@@ -1,0 +1,3 @@
+hello:
+    pattern:  /:name
+    defaults: { _controller: IndexBundle:Index:index }
