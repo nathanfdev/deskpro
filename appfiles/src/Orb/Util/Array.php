@@ -1,0 +1,1159 @@
+<?php
+/**
+ * Orb
+ *
+ * @package Orb
+ * @category Util
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Orb\Util;
+
+/**
+ * Utility functions that work with arrays.
+ *
+ * @static
+ */
+class Arrays
+{
+	private __construct() { /* No instances allowed */ }
+	
+	/**
+	 * Used as the value placeholder when defining parameters to pass to a user
+	 * function with Outershift_Array::func().
+	 *
+	 * @var string
+	 * @see Arrays::func()
+	 */
+	const FUNC_ARR_VAL = '___ORB_ARR_VALUE___';
+
+	/**
+	 * Used as the value to indicate that values that aren't set should be ignored and not
+	 * included in the resulting reduced array.
+	 *
+	 * @var string
+	 * @see Arrays::reduceToKeys()
+	 */
+	const REDUCE_IGNORE_UNSET = '___ORB_IGNORE_UNSET___';
+
+	/**
+	 * Represents that duplicate lowercase keys are overwritten. The value
+	 * that appears later in the array is kept.
+	 *
+	 * @var int
+	 * @see Arrays::lowercaseKeys()
+	 */
+	const LOWERKEY_DUPE_OVERWRITE = 1;
+
+	/**
+	 * Represents that duplicate lowercase keys are kept in a sub-array.
+	 *
+	 * @var int
+	 * @see Arrays::lowercaseKeys()
+	 */
+	const LOWERKEY_DUPE_ADD_ARRAY = 2;
+
+
+
+	/**
+	 * Flattens a multidimentional array into a single dimentional array.
+	 * This MAY result in data loss if there are duplicate keys in associative arrays.
+	 *
+	 * @param    array    $array The array to flatten
+	 * @return   array    The flattened array
+	 */
+	public static function flatten($array)
+	{
+		if (!is_array($array)) {
+			return (array)$array;
+		}
+
+		$new_array = array();
+
+		foreach ($array as $k => $v) {
+			if (!is_array($v)) {
+			    if (is_int($k)) {
+			        $new_array[] = $v;
+			    } else {
+			        $new_array[$k] = $v;
+			    }
+			} else {
+			    $v = self::flatten($v);
+				$new_array = array_merge($new_array, $v);
+			}
+		}
+
+		return $new_array;
+	}
+
+
+
+	/**
+	 * Run a function on all items of an array recursively. This is a more powerful version of
+	 * array_walk().
+	 *
+	 * Note: You can change the placement of the array value when calling the functions by using
+	 * the value Arrays::FUNC_ARR_VAL in the $params array. If it does not exist, it will
+	 * be the first parameter.
+	 *
+	 * Example:
+	 * <code>
+	 * // Strip magic quotes
+	 * $_GET = Arrays::func($_GET, 'stripslashes');
+	 *
+	 * // Example of custom parameters
+	 * $var = Arrays::func($array, 'somefunc', array(1, 2, Arrays::FUNC_ARR_VAL));
+	 * // Calls somefunc(1, 2, $array[index]) for each index.
+	 * </code>
+	 *
+	 * @param    mixed    $array   The array or value to run $func on
+	 * @param    string   $func    The function to run
+	 * @param    array    $params  Parameters to pass to $func.
+	 * @return   mixed    The value (usually array) returned by $func on all items
+	 */
+	public static function func($array, $func, $params = array())
+	{
+		if (!is_array($array)) {
+			$key = array_search(self::FUNC_ARR_VAL, $params, true);
+
+			if ($key === false) {
+				if (array_key_exists(0, $params)) {
+					array_unshift($params, '');
+				}
+
+				$key = 0;
+			}
+
+			$params[$key] = $array;
+
+			return call_user_func_array($func, $params);
+		}
+
+		foreach ($array as $k => $v) {
+			$array[$k] = Arrays::func($v, $func, $params);
+		}
+
+		return $array;
+	}
+
+
+
+	/**
+	 * Merge multiple associative arrays together.
+	 *
+	 * This differs from PHP's array_merge() in that numeric keys are not discarded.
+	 *
+	 * <code>
+	 * $arr1 = array(0 => 'None', 5 => 'User5', 22 => 'User22');
+	 * $arr2 = array(14 => 'User14', 2 => 'User2');
+	 *
+	 * array_merge($arr1, $arr2)
+	 *     -> array('None', 'User5', 'User22', 'User14', 'User2')
+	 *        Indexed 0 to 5, the userid keys are lost.
+	 *
+	 * Arrays::mergeAssoc($arr1, $arr2)
+	 *     -> array(0 => 'None', 5 => 'User5', 22 => 'User22', 14 => 'User14', 2 => 'User2')
+	 *        Userid keys remain unchanged
+	 * </code>
+	 *
+	 * @param    array    $array       The initial array
+	 * @param    array    $another...  An array to merge into the original
+	 * @return   array
+	 */
+	public static function mergeAssoc()
+	{
+		$new_array = (array)func_get_arg(0);
+
+		for ($i = 1, $size = func_num_args(); $i < $size; $i++) {
+
+			$arr = (array)func_get_arg($i);
+
+			foreach ($arr as $key => $val) {
+				$new_array[$key] = $val;
+			}
+		}
+
+		return $new_array;
+	}
+
+
+
+	/**
+	 * Merge two or more arrays together recursively.
+	 *
+	 * @param array $array...
+	 * @return array
+	 */
+	public static function mergeDeep()
+	{
+		$args = func_get_args();
+
+		if (!$args) {
+			return array();
+		}
+		if (sizeof($args) == 1) {
+			return $args[0];
+		}
+
+		$array = array_shift($args);
+
+		while (($other_array = array_shift($args)) !== null) {
+			$array = self::_mergeDeepHelper($array, $other_array);
+		}
+
+		return $array;
+	}
+
+	/**
+	 * Recursively merges two arrays together.
+	 *
+	 * @param array $array1
+	 * @param array|null $array2
+	 * @return array
+	 */
+	protected static function _mergeDeepHelper(array $array1, $array2 = null)
+	{
+		if (is_array($array2)) {
+            foreach ($array2 as $key => $val) {
+                if (is_array($array2[$key])) {
+                    $array1[$key] = (array_key_exists($key, $array1) && is_array($array1[$key]))
+                                  ? self::_mergeDeepHelper($array1[$key], $array2[$key])
+                                  : $array2[$key];
+                } else {
+                    $array1[$key] = $val;
+                }
+            }
+        }
+
+        return $array1;
+	}
+
+
+
+	/**
+	 * Add a new value to the beginning of an associative array.
+	 *
+	 * Like PHP's array_unshift(), but works on associative arrays.
+	 *
+	 * <code>
+	 * $arr = array(5 => 'User5', 22 => 'User22');
+	 *
+	 * array_unshift($arr, 'None')
+	 *     -> array('None', 'User5', 'User22')
+	 *        Indexed 0 to 2, the userid keys are lost.
+	 *
+	 * Arrays::unshiftAssoc($arr, 0, 'None')
+	 *     -> array(0 => 'None', 5 => 'User5', 22 => 'User22')
+	 *        Userid keys remain unchanged
+	 * </code>
+	 *
+	 * @param    array    $array    The array to work on
+	 * @param    mixed    $key      The key of the item to add
+	 * @param    mixed    $value    The value of the item to add
+	 * @return   int      Size of new array
+	 */
+	public static function unshiftAssoc(&$array, $key, $value = false)
+	{
+		if (!is_array($array)) {
+			$array = (array)$array;
+		}
+
+		$old_array = $array;
+		$array = array($key => $value);
+
+		// Make sure not to overwrite it with old value
+		if (isset($old_array[$key])) {
+			unset($old_array[$key]);
+		}
+
+		foreach ($old_array as $k => $v) {
+			$array[$k] = $v;
+		}
+
+		return sizeof($array);
+	}
+
+
+
+	/**
+	 * Remove all falsey values from an array.
+	 *
+	 * @param    array    $array    The array to work on
+	 * @return   mixed
+	 */
+	public static function removeFalsey($array)
+	{
+		if (!is_array($array)) {
+			$array = (array)$array;
+		}
+
+		foreach (array_keys($array) as $k) {
+			if (!$array[$k]) {
+				unset($array[$k]);
+			}
+		}
+
+		return $array;
+	}
+
+
+
+	/**
+	 * Remove all values from an array that are empty strings. This differs
+	 * from removeFalsey() in that only empty strings are removed, things like
+	 * null or 0 are preserved. Note that strings are trim()'ed before being
+	 * tested for emptiness.
+	 *
+	 * @param    array    $array   The array to search in
+	 * @return   array
+	 */
+	public static function removeEmptyString($array)
+	{
+	    if (!is_array($array)) {
+	        $array = (array)$array;
+	    }
+
+	    foreach (array_keys($array) as $k) {
+	        if (is_string($array[$k]) AND trim($array[$k]) === '') {
+	            unset($array[$k]);
+	        }
+	    }
+
+	    return $array;
+	}
+
+
+
+	/**
+	 * Take an array of arrays and then use data from the sub-arrays as keys in the
+	 * main array. Example:
+	 *
+	 * <code>
+	 * $arr1 = array( array('id' => 1, 'value' => 'foo'), array('id' => 2, 'value' => 'bar') )
+	 * $arr2 = Arrays::keyFromData($arr1, 'id', 'value');
+	 * // Is now: array(1 => 'foo', 2 => 'bar')
+	 * </code>
+	 *
+	 * If $val_index is supplied, the array is 'flattened' and only the value from the index
+	 * is added.
+	 *
+	 * @param    array    $array        The array to work with
+	 * @param    mixed    $key_index    The index of the sub-arrays to use as the key
+	 * @param    bool     $val_index    The index of the only data item to return
+	 */
+	public static function keyFromData($array, $key_index = 0, $val_index = false)
+	{
+		$new_array = array();
+
+		if (!$val_index) {
+			foreach ($array as $sub_array) {
+				$new_array[$sub_array[$key_index]] = $sub_array;
+			}
+		} else {
+			foreach ($array as $sub_array) {
+				$new_array[$sub_array[$key_index]] = $sub_array[$val_index];
+			}
+		}
+
+		return $new_array;
+	}
+
+
+
+	/**
+	 * Push values into the array as long as they are not already in the array.
+	 *
+	 * Note this does a weak comparison (== instead of ===).
+	 *
+	 * @param    array    $array    The array to work on
+	 * @param    mixed    $val ...  The values to push
+	 * @return   int      The new number of elements in the array
+	 */
+	public static function pushUnique(&$array, $val)
+	{
+		$num = func_num_args();
+
+		for ($i = 1; $i < $num; $i++) {
+			$val = func_get_arg($i);
+
+			if (!in_array($val, $array)) {
+				array_push($array, $val);
+			}
+		}
+
+		return sizeof($array);
+	}
+
+
+
+	/**
+	 * Same as pushUnique() except this does strict comparisons (=== instead of ==).
+	 *
+	 * @see      Arrays::pushUnique()
+	 * @param    array    $array    The array to work on
+	 * @param    mixed    $val ...  The values to push
+	 * @return   int      The new number of elements in the array
+	 */
+	public static function pushUniqueStrict(&$array, $val)
+	{
+		$num = func_num_args();
+
+		for ($i = 1; $i < $num; $i++) {
+			$val = func_get_arg($i);
+
+			if (!in_array($val, $array)) {
+				array_push($array, $val, true);
+			}
+		}
+
+		return sizeof($array);
+	}
+
+
+
+	/**
+	 * Get the value from a multidimentional array using a path-like syntax.
+	 *
+	 * <code>
+	 * $array = array('user1' => array('groups' => arary(1 => array('name' => 'Admin'))));
+	 * $group_name = Arrays::keyAsPath('/user1/groups/1/name/', $array);
+	 * echo $group_name; // Admin
+	 * </code>
+	 *
+	 * If the path could not be resolved, null is returned as the value. Note that null may be
+	 * a legitimate value. That is, if the value in the array is actually null then you have no
+	 * way to know if it was found or not.
+	 *
+	 * @param    array    $array     The array to work with
+	 * @param    string   $path      The path
+	 * @param    bool     $path_sep  The string to use as the path separator
+	 * @return   mixed    The value at the end of the path.
+	 */
+	public static function keyAsPath($array, $path, $path_sep = '/')
+	{
+		if (!$path_sep) {
+			return null;
+		}
+
+		// Remove leading+trailing seps
+		if (Orb_String::startsWith($path_sep, $path)) {
+			$path = substr($path, 1);
+		}
+
+		if (Orb_String::endsWith($path_sep, $path)) {
+			$path = substr($path, 0, strlen($path) - 1);
+		}
+
+
+		$parts = explode($path_sep, $path);
+
+		if (!$parts) {
+			return null;
+		}
+
+		while ($key = array_shift($parts)) {
+			if (!isset($array[$key])) {
+				return null;
+			}
+
+			$array = $array[$key];
+		}
+
+		return $array;
+	}
+
+
+
+	/**
+	 * Returns a string from an array using the given template on each item. Sortof like
+	 * implode() but a bit more control.
+	 *
+	 * @param array $array The array to work with
+	 * @param string $tpl The template to use. Variables {VAL} and {KEY} are available.
+	 * @return string
+	 */
+	public static function implodeTemplate($array, $tpl = '<li>{VAL}</li>')
+	{
+	    if (!is_array($array)) {
+	        $array = (array)$array;
+	    }
+
+
+	    $string = '';
+
+	    foreach ($array as $k => $v) {
+	        $string .= str_replace(array('{KEY}', '{VAL}'), array($k, $v), $tpl);
+	    }
+
+	    return $string;
+	}
+
+
+
+	/**
+	 * Take an array of id=>array(data) items and create a hierarchy based on a parent_id element
+	 * in the data array.
+	 *
+	 * <code>
+	 * $data = array(
+	 *     1 => array('parent_id' => 0, 'title' => 'Title 1'),
+	 *     2 => array('parent_id' => 1, 'title' => 'Title 2')
+	 * );
+	 * $data2 = Arrays::intoHierarchy($data, 'parent_id', 'children');
+	 * // $data2 = array(
+	 * //            1 => array(
+	 * //                'parent_id' => 0,
+	 * //                'title' => 'Title 1',
+	 * //                'children' => array(2 => array('parent_id' => 1, 'title' => 'Title 2'))
+	 * //            )
+	 * // );
+	 * </code>
+	 *
+	 * @param  array   $array       The array to work on
+	 * @param  array   $top_id      The top of the hierarchy (i.e., level 0, or 'no parent', 'top', etc)
+	 * @param  string  $parent_key  The key in the data to use as the parent_id
+	 * @param  string  $child_key   The key to add that contains the children
+	 * @param  string  $store_ids   A variable to put all the keys that make it into the array.
+	 * @return array
+	 */
+	public static function intoHierarchy($array, $top_id = 0, $parent_key = 'parent_id', $child_key = 'children', &$store_ids = null)
+	{
+		$store_ids = array();
+		return self::_intoHierarchy($array, $top_id, $parent_key, $child_key, $store_ids);
+	}
+
+	// Helper function takes the array by ref to save time/memory by unsetting each processed
+	// element as it goes.
+	protected static function _intoHierarchy(&$array, $top_id = 0, $parent_key, $child_key, &$store_ids = null)
+	{
+		$new_array = array();
+
+		foreach (array_keys($array) as $id) {
+
+			if (!isset($array[$id]) OR $array[$id][$parent_key] != $top_id) {
+				continue;
+			}
+
+			$store_ids[] = $id;
+
+			$new_array[$id] = $array[$id];
+
+			// Processed, can remove it
+			unset($array[$id]);
+
+			$new_array[$id][$child_key] = Arrays::intoHierarchy($array, $id, $parent_key, $child_key, $store_ids);
+		}
+
+		return $new_array;
+	}
+
+
+
+	/**
+	 * Flattens a hierarchical array into a "flat" hierarchy. This is where all items exist in a single-dimentional
+	 * array, but are in order with a new 'depth' field to indicate "indentation". This is useful when you have
+	 * an array formatted like Arrays::intoHierarchy().
+	 *
+	 * <code>
+	 * $data = array(
+	 *             1 => array(
+	 *                 'parent_id' => 0,
+	 *                 'title' => 'Title 1',
+	 *                 'children' => array(2 => array('parent_id' => 1, 'title' => 'Title 2'))
+	 *             )
+	 * );
+	 *
+	 * // to
+	 * $data2 = array(
+	 *     1 => array('parent_id' => 0, 'title' => 'Title 1', 'depth' => 0),
+	 *     2 => array('parent_id' => 1, 'title' => 'Title 2', 'depth' => 1)
+	 * );
+	 * </code>
+	 *
+	 * @param  array   $array      The array of data to work on
+	 * @param  string  $index_key  The key to use when putting items into the data array, null for no key (which results in normal integer arrays)
+	 * @param  string  $child_key  Which item contains the "children" in each item in the array?
+	 * @param  string  $depth_key  The key to use to put the integer 'depth' that represents an items level
+	 * @return array
+	 */
+	public static function flattenHierarchy(array $array, $index_key = 'id', $child_key = 'children', $depth_key = 'depth')
+	{
+	    $new_array = array();
+
+	    self::_flattenHierarcy($new_array, $array, $index_key, $child_key, $depth_key, 0);
+
+	    return $new_array;
+	}
+
+	protected static function _flattenHierarcy(array &$new_array, array $array, $index_key, $child_key, $depth_key, $current_depth = 0, &$count = 0)
+	{
+	    foreach ($array as $arr) {
+	        if ($index_key !== null) {
+	            $index = $arr[$index_key];
+	        } else {
+	            $index = $count;
+	        }
+
+	        $count++;
+
+	        $new_array[$index] = $arr;
+			unset($new_array[$index][$child_key]);
+	        $new_array[$index]['depth'] = $current_depth;
+
+	        if (isset($arr[$child_key]) AND $arr[$child_key]) {
+	            self::_flattenHierarcy($new_array, $arr[$child_key], $index_key, $child_key, $depth_key, $current_depth+1, $count);
+	        }
+	    }
+	}
+
+
+
+	/**
+	 * Reduce an array to only specified keys.
+	 *
+	 * Set $default to Arrays::REDUCE_IGNORE_UNSET if you do not want to
+	 * include keys that don't exist in the original array.
+	 *
+	 * @param   array  $keys      What keys to preserve
+	 * @param   array  $array     The original array
+	 * @param   mixed  $default   The default value to set, if the original array doesn't have a key
+	 * @return  array
+	 */
+	public static function reduceToKeys(array $keys, array $array, $default = self::REDUCE_IGNORE_UNSET)
+	{
+	    $ret = array();
+
+	    foreach ($keys as $k) {
+	        if (isset($array[$k])) {
+	            $ret[$k] = $array[$k];
+	        } elseif ($default != self::REDUCE_IGNORE_UNSET) {
+	            $ret[$k] = $default;
+	        }
+	    }
+
+	    return $ret;
+	}
+
+
+
+	/**
+	 * Take a multidimential array and return a new array where
+	 * only a single index exists.
+	 *
+	 * <code>
+	 * $array = array(
+	 *     4 => array('userid' => 4, 'name' => 'Christopher'),
+	 *     15 => array('userid' => 15, 'name' => 'Danny')
+	 * );
+	 *
+	 * $new = Arrays::flattenToIndex($array, 'name');
+	 *
+	 * // $new is now:
+	 * // array(4 => 'Christopher', 15 => 'Danny')
+	 * </code>
+	 *
+	 * @param  array       $array  The array to work on
+	 * @param  string|int  $index  The index of the immediate sub-array to use
+	 * @return array
+	 */
+	public static function flattenToIndex(array $array, $index = 0)
+	{
+	    $ret = array();
+
+	    foreach ($array as $k => $sub_array) {
+	        if (isset($sub_array[$index])) {
+	            $ret[$k] = $sub_array[$index];
+	        }
+	    }
+
+	    return $ret;
+	}
+
+
+
+	/**
+	 * Cast array values and/or keys to a specific type. Pass
+	 * null to $values or $keys to skip casting of that thing.
+	 *
+	 * @param  array   $array     The array to work on
+	 * @param  string  $val_type  The type to cast values to
+	 * @param  string  $key_type  The type to cast keys to
+	 * @return array
+	 */
+	public static function castToType(array $array, $val_type = 'string', $key_type = null)
+	{
+	    $ret = array();
+
+	    foreach ($array as $k => $v) {
+	        if ($key_type !== null) {
+	            settype($k, $key_type);
+	        }
+
+	        if ($val_type !== null) {
+	            settype($v, $val_type);
+	        }
+
+	        $ret[$k] = $v;
+	    }
+
+	    return $ret;
+	}
+
+
+
+	/**
+	 * Get the Nth key in the array. Obviously only useful for
+	 * non-numerical indexed arrays.
+	 *
+	 * <code>
+	 * $arr = array('title1' => 'Some data', 'title2' => 'Some other data');
+	 * Arrays::getNthKey($arr, 0) // title1
+	 * </code>
+	 *
+	 * @param int $num The nth key to get (starts from 0)
+	 * @return mixed NULL if the nth key doesn't exist
+	 */
+	public static function getNthKey($array, $num = 0)
+	{
+		if (sizeof($array) < $num) {
+			return null;
+		}
+
+		$count = 0;
+		foreach ($array as $k => $v) {
+			if ($count == $num) {
+				return $k;
+			}
+			++$count;
+		}
+
+		return null;
+	}
+
+
+
+	/**
+	 * Get the Nth item in the array. Obviously only useful for
+	 * non-numerical indexed arrays.
+	 *
+	 * <code>
+	 * $arr = array('title1' => 'Some data', 'title2' => 'Some other data');
+	 * Arrays::getNthItem($arr, 0) // Some data
+	 * </code>
+	 *
+	 * @param int $num The nth key to get (starts from 0)
+	 * @return mixed NULL if the nth item doesn't exist
+	 */
+	public static function getNthItem($array, $num = 0)
+	{
+		$k = self::getNthKey($array, $num);
+
+		if ($k === null) return null;
+
+		return $array[$k];
+	}
+
+
+
+	/**
+	 * Get the first key of an array.
+	 *
+	 * @param array $array
+	 * @return index
+	 */
+	public static function getFirstKey($array)
+	{
+		return self::getNthKey($array, 0);
+	}
+
+
+
+	/**
+	 * Get the last key of an array
+	 *
+	 * @param unknown_type $array
+	 * @return unknown
+	 */
+	public static function getLastKey($array)
+	{
+		return self::getNthKey($array, 0);
+	}
+	
+
+
+	/**
+	 * Get the first item of an array.
+	 *
+	 * @param array $array
+	 * @return mixed
+	 */
+	public static function getFirstItem($array)
+	{
+		return self::getNthItem($array, 0);
+	}
+
+
+
+	/**
+	 * Get the last item of an array.
+	 *
+	 * @param array $array
+	 * @return mixed
+	 */
+	public static function getLastItem($array)
+	{
+		return self::getNthItem($array, sizeof($array)-1);
+	}
+
+
+
+	/**
+	 * Check to see if an item is in an array. Just like in_array(), but works
+	 * with arrays of items to check instead of just a single value.
+	 *
+	 * If you want to search for an array within the array, you must wrap it in
+	 * an outer array so the function expects it properly: array($searchforthis)
+	 *
+	 * If $all is true, then the function will only return true if all of the items
+	 * in $items are found. If it is false, it will return true when any one of the items
+	 * is found.
+	 *
+	 * @param  array  $items   The items to search for
+	 * @param  array  $array   The array to search in
+	 * @param  bool   $all     Search for all (true) or just any (false)
+	 * @param  bool   $strict  Use strict comparisons
+	 * @return bool
+	 */
+	public static function isIn($items, $array, $all = false, $strict = false)
+	{
+		if (!$array) {
+			return false;
+		}
+
+		$items = (array)$items;
+
+		foreach ($items as $val) {
+			if (in_array($val, $array, $strict)) {
+				if (!$all) return true;
+			} else {
+				if ($all) return false;
+			}
+		}
+
+		if ($all) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Check to see if keys are in an array. Just like array_key_exists() or an isset(),
+	 * but works with arrays of keys instead of just one.
+	 *
+	 * If $all is true, then the function will only return true if all of the keys
+	 * in $keys are found. If it is false, it will return true when any one of the keys
+	 * is found.
+	 *
+	 * @param  array  $keys    The keys to search for
+	 * @param  array  $array   The array to search in
+	 * @param  bool   $all     Search for all (true) or just any (false)
+	 * @return bool
+	 */
+	public static function isKeyIn($keys, $array, $all = false)
+	{
+		if (!$array) {
+			return false;
+		}
+
+		$keys = (array)$keys;
+
+		foreach ($keys as $k) {
+			if (isset($array[$k])) {
+				if (!$all) return true;
+			} else {
+				if ($all) return false;
+			}
+		}
+
+		if ($all) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+
+	/**
+	 * Search an entire array and return all keys that match a value. Just like
+	 * array_search() except this returns all keys, instead of just one.
+	 *
+	 * @param  array  $array   The array to search through
+	 * @param  mixed  $search  The value to search for
+	 * @param  bool   $strict  True to enable strict comparisons
+	 * @return array
+	 */
+	public static function searchAll($array, $search, $strict = false)
+	{
+		$found_keys = array();
+
+		if ($strict) {
+			foreach ($array as $k => $v) {
+				if ($search === $v) {
+					$found_keys[] = $k;
+				}
+			}
+		} else {
+			foreach ($array as $k => $v) {
+				if ($search == $v) {
+					$found_keys[] = $k;
+				}
+			}
+		}
+
+		return $found_keys;
+	}
+
+
+
+	/**
+	 * Takes an array and normalizes all keys to lowercase.
+	 *
+	 * @param  array  $array      The array to work on
+	 * @param  int    $dupe_mode  What to do when a lowercased key already exists (i.e., MyKey and mykey were in the original array)
+	 * @return array
+	 */
+	public static function lowercaseKeys($array, $dupe_mode = LOWERKEY_DUPE_OVERWRITE)
+	{
+		foreach ($array as $key => $value) {
+			$lower_key = strtowloer($key);
+			if ($lower_key == $key) continue; // already lowercase
+
+			unset($array[$key]);
+
+			// If we're adding up dupes
+			if ($dupe_mode == self::LOWERKEY_DUPE_ADD_ARRAY) {
+				// If theres only one, then no need for an array
+				if (!isset($array[$lower_key])) {
+					$array[$lower_key] = $value;
+				// Otherwise, if we already have an array, add the value to the collection
+				} elseif (is_array($array[$lower_key])) {
+					$array[$lower_key][] = $value;
+				// And lastly, we already have a value so we're making a new array
+				} else {
+					$array[$lower_key] = array($array[$lower_key], $value);
+				}
+			// We dont care if there was an existing value or not
+			} else {
+				$array[$lower_key] = $value;
+			}
+		}
+
+		return $array;
+	}
+
+
+
+	/**
+	 * Converts an array to a string of "equals lines".
+	 *
+	 * @param array $array
+	 * @return string
+	 * @see Orb_String::parseEqualsLines()
+	 */
+	public static function toEqualsLines(array $array)
+	{
+		$lines = array();
+
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				foreach ($v as $subv) {
+					$lines[] = "$k = $subv";
+				}
+			} else {
+				$lines[] = "$k = $v";
+			}
+		}
+
+		return implode("\n", $lines);
+	}
+
+
+
+	/**
+	 * Generates an md5 hash of an arrays data. This tries to normalize
+	 * things a bit, so things like arrays in a different order but same
+	 * data would generate the same hash.
+	 *
+	 * @param array $array
+	 * @return string
+	 */
+	public static function generateHash(array $array, $keys_significant = true)
+	{
+		return self::_generateHashHelper($array, $keys_significant);
+	}
+
+	protected static function _generateHashHelper(array $array, $keys_significant = true)
+	{
+		$data_str = array();
+
+		if ($keys_significant) {
+			ksort($array, SORT_REGULAR);
+		} else {
+			sort($array, SORT_REGULAR);
+		}
+
+		foreach ($array as $k => $v) {
+			if ($keys_significant) {
+				$data_str[] = $k;
+			}
+
+			switch (gettype($v)) {
+				case 'array':
+					$v = self::_generateHashHelper($v, false);
+					break;
+
+				case 'object':
+					if (method_exists($v, 'toString')) {
+						$v = $v->toString();
+					} elseif (method_exists($v, '__toString')) {
+						$v = $v->__toString();
+					} elseif (method_exists($v, 'toArray')) {
+						$v = $v->toArray();
+						$v = self::_generateHashHelper($v, false);
+					} else {
+						$v = serialize($v);
+						$v = md5($v);
+					}
+					break;
+
+				case 'resource':
+					$v = 'resource';
+					break;
+			}
+
+			$data_str[] = $v;
+		}
+
+		$data_str = implode('', $data_str);
+
+		return md5($data_str);
+	}
+	
+
+
+	/**
+	 * Unset a specific deep value of an array.
+	 *
+	 * @param  array $array The array to unset in
+	 * @paray  array $keys  The keys used to get to deep item to unset
+	 * @return boolean  True if the unset was performed.
+	 */
+	public static function unsetKey(array &$array, $keys)
+	{
+		$keys = (array)$keys;
+
+		// Top level, no looping needed
+		if (count($keys) == 1) {
+			$keys = array_pop($keys);
+			unset($array[$keys]);
+			return true;
+		}
+
+		$last_key = array_pop($keys);
+		$subarray = &$array;
+
+		foreach ($keys as $key) {
+			if (!is_array($subarray) OR !isset($subarray[$key])) {
+				return false;
+			}
+
+			$subarray = &$subarray[$key];
+		}
+
+		unset($subarray[$last_key]);
+
+		return true;
+	}
+	
+	
+	
+	/**
+	 * Takes an array of error codes and flattens it into a
+	 * single-dimentional array, easy for testing in templates etc.
+	 *
+	 * <code>
+	 * $errors = array(
+	 *    'username' => array('required'),
+	 *    'title' => array('too_short', 'invalid_characters')
+	 * );
+	 * 
+	 * $flat_errors = Arrays::flattenErrors($errors);
+	 * // array(
+	 * //    'username_required' => true,
+	 * //    'title_too_short' => true,
+	 * //    'title_invalid_characters' => true
+	 * // );
+	 *
+	 * if ($flat_errors['title_invalid_characters']) {} // etc
+	 * </code>
+	 *
+	 * @param  array  $array    The array to flatten
+	 * @param  string $add_any  Adds a new 'any' code, useful when you want to indicate that *any* error happened
+	 *                          on a given field. For example a string value 'hasError' will add 'title_hasError' to true.
+	 * @param  string $prefix   Prefix all keys with this string
+	 * @return array
+	 */
+	public static function flattenCodeArray(array $array, $add_any = false, $prefix = '')
+	{
+		$new = array();
+		
+		foreach ($array as $k => $v) {
+			
+			// May be empty array
+			if (!$v) continue;
+			
+			$k = $prefix.$k.'_';
+			
+			if ($add_any) {
+				$new[$k.$add_any] = true;
+			}
+			
+			foreach ($v as $code) {
+				if (is_array($code)) {
+					$new = $new + self::flattenCodeArray($code, $add_any, $k);
+				} else {
+					$new[$k.$code] = true;
+				}
+			}
+		}
+		
+		return $new;
+	}
+
+
+
+	/**
+	 * Search for a value in an array and remove it.
+	 *
+	 * @param  array  $array        The array to work on
+	 * @param  mixed  $value        A value to search for and remove, or an array of values
+	 * @param  bool   $strict       Use strict (===) comparisons instead of weak (==)
+	 * @return array
+	 */
+	public static function removeValue(array $array, $value, $strict = false)
+	{
+		if (!is_array($value)) $value = array($value);
+
+		foreach ($value as $v) {
+			while (($k = array_search($v, $array, $strict)) !== false) {
+				unset($array[$k]);
+			}
+		}
+
+		return $array;
+	}
+}

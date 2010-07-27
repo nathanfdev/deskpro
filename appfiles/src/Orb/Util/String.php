@@ -1,0 +1,848 @@
+<?php
+/**
+ * Orb
+ *
+ * @package Orb
+ * @category Util
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Orb\Util;
+
+/**
+ * String utility functions.
+ *
+ * @static
+ */
+class Strings
+{
+	private __construct() { /* No instances allowed */ }
+
+	/**#@+
+	 * Strings of some common character ranges.
+	 * @see Strings::randomString()
+	 */
+	const CHARS_ALPHANUM     = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+	const CHARS_ALPHANUM_I   = '0123456789abcdefghijklmnopqrstuvwxyz';
+	const CHARS_ALPHANUM_IU  = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	const CHARS_NUM          = '0123456789';
+	const CHARS_ALPHA        = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+	const CHARS_ALPHA_I      = 'abcdefghijklmnopqrstuvwxyz';
+	const CHARS_ALPHA_IU     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	const CHARS_SECURE       = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()-_=+{}|[]:;,./<>?';
+	/**#@-*/
+
+
+	/**#@+
+	 * End of line characters.
+	 * @see Strings::standardEol()
+	 */
+	const EOL_LF = "\n";
+	const EOL_CRLF = "\r\n";
+	const EOL_CR = "\r";
+	/**#@-*/
+
+
+	/**#@+
+	 * Flags for use with the boundary function.
+	 * @see Strings::getBetweenBoundary()
+	 */
+	const BOUNDARY_APPEND = 1;
+	const BOUNDARY_ARRAY = 2;
+	const BOUNDARY_FIRST = 3;
+	/**#@-*/
+
+
+	/**
+	 * When a dupe key is encountered, overwrite the old key.
+	 * @see see Strings::parseEqualsLines()
+	 */
+	const EQUALSLINES_DUPE_OVERWRITE = 1;
+
+
+	/**
+	 * When a dupe key is encountered, overwrite the old key.
+	 * @see see Strings::parseEqualsLines()
+	 */
+	const EQUALSLINES_DUPE_ADD_ARRAY = 2;
+
+
+
+	/**
+	 * Add slashes to a string to be used within Javascript with quotes and newlines properly
+	 * escaped.
+	 *
+	 * Example:
+	 * <code>
+	 * $str = 'She said, "Wow!"';
+	 * echo '<script type="text/javascript">var js_string = "' . Strings::addslashesJs($str) . '";</script>';
+	 * </code>
+	 *
+	 * @param    string    $string    The string to escape
+	 * @return   string
+	 */
+	public static function addslashesJs($string)
+	{
+		$str = str_replace(array('\\', '\'', '"', "\n", "\r"), array('\\\\', "\'", '\\"', "\\n", "\\r"), trim($string));
+
+		// Can't have </script> or else browsers will interpret that as
+		// ending the script. \x3C is hex for the '<' char, so turn </script> into
+		// \x3C/script>
+		$str = preg_replace('#<(\s*/script\s*>)#i', '\\x3C\\1', $str);
+
+		return $str;
+	}
+
+
+
+	/**
+	 * Generate a random string.
+	 *
+	 * $chars is a string of possible characters. See the CHARS_* presets.
+	 *
+	 * If a falsy value is provided, then CHARS_ALPHANUM is used.
+	 *
+	 * @param integer $len
+	 * @param string  $chars
+	 */
+	public static function random($len = 8, $chars = null)
+	{
+		if (!$chars) {
+			$chars = self::CHARS_ALPHANUM;
+		}
+
+		$string = '';
+		$max_range = strlen($chars) - 1;
+
+		for ($i = 0; $i < $len; $i++) {
+			$string .= $chars[mt_rand(0, $max_range)];
+		}
+
+		return $string;
+	}
+
+
+
+	/**
+	 * Generate a random string made up of "pronouncable" bits. Examples:
+	 * - bacrimo
+	 * - drestaw
+	 * - swuclew
+	 *
+	 * @param   int     $len The maximum length of the string
+	 * @return  string
+	 */
+	public static function randomPronounceable($len = 10)
+	{
+		static $vowels, $cons, $num_vowels, $num_cons;
+
+		if (!$vowels) {
+			$vowels = array('a', 'e', 'i', 'o', 'u');
+			$cons = array(
+				'b', 'c', 'd', 'g', 'h', 'j', 'k', 'l', 'm', 'n', 'p', 'r', 's', 't', 'u', 'v', 'w', 'tr',
+				'cr', 'br', 'fr', 'th', 'dr', 'ch', 'ph', 'wr', 'st', 'sp', 'sw', 'pr', 'sl', 'cl'
+				);
+
+				$num_vowels = count($vowels);
+				$num_cons = count($cons);
+		}
+
+		$string = '';
+		for($i = 0; $i < $len; $i++){
+			$string .= $cons[mt_rand(0, $num_cons - 1)] . $vowels[mt_rand(0, $num_vowels - 1)];
+		}
+
+		return substr($string, 0, $len);
+	}
+
+
+
+	/**
+	 * Standarize the end-of-line character in a string.
+	 *
+	 * @param    string $string    The string to work on
+	 * @param    string $eol       The end of line character to use
+	 * @return   string
+	 */
+	public static function standardEol($string, $eol = self::EOL_LF)
+	{
+		return preg_replace('#\n|\r\n|\r#', $eol, $string);
+	}
+
+
+
+	/**
+	 * Return the first line of a string.
+	 *
+	 * @param    string    $string The string to work on
+	 * @return   string
+	 */
+	public static function getFirstLine($string)
+	{
+		$string = self::standardEol($string);
+
+		if (($pos = strpos($string, "\n")) !== false) {
+			$string = substr($string, 0, $pos);
+		}
+
+		return $string;
+	}
+
+
+
+	/**
+	 * Return the last line of a string.
+	 *
+	 * @param    string    $string The string to work on
+	 * @return   string
+	 */
+	public static function getLastLine($string)
+	{
+		$string = self::standardEol($string);
+
+		$lines = explode("\n", $string);
+
+		return array_pop($lines);
+	}
+
+
+
+	/**
+	 * Check if $needle is anywhere in $haystack. If $needle is an array,
+	 * then all strings in the array must be found in $haystack for
+	 * this function to return true.
+	 *
+	 * @param    string|array    $needle    The string to search for
+	 * @param    string          $haystack  The string to search in
+	 * @param    bool            $any_needle  If using array $needle, return true for any found needle instead of requiring all
+	 * @return bool
+	 */
+	public static function isIn($needle, $haystack, $any_needle = false)
+	{
+		if (is_array($needle)) {
+			foreach ($needle as $n) {
+				if (self::isIn($n, $haystack)) {
+					if ($and_needle) {
+						return true;
+					}
+				} else {
+					if (!$any_needle) {
+						return false;
+					}
+				}
+			}
+
+			return true;
+		}
+
+		return (strpos($haystack, $needle) !== false);
+	}
+
+
+
+	/**
+	 * Check if $needle is at the beginning of $haystack
+	 *
+	 * @param    string    $needle    The string to search for
+	 * @param    string    $haystack  The string to search in
+	 * @return bool
+	 */
+	public static function startsWith($needle, $haystack)
+	{
+		if (is_array($needle)) {
+			foreach ($needle as $n) {
+				if (self::startsWith($n, $haystack)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		if ($needle == $haystack OR $haystack == '') {
+			return true;
+		}
+
+		return (strpos($haystack, $needle) === 0);
+	}
+
+
+
+	/**
+	 * Check if $needle is at the end of $haystack
+	 *
+	 * @param    string    $needle    The string to search for
+	 * @param    string    $haystack  The string to search in
+	 * @return   bool
+	 */
+	public static function endsWith($needle, $haystack)
+	{
+		if (is_array($needle)) {
+			foreach ($needle as $n) {
+				if (self::endsWith($n, $haystack)) {
+					return true;
+				}
+			}
+
+			return false;
+		}
+
+		return Strings::startsWith(strrev($needle), strrev($haystack));
+	}
+
+
+
+	/**
+	 * Get characters from the beginning of a string.
+	 *
+	 * @param    string   $string   The string to work on
+	 * @param    int      $num      The number of characters to get
+	 * @return   string
+	 */
+	public function getFromStart($string, $num = 1)
+	{
+		return substr($string, 0, $num);
+	}
+
+
+
+	/**
+	 * Get characters from the end of a string.
+	 *
+	 * @param    string   $string   The string to work on
+	 * @param    int      $num      The number of characters to get
+	 * @return   string
+	 */
+	public function getFromEnd($string, $num = 1)
+	{
+		return substr($string, strlen($string) - $num);
+	}
+
+
+
+	/**
+	 * Trim characters off of the end of a string.
+	 *
+	 * @param    string   $string  The string to work on
+	 * @param    int      $num     How many characters to remove
+	 * @return   string
+	 */
+	public static function delFromEnd($string, $num = 1)
+	{
+		return substr($string, 0, strlen($string) - $num);
+	}
+
+
+
+	/**
+	 * Trim characters off of the start of a string.
+	 *
+	 * @param    string   $string  The string to work on
+	 * @param    int      $num     How many characters to remove
+	 * @return   string
+	 */
+	public static function delFromStart($string, $num = 1)
+	{
+		return substr($string, $num);
+	}
+
+
+
+	/**
+	 * Get a string from a character index. Like substr, but doesn't works with
+	 * indexes instead of lengths.
+	 *
+	 * @param    int     $index_start  The start index inclusive
+	 * @param    int     $index_end    The end index, exclusive. Null means end of the string
+	 * @return   string
+	 */
+	public static function getFromIndex($string, $index_start = 0, $index_end = null)
+	{
+		if ($index_end === null) {
+			return substr($string, $index_start);
+		}
+
+		$length = ($index_end - $index_start);
+
+		return substr($string, $index_start, $length);
+	}
+
+
+
+	/**
+	 * Replace tokens in a string with values in arguments passed. The tokens must be incremented in the
+	 * format of {1}, {2} etc and must start at 1.
+	 *
+	 * <code>
+	 * echo Strings::format('* {1} smacks {2} around a bit with a big large trout', 'Christopher', 'David');
+	 * // -> 'Christopher smacks David around a bit with a big large trout
+	 * </code>
+	 *
+	 * @param   string  $string    The string to work on
+	 * @param   mixed   $value...  The value(s) to replace each token with
+	 * @return  string
+	 */
+	public static function format()
+	{
+		$args = func_get_args();
+
+		#------------------------------
+		# Get the string ready for vsprintf
+		#------------------------------
+
+		$string = array_shift($args);
+
+		// Escape percents
+		$string = str_replace('%', '%%', $string);
+
+		// Replace {1} with %1$s
+		$count = 0;
+		$string = preg_replace('#\{([0-9]+)\}#', '%\\1$s', $string, -1, $count);
+
+		if (!$count) {
+			return $string;
+		}
+
+		// If there are too many placeholders, padd the args with empty strings
+		// or else vsprintf will throw errors
+		$args = array_pad($args, $count, '');
+
+
+		#------------------------------
+		# Return the string with placeholders replaces
+		#------------------------------
+
+		return vsprintf($string, $args);
+	}
+
+
+
+	/**
+	 * Get the exention from a string. This is the last bits after the
+	 * '.', i.e. as part of a path.
+	 *
+	 * @param   string $string  The string to work on
+	 * @return  string
+	 */
+	public static function getExtension($string)
+	{
+		$matches = null;
+		if (preg_match('#\.([a-zA-Z0-9]+)$#', $string, $matches)) {
+			return $matches[1];
+		}
+
+		return '';
+	}
+
+
+
+	/**
+	 * Get all text above a boundary within a string.
+	 *
+	 * <code>
+	 * $text = "Testing 123
+	 * ======= BOUNDARY =======
+	 * More text
+	 * ";
+	 *
+	 * echo Strings::getAboveBoundary($text, "======= BOUNDARY ======="); // "Testing 123"
+	 * </code>
+	 *
+	 * @param  string  $string    The string to operate on
+	 * @param  string  $boundary  The boundary to look for
+	 * @return string
+	 */
+	public static function getAboveBoundary($string, $boundary)
+	{
+		$pos = strpos($string, $boundary);
+
+		if ($pos === false) return '';
+
+		return substr($string, 0, $pos);
+	}
+
+
+
+	/**
+	 * Get all text below a boundary within a string.
+	 *
+	 * <code>
+	 * $text = "Testing 123
+	 * ======= BOUNDARY =======
+	 * More text
+	 * ";
+	 *
+	 * echo Strings::getBelowBoundary($text, "======= BOUNDARY ======="); // "More text"
+	 * </code>
+	 *
+	 * @param  string  $string    The string to operate on
+	 * @param  string  $boundary  The boundary to look for
+	 * @return string
+	 */
+	public static function getBelowBoundary($string, $boundary)
+	{
+		$pos = strpos($string, $boundary);
+
+		if ($pos === false) return '';
+
+		return substr($string, $pos+strlen($boundary));
+	}
+
+
+
+	/**
+	 * Get all the text between two boundaries in a string.
+	 *
+	 * $mode determins what should be returned, especially in cases where there are multiple
+	 * found boundary texsts:
+	 * - BOUNDARY_APPEND: Append all results into a single string
+	 * - BOUNDARY_ARRAY: Return an array of results
+	 * - BOUNDARY_FIRST: Only return the first result as a string
+	 *
+	 * <code>
+	 * $text = "Testing 123
+	 * ======= BOUNDARY_START =======
+	 * More text
+	 * ======= BOUNDARY_END =======
+	 * ";
+	 *
+	 * echo Strings::getBetweenBoundary($text, "======= BOUNDARY_START =======", "======= BOUNDARY_END ======="); // "More text"
+	 * </code>
+	 *
+	 * @param  string  $string           The string to operate on
+	 * @param  string  $boundary_start   The beginning boundary
+	 * @param  string  $boundary_end     The end boundary
+	 * @param  int     $mode             How to handle multiple results
+	 * @return string|array
+	 */
+	public static function getBetweenBoundary($string, $boundary_start, $boundary_end = null, $mode = self::BOUNDARY_APPEND)
+	{
+		if (!$boundary_end) $boundary_end = $boundary_start;
+
+		$boundary_start = preg_quote($boundary_start, '#');
+		$boundary_end = preg_quote($boundary_end, '#');
+		$regex = "#$boundary_start(.*?)$boundary_end#ms";
+
+		$matches = array();
+		if (!preg_match_all($regex, $string, $matches)) {
+			if ($mode == self::BOUNDARY_ARRAY) {
+				return array();
+			} else {
+				return '';
+			}
+		}
+
+		// We want a full array
+		if ($mode == self::BOUNDARY_ARRAY) {
+			return $matches[1];
+		}
+
+		// Only the first
+		if ($mode == self::BOUNDARY_FIRST) {
+			return $matches[1][0];
+		}
+
+		// Append all results togehter
+		$res = array();
+		foreach ($matches[1] as $m) {
+			$res[] = $m;
+		}
+
+		return implode('', $res);
+	}
+
+
+
+	/**
+	 * Converts a dashed string into a camelCase string. Example:
+	 * this-dash-string becomes thisDashString
+	 *
+	 * @param string $str
+	 * @return string
+	 */
+	public static function dashToCamelCase($str)
+	{
+		$new_str = '';
+		$str = strtolower($str);
+
+		// Convert some-string to someController
+		$do_upper = false;
+		for ($i = 0; $i < strlen($str); $i++) {
+			if ($str[$i] == '-') {
+				$do_upper = true;
+			} elseif ($do_upper) {
+				$new_str .= strtoupper($str[$i]);
+				$do_upper = false;
+			} else {
+				$new_str .= $str[$i];
+			}
+		}
+
+		return $new_str;
+	}
+
+
+
+	/**
+	 * Converts a camelCase string to a dashed-string. Example:
+	 * thisDashString becoems this-dash-string
+	 *
+	 * @param   string  $str  The string to work on
+	 * @return  string
+	 */
+	public static function camelCaseToDash($str)
+	{
+		return strtolower(preg_replace('#([a-z0-9])([A-Z])#', '$1-$2', $str));
+	}
+
+
+
+	/**
+	 * Parse a simple 'key=value' string into an array.
+	 *
+	 * @param  string  $str        The string to parse, or an array of lines
+	 * @param  int     $dupe_mode  What to do when dupe keys are found
+	 * @return array
+	 */
+	public static function parseEqualsLines($str, $dupe_mode = self::EQUALSLINES_DUPE_OVERWRITE)
+	{
+		if (!is_array($str)) {
+			$str = self::standardEol($str);
+			$str = explode("\n", $str);
+		}
+
+		$values = array();
+
+		foreach ($str as $line) {
+
+			// No line
+			if (!$line) continue;
+
+			// Ignore 'comments'
+			if ($line[0] == '#') continue;
+
+			$vals = explode('=', $line, 2);
+			if (!isset($vals[1])) continue; // wrong array size, should be two items
+
+			$key = trim($vals[0]);
+			$val = trim($vals[1]);
+
+			// We can just overwrite
+			if ($dupe_mode == self::EQUALSLINES_DUPE_OVERWRITE) {
+				$values[$key] = $val;
+
+			// Or we might need to create/add to an array of values
+			} else {
+				if (isset($values[$key])) {
+					if (is_array($values[$key])) {
+						$values[$key][] = $val;
+					} else {
+						$values[$key] = array($values[$key], $val);
+					}
+				} else {
+					$values[$key] = $val;
+				}
+			}
+		}
+
+		return $values;
+	}
+
+
+
+	/**
+	 * Encode a string as quoted-printable.
+	 *
+	 * @param $input
+	 * @param $line_max
+	 * @return string
+	 */
+	public static function quotedPrintableEncode($input, $line_max = 75)
+	{
+		$hex = array('0','1','2','3','4','5','6','7','8','9','A','B','C','D','E','F');
+		$lines = preg_split("/(?:\r\n|\r|\n)/", $input);
+		$linebreak = "=0D=0A=\r\n";
+
+		$line_max = $line_max - strlen($linebreak);
+		$escape = "=";
+		$output = "";
+		$cur_conv_line = "";
+		$length = 0;
+		$whitespace_pos = 0;
+		$addtl_chars = 0;
+
+		for ($j=0; $j<count($lines); $j++) {
+			$line = $lines[$j];
+			$linlen = strlen($line);
+
+			for ($i = 0; $i < $linlen; $i++) {
+				$c = substr($line, $i, 1);
+				$dec = ord($c);
+
+				$length++;
+
+				if ($dec == 32) {
+					// space occurring at end of line, need to encode
+					if (($i == ($linlen - 1))) {
+						$c = "=20";
+						$length += 2;
+					}
+
+					$addtl_chars = 0;
+					$whitespace_pos = $i;
+				} elseif ( ($dec == 61) || ($dec < 32 ) || ($dec > 126) ) {
+					$h2 = floor($dec/16); $h1 = floor($dec%16);
+					$c = $escape . $hex["$h2"] . $hex["$h1"];
+					$length += 2;
+					$addtl_chars += 2;
+				}
+
+				// length for wordwrap exceeded, get a newline into the text
+				if ($length >= $line_max) {
+					$cur_conv_line .= $c;
+
+					// read only up to the whitespace for the current line
+					$whitesp_diff = $i - $whitespace_pos + $addtl_chars;
+					$output .= substr($cur_conv_line, 0,
+					(strlen($cur_conv_line) - $whitesp_diff)) .
+					$linebreak;
+
+					/* the text after the whitespace will have to be read
+					 * again ( + any additional characters that came into
+					 * existence as a result of the encoding process after the whitespace) */
+					$i =  $i - $whitesp_diff + $addtl_chars;
+
+					$cur_conv_line = "";
+					$length = 0;
+					$whitespace_pos = 0;
+				} else {
+					// length for wordwrap not reached, continue reading
+					$cur_conv_line .= $c;
+				}
+			} // end of for
+
+			$length = 0;
+			$whitespace_pos = 0;
+			$output .= $cur_conv_line;
+			$cur_conv_line = "";
+
+			if ($j<=count($lines)-1) {
+				$output .= $linebreak;
+			}
+		}
+
+		return trim($output);
+	}
+
+	
+
+	/**
+	 * Executes regex on a string and returns the match at index $index.
+	 *
+	 * If no matches were found, or if the index doesn't exist, null is returned.
+	 *
+	 * @param string   $regex   Regex to run
+	 * @param string   $string  The string to run it on
+	 * @param int      $index   The index to return, same rules. Or if -1, all matches.
+	 * @param int      $flags   Flags to pass to preg_match
+	 * @param int      $offset  Offset to pass to preg_match
+	 * @return string
+	 */
+	static public function extractRegexMatch($regex, $string, $index = 1, $flags = null, $offset = null)
+	{
+		$matches = null;
+		if (!preg_match($regex, $string, $matches, $flags, $offset)) {
+			return null;
+		}
+
+		if ($index == -1) {
+			return $matches;
+		}
+
+		return isset($matches[$index]) ? $matches[$index] : null;
+	}
+	
+	
+	
+	/**
+	 * Turns a string into an acceptable URL slug.
+	 * "My Great Title!" becomes "my-great-title"
+	 *
+	 * @param  string $string The string title to work on
+	 * @return string
+	 */
+	static public function slugifyTitle($string)
+	{
+		$string = preg_replace('#[^a-zA-Z0-9]#', '-', $string);
+		$string = preg_replace('#\-{2,}#', '-', $string); // remove  double dashes
+		$string = preg_replace('#^\-+#', '', $string); // remove leading dashes
+		$string = preg_replace('#\-+$#', '', $string); // remove trailing dashes
+		$string = strtolower($string);
+		
+		return $string;
+	}
+	
+	
+	
+	/**
+	 * Converts newlines to paragraphs and breaks. Two consecutive newlines are paragrpahs, all else
+	 * are breaks.
+	 *
+	 * @param  string $string    The string to work on
+	 * @return stirng
+	 */
+	public static function nl2p($string)
+	{
+		$string = '<p>' . preg_replace('#([\r\n]\s*?[\r\n]){2,}#', '</p><p>', $string) . '</p>';
+		$string = str_replace('<p></p>', '', $string);
+		$string = nl2br($string);
+		
+		return $string;
+	}
+
+
+
+	/**
+	 * Like urlencode() but encodes all characters, not just special ones.
+	 * 
+	 * @param  string $string The string to encode
+	 * @return string
+	 */
+	public static function urlencodeFull($string)
+	{
+		$ret = '';
+		$len = strlen($string);
+		for ($i = 0; $i < $len; $i++) {
+			$hex = hexdec(ord($string[$i]));
+			if ($hex) {
+				$ret .= isset($hex[1]) ? '%' . strtoupper($hex) : '%0' . strtoupper($hex);
+			} else {
+				$ret .= rawurlencode($string[$i]);
+			}
+		}
+
+		return $ret;
+	}
+
+
+
+	/**
+	 * Like htmlentities() but encodes all characters, not just special ones.
+	 * Useful for email addresses since most bots are stupid.
+	 *
+	 * @param string $string The string to encode
+	 * @return string
+	 */
+	public static function htmlentitiesFull($string)
+	{
+		$ret = '';
+		$len = strlen($string);
+
+		for ($i = 0; $i < $len; $i++) {
+			$enc = htmlentities($string[$i], ENT_QUOTES);
+			$ret .= $string[$i] == $enc[0] ? '&#' . ord($string[$i]) : $enc;
+		}
+
+		return $ret;
+	}
+}
