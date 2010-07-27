@@ -1,6 +1,2 @@
-homepage:
-    pattern:  /
-    defaults: { _controller: FoundationBundle:Default:index }
-
-user:
+usercore:
     resource: UserCoreBundle/Resources/config/routing.yml

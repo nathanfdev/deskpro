@@ -1,21 +1,10 @@
 <?php
 
-require_once DP_ROOT.'/autoload.php';
+require_once DP_ROOT.'/src/autoload.php';
 
-use Symfony\Foundation\Kernel;
-use Symfony\Components\DependencyInjection\Loader\YamlFileLoader as ContainerLoader;
-use Symfony\Components\Routing\Loader\YamlFileLoader as RoutingLoader;
-
-use Symfony\Foundation\Bundle\KernelBundle;
-use Symfony\Framework\FoundationBundle\FoundationBundle;
-use Symfony\Framework\ZendBundle\ZendBundle;
-use Symfony\Framework\SwiftmailerBundle\SwiftmailerBundle;
-use Symfony\Framework\DoctrineBundle\DoctrineBundle;
-use Symfony\Framework\DoctrineMigrationsBundle\DoctrineMigrationsBundle;
-use Symfony\Framework\DoctrineMongoDBBundle\DoctrineMongoDBBundle;
-use Symfony\Framework\PropelBundle\PropelBundle;
-use Symfony\Framework\TwigBundle\TwigBundle;
-use Application\Deskpro;
+use Symfony\Framework\Kernel;
+use Symfony\Components\DependencyInjection\Loader\LoaderInterface;
+use Symfony\Components\DependencyInjection\ContainerBuilder;
 
 class DeskproKernel extends Kernel
 {
@@ -27,16 +16,18 @@ class DeskproKernel extends Kernel
     public function registerBundles()
     {
         $bundles = array(
-            new KernelBundle(),
-            new FoundationBundle(),
-            new ZendBundle(),
-            new SwiftmailerBundle(),
-            new DoctrineBundle(),
-            new TwigBundle(),
-            new User\CoreBundle(),
+			new Symfony\Framework\KernelBundle(),
+			new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+
+			new Symfony\Bundle\ZendBundle\ZendBundle(),
+			new Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
+			new Symfony\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle(),
+
+            new Application\UserCoreBundle\UserCoreBundle(),
         );
 
         if ($this->isDebug()) {
+
         }
 
         return $bundles;
@@ -47,21 +38,29 @@ class DeskproKernel extends Kernel
         return array(
             'Application'        => DP_ROOT.'/src/Application',
             'Bundle'             => DP_ROOT.'/src/Bundle',
-            'Symfony\\Framework' => DP_ROOT.'/src/vendor/symfony/src/Symfony/Framework',
+            'Symfony\\Bundle' => DP_ROOT.'/src/vendor/symfony/src/Symfony/Framework',
         );
     }
 
-    public function registerContainerConfiguration()
-    {
-        $loader = new ContainerLoader($this->getBundleDirs());
+	protected function getLocalConfigurationFile($environment)
+	{
+		$basePath = __DIR__.'/config/config_';
+		$file = $basePath.$environment.'_local.yml';
 
-        return $loader->load(DP_ROOT.'/deskpro/config/config_'.$this->getEnvironment().'.yml');
-    }
+		if(\file_exists($file))
+		{
+			return $file;
+		}
 
-    public function registerRoutes()
-    {
-        $loader = new RoutingLoader($this->getBundleDirs());
+		return $basePath.$environment.'.yml';
+	}
 
-        return $loader->load(DP_ROOT.'/deskpro/config/routing.yml');
-    }
+	public function registerContainerConfiguration(LoaderInterface $loader)
+	{
+		$container = new ContainerBuilder();
+
+		$loader->load($this->getLocalConfigurationFile($this->getEnvironment()));
+
+		return $container;
+	}
 }
