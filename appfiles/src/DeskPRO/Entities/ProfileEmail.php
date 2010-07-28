@@ -39,7 +39,7 @@ class ProfileEmail extends Entity
 	 */
 	protected $profile_id;
 
-	
+
 	/**
 	 * @var Profile
 	 * @ManyToOne(targetEntity="Profile", inversedBy="email_addresses")
@@ -78,4 +78,12 @@ class ProfileEmail extends Entity
 	 * @Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
+
+
+
+	/** @PrePersist */
+	public function incCreatedAt()
+	{
+		$this->created_at = new \DateTime();
+	}
 }

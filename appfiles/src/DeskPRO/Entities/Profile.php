@@ -71,7 +71,7 @@ class Profile extends Entity
 	 * A secret string used in various hashing or encryption schemes.
 	 *
 	 * @var string
-	 * @Column(name="secret_string", type="string", length=100)
+	 * @Column(name="secret_string", type="string", length=40)
 	 */
 	protected $secret_string;
 
@@ -115,16 +115,18 @@ class Profile extends Entity
 	protected $email_addresses;
 
 
+
 	public function __construct()
 	{
 		$this->created_at = new \DateTime();
 		$this->updated_at = new \DateTime();
-		$this->secret_string = Strings::ranom(100);
+		$this->secret_string = Strings::random(40);
 		$this->timezone = 'UTC';
 
 		$this->email_addresses = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	
 
 	/** @PrePersist */
 	public function incCreatedAt()
