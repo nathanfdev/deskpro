@@ -16,8 +16,8 @@ namespace Orb\Util;
  */
 class Arrays
 {
-	private __construct() { /* No instances allowed */ }
-	
+	private function __construct() { /* No instances allowed */ }
+
 	/**
 	 * Used as the value placeholder when defining parameters to pass to a user
 	 * function with Outershift_Array::func().
@@ -778,7 +778,7 @@ class Arrays
 	{
 		return self::getNthKey($array, 0);
 	}
-	
+
 
 
 	/**
@@ -1042,7 +1042,7 @@ class Arrays
 
 		return md5($data_str);
 	}
-	
+
 
 
 	/**
@@ -1078,9 +1078,9 @@ class Arrays
 
 		return true;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Takes an array of error codes and flattens it into a
 	 * single-dimentional array, easy for testing in templates etc.
@@ -1090,7 +1090,7 @@ class Arrays
 	 *    'username' => array('required'),
 	 *    'title' => array('too_short', 'invalid_characters')
 	 * );
-	 * 
+	 *
 	 * $flat_errors = Arrays::flattenErrors($errors);
 	 * // array(
 	 * //    'username_required' => true,
@@ -1110,18 +1110,18 @@ class Arrays
 	public static function flattenCodeArray(array $array, $add_any = false, $prefix = '')
 	{
 		$new = array();
-		
+
 		foreach ($array as $k => $v) {
-			
+
 			// May be empty array
 			if (!$v) continue;
-			
+
 			$k = $prefix.$k.'_';
-			
+
 			if ($add_any) {
 				$new[$k.$add_any] = true;
 			}
-			
+
 			foreach ($v as $code) {
 				if (is_array($code)) {
 					$new = $new + self::flattenCodeArray($code, $add_any, $k);
@@ -1130,7 +1130,7 @@ class Arrays
 				}
 			}
 		}
-		
+
 		return $new;
 	}
 

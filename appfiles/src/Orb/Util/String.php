@@ -16,7 +16,7 @@ namespace Orb\Util;
  */
 class Strings
 {
-	private __construct() { /* No instances allowed */ }
+	private function __construct() { /* No instances allowed */ }
 
 	/**#@+
 	 * Strings of some common character ranges.
@@ -734,7 +734,7 @@ class Strings
 		return trim($output);
 	}
 
-	
+
 
 	/**
 	 * Executes regex on a string and returns the match at index $index.
@@ -761,9 +761,9 @@ class Strings
 
 		return isset($matches[$index]) ? $matches[$index] : null;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Turns a string into an acceptable URL slug.
 	 * "My Great Title!" becomes "my-great-title"
@@ -778,12 +778,12 @@ class Strings
 		$string = preg_replace('#^\-+#', '', $string); // remove leading dashes
 		$string = preg_replace('#\-+$#', '', $string); // remove trailing dashes
 		$string = strtolower($string);
-		
+
 		return $string;
 	}
-	
-	
-	
+
+
+
 	/**
 	 * Converts newlines to paragraphs and breaks. Two consecutive newlines are paragrpahs, all else
 	 * are breaks.
@@ -796,7 +796,7 @@ class Strings
 		$string = '<p>' . preg_replace('#([\r\n]\s*?[\r\n]){2,}#', '</p><p>', $string) . '</p>';
 		$string = str_replace('<p></p>', '', $string);
 		$string = nl2br($string);
-		
+
 		return $string;
 	}
 
@@ -804,7 +804,7 @@ class Strings
 
 	/**
 	 * Like urlencode() but encodes all characters, not just special ones.
-	 * 
+	 *
 	 * @param  string $string The string to encode
 	 * @return string
 	 */
