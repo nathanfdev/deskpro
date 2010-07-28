@@ -1,11 +1,11 @@
 <?php
 
-require_once DP_ROOT.'/src/vendor/symfony/src/Symfony/Foundation/UniversalClassLoader.php';
+require_once DP_ROOT.'/src/vendor/Symfony/src/Symfony/Framework/UniversalClassLoader.php';
 
-use Symfony\Foundation\UniversalClassLoader;
-
-$loader = new UniversalClassLoader();
+$loader = new Symfony\Framework\UniversalClassLoader();
 $loader->registerNamespaces(array(
+	'DeskPRO'                    => DP_ROOT.'/src/DeskPRO',
+
     'Symfony'                    => DP_ROOT.'/src/vendor/symfony/src',
     'Application'                => DP_ROOT.'/src',
     'Bundle'                     => DP_ROOT.'/src',
