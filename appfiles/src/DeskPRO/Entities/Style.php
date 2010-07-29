@@ -74,17 +74,12 @@ class Style extends Entity
 	 */
 	protected $created_at;
 
-
-	
-	/**
-	 * @PrePersist
-	 * @PreUpdate
-	 */
-	public function _setDefaultParent()
+	public function setParentId($parent_id)
 	{
-		if (!$this->parent_id) {
-			$this->parent_id = 1;
-		}
+		$this->parent_id = $parent_id;
+
+		// TODO: Cache parents hierarchy later so template fetching is easier
+		$this->_parent_has_changed = true;
 	}
 
 
