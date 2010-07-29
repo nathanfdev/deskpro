@@ -17,50 +17,51 @@
  * @subpackage Writer
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: Firebug.php 20096 2010-01-06 02:05:09Z bkarwin $
  */
 
-/**
- * @namespace
- */
-namespace Zend\Log\Writer;
-use Zend\Log;
-use Zend\Wildfire\Plugin\FirePhp;
+/** Zend_Log */
+require_once 'Zend/Log.php';
+
+/** Zend_Log_Writer_Abstract */
+require_once 'Zend/Log/Writer/Abstract.php';
+
+/** Zend_Log_Formatter_Firebug */
+require_once 'Zend/Log/Formatter/Firebug.php';
+
+/** Zend_Wildfire_Plugin_FirePhp */
+require_once 'Zend/Wildfire/Plugin/FirePhp.php';
 
 /**
  * Writes log messages to the Firebug Console via FirePHP.
  *
- * @uses       \Zend\Log\Logger
- * @uses       \Zend\Log\Formatter\Firebug
- * @uses       \Zend\Log\Writer\AbstractWriter
- * @uses       \Zend\Wildfire\Plugin\FirePhp\FirePhp
  * @category   Zend
  * @package    Zend_Log
  * @subpackage Writer
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Firebug extends AbstractWriter
+class Zend_Log_Writer_Firebug extends Zend_Log_Writer_Abstract
 {
 
     /**
      * Maps logging priorities to logging display styles
      * @var array
      */
-    protected $_priorityStyles = array(Log\Logger::EMERG  => FirePhp\FirePhp::ERROR,
-                                       Log\Logger::ALERT  => FirePhp\FirePhp::ERROR,
-                                       Log\Logger::CRIT   => FirePhp\FirePhp::ERROR,
-                                       Log\Logger::ERR    => FirePhp\FirePhp::ERROR,
-                                       Log\Logger::WARN   => FirePhp\FirePhp::WARN,
-                                       Log\Logger::NOTICE => FirePhp\FirePhp::INFO,
-                                       Log\Logger::INFO   => FirePhp\FirePhp::INFO,
-                                       Log\Logger::DEBUG  => FirePhp\FirePhp::LOG);
+    protected $_priorityStyles = array(Zend_Log::EMERG  => Zend_Wildfire_Plugin_FirePhp::ERROR,
+                                       Zend_Log::ALERT  => Zend_Wildfire_Plugin_FirePhp::ERROR,
+                                       Zend_Log::CRIT   => Zend_Wildfire_Plugin_FirePhp::ERROR,
+                                       Zend_Log::ERR    => Zend_Wildfire_Plugin_FirePhp::ERROR,
+                                       Zend_Log::WARN   => Zend_Wildfire_Plugin_FirePhp::WARN,
+                                       Zend_Log::NOTICE => Zend_Wildfire_Plugin_FirePhp::INFO,
+                                       Zend_Log::INFO   => Zend_Wildfire_Plugin_FirePhp::INFO,
+                                       Zend_Log::DEBUG  => Zend_Wildfire_Plugin_FirePhp::LOG);
 
     /**
      * The default logging style for un-mapped priorities
      * @var string
      */
-    protected $_defaultPriorityStyle = FirePhp\FirePhp::LOG;
+    protected $_defaultPriorityStyle = Zend_Wildfire_Plugin_FirePhp::LOG;
 
     /**
      * Flag indicating whether the log writer is enabled
@@ -77,17 +78,17 @@ class Firebug extends AbstractWriter
             $this->setEnabled(false);
         }
 
-        $this->_formatter = new Log\Formatter\Firebug();
+        $this->_formatter = new Zend_Log_Formatter_Firebug();
     }
    
     /**
      * Create a new instance of Zend_Log_Writer_Firebug
      * 
-     * @param  array|\Zend\Config\Config $config
-     * @return \Zend\Log\Writer\Firebug
-     * @throws \Zend\Log\Exception
+     * @param  array|Zend_Config $config
+     * @return Zend_Log_Writer_Firebug
+     * @throws Zend_Log_Exception
      */
-    static public function factory($config = array())
+    static public function factory($config)
     {
         return new self();
     }
@@ -191,7 +192,7 @@ class Firebug extends AbstractWriter
 
         $label = isset($event['firebugLabel'])?$event['firebugLabel']:null;
 
-        FirePhp\FirePhp::getInstance()->send($message,
+        Zend_Wildfire_Plugin_FirePhp::getInstance()->send($message,
                                                           $label,
                                                           $type,
                                                           array('traceOffset'=>6));

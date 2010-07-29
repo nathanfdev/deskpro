@@ -17,25 +17,21 @@
  * @subpackage Filter
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: Message.php 20982 2010-02-08 15:51:36Z matthew $
  */
 
-/**
- * @namespace
- */
-namespace Zend\Log\Filter;
+/** Zend_Log_Filter_Abstract */
+require_once 'Zend/Log/Filter/Abstract.php';
 
 /**
- * @uses       \Zend\Log\Exception
- * @uses       \Zend\Log\Filter\AbstractFilter
  * @category   Zend
  * @package    Zend_Log
  * @subpackage Filter
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: Message.php 20982 2010-02-08 15:51:36Z matthew $
  */
-class Message extends AbstractFilter
+class Zend_Log_Filter_Message extends Zend_Log_Filter_Abstract
 {
     /**
      * @var string
@@ -46,12 +42,13 @@ class Message extends AbstractFilter
      * Filter out any log messages not matching $regexp.
      *
      * @param  string  $regexp     Regular expression to test the log message
-     * @throws \Zend\Log\Exception
+     * @throws Zend_Log_Exception
      */
     public function __construct($regexp)
     {
         if (@preg_match($regexp, '') === false) {
-            throw new \Zend\Log\Exception("Invalid regular expression '$regexp'");
+            require_once 'Zend/Log/Exception.php';
+            throw new Zend_Log_Exception("Invalid regular expression '$regexp'");
         }
         $this->_regexp = $regexp;
     }
@@ -59,11 +56,11 @@ class Message extends AbstractFilter
     /**
      * Create a new instance of Zend_Log_Filter_Message
      * 
-     * @param  array|\Zend\Config\Config $config
-     * @return \Zend\Log\Filter\Message
-     * @throws \Zend\Log\Exception
+     * @param  array|Zend_Config $config
+     * @return Zend_Log_Filter_Message
+     * @throws Zend_Log_Exception
      */
-    static public function factory($config = array()) 
+    static public function factory($config) 
     {
         $config = self::_parseConfig($config);
         $config = array_merge(array(

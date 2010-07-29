@@ -17,26 +17,21 @@
  * @subpackage Writer
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: Db.php 22514 2010-07-01 14:11:18Z ramon $
  */
 
-/**
- * @namespace
- */
-namespace Zend\Log\Writer;
-use Zend\Log;
+/** Zend_Log_Writer_Abstract */
+require_once 'Zend/Log/Writer/Abstract.php';
 
 /**
- * @uses       \Zend\Log\Exception
- * @uses       \Zend\Log\Writer\AbstractWriter
  * @category   Zend
  * @package    Zend_Log
  * @subpackage Writer
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: Db.php 22514 2010-07-01 14:11:18Z ramon $
  */
-class Db extends AbstractWriter
+class Zend_Log_Writer_Db extends Zend_Log_Writer_Abstract
 {
     /**
      * Database adapter instance
@@ -66,31 +61,31 @@ class Db extends AbstractWriter
      */
     public function __construct($db, $table, $columnMap = null)
     {
-        $this->_db        = $db;
-        $this->_table     = $table;
+        $this->_db    = $db;
+        $this->_table = $table;
         $this->_columnMap = $columnMap;
     }
 
     /**
      * Create a new instance of Zend_Log_Writer_Db
-     * 
-     * @param  array|\Zend\Config\Config $config
-     * @return \Zend\Log\Writer\Db
-     * @throws \Zend\Log\Exception
+     *
+     * @param  array|Zend_Config $config
+     * @return Zend_Log_Writer_Db
+     * @throws Zend_Log_Exception
      */
-    static public function factory($config = array())
+    static public function factory($config)
     {
         $config = self::_parseConfig($config);
         $config = array_merge(array(
-            'db'        => null, 
-            'table'     => null, 
+            'db'        => null,
+            'table'     => null,
             'columnMap' => null,
         ), $config);
-        
+
         if (isset($config['columnmap'])) {
             $config['columnMap'] = $config['columnmap'];
         }
-        
+
         return new self(
             $config['db'],
             $config['table'],
@@ -101,9 +96,10 @@ class Db extends AbstractWriter
     /**
      * Formatting is not possible on this writer
      */
-    public function setFormatter($formatter)
+    public function setFormatter(Zend_Log_Formatter_Interface $formatter)
     {
-        throw new Log\Exception(get_class() . ' does not support formatting');
+        require_once 'Zend/Log/Exception.php';
+        throw new Zend_Log_Exception(get_class($this) . ' does not support formatting');
     }
 
     /**
@@ -125,7 +121,8 @@ class Db extends AbstractWriter
     protected function _write($event)
     {
         if ($this->_db === null) {
-            throw new Log\Exception('Database adapter is null');
+            require_once 'Zend/Log/Exception.php';
+            throw new Zend_Log_Exception('Database adapter is null');
         }
 
         if ($this->_columnMap === null) {

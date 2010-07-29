@@ -17,41 +17,36 @@
  * @subpackage Writer
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: Syslog.php 22632 2010-07-18 18:30:08Z ramon $
  */
 
-/**
- * @namespace
- */
-namespace Zend\Log\Writer;
-use Zend\Log;
+/** Zend_Log_Writer_Abstract */
+require_once 'Zend/Log/Writer/Abstract.php';
 
 /**
  * Writes log messages to syslog
  *
- * @uses       \Zend\Log\Log
- * @uses       \Zend\Log\Writer\AbstractWriter
  * @category   Zend
  * @package    Zend_Log
  * @subpackage Writer
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
  */
-class Syslog extends AbstractWriter
+class Zend_Log_Writer_Syslog extends Zend_Log_Writer_Abstract
 {
     /**
      * Maps Zend_Log priorities to PHP's syslog priorities
      * @var array
      */
     protected $_priorities = array(
-        Log\Logger::EMERG  => LOG_EMERG,
-        Log\Logger::ALERT  => LOG_ALERT,
-        Log\Logger::CRIT   => LOG_CRIT,
-        Log\Logger::ERR    => LOG_ERR,
-        Log\Logger::WARN   => LOG_WARNING,
-        Log\Logger::NOTICE => LOG_NOTICE,
-        Log\Logger::INFO   => LOG_INFO,
-        Log\Logger::DEBUG  => LOG_DEBUG,
+        Zend_Log::EMERG  => LOG_EMERG,
+        Zend_Log::ALERT  => LOG_ALERT,
+        Zend_Log::CRIT   => LOG_CRIT,
+        Zend_Log::ERR    => LOG_ERR,
+        Zend_Log::WARN   => LOG_WARNING,
+        Zend_Log::NOTICE => LOG_NOTICE,
+        Zend_Log::INFO   => LOG_INFO,
+        Zend_Log::DEBUG  => LOG_DEBUG,
     );
 
     /**
@@ -80,9 +75,16 @@ class Syslog extends AbstractWriter
 
     /**
      * Facility used by this syslog-writer instance
-     * @var string
+     * @var int
      */
     protected $_facility = LOG_USER;
+
+    /**
+     * _validFacilities
+     *
+     * @var array
+     */
+    protected $_validFacilities = array();
 
     /**
      * Class constructor
@@ -95,29 +97,69 @@ class Syslog extends AbstractWriter
         if (isset($params['application'])) {
             $this->_application = $params['application'];
         }
+
+        $runInitializeSyslog = true;
         if (isset($params['facility'])) {
-            $this->_facility = $params['facility'];
+            $this->_facility = $this->setFacility($params['facility']);
+            $runInitializeSyslog = false;
         }
-        $this->_initializeSyslog();
+
+        if ($runInitializeSyslog) {
+            $this->_initializeSyslog();
+        }
     }
-    
+
     /**
      * Create a new instance of Zend_Log_Writer_Syslog
-     * 
-     * @param  array|\Zend\Config\Config $config
-     * @return \Zend\Log\Writer\Syslog
-     * @throws \Zend\Log\Exception
+     *
+     * @param  array|Zend_Config $config
+     * @return Zend_Log_Writer_Syslog
+     * @throws Zend_Log_Exception
      */
-    static public function factory($config = array())
+    static public function factory($config)
     {
         return new self(self::_parseConfig($config));
     }
 
     /**
+     * Initialize values facilities
+     *
+     * @return void
+     */
+    protected function _initializeValidFacilities()
+    {
+        $constants = array(
+            'LOG_AUTH',
+            'LOG_AUTHPRIV',
+            'LOG_CRON',
+            'LOG_DAEMON',
+            'LOG_KERN',
+            'LOG_LOCAL0',
+            'LOG_LOCAL1',
+            'LOG_LOCAL2',
+            'LOG_LOCAL3',
+            'LOG_LOCAL4',
+            'LOG_LOCAL5',
+            'LOG_LOCAL6',
+            'LOG_LOCAL7',
+            'LOG_LPR',
+            'LOG_MAIL',
+            'LOG_NEWS',
+            'LOG_SYSLOG',
+            'LOG_USER',
+            'LOG_UUCP'
+        );
+
+        foreach ($constants as $constant) {
+            if (defined($constant)) {
+                $this->_validFacilities[] = constant($constant);
+            }
+        }
+    }
+
+    /**
      * Initialize syslog / set application name and facility
      *
-     * @param  string $application Application name
-     * @param  string $facility Syslog facility
      * @return void
      */
     protected function _initializeSyslog()
@@ -130,14 +172,32 @@ class Syslog extends AbstractWriter
     /**
      * Set syslog facility
      *
-     * @param  string $facility Syslog facility
+     * @param  int $facility Syslog facility
      * @return void
+     * @throws Zend_Log_Exception for invalid log facility
      */
     public function setFacility($facility)
     {
         if ($this->_facility === $facility) {
             return;
         }
+
+        if (!count($this->_validFacilities)) {
+            $this->_initializeValidFacilities();
+        }
+
+        if (!in_array($facility, $this->_validFacilities)) {
+            require_once 'Zend/Log/Exception.php';
+            throw new Zend_Log_Exception('Invalid log facility provided; please see http://php.net/openlog for a list of valid facility values');
+        }
+
+        if ('WIN' == strtoupper(substr(PHP_OS, 0, 3))
+            && ($facility !== LOG_USER)
+        ) {
+            require_once 'Zend/Log/Exception.php';
+            throw new Zend_Log_Exception('Only LOG_USER is a valid log facility on Windows');
+        }
+
         $this->_facility = $facility;
         $this->_initializeSyslog();
     }

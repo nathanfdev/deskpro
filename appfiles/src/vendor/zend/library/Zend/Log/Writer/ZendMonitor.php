@@ -17,24 +17,21 @@
  * @subpackage Writer
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: ZendMonitor.php 22533 2010-07-07 02:38:14Z ramon $
  */
 
-/**
- * @namespace
- */
-namespace Zend\Log\Writer;
+/** Zend_Log_Writer_Abstract */
+require_once 'Zend/Log/Writer/Abstract.php';
 
 /**
- * @uses       \Zend\Log\Writer\AbstractWriter
  * @category   Zend
  * @package    Zend_Log
  * @subpackage Writer
  * @copyright  Copyright (c) 2005-2010 Zend Technologies USA Inc. (http://www.zend.com)
  * @license    http://framework.zend.com/license/new-bsd     New BSD License
- * @version    $Id$
+ * @version    $Id: ZendMonitor.php 22533 2010-07-07 02:38:14Z ramon $
  */
-class ZendMonitor extends AbstractWriter
+class Zend_Log_Writer_ZendMonitor extends Zend_Log_Writer_Abstract
 {
     /**
      * Is Zend Monitor enabled?
@@ -43,7 +40,7 @@ class ZendMonitor extends AbstractWriter
     protected $_isEnabled = true;
 
     /**
-     * @throws \Zend\Log\Exception if Zend Monitor extension not present
+     * @throws Zend_Log_Exception if Zend Monitor extension not present
      */
     public function __construct()
     {
@@ -54,12 +51,12 @@ class ZendMonitor extends AbstractWriter
 
     /**
      * Create a new instance of Zend_Log_Writer_ZendMonitor
-     * 
-     * @param  array|\Zend\Config\Config $config
-     * @return \Zend\Log\Writer\Syslog
-     * @throws \Zend\Log\Exception
+     *
+     * @param  array|Zend_Config $config
+     * @return Zend_Log_Writer_Syslog
+     * @throws Zend_Log_Exception
      */
-    static public function factory($config = array())
+    static public function factory($config)
     {
         return new self();
     }
@@ -67,10 +64,10 @@ class ZendMonitor extends AbstractWriter
     /**
      * Is logging to this writer enabled?
      *
-     * If the Zend Monitor extension is not enabled, this log writer will 
-     * fail silently. You can query this method to determine if the log 
+     * If the Zend Monitor extension is not enabled, this log writer will
+     * fail silently. You can query this method to determine if the log
      * writer is enabled.
-     * 
+     *
      * @return bool
      */
     public function isEnabled()
@@ -106,7 +103,7 @@ class ZendMonitor extends AbstractWriter
         unset($event['priority'], $event['message']);
 
         if (!empty($event)) {
-            monitor_custom_event($priority, $message, $event);
+            monitor_custom_event($priority, $message, false, $event);
         } else {
             monitor_custom_event($priority, $message);
         }
