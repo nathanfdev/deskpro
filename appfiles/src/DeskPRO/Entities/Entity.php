@@ -28,7 +28,7 @@ abstract class Entity implements \ArrayAccess
 
 	public function offsetSet($offset, $value)
 	{
-		$func = "set$offset";
+		$func = "set" . str_replace('_', '', $offset);
 		if (method_exists($this, $func)) {
 			$this->$func($value);
 		} elseif (property_exists($this, $offset)) {
@@ -40,7 +40,7 @@ abstract class Entity implements \ArrayAccess
 
 	public function offsetGet($offset)
 	{
-		$func = "get$offset";
+		$func = "get" . str_replace('_', '', $offset);
 		if (method_exists($this, $func)) {
 			return $this->$func();
 		} elseif (property_exists($this, $offset)) {
