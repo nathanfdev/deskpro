@@ -1,8 +1,7 @@
 <?php
 
 namespace Application\UserCoreBundle;
-use Symfony\Framework\Bundle\Bundle as BaseBundle;
 
-class UserCoreBundle extends BaseBundle
+class UserCoreBundle extends Symfony\Framework\Bundle\Bundle
 {
 }

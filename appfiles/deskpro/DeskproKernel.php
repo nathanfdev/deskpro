@@ -21,7 +21,9 @@ class DeskproKernel extends Kernel
 
 			new Symfony\Bundle\ZendBundle\ZendBundle(),
 			new Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
-			new Symfony\Bundle\DoctrineMigrationsBundle\DoctrineMigrationsBundle(),
+			new Symfony\Bundle\TwigBundle\Bundle(),
+
+			new DeskPRO\DeskPROBundle(),
 
             new Application\UserCoreBundle\UserCoreBundle(),
         );
@@ -38,7 +40,8 @@ class DeskproKernel extends Kernel
         return array(
             'Application'        => DP_ROOT.'/src/Application',
             'Bundle'             => DP_ROOT.'/src/Bundle',
-            'Symfony\\Bundle' => DP_ROOT.'/src/vendor/symfony/src/Symfony/Framework',
+			'DeskPRO'            => DP_ROOT.'/src/DeskPRO',
+            'Symfony\\Bundle'    => DP_ROOT.'/src/vendor/symfony/src/Symfony/Framework',
         );
     }
 
