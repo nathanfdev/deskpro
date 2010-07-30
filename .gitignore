@@ -1,0 +1,6 @@
+# IDE project files
+.idea/
+
+# cache and log files
+appfiles/deskpro/cache/
+appfiles/deskpro/logs/
