@@ -14,8 +14,12 @@ namespace DeskPRO\Twig\Loader;
 use Symfony\Components\Templating\Engine;
 use Symfony\Components\Templating\Storage\Storage;
 use Symfony\Components\Templating\Storage\FileStorage;
+use Symfony\Components\DependencyInjection\ContainerInterface;
 
 use DeskPRO\Entities;
+
+use Orb\Arrays;
+use Orb\Strings;
 
 /**
  * This hybrid loader loads templates from the filesystem first, and then from the
@@ -30,22 +34,49 @@ class Hybrid implements Symfony\Bundle\TwigBundle\Loader\Loader
 	protected $style = null;
 
 	/**
+	 * An array of id=>array(info). This is an array of all templates specified in
+	 * a style and their last updated date. We use this to sort out which templates
+	 * to use, or if we should read it from the filesystem.
+	 *
 	 * @var array
 	 */
 	protected $style_template_info = array();
 
+	/**
+	 * The database connection we'll use to fetch templates. Not using ORM, faster
+	 * to fetch with pure sql.
+	 *
+	 * @var Doctrine\DBAL\Connection
+	 */
 	protected $dbconn;
 
+
+	/**
+	 * @param Connection $dbconn
+	 */
+	public function __construct(ContainerInterface $container)
+	{
+		parent::__construct();
+		$this->dbconn = $container->getService('database_connection');
+	}
+
+
+
+	/**
+	 * Set the database-based style we should try to use.
+	 *
+	 * @param Style $style
+	 */
 	public function setStyle(Style $style)
 	{
 		$this->style = $style;
 
-		$this->dbconn = $this->container->getService('database_connection');
-
-		// TODO sort out parent style stuff
-		$this->_style_template_info = $this->dbconn->fetchAll('SELECT id, path, updated_at FROM templates WHERE style_id = ?', array($this->style['id']));
-		$this->_style_template_info = Arrays::keyFromData('path');
+		// TODO sort out parent/child hierarchy stuff
+		$this->style_template_info = $this->dbconn->fetchAll('SELECT id, path, updated_at FROM templates WHERE style_id = ?', array($this->style['id']));
+		$this->style_template_info = Arrays::keyFromData('path');
 	}
+
+
 
     /**
      * Gets the source code of a template, given its name.
@@ -60,8 +91,8 @@ class Hybrid implements Symfony\Bundle\TwigBundle\Loader\Loader
             return $name->getContent();
         }
 
-		if (isset($this->_style_template_info[$name])) {
-			$tplinfo = $this->_style_template_info[$name];
+		if (isset($this->style_template_info[$name])) {
+			$tplinfo = $this->style_template_info[$name];
 			return $this->dbconn->fetchColumn('SELECT template FROM templates WHERE id = ?', array($tplinfo['id']));
 		}
 
@@ -76,6 +107,8 @@ class Hybrid implements Symfony\Bundle\TwigBundle\Loader\Loader
         return $template->getContent();
     }
 
+
+
     /**
      * Gets the cache key to use for the cache for a given template name.
      *
@@ -89,8 +122,8 @@ class Hybrid implements Symfony\Bundle\TwigBundle\Loader\Loader
             return (string) $name;
         }
 
-		if (isset($this->_style_template_info[$name])) {
-			$tplinfo = $this->_style_template_info[$name];
+		if (isset($this->style_template_info[$name])) {
+			$tplinfo = $this->style_template_info[$name];
 			return $this->style['id'] . '_' . $tplinfo['id'];
 		}
 
@@ -98,6 +131,8 @@ class Hybrid implements Symfony\Bundle\TwigBundle\Loader\Loader
 
         return $name.'_'.serialize($options);
     }
+
+
 
     /**
      * Returns true if the template is still fresh.
@@ -115,8 +150,8 @@ class Hybrid implements Symfony\Bundle\TwigBundle\Loader\Loader
             return false;
         }
 
-		if (isset($this->_style_template_info[$name])) {
-			$tplinfo = $this->_style_template_info[$name];
+		if (isset($this->style_template_info[$name])) {
+			$tplinfo = $this->style_template_info[$name];
 			$date = new \DateTime($tplinfo['updated_at']);
 
 			return ($date->getTimestamp() < $time);
