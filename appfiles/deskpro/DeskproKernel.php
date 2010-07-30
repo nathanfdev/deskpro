@@ -25,6 +25,7 @@ class DeskproKernel extends Kernel
 
 			new DeskPRO\DeskPROBundle(),
 
+            new Application\DevBundle\DevBundle(),
             new Application\UserCoreBundle\UserCoreBundle(),
         );
 
