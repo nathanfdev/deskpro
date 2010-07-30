@@ -51,7 +51,11 @@ class Usergroup extends Entity
 
 
 	/**
-     * @ManyToMany(targetEntity="User", mappedBy="usergroups")
+     * @ManyToMany(targetEntity="User", inversedBy="usergroups")
+	 * @JoinTable(name="user2usergroups",
+	 *     joinColumns={@JoinColumn(name="usergroup_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="user_id", referencedColumnName="id")}
+     * )
      */
     protected $users;
 

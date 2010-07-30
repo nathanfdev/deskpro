@@ -43,7 +43,7 @@ class User extends Entity
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection();
 	 * @ManyToMany(targetEntity="Usergroup", inversedBy="users")
-	 * @JoinTable(name="user2groups",
+	 * @JoinTable(name="user2usergroups",
 	 *     joinColumns={@JoinColumn(name="user_id", referencedColumnName="id")},
      *     inverseJoinColumns={@JoinColumn(name="usergroup_id", referencedColumnName="id")}
      * )
@@ -195,7 +195,7 @@ class User extends Entity
 	}
 
 
-	
+
 	/**
 	 * Initializes the active permissions array.
 	 *
