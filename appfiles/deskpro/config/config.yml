@@ -10,9 +10,6 @@ web.config:
 web.templating:
   escaping: htmlspecialchars
 
-twig.loader.class: "DeskPRO\\Twig\\Loader\\Hyrbid"
-twig.loader.argument: [service_container]
-
 doctrine.orm: ~
 doctrine.dbal:
   driver: PDOMySql

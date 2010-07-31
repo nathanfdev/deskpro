@@ -1,12 +1,11 @@
 <?php
 
-require_once DP_ROOT.'/src/autoload.php';
+require_once DP_ROOT.'/autoload.php';
 
-use Symfony\Framework\Kernel;
 use Symfony\Components\DependencyInjection\Loader\LoaderInterface;
 use Symfony\Components\DependencyInjection\ContainerBuilder;
 
-class DeskproKernel extends Kernel
+class DeskproKernel extends Symfony\Framework\Kernel
 {
     public function registerRootDir()
     {
@@ -21,7 +20,6 @@ class DeskproKernel extends Kernel
 
 			new Symfony\Bundle\ZendBundle\ZendBundle(),
 			new Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
-			new Symfony\Bundle\TwigBundle\Bundle(),
 
 			new DeskPRO\DeskPROBundle(),
 
@@ -42,7 +40,7 @@ class DeskproKernel extends Kernel
             'Application'        => DP_ROOT.'/src/Application',
             'Bundle'             => DP_ROOT.'/src/Bundle',
 			'DeskPRO'            => DP_ROOT.'/src/DeskPRO',
-            'Symfony\\Bundle'    => DP_ROOT.'/vendor/symfony/src/Symfony/Framework',
+            'Symfony\\Bundle'    => DP_ROOT.'/vendor/symfony/src/Symfony/Bundle',
         );
     }
 

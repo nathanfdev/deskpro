@@ -4,7 +4,7 @@ imports:
 web.config:
     toolbar: true
 
-twig.options:
+twig.config:
   auto_reload: true
 
 zend.logger:
