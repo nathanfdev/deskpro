@@ -1,3 +1,24 @@
-[submodule "appfiles/src/vendor/symfony"]
-	path = appfiles/src/vendor/symfony
+[submodule "appfiles/vendor/symfony"]
+	path = appfiles/vendor/symfony
 	url = http://github.com/symfony/symfony.git
+[submodule "appfiles/vendor/doctrine-orm"]
+	path = appfiles/vendor/doctrine-orm
+	url = git://github.com/doctrine/doctrine2.git
+[submodule "appfiles/vendor/doctrine-dbal"]
+	path = appfiles/vendor/doctrine-dbal
+	url = git://github.com/doctrine/dbal.git
+[submodule "appfiles/vendor/doctrine-common"]
+	path = appfiles/vendor/doctrine-common
+	url = git://github.com/doctrine/common.git
+[submodule "appfiles/vendor/doctrine-migrations"]
+	path = appfiles/vendor/doctrine-migrations
+	url = git://github.com/doctrine/migrations.git
+[submodule "appfiles/vendor/swiftmailer"]
+	path = appfiles/vendor/swiftmailer
+	url = git://github.com/swiftmailer/swiftmailer.git
+[submodule "appfiles/vendor/twig"]
+	path = appfiles/vendor/twig
+	url = git://github.com/fabpot/Twig.git
+[submodule "appfiles/vendor/zend"]
+	path = appfiles/vendor/zend
+	url = git://github.com/zendframework/zf2.git
