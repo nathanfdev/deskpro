@@ -2,11 +2,11 @@
 <?php
 
 define('DP_ROOT', realpath(__DIR__ . '/../'));
-require_once __DIR__.'/DeskproKernel.php';
+require_once DP_ROOT.'/deskpro/DeskproKernel.php';
 
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
-$kernel = new DeskproKernel('prod', true);
+$kernel = new DeskproKernel('dev', true);
 
 $application = new Application($kernel);
 $application->run();

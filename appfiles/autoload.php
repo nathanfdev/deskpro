@@ -4,7 +4,7 @@ require_once DP_ROOT.'/vendor/symfony/src/Symfony/Framework/UniversalClassLoader
 
 $loader = new Symfony\Framework\UniversalClassLoader();
 $loader->registerNamespaces(array(
-	'DeskPRO'                    => DP_ROOT.'/src/DeskPRO',
+	'DeskPRO'                    => DP_ROOT.'/src',
 	'Application'                => DP_ROOT.'/src',
     'Bundle'                     => DP_ROOT.'/src',
 
@@ -12,7 +12,7 @@ $loader->registerNamespaces(array(
     'Doctrine\\Common'           => DP_ROOT.'/vendor/doctrine-common/lib',
     'Doctrine\\DBAL\\Migrations' => DP_ROOT.'/vendor/doctrine-migrations/lib',
     'Doctrine\\DBAL'             => DP_ROOT.'/vendor/doctrine-dbal/lib',
-    'Doctrine'                   => DP_ROOT.'/vendor/doctrine/lib',
+    'Doctrine'                   => DP_ROOT.'/vendor/doctrine-orm/lib',
     'Zend'                       => DP_ROOT.'/vendor/zend/library',
 ));
 $loader->registerPrefixes(array(
