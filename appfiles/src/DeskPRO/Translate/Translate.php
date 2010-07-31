@@ -17,6 +17,19 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use DeskPRO\Entities;
 
+/**
+ * This class is responsible for loading phrases from a language stored in the database.
+ *
+ * <code>
+ * $t = new Translate($language, $container);
+ * $t->loadPhraseGroups('core', 'profile', 'tickets');
+ * echo $t['tickets.ask_a_question'];
+ * echo $t->phrase('core.welcome_back_x', 'Christopher');  
+ * </code>
+ *
+ * @see Language
+ * @see Phrase
+ */
 class Translate implements \ArrayAccess
 {
 	/**
@@ -55,12 +68,24 @@ class Translate implements \ArrayAccess
 
 	/**
 	 * @param Language $language The language we're using
-	 * @param ContainerInterface $container The container we'll use to get the database connection
+	 * @param ContainerInterface $container The DI container we'll use to get the database connection
 	 */
 	public function __construct(Language $language, ContainerInterface $container)
 	{
 		$this->language = $language;
 		$this->dbconn = $container->getService('database_connection');
+	}
+
+
+
+	/**
+	 * Get the language used.
+	 *
+	 * @return DeskPRO\Entities\Language
+	 */
+	public function getLanguage()
+	{
+		return $this->language;
 	}
 
 
@@ -179,7 +204,7 @@ class Translate implements \ArrayAccess
 	}
 
 
-	
+
 	public function offsetExists($offset)
 	{
 		return $this->getPhraseText($offset) !== null;
