@@ -42,7 +42,7 @@ class DeskproKernel extends Kernel
             'Application'        => DP_ROOT.'/src/Application',
             'Bundle'             => DP_ROOT.'/src/Bundle',
 			'DeskPRO'            => DP_ROOT.'/src/DeskPRO',
-            'Symfony\\Bundle'    => DP_ROOT.'/src/vendor/symfony/src/Symfony/Framework',
+            'Symfony\\Bundle'    => DP_ROOT.'/vendor/symfony/src/Symfony/Framework',
         );
     }
 
