@@ -2,6 +2,6 @@
 
 namespace Application\UserCoreBundle;
 
-class UserCoreBundle extends Symfony\Framework\Bundle\Bundle
+class UserCoreBundle extends \Symfony\Framework\Bundle\Bundle
 {
 }
