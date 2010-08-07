@@ -11,13 +11,12 @@ class DeskPROBundle extends \Symfony\Framework\Bundle\Bundle
 	public function buildContainer(ParameterBagInterface $parameterBag)
     {
         ContainerBuilder::registerExtension(new \DeskPRO\DependencyInjection\TwigExtension());
+        ContainerBuilder::registerExtension(new \DeskPRO\DependencyInjection\AppExtension());
+        ContainerBuilder::registerExtension(new \DeskPRO\DependencyInjection\CacheExtension());
     }
 
 	public function boot(ContainerInterface $container)
 	{
 		parent::boot($container);
-
-		// TODO convert into DI
-
 	}
 }
