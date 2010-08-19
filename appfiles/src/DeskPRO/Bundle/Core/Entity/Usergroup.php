@@ -51,11 +51,7 @@ class Usergroup extends \DeskPRO\Bundle\Core\Entity\Entity
 
 
 	/**
-     * @ManyToMany(targetEntity="User", inversedBy="usergroups")
-	 * @JoinTable(name="user2usergroups",
-	 *     joinColumns={@JoinColumn(name="usergroup_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@JoinColumn(name="user_id", referencedColumnName="id")}
-     * )
+     * @ManyToMany(targetEntity="User", mappedBy="usergroups")
      */
     protected $users;
 
@@ -64,7 +60,7 @@ class Usergroup extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * Is this user a tech that can use the tech interface?
 	 *
 	 * @var bool
-	 * @Column(name="p_is_tech", type="boolean", default=false)
+	 * @Column(name="p_is_tech", type="boolean")
 	 */
 	protected $is_tech = false;
 
@@ -73,7 +69,7 @@ class Usergroup extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * Is this user an admin that can use the admin features?
 	 *
 	 * @var bool
-	 * @Column(name="p_is_admin", type="boolean", default=false)
+	 * @Column(name="p_is_admin", type="boolean")
 	 */
 	protected $is_admin = false;
 

@@ -70,7 +70,7 @@ class Template extends \DeskPRO\Bundle\Core\Entity\Entity
 
 	/**
 	 * @var string
-	 * @Column(name="template", type="text")
+	 * @Column(name="template_compiled", type="text")
 	 */
 	protected $template_compiled;
 

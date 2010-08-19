@@ -55,7 +55,7 @@ class User extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * Every user has a local login capability with this password. Null means there is no local auth.
 	 *
 	 * @var string
-	 * @Column(name="password", type="string", length=255, nullable=true, default=null)
+	 * @Column(name="password", type="string", length=255, nullable=true)
 	 */
 	protected $password = null;
 
@@ -64,7 +64,7 @@ class User extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * Which hashing algoirthm is used for storing the password.
 	 *
 	 * @var string
-	 * @Column(name="password_algo", type="string", length=15, default="sha1")
+	 * @Column(name="password_algo", type="string", length=15)
 	 */
 	protected $password_algo = 'sha1';
 

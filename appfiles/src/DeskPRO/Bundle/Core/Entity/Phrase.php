@@ -67,7 +67,7 @@ class Phrase extends \DeskPRO\Bundle\Core\Entity\Entity
 	 *
 	 * @var string
 	 * @Index
-	 * @Column(name="group", type="string", length=255, nullable=true, default=null)
+	 * @Column(name="group", type="string", length=255, nullable=true)
 	 */
 	protected $group;
 

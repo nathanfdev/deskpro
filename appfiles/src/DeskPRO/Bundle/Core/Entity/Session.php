@@ -45,16 +45,16 @@ class Session extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * The user this session belong to
 	 *
 	 * @var int
-	 * @Column(name="user_id", type="integer", nullable=true, default=null)
+	 * @Column(name="user_id", type="integer", nullable=true)
 	 */
 	protected $user_id = null;
 
 
 	/**
 	 * @var string
-	 * @Column(name="data", type="text", default="")
+	 * @Column(name="data", type="text")
 	 */
-	protected $data;
+	protected $data = '';
 
 
 	/**

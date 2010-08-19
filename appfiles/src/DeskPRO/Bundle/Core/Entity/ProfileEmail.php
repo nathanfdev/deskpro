@@ -59,7 +59,7 @@ class ProfileEmail extends \DeskPRO\Bundle\Core\Entity\Entity
 
 	/**
 	 * @var bool
-	 * @Column(name="is_validated", type="boolean", default=false)
+	 * @Column(name="is_validated", type="boolean")
 	 */
 	protected $is_validated = false;
 
@@ -68,9 +68,9 @@ class ProfileEmail extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * A comment or description of the email address. For example, "work" or "home."
 	 *
 	 * @var string
-	 * @Column(name="comment", type="text", default="")
+	 * @Column(name="comment", type="text")
 	 */
-	protected $comment;
+	protected $comment = '';
 
 
 	/**

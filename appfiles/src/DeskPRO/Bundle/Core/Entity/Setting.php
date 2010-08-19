@@ -47,7 +47,7 @@ class Setting extends \DeskPRO\Bundle\Core\Entity\Entity
 	 *
 	 * @var string
 	 * @Index
-	 * @Column(name="group", type="string", length=255, nullable=true, default=null)
+	 * @Column(name="group", type="string", length=255, nullable=true)
 	 */
 	protected $group;
 
@@ -56,7 +56,7 @@ class Setting extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * The value of a setting
 	 *
 	 * @var string
-	 * @Column(name="group", type="text", nullable=true, default=null)
+	 * @Column(name="value", type="text", nullable=true)
 	 */
 	protected $value;
 
@@ -65,9 +65,9 @@ class Setting extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * The default value set by DeskPRO.
 	 *
 	 * @var string
-	 * @Column(name="group", type="text", default="")
+	 * @Column(name="default_value", type="text")
 	 */
-	protected $default_value;
+	protected $default_value = '';
 
 
 	/**
