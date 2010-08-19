@@ -26,8 +26,18 @@ class AppExtension extends \Symfony\Components\DependencyInjection\Extension\Ext
 		App::set('container', $container);
     }
 
+	public function getXsdValidationBasePath()
+	{
+		return null;
+	}
+
+	public function getNamespace()
+	{
+		return null;
+	}
+
 	public function getAlias()
     {
-        return 'app';
+        return 'deskpro.app';
     }
 }

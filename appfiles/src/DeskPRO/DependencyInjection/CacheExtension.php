@@ -28,6 +28,16 @@ class CacheExtension extends \Symfony\Components\DependencyInjection\Extension\E
 		$container->setDefinition('deskpro.core.cache', $definition);
     }
 
+	public function getXsdValidationBasePath()
+	{
+		return null;
+	}
+
+	public function getNamespace()
+	{
+		return null;
+	}
+
 	public function getAlias()
     {
         return 'deskpro.core.cache';

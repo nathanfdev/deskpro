@@ -33,6 +33,16 @@ class AppExtension extends \Symfony\Components\DependencyInjection\Extension\Ext
 		$container->setDefinition('deskpro.core.requestuser', $definition);
     }
 
+	public function getXsdValidationBasePath()
+	{
+		return null;
+	}
+
+	public function getNamespace()
+	{
+		return null;
+	}
+
 	public function getAlias()
     {
         return 'deskpro.core.requestuser';

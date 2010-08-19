@@ -25,7 +25,7 @@ use Orb\Strings;
  * This hybrid loader loads templates from the filesystem first, and then from the
  * database second if a style is being used and has templates that override it.
  */
-class Hybrid implements \Symfony\Bundle\TwigBundle\Loader\Loader
+class Hybrid extends \Symfony\Bundle\TwigBundle\Loader\Loader
 {
 	/**
 	 * The current database-stored style being used
@@ -56,8 +56,7 @@ class Hybrid implements \Symfony\Bundle\TwigBundle\Loader\Loader
 	 */
 	public function __construct(ContainerInterface $container)
 	{
-		parent::__construct();
-		$this->dbconn = $container->getService('database_connection');
+		$this->dbconn = $container->get('database_connection');
 	}
 
 
