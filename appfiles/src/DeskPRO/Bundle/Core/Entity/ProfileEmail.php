@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Entity;
+namespace DeskPRO\Bundle\Core\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -19,7 +19,7 @@ use Orb\Util\Arrays;
  * @Entity
  * @Table(name="profile_emails")
  */
-class ProfileEmail extends \DeskPRO\Bundle\Entity\Entity
+class ProfileEmail extends \DeskPRO\Bundle\Core\Entity\Entity
 {
 	/**
 	 * The unique ID.

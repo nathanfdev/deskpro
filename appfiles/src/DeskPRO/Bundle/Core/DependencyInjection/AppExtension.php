@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\DependencyInjection;
+namespace DeskPRO\Bundle\Core\DependencyInjection;
 
 use Symfony\Components\DependencyInjection\ContainerBuilder;
 use DeskPRO\App;

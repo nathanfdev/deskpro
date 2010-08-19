@@ -9,17 +9,17 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Entity;
+namespace DeskPRO\Bundle\Core\Entity;
 use Orb\Util\Strings;
-use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 /**
- * Templates used in the system
+ * Active user sessions
  *
  * @Entity
- * @Table(name="template")
+ * @Table(name="sessions")
  */
-class Template extends \DeskPRO\Bundle\Entity\Entity
+class Session extends \DeskPRO\Bundle\Core\Entity\Entity
 {
 	/**
 	 * The unique ID.
@@ -33,46 +33,29 @@ class Template extends \DeskPRO\Bundle\Entity\Entity
 
 
 	/**
-	 * The style ID.
+	 * The authcode for the session to verify an id
+	 *
+	 * @var string
+	 * @Column(name="password", type="string", length=15)
+	 */
+	protected $auth = null;
+
+
+	/**
+	 * The user this session belong to
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="style_id", type="integer")
+	 * @Column(name="user_id", type="integer", nullable=true, default=null)
 	 */
-	protected $style_id = null;
-
-
-	/**
-	 * The style this template belongs to
-	 *
-	 * @var Style
-	 * @OneToOne(targetEntity="Style")
-	 * @JoinColumn(name="style_id", referencedColumnName="id")
-	 */
-	protected $style;
-
-
-	/**
-	 * The path of the template
-	 *
-	 * @var string
-	 * @Column(name="path", type="string", length=255)
-	 */
-	protected $path;
+	protected $user_id = null;
 
 
 	/**
 	 * @var string
-	 * @Column(name="template", type="text")
+	 * @Column(name="data", type="text", default="")
 	 */
-	protected $template;
+	protected $data;
 
-
-	/**
-	 * @var string
-	 * @Column(name="template", type="text")
-	 */
-	protected $template_compiled;
 
 	/**
 	 * @var \DateTime
@@ -87,6 +70,26 @@ class Template extends \DeskPRO\Bundle\Entity\Entity
 	 */
 	protected $updated_at;
 
+	public function __construct()
+	{
+		$this->auth = Strings::random(15, Strings::CHARS_ALPHA_I);
+	}
+
+
+
+	/**
+	 * Gets the session ID for this session. It's an encoded ID and an authcode.
+	 *
+	 * @return string
+	 */
+	public function getSessionId()
+	{
+		$id_enc = Util::baseEncode($this->id, Util::BASE36_ALPHABET);
+		return $id_enc . '-' . $this->auth;
+	}
+
+
+	
 	/** @PrePersist */
 	public function incCreatedAt()
 	{

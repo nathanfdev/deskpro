@@ -9,23 +9,28 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\DependencyInjection;
+namespace DeskPRO\Bundle\Core\DependencyInjection;
 
 use Symfony\Components\DependencyInjection\ContainerBuilder;
+use Symfony\Components\DependencyInjection\Reference;
 use DeskPRO\App;
 
 /**
  * This simply initiates teh App registry and sets the main app container.
  */
-class CacheExtension extends \Symfony\Components\DependencyInjection\Extension\Extension
+class AppExtension extends \Symfony\Components\DependencyInjection\Extension\Extension
 {
 	public function coreLoad($config, ContainerBuilder $container)
     {
 		$definition = new Symfony\Components\DependencyInjection\Definition(
-			$container->getParameter('deskpro.core.cache.class'),
-			$container->getParameter('deskpro.core.cache.args')
+			'DeskPRO\\User\\UserLoader',
+			array(
+				new Reference('service_container'),
+				new Reference('service_request')
+			)
 		);
-		$container->setDefinition('deskpro.core.cache', $definition);
+		$definition->setFactoryMethod('getUserFromRequest');
+		$container->setDefinition('deskpro.core.requestuser', $definition);
     }
 
 	public function getXsdValidationBasePath()
@@ -40,6 +45,6 @@ class CacheExtension extends \Symfony\Components\DependencyInjection\Extension\E
 
 	public function getAlias()
     {
-        return 'deskpro.core.cache';
+        return 'deskpro.core.requestuser';
     }
 }
