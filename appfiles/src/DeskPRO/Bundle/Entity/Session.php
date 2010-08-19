@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Entities;
+namespace DeskPRO\Bundle\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -19,7 +19,7 @@ use Orb\Util\Util;
  * @Entity
  * @Table(name="sessions")
  */
-class Session extends Entity
+class Session extends \DeskPRO\Bundle\Entity\Entity
 {
 	/**
 	 * The unique ID.
