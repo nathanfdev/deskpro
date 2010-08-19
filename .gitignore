@@ -1,5 +1,6 @@
 # IDE project files
 .idea/
+nbproject/
 
 # cache and log files
 appfiles/deskpro/cache/
