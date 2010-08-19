@@ -8,15 +8,10 @@ use Symfony\Components\DependencyInjection\ContainerBuilder;
 
 class DeskPROBundle extends \Symfony\Framework\Bundle\Bundle
 {
-	public function buildContainer(ParameterBagInterface $parameterBag)
+	public function registerExtensions(ContainerBuilder $container)
     {
-        ContainerBuilder::registerExtension(new \DeskPRO\DependencyInjection\TwigExtension());
-        ContainerBuilder::registerExtension(new \DeskPRO\DependencyInjection\AppExtension());
-        ContainerBuilder::registerExtension(new \DeskPRO\DependencyInjection\CacheExtension());
+        $container->registerExtension(new \DeskPRO\DependencyInjection\TwigExtension());
+        $container->registerExtension(new \DeskPRO\DependencyInjection\AppExtension());
+        $container->registerExtension(new \DeskPRO\DependencyInjection\CacheExtension());
     }
-
-	public function boot(ContainerInterface $container)
-	{
-		parent::boot($container);
-	}
 }
