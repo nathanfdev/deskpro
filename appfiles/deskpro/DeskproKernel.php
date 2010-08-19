@@ -21,7 +21,7 @@ class DeskproKernel extends Symfony\Framework\Kernel
 			new Symfony\Bundle\ZendBundle\ZendBundle(),
 			new Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
 
-			new DeskPRO\Bundle\DeskPROBundle(),
+			new DeskPRO\Bundle\Core\CoreBundle(),
 
             new Application\DevBundle\DevBundle(),
             new Application\UserCoreBundle\UserCoreBundle(),
