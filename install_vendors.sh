@@ -1,7 +1,7 @@
 #!/bin/sh
 
 # initialization
-if [ -d "appfiles/vendor" ]; then
+if [ -d "appfiles/src/vendor" ]; then
   rm -rf appfiles/vendor/*
 else
   mkdir appfiles/vendor
