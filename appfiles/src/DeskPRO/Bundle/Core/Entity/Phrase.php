@@ -67,9 +67,9 @@ class Phrase extends \DeskPRO\Bundle\Core\Entity\Entity
 	 *
 	 * @var string
 	 * @Index
-	 * @Column(name="group", type="string", length=255, nullable=true)
+	 * @Column(name="groupname", type="string", length=255, nullable=true)
 	 */
-	protected $group;
+	protected $groupname;
 
 
 	/**
@@ -102,9 +102,9 @@ class Phrase extends \DeskPRO\Bundle\Core\Entity\Entity
 	{
 		$dotpos = strpos($this->name, '.');
 		if ($dotpos) {
-			$this->group = substr($this->name, 0, $dotpos);
+			$this->groupname = substr($this->name, 0, $dotpos);
 		} else {
-			$this->group = null;
+			$this->groupname = null;
 		}
 	}
 
