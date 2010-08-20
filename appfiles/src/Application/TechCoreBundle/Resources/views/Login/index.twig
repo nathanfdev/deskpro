@@ -5,13 +5,21 @@
 	<div class="block" id="block-login">
 		<h2>Login</h2>
 		<div class="content login">
-			<form action="#" class="form login">
+			{% if invalid_login %}
+			<div class="flash">
+				<div class="message error">
+					<p>Invalid login. Please try again.</p>
+				</div>
+			</div>
+			{% endif %}
+
+			<form action="{% route 'tech_login' %}" class="form login" method="post">
 				<div class="group wat-cf">
 					<div class="left">
-						<label class="label right">Login</label>
+						<label class="label right">Email</label>
 					</div>
 					<div class="right">
-						<input type="text" class="text_field" />
+						<input type="text" class="text_field" name="email_address" />
 					</div>
 				</div>
 				<div class="group wat-cf">
@@ -19,12 +27,12 @@
 						<label class="label right">Password</label>
 					</div>
 					<div class="right">
-						<input type="password" class="text_field" />
+						<input type="password" class="text_field" name="password" />
 					</div>
 				</div>
 				<div class="group navform wat-cf">
 					<div class="right">
-						<button class="button" type="submit">
+						<button class="button" type="submit" name="process">
 							<img src="{% asset 'static/images/icons/key.png' %}" alt="Save" /> Login
 						</button>
 					</div>
