@@ -2,7 +2,7 @@
 <html xmlns="http://www.w3.org/1999/xhtml" lang="en">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Web App Theme</title>
+	<title>DeskPRO</title>
 	<link rel="stylesheet" href="{% asset 'static/stylesheets/base.css' %}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{% asset 'static/stylesheets/themes/blue/style.css' %}" type="text/css" media="screen" />
 	<script type="text/javascript" charset="utf-8" src="{% asset 'static/javascripts/jquery-1.3.min.js' %}"></script>
@@ -12,20 +12,18 @@
 <body>
 	<div id="container">
 		<div id="header">
-			<h1><a href="index.html">Web App Theme</a></h1>
+			<h1><a href="index.html">DeskPRO</a></h1>
 			<div id="user-navigation">
 				<ul class="wat-cf">
-					<li><a href="#">Profile</a></li>
 					<li><a href="#">Settings</a></li>
 					<li><a class="logout" href="#">Logout</a></li>
 				</ul>
 			</div>
 			<div id="main-navigation">
 				<ul class="wat-cf">
-					<li class="first"><a href="#block-text">Main Page</a></li>
-					<li class="active"><a href="#block-text">Active</a></li>
-					<li><a href="#block-login">Login</a></li>
-					<li><a href="#block-signup">Signup</a></li>
+					<li class="first"><a href="#block-text">Dashboard</a></li>
+					<li class="active"><a href="#block-text">Tickets</a></li>
+					<li><a href="#block-text">Knowledgebase</a></li>
 				</ul>
 			</div>
 		</div>
@@ -60,16 +58,6 @@
 				</div>
 
 				<div class="block" id="block-tables">
-					<div class="secondary-navigation">
-						<ul class="wat-cf">
-							<li class="first"><a href="#block-text">Text</a></li>
-							<li class="active"><a href="#block-tables">Tables</a></li>
-							<li><a href="#block-forms">Forms</a></li>
-							<li><a href="#block-messages">Messages</a></li>
-							<li><a href="#block-forms-2">2 Columns Forms</a></li>
-							<li><a href="#block-lists">Lists</a></li>
-						</ul>
-					</div>
 					<div class="content">
 						<h2 class="title">Tables</h2>
 						<div class="inner">
@@ -112,16 +100,6 @@
 				</div>
 
 				<div class="block" id="block-forms">
-					<div class="secondary-navigation">
-						<ul class="wat-cf">
-							<li class="first"><a href="#block-text">Text</a></li>
-							<li><a href="#block-tables">Tables</a></li>
-							<li class="active"><a href="#block-forms">Forms</a></li>
-							<li><a href="#block-messages">Messages</a></li>
-							<li><a href="#block-forms-2">2 Columns Forms</a></li>
-							<li><a href="#block-lists">Lists</a></li>
-						</ul>
-					</div>
 					<div class="content">
 						<h2 class="title">Forms</h2>
 						<div class="inner">
@@ -158,16 +136,6 @@
 				</div>
 
 				<div class="block" id="block-messages">
-					<div class="secondary-navigation">
-						<ul class="wat-cf">
-							<li class="first"><a href="#block-text">Text</a></li>
-							<li><a href="#block-tables">Tables</a></li>
-							<li><a href="#block-forms">Forms</a></li>
-							<li class="active"><a href="#block-messages">Messages</a></li>
-							<li><a href="#block-forms-2">2 Columns Forms</a></li>
-							<li><a href="#block-lists">Lists</a></li>
-						</ul>
-					</div>
 					<div class="content">
 						<h2 class="title">Messages</h2>
 						<div class="inner">
@@ -187,16 +155,6 @@
 				</div>
 
 				<div class="block" id="block-forms-2">
-					<div class="secondary-navigation">
-						<ul class="wat-cf">
-							<li class="first"><a href="#block-text">Text</a></li>
-							<li><a href="#block-tables">Tables</a></li>
-							<li><a href="#block-forms">Forms</a></li>
-							<li><a href="#block-messages">Messages</a></li>
-							<li class="active"><a href="#block-forms-2">2 Columns Forms</a></li>
-							<li><a href="#block-lists">Lists</a></li>
-						</ul>
-					</div>
 					<div class="content">
 						<h2 class="title">2 columns forms</h2>
 						<div class="inner">
@@ -251,16 +209,6 @@
 				</div>
 
 				<div class="block" id="block-lists">
-					<div class="secondary-navigation">
-						<ul class="wat-cf">
-							<li class="first"><a href="#block-text">Text</a></li>
-							<li><a href="#block-tables">Tables</a></li>
-							<li><a href="#block-forms">Forms</a></li>
-							<li><a href="#block-messages">Messages</a></li>
-							<li><a href="#block-forms-2">2 Columns Forms</a></li>
-							<li class="active"><a href="#block-lists">Lists</a></li>
-						</ul>
-					</div>
 					<div class="content">
 						<h2 class="title">Lists</h2>
 						<div class="inner">
@@ -306,34 +254,7 @@
 						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
 					</div>
 				</div>
-				<div class="block">
-					<h3>Switch Theme</h3>
-					<ul class="navigation">
-						<li><a href="#" onclick="Theme.activate('default'); return false;">Default</a></li>
-						<li><a href="#" onclick="Theme.activate('amro'); return false;">Amro</a></li>
-						<li><a href="#" onclick="Theme.activate('bec'); return false;">Bec</a></li>
-						<li><a href="#" onclick="Theme.activate('bec-green'); return false;">Bec-Green</a></li>
-						<li><a href="#" onclick="Theme.activate('blue'); return false;">Blue</a></li>
-						<li><a href="#" onclick="Theme.activate('djime-cerulean'); return false;">Djime-Cerulean</a></li>
-						<li><a href="#" onclick="Theme.activate('drastic-dark'); return false;">Drastic Dark</a></li>
-						<li><a href="#" onclick="Theme.activate('kathleene'); return false;">Kathleene</a></li>
-						<li><a href="#" onclick="Theme.activate('olive'); return false;">Olive</a></li>
-						<li><a href="#" onclick="Theme.activate('orange'); return false;">Orange</a></li>
-						<li><a href="#" onclick="Theme.activate('reidb-greenish'); return false;">Greenish</a></li>
-						<li><a href="#" onclick="Theme.activate('warehouse'); return false;">Warehouse</a></li>
-					</ul>
-				</div>
-				<div class="block">
-					<h3>Sidebar</h3>
-					<ul class="navigation">
-						<li><a href="#block-text">Text</a></li>
-						<li><a href="#block-tables">Tables</a></li>
-						<li><a href="#block-forms">Forms</a></li>
-						<li><a href="#block-messages">Messages</a></li>
-						<li><a href="#block-forms-2">2 Columns Forms</a></li>
-						<li><a href="#block-lists">Lists</a></li>
-					</ul>
-				</div>
+
 				<div class="block notice">
 					<h4>Notice Title</h4>
 					<p>Morbi posuere urna vitae nunc. Curabitur ultrices, lorem ac aliquam blandit, lectus eros hendrerit eros, at eleifend libero ipsum hendrerit urna. Suspendisse viverra. Morbi ut magna. Praesent id ipsum. Sed feugiat ipsum ut felis. Fusce vitae nibh sed risus commodo pulvinar. Duis ut dolor. Cras ac erat pulvinar tortor porta sodales. Aenean tempor venenatis dolor.</p>
