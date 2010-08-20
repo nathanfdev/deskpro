@@ -20,7 +20,7 @@ abstract class Entity implements \ArrayAccess
 	{
 		try {
 			$val = $this->offsetGet($offset);
-		} catch (InvalidArgumentException $e) {
+		} catch (\InvalidArgumentException $e) {
 			$val = null;
 		}
 		return $val !== null;
@@ -33,9 +33,9 @@ abstract class Entity implements \ArrayAccess
 			$this->$func($value);
 		} elseif (property_exists($this, $offset)) {
 			$this->$offset = $value;
+		} else {
+			throw new \InvalidArgumentException('No such offset exists to set: ' . $offset);
 		}
-
-		throw new InvalidArgumentException('No such offset exists to set: ' . $offset);
 	}
 
 	public function offsetGet($offset)
@@ -45,9 +45,9 @@ abstract class Entity implements \ArrayAccess
 			return $this->$func();
 		} elseif (property_exists($this, $offset)) {
 			return $this->$offset;
+		} else {
+			throw new \InvalidArgumentException('No such offset exists to get: ' . $offset);
 		}
-
-		throw new InvalidArgumentException('No such offset exists to get: ' . $offset);
 	}
 
 	public function offsetUnset($offset)
