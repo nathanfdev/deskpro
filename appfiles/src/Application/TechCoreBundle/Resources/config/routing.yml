@@ -1,3 +1,3 @@
-login:
+tech_login:
     pattern:  /login
     defaults: { _controller: TechCoreBundle:Login:index }
