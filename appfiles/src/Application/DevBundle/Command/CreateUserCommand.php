@@ -45,16 +45,14 @@ class CreateUserCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 		$usergroup = null;
 
 		$user['profile'] = $profile;
-		$em->persist($user);
-		$em->flush();
 
 		if ($input->hasOption('is-admin')) {
 			$group = $em->find('DeskPRO\\Bundle\\Core\\Entity\\Usergroup', 1);
-			$group['users']->add($user);
-			$em->persist($group);
-			$em->flush();
+			$user['usergroups']->add($group);
 		}
 
+		$em->persist($user);
+		$em->flush();
 		$em->commit();
 
 		$output->writeln("<info>User {$user['id']} was created</info>");
