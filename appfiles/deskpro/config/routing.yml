@@ -1,2 +1,6 @@
 usercore:
     resource: UserCoreBundle/Resources/config/routing.yml
+
+dev:
+  prefix: /dev
+  resource: DevBundle/Resources/config/routing.yml
