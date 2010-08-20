@@ -24,6 +24,7 @@ class DeskproKernel extends Symfony\Framework\Kernel
 			new DeskPRO\Bundle\Core\CoreBundle(),
 
             new Application\DevBundle\DevBundle(),
+            new Application\TechCoreBundle\TechCoreBundle(),
             new Application\UserCoreBundle\UserCoreBundle(),
         );
 

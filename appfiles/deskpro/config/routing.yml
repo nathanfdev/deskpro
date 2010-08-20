@@ -1,6 +1,10 @@
 usercore:
     resource: UserCoreBundle/Resources/config/routing.yml
 
+techcore:
+  prefix: /tech
+  resource: TechCoreBundle/Resources/config/routing.yml
+
 dev:
   prefix: /dev
   resource: DevBundle/Resources/config/routing.yml
