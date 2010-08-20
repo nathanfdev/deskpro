@@ -7,6 +7,7 @@ $loader->registerNamespaces(array(
 	'DeskPRO'                    => DP_ROOT.'/src',
 	'Application'                => DP_ROOT.'/src',
     'Bundle'                     => DP_ROOT.'/src',
+	'Orb'                        => DP_ROOT.'/src',
 
     'Symfony'                    => DP_ROOT.'/vendor/symfony/src',
     'Doctrine\\Common'           => DP_ROOT.'/vendor/doctrine-common/lib',
