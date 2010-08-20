@@ -17,6 +17,7 @@ use Orb\Util\Arrays;
  * Templates used in the system
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="phrases")
  */
 class Phrase extends \DeskPRO\Bundle\Core\Entity\Entity

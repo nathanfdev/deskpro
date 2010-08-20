@@ -17,6 +17,7 @@ use Orb\Util\Arrays;
  * Templates used in the system
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="template")
  */
 class Template extends \DeskPRO\Bundle\Core\Entity\Entity

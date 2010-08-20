@@ -17,6 +17,7 @@ use Orb\Util\Util;
  * Active user sessions
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="sessions")
  */
 class Session extends \DeskPRO\Bundle\Core\Entity\Entity

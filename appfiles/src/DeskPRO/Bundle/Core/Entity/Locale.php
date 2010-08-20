@@ -17,6 +17,7 @@ use Orb\Util\Arrays;
  * Locales that users can choose.
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="locales", indexes={@Index(name="locale_idx", columns={"locale"})})
  */
 class Locale extends \DeskPRO\Bundle\Core\Entity\Entity

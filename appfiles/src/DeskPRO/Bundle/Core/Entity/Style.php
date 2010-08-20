@@ -17,6 +17,7 @@ use Orb\Util\Arrays;
  * Settings used by the system.
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="styles")
  */
 class Style extends \DeskPRO\Bundle\Core\Entity\Entity

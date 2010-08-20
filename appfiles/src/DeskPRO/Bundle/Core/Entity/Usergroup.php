@@ -17,6 +17,7 @@ use Orb\Util\Arrays;
  * A "user" is a person in the database who can log in and has access to the interfaces.
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="usergroups")
  */
 class Usergroup extends \DeskPRO\Bundle\Core\Entity\Entity

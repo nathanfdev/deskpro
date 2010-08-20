@@ -17,6 +17,7 @@ use Orb\Util\Arrays;
  * Settings used by the system.
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="languages")
  */
 class Language extends \DeskPRO\Bundle\Core\Entity\Entity

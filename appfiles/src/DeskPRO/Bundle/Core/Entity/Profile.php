@@ -17,6 +17,7 @@ use Orb\Util\Arrays;
  * A "profile" is a record in the database that stores information about a person.
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="profiles")
  */
 class Profile extends \DeskPRO\Bundle\Core\Entity\Entity

@@ -17,6 +17,7 @@ use Orb\Util\Arrays;
  * Email addresses attached to a profile
  *
  * @Entity
+ * @HasLifecycleCallbacks
  * @Table(name="profile_emails")
  */
 class ProfileEmail extends \DeskPRO\Bundle\Core\Entity\Entity
@@ -35,7 +36,6 @@ class ProfileEmail extends \DeskPRO\Bundle\Core\Entity\Entity
 	 * The profile this email belongs to
 	 *
 	 * @var int
-	 * @Column(name="profile_id", type="integer")
 	 */
 	protected $profile_id;
 
