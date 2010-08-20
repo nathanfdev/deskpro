@@ -1,50 +1,61 @@
 <?php
 
-namespace Application\DevBundle;
+namespace Application\DevBundle\Command;
 
 use Symfony\Components\Console\Input\InputArgument;
 use Symfony\Components\Console\Input\InputOption;
 use Symfony\Components\Console\Input\InputInterface;
 use Symfony\Components\Console\Output\OutputInterface;
 use Symfony\Components\Console\Output\Output;
-use Symfony\Bundle\FrameworkBundle\Util\Filesystem;
-use Symfony\Bundle\FrameworkBundle\Util\Mustache;
 
-use DeskPRO\Entities;
+use DeskPRO\Bundle\Core\Entity;
 
-class CreateUserCommand extends Command
+class CreateUserCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 {
 	protected function configure()
 	{
 		$this->setDefinition(array(
 				new InputArgument('email', InputArgument::REQUIRED, 'The email address of the user'),
 				new InputArgument('password', InputArgument::REQUIRED, 'The password of the user'),
-				new InputOption('set-admin', null, InputOption::PARAMETER_OPTIONAL, 'Should this user be made an admin?', 1),
+				new InputOption('is-admin', null, InputOption::PARAMETER_NONE, 'Set this user as admin'),
 		))->setName('dpdev:create-user');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
-	{
-		$profile = new Profile();
+	{	
+		$em = $this->container->get('doctrine.orm.entity_manager');
+		$em->beginTransaction();
 
-		$email = new ProfileEmail();
+		$profile = new Entity\Profile();
+		$em->persist($profile);
+		$em->flush();
+
+		$email = new Entity\ProfileEmail();
 		$email['email_address'] = $input->getArgument('email');
 		$email['is_validated'] = true;
-		$profile['email_addresses']->add($email);
+		$email['profile'] = $profile;
 
-		$user = new User();
+		$em->persist($email);
+		$em->persist($profile);
+		$em->flush();
+
+		$user = new Entity\User();
 		$user['password'] = $input->getArgument('password');
 
-		if ($input->getArgument('set-admin')) {
-			$usergroup = new Usergroup();
-			$usergroup['id'] = 1;
-			$user['usergroups']->add($usergroup);
-		}
+		$usergroup = null;
 
 		$user['profile'] = $profile;
-
-		$em = $this->application->getKernel()->getContainer()->getService('doctrine.orm.entity_manager');
 		$em->persist($user);
+		$em->flush();
+
+		if ($input->hasOption('is-admin')) {
+			$group = $em->find('DeskPRO\\Bundle\\Core\\Entity\\Usergroup', 1);
+			$group['users']->add($user);
+			$em->persist($group);
+			$em->flush();
+		}
+
+		$em->commit();
 
 		$output->writeln("<info>User {$user['id']} was created</info>");
 	}
