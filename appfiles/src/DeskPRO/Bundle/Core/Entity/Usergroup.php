@@ -75,6 +75,12 @@ class Usergroup extends \DeskPRO\Bundle\Core\Entity\Entity
 	protected $is_admin = false;
 
 
+	public function __construct()
+	{
+		$this->users = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+
 
 	/**
 	 * Get an array of yes/no permissions for this usergroup.
