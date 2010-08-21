@@ -14,7 +14,7 @@ namespace DeskPRO\Controller;
 /**
  * The abstract controller sets up some default objects.
  */
-class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller
+abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller
 {
 	/**
 	 * Entity manager
