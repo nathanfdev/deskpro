@@ -101,6 +101,13 @@ class User extends \DeskPRO\Bundle\Core\Entity\Entity
 	 */
 	protected $_set_plain_password = null;
 
+	
+	/**
+	 * This object was set as a guest
+	 * @var bool
+	 */
+	protected $_is_guest = true;
+
 
 
 	public function __construct()
@@ -193,6 +200,13 @@ class User extends \DeskPRO\Bundle\Core\Entity\Entity
 	public function checkPermission($name)
 	{
 		return (isset($this->_active_perms[$name]) AND $this->_active_perms[$name]);
+	}
+
+
+	public function loadAsGuest()
+	{
+		// TODO
+		$this->_is_guest = true;
 	}
 
 
