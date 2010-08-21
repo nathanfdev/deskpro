@@ -40,6 +40,6 @@ class CacheExtension extends \Symfony\Components\DependencyInjection\Extension\E
 
 	public function getAlias()
     {
-        return 'deskpro.core.cache';
+        return 'deskpro';
     }
 }

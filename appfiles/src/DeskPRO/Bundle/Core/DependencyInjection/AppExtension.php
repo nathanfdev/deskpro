@@ -11,8 +11,8 @@
 
 namespace DeskPRO\Bundle\Core\DependencyInjection;
 
-use Symfony\Components\DependencyInjection\ContainerBuilder;
-use DeskPRO\App;
+use \Symfony\Components\DependencyInjection\ContainerBuilder;
+use \DeskPRO\App;
 
 /**
  * This simply initiates teh App registry and sets the main app container.
@@ -21,8 +21,6 @@ class AppExtension extends \Symfony\Components\DependencyInjection\Extension\Ext
 {
 	public function configLoad($config, ContainerBuilder $container)
     {
-		parent::configLoad($config, $container);
-
 		App::set('container', $container);
     }
 
@@ -38,6 +36,6 @@ class AppExtension extends \Symfony\Components\DependencyInjection\Extension\Ext
 
 	public function getAlias()
     {
-        return 'deskpro.app';
+        return 'deskpro_app';
     }
 }
