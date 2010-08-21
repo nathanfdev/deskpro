@@ -18,3 +18,6 @@ doctrine.dbal:
   dbname: dp_400
   user: root
   password: mysquirrel
+
+deskpro_app.config: ~
+deskpro_requestuser.config: ~
