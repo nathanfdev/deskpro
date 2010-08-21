@@ -1,25 +1,22 @@
 <?php
 
 namespace Application\TechCoreBundle\Controller;
-use Symfony\Bundle\FrameworkBundle\Controller;
 
-class LoginController extends Controller
+class LoginController extends \DeskPRO\Controller\AbstractController
 {
 	public function indexAction()
     {
-		$tplvars = array();
-
 		if (isset($_REQUEST['process'])) {
 			$user = $this->_processLogin();
 			if ($user) {
-				$this->container->get('request')->getSession()->setAttribute('auth_userid', $user['id']);
-				return $this->redirect($this->container->getRouterService()->generate('TechCoreBundle:Main:index'));
+				$this['request']->getSession()->setAttribute('auth_userid', $user['id']);
+				return $this->redirect($this['router']->generate('TechCoreBundle:Main:index'));
 			} else {
-				$tplvars['invalid_login'] = true;
+				$this->tpl['invalid_login'] = true;
 			}
 		}
 
-       return $this->render('TechCoreBundle:Login:index:twig', $tplvars);
+       return $this->render('TechCoreBundle:Login:index');
     }
 
 	protected function _processLogin()
@@ -27,17 +24,16 @@ class LoginController extends Controller
 		$email_address = $_REQUEST['email_address'];
 		$password = $_REQUEST['password'];
 
-		$em = $this->container->get('doctrine.orm.entity_manager');
-		$q = $em->createQuery('
-			SELECT p
-			FROM DeskPRO\\Bundle\\Core\\Entity\\ProfileEmail p
-			WHERE p.email_address = ?1
+		$q = $this->em->createQuery('
+			SELECT e
+			FROM Core:ProfileEmail e
+			WHERE e.email_address = ?1 AND e.profile IS NOT NULL
 		');
 		$q->setParameter(1, $email_address);
 
-		$profile_email = $q->getSingleResult();
-
-		if (!$profile_email OR !$profile_email['profile'] OR !$profile_email['profile']['user_id']) {
+		try {
+			$profile_email = $q->getSingleResult();
+		} catch (\Doctrine\ORM\NoResultException $e) {
 			return false;
 		}
 
@@ -46,6 +42,6 @@ class LoginController extends Controller
 			return false;
 		}
 
-		return true;
+		return $user;
 	}
 }
