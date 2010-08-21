@@ -10,7 +10,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 			$user = $this->_processLogin();
 			if ($user) {
 				$this['request']->getSession()->setAttribute('auth_userid', $user['id']);
-				return $this->redirect($this['router']->generate('TechCoreBundle:Main:index'));
+				return $this->redirect($this['router']->generate('tech_dashboard', array()));
 			} else {
 				$this->tpl['invalid_login'] = true;
 			}
