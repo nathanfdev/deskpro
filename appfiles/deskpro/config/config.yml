@@ -1,5 +1,6 @@
 parameters:
     kernel.include_core_classes: false
+    templating.engine.class: "DeskPRO\Templating\Engine"
 
 kernel.config:
   error_handler_level: null
@@ -11,6 +12,7 @@ web.templating:
   escaping: htmlspecialchars
 
 doctrine.orm: ~
+
 doctrine.dbal:
   driver: PDOMySql
   dbname: dp_400
