@@ -22,16 +22,22 @@ class UserLaoder
 			$user_id = $session->getAttribute('auth_userid');
 		}
 
-		if (!$user_id) {
-			$user = new User();
-			$user->loadAsGuest();
-			return $user;
+		$em = $container->getService('doctrine.orm.entity_manager');
+
+		if ($user_id) {
+			try {
+				$user = $em->createQuery('SELECT Core:User WHERE id = ?1')
+					->setParameter(1, $user_id)
+					->getSingleResult();
+			} catch (\Doctrine\ORM\NoResultException $e) {
+				$user = false;
+			}
 		}
 
-
-
-		$em = $container->getService('doctrine.orm.entity_manager');
-		$user = $em->createQuery('SELECT DeskPRO:User WHERE id = ?', $user_id);
+		if (!$user) {
+			$user = new \DeskPRO\Bundle\Core\Entity\User();
+			$user->loadAsGuest();
+		}
 
 		return $user;
 	}
