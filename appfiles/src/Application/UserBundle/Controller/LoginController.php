@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\UserCoreBundle\Controller;
+namespace Application\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller;
 
@@ -13,12 +13,12 @@ class MainController extends Controller
 		if ($_REQUEST['process']) {
 			if ($user = $this->_processLogin()) {
 				$this->getRequest()->getSession()->setAttribute('auth_userid', $user['id']);
-				return $this->redirect($this->container->getRouterService()->generate('UserCoreBundle:Main:index'));
+				return $this->redirect($this->container->getRouterService()->generate('UserBundle:Main:index'));
 			} else {
 				$tplvars['invalid_login'] = true;
 			}
 		}
-        return $this->render('UserCoreBundle:Login:index', $tplvars);
+        return $this->render('UserBundle:Login:index', $tplvars);
     }
 
 	protected function _processLogin()

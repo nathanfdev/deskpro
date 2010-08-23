@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\TechCoreBundle\Controller;
+namespace Application\TechBundle\Controller;
 
 abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 {
@@ -14,7 +14,7 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 	{
 		$this->user = $this['deskpro.core.requestuser'];
 		if (!$this->user OR !$this->user['id']) {
-			$this->redirect($this['router']->generate('TechCoreBundle:Login:index'));
+			$this->redirect($this['router']->generate('tech_login', array()));
 			return;
 		}
 

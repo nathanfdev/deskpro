@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\TechCoreBundle\Controller;
+namespace Application\TechBundle\Controller;
 
 class LoginController extends \DeskPRO\Controller\AbstractController
 {
@@ -16,7 +16,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 			}
 		}
 
-       return $this->render('TechCoreBundle:Login:index');
+       return $this->render('TechBundle:Login:index');
     }
 
 	protected function _processLogin()

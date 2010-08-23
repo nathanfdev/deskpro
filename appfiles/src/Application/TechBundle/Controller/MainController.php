@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\TechCoreBundle\Controller;
+namespace Application\TechBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller;
 
@@ -8,6 +8,6 @@ class MainController extends AbstractController
 {
     public function indexAction()
     {
-        return $this->render('TechCoreBundle:Main:index');
+        return $this->render('TechBundle:Main:index');
     }
 }

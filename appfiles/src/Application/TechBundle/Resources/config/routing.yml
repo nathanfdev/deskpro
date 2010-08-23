@@ -1,0 +1,7 @@
+tech_login:
+    pattern:  /login
+    defaults: { _controller: TechBundle:Login:index }
+
+tech_dashboard:
+  pattern: /
+  defaults: { _controller: TechBundle:Main:index }

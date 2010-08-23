@@ -1,9 +1,9 @@
-usercore:
-    resource: UserCoreBundle/Resources/config/routing.yml
+user:
+    resource: UserBundle/Resources/config/routing.yml
 
-techcore:
+tech:
   prefix: /tech
-  resource: TechCoreBundle/Resources/config/routing.yml
+  resource: TechBundle/Resources/config/routing.yml
 
 dev:
   prefix: /dev
