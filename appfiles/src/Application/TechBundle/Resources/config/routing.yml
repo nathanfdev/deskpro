@@ -2,6 +2,10 @@ tech_login:
     pattern:  /login
     defaults: { _controller: TechBundle:Login:index }
 
+tech_logout:
+  pattern: /login/logout
+  defaults: { _controller: TechBundle:Login:logout }
+
 tech_dashboard:
   pattern: /
   defaults: { _controller: TechBundle:Main:index }

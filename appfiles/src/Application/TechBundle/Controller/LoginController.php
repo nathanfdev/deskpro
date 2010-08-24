@@ -9,6 +9,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		if (isset($_REQUEST['process'])) {
 			$user = $this->_processLogin();
 			if ($user) {
+				$this['request']->getSession()->start();
 				$this['request']->getSession()->setAttribute('auth_userid', $user['id']);
 				return $this->redirect($this['router']->generate('tech_dashboard', array()));
 			} else {
@@ -43,5 +44,17 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		}
 
 		return $user;
+	}
+
+
+	public function logoutAction()
+	{
+		// TODO
+		// When symfony session is more flushed out, should completely destroy the old session
+
+		$this['request']->getSession()->start();
+		$this['request']->getSession()->setAttribute('auth_userid', $user['id']);
+
+		return $this->redirect($this['router']->generate('tech_login', array()));
 	}
 }

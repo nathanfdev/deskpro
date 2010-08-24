@@ -17,17 +17,15 @@ class UserLoader
 	{
 		$user_id = null;
 
-		if ($request->hasSession()) {
-			$session = $request->getSession();
-			$user_id = $session->getAttribute('auth_userid');
-		}
+		$session = $request->getSession();
+		$user_id = $session->getAttribute('auth_userid');
 
 		$em = $container->get('doctrine.orm.entity_manager');
 		$user = false;
 
 		if ($user_id) {
 			try {
-				$user = $em->createQuery('SELECT Core:User WHERE id = ?1')
+				$user = $em->createQuery('SELECT u FROM Core:User u WHERE u.id = ?1')
 					->setParameter(1, $user_id)
 					->getSingleResult();
 			} catch (\Doctrine\ORM\NoResultException $e) {}
