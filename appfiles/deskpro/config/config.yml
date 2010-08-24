@@ -11,7 +11,8 @@ web.config:
 web.templating:
   escaping: htmlspecialchars
 
-doctrine.orm: ~
+doctrine.orm:
+  auto_generate_proxy_classes: true
 
 doctrine.dbal:
   driver: PDOMySql
