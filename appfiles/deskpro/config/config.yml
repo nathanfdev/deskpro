@@ -19,5 +19,4 @@ doctrine.dbal:
   user: root
   password: mysquirrel
 
-deskpro_app.config: ~
 deskpro_requestuser.config: ~
