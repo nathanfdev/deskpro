@@ -25,9 +25,13 @@ class UserLoader
 
 		if ($user_id) {
 			try {
-				$user = $em->createQuery('SELECT u FROM Core:User u WHERE u.id = ?1')
-					->setParameter(1, $user_id)
-					->getSingleResult();
+				$user = $em->createQuery('
+					SELECT u, p, e
+					FROM Core:User u
+					JOIN u.profile p
+					JOIN p.email_addresses e
+					WHERE u.id = ?1'
+				)->setParameter(1, $user_id)->getSingleResult();
 			} catch (\Doctrine\ORM\NoResultException $e) {}
 		}
 
