@@ -22,6 +22,15 @@ class StylesController extends AbstractController
 		$this->tpl['all_styles'] = $this->style_hierarchy;
 	}
 
+
+
+	############################################################################
+	# index
+	############################################################################
+
+	/**
+	 * Shows a list of currents styles
+	 */
 	public function indexAction()
     {
 		if (!$this->style_hierarchy) {
@@ -31,10 +40,94 @@ class StylesController extends AbstractController
         return $this->render('TechBundle:Styles:index');
     }
 
+
+	
+	############################################################################
+	# intro
+	############################################################################
+
+	/**
+	 * Shows an introduction to what styles are etc. A user is automatically redirected
+	 * here when no styles exist yet.
+	 */
 	public function introAction()
 	{
 		$this->tpl['has_no_styles'] = !((bool)$this->style_hierarchy);
 
 		return $this->render('TechBundle:Styles:intro');
+	}
+
+
+
+	############################################################################
+	# id/edit-style | new-style
+	############################################################################
+
+	/**
+	 * Form
+	 */
+	public function editStyleAction($style_id)
+	{
+		#-------------------------
+		# Get the style we're working on
+		#-------------------------
+
+		if ($style_id) {
+			try {
+				$style = $em->createQuery('
+						SELECT s
+						FROM Core:Style s
+						WHERE u.id = ?1'
+					)->setParameter(1, $style_id)->getSingleResult();
+			} catch (\Doctrine\ORM\NoResultException $e) {
+				throw new \Symfony\Components\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
+			}
+		} else {
+			$style = new \DeskPRO\Bundle\Core\Entity\Style;
+		}
+
+		$this->tpl['style'] = $style;
+
+		
+		#-------------------------
+		# Set up the form and validator
+		#-------------------------
+
+		$validator = new \Application\TechBundle\Validator\Style\Style();
+		$form = new \Application\TechBundle\Form\Style\Style('style', $style, $validator);
+		$form->setParentIdOptions($this->style_hierarchy);
+
+		$this->tpl['form'] = $form;
+
+		
+		#-------------------------
+		# If the form was submitted, try and save it
+		#-------------------------
+
+		if (isset($_POST['process'])) {
+			$form->bind($this['request']->request->get());
+			if ($form->isValid()) {
+				$this->em->persist($style);
+				$this->em->flush();
+
+				return $this->redirect($this->generateUrl('tech_admin_styles_showstyle', array('style_id' => $style['id'])));
+			}
+		}
+
+		return $this->render('TechBundle:Styles:edit');
+	}
+
+
+
+	############################################################################
+	# id/show-style
+	############################################################################
+
+	/**
+	 * Shows template list
+	 */
+	public function showStyleAction($style_id)
+	{
+
 	}
 }
