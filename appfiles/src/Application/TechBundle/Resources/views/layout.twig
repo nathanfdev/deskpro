@@ -15,14 +15,15 @@
 			<h1><a href="index.html">DeskPRO Tech Interface</a></h1>
 			<div id="user-navigation">
 				<ul class="wat-cf">
-					<li><a href="#">Profile</a></li>
-					<li><a href="#">Settings</a></li>
-					<li><a class="logout" href="#">Logout</a></li>
+					<li>
+						<span style="color: #fff; ">Hello, {{user.profile.display_name}} &middot;</span>
+						<a class="logout" href="{% route 'tech_logout' %}">Logout</a>
+					</li>
 				</ul>
 			</div>
 			<div id="main-navigation">
 				<ul class="wat-cf">
-					<li class="first"><a href="#block-text">Dashboard</a></li>
+					<li class="first"><a href="{% route 'tech_dashboard' %}">Dashboard</a></li>
 					<li class="active"><a href="#block-text">Tickets</a></li>
 				</ul>
 			</div>
@@ -30,22 +31,9 @@
 		<div id="wrapper" class="wat-cf">
 			<div id="main">
 				{% block content%}{%endblock%}
-				<div id="footer">
-					<div class="block">
-						<p>Copyright &copy; 2010 Your Site.</p>
-					</div>
-				</div>
 			</div>
 			<div id="sidebar">
-				<div class="block">
-					<h3>Simple Block</h3>
-					<div class="content">
-						<p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.</p>
-					</div>
-				</div>
-				<div class="block">
-					{% block sidebar %}{% endblock %}
-				</div>
+				{% block sidebar %}{% endblock %}
 			</div>
 		</div>
 	</div>
