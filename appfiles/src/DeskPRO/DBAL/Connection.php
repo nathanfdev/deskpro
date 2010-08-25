@@ -11,6 +11,7 @@
 
 namespace DeskPRO\DBAL;
 
+use \PDO;
 
 /**
  * Some enhancements to Doctrine's connection class.
