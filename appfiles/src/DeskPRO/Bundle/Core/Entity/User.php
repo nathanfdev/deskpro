@@ -210,6 +210,12 @@ class User extends \DeskPRO\Bundle\Core\Entity\Entity
 	}
 
 
+	public function __toString()
+	{
+		return $this['profile']->__toString();
+	}
+
+
 
 	/**
 	 * Initializes the active permissions array.

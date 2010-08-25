@@ -16,6 +16,11 @@ namespace DeskPRO\Bundle\Core\Entity;
  */
 abstract class Entity implements \ArrayAccess
 {
+	public function get($name, $default = null)
+	{
+		return isset($this[$name]) ? $this[$name] : $default;
+	}
+
 	public function offsetExists($offset)
 	{
 		try {

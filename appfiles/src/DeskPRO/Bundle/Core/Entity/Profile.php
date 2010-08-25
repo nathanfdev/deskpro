@@ -127,8 +127,28 @@ class Profile extends \DeskPRO\Bundle\Core\Entity\Entity
 		$this->email_addresses = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
-	
 
+	public function getDisplayName()
+	{
+		if ($this->informal_name) {
+			return $this->informal_name;
+		} elseif ($this->fullname) {
+			return $this->fullname;
+		} elseif ($this->email_addresses->count()) {
+			return $this->email_addresses->first()->get('email_address');
+		} else {
+			return 'ID-' . $this['id'];
+		}
+	}
+
+
+	public function __toString()
+	{
+		return $this->getDisplayName();
+	}
+
+
+	
 	/** @PrePersist */
 	public function incCreatedAt()
 	{
