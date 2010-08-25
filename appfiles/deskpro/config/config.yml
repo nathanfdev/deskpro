@@ -19,7 +19,7 @@ doctrine.dbal:
   dbname: dp_400
   user: root
   password: mysquirrel
-  connection_class: "DeskPRO\DBAL\Connection"
+  wrapper_class: "DeskPRO\DBAL\Connection"
 
 deskpro_core.config: ~
 deskpro_tech_core.config: ~

@@ -25,7 +25,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $index
 	 * @return array
 	 */
-	public function fetchArrayKeyed($statement, array $params = array(), $index = 'id')
+	public function fetchAllKeyed($statement, array $params = array(), $index = 'id')
 	{
 		$statement = $this->executeQuery($statement, $params);
 		$array = array();
