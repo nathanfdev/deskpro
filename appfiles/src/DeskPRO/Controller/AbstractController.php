@@ -24,7 +24,7 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 
 	/**
 	 * Plain database connection for raw queries
-	 * @var Doctrine\DBAL\Connection
+	 * @var DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 
