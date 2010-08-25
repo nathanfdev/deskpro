@@ -9,3 +9,15 @@ tech_logout:
 tech_dashboard:
   pattern: /
   defaults: { _controller: TechBundle:Main:index }
+
+tech_admin_styles:
+  pattern: /styles
+  defaults: { _controller: TechBundle:Styles:index }
+
+tech_admin_styles_intro:
+  pattern: /styles/intro
+  defaults: { _controller: TechBundle:Styles:intro }
+
+tech_admin_styles_newstyle:
+  pattern: /styles/new-style
+  defaults: { _controller: TechBundle:Styles:newstyle }
