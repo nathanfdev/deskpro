@@ -17,6 +17,24 @@ namespace DeskPRO\Bundle\Core\Entity;
 abstract class Entity implements \ArrayAccess
 {
 	/**
+	 * An array of properties that have been changed through one of the accessor
+	 * methods.
+	 * @var array
+	 */
+	protected $_properties_changed = array();
+
+	/**
+	 * Check to see if a certain property has changed.
+	 * @return bool
+	 */
+	public function hasPropertyChanged()
+	{
+		return in_array($prop, $this->_properties_changed);
+	}
+
+
+
+	/**
 	 * Get a property of this entity. Same as using $entity[something]
 	 */
 	public function get($name, $default = null)
@@ -60,8 +78,10 @@ abstract class Entity implements \ArrayAccess
 	{
 		$func = "set" . str_replace('_', '', $offset);
 		if (method_exists($this, $func)) {
+			$this->_properties_changed = true;
 			$this->$func($value);
 		} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
+			$this->_properties_changed = true;
 			$this->$offset = $value;
 		} else {
 			throw new \InvalidArgumentException('No such offset exists to set: ' . $offset);
