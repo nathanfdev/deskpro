@@ -11,10 +11,10 @@
 
 namespace DeskPRO\Twig\Loader;
 
-use Symfony\Components\Templating\Engine;
-use Symfony\Components\Templating\Storage\Storage;
-use Symfony\Components\Templating\Storage\FileStorage;
-use Symfony\Components\DependencyInjection\ContainerInterface;
+use Symfony\Component\Templating\Engine;
+use Symfony\Component\Templating\Storage\Storage;
+use Symfony\Component\Templating\Storage\FileStorage;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use DeskPRO\Entities;
 

@@ -2,9 +2,9 @@
 
 namespace Application\TechBundle\Validator\Style;
 
-use Symfony\Components\Validator\Constraint;
+use Symfony\Component\Validator\Constraint;
 
-class Style implements \Symfony\Components\Validator\ValidatorInterface
+class Style implements \Symfony\Component\Validator\ValidatorInterface
 {
 	public function validate($object, $groups = null)
 	{

@@ -18,7 +18,7 @@ use Orb\Util\Util;
 /**
  * This storage uses the Session entity for storing session info.
  */
-class SessionEntityStorage extends \Symfony\Components\HttpFoundation\SessionStorage\NativeSessionStorage
+class SessionEntityStorage extends \Symfony\Component\HttpFoundation\SessionStorage\NativeSessionStorage
 {
 	/**
 	 * @var \Doctrine\ORM\EntityManager

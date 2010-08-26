@@ -11,18 +11,18 @@
 
 namespace DeskPRO\Bundle\Core\DependencyInjection;
 
-use Symfony\Components\DependencyInjection\ContainerBuilder;
-use Symfony\Components\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 use DeskPRO\App;
 
 /**
  * This simply initiates teh App registry and sets the main app container.
  */
-class RequestUser extends \Symfony\Components\DependencyInjection\Extension\Extension
+class RequestUser extends \Symfony\Component\DependencyInjection\Extension\Extension
 {
 	public function configLoad($config, ContainerBuilder $container)
     {
-		$definition = new \Symfony\Components\DependencyInjection\Definition(
+		$definition = new \Symfony\Component\DependencyInjection\Definition(
 			'DeskPRO\\User\\UserLoader',
 			array(
 				new Reference('service_container'),

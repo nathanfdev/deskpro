@@ -2,8 +2,8 @@
 
 require_once DP_ROOT.'/autoload.php';
 
-use Symfony\Components\DependencyInjection\Loader\LoaderInterface;
-use Symfony\Components\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Loader\LoaderInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class DeskproKernel extends Symfony\Framework\Kernel
 {

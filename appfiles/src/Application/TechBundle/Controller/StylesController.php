@@ -19,7 +19,7 @@ class StylesController extends AbstractController
 		$this->style_hierarchy = Arrays::intoHierarchy($this->style_hierarchy);
 		$this->style_hierarchy = Arrays::flattenHierarchy($this->style_hierarchy);
 
-		$this->tpl['all_styles'] = $this->style_hierarchy;
+		$this->tplvars['all_styles'] = $this->style_hierarchy;
 	}
 
 
@@ -52,7 +52,7 @@ class StylesController extends AbstractController
 	 */
 	public function introAction()
 	{
-		$this->tpl['has_no_styles'] = !((bool)$this->style_hierarchy);
+		$this->tplvars['has_no_styles'] = !((bool)$this->style_hierarchy);
 
 		return $this->render('TechBundle:Styles:intro');
 	}
@@ -80,20 +80,20 @@ class StylesController extends AbstractController
 						WHERE u.id = ?1'
 					)->setParameter(1, $style_id)->getSingleResult();
 			} catch (\Doctrine\ORM\NoResultException $e) {
-				throw new \Symfony\Components\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
 			}
 		} else {
 			$style = new \DeskPRO\Bundle\Core\Entity\Style;
 		}
 
-		$this->tpl['style'] = $style;
+		$this->tplvars['style'] = $style;
 
 		
 		#-------------------------
 		# Set up the form and validator
 		#-------------------------
 
-		$form = new \Symfony\Components\Form\Form('style', $style, $this['validator']);
+		$form = new \Symfony\Component\Form\Form('style', $style, $this['validator']);
 		$form->add(new TextField('title'));
 
 		if (!$style['id'] AND $this->style_hierarchy) {
@@ -109,7 +109,7 @@ class StylesController extends AbstractController
 		}
 		$form->add(new TextField('note'));
 
-		$this->tpl['form'] = $form;
+		$this->tplvars['form'] = $form;
 
 		
 		#-------------------------

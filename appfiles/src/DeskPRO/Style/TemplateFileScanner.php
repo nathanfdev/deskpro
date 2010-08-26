@@ -10,7 +10,7 @@
  */
 
 namespace DeskPRO\Style;
-use Symfony\Components\DependencyInjection\Container;
+use Symfony\Component\DependencyInjection\Container;
 
 /**
  * The style system uses templates from the database first, and falls back onto the filesystem.
@@ -79,7 +79,7 @@ class TemplateFileScanner
 
 		$view_dir = $bundle_dir . '/Resources/views';
 
-		$finder = new \Symfony\Components\Finder\Finder();
+		$finder = new \Symfony\Component\Finder\Finder();
 		$finder->files()->name('*.twig')->in($view_dir);
 
 		$templates = array();

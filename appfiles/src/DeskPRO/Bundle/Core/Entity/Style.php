@@ -11,8 +11,8 @@
 
 namespace DeskPRO\Bundle\Core\Entity;
 
-use \Symfony\Components\Validator\Constraints;
-use \Symfony\Components\Validator\Mapping\ClassMetadata;
+use \Symfony\Component\Validator\Constraints;
+use \Symfony\Component\Validator\Mapping\ClassMetadata;
 
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;

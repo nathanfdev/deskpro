@@ -1,8 +1,8 @@
-core:
-  CoreBundle/Resources/config/routing.yml
+#core:
+#  resource: CoreBundle/Resources/config/routing.yml
 
 user:
-    resource: UserBundle/Resources/config/routing.yml
+  resource: UserBundle/Resources/config/routing.yml
 
 tech:
   prefix: /tech

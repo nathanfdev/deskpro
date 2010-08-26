@@ -11,7 +11,7 @@
 
 namespace DeskPRO\Translate;
 
-use Symfony\Components\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;

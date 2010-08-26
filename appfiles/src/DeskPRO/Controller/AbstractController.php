@@ -10,11 +10,12 @@
  */
 
 namespace DeskPRO\Controller;
+use \Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * The abstract controller sets up some default objects.
  */
-abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller
+abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
 	/**
 	 * Entity manager
@@ -29,22 +30,24 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 	protected $db;
 
 	/**
-	 * The template engine
-	 * @var DeskPRO\Templating\Engine
+	 * Shared template vars
+	 * @var ArrayObject
 	 */
-	protected $tpl;
+	protected $tplvars;
 
 
 
-	public function __construct(\Symfony\Components\DependencyInjection\Container $container)
+	public function setContainer(ContainerInterface $container)
 	{
-		parent::__construct($container);
+		parent::setContainer($container);
+
+		// Set shortcuts once we have the container :)
 
 		$this->em = $this['doctrine.orm.entity_manager'];
 		$this->db = $this['database_connection'];
 
-		$this->tpl = $this['templating'];
-		$this->tpl->resetTemplateVars();
+		$this->tplvars = $this['templating']->getTemplateVarsObject();
+		$this['templating']->resetTemplateVars();
 
 		$this->init();
 	}

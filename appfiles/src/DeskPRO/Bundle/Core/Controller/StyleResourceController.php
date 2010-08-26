@@ -13,7 +13,7 @@ use Orb\Util\Web;
 /**
  * Serve style resources
  */
-class StyleResourceController extends \Symfony\Bundle\FrameworkBundle\Controller
+class StyleResourceController extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
 {
 	public function servAction($resource_id, $resource_filename)
 	{
@@ -23,7 +23,7 @@ class StyleResourceController extends \Symfony\Bundle\FrameworkBundle\Controller
 		/** @var DeskPRO\Bundle\Core\Entity\StyleResource */
 		$res = $em->find('Core:StyleResource', $resource_id);
 		if (!$res) {
-			throw new \Symfony\Components\HttpKernel\Exception\NotFoundHttpException("There is no resource with ID $resource_id");
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no resource with ID $resource_id");
 		}
 
 		// Make sure the URL is correct (consistency)

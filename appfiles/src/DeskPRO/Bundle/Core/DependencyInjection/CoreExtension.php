@@ -11,14 +11,14 @@
 
 namespace DeskPRO\Bundle\Core\DependencyInjection;
 
-use Symfony\Components\DependencyInjection\ContainerBuilder;
-use Symfony\Components\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\Reference;
 use DeskPRO\App;
 
 /**
  * Registers basic core stuff
  */
-class CoreExtension extends \Symfony\Components\DependencyInjection\Extension\Extension
+class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Extension
 {
 	public function configLoad($config, ContainerBuilder $container)
     {

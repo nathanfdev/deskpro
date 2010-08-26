@@ -10,10 +10,10 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 			$user = $this->_processLogin();
 			if ($user) {
 				$this['request']->getSession()->start();
-				$this['request']->getSession()->setAttribute('auth_userid', $user['id']);
+				$this['request']->getSession()->set('auth_userid', $user['id']);
 				return $this->redirect($this['router']->generate('tech_dashboard', array()));
 			} else {
-				$this->tpl['invalid_login'] = true;
+				$this->tplvars['invalid_login'] = true;
 			}
 		}
 
@@ -53,7 +53,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		// When symfony session is more flushed out, should completely destroy the old session
 
 		$this['request']->getSession()->start();
-		$this['request']->getSession()->setAttribute('auth_userid', $user['id']);
+		$this['request']->getSession()->set('auth_userid', $user['id']);
 
 		return $this->redirect($this['router']->generate('tech_login', array()));
 	}

@@ -2,9 +2,9 @@
 
 namespace DeskPRO\Bundle\Core;
 
-use Symfony\Components\DependencyInjection\ContainerInterface;
-use Symfony\Components\DependencyInjection\ParameterBag\ParameterBagInterface;
-use Symfony\Components\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class CoreBundle extends \Symfony\Framework\Bundle\Bundle
 {

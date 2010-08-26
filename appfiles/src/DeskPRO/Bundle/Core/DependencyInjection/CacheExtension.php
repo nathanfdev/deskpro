@@ -11,17 +11,17 @@
 
 namespace DeskPRO\Bundle\Core\DependencyInjection;
 
-use Symfony\Components\DependencyInjection\ContainerBuilder;
+use Symfony\Component\DependencyInjection\ContainerBuilder;
 use DeskPRO\App;
 
 /**
  * This simply initiates teh App registry and sets the main app container.
  */
-class CacheExtension extends \Symfony\Components\DependencyInjection\Extension\Extension
+class CacheExtension extends \Symfony\Component\DependencyInjection\Extension\Extension
 {
 	public function coreLoad($config, ContainerBuilder $container)
     {
-		$definition = new Symfony\Components\DependencyInjection\Definition(
+		$definition = new Symfony\Component\DependencyInjection\Definition(
 			$container->getParameter('deskpro.core.cache.class'),
 			$container->getParameter('deskpro.core.cache.args')
 		);

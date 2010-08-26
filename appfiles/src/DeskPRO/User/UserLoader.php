@@ -13,12 +13,12 @@ namespace DeskPRO\User;
 
 class UserLoader
 {
-	public static function getUserFromRequest($container, \Symfony\Components\HttpFoundation\Request $request)
+	public static function getUserFromRequest($container, \Symfony\Component\HttpFoundation\Request $request)
 	{
 		$user_id = null;
 
 		$session = $request->getSession();
-		$user_id = $session->getAttribute('auth_userid');
+		$user_id = $session->get('auth_userid');
 
 		$em = $container->get('doctrine.orm.entity_manager');
 		$user = false;

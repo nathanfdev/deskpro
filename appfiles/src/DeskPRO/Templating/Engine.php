@@ -16,19 +16,22 @@ namespace DeskPRO\Templating;
  * Customized template engine that we can assign shared variables to, and also makes the default
  * renderer twig.
  */
-class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine implements \ArrayAccess
+class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine
 {
 	/**
 	 * An array of shared template vars
-	 * @var array
+	 * @var \ArrayObject
 	 */
-	protected $_tpl_vars = array();
-
+	protected $_tpl_vars = null;
 
 
 	public function render($name, array $parameters = array())
 	{
-		$all_params = $this->_tpl_vars;
+		if ($this->_tpl_vars) {
+			$all_params = $this->getTemplateVarsObject()->getArrayCopy();
+		} else {
+			$all_params = array();
+		}
 		if ($parameters) {
 			$all_params = array_merge($all_params, $parameters);
 		}
@@ -53,14 +56,34 @@ class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine implement
 	}
 
 
-	
+
+	/**
+	 * Get the templatevars object
+	 *
+	 * @return ArrayObject
+	 */
+	public function getTemplateVarsObject()
+	{
+		if ($this->_tpl_vars === null) {
+			$this->resetTemplateVars();
+		}
+
+		return $this->_tpl_vars;
+	}
+
+
+
 	/**
 	 * Reset vars back to nothing.
 	 */
 	public function resetTemplateVars()
 	{
-		$this->_tpl_vars = array();
+		if ($this->_tpl_vars !== null) {
+			$this->getTemplateVarsObject()->exchangeArray(array());
+		}
 	}
+
+
 
 	/**
 	 * Assign multiple variables to the shared template parameters.
@@ -69,26 +92,9 @@ class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine implement
 	 */
 	public function assignMulti(array $params)
 	{
-		$this->_tpl_vars = array_merge($this->_tpl_vars, $params);
-	}
-
-	public function offsetExists($offset)
-	{
-		return isset($this->_tpl_vars[$offset]);
-	}
-
-	public function offsetSet($offset, $value)
-	{
-		$this->_tpl_vars[$offset] = $value;
-	}
-
-	public function offsetGet($offset)
-	{
-		return $this->_tpl_vars[$offset];
-	}
-
-	public function offsetUnset($offset)
-	{
-		unset($this->_tpl_vars[$offset]);
+		$arr = $this->getTemplateVarsObject();
+		foreach ($params as $k => $v) {
+			$arr[$k] = $v;
+		}
 	}
 }

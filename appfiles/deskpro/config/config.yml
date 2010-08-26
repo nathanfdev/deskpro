@@ -7,11 +7,11 @@ kernel.config:
 
 web.config:
   router: { resource: "%kernel.root_dir%/config/routing.yml" }
+  validation: ~
 
 web.templating:
   escaping: htmlspecialchars
-
-web.validation: ~
+  assets_base_urls: "/static"
 
 doctrine.orm:
   auto_generate_proxy_classes: true

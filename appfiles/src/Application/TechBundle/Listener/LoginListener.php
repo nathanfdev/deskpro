@@ -11,9 +11,9 @@
 
 namespace Application\TechBundle\Listener;
 
-use \Symfony\Components\EventDispatcher\Event;
+use \Symfony\Component\EventDispatcher\Event;
 use \Symfony\Framework\Debug\EventDispatcher;
-use \Symfony\Components\DependencyInjection\ContainerInterface;
+use \Symfony\Component\DependencyInjection\ContainerInterface;
 
 class LoginListener
 {
