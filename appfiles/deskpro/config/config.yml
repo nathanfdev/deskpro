@@ -11,7 +11,7 @@ web.config:
 
 web.templating:
   escaping: htmlspecialchars
-  assets_base_urls: "/static"
+  assets_base_urls: "/dp_400/static" # root paths like this need to have basepath prepended
 
 doctrine.orm:
   auto_generate_proxy_classes: true
