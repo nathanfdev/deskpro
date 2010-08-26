@@ -11,6 +11,8 @@ web.config:
 web.templating:
   escaping: htmlspecialchars
 
+web.validation: ~
+
 doctrine.orm:
   auto_generate_proxy_classes: true
 

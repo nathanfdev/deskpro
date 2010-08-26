@@ -10,8 +10,12 @@
  */
 
 namespace DeskPRO\Bundle\Core\Entity;
-use Orb\Util\Strings;
-use Orb\Util\Arrays;
+
+use \Symfony\Components\Validator\Constraints;
+use \Symfony\Components\Validator\Mapping\ClassMetadata;
+
+use \Orb\Util\Strings;
+use \Orb\Util\Arrays;
 
 /**
  * Settings used by the system.
@@ -88,5 +92,16 @@ class Style extends \DeskPRO\Bundle\Core\Entity\Entity
 	public function _incCreatedAt()
 	{
 		$this->created_at = new \DateTime();
+	}
+
+
+	/**
+	 * Load validators for use with the validator service.
+	 * 
+	 * @param ClassMetadata $metadata
+	 */
+	public static function loadValidatorMetadata(ClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('title', new Constraints\NotBlank());
 	}
 }

@@ -93,9 +93,21 @@ class StylesController extends AbstractController
 		# Set up the form and validator
 		#-------------------------
 
-		$validator = new \Application\TechBundle\Validator\Style\Style();
-		$form = new \Application\TechBundle\Form\Style\Style('style', $style, $validator);
-		$form->setParentIdOptions($this->style_hierarchy);
+		$form = new \Symfony\Components\Form\Form('style', $style, $this['validator']);
+		$form->add(new TextField('title'));
+
+		if (!$style['id'] AND $this->style_hierarchy) {
+			foreach ($this->style_hierarchy as $s) {
+				$indent = '';
+				if ($s['depth']) $indent = \str_repeat ('--', $s['depth']) . ' ';
+
+				$choices[$s['id']] = $indent . $s['title'];
+			}
+
+			$f = new ChoiceField('parent_id', array('choices' => $choices));
+			$form->add($f);
+		}
+		$form->add(new TextField('note'));
 
 		$this->tpl['form'] = $form;
 
