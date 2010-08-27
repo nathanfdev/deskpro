@@ -26,3 +26,4 @@ doctrine.dbal:
 deskpro_core.config: ~
 deskpro_tech_core.config: ~
 deskpro_requestuser.config: ~
+deskpro_inputreader.config: ~

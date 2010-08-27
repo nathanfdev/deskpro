@@ -13,5 +13,6 @@ class CoreBundle extends \Symfony\Framework\Bundle\Bundle
         $container->registerExtension(new \DeskPRO\Bundle\Core\DependencyInjection\TwigExtension());
         $container->registerExtension(new \DeskPRO\Bundle\Core\DependencyInjection\CoreExtension());
         $container->registerExtension(new \DeskPRO\Bundle\Core\DependencyInjection\RequestUser());
+        $container->registerExtension(new \DeskPRO\Bundle\Core\DependencyInjection\InputReader());
     }
 }
