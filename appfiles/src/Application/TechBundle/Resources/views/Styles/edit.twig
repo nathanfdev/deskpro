@@ -5,23 +5,27 @@
 	<div class="content">
 		<h2 class="title">{% if style.id %}Edit Style{% else %}Create Style{% endif %}</h2>
 		<div class="inner">
-			<form action="{% route 'tech_admin_styles_editstyle' with ['style_id': style.id] %}" method="post">
+			<form action="{% route 'tech_admin_styles_editstyle' with ['style_id': style.id|default(0)] %}" method="post" class="form">
 				<input type="hidden" name="process" value="1" />
 				<div class="group">
 					<label class="label">Title</label>
-					{{form.username.getRawValue.render}}
+					{{form.get('title').render(['class': 'text_field'])|safe}}
 				</div>
-				<div class="group">
-					<label class="label">Parent</label>
-					{{form.parent_id.getRawValue.render}}
-				</div>
+				{% if form.has('parent_id') %}
+					<div class="group">
+						<label class="label">Parent</label>
+						{{form.get('parent_id').render()|safe}}
+						<span class="description">Choose a parent you want to inherit all templates from</span>
+					</div>
+				{% endif %}
 				<div class="group">
 					<label class="label">Note</label>
-					{{form.parent_id.getRawValue.render}}
+					{{form.get('note').render(['rows': 10, 'cols': 50, 'class': 'text_area'])|safe}}
+					<span class="description">Enter any notes about this style. Notes are only displayed to administrators.</span>
 				</div>
 				<div class="group navform wat-cf">
 					<button class="button" type="submit">
-						<img src="{% asset 'static/images/icons/tick.png' %}" alt="Save" /> Save
+						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Save
 					</button>
 					{% if style.id %}
 						<a href="#header" class="button">
@@ -35,6 +39,5 @@
 </div>
 
 {% endblock %}
-
 {% block sidebar %}
 {% endblock %}

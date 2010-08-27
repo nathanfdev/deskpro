@@ -36,20 +36,14 @@ class Style extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 	 */
 	protected $id = null;
 
-
 	/**
-	 * The parent style ID. All styles at least descened from 1, the default.
-	 *
-	 * @var int
-	 * @Id
-	 * @Column(name="parent_id", type="integer")
-	 */
-	protected $parent_id = null;
-
+     * @OneToMany(targetEntity="Style", mappedBy="parent")
+     */
+    protected $children;
 
 	/**
 	 * @var Style
-	 * @OneToOne(targetEntity="Style")
+	 * @ManyToOne(targetEntity="Style", inversedBy="children")
 	 * @JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent;
@@ -70,7 +64,7 @@ class Style extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 	 * @var string
 	 * @Column(name="note", type="text")
 	 */
-	protected $note;
+	protected $note = '';
 
 
 	/**
@@ -92,6 +86,12 @@ class Style extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 	public function _incCreatedAt()
 	{
 		$this->created_at = new \DateTime();
+	}
+
+	/** @PreUpdate @PrePersist */
+	public function setDefaultValues()
+	{
+		if (!$this->note) $this->note = '';
 	}
 
 

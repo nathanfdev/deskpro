@@ -108,7 +108,7 @@ class StylesController extends AbstractController
 			$f = new Form\ChoiceField('parent_id', array('choices' => $choices));
 			$form->add($f);
 		}
-		$form->add(new Form\TextField('note'));
+		$form->add(new Form\TextAreaField('note'));
 
 		$this->tplvars['form'] = $form;
 
@@ -117,8 +117,8 @@ class StylesController extends AbstractController
 		# If the form was submitted, try and save it
 		#-------------------------
 
-		if (isset($_POST['process'])) {
-			$form->bind($this['request']->request->get());
+		if ($this['request']->getMethod() == 'POST') {
+			$form->bind($this['request']->request->get('style'));
 			if ($form->isValid()) {
 				$this->em->persist($style);
 				$this->em->flush();
