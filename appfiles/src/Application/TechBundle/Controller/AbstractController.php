@@ -6,7 +6,7 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 {
 	/**
 	 * The currently logged in user
-	 * @var \DeskPRO\Bundle\Core\Entity\User
+	 * @var \DeskPRO\Bundle\CoreBundle\Entity\User
 	 */
 	protected $user;
 

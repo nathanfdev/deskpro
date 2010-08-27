@@ -1,5 +1,5 @@
 core:
-  resource: Core/Resources/config/routing.yml
+  resource: CoreBundle/Resources/config/routing.yml
 
 user:
   resource: UserBundle/Resources/config/routing.yml

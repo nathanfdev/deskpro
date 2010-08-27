@@ -7,7 +7,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Core\Controller;
+namespace DeskPRO\Bundle\CoreBundle\Controller;
 use Orb\Util\Web;
 
 /**
@@ -20,8 +20,8 @@ class StyleResourceController extends \Symfony\Bundle\FrameworkBundle\Controller
 		/** @var Doctrine\ORM\EntityManager */
 		$em = $this['doctrine.orm.entity_manager'];
 
-		/** @var DeskPRO\Bundle\Core\Entity\StyleResource */
-		$res = $em->find('Core:StyleResource', $resource_id);
+		/** @var DeskPRO\Bundle\CoreBundle\Entity\StyleResource */
+		$res = $em->find('CoreBundle:StyleResource', $resource_id);
 		if (!$res) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no resource with ID $resource_id");
 		}

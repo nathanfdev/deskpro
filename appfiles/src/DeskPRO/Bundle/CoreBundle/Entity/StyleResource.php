@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Core\Entity;
+namespace DeskPRO\Bundle\CoreBundle\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Web;
@@ -24,7 +24,7 @@ use Orb\Util\Web;
  * @HasLifecycleCallbacks
  * @Table(name="style_resource")
  */
-abstract class StyleResource extends \DeskPRO\Bundle\Core\Entity\Entity
+abstract class StyleResource extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 {
 	/**
 	 * The unique ID.

@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Core\DependencyInjection;
+namespace DeskPRO\Bundle\CoreBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;

@@ -77,14 +77,14 @@ class StylesController extends AbstractController
 			try {
 				$style = $em->createQuery('
 						SELECT s
-						FROM Core:Style s
+						FROM CoreBundle:Style s
 						WHERE u.id = ?1'
 					)->setParameter(1, $style_id)->getSingleResult();
 			} catch (\Doctrine\ORM\NoResultException $e) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
 			}
 		} else {
-			$style = new \DeskPRO\Bundle\Core\Entity\Style;
+			$style = new \DeskPRO\Bundle\CoreBundle\Entity\Style;
 		}
 
 		$this->tplvars['style'] = $style;
@@ -144,7 +144,7 @@ class StylesController extends AbstractController
 		try {
 			$style = $em->createQuery('
 				SELECT s
-				FROM Core:Style s
+				FROM CoreBundle:Style s
 				WHERE u.id = ?1'
 			)->setParameter(1, $style_id)->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {
@@ -170,7 +170,7 @@ class StylesController extends AbstractController
 		try {
 			$style = $em->createQuery('
 				SELECT s
-				FROM Core:Style s
+				FROM CoreBundle:Style s
 				WHERE u.id = ?1'
 			)->setParameter(1, $style_id)->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {

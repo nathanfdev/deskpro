@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Core\Entity;
+namespace DeskPRO\Bundle\CoreBundle\Entity;
 
 /**
  * The basic entitiy class

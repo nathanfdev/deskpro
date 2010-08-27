@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Core\Entity;
+namespace DeskPRO\Bundle\CoreBundle\Entity;
 
 use \Symfony\Component\Validator\Constraints;
 use \Symfony\Component\Validator\Mapping\ClassMetadata;
@@ -24,7 +24,7 @@ use \Orb\Util\Arrays;
  * @HasLifecycleCallbacks
  * @Table(name="styles")
  */
-class Style extends \DeskPRO\Bundle\Core\Entity\Entity
+class Style extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 {
 	/**
 	 * The unique ID.

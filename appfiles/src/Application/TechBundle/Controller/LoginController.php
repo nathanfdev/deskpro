@@ -27,7 +27,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 		$q = $this->em->createQuery('
 			SELECT e
-			FROM Core:ProfileEmail e
+			FROM CoreBundle:ProfileEmail e
 			WHERE e.email_address = ?1 AND e.profile IS NOT NULL
 		');
 		$q->setParameter(1, $email_address);

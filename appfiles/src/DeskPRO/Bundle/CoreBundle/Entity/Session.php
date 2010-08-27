@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Core\Entity;
+namespace DeskPRO\Bundle\CoreBundle\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -20,7 +20,7 @@ use Orb\Util\Util;
  * @HasLifecycleCallbacks
  * @Table(name="sessions")
  */
-class Session extends \DeskPRO\Bundle\Core\Entity\Entity
+class Session extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 {
 	/**
 	 * The unique ID.

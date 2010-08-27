@@ -27,7 +27,7 @@ class UserLoader
 			try {
 				$user = $em->createQuery('
 					SELECT u, p, e
-					FROM Core:User u
+					FROM CoreBundle:User u
 					JOIN u.profile p
 					JOIN p.email_addresses e
 					WHERE u.id = ?1'
@@ -36,7 +36,7 @@ class UserLoader
 		}
 
 		if (!$user) {
-			$user = new \DeskPRO\Bundle\Core\Entity\User();
+			$user = new \DeskPRO\Bundle\CoreBundle\Entity\User();
 			$user->loadAsGuest();
 		}
 

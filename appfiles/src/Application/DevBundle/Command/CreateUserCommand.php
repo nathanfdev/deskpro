@@ -8,7 +8,7 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
 
-use DeskPRO\Bundle\Core\Entity;
+use DeskPRO\Bundle\CoreBundle\Entity;
 
 class CreateUserCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 {
