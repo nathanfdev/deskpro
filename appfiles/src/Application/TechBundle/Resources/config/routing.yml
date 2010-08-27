@@ -21,10 +21,12 @@ tech_admin_styles_intro:
 tech_admin_styles_showstyle:
   pattern: /styles/:style_id
   defaults: { _controller: TechBundle:Styles:showStyle }
+  requirements: { style_id: "\d+" }
 
 tech_admin_styles_editstyle:
   pattern: /styles/:style_id/edit
   defaults: { _controller: TechBundle:Styles:editStyle }
+  requirements: { style_id: "\d+" }
 
 tech_admin_styles_newstyle:
   pattern: /styles/new-style
