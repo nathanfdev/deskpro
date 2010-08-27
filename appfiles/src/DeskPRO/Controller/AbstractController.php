@@ -46,8 +46,8 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 		$this->em = $this['doctrine.orm.entity_manager'];
 		$this->db = $this['database_connection'];
 
-		$this->tplvars = $this['templating']->getTemplateVarsObject();
 		$this['templating']->resetTemplateVars();
+		$this->tplvars = $this['templating']->getTemplateVarsObject();
 
 		$this->init();
 	}

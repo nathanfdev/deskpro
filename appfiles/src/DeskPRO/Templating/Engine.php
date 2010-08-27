@@ -27,11 +27,8 @@ class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine
 
 	public function render($name, array $parameters = array())
 	{
-		if ($this->_tpl_vars) {
-			$all_params = $this->getTemplateVarsObject()->getArrayCopy();
-		} else {
-			$all_params = array();
-		}
+		$all_params = $this->getTemplateVarsObject()->getArrayCopy();
+
 		if ($parameters) {
 			$all_params = array_merge($all_params, $parameters);
 		}
@@ -65,7 +62,7 @@ class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine
 	public function getTemplateVarsObject()
 	{
 		if ($this->_tpl_vars === null) {
-			$this->resetTemplateVars();
+			$this->_tpl_vars = new \ArrayObject();
 		}
 
 		return $this->_tpl_vars;
@@ -78,9 +75,7 @@ class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine
 	 */
 	public function resetTemplateVars()
 	{
-		if ($this->_tpl_vars !== null) {
-			$this->getTemplateVarsObject()->exchangeArray(array());
-		}
+		$this->getTemplateVarsObject()->exchangeArray(array());
 	}
 
 
