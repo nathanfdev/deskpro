@@ -28,8 +28,8 @@
 						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Save
 					</button>
 					{% if style.id %}
-						<a href="#header" class="button">
-							<img src="{% route 'tech_admin_styles_editstyle' with ['style_id': style.id] %}" alt="Cancel"/> Cancel
+						<a href="{% route 'tech_admin_styles' %}" class="button">
+							<img src="{% asset 'images/icons/cross.png' %}" alt="Cancel"/> Cancel
 						</a>
 					{% endif %}
 				</div>

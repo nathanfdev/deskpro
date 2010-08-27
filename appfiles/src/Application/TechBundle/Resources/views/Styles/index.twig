@@ -3,13 +3,23 @@
 
 <div class="block" id="block-tables">
 	<div class="content">
+		<div style="float: right; padding: 5px 5px 0 0;">
+			<a href="{% route 'tech_admin_styles_newstyle' %}" class="button">
+				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New Style
+			</a>
+		</div>
 		<h2 class="title">Styles</h2>
 		<div class="inner">
 			<form action="#" class="form">
 				<table class="table">
-					{% for style in styles %}
 					<tr>
-						<td width="10"><input type="radio" name="default_style_id" value="{{style.id}}" /></td>
+						<th class="first" width="10">&nbsp;</th>
+						<th>Style</th>
+						<th width="250">&nbsp;</th>
+					</tr>
+					{% for style in all_styles %}
+					<tr class="even">
+						<td><input type="radio" name="default_style_id" value="{{style.id}}" /></td>
 						<td>
 							{% if style.depth %}
 								{% for i in 0..style.depth %}--{% endfor %}
@@ -17,8 +27,8 @@
 							{{style.title}}
 						</td>
 						<td class="last">
-							<a href="{% route 'tech_admin_styles_templates' with ['style_id': style.id] %}">Templates</a>
-							<a href="{% route 'tech_admin_styles_resources' with ['style_id': style.id] %}">Resources</a>
+							<a href="{% route 'tech_admin_styles_templates' with ['style_id': style.id] %}">Templates</a> &middot;
+							<a href="{% route 'tech_admin_styles_resources' with ['style_id': style.id] %}">Resources</a> &middot;
 							<a href="{% route 'tech_admin_styles_editstyle' with ['style_id': style.id] %}">Properties</a>
 						</td>
 					</tr>
@@ -27,7 +37,7 @@
 				<div class="actions-bar wat-cf">
 					<div class="actions">
 						<button class="button" type="submit">
-							<img src="{% asset 'images/icons/check.png' %}" alt="Change Default" /> Change Default Style
+							Change Default Style
 						</button>
 					</div>
 				</div>

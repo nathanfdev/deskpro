@@ -45,4 +45,4 @@ tech_admin_styles_templates:
 tech_admin_styles_edittemplate:
   pattern: /styles/:style_id/templates/:template_name
   defaults: { _controller: TechBundle:Styles:editTemplate }
-  requirements: { style_id: "\d+", template_name: "[A-Za-z0-9:\-_]+" }
+  requirements: { style_id: "\d+" }
