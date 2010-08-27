@@ -11,6 +11,7 @@
 
 namespace DeskPRO\Style;
 use Symfony\Component\DependencyInjection\Container;
+use Orb\Util\Arrays;
 
 /**
  * The style system uses templates from the database first, and falls back onto the filesystem.
@@ -63,38 +64,44 @@ class TemplateFileScanner
 	public function getBundleTemplates($bundle)
 	{
 		$bundle_dir = null;
-		$bundle_ns = null;
+		$bundle_name = null;
 
 		foreach ($this->bundle_dirs as $ns => $dir) {
 			if (strpos($bundle, $ns) === 0) {
-				$bundle_dir = $dir . '/' . str_replace('\\', '/', str_replace($ns, '', $bundle));
-				$bundle_ns = $ns;
+				$bundle_dir = $dir . str_replace('\\', '/', str_replace($ns, '', $bundle));
+				// Remove the bundlename at the end cuz its duplciated
+				$bundle_dir = substr($bundle_dir, 0, strrpos($bundle_dir, '/'));
+
+				$bundle_name = substr($bundle_dir, strrpos($bundle_dir, '/')+1);
 				break;
 			}
 		}
 
-		if (!$bundle_dir) {
+		$view_dir = $bundle_dir . '/Resources/views';
+
+		if (!$bundle_dir OR !is_dir($bundle_dir) OR !is_dir($view_dir)) {
 			return array();
 		}
-
-		$view_dir = $bundle_dir . '/Resources/views';
 
 		$finder = new \Symfony\Component\Finder\Finder();
 		$finder->files()->name('*.twig')->in($view_dir);
 
 		$templates = array();
-		foreach ($finder as $file) {
+		foreach ($finder as $filepath) {
 			// /somepath/SomeBundle/Resources/views/Something/index.twig
 			// -> SomeBundle:Something:index
 			$tplname = str_replace($view_dir . '/', ':', $filepath);
 			$tplname = str_replace('.twig', '', $tplname);
 			$tplname = str_replace('/', ':', $tplname);
-			$tplname = $bundle . ':' . $tplname;
+			if (substr_count($tplname, ':') < 2) {
+				$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
+			}
+			$tplname = $bundle_name . $tplname;
 
-			$templates[$tplname] = $file;
+			$templates[$tplname] = $filepath;
 		}
 
-		return $templats;
+		return $templates;
 	}
 
 
@@ -104,13 +111,18 @@ class TemplateFileScanner
 	 *
 	 * @return array
 	 */
-	public function getTemplates()
+	public function getTemplates($nameonly = false)
 	{
 		$templates = array();
 
 		foreach ($this->bundles as $bundle) {
 			$templates[$bundle] = $this->getBundleTemplates($bundle);
+			if ($nameonly) {
+				$templates[$bundle] = array_keys($templates[$bundle]);
+			}
 		}
+
+		$templates = Arrays::removeFalsey($templates);
 
 		return $templates;
 	}
