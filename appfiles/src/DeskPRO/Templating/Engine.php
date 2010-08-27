@@ -45,6 +45,12 @@ class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine
 	 */
 	public function splitTemplateName($name, array $defaults = array())
 	{
+		// Hack: Defaults for FrameworkBundle that has default exception handler still
+		// Want php renderer
+		if (strpos($name, 'FrameworkBundle') === 0) {
+			return parent::splitTemplateName($name, $defaults);
+		}
+
 		if (!isset($defaults['renderer']) OR !$defaults['renderer']) {
 			$defaults['renderer'] = 'twig';
 		}
