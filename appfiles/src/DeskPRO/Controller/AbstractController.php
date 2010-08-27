@@ -30,6 +30,18 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 	protected $db;
 
 	/**
+	 * Input reader
+	 * @var Orb\Input\Reader\Reader
+	 */
+	protected $in;
+
+	/**
+	 * A generic value cleaner
+	 * @var Orb\Input\Cleaner\Cleaner
+	 */
+	protected $cleaner;
+
+	/**
 	 * Shared template vars
 	 * @var ArrayObject
 	 */
@@ -43,8 +55,10 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 
 		// Set shortcuts once we have the container :)
 
-		$this->em = $this['doctrine.orm.entity_manager'];
-		$this->db = $this['database_connection'];
+		$this->em      = $this['doctrine.orm.entity_manager'];
+		$this->db      = $this['database_connection'];
+		$this->in      = $this['deskpro.core.input_reader'];
+		$this->cleaner = $this['deskpro.core.input_cleaner'];
 
 		$this['templating']->resetTemplateVars();
 		$this->tplvars = $this['templating']->getTemplateVarsObject();
