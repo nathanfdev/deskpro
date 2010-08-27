@@ -1,8 +1,42 @@
 {% extends 'TechBundle::layout' %}
 {% block content %}
 
-{% endblock %}
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">Styles</h2>
+		<div class="inner">
+			<form action="#" class="form">
+				<table class="table">
+					{% for style in styles %}
+					<tr>
+						<td width="10"><input type="radio" name="default_style_id" value="{{style.id}}" /></td>
+						<td>
+							{% if style.depth %}
+								{% for i in 0..style.depth %}--{% endfor %}
+							{% endif %}
+							{{style.title}}
+						</td>
+						<td class="last">
+							<a href="{% route 'tech_admin_styles_templates' with ['style_id': style.id] %}">Templates</a>
+							<a href="{% route 'tech_admin_styles_resources' with ['style_id': style.id] %}">Resources</a>
+							<a href="{% route 'tech_admin_styles_editstyle' with ['style_id': style.id] %}">Properties</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+				<div class="actions-bar wat-cf">
+					<div class="actions">
+						<button class="button" type="submit">
+							<img src="{% asset 'images/icons/check.png' %}" alt="Change Default" /> Change Default Style
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
 
+{% endblock %}
 {% block sidebar %}
 	{% include 'TechBundle:Styles:_style_sidebar' %}
 {% endblock %}

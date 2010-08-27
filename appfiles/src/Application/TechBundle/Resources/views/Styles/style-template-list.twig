@@ -1,0 +1,29 @@
+{% extends 'TechBundle::layout' %}
+{% block content %}
+
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">Styles</h2>
+		<div class="inner">
+			{% for bundle, template_list in template_files %}
+				<table class="table">
+					<tr>
+						<th class="first colspan="3">{{bundle}}</th>
+					</tr>
+					{% for template in template_list %}
+						<tr>
+							<td><!--TODO: Icon--></td>
+							<td>{{template}}</td>
+							<td><a href="{% route 'tech_admin_styles_edittemplate' with ['style_id': style.id, 'template_name': template] %}">Edit</a>
+						</tr>
+					{% endfor %}
+				</table>
+			{% endfor %}
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block sidebar %}
+	{% include 'TechBundle:Styles:_style_sidebar' %}
+{% endblock %}

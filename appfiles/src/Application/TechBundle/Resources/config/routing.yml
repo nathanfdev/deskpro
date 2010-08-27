@@ -31,3 +31,18 @@ tech_admin_styles_editstyle:
 tech_admin_styles_newstyle:
   pattern: /styles/new-style
   defaults: { _controller: TechBundle:Styles:editStyle, style_id: 0 }
+
+tech_admin_styles_resources:
+  pattern: /styles/:style_id/resources
+  defaults: { _controller: TechBundle:Styles:styleResourceList }
+  requirements: { style_id: "\d+" }
+
+tech_admin_styles_templates:
+  pattern: /styles/:style_id/templates
+  defaults: { _controller: TechBundle:Styles:styleTemplateList }
+  requirements: { style_id: "\d+" }
+
+tech_admin_styles_edittemplate:
+  pattern: /styles/:style_id/templates/:template_name
+  defaults: { _controller: TechBundle:Styles:editTemplate }
+  requirements: { style_id: "\d+", template_name: "[A-Za-z0-9:\-_]+" }

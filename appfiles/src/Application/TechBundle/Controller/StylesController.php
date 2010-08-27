@@ -3,6 +3,7 @@
 namespace Application\TechBundle\Controller;
 
 use \Orb\Util\Arrays;
+use \Symfony\Component\Form;
 
 class StylesController extends AbstractController
 {
@@ -93,21 +94,21 @@ class StylesController extends AbstractController
 		# Set up the form and validator
 		#-------------------------
 
-		$form = new \Symfony\Component\Form\Form('style', $style, $this['validator']);
-		$form->add(new TextField('title'));
+		$form = new Form\Form('style', $style, $this['validator']);
+		$form->add(new Form\TextField('title'));
 
 		if (!$style['id'] AND $this->style_hierarchy) {
 			foreach ($this->style_hierarchy as $s) {
 				$indent = '';
-				if ($s['depth']) $indent = \str_repeat ('--', $s['depth']) . ' ';
+				if ($s['depth']) $indent = str_repeat('--', $s['depth']) . ' ';
 
 				$choices[$s['id']] = $indent . $s['title'];
 			}
 
-			$f = new ChoiceField('parent_id', array('choices' => $choices));
+			$f = new Form\ChoiceField('parent_id', array('choices' => $choices));
 			$form->add($f);
 		}
-		$form->add(new TextField('note'));
+		$form->add(new Form\TextField('note'));
 
 		$this->tplvars['form'] = $form;
 
@@ -132,14 +133,61 @@ class StylesController extends AbstractController
 
 
 	############################################################################
-	# id/show-style
+	# id/templates
 	############################################################################
 
 	/**
 	 * Shows template list
 	 */
-	public function showStyleAction($style_id)
+	public function styleTemplateListAction($style_id)
 	{
+		try {
+			$style = $em->createQuery('
+				SELECT s
+				FROM Core:Style s
+				WHERE u.id = ?1'
+			)->setParameter(1, $style_id)->getSingleResult();
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
+		}
 
+		$template_finder = new \DeskPRO\Style\TemplateFileScanner($this->getContainer());
+		$this->tplvars['template_files'] = $template_finder->getTemplates();
+
+		return $this->render('TechBundle:Styles:style-template-list');
+	}
+
+
+	############################################################################
+	# id/templates/some:template:name
+	############################################################################
+
+	/**
+	 * Edit a template
+	 */
+	public function editTemplateAction($style_id, $template_name)
+	{
+		try {
+			$style = $em->createQuery('
+				SELECT s
+				FROM Core:Style s
+				WHERE u.id = ?1'
+			)->setParameter(1, $style_id)->getSingleResult();
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
+		}
+
+		$template_finder = new \DeskPRO\Style\TemplateFileScanner($this->getContainer());
+		$template_files = $template_finder->getTemplates();
+
+		if (!isset($template_files[$template_name])) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no template called `$template_name`");
+		}
+
+		$this->tplvars['template_name'] = $template_name;
+		$this->tplvars['style'] = $style;
+
+		// TODO fetch current styles contents
+		$this->tplvars['template_content'] = file_get_contents($template_files[$template_name]);
 	}
 }
