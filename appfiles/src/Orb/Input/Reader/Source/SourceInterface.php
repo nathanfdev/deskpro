@@ -1,18 +1,19 @@
 <?php
 /**
- * Contains the Orb_Input_Reader_ISource interface.
+ * Orb
  *
  * @package Orb
- * @subpackage Input
+ * @category Input
+ * @author Christopher Nadeau <chris@nadeau.ws>
  */
+
+namespace Orb\Input\Reader\Source;
 
 /**
  * A reader source is a thing that reads variables from somewhere for use with the
  * input reader.
- *
- * @see Orb_Input_Reader
  */
-interface Orb_Input_Reader_ISource
+interface SourceInterface
 {
 	/**
 	 * Get the value of some variable in the source.
