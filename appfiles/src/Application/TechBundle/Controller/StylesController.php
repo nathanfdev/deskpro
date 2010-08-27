@@ -74,15 +74,7 @@ class StylesController extends AbstractController
 		#-------------------------
 
 		if ($style_id) {
-			try {
-				$style = $em->createQuery('
-						SELECT s
-						FROM CoreBundle:Style s
-						WHERE u.id = ?1'
-					)->setParameter(1, $style_id)->getSingleResult();
-			} catch (\Doctrine\ORM\NoResultException $e) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
-			}
+			$style = $this->getStyleOr404($style_id);
 		} else {
 			$style = new \DeskPRO\Bundle\CoreBundle\Entity\Style;
 		}
@@ -141,18 +133,11 @@ class StylesController extends AbstractController
 	 */
 	public function styleTemplateListAction($style_id)
 	{
-		try {
-			$style = $em->createQuery('
-				SELECT s
-				FROM CoreBundle:Style s
-				WHERE u.id = ?1'
-			)->setParameter(1, $style_id)->getSingleResult();
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
-		}
+		$style = $this->getStyleOr404($style_id);
+		$this->tplvars['style'] = $style;
 
-		$template_finder = new \DeskPRO\Style\TemplateFileScanner($this->getContainer());
-		$this->tplvars['template_files'] = $template_finder->getTemplates();
+		$template_finder = new \DeskPRO\Style\TemplateFileScanner($this->container);
+		$this->tplvars['template_files'] = $template_finder->getTemplates(true);
 
 		return $this->render('TechBundle:Styles:style-template-list');
 	}
@@ -167,15 +152,7 @@ class StylesController extends AbstractController
 	 */
 	public function editTemplateAction($style_id, $template_name)
 	{
-		try {
-			$style = $em->createQuery('
-				SELECT s
-				FROM CoreBundle:Style s
-				WHERE u.id = ?1'
-			)->setParameter(1, $style_id)->getSingleResult();
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
-		}
+		$style = $this->getStyleOr404($style_id);
 
 		$template_finder = new \DeskPRO\Style\TemplateFileScanner($this->getContainer());
 		$template_files = $template_finder->getTemplates();
@@ -189,5 +166,29 @@ class StylesController extends AbstractController
 
 		// TODO fetch current styles contents
 		$this->tplvars['template_content'] = file_get_contents($template_files[$template_name]);
+	}
+
+	
+
+
+
+	############################################################################
+
+	/**
+	 * @return \DeskPRO\Bundle\CoreBundle\Entity\Style
+	 */
+	protected function getStyleOr404($style_id)
+	{
+		try {
+			$style = $this->em->createQuery('
+				SELECT s
+				FROM CoreBundle:Style s
+				WHERE s.id = ?1'
+			)->setParameter(1, $style_id)->getSingleResult();
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no style with ID $style_id");
+		}
+
+		return $style;
 	}
 }

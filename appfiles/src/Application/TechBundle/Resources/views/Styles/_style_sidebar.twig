@@ -5,7 +5,7 @@
 			{% if style.depth %}
 				{% for i in 0..style.depth %}--{% endfor %}
 			{% endif %}
-			<a href="{% route 'tech_admin_styles_view' with ['id': style.id] %}">{{style.title}}</a>
+			<a href="{% route 'tech_admin_styles_showstyle' with ['style_id': style.id] %}">{{style.title}}</a>
 		{% endfor %}
 	</div>
 </div>
