@@ -7,7 +7,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\Core\Entity;
+namespace DeskPRO\Bundle\Core\Controller;
 use Orb\Util\Web;
 
 /**
