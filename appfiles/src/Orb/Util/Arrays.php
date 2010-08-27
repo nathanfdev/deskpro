@@ -109,31 +109,40 @@ class Arrays
 	 * @param    mixed    $array   The array or value to run $func on
 	 * @param    string   $func    The function to run
 	 * @param    array    $params  Parameters to pass to $func.
+	 * @param    bool     $run_on_keys Also run the function on the keys (useful for ex stripslashes)
 	 * @return   mixed    The value (usually array) returned by $func on all items
 	 */
-	public static function func($array, $func, $params = array())
+	public static function func($array, $func, $params = array(), $run_on_keys = false)
 	{
 		if (!is_array($array)) {
-			$key = array_search(self::FUNC_ARR_VAL, $params, true);
-
-			if ($key === false) {
-				if (array_key_exists(0, $params)) {
-					array_unshift($params, '');
-				}
-
-				$key = 0;
-			}
-
-			$params[$key] = $array;
-
-			return call_user_func_array($func, $params);
+			return self::_func_run_func($func, $params, $array);
 		}
 
 		foreach ($array as $k => $v) {
+			if ($run_on_keys) {
+				$k = self::_func_run_func($func, $params, $v);
+			}
 			$array[$k] = Arrays::func($v, $func, $params);
 		}
 
 		return $array;
+	}
+
+	protected function _func_run_func($func, $params, $val)
+	{
+		$key = array_search(self::FUNC_ARR_VAL, $params, true);
+
+		if ($key === false) {
+			if (array_key_exists(0, $params)) {
+				array_unshift($params, '');
+			}
+
+			$key = 0;
+		}
+
+		$params[$key] = $val;
+
+		return call_user_func_array($func, $params);
 	}
 
 
