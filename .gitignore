@@ -6,3 +6,6 @@
 # cache and log files
 /appfiles/deskpro/cache/
 /appfiles/deskpro/logs/
+
+# vendor lib dirs
+/appfiles/vendor/
