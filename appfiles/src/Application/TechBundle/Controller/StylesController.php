@@ -153,10 +153,12 @@ class StylesController extends AbstractController
 	public function editTemplateAction($style_id, $template_name)
 	{
 		$style = $this->getStyleOr404($style_id);
+		$this->tplvars['style'] = $style;
 
-		$template_finder = new \DeskPRO\Style\TemplateFileScanner($this->getContainer());
+		$template_finder = new \DeskPRO\Style\TemplateFileScanner($this->container);
 		$template_files = $template_finder->getTemplates();
 
+		$template_files = Arrays::flatten($template_files);
 		if (!isset($template_files[$template_name])) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no template called `$template_name`");
 		}
@@ -166,6 +168,8 @@ class StylesController extends AbstractController
 
 		// TODO fetch current styles contents
 		$this->tplvars['template_content'] = file_get_contents($template_files[$template_name]);
+
+		return $this->render('TechBundle:Styles:edit-template');
 	}
 
 	
