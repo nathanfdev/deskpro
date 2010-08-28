@@ -17,12 +17,71 @@ namespace DeskPRO\Bundle\CoreBundle\Entity;
 abstract class Entity implements \ArrayAccess
 {
 	/**
+	 * @var \Symfony\Component\DependencyInjection\Container
+	 */
+	protected $_container;
+
+	/**
 	 * An array of properties that have been changed through one of the accessor
 	 * methods.
 	 * @var array
 	 */
 	protected $_properties_changed = array();
 
+
+
+	/**
+	 * Set the container
+	 *
+	 * @param Symfony\Component\DependencyInjection\Container $container 
+	 */
+	public function setContainer(Symfony\Component\DependencyInjection\Container $container)
+	{
+		$this->_container = $container;
+
+		$this->initWithContainer();
+	}
+
+
+
+	/**
+	 * Get the set container
+	 *
+	 * @return \Symfony\Component\DependencyInjection\Container
+	 */
+	public function getContainer()
+	{
+		if (!$this->_container) {
+			throw new UnexpectedValueException('The container has not been set!');
+		}
+
+		return $this->_container;
+	}
+
+
+	
+	/**
+	 * Has a container been set?
+	 *
+	 * @return bool
+	 */
+	public function hasContainer()
+	{
+		return (bool)$this->_container;
+	}
+
+
+
+	/**
+	 * Empty hook method called after a new container was set.
+	 */
+	protected function initWithContainer()
+	{
+
+	}
+
+	
+	
 	/**
 	 * Check to see if a certain property has changed.
 	 * @return bool
@@ -41,6 +100,8 @@ abstract class Entity implements \ArrayAccess
 	{
 		return $this->offsetExists($name) ? $this->offsetGet($name) : $default;
 	}
+
+
 
 	/**
 	 * Dynamically implement getX() calls where X is the name of a property.
@@ -64,6 +125,8 @@ abstract class Entity implements \ArrayAccess
 		return $this->$prop;
 	}
 
+
+
 	public function offsetExists($offset)
 	{
 		try {
@@ -73,6 +136,8 @@ abstract class Entity implements \ArrayAccess
 			return false;
 		}
 	}
+
+
 
 	public function offsetSet($offset, $value)
 	{
@@ -88,6 +153,8 @@ abstract class Entity implements \ArrayAccess
 		}
 	}
 
+
+
 	public function offsetGet($offset)
 	{
 		$func = "get" . str_replace('_', '', $offset);
@@ -100,6 +167,8 @@ abstract class Entity implements \ArrayAccess
 		}
 	}
 
+
+	
 	public function offsetUnset($offset)
 	{
 		$this->offsetSet($offset, null);
