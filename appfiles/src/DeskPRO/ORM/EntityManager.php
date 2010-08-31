@@ -37,8 +37,8 @@ class EntityManager extends \Doctrine\ORM\EntityManager
 	 */
 	public function createEntity($entityName, array $userParams = array())
 	{
-		$metaData = $this->em->getClassMetadata($entityName);
-		$className = $metaData['name'];
+		$metaData = $this->getClassMetadata($entityName);
+		$className = $metaData->name;
 
 		$obj = new $className($this->_container, $userParams);
 
