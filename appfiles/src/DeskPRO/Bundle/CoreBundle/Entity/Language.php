@@ -10,6 +10,10 @@
  */
 
 namespace DeskPRO\Bundle\CoreBundle\Entity;
+
+use \Symfony\Component\Validator\Constraints;
+use \Symfony\Component\Validator\Mapping\ClassMetadata;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -34,21 +38,20 @@ class Language extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * The parent language ID. All languages at least descened from 1, the default.
-	 *
-	 * @var int
-	 * @Id
-	 * @Column(name="parent_id", type="integer")
-	 */
-	protected $parent_id = null;
-
-
-	/**
 	 * @var Style
 	 * @OneToOne(targetEntity="Language")
 	 * @JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent;
+
+	
+	/**
+	 * Locale associated with this language.
+	 *
+	 * @var string
+	 * @Column(name="locale", type="string", length=20)
+	 */
+	protected $locale = 'en_US';
 
 
 	/**
@@ -66,7 +69,7 @@ class Language extends \DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @Column(name="note", type="text")
 	 */
-	protected $note;
+	protected $note = '';
 
 
 	/**
@@ -100,5 +103,16 @@ class Language extends \DeskPRO\Domain\DomainObject
 	public function _incCreatedAt()
 	{
 		$this->created_at = new \DateTime();
+	}
+
+	/**
+	 * Load validators for use with the validator service.
+	 *
+	 * @param ClassMetadata $metadata
+	 */
+	public static function loadValidatorMetadata(ClassMetadata $metadata)
+	{
+		$metadata->addPropertyConstraint('title', new Constraints\NotBlank());
+		$metadata->addPropertyConstraint('locale', new Constraints\NotBlank());
 	}
 }
