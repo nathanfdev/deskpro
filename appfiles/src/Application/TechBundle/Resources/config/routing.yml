@@ -10,6 +10,10 @@ tech_dashboard:
   pattern: /
   defaults: { _controller: TechBundle:Main:index }
 
+################################################################################
+# Styles
+################################################################################
+
 tech_admin_styles:
   pattern: /styles
   defaults: { _controller: TechBundle:Styles:index }
@@ -46,3 +50,35 @@ tech_admin_styles_edittemplate:
   pattern: /styles/:style_id/templates/:template_name
   defaults: { _controller: TechBundle:Styles:editTemplate }
   requirements: { style_id: "\d+" }
+
+
+################################################################################
+# Languages
+################################################################################
+
+tech_admin_langs:
+  pattern: /languages
+  defaults: { _controller: TechBundle:Languages:index }
+
+tech_admin_langs_intro:
+  pattern: /languages/intro
+  defaults: { _controller: TechBundle:Languages:intro }
+
+tech_admin_langs_editlang:
+  pattern: /languages/:lang_id/edit
+  defaults: { _controller: TechBundle:Languages:editLang }
+  requirements: { lang_id: "\d+" }
+
+tech_admin_langs_newlang:
+  pattern: /languages/new-language
+  defaults: { _controller: TechBundle:Languages:editLang, lang_id: 0 }
+
+tech_admin_langs_phrases:
+  pattern: /languages/:lang_id/phrases
+  defaults: { _controller: TechBundle:Languages:listPhrases}
+  requirements: { lang_id: "\d+", phrase_group: null }
+
+tech_admin_langs_editphrase:
+  pattern: /languages/:lang_id/edit-phrase/:phrase_name
+  defaults: { _controller: TechBundle:Languages:editPhrase }
+  requirements: { lang_id: "\d+" }
