@@ -3,7 +3,7 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @category Translate
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
@@ -15,7 +15,8 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
-use DeskPRO\Entities;
+
+use \DeskPRO\Translate\Loader\LoaderInterface;
 
 /**
  * This class is responsible for loading phrases from a language stored in the database.
@@ -32,20 +33,6 @@ use DeskPRO\Entities;
  */
 class Translate implements \ArrayAccess
 {
-	/**
-	 * The database connection we'll use to fetch templates. Not using ORM, faster
-	 * to fetch with pure sql.
-	 *
-	 * @var Doctrine\DBAL\Connection
-	 */
-	protected $dbconn;
-
-	/**
-	 * The currently selected language
-	 * @var DeskPRO\Entities\Language
-	 */
-	protected $language;
-
 	/**
 	 * The phrases loaded so far
 	 * @var array
@@ -67,13 +54,11 @@ class Translate implements \ArrayAccess
 
 
 	/**
-	 * @param Language $language The language we're using
-	 * @param ContainerInterface $container The DI container we'll use to get the database connection
+	 * @param LoaderInterface $loader A loader that'll load phrases from somehwere
 	 */
-	public function __construct(Language $language, ContainerInterface $container)
+	public function __construct(LoaderInterface $laoder)
 	{
-		$this->language = $language;
-		$this->dbconn = $container->getService('database_connection');
+		$this->loader = $laoder;
 	}
 
 
@@ -119,16 +104,9 @@ class Translate implements \ArrayAccess
 		$this->_pending_groups = array_unique($this->_pending_groups);
 		$this->_pending_groups = Arrays::removeFalsey($this->_pending_groups);
 
-		$group_in = "'" . implode("','", $this->_pending_groups);
+		$this->phrases = array_merge($phrases, $this->loader->load($this->_pending_groups));
 
-		// TODO handle language hierarchy
-		$phrases = $this->dbconn->fetchAll("
-			SELECT name, phrase
-			FROM phrases
-			WHERE language_id = ? AND group IN ($group_in)
-		", array($this->style['id']));
-
-		$this->phrases = array_merge($phrases, $this->phrases);
+		$this->_pending_groups = array();
 	}
 
 
