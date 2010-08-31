@@ -19,7 +19,6 @@ class DeskproKernel extends Symfony\Framework\Kernel
 			new Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 
 			new Symfony\Bundle\ZendBundle\ZendBundle(),
-			new Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
 
 			new DeskPRO\Bundle\CoreBundle\CoreBundle(),
 
@@ -55,6 +54,11 @@ class DeskproKernel extends Symfony\Framework\Kernel
 		}
 
 		return $basePath.$environment.'.yml';
+	}
+	
+	public function getCacheDir()
+	{
+		return '/home/chroder/dp400_cache' . '/' . $this->environment;
 	}
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
