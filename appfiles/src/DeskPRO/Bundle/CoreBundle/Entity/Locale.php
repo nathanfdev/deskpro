@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * @HasLifecycleCallbacks
  * @Table(name="locales", indexes={@Index(name="locale_idx", columns={"locale"})})
  */
-class Locale extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
+class Locale extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

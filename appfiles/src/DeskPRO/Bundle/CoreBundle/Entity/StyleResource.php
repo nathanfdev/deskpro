@@ -24,7 +24,7 @@ use Orb\Util\Web;
  * @HasLifecycleCallbacks
  * @Table(name="style_resource")
  */
-abstract class StyleResource extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
+abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

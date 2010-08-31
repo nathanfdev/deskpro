@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * @HasLifecycleCallbacks
  * @Table(name="profile_emails")
  */
-class ProfileEmail extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
+class ProfileEmail extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

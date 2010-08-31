@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * @HasLifecycleCallbacks
  * @Table(name="phrases")
  */
-class Phrase extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
+class Phrase extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

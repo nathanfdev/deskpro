@@ -20,7 +20,7 @@ use Orb\Util\Util;
  * @HasLifecycleCallbacks
  * @Table(name="sessions")
  */
-class Session extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
+class Session extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -71,7 +71,7 @@ class Session extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 	 */
 	protected $updated_at;
 
-	public function __construct()
+	public function init()
 	{
 		$this->auth = Strings::random(15, Strings::CHARS_ALPHA_I);
 	}

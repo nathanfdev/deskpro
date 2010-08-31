@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * @HasLifecycleCallbacks
  * @Table(name="users")
  */
-class User extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
+class User extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -110,7 +110,7 @@ class User extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 
 
 
-	public function __construct()
+	public function init()
 	{
 		$this->salt = Strings::random(40);
 		$this->usergroups = new \Doctrine\Common\Collections\ArrayCollection();

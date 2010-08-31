@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * @HasLifecycleCallbacks
  * @Table(name="usergroups")
  */
-class Usergroup extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
+class Usergroup extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -75,7 +75,7 @@ class Usergroup extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 	protected $is_admin = false;
 
 
-	public function __construct()
+	public function init()
 	{
 		$this->users = new \Doctrine\Common\Collections\ArrayCollection();
 	}

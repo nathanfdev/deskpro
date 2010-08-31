@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * @HasLifecycleCallbacks
  * @Table(name="profiles")
  */
-class Profile extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
+class Profile extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -117,7 +117,7 @@ class Profile extends \DeskPRO\Bundle\CoreBundle\Entity\Entity
 
 
 
-	public function __construct()
+	public function init()
 	{
 		$this->created_at = new \DateTime();
 		$this->updated_at = new \DateTime();
