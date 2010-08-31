@@ -76,7 +76,7 @@ class StylesController extends AbstractController
 		if ($style_id) {
 			$style = $this->getStyleOr404($style_id);
 		} else {
-			$style = new \DeskPRO\Bundle\CoreBundle\Entity\Style;
+			$style = $this->em->createEntity('CoreBundle:Style');
 		}
 
 		$this->tplvars['style'] = $style;

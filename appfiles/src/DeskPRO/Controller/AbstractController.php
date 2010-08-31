@@ -19,7 +19,7 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 {
 	/**
 	 * Entity manager
-	 * @var Doctrine\ORM\EntityManager
+	 * @var DeskPRO\ORM\EntityManager
 	 */
 	protected $em;
 
