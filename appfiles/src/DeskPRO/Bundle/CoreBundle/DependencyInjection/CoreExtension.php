@@ -25,6 +25,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
     {
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
+		$this->loadPhraseTemplateHelper($container);
     }
 
 	
@@ -57,6 +58,23 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 			new Reference('deskpro.core.translate_loder'),
 		));
 		$container->setDefinition('deskpro.core.translate', $definition);
+	}
+
+
+	/**
+	 * Sets up the template helpers
+	 */
+	protected function loadPhraseTemplateHelper(ContainerBuilder $container)
+	{
+		// Engine helper
+		$definition = new Definition('DeskPRO\\Templating\\Helper\\PhraseHelper', array(new Reference('deskpro.core.translate')));
+		$definition->addTag('templating.helper', array('alias' => 'phrase'));
+		$container->setDefinition('deskpro.templating.helper.phrase', $definition);
+
+		// Then the Twig parser that uses it
+		$definition = new Definition('DeskPRO\\Twig\\Extension\\Helpers', array());
+		$definition->addTag('twig.extension');
+		$container->setDefinition('deskpro.twig.extension.helpers', $definition);
 	}
 
 
