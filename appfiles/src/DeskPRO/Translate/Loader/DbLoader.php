@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Translate\Laoder;
+namespace DeskPRO\Translate\Loader;
 
 /**
  * Loads phrases from the database
@@ -63,7 +63,7 @@ class DbLoader implements LoaderInterface
 		$phrases = $this->dbconn->fetchAll("
 			SELECT DISTINCT name, phrase
 			FROM phrases
-			WHERE language_id = IN ($lang_in) AND group IN ($group_in)
+			WHERE language_id IN ($lang_in) AND groupname IN ($group_in)
 			ORDER BY language_id DESC
 		");
 

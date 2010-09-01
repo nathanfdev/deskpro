@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Translate\Laoder;
+namespace DeskPRO\Translate\Loader;
 
 /**
  * Combines multiple loaders

@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Translate\Laoder;
+namespace DeskPRO\Translate\Loader;
 
 /**
  * Loads core from CoreBundle core.php, and tech_whatever as TechBundle whatever.php etc.
@@ -47,16 +47,17 @@ class BundleLoader implements LoaderInterface
 
 			$group = strtolower($group);
 
-			$bundle_parts = explode('_', $parts[0], 2);
+			$bundle_parts = explode('_', $group, 2);
 			if (!isset($bundle_parts[1])) $bundle_parts[1] = $bundle_parts[0];
 
-			list($bundle_name, $name) = each($bundle_parts);
+			list($bundle_name, $name) = $bundle_parts;
 
 			if (!isset($this->bundle_paths[$bundle_name])) {
 				throw new \InvalidArgumentException("No bundle named `$group`");
 			}
 
 			$filepath = $this->bundle_paths[$bundle_name] . '/' . $name . '.php';
+			
 			if (!is_file($filepath)) {
 				return array();
 			}

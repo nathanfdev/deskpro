@@ -37,7 +37,7 @@ class Translate implements \ArrayAccess
 	 * The phrases loaded so far
 	 * @var array
 	 */
-	protected $phrases;
+	protected $phrases = array();
 
 	/**
 	 * An array of groups that we need to load in the next batch
@@ -92,8 +92,9 @@ class Translate implements \ArrayAccess
 		$this->_pending_groups = array_unique($this->_pending_groups);
 		$this->_pending_groups = Arrays::removeFalsey($this->_pending_groups);
 
-		$this->phrases = array_merge($phrases, $this->loader->load($this->_pending_groups));
+		$this->phrases = array_merge($this->phrases, $this->loader->load($this->_pending_groups));
 
+		$this->_loaded_groups = array_merge($this->_loaded_groups, $this->_pending_groups);
 		$this->_pending_groups = array();
 	}
 
@@ -126,13 +127,16 @@ class Translate implements \ArrayAccess
 	 */
 	public function getPhraseText($phrase_name)
 	{
+		if (!$phrase_name) return '';
+
 		if (!isset($this->phrases[$phrase_name])) {
-			if ($this->_pending_groups) {
-				$check_group = $this->getPhraseGroupFromName($phrase_name);
-				if (in_array($check_group, $this->_pending_groups)) {
-					$this->_loadPendingPhraseGroups();
-					return $this->getPhrase($phrase_name);
-				}
+			$check_group = $this->getPhraseGroupFromName($phrase_name);
+
+			if (!in_array($check_group, $this->_loaded_groups)) {
+				$this->_pending_groups[] = $check_group;
+
+				$this->_loadPendingPhraseGroups();
+				return $this->getPhraseText($phrase_name);
 			}
 
 			return null;

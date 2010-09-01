@@ -34,12 +34,12 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 	protected function loadTranslation(ContainerBuilder $container)
 	{
 		// BundleLoader
-		$definition = new Definition('DeskPRO\\Translate\\Loader\\BundleLoader', array(
-			'CoreBundle' => DP_ROOT . '/src/DeskPRO/Bundles/CoreBundle/Resources/language',
-			'TechBundle' => DP_ROOT . '/src/Application/TechBundle/Resources/language',
-			'UserBundle' => DP_ROOT . '/src/Application/UserBundle/Resources/language',
-			'DevBundle' => DP_ROOT . '/src/Application/DevBundle/Resources/language',
-		));
+		$definition = new Definition('DeskPRO\\Translate\\Loader\\BundleLoader', array(array(
+			'core' => DP_ROOT . '/src/DeskPRO/Bundles/CoreBundle/Resources/language',
+			'tech' => DP_ROOT . '/src/Application/TechBundle/Resources/language',
+			'user' => DP_ROOT . '/src/Application/UserBundle/Resources/language',
+			'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/language',
+		)));
 		$container->setDefinition('deskpro.core.translate_loder_bundle', $definition);
 
 		// DbLoader
@@ -47,10 +47,9 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$container->setDefinition('deskpro.core.translate_loder_db', $definition);
 
 		// CombinationLoader
-		$definition = new Definition('DeskPRO\\Translate\\Loader\\CombinationLoader', array(
-			new Reference('deskpro.core.translate_loder_bundle'),
-			new Reference('deskpro.core.translate_loder_db')
-		));
+		$definition = new Definition('DeskPRO\\Translate\\Loader\\CombinationLoader');
+		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loder_bundle')));
+		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loder_db')));
 		$container->setDefinition('deskpro.core.translate_loder', $definition);
 
 		// Now create the translate object
