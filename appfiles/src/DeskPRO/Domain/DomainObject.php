@@ -37,7 +37,7 @@ abstract class DomainObject implements \ArrayAccess
 	 * @param \Symfony\Component\DependencyInjection\Container $container
 	 * @param array $params An array of user data that will be passed to init
 	 */
-	public final function __construct(\Symfony\Component\DependencyInjection\Container $container, array $params = array())
+	public function __construct(\Symfony\Component\DependencyInjection\Container $container, array $params = array())
 	{
 		if ($container) {
 			$this->setContainer($container);

@@ -36,7 +36,7 @@ class UserLoader
 		}
 
 		if (!$user) {
-			$user = new \DeskPRO\Bundle\CoreBundle\Entity\User();
+			$user = $em->createEntity('CoreBundle:User');
 			$user->loadAsGuest();
 		}
 
