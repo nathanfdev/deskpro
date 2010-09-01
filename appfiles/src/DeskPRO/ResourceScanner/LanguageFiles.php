@@ -9,16 +9,14 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Style;
+namespace DeskPRO\ResourceScanner;
 use Symfony\Component\DependencyInjection\Container;
 use Orb\Util\Arrays;
 
 /**
- * The style system uses templates from the database first, and falls back onto the filesystem.
- * For us to show the user in an interface which templates can be editted we need a way to get
- * a list of templates in the fs, and be able to map them to files.
+ * Scans the filesystem for language files
  */
-class TemplateFileScanner
+class LanguageFiles
 {
 	protected $bundle_dirs = array();
 	protected $bundles = array();
@@ -45,23 +43,23 @@ class TemplateFileScanner
 		}
 	}
 
-	
+
 
 	/**
-	 * Scan a bundle directory for all templates, and return a map of template names
+	 * Scan a bundle directory for all language files, and return a map of groups
 	 * and the corresponding file:
 	 *
 	 * <code>
 	 * array(
-	 *     'ExampleBundle:Example:index'   => '/src/Application/ExampleBundle/views/Example/index.twig',
-	 *     'WhateverBundle::layout'        => '/src/Bundle/WhateverBundle/views/layout.twig',
+	 *     'example'            => '/src/Application/ExampleBundle/language/example.php',
+	 *     'whatever_core'      => '/src/Bundle/WhateverBundle/language/core.php',
 	 * )
 	 * </code>
 	 *
 	 * @param string $bundle
 	 * @return array
 	 */
-	public function getBundleTemplates($bundle)
+	public function getBundleGroups($bundle)
 	{
 		$bundle_dir = null;
 		$bundle_name = null;
@@ -73,57 +71,71 @@ class TemplateFileScanner
 				$bundle_dir = substr($bundle_dir, 0, strrpos($bundle_dir, '/'));
 
 				$bundle_name = substr($bundle_dir, strrpos($bundle_dir, '/')+1);
+				$bundle_name = str_replace('Bundle', '', $bundle_name);
+				$bundle_name = strtolower($bundle_name);
 				break;
 			}
 		}
 
-		$view_dir = $bundle_dir . '/Resources/views';
+		$lang_dir = $bundle_dir . '/Resources/language';
 
-		if (!$bundle_dir OR !is_dir($bundle_dir) OR !is_dir($view_dir)) {
+		if (!$bundle_dir OR !is_dir($bundle_dir) OR !is_dir($lang_dir)) {
 			return array();
 		}
 
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->files()->name('*.twig')->in($view_dir);
+		$finder->files()->name('*.php')->in($lang_dir);
 
-		$templates = array();
+		$groups = array();
 		foreach ($finder as $filepath) {
-			// /somepath/SomeBundle/Resources/views/Something/index.twig
-			// -> SomeBundle:Something:index
-			$tplname = str_replace($view_dir . '/', ':', $filepath);
-			$tplname = str_replace('.twig', '', $tplname);
-			$tplname = str_replace('/', ':', $tplname);
-			if (substr_count($tplname, ':') < 2) {
-				$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
-			}
-			$tplname = $bundle_name . $tplname;
 
-			$templates[$tplname] = $filepath;
+			$groupname = basename($filepath, '.php');
+			if ($groupname != $bundle_name) {
+				$groupname = $bundle_name . '_' . $groupname;
+			}
+
+			// /somepath/SomeBundle/Resources/language/whatever.php
+			// -> some_whatever
+
+			$groups[$groupname] = $filepath;
 		}
 
-		return $templates;
+		return $groups;
 	}
 
 
-	
+
 	/**
 	 * Get templates for all known bundles.
 	 *
 	 * @return array
 	 */
-	public function getTemplates($nameonly = false)
+	public function getGroups($nameonly = false)
 	{
-		$templates = array();
+		$groups = array();
 
 		foreach ($this->bundles as $bundle) {
-			$templates[$bundle] = $this->getBundleTemplates($bundle);
+			$groups[$bundle] = $this->getBundleGroups($bundle);
 			if ($nameonly) {
-				$templates[$bundle] = array_keys($templates[$bundle]);
+				$groups[$bundle] = array_keys($groups[$bundle]);
 			}
 		}
 
-		$templates = Arrays::removeFalsey($templates);
+		$groups = Arrays::removeFalsey($groups);
 
-		return $templates;
+		return $groups;
+	}
+
+
+
+	public function getPhrasesInFile($file, $just_names = false)
+	{
+		$phrases = include($file);
+
+		if ($just_names) {
+			return array_keys($phrases);
+		}
+
+		return $phrases;
 	}
 }

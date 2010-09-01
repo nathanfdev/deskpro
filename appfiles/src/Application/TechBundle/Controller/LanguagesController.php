@@ -123,6 +123,66 @@ class LanguagesController extends AbstractController
 		return $this->render('TechBundle:Languages:edit');
 	}
 
+
+	############################################################################
+	# id/phrases
+	############################################################################
+
+	/**
+	 * List phrases
+	 */
+	public function listPhrasesAction($lang_id)
+	{
+		$lang = $this->getLangOr404($lang_id);
+		$this->tplvars['lang'] = $lang;
+
+		$lang_finder = new \DeskPRO\ResourceScanner\LanguageFiles($this->container);
+		$bundled_groups = $lang_finder->getGroups();
+		
+		$phrases = array();
+
+		foreach ($bundled_groups as $bundle => $groups) {
+			foreach ($groups as $group => $groupfile) {
+				$phrases[$group] = $lang_finder->getPhrasesInFile($groupfile);
+			}
+		}
+
+		$this->tplvars['all_phrases'] = $phrases;
+
+		return $this->render('TechBundle:Languages:language-phrase-list');
+	}
+
+
+	############################################################################
+	# id/phrases/somephrasename
+	############################################################################
+
+	/**
+	 * Edit a phrase
+	 */
+	public function editPhraseAction($lang_id, $phrase_name)
+	{
+		$lang = $this->getLangOr404($lang_id);
+		$this->tplvars['lang'] = $lang;
+
+		$lang_finder = new \DeskPRO\ResourceScanner\LanguageFiles($this->container);
+		$bundled_groups = $lang_finder->getGroups();
+
+		$bundled_groups = Arrays::flatten($bundled_groups);
+		if (!isset($bundled_groups[$phrase_name])) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no phrase called `$phrase_name`");
+		}
+
+		$this->tplvars['phrase_name'] = $phrase_name;
+
+		$group_phrases = $lang_finder->getPhrasesInFile($bundled_groups[$phrase_name]);
+
+		// TODO fetch current contents
+		$this->tplvars['phrase_content'] = $group_phrases[$phrase_name];
+
+		return $this->render('TechBundle:Styles:edit-phrase');
+	}
+
 	
 
 	############################################################################
