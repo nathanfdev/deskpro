@@ -25,17 +25,28 @@ class DbLoader implements LoaderInterface
 	/**
 	 * @var array
 	 */
-	protected $language_ids;
+	protected $language_ids = array();
 
 
 
 	/**
-	 * @param array $language_ids Array of lang ids from most specific (child) to most generic (parents)
 	 * @param \DeskPRO\DBAL\Connection $dbconn
 	 */
-	public function __construct(array $language_ids, \DeskPRO\DBAL\Connection $dbconn)
+	public function __construct(\DeskPRO\DBAL\Connection $dbconn)
 	{
 		$this->dbconn = $dbconn;
+	}
+	
+	
+	
+	/**
+	 * Set the language ID's to fetch from.
+	 * 
+	 * @param array $language_ids 
+	 */
+	public function setLanguageIds(array $language_ids)
+	{
+		$this->language_ids = $language_ids;
 	}
 
 
@@ -43,7 +54,11 @@ class DbLoader implements LoaderInterface
 	public function load($groups)
 	{
 		$group_in = "'" . implode("','", $groups) . "'";
-		$lang_in = implode(',', $this->language_ids);
+		
+		// 0 contains non-language language like cat names and such
+		$langs = $this->language_ids;
+		$langs[] = 0;
+		$lang_in = implode(',', $langs);
 
 		$phrases = $this->dbconn->fetchAll("
 			SELECT DISTINCT name, phrase

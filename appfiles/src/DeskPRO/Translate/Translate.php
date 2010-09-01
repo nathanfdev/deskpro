@@ -64,18 +64,6 @@ class Translate implements \ArrayAccess
 
 
 	/**
-	 * Get the language used.
-	 *
-	 * @return DeskPRO\Entities\Language
-	 */
-	public function getLanguage()
-	{
-		return $this->language;
-	}
-
-
-
-	/**
 	 * Add a group of phrases we want to load.
 	 *
 	 * @param  $group
@@ -129,6 +117,7 @@ class Translate implements \ArrayAccess
 	}
 
 
+	
 	/**
 	 * Get the phrase text for a given name.
 	 *
@@ -178,7 +167,7 @@ class Translate implements \ArrayAccess
 		$args = func_get_args();
 		$args[0] = $phrase_text;
 
-		return call_user_func_array('DeskPRO\\Util\\Strings::format', $args);
+		return call_user_func_array('Orb\\Util\\Strings::format', $args);
 	}
 
 
