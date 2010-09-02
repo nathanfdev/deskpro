@@ -100,12 +100,14 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$user = $this->em->createEntity('CoreBundle:User');
 		$user['password'] = 'pass';
 
+		$profile['user'] = $user;
 		$user['profile'] = $profile;
 
 		$group = $em->find('CoreBundle:Usergroup', 1);
 		$user['usergroups']->add($group);
 
 		$em->persist($user);
+		$em->persist($profile);
 		$em->flush();
 		$em->commit();
 
