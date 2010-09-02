@@ -23,6 +23,29 @@ use \Symfony\Component\DependencyInjection\ContainerBuilder;
  */
 class Kernel extends \Symfony\Framework\Kernel
 {
+	/**
+	 * Get config data from the config.php file. This config file is meant to be user-editable.
+	 * This is unlike the other config files that build the DI container and routing etc.
+	 *
+	 * @param string $key The config key to get, null to get the whole array
+	 * @staticvar string $CONFIG
+	 * @return array
+	 */
+	public static function getUserConfig($key = null)
+	{
+		static $CONFIG = null;
+
+		if ($CONFIG === null) {
+			require(DP_ROOT.'/config.php');
+		}
+
+		if ($key) {
+			return isset($CONFIG[$key]) ? $CONFIG[$key] : null;
+		}
+
+		return $CONFIG;
+	}
+
     public function registerRootDir()
     {
         return DP_ROOT.'/sys';
@@ -74,7 +97,15 @@ class Kernel extends \Symfony\Framework\Kernel
 	
 	public function getCacheDir()
 	{
-		return '/home/chroder/dp400_cache' . '/' . $this->environment;
+		$dir = self::getUserConfig('cache_dir');
+
+		if ($dir === null) {
+			return parent::getCacheDir();
+		}
+
+		$dir = str_replace('%env%', $this->environment, $dir);
+
+		return $dir;
 	}
 
 	public function registerContainerConfiguration(LoaderInterface $loader)

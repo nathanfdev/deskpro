@@ -18,10 +18,7 @@ doctrine.orm:
   auto_generate_proxy_classes: true
 
 doctrine.dbal:
-  driver: PDOMySql
-  dbname: dp_400
-  user: root
-  password: mysquirrel
+  dp_from_user_config: db
   wrapper_class: "DeskPRO\DBAL\Connection"
 
 deskpro_core.config: ~

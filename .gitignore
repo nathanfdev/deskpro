@@ -9,3 +9,6 @@
 
 # vendor lib dirs
 /appfiles/vendor/
+
+# Per-site files
+/appfiles/config.php
