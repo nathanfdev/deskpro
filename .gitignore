@@ -4,8 +4,8 @@
 /catalog.xml
 
 # cache and log files
-/appfiles/deskpro/cache/
-/appfiles/deskpro/logs/
+/appfiles/sys/cache/
+/appfiles/sys/logs/
 
 # vendor lib dirs
 /appfiles/vendor/

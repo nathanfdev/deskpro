@@ -1,9 +1,8 @@
 <?php
+require('./dppath.php');
+require(DP_ROOT.'/sys/Kernel.php');
 
-//phpinfo(); exit;
+use \DeskPRO\Kernel\Kernel;
 
-require_once './dppath.php';
-require_once DP_ROOT.'/deskpro/DeskproKernel.php';
-
-$kernel = new DeskproKernel('dev', true);
+$kernel = new Kernel('dev', false);
 $kernel->handle()->send();

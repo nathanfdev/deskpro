@@ -1,6 +1,8 @@
 #!/bin/sh
 
-CURRENT=`pwd`/appfiles/vendor
+cd ..
+
+CURRENT=`pwd`/vendor
 
 # Symfony
 cd $CURRENT/symfony && git pull
