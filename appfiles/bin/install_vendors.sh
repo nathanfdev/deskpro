@@ -3,7 +3,7 @@
 cd ..
 
 # initialization
-if [ -d "src/vendor" ]; then
+if [ -d "vendor" ]; then
   rm -rf vendor/*
 else
   mkdir vendor
