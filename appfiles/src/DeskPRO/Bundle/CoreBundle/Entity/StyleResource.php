@@ -69,7 +69,7 @@ abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 	 * The resource value.
 	 *
 	 * @var string
-	 * @Column(name="resource", type="text", nullable=true)
+	 * @Column(name="raw_resource", type="text", nullable=true)
 	 */
 	protected $raw_resource = null;
 
