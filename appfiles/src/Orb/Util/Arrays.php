@@ -410,8 +410,8 @@ class Arrays
 		for ($i = 1; $i < $num; $i++) {
 			$val = func_get_arg($i);
 
-			if (!in_array($val, $array)) {
-				array_push($array, $val, true);
+			if (!in_array($val, $array, true)) {
+				array_push($array, $val);
 			}
 		}
 
