@@ -21,6 +21,9 @@ doctrine.dbal:
   dp_from_user_config: db
   wrapper_class: "DeskPRO\DBAL\Connection"
 
+deskpro_cache.caches:
+  phrases: ~
+
 deskpro_core.config: ~
 deskpro_tech_core.config: ~
 deskpro_requestuser.config: ~

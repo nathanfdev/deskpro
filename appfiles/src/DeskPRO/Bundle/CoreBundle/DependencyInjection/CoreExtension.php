@@ -53,6 +53,9 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loder_db')));
 		$container->setDefinition('deskpro.core.translate_loder', $definition);
 
+		// Add the cacher to the CombinationLoader if we want
+		$definition->addMethodCall('setCache', array(new Reference('deskpro.cache.phrases', ContainerBuilder::IGNORE_ON_INVALID_REFERENCE)));
+
 		// Now create the translate object
 		$definition = new Definition('DeskPRO\\Translate\\Translate', array(
 			new Reference('deskpro.core.translate_loder'),
