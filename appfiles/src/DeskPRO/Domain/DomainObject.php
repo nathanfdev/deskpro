@@ -166,7 +166,7 @@ abstract class DomainObject implements \ArrayAccess
 	 * Check to see if a certain property has changed.
 	 * @return bool
 	 */
-	public function hasPropertyChanged()
+	public function hasPropertyChanged($prop)
 	{
 		return in_array($prop, $this->_properties_changed);
 	}

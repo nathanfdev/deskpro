@@ -37,4 +37,27 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		return $array;
 	}
+
+
+
+	/**
+	 * Execute a query and return an array of all values from one column.
+	 *
+	 * @param string $statement
+	 * @param array $params
+	 * @param string $index
+	 * @param int $mode Change to PDO::FETCH_ASSOC if you want to specify a string $index
+	 * @return array
+	 */
+	public function fetchAllCol($statement, array $params = array(), $index = 0, $mode = PDO::FETCH_NUM)
+	{
+		$statement = $this->executeQuery($statement, $params);
+		$array = array();
+
+		while ($row = $statement->fetch($mode)) {
+			$array[] = $row[$index];
+		}
+
+		return $array;
+	}
 }
