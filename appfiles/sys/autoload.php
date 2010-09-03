@@ -2,6 +2,8 @@
 
 require_once DP_ROOT.'/vendor/symfony/src/Symfony/Framework/UniversalClassLoader.php';
 
+set_include_path(DP_ROOT.'/vendor/zend/library');
+
 $loader = new Symfony\Framework\UniversalClassLoader();
 $loader->registerNamespaces(array(
 	'DeskPRO'                    => DP_ROOT.'/src',
