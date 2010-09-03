@@ -42,7 +42,7 @@ class Language extends \DeskPRO\Domain\DomainObject
 	 * @OneToOne(targetEntity="Language")
 	 * @JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
-	protected $parent;
+	protected $parent = null;
 
 	
 	/**
@@ -72,38 +72,15 @@ class Language extends \DeskPRO\Domain\DomainObject
 	protected $note = '';
 
 
-	/**
-	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
-	 */
-	protected $created_at;
-
 	public function setParentId($parent_id)
 	{
-		$this->parent_id = $parent_id;
-
-		// TODO: Cache parents hierarchy later so template fetching is easier
-		$this->_parent_has_changed = true;
-	}
-
-
-	/**
-	 * @PrePersist
-	 * @PreUpdate
-	 */
-	public function _setDefaultParentId()
-	{
-		if (!$this->parent_id) {
-			$this->setParentId(1);
+		if ($this->id) {
+			throw new \BadMethodCallException('You cannot change the parent_id once the record has been created. Hierarchy is fixed.');
 		}
+
+		$this->parent_id = $parent_id;
 	}
 
-
-	/** @PrePersist */
-	public function _incCreatedAt()
-	{
-		$this->created_at = new \DateTime();
-	}
 
 	/**
 	 * Load validators for use with the validator service.

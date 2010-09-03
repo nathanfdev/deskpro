@@ -1,0 +1,342 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace DeskPRO\Bundle\CoreBundle\Entity;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+use \DeskPRO\Bundle\CoreBundle\Entity\UsergroupPropertyPermission;
+
+/**
+ * A "person" is a record in the database that stores information about a person.
+ * Every person is capable of logging in, though it may be the case that many wont (ie they are just contact cards).
+ *
+ * @Entity
+ * @HasLifecycleCallbacks
+ * @Table(name="person")
+ */
+class Person extends \DeskPRO\Domain\DomainObject
+{
+	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @Id @Column(name="id", type="integer")
+	 * @GeneratedValue
+	 */
+	protected $id = null;
+
+
+	/**
+	 * Is this person a user (someone with login credentials)?
+	 * 
+	 * @var bool
+	 * @Column(name="is_user", type="boolean")
+	 */
+	protected $is_user = false;
+
+	
+	/**
+	 * The users full name.
+	 *
+	 * @var string
+	 * @Column(name="full_name", type="text", nullable=true)
+	 */
+	protected $fullname = null;
+
+
+	/**
+	 * What the user wants to be called. For example, a first name. This
+	 * is used in greetings when available.
+	 *
+	 * @var string
+	 * @Column(name="informal_name", type="text", nullable=true)
+	 */
+	protected $informal_name = null;
+
+
+	/**
+	 * The users nickname, even more informal than the informal name.
+	 *
+	 * @var string
+	 * @Column(name="nick_name", type="text", nullable=true)
+	 */
+	protected $nick_name = null;
+
+
+	/**
+	 * A secret string used in various hashing or encryption schemes.
+	 *
+	 * @var string
+	 * @Column(name="secret_string", type="string", length=40)
+	 */
+	protected $secret_string;
+
+
+	/**
+	 * The language associate with the user.
+	 *
+	 * @var \DeskPRO\Bundle\CoreBundle\Language
+	 * @OneToOne(targetEntity="Language")
+	 * @JoinColumn(name="language_id", referencedColumnName="id")
+	 */
+	protected $language = null;
+
+
+	/**
+	 * The timezone associated with this user.
+	 *
+	 * @var string
+	 * @Column(name="timezome", type="string", length=50)
+	 */
+	protected $timezone;
+
+
+	/**
+	 * Every person has a local login capability with this password. Null means there is no local auth.
+	 *
+	 * @var string
+	 * @Column(name="password", type="string", length=255, nullable=true)
+	 */
+	protected $password = null;
+
+
+	/**
+	 * Which hashing algoirthm is used for storing the password.
+	 *
+	 * @var string
+	 * @Column(name="password_algo", type="string", length=15)
+	 */
+	protected $password_algo = 'sha1';
+
+
+	/**
+	 * A salt used to hash the password with.
+	 *
+	 * @var string
+	 * @Column(name="salt", type="string", length=40)
+	 */
+	protected $salt;
+
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="PersonEmail", mappedBy="person")
+	 */
+	protected $email_addresses;
+	
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection();
+	 * @ManyToMany(targetEntity="Usergroup")
+	 * @JoinTable(name="user2usergroups",
+	 *     joinColumns={@JoinColumn(name="person_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="usergroup_id", referencedColumnName="id")}
+     * )
+	 */
+	protected $usergroups;
+
+	
+	/**
+	 * @var \DateTime
+	 * @Column(name="created_at",type="datetime")
+	 */
+	protected $created_at;
+
+	/**
+	 * If we have set a password for this user, then the plaintext version will be set here.
+	 * @var string
+	 */
+	protected $_set_plain_password = null;
+
+	/**
+	 * An array of effective permissions for this user based on usergroups.
+	 * @var array
+	 */
+	protected $_effective_permissions = null;
+
+
+
+	public function init()
+	{
+		$this->created_at = new \DateTime();
+		$this->secret_string = Strings::random(40);
+		$this->timezone = 'UTC';
+
+		$this->salt = Strings::random(40);
+
+		$this->email_addresses = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->usergroups = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+
+
+	/**
+	 * Get a string display name we can call this person.
+	 * @return string
+	 */
+	public function getDisplayName()
+	{
+		if ($this->informal_name) {
+			return $this->informal_name;
+		} elseif ($this->fullname) {
+			return $this->fullname;
+		} elseif ($this->nick_name) {
+			return $this->nick_name;
+		} elseif ($this->email_addresses->count()) {
+			return $this->email_addresses->first()->get('email_address');
+		} else {
+			return 'ID-' . $this['id'];
+		}
+	}
+	
+
+
+	/**
+	 * Check to see if a password is the same one we have on record. Used with local auth.
+	 *
+	 * @param  $plain_password
+	 * @return bool
+	 */
+	public function checkPassword($plain_password)
+	{
+		$hash = $this->hashPassword($plain_password);
+
+		return ($hash == $this->password);
+	}
+
+
+
+	/**
+	 * Sets the hashed form of the password for this user. Used with local auth.
+	 *
+	 * @param  string $plain_password The password to set
+	 * @return string
+	 */
+	public function setPassword($plain_password)
+	{
+		$hash = $this->hashPassword($plain_password);
+
+		$this->password = $hash;
+		$this->_set_plain_password = $plain_password;
+
+		return $this->password;
+	}
+
+
+
+	/**
+	 * If you have set a password, the plaintext version will be returned.
+	 * Otherwise, null is returned.
+	 *
+	 * @return string
+	 */
+	public function getPlaintextPassword()
+	{
+		return $this->_set_plain_password;
+	}
+
+
+	
+	/**
+	 * Create a new password hash using the salt and algorithm used with this user.
+	 *
+	 * @throws DomainException
+	 * @param  string $plain_password The password to hash
+	 * @return string
+	 */
+	public function hashPassword($plain_password)
+	{
+		$hash = null;
+		switch ($this->password_algo) {
+			case 'sha1':
+				$hash = sha1($this->salt . $plain_password);
+				break;
+			case 'plaintext':
+				$hash = substr($plain_password, 0, 255);
+				break;
+			default:
+				throw new DomainException('Unknown hashing algorithm: ' . $this->password_algo);
+				break;
+		}
+
+		return $hash;
+	}
+
+
+
+	/**
+	 * Get the value of a permission
+	 *
+	 * @param string $name The permission name
+	 * @return mixed
+	 */
+	public function getPermission($name)
+	{
+		$this->_loadEffectivePermissions();
+
+		if (!isset($this->_effective_permissions[$name])) {
+			return null;
+		}
+
+		return $this->_effective_permissions[$name];
+	}
+
+	protected function _loadEffectivePermissions()
+	{
+		if ($this->_effective_permissions !== null) return;
+
+		if (!$this->id) {
+			$this->_effective_permissions = array();
+			return;
+		}
+
+		/** @var $db \DeskPRO\DBAL\Connection */
+		$db = $this->getContainer()->get('database_connection');
+		$usergroup_ids = $db->fetchAllCol("
+			SELECT usergroup_id
+			FROM user2usergroups
+			WHERE person_id = {$this->id}
+		");
+
+		if (!$usergroup_ids) {
+			$this->_effective_permissions = array();
+			return;
+		}
+
+		$em = $this->getContainer()->get('doctrine.orm.entity_manager');
+		$properties = $em->createQuery('
+			SELECT CoreBundle:UsergroupProperty p
+			WHERE usergroup_id IN ?1 AND property_type = ?2
+		')->setParameter(1, $usergroup_ids)
+			->setParameter(2, UsergroupPropertyPermission::PROPERTY_TYPE)
+			->getResult();
+
+		$this->_effective_permissions = UsergroupPropertyPermission::coalescePermissionProperties($properties);
+	}
+
+
+	
+	public function __toString()
+	{
+		return $this->getDisplayName();
+	}
+
+
+
+	/** @PrePersist */
+	public function incCreatedAt()
+	{
+		if (!$this->created_at) {
+			$this->created_at = new \DateTime();
+		}
+	}
+}

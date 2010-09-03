@@ -14,7 +14,7 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * A "user" is a person in the database who can log in and has access to the interfaces.
+ * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
  * @Entity
  * @HasLifecycleCallbacks
@@ -52,48 +52,16 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-     * @ManyToMany(targetEntity="User", mappedBy="usergroups")
-     */
-    protected $users;
-
-
-	/**
-	 * Is this user a tech that can use the tech interface?
+	 * Properties attached to this usergroup
 	 *
-	 * @var bool
-	 * @Column(name="p_is_tech", type="boolean")
+	 * @var DeskPRO\Bundle\CoreBundle\Entity\UsergroupProperty
+	 * @OneToOne(targetEntity="UsergroupProperty", mappedBy="usergroup")
 	 */
-	protected $is_tech = false;
-
-
-	/**
-	 * Is this user an admin that can use the admin features?
-	 *
-	 * @var bool
-	 * @Column(name="p_is_admin", type="boolean")
-	 */
-	protected $is_admin = false;
+	protected $properties;
 
 
 	public function init()
 	{
-		$this->users = new \Doctrine\Common\Collections\ArrayCollection();
-	}
-
-
-
-	/**
-	 * Get an array of yes/no permissions for this usergroup.
-	 *
-	 * @return array
-	 */
-	public function getPermissionArray()
-	{
-		$arr = array(
-			'is_tech' => $this->is_tech,
-			'is_admin' => $this->is_admin,
-		);
-
-		return $arr;
+		$this->properties = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 }

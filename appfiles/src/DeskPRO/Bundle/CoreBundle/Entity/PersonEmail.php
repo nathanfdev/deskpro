@@ -14,13 +14,15 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * Email addresses attached to a profile
+ * Email addresses attached to a person. This is a separate entity because emails are
+ * roughly tied to identity (ie local login uses email as identity), and are integral
+ * in many cases (notifications etc).
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="profile_emails")
+ * @Table(name="person_emails")
  */
-class ProfileEmail extends \DeskPRO\Domain\DomainObject
+class PersonEmail extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -31,21 +33,22 @@ class ProfileEmail extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
-
+	
 	/**
-	 * The profile this email belongs to
+	 * The preference order for this email address. Lower = higher preference.
 	 *
 	 * @var int
+	 * @Column(name="pref_order", type="integer")
 	 */
-	protected $profile_id;
+	protected $pref_order = 0;
 
 
 	/**
-	 * @var Profile
-	 * @ManyToOne(targetEntity="Profile", inversedBy="email_addresses")
-	 * @JoinColumn(name="profile_id", referencedColumnName="id")
+	 * @var DeskPRO\Bundle\CoreBundle\Entity\Person
+	 * @ManyToOne(targetEntity="Person", inversedBy="email_addresses")
+	 * @JoinColumn(name="person_id", referencedColumnName="id")
 	 */
-	protected $profile;
+	protected $person;
 
 
 	/**
@@ -79,11 +82,25 @@ class ProfileEmail extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $created_at;
 
+	/**
+	 * @var \DateTime
+	 * @Column(name="validated_at",type="datetime", nullable=true)
+	 */
+	protected $validated_at = null;
+
 
 
 	/** @PrePersist */
 	public function incCreatedAt()
 	{
 		$this->created_at = new \DateTime();
+	}
+
+	/** @PreSave */
+	public function incValidatedAt()
+	{
+		if ($this->is_validated AND !$this->validated_at) {
+			$this->validated_at = new \DateTime();
+		}
 	}
 }
