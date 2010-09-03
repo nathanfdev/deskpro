@@ -1165,4 +1165,38 @@ class Arrays
 
 		return $array;
 	}
+
+
+	/**
+	 * Take an array of arrays, and merge each sub-array into one big one.
+	 *
+	 * <code>
+	 * $array_of_arrays = array(array('id1' => 'test'), array('id2' => 'test2'), array('id3' => 'test3'));
+	 * $array = Arrays::mergeSubArrays($array_of_arrays);
+	 * // -> array('id1' => 'test', 'id2' => 'test2', 'id3' => 'test3')
+	 * </code>
+	 *
+	 * @param array $array_of_arrays The array of arrays to merge
+	 * @param int $levels How deep to go in merging sub-arrays
+	 * @return array
+	 */
+	public static function mergeSubArrays(array $array_of_arrays, $levels = 1)
+	{
+		return self::_mergeSubArray_helper($array_of_arrays, $levels, 1);
+	}
+
+	protected static function _mergeSubArray_helper(array $array_of_arrays, $max_level, $cur_level)
+	{
+		$array = array();
+
+		foreach ($array_of_arrays as $sub_array) {
+			if ($cur_level < $max_level AND is_array($sub_array)) {
+				$sub_array = self::_mergeSubArray_helper($sub_array, $levels, $cur_level+1);
+			}
+
+			$array = array_merge($array, $sub_array);
+		}
+
+		return $array;
+	}
 }
