@@ -60,12 +60,23 @@ class DbLoader implements LoaderInterface
 		$langs[] = 0;
 		$lang_in = implode(',', $langs);
 
-		$phrases = $this->dbconn->fetchAll("
-			SELECT DISTINCT name, phrase
+		// Note that ordering by lang id here is an easy way to give child phrases
+		// priority over parent phrases. Children are always created after parents, therefore
+		// their ID's are always higher.
+
+		$q = $this->dbconn->query("
+			SELECT DISTINCT name, phrase, groupname
 			FROM phrases
 			WHERE language_id IN ($lang_in) AND groupname IN ($group_in)
 			ORDER BY language_id DESC
 		");
+
+		$phrases = array();
+		while ($r = $q->fetch()) {
+			if (!isset($phrases[$r['groupname']])) $phrases[$r['groupname']] = array();
+
+			$phrases[$r['groupname']][$r['name']] = $r['phrase'];
+		}
 
 		return $phrases;
 	}

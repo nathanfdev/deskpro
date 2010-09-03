@@ -19,6 +19,11 @@ interface LoaderInterface
 	/**
 	 * Load all phrases from specified groups.
 	 *
+	 * The returned array structure should be like:
+	 * <code>
+	 * array('group' => array('id' => 'phrase', ...));
+	 * </code>
+	 *
 	 * @param array $group The groups to load
 	 * @return array Array of name=>phrase
 	 */

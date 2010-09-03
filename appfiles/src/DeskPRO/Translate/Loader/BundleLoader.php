@@ -62,7 +62,7 @@ class BundleLoader implements LoaderInterface
 				return array();
 			}
 
-			$phrases = array_merge($phrases, include($filepath));
+			$phrases[$group] = include($filepath);
 		}
 
 		return $phrases;
