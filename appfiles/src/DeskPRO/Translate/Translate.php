@@ -56,9 +56,9 @@ class Translate implements \ArrayAccess
 	/**
 	 * @param LoaderInterface $loader A loader that'll load phrases from somehwere
 	 */
-	public function __construct(LoaderInterface $laoder)
+	public function __construct(LoaderInterface $loader)
 	{
-		$this->loader = $laoder;
+		$this->loader = $loader;
 	}
 
 
