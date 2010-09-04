@@ -26,6 +26,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadPhraseTemplateHelper($container);
+		$this->loadSettings($container);
     }
 
 	
@@ -113,6 +114,25 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$container->setDefinition('deskpro.core.input_reader', $definition);
 	}
 
+
+	
+	/**
+	 * Sets up the settings loader
+	 */
+	protected function loadSettings(ContainerBuilder $container)
+	{
+		$definition = new Definition('DeskPRO\\Settings\\Settings', array(
+			array(
+				'core' => DP_ROOT . '/src/Application/CoreBundle/Resources/settings',
+				'tech' => DP_ROOT . '/src/Application/TechBundle/Resources/settings',
+				'user' => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
+				'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/settings',
+			),
+			new Reference('database_connection')
+		));
+		$definition->addMethodCall('loadGroups', array('core'));
+		$container->setDefinition('deskpro.core.settings', $definition);
+	}
 
 
 
