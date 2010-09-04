@@ -163,6 +163,12 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $_effective_permissions = null;
 
+	/**
+	 * An array of usergroupids this user belongs to
+	 * @var array
+	 */
+	protected $_usergroup_ids = null;
+
 
 
 	public function init()
@@ -301,11 +307,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 		/** @var $db \DeskPRO\DBAL\Connection */
 		$db = $this->getContainer()->get('database_connection');
-		$usergroup_ids = $db->fetchAllCol("
-			SELECT usergroup_id
-			FROM user2usergroups
-			WHERE person_id = {$this->id}
-		");
+		$usergroup_ids = $this->getUsergroupIds();
 
 		if (!$usergroup_ids) {
 			$this->_effective_permissions = array();
@@ -321,6 +323,26 @@ class Person extends \DeskPRO\Domain\DomainObject
 			->getResult();
 
 		$this->_effective_permissions = UsergroupPropertyPermission::coalescePermissionProperties($properties);
+	}
+
+	
+
+	/**
+	 * Get an array of usergroup ID's this user belongs to.
+	 *
+	 * @return array
+	 */
+	public function getUsergroupIds()
+	{
+		if ($this->_usergroup_ids !== null) return $this->_usergroup_ids;
+
+		$this->_usergroup_ids = $db->fetchAllCol("
+			SELECT usergroup_id
+			FROM user2usergroups
+			WHERE person_id = {$this->id}
+		");
+
+		return $this->_usergroup_ids;
 	}
 
 
