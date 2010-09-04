@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\CoreBundle\Entity;
+namespace Application\CoreBundle\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -54,14 +54,36 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 	/**
 	 * Properties attached to this usergroup
 	 *
-	 * @var DeskPRO\Bundle\CoreBundle\Entity\UsergroupProperty
+	 * @var Application\CoreBundle\Entity\UsergroupProperty
 	 * @OneToOne(targetEntity="UsergroupProperty", mappedBy="usergroup")
 	 */
 	protected $properties;
 
 
-	public function init()
+	public function init(array $params = array())
 	{
 		$this->properties = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function fromArray(array $values)
+	{
+		if (isset($values['permissions']) AND is_array($values['permissions'])) {
+			$em = $this->getContainer()->get('doctrine.orm.entity_manager');
+			foreach ($values['permissions'] as $name => $val) {
+				$prop = $em->createEntity('CoreBundle:UsergroupPropertyPermission');
+				$prop['name'] = $name;
+				if (is_bool($val)) {
+					$prop['flag'] = $val;
+				} else {
+					$prop['data'] = $val;
+				}
+
+				$this->properties->add($prop);
+			}
+
+			unset($values['permissions']);
+		}
+
+		parent::fromArray($values);
 	}
 }

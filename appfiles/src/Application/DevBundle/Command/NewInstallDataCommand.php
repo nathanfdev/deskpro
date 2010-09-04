@@ -50,9 +50,13 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 	{
 		// Admins
 		$group = $this->em->createEntity('CoreBundle:Usergroup');
-		$group['is_admin'] = true;
-		$group['is_tech'] = true;
-		$group['title'] = 'Administrators';
+		$group->fromArray(array(
+			'title' => 'Administrators',
+			'permissions' => array(
+				'is_admin' => true,
+				'is_tech' => true
+			)
+		));
 		$this->em->persist($group);
 		$this->em->flush();
 
@@ -60,12 +64,27 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 
 		// Techs
 		$group = $this->em->createEntity('CoreBundle:Usergroup');
-		$group['is_tech'] = true;
-		$group['title'] = 'Technicians';
+		$group->fromArray(array(
+			'title' => 'Technicians',
+			'permissions' => array(
+				'is_tech' => true
+			)
+		));
 		$this->em->persist($group);
 		$this->em->flush();
 
 		$output->writeln("Created Technicians usergroup #{$group['id']}");
+
+		// Guests
+		$group = $this->em->createEntity('CoreBundle:Usergroup');
+		$group->fromArray(array(
+			'title' => 'Guests',
+			'permissions' => array(
+				'is_guest' => true
+			)
+		));
+		$this->em->persist($group);
+		$this->em->flush();
 
 		// Users
 		$group = $this->em->createEntity('CoreBundle:Usergroup');
