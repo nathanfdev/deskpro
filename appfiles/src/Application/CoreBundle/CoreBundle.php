@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\CoreBundle;
+namespace Application\CoreBundle;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
@@ -10,10 +10,10 @@ class CoreBundle extends \Symfony\Framework\Bundle\Bundle
 {
 	public function registerExtensions(ContainerBuilder $container)
     {
-        $container->registerExtension(new \DeskPRO\Bundle\CoreBundle\DependencyInjection\TwigExtension());
-        $container->registerExtension(new \DeskPRO\Bundle\CoreBundle\DependencyInjection\CoreExtension());
-        $container->registerExtension(new \DeskPRO\Bundle\CoreBundle\DependencyInjection\RequestUser());
-        $container->registerExtension(new \DeskPRO\Bundle\CoreBundle\DependencyInjection\DoctrineExtension());
-        $container->registerExtension(new \DeskPRO\Bundle\CoreBundle\DependencyInjection\CacheExtension());
+        $container->registerExtension(new \Application\CoreBundle\DependencyInjection\TwigExtension());
+        $container->registerExtension(new \Application\CoreBundle\DependencyInjection\CoreExtension());
+        $container->registerExtension(new \Application\CoreBundle\DependencyInjection\RequestUser());
+        $container->registerExtension(new \Application\CoreBundle\DependencyInjection\DoctrineExtension());
+        $container->registerExtension(new \Application\CoreBundle\DependencyInjection\CacheExtension());
     }
 }

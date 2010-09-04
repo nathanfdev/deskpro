@@ -23,7 +23,7 @@ namespace DeskPRO\StaticLoader;
  *
  * Where 'db' is the key of the config we'll fetch for connection params.
  *
- * @see \DeskPRO\Bundle\CoreBundle\DependencyInjection\DoctrineExtension
+ * @see \Application\CoreBundle\DependencyInjection\DoctrineExtension
  */
 class DatabaseConnection
 {

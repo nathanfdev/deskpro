@@ -11,8 +11,6 @@
 
 namespace DeskPRO\ORM\EventListener;
 
-use \DeskPRO\Bundle\CoreBundle\Entity\Entity;
-
 use \Doctrine\ORM\Events;
 use \Doctrine\ORM\Event\LifecycleEventArgs;
 use \Doctrine\Common\EventSubscriber;

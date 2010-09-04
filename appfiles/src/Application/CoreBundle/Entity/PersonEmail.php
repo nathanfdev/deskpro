@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\CoreBundle\Entity;
+namespace Application\CoreBundle\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -44,7 +44,7 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @var DeskPRO\Bundle\CoreBundle\Entity\Person
+	 * @var Application\CoreBundle\Entity\Person
 	 * @ManyToOne(targetEntity="Person", inversedBy="email_addresses")
 	 * @JoinColumn(name="person_id", referencedColumnName="id")
 	 */

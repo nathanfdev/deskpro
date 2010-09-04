@@ -9,11 +9,11 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\CoreBundle\Entity;
+namespace Application\CoreBundle\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-use \DeskPRO\Bundle\CoreBundle\Entity\UsergroupPropertyPermission;
+use \Application\CoreBundle\Entity\UsergroupPropertyPermission;
 
 /**
  * A "person" is a record in the database that stores information about a person.
@@ -84,7 +84,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	/**
 	 * The language associate with the user.
 	 *
-	 * @var \DeskPRO\Bundle\CoreBundle\Language
+	 * @var \Application\CoreBundle\Language
 	 * @OneToOne(targetEntity="Language")
 	 * @JoinColumn(name="language_id", referencedColumnName="id")
 	 */

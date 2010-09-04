@@ -179,7 +179,7 @@ class StylesController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return \DeskPRO\Bundle\CoreBundle\Entity\Style
+	 * @return Application\CoreBundle\Entity\Style
 	 */
 	protected function getStyleOr404($style_id)
 	{

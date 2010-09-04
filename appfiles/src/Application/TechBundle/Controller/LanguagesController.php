@@ -188,7 +188,7 @@ class LanguagesController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return \DeskPRO\Bundle\CoreBundle\Entity\Language
+	 * @return Application\CoreBundle\Entity\Language
 	 */
 	protected function getLangOr404($lang_id)
 	{

@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\CoreBundle\Entity;
+namespace Application\CoreBundle\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Web;
@@ -19,7 +19,7 @@ use Orb\Util\Web;
  *
  * @Entity
  */
-class UsergroupPropertyPermission extends \DeskPRO\Bundle\CoreBundle\Entity\UsergroupProperty
+class UsergroupPropertyPermission extends \Application\CoreBundle\Entity\UsergroupProperty
 {
 	const PROPERTY_TYPE = 'permission';
 

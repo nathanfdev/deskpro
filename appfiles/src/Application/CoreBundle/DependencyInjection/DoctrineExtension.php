@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Bundle\CoreBundle\DependencyInjection;
+namespace Application\CoreBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;

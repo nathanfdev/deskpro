@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\CoreBundle\DependencyInjection;
+namespace Application\CoreBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -36,7 +36,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 	{
 		// BundleLoader
 		$definition = new Definition('DeskPRO\\Translate\\Loader\\BundleLoader', array(array(
-			'core' => DP_ROOT . '/src/DeskPRO/Bundles/CoreBundle/Resources/language',
+			'core' => DP_ROOT . '/src/Application/CoreBundle/Resources/language',
 			'tech' => DP_ROOT . '/src/Application/TechBundle/Resources/language',
 			'user' => DP_ROOT . '/src/Application/UserBundle/Resources/language',
 			'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/language',

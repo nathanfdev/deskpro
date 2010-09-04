@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Bundle\CoreBundle\Entity;
+namespace Application\CoreBundle\Entity;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Web;
@@ -48,7 +48,7 @@ abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 	/**
 	 * The usergroup this property belongs to
 	 *
-	 * @var DeskPRO\Bundle\CoreBundle\Entity\Usergroup
+	 * @var Application\CoreBundle\Entity\Usergroup
 	 * @OneToOne(targetEntity="Usergroup", mappedBy="properties")
 	 * @JoinColumn(name="usergroup_id", referencedColumnName="id")
 	 */

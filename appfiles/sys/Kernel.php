@@ -59,8 +59,7 @@ class Kernel extends \Symfony\Framework\Kernel
 
 			new \Symfony\Bundle\ZendBundle\ZendBundle(),
 
-			new \DeskPRO\Bundle\CoreBundle\CoreBundle(),
-
+			new \Application\CoreBundle\CoreBundle(),
             new \Application\TechBundle\TechBundle(),
             new \Application\UserBundle\UserBundle(),
         );
@@ -77,7 +76,6 @@ class Kernel extends \Symfony\Framework\Kernel
         return array(
             'Application'        => DP_ROOT.'/src/Application',
             'Bundle'             => DP_ROOT.'/src/Bundle',
-			'DeskPRO\\Bundle'    => DP_ROOT.'/src/DeskPRO/Bundle',
             'Symfony\\Bundle'    => DP_ROOT.'/vendor/symfony/src/Symfony/Bundle',
         );
     }
