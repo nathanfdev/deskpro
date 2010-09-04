@@ -137,7 +137,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection();
 	 * @ManyToMany(targetEntity="Usergroup")
-	 * @JoinTable(name="user2usergroups",
+	 * @JoinTable(name="person2usergroups",
 	 *     joinColumns={@JoinColumn(name="person_id", referencedColumnName="id")},
      *     inverseJoinColumns={@JoinColumn(name="usergroup_id", referencedColumnName="id")}
      * )
