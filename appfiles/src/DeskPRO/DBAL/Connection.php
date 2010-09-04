@@ -39,6 +39,30 @@ class Connection extends \Doctrine\DBAL\Connection
 	}
 
 
+	
+	/**
+	 * Execute a query and return a key=>value pair.
+	 *
+	 * @param string $statement
+	 * @param array $params
+	 * @param string $key_index
+	 * @param string $val_index
+	 * @param int $mode Change to PDO::FETCH_ASSOC if you want to specify a string indexes
+	 * @return array
+	 */
+	public function feetchAllKeyValue($statement, array $params = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM)
+	{
+		$statement = $this->executeQuery($statement, $params);
+		$array = array();
+
+		while ($row = $statement->fetch($mode)) {
+			$array[$row[$key_index]] = $row[$val_index];
+		}
+
+		return $array;
+	}
+
+
 
 	/**
 	 * Execute a query and return an array of all values from one column.
@@ -59,5 +83,27 @@ class Connection extends \Doctrine\DBAL\Connection
 		}
 
 		return $array;
+	}
+
+	
+
+	/**
+	 * Quote an array of values suitable for IN() clause.
+	 * 
+	 * @param array $values
+	 * @param int $type
+	 * @return string
+	 */
+	public function quoteIn(array $values, $type = null)
+	{
+		$quoted = array();
+
+		foreach ($values as $val) {
+			$quoted[] = $this->quote($val, $type);
+		}
+
+		$quoted = implode(',', $quoted);
+
+		return $quoted;
 	}
 }
