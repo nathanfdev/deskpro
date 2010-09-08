@@ -110,15 +110,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Which hashing algoirthm is used for storing the password.
-	 *
-	 * @var string
-	 * @Column(name="password_algo", type="string", length=15)
-	 */
-	protected $password_algo = 'sha1';
-
-
-	/**
 	 * A salt used to hash the password with.
 	 *
 	 * @var string
@@ -255,26 +246,12 @@ class Person extends \DeskPRO\Domain\DomainObject
 	/**
 	 * Create a new password hash using the salt and algorithm used with this user.
 	 *
-	 * @throws DomainException
 	 * @param  string $plain_password The password to hash
 	 * @return string
 	 */
 	public function hashPassword($plain_password)
 	{
-		$hash = null;
-		switch ($this->password_algo) {
-			case 'sha1':
-				$hash = sha1($this->salt . $plain_password);
-				break;
-			case 'plaintext':
-				$hash = substr($plain_password, 0, 255);
-				break;
-			default:
-				throw new DomainException('Unknown hashing algorithm: ' . $this->password_algo);
-				break;
-		}
-
-		return $hash;
+		return sha1($this->salt . $plain_password);
 	}
 
 
