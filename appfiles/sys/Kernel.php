@@ -62,6 +62,7 @@ class Kernel extends \Symfony\Framework\Kernel
 			new \Application\CoreBundle\CoreBundle(),
             new \Application\TechBundle\TechBundle(),
             new \Application\UserBundle\UserBundle(),
+            new \Application\UserBundle\ApiBundle(),
         );
 
         if ($this->isDebug()) {

@@ -11,3 +11,7 @@ tech:
 dev:
   prefix: /dev
   resource: DevBundle/Resources/config/routing.yml
+
+api:
+  prefix: /api
+  resource: ApiBundle/Resources/config/routing.yml

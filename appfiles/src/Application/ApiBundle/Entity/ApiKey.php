@@ -1,0 +1,65 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage ApiBundle
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Application\CoreBundle\Entity;
+
+use \Symfony\Component\Validator\Constraints;
+use \Symfony\Component\Validator\Mapping\ClassMetadata;
+
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+/**
+ * API keys are codes that authorize requests against the DeskPRO.
+ *
+ * @Entity
+ * @Table(name="api_key")
+ */
+class ApiKey extends \DeskPRO\Domain\DomainObject
+{
+	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @Id
+	 * @Column(name="id", type="integer")
+	 * @GeneratedValue
+	 */
+	protected $id = null;
+
+
+	/**
+	 * The unique key that identifies this API key and is used in requests.
+	 * 
+	 * @var string
+	 * @Column(name="api_key", type="string", length=30)
+	 */
+	protected $api_key;
+
+
+	/**
+	 * A secret key used to sign requests
+	 *
+	 * @var string
+	 * @Column(name="secret_key", type="string", length=30)
+	 */
+	protected $secret_key;
+
+
+	/**
+	 * A note or description about the key (ie what its used for).
+	 *
+	 * @var string
+	 * @Column(name="note", type="text")
+	 */
+	protected $note = '';
+}
