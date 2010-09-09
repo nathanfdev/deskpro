@@ -30,6 +30,7 @@ class Strings
 	const CHARS_ALPHA_I      = 'abcdefghijklmnopqrstuvwxyz';
 	const CHARS_ALPHA_IU     = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	const CHARS_SECURE       = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz!@#$%^&*()-_=+{}|[]:;,./<>?';
+	const CHARS_KEY          = '023456789ABCDGHJKMNPQRSTWXYZ';
 	/**#@-*/
 
 
