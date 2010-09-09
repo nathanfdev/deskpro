@@ -52,11 +52,6 @@ class OrbRemoteCallAuth implements AdapterInterface
 	 */
 	protected $consumer_key = null;
 
-	/**
-	 * A secret token used to verify requests
-	 * @var string
-	 */
-	protected $consumer_token = null;
 
 	/**
 	 * The URL to call
@@ -89,10 +84,9 @@ class OrbRemoteCallAuth implements AdapterInterface
 	 * any kind of encryption, it's recommended you use an HTTPS URL.
 	 *
 	 * @param string $consumer_key
-	 * @param string $consumer_token
 	 * @param string $service_url
 	 */
-	public function __construct($consumer_key, $consumer_token, $service_url)
+	public function __construct($consumer_key, $service_url)
 	{
 		$this->consumer_key = $consumer_key;
 		$this->service_url = $service_url;
