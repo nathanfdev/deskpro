@@ -14,13 +14,43 @@ namespace Orb\Auth;
  */
 class Result implements \ArrayAccess
 {
+	/**
+	 * Failure due to an inner exception. The exception will be in the messages
+	 * array under the 'exception' key.
+	 */
 	const FAILURE_EXCEPTION = -1;
+
+	/**
+	 * A general error. More information might be in the messages array.
+	 */
 	const FAILURE = 0;
+
+	/**
+	 * Success
+	 */
 	const SUCCESS = 1;
+
+	/**
+	 * Not a login success, but not a failure either. This indicates the user
+	 * needs to be redirected (ie to an offsite resource) before login is complete.
+	 * The URL will be in the messages array under the key 'redirect_url'.
+	 */
 	const REQUIRES_REDIRECT = 2;
 
 	/**
-	 * Array of reasons for failure.
+	 * The key that an Exception is stored under for FAILURE_EXCEPTION codes.
+	 */
+	const MSG_EXCEPTION = 'exception';
+
+	/**
+	 * The key that the redirect URL is stored under in the REQUIRES_REDIRECT code.
+	 */
+	const MSG_REDIRECT = 'redirect_url';
+
+
+
+	/**
+	 * Array of info (ie debug info etc) from the adapter
 	 * @var array
 	 */
 	protected $_messages = array();
@@ -38,6 +68,7 @@ class Result implements \ArrayAccess
 	 */
 	protected $_code = 0;
 
+	
 
 	/**
 	 * If $code is Result::REQUIRES_REDIRECT then $messages should have an item called
@@ -45,7 +76,7 @@ class Result implements \ArrayAccess
 	 *
 	 * @param int $code Success (Result::SUCCESS) or error code on failure
 	 * @param \Orb\Auth\Identity $identity If successful, the user identity
-	 * @param array $messages Messages of why the login failed
+	 * @param array $messages Messages of why the login failed, or any additional info
 	 */
 	public function __construct($code, \Orb\Auth\Identity $identity = null, array $messages = array())
 	{
@@ -113,12 +144,18 @@ class Result implements \ArrayAccess
 
 
 	/**
-	 * Get messages (reasons for login failure)/
-	 * 
-	 * @return array
+	 * An array of extra data returned from the adapters, such as error information.
+	 * Returns an array, or if a key is supplied, that one key or null if it doesn't exist.
+	 *
+	 * @array string $key A specific key to get, or null to get the whole array
+	 * @return mixed
 	 */
-	public function getMessages()
+	public function getMessages($key = null)
 	{
+		if ($key !== null) {
+			return isset($this->_messages[$key]) ? $this->_messages[$key] : null;
+		}
+
 		return $this->_messages;
 	}
 }

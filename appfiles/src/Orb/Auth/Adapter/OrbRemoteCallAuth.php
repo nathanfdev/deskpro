@@ -9,6 +9,8 @@
 
 namespace Orb\Auth\Adapter;
 
+use \Orb\Auth\Result;
+
 /**
  * OrbRemoteCallAuth is a very simple protocol where the software sends a POST request to a remote web
  * with form data (credentials) and the remote page must return a JSON formatted message.
@@ -42,6 +44,8 @@ namespace Orb\Auth\Adapter;
  */
 class OrbRemoteCallAuth implements AdapterInterface
 {
+	const ERR_SERVICE_ERR = -11;
+
 	/**
 	 * The key that identifies this service
 	 * @var string
@@ -149,11 +153,11 @@ class OrbRemoteCallAuth implements AdapterInterface
 		}
 
 		if (isset($data['is_error'])) {
-			return new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE, null, $data);
+			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_SERVICE_ERR, 'error_message' => 'Service reported error', 'service_data' => $data));
 		}
 
 		$identity = new \Orb\Auth\Identity($data['identity'], isset($userdata['userinfo']) ? $userdata : array());
-		$result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
+		$result = new Result(Result::SUCCESS, $identity);
 
 		return $result;
 	}

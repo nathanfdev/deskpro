@@ -12,8 +12,15 @@ namespace Orb\Auth;
 use \Symfony\Component\EventDispatcher\Event;
 use \Symfony\Component\EventDispatcher\EventDispatcher;
 
+use \Orb\Auth\Result;
+
 /**
  * Authenticates a user using one of any compatible adapters.
+ *
+ * Orb\Auth is much like Zend\Auth except for some subtle differences, including the way we
+ * gracefully handle remote-login sources (requiring redirect) in the Result object, as well
+ * as how the Identity is an object and we are able to build adapters that can fetch additional
+ * userinfo from the sources such as email addresses or names.
  */
 class Auth
 {
@@ -43,7 +50,7 @@ class Auth
 		try {
 			$result = $adapter->authenticate();
 		} catch (Exception $e) {
-			$result = new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE_EXCEPTION, null, array('exception' => $e));
+			$result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
 		}
 
 		if ($this->dispatcher) {

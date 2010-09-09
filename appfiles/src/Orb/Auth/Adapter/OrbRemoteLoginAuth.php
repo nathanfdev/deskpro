@@ -11,6 +11,8 @@ namespace Orb\Auth\Adapter;
 
 use \Symfony\Component\HttpFoundation\Session;
 
+use \Orb\Auth\Result;
+
 /**
  * OrbRemoteLoginAuth is a simple protocol where the system redirects the user to a remote login
  * form. The remote service takes care of logging the user in, and then redirect the user back to
@@ -72,6 +74,9 @@ use \Symfony\Component\HttpFoundation\Session;
  */
 class OrbRemoteLoginAuth implements AdapterInterface
 {
+	const ERR_INVALID_TOKEN = -10;
+	const ERR_SERVICE_ERR = -11;
+
 	/**
 	 * The key to authenticate the request
 	 * @var string
@@ -197,7 +202,7 @@ class OrbRemoteLoginAuth implements AdapterInterface
 		$check_verify = sha1($this->got_data['orba_access_token'] . $this->session->get('orba_user_key'));
 
 		if ($check_verify != $got_tokens['orba_verify']) {
-			return new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE, null, array('error_code' => -10, 'error_message' => 'Invalid verify token'));
+			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
 		}
 
 		#------------------------------
@@ -222,11 +227,11 @@ class OrbRemoteLoginAuth implements AdapterInterface
 		}
 
 		if (isset($data['is_error'])) {
-			return new \Orb\Auth\Result(\Orb\Auth\Result::FAILURE, null, $data);
+			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_SERVICE_ERR, 'error_message' => 'Service reported error', 'service_data' => $data));
 		}
 
 		$identity = new \Orb\Auth\Identity($data['identity'], isset($userdata['userinfo']) ? $userdata : array());
-		$result = new \Orb\Auth\Result(\Orb\Auth\Result::SUCCESS, $identity);
+		$result = new Result(Result::SUCCESS, $identity);
 
 		return $result;
 	}
@@ -271,7 +276,7 @@ class OrbRemoteLoginAuth implements AdapterInterface
 		$redirect_url .= '&orba_verify=' . sha1($service_data['orba_token'] . $user_key);
 		$redirect_url .= '&redirect_url=' . urlencode($this->redirect_url);
 
-		$result = new \Orb\Auth\Result(\Orb\Auth\Result::REQUIRES_REDIRECT, null, array('redirect_url' => $redirect_url));
+		$result = new Result(Result::REQUIRES_REDIRECT, null, array(Result::MSG_REDIRECT => $redirect_url));
 		return $result;
 	}
 
