@@ -47,6 +47,12 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 	 */
 	protected $tplvars;
 
+	/**
+	 * Fetch settings
+	 * @var DeskPRO\Settings\Settings
+	 */
+	protected $settings;
+
 
 
 	public function setContainer(ContainerInterface $container)
@@ -55,10 +61,11 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 
 		// Set shortcuts once we have the container :)
 
-		$this->em      = $this['doctrine.orm.entity_manager'];
-		$this->db      = $this['database_connection'];
-		$this->in      = $this['deskpro.core.input_reader'];
-		$this->cleaner = $this['deskpro.core.input_cleaner'];
+		$this->em       = $this['doctrine.orm.entity_manager'];
+		$this->db       = $this['database_connection'];
+		$this->in       = $this['deskpro.core.input_reader'];
+		$this->cleaner  = $this['deskpro.core.input_cleaner'];
+		$this->settings = $this['deskpro.core.settings'];
 
 		$this['templating']->resetTemplateVars();
 		$this->tplvars = $this['templating']->getTemplateVarsObject();
