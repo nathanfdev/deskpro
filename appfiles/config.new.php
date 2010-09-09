@@ -32,6 +32,24 @@ $CONFIG['db']['dbname'] = 'deskpro';
 $CONFIG['db']['driver'] = 'pdo_mysql';
 
 
+################################################################################
+# Cache Options
+################################################################################
+
+/**
+ * Phrase caching caches entire phrase groups, meaning neither the database
+ * nor even the filesystem is touched when fething phrases.
+ */
+//$CONFIG['cache_phrases'] = array(
+//	'backend' => 'File',
+//	'cache_dir' => '%kernel.cache_dir%/cache_phrases',
+//	'file_locking' => true,
+//	'read_control' => true,
+//	'read_control_type' => 'strlen',
+//	'hashed_directory_level' => 0,
+//	'cache_file_umask' => 0744,
+//);
+
 
 ################################################################################
 # Misc
