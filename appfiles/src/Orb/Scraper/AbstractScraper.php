@@ -56,10 +56,12 @@ abstract class AbstractScraper
 
 	
 	/**
-	 * Get the data from the remote source.
+	 * Get the data from the remote source. The returned data is always an array.
+	 * If the remote resource only returns one piece of information, then the convention
+	 * is to set it as the 'data' key.
 	 *
 	 * @param mixed $identity The ID from the remote source to fetch
-	 * @return mixed
+	 * @return array
 	 */
 	abstract function getData($identity = null);
 }
