@@ -186,11 +186,12 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 				SELECT *
 				FROM CoreBundle:QueueItem i
 				WHERE
-					(i.is_ready = ? AND (i.reserved_at IS NULL OR i.timeout_at < ?))
+					i.is_dataonly = ?
+					AND (i.is_ready = ? AND (i.reserved_at IS NULL OR i.timeout_at < ?))
 					AND (i.delay_until IS NULL OR i.delay_until < ?)
 				ORDER BY i.priority
 				LIMIT ?
-			")->setParameters(array(true, $timenow, $timenow));
+			")->setParameters(array(false, true, $timenow, $timenow));
 
 			foreach ($results as $item) {
 				$msgs[] = $item->toArray();

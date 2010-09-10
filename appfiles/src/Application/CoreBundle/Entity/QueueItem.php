@@ -86,6 +86,15 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	protected $is_ready = true;
 
 	/**
+	 * Is this item used only for queue datas? Useful if the database queue is used
+	 * alongside other queue systems that are using this as a store for data.
+	 *
+	 * @var bool
+	 * @Column(name="is_dataonly", type="boolean")
+	 */
+	protected $is_dataonly = false;
+
+	/**
 	 * Should this job be ignored and not run automatically?
 	 * In other words, the job wont be run until something (someone?) unignores it.
 	 *
