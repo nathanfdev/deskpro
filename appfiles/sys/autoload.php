@@ -19,7 +19,8 @@ $loader->registerNamespaces(array(
     'Zend'                       => DP_ROOT.'/vendor/zend/library',
 ));
 $loader->registerPrefixes(array(
-    'Swift_' => DP_ROOT.'/vendor/swiftmailer/lib/classes',
-    'Twig_'  => DP_ROOT.'/vendor/twig/lib',
+    'Swift_'      => DP_ROOT.'/vendor/swiftmailer/lib/classes',
+    'Twig_'       => DP_ROOT.'/vendor/twig/lib',
+	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes'
 ));
 $loader->register();

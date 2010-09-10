@@ -1,34 +1,37 @@
 #!/bin/sh
 
-cd ..
+cd ../../
 
 # initialization
 if [ -d "vendor" ]; then
-  rm -rf vendor/*
+  rm -rf appfiles/vendor/*
 else
-  mkdir vendor
+  mkdir appfiles/vendor
 fi
 
 # Symfony
-git submodule add http://github.com/symfony/symfony.git vendor/symfony
+git submodule add http://github.com/symfony/symfony.git appfiles/vendor/symfony
 
 # Doctrine ORM
-git submodule add git://github.com/doctrine/doctrine2.git vendor/doctrine-orm
+git submodule add git://github.com/doctrine/doctrine2.git appfiles/vendor/doctrine-orm
 
 # Doctrine DBAL
-git submodule add git://github.com/doctrine/dbal.git vendor/doctrine-dbal
+git submodule add git://github.com/doctrine/dbal.git appfiles/vendor/doctrine-dbal
 
 # Doctrine Common
-git submodule add git://github.com/doctrine/common.git vendor/doctrine-common
+git submodule add git://github.com/doctrine/common.git appfiles/vendor/doctrine-common
 
 # Doctrine migrations
-git submodule add git://github.com/doctrine/migrations.git vendor/doctrine-migrations
+git submodule add git://github.com/doctrine/migrations.git appfiles/vendor/doctrine-migrations
 
 # Swiftmailer
-git submodule add git://github.com/swiftmailer/swiftmailer.git vendor/swiftmailer
+git submodule add git://github.com/swiftmailer/swiftmailer.git appfiles/vendor/swiftmailer
 
 # Twig
-git submodule add git://github.com/fabpot/Twig.git vendor/twig
+git submodule add git://github.com/fabpot/Twig.git appfiles/vendor/twig
 
 # Zend Framework
-git submodule add git://github.com/zendframework/zf2.git vendor/zend
+git submodule add git://github.com/zendframework/zf2.git appfiles/vendor/zend
+
+# Pheanstalk
+git submodule add git://github.com/pda/pheanstalk.git appfiles/vendor/pheanstalk

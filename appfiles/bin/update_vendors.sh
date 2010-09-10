@@ -27,3 +27,6 @@ cd $CURRENT/twig && git pull
 
 # Zend Framework
 cd $CURRENT/zend && git pull
+
+# Pheanstalk
+cd $CURRENT/pheanstalk && git pull
