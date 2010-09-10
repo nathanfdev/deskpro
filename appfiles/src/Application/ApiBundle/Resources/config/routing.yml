@@ -22,3 +22,8 @@ api_deskpro_setting_post:
   patterns: /deskpro/setting/:setting_name
   defaults: { _controller: ApiBundle:Deskpro:postSetting }
   requirements: { _method: POST }
+
+api_ping_object_updated:
+  patterns: /ping/object-updated/:resource_id/:object_id
+  defaults: { _controller: ApiBundle:Ping:postObjectUpdated }
+  requirements: { _method: POST }
