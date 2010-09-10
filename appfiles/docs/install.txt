@@ -10,6 +10,25 @@ Make sure the following directories exist and are writable:
 - `/appfiles/sys/cache`
 - `/appfiles/sys/logs`
 
+Make sure the following files are executable:
+
+- `/appfiles/bin/console`
+- `/appfiles/bin/console-dev`
+- `/appfiles/bin/install_vendors.sh`
+- `/appfiles/bin/update_vendors.sh`
+
+
+Download Vendors
+================
+
+Some vendors need to be downlaoded separately. This is automated by the `/appfiles/bin/install_vendors.sh` shell script:
+
+	$ cd appfiles/bin
+	$ ./install_vendors.sh
+	Initialized empty Git repository # etc
+
+Note that this will pull the latest revision which might break. You may need to revert.
+
 
 Edit Config
 ===========
