@@ -75,7 +75,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @Column(name="ttr", type="integer")
 	 */
-	protected $ttr = 1;
+	protected $ttr = 60;
 
 	/**
 	 * When this is true, the job is ready to be reserved.
@@ -125,8 +125,8 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * Any data pertaining to the job
-	 * @var array
-	 * @Column(name="data", type="array", nullable=true)
+	 * @var string
+	 * @Column(name="data", type="blob", nullable=true)
 	 */
-	protected $data = array();
+	protected $data = '';
 }
