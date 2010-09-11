@@ -18,7 +18,10 @@ namespace Orb\Scraper;
  * service users.
  * - There is a `data` item which may be an array of any data that your resource might use (for example ID's).
  *
- * Your resource must return a JSON-encoded data structure that will be decoded into an array.
+ * Your resource must return a JSON-encoded data structure that will be decoded into an array. Array items must be:
+ * - identity
+ * - identity_friendly
+ * - data: A single value or array of values
  */
 class OrbResource extends AbstractScraper
 {
@@ -54,7 +57,7 @@ class OrbResource extends AbstractScraper
 	 * Get data from the resource
 	 *
 	 * @param mixed $identity A string or array of k=>v pairs to be sent as posted 'data'
-	 * @return array
+	 * @return ItemInterface
 	 */
 	public function getData($identity = null)
 	{
@@ -80,7 +83,9 @@ class OrbResource extends AbstractScraper
 			throw \UnexpectedValueException('Invalid JSON returned from service');
 		}
 
-		return $data;
+		$item = new \Orb\Scraper\Item($data['identity'], $data['identity_friendly'], $data['data']);
+
+		return $item;
 	}
 
 
