@@ -52,13 +52,13 @@ class PersonData extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * If this field is mapped to a remote obejct, that remote object is this.
+	 * If this field is mapped to a remote item, that remote object is this.
 	 * 
 	 * @var Application\CoreBundle\Entity\RemoteObject
-	 * @ManyToOne(targetEntity="RemoteObject")
-	 * @JoinColumn(name="remote_object_id", referencedColumnName="id")
+	 * @ManyToOne(targetEntity="RemoteItem")
+	 * @JoinColumn(name="remote_item_id", referencedColumnName="id")
 	 */
-	protected $remote_object = null;
+	protected $remote_item = null;
 
 
 	/**

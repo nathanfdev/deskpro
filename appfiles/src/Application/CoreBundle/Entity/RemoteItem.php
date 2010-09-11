@@ -19,9 +19,9 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="remote_object")
+ * @Table(name="remote_item")
  */
-class RemoteObject extends \DeskPRO\Domain\DomainObject
+class RemoteItem extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
