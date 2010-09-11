@@ -53,13 +53,23 @@ class PersonAuth extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * The user id in the remote source (user id, or a twitter user, or an openid URL etc). Can be
+	 * The user id in the remote source (user id, an openid URL etc). Can be
 	 * anything.
 	 * 
 	 * @var string
 	 * @Column(name="identity", type="string", length=255)
 	 */
 	protected $identity;
+
+
+	/**
+	 * The human-friendly version of the identity. So if the identity is a UserID,
+	 * this might be the username.
+	 *
+	 * @var string
+	 * @Column(name="identity_friendly", type="string", length=255)
+	 */
+	protected $identity_friendly;
 
 
 	/**

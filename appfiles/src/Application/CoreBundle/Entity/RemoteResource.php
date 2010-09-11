@@ -70,6 +70,16 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * The classname of the handler used to handle data from this resource. For example,
+	 * with users we'll need the handler to assign new values etc.
+	 *
+	 * @var string
+	 * @Column(name="processor_class", type="string", length=255)
+	 */
+	protected $handler_class;
+
+
+	/**
 	 * Get an instance of the scraper
 	 * 
 	 * @return Orb\Scraper\AbstractScraper
