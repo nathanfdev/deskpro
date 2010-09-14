@@ -15,6 +15,11 @@ namespace Orb\Auth;
 class Result implements \ArrayAccess
 {
 	/**
+	 * Failure due to invalid credentials.
+	 */
+	const FAILURE_INVALID_CREDS = -2;
+
+	/**
 	 * Failure due to an inner exception. The exception will be in the messages
 	 * array under the 'exception' key.
 	 */
