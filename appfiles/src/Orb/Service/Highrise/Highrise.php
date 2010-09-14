@@ -10,6 +10,15 @@
 
 namespace Orb\Service\Highrise;
 
+/**
+ * The interface to all Highrise API usage. Specific actions are delegated to Resource
+ * classes.
+ *
+ * TODO: Still need to implement all the other API calls.
+ *
+ * @see http://developer.37signals.com/highrise/
+ * @property Orb\Service\Highrise\Resource\Person person
+ */
 class Highrise
 {
 	/**
