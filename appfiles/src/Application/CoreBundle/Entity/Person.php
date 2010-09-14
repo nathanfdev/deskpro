@@ -101,6 +101,16 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * An admin can enable usernames for local logins. This would be useful in cases where no email
+	 * addresses are used, so the only other identity we have is a username.
+	 *
+	 * @var string
+	 * @Column(name="username", type="string", length=255, nullable=true)
+	 */
+	protected $username = null;
+
+
+	/**
 	 * Every person has a local login capability with this password. Null means there is no local auth.
 	 *
 	 * @var string
