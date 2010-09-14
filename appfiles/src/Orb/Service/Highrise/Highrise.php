@@ -1,0 +1,264 @@
+<?php
+/**
+ * Orb
+ *
+ * @package Orb
+ * @subpackage Service
+ * @category Highrise
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Orb\Service\Highrise;
+
+class Highrise
+{
+	/**
+	 * The company highrise URL without trailing slash. Example: http://mycompany.highrisehq.com
+	 * @var string
+	 */
+	protected $highrise_url;
+
+	/**
+	 * The authtoken for the user.
+	 * @var stirng
+	 */
+	protected $auth_token;
+
+	/**
+	 * Instantiated resources
+	 * @see __get
+	 * @var array
+	 */
+	protected $resources = array();
+
+	/**
+	 * HTTP Client we'll use
+	 * @var \Zend\Http\Client
+	 */
+	protected $http;
+
+	public function __construct($highrise_url, $auth_token)
+	{
+		$this->highrise_url = $highrise_url;
+		$this->auth_token = $auth_token;
+	}
+
+
+
+	/**
+	 * Send a GET request.
+	 * 
+	 * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
+	 * @param array $params Any GET params to specify
+	 * @return \Zend\Http\Response
+	 */
+	public function sendReadRequest($resource, array $params = array())
+	{
+		$resource_url = $this->highrise_url . $resource;
+
+		$http = $this->getHttpClient();
+		$http->setUri($resource_url);
+		if ($params) {
+			$http->setParameterGet($params);
+		}
+
+		return $http->request(\Zend\Http\Client::GET);
+	}
+
+
+	
+	/**
+	 * Send a POST request.
+	 *
+	 * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
+	 * @param string $postdata The POST data to submit. Highrise expects an XML string.
+	 * @param array $get_params Any GET params to specify
+	 * @return \Zend\Http\Response
+	 */
+	public function sendWriteRequest($resource, $postdata, array $get_params = array(), $use_put = false)
+	{
+		$resource_url = $this->highrise_url . $resource;
+
+		$http = $this->getHttpClient();
+		$http->setUri($resource_url);
+		if ($get_params) {
+			$http->setParameterGet($get_params);
+		}
+		$http->setRawData($postdata, 'application/xml');
+
+		if ($use_put) {
+			return $http->request(\Zend\Http\Client::PUT);
+		} else {
+			return $http->request(\Zend\Http\Client::POST);
+		}
+	}
+
+
+	
+	/**
+	 * Send a PUT request.
+	 *
+	 * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
+	 * @param string $postdata The POST data to submit. Highrise expects an XML string.
+	 * @param array $get_params Any GET params to specify
+	 * @return \Zend\Http\Response
+	 */
+	public function sendPutRequest($resource, $postdata, array $get_params = array(), $put = false)
+	{
+		return $this->sendWriteRequest($resource, $postdata, $get_params, true);
+	}
+
+
+	
+	/**
+	 * Send a DELETE request.
+	 *
+	 * @param string $resource The resource to fetch with leading slash. Will be prepended with highrise url.
+	 * @param array $params Any GET params to specify
+	 * @return \Zend\Http\Response
+	 */
+	public function sendDeleteRequest($resource, array $params = array())
+	{
+		$resource_url = $this->highrise_url . $resource;
+
+		$http = $this->getHttpClient();
+		$http->setUri($resource_url);
+		if ($params) {
+			$http->setParameterGet($params);
+		}
+
+		return $http->request(\Zend\Http\Client::DELETE);
+	}
+
+	
+	
+	/**
+	 * Set the HTTPclient to use. If null, a default client will be set.
+	 *
+	 * @param \Zend\Http\Client $http
+	 */
+	public function setHttpClient(\Zend\Http\Client $http)
+	{
+		if ($http === null) {
+
+		}
+
+		$this->http = $http;
+	}
+
+
+
+	/**
+	 * Get the HTTP client to use
+	 *
+	 * @return \Zend\Http\Client
+	 */
+	public function getHttpClient()
+	{
+		if ($this->http === null) $this->setHttpClient();
+
+		$this->http->resetParameters();
+		$this->http->setAuth($this->auth_token, 'X');
+
+		return $this->http;
+	}
+
+
+
+	/**
+	 * Read in values from XML into a native PHP array.
+	 *
+	 * @param string $xml XML doc as as tring, or SimpleXmlElement
+	 * @return array
+	 */
+	public static function xmlToArray($xml)
+	{
+		if (is_string($xml)) {
+			$xml = new \SimpleXMLElement($xml);
+		} elseif (!($xml instanceof \SimpleXMLElement)) {
+			throw new \InvalidArgumentException('$xml must be a XML string or SimpleXMLElement');
+		}
+
+		$array = array();
+
+		$complex_types = array(
+			'contact-data',
+		);
+		$collection_types = array(
+			'email-addresses',
+			'phone-numbers',
+			'addresses',
+			'instant-messengers',
+			'web-addresses',
+		);
+
+		foreach ($xml->children() as $nodename => $node) {
+			if (in_array($nodename, $complex_types)) {
+				$array[$nodename] = $this->xmlToArray($node);
+			} elseif (in_array($nodename, $collection_types)) {
+				$array[$nodename] = array();
+				foreach ($node->children() as $subnode) {
+					$array[$nodename][] = $this->xmlToArray($subnode);
+				}
+			} else {
+				$array[$nodename] = (string)$node;
+			}
+		}
+
+		return $array;
+	}
+
+
+	/**
+	 * Export the values to XML.
+	 *
+	 * @return string
+	 */
+	public function arrayToXml(array $array, $base_nodename)
+	{
+		$xml = array();
+		$xml[] = "<{$base_nodename}>";
+
+		foreach ($array as $nodename => $node) {
+			if (strpos('-id', $nodename) !== false) {
+				$xml[] = "<{$nodename} type=\"integer\">" . ((int)$node) . "</{$nodename}>";
+			} elseif (strpos('-at', $nodename) !== false) {
+				$xml[] = "<{$nodename} type=\"datetime\">" . ((string)$node) . "</{$nodename}>";
+			} elseif (strpos('-on', $nodename) !== false) {
+				$xml[] = "<{$nodename} type=\"date\">" . ((string)$node) . "</{$nodename}>";
+			} elseif (is_array($node)) {
+				$xml[] = $this->arrayToXml($node, $nodename);
+			} else {
+				$xml[] = "<{$nodename}>" . ((string)$node) . "</{$nodename}>";
+			}
+		}
+
+		$xml[] = "</{$base_nodename}>";
+
+		return implode("\n", $xml);
+	}
+
+	
+
+	/**
+	 * Dynamically get resource objects.
+	 *
+	 * @param string $name
+	 * @return Orb\Service\Highrise\Resource\AbstractResource
+	 */
+	public function __get($name)
+	{
+		if (isset($this->resources[$name])) {
+			return $this->resources[$name];
+		}
+
+		$classname = str_replace($name, '_', '-');
+		$classname = \Orb\Util\Strings::dashToCamelCase($classname);
+		$classname = 'Orb\\Service\\Highrise\\Resource\\' . ucfirst($classname);
+
+		$obj = new $classname($this);
+		$this->resources[$name] = $obj;
+
+		return $obj;
+	}
+}
