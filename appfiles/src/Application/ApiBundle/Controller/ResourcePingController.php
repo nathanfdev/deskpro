@@ -12,20 +12,24 @@
 namespace Application\ApiBundle\Controller;
 
 /**
- * A misc resource for doing things like testing if the system is up, or fetching
- * statistics etc.
+ * A remote resource pings this script to notify the system that some record was updated.
+ *
+ * The resource and record are added to a worker queue, and then it will be processed
+ * later (hopefully in a few seconds).
  */
-class PingController extends AbstractController
+class ResourcePingController extends AbstractController
 {
 	/**
 	 * A remote site will ping us when one of their objects has been updated.
 	 *
 	 * @param int $resource_id
-	 * @param mixed $object_id
+	 * @param mixed $record_id
 	 */
-	public function postObjectUpdated($resource_id, $object_id)
+	public function postObjectUpdated($resource_id, $record_id)
 	{
 		$queue = $this['deskpro.core.queue_factory']->createForQueue('object_updated');
-		$queue->send("$resource_id:$object_id");
+		$queue->send("$resource_id:$record_id");
+
+		return $this->createApiResponse(array('success' => true));
 	}
 }

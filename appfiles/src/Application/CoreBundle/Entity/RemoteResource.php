@@ -68,15 +68,12 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $scraper_options = array();
 
-
 	/**
-	 * The classname of the handler used to handle data from this resource. For example,
-	 * with users we'll need the handler to assign new values etc.
-	 *
-	 * @var string
-	 * @Column(name="processor_class", type="string", length=255)
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="RemoteRecordListener", mappedBy="remote_resource")
 	 */
-	protected $handler_class;
+	protected $listeners;
+
 
 
 	/**
@@ -88,10 +85,21 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 	{
 		static $scraper = null;
 		if ($scraper === null) {
-			$class = $this->scraper_class;
-			$scraper = new $class($this->scraper_options);
+			$scraper = DeskPRO\Util::simpleObjectFactory($this->scraper_class, $this->scraper_options);
 		}
 
 		return $scraper;
+	}
+
+
+
+	/**
+	 * Notify all listeners that a record was updated or created.
+	 */
+	public function notifyListeners(RemoteRecord $record)
+	{
+		foreach ($this->listeners as $listener) {
+			$listener->remoteRecordUpdated($this, $record);
+		}
 	}
 }

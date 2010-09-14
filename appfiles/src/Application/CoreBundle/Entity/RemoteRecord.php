@@ -15,13 +15,13 @@ use Orb\Util\Arrays;
 
 
 /**
- * A RemoteObject is actual data that was fetched from some RemoteResource.
+ * A RemoteRecord is actual data that was fetched from some RemoteResource.
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="remote_item")
+ * @Table(name="remote_record")
  */
-class RemoteItem extends \DeskPRO\Domain\DomainObject
+class RemoteRecord extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -33,14 +33,24 @@ class RemoteItem extends \DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * The remote object's unique ID. This ID should identify the object on the remote
-	 * resource. We use this to track updates etc.
+	 * The remote records unique ID. This ID should identify the object on the remote
+	 * resource. We use this to track updates etc. Example: UserID
 	 *
 	 * @var string
 	 * @Index
 	 * @Column(name="object_id", type="string", length=255)
 	 */
-	protected $object_id;
+	protected $identity;
+
+	/**
+	 * The remote records friendly ID. For example, the $record_id might be a UserID,
+	 * this would be the username.
+	 *
+	 * @var string
+	 * @Index
+	 * @Column(name="object_id", type="string", length=255)
+	 */
+	protected $friendly_identity;
 	
 	/**
 	 * The remote resource this item belongs to
@@ -74,4 +84,17 @@ class RemoteItem extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
+
+
+	/**
+	 * Assign new values from a scraper Item.
+	 * 
+	 * @param \Orb\Scraper\Item $item
+	 */
+	public function fromScraperItem(\Orb\Scraper\Item $item)
+	{
+		$this['data'] = $item->getData();
+		$this['identity'] = $item->getIdentity();
+		$this['friendly_identity'] = $item->getFriendlyIdentity();
+	}
 }
