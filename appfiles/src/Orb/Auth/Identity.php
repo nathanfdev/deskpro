@@ -48,7 +48,55 @@ class Identity implements \ArrayAccess
 		return $this->identity;
 	}
 
+
+	/**
+	 * Get the real name of this person
+	 *
+	 * @return string
+	 */
+	public function getName()
+	{
+		return isset($this['name']) ? $this['name'] : false;
+	}
+
 	
+	/**
+	 * Get the display name or nickname of this person
+	 *
+	 * @return string
+	 */
+	public function getNickname()
+	{
+		if (isset($this['nickname'])) {
+			return $this['nickname'];
+		} elseif (isset($this['username'])) {
+			return $this['username'];
+		}
+
+		return null;
+	}
+
+
+	
+	/**
+	 * Get an array of email addresses for this person. They should be sorted
+	 * already in order of preference.
+	 * 
+	 * @return array
+	 */
+	public function getEmailAddresses()
+	{
+		if (isset($this['email_address'])) {
+			return array($this['email_address']);
+		} elseif (isset($this['email_addresses']) AND is_array($this['email_addresses'])) {
+			return $this['email_addresses'];
+		}
+
+		return null;
+	}
+
+
+
 
 	public function offsetExists($offset)
 	{

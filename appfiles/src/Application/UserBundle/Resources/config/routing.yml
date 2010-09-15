@@ -1,3 +1,16 @@
 index:
-    pattern:  /
-    defaults: { _controller: UserBundle:Main:index }
+  pattern:  /
+  defaults: { _controller: UserBundle:Main:index }
+
+user_login:
+  pattern: /login
+  defaults: { _controller: UserBundle:Login:index }
+
+user_logout:
+  pattern: /logout
+  defaults: { _controller: UserBundle:Login:logout }
+
+user_login_callback:
+  pattern: /login/callback/:usersource_id
+  defaults: { _controller: UserBundle:Login:callback }
+  requirements: { usersource_id: "\d+" }

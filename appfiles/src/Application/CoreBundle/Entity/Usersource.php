@@ -69,6 +69,14 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $url = '';
 
+	/**
+	 * The field that is used to store the primary identity of this source.
+	 *
+	 * @var Application\CoreBundle\Entity\PersonField
+	 * @ManyToOne(targetEntity="PersonField")
+	 * @JoinColumn(name="person_field_id", referencedColumnName="id")
+	 */
+	protected $person_field;
 
 	/**
 	 * Options we'll pass to the handlers

@@ -18,7 +18,7 @@ use \Orb\Auth\Result;
 /**
  * The Local adapter handles local logins using an email address or username and a password.
  */
-class Local implements AdapterInterface
+class Local implements \Orb\Auth\Adapter\AdapterInterface
 {
 	/**
 	 * Entity manager

@@ -1,0 +1,63 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Log In</title>
+	<style type="text/css">
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { margin:0; padding:0; }
+		fieldset,img { border:0; }
+		address,caption,cite,code,dfn,em,strong,th,var { font-style:normal;	font-weight:normal; }
+		ol,ul { list-style:none; }
+		caption,th { text-align:left; }
+		h1,h2,h3,h4,h5,h6 { font-size:100%; font-weight:normal; }
+		q:before,q:after { content:''; }
+		abbr,acronym { border:0; }
+
+		body {
+			background-color: #ececec;
+			font-size: 75%;
+			line-height: 135%;
+			margin: 0;
+			padding: 25px 0 25px 0;
+			text-align: center;
+		}
+
+		body, div, p, td, th, ul, li {
+			color: #000;
+			font-family: Arial, Helvetica, Verdana, Tahoma, sans-serif;
+		}
+
+		#body_wrap {
+			border: 1px solid #bdbdbd;
+			margin: 0 auto 0 auto;
+			text-align: left;
+			width: 700px;
+		}
+
+		#header {
+			background-color: #cacaca;
+		}
+
+		#header h1 {
+			font-size: 130%;
+			font-weight: bold;
+			padding: 10px;
+		}
+	</style>
+</head>
+<body>
+<div id="body_wrap">
+	<div id="header"><h1>Log In</h1></div>
+	<div id="content">
+		<form action="{% route 'user_login' %}" class="form login" method="post">
+			{% if invalid_login %}
+				<p>Invalid login. Please try again.</p>
+			{% endif %}
+			Email address: <input type="text" value="" name="username" id="username" /><br />
+			Password: <input type="password" value="" name="password" id="password" /><br />
+			<input type="submit" value="Log In" />
+		</form>
+	</div>
+</div>
+</body>
+</html>

@@ -23,6 +23,6 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 
 	public function userRequriedAction()
 	{
-		return $this->forward('TechBundle:Login:index');
+		return $this->forward('UserBundle:Login:index');
 	}
 }
