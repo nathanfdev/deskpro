@@ -69,7 +69,11 @@ class RemoteRecordListener extends \DeskPRO\Domain\DomainObject
 	{
 		static $listener = null;
 		if ($listener === null) {
-			$listener = DeskPRO\Util::simpleObjectFactory($this->listener_class, $this->listener_options);
+			$options = $this->listener_options;
+			$options['em'] = $this->getContainer()->get('doctrine.orm.entity_manager');
+			$options['db'] = $this->getContainer()->get('database_connection');
+
+			$listener = DeskPRO\Util::simpleObjectFactory($this->listener_class, $options);
 		}
 
 		return $listener;

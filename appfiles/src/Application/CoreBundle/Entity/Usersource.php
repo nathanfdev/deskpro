@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="person_auth")
+ * @Table(name="usersource")
  */
 class Usersource extends \DeskPRO\Domain\DomainObject
 {
@@ -69,41 +69,35 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $url = '';
 
+	
 	/**
-	 * The field that is used to store the primary identity of this source.
+	 * Usersource's use a special RemoteResource that just helps transform an Identity
+	 * into RemoteRecord and then maps userinfo to Person and PersonField's.
 	 *
-	 * @var Application\CoreBundle\Entity\PersonField
-	 * @ManyToOne(targetEntity="PersonField")
-	 * @JoinColumn(name="person_field_id", referencedColumnName="id")
+	 * @var Application\CoreBundle\Entity\RemoteResource
+	 * @ManyToOne(targetEntity="RemoteResource")
+	 * @JoinColumn(name="remote_resource_sysname", referencedColumnName="sysname")
 	 */
-	protected $person_field;
+	protected $remote_resource;
+
 
 	/**
-	 * Options we'll pass to the handlers
+	 * Options we'll pass to the adapter
 	 * 
 	 * @var array
-	 * @Column(name="handler_options", type="array")
+	 * @Column(name="adapter_options", type="array")
 	 */
-	protected $handler_options = array();
+	protected $adapter_options = array();
 
 
 	/**
-	 * The PHP namespace for this handler.
+	 * The adapter to use. This can also be a static method (ie Whatever::MakeAdapter)
+	 * that should return an adapter instead.
 	 *
 	 * @var string
-	 * @Column(name="handler_namepsace", type="string", length=255)
+	 * @Column(name="adapter_class", type="string", length=255)
 	 */
-	protected $handler_namespace;
-
-	
-
-	/**
-	 * Is this a source that requires periodic polling to check for remote updates?
-	 *
-	 * @var bool
-	 * @Column(name="is_polling_source", type="boolean")
-	 */
-	protected $is_polling_source = false;
+	protected $adapter_class;
 
 
 	/**
@@ -112,4 +106,21 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
+
+	
+
+	/**
+	 * Get the adapter
+	 *
+	 * @return Orb\Auth\Adapter\AdapterInterface
+	 */
+	public function getAdapter()
+	{
+		static $adapter = null;
+		if ($adapter === null) {
+			$adapter = DeskPRO\Util::simpleObjectFactory($this->adapter_class, $this->adapter_options);
+		}
+
+		return $adapter;
+	}
 }

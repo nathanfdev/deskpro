@@ -33,6 +33,15 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 	 * @GeneratedValue
 	 */
 	protected $id = null;
+
+	/**
+	 * The system name for the resource. This is so system-level
+	 * resources can be linked easily with other entities.
+	 *
+	 * @var string
+	 * @Column(name="sysname", type="string", length=255, nullable=true)
+	 */
+	protected $sysname = null;
 	
 	/**
 	 * A group or type of resource. For example, there might be multiple user info scrapers,
@@ -73,6 +82,23 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 	 * @OneToMany(targetEntity="RemoteRecordListener", mappedBy="remote_resource")
 	 */
 	protected $listeners;
+
+	/**
+	 * How often to repoll to update this resource. Null means no polling.
+	 *
+	 * @var int
+	 * @Column(name="poll_cycle", type="integer", nullable=true)
+	 */
+	protected $poll_cycle = null;
+
+	/**
+	 * How often to poll to check if a resource exists (i.e., checking to see
+	 * if Highrise has contact info for a person). Null means no polling.
+	 *
+	 * @var int
+	 * @Column(name="poll_discovery_cycle", type="integer", nullable=true)
+	 */
+	protected $poll_discovery_cycle = null;
 
 
 
