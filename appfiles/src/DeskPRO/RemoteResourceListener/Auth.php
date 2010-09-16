@@ -23,19 +23,6 @@ class Auth extends AbstractListener
 {
 	public function remoteRecordUpdated(RemoteResource $resource, RemoteRecord $record)
 	{
-		// 1: Find the PersonData field mapped to this $record
-		try {
-			$person_data = $this->em->getRepository('CoreBundle:PersonData')->findOneBy(array(
-				'remote_record_id' => $record['id']
-			));
-
-			$person = $person_data['person'];
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			$person = null;
-		}
-
-		if (!$person) {
-			$person = $this->initializePerson($record);
-		}
+		// TODO mappers
 	}
 }

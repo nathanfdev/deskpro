@@ -128,4 +128,30 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 			$listener->getListener()->remoteRecordUpdated($this, $record);
 		}
 	}
+
+
+	
+	/**
+	 * Update or create a RemoteRecord and then return it unsaved.
+	 *
+	 * @param \Orb\Scraper\Item $item
+	 * @return RemoteRecord
+	 */
+	public function updateRemoteRecord(\Orb\Scraper\Item $item)
+	{
+		$em = $this->getContainer()->get('doctrine.orm.entity_manager');
+		try {
+			$rec = $em->getRepository('CoreBundle:RemoteRecord')->findOneBy(array(
+				'remote_resource_id' => $this['id'],
+				'identity' => $item->getIdentity()
+			));
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			$rec = $em->createEntity('CoreBundle:RemoteRecord');
+			$rec['remote_resource'] = $this;
+		}
+
+		$rec->fromScraperItem($item);
+
+		return $rec;
+	}
 }

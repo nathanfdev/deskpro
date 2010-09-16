@@ -33,12 +33,21 @@ class RemoteRecord extends \DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * If this record belongs to a person.
+	 *
+	 * @var \Application\CoreBundle\Person
+	 * @OneToOne(targetEntity="Person")
+	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 */
+	protected $person = null;
+
+	/**
 	 * The remote records unique ID. This ID should identify the object on the remote
 	 * resource. We use this to track updates etc. Example: UserID
 	 *
 	 * @var string
 	 * @Index
-	 * @Column(name="object_id", type="string", length=255)
+	 * @Column(name="identity", type="string", length=255)
 	 */
 	protected $identity;
 
@@ -48,9 +57,9 @@ class RemoteRecord extends \DeskPRO\Domain\DomainObject
 	 *
 	 * @var string
 	 * @Index
-	 * @Column(name="object_id", type="string", length=255)
+	 * @Column(name="identity_friendly", type="string", length=255, nullable=true)
 	 */
-	protected $friendly_identity;
+	protected $identity_friendly = null;
 	
 	/**
 	 * The remote resource this item belongs to

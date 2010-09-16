@@ -15,6 +15,15 @@ use Orb\Util\Arrays;
 
 /**
  * This record defines the relationship between a Person and a Usersource.
+ * 
+ * The relationship between RemoteResourse:
+ * A Usersource uses a special RemoteResource which basically exists just so auth Identities
+ * can be transformed into RemoteRecords, so the standard user field mapping system can be used
+ * for those auth adapters that provide additional information. And RemoteRecord is used to store
+ * the relationship between the identity and a Person.
+ *
+ * @see DeskPRO\Auth\UserInitializer
+ * @see DeskPRO\RemoteResourceListener\Auth
  *
  * @Entity
  * @HasLifecycleCallbacks
