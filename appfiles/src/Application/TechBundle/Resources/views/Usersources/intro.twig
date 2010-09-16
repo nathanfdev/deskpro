@@ -1,0 +1,54 @@
+{% extends 'TechBundle::layout' %}
+{% block content %}
+
+<div class="block"><div class="content">
+	<h2>Introduction to Usersources</h2>
+	<div class="inner">
+		<p>
+			Usersources allow you to configure remote resources that feed your helpdesk authentication information.
+			This allows you to let your users log in using credentials from other systems such as your website, or even popular
+			social networks like Twitter or Facebook.
+		</p>
+
+		<p>
+			Usersources are also used to fetch user information to make it easy to keep your users contact information up to date
+			and complete. You can configure your helpdesk to sync from systems like Highrise.
+		</p>
+
+		<p>
+			If you have your own systems, you can implement your own integrations by implementing a set of simple protocols.
+			Refer to the <a href="">help pages</a> for information and examples.
+		</p>
+	</div>
+</div></div>
+
+{% if has_no_usersources %}
+	<div class="block"><div class="content">
+		<h2>Create a Usersource</h2>
+		<div class="inner">
+			<p>
+				You currently have no usersources defined. This means all users will only be able to register and log in using the helpdesk.
+				We recommend creating new sources for popular websites such as Twitter and Facebook to increase the ease in which
+				users can gain access to your helpdesk.
+			</p>
+			<form action="{% route 'tech_admin_usersources_new' %}" method="get">
+				<div class="group navform wat-cf">
+					<button class="button" type="submit">
+						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Create a new usersource
+					</button>
+				</div>
+			</form>
+		</div>
+	</div></div>
+{% endif %}
+
+
+{% endblock %}
+{% block sidebar %}
+	<div class="block notice">
+		<h4>Need Help?</h4>
+		<p>
+			Read the <a href="">help pages</a> regarding usersources for more information.
+		</p>
+	</div>
+{% endblock %}

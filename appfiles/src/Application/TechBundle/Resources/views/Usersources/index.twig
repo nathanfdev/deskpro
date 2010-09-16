@@ -1,0 +1,48 @@
+{% extends 'TechBundle::layout' %}
+{% block content %}
+
+<div class="block" id="block-tables">
+	<div class="content">
+		<div style="float: right; padding: 5px 5px 0 0;">
+			<a href="{% route 'tech_admin_styles_newstyle' %}" class="button">
+				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New Usersource
+			</a>
+		</div>
+		<h2 class="title">Usersources</h2>
+		<div class="inner">
+			<form action="#" class="form">
+				<table class="table">
+					<tr>
+						<th class="first" width="10">Order</th>
+						<th>Usersource</th>
+						<th width="250">&nbsp;</th>
+					</tr>
+					{% for usersource in all_usersources %}
+					<tr class="even">
+						<td><input type="text" name="display_order[{{usersource.id}}]" value="{{usersource.display_order}}" /></td>
+						<td>
+							{{usersource.title}}
+							{% if usersource.note %}<br />{{usersource.note}}{% endif %}
+						</td>
+						<td class="last">
+							<a href="{% route 'tech_admin_usersources_info' with ['usersource_id': usersource.id] %}">Info</a> &middot;
+							<a href="{% route 'tech_admin_usersources_edit' with ['usersource_id': usersource.id] %}">Edit</a>
+						</td>
+					</tr>
+					{% endfor %}
+				</table>
+				<div class="actions-bar wat-cf">
+					<div class="actions">
+						<button class="button" type="submit">
+							Update Display Order
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block sidebar %}
+{% endblock %}

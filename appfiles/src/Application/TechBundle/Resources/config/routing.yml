@@ -82,3 +82,30 @@ tech_admin_langs_editphrase:
   pattern: /languages/:lang_id/edit-phrase/:phrase_name
   defaults: { _controller: TechBundle:Languages:editPhrase }
   requirements: { lang_id: "\d+" }
+
+
+################################################################################
+# Usersources
+################################################################################
+
+tech_admin_usersources:
+  pattern: /usersources
+  defaults: { _controller: TechBundle:Usersources:index }
+
+tech_admin_usersources_intro:
+  pattern: /usersources/intro
+  defaults: { _controller: TechBundle:Usersources:intro }
+
+tech_admin_usersources_info:
+  pattern: /usersources/:usersource_id
+  defaults: { _controller: TechBundle:Usersources:info }
+  requirements: { usersource_id: "\d+" }
+
+tech_admin_usersources_edit:
+  pattern: /usersources/:usersource_id/edit
+  defaults: { _controller: TechBundle:Usersources:edit }
+  requirements: { usersource_id: "\d+" }
+
+tech_admin_usersources_new:
+  pattern: /usersources/new-usersource
+  defaults: { _controller: TechBundle:Usersources:edit, usersource_id: 0 }
