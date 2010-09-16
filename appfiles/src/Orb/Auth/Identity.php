@@ -11,6 +11,12 @@ namespace Orb\Auth;
 
 /**
  * Holds the result from an auth try.
+ *
+ * Suggested common names:
+ * - identity_friendly: A unique username to correspond with the ID
+ * - name: For users full name
+ * - email_address: For users email address
+ * - nickname: The users nickname or displayname (if using usernames, probably that)
  */
 class Identity implements \ArrayAccess
 {
