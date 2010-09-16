@@ -117,6 +117,15 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	protected $display_order = 0;
 
 	
+	/**
+	 * True if this usersource is enabled/usable.
+	 *
+	 * @var bool
+	 * @Column(name="is_enabled", type="boolean")
+	 */
+	protected $is_enabled = true;
+
+	
 
 	/**
 	 * Get the adapter
