@@ -104,9 +104,9 @@ class Twitter implements AdapterInterface
 			'access_token_secret' => $access_token->getTokenSecret(),
 			'identity' => $account_data['id'],
 			'identity_friendly' => $access_token['screen_name'],
-			'name' => $account_data['name'],
+			'fullname' => $account_data['name'],
 			'url' => $account_data['url'],
-			'username' => $access_token['screen_name'],
+			'nickname' => $access_token['screen_name'],
 			'raw' => $account_data,
 		);
 
