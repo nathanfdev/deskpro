@@ -109,3 +109,29 @@ tech_admin_usersources_edit:
 tech_admin_usersources_new:
   pattern: /usersources/new-usersource
   defaults: { _controller: TechBundle:Usersources:edit, usersource_id: 0 }
+
+
+################################################################################
+# API Keys
+################################################################################
+
+tech_admin_api:
+  pattern: /api
+  defaults: { _controller: TechBundle:Api:index }
+
+tech_admin_api_intro:
+  pattern: /api/intro
+  defaults: { _controller: TechBundle:Api:intro }
+
+tech_admin_api_keyinfo:
+  pattern: /api/key/:apikey
+  defaults: { _controller: TechBundle:Api:infoKey }
+  requirements: { usersource_id: "\d+" }
+
+tech_admin_api_editkey:
+  pattern: /api/key/:apikey/edit
+  defaults: { _controller: TechBundle:Api:editKey }
+
+tech_admin_api_newkey:
+  pattern: /api/new-key
+  defaults: { _controller: TechBundle:Api:editKey, apikey: 0 }
