@@ -125,7 +125,7 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 	public function notifyListeners(RemoteRecord $record)
 	{
 		foreach ($this->listeners as $listener) {
-			$listener->remoteRecordUpdated($this, $record);
+			$listener->getListener()->remoteRecordUpdated($this, $record);
 		}
 	}
 }
