@@ -33,12 +33,7 @@ class AuthIdentity extends \Orb\Scraper\AbstractScraper
 		$item = new \Orb\Scraper\Item(
 			$identity->getIdentity(),
 			isset($identity['identity_friendly']) ? $identity['identity_friendly'] : null,
-			array(
-				'fullname' => isset($identity['fullname']) ? $identity['fullname'] : null,
-				'nickname' => isset($identity['nickname']) ? $identity['nickname'] : null,
-				'email_addresses' => isset($identity['email_address']) ? array($identity['email_address']) : null,
-				'raw_info' => $identity->getRawData()
-			)
+			$identity->getRawData()
 		);
 
 		return $item;
