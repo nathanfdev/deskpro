@@ -80,4 +80,16 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 	{
 
 	}
+
+	
+
+	/**
+	 * Is this a POST request?
+	 *
+	 * @return bool
+	 */
+	public function isPostRequest()
+	{
+		return ($this['request']->getMethod() == 'POST');
+	}
 }
