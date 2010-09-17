@@ -70,12 +70,14 @@ abstract class AbstractSetup
 
 
 	/**
-	 * Set up or update a remote resource
+	 * Set up or update a remote resource. This must setup the primary remoteresource with the
+	 * AuthIdentity scraper, as well as any additional resources the Usersource might need
+	 * and possibly custom field mappers.
 	 * 
 	 * @param \Application\CoreBundle\Entity\Usersource $usersource
 	 * @return array
 	 */
-	public function setupRemoteResource(\Application\CoreBundle\Entity\Usersource $usersource)
+	public function setupRemoteResources(\Application\CoreBundle\Entity\Usersource $usersource)
 	{
 		if ($usersource['remote_resource']) {
 			return;

@@ -91,13 +91,19 @@ class UsersourcesController extends AbstractController
 		}
 
 		if ($this->isPostRequest()) {
+
 			if ($setup->setFormData($this->in->getArray('form_data'))) {
+
+				$this->em->beginTransaction();
+
 				$usersource['adapter_class']   = $setup->getAdapterClass();
 				$usersource['adapter_options'] = $setup->getAdapterOptions();
 				$setup->setupRemoteResource($usersource);
 
 				$this->em->persist($usersource);
 				$this->em->flush();
+
+				$this->em->commit();
 
 				return $this->redirect($this->generateUrl('tech_admin_usersources_info', array('usersource_id' => $usersource['id'])));
 			}

@@ -19,6 +19,17 @@ use Orb\Util\Arrays;
  */
 class Twitter extends AbstractSetup
 {
+	public function setupRemoteResources(\Application\CoreBundle\Entity\Usersource $usersource)
+	{
+		if ($usersource['remote_resource']) {
+			return;
+		}
+
+		parent::setupRemoteResources($usersource);
+
+		// Now create the remotereousrce for the Twitter feed scraper
+	}
+
 	public function getAdapterClass()
 	{
 		return 'Orb\\Auth\\Adapter\\Twitter';

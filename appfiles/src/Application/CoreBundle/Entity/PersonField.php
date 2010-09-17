@@ -32,15 +32,15 @@ class PersonField extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
+
 	/**
-	 * If this field is an implicit field created by a Usersource, then this will
-	 * be that Usersource.
+	 * The remote resource this field is linked with
 	 *
-	 * @var Application\CoreBundle\Entity\Usersource
-	 * @OneToOne(targetEntity="Usersource")
-	 * @JoinColumn(name="for_usersource_id", referencedColumnName="id")
+	 * @var Application\CoreBundle\Entity\RemoteResource
+	 * @OneToOne(targetEntity="RemoteResource")
+	 * @JoinColumn(name="remote_resource_id", referencedColumnName="id")
 	 */
-	protected $for_usersource = null;
+	protected $remote_resource;
 	
 	
 	/**

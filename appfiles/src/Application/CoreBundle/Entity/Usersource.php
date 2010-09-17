@@ -91,6 +91,17 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * @var Doctrine\Common\Collections\ArrayCollection;
+	 * @ManyToMany(targetEntity="RemoteResource")
+	 * @JoinTable(name="usersource2remoteresource",
+	 *     joinColumns={@JoinColumn(name="usersource_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@JoinColumn(name="remote_resource_id", referencedColumnName="id")}
+     * )
+	 */
+	protected $related_remote_resources;
+
+
+	/**
 	 * The typename. This is a simple name that the system will use to base classnames off
 	 * of (like the setup).
 	 * 
