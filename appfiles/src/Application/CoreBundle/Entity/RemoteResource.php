@@ -33,15 +33,6 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 	 * @GeneratedValue
 	 */
 	protected $id = null;
-
-	/**
-	 * The system name for the resource. This is so system-level
-	 * resources can be linked easily with other entities.
-	 *
-	 * @var string
-	 * @Column(name="sysname", type="string", length=255, nullable=true)
-	 */
-	protected $sysname = null;
 	
 	/**
 	 * A group or type of resource. For example, there might be multiple user info scrapers,

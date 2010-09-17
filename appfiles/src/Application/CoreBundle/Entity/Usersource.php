@@ -85,9 +85,19 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 *
 	 * @var Application\CoreBundle\Entity\RemoteResource
 	 * @ManyToOne(targetEntity="RemoteResource")
-	 * @JoinColumn(name="remote_resource_sysname", referencedColumnName="sysname")
+	 * @JoinColumn(name="remote_resource_id", referencedColumnName="id", nullable=true)
 	 */
 	protected $remote_resource;
+
+
+	/**
+	 * The typename. This is a simple name that the system will use to base classnames off
+	 * of (like the setup).
+	 * 
+	 * @var string
+	 * @Column(name="typename", type="string", length=255)
+	 */
+	protected $typename;
 
 
 	/**
@@ -106,7 +116,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @Column(name="adapter_class", type="string", length=255)
 	 */
-	protected $adapter_class;
+	protected $adapter_class = null;
 
 
 	/**

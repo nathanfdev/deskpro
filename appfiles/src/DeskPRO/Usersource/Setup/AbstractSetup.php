@@ -1,0 +1,88 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Usersources
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace DeskPRO\Usersource\Setup;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+/**
+ * The setup classes handle showing the user a wizard, and then taking input and
+ * transforming it (if necessary) into adapter options.
+ */
+abstract class AbstractSetup
+{
+	protected $form_data = array();
+	protected $controller;
+	protected $usersource;
+
+	public function __construct(\Application\TechBundle\Controller\AbstractController $controller)
+	{
+		$this->controller = $controller;
+	}
+
+	public function setExistingUsersource(\Application\CoreBundle\Entity\Usersource $usersource)
+	{
+		$this->usersource = $usersource;
+		$this->form_data = $usersource['adapter_options'];
+	}
+
+
+
+	/**
+	 * Set form data. Returns true if data is okay, false if not.
+	 * 
+	 * @param array $form_data
+	 * @return bool
+	 */
+	public function setFormData(array $form_data)
+	{
+		$this->form_data;
+		return true;
+	}
+
+
+	
+	abstract public function getAdapterClass();
+	
+	abstract public function getAdapterOptions();
+
+	/**
+	 * Render the form parts for this setup wizard
+	 * @return string
+	 */
+	public function renderForm()
+	{
+		$nameparts = explode('\\', \get_class($this));
+		$classname = array_pop($nameparts);
+
+		$tpl = 'TechBundle:Usersource:setupform-' . strtolower($tpl);
+
+		return $this->controller['templating']->render($tpl, array('form_data' => $this->form_data));
+	}
+
+
+	/**
+	 * Set up or update a remote resource
+	 * 
+	 * @param \Application\CoreBundle\Entity\Usersource $usersource
+	 * @return array
+	 */
+	public function setupRemoteResource(\Application\CoreBundle\Entity\Usersource $usersource)
+	{
+		if ($usersource['remote_resource']) {
+			return;
+		}
+
+		$remote_resource = $this->controller->em->createEntity('CoreBundle:RemoteResource');
+		$remote_resource['scraper_class'] = 'DeskPRO\\Scraper\\AuthIdentity';
+		$usersource['remote_resource'] = $remote_resource;
+	}
+}
