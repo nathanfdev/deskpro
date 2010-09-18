@@ -86,6 +86,8 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$this->em->persist($group);
 		$this->em->flush();
 
+		$output->writeln("Created Guests usergroup #{$group['id']}");
+
 		// Users
 		$group = $this->em->createEntity('CoreBundle:Usergroup');
 		$group['title'] = 'Users';
@@ -101,35 +103,29 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$em->beginTransaction();
 
 		// Profile
-		$profile = $this->em->createEntity('CoreBundle:Profile');
-		$em->persist($profile);
+		$person = $this->em->createEntity('CoreBundle:Person');
+		$person['password'] = 'pass';
+		$person['is_user'] = true;
+		$em->persist($person);
 		$em->flush();
 
 		// The email addy
-		$email = $this->em->createEntity('CoreBundle:ProfileEmail');
+		$email = $this->em->createEntity('CoreBundle:PersonEmail');
 		$email['email_address'] = 'admin@example.com';
 		$email['is_validated'] = true;
-		$email['profile'] = $profile;
+		$email['person'] = $person;
 
 		$em->persist($email);
-		$em->persist($profile);
+		$em->persist($person);
 		$em->flush();
 
-		// The user
-		$user = $this->em->createEntity('CoreBundle:User');
-		$user['password'] = 'pass';
-
-		$profile['user'] = $user;
-		$user['profile'] = $profile;
-
 		$group = $em->find('CoreBundle:Usergroup', 1);
-		$user['usergroups']->add($group);
+		$person['usergroups']->add($group);
 
-		$em->persist($user);
-		$em->persist($profile);
+		$em->persist($person);
 		$em->flush();
 		$em->commit();
 
-		$output->writeln("\n<info>Admin user #{$user['id']} was created:\n\tEmail: admin@example.com\n\tPassword: pass</info>");
+		$output->writeln("\n<info>Admin Person #{$person['id']} was created:\n\tEmail: admin@example.com\n\tPassword: pass</info>");
 	}
 }
