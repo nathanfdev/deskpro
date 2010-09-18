@@ -12,7 +12,6 @@ class CoreBundle extends \Symfony\Framework\Bundle\Bundle
     {
         $container->registerExtension(new \Application\CoreBundle\DependencyInjection\TwigExtension());
         $container->registerExtension(new \Application\CoreBundle\DependencyInjection\CoreExtension());
-        $container->registerExtension(new \Application\CoreBundle\DependencyInjection\RequestUser());
         $container->registerExtension(new \Application\CoreBundle\DependencyInjection\DoctrineExtension());
         $container->registerExtension(new \Application\CoreBundle\DependencyInjection\CacheExtension());
     }

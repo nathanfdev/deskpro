@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\CoreBundle;
+namespace Application\ApiBundle;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 use Symfony\Component\DependencyInjection\ParameterBag\ParameterBagInterface;
