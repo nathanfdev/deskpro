@@ -1,29 +1,29 @@
 api_test:
-  patterns: /test
+  pattern: /test
   defaults: { _controller: ApiBundle:Test:test }
   requirements: { _method: GET }
 
 api_test_post:
-  patterns: /test
+  pattern: /test
   defaults: { _controller: ApiBundle:Test:postTest }
   requirements: { _method: POST }
 
 api_deskpro_time:
-  patterns: /deskpro/time
+  pattern: /deskpro/time
   defaults: { _controller: ApiBundle:Deskpro:time }
   requirements: { _method: GET }
 
 api_deskpro_setting:
-  patterns: /deskpro/setting/:setting_name
+  pattern: /deskpro/setting/:setting_name
   defaults: { _controller: ApiBundle:Deskpro:setting }
   requirements: { _method: GET }
 
 api_deskpro_setting_post:
-  patterns: /deskpro/setting/:setting_name
+  pattern: /deskpro/setting/:setting_name
   defaults: { _controller: ApiBundle:Deskpro:postSetting }
   requirements: { _method: POST }
 
 api_ping_object_updated:
-  patterns: /ping/object-updated/:resource_id/:object_id
-  defaults: { _controller: ApiBundle:Ping:postObjectUpdated }
+  pattern: /ping/object-updated/:resource_id/:object_id
+  defaults: { _controller: ApiBundle:ResourcePing:postObjectUpdated }
   requirements: { _method: POST }
