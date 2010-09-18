@@ -55,10 +55,10 @@ class Superglobal implements SourceInterface
 			$name = array_shift($parts);
 		}
 
-		if (isset($this->superglobal[$name])) {
-			$value = $this->superglobal[$name];
+		if (isset($this->array[$name])) {
+			$value = $this->array[$name];
 		} else {
-			$value = null;
+			return null;
 		}
 
 		if ($parts) {
