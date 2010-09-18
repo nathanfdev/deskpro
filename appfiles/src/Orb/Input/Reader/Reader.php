@@ -99,6 +99,27 @@ class Reader
 
 
 	/**
+	 * Get an array value. This is just a shortcut to get a raw value, and then
+	 * cast it to an array if it isn't already.
+	 *
+	 * @param   string   $name         The name of the value to fetch
+	 * @param   string   $source_name  The name of the source
+	 * @return  mixed
+	 */
+	public function getArrayValue($name, $source_name = null)
+	{
+		$value = $this->getValue($name, $source_name);
+
+		if (!is_array($value)) {
+			$value = array($value);
+		}
+
+		return $value;
+	}
+
+
+
+	/**
 	 * Get a value from a source then clean it.
 	 *
 	 * @param   string      $name           The name of the value to fetch
@@ -107,7 +128,7 @@ class Reader
 	 * @param   mixed       $clean_options  Any options to pass to the cleaner
 	 * @return  mixed
 	 */
-	public function getCleanValue($name, $clean_type, $source_name = null, $clean_options = null)
+	public function getCleanValue($name, $clean_type = 'raw', $source_name = null, $clean_options = null)
 	{
 		$value = $this->getValue($name, $source_name);
 
@@ -127,7 +148,7 @@ class Reader
 	 * @param   mixed       $clean_key_options  Any options to pass to the cleaner for key cleaning
 	 * @return  mixed
 	 */
-	public function getCleanValueArray($name, $clean_val_type, $clean_key_type, $source_name = null, $clean_val_options = null, $clean_key_options = null)
+	public function getCleanValueArray($name, $clean_val_type = 'raw', $clean_key_type = 'raw', $source_name = null, $clean_val_options = null, $clean_key_options = null)
 	{
 		$value = $this->getValue($name, $source_name);
 

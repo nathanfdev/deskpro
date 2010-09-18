@@ -145,7 +145,7 @@ class Cleaner
 	 * @param   mixed    $options_key  Options for the key type
 	 * @return  array
 	 */
-	public function cleanArray($array, $type_val = self::TYPE_RAW, $type_key = self::TYPE_RAW, $options_val = null, $options_key = null)
+	public function cleanArray($array, $type_val = 'raw', $type_key = 'raw', $options_val = null, $options_key = null)
 	{
 	    if (!is_array($array)) {
 	        $array = (array)$array;
@@ -153,14 +153,11 @@ class Cleaner
 
 	    $ret_array = array();
 
-	    $type_val = $this->stringTypeToInt($type_val);
-	    $type_key = $this->stringTypeToInt($type_key);
-
 		foreach ($array as $k => $v) {
 			$k = $this->clean($k, $type_key, $options_key);
 			$v = $this->clean($v, $type_val, $options_val);
 
-			if ($type_key == self::TYPE_DISCARD) {
+			if ($type_key == 'discard') {
 				$ret_array[] = $v;
 			} else {
 				$ret_array[$k] = $v;
