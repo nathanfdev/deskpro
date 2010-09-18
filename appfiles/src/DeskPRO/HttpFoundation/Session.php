@@ -14,6 +14,8 @@ namespace DeskPRO\HttpFoundation;
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
+use \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
+
 /**
  * Session is able to load up a user, their locale etc.
  */
