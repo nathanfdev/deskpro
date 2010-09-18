@@ -313,7 +313,7 @@ class Reader
 				$name = $method_args[0];
 
 				$type = $match[1];
-				$type = Strings::camelCaseDash($type);
+				$type = Strings::camelCaseToDash($type);
 				$type = str_replace('-', '_', $type);
 
 				$from = strtolower($match[2]);
