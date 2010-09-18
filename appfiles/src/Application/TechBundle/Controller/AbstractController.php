@@ -5,14 +5,14 @@ namespace Application\TechBundle\Controller;
 abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 {
 	/**
-	 * The currently logged in user
-	 * @var \DeskPRO\Bundle\CoreBundle\Entity\User
+	 * The currently logged in person
+	 * @var \DeskPRO\Bundle\CoreBundle\Entity\Person
 	 */
-	protected $user;
+	protected $person;
 
 	protected function init()
 	{
-		$this->user = $this['deskpro.core.requestuser'];
+		$this->user = $this->session->getPerson();
 		$this->tplvars['user'] = $this->user;
 	}
 

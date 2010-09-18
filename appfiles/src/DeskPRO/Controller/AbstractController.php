@@ -53,6 +53,12 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 	 */
 	protected $settings;
 
+	/**
+	 * The session
+	 * @var DeskPRO\HttpFoundation\Session
+	 */
+	protected $session;
+
 
 
 	public function setContainer(ContainerInterface $container)
@@ -66,6 +72,7 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 		$this->in       = $this['deskpro.core.input_reader'];
 		$this->cleaner  = $this['deskpro.core.input_cleaner'];
 		$this->settings = $this['deskpro.core.settings'];
+		$this->session  = $this['session'];
 
 		$this['templating']->resetTemplateVars();
 		$this->tplvars = $this['templating']->getTemplateVarsObject();
