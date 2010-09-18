@@ -12,7 +12,7 @@ namespace Orb\Auth;
 /**
  * Holds the result from an auth try.
  */
-class Result implements \ArrayAccess
+class Result
 {
 	/**
 	 * Failure due to invalid credentials.
@@ -99,7 +99,7 @@ class Result implements \ArrayAccess
 	 */
 	public function isValid()
 	{
-		return $this->code == self::SUCCESS;
+		return $this->_code == self::SUCCESS;
 	}
 
 	
@@ -111,7 +111,7 @@ class Result implements \ArrayAccess
 	 */
 	public function isRedirectRequired()
 	{
-		return $this->code == self::REQUIRES_REDIRECT;
+		return $this->_code == self::REQUIRES_REDIRECT;
 	}
 
 
