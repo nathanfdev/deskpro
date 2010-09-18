@@ -38,8 +38,8 @@ class Twitter extends AbstractSetup
 	public function getAdapterOptions()
 	{
 		$options = array(
-			'consumer_key' => $this->form_data['consumer_key'],
-			'consumer_secret' => $this->form_data['consumer_secret']
+			'consumer_key' => isset($this->form_data['consumer_key']) ? $this->form_data['consumer_key'] : '',
+			'consumer_secret' => isset($this->form_data['consumer_secret']) ? $this->form_data['consumer_secret'] : '',
 		);
 
 		return $options;

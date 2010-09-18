@@ -1,0 +1,37 @@
+{% extends 'TechBundle::layout' %}
+{% block content %}
+
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">Usersource Types</h2>
+		<div class="inner">
+			<form action="{% route 'tech_admin_usersources_new' %}" class="form">
+				<table class="table">
+					<tr>
+						<th class="first" width="10">&nbsp;</th>
+						<th>Type</th>
+					</tr>
+					<tr class="even">
+						<td><input type="radio" name="typename" value="twitter" /></td>
+						<td>
+							<strong>Twitter</strong><br />
+							The Twitter usersource will allow your users to log in via their Twitter profile, and profiles
+							will automatically show a users latest tweets.
+						</td>
+					</tr>
+				</table>
+				<div class="actions-bar wat-cf">
+					<div class="actions">
+						<button class="button" type="submit">
+							Choose Type
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block sidebar %}
+{% endblock %}

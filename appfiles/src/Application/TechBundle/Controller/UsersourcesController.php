@@ -27,12 +27,12 @@ class UsersourcesController extends AbstractController
 	{
 		$all_usersources = $this->em->createQuery("
 			SELECT us
-			FROM CoreEntity:Usersource us
+			FROM CoreBundle:Usersource us
 			ORDER BY us.display_order ASC
 		")->getResult();
 
-		if (!$all_usersources->count()) {
-			return $this->redirect($this->generateUrl('tech_admin_usersources_info', array()));
+		if (!count($all_usersources)) {
+			return $this->redirect($this->generateUrl('tech_admin_usersources_intro', array()));
 		}
 
 		$this->tplvars['all_usersources'] = $all_usersources;
@@ -51,6 +51,9 @@ class UsersourcesController extends AbstractController
 	 */
 	public function introAction()
 	{
+		$count = $this->db->fetchColumn("SELECT COUNT(*) FROM usersources LIMIT 1");
+		$this->tplvars['has_no_usersources'] = !$count;
+
 		return $this->render('TechBundle:Usersources:intro');
 	}
 
@@ -92,14 +95,20 @@ class UsersourcesController extends AbstractController
 
 		if ($this->isPostRequest()) {
 
-			if ($setup->setFormData($this->in->getArray('form_data'))) {
+			$fields = array('title', 'description', 'url', 'note');
+			foreach ($fields as $f) {
+				$usersource[$f] = $this->in->getString('usersource.'.$f);
+			}
+
+			if ($setup->setFormData($this->in->getArrayValue('form_data'))) {
 
 				$this->em->beginTransaction();
 
 				$usersource['adapter_class']   = $setup->getAdapterClass();
 				$usersource['adapter_options'] = $setup->getAdapterOptions();
-				$setup->setupRemoteResource($usersource);
+				$this->em->persist($usersource);
 
+				$setup->setupRemoteResources($usersource);
 				$this->em->persist($usersource);
 				$this->em->flush();
 
@@ -108,6 +117,9 @@ class UsersourcesController extends AbstractController
 				return $this->redirect($this->generateUrl('tech_admin_usersources_info', array('usersource_id' => $usersource['id'])));
 			}
 		}
+
+		$this->tplvars['usersource'] = $usersource;
+		$this->tplvars['usersource_form'] = $setup->renderForm();
 
 		return $this->render('TechBundle:Usersources:edit');
 	}

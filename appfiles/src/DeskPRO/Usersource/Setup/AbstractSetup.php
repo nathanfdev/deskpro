@@ -22,10 +22,18 @@ abstract class AbstractSetup
 	protected $form_data = array();
 	protected $controller;
 	protected $usersource;
+	
+	/**
+	 * Entity manager
+	 * @var DeskPRO\ORM\EntityManager
+	 */
+	protected $em;
+
 
 	public function __construct(\Application\TechBundle\Controller\AbstractController $controller)
 	{
 		$this->controller = $controller;
+		$this->em = $this->controller['doctrine.orm.entity_manager'];
 	}
 
 	public function setExistingUsersource(\Application\CoreBundle\Entity\Usersource $usersource)
@@ -44,7 +52,7 @@ abstract class AbstractSetup
 	 */
 	public function setFormData(array $form_data)
 	{
-		$this->form_data;
+		$this->form_data = $form_data;
 		return true;
 	}
 
@@ -63,7 +71,7 @@ abstract class AbstractSetup
 		$nameparts = explode('\\', \get_class($this));
 		$classname = array_pop($nameparts);
 
-		$tpl = 'TechBundle:Usersource:setupform-' . strtolower($tpl);
+		$tpl = 'TechBundle:Usersources:setupform-' . strtolower($classname);
 
 		return $this->controller['templating']->render($tpl, array('form_data' => $this->form_data));
 	}
@@ -83,8 +91,10 @@ abstract class AbstractSetup
 			return;
 		}
 
-		$remote_resource = $this->controller->em->createEntity('CoreBundle:RemoteResource');
+		$remote_resource = $this->em->createEntity('CoreBundle:RemoteResource');
 		$remote_resource['scraper_class'] = 'DeskPRO\\Scraper\\AuthIdentity';
+		$this->em->persist($remote_resource);
+
 		$usersource['remote_resource'] = $remote_resource;
 	}
 }

@@ -50,7 +50,7 @@ class RemoteResource extends \DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @Column(name="note", type="text")
 	 */
-	protected $note;
+	protected $note = '';
 
 	/**
 	 * The classname of the corresponding scraper
