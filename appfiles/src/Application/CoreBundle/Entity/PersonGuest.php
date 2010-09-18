@@ -45,4 +45,10 @@ class PersonGuest extends Person
 
 		return $this->usergroups;
 	}
+
+	/** @PrePersist */
+	public function incCreatedAt()
+	{
+		throw new \BadMethodCallException('A PersonGuest cannot be persisted');
+	}
 }

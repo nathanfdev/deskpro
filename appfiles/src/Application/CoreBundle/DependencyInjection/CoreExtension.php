@@ -27,7 +27,22 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$this->loadTranslation($container);
 		$this->loadPhraseTemplateHelper($container);
 		$this->loadSettings($container);
+		$this->loadSession($container);
     }
+
+
+	protected function loadSession(ContainerBuilder $container)
+	{
+		// TODO: Change this to proper Entity storage when its finished
+		$definition = new Definition('Symfony\\Component\\HttpFoundation\\SessionStorage\\NativeSessionStorage', array());
+		$container->setDefinition('session.storage', $definition);
+
+		$definition = new Definition('DeskPRO\\HttpFoundation\\Session', array(
+			new Reference('doctrine.orm.entity_manager'),
+			new Reference('session.storage'),
+		));
+		$container->setDefinition('session', $definition);
+	}
 
 	
 	/**
