@@ -21,7 +21,7 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="remote_resource")
+ * @Table(name="remote_resources")
  */
 class RemoteResource extends \DeskPRO\Domain\DomainObject
 {

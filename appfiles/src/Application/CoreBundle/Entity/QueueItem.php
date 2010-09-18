@@ -25,7 +25,7 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="queue_item")
+ * @Table(name="queue_items")
  */
 class QueueItem extends \DeskPRO\Domain\DomainObject
 {

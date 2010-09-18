@@ -21,7 +21,7 @@ use \Application\CoreBundle\Entity\UsergroupPropertyPermission;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="person")
+ * @Table(name="people")
  */
 class Person extends \DeskPRO\Domain\DomainObject
 {

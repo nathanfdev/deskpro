@@ -22,7 +22,7 @@ use Orb\Util\Arrays;
  * API keys are codes that authorize requests against the DeskPRO.
  *
  * @Entity
- * @Table(name="api_key")
+ * @Table(name="api_keys")
  */
 class ApiKey extends \DeskPRO\Domain\DomainObject
 {

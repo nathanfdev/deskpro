@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="template")
+ * @Table(name="templates")
  */
 class Template extends \DeskPRO\Domain\DomainObject
 {

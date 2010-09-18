@@ -27,7 +27,7 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="usersource")
+ * @Table(name="usersources")
  */
 class Usersource extends \DeskPRO\Domain\DomainObject
 {

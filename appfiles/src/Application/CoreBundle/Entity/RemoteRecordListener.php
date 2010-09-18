@@ -21,7 +21,7 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="remote_record_listener")
+ * @Table(name="remote_record_listeners")
  */
 class RemoteRecordListener extends \DeskPRO\Domain\DomainObject
 {

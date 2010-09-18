@@ -19,7 +19,7 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="remote_record")
+ * @Table(name="remote_records")
  */
 class RemoteRecord extends \DeskPRO\Domain\DomainObject
 {

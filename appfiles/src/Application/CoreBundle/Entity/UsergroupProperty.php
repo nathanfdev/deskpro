@@ -22,7 +22,7 @@ use Orb\Util\Web;
  * @DiscriminatorColumn(name="property_type", type="string")
  * @DiscriminatorMap({"permission" = "UsergroupPropertyPermission"})
  * @HasLifecycleCallbacks
- * @Table(name="usergroup_property")
+ * @Table(name="usergroup_properties")
  */
 abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 {

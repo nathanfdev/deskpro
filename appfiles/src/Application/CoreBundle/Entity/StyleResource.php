@@ -22,7 +22,7 @@ use Orb\Util\Web;
  * @DiscriminatorColumn(name="resource_type", type="string")
  * @DiscriminatorMap({"css" = "StyleResourceCss"})
  * @HasLifecycleCallbacks
- * @Table(name="style_resource")
+ * @Table(name="style_resources")
  */
 abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 {
