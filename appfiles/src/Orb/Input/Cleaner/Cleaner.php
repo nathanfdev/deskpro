@@ -176,11 +176,25 @@ class Cleaner
 	 * If a string has mb characters, this will ensure the string is well-formed and
 	 * fix it if it's not (most secure thing to do).
 	 *
+	 * This uses phputf8 from sourceforge if it's available. If it's not available,
+	 * this cleaner does nothing.
+	 * 
+	 * @link http://sourceforge.net/projects/phputf8/
+	 *
 	 * @param string|array $string The string to work on, or an array to go through
 	 * @return string
 	 */
 	public function cleanUtf8($string)
 	{
+		static $has_utf8_funcs = null;
+		if ($has_utf8_funcs === null) {
+			$has_utf8_funcs = function_exists('utf8_is_ascii');
+		}
+
+		if (!$has_utf8_funcs) {
+			return $string;
+		}
+
 		#-------------------------
 		# Recursively clean arrays
 		#-------------------------

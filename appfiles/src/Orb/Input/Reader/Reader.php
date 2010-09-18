@@ -11,7 +11,7 @@ namespace Orb\Input\Reader;
 
 use Orb\Input\Reader\Source\SourceInterface;
 use Orb\Input\Cleaner\Cleaner;
-use Orb\Strings;
+use Orb\Util\Strings;
 
 /**
  * The reader lets you easily read input from a number of defined sources, and makes it easy to
@@ -338,7 +338,7 @@ class Reader
 				$name = $method_args[0];
 
 				$type = $match[1];
-				$type = Strings::camelCaseDash($type);
+				$type = Strings::camelCaseToDash($type);
 				$type = str_replace('-', '_', $type);
 
 				if (isset($method_args[1])) {
