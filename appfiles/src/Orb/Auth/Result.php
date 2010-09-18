@@ -86,7 +86,7 @@ class Result
 	public function __construct($code, \Orb\Auth\Identity $identity = null, array $messages = array())
 	{
 		$this->_code = $code;
-		$this->_identity;
+		$this->_identity = $identity;
 		$this->_messages = $messages;
 	}
 
