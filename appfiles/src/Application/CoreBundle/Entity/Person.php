@@ -172,7 +172,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 
 
-	public function init()
+	public function init(array $params)
 	{
 		$this->created_at = new \DateTime();
 		$this->secret_string = Strings::random(40);

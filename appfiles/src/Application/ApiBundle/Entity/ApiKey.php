@@ -64,7 +64,7 @@ class ApiKey extends \DeskPRO\Domain\DomainObject
 	protected $note = '';
 
 
-	public function init()
+	public function init(array $params)
 	{
 		$this->api_key = Strings::random(30, Strings::CHARS_KEY);
 	}

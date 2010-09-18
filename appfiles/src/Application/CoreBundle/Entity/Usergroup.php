@@ -55,7 +55,7 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 	 * Properties attached to this usergroup
 	 *
 	 * @var Application\CoreBundle\Entity\UsergroupProperty
-	 * @OneToOne(targetEntity="UsergroupProperty", mappedBy="usergroup")
+	 * @OneToMany(targetEntity="UsergroupProperty", mappedBy="usergroup", cascade={"persist", "remove"})
 	 */
 	protected $properties;
 

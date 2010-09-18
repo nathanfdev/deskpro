@@ -94,6 +94,9 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	public function incCreatedAt()
 	{
 		$this->created_at = new \DateTime();
+		if ($this->is_validated AND !$this->validated_at) {
+			$this->validated_at = new \DateTime();
+		}
 	}
 
 	/** @PreSave */

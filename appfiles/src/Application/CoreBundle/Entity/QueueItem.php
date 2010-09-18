@@ -81,7 +81,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * When this is true, the job is ready to be reserved.
 	 * 
 	 * @var bool
-	 * @Column(name="is_ignored", type="boolean")
+	 * @Column(name="is_ready", type="boolean")
 	 */
 	protected $is_ready = true;
 
@@ -120,7 +120,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * That is, $reserved_at+$ttr
 	 *
 	 * @var \DateTime
-	 * @Column(name="reserved_at",type="datetime")
+	 * @Column(name="timeout_at",type="datetime")
 	 */
 	protected $timeout_at = null;
 
@@ -134,8 +134,9 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * Any data pertaining to the job
+	 * TODO: Change to BLOB type when Doctrine2 has that type. Or we will have to create it ourselves.
 	 * @var string
-	 * @Column(name="data", type="blob", nullable=true)
+	 * @Column(name="data", type="text", nullable=true)
 	 */
 	protected $data = '';
 }

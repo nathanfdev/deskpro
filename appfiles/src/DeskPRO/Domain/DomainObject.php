@@ -55,7 +55,7 @@ abstract class DomainObject implements \ArrayAccess
 	/**
 	 * Init. Will be passed an array of params.
 	 */
-	protected function init()
+	protected function init(array $params)
 	{
 
 	}
