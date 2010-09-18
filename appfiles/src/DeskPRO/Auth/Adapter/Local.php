@@ -48,19 +48,22 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 	public function authenticate()
 	{
 		$qb = $this->em->createQueryBuilder();
-		$qb->select('p.*')
+		$qb->select('p')
 			->from('CoreBundle:Person', 'p')
 			->leftJoin('p.email_addresses', 'e')
-			->where('p.is_user = 1 AND p.username = ?1')
+			->where('p.is_user = 1')
 			->setMaxResults(1);
-		$qb->setParameter(1, $this->username_or_email);
 
 		if (strpos($this->username_or_email, '@')) {
-			$qb->orWhere('e.email_address = ?2');
+			$qb->andWhere('p.username = ?1 OR e.email_address = ?2');
+			$qb->setParameter(1, $this->username_or_email);
 			$qb->setParameter(2, $this->username_or_email);
+		} else {
+			$qb->andWhere('p.username = ?1');
+			$qb->setParameter(1, $this->username_or_email);
 		}
 
-		$person = $qb->getQuery()->getFirstResult();
+		$person = $qb->getQuery()->getSingleResult();
 		if (!$person OR !$person->checkPassword($this->password)) {
 			return new Result(Result::FAILURE_INVALID_CREDS);
 		}

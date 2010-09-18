@@ -12,8 +12,8 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 
 	protected function init()
 	{
-		$this->user = $this->session->getPerson();
-		$this->tplvars['user'] = $this->user;
+		$this->person = $this->session->getPerson();
+		$this->tplvars['person'] = $this->person;
 	}
 
 	public function isUserRequired()

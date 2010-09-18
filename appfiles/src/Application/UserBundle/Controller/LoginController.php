@@ -23,17 +23,16 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	 */
 	public function indexAction()
     {
-		if ($this['request']->getMethod() == 'POST') {
-			$user = $this->_processLogin();
+		if ($this->isPostRequest()) {
+			$person = $this->_processLogin();
 
 			// In some cases, there is a direct response (like a redirect)
-			if ($user instanceof \Symfony\Component\HttpFoundation\Response) {
-				return $user;
+			if ($person instanceof \Symfony\Component\HttpFoundation\Response) {
+				return $person;
 			}
 
-			if ($user) {
-				$this['request']->getSession()->start();
-				$this['request']->getSession()->set('auth_userid', $user['id']);
+			if ($person) {
+				$this->session->set('auth_person_id', $person['id']);
 				return $this->redirect($this['router']->generate('tech_dashboard', array()));
 			} else {
 				$this->tplvars['invalid_login'] = true;
@@ -58,7 +57,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		$result = $adapter->authenticate();
 		if ($result->isRedirectRequired()) {
 			return $this->redirect($result->getRedirectUrl());
-		} elseif ($result->isError()) {
+		} elseif (!$result->isValid()) {
 			return false;
 		} else {
 			$user_init = new \DeskPRO\Auth\UserInitializer($this->em);
@@ -85,16 +84,15 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		$auth = $this->getAuth();
 		$adapter = $this->getAuthAdapter($usersource_id);
 
-		$user = $this->_processAuth($auth, $adapter);
+		$person = $this->_processAuth($auth, $adapter);
 
 		// In some cases, there is a direct response (like a redirect)
-		if ($user instanceof \Symfony\Component\HttpFoundation\Response) {
-			return $user;
+		if ($person instanceof \Symfony\Component\HttpFoundation\Response) {
+			return $person;
 		}
 		
-		if ($user) {
-			$this['request']->getSession()->start();
-			$this['request']->getSession()->set('auth_userid', $user['id']);
+		if ($person) {
+			$this->session->set('auth_userid', $user['id']);
 			return $this->redirect($this['router']->generate('tech_dashboard', array()));
 		} else {
 			$this->tplvars['invalid_login'] = true;
@@ -115,8 +113,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		// TODO
 		// When symfony session is more flushed out, should completely destroy the old session
 
-		$this['request']->getSession()->start();
-		$this['request']->getSession()->set('auth_userid', $user['id']);
+		$this->session->set('auth_userid', null);
 
 		return $this->redirect($this['router']->generate('user_login', array()));
 	}
@@ -135,7 +132,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		static $auth = null;
 
 		if ($auth === null) {
-			$auth = new Orb\Auth\Auth();
+			$auth = new \Orb\Auth\Auth();
 		}
 
 		return $auth;
@@ -154,7 +151,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		$adapter = null;
 
 		if (!$usersource_id) {
-			$adapter = new \DeskPRO\Auth\Adapter\Local();
+			$adapter = new \DeskPRO\Auth\Adapter\Local($this->em);
 			$adapter->setCredentials($this->in->getString('username'), $this->in->getString('password'));
 		}
 

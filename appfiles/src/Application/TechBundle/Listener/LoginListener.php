@@ -44,8 +44,8 @@ class LoginListener
 
 		// Or if we're logged in already
 		$request = $event->getParameter('request');
-		$user = $this->container->get('deskpro.core.requestuser');
-		if ($user['id']) {
+		$person = $request->getSession()->getPerson();
+		if ($person AND $person['id'] AND $person['is_user']) {
 			return $controller;
 		}
 
