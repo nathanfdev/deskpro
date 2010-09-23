@@ -1,0 +1,398 @@
+<?php
+/**
+ * Orb
+ *
+ * @package Orb
+ * @subpackage Form
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Orb\Form\Field;
+
+use Orb\Util\Strings;
+use Orb\Util\Util;
+
+/**
+ * A form field.
+ *
+ * Inspired by sf2's Field.
+ */
+abstract class Field
+{
+	/**
+	 * The parent field, if there is one
+	 * @var Field
+	 */
+	protected $parent;
+
+	/**
+	 * The filter chain
+	 * @var Orb\Filter\FilterChain
+	 */
+	protected $filter;
+
+	/**
+	 * The validator chain
+	 * @var Orb\Validator\ValidatorChain
+	 */
+	protected $validator;
+
+	/**
+	 * The transformer chain
+	 * @var Orb\Form\Transformer\TransformerChain
+	 */
+	protected $transformer;
+
+	/**
+	 * The renderer to use
+	 * @var Orb\Form\Renderer
+	 */
+	protected $renderer = null;
+
+	/**
+	 * An array of options.
+	 * @var array
+	 */
+	protected $options = array();
+
+	/**
+	 * Data we can store etc
+	 * @var mixed
+	 */
+	protected $data;
+
+	/**
+	 * Raw form data
+	 * @var mixed
+	 */
+	protected $form_data;
+
+
+
+	/**
+	 * Important options:
+	 * - name: The name of this field as it'll be in the forms etc
+	 * - parent: A parent field, if any
+	 *
+	 * @param array $options
+	 */
+	public function __construct(array $options = array())
+	{
+		$this->options = $options;
+
+		$this->filter = new \Orb\Filter\FilterChain();
+		$this->validator = new \Orb\Validator\ValidatorChain();
+		$this->transformer = new \Orb\Form\Transformer\TransformerChain();
+	}
+
+	
+
+	/**
+	 * Get the name of this field. The name is unique per group.
+	 * 
+	 * @return string
+	 */
+	public function getName()
+	{
+		if ($this->getOption('name') === null) {
+			throw new \UnexpectedValueException('The `name` option is not set');
+		}
+
+		return $this->getOption('name');
+	}
+
+
+
+	/**
+	 * Get the name of this form element.
+	 *
+	 * @return string
+	 */
+	public function getFormName()
+	{
+		if ($this->getOption('form_name') !== null) {
+			return $this->getOption('form_name');
+		}
+
+		if ($this->getOption('name') === null) {
+			throw new \UnexpectedValueException('The `name` option is not set');
+		}
+
+		if ($this->getOption('parent')) {
+			$name = $this->getOption('parent')->getName() . '[' . $this->getOption('name') . ']';
+		} else {
+			$name = $this->getOption('name');
+		}
+
+		$this->setOption('form_name', $name);
+
+		return $name;
+	}
+
+
+	
+	/**
+	 * Get the ID of this form element.
+	 *
+	 * @return string
+	 */
+	public function getFormId()
+	{
+		if ($this->getOption('form_id') !== null) {
+			return $this->getOption('form_id');
+		}
+
+		if ($this->getOption('name') === null) {
+			throw new \UnexpectedValueException('The `name` option is not set');
+		}
+
+		if ($this->getOption('parent')) {
+			$name = $this->getOption('parent')->getId() . '_' . $this->getOption('name');
+		} else {
+			$name = $this->getOption('name');
+		}
+
+		$this->setOption('form_id', $name);
+
+		return $name;
+	}
+
+
+	
+	/**
+	 * Instantiate and add a new named filter. The name should be a dashed
+	 * name of the classname in either the Orb\Filter or Zend\Filter namespace.
+	 *
+	 * For example string-trim will map to Zend\Filter\StringTrim.
+	 *
+	 * @param string $name The filter name
+	 */
+	public function addNamedFilter($name)
+	{
+		$classname = Strings::dashToCamelCase($name);
+		$classname = ucfirst($classname);
+
+		$ns_classname = 'Orb\\Filter\\' . $classname;
+		if (!class_exists($ns_classname)) {
+			$ns_classname = 'Zend\\Filter\\' . $classname;
+		}
+		if (!class_exists($ns_classname)) {
+			throw new \InvalidArgumentException('Could not find filter name `'.$name.'`');
+		}
+
+		$filter = new $ns_classname();
+		$this->addFilter($filter);
+	}
+
+
+
+	/**
+	 * Add a new filter to this field
+	 *
+	 * @param \Zend\Filter\Filter $filter
+	 */
+	public function addFilter(\Zend\Filter\Filter $filter)
+	{
+		$this->filter->addFilter($filter);
+	}
+
+	
+
+	/**
+	 * Get an array of set filters
+	 *
+	 * @return array
+	 */
+	public function getFilters()
+	{
+		return $this->filters;
+	}
+
+
+
+	/**
+	 * Add a transformer to this field.
+	 *
+	 * @param Orb\Form\Transformer $transformer
+	 */
+	public function addTransformer(\Orb\Form\Transformer $transformer)
+	{
+		$this->transformer->addTransformer($transformer);
+	}
+
+	
+
+	/**
+	 * Get an array of set transformers
+	 *
+	 * @return array
+	 */
+	public function getTransformers()
+	{
+		return $this->transformer->getTransformers();
+	}
+
+
+	
+	/**
+	 * Add a validator to the chain.
+	 *
+	 * @param  \Orb\Validator\AbstractValidator  $validator         The validator to add
+	 * @param  bool                              $break_on_invalid  If the validator says the value is invalid, break the chain (stop executing further ones)
+	 */
+	public function addValidator(\Orb\Validator\AbstractValidator $validator, $break_on_invalid = false)
+	{
+		$this->validator->addValidator($validator, $break_on_invalid);
+	}
+
+	
+
+	/**
+	 * Get an array of set validators
+	 *
+	 * @return array
+	 */
+	public function getValidators()
+	{
+		return $this->validator->getValidators();
+	}
+
+
+	
+	/**
+	 * Check if the value is valid.
+	 *
+	 * @return bool
+	 */
+	public function isValid()
+	{
+		return $this->validator->isValid($this->getValue());
+	}
+
+
+	
+	/**
+	 * Get an array of error codes
+	 * @return array
+	 */
+	public function getErrors()
+	{
+		return $this->validator->getErrors();
+	}
+
+
+
+	/**
+	 * Set the field data (ie value stored in a database)
+	 * 
+	 * @param mixed $data The data to set
+	 */
+	public function setData($data)
+	{
+		$this->data = $data;
+		$this->form_data = $this->transformer->reverseTransform($data);
+	}
+
+
+
+	/**
+	 * Get the field data
+	 *
+	 * @return mixed
+	 */
+	public function getData()
+	{
+		return $this->data;
+	}
+
+
+
+	/**
+	 * Set form data (ie from POST).
+	 *
+	 * @param mixed $form_data The user input value to set
+	 */
+	public function setFormData($form_data)
+	{
+		$this->data = $this->transformer->transform($form_data);
+		$this->form_data = $this->transformer->reverseTransform($this->data);
+	}
+
+
+	
+	/**
+	 * Get the form data.
+	 * 
+	 * @return mixed
+	 */
+	public function getFormData()
+	{
+		return $this->form_data;
+	}
+
+	
+
+	/**
+	 * Get the value if an option $name, or return $default if it doesn't exist.
+	 *
+	 * @see setOption
+	 * @param  string  $name     The option to fetch
+	 * @param  mixed   $default  The default value to return if $name doesn't exist
+	 * @return mixed
+	 */
+	public function getOption($name = null, $default = null)
+	{
+		if ($name === null) return $this->options;
+
+		return isset($this->options[$name]) ? $this->options[$name] : $default;
+	}
+
+
+	
+	/**
+	 * Set an option.
+	 *
+	 * Standard options used by most renderers:
+	 * - label
+	 * - description
+	 *
+	 * @param  stting  $name
+	 * @param  mixed   $value
+	 */
+	public function setOption($name, $value)
+	{
+		$this->options[$name] = $value;
+	}
+
+
+
+	/**
+	 * Set an array of options.
+	 *
+	 * If $do_merge is false, then the entire options array is overwritten with your
+	 * passed value. Otherwise, they are merged together.
+	 *
+	 * @param  array  $options   Array of k=>v options to set
+	 * @param  bool   $do_merge  Merge passed options with existing set options?
+	 */
+	public function setOptions(array $options, $do_merge = true)
+	{
+		if ($do_merge AND $this->options) {
+			$this->options = array_merge($this->options, $options);
+		} else {
+			$this->options = $options;
+		}
+	}
+
+
+	
+	/**
+	 * Get the entire array of options
+	 *
+	 * @return mixed
+	 */
+	public function getOptions()
+	{
+		return $this->options;
+	}
+}
