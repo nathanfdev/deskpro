@@ -128,7 +128,7 @@ class Arrays
 		return $array;
 	}
 
-	protected function _func_run_func($func, $params, $val)
+	protected static function _func_run_func($func, $params, $val)
 	{
 		$key = array_search(self::FUNC_ARR_VAL, $params, true);
 
