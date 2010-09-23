@@ -237,4 +237,56 @@ class Util
 
 		return @unserialize(@base64_decode($ser));
 	}
+
+
+
+	/**
+	 * Create a new object and pass $args as arguments to the constructor.
+	 * Same as callUserConstructor but this takes an array of arguments instead.
+	 * 
+	 * @param string $classname  The class to instantiate
+	 * @param array  $args       Args to pass to the constructor
+	 * @return $classname
+	 */
+	public static function callUserConstructorArray($classname, array $args)
+	{
+		switch (count($args)) {
+			// Most constructors wont take any more than a handful arguments
+			case 0:  $obj = new $classname();
+			case 1:  $obj = new $classname($args[0]); break;
+			case 2:  $obj = new $classname($args[0], $args[1]); break;
+			case 3:  $obj = new $classname($args[0], $args[1], $args[2]); break;
+			case 4:  $obj = new $classname($args[0], $args[1], $args[2], $args[3]); break;
+			case 5:  $obj = new $classname($args[0], $args[1], $args[2], $args[3], $args[4]); break;
+			case 6:  $obj = new $classname($args[0], $args[1], $args[2], $args[3], $args[4], $args[5]); break;
+			case 7:  $obj = new $classname($args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6]); break;
+			case 8:  $obj = new $classname($args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7]); break;
+			case 9:  $obj = new $classname($args[0], $args[1], $args[2], $args[3], $args[4], $args[5], $args[6], $args[7], $args[8]); break;
+
+			// But if there's more, fallback on reflection
+			default:
+				$ref = new ReflectionClass($classname);
+				$obj = $ref->newInstance($args);
+				break;
+		}
+
+		return $obj;
+	}
+
+	
+
+	/**
+	 * Create a new object and pass arguments to the constructor.
+	 *
+	 * @param string $classname  The class to instantiate
+	 * @param mixed  $param...   Parameters to call the constructor with
+	 * @return $classname
+	 */
+	public static function callUserConstructor($classname)
+	{
+		$args = func_get_args();
+		array_shift($args); // get rid of $classname
+
+		return self::callUserConstructorArray($classname, $args);
+	}
 }
