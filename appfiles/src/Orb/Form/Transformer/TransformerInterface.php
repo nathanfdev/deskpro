@@ -21,12 +21,12 @@ namespace Orb\Form\Transformer;
 interface TransformerInterface
 {
 	/**
-	 * Transforms a field input into data we can use.
+	 * Transforms data stored into form data
 	 *
 	 * @param  mixed $value     The user input
 	 * @return mixed
 	 */
-	public function transform($value);
+	public function transformStoredToForm($value);
 
 
 
@@ -36,5 +36,5 @@ interface TransformerInterface
 	 * @param  mixed $value     The stored data
 	 * @return mixed            The original form data
 	 */
-	public function reverseTransform($value);
+	public function transformFormToStored($value);
 }

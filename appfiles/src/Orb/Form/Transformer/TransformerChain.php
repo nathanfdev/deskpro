@@ -47,20 +47,20 @@ class TransformerChain implements TransformerInterface
 
 
 	
-    public function transform($value)
+    public function transformStoredToForm($value)
     {
-        foreach ($this->transformers as $transformer) {
-            $value = $transformer->transform($value);
-        }
+		for ($i = count($this->transformers) - 1; $i >= 0; --$i) {
+			$value = $this->transformers[$i]->transformStoredToForm($value);
+		}
 
         return $value;
     }
 
-    public function reverseTransform($value)
+    public function transformFormToStored($value)
     {
-        for ($i = count($this->transformers) - 1; $i >= 0; --$i) {
-            $value = $this->transformers[$i]->reverseTransform($value);
-        }
+		foreach ($this->transformers as $transformer) {
+			$value = $transformer->transformStoredToForm($value);
+		}
 
         return $value;
     }
