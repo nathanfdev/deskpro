@@ -846,4 +846,32 @@ class Strings
 
 		return $ret;
 	}
+
+
+	
+	/**
+	 * Creates a string of k="v", suitable for use as HTML tag attributes.
+	 * 
+	 * @param  array $attributes  The attributes to string together
+	 * @param  bool  $do_escape   Escape values?
+	 * @return string
+	 */
+	public static function htmlAttributes(array $attributes, $do_escape = true)
+	{
+		$attr = array();
+
+		foreach ($attributes as $k => $v) {
+			if ($v === false OR $v === null OR ($v === '' AND $k != 'value')) {
+				continue;
+			}
+
+			if ($v === true) {
+				$attr[] = "$k=\"$k\"";
+			} else {
+				$attr[] = $k . '="' . ($do_escape ? htmlspecialchars((string)$v, ENT_QUOTES) : $v) . '"';
+			}
+		}
+
+		return implode(' ', $attr);
+	}
 }
