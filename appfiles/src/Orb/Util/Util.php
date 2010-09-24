@@ -289,4 +289,19 @@ class Util
 
 		return self::callUserConstructorArray($classname, $args);
 	}
+
+
+
+	/**
+	 * An integer that is guarenteed to be unique for this one request.
+	 * It's simply a global counter.
+	 *
+	 * @return int
+	 */
+	public static function requestUniqueId()
+	{
+		static $x = 0;
+
+		return ++$x;
+	}
 }
