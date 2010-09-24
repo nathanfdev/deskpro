@@ -45,7 +45,7 @@ abstract class Field
 
 	/**
 	 * The renderer to use
-	 * @var Orb\Form\Renderer
+	 * @var Orb\Form\Renderer\RendererInterface
 	 */
 	protected $renderer = null;
 
@@ -72,7 +72,9 @@ abstract class Field
 	/**
 	 * Important options:
 	 * - name: The name of this field as it'll be in the forms etc
-	 * - parent: A parent field, if any
+	 * - parent: A parent field, if any (also see setParentField)
+	 * - renderer: The renderer to use, if you want to render the field (also see setRenderer)
+	 * - attribtues: Default attributes used in when calling render(), it'll be merged with attributes supplied
 	 *
 	 * @param array $options
 	 */
@@ -83,10 +85,42 @@ abstract class Field
 		$this->filter = new \Orb\Filter\FilterChain();
 		$this->validator = new \Orb\Validator\ValidatorChain();
 		$this->transformer = new \Orb\Form\Transformer\TransformerChain();
+
+		if ($this->hasOption('parent')) {
+			$this->setParentField($this->getOption('parent'));
+		}
+
+		if ($this->hasOption('renderer')) {
+			$this->setRenderer($this->getOption('renderer'));
+		}
+
+		$this->init();
+	}
+
+
+	
+	/**
+	 * Empty callback fired at the end of construction
+	 */
+	protected function init()
+	{
+
 	}
 
 	
 
+	/**
+	 * Set the parent field
+	 * 
+	 * @param Field $parent
+	 */
+	public function setParentField(Field $parent)
+	{
+		$this->parent = $parent;
+	}
+	
+
+	
 	/**
 	 * Get the name of this field. The name is unique per group.
 	 * 
@@ -290,7 +324,7 @@ abstract class Field
 	public function setData($data)
 	{
 		$this->data = $data;
-		$this->form_data = $this->transformer->reverseTransform($data);
+		$this->form_data = $this->transformer->transformStoredToForm($data);
 	}
 
 
@@ -314,8 +348,8 @@ abstract class Field
 	 */
 	public function setFormData($form_data)
 	{
-		$this->data = $this->transformer->transform($form_data);
-		$this->form_data = $this->transformer->reverseTransform($this->data);
+		$this->data = $this->transformer->transformFormToStored($form_data);
+		$this->form_data = $this->transformer->transformStoredToForm($this->data);
 	}
 
 
@@ -330,6 +364,58 @@ abstract class Field
 		return $this->form_data;
 	}
 
+
+	
+	/**
+	 * Render the field into HTML
+	 * 
+	 * @param array $attributes
+	 */
+	public function render(array $attributes = array())
+	{
+		if ($this->renderer === null) {
+			throw new \RuntimeException('No renderer has been set, cannot render field');
+		}
+
+		$attributes = array_merge($this->getDefaultAttributes(), $attributes);
+
+		return $this->renderer->render($this, $attributes);
+	}
+
+
+	
+	/**
+	 * Set the renderer
+	 *
+	 * @param \Orb\Form\Renderer\RendererInterface $renderer
+	 */
+	public function setRenderer(\Orb\Form\Renderer\RendererInterface $renderer)
+	{
+		$this->renderer = $renderer;
+	}
+
+
+	
+	/**
+	 * An array of default attributes for this field.
+	 * 
+	 * @return array
+	 */
+	public function getDefaultAttributes()
+	{
+		if ($this->hasOption('attributes')) {
+			$attr = $this->getOption('attributes');
+		} else {
+			$attr = array();
+		}
+
+		$attr['name']  = $this->getFormName();
+		$attr['id']    = $this->getFormId();
+		$attr['value'] = $this->getFormData();
+
+		return $attr;
+	}
+
 	
 
 	/**
@@ -340,10 +426,8 @@ abstract class Field
 	 * @param  mixed   $default  The default value to return if $name doesn't exist
 	 * @return mixed
 	 */
-	public function getOption($name = null, $default = null)
+	public function getOption($name, $default = null)
 	{
-		if ($name === null) return $this->options;
-
 		return isset($this->options[$name]) ? $this->options[$name] : $default;
 	}
 
@@ -394,5 +478,18 @@ abstract class Field
 	public function getOptions()
 	{
 		return $this->options;
+	}
+
+	
+
+	/**
+	 * Check to see if an option has been set
+	 *
+	 * @param string $name
+	 * @return bool
+	 */
+	public function hasOption($name)
+	{
+		return isset($this->options[$name]);
 	}
 }
