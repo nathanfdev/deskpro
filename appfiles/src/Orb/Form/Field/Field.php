@@ -373,13 +373,15 @@ abstract class Field
 	 */
 	public function render(array $attributes = array())
 	{
-		if ($this->renderer === null) {
+		$renderer = $this->getRenderer();
+
+		if ($renderer === null) {
 			throw new \RuntimeException('No renderer has been set, cannot render field');
 		}
 
 		$attributes = array_merge($this->getDefaultAttributes(), $attributes);
 
-		return $this->renderer->render($this, $attributes);
+		return $renderer->render($this, $attributes);
 	}
 
 
@@ -392,6 +394,27 @@ abstract class Field
 	public function setRenderer(\Orb\Form\Renderer\RendererInterface $renderer)
 	{
 		$this->renderer = $renderer;
+	}
+
+
+
+	/**
+	 * Get the renderer. This'll be the renderer set, or it'll try and use a parents
+	 * renderer.
+	 *
+	 * Returns null if there is no renderer.
+	 * 
+	 * @return Orb\Form\Renderer\RendererInterface
+	 */
+	public function getRenderer()
+	{
+		if ($this->renderer) {
+			return $this->renderer;
+		} elseif ($this->parent AND $this->parent->getRenderer()) {
+			return $this->parent->getRenderer();
+		}
+
+		return null;
 	}
 
 
