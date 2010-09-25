@@ -219,6 +219,30 @@ class FieldGroup extends Field implements \IteratorAggregate, \Countable
 
 	
 	/**
+	 * Find a field that might be deep in the hierarchy. Separate groups by dots.
+	 *
+	 * @param string $name
+	 * @return Field
+	 */
+	public function findField($name)
+	{
+		$name_parts = explode('.', $name);
+
+		$current_field = $this;
+		while ($name_parts) {
+			$part = array_shift($name_parts);
+			if (!$current_field->hasField($part)) {
+				return null;
+			}
+			$current_field = $current_field->getField($part);
+		}
+
+		return $current_field;
+	}
+
+
+	
+	/**
 	 * Go through the collection and find all fields of a certain type.
 	 *
 	 * @param  string  $type       The field classname
