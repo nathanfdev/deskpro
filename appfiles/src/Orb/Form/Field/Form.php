@@ -46,10 +46,9 @@ class Form extends FieldGroup
 	 * 
 	 * @param array $attributes
 	 */
-	public function renderFormTag($url, array $attributes = array())
+	public function renderFormTag(array $attributes = array())
 	{
 		$attributes = array_merge($this->getDefaultAttributes(), $attributes);
-		$attributes['method'] = $url;
 
 		$html = '<form ' . Strings::htmlAttributes($attributes) . '>';
 
@@ -59,6 +58,28 @@ class Form extends FieldGroup
 		}
 
 		return $html;
+	}
+
+	
+
+	/**
+	 * Go through the entire form and render all hidden tags
+	 *
+	 * @param bool $mark_as_norender Mark the field with no_render option? Prevents them from being rendered again
+	 * @return string
+	 */
+	public function renderHiddenTags($mark_as_norender = false)
+	{
+		$html = array();
+
+		foreach ($this->findFieldsOfType('Orb\\Form\\Field\\Hidden', true) as $f) {
+			$html[] = $f->render();
+			if ($mark_as_norender) {
+				$f->setOption('no_render', true);
+			}
+		}
+
+		return implode('', $html);
 	}
 
 
