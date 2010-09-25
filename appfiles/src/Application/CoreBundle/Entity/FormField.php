@@ -38,9 +38,17 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="parent_id", type="integer", nullable=true)
 	 */
 	protected $parent_id = null;
-	
+
 	/**
-	 * The field classname
+	 * The system typename. When defining fields, we may need specialized interfaces
+	 * to build up each kind of field. This is the system name.
+	 *
+	 * @var string
+	 */
+	protected $typename = 'text';
+
+	/**
+	 * The actual classname that we'll use to build the field.
 	 *
 	 * @var string
 	 * @Column(name="field_classname", type="string", length=255)
