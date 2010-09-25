@@ -48,6 +48,10 @@ class Basic implements RendererInterface
 	 */
 	public function renderField(\Orb\Form\Field\Field $field, array $attributes = array())
 	{
+		if ($field->getOption('no_render')) {
+			return '';
+		}
+
 		$field_classname = get_class($field);
 
 		#------------------------------

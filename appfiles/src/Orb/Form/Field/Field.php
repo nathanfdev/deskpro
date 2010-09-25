@@ -21,6 +21,7 @@ use Orb\Util\Util;
  * @option  Field     parent      A parent field, if any (also see setParentField)
  * @option  Renderer  renderer    The renderer to use, if you want to render the field (also see setRenderer)
  * @option  array     attribtues  Default attributes used in when calling render(), it'll be merged with attributes supplied
+ * @option  bool      no_render   Signifies to the renderer that the field should not be rendered (it'll return an empty string)
  */
 abstract class Field
 {
