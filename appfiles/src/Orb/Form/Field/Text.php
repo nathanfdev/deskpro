@@ -14,6 +14,11 @@ use Orb\Util\Util;
 
 /**
  * A text input field
+ *
+ * @option  bool    max_length  Automatically adds 'maxlength' HTML attribute, and also adds
+ *                              a max length validator.
+ * @option  bool    min_length  Adds a min length validator.
+ * @option  string  encoding    The text encoding (needed for good length tests). Defaults to utf8.
  */
 class Text extends Field
 {
@@ -50,7 +55,6 @@ class Text extends Field
 	public function getDefaultAttributes()
 	{
 		$attr = parent::getDefaultAttributes();
-		$attr['type'] = 'text';
 		
 		if ($this->hasOption('max_length')) {
 			$attr['maxlength'] = $this->getOption('max_length');

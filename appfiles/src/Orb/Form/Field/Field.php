@@ -16,6 +16,11 @@ use Orb\Util\Util;
  * A form field.
  *
  * Inspired by sf2's Field.
+ *
+ * @option  string    name        The name of this field as it'll be in the forms etc. This must be unique per group.
+ * @option  Field     parent      A parent field, if any (also see setParentField)
+ * @option  Renderer  renderer    The renderer to use, if you want to render the field (also see setRenderer)
+ * @option  array     attribtues  Default attributes used in when calling render(), it'll be merged with attributes supplied
  */
 abstract class Field
 {
@@ -70,12 +75,6 @@ abstract class Field
 
 
 	/**
-	 * Important options:
-	 * - name: The name of this field as it'll be in the forms etc
-	 * - parent: A parent field, if any (also see setParentField)
-	 * - renderer: The renderer to use, if you want to render the field (also see setRenderer)
-	 * - attribtues: Default attributes used in when calling render(), it'll be merged with attributes supplied
-	 *
 	 * @param array $options
 	 */
 	public function __construct(array $options = array())

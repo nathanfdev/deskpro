@@ -70,7 +70,8 @@ class Basic implements RendererInterface
 			case 'Orb\\Form\\Field\\Text':
 			case 'Orb\\Form\\Field\\Password':
 			case 'Orb\\Form\\Field\\Hidden':
-			case 'Orb\\Form\\Field\\CheckboxBoolean':
+			case 'Orb\\Form\\Field\\Checkbox':
+			case 'Orb\\Form\\Field\\Radio':
 				if (!isset($attributes['type'])) $attributes['type'] = 'input';
 				$html = $this->renderTag($field, 'input', $attributes);
 				break;

@@ -14,6 +14,11 @@ use Orb\Util\Util;
 
 /**
  * A textarea field
+ *
+ * @option  bool    max_length  Automatically adds 'maxlength' HTML attribute, and also adds
+ *                              a max length validator.
+ * @option  bool    min_length  Adds a min length validator.
+ * @option  string  encoding    The text encoding (needed for good length tests). Defaults to utf8.
  */
 class Textarea extends Field
 {

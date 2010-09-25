@@ -14,13 +14,14 @@ use Orb\Util\Util;
 
 /**
  * A password input field
+ *
+ * @option  bool  always_empty   To always make this field empty
  */
 class Password extends Text
 {
 	public function getDefaultAttributes()
 	{
 		$attr = parent::getDefaultAttributes();
-		$attr['type'] = 'password';
 
 		if ($this->getOption('always_empty')) {
 			$attr['value'] = '';
