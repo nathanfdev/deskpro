@@ -304,4 +304,68 @@ class Util
 
 		return ++$x;
 	}
+
+
+
+	/**
+	 * Generate a random security token using some secret.
+	 *
+	 * @param string  $secret   A secret to encode the token with.
+	 * @param int     $timeout  How long (seconds) is the token valid for? 0 disables
+	 * @return string
+	 */
+	public static function generateStaticSecurityToken($secret, $timeout = 0)
+	{
+		if ($timeout) {
+			// rand is so we never give the exact real time the token was made
+			// since we have to put that in plaintext
+			$expire_time = time() + $timeout + mt_rand(1, 10);
+			$expire_time_enc = base_convert($expire_time, 10, 36);
+		} else {
+			$expire_time = 0;
+			$expire_time_enc = 0;
+		}
+
+		$rand_str = Strings::random(10, Strings::CHARS_ALPHA_I);
+
+		$token = $expire_time_enc . '-' . $rand_str . '-' . sha1($secret . $expire_time_enc . $rand_str);
+
+		return $token;
+	}
+	
+
+
+	/**
+	 * Check a security token to see if its valid.
+	 *
+	 * @param string $token   The token to check
+	 * @param string $secret  The same secret used to create the token
+	 * @return bool
+	 */
+	public static function checkStaticSecurityToken($token, $secret)
+	{
+		// Check to make sure its a valid format
+		if (substr_count($token, '-') != 2) {
+			return false;
+		}
+
+		list($expire_time_enc, $rand_str, $hash) = explode('-', $token, 3);
+
+		// Check the hash first
+		$check_hash = sha1($secret . $expire_time_enc . $rand_str);
+
+		if ($check_hash != $hash) {
+			return false;
+		}
+
+		// Check the time now
+		if ($expire_time_enc != '0') {
+			$expire_time = base_convert($expire_time_enc, 36, 10);
+			if (time() > $expire_time) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
