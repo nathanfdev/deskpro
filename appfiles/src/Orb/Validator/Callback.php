@@ -43,6 +43,9 @@ class Callback extends AbstractValidator
 	 * $callback_args should contain ARG_PLACEHOLDER in the array where the value
 	 * should be called. If ARG_PLACEHOLDER is not found, then the value will always
 	 * be the first argument.
+	 *
+	 * The callback must return an error code, or an array of error codes, upon error.
+	 * Return false if no errors.
 	 * 
 	 * @param  mixed  $callback_fn    The callback to call
 	 * @param  array  $callback_args  The arguments to pass to the callback
@@ -75,6 +78,21 @@ class Callback extends AbstractValidator
 		$args = $this->callback_args;
 		$args[$this->callback_value_arg_pos] = $value;
 
-		return call_user_func_array($this->callback_fn, $args);
+		$errors = call_user_func_array($this->callback_fn, $args);
+
+		if ($errors) {
+			if (!is_array($errors)) $errors = array($errors);
+			
+			foreach ($errors as $info) {
+				if (is_array($info)) {
+					$this->addError($info[0], $info[1]);
+				} else {
+					$this->addError($info);
+				}
+			}
+			return true;
+		}
+
+		return false;
 	}
 }
