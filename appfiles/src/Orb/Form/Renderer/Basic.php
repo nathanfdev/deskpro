@@ -76,17 +76,65 @@ class Basic implements RendererInterface
 				$html = $this->renderTag($field, 'input', $attributes);
 				break;
 
+			case 'Orb\\Form\\Field\\SimpleChoice':
+				$html = $this->_renderSimpleChoiceField($field, $attributes);
+
 			case 'Orb\\Form\\Field\\Choice':
 				$html = $this->_renderChoiceField($field, $attributes);
 
-			case 'Orb\\Form\\Field\\Text':
+			case 'Orb\\Form\\Field\\FieldGroup':
+				$html = $this->_renderFieldGroupField($field, $attributes);
+
+			case 'Orb\\Form\\Field\\Textarea':
 				$html = $this->renderContentTag($field, 'textarea', $attributes);
 				break;
+
+			default:
+				throw new \InvalidArgumentException('This renderer does not know how to render field `' . $field_classname . '`');
+				break;
 		}
+
+		return $html;
+	}
+
+	protected function _renderFieldGroupField(\Orb\Form\Field\FieldGroup $field, array $attributes)
+	{
+		$wrapper = '<div class="group-field">%s</div>';
+		if ($field->hasOption('render_field_wrapepr')) {
+			$wrapper = $field->getOption('render_field_wrapepr');
+		}
+
+		$html = array();
+
+		foreach ($field as $sub_field) {
+			$html[] = sprintf($wrapper, $this->render($sub_field));
+		}
+
+		return implode('', $html);
+	}
+
+	protected function _renderChoiceField(\Orb\Form\Field\Choice $field, array $attributes)
+	{
+		$html = array();
+		$html[] = '<select ' . Strings::htmlAttributes($attributes) . '>';
+
+		foreach ($field as $option) {
+			$option_attr = $option->getDefaultAttributes();
+			$use_attr = array('value' => $option_attr['value']);
+			if ($option_attr['checked']) {
+				$use_attr['selected'] = true;
+			}
+
+			$html[] = '<option ' . Strings::htmlAttributes($use_attr) . '>' . htmlspecialchars($field->getOption('label')) . '</option>';
+		}
+
+		$html[] = '</select>';
+
+		return implode('', $html);
 	}
 
 
-	protected function _renderChoiceField(\Orb\Form\Field\Choice $field, array $attributes)
+	protected function _renderSimpleChoiceField(\Orb\Form\Field\SimpleChoice $field, array $attributes)
 	{
 		$choice_attributes = array();
 		if ($attributes['choice_attributes']) {

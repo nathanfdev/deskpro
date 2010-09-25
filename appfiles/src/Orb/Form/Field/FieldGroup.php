@@ -14,14 +14,61 @@ use Orb\Util\Util;
 
 /**
  * A field that has any number of sub-fields
+ *
+ * This can be used to group things like radio fields, or just serve as a namespace
+ * because fields in forms are named after their parents.
+ *
+ * @option string render_field_wrapepr  An HTML string to wrap each field if you choose
+ *                                      to render this field group (as opposed to just using it
+ *                                      as a container. Use %s as the field HTML.
+ *                                      Default: <div class="group-field">%s</div>
+ *                                      NOTE: applies to Basic renderer only
  */
-abstract class FieldGroup implements \IteratorAggregate, \Countable
+class FieldGroup extends Field implements \IteratorAggregate, \Countable
 {
 	/**
 	 * Array of fields
 	 * @var array
 	 */
 	protected $fields = array();
+
+	/**
+	 * An array of allowed types
+	 * @see addAllowedType
+	 * @var array
+	 */
+	protected $allowed_types = array();
+
+
+	/**
+	 * This is meant for subclasses so they can restrict which types of fields are in a group.
+	 * If the array is empty, then all types are allowd.
+	 *
+	 * Note this only affects THIS groups 'addField' method. Subgroups are not affected, the restriction
+	 * is not delegated down the hierarchy.
+	 */
+	protected function addAllowedFieldType($field_type)
+	{
+		$this->allowed_types[] = $field_type;
+	}
+
+
+
+	/**
+	 * Check if a field is allowed in this group. This runs the field through the allowed_types
+	 * array.
+	 *
+	 * @param Field $field
+	 * @return bool
+	 */
+	public function isFieldAllowed(Field $field)
+	{
+		if ($this->allowed_types AND !\in_array(get_class($field), $this->allowed_types)) {
+			return false;
+		}
+
+		return true;
+	}
 
 
 
@@ -129,6 +176,10 @@ abstract class FieldGroup implements \IteratorAggregate, \Countable
 	 */
 	public function addField(Field $field)
 	{
+		if (!$this->isFieldAllowed($field)) {
+			throw new \InvalidArgumentException('Invalid Field type `' . get_class($field) . '`. The field type is not allowed in this group.');
+		}
+
 		$this->fields[$field->getName()] = $field;
 		$field->setParentField($this);
 	}
