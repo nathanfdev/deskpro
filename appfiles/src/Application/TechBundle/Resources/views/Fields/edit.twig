@@ -1,0 +1,51 @@
+{% extends 'TechBundle::layout' %}
+{% block content %}
+
+{% if field.id %}
+	{% set form_url %}{% route 'tech_admin_fields_editfield' with ['field_id': field.id] %}{% endset %}
+{% else %}
+	{% set form_url %}{% route 'tech_admin_fields_newfield' %}{% endset %}
+{% endif %}
+
+{{form.renderFormTag(['method': form_url])|safe}}
+{{form.renderHiddenTags()|safe}}
+
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">Field Properties</h2>
+		<div class="inner">
+			<table class="table">
+				<tr class="even">
+					<td>Type</td>
+					<td>{{field.typename}}</td>
+				</tr>
+				<tr>
+					<td>Title</td>
+					<td><input type="text" name="usersource[title]" value="{{usersource.title}}" size="40" /></td>
+				</tr>
+				<tr>
+					<td>Label</td>
+					<td>{{form.findField('field_options.label').render()}}</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+
+<div class="block">
+	<div class="content">
+		<div class="innter" style="padding: 10px">
+			<div class="group navform wat-cf">
+				<button class="button" type="submit">
+					<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Save
+				</button>
+			</div>
+		</div>
+	</div>
+</div>
+
+</form>
+
+{% endblock %}
+{% block sidebar %}
+{% endblock %}

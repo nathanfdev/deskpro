@@ -1,0 +1,51 @@
+{% extends 'TechBundle::layout' %}
+{% block content %}
+
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">Field Types</h2>
+		<div class="inner">
+			<form action="{% route 'tech_admin_usersources_new' %}" class="form">
+				<table class="table">
+					<tr>
+						<th class="first" width="10">&nbsp;</th>
+						<th>Type</th>
+					</tr>
+					<tr class="even">
+						<td><input type="radio" name="typename" value="text" /></td>
+						<td>
+							<strong>Text</strong><br />
+							This is a simple one-line text box
+						</td>
+					</tr>
+					<tr class="even">
+						<td><input type="radio" name="typename" value="textarea" /></td>
+						<td>
+							<strong>Textarea</strong><br />
+							This is a multi-line textarea.
+						</td>
+					</tr>
+					<tr class="even">
+						<td><input type="radio" name="typename" value="choice" /></td>
+						<td>
+							<strong>Choice</strong><br />
+							This field lets the user choose one or more pre-defined options. This field can be rendered
+							as a drop-down select box, a series of radio buttons, or a series of checkboxes.
+						</td>
+					</tr>
+				</table>
+				<div class="actions-bar wat-cf">
+					<div class="actions">
+						<button class="button" type="submit">
+							Choose Type
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block sidebar %}
+{% endblock %}
