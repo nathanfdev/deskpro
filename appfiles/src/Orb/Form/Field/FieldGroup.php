@@ -216,6 +216,31 @@ class FieldGroup extends Field implements \IteratorAggregate, \Countable
 		return $this->fields[$name];
 	}
 
+
+	
+	/**
+	 * Go through the collection and find all fields of a certain type.
+	 *
+	 * @param  string  $type       The field classname
+	 * @param  bool    $recursive  To recurse in sub-groups as well
+	 * @return bool
+	 */
+	public function findFieldsOfType($type, $recursive = true)
+	{
+		$ret = array();
+
+		foreach ($this as $f) {
+			if ($f instanceof $type) {
+				$ret[] = $f;
+				if ($recursive AND $f instanceof FieldGroup) {
+					$ret = array_merge($ret, $f->findFieldsOfType($type, true));
+				}
+			}
+		}
+
+		return $ret;
+	}
+
 	
 	
 	/**
