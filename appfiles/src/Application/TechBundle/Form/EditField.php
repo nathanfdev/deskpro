@@ -64,6 +64,13 @@ class EditField extends \Orb\Form\Field\Form
 		$f_opt->addField($f);
 	}
 
+
+	
+	/**
+	 * Apply the data stored in this form to a form field.
+	 * 
+	 * @param FormField $formfield The entity object, or null to use the one used from options
+	 */
 	public function applyFormToEntity(FormField $formfield = null)
 	{
 		if ($formfield === null) $formfield = $this->formfield;
@@ -73,6 +80,6 @@ class EditField extends \Orb\Form\Field\Form
 			case 'textarea':           $formfield['field_classname'] = 'Orb\\Form\\Field\\Textarea';
 		}
 
-		$formfield = $this->getField('field_options')->getData();
+		$formfield['field_options'] = $this->getField('field_options')->getData();
 	}
 }
