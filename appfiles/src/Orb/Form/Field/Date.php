@@ -17,15 +17,37 @@ use Orb\Util\Util;
  */
 class Date extends FieldGroup
 {
+	const DATA_FORMAT_DATETIME = 'DateTime';
+	const DATA_FORMAT_TIMESTAMP = 'timestamp';
+	const DATA_FORMAT_STRING = 'string';
+
+	const INPUT_FORMAT_CHOICE = 'choice';
+	const INPUT_FORMAT_STRING = 'string';
+
+
 	protected function init()
 	{
 		if (!$this->hasOption('year_min')) $this->setOption ('year_min', 1900);
 		if (!$this->hasOption('year_max')) $this->setOption ('year_max', 2025);
 
-		$this->_initChoices();
+		if (!$this->hasOption('data_format'))  $this->setOption('data_format', self::DATA_FORMAT_DATETIME);
+		if (!$this->hasOption('input_format')) $this->setOption('input_format', self::INPUT_FORMAT_STRING);
+
+		if ($this->getOption('input_format') == self::INPUT_FORMAT_CHOICE) {
+			$this->_initChoices();
+		} else {
+			$this->_initInputField();
+		}
+		
 		$this->_initTransformers();
 		// TODO add validation
 		// TODO add localization
+	}
+
+	protected function _initInputField()
+	{
+		$f = new \Orb\Form\Field\Text(array('name' => 'date_input'));
+		$this->addFeild('date_input');
 	}
 
 	protected function _initChoices()
@@ -55,32 +77,71 @@ class Date extends FieldGroup
 	protected function _initTransformers()
 	{
 		$trans = new \Orb\Form\Transformer\Callback(
-			array($this, 'transformDateToArray'),
-			array($this, 'transformArrayToDate')
+			array($this, 'transformToForm'),
+			array($this, 'transformToData')
 		);
 
 		$this->addTransformer($trans);
 	}
 
-	public function transformDateToArray(\DateTime $date)
+	public function transformToForm($data)
 	{
 		if (!$date) return null;
-		
-		$array = array(
-			'year'  => $dateTime->format('Y'),
-			'month' => $dateTime->format('m'),
-			'day'   => $dateTime->format('d'),
-		);
 
-		return $array;
+		switch ($this->getOption('data_format')) {
+			case self::DATA_FORMAT_TIMESTAMP:
+				$data = new \DateTime();
+				$data->setTimestamp($data);
+				break;
+
+			case self::DATA_FORMAT_STRING:
+				$data = \DateTime::createFromFormat('Y-m-d', $data);
+				break;
+
+		}
+		
+		switch ($this->getOption('input_format')) {
+			case self::INPUT_FORMAT_CHOICE:
+				$return = array(
+					'year'  => $dateTime->format('Y'),
+					'month' => $dateTime->format('m'),
+					'day'   => $dateTime->format('d'),
+				);
+				break;
+			
+			case self::INPUT_FORMAT_STRING:
+				$return = array('date_format' => $data->format('Y-m-d'));
+				break;
+		}		
+
+		return $return;
 	}
 
-	public function transformArrayToDate(array $array)
+	public function transformArrayToDate($data)
 	{
-		if (!$array) return null;
+		if (!$data) return null;
 
-		$date = new \DateTime("{$array['year']}-{$array['month']}-{$array['day']}");
+		switch ($this->getOption('input_format')) {
+			case self::INPUT_FORMAT_CHOICE:
+				$date = new \DateTime("{$array['year']}-{$array['month']}-{$array['day']}");
+				break;
+			
+			case self::INPUT_FORMAT_STRING:
+				$date = new \DateTime($data['date_input']);
+				break;
+		}
 
-		return $date;
+		switch ($this->getOption('data_format')) {
+			case self::DATA_FORMAT_TIMESTAMP:
+				$return = $date->getTimestamp();
+				break;
+
+			case self::DATA_FORMAT_STRING:
+				$return = $data->format('Y-m-d');
+				break;
+
+		}
+
+		return $return;
 	}
 }
