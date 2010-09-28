@@ -36,34 +36,25 @@ class FieldsController extends AbstractController
 		if ($field_id) {
 			$field = $this->getFieldOr404($field_id);
 		} else {
-			$field = new$this->em->createEntity('CoreBundle:FormField');
+			$field = $this->em->createEntity('CoreBundle:FormField');
 			$field['typename'] = $this->in->getString('typename');
 		}
 
 		$renderer = new \Orb\Form\Renderer\Basic();
-		$form = new \Orb\Form\Field\Form(array(
-			'name' => 'field',
+		$form = new \Application\TechBundle\Form\EditField(array(
+			'name' => 'formfield',
 			'renderer' => $renderer,
-			'event_dispatcher' => $this['event_dispatcher']
+			'event_dispatcher' => $this['event_dispatcher'],
+			'form_field' => $field
 		));
-
-		if (!$field['id']) {
-			$f = new \Orb\Form\Field\Hidden(array('name' => 'typename'));
-			$f->setData($field['typename']);
-			$form->addField($f);
-		}
-
-		$form_field_options = new \Orb\Form\Field\FieldGroup(array('name' => 'field_options'));
-		$f = new \Orb\Form\Field\Text(array('name' => 'label'));
-		$f->setData($field['field_options']['label']);
-
-		$form->addField($form_field_options);
 
 		if ($this->isPostRequest()) {
 			$form->setData($_POST);
 			if ($form->isValid()) {
-				$field['field_options'] = $form->getField('field_options')->getData();
-				$field->save();
+				$form->applyFormToEntity();
+				$this->em->persist($field);
+				$this->em->flush();
+				echo "DONE";
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());

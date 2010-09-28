@@ -40,10 +40,19 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	protected $parent_id = null;
 
 	/**
+	 * The title. Note this should be a phrase key, not an actual string.
+	 * 
+	 * @var string
+	 * @Column(name="title", type="string", length=255)
+	 */
+	protected $title = '';
+
+	/**
 	 * The system typename. When defining fields, we may need specialized interfaces
 	 * to build up each kind of field. This is the system name.
 	 *
 	 * @var string
+	 * @Column(name="typename", type="string", length=255)
 	 */
 	protected $typename = 'text';
 
