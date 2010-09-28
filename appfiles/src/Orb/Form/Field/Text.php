@@ -62,4 +62,10 @@ class Text extends Field
 
 		return $attr;
 	}
+
+
+	public function __toString()
+	{
+		return $this->getData();
+	}
 }

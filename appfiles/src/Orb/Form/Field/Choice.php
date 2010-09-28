@@ -89,4 +89,19 @@ class Choice extends FieldGroup
 
 		$this->addField($field);
 	}
+
+
+
+	protected function __toString()
+	{
+		$choices = array();
+
+		foreach ($this as $choice) {
+			if ($choice->isChecked()) {
+				$choices[] = $choice->getOption('label');
+			}
+		}
+
+		return implode(', ', $choices);
+	}
 }

@@ -48,8 +48,31 @@ abstract class BooleanField extends Field
 		// is not falsey. Sometimes it might be somethign like '1',
 		// and other times it might be the string 'value' itself
 		// if the StringBool transformer wasn't added.
-		$attr['checked'] = (trim($this->getFormData()) !== '' AND $this->getFormData() !== 0 AND $this->getFormData() !== false);
+		$attr['checked'] = $this->isChecked();
 
 		return $attr;
+	}
+
+
+	
+	/**
+	 * Is this field checked?
+	 *
+	 * @return bool
+	 */
+	public function isChecked()
+	{
+		return (trim($this->getFormData()) !== '' AND $this->getFormData() !== 0 AND $this->getFormData() !== false);
+	}
+
+	
+
+	public function __toString()
+	{
+		if ($this->isChecked()) {
+			return '1';
+		} else {
+			return '0';
+		}
 	}
 }

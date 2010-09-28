@@ -515,4 +515,18 @@ abstract class Field
 	{
 		return isset($this->options[$name]);
 	}
+
+
+	
+	/**
+	 * A simple string representation of the fields current value.
+	 * This should be a usable value that makes sense. For example, rendering
+	 * a date to YYYY-MM-DD string.
+	 *
+	 * @return string
+	 */
+	public function __toString()
+	{
+		return 'Field(' . get_class($this) . ')';
+	}
 }

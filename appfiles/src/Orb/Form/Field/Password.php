@@ -29,4 +29,9 @@ class Password extends Text
 
 		return $attr;
 	}
+
+	public function __toString()
+	{
+		return ($this->getData() ? '********' : '');
+	}
 }

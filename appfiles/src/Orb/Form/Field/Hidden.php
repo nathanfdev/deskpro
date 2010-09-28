@@ -17,5 +17,8 @@ use Orb\Util\Util;
  */
 class Hidden extends Field
 {
-
+	public function __toString()
+	{
+		return $this->getData();
+	}
 }
