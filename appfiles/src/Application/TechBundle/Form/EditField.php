@@ -29,11 +29,19 @@ class EditField extends \Orb\Form\Field\Form
 
 		$this->formfield = $this->getOption('form_field');
 
+		$f_group_props = new \Orb\Form\Field\FieldGroup(array('name' => 'field_properties'));
+
 		// Typename
 		if (!$this->formfield['id']) {
 			$f = new \Orb\Form\Field\Hidden(array('name' => 'typename'));
-			$this->addField($f);
+			$f_group_props->addField($f);
 		}
+
+		// Title
+		$f = new \Orb\Form\Field\Hidden(array('name' => 'title'));
+		$f_group_props->addField($f);
+
+		$this->addField($f_group_props);
 
 		// Field options which are specific to types of fields
 		$f = new \Orb\Form\Field\FieldGroup(array('name' => 'field_options'));
@@ -47,8 +55,8 @@ class EditField extends \Orb\Form\Field\Form
 		// Set the data
 		if ($this->formfield['id']) {
 			$this->setData(array(
-				'title' => $this->formfield['title'],
-				'field_options' => $this->formfield['options']
+				'field_properties'  => array('title' => $this->formfield['title']),
+				'field_options'     => $this->formfield['field_options']
 			));
 		}
 	}
@@ -62,24 +70,5 @@ class EditField extends \Orb\Form\Field\Form
 
 		$f = new \Orb\Form\Field\Hidden(array('name' => 'min_length'));
 		$f_opt->addField($f);
-	}
-
-
-	
-	/**
-	 * Apply the data stored in this form to a form field.
-	 * 
-	 * @param FormField $formfield The entity object, or null to use the one used from options
-	 */
-	public function applyFormToEntity(FormField $formfield = null)
-	{
-		if ($formfield === null) $formfield = $this->formfield;
-
-		switch ($formfield['typename']) {
-			case 'text':               $formfield['field_classname'] = 'Orb\\Form\\Field\\Text';
-			case 'textarea':           $formfield['field_classname'] = 'Orb\\Form\\Field\\Textarea';
-		}
-
-		$formfield['field_options'] = $this->getField('field_options')->getData();
 	}
 }
