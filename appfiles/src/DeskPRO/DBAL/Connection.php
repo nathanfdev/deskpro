@@ -37,6 +37,35 @@ class Connection extends \Doctrine\DBAL\Connection
 
 		return $array;
 	}
+	
+
+
+	/**
+	 * Execute a query and return all results grouped into a multi-dimentional array by $group_key.
+	 * Optionally, the sub-array can be indexed by $index_key.
+	 *
+	 * @param string $statement
+	 * @param array $params
+	 * @param string $group_key
+	 * @param string $index_key
+	 */
+	public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null)
+	{
+		$statement = $this->executeQuery($statement, $params);
+		$array = array();
+
+		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
+			if (!isset($array[$row[$group_key]])) $array[$row[$group_key]] = array();
+
+			if ($index_key !== null) {
+				$array[$row[$group_key]][$row[$index]] = $row;
+			} else {
+				$array[$row[$group_key]][] = $row;
+			}
+		}
+
+		return $array;
+	}
 
 
 	
