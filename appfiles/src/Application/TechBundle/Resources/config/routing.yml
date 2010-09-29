@@ -125,6 +125,7 @@ tech_admin_fields_testfield:
   defaults: { _controller: TechBundle:Fields:testField }
   requirements: { field_id: "\d+" }
 
+
 ################################################################################
 # API Keys
 ################################################################################
@@ -149,3 +150,17 @@ tech_admin_api_editkey:
 tech_admin_api_newkey:
   pattern: /api/new-key
   defaults: { _controller: TechBundle:Api:editKey, apikey: 0 }
+
+
+################################################################################
+# People
+################################################################################
+
+tech_people:
+  pattern: /people
+  defaults: { _controller: TechBundle:PeopleSearch:index }
+
+tech_people_view:
+  pattern: /people/:person_id
+  defaults: { _controller: TechBundle:People:view }
+  requirements: { person_id: "\d+" }
