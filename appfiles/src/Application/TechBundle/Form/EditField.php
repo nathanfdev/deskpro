@@ -33,7 +33,7 @@ class EditField extends \Orb\Form\Field\Form
 
 		// Typename
 		if (!$this->formfield['id']) {
-			$f = new \Orb\Form\Field\Hidden(array('name' => 'typename'));
+			$f = new \Orb\Form\Field\Hidden(array('name' => 'typeclass'));
 			$f_group_props->addField($f);
 		}
 
@@ -47,7 +47,7 @@ class EditField extends \Orb\Form\Field\Form
 		$f = new \Orb\Form\Field\FieldGroup(array('name' => 'field_options'));
 		$this->addField($f);
 
-		switch ($this->formfield['typename']) {
+		switch ($this->formfield['typeclass']) {
 			case 'text':               $this->_initTextFields(); break;
 			case 'textarea':           $this->_initTextFields(); break;
 		}

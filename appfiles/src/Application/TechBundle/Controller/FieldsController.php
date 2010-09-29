@@ -24,7 +24,7 @@ class FieldsController extends AbstractController
 	{
 		$existing_fields = $this->db->fetchAllGrouped("
 			SELECT
-				f.id, f.title, f.typename,
+				f.id, f.title, f.typeclass,
 				fa.sysname AS assoc_sysname
 			FROM form_fields f
 			INNER JOIN form_field_associations AS fa ON (fa.form_field_id = f.id)
@@ -46,7 +46,7 @@ class FieldsController extends AbstractController
 			$field = $this->getFieldOr404($field_id);
 		} else {
 			$field = $this->em->createEntity('CoreBundle:FormField');
-			$field['typename'] = $this->in->getString('typename');
+			$field['typeclass'] = $this->in->getString('typeclass');
 		}
 
 		$renderer = new \Orb\Form\Renderer\Basic();
@@ -83,7 +83,7 @@ class FieldsController extends AbstractController
 		# Set form properties
 		#------------------------------
 
-		switch ($formfield['typename']) {
+		switch ($formfield['typeclass']) {
 			case 'text':               $formfield['field_classname'] = 'Orb\\Form\\Field\\Text';
 			case 'textarea':           $formfield['field_classname'] = 'Orb\\Form\\Field\\Textarea';
 		}

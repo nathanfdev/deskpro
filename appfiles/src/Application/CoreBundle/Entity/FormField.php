@@ -52,20 +52,12 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	 * to build up each kind of field. This is the system name.
 	 *
 	 * @var string
-	 * @Column(name="typename", type="string", length=255)
+	 * @Column(name="typeclass", type="string", length=255)
 	 */
-	protected $typename = 'text';
+	protected $typeclass = 'text';
 
 	/**
-	 * The actual classname that we'll use to build the field.
-	 *
-	 * @var string
-	 * @Column(name="field_classname", type="string", length=255)
-	 */
-	protected $field_classname = 'Orb\\Form\\Field\\Text';
-
-	/**
-	 * Options to pass to the field
+	 * Options for the field
 	 * 
 	 * @Column(name="field_options", type="array")
 	 */
