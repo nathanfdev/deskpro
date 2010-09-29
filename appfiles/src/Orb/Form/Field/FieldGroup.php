@@ -24,7 +24,7 @@ use Orb\Util\Util;
  *                                      Default: <div class="group-field">%s</div>
  *                                      NOTE: applies to Basic renderer only
  */
-class FieldGroup extends Field implements \IteratorAggregate, \Countable
+class FieldGroup extends Field implements \IteratorAggregate, \Countable, \ArrayAccess
 {
 	/**
 	 * Array of fields
@@ -191,7 +191,7 @@ class FieldGroup extends Field implements \IteratorAggregate, \Countable
 	 * 
 	 * @param string $name
 	 */
-	public function removeFields($name)
+	public function removeField($name)
 	{
 		$field = $this->getField($name);
 		$field->setParent(null);
@@ -311,5 +311,27 @@ class FieldGroup extends Field implements \IteratorAggregate, \Countable
 	public function getIterator()
 	{
 		return new \ArrayIterator($this->fields);
+	}
+
+
+	
+	public function offsetExists($offset)
+	{
+		return $this->hasField($offset);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->getField($offset);
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		throw new \BadMethodCallException('Use addField()');
+	}
+
+	public function offsetUnset($offset)
+	{
+		throw new \BadMethodCallException('Use removeField()');
 	}
 }
