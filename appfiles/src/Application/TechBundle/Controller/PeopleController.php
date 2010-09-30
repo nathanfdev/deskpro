@@ -27,11 +27,26 @@ class PeopleController extends AbstractController
 	public function viewAction($person_id)
 	{
 		$person = $this->getPersonOr404($person_id);
-		$person_field_ids = $this->em->getRepository('CoreBundle:FormFieldAssociation')->getFieldsForType(FormFieldAssociation::SYSTYPE_PERSON);
 
-		if ($person_field_ids) {
+		$form = new \Application\TechBundle\Form\Person();
+		$fields = $this->em->getRepository('CoreBundle:FormFieldAssociation')->getFieldsForType(FormFieldAssociation::SYSTYPE_PERSON);
+		$form->setCustomFields($fields);
 
+		if ($this->isPostRequest()) {
+			$form->setData($_POST);
+			if ($form->isValid()) {
+				$form->savePerson($person);
+				echo "DONE";
+			} else {
+				// TODO proper handling
+				print_r($form->getErrors());
+			}
 		}
+
+		$this->render('TechBundle:People:view', array(
+			'person' => $person,
+			'form' => $form,
+		));
 	}
 
 

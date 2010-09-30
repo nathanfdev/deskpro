@@ -1,0 +1,51 @@
+{% extends 'TechBundle::layout' %}
+{% block content %}
+
+{# TODO: Sholud clean up forms so theres none of the complicated finding/method calling #}
+
+{% set form_url %}{% route 'tech_people_view' with ['person_id': person.id] %}{% endset %}
+{{form.renderFormTag(['action': form_url])|safe}}
+{{form.renderHiddenTags()|safe}}
+
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">{{person.display_name}}</h2>
+		<div class="inner">
+			<table class="table">
+				<tr class="even">
+					<td>Person ID</td>
+					<td>{{person.id}}</td>
+				</tr>
+				<tr class="even">
+					<td>Name</td>
+					<td>
+						Full Name: {{form.findField('basic_fields.full_name').render()}}
+						Informal: {{form.findField('basic_fields.informal_name').render()}}
+						Nickname: {{form.findField('basic_fields.nick_name').render()}}
+					</td>
+				</tr>
+			</table>
+		</div>
+		
+		{% if form.hasField('custom_fields') %}
+			<br />
+
+			<div class="inner">
+				<table class="table">
+					{% for field in form.getField('custom_fields') %}
+						<tr>
+							<td>{{field.getOption('label')}}</td>
+							<td>{{field.render()}}</td>
+						</tr>
+					{% endfor %}
+				</table>
+			</div>
+		{% endif %}
+	</div>
+</div>
+
+</form>
+
+{% endblock %}
+{% block sidebar %}
+{% endblock %}

@@ -90,6 +90,27 @@ abstract class AbstractAdminHandler
 	abstract protected function buildRequiredFormFields();
 
 
+
+	/**
+	 * Save the value from a form field into storage
+	 *
+	 * @param Orb\Form\Field\Field $formfield
+	 * @param Entity\FormFieldData $form_field_data
+	 */
+	public function saveFormValue(\Orb\Form\Field\Field $formfield, $em, Entity\FormFieldData $form_field_data)
+	{
+		$em->beginTransaction();
+
+		$form_field_data['data'] = $formfield->getData();
+		$em->persist($form_field_data);
+		$em->flush();
+		
+		$em->commit();
+
+		return $form_field_data;
+	}
+
+
 	
 	/**
 	 * This renders the HTML for a particular field types options. Standard options

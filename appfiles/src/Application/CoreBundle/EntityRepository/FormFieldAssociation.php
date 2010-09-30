@@ -21,13 +21,54 @@ class FormFieldAssociation extends EntityRepository
 	 */
 	protected $fields_for_systype = null;
 
+
+
 	/**
-	 * Get an array of fields that apply for some type.
+	 * get an array of fields for the specified IDs.
 	 * 
+	 * @param array $ids
+	 * @return array
+	 */
+	public function getFieldsWithIds(array $ids)
+	{
+		$fields = $this->_em->createQuery("
+			SELECT f
+			FROM CoreBundle:FormField f
+			WHERE f.id IN ?1
+		")->setParameter(1, $ids)->getResults();
+
+		return $fields;
+	}
+	
+
+
+	/**
+	 * Get an array of field entities that apply for some type.
+	 *
+	 * TODO: handle default on kind of cases? some fields arent always showed etc
+	 *
 	 * @param string $systype
 	 * @return array
 	 */
 	public function getFieldsForType($systype)
+	{
+		$ids = $this->getFieldIdsForType($systype);
+
+		if (!$ids) {
+			return array();
+		}
+
+		return $this->getFieldsWithIds($ids);
+	}
+
+
+	/**
+	 * Get an array of field ID's that apply for some type.
+	 * 
+	 * @param string $systype
+	 * @return array
+	 */
+	public function getFieldIdsForType($systype)
 	{
 		if ($this->fields_for_systype === null) {
 			$this->_initFieldsForSystypeArray();
