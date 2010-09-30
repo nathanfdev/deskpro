@@ -11,8 +11,7 @@
 
 namespace DeskPRO\FormField\Type;
 
-use \Application\CoreBundle\Entity\FormField;
-use \Application\CoreBundle\Entity\FormFieldData;
+use \Application\CoreBundle\Entity;
 
 /**
  * A FormField type is a custom field that DeskPRO knows how to handle. This ties together the
@@ -28,28 +27,49 @@ abstract class AbstractType
 	 * The form field definition
 	 * @var Application\CoreBundle\Entity\FormField
 	 */
-	protected $form_field;
+	protected $fielddef;
 
-	public function __construct(FormField $form_field = null)
+	public function __construct(Entity\FormField $fielddef = null)
 	{
-		$this->form_field = $form_field;
+		$this->fielddef = $form_field;
+	}
+
+
+
+	/**
+	 * Get the standard name or ID for this element in an HTML form.
+	 *
+	 * @return string
+	 */
+	public function getFormFieldName()
+	{
+		return 'field_' . $this->fielddef['id'];
 	}
 
 
 	/**
 	 * Get the Orb\Form\Field object for this field type.
 	 */
-	abstract public function getField(FormFieldData $form_field_data = null);
+	abstract public function getFormField(Entity\FormFieldData $form_field_data = null);
+
+
+	/**
+	 * Save the value from a form field into storage
+	 *
+	 * @param Orb\Form\Field\Field $formfield
+	 * @param Entity\FormFieldData $form_field_data
+	 */
+	abstract public function saveFormValue(\Orb\Form\Field\Field $formfield, Entity\FormFieldData $form_field_data);
 
 
 	/**
 	 * Render the field to HTML for use in a web page.
 	 */
-	abstract public function renderHtml(FormFieldData $form_field_data = null);
+	abstract public function renderHtml(Entity\FormFieldData $form_field_data = null);
 
 
 	/**
 	 * Render the field
 	 */
-	abstract public function renderText(FormFieldData $form_field_data = null);
+	abstract public function renderText(Entity\FormFieldData $form_field_data = null);
 }

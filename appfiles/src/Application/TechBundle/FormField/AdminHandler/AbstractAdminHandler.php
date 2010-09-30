@@ -26,13 +26,13 @@ abstract class AbstractAdminHandler
 	 * The form field definition
 	 * @var Application\CoreBundle\Entity\FormField
 	 */
-	protected $form_field;
+	protected $fielddef;
 
 	protected $em;
 
-	public function __construct(FormField $form_field, $em)
+	public function __construct(FormField $fielddef, $em)
 	{
-		$this->form_field = $form_field;
+		$this->fielddef = $fielddef;
 		$this->em = $em;
 
 		$this->init();
@@ -61,11 +61,27 @@ abstract class AbstractAdminHandler
 			$formgroup->addField($f);
 		}
 
+		$this->setDataOnForm($form);
+		
+
 		return $formgroup;
 	}
 
 
-	
+
+	/**
+	 * Set data/options based on the current field defition.
+	 * 
+	 * @param \Orb\Form\Field\FieldGroup $formgroup
+	 */
+	public function setDataOnFormGroup(\Orb\Form\Field\FieldGroup $formgroup)
+	{
+		$formgroup->setData($this->fielddef['data']);
+	}
+
+
+
+
 	/**
 	 * Return an array of fields we need to add to the form.
 	 *
@@ -89,7 +105,7 @@ abstract class AbstractAdminHandler
 
 		$tplname = 'TechBundle:Fields:_edit_' . strtolower($basename);
 
-		return $this->controller->renderView($tplname, array('form_field' => $this->form_field, 'form' => $form['fieldtype_form'], 'full_form' => $form));
+		return $this->controller->renderView($tplname, array('fielddef' => $this->fielddef, 'form' => $form['fieldtype_form'], 'full_form' => $form));
 	}
 
 
@@ -103,12 +119,13 @@ abstract class AbstractAdminHandler
 	{
 		$this->em->beginTransaction();
 
-		$is_new = ((bool)$this->formfield['id']);
+		$is_new = ((bool)$this->fielddef['id']);
 
-		$this->formfield['title'] = $form['field_properties']['title']->getData();
-		$this->em->persist($formfield);
+		$this->fielddef['title'] = $form['field_properties']['title']->getData();
 
 		$this->handleSave($form['fieldtype_form']);
+
+		$this->em->persist($formfield);
 
 		#------------------------------
 		# Save associations
@@ -129,16 +146,6 @@ abstract class AbstractAdminHandler
 		}
 
 		#------------------------------
-		# Run post-updates
-		#------------------------------
-
-		// TODO
-		// Some fields might need cleanup for existing data. For example,
-		// if a select field deleted an option, we might have to delete the
-		// fields that use that option.
-
-
-		#------------------------------
 		# Save
 		#------------------------------
 
@@ -151,7 +158,7 @@ abstract class AbstractAdminHandler
 	/**
 	 * Save options for the current field.
 	 *
-	 * @param Orb\Form\Field\FieldGroup $form This is the form fragment for this type
+	 * @param Orb\Form\Field\FieldGroup $formgroup This is the form fragment for this type
 	 */
-	abstract protected function handleSave(\Orb\Form\Field\FieldGroup $form);
+	abstract protected function handleSave(\Orb\Form\Field\FieldGroup $formgroup);
 }

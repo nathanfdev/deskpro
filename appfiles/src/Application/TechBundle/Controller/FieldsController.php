@@ -57,10 +57,13 @@ class FieldsController extends AbstractController
 			'form_field' => $field
 		));
 
+		$admin_handler = \Application\TechBundle\FormField\AdminHandler\Factor::createFromFormField($field);
+		$form->addField($admin_handler->buildFormGroup());
+
 		if ($this->isPostRequest()) {
 			$form->setData($_POST);
 			if ($form->isValid()) {
-				$this->_saveEditFieldForm($form, $field);
+				$admin_handler->saveField($form);
 				echo "DONE";
 			} else {
 				// TODO proper handling
@@ -71,62 +74,6 @@ class FieldsController extends AbstractController
 		return $this->render('TechBundle:Fields:edit', array(
 			'form' => $form
 		));
-	}
-
-	protected function _saveEditFieldForm(\Application\TechBundle\Form\EditField $form, \Application\CoreBundle\Entity\FormField $formfield)
-	{
-		$this->em->beginTransaction();
-
-		$is_new = ((bool)$formfield['id']);
-
-		#------------------------------
-		# Set form properties
-		#------------------------------
-
-		switch ($formfield['typeclass']) {
-			case 'text':               $formfield['field_classname'] = 'Orb\\Form\\Field\\Text';
-			case 'textarea':           $formfield['field_classname'] = 'Orb\\Form\\Field\\Textarea';
-		}
-
-		$formfield['title'] = $form['field_properties']['title']->getData();
-		$formfield['field_options'] = $form['field_options']->getData();
-
-		$this->em->persist($formfield);
-
-		#------------------------------
-		# Save associations
-		#------------------------------
-
-		if (!$is_new) {
-			// Delete existing ones first
-			$this->db->delete('form_field_associations', array('form_field_id' => $formfield['id']));
-		}
-
-		// Create them
-		foreach ($formfield['field_associations'] as $sysname) {
-			$formfield_assoc = $this->em->createEntity('Core:FormFieldAssociation');
-			$formfield_assoc['form_field'] = $formfield;
-			$formfield_assoc['sysname'] = $sysname;
-
-			$this->em->persist($formfield_assoc);
-		}
-
-		#------------------------------
-		# Run post-updates
-		#------------------------------
-
-		// TODO
-		// Some fields might need cleanup for existing data. For example,
-		// if a select field deleted an option, we might have to delete the
-		// fields that use that option.
-
-
-		#------------------------------
-		# Save
-		#------------------------------
-
-		$this->em->flush();
-		$this->em->commit();
 	}
 
 

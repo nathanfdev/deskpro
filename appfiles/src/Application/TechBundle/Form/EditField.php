@@ -42,33 +42,5 @@ class EditField extends \Orb\Form\Field\Form
 		$f_group_props->addField($f);
 
 		$this->addField($f_group_props);
-
-		// Field options which are specific to types of fields
-		$f = new \Orb\Form\Field\FieldGroup(array('name' => 'field_options'));
-		$this->addField($f);
-
-		switch ($this->formfield['typeclass']) {
-			case 'text':               $this->_initTextFields(); break;
-			case 'textarea':           $this->_initTextFields(); break;
-		}
-
-		// Set the data
-		if ($this->formfield['id']) {
-			$this->setData(array(
-				'field_properties'  => array('title' => $this->formfield['title']),
-				'field_options'     => $this->formfield['field_options']
-			));
-		}
-	}
-
-	protected function _initTextFields()
-	{
-		$f_opt = $this->getField('field_options');
-
-		$f = new \Orb\Form\Field\Hidden(array('name' => 'min_length'));
-		$f_opt->addField($f);
-
-		$f = new \Orb\Form\Field\Hidden(array('name' => 'min_length'));
-		$f_opt->addField($f);
 	}
 }

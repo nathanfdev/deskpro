@@ -22,18 +22,21 @@ class Factor
 {
 	private function __construct() { /* static */ }
 
+	/**
+	 * @return Application\TechBundle\FormField\AdminHandler\AbstractAdminHandler
+	 */
 	public static function createFromFormField(FormField $form_field)
 	{
 		switch ($form_field['typeclass']) {
-			case 'DeskPRO\\FormField\\Type\\Text':
+			case 'DeskPRO\\FormField\\Text':
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Text($form_field);
 				break;
 
-			case 'DeskPRO\\FormField\\Type\\Textarea':
+			case 'DeskPRO\\FormField\\Textarea':
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Textarea($form_field);
 				break;
 
-			case 'DeskPRO\\FormField\\Type\\Choice':
+			case 'DeskPRO\\FormField\\Choice':
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Choice($form_field);
 				break;
 		}
