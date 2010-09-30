@@ -50,7 +50,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @Column(name="full_name", type="text", nullable=true)
 	 */
-	protected $fullname = null;
+	protected $full_name = null;
 
 
 	/**
@@ -127,13 +127,11 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $salt;
 
-
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @OneToMany(targetEntity="PersonEmail", mappedBy="person")
 	 */
 	protected $email_addresses;
-	
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection();
@@ -145,7 +143,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $usergroups;
 
-	
 	/**
 	 * @var \DateTime
 	 * @Column(name="created_at",type="datetime")
@@ -169,6 +166,12 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @var array
 	 */
 	protected $_usergroup_ids = null;
+
+	/**
+	 * Loaded field values
+	 * @var array
+	 */
+	protected $_fields = null;
 
 
 
@@ -333,6 +336,28 @@ class Person extends \DeskPRO\Domain\DomainObject
 	}
 
 
+
+	/**
+	 * Get an array of field values for this person, indexed by field ID.
+	 * 
+	 * @return array
+	 */
+	public function getFields()
+	{
+		if ($this->_fields !== null) return $this->_fields;
+
+		$em = $this->getContainer()->get('doctrine.orm.entity_manager');
+		$this->_fields = $em->createQuery("
+			SELECT d
+			FROM CoreBundle:FormFieldDataPerson d INDEXBY d.id
+			WHERE d.record_id = ? AND d.parent_id = ?
+		")->setParameter(1, $this['id'])->setParameter(2, null)->getResults();
+
+		return $this->_fields;
+
+	}
+
+	
 	
 	public function __toString()
 	{
