@@ -21,6 +21,23 @@ namespace Application\CoreBundle\Entity;
 abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 {
 	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @Id @Column(name="id", type="integer")
+	 * @GeneratedValue
+	 */
+	protected $id = null;
+
+	/**
+	 * The parent ID for multi-field fields.
+	 *
+	 * @var int
+	 * @Column(name="parent_id", type="integer", nullable=true)
+	 */
+	protected $parent_id = null;
+
+	/**
 	 * The field the data maps to
 	 *
 	 * @var int
@@ -70,4 +87,12 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="indexed_int", type="integer", nullable=true)
 	 */
 	protected $indexed_int = null;
+
+	/**
+	 * Related data
+	 *
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="FormFieldData", mappedBy="parent_id")
+	 */
+	protected $data_children = null;
 }
