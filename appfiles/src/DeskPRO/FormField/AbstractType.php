@@ -21,7 +21,7 @@ use \Application\CoreBundle\Entity;
  * - Creating the Form objects
  * - Rendering data
  */
-abstract class AbstractType
+abstract class AbstractType implements \Orb\Form\Transformer\TransformerInterface
 {
 	/**
 	 * The form field definition
@@ -46,20 +46,38 @@ abstract class AbstractType
 		return 'field_' . $this->fielddef['id'];
 	}
 
+	
+
+	/**
+	 * Transforms data stored into form data
+	 *
+	 * @param  mixed $value     The user input
+	 * @return mixed
+	 */
+	public function transformStoredToForm($value)
+	{
+		return $value['value'];
+	}
+
+
+
+	/**
+	 * Transforms data stored into data we can put into a form.
+	 *
+	 * @param  mixed $value     The stored data
+	 * @return mixed            The original form data
+	 */
+	public function transformFormToStored($value)
+	{
+		return array('value' => $value);
+	}
+
+
 
 	/**
 	 * Get the Orb\Form\Field object for this field type.
 	 */
-	abstract public function getFormField(Entity\FormFieldData $form_field_data = null);
-
-
-	/**
-	 * Save the value from a form field into storage
-	 *
-	 * @param Orb\Form\Field\Field $formfield
-	 * @param Entity\FormFieldData $form_field_data
-	 */
-	abstract public function saveFormValue(\Orb\Form\Field\Field $formfield, Entity\FormFieldData $form_field_data);
+	abstract public function getFormField();
 
 
 	/**

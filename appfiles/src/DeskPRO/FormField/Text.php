@@ -19,11 +19,9 @@ use \Application\CoreBundle\Entity;
 class Text extends AbstractType
 {
 	/**
-	 * Get the Orb\Form\Field object for this field type.
-	 *
 	 * @return Orb\Form\Field\Text
 	 */
-	public function getFormField(Entity\FormFieldData $form_field_data = null)
+	public function getFormField()
 	{
 		$options = array();
 		if ($this->fielddef['options']['min_length']) {
@@ -36,26 +34,10 @@ class Text extends AbstractType
 		$options['name'] = $this->getFormFieldName();
 
 		$field = new \Orb\Form\Field\Text($options);
-
-		if ($form_field_data) {
-			$field->setData($form_field_data['data']['value']);
-		}
+		$field->addTransformer($this);
 
 		return $field;
 	}
-
-
-	/**
-	 * Save the value from a form field into storage
-	 *
-	 * @param Orb\Form\Field\Field $formfield
-	 * @param Entity\FormFieldData $form_field_data
-	 */
-	public function saveFormValue(\Orb\Form\Field\Field $formfield, Entity\FormFieldData $form_field_data)
-	{
-		$form_field_data['data'] = array('value' => $formfield->getData());
-	}
-
 
 
 	/**
