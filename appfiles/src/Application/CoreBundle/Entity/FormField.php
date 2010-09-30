@@ -54,14 +54,14 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @Column(name="typeclass", type="string", length=255)
 	 */
-	protected $typeclass = 'text';
+	protected $typeclass = 'Text';
 
 	/**
 	 * Options for the field
 	 * 
-	 * @Column(name="field_options", type="array")
+	 * @Column(name="options", type="array")
 	 */
-	protected $field_options = array();
+	protected $options = array();
 
 	/**
 	 * Field children
@@ -74,27 +74,36 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	
 
 	/**
-	 * Get the field instance. Note that this value is NOT cached, you should
-	 * assign it to a local var always.
+	 * Get the DeskPRO form field object that knows how to render data etc.
 	 *
-	 * TODO: handle setting up validators and transformers, if nec
-	 *
-	 * @return Orb\Field\Field
+	 * @return DeskPRO\FormField\Type\Type
 	 */
-	public function getField()
+	public function getFormFieldType()
 	{
-		$field_classname = $this->field_classname;
+		$classname = $this['typeclass'];
 
-		$options = $this->field_options;
-		$options['name'] = 'field_' . $this->id;
-		$field = new $field_classname($options);
+		$formfield = new $classname($this);
 
-		if ($this->field_children) {
-			foreach ($this->field_children as $child) {
-				$field->addField($child->getField());
-			}
+		return $formfield;
+	}
+
+
+	
+	/**
+	 * Get the full classname to the type.
+	 *
+	 * @return string
+	 */
+	public function getTypeclass()
+	{
+		$classname = $this->typeclass;
+
+		// Easy check for full namepsaced classname
+		// If not a full classname, then we assume its a DeskPRO class
+		if (strpos($classname, '\\') === false) {
+			$classname = 'DeskPRO\\FormField\\Type\\' . $classname;
 		}
 
-		return $field;
+		return $classname;
 	}
 }
