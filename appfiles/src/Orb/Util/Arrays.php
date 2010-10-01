@@ -472,6 +472,27 @@ class Arrays
 	}
 
 
+	
+	/**
+	 * Get a deep value from a multidimentional array using a dot to separate keys.
+	 *
+	 * <code>
+	 * $array = array('chroder' => array('info' => array('name' => 'Christopher')));
+	 * $name = Arrays::getValue('chroder.info.name');
+	 * </code>
+	 *
+	 * Note: This is really just an alias for keyAsPath() with $path_sep to '.'
+	 *
+	 * @param    array    $array     The array to work with
+	 * @param    string   $key       The dotted key
+	 * @return   mixed
+	 */
+	public static function getValue($array, $key)
+	{
+		return self::keyAsPath($array, $key, '.');
+	}
+
+
 
 	/**
 	 * Returns a string from an array using the given template on each item. Sortof like
