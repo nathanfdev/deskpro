@@ -1,7 +1,7 @@
-Orb.createNamespace('DeskPRO.Form.Validator');
+Orb.createNamespace('Orb.Validator');
 
-DeskPRO.Form.Validator.Length = new Class({
-	Implements: DeskPRO.Form.Validator.AbstractValidator,
+Orb.Validator.Length = new Class({
+	Extends: Orb.Validator.AbstractValidator,
 	
 	_setDefaultOptions: function() {
 		this.setOptions({

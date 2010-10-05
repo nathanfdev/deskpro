@@ -1,9 +1,9 @@
-Orb.createNamespace('DeskPRO.Form.Validator');
+Orb.createNamespace('Orb.Validator');
 
 /**
  * Validator validates some value
  */
-DeskPRO.Form.Validator.AbstractValidator = new Class({
+Orb.Validator.AbstractValidator = new Class({
 	Implements: Options,
 	
 	/**
