@@ -22,7 +22,7 @@ use Orb\Util\Arrays;
  */
 class App
 {
-	const DEFAULT_NAME = 'default';
+	const DEFAULT_NAME = '__default__';
 
 	/**#@+
 	 * Names of common services
@@ -40,6 +40,18 @@ class App
 	 * @var array
 	 */
 	protected static $_containers = array();
+
+	/**
+	 * An array of service=>containername
+	 * @var array
+	 */
+	protected static $_service_to_container = array();
+
+	/**
+	 * The container we'll use by default when DEFAULT_NAME is specified
+	 * @var string
+	 */
+	protected static $_default_contaner_name = 'default';
 
 	/**
 	 * An array of loaded config files.
@@ -91,7 +103,7 @@ class App
 	 * @param ContainerInterface $container The container
 	 * @param string             $name      A name for the container to reference it (such as 'default')
 	 */
-	public static function setContainer(ContainerInterface $container, $name = self::DEFAULT_NAME)
+	public static function setContainer(ContainerInterface $container, $name)
 	{
 		if (isset(self::$_containers[$name])) {
 			throw new \InvalidArgumentException("The container with `$name` has already been set");
@@ -110,9 +122,41 @@ class App
 	 */
 	public static function getContainer($name = self::DEFAULT_NAME)
 	{
+		if ($name == self::DEFAULT_NAME) {
+			$name = self::$_default_contaner_name;
+		}
 		if (!isset(self::$_containers[$name])) {
 			throw new \OutOfBoundsException("There is no container set with name `$name`");
 		}
+
+		return self::$_containers[$name];
+	}
+
+
+
+	/**
+	 * Set the default container to use when using DEFAULT_NAME, or when no service-to-container
+	 * map has been specified.
+	 *
+	 * @param string $name
+	 */
+	public static function setDefaultContainer($name)
+	{
+		self::$_default_contaner_name = $name;
+	}
+
+	
+
+	/**
+	 * Set the default container to fetch from when using DEFAULT_NAME with a specific
+	 * service.
+	 *
+	 * @param string $service_name
+	 * @param string $container_name
+	 */
+	public static function setDefaultContainerForService($service_name, $container_name)
+	{
+		self::$_service_to_container[$service_name] = $container_name;
 	}
 
 
@@ -129,6 +173,10 @@ class App
 	public static function get($service_name, $container_name = self::DEFAULT_NAME)
 	{
 		if ($container_name !== null) {
+			if ($container_name == self::DEFAULT_NAME AND isset(self::$_service_to_container[$service_name])) {
+				$container_name = self::$_service_to_container[$service_name];
+			}
+
 			$container = self::getContainer($container_name);
 			return $container->get($service_name);
 		}
@@ -140,6 +188,34 @@ class App
 		}
 
 		throw new \OutOfBoundsException("There is no container with the service `$service_name`");
+	}
+
+
+
+	/**
+	 * Check if a service exists..
+	 *
+	 * @param string $service_name    The service to get
+	 * @param string $container_name  The container to get it from.
+	 */
+	public static function has($service_name, $container_name = self::DEFAULT_NAME)
+	{
+		if ($container_name !== null) {
+			if ($container_name == self::DEFAULT_NAME AND isset(self::$_service_to_container[$service_name])) {
+				$container_name = self::$_service_to_container[$service_name];
+			}
+
+			$container = self::getContainer($container_name);
+			return $container->has($service_name);
+		}
+
+		foreach (self::$_containers as $container) {
+			if ($container->has($service_name)) {
+				return true;
+			}
+		}
+
+		return false;
 	}
 
 	
@@ -176,12 +252,10 @@ class App
 	 */
 	public static function getCache($name)
 	{
-		$container = self::getContainer(self::DEFAULT_NAME);
-
 		$service_name = 'deskpro.cache.' . $name;
 
-		if ($container->has($service_name)) {
-			return $container->get($service_name);
+		if (self::has($service_name)) {
+			return self::get($service_name);
 		}
 
 		return null;
