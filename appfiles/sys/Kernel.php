@@ -16,13 +16,26 @@ require(DP_ROOT.'/sys/autoload.php');
 use \Symfony\Component\DependencyInjection\Loader\LoaderInterface;
 use \Symfony\Component\DependencyInjection\ContainerBuilder;
 
-
+use \DeskPRO\App;
 
 /**
  * Kernel boots the app.
  */
 class Kernel extends \Symfony\Framework\Kernel
 {
+	public function __construct($environment, $debug)
+	{
+		parent::Kernel($environment, $debug);
+		App::setKernel($this);
+	}
+
+	public function boot()
+	{
+		parent::boot();
+		App::setContainer($this->container);
+	}
+
+
 	/**
 	 * Get config data from the config.php file. This config file is meant to be user-editable.
 	 * This is unlike the other config files that build the DI container and routing etc.
@@ -96,16 +109,13 @@ class Kernel extends \Symfony\Framework\Kernel
 	
 	public function getCacheDir()
 	{
-		$dir = self::getUserConfig('cache_dir');
-
-		if ($dir === null) {
-			return parent::getCacheDir();
-		}
-
-		$dir = str_replace('%env%', $this->environment, $dir);
-
-		return $dir;
+		return App::getCacheDir();
 	}
+
+	public function getLogDir()
+    {
+        return App::getLogDir();
+    }
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{

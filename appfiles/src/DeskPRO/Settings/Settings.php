@@ -88,6 +88,20 @@ class Settings implements \ArrayAccess
 		return $this->settings[$name];
 	}
 
+	
+
+	/**
+	 * Manually set the value for one or more settings. Note that these values are
+	 * temporary, they are NOT persisted. This is mainly useful for code overrides
+	 * or the like.
+	 *
+	 * @param array $settings
+	 */
+	public function setTemporarySettingValues(array $settings)
+	{
+		$this->settings = array_merge($this->settings, $settings);
+	}
+
 
 
 	/**

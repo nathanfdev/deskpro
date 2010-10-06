@@ -29,7 +29,7 @@ class Cache
 	static function getCache($name, $options, $cache_dir)
 	{
 		$key = 'cache_' . $name;
-		$user_options = \DeskPRO\Kernel\Kernel::getUserConfig($key);
+		$user_options = \DeskPRO\App::getConfig($key);
 
 		if ($user_options) {
 			$options = array_merge($options, $user_options);
