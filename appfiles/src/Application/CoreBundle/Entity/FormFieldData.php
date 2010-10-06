@@ -95,4 +95,30 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 	 * @OneToMany(targetEntity="FormFieldData", mappedBy="parent_id")
 	 */
 	protected $data_children = null;
+
+
+
+	/**
+	 * Get the value of this field rendered to HTML
+	 *
+	 * @return string
+	 */
+	public function getDisplayHtml()
+	{
+		$field_handler = $this['form_field']->getFormFieldType();
+		return $field_handler->renderHtml($this);
+	}
+
+	
+
+	/**
+	 * Get the value of this field rendered to plain text.
+	 * 
+	 * @return string
+	 */
+	public function getDisplayText()
+	{
+		$field_handler = $this['form_field']->getFormFieldType();
+		return $field_handler->renderText($this);
+	}
 }

@@ -1,4 +1,16 @@
 {% extends 'TechBundle::layout' %}
+{% block extra_head %}
+<script type="text/javascript">
+	$(document).ready(function() {
+		var inline_edit = new DeskPRO.Form.InlineEdit({
+			autoSave: true,
+			ajax: {
+				url: '{% route 'tech_people_ajaxedit' with ['person_id': person.id] %}'
+			}
+		});
+	});
+</script>
+{% endblock %}
 {% block content %}
 
 {# TODO: Sholud clean up forms so theres none of the complicated finding/method calling #}
@@ -18,24 +30,24 @@
 				</tr>
 				<tr class="even">
 					<td>Name</td>
-					<td>
-						Full Name: {{form.findField('basic_fields.full_name').render()}}
-						Informal: {{form.findField('basic_fields.informal_name').render()}}
-						Nickname: {{form.findField('basic_fields.nick_name').render()}}
+					<td class="editable" data-editable-for="editfields_names">
+						Full Name: <span data-render-for="full_name">{{person.full_name}}</span><br />
+						Informal: <span data-render-for="informal_name">{{person.informal_name}}</span><br />
+						Nickname: <span data-render-for="nick_name">{{person.nick_name}}</span><br />
 					</td>
 				</tr>
 			</table>
 		</div>
-		
-		{% if form.hasField('custom_fields') %}
+
+		{% if person.fields %}
 			<br />
 
 			<div class="inner">
 				<table class="table">
-					{% for field in form.getField('custom_fields') %}
-						<tr>
-							<td>{{field.getOption('label')}}</td>
-							<td>{{field.render()}}</td>
+					{% for field in person.fields %}
+						<tr class="editable" data-editable-for="editfields_custom{{field.form_field_id}}">
+							<td>{{field.form_field.title}}</td>
+							<td>{{field.displayHtml|safe}}</td>
 						</tr>
 					{% endfor %}
 				</table>
@@ -45,6 +57,19 @@
 </div>
 
 </form>
+
+<div id="field_html_wrap" style="display: none">
+	<div id="editfields_names">
+		Full Name: {{form.findField('basic_fields.full_name').render()}}
+		Informal: {{form.findField('basic_fields.informal_name').render()}}
+		Nickname: {{form.findField('basic_fields.nick_name').render()}}
+	</div>
+	{% if form.hasField('custom_fields') %}
+		{% for field in form.getField('custom_fields') %}
+			<div id="editfields_{{field.getName()}}">{{field.render()}}<div>
+		{% endfor %}
+	{% endif %}
+</div>
 
 {% endblock %}
 {% block sidebar %}

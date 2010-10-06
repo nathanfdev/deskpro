@@ -217,6 +217,15 @@ DeskPRO.Form.InlineEdit = new Class({
 	 */
 	submitDone: function(data, textStatus, XMLHttpRequest) {
 		
+		/*
+			data should be:
+			{
+				renderedHtml: '...', // FULL html rendered block, OR
+				renderedValues: {name: 'html', name2: 'html2'}, // HTML for specific things
+				renderedForm: '...' // optional HTML to replace the old form input
+			}
+		*/
+		
 		while (info = data.fields.pop()) {
 			var el = $('#' + info.id);
 			
@@ -241,9 +250,61 @@ DeskPRO.Form.InlineEdit = new Class({
 			// and 2) replace the rendered form value (incase we edit again)
 			} else {
 				var sending_info = this.sending_edits.get(info.id);
+
+				// got a new form HTML
+				if (info.renderedForm) {
+					sendinfo_info.form_wrap.html(info.renderedForm);
+				// otherwise move the form fields back to inivisble container
+				} else {
+					var form_fields = el.children();
+					form_fields.detatch();
+					sendinfo_info.form_wrap.append(form_fields);
+				}
 				
-				el.html(info.renderedValue);
-				sendinf_info.form_wrap.html(info.renderedForm);
+				// We got a full rendered value back
+				if (info.renderedHtml) {
+					el.html(info.renderedValue);
+				} else {
+
+					// put original html back
+					el.html(sending_info.html);
+					
+					// We got rendered values back
+					if (info.renderedValues) {
+						var renderedValues = new Hash(info.renderedValues);
+						
+					// Try to generate values ourselves
+					} else {
+						var renderedValues = new Hash();
+						$(form_fields).each(function() {
+							var val = $(this).val();
+							if ($type(val) == 'array') {
+								val = val.join(', ');
+							}
+							
+							var key = $(this).attr('name').replace(/\b(.*?)$/, '$1');
+							
+							renderedValues.set(key, value);
+						});
+					}
+					
+					
+					var placeholders = $('[data-render-for]', el);
+					
+					// Use the placeholds if we have them
+					if (placeholders.size()) {
+						
+						renderedValues.each(function (value, key) {
+							var els = placeholders.filter('[data-render-for$="'+key+'"]');
+							els.html(value);
+						});
+					
+					// No placeholders, just replace the whole block with rendered values
+					} else {
+						el.html(renderedValues.getValues().join(', '));
+					}
+				}
+				
 				this.sending_edits.erase(info.id);
 			}
 		}
