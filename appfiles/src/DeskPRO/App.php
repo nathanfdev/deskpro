@@ -282,6 +282,27 @@ class App
 		return self::$_debug;
 	}
 
+	
+
+	/**
+	 * Check if we're currently running in CLI
+	 *
+	 * @return bool
+	 */
+	public static function isCli()
+	{
+		static $is_cli = null;
+
+		if ($is_cli === null) {
+			$is_cli = false;
+			if (self::getKernel() instanceof \DeskPRO\Kernel\KernelCli) {
+				$is_cli = true;
+			}
+		}
+
+		return $is_cli;
+	}
+
 
 
 	/**

@@ -126,3 +126,8 @@ class Kernel extends \Symfony\Framework\Kernel
 		return $container;
 	}
 }
+
+class KernelCli extends Kernel
+{
+	
+}
