@@ -16,7 +16,7 @@ use Orb\Util\Util;
  * A choice field is a select box, either single selection or multiple.
  * Choices are made up of Checkbox or Radio fields.
  */
-class Choice extends FieldGroup
+class Choice extends CompositeField
 {
 	const SELMODE_SINGLE = 'single';
 	const SELMODE_MULTIPLE = 'multiple';

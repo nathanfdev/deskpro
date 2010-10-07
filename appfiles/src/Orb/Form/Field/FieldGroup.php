@@ -302,6 +302,19 @@ class FieldGroup extends Field implements \IteratorAggregate, \Countable, \Array
 	}
 
 
+
+	/**
+	 * Is this an actual composite field, rather than just a group of fields?
+	 *
+	 * @see CompositeField
+	 * @return bool
+	 */
+	public function isCompositeField()
+	{
+		return false;
+	}
+
+
 	
 	/**
 	 * Returns the iterator for this group.

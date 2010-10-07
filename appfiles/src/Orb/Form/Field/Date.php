@@ -15,7 +15,7 @@ use Orb\Util\Util;
 /**
  * A date field
  */
-class Date extends FieldGroup
+class Date extends CompositeField
 {
 	const DATA_FORMAT_DATETIME = 'DateTime';
 	const DATA_FORMAT_TIMESTAMP = 'timestamp';
