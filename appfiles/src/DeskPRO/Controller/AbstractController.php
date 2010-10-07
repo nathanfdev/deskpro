@@ -15,7 +15,7 @@ use \Symfony\Component\DependencyInjection\ContainerInterface;
 /**
  * The abstract controller sets up some default objects.
  */
-abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Controller\Controller
+abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Controller
 {
 	/**
 	 * Entity manager
@@ -59,14 +59,11 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 	 */
 	protected $session;
 
-
-
-	public function setContainer(ContainerInterface $container)
+	/**
+	 * An empty callback function
+	 */
+	protected function init()
 	{
-		parent::setContainer($container);
-
-		// Set shortcuts once we have the container :)
-
 		$this->em       = $this['doctrine.orm.entity_manager'];
 		$this->db       = $this['database_connection'];
 		$this->in       = $this['deskpro.core.input_reader'];
@@ -76,16 +73,6 @@ abstract class AbstractController extends \Symfony\Bundle\FrameworkBundle\Contro
 
 		$this['templating']->resetTemplateVars();
 		$this->tplvars = $this['templating']->getTemplateVarsObject();
-
-		$this->init();
-	}
-
-	/**
-	 * An empty callback function
-	 */
-	protected function init()
-	{
-
 	}
 
 	
