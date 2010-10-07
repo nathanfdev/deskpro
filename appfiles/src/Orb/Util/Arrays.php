@@ -87,6 +87,52 @@ class Arrays
 	}
 
 
+	/**
+	 * Flattens a multidimentional array into a single dimentional array, and separates
+	 * sub-array keys with $sep.
+	 *
+	 * <code>
+	 * $array = array('christopher' => array('id' => 22, 'group' => 'admin'));
+	 * $array = Arrays::flattenWithKeys($array);
+	 * // -> christopher.id=22
+	 * //    christopher.group=admin
+	 * </code>
+	 *
+	 * @param  array   $array  The array to work on
+	 * @param  string  $sep    The separate to use between key names
+	 * @return array
+	 */
+	public static function flattenWithKeys($array, $sep = '.')
+	{
+		return self::_flattenWithKeys($array, $sep);
+	}
+
+	protected static function _flattenWithKeys($array, $sep = '.', array $key_parts = array())
+	{
+		$new_array = array();
+
+		if ($key_parts) {
+			$key_prefix = implode('.', $key_parts) . '.';
+		} else {
+			$key_prefix = '';
+		}
+
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				$key_parts[] = $k;
+				$v = self::_flattenWithKeys($v, $sep, $key_parts);
+				$new_array = array_merge($new_array, $v);
+				array_pop($key_parts);
+			} else {
+				$k = $key_prefix . $k;
+				$new_array[$k] = $v;
+			}
+		}
+
+		return $new_array;
+	}
+
+
 
 	/**
 	 * Run a function on all items of an array recursively. This is a more powerful version of
