@@ -48,7 +48,7 @@ Orb.createNamespace('DeskPRO.Form');
  * When AJAX is submitted, a 'data' array is supplied with the array key being a unique ID, and the array
  * value being an array of data fields. For example, when submitting the above snippet, the request might look like:
  * 
- *     save?data[editable_1235][person][fullname]=Chris
+ *     save?person[fullname]=Chris
  * 
  * The AJAX must return JSON encoded data with an array of 'fields':
  * 
@@ -94,8 +94,6 @@ DeskPRO.Form.InlineEdit = new Class({
 		baseElement: document,
 		editableClass: 'editable',
 		autoSave: false,
-		errorContainerSelector: '.errors',
-		errorListSelector: 'ul',
 		ajax: {
 			timeout: 20000,
 			type: 'POST',
@@ -103,6 +101,8 @@ DeskPRO.Form.InlineEdit = new Class({
 		},
 		ajaxData: {},
 	},
+	
+	errorListHandler: null,
 	
 	/**
 	 * An array of open editables. If autoSave is enabled, this is always just one.
@@ -125,6 +125,8 @@ DeskPRO.Form.InlineEdit = new Class({
 		if (!this.options['formContainer']) {
 			this.options['formContainer'] = $('<div style="display:none"></div>').appendTo(document);
 		}
+		
+		this.errorListHandler = new DeskPRO.ErrorListHandler();
 		
 		this.sending_edits = new Hash();
 		
@@ -166,7 +168,13 @@ DeskPRO.Form.InlineEdit = new Class({
 		// We detatch it from the DOM now
 		form_fields.detatch();
 		
-		var state_info = { 'el': el, 'html': $(el).html(), 'form_wrap': form_wrap };
+		// Get field ID's in the group
+		var field_ids = [];
+		form_fields.each(function() {
+			field_ids.push($(this).attr('id'));
+		});
+		
+		var state_info = { 'el': el, 'html': $(el).html(), 'form_wrap': form_wrap. field_ids: field_ids };
 		
 		// And add it into the editable wrapper
 		$(el).html('').appendTo(form_fields);
@@ -189,7 +197,7 @@ DeskPRO.Form.InlineEdit = new Class({
 			
 			var el_id = $(edit.el).attr('id');
 			var form_data = $(edit.el).serializeArray();
-			data_parts[el_id] = form_data;
+			data_parts = $merge(data_parts, form_data);
 			
 			// TODO put a loading indicator now or dim out fields
 			// or something
@@ -220,36 +228,61 @@ DeskPRO.Form.InlineEdit = new Class({
 		/*
 			data should be:
 			{
-				renderedHtml: '...', // FULL html rendered block, OR
-				renderedValues: {name: 'html', name2: 'html2'}, // HTML for specific things
-				renderedForm: '...' // optional HTML to replace the old form input
+				fields: [
+					{
+						fieldName: 'person[something][something]',
+						
+						status: 'success',
+						renderedForm: '...', // optional
+						renderedHtml: '...', //optional
+						
+						status: error,
+						errorCodes: [..], // optional
+					}
+				]
 			}
 		*/
 		
-		while (info = data.fields.pop()) {
-			var el = $('#' + info.id);
+		while (fieldinfo = data.fields.pop()) {
 			
-			var errorContainer = $(this.options['errorContainerSelector'], el);
-			var errorList = $(this.options['errorListSelector'], errorContainer);
-			errorContainer.hide()
-			errorList.hide();
-			errorList.html('');
+			// Find the element
+			var el = $('[name="'+fieldinfo.fieldName+'"]');
 			
+			// Of if there is no exact match, we'll use a prefix
+			// to find the first element of a group.
+			// - For example, in a date field date[mm], date[yyyy],
+			// we might have an error that applies simply to the collective 'date',
+			// and not a specific field in the group.
+			if (!el.size()) {
+				el = $('[name^="'+fieldinfo.fieldName+'\\["]').first();
+			}
+			
+			// If we have no element matching, then we have to skip this
+			if (!el.size()) {
+				continue;
+			}
+
 			// If theres an error with the data, then show the error div
 			// and any messages provided
-			if (info.status == 'error') {
-				if (info.errorMessages) {
-					while (errorMessage = info.errorMessages.shift()) {
-						errorList.append('<li>' + errorMessage + '</li>');
-					}
-					errorList.show();
-					errorContainer.show();
-				}
+			if (fieldinfo.status == 'error') {
+				
+				this.errorHandler.showErrors(el, fieldinfo.errorCodes);
 
 			// On success, we have to 1) replace the rendered value,
 			// and 2) replace the rendered form value (incase we edit again)
 			} else {
-				var sending_info = this.sending_edits.get(info.id);
+				
+				// No errors, so reset it
+				this.errorHandler.showErrors(el, false);
+				
+				// Find the sending info
+				var sending_info = null;
+				this.sending_edits.each(function (info, id) {
+					if (info.field_ids.contains(el.attr('id'))) {
+						sending_info = info;
+						return false;
+					}
+				});
 
 				// got a new form HTML
 				if (info.renderedForm) {
@@ -282,7 +315,9 @@ DeskPRO.Form.InlineEdit = new Class({
 								val = val.join(', ');
 							}
 							
-							var key = $(this).attr('name').replace(/\b(.*?)$/, '$1');
+							// The only important part of the name is the last
+							// key part. So myform[section][whatever], whatever is important
+							var key = $(this).attr('name').replace(/[\[\]]/, ' ').replace(/\b(.*?)$/, '$1');
 							
 							renderedValues.set(key, value);
 						});

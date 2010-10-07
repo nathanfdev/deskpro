@@ -73,6 +73,12 @@ abstract class Field
 	 */
 	protected $form_data;
 
+	/**
+	 * Has the field been modified by a posted form?
+	 * @var string
+	 */
+	protected $is_modified = false;
+
 
 
 	/**
@@ -349,7 +355,43 @@ abstract class Field
 	public function setFormData($form_data)
 	{
 		$this->data = $this->transformer->transformFormToStored($form_data);
-		$this->form_data = $this->transformer->transformStoredToForm($this->data);
+
+		$new_form_data = $this->transformer->transformStoredToForm($this->data);
+		if ($this->_compareFormData($this->form_data, $new_form_data)) {
+			$this->is_modified = true;
+			$this->form_data = $this->transformer->transformStoredToForm($this->data);
+		}
+	}
+
+	protected function _compareFormData($old, $new)
+	{
+		if (is_array($old) AND is_array($new)) {
+			foreach ($old as $k => $v) {
+				if (!isset($new[$k])) {
+					return false;
+				}
+				if (!$this->_compareFormData($k, $new[$k])) {
+					return false;
+				}
+			}
+			return true;
+		} elseif ($old == $new) {
+			return true;
+		} else {
+			return false;
+		}
+	}
+
+	
+
+	/**
+	 * Has this fields value changed from POST?
+	 *
+	 * @return bool
+	 */
+	public function isModified()
+	{
+		return $this->is_modified;
 	}
 
 

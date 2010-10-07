@@ -49,6 +49,25 @@ class PeopleController extends AbstractController
 		));
 	}
 
+	public function ajaxSaveAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		$form->setData($_POST);
+		if ($form->isValid()) {
+			$form->savePerson();
+		}
+	}
+
+	protected function _getForm()
+	{
+		$form = new \Application\TechBundle\Form\Person();
+		$fields = $this->em->getRepository('CoreBundle:FormFieldAssociation')->getFieldsForType(FormFieldAssociation::SYSTYPE_PERSON);
+		$form->setCustomFields($fields);
+
+		return $form;
+	}
+
 
 
 	############################################################################
