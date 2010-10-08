@@ -4,6 +4,9 @@ parameters:
     http_kernel.class: "DeskPRO\HttpKernel\HttpKernel"
     controller_resolver.class: "DeskPRO\HttpKernel\Controller\ControllerResolver"
 
+kernel.session:
+  class: "Application\CoreBundle\HttpFoundation\Session"
+
 kernel.config:
   error_handler_level: null
 

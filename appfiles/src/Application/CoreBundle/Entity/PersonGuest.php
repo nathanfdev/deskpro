@@ -10,6 +10,9 @@
  */
 
 namespace Application\CoreBundle\Entity;
+
+use \DeskPRO\App;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -20,34 +23,29 @@ use \Application\CoreBundle\Entity\UsergroupPropertyPermission;
  */
 class PersonGuest extends Person
 {
-	public function init(array $params)
+	public function __construct()
 	{
-		parent::init($params);
-
-		$settings = $this->getContainer()->get('deskpro.core.settings');
-
 		$this->id = 0;
-		$this->_usergroup_ids = array($settings->get('core.guest_usergroup_id'));
-		$this->timezone = $settings->get('core.default_timezone');
+		$this->_usergroup_ids = array(App::getSetting('core.guest_usergroup_id'));
+		$this->timezone = App::getSetting('core.default_timezone');
 	}
 
 	public function getUsergroups()
 	{
 		if ($this->usergroups->count()) return $this->usergroups;
 
-		$em = $this->getContainer()->get('doctrine.orm.entity_manager');
+		$em = App::getOrm();
 
 		$this->usergroups = $em->createQuery('
 			SELECT CoreBundle:Usergroup u
 			WHERE usergroup_id = ?1
-		')->setParameter(1, $this->_usergroup_ids[0])
-			->getResult();
+		')->setParameter(1, $this->_usergroup_ids[0])->getResult();
 
 		return $this->usergroups;
 	}
 
 	/** @PrePersist */
-	public function incCreatedAt()
+	public function noPersist()
 	{
 		throw new \BadMethodCallException('A PersonGuest cannot be persisted');
 	}

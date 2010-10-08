@@ -9,10 +9,12 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\HttpFoundation;
+namespace Application\CoreBundle\HttpFoundation;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;
+
+use \DeskPRO\App;
 
 use \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
 
@@ -21,12 +23,6 @@ use \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
  */
 class Session extends \Symfony\Component\HttpFoundation\Session
 {
-	/**
-	 * The entity manager
-	 * @var DeskPRO\ORM\EntityManager
-	 */
-	protected $em;
-
 	/**
 	 * The person this session belongs to
 	 * @var Application\CoreBundle\Entity\Person
@@ -38,12 +34,6 @@ class Session extends \Symfony\Component\HttpFoundation\Session
 	 * @var Application\CoreBundle\Entity\Language
 	 */
 	protected $language;
-
-	public function __construct(\DeskPRO\ORM\EntityManager $em, SessionStorageInterface $storage, array $options = array())
-	{
-		parent::__construct($storage, $options);
-		$this->em = $em;
-	}
 
 
 	
@@ -61,12 +51,12 @@ class Session extends \Symfony\Component\HttpFoundation\Session
 
 		if ($person_id) {
 			try {
-				$person = $this->em->find('CoreBundle:Person', $person_id);
+				$person = App::getOrm()->find('CoreBundle:Person', $person_id);
 			} catch (\Doctrine\ORM\NoResultException $e) {}
 		}
 
 		if (!$person) {
-			$person = $this->em->createEntity('CoreBundle:PersonGuest');
+			$person = new \Application\CoreBundle\Entity\PersonGuest();
 		}
 
 		$this->person = $person;
