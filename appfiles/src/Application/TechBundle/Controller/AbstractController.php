@@ -12,6 +12,8 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 
 	protected function init()
 	{
+		parent::init();
+
 		$this->person = $this->session->getPerson();
 		$this->tplvars['person'] = $this->person;
 	}
