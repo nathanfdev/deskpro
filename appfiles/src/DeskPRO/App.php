@@ -404,7 +404,7 @@ class App
 			throw new \UnexpectedValueException("$filename does not define \$CONFIG");
 		}
 
-		self::$_userconfig[$name] = $CONFIG;
+		self::$_fileconfig[$name] = $CONFIG;
 	}
 
 
