@@ -57,11 +57,11 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 		// call controller if preaction didnt set one
 		if (!$retval OR !($retval instanceof Response)) {
 			$retval = call_user_func_array($controller, $arguments);
-			$retval = $this->filterResponse($event->getReturnValue(), $request, sprintf('The controller must return a response (instead of %s).', is_object($event->getReturnValue()) ? 'an object of class '.get_class($event->getReturnValue()) : is_array($event->getReturnValue()) ? 'an array' : str_replace("\n", '', var_export($event->getReturnValue(), true))), $type);
+			$retval = $this->filterResponse($retval, $request, sprintf('The controller must return a response (instead of %s).', is_object($event->getReturnValue()) ? 'an object of class '.get_class($event->getReturnValue()) : is_array($event->getReturnValue()) ? 'an array' : str_replace("\n", '', var_export($event->getReturnValue(), true))), $type);
 		}
 
 		// Run postaction
-		$new_retval = $controller_obj->postAction($new_retval);
+		$new_retval = $controller_obj->postAction($retval);
 		if ($new_retval AND $new_retval instanceof Response) {
 			// Use returned reponse if it exists
 			$retval = $new_retval;

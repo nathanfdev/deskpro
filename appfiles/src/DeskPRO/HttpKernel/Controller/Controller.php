@@ -72,7 +72,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	 * @param string $action      The action that will be called
 	 * @param array  $arguments   The arguments that will be passed in
 	 */
-	protected function preAction($action, $arguments = null)
+	public function preAction($action, $arguments = null)
 	{
 
 	}
@@ -88,7 +88,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	 *
 	 * @param Symfony\Component\HttpFoundation\Response $response
 	 */
-	protected function postAction($response)
+	public function postAction($response)
 	{
 
 	}
