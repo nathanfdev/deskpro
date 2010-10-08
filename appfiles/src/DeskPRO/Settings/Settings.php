@@ -58,6 +58,7 @@ class Settings implements \ArrayAccess
 	public function __construct(array $settings_paths, \DeskPRO\DBAL\Connection $db = null)
 	{
 		$this->settings_paths = $settings_paths;
+		$this->db = $db;
 	}
 
 
@@ -138,7 +139,7 @@ class Settings implements \ArrayAccess
 		#------------------------------
 
 		foreach ($this->_pending_groups as $group) {
-			if (strpos($group, '_') !== 0) {
+			if (strpos($group, '_') !== false) {
 				list($key, $name) = explode('_', $group, 2);
 			} else {
 				$key = $group;
