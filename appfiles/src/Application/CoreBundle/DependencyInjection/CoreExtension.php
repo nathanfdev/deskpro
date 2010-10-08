@@ -27,7 +27,11 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$this->loadTranslation($container);
 		$this->loadPhraseTemplateHelper($container);
 		$this->loadSettings($container);
-		$this->loadSession($container);
+
+		// Dont need this. When changing session storage to DB, we'll
+		// need to have JUST the session.storage definition
+		// (? or maybe not, check if we cant do it from just config)
+		//$this->loadSession($container);
     }
 
 
