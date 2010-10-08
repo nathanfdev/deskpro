@@ -17,8 +17,8 @@ use \Symfony\Component\DependencyInjection\Container;
  * We're subclassing the EntityManager because it's a good place to stick an entity factory for
  * when we need to create new instances of some entity, and a good place to pass in the container.
  *
- * TODO: We might get rid of this because the EntityManager isn't exactly designed for inheritance.
- * But for now it's the easiest solution.
+ * TODO: This is no longer needed. Entities can use DeskPRO\App to fetch required objects.
+ * We should just start creating entities normally again and get rid of this.
  */
 class EntityManager extends \Doctrine\ORM\EntityManager
 {
@@ -40,7 +40,7 @@ class EntityManager extends \Doctrine\ORM\EntityManager
 		$metaData = $this->getClassMetadata($entityName);
 		$className = $metaData->name;
 
-		$obj = new $className($this->_container, $userParams);
+		$obj = new $className($userParams);
 
 		return $obj;
 	}

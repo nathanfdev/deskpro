@@ -21,32 +21,14 @@ abstract class DomainObject implements \ArrayAccess
 	const TOARRAY_ONLY_PRIMATIVES = 2;
 
 	/**
-	 * @var \Symfony\Component\DependencyInjection\Container
-	 */
-	protected $_container;
-
-	/**
 	 * An array of properties that have been changed through one of the accessor
 	 * methods.
 	 * @var array
 	 */
 	protected $_properties_changed = array();
 
-
-	/**
-	 * Create a ne winstance of the entity.
-	 *
-	 * Any <var>$param</var> parameters specified will be passed to the init() method.
-	 *
-	 * @param \Symfony\Component\DependencyInjection\Container $container
-	 * @param array $params An array of user data that will be passed to init
-	 */
-	public function __construct(\Symfony\Component\DependencyInjection\Container $container, array $params = array())
+	public function __construct(array $params = array())
 	{
-		if ($container) {
-			$this->setContainer($container);
-		}
-
 		$this->init($params);
 	}
 
@@ -59,47 +41,6 @@ abstract class DomainObject implements \ArrayAccess
 	{
 
 	}
-
-
-
-	/**
-	 * Set the container
-	 *
-	 * @param Symfony\Component\DependencyInjection\Container $container
-	 */
-	public function setContainer(\Symfony\Component\DependencyInjection\Container $container)
-	{
-		$this->_container = $container;
-	}
-
-
-
-	/**
-	 * Get the set container
-	 *
-	 * @return \Symfony\Component\DependencyInjection\Container
-	 */
-	public function getContainer()
-	{
-		if (!$this->_container) {
-			throw new UnexpectedValueException('The container has not been set!');
-		}
-
-		return $this->_container;
-	}
-
-
-
-	/**
-	 * Has a container been set?
-	 *
-	 * @return bool
-	 */
-	public function hasContainer()
-	{
-		return (bool)$this->_container;
-	}
-
 
 
 	/**
