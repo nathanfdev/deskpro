@@ -25,14 +25,14 @@ class Kernel extends \Symfony\Framework\Kernel
 {
 	public function __construct($environment, $debug)
 	{
-		parent::Kernel($environment, $debug);
+		parent::__construct($environment, $debug);
 		App::setKernel($this);
 	}
 
 	public function boot()
 	{
 		parent::boot();
-		App::setContainer($this->container);
+		App::setContainer($this->container, 'default');
 	}
 
 

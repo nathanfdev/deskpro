@@ -1,13 +1,7 @@
 parameters:
     kernel.include_core_classes: false
     templating.engine.class: "DeskPRO\Templating\Engine"
-
-kernel:
-  parameters:
     http_kernel.class: "DeskPRO\HttpKernel\HttpKernel"
-
-web:
-  parameters:
     controller_resolver.class: "DeskPRO\HttpKernel\Controller\ControllerResolver"
 
 kernel.config:

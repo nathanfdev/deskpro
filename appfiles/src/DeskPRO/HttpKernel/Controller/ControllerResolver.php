@@ -12,6 +12,7 @@
 namespace DeskPRO\HttpKernel\Controller;
 
 use \Symfony\Component\HttpFoundation\Request;
+use \Symfony\Bundle\FrameworkBundle\Controller\ControllerInterface;
 
 
 /**
@@ -33,7 +34,7 @@ class ControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-		if ($controller instanceof \DeskPRO\HttpKernel\Controller\Controller) {
+		if (is_subclass_of($class, 'DeskPRO\\HttpKernel\\Controller\\Controller')) {
 			$controller = new $class($this->container);
 		} else {
 			$controller = new $class();

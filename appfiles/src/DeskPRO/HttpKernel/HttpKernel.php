@@ -43,7 +43,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 
 		// controller must be of the correct type
 		if (!isset($controller[0]) OR !($controller[0] instanceof \DeskPRO\HttpKernel\Controller\Controller)) {
-			throw new \LogicException(sprintf('The controller must be of \DeskPRO\Controller\AbstractController (%s).', \get_class($controller)));
+			throw new \LogicException(sprintf('The controller must be of \DeskPRO\Controller\AbstractController (%s).', \get_class($controller[0])));
 		}
 
 		$controller_obj = $controller[0];
