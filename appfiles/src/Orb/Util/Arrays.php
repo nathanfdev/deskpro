@@ -491,11 +491,11 @@ class Arrays
 		}
 
 		// Remove leading+trailing seps
-		if (Orb_String::startsWith($path_sep, $path)) {
+		if (Strings::startsWith($path_sep, $path)) {
 			$path = substr($path, 1);
 		}
 
-		if (Orb_String::endsWith($path_sep, $path)) {
+		if (Strings::endsWith($path_sep, $path)) {
 			$path = substr($path, 0, strlen($path) - 1);
 		}
 
@@ -1038,7 +1038,7 @@ class Arrays
 	 *
 	 * @param array $array
 	 * @return string
-	 * @see Orb_String::parseEqualsLines()
+	 * @see Strings::parseEqualsLines()
 	 */
 	public static function toEqualsLines(array $array)
 	{
