@@ -110,7 +110,10 @@
 		<div class="login_method_title">Twitter</div>
 		<div class="content login_method_content" style="display:none">
 			Log in using your Twitter account.<br />
-			<img src="http://a0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png" alt="Log in with Twitter" />
+			<form action="{% route 'user_login' %}" method="post">
+				<input type="hidden" name="usersource_id" value="{{usersources.twitter.id}}" />
+				<input type="image" src="http://a0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png" alt="Log in with Twitter" style="cursor: pointer" />
+			</form>
 		</div>
 	</div>
 </div>

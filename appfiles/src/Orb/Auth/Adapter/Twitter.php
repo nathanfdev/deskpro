@@ -44,7 +44,6 @@ class Twitter implements AdapterInterface
 	public function __construct(Session $session, $consumer_key, $consumer_secret, $callback_url)
 	{
 		$this->session = $session;
-		$this->got_data = $got_data;
 		$this->consumer_key = $consumer_key;
 		$this->consumer_secret = $consumer_key;
 		$this->callback_url = $callback_url;
@@ -123,7 +122,7 @@ class Twitter implements AdapterInterface
 	 */
 	public function getOauthConsumer()
 	{
-		return new Zend\OAuth\Consumer($this->getOauthConfig());
+		return new \Zend\OAuth\Consumer($this->getOauthConfig());
 	}
 
 	public function getOauthConfig()
@@ -132,7 +131,9 @@ class Twitter implements AdapterInterface
 			'callbackUrl' => $this->callback_url,
 			'siteUrl' => 'http://api.twitter.com/oauth',
 			'consumerKey' => $this->consumer_key,
-			'consumerSecret' => $this->consumer_secret
+			'consumerSecret' => $this->consumer_secret,
+			'requestScheme' => \Zend\OAuth\OAuth::REQUEST_SCHEME_HEADER,
+			'signatureMethod' => 'HMAC-SHA1',
 		);
 	}
 }

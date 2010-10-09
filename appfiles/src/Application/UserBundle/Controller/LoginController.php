@@ -22,7 +22,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	 * through the auth adapters.
 	 */
 	public function indexAction()
-    {
+	{
 		if ($this->isPostRequest()) {
 			$person = $this->_processLogin();
 
@@ -39,8 +39,12 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 			}
 		}
 
-       return $this->render('UserBundle:Login:index');
-    }
+		$usersources = $this->em->createQuery('SELECT us FROM CoreBundle:Usersource us INDEX BY us.typename')->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+		return $this->render('UserBundle:Login:index', array(
+			'usersources' => $usersources
+		));
+	}
 
 	protected function _processLogin()
 	{
@@ -82,7 +86,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		}
 
 		$auth = $this->getAuth();
-		$adapter = $this->getAuthAdapter($usersource_id);
+		$adapter = $this->getAuthAdapter($usersource_id, true);
 
 		$person = $this->_processAuth($auth, $adapter);
 
@@ -146,13 +150,32 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	 * @param int $usersource_id The usersource id
 	 * @return Orb\Auth\Adapter\AdapterInterface
 	 */
-	protected function getAuthAdapter($usersource_id)
+	protected function getAuthAdapter($usersource_id, $is_callback = false)
 	{
 		$adapter = null;
 
 		if (!$usersource_id) {
 			$adapter = new \DeskPRO\Auth\Adapter\Local($this->em);
 			$adapter->setCredentials($this->in->getString('username'), $this->in->getString('password'));
+		} else {
+			// TODO refactor into a factory
+			$usersource = $this->em->find('CoreBundle:Usersource', $usersource_id);
+
+			switch ($usersource['adapter_class']) {
+				case 'Orb\\Auth\\Adapter\\Twitter':
+					$adapter = new \Orb\Auth\Adapter\Twitter(
+						$this->session,
+						$usersource['adapter_options']['consumer_key'],
+						$usersource['adapter_options']['consumer_secret'],
+						$this->generateUrl('user_login_callback', array('usersource_id' => $usersource_id), true)
+					);
+					
+					if ($is_callback) {
+						$adapter->setCallbackMode($_POST);
+					}
+
+					break;
+			}
 		}
 
 		return $adapter;

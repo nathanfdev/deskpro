@@ -137,9 +137,9 @@ class UsersourcesController extends AbstractController
 	{
 		$usersource = $this->getUsersourceOr404($usersource_id);
 
-		// TODO
-
-		return $this->render('TechBundle:Usersources:info');
+		return $this->render('TechBundle:Usersources:info', array(
+			'usersource' => $usersource,
+		));
 	}
 
 
