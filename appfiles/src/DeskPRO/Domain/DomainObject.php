@@ -191,10 +191,12 @@ abstract class DomainObject implements \ArrayAccess
 
 	public function offsetExists($offset)
 	{
-		try {
-			$this->offsetGet($offset);
+		$func = "get" . str_replace('_', '', $offset);
+		if (method_exists($this, $func)) {
 			return true;
-		} catch (\InvalidArgumentException $e) {
+		} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
+			return true;
+		} else {
 			return false;
 		}
 	}
