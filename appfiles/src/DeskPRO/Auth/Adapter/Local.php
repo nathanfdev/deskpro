@@ -50,12 +50,12 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 		$qb = $this->em->createQueryBuilder();
 		$qb->select('p')
 			->from('CoreBundle:Person', 'p')
-			->leftJoin('p.email_addresses', 'e')
+			->leftJoin('p.email', 'e')
 			->where('p.is_user = 1')
 			->setMaxResults(1);
 
 		if (strpos($this->username_or_email, '@')) {
-			$qb->andWhere('p.username = ?1 OR e.email_address = ?2');
+			$qb->andWhere('p.username = ?1 OR e.email = ?2');
 			$qb->setParameter(1, $this->username_or_email);
 			$qb->setParameter(2, $this->username_or_email);
 		} else {
