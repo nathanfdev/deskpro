@@ -59,7 +59,7 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 	 * should add a 'record' type that points to the proper entity.
 	 *
 	 * @var int
-	 * @Column(name="form_field_id", type="integer")
+	 * @Column(name="record_id", type="integer")
 	 */
 	protected $record_id;
 

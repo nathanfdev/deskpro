@@ -44,6 +44,14 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="is_user", type="boolean")
 	 */
 	protected $is_user = false;
+
+	/**
+	 * Is this person a tech?
+	 *
+	 * @var bool
+	 * @Column(name="is_tech", type="boolean")
+	 */
+	protected $is_tech = false;
 	
 	/**
 	 * The users full name.
@@ -82,7 +90,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The language ID.
 	 *
 	 * @var int
-	 * @Column(name="language_id", type="integer")
+	 * @Column(name="language_id", type="integer", nullable=true)
 	 */
 	protected $language_id = null;
 
@@ -140,14 +148,14 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The primary email address used by this account
 	 *
 	 * @var \Application\CoreBundle\Entity\PersonEmail
-	 * @OneToOne(targetEntity="PersonEmail")
-	 * @JoinColumn(name="primary_email_id", referencedColumnName="id", fetch="EAGER")
+	 * @OneToOne(targetEntity="PersonEmail", fetch="EAGER")
+	 * @JoinColumn(name="primary_email_id", referencedColumnName="id")
 	 */
 	protected $primary_email;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="PersonEmail", mappedBy="person")
+	 * @OneToMany(targetEntity="PersonEmail", mappedBy="person", cascade={"persist", "remove", "merge"})
 	 */
 	protected $emails;
 
@@ -371,6 +379,35 @@ class Person extends \DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_usergroup_ids;
+	}
+
+
+
+	/**
+	 * Add an email address
+	 *
+	 * @param PersonEmail $email
+	 */
+	public function addEmailAddress(PersonEmail $email)
+	{
+		if ($this['emails']->count() < 1) {
+			$this['primary_email'] = $email;
+		}
+		$this['emails']->add($email);
+
+		$email['person'] = $this;
+	}
+
+
+
+	/**
+	 * Add a new usergroup
+	 * 
+	 * @param Usergroup $usergroup
+	 */
+	public function addUsergroup(Usergroup $usergroup)
+	{
+		$this['usergroups']->add($usergroup);
 	}
 
 

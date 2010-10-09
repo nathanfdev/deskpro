@@ -24,6 +24,15 @@ class FormFieldAssociation extends \DeskPRO\Domain\DomainObject
 	const SYSTYPE_PERSON = 'person';
 
 	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @Id @Column(name="id", type="integer")
+	 * @GeneratedValue
+	 */
+	protected $id = null;
+
+	/**
 	 * The form field
 	 * 
 	 * @var int

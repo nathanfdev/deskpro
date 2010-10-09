@@ -10,6 +10,9 @@
  */
 
 namespace Application\CoreBundle\Entity;
+
+use \DeskPRO\App;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -68,7 +71,7 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 	public function fromArray(array $values)
 	{
 		if (isset($values['permissions']) AND is_array($values['permissions'])) {
-			$em = $this->getContainer()->get('doctrine.orm.entity_manager');
+			$em = App::getOrm();
 			foreach ($values['permissions'] as $name => $val) {
 				$prop = $em->createEntity('CoreBundle:UsergroupPropertyPermission');
 				$prop['name'] = $name;
