@@ -42,46 +42,19 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 	{
 		$this->em = $this->container->get('doctrine.orm.entity_manager');
 
+		$this->em->beginTransaction();
 		$this->_createUsergroups($output);
 		$this->_createNewUser($output);
+		$this->em->commit();
 	}
 
 	protected function _createUsergroups(OutputInterface $output)
 	{
-		// Admins
-		$group = $this->em->createEntity('CoreBundle:Usergroup');
-		$group->fromArray(array(
-			'title' => 'Administrators',
-			'permissions' => array(
-				'is_admin' => true,
-				'is_tech' => true
-			)
-		));
-		$this->em->persist($group);
-		$this->em->flush();
-
-		$output->writeln("Created Aministrators usergroup #{$group['id']}");
-
-		// Techs
-		$group = $this->em->createEntity('CoreBundle:Usergroup');
-		$group->fromArray(array(
-			'title' => 'Technicians',
-			'permissions' => array(
-				'is_tech' => true
-			)
-		));
-		$this->em->persist($group);
-		$this->em->flush();
-
-		$output->writeln("Created Technicians usergroup #{$group['id']}");
-
 		// Guests
 		$group = $this->em->createEntity('CoreBundle:Usergroup');
 		$group->fromArray(array(
 			'title' => 'Guests',
-			'permissions' => array(
-				'is_guest' => true
-			)
+			'permissions' => array()
 		));
 		$this->em->persist($group);
 		$this->em->flush();
@@ -95,36 +68,48 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$this->em->flush();
 
 		$output->writeln("Created Users usergroup #{$group['id']}");
+
+		// Techs
+		$group = $this->em->createEntity('CoreBundle:Usergroup');
+		$group->fromArray(array(
+			'title' => 'Technicians',
+			'permissions' => array()
+		));
+		$this->em->persist($group);
+		$this->em->flush();
+
+		$output->writeln("Created Technicians usergroup #{$group['id']}");
+
+		// Admins
+		$group = $this->em->createEntity('CoreBundle:Usergroup');
+		$group->fromArray(array(
+			'title' => 'Administrators',
+			'permissions' => array()
+		));
+		$this->em->persist($group);
+		$this->em->flush();
+
+		$output->writeln("Created Aministrators usergroup #{$group['id']}");
 	}
 
 	protected function _createNewUser(OutputInterface $output)
 	{
-		$em = $this->container->get('doctrine.orm.entity_manager');
-		$em->beginTransaction();
-
 		// Profile
-		$person = $this->em->createEntity('CoreBundle:Person');
+		$person = new \Application\CoreBundle\Entity\Person();
 		$person['password'] = 'pass';
 		$person['is_user'] = true;
-		$em->persist($person);
-		$em->flush();
+		$person['is_tech'] = true;
 
-		// The email addy
-		$email = $this->em->createEntity('CoreBundle:PersonEmail');
-		$email['email_address'] = 'admin@example.com';
+		$email = new \Application\CoreBundle\Entity\PersonEmail();
+		$email['email'] = 'admin@example.com';
 		$email['is_validated'] = true;
-		$email['person'] = $person;
+		$person->addEmailAddress($email);
 
-		$em->persist($email);
-		$em->persist($person);
-		$em->flush();
+		$usergroup = $this->em->find('CoreBundle:Usergroup', 4);
+		$person->addUsergroup($usergroup);
 
-		$group = $em->find('CoreBundle:Usergroup', 1);
-		$person['usergroups']->add($group);
-
-		$em->persist($person);
-		$em->flush();
-		$em->commit();
+		$this->em->persist($person);
+		$this->em->flush();
 
 		$output->writeln("\n<info>Admin Person #{$person['id']} was created:\n\tEmail: admin@example.com\n\tPassword: pass</info>");
 	}
