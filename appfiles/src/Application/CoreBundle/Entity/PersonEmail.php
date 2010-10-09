@@ -33,19 +33,10 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
-	
-	/**
-	 * The preference order for this email address. Lower = higher preference.
-	 *
-	 * @var int
-	 * @Column(name="pref_order", type="integer")
-	 */
-	protected $pref_order = 0;
-
 
 	/**
 	 * @var Application\CoreBundle\Entity\Person
-	 * @ManyToOne(targetEntity="Person", inversedBy="email_addresses")
+	 * @ManyToOne(targetEntity="Person", inversedBy="emails")
 	 * @JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
@@ -55,9 +46,9 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 * The email address
 	 *
 	 * @var string
-	 * @Column(name="email_address", type="string", length=255)
+	 * @Column(name="email", type="string", length=255)
 	 */
-	protected $email_address;
+	protected $email;
 
 
 	/**

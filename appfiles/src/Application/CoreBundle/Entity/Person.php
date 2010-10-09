@@ -10,6 +10,9 @@
  */
 
 namespace Application\CoreBundle\Entity;
+
+use \DeskPRO\ORM\Util\Util as ORM_Util;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -34,7 +37,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
-
 	/**
 	 * Is this person a user (someone with login credentials)?
 	 * 
@@ -42,7 +44,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="is_user", type="boolean")
 	 */
 	protected $is_user = false;
-
 	
 	/**
 	 * The users full name.
@@ -51,7 +52,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="full_name", type="text", nullable=true)
 	 */
 	protected $full_name = null;
-
 
 	/**
 	 * What the user wants to be called. For example, a first name. This
@@ -62,7 +62,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $informal_name = null;
 
-
 	/**
 	 * The users nickname, even more informal than the informal name.
 	 *
@@ -70,7 +69,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="nick_name", type="text", nullable=true)
 	 */
 	protected $nick_name = null;
-
 
 	/**
 	 * A secret string used in various hashing or encryption schemes.
@@ -80,16 +78,22 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $secret_string;
 
+	/**
+	 * The language ID.
+	 *
+	 * @var int
+	 * @Column(name="language_id", type="integer")
+	 */
+	protected $language_id = null;
 
 	/**
 	 * The language associate with the user.
 	 *
-	 * @var \Application\CoreBundle\Language
+	 * @var \Application\CoreBundle\Entity\Language
 	 * @OneToOne(targetEntity="Language")
 	 * @JoinColumn(name="language_id", referencedColumnName="id")
 	 */
 	protected $language = null;
-
 
 	/**
 	 * The timezone associated with this user.
@@ -98,7 +102,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="timezome", type="string", length=50)
 	 */
 	protected $timezone;
-
 
 	/**
 	 * An admin can enable usernames for local logins. This would be useful in cases where no email
@@ -109,7 +112,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $username = null;
 
-
 	/**
 	 * Every person has a local login capability with this password. Null means there is no local auth.
 	 *
@@ -117,7 +119,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="password", type="string", length=255, nullable=true)
 	 */
 	protected $password = null;
-
 
 	/**
 	 * A salt used to hash the password with.
@@ -128,12 +129,31 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $salt;
 
 	/**
+	 * The primary email id.
+	 *
+	 * @var int
+	 * @Column(name="primary_email_id", type="integer", nullable=true)
+	 */
+	protected $primary_email_id = null;
+
+	/**
+	 * The primary email address used by this account
+	 *
+	 * @var \Application\CoreBundle\Entity\PersonEmail
+	 * @OneToOne(targetEntity="PersonEmail")
+	 * @JoinColumn(name="primary_email_id", referencedColumnName="id", fetch="EAGER")
+	 */
+	protected $primary_email;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @OneToMany(targetEntity="PersonEmail", mappedBy="person")
 	 */
-	protected $email_addresses;
+	protected $emails;
 
 	/**
+	 * Usergroups the user belongs to
+	 * 
 	 * @var \Doctrine\Common\Collections\ArrayCollection();
 	 * @ManyToMany(targetEntity="Usergroup")
 	 * @JoinTable(name="person2usergroups",
@@ -144,6 +164,8 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $usergroups;
 
 	/**
+	 * The date the user was inserted into the system
+	 * 
 	 * @var \DateTime
 	 * @Column(name="created_at",type="datetime")
 	 */
@@ -151,24 +173,28 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * If we have set a password for this user, then the plaintext version will be set here.
+	 *
 	 * @var string
 	 */
 	protected $_set_plain_password = null;
 
 	/**
 	 * An array of effective permissions for this user based on usergroups.
+	 *
 	 * @var array
 	 */
 	protected $_effective_permissions = null;
 
 	/**
 	 * An array of usergroupids this user belongs to
+	 *
 	 * @var array
 	 */
 	protected $_usergroup_ids = null;
 
 	/**
 	 * Loaded field values
+	 * 
 	 * @var array
 	 */
 	protected $_fields = null;
@@ -183,7 +209,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 		$this->salt = Strings::random(40);
 
-		$this->email_addresses = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->emails = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
@@ -326,11 +352,23 @@ class Person extends \DeskPRO\Domain\DomainObject
 	{
 		if ($this->_usergroup_ids !== null) return $this->_usergroup_ids;
 
-		$this->_usergroup_ids = $db->fetchAllCol("
-			SELECT usergroup_id
-			FROM user2usergroups
-			WHERE person_id = {$this->id}
-		");
+		// If we have the usergroups collection, we can just use that
+		if (ORM_Util::isCollectionInitialized($this->usergroups)) {
+
+			$this->_usergroup_ids = array();
+			foreach ($this->usergroups as $ug) {
+				$this->_usergroup_ids[] = $ug['id'];
+			}
+
+		// Otherwise we'll try and just fetch simple values
+		// with a quick query
+		} else {
+			$this->_usergroup_ids = $db->fetchAllCol("
+				SELECT usergroup_id
+				FROM user2usergroups
+				WHERE person_id = {$this->id}
+			");
+		}
 
 		return $this->_usergroup_ids;
 	}
