@@ -5,7 +5,7 @@ define('DP_ROOT', realpath(__DIR__ . '/../'));
 require_once DP_ROOT.'/sys/Kernel.php';
 
 use \Symfony\Bundle\FrameworkBundle\Console\Application;
-use \DeskPRO\Kernel\Kernel;
+use \DeskPRO\Kernel\KernelCli;
 
 $kernel = new KernelCli('prod', true);
 
