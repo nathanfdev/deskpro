@@ -229,14 +229,14 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	public function getDisplayName()
 	{
-		if ($this->informal_name) {
-			return $this->informal_name;
-		} elseif ($this->fullname) {
-			return $this->fullname;
-		} elseif ($this->nick_name) {
-			return $this->nick_name;
-		} elseif ($this->email_addresses->count()) {
-			return $this->email_addresses->first()->get('email_address');
+		if ($this['informal_name']) {
+			return $this['informal_name'];
+		} elseif ($this['full_name']) {
+			return $this['full_name'];
+		} elseif ($this['nick_name']) {
+			return $this['nick_name'];
+		} elseif ($this['primary_email']) {
+			return $this['primary_email']['email'];
 		} else {
 			return 'ID-' . $this['id'];
 		}
