@@ -34,6 +34,12 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	protected $state;
 
 	/**
+	 * The callback URL
+	 * @var string
+	 */
+	protected $callback_url = null;
+
+	/**
 	 * Switches the adapter to the callback context using form data $data.
 	 *
 	 * @param array $data Form data or other callback data
@@ -42,6 +48,34 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	public function setCallbackContext(array $data)
 	{
 		$this->callback_data = $data;
+	}
+
+
+
+	/**
+	 * Set the URL the user is returned to
+	 *
+	 * @param string $url
+	 */
+	public function setCallbackUrl($url)
+	{
+		$this->callback_url = $url;
+	}
+
+
+
+	/**
+	 * Get the callback URL
+	 *
+	 * @throws RuntimeException
+	 * @return string
+	 */
+	public function getCallbackUrl()
+	{
+		if (!$this->callback_url) {
+			throw new \RuntimeException('No callback URL was set');
+		}
+		return $this->callback_url;
 	}
 
 

@@ -25,4 +25,12 @@ interface CallbackInterface extends AdapterInterface
 	 * @return void
 	 */
 	public function setCallbackContext(array $data);
+
+
+	/**
+	 * Set the callback URL the user should return to when the remote service is finished.
+	 *
+	 * @param string $url The URL
+	 */
+	public function setCallbackUrl($url);
 }
