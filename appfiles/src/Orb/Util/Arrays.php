@@ -37,6 +37,11 @@ class Arrays
 	const REDUCE_IGNORE_UNSET = '___ORB_IGNORE_UNSET___';
 
 	/**
+	 * Used to indicate that an array item is not set.
+	 */
+	const ARR_KEY_NOT_SET = '___ORB_ARR_KEY_NOT_SET___';
+
+	/**
 	 * Represents that duplicate lowercase keys are overwritten. The value
 	 * that appears later in the array is kept.
 	 *
@@ -481,13 +486,18 @@ class Arrays
 	 *
 	 * @param    array    $array     The array to work with
 	 * @param    string   $path      The path
-	 * @param    bool     $path_sep  The string to use as the path separator
+	 * @param    string   $path_sep  The string to use as the path separator
 	 * @return   mixed    The value at the end of the path.
 	 */
-	public static function keyAsPath($array, $path, $path_sep = '/')
+	public static function keyAsPath($array, $path, $path_sep = '/', $default = null)
 	{
 		if (!$path_sep) {
 			return null;
+		}
+
+		// If its not a path at all, we can do a simple lookup
+		if (strpos($path, $path_sep) === false) {
+			return isset($array[$path]) ? $array[$path] : $default;
 		}
 
 		// Remove leading+trailing seps
@@ -503,12 +513,12 @@ class Arrays
 		$parts = explode($path_sep, $path);
 
 		if (!$parts) {
-			return null;
+			return $default;
 		}
 
 		while ($key = array_shift($parts)) {
 			if (!isset($array[$key])) {
-				return null;
+				return $default;
 			}
 
 			$array = $array[$key];
@@ -518,7 +528,7 @@ class Arrays
 	}
 
 
-	
+
 	/**
 	 * Get a deep value from a multidimentional array using a dot to separate keys.
 	 *
@@ -533,9 +543,9 @@ class Arrays
 	 * @param    string   $key       The dotted key
 	 * @return   mixed
 	 */
-	public static function getValue($array, $key)
+	public static function getValue($array, $key, $default = null)
 	{
-		return self::keyAsPath($array, $key, '.');
+		return self::keyAsPath($array, $key, '.', $default);
 	}
 
 
