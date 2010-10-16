@@ -43,7 +43,6 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
-
 	/**
 	 * A note or description about the user source (admin eyes)
 	 *
@@ -51,7 +50,6 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="note", type="text")
 	 */
 	protected $note = '';
-
 
 	/**
 	 * The title of this usersource. This SHOULD be a phrase ID so the title can change
@@ -62,7 +60,6 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $title = '';
 
-
 	/**
 	 * The description of this usersource. This SHOULD be a phrase ID so the title can change
 	 * based on language.
@@ -72,7 +69,6 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $description = '';
 
-
 	/**
 	 * The URL/homepage of this service.
 	 *
@@ -81,47 +77,38 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $url = '';
 
-
 	/**
-	 * Usersource's use a special RemoteResource that just helps transform an Identity
-	 * into RemoteRecord and then maps userinfo to Person and PersonField's.
+	 * If this usersource includes a person scraper to fetch contact info, this is it.
 	 *
-	 * @var Application\CoreBundle\Entity\RemoteResource
-	 * @ManyToOne(targetEntity="RemoteResource")
-	 * @JoinColumn(name="remote_resource_id", referencedColumnName="id", nullable=true)
+	 * @var Application\CoreBundle\Entity\PersonScraper
+	 * @ManyToOne(targetEntity="PersonScraper")
+	 * @JoinColumn(name="person_scraper_id", referencedColumnName="id", nullable=true)
 	 */
-	protected $remote_resource;
-
+	protected $person_scraper = null;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection;
-	 * @ManyToMany(targetEntity="RemoteResource")
-	 * @JoinTable(name="usersource2remoteresource",
-	 *     joinColumns={@JoinColumn(name="usersource_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@JoinColumn(name="remote_resource_id", referencedColumnName="id")}
-     * )
+	 * The person scraper ID
+	 * @var int
+	 * @Column(name="person_scraper_id", type="integer", nullable=true)
 	 */
-	protected $related_remote_resources;
-
+	protected $person_scraper_id = null;
 
 	/**
 	 * The handler classname. A handler is created from this usersource, and is responsible for
 	 * handling things like creating auth adapters etc.
 	 *
 	 * @var string
-	 * @Column(name="typename", type="string", length=255)
+	 * @Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class;
-
 
 	/**
 	 * Options we'll pass to the handler
 	 *
 	 * @var array
-	 * @Column(name="adapter_options", type="array")
+	 * @Column(name="options", type="array")
 	 */
 	protected $options = array();
-
 
 	/**
 	 * The order in which to display this source
@@ -129,7 +116,6 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
-
 
 	/**
 	 * True if this usersource is enabled/usable.
