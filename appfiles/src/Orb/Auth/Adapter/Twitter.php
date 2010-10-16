@@ -9,70 +9,42 @@
 
 namespace Orb\Auth\Adapter;
 
+use \Orb\Auth\Adapter\SessionStateInterface;
+use \Orb\Auth\Adapter\CallbackInterface;
+use \Orb\Auth\StateHandler\StateHandlerInterface;
 use \Orb\Auth\Result;
-use \Symfony\Component\HttpFoundation\Session;
 
-/**
- * Login with twitter
- */
-class Twitter implements AdapterInterface
+class Twitter extends AbstractCallbackAdatper
 {
 	protected $consumer_key;
 	protected $consumer_secret;
 	protected $callback_url;
 
 	/**
-	 * The session we'll use to store various keys.
-	 * @var \Symfony\Component\HttpFoundation\Session
-	 */
-	protected $session;
-
-	/**
-	 * Data that came with the request
-	 * @var array
-	 */
-	protected $got_data = array();
-
-	protected $is_callback = false;
-
-	/**
-	 * @param Session $session         Session we'll use to store various keys
 	 * @param string $consumer_key     Your Twitter consumer key
 	 * @param string $consumer_secret  Your Twitter consumer secret
 	 * @param string $callback_url     The URL that the user returns to to finish the OAuth login
 	 */
-	public function __construct(Session $session, $consumer_key, $consumer_secret, $callback_url)
+	public function __construct($consumer_key, $consumer_secret, $callback_url)
 	{
-		$this->session = $session;
 		$this->consumer_key = $consumer_key;
 		$this->consumer_secret = $consumer_key;
 		$this->callback_url = $callback_url;
 	}
 
 
-	
+
 	/**
-	 * Switch handling to callback.
-	 * 
-	 * @param array $got_data
+	 * Initialize the auth process by setting state, and returning a redirect result.
+	 *
+	 * @return Orb\Auth\Result
 	 */
-	public function setCallbackMode(array $got_data)
+	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
-		$this->is_callback = true;
-		$this->got_data = $got_data;
-	}
-
-
-	public function authenticate()
-	{
-		if ($this->is_callback) {
-			return $this->authenticateCallback();
-		}
-
 		$oauth = $this->getOauthConsumer();
 		$token = $oauth->getRequestToken();
 
-		$this->session->set('orb_oauth_twitter_rtoken', $token);
+		$state['orb_oauth_twitter_rtoken'] = $token;
 
 		$redirect_url = $oauth->getRedirectUrl();
 
@@ -80,16 +52,23 @@ class Twitter implements AdapterInterface
 		return $result;
 	}
 
-	public function authenticateCallback()
+
+
+	/**
+	 * Process the callback and return a final result.
+	 *
+	 * @return Orb\Auth\Result
+	 */
+	protected function authenticateCallback(array $callback_data, StateHandlerInterface $state)
 	{
 		$oauth = $this->getOauthConsumer();
 
-		if (!$this->session->has('orb_oauth_twitter_rtoken')) {
+		if (!isset($state['orb_oauth_twitter_rtoken'])) {
 			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
 		}
 
-		$access_token = $oauth->getAccessToken($this->got_data, $this->session->get('orb_oauth_twitter_rtoken'));
-		$this->session->remove('orb_oauth_twitter_rtoken');
+		$access_token = $oauth->getAccessToken($callback_data, $state['orb_oauth_twitter_rtoken']);
+		unset($state['orb_oauth_twitter_rtoken']);
 
 		$client = $access_token->getHttpClient($this->getOauthConfig());
 		$client->setUri('http://api.twitter.com/version/account/verify_credentials.json');
@@ -115,8 +94,6 @@ class Twitter implements AdapterInterface
 		return $result;
 	}
 
-	
-	
 	/**
 	 * @return Zend\OAuth\Consumer
 	 */
@@ -136,4 +113,5 @@ class Twitter implements AdapterInterface
 			'signatureMethod' => 'HMAC-SHA1',
 		);
 	}
+
 }

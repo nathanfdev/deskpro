@@ -9,8 +9,9 @@
 
 namespace Orb\Auth\Adapter;
 
-use \Symfony\Component\HttpFoundation\Session;
-
+use \Orb\Auth\Adapter\SessionStateInterface;
+use \Orb\Auth\Adapter\CallbackInterface;
+use \Orb\Auth\StateHandler\StateHandlerInterface;
 use \Orb\Auth\Result;
 
 /**
@@ -72,7 +73,7 @@ use \Orb\Auth\Result;
  * - orba_email: A preferred email address, or an array of preferred email addresses in order of priority
  * - orba_name: The users real name
  */
-class OrbRemoteLoginAuth implements AdapterInterface
+class OrbRemoteLoginAuth implements AdapterInterface, SessionStateInterface, CallbackInterface
 {
 	const ERR_INVALID_TOKEN = -10;
 	const ERR_SERVICE_ERR = -11;
@@ -102,10 +103,10 @@ class OrbRemoteLoginAuth implements AdapterInterface
 	protected $verify_url = null;
 
 	/**
-	 * The session we'll use to store various keys.
-	 * @var \Symfony\Component\HttpFoundation\Session
+	 * State handler to store session data
+	 * @var Orb\Auth\StateHandler\StateHandlerInterface;
 	 */
-	protected $session;
+	protected $state;
 
 	/**
 	 * HTTP client
@@ -126,51 +127,34 @@ class OrbRemoteLoginAuth implements AdapterInterface
 	protected $got_data = array();
 
 	/**
-	 * @param Session $session
 	 * @param string $consumer_key
 	 * @param string $initiate_url The remote URL we'll call to initiate the process
 	 * @param string $redirect_url The local URL to redirect the user BACK to upon login
 	 * @param string $verify_url   The URL to call
 	 */
-	public function __construct(Session $session, $consumer_key, $initiate_url, $redirect_url, $verify_url)
+	public function __construct($consumer_key, $initiate_url, $redirect_url, $verify_url)
 	{
-		$this->session      = $session;
 		$this->consumer_key = $consumer_key;
 		$this->initiate_url = $initiate_url;
 		$this->redirect_url = $redirect_url;
 		$this->verify_url   = $verify_url;
 	}
 
-	
+
 
 	/**
-	 * Set the orba_access_token and orba_verify we got back from a user redirected back to our site.
+	 * Switches the adapter to the callback context using form data $data.
 	 *
-	 * @param string $access_token
-	 * @param string $verify_key
+	 * @param array $data Form data or other callback data
+	 * @return void
 	 */
-	public function setKeys($access_token, $verify_key)
+	public function setCallbackContext(array $got_data)
 	{
-		$this->got_data = array(
-			'orba_access_token' => $access_token,
-			'orba_verify' => $verify_key
-		);
+		$this->got_data = $got_data;
 	}
 
 
 
-	/**
-	 * Set the keys from an array
-	 * 
-	 * @param array $get The array to get from (ie $_GET)
-	 */
-	public function setKeysFromArray(array $get)
-	{
-		$this->got_data = $get;
-	}
-
-
-	
 	/**
 	 * Set if we want userinfo or not
 	 *
@@ -190,8 +174,10 @@ class OrbRemoteLoginAuth implements AdapterInterface
 	 */
 	public function authenticate()
 	{
+		$state = $this->getStateHandler();
+
 		// If we dont have tokens yet, we must initiate the request
-		if (!isset($this->got_data['orba_access_token']) OR !isset($got_tokens['orba_verify']) OR !$this->session->has('orba_user_key')) {
+		if (!isset($this->got_data['orba_access_token']) OR !isset($this->got_data['orba_verify']) OR !isset($state['orba_user_key'])) {
 			return $this->_initiate();
 		}
 
@@ -199,9 +185,9 @@ class OrbRemoteLoginAuth implements AdapterInterface
 		# Verify the callback
 		#------------------------------
 
-		$check_verify = sha1($this->got_data['orba_access_token'] . $this->session->get('orba_user_key'));
+		$check_verify = sha1($this->got_data['orba_access_token'] . $state['orba_user_key']);
 
-		if ($check_verify != $got_tokens['orba_verify']) {
+		if ($check_verify != $this->got_data['orba_verify']) {
 			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_INVALID_TOKEN, 'error_message' => 'Invalid verify token'));
 		}
 
@@ -214,7 +200,7 @@ class OrbRemoteLoginAuth implements AdapterInterface
 
 		$http->setUri($this->verify_url);
 		$http->setParameterPost('orba_access_token', $this->got_data['orba_access_token']);
-		$http->setParameterPost('orba_verify', sha1($service_data['orba_access_token'] . $this->session->get('orba_user_key')));
+		$http->setParameterPost('orba_verify', sha1($this->got_data['orba_access_token'] . $state['orba_user_key']));
 		if ($this->with_userinfo) {
 			$http->setParameterPost('orba_with_userinfo', 1);
 		}
@@ -222,7 +208,7 @@ class OrbRemoteLoginAuth implements AdapterInterface
 		$http_result = $http->request(\Zend\Http\Client::POST);
 
 		$data = @json_decode($http_result->getBody(), true);
-		if (!$userdata) {
+		if (!$data) {
 			throw \UnexpectedValueException('Invalid JSON returned from service');
 		}
 
@@ -230,7 +216,7 @@ class OrbRemoteLoginAuth implements AdapterInterface
 			return new Result(Result::FAILURE, null, array('error_code' => self::ERR_SERVICE_ERR, 'error_message' => 'Service reported error', 'service_data' => $data));
 		}
 
-		$identity = new \Orb\Auth\Identity($data['identity'], isset($userdata['userinfo']) ? $userdata : array());
+		$identity = new \Orb\Auth\Identity($data['identity'], isset($data['userinfo']) ? $data['userinfo'] : array());
 		$result = new Result(Result::SUCCESS, $identity);
 
 		return $result;
@@ -238,6 +224,9 @@ class OrbRemoteLoginAuth implements AdapterInterface
 
 	protected function _initiate()
 	{
+		$state = $this->getStateHandler();
+		$state->clearState();
+
 		// The user key used in various signings
 		$user_key = \Orb\Util\Strings::random(20, \Orb\Util\Strings::CHARS_ALPHANUM_IU);
 
@@ -264,7 +253,7 @@ class OrbRemoteLoginAuth implements AdapterInterface
 		# redirect the user
 		#------------------------------
 
-		$this->session->set('orba_user_key', $user_key);
+		$state['orba_user_key'] = $user_key;
 
 		$redirect_url = $service_data['orba_service_url'];
 		if (\strpos($redirect_url, '?') === false) {
@@ -305,5 +294,33 @@ class OrbRemoteLoginAuth implements AdapterInterface
 		$this->http = new \Zend\Http\Client();
 
 		return $this->http;
+	}
+
+
+
+	/**
+	 * Switches the adapter to the callback context using form data $data.
+	 *
+	 * @param Orb\Auth\StateHandler\StateHandlerInterface $state The state handler
+	 * @return void
+	 */
+	public function setStateHandler(StateHandlerInterface $state)
+	{
+		$this->state = $state;
+	}
+
+
+
+	/**
+	 * Get the state handler.
+	 *
+	 * @return Orb\Auth\StateHandler\StateHandlerInterface
+	 */
+	public function getStateHandler()
+	{
+		if (!$this->state) {
+			throw new \RuntimeException('No state handler was set. Set one with setStateHandler');
+		}
+		return $this->state;
 	}
 }

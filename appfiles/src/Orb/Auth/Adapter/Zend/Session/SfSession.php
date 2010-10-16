@@ -22,7 +22,7 @@ class Session implements \Zend\Authentication\Storage
      * @var Symfony\Component\HttpFoundation\Session
      */
     protected $_session;
-	
+
 	/**
 	 * The name (array key) in the session
 	 * @var string
@@ -42,7 +42,7 @@ class Session implements \Zend\Authentication\Storage
 		$this->_name= $name;
 	}
 
-	
+
 
     /**
      * Returns the session namespace
@@ -61,7 +61,7 @@ class Session implements \Zend\Authentication\Storage
      */
     public function isEmpty()
     {
-		return !isset($this->_session->has($this->_name));
+		return !$this->_session->has($this->_name);
     }
 
 
