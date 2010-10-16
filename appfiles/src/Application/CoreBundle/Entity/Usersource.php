@@ -10,12 +10,15 @@
  */
 
 namespace Application\CoreBundle\Entity;
+
+use DeskPRO\Usersource\Handler\AbstractHandler;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * This record defines the relationship between a Person and a Usersource.
- * 
+ *
  * The relationship between RemoteResourse:
  * A Usersource uses a special RemoteResource which basically exists just so auth Identities
  * can be transformed into RemoteRecords, so the standard user field mapping system can be used
@@ -78,7 +81,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $url = '';
 
-	
+
 	/**
 	 * Usersource's use a special RemoteResource that just helps transform an Identity
 	 * into RemoteRecord and then maps userinfo to Person and PersonField's.
@@ -102,32 +105,22 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * The typename. This is a simple name that the system will use to base classnames off
-	 * of (like the setup).
-	 * 
+	 * The handler classname. A handler is created from this usersource, and is responsible for
+	 * handling things like creating auth adapters etc.
+	 *
 	 * @var string
 	 * @Column(name="typename", type="string", length=255)
 	 */
-	protected $typename;
+	protected $handler_class;
 
 
 	/**
-	 * Options we'll pass to the adapter
-	 * 
+	 * Options we'll pass to the handler
+	 *
 	 * @var array
 	 * @Column(name="adapter_options", type="array")
 	 */
-	protected $adapter_options = array();
-
-
-	/**
-	 * The adapter to use. This can also be a static method (ie Whatever::MakeAdapter)
-	 * that should return an adapter instead.
-	 *
-	 * @var string
-	 * @Column(name="adapter_class", type="string", length=255)
-	 */
-	protected $adapter_class = null;
+	protected $options = array();
 
 
 	/**
@@ -137,7 +130,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $display_order = 0;
 
-	
+
 	/**
 	 * True if this usersource is enabled/usable.
 	 *
@@ -146,20 +139,27 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $is_enabled = true;
 
-	
+	/**
+	 * @var DeskPRO\Usersource\Handler\AbstractHandler
+	 */
+	protected $_handler_instance = null;
+
+
 
 	/**
-	 * Get the adapter
+	 * Get the usersource handler for this usersource.
 	 *
-	 * @return Orb\Auth\Adapter\AdapterInterface
+	 * @return DeskPRO\Usersource\Handler\AbstractHandler
 	 */
-	public function getAdapter()
+	public function getHandler()
 	{
-		static $adapter = null;
-		if ($adapter === null) {
-			$adapter = DeskPRO\Util::simpleObjectFactory($this->adapter_class, $this->adapter_options);
+		if ($this->_handler_instance !== null) {
+			return $this->_handler_instance;
 		}
 
-		return $adapter;
+		$classname = $this->handler_class;
+		$this->_handler_instance = new $classname($this);
+
+		return $this->_handler_instance;
 	}
 }
