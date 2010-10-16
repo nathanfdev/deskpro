@@ -16,12 +16,10 @@ use Orb\Util\Util;
 
 use \DeskPRO\App;
 
-use \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
-
 /**
  * Session is able to load up a user, their locale etc.
  */
-class Session extends \Symfony\Component\HttpFoundation\Session
+class Session extends \Orb\HttpFoundation\Session\Session
 {
 	/**
 	 * The person this session belongs to
@@ -36,10 +34,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session
 	protected $language;
 
 
-	
+
 	/**
 	 * Get the logged in Person
-	 * 
+	 *
 	 * @return Application\CoreBundle\Entity\Person
 	 */
 	public function getPerson()
@@ -65,7 +63,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session
 	}
 
 
-	
+
 	/**
 	 * Get the locale the user wants.
 	 *
