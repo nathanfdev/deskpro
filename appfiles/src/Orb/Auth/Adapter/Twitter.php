@@ -18,20 +18,16 @@ class Twitter extends AbstractCallbackAdatper
 {
 	protected $consumer_key;
 	protected $consumer_secret;
-	protected $callback_url;
 
 	/**
 	 * @param string $consumer_key     Your Twitter consumer key
 	 * @param string $consumer_secret  Your Twitter consumer secret
-	 * @param string $callback_url     The URL that the user returns to to finish the OAuth login
 	 */
-	public function __construct($consumer_key, $consumer_secret, $callback_url)
+	public function __construct($consumer_key, $consumer_secret)
 	{
 		$this->consumer_key = $consumer_key;
 		$this->consumer_secret = $consumer_key;
-		$this->callback_url = $callback_url;
 	}
-
 
 
 	/**
@@ -105,7 +101,7 @@ class Twitter extends AbstractCallbackAdatper
 	public function getOauthConfig()
 	{
 		return array(
-			'callbackUrl' => $this->callback_url,
+			'callbackUrl' => $this->getCallbackUrl(),
 			'siteUrl' => 'http://api.twitter.com/oauth',
 			'consumerKey' => $this->consumer_key,
 			'consumerSecret' => $this->consumer_secret,
