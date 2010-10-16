@@ -24,12 +24,4 @@ interface SessionStateInterface extends AdapterInterface
 	 * @return void
 	 */
 	public function setStateHandler(StateHandlerInterface $state);
-
-
-	/**
-	 * Get the state hander
-	 *
-	 * @return Orb\Auth\StateHandler\StateHandlerInterface
-	 */
-	public function getStateHandler();
 }
