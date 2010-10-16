@@ -1,16 +1,20 @@
 <?php
 /**
- * Created by JetBrains PhpStorm.
- * User: chroder
- * Date: 10-10-15
- * Time: 7:16 PM
- * To change this template use File | Settings | File Templates.
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
 namespace DeskPRO\Usersource\Handler;
 
 use Application\CoreBundle\Entity\Usersource;
 
+/**
+ * A handler takes a usersource and knows how to facilitate create an adapter.
+ */
 abstract class AbstractHandler
 {
 	/**

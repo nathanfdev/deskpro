@@ -23,161 +23,150 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	 */
 	public function indexAction()
 	{
-		if ($this->isPostRequest()) {
-			$person = $this->_processLogin();
-
-			// In some cases, there is a direct response (like a redirect)
-			if ($person instanceof \Symfony\Component\HttpFoundation\Response) {
-				return $person;
-			}
-
-			if ($person) {
-				$this->session->set('auth_person_id', $person['id']);
-				return $this->redirect($this['router']->generate('tech_dashboard', array()));
-			} else {
-				$this->tplvars['invalid_login'] = true;
-			}
-		}
-
-		$usersources = $this->em->createQuery('SELECT us FROM CoreBundle:Usersource us INDEX BY us.typename')->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+		$usersources = $this->em->createQuery('
+			SELECT FROM CoreBundle:Usersource us
+			INDEX BY us.id
+			WHERE us.is_enabled = ?1
+		')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
 		return $this->render('UserBundle:Login:index', array(
-			'usersources' => $usersources
+			'usersources' => $usersources,
+			'usersource_forms' => $this->_getUsersourceLoginForms($usersources)
 		));
 	}
 
-	protected function _processLogin()
+	protected function _getUsersourceLoginForms($usersources)
 	{
-		$auth = $this->getAuth();
+		$forms = array();
 
+		foreach ($usersources as $usersource) {
+			$parts = explode('\\', $usersource['handler_class']);
+			$tpl_name = 'UserBundle::Login:_usersource_form_' . strtolower(array_pop($parts));
+
+			$this->forms[$usersource['id']] = $this->tpl->render($tpl_name, array('usersource' => $usersource));
+		}
+
+		return $forms;
+	}
+
+	############################################################################
+	# /login/authenticate
+	############################################################################
+
+	public function authenticateAction()
+	{
 		$usersource_id = $this->in->getUint('usersource_id');
-		$adapter = $this->getAuthAdapter($usersource_id);
 
-		return $this->_processAuth($auth, $adapter);
-	}
-
-	protected function _processAuth($auth, $adapter)
-	{
-		$result = $adapter->authenticate();
-		if ($result->isRedirectRequired()) {
-			return $this->redirect($result->getRedirectUrl());
-		} elseif (!$result->isValid()) {
-			return false;
+		if ($usersource_id) {
+			return $this->_processUsersourceLogin($usersource_id);
 		} else {
-			$user_init = new \DeskPRO\Auth\UserInitializer($this->em);
-			$person = $user_init->getPersonFromIdentity($usersource_id, $result->getIdentity());
-
-			return $person;
+			return $this->_processLocalLogin();
 		}
 	}
 
-
-	
-	############################################################################
-	# /callback/:usersource_id
-	############################################################################
-
-	public function callbackAction($usersource_id)
+	protected function _processLocalLogin()
 	{
-		try {
-			$usersource = $this->em->find('CoreBundle:Usersource', $usersource_id);
-		} catch (\Doctrine\ORM\NoResultException $e) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no usersource with ID $usersource_id");
+		$adapter = new \DeskPRO\Auth\Adapter\Local($this->em);
+		$adapter->setCredentials($this->in->getString('username'), $this->in->getString('password'));
+		if (!$adapter->isValid()) {
+			return $this->redirect($this['router']->generate('login', array()));
 		}
 
-		$auth = $this->getAuth();
-		$adapter = $this->getAuthAdapter($usersource_id, true);
+		$identity = $adapter->getIdentity();
 
-		$person = $this->_processAuth($auth, $adapter);
+		$this->session->set('auth_person_id', $identity['id']);
+		return $this->redirect($this['router']->generate('tech_dashboard', array()));
+	}
 
-		// In some cases, there is a direct response (like a redirect)
-		if ($person instanceof \Symfony\Component\HttpFoundation\Response) {
-			return $person;
-		}
-		
-		if ($person) {
-			$this->session->set('auth_userid', $user['id']);
-			return $this->redirect($this['router']->generate('tech_dashboard', array()));
+	protected function _processUsersourceLogin($usersource_id)
+	{
+		$usersource = $this->em->find('CoreBundle:Usersource', $usersource_id);
+
+		$adapter = $this->_initUserSourceAdapter($usersource);
+
+		#------------------------------
+		# Callback types require us to redirect
+		#------------------------------
+
+		if ($adapter instanceof Orb\Auth\Adapter\CallbackInterface) {
+			$adapter->setCallbackUrl($this->generateUrl('user_login_callback', array('usersource_id' => $usersource_id), true));
+
+			$result = $adapter->authenticate();
+
+			// We expect a redirect to be rquired
+			if ($result->isRedirectRequired()) {
+				return $this->redirect($result->getRedirectUrl());
+
+			// Otherwise its an error
+			} else {
+				return $this->redirect($this['router']->generate('login', array()));
+			}
+
+		#------------------------------
+		# Other types should return a result right away
+		#------------------------------
+
 		} else {
-			$this->tplvars['invalid_login'] = true;
-		}
-	}
+			$result = $adapter->authenticate();
 
+			// Valid
+			if ($result->isValid()) {
 
+				// TODO handle simple login from Identity
 
-	############################################################################
-	# /logout
-	############################################################################
-
-	/**
-	 * Handles user logout by destroying the session and cookies.
-	 */
-	public function logoutAction()
-	{
-		// TODO
-		// When symfony session is more flushed out, should completely destroy the old session
-
-		$this->session->set('auth_userid', null);
-
-		return $this->redirect($this['router']->generate('user_login', array()));
-	}
-
-
-
-	############################################################################
-
-	/**
-	 * Get the auth object
-	 *
-	 * @return Orb\Auth\Auth
-	 */
-	protected function getAuth()
-	{
-		static $auth = null;
-
-		if ($auth === null) {
-			$auth = new \Orb\Auth\Auth();
-		}
-
-		return $auth;
-	}
-
-
-	
-	/**
-	 * Get the auth adapter for a particular usersource.
-	 * 
-	 * @param int $usersource_id The usersource id
-	 * @return Orb\Auth\Adapter\AdapterInterface
-	 */
-	protected function getAuthAdapter($usersource_id, $is_callback = false)
-	{
-		$adapter = null;
-
-		if (!$usersource_id) {
-			$adapter = new \DeskPRO\Auth\Adapter\Local($this->em);
-			$adapter->setCredentials($this->in->getString('username'), $this->in->getString('password'));
-		} else {
-			// TODO refactor into a factory
-			$usersource = $this->em->find('CoreBundle:Usersource', $usersource_id);
-
-			switch ($usersource['adapter_class']) {
-				case 'Orb\\Auth\\Adapter\\Twitter':
-					$adapter = new \Orb\Auth\Adapter\Twitter(
-						$this->session,
-						$usersource['adapter_options']['consumer_key'],
-						$usersource['adapter_options']['consumer_secret'],
-						$this->generateUrl('user_login_callback', array('usersource_id' => $usersource_id), true)
-					);
-					
-					if ($is_callback) {
-						$adapter->setCallbackMode($_POST);
-					}
-
-					break;
+			// Error, go back to login
+			} else {
+				return $this->redirect($this['router']->generate('login', array()));
 			}
 		}
+	}
 
-		return $adapter;
+
+
+	############################################################################
+	# /login/authenticate-callback/:usersource_id
+	############################################################################
+
+	public function authenticateCallbackAction($usersource_id)
+	{
+		$usersource = $this->em->find('CoreBundle:Usersource', $usersource_id);
+
+		$adapter = $this->_initUserSourceAdapter($usersource);
+
+		// It must be a callback type to be here, so if not redirect back to login
+		if (!($adapter instanceof Orb\Auth\Adapter\CallbackInterface)) {
+			return $this->redirect($this['router']->generate('login', array()));
+		}
+
+		$adapter->setCallbackContext($_REQUEST);
+
+		$result = $adapter->authenticate();
+
+		// Valid
+		if ($result->isValid()) {
+
+			// TODO handle simple login from Identity
+
+		// Error, go back to login
+		} else {
+			return $this->redirect($this['router']->generate('login', array()));
+		}
+	}
+
+
+	############################################################################
+
+	protected function _initUserSourceAdapter($usersource)
+	{
+		$adapter = $usersource->getHandler()->getAuthAdapter();
+
+		if ($adapter instanceof Orb\Auth\Adapter\SessionStateInterface) {
+			$auth_session = $this->session->createNamespace('user_auth_state');
+
+			$auth_state = new Orb\Auth\StateHandler\ArrayAccessWrapper($auth_session);
+			$auth_state->setClearStateMethod('clearAllData');
+
+			$adapter->setStateHandler($auth_session);
+		}
 	}
 }
