@@ -171,6 +171,16 @@ class Session implements SessionInterface
 
 
 	/**
+	 * Clear all set data
+	 */
+	public function removeAllData()
+	{
+		$this->data = array();
+	}
+
+
+
+	/**
 	 * Removes a data item.
 	 *
 	 * @param string $name

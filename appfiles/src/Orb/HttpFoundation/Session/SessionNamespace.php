@@ -149,6 +149,18 @@ class SessionNamespace implements SessionInterface
 
 
 	/**
+	 * Removes all data
+	 */
+	public function removeAllData()
+	{
+		if (isset($this->session->data[$this->namespace])) {
+			unset($this->session->data[$this->namespace]);
+		}
+	}
+
+
+
+	/**
 	 * Get this namespace name
 	 *
 	 * @return string

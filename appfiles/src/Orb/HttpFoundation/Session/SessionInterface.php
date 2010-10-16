@@ -61,4 +61,9 @@ interface SessionInterface extends ArrayAccess, IteratorAggregate
 	 * @param string $name
 	 */
 	public function remove($name);
+
+	/**
+	 * Removes all set data
+	 */
+	public function remoteAllData();
 }
