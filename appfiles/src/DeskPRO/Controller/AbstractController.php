@@ -48,6 +48,11 @@ abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Control
 	protected $tplvars;
 
 	/**
+	 * @var DeskPRO\Templating\Engine
+	 */
+	protected $tpl;
+
+	/**
 	 * Fetch settings
 	 * @var DeskPRO\Settings\Settings
 	 */
@@ -71,11 +76,12 @@ abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Control
 		$this->settings = $this['deskpro.core.settings'];
 		$this->session  = $this['session'];
 
-		$this['templating']->resetTemplateVars();
-		$this->tplvars = $this['templating']->getTemplateVarsObject();
+		$this->tpl = $this['templating'];
+		$this->tpl->resetTemplateVars();
+		$this->tplvars = $this->tpl->getTemplateVarsObject();
 	}
 
-	
+
 
 	/**
 	 * Is this a POST request?
