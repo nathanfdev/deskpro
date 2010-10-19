@@ -10,5 +10,5 @@ use \Application\CoreBundle\Entity\Usersource;
 
 class ScrapeDataApplicator
 {
-	
+
 }

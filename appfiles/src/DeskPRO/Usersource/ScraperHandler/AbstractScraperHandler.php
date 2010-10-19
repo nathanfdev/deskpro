@@ -41,12 +41,23 @@ abstract class ScraperHandlerInterface
 	/**
 	 * Get all scrapable data for a given identity.
 	 *
-	 * Should return an array of PersonScraperData objects, or null if this is not supported.
+	 * Return an array of raw data scraped for the identity. Return null
+	 * if the identity does not exist.
 	 *
 	 * @return array
 	 */
-	public function dataForIdentity($identity)
+	public function scrapeIdentity($identity)
 	{
 		return null;
 	}
+
+
+
+	/**
+	 * Transform the raw array of data into scraper objects we know how to process
+	 * save and work with.
+	 *
+	 * @return array
+	 */
+	abstract public function createDataRecords(array $scraper_data);
 }

@@ -162,7 +162,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	/**
 	 * Usergroups the user belongs to
 	 * 
-	 * @var \Doctrine\Common\Collections\ArrayCollection();
+	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @ManyToMany(targetEntity="Usergroup")
 	 * @JoinTable(name="person2usergroups",
 	 *     joinColumns={@JoinColumn(name="person_id", referencedColumnName="id")},
@@ -170,6 +170,22 @@ class Person extends \DeskPRO\Domain\DomainObject
      * )
 	 */
 	protected $usergroups;
+
+	/**
+	 * Usersource associations
+	 *
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person")
+	 */
+	protected $usersource_assoc;
+
+	/**
+	 * Person scraper associations
+	 *
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="PersonScraperAssoc", mappedBy="person")
+	 */
+	protected $personscraper_assoc;
 
 	/**
 	 * The date the user was inserted into the system
@@ -227,6 +243,8 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 		$this->emails = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usergroups = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->usersource_assoc = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->personscraper_assoc = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 

@@ -66,9 +66,12 @@ class PersonScraperAssoc
 	 * The remote users unique ID. This should change, so it's smart if this is a system
 	 * ID such as a UserID. This value is used to map our local Person to the remote Person.
 	 *
+	 * If null, it means this assoc doesn't really exist, we're using it to keep track of
+	 * auto-discovery attempts.
+	 *
 	 * @var string
 	 * @Index
-	 * @Column(name="identity", type="string", length=255)
+	 * @Column(name="identity", type="string", length=255, nullable=true)
 	 */
 	protected $identity;
 
@@ -126,6 +129,12 @@ class PersonScraperAssoc
 		$this->data = new \Doctrine\Common\Collection\ArrayCollection();
 	}
 
+	public function addData(PersonScraperData $data)
+	{
+		$this->data->add($data);
+		$data['person_scraper_assoc'] = $this;
+	}
+
 
 	/** @PrePersist */
 	public function __incCreatedAt()
@@ -133,6 +142,7 @@ class PersonScraperAssoc
 		if (!$this->created_at) {
 			$this->created_at = new \DateTime();
 		}
+		$this->updated_at = new \DateTime();
 	}
 
 	/** @PreUpdate */
