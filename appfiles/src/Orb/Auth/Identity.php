@@ -27,6 +27,12 @@ class Identity implements \ArrayAccess
 	protected $identity;
 
 	/**
+	 * A human-friendly identity. Still unique, but capable of changing (ie a username)
+	 * @var string
+	 */
+	protected $friendly_identity;
+
+	/**
 	 * An array of raw userinfo
 	 * @var array
 	 */
@@ -42,7 +48,19 @@ class Identity implements \ArrayAccess
 		$this->raw_userinfo = $raw_userinfo;
 	}
 
+	
 
+	/**
+	 * Set the human friendly identity
+	 * 
+	 * @param string $friendly_identity 
+	 */
+	public function setFriendlyIdentity($friendly_identity)
+	{
+		$this->friendly_identity = $friendly_identity;
+	}
+
+	
 	
 	/**
 	 * Get the identitiy
@@ -52,6 +70,18 @@ class Identity implements \ArrayAccess
 	public function getIdentity()
 	{
 		return $this->identity;
+	}
+
+
+
+	/**
+	 * Get the human friendly identity
+	 *
+	 * @return string
+	 */
+	public function getFriendlyIdentity()
+	{
+		return $this->friendly_identity;
 	}
 
 

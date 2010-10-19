@@ -85,6 +85,8 @@ class Twitter extends AbstractCallbackAdatper
 		);
 
 		$identity = new \Orb\Auth\Identity($account_data['id'], $raw_userinfo);
+		$identity->setFriendlyIdentity($access_token['screen_name']);
+		
 		$result = new Result(Result::SUCCESS, $identity);
 
 		return $result;
