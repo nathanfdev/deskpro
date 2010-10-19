@@ -56,4 +56,21 @@ class PersonScraper extends Scraper
 	 * @Column(name="poll_discovery_interval", type="integer", nullable=true)
 	 */
 	protected $poll_discovery_interval = null;
+
+	
+
+	/**
+	 * @return DeskPRO\Usersource\ScraperHandler\ScraperHandlerInterface
+	 */
+	public function getHandler()
+	{
+		if ($this->_handler_instance !== null) {
+			return $this->_handler_instance;
+		}
+
+		$classname = $this->handler_class;
+		$this->_handler_instance = new $classname($this);
+
+		return $this->_handler_instance;
+	}
 }

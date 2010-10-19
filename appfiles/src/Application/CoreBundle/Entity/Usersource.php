@@ -12,6 +12,7 @@
 namespace Application\CoreBundle\Entity;
 
 use DeskPRO\Usersource\Handler\AbstractHandler;
+use DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;

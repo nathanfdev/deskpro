@@ -11,6 +11,10 @@
 
 /**
  * This tracks associations between a user and a usersource.
+ *
+ * @Entity
+ * @HasLifecycleCallbacks
+ * @Table(name="person_usersource_assoc")
  */
 class PersonUsersourceAssoc
 {
@@ -54,7 +58,7 @@ class PersonUsersourceAssoc
 	protected $usersource_id;
 
 	/**
-	 * The remote users unique ID. This should change, so it's smart if this is a system
+	 * The remote users unique ID. This should not change, so it's smart if this is a system
 	 * ID such as a UserID.
 	 *
 	 * @var string
@@ -98,4 +102,27 @@ class PersonUsersourceAssoc
 	 * @Column(name="last_used_at", type="datetime")
 	 */
 	protected $last_used_at;
+
+
+	
+	/**
+	 * Set the last time this usersource was used.
+	 *
+	 * @param DateTime $time The time to set, or null to set now
+	 */
+	public function setLastUsedAt(\DateTime $time = null)
+	{
+		if (!$time) $time = new \DateTime();
+		
+		$this->last_used_at = $time;
+	}
+
+
+	/** @PrePersist */
+	public function _incCreatedAt()
+	{
+		if (!$this->created_at) {
+			$this->created_at = new \DateTime();
+		}
+	}
 }

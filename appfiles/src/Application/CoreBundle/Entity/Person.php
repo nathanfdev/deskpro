@@ -180,6 +180,14 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $created_at;
 
 	/**
+	 * The last time the user logged in
+	 *
+	 * @var \DateTime
+	 * @Column(name="last_login_at", type="datetime", nullable=true)
+	 */
+	protected $last_login_at;
+
+	/**
 	 * If we have set a password for this user, then the plaintext version will be set here.
 	 *
 	 * @var string
@@ -437,6 +445,20 @@ class Person extends \DeskPRO\Domain\DomainObject
 	public function __toString()
 	{
 		return $this->getDisplayName();
+	}
+
+
+
+	/**
+	 * Set the last time this usersource was used.
+	 *
+	 * @param DateTime $time The time to set, or null to set now
+	 */
+	public function setLastLoginAt(\DateTime $time = null)
+	{
+		if (!$time) $time = new \DateTime();
+
+		$this->last_login_at = $time;
 	}
 
 

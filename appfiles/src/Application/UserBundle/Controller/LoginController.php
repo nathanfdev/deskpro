@@ -11,6 +11,8 @@
 
 namespace Application\UserBundle\Controller;
 
+use \DeskPRO\Auth\LoginProcessor;
+
 class LoginController extends \DeskPRO\Controller\AbstractController
 {
 	############################################################################
@@ -112,7 +114,11 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 			// Valid
 			if ($result->isValid()) {
 
-				// TODO handle simple login from Identity
+				$login_processor = new LoginProcessor($usersource, $result->getIdentity());
+				$person = $login_processor->getPerson();
+
+				$this->session->set('auth_person_id', $person['id']);
+				return $this->redirect($this['router']->generate('tech_dashboard', array()));
 
 			// Error, go back to login
 			} else {
@@ -145,7 +151,11 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		// Valid
 		if ($result->isValid()) {
 
-			// TODO handle simple login from Identity
+			$login_processor = new LoginProcessor($usersource, $result->getIdentity());
+			$person = $login_processor->getPerson();
+
+			$this->session->set('auth_person_id', $person['id']);
+			return $this->redirect($this['router']->generate('tech_dashboard', array()));
 
 		// Error, go back to login
 		} else {

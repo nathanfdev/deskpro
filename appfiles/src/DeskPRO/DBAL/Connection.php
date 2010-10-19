@@ -35,9 +35,10 @@ class Connection extends \Doctrine\DBAL\Connection
 			$array[$row[$index]] = $row;
 		}
 
+
 		return $array;
 	}
-	
+
 
 
 	/**
@@ -68,7 +69,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	}
 
 
-	
+
 	/**
 	 * Execute a query and return a key=>value pair.
 	 *
@@ -114,11 +115,11 @@ class Connection extends \Doctrine\DBAL\Connection
 		return $array;
 	}
 
-	
+
 
 	/**
 	 * Quote an array of values suitable for IN() clause.
-	 * 
+	 *
 	 * @param array $values
 	 * @param int $type
 	 * @return string

@@ -59,21 +59,4 @@ abstract class Scraper
 	 * @var DeskPRO\Scraper\Handler\HandlerAbstract
 	 */
 	protected $_handler_instance = null;
-
-
-
-	/**
-	 * @return DeskPRO\Scraper\Handler\HandlerAbstract
-	 */
-	public function getHandler()
-	{
-		if ($this->_handler_instance !== null) {
-			return $this->_handler_instance;
-		}
-
-		$classname = $this->handler_class;
-		$this->_handler_instance = new $classname($this);
-
-		return $this->_handler_instance;
-	}
 }
