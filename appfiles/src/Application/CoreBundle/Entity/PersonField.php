@@ -21,23 +21,7 @@ use Orb\Util\Arrays;
  * @HasLifecycleCallbacks
  * @Table(name="person_fields")
  */
-class PersonField extends \DeskPRO\Domain\DomainObject
+class PersonField extends FormField
 {
-	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 * @Id @Column(name="id", type="integer")
-	 * @GeneratedValue
-	 */
-	protected $id = null;
-	
-	
-	/**
-	 * The type of field. TODO: Later maybe this is a classname?
-	 *
-	 * @var string
-	 * @Column(name="field_type", type="string", length=255)
-	 */
-	protected $field_type = 'free';
+
 }

@@ -9,14 +9,14 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\FormField\Type;
+namespace DeskPRO\Form\FieldHandler;
 
 use \Application\CoreBundle\Entity;
 
 /**
  * Text field
  */
-class Text extends AbstractType
+class Text extends AbstractFieldHandler
 {
 	/**
 	 * @return Orb\Form\Field\Text

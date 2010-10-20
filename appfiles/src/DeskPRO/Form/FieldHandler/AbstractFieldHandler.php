@@ -9,19 +9,19 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\FormField\Type;
+namespace DeskPRO\Form\FieldHandler;
 
 use \Application\CoreBundle\Entity;
 
 /**
  * A FormField type is a custom field that DeskPRO knows how to handle. This ties together the
- * low-level Form system (from Orb) that knows how to handle HTML forms and validationa and such, and the actual
+ * low-level Form system (from Orb) that knows how to handle HTML forms and validation and such, and the actual
  * logic/processing/etc that DeskPRO needs to do to handle them:
  *
  * - Creating the Form objects
  * - Rendering data
  */
-abstract class AbstractType implements \Orb\Form\Transformer\TransformerInterface
+abstract class AbstractFieldHandler implements \Orb\Form\Transformer\TransformerInterface
 {
 	/**
 	 * The form field definition

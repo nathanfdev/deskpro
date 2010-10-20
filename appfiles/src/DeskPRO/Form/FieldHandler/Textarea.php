@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\FormField\Type;
+namespace DeskPRO\Form\FieldHandler;
 
 use \Application\CoreBundle\Entity;
 

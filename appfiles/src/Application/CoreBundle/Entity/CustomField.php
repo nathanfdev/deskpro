@@ -16,9 +16,7 @@ use Orb\Util\Arrays;
 /**
  * A form field is any custom field that can be attached to anything in the system.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="form_fields")
+ * @MappedSuperclass
  */
 class FormField extends \DeskPRO\Domain\DomainObject
 {
@@ -48,13 +46,12 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	protected $title = '';
 
 	/**
-	 * The system typename. When defining fields, we may need specialized interfaces
-	 * to build up each kind of field. This is the system name.
+	 * The handler class
 	 *
 	 * @var string
-	 * @Column(name="typeclass", type="string", length=255)
+	 * @Column(name="handler_class", type="string", length=255)
 	 */
-	protected $typeclass = 'Text';
+	protected $handler_class;
 
 	/**
 	 * Options for the field
@@ -71,39 +68,26 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $field_children = null;
 
+	/**
+	 * @var DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 */
+	protected $_handler_instance = null;
+
 	
 
 	/**
 	 * Get the DeskPRO form field object that knows how to render data etc.
 	 *
-	 * @return DeskPRO\FormField\Type\Type
+	 * @return DeskPRO\Form\FieldHandler\AbstractFieldHandler
 	 */
-	public function getFormFieldType()
+	public function getHandler()
 	{
-		$classname = $this['typeclass'];
+		if ($this->_handler_instance !== null) return $this->_handler_instance;
 
-		$formfield = new $classname($this);
+		$classname = $this['handler_class'];
 
-		return $formfield;
-	}
+		$this->_handler_instance = new $classname($this);
 
-
-	
-	/**
-	 * Get the full classname to the type.
-	 *
-	 * @return string
-	 */
-	public function getTypeclass()
-	{
-		$classname = $this->typeclass;
-
-		// Easy check for full namepsaced classname
-		// If not a full classname, then we assume its a DeskPRO class
-		if (strpos($classname, '\\') === false) {
-			$classname = 'DeskPRO\\FormField\\Type\\' . $classname;
-		}
-
-		return $classname;
+		return $this->_handler_instance;
 	}
 }
