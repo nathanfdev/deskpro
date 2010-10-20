@@ -9,6 +9,8 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
+namespace Application\CoreBundle\Entity;
+
 /**
  * This tracks associations between a Person and a PersonScraper.
  *

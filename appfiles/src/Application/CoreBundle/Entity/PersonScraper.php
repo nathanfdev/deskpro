@@ -9,6 +9,8 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
+namespace Application\CoreBundle\Entity;
+
 /**
  * A person scraper fetches information about a Person from a remote resource.
  * For example, to keep information up-to-date using a pre-existing contact management product.

@@ -9,6 +9,8 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
+namespace Application\CoreBundle\Entity;
+
 /**
  * A scraper is something that fetches data from a remote resource. This is the abstract
  * scraper type, but each different type of scrape defines its own entity and may have

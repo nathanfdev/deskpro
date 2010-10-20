@@ -31,16 +31,6 @@ class PersonField extends \DeskPRO\Domain\DomainObject
 	 * @GeneratedValue
 	 */
 	protected $id = null;
-
-
-	/**
-	 * The remote resource this field is linked with
-	 *
-	 * @var Application\CoreBundle\Entity\RemoteResource
-	 * @OneToOne(targetEntity="RemoteResource")
-	 * @JoinColumn(name="remote_resource_id", referencedColumnName="id")
-	 */
-	protected $remote_resource;
 	
 	
 	/**

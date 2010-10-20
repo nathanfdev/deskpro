@@ -26,7 +26,8 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	public function indexAction()
 	{
 		$usersources = $this->em->createQuery('
-			SELECT FROM CoreBundle:Usersource us
+			SELECT us
+			FROM CoreBundle:Usersource us
 			INDEX BY us.id
 			WHERE us.is_enabled = ?1
 		')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);

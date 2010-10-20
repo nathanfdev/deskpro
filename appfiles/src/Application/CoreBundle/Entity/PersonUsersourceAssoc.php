@@ -9,6 +9,8 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
+namespace Application\CoreBundle\Entity;
+
 /**
  * This tracks associations between a user and a usersource.
  *
@@ -37,7 +39,7 @@ class PersonUsersourceAssoc
 	/**
 	 * The usersource ID
 	 * @var int
-	 * @Column(name="usersource_id", type="integer")
+	 * @Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 
