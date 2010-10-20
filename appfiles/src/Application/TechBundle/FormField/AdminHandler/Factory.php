@@ -27,6 +27,7 @@ class Factory
 	 */
 	public static function createFromFormField(FormField $form_field)
 	{
+		$handler = null;
 		switch ($form_field['handler_class']) {
 			case 'DeskPRO\\Form\\FieldHandler\\Text':
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Text($form_field);
@@ -40,5 +41,11 @@ class Factory
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Choice($form_field);
 				break;
 		}
+		
+		if (!$handler) {
+			throw new \InvalidArgumentException("Unknown AdminHandler for {$form_field['handler_class']}");
+		}
+
+		return $handler;
 	}
 }

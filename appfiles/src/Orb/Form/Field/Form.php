@@ -30,7 +30,7 @@ class Form extends FieldGroup
 	 */
 	protected $event_dispatcer;
 
-	public function init()
+	protected function init()
 	{
 		if ($this->getOption('event_dispatcher')) {
 			$this->event_dispatcer = $this->getOption('event_dispatcher');

@@ -13,6 +13,8 @@ namespace Application\TechBundle\FormField\AdminHandler;
 
 use \Application\CoreBundle\Entity\FormField;
 
+use \DeskPRO\App;
+
 /**
  * An admin handler that helps with building a custom field (options and the like).
  * Since each custom field is different and has its own options, each form for
@@ -30,10 +32,10 @@ abstract class AbstractAdminHandler
 
 	protected $em;
 
-	public function __construct(FormField $fielddef, $em)
+	public function __construct(FormField $fielddef)
 	{
 		$this->fielddef = $fielddef;
-		$this->em = $em;
+		$this->em = App::getOrm();
 
 		$this->init();
 	}
@@ -60,8 +62,6 @@ abstract class AbstractAdminHandler
 		foreach ($this->buildRequiredFormFields() as $f) {
 			$formgroup->addField($f);
 		}
-
-		$this->setDataOnForm($form);
 		
 
 		return $formgroup;
@@ -88,27 +88,6 @@ abstract class AbstractAdminHandler
 	 * @return array
 	 */
 	abstract protected function buildRequiredFormFields();
-
-
-
-	/**
-	 * Save the value from a form field into storage
-	 *
-	 * @param Orb\Form\Field\Field $formfield
-	 * @param Entity\FormFieldData $form_field_data
-	 */
-	public function saveFormValue(\Orb\Form\Field\Field $formfield, $em, Entity\FormFieldData $form_field_data)
-	{
-		$em->beginTransaction();
-
-		$form_field_data['data'] = $formfield->getData();
-		$em->persist($form_field_data);
-		$em->flush();
-		
-		$em->commit();
-
-		return $form_field_data;
-	}
 
 
 	
@@ -146,25 +125,7 @@ abstract class AbstractAdminHandler
 
 		$this->handleSave($form['fieldtype_form']);
 
-		$this->em->persist($formfield);
-
-		#------------------------------
-		# Save associations
-		#------------------------------
-
-		if (!$is_new) {
-			// Delete existing ones first
-			$this->db->delete('form_field_associations', array('form_field_id' => $formfield['id']));
-		}
-
-		// Create them
-		foreach ($form['field_associations']->getData() as $sysname) {
-			$formfield_assoc = $this->em->createEntity('Core:FormFieldAssociation');
-			$formfield_assoc['form_field'] = $formfield;
-			$formfield_assoc['sysname'] = $sysname;
-
-			$this->em->persist($formfield_assoc);
-		}
+		$this->em->persist($this->fielddef);
 
 		#------------------------------
 		# Save

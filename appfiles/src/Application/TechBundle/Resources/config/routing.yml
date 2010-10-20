@@ -102,30 +102,6 @@ tech_admin_usersources_new:
   pattern: /usersources/new-usersource
   defaults: { _controller: TechBundle:Usersources:edit, usersource_id: 0 }
 
-
-################################################################################
-# Fields
-################################################################################
-
-tech_admin_fields:
-  pattern: /fields
-  defaults: { _controller: TechBundle:Fields:index }
-
-tech_admin_fields_newfield:
-  pattern: /fields/new-field
-  defaults: { _controller: TechBundle:Fields:editField, field_id: 0 }
-
-tech_admin_fields_editfield:
-  pattern: /fields/:field_id/edit
-  defaults: { _controller: TechBundle:Fields:editField }
-  requirements: { field_id: "\d+" }
-
-tech_admin_fields_testfield:
-  pattern: /fields/:field_id/test
-  defaults: { _controller: TechBundle:Fields:testField }
-  requirements: { field_id: "\d+" }
-
-
 ################################################################################
 # API Keys
 ################################################################################

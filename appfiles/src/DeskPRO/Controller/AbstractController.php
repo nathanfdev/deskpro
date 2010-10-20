@@ -92,4 +92,20 @@ abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Control
 	{
 		return ($this['request']->getMethod() == 'POST');
 	}
+
+
+
+	/**
+	 * Redirect to a named route.
+	 *
+	 * @param string $route
+	 * @param array $parameters
+	 * @param int $status
+	 * @return Response
+	 */
+	public function redirectRoute($route, array $parameters = array(), $status = 302)
+	{
+		$url = $this->generateUrl($route, $parameters, true);
+		return $this->redirect($url, $status);
+	}
 }

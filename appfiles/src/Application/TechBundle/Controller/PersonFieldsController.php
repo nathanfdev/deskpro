@@ -25,18 +25,31 @@ class PersonFieldsController extends AbstractController
 	public function indexAction()
 	{
 		$existing_fields = $this->db->fetchAll("
-			SELECT f.id, f.title, f.class_name
+			SELECT f.id, f.title, f.handler_class
 			FROM person_fields f
 			ORDER BY f.id
 		");
 
-		return $this->render('TechBundle:Fields:index', array(
-			'existing_fields' => $existing_fields
+		return $this->render('TechBundle:PersonFields:index', array(
+			'fields' => $existing_fields
 		));
 	}
 
 
-	
+
+	############################################################################
+	# /tech/person-fields/new-choose-type      admin_personfields_new_choosetype
+	############################################################################
+
+	public function newChooseTypeAction()
+	{
+		return $this->render('TechBundle:PersonFields:edit-choosetype', array(
+			
+		));
+	}
+
+
+
 	############################################################################
 	# /tech/person-fields/:field_id/edit                 admin_personfields_edit
 	############################################################################
@@ -57,6 +70,7 @@ class PersonFieldsController extends AbstractController
 			'event_dispatcher' => $this['event_dispatcher'],
 			'form_field' => $field
 		));
+		$form->addField(new \Orb\Form\Field\Hidden(array('name' => 'handler_class', 'data' => $field['handler_class'])));
 
 		$admin_handler = \Application\TechBundle\FormField\AdminHandler\Factory::createFromFormField($field);
 		$form->addField($admin_handler->buildFormGroup());
@@ -65,7 +79,7 @@ class PersonFieldsController extends AbstractController
 			$form->setData($_POST);
 			if ($form->isValid()) {
 				$admin_handler->saveField($form);
-				echo "DONE";
+				$this->redirectRoute('admin_personfields_edit', array('field_id' => $field['id']));
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());

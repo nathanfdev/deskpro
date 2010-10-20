@@ -4,29 +4,34 @@
 <div class="block" id="block-tables">
 	<div class="content">
 		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{% route 'tech_admin_fields_newfield' %}" class="button">
+			<a href="{% route 'admin_personfields_new_choosetype' %}" class="button">
 				<img src="{% asset 'images/icons/tick.png' %}" alt="New Field" /> Create New Field
 			</a>
 		</div>
 		<h2 class="title">Fields</h2>
 		<div class="inner">
-			{% for sysname, fields_list in existing_fields %}
-				<table class="table">
+			<table class="table">
+				<tr>
+					<th class="first" width="10">ID</th>
+					<th>Title</th>
+					<th>Type</th>
+					<th width="250">&nbsp;</th>
+				</tr>
+				{% for field in fields %}
 					<tr>
-						<th class="first" colspan="4">{{sysname}}</th>
+						<td width="10">{{field.id}}</td>
+						<td>{{field.title}}</td>
+						<td>{{field.handler_class}}</td>
+						<td width="50" style="text-align: right;">
+							<a href="{% route 'admin_personfields_edit' with ['field_id': field.id] %}">Edit</a>
+						</td>
 					</tr>
-					{% for field in fields_list %}
-						<tr>
-							<td width="10">{{field.id}}</td>
-							<td>{{field.title}}</td>
-							<td>{{field.typename}}</td>
-							<td width="50" style="text-align: right;">
-								<a href="{% route 'tech_admin_fields_editfield' with ['field_id': field.id] %}">Edit</a>
-							</td>
-						</tr>
-					{% endfor %}
-				</table>
-			{% endfor %}
+				{% else %}
+					<tr>
+						<td colspan="4">You have no fields defined</td>
+					</tr>
+				{% endfor %}
+			</table>
 		</div>
 	</div>
 </div>

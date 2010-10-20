@@ -24,7 +24,7 @@ class EditField extends \Orb\Form\Field\Form
 	protected function init()
 	{
 		if (!$this->hasOption('form_field') OR !($this->getOption('form_field') instanceof FormField)) {
-			throw new InvalidArgumentException('Options must include a form_field item');
+			throw new \InvalidArgumentException('Options must include a form_field item');
 		}
 
 		$this->formfield = $this->getOption('form_field');

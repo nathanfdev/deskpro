@@ -9,6 +9,8 @@
 
 namespace Orb\Form\Renderer;
 
+use Orb\Util\Strings;
+
 class Basic implements RendererInterface
 {
 	/**

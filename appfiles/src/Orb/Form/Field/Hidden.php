@@ -17,6 +17,13 @@ use Orb\Util\Util;
  */
 class Hidden extends Field
 {
+	public function getDefaultAttributes()
+	{
+		$attr = parent::getDefaultAttributes();
+		$attr['type'] = 'hidden';
+		return $attr;
+	}
+	
 	public function __toString()
 	{
 		return $this->getData();

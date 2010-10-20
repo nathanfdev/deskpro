@@ -79,8 +79,8 @@ class FieldGroup extends Field implements \IteratorAggregate, \Countable, \Array
 	 */
 	public function setData($data)
 	{
-		if (!is_array($this->data)) {
-			throw new \InvalidArgumentException('$data must be an array');
+		if (!is_array($data) AND !($data instanceof \Traversable)) {
+			throw new \InvalidArgumentException('$data must be an array, got ' . \Orb\Util\Util::typeof($data));
 		}
 
 		parent::setData($data);

@@ -164,6 +164,10 @@ abstract class Field
 			$name = $this->getOption('name');
 		}
 
+		if ($this->hasOption('data')) {
+			$this->setData($this->getOption('data'));
+		}
+
 		$this->setOption('form_name', $name);
 
 		return $name;
@@ -306,7 +310,7 @@ abstract class Field
 	 */
 	public function isValid()
 	{
-		return $this->validator->isValid($this->getValue());
+		return $this->validator->isValid($this->getData());
 	}
 
 
@@ -423,7 +427,7 @@ abstract class Field
 
 		$attributes = array_merge($this->getDefaultAttributes(), $attributes);
 
-		return $renderer->render($this, $attributes);
+		return $renderer->renderField($this, $attributes);
 	}
 
 

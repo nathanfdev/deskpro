@@ -20,6 +20,27 @@ class Util
 	const BASE62_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
 	const BASE36_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
 
+	
+	
+	/**
+	 * Get the type of a variable. If it's an object, also get the classname.
+	 *
+	 * @param mixed $var
+	 * @return string
+	 */
+	public static function typeof($var)
+	{
+		$type = gettype($var);
+		
+		if ($type == 'object') {
+			$type .= ':' . get_class($var);
+		}
+
+		return $type;
+	}
+
+
+
 	/**
 	 * Return $param if it is set, else return $or.
 	 *

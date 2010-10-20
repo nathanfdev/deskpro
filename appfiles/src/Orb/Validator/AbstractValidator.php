@@ -12,7 +12,7 @@ namespace Orb\Validator;
 /**
  * Validates a value
  */
-class AbstractValidator implements ValidatorInterface
+abstract class AbstractValidator implements ValidatorInterface
 {
 	/**
 	 * An array of simple error codes. Language must be handled elsewhere.
