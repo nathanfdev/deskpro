@@ -19,6 +19,7 @@ abstract class DomainObject implements \ArrayAccess
 	const TOARRAY_NOOP = 0;
 	const TOARRAY_DEEP = 1;
 	const TOARRAY_ONLY_PRIMATIVES = 2;
+	const TOARRAY_LOAD_UNLOADED = 4;
 
 	/**
 	 * An array of properties that have been changed through one of the accessor
@@ -66,18 +67,19 @@ abstract class DomainObject implements \ArrayAccess
 	{
 		$values = array();
 
-		$r = new \ReflectionObject($this);
-		$props = $r->getProperties(ReflectionProperty::IS_PRIVATE | ReflectionProperty::IS_PROTECTED);
+		foreach ($this->getKeys() as $name) {
 
-		foreach ($props as $prop) {
-			// Skip _props because they arent entity properties
-			if ($prop->name[0] === '_') continue;
+			$val = $this[$name];
 
-			$name = $prop->name[0];
-			$val = $this->$name;
+			if (!($mode & self::TOARRAY_LOAD_UNLOADED)) {
+				// If a relation isn't loaded then dont access it, or else we'll lazy load it
+				if (!is_scalar($val) AND !is_array($val) AND !\DeskPRO\ORM\Util\Util::isCollectionInitialized($val)) {
+					continue;
+				}
+			}
 
 			if ($mode & self::TOARRAY_NOOP) {
-				$values[$name] = $this->$name;
+				$values[$name] = $val;
 
 			} elseif ($mode & self::TOARRAY_ONLY_PRIMATIVES) {
 				if (is_scalar($val) OR is_array($val)) {
@@ -99,6 +101,29 @@ abstract class DomainObject implements \ArrayAccess
 		}
 
 		return $values;
+	}
+
+
+	
+	/**
+	 * Get an array of keys that can be used on this object to access certain data.
+	 *
+	 * @return array
+	 */
+	public function getKeys()
+	{
+		$r = new \ReflectionObject($this);
+		$props = $r->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED);
+
+		$keys = array();
+		foreach ($props as $prop) {
+			// Skip _props because they arent entity properties
+			if ($prop->name[0] === '_') continue;
+
+			$keys[] = $prop->name;
+		}
+
+		return $keys;
 	}
 
 	

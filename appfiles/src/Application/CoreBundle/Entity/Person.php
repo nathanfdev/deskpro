@@ -261,6 +261,8 @@ class Person extends \DeskPRO\Domain\DomainObject
 			return $this['full_name'];
 		} elseif ($this['nick_name']) {
 			return $this['nick_name'];
+		} elseif ($this['username']) {
+			return $this['username'];
 		} elseif ($this['primary_email']) {
 			return $this['primary_email']['email'];
 		} else {
@@ -463,6 +465,16 @@ class Person extends \DeskPRO\Domain\DomainObject
 	public function __toString()
 	{
 		return $this->getDisplayName();
+	}
+
+
+	
+	public function getKeys()
+	{
+		$keys = parent::getKeys();
+		$keys[] = 'display_name';
+
+		return $keys;
 	}
 
 
