@@ -71,13 +71,14 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	{
 		$adapter = new \DeskPRO\Auth\Adapter\Local($this->em);
 		$adapter->setCredentials($this->in->getString('username'), $this->in->getString('password'));
-		if (!$adapter->isValid()) {
+		$result = $adapter->authenticate();
+		if (!$result->isValid()) {
 			return $this->redirect($this['router']->generate('login', array()));
 		}
 
-		$identity = $adapter->getIdentity();
+		$identity = $result->getIdentity();
 
-		$this->session->set('auth_person_id', $identity['id']);
+		$this->session->set('auth_person_id', $identity->getIdentity());
 		return $this->redirect($this['router']->generate('tech_dashboard', array()));
 	}
 

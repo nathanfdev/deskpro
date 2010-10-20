@@ -18,13 +18,27 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 		$this->tplvars['person'] = $this->person;
 	}
 
-	public function isUserRequired()
-	{
-		return true;
-	}
 
-	public function userRequriedAction()
+	/**
+	 * Force a login
+	 */
+	public function preAction($action, $arguments = null)
 	{
-		return $this->forward('UserBundle:Login:index');
+		if (!$this->person['id']) {
+			return $this->redirect($this['router']->generate('user_login', array()));
+		}
+
+		if (!$this->_userHasPermissions()) {
+			// TODO implement no perms
+		}
+	}
+	
+	protected function _userHasPermissions()
+	{
+		if ($this->person['is_tech']) {
+			return true;
+		}
+		
+		return false;
 	}
 }

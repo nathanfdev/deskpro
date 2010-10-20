@@ -21,14 +21,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 {
 	public function configLoad($config, ContainerBuilder $container)
     {
-		$definition = new \Symfony\Component\DependencyInjection\Definition(
-			'Application\TechBundle\Listener\LoginListener',
-			array(
-				new Reference('service_container')
-			)
-		);
-		$definition->addTag('kernel.listener');
-		$container->setDefinition('deskpro.tech.loginlistener', $definition);
+
     }
 
 	public function getXsdValidationBasePath()
