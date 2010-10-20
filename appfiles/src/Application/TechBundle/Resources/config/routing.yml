@@ -164,3 +164,26 @@ tech_people_view:
   pattern: /people/:person_id
   defaults: { _controller: TechBundle:People:view }
   requirements: { person_id: "\d+" }
+
+
+################################################################################
+# Person Fields
+################################################################################
+
+admin_personfields:
+  pattern: /person-fields
+  defaults: { _controller: TechBundle:PersonFields:index }
+
+admin_personfields_new_choosetype:
+  pattern: /person-fields/new-choose-type
+  defaults: { _controller: TechBundle:PersonFields:newChooseType, field_id: 0 }
+
+admin_personfields_edit:
+  pattern: /person-fields/:field_id/edit
+  defaults: { _controller: TechBundle:PersonFields:edit }
+  requirements: { field_id: "\d+" }
+
+admin_personfields_test:
+  pattern: /person-fields/:field_id/test
+  defaults: { _controller: TechBundle:PersonFields:test }
+  requirements: { field_id: "\d+" }

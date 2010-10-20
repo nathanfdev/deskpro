@@ -18,7 +18,7 @@ use \Application\CoreBundle\Entity\FormField;
  * 
  * @static
  */
-class Factor
+class Factory
 {
 	private function __construct() { /* static */ }
 
@@ -27,16 +27,16 @@ class Factor
 	 */
 	public static function createFromFormField(FormField $form_field)
 	{
-		switch ($form_field['typeclass']) {
-			case 'DeskPRO\\FormField\\Text':
+		switch ($form_field['handler_class']) {
+			case 'DeskPRO\\Form\\FieldHandler\\Text':
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Text($form_field);
 				break;
 
-			case 'DeskPRO\\FormField\\Textarea':
+			case 'DeskPRO\\Form\\FieldHandler\\Textarea':
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Textarea($form_field);
 				break;
 
-			case 'DeskPRO\\FormField\\Choice':
+			case 'DeskPRO\\Form\\FieldHandler\\Choice':
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Choice($form_field);
 				break;
 		}
