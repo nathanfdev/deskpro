@@ -26,6 +26,15 @@ class PeopleSearchController extends AbstractController
 
 	public function indexAction()
 	{
+		$people_list = $this->em->createQuery("
+			SELECT p, p_email
+			FROM CoreBundle:Person p
+			LEFT JOIN p.primary_email p_email
+			ORDER BY p.id DESC
+		")->getResult();
 
+		return $this->render('TechBundle:PeopleSearch:index', array(
+			'people_list' => $people_list
+		));
 	}
 }

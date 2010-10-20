@@ -1,0 +1,35 @@
+{% extends 'TechBundle::layout' %}
+{% block content %}
+
+<div class="block" id="block-tables">
+	<div class="content">
+		<div style="float: right; padding: 5px 5px 0 0;">
+			<a href="{% route 'admin_personfields_new_choosetype' %}" class="button">
+				<img src="{% asset 'images/icons/tick.png' %}" alt="New Field" /> Create New Field
+			</a>
+		</div>
+		<h2 class="title">People</h2>
+		<div class="inner">
+			<table class="table">
+				<tr>
+					<th class="first" width="10">ID</th>
+					<th>Name</th>
+					<th>Email</th>
+					<th width="250">&nbsp;</th>
+				</tr>
+				{% for person in people_list %}
+					<tr>
+						<td width="10">{{person.id}}</td>
+						<td>{{person.display_name}}</td>
+						<td>{{person.primary_email.email|default('No email')}}</td>
+						<td width="50" style="text-align: right;">
+							<a href="{% route 'tech_people_view' with ['person_id': person.id] %}">View</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
