@@ -14,7 +14,7 @@ use \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface;
 /**
  * A session interface
  */
-interface SessionInterface extends ArrayAccess, IteratorAggregate
+interface SessionInterface extends \ArrayAccess, \IteratorAggregate
 {
 	/**
 	 * Checks if a data item is defined.
@@ -65,5 +65,5 @@ interface SessionInterface extends ArrayAccess, IteratorAggregate
 	/**
 	 * Removes all set data
 	 */
-	public function remoteAllData();
+	public function removeAllData();
 }

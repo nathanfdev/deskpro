@@ -19,7 +19,7 @@ use \DeskPRO\App;
 /**
  * Session is able to load up a user, their locale etc.
  */
-class Session extends \Orb\HttpFoundation\Session\Session
+class Session extends \Symfony\Component\HttpFoundation\Session
 {
 	/**
 	 * The person this session belongs to
