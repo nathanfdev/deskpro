@@ -15,13 +15,6 @@ use \Application\CoreBundle\Entity\PersonScraper;
 
 abstract class ScraperHandlerInterface
 {
-	protected $person_scraper;
-	
-	public function __construct(PersonScraper $person_scraper)
-	{
-		$this->person_scraper = $person_scraper;
-	}
-
 	/**
 	 * Try to detect a remote identity based on a Person object.
 	 * A Handler should use data already on file to find a matching record,
@@ -54,10 +47,13 @@ abstract class ScraperHandlerInterface
 
 
 	/**
-	 * Transform the raw array of data into scraper objects we know how to process
-	 * save and work with.
-	 *
-	 * @return array
+	 * Gets an array of data we'll use to apply to a person. This basically
+	 * normalizes a scrapers data into standard array we can use.
+	 * 
+	 * @param array $scraper_data
 	 */
-	abstract public function createDataRecords(array $scraper_data);
+	public function getPersonData(array $scraper_data)
+	{
+		return \DeskPRO\Util::getPersonData($scraper_data);
+	}
 }

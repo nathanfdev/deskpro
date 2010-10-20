@@ -11,6 +11,7 @@
 
 namespace DeskPRO\Auth;
 
+use \Orb\Util\Arrays;
 use \Orb\Auth\Identity;
 
 use \Application\CoreBundle\Entity\Person;
@@ -71,10 +72,21 @@ class LoginProcessor
 		# We should get that info now
 		#------------------------------
 
+		$person_data = array();
+
+		// There might be a scraper alongside with this identity
 		if ($this->person_scraper) {
 			$scraper_handler = $this->person_scraper->getHandler();
 			$scraped_data = $scraper_handler->dataForIdentity($this->identity->getIdentity());
+			if ($scraped_data) {
+				$person_data = $scraper_handler->getPersonData($scraped_data);;
+			}
 		}
+
+		// We might also have data passed along with this login
+		Arrays::mergeDeep($person_data, $this->usersource->getHandler()->getPersonData($this->identity->getRawData()));
+		$person_data = Arrays::uniqueDeep($person_data);
+
 
 		#------------------------------
 		# Figure if we have an existing Person mapped, or if its
@@ -119,24 +131,26 @@ class LoginProcessor
 			$this->assoc['identity_friendly'] = $this->identity->getFriendlyIdentity();
 			$this->assoc['data']              = $this->identity->getRawData();
 
-		}
+			// New scraper assoc
+			if ($person_data) {
+				$scraper_assoc = new PersonScraperAssoc();
+				$scraper_assoc['person']            = $this->person;
+				$scraper_assoc['scraper']           = $this->person_scraper;
+				$scraper_assoc['identity']          = $this->identity->getIdentity();
+				$scraper_assoc['data']              = $scraped_data;
 
-		// TODO: Use ScrapeDataApplicator or whatever, need a strategy
-		// TODO: Save scraped data into PersonScraperData (part of the applicator probably)
-		// Apply scraped data to the Person object now
-		// - Need way to set preference. Like what data source takes precenedence etc
-		if ($scraped_data) {
-			foreach($scraped_data as $data) {
-				if ($data['groupname'] == 'person_email') {
-					$email = new PersonEmail();
-					$email['email'] = $data['value_text'];
-					$email['is_validated'] = true;
-					$person->addEmailAddress($email);
-				} elseif ($data['groupname'] = 'person_full_name' AND !$this->person['full_name']) {
-					$this->person['full_name'] = $data['value_text'];
-				} elseif ($data['groupname'] = 'person_nick_name' AND !$this->person['nick_name']) {
-					$this->person['nick_name'] = $data['value_text'];
+				// TODO move this out into some applicator class
+				foreach ($person_data['standard_fields'] as $k => $v) {
+					$this->person[$k] = $v;
 				}
+				foreach ($person_data['emails'] as $e) {
+					$email = new PersonEmail();
+					$email['email'] = $e;
+					$email['is_validated'] = true;
+					$this->person->addEmailAddress($email);
+					$em->persist($email);
+				}
+
 			}
 		}
 

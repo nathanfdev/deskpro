@@ -88,23 +88,9 @@ class ScrapeDataUpdater
 		// Run the info scraper now
 		$scraper_data = $scraper_handler->scrapeIdentity($identity);
 
-		$this->applyScraperData($assoc, $identity, $scraper_data);
-	}
-
-
-	
-	/**
-	 * Applies scraper data
-	 *
-	 * @param PersonScraper $scraper
-	 * @param string $identity
-	 * @param array $scraper_data
-	 */
-	public function applyScraperData(PersonScraperAssoc $assoc, $identity, array $scraper_data)
-	{
 		$em = App::getOrm();
 		$em->beginTransaction();
-		
+
 		// Null means the id doesnt exist, so we should delete the scraper assoc
 		// TODO: Implement search/moved discovery? (ie LDAP use DN, but the user tree was moved?)
 		if ($scraper_data === null) {
@@ -114,16 +100,7 @@ class ScrapeDataUpdater
 			return;
 		}
 
-		$assoc['raw_data'] = $scraper_data;
-
-		// Save scraper data
-		$scraper_data_objs = $assoc['scraper']->getHandler()->createDataRecords($scraper_data);
-		if ($scraper_data_objs) {
-			foreach ($scraper_data_objs as $data_obj) {
-				$em->persist($data_obj);
-				$assoc->addData($data_obj);
-			}
-		}
+		$assoc['data'] = $scraper_data;
 
 		$em->persist($assoc);
 		$em->flush();

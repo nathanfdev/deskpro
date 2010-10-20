@@ -51,6 +51,20 @@ abstract class AbstractHandler
 	}
 
 
+	/**
+	 * Gets an array of data we'll use to apply to a person. This basically
+	 * normalizes a raw userinfo data from the adapter into standard array we can use.
+	 *
+	 * Note that some usersources might not have any useful info, but this is used
+	 * anyway.
+	 *
+	 * @param array $raw_userinfo
+	 */
+	public function getPersonData(array $raw_userinfo)
+	{
+		return \DeskPRO\Util::getPersonData($raw_userinfo);
+	}
+
 
 	/**
 	 * Get the adapter.

@@ -83,13 +83,7 @@ class PersonScraperAssoc
 	 * @var array
 	 * @Column(name="raw_data", type="array")
 	 */
-	protected $raw_data = array();
-
-	/**
-	 * @var Doctrine\Common\Collection\ArrayCollection
-	 * @OneToMany(targetEntity="PersonScraperData", mappedBy="person_scraper_assoc_id", cascade={"persist", "remove", "merge"})
-	 */
-	protected $data;
+	protected $data = array();
 
 	/**
 	 * When the record was first created in the system
@@ -127,12 +121,6 @@ class PersonScraperAssoc
 	public function __construct()
 	{
 		$this->data = new \Doctrine\Common\Collection\ArrayCollection();
-	}
-
-	public function addData(PersonScraperData $data)
-	{
-		$this->data->add($data);
-		$data['person_scraper_assoc'] = $this;
 	}
 
 

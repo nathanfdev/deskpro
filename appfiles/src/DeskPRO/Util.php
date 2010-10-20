@@ -42,4 +42,59 @@ class Util
 
 		return $obj;
 	}
+
+
+
+	/**
+	 * Tries to build an array of person data using an arbitrary array.
+	 * This is used in the default usersource handlers and scraper handlers.
+	 *
+	 * @param array $misc_data
+	 * @return array
+	 */
+public function getPersonData(array $misc_data)
+	{
+		$person_data = array(
+			'standard_fields' => array(),
+			'emails' => array(),
+			'fields' => array()
+		);
+
+		$keymap = array(
+			'full_name' => 'full_name',
+			'name' => 'full_name',
+			'fullname' => 'fullname',
+			'nickname' => 'nick_name',
+			'nick_name' => 'nick_name',
+			'username' => 'nick_name',
+			'user_name' => 'nick_name',
+			'screen_name' => 'nick_name',
+			'screenname' => 'nick_name',
+			'first_name' => 'informal_name',
+			'firstname' => 'informal_name',
+		);
+
+		foreach ($keymap as $findkey => $personkey) {
+			if (isset($misc_data[$findkey])) {
+				$person_data['standard_fields'][$personkey] = $misc_data[$findkey];
+			}
+		}
+
+		$emailkeymap = array(
+			'email', 'emails', 'email_address', 'emailaddress',
+			'email_addresses', 'emailaddresses',
+			'mail'
+		);
+
+		$scraper_emails = array();
+		foreach ($emailkeymap as $findkey) {
+			if (isset($misc_data[$findkey])) {
+				$scraper_emails = array_merge($scraper_emails, $misc_data[$findkey]);
+			}
+		}
+
+		$person_data['emails'] = $misc_data;
+
+		return $person_data;
+	}
 }

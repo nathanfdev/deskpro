@@ -288,6 +288,41 @@ class Arrays
         return $array1;
 	}
 
+	
+
+	/**
+	 * Goes through an array and makes sure each sub-array contains only unique items.
+	 *
+	 * @param arary $array
+	 * @return array
+	 */
+	public static function uniqueDeep(array $array, $sort_flags = \SORT_STRING)
+	{
+		$args = func_get_args();
+
+		if (!$args) {
+			return array();
+		}
+		if (sizeof($args) == 1) {
+			return $args[0];
+		}
+
+		return self::_uniqueDeep($array, $sort_flags);
+	}
+	
+	protected static function _uniqueDeep(array $array, $sort_flags)
+	{
+		foreach ($array as $k => $v) {
+			if (is_array($v)) {
+				$array[$k] = array_unique(self::_uniqueDeep($v, $sort_flags), $sort_flags);
+			} else {
+				$array[$k] = $v;
+			}
+		}
+
+		$array = array_unique($array);
+	}
+
 
 
 	/**
