@@ -91,7 +91,7 @@ abstract class AbstractSetup
 			return;
 		}
 
-		$remote_resource = $this->em->createEntity('CoreBundle:RemoteResource');
+		$remote_resource = new \Application\CoreBundle\Entity\RemoteResource();
 		$remote_resource['scraper_class'] = 'DeskPRO\\Scraper\\AuthIdentity';
 		$this->em->persist($remote_resource);
 

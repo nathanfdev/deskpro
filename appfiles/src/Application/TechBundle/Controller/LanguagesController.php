@@ -76,7 +76,7 @@ class LanguagesController extends AbstractController
 		if ($lang_id) {
 			$lang = $this->getLangOr404($lang_id);
 		} else {
-			$lang = $this->em->createEntity('CoreBundle:Language');
+			$lang = new \Application\CoreBundle\Entity\Language();
 		}
 
 		$this->tplvars['lang'] = $lang;

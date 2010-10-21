@@ -59,20 +59,4 @@ class DoctrineExtension extends \Symfony\Bundle\DoctrineBundle\DependencyInjecti
 			new Reference(sprintf('doctrine.dbal.%s_connection.event_manager', $connection['name']))
 		));
 	}
-
-	protected function loadOrmDefaults(array $config, ContainerBuilder $container)
-	{
-		parent::loadOrmDefaults($config, $container);
-		$container->setParameter('doctrine.orm.entity_manager_class', 'DeskPRO\ORM\EntityManager');
-	}
-
-	protected function loadOrmEntityManager(array $entityManager, ContainerBuilder $container)
-	{
-		parent::loadOrmEntityManager($entityManager, $container);
-
-		$key = sprintf('doctrine.orm.%s_entity_manager', $entityManager['name']);
-		$def = $container->getDefinition($key);
-		$def->addArgument(null);
-		$def->addArgument(new Reference('service_container'));
-	}
 }

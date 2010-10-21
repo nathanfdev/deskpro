@@ -68,7 +68,7 @@ class ApiController extends AbstractController
 		if ($apikey) {
 			$apikey = $this->getApiKeyOr404($apikey);
 		} else {
-			$apikey = $this->em->createEntity('ApiBundle:ApiKey');
+			$apikey = new \Application\CoreBundle\Entity\ApiKey();
 		}
 
 		if ($this->isPostRequest()) {

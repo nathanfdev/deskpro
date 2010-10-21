@@ -133,7 +133,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 			$queue = $this->_queue;
 		}
 
-		$item = $this->em->createEntity('CoreBundle:QueueItem');
+		$item = new \Application\CoreBundle\Entity\QueueItem();
 		$item['groupname'] = $queue->getName();
 		$item['data'] = $message;
 

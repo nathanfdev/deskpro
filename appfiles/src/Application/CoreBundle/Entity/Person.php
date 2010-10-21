@@ -11,6 +11,7 @@
 
 namespace Application\CoreBundle\Entity;
 
+use \DeskPRO\App;
 use \DeskPRO\ORM\Util\Util as ORM_Util;
 
 use Orb\Util\Strings;
@@ -233,7 +234,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 
 
-	public function init(array $params)
+	public function __construct()
 	{
 		$this->created_at = new \DateTime();
 		$this->secret_string = Strings::random(40);
@@ -358,7 +359,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 		}
 
 		/** @var $db \DeskPRO\DBAL\Connection */
-		$db = $this->getContainer()->get('database_connection');
+		$db = App::getDb();
 		$usergroup_ids = $this->getUsergroupIds();
 
 		if (!$usergroup_ids) {
@@ -366,7 +367,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 			return;
 		}
 
-		$em = $this->getContainer()->get('doctrine.orm.entity_manager');
+		$em = App::getOrm();
 		$properties = $em->createQuery('
 			SELECT CoreBundle:UsergroupProperty p
 			WHERE usergroup_id IN ?1 AND property_type = ?2
@@ -449,7 +450,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	{
 		if ($this->_fields !== null) return $this->_fields;
 
-		$em = $this->getContainer()->get('doctrine.orm.entity_manager');
+		$em = App::getOrm();
 		$this->_fields = $em->createQuery("
 			SELECT d
 			FROM CoreBundle:FormFieldDataPerson d INDEXBY d.id

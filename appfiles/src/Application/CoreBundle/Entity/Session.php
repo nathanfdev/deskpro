@@ -71,7 +71,7 @@ class Session extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $updated_at;
 
-	public function init(array $params)
+	public function __construct()
 	{
 		$this->auth = Strings::random(15, Strings::CHARS_ALPHA_I);
 	}

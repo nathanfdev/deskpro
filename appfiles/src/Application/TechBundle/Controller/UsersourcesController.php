@@ -71,7 +71,7 @@ class UsersourcesController extends AbstractController
 		if ($usersource_id) {
 			$usersource = $this->getUsersourceOr404($usersource_id);
 		} else {
-			$usersource = $this->em->createEntity('CoreBundle:Usersource');
+			$usersource = new \Application\CoreBundle\Entity\Usersource();
 
 			if (!$this->in->getString('typename')) {
 				return $this->render('TechBundle:Usersources:edit-choosetype');

@@ -63,7 +63,7 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 	protected $properties;
 
 
-	public function init(array $params = array())
+	public function __construct()
 	{
 		$this->properties = new \Doctrine\Common\Collections\ArrayCollection();
 	}
@@ -73,7 +73,7 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 		if (isset($values['permissions']) AND is_array($values['permissions'])) {
 			$em = App::getOrm();
 			foreach ($values['permissions'] as $name => $val) {
-				$prop = $em->createEntity('CoreBundle:UsergroupPropertyPermission');
+				$prop = new \Application\CoreBundle\Entity\UsergroupPropertyPermission();
 				$prop['name'] = $name;
 				if (is_bool($val)) {
 					$prop['flag'] = $val;

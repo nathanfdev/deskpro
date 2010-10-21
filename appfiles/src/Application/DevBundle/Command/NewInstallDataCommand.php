@@ -51,7 +51,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 	protected function _createUsergroups(OutputInterface $output)
 	{
 		// Guests
-		$group = $this->em->createEntity('CoreBundle:Usergroup');
+		$group = new \Application\CoreBundle\Entity\Usergroup();
 		$group->fromArray(array(
 			'title' => 'Guests',
 			'permissions' => array()
@@ -62,7 +62,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$output->writeln("Created Guests usergroup #{$group['id']}");
 
 		// Users
-		$group = $this->em->createEntity('CoreBundle:Usergroup');
+		$group = new \Application\CoreBundle\Entity\Usergroup();
 		$group['title'] = 'Users';
 		$this->em->persist($group);
 		$this->em->flush();
@@ -70,7 +70,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$output->writeln("Created Users usergroup #{$group['id']}");
 
 		// Techs
-		$group = $this->em->createEntity('CoreBundle:Usergroup');
+		$group = new \Application\CoreBundle\Entity\Usergroup();
 		$group->fromArray(array(
 			'title' => 'Technicians',
 			'permissions' => array()
@@ -81,7 +81,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$output->writeln("Created Technicians usergroup #{$group['id']}");
 
 		// Admins
-		$group = $this->em->createEntity('CoreBundle:Usergroup');
+		$group = new \Application\CoreBundle\Entity\Usergroup();
 		$group->fromArray(array(
 			'title' => 'Administrators',
 			'permissions' => array()

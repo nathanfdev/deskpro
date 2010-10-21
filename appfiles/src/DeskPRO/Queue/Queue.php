@@ -52,7 +52,7 @@ class Queue extends \Zend\Queue\Queue
 		#------------------------------
 		
 		$em = $this->getOption('em');
-		$item = $em->createEntity('CoreBundle:QueueItem');
+		$item = new \Application\CoreBundle\Entity\QueueItem();
 		$item['is_dataonly'] = true;
 		$item['data'] = $message;
 		$em->persist($item);
