@@ -25,7 +25,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 {
 	/**
 	 * Entity manager
-	 * @var DeskPRO\ORM\EntityManager
+	 * @var Doctrine\ORM\EntityManager
 	 */
 	protected $em;
 

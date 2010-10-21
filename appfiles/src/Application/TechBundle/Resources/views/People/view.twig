@@ -1,19 +1,17 @@
 {% extends 'TechBundle::layout' %}
 {% block extra_head %}
+
 <script type="text/javascript">
-	$(document).ready(function() {
-		var inline_edit = new DeskPRO.Form.InlineEdit({
-			autoSave: true,
-			ajax: {
-				url: '{% route 'tech_people_ajaxedit' with ['person_id': person.id] %}'
-			}
-		});
+$(document).ready(function() {
+	var inline_edit = new DeskPRO.Form.InlineEdit({
+		ajax: {
+			url: '{% route 'tech_people_ajaxsave' with ['person_id': person.id|default(0)] %}'
+		}
 	});
+});
 </script>
 {% endblock %}
 {% block content %}
-
-{# TODO: Sholud clean up forms so theres none of the complicated finding/method calling #}
 
 {% set form_url %}{% route 'tech_people_view' with ['person_id': person.id] %}{% endset %}
 {{form.renderFormTag(['action': form_url])|raw}}
@@ -22,53 +20,47 @@
 <div class="block" id="block-tables">
 	<div class="content">
 		<h2 class="title">{{person.display_name}}</h2>
+
 		<div class="inner">
 			<table class="table">
 				<tr class="even">
-					<td>Person ID</td>
+					<td width="200">Person ID</td>
 					<td>{{person.id}}</td>
 				</tr>
 				<tr class="even">
-					<td>Name</td>
-					<td class="editable" data-editable-for="editfields_names">
-						Full Name: <span data-render-for="full_name">{{person.full_name}}</span><br />
-						Informal: <span data-render-for="informal_name">{{person.informal_name}}</span><br />
-						Nickname: <span data-render-for="nick_name">{{person.nick_name}}</span><br />
+					<td>Full Name</td>
+					<td class="editable row-trigger" data-editable-for="edit_basic_fields_full_name">
+						{{person.full_name}}
+					</td>
+				</tr>
+				<tr class="even">
+					<td>Informal Name</td>
+					<td class="editable row-trigger" data-editable-for="edit_basic_fields_informal_name">
+						{{person.informal_name}}
+					</td>
+				</tr>
+				<tr class="even">
+					<td>Nickname</td>
+					<td class="editable row-trigger" data-editable-for="edit_basic_fields_nick_name">
+						{{person.nick_name}}
 					</td>
 				</tr>
 			</table>
 		</div>
-
-		{% if person.fields %}
-			<br />
-
-			<div class="inner">
-				<table class="table">
-					{% for field in person.fields %}
-						<tr class="editable" data-editable-for="editfields_custom{{field.form_field_id}}">
-							<td>{{field.form_field.title}}</td>
-							<td>{{field.displayHtml|raw}}</td>
-						</tr>
-					{% endfor %}
-				</table>
-			</div>
-		{% endif %}
 	</div>
 </div>
-
 </form>
 
 <div id="field_html_wrap" style="display: none">
-	<div id="editfields_names">
-		Full Name: {{form.findField('basic_fields.full_name').render()}}
-		Informal: {{form.findField('basic_fields.informal_name').render()}}
-		Nickname: {{form.findField('basic_fields.nick_name').render()}}
+	<div id="edit_basic_fields_full_name">
+		{{form.findField('basic_fields.full_name').render()|raw}}
 	</div>
-	{% if form.hasField('custom_fields') %}
-		{% for field in form.getField('custom_fields') %}
-			<div id="editfields_{{field.getName()}}">{{field.render()}}<div>
-		{% endfor %}
-	{% endif %}
+	<div id="edit_basic_fields_informal_name">
+		{{form.findField('basic_fields.informal_name').render()|raw}}
+	</div>
+	<div id="edit_basic_fields_nick_name">
+		{{form.findField('basic_fields.nick_name').render()|raw}}
+	</div>
 </div>
 
 {% endblock %}

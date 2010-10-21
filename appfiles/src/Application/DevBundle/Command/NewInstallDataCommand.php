@@ -27,7 +27,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 {
 	/**
 	 * Entity manager
-	 * @var DeskPRO\ORM\EntityManager
+	 * @var Doctrine\ORM\EntityManager
 	 */
 	protected $em;
 	

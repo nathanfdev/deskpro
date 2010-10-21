@@ -1,88 +1,5 @@
 Orb.createNamespace('DeskPRO.Form');
 
-/**
- * InlineEdit allows you to attach inline editing capabilities to any elements
- * within your page.
- *
- * OVERVIEW
- * ========
- * This class is more involved than many of the existing "inline editable" Javascript
- * plugins available. Since DeskPRO has many types of input fields with special handling
- * etc, we don't want to rewrite templates and other logic in Javascript.
- *
- * Instead, this class will either use pre-rendered form elements, or will fetch form HTML
- * via AJAX. We never actually render HTML ourselves here in JS. This whole module only cares
- * for triggers that replace a rendered value with a form, and then submitting it via AJAX.
- *
- * This class uses custom HTML attributes which won't validate, but will still work
- * in all browsers.
- *
- * HOW IT WORKS
- * ============
- * Each editable data is wrapped by a CSS class 'editable'. When the editable interface
- * is enabled, the innerHTML will be cleared and replaced with form input. When the data
- * is updated, the innerHTML will be cleared again and replaced with the new rendered data.
- *
- * An editable item has a custom attribute:
- * data-editable-for: An elemenet ID that has the field(s) HTML we want to edit. The
- * inner elements will be moved from this element into the 'editable' element.
- *
- * Web Page HTML
- * =============
- * You have two sections. The first section is the currently rendered value, and the second
- * section is the rendered form fields for editing the value:
- * 
- * <code>
- * 	Name:
- * 	<div class="editable" data-editable-for="edit_name">Christopher</div>
- * 
- * 	<!-- A simple hidden container to contain HTML for fields -->
- * 	<div style="display:none">
- * 		<div id="edit_name"><input type="input" name="person[fullname]" value="Christopher" /></div>
- * 	</div>
- * </code>
- * 
- * Script Handler
- * ==============
- * 
- * When AJAX is submitted, a 'data' array is supplied with the array key being a unique ID, and the array
- * value being an array of data fields. For example, when submitting the above snippet, the request might look like:
- * 
- *     save?person[fullname]=Chris
- * 
- * The AJAX must return JSON encoded data with an array of 'fields':
- * 
- * <code>
- * 	{
- * 		fields:
- * 		[
- * 			{
- * 				id: 'id_from_data_array',
- * 				status: 'success',
- * 				renderedValue: 'HTML display of new value',
- * 				renderedForm: 'New input HTML for form fields'
- * 			},
- * 			{
- * 				id: 'id_from_data_array',
- * 				status: 'error',
- * 				errorMessages: ['Message 1', 'Message 2']
- * 			}
- * 		]
- * 	}
- * </code>
- * 
- *
- *
- * @option {Element} baseElement                  The base element to search for the selectors in
- * @option {String}  editableClass                The classname we'll search for for editables
- * @option {Boolean} autoSave                     Automatically 'close' the editable after clicking off, and save.
- *                                                If false, then saving is done some other way (such as a button).
- * @option {String} errorContainerSelector        An error container within a form wrapper element that will be displayed if
- *                                                server returns an error status.
- * @option {String} errorListSelector             A list within the error container that will have error messages appended to it
- * @option {Object} ajax                          A hash of AJAX info. The most important being that you suppy the 'url' item.
- * @option {Object} ajaxData                      Data to send in the AJAX call. Do not use the key 'data'.
- */
 DeskPRO.Form.InlineEdit = new Class({
 	Implements: Options,
 	
@@ -91,51 +8,39 @@ DeskPRO.Form.InlineEdit = new Class({
 	 * @var {Object}
 	 */
 	options: {
-		baseElement: document,
+		baseElement: window.document,
 		editableClass: 'editable',
 		autoSave: false,
 		ajax: {
 			timeout: 20000,
 			type: 'POST',
 			url: ''
-		},
-		ajaxData: {},
+		}
 	},
 	
-	errorListHandler: null,
+	activeEdits: [],
+	sendingEdits: {},
 	
-	/**
-	 * An array of open editables. If autoSave is enabled, this is always just one.
-	 * @var {Array}
-	 */
-	pending_edits: [],
-	
-	/**
-	 * A Hash of edits that have been sent out, keyed by ID. This is used in the ajax
-	 * callback to properly replace new values back into the dom.
-	 * @var {Hash}
-	 */
-	sending_edits: null,
-	
-	
+	documentClickSubmitOn: false,
 	
 	initialize: function (options) {
 		this.setOptions(options);
-		
-		if (!this.options['formContainer']) {
-			this.options['formContainer'] = $('<div style="display:none"></div>').appendTo(document);
-		}
-		
-		this.errorListHandler = new DeskPRO.ErrorListHandler();
-		
-		this.sending_edits = new Hash();
-		
+
 		var sel = '.' + this.options['editableClass'];
 		var self = this;
 		$(sel, this.options['baseElement']).each(function() { self.initEditable(this); });
+		
+		$(document).click(function(ev) {
+			self.handleDocumentClick(ev);
+		})
+		
+		$(document).keydown(function(ev) {
+			// Escape key
+			if (ev.keyCode == 27) {
+				self.closeEditables();
+			}
+		});
 	},
-	
-	
 	
 	/**
 	 * Initialize an editable by attaching new triggers
@@ -145,12 +50,32 @@ DeskPRO.Form.InlineEdit = new Class({
 	initEditable: function(el) {
 		var self = this;
 		
-		var jel = $(el);
-		jel.dblclick(function() { self.startEditable(this); });
+		var j_el = $(el);
 		
-		if (!jel.attr('id')) {
-			jel.attr('id', Orb.getUniqueId('editable_'));
+		if (j_el.is('.parent-trigger')) {
+			var parent = j_el.parent();
+			parent.dblclick(function() {
+				self.startEditable(j_el);
+			});
+		} else {
+			j_el.dblclick(function() { self.startEditable(this); });
 		}
+	},
+	
+	
+	
+	handleDocumentClick: function(ev) {
+		if (!this.documentClickSubmitOn) {
+			return;
+		}
+		
+		// Dont listen if the click was inside the editable area
+		if ($(event.target).parents().is('.editable')) {
+			return;
+		}
+		
+		this.submitOpen();
+		this.documentClickSubmitOn = false;
 	},
 	
 	
@@ -161,225 +86,167 @@ DeskPRO.Form.InlineEdit = new Class({
 	 *
 	 * @param {HTMLElement} el
 	 */
-	startEditable: function(el) {
-		var form_wrap = this.getEditableFields(el);
-		var form_fields = form_wrap.children();
+	startEditable: function(editable) {
+
+		editable = $(editable);
 		
-		// We detatch it from the DOM now
-		form_fields.detatch();
-		
-		// Get field ID's in the group
-		var field_ids = [];
-		form_fields.each(function() {
-			field_ids.push($(this).attr('id'));
+		// 1. Detatch (but dont remove) rendered elements from DOM
+		// 2. Move form from hidden container to editable container
+
+		var rendered_els = editable.children();
+		if (!rendered_els.size()) {
+			editable.wrapInner('<div />');
+			rendered_els = editable.children();
+		}
+
+		var form_elements = $('#' + $(editable).data('editable-for'));
+		var form_elements_container = form_elements.parent();
+
+		rendered_els.fadeOut('fast', function() {
+			rendered_els.detach();
+			form_elements.addClass('editable-fields-on').hide().appendTo(editable).fadeIn('fast');
 		});
+	
+		var editinfo = {
+			'editable': editable,
+			'rendered_els': rendered_els,
+			'form_elements': form_elements,
+			'form_elements_container': form_elements_container
+		};
 		
-		var state_info = { 'el': el, 'html': $(el).html(), 'form_wrap': form_wrap. field_ids: field_ids };
-		
-		// And add it into the editable wrapper
-		$(el).html('').appendTo(form_fields);
-		
-		this.pending_edits.push(state_info);
+		this.documentClickSubmitOn = true;
+		this.activeEdits.push(editinfo);
 	},
 	
-	
-	/**
-	 * Submit all pending editables via ajax.
-	 */
-	submitEditables: function() {
+	submitOpen: function() {
+		var data = $('.editable-fields-on :input, .editable-ajax-data :input', this.options['baseElement']).serializeArray();
 		
-		var req_id = Orb.uuid();
-		var data_parts = $extend({
-			{ name: 'editable_request_id', value: req_id }
-		}, this.options['ajaxData']);
+		var is_multi = this.activeEdits.length;
 		
-		while (var edit = this.pending_edits.shift()) {
-			
-			var el_id = $(edit.el).attr('id');
-			var form_data = $(edit.el).serializeArray();
-			data_parts = $merge(data_parts, form_data);
-			
-			// TODO put a loading indicator now or dim out fields
-			// or something
-			
-			edit.req_id = req_id;
-			this.sending_edits.set(el_id, edit);
+		var sending_edits = [];
+		
+		// Move all open to pending
+		var editinfo = null;
+		while (editinfo = this.activeEdits.pop()) {
+			this.setEditinfoLoading(editinfo);
+			sending_edits.push(editinfo);
 		}
 		
-		var ajax_options = $extend({
-			context: this,
-			success: this.submitDone,
+		var ajax_id = Orb.uuid();
+		this.sendingEdits[ajax_id] = sending_edits;
+		
+		var self = this;
+		var ajax_options = Object.merge({
+			success: function(data, textStatus, XMLHttpRequest) {
+				self.handleAjaxSuccess(ajax_id, data);
+			},
+			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				self.handleAjaxFailure(ajax_id);
+			},
 			dataType: 'json',
-			//TODO
-			//error: this.submitError,
-			data: data_parts
+			data: data
 		}, this.options['ajax']);
+		
+		console.log('ajax-save: %s', ajax_options.url);
+		console.log('ajax-save data: %o', ajax_options.data);
 		
 		$.ajax(ajax_options);
 	},
 	
+	handleAjaxSuccess: function(ajax_id, data) {
 	
-	
-	/**
-	 * Callback function called after AJAX data has been saved to the server
-	 */
-	submitDone: function(data, textStatus, XMLHttpRequest) {
+		var all_sending_edits = this.sendingEdits[ajax_id];
+		delete this.sendingEdits[ajax_id];
 		
-		/*
-			data should be:
-			{
-				fields: [
-					{
-						fieldName: 'person[something][something]',
-						
-						status: 'success',
-						renderedForm: '...', // optional
-						renderedHtml: '...', //optional
-						
-						status: error,
-						errorCodes: [..], // optional
-					}
-				]
-			}
-		*/
-		
-		while (fieldinfo = data.fields.pop()) {
+		var sending_edit = null;
+		var editinfo = null;
+		while (editinfo = all_sending_edits.pop()) {
+			var field_data = this._findDataFromEditinfo(editinfo, data);
 			
-			// Find the element
-			var el = $('[name="'+fieldinfo.fieldName+'"]');
+			var html = null;
 			
-			// Of if there is no exact match, we'll use a prefix
-			// to find the first element of a group.
-			// - For example, in a date field date[mm], date[yyyy],
-			// we might have an error that applies simply to the collective 'date',
-			// and not a specific field in the group.
-			if (!el.size()) {
-				el = $('[name^="'+fieldinfo.fieldName+'\\["]').first();
+			// We got something back
+			if (field_data) {
+				if (field_data.errors) {
+					// TODO handle errors
+					continue; // continue because we dont want to process back into rendered
+				} else if (field_data.html) {
+					html = field_data.html;
+				}
 			}
 			
-			// If we have no element matching, then we have to skip this
-			if (!el.size()) {
-				continue;
-			}
-
-			// If theres an error with the data, then show the error div
-			// and any messages provided
-			if (fieldinfo.status == 'error') {
-				
-				this.errorHandler.showErrors(el, fieldinfo.errorCodes);
-
-			// On success, we have to 1) replace the rendered value,
-			// and 2) replace the rendered form value (incase we edit again)
-			} else {
-				
-				// No errors, so reset it
-				this.errorHandler.showErrors(el, false);
-				
-				// Find the sending info
-				var sending_info = null;
-				this.sending_edits.each(function (info, id) {
-					if (info.field_ids.contains(el.attr('id'))) {
-						sending_info = info;
-						return false;
-					}
+			// We dont have HTML, we'll have to guess what the rendered value is
+			if (!html) {
+				var value_arr = $(':input', editinfo.form_elements).serializeArray();
+				var value_bits = [];
+				value_arr.each(function (v) {
+					value_bits.push(v.value);
 				});
 
-				// got a new form HTML
-				if (info.renderedForm) {
-					sendinfo_info.form_wrap.html(info.renderedForm);
-				// otherwise move the form fields back to inivisble container
-				} else {
-					var form_fields = el.children();
-					form_fields.detatch();
-					sendinfo_info.form_wrap.append(form_fields);
-				}
-				
-				// We got a full rendered value back
-				if (info.renderedHtml) {
-					el.html(info.renderedValue);
-				} else {
-
-					// put original html back
-					el.html(sending_info.html);
-					
-					// We got rendered values back
-					if (info.renderedValues) {
-						var renderedValues = new Hash(info.renderedValues);
-						
-					// Try to generate values ourselves
-					} else {
-						var renderedValues = new Hash();
-						$(form_fields).each(function() {
-							var val = $(this).val();
-							if ($type(val) == 'array') {
-								val = val.join(', ');
-							}
-							
-							// The only important part of the name is the last
-							// key part. So myform[section][whatever], whatever is important
-							var key = $(this).attr('name').replace(/[\[\]]/, ' ').replace(/\b(.*?)$/, '$1');
-							
-							renderedValues.set(key, value);
-						});
-					}
-					
-					
-					var placeholders = $('[data-render-for]', el);
-					
-					// Use the placeholds if we have them
-					if (placeholders.size()) {
-						
-						renderedValues.each(function (value, key) {
-							var els = placeholders.filter('[data-render-for$="'+key+'"]');
-							els.html(value);
-						});
-					
-					// No placeholders, just replace the whole block with rendered values
-					} else {
-						el.html(renderedValues.getValues().join(', '));
-					}
-				}
-				
-				this.sending_edits.erase(info.id);
+				html = value_bits.join(', ');
 			}
+			
+			// Remove old rendered value
+			editinfo.rendered_els.remove();
+			editinfo.rendered_els = $('<div/>').html(html);
+			this.closeEditinfo(editinfo);
 		}
 	},
 	
-	
-	
-	/**
-	 * Cancel all editables by returning things to their natural
-	 * state.
-	 */
-	cancelEditables: function(el) {
-		this.pending_edits.each(function (item) {
-			// Move the input elements back to the hidden form container
-			var form_fields = $(item.el).children();
-			form_fields.detatch();
-			item.form_wrap.append(form_fields);
-			
-			// Put the original HTML back
-			$(item.el).html(item.html);
-		});
+	_findDataFromEditinfo: function(editinfo, data) {
+		
+		// A single 'field' can be made up of more than one actual form element
+		// So the data we get back is often ID'd by the parent.
+		// For example, date[mm] and date[yy] might be the real form elements,
+		// but AJAX would return data for the field with the identifier simply 'date'.
+		
+		// Since each editable is for a single field, they must all share the same
+		// prefix/group. So we can simply try to find the common prefix by removing
+		// each sub-field one at a time.
+		// 'date_mm': not found, so we cut down to just 'date': and its found
+		
+		var id = $(':input', editinfo.form_elements).eq(0).attr('id');
+		var id_parts = id.split('_');
+		
+		do {
+			var check_part = id_parts.join('_');
+			if (data[check_part] != undefined) {
+				return data[check_part];
+			}
+		} while (id_parts.pop());
+		
+		return false;
 	},
 	
+	handleAjaxFailure: function(ajax_id) {
+		// TODO retry? show error?
+	},
 	
+	setEditinfoLoading: function (editinfo, is_multi) {
+		// TODO loading el?
+	},
+
+	closeEditables: function() {
+		var editinfo = null;
+		while (editinfo = this.activeEdits.pop()) {
+			this.closeEditinfo(editinfo);
+		}
+	},
 	
-	/**
-	 * Get the wrapper that contains the fields for an editable.
-	 *
-	 * @param {HTMLElement} el
-	 */
-	getEditableFields: function(el) {
-		var form_wrap_id = $(el).attr('data-editable-for');
-		var form_wrap = $('#' + form_wrap_id);
+	closeEditinfo: function(editinfo) {
+		// 1. Move form back to old location
+		// 2. Put rendered data bc
 		
-		return form_wrap;
+		var editable = editinfo.editable;
+		var rendered_els = editinfo.rendered_els;
+		var form_elements = editinfo.form_elements;
+		var form_elements_container = editinfo.form_elements_container;
+		
+		form_elements.fadeOut('fast', function() {
+			form_elements.removeClass('editable-fields-on').appendTo(form_elements_container);
+			if (rendered_els.parent().get(0) != editable.get(0)) {
+				rendered_els.hide().appendTo(editable).fadeIn('fast');
+			}
+		});	
 	}
 });
-
-
-
-
-
-

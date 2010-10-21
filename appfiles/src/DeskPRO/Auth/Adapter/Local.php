@@ -22,14 +22,14 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 {
 	/**
 	 * Entity manager
-	 * @var DeskPRO\ORM\EntityManager
+	 * @var Doctrine\ORM\EntityManager
 	 */
 	protected $em;
 
 	protected $username_or_email = '';
 	protected $password = '';
 
-	public function __construct(\DeskPRO\ORM\EntityManager $em)
+	public function __construct(\Doctrine\ORM\EntityManager $em)
 	{
 		$this->em = $em;
 	}

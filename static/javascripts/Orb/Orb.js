@@ -10,7 +10,7 @@ Orb.createNamespace = function(namespace, obj) {
 	var objcheck = window;
 	
 	parts.forEach(function(part) {
-		if (!$type(objcheck[part])) {
+		if (!objcheck[part]) {
 			objcheck[part] = {};
 		}
 		
@@ -34,7 +34,7 @@ Orb.getUniqueId = function(prefix) {
 	
 	var id = '';
 	do {
-		id = prefix + $time() + Math.floor(Math.random()*1001);
+		id = prefix + Date.now() + Math.floor(Math.random()*1001);
 	} while ($el(id));
 	
 	return id;
@@ -62,7 +62,7 @@ Orb.uuid_num = 0;
  * @retrun {HTMLElement}
  */
 Orb.getEl = function(el) {
-	if ($type(el) == 'element') {
+	if (typeOf(el) == 'element') {
 		return el;
 	}
 	

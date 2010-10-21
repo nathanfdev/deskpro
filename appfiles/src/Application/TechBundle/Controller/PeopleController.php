@@ -38,14 +38,22 @@ class PeopleController extends AbstractController
 			}
 		}
 
-		$this->render('TechBundle:People:view', array(
+		return $this->render('TechBundle:People:view', array(
 			'person' => $person,
 			'form' => $form,
 		));
 	}
 
+	
+	
+	############################################################################
+	# /tech/people/:person_id/ajax-save                     tech_people_ajaxsave
+	############################################################################
+
 	public function ajaxSaveAction($person_id)
 	{
+		return $this->createJsonResponse(array('yay' => '123'));
+
 		$person = $this->getPersonOr404($person_id);
 
 		$form->setData($_POST);
@@ -54,17 +62,21 @@ class PeopleController extends AbstractController
 		}
 	}
 
+
+
+	############################################################################
+	
 	protected function _getForm(Person $person)
 	{
 		$form = new \Application\TechBundle\Form\EditPerson(array('name' => 'edit_person'));
 		$form->setPerson($person);
 
+		$renderer = new \Orb\Form\Renderer\Basic();
+		$form->setRenderer($renderer);
+
 		return $form;
 	}
 
-
-
-	############################################################################
 
 	/**
 	 * @return Application\CoreBundle\Entity\Person

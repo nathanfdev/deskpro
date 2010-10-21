@@ -108,4 +108,23 @@ abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Control
 		$url = $this->generateUrl($route, $parameters, true);
 		return $this->redirect($url, $status);
 	}
+
+
+	
+	/**
+	 * Create a JSON response.
+	 *
+	 * @param array $data
+	 * @param int $status_code
+	 * @return Response
+	 */
+	public function createJsonResponse(array $data, $status_code = 200)
+	{
+		$response = $this->container->get('response');
+		$response->headers->set('Content-Type', 'application/json');
+		$response->setStatusCode(200);
+		$response->setContent(json_encode($data));
+
+		return $response;
+	}
 }

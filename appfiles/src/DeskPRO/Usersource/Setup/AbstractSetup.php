@@ -25,7 +25,7 @@ abstract class AbstractSetup
 	
 	/**
 	 * Entity manager
-	 * @var DeskPRO\ORM\EntityManager
+	 * @var Doctrine\ORM\EntityManager
 	 */
 	protected $em;
 

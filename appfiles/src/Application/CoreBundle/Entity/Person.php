@@ -18,6 +18,7 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 use \Application\CoreBundle\Entity\UsergroupPropertyPermission;
+use \Application\CoreBundle\Entity\PersonFieldDada;
 
 /**
  * A "person" is a record in the database that stores information about a person.
@@ -161,6 +162,12 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $emails;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="PersonFieldData", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 */
+	protected $fields;
+
+	/**
 	 * Usergroups the user belongs to
 	 * 
 	 * @var Doctrine\Common\Collections\ArrayCollection
@@ -224,13 +231,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @var array
 	 */
 	protected $_usergroup_ids = null;
-
-	/**
-	 * Loaded field values
-	 * 
-	 * @var array
-	 */
-	protected $_fields = null;
 
 
 
@@ -442,26 +442,16 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Get an array of field values for this person, indexed by field ID.
-	 * 
-	 * @return array
+	 * Add a new field
+	 * @param PersonField $field
 	 */
-	public function getFields()
+	public function addFieldData(PersonFieldData $field)
 	{
-		if ($this->_fields !== null) return $this->_fields;
-
-		$em = App::getOrm();
-		$this->_fields = $em->createQuery("
-			SELECT d
-			FROM CoreBundle:FormFieldDataPerson d INDEXBY d.id
-			WHERE d.record_id = ? AND d.parent_id = ?
-		")->setParameter(1, $this['id'])->setParameter(2, null)->getResults();
-
-		return $this->_fields;
-
+		$this['fields']->add($field);
+		$field['person'] = $this;
 	}
 
-	
+
 	
 	public function __toString()
 	{

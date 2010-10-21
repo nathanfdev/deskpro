@@ -235,7 +235,7 @@ class App
 	/**
 	 * Get the ORM entity manager.
 	 *
-	 * @return DeskPRO\ORM\EntityManager
+	 * @return Doctrine\ORM\EntityManager
 	 */
 	public static function getOrm()
 	{
