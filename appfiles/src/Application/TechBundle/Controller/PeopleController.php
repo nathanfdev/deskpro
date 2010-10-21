@@ -12,8 +12,6 @@
 namespace Application\TechBundle\Controller;
 
 use \Application\CoreBundle\Entity\Person;
-use \Application\CoreBundle\Entity\FormField;
-use \Application\CoreBundle\Entity\FormFieldAssociation;
 
 /**
  * Handles viewing and editing people
@@ -28,15 +26,12 @@ class PeopleController extends AbstractController
 	{
 		$person = $this->getPersonOr404($person_id);
 
-		$form = new \Application\TechBundle\Form\Person();
-		$fields = $this->em->getRepository('CoreBundle:FormFieldAssociation')->getFieldsForType(FormFieldAssociation::SYSTYPE_PERSON);
-		$form->setCustomFields($fields);
+		$form = $this->_getForm($person);
 
 		if ($this->isPostRequest()) {
 			$form->setData($_POST);
 			if ($form->isValid()) {
 				$form->savePerson($person);
-				echo "DONE";
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());
@@ -59,11 +54,10 @@ class PeopleController extends AbstractController
 		}
 	}
 
-	protected function _getForm()
+	protected function _getForm(Person $person)
 	{
-		$form = new \Application\TechBundle\Form\Person();
-		$fields = $this->em->getRepository('CoreBundle:FormFieldAssociation')->getFieldsForType(FormFieldAssociation::SYSTYPE_PERSON);
-		$form->setCustomFields($fields);
+		$form = new \Application\TechBundle\Form\EditPerson(array('name' => 'edit_person'));
+		$form->setPerson($person);
 
 		return $form;
 	}

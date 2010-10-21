@@ -141,6 +141,11 @@ tech_people_view:
   defaults: { _controller: TechBundle:People:view }
   requirements: { person_id: "\d+" }
 
+tech_people_ajaxedit:
+  pattern: /people/:person_id/ajax-edit
+  defaults: { _controller: TechBundle:People:ajaxEdit }
+  requirements: { person_id: "\d+" }
+
 
 ################################################################################
 # Person Fields

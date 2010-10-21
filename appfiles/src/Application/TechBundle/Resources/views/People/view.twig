@@ -16,8 +16,8 @@
 {# TODO: Sholud clean up forms so theres none of the complicated finding/method calling #}
 
 {% set form_url %}{% route 'tech_people_view' with ['person_id': person.id] %}{% endset %}
-{{form.renderFormTag(['action': form_url])|safe}}
-{{form.renderHiddenTags()|safe}}
+{{form.renderFormTag(['action': form_url])|raw}}
+{{form.renderHiddenTags()|raw}}
 
 <div class="block" id="block-tables">
 	<div class="content">
@@ -47,7 +47,7 @@
 					{% for field in person.fields %}
 						<tr class="editable" data-editable-for="editfields_custom{{field.form_field_id}}">
 							<td>{{field.form_field.title}}</td>
-							<td>{{field.displayHtml|safe}}</td>
+							<td>{{field.displayHtml|raw}}</td>
 						</tr>
 					{% endfor %}
 				</table>

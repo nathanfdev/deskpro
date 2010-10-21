@@ -14,7 +14,7 @@ namespace Application\TechBundle\Form;
 use \Application\CoreBundle\Entity\FormField;
 use \Application\CoreBundle\Entity\Person;
 
-class Person extends \Orb\Form\Field\Form
+class EditPerson extends \Orb\Form\Field\Form
 {
 	protected function init()
 	{
@@ -35,7 +35,7 @@ class Person extends \Orb\Form\Field\Form
 		$f = new \Orb\Form\Field\Password(array('name' => 'password'));
 		$basic_fields->addField($f);
 
-		$this->addField('basic_fields');
+		$this->addField($basic_fields);
 	}
 
 	public function setCustomFields($fields)
