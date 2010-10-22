@@ -2,7 +2,11 @@
 
 require_once DP_ROOT.'/vendor/symfony/src/Symfony/Framework/UniversalClassLoader.php';
 
-set_include_path(DP_ROOT.'/vendor/zend/library');
+set_include_path(
+	DP_ROOT.'/vendor/zend/library'
+	.PATH_SEPARATOR.
+	DP_ROOT.'/vendor/zend1/library'
+);
 
 $loader = new Symfony\Framework\UniversalClassLoader();
 $loader->registerNamespaces(array(
@@ -21,6 +25,7 @@ $loader->registerNamespaces(array(
 $loader->registerPrefixes(array(
     'Swift_'      => DP_ROOT.'/vendor/swiftmailer/lib/classes',
     'Twig_'       => DP_ROOT.'/vendor/twig/lib',
-	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes'
+	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes',
+	'Zend_'       => DP_ROOT.'/vendor/zend1/library',
 ));
 $loader->register();

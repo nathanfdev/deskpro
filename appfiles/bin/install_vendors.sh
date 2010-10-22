@@ -35,3 +35,13 @@ git submodule add git://github.com/zendframework/zf2.git appfiles/vendor/zend
 
 # Pheanstalk
 git submodule add git://github.com/pda/pheanstalk.git appfiles/vendor/pheanstalk
+
+# ZF1
+cd appfiles/vendor
+mkdir zend1
+cd zend1
+wget http://framework.zend.com/releases/ZendFramework-1.10.8/ZendFramework-1.10.8-minimal.tar.gz
+tar zxvf ZendFramework-1.10.8-minimal.tar.gz
+mv ZendFramework-1.10.8-minimal/* .
+rmdir ZendFramework-1.10.8-minimal
+rm -f ZendFramework-1.10.8-minimal.tar.gz

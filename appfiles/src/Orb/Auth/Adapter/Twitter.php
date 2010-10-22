@@ -93,11 +93,11 @@ class Twitter extends AbstractCallbackAdatper
 	}
 
 	/**
-	 * @return Zend\OAuth\Consumer
+	 * @return Zend_OAuth_Consumer
 	 */
 	public function getOauthConsumer()
 	{
-		return new \Zend\OAuth\Consumer($this->getOauthConfig());
+		return new Zend_OAuth_Consumer($this->getOauthConfig());
 	}
 
 	public function getOauthConfig()
@@ -107,7 +107,7 @@ class Twitter extends AbstractCallbackAdatper
 			'siteUrl' => 'http://api.twitter.com/oauth',
 			'consumerKey' => $this->consumer_key,
 			'consumerSecret' => $this->consumer_secret,
-			'requestScheme' => \Zend\OAuth\OAuth::REQUEST_SCHEME_HEADER,
+			'requestScheme' => Zend_OAuth::REQUEST_SCHEME_HEADER,
 			'signatureMethod' => 'HMAC-SHA1',
 		);
 	}
