@@ -1,5 +1,10 @@
 Orb.createNamespace('DeskPRO.Form');
 
+/**
+ * @option {HTMLElement} baseElement The base element to activate this inline edit on
+ * @option {String} editableClass The class that denotes an editable thing
+ * @option {Object} ajax The AJAX options to pass to jQuery.ajax. Only the 'url' item is required.
+ */
 DeskPRO.Form.InlineEdit = new Class({
 	Implements: Options,
 	
@@ -10,7 +15,6 @@ DeskPRO.Form.InlineEdit = new Class({
 	options: {
 		baseElement: window.document,
 		editableClass: 'editable',
-		autoSave: false,
 		ajax: {
 			timeout: 20000,
 			type: 'POST',
@@ -18,10 +22,26 @@ DeskPRO.Form.InlineEdit = new Class({
 		}
 	},
 	
+	/**
+	 * An array of 'editinfo's that are currently open
+	 * @var {Array}
+	 */
 	activeEdits: [],
+	
+	/**
+	 * ajax_id=>editinfo of changes that are currenly being sent via ajax
+	 * @var {Object}
+	 */
 	sendingEdits: {},
 	
+	/**
+	 * If a document click should send open edits. This is used
+	 * with the double-click. Also controls if the Escape key cancels.
+	 * @var {Boolean}
+	 */
 	documentClickSubmitOn: false,
+	
+	
 	
 	initialize: function (options) {
 		this.setOptions(options);
@@ -42,8 +62,14 @@ DeskPRO.Form.InlineEdit = new Class({
 		});
 	},
 	
+	
+	
 	/**
 	 * Initialize an editable by attaching new triggers
+	 *
+	 * If the element has the class parent-trigger, then the parent
+	 * will have the dblclick even listener. This is useful for example
+	 * in tables, where you want the entire table row to accept the click.
 	 *
 	 * @param {HTMLElement} el
 	 */
@@ -64,6 +90,10 @@ DeskPRO.Form.InlineEdit = new Class({
 	
 	
 	
+	/**
+	 * When anywhere on the page is clicked, we need to see
+	 * if that means we should submit changes.
+	 */
 	handleDocumentClick: function(ev) {
 		if (!this.documentClickSubmitOn) {
 			return;
@@ -81,8 +111,11 @@ DeskPRO.Form.InlineEdit = new Class({
 	
 	
 	/**
-	 * Start editing an element. This removes the rendered value and replaces
-	 * it with the form fields.
+	 * Start editing an element.
+	 *
+	 * This detatches (but doesn't remove) rendered elements from the DOM
+	 * from inside the editable. Then it moves (not clones) the form fields
+	 * from the hidden container into the editable.
 	 *
 	 * @param {HTMLElement} el
 	 */
@@ -90,15 +123,16 @@ DeskPRO.Form.InlineEdit = new Class({
 
 		editable = $(editable);
 		
-		// 1. Detatch (but dont remove) rendered elements from DOM
-		// 2. Move form from hidden container to editable container
-
-		var rendered_els = editable.children();
+		// Rendered els are whatever is inside the editable.
+		// We wrap the inside with a rendered-value div so we can easily
+		// just move the nodes using that one wrapper
+		var rendered_els = $('div.rendered-value', editable);
 		if (!rendered_els.size()) {
-			editable.wrapInner('<div />');
-			rendered_els = editable.children();
+			editable.wrapInner('<div class="rendered-value" />');
+			rendered_els = $('div.rendered-value', editable);
 		}
 
+		// Form elements is the whole thing, they are already in a wrapper of some kind
 		var form_elements = $('#' + $(editable).data('editable-for'));
 		var form_elements_container = form_elements.parent();
 
@@ -118,6 +152,11 @@ DeskPRO.Form.InlineEdit = new Class({
 		this.activeEdits.push(editinfo);
 	},
 	
+	
+	
+	/**
+	 * Submits all the fields that are currently 'open'.
+	 */
 	submitOpen: function() {
 		var data = $('.editable-fields-on :input, .editable-ajax-data :input', this.options['baseElement']).serializeArray();
 		
@@ -155,6 +194,18 @@ DeskPRO.Form.InlineEdit = new Class({
 		$.ajax(ajax_options);
 	},
 	
+	
+	
+	/**
+	 * Handles a successful AJAX.
+	 *
+	 * data is expected to be a hash of field_id: {info}
+	 * where info is either a string that represents the rendered field,
+	 * or an array of error codes we'll use with the error handler.
+	 *
+	 * @param {Integer} ajax_id
+	 * @param {Object} data
+	 */
 	handleAjaxSuccess: function(ajax_id, data) {
 	
 		var all_sending_edits = this.sendingEdits[ajax_id];
@@ -190,22 +241,33 @@ DeskPRO.Form.InlineEdit = new Class({
 			
 			// Remove old rendered value
 			editinfo.rendered_els.remove();
-			editinfo.rendered_els = $('<div/>').html(html);
+			
+			// Set a new rendered value by creating a new element
+			// The closeEditInfo call next will actually attach the
+			// node to the correct DOM editable
+			editinfo.rendered_els = $('<div class="rendered-value" />').html(html);
+			
 			this.closeEditinfo(editinfo);
 		}
 	},
 	
+	
+	
+	/**
+	 * Try to match an editinfo which contains fields, to data returned
+	 * from ajax.
+	 *
+	 * A single 'field' can be made up of more than one actual form element
+	 * So the data we get back is often ID'd by the parent.
+	 * For example, date[mm] and date[yy] might be the real form elements,
+	 * but AJAX would return data for the field with the identifier simply 'date'.
+	 * 
+	 * Since each editable is for a single field, they must all share the same
+	 * prefix/group. So we can simply try to find the common prefix by removing
+	 * each sub-field one at a time.
+	 * 'date_mm': not found, so we cut down to just 'date': and its found
+	 */
 	_findDataFromEditinfo: function(editinfo, data) {
-		
-		// A single 'field' can be made up of more than one actual form element
-		// So the data we get back is often ID'd by the parent.
-		// For example, date[mm] and date[yy] might be the real form elements,
-		// but AJAX would return data for the field with the identifier simply 'date'.
-		
-		// Since each editable is for a single field, they must all share the same
-		// prefix/group. So we can simply try to find the common prefix by removing
-		// each sub-field one at a time.
-		// 'date_mm': not found, so we cut down to just 'date': and its found
 		
 		var id = $(':input', editinfo.form_elements).eq(0).attr('id');
 		var id_parts = id.split('_');
@@ -220,14 +282,32 @@ DeskPRO.Form.InlineEdit = new Class({
 		return false;
 	},
 	
+	
+	/**
+	 * When AJAX fails
+	 *
+	 * @param {Integer} ajax_id
+	 */
 	handleAjaxFailure: function(ajax_id) {
 		// TODO retry? show error?
 	},
 	
+	
+	
+	/**
+	 * Called on submit so we can show a loading indicator of some kind.
+	 *
+	 * @param {Object} editinfo
+	 * @param {Boolean} is_multi True if multiple fields are sending at once, may affect the design
+	 */
 	setEditinfoLoading: function (editinfo, is_multi) {
 		// TODO loading el?
 	},
 
+
+	/**
+	 * Close all open editables.
+	 */
 	closeEditables: function() {
 		var editinfo = null;
 		while (editinfo = this.activeEdits.pop()) {
@@ -235,6 +315,16 @@ DeskPRO.Form.InlineEdit = new Class({
 		}
 	},
 	
+	
+	
+	/**
+	 * Close a specific editable.
+	 *
+	 * This moves the form elements back to its old hidden container.
+	 * Then it reattaches the rendered elements to the editable container
+	 * (the rendered elements may be changed by the ajax save, so the new value
+	 * would appear).
+	 */
 	closeEditinfo: function(editinfo) {
 		// 1. Move form back to old location
 		// 2. Put rendered data bc
