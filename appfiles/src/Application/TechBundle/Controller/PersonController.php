@@ -14,9 +14,9 @@ namespace Application\TechBundle\Controller;
 use \Application\CoreBundle\Entity\Person;
 
 /**
- * Handles viewing and editing people
+ * Handles viewing and editing a person
  */
-class PeopleController extends AbstractController
+class PersonController extends AbstractController
 {
 	############################################################################
 	# /tech/people/:person_id                                   tech_people_view
@@ -38,37 +38,60 @@ class PeopleController extends AbstractController
 			}
 		}
 
-		return $this->render('TechBundle:People:view', array(
+		// All-in-one array for template
+		$custom_fields = array();
+		foreach ($form->getCustomFields() as $f) {
+			$form_field = $form['custom_fields']['field_' . $f['id']];
+			$custom_fields[] = array(
+				'id' => $f['id'],
+				'html_id' => $form_field->getFormId(),
+				'rendered_value' => $person->renderSingleFieldValue($f['id']),
+				'field_def' => $f,
+				'form_field' => $form_field
+			);
+		}
+
+		return $this->render('TechBundle:Person:view', array(
 			'person' => $person,
 			'form' => $form,
+			'fields' => $form->getCustomFields(),
+			'custom_fields' => $custom_fields,
 		));
 	}
 
-	
-	
+
+
 	############################################################################
 	# /tech/people/:person_id/ajax-save                     tech_people_ajaxsave
 	############################################################################
 
 	public function ajaxSaveAction($person_id)
 	{
-		return $this->createJsonResponse(array('yay' => '123'));
-
 		$person = $this->getPersonOr404($person_id);
+		$form = $this->_getForm($person);
+		$form->setFormData($_POST);
 
-		$form->setData($_POST);
 		if ($form->isValid()) {
-			$form->savePerson();
+			$form->savePerson($person);
+			return $this->createJsonResponse(array('success' => true));
+		} else {
+			return $this->createJsonResponse(array('error' => true));
 		}
 	}
 
 
 
 	############################################################################
-	
+
 	protected function _getForm(Person $person)
 	{
 		$form = new \Application\TechBundle\Form\EditPerson(array('name' => 'edit_person'));
+
+		// Custom fields
+		$fields = $this->em->getRepository('CoreBundle:PersonField')->getEnabledFields();
+
+		$form->setCustomFields($fields);
+
 		$form->setPerson($person);
 
 		$renderer = new \Orb\Form\Renderer\Basic();

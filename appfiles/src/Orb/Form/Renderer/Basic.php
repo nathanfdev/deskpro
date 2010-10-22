@@ -260,6 +260,7 @@ class Basic implements RendererInterface
 		if ($tagname == 'input') {
 			$html .= '/>';
 		} else {
+			$html .= ">";
 			$html .= "</$tagname>";
 		}
 
@@ -283,7 +284,7 @@ class Basic implements RendererInterface
 	{
 		$tagname = strtolower($tagname);
 
-		$html = "<$tagname " . Strings::htmlAttributes($attributes);
+		$html = "<$tagname " . Strings::htmlAttributes($attributes) . ">";
 		$html .= htmlspecialchars($field->getFormData());
 		$html .= "</$tagname>";
 

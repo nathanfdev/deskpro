@@ -43,8 +43,12 @@ class Text extends AbstractFieldHandler
 	/**
 	 * Render the field to HTML for use in a web page.
 	 */
-	public function renderHtml(Entity\FormFieldData $form_field_data)
+	public function renderHtml(Entity\FormFieldData $form_field_data = null)
 	{
+		if (!$form_field_data) {
+			return '';
+		}
+
 		return htmlspecialchars($this->renderText($form_field_data));
 	}
 
@@ -53,8 +57,12 @@ class Text extends AbstractFieldHandler
 	/**
 	 * Render the field
 	 */
-	public function renderText(Entity\FormFieldData $form_field_data)
+	public function renderText(Entity\FormFieldData $form_field_data = null)
 	{
+		if (!$form_field_data) {
+			return '';
+		}
+
 		$value = '';
 		if (isset($form_field_data['data']['value'])) {
 			$value = $form_field_data['data']['value'];

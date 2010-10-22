@@ -73,7 +73,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		$adapter->setCredentials($this->in->getString('username'), $this->in->getString('password'));
 		$result = $adapter->authenticate();
 		if (!$result->isValid()) {
-			return $this->redirect($this['router']->generate('login', array()));
+			return $this->redirect($this['router']->generate('user_login', array()));
 		}
 
 		$identity = $result->getIdentity();
@@ -103,7 +103,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 			// Otherwise its an error
 			} else {
-				return $this->redirect($this['router']->generate('login', array()));
+				return $this->redirect($this['router']->generate('user_login', array()));
 			}
 
 		#------------------------------
@@ -124,7 +124,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 			// Error, go back to login
 			} else {
-				return $this->redirect($this['router']->generate('login', array()));
+				return $this->redirect($this['router']->generate('user_login', array()));
 			}
 		}
 	}
@@ -143,7 +143,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 		// It must be a callback type to be here, so if not redirect back to login
 		if (!($adapter instanceof Orb\Auth\Adapter\CallbackInterface)) {
-			return $this->redirect($this['router']->generate('login', array()));
+			return $this->redirect($this['router']->generate('user_login', array()));
 		}
 
 		$adapter->setCallbackContext($_REQUEST);
@@ -161,7 +161,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 		// Error, go back to login
 		} else {
-			return $this->redirect($this['router']->generate('login', array()));
+			return $this->redirect($this['router']->generate('user_login', array()));
 		}
 	}
 

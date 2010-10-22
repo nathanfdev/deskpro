@@ -59,7 +59,7 @@ class TransformerChain implements TransformerInterface
     public function transformFormToStored($value)
     {
 		foreach ($this->transformers as $transformer) {
-			$value = $transformer->transformStoredToForm($value);
+			$value = $transformer->transformFormToStored($value);
 		}
 
         return $value;

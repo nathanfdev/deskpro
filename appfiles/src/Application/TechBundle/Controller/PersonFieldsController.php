@@ -60,7 +60,7 @@ class PersonFieldsController extends AbstractController
 			$field = $this->getFieldOr404($field_id);
 		} else {
 			$field = new PersonField();
-			$field['handler_class'] = $this->in->getString('handler_class');
+			$field['handler_class'] = $this->in->getString('formfield.handler_class');
 		}
 
 		$renderer = new \Orb\Form\Renderer\Basic();

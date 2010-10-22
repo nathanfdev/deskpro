@@ -165,7 +165,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @OneToMany(targetEntity="PersonFieldData", mappedBy="person", cascade={"persist", "remove", "merge"})
 	 */
-	protected $fields;
+	protected $field_data;
 
 	/**
 	 * Usergroups the user belongs to
@@ -447,10 +447,89 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	public function addFieldData(PersonFieldData $field)
 	{
-		$this['fields']->add($field);
+		$this->field_data->add($field);
 		$field['person'] = $this;
 	}
 
+
+
+	/**
+	 * Gets field data for 'top' fields, that is, don't return fields that are children.
+	 * Most of the time we work with those values strictly through the parent field.
+	 *
+	 * @return array
+	 */
+	public function getFields()
+	{
+		$array = array();
+
+		foreach ($this->field_data as $f) {
+			if ($f['parent_id']) continue;
+
+			$array[$f['person_field_id']] = $f;
+		}
+
+		return $array;
+	}
+
+
+	
+	/**
+	 * Get fielddata for a specific field. Returns null if no data for a field exists.
+	 *
+	 * @param $field_id
+	 * @return PersonFieldData
+	 */
+	public function getField($field_id)
+	{
+		foreach ($this->field_data as $f) {
+			if ($f['person_field_id'] == $field_id AND !$f['parent_id']) {
+				return $f;
+			}
+		}
+
+		return null;
+	}
+
+	
+
+	/**
+	 * Gets the rendered values of fields, indexed by
+	 *
+	 * @array
+	 */
+	public function renderFieldValues($context = 'html')
+	{
+		$array = array();
+
+		foreach ($this->field_data as $f) {
+			if ($f['parent_id']) continue;
+			$array[$f['person_field_id']] = $f->renderContext($context);
+		}
+
+		return $array;
+	}
+
+	
+
+	/**
+	 * Get a single value
+	 *
+	 * @param int $person_field_id
+	 * @param string $context
+	 * @return string|null Null if no field value
+	 */
+	public function renderSingleFieldValue($person_field_id, $context = 'html')
+	{
+		foreach ($this->field_data as $f) {
+			if ($f['parent_id']) continue;
+			if ($f['person_field_id'] == $person_field_id) {
+				return $f->renderContext($context);
+			}
+		}
+
+		return null;
+	}
 
 	
 	public function __toString()

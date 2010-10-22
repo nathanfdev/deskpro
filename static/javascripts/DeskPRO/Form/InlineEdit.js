@@ -138,9 +138,11 @@ DeskPRO.Form.InlineEdit = new Class({
 		var self = this;
 		var ajax_options = Object.merge({
 			success: function(data, textStatus, XMLHttpRequest) {
+				console.log('ajax-save data: %o', data);
 				self.handleAjaxSuccess(ajax_id, data);
 			},
 			error: function(XMLHttpRequest, textStatus, errorThrown) {
+				console.log('ajax-save error: %s', textStatus);
 				self.handleAjaxFailure(ajax_id);
 			},
 			dataType: 'json',

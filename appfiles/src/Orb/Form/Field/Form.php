@@ -42,6 +42,27 @@ class Form extends FieldGroup
 
 
 	/**
+	 * Set an array of form values for fields in this group
+	 *
+	 * @param array $data
+	 */
+	public function setFormData($form_data)
+	{
+		if (!is_array($form_data)) {
+			throw new \InvalidArgumentException('$form_data must be an array');
+		}
+
+		if (!isset($form_data[$this->getName()])) {
+			return;
+		}
+
+		$form_data = $form_data[$this->getName()];
+
+		parent::setFormData($form_data);
+	}
+
+
+	/**
 	 * Render the form tag.
 	 * 
 	 * @param array $attributes

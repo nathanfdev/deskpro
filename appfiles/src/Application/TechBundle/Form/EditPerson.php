@@ -11,11 +11,16 @@
 
 namespace Application\TechBundle\Form;
 
+use \DeskPRO\App;
+
 use \Application\CoreBundle\Entity\FormField;
+use \Application\CoreBundle\Entity\PersonFieldData;
 use \Application\CoreBundle\Entity\Person;
 
 class EditPerson extends \Orb\Form\Field\Form
 {
+	protected $person_fields;
+
 	protected function init()
 	{
 		$basic_fields = new\Orb\Form\Field\FieldGroup(array('name' => 'basic_fields'));
@@ -40,13 +45,22 @@ class EditPerson extends \Orb\Form\Field\Form
 
 	public function setCustomFields($fields)
 	{
+		$this->person_fields = $fields;
+
 		$custom_fields = new\Orb\Form\Field\FieldGroup(array('name' => 'custom_fields'));
 
-		foreach ($fields as $field) {
-			$custom_fields->addField($field->getFormField());
+		foreach ($fields as $field_def) {
+			$form_field = $field_def->getHandler()->getFormField();
+			$form_field->setOption('field_def', $field_def);
+			$custom_fields->addField($form_field);
 		}
 
 		$this->addField($custom_fields);
+	}
+
+	public function getCustomFields()
+	{
+		return $this->person_fields;
 	}
 
 	public function setPerson(Person $person)
@@ -60,21 +74,52 @@ class EditPerson extends \Orb\Form\Field\Form
 
 		$this->getField('basic_fields')->setData($values);
 
-		// Set custom fields
-		if ($this->hasField('custom_fields')) {
-			$values = array();
-			foreach ($person->getFields() as $k => $obj) {
-				$values['field_' . $k] = $obj['data'];
+		foreach ($person['fields'] as $fielddata) {
+			$name = 'field_' . $fielddata['person_field_id'];
+			if (isset($this['custom_fields'][$name])) {
+				$this['custom_fields'][$name]->setData($fielddata['data']);
 			}
-
-			$this->getField('custom_fields')->setData($values);
 		}
 	}
 
 	public function savePerson(Person $person)
 	{
+		$em = App::getOrm();
+		$em->beginTransaction();
+
 		foreach ($this['basic_fields'] as $k => $f) {
 			$person[$k] = $f->getData();
 		}
+
+		foreach ($this['custom_fields'] as $k => $f) {
+
+			$value = $f->getData();
+
+			$field_def = $f->getOption('field_def');
+			$field_data = $person->getField($field_def['id']);
+
+			// A value exists, store it
+			if ($value !== null) {
+				if (!$field_data) {
+					$field_data = new PersonFieldData();
+					$field_data['field'] = $field_def;
+					$person->addFieldData($field_data);
+				}
+
+				$field_data['data'] = $value;
+				$em->persist($field_data);
+
+			// A value doesnt exist, remove it
+			} else {
+				if ($field_data) {
+					$person['field_data']->remove($field_data);
+					$em->remove($field_data);
+				}
+			}
+		}
+
+		$em->persist($person);
+		$em->flush();
+		$em->commit();
 	}
 }

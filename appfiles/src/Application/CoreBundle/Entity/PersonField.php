@@ -17,7 +17,7 @@ use Orb\Util\Arrays;
  * A PersonField describes a type of field that is set on a Person, and how the data
  * is to be treated/inputted/transformed etc.
  *
- * @Entity
+ * @Entity(repositoryClass="Application\CoreBundle\EntityRepository\PersonField")
  * @HasLifecycleCallbacks
  * @Table(name="person_fields")
  */

@@ -100,6 +100,10 @@ abstract class Field
 			$this->setRenderer($this->getOption('renderer'));
 		}
 
+		if ($this->hasOption('data')) {
+			$this->setData($this->getOption('data'));
+		}
+
 		$this->init();
 	}
 
@@ -158,14 +162,10 @@ abstract class Field
 			throw new \UnexpectedValueException('The `name` option is not set');
 		}
 
-		if ($this->getOption('parent')) {
-			$name = $this->getOption('parent')->getName() . '[' . $this->getOption('name') . ']';
+		if ($this->parent) {
+			$name = $this->parent->getFormName() . '[' . $this->getOption('name') . ']';
 		} else {
 			$name = $this->getOption('name');
-		}
-
-		if ($this->hasOption('data')) {
-			$this->setData($this->getOption('data'));
 		}
 
 		$this->setOption('form_name', $name);
@@ -186,19 +186,11 @@ abstract class Field
 			return $this->getOption('form_id');
 		}
 
-		if ($this->getOption('name') === null) {
-			throw new \UnexpectedValueException('The `name` option is not set');
-		}
+		$id = preg_replace('#\[(.*?)\]#', '_$1', $this->getFormName());
 
-		if ($this->getOption('parent')) {
-			$name = $this->getOption('parent')->getId() . '_' . $this->getOption('name');
-		} else {
-			$name = $this->getOption('name');
-		}
+		$this->setOption('form_id', $id);
 
-		$this->setOption('form_id', $name);
-
-		return $name;
+		return $id;
 	}
 
 
@@ -259,7 +251,7 @@ abstract class Field
 	 *
 	 * @param Orb\Form\Transformer $transformer
 	 */
-	public function addTransformer(\Orb\Form\Transformer $transformer)
+	public function addTransformer(\Orb\Form\Transformer\TransformerInterface $transformer)
 	{
 		$this->transformer->addTransformer($transformer);
 	}
@@ -359,12 +351,15 @@ abstract class Field
 	public function setFormData($form_data)
 	{
 		$this->data = $this->transformer->transformFormToStored($form_data);
+		$this->form_data = $this->transformer->transformStoredToForm($this->data);
 
+		/*
 		$new_form_data = $this->transformer->transformStoredToForm($this->data);
 		if ($this->_compareFormData($this->form_data, $new_form_data)) {
 			$this->is_modified = true;
 			$this->form_data = $this->transformer->transformStoredToForm($this->data);
 		}
+		*/
 	}
 
 	protected function _compareFormData($old, $new)
@@ -481,6 +476,9 @@ abstract class Field
 		$attr['name']  = $this->getFormName();
 		$attr['id']    = $this->getFormId();
 		$attr['value'] = $this->getFormData();
+		if ($attr['value'] === null) {
+			$attr['value'] = '';
+		}
 
 		return $attr;
 	}

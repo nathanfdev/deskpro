@@ -24,8 +24,8 @@ class Textarea extends Text
 	public function getFormField(Entity\FormFieldData $form_field_data = null)
 	{
 		$options = array();
-		if ($this->fielddef['options']['field_options']) {
-			$options = $this->fielddef['options']['field_options'];
+		if ($this->fielddef['options']) {
+			$options = $this->fielddef['options'];
 		}
 
 		$options['name'] = $this->getFormFieldName();

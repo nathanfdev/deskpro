@@ -57,26 +57,30 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Get the value of this field rendered to HTML
+	 * Sets data from the form field
 	 *
-	 * @return string
+	 * @param mixed $data
 	 */
-	public function getDisplayHtml()
+	public function setData($data)
 	{
-		$field_handler = $this['field']->getHandler();
-		return $field_handler->renderHtml($this);
+		if (!is_array($data)) {
+			$data = array('value' => $data);
+		}
+
+		$this->data = $data;
 	}
 
-	
+
 
 	/**
-	 * Get the value of this field rendered to plain text.
+	 * Render this field in a given context
 	 * 
+	 * @param string $context
 	 * @return string
 	 */
-	public function getDisplayText()
+	public function renderContext($context = 'html')
 	{
 		$field_handler = $this['field']->getHandler();
-		return $field_handler->renderText($this);
+		return $field_handler->renderContext($context, $this);
 	}
 }

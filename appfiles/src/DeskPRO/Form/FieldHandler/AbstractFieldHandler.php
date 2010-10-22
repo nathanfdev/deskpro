@@ -23,6 +23,9 @@ use \Application\CoreBundle\Entity;
  */
 abstract class AbstractFieldHandler implements \Orb\Form\Transformer\TransformerInterface
 {
+	const CONTEXT_HTML = 'html';
+	const CONTEXT_TEXT = 'text';
+	
 	/**
 	 * The form field definition
 	 * @var Application\CoreBundle\Entity\FormField
@@ -31,7 +34,7 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 
 	public function __construct(Entity\FormField $fielddef = null)
 	{
-		$this->fielddef = $form_field;
+		$this->fielddef = $fielddef;
 	}
 
 
@@ -49,9 +52,9 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 	
 
 	/**
-	 * Transforms data stored into form data
+	 * Transforms stored data to data the form controls can use
 	 *
-	 * @param  mixed $value     The user input
+	 * @param  mixed $value     The stored data
 	 * @return mixed
 	 */
 	public function transformStoredToForm($value)
@@ -62,13 +65,21 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 
 
 	/**
-	 * Transforms data stored into data we can put into a form.
+	 * Transforms form data into data we can store.
 	 *
-	 * @param  mixed $value     The stored data
-	 * @return mixed            The original form data
+	 * If null, it signifies no value. Sometimes empty values can be significant,
+	 * in which case the we'd still store an "empty" value in the database.
+	 * But if you return null, no such record will be stored at all.
+	 *
+	 * @param  mixed $value     The form data
+	 * @return mixed            The data we can store
 	 */
 	public function transformFormToStored($value)
 	{
+		if (!$value) {
+			return null;
+		}
+
 		return array('value' => $value);
 	}
 
@@ -90,4 +101,32 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 	 * Render the field
 	 */
 	abstract public function renderText(Entity\FormFieldData $form_field_data = null);
+
+
+	
+	/**
+	 * Render a field in a given context. This is just a strategy for calling other renderX
+	 * methods.
+	 *
+	 * @param string $context
+	 * @param Entity\FormFieldData $form_field_data
+	 * @return mixed
+	 */
+	public function renderContext($context, Entity\FormFieldData $form_field_data = null)
+	{
+		switch ($context) {
+			case self::CONTEXT_HTML:
+				$method = 'renderHtml';
+				break;
+
+			case self::CONTEXT_TEXT:
+				$method = 'renderText';
+				break;
+
+			default:
+				throw new \InvalidArgumentException("Unknow context `$context`");
+		}
+
+		return $this->$method($form_field_data);
+	}
 }

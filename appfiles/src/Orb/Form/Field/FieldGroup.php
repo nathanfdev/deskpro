@@ -210,7 +210,7 @@ class FieldGroup extends Field implements \IteratorAggregate, \Countable, \Array
 	public function getField($name)
 	{
 		if (!isset($this->fields[$name])) {
-			return \OutOfBoundsException('No field with name `' . $name . '`');
+			throw new \OutOfBoundsException('No field with name `' . $name . '`');
 		}
 		
 		return $this->fields[$name];

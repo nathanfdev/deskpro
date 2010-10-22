@@ -138,12 +138,12 @@ tech_people:
 
 tech_people_view:
   pattern: /people/:person_id
-  defaults: { _controller: TechBundle:People:view }
+  defaults: { _controller: TechBundle:Person:view }
   requirements: { person_id: "\d+" }
 
 tech_people_ajaxsave:
   pattern: /people/:person_id/ajax-save
-  defaults: { _controller: TechBundle:People:ajaxSave }
+  defaults: { _controller: TechBundle:Person:ajaxSave }
   requirements: { person_id: "\d+" }
 
 

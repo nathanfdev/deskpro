@@ -32,8 +32,8 @@ class PersonFieldData extends FormFieldData
 	 * The form field this is attached to
 	 *
 	 * @var \Application\CoreBundle\Entity\PersonField
-	 * @OneToOne(targetEntity="PersonField")
-	 * @JoinColumn(name="field_id", referencedColumnName="id")
+	 * @ManyToOne(targetEntity="PersonField")
+	 * @JoinColumn(name="person_field_id", referencedColumnName="id")
 	 */
 	protected $field = null;
 
@@ -49,7 +49,7 @@ class PersonFieldData extends FormFieldData
 	 * The form field this is attached to
 	 *
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @OneToOne(targetEntity="Person")
+	 * @ManyToOne(targetEntity="Person")
 	 * @JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;

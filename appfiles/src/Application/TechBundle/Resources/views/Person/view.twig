@@ -45,6 +45,15 @@ $(document).ready(function() {
 						{{person.nick_name}}
 					</td>
 				</tr>
+
+				{% for info in custom_fields %}
+					<tr class="even">
+						<td>{{info.field_def.title}}</td>
+						<td class="editable row-trigger" data-editable-for="edit_{{info.form_field.getFormId()}}">
+							{{info.rendered_value}}
+						</td>
+					</tr>
+				{% endfor %}
 			</table>
 		</div>
 	</div>
@@ -61,6 +70,11 @@ $(document).ready(function() {
 	<div id="edit_basic_fields_nick_name">
 		{{form.findField('basic_fields.nick_name').render()|raw}}
 	</div>
+	{% for info in custom_fields %}
+		<div id="edit_{{info.form_field.getFormId()}}">
+			{{info.form_field.render()|raw}}
+		</div>
+	{% endfor %}
 </div>
 
 {% endblock %}
