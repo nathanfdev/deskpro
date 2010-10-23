@@ -73,55 +73,40 @@ class UsersourcesController extends AbstractController
 		} else {
 			$usersource = new \Application\CoreBundle\Entity\Usersource();
 
-			if (!$this->in->getString('typename')) {
+			if (!$this->in->getString('usersource.handler_class')) {
 				return $this->render('TechBundle:Usersources:edit-choosetype');
 			}
 
-			$usersource['typename'] = $this->in->getString('typename');
+			$usersource['handler_class'] = $this->in->getString('usersource.handler_class');
 		}
 
-		if (!in_array($usersource['typename'], $this->getUsersourceTypes())) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("The typename chosen is invalid");
-		}
+		$renderer = new \Orb\Form\Renderer\Basic();
+		$form = new \Application\TechBundle\Form\EditUsersource(array(
+			'name' => 'usersource',
+			'renderer' => $renderer,
+			'event_dispatcher' => $this['event_dispatcher'],
+			'usersource' => $usersource
+		));
 
-		$classname = $usersource['typename'];
-		$classname = ucfirst($classname);
-		$classname = 'DeskPRO\\Usersource\\Setup\\' . $classname;
-
-		$setup = new $classname($this);
-		if ($usersource['id']) {
-			$setup->setExistingUsersource($usersource);
-		}
+		$admin_handler = \Application\TechBundle\Usersource\AdminHandler\Factory::createUsersource($usersource);
+		$form->addField($admin_handler->buildFormGroup());
 
 		if ($this->isPostRequest()) {
-
-			$fields = array('title', 'description', 'url', 'note');
-			foreach ($fields as $f) {
-				$usersource[$f] = $this->in->getString('usersource.'.$f);
-			}
-
-			if ($setup->setFormData($this->in->getArrayValue('form_data'))) {
-
-				$this->em->beginTransaction();
-
-				$usersource['adapter_class']   = $setup->getAdapterClass();
-				$usersource['adapter_options'] = $setup->getAdapterOptions();
-				$this->em->persist($usersource);
-
-				$setup->setupRemoteResources($usersource);
-				$this->em->persist($usersource);
-				$this->em->flush();
-
-				$this->em->commit();
-
-				return $this->redirect($this->generateUrl('tech_admin_usersources_info', array('usersource_id' => $usersource['id'])));
+			$form->setFormData($_POST);
+			if ($form->isValid()) {
+				$admin_handler->saveUsersource($form);
+				$this->redirectRoute('tech_admin_usersources_info', array('usersource_id' => $usersource['id']));
+			} else {
+				// TODO proper handling
+				print_r($form->getErrors());
 			}
 		}
-
-		$this->tplvars['usersource'] = $usersource;
-		$this->tplvars['usersource_form'] = $setup->renderForm();
-
-		return $this->render('TechBundle:Usersources:edit');
+		
+		return $this->render('TechBundle:Usersources:edit', array(
+			'usersource' => $usersource,
+			'form' => $form,
+			'rendered_type_form' => $admin_handler->renderFormPartial($this, $form)
+		));
 	}
 
 	
@@ -158,12 +143,5 @@ class UsersourcesController extends AbstractController
 		}
 
 		return $usersource;
-	}
-
-	protected function getUsersourceTypes()
-	{
-		return array(
-			'twitter',
-		);
 	}
 }

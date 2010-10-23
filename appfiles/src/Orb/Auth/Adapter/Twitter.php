@@ -68,7 +68,7 @@ class Twitter extends AbstractCallbackAdatper
 
 		$client = $access_token->getHttpClient($this->getOauthConfig());
 		$client->setUri('http://api.twitter.com/version/account/verify_credentials.json');
-		$client->setMethod(Zend_Http_Client::POST);
+		$client->setMethod(\Zend_Http_Client::POST);
 		$response = $client->request();
 
 		$account_data = json_decode($response->getBody(), true);
@@ -97,7 +97,7 @@ class Twitter extends AbstractCallbackAdatper
 	 */
 	public function getOauthConsumer()
 	{
-		return new Zend_OAuth_Consumer($this->getOauthConfig());
+		return new \Zend_OAuth_Consumer($this->getOauthConfig());
 	}
 
 	public function getOauthConfig()
@@ -107,7 +107,7 @@ class Twitter extends AbstractCallbackAdatper
 			'siteUrl' => 'http://api.twitter.com/oauth',
 			'consumerKey' => $this->consumer_key,
 			'consumerSecret' => $this->consumer_secret,
-			'requestScheme' => Zend_OAuth::REQUEST_SCHEME_HEADER,
+			'requestScheme' => \Zend_OAuth::REQUEST_SCHEME_HEADER,
 			'signatureMethod' => 'HMAC-SHA1',
 		);
 	}

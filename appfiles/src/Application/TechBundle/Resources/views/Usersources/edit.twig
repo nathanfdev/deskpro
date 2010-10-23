@@ -1,12 +1,10 @@
 {% extends 'TechBundle::layout' %}
 {% block content %}
 
-{% if usersource.id %}
-	<form action="{% route 'tech_admin_usersources_edit' with ['usersource_id':usersource.id] %}" class="form" method="post">
-{% else %}
-	<form action="{% route 'tech_admin_usersources_new' %}" class="form" method="post">
-	<input type="hidden" name="typename" value="{{usersource.typename}}" />
-{% endif %}
+{% set form_url %}{% route 'tech_admin_usersources_edit' with ['usersource_id':usersource.id|default(0)] %}{% endset %}
+
+{{form.renderFormTag(['action': form_url, 'method':'POST'])|raw}}
+{{form.renderHiddenTags()|raw}}
 
 <div class="block" id="block-tables">
 	<div class="content">
@@ -15,32 +13,18 @@
 			<table class="table">
 				<tr class="even">
 					<td>Type</td>
-					<td>{{usersource.typename}}</td>
+					<td>{{usersource.handler_class}}</td>
 				</tr>
 				<tr>
 					<td>Title</td>
-					<td><input type="text" name="usersource[title]" value="{{usersource.title}}" size="40" /></td>
-				</tr>
-				<tr>
-					<td>Description</td>
-					<td><input type="text" name="usersource[description]" value="{{usersource.description}}" size="40" /></td>
-				</tr>
-				<tr>
-					<td>URL</td>
-					<td><input type="text" name="usersource[url]" value="{{usersource.url}}" size="40" /></td>
-				</tr>
-				<tr>
-					<td>Admin Note</td>
-					<td><input type="text" name="usersource[note]" value="{{usersource.note}}" size="40" /></td>
+					<td><input type="text" name="usersource[basic_properties][title]" value="{{usersource.title}}" size="40" /></td>
 				</tr>
 			</table>
 		</div>
 	</div>
 </div>
 
-{% autoescape off %}
-{{usersource_form}}
-{% endautoescape %}
+{{rendered_type_form|raw}}
 
 <div class="block">
 	<div class="content">

@@ -8,20 +8,26 @@
 			<form action="#" class="form">
 				<table class="table">
 					<tr>
-						<td>Typename</td>
-						<td>{{usersource.typename}}</td>
+						<td>Type</td>
+						<td>{{usersource.handler_class}}</td>
 					</tr>
 					<tr>
 						<td>Title</td>
 						<td>{{usersource.title}}</td>
 					</tr>
 					<tr>
-						<td>Adapter Class</td>
-						<td>{{usersource.adapter_class}}</td>
-					</tr>
-					<tr>
 						<td>Is Enabled</td>
 						<td>{% if usersource.is_enabled %}Yes{%else%}No{%endif%}</td>
+					</tr>
+					<tr>
+						<td>Options</td>
+						<td>
+							<textarea style="width: 95%; height: 200px;">
+{% for k, v in usersource.options %}
+{{k}}: {{v}}
+{% endfor %}
+</textarea>
+						</td>
 					</tr>
 				</table>
 			</form>

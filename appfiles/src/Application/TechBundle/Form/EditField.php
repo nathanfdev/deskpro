@@ -31,12 +31,6 @@ class EditField extends \Orb\Form\Field\Form
 
 		$f_group_props = new \Orb\Form\Field\FieldGroup(array('name' => 'field_properties'));
 
-		// Typename
-		if (!$this->formfield['id']) {
-			$f = new \Orb\Form\Field\Hidden(array('name' => 'typeclass'));
-			$f_group_props->addField($f);
-		}
-
 		// Title
 		$f = new \Orb\Form\Field\Hidden(array('name' => 'title'));
 		$f_group_props->addField($f);
