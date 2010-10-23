@@ -11,6 +11,8 @@
 
 namespace DeskPRO\Auth;
 
+use \DeskPRO\App;
+
 use \Orb\Util\Arrays;
 use \Orb\Auth\Identity;
 
@@ -99,7 +101,7 @@ class LoginProcessor
 		$em->beginTransaction();
 
 		$this->assoc = $assoc_repos->getIdentityAssociation(
-			$this->id,
+			$this->usersource['id'],
 			$this->identity->getIdentity()
 		);
 
@@ -122,6 +124,7 @@ class LoginProcessor
 			}
 
 			$em->persist($this->person);
+			$em->flush();
 
 			// New assoc
 			$this->assoc = new PersonUsersourceAssoc();
@@ -130,14 +133,19 @@ class LoginProcessor
 			$this->assoc['identity']          = $this->identity->getIdentity();
 			$this->assoc['identity_friendly'] = $this->identity->getFriendlyIdentity();
 			$this->assoc['data']              = $this->identity->getRawData();
+			$em->persist($this->assoc);
+			$em->flush();
 
 			// New scraper assoc
 			if ($person_data) {
+
+				/* TODO person_data is combined with data from the source, so we cant do it
 				$scraper_assoc = new PersonScraperAssoc();
 				$scraper_assoc['person']            = $this->person;
 				$scraper_assoc['scraper']           = $this->person_scraper;
 				$scraper_assoc['identity']          = $this->identity->getIdentity();
 				$scraper_assoc['data']              = $scraped_data;
+				*/
 
 				// TODO move this out into some applicator class
 				foreach ($person_data['standard_fields'] as $k => $v) {
@@ -152,17 +160,17 @@ class LoginProcessor
 				}
 
 			}
+		} else {
+			$this->person = $this->assoc['person'];
 		}
 
 		// TODO
 		// Good time to apply "user rules", or post-registration rules.
 		// For now, just add new users to the correct Registered usergroup
 		if ($this->is_new_person) {
-			$usergroup = $this->em->find('CoreBundle:Usergroup', 4);
-			$person->addUsergroup($usergroup);
+			$usergroup = $em->find('CoreBundle:Usergroup', 4);
+			$this->person->addUsergroup($usergroup);
 		}
-
-		
 
 		$this->person['is_user'] = true;
 		$this->person->setLastLoginAt();
@@ -171,7 +179,6 @@ class LoginProcessor
 		$em->persist($this->person);
 		$em->persist($this->assoc);
 		$em->flush();
-
 		$em->commit();
 
 		return $this->person;

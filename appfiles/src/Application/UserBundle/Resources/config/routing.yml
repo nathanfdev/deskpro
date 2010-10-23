@@ -11,8 +11,9 @@ user_logout:
   defaults: { _controller: UserBundle:Login:logout }
 
 user_login_authenticate:
-  pattern: /login/authenticate
-  defaults: { _controller: UserBundle:Login:authenticate }
+  pattern: /login/authenticate/:usersource_id
+  defaults: { _controller: UserBundle:Login:authenticate, usersource_id: 0 }
+  requirements: { usersource_id: "\d+" }
 
 user_login_callback:
   pattern: /login/authenticate-callback/:usersource_id

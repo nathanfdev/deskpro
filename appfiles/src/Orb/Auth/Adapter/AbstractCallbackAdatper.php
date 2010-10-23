@@ -87,7 +87,7 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 	 */
 	public function isCallbackMode()
 	{
-		return $this->callback_data === null;
+		return $this->callback_data !== null;
 	}
 
 
@@ -102,7 +102,6 @@ abstract class AbstractCallbackAdatper implements AdapterInterface, SessionState
 		if ($this->isCallbackMode()) {
 			return $this->authenticateCallback($this->callback_data, $this->getStateHandler());
 		} else {
-			$this->getStateHandler()->clearState();
 			return $this->authenticateInitialize($this->getStateHandler());
 		}
 	}

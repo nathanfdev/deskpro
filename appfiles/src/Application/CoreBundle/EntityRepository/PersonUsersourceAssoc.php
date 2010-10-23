@@ -32,7 +32,7 @@ class PersonUsersourceAssoc extends EntityRepository
 				SELECT f, p
 				FROM CoreBundle:PersonUsersourceAssoc f
 				LEFT JOIN f.person p
-				WHERE f.usersource_id = ? AND f.identity = ?
+				WHERE f.usersource_id = ?1 AND f.identity = ?2
 			")->setParameter(1, $usersource_id)->setParameter(2, $identity)->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {
 			return null;

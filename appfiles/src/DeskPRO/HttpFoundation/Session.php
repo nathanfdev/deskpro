@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\CoreBundle\HttpFoundation;
+namespace DeskPRO\HttpFoundation;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -19,7 +19,7 @@ use \DeskPRO\App;
 /**
  * Session is able to load up a user, their locale etc.
  */
-class Session extends \Symfony\Component\HttpFoundation\Session
+class Session extends \Symfony\Component\HttpFoundation\Session implements \ArrayAccess, \IteratorAggregate
 {
 	/**
 	 * The person this session belongs to
@@ -100,5 +100,38 @@ class Session extends \Symfony\Component\HttpFoundation\Session
 		} else {
 			$this->language = 0;
 		}
+	}
+
+
+	public function clear()
+	{
+		//$this->attributes = array('_flash' => $this->attributes['_flash'], '_locale' => $this->attributes['_locale']);
+	}
+
+
+
+	public function getIterator()
+	{
+		return \ArrayIterator($this->attributes);
+	}
+
+	public function offsetUnset($offset)
+	{
+		$this->remove($offset);
+	}
+
+	public function offsetSet($offset, $value)
+	{
+		$this->set($offset, $value);
+	}
+
+	public function offsetGet($offset)
+	{
+		return $this->get($offset);
+	}
+
+	public function offsetExists($offset)
+	{
+		return $this->has($offset);
 	}
 }

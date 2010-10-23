@@ -14,11 +14,11 @@ namespace Application\CoreBundle\Entity;
 /**
  * This tracks associations between a user and a usersource.
  *
- * @Entity
+ * @Entity(repositoryClass="Application\CoreBundle\EntityRepository\PersonUsersourceAssoc")
  * @HasLifecycleCallbacks
  * @Table(name="person_usersource_assoc")
  */
-class PersonUsersourceAssoc
+class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -30,6 +30,13 @@ class PersonUsersourceAssoc
 	protected $id;
 
 	/**
+	 * The usersource ID
+	 * @var int
+	 * @Column(name="person_id", type="integer")
+	 */
+	protected $person_id;
+
+	/**
 	 * @var Application\CoreBundle\Entity\Person
 	 * @ManyToOne(targetEntity="Person", inversedBy="emails")
 	 * @JoinColumn(name="person_id", referencedColumnName="id")
@@ -39,9 +46,9 @@ class PersonUsersourceAssoc
 	/**
 	 * The usersource ID
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @Column(name="usersource_id", type="integer")
 	 */
-	protected $person_id = null;
+	protected $usersource_id;
 
 	/**
 	 * The usersource that this scraper is attached to
@@ -51,13 +58,6 @@ class PersonUsersourceAssoc
 	 * @JoinColumn(name="usersource_id", referencedColumnName="id")
 	 */
 	protected $usersource;
-
-	/**
-	 * The usersource ID
-	 * @var int
-	 * @Column(name="usersource_id", type="integer")
-	 */
-	protected $usersource_id;
 
 	/**
 	 * The remote users unique ID. This should not change, so it's smart if this is a system
@@ -126,5 +126,6 @@ class PersonUsersourceAssoc
 		if (!$this->created_at) {
 			$this->created_at = new \DateTime();
 		}
+		$this->setLastUsedAt();
 	}
 }

@@ -5,7 +5,7 @@ parameters:
     controller_resolver.class: "DeskPRO\HttpKernel\Controller\ControllerResolver"
 
 kernel.session:
-  class: "Application\CoreBundle\HttpFoundation\Session"
+  class: "DeskPRO\HttpFoundation\Session"
 
 kernel.config:
   error_handler_level: null

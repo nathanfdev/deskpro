@@ -26,7 +26,7 @@ class Twitter extends AbstractCallbackAdatper
 	public function __construct($consumer_key, $consumer_secret)
 	{
 		$this->consumer_key = $consumer_key;
-		$this->consumer_secret = $consumer_key;
+		$this->consumer_secret = $consumer_secret;
 	}
 
 
@@ -38,7 +38,13 @@ class Twitter extends AbstractCallbackAdatper
 	protected function authenticateInitialize(StateHandlerInterface $state)
 	{
 		$oauth = $this->getOauthConsumer();
-		$token = $oauth->getRequestToken();
+
+		try {
+			$token = $oauth->getRequestToken();
+		} catch (\Zend_Oauth_Exception $e) {
+			$result = new Result(Result::FAILURE_EXCEPTION, null, array(Result::MSG_EXCEPTION => $e));
+			return $result;
+		}
 
 		$state['orb_oauth_twitter_rtoken'] = $token;
 
@@ -67,25 +73,29 @@ class Twitter extends AbstractCallbackAdatper
 		unset($state['orb_oauth_twitter_rtoken']);
 
 		$client = $access_token->getHttpClient($this->getOauthConfig());
-		$client->setUri('http://api.twitter.com/version/account/verify_credentials.json');
-		$client->setMethod(\Zend_Http_Client::POST);
+		$client->setUri('http://api.twitter.com/account/verify_credentials.json');
+		$client->setMethod(\Zend_Http_Client::GET);
 		$response = $client->request();
 
-		$account_data = json_decode($response->getBody(), true);
+		$account_data = @json_decode($response->getBody(), true);
+
+		if (!$account_data OR !isset($account_data['id'])) {
+			return new Result(Result::FAILURE, null, array('error_code' => 'failed_verify_credentials', 'error_message' => 'Failed to call API service to verify credentials'));
+		}
 
 		$raw_userinfo = array(
 			'access_token' => $access_token->getToken(),
 			'access_token_secret' => $access_token->getTokenSecret(),
 			'identity' => $account_data['id'],
-			'identity_friendly' => $access_token['screen_name'],
+			'identity_friendly' => $account_data['screen_name'],
 			'fullname' => $account_data['name'],
 			'url' => $account_data['url'],
-			'nickname' => $access_token['screen_name'],
+			'nickname' => $account_data['screen_name'],
 			'raw' => $account_data,
 		);
 
 		$identity = new \Orb\Auth\Identity($account_data['id'], $raw_userinfo);
-		$identity->setFriendlyIdentity($access_token['screen_name']);
+		$identity->setFriendlyIdentity($account_data['screen_name']);
 		
 		$result = new Result(Result::SUCCESS, $identity);
 
@@ -107,8 +117,6 @@ class Twitter extends AbstractCallbackAdatper
 			'siteUrl' => 'http://api.twitter.com/oauth',
 			'consumerKey' => $this->consumer_key,
 			'consumerSecret' => $this->consumer_secret,
-			'requestScheme' => \Zend_OAuth::REQUEST_SCHEME_HEADER,
-			'signatureMethod' => 'HMAC-SHA1',
 		);
 	}
 

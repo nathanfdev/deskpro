@@ -44,22 +44,38 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 		foreach ($usersources as $usersource) {
 			$parts = explode('\\', $usersource['handler_class']);
-			$tpl_name = 'UserBundle::Login:_usersource_form_' . strtolower(array_pop($parts));
+			$tpl_name = 'UserBundle:Login:login-form-' . strtolower(array_pop($parts));
 
-			$this->forms[$usersource['id']] = $this->tpl->render($tpl_name, array('usersource' => $usersource));
+			$forms[] = array(
+				'usersource' => $usersource,
+				'html' => $this->tpl->render($tpl_name, array('usersource' => $usersource))
+			);
 		}
 
 		return $forms;
 	}
 
+
+	
+	############################################################################
+	# /logout
+	############################################################################
+
+	public function logoutAction()
+	{
+		$this->session->setAttributes(array());
+		
+		return $this->redirectRoute('user_login');
+	}
+
+
+
 	############################################################################
 	# /login/authenticate
 	############################################################################
 
-	public function authenticateAction()
+	public function authenticateAction($usersource_id)
 	{
-		$usersource_id = $this->in->getUint('usersource_id');
-
 		if ($usersource_id) {
 			return $this->_processUsersourceLogin($usersource_id);
 		} else {
@@ -92,9 +108,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		# Callback types require us to redirect
 		#------------------------------
 
-		if ($adapter instanceof Orb\Auth\Adapter\CallbackInterface) {
-			$adapter->setCallbackUrl($this->generateUrl('user_login_callback', array('usersource_id' => $usersource_id), true));
-
+		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$result = $adapter->authenticate();
 
 			// We expect a redirect to be rquired
@@ -142,7 +156,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		$adapter = $this->_initUserSourceAdapter($usersource);
 
 		// It must be a callback type to be here, so if not redirect back to login
-		if (!($adapter instanceof Orb\Auth\Adapter\CallbackInterface)) {
+		if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
 			return $this->redirect($this['router']->generate('user_login', array()));
 		}
 
@@ -161,6 +175,8 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 		// Error, go back to login
 		} else {
+			print_r($_REQUEST);
+			die('err');
 			return $this->redirect($this['router']->generate('user_login', array()));
 		}
 	}
@@ -172,13 +188,17 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	{
 		$adapter = $usersource->getHandler()->getAuthAdapter();
 
-		if ($adapter instanceof Orb\Auth\Adapter\SessionStateInterface) {
-			$auth_session = $this->session->createNamespace('user_auth_state');
-
-			$auth_state = new Orb\Auth\StateHandler\ArrayAccessWrapper($auth_session);
-			$auth_state->setClearStateMethod('clearAllData');
-
-			$adapter->setStateHandler($auth_session);
+		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
+			$adapter->setCallbackUrl($this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), true));
 		}
+
+		if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
+			$auth_state = new \Orb\Auth\StateHandler\ArrayAccessWrapper($this->session);
+			$auth_state->setClearStateMethod('clear');
+
+			$adapter->setStateHandler($auth_state);
+		}
+
+		return $adapter;
 	}
 }
