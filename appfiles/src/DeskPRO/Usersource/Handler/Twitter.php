@@ -39,8 +39,8 @@ class Twitter extends AbstractHandler
 		);
 
 		foreach ($keymap as $findkey => $personkey) {
-			if (isset($misc_data[$findkey])) {
-				$person_data['standard_fields'][$personkey] = $misc_data[$findkey];
+			if (isset($raw_userinfo[$findkey])) {
+				$person_data['standard_fields'][$personkey] = $raw_userinfo[$findkey];
 			}
 		}
 
@@ -51,6 +51,15 @@ class Twitter extends AbstractHandler
 			$value = $field->getHandler()->transformFormToStored($raw_userinfo['nickname']);
 
 			$person_data['fields'][$twitter_field_id] = $value;
+		}
+
+		$website_field_id = App::getSetting('core.website_field_id');
+		if ($website_field_id AND !empty($raw_userinfo['url'])) {
+			$em = App::getOrm();
+			$field = $em->find('CoreBundle:PersonField', $website_field_id);
+			$value = $field->getHandler()->transformFormToStored($raw_userinfo['url']);
+
+			$person_data['fields'][$website_field_id] = $value;
 		}
 
 		return $person_data;
