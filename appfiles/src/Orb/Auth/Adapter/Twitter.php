@@ -107,7 +107,7 @@ class Twitter extends AbstractCallbackAdatper
 	 */
 	public function getOauthConsumer()
 	{
-		return new \Zend_OAuth_Consumer($this->getOauthConfig());
+		return new \Zend_Oauth_Consumer($this->getOauthConfig());
 	}
 
 	public function getOauthConfig()
