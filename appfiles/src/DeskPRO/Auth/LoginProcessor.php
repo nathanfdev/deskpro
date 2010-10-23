@@ -18,6 +18,7 @@ use \Orb\Auth\Identity;
 
 use \Application\CoreBundle\Entity\Person;
 use \Application\CoreBundle\Entity\PersonEmail;
+use \Application\CoreBundle\Entity\PersonFieldData;
 use \Application\CoreBundle\Entity\PersonScraper;
 use \Application\CoreBundle\Entity\PersonScraperAssoc;
 use \Application\CoreBundle\Entity\PersonUsersourceAssoc;
@@ -86,8 +87,7 @@ class LoginProcessor
 		}
 
 		// We might also have data passed along with this login
-		Arrays::mergeDeep($person_data, $this->usersource->getHandler()->getPersonData($this->identity->getRawData()));
-		$person_data = Arrays::uniqueDeep($person_data);
+		$person_data = $this->usersource->getHandler()->getPersonData($this->identity->getRawData());
 
 
 		#------------------------------
@@ -147,28 +147,51 @@ class LoginProcessor
 				$scraper_assoc['data']              = $scraped_data;
 				*/
 
-				// TODO move this out into some applicator class
-				foreach ($person_data['standard_fields'] as $k => $v) {
-					$this->person[$k] = $v;
-				}
-				foreach ($person_data['emails'] as $e) {
-					$email = new PersonEmail();
-					$email['email'] = $e;
-					$email['is_validated'] = true;
-					$this->person->addEmailAddress($email);
-					$em->persist($email);
-				}
-
 			}
 		} else {
 			$this->person = $this->assoc['person'];
+		}
+
+		// TODO move this out into some applicator class
+		if (!empty($person_data['standard_fields'])) {
+			foreach ($person_data['standard_fields'] as $k => $v) {
+				if (!$this->person[$k]) {
+					$this->person[$k] = $v;
+				}
+			}
+		}
+
+		if (!empty($person_data['emails'])) {
+			foreach ($person_data['emails'] as $e) {
+				$email = new PersonEmail();
+				$email['email'] = $e;
+				$email['is_validated'] = true;
+				$this->person->addEmailAddress($email);
+				$em->persist($email);
+			}
+		}
+
+		if (!empty($person_data['fields'])) {
+			foreach ($person_data['fields'] as $field_id => $data) {
+				$field_def = $em->find('CoreBundle:PersonField', $field_id);
+				$field_data = $this->person->getField($field_def['id']);
+
+				if (!$field_data) {
+					$field_data = new PersonFieldData();
+					$field_data['field'] = $field_def;
+					$this->person->addFieldData($field_data);
+				}
+
+				$field_data['data'] = $data;
+				$em->persist($field_data);
+			}
 		}
 
 		// TODO
 		// Good time to apply "user rules", or post-registration rules.
 		// For now, just add new users to the correct Registered usergroup
 		if ($this->is_new_person) {
-			$usergroup = $em->find('CoreBundle:Usergroup', 4);
+			$usergroup = $em->find('CoreBundle:Usergroup', 4); // TODO this is an admin group for now for testing
 			$this->person->addUsergroup($usergroup);
 		}
 

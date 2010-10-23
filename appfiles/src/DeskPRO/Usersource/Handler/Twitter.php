@@ -10,6 +10,8 @@
 
 namespace DeskPRO\Usersource\Handler;
 
+use \DeskPRO\App;
+
 use Application\CoreBundle\Entity\Usersource;
 
 /**
@@ -28,6 +30,7 @@ class Twitter extends AbstractHandler
 	{
 		$person_data = array(
 			'standard_fields' => array(),
+			'fields' => array(),
 		);
 
 		$keymap = array(
@@ -39,6 +42,15 @@ class Twitter extends AbstractHandler
 			if (isset($misc_data[$findkey])) {
 				$person_data['standard_fields'][$personkey] = $misc_data[$findkey];
 			}
+		}
+
+		$twitter_field_id = App::getSetting('core.twitter_field_id');
+		if ($twitter_field_id) {
+			$em = App::getOrm();
+			$field = $em->find('CoreBundle:PersonField', $twitter_field_id);
+			$value = $field->getHandler()->transformFormToStored($raw_userinfo['nickname']);
+
+			$person_data['fields'][$twitter_field_id] = $value;
 		}
 
 		return $person_data;
