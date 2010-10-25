@@ -188,6 +188,10 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	{
 		$adapter = $usersource->getHandler()->getAuthAdapter();
 
+		if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
+			$adapter->setFormData($_POST);
+		}
+
 		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
 			$adapter->setCallbackUrl($this->generateUrl('user_login_callback', array('usersource_id' => $usersource['id']), true));
 		}

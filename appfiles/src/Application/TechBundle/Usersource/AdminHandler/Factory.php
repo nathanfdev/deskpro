@@ -32,6 +32,10 @@ class Factory
 			case 'DeskPRO\\Usersource\\Handler\\Twitter':
 				$handler = new \Application\TechBundle\Usersource\AdminHandler\Twitter($usersource);
 				break;
+
+			case 'DeskPRO\\Usersource\\Handler\\OpenId':
+				$handler = new \Application\TechBundle\Usersource\AdminHandler\OpenId($usersource);
+				break;
 		}
 		
 		if (!$handler) {
