@@ -1,6 +1,7 @@
 <?php
 
 require_once DP_ROOT.'/vendor/symfony/src/Symfony/Framework/UniversalClassLoader.php';
+require_once DP_ROOT.'/Orb/Util/ClassLaoder.php';
 
 set_include_path(
 	DP_ROOT.'/vendor/zend1/library'
@@ -8,7 +9,8 @@ set_include_path(
 	DP_ROOT.'/vendor/zend/library'
 );
 
-$loader = new Symfony\Framework\UniversalClassLoader();
+$loader = new \Orb\Util\ClassLoader();
+
 $loader->registerNamespaces(array(
 	'DeskPRO'                    => DP_ROOT.'/src',
 	'Application'                => DP_ROOT.'/src',
@@ -22,10 +24,18 @@ $loader->registerNamespaces(array(
     'Doctrine'                   => DP_ROOT.'/vendor/doctrine-orm/lib',
     'Zend'                       => DP_ROOT.'/vendor/zend/library',
 ));
+
 $loader->registerPrefixes(array(
     'Swift_'      => DP_ROOT.'/vendor/swiftmailer/lib/classes',
     'Twig_'       => DP_ROOT.'/vendor/twig/lib',
 	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes',
 	'Zend_'       => DP_ROOT.'/vendor/zend1/library',
 ));
+
+$loader->registerClassNames(array(
+	'LightOpenID'          => DP_ROOT.'/vendor/lightopenid/openid.php',
+	'Facebook'             => DP_ROOT.'/vendor/facebook/src/facebook.php',
+	'FacebookApiException' => DP_ROOT.'/vendor/facebook/src/facebook.php',
+));
+
 $loader->register();

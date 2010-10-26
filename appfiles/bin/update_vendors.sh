@@ -31,6 +31,9 @@ cd $CURRENT/zend && git pull
 # Pheanstalk
 cd $CURRENT/pheanstalk && git pull
 
+# Facebook
+cd $CURRENT/facebook && git pull
+
 # ZF1
 cd $CURRENT
 rm -rf zend1

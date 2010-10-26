@@ -36,6 +36,9 @@ git submodule add git://github.com/zendframework/zf2.git appfiles/vendor/zend
 # Pheanstalk
 git submodule add git://github.com/pda/pheanstalk.git appfiles/vendor/pheanstalk
 
+# Facebook
+git submodule add http://github.com/facebook/php-sdk.git appfiles/vendor/facebook
+
 # ZF1
 cd appfiles/vendor
 mkdir zend1

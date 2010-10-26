@@ -25,3 +25,6 @@
 [submodule "appfiles/vendor/pheanstalk"]
 	path = appfiles/vendor/pheanstalk
 	url = git://github.com/pda/pheanstalk.git
+[submodule "appfiles/vendor/facebook"]
+	path = appfiles/vendor/facebook
+	url = http://github.com/facebook/php-sdk.git
