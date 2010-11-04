@@ -1,7 +1,7 @@
 <?php
 
 require_once DP_ROOT.'/vendor/symfony/src/Symfony/Framework/UniversalClassLoader.php';
-require_once DP_ROOT.'/Orb/Util/ClassLaoder.php';
+require_once DP_ROOT.'/src/Orb/Util/ClassLoader.php';
 
 set_include_path(
 	DP_ROOT.'/vendor/zend1/library'
