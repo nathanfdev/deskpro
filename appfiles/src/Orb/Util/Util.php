@@ -389,4 +389,32 @@ class Util
 
 		return true;
 	}
+
+
+
+	/**
+	 * Get all the parts of a classname (i.e., split up by namespace).
+	 *
+	 * @param object $obj
+	 * @return array
+	 */
+	public static function getClassnameParts($obj)
+	{
+		return explode('\\', get_class($obj));
+	}
+
+	
+
+	/**
+	 * Get the base name of a class. That is, the classname itself without the full
+	 * namespace path.
+	 * 
+	 * @param obj $obj
+	 * @return string
+	 */
+	public static function getBaseClassname($obj)
+	{
+		$parts = self::getClassnameParts($obj);
+		return array_pop($parts);
+	}
 }
