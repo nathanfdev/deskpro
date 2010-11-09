@@ -24,6 +24,10 @@ class DatatestBuildSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 		unset($super_params['dbname']);
 		$super_db = \Doctrine\DBAL\DriverManager::getConnection($super_params);
 
+		#------------------------------
+		# Basic
+		#------------------------------
+
 		// Drop if not exist
 		$output->write('Drop database if exists ... ');
 		$super_db->executeQuery("DROP DATABASE IF EXISTS dp_test_basic");
@@ -43,5 +47,30 @@ class DatatestBuildSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 		$basic->buildSchema($basic_db, $output);
 
 		$basic->run($basic_db, $output);
+
+		#------------------------------
+		# Denormalized
+		#------------------------------
+
+		// Drop if not exist
+		$output->write('Drop database if exists ... ');
+		$super_db->executeQuery("DROP DATABASE IF EXISTS dp_test_denormalized");
+		$output->write("Done\n");
+
+		// Create database
+		$output->write('Create database ... ');
+		$super_db->executeQuery("CREATE DATABASE dp_test_denormalized");
+		$output->write("Done\n");
+
+		$denormalized_db_params = $super_params;
+		$denormalized_db_params['dbname'] = 'dp_test_denormalized';
+		$denormalized_db = \Doctrine\DBAL\DriverManager::getConnection($denormalized_db_params);
+
+		$dataset = new \Application\DevBundle\DataTest\DataSet\Basic();
+		$denormalized = new \Application\DevBundle\DataTest\Generator\Denormalized($dataset);
+		$denormalized->buildSchema($denormalized_db, $output);
+
+		$denormalized->run($denormalized_db, $output);
+
 	}
 }

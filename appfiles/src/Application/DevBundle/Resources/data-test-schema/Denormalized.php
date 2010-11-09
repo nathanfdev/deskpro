@@ -1,6 +1,7 @@
 <?php
 
 $queries = array();
+
 $queries[] = "CREATE TABLE `people` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `language_id` int(11) DEFAULT NULL,
@@ -51,7 +52,7 @@ $queries[] = "CREATE TABLE `person_emails` (
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
 
-$queries[] = "CREATE TABLE `tickets` (
+$queries[] = "CREATE TABLE `tickets_search` (
   `id` int(11) NOT NULL AUTO_INCREMENT,
   `person_id` int(11) NOT NULL,
   `department_id` int(11) NOT NULL,
@@ -66,6 +67,10 @@ $queries[] = "CREATE TABLE `tickets` (
   `closed_at` datetime DEFAULT NULL,
   `awaiting_user_at` datetime DEFAULT NULL,
   `awaiting_tech_at` datetime DEFAULT NULL,
+  `field_4` int(11) DEFAULT NULL,
+  `field_5` int(11) DEFAULT NULL,
+  `field_6` text,
+  `field_7` text,
   PRIMARY KEY (`id`),
   KEY `person_id` (`person_id`),
   KEY `department_id` (`department_id`),
@@ -76,23 +81,10 @@ $queries[] = "CREATE TABLE `tickets` (
   KEY `sub_status` (`sub_status`),
   KEY `company_id` (`company_id`),
   KEY `opened_at` (`opened_at`),
-  KEY `closed_at` (`closed_at`)
-) ENGINE=InnoDB DEFAULT CHARSET=utf8;";
-
-
-$queries[] = "CREATE TABLE `ticket_field_data` (
-  `id` int(11) NOT NULL AUTO_INCREMENT,
-  `parent_id` int(11) DEFAULT NULL,
-  `field_id` int(11) NOT NULL,
-  `ticket_id` int(11) NOT NULL,
-  `data` text NOT NULL,
-  `value` text NOT NULL,
-  PRIMARY KEY (`id`),
-  KEY `parent_id` (`parent_id`),
-  KEY `field_id` (`field_id`),
-  KEY `ticket_id` (`ticket_id`),
-  KEY `value` (`value`(15))
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8;";
+  KEY `closed_at` (`closed_at`),
+  KEY `field_4` (`field_4`),
+  KEY `field_5` (`field_5`)
+) ENGINE=InnoDB DEFAULT CHARSET=utf8";
 
 
 $queries[] = "CREATE TABLE `ticket_participants` (
@@ -100,3 +92,16 @@ $queries[] = "CREATE TABLE `ticket_participants` (
   `person_id` int(11) NOT NULL,
   PRIMARY KEY (`ticket_id`,`person_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8";
+
+
+$queries[] = "CREATE TABLE `ticket_search_fieldassoc` (
+  `id` int(11) NOT NULL AUTO_INCREMENT,
+  `field_id` int(11) NOT NULL,
+  `ticket_id` int(11) NOT NULL,
+  `value_int` int(11) NOT NULL,
+  PRIMARY KEY (`id`),
+  KEY `field_id_value` (`field_id`,`value_int`),
+  KEY `field_id` (`field_id`),
+  KEY `ticket_id` (`ticket_id`)
+) ENGINE=MyISAM DEFAULT CHARSET=latin1";
+

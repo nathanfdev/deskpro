@@ -74,7 +74,6 @@ class Basic extends AbstractGenerator
 				'informal_name' => mt_rand(0,1) ? '' : Strings::randomPronounceable(mt_rand(2, 8)),
 				'nick_name' => mt_rand(0,1) ? '' : Strings::randomPronounceable(mt_rand(2, 8)),
 				'secret_string' => '',
-				'timezone' => 'UTC',
 				'created_at' => $this->chooseDateFromChanceArray($this->dataset->getStartDate(), 'start_date')->format('Y-m-d H:i:s')
 			);
 
@@ -160,17 +159,32 @@ class Basic extends AbstractGenerator
 			$this->_genTicketsForUser($db, $i, $num_tickets);
 		}
 
+		$output->write("<info>Done adding tickets for every user. Now creating more tickets to meet minimum count of {$this->dataset->getMinNumTickets()}</info>\n");
 		$range = array($this->dataset->getNumTechs()+1, $this->dataset->getNumPeople());
 		while ($count < $this->dataset->getMinNumTickets()) {
 			if (time() - 10 > $last_report_time) {
 				$last_report_time = time();
-				$output->write("[$last_report_time] Processed $count tickets (meeting minimum)\n");
+				$output->write("[$last_report_time] Processed $count tickets\n");
 			}
 
 			$num_tickets = $this->chooseFromChanceArray($this->dataset->getNumTicketsPerPerson(), 'num_tickets');
 			$count += $num_tickets;
 			$this->_genTicketsForUser($db, mt_rand($range[0], $range[1]), $num_tickets);
 		}
+		
+		$output->write("<comment>\nCREATING TECH PARTICIPANT RELATIONS\n</comment>\n");
+
+		$max_ticket = $this->dataset->getMinNumTickets() - $this->dataset->getNumTechs();
+		for ($i = 1; $i <= $this->dataset->getNumTechs(); $i++) {
+			for ($x = 1; $x < $max_ticket; $x += (200 + $i)) {
+				$basic_db->insert('ticket_participants', array(
+					'ticket_id' => $x,
+					'person_id' => $i
+				));
+			}
+		}
+
+		$output->write("Done.\n");
 	}
 
 	protected function _genTicketsForUser(\DeskPRO\DBAL\Connection $db, $person_id, $num_tickets)
@@ -251,20 +265,62 @@ class Basic extends AbstractGenerator
 			$fields = $this->dataset->getTicketFields();
 
 			foreach ($fields as $fieldinfo) {
-				$data = array(
-					'field_id' => $fieldinfo[0],
-					'ticket_id' => $ticket_id
-				);
-				if ($fieldinfo[1]['type'] == 'int') {
-					$data['value'] = mt_rand($fieldinfo[1]['range'][0], $fieldinfo[1]['range'][1]);
-				} else {
-					$data['value'] = Strings::randomPronounceable(mt_rand(4, 40));
-				}
-
-				$db->insert('ticket_field_data', $data);
+				$this->_genTicketFieldData($db, $fieldinfo, $ticket_id);
 			}
 
 			$db->commit();
+		}
+	}
+
+	protected function _genTicketFieldData(\DeskPRO\DBAL\Connection $db, $fieldinfo, $ticket_id)
+	{
+		switch ($fieldinfo[1]['type']) {
+			case 'int':
+				$data = array(
+					'field_id' => $fieldinfo[0],
+					'ticket_id' => $ticket_id,
+					'value' => mt_rand($fieldinfo[1]['range'][0], $fieldinfo[1]['range'][1]),
+				);
+
+				$db->insert('ticket_field_data', $data);
+				break;
+
+			case 'text':
+				$data = array(
+					'field_id' => $fieldinfo[0],
+					'ticket_id' => $ticket_id,
+					'value' => Strings::randomPronounceable(mt_rand(4, 40)),
+				);
+
+				$db->insert('ticket_field_data', $data);
+				break;
+
+			case 'choice':
+
+				$parent_data = array(
+					'field_id' => $fieldinfo[0],
+					'ticket_id' => $ticket_id,
+				);
+
+				$db->insert('ticket_field_data', $parent_data);
+				$parent_id = $db->lastInsertId();
+
+				for ($i = 0; $i < $fieldinfo[1]['max_choices']; $i++) {
+					$child_data = array(
+						'field_id' => $fieldinfo[0],
+						'ticket_id' => $ticket_id,
+						'value' => mt_rand($fieldinfo[1]['range'][0], $fieldinfo[1]['range'][1]),
+						'parent_id' => $parent_id
+					);
+					$vals[] = $child_data['value'];
+
+					$db->insert('ticket_field_data', $child_data);
+				}
+
+				$vals = ':' . implode(':', $vals) . ':';
+				$db->update('ticket_field_data', array('value' => $vals), array('id' => $parent_id));
+
+				break;
 		}
 	}
 }

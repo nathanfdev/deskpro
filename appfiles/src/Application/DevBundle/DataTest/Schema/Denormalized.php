@@ -2,9 +2,9 @@
 
 namespace Application\DevBundle\DataTest\Schema;
 
-class Basic extends AbstractSchema
+class Denormalized extends AbstractSchema
 {
-	public function testCategory()
+		public function testCategory()
 	{
 		$sql = "
 			SELECT COUNT(*)
@@ -162,31 +162,12 @@ class Basic extends AbstractSchema
 	{
 		/* field_id 1 is ranged from 1-15 */
 
-		$sql['join'] = "
+		$sql = "
 			SELECT COUNT(*)
 			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 1)
-			WHERE
-				ticket_field_data.value = 5
+			WHERE field_1 = 5
 		";
-
-		$sql['join_complex_on'] = "
-			SELECT COUNT(*)
-			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 1 AND ticket_field_data.value = 5)
-			WHERE
-				ticket_field_data.id IS NOT NULL
-		";
-
-		/* Takes WAYYYY too long
-		$sql['nested_select'] = "
-			SELECT COUNT(*)
-			FROM tickets
-			WHERE
-				id IN (SELECT ticket_id FROM ticket_field_data WHERE field_id = 1 AND value = 5)
-		";
-		*/
-
+		
 		return $sql;
 	}
 
@@ -196,62 +177,18 @@ class Basic extends AbstractSchema
 		$sql['join'] = "
 			SELECT COUNT(*)
 			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NOT NULL)
+			LEFT JOIN ticket_search_fieldassoc ON (ticket_search_fieldassoc.ticket_id = tickets.id AND ticket_search_fieldassoc.field_id = 2)
 			WHERE
-				ticket_field_data.value IN (5, 10, 15, 20, 25, 30)
+				ticket_search_fieldassoc.value_int IN (5, 10, 15, 20, 25, 30)
 		";
 
 		$sql['join_complex_on'] = "
 			SELECT COUNT(*)
 			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NOT NULL AND ticket_field_data.value IN (5, 10, 15, 20, 25, 30))
+			LEFT JOIN ticket_search_fieldassoc ON (ticket_search_fieldassoc.ticket_id = tickets.id AND ticket_search_fieldassoc.field_id = 2 AND ticket_search_fieldassoc.value_int IN (5, 10, 15, 20, 25, 30))
 			WHERE
-				ticket_field_data.id IS NOT NULL
+				ticket_search_fieldassoc.id IS NOT NULL
 		";
-
-		/* Way too long
-		$sql['nested_select'] = "
-			SELECT COUNT(*)
-			FROM tickets
-			WHERE
-				id IN (SELECT ticket_id FROM ticket_field_data WHERE field_id = 2 AND ticket_field_data.parent_id IS NOT NULL AND value IN (5, 10, 15, 20, 25, 30))
-		";
-		 */
-
-		$sql['join_like'] = "
-			SELECT COUNT(*)
-			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NULL)
-			WHERE
-				ticket_field_data.value LIKE '%:5:%'
-				OR ticket_field_data.value LIKE '%:10:%'
-				OR ticket_field_data.value LIKE '%:15:%'
-				OR ticket_field_data.value LIKE '%:20:%'
-				OR ticket_field_data.value LIKE '%:25:%'
-				OR ticket_field_data.value LIKE '%:30:%'
-		";
-
-		/* Way too long
-		$sql['nested_select_like'] = "
-			SELECT COUNT(*)
-			FROM tickets
-			WHERE
-				id IN (
-					SELECT ticket_id FROM ticket_field_data
-					WHERE
-						field_id = 2
-						AND ticket_field_data.parent_id IS NULL
-						AND (
-							value LIKE '%:5:%'
-							OR value LIKE '%:10:%'
-							OR value LIKE '%:15:%'
-							OR value LIKE '%:20:%'
-							OR value LIKE '%:25:%'
-							OR value LIKE '%:30:%'
-						)
-				)
-		";
-		 */
 
 		return $sql;
 	}
@@ -262,35 +199,19 @@ class Basic extends AbstractSchema
 		$sql['join'] = "
 			SELECT COUNT(*)
 			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NOT NULL)
+			LEFT JOIN ticket_search_fieldassoc ON (ticket_search_fieldassoc.ticket_id = tickets.id AND ticket_search_fieldassoc.field_id = 2)
 			WHERE
 				tickets.status = 'open'
-				AND ticket_field_data.value IN (5, 10, 15, 20, 25, 30)
+				AND ticket_search_fieldassoc.value_int IN (5, 10, 15, 20, 25, 30)
 		";
 
 		$sql['join_complex_on'] = "
 			SELECT COUNT(*)
 			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NOT NULL AND ticket_field_data.value IN (5, 10, 15, 20, 25, 30))
+			LEFT JOIN ticket_search_fieldassoc ON (ticket_search_fieldassoc.ticket_id = tickets.id AND ticket_search_fieldassoc.field_id = 2 AND ticket_search_fieldassoc.value_int IN (5, 10, 15, 20, 25, 30))
 			WHERE
 				tickets.status = 'open'
-				AND ticket_field_data.id IS NOT NULL
-		";
-
-		$sql['join_like'] = "
-			SELECT COUNT(*)
-			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NULL)
-			WHERE
-				tickets.status = 'open'
-				AND (
-					ticket_field_data.value LIKE '%:5:%'
-					OR ticket_field_data.value LIKE '%:10:%'
-					OR ticket_field_data.value LIKE '%:15:%'
-					OR ticket_field_data.value LIKE '%:20:%'
-					OR ticket_field_data.value LIKE '%:25:%'
-					OR ticket_field_data.value LIKE '%:30:%'
-				)
+				AND ticket_search_fieldassoc.id IS NOT NULL
 		";
 
 		return $sql;

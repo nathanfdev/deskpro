@@ -11,7 +11,8 @@ class Basic
 	 */
 	public function getNumPeople()
 	{
-		return 50000;
+		//return 50000;
+		return 20000;
 	}
 
 
@@ -23,7 +24,8 @@ class Basic
 	 */
 	public function getMinNumTickets()
 	{
-		return 750000;
+		//return 750000;
+		return 300000;
 	}
 
 
@@ -136,10 +138,13 @@ class Basic
 	public function getTicketFields()
 	{
 		return array(
-			array(1, array('type' => 'int', 'range' => array(1, 15))),
-			array(2, array('type' => 'int', 'range' => array(1, 5))),
-			array(3, array('type' => 'text')),
-			array(4, array('type' => 'text')),
+			array(1, array('type' => 'choice', 'range' => array(1, 8), 'max_choices' => 3)),
+			array(2, array('type' => 'choice', 'range' => array(1, 50), 'max_choices' => 10)),
+			array(3, array('type' => 'choice', 'range' => array(1, 15), 'max_choices' => 5)),
+			array(4, array('type' => 'int', 'range' => array(1, 15))),
+			array(5, array('type' => 'int', 'range' => array(1, 5))),
+			array(6, array('type' => 'text')),
+			array(7, array('type' => 'text')),
 		);
 	}
 
