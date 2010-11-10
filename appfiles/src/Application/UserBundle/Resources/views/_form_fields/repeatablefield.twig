@@ -1,0 +1,9 @@
+<div class="deskpro-repeatable-field">
+	<div class="deskpro-repeatable-field-addbtn">[+] Add</div>
+	<div id="{{attributes.id}}_wrap" class="deskpro-repeatable-field-wrap">
+		{% for sub_field in field %}
+			{{field.render()|raw}}
+		{% endfor %}
+	</div>
+	<input type="hidden" class="deskpro-repeatable-field-tpl" value="{{field.getEmptyField('new_ID')}}" />
+</div>

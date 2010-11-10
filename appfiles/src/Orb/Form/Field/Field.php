@@ -159,7 +159,14 @@ abstract class Field
 		}
 
 		if ($this->getOption('name') === null) {
-			throw new \UnexpectedValueException('The `name` option is not set');
+
+			// If the parent is a composite field, we can guess the name
+			// is just a numeric index.
+			if ($this->parent AND $this->parent instanceof FieldGroup AND $this->parent->isComposite()) {
+				$this->setOption('name', count($this->parent));
+			} else {
+				throw new \UnexpectedValueException('The `name` option is not set');
+			}
 		}
 
 		if ($this->parent) {
