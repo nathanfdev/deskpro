@@ -73,6 +73,36 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Add a child data item
+	 *
+	 * @param FormFieldData $data
+	 */
+	public function addChildData(FormFieldData $data)
+	{
+		$this->data_children->add($data);
+		$data['parent'] = $this;
+	}
+
+
+
+	/**
+	 * Create a new data object to store child-data for this field.
+	 *
+	 * @return FormFieldData
+	 */
+	public function createChildInstance()
+	{
+		$classname = get_class($this);
+
+		$obj = new $classname();
+		$obj['parent'] = $this;
+
+		return $obj;
+	}
+
+
+
+	/**
 	 * Render this field in a given context
 	 * 
 	 * @param string $context

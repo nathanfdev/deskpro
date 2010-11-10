@@ -14,33 +14,30 @@ namespace DeskPRO\Form\FieldHandler;
 use \Application\CoreBundle\Entity;
 
 /**
- * Text field
+ * Multi-select field
  */
-class Text extends AbstractFieldHandler
+class MultipleChoice extends Choice
 {
 	/**
-	 * @return Orb\Form\Field\Text
+	 * @return Orb\Form\Field\Choice
 	 */
 	public function getFormField()
 	{
 		$options = array();
-		if ($this->fielddef['options']['min_length']) {
-			$options['min_length'] = $this->fielddef['options']['min_length'];
-		}
-		if ($this->fielddef['options']['max_length']) {
-			$options['max_length'] = $this->fielddef['options']['max_length'];
-		}
-
 		$options['name'] = $this->getFormFieldName();
+		$options['selection_mode'] = \Orb\Form\Field\Choice::SELMODE_MULTIPLE;
 
-		$field = new \Orb\Form\Field\Text($options);
+		$field = new \Orb\Form\Field\Choice($options);
 		$field->addTransformer($this);
+
+		foreach ($this->fielddef['field_children'] as $option_field) {
+			$field->addChoice($option_field['id'], $option_field['title']);
+		}
 
 		return $field;
 	}
 
 
-	
 	/**
 	 * Render the field
 	 */
@@ -50,11 +47,12 @@ class Text extends AbstractFieldHandler
 			return '';
 		}
 
-		$value = '';
-		if (isset($form_field_data['data']['value'])) {
-			$value = $form_field_data['data']['value'];
+		$values = array();
+
+		foreach ($form_field_data['data_children'] as $val) {
+			$values[] = $val['title'];
 		}
 
-		return $value;
+		return implode(', ', $values);
 	}
 }

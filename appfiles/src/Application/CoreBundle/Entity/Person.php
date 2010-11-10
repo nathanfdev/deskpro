@@ -28,7 +28,7 @@ use \Application\CoreBundle\Entity\PersonFieldDada;
  * @HasLifecycleCallbacks
  * @Table(name="people")
  */
-class Person extends \DeskPRO\Domain\DomainObject
+class Person extends \DeskPRO\Domain\DomainObject implements FormFieldableInterface
 {
 	/**
 	 * The unique ID.

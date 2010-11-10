@@ -106,7 +106,8 @@ class EditPerson extends \Orb\Form\Field\Form
 					$person->addFieldData($field_data);
 				}
 
-				$field_data['data'] = $value;
+				$field_def->getHandler()->setValueOnData($field_data, $value);
+				
 				$em->persist($field_data);
 
 			// A value doesnt exist, remove it

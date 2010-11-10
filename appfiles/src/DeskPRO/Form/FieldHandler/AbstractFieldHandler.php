@@ -90,11 +90,20 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 	 */
 	abstract public function getFormField();
 
+	
 
 	/**
 	 * Render the field to HTML for use in a web page.
 	 */
-	abstract public function renderHtml(Entity\FormFieldData $form_field_data = null);
+	public function renderHtml(Entity\FormFieldData $form_field_data = null)
+	{
+		if (!$form_field_data) {
+			return '';
+		}
+
+		return htmlspecialchars($this->renderText($form_field_data));
+	}
+
 
 
 	/**
@@ -128,5 +137,17 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 		}
 
 		return $this->$method($form_field_data);
+	}
+
+
+
+	/**
+	 * Apply the transformed value to a field_data object.
+	 *
+	 * This should be called within a transaction, because child values may be added and persisted.
+	 */
+	public function setValueOnData(Entity\FormFieldData $field_data, $value)
+	{
+		$field_data['data'] = $value;
 	}
 }

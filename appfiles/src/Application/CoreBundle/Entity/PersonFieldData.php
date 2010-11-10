@@ -53,4 +53,37 @@ class PersonFieldData extends FormFieldData
 	 * @JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
+	
+
+
+	/**
+	 * Add a child data item
+	 *
+	 * @param FormFieldData $data
+	 */
+	public function addChildData(FormFieldData $data)
+	{
+		$this->data_children->add($data);
+		$data['parent'] = $this;
+		$data['field'] = $this->field;
+		$this->person->addFieldData($data);
+	}
+
+
+
+	/**
+	 * Create a new data object to store child-data for this field.
+	 *
+	 * @return FormFieldData
+	 */
+	public function createChildInstance()
+	{
+		$classname = get_class($this);
+
+		$obj = new $classname();
+		$obj['parent'] = $this;
+		$obj['field'] = $this->field;
+
+		return $obj;
+	}
 }
