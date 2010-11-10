@@ -35,7 +35,7 @@ class DatatestTestSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Command
 		$schema = new \Application\DevBundle\DataTest\Schema\Basic();
 
 		$this->_testSchema($basic_db, $schema, $output);
-
+return;
 		#------------------------------
 		# Denormalized
 		#------------------------------
@@ -65,6 +65,9 @@ class DatatestTestSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Command
 		$output->write("<info>We have " . count($tests) . " tests to run through.</info>\n");
 
 		foreach ($tests as $method) {
+
+			if ($method != 'testCustomFieldInt') continue;
+
 			$sqls = $schema->$method();
 			if (!is_array($sqls)) $sqls = array('main' => $sqls);
 
@@ -101,7 +104,13 @@ class DatatestTestSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Command
 					$times_all += $time_total;
 
 					if ($time_total > 10) {
-						$output->write("Took {$time_total} seconds. Took too long, I won't waste time getting averages.\n");
+						$output->write("Took {$time_total} seconds. Took too long, I won't waste time getting averages. Here's an explain:\n");
+
+						$explain = $db->fetchAll("EXPLAIN " . $sql);
+						print_r($explain);
+
+						$output->write("\n");
+
 						break;
 					}
 

@@ -27,7 +27,7 @@ class DatatestBuildSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 		#------------------------------
 		# Basic
 		#------------------------------
-
+/*
 		// Drop if not exist
 		$output->write('Drop database if exists ... ');
 		$super_db->executeQuery("DROP DATABASE IF EXISTS dp_test_basic");
@@ -47,7 +47,7 @@ class DatatestBuildSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 		$basic->buildSchema($basic_db, $output);
 
 		$basic->run($basic_db, $output);
-
+*/
 		#------------------------------
 		# Denormalized
 		#------------------------------

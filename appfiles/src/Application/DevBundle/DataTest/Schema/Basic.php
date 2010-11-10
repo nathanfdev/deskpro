@@ -64,6 +64,7 @@ class Basic extends AbstractSchema
 				AND ticket_participants.person_id IS NOT NULL
 		";
 
+		/*
 		$sql['nested_select'] = "
 			SELECT COUNT(*)
 			FROM tickets
@@ -71,6 +72,7 @@ class Basic extends AbstractSchema
 				category_id IN (1, 4)
 				AND id IN (SELECT ticket_id FROM ticket_participants WHERE person_id = 5)
 		";
+		 */
 
 		return $sql;
 	}
@@ -120,6 +122,7 @@ class Basic extends AbstractSchema
 				AND ticket_participants.person_id IS NOT NULL
 		";
 
+		/*
 		$sql['nested_select'] = "
 			SELECT COUNT(*)
 			FROM tickets
@@ -127,6 +130,7 @@ class Basic extends AbstractSchema
 				subject LIKE '%golden%'
 				AND id IN (SELECT ticket_id FROM ticket_participants WHERE person_id = 5)
 		";
+		 */
 
 		return $sql;
 	}
@@ -148,12 +152,14 @@ class Basic extends AbstractSchema
 			WHERE person_emails.person_id IS NOT NULL
 		";
 
+		/*
 		$sql['nested_select'] = "
 			SELECT COUNT(*)
 			FROM tickets
 			WHERE
 				person_id IN (SELECT person_id FROM person_emails WHERE email LIKE '%msn%')
 		";
+		 */
 
 		return $sql;
 	}
@@ -165,9 +171,9 @@ class Basic extends AbstractSchema
 		$sql['join'] = "
 			SELECT COUNT(*)
 			FROM tickets
-			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 1)
+			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id)
 			WHERE
-				ticket_field_data.value = 5
+				(ticket_field_data.field_id = 1 AND ticket_field_data.value = 5)
 		";
 
 		$sql['join_complex_on'] = "
@@ -199,6 +205,7 @@ class Basic extends AbstractSchema
 			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NOT NULL)
 			WHERE
 				ticket_field_data.value IN (5, 10, 15, 20, 25, 30)
+			LIMIT 1000
 		";
 
 		$sql['join_complex_on'] = "
@@ -207,6 +214,7 @@ class Basic extends AbstractSchema
 			LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 2 AND ticket_field_data.parent_id IS NOT NULL AND ticket_field_data.value IN (5, 10, 15, 20, 25, 30))
 			WHERE
 				ticket_field_data.id IS NOT NULL
+			LIMIT 1000
 		";
 
 		/* Way too long
@@ -229,6 +237,7 @@ class Basic extends AbstractSchema
 				OR ticket_field_data.value LIKE '%:20:%'
 				OR ticket_field_data.value LIKE '%:25:%'
 				OR ticket_field_data.value LIKE '%:30:%'
+			LIMIT 1000
 		";
 
 		/* Way too long
