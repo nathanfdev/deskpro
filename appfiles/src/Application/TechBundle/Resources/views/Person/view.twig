@@ -38,6 +38,18 @@ $(document).ready(function() {
 					<td>{{person.id}}</td>
 				</tr>
 				<tr class="even">
+					<td>Username</td>
+					<td class="editable row-trigger" data-editable-for="edit_basic_fields_username">
+						{{person.username}}
+					</td>
+				</tr>
+				<tr class="even">
+					<td>Password</td>
+					<td class="editable row-trigger" data-editable-for="edit_basic_fields_password">
+						********
+					</td>
+				</tr>
+				<tr class="even">
 					<td>Full Name</td>
 					<td class="editable row-trigger" data-editable-for="edit_basic_fields_full_name">
 						{{person.full_name}}
@@ -71,6 +83,12 @@ $(document).ready(function() {
 </form>
 
 <div id="field_html_wrap" style="display: none">
+	<div id="edit_basic_fields_username">
+		{{form.findField('basic_fields.username').render()|raw}}
+	</div>
+	<div id="edit_basic_fields_password">
+		{{form.findField('basic_fields.password').render()|raw}}
+	</div>
 	<div id="edit_basic_fields_full_name">
 		{{form.findField('basic_fields.full_name').render()|raw}}
 	</div>

@@ -66,7 +66,7 @@ class EditPerson extends \Orb\Form\Field\Form
 	public function setPerson(Person $person)
 	{
 		// Set basic values
-		$simple = array('full_name', 'informal_name', 'nick_name', 'username');
+		$simple = array('full_name', 'informal_name', 'nick_name', 'username', 'password');
 		$values = array();
 		foreach ($simple as $k) {
 			$values[$k] = $person[$k];
