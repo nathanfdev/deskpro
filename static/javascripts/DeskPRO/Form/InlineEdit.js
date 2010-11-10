@@ -19,7 +19,8 @@ DeskPRO.Form.InlineEdit = new Class({
 			timeout: 20000,
 			type: 'POST',
 			url: ''
-		}
+		},
+		saveFinishCallback: function() { }
 	},
 	
 	/**
@@ -249,6 +250,8 @@ DeskPRO.Form.InlineEdit = new Class({
 			
 			this.closeEditinfo(editinfo);
 		}
+
+		this.saveFinishCallback(data);
 	},
 	
 	

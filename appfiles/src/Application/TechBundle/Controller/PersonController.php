@@ -24,7 +24,11 @@ class PersonController extends AbstractController
 
 	public function viewAction($person_id)
 	{
-		$person = $this->getPersonOr404($person_id);
+		if ($person_id) {
+			$person = $this->getPersonOr404($person_id);
+		} else {
+			$person = new Person();
+		}
 
 		$form = $this->_getForm($person);
 
@@ -67,13 +71,18 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveAction($person_id)
 	{
-		$person = $this->getPersonOr404($person_id);
+		if ($person_id) {
+			$person = $this->getPersonOr404($person_id);
+		} else {
+			$person = new Person();
+		}
+		
 		$form = $this->_getForm($person);
 		$form->setFormData($_POST);
 
 		if ($form->isValid()) {
 			$form->savePerson($person);
-			return $this->createJsonResponse(array('success' => true));
+			return $this->createJsonResponse(array('success' => true, 'person_id' => $person['id']));
 		} else {
 			return $this->createJsonResponse(array('error' => true));
 		}

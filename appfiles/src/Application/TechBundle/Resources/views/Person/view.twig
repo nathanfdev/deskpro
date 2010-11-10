@@ -8,6 +8,16 @@ $(document).ready(function() {
 			url: '{% route 'tech_people_ajaxsave' with ['person_id': person.id|default(0)] %}'
 		}
 	});
+
+	{% if person.id %}
+		inline_edit.options.saveFinishCallback = function(data) {
+			if (inline_edit.options['x-has-done-newurl']) return;
+			inline_edit.options['x-has-done-newurl'] = true;
+
+			// Replace the 0 that denotes no user, with the new user we got back
+			inline_edit.options.ajax.url = inline_edit.options.ajax.url.replace(/\w0\w/, data.person_id);
+		};
+	{% endif %}}
 });
 </script>
 {% endblock %}
