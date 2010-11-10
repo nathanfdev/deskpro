@@ -141,6 +141,10 @@ tech_people_view:
   defaults: { _controller: TechBundle:Person:view }
   requirements: { person_id: "\d+" }
 
+tech_people_new:
+  pattern: /people/new-person
+  defaults: { _controller: TechBundle:Person:view, person_id: 0 }
+
 tech_people_ajaxsave:
   pattern: /people/:person_id/ajax-save
   defaults: { _controller: TechBundle:Person:ajaxSave }
