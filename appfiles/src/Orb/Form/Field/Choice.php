@@ -36,11 +36,11 @@ class Choice extends CompositeField
 
 		// Make sure its correct based on field type.
 		if ($this->getOption('selection_mode') == self::SELMODE_SINGLE) {
-			if (!($field instanceof Orb\Form\Field\Radio)) {
+			if (!($field instanceof \Orb\Form\Field\Radio)) {
 				return false;
 			}
 		} else {
-			if (!($field instanceof Orb\Form\Field\Checkbox)) {
+			if (!($field instanceof \Orb\Form\Field\Checkbox)) {
 				return false;
 			}
 		}
@@ -92,7 +92,7 @@ class Choice extends CompositeField
 
 
 
-	protected function __toString()
+	public function __toString()
 	{
 		$choices = array();
 

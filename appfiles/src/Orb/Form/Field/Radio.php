@@ -24,8 +24,8 @@ class Radio extends BooleanField
 		// Radio fields are useless on their own, they have to be part of a group.
 		// So the 'name' attribute of a set of radio buttons must all be the same
 		// for them to work properly.
-		if ($this->getParent()) {
-			$parent_attr = $this->getParent()->getDefaultAttributes();
+		if ($this->parent) {
+			$parent_attr = $this->parent->getDefaultAttributes();
 			$attr['name'] = $parent_attr['name'];
 		}
 

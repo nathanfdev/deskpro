@@ -84,12 +84,15 @@ class Basic implements RendererInterface
 
 			case 'Orb\\Form\\Field\\SimpleChoice':
 				$html = $this->_renderSimpleChoiceField($field, $attributes);
+				break;
 
 			case 'Orb\\Form\\Field\\Choice':
 				$html = $this->_renderChoiceField($field, $attributes);
+				break;
 
 			case 'Orb\\Form\\Field\\FieldGroup':
 				$html = $this->_renderFieldGroupField($field, $attributes);
+				break;
 
 			case 'Orb\\Form\\Field\\Textarea':
 				$html = $this->renderContentTag($field, 'textarea', $attributes);
@@ -113,7 +116,7 @@ class Basic implements RendererInterface
 		$html = array();
 
 		foreach ($field as $sub_field) {
-			$html[] = sprintf($wrapper, $this->render($sub_field));
+			$html[] = sprintf($wrapper, $this->renderField($sub_field));
 		}
 
 		return implode('', $html);
@@ -131,7 +134,7 @@ class Basic implements RendererInterface
 				$use_attr['selected'] = true;
 			}
 
-			$html[] = '<option ' . Strings::htmlAttributes($use_attr) . '>' . htmlspecialchars($field->getOption('label')) . '</option>';
+			$html[] = '<option ' . Strings::htmlAttributes($use_attr) . '>' . htmlspecialchars($option->getOption('label')) . '</option>';
 		}
 
 		$html[] = '</select>';

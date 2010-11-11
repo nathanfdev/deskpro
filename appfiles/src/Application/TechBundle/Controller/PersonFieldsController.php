@@ -27,6 +27,7 @@ class PersonFieldsController extends AbstractController
 		$existing_fields = $this->db->fetchAll("
 			SELECT f.id, f.title, f.handler_class
 			FROM person_fields f
+			WHERE f.parent_id IS NULL
 			ORDER BY f.id
 		");
 
@@ -63,6 +64,11 @@ class PersonFieldsController extends AbstractController
 			$field['handler_class'] = $this->in->getString('formfield.handler_class');
 		}
 
+		// Cant edit a specific child field; the main parent field editor must be used
+		if ($field['parent']) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("$field_id is not a valid field (it has a parent)");
+		}
+
 		$renderer = new \Orb\Form\Renderer\Basic();
 		$form = new \Application\TechBundle\Form\EditField(array(
 			'name' => 'formfield',
@@ -76,7 +82,7 @@ class PersonFieldsController extends AbstractController
 		$form->addField($admin_handler->buildFormGroup());
 
 		if ($this->isPostRequest()) {
-			$form->setData($_POST);
+			$form->setFormData($_POST);
 			if ($form->isValid()) {
 				$admin_handler->saveField($form);
 				$this->redirectRoute('admin_personfields_edit', array('field_id' => $field['id']));
@@ -86,10 +92,15 @@ class PersonFieldsController extends AbstractController
 			}
 		}
 
-		return $this->render('TechBundle:PersonFields:edit', array(
+		$parts = explode('\\', $field['handler_class']);
+		$tpl_name = 'TechBundle:PersonFields:edit-' . strtolower(array_pop($parts));
+
+		$vars = array_merge($admin_handler->getTemplateVars(), array(
 			'field' => $field,
-			'form' => $form
+			'form' => $form,
 		));
+
+		return $this->render($tpl_name, $vars);
 	}
 
 

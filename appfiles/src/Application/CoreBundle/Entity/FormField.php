@@ -30,12 +30,15 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * The parent ID for multi-field fields.
+	 * Field parent
 	 *
-	 * @var int
-	 * @Column(name="parent_id", type="integer", nullable=true)
+	 * MUST BE IMPLEMENT IN CHILD CLASS
+	 *
+	 * @var FormField
+	 * @OneToOne(targetEntity="FormField")
+	 * @JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
-	protected $parent_id = null;
+	//protected $parent = null;
 
 	/**
 	 * The title. Note this should be a phrase key, not an actual string.
@@ -62,17 +65,24 @@ class FormField extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * Field children
+	 *
+	 * MUST BE IMPLEMENT IN CHILD CLASS
 	 * 
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @OneToMany(targetEntity="FormField", mappedBy="parent_id")
 	 */
-	protected $field_children = null;
+	//protected $field_children = null;
 
 	/**
 	 * @var DeskPRO\Form\FieldHandler\AbstractFieldHandler
 	 */
 	protected $_handler_instance = null;
 
+
+	public function __construct()
+	{
+		$this->field_children = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 	
 
 	/**
@@ -83,6 +93,12 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	public function getHandler()
 	{
 		if ($this->_handler_instance !== null) return $this->_handler_instance;
+
+		if ($this['handler_class'] == 'x') {
+			$e = new \Exception();
+			echo $e->getTraceAsString();
+			exit;
+		}
 
 		$classname = $this['handler_class'];
 

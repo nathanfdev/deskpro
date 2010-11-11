@@ -92,20 +92,13 @@ abstract class AbstractAdminHandler
 
 	
 	/**
-	 * This renders the HTML for a particular field types options. Standard options
-	 * always exist, like a title, but the rest is per-custom field type.
+	 * Gets variables we'll need to use in the template.
 	 *
-	 * @return string
+	 * @return array
 	 */
-	public function renderFormPartial($controller, $form)
+	public function getTemplateVars()
 	{
-		$classname = get_class($this);
-		$parts = explode('\\', $classname);
-		$basename = array_pop($parts);
-
-		$tplname = 'TechBundle:Fields:_edit_' . strtolower($basename);
-
-		return $this->controller->renderView($tplname, array('fielddef' => $this->fielddef, 'form' => $form['fieldtype_form'], 'full_form' => $form));
+		return array();
 	}
 
 
@@ -122,10 +115,11 @@ abstract class AbstractAdminHandler
 		$is_new = ((bool)$this->fielddef['id']);
 
 		$this->fielddef['title'] = $form['field_properties']['title']->getData();
+		$this->em->persist($this->fielddef); // need to save now 'cuz might add children, which will need the parent
 
 		$this->handleSave($form['fieldtype_form']);
 
-		$this->em->persist($this->fielddef);
+		$this->em->persist($this->fielddef); // save again incase changes made from handler
 
 		#------------------------------
 		# Save

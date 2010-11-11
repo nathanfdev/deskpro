@@ -23,5 +23,28 @@ use Orb\Util\Arrays;
  */
 class PersonField extends FormField
 {
+	/**
+	 * The parent ID for multi-field fields.
+	 *
+	 * @var int
+	 * @Column(name="parent_id", type="integer", nullable=true)
+	 */
+	protected $parent_id = null;
+	
+	/**
+	 * Field parent
+	 *
+	 * @var PersonField
+	 * @OneToOne(targetEntity="PersonField")
+	 * @JoinColumn(name="parent_id", referencedColumnName="id")
+	 */
+	protected $parent = null;
 
+	/**
+	 * Field children
+	 *
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="PersonField", mappedBy="parent")
+	 */
+	protected $field_children = null;
 }

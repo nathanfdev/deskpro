@@ -32,6 +32,7 @@ class Choice extends AbstractFieldHandler
 		$field = new \Orb\Form\Field\Choice($options);
 		$field->addTransformer($this);
 
+		$field->addChoice(0, '');
 		foreach ($this->fielddef['field_children'] as $option_field) {
 			$field->addChoice($option_field['id'], $option_field['title']);
 		}

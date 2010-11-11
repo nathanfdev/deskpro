@@ -30,11 +30,11 @@ class EditField extends \Orb\Form\Field\Form
 		$this->formfield = $this->getOption('form_field');
 
 		$f_group_props = new \Orb\Form\Field\FieldGroup(array('name' => 'field_properties'));
+		$this->addField($f_group_props);
 
 		// Title
-		$f = new \Orb\Form\Field\Hidden(array('name' => 'title'));
+		$f = new \Orb\Form\Field\Text(array('name' => 'title'));
+		$f->setData($this->formfield['title']);
 		$f_group_props->addField($f);
-
-		$this->addField($f_group_props);
 	}
 }

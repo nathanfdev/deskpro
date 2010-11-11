@@ -1,25 +1,6 @@
 {% extends 'TechBundle::layout' %}
 {% block extra_head %}
 
-<script type="text/javascript">
-$(document).ready(function() {
-	var inline_edit = new DeskPRO.Form.InlineEdit({
-		ajax: {
-			url: '{% route 'tech_people_ajaxsave' with ['person_id': person.id|default(0)] %}'
-		}
-	});
-
-	{% if person.id %}
-		inline_edit.options.saveFinishCallback = function(data) {
-			if (inline_edit.options['x-has-done-newurl']) return;
-			inline_edit.options['x-has-done-newurl'] = true;
-
-			// Replace the 0 that denotes no user, with the new user we got back
-			inline_edit.options.ajax.url = inline_edit.options.ajax.url.replace(/\w0\w/, data.person_id);
-		};
-	{% endif %}}
-});
-</script>
 {% endblock %}
 {% block content %}
 
@@ -39,71 +20,39 @@ $(document).ready(function() {
 				</tr>
 				<tr class="even">
 					<td>Username</td>
-					<td class="editable row-trigger" data-editable-for="edit_basic_fields_username">
-						{{person.username}}
-					</td>
+					<td>{{form.findField('basic_fields.username').render()|raw}}</td>
 				</tr>
 				<tr class="even">
 					<td>Password</td>
-					<td class="editable row-trigger" data-editable-for="edit_basic_fields_password">
-						********
-					</td>
+					<td>{{form.findField('basic_fields.password').render()|raw}}</td>
 				</tr>
 				<tr class="even">
 					<td>Full Name</td>
-					<td class="editable row-trigger" data-editable-for="edit_basic_fields_full_name">
-						{{person.full_name}}
-					</td>
+					<td>{{form.findField('basic_fields.full_name').render()|raw}}</td>
 				</tr>
 				<tr class="even">
 					<td>Informal Name</td>
-					<td class="editable row-trigger" data-editable-for="edit_basic_fields_informal_name">
-						{{person.informal_name}}
-					</td>
+					<td>{{form.findField('basic_fields.informal_name').render()|raw}}</td>
 				</tr>
 				<tr class="even">
 					<td>Nickname</td>
-					<td class="editable row-trigger" data-editable-for="edit_basic_fields_nick_name">
-						{{person.nick_name}}
-					</td>
+					<td>{{form.findField('basic_fields.nick_name').render()|raw}}</td>
 				</tr>
 
 				{% for info in custom_fields %}
 					<tr class="even">
 						<td>{{info.field_def.title}}</td>
-						<td class="editable row-trigger" data-editable-for="edit_{{info.form_field.getFormId()}}">
-							{{info.rendered_value}}
-						</td>
+						<td>{{info.form_field.render()|raw}}</td>
 					</tr>
 				{% endfor %}
 			</table>
 		</div>
 	</div>
 </div>
-</form>
 
-<div id="field_html_wrap" style="display: none">
-	<div id="edit_basic_fields_username">
-		{{form.findField('basic_fields.username').render()|raw}}
-	</div>
-	<div id="edit_basic_fields_password">
-		{{form.findField('basic_fields.password').render()|raw}}
-	</div>
-	<div id="edit_basic_fields_full_name">
-		{{form.findField('basic_fields.full_name').render()|raw}}
-	</div>
-	<div id="edit_basic_fields_informal_name">
-		{{form.findField('basic_fields.informal_name').render()|raw}}
-	</div>
-	<div id="edit_basic_fields_nick_name">
-		{{form.findField('basic_fields.nick_name').render()|raw}}
-	</div>
-	{% for info in custom_fields %}
-		<div id="edit_{{info.form_field.getFormId()}}">
-			{{info.form_field.render()|raw}}
-		</div>
-	{% endfor %}
-</div>
+<input type="submit" value="Save" />
+
+</form>
 
 {% endblock %}
 {% block sidebar %}

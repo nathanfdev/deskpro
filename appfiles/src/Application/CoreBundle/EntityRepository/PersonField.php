@@ -22,6 +22,10 @@ class PersonField extends EntityRepository
 	 */
 	public function getEnabledFields()
 	{
-		return $this->findAll();
+		return $this->_em->createQuery("
+			SELECT f
+			FROM CoreBundle:PersonField f
+			WHERE f.parent IS NULL
+		")->execute();
 	}
 }

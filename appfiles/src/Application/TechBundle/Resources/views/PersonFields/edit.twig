@@ -6,6 +6,7 @@
 {{form.renderFormTag(['action': form_url, 'method':'POST'])|raw}}
 {{form.renderHiddenTags()|raw}}
 
+{% block edit_properties %}
 <div class="block" id="block-tables">
 	<div class="content">
 		<h2 class="title">Field Properties</h2>
@@ -17,12 +18,15 @@
 				</tr>
 				<tr>
 					<td>Title</td>
-					<td><input type="text" name="field_properties[title]" value="{{field.title}}" size="40" /></td>
+					<td>{{form.field_properties.title.render()|raw()}}</td>
 				</tr>
 			</table>
 		</div>
 	</div>
 </div>
+{% endblock %}
+
+{% block custom_form %}{% endblock %}
 
 <div class="block">
 	<div class="content">
