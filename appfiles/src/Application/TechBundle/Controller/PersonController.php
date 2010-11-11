@@ -35,7 +35,12 @@ class PersonController extends AbstractController
 		if ($this->isPostRequest()) {
 			$form->setData($_POST);
 			if ($form->isValid()) {
+
+				$this->em->beginTransaction();
+
 				$form->savePerson($person);
+
+				$this->em->commit();
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());

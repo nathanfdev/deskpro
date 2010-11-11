@@ -41,6 +41,15 @@ class EditPerson extends \Orb\Form\Field\Form
 		$basic_fields->addField($f);
 
 		$this->addField($basic_fields);
+
+		// del emails is just an array we'll process on save
+		// The template needs to actually output the proper fields
+		$f = new \Orb\Form\Field\FieldGroup(array('name' => 'del_emails'));
+		$this->addField($f);
+
+		// New email
+		$f = new \Orb\Form\Field\Text(array('name' => 'new_email'));
+		$this->addField($f);
 	}
 
 	public function setCustomFields($fields)
@@ -87,9 +96,34 @@ class EditPerson extends \Orb\Form\Field\Form
 		$em = App::getOrm();
 		$em->beginTransaction();
 
+		#------------------------------
+		# Basic fields
+		#------------------------------
+
 		foreach ($this['basic_fields'] as $k => $f) {
 			$person[$k] = $f->getData();
 		}
+		
+		#------------------------------
+		# Emails
+		#------------------------------
+
+		// Delete them, if they're checked
+		foreach ($this['del_emails']->getData() as $email_id) {
+			$person->removeEmailAddressId($email_id);
+		}
+
+		// Add them
+		if ($this['new_email']->getData()) {
+			$email = new PersonEmail();
+			$email['is_validated'] = true;
+			$email['email'] = $this['new_email']->getData();
+			$person->addEmailAddress($email);
+		}
+
+		#------------------------------
+		# Custom fields
+		#------------------------------
 
 		foreach ($this['custom_fields'] as $k => $f) {
 

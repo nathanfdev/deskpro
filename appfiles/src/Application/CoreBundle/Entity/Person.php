@@ -428,6 +428,33 @@ class Person extends \DeskPRO\Domain\DomainObject
 	}
 
 
+	
+	/**
+	 * Remove an email address from this user.
+	 * 
+	 * Note: This should be run within a transaction if you want to :)
+	 *
+	 * The old PersonEmail will be returned.
+	 *
+	 * @param int $email_id
+	 * @return PersonEmail
+	 */
+	public function removeEmailAddressId($email_id)
+	{
+		$em = App::getOrm();
+
+		$the_email = null;
+		foreach ($this->emails as $index => $email) {
+			if ($email['id'] == $email_id) {
+				$this->emails->remove($index);
+				return $email;
+			}
+		}
+
+		return null;
+	}
+
+
 
 	/**
 	 * Add a new usergroup
