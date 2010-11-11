@@ -40,6 +40,10 @@ class Factory
 			case 'DeskPRO\\Form\\FieldHandler\\Choice':
 				$handler = new \Application\TechBundle\FormField\AdminHandler\Choice($form_field);
 				break;
+
+			case 'DeskPRO\\Form\\FieldHandler\\MultipleChoice':
+				$handler = new \Application\TechBundle\FormField\AdminHandler\MultipleChoice($form_field);
+				break;
 		}
 		
 		if (!$handler) {

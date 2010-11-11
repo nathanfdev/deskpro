@@ -96,6 +96,7 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 
 		$obj = new $classname();
 		$obj['parent'] = $this;
+		$obj['field'] = $this->field;
 
 		return $obj;
 	}

@@ -1,0 +1,19 @@
+{% extends 'TechBundle:PersonFields:edit' %}
+{% block custom_form %}
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">Options</h2>
+		<div class="inner">
+			<table class="table">
+				<tr class="even">
+					<td>
+						{{form.fieldtype_form.choices.render(['rows': 8, 'cols': 80])|raw}}
+						<br /><small>One option per line. Currently there is no way to edit the value of an option (i.e., update the text), it'll just delete
+						the old value and then create a new one.</small>
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}
