@@ -84,7 +84,7 @@
 	<div class="login_method_wrap">
 		<div class="login_method_title">Username and Password</div>
 		<div class="content login_method_content">
-			<form action="{% route 'user_login_authenticate' %}" class="form login" method="post">
+			<form action="{% route 'user_login_authenticate_local' %}" class="form login" method="post">
 				{% if invalid_login %}
 					<p>Invalid login. Please try again.</p>
 				{% endif %}

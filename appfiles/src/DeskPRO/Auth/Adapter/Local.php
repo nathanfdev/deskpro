@@ -55,7 +55,7 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 			->setMaxResults(1);
 
 		if (strpos($this->username_or_email, '@')) {
-			$qb->andWhere('p.username = ?1 OR e.emails = ?2');
+			$qb->andWhere('p.username = ?1 OR e.email = ?2');
 			$qb->setParameter(1, $this->username_or_email);
 			$qb->setParameter(2, $this->username_or_email);
 		} else {
@@ -63,7 +63,12 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 			$qb->setParameter(1, $this->username_or_email);
 		}
 
-		$person = $qb->getQuery()->getSingleResult();
+		$person = null;
+
+		try {
+			$person = $qb->getQuery()->getSingleResult();
+		} catch (\Doctrine\ORM\NoResultException $e) {}
+
 		if (!$person OR !$person->checkPassword($this->password)) {
 			return new Result(Result::FAILURE_INVALID_CREDS);
 		}

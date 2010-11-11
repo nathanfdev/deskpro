@@ -10,6 +10,10 @@ user_logout:
   pattern: /logout
   defaults: { _controller: UserBundle:Login:logout }
 
+user_login_authenticate_local:
+  pattern: /login/authenticate-password
+  defaults: { _controller: UserBundle:Login:authenticate, usersource_id: 0 }
+
 user_login_authenticate:
   pattern: /login/authenticate/:usersource_id
   defaults: { _controller: UserBundle:Login:authenticate, usersource_id: 0 }
