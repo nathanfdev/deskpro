@@ -150,14 +150,17 @@ class Working01 extends AbstractSchema
 
 	public function testComplicatedQuery1()
 	{
+		$rand_tech = mt_rand(1,15);
+
 		$sql = "SELECT SQL_NO_CACHE *
 FROM tickets
 LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 1)
 LEFT JOIN ticket_participants ON (ticket_participants.ticket_id = tickets.id)
 WHERE
 	tickets.department_id IN (1, 3)
+	AND (tickets.tech_id = $rand_tech OR ticket_participants.person_id = $rand_tech)
 	AND ticket_field_data.value_int = 10
-	AND tickets.tech_id = 9 OR ticket_participants.person_id = 9";
+";
 
 		return $sql;
 	}
