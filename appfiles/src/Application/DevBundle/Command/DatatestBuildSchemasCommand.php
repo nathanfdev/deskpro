@@ -48,6 +48,7 @@ class DatatestBuildSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 
 		$basic->run($basic_db, $output);
 */
+/*
 		#------------------------------
 		# Denormalized
 		#------------------------------
@@ -71,6 +72,55 @@ class DatatestBuildSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 		$denormalized->buildSchema($denormalized_db, $output);
 
 		$denormalized->run($denormalized_db, $output);
+*/
+//
+//		#------------------------------
+//		# Working01
+//		#------------------------------
+//
+		// Drop if not exist
+		$output->write('Drop database if exists ... ');
+		$super_db->executeQuery("DROP DATABASE IF EXISTS dp_working_01");
+		$output->write("Done\n");
 
+		// Create database
+		$output->write('Create database ... ');
+		$super_db->executeQuery("CREATE DATABASE dp_working_01");
+		$output->write("Done\n");
+
+		$schema_db_params = $super_params;
+		$schema_db_params['dbname'] = 'dp_working_01';
+		$schema_db = \Doctrine\DBAL\DriverManager::getConnection($schema_db_params);
+
+		$dataset = new \Application\DevBundle\DataTest\DataSet\Basic();
+		$schema_gen = new \Application\DevBundle\DataTest\Generator\Working01($dataset);
+		$schema_gen->buildSchema($schema_db, $output);
+
+		$schema_gen->run($schema_db, $output);
+
+
+		#------------------------------
+		# Book
+		#------------------------------
+
+//		// Drop if not exist
+//		$output->write('Drop database if exists ... ');
+//		$super_db->executeQuery("DROP DATABASE IF EXISTS test_database");
+//		$output->write("Done\n");
+//
+//		// Create database
+//		$output->write('Create database ... ');
+//		$super_db->executeQuery("CREATE DATABASE test_database");
+//		$output->write("Done\n");
+//
+//		$schema_db_params = $super_params;
+//		$schema_db_params['dbname'] = 'test_database';
+//		$schema_db = \Doctrine\DBAL\DriverManager::getConnection($schema_db_params);
+//
+//		$dataset = new \Application\DevBundle\DataTest\DataSet\Basic();
+//		$schema_gen = new \Application\DevBundle\DataTest\Generator\Book($dataset);
+//		$schema_gen->buildSchema($schema_db, $output);
+//
+//		$schema_gen->run($schema_db, $output);
 	}
 }

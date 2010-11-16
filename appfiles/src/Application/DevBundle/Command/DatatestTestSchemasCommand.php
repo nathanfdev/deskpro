@@ -13,6 +13,7 @@ class DatatestTestSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Command
 	protected function configure()
 	{
 		$this->setDefinition(array(
+			new InputArgument('run', InputArgument::OPTIONAL, 'Only run this specific test'),
 		))->setName('dpdev:datatest-test-schemas');
 	}
 
@@ -23,6 +24,32 @@ class DatatestTestSchemasCommand extends \Symfony\Bundle\FrameworkBundle\Command
 
 		unset($super_params['dbname']);
 		$super_db = \Doctrine\DBAL\DriverManager::getConnection($super_params);
+
+						#------------------------------
+		# Basic
+		#------------------------------
+
+//		$basic_db_params = $super_params;
+//		$basic_db_params['dbname'] = 'test_database';
+//		$basic_db = \Doctrine\DBAL\DriverManager::getConnection($basic_db_params);
+//
+//		$schema = new \Application\DevBundle\DataTest\Schema\Book();
+//
+//		$this->_testSchema($basic_db, $schema, $input, $output);
+//return;
+
+				#------------------------------
+		# Basic
+		#------------------------------
+
+		$basic_db_params = $super_params;
+		$basic_db_params['dbname'] = 'dp_working_01';
+		$basic_db = \Doctrine\DBAL\DriverManager::getConnection($basic_db_params);
+
+		$schema = new \Application\DevBundle\DataTest\Schema\Working01();
+
+		$this->_testSchema($basic_db, $schema, $input, $output);
+return;
 
 		#------------------------------
 		# Basic
@@ -49,7 +76,7 @@ return;
 		$this->_testSchema($denormalized_db, $schema, $output);
 	}
 
-	protected function _testSchema(\DeskPRO\DBAL\Connection $db, $schema, OutputInterface $output)
+	protected function _testSchema(\DeskPRO\DBAL\Connection $db, $schema, InputInterface $input, OutputInterface $output)
 	{
 		$output->write("\n<comment>########################################\nTESTING " . get_class($schema) . "\n########################################</comment>\n");
 
@@ -64,53 +91,54 @@ return;
 
 		$output->write("<info>We have " . count($tests) . " tests to run through.</info>\n");
 
+		$only_run = null;
+		if ($input->getArgument('run')) {
+			$only_run = $input->getArgument('run');
+		}
+
 		foreach ($tests as $method) {
 
-			if ($method != 'testCustomFieldInt') continue;
+			if ($only_run AND $method != $only_run) {
+				continue;
+			}
 
 			$sqls = $schema->$method();
 			if (!is_array($sqls)) $sqls = array('main' => $sqls);
 
-			$output->write("--------------------------------------------------\n");
+			$output->write("<info>--------------------------------------------------\n");
 			$output->write($method);
-			$output->write("\n--------------------------------------------------\n");
+			$output->write("\n--------------------------------------------------</info>\n");
 
 			$best = null;
 			$best_name = null;
 			foreach ($sqls as $name => $sql) {
+
+				$sql = str_replace("SELECT", "SELECT SQL_NO_CACHE", $sql);
 
 				$output->write(str_pad($name, 20, ' ') . ' ... ');
 
 				$times = array();
 				$times_all = 0.0;
 				$times_max = null;
-				for ($i = 0; $i < 11; $i++) {
-					$time_start = microtime(true);
+				for ($i = 0; $i < 5; $i++) {
 
 					$db->executeQuery("RESET QUERY CACHE");
 					$db->executeQuery("FLUSH QUERY CACHE");
 					$db->executeQuery("FLUSH TABLES");
-					usleep(1000);
 
-					$rows = $db->fetchColumn($sql);
+					$time_start = microtime(true);
 
-					// Discard first result, hdd's have chance to cache sectors
-					if ($i == 0) {
-						continue;
-					}
+					$q = $db->executeQuery($sql);
+					$rows = $q->RowCount();
 
 					$time_end = microtime(true);
 					$time_total = $time_end - $time_start;
 					$times_all += $time_total;
 
+					$output->write(sprintf("%.5f ", $time_total));
+
 					if ($time_total > 10) {
-						$output->write("Took {$time_total} seconds. Took too long, I won't waste time getting averages. Here's an explain:\n");
-
-						$explain = $db->fetchAll("EXPLAIN " . $sql);
-						print_r($explain);
-
-						$output->write("\n");
-
+						$output->write("Took {$time_total} seconds. Took too long, I won't waste time getting averages.\n");
 						break;
 					}
 
@@ -118,13 +146,11 @@ return;
 						$times_max = $time_total;
 					}
 
-					$output->write(sprintf("%.5f ", $time_total));
-
 					$times[] = (float)$times_all;
 				}
 
 				if ($times) {
-					$times_avg = $times_all / 10;
+					$times_avg = $times_all / 5;
 
 					if ($times_avg < $best OR $best === null) {
 						$best = $time_total;
@@ -133,6 +159,13 @@ return;
 
 					$output->write(sprintf("\n".str_pad('', 25, ' ')."Rows: %6s, Avg: %.5f, Min: %.5f, Max: %.5f\n", $rows, $times_avg, min($times), $times_max));
 				}
+
+				$output->write("Query: $sql\n\n");
+				$output->write("Here's an explain:\n");
+				$explain = $db->fetchAll("EXPLAIN " . $sql);
+				print_r($explain);
+
+				$output->write("\n");
 			}
 
 			if ($best_name AND count($sqls) > 1) {
