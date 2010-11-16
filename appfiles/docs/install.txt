@@ -21,7 +21,7 @@ Make sure the following files are executable:
 Download Vendors
 ================
 
-Some vendors need to be downlaoded separately. This is automated by the `/appfiles/bin/install_vendors.sh` shell script:
+Some vendors need to be downloaded separately. This is automated by the `/appfiles/bin/install_vendors.sh` shell script:
 
 	$ cd appfiles/bin
 	$ ./install_vendors.sh
