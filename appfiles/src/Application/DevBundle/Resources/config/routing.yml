@@ -5,3 +5,11 @@ dev_test:
 dev_theme:
     pattern:  /theme
     defaults: { _controller: DevBundle:Theme:index }
+
+dev_datagen:
+    pattern:  /data-generator
+    defaults: { _controller: DevBundle:DataGenerator:index }
+
+dev_datagen_run:
+    pattern:  /data-generator/run
+    defaults: { _controller: DevBundle:DataGenerator:run }
