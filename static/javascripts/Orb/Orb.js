@@ -67,7 +67,7 @@ Orb.getEl = function(el) {
 	}
 	
 	return document.getElementById(el);
-}
+};
 $el = function(el) { return Orb.getEl(el); };
 
 
@@ -85,4 +85,124 @@ Orb.sleep = function(ms) {
 			break;
 		}
 	}
-}
+};
+
+
+
+/**
+ * Simple way to load Javascript and CSS files on-demand.
+ *
+ * Usage:
+ * <code>
+ *  Orb.resourceLoader.loadScript('whatever.js');
+ *  Orb.resourceLoader.loadBatch([{
+ *  	type: 'script',
+ *  	src: 'whatever.js'
+ *  }, {
+ *  	type: 'css',
+ *  	src: 'whatever.css'
+ *  }], function() { alert("All resources loaded"); });
+ * </code>
+ */
+Orb.resourceLoader = {
+	batches: {},
+	batchesCallback: {},
+	
+	/**
+	 * Load a new Javascript source
+	 *
+	 * @param {String} src The path or full URL to the source file
+	 * @param {Function} callback The function to execute when the file has been loaded
+	 */
+	loadScript: function(src, callback) {
+		this.loadBatch([{
+			type: 'script',
+			url: src
+		}], callback);
+	},
+
+
+
+	/**
+	 * Load a new CSS stylesheet
+	 *
+	 * @param {String} url The path or full URL to the CSS file
+	 * @param {Function} callback The function to execute when the file has been loaded
+	 */
+	loadStylesheet: function(url, callback) {
+		this.loadBatch([{
+			type: 'css',
+			url: url
+		}], callback);
+	},
+	
+	
+	
+	/**
+	 * Load a number of resources all at once, and be notified when they've all finished
+	 * loading.
+	 *
+	 * `resources` must be a hash of `type` being 'script' or 'stylesheet', and `url` being the
+	 * path or full URL to the file.
+	 *
+	 * @param {Object} resources Descriptions of each resource
+	 * @param {Function} callback The function to execute when all files have been loaded
+	 */
+	loadBatch: function(resources, callback) {
+	
+		var batchId = Orb.uuid();
+		var head = $('head');
+		
+		this.batches[batchId] = [];
+		this.batchesCallback[batchId] = callback;
+		
+		while (var res = resources.shift()) {
+			var resourceId = Orb.uuid();
+			
+			var fn = function() {
+				Orb.resourceLoader._resourceDoneLoading(batchId, resourceId);
+			};
+			
+			if (res.type == 'script') {
+				var tag = document.createElement('script');
+				tag.type = "text/javascript";
+				tag.src = res.url;
+			} else if (res.type == 'stylesheet') {
+				var tag = document.createElement('link');
+				tag.rel = "stylesheet";
+				tag.type = 'text/css';
+				tag.href = res.url;
+				tag.media = "screen";
+				
+				if (res.media != undefined) {
+					tag.media = res.media;
+				}
+			}
+			
+			tag.onreadystatechange= function () {
+				if (this.readyState == 'complete') fn();
+			}
+			tag.onload = fn;
+			
+			this.batches[batchId].push(resourceId);
+		}
+		
+	},
+	
+	_resourceDoneLoading: function(batchId, resourceId) {
+		if (this.batches[batchId] == undefined) {
+			return false;
+		}
+		
+		this.batches[batchId].erase(resourceId);
+		
+		if (!this.batches[batchId].length) {
+			var callback = this.batchesCallback[batchId];
+			
+			delete this.batches[batchId];
+			delete this.batchesCallback[batchId];
+			
+			callback();
+		}
+	}
+};
