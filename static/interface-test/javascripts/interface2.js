@@ -25,14 +25,18 @@ agent_tester = {
 	
 	loadTab: function() {
 		var url = 'test-pages/page-' + Number.random(1,4) + '.html';
+		var url = 'test-pages/page-' + 1 + '.html';
 		$.ajax({
 			dataType: 'text',
 			url: url,
 			success: function(data) {
 				//var page = new DeskPRO.Agent.Interface.PageFragment(data);
-				var id = Orb.uuid();
+				var page = new DeskPRO.Agent.Interface.PageFragment.Ticket(data);
 				var title = /<!\-\-\(TABTITLE:(.*?)\)\-\->/.exec(data)[1];
-				DeskPRO_Window.getPanedShell().addTabHtml(id, title, data);
+				
+				page.setTitle(title);
+				
+				DeskPRO_Window.getPanedShell().addTabPage(page);
 			}
 		});
 	}
@@ -346,6 +350,15 @@ DeskPRO.Agent.Interface.Shells.ThreePaned = new Class({
 		page.initPage($('#pane_list'));
 	},
 	
+	addTabPage: function(page) {
+		this.tabManager.addTab(Orb.uuid(), {
+			html: page.getHtml(),
+			title: page.getTitle(),
+			callback_render: function(data, container, tabManager) {
+				page.initPage(container);
+			}
+		});
+	},
 	
 	/**
 	 * Add a new tab to the tab strip and manager.
@@ -478,7 +491,7 @@ DeskPRO.Interface.PageFragment = new Class({
 	 * @param {jQuery} el
 	 */
 	initPage: function(el) {
-		
+
 	}
 });
 
@@ -503,6 +516,56 @@ DeskPRO.Agent.Interface.PageFragment.ListPane = new Class({
 	}
 });
 
+DeskPRO.Agent.Interface.PageFragment.Ticket = new Class({
+	Extends: DeskPRO.Interface.PageFragment,
+	
+	title: 'Untitled',
+	
+	setTitle: function(title) {
+		this.title = title;
+	},
+	
+	getTitle: function() {
+		return this.title;
+	},
+	
+	initPage: function(el) {
+		var self = this;
+		$('.person-overview', el).mouseover(function(event) {
+			self.openPopOut(el, event);
+		});
+	},
+	
+	openPopOut: function(el, event) {
+		var orig = $('.person-overview', el);
+		var popout = $('.person-popout', el);
+		popout.detach().appendTo('body');
+		
+		var pos = orig.offset();
+		
+		popout.css({
+			'position': 'absolute',
+			'top': (pos.top - 30),
+			'left': (pos.left - popout.outerWidth() + 1),
+			'display': 'block',
+			'z-index': 9999998
+		});
+		
+		var popout_overview = $('.person-overview-popout', el);
+		popout_overview.detach().appendTo('body');
+		
+		popout_overview.css({
+			'position': 'absolute',
+			'top': pos.top,
+			'left': pos.left,
+			'display': 'block',
+			'width': orig.width(),
+			'height': orig.height(),
+			'z-index': 9999999
+		});
+		
+	}
+});
 
 //#####################################################################
 //# DeskPRO.Interface.TabManager
@@ -522,7 +585,7 @@ DeskPRO.Interface.TabManager = new Class({
 	Implements: [Events, Options],
 	
 	options: {
-		defaultHideMode: 'remove'
+		defaultHideMode: 'hide'
 	},
 	
 	tabs: {},
@@ -632,7 +695,7 @@ DeskPRO.Interface.TabManager = new Class({
 			
 			$('#' + data.wrapperId, this.containerEl).show();
 			
-			if (Object.contains(data, 'callback_reinsert')) {
+			if (data.callback_reinsert !== undefined) {
 				data.callback_reinsert(data, this.containerEl, this);
 			}
 
@@ -651,14 +714,14 @@ DeskPRO.Interface.TabManager = new Class({
 	
 			el.show();
 
-			if (Object.contains(data, 'callback_render')) {
+			if (data.callback_render !== undefined) {
 				data.callback_render(data, this.containerEl, this);
 			}
 			
 			this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId, this.containerEl), this]);
 		}
 		
-		if (Object.contains(data, 'callback_activate')) {
+		if (data.callback_activate !== undefined) {
 			data.callback_activate(data, this.containerEl, this);
 		}
 
@@ -701,7 +764,7 @@ DeskPRO.Interface.TabManager = new Class({
 			$('#' + data.wrapperId, this.containerEl).hide();
 		}
 		
-		if (Object.contains(data, 'callback_deactivate')) {
+		if (data.callback_deactivate !== undefined) {
 			data.callback_deactivate(data, this.containerEl, this);
 		}
 		
@@ -729,7 +792,7 @@ DeskPRO.Interface.TabManager = new Class({
 		var data = this.tabs[id];
 		delete this.tabs[id];
 		
-		if (Object.contains(data, 'callback_remove')) {
+		if (data.callback_remove !== undefined) {
 			data.callback_delete();
 		}
 		
