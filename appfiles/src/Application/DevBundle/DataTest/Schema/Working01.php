@@ -7,7 +7,7 @@ class Working01 extends AbstractSchema
 		public function testCategory2()
 	{
 		$sql = "
-			SELECT COUNT(*)
+			SELECT id
 			FROM tickets
 			WHERE
 				category_id = 2
@@ -17,7 +17,7 @@ class Working01 extends AbstractSchema
 	public function testCategory()
 	{
 		$sql = "
-			SELECT COUNT(*)
+			SELECT id
 			FROM tickets
 			WHERE
 				category_id IN (1, 4)
@@ -29,7 +29,7 @@ class Working01 extends AbstractSchema
 	public function testCategoryDepartment()
 	{
 		$sql = "
-			SELECT COUNT(*)
+			SELECT id
 			FROM tickets
 			WHERE
 				category_id = 4
@@ -42,7 +42,7 @@ class Working01 extends AbstractSchema
 	public function testCategoryDepartmentAgent()
 	{
 		$sql = "
-			SELECT COUNT(*)
+			SELECT id
 			FROM tickets
 			WHERE
 				category_id IN (1, 4)
@@ -151,15 +151,16 @@ class Working01 extends AbstractSchema
 	public function testComplicatedQuery1()
 	{
 		$rand_tech = mt_rand(1,15);
+		$rand_department = mt_rand(2,4);
 
-		$sql = "SELECT SQL_NO_CACHE *
+		$sql = "SELECT *
 FROM tickets
 LEFT JOIN ticket_field_data ON (ticket_field_data.ticket_id = tickets.id AND ticket_field_data.field_id = 1)
 LEFT JOIN ticket_participants ON (ticket_participants.ticket_id = tickets.id)
 WHERE
-	tickets.department_id IN (1, 3)
-	AND (tickets.tech_id = $rand_tech OR ticket_participants.person_id = $rand_tech)
+	tickets.department_id IN (1, $rand_department)
 	AND ticket_field_data.value_int = 10
+	AND (tickets.tech_id = $rand_tech OR ticket_participants.person_id = $rand_tech)
 ";
 
 		return $sql;

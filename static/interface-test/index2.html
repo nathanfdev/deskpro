@@ -17,12 +17,13 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Interface.Window();
+			agent_tester.loadTicketPane();
 		});
 	</script>
 </head>
 <body>
 
-<div id="window_head">
+<div id="window_head" class="ui-layout-north">
 	<div id="window_head_top">
 		<div class="logo">DeskPRO</div>
 		<div class="current-user">
@@ -38,17 +39,18 @@
 	</div>
 </div>
 
-<div id="pane_shell">
-	<div id="pane_nav">
-		Nav
+<div id="pane_shell" class="ui-layout-center">
+	<div id="pane_nav" class="ui-layout-west">
+
 	</div>
-	<div id="pane_shell_inner">
-		<div id="pane_list">
-			List
+	<div id="pane_shell_inner" class="ui-layout-center">
+		<div id="pane_list" class="ui-layout-west">
+
 		</div>
-		<div id="pane_content">
+		<div id="pane_content" class="ui-layout-center">
 			<div id="pane_tabbar">
 				<ul id="pane_tabs"></ul>
+				<div class="close-btn">x</div>
 			</div>
 			<div id="page" class="ui-layout-content">
 

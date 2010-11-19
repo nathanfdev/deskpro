@@ -1,3 +1,44 @@
+agent_tester = {
+	loadTicketPane: function() {
+		$.ajax({
+			dataType: 'text',
+			url: 'test-pages/pane-nav-tickets.html',
+			success: function(data) {
+				var page = new DeskPRO.Agent.Interface.PageFragment.NavPane(data);
+				DeskPRO_Window.getPanedShell().setNavPanePage(page);
+			}
+		});
+	},
+	
+	loadListPane: function() {
+		
+		var url = 'test-pages/list-' + Number.random(1,3) + '.html';
+		$.ajax({
+			dataType: 'text',
+			url: url,
+			success: function(data) {
+				var page = new DeskPRO.Agent.Interface.PageFragment.ListPane(data);
+				DeskPRO_Window.getPanedShell().setListPanePage(page);
+			}
+		});
+	},
+	
+	loadTab: function() {
+		var url = 'test-pages/page-' + Number.random(1,4) + '.html';
+		$.ajax({
+			dataType: 'text',
+			url: url,
+			success: function(data) {
+				//var page = new DeskPRO.Agent.Interface.PageFragment(data);
+				var id = Orb.uuid();
+				var title = /<!\-\-\(TABTITLE:(.*?)\)\-\->/.exec(data)[1];
+				DeskPRO_Window.getPanedShell().addTabHtml(id, title, data);
+			}
+		});
+	}
+};
+
+
 Orb.createNamespace('DeskPRO.Agent.Interface');
 
 /**
@@ -13,33 +54,30 @@ DeskPRO.Agent.Interface.Window = new Class({
 		
 		$('body').layout({
 			north: {
-				paneSelector: '#window_head',
+				//paneSelector: '#window_head',
 				spacing_open: 0,
 				spacing_closed: 0,
-				size: 50
+				size: 55
 			},
 			center: {
-				paneSelector: '#pane_shell'
+				//paneSelector: '#pane_shell'
 			}
 		});
 		
-		var pane = new DeskPRO.Agent.Interface.Shells.Pane();
-		pane.addTabHtml('tab1',  'Tab 1', '<b>Tab 1</b>');
-		pane.addTabHtml('tab2',  'Tab 2', '<b>Tab 2</b>');
-		pane.addTabHtml('tab3',  'Tab 3', '<b>Tab 3</b>');
-		pane.addTabHtml('tab4',  'Tab 4', '<b>Tab 4</b>');
+		var pane = new DeskPRO.Agent.Interface.Shells.ThreePaned();
+		this.addShell('paned', pane);
 	},
 	
-	addShell: function(name, shell) {
-		this.shells[name] = shell;
+	addShell: function(id, shell) {
+		this.shells[id] = shell;
 	},
 	
-	getShell: function(name) {
-		return this.shells[name];
+	getShell: function(id) {
+		return this.shells[id];
 	},
 	
-	getPaneShell: function() {
-		return this.getShell('pane');
+	getPanedShell: function() {
+		return this.getShell('paned');
 	}
 });
 
@@ -59,12 +97,15 @@ Orb.createNamespace('DeskPRO.Agent.Interface.Shells');
  *
  * The content area has a tabbed interface.
  */
-DeskPRO.Agent.Interface.Shells.Pane = new Class({
+DeskPRO.Agent.Interface.Shells.ThreePaned = new Class({
 	el: null,
 	htmlEl: null,
 	
 	tabManager: null,
 	tabStrip: null,
+	
+	navPanePage: null,
+	listPanePage: null,
 	
 	initialize: function() {
 		this.el = $('#pane_shell');
@@ -72,19 +113,23 @@ DeskPRO.Agent.Interface.Shells.Pane = new Class({
 		
 		this.el.layout({
 			west: {
-				paneSelector: '#pane_nav'
+				//paneSelector: '#pane_nav'
+				size: 200,
+				spacing_open: 2
 			},
 			center: {
-				paneSelector: '#pane_shell_inner'
+				//paneSelector: '#pane_shell_inner'
 			}
 		});
 		
 		$('#pane_shell_inner').layout({
 			west: {
-				paneSelector: '#pane_list'
+				//paneSelector: '#pane_list'
+				size: '40%',
+				spacing_open: 2
 			},
 			center: {
-				paneSelector: '#pane_content'
+				//paneSelector: '#pane_content'
 			}
 		});
 		
@@ -96,8 +141,25 @@ DeskPRO.Agent.Interface.Shells.Pane = new Class({
 		this.tabManager.addEvents({
 			addTab: this._onTabAdd.bind(this),
 			activateTab: this._onTabActivate.bind(this),
-			deactivateTab: this._onTabDeactivate.bind(this)
+			deactivateTab: this._onTabDeactivate.bind(this),
+			removeTab: this._onTabRemove.bind(this)
 		});
+		
+		$('#pane_tabbar .close-btn').click(function() {
+			self.tabManager.removeTab(self.tabManager.getActiveTabId());
+		});
+	},
+	
+	setNavPanePage: function(page) {
+		this.navPanePage = page;
+		$('#pane_nav').html(page.getHtml());
+		page.initPage($('#pane_nav'));
+	},
+	
+	setListPanePage: function(page) {
+		this.listPanePage = page;
+		$('#pane_list').html(page.getHtml());
+		page.initPage($('#pane_list'));
 	},
 	
 	
@@ -144,6 +206,10 @@ DeskPRO.Agent.Interface.Shells.Pane = new Class({
 	_onTabActivate: function(tabData) {
 		$('li', this.tabStrip).removeClass('tab-active');
 		$('#' + tabData.btnId, this.tabStrip).addClass('tab-active');
+	},
+	
+	_onTabRemove: function(tabData) {
+		$('#' + tabData.btnId).remove();
 	}
 });
 
@@ -154,6 +220,8 @@ DeskPRO.Agent.Interface.Shells.Pane = new Class({
 //#####################################################################
 //# DeskPRO.Interface.PageFragment
 //#####################################################################
+
+Orb.createNamespace('DeskPRO.Interface');
 
 /**
  * A generic page fragment is any kind of page we'll spit into the content
@@ -215,10 +283,41 @@ DeskPRO.Interface.PageFragment = new Class({
 		}
 		
 		Orb.resourceLoader.loadBatch(batch, callback);
+	},
+	
+	
+	
+	/**
+	 * Should be called after all resources are laoded and after the
+	 * HTML is in the dom.
+	 *
+	 * @param {jQuery} el
+	 */
+	initPage: function(el) {
+		
 	}
 });
 
+Orb.createNamespace('DeskPRO.Agent.Interface.PageFragment');
+DeskPRO.Agent.Interface.PageFragment.NavPane = new Class({
+	Extends: DeskPRO.Interface.PageFragment,
+	
+	initPage: function(el) {
+		$('li', el).click(function() {
+			agent_tester.loadListPane();
+		});
+	}
+});
 
+DeskPRO.Agent.Interface.PageFragment.ListPane = new Class({
+	Extends: DeskPRO.Interface.PageFragment,
+	
+	initPage: function(el) {
+		$('tr', el).click(function() {
+			agent_tester.loadTab();
+		});
+	}
+});
 
 
 //#####################################################################
@@ -261,7 +360,7 @@ DeskPRO.Interface.TabManager = new Class({
 	 * @return {String}
 	 */
 	getActiveTabId: function() {
-		return this.currentTabId();
+		return this.currentTabId;
 	},
 	
 	
@@ -288,7 +387,7 @@ DeskPRO.Interface.TabManager = new Class({
 	 * are special:
 	 * - html: The HTML for the tab that will be rendered
 	 * - id: Reserverd, is the id you pass
-	 * - hideMode: 'remove' or 'detach' depending on mode. Defaults to options.defaultHideMode
+	 * - hideMode: 'remove' or 'hide' depending on mode. Defaults to options.defaultHideMode
 	 *
 	 * @param {String} id A unique ID (unique to this manager)
 	 * @param {Object} data Data
@@ -300,9 +399,13 @@ DeskPRO.Interface.TabManager = new Class({
 		
 		data.id = id;
 		
-		if (data['hideMode'] != undefined) {
+		if (data['hideMode'] == undefined) {
 			data.hideMode = this.options.defaultHideMode;
 		}
+		
+		data.wrapperId = Orb.getUniqueId('tab_');
+		data.isInserted = false;
+		data.html = '<div id="'+data.wrapperId+'" style="display:none">' + data.html + '</div>';
 
 		this.tabs[id] = data;
 		
@@ -329,42 +432,46 @@ DeskPRO.Interface.TabManager = new Class({
 		
 		this.isActivating = true;
 		
+		if (this.currentTabId) {
+			this.deactivateCurrentTab();
+		}
+		
 		var data = this.tabs[id];
 		
 		//----------------------------------------
 		// If we kept data nodes, we can just reinsert them
 		//----------------------------------------
 		
-		if (data.domNodes != undefined) {
+		if (data.isInserted && data.hideMode == 'hide') {
 			
-			console.log('Reinserting tab nodes: %s', id);
+			console.log('Re-showing tab node: %s', id);
 			
-			this.containerEl.append(data.domNodes);
+			$('#' + data.wrapperId, this.containerEl).show();
 			
 			if (Object.contains(data, 'callback_reinsert')) {
 				data.callback_reinsert(data, this.containerEl, this);
 			}
-			
-			delete data.domNodes;
 
 			this.fireEvent('activateTabReinsert', [data, this.containerEl, this]);
 
 
 		//----------------------------------------
-		// Otherwise we're re-rendering
+		// Otherwise we're re-rendering or inserting for the first time
 		//----------------------------------------
 		
 		} else {
-			
 			console.log('Rendering tab content: %s', id);
-			
-			this.containerEl.html(data.html);
-			
+
+			var el = $(data.html).appendTo(this.containerEl);
+			data.isInserted = true;
+	
+			el.show();
+
 			if (Object.contains(data, 'callback_render')) {
 				data.callback_render(data, this.containerEl, this);
 			}
 			
-			this.fireEvent('activateTabRender', [data, this.containerEl, this]);
+			this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId, this.containerEl), this]);
 		}
 		
 		if (Object.contains(data, 'callback_activate')) {
@@ -396,13 +503,18 @@ DeskPRO.Interface.TabManager = new Class({
 		
 		// Removing
 		if (data.hideMode == 'remove') {
-			this.containerEl.empty();
-			delete data.domNodes;
+			
+			console.log('Removing tab content: %o', this.currentTabId);
+			
+			$('#' + data.wrapperId, this.containerEl).remove();
+			
+			data.isInserted = false;
 
-		// detach
+		// hide
 		} else {
-			data.domNodes = this.containerEl.children();
-			this.containerEl.children().detach();
+			
+			console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
+			$('#' + data.wrapperId, this.containerEl).hide();
 		}
 		
 		if (Object.contains(data, 'callback_deactivate')) {
@@ -422,12 +534,12 @@ DeskPRO.Interface.TabManager = new Class({
 	 * @param {String} id The tab ID
 	 */
 	removeTab: function(id) {
-		if (this.tabs[id] != undefined) {
+		if (this.tabs[id] == undefined) {
 			return false;
 		}
 		
 		if (this.currentTabId == id) {
-			this.deactivateTab();
+			this.deactivateCurrentTab();
 		}
 		
 		var data = this.tabs[id];
@@ -437,7 +549,14 @@ DeskPRO.Interface.TabManager = new Class({
 			data.callback_delete();
 		}
 		
+		$('#' + data.wrapperId, this.containerEl).remove();
+		
 		this.fireEvent('removeTab', [data, this]);
+		
+		var last_tab_id = Object.keys(this.tabs).getLast();
+		if (last_tab_id) {
+			this.activateTab(last_tab_id);
+		}
 	}
 });
 
