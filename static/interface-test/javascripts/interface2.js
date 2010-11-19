@@ -43,12 +43,27 @@ Orb.createNamespace('DeskPRO.Agent.Interface');
 
 /**
  * The super duper Window that connects controls from all over the interface.
- * So right now this is just mainly interacting with the 3-paned shell,
- * but we'll add connecting-logic for sounds and notifications and such here as well.
+ *
+ * Contains "shells": A shell is a major part of the interface. Right now, and perhaps
+ * always, we only have the three pane interface. But it is possible to for example,
+ * completely hide the three-panes and show a totally new layout. A super-tab if you will.
+ *
+ * Contains a registry for global app data.
+ *
+ * Is responsible for "routing" and loading data. The router uses strings and decides where
+ * they should be loaded (and how). For example, "navpane:filters/", the first part says it'll
+ * be a navpane fragment. The second part is a simple URL we can load via AJAX.
+ *
+ * Global events system: Objects can listen to various named events on the window to recieve
+ * notifications for some message.
  */
 DeskPRO.Agent.Interface.Window = new Class({
 	
+	Implements: Events,
+	
 	shells: {},
+	routePrefixes: {},
+	registry: {},
 
 	initialize: function() {
 		
@@ -66,6 +81,11 @@ DeskPRO.Agent.Interface.Window = new Class({
 		
 		var pane = new DeskPRO.Agent.Interface.Shells.ThreePaned();
 		this.addShell('paned', pane);
+		
+		// Set ourselves up as the first route listener
+		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
+		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
+		this.addPageRouteLoader('ticket', this.loadRoute.bind(this));
 	},
 	
 	addShell: function(id, shell) {
@@ -78,10 +98,166 @@ DeskPRO.Agent.Interface.Window = new Class({
 	
 	getPanedShell: function() {
 		return this.getShell('paned');
+	},
+	
+	
+	
+	/**
+	 * Add a loader for a particular prefix.
+	 *
+	 * @param {String} prefix The prefix to lisen for. Eg "navpane:tickets"
+	 * @param {Function} callback The function to call when the prefix is used
+	 */
+	addPageRouteLoader: function(prefix, callback) {
+		if (this.routePrefixes[prefix] == undefined) {
+			this.routePrefixes[prefix] = [];
+		}
+		
+		this.routePrefixes[prefix].push(callback);
+	},
+	
+	
+	
+	/**
+	 * Loads a route.
+	 * 
+	 * @param {String} route The route to match, like navpane:tickets:filters
+	 */
+	runPageRoute: function(route) {
+
+		var sections = route.split(':');
+		var master = sections.shift();
+		var url = sections.pop();
+
+		var data = {
+			'route': route,
+			'master': master,
+			'sections': sections,
+			'url': url,
+			stopListeners: false
+		};
+		
+		var found_listener = false;
+		
+		Object.each(this.routePrefixes, function(listeners, prefix) {
+			if (route.indexOf(prefix) == 0) {
+				Array.each(listeners, function(callback) {
+					callback(data);
+					found_listener = true;
+				});
+				if (data.stopListeners) {
+					return true;
+				}
+			}
+		}, this);
+		
+		if (!found_listener) {
+			console.warn('Unknown route: %s', route);
+		}
+	},
+	
+	
+
+	/**
+	 * Loads a route attached to an element. Useful for quickly assigning click events.
+	 *
+	 * @param {jQuery} el The element to inspect for a route
+	 */
+	runPageRouteFromElement: function(el) {
+
+		el = $(el);
+		
+		if (!el.data('route')) {
+			console.warn('Element has no route: %o', el);
+		}
+		
+		this.runPageRoute(el.data('route'));
+	},
+	
+	
+	
+	/**
+	 * Load route data into the interface.
+	 *
+	 * @param {Object} routeData
+	 */
+	loadRoute: function(routeData) {
+		switch (routeData.master) {
+			case 'navpane':
+				this.loadNavPane(routeData.url);
+				break;
+				
+			case 'listpane':
+				this.loadListPane(routeData.url);
+				break;
+			
+			case 'ticket':
+				this.loadPage(routeData.url, 'ticket');
+				break;
+		}
+	},
+	
+	
+	
+	/**
+	 * Load a URL and treat it as a nav pane.
+	 *
+	 * @param {String} url The URL of the nav pane
+	 */
+	loadNavPane: function(url) {
+		agent_tester.loadTicketPane();
+	},
+	
+	
+	
+	/**
+	 * Load a URL and treat it as a list pane.
+	 *
+	 * @param {String} url The URL of the list pane.
+	 */
+	loadListPane: function(url) {
+		agent_tester.loadListPane();
+	},
+	
+	
+	
+	/**
+	 * Load a URL and treat and put it into the tabbed pane.
+	 *
+	 * @param {String} url The URL of the page
+	 */
+	loadPage: function(url) {
+		agent_tester.loadTab();
+	},
+	
+	
+	
+	/**
+	 * Get a value from the registry.
+	 *
+	 * @param {String} id The ID of the item
+	 * @return mixed
+	 */
+	get: function(id) {
+		if (this.registry[id] === undefined) {
+			return null;
+		}
+		
+		return this.registry[id];
+	},
+	
+	
+	
+	/**
+	 * Add or reset a value in the registry.
+	 *
+	 * @param {String} id The ID of the item
+	 * @param mixed value The value of the item
+	 */
+	set: function(id, value) {
+		this.registry[id] = value;
 	}
 });
-
-
 
 
 
@@ -111,10 +287,14 @@ DeskPRO.Agent.Interface.Shells.ThreePaned = new Class({
 		this.el = $('#pane_shell');
 		this.htmlEl = $(this.el).get(0);
 		
+		//------------------------------
+		// Set up the layout
+		//------------------------------
+		
 		this.el.layout({
 			west: {
 				//paneSelector: '#pane_nav'
-				size: 200,
+				size: 230,
 				spacing_open: 2
 			},
 			center: {
@@ -132,6 +312,10 @@ DeskPRO.Agent.Interface.Shells.ThreePaned = new Class({
 				//paneSelector: '#pane_content'
 			}
 		});
+		
+		//------------------------------
+		// Set up the tab strip
+		//------------------------------
 		
 		this.tabStrip = $('#pane_tabs');
 		this.tabStrip.click(this._tabStripClick.bind(this));
@@ -304,7 +488,7 @@ DeskPRO.Agent.Interface.PageFragment.NavPane = new Class({
 	
 	initPage: function(el) {
 		$('li', el).click(function() {
-			agent_tester.loadListPane();
+			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	}
 });
@@ -314,7 +498,7 @@ DeskPRO.Agent.Interface.PageFragment.ListPane = new Class({
 	
 	initPage: function(el) {
 		$('tr', el).click(function() {
-			agent_tester.loadTab();
+			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	}
 });
