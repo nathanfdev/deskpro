@@ -1,5 +1,12 @@
 var Orb = {};
 
+if (window.console === undefined) {
+	window.console = {};
+	['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
+		window.console[v] = function() { };
+	});
+}
+
 /**
  * Create a namespace.
  *
