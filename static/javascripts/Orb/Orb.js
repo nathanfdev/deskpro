@@ -34,8 +34,8 @@ Orb.getUniqueId = function(prefix) {
 	
 	var id = '';
 	do {
-		id = prefix + Date.now() + Math.floor(Math.random()*1001);
-	} while ($el(id));
+		id = prefix + Orb.uuid();
+	} while (document.getElementById(id));
 	
 	return id;
 };
@@ -156,7 +156,8 @@ Orb.resourceLoader = {
 		this.batches[batchId] = [];
 		this.batchesCallback[batchId] = callback;
 		
-		while (var res = resources.shift()) {
+		var res = null;
+		while (res = resources.shift()) {
 			var resourceId = Orb.uuid();
 			
 			var fn = function() {
