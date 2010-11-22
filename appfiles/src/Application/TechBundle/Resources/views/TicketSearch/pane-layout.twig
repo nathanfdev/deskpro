@@ -1,0 +1,14 @@
+<ul class="side-nav">
+	<li data-route="navpane:{% route 'tech_ticketsearch_filterspane' %}" class="active"><span class="filters">Filters</span></li>
+	<li data-route="{% route 'tech_ticketsearch_overviewpane' %}"><span class="overview">Overview</span></li>
+	<li data-route="navpane:{% route 'tech_ticketsearch_flaggedpane' %}"><span class="flagged">Flagged</span></li>
+</ul>
+
+<div class="main-nav with-side-nav">
+	<div class="top-box ui-layout-north">
+		Top Bit
+	</div>
+	<div class="ui-layout-center">
+		{% block pane_content %}{% endblock %}
+	</div>
+</div>

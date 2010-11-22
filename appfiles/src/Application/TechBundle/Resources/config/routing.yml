@@ -150,6 +150,21 @@ tech_people_ajaxsave:
   defaults: { _controller: TechBundle:Person:ajaxSave }
   requirements: { person_id: "\d+" }
 
+tech_peoplesearch_perform:
+  pattern: /people-search/search
+  defaults: { _controller: TechBundle:PeopleSearch:performSearch }
+
+tech_peoplesearch:
+  pattern: /people-search
+  defaults: { _controller: TechBundle:PeopleSearch:search }
+
+tech_peoplesearch_labelspane:
+  pattern: /people-search/filters-pane
+  defaults: { _controller: TechBundle:PeopleSearch:labelsPane }
+
+tech_peoplesearch_directorypane:
+  pattern: /people-search/directory-pane
+  defaults: { _controller: TechBundle:PeopleSearch:directoryPane }
 
 ################################################################################
 # Person Fields
@@ -172,3 +187,12 @@ admin_personfields_test:
   pattern: /person-fields/:field_id/test
   defaults: { _controller: TechBundle:PersonFields:test }
   requirements: { field_id: "\d+" }
+
+
+################################################################################
+# Ticket Search
+################################################################################
+
+tech_ticketsearch_filterspane:
+  pattern: /ticket-search/filters-pane
+  defaults: { _controller: TechBundle:TicketSearch:filtersPane }

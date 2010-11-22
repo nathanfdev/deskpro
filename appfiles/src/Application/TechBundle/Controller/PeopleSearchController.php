@@ -37,4 +37,40 @@ class PeopleSearchController extends AbstractController
 			'people_list' => $people_list
 		));
 	}
+
+	############################################################################
+	# /tech/people-search                                      tech_peoplesearch
+	############################################################################
+
+	public function searchAction()
+	{
+		return $this->render('TechBundle:PeopleSearch:search');
+	}
+
+	############################################################################
+	# /tech/people-search/search                       tech_peoplesearch_perform
+	############################################################################
+
+	public function performSearchAction()
+	{
+		$people_list = $this->em->createQuery("
+			SELECT p, p_email
+			FROM CoreBundle:Person p
+			LEFT JOIN p.primary_email p_email
+			ORDER BY p.id DESC
+		")->getResult();
+
+		return $this->render('TechBundle:PeopleSearch:search_results', array(
+			'people_list' => $people_list
+		));
+	}
+
+	############################################################################
+	# /tech/people-search/labels-pane               tech_peoplesearch_labelspane
+	############################################################################
+
+	public function labelsPaneAction()
+	{
+		return $this->render('TechBundle:PeopleSearch:pane-labels');
+	}
 }

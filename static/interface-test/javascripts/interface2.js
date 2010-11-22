@@ -1,8 +1,16 @@
 agent_tester = {
-	loadTicketPane: function() {
+	loadTicketPane: function(url) {
+		
+		var load_url = 'test-pages/pane-nav-tickets.html';
+		
+		if (!url) url ='';
+		if (url.indexOf('user') != -1) {
+			load_url = 'test-pages/pane-nav-users.html';
+		}
+		
 		$.ajax({
 			dataType: 'text',
-			url: 'test-pages/pane-nav-tickets.html',
+			url: load_url,
 			success: function(data) {
 				var page = new DeskPRO.Agent.Interface.PageFragment.NavPane(data);
 				DeskPRO_Window.getPanedShell().setNavPanePage(page);
@@ -90,6 +98,10 @@ DeskPRO.Agent.Interface.Window = new Class({
 		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('ticket', this.loadRoute.bind(this));
+		
+		$('#window_header_nav li').click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
 	},
 	
 	addShell: function(id, shell) {
@@ -209,7 +221,7 @@ DeskPRO.Agent.Interface.Window = new Class({
 	 * @param {String} url The URL of the nav pane
 	 */
 	loadNavPane: function(url) {
-		agent_tester.loadTicketPane();
+		agent_tester.loadTicketPane(url);
 	},
 	
 	
@@ -356,6 +368,9 @@ DeskPRO.Agent.Interface.Shells.ThreePaned = new Class({
 			title: page.getTitle(),
 			callback_render: function(data, container, tabManager) {
 				page.initPage(container);
+			},
+			callback_delete: function(data, container, tabManager) {
+				page.destroyPage(container);
 			}
 		});
 	},
@@ -431,6 +446,7 @@ DeskPRO.Interface.PageFragment = new Class({
 
 	scripts: [],
 	stylesheets: [],
+	destroyEls: [],
 	html: '',
 	
 	initialize: function(html, scripts, stylesheets) {
@@ -488,11 +504,26 @@ DeskPRO.Interface.PageFragment = new Class({
 	 * Should be called after all resources are laoded and after the
 	 * HTML is in the dom.
 	 *
-	 * @param {jQuery} el
+	 * @param {jQuery} el The wrapper element
 	 */
 	initPage: function(el) {
 
-	}
+	},
+	
+	
+	
+	/**
+	 * Called after the page should be destroyed. Any specific cleanup required can be done
+	 * here if for example an element was moved etc.
+	 *
+	 * @param {jQuery} el The wrapper element
+	 */
+	destroyPage: function(el) {
+		var del = null;
+		while (del = this.destroyEls.pop()) {
+			$(del).remove();
+		}
+	},
 });
 
 Orb.createNamespace('DeskPRO.Agent.Interface.PageFragment');
@@ -520,6 +551,11 @@ DeskPRO.Agent.Interface.PageFragment.Ticket = new Class({
 	Extends: DeskPRO.Interface.PageFragment,
 	
 	title: 'Untitled',
+
+	popout: null,
+	popout_overview: null,
+	
+	isMouseOverPopout: false,
 	
 	setTitle: function(title) {
 		this.title = title;
@@ -532,38 +568,71 @@ DeskPRO.Agent.Interface.PageFragment.Ticket = new Class({
 	initPage: function(el) {
 		var self = this;
 		$('.person-overview', el).mouseover(function(event) {
+			self.isMouseOverPopout = true;
 			self.openPopOut(el, event);
+		}).mouseout(function() {
+			self.isMouseOverPopout = false;
+			self.closePopoutOnmouseout.delay(500, self);
 		});
+		
+		
+		this.popout = $('.person-popout', el);
+		this.popout.mouseover(function() {
+			self.isMouseOverPopout = true;
+		}).mouseout(function() {
+			self.isMouseOverPopout = false;
+			self.closePopoutOnmouseout.delay(500, self);
+		});
+		this.popout.detach().appendTo('body');
+		
+		this.popout_overview = $('.person-overview-popout', el);
+		this.popout_overview.mouseover(function() {
+			self.isMouseOverPopout = true;
+		}).mouseout(function() {
+			self.isMouseOverPopout = false;
+			self.closePopoutOnmouseout.delay(500, self);
+		});
+		this.popout_overview.detach().appendTo('body');
+	},
+	
+	destroyPage: function(el) {
+		this.popout.remove();
+		this.popout_overview.remove();
+		
+		this.popout = null;
+		this.popout_overview = null;
 	},
 	
 	openPopOut: function(el, event) {
 		var orig = $('.person-overview', el);
-		var popout = $('.person-popout', el);
-		popout.detach().appendTo('body');
-		
 		var pos = orig.offset();
 		
-		popout.css({
+		this.popout.css({
 			'position': 'absolute',
 			'top': (pos.top - 30),
-			'left': (pos.left - popout.outerWidth() + 1),
+			'left': (pos.left - this.popout.outerWidth() + 1),
 			'display': 'block',
 			'z-index': 9999998
 		});
 		
-		var popout_overview = $('.person-overview-popout', el);
-		popout_overview.detach().appendTo('body');
-		
-		popout_overview.css({
+		this.popout_overview.css({
 			'position': 'absolute',
 			'top': pos.top,
 			'left': pos.left,
 			'display': 'block',
 			'width': orig.width(),
 			'height': orig.height(),
-			'z-index': 9999999
+			'z-index': 9999997
 		});
+	},
+	
+	closePopoutOnmouseout: function() {
+		if (this.isMouseOverPopout) {
+			return;
+		}
 		
+		this.popout.hide();
+		this.popout_overview.hide();
 	}
 });
 
@@ -792,7 +861,7 @@ DeskPRO.Interface.TabManager = new Class({
 		var data = this.tabs[id];
 		delete this.tabs[id];
 		
-		if (data.callback_remove !== undefined) {
+		if (data.callback_delete !== undefined) {
 			data.callback_delete();
 		}
 		

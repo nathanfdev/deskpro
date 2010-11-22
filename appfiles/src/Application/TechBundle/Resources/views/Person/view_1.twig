@@ -1,6 +1,8 @@
-<script>
-pageMeta.class = 'DeskPRO.Agent.PageFragment.Page.Person';
-</script>
+{% extends 'TechBundle::layout' %}
+{% block extra_head %}
+
+{% endblock %}
+{% block content %}
 
 {% set form_url %}{% route 'tech_people_view' with ['person_id': person.id] %}{% endset %}
 {{form.renderFormTag(['action': form_url])|raw}}
@@ -85,26 +87,29 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.Page.Person';
 
 </form>
 
-{% for assoc in person.usersource_assoc %}
-	<div class="block">
-		<div class="sidebar-block">
-			<h4>
-				{{assoc.usersource.title}}:
-				{% if assoc.identity_friendly %}
-					{{assoc.identity_friendly}}
-				{% else %}
-					{{assoc.identity}}
-				{% endif %}
-			</h4>
-			<hr />
-				First used: {{assoc.created_at|date("Y-m-d")}}<br />
-				Last used: {{assoc.last_used_at|date("Y-m-d")}}<br />
-			<hr />
-			<small>
-				{% for k, v in assoc.data %}
-					{{k}}: {{v}}<br />
-				{% endfor %}
-			</small>
+{% endblock %}
+{% block sidebar %}
+	{% for assoc in person.usersource_assoc %}
+		<div class="block">
+			<div class="sidebar-block">
+				<h4>
+					{{assoc.usersource.title}}:
+					{% if assoc.identity_friendly %}
+						{{assoc.identity_friendly}}
+					{% else %}
+						{{assoc.identity}}
+					{% endif %}
+				</h4>
+				<hr />
+					First used: {{assoc.created_at|date("Y-m-d")}}<br />
+					Last used: {{assoc.last_used_at|date("Y-m-d")}}<br />
+				<hr />
+				<small>
+					{% for k, v in assoc.data %}
+						{{k}}: {{v}}<br />
+					{% endfor %}
+				</small>
+			</div>
 		</div>
-	</div>
-{% endfor %}
+	{% endfor %}
+{% endblock %}

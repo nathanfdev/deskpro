@@ -36,7 +36,7 @@ body {
 }
 
 #window_head > #window_head_top {
-	background: #24406a url(../images/topbar-bg.png) repeat-x top left;
+	background: #24406a url(../../images/topbar-bg.png) repeat-x top left;
 	border-bottom: 1px solid #151e41;
 	height: 20px;
 	overflow: hidden;
@@ -60,7 +60,7 @@ body {
 	color: #fff;
 	font-family: Helvetica, sans-serif;
 	font-size: 11px;
-	background: transparent url(../images/topbar-down-arrow.png) no-repeat right center;
+	background: transparent url(../../images/topbar-down-arrow.png) no-repeat right center;
 	padding-right: 25px;
 	margin-right: 20px;
 	cursor: pointer;
@@ -291,7 +291,7 @@ body {
 }
 
 table.list > thead > tr {
-	background: #292a29 url(../images/page-tabbar-bg.png) repeat-x top left;
+	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
 	border-bottom: #212121;
 	border-top: 1px solid #333;
 	height: 28px;
@@ -414,4 +414,22 @@ table.list > tbody > tr:hover {
 
 .person-popout > .content {
 	
+}
+
+
+
+
+
+
+
+
+
+
+
+
+.listpane-top {
+	background-color: #CBE1F2;
+	padding: 6px;
+	margin: 2px;
+	border: 1px solid #9DBAD1;
 }

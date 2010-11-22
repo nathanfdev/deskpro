@@ -28,6 +28,32 @@ Orb.createNamespace = function(namespace, obj) {
 
 
 /**
+ * Gets the actual object from a string namespace.
+ *
+ * @param {String} fullname The full namespace path
+ * @return {Object}
+ */
+Orb.getNamespacedObject = function(fullname) {
+	
+	var obj = window;
+	
+	fullname_parts = fullname.split('.');
+	
+	var part = null;
+	while (part = fullname_parts.shift()) {
+		if (obj[part] === undefined) {
+			console.warn('Orb.getNamespacedObject(%s) is an invalid name', fullname);
+		}
+		
+		obj = obj[part];
+	}
+	
+	return obj;
+};
+
+
+
+/**
  * Generate a new unique ID.
  *
  * @param {String} prefix An optional prefix
