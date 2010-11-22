@@ -1,5 +1,6 @@
 <script>
 pageMeta.class = 'DeskPRO.Agent.PageFragment.Page.Person';
+pageMeta.title = '{{ person.display_name|e(js) }}';
 </script>
 
 {% set form_url %}{% route 'tech_people_view' with ['person_id': person.id] %}{% endset %}

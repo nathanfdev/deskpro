@@ -3,9 +3,23 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.PeopleSearch';
 </script>
 
 <div class="listpane-top">
-	<form action="{% route 'tech_peoplesearch_perform' %}" method="post" class="search-form">
-		<input type="submit" value="Search" />
-	</form>
+	<div class="search-form" style="display:none">
+		<div class="toggle toggle-quick-search-form" style="float: right;">
+			Quick Search &raquo;
+		</div>
+		<form action="{% route 'tech_peoplesearch_perform' %}" method="post">
+			<input type="submit" value="Search" />
+		</form>
+	</div>
+	<div class="quick-search-form">
+		<div class="toggle toggle-search-form" style="float:right;">
+			Advanced Search &raquo;
+		</div>
+		<form action="{% route 'tech_peoplesearch_performquick' %}" method="post">
+			<input type="search" name="q" placeholder="Begin typing a name, email address, label or company ..." style="width: 350px" />
+			<img src="{% asset 'images/loading-small.gif' %}" alt="Searching..." class="quick-search-loading" style="display:none" />
+		</form>
+	</div>
 </div>
 
 <div class="search-results">

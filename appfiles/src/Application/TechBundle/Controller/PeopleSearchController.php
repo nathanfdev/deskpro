@@ -66,6 +66,34 @@ class PeopleSearchController extends AbstractController
 	}
 
 	############################################################################
+	# /tech/people-search/quick-search            tech_peoplesearch_performquick
+	############################################################################
+
+	public function performQuickSearchAction()
+	{
+		$q = $this->in->getString('q');
+
+		//TODO proper sql escape
+		$q = addslashes($q);
+
+		$people_list = $this->em->createQuery("
+			SELECT p, p_email
+			FROM CoreBundle:Person p
+			LEFT JOIN p.primary_email p_email
+			LEFT JOIN p.emails emails
+			WHERE
+				p.full_name LIKE '%$q%'
+				OR 	emails.email LIKE '%$q%'
+			ORDER BY p.id DESC
+		")->getResult();
+		//")->setParameters(array($q, $q))->getResult();
+
+		return $this->render('TechBundle:PeopleSearch:search_results', array(
+			'people_list' => $people_list
+		));
+	}
+
+	############################################################################
 	# /tech/people-search/labels-pane               tech_peoplesearch_labelspane
 	############################################################################
 

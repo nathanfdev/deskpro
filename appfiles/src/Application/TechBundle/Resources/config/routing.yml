@@ -154,6 +154,10 @@ tech_peoplesearch_perform:
   pattern: /people-search/search
   defaults: { _controller: TechBundle:PeopleSearch:performSearch }
 
+tech_peoplesearch_performquick:
+  pattern: /people-search/search-quick
+  defaults: { _controller: TechBundle:PeopleSearch:performQuickSearch }
+
 tech_peoplesearch:
   pattern: /people-search
   defaults: { _controller: TechBundle:PeopleSearch:search }

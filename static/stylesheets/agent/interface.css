@@ -14,6 +14,10 @@ body {
 	font-size: 85%;
 }
 
+input.placeholder-visible {
+	color: #999 !important;
+}
+
 #pane_shell {
 	overflow: hidden;
 }
@@ -93,7 +97,7 @@ body {
 
 
 #pane_tabbar {
-	background: #292a29 url(../images/page-tabbar-bg.png) repeat-x top left;
+	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
 	border-bottom: #212121;
 	border-top: 1px solid #333;
 	height: 28px;
@@ -432,4 +436,11 @@ table.list > tbody > tr:hover {
 	padding: 6px;
 	margin: 2px;
 	border: 1px solid #9DBAD1;
+}
+
+.listpane-top .toggle {
+	font-size: 80%;
+	color: #4D4A61;
+	border-bottom: 1px dotted #4D4A61;
+	cursor: pointer;
 }
