@@ -1,0 +1,109 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Application\CoreBundle\Entity;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+/**
+ * A custom field definition
+ *
+ * @MappedSuperclass
+ */
+class CustomDefAbstract extends \DeskPRO\Domain\DomainObject
+{
+	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @Id @Column(name="id", type="integer")
+	 * @GeneratedValue
+	 */
+	protected $id = null;
+
+	/**
+	 * Field parent
+	 *
+	 * MUST BE IMPLEMENT IN CHILD CLASS
+	 *
+	 * @var XXX
+	 * @OneToOne(targetEntity="XXX")
+	 * @JoinColumn(name="parent_id", referencedColumnName="id")
+	 */
+	//protected $parent = null;
+
+	/**
+	 * The title
+	 *
+	 * @var string
+	 * @Column(name="title", type="string", length=255)
+	 */
+	protected $title = '';
+
+	/**
+	 * The handler class
+	 *
+	 * @var string
+	 * @Column(name="handler_class", type="string", length=255)
+	 */
+	protected $handler_class;
+
+	/**
+	 * Options for the field
+	 *
+	 * @Column(name="options", type="array")
+	 */
+	protected $options = array();
+
+	/**
+	 * Field children
+	 *
+	 * MUST BE IMPLEMENT IN CHILD CLASS
+	 *
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="FormField", mappedBy="parent_id")
+	 */
+	//protected $field_children = null;
+
+	/**
+	 * @var DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 */
+	protected $_handler_instance = null;
+
+
+	public function __construct()
+	{
+		$this->field_children = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+
+	/**
+	 * Get the DeskPRO form field object that knows how to render data etc.
+	 *
+	 * @return DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 */
+	public function getHandler()
+	{
+		if ($this->_handler_instance !== null) return $this->_handler_instance;
+
+		if ($this['handler_class'] == 'x') {
+			$e = new \Exception();
+			echo $e->getTraceAsString();
+			exit;
+		}
+
+		$classname = $this['handler_class'];
+
+		$this->_handler_instance = new $classname($this);
+
+		return $this->_handler_instance;
+	}
+}

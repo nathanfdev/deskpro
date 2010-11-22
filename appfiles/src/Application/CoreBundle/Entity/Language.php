@@ -63,15 +63,6 @@ class Language extends \DeskPRO\Domain\DomainObject
 	protected $title;
 
 
-	/**
-	 * A note or description about the style
-	 *
-	 * @var string
-	 * @Column(name="note", type="text")
-	 */
-	protected $note = '';
-
-
 	public function setParentId($parent_id)
 	{
 		if ($this->id) {
@@ -79,17 +70,5 @@ class Language extends \DeskPRO\Domain\DomainObject
 		}
 
 		$this->parent_id = $parent_id;
-	}
-
-
-	/**
-	 * Load validators for use with the validator service.
-	 *
-	 * @param ClassMetadata $metadata
-	 */
-	public static function loadValidatorMetadata(ClassMetadata $metadata)
-	{
-		$metadata->addPropertyConstraint('title', new Constraints\NotBlank());
-		$metadata->addPropertyConstraint('locale', new Constraints\NotBlank());
 	}
 }

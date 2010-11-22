@@ -40,6 +40,14 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * Is this person a contact (someone we care about seeing)?
+	 *
+	 * @var bool
+	 * @Column(name="is_contact", type="boolean")
+	 */
+	protected $is_contact = true;
+
+	/**
 	 * Is this person a user (someone with login credentials)?
 	 * 
 	 * @var bool
@@ -56,29 +64,28 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $is_tech = false;
 	
 	/**
-	 * The users full name.
+	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @Column(name="full_name", type="text", nullable=true)
+	 * @Column(name="name", type="text")
 	 */
-	protected $full_name = null;
+	protected $name = '';
 
 	/**
-	 * What the user wants to be called. For example, a first name. This
-	 * is used in greetings when available.
+	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @Column(name="informal_name", type="text", nullable=true)
+	 * @Column(name="name", type="text", nullable=true)
 	 */
-	protected $informal_name = null;
+	protected $first_name = '';
 
 	/**
-	 * The users nickname, even more informal than the informal name.
+	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @Column(name="nick_name", type="text", nullable=true)
+	 * @Column(name="name", type="text", nullable=true)
 	 */
-	protected $nick_name = null;
+	protected $last_name = '';
 
 	/**
 	 * A secret string used in various hashing or encryption schemes.
@@ -106,6 +113,21 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $language = null;
 
 	/**
+	 * @var int
+	 * @Column(name="organization_id", type="integer", nullable=true)
+	 */
+	protected $organization_id = null;
+
+	/**
+	 * The users organization
+	 *
+	 * @var \Application\CoreBundle\Entity\Organization
+	 * @OneToOne(targetEntity="Organization")
+	 * @JoinColumn(name="organization_id", referencedColumnName="id")
+	 */
+	protected $organization = null;
+
+	/**
 	 * The timezone associated with this user.
 	 *
 	 * @var string
@@ -114,19 +136,11 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $timezone;
 
 	/**
-	 * An admin can enable usernames for local logins. This would be useful in cases where no email
-	 * addresses are used, so the only other identity we have is a username.
+	 * Every person has a local login capability with this password and using
+	 * an email address.
 	 *
 	 * @var string
-	 * @Column(name="username", type="string", length=255, nullable=true)
-	 */
-	protected $username = null;
-
-	/**
-	 * Every person has a local login capability with this password. Null means there is no local auth.
-	 *
-	 * @var string
-	 * @Column(name="password", type="string", length=255, nullable=true)
+	 * @Column(name="password", type="string", length=40, nullable=true)
 	 */
 	protected $password = null;
 
@@ -160,6 +174,12 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * @OneToMany(targetEntity="PersonEmail", mappedBy="person", cascade={"persist", "remove", "merge"})
 	 */
 	protected $emails;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @OneToMany(targetEntity="PersonContactData", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 */
+	protected $contact_data;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -199,17 +219,17 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The date the user was inserted into the system
 	 * 
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @Column(name="date_created",type="datetime")
 	 */
-	protected $created_at;
+	protected $date_created;
 
 	/**
 	 * The last time the user logged in
 	 *
 	 * @var \DateTime
-	 * @Column(name="last_login_at", type="datetime", nullable=true)
+	 * @Column(name="date_last_login", type="datetime", nullable=true)
 	 */
-	protected $last_login_at;
+	protected $date_last_login;
 
 	/**
 	 * If we have set a password for this user, then the plaintext version will be set here.
@@ -236,7 +256,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->created_at = new \DateTime();
+		$this->date_created = new \DateTime();
 		$this->secret_string = Strings::random(40);
 		$this->timezone = 'UTC';
 
@@ -246,6 +266,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 		$this->usergroups = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->usersource_assoc = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->personscraper_assoc = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->contact_data = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 
@@ -585,16 +606,16 @@ class Person extends \DeskPRO\Domain\DomainObject
 	{
 		if (!$time) $time = new \DateTime();
 
-		$this->last_login_at = $time;
+		$this->date_last_login = $time;
 	}
 
 
 
 	/** @PrePersist */
-	public function incCreatedAt()
+	public function _prePersist()
 	{
-		if (!$this->created_at) {
-			$this->created_at = new \DateTime();
+		if (!$this->date_created) {
+			$this->date_created = new \DateTime();
 		}
 	}
 }

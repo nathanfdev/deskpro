@@ -1,0 +1,74 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Application\CoreBundle\Entity;
+
+/**
+ * An email gateway contains info about how to read emails from an email account.
+ * 
+ * @Entity
+ * @Table(name="email_gateways")
+ */
+class EmailGateway extends \DeskPRO\Domain\DomainObject
+{
+	/**
+	 * @var int
+	 * @Id @Column(name="id", type="integer")
+	 * @GeneratedValue
+	 */
+	protected $id = null;
+
+	/**
+	 * The name of the account. Eg the email address
+	 *
+	 * @var string
+	 * @Column(name="name", type="text", length=100)
+	 */
+	protected $name = '';
+
+	/**
+	 * The connection class that handles connecting/downloading etc.
+	 *
+	 * @var string
+	 * @Column(name="connection_class", type="string", length=80)
+	 */
+	protected $connection_class;
+
+	/**
+	 * Options for the connection handler
+	 *
+	 * @Column(name="connection_options", type="array")
+	 */
+	protected $connection_options = array();
+
+	/**
+	 * The class that processes the email. For example, into tickets
+	 * or agent replies etc.
+	 *
+	 * @var string
+	 * @Column(name="processor_class", type="string", length=80)
+	 */
+	protected $processor_class;
+
+	/**
+	 * @var bool
+	 * @Column(name="is_enabled", type="boolean")
+	 */
+	protected $is_enabled = true;
+
+	/**
+	 * The last time this gateway successfully connected and checked for messages.
+	 *
+	 * @var \DateTime
+	 * @Column(name="date_last_login", type="datetime", nullable=true)
+	 */
+	protected $date_last_login = null;
+}

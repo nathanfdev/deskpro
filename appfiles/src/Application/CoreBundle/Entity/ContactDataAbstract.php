@@ -1,0 +1,125 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Application\CoreBundle\Entity;
+
+/**
+ * Contact data is stuff like address, instant messaging, phone etc.
+ * These can be applied to People and Organizations.
+ *
+ * Because of the nature, each 'data_type' uses each of the field1-field10
+ * differently. Sometimes only a single one might be used, other times multiple.
+ *
+ * @MappedSuperclass
+ */
+abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
+{
+	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @Id @Column(name="id", type="integer")
+	 * @GeneratedValue
+	 */
+	protected $id = null;
+
+	/**
+	 * The handler class
+	 *
+	 * @var string
+	 * @Column(name="handler_class", type="string", length=80)
+	 */
+	protected $handler_class;
+
+	/**
+	 * @var string
+	 * @Column(name="field_1", type="text")
+	 */
+	protected $field_1;
+
+	/**
+	 * @var string
+	 * @Column(name="field_2", type="text")
+	 */
+	protected $field_2;
+
+	/**
+	 * @var string
+	 * @Column(name="field_3", type="text")
+	 */
+	protected $field_3;
+
+	/**
+	 * @var string
+	 * @Column(name="field_4", type="text")
+	 */
+	protected $field_4;
+
+	/**
+	 * @var string
+	 * @Column(name="field_5", type="text")
+	 */
+	protected $field_5;
+
+	/**
+	 * @var string
+	 * @Column(name="field_6", type="text")
+	 */
+	protected $field_6;
+
+	/**
+	 * @var string
+	 * @Column(name="field_7", type="text")
+	 */
+	protected $field_7;
+
+	/**
+	 * @var string
+	 * @Column(name="field_8", type="text")
+	 */
+	protected $field_8;
+
+	/**
+	 * @var string
+	 * @Column(name="field_9", type="text")
+	 */
+	protected $field_9;
+
+	/**
+	 * @var string
+	 * @Column(name="field_1", type="text")
+	 */
+	protected $field_10;
+
+	/**
+	 * Instance of the handler class
+	 * @var TODO
+	 */
+	protected $_handler_instance = null;
+
+
+
+	/**
+	 * Get the DeskPRO form field object that knows how to render data etc.
+	 *
+	 * @return DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 */
+	public function getHandler()
+	{
+		if ($this->_handler_instance !== null) return $this->_handler_instance;
+
+		$classname = $this->handler_class;
+
+		$this->_handler_instance = new $classname($this);
+
+		return $this->_handler_instance;
+	}
+}

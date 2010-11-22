@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="person_emails")
+ * @Table(name="people_emails")
  */
 class PersonEmail extends \DeskPRO\Domain\DomainObject
 {
@@ -33,6 +33,13 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
+	/**
+	 * The person ID
+	 *
+	 * @var int
+	 * @Column(name="person_id", type="integer")
+	 */
+	protected $person_id;
 
 	/**
 	 * @var Application\CoreBundle\Entity\Person
@@ -40,7 +47,6 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 * @JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
-
 
 	/**
 	 * The email address
@@ -50,51 +56,48 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $email;
 
-
 	/**
 	 * @var bool
 	 * @Column(name="is_validated", type="boolean")
 	 */
 	protected $is_validated = false;
 
-
 	/**
 	 * A comment or description of the email address. For example, "work" or "home."
 	 *
 	 * @var string
-	 * @Column(name="comment", type="text")
+	 * @Column(name="comment", type="text", length=100)
 	 */
 	protected $comment = '';
 
+	/**
+	 * @var \DateTime
+	 * @Column(name="date_created",type="datetime")
+	 */
+	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @Column(name="date_validated",type="datetime", nullable=true)
 	 */
-	protected $created_at;
-
-	/**
-	 * @var \DateTime
-	 * @Column(name="validated_at",type="datetime", nullable=true)
-	 */
-	protected $validated_at = null;
+	protected $date_validated = null;
 
 
 
 	/** @PrePersist */
 	public function incCreatedAt()
 	{
-		$this->created_at = new \DateTime();
-		if ($this->is_validated AND !$this->validated_at) {
-			$this->validated_at = new \DateTime();
+		$this->date_created = new \DateTime();
+		if ($this->is_validated AND !$this->date_validated) {
+			$this->date_validated = new \DateTime();
 		}
 	}
 
 	/** @PreSave */
 	public function incValidatedAt()
 	{
-		if ($this->is_validated AND !$this->validated_at) {
-			$this->validated_at = new \DateTime();
+		if ($this->is_validated AND !$this->date_validated) {
+			$this->date_validated = new \DateTime();
 		}
 	}
 }
