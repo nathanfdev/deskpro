@@ -33,7 +33,7 @@ class PersonController extends AbstractController
 		$form = $this->_getForm($person);
 
 		if ($this->isPostRequest()) {
-			$form->setData($_POST);
+			$form->setFormData($_POST);
 			if ($form->isValid()) {
 
 				$this->em->beginTransaction();
@@ -49,16 +49,16 @@ class PersonController extends AbstractController
 
 		// All-in-one array for template
 		$custom_fields = array();
-		foreach ($form->getCustomFields() as $f) {
-			$form_field = $form['custom_fields']['field_' . $f['id']];
-			$custom_fields[] = array(
-				'id' => $f['id'],
-				'html_id' => $form_field->getFormId(),
-				'rendered_value' => $person->renderSingleFieldValue($f['id']),
-				'field_def' => $f,
-				'form_field' => $form_field
-			);
-		}
+//		foreach ($form->getCustomFields() as $f) {
+//			$form_field = $form['custom_fields']['field_' . $f['id']];
+//			$custom_fields[] = array(
+//				'id' => $f['id'],
+//				'html_id' => $form_field->getFormId(),
+//				'rendered_value' => $person->renderSingleFieldValue($f['id']),
+//				'field_def' => $f,
+//				'form_field' => $form_field
+//			);
+//		}
 
 		return $this->render('TechBundle:Person:view', array(
 			'person' => $person,
@@ -102,9 +102,8 @@ class PersonController extends AbstractController
 		$form = new \Application\TechBundle\Form\EditPerson(array('name' => 'edit_person'));
 
 		// Custom fields
-		$fields = $this->em->getRepository('CoreBundle:PersonField')->getEnabledFields();
-
-		$form->setCustomFields($fields);
+		//$fields = $this->em->getRepository('CoreBundle:PersonField')->getEnabledFields();
+		//$form->setCustomFields($fields);
 
 		$form->setPerson($person);
 

@@ -606,13 +606,20 @@ DeskPRO.Agent.Interface.PageFragment.Ticket = new Class({
 	openPopOut: function(el, event) {
 		var orig = $('.person-overview', el);
 		var pos = orig.offset();
+
+		// can use the left position of the element to roughly
+		// determine how wide the columns are
+		// so we want it to stretch as far as we can, minus some wriggle room
+		var width = pos.left - 50;
 		
 		this.popout.css({
 			'position': 'absolute',
 			'top': (pos.top - 30),
-			'left': (pos.left - this.popout.outerWidth() + 1),
+			'left': (pos.left - width),
 			'display': 'block',
-			'z-index': 9999998
+			'z-index': 9999998,
+			'width': width
+			//'overflow': 'auto'
 		});
 		
 		this.popout_overview.css({

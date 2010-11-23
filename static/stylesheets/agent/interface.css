@@ -11,7 +11,7 @@ table { border-collapse: collapse; border-spacing: 0; }
 
 body {
 	font-family: Verdana, 'Lucida Grande', Helvetica, Arial, sans-serif;
-	font-size: 85%;
+	font-size: 80%;
 }
 
 input.placeholder-visible {
@@ -443,4 +443,215 @@ table.list > tbody > tr:hover {
 	color: #4D4A61;
 	border-bottom: 1px dotted #4D4A61;
 	cursor: pointer;
+}
+
+
+
+
+
+.profile {
+
+}
+
+.profile .main {
+	margin-right: 35%;
+	padding: 8px 15px 15px 7px;
+}
+
+.profile .side {
+	position: absolute;
+	top: 0;
+	right: 0;
+	width: 33%;
+	padding: 8px 15px 15px 15px;
+}
+
+.profile .header {
+	padding-bottom: 8px;
+	border-bottom: 1px solid #eee;
+	margin-bottom: 10px;
+	font-size: 90%;
+	line-height: 130%;
+}
+
+.profile .header > h1 {
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 15pt;
+	font-weight: normal;
+	padding-bottom: 4px;
+}
+
+.profile .header > .organization > .position {
+	padding-left: 8px;
+	font-style: italic;
+	color: #A1B3AD;
+}
+
+
+
+
+.profile .section {
+	margin-bottom: 15px;
+}
+
+.profile .section > h5 {
+	display: block;
+	font-family: Tahoma, Arial, Helvetica, sans-serif;
+	font-size: 12pt;
+	font-weight: normal;
+	padding-bottom: 2px;
+	border-bottom: 2px solid #888;
+	padding: 3px;
+	cursor: pointer;
+}
+
+.profile .section.closed > h5 {
+	color: #aaa;
+	border: 1px solid #aaa;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.profile .section > div {
+	font-size: 90%;
+}
+
+.profile .section > div > dl > dt {
+	float: left;
+	font-weight: bold;
+	width: 100px;
+	padding: 6px 2px 6px 0;
+	border-top: 1px solid #ddd;
+}
+
+.profile .section > div > dl > dd {
+	margin-left: 100px;
+	padding: 6px 2px 6px 0;
+	margin-bottom: 6px;
+	border-top: 1px solid #ddd;
+}
+
+.profile .section > div > dl > dt:first, .profile .section > div > dl > dd:first {
+	border: none;
+}
+
+.profile .section > div > ul.stream {
+
+}
+
+.profile .section > div > ul.stream > li {
+	padding: 4px 0 4px 0;
+	border-bottom: 1px solid #ddd;
+}
+
+.profile .section > div > ul.stream > li a {
+	color: #747987;
+	text-decoration: none;
+}
+
+.profile .section > div > ul.stream > li > span.time {
+	float: right;
+	color: #A1B3AD;
+	font-style: italic;
+	font-size: 90%;
+}
+
+.profile .section > div > ul.stream > li > span.who {
+	
+}
+
+.profile .section > div > ul.stream > li > span.what {
+
+}
+
+.profile .section > div > ul.pages {
+	background-color: #eee;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 3px;
+	text-align: right;
+}
+
+.profile .section > div > ul.pages > li {
+	display: inline;
+	font-size: 95%;
+	cursor: pointer;
+	margin-left: 6px;
+	color: #999;
+}
+
+.profile .section > div > ul.pages > li.active {
+	text-decoration: underline;
+}
+
+
+.profile .section ul.simple {
+	margin-left: 6px;
+}
+
+.profile .section ul.simple > li {
+	padding: 4px 0 4px 0;
+	list-style-type: circle;
+	margin-left: 6px;
+}
+
+.profile .section ul.simple > li a {
+	color: #666;
+	text-decoration: none;
+}
+
+
+
+
+
+
+.profile > .side .section {
+	background-color: #eee;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.profile > .side .section > div {
+	padding: 6px;
+}
+
+
+
+
+
+
+.profile table.simple > thead > tr {
+	background: #eee;
+	border-bottom: 1px solid #ddd;
+	color: #666;
+	font-size: 8pt;
+	font-family: Arial, sans-serif;
+}
+
+.profile table.simple > thead > tr > th {
+	text-align: left;
+	color: #666;
+	padding: 4px;
+}
+
+.profile table.simple > tbody > tr {
+	border-top: 1px solid #ddd;
+}
+
+.profile table.simple > tbody > tr:nth-child(odd) {
+	background-color: #F8F8F8;
+}
+
+.profile table.simple > tbody > tr > td {
+	padding: 5px;
+	font-size: 8pt;
+}
+
+.profile table.simple > tbody > tr:hover {
+	background-color: #F5F6FA;
+	border-top: 1px solid #CCCED9;
+	border-bottom: 1px solid #CCCED9;
 }

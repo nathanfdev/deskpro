@@ -25,13 +25,13 @@ class EditPerson extends \Orb\Form\Field\Form
 	{
 		$basic_fields = new\Orb\Form\Field\FieldGroup(array('name' => 'basic_fields'));
 
-		$f = new \Orb\Form\Field\Text(array('name' => 'full_name'));
+		$f = new \Orb\Form\Field\Text(array('name' => 'first_name'));
 		$basic_fields->addField($f);
 
-		$f = new \Orb\Form\Field\Text(array('name' => 'informal_name'));
+		$f = new \Orb\Form\Field\Text(array('name' => 'last_name'));
 		$basic_fields->addField($f);
 
-		$f = new \Orb\Form\Field\Text(array('name' => 'nick_name'));
+		$f = new \Orb\Form\Field\Text(array('name' => 'name'));
 		$basic_fields->addField($f);
 
 		$f = new \Orb\Form\Field\Password(array('name' => 'password'));
@@ -72,7 +72,7 @@ class EditPerson extends \Orb\Form\Field\Form
 	public function setPerson(Person $person)
 	{
 		// Set basic values
-		$simple = array('full_name', 'informal_name', 'nick_name', 'password');
+		$simple = array('first_name', 'last_name', 'name', 'password');
 		$values = array();
 		foreach ($simple as $k) {
 			$values[$k] = $person[$k];
@@ -80,12 +80,12 @@ class EditPerson extends \Orb\Form\Field\Form
 
 		$this->getField('basic_fields')->setData($values);
 
-		foreach ($person['fields'] as $fielddata) {
-			$name = 'field_' . $fielddata['person_field_id'];
-			if (isset($this['custom_fields'][$name])) {
-				$this['custom_fields'][$name]->setData($fielddata['data']);
-			}
-		}
+//		foreach ($person['fields'] as $fielddata) {
+//			$name = 'field_' . $fielddata['person_field_id'];
+//			if (isset($this['custom_fields'][$name])) {
+//				$this['custom_fields'][$name]->setData($fielddata['data']);
+//			}
+//		}
 	}
 
 	public function savePerson(Person $person)
@@ -122,33 +122,33 @@ class EditPerson extends \Orb\Form\Field\Form
 		# Custom fields
 		#------------------------------
 
-		foreach ($this['custom_fields'] as $k => $f) {
-
-			$value = $f->getData();
-
-			$field_def = $f->getOption('field_def');
-			$field_data = $person->getField($field_def['id']);
-
-			// A value exists, store it
-			if ($value !== null) {
-				if (!$field_data) {
-					$field_data = new PersonFieldData();
-					$field_data['field'] = $field_def;
-					$person->addFieldData($field_data);
-				}
-
-				$field_def->getHandler()->setValueOnData($field_data, $value);
-				
-				$em->persist($field_data);
-
-			// A value doesnt exist, remove it
-			} else {
-				if ($field_data) {
-					$person['field_data']->remove($field_data);
-					$em->remove($field_data);
-				}
-			}
-		}
+//		foreach ($this['custom_fields'] as $k => $f) {
+//
+//			$value = $f->getData();
+//
+//			$field_def = $f->getOption('field_def');
+//			$field_data = $person->getField($field_def['id']);
+//
+//			// A value exists, store it
+//			if ($value !== null) {
+//				if (!$field_data) {
+//					$field_data = new PersonFieldData();
+//					$field_data['field'] = $field_def;
+//					$person->addFieldData($field_data);
+//				}
+//
+//				$field_def->getHandler()->setValueOnData($field_data, $value);
+//
+//				$em->persist($field_data);
+//
+//			// A value doesnt exist, remove it
+//			} else {
+//				if ($field_data) {
+//					$person['field_data']->remove($field_data);
+//					$em->remove($field_data);
+//				}
+//			}
+//		}
 
 		$em->persist($person);
 		$em->flush();

@@ -3,6 +3,147 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.Page.Person';
 pageMeta.title = '{{ person.display_name|e(js) }}';
 </script>
 
+<div class="profile">
+	<div class="main">
+		<div class="header">
+			<h1>{{person.display_name}}</h1>
+			<div class="organization">
+				<span class="name">{{person.organization.name}}</span>
+				<span class="position">{{person.organization_position}}</span>
+			</div>
+			<div class="email">
+				<div class="primary">{{person.primary_email.email}}</div>
+			</div>
+		</div>
+
+		<div class="section">
+			<h5>Notes</h5>
+			<div>
+				<dl>
+					<dt>Jane</dt>
+					<dd>Some note by Jane</dd>
+
+					<dt>Ben</dt>
+					<dd>Some note by Ben</dd>
+
+					<dt>Ben</dt>
+					<dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque at lacus nisi, quis facilisis ante. Morbi nec aliquet risus. Suspendisse potenti. Ut sit amet dolor sed diam porttitor feugiat et nec ipsum</dd>
+				</dl>
+				<ul class="pages">
+					<li class="active">1</li>
+					<li>2</li>
+					<li>3</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="section">
+			<h5>User Stream</h5>
+			<div>
+				<ul class="stream">
+					<li>
+						<span class="time">14 minutes ago</span>
+						<span class="who">John Doe</span>
+						<span class="what">updated profile fields <a href="">phone number and email address</a></span>
+					</li>
+					<li>
+						<span class="time">42 minutes ago</span>
+						<span class="who">John Doe</span>
+						<span class="what">created new ticket <a href="">trouble</a></span>
+					</li>
+					<li>
+						<span class="time">1 day ago</span>
+						<span class="who">System</span>
+						<span class="what">auto-closed ticket <a href="">something or other</a></span>
+					</li>
+					<li>
+						<span class="time">2 days ago</span>
+						<span class="who">Ben</span>
+						<span class="what">replied to ticket <a href="">something or other</a></span>
+					</li>
+					<li>
+						<span class="time">2 days ago</span>
+						<span class="who">John Doe</span>
+						<span class="what">created ticket <a href="">something or other</a></span>
+					</li>
+					<li>
+						<span class="time">2 days ago</span>
+						<span class="who">John Doe</span>
+						<span class="what">registered</span>
+					</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="section">
+			<h5>Tickets</h5>
+			<div>
+				<table class="simple" width="100%">
+					<thead>
+						<tr>
+							<th>Subject</th>
+							<th>Department</th>
+							<th>Time</th>
+						</tr>
+					</thead>
+					<tbody>
+						<tr>
+							<td>trouble</td>
+							<td>Support</td>
+							<td>42 minutes ago</td>
+						</tr>
+						<tr>
+							<td>something or other</td>
+							<td>Sales</td>
+							<td>2 days ago</td>
+						</tr>
+					</tbody>
+				</table>
+			</div>
+		</div>
+	</div>
+
+
+	<div class="side">
+		<div class="section">
+			<h5>Contact</h5>
+			<div>
+				<dl class="contact">
+					<dt>Phone</dt>
+					<dd>+1 705-492-6224</dd>
+
+					<dt>Address</dt>
+					<dd>APT-8 1120 Clarence Street, North Bay, Ontario, Canada</dd>
+
+					<dt>IM</dt>
+					<dd>(MSN) chris.nadeau@deskpro.com</dd>
+				</dl>
+			</div>
+		</div>
+
+		<div class="section">
+			<h5>Leads</h5>
+			<div>
+				<ul class="simple">
+					<li><a href="">Sale</a> for $2495</li>
+				</ul>
+			</div>
+		</div>
+
+		<div class="section closed">
+			<h5>Chat Logs</h5>
+			<div style="display: none">
+				<ul class="simple">
+					<li><a href="">untitled</a> 2 days ago</li>
+					<li><a href="">Pre-sales questions</a> 2 days ago</li>
+				</ul>
+			</div>
+		</div>
+	</div>
+</div>
+
+
+<!--
 {% set form_url %}{% route 'tech_people_view' with ['person_id': person.id] %}{% endset %}
 {{form.renderFormTag(['action': form_url])|raw}}
 {{form.renderHiddenTags()|raw}}
@@ -20,23 +161,23 @@ pageMeta.title = '{{ person.display_name|e(js) }}';
 		<div class="inner">
 			<table class="table">
 				<tr class="even">
-					<td>Full Name</td>
-					<td>{{form.findField('basic_fields.full_name').render()|raw}}</td>
+					<td>First Name</td>
+					<td>{{form.findField('basic_fields.first_name').render()|raw}}</td>
 				</tr>
 				<tr class="even">
-					<td>Informal Name</td>
-					<td>{{form.findField('basic_fields.informal_name').render()|raw}}</td>
+					<td>Last Name</td>
+					<td>{{form.findField('basic_fields.last_name').render()|raw}}</td>
 				</tr>
 				<tr class="even">
-					<td>Nickname</td>
-					<td>{{form.findField('basic_fields.nick_name').render()|raw}}</td>
+					<td>Name</td>
+					<td>{{form.findField('basic_fields.name').render()|raw}}</td>
 				</tr>
 			</table>
 		</div>
 
 		<h3 class="title">Local Login</h3>
 		<div class="inner">
-			<table class="table"
+			<table class="table">
 				<tr class="even">
 					<td>Password</td>
 					<td>{{form.findField('basic_fields.password').render()|raw}}</td>
@@ -46,7 +187,7 @@ pageMeta.title = '{{ person.display_name|e(js) }}';
 
 		<h3 class="title">Email Addresses</h3>
 		<div class="inner">
-			<table class="table"
+			<table class="table">
 				<tr class="even">
 					<td width="10">x</td>
 					<td>Address</td>
@@ -64,9 +205,10 @@ pageMeta.title = '{{ person.display_name|e(js) }}';
 			</table>
 		</div>
 
+		{#
 		<h3>Custom Fields</h3>
 		<div class="inner">
-			<table class="table"
+			<table class="table">
 				{% for info in custom_fields %}
 					<tr class="even">
 						<td>{{info.field_def.title}}</td>
@@ -75,6 +217,7 @@ pageMeta.title = '{{ person.display_name|e(js) }}';
 				{% endfor %}
 			</table>
 		</div>
+		#}
 	</div>
 </div>
 
@@ -105,3 +248,4 @@ pageMeta.title = '{{ person.display_name|e(js) }}';
 		</div>
 	</div>
 {% endfor %}
+-->

@@ -36,6 +36,7 @@
 	<script type="text/javascript">
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
+			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .people'));
 			//agent_tester.loadTicketPane();
 		});
 	</script>
@@ -53,7 +54,7 @@
 	<div id="window_header_nav">
 		<ul>
 			<li data-route="navpane:{% route 'tech_ticketsearch_filterspane' %}">Tickets</li>
-			<li data-route="navpane:{% route 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% route 'tech_peoplesearch' %}">People</li>
+			<li class="people" data-route="navpane:{% route 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% route 'tech_peoplesearch' %}">People</li>
 		</ul>
 	</div>
 </div>
