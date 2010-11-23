@@ -61,17 +61,19 @@ public function getPersonData(array $misc_data)
 		);
 
 		$keymap = array(
-			'full_name' => 'full_name',
-			'name' => 'full_name',
-			'fullname' => 'fullname',
-			'nickname' => 'nick_name',
-			'nick_name' => 'nick_name',
-			'username' => 'nick_name',
-			'user_name' => 'nick_name',
-			'screen_name' => 'nick_name',
-			'screenname' => 'nick_name',
-			'first_name' => 'informal_name',
-			'firstname' => 'informal_name',
+			'full_name' => 'name',
+			'name' => 'name',
+			'fullname' => 'name',
+			'nickname' => 'name',
+			'nick_name' => 'name',
+			'username' => 'name',
+			'user_name' => 'name',
+			'screen_name' => 'name',
+			'screenname' => 'name',
+			'first_name' => 'first_name',
+			'firstname' => 'first_name',
+			'last_name' => 'last_name',
+			'lastname' => 'last_name',
 		);
 
 		foreach ($keymap as $findkey => $personkey) {

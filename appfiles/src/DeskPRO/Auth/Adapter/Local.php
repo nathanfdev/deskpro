@@ -26,7 +26,7 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 	 */
 	protected $em;
 
-	protected $username_or_email = '';
+	protected $email = '';
 	protected $password = '';
 
 	public function __construct(\Doctrine\ORM\EntityManager $em)
@@ -34,9 +34,9 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 		$this->em = $em;
 	}
 
-	public function setCredentials($username_or_email, $password)
+	public function setCredentials($email, $password)
 	{
-		$this->username_or_email = $username_or_email;
+		$this->email = $email;
 		$this->password = $password;
 	}
 
@@ -54,14 +54,8 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 			->where('p.is_user = 1')
 			->setMaxResults(1);
 
-		if (strpos($this->username_or_email, '@')) {
-			$qb->andWhere('p.username = ?1 OR e.email = ?2');
-			$qb->setParameter(1, $this->username_or_email);
-			$qb->setParameter(2, $this->username_or_email);
-		} else {
-			$qb->andWhere('p.username = ?1');
-			$qb->setParameter(1, $this->username_or_email);
-		}
+		$qb->andWhere('e.email = ?2');
+		$qb->setParameter(2, $this->email);
 
 		$person = null;
 

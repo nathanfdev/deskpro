@@ -81,9 +81,13 @@ class PeopleSearchController extends AbstractController
 			FROM CoreBundle:Person p
 			LEFT JOIN p.primary_email p_email
 			LEFT JOIN p.emails emails
+			LEFT JOIN p.organization org
 			WHERE
-				p.full_name LIKE '%$q%'
-				OR 	emails.email LIKE '%$q%'
+				p.name LIKE '%$q%'
+				OR p.first_name LIKE '%$q%'
+				OR p.last_name LIKE '%$q%'
+				OR emails.email LIKE '%$q%'
+				OR org.name LIKE '%$q%'
 			ORDER BY p.id DESC
 		")->getResult();
 		//")->setParameters(array($q, $q))->getResult();

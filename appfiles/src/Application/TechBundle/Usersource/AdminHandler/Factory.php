@@ -23,7 +23,7 @@ class Factory
 	private function __construct() { /* static */ }
 
 	/**
-	 * @return Application\TechBundle\FormField\AdminHandler\AbstractAdminHandler
+	 * @return Application\TechBundle\CustomField\AdminHandler\AbstractAdminHandler
 	 */
 	public static function createUsersource(Usersource $usersource)
 	{

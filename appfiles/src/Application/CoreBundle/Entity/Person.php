@@ -182,12 +182,6 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $contact_data;
 
 	/**
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="PersonFieldData", mappedBy="person", cascade={"persist", "remove", "merge"})
-	 */
-	protected $field_data;
-
-	/**
 	 * Usergroups the user belongs to
 	 * 
 	 * @var Doctrine\Common\Collections\ArrayCollection
@@ -277,14 +271,12 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	public function getDisplayName()
 	{
-		if ($this['informal_name']) {
-			return $this['informal_name'];
-		} elseif ($this['full_name']) {
-			return $this['full_name'];
-		} elseif ($this['nick_name']) {
-			return $this['nick_name'];
-		} elseif ($this['username']) {
-			return $this['username'];
+		if ($this['first_name']) {
+			return $this['first_name'];
+		} elseif ($this['name']) {
+			return $this['name'];
+		} elseif ($this['last_name']) {
+			return $this['last_name'];
 		} elseif ($this['primary_email']) {
 			return $this['primary_email']['email'];
 		} else {
@@ -509,6 +501,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	public function getFields()
 	{
+		return array();
 		$array = array();
 
 		foreach ($this->field_data as $f) {

@@ -34,9 +34,6 @@ class EditPerson extends \Orb\Form\Field\Form
 		$f = new \Orb\Form\Field\Text(array('name' => 'nick_name'));
 		$basic_fields->addField($f);
 
-		$f = new \Orb\Form\Field\Text(array('name' => 'username'));
-		$basic_fields->addField($f);
-
 		$f = new \Orb\Form\Field\Password(array('name' => 'password'));
 		$basic_fields->addField($f);
 
@@ -75,7 +72,7 @@ class EditPerson extends \Orb\Form\Field\Form
 	public function setPerson(Person $person)
 	{
 		// Set basic values
-		$simple = array('full_name', 'informal_name', 'nick_name', 'username', 'password');
+		$simple = array('full_name', 'informal_name', 'nick_name', 'password');
 		$values = array();
 		foreach ($simple as $k) {
 			$values[$k] = $person[$k];

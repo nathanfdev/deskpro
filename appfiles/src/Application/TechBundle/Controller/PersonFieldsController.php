@@ -78,7 +78,7 @@ class PersonFieldsController extends AbstractController
 		));
 		$form->addField(new \Orb\Form\Field\Hidden(array('name' => 'handler_class', 'data' => $field['handler_class'])));
 
-		$admin_handler = \Application\TechBundle\FormField\AdminHandler\Factory::createFromFormField($field);
+		$admin_handler = \Application\TechBundle\CustomField\AdminHandler\Factory::createFromFormField($field);
 		$form->addField($admin_handler->buildFormGroup());
 
 		if ($this->isPostRequest()) {

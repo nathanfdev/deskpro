@@ -86,7 +86,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 	protected function _processLocalLogin()
 	{
 		$adapter = new \DeskPRO\Auth\Adapter\Local($this->em);
-		$adapter->setCredentials($this->in->getString('username'), $this->in->getString('password'));
+		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
 		$result = $adapter->authenticate();
 		if (!$result->isValid()) {
 			return $this->redirect($this['router']->generate('user_login', array()));
