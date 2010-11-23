@@ -40,6 +40,14 @@ abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
 	protected $handler_class;
 
 	/**
+	 * The label/comment/name for this contact entry (Work, Home, etc).
+	 *
+	 * @var string
+	 * @Column(name="comment", type="string", length=100)
+	 */
+	protected $comment = '';
+
+	/**
 	 * @var string
 	 * @Column(name="field_1", type="text")
 	 */
