@@ -128,6 +128,14 @@ class Person extends \DeskPRO\Domain\DomainObject
 	protected $organization = null;
 
 	/**
+	 * The persons position at the organization
+	 *
+	 * @var string
+	 * @Column(name="organization_position", type="string", length=100)
+	 */
+	protected $organization_position = '';
+
+	/**
 	 * The timezone associated with this user.
 	 *
 	 * @var string
@@ -271,8 +279,8 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	public function getDisplayName()
 	{
-		if ($this['first_name']) {
-			return $this['first_name'];
+		if ($this['first_name'] AND $this['last_name']) {
+			return $this['first_name'] . ' ' . $this['last_name'];
 		} elseif ($this['name']) {
 			return $this['name'];
 		} elseif ($this['last_name']) {
@@ -570,6 +578,20 @@ class Person extends \DeskPRO\Domain\DomainObject
 		}
 
 		return null;
+	}
+
+	
+
+	/**
+	 * Set this persons organization and position.
+	 *
+	 * @param Organization $org
+	 * @param string $position 
+	 */
+	public function setOrganization(Organization $org, $position = '')
+	{
+		$this->organization = $org;
+		$this->organization_position = $position;
 	}
 
 	

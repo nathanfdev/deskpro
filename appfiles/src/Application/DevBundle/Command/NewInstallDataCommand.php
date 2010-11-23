@@ -94,12 +94,24 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 
 	protected function _createNewUser(OutputInterface $output)
 	{
+		$this->em->beginTransaction();
+
+		// Organization
+		$org = new \Application\CoreBundle\Entity\Organization();
+		$org['name'] = 'ACME Corp';
+		$this->em->persist($org);
+
 		// Profile
 		$person = new \Application\CoreBundle\Entity\Person();
 		$person['password'] = 'pass';
+		$person['first_name'] = 'John';
+		$person['last_name'] = 'Doe';
+		$person['name'] = 'John Doe';
 		$person['is_contact'] = true;
 		$person['is_user'] = true;
 		$person['is_tech'] = true;
+
+		$person->setOrganization($org, 'Marketing Manager');
 
 		$email = new \Application\CoreBundle\Entity\PersonEmail();
 		$email['email'] = 'admin@example.com';
@@ -111,6 +123,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 
 		$this->em->persist($person);
 		$this->em->flush();
+		$this->em->commit();
 
 		$output->writeln("\n<info>Admin Person #{$person['id']} was created:\n\tEmail: admin@example.com\n\tPassword: pass</info>");
 	}
