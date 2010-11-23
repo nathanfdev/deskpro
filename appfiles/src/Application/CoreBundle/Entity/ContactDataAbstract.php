@@ -95,7 +95,7 @@ abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @Column(name="field_1", type="text")
+	 * @Column(name="field_10", type="text")
 	 */
 	protected $field_10;
 

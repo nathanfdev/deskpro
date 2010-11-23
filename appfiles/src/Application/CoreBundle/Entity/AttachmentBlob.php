@@ -17,6 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @Entity
  * @HasLifecycleCallbacks
  * @Table(name="attachments_blobs")
+ * )
  */
 class AttachmentBlob extends \DeskPRO\Domain\DomainObject
 {
@@ -32,6 +33,13 @@ class AttachmentBlob extends \DeskPRO\Domain\DomainObject
 	 * @Column(name="attachment_id", type="integer")
 	 */
 	protected $attachment_id;
+
+	/**
+	 * @var \Application\CoreBundle\Entity\Attachment
+	 * @ManyToOne(targetEntity="Attachment")
+	 * @JoinColumn(name="attachment_id", referencedColumnName="id")
+	 */
+	protected $attachment;
 
 	/**
 	 * The users name (best guess from other sources etc)

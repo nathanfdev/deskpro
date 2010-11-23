@@ -46,7 +46,7 @@ class PersonNote extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @Column(name="agent_id", type="integer")
 	 */
 	protected $agent_id;
 

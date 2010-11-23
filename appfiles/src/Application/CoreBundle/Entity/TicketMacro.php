@@ -12,12 +12,12 @@
 namespace Application\CoreBundle\Entity;
 
 /**
- * Departments
+ * Ticket macros
  *
  * @Entity
  * @Table(name="ticket_macros")
  */
-class Department extends \DeskPRO\Domain\DomainObject
+class TicketMacro extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
@@ -25,6 +25,19 @@ class Department extends \DeskPRO\Domain\DomainObject
 	 * @GeneratedValue
 	 */
 	protected $id = null;
+
+	/**
+	 * @var int
+	 * @Column(name="person_id", type="integer")
+	 */
+	protected $person_id = null;
+
+	/**
+	 * @var \Application\CoreBundle\Entity\Person
+	 * @OneToOne(targetEntity="Person")
+	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 */
+	protected $person = null;
 
 	/**
 	 * @var string

@@ -15,7 +15,7 @@ namespace Application\CoreBundle\Entity;
  * Flagged tickets
  *
  * @Entity
- * @Table(name="departments")
+ * @Table(name="tickets_flagged")
  */
 class TicketFlagged extends \DeskPRO\Domain\DomainObject
 {

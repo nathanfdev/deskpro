@@ -16,7 +16,9 @@ namespace Application\CoreBundle\Entity;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="email_sources")
+ * @Table(name="email_sources",
+ *     indexes={@Index(name="object_idx", columns={"object_type", "object_id"})}
+ * )
  */
 class EmailSource extends \DeskPRO\Domain\DomainObject
 {

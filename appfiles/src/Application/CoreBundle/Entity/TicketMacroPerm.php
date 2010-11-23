@@ -12,10 +12,12 @@
 namespace Application\CoreBundle\Entity;
 
 /**
- * Departments
+ * Ticket macro permissions
  *
  * @Entity
- * @Table(name="ticket_macros_perms")
+ * @Table(name="ticket_macros_perms",
+ *     indexes={@Index(name="object_idx", columns={"object_type", "object_id"})}
+ * )
  */
 class TicketMacroPerm extends \DeskPRO\Domain\DomainObject
 {
@@ -37,8 +39,8 @@ class TicketMacroPerm extends \DeskPRO\Domain\DomainObject
 	protected $macro_id = null;
 
 	/**
-	 * @var \Application\CoreBundle\Entity\Macro
-	 * @OneToOne(targetEntity="Macro")
+	 * @var \Application\CoreBundle\Entity\TicketMacro
+	 * @OneToOne(targetEntity="TicketMacro")
 	 * @JoinColumn(name="macro_id", referencedColumnName="id")
 	 */
 	protected $macro = null;

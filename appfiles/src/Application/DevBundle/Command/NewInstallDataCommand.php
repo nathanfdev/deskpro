@@ -97,7 +97,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		// Profile
 		$person = new \Application\CoreBundle\Entity\Person();
 		$person['password'] = 'pass';
-		$person['username'] = 'admin';
+		$person['is_contact'] = true;
 		$person['is_user'] = true;
 		$person['is_tech'] = true;
 
@@ -112,6 +112,6 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$this->em->persist($person);
 		$this->em->flush();
 
-		$output->writeln("\n<info>Admin Person #{$person['id']} was created:\n\tUsername: admin\n\tEmail: admin@example.com\n\tPassword: pass</info>");
+		$output->writeln("\n<info>Admin Person #{$person['id']} was created:\n\tEmail: admin@example.com\n\tPassword: pass</info>");
 	}
 }

@@ -34,6 +34,13 @@ class EmailSourceBlob extends \DeskPRO\Domain\DomainObject
 	protected $source_id;
 
 	/**
+	 * @var \Application\CoreBundle\Entity\EmailSource
+	 * @OneToOne(targetEntity="EmailSource")
+	 * @JoinColumn(name="source_id", referencedColumnName="id")
+	 */
+	protected $source = null;
+
+	/**
 	 * @TODO This needs to be a binary type
 	 *
 	 * @var string

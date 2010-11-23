@@ -26,6 +26,13 @@ class UserMask extends \DeskPRO\Domain\DomainObject
 	protected $person_id = null;
 
 	/**
+	 * @var \Application\CoreBundle\Entity\Person
+	 * @OneToOne(targetEntity="Person")
+	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 */
+	protected $person = null;
+
+	/**
 	 * @var string
 	 * @Column(name="overrides", type="array")
 	 */

@@ -16,7 +16,9 @@ namespace Application\CoreBundle\Entity;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="attachments")
+ * @Table(name="attachments",
+ *     indexes={@Index(name="object_idx", columns={"object_type","object_id"})}
+ * )
  */
 class Attachment extends \DeskPRO\Domain\DomainObject
 {

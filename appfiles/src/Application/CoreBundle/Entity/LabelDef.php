@@ -22,7 +22,9 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="label_defs")
+ * @Table(name="label_defs",
+ *     indexes={@Index(name="object_type_idx", columns={"object_type"})}
+ * )
  */
 class LabelDefinition extends \DeskPRO\Domain\DomainObject
 {

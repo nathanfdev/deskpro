@@ -75,7 +75,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @Column(name="name", type="text", nullable=true)
+	 * @Column(name="first_name", type="text", nullable=true)
 	 */
 	protected $first_name = '';
 
@@ -83,7 +83,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @Column(name="name", type="text", nullable=true)
+	 * @Column(name="last_name", type="text", nullable=true)
 	 */
 	protected $last_name = '';
 

@@ -18,7 +18,9 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="email_gateway_logs")
+ * @Table(name="email_gateway_logs",
+ *     indexes={@Index(name="log_type_idx", columns={"log_type"})}
+ * )
  */
 class EmailGatewayLog extends CustomDefAbstract
 {

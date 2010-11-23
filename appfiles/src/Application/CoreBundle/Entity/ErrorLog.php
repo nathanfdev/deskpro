@@ -18,7 +18,9 @@ use Orb\Util\Arrays;
  *
  * @Entity
  * @HasLifecycleCallbacks
- * @Table(name="error_logs")
+ * @Table(name="error_logs",
+ *     indexes={@Index(name="log_type_idx", columns={"log_type"})}
+ * )
  */
 class ErrorLog extends CustomDefAbstract
 {

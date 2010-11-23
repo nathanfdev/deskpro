@@ -26,8 +26,22 @@ class TicketParticipant extends \DeskPRO\Domain\DomainObject
 	protected $ticket_id = null;
 
 	/**
+	 * @var \Application\CoreBundle\Entity\Ticket
+	 * @OneToOne(targetEntity="Ticket")
+	 * @JoinColumn(name="ticket_id", referencedColumnName="id")
+	 */
+	protected $ticket = null;
+
+	/**
 	 * @var int
 	 * @Id @Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
+
+	/**
+	 * @var \Application\CoreBundle\Entity\Person
+	 * @OneToOne(targetEntity="Person")
+	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 */
+	protected $person = null;
 }
