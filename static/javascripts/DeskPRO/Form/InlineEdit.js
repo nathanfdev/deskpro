@@ -3,7 +3,7 @@ Orb.createNamespace('DeskPRO.Form');
 /**
  * @option {HTMLElement} baseElement The base element to activate this inline edit on
  * @option {String} editableClass The class that denotes an editable thing
- * @option {Object} ajax The AJAX options to pass to jQuery.ajax. Only the 'url' item is required.
+ * @option {Object} ajax The AJAX options to pass to jQuery.ajax. Only the ajax.url item is required.
  */
 DeskPRO.Form.InlineEdit = new Class({
 	Implements: Options,
@@ -95,7 +95,7 @@ DeskPRO.Form.InlineEdit = new Class({
 	 * When anywhere on the page is clicked, we need to see
 	 * if that means we should submit changes.
 	 */
-	handleDocumentClick: function(ev) {
+	handleDocumentClick: function(event) {
 		if (!this.documentClickSubmitOn) {
 			return;
 		}
@@ -134,7 +134,7 @@ DeskPRO.Form.InlineEdit = new Class({
 		}
 
 		// Form elements is the whole thing, they are already in a wrapper of some kind
-		var form_elements = $('#' + $(editable).data('editable-for'));
+		var form_elements = $($(editable).data('editable-for'), this.options.baseElement);
 		var form_elements_container = form_elements.parent();
 
 		rendered_els.fadeOut('fast', function() {
@@ -251,7 +251,7 @@ DeskPRO.Form.InlineEdit = new Class({
 			this.closeEditinfo(editinfo);
 		}
 
-		this.saveFinishCallback(data);
+		this.options.saveFinishCallback(data);
 	},
 	
 	
@@ -282,7 +282,7 @@ DeskPRO.Form.InlineEdit = new Class({
 			}
 		} while (id_parts.pop());
 		
-		return false;
+		return data;
 	},
 	
 	

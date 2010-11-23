@@ -14,10 +14,13 @@
 	<![endif]-->
 
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.min.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery-ui/jquery-ui.min.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.layout.min.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/mootools/mootools-core.min.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Orb.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Compat.js' %}"></script>
+	
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Form/InlineEdit.js' %}"></script>
 
 	<!-- Agent Interface sources -->
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/Window.js' %}"></script>
@@ -34,6 +37,7 @@
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js' %}"></script>
 
 	<script type="text/javascript">
+		var BASE_URL = '{% route 'index' %}';
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
 			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .people'));

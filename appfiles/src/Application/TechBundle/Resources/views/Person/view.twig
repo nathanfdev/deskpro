@@ -1,12 +1,13 @@
 <script>
 pageMeta.class = 'DeskPRO.Agent.PageFragment.Page.Person';
 pageMeta.title = '{{ person.display_name|e(js) }}';
+pageMeta.person_id = {{person.id}};
 </script>
 
 <div class="profile">
 	<div class="main">
 		<div class="header">
-			<h1>{{person.display_name}}</h1>
+			<h1 class="editable" data-editable-for=".inline-editable .name">{{person.display_name}}</h1>
 			<div class="organization">
 				<span class="name">{{person.organization.name}}</span>
 				<span class="position">{{person.organization_position}}</span>
@@ -138,6 +139,22 @@ pageMeta.title = '{{ person.display_name|e(js) }}';
 					<li><a href="">Pre-sales questions</a> 2 days ago</li>
 				</ul>
 			</div>
+		</div>
+	</div>
+
+	<div class="email-edit-dlg" style="display:none" title="Contact Emails">
+		<ul class="emails-list">
+			{% include 'TechBundle:Person:email-dlg-li' with ['person': person] %}
+		</ul>
+		<div class="add-email">
+			New email: <input type="text" class="new-email-input" value="" /> <input type="button" class="new-email-btn" value="Add" />
+		</div>
+	</div>
+	<div class="inline-editable" style="display:none">
+		<div class="name">
+			{{form.findField('basic_fields.first_name').render()|raw}}
+			{{form.findField('basic_fields.last_name').render()|raw}}
+			<input type="hidden" name="action" value="name" />
 		</div>
 	</div>
 </div>

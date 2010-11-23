@@ -440,12 +440,15 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 */
 	public function addEmailAddress(PersonEmail $email)
 	{
+		$em = App::getOrm();
+
 		if ($this['emails']->count() < 1) {
 			$this['primary_email'] = $email;
 		}
 		$this['emails']->add($email);
 
 		$email['person'] = $this;
+		$em->persist($email);
 	}
 
 
@@ -468,11 +471,22 @@ class Person extends \DeskPRO\Domain\DomainObject
 		foreach ($this->emails as $index => $email) {
 			if ($email['id'] == $email_id) {
 				$this->emails->remove($index);
+				$em->remove($email);
 				return $email;
 			}
 		}
 
 		return null;
+	}
+
+
+	public function getEmailId($email_id)
+	{
+		foreach ($this->emails as $index => $email) {
+			if ($email['id'] == $email_id) {
+				return $email;
+			}
+		}
 	}
 
 
