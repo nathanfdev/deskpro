@@ -25,6 +25,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			});
 		});
 		
+		$('.tip', el).tipTip({defaultPosition: 'left'});
+		
 		// Name is editable
 		var name = $('.main .header h1:first', el);
 		if (!name.attr('id')) {

@@ -454,7 +454,7 @@ table.list > tbody > tr:hover {
 }
 
 .profile .main {
-	margin-right: 35%;
+	margin-right: 40%;
 	padding: 8px 15px 15px 7px;
 }
 
@@ -462,7 +462,7 @@ table.list > tbody > tr:hover {
 	position: absolute;
 	top: 0;
 	right: 0;
-	width: 33%;
+	width: 38%;
 	padding: 8px 15px 15px 15px;
 }
 
@@ -518,18 +518,16 @@ table.list > tbody > tr:hover {
 }
 
 .profile .section > div > dl > dt {
-	float: left;
+	display: block;
 	font-weight: bold;
-	width: 100px;
 	padding: 6px 2px 6px 0;
 	border-top: 1px solid #ddd;
 }
 
 .profile .section > div > dl > dd {
-	margin-left: 100px;
-	padding: 6px 2px 6px 0;
+	display: block;
+	padding: 0 2px 6px 0;
 	margin-bottom: 6px;
-	border-top: 1px solid #ddd;
 }
 
 .profile .section > div > dl > dt:first, .profile .section > div > dl > dd:first {
