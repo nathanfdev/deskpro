@@ -120,6 +120,23 @@ Orb.sleep = function(ms) {
 	}
 };
 
+// I dont think this works :)
+Orb.mouseInElement = function(mouseX, mouseY, el) {
+	var pos = el.offset();
+	var width = el.outerWidth();
+	var height = el.outerHeight();
+	
+	if (mouseX < pos.left || mouseX > pos.left+width) {
+		return false;
+	}
+	
+	if (mouseY < pos.top || mouseY > pos.top+height) {
+		return false;
+	}
+	
+	return true;
+}
+
 
 
 /**

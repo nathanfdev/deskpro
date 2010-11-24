@@ -26,7 +26,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			var title = $('h5', sec);
 			var content = $('div:first', sec);
 
-			title.click(function() {
+			title.click(function(ev) {
+				ev.stopPropagation();
 				if (content.is(':visible')) {
 					content.slideUp(function() { sec.addClass('closed'); });
 					
