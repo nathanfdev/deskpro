@@ -11,6 +11,8 @@
 
 namespace DeskPRO\Domain;
 
+use \DeskPRO\App;
+
 /**
  * The basic entitiy class
  */

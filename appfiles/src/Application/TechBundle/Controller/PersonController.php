@@ -17,6 +17,7 @@ use \Application\CoreBundle\Entity\Person;
 use \Application\CoreBundle\Entity\PersonEmail;
 use \Application\CoreBundle\Entity\PersonContactData;
 use \Application\CoreBundle\Entity\PersonNote;
+use \Application\CoreBundle\Entity\Organization;
 
 use \DeskPRO\App;
 
@@ -103,6 +104,16 @@ class PersonController extends AbstractController
 			$note_pages = range(1, ceil($notes_count / 5));
 		}
 
+
+		// Used in the org dlg popup. TODO need to clean this up.
+		// Likely be an autocomplete field in the dlg
+		$org_options = $db->feetchAllKeyValue("
+			SELECT id, name
+			FROM organizations
+			ORDER BY name ASC
+		");
+		$org_options = Arrays::implodeTemplate($org_options, "<option value=\"{KEY}\">{VAL}</option>");
+
 		return $this->render('TechBundle:Person:view', array(
 			'person' => $person,
 			'form' => $form,
@@ -110,7 +121,8 @@ class PersonController extends AbstractController
 			'custom_fields' => $custom_fields,
 			'contact_fields_tpl' => $contact_fields_tpl,
 			'notes' => $notes,
-			'note_pages' => $note_pages
+			'note_pages' => $note_pages,
+			'org_options' => $org_options
 		));
 	}
 
@@ -193,20 +205,53 @@ class PersonController extends AbstractController
 				}
 				break;
 		}
+	}
 
-		if (!$form->isValid()) {
 
+	############################################################################
+	# /tech/people/:person_id/ajax-save-organization        tech_people_ajaxsave_organization
+	############################################################################
+
+	public function ajaxSaveOrganizationAction($person_id)
+	{
+		if ($person_id) {
+			$person = $this->getPersonOr404($person_id);
+		} else {
+			$person = new Person();
 		}
 
-		/*
-		$form->setFormData($_POST);
+		$org_id = $this->in->getUint('organization_id');
+		if (!$org_id) {
+			$person['organization_id'] = 0;
+			$person['organization'] = null;
+			$person['organization_position'] = '';
 
-		if ($form->isValid()) {
-			$form->savePerson($person);
-			return $this->createJsonResponse(array('success' => true, 'person_id' => $person['id']));
-		} else {
-			return $this->createJsonResponse(array('error' => true));
-		}*/
+			$em = App::getOrm();
+			$em->persist($person);
+			$em->flush();
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'person_id' => $person['id'],
+				'organization_name' => '',
+				'organization_position' => '',
+			));
+		}
+
+		$org = Organization::getRepository()->find($org_id);
+
+		$person['organization'] = $org;
+		$person['organization_position'] = $this->in->getString('organization_position');
+
+		$em = App::getOrm();
+		$em->persist($person);
+		$em->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'person_id' => $person['id'],
+			'organization_name' => $org['name'],
+			'organization_position' => $person['organization_position'],
+		));
 	}
 
 

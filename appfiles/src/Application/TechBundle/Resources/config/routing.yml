@@ -165,6 +165,11 @@ tech_people_ajaxsave_note:
   defaults: { _controller: TechBundle:Person:ajaxSaveNote }
   requirements: { person_id: "\d+" }
 
+tech_people_ajaxsave_organization:
+  pattern: /people/:person_id/ajax-save-organization
+  defaults: { _controller: TechBundle:Person:ajaxSaveOrganization }
+  requirements: { person_id: "\d+" }
+
 tech_people_ajaxget_notes:
   pattern: /people/:person_id/ajax-get-notes
   defaults: { _controller: TechBundle:Person:ajaxGetNotes }

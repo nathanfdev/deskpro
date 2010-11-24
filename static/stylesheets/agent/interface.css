@@ -793,7 +793,9 @@ table.list > tbody > tr:hover {
 
 
 
-
+.hover-edit:hover {
+	background-color: #FAF7D2;
+}
 
 
 

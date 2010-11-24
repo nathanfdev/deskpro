@@ -7,12 +7,12 @@ pageMeta.person_id = {{person.id}};
 <div class="profile">
 	<div class="main">
 		<div class="header">
-			<h1 class="editable" data-editable-for=".inline-editable .name">{{person.display_name}}</h1>
-			<div class="organization">
+			<h1 class="editable hover-edit" data-editable-for=".inline-editable .name">{{person.display_name}}</h1>
+			<div class="organization hover-edit">
 				<span class="name">{{person.organization.name}}</span>
 				<span class="position">{{person.organization_position}}</span>
 			</div>
-			<div class="email">
+			<div class="email hover-edit">
 				<div class="primary">{{person.primary_email.email}}</div>
 			</div>
 		</div>
@@ -49,12 +49,12 @@ pageMeta.person_id = {{person.id}};
 			<div>
 				<ul class="stream">
 					<li>
-						<span class="time">14 minutes ago</span>
+						<span class="time">14 mins</span>
 						<span class="who">John Doe</span>
 						<span class="what">updated profile fields <a href="">phone number and email address</a></span>
 					</li>
 					<li>
-						<span class="time">42 minutes ago</span>
+						<span class="time">42 mins</span>
 						<span class="who">John Doe</span>
 						<span class="what">created new ticket <a href="">trouble</a></span>
 					</li>
@@ -64,17 +64,17 @@ pageMeta.person_id = {{person.id}};
 						<span class="what">auto-closed ticket <a href="">something or other</a></span>
 					</li>
 					<li>
-						<span class="time">2 days ago</span>
+						<span class="time">2 days</span>
 						<span class="who">Ben</span>
 						<span class="what">replied to ticket <a href="">something or other</a></span>
 					</li>
 					<li>
-						<span class="time">2 days ago</span>
+						<span class="time">2 days</span>
 						<span class="who">John Doe</span>
 						<span class="what">created ticket <a href="">something or other</a></span>
 					</li>
 					<li>
-						<span class="time">2 days ago</span>
+						<span class="time">2 days</span>
 						<span class="who">John Doe</span>
 						<span class="what">registered</span>
 					</li>
@@ -157,6 +157,12 @@ pageMeta.person_id = {{person.id}};
 			<span class="close trigger">cancel</span>
 		</div>
 	</div>
+	
+	<div class="org-edit-dlg" style="display:none" title="Organization">
+		<select name="organization_id">{{org_options|raw}}</select>
+		<br />
+		Position: <input type="text" name="organization_position" value="{{person.organization_position}}" />
+	</div>
 
 	<div class="email-edit-dlg" style="display:none" title="Contact Emails">
 		<ul class="emails-list">
@@ -174,111 +180,3 @@ pageMeta.person_id = {{person.id}};
 		</div>
 	</div>
 </div>
-
-
-<!--
-{% set form_url %}{% route 'tech_people_view' with ['person_id': person.id] %}{% endset %}
-{{form.renderFormTag(['action': form_url])|raw}}
-{{form.renderHiddenTags()|raw}}
-
-<div class="block" id="block-tables">
-	<div class="content">
-		<h2 class="title">
-			{% if person.id %}
-				#{{person.id}}: {{person.display_name}}
-			{% else %}
-				New Person
-			{% endif %}
-		</h2>
-
-		<div class="inner">
-			<table class="table">
-				<tr class="even">
-					<td>First Name</td>
-					<td>{{form.findField('basic_fields.first_name').render()|raw}}</td>
-				</tr>
-				<tr class="even">
-					<td>Last Name</td>
-					<td>{{form.findField('basic_fields.last_name').render()|raw}}</td>
-				</tr>
-				<tr class="even">
-					<td>Name</td>
-					<td>{{form.findField('basic_fields.name').render()|raw}}</td>
-				</tr>
-			</table>
-		</div>
-
-		<h3 class="title">Local Login</h3>
-		<div class="inner">
-			<table class="table">
-				<tr class="even">
-					<td>Password</td>
-					<td>{{form.findField('basic_fields.password').render()|raw}}</td>
-				</tr>
-			</table>
-		</div>
-
-		<h3 class="title">Email Addresses</h3>
-		<div class="inner">
-			<table class="table">
-				<tr class="even">
-					<td width="10">x</td>
-					<td>Address</td>
-				</tr>
-				{% for email in person.emails %}
-					<tr>
-						<td><input type="checkbox" name="edit_person[del_emails][]" value="{{email.id}}" /></td>
-						<td>{{email.email}}</td>
-					</tr>
-				{% endfor %}
-				<tr>
-					<td>&nbsp;</td>
-					<td>New: {{form.new_email.render()|raw}}</td>
-				</tr>
-			</table>
-		</div>
-
-		{#
-		<h3>Custom Fields</h3>
-		<div class="inner">
-			<table class="table">
-				{% for info in custom_fields %}
-					<tr class="even">
-						<td>{{info.field_def.title}}</td>
-						<td>{{info.form_field.render()|raw}}</td>
-					</tr>
-				{% endfor %}
-			</table>
-		</div>
-		#}
-	</div>
-</div>
-
-<input type="submit" value="Save" />
-
-</form>
-
-{% for assoc in person.usersource_assoc %}
-	<div class="block">
-		<div class="sidebar-block">
-			<h4>
-				{{assoc.usersource.title}}:
-				{% if assoc.identity_friendly %}
-					{{assoc.identity_friendly}}
-				{% else %}
-					{{assoc.identity}}
-				{% endif %}
-			</h4>
-			<hr />
-				First used: {{assoc.created_at|date("Y-m-d")}}<br />
-				Last used: {{assoc.last_used_at|date("Y-m-d")}}<br />
-			<hr />
-			<small>
-				{% for k, v in assoc.data %}
-					{{k}}: {{v}}<br />
-				{% endfor %}
-			</small>
-		</div>
-	</div>
-{% endfor %}
--->

@@ -72,6 +72,52 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		this.initContactFormEditable(el);
 		this.initNoteFormEditable();
 		this.initNotePagination();
+		this.initOrgEditable();
+	},
+	
+	//#########################################################################
+	//# Company stuff
+	//#########################################################################
+	
+	initOrgEditable: function() {
+		this.org_dlg =  $('.org-edit-dlg', this.wrapper).dialog({
+			autoOpen: false,
+			buttons: {
+				'Save': this.saveOrg.bind(this),
+				'Cancel': function() { $(this).dialog('close'); }
+			},
+			width: 300,
+			height: 200
+		});
+		
+		$('.profile .header .organization').dblclick((function() {
+			this.org_dlg.dialog('open');
+		}).bind(this));
+	},
+	
+	saveOrg: function() {
+		
+		var sel = $('select[name="organization_id"]', this.org_dlg);
+		var opt = $('option:selected', sel);
+		
+		var data = {
+			'organization_id': opt.val(),
+			'organization_position': $('input[name="organization_position"]', this.org_dlg).val()
+		};
+		
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-save-organization',
+			data: data,
+			success: this.handleOrgSave.bind(this)
+		});
+	},
+	
+	handleOrgSave: function(data) {
+		$('.header .organization .name').html(data.organization_name);
+		$('.header .organization .position').html(data.organization_position);
+		this.org_dlg.dialog('close');
 	},
 	
 	//#########################################################################
