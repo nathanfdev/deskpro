@@ -51,7 +51,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleSearch = new Class({
 				this.autoTimeout = null;
 			}
 			
-			this.autoTimeout = this.ajaxQuickSubmitForm.delay(400, this);
+			this.autoTimeout = this.ajaxQuickSubmitForm.delay(250, this);
 		}).bind(this));
 	},
 	
