@@ -38,7 +38,7 @@ class Address extends AbstractContactFieldHandler
 
 		// field_2 is the country selector
 		// TODO make it a select
-		$f = new \Orb\Form\Field\Textarea(array('name' => 'country'));
+		$f = new \Orb\Form\Field\Text(array('name' => 'country'));
 		$group->addField($f);
 
 		return $group;

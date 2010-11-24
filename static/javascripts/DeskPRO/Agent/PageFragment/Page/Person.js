@@ -3,11 +3,21 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 	
+	wrapper: null,
 	hasSetupEmailDlg: false,
 	email_display: null,
 	email_dlg: null,
+	
+	contactSection: null,
 
 	initPage: function(el) {
+		
+		this.wrapper = el;
+		
+		$('input[placeholder]', this.wrapper).each(function() {
+			Orb.Compat.WebForms.placeholder(this);
+		})
+		
 		// Collapsible headings
 		$('.section', el).each(function() {
 			var sec = $(this);
@@ -56,7 +66,82 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		this.email_display.dblclick((function() {
 			this.email_dlg.dialog('open');
 		}).bind(this));
+		
+		this.initContactFormEditable(el);
 	},
+	
+	//#########################################################################
+	//# Contact form stuff
+	//#########################################################################
+	
+	initContactFormEditable: function(el) {
+		this.contactSection = $('.section.contact', el);
+		
+		var add_btn = $('.add.trigger', this.contactSection);
+		var self = this;
+		add_btn.click(function() {
+			self.startContactAdd($(this));
+		});
+	},
+	
+	startContactAdd: function(btn) {
+		
+		var type = btn.data('add-type');
+		
+		var edit_el = $('.contact-add-tpl.new.'+type, this.wrapper).clone();
+		
+		var pos_el = $('.contact-group.'+type, this.contactSection);
+		if (!pos_el.length || pos_el.is(':hidden')) {
+			pos_el = this.contactSection;
+		}
+		var pos = pos_el.offset();
+		
+		edit_el.appendTo('body');
+		edit_el.css({
+			position: 'absolute',
+			left: pos.left - (edit_el.outerWidth() - this.contactSection.outerWidth()),
+			top: pos.top,
+			'z-index': 999999
+		});
+		edit_el.show();
+		
+		$('.close', edit_el).click(function() {
+			edit_el.remove();
+		});
+		
+		var self = this;
+		$('.save', edit_el).click(function() {
+			self.saveContact(edit_el);
+		});
+	},
+	
+	saveContact: function(edit_el) {
+		
+		var data = edit_el.children().serializeArray();
+		
+		edit_el.addClass('saving');
+		
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-save-contact',
+			data: data,
+			success: (function(data) {
+				this.handleSaveSuccess(data, edit_el);
+			}).bind(this)
+		});
+		
+	},
+	
+	handleSaveSuccess: function(data, edit_el) {
+		$('.section.contact .content').html(data.contact_html);
+		
+		edit_el.remove();
+	},
+	
+	//#########################################################################
+	//# Email Dlg stuff
+	//#########################################################################
 	
 	initEmailDlg: function() {
 		if (this.hasSetupEmailDlg) return;

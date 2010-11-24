@@ -78,19 +78,13 @@ pageMeta.person_id = {{person.id}};
 	</div>
 
 	<div class="side">
-		<div class="section">
+		<div class="section contact">
+			<span class="add trigger" data-add-type="im">add im</span>
+			<span class="add trigger" data-add-type="address">add address</span>
+			<span class="add trigger" data-add-type="phone">add phone</span>
 			<h5>Contact</h5>
-			<div>
-				<dl class="contact">
-					<dt>Phone</dt>
-					<dd>+1 705-492-6224</dd>
-
-					<dt>Address</dt>
-					<dd>APT-8 1120 Clarence Street, North Bay, Ontario, Canada</dd>
-
-					<dt>IM</dt>
-					<dd>(MSN) chris.nadeau@deskpro.com</dd>
-				</dl>
+			<div class="content">
+				{% include 'TechBundle:Person:contact-section' with ['person': person] %}
 			</div>
 		</div>
 		
@@ -121,6 +115,40 @@ pageMeta.person_id = {{person.id}};
 					<li><a href="">Pre-sales questions</a> 2 days ago</li>
 				</ul>
 			</div>
+		</div>
+	</div>
+	
+	<div class="contact-add-tpl im new" style="display:none">
+		<input type="hidden" name="contact_type" value="instant_message" />
+		{{contact_fields_tpl.instant_message.protocol.render|raw}}
+		{{contact_fields_tpl.instant_message.im.render(['placeholder': 'ID/Nickname'])|raw}}
+		{{contact_fields_tpl.instant_message.comment.render()|raw}}
+		<div>
+			<span class="saving trigger">saving...</span>
+			<span class="save trigger">save</span>
+			<span class="close trigger">cancel</span>
+		</div>
+	</div>
+	<div class="contact-add-tpl address new" style="display:none">
+		<input type="hidden" name="contact_type" value="address" />
+		{{contact_fields_tpl.address.address.render()|raw}}<br />
+		{{contact_fields_tpl.address.country.render(['size': 10, 'placeholder': 'Country'])|raw}}
+		{{contact_fields_tpl.address.comment.render()|raw}}
+		<div>
+			<span class="saving trigger">saving...</span>
+			<span class="save trigger">save</span>
+			<span class="close trigger">cancel</span>
+		</div>
+	</div>
+	<div class="contact-add-tpl phone new" style="display:none">
+		<input type="hidden" name="contact_type" value="phone" />
+		{{contact_fields_tpl.phone.country_code.render(['size': 4, 'placeholder': 'Country Code'])|raw}}
+		{{contact_fields_tpl.phone.phone.render(['placeholder': 'Phone Number'])|raw}}
+		{{contact_fields_tpl.phone.comment.render()|raw}}
+		<div>
+			<span class="saving trigger">saving...</span>
+			<span class="save trigger">save</span>
+			<span class="close trigger">cancel</span>
 		</div>
 	</div>
 

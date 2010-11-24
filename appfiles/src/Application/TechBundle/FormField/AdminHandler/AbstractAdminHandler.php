@@ -9,9 +9,9 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\FormField\AdminHandler;
+namespace Application\TechBundle\CustomField\AdminHandler;
 
-use \Application\CoreBundle\Entity\FormField;
+use \Application\CoreBundle\Entity\CustomDefAbstract;
 
 use \DeskPRO\App;
 
@@ -26,13 +26,13 @@ abstract class AbstractAdminHandler
 {
 	/**
 	 * The form field definition
-	 * @var Application\CoreBundle\Entity\FormField
+	 * @var Application\CoreBundle\Entity\CustomDefAbstract
 	 */
 	protected $fielddef;
 
 	protected $em;
 
-	public function __construct(FormField $fielddef)
+	public function __construct(CustomDefAbstract $fielddef)
 	{
 		$this->fielddef = $fielddef;
 		$this->em = App::getOrm();

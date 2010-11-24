@@ -15,6 +15,9 @@ use \Orb\Util\Arrays;
 
 use \Application\CoreBundle\Entity\Person;
 use \Application\CoreBundle\Entity\PersonEmail;
+use \Application\CoreBundle\Entity\PersonContactData;
+
+use \DeskPRO\App;
 
 /**
  * Handles viewing and editing a person
@@ -47,21 +50,6 @@ class PersonController extends AbstractController
 
 		$form = $this->_getForm($person);
 
-		if ($this->isPostRequest()) {
-			$form->setFormData($_POST);
-			if ($form->isValid()) {
-
-				$this->em->beginTransaction();
-
-				$form->savePerson($person);
-
-				$this->em->commit();
-			} else {
-				// TODO proper handling
-				print_r($form->getErrors());
-			}
-		}
-
 		// All-in-one array for template
 		$custom_fields = array();
 //		foreach ($form->getCustomFields() as $f) {
@@ -75,11 +63,32 @@ class PersonController extends AbstractController
 //			);
 //		}
 
+		#------------------------------
+		# Contact fields: values
+		#------------------------------
+
+
+
+		#------------------------------
+		# Contact fields: empty tpls
+		#------------------------------
+
+		$contact_fields_tpl = array();
+		$f = new \DeskPRO\Form\ContactFieldHandler\InstantMessage();
+		$contact_fields_tpl['instant_message'] = $f->getFormField();
+
+		$f = new \DeskPRO\Form\ContactFieldHandler\Address();
+		$contact_fields_tpl['address'] = $f->getFormField();
+
+		$f = new \DeskPRO\Form\ContactFieldHandler\Phone();
+		$contact_fields_tpl['phone'] = $f->getFormField();
+
 		return $this->render('TechBundle:Person:view', array(
 			'person' => $person,
 			'form' => $form,
 			'fields' => $form->getCustomFields(),
 			'custom_fields' => $custom_fields,
+			'contact_fields_tpl' => $contact_fields_tpl
 		));
 	}
 
@@ -194,6 +203,52 @@ class PersonController extends AbstractController
 			'success' => true,
 			'person_id' => $person['id'],
 			'dlg_html' => $this->renderView('TechBundle:Person:email-dlg-li', array('person' => $person))
+		));
+	}
+
+
+	############################################################################
+	# /tech/people/:person_id/ajax-save-contact     tech_people_ajaxsave_contact
+	############################################################################
+
+	// TODO error checking
+	public function ajaxSaveContactAction($person_id)
+	{
+		if ($person_id) {
+			$person = $this->getPersonOr404($person_id);
+		} else {
+			$person = new Person();
+		}
+
+		$type = $this->in->getString('contact_type');
+		$handler = \DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
+
+		$handler = new $handler();
+
+		$contact_data = new PersonContactData();
+		$contact_data['handler_class'] = get_class($handler);
+
+		foreach ($_POST[$handler->getSimpleName()] as $k => $v) {
+			$field_k = $k;
+			if ($k != 'comment') {
+				$field_k = $handler->mapNameToField($k);
+			}
+			if (!$field_k) continue;
+
+			$contact_data[$field_k] = $v;
+		}
+
+		$em = App::getOrm();
+		$em->beginTransaction();
+		$this->person->addContactData($contact_data);
+		$em->persist($contact_data);
+		$em->flush();
+		$em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'person_id' => $person['id'],
+			'contact_html' => $this->renderView('TechBundle:Person:contact-section', array('person' => $person))
 		));
 	}
 

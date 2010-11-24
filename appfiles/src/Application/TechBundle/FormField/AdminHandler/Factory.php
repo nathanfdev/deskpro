@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\FormField\AdminHandler;
+namespace Application\TechBundle\CustomField\AdminHandler;
 
 use \Application\CoreBundle\Entity\FormField;
 
@@ -23,26 +23,26 @@ class Factory
 	private function __construct() { /* static */ }
 
 	/**
-	 * @return Application\TechBundle\FormField\AdminHandler\AbstractAdminHandler
+	 * @return Application\TechBundle\CustomField\AdminHandler\AbstractAdminHandler
 	 */
 	public static function createFromFormField(FormField $form_field)
 	{
 		$handler = null;
 		switch ($form_field['handler_class']) {
 			case 'DeskPRO\\Form\\FieldHandler\\Text':
-				$handler = new \Application\TechBundle\FormField\AdminHandler\Text($form_field);
+				$handler = new \Application\TechBundle\CustomField\AdminHandler\Text($form_field);
 				break;
 
 			case 'DeskPRO\\Form\\FieldHandler\\Textarea':
-				$handler = new \Application\TechBundle\FormField\AdminHandler\Textarea($form_field);
+				$handler = new \Application\TechBundle\CustomField\AdminHandler\Textarea($form_field);
 				break;
 
 			case 'DeskPRO\\Form\\FieldHandler\\Choice':
-				$handler = new \Application\TechBundle\FormField\AdminHandler\Choice($form_field);
+				$handler = new \Application\TechBundle\CustomField\AdminHandler\Choice($form_field);
 				break;
 
 			case 'DeskPRO\\Form\\FieldHandler\\MultipleChoice':
-				$handler = new \Application\TechBundle\FormField\AdminHandler\MultipleChoice($form_field);
+				$handler = new \Application\TechBundle\CustomField\AdminHandler\MultipleChoice($form_field);
 				break;
 		}
 		

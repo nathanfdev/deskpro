@@ -46,7 +46,9 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 	 */
 	public static function simpleNameToClassName($simple_name)
 	{
+		$simple_name = str_replace('_', '-', $simple_name);
 		$classname = Strings::dashToCamelCase($simple_name);
+		$classname = ucfirst($classname);
 		$classname = "DeskPRO\\Form\\ContactFieldHandler\\$classname";
 
 		return $classname;
@@ -143,6 +145,7 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 		$classname = explode('\\', $classname);
 		$classname = array_pop($classname);
 		$classname = Strings::camelCaseToDash($classname);
+		$classname = str_replace('-', '_', $classname);
 
 		return $classname;
 	}

@@ -432,6 +432,22 @@ class Person extends \DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Add contact data
+	 *
+	 * @param PersonEmail $email
+	 */
+	public function addContactData(PersonContactData $contact_data)
+	{
+		$em = App::getOrm();
+
+		$this['contact_data']->add($contact_data);
+
+		$contact_data['person'] = $this;
+		$em->persist($contact_data);
+	}
+
+
 
 	/**
 	 * Add an email address
@@ -553,6 +569,40 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 		return null;
 	}
+
+
+	public function getContactDataOfType($type)
+	{
+		if (strpos($type, 'DeskPRO\\') !== 0) {
+			$type = \DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
+		}
+
+		$ret = array();
+		foreach ($this->contact_data as $contact_data) {
+			if ($contact_data['handler_class'] == $type) {
+				$ret[] = $contact_data;
+			}
+		}
+
+		return $ret;
+	}
+
+	public function getIms()
+	{
+		return $this->getContactDataOfType('instant_message');
+	}
+
+	public function getAddresses()
+	{
+		return $this->getContactDataOfType('address');
+	}
+
+	public function getPhones()
+	{
+		return $this->getContactDataOfType('phone');
+	}
+
+
 
 	
 

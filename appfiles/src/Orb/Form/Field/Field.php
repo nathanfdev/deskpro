@@ -424,7 +424,7 @@ abstract class Field
 		$renderer = $this->getRenderer();
 
 		if ($renderer === null) {
-			throw new \RuntimeException('No renderer has been set, cannot render field');
+			$renderer = new \Orb\Form\Renderer\Basic();
 		}
 
 		$attributes = array_merge($this->getDefaultAttributes(), $attributes);

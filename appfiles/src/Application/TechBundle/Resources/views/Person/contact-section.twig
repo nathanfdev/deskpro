@@ -1,0 +1,24 @@
+{% if person.phones %}
+	<dl class="contact-group phone">
+		<dt>Phone</dt>
+		{% for i in person.phones %}
+			<dd>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</dd>
+		{% endfor %}
+	</dl>
+{% endif %}
+{% if person.addresses %}
+	<dl class="contact-group address">
+		<dt>Phone</dt>
+		{% for i in person.addresses %}
+			<dd>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</dd>
+		{% endfor %}
+	</dl>
+{% endif %}
+{% if person.ims %}
+	<dl class="contact-group im">
+		<dt>Instant Messaging</dt>
+		{% for i in person.ims %}
+			<dd>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</dd>
+		{% endfor %}
+	</dl>
+{% endif %}

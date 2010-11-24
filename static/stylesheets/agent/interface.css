@@ -505,6 +505,10 @@ table.list > tbody > tr:hover {
 	cursor: pointer;
 }
 
+.profile .section.closed > .trigger {
+	display: none;
+}
+
 .profile .section.closed > h5 {
 	color: #aaa;
 	border: 1px solid #aaa;
@@ -605,14 +609,14 @@ table.list > tbody > tr:hover {
 
 
 
-.profile > .side .section {
+.profile > .side .section, .profile > .side-section {
 	background-color: #eee;
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
 }
 
-.profile > .side .section > div {
+.profile > .side .section > div, .profile > .side-section > div {
 	padding: 6px;
 }
 
@@ -720,4 +724,66 @@ table.list > tbody > tr:hover {
 	-webkit-border-radius: 4px;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
+}
+
+
+
+.section > .trigger {
+	font-size: 7pt;
+	background-color: #D8E5ED;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	margin-left: 6px;
+	cursor: pointer;
+	float: right;
+}
+
+.section > .trigger:hover {
+	background-color: #BACDD9;
+}
+
+.section.contact .trigger.save-all { display: none; }
+.section.contact.editable .trigger.save-all { display: block; }
+.section.contact.editable .trigger.edit-all { display: none; }
+
+.section.contact .contact-group dt .add {
+	display: none;
+}
+
+.section.contact.editable .contact-group dt .add {
+	display: block;
+}
+
+.contact-add-tpl {
+	background-color: #fff;
+	border: 1px solid #40AEF7;
+	padding: 5px 3px 6px 5px;
+	-webkit-border-radius: 4px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+}
+
+.contact-add-tpl.im {
+
+}
+
+.contact-add-tpl .trigger {
+	font-size: 7pt;
+	background-color: #D8E5ED;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	margin-left: 6px;
+	cursor: pointer;
+	float: right;
+}
+
+.contact-add-tpl .trigger.saving { display: none; }
+.contact-add-tpl.saving .trigger.saving { display: block; }
+.contact-add-tpl.saving .trigger.save { display: block; }
+.contact-add-tpl.saving .trigger.cancel { display: block; }
+
+.contact-add-tpl > .trigger:hover {
+	background-color: #BACDD9;
 }

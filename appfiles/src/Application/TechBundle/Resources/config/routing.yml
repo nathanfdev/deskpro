@@ -155,6 +155,11 @@ tech_people_ajaxsave_emails:
   defaults: { _controller: TechBundle:Person:ajaxSaveEmails }
   requirements: { person_id: "\d+" }
 
+tech_people_ajaxsave_contact:
+  pattern: /people/:person_id/ajax-save-contact
+  defaults: { _controller: TechBundle:Person:ajaxSaveContact }
+  requirements: { person_id: "\d+" }
+
 tech_peoplesearch_perform:
   pattern: /people-search/search
   defaults: { _controller: TechBundle:PeopleSearch:performSearch }

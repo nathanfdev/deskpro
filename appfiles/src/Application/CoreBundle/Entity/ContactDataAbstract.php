@@ -51,61 +51,61 @@ abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @Column(name="field_1", type="text")
 	 */
-	protected $field_1;
+	protected $field_1 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_2", type="text")
 	 */
-	protected $field_2;
+	protected $field_2 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_3", type="text")
 	 */
-	protected $field_3;
+	protected $field_3 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_4", type="text")
 	 */
-	protected $field_4;
+	protected $field_4 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_5", type="text")
 	 */
-	protected $field_5;
+	protected $field_5 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_6", type="text")
 	 */
-	protected $field_6;
+	protected $field_6 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_7", type="text")
 	 */
-	protected $field_7;
+	protected $field_7 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_8", type="text")
 	 */
-	protected $field_8;
+	protected $field_8 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_9", type="text")
 	 */
-	protected $field_9;
+	protected $field_9 = '';
 
 	/**
 	 * @var string
 	 * @Column(name="field_10", type="text")
 	 */
-	protected $field_10;
+	protected $field_10 = '';
 
 	/**
 	 * Instance of the handler class

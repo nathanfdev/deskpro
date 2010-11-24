@@ -9,10 +9,9 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\FormField\AdminHandler;
+namespace Application\TechBundle\CustomField\AdminHandler;
 
 use \Application\CoreBundle\Entity;
-use \Application\CoreBundle\Entity\FormField;
 
 use \DeskPRO\App;
 
