@@ -206,9 +206,20 @@ abstract class DomainObject implements \ArrayAccess
 		}
 	}
 
+	
+	/**
+	 * @return Doctrine\ORM\EntityRepository
+	 */
+	public static function getRepository()
+	{
+		$entity = get_called_class();
+		$entity = explode('\\', $entity);
+		$entity = array_pop($entity);
 
+		$em = App::getOrm();
 
-
+		return $em->getRepository("CoreBundle:$entity");
+	}
 	
 	############################################################################
 	# ArrayAccess Implementation

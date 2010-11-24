@@ -160,6 +160,16 @@ tech_people_ajaxsave_contact:
   defaults: { _controller: TechBundle:Person:ajaxSaveContact }
   requirements: { person_id: "\d+" }
 
+tech_people_ajaxsave_note:
+  pattern: /people/:person_id/ajax-save-note
+  defaults: { _controller: TechBundle:Person:ajaxSaveNote }
+  requirements: { person_id: "\d+" }
+
+tech_people_ajaxget_notes:
+  pattern: /people/:person_id/ajax-get-notes
+  defaults: { _controller: TechBundle:Person:ajaxGetNotes }
+  requirements: { person_id: "\d+" }
+
 tech_peoplesearch_perform:
   pattern: /people-search/search
   defaults: { _controller: TechBundle:PeopleSearch:performSearch }

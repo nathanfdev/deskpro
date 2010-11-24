@@ -73,6 +73,11 @@ class PersonNote extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $note;
 
+	public function getNoteHtml()
+	{
+		return nl2br(htmlspecialchars($this->note), true);
+	}
+
 	/** @PrePersist */
 	public function _prePersist()
 	{

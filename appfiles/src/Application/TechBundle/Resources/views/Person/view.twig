@@ -17,24 +17,30 @@ pageMeta.person_id = {{person.id}};
 			</div>
 		</div>
 
-		<div class="section">
+		<div class="section notes">
+			<span class="new-note trigger">new note</span>
 			<h5>Notes</h5>
+			<div class="new-note-form" style="display:none">
+				<textarea name="note"></textarea>
+				<div style="float:right">
+					<span class="saving trigger">saving...</span>
+					<span class="save trigger">save</span><br/>
+					<span class="cancel trigger">cancel</span>
+				</div>
+			</div>
 			<div>
-				<dl>
-					<dt>Jane</dt>
-					<dd>Some note by Jane</dd>
-
-					<dt>Ben</dt>
-					<dd>Some note by Ben</dd>
-
-					<dt>Ben</dt>
-					<dd>Lorem ipsum dolor sit amet, consectetur adipiscing elit. Pellentesque at lacus nisi, quis facilisis ante. Morbi nec aliquet risus. Suspendisse potenti. Ut sit amet dolor sed diam porttitor feugiat et nec ipsum</dd>
+				<dl class="note-list" data-limit="5">
+					{% for note in notes %}
+						{% include 'TechBundle:Person:note-li' with ['note': note] %}
+					{% endfor %}
 				</dl>
-				<ul class="pages">
-					<li class="active">1</li>
-					<li>2</li>
-					<li>3</li>
-				</ul>
+				{% if note_pages %}
+					<ul class="pages">
+						{% for i in note_pages %}
+							<li class="page-{{i}} {%if i == 1 %}active{%endif%}" data-page="{{i}}">{{i}}</li>
+						{% endfor %}
+					</ul>
+				{% endif %}
 			</div>
 		</div>
 

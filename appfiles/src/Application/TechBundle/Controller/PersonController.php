@@ -16,6 +16,7 @@ use \Orb\Util\Arrays;
 use \Application\CoreBundle\Entity\Person;
 use \Application\CoreBundle\Entity\PersonEmail;
 use \Application\CoreBundle\Entity\PersonContactData;
+use \Application\CoreBundle\Entity\PersonNote;
 
 use \DeskPRO\App;
 
@@ -63,11 +64,6 @@ class PersonController extends AbstractController
 //			);
 //		}
 
-		#------------------------------
-		# Contact fields: values
-		#------------------------------
-
-
 
 		#------------------------------
 		# Contact fields: empty tpls
@@ -83,12 +79,87 @@ class PersonController extends AbstractController
 		$f = new \DeskPRO\Form\ContactFieldHandler\Phone();
 		$contact_fields_tpl['phone'] = $f->getFormField();
 
+		#------------------------------
+		# Latest 5 notes
+		#------------------------------
+
+		$em = App::getOrm();
+
+		$notes = $em->createQuery("
+			SELECT n
+			FROM CoreBundle:PersonNote n
+			WHERE n.person_id = ?1
+			ORDER BY n.id DESC
+		")->setParameter(1, $person['id'])->setMaxResults(5)->execute();
+
+		$db = App::getDb();
+		$notes_count = $db->fetchColumn("
+			SELECT COUNT(*) FROM people_notes
+			WHERE person_id = ?
+		", array($person['id']));
+
+		$note_pages = false;
+		if ($notes_count > 5) {
+			$note_pages = range(1, ceil($notes_count / 5));
+		}
+
 		return $this->render('TechBundle:Person:view', array(
 			'person' => $person,
 			'form' => $form,
 			'fields' => $form->getCustomFields(),
 			'custom_fields' => $custom_fields,
-			'contact_fields_tpl' => $contact_fields_tpl
+			'contact_fields_tpl' => $contact_fields_tpl,
+			'notes' => $notes,
+			'note_pages' => $note_pages
+		));
+	}
+
+	############################################################################
+	# /tech/people/:person_id/ajax-get-notes           tech_people_ajaxget_notes
+	############################################################################
+
+	public function ajaxGetNotesAction($person_id)
+	{
+		if ($person_id) {
+			$person = $this->getPersonOr404($person_id);
+		} else {
+			$person = new Person();
+		}
+
+		$per_page = min($this->in->getUint('pp'), 20);
+		$page = $this->in->getUint('p');
+		if (!$page) {
+			$page = 1;
+		}
+
+		$start = ($page - 1) * $per_page;
+
+		$em = App::getOrm();
+		
+		$notes = $em->createQuery("
+			SELECT n, a
+			FROM CoreBundle:PersonNote n
+			LEFT JOIN n.agent a
+			WHERE n.person_id = ?1
+			ORDER BY n.id DESC
+		")->setParameter(1, $person['id'])
+			->setMaxResults($per_page)
+			->setFirstResult($start)
+			->execute();
+
+		$html = array();
+
+		foreach ($notes as $note) {
+			$html[] = $this->renderView('TechBundle:Person:note-li', array('note' => $note));
+		}
+		
+		$html = implode('', $html);
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'person_id' => $person['id'],
+			'notes_html' => $html,
+			'page' => $page
 		));
 	}
 
@@ -249,6 +320,40 @@ class PersonController extends AbstractController
 			'success' => true,
 			'person_id' => $person['id'],
 			'contact_html' => $this->renderView('TechBundle:Person:contact-section', array('person' => $person))
+		));
+	}
+
+	############################################################################
+	# /tech/people/:person_id/ajax-save-note           tech_people_ajaxsave_note
+	############################################################################
+
+	// TODO error checking
+	public function ajaxSaveNoteAction($person_id)
+	{
+		if ($person_id) {
+			$person = $this->getPersonOr404($person_id);
+		} else {
+			$person = new Person();
+		}
+
+		$note_txt = $this->in->getString('note');
+
+		$em = App::getOrm();
+		$em->beginTransaction();
+
+		$note = new PersonNote();
+		$note['agent'] = $this->person;
+		$note['person'] = $person;
+		$note['note'] = $note_txt;
+		$em->persist($note);
+
+		$em->flush();
+		$em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'person_id' => $person['id'],
+			'note_li_html' => $this->renderView('TechBundle:Person:note-li', array('note' => $note))
 		));
 	}
 

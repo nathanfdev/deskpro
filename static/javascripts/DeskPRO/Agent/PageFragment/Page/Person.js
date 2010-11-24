@@ -9,6 +9,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	email_dlg: null,
 	
 	contactSection: null,
+	
+	notesSection: null,
 
 	initPage: function(el) {
 		
@@ -68,6 +70,99 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		}).bind(this));
 		
 		this.initContactFormEditable(el);
+		this.initNoteFormEditable();
+		this.initNotePagination();
+	},
+	
+	//#########################################################################
+	//# Note form stuff
+	//#########################################################################
+	
+	initNoteFormEditable: function() {
+		this.notesSection = $('.section.notes', this.wrapper);
+		
+		$('.trigger.new-note', this.notesSection).click((function() {
+			this.openNoteEdtiable();
+		}).bind(this));
+		
+		$('.new-note-form .trigger.cancel', this.notesSection).click((function() {
+			this.closeNoteEditable();
+		}).bind(this));
+		
+		$('.new-note-form .trigger.save', this.notesSection).click((function() {
+			this.saveNote();
+		}).bind(this));
+	},
+	
+	openNoteEdtiable: function() {
+		var form = $('.new-note-form', this.notesSection);
+		if (form.is(':hidden')) {
+			$('.new-note-form textarea').val('');
+			form.slideDown();
+		}
+	},
+	
+	closeNoteEditable: function() {
+		$('.new-note-form textarea').val('');
+		var form = $('.new-note-form', this.notesSection);
+		if (form.is(':visible')) {
+			form.slideUp();
+		}
+	},
+	
+	saveNote: function() {
+		
+		$('.new-note-form').addClass('saving');
+		var note = $('.new-note-form textarea').val();
+		
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-save-note',
+			data: {note: note},
+			success: this.handleNoteSave.bind(this)
+		});
+	},
+	
+	handleNoteSave: function(data) {
+		
+		var list = $('.note-list', this.notesSection);
+		list.prepend(data.note_li_html);
+		
+		$('.new-note-form').removeClass('saving');
+		this.closeNoteEditable();
+	},
+	
+	//#########################################################################
+	//# Note pagination
+	//#########################################################################
+	
+	initNotePagination: function() {
+		var pages = $('ul.pages', this.notesSection);
+		if (!pages.length) return;
+		
+		var self = this;
+		$('li', pages).click(function() {
+			self.loadNotePage($(this).data('page'));
+		});
+	},
+	
+	loadNotePage: function(page) {
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-get-notes',
+			data: { 'pp': $('.note-list', this.notesSection).data('limit'), 'p': page },
+			success: this.handleGetNotes.bind(this)
+		});
+	},
+	
+	handleGetNotes: function(data) {
+		var note_list = $('.note-list', this.notesSection);
+		note_list.html(data.notes_html);
+		
+		$('ul.pages il', this.notesSection).removeClass('active');
+		$('ul.pages il.page-'+data.page, this.notesSection).addClass('active');
 	},
 	
 	//#########################################################################
