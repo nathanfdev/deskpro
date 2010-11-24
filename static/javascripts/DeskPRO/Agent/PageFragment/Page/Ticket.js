@@ -19,16 +19,25 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.person-overview', el).mouseover(function(event) {
 			self.isMouseOverPopout = true;
 			self.openPopOut(el, event);
-		}).mouseout(function(ev) {
+		}).mouseout(function(event) {
 			self.isMouseOverPopout = false;
 			self.closePopoutOnmouseout.delay(500, self);
+		});
+		
+		$('.person-overview', el).click(function(event) {
+			event.stopPropagation();
 		});
 		
 		
 		this.popout = $('.person-popout', el);
 		this.popout.mouseover(function() {
 			self.isMouseOverPopout = true;
-		}).mouseout(function() {
+		}).mouseout(function(event) {
+			// Stuff that pops up within the element will cause the
+			// element to mouseout, so we need to check if its a child
+			if ($(event.target).parentsUntil('.person-popout').length) {
+				return;
+			}
 			self.isMouseOverPopout = false;
 			self.closePopoutOnmouseout.delay(500, self);
 		});
