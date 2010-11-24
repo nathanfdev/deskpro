@@ -3,6 +3,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
+	wrapper: null,
 	popout: null,
 	popout_overview: null,
 	
@@ -11,6 +12,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	popoutPage: null,
 	
 	initPage: function(el) {
+		
+		this.wrapper = el;
 		
 		var self = this;
 		$('.person-overview', el).mouseover(function(event) {
@@ -56,6 +59,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	openPopOut: function(el, event) {
 		var orig = $('.person-overview', el);
 		var pos = orig.offset();
+		var wrapper_pos = this.wrapper.offset();
 		
 		// can use the left position of the element to roughly
 		// determine how wide the columns are
@@ -70,7 +74,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			'overflow': 'auto'
 		});
 		this.popout.css({
-			'top': (pos.top - 70),
+			'top': (wrapper_pos.top - 8),
 			'left': (pos.left - this.popout.outerWidth() - 20),
 			'bottom': 30
 		});
