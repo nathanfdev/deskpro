@@ -222,6 +222,21 @@ admin_personfields_test:
 # Ticket Search
 ################################################################################
 
+tech_ticketsearch:
+  pattern: /ticket-search
+  defaults: { _controller: TechBundle:TicketSearch:index }
+
+# TMP just stick the mockup ticket view into ticket search
+tech_ticket_view:
+  pattern: /tickets/:ticket_id
+  defaults: { _controller: TechBundle:TicketSearch:ticketView }
+  requirements: { filter_id: "\d+" }
+
 tech_ticketsearch_filterspane:
   pattern: /ticket-search/filters-pane
   defaults: { _controller: TechBundle:TicketSearch:filtersPane }
+
+tech_ticketsearch_runfilter:
+  pattern: /ticket-search/filter/:filter_id
+  defaults: { _controller: TechBundle:TicketSearch:runFilter }
+  requirements: { filter_id: "\d+" }

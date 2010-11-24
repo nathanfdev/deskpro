@@ -287,7 +287,7 @@ DeskPRO.Agent.Window = new Class({
 			'class': classname || 'DeskPRO.Agent.PageFragment.Basic'
 		};
 		
-		var regex = /<script>([\s\S]*)<\/script>/im;
+		var regex = /<script>([\s\S]*?)<\/script>/im;
 		var matches = regex.exec(html);
 		
 		if (matches && matches.length) {

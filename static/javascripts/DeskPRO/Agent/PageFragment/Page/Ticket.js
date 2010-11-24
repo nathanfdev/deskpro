@@ -7,6 +7,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	popout_overview: null,
 	
 	isMouseOverPopout: false,
+	hasInitPopout: false,
+	popoutPage: null,
 	
 	initPage: function(el) {
 		
@@ -14,7 +16,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.person-overview', el).mouseover(function(event) {
 			self.isMouseOverPopout = true;
 			self.openPopOut(el, event);
-		}).mouseout(function() {
+		}).mouseout(function(ev) {
 			self.isMouseOverPopout = false;
 			self.closePopoutOnmouseout.delay(500, self);
 		});
@@ -37,6 +39,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			self.closePopoutOnmouseout.delay(500, self);
 		});
 		this.popout_overview.detach().appendTo('body');
+		
+		$('.open-person', this.popout_overview).click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
 	},
 	
 	destroyPage: function(el) {
@@ -51,23 +57,42 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var orig = $('.person-overview', el);
 		var pos = orig.offset();
 		
+		// can use the left position of the element to roughly
+		// determine how wide the columns are
+		// so we want it to stretch as far as we can, minus some wriggle room
+		var width = pos.left - 35;
+		
 		this.popout.css({
 			'position': 'absolute',
-			'top': (pos.top - 30),
-			'left': (pos.left - this.popout.outerWidth() + 1),
 			'display': 'block',
-			'z-index': 9999998
+			'z-index': 999998,
+			'width': width,
+			'overflow': 'auto'
+		});
+		this.popout.css({
+			'top': (pos.top - 70),
+			'left': (pos.left - this.popout.outerWidth() - 20),
+			'bottom': 30
 		});
 		
 		this.popout_overview.css({
 			'position': 'absolute',
 			'top': pos.top,
-			'left': pos.left,
+			'left': pos.left - 20,
 			'display': 'block',
 			'width': orig.width(),
 			'height': orig.height(),
-			'z-index': 9999997
+			'z-index': 999997
 		});
+		
+		if (!this.hasInitPopout) {
+			this.popoutPage = new DeskPRO.Agent.PageFragment.Page.Person();
+			this.popoutPage.setAllMetaData({
+				person_id: 1
+			});
+			
+			this.popoutPage.initPage();
+		}
 	},
 	
 	closePopoutOnmouseout: function() {

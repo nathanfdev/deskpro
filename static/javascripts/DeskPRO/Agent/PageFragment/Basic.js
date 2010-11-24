@@ -61,10 +61,6 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		}
 	},
 	
-	setMetaData: function (metaData) {
-		this.metaData = metaData;
-	},
-	
 	getScripts: function() {
 		return this.scripts;
 	},

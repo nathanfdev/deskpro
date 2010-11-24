@@ -32,6 +32,7 @@
 
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleSearch.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSearch.js' %}"></script>
 
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/Basic.js' %}"></script>
 
@@ -59,7 +60,7 @@
 
 	<div id="window_header_nav">
 		<ul>
-			<li data-route="navpane:{% route 'tech_ticketsearch_filterspane' %}">Tickets</li>
+			<li data-route="navpane:{% route 'tech_ticketsearch_filterspane' %}" data-route-alt="listpane:{% route 'tech_ticketsearch' %}">Tickets</li>
 			<li class="people" data-route="navpane:{% route 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% route 'tech_peoplesearch' %}">People</li>
 		</ul>
 	</div>
