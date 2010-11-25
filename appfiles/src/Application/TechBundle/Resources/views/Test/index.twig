@@ -18,6 +18,7 @@
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery-ui/jquery-ui.min.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.layout.min.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/tipTip/jquery.tipTip.min.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/tag-it/tag-it.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/mootools/mootools-core.min.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Orb.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Compat.js' %}"></script>
@@ -44,12 +45,13 @@
 		var BASE_URL = '{% route 'index' %}';
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
-			//window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .people'));
+			window.DeskPRO_Window.runPageRouteFromElement($('#load_this'));
 			//agent_tester.loadTicketPane();
 		});
 	</script>
 </head>
 <body>
+<input id="load_this" type="hidden" data-route="person:{% route 'tech_people_view' with ['person_id': person.id] %}" />
 
 <div id="window_head" class="ui-layout-north">
 	<div id="window_head_top">
@@ -73,61 +75,6 @@
 	</div>
 	<div id="pane_shell_inner" class="ui-layout-center">
 		<div id="pane_list" class="ui-layout-west">
-			
-			<script type="text/javascript" charset="utf-8">
-				$(document).ready(function() {
-					var editor = new DeskPRO.Form.RuleBuilder($('.rules-tpl'));
-					editor.addEvent('newRow', function(new_row) {
-						$('.remove', new_row).click(function() {
-							new_row.remove();
-						});
-					});
-					$('.search-form .add .btn').data('add-count', 0).click(function() {
-						var count = parseInt($(this).data('add-count'));
-						var basename = 'criteria['+count+']';
-						
-						$(this).data('add-count', count+1);
-						
-						editor.addNewRow($('.search-form .search-terms'), basename);
-					});
-				});
-			</script>
-			
-			<div class="listpane-top">
-				<div class="search-form">
-					<div class="search-terms"></div>
-					<div class="term add">
-						<span class="btn">+</span>
-						Add a new search term
-					</div>
-				</div>
-				<center><input type="submit" value="search" /></center>
-			</div>
-
-			<div class="rules-tpl" style="display:none">
-				<div class="row">
-					<div class="term">
-						<div class="type"></div>
-						<div class="op"></div>
-						<div class="choice"></div>
-						<div class="remove">-</div>
-					</div>
-				</div>
-				<div class="type" title="Department" data-rule-type="department">
-					<div class="op">
-						<select name="op">
-							<option value="is">is</option>
-							<option value="not">is not</option>
-						</select>
-					</div>
-					<div class="choice">
-						<select name="department">
-							<option value="1">Sales</option>
-							<option value="2">Support</option>
-						</select>
-					</div>
-				</div>
-			</div>
 
 		</div>
 		<div id="pane_content" class="ui-layout-center">
@@ -136,8 +83,6 @@
 				<div class="close-btn">x</div>
 			</div>
 			<div id="page" class="ui-layout-content">
-
-				TEST PAGE
 
 			</div>
 		</div>

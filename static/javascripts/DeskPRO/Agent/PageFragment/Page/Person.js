@@ -70,6 +70,13 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			this.email_dlg.dialog('open');
 		}).bind(this));
 		
+		// Tags
+		$("#mytags").tagit({
+			fieldName: 'tags',
+			//inputFieldAppendTo: $('.section.tags .new-tag', this.wrapper),
+			enableBackspace: false
+		});
+		
 		this.initContactFormEditable(el);
 		this.initNoteFormEditable();
 		this.initNotePagination();
