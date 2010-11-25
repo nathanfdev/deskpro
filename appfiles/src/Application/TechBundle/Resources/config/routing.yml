@@ -2,6 +2,10 @@ tech_dashboard:
   pattern: /
   defaults: { _controller: TechBundle:Main:index }
 
+tech_test:
+  pattern: /test
+  defaults: { _controller: TechBundle:Test:index }
+
 ################################################################################
 # Styles
 ################################################################################

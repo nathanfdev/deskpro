@@ -44,7 +44,7 @@
 		var BASE_URL = '{% route 'index' %}';
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
-			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .people'));
+			//window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .people'));
 			//agent_tester.loadTicketPane();
 		});
 	</script>
@@ -73,6 +73,71 @@
 	</div>
 	<div id="pane_shell_inner" class="ui-layout-center">
 		<div id="pane_list" class="ui-layout-west">
+			
+			<script type="text/javascript" charset="utf-8">
+				$(document).ready(function() {
+					var editor = new DeskPRO.Form.RuleBuilder($('#rules-tpl'));
+					editor.addNewRow($('#rules'), 'rule[123]', {
+						rule_type: 'department',
+						op: 'not',
+						choice: {
+							department: 2
+						}
+					});
+					
+					$('#add_rule_btn').data('add-count', 0).click(function() {
+						var count = parseInt($(this).data('add-count'));
+						var basename = 'newrule['+count+']';
+						
+						$(this).data('add-count', count+1);
+						
+						editor.addNewRow($('#rules'), basename);
+					});
+				});
+			</script>
+
+
+			<input type="button" value="Add Rule" id="add_rule_btn" />
+			<div id="rules">
+			</div>
+			<div id="rules-tpl" style="display:none">
+				<div class="row">
+					<div class="type"></div>
+					<div class="op"></div>
+					<div class="choice"></div>
+					<div class="remove">-</div>
+				</div>
+				<div class="type" title="Department" data-rule-type="department">
+					<div class="op">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<select name="department">
+							<option value="1">Sales</option>
+							<option value="2">Support</option>
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Priority" data-rule-type="priority">
+					<div class="op">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+							<option value="lt">less than</option>
+							<option value="lte">less than or equal to</option>
+							<option value="gt">greater than</option>
+							<option value="gte">greater than or equal to</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" value="" name="priority" />
+					</div>
+				</div>
+			</div>
+
 
 		</div>
 		<div id="pane_content" class="ui-layout-center">
@@ -81,6 +146,8 @@
 				<div class="close-btn">x</div>
 			</div>
 			<div id="page" class="ui-layout-content">
+
+				TEST PAGE
 
 			</div>
 		</div>
