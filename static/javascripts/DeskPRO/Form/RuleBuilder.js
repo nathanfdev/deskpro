@@ -45,11 +45,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 			$('> .op select', new_row).val(existing.op);
 			
 			Object.each(existing.choice, function(val, name) {
-				var el = $('[name="'+name+'"], [name$="['+name+']"]').first();
-				
-				if (el.is('select')) {
-					$('option[value="'+val+'"]', el).attr('selected', true);
-				}
+				var el = $('[name="'+name+'"], [name$="\['+name+'\]"]', new_row).first().val(val);
 			}, this);
 		}
 		
