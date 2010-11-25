@@ -53,6 +53,22 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleSearch = new Class({
 			
 			this.autoTimeout = this.ajaxQuickSubmitForm.delay(250, this);
 		}).bind(this));
+		
+		// Set up search builder
+		var editor = new DeskPRO.Form.RuleBuilder($('.search-builder-tpl', this.wrapper));
+		editor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+		$('.search-form .add .btn').data('add-count', 0).click(function() {
+			var count = parseInt($(this).data('add-count'));
+			var basename = 'criteria['+count+']';
+			
+			$(this).data('add-count', count+1);
+			
+			editor.addNewRow($('.search-form .search-terms'), basename);
+		});
 	},
 	
 	ajaxQuickSubmitForm: function() {

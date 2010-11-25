@@ -7,8 +7,16 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.PeopleSearch';
 		<div class="toggle toggle-quick-search-form" style="float: right;">
 			Quick Search &raquo;
 		</div>
+		<br />
 		<form action="{% route 'tech_peoplesearch_perform' %}" method="post">
-			<input type="submit" value="Search" />
+			<div class="search-form">
+				<div class="search-terms"></div>
+				<div class="term add">
+					<span class="btn">+</span>
+					Add a new search term
+				</div>
+			</div>
+			<center><input type="submit" value="search" /></center>
 		</form>
 	</div>
 	<div class="quick-search-form">
@@ -19,6 +27,31 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.PeopleSearch';
 			<input type="search" name="q" placeholder="Begin typing a name, email address, label or company ..." style="width: 350px" />
 			<img src="{% asset 'images/loading-small.gif' %}" alt="Searching..." class="quick-search-loading" style="display:none" />
 		</form>
+	</div>
+	
+	<div class="search-builder-tpl" style="display:none">
+		<div class="row">
+			<div class="term">
+				<div class="type"></div>
+				<div class="op"></div>
+				<div class="choice"></div>
+				<div class="remove">-</div>
+			</div>
+		</div>
+		<div class="type" title="Department" data-rule-type="department">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="choice">
+				<select name="department">
+					<option value="1">Sales</option>
+					<option value="2">Support</option>
+				</select>
+			</div>
+		</div>
 	</div>
 </div>
 

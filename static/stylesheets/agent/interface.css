@@ -826,3 +826,68 @@ table.list > tbody > tr:hover {
 .person-popout .person {
 	padding: 0 !important;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+.search-form .term {
+	border-bottom: 1px solid #AFB2BA;
+	background-color: #fff;
+	padding: 4px;
+	margin: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.search-form .term .type, .search-form .term .op, .search-form .term .choice {
+	display: inline;
+}
+
+.search-form .term .remove {
+	font-size: 9pt;
+	color: #fff;
+	background-color: #BA3C3C;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	margin-left: 6px;
+	cursor: pointer;
+	float: right;
+}
+
+.search-form .term.add {
+	border-bottom: none;
+	font-size: 120%;
+	color: #C4C7CF;
+}
+
+.search-form .term.add .btn {
+	font-size: 9pt;
+	color: #fff;
+	background-color: #468733;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	margin-left: 6px;
+	cursor: pointer;
+	float: right;
+}
+
+
+
+

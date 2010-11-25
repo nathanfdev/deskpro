@@ -1,10 +1,51 @@
 Orb.createNamespace('DeskPRO.Form');
 
+/**
+ * A rule builder is a form widget that lets you add multiple "rules" to a list.
+ * A rule conists of a rule type (for example, "category"), an op ("is" or "is not" etc),
+ * and then a user input or selection (the actual category choice).
+ *
+ * This builder handles everything except form naming (eg. rule[0][rule_type] etc), and when
+ * to add rows (eg. on a button click). Some other component will figure those parts out.
+ *
+ * Example:
+ *    <script type="text/javascript" charset="utf-8">
+ *        $(document).ready(function() {
+ *            var editor = new DeskPRO.Form.RuleBuilder($('#rules-tpl'));
+ *            $('#add_rule_btn').data('add-count', 0).click(function() {
+ *                var count = parseInt($(this).data('add-count'));
+ *                var basename = 'newrule['+count+']';
+ *            
+ *                $(this).data('add-count', count+1);
+ *            
+ *                editor.addNewRow($('#rules'), basename);
+ *            });
+ *        });
+ *    </script>
+ *    <input type="button" value="Add Rule" id="add_rule_btn" />
+ *    <div id="rules"></div>
+ *    <div id="rules-tpl" style="display:none">
+ *        <div class="row"><div class="type"></div><div class="op"></div><div class="choice"></div></div>
+ *        <div class="type" title="Department" data-rule-type="department">
+ *            <div class="op"><select name="op"><option value="is">is</option><option value="not">is not</option></select></div>
+ *            <div class="choice"><select name="department"><option value="1">Sales</option><option value="2">Support</option></select></div>
+ *        </div>
+ *    </div>
+ */
 DeskPRO.Form.RuleBuilder = new Class({
+	Implements: Events,
+
 	ruleTpl: null,
 	
+	/**
+	 * Select options for "rule type" we pre-built in initalize
+	 */
 	typeSelectHtml: null,
 	
+	
+	/**
+	 * @param {jQuery} ruleTpl This is the wrapper element that contains the templates used for each rule type
+	 */
 	initialize: function(ruleTpl) {
 		this.ruleTpl = ruleTpl;
 		
@@ -27,11 +68,11 @@ DeskPRO.Form.RuleBuilder = new Class({
 	 * @return {jQuery} The newly added row
 	 */
 	addNewRow: function(addToEl, formBaseName, existing) {
-		var new_row = $('> .row', this.ruleTpl).clone();
+		var new_row = $('> .row', this.ruleTpl).children().clone();
 		
 		// Add select
-		$('> .type', new_row).html(this.typeSelectHtml);
-		var select = $('> .type > select', new_row);
+		$('.type:first', new_row).html(this.typeSelectHtml);
+		var select = $('.type:first > select', new_row);
 
 		// Update its name
 		if (formBaseName) {
@@ -42,7 +83,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 		if (existing) {
 			select.val(existing.rule_type);
 			this.handleSelectChange(new_row);
-			$('> .op select', new_row).val(existing.op);
+			$('.op:first select', new_row).val(existing.op);
 			
 			Object.each(existing.choice, function(val, name) {
 				var el = $('[name="'+name+'"], [name$="\['+name+'\]"]', new_row).first().val(val);
@@ -56,6 +97,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 		
 		$(addToEl).append(new_row);
 		
+		this.fireEvent('newRow', [new_row, addToEl, existing]);
+		
 		return new_row;
 	},
 	
@@ -67,19 +110,21 @@ DeskPRO.Form.RuleBuilder = new Class({
 	 * @param {jQuery} row The row that we need to update
 	 */
 	handleSelectChange: function(row) {
-		var rule_type = $('> .type > select', row).val();
+		var rule_type = $('.type:first > select', row).val();
 		
 		var rule_tpl = $('> .type[data-rule-type="'+rule_type+'"]', this.ruleTpl);
-		var op = $('> .op', rule_tpl).children().clone();
-		var choice = $('> .choice', rule_tpl).children().clone();
+		var op = $('> .op:first', rule_tpl).children().clone();
+		var choice = $('> .choice:first', rule_tpl).children().clone();
 		
-		$('> .op', row).append(op);
-		$('> .choice', row).append(choice);
+		$('.op:first', row).append(op);
+		$('.choice:first', row).append(choice);
 		
 		if (row.data('form-base-name')) {
-			this.updateFormName($('> .op', row), row.data('form-base-name'));
-			this.updateFormName($('> .choice', row), row.data('form-base-name'));
+			this.updateFormName($('.op:first', row), row.data('form-base-name'));
+			this.updateFormName($('.choice:first', row), row.data('form-base-name'));
 		}
+		
+		this.fireEvent('selectChange', [row, rule_type]);
 	},
 	
 	
