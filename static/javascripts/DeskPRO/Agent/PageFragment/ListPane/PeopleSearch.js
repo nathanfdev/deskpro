@@ -61,7 +61,7 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleSearch = new Class({
 				new_row.remove();
 			});
 		});
-		$('.search-form .add .btn').data('add-count', 0).click(function() {
+		$('.search-form .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'criteria['+count+']';
 			

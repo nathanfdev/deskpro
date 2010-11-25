@@ -865,27 +865,33 @@ table.list > tbody > tr:hover {
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
-	margin-left: 6px;
 	cursor: pointer;
-	float: right;
+	float: left;
+	margin-right: 5px;
+	width: 15px;
+	height: 15px;
+	line-height: 12px;
+	text-align: center;
+	overflow: hidden;
+	display: block;
 }
 
-.search-form .term.add {
-	border-bottom: none;
-	font-size: 120%;
-	color: #C4C7CF;
-}
-
-.search-form .term.add .btn {
+.search-form .add-term {
 	font-size: 9pt;
 	color: #fff;
 	background-color: #468733;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
-	margin-left: 6px;
 	cursor: pointer;
-	float: right;
+	float: left;
+	margin-right: 5px;
+	width: 15px;
+	height: 15px;
+	line-height: 12px;
+	text-align: center;
+	overflow: hidden;
+	display: block;
 }
 
 

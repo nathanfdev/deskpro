@@ -11,10 +11,7 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.PeopleSearch';
 		<form action="{% route 'tech_peoplesearch_perform' %}" method="post">
 			<div class="search-form">
 				<div class="search-terms"></div>
-				<div class="term add">
-					<span class="btn">+</span>
-					Add a new search term
-				</div>
+				<div class="term"><span class="add-term">+</span> Add a new search term</div>
 			</div>
 			<center><input type="submit" value="search" /></center>
 		</form>
@@ -49,6 +46,23 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.PeopleSearch';
 				<select name="department">
 					<option value="1">Sales</option>
 					<option value="2">Support</option>
+				</select>
+			</div>
+		</div>
+		<div class="type" title="Priority" data-rule-type="priority">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					<option value="lt">is less than</option>
+					<option value="gt">is greater than</option>
+				</select>
+			</div>
+			<div class="choice">
+				<select name="priority">
+					<option value="1">Low</option>
+					<option value="2">High</option>
+					<option value="3">Emergency</option>
 				</select>
 			</div>
 		</div>
