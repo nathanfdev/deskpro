@@ -10,7 +10,7 @@ Make sure the following directories exist and are writable:
 - `/appfiles/sys/cache`
 - `/appfiles/sys/logs`
 
-Make sure the following files are executable:
+On Linux, make sure the following files are executable:
 
 - `/appfiles/bin/console`
 - `/appfiles/bin/console-dev`
@@ -18,16 +18,19 @@ Make sure the following files are executable:
 - `/appfiles/bin/update_vendors.sh`
 
 
-Download Vendors
-================
+Vendors
+=======
 
-Some vendors need to be downloaded separately. This is automated by the `/appfiles/bin/install_vendors.sh` shell script:
+1. Delete the directory `/appfiles/vendor`
+2. Extract `/appfiles/docs/vendors.tgz` and move the directory to `/appfiles/vendor`
+
+The vendors can alternatively be downloaded separately from their sources. This is automated by the `/appfiles/bin/install_vendors.sh` shell script on Linux:
 
 	$ cd appfiles/bin
 	$ ./install_vendors.sh
 	Initialized empty Git repository # etc
 
-Note that this will pull the latest revision which might break. You may need to revert.
+This will pull the latest revisions from each repository which might break the system. Stick with vendors.tgz which is known to work.
 
 
 Edit Config
@@ -45,17 +48,26 @@ From the console, run the two dev commands.
 
 To create the database and schema:
 
-	$ cd appfiles/bin
+	$ cd /srv/www/dp_400/appfiles/bin
 	$ ./console-dev dpdev:new-install
 
-To fill in the default data:
+To fill in some initial data:
 
 	$ ./console-dev dpdev:new-install-data
 
+Or on Windows, for example using WAMP:
+
+	> cd C:\wamp\www\dp_400\appfiles\bin
+	> C:\wamp\bin\php\php5.3.0\php.exe console-dev dpdev:new-install
+	> C:\wamp\bin\php\php5.3.0\php.exe console-dev dpdev:new-install-data
+
+If something fails, you can use the `-v` switch to get more information with a backtrace:
+
+	$ ./console-dev dpdev:new-install -v
 
 NOTES:
 
-- The `dpdev:new-install` command will drop the database if it doesn't exist.
+- The `dpdev:new-install` command will DROP the database if it exists! Make a backup if you want to keep it.
 - The `dpdev:new-install` command dynamically generates the schema based on the defined entities. If an entity is incorrect/invalid, then the command will fail. You'll need to either fix the bug or revert to a previous working revision.
 - The `dpdev:new-install-data` creates an admin user with email "admin@example.com" and password "pass".
 
@@ -63,6 +75,4 @@ NOTES:
 Log In
 ================
 
-View `/index_dev.php/tech/` in your browser.
-
-See `/appfiles/Application/TechBundle/Resources/config/routing.yml` for more URLs you can try (they are prefixed with `/tech/`).
+View `/index_dev.php/tech/` in your browser and log in with the created admin account.
