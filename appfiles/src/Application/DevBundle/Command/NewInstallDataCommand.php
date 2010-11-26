@@ -46,6 +46,15 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$this->_createUsergroups($output);
 		$this->_createNewUser($output);
 		$this->em->commit();
+
+		// Write the version file which will be used by
+		// upgrade scripts
+		$vfile = ROOT.'/sys/VERSION';
+		$version = new \DateTime();
+		$version = $version->format('Y-m-d H:i:s');
+		if (!@file_put_contents($vfile, $version)) {
+			$output->write("<warn>\n Error writing $vfile\nThis file must contain the value: $version\nIf it does not, upgrading will not work\n</warn>\n");
+		}
 	}
 
 	protected function _createUsergroups(OutputInterface $output)
