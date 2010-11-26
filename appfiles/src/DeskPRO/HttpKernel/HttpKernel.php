@@ -28,25 +28,28 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 	protected function handleRaw(Request $request, $type = self::MASTER_REQUEST)
 	{
 		// request
-		$event = $this->dispatcher->notifyUntil(new Event($this, 'core.request', array('request_type' => $type, 'request' => $request)));
-		if ($event->isProcessed()) {
-			return $this->filterResponse($event->getReturnValue(), $request, 'A "core.request" listener returned a non response object.', $type);
-		}
+        $event = new Event($this, 'core.request', array('request_type' => $type, 'request' => $request));
+        $this->dispatcher->notifyUntil($event);
+        if ($event->isProcessed()) {
+            return $this->filterResponse($event->getReturnValue(), $request, 'A "core.request" listener returned a non response object.', $type);
+        }
 
 		// load controller
 		if (false === $controller = $this->resolver->getController($request)) {
 			throw new NotFoundHttpException('Unable to find the controller.');
 		}
 
-		$event = $this->dispatcher->filter(new Event($this, 'core.controller', array('request_type' => $type, 'request' => $request)), $controller);
-		$controller = $event->getReturnValue();
+		$event = new Event($this, 'core.controller', array('request_type' => $type, 'request' => $request));
+        $this->dispatcher->filter($event, $controller);
+        $controller = $event->getReturnValue();
 
-		if (!is_callable($controller)) {
+        // controller must be a callable
+        if (!is_callable($controller)) {
             throw new \LogicException(sprintf('The controller must be a callable (%s).', var_export($controller, true)));
         }
 
 		// controller arguments
-		$arguments = $this->resolver->getArguments($request, $controller);
+        $arguments = $this->resolver->getArguments($request, $controller);
 
 		// is DP controller which has pre/post actions
 		if (isset($controller[0]) AND ($controller[0] instanceof \DeskPRO\HttpKernel\Controller\Controller)) {
@@ -74,8 +77,9 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 		}
 
 		// view
-		$event = $this->dispatcher->filter(new Event($this, 'core.view', array('request_type' => $type, 'request' => $request)), $retval);
+        $event = new Event($this, 'core.view', array('request_type' => $type, 'request' => $request));
+        $this->dispatcher->filter($event, $retval);
 
-		return $this->filterResponse($event->getReturnValue(), $request, sprintf('The controller must return a response (instead of %s).', is_object($event->getReturnValue()) ? 'an object of class '.get_class($event->getReturnValue()) : is_array($event->getReturnValue()) ? 'an array' : str_replace("\n", '', var_export($event->getReturnValue(), true))), $type);
+        return $this->filterResponse($event->getReturnValue(), $request, sprintf('The controller must return a response (instead of %s).', is_object($event->getReturnValue()) ? 'an object of class '.get_class($event->getReturnValue()) : is_array($event->getReturnValue()) ? 'an array' : str_replace("\n", '', var_export($event->getReturnValue(), true))), $type);
 	}
 }

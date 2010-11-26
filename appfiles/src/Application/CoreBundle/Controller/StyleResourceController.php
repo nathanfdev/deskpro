@@ -18,7 +18,7 @@ class StyleResourceController extends \Symfony\Bundle\FrameworkBundle\Controller
 	public function servAction($resource_id, $resource_filename)
 	{
 		/** @var Doctrine\ORM\EntityManager */
-		$em = $this['doctrine.orm.entity_manager'];
+		$em = $this->get('doctrine.orm.entity_manager');
 
 		/** @var Application\CoreBundle\Entity\StyleResource */
 		$res = $em->find('CoreBundle:StyleResource', $resource_id);

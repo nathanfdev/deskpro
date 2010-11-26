@@ -86,7 +86,7 @@ class StylesController extends AbstractController
 		# Set up the form and validator
 		#-------------------------
 
-		$form = new Form\Form('style', $style, $this['validator']);
+		$form = new Form\Form('style', $style, $this->get('validator'));
 		$form->add(new Form\TextField('title'));
 
 		if (!$style['id'] AND $this->style_hierarchy) {
@@ -109,8 +109,8 @@ class StylesController extends AbstractController
 		# If the form was submitted, try and save it
 		#-------------------------
 
-		if ($this['request']->getMethod() == 'POST') {
-			$form->bind($this['request']->request->get('style'));
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bind($this->get('request')->request->get('style'));
 			if ($form->isValid()) {
 				$this->em->persist($style);
 				$this->em->flush();

@@ -69,14 +69,14 @@ abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Control
 	 */
 	protected function init()
 	{
-		$this->em       = $this['doctrine.orm.entity_manager'];
-		$this->db       = $this['database_connection'];
-		$this->in       = $this['deskpro.core.input_reader'];
-		$this->cleaner  = $this['deskpro.core.input_cleaner'];
-		$this->settings = $this['deskpro.core.settings'];
-		$this->session  = $this['session'];
+		$this->em       = $this->get('doctrine.orm.entity_manager');
+		$this->db       = $this->get('database_connection');
+		$this->in       = $this->get('deskpro.core.input_reader');
+		$this->cleaner  = $this->get('deskpro.core.input_cleaner');
+		$this->settings = $this->get('deskpro.core.settings');
+		$this->session  = $this->get('session');
 
-		$this->tpl = $this['templating'];
+		$this->tpl = $this->get('templating');
 		$this->tpl->resetTemplateVars();
 		$this->tplvars = $this->tpl->getTemplateVarsObject();
 	}
@@ -90,7 +90,7 @@ abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Control
 	 */
 	public function isPostRequest()
 	{
-		return ($this['request']->getMethod() == 'POST');
+		return ($this->get('request')->getMethod() == 'POST');
 	}
 
 

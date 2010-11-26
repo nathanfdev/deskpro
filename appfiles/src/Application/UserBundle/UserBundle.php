@@ -2,6 +2,6 @@
 
 namespace Application\UserBundle;
 
-class UserBundle extends \Symfony\Framework\Bundle\Bundle
+class UserBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
 }

@@ -86,7 +86,7 @@ class LanguagesController extends AbstractController
 		# Set up the form and validator
 		#-------------------------
 
-		$form = new Form\Form('lang', $lang, $this['validator']);
+		$form = new Form\Form('lang', $lang, $this->get('validator'));
 		$form->add(new Form\TextField('title'));
 		$form->add(new Form\TextField('locale'));
 
@@ -110,8 +110,8 @@ class LanguagesController extends AbstractController
 		# If the form was submitted, try and save it
 		#-------------------------
 
-		if ($this['request']->getMethod() == 'POST') {
-			$form->bind($this['request']->request->get('lang'));
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bind($this->get('request')->request->get('lang'));
 			if ($form->isValid()) {
 				$this->em->persist($lang);
 				$this->em->flush();

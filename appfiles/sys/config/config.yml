@@ -3,24 +3,20 @@ parameters:
     templating.engine.class: "DeskPRO\Templating\Engine"
     http_kernel.class: "DeskPRO\HttpKernel\HttpKernel"
     controller_resolver.class: "DeskPRO\HttpKernel\Controller\ControllerResolver"
+    session.class: "DeskPRO\HttpFoundation\Session"
 
-kernel.session:
-  class: "DeskPRO\HttpFoundation\Session"
-
-kernel.config:
-  error_handler_level: null
-
-web.config:
+app.config:
+  charset: UTF-8
   router: { resource: "%kernel.root_dir%/config/routing.yml" }
+  profiler: { only_exceptions: false }
+  templating:
+    escaping: htmlspecialchars
+    assets_base_urls: "/dp_400/static" # root paths like this need to have basepath prepended
   validation:
     enabled: true
 
-web.templating:
-  escaping: htmlspecialchars
-  assets_base_urls: "/dp_400/static" # root paths like this need to have basepath prepended
-
-doctrine.orm:
-  auto_generate_proxy_classes: true
+doctrine.orm: ~
+#  auto_generate_proxy_classes: true
 
 doctrine.dbal:
   dp_from_user_config: db

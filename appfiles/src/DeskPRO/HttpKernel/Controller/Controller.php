@@ -44,9 +44,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	{
 		$this->setContainer($container);
 
-		$this->request           = $this['request'];
-		$this->response          = $this['response'];
-		$this->event_dispatcher  = $this['event_dispatcher'];
+		$this->request           = $this->get('request');
+		$this->response          = $this->get('response');
+		$this->event_dispatcher  = $this->get('event_dispatcher');
 
 		$this->init();
 	}

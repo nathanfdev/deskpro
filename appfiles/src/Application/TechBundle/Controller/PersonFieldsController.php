@@ -73,7 +73,7 @@ class PersonFieldsController extends AbstractController
 		$form = new \Application\TechBundle\Form\EditField(array(
 			'name' => 'formfield',
 			'renderer' => $renderer,
-			'event_dispatcher' => $this['event_dispatcher'],
+			'event_dispatcher' => $this->get('event_dispatcher'),
 			'form_field' => $field
 		));
 		$form->addField(new \Orb\Form\Field\Hidden(array('name' => 'handler_class', 'data' => $field['handler_class'])));

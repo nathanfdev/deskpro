@@ -89,13 +89,13 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
 		$result = $adapter->authenticate();
 		if (!$result->isValid()) {
-			return $this->redirect($this['router']->generate('user_login', array()));
+			return $this->redirect($this->get('router')->generate('user_login', array()));
 		}
 
 		$identity = $result->getIdentity();
 
 		$this->session->set('auth_person_id', $identity->getIdentity());
-		return $this->redirect($this['router']->generate('tech_dashboard', array()));
+		return $this->redirect($this->get('router')->generate('tech_dashboard', array()));
 	}
 
 	protected function _processUsersourceLogin($usersource_id)
@@ -117,7 +117,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 			// Otherwise its an error
 			} else {
-				return $this->redirect($this['router']->generate('user_login', array()));
+				return $this->redirect($this->get('router')->generate('user_login', array()));
 			}
 
 		#------------------------------
@@ -134,11 +134,11 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 				$person = $login_processor->getPerson();
 
 				$this->session->set('auth_person_id', $person['id']);
-				return $this->redirect($this['router']->generate('tech_dashboard', array()));
+				return $this->redirect($this->get('router')->generate('tech_dashboard', array()));
 
 			// Error, go back to login
 			} else {
-				return $this->redirect($this['router']->generate('user_login', array()));
+				return $this->redirect($this->get('router')->generate('user_login', array()));
 			}
 		}
 	}
@@ -157,7 +157,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 		// It must be a callback type to be here, so if not redirect back to login
 		if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
-			return $this->redirect($this['router']->generate('user_login', array()));
+			return $this->redirect($this->get('router')->generate('user_login', array()));
 		}
 
 		$adapter->setCallbackContext($_REQUEST);
@@ -171,13 +171,13 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 			$person = $login_processor->getPerson();
 
 			$this->session->set('auth_person_id', $person['id']);
-			return $this->redirect($this['router']->generate('tech_dashboard', array()));
+			return $this->redirect($this->get('router')->generate('tech_dashboard', array()));
 
 		// Error, go back to login
 		} else {
 			print_r($_REQUEST);
 			die('err');
-			return $this->redirect($this['router']->generate('user_login', array()));
+			return $this->redirect($this->get('router')->generate('user_login', array()));
 		}
 	}
 

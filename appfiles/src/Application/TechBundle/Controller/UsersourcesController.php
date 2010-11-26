@@ -84,7 +84,7 @@ class UsersourcesController extends AbstractController
 		$form = new \Application\TechBundle\Form\EditUsersource(array(
 			'name' => 'usersource',
 			'renderer' => $renderer,
-			'event_dispatcher' => $this['event_dispatcher'],
+			'event_dispatcher' => $this->get('event_dispatcher'),
 			'usersource' => $usersource
 		));
 

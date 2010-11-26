@@ -21,7 +21,7 @@ use \DeskPRO\App;
 /**
  * Kernel boots the app.
  */
-class Kernel extends \Symfony\Framework\Kernel
+class Kernel extends \Symfony\Component\HttpKernel\Kernel
 {
 	public function __construct($environment, $debug)
 	{
@@ -67,7 +67,6 @@ class Kernel extends \Symfony\Framework\Kernel
     public function registerBundles()
     {
         $bundles = array(
-			new \Symfony\Framework\KernelBundle(),
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 
 			new \Symfony\Bundle\ZendBundle\ZendBundle(),
@@ -79,6 +78,7 @@ class Kernel extends \Symfony\Framework\Kernel
         );
 
         if ($this->isDebug()) {
+			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
 			$bundles[] = new \Application\DevBundle\DevBundle();
         }
 

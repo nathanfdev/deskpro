@@ -12,7 +12,8 @@
 namespace DeskPRO\HttpKernel\Controller;
 
 use \Symfony\Component\HttpFoundation\Request;
-use \Symfony\Bundle\FrameworkBundle\Controller\ControllerInterface;
+use \Symfony\Bundle\FrameworkBundle\Controller\ContainerAware;
+use \Symfony\Bundle\FrameworkBundle\Controller\ContainerAwareInterface;
 
 
 /**
@@ -24,8 +25,18 @@ class ControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
     protected function createController($controller)
     {
         if (false === strpos($controller, '::')) {
-            // must be a controller in the a:b:c notation then
-            $controller = $this->converter->fromShortNotation($controller);
+            $count = substr_count($controller, ':');
+            if (2 == $count) {
+                // controller in the a:b:c notation then
+                $controller = $this->converter->fromShortNotation($controller);
+            } elseif (1 == $count) {
+                // controller in the service:method notation
+                list($service, $method) = explode(':', $controller);
+
+                return array($this->container->get($service), $method);
+            } else {
+                throw new \LogicException(sprintf('Unable to parse the controller name "%s".', $controller));
+            }
         }
 
         list($class, $method) = explode('::', $controller);
@@ -38,8 +49,11 @@ class ControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
 			$controller = new $class($this->container);
 		} else {
 			$controller = new $class();
-			if ($controller instanceof ControllerInterface) {
+			if (is_subclass_of($class, 'Symfony\\Component\\DependencyInjection\\ContainerAwareInterface')) {
+			//if ($controller instanceof ContainerAwareInterface OR $controller instanceof ContainerAware) {
 				$controller->setContainer($this->container);
+			} else {
+				die($class);
 			}
 		}
 

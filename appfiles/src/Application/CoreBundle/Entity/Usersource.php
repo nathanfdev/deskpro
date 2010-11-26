@@ -28,7 +28,6 @@ use Orb\Util\Arrays;
  *
  * @see DeskPRO\Auth\UserInitializer
  * @see DeskPRO\RemoteResourceListener\Auth
- *
  * @Entity
  * @HasLifecycleCallbacks
  * @Table(name="usersources")
