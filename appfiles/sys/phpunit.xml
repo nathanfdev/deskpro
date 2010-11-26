@@ -7,11 +7,12 @@
 	processIsolation="true"
 	stopOnFailure="false"
 	syntaxCheck="true"
-	bootstrap="./autoload.php"
+	bootstrap="./tests/bootstrap.php"
 >
   <testsuites>
       <testsuite name="Project Test Suite">
-          <directory>../src/Application/*/Tests</directory>
+          <directory>./tests/Application/*</directory>
+          <directory>./tests/DeskPRO</directory>
       </testsuite>
   </testsuites>
 </phpunit>

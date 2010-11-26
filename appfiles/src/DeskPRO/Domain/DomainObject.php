@@ -18,10 +18,10 @@ use \DeskPRO\App;
  */
 abstract class DomainObject implements \ArrayAccess
 {
-	const TOARRAY_NOOP = 0;
-	const TOARRAY_DEEP = 1;
-	const TOARRAY_ONLY_PRIMATIVES = 2;
-	const TOARRAY_LOAD_UNLOADED = 4;
+	const TOARRAY_NOOP = 1;
+	const TOARRAY_DEEP = 2;
+	const TOARRAY_ONLY_PRIMATIVES = 4;
+	const TOARRAY_LOAD_UNLOADED = 6;
 
 	/**
 	 * An array of properties that have been changed through one of the accessor
@@ -81,6 +81,7 @@ abstract class DomainObject implements \ArrayAccess
 			}
 
 			if ($mode & self::TOARRAY_NOOP) {
+
 				$values[$name] = $val;
 
 			} elseif ($mode & self::TOARRAY_ONLY_PRIMATIVES) {
@@ -184,15 +185,15 @@ abstract class DomainObject implements \ArrayAccess
 	 */
 	public function __call($name, $arguments)
 	{
+		$orig_name = $name;
+		$name = preg_replace('#([A-Z])#', '_$1', $name);
+
 		$match = null;
-		if (!preg_match('#^(get|set)([a-zA-Z0-9]+)$#', $name, $match)) {
-			throw new \BadMethodCallException("Method `$name` is undefined");
+		if (!preg_match('#^(get|set)_([a-zA-Z0-9_]+)$#', $name, $match)) {
+			throw new \BadMethodCallException("Method `$orig_name` is undefined");
 		}
 
-		list($type, $prop) = $match;
-
-		$prop = preg_replace('#([A-Z])#', '_$1', $prop);
-		$prop = substr($prop, 1); // remove leading _x cause by above setWhateverField _whatever_field
+		list(, $type, $prop) = $match;
 		$prop = strtolower($prop);
 
 		// getX

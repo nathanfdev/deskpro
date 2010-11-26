@@ -7,6 +7,8 @@ set_include_path(
 	DP_ROOT.'/vendor/zend1/library'
 	.PATH_SEPARATOR.
 	DP_ROOT.'/vendor/zend/library'
+	.PATH_SEPARATOR.
+	get_include_path()
 );
 
 $loader = new \Orb\Util\ClassLoader();
