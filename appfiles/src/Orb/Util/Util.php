@@ -17,7 +17,7 @@ namespace Orb\Util;
  */
 class Util
 {
-	const BASE62_ALPHABET = '0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz';
+	const BASE62_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
 	const BASE36_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
 
 	
@@ -80,7 +80,7 @@ class Util
 	 * @param    mixed    $or       The value to return if $param is not truthy
 	 * @return   mixed
 	 */
-	public static function ifvalor($param, $or)
+	public static function ifvalor($param, $or = null)
 	{
 		if ($param) {
 			return $param;
@@ -166,6 +166,9 @@ class Util
 	 */
 	public static function baseEncode($num, $alphabet)
 	{
+		if ($alphabet == 'base62') $alphabet = self::BASE62_ALPHABET;
+		elseif ($alphabet == 'base36') $alphabet = self::BASE36_ALPHABET;
+
 		if ($num == 0) {
 			return $alphabet[0];
 		}
@@ -194,6 +197,9 @@ class Util
 	 */
 	public static function baseDecode($string, $alphabet)
 	{
+		if ($alphabet == 'base62') $alphabet = self::BASE62_ALPHABET;
+		elseif ($alphabet == 'base36') $alphabet = self::BASE36_ALPHABET;
+		
 		$alphabet = str_split($alphabet);
 		$base = sizeof($alphabet);
 		$strlen = strlen($string);
@@ -225,14 +231,15 @@ class Util
 	 * @param  string  $sign_key  The secret key to sign with. You should most certainly provide this!
 	 * @return string
 	 */
-	public static function signedSeriaize($data, $sign_key = 'orb_util_sign_key')
+	public static function signedSerialize($data, $sign_key = 'orb_util_sign_key')
 	{
 		$ser = base64_encode(serialize($data));
+		$ser = rtrim($ser, '=');
 		$md5 = md5($sign_key . $ser);
 
 		// the :b64: part is so if in the future we change the encoding method,
 		// the unserialize method below can be backwards compat by reading the b64 label
-		return $md5 . ':b64:' . $ser;
+		return $md5 . ':' . $ser;
 	}
 
 
@@ -249,7 +256,7 @@ class Util
 	public static function signedUnserialize($string, $sign_key = 'orb_util_sign_key')
 	{
 		$md5 = substr($string, 0, 32);
-		$ser = substr($string, 37);
+		$ser = substr($string, 33);
 
 		$md5_check = md5($sign_key . $ser);
 		if ($md5 != $md5_check) {
@@ -286,8 +293,8 @@ class Util
 
 			// But if there's more, fallback on reflection
 			default:
-				$ref = new ReflectionClass($classname);
-				$obj = $ref->newInstance($args);
+				$ref = new \ReflectionClass($classname);
+				$obj = $ref->newInstanceArgs($args);
 				break;
 		}
 

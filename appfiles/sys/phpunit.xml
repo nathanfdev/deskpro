@@ -12,6 +12,7 @@
   <testsuites>
       <testsuite name="Project Test Suite">
           <directory>./tests/Application/*</directory>
+          <directory>./tests/Orb</directory>
           <directory>./tests/DeskPRO</directory>
       </testsuite>
   </testsuites>
