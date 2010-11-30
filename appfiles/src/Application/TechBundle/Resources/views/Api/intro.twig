@@ -1,4 +1,4 @@
-{% extends 'TechBundle::layout' %}
+{% extends 'TechBundle::layout.twig' %}
 {% block content %}
 
 <div class="block"><div class="content">
@@ -20,7 +20,7 @@
 				You currently have no API keys. Before you are able to integrate your apps into your helpdesk,
 				you'll need to create a new API key.
 			</p>
-			<form action="{% route 'tech_admin_api_newkey' %}" method="get">
+			<form action="{% path 'tech_admin_api_newkey' %}" method="get">
 				<div class="group navform wat-cf">
 					<button class="button" type="submit">
 						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Create a new API Key

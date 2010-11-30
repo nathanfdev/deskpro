@@ -18,9 +18,9 @@ use Orb\Util\Arrays;
  * roughly tied to identity (ie local login uses email as identity), and are integral
  * in many cases (notifications etc).
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="people_emails")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="people_emails")
  */
 class PersonEmail extends \DeskPRO\Domain\DomainObject
 {
@@ -28,7 +28,7 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -37,14 +37,14 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 * The person ID
 	 *
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id;
 
 	/**
 	 * @var Application\CoreBundle\Entity\Person
-	 * @ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
 
@@ -52,13 +52,13 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 * The email address
 	 *
 	 * @var string
-	 * @Column(name="email", type="string", length=255)
+	 * @orm:Column(name="email", type="string", length=255)
 	 */
 	protected $email;
 
 	/**
 	 * @var bool
-	 * @Column(name="is_validated", type="boolean")
+	 * @orm:Column(name="is_validated", type="boolean")
 	 */
 	protected $is_validated = false;
 
@@ -66,19 +66,19 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 * A comment or description of the email address. For example, "work" or "home."
 	 *
 	 * @var string
-	 * @Column(name="comment", type="text", length=100)
+	 * @orm:Column(name="comment", type="text", length=100)
 	 */
 	protected $comment = '';
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_created",type="datetime")
+	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_validated",type="datetime", nullable=true)
+	 * @orm:Column(name="date_validated",type="datetime", nullable=true)
 	 */
 	protected $date_validated = null;
 

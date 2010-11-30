@@ -26,7 +26,7 @@ abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -35,7 +35,7 @@ abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * The handler class
 	 *
 	 * @var string
-	 * @Column(name="handler_class", type="string", length=80)
+	 * @orm:Column(name="handler_class", type="string", length=80)
 	 */
 	protected $handler_class;
 
@@ -43,67 +43,67 @@ abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * The label/comment/name for this contact entry (Work, Home, etc).
 	 *
 	 * @var string
-	 * @Column(name="comment", type="string", length=100)
+	 * @orm:Column(name="comment", type="string", length=100)
 	 */
 	protected $comment = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_1", type="text")
+	 * @orm:Column(name="field_1", type="text")
 	 */
 	protected $field_1 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_2", type="text")
+	 * @orm:Column(name="field_2", type="text")
 	 */
 	protected $field_2 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_3", type="text")
+	 * @orm:Column(name="field_3", type="text")
 	 */
 	protected $field_3 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_4", type="text")
+	 * @orm:Column(name="field_4", type="text")
 	 */
 	protected $field_4 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_5", type="text")
+	 * @orm:Column(name="field_5", type="text")
 	 */
 	protected $field_5 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_6", type="text")
+	 * @orm:Column(name="field_6", type="text")
 	 */
 	protected $field_6 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_7", type="text")
+	 * @orm:Column(name="field_7", type="text")
 	 */
 	protected $field_7 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_8", type="text")
+	 * @orm:Column(name="field_8", type="text")
 	 */
 	protected $field_8 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_9", type="text")
+	 * @orm:Column(name="field_9", type="text")
 	 */
 	protected $field_9 = '';
 
 	/**
 	 * @var string
-	 * @Column(name="field_10", type="text")
+	 * @orm:Column(name="field_10", type="text")
 	 */
 	protected $field_10 = '';
 

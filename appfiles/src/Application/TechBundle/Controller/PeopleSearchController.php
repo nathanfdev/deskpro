@@ -33,7 +33,7 @@ class PeopleSearchController extends AbstractController
 			ORDER BY p.id DESC
 		")->getResult();
 
-		return $this->render('TechBundle:PeopleSearch:index', array(
+		return $this->render('TechBundle:PeopleSearch:index.twig', array(
 			'people_list' => $people_list
 		));
 	}
@@ -44,7 +44,7 @@ class PeopleSearchController extends AbstractController
 
 	public function searchAction()
 	{
-		return $this->render('TechBundle:PeopleSearch:search');
+		return $this->render('TechBundle:PeopleSearch:search.twig');
 	}
 
 	############################################################################
@@ -60,7 +60,7 @@ class PeopleSearchController extends AbstractController
 			ORDER BY p.id DESC
 		")->getResult();
 
-		return $this->render('TechBundle:PeopleSearch:search_results', array(
+		return $this->render('TechBundle:PeopleSearch:search_results.twig', array(
 			'people_list' => $people_list
 		));
 	}
@@ -92,7 +92,7 @@ class PeopleSearchController extends AbstractController
 		")->getResult();
 		//")->setParameters(array($q, $q))->getResult();
 
-		return $this->render('TechBundle:PeopleSearch:search_results', array(
+		return $this->render('TechBundle:PeopleSearch:search_results.twig', array(
 			'people_list' => $people_list
 		));
 	}
@@ -103,6 +103,6 @@ class PeopleSearchController extends AbstractController
 
 	public function labelsPaneAction()
 	{
-		return $this->render('TechBundle:PeopleSearch:pane-labels');
+		return $this->render('TechBundle:PeopleSearch:pane-labels.twig');
 	}
 }

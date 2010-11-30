@@ -19,9 +19,9 @@ use Orb\Util\Arrays;
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="usergroups")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="usergroups")
  */
 class Usergroup extends \DeskPRO\Domain\DomainObject
 {
@@ -29,8 +29,8 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -40,7 +40,7 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 	 * Title of the usergroup
 	 *
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -49,7 +49,7 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 	 * A note or description about the usergroup
 	 *
 	 * @var string
-	 * @Column(name="note", type="text")
+	 * @orm:Column(name="note", type="text")
 	 */
 	protected $note = '';
 
@@ -58,7 +58,7 @@ class Usergroup extends \DeskPRO\Domain\DomainObject
 	 * Properties attached to this usergroup
 	 *
 	 * @var Application\CoreBundle\Entity\UsergroupProperty
-	 * @OneToMany(targetEntity="UsergroupProperty", mappedBy="usergroup", cascade={"persist", "remove"})
+	 * @orm:OneToMany(targetEntity="UsergroupProperty", mappedBy="usergroup", cascade={"persist", "remove"})
 	 */
 	protected $properties;
 

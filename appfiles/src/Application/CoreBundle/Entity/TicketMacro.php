@@ -14,58 +14,58 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket macros
  *
- * @Entity
- * @Table(name="ticket_macros")
+ * @orm:Entity
+ * @orm:Table(name="ticket_macros")
  */
 class TicketMacro extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @OneToOne(targetEntity="Person")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @Column(name="labels", type="string", length=1000)
+	 * @orm:Column(name="labels", type="string", length=1000)
 	 */
 	protected $labels;
 
 	/**
 	 * @var bool
-	 * @Column(name="is_enabled", type="boolean")
+	 * @orm:Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
 	/**
 	 * @var bool
-	 * @Column(name="is_global", type="boolean")
+	 * @orm:Column(name="is_global", type="boolean")
 	 */
 	protected $is_global = false;
 
 	/**
 	 * @var string
-	 * @Column(name="actions", type="array")
+	 * @orm:Column(name="actions", type="array")
 	 */
 	protected $actions;
 }

@@ -20,9 +20,9 @@ use Orb\Util\Arrays;
 /**
  * Settings used by the system.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="languages")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="languages")
  */
 class Language extends \DeskPRO\Domain\DomainObject
 {
@@ -30,8 +30,8 @@ class Language extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -39,8 +39,8 @@ class Language extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Style
-	 * @OneToOne(targetEntity="Language")
-	 * @JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Language")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent = null;
 
@@ -49,7 +49,7 @@ class Language extends \DeskPRO\Domain\DomainObject
 	 * Locale associated with this language.
 	 *
 	 * @var string
-	 * @Column(name="locale", type="string", length=20)
+	 * @orm:Column(name="locale", type="string", length=20)
 	 */
 	protected $locale = 'en_US';
 
@@ -58,7 +58,7 @@ class Language extends \DeskPRO\Domain\DomainObject
 	 * Title of the style
 	 *
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 

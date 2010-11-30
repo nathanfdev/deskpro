@@ -8,6 +8,6 @@ class ThemeController extends Controller
 {
     public function indexAction()
     {
-        return $this->render('DevBundle:Theme:index:twig');
+        return $this->render('DevBundle:Theme:index:twig.twig');
     }
 }

@@ -20,9 +20,9 @@ use \Orb\Util\Arrays;
 /**
  * Settings used by the system.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="styles")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="styles")
  */
 class Style extends \DeskPRO\Domain\DomainObject
 {
@@ -30,8 +30,8 @@ class Style extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -41,16 +41,16 @@ class Style extends \DeskPRO\Domain\DomainObject
 	 * The parent style ID. All styles at least descened from 1, the default.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="parent_id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="parent_id", type="integer")
 	 */
 	protected $parent_id = null;
 
 
 	/**
 	 * @var Style
-	 * @OneToOne(targetEntity="Style")
-	 * @JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Style")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent;
 
@@ -59,7 +59,7 @@ class Style extends \DeskPRO\Domain\DomainObject
 	 * Title of the style
 	 *
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -68,14 +68,14 @@ class Style extends \DeskPRO\Domain\DomainObject
 	 * A note or description about the style
 	 *
 	 * @var string
-	 * @Column(name="note", type="text")
+	 * @orm:Column(name="note", type="text")
 	 */
 	protected $note;
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @orm:Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 

@@ -17,12 +17,12 @@ use Orb\Util\Web;
 /**
  * Settings used by the system.
  *
- * @Entity
+ * @orm:Entity
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="resource_type", type="string")
  * @DiscriminatorMap({"css" = "StyleResourceCss"})
- * @HasLifecycleCallbacks
- * @Table(name="style_resources")
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="style_resources")
  */
 abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 {
@@ -30,8 +30,8 @@ abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -41,8 +41,8 @@ abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 	 * The style this template belongs to
 	 *
 	 * @var Style
-	 * @OneToOne(targetEntity="Style")
-	 * @JoinColumn(name="style_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Style")
+	 * @orm:JoinColumn(name="style_id", referencedColumnName="id")
 	 */
 	protected $style;
 
@@ -51,7 +51,7 @@ abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 	 * Title of the style
 	 *
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -60,7 +60,7 @@ abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 	 * The resource value.
 	 *
 	 * @var string
-	 * @Column(name="resource", type="text", nullable=true)
+	 * @orm:Column(name="resource", type="text", nullable=true)
 	 */
 	protected $resource = null;
 
@@ -69,7 +69,7 @@ abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 	 * The resource value.
 	 *
 	 * @var string
-	 * @Column(name="raw_resource", type="text", nullable=true)
+	 * @orm:Column(name="raw_resource", type="text", nullable=true)
 	 */
 	protected $raw_resource = null;
 
@@ -78,7 +78,7 @@ abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 	 * Any resource data such as options or config data used in sub-classes.
 	 *
 	 * @var array
-	 * @Column(name="resource_data", type="array", nullable=true)
+	 * @orm:Column(name="resource_data", type="array", nullable=true)
 	 */
 	protected $resource_data = null;
 
@@ -87,21 +87,21 @@ abstract class StyleResource extends \DeskPRO\Domain\DomainObject
 	 * Any user data such as customizations or defined options.
 	 *
 	 * @var array
-	 * @Column(name="user_data", type="array", nullable=true)
+	 * @orm:Column(name="user_data", type="array", nullable=true)
 	 */
 	protected $user_data = null;
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @orm:Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="updated_at",type="datetime")
+	 * @orm:Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 

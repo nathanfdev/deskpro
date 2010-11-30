@@ -14,40 +14,40 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket categories
  *
- * @Entity
- * @Table(name="ticket_categories")
+ * @orm:Entity
+ * @orm:Table(name="ticket_categories")
  */
 class TicketCategory extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @Column(name="department_id", type="integer")
+	 * @orm:Column(name="department_id", type="integer")
 	 */
 	protected $department_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Department
-	 * @OneToOne(targetEntity="Department")
-	 * @JoinColumn(name="department_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Department")
+	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
 	 */
 	protected $department = null;
 
 	/**
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @Column(name="display_order", type="integer")
+	 * @orm:Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 }

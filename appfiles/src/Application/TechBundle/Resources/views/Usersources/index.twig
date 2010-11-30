@@ -1,10 +1,10 @@
-{% extends 'TechBundle::layout' %}
+{% extends 'TechBundle::layout.twig' %}
 {% block content %}
 
 <div class="block" id="block-tables">
 	<div class="content">
 		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{% route 'tech_admin_styles_newstyle' %}" class="button">
+			<a href="{% path 'tech_admin_styles_newstyle' %}" class="button">
 				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New Usersource
 			</a>
 		</div>
@@ -25,8 +25,8 @@
 							{% if usersource.note %}<br />{{usersource.note}}{% endif %}
 						</td>
 						<td class="last">
-							<a href="{% route 'tech_admin_usersources_info' with ['usersource_id': usersource.id] %}">Info</a> &middot;
-							<a href="{% route 'tech_admin_usersources_edit' with ['usersource_id': usersource.id] %}">Edit</a>
+							<a href="{% path 'tech_admin_usersources_info' with ['usersource_id': usersource.id] %}">Info</a> &middot;
+							<a href="{% path 'tech_admin_usersources_edit' with ['usersource_id': usersource.id] %}">Edit</a>
 						</td>
 					</tr>
 					{% endfor %}

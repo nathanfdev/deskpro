@@ -18,24 +18,24 @@ class TicketSearchController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->render('TechBundle:TicketSearch:search');
+		return $this->render('TechBundle:TicketSearch:search.twig');
 	}
 
 	public function filtersPaneAction()
 	{
-		return $this->render('TechBundle:TicketSearch:pane-filters');
+		return $this->render('TechBundle:TicketSearch:pane-filters.twig');
 	}
 
 	public function runFilterAction($filter_id)
 	{
-		return $this->render('TechBundle:TicketSearch:search');
+		return $this->render('TechBundle:TicketSearch:search.twig');
 	}
 
 	public function ticketViewAction()
 	{
-		$person_inner_tab = $this->forward('TechBundle:Person:view', array('person_id' => 1))->getContent();
+		$person_inner_tab = $this->forward('TechBundle:Person:view.twig', array('person_id' => 1))->getContent();
 
-		return $this->render('TechBundle:TicketSearch:ticket-view', array(
+		return $this->render('TechBundle:TicketSearch:ticket-view.twig', array(
 			'person_inner_tab' => $person_inner_tab
 		));
 	}

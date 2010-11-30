@@ -1,10 +1,10 @@
-{% extends 'TechBundle::layout' %}
+{% extends 'TechBundle::layout.twig' %}
 {% block content %}
 
 <div class="block" id="block-tables">
 	<div class="content">
 		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{% route 'tech_admin_langs_newlang' %}" class="button">
+			<a href="{% path 'tech_admin_langs_newlang' %}" class="button">
 				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New Language
 			</a>
 		</div>
@@ -31,8 +31,8 @@
 							{{lang.locale}}
 						</td>
 						<td class="last">
-							<a href="{% route 'tech_admin_langs_phrases' with ['lang_id': lang.id] %}">Phrases</a> &middot;
-							<a href="{% route 'tech_admin_langs_editlang' with ['lang_id': lang.id] %}">Properties</a>
+							<a href="{% path 'tech_admin_langs_phrases' with ['lang_id': lang.id] %}">Phrases</a> &middot;
+							<a href="{% path 'tech_admin_langs_editlang' with ['lang_id': lang.id] %}">Properties</a>
 						</td>
 					</tr>
 					{% endfor %}

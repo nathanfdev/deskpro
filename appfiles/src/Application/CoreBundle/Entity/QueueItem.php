@@ -23,9 +23,9 @@ use Orb\Util\Arrays;
  * in the task. So instead, we simply store the QueueItem ID and the task
  * worker can fetch the data when it processes the task.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="queue_items")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="queue_items")
  */
 class QueueItem extends \DeskPRO\Domain\DomainObject
 {
@@ -33,7 +33,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -44,8 +44,8 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * In beanstalkd terminology: tube
 	 *
 	 * @var string
-	 * @Index
-	 * @Column(name="groupname", type="string", length=255, nullable=true)
+	 * @orm:Index
+	 * @orm:Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;
 
@@ -53,7 +53,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * The priority of this job
 	 * 
 	 * @var int
-	 * @Column(name="priority", type="integer")
+	 * @orm:Column(name="priority", type="integer")
 	 */
 	protected $priority = 0;
 
@@ -61,7 +61,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * Don't process this item until this date.
 	 * 
 	 * @var \DateTime
-	 * @Column(name="delay_until",type="datetime")
+	 * @orm:Column(name="delay_until",type="datetime")
 	 */
 	protected $delay_until = null;
 
@@ -73,7 +73,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * The minimum value is 1.
 	 *
 	 * @var int
-	 * @Column(name="ttr", type="integer")
+	 * @orm:Column(name="ttr", type="integer")
 	 */
 	protected $ttr = 60;
 
@@ -81,7 +81,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * When this is true, the job is ready to be reserved.
 	 * 
 	 * @var bool
-	 * @Column(name="is_ready", type="boolean")
+	 * @orm:Column(name="is_ready", type="boolean")
 	 */
 	protected $is_ready = true;
 
@@ -90,7 +90,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * alongside other queue systems that are using this as a store for data.
 	 *
 	 * @var bool
-	 * @Column(name="is_dataonly", type="boolean")
+	 * @orm:Column(name="is_dataonly", type="boolean")
 	 */
 	protected $is_dataonly = false;
 
@@ -101,7 +101,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * In beanstalkd terminology: buried
 	 *
 	 * @var bool
-	 * @Column(name="is_ignored", type="boolean")
+	 * @orm:Column(name="is_ignored", type="boolean")
 	 */
 	protected $is_ignored = false;
 
@@ -111,7 +111,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * should use this job.
 	 *
 	 * @var \DateTime
-	 * @Column(name="reserved_at",type="datetime")
+	 * @orm:Column(name="reserved_at",type="datetime")
 	 */
 	protected $reserved_at = null;
 
@@ -120,7 +120,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * That is, $reserved_at+$ttr
 	 *
 	 * @var \DateTime
-	 * @Column(name="timeout_at",type="datetime")
+	 * @orm:Column(name="timeout_at",type="datetime")
 	 */
 	protected $timeout_at = null;
 
@@ -128,7 +128,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * When this job was created.
 	 *
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @orm:Column(name="created_at",type="datetime")
 	 */
 	protected $created_at = null;
 
@@ -136,7 +136,7 @@ class QueueItem extends \DeskPRO\Domain\DomainObject
 	 * Any data pertaining to the job
 	 * TODO: Change to BLOB type when Doctrine2 has that type. Or we will have to create it ourselves.
 	 * @var string
-	 * @Column(name="data", type="text", nullable=true)
+	 * @orm:Column(name="data", type="text", nullable=true)
 	 */
 	protected $data = '';
 }

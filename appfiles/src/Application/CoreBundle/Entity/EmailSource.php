@@ -14,31 +14,31 @@ namespace Application\CoreBundle\Entity;
 /**
  * Raw email sources
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="email_sources",
- *     indexes={@Index(name="object_idx", columns={"object_type", "object_id"})}
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="email_sources",
+ *     indexes={@orm:Index(name="object_idx", columns={"object_type", "object_id"})}
  * )
  */
 class EmailSource extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @Column(name="gateway_id", type="integer")
+	 * @orm:Column(name="gateway_id", type="integer")
 	 */
 	protected $gateway_id;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\EmailGateway
-	 * @OneToOne(targetEntity="EmailGateway")
-	 * @JoinColumn(name="gateway_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="EmailGateway")
+	 * @orm:JoinColumn(name="gateway_id", referencedColumnName="id")
 	 */
 	protected $gateway = null;
 
@@ -47,7 +47,7 @@ class EmailSource extends \DeskPRO\Domain\DomainObject
 	 * the super type, eg: tickets, people, organizations).
 	 *
 	 * @var string
-	 * @Column(name="object_type", type="string", length=50)
+	 * @orm:Column(name="object_type", type="string", length=50)
 	 */
 	protected $object_type;
 
@@ -55,7 +55,7 @@ class EmailSource extends \DeskPRO\Domain\DomainObject
 	 * The ID of the object this is attached to.
 	 *
 	 * @var int
-	 * @Column(name="object_id", type="integer")
+	 * @orm:Column(name="object_id", type="integer")
 	 */
 	protected $object_id;
 
@@ -63,7 +63,7 @@ class EmailSource extends \DeskPRO\Domain\DomainObject
 	 * Just the headers portion of the email
 	 *
 	 * @var string
-	 * @Column(name="headers", type="string", length=1000)
+	 * @orm:Column(name="headers", type="string", length=1000)
 	 */
 	protected $headers;
 
@@ -73,7 +73,7 @@ class EmailSource extends \DeskPRO\Domain\DomainObject
 	 * - complete: Fully processed
 	 *
 	 * @var string
-	 * @Column(name="status", type="string", length=15)
+	 * @orm:Column(name="status", type="string", length=15)
 	 */
 	protected $status = 'inserted';
 
@@ -81,13 +81,13 @@ class EmailSource extends \DeskPRO\Domain\DomainObject
 	 * The path to the raw email if it was saved to the filesystem
 	 *
 	 * @var string
-	 * @Column(name="save_path", type="string", length=255)
+	 * @orm:Column(name="save_path", type="string", length=255)
 	 */
 	protected $save_path = '';
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_created",type="datetime")
+	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

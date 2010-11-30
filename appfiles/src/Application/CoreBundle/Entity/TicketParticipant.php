@@ -14,34 +14,34 @@ namespace Application\CoreBundle\Entity;
 /**
  * Links participants to tickets
  *
- * @Entity
- * @Table(name="tickets_participants")
+ * @orm:Entity
+ * @orm:Table(name="tickets_participants")
  */
 class TicketParticipant extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="ticket_id", type="integer")
+	 * @orm:Id @orm:Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Ticket
-	 * @OneToOne(targetEntity="Ticket")
-	 * @JoinColumn(name="ticket_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Ticket")
+	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var int
-	 * @Id @Column(name="person_id", type="integer")
+	 * @orm:Id @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @OneToOne(targetEntity="Person")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
 }

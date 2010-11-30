@@ -14,9 +14,9 @@ namespace Application\CoreBundle\Entity;
 /**
  * This tracks associations between a user and a usersource.
  *
- * @Entity(repositoryClass="Application\CoreBundle\EntityRepository\PersonUsersourceAssoc")
- * @HasLifecycleCallbacks
- * @Table(name="person_usersource_assoc")
+ * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\PersonUsersourceAssoc")
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="person_usersource_assoc")
  */
 class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 {
@@ -24,7 +24,7 @@ class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id;
@@ -32,21 +32,21 @@ class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 	/**
 	 * The usersource ID
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id;
 
 	/**
 	 * @var Application\CoreBundle\Entity\Person
-	 * @ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
 
 	/**
 	 * The usersource ID
 	 * @var int
-	 * @Column(name="usersource_id", type="integer")
+	 * @orm:Column(name="usersource_id", type="integer")
 	 */
 	protected $usersource_id;
 
@@ -54,8 +54,8 @@ class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 	 * The usersource that this scraper is attached to
 	 *
 	 * @var Usersource
-	 * @OneToOne(targetEntity="Usersource")
-	 * @JoinColumn(name="usersource_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Usersource")
+	 * @orm:JoinColumn(name="usersource_id", referencedColumnName="id")
 	 */
 	protected $usersource;
 
@@ -64,8 +64,8 @@ class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 	 * ID such as a UserID.
 	 *
 	 * @var string
-	 * @Index
-	 * @Column(name="identity", type="string", length=255)
+	 * @orm:Index
+	 * @orm:Column(name="identity", type="string", length=255)
 	 */
 	protected $identity;
 
@@ -75,8 +75,8 @@ class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 	 * if this changes.
 	 *
 	 * @var string
-	 * @Index
-	 * @Column(name="identity_friendly", type="string", length=255)
+	 * @orm:Index
+	 * @orm:Column(name="identity_friendly", type="string", length=255)
 	 */
 	protected $identity_friendly;
 
@@ -85,7 +85,7 @@ class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 	 * such as auth keys (eg: in twitter or facebook).
 	 *
 	 * @var array
-	 * @Column(name="data", type="array")
+	 * @orm:Column(name="data", type="array")
 	 */
 	protected $data = array();
 
@@ -93,7 +93,7 @@ class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 	 * When the record was first created in the system
 	 *
 	 * @var \DateTime
-	 * @Column(name="created_at", type="datetime")
+	 * @orm:Column(name="created_at", type="datetime")
 	 */
 	protected $created_at;
 
@@ -101,7 +101,7 @@ class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
 	 * The last time the user logged in using this auth.
 	 *
 	 * @var \DateTime
-	 * @Column(name="last_used_at", type="datetime")
+	 * @orm:Column(name="last_used_at", type="datetime")
 	 */
 	protected $last_used_at;
 

@@ -38,7 +38,7 @@ class LanguagesController extends AbstractController
 			return $this->redirect($this->generateUrl('tech_admin_langs_intro', array()));
 		}
 
-        return $this->render('TechBundle:Languages:index');
+        return $this->render('TechBundle:Languages:index.twig');
     }
 
 
@@ -55,7 +55,7 @@ class LanguagesController extends AbstractController
 	{
 		$this->tplvars['has_no_langs'] = !((bool)$this->lang_hierarchy);
 
-		return $this->render('TechBundle:Languages:intro');
+		return $this->render('TechBundle:Languages:intro.twig');
 	}
 
 
@@ -120,7 +120,7 @@ class LanguagesController extends AbstractController
 			}
 		}
 
-		return $this->render('TechBundle:Languages:edit');
+		return $this->render('TechBundle:Languages:edit.twig');
 	}
 
 
@@ -149,7 +149,7 @@ class LanguagesController extends AbstractController
 
 		$this->tplvars['all_phrases'] = $phrases;
 
-		return $this->render('TechBundle:Languages:language-phrase-list');
+		return $this->render('TechBundle:Languages:language-phrase-list.twig');
 	}
 
 
@@ -180,7 +180,7 @@ class LanguagesController extends AbstractController
 		// TODO fetch current contents
 		$this->tplvars['phrase_content'] = $group_phrases[$phrase_name];
 
-		return $this->render('TechBundle:Styles:edit-phrase');
+		return $this->render('TechBundle:Styles:edit-phrase.twig');
 	}
 
 	

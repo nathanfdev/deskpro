@@ -20,7 +20,7 @@ abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="field_id", type="integer")
+	 * @orm:Id @orm:Column(name="field_id", type="integer")
 	 */
 	protected $field_id;
 
@@ -29,8 +29,8 @@ abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * The form field this is attached to
 	 *
 	 * @var \Application\CoreBundle\Entity\CustomDefXXX
-	 * @ManyToOne(targetEntity="CustomDefXXX")
-	 * @JoinColumn(name="field_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="CustomDefXXX")
+	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
 	 */
 	//protected $field = null;
 
@@ -38,7 +38,7 @@ abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var int
-	 * @Id @Column(name="xxx_id", type="integer")
+	 * @orm:Id @orm:Column(name="xxx_id", type="integer")
 	 */
 	//protected $xxx_id;
 
@@ -46,8 +46,8 @@ abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var \Application\CoreBundle\Entity\Xxx
-	 * @ManyToOne(targetEntity="xxx")
-	 * @JoinColumn(name="xxx_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="xxx")
+	 * @orm:JoinColumn(name="xxx_id", referencedColumnName="id")
 	 */
 	//protected $xxx;
 
@@ -55,7 +55,7 @@ abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * User numeric data
 	 *
 	 * @var array
-	 * @Column(name="value", type="integer")
+	 * @orm:Column(name="value", type="integer")
 	 */
 	protected $value = 0;
 
@@ -63,7 +63,7 @@ abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * User string data
 	 *
 	 * @var array
-	 * @Column(name="input", type="text")
+	 * @orm:Column(name="input", type="text")
 	 */
 	protected $input = 0;
 }

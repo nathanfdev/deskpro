@@ -35,29 +35,6 @@ class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine
 		return $content = parent::render($name, $all_params);
 	}
 
-	
-
-	/**
-	 * Default to using Twig instead of PHP.
-	 * 
-	 * @param string $name Template name
-	 * @param array $defaults Array of defaults
-	 */
-	public function splitTemplateName($name, array $defaults = array())
-	{
-		// Hack: Defaults for FrameworkBundle that has default exception handler still
-		// Want php renderer
-		if (strpos($name, 'FrameworkBundle') === 0) {
-			return parent::splitTemplateName($name, $defaults);
-		}
-
-		if (!isset($defaults['renderer']) OR !$defaults['renderer']) {
-			$defaults['renderer'] = 'twig';
-		}
-
-		return parent::splitTemplateName($name, $defaults);
-	}
-
 
 
 	/**

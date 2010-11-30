@@ -24,9 +24,9 @@ use \Application\CoreBundle\Entity\PersonFieldDada;
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="organizations")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="organizations")
  */
 class Organization extends \DeskPRO\Domain\DomainObject
 {
@@ -34,7 +34,7 @@ class Organization extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -43,7 +43,7 @@ class Organization extends \DeskPRO\Domain\DomainObject
 	 * The organization name
 	 *
 	 * @var string
-	 * @Column(name="name", type="text")
+	 * @orm:Column(name="name", type="text")
 	 */
 	protected $name = null;
 }

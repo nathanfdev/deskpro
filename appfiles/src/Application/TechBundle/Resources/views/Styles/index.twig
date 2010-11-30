@@ -1,10 +1,10 @@
-{% extends 'TechBundle::layout' %}
+{% extends 'TechBundle::layout.twig' %}
 {% block content %}
 
 <div class="block" id="block-tables">
 	<div class="content">
 		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{% route 'tech_admin_styles_newstyle' %}" class="button">
+			<a href="{% path 'tech_admin_styles_newstyle' %}" class="button">
 				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New Style
 			</a>
 		</div>
@@ -27,9 +27,9 @@
 							{{style.title}}
 						</td>
 						<td class="last">
-							<a href="{% route 'tech_admin_styles_templates' with ['style_id': style.id] %}">Templates</a> &middot;
-							<a href="{% route 'tech_admin_styles_resources' with ['style_id': style.id] %}">Resources</a> &middot;
-							<a href="{% route 'tech_admin_styles_editstyle' with ['style_id': style.id] %}">Properties</a>
+							<a href="{% path 'tech_admin_styles_templates' with ['style_id': style.id] %}">Templates</a> &middot;
+							<a href="{% path 'tech_admin_styles_resources' with ['style_id': style.id] %}">Resources</a> &middot;
+							<a href="{% path 'tech_admin_styles_editstyle' with ['style_id': style.id] %}">Properties</a>
 						</td>
 					</tr>
 					{% endfor %}
@@ -48,5 +48,5 @@
 
 {% endblock %}
 {% block sidebar %}
-	{% include 'TechBundle:Styles:_style_sidebar' %}
+	{% include 'TechBundle:Styles:_style_sidebar.twig' %}
 {% endblock %}

@@ -14,27 +14,27 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket priorities
  *
- * @Entity
- * @Table(name="ticket_priorities")
+ * @orm:Entity
+ * @orm:Table(name="ticket_priorities")
  */
 class TicketPriority extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @Column(name="priority", type="integer")
+	 * @orm:Column(name="priority", type="integer")
 	 */
 	protected $priority = 0;
 }

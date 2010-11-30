@@ -27,7 +27,7 @@ abstract class Scraper
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id;
@@ -37,7 +37,7 @@ abstract class Scraper
 	 * creating all the resources needed for a scraper to do its job.
 	 *
 	 * @var string
-	 * @Column(name="handler_class", type="string", length=255)
+	 * @orm:Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class;
 
@@ -45,7 +45,7 @@ abstract class Scraper
 	 * Options we'll pass to the handler
 	 *
 	 * @var array
-	 * @Column(name="options", type="array")
+	 * @orm:Column(name="options", type="array")
 	 */
 	protected $options = array();
 
@@ -53,7 +53,7 @@ abstract class Scraper
 	 * True if this scraper is enabled
 	 *
 	 * @var bool
-	 * @Column(name="is_enabled", type="boolean")
+	 * @orm:Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 

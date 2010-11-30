@@ -103,7 +103,7 @@ abstract class AbstractAdminHandler
 		$parts = explode('\\', $classname);
 		$basename = strtolower(array_pop($parts));
 
-		$tplname = 'TechBundle:Usersources:edit-form-' . $basename;
+		$tplname = 'TechBundle:Usersources:edit-form-.twig' . $basename;
 
 		return $controller->renderView($tplname, array(
 			'usersource' => $this->usersource,

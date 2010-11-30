@@ -38,7 +38,7 @@ class StylesController extends AbstractController
 			return $this->redirect($this->generateUrl('tech_admin_styles_intro', array()));
 		}
 
-        return $this->render('TechBundle:Styles:index');
+        return $this->render('TechBundle:Styles:index.twig');
     }
 
 
@@ -55,7 +55,7 @@ class StylesController extends AbstractController
 	{
 		$this->tplvars['has_no_styles'] = !((bool)$this->style_hierarchy);
 
-		return $this->render('TechBundle:Styles:intro');
+		return $this->render('TechBundle:Styles:intro.twig');
 	}
 
 
@@ -119,7 +119,7 @@ class StylesController extends AbstractController
 			}
 		}
 
-		return $this->render('TechBundle:Styles:edit');
+		return $this->render('TechBundle:Styles:edit.twig');
 	}
 
 
@@ -139,7 +139,7 @@ class StylesController extends AbstractController
 		$template_finder = new \DeskPRO\ResourceScanner\TemplateFiles($this->container);
 		$this->tplvars['template_files'] = $template_finder->getTemplates(true);
 
-		return $this->render('TechBundle:Styles:style-template-list');
+		return $this->render('TechBundle:Styles:style-template-list.twig');
 	}
 
 
@@ -169,7 +169,7 @@ class StylesController extends AbstractController
 		// TODO fetch current styles contents
 		$this->tplvars['template_content'] = file_get_contents($template_files[$template_name]);
 
-		return $this->render('TechBundle:Styles:edit-template');
+		return $this->render('TechBundle:Styles:edit-template.twig');
 	}
 
 	

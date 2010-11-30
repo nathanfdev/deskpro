@@ -24,7 +24,7 @@ class CustomDefAbstract extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -35,8 +35,8 @@ class CustomDefAbstract extends \DeskPRO\Domain\DomainObject
 	 * MUST BE IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var XXX
-	 * @OneToOne(targetEntity="XXX")
-	 * @JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="XXX")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	//protected $parent = null;
 
@@ -44,7 +44,7 @@ class CustomDefAbstract extends \DeskPRO\Domain\DomainObject
 	 * The title
 	 *
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title = '';
 
@@ -52,14 +52,14 @@ class CustomDefAbstract extends \DeskPRO\Domain\DomainObject
 	 * The handler class
 	 *
 	 * @var string
-	 * @Column(name="handler_class", type="string", length=255)
+	 * @orm:Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class;
 
 	/**
 	 * Options for the field
 	 *
-	 * @Column(name="options", type="array")
+	 * @orm:Column(name="options", type="array")
 	 */
 	protected $options = array();
 
@@ -69,7 +69,7 @@ class CustomDefAbstract extends \DeskPRO\Domain\DomainObject
 	 * MUST BE IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="FormField", mappedBy="parent_id")
+	 * @orm:OneToMany(targetEntity="FormField", mappedBy="parent_id")
 	 */
 	//protected $field_children = null;
 

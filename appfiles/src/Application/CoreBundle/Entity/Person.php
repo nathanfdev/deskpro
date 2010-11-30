@@ -24,9 +24,9 @@ use \Application\CoreBundle\Entity\PersonFieldDada;
  * A "person" is a record in the database that stores information about a person.
  * Every person is capable of logging in, though it may be the case that many wont (ie they are just contact cards).
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="people")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="people")
  */
 class Person extends \DeskPRO\Domain\DomainObject
 {
@@ -34,7 +34,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -43,7 +43,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * Is this person a contact (someone we care about seeing)?
 	 *
 	 * @var bool
-	 * @Column(name="is_contact", type="boolean")
+	 * @orm:Column(name="is_contact", type="boolean")
 	 */
 	protected $is_contact = true;
 
@@ -51,7 +51,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * Is this person a user (someone with login credentials)?
 	 * 
 	 * @var bool
-	 * @Column(name="is_user", type="boolean")
+	 * @orm:Column(name="is_user", type="boolean")
 	 */
 	protected $is_user = false;
 
@@ -59,7 +59,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * Is this person a tech?
 	 *
 	 * @var bool
-	 * @Column(name="is_tech", type="boolean")
+	 * @orm:Column(name="is_tech", type="boolean")
 	 */
 	protected $is_tech = false;
 	
@@ -67,7 +67,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @Column(name="name", type="text")
+	 * @orm:Column(name="name", type="text")
 	 */
 	protected $name = '';
 
@@ -75,7 +75,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @Column(name="first_name", type="text", nullable=true)
+	 * @orm:Column(name="first_name", type="text", nullable=true)
 	 */
 	protected $first_name = '';
 
@@ -83,7 +83,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
-	 * @Column(name="last_name", type="text", nullable=true)
+	 * @orm:Column(name="last_name", type="text", nullable=true)
 	 */
 	protected $last_name = '';
 
@@ -91,7 +91,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * A secret string used in various hashing or encryption schemes.
 	 *
 	 * @var string
-	 * @Column(name="secret_string", type="string", length=40)
+	 * @orm:Column(name="secret_string", type="string", length=40)
 	 */
 	protected $secret_string;
 
@@ -99,7 +99,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The language ID.
 	 *
 	 * @var int
-	 * @Column(name="language_id", type="integer", nullable=true)
+	 * @orm:Column(name="language_id", type="integer", nullable=true)
 	 */
 	protected $language_id = null;
 
@@ -107,14 +107,14 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The language associate with the user.
 	 *
 	 * @var \Application\CoreBundle\Entity\Language
-	 * @OneToOne(targetEntity="Language")
-	 * @JoinColumn(name="language_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Language")
+	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
 	 */
 	protected $language = null;
 
 	/**
 	 * @var int
-	 * @Column(name="organization_id", type="integer", nullable=true)
+	 * @orm:Column(name="organization_id", type="integer", nullable=true)
 	 */
 	protected $organization_id = null;
 
@@ -122,8 +122,8 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The users organization
 	 *
 	 * @var \Application\CoreBundle\Entity\Organization
-	 * @OneToOne(targetEntity="Organization")
-	 * @JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Organization")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization = null;
 
@@ -131,7 +131,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The persons position at the organization
 	 *
 	 * @var string
-	 * @Column(name="organization_position", type="string", length=100)
+	 * @orm:Column(name="organization_position", type="string", length=100)
 	 */
 	protected $organization_position = '';
 
@@ -139,7 +139,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The timezone associated with this user.
 	 *
 	 * @var string
-	 * @Column(name="timezome", type="string", length=50)
+	 * @orm:Column(name="timezome", type="string", length=50)
 	 */
 	protected $timezone;
 
@@ -148,7 +148,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * an email address.
 	 *
 	 * @var string
-	 * @Column(name="password", type="string", length=40, nullable=true)
+	 * @orm:Column(name="password", type="string", length=40, nullable=true)
 	 */
 	protected $password = null;
 
@@ -156,7 +156,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * A salt used to hash the password with.
 	 *
 	 * @var string
-	 * @Column(name="salt", type="string", length=40)
+	 * @orm:Column(name="salt", type="string", length=40)
 	 */
 	protected $salt;
 
@@ -164,7 +164,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The primary email id.
 	 *
 	 * @var int
-	 * @Column(name="primary_email_id", type="integer", nullable=true)
+	 * @orm:Column(name="primary_email_id", type="integer", nullable=true)
 	 */
 	protected $primary_email_id = null;
 
@@ -172,20 +172,20 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The primary email address used by this account
 	 *
 	 * @var \Application\CoreBundle\Entity\PersonEmail
-	 * @OneToOne(targetEntity="PersonEmail", fetch="EAGER")
-	 * @JoinColumn(name="primary_email_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="PersonEmail", fetch="EAGER")
+	 * @orm:JoinColumn(name="primary_email_id", referencedColumnName="id")
 	 */
 	protected $primary_email;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="PersonEmail", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 * @orm:OneToMany(targetEntity="PersonEmail", mappedBy="person", cascade={"persist", "remove", "merge"})
 	 */
 	protected $emails;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="PersonContactData", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 * @orm:OneToMany(targetEntity="PersonContactData", mappedBy="person", cascade={"persist", "remove", "merge"})
 	 */
 	protected $contact_data;
 
@@ -193,10 +193,10 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 * 
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ManyToMany(targetEntity="Usergroup")
-	 * @JoinTable(name="person2usergroups",
-	 *     joinColumns={@JoinColumn(name="person_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@JoinColumn(name="usergroup_id", referencedColumnName="id")}
+	 * @orm:ManyToMany(targetEntity="Usergroup")
+	 * @orm:JoinTable(name="person2usergroups",
+	 *     joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")},
+     *     inverseJoinColumns={@orm:JoinColumn(name="usergroup_id", referencedColumnName="id")}
      * )
 	 */
 	protected $usergroups;
@@ -205,7 +205,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * Usersource associations
 	 *
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person")
+	 * @orm:OneToMany(targetEntity="PersonUsersourceAssoc", mappedBy="person")
 	 */
 	protected $usersource_assoc;
 
@@ -213,7 +213,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * Person scraper associations
 	 *
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="PersonScraperAssoc", mappedBy="person")
+	 * @orm:OneToMany(targetEntity="PersonScraperAssoc", mappedBy="person")
 	 */
 	protected $personscraper_assoc;
 
@@ -221,7 +221,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The date the user was inserted into the system
 	 * 
 	 * @var \DateTime
-	 * @Column(name="date_created",type="datetime")
+	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -229,7 +229,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The last time the user logged in
 	 *
 	 * @var \DateTime
-	 * @Column(name="date_last_login", type="datetime", nullable=true)
+	 * @orm:Column(name="date_last_login", type="datetime", nullable=true)
 	 */
 	protected $date_last_login;
 

@@ -17,7 +17,7 @@ use Orb\Util\Web;
 /**
  * Settings used by the system.
  *
- * @Entity
+ * @orm:Entity
  */
 class UsergroupPropertyPermission extends \Application\CoreBundle\Entity\UsergroupProperty
 {

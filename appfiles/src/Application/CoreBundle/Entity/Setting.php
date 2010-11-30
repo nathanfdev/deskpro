@@ -16,9 +16,9 @@ use Orb\Util\Arrays;
 /**
  * Settings used by the system.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="settings")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="settings")
  */
 class Setting extends \DeskPRO\Domain\DomainObject
 {
@@ -26,8 +26,8 @@ class Setting extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -37,7 +37,7 @@ class Setting extends \DeskPRO\Domain\DomainObject
 	 * The name of the setting
 	 *
 	 * @var string
-	 * @Column(name="name", type="string", length=255)
+	 * @orm:Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
 
@@ -47,8 +47,8 @@ class Setting extends \DeskPRO\Domain\DomainObject
 	 * before the first dot in the name. deskpro.url, the group is 'deskpro'
 	 *
 	 * @var string
-	 * @Index
-	 * @Column(name="groupname", type="string", length=255, nullable=true)
+	 * @orm:Index
+	 * @orm:Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;
 
@@ -57,7 +57,7 @@ class Setting extends \DeskPRO\Domain\DomainObject
 	 * The value of a setting
 	 *
 	 * @var string
-	 * @Column(name="value", type="text", nullable=true)
+	 * @orm:Column(name="value", type="text", nullable=true)
 	 */
 	protected $value;
 
@@ -66,21 +66,21 @@ class Setting extends \DeskPRO\Domain\DomainObject
 	 * The default value set by DeskPRO.
 	 *
 	 * @var string
-	 * @Column(name="default_value", type="text")
+	 * @orm:Column(name="default_value", type="text")
 	 */
 	protected $default_value = '';
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @orm:Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="updated_at",type="datetime")
+	 * @orm:Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 

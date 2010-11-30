@@ -19,9 +19,9 @@ namespace Application\CoreBundle\Entity;
  * because technically Usersources and PersonScrapers are two distinct subsystems,
  * we just offer a way to tie them together aesthetically because they are often found together.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="person_scraper_assoc")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="person_scraper_assoc")
  */
 class PersonScraperAssoc
 {
@@ -29,22 +29,22 @@ class PersonScraperAssoc
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id;
 
 	/**
 	 * @var Application\CoreBundle\Entity\Person
-	 * @ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
 
 	/**
 	 * The usersource ID
 	 * @var int
-	 * @Column(name="usersource_id", type="integer")
+	 * @orm:Column(name="usersource_id", type="integer")
 	 */
 	protected $person_id = null;
 
@@ -52,15 +52,15 @@ class PersonScraperAssoc
 	 * The scraper the person is connected to
 	 *
 	 * @var Usersource
-	 * @OneToOne(targetEntity="Usersource")
-	 * @JoinColumn(name="person_scraper_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Usersource")
+	 * @orm:JoinColumn(name="person_scraper_id", referencedColumnName="id")
 	 */
 	protected $scraper;
 
 	/**
 	 * The person scraper ID
 	 * @var int
-	 * @Column(name="person_scraper_id", type="integer")
+	 * @orm:Column(name="person_scraper_id", type="integer")
 	 */
 	protected $person_scraper_id;
 
@@ -72,8 +72,8 @@ class PersonScraperAssoc
 	 * auto-discovery attempts.
 	 *
 	 * @var string
-	 * @Index
-	 * @Column(name="identity", type="string", length=255, nullable=true)
+	 * @orm:Index
+	 * @orm:Column(name="identity", type="string", length=255, nullable=true)
 	 */
 	protected $identity;
 
@@ -83,7 +83,7 @@ class PersonScraperAssoc
 	 * not the raw JSON string).
 	 *
 	 * @var array
-	 * @Column(name="raw_data", type="array")
+	 * @orm:Column(name="raw_data", type="array")
 	 */
 	protected $data = array();
 
@@ -91,7 +91,7 @@ class PersonScraperAssoc
 	 * When the record was first created in the system
 	 *
 	 * @var \DateTime
-	 * @Column(name="created_at", type="datetime")
+	 * @orm:Column(name="created_at", type="datetime")
 	 */
 	protected $created_at;
 
@@ -99,7 +99,7 @@ class PersonScraperAssoc
 	 * When the record was last updated in the system.
 	 *
 	 * @var \DateTime
-	 * @Column(name="updated_at", type="datetime")
+	 * @orm:Column(name="updated_at", type="datetime")
 	 */
 	protected $updated_at;
 
@@ -107,7 +107,7 @@ class PersonScraperAssoc
 	 * If the remote resource reports when it was created, this is when
 	 *
 	 * @var \DateTime
-	 * @Column(name="remote_created_at", type="datetime", nullable=true)
+	 * @orm:Column(name="remote_created_at", type="datetime", nullable=true)
 	 */
 	protected $remote_created_at = null;
 
@@ -115,7 +115,7 @@ class PersonScraperAssoc
 	 * If the remote resource reports when it was updated, this is when.
 	 *
 	 * @var \DateTime
-	 * @Column(name="remote_updated_at", type="datetime", nullable=true)
+	 * @orm:Column(name="remote_updated_at", type="datetime", nullable=true)
 	 */
 	protected $remote_updated_at = null;
 

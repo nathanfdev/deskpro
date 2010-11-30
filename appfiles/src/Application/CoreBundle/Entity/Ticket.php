@@ -14,8 +14,8 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket
  *
- * @Entity
- * @Table(name="tickets")
+ * @orm:Entity
+ * @orm:Table(name="tickets")
  */
 class Ticket extends \DeskPRO\Domain\DomainObject
 {
@@ -32,105 +32,105 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @Column(name="department_id", type="integer")
+	 * @orm:Column(name="department_id", type="integer")
 	 */
 	protected $department_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Department
-	 * @OneToOne(targetEntity="Department")
-	 * @JoinColumn(name="department_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Department")
+	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
 	 */
 	protected $department = null;
 
 	/**
 	 * @var int
-	 * @Column(name="category_id", type="integer")
+	 * @orm:Column(name="category_id", type="integer")
 	 */
 	protected $category_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\TicketCategory
-	 * @OneToOne(targetEntity="TicketCategory")
-	 * @JoinColumn(name="category_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="TicketCategory")
+	 * @orm:JoinColumn(name="category_id", referencedColumnName="id")
 	 */
 	protected $category = null;
 
 	/**
 	 * @var int
-	 * @Column(name="priority_id", type="integer")
+	 * @orm:Column(name="priority_id", type="integer")
 	 */
 	protected $priority_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\TicketPriority
-	 * @OneToOne(targetEntity="TicketPriority")
-	 * @JoinColumn(name="priority_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="TicketPriority")
+	 * @orm:JoinColumn(name="priority_id", referencedColumnName="id")
 	 */
 	protected $priority = null;
 
 	/**
 	 * @var int
-	 * @Column(name="product_id", type="integer")
+	 * @orm:Column(name="product_id", type="integer")
 	 */
 	protected $product_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Product
-	 * @OneToOne(targetEntity="Product")
-	 * @JoinColumn(name="product_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Product")
+	 * @orm:JoinColumn(name="product_id", referencedColumnName="id")
 	 */
 	protected $product = null;
 
 	/**
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @OneToOne(targetEntity="Person")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var int
-	 * @Column(name="agent_id", type="integer")
+	 * @orm:Column(name="agent_id", type="integer")
 	 */
 	protected $agent_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @OneToOne(targetEntity="Person")
-	 * @JoinColumn(name="agent_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
 	 */
 	protected $agent = null;
 
 	/**
 	 * @var int
-	 * @Column(name="organization_id", type="integer")
+	 * @orm:Column(name="organization_id", type="integer")
 	 */
 	protected $organization_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Organization
-	 * @OneToOne(targetEntity="Organization")
-	 * @JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Organization")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization = null;
 
 	/**
 	 * @var string
-	 * @Column(name="creation_system", type="string", length=20)
+	 * @orm:Column(name="creation_system", type="string", length=20)
 	 */
 	protected $creation_system;
 
@@ -138,7 +138,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 	 * @TODO Make this an enum type
 	 * 
 	 * @var string
-	 * @Column(name="status", type="string", length=15)
+	 * @orm:Column(name="status", type="string", length=15)
 	 */
 	protected $status;
 
@@ -146,91 +146,91 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 	 * @TODO Make this an enum type
 	 *
 	 * @var string
-	 * @Column(name="hidden_status", type="string", length=15)
+	 * @orm:Column(name="hidden_status", type="string", length=15)
 	 */
 	protected $hidden_status;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_created",type="datetime")
+	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_resolved",type="datetime",nullable=true)
+	 * @orm:Column(name="date_resolved",type="datetime",nullable=true)
 	 */
 	protected $date_resolved = null;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_closed",type="datetime",nullable=true)
+	 * @orm:Column(name="date_closed",type="datetime",nullable=true)
 	 */
 	protected $date_closed = null;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_first_agent_reply",type="datetime",nullable=true)
+	 * @orm:Column(name="date_first_agent_reply",type="datetime",nullable=true)
 	 */
 	protected $date_first_agent_reply = null;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_last_agent_reply",type="datetime",nullable=true)
+	 * @orm:Column(name="date_last_agent_reply",type="datetime",nullable=true)
 	 */
 	protected $date_last_agent_reply = null;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_last_user_reply",type="datetime",nullable=true)
+	 * @orm:Column(name="date_last_user_reply",type="datetime",nullable=true)
 	 */
 	protected $date_last_user_reply = null;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_agent_waiting",type="datetime",nullable=true)
+	 * @orm:Column(name="date_agent_waiting",type="datetime",nullable=true)
 	 */
 	protected $date_agent_waiting = null;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_user_waiting",type="datetime",nullable=true)
+	 * @orm:Column(name="date_user_waiting",type="datetime",nullable=true)
 	 */
 	protected $date_user_waiting = null;
 
 	/**
 	 * @var int
-	 * @Column(name="total_user_waiting", type="integer")
+	 * @orm:Column(name="total_user_waiting", type="integer")
 	 */
 	protected $total_user_waiting = 0;
 
 	/**
 	 * @var int
-	 * @Column(name="total_to_first_reply", type="integer")
+	 * @orm:Column(name="total_to_first_reply", type="integer")
 	 */
 	protected $total_to_first_reply = 0;
 
 	/**
 	 * @var int
-	 * @Column(name="locked_by_agent", type="integer")
+	 * @orm:Column(name="locked_by_agent", type="integer")
 	 */
 	protected $locked_by_agent = 0;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_locked",type="datetime",nullable=true)
+	 * @orm:Column(name="date_locked",type="datetime",nullable=true)
 	 */
 	protected $date_locked = null;
 
 	/**
 	 * @var bool
-	 * @Column(name="has_attachments", type="boolean")
+	 * @orm:Column(name="has_attachments", type="boolean")
 	 */
 	protected $has_attachments = false;
 
 	/**
 	 * @var string
-	 * @Column(name="subject", type="string", length=255)
+	 * @orm:Column(name="subject", type="string", length=255)
 	 */
 	protected $subject;
 

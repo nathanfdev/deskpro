@@ -1,11 +1,11 @@
-{% extends 'TechBundle::layout' %}
+{% extends 'TechBundle::layout.twig' %}
 {% block content %}
 
 <div class="block">
 	<div class="content">
 		<h2 class="title">{% if style.id %}Edit Style{% else %}Create Style{% endif %}</h2>
 		<div class="inner">
-			<form action="{% route 'tech_admin_styles_editstyle' with ['style_id': style.id|default(0)] %}" method="post" class="form">
+			<form action="{% path 'tech_admin_styles_editstyle' with ['style_id': style.id|default(0)] %}" method="post" class="form">
 				<input type="hidden" name="process" value="1" />
 				<div class="group">
 					<label class="label">Title</label>
@@ -28,7 +28,7 @@
 						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Save
 					</button>
 					{% if style.id %}
-						<a href="{% route 'tech_admin_styles' %}" class="button">
+						<a href="{% path 'tech_admin_styles' %}" class="button">
 							<img src="{% asset 'images/icons/cross.png' %}" alt="Cancel"/> Cancel
 						</a>
 					{% endif %}

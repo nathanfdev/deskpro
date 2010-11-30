@@ -14,29 +14,29 @@ namespace Application\CoreBundle\Entity;
 /**
  * Custom ticket data
  * 
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="custom_data_ticket")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="custom_data_ticket")
  */
 abstract class CustomDataTicket extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\CoreBundle\Entity\CustomDefTicket
-	 * @ManyToOne(targetEntity="CustomDefTicket")
-	 * @JoinColumn(name="field_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="CustomDefTicket")
+	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
 	 */
 	protected $field = null;
 
 	/**
 	 * @var int
-	 * @Id @Column(name="ticket_id", type="integer")
+	 * @orm:Id @orm:Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Ticket
-	 * @ManyToOne(targetEntity="Ticket")
-	 * @JoinColumn(name="ticket_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Ticket")
+	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
 	protected $ticket;
 }

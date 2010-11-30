@@ -17,9 +17,9 @@ use Orb\Util\Arrays;
  * A PersonField describes a type of field that is set on a Person, and how the data
  * is to be treated/inputted/transformed etc.
  *
- * @Entity(repositoryClass="Application\CoreBundle\EntityRepository\PersonField")
- * @HasLifecycleCallbacks
- * @Table(name="person_fields")
+ * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\PersonField")
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="person_fields")
  */
 class PersonField extends FormField
 {
@@ -27,7 +27,7 @@ class PersonField extends FormField
 	 * The parent ID for multi-field fields.
 	 *
 	 * @var int
-	 * @Column(name="parent_id", type="integer", nullable=true)
+	 * @orm:Column(name="parent_id", type="integer", nullable=true)
 	 */
 	protected $parent_id = null;
 	
@@ -35,8 +35,8 @@ class PersonField extends FormField
 	 * Field parent
 	 *
 	 * @var PersonField
-	 * @OneToOne(targetEntity="PersonField")
-	 * @JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="PersonField")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent = null;
 
@@ -44,7 +44,7 @@ class PersonField extends FormField
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="PersonField", mappedBy="parent")
+	 * @orm:OneToMany(targetEntity="PersonField", mappedBy="parent")
 	 */
 	protected $field_children = null;
 }

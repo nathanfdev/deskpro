@@ -37,7 +37,7 @@ class ApiController extends AbstractController
 
 		$this->tplvars['all_apikeys'] = $all_apikeys;
 
-		return $this->render('TechBundle:Api:index');
+		return $this->render('TechBundle:Api:index.twig');
 	}
 
 
@@ -51,7 +51,7 @@ class ApiController extends AbstractController
 	 */
 	public function introAction()
 	{
-		return $this->render('TechBundle:Api:intro');
+		return $this->render('TechBundle:Api:intro.twig');
 	}
 
 
@@ -75,7 +75,7 @@ class ApiController extends AbstractController
 
 		}
 
-		return $this->render('TechBundle:Api:edit-key');
+		return $this->render('TechBundle:Api:edit-key.twig');
 	}
 
 
@@ -93,7 +93,7 @@ class ApiController extends AbstractController
 
 		// TODO
 
-		return $this->render('TechBundle:Api:edit-key');
+		return $this->render('TechBundle:Api:edit-key.twig');
 	}
 
 

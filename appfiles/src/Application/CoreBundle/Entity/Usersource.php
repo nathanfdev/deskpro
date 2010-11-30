@@ -28,9 +28,9 @@ use Orb\Util\Arrays;
  *
  * @see DeskPRO\Auth\UserInitializer
  * @see DeskPRO\RemoteResourceListener\Auth
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="usersources")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="usersources")
  */
 class Usersource extends \DeskPRO\Domain\DomainObject
 {
@@ -38,8 +38,8 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:GeneratedValue
 	 */
 	protected $id = null;
 
@@ -47,7 +47,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * A note or description about the user source (admin eyes)
 	 *
 	 * @var string
-	 * @Column(name="note", type="text")
+	 * @orm:Column(name="note", type="text")
 	 */
 	protected $note = '';
 
@@ -56,7 +56,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * based on language.
 	 *
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title = '';
 
@@ -65,7 +65,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * based on language.
 	 *
 	 * @var string
-	 * @Column(name="description", type="string", length=255)
+	 * @orm:Column(name="description", type="string", length=255)
 	 */
 	protected $description = '';
 
@@ -73,7 +73,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * The URL/homepage of this service.
 	 *
 	 * @var string
-	 * @Column(name="url", type="string", length=255)
+	 * @orm:Column(name="url", type="string", length=255)
 	 */
 	protected $url = '';
 
@@ -81,15 +81,15 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * If this usersource includes a person scraper to fetch contact info, this is it.
 	 *
 	 * @var Application\CoreBundle\Entity\PersonScraper
-	 * @ManyToOne(targetEntity="PersonScraper")
-	 * @JoinColumn(name="person_scraper_id", referencedColumnName="id", nullable=true)
+	 * @orm:ManyToOne(targetEntity="PersonScraper")
+	 * @orm:JoinColumn(name="person_scraper_id", referencedColumnName="id", nullable=true)
 	 */
 	protected $person_scraper = null;
 
 	/**
 	 * The person scraper ID
 	 * @var int
-	 * @Column(name="person_scraper_id", type="integer", nullable=true)
+	 * @orm:Column(name="person_scraper_id", type="integer", nullable=true)
 	 */
 	protected $person_scraper_id = null;
 
@@ -98,7 +98,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * handling things like creating auth adapters etc.
 	 *
 	 * @var string
-	 * @Column(name="handler_class", type="string", length=255)
+	 * @orm:Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class;
 
@@ -106,14 +106,14 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * Options we'll pass to the handler
 	 *
 	 * @var array
-	 * @Column(name="options", type="array")
+	 * @orm:Column(name="options", type="array")
 	 */
 	protected $options = array();
 
 	/**
 	 * The order in which to display this source
 	 * @var int
-	 * @Column(name="display_order", type="integer")
+	 * @orm:Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
@@ -121,7 +121,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	 * True if this usersource is enabled/usable.
 	 *
 	 * @var bool
-	 * @Column(name="is_enabled", type="boolean")
+	 * @orm:Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 

@@ -1,10 +1,10 @@
-{% extends 'TechBundle::layout' %}
+{% extends 'TechBundle::layout.twig' %}
 {% block content %}
 
 <div class="block" id="block-tables">
 	<div class="content">
 		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{% route 'tech_admin_api_newkey' %}" class="button">
+			<a href="{% path 'tech_admin_api_newkey' %}" class="button">
 				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New API Key
 			</a>
 		</div>
@@ -23,8 +23,8 @@
 							{% if apikey.note %}<br />{{apikey.note}}{% endif %}
 						</td>
 						<td class="last">
-							<a href="{% route 'tech_admin_api_infokey' with ['apikey': apikey.id] %}">Info</a> &middot;
-							<a href="{% route 'tech_admin_api_editkey' with ['apikey': apikey.id] %}">Edit</a>
+							<a href="{% path 'tech_admin_api_infokey' with ['apikey': apikey.id] %}">Info</a> &middot;
+							<a href="{% path 'tech_admin_api_editkey' with ['apikey': apikey.id] %}">Edit</a>
 						</td>
 					</tr>
 					{% endfor %}

@@ -21,16 +21,16 @@
 				<ul class="wat-cf">
 					<li>
 						<span style="color: #fff; ">Hello, {{person.display_name}} &middot;</span>
-						<a class="logout" href="{% route 'user_logout' %}">Logout</a>
+						<a class="logout" href="{% path 'user_logout' %}">Logout</a>
 					</li>
 				</ul>
 			</div>
 			<div id="main-navigation">
 				<ul class="wat-cf">
-					<li class="first"><a href="{% route 'tech_dashboard' %}">Dashboard</a></li>
-					<li class=""><a href="{% route 'tech_people' %}">List People</a></li>
-					<li class=""><a href="{% route 'admin_personfields' %}">User Fields</a></li>
-					<li class=""><a href="{% route 'tech_admin_usersources' %}">User Sources</a></li>
+					<li class="first"><a href="{% path 'tech_dashboard' %}">Dashboard</a></li>
+					<li class=""><a href="{% path 'tech_people' %}">List People</a></li>
+					<li class=""><a href="{% path 'admin_personfields' %}">User Fields</a></li>
+					<li class=""><a href="{% path 'tech_admin_usersources' %}">User Sources</a></li>
 				</ul>
 			</div>
 		</div>

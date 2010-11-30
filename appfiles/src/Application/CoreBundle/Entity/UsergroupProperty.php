@@ -17,12 +17,12 @@ use Orb\Util\Web;
 /**
  * Settings used by the system.
  *
- * @Entity
+ * @orm:Entity
  * @InheritanceType("SINGLE_TABLE")
  * @DiscriminatorColumn(name="property_type", type="string")
  * @DiscriminatorMap({"permission" = "UsergroupPropertyPermission"})
- * @HasLifecycleCallbacks
- * @Table(name="usergroup_properties")
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="usergroup_properties")
  */
 abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 {
@@ -30,8 +30,8 @@ abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -40,7 +40,7 @@ abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 	 * The name of the property. This may be quite important if the system uses the property.
 	 *
 	 * @var string
-	 * @Column(name="name", type="string", length=50)
+	 * @orm:Column(name="name", type="string", length=50)
 	 */
 	protected $name = null;
 
@@ -49,8 +49,8 @@ abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 	 * The usergroup this property belongs to
 	 *
 	 * @var Application\CoreBundle\Entity\Usergroup
-	 * @OneToOne(targetEntity="Usergroup", mappedBy="properties")
-	 * @JoinColumn(name="usergroup_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Usergroup", mappedBy="properties")
+	 * @orm:JoinColumn(name="usergroup_id", referencedColumnName="id")
 	 */
 	protected $usergroup;
 
@@ -59,7 +59,7 @@ abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 	 * An flag value
 	 *
 	 * @var bool
-	 * @Column(name="flag", type="boolean", nullable=true)
+	 * @orm:Column(name="flag", type="boolean", nullable=true)
 	 */
 	protected $flag = null;
 
@@ -68,7 +68,7 @@ abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 	 * Any arbitrary value
 	 *
 	 * @var bool
-	 * @Column(name="data", type="text", nullable=true)
+	 * @orm:Column(name="data", type="text", nullable=true)
 	 */
 	protected $data = null;
 

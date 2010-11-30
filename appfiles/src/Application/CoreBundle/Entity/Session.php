@@ -16,9 +16,9 @@ use Orb\Util\Util;
 /**
  * Active user sessions
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="sessions")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="sessions")
  */
 class Session extends \DeskPRO\Domain\DomainObject
 {
@@ -26,8 +26,8 @@ class Session extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -37,7 +37,7 @@ class Session extends \DeskPRO\Domain\DomainObject
 	 * The authcode for the session to verify an id
 	 *
 	 * @var string
-	 * @Column(name="password", type="string", length=15)
+	 * @orm:Column(name="password", type="string", length=15)
 	 */
 	protected $auth = null;
 
@@ -46,28 +46,28 @@ class Session extends \DeskPRO\Domain\DomainObject
 	 * The user this session belong to
 	 *
 	 * @var int
-	 * @Column(name="user_id", type="integer", nullable=true)
+	 * @orm:Column(name="user_id", type="integer", nullable=true)
 	 */
 	protected $user_id = null;
 
 
 	/**
 	 * @var string
-	 * @Column(name="data", type="text")
+	 * @orm:Column(name="data", type="text")
 	 */
 	protected $data = '';
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @orm:Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="updated_at",type="datetime")
+	 * @orm:Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 

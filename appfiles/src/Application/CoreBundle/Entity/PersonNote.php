@@ -16,22 +16,22 @@ use Orb\Util\Arrays;
 /**
  * A note is a private note added by an agent to a persons account.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="people_notes")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="people_notes")
  */
 class PersonNote extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id;
 
@@ -39,14 +39,14 @@ class PersonNote extends \DeskPRO\Domain\DomainObject
 	 * The person the note is attached to.
 	 * 
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @ManyToOne(targetEntity="Person")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
 
 	/**
 	 * @var int
-	 * @Column(name="agent_id", type="integer")
+	 * @orm:Column(name="agent_id", type="integer")
 	 */
 	protected $agent_id;
 
@@ -54,14 +54,14 @@ class PersonNote extends \DeskPRO\Domain\DomainObject
 	 * The agent that added the note
 	 * 
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @ManyToOne(targetEntity="Person")
-	 * @JoinColumn(name="agent_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
 	 */
 	protected $agent;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_created",type="datetime")
+	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -69,7 +69,7 @@ class PersonNote extends \DeskPRO\Domain\DomainObject
 	 * The note contents
 	 *
 	 * @var string
-	 * @Column(name="note", type="string")
+	 * @orm:Column(name="note", type="string")
 	 */
 	protected $note;
 

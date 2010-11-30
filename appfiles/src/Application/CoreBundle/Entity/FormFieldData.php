@@ -24,7 +24,7 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -33,7 +33,7 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 	 * The parent ID for multi-field fields.
 	 *
 	 * @var int
-	 * @Column(name="parent_id", type="integer", nullable=true)
+	 * @orm:Column(name="parent_id", type="integer", nullable=true)
 	 */
 	protected $parent_id = null;
 
@@ -42,7 +42,7 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 	 * fields.
 	 *
 	 * @var array
-	 * @Column(name="data", type="array", nullable=false)
+	 * @orm:Column(name="data", type="array", nullable=false)
 	 */
 	protected $data;
 
@@ -50,7 +50,7 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 	 * Related data
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="FormFieldData", mappedBy="parent_id")
+	 * @orm:OneToMany(targetEntity="FormFieldData", mappedBy="parent_id")
 	 */
 	protected $data_children = null;
 

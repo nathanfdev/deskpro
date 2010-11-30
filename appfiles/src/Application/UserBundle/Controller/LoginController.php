@@ -32,7 +32,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 			WHERE us.is_enabled = ?1
 		')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
-		return $this->render('UserBundle:Login:index', array(
+		return $this->render('UserBundle:Login:index.twig', array(
 			'usersources' => $usersources,
 			'usersource_forms' => $this->_getUsersourceLoginForms($usersources)
 		));
@@ -44,7 +44,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 		foreach ($usersources as $usersource) {
 			$parts = explode('\\', $usersource['handler_class']);
-			$tpl_name = 'UserBundle:Login:login-form-' . strtolower(array_pop($parts));
+			$tpl_name = 'UserBundle:Login:login-form-.twig' . strtolower(array_pop($parts));
 
 			$forms[] = array(
 				'usersource' => $usersource,

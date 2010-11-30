@@ -14,21 +14,21 @@ namespace Application\CoreBundle\Entity;
 /**
  * Products
  *
- * @Entity
- * @Table(name="products")
+ * @orm:Entity
+ * @orm:Table(name="products")
  */
 class Product extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @Column(name="title", type="string", length=255)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 }

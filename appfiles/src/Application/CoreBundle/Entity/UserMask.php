@@ -14,27 +14,27 @@ namespace Application\CoreBundle\Entity;
 /**
  * A usermask is applied to a specific user to override permissions set by a usergroup.
  *
- * @Entity
- * @Table(name="user_masks")
+ * @orm:Entity
+ * @orm:Table(name="user_masks")
  */
 class UserMask extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="person_id", type="integer")
+	 * @orm:Id @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @OneToOne(targetEntity="Person")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @Column(name="overrides", type="array")
+	 * @orm:Column(name="overrides", type="array")
 	 */
 	protected $overrides = array();
 }

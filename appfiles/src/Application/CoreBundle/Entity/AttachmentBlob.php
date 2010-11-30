@@ -14,30 +14,30 @@ namespace Application\CoreBundle\Entity;
 /**
  * Attachments are binary file data that can be attached to various things.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="attachments_blobs")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="attachments_blobs")
  * )
  */
 class AttachmentBlob extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @Column(name="attachment_id", type="integer")
+	 * @orm:Column(name="attachment_id", type="integer")
 	 */
 	protected $attachment_id;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Attachment
-	 * @ManyToOne(targetEntity="Attachment")
-	 * @JoinColumn(name="attachment_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Attachment")
+	 * @orm:JoinColumn(name="attachment_id", referencedColumnName="id")
 	 */
 	protected $attachment;
 
@@ -47,7 +47,7 @@ class AttachmentBlob extends \DeskPRO\Domain\DomainObject
 	 * @TODO This needs to be a binary type
 	 *
 	 * @var string
-	 * @Column(name="name", type="text")
+	 * @orm:Column(name="name", type="text")
 	 */
 	protected $data;
 }

@@ -16,9 +16,9 @@ use Orb\Util\Arrays;
 /**
  * Templates used in the system
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="phrases")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="phrases")
  */
 class Phrase extends \DeskPRO\Domain\DomainObject
 {
@@ -26,8 +26,8 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -37,8 +37,8 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 	 * The language ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="language_id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="language_id", type="integer")
 	 */
 	protected $language_id = null;
 
@@ -47,8 +47,8 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 	 * The language this phrase belongs to
 	 *
 	 * @var Style
-	 * @OneToOne(targetEntity="Language")
-	 * @JoinColumn(name="language_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Language")
+	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
 	 */
 	protected $language;
 
@@ -57,7 +57,7 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 	 * The name of the phrase
 	 *
 	 * @var string
-	 * @Column(name="name", type="string", length=255)
+	 * @orm:Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
 
@@ -67,29 +67,29 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 	 * before the first dot in the name. deskpro.profile, the group is 'deskpro'
 	 *
 	 * @var string
-	 * @Index
-	 * @Column(name="groupname", type="string", length=255, nullable=true)
+	 * @orm:Index
+	 * @orm:Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;
 
 
 	/**
 	 * @var string
-	 * @Column(name="phrase", type="text")
+	 * @orm:Column(name="phrase", type="text")
 	 */
 	protected $phrase;
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @orm:Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="updated_at",type="datetime")
+	 * @orm:Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 

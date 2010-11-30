@@ -14,30 +14,30 @@ namespace Application\CoreBundle\Entity;
 /**
  * Labels on organizations
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="labels_organizations")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="labels_organizations")
  */
 class LabelOrganization extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @Id
-	 * @Column(name="label", type="string", length=255)
+	 * @orm:Id
+	 * @orm:Column(name="label", type="string", length=255)
 	 */
 	protected $label;
 
 	/**
 	 * @var int
-	 * @Id
-	 * @Column(name="organization_id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="organization_id", type="integer")
 	 */
 	protected $organization_id;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Organization
-	 * @ManyToOne(targetEntity="Organization")
-	 * @JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Organization")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization;
 }

@@ -18,8 +18,8 @@ namespace Application\CoreBundle\Entity;
  * Some PersonScrapers might be attached to usersources. Usersources only responsibility is to offer
  * authentication, so PersonScrapers take care of bringing over other data about an identity.
  *
- * @Entity
- * @Table(name="person_scraper")
+ * @orm:Entity
+ * @orm:Table(name="person_scraper")
  */
 class PersonScraper extends Scraper
 {
@@ -27,15 +27,15 @@ class PersonScraper extends Scraper
 	 * The usersource that this scraper is attached to
 	 *
 	 * @var Usersource
-	 * @OneToOne(targetEntity="Usersource")
-	 * @JoinColumn(name="usersource_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Usersource")
+	 * @orm:JoinColumn(name="usersource_id", referencedColumnName="id")
 	 */
 	protected $usersource;
 
 	/**
 	 * The usersource ID
 	 * @var int
-	 * @Column(name="usersource_id", type="integer", nullable=true)
+	 * @orm:Column(name="usersource_id", type="integer", nullable=true)
 	 */
 	protected $usersource_id = null;
 
@@ -44,7 +44,7 @@ class PersonScraper extends Scraper
 	 * means disabled.
 	 *
 	 * @var int
-	 * @Column(name="poll_interval", type="integer", nullable=true)
+	 * @orm:Column(name="poll_interval", type="integer", nullable=true)
 	 */
 	protected $poll_interval = null;
 
@@ -55,7 +55,7 @@ class PersonScraper extends Scraper
 	 * This is the time between auto discovery checks. Null means disabled.
 	 *
 	 * @var int
-	 * @Column(name="poll_discovery_interval", type="integer", nullable=true)
+	 * @orm:Column(name="poll_discovery_interval", type="integer", nullable=true)
 	 */
 	protected $poll_discovery_interval = null;
 

@@ -31,7 +31,7 @@ class PersonFieldsController extends AbstractController
 			ORDER BY f.id
 		");
 
-		return $this->render('TechBundle:PersonFields:index', array(
+		return $this->render('TechBundle:PersonFields:index.twig', array(
 			'fields' => $existing_fields
 		));
 	}
@@ -44,7 +44,7 @@ class PersonFieldsController extends AbstractController
 
 	public function newChooseTypeAction()
 	{
-		return $this->render('TechBundle:PersonFields:edit-choosetype', array(
+		return $this->render('TechBundle:PersonFields:edit-choosetype.twig', array(
 			
 		));
 	}
@@ -93,7 +93,7 @@ class PersonFieldsController extends AbstractController
 		}
 
 		$parts = explode('\\', $field['handler_class']);
-		$tpl_name = 'TechBundle:PersonFields:edit-' . strtolower(array_pop($parts));
+		$tpl_name = 'TechBundle:PersonFields:edit-.twig' . strtolower(array_pop($parts));
 
 		$vars = array_merge($admin_handler->getTemplateVars(), array(
 			'field' => $field,

@@ -14,17 +14,17 @@ namespace Application\CoreBundle\Entity;
 /**
  * Attachments are binary file data that can be attached to various things.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="attachments",
- *     indexes={@Index(name="object_idx", columns={"object_type","object_id"})}
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="attachments",
+ *     indexes={@orm:Index(name="object_idx", columns={"object_type","object_id"})}
  * )
  */
 class Attachment extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -34,7 +34,7 @@ class Attachment extends \DeskPRO\Domain\DomainObject
 	 * the super type, eg: tickets, people, organizations).
 	 *
 	 * @var string
-	 * @Column(name="object_type", type="string", length=50)
+	 * @orm:Column(name="object_type", type="string", length=50)
 	 */
 	protected $object_type;
 
@@ -42,7 +42,7 @@ class Attachment extends \DeskPRO\Domain\DomainObject
 	 * The ID of the object this is attached to.
 	 * 
 	 * @var int
-	 * @Column(name="object_id", type="integer")
+	 * @orm:Column(name="object_id", type="integer")
 	 */
 	protected $object_id;
 
@@ -50,13 +50,13 @@ class Attachment extends \DeskPRO\Domain\DomainObject
 	 * The path to the file if it's not stored in the database.
 	 *
 	 * @var string
-	 * @Column(name="save_path", type="string", length=255)
+	 * @orm:Column(name="save_path", type="string", length=255)
 	 */
 	protected $save_path = '';
 
 	/**
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id;
 
@@ -64,14 +64,14 @@ class Attachment extends \DeskPRO\Domain\DomainObject
 	 * Who created the attachment
 	 * 
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @ManyToOne(targetEntity="Person")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_created",type="datetime")
+	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -79,7 +79,7 @@ class Attachment extends \DeskPRO\Domain\DomainObject
 	 * The original filename
 	 *
 	 * @var string
-	 * @Column(name="filename", type="string", length=120)
+	 * @orm:Column(name="filename", type="string", length=120)
 	 */
 	protected $filename;
 	
@@ -87,7 +87,7 @@ class Attachment extends \DeskPRO\Domain\DomainObject
 	 * The file size
 	 *
 	 * @var int
-	 * @Column(name="filesize", type="integer")
+	 * @orm:Column(name="filesize", type="integer")
 	 */
 	protected $language_id;
 
@@ -95,7 +95,7 @@ class Attachment extends \DeskPRO\Domain\DomainObject
 	 * The files mimetype
 	 *
 	 * @var string
-	 * @Column(name="content_type", type="string", length=50)
+	 * @orm:Column(name="content_type", type="string", length=50)
 	 */
 	protected $content_type;
 

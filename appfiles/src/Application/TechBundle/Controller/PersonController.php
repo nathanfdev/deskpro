@@ -114,7 +114,7 @@ class PersonController extends AbstractController
 		");
 		$org_options = Arrays::implodeTemplate($org_options, "<option value=\"{KEY}\">{VAL}</option>");
 
-		return $this->render('TechBundle:Person:view', array(
+		return $this->render('TechBundle:Person:view.twig', array(
 			'person' => $person,
 			'form' => $form,
 			'fields' => $form->getCustomFields(),
@@ -162,7 +162,7 @@ class PersonController extends AbstractController
 		$html = array();
 
 		foreach ($notes as $note) {
-			$html[] = $this->renderView('TechBundle:Person:note-li', array('note' => $note));
+			$html[] = $this->renderView('TechBundle:Person:note-li.twig', array('note' => $note));
 		}
 		
 		$html = implode('', $html);
@@ -318,7 +318,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'dlg_html' => $this->renderView('TechBundle:Person:email-dlg-li', array('person' => $person))
+			'dlg_html' => $this->renderView('TechBundle:Person:email-dlg-li.twig', array('person' => $person))
 		));
 	}
 
@@ -364,7 +364,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'contact_html' => $this->renderView('TechBundle:Person:contact-section', array('person' => $person))
+			'contact_html' => $this->renderView('TechBundle:Person:contact-section.twig', array('person' => $person))
 		));
 	}
 
@@ -398,7 +398,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'note_li_html' => $this->renderView('TechBundle:Person:note-li', array('note' => $note))
+			'note_li_html' => $this->renderView('TechBundle:Person:note-li.twig', array('note' => $note))
 		));
 	}
 

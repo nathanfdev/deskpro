@@ -16,16 +16,16 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="custom_def_ticket")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="custom_def_ticket")
  */
 class CustomDefTicket extends CustomDefAbstract
 {
 	/**
 	 * @var CustomDefPeople
-	 * @OneToOne(targetEntity="CustomDefTicket")
-	 * @JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="CustomDefTicket")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent = null;
 
@@ -33,7 +33,7 @@ class CustomDefTicket extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @OneToMany(targetEntity="CustomDefTicket", mappedBy="parent_id")
+	 * @orm:OneToMany(targetEntity="CustomDefTicket", mappedBy="parent_id")
 	 */
 	protected $field_children = null;
 }

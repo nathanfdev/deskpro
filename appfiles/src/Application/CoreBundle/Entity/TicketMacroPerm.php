@@ -14,9 +14,9 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket macro permissions
  *
- * @Entity
- * @Table(name="ticket_macros_perms",
- *     indexes={@Index(name="object_idx", columns={"object_type", "object_id"})}
+ * @orm:Entity
+ * @orm:Table(name="ticket_macros_perms",
+ *     indexes={@orm:Index(name="object_idx", columns={"object_type", "object_id"})}
  * )
  */
 class TicketMacroPerm extends \DeskPRO\Domain\DomainObject
@@ -27,21 +27,21 @@ class TicketMacroPerm extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @Column(name="macro_id", type="integer", nullable=true)
+	 * @orm:Column(name="macro_id", type="integer", nullable=true)
 	 */
 	protected $macro_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\TicketMacro
-	 * @OneToOne(targetEntity="TicketMacro")
-	 * @JoinColumn(name="macro_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="TicketMacro")
+	 * @orm:JoinColumn(name="macro_id", referencedColumnName="id")
 	 */
 	protected $macro = null;
 
@@ -50,7 +50,7 @@ class TicketMacroPerm extends \DeskPRO\Domain\DomainObject
 	 * the super type, eg: tickets, people, organizations).
 	 *
 	 * @var string
-	 * @Column(name="object_type", type="string", length=50)
+	 * @orm:Column(name="object_type", type="string", length=50)
 	 */
 	protected $object_type;
 
@@ -58,7 +58,7 @@ class TicketMacroPerm extends \DeskPRO\Domain\DomainObject
 	 * The ID of the object this is attached to.
 	 *
 	 * @var int
-	 * @Column(name="object_id", type="integer")
+	 * @orm:Column(name="object_id", type="integer")
 	 */
 	protected $object_id;
 }

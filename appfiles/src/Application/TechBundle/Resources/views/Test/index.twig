@@ -42,7 +42,7 @@
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js' %}"></script>
 
 	<script type="text/javascript">
-		var BASE_URL = '{% route 'index' %}';
+		var BASE_URL = '{% path 'index' %}';
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
 			window.DeskPRO_Window.runPageRouteFromElement($('#load_this'));
@@ -51,7 +51,7 @@
 	</script>
 </head>
 <body>
-<input id="load_this" type="hidden" data-route="person:{% route 'tech_people_view' with ['person_id': person.id] %}" />
+<input id="load_this" type="hidden" data-route="person:{% path 'tech_people_view' with ['person_id': person.id] %}" />
 
 <div id="window_head" class="ui-layout-north">
 	<div id="window_head_top">
@@ -63,8 +63,8 @@
 
 	<div id="window_header_nav">
 		<ul>
-			<li data-route="navpane:{% route 'tech_ticketsearch_filterspane' %}" data-route-alt="listpane:{% route 'tech_ticketsearch' %}">Tickets</li>
-			<li class="people" data-route="navpane:{% route 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% route 'tech_peoplesearch' %}">People</li>
+			<li data-route="navpane:{% path 'tech_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'tech_ticketsearch' %}">Tickets</li>
+			<li class="people" data-route="navpane:{% path 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'tech_peoplesearch' %}">People</li>
 		</ul>
 	</div>
 </div>

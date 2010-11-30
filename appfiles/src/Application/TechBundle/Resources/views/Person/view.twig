@@ -31,7 +31,7 @@ pageMeta.person_id = {{person.id}};
 			<div>
 				<dl class="note-list" data-limit="5">
 					{% for note in notes %}
-						{% include 'TechBundle:Person:note-li' with ['note': note] %}
+						{% include 'TechBundle:Person:note-li.twig' with ['note': note] %}
 					{% endfor %}
 				</dl>
 				{% if note_pages %}
@@ -90,7 +90,7 @@ pageMeta.person_id = {{person.id}};
 			<span class="add trigger" data-add-type="phone">add phone</span>
 			<h5>Contact</h5>
 			<div class="content">
-				{% include 'TechBundle:Person:contact-section' with ['person': person] %}
+				{% include 'TechBundle:Person:contact-section.twig' with ['person': person] %}
 			</div>
 		</div>
 		
@@ -168,7 +168,7 @@ pageMeta.person_id = {{person.id}};
 
 	<div class="email-edit-dlg" style="display:none" title="Contact Emails">
 		<ul class="emails-list">
-			{% include 'TechBundle:Person:email-dlg-li' with ['person': person] %}
+			{% include 'TechBundle:Person:email-dlg-li.twig' with ['person': person] %}
 		</ul>
 		<div class="add-email">
 			New email: <input type="text" class="new-email-input" value="" /> <input type="button" class="new-email-btn" value="Add" />

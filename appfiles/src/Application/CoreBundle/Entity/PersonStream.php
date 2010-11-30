@@ -14,52 +14,52 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket log items
  *
- * @Entity
- * @Table(name="person_stream")
+ * @orm:Entity
+ * @orm:Table(name="person_stream")
  */
 class PersonStream extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @OneToOne(targetEntity="Person")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @Column(name="action_type", type="string", length=40)
+	 * @orm:Column(name="action_type", type="string", length=40)
 	 */
 	protected $action_type;
 
 	/**
 	 * @var string
-	 * @Column(name="summary", type="string", length=255)
+	 * @orm:Column(name="summary", type="string", length=255)
 	 */
 	protected $summary;
 
 	/**
 	 * @var string
-	 * @Column(name="details", type="array")
+	 * @orm:Column(name="details", type="array")
 	 */
 	protected $details = array();
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="date_created",type="datetime")
+	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

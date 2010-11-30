@@ -16,9 +16,9 @@ use Orb\Util\Arrays;
 /**
  * Templates used in the system
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="templates")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="templates")
  */
 class Template extends \DeskPRO\Domain\DomainObject
 {
@@ -26,8 +26,8 @@ class Template extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -37,8 +37,8 @@ class Template extends \DeskPRO\Domain\DomainObject
 	 * The style ID.
 	 *
 	 * @var int
-	 * @Id
-	 * @Column(name="style_id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="style_id", type="integer")
 	 */
 	protected $style_id = null;
 
@@ -47,8 +47,8 @@ class Template extends \DeskPRO\Domain\DomainObject
 	 * The style this template belongs to
 	 *
 	 * @var Style
-	 * @OneToOne(targetEntity="Style")
-	 * @JoinColumn(name="style_id", referencedColumnName="id")
+	 * @orm:OneToOne(targetEntity="Style")
+	 * @orm:JoinColumn(name="style_id", referencedColumnName="id")
 	 */
 	protected $style;
 
@@ -57,34 +57,34 @@ class Template extends \DeskPRO\Domain\DomainObject
 	 * The path of the template
 	 *
 	 * @var string
-	 * @Column(name="path", type="string", length=255)
+	 * @orm:Column(name="path", type="string", length=255)
 	 */
 	protected $path;
 
 
 	/**
 	 * @var string
-	 * @Column(name="template", type="text")
+	 * @orm:Column(name="template", type="text")
 	 */
 	protected $template;
 
 
 	/**
 	 * @var string
-	 * @Column(name="template_compiled", type="text")
+	 * @orm:Column(name="template_compiled", type="text")
 	 */
 	protected $template_compiled;
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="created_at",type="datetime")
+	 * @orm:Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 
 	/**
 	 * @var \DateTime
-	 * @Column(name="updated_at",type="datetime")
+	 * @orm:Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 

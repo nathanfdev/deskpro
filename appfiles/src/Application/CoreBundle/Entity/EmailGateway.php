@@ -14,14 +14,14 @@ namespace Application\CoreBundle\Entity;
 /**
  * An email gateway contains info about how to read emails from an email account.
  * 
- * @Entity
- * @Table(name="email_gateways")
+ * @orm:Entity
+ * @orm:Table(name="email_gateways")
  */
 class EmailGateway extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="id", type="integer")
+	 * @orm:Id @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -30,7 +30,7 @@ class EmailGateway extends \DeskPRO\Domain\DomainObject
 	 * The name of the account. Eg the email address
 	 *
 	 * @var string
-	 * @Column(name="name", type="text", length=100)
+	 * @orm:Column(name="name", type="text", length=100)
 	 */
 	protected $name = '';
 
@@ -38,14 +38,14 @@ class EmailGateway extends \DeskPRO\Domain\DomainObject
 	 * The connection class that handles connecting/downloading etc.
 	 *
 	 * @var string
-	 * @Column(name="connection_class", type="string", length=80)
+	 * @orm:Column(name="connection_class", type="string", length=80)
 	 */
 	protected $connection_class;
 
 	/**
 	 * Options for the connection handler
 	 *
-	 * @Column(name="connection_options", type="array")
+	 * @orm:Column(name="connection_options", type="array")
 	 */
 	protected $connection_options = array();
 
@@ -54,13 +54,13 @@ class EmailGateway extends \DeskPRO\Domain\DomainObject
 	 * or agent replies etc.
 	 *
 	 * @var string
-	 * @Column(name="processor_class", type="string", length=80)
+	 * @orm:Column(name="processor_class", type="string", length=80)
 	 */
 	protected $processor_class;
 
 	/**
 	 * @var bool
-	 * @Column(name="is_enabled", type="boolean")
+	 * @orm:Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
@@ -68,7 +68,7 @@ class EmailGateway extends \DeskPRO\Domain\DomainObject
 	 * The last time this gateway successfully connected and checked for messages.
 	 *
 	 * @var \DateTime
-	 * @Column(name="date_last_login", type="datetime", nullable=true)
+	 * @orm:Column(name="date_last_login", type="datetime", nullable=true)
 	 */
 	protected $date_last_login = null;
 }

@@ -6,6 +6,6 @@ class MainController extends AbstractController
 {
     public function indexAction()
     {
-        return $this->render('TechBundle:Main:index');
+        return $this->render('TechBundle:Main:index.twig');
     }
 }

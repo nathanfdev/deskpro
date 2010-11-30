@@ -20,18 +20,18 @@ use Orb\Util\Arrays;
 /**
  * These are pre-defined labels that are allowed to be used.
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="label_defs",
- *     indexes={@Index(name="object_type_idx", columns={"object_type"})}
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="label_defs",
+ *     indexes={@orm:Index(name="object_type_idx", columns={"object_type"})}
  * )
  */
 class LabelDefinition extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @Id
-	 * @Column(name="label", type="string", length=255)
+	 * @orm:Id
+	 * @orm:Column(name="label", type="string", length=255)
 	 */
 	protected $label;
 
@@ -39,8 +39,8 @@ class LabelDefinition extends \DeskPRO\Domain\DomainObject
 	 * The object type the definition is aplied to (should be a table name).
 	 * 
 	 * @var string
-	 * @Id
-	 * @Column(name="object_type", type="string", length=80)
+	 * @orm:Id
+	 * @orm:Column(name="object_type", type="string", length=80)
 	 */
 	protected $object_type;
 }

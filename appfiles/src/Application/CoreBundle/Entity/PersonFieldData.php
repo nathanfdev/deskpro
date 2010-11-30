@@ -14,9 +14,9 @@ namespace Application\CoreBundle\Entity;
 /**
  * Data storage for fields attached to Person
  *
- * @Entity
- * @HasLifecycleCallbacks
- * @Table(name="person_field_data")
+ * @orm:Entity
+ * @orm:HasLifecycleCallbacks
+ * @orm:Table(name="person_field_data")
  */
 class PersonFieldData extends FormFieldData
 {
@@ -24,7 +24,7 @@ class PersonFieldData extends FormFieldData
 	 * The field the data maps to.
 	 *
 	 * @var int
-	 * @Column(name="person_field_id", type="integer")
+	 * @orm:Column(name="person_field_id", type="integer")
 	 */
 	protected $person_field_id;
 
@@ -32,8 +32,8 @@ class PersonFieldData extends FormFieldData
 	 * The form field this is attached to
 	 *
 	 * @var \Application\CoreBundle\Entity\PersonField
-	 * @ManyToOne(targetEntity="PersonField")
-	 * @JoinColumn(name="person_field_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="PersonField")
+	 * @orm:JoinColumn(name="person_field_id", referencedColumnName="id")
 	 */
 	protected $field = null;
 
@@ -41,7 +41,7 @@ class PersonFieldData extends FormFieldData
 	 * The person ID
 	 *
 	 * @var int
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id;
 
@@ -49,8 +49,8 @@ class PersonFieldData extends FormFieldData
 	 * The form field this is attached to
 	 *
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @ManyToOne(targetEntity="Person")
-	 * @JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
 	

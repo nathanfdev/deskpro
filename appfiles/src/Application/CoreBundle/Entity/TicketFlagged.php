@@ -14,20 +14,20 @@ namespace Application\CoreBundle\Entity;
 /**
  * Flagged tickets
  *
- * @Entity
- * @Table(name="tickets_flagged")
+ * @orm:Entity
+ * @orm:Table(name="tickets_flagged")
  */
 class TicketFlagged extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @Id @Column(name="ticket_id", type="integer")
+	 * @orm:Id @orm:Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id = null;
 
 	/**
 	 * @var int
-	 * @Id @Column(name="person_id", type="integer")
+	 * @orm:Id @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 }
