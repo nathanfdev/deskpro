@@ -46,7 +46,7 @@ class StyleResourceCss extends StyleResource
 
 
 	/**
-	 * @PreUpdate
+	 * @orm:PreUpdate
 	 */
 	public function updateCompiledCss()
 	{

@@ -26,7 +26,7 @@ class Setting extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
@@ -102,8 +102,8 @@ class Setting extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @PrePersist
-	 * @PreUpdate
+	 * @orm:PrePersist
+	 * @orm:PreUpdate
 	 */
 	public function _resetValueIfDefault()
 	{
@@ -113,8 +113,8 @@ class Setting extends \DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @PrePersist
-	 * @PreUpdate
+	 * @orm:PrePersist
+	 * @orm:PreUpdate
 	 */
 	public function _resetGroupFromName()
 	{
@@ -126,13 +126,13 @@ class Setting extends \DeskPRO\Domain\DomainObject
 		}
 	}
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function _incCreatedAt()
 	{
 		$this->created_at = $this->updated_at = new \DateTime();
 	}
 
-	/** @PreUpdate */
+	/** @orm:PreUpdate */
 	public function _incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

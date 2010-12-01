@@ -29,7 +29,7 @@ abstract class CustomDataTicket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="ticket_id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id;
 

@@ -28,7 +28,7 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -84,7 +84,7 @@ class PersonEmail extends \DeskPRO\Domain\DomainObject
 
 
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function incCreatedAt()
 	{
 		$this->date_created = new \DateTime();

@@ -14,13 +14,13 @@ namespace Application\CoreBundle\Entity;
 /**
  * Base class used for storing custom field data.
  *
- * @MappedSuperclass
+ * @orm:MappedSuperclass
  */
 abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="field_id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="field_id", type="integer")
 	 */
 	protected $field_id;
 
@@ -38,7 +38,7 @@ abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var int
-	 * @orm:Id @orm:Column(name="xxx_id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="xxx_id", type="integer")
 	 */
 	//protected $xxx_id;
 

@@ -30,7 +30,7 @@ class LabelDefinition extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="label", type="string", length=255)
 	 */
 	protected $label;
@@ -39,7 +39,7 @@ class LabelDefinition extends \DeskPRO\Domain\DomainObject
 	 * The object type the definition is aplied to (should be a table name).
 	 * 
 	 * @var string
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="object_type", type="string", length=80)
 	 */
 	protected $object_type;

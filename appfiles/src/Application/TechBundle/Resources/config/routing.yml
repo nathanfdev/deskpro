@@ -244,3 +244,16 @@ tech_ticketsearch_runfilter:
   pattern: /ticket-search/filter/:filter_id
   defaults: { _controller: TechBundle:TicketSearch:runFilter }
   requirements: { filter_id: "\d+" }
+
+tech_ticketqueues_list:
+  pattern: /ticket-search/queues/list
+  defaults: { _controller: TechBundle:TicketSearch:listQueues }
+
+tech_ticketqueues_edit:
+  pattern: /ticket-search/queues/:queue_id/edit
+  defaults: { _controller: TechBundle:TicketSearch:editQueue }
+  requirements: { queue_id: "\d+" }
+
+tech_ticketqueues_new:
+  pattern: /ticket-search/queues/new-queue
+  defaults: { _controller: TechBundle:TicketSearch:editQueue, queue_id: 0 }

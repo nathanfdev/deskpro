@@ -26,7 +26,7 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
@@ -37,7 +37,7 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 	 * The language ID.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="language_id", type="integer")
 	 */
 	protected $language_id = null;
@@ -96,8 +96,8 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @PrePersist
-	 * @PreUpdate
+	 * @orm:PrePersist
+	 * @orm:PreUpdate
 	 */
 	public function _resetGroupFromName()
 	{
@@ -109,13 +109,13 @@ class Phrase extends \DeskPRO\Domain\DomainObject
 		}
 	}
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function incCreatedAt()
 	{
 		$this->created_at = $this->updated_at = new \DateTime();
 	}
 
-	/** @PreUpdate */
+	/** @orm:PreUpdate */
 	public function incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

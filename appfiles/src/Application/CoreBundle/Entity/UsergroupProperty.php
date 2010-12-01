@@ -30,7 +30,7 @@ abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */

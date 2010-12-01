@@ -116,8 +116,8 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var op = $('> .op:first', rule_tpl).children().clone();
 		var choice = $('> .choice:first', rule_tpl).children().clone();
 		
-		$('.op:first', row).append(op);
-		$('.choice:first', row).append(choice);
+		$('.op:first', row).empty().append(op);
+		$('.choice:first', row).empty().append(choice);
 		
 		if (row.data('form-base-name')) {
 			this.updateFormName($('.op:first', row), row.data('form-base-name'));

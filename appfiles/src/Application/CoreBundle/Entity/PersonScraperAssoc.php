@@ -29,7 +29,7 @@ class PersonScraperAssoc
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id;
@@ -126,7 +126,7 @@ class PersonScraperAssoc
 	}
 
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function __incCreatedAt()
 	{
 		if (!$this->created_at) {
@@ -135,7 +135,7 @@ class PersonScraperAssoc
 		$this->updated_at = new \DateTime();
 	}
 
-	/** @PreUpdate */
+	/** @orm:PreUpdate */
 	public function __incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

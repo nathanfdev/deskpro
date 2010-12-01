@@ -24,7 +24,7 @@ use \Application\CoreBundle\Entity\PersonFieldDada;
  * A "person" is a record in the database that stores information about a person.
  * Every person is capable of logging in, though it may be the case that many wont (ie they are just contact cards).
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\Person")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="people")
  */
@@ -34,7 +34,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -59,9 +59,9 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * Is this person a tech?
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_tech", type="boolean")
+	 * @orm:Column(name="is_agent", type="boolean")
 	 */
-	protected $is_tech = false;
+	protected $is_agent = false;
 	
 	/**
 	 * The users name (best guess from other sources etc)
@@ -690,7 +690,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function _prePersist()
 	{
 		if (!$this->date_created) {

@@ -16,7 +16,7 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
- * @MappedSuperclass
+ * @orm:MappedSuperclass
  */
 class CustomDefAbstract extends \DeskPRO\Domain\DomainObject
 {
@@ -24,7 +24,7 @@ class CustomDefAbstract extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;

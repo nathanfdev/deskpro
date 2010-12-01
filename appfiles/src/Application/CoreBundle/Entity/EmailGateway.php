@@ -21,7 +21,7 @@ class EmailGateway extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;

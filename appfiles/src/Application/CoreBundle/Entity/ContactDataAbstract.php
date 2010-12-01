@@ -18,7 +18,7 @@ namespace Application\CoreBundle\Entity;
  * Because of the nature, each 'data_type' uses each of the field1-field10
  * differently. Sometimes only a single one might be used, other times multiple.
  *
- * @MappedSuperclass
+ * @orm:MappedSuperclass
  */
 abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
 {
@@ -26,7 +26,7 @@ abstract class ContactDataAbstract extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;

@@ -26,7 +26,7 @@ class Session extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
@@ -91,13 +91,13 @@ class Session extends \DeskPRO\Domain\DomainObject
 
 
 	
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function incCreatedAt()
 	{
 		$this->created_at = $this->updated_at = new \DateTime();
 	}
 
-	/** @PreUpdate */
+	/** @orm:PreUpdate */
 	public function incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

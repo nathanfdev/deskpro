@@ -14,14 +14,14 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket priorities
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\TicketPriority")
  * @orm:Table(name="ticket_priorities")
  */
 class TicketPriority extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;

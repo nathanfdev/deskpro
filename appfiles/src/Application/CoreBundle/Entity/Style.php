@@ -30,7 +30,7 @@ class Style extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
@@ -41,7 +41,7 @@ class Style extends \DeskPRO\Domain\DomainObject
 	 * The parent style ID. All styles at least descened from 1, the default.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="parent_id", type="integer")
 	 */
 	protected $parent_id = null;
@@ -88,7 +88,7 @@ class Style extends \DeskPRO\Domain\DomainObject
 	}
 
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function _incCreatedAt()
 	{
 		$this->created_at = new \DateTime();

@@ -26,7 +26,7 @@ class EmailGatewayLog extends CustomDefAbstract
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -76,7 +76,7 @@ class EmailGatewayLog extends CustomDefAbstract
 	 */
 	protected $date_created;
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function _prePersist()
 	{
 		if (!$this->date_created) {

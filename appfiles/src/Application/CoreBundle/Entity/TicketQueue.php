@@ -12,16 +12,16 @@
 namespace Application\CoreBundle\Entity;
 
 /**
- * Ticket macros
+ * Ticket queues
  *
  * @orm:Entity
- * @orm:Table(name="ticket_macros")
+ * @orm:Table(name="ticket_queues")
  */
-class TicketMacro extends \DeskPRO\Domain\DomainObject
+class TicketQueue extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -46,12 +46,6 @@ class TicketMacro extends \DeskPRO\Domain\DomainObject
 	protected $title;
 
 	/**
-	 * @var string
-	 * @orm:Column(name="labels", type="string", length=1000)
-	 */
-	protected $labels;
-
-	/**
 	 * @var bool
 	 * @orm:Column(name="is_enabled", type="boolean")
 	 */
@@ -65,7 +59,7 @@ class TicketMacro extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="actions", type="array")
+	 * @orm:Column(name="terms", type="array")
 	 */
-	protected $actions;
+	protected $terms;
 }

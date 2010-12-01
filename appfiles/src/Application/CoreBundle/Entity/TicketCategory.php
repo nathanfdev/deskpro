@@ -14,14 +14,14 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket categories
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\TicketCategory")
  * @orm:Table(name="ticket_categories")
  */
 class TicketCategory extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -34,7 +34,7 @@ class TicketCategory extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Department
-	 * @orm:OneToOne(targetEntity="Department")
+	 * @orm:ManyToOne(targetEntity="Department")
 	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
 	 */
 	protected $department = null;

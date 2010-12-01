@@ -9,3 +9,4 @@
 
 # Per-site files
 /appfiles/config.php
+/appfiles/sys/VERSION

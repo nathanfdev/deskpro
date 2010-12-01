@@ -16,7 +16,7 @@ namespace Application\CoreBundle\Entity;
  * will have it's own table for storing data for performance reasons, but they
  * should all extend this base class.
  *
- * @MappedSuperclass
+ * @orm:MappedSuperclass
  */
 abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 {
@@ -24,7 +24,7 @@ abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;

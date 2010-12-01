@@ -15,11 +15,11 @@ namespace Application\CoreBundle\Entity;
  * Ticket macro permissions
  *
  * @orm:Entity
- * @orm:Table(name="ticket_macros_perms",
+ * @orm:Table(name="ticket_queues_perms",
  *     indexes={@orm:Index(name="object_idx", columns={"object_type", "object_id"})}
  * )
  */
-class TicketMacroPerm extends \DeskPRO\Domain\DomainObject
+class TicketQueuePerm extends \DeskPRO\Domain\DomainObject
 {
 	const TYPE_DEPARTMENT = 'department';
 	const TYPE_USERGROUP = 'usergroup';
@@ -27,23 +27,23 @@ class TicketMacroPerm extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="macro_id", type="integer", nullable=true)
+	 * @orm:Column(name="queue_id", type="integer", nullable=true)
 	 */
-	protected $macro_id = null;
+	protected $queue_id = null;
 
 	/**
-	 * @var \Application\CoreBundle\Entity\TicketMacro
-	 * @orm:OneToOne(targetEntity="TicketMacro")
-	 * @orm:JoinColumn(name="macro_id", referencedColumnName="id")
+	 * @var \Application\CoreBundle\Entity\TicketQueue
+	 * @orm:OneToOne(targetEntity="TicketQueue")
+	 * @orm:JoinColumn(name="queue_id", referencedColumnName="id")
 	 */
-	protected $macro = null;
+	protected $queue = null;
 
 	/**
 	 * The type of object this is attached to (should be the table name of

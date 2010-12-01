@@ -24,7 +24,7 @@ class PersonNote extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
 	protected $id = null;
@@ -78,7 +78,7 @@ class PersonNote extends \DeskPRO\Domain\DomainObject
 		return nl2br(htmlspecialchars($this->note), true);
 	}
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function _prePersist()
 	{
 		$this->date_created = new \DateTime();

@@ -21,19 +21,19 @@ class TicketDeleted extends \DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="ticket_id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id;
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="new_ticket_id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="new_ticket_id", type="integer")
 	 */
 	protected $new_ticket_id = 0;
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="by_person_id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="by_person_id", type="integer")
 	 */
 	protected $by_person_id;
 
@@ -49,7 +49,7 @@ class TicketDeleted extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $reason;
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function _prePersist()
 	{
 		if (!$this->date_created) {

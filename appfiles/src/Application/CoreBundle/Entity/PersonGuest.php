@@ -44,7 +44,7 @@ class PersonGuest extends Person
 		return $this->usergroups;
 	}
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function noPersist()
 	{
 		throw new \BadMethodCallException('A PersonGuest cannot be persisted');

@@ -26,7 +26,7 @@ class Template extends \DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="id", type="integer")
 	 * @GeneratedValue
 	 */
@@ -37,7 +37,7 @@ class Template extends \DeskPRO\Domain\DomainObject
 	 * The style ID.
 	 *
 	 * @var int
-	 * @orm:Id
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="style_id", type="integer")
 	 */
 	protected $style_id = null;
@@ -88,13 +88,13 @@ class Template extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $updated_at;
 
-	/** @PrePersist */
+	/** @orm:PrePersist */
 	public function incCreatedAt()
 	{
 		$this->created_at = $this->updated_at = new \DateTime();
 	}
 
-	/** @PreUpdate */
+	/** @orm:PreUpdate */
 	public function incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

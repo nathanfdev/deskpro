@@ -36,7 +36,7 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 	
 	protected function _userHasPermissions()
 	{
-		if ($this->person['is_tech']) {
+		if ($this->person['is_agent']) {
 			return true;
 		}
 		
