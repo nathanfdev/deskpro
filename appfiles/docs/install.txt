@@ -28,6 +28,8 @@ Vendors are tracked as git submodules. Git does not automatically download submo
 
 This will initiate the submodules in your git tree, and then clone the repositories, and finally the correct revision will be checked out.
 
+If you use SmartGit, choose Remove -> Submodule from the menu to get to these commands.
+
 Edit Config
 ===========
 
