@@ -21,17 +21,12 @@ On Linux, make sure the following files are executable:
 Vendors
 =======
 
-1. Delete the directory `/appfiles/vendor`
-2. Extract `/appfiles/docs/vendors.tgz` and move the directory to `/appfiles/vendor`
+Vendors are tracked as git submodules. Git does not automatically download submodules, so you have to clone these repositories manually by running two git commands:
 
-The vendors can alternatively be downloaded separately from their sources. This is automated by the `/appfiles/bin/install_vendors.sh` shell script on Linux:
+	git submodule init
+	git submodule update
 
-	$ cd appfiles/bin
-	$ ./install_vendors.sh
-	Initialized empty Git repository # etc
-
-This will pull the latest revisions from each repository which might break the system. Stick with vendors.tgz which is known to work.
-
+This will initiate the submodules in your git tree, and then clone the repositories, and finally the correct revision will be checked out.
 
 Edit Config
 ===========
