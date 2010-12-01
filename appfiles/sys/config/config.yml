@@ -15,8 +15,8 @@ app.config:
   validation:
     enabled: true
 
-doctrine.orm: ~
-#  auto_generate_proxy_classes: true
+doctrine.orm:
+  auto_generate_proxy_classes: true
 
 doctrine.dbal:
   dp_from_user_config: db

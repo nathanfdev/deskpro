@@ -5,7 +5,7 @@ cd ..
 CURRENT=`pwd`/vendor
 
 # Symfony
-cd $CURRENT/symfony && git pull
+cd $CURRENT/symfony && git pull origin master
 
 # Doctrine ORM
 cd $CURRENT/doctrine-orm && git pull
@@ -39,8 +39,9 @@ cd $CURRENT
 rm -rf zend1
 mkdir zend1
 cd zend1
-wget http://framework.zend.com/releases/ZendFramework-1.10.8/ZendFramework-1.10.8-minimal.tar.gz
-tar zxvf ZendFramework-1.10.8-minimal.tar.gz
-mv ZendFramework-1.10.8-minimal/* .
-rmdir ZendFramework-1.10.8-minimal
-rm -f ZendFramework-1.10.8-minimal.tar.gz
+rm -f ZendFramework-1.11.0-minimal.tar.gz
+wget http://framework.zend.com/releases/ZendFramework-1.11.0/ZendFramework-1.11.0-minimal.tar.gz
+tar zxvf ZendFramework-1.11.0-minimal.tar.gz
+mv ZendFramework-1.11.0-minimal.tar.gz/* .
+rmdir ZendFramework-1.11.0-minimal.tar.gz
+rm -f ZendFramework-1.11.0-minimal.tar.gz

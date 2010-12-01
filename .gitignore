@@ -8,7 +8,17 @@
 /appfiles/sys/logs/
 
 # vendor lib dirs
-/appfiles/vendor/
+/appfiles/vendor/doctrine-common/
+/appfiles/vendor/doctrine-dbal/
+/appfiles/vendor/doctrine-migrations/
+/appfiles/vendor/doctrine-orm/
+/appfiles/vendor/facebook/
+/appfiles/vendor/pheanstalk/
+/appfiles/vendor/swiftmailer/
+/appfiles/vendor/symfony/
+/appfiles/vendor/twig/
+/appfiles/vendor/zend/
+/appfiles/vendor/zend1/
 
 # Per-site files
 /appfiles/config.php
