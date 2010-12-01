@@ -28,3 +28,6 @@
 [submodule "appfiles/vendor/facebook"]
 	path = appfiles/vendor/facebook
 	url = http://github.com/facebook/php-sdk.git
+[submodule "appfiles/vendor/zend1"]
+	path = appfiles/vendor/zend1
+	url = https://github.com/mridgway/Zend-Framework-1.x-Mirror.git
