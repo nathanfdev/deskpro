@@ -27,7 +27,7 @@ class TicketParticipant extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Ticket
-	 * @orm:OneToOne(targetEntity="Ticket")
+	 * @orm:ManyToOne(targetEntity="Ticket", inversedBy="participants")
 	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
 	protected $ticket = null;

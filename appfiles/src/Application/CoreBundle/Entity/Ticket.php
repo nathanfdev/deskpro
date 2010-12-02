@@ -38,6 +38,23 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * The language ID.
+	 *
+	 * @var int
+	 * @orm:Column(name="language_id", type="integer", nullable=true)
+	 */
+	protected $language_id = null;
+
+	/**
+	 * The language associate with the user.
+	 *
+	 * @var \Application\CoreBundle\Entity\Language
+	 * @orm:OneToOne(targetEntity="Language")
+	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
+	 */
+	protected $language = null;
+
+	/**
 	 * @var int
 	 * @orm:Column(name="department_id", type="integer")
 	 */
@@ -234,6 +251,60 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $subject;
 
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TicketParticipant", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 */
+	protected $participants;
+
+	public function __construct()
+	{
+		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+
+
+	/**
+	 * Get a simple array of person ID's of participants.
+	 *
+	 * @return array 
+	 */
+	public function getParticipantIds()
+	{
+		$ids = array();
+		foreach ($this->participants as $p) {
+			$ids[] = $p['person_id'];
+		}
+
+		return $ids;
+	}
+
+
+	
+	/**
+	 * Check if a person ID or a person object is current a participant.
+	 *
+	 * @param  $person_or_id
+	 * @return bool
+	 */
+	public function hasParticipant($person_or_id)
+	{
+		$person_id = $person_or_id;
+		if ($person_or_id instanceof Person) {
+			$person_id = $person_or_id['id'];
+		}
+
+		foreach ($this->participants as $p) {
+			if ($p['person_id'] == $person_id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	
 	/** @orm:PrePersist */
 	public function _prePersist()
 	{
