@@ -1,0 +1,126 @@
+<div class="type" title="Subject" data-rule-type="subject">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+			<option value="contains">contains</option>
+			<option value="not_contains">does not contain</option>
+		</select>
+	</div>
+	<div class="choice">
+		<input type="text" name="subject" value="" />
+	</div>
+</div>
+<div class="type" title="Labels" data-rule-type="labels">
+	<div class="op">
+		<select name="op">
+			<option value="contains">contains</option>
+			<option value="not_contains">does not contain</option>
+		</select>
+	</div>
+	<div class="choice">
+		<input type="text" name="labels" value="" />
+	</div>
+</div>
+<div class="type" title="Assigned Agent" data-rule-type="agent">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="choice">
+		<select name="status">
+			<option value="0">Unassigned</option>
+			<option value="-1">Current Agent</option>
+			{% for id,label in term_options.agents %}
+				<option value="{{id}}">{{label}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="type" title="Status" data-rule-type="status">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="choice">
+		<select name="status">
+			<option value="awaiting_agent">Awaiting Agent</option>
+			<option value="awaiting_agent">Awaiting User</option>
+			<option value="resolved">Resolved</option>
+		</select>
+	</div>
+</div>
+{% if term_options.products %}
+	<div class="type" title="Product" data-rule-type="products">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+			</select>
+		</div>
+		<div class="choice">
+			<select name="priority">
+				{% for id,label in term_options.products %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
+{% if term_options.departments %}
+	<div class="type" title="Department" data-rule-type="department">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+			</select>
+		</div>
+		<div class="choice">
+			<select name="department">
+				{% for id,label in term_options.departments %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
+{% if term_options.categories %}
+	<div class="type" title="Category" data-rule-type="categories">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+			</select>
+		</div>
+		<div class="choice">
+			<select name="department">
+				{% for id,label in term_options.categories %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
+{% if term_options.priorities %}
+	<div class="type" title="Priority" data-rule-type="priority">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+				<option value="lt">is less than</option>
+				<option value="gt">is greater than</option>
+			</select>
+		</div>
+		<div class="choice">
+			<select name="priority">
+				{% for id,label in term_options.priorities %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
