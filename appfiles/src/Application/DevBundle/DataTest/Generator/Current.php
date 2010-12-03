@@ -4,8 +4,9 @@ namespace Application\DevBundle\DataTest\Generator;
 
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
+use \Orb\Util\Util;
 
-class Working01 extends AbstractGenerator
+class Current extends AbstractGenerator
 {
 	public function run(\DeskPRO\DBAL\Connection $db, \Symfony\Component\Console\Output\Output $output)
 	{
@@ -28,12 +29,75 @@ class Working01 extends AbstractGenerator
 		$output->write("<comment>\nGENERATING PRE-MISC\n</comment>\n");
 
 		$num = $this->dataset->getNumCompanies();
-		$output->write("Generating $num companies ... ");
+		$output->write("Generating $num organizations ... ");
 
 		$c = 0;
 		while ($c++ < $num) {
-			$db->insert('person_company', array(
-				'title' => Strings::randomPronounceable(10)
+			$db->insert('organizations', array(
+				'name' => Strings::randomPronounceable(mt_rand(6,15))
+			));
+		}
+
+		$num = $this->dataset->getNumProducts();
+		$output->write("Generating $num products ... ");
+
+		$c = 0;
+		while ($c++ < $num) {
+			$db->insert('products', array(
+				'title' => "Product $c"
+			));
+		}
+
+		$num = count($this->dataset->getDepartmentIdChoices());
+		$output->write("Generating $num departments ... ");
+
+		$c = 0;
+		while ($c++ < $num) {
+			$db->insert('departments', array(
+				'title' => "Department $c"
+			));
+
+			$dep_id = $db->lastInsertId();
+			$this->dataset->dep_cat_ids[$dep_id] = array();
+
+			$num_c = mt_rand(0, $this->dataset->getNumCategoriesPerDep());
+			$c_c = 0;
+			while ($c_c++ < $num_c) {
+				$db->insert('ticket_categories', array(
+					'department_id' => $dep_id,
+					'title' => "Category $c_c"
+				));
+
+				$this->dataset->dep_cat_ids[$dep_id][] = $c_c;
+			}
+		}
+
+		$num = $this->dataset->getNumLangs();
+		$output->write("Generating $num langs ... ");
+		$c = 0;
+		while ($c++ < $num) {
+			$db->insert('languages', array(
+				'title' => "Language $c",
+				'locale' => 'en_US'
+			));
+		}
+
+		$num = $this->dataset->getNumPriorities();;
+		$output->write("Generating $num pris ... ");
+		$c = 0;
+		while ($c++ < $num) {
+			$db->insert('ticket_priorities', array(
+				'title' => "Priority $c",
+				'priority' => $c
+			));
+		}
+
+		$num = $this->dataset->getAdditionalUsergroups();
+		$output->write("Generating $num additional usergroups ... ");
+		$c = 0;
+		while ($c++ < $num) {
+			$db->insert('usergroups', array(
+				'title' => "Usergroup $c",
 			));
 		}
 	}
@@ -58,8 +122,6 @@ class Working01 extends AbstractGenerator
 				$output->write("[$last_report_time] Processed $c\n");
 			}
 
-			$db->beginTransaction();
-
 			#------------------------------
 			# User
 			#------------------------------
@@ -68,13 +130,19 @@ class Working01 extends AbstractGenerator
 			$lname = Strings::randomPronounceable(mt_rand(4, 20));
 
 			$userinfo = array(
-				'language_id' => $this->chooseFromChanceArray($this->dataset->getPersonLanguage(), 'languages'),
+				'language_id' => mt_rand(1, $this->dataset->getNumLangs()),
+				'organization_id' => mt_rand(1, $this->dataset->getNumCompanies()),
+				'organization_position' => Strings::randomPronounceable(mt_rand(5, 20)),
 				'is_user' => 1,
-				'full_name' => "$fname $lname",
-				'informal_name' => mt_rand(0,1) ? '' : Strings::randomPronounceable(mt_rand(2, 8)),
-				'nick_name' => mt_rand(0,1) ? '' : Strings::randomPronounceable(mt_rand(2, 8)),
-				'secret_string' => '',
-				'created_at' => $this->chooseDateFromChanceArray($this->dataset->getStartDate(), 'start_date')->format('Y-m-d H:i:s')
+				'is_contact' => 1,
+				'name' => "$fname $lname",
+				'first_name' => "$fname",
+				'last_name' => "$lname",
+				'secret_string' => 'secret',
+				//'timezone' => 'UTC',
+				'password' => sha1('password'.'salt'),
+				'salt' => 'salt',
+				'date_created' => $this->chooseDateFromChanceArray($this->dataset->getStartDate(), 'start_date')->format('Y-m-d H:i:s')
 			);
 
 			$db->insert('people', $userinfo);
@@ -95,12 +163,12 @@ class Working01 extends AbstractGenerator
 
 				$created_at = $this->chooseDateFromChanceArray($this->dataset->getStartDate(), 'start_date')->format('Y-m-d H:i:s');
 
-				$db->insert('person_emails', array(
+				$db->insert('people_emails', array(
 					'person_id' => $person_id,
 					'email' => $email,
 					'is_validated' => 1,
-					'created_at' => $created_at,
-					'validated_at' => $created_at
+					'date_created' => $created_at,
+					'date_created' => $created_at
 				));
 
 				if (!$primary_email_id) $primary_email_id = $db->lastInsertId();
@@ -109,29 +177,13 @@ class Working01 extends AbstractGenerator
 			if ($primary_email_id) {
 				$db->update('people', array('primary_email_id' => $primary_email_id), array('id' => $person_id));
 			}
-
-
-			#------------------------------
-			# Companies
-			#------------------------------
-
-			$add_company = $this->chooseFromChanceArray($this->dataset->getCompanyPerPerson(), 'company_choice');
-			if (!$add_company) {
-				$company_id = mt_rand($add_company[1][0], $add_company[1][1]);
-				$db->insert('person2company', array(
-					'person_id' => $person_id,
-					'company_id' => $company_id
-				));
-			}
-
-			$db->commit();
 		}
 
 		$num_techs = $this->dataset->getNumTechs();
 		$output->write("<info>Setting $num_techs people as techs</info>\n");
 		$db->executeUpdate("
 			UPDATE people
-			SET is_tech = 1
+			SET is_agent = 1
 			WHERE id BETWEEN 1 AND $num_techs
 		");
 	}
@@ -172,28 +224,14 @@ class Working01 extends AbstractGenerator
 			$this->_genTicketsForUser($db, mt_rand($range[0], $range[1]), $num_tickets);
 		}
 
-		$output->write("<comment>\nCREATING TECH PARTICIPANT RELATIONS\n</comment>\n");
-
-		$max_ticket = $this->dataset->getMinNumTickets() - $this->dataset->getNumTechs();
-		for ($i = 1; $i <= $this->dataset->getNumTechs(); $i++) {
-			for ($x = 1; $x < $max_ticket; $x += (200 + $i)) {
-				$db->insert('ticket_participants', array(
-					'ticket_id' => $x,
-					'person_id' => $i
-				));
-			}
-		}
-
 		$output->write("Done.\n");
 	}
 
 	protected function _genTicketsForUser(\DeskPRO\DBAL\Connection $db, $person_id, $num_tickets)
 	{
-		$person = $db->fetchArray("SELECT * FROM people WHERE id = ?", array($person_id));
+		$person = $db->fetchAssoc("SELECT * FROM people WHERE id = ?", array($person_id));
 
 		while ($num_tickets-- > 0) {
-
-			$db->beginTransaction();
 
 			$created_at = $this->chooseDateFromChanceArray($this->dataset->getStartDate(), 'ticket_start_date');
 			//format('Y-m-d H:i:s')
@@ -213,30 +251,41 @@ class Working01 extends AbstractGenerator
 
 			$subject = implode(' ', $subject);
 
+			$dep_id = $this->chooseFromChanceArray($this->dataset->getDepartmentIdChoices(), 'department_id');
 			$ticket = array(
 				'person_id' => $person_id,
-				'department_id' => $this->chooseFromChanceArray($this->dataset->getDepartmentIdChoices(), 'department_id'),
-				'category_id' => $this->chooseFromChanceArray($this->dataset->getCategoryIdChoices(), 'category_id'),
+				'department_id' => $dep_id,
+				'category_id' => Util::coalesce($this->chooseFromChanceArray($this->dataset->getCategoryIdChoices($dep_id)), 1),
 				'agent_id' => mt_rand(1, $this->dataset->getNumTechs()),
-				'language_id' => $this->chooseFromChanceArray($this->dataset->getPersonLanguage(), 'languages'),
-				'date_opened' => $created_at->format('Y-m-d H:i:s'),
-				'organization_id' => null
+				'language_id' => mt_rand(1, $this->dataset->getNumLangs()),
+				'priority_id' => mt_rand(1, $this->dataset->getNumPriorities()),
+				'product_id' => mt_rand(1, $this->dataset->getNumProducts()),
+				'date_created' => $created_at->format('Y-m-d H:i:s'),
+				'organization_id' => $person['organization_id'],
+				'creation_system' => 'web',
+				'subject' => $subject
 			);
+			$ticket['date_first_agent_reply'] = $created_at->add(new \DateInterval('PT'.mt_rand(360, 86400).'S'))->format('Y-m-d H:i:s');
+			$ticket['date_last_agent_reply'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
+			$ticket['date_agent_waiting'] = $ticket['date_last_agent_reply'];
+			$ticket['date_last_user_reply'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
+			$ticket['date_user_waiting'] = $ticket['date_last_user_reply'];
+			$ticket['total_user_waiting'] = mt_rand(600, 86400*4);
+			$ticket['total_to_first_reply'] = mt_rand(120, $ticket['total_user_waiting']);
 
-			$company_range = $this->chooseFromChanceArray($this->dataset->getCompanyPerPerson(), 'company_choice');
-			if ($company_range) {
-				$ticket['organization_id'] = mt_rand($company_range[0], $company_range[1]);
-			}
-
-			$status = $this->chooseFromChanceArray($this->dataset->getStatusChoices(), 'ticket_status');
-			$ticket['status'] = $status[0];
+			$ticket['status'] = $this->chooseFromChanceArray($this->dataset->getStatusChoices(), 'ticket_status');
 
 			if ($ticket['status'] == 'closed') {
 				$ticket['date_closed'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
+				$ticket['date_resolved'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
 			} elseif ($ticket['status'] == 'awaiting_tech') {
-				$ticket['date_awaiting_tech'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
+
 			} elseif ($ticket['status'] == 'awaiting_user') {
-				$ticket['date_awaiting_user'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
+				
+			} elseif ($ticket['status'] == 'resolved') {
+				$ticket['date_resolved'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
+			} elseif ($ticket['status'] == 'hidden') {
+				$ticket['hidden_status'] = 'spam';
 			}
 
 			$db->insert('tickets', $ticket);
@@ -244,11 +293,10 @@ class Working01 extends AbstractGenerator
 
 			// Add participants
 			$num_parts = $this->chooseFromChanceArray($this->dataset->getParticipantsPerTicket(), 'num_participants');
+			$got_ids = array();
 			while ($num_parts-- > 0) {
-				$range = $this->chooseFromChanceArray($this->dataset->getParticipantPersonChance(), 'participant_id_range');
-				$got_ids = array();
 				do {
-					$add_part_id = mt_rand($range[0], $range[1]);
+					$add_part_id = mt_rand(20, $this->dataset->getNumPeople());
 				} while (in_array($add_part_id, $got_ids));
 				$got_ids[] = $add_part_id;
 
@@ -259,14 +307,34 @@ class Working01 extends AbstractGenerator
 				));
 			}
 
-			// Ticket fields
-			$fields = $this->dataset->getTicketFields();
+			// Messages
+			$got_ids[] = $ticket['agent_id'];
+			$got_ids[] = $ticket['person_id'];
 
-			foreach ($fields as $fieldinfo) {
-				//$this->_genTicketFieldData($db, $fieldinfo, $ticket_id);
+			$num = mt_rand(2, 10);
+			while ($num--) {
+				$message_str = $this->dataset->getWords();
+				shuffle($message_str);
+				$message_str = array_slice($message_str, 0, count($message_str) - mt_rand(1, 20));
+				$message_str = implode(' ', $message_str);
+				$message = array(
+					'ticket_id' => $ticket_id,
+					'person_id' => $got_ids[array_rand($got_ids)],
+					'date_created' => $created_at->add(new \DateInterval('PT'.mt_rand(500*$num, 600*$num).'S'))->format('Y-m-d H:i:s'),
+					'message_hash' => sha1($message_str),
+					'message' => $message_str
+				);
+
+				$db->insert('tickets_messages', $message);
 			}
 
-			$db->commit();
+			// Ticket fields
+			//$fields = $this->dataset->getTicketFields();
+
+			//foreach ($fields as $fieldinfo) {
+				//$this->_genTicketFieldData($db, $fieldinfo, $ticket_id);
+			//}
+
 		}
 	}
 

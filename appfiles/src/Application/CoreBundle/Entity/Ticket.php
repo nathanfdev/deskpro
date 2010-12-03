@@ -49,7 +49,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 	 * The language associate with the user.
 	 *
 	 * @var \Application\CoreBundle\Entity\Language
-	 * @orm:OneToOne(targetEntity="Language")
+	 * @orm:ManyToOne(targetEntity="Language")
 	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
 	 */
 	protected $language = null;
@@ -62,7 +62,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Department
-	 * @orm:OneToOne(targetEntity="Department")
+	 * @orm:ManyToOne(targetEntity="Department")
 	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
 	 */
 	protected $department = null;
@@ -75,7 +75,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\TicketCategory
-	 * @orm:OneToOne(targetEntity="TicketCategory")
+	 * @orm:ManyToOne(targetEntity="TicketCategory")
 	 * @orm:JoinColumn(name="category_id", referencedColumnName="id")
 	 */
 	protected $category = null;
@@ -88,7 +88,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\TicketPriority
-	 * @orm:OneToOne(targetEntity="TicketPriority")
+	 * @orm:ManyToOne(targetEntity="TicketPriority")
 	 * @orm:JoinColumn(name="priority_id", referencedColumnName="id")
 	 */
 	protected $priority = null;
@@ -101,7 +101,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Product
-	 * @orm:OneToOne(targetEntity="Product")
+	 * @orm:ManyToOne(targetEntity="Product")
 	 * @orm:JoinColumn(name="product_id", referencedColumnName="id")
 	 */
 	protected $product = null;
@@ -114,7 +114,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
@@ -127,7 +127,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
 	 */
 	protected $agent = null;
@@ -140,7 +140,7 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Organization
-	 * @orm:OneToOne(targetEntity="Organization")
+	 * @orm:ManyToOne(targetEntity="Organization")
 	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization = null;

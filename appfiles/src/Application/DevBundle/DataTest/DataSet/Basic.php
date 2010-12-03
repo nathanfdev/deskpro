@@ -11,6 +11,7 @@ class Basic
 	 */
 	public function getNumPeople()
 	{
+		return 100;
 		//return 50000;
 		return 10000;
 	}
@@ -24,8 +25,25 @@ class Basic
 	 */
 	public function getMinNumTickets()
 	{
+	return 1000;
 		//return 750000;
 		return 300000;
+	}
+
+
+	public function getNumPriorities()
+	{
+		return 10;
+	}
+
+	public function getNumLangs()
+	{
+		return 4;
+	}
+
+	public function getAdditionalUsergroups()
+	{
+		return 3;
 	}
 
 
@@ -107,6 +125,16 @@ class Basic
 	public function getNumCompanies()
 	{
 		return 150;
+	}
+
+	public function getNumProducts()
+	{
+		return 5;
+	}
+
+	public function getNumCategoriesPerDep()
+	{
+		return 4;
 	}
 
 
@@ -215,21 +243,26 @@ class Basic
 	}
 
 	
-
+	public $dep_cat_ids = array();
 	/**
 	 * Get an array of category ID choices/chances
 	 *
 	 * @return array
 	 */
-	public function getCategoryIdChoices()
+	public function getCategoryIdChoices($department_id)
 	{
-		return array(
-			array(20, 1),
-			array(20, 2),
-			array(20, 3),
-			array(30, 4),
-			array(10, 5),
-		);
+		$ret = array();
+
+		if (isset($this->dep_cat_ids[$department_id])) {
+			foreach ($this->dep_cat_ids[$department_id] as $cid) {
+				$ret[] = array(1, $cid);
+			}
+		} else {
+			$ret[] = array(1,1);
+			$ret[] = array(1,2);
+		}
+
+		return $ret;
 	}
 
 
@@ -253,10 +286,11 @@ class Basic
 	public function getStatusChoices()
 	{
 		return array(
-			array(1, array('open', 'awaiting_tech')), // 0.1% of 300,000 is 300 tickets
-			array(10, array('open', 'awaiting_user')),
-			array(50, array('hidden', 'spam')),
-			array(939, array('closed', null)), // remaining are closed
+			array(1, 'awaiting_tech'), // 0.1% of 300,000 is 300 tickets
+			array(10, 'awaiting_user'),
+			array(200, 'resolved'),
+			array(50, 'hidden'),
+			array(800, 'closed'), // remaining are closed
 		);
 	}
 
@@ -277,5 +311,31 @@ class Basic
 			array(1, 'table'),
 			array(995, '')
 		);
+	}
+
+
+	public function getWords()
+	{
+		return array('piete','anowed','movice','eduse','kent','appeased','hist','ince',
+		'marger','shorks','horwart','trit','vallow','negram','milem','worthod','yous',
+		'untrit','neemen','amoup','knomint','daing','extere','abovern','incles','patil',
+		'rety','amought','shod','prontly','sude','earrit','worsts','leture','alow','hostic',
+		'requal','inst','thervity','otheort','fougher','imaths','watept','lable','prol','greass',
+		'colic','rese','anot','watudy','thres','dire','eard','thining','pubject','almous','peratee',
+		'offic','fundard','moducts','hanner','brial','houth','buite','tothire','head',
+		'deths','arother','chown','cole','preaving','tothems','brient','gresed','sinnity',
+		'sear','rivats','audio','ress','paps','decent','issard','mety','evict','meen',
+		'casenly','livide','triath','cons','exced','amounish','bronsity','earls','peral',
+		'wesic','exish','invols','chury','wain','matil','almon','appece','neir','desic',
+		'ordio','lable','beive','sock','lange','grocal','chard','anyths','neve','nign',
+		'strive','avelf','dearts','sect','nort','westil','leading','remed','dety','yearned',
+		'strol','strit','shod','latil','physts','accome','cenglar','unducts','with','takelf',
+		'dain','physed','enger','adder','reparty','parlic','espith','grol','necome','fedical',
+		'offect','sume','themond','shous','aread','livers','devenge','propmes','lear','prol',
+		'huse','beyont','pring','frit','belf','deass','wout','gird','polow','woult','alwars',
+		'appare','nather','wheir','inday','cords','marls','horth','have','cound','heaters',
+		'hisic','litired','operit','coutudy','exped','thincous','tries','stry','rember',
+		'wallity','accort','wroble','conts','thernmes','ture','cone','medy','desped',
+		'actil','inds','clown','shountry','whans','pical','asket');
 	}
 }

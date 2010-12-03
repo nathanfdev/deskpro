@@ -107,7 +107,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The language associate with the user.
 	 *
 	 * @var \Application\CoreBundle\Entity\Language
-	 * @orm:OneToOne(targetEntity="Language")
+	 * @orm:ManyToOne(targetEntity="Language")
 	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
 	 */
 	protected $language = null;
@@ -122,7 +122,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 	 * The users organization
 	 *
 	 * @var \Application\CoreBundle\Entity\Organization
-	 * @orm:OneToOne(targetEntity="Organization")
+	 * @orm:ManyToOne(targetEntity="Organization")
 	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization = null;
