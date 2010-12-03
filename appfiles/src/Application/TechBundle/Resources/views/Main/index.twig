@@ -25,6 +25,10 @@
 	
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Form/InlineEdit.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Form/RuleBuilder.js' %}"></script>
+	
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/MessageBroker.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/AjaxPoller/Poller.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/AjaxPoller/MessagePoller.js' %}"></script>
 
 	<!-- Agent Interface sources -->
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/Window.js' %}"></script>
@@ -37,6 +41,7 @@
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSearch.js' %}"></script>
 
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/Basic.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketFilters.js' %}"></script>
 
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js' %}"></script>
@@ -45,8 +50,7 @@
 		var BASE_URL = '{% path 'index' %}';
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
-			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .people'));
-			//agent_tester.loadTicketPane();
+			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
 		});
 	</script>
 </head>
@@ -62,8 +66,8 @@
 
 	<div id="window_header_nav">
 		<ul>
-			<li data-route="navpane:{% path 'tech_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'tech_ticketsearch' %}">Tickets</li>
-			<li class="people" data-route="navpane:{% path 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'tech_peoplesearch' %}">People</li>
+			<li class="tickets" data-route="navpane:{% path 'tech_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'tech_ticketsearch' %}">Tickets <span class="ticket-filter-count-all">(-)</span></li>
+			<li class="people"  data-route="navpane:{% path 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'tech_peoplesearch' %}">People</li>
 		</ul>
 	</div>
 </div>

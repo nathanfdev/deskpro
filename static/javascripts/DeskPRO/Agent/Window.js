@@ -1,56 +1,3 @@
-agent_tester = {
-	loadTicketPane: function(url) {
-		
-		var load_url = 'test-pages/pane-nav-tickets.html';
-		
-		if (!url) url ='';
-		if (url.indexOf('user') != -1) {
-			load_url = 'test-pages/pane-nav-users.html';
-		}
-		
-		$.ajax({
-			dataType: 'text',
-			url: load_url,
-			success: function(data) {
-				var page = new DeskPRO.Agent.PageFragment.NavPane.Basic(data);
-				DeskPRO_Window.getPanedShell().setNavPanePage(page);
-			}
-		});
-	},
-	
-	loadListPane: function() {
-		
-		var url = 'test-pages/list-' + Number.random(1,3) + '.html';
-		$.ajax({
-			dataType: 'text',
-			url: url,
-			success: function(data) {
-				var page = new DeskPRO.Agent.PageFragment.ListPane.Basic(data);
-				DeskPRO_Window.getPanedShell().setListPanePage(page);
-			}
-		});
-	},
-	
-	loadTab: function() {
-		var url = 'test-pages/page-' + Number.random(1,4) + '.html';
-		var url = 'test-pages/page-' + 1 + '.html';
-		$.ajax({
-			dataType: 'text',
-			url: url,
-			success: function(data) {
-				//var page = new DeskPRO.Agent.PageFragment(data);
-				var page = new DeskPRO.Agent.PageFragment.Ticket(data);
-				var title = /<!\-\-\(TABTITLE:(.*?)\)\-\->/.exec(data)[1];
-				
-				page.setTitle(title);
-				
-				DeskPRO_Window.getPanedShell().addTabPage(page);
-			}
-		});
-	}
-};
-
-
 Orb.createNamespace('DeskPRO.Agent');
 
 /**
@@ -65,19 +12,22 @@ Orb.createNamespace('DeskPRO.Agent');
  * Is responsible for "routing" and loading data. The router uses strings and decides where
  * they should be loaded (and how). For example, "navpane:filters/", the first part says it'll
  * be a navpane fragment. The second part is a simple URL we can load via AJAX.
- *
- * Global events system: Objects can listen to various named events on the window to recieve
- * notifications for some message.
  */
 DeskPRO.Agent.Window = new Class({
-	
-	Implements: Events,
 	
 	shells: {},
 	routePrefixes: {},
 	registry: {},
+	
+	messageBroker: null,
+	poller: null,
 
 	initialize: function() {
+		
+		this.messageBroker = new DeskPRO.MessageBroker();
+		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
+			ajaxUrl: BASE_URL + 'tech/poller'
+		});
 		
 		$('body').layout({
 			north: {
@@ -103,6 +53,27 @@ DeskPRO.Agent.Window = new Class({
 		$('#window_header_nav li').click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
+		
+		// Set up listener for badge count
+		this.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
+	},
+	
+	updateFilterCounts: function (counts) {
+		var total = 0;
+		Object.each(counts, function (count, filter_id) {
+			total += count;
+			
+		});
+		
+		$('.ticket-filter-count-all').html('(' + total + ')');
+	},
+	
+	getMessageBroker: function() {
+		return this.messageBroker;
+	},
+	
+	getPoller: function() {
+		return this.poller;
 	},
 	
 	addShell: function(id, shell) {
@@ -229,10 +200,10 @@ DeskPRO.Agent.Window = new Class({
 		$.ajax({
 			dataType: 'text',
 			url: url,
-			success: function(data) {
-				var page = new DeskPRO.Agent.PageFragment.NavPane.Basic(data);
+			success: (function(data) {
+				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.NavPane.Basic');
 				DeskPRO_Window.getPanedShell().setNavPanePage(page);
-			}
+			}).bind(this)
 		});
 	},
 	

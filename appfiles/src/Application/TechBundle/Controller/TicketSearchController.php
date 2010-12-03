@@ -23,17 +23,43 @@ class TicketSearchController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->render('TechBundle:TicketSearch:search.twig');
+		return $this->render('TechBundle:TicketSearch:list-blank.twig');
 	}
 
 	public function filtersPaneAction()
 	{
-		return $this->render('TechBundle:TicketSearch:pane-filters.twig');
+		$filters = $this->em->createQuery("
+			SELECT q
+			FROM CoreBundle:TicketQueue q
+			WHERE q.person_id = ?1 OR q.is_global = true
+		")->setParameter(1, $this->person['id'])->execute();
+
+		return $this->render('TechBundle:TicketSearch:pane-filters.twig', array(
+			'filters' => $filters
+		));
 	}
 
 	public function runFilterAction($filter_id)
 	{
-		return $this->render('TechBundle:TicketSearch:search.twig');
+		$filter = $this->em->getRepository('CoreBundle:TicketQueue')->find($filter_id);
+		$searcher = $filter->getSearcher();
+		$searcher->enableArchiveSearch();
+
+		$results = $searcher->getMatches();
+
+		$tickets = false;
+		if ($results) {
+			$tickets = $this->em->createQuery("
+				SELECT t
+				FROM CoreBundle:Ticket
+				WHERE t.id IN(" . implode(',', $results) . ")
+				ORDER BY t.id ASC
+			")->execute();
+		}
+
+		return $this->render('TechBundle:TicketSearch:filter-results.twig', array(
+			'tickets' => $tickets
+		));
 	}
 
 	public function ticketViewAction()

@@ -1,21 +1,19 @@
 {% extends 'TechBundle:TicketSearch:pane-layout.twig' %}
+{% block meta %}
+<script>
+pageMeta.class = 'DeskPRO.Agent.PageFragment.NavPane.TicketFilters';
+</script>
+{% endblock %}
 {% block pane_content %}
 <div class="main-nav with-side-nav">
 	<div class="top-box ui-layout-north">
 		<ul>
-			<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': 123] %}" class="important">SLA warning <span>2</span></li>
-			<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': 123] %}">Sales <span>4</span></li>
-			<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': 123] %}">Support <span>4</span></li>
-			<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': 123] %}">Billing <span>4</span></li>
+			{% for filter in filters %}
+				<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': filter.id] %}">
+					{{filter.title}} <span class="ticket-filter-count-{{filter.id}}">-</span>
+				</li>
+			{% endfor %}
 		</ul>                                    
 	</div>                                       
-	<div class="ui-layout-center">               
-		<ul class="nav-list">                    
-			<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': 123] %}">My tickets awaiting tech <span>1</span></li>
-			<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': 123] %}">All tickets awaiting tech <span>6</span></li>
-			<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': 123] %}">Pending tickets <span>12</span></li>
-			<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': 123] %}">All open tickets <span>25</span></li>
-		<ul>
-	</div>
 </div>
 {% endblock %}

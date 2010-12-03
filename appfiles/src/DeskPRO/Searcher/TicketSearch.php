@@ -128,10 +128,16 @@ class TicketSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
-		$sql .= "WHERE ";
-		$sql .= implode(" AND ", $ticket_parts['wheres']);
+		$where = '';
+		if ($ticket_parts['wheres']) {
+			$where .= implode(" AND ", $ticket_parts['wheres']);
+		}
 		if ($user_parts) {
-			$sql .= " AND " . implode(" AND ", $user_parts['wheres']);
+			$where .= " AND " . implode(" AND ", $user_parts['wheres']);
+		}
+
+		if ($where) {
+			$sql .= " WHERE $where ";
 		}
 
 		$sql .= " LIMIT 1000";

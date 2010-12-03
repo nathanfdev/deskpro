@@ -62,4 +62,29 @@ class TicketQueue extends \DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="terms", type="array")
 	 */
 	protected $terms;
+
+	
+
+	/**
+	 * Get the searcher for this.
+	 * 
+	 * @return DeskPRO\Searcher\TicketSearch
+	 */
+	public function getSearcher()
+	{
+		$searcher = new \DeskPRO\Searcher\TicketSearch();
+
+		foreach ($this->terms as $term) {
+			$data = $term;
+			unset($data['rule_type'], $data['op']);
+
+			if (count($data) == 1) {
+				$data = array_pop($data);
+			}
+
+			$searcher->addTerm($term['rule_type'], $term['op'], $data);
+		}
+
+		return $searcher;
+	}
 }

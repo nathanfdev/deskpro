@@ -6,6 +6,10 @@ tech_test:
   pattern: /test
   defaults: { _controller: TechBundle:Test:index }
 
+tech_interface_poller:
+  pattern: /poller
+  defaults: { _controller: TechBundle:Poller:handler }
+
 ################################################################################
 # Styles
 ################################################################################
