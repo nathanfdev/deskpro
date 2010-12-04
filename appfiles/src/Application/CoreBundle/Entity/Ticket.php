@@ -146,6 +146,11 @@ class Ticket extends \DeskPRO\Domain\DomainObject
 	protected $organization = null;
 
 	/**
+	 * @orm:OneToMany(targetEntity="TicketMessage", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 */
+	protected $messages;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="creation_system", type="string", length=20)
 	 */

@@ -14,10 +14,10 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.TicketSearch';
 		</thead>
 		<tbody>
 			{% for ticket in tickets %}
-			<tr data-route="person:{% path 'tech_ticket_view' with ['ticket_id': 123] %}">
+			<tr data-route="person:{% path 'tech_ticket_view' with ['ticket_id': ticket.id] %}">
 				<td>{{ticket.subject}}</td>
-				<td>{{ticket.department.name}}</td>
-				<td>{{ticket.date_created}}</td>
+				<td>{{ticket.department.title}}</td>
+				<td>{{ticket.date_created|date('Y-m-d')}}</td>
 				<td>{{ticket.person.name}}</td>
 			</tr>
 			{% else %}

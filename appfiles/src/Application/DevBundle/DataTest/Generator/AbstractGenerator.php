@@ -46,6 +46,7 @@ abstract class AbstractGenerator
 		}
 
 		$choice_index = array_rand($filled_choices);
+		if (!is_array($filled_choices)) echo $cache_name;
 		$choice_index = $filled_choices[$choice_index];
 
 		$choice = $choices[$choice_index][1];

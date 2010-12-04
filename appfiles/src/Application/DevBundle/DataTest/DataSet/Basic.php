@@ -11,9 +11,8 @@ class Basic
 	 */
 	public function getNumPeople()
 	{
-		return 100;
 		//return 50000;
-		return 10000;
+		return 20000;
 	}
 
 
@@ -25,9 +24,8 @@ class Basic
 	 */
 	public function getMinNumTickets()
 	{
-	return 1000;
 		//return 750000;
-		return 300000;
+		return 350000;
 	}
 
 
@@ -56,10 +54,10 @@ class Basic
 	public function getNumEmailsPerPerson()
 	{
 		return array(
-			array(70, 1),
-			array(15, 0),
-			array(10, 2),
-			array(5, 3),
+			array(7, 1),
+			array(1, 0),
+			array(1, 2),
+			array(1, 3),
 		);
 	}
 
@@ -75,10 +73,10 @@ class Basic
 	public function getNumTicketsPerPerson()
 	{
 		return array(
-			array(70, 3),
-			array(10, 1),
-			array(10, 4),
-			array(10, 5),
+			array(7, 3),
+			array(1, 1),
+			array(1, 4),
+			array(1, 5),
 		);
 	}
 
@@ -91,9 +89,9 @@ class Basic
 	public function getParticipantsPerTicket()
 	{
 		return array(
-			array(50, 0),
-			array(40, 1),
-			array(10, 2),
+			array(5, 0),
+			array(4, 1),
+			array(1, 2),
 		);
 	}
 
@@ -109,9 +107,9 @@ class Basic
 	public function getParticipantPersonChance()
 	{
 		return array(
-			array(50, array(1, $this->getNumTechs())),
-			array(40, array(1, 5000)),
-			array(10, array(1000, 2000)),
+			array(5, array(1, $this->getNumTechs())),
+			array(4, array(1, 5000)),
+			array(1, array(1000, 2000)),
 		);
 	}
 
@@ -148,10 +146,10 @@ class Basic
 	{
 		// percent => array(rangestart, rangeend), where the company is a random one in that range
 		return array(
-			array(30, null),
-			array(50, array(1, 50)),
-			array(10, array(51, 90)),
-			array(10, array(111, 150)),
+			array(3, null),
+			array(5, array(1, 50)),
+			array(1, array(51, 90)),
+			array(1, array(111, 150)),
 		);
 	}
 
@@ -184,13 +182,13 @@ class Basic
 	public function getEmailDomains()
 	{
 		return array(
-			array(10, 'gmail.com'),
-			array(10, 'yahoo.com'),
-			array(10, 'msn.com'),
-			array(10, 'aol.com'),
-			array(10, 'fastmai.fm'),
-			array(10, 'something.edu'),
-			array(40, ''), // random
+			array(1, 'gmail.com'),
+			array(1, 'yahoo.com'),
+			array(1, 'msn.com'),
+			array(1, 'aol.com'),
+			array(1, 'fastmai.fm'),
+			array(1, 'something.edu'),
+			array(4, ''), // random
 		);
 	}
 
@@ -204,9 +202,9 @@ class Basic
 	public function getStartDate()
 	{
 		return array(
-			array(80, array(strtotime('2008-01-01'), time())),
-			array(10, array(strtotime('2009-01-01'), strtotime('2009-04-01'))),
-			array(10, array(strtotime('2010-01-01'), strtotime('2009-01-30'))),
+			array(8, array(strtotime('2008-01-01'), time())),
+			array(1, array(strtotime('2009-01-01'), strtotime('2009-04-01'))),
+			array(1, array(strtotime('2010-01-01'), strtotime('2009-01-30'))),
 		);
 	}
 
@@ -220,9 +218,9 @@ class Basic
 	public function getPersonLanguage()
 	{
 		return array(
-			array(80, 1),
-			array(10, 2),
-			array(10, 3),
+			array(8, 1),
+			array(1, 2),
+			array(1, 3),
 		);
 	}
 
@@ -235,10 +233,10 @@ class Basic
 	public function getDepartmentIdChoices()
 	{
 		return array(
-			array(30, 1),
-			array(40, 2),
-			array(10, 3),
-			array(10, 4),
+			array(3, 1),
+			array(4, 2),
+			array(1, 3),
+			array(1, 4),
 		);
 	}
 

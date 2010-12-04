@@ -356,6 +356,11 @@ ul.tagit input[type="text"] {
 	right: 10px;
 }
 
+#pane_nav .top-box > ul li span.new {
+	background-color: #000;
+	color: #fff;
+}
+
 #pane_nav .top-box > ul > li:hover {
 	background-color: #F2F7F6;
 }
@@ -469,6 +474,62 @@ table.list > tbody > tr:hover {
 	font-size: 9pt;
 	font-weight: normal;
 }
+
+
+
+.ticket .ticket-info > dl {
+	float: left;
+	width: 120px;
+}
+
+.ticket .ticket-info > dl > dt {
+	font-style: italic;
+	color: #636C78;
+	font-size: 90%;
+}
+
+.ticket .ticket-info > dl > dd {
+	display: block;
+}
+
+
+.ticket .messages {
+
+}
+
+.ticket .messages > ul > li {
+	margin-top: 10px;
+	margin-bottom: 10px;
+	background-color: #EDF4FA;
+	border: 1px solid #386F9C;
+}
+
+.ticket .messages > ul > li div.info {
+	background-color: #D5E1EB;
+	padding: 5px;
+	border-bottom: 2px solid #788996;
+}
+
+.ticket .messages > ul > li div.info cite {
+	font-size: 120%;
+}
+
+.ticket .messages > ul > li.agent div.info cite {
+	color: #2B89D6;
+	font-weight: bold;
+}
+
+.ticket .messages > ul > li div.info span.time {
+	font-size: 90%;
+	font-style: italic;
+	color: #666;
+	float: right;
+}
+
+.ticket .messages > ul > li div.message {
+	padding: 8px;
+}
+
 
 .person-overview-popout {
 	border: 1px solid #000;

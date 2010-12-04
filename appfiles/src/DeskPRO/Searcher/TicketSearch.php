@@ -19,6 +19,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_SUBJECT       = 'subject';
 	const TERM_ORGANIZATION  = 'organization';
 	const TERM_LANGUAGE      = 'language';
+	const TERM_PARTICIPANT   = 'participant';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)

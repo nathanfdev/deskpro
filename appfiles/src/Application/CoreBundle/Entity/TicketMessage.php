@@ -76,6 +76,11 @@ class TicketMessage extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $message;
 
+	public function getMessageHtml()
+	{
+		return nl2br(htmlspecialchars($this->message), true);
+	}
+
 	/** @orm:PrePersist */
 	public function _prePersist()
 	{

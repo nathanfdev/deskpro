@@ -91,11 +91,16 @@ abstract class SearcherAbstract
 				$where = "$field NOT IN $choices_in";
 			}
 		} else {
-			if ($op == self::OP_IS) {
-				$where = "$field = " . $db->quote($choice);
-			} elseif ($op == self::OP_NOT) {
-				$where = "$field != " . $db->quote($choice);
+			if ($choice === 0 OR $choice === '0') {
+				$choice = 'NULL';
+				$op = ($op == self::OP_IS) ? "IS" : "IS NOT";
 			}
+			else {
+				$choice = $db->quote($choice);
+				$op = ($op == self::OP_IS) ? "=" : "!=";
+			}
+
+			$where = "$field $op $choice";
 		}
 
 		return $where;

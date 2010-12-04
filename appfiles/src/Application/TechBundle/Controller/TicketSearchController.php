@@ -51,7 +51,7 @@ class TicketSearchController extends AbstractController
 		if ($results) {
 			$tickets = $this->em->createQuery("
 				SELECT t
-				FROM CoreBundle:Ticket
+				FROM CoreBundle:Ticket t
 				WHERE t.id IN(" . implode(',', $results) . ")
 				ORDER BY t.id ASC
 			")->execute();
@@ -59,15 +59,6 @@ class TicketSearchController extends AbstractController
 
 		return $this->render('TechBundle:TicketSearch:filter-results.twig', array(
 			'tickets' => $tickets
-		));
-	}
-
-	public function ticketViewAction()
-	{
-		$person_inner_tab = $this->forward('TechBundle:Person:view', array('person_id' => 1))->getContent();
-
-		return $this->render('TechBundle:TicketSearch:ticket-view.twig', array(
-			'person_inner_tab' => $person_inner_tab
 		));
 	}
 

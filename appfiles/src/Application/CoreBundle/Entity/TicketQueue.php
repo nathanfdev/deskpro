@@ -34,7 +34,7 @@ class TicketQueue extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\CoreBundle\Entity\Person
-	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;

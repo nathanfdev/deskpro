@@ -1,0 +1,90 @@
+<script>
+pageMeta.class = 'DeskPRO.Agent.PageFragment.Page.Ticket';
+pageMeta.title = '{{ticket.subject}}';
+pageMeta.ticket_id = {{ticket.id}};
+</script>
+
+<div class="ticket">
+
+<div class="ticket-info" style="float:right; margin-left: 15px; padding-left: 10px; border-left: 1px solid #ccc;">
+	<dl>
+		<dt>Department</dt>
+		<dd>{{ticket.department.title}}</dd>
+	</dl>
+	<dl>
+		<dt>Category</dt>
+		<dd>{{ticket.category.title}}</dd>
+	</dl>
+	<dl>
+		<dt>Product</dt>
+		<dd>{{ticket.product.title}}</dd>
+	</dl>
+	<dl>
+		<dt>Priority</dt>
+		<dd>{{ticket.priority.title}}</dd>
+	</dl>
+</div>
+
+<h1>{{ticket.subject}}</h1>
+<br style="clear" />
+
+<div style="float:right">
+	<strong>Assigned To:</strong><br />
+	{% if not ticket.agent_id %}
+		UNASSIGNED
+	{% elseif ticket.agent_id == person.id %}
+		YOU
+	{% else %}
+		{{ticket.agent.name}}
+	{% endif %}
+</div>
+
+<div class="person-overview">
+	<div class="img">
+		<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
+	</div>
+	<div class="info">
+		<h1>{{ticket.person.name}}</h1>
+		{% if ticket.person.primary_email %}
+			{{ticket.person.primary_email.email}}
+		{% endif %}
+	</div>
+</div>
+
+<br style="clear:both" />
+
+<div class="messages">
+	<ul>
+		{% for message in ticket.messages %}
+			<li {% if message.person.is_agent %}class="agent"{%endif%}>
+				<div class="info">
+					<cite>{{message.person.name}}</cite>
+					<span class="time">{{message.date_created|date('Y-m-d')}}</span>
+				</div>
+				<div class="message">
+					{{message.message_html|raw}}
+				</div>
+			</li>
+		{% endfor %}
+	</ul>
+</div>
+
+</div>
+
+<div class="person-popout" style="display:none">
+	<div class="content">
+		{{person_inner_tab|raw}}
+	</div>
+</div>
+
+<div class="person-overview-popout" style="display:none">
+	<div class="img">
+		<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
+	</div>
+	<div class="info">
+		<h1>{{ticket.person.name}}</h1>
+		{% if ticket.person.primary_email %}
+			{{ticket.person.primary_email.email}}
+		{% endif %}
+	</div>
+</div>

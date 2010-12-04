@@ -25,7 +25,16 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 	
 	updateFilterCounts: function(counts) {
 		Object.each(counts, function (count, filter_id) {
-			$('.ticket-filter-count-' + filter_id).html(count);
+			var count_str = count;
+			if (count >= 1000) count_str = '1000+';
+
+			var el = $('.ticket-filter-count-' + filter_id).html(count);
+
+			if (count == 0) {
+				el.removeClass('new');
+			} else {
+				el.addClass('new');
+			}
 		});
 	}
 });

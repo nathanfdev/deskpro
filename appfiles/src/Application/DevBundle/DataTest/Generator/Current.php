@@ -13,10 +13,21 @@ class Current extends AbstractGenerator
 		$this->_runGenPreMisc($db, $output);
 		$output->writeln('');
 
+		$db->exec("
+			LOCK TABLES
+			people WRITE,
+			people_emails WRITE,
+			tickets WRITE,
+			tickets_participants WRITE,
+			tickets_messages WRITE
+		");
+
 		$this->_runGenPeople($db, $output);
 		$output->writeln('');
 
 		$this->_runGenTickets($db, $output);
+
+		$db->exec("UNLOCK TABLES");
 	}
 
 
@@ -51,6 +62,7 @@ class Current extends AbstractGenerator
 		$num = count($this->dataset->getDepartmentIdChoices());
 		$output->write("Generating $num departments ... ");
 
+		$this->total_cats = 0;
 		$c = 0;
 		while ($c++ < $num) {
 			$db->insert('departments', array(
@@ -68,6 +80,7 @@ class Current extends AbstractGenerator
 					'title' => "Category $c_c"
 				));
 
+				$this->total_cats++;
 				$this->dataset->dep_cat_ids[$dep_id][] = $c_c;
 			}
 		}
@@ -112,15 +125,19 @@ class Current extends AbstractGenerator
 		$output->write("<comment>\nGENERATING PEOPLE\n</comment>\n");
 
 		$num = $this->dataset->getNumPeople();
-		$output->write("<info>Number of people being generated: $num</info>\n");
+		$output->write("\n<info>Number of people being generated: $num</info>\n");
 
 		$c = 0;
 		$last_report_time = time();
 		while ($c++ < $num) {
 			if (time() - 10 > $last_report_time) {
 				$last_report_time = time();
-				$output->write("[$last_report_time] Processed $c\n");
+				$output->write("\n[$last_report_time] Processed $c\n");
 			}
+
+			$output->write(".");
+
+			//$db->beginTransaction();
 
 			#------------------------------
 			# User
@@ -177,6 +194,8 @@ class Current extends AbstractGenerator
 			if ($primary_email_id) {
 				$db->update('people', array('primary_email_id' => $primary_email_id), array('id' => $person_id));
 			}
+
+			//$db->commit();
 		}
 
 		$num_techs = $this->dataset->getNumTechs();
@@ -195,7 +214,7 @@ class Current extends AbstractGenerator
 	 */
 	protected function _runGenTickets(\DeskPRO\DBAL\Connection $db, \Symfony\Component\Console\Output\Output $output)
 	{
-		$output->write("<comment>\nGENERATING TICKETS\n</comment>\n");
+		$output->write("\n<comment>\nGENERATING TICKETS\n</comment>\n");
 
 		$count = 0;
 
@@ -203,12 +222,12 @@ class Current extends AbstractGenerator
 		for ($i = $this->dataset->getNumTechs()+1; $i < $this->dataset->getNumPeople(); $i++) {
 			if (time() - 10 > $last_report_time) {
 				$last_report_time = time();
-				$output->write("[$last_report_time] Processed $count tickets for $i users\n");
+				$output->write("\n[$last_report_time] Processed $count tickets for $i users\n");
 			}
 
 			$num_tickets = $this->chooseFromChanceArray($this->dataset->getNumTicketsPerPerson(), 'num_tickets');
 			$count += $num_tickets;
-			$this->_genTicketsForUser($db, $i, $num_tickets);
+			$this->_genTicketsForUser($db, $i, $num_tickets, $output);
 		}
 
 		$output->write("<info>Done adding tickets for every user. Now creating more tickets to meet minimum count of {$this->dataset->getMinNumTickets()}</info>\n");
@@ -219,19 +238,23 @@ class Current extends AbstractGenerator
 				$output->write("[$last_report_time] Processed $count tickets\n");
 			}
 
-			$num_tickets = $this->chooseFromChanceArray($this->dataset->getNumTicketsPerPerson(), 'num_tickets');
+			$num_tickets = 100;
 			$count += $num_tickets;
-			$this->_genTicketsForUser($db, mt_rand($range[0], $range[1]), $num_tickets);
+			$this->_genTicketsForUser($db, mt_rand($range[0], $range[1]), $num_tickets, $output);
 		}
 
 		$output->write("Done.\n");
 	}
 
-	protected function _genTicketsForUser(\DeskPRO\DBAL\Connection $db, $person_id, $num_tickets)
+	protected function _genTicketsForUser(\DeskPRO\DBAL\Connection $db, $person_id, $num_tickets, $output)
 	{
 		$person = $db->fetchAssoc("SELECT * FROM people WHERE id = ?", array($person_id));
 
 		while ($num_tickets-- > 0) {
+
+			$output->write(".");
+
+			//$db->beginTransaction();
 
 			$created_at = $this->chooseDateFromChanceArray($this->dataset->getStartDate(), 'ticket_start_date');
 			//format('Y-m-d H:i:s')
@@ -255,7 +278,7 @@ class Current extends AbstractGenerator
 			$ticket = array(
 				'person_id' => $person_id,
 				'department_id' => $dep_id,
-				'category_id' => Util::coalesce($this->chooseFromChanceArray($this->dataset->getCategoryIdChoices($dep_id)), 1),
+				'category_id' => mt_rand(1,$this->total_cats),
 				'agent_id' => mt_rand(1, $this->dataset->getNumTechs()),
 				'language_id' => mt_rand(1, $this->dataset->getNumLangs()),
 				'priority_id' => mt_rand(1, $this->dataset->getNumPriorities()),
@@ -281,7 +304,7 @@ class Current extends AbstractGenerator
 			} elseif ($ticket['status'] == 'awaiting_tech') {
 
 			} elseif ($ticket['status'] == 'awaiting_user') {
-				
+
 			} elseif ($ticket['status'] == 'resolved') {
 				$ticket['date_resolved'] = $created_at->add(new \DateInterval('PT'.mt_rand(4000, 345600).'S'))->format('Y-m-d H:i:s');
 			} elseif ($ticket['status'] == 'hidden') {
@@ -335,6 +358,7 @@ class Current extends AbstractGenerator
 				//$this->_genTicketFieldData($db, $fieldinfo, $ticket_id);
 			//}
 
+			//$db->commit();
 		}
 	}
 

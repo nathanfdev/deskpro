@@ -234,10 +234,9 @@ tech_ticketsearch:
   pattern: /ticket-search
   defaults: { _controller: TechBundle:TicketSearch:index }
 
-# TMP just stick the mockup ticket view into ticket search
 tech_ticket_view:
   pattern: /tickets/:ticket_id
-  defaults: { _controller: TechBundle:TicketSearch:ticketView }
+  defaults: { _controller: TechBundle:Ticket:view }
   requirements: { filter_id: "\d+" }
 
 tech_ticketsearch_filterspane:

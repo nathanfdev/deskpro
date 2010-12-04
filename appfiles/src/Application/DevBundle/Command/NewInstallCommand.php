@@ -88,6 +88,7 @@ class NewInstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 		$total = count($all_sql);
 		$count = 1;
 		foreach ($all_sql as $sql) {
+		$sql = str_replace('INNODB', 'MyISAM', $sql);
 			$output->write("Executing query " . ($count++) . " of {$total} ... ");
 			$super_db->executeQuery($sql);
 			$output->write("Done\n");
