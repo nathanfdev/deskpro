@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\HttpKernel\Controller;
+namespace Application\DeskPRO\HttpKernel\Controller;
 use \Symfony\Component\DependencyInjection\ContainerInterface;
 
 use \Symfony\Component\HttpFoundation\Request;

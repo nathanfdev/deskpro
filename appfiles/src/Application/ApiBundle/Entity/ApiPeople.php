@@ -25,7 +25,7 @@ use Orb\Util\Arrays;
  * @orm:Entity
  * @orm:Table(name="api_people")
  */
-class ApiPeople extends \DeskPRO\Domain\DomainObject
+class ApiPeople extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

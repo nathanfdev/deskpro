@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\ORM\Util;
+namespace Application\DeskPRO\ORM\Util;
 
 use \Doctrine\ORM\PersistentCollection;
 

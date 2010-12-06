@@ -29,19 +29,19 @@ class Factory
 	{
 		$handler = null;
 		switch ($form_field['handler_class']) {
-			case 'DeskPRO\\Form\\FieldHandler\\Text':
+			case 'Application\\DeskPRO\\Form\\FieldHandler\\Text':
 				$handler = new \Application\TechBundle\CustomField\AdminHandler\Text($form_field);
 				break;
 
-			case 'DeskPRO\\Form\\FieldHandler\\Textarea':
+			case 'Application\\DeskPRO\\Form\\FieldHandler\\Textarea':
 				$handler = new \Application\TechBundle\CustomField\AdminHandler\Textarea($form_field);
 				break;
 
-			case 'DeskPRO\\Form\\FieldHandler\\Choice':
+			case 'Application\\DeskPRO\\Form\\FieldHandler\\Choice':
 				$handler = new \Application\TechBundle\CustomField\AdminHandler\Choice($form_field);
 				break;
 
-			case 'DeskPRO\\Form\\FieldHandler\\MultipleChoice':
+			case 'Application\\DeskPRO\\Form\\FieldHandler\\MultipleChoice':
 				$handler = new \Application\TechBundle\CustomField\AdminHandler\MultipleChoice($form_field);
 				break;
 		}

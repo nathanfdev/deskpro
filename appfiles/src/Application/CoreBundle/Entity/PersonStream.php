@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="person_stream")
  */
-class PersonStream extends \DeskPRO\Domain\DomainObject
+class PersonStream extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

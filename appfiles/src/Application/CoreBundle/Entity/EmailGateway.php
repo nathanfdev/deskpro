@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="email_gateways")
  */
-class EmailGateway extends \DeskPRO\Domain\DomainObject
+class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

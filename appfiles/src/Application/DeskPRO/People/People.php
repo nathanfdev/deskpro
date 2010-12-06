@@ -1,8 +1,8 @@
 <?php
 
-namespace DeskPRO\Tickets;
+namespace Application\DeskPRO\Tickets;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 use \Application\CoreBundle\Entity\Person;
 
 class Tickets

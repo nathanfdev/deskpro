@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Form;
+namespace Application\DeskPRO\Form;
 
 use \Orb\Util\Arrays;
 use \Orb\Util\Strings;

@@ -1,10 +1,10 @@
 <?php
 
-namespace DeskPRO\Build\Upgrade;
+namespace Application\DeskPRO\Build\Upgrade;
 
 use Symfony\Component\Console\Output\OutputInterface;
 
-use DeskPRO\Build\Upgrade\Upgrader;
+use Application\DeskPRO\Build\Upgrade\Upgrader;
 
 /**
  * An upgrader must be named:

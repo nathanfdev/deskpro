@@ -18,7 +18,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="labels_organizations")
  */
-class LabelOrganization extends \DeskPRO\Domain\DomainObject
+class LabelOrganization extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string

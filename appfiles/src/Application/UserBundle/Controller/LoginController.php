@@ -11,9 +11,9 @@
 
 namespace Application\UserBundle\Controller;
 
-use \DeskPRO\Auth\LoginProcessor;
+use \Application\DeskPRO\Auth\LoginProcessor;
 
-class LoginController extends \DeskPRO\Controller\AbstractController
+class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
 	############################################################################
 	# /login
@@ -85,7 +85,7 @@ class LoginController extends \DeskPRO\Controller\AbstractController
 
 	protected function _processLocalLogin()
 	{
-		$adapter = new \DeskPRO\Auth\Adapter\Local($this->em);
+		$adapter = new \Application\DeskPRO\Auth\Adapter\Local($this->em);
 		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
 		$result = $adapter->authenticate();
 		if (!$result->isValid()) {

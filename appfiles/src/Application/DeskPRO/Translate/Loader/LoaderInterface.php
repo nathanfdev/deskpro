@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Translate\Loader;
+namespace Application\DeskPRO\Translate\Loader;
 
 /**
  * A loader is a class that can load phrases from some resource.

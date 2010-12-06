@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Form\ContactFieldHandler;
+namespace Application\DeskPRO\Form\ContactFieldHandler;
 
 /**
  * Website field

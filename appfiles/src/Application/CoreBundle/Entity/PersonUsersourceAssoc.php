@@ -18,7 +18,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="person_usersource_assoc")
  */
-class PersonUsersourceAssoc extends \DeskPRO\Domain\DomainObject
+class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

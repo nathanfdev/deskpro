@@ -14,7 +14,6 @@ set_include_path(
 $loader = new \Orb\Util\ClassLoader();
 
 $loader->registerNamespaces(array(
-	'DeskPRO'                    => DP_ROOT.'/src',
 	'Application'                => DP_ROOT.'/src',
     'Bundle'                     => DP_ROOT.'/src',
 	'Orb'                        => DP_ROOT.'/src',

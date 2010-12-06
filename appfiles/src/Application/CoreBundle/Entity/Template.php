@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="templates")
  */
-class Template extends \DeskPRO\Domain\DomainObject
+class Template extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

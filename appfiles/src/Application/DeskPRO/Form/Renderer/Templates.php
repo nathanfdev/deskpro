@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Form\Renderer;
+namespace Application\DeskPRO\Form\Renderer;
 
 class Templates implements RendererInterface
 {
@@ -20,7 +20,7 @@ class Templates implements RendererInterface
 	protected $template_ns;
 
 	/**
-	 * @var DeskPRO\Templating\Engine
+	 * @var Application\DeskPRO\Templating\Engine
 	 */
 	protected $template_engine;
 
@@ -28,7 +28,7 @@ class Templates implements RendererInterface
 
 	/**
 	 *
-	 * @param \DeskPRO\Templating\Engine $temmplate_engine
+	 * @param \Application\DeskPRO\Templating\Engine $temmplate_engine
 	 * @param string $template_ns
 	 */
 	public function __construct(\DeskPRO\Templating\Engine $temmplate_engine, $template_ns)
@@ -53,7 +53,7 @@ class Templates implements RendererInterface
 		// then its the full name
 		$short_classname = get_class($field);
 
-		if (strpos($short_classname, 'Orb\\') === 0 OR strpos($short_classname, 'DeskPRO\\') === 0) {
+		if (strpos($short_classname, 'Orb\\') === 0 OR strpos($short_classname, 'Application\\DeskPRO\\') === 0) {
 			$parts = explode('\\', $short_classname);
 			$short_classname = array_pop($parts);
 		}

@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Integration\XenForo\UserShare\ControllerPublic;
+namespace Application\DeskPRO\Integration\XenForo\UserShare\ControllerPublic;
 
 /**
  * This controller takes a users login and then directs them back to DeskPRO.

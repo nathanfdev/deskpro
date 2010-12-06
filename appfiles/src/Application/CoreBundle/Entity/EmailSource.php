@@ -20,7 +20,7 @@ namespace Application\CoreBundle\Entity;
  *     indexes={@orm:Index(name="object_idx", columns={"object_type", "object_id"})}
  * )
  */
-class EmailSource extends \DeskPRO\Domain\DomainObject
+class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

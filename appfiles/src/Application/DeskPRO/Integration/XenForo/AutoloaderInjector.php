@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Integration\XenForo;
+namespace Application\DeskPRO\Integration\XenForo;
 
 
 

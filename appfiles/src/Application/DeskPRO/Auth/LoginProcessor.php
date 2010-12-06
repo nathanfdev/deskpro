@@ -9,9 +9,9 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Auth;
+namespace Application\DeskPRO\Auth;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use \Orb\Util\Arrays;
 use \Orb\Auth\Identity;

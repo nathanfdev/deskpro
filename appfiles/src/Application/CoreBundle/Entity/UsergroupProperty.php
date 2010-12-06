@@ -24,7 +24,7 @@ use Orb\Util\Web;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="usergroup_properties")
  */
-abstract class UsergroupProperty extends \DeskPRO\Domain\DomainObject
+abstract class UsergroupProperty extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

@@ -13,7 +13,7 @@ namespace Application\TechBundle\CustomField\AdminHandler;
 
 use \Application\CoreBundle\Entity\CustomDefAbstract;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 /**
  * An admin handler that helps with building a custom field (options and the like).

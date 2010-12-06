@@ -11,7 +11,7 @@
 
 namespace Application\ApiBundle\Controller;
 
-use \DeskPRO\Domain\DomainObject;
+use \Application\DeskPRO\Domain\DomainObject;
 
 /**
  * Perform searches or get results from queues.

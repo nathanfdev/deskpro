@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Form\ContactFieldHandler;
+namespace Application\DeskPRO\Form\ContactFieldHandler;
 
 use \Orb\Util\Strings;
 
@@ -49,7 +49,7 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 		$simple_name = str_replace('_', '-', $simple_name);
 		$classname = Strings::dashToCamelCase($simple_name);
 		$classname = ucfirst($classname);
-		$classname = "DeskPRO\\Form\\ContactFieldHandler\\$classname";
+		$classname = "Application\\DeskPRO\\Form\\ContactFieldHandler\\$classname";
 
 		return $classname;
 	}
@@ -137,8 +137,8 @@ abstract class AbstractContactFieldHandler implements \Orb\Form\Transformer\Tran
 
 	public function getSimpleName()
 	{
-		// DeskPRO\Form\ContactFieldHandler\Address becomes address
-		// DeskPRO\Form\ContactFieldHandler\Address becomes address
+		// Application\DeskPRO\Form\ContactFieldHandler\Address becomes address
+		// Application\DeskPRO\Form\ContactFieldHandler\Address becomes address
 		// -> Good for form names etc
 
 		$classname = get_class($this);

@@ -19,7 +19,7 @@ use \Application\CoreBundle\Entity\PersonContactData;
 use \Application\CoreBundle\Entity\PersonNote;
 use \Application\CoreBundle\Entity\Organization;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 /**
  * Handles viewing and editing a person
@@ -71,13 +71,13 @@ class PersonController extends AbstractController
 		#------------------------------
 
 		$contact_fields_tpl = array();
-		$f = new \DeskPRO\Form\ContactFieldHandler\InstantMessage();
+		$f = new \Application\DeskPRO\Form\ContactFieldHandler\InstantMessage();
 		$contact_fields_tpl['instant_message'] = $f->getFormField();
 
-		$f = new \DeskPRO\Form\ContactFieldHandler\Address();
+		$f = new \Application\DeskPRO\Form\ContactFieldHandler\Address();
 		$contact_fields_tpl['address'] = $f->getFormField();
 
-		$f = new \DeskPRO\Form\ContactFieldHandler\Phone();
+		$f = new \Application\DeskPRO\Form\ContactFieldHandler\Phone();
 		$contact_fields_tpl['phone'] = $f->getFormField();
 
 		#------------------------------
@@ -337,7 +337,7 @@ class PersonController extends AbstractController
 		}
 
 		$type = $this->in->getString('contact_type');
-		$handler = \DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
+		$handler = \Application\DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
 
 		$handler = new $handler();
 

@@ -19,7 +19,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Table(name="attachments_blobs")
  * )
  */
-class AttachmentBlob extends \DeskPRO\Domain\DomainObject
+class AttachmentBlob extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

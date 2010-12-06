@@ -24,7 +24,7 @@ use \Orb\Util\Arrays;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="styles")
  */
-class Style extends \DeskPRO\Domain\DomainObject
+class Style extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

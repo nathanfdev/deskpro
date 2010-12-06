@@ -58,7 +58,7 @@ abstract class Scraper
 	protected $is_enabled = true;
 
 	/**
-	 * @var DeskPRO\Scraper\Handler\HandlerAbstract
+	 * @var Application\DeskPRO\Scraper\Handler\HandlerAbstract
 	 */
 	protected $_handler_instance = null;
 }

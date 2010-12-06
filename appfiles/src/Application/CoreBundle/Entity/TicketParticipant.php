@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="tickets_participants")
  */
-class TicketParticipant extends \DeskPRO\Domain\DomainObject
+class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

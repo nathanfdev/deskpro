@@ -11,8 +11,8 @@
 
 namespace Application\CoreBundle\Entity;
 
-use \DeskPRO\App;
-use \DeskPRO\ORM\Util\Util as ORM_Util;
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\ORM\Util\Util as ORM_Util;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -28,7 +28,7 @@ use \Application\CoreBundle\Entity\PersonFieldDada;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="people")
  */
-class Person extends \DeskPRO\Domain\DomainObject
+class Person extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -379,7 +379,7 @@ class Person extends \DeskPRO\Domain\DomainObject
 			return;
 		}
 
-		/** @var $db \DeskPRO\DBAL\Connection */
+		/** @var $db \Application\DeskPRO\DBAL\Connection */
 		$db = App::getDb();
 		$usergroup_ids = $this->getUsergroupIds();
 
@@ -573,8 +573,8 @@ class Person extends \DeskPRO\Domain\DomainObject
 
 	public function getContactDataOfType($type)
 	{
-		if (strpos($type, 'DeskPRO\\') !== 0) {
-			$type = \DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
+		if (strpos($type, 'Application\\DeskPRO\\') !== 0) {
+			$type = \Application\DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
 		}
 
 		$ret = array();

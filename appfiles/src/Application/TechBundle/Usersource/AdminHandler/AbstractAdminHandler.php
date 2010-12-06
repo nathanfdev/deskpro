@@ -13,7 +13,7 @@ namespace Application\TechBundle\Usersource\AdminHandler;
 
 use \Application\CoreBundle\Entity\Usersource;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;

@@ -16,7 +16,7 @@ require(DP_ROOT.'/sys/autoload.php');
 use \Symfony\Component\DependencyInjection\Loader\LoaderInterface;
 use \Symfony\Component\DependencyInjection\ContainerBuilder;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 /**
  * Kernel boots the app.
@@ -71,6 +71,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
 			new \Symfony\Bundle\ZendBundle\ZendBundle(),
 
+			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\CoreBundle\CoreBundle(),
             new \Application\TechBundle\TechBundle(),
             new \Application\UserBundle\UserBundle(),

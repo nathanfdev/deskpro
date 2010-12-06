@@ -27,7 +27,7 @@ use Orb\Util\Arrays;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="queue_items")
  */
-class QueueItem extends \DeskPRO\Domain\DomainObject
+class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

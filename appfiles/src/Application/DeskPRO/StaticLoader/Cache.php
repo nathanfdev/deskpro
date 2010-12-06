@@ -8,7 +8,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\StaticLoader;
+namespace Application\DeskPRO\StaticLoader;
 
 
 /**
@@ -29,7 +29,7 @@ class Cache
 	static function getCache($name, $options, $cache_dir)
 	{
 		$key = 'cache_' . $name;
-		$user_options = \DeskPRO\App::getConfig($key);
+		$user_options = \Application\DeskPRO\App::getConfig($key);
 
 		if ($user_options) {
 			$options = array_merge($options, $user_options);

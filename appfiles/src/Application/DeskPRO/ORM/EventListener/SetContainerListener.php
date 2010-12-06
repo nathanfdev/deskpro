@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\ORM\EventListener;
+namespace Application\DeskPRO\ORM\EventListener;
 
 use \Doctrine\ORM\Events;
 use \Doctrine\ORM\Event\LifecycleEventArgs;

@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\DBAL;
+namespace Application\DeskPRO\DBAL;
 
 use \PDO;
 

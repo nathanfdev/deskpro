@@ -8,9 +8,9 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Usersource\Handler;
+namespace Application\DeskPRO\Usersource\Handler;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use Application\CoreBundle\Entity\Usersource;
 

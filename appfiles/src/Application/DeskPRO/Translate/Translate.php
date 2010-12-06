@@ -9,14 +9,14 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Translate;
+namespace Application\DeskPRO\Translate;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-use \DeskPRO\Translate\Loader\LoaderInterface;
+use \Application\DeskPRO\Translate\Loader\LoaderInterface;
 
 /**
  * This class is responsible for loading phrases from a language stored in the database.

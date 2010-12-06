@@ -33,7 +33,7 @@ class DoctrineExtension extends \Symfony\Bundle\DoctrineBundle\DependencyInjecti
 			$container->setDefinition(sprintf('doctrine.dbal.%s_connection.event_manager', $connection['name']), $eventManagerDef);
 
 			$driverOptions = array();
-			$driverDef = new Definition('DeskPRO\\StaticLoader\\DatabaseConnection');
+			$driverDef = new Definition('Application\\DeskPRO\\StaticLoader\\DatabaseConnection');
 			$driverDef->setFactoryMethod('getConnection');
 			$container->setDefinition(sprintf('doctrine.dbal.%s_connection', $connection['name']), $driverDef);
 		}

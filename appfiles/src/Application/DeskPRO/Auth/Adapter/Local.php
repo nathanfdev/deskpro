@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Auth\Adapter;
+namespace Application\DeskPRO\Auth\Adapter;
 
 use \Orb\Auth\Result;
 

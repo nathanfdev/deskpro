@@ -24,7 +24,7 @@ use Orb\Util\Arrays;
  * @orm:Entity
  * @orm:Table(name="api_keys")
  */
-class ApiKey extends \DeskPRO\Domain\DomainObject
+class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string

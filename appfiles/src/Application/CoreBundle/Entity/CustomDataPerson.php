@@ -18,7 +18,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="custom_data_person")
  */
-abstract class CustomDataPerson extends \DeskPRO\Domain\DomainObject
+abstract class CustomDataPerson extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\CoreBundle\Entity\CustomDefPerson

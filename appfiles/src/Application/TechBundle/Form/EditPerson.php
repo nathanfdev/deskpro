@@ -11,7 +11,7 @@
 
 namespace Application\TechBundle\Form;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use \Application\CoreBundle\Entity\FormField;
 use \Application\CoreBundle\Entity\PersonFieldData;

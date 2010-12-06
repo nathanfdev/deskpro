@@ -9,13 +9,13 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Controller;
+namespace Application\DeskPRO\Controller;
 use \Symfony\Component\DependencyInjection\ContainerInterface;
 
 /**
  * The abstract controller sets up some default objects.
  */
-abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Controller
+abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
 	/**
 	 * Entity manager
@@ -25,7 +25,7 @@ abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Control
 
 	/**
 	 * Plain database connection for raw queries
-	 * @var DeskPRO\DBAL\Connection
+	 * @var Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 
@@ -48,19 +48,19 @@ abstract class AbstractController extends \DeskPRO\HttpKernel\Controller\Control
 	protected $tplvars;
 
 	/**
-	 * @var DeskPRO\Templating\Engine
+	 * @var Application\DeskPRO\Templating\Engine
 	 */
 	protected $tpl;
 
 	/**
 	 * Fetch settings
-	 * @var DeskPRO\Settings\Settings
+	 * @var Application\DeskPRO\Settings\Settings
 	 */
 	protected $settings;
 
 	/**
 	 * The session
-	 * @var DeskPRO\HttpFoundation\Session
+	 * @var Application\DeskPRO\HttpFoundation\Session
 	 */
 	protected $session;
 

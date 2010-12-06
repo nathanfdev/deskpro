@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\ResourceScanner;
+namespace Application\DeskPRO\ResourceScanner;
 use Symfony\Component\DependencyInjection\Container;
 use Orb\Util\Arrays;
 

@@ -9,10 +9,10 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Templating\Helper;
+namespace Application\DeskPRO\Templating\Helper;
 
 use \Symfony\Component\Templating\Helper\Helper;
-use \DeskPRO\Translate\Translate;
+use \Application\DeskPRO\Translate\Translate;
 
 class PhraseHelper extends Helper
 {

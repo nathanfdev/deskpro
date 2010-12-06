@@ -11,8 +11,8 @@
 
 namespace Application\CoreBundle\Entity;
 
-use DeskPRO\Usersource\Handler\AbstractHandler;
-use DeskPRO\App;
+use Application\DeskPRO\Usersource\Handler\AbstractHandler;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -26,13 +26,13 @@ use Orb\Util\Arrays;
  * for those auth adapters that provide additional information. And RemoteRecord is used to store
  * the relationship between the identity and a Person.
  *
- * @see DeskPRO\Auth\UserInitializer
- * @see DeskPRO\RemoteResourceListener\Auth
+ * @see Application\DeskPRO\Auth\UserInitializer
+ * @see Application\DeskPRO\RemoteResourceListener\Auth
  * @orm:Entity
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="usersources")
  */
-class Usersource extends \DeskPRO\Domain\DomainObject
+class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -126,7 +126,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	protected $is_enabled = true;
 
 	/**
-	 * @var DeskPRO\Usersource\Handler\AbstractHandler
+	 * @var Application\DeskPRO\Usersource\Handler\AbstractHandler
 	 */
 	protected $_handler_instance = null;
 
@@ -135,7 +135,7 @@ class Usersource extends \DeskPRO\Domain\DomainObject
 	/**
 	 * Get the usersource handler for this usersource.
 	 *
-	 * @return DeskPRO\Usersource\Handler\AbstractHandler
+	 * @return Application\DeskPRO\Usersource\Handler\AbstractHandler
 	 */
 	public function getHandler()
 	{

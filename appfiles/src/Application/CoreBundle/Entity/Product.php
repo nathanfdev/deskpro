@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\Product")
  * @orm:Table(name="products")
  */
-class Product extends \DeskPRO\Domain\DomainObject
+class Product extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

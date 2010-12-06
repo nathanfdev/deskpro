@@ -1,8 +1,8 @@
 <?php
 
-namespace DeskPRO\Searcher;
+namespace Application\DeskPRO\Searcher;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 

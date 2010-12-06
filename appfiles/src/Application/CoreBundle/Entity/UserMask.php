@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="user_masks")
  */
-class UserMask extends \DeskPRO\Domain\DomainObject
+class UserMask extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

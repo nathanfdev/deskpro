@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Twig\Extension;
+namespace Application\DeskPRO\Twig\Extension;
 
 use \Symfony\Component\Templating\Engine;
 use \Symfony\Bundle\TwigBundle\TokenParser\HelperTokenParser;

@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\TicketCategory")
  * @orm:Table(name="ticket_categories")
  */
-class TicketCategory extends \DeskPRO\Domain\DomainObject
+class TicketCategory extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

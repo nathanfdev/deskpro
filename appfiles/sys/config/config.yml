@@ -1,9 +1,9 @@
 parameters:
     kernel.include_core_classes: false
-    templating.engine.class: "DeskPRO\Templating\Engine"
-    http_kernel.class: "DeskPRO\HttpKernel\HttpKernel"
-    controller_resolver.class: "DeskPRO\HttpKernel\Controller\ControllerResolver"
-    session.class: "DeskPRO\HttpFoundation\Session"
+    templating.engine.class: "Application\DeskPRO\Templating\Engine"
+    http_kernel.class: "Application\DeskPRO\HttpKernel\HttpKernel"
+    controller_resolver.class: "Application\DeskPRO\HttpKernel\Controller\ControllerResolver"
+    session.class: "Application\DeskPRO\HttpFoundation\Session"
 
 app.config:
   charset: UTF-8
@@ -20,7 +20,7 @@ doctrine.orm:
 
 doctrine.dbal:
   dp_from_user_config: db
-  wrapper_class: "DeskPRO\DBAL\Connection"
+  wrapper_class: "Application\DeskPRO\DBAL\Connection"
 
 deskpro_cache.caches:
   phrases: ~

@@ -16,7 +16,7 @@ namespace Application\CoreBundle\Entity;
  *
  * @orm:MappedSuperclass
  */
-abstract class CustomDataAbstract extends \DeskPRO\Domain\DomainObject
+abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

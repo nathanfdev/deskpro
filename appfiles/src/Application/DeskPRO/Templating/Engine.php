@@ -8,7 +8,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Templating;
+namespace Application\DeskPRO\Templating;
 
 /**
  * Customized template engine that we can assign shared variables to, and also makes the default

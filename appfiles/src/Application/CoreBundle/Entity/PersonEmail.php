@@ -22,7 +22,7 @@ use Orb\Util\Arrays;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="people_emails")
  */
-class PersonEmail extends \DeskPRO\Domain\DomainObject
+class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

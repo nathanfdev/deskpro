@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="people_notes")
  */
-class PersonNote extends \DeskPRO\Domain\DomainObject
+class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

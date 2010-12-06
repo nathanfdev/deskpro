@@ -8,7 +8,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\StaticLoader;
+namespace Application\DeskPRO\StaticLoader;
 
 
 /**
@@ -33,7 +33,7 @@ class DatabaseConnection
 
 		$key = isset($args[0]['dp_from_user_config']) ? isset($args[0]['dp_from_user_config']) : 'db';
 
-		$args[0] = array_merge($args[0], \DeskPRO\App::getConfig($key));
+		$args[0] = array_merge($args[0], \Application\DeskPRO\App::getConfig($key));
 
 		return call_user_func_array(array('Doctrine\DBAL\DriverManager', 'getConnection'), $args);
 	}

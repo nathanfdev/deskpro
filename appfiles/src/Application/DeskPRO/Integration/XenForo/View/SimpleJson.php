@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Integration\XenForo\View;
+namespace Application\DeskPRO\Integration\XenForo\View;
 
 class SimpleJson extends \XenForo_ViewPublic_Base
 {

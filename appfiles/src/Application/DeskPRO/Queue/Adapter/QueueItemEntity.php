@@ -7,7 +7,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Queue\Adapter;
+namespace Application\DeskPRO\Queue\Adapter;
 
 use \Orb\Util\Strings;
 use \Orb\Util\Util;
@@ -31,7 +31,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 
 	/**
 	 * Plain database connection for raw queries
-	 * @var DeskPRO\DBAL\Connection
+	 * @var Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 

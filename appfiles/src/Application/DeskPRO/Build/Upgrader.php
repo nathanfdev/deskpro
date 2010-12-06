@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Build;
+namespace Application\DeskPRO\Build;
 
 use Symfony\Component\Finder\Finder;
 
@@ -99,7 +99,7 @@ class Upgrader
 	 */
 	public function getUpgradeClass(\DateTime $version)
 	{
-		return 'DeskPRO\\Build\\Upgrade\\Upgrade' . VersionReader::getVersionId($version);
+		return 'Application\\DeskPRO\\Build\\Upgrade\\Upgrade' . VersionReader::getVersionId($version);
 	}
 
 

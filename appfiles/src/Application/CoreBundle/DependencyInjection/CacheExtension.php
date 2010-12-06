@@ -14,7 +14,7 @@ namespace Application\CoreBundle\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
-use DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * Registeres cache services
@@ -37,7 +37,7 @@ class CacheExtension extends \Symfony\Component\DependencyInjection\Extension\Ex
 		if (!$cache_options) $cache_options = array();
 
 		$definition = new \Symfony\Component\DependencyInjection\Definition(
-			'DeskPRO\\StaticLoader\\Cache',
+			'Application\\DeskPRO\\StaticLoader\\Cache',
 			array(
 				$name,
 				$cache_options,

@@ -8,7 +8,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Usersource\Handler;
+namespace Application\DeskPRO\Usersource\Handler;
 
 use Application\CoreBundle\Entity\Usersource;
 
@@ -62,7 +62,7 @@ abstract class AbstractHandler
 	 */
 	public function getPersonData(array $raw_userinfo)
 	{
-		return \DeskPRO\Util::getPersonData($raw_userinfo);
+		return \Application\DeskPRO\Util::getPersonData($raw_userinfo);
 	}
 
 

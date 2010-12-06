@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="ticket_macros")
  */
-class TicketMacro extends \DeskPRO\Domain\DomainObject
+class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

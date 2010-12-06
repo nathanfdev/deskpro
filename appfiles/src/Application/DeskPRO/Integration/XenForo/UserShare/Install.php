@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Integration\XenForo\UserShare;
+namespace Application\DeskPRO\Integration\XenForo\UserShare;
 
 /**
  * Install code for the UserShare addon.

@@ -13,7 +13,7 @@ namespace Application\TechBundle\CustomField\AdminHandler;
 
 use \Application\CoreBundle\Entity;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;

@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Build;
+namespace Application\DeskPRO\Build;
 
 use \Orb\Util\Strings;
 

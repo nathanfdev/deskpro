@@ -76,7 +76,7 @@ class DeskPRO_Integration_XenForo_SetupEnv
 		$inst->getAutoloader()->registerNamespace('Orb', $inst->getRootDir() . '/src');
 		$inst->getAutoloader()->registerNamespace('Symfony', $inst->getRootDir() . '/vendor/symfony/src');
 
-		$our_loader = new \DeskPRO\Integration\XenForo\AutoloaderInjector(XenForo_Autoloader::getInstance(), $inst->getAutoloader());
+		$our_loader = new \Application\DeskPRO\Integration\XenForo\AutoloaderInjector(XenForo_Autoloader::getInstance(), $inst->getAutoloader());
 		XenForo_Autoloader::setInstance($our_loader);
 	}
 

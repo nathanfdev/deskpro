@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="tickets")
  */
-class Ticket extends \DeskPRO\Domain\DomainObject
+class Ticket extends \Application\DeskPRO\Domain\DomainObject
 {
 	const CREATED_WEB_PERSON = 'web_person';
 	const CREATED_WEB_AGENT = 'web_agent';

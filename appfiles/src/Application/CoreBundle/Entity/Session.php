@@ -20,7 +20,7 @@ use Orb\Util\Util;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="sessions")
  */
-class Session extends \DeskPRO\Domain\DomainObject
+class Session extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

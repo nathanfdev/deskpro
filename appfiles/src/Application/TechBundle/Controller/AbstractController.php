@@ -2,12 +2,12 @@
 
 namespace Application\TechBundle\Controller;
 
-abstract class AbstractController extends \DeskPRO\Controller\AbstractController
+abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
 	/**
 	 * The currently logged in person.
 	 * TODO: Rename this to user? Agent?
-	 * @var \DeskPRO\Bundle\CoreBundle\Entity\Person
+	 * @var \Application\DeskPRO\Bundle\CoreBundle\Entity\Person
 	 */
 	protected $person;
 

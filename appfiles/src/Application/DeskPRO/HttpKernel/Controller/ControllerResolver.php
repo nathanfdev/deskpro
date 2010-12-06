@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\HttpKernel\Controller;
+namespace Application\DeskPRO\HttpKernel\Controller;
 
 use \Symfony\Component\HttpFoundation\Request;
 use \Symfony\Bundle\FrameworkBundle\Controller\ContainerAware;
@@ -45,7 +45,7 @@ class ControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
             throw new \InvalidArgumentException(sprintf('Class "%s" does not exist.', $class));
         }
 
-		if (is_subclass_of($class, 'DeskPRO\\HttpKernel\\Controller\\Controller')) {
+		if (is_subclass_of($class, 'Application\\DeskPRO\\HttpKernel\\Controller\\Controller')) {
 			$controller = new $class($this->container);
 		} else {
 			$controller = new $class();

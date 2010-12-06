@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Integration\XenForo\UserShare\ControllerService;
+namespace Application\DeskPRO\Integration\XenForo\UserShare\ControllerService;
 
 /**
  * This is a service controller that handles registering and validating login

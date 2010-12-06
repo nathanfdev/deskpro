@@ -26,7 +26,7 @@ use Orb\Util\Arrays;
  *     indexes={@orm:Index(name="object_type_idx", columns={"object_type"})}
  * )
  */
-class LabelDefinition extends \DeskPRO\Domain\DomainObject
+class LabelDefinition extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string

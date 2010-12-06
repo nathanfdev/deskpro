@@ -19,7 +19,7 @@ namespace Application\CoreBundle\Entity;
  *     indexes={@orm:Index(name="object_idx", columns={"object_type", "object_id"})}
  * )
  */
-class TicketQueuePerm extends \DeskPRO\Domain\DomainObject
+class TicketQueuePerm extends \Application\DeskPRO\Domain\DomainObject
 {
 	const TYPE_DEPARTMENT = 'department';
 	const TYPE_USERGROUP = 'usergroup';

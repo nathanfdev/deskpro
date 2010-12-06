@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
  *
  * @orm:MappedSuperclass
  */
-class FormField extends \DeskPRO\Domain\DomainObject
+class FormField extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
@@ -74,7 +74,7 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	//protected $field_children = null;
 
 	/**
-	 * @var DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 * @var Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
 	 */
 	protected $_handler_instance = null;
 
@@ -88,7 +88,7 @@ class FormField extends \DeskPRO\Domain\DomainObject
 	/**
 	 * Get the DeskPRO form field object that knows how to render data etc.
 	 *
-	 * @return DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 * @return Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
 	 */
 	public function getHandler()
 	{

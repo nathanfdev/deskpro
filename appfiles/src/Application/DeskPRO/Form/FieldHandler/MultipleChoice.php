@@ -9,9 +9,9 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Form\FieldHandler;
+namespace Application\DeskPRO\Form\FieldHandler;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use \Application\CoreBundle\Entity;
 

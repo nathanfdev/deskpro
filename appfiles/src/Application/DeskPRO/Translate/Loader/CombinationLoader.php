@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Translate\Loader;
+namespace Application\DeskPRO\Translate\Loader;
 
 use \Orb\Util\Arrays;
 

@@ -9,12 +9,12 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\HttpFoundation;
+namespace Application\DeskPRO\HttpFoundation;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 /**
  * Session is able to load up a user, their locale etc.

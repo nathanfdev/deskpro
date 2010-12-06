@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="tickets_attachments")
  */
-class TicketAttachment extends \DeskPRO\Domain\DomainObject
+class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

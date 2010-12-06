@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Settings;
+namespace Application\DeskPRO\Settings;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -28,7 +28,7 @@ class Settings implements \ArrayAccess
 	
 	/**
 	 * Plain database connection for raw queries
-	 * @var DeskPRO\DBAL\Connection
+	 * @var Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 
@@ -55,7 +55,7 @@ class Settings implements \ArrayAccess
 
 
 
-	public function __construct(array $settings_paths, \DeskPRO\DBAL\Connection $db = null)
+	public function __construct(array $settings_paths, \Application\DeskPRO\DBAL\Connection $db = null)
 	{
 		$this->settings_paths = $settings_paths;
 		$this->db = $db;

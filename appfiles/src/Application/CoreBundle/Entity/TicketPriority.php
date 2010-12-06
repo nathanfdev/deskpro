@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\TicketPriority")
  * @orm:Table(name="ticket_priorities")
  */
-class TicketPriority extends \DeskPRO\Domain\DomainObject
+class TicketPriority extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

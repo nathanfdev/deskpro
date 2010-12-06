@@ -14,7 +14,7 @@ namespace Application\CoreBundle\DependencyInjection;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
-use DeskPRO\App;
+use Application\DeskPRO\App;
 
 /**
  * Registers basic core stuff
@@ -41,7 +41,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$definition = new Definition('Symfony\\Component\\HttpFoundation\\SessionStorage\\NativeSessionStorage', array());
 		$container->setDefinition('session.storage', $definition);
 
-		$definition = new Definition('DeskPRO\\HttpFoundation\\Session', array(
+		$definition = new Definition('Application\\DeskPRO\\HttpFoundation\\Session', array(
 			new Reference('doctrine.orm.entity_manager'),
 			new Reference('session.storage'),
 		));
@@ -55,7 +55,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 	protected function loadTranslation(ContainerBuilder $container)
 	{
 		// BundleLoader
-		$definition = new Definition('DeskPRO\\Translate\\Loader\\BundleLoader', array(array(
+		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\BundleLoader', array(array(
 			'core' => DP_ROOT . '/src/Application/CoreBundle/Resources/language',
 			'tech' => DP_ROOT . '/src/Application/TechBundle/Resources/language',
 			'user' => DP_ROOT . '/src/Application/UserBundle/Resources/language',
@@ -64,11 +64,11 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$container->setDefinition('deskpro.core.translate_loder_bundle', $definition);
 
 		// DbLoader
-		$definition = new Definition('DeskPRO\\Translate\\Loader\\DbLoader', array(new Reference('database_connection')));
+		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', array(new Reference('database_connection')));
 		$container->setDefinition('deskpro.core.translate_loder_db', $definition);
 
 		// CombinationLoader
-		$definition = new Definition('DeskPRO\\Translate\\Loader\\CombinationLoader');
+		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\CombinationLoader');
 		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loder_bundle')));
 		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loder_db')));
 		$container->setDefinition('deskpro.core.translate_loder', $definition);
@@ -77,7 +77,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$definition->addMethodCall('setCache', array(new Reference('deskpro.cache.phrases', ContainerBuilder::IGNORE_ON_INVALID_REFERENCE)));
 
 		// Now create the translate object
-		$definition = new Definition('DeskPRO\\Translate\\Translate', array(
+		$definition = new Definition('Application\\DeskPRO\\Translate\\Translate', array(
 			new Reference('deskpro.core.translate_loder'),
 		));
 		$container->setDefinition('deskpro.core.translate', $definition);
@@ -90,12 +90,12 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 	protected function loadPhraseTemplateHelper(ContainerBuilder $container)
 	{
 		// Engine helper
-		$definition = new Definition('DeskPRO\\Templating\\Helper\\PhraseHelper', array(new Reference('deskpro.core.translate')));
+		$definition = new Definition('Application\\DeskPRO\\Templating\\Helper\\PhraseHelper', array(new Reference('deskpro.core.translate')));
 		$definition->addTag('templating.helper', array('alias' => 'phrase'));
 		$container->setDefinition('deskpro.templating.helper.phrase', $definition);
 
 		// Then the Twig parser that uses it
-		$definition = new Definition('DeskPRO\\Twig\\Extension\\Helpers', array());
+		$definition = new Definition('Application\\DeskPRO\\Twig\\Extension\\Helpers', array());
 		$definition->addTag('twig.extension');
 		$container->setDefinition('deskpro.twig.extension.helpers', $definition);
 	}
@@ -140,7 +140,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 	 */
 	protected function loadSettings(ContainerBuilder $container)
 	{
-		$definition = new Definition('DeskPRO\\Settings\\Settings', array(
+		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
 			array(
 				'core' => DP_ROOT . '/src/Application/CoreBundle/Resources/settings',
 				'tech' => DP_ROOT . '/src/Application/TechBundle/Resources/settings',

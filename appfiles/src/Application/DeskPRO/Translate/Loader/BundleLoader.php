@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Translate\Loader;
+namespace Application\DeskPRO\Translate\Loader;
 
 /**
  * Loads core from CoreBundle core.php, and tech_whatever as TechBundle whatever.php etc.

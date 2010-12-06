@@ -62,7 +62,7 @@ class PersonScraper extends Scraper
 	
 
 	/**
-	 * @return DeskPRO\Usersource\ScraperHandler\ScraperHandlerInterface
+	 * @return Application\DeskPRO\Usersource\ScraperHandler\ScraperHandlerInterface
 	 */
 	public function getHandler()
 	{

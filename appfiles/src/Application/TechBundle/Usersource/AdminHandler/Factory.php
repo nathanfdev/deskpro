@@ -29,11 +29,11 @@ class Factory
 	{
 		$handler = null;
 		switch ($usersource['handler_class']) {
-			case 'DeskPRO\\Usersource\\Handler\\Twitter':
+			case 'Application\\DeskPRO\\Usersource\\Handler\\Twitter':
 				$handler = new \Application\TechBundle\Usersource\AdminHandler\Twitter($usersource);
 				break;
 
-			case 'DeskPRO\\Usersource\\Handler\\OpenId':
+			case 'Application\\DeskPRO\\Usersource\\Handler\\OpenId':
 				$handler = new \Application\TechBundle\Usersource\AdminHandler\OpenId($usersource);
 				break;
 		}

@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Integration\XenForo\UserShare\ControllerService;
+namespace Application\DeskPRO\Integration\XenForo\UserShare\ControllerService;
 
 /**
  * Base controller sets basic assertions
@@ -38,12 +38,12 @@ class AbstractController extends \XenForo_ControllerPublic_Abstract
 
 	public function responseNoPermission()
 	{
-		return $this->responseView('DeskPRO\\Integration\\XenForo\\View\\SimpleJson', '', array('error' => true, 'error_code' => 'no_permission'));
+		return $this->responseView('Application\\DeskPRO\\Integration\\XenForo\\View\\SimpleJson', '', array('error' => true, 'error_code' => 'no_permission'));
 	}
 
 	public function renderJsonResponse(array $data)
 	{
-		return $this->responseView('DeskPRO\\Integration\\XenForo\\View\\SimpleJson', '', $data);
+		return $this->responseView('Application\\DeskPRO\\Integration\\XenForo\\View\\SimpleJson', '', $data);
 	}
 
 	public function renderJsonErrorResponse($error_code)

@@ -18,7 +18,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="email_sources_blobs")
  */
-class EmailSourceBlob extends \DeskPRO\Domain\DomainObject
+class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

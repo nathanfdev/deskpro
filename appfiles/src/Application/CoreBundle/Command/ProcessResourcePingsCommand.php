@@ -37,7 +37,7 @@ class ProcessResourcePingsCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 	{
 		$em = $this->container->get('doctrine.orm.entity_manager');
 
-		/* @var $queue DeskPRO\Queue\Queue */
+		/* @var $queue Application\DeskPRO\Queue\Queue */
 		$queue = $this->container->get('deskpro.core.queue_factory')->createForQueue('object_updated');
 
 		while ($message = $queue->receive()) {

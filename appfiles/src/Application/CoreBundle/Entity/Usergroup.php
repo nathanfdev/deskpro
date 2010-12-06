@@ -11,7 +11,7 @@
 
 namespace Application\CoreBundle\Entity;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -23,7 +23,7 @@ use Orb\Util\Arrays;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="usergroups")
  */
-class Usergroup extends \DeskPRO\Domain\DomainObject
+class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

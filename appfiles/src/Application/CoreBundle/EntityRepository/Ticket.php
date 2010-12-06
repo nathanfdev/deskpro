@@ -11,7 +11,7 @@
 
 namespace Application\CoreBundle\EntityRepository;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 

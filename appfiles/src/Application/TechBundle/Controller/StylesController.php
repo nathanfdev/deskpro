@@ -136,7 +136,7 @@ class StylesController extends AbstractController
 		$style = $this->getStyleOr404($style_id);
 		$this->tplvars['style'] = $style;
 
-		$template_finder = new \DeskPRO\ResourceScanner\TemplateFiles($this->container);
+		$template_finder = new \Application\DeskPRO\ResourceScanner\TemplateFiles($this->container);
 		$this->tplvars['template_files'] = $template_finder->getTemplates(true);
 
 		return $this->render('TechBundle:Styles:style-template-list.twig');
@@ -155,7 +155,7 @@ class StylesController extends AbstractController
 		$style = $this->getStyleOr404($style_id);
 		$this->tplvars['style'] = $style;
 
-		$template_finder = new \DeskPRO\Style\TemplateFileScanner($this->container);
+		$template_finder = new \Application\DeskPRO\Style\TemplateFileScanner($this->container);
 		$template_files = $template_finder->getTemplates();
 
 		$template_files = Arrays::flatten($template_files);

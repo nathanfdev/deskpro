@@ -8,7 +8,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Usersource\ScraperHandler;
+namespace Application\DeskPRO\Usersource\ScraperHandler;
 
 use \Application\CoreBundle\Entity\Person;
 use \Application\CoreBundle\Entity\PersonScraper;
@@ -54,6 +54,6 @@ abstract class ScraperHandlerInterface
 	 */
 	public function getPersonData(array $scraper_data)
 	{
-		return \DeskPRO\Util::getPersonData($scraper_data);
+		return \Application\DeskPRO\Util::getPersonData($scraper_data);
 	}
 }

@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\HttpKernel;
+namespace Application\DeskPRO\HttpKernel;
 
 use \Symfony\Component\EventDispatcher\Event;
 use \Symfony\Component\EventDispatcher\EventDispatcher;
@@ -52,7 +52,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
         $arguments = $this->resolver->getArguments($request, $controller);
 
 		// is DP controller which has pre/post actions
-		if (isset($controller[0]) AND ($controller[0] instanceof \DeskPRO\HttpKernel\Controller\Controller)) {
+		if (isset($controller[0]) AND ($controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller)) {
 			$controller_obj = $controller[0];
 
 			// Run preaction

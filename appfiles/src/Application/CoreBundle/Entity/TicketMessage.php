@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="tickets_messages")
  */
-class TicketMessage extends \DeskPRO\Domain\DomainObject
+class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

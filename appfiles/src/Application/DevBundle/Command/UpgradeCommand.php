@@ -8,8 +8,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
 
-use \DeskPRO\Build\VersionReader;
-use \DeskPRO\Build\Upgrader;
+use \Application\DeskPRO\Build\VersionReader;
+use \Application\DeskPRO\Build\Upgrader;
 
 class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 {

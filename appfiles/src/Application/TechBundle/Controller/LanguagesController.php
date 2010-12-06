@@ -136,7 +136,7 @@ class LanguagesController extends AbstractController
 		$lang = $this->getLangOr404($lang_id);
 		$this->tplvars['lang'] = $lang;
 
-		$lang_finder = new \DeskPRO\ResourceScanner\LanguageFiles($this->container);
+		$lang_finder = new \Application\DeskPRO\ResourceScanner\LanguageFiles($this->container);
 		$bundled_groups = $lang_finder->getGroups();
 		
 		$phrases = array();
@@ -165,7 +165,7 @@ class LanguagesController extends AbstractController
 		$lang = $this->getLangOr404($lang_id);
 		$this->tplvars['lang'] = $lang;
 
-		$lang_finder = new \DeskPRO\ResourceScanner\LanguageFiles($this->container);
+		$lang_finder = new \Application\DeskPRO\ResourceScanner\LanguageFiles($this->container);
 		$bundled_groups = $lang_finder->getGroups();
 
 		$bundled_groups = Arrays::flatten($bundled_groups);

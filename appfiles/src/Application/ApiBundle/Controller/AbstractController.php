@@ -14,7 +14,7 @@ namespace Application\ApiBundle\Controller;
 /**
  * Base API controller.
  */
-abstract class AbstractController extends \DeskPRO\Controller\AbstractController
+abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
 	/**
 	 * The API key making this request

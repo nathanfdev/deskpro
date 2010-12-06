@@ -18,7 +18,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="labels_tickets")
  */
-class LabelTicket extends \DeskPRO\Domain\DomainObject
+class LabelTicket extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string

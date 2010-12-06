@@ -9,9 +9,9 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Domain;
+namespace Application\DeskPRO\Domain;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 /**
  * The basic entitiy class

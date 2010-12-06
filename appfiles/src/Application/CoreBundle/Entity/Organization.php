@@ -11,8 +11,8 @@
 
 namespace Application\CoreBundle\Entity;
 
-use \DeskPRO\App;
-use \DeskPRO\ORM\Util\Util as ORM_Util;
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\ORM\Util\Util as ORM_Util;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -28,7 +28,7 @@ use \Application\CoreBundle\Entity\PersonFieldDada;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="organizations")
  */
-class Organization extends \DeskPRO\Domain\DomainObject
+class Organization extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

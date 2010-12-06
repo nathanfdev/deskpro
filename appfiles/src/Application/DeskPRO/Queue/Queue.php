@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Queue;
+namespace Application\DeskPRO\Queue;
 
 use \Orb\Util\Strings;
 use \Orb\Util\Util;
@@ -40,7 +40,7 @@ class Queue extends \Zend\Queue\Queue
 		# If the message is not too big, we can just store it in the queue store
 		#------------------------------
 
-		if (strlen($message) < $max_size OR $this->getAdapter() instanceof \DeskPRO\Queue\Adapter\QueueItemEntity) {
+		if (strlen($message) < $max_size OR $this->getAdapter() instanceof \Application\DeskPRO\Queue\Adapter\QueueItemEntity) {
 			return $this->getAdapter()->send($message);
 		}
 

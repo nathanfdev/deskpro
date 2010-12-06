@@ -1,6 +1,6 @@
 <?php
 
-namespace DeskPRO\Usersource;
+namespace Application\DeskPRO\Usersource;
 
 use \Application\CoreBundle\Entity\Person;
 use \Application\CoreBundle\Entity\PersonScraper;

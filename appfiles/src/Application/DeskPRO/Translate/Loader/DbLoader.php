@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Translate\Loader;
+namespace Application\DeskPRO\Translate\Loader;
 
 /**
  * Loads phrases from the database
@@ -18,7 +18,7 @@ class DbLoader implements LoaderInterface
 {
 	/**
 	 * Plain database connection for raw queries
-	 * @var DeskPRO\DBAL\Connection
+	 * @var Application\DeskPRO\DBAL\Connection
 	 */
 	protected $dbconn;
 
@@ -30,7 +30,7 @@ class DbLoader implements LoaderInterface
 
 
 	/**
-	 * @param \DeskPRO\DBAL\Connection $dbconn
+	 * @param \Application\DeskPRO\DBAL\Connection $dbconn
 	 */
 	public function __construct(\DeskPRO\DBAL\Connection $dbconn)
 	{

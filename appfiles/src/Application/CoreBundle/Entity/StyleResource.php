@@ -24,7 +24,7 @@ use Orb\Util\Web;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="style_resources")
  */
-abstract class StyleResource extends \DeskPRO\Domain\DomainObject
+abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

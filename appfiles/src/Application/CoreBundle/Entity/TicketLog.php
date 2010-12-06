@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity
  * @orm:Table(name="tickets_logs")
  */
-class TicketLog extends \DeskPRO\Domain\DomainObject
+class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

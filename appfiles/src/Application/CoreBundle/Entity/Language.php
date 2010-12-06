@@ -24,7 +24,7 @@ use Orb\Util\Arrays;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="languages")
  */
-class Language extends \DeskPRO\Domain\DomainObject
+class Language extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

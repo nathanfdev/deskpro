@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\HttpFoundation\SessionStorage;
+namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;

@@ -9,14 +9,14 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Twig\Loader;
+namespace Application\DeskPRO\Twig\Loader;
 
 use Symfony\Component\Templating\Engine;
 use Symfony\Component\Templating\Storage\Storage;
 use Symfony\Component\Templating\Storage\FileStorage;
 use Symfony\Component\DependencyInjection\ContainerInterface;
 
-use DeskPRO\Entities;
+use Application\DeskPRO\Entities;
 
 use Orb\Arrays;
 use Orb\Strings;

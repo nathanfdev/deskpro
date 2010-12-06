@@ -18,7 +18,7 @@ namespace Application\CoreBundle\Entity;
  *
  * @orm:MappedSuperclass
  */
-abstract class FormFieldData extends \DeskPRO\Domain\DomainObject
+abstract class FormFieldData extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.

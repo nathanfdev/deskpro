@@ -20,7 +20,7 @@ namespace Application\CoreBundle\Entity;
  *     indexes={@orm:Index(name="object_idx", columns={"object_type","object_id"})}
  * )
  */
-class Attachment extends \DeskPRO\Domain\DomainObject
+class Attachment extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int

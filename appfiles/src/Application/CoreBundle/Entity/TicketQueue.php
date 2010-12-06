@@ -17,7 +17,7 @@ namespace Application\CoreBundle\Entity;
  * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\TicketQueue")
  * @orm:Table(name="ticket_queues")
  */
-class TicketQueue extends \DeskPRO\Domain\DomainObject
+class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
@@ -84,11 +84,11 @@ class TicketQueue extends \DeskPRO\Domain\DomainObject
 	/**
 	 * Get the searcher for this.
 	 * 
-	 * @return DeskPRO\Searcher\TicketSearch
+	 * @return Application\DeskPRO\Searcher\TicketSearch
 	 */
 	public function getSearcher()
 	{
-		$searcher = new \DeskPRO\Searcher\TicketSearch();
+		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 
 		foreach ($this->terms as $term) {
 			$data = $term;

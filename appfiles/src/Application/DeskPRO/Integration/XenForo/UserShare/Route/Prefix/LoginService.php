@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO\Integration\XenForo\UserShare\Route\Prefix;
+namespace Application\DeskPRO\Integration\XenForo\UserShare\Route\Prefix;
 
 class LoginService implements \XenForo_Route_Interface
 {

@@ -8,7 +8,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace DeskPRO;
+namespace Application\DeskPRO;
 
 use \Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -73,7 +73,7 @@ class App
 
 	/**
 	 * The Kernel
-	 * @var DeskPRO\Kernel\Kernel
+	 * @var Application\DeskPRO\Kernel\Kernel
 	 */
 	protected static $_kernel = null;
 
@@ -88,7 +88,7 @@ class App
 	/**
 	 * Set the kernel
 	 *
-	 * @param \DeskPRO\Kernel\Kernel $kernel
+	 * @param \Application\DeskPRO\Kernel\Kernel $kernel
 	 */
 	public static function setKernel(\DeskPRO\Kernel\Kernel $kernel)
 	{
@@ -229,7 +229,7 @@ class App
 	/**
 	 * Get the DB abstraction object.
 	 *
-	 * @return DeskPRO\DBAL\Connection
+	 * @return Application\DeskPRO\DBAL\Connection
 	 */
 	public static function getDb()
 	{
@@ -272,7 +272,7 @@ class App
 	/**
 	 * Get the kernel
 	 *
-	 * @return DeskPRO\Kernel\Kernel
+	 * @return Application\DeskPRO\Kernel\Kernel
 	 */
 	public static function getKernel()
 	{
@@ -299,10 +299,10 @@ class App
 
 
 	protected static $_api_handler_names = array(
-		'tickets'           => 'DeskPRO\\Tickets\\Tickets',
-		'tickets.queues'    => 'DeskPRO\\Tickets\\Queues',
-		'tickets.edit'      => 'DeskPRO\\Tickets\\TicketEdit',
-		'tickets.search'    => 'DeskPRO\\Tickets\\TicketSearch',
+		'tickets'           => 'Application\\DeskPRO\\Tickets\\Tickets',
+		'tickets.queues'    => 'Application\\DeskPRO\\Tickets\\Queues',
+		'tickets.edit'      => 'Application\\DeskPRO\\Tickets\\TicketEdit',
+		'tickets.search'    => 'Application\\DeskPRO\\Tickets\\TicketSearch',
 	);
 
 	/**
@@ -409,7 +409,7 @@ class App
 
 		if ($is_cli === null) {
 			$is_cli = false;
-			if (self::getKernel() instanceof \DeskPRO\Kernel\KernelCli) {
+			if (self::getKernel() instanceof \Application\DeskPRO\Kernel\KernelCli) {
 				$is_cli = true;
 			}
 		}

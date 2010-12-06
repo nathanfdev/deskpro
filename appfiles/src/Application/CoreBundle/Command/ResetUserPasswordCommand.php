@@ -2,7 +2,7 @@
 
 namespace Application\CoreBundle\Command;
 
-use \DeskPRO\App;
+use \Application\DeskPRO\App;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
