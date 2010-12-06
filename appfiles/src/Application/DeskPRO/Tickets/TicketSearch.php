@@ -3,8 +3,8 @@
 namespace Application\DeskPRO\Tickets;
 
 use \Application\DeskPRO\App;
-use \Application\CoreBundle\Entity\Person;
-use \Application\CoreBundle\Entity\TicketQueue;
+use \Application\DeskPRO\Entity\Person;
+use \Application\DeskPRO\Entity\TicketQueue;
 use \Symfony\Component\DependencyInjection\ContainerAware;
 
 class TicketSearch

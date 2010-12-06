@@ -11,7 +11,7 @@ namespace Application\DeskPRO\Queue\Adapter;
 
 use \Orb\Util\Strings;
 use \Orb\Util\Util;
-use \Application\CoreBundle\Entity\QueueItem;
+use \Application\DeskPRO\Entity\QueueItem;
 
 
 use \Zend\Queue\Queue;
@@ -133,7 +133,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 			$queue = $this->_queue;
 		}
 
-		$item = new \Application\CoreBundle\Entity\QueueItem();
+		$item = new \Application\DeskPRO\Entity\QueueItem();
 		$item['groupname'] = $queue->getName();
 		$item['data'] = $message;
 

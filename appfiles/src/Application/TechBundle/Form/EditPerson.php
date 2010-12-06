@@ -13,9 +13,9 @@ namespace Application\TechBundle\Form;
 
 use \Application\DeskPRO\App;
 
-use \Application\CoreBundle\Entity\FormField;
-use \Application\CoreBundle\Entity\PersonFieldData;
-use \Application\CoreBundle\Entity\Person;
+use \Application\DeskPRO\Entity\FormField;
+use \Application\DeskPRO\Entity\PersonFieldData;
+use \Application\DeskPRO\Entity\Person;
 
 class EditPerson extends \Orb\Form\Field\Form
 {

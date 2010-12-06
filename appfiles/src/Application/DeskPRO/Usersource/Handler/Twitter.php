@@ -12,7 +12,7 @@ namespace Application\DeskPRO\Usersource\Handler;
 
 use \Application\DeskPRO\App;
 
-use Application\CoreBundle\Entity\Usersource;
+use Application\DeskPRO\Entity\Usersource;
 
 /**
  *

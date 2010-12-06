@@ -2,11 +2,11 @@
 
 namespace Application\DeskPRO\Usersource;
 
-use \Application\CoreBundle\Entity\Person;
-use \Application\CoreBundle\Entity\PersonScraper;
-use \Application\CoreBundle\Entity\PersonScraperAssoc;
-use \Application\CoreBundle\Entity\PersonUsersourceAssoc;
-use \Application\CoreBundle\Entity\Usersource;
+use \Application\DeskPRO\Entity\Person;
+use \Application\DeskPRO\Entity\PersonScraper;
+use \Application\DeskPRO\Entity\PersonScraperAssoc;
+use \Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use \Application\DeskPRO\Entity\Usersource;
 
 class ScrapeDataApplicator
 {

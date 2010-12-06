@@ -64,7 +64,7 @@ class DeskproController extends AbstractController
 		try {
 			$setting =$this->em->findOneBy('DeskPRO:Setting', array('name' => $setting_name));
 		} catch (\Doctrine\ORM\NoResultException $e) {
-			$setting = new \Application\CoreBundle\Entity\Setting();
+			$setting = new \Application\DeskPRO\Entity\Setting();
 		}
 
 		$setting['value'] = isset($_POST['value']) ? $_POST['value'] : '';

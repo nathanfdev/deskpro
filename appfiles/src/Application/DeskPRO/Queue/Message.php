@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Queue;
 
 use \Orb\Util\Strings;
 use \Orb\Util\Util;
-use \Application\CoreBundle\Entity\QueueItem;
+use \Application\DeskPRO\Entity\QueueItem;
 
 
 use \Zend\Queue\Queue;

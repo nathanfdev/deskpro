@@ -11,7 +11,7 @@
 
 namespace Application\TechBundle\CustomField\AdminHandler;
 
-use \Application\CoreBundle\Entity;
+use \Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
 

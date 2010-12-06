@@ -10,8 +10,8 @@
 
 namespace Application\DeskPRO\Usersource\ScraperHandler;
 
-use \Application\CoreBundle\Entity\Person;
-use \Application\CoreBundle\Entity\PersonScraper;
+use \Application\DeskPRO\Entity\Person;
+use \Application\DeskPRO\Entity\PersonScraper;
 
 abstract class ScraperHandlerInterface
 {

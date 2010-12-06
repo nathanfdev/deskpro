@@ -23,13 +23,13 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 {
 	/**
 	 * The person this session belongs to
-	 * @var Application\CoreBundle\Entity\Person
+	 * @var Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
 
 	/**
 	 * The language used for this user
-	 * @var Application\CoreBundle\Entity\Language
+	 * @var Application\DeskPRO\Entity\Language
 	 */
 	protected $language;
 
@@ -38,7 +38,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	/**
 	 * Get the logged in Person
 	 *
-	 * @return Application\CoreBundle\Entity\Person
+	 * @return Application\DeskPRO\Entity\Person
 	 */
 	public function getPerson()
 	{
@@ -54,7 +54,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
 
 		if (!$person) {
-			$person = new \Application\CoreBundle\Entity\PersonGuest();
+			$person = new \Application\DeskPRO\Entity\PersonGuest();
 		}
 
 		$this->person = $person;
@@ -88,7 +88,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	 * etc are gathered from filesystem. Perhaps this needs to change, or maybe
 	 * make a LanguageDefault subclass like we did with PersonGuest.
 	 *
-	 * @return Application\CoreBundle\Entity\Language
+	 * @return Application\DeskPRO\Entity\Language
 	 */
 	public function getLanguage()
 	{

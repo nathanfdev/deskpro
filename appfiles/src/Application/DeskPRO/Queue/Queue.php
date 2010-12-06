@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Queue;
 
 use \Orb\Util\Strings;
 use \Orb\Util\Util;
-use \Application\CoreBundle\Entity\QueueItem;
+use \Application\DeskPRO\Entity\QueueItem;
 
 
 use \Zend\Queue\Queue;
@@ -52,7 +52,7 @@ class Queue extends \Zend\Queue\Queue
 		#------------------------------
 		
 		$em = $this->getOption('em');
-		$item = new \Application\CoreBundle\Entity\QueueItem();
+		$item = new \Application\DeskPRO\Entity\QueueItem();
 		$item['is_dataonly'] = true;
 		$item['data'] = $message;
 		$em->persist($item);

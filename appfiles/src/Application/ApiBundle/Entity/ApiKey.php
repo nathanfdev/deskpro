@@ -10,7 +10,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\CoreBundle\Entity;
+namespace Application\DeskPRO\Entity;
 
 use \Symfony\Component\Validator\Constraints;
 use \Symfony\Component\Validator\Mapping\ClassMetadata;

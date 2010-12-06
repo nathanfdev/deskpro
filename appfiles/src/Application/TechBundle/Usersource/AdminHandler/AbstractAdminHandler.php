@@ -11,7 +11,7 @@
 
 namespace Application\TechBundle\Usersource\AdminHandler;
 
-use \Application\CoreBundle\Entity\Usersource;
+use \Application\DeskPRO\Entity\Usersource;
 
 use \Application\DeskPRO\App;
 

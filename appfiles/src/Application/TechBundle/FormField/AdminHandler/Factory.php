@@ -11,7 +11,7 @@
 
 namespace Application\TechBundle\CustomField\AdminHandler;
 
-use \Application\CoreBundle\Entity\FormField;
+use \Application\DeskPRO\Entity\FormField;
 
 /**
  * Creates an admin handler based off of a particular form field.

@@ -30,7 +30,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 		$this->em = $this->container->get('doctrine.orm.entity_manager');
 
 		// Profile
-		$person = new \Application\CoreBundle\Entity\Person();
+		$person = new \Application\DeskPRO\Entity\Person();
 		$person['password'] = 'pass';
 		$person['first_name'] = 'John';
 		$person['last_name'] = 'Doe';
@@ -41,7 +41,7 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 		$this->em->persist($person);
 		$this->em->flush();
 
-		$email = new \Application\CoreBundle\Entity\PersonEmail();
+		$email = new \Application\DeskPRO\Entity\PersonEmail();
 		$email['email'] = 'admin@example.com';
 		$email['is_validated'] = true;
 		$person->addEmailAddress($email);

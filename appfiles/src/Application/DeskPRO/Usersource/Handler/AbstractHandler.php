@@ -10,7 +10,7 @@
 
 namespace Application\DeskPRO\Usersource\Handler;
 
-use Application\CoreBundle\Entity\Usersource;
+use Application\DeskPRO\Entity\Usersource;
 
 /**
  * A handler takes a usersource and knows how to facilitate create an adapter.
@@ -23,7 +23,7 @@ abstract class AbstractHandler
 	protected $_auth_adapter = null;
 
 	/**
-	 * @var Application\CoreBundle\Entity\Usersource
+	 * @var Application\DeskPRO\Entity\Usersource
 	 */
 	protected $_usersource = null;
 
@@ -31,7 +31,7 @@ abstract class AbstractHandler
 	/**
 	 * Create a new handler based off the usersource.
 	 *
-	 * @param Application\CoreBundle\Entity\Usersource $usersource
+	 * @param Application\DeskPRO\Entity\Usersource $usersource
 	 */
 	public function __construct(Usersource $usersource)
 	{

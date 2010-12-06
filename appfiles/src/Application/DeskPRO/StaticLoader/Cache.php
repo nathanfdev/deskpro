@@ -22,7 +22,7 @@ namespace Application\DeskPRO\StaticLoader;
  *
  * Where 'cache_id' is the key of the config. 'someid' means we'll load cache_someid.
  *
- * @see \Application\CoreBundle\DependencyInjection\CacheExtension
+ * @see \Application\DeskPRO\DependencyInjection\CacheExtension
  */
 class Cache
 {

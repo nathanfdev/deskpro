@@ -11,7 +11,7 @@
 
 namespace Application\TechBundle\Controller;
 
-use \Application\CoreBundle\Entity\PersonField;
+use \Application\DeskPRO\Entity\PersonField;
 
 /**
  * Handles manaing person fields
@@ -119,7 +119,7 @@ class PersonFieldsController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return Application\CoreBundle\Entity\PersonField
+	 * @return Application\DeskPRO\Entity\PersonField
 	 */
 	protected function getFieldOr404($field_id)
 	{

@@ -3,7 +3,7 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage CoreBundle
+ * @subpackage DeskPRO
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
@@ -16,13 +16,13 @@ use \Application\DeskPRO\App;
 use \Orb\Util\Arrays;
 use \Orb\Auth\Identity;
 
-use \Application\CoreBundle\Entity\Person;
-use \Application\CoreBundle\Entity\PersonEmail;
-use \Application\CoreBundle\Entity\PersonFieldData;
-use \Application\CoreBundle\Entity\PersonScraper;
-use \Application\CoreBundle\Entity\PersonScraperAssoc;
-use \Application\CoreBundle\Entity\PersonUsersourceAssoc;
-use \Application\CoreBundle\Entity\Usersource;
+use \Application\DeskPRO\Entity\Person;
+use \Application\DeskPRO\Entity\PersonEmail;
+use \Application\DeskPRO\Entity\PersonFieldData;
+use \Application\DeskPRO\Entity\PersonScraper;
+use \Application\DeskPRO\Entity\PersonScraperAssoc;
+use \Application\DeskPRO\Entity\PersonUsersourceAssoc;
+use \Application\DeskPRO\Entity\Usersource;
 
 class LoginProcessor
 {
@@ -34,25 +34,25 @@ class LoginProcessor
 
 	/**
 	 * The usersource
-	 * @var Application\CoreBundle\Entity\Usersource
+	 * @var Application\DeskPRO\Entity\Usersource
 	 */
 	protected $usersource;
 
 	/**
 	 * The scraper that is tied to the usersource, if any
-	 * @var Application\CoreBundle\Entity\PersonScraper
+	 * @var Application\DeskPRO\Entity\PersonScraper
 	 */
 	protected $person_scraper;
 
 	/**
 	 * The association
-	 * @var Application\CoreBundle\Entity\PersonUsersourceAssoc
+	 * @var Application\DeskPRO\Entity\PersonUsersourceAssoc
 	 */
 	protected $assoc;
 
 	/**
 	 * The person the login represents
-	 * @var Application\CoreBundle\Entity\Person
+	 * @var Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
 

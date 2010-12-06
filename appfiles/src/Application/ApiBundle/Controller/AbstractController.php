@@ -19,7 +19,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	/**
 	 * The API key making this request
 	 * 
-	 * @var Application\CoreBundle\Entity\ApiKey
+	 * @var Application\DeskPRO\Entity\ApiKey
 	 */
 	protected $apikey;
 

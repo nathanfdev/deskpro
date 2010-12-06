@@ -11,9 +11,9 @@
 
 namespace Application\TechBundle\Controller;
 
-use \Application\CoreBundle\Entity\Person;
-use \Application\CoreBundle\Entity\FormField;
-use \Application\CoreBundle\Entity\FormFieldAssociation;
+use \Application\DeskPRO\Entity\Person;
+use \Application\DeskPRO\Entity\FormField;
+use \Application\DeskPRO\Entity\FormFieldAssociation;
 
 /**
  * Handles searching for people

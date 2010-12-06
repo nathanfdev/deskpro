@@ -13,11 +13,11 @@ namespace Application\TechBundle\Controller;
 
 use \Orb\Util\Arrays;
 
-use \Application\CoreBundle\Entity\Person;
-use \Application\CoreBundle\Entity\PersonEmail;
-use \Application\CoreBundle\Entity\PersonContactData;
-use \Application\CoreBundle\Entity\PersonNote;
-use \Application\CoreBundle\Entity\Organization;
+use \Application\DeskPRO\Entity\Person;
+use \Application\DeskPRO\Entity\PersonEmail;
+use \Application\DeskPRO\Entity\PersonContactData;
+use \Application\DeskPRO\Entity\PersonNote;
+use \Application\DeskPRO\Entity\Organization;
 
 use \Application\DeskPRO\App;
 
@@ -424,7 +424,7 @@ class PersonController extends AbstractController
 
 
 	/**
-	 * @return Application\CoreBundle\Entity\Person
+	 * @return Application\DeskPRO\Entity\Person
 	 */
 	protected function getPersonOr404($person_id)
 	{

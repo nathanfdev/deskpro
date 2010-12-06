@@ -76,7 +76,7 @@ class StylesController extends AbstractController
 		if ($style_id) {
 			$style = $this->getStyleOr404($style_id);
 		} else {
-			$style = new \Application\CoreBundle\Entity\Style();
+			$style = new \Application\DeskPRO\Entity\Style();
 		}
 
 		$this->tplvars['style'] = $style;
@@ -179,7 +179,7 @@ class StylesController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return Application\CoreBundle\Entity\Style
+	 * @return Application\DeskPRO\Entity\Style
 	 */
 	protected function getStyleOr404($style_id)
 	{

@@ -11,7 +11,7 @@
 
 namespace Application\TechBundle\Controller;
 
-use \Application\CoreBundle\Entity\TicketQueue;
+use \Application\DeskPRO\Entity\TicketQueue;
 use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;

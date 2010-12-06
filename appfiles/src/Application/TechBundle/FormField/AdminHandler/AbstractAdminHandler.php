@@ -11,7 +11,7 @@
 
 namespace Application\TechBundle\CustomField\AdminHandler;
 
-use \Application\CoreBundle\Entity\CustomDefAbstract;
+use \Application\DeskPRO\Entity\CustomDefAbstract;
 
 use \Application\DeskPRO\App;
 
@@ -26,7 +26,7 @@ abstract class AbstractAdminHandler
 {
 	/**
 	 * The form field definition
-	 * @var Application\CoreBundle\Entity\CustomDefAbstract
+	 * @var Application\DeskPRO\Entity\CustomDefAbstract
 	 */
 	protected $fielddef;
 

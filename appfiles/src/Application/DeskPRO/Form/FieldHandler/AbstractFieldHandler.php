@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Form\FieldHandler;
 
-use \Application\CoreBundle\Entity;
+use \Application\DeskPRO\Entity;
 
 /**
  * A FormField type is a custom field that DeskPRO knows how to handle. This ties together the
@@ -28,7 +28,7 @@ abstract class AbstractFieldHandler implements \Orb\Form\Transformer\Transformer
 	
 	/**
 	 * The form field definition
-	 * @var Application\CoreBundle\Entity\FormField
+	 * @var Application\DeskPRO\Entity\FormField
 	 */
 	protected $fielddef;
 

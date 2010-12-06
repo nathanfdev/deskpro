@@ -11,12 +11,12 @@
 
 namespace Application\TechBundle\Form;
 
-use \Application\CoreBundle\Entity\Usersource;
+use \Application\DeskPRO\Entity\Usersource;
 
 class EditUsersource extends \Orb\Form\Field\Form
 {
 	/**
-	 * @var Application\CoreBundle\Entity\Usersource
+	 * @var Application\DeskPRO\Entity\Usersource
 	 */
 	protected $usersource;
 

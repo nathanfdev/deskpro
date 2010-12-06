@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Form\ContactFieldHandler;
 
 use \Orb\Util\Strings;
 
-use \Application\CoreBundle\Entity;
+use \Application\DeskPRO\Entity;
 
 /**
  * A ContactFieldHandler handles processing of contact fields like address, phone etc.

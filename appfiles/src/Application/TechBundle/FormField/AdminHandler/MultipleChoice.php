@@ -11,8 +11,8 @@
 
 namespace Application\TechBundle\CustomField\AdminHandler;
 
-use \Application\CoreBundle\Entity;
-use \Application\CoreBundle\Entity\FormField;
+use \Application\DeskPRO\Entity;
+use \Application\DeskPRO\Entity\FormField;
 
 use \Application\DeskPRO\App;
 

@@ -11,13 +11,13 @@
 
 namespace Application\TechBundle\Form;
 
-use \Application\CoreBundle\Entity\FormField;
+use \Application\DeskPRO\Entity\FormField;
 
 class EditField extends \Orb\Form\Field\Form
 {
 	/**
 	 * The formfield we're working on
-	 * @var Application\CoreBundle\Entity\FormField
+	 * @var Application\DeskPRO\Entity\FormField
 	 */
 	protected $formfield;
 

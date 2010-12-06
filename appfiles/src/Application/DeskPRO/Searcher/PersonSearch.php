@@ -6,7 +6,7 @@ use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 
-use \Application\CoreBundle\Entity;
+use \Application\DeskPRO\Entity;
 
 class PersonSearch extends SearcherAbstract
 {

@@ -11,7 +11,7 @@
 
 namespace Application\DeskPRO\Form\FieldHandler;
 
-use \Application\CoreBundle\Entity;
+use \Application\DeskPRO\Entity;
 
 /**
  * Text field

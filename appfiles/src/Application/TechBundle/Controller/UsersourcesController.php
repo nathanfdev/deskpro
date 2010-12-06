@@ -71,7 +71,7 @@ class UsersourcesController extends AbstractController
 		if ($usersource_id) {
 			$usersource = $this->getUsersourceOr404($usersource_id);
 		} else {
-			$usersource = new \Application\CoreBundle\Entity\Usersource();
+			$usersource = new \Application\DeskPRO\Entity\Usersource();
 
 			if (!$this->in->getString('usersource.handler_class')) {
 				return $this->render('TechBundle:Usersources:edit-choosetype.twig');
@@ -132,7 +132,7 @@ class UsersourcesController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return Application\CoreBundle\Entity\Usersource
+	 * @return Application\DeskPRO\Entity\Usersource
 	 */
 	protected function getUsersourceOr404($usersource_id)
 	{

@@ -76,7 +76,7 @@ class LanguagesController extends AbstractController
 		if ($lang_id) {
 			$lang = $this->getLangOr404($lang_id);
 		} else {
-			$lang = new \Application\CoreBundle\Entity\Language();
+			$lang = new \Application\DeskPRO\Entity\Language();
 		}
 
 		$this->tplvars['lang'] = $lang;
@@ -188,7 +188,7 @@ class LanguagesController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return Application\CoreBundle\Entity\Language
+	 * @return Application\DeskPRO\Entity\Language
 	 */
 	protected function getLangOr404($lang_id)
 	{

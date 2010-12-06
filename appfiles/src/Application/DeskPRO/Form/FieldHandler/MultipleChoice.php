@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Form\FieldHandler;
 
 use \Application\DeskPRO\App;
 
-use \Application\CoreBundle\Entity;
+use \Application\DeskPRO\Entity;
 
 /**
  * Multi-select field

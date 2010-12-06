@@ -61,39 +61,39 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 	protected function _createMiscData(OutputInterface $output)
 	{
 		// Department
-		$dep_support = $ent = new \Application\CoreBundle\Entity\Department();
+		$dep_support = $ent = new \Application\DeskPRO\Entity\Department();
 		$ent['title'] = 'Support';
 		$this->em->persist($ent);
 
-		$dep_sales = $ent = new \Application\CoreBundle\Entity\Department();
+		$dep_sales = $ent = new \Application\DeskPRO\Entity\Department();
 		$ent['title'] = 'Sales';
 		$this->em->persist($ent);
 
-		$dep_info = $ent = new \Application\CoreBundle\Entity\Department();
+		$dep_info = $ent = new \Application\DeskPRO\Entity\Department();
 		$ent['title'] = 'Information';
 		$this->em->persist($ent);
 
 		// Product
-		$ent = new \Application\CoreBundle\Entity\Product();
+		$ent = new \Application\DeskPRO\Entity\Product();
 		$ent['title'] = 'DeskPRO';
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\Product();
+		$ent = new \Application\DeskPRO\Entity\Product();
 		$ent['title'] = 'DeskPRO Live';
 		$this->em->persist($ent);
 
 		// Priority
-		$ent = new \Application\CoreBundle\Entity\TicketPriority();
+		$ent = new \Application\DeskPRO\Entity\TicketPriority();
 		$ent['title'] = 'Low';
 		$ent['priority'] = 1;
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\TicketPriority();
+		$ent = new \Application\DeskPRO\Entity\TicketPriority();
 		$ent['title'] = 'Medium';
 		$ent['priority'] = 5;
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\TicketPriority();
+		$ent = new \Application\DeskPRO\Entity\TicketPriority();
 		$ent['title'] = 'High';
 		$ent['priority'] = 10;
 		$this->em->persist($ent);
@@ -101,37 +101,37 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		// Category
 		$this->em->flush();
 
-		$ent = new \Application\CoreBundle\Entity\TicketCategory();
+		$ent = new \Application\DeskPRO\Entity\TicketCategory();
 		$ent['title'] = 'How Do I';
 		$ent['department'] = $dep_support;
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\TicketCategory();
+		$ent = new \Application\DeskPRO\Entity\TicketCategory();
 		$ent['title'] = 'Troubleshooting';
 		$ent['department'] = $dep_support;
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\TicketCategory();
+		$ent = new \Application\DeskPRO\Entity\TicketCategory();
 		$ent['title'] = 'Other';
 		$ent['department'] = $dep_support;
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\TicketCategory();
+		$ent = new \Application\DeskPRO\Entity\TicketCategory();
 		$ent['title'] = 'General';
 		$ent['department'] = $dep_sales;
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\TicketCategory();
+		$ent = new \Application\DeskPRO\Entity\TicketCategory();
 		$ent['title'] = 'Feature Enquiry';
 		$ent['department'] = $dep_sales;
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\TicketCategory();
+		$ent = new \Application\DeskPRO\Entity\TicketCategory();
 		$ent['title'] = 'Licensing Enquiry';
 		$ent['department'] = $dep_sales;
 		$this->em->persist($ent);
 
-		$ent = new \Application\CoreBundle\Entity\TicketCategory();
+		$ent = new \Application\DeskPRO\Entity\TicketCategory();
 		$ent['title'] = 'Custom Programming';
 		$ent['department'] = $dep_sales;
 		$this->em->persist($ent);
@@ -142,7 +142,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 	protected function _createUsergroups(OutputInterface $output)
 	{
 		// Guests
-		$group = new \Application\CoreBundle\Entity\Usergroup();
+		$group = new \Application\DeskPRO\Entity\Usergroup();
 		$group->fromArray(array(
 			'title' => 'Guests',
 			'permissions' => array()
@@ -153,7 +153,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$output->writeln("Created Guests usergroup #{$group['id']}");
 
 		// Users
-		$group = new \Application\CoreBundle\Entity\Usergroup();
+		$group = new \Application\DeskPRO\Entity\Usergroup();
 		$group['title'] = 'Users';
 		$this->em->persist($group);
 		$this->em->flush();
@@ -161,7 +161,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$output->writeln("Created Users usergroup #{$group['id']}");
 
 		// Techs
-		$group = new \Application\CoreBundle\Entity\Usergroup();
+		$group = new \Application\DeskPRO\Entity\Usergroup();
 		$group->fromArray(array(
 			'title' => 'Technicians',
 			'permissions' => array()
@@ -172,7 +172,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 		$output->writeln("Created Technicians usergroup #{$group['id']}");
 
 		// Admins
-		$this->admin_group = $group = new \Application\CoreBundle\Entity\Usergroup();
+		$this->admin_group = $group = new \Application\DeskPRO\Entity\Usergroup();
 		$group->fromArray(array(
 			'title' => 'Administrators',
 			'permissions' => array()
@@ -186,12 +186,12 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 	protected function _createNewUser(OutputInterface $output)
 	{
 		// Organization
-		$org = new \Application\CoreBundle\Entity\Organization();
+		$org = new \Application\DeskPRO\Entity\Organization();
 		$org['name'] = 'ACME Corp';
 		$this->em->persist($org);
 
 		// Profile
-		$person = new \Application\CoreBundle\Entity\Person();
+		$person = new \Application\DeskPRO\Entity\Person();
 		$person['password'] = 'pass';
 		$person['first_name'] = 'John';
 		$person['last_name'] = 'Doe';
@@ -202,7 +202,7 @@ class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Comm
 
 		$person->setOrganization($org, 'Marketing Manager');
 
-		$email = new \Application\CoreBundle\Entity\PersonEmail();
+		$email = new \Application\DeskPRO\Entity\PersonEmail();
 		$email['email'] = 'admin@example.com';
 		$email['is_validated'] = true;
 		$person->addEmailAddress($email);
