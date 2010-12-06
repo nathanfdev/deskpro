@@ -184,7 +184,7 @@ class QueueItemEntity extends \Zend\Queue\Adapter\AbstractAdapter
 			$timenow = new \DateTime();
 			$results = $this->em->createQuery("
 				SELECT *
-				FROM CoreBundle:QueueItem i
+				FROM DeskPRO:QueueItem i
 				WHERE
 					i.is_dataonly = ?
 					AND (i.is_ready = ? AND (i.reserved_at IS NULL OR i.timeout_at < ?))

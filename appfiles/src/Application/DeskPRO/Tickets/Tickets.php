@@ -18,7 +18,7 @@ class Tickets
 	public function getTicketsFromIds(array $ids)
 	{
 		return App::getOrm()
-			->getRepository('CoreBundle:Ticket')
+			->getRepository('DeskPRO:Ticket')
 			->getTicketsFromIds($ids);
 	}
 }

@@ -20,13 +20,13 @@ class TicketEdit
 		$options = array();
 
 		if ($personp['is_agent']) {
-			$options['agents'] = App::getOrm()->getRepository('CoreBundle:Person')->getAgentNames();
+			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
 		}
 
-		$options['products']    = App::getOrm()->getRepository('CoreBundle:Product')->getProductNames();
-		$options['departments'] = App::getOrm()->getRepository('CoreBundle:Department')->getDepartmentNames();
-		$options['categories']  = App::getOrm()->getRepository('CoreBundle:TicketCategory')->getAllCategoryNames();
-		$options['priorities']  = App::getOrm()->getRepository('CoreBundle:TicketPriority')->getPriorityNames();
+		$options['products']    = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
+		$options['departments'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
+		$options['categories']  = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getAllCategoryNames();
+		$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 
 		return $options;
 	}

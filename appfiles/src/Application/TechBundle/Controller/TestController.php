@@ -6,7 +6,7 @@ class TestController extends AbstractController
 {
     public function indexAction()
     {
-		$filter = $this->em->getRepository('CoreBundle:TicketQueue')->find(3);
+		$filter = $this->em->getRepository('DeskPRO:TicketQueue')->find(3);
 
 		$searcher = $filter->getSearcher();
 		$searcher->enableArchiveSearch();

@@ -49,7 +49,7 @@ class Local implements \Orb\Auth\Adapter\AdapterInterface
 	{
 		$qb = $this->em->createQueryBuilder();
 		$qb->select('p')
-			->from('CoreBundle:Person', 'p')
+			->from('DeskPRO:Person', 'p')
 			->leftJoin('p.emails', 'e')
 			->where('p.is_user = 1')
 			->setMaxResults(1);

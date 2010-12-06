@@ -195,7 +195,7 @@ class LanguagesController extends AbstractController
 		try {
 			$lang = $this->em->createQuery('
 				SELECT l
-				FROM CoreBundle:Language l
+				FROM DeskPRO:Language l
 				WHERE l.id = ?1'
 			)->setParameter(1, $lang_id)->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {

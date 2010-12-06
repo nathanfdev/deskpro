@@ -27,7 +27,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	{
 		$usersources = $this->em->createQuery('
 			SELECT us
-			FROM CoreBundle:Usersource us
+			FROM DeskPRO:Usersource us
 			INDEX BY us.id
 			WHERE us.is_enabled = ?1
 		')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
@@ -100,7 +100,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 	protected function _processUsersourceLogin($usersource_id)
 	{
-		$usersource = $this->em->find('CoreBundle:Usersource', $usersource_id);
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
 		$adapter = $this->_initUserSourceAdapter($usersource);
 
@@ -151,7 +151,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 	public function authenticateCallbackAction($usersource_id)
 	{
-		$usersource = $this->em->find('CoreBundle:Usersource', $usersource_id);
+		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
 		$adapter = $this->_initUserSourceAdapter($usersource);
 

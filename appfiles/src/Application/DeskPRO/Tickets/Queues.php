@@ -18,7 +18,7 @@ class Queues
 	public function getQueuesForPerson(Person $person)
 	{
 		return App::getOrm()
-			->getRepository('CoreBundle:TicketQueue')
+			->getRepository('DeskPRO:TicketQueue')
 			->getQueuesForPerson($person);
 	}
 
@@ -32,7 +32,7 @@ class Queues
 	public function getQueueFromId($ticket_queue_id)
 	{
 		return App::getOrm()
-			->getRepository('CoreBundle:TicketQueue')
+			->getRepository('DeskPRO:TicketQueue')
 			->find($ticket_queue_id);
 	}
 
@@ -46,7 +46,7 @@ class Queues
 	 */
 	public function getCountForQueue($ticket_queue)
 	{
-		$ticket_queue = App::getOrm()->getRepository('CoreBundle:TicketQueeu')->getTicketQueueFromVar($ticket_queue);
+		$ticket_queue = App::getOrm()->getRepository('DeskPRO:TicketQueeu')->getTicketQueueFromVar($ticket_queue);
 
 		return $ticket_queue->getResultsCount();
 	}
@@ -96,7 +96,7 @@ class Queues
 	 */
 	public function getTicketsFromQueue($ticket_queue, $page = 1, $per_page = 25)
 	{
-		$ticket_queue = App::getOrm()->getRepository('CoreBundle:TicketQueeu')->getTicketQueueFromVar($ticket_queue);
+		$ticket_queue = App::getOrm()->getRepository('DeskPRO:TicketQueeu')->getTicketQueueFromVar($ticket_queue);
 
 		$result_ids = $ticket_queue->getResults();
 
@@ -116,7 +116,7 @@ class Queues
 		$page_ids = $result_ids[$page];
 
 		return App::getOrm()
-			->getRepository('CoreBundle:Ticket')
+			->getRepository('DeskPRO:Ticket')
 			->getTicketsFromIds($page_ids);
 	}
 }

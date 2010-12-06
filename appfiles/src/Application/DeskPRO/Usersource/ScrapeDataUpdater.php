@@ -25,7 +25,7 @@ class ScrapeDataUpdater
 
 		$this->all_scrapers = $em->createQuery("
 			SELECT s
-			FROM CoreBundle:PersonScraper INDEXBY s.id
+			FROM DeskPRO:PersonScraper INDEXBY s.id
 			WHERE s.is_enabled = ?1
 		")->setParam(1, true)->getResults();
 	}

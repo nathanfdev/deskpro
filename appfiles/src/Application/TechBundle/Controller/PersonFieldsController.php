@@ -124,7 +124,7 @@ class PersonFieldsController extends AbstractController
 	protected function getFieldOr404($field_id)
 	{
 		try {
-			$field = $this->em->find('CoreBundle:PersonField', $field_id);
+			$field = $this->em->find('DeskPRO:PersonField', $field_id);
 		} catch (\Doctrine\ORM\NoResultException $e) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no field with ID $field_id");
 		}

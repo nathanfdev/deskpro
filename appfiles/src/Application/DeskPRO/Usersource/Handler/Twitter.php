@@ -47,7 +47,7 @@ class Twitter extends AbstractHandler
 		$twitter_field_id = App::getSetting('core.twitter_field_id');
 		if ($twitter_field_id) {
 			$em = App::getOrm();
-			$field = $em->find('CoreBundle:PersonField', $twitter_field_id);
+			$field = $em->find('DeskPRO:PersonField', $twitter_field_id);
 			$value = $field->getHandler()->transformFormToStored($raw_userinfo['nickname']);
 
 			$person_data['fields'][$twitter_field_id] = $value;
@@ -56,7 +56,7 @@ class Twitter extends AbstractHandler
 		$website_field_id = App::getSetting('core.website_field_id');
 		if ($website_field_id AND !empty($raw_userinfo['url'])) {
 			$em = App::getOrm();
-			$field = $em->find('CoreBundle:PersonField', $website_field_id);
+			$field = $em->find('DeskPRO:PersonField', $website_field_id);
 			$value = $field->getHandler()->transformFormToStored($raw_userinfo['url']);
 
 			$person_data['fields'][$website_field_id] = $value;

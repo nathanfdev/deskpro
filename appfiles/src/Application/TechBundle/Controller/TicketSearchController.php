@@ -76,7 +76,7 @@ class TicketSearchController extends AbstractController
 	{
 		if ($queue_id) {
 			try {
-				$queue = $this->em->find('CoreBundle:TicketQueue', $queue_id);
+				$queue = $this->em->find('DeskPRO:TicketQueue', $queue_id);
 			} catch (\Doctrine\ORM\NoResultException $e) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no queue with ID $queue_id");
 			}

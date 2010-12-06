@@ -1,0 +1,64 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Application\DeskPRO\Entity;
+
+/**
+ * A scraper is something that fetches data from a remote resource. This is the abstract
+ * scraper type, but each different type of scrape defines its own entity and may have
+ * its own dramatically different processing/handling.
+ *
+ * Actual scrapers are also responsible for how to store any scraped data (hence there is no
+ * use in an abstract ScraperData class).
+ *
+ * @orm:MappedSuperclass
+ */
+abstract class Scraper
+{
+	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @GeneratedValue
+	 */
+	protected $id;
+
+	/**
+	 * The handler classname. A handler is created from this usersource, and is responsible for
+	 * creating all the resources needed for a scraper to do its job.
+	 *
+	 * @var string
+	 * @orm:Column(name="handler_class", type="string", length=255)
+	 */
+	protected $handler_class;
+
+	/**
+	 * Options we'll pass to the handler
+	 *
+	 * @var array
+	 * @orm:Column(name="options", type="array")
+	 */
+	protected $options = array();
+
+	/**
+	 * True if this scraper is enabled
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_enabled", type="boolean")
+	 */
+	protected $is_enabled = true;
+
+	/**
+	 * @var Application\DeskPRO\Scraper\Handler\HandlerAbstract
+	 */
+	protected $_handler_instance = null;
+}

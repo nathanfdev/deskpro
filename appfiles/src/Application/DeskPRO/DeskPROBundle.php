@@ -10,6 +10,9 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
 	public function registerExtensions(ContainerBuilder $container)
     {
-
+		$container->registerExtension(new \Application\DeskPRO\DependencyInjection\TwigExtension());
+        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
+        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\DoctrineExtension());
+        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CacheExtension());
     }
 }

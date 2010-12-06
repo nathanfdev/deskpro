@@ -1,3 +1,0 @@
-core_styleres_serv:
-    pattern:  /sr/:resource_id/:resource_filename
-    defaults: { _controller: CoreBundle:StyleResource:serv }

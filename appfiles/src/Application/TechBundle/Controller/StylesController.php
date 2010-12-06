@@ -186,7 +186,7 @@ class StylesController extends AbstractController
 		try {
 			$style = $this->em->createQuery('
 				SELECT s
-				FROM CoreBundle:Style s
+				FROM DeskPRO:Style s
 				WHERE s.id = ?1'
 			)->setParameter(1, $style_id)->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {

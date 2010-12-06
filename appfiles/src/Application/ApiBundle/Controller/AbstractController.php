@@ -76,7 +76,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$person = null;
 		if (isset($this->session) AND $this->session->get('auth_person_id')) {
 			try {
-				$person = $this->em->find('CoreBundle:Person', $this->session->get('auth_person_id'));
+				$person = $this->em->find('DeskPRO:Person', $this->session->get('auth_person_id'));
 			} catch (Exception $e) {}
 		}
 

@@ -28,7 +28,7 @@ class PeopleSearchController extends AbstractController
 	{
 		$people_list = $this->em->createQuery("
 			SELECT p, p_email
-			FROM CoreBundle:Person p
+			FROM DeskPRO:Person p
 			LEFT JOIN p.primary_email p_email
 			ORDER BY p.id DESC
 		")->getResult();
@@ -55,7 +55,7 @@ class PeopleSearchController extends AbstractController
 	{
 		$people_list = $this->em->createQuery("
 			SELECT p, p_email
-			FROM CoreBundle:Person p
+			FROM DeskPRO:Person p
 			LEFT JOIN p.primary_email p_email
 			ORDER BY p.id DESC
 		")->getResult();
@@ -78,7 +78,7 @@ class PeopleSearchController extends AbstractController
 
 		$people_list = $this->em->createQuery("
 			SELECT p, p_email
-			FROM CoreBundle:Person p
+			FROM DeskPRO:Person p
 			LEFT JOIN p.primary_email p_email
 			LEFT JOIN p.emails emails
 			LEFT JOIN p.organization org

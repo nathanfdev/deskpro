@@ -1,5 +1,5 @@
-core:
-  resource: CoreBundle/Resources/config/routing.yml
+#deskpro:
+#  resource: DeskPRO/Resources/config/routing.yml
 
 user:
   resource: UserBundle/Resources/config/routing.yml

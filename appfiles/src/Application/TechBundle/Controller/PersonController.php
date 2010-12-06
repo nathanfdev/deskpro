@@ -88,7 +88,7 @@ class PersonController extends AbstractController
 
 		$notes = $em->createQuery("
 			SELECT n
-			FROM CoreBundle:PersonNote n
+			FROM DeskPRO:PersonNote n
 			WHERE n.person_id = ?1
 			ORDER BY n.id DESC
 		")->setParameter(1, $person['id'])->setMaxResults(5)->execute();
@@ -150,7 +150,7 @@ class PersonController extends AbstractController
 		
 		$notes = $em->createQuery("
 			SELECT n, a
-			FROM CoreBundle:PersonNote n
+			FROM DeskPRO:PersonNote n
 			LEFT JOIN n.agent a
 			WHERE n.person_id = ?1
 			ORDER BY n.id DESC
@@ -411,7 +411,7 @@ class PersonController extends AbstractController
 		$form = new \Application\TechBundle\Form\EditPerson(array('name' => 'edit_person'));
 
 		// Custom fields
-		//$fields = $this->em->getRepository('CoreBundle:PersonField')->getEnabledFields();
+		//$fields = $this->em->getRepository('DeskPRO:PersonField')->getEnabledFields();
 		//$form->setCustomFields($fields);
 
 		$form->setPerson($person);
@@ -429,7 +429,7 @@ class PersonController extends AbstractController
 	protected function getPersonOr404($person_id)
 	{
 		try {
-			$person = $this->em->find('CoreBundle:Person', $person_id);
+			$person = $this->em->find('DeskPRO:Person', $person_id);
 		} catch (\Doctrine\ORM\NoResultException $e) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no person with ID $person_id");
 		}

@@ -96,7 +96,7 @@ class LoginProcessor
 		#------------------------------
 		
 		$em = App::getOrm();
-		$assoc_repos = $em->getRepository('CoreBundle:PersonUsersourceAssoc');
+		$assoc_repos = $em->getRepository('DeskPRO:PersonUsersourceAssoc');
 
 		$em->beginTransaction();
 
@@ -173,7 +173,7 @@ class LoginProcessor
 
 		if (!empty($person_data['fields'])) {
 			foreach ($person_data['fields'] as $field_id => $data) {
-				$field_def = $em->find('CoreBundle:PersonField', $field_id);
+				$field_def = $em->find('DeskPRO:PersonField', $field_id);
 				$field_data = $this->person->getField($field_def['id']);
 
 				if (!$field_data) {
@@ -191,7 +191,7 @@ class LoginProcessor
 		// Good time to apply "user rules", or post-registration rules.
 		// For now, just add new users to the correct Registered usergroup
 		if ($this->is_new_person) {
-			$usergroup = $em->find('CoreBundle:Usergroup', 4); // TODO this is an admin group for now for testing
+			$usergroup = $em->find('DeskPRO:Usergroup', 4); // TODO this is an admin group for now for testing
 			$this->person->addUsergroup($usergroup);
 		}
 

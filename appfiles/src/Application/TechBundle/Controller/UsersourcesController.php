@@ -27,7 +27,7 @@ class UsersourcesController extends AbstractController
 	{
 		$all_usersources = $this->em->createQuery("
 			SELECT us
-			FROM CoreBundle:Usersource us
+			FROM DeskPRO:Usersource us
 			ORDER BY us.display_order ASC
 		")->getResult();
 
@@ -137,7 +137,7 @@ class UsersourcesController extends AbstractController
 	protected function getUsersourceOr404($usersource_id)
 	{
 		try {
-			$usersource = $this->em->find('CoreBundle:Usersource', $usersource_id);
+			$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 		} catch (\Doctrine\ORM\NoResultException $e) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no usersource with ID $usersource_id");
 		}

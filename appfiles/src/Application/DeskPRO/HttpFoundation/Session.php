@@ -49,7 +49,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 		if ($person_id) {
 			try {
-				$person = App::getOrm()->find('CoreBundle:Person', $person_id);
+				$person = App::getOrm()->find('DeskPRO:Person', $person_id);
 			} catch (\Doctrine\ORM\NoResultException $e) {}
 		}
 

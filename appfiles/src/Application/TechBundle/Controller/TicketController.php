@@ -23,7 +23,7 @@ class TicketController extends AbstractController
 {
 	public function viewAction($ticket_id)
 	{
-		$ticket = $this->em->getRepository('CoreBundle:Ticket')->find($ticket_id);
+		$ticket = $this->em->getRepository('DeskPRO:Ticket')->find($ticket_id);
 		$person_inner_tab = $this->forward('TechBundle:Person:view', array('person_id' => $ticket['person_id']))->getContent();
 
 		return $this->render('TechBundle:Ticket:view.twig', array(

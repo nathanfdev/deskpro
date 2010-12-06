@@ -221,7 +221,7 @@ abstract class DomainObject implements \ArrayAccess
 
 		$em = App::getOrm();
 
-		return $em->getRepository("CoreBundle:$entity");
+		return $em->getRepository("DeskPRO:$entity");
 	}
 	
 	############################################################################
