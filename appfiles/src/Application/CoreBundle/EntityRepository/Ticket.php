@@ -1,0 +1,41 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris@nadeau.ws>
+ */
+
+namespace Application\CoreBundle\EntityRepository;
+
+use \DeskPRO\App;
+
+use \Doctrine\ORM\EntityRepository;
+
+class Ticket extends EntityRepository
+{
+	public function getTicketsFromIds(array $ids)
+	{
+		// Only valid ID's please :)
+		// Do this because Doctrine doesnt have proper IN()
+		// escaping until 2.1
+		$ids = array_filter($ids, function ($val) {
+			if (is_int($val) OR (int)$val == (string)$val) {
+				return true;
+			}
+			return false;
+		});
+
+		$tickets = $this->em->createQuery("
+			SELECT t
+			FROM CoreBundle:Ticket t
+			WHERE t.id IN(" . implode(',', $results) . ")
+			ORDER BY t.id ASC
+		")->execute();
+
+		return $tickets;
+	}
+}

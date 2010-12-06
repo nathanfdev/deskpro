@@ -21,7 +21,7 @@ abstract class DomainObject implements \ArrayAccess
 	const TOARRAY_NOOP = 1;
 	const TOARRAY_DEEP = 2;
 	const TOARRAY_ONLY_PRIMATIVES = 4;
-	const TOARRAY_LOAD_UNLOADED = 6;
+	const TOARRAY_LOAD_UNLOADED = 8;
 
 	/**
 	 * An array of properties that have been changed through one of the accessor

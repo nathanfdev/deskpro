@@ -16,7 +16,7 @@ use Orb\Util\Arrays;
 /**
  * A note is a private note added by an agent to a persons account.
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\PersonNote")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="people_notes")
  */

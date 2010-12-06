@@ -23,11 +23,64 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 	 */
 	protected $apikey;
 
+	/**
+	 * Flag set in other API controllers that requires a person
+	 * to perform any actions.
+	 */
+	protected $require_person = true;
+
 
 	
 	protected function init()
 	{
 		$this->apikey = $this['deskpro.api.requestapikey'];
+	}
+
+
+
+	/**
+	 * Always require a valid API key.
+	 */
+	public function preAction($action, $arguments = null)
+	{
+		if ($this->apikey === null) {
+			return $this->createApiErrorResponse(
+				'invalid_api_key',
+				'Invalid API key',
+				'401'
+			);
+		}
+
+		if ($this->require_person AND !$this->getPersonContext()) {
+			return $this->createApiErrorResponse(
+				'invalid_person',
+				'Invalid Person',
+				'401'
+			);
+		}
+	}
+
+
+	
+	/**
+	 * If an action is done on the behalf of a person, then we'll need to have
+	 * those credentials passed.
+	 *
+	 * @return Person
+	 */
+	public function getPersonContext()
+	{
+		// TODO: Work out how to auth other sites or apps etc
+		// oauth?
+
+		$person = null;
+		if (isset($this->session) AND $this->session->get('auth_person_id')) {
+			try {
+				$person = $this->em->find('CoreBundle:Person', $this->session->get('auth_person_id'));
+			} catch (Exception $e) {}
+		}
+
+		return $person;
 	}
 
 
@@ -65,21 +118,5 @@ abstract class AbstractController extends \DeskPRO\Controller\AbstractController
 			'error_code' => $error_code,
 			'error_message' => $error_message
 		), $status);
-	}
-
-
-	
-	/**
-	 * Called when an API key does not have permission to access a certain action
-	 * 
-	 * @return Reponse
-	 */
-	public function apiKeyRequriedAction()
-	{
-		return $this->createApiErrorResponse(
-			'invalid_api_key',
-			'API key is invalid or does not have permission to use this resource',
-			401
-		);
 	}
 }

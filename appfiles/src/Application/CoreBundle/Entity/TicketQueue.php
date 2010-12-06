@@ -14,7 +14,7 @@ namespace Application\CoreBundle\Entity;
 /**
  * Ticket queues
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\CoreBundle\EntityRepository\TicketQueue")
  * @orm:Table(name="ticket_queues")
  */
 class TicketQueue extends \DeskPRO\Domain\DomainObject
@@ -63,6 +63,22 @@ class TicketQueue extends \DeskPRO\Domain\DomainObject
 	 */
 	protected $terms;
 
+	/**
+	 * Results from the last search
+	 * @var array
+	 */
+	protected $_results = null;
+
+
+
+	/**
+	 * Reset results so next calls will re-do the search.
+	 */
+	public function resetResults()
+	{
+		$this->_results = null;
+	}
+
 	
 
 	/**
@@ -86,5 +102,25 @@ class TicketQueue extends \DeskPRO\Domain\DomainObject
 		}
 
 		return $searcher;
+	}
+
+
+	public function getResults()
+	{
+		if ($this->_results !== null) return $this->_results;
+
+		$searcher = $this->getSearcher();
+
+		//TODO remove when ready for real searches
+		$searcher->enableArchiveSearch();
+
+		$this->_results = $searcher->getMatches();
+		
+		return $this->_results;
+	}
+
+	public function getResultsCount()
+	{
+		return count($this->getResults());
 	}
 }

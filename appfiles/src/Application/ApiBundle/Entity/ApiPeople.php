@@ -19,15 +19,16 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * API keys are codes that authorize requests against the DeskPRO.
+ * Some API calls are done on behalf of a user. These map keys to authorized
+ * users.
  *
  * @orm:Entity
- * @orm:Table(name="api_keys")
+ * @orm:Table(name="api_people")
  */
-class ApiKey extends \DeskPRO\Domain\DomainObject
+class ApiPeople extends \DeskPRO\Domain\DomainObject
 {
 	/**
-	 * @var string
+	 * @var int
 	 * @orm:Id
 	 * @Column(name="api_key", type="string", length=50)
 	 */
@@ -35,22 +36,34 @@ class ApiKey extends \DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="api_secret", type="string", length=50)
+	 * @orm:Id
+	 * @Column(name="person_id", type="integer")
 	 */
-	protected $api_secret;
+	protected $person_id;
+	
+	/**
+	 * @var string
+	 * @Column(name="secret_key", type="string", length=30)
+	 */
+	protected $token;
+
+	/**
+	 * @var string
+	 * @Column(name="secret_key", type="string", length=30)
+	 */
+	protected $token_secret;
 
 	/**
 	 * A note or description about the key (ie what its used for).
 	 *
 	 * @var string
-	 * @orm:Column(name="note", type="text")
+	 * @Column(name="note", type="text")
 	 */
 	protected $note = '';
 
 
 	public function init()
 	{
-		$this->api_key    = Strings::random(50, Strings::CHARS_KEY);
-		$this->api_secret = Strings::random(50, Strings::CHARS_KEY);
+		$this->api_key = Strings::random(30, Strings::CHARS_KEY);
 	}
 }

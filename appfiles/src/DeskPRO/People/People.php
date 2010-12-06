@@ -1,0 +1,22 @@
+<?php
+
+namespace DeskPRO\Tickets;
+
+use \DeskPRO\App;
+use \Application\CoreBundle\Entity\Person;
+
+class Tickets
+{
+	/**
+	 * Get an array of tickets from the passed IDs.
+	 *
+	 * @param array $ids
+	 * @return array
+	 */
+	public function getNotesForPerson(array $ids)
+	{
+		return App::getOrm()
+			->getRepository('CoreBundle:Ticket')
+			->getTicketsFromIds($ids);
+	}
+}

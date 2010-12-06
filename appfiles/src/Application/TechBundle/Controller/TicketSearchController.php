@@ -28,34 +28,19 @@ class TicketSearchController extends AbstractController
 
 	public function filtersPaneAction()
 	{
-		$filters = $this->em->createQuery("
-			SELECT q
-			FROM CoreBundle:TicketQueue q
-			WHERE q.person_id = ?1 OR q.is_global = true
-		")->setParameter(1, $this->person['id'])->execute();
+		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
 		return $this->render('TechBundle:TicketSearch:pane-filters.twig', array(
-			'filters' => $filters
+			'filters' => $queues
 		));
 	}
 
 	public function runFilterAction($filter_id)
 	{
-		$filter = $this->em->getRepository('CoreBundle:TicketQueue')->find($filter_id);
-		$searcher = $filter->getSearcher();
-		$searcher->enableArchiveSearch();
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
 
-		$results = $searcher->getMatches();
-
-		$tickets = false;
-		if ($results) {
-			$tickets = $this->em->createQuery("
-				SELECT t
-				FROM CoreBundle:Ticket t
-				WHERE t.id IN(" . implode(',', $results) . ")
-				ORDER BY t.id ASC
-			")->execute();
-		}
+		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($filter_id, $page, 25);
 
 		return $this->render('TechBundle:TicketSearch:filter-results.twig', array(
 			'tickets' => $tickets
@@ -71,11 +56,7 @@ class TicketSearchController extends AbstractController
 	 */
 	public function listQueuesAction()
 	{
-		$queues = $this->em->createQuery("
-			SELECT q
-			FROM CoreBundle:TicketQueue q
-			WHERE q.is_global = true OR q.person_id = ?1
-		")->setParameter(1, $this->person['id'])->execute();
+		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
 		return $this->render('TechBundle:TicketSearch:queues-list.twig', array(
 			'queues' => $queues
@@ -103,12 +84,7 @@ class TicketSearchController extends AbstractController
 			$queue = new TicketQueue;
 		}
 
-		$term_options = array();
-		$term_options['agents']      = $this->em->getRepository('CoreBundle:Person')->getAgentNames();
-		$term_options['products']    = $this->em->getRepository('CoreBundle:Product')->getProductNames();
-		$term_options['departments'] = $this->em->getRepository('CoreBundle:Department')->getDepartmentNames();
-		$term_options['categories']  = $this->em->getRepository('CoreBundle:TicketCategory')->getAllCategoryNames();
-		$term_options['priorities']  = $this->em->getRepository('CoreBundle:TicketPriority')->getPriorityNames();
+		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
 
 		if ($this->isPostRequest()) {
 			$errors = $this->_processEditQueue($queue);

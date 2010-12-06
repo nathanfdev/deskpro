@@ -697,4 +697,30 @@ class Person extends \DeskPRO\Domain\DomainObject
 			$this->date_created = new \DateTime();
 		}
 	}
+
+
+
+	/**
+	 * Get a Person ID from some parameter that might be a person, already a
+	 * person ID, or some object that knows about a person ID.
+	 * 
+	 * @param mixed $person
+	 * @return int
+	 */
+	public static function smartPersonId($person)
+	{
+		if (is_int($person)) {
+			return $person;
+		} elseif (ctype_digit($person)) {
+			return (int)$person;
+		} elseif (\is_object($person)) {
+			if ($person instanceof Person) {
+				return (int)$person['id'];
+			}
+		} elseif (isset($person['person_id'])) {
+			return (int)$person['person_id'];
+		}
+
+		return null;
+	}
 }

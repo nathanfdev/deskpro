@@ -735,12 +735,12 @@ class Arrays
 	 * Set $default to Arrays::REDUCE_IGNORE_UNSET if you do not want to
 	 * include keys that don't exist in the original array.
 	 *
-	 * @param   array  $keys      What keys to preserve
 	 * @param   array  $array     The original array
+	 * @param   array  $keys      What keys to preserve
 	 * @param   mixed  $default   The default value to set, if the original array doesn't have a key
 	 * @return  array
 	 */
-	public static function reduceToKeys(array $keys, array $array, $default = self::REDUCE_IGNORE_UNSET)
+	public static function reduceToKeys(array $array, array $keys, $default = self::REDUCE_IGNORE_UNSET)
 	{
 	    $ret = array();
 
@@ -753,6 +753,26 @@ class Arrays
 	    }
 
 	    return $ret;
+	}
+
+
+	
+	/**
+	 * Run reduceToKeys() on an array of arrays. Useful on collections for example.
+	 *
+	 * @param array $mutli_array The original array
+	 * @param array $keys        What keys to preserve
+	 * @param mixed $default    The default value to set, if the orig array doesn't have a key
+	 * @return array
+	 */
+	public static function reduceToKeysMulti(array $mutli_array, array $keys, $default = self::REDUCE_IGNORE_UNSET)
+	{
+		$ret = array();
+		foreach ($mutli_array as $k => $v) {
+			$ret[$k] = self::reduceToKeys($v, $keys, $default);
+		}
+
+		return $ret;
 	}
 
 

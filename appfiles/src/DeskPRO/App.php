@@ -77,6 +77,12 @@ class App
 	 */
 	protected static $_kernel = null;
 
+	/**
+	 * Array of instantiated API handlers
+	 * @var array
+	 */
+	protected static $_api_handlers = null;
+
 	
 
 	/**
@@ -289,6 +295,40 @@ class App
 	{
 		$settings = self::get(self::SERVICE_SETTINGS);
 		return $settings->get($name);
+	}
+
+
+	protected static $_api_handler_names = array(
+		'tickets'           => 'DeskPRO\\Tickets\\Tickets',
+		'tickets.queues'    => 'DeskPRO\\Tickets\\Queues',
+		'tickets.edit'      => 'DeskPRO\\Tickets\\TicketEdit',
+		'tickets.search'    => 'DeskPRO\\Tickets\\TicketSearch',
+	);
+
+	/**
+	 * Get an API handler. It will be instantiated if it hasn't been already.
+	 * This is a DeskPRO-specific way to instantiate services that doesn't use
+	 * the usual DI handler used in Symfony.
+	 *
+	 * They will likely move to a dedicated DI later. For now, just hard-code
+	 * them in here.
+	 * 
+	 * @param string $name Name of the API handler
+	 */
+	public static function getApi($name)
+	{
+		if (isset(self::$_api_handlers[$name])) {
+			return self::$_api_handlers[$name];
+		}
+
+		if (!isset(self::$_api_handler_names[$name])) {
+			throw new \OutOfBoundsException("API handler does not exist");
+		}
+
+		$classname = self::$_api_handler_names[$name];
+		self::$_api_handlers[$name] = new $classname();
+
+		return self::$_api_handlers[$name];
 	}
 
 

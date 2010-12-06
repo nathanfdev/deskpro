@@ -10,8 +10,6 @@
 
 namespace DeskPRO\Templating;
 
-
-
 /**
  * Customized template engine that we can assign shared variables to, and also makes the default
  * renderer twig.
@@ -32,6 +30,7 @@ class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine
 		if ($parameters) {
 			$all_params = array_merge($all_params, $parameters);
 		}
+
 		return $content = parent::render($name, $all_params);
 	}
 

@@ -2,6 +2,9 @@
 /.idea/
 /nbproject/
 /catalog.xml
+/.settings/
+/.buildpath
+/.project
 
 # cache and log files
 /appfiles/sys/cache/

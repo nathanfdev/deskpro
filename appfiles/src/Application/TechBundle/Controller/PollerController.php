@@ -49,21 +49,7 @@ class PollerController extends AbstractController
 
 	public function getFilterCountsMessage()
 	{
-		$filters = $this->em->createQuery("
-			SELECT q
-			FROM CoreBundle:TicketQueue q
-			WHERE q.person_id = ?1 OR q.is_global = true
-		")->setParameter(1, $this->person['id'])->execute();
-
-		$all_counts = array();
-
-		foreach ($filters as $filter) {
-			$searcher = $filter->getSearcher();
-			$searcher->enableArchiveSearch();//todo
-			$count = count($searcher->getMatches());
-
-			$all_counts[$filter['id']] = $count;
-		}
+		$all_counts = $queues = App::getApi('tickets.queues')->getAllCountsForPersonQueues($this->person);
 
 		return array('filters.counts', $all_counts);
 	}
