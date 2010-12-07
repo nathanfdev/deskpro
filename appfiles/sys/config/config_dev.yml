@@ -4,9 +4,9 @@ imports:
 parameters:
     kernel.debug: true
 
-webprofiler.config:
-  toolbar: true
-  intercept_redirects: false
+#webprofiler.config:
+#  toolbar: true
+#  intercept_redirects: false
 
 twig.config:
   auto_reload: true

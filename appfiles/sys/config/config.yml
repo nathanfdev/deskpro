@@ -18,7 +18,7 @@ services:
 app.config:
   charset: UTF-8
   router: { resource: "%kernel.root_dir%/config/routing.yml" }
-  profiler: { only_exceptions: false }
+#  profiler: { only_exceptions: false }
   templating:
     escaping: htmlspecialchars
     assets_base_urls: "/dp_400/static" # root paths like this need to have basepath prepended
