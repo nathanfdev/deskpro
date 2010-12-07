@@ -1,12 +1,13 @@
-#deskpro:
-#  resource: DeskPRO/Resources/config/routing.yml
-
 user:
   resource: UserBundle/Resources/config/routing.yml
 
 tech:
   prefix: /tech
   resource: TechBundle/Resources/config/routing.yml
+
+admin:
+  prefix: /admin
+  resource: AdminBundle/Resources/config/routing.yml
 
 dev:
   prefix: /dev

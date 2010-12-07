@@ -1,0 +1,11 @@
+<div class="block">
+	<h3>Styles</h3>
+	<div class="content">
+		{% for style in all_styles %}
+			{% if style.depth %}
+				{% for i in 0..style.depth %}--{% endfor %}
+			{% endif %}
+			<a href="{% path 'admin_styles_showstyle' with ['style_id': style.id] %}">{{style.title}}</a>
+		{% endfor %}
+	</div>
+</div>

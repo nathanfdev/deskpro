@@ -72,6 +72,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 			new \Symfony\Bundle\ZendBundle\ZendBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
+			new \Application\AdminBundle\AdminBundle(),
             new \Application\TechBundle\TechBundle(),
             new \Application\UserBundle\UserBundle(),
             new \Application\ApiBundle\ApiBundle(),

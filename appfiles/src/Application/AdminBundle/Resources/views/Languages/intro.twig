@@ -1,0 +1,52 @@
+{% extends 'AdminBundle::layout.twig' %}
+{% block content %}
+
+<div class="block"><div class="content">
+	<h2>Introduction to Languages</h2>
+	<div class="inner">
+		<p>
+			Languages control the <span class="highlight">words and phrases</span> used in your helpdesk. By editing a language,
+			you can changes phrases or create new ones to suit your needs.
+		</p>
+		<p>
+			Many areas of your helpdesk are implemented using the language system to make it easy to translate all aspects of
+			the system. For example, category titles are actually phrases in the language system that you can easily translate
+			to other languages.
+		</p>
+		<p>
+			Any language can have <span class="highlight">sub-languages</span> that inherit all phrases from their parents. This allows you to
+			create similar languages that only change in some specific way (for example, maybe you only want to change 1 word).
+		</p>
+	</div>
+</div></div>
+
+{% if has_no_langs %}
+	<div class="block"><div class="content">
+		<h2>Create a Style</h2>
+		<div class="inner">
+			<p>
+				You currently have no languages defined. This means that the default English language is always used. Create a new language
+				to start customizing phrases. Don't worry, you can revert changes at any time if you make a mistake and
+				the language won't be publicly visible until you choose to enable it.
+			</p>
+			<form action="{% path 'admin_langs_newlang' %}" method="get">
+				<div class="group navform wat-cf">
+					<button class="button" type="submit">
+						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Create a new language
+					</button>
+				</div>
+			</form>
+		</div>
+	</div></div>
+{% endif %}
+
+
+{% endblock %}
+{% block sidebar %}
+	<div class="block notice">
+		<h4>Need Help?</h4>
+		<p>
+			Read the <a href="">help pages</a> regarding languages for more information about things like how phrases and inheritance work.
+		</p>
+	</div>
+{% endblock %}

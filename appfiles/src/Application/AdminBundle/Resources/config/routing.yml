@@ -1,0 +1,155 @@
+admin_dashboard:
+  pattern: /
+  defaults: { _controller: AdminBundle:Main:index }
+
+admin_test:
+  pattern: /test
+  defaults: { _controller: AdminBundle:Test:index }
+
+################################################################################
+# Styles
+################################################################################
+
+admin_styles:
+  pattern: /styles
+  defaults: { _controller: AdminBundle:Styles:index }
+
+admin_styles_intro:
+  pattern: /styles/intro
+  defaults: { _controller: AdminBundle:Styles:intro }
+
+admin_styles_showstyle:
+  pattern: /styles/:style_id
+  defaults: { _controller: AdminBundle:Styles:showStyle }
+  requirements: { style_id: "\d+" }
+
+admin_styles_editstyle:
+  pattern: /styles/:style_id/edit
+  defaults: { _controller: AdminBundle:Styles:editStyle }
+  requirements: { style_id: "\d+" }
+
+admin_styles_newstyle:
+  pattern: /styles/new-style
+  defaults: { _controller: AdminBundle:Styles:editStyle, style_id: 0 }
+
+admin_styles_resources:
+  pattern: /styles/:style_id/resources
+  defaults: { _controller: AdminBundle:Styles:styleResourceList }
+  requirements: { style_id: "\d+" }
+
+admin_styles_templates:
+  pattern: /styles/:style_id/templates
+  defaults: { _controller: AdminBundle:Styles:styleTemplateList }
+  requirements: { style_id: "\d+" }
+
+admin_styles_edittemplate:
+  pattern: /styles/:style_id/templates/:template_name
+  defaults: { _controller: AdminBundle:Styles:editTemplate }
+  requirements: { style_id: "\d+" }
+
+
+################################################################################
+# Languages
+################################################################################
+
+admin_langs:
+  pattern: /languages
+  defaults: { _controller: AdminBundle:Languages:index }
+
+admin_langs_intro:
+  pattern: /languages/intro
+  defaults: { _controller: AdminBundle:Languages:intro }
+
+admin_langs_editlang:
+  pattern: /languages/:lang_id/edit
+  defaults: { _controller: AdminBundle:Languages:editLang }
+  requirements: { lang_id: "\d+" }
+
+admin_langs_newlang:
+  pattern: /languages/new-language
+  defaults: { _controller: AdminBundle:Languages:editLang, lang_id: 0 }
+
+admin_langs_phrases:
+  pattern: /languages/:lang_id/phrases
+  defaults: { _controller: AdminBundle:Languages:listPhrases}
+  requirements: { lang_id: "\d+", phrase_group: null }
+
+admin_langs_editphrase:
+  pattern: /languages/:lang_id/edit-phrase/:phrase_name
+  defaults: { _controller: AdminBundle:Languages:editPhrase }
+  requirements: { lang_id: "\d+" }
+
+
+################################################################################
+# Usersources
+################################################################################
+
+admin_usersources:
+  pattern: /usersources
+  defaults: { _controller: AdminBundle:Usersources:index }
+
+admin_usersources_intro:
+  pattern: /usersources/intro
+  defaults: { _controller: AdminBundle:Usersources:intro }
+
+admin_usersources_info:
+  pattern: /usersources/:usersource_id
+  defaults: { _controller: AdminBundle:Usersources:info }
+  requirements: { usersource_id: "\d+" }
+
+admin_usersources_edit:
+  pattern: /usersources/:usersource_id/edit
+  defaults: { _controller: AdminBundle:Usersources:edit }
+  requirements: { usersource_id: "\d+" }
+
+admin_usersources_new:
+  pattern: /usersources/new-usersource
+  defaults: { _controller: AdminBundle:Usersources:edit, usersource_id: 0 }
+
+################################################################################
+# API Keys
+################################################################################
+
+admin_api:
+  pattern: /api
+  defaults: { _controller: AdminBundle:Api:index }
+
+admin_api_intro:
+  pattern: /api/intro
+  defaults: { _controller: AdminBundle:Api:intro }
+
+admin_api_keyinfo:
+  pattern: /api/key/:apikey
+  defaults: { _controller: AdminBundle:Api:infoKey }
+  requirements: { usersource_id: "\d+" }
+
+admin_api_editkey:
+  pattern: /api/key/:apikey/edit
+  defaults: { _controller: AdminBundle:Api:editKey }
+
+admin_api_newkey:
+  pattern: /api/new-key
+  defaults: { _controller: AdminBundle:Api:editKey, apikey: 0 }
+
+
+################################################################################
+# Person Fields
+################################################################################
+
+admin_personfields:
+  pattern: /person-fields
+  defaults: { _controller: AdminBundle:PersonFields:index }
+
+admin_personfields_new_choosetype:
+  pattern: /person-fields/new-choose-type
+  defaults: { _controller: AdminBundle:PersonFields:newChooseType, field_id: 0 }
+
+admin_personfields_edit:
+  pattern: /person-fields/:field_id/edit
+  defaults: { _controller: AdminBundle:PersonFields:edit }
+  requirements: { field_id: "\d+" }
+
+admin_personfields_test:
+  pattern: /person-fields/:field_id/test
+  defaults: { _controller: AdminBundle:PersonFields:test }
+  requirements: { field_id: "\d+" }

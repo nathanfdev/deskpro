@@ -1,0 +1,51 @@
+{% extends 'AdminBundle::layout.twig' %}
+{% block content %}
+
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">Usersource Types</h2>
+		<div class="inner">
+			<form action="{% path 'admin_usersources_new' %}" class="form">
+				<table class="table">
+					<tr>
+						<th class="first" width="10">&nbsp;</th>
+						<th>Type</th>
+					</tr>
+					<tr class="even">
+						<td><input type="radio" name="usersource[handler_class]" value="DeskPRO\Usersource\Handler\Twitter" /></td>
+						<td>
+							<strong>Twitter</strong><br />
+							The Twitter usersource will allow your users to log in via their Twitter profile, and profiles
+							will automatically show a users latest tweets.
+						</td>
+					</tr>
+					<tr class="even">
+						<td><input type="radio" name="usersource[handler_class]" value="DeskPRO\Usersource\Handler\OpenId" /></td>
+						<td>
+							<strong>OpenID</strong><br />
+							The OpenID usersource will allow users to log in using any OpenID provider such as Google and Wordpress.
+						</td>
+					</tr>
+					<tr class="even">
+						<td><input type="radio" name="usersource[handler_class]" value="DeskPRO\Usersource\Handler\Facebook" /></td>
+						<td>
+							<strong>Facebook</strong><br />
+							Facebook allows users to log in using their Facebook accounts.
+						</td>
+					</tr>
+				</table>
+				<div class="actions-bar wat-cf">
+					<div class="actions">
+						<button class="button" type="submit">
+							Choose Type
+						</button>
+					</div>
+				</div>
+			</form>
+		</div>
+	</div>
+</div>
+
+{% endblock %}
+{% block sidebar %}
+{% endblock %}
