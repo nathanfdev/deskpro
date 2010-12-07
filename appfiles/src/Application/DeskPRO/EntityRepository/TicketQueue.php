@@ -26,16 +26,18 @@ class TicketQueue extends EntityRepository
 	 */
 	public function getQueuesForPerson($person_id)
 	{
-		$persin_id = Person::smartPersonId($person_id);
+		if ($person_id instanceof Person) {
+			$person_id = $perosn_id['id'];
+		}
 
-		$filters = $this->getEntityManager()->createQuery("
+		$queues = $this->getEntityManager()->createQuery("
 			SELECT q
 			FROM DeskPRO:TicketQueue q
 			WHERE q.person_id = ?1 OR q.is_global = true
 			ORDER BY q.title ASC
 		")->setParameter(1, $person_id)->execute();
 
-		return $fitlers;
+		return $queues;
 	}
 
 	public function getTicketQueueFromVar($var)

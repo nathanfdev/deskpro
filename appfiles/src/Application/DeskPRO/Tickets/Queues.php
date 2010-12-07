@@ -12,10 +12,10 @@ class Queues
 	/**
 	 * Find all queues a person can use.
 	 *
-	 * @param mixed $person
+	 * @param mixed $person Person or person ID
 	 * @return array Collection of TicketQueue entities
 	 */
-	public function getQueuesForPerson(Person $person)
+	public function getQueuesForPerson($person)
 	{
 		return App::getOrm()
 			->getRepository('DeskPRO:TicketQueue')
@@ -56,13 +56,13 @@ class Queues
 	/**
 	 * Get the counts for each queue a person can see.
 	 *
-	 * @param mixed $person_id
+	 * @param mixed $person Person or person ID
 	 * @return array
 	 */
-	public function getAllCountsForPersonQueues(Person $person)
+	public function getAllCountsForPersonQueues($person)
 	{
-		$coll = $this->getQueuesForPerson($person_id);
-		return $this->getCountsForQueuesCollection($coll);
+		$coll = $this->getQueuesForPerson($person);
+		return $this->getAllCountsForQueuesCollection($coll);
 	}
 
 

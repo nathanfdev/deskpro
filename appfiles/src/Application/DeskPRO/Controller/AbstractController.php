@@ -123,6 +123,11 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 		$response = $this->container->get('response');
 		$response->headers->set('Content-Type', 'application/json');
 		$response->setStatusCode($status_code);
+
+		if (is_array($content)) {
+			$content = json_encode($content);
+		}
+		
 		$response->setContent($content);
 
 		return $response;

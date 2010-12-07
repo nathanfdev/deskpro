@@ -13,6 +13,8 @@ namespace Application\TechBundle\Controller;
 
 use \Orb\Util\Strings;
 
+use Application\DeskPRO\App;
+
 /**
  * Handles creating/editing of API keys
  */
@@ -37,9 +39,9 @@ class PollerController extends AbstractController
 			$data[] = $this->$method();
 		}
 
-		return $this->createJsonResponse(array(
+		return $this->createJsonResponse(json_encode(array(
 			'messages' => $data
-		));
+		)));
 	}
 
 
