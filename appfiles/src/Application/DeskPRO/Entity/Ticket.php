@@ -308,7 +308,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return false;
 	}
 
-
 	
 	/** @orm:PrePersist */
 	public function _prePersist()

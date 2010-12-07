@@ -114,16 +114,37 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	/**
 	 * Create a JSON response.
 	 *
-	 * @param array $data
+	 * @param string $content
 	 * @param int $status_code
 	 * @return Response
 	 */
-	public function createJsonResponse(array $data, $status_code = 200)
+	public function createJsonResponse($content, $status_code = 200)
 	{
 		$response = $this->container->get('response');
 		$response->headers->set('Content-Type', 'application/json');
-		$response->setStatusCode(200);
-		$response->setContent(json_encode($data));
+		$response->setStatusCode($status_code);
+		$response->setContent($content);
+
+		return $response;
+	}
+
+
+	/**
+	 * Render a template and create a JSON response with it.
+	 *
+	 * @param string $view
+	 * @param array $parameters
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function renderJson($view, array $parameters = array(), Response $response = null)
+	{
+		if ($response === null) {
+			$response = $this->container->get('response');
+			$response->headers->set('Content-Type', 'application/json');
+			$response->setStatusCode(200);
+		}
+		$response = $this->container->get('templating')->renderResponse($view, $parameters, $response);
 
 		return $response;
 	}

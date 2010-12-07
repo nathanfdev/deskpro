@@ -106,7 +106,7 @@ abstract class DomainObject implements \ArrayAccess
 		return $values;
 	}
 
-
+	
 	
 	/**
 	 * Get an array of keys that can be used on this object to access certain data.

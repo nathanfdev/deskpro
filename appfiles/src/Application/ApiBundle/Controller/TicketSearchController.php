@@ -25,7 +25,7 @@ class TicketSearchController extends AbstractController
 	{
 		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
-		return $this->createApiResponse(array(
+		return $this->renderJson('ApiBundle:TicketSearch:get-queue-names.phpj', array(
 			'queues' => $queues
 		));
 	}
@@ -39,7 +39,7 @@ class TicketSearchController extends AbstractController
 	{
 		$all_counts = $queues = App::getApi('tickets.queues')->getAllCountsForPersonQueues($this->person);
 
-		return $this->createApiResponse(array(
+		return $this->renderJson('ApiBundle:TicketSearch:get-queue-counts.phpj', array(
 			'counts' => $counts
 		));
 	}
@@ -64,14 +64,11 @@ class TicketSearchController extends AbstractController
 
 		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($queue_id, $page, $per_page);
 
-		$ret = array();
-		foreach ($tickets as $t) {
-			$ret[] = $t->toArray(DomainObject::TOARRAY_DEEP & DomainObject::TOARRAY_LOAD_UNLOADED);
-		}
-
-		return $this->createApiResponse(array(
+		return $this->renderJson('ApiBundle:TicketSearch:get-queue-results.phpj', array(
 			'num_tickets' => $num_results,
 			'num_pages' => $num_pages,
+			'per_page' => $per_page,
+			'cur_page' => $page,
 			'tickets' => $ret
 		));
 	}

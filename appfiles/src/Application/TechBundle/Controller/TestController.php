@@ -6,6 +6,8 @@ class TestController extends AbstractController
 {
     public function indexAction()
     {
+		return $this->renderJson('TechBundle:Test:test.phpj');
+
 		$filter = $this->em->getRepository('DeskPRO:TicketQueue')->find(3);
 
 		$searcher = $filter->getSearcher();

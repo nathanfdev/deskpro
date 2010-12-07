@@ -1,0 +1,15 @@
+<?php
+use Application\DeskPRO\Domain\DomainObject;
+
+$OUTPUT['current_page'] = $cur_page;
+$OUTPUT['total_pages'] = $num_pages;
+$OUTPUT['per_page'] = $per_page;
+$OUTPUT['total'] = $num_tickets;
+
+$OUTPUT['tickets'] = array();
+
+// TODO: Be more specific here with what info to include
+foreach ($tickets as $ticket) {
+	$t = $ticket->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
+	$t['person'] = $t['person']->toArray(DomainObject::TOARRAY_ONLY_PRIMATIVES);
+}

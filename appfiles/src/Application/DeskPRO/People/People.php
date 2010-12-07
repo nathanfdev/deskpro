@@ -5,7 +5,7 @@ namespace Application\DeskPRO\Tickets;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity\Person;
 
-class Tickets
+class People
 {
 	/**
 	 * Get an array of tickets from the passed IDs.

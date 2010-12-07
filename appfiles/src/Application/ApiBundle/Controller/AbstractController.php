@@ -86,25 +86,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 
 	/**
-	 * Create an API response
-	 *
-	 * @param array $data The data to send
-	 * @param int $status The HTTP status to return
-	 * @return Response
-	 */
-	public function createApiResponse(array $data, $status = 200)
-	{
-		$response = $this->container->get('response');
-		$response->headers->set('Content-Type', 'application/json');
-		$response->setStatusCode(200);
-		$response->setContent(json_encode($data));
-
-		return $response;
-	}
-
-
-
-	/**
 	 * Create an API error response
 	 *
 	 * @param string $error_code The short error code
