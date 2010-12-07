@@ -860,15 +860,13 @@ class Arrays
 			return null;
 		}
 
-		$count = 0;
-		foreach ($array as $k => $v) {
-			if ($count == $num) {
-				return $k;
-			}
-			++$count;
+		reset($array);
+		for ($i = 0; $i < $num; $i++) {
+			next($array);
 		}
+		$k = key($array);
 
-		return null;
+		return $k;
 	}
 
 

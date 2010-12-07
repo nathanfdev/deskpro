@@ -299,10 +299,11 @@ class App
 
 
 	protected static $_api_handler_names = array(
-		'tickets'           => 'Application\\DeskPRO\\Tickets\\Tickets',
-		'tickets.queues'    => 'Application\\DeskPRO\\Tickets\\Queues',
-		'tickets.edit'      => 'Application\\DeskPRO\\Tickets\\TicketEdit',
-		'tickets.search'    => 'Application\\DeskPRO\\Tickets\\TicketSearch',
+		'tickets'                    => 'Application\\DeskPRO\\Tickets\\Tickets',
+		'tickets.queues'             => 'Application\\DeskPRO\\Tickets\\Queues',
+		'tickets.edit'               => 'Application\\DeskPRO\\Tickets\\TicketEdit',
+		'tickets.search'             => 'Application\\DeskPRO\\Tickets\\TicketSearch',
+		'custom_fields.people'       => 'Application\\DeskPRO\\CustomFields\\PeopleFields',
 	);
 
 	/**

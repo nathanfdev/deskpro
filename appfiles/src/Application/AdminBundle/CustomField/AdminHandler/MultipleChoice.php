@@ -3,18 +3,19 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @category Entities
+ * @subpackage AdminBundle
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\DeskPRO\Entity;
+namespace Application\AdminBundle\CustomField\AdminHandler;
+
 
 /**
- * Applied to any object that can have custom fields attached to it.
+ * Handles editing and creating multiple-select choices
  */
-interface FormFieldableInterface
+class MultipleChoice extends Choice
 {
-	public function addFieldData();
+
 }

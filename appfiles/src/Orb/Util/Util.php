@@ -402,12 +402,17 @@ class Util
 	/**
 	 * Get all the parts of a classname (i.e., split up by namespace).
 	 *
-	 * @param object $obj
+	 * @param mixed $obj_or_classname An object or string classname
 	 * @return array
 	 */
-	public static function getClassnameParts($obj)
+	public static function getClassnameParts($obj_or_classname)
 	{
-		return explode('\\', get_class($obj));
+		$classname = $obj_or_classname;
+		if (is_object($classname)) {
+			$classname = get_class($classname);
+		}
+
+		return explode('\\', $classname);
 	}
 
 	

@@ -9,32 +9,31 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Form;
+namespace Application\AdminBundle\Form;
 
-use \Application\DeskPRO\Entity\FormField;
+use \Application\DeskPRO\Entity\CustomDefAbstract;
 
 class EditField extends \Orb\Form\Field\Form
 {
 	/**
-	 * The formfield we're working on
-	 * @var Application\DeskPRO\Entity\FormField
+	 * @var Application\DeskPRO\Entity\CustomDefAbstract
 	 */
-	protected $formfield;
+	protected $custom_def;
 
 	protected function init()
 	{
-		if (!$this->hasOption('form_field') OR !($this->getOption('form_field') instanceof FormField)) {
+		if (!$this->hasOption('custom_def') OR !($this->getOption('custom_def') instanceof CustomDefAbstract)) {
 			throw new \InvalidArgumentException('Options must include a form_field item');
 		}
 
-		$this->formfield = $this->getOption('form_field');
+		$this->custom_def = $this->getOption('custom_def');
 
 		$f_group_props = new \Orb\Form\Field\FieldGroup(array('name' => 'field_properties'));
 		$this->addField($f_group_props);
 
 		// Title
 		$f = new \Orb\Form\Field\Text(array('name' => 'title'));
-		$f->setData($this->formfield['title']);
+		$f->setData($this->custom_def['title']);
 		$f_group_props->addField($f);
 	}
 }

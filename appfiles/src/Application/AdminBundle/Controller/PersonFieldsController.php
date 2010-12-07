@@ -11,7 +11,9 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\Entity\PersonField;
+use Application\DeskPRO\App;
+
+use Application\DeskPRO\Entity\CustomDefPerson;
 
 /**
  * Handles manaing person fields
@@ -24,12 +26,7 @@ class PersonFieldsController extends AbstractController
 
 	public function indexAction()
 	{
-		$existing_fields = $this->db->fetchAll("
-			SELECT f.id, f.title, f.handler_class
-			FROM person_fields f
-			WHERE f.parent_id IS NULL
-			ORDER BY f.id
-		");
+		$existing_fields = App::getApi('custom_fields.people')->getFields();
 
 		return $this->render('AdminBundle:PersonFields:index.twig', array(
 			'fields' => $existing_fields
@@ -60,7 +57,7 @@ class PersonFieldsController extends AbstractController
 		if ($field_id) {
 			$field = $this->getFieldOr404($field_id);
 		} else {
-			$field = new PersonField();
+			$field = new CustomDefPerson();
 			$field['handler_class'] = $this->in->getString('formfield.handler_class');
 		}
 
@@ -74,7 +71,7 @@ class PersonFieldsController extends AbstractController
 			'name' => 'formfield',
 			'renderer' => $renderer,
 			'event_dispatcher' => $this->get('event_dispatcher'),
-			'form_field' => $field
+			'custom_def' => $field
 		));
 		$form->addField(new \Orb\Form\Field\Hidden(array('name' => 'handler_class', 'data' => $field['handler_class'])));
 
@@ -93,7 +90,7 @@ class PersonFieldsController extends AbstractController
 		}
 
 		$parts = explode('\\', $field['handler_class']);
-		$tpl_name = 'AdminBundle:PersonFields:edit-.twig' . strtolower(array_pop($parts));
+		$tpl_name = 'AdminBundle:PersonFields:edit-' . strtolower(array_pop($parts)) . '.twig';
 
 		$vars = array_merge($admin_handler->getTemplateVars(), array(
 			'field' => $field,
@@ -119,12 +116,12 @@ class PersonFieldsController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return Application\DeskPRO\Entity\PersonField
+	 * @return Application\DeskPRO\Entity\CustomDefPerson
 	 */
 	protected function getFieldOr404($field_id)
 	{
 		try {
-			$field = $this->em->find('DeskPRO:PersonField', $field_id);
+			$field = $this->em->find('DeskPRO:CustomDefPerson', $field_id);
 		} catch (\Doctrine\ORM\NoResultException $e) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no field with ID $field_id");
 		}
