@@ -21,7 +21,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			self.openPopOut(event);
 		}).mouseout(function(event) {
 			self.isMouseOverPopout = false;
-			self.closePopoutOnmouseout.delay(500, self);
+			self.closePopoutOnmouseout.delay(10, self);
 		});
 		
 		$('.person-popout', el).click(function(event) {
@@ -34,7 +34,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			self.isMouseOverPopout = true;
 		}).mouseout(function(event) {
 			self.isMouseOverPopout = false;
-			self.closePopoutOnmouseout.delay(500, self);
+			self.closePopoutOnmouseout.delay(10, self);
 		});
 		this.popout.detach().appendTo('body');
 		this.destroyEls.push(this.popout);
@@ -44,12 +44,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			self.isMouseOverPopout = true;
 		}).mouseout(function() {
 			self.isMouseOverPopout = false;
-			self.closePopoutOnmouseout.delay(500, self);
+			self.closePopoutOnmouseout.delay(10, self);
 		});
 		this.popout_overview.detach().appendTo('body');
 		this.destroyEls.push(this.popout_overview);
 		
-		$('.open-person', this.popout_overview).click(function() {
+		this.popout_overview_content = $('.person-overview-popout-content', el);
+		this.popout_overview_content.detach().appendTo('body');
+		this.popout_overview_content.mouseover(function() {
+			self.isMouseOverPopout = true;
+		}).mouseout(function() {
+			self.isMouseOverPopout = false;
+			self.closePopoutOnmouseout.delay(10, self);
+		});
+		this.destroyEls.push(this.popout_overview_content);
+		
+		this.popout_overview_content.click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	},
@@ -64,30 +74,47 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		// so we want it to stretch as far as we can, minus some wriggle room
 		var width = pos.left - 35;
 		
-		this.popout.css({
+		var show_popout = true;
+		if (width < 400) {
+			show_popout = false;
+		}
+		
+		if (show_popout) {
+			this.popout.css({
+				'position': 'absolute',
+				'display': 'block',
+				'z-index': 999998,
+				'width': width,
+				'overflow': 'auto'
+			});
+			this.popout.css({
+				'top': (wrapper_pos.top - 8),
+				'left': (pos.left - this.popout.outerWidth() - 20),
+				'bottom': 30
+			});
+		}
+		
+		this.popout_overview_content.css({
 			'position': 'absolute',
+			'top': pos.top - this.popout_overview_content.padding().top,
+			'left': pos.left - this.popout_overview_content.padding().left,
 			'display': 'block',
-			'z-index': 999998,
-			'width': width,
-			'overflow': 'auto'
-		});
-		this.popout.css({
-			'top': (wrapper_pos.top - 8),
-			'left': (pos.left - this.popout.outerWidth() - 20),
-			'bottom': 30
-		});
+			'width': orig.width() + 25,
+			'height': orig.height(),
+			'z-index': 999996
+		})
 		
 		this.popout_overview.css({
 			'position': 'absolute',
-			'top': pos.top,
-			'left': pos.left - 20,
+			'top': pos.top - this.popout_overview.padding().top,
+			'left': pos.left - this.popout_overview.padding().left - 20,
 			'display': 'block',
-			'width': orig.width(),
+			'width': orig.width() + 30,
 			'height': orig.height(),
-			'z-index': 999997
+			'z-index': 999996
 		});
 		
-		if (!this.hasInitPopout) {
+		if (!this.hasInitPopout && show_popout) {
 			this.popoutPage = new DeskPRO.Agent.PageFragment.Page.Person();
 			this.popoutPage.setMetaData({
 				person_id: 1
@@ -105,5 +132,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		
 		this.popout.hide();
 		this.popout_overview.hide();
+		this.popout_overview_content.hide();
 	}
 });

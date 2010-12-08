@@ -2,6 +2,7 @@
 pageMeta.class = 'DeskPRO.Agent.PageFragment.Page.Ticket';
 pageMeta.title = '{{ticket.subject}}';
 pageMeta.ticket_id = {{ticket.id}};
+pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 </script>
 
 <div class="ticket">
@@ -77,7 +78,9 @@ pageMeta.ticket_id = {{ticket.id}};
 	</div>
 </div>
 
-<div class="person-overview-popout" style="display:none">
+<div class="person-overview-popout" style="display:none"></div>
+
+<div class="person-overview-popout-content" style="display:none" data-route="person:{% path 'tech_people_view' with ['person_id': ticket.person_id] %}">
 	<div class="img">
 		<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
 	</div>
@@ -86,5 +89,8 @@ pageMeta.ticket_id = {{ticket.id}};
 		{% if ticket.person.primary_email %}
 			{{ticket.person.primary_email.email}}
 		{% endif %}
+	</div>
+	<div class="open-person">
+		Open person in new tab
 	</div>
 </div>

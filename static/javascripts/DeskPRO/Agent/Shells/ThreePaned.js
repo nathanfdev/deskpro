@@ -61,10 +61,6 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			deactivateTab: this._onTabDeactivate.bind(this),
 			removeTab: this._onTabRemove.bind(this)
 		});
-		
-		$('#pane_tabbar .close-btn').click(function() {
-			self.tabManager.removeTab(self.tabManager.getActiveTabId());
-		});
 	},
 	
 	setNavPanePage: function(page) {
@@ -82,6 +78,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	addTabPage: function(page) {
 		this.tabManager.addTab(Orb.uuid(), {
 			html: page.getHtml(),
+			page: page,
 			title: page.getMetaData('title', 'Untitled'),
 			callback_render: function(data, container, tabManager) {
 				page.initPage(container);
@@ -105,10 +102,25 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	},
 	
 	_tabStripClick: function(event) {
-		var el = $(event.target);
+		var el_click = $(event.target);
+
+		if (el_click.parent().is('li.tab')) {
+			var el = el_click.parent();
+		} else {
+			var el = el_click.parentsUntil('li.tab');
+			if (el.length) {
+				el = el.parent(); // jquery doesnt include the actual parent in parentsUntil
+			}
+		}
 		
 		// If its not a tab, we can just ignore the event
 		if (!el.is('li.tab')) {
+			return;
+		}
+		
+		// If the clicked thing was the close button...
+		if (el_click.parent().is('.close')) {
+			this.tabManager.removeTab(el.data('tab-id'));
 			return;
 		}
 		
@@ -118,7 +130,13 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	
 	_onTabAdd: function(tabData) {
 		tabData.btnId = Orb.getUniqueId('tab_');
-		this.tabStrip.append('<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab">'+tabData.title+'</li>');
+		
+		var li = $('<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab" title="' + tabData.title + '"><div class="title"><span>'+tabData.title+'</span></div><div class="close"><span /></div></li>');
+		
+		li.appendTo(this.tabStrip);
+		
+		// Add tooltip
+		$(li).tipTip({defaultPosition: 'bottom'});
 	},
 	
 	_onTabDeactivate: function(tabData, container, isActivating) {
@@ -130,6 +148,10 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 				this.tabManager.activateTab(last_tab.data('tab-id'));
 			}
 		}
+		
+		// If a tab was removed, the onmouseout was never fired
+		// so the tooltip saying its title might still appear
+		$('#tiptip_holder').hide();
 	},
 	
 	_onTabActivate: function(tabData) {
@@ -139,5 +161,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	
 	_onTabRemove: function(tabData) {
 		$('#' + tabData.btnId).remove();
+		
+		$('#tiptip_holder').hide();
 	}
 });

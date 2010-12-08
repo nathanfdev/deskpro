@@ -53,6 +53,16 @@ DeskPRO.Agent.TabManager = new Class({
 	},
 	
 	
+	/**
+	 * Get all tabs
+	 *
+	 * @return {Array}
+	 */
+	getTabs: function() {
+		return this.tabs;
+	},
+	
+	
 	
 	/**
 	 * Adds a tab to be managed.
@@ -157,6 +167,8 @@ DeskPRO.Agent.TabManager = new Class({
 		this.fireEvent('activateTab', [data, this.containerEl, this]);
 		
 		this.isActivating = false;
+		
+		data.isActive = true;
 	},
 	
 	
@@ -171,6 +183,7 @@ DeskPRO.Agent.TabManager = new Class({
 		}
 		
 		var data = this.tabs[this.currentTabId];
+		data.isActive = false;
 		
 		// Chance to hook in before the nodes are actually removed
 		this.fireEvent('deactivateTabBefore', [data, this.containerEl, this.isActivating, this]);

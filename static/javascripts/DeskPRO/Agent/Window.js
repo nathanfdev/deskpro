@@ -184,6 +184,20 @@ DeskPRO.Agent.Window = new Class({
 				break;
 			
 			default:
+				// Check if its already laoded
+				var tabs = DeskPRO_Window.getPanedShell().tabManager.getTabs();
+				var already_loaded = false;
+				Object.each(tabs, function(tab, tab_id) {
+					console.log('Checking %s', tab.page.getMetaData('routeUrl'));
+					if (tab.page.getMetaData('routeUrl') == routeData.url) {
+						DeskPRO_Window.getPanedShell().tabManager.activateTab(tab_id);
+						already_loaded = true;
+						return false;
+					}
+				});
+				
+				if (already_loaded) return;
+			
 				this.loadPage(routeData.url);
 				break;
 		}
@@ -238,6 +252,7 @@ DeskPRO.Agent.Window = new Class({
 			url: url,
 			success: (function(data) {
 				var page = this.createPageFragment(data);
+				page.setMetaData('routeUrl', url);
 				DeskPRO_Window.getPanedShell().addTabPage(page);
 			}).bind(this)
 		});
