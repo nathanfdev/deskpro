@@ -56,31 +56,30 @@
 </head>
 <body>
 
-<div id="window_head" class="ui-layout-north">
+<div id="window_head">
 	<div id="window_head_top">
 		<div class="logo">DeskPRO</div>
+		<div id="window_header_nav">
+			<ul>
+				<li class="tickets" data-route="navpane:{% path 'tech_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'tech_ticketsearch' %}">Tickets <span class="ticket-filter-count-all">(-)</span></li>
+				<li class="people"  data-route="navpane:{% path 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'tech_peoplesearch' %}">People</li>
+			</ul>
+		</div>
 		<div class="current-user">
 			{{person.display_name}}
 		</div>
 	</div>
-
-	<div id="window_header_nav">
-		<ul>
-			<li class="tickets" data-route="navpane:{% path 'tech_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'tech_ticketsearch' %}">Tickets <span class="ticket-filter-count-all">(-)</span></li>
-			<li class="people"  data-route="navpane:{% path 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'tech_peoplesearch' %}">People</li>
-		</ul>
-	</div>
 </div>
 
-<div id="pane_shell" class="ui-layout-center">
-	<div id="pane_nav" class="ui-layout-west">
+<div id="pane_shell">
+	<div id="pane_nav">
 
 	</div>
-	<div id="pane_shell_inner" class="ui-layout-center">
-		<div id="pane_list" class="ui-layout-west">
+	<div id="pane_shell_inner">
+		<div id="pane_list">
 
 		</div>
-		<div id="pane_content" class="ui-layout-center">
+		<div id="pane_content">
 			<div id="pane_tabbar">
 				<ul id="pane_tabs"></ul>
 				<div class="close-btn">x</div>

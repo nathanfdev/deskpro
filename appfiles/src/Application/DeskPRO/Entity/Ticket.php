@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 /**
  * Ticket
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Ticket")
  * @orm:Table(name="tickets")
  */
 class Ticket extends \Application\DeskPRO\Domain\DomainObject

@@ -29,7 +29,7 @@ class Ticket extends EntityRepository
 			return false;
 		});
 
-		$tickets = $this->em->createQuery("
+		$tickets = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Ticket t
 			WHERE t.id IN(" . implode(',', $ids) . ")

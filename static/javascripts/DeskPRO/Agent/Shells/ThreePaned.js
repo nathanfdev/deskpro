@@ -26,23 +26,23 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		
 		this.el.layout({
 			west: {
-				//paneSelector: '#pane_nav'
-				size: 230,
+				paneSelector: '#pane_nav',
+				size: 185,
 				spacing_open: 2
 			},
 			center: {
-				//paneSelector: '#pane_shell_inner'
+				paneSelector: '#pane_shell_inner'
 			}
 		});
 		
 		$('#pane_shell_inner').layout({
 			west: {
-				//paneSelector: '#pane_list'
-				size: '40%',
+				paneSelector: '#pane_list',
+				size: '45%',
 				spacing_open: 2
 			},
 			center: {
-				//paneSelector: '#pane_content'
+				paneSelector: '#pane_content'
 			}
 		});
 		

@@ -10,7 +10,8 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.NavPane.TicketFilters';
 		<ul>
 			{% for filter in filters %}
 				<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': filter.id] %}">
-					{{filter.title}} <span class="ticket-filter-count-{{filter.id}}">-</span>
+					<span class="ticket-filter-count-{{filter.id}}">-</span>
+					{{filter.title}}
 				</li>
 			{% endfor %}
 		</ul>                                    

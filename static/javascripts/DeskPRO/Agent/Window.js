@@ -31,13 +31,13 @@ DeskPRO.Agent.Window = new Class({
 		
 		$('body').layout({
 			north: {
-				//paneSelector: '#window_head',
+				paneSelector: '#window_head',
 				spacing_open: 0,
 				spacing_closed: 0,
-				size: 55
+				size: 21
 			},
 			center: {
-				//paneSelector: '#pane_shell'
+				paneSelector: '#pane_shell'
 			}
 		});
 		

@@ -4,27 +4,27 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.TicketSearch';
 
 <div class="search-results">
 	<table class="list" cellspacing="0" width="100%">
-		<thead>
-			<tr>
-				<th>Subject</th>
-				<th>Department</th>
-				<th>Opened</th>
-				<th>User</th>
-			</tr>
-		</thead>
+		{% for ticket in tickets %}
 		<tbody>
-			{% for ticket in tickets %}
 			<tr data-route="person:{% path 'tech_ticket_view' with ['ticket_id': ticket.id] %}">
-				<td>{{ticket.subject}}</td>
-				<td>{{ticket.department.title}}</td>
-				<td>{{ticket.date_created|date('Y-m-d')}}</td>
-				<td>{{ticket.person.name}}</td>
+				<td>
+					{{ticket.subject}}
+				</td>
+				<td width="100" align="right">
+					{{ticket.date_created|date('Y-m-d')}}
+				</td>
 			</tr>
-			{% else %}
-			<tr>
-				<td colspan="4">No tickets</td>
+			<tr class="info-line" data-route="person:{% path 'tech_ticket_view' with ['ticket_id': ticket.id] %}">
+				<td colspan="2">
+					<div class="by">by <cite>{{ticket.person.name}}</cite></div>
+					<div class="department">{{ticket.department.title}}</div>
+				</td>
 			</tr>
-			{% endfor %}
 		</tbody>
+		{% else %}
+		<tr>
+			<td colspan="4">No tickets</td>
+		</tr>
+		{% endfor %}
 	</table>
 </div>
