@@ -86,7 +86,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			callback_render: function(data, container, tabManager) {
 				page.initPage(container);
 			},
-			callback_delete: function(data, container, tabManager) {
+			callback_remove_content: function(data, container, tabManager) {
 				page.destroyPage(container);
 			}
 		});

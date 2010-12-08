@@ -13,7 +13,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	notesSection: null,
 
 	initPage: function(el) {
-		
+		console.log("INIT");
 		this.wrapper = el;
 		
 		$('input[placeholder]', this.wrapper).each(function() {
@@ -71,7 +71,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		}).bind(this));
 		
 		// Tags
-		$("#mytags").tagit({
+		$(".tagit", el).tagit({
 			fieldName: 'tags',
 			//inputFieldAppendTo: $('.section.tags .new-tag', this.wrapper),
 			enableBackspace: false

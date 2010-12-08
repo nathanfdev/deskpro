@@ -120,13 +120,13 @@ DeskPRO.Agent.TabManager = new Class({
 			
 			console.log('Re-showing tab node: %s', id);
 			
-			$('#' + data.wrapperId, this.containerEl).show();
+			var wrapper = $('#' + data.wrapperId, this.containerEl).show();
 			
 			if (data.callback_reinsert !== undefined) {
-				data.callback_reinsert(data, this.containerEl, this);
+				data.callback_reinsert(data, $('#' + data.wrapperId, this.containerEl), this);
 			}
 
-			this.fireEvent('activateTabReinsert', [data, this.containerEl, this]);
+			this.fireEvent('activateTabReinsert', [data, wrapper, this]);
 
 
 		//----------------------------------------
@@ -142,7 +142,7 @@ DeskPRO.Agent.TabManager = new Class({
 			el.show();
 
 			if (data.callback_render !== undefined) {
-				data.callback_render(data, this.containerEl, this);
+				data.callback_render(data, $('#' + data.wrapperId, this.containerEl), this);
 			}
 			
 			this.fireEvent('activateTabRender', [data, $('#' + data.wrapperId, this.containerEl), this]);
@@ -183,19 +183,26 @@ DeskPRO.Agent.TabManager = new Class({
 			$('#' + data.wrapperId, this.containerEl).remove();
 			
 			data.isInserted = false;
+			
+			if (data.callback_remove_content !== undefined) {
+				data.callback_remove_content(data, $('#' + data.wrapperId, this.containerEl), this);
+			}
 
 		// hide
 		} else {
-			
 			console.log('Hiding tab content: %o, id: %s', this.currentTabId, data.wrapperId);
 			$('#' + data.wrapperId, this.containerEl).hide();
+			
+			if (data.callback_hide_content !== undefined) {
+				data.callback_hide_content(data, $('#' + data.wrapperId, this.containerEl), this);
+			}
 		}
 		
 		if (data.callback_deactivate !== undefined) {
-			data.callback_deactivate(data, this.containerEl, this);
+			data.callback_deactivate(data, $('#' + data.wrapperId, this.containerEl), this);
 		}
 		
-		this.fireEvent('deactivateTab', [data, this.containerEl, this.isActivating, this]);
+		this.fireEvent('deactivateTab', [data, $('#' + data.wrapperId, this.containerEl), this.isActivating, this]);
 		
 		this.currentTabId = null;
 	},
@@ -219,8 +226,8 @@ DeskPRO.Agent.TabManager = new Class({
 		var data = this.tabs[id];
 		delete this.tabs[id];
 		
-		if (data.callback_delete !== undefined) {
-			data.callback_delete();
+		if (data.callback_remove_content !== undefined) {
+			data.callback_remove_content(data, $('#' + data.wrapperId, this.containerEl), this);
 		}
 		
 		$('#' + data.wrapperId, this.containerEl).remove();

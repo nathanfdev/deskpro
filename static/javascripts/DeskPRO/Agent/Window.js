@@ -273,7 +273,7 @@ DeskPRO.Agent.Window = new Class({
 		var fragment_class = Orb.getNamespacedObject(pageMeta.class);
 		
 		var page = new fragment_class(html);
-		page.setAllMetaData(pageMeta);
+		page.setMetaData(pageMeta);
 		
 		return page;
 	},

@@ -15,18 +15,48 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	html: '',
 	meta: {},
 	
-	setAllMetaData: function(meta) {
-		this.meta = Object.merge(this.meta, meta);
+	initialize: function(html) {
+		if (html) {
+			this.html = html;
+		}
 	},
 	
+	
+	
+	/**
+	 * Set metadata about this page.
+	 *
+	 * @param mixed name Either a string name to use with value, or an object of key/value pairs
+	 * @param mixed value Only used if name is a string, the value to set
+	 */
 	setMetaData: function(name, value) {
-		this.meta[name] = value;
+		// Assigning multiple values from a hash
+		if (value === undefined && typeOf(name) == 'object') {
+			this.meta = Object.merge(this.meta, name);
+		} else {
+			this.meta[name] = value;
+		}
 	},
 	
+	
+	
+	/**
+	 * Get a hash of all the metadata.
+	 *
+	 * @return {Object}
+	 */
 	getAllMetaData: function() {
 		return this.meta;
 	},
 	
+	
+	
+	/**
+	 * Get a specific piece of metadata.
+	 *
+	 * @param {String} name The name of the data you want
+	 * @param mixed default_value The value to return if the metadata is undefined
+	 */
 	getMetaData: function(name, default_value) {
 		if (default_value === undefined) {
 			default_value = null;
@@ -39,53 +69,37 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		return this.meta[name];
 	},
 	
-	initialize: function(html, scripts, stylesheets) {
-		if (html) {
-			this.html = html;
-		}
-		
-		if (scripts) {
-			if (typeOf(scripts) == 'string') {
-				scripts = [scripts];
-			}
-			
-			this.scripts = scripts;
-		}
-		
-		if (stylesheets) {
-			if (typeOf(stylesheets) == 'string') {
-				stylesheets = [stylesheets];
-			}
-			
-			this.stylesheets = stylesheets;
-		}
-	},
 	
+	
+	/**
+	 * Get the scripts required by this fragment.
+	 *
+	 * @return {Array}
+	 */
 	getScripts: function() {
 		return this.scripts;
 	},
 	
+	
+	
+	/**
+	 * Get stylesheets required by this fragment
+	 *
+	 * @return {Array}
+	 */
 	getStylesheets: function() {
 		return this.stylesheets;
 	},
 	
+	
+	
+	/**
+	 * Get the HTML source for this fragment.
+	 *
+	 * @return {String}
+	 */
 	getHtml: function() {
 		return this.html;
-	},
-	
-	loadResources: function(callback) {
-		
-		var batch = [];
-		
-		for (var i = 0; i < this.scripts.length; i++) {
-			batch.push({ type: 'script', url: this.scripts[i] });
-		}
-		
-		for (var i = 0; i < this.stylesheets.length; i++) {
-			batch.push({ type: 'stylesheet', url: this.stylesheets[i] });
-		}
-		
-		Orb.resourceLoader.loadBatch(batch, callback);
 	},
 	
 	
@@ -97,14 +111,14 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 * @param {jQuery} el The wrapper element
 	 */
 	initPage: function(el) {
-
+		
 	},
 	
 	
 	
 	/**
 	 * Called after the page should be destroyed. Any specific cleanup required can be done
-	 * here if for example an element was moved etc.
+	 * here if for example an element was moved during initPage etc.	
 	 *
 	 * @param {jQuery} el The wrapper element
 	 */
