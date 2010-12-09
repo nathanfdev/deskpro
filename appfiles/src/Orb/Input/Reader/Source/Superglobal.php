@@ -4,7 +4,7 @@
  *
  * @package Orb
  * @category Input
- * @author Christopher Nadeau <chris@nadeau.ws>
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
 namespace Orb\Input\Reader\Source;

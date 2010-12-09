@@ -4,7 +4,7 @@
  *
  * @package Orb
  * @subpackage HttpFoundation
- * @author Christopher Nadeau <chris@nadeau.ws>
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
 namespace Orb\HttpFoundation\Session;

@@ -4,7 +4,7 @@
  *
  * @package Orb
  * @subpackage Scraper
- * @author Christopher Nadeau <chris@nadeau.ws>
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
 namespace Orb\Scraper;

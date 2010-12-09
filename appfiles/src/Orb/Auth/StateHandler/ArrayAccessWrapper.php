@@ -4,7 +4,7 @@
  *
  * @package Orb
  * @category Auth
- * @author Christopher Nadeau <chris@nadeau.ws>
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
 namespace Orb\Auth\StateHandler;

@@ -5,7 +5,7 @@
  * @package Orb
  * @subpackage Service
  * @category Highrise
- * @author Christopher Nadeau <chris@nadeau.ws>
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
 namespace Orb\Service\Highrise;
