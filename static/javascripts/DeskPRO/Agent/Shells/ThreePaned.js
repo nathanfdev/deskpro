@@ -128,6 +128,10 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			w += $(this).outerWidth();	
 		});
 		
+		if (w < this.tabStrip.parent().width()) {
+			w = this.tabStrip.parent().width();
+		}
+		
 		this.tabStrip.css({width: w});
 		
 		// See if we need to be showing the navigator
