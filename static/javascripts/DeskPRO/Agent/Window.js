@@ -188,7 +188,6 @@ DeskPRO.Agent.Window = new Class({
 				var tabs = DeskPRO_Window.getPanedShell().tabManager.getTabs();
 				var already_loaded = false;
 				Object.each(tabs, function(tab, tab_id) {
-					console.log('Checking %s', tab.page.getMetaData('routeUrl'));
 					if (tab.page.getMetaData('routeUrl') == routeData.url) {
 						DeskPRO_Window.getPanedShell().tabManager.activateTab(tab_id);
 						already_loaded = true;
@@ -284,7 +283,7 @@ DeskPRO.Agent.Window = new Class({
 			}
 		}
 		
-		console.debug('PageFragment class: %s', pageMeta.class);
+		//console.debug('PageFragment class: %s', pageMeta.class);
 		var fragment_class = Orb.getNamespacedObject(pageMeta.class);
 		
 		var page = new fragment_class(html);

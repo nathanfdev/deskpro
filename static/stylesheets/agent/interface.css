@@ -220,9 +220,24 @@ ul.tagit input[type="text"] {
 	color: #fff;
 	overflow: hidden;
 	cursor: pointer;
-	height: 28px;
+	height: 23px;
+	margin-top: 5px;
 	overflow: hidden;
 	max-width: 100px;
+	background-color: #5c5c5c;
+	border: 1px solid #6e6e6e;
+	border-bottom: none;
+	margin-right: 3px;
+	margin-left: 3px;
+	
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
 }
 
 #pane_tabbar ul li.icon {
@@ -250,16 +265,23 @@ ul.tagit input[type="text"] {
 
 #pane_tabbar ul li div.close {
 	float: right;
-	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
+	background: #5c5c5c;
 	width: 10;
-	height: 28px;
+	height: 22px;
 	padding: 0 5px 0 5px;
+	
+	-moz-border-radius-topright: 5px;
+	border-top-right-radius: 5px;
+}
+
+#pane_tabbar ul li.tab-active div.close {
+	background-color: #2a2b2a;
 }
 
 #pane_tabbar ul li div.close span {
 	background: transparent url(../../images/tab-close.png) no-repeat center center;
 	width: 10px;
-	height: 26px;
+	height: 22px;
 	display: block;
 }
 
@@ -279,6 +301,8 @@ ul.tagit input[type="text"] {
 
 #pane_tabbar ul li.tab-active {
 	background-color: #2a2b2a;
+	border: 1px solid #c5c5c5;
+	border-bottom: none;
 }
 
 #pane_tabbar.with-scroller ul {
