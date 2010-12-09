@@ -68,14 +68,20 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 
 		scroll_el = this.tabStrip.parent();
 		$('#pane_tabs_scroll_left').click(function() {
-			scroll_el.animate({scrollLeft: '-=' + w});
+			scroll_el.animate({scrollLeft: '-=' + w}, 200);
 		});
 		$('#pane_tabs_scroll_right').click(function() {
-			scroll_el.animate({scrollLeft: '+=' + w});
+			scroll_el.animate({scrollLeft: '+=' + w}, 200);
 		});
 		
 		// Scroll wheel should scroll this baby horizontally
-
+		this.tabStrip.parent().mousewheel(function(ev, delta) {
+			if (delta > 0) {
+				scroll_el.animate({scrollLeft: '+=' + w}, 100);
+			} else {
+				scroll_el.animate({scrollLeft: '-=' + w}, 100);
+			}
+		});
 	},
 	
 	setNavPanePage: function(page) {
