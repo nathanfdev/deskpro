@@ -52,6 +52,14 @@
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
 			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
+			
+			for (var i = 1; i <= 20; i++) {
+				var page = window.DeskPRO_Window.createPageFragment('Testing', 'DeskPRO.Agent.PageFragment.NavPane.Basic');
+				page.TYPENAME = 'ticket';
+				page.setMetaData('title', 'Testing ' + i);
+				
+				window.DeskPRO_Window.getPanedShell().addTabPage(page);
+			}
 		});
 	</script>
 </head>
@@ -82,7 +90,9 @@
 		</div>
 		<div id="pane_content">
 			<div id="pane_tabbar">
-				<ul id="pane_tabs"></ul>
+				<div id="pane_tabs_scroll_left"></div>
+				<div id="pane_tabs_scroll_right"></div>
+				<ul id="pane_tabs"></ul>				
 			</div>
 			<div id="page" class="ui-layout-content">
 

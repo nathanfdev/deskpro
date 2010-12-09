@@ -61,6 +61,21 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			deactivateTab: this._onTabDeactivate.bind(this),
 			removeTab: this._onTabRemove.bind(this)
 		});
+		
+		// Clicking the scrollers scroll left and right
+		var w = (self.tabStrip.parent().width() / 2);
+		w = w - (w / 4);
+
+		scroll_el = this.tabStrip.parent();
+		$('#pane_tabs_scroll_left').click(function() {
+			scroll_el.animate({scrollLeft: '-=' + w});
+		});
+		$('#pane_tabs_scroll_right').click(function() {
+			scroll_el.animate({scrollLeft: '+=' + w});
+		});
+		
+		// Scroll wheel should scroll this baby horizontally
+
 	},
 	
 	setNavPanePage: function(page) {
@@ -99,6 +114,24 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	addTabHtml: function(id, title, html) {
 		var data = {title: title, html: html};
 		this.tabManager.addTab(id, data);
+	},
+	
+	resizeTabListWidth: function() {
+		var w = 0;
+		$('> li', this.tabStrip).each(function() {
+			w += $(this).outerWidth();	
+		});
+		
+		this.tabStrip.css({width: w});
+		
+		// See if we need to be showing the navigator
+		if (this.tabStrip.width() > this.tabStrip.parent().width()) {
+			this.tabStrip.parent().addClass('with-scroller');
+			w += 30; // for scroll indicators :)
+			this.tabStrip.css({width: w});
+		} else {
+			this.tabStrip.parent().removeClass('with-scroller');
+		}
 	},
 	
 	_tabStripClick: function(event) {
@@ -144,6 +177,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		var li = $(html);
 		
 		li.appendTo(this.tabStrip);
+		this.resizeTabListWidth();
 		
 		// Add tooltip
 		$(li).tipTip({defaultPosition: 'bottom'});
@@ -173,5 +207,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		$('#' + tabData.btnId).remove();
 		
 		$('#tiptip_holder').hide();
+		
+		this.resizeTabListWidth();
 	}
 });
