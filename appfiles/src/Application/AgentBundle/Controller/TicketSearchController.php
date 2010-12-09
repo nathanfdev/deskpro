@@ -40,10 +40,17 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($filter_id, $page, 25);
+		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($filter_id, $page, 50);
 
-		return $this->render('AgentBundle:TicketSearch:filter-results.twig', array(
-			'tickets' => $tickets
+		$tpl = 'AgentBundle:TicketSearch:filter-results.twig';
+		if ($this->in->getBool('partial')) {
+			$tpl = 'AgentBundle:TicketSearch:filter-results-list.twig';
+		}
+
+		return $this->render($tpl, array(
+			'queue_id' => $filter_id,
+			'tickets' => $tickets,
+			'page' => $page
 		));
 	}
 

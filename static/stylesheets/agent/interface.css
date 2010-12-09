@@ -1154,3 +1154,20 @@ table.list tr.info-line div.department {
 
 
 
+
+.loading-more {
+	margin-top: 15px;
+	text-align: center;
+	background: #ebebeb url(../../images/loading-big-circle.gif) no-repeat center bottom;
+	padding: 5px 0 36px 0;
+	font-size: 12px;
+	display: none;
+}
+
+.page-separator {
+	background-color: #CCCED9;
+	height: 4px;
+	overflow: hidden;
+}
+
+
