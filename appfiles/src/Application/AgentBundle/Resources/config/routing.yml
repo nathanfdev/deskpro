@@ -1,262 +1,147 @@
-tech_dashboard:
+agent_dashboard:
   pattern: /
-  defaults: { _controller: TechBundle:Main:index }
+  defaults: { _controller: AgentBundle:Main:index }
 
-tech_test:
+agent_test:
   pattern: /test
-  defaults: { _controller: TechBundle:Test:index }
+  defaults: { _controller: AgentBundle:Test:index }
 
-tech_interface_poller:
+agent_interface_poller:
   pattern: /poller
-  defaults: { _controller: TechBundle:Poller:handler }
-
-################################################################################
-# Styles
-################################################################################
-
-tech_admin_styles:
-  pattern: /styles
-  defaults: { _controller: TechBundle:Styles:index }
-
-tech_admin_styles_intro:
-  pattern: /styles/intro
-  defaults: { _controller: TechBundle:Styles:intro }
-
-tech_admin_styles_showstyle:
-  pattern: /styles/:style_id
-  defaults: { _controller: TechBundle:Styles:showStyle }
-  requirements: { style_id: "\d+" }
-
-tech_admin_styles_editstyle:
-  pattern: /styles/:style_id/edit
-  defaults: { _controller: TechBundle:Styles:editStyle }
-  requirements: { style_id: "\d+" }
-
-tech_admin_styles_newstyle:
-  pattern: /styles/new-style
-  defaults: { _controller: TechBundle:Styles:editStyle, style_id: 0 }
-
-tech_admin_styles_resources:
-  pattern: /styles/:style_id/resources
-  defaults: { _controller: TechBundle:Styles:styleResourceList }
-  requirements: { style_id: "\d+" }
-
-tech_admin_styles_templates:
-  pattern: /styles/:style_id/templates
-  defaults: { _controller: TechBundle:Styles:styleTemplateList }
-  requirements: { style_id: "\d+" }
-
-tech_admin_styles_edittemplate:
-  pattern: /styles/:style_id/templates/:template_name
-  defaults: { _controller: TechBundle:Styles:editTemplate }
-  requirements: { style_id: "\d+" }
+  defaults: { _controller: AgentBundle:Poller:handler }
 
 
 ################################################################################
 # Languages
 ################################################################################
 
-tech_admin_langs:
+agent_admin_langs:
   pattern: /languages
-  defaults: { _controller: TechBundle:Languages:index }
+  defaults: { _controller: AgentBundle:Languages:index }
 
-tech_admin_langs_intro:
+agent_admin_langs_intro:
   pattern: /languages/intro
-  defaults: { _controller: TechBundle:Languages:intro }
+  defaults: { _controller: AgentBundle:Languages:intro }
 
-tech_admin_langs_editlang:
+agent_admin_langs_editlang:
   pattern: /languages/:lang_id/edit
-  defaults: { _controller: TechBundle:Languages:editLang }
+  defaults: { _controller: AgentBundle:Languages:editLang }
   requirements: { lang_id: "\d+" }
 
-tech_admin_langs_newlang:
+agent_admin_langs_newlang:
   pattern: /languages/new-language
-  defaults: { _controller: TechBundle:Languages:editLang, lang_id: 0 }
+  defaults: { _controller: AgentBundle:Languages:editLang, lang_id: 0 }
 
-tech_admin_langs_phrases:
+agent_admin_langs_phrases:
   pattern: /languages/:lang_id/phrases
-  defaults: { _controller: TechBundle:Languages:listPhrases}
+  defaults: { _controller: AgentBundle:Languages:listPhrases}
   requirements: { lang_id: "\d+", phrase_group: null }
 
-tech_admin_langs_editphrase:
+agent_admin_langs_editphrase:
   pattern: /languages/:lang_id/edit-phrase/:phrase_name
-  defaults: { _controller: TechBundle:Languages:editPhrase }
+  defaults: { _controller: AgentBundle:Languages:editPhrase }
   requirements: { lang_id: "\d+" }
-
-
-################################################################################
-# Usersources
-################################################################################
-
-tech_admin_usersources:
-  pattern: /usersources
-  defaults: { _controller: TechBundle:Usersources:index }
-
-tech_admin_usersources_intro:
-  pattern: /usersources/intro
-  defaults: { _controller: TechBundle:Usersources:intro }
-
-tech_admin_usersources_info:
-  pattern: /usersources/:usersource_id
-  defaults: { _controller: TechBundle:Usersources:info }
-  requirements: { usersource_id: "\d+" }
-
-tech_admin_usersources_edit:
-  pattern: /usersources/:usersource_id/edit
-  defaults: { _controller: TechBundle:Usersources:edit }
-  requirements: { usersource_id: "\d+" }
-
-tech_admin_usersources_new:
-  pattern: /usersources/new-usersource
-  defaults: { _controller: TechBundle:Usersources:edit, usersource_id: 0 }
-
-################################################################################
-# API Keys
-################################################################################
-
-tech_admin_api:
-  pattern: /api
-  defaults: { _controller: TechBundle:Api:index }
-
-tech_admin_api_intro:
-  pattern: /api/intro
-  defaults: { _controller: TechBundle:Api:intro }
-
-tech_admin_api_keyinfo:
-  pattern: /api/key/:apikey
-  defaults: { _controller: TechBundle:Api:infoKey }
-  requirements: { usersource_id: "\d+" }
-
-tech_admin_api_editkey:
-  pattern: /api/key/:apikey/edit
-  defaults: { _controller: TechBundle:Api:editKey }
-
-tech_admin_api_newkey:
-  pattern: /api/new-key
-  defaults: { _controller: TechBundle:Api:editKey, apikey: 0 }
 
 
 ################################################################################
 # People
 ################################################################################
 
-tech_people:
+agent_people:
   pattern: /people
-  defaults: { _controller: TechBundle:PeopleSearch:index }
+  defaults: { _controller: AgentBundle:PeopleSearch:index }
 
-tech_people_view:
+agent_people_view:
   pattern: /people/:person_id
-  defaults: { _controller: TechBundle:Person:view }
+  defaults: { _controller: AgentBundle:Person:view }
   requirements: { person_id: "\d+" }
 
-tech_people_new:
+agent_people_new:
   pattern: /people/new-person
-  defaults: { _controller: TechBundle:Person:view, person_id: 0 }
+  defaults: { _controller: AgentBundle:Person:view, person_id: 0 }
 
-tech_people_ajaxsave:
+agent_people_ajaxsave:
   pattern: /people/:person_id/ajax-save
-  defaults: { _controller: TechBundle:Person:ajaxSave }
+  defaults: { _controller: AgentBundle:Person:ajaxSave }
   requirements: { person_id: "\d+" }
 
-tech_people_ajaxsave_emails:
+agent_people_ajaxsave_emails:
   pattern: /people/:person_id/ajax-save-emails
-  defaults: { _controller: TechBundle:Person:ajaxSaveEmails }
+  defaults: { _controller: AgentBundle:Person:ajaxSaveEmails }
   requirements: { person_id: "\d+" }
 
-tech_people_ajaxsave_contact:
+agent_people_ajaxsave_contact:
   pattern: /people/:person_id/ajax-save-contact
-  defaults: { _controller: TechBundle:Person:ajaxSaveContact }
+  defaults: { _controller: AgentBundle:Person:ajaxSaveContact }
   requirements: { person_id: "\d+" }
 
-tech_people_ajaxsave_note:
+agent_people_ajaxsave_note:
   pattern: /people/:person_id/ajax-save-note
-  defaults: { _controller: TechBundle:Person:ajaxSaveNote }
+  defaults: { _controller: AgentBundle:Person:ajaxSaveNote }
   requirements: { person_id: "\d+" }
 
-tech_people_ajaxsave_organization:
+agent_people_ajaxsave_organization:
   pattern: /people/:person_id/ajax-save-organization
-  defaults: { _controller: TechBundle:Person:ajaxSaveOrganization }
+  defaults: { _controller: AgentBundle:Person:ajaxSaveOrganization }
   requirements: { person_id: "\d+" }
 
-tech_people_ajaxget_notes:
+agent_people_ajaxget_notes:
   pattern: /people/:person_id/ajax-get-notes
-  defaults: { _controller: TechBundle:Person:ajaxGetNotes }
+  defaults: { _controller: AgentBundle:Person:ajaxGetNotes }
   requirements: { person_id: "\d+" }
 
-tech_peoplesearch_perform:
+agent_peoplesearch_perform:
   pattern: /people-search/search
-  defaults: { _controller: TechBundle:PeopleSearch:performSearch }
+  defaults: { _controller: AgentBundle:PeopleSearch:performSearch }
 
-tech_peoplesearch_performquick:
+agent_peoplesearch_performquick:
   pattern: /people-search/search-quick
-  defaults: { _controller: TechBundle:PeopleSearch:performQuickSearch }
+  defaults: { _controller: AgentBundle:PeopleSearch:performQuickSearch }
 
-tech_peoplesearch:
+agent_peoplesearch:
   pattern: /people-search
-  defaults: { _controller: TechBundle:PeopleSearch:search }
+  defaults: { _controller: AgentBundle:PeopleSearch:search }
 
-tech_peoplesearch_labelspane:
+agent_peoplesearch_labelspane:
   pattern: /people-search/filters-pane
-  defaults: { _controller: TechBundle:PeopleSearch:labelsPane }
+  defaults: { _controller: AgentBundle:PeopleSearch:labelsPane }
 
-tech_peoplesearch_directorypane:
+agent_peoplesearch_directorypane:
   pattern: /people-search/directory-pane
-  defaults: { _controller: TechBundle:PeopleSearch:directoryPane }
-
-################################################################################
-# Person Fields
-################################################################################
-
-admin_personfields:
-  pattern: /person-fields
-  defaults: { _controller: TechBundle:PersonFields:index }
-
-admin_personfields_new_choosetype:
-  pattern: /person-fields/new-choose-type
-  defaults: { _controller: TechBundle:PersonFields:newChooseType, field_id: 0 }
-
-admin_personfields_edit:
-  pattern: /person-fields/:field_id/edit
-  defaults: { _controller: TechBundle:PersonFields:edit }
-  requirements: { field_id: "\d+" }
-
-admin_personfields_test:
-  pattern: /person-fields/:field_id/test
-  defaults: { _controller: TechBundle:PersonFields:test }
-  requirements: { field_id: "\d+" }
+  defaults: { _controller: AgentBundle:PeopleSearch:directoryPane }
 
 
 ################################################################################
 # Ticket Search
 ################################################################################
 
-tech_ticketsearch:
+agent_ticketsearch:
   pattern: /ticket-search
-  defaults: { _controller: TechBundle:TicketSearch:index }
+  defaults: { _controller: AgentBundle:TicketSearch:index }
 
-tech_ticket_view:
+agent_ticket_view:
   pattern: /tickets/:ticket_id
-  defaults: { _controller: TechBundle:Ticket:view }
+  defaults: { _controller: AgentBundle:Ticket:view }
   requirements: { filter_id: "\d+" }
 
-tech_ticketsearch_filterspane:
+agent_ticketsearch_filterspane:
   pattern: /ticket-search/filters-pane
-  defaults: { _controller: TechBundle:TicketSearch:filtersPane }
+  defaults: { _controller: AgentBundle:TicketSearch:filtersPane }
 
-tech_ticketsearch_runfilter:
+agent_ticketsearch_runfilter:
   pattern: /ticket-search/filter/:filter_id
-  defaults: { _controller: TechBundle:TicketSearch:runFilter }
+  defaults: { _controller: AgentBundle:TicketSearch:runFilter }
   requirements: { filter_id: "\d+" }
 
-tech_ticketqueues_list:
+agent_ticketqueues_list:
   pattern: /ticket-search/queues/list
-  defaults: { _controller: TechBundle:TicketSearch:listQueues }
+  defaults: { _controller: AgentBundle:TicketSearch:listQueues }
 
-tech_ticketqueues_edit:
+agent_ticketqueues_edit:
   pattern: /ticket-search/queues/:queue_id/edit
-  defaults: { _controller: TechBundle:TicketSearch:editQueue }
+  defaults: { _controller: AgentBundle:TicketSearch:editQueue }
   requirements: { queue_id: "\d+" }
 
-tech_ticketqueues_new:
+agent_ticketqueues_new:
   pattern: /ticket-search/queues/new-queue
-  defaults: { _controller: TechBundle:TicketSearch:editQueue, queue_id: 0 }
+  defaults: { _controller: AgentBundle:TicketSearch:editQueue, queue_id: 0 }

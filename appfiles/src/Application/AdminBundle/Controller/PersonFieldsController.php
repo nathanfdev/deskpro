@@ -21,7 +21,7 @@ use Application\DeskPRO\Entity\CustomDefPerson;
 class PersonFieldsController extends AbstractController
 {
 	############################################################################
-	# /tech/person-fields                                     admin_personfields
+	# /agent/person-fields                                     admin_personfields
 	############################################################################
 
 	public function indexAction()
@@ -36,7 +36,7 @@ class PersonFieldsController extends AbstractController
 
 
 	############################################################################
-	# /tech/person-fields/new-choose-type      admin_personfields_new_choosetype
+	# /agent/person-fields/new-choose-type      admin_personfields_new_choosetype
 	############################################################################
 
 	public function newChooseTypeAction()
@@ -49,7 +49,7 @@ class PersonFieldsController extends AbstractController
 
 
 	############################################################################
-	# /tech/person-fields/:field_id/edit                 admin_personfields_edit
+	# /agent/person-fields/:field_id/edit                 admin_personfields_edit
 	############################################################################
 
 	public function editAction($field_id)
@@ -103,7 +103,7 @@ class PersonFieldsController extends AbstractController
 
 
 	############################################################################
-	# /tech/person-fields/:field_id/test                 admin_personfields_test
+	# /agent/person-fields/:field_id/test                 admin_personfields_test
 	############################################################################
 
 	public function testAction()

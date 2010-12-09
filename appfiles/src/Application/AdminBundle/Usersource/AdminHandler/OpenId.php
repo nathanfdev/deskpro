@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Usersource\AdminHandler;
+namespace Application\AgentBundle\Usersource\AdminHandler;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;

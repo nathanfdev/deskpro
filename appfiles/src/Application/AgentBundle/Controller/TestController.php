@@ -1,12 +1,12 @@
 <?php
 
-namespace Application\TechBundle\Controller;
+namespace Application\AgentBundle\Controller;
 
 class TestController extends AbstractController
 {
     public function indexAction()
     {
-		return $this->renderJson('TechBundle:Test:test.phpj');
+		return $this->renderJson('AgentBundle:Test:test.phpj');
 
 		$filter = $this->em->getRepository('DeskPRO:TicketQueue')->find(3);
 
@@ -19,6 +19,6 @@ class TestController extends AbstractController
 
 		exit;
 
-        //return $this->render('TechBundle:Test:index.twig');
+        //return $this->render('AgentBundle:Test:index.twig');
     }
 }

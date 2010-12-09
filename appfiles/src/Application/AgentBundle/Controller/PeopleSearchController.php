@@ -3,13 +3,13 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage TechBundle
+ * @subpackage AgentBundle
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Controller;
+namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\Entity\Person;
 use \Application\DeskPRO\Entity\FormField;
@@ -21,7 +21,7 @@ use \Application\DeskPRO\Entity\FormFieldAssociation;
 class PeopleSearchController extends AbstractController
 {
 	############################################################################
-	# /tech/people                                                   tech_people
+	# /agent/people                                                   agent_people
 	############################################################################
 
 	public function indexAction()
@@ -33,22 +33,22 @@ class PeopleSearchController extends AbstractController
 			ORDER BY p.id DESC
 		")->getResult();
 
-		return $this->render('TechBundle:PeopleSearch:index.twig', array(
+		return $this->render('AgentBundle:PeopleSearch:index.twig', array(
 			'people_list' => $people_list
 		));
 	}
 
 	############################################################################
-	# /tech/people-search                                      tech_peoplesearch
+	# /agent/people-search                                      agent_peoplesearch
 	############################################################################
 
 	public function searchAction()
 	{
-		return $this->render('TechBundle:PeopleSearch:search.twig');
+		return $this->render('AgentBundle:PeopleSearch:search.twig');
 	}
 
 	############################################################################
-	# /tech/people-search/search                       tech_peoplesearch_perform
+	# /agent/people-search/search                       agent_peoplesearch_perform
 	############################################################################
 
 	public function performSearchAction()
@@ -60,13 +60,13 @@ class PeopleSearchController extends AbstractController
 			ORDER BY p.id DESC
 		")->getResult();
 
-		return $this->render('TechBundle:PeopleSearch:search_results.twig', array(
+		return $this->render('AgentBundle:PeopleSearch:search_results.twig', array(
 			'people_list' => $people_list
 		));
 	}
 
 	############################################################################
-	# /tech/people-search/quick-search            tech_peoplesearch_performquick
+	# /agent/people-search/quick-search            agent_peoplesearch_performquick
 	############################################################################
 
 	public function performQuickSearchAction()
@@ -92,17 +92,17 @@ class PeopleSearchController extends AbstractController
 		")->getResult();
 		//")->setParameters(array($q, $q))->getResult();
 
-		return $this->render('TechBundle:PeopleSearch:search_results.twig', array(
+		return $this->render('AgentBundle:PeopleSearch:search_results.twig', array(
 			'people_list' => $people_list
 		));
 	}
 
 	############################################################################
-	# /tech/people-search/labels-pane               tech_peoplesearch_labelspane
+	# /agent/people-search/labels-pane               agent_peoplesearch_labelspane
 	############################################################################
 
 	public function labelsPaneAction()
 	{
-		return $this->render('TechBundle:PeopleSearch:pane-labels.twig');
+		return $this->render('AgentBundle:PeopleSearch:pane-labels.twig');
 	}
 }

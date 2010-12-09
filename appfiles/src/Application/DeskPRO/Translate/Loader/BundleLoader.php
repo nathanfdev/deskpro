@@ -12,7 +12,7 @@
 namespace Application\DeskPRO\Translate\Loader;
 
 /**
- * Loads core from DeskPRO core.php, and tech_whatever as TechBundle whatever.php etc.
+ * Loads core from DeskPRO core.php, and agent_whatever as AgentBundle whatever.php etc.
  */
 class BundleLoader implements LoaderInterface
 {

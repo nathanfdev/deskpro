@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Listener;
+namespace Application\AgentBundle\Listener;
 
 use \Symfony\Component\EventDispatcher\Event;
 use \Symfony\Framework\Debug\EventDispatcher;

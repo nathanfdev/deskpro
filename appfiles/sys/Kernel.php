@@ -73,7 +73,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\AdminBundle\AdminBundle(),
-            new \Application\TechBundle\TechBundle(),
+            new \Application\AgentBundle\AgentBundle(),
             new \Application\UserBundle\UserBundle(),
             new \Application\ApiBundle\ApiBundle(),
         );

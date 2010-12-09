@@ -3,13 +3,13 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage TechBundle
+ * @subpackage AgentBundle
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Controller;
+namespace Application\AgentBundle\Controller;
 
 use \Orb\Util\Arrays;
 
@@ -27,7 +27,7 @@ use \Application\DeskPRO\App;
 class PersonController extends AbstractController
 {
 	############################################################################
-	# /tech/people/:person_id                                   tech_people_view
+	# /agent/people/:person_id                                   agent_people_view
 	############################################################################
 
 	public function viewAction($person_id)
@@ -114,7 +114,7 @@ class PersonController extends AbstractController
 		");
 		$org_options = Arrays::implodeTemplate($org_options, "<option value=\"{KEY}\">{VAL}</option>");
 
-		return $this->render('TechBundle:Person:view.twig', array(
+		return $this->render('AgentBundle:Person:view.twig', array(
 			'person' => $person,
 			'form' => $form,
 			'fields' => $form->getCustomFields(),
@@ -127,7 +127,7 @@ class PersonController extends AbstractController
 	}
 
 	############################################################################
-	# /tech/people/:person_id/ajax-get-notes           tech_people_ajaxget_notes
+	# /agent/people/:person_id/ajax-get-notes           agent_people_ajaxget_notes
 	############################################################################
 
 	public function ajaxGetNotesAction($person_id)
@@ -162,7 +162,7 @@ class PersonController extends AbstractController
 		$html = array();
 
 		foreach ($notes as $note) {
-			$html[] = $this->renderView('TechBundle:Person:note-li.twig', array('note' => $note));
+			$html[] = $this->renderView('AgentBundle:Person:note-li.twig', array('note' => $note));
 		}
 		
 		$html = implode('', $html);
@@ -178,7 +178,7 @@ class PersonController extends AbstractController
 
 
 	############################################################################
-	# /tech/people/:person_id/ajax-save                     tech_people_ajaxsave
+	# /agent/people/:person_id/ajax-save                     agent_people_ajaxsave
 	############################################################################
 
 	public function ajaxSaveAction($person_id)
@@ -209,7 +209,7 @@ class PersonController extends AbstractController
 
 
 	############################################################################
-	# /tech/people/:person_id/ajax-save-organization        tech_people_ajaxsave_organization
+	# /agent/people/:person_id/ajax-save-organization        agent_people_ajaxsave_organization
 	############################################################################
 
 	public function ajaxSaveOrganizationAction($person_id)
@@ -256,7 +256,7 @@ class PersonController extends AbstractController
 
 
 	############################################################################
-	# /tech/people/:person_id/ajax-save-emails       tech_people_ajaxsave_emails
+	# /agent/people/:person_id/ajax-save-emails       agent_people_ajaxsave_emails
 	############################################################################
 
 	// TODO error checking
@@ -318,13 +318,13 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'dlg_html' => $this->renderView('TechBundle:Person:email-dlg-li.twig', array('person' => $person))
+			'dlg_html' => $this->renderView('AgentBundle:Person:email-dlg-li.twig', array('person' => $person))
 		));
 	}
 
 
 	############################################################################
-	# /tech/people/:person_id/ajax-save-contact     tech_people_ajaxsave_contact
+	# /agent/people/:person_id/ajax-save-contact     agent_people_ajaxsave_contact
 	############################################################################
 
 	// TODO error checking
@@ -364,12 +364,12 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'contact_html' => $this->renderView('TechBundle:Person:contact-section.twig', array('person' => $person))
+			'contact_html' => $this->renderView('AgentBundle:Person:contact-section.twig', array('person' => $person))
 		));
 	}
 
 	############################################################################
-	# /tech/people/:person_id/ajax-save-note           tech_people_ajaxsave_note
+	# /agent/people/:person_id/ajax-save-note           agent_people_ajaxsave_note
 	############################################################################
 
 	// TODO error checking
@@ -398,7 +398,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'note_li_html' => $this->renderView('TechBundle:Person:note-li.twig', array('note' => $note))
+			'note_li_html' => $this->renderView('AgentBundle:Person:note-li.twig', array('note' => $note))
 		));
 	}
 
@@ -408,7 +408,7 @@ class PersonController extends AbstractController
 
 	protected function _getForm(Person $person)
 	{
-		$form = new \Application\TechBundle\Form\EditPerson(array('name' => 'edit_person'));
+		$form = new \Application\AgentBundle\Form\EditPerson(array('name' => 'edit_person'));
 
 		// Custom fields
 		//$fields = $this->em->getRepository('DeskPRO:PersonField')->getEnabledFields();

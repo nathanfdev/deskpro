@@ -59,7 +59,7 @@ class Templates implements RendererInterface
 		}
 
 		// So we end up with templates called...
-		// TechBundle:Whatever:Text, TechBundle:Whatever:Date
+		// AgentBundle:Whatever:Text, AgentBundle:Whatever:Date
 
 		return $this->template_engine->render(
 			$this->template_ns . ':' . $short_classname,

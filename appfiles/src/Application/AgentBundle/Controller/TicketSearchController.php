@@ -3,13 +3,13 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage TechBundle
+ * @subpackage AgentBundle
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Controller;
+namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\Entity\TicketQueue;
 use \Application\DeskPRO\App;
@@ -23,14 +23,14 @@ class TicketSearchController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->render('TechBundle:TicketSearch:list-blank.twig');
+		return $this->render('AgentBundle:TicketSearch:list-blank.twig');
 	}
 
 	public function filtersPaneAction()
 	{
 		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
-		return $this->render('TechBundle:TicketSearch:pane-filters.twig', array(
+		return $this->render('AgentBundle:TicketSearch:pane-filters.twig', array(
 			'filters' => $queues
 		));
 	}
@@ -42,13 +42,13 @@ class TicketSearchController extends AbstractController
 
 		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($filter_id, $page, 25);
 
-		return $this->render('TechBundle:TicketSearch:filter-results.twig', array(
+		return $this->render('AgentBundle:TicketSearch:filter-results.twig', array(
 			'tickets' => $tickets
 		));
 	}
 
 	############################################################################
-	# /tech/ticket-search/queues/list                     tech_ticketqueues_list
+	# /agent/ticket-search/queues/list                     agent_ticketqueues_list
 	############################################################################
 
 	/**
@@ -58,7 +58,7 @@ class TicketSearchController extends AbstractController
 	{
 		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
-		return $this->render('TechBundle:TicketSearch:queues-list.twig', array(
+		return $this->render('AgentBundle:TicketSearch:queues-list.twig', array(
 			'queues' => $queues
 		));
 	}
@@ -66,7 +66,7 @@ class TicketSearchController extends AbstractController
 
 
 	############################################################################
-	# /tech/ticket-search/queues/:queue_id/edit           tech_ticketqueues_edit
+	# /agent/ticket-search/queues/:queue_id/edit           agent_ticketqueues_edit
 	############################################################################
 
 	/**
@@ -93,7 +93,7 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
-		return $this->render('TechBundle:TicketSearch:queues-edit.twig', array(
+		return $this->render('AgentBundle:TicketSearch:queues-edit.twig', array(
 			'term_options' => $term_options,
 			'queue' => $queue
 		));

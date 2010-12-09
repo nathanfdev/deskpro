@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Usersource\AdminHandler;
+namespace Application\AgentBundle\Usersource\AdminHandler;
 
 use \Application\DeskPRO\Entity\Usersource;
 
@@ -103,7 +103,7 @@ abstract class AbstractAdminHandler
 		$parts = explode('\\', $classname);
 		$basename = strtolower(array_pop($parts));
 
-		$tplname = 'TechBundle:Usersources:edit-form-.twig' . $basename;
+		$tplname = 'AgentBundle:Usersources:edit-form-.twig' . $basename;
 
 		return $controller->renderView($tplname, array(
 			'usersource' => $this->usersource,

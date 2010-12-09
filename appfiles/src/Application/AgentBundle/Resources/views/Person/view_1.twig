@@ -1,10 +1,10 @@
-{% extends 'TechBundle::layout.twig' %}
+{% extends 'AgentBundle::layout.twig' %}
 {% block extra_head %}
 
 {% endblock %}
 {% block content %}
 
-{% set form_url %}{% path 'tech_people_view' with ['person_id': person.id] %}{% endset %}
+{% set form_url %}{% path 'agent_people_view' with ['person_id': person.id] %}{% endset %}
 {{form.renderFormTag(['action': form_url])|raw}}
 {{form.renderHiddenTags()|raw}}
 

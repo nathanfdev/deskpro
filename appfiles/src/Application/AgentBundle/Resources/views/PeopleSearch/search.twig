@@ -8,7 +8,7 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.PeopleSearch';
 			Quick Search &raquo;
 		</div>
 		<br />
-		<form action="{% path 'tech_peoplesearch_perform' %}" method="post">
+		<form action="{% path 'agent_peoplesearch_perform' %}" method="post">
 			<div class="search-form">
 				<div class="search-terms"></div>
 				<div class="term"><span class="add-term">+</span> Add a new search term</div>
@@ -20,7 +20,7 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.PeopleSearch';
 		<div class="toggle toggle-search-form" style="float:right;">
 			Advanced Search &raquo;
 		</div>
-		<form action="{% path 'tech_peoplesearch_performquick' %}" method="post">
+		<form action="{% path 'agent_peoplesearch_performquick' %}" method="post">
 			<input type="search" name="q" placeholder="Begin typing a name, email address, label or company ..." style="width: 350px" />
 			<img src="{% asset 'images/loading-small.gif' %}" alt="Searching..." class="quick-search-loading" style="display:none" />
 		</form>

@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\TechBundle\Controller;
+namespace Application\AgentBundle\Controller;
 
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {

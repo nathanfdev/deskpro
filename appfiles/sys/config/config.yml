@@ -36,4 +36,4 @@ deskpro_cache.caches:
   phrases: ~
 
 deskpro_core.config: ~
-deskpro_tech_core.config: ~
+deskpro_agent_core.config: ~

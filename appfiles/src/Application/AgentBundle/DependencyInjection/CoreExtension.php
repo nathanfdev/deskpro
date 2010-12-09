@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\DependencyInjection;
+namespace Application\AgentBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
@@ -36,6 +36,6 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 
 	public function getAlias()
     {
-        return 'deskpro_tech_core';
+        return 'deskpro_agent_core';
     }
 }

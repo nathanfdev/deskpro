@@ -3,13 +3,13 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage TechBundle
+ * @subpackage AgentBundle
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Usersource\AdminHandler;
+namespace Application\AgentBundle\Usersource\AdminHandler;
 
 use \Application\DeskPRO\Entity\Usersource;
 
@@ -23,18 +23,18 @@ class Factory
 	private function __construct() { /* static */ }
 
 	/**
-	 * @return Application\TechBundle\CustomField\AdminHandler\AbstractAdminHandler
+	 * @return Application\AgentBundle\CustomField\AdminHandler\AbstractAdminHandler
 	 */
 	public static function createUsersource(Usersource $usersource)
 	{
 		$handler = null;
 		switch ($usersource['handler_class']) {
 			case 'Application\\DeskPRO\\Usersource\\Handler\\Twitter':
-				$handler = new \Application\TechBundle\Usersource\AdminHandler\Twitter($usersource);
+				$handler = new \Application\AgentBundle\Usersource\AdminHandler\Twitter($usersource);
 				break;
 
 			case 'Application\\DeskPRO\\Usersource\\Handler\\OpenId':
-				$handler = new \Application\TechBundle\Usersource\AdminHandler\OpenId($usersource);
+				$handler = new \Application\AgentBundle\Usersource\AdminHandler\OpenId($usersource);
 				break;
 		}
 		

@@ -35,7 +35,7 @@ class LanguagesController extends AbstractController
 	public function indexAction()
     {
 		if (!$this->lang_hierarchy) {
-			return $this->redirect($this->generateUrl('tech_admin_langs_intro', array()));
+			return $this->redirect($this->generateUrl('agent_admin_langs_intro', array()));
 		}
 
         return $this->render('AdminBundle:Languages:index.twig');

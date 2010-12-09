@@ -17,7 +17,7 @@ namespace Application\AdminBundle\Controller;
 class ApiController extends AbstractController
 {
 	############################################################################
-	# /tech/api                                                   tech_admin_api
+	# /agent/api                                                   agent_admin_api
 	############################################################################
 
 	/**
@@ -32,7 +32,7 @@ class ApiController extends AbstractController
 		")->getResult();
 
 		if (!$all_apikeys->count()) {
-			return $this->redirect($this->generateUrl('tech_admin_api_info', array()));
+			return $this->redirect($this->generateUrl('agent_admin_api_info', array()));
 		}
 
 		$this->tplvars['all_apikeys'] = $all_apikeys;
@@ -43,7 +43,7 @@ class ApiController extends AbstractController
 
 
 	############################################################################
-	# /tech/api/intro                                       tech_admin_api_intro
+	# /agent/api/intro                                       agent_admin_api_intro
 	############################################################################
 
 	/**
@@ -57,7 +57,7 @@ class ApiController extends AbstractController
 
 
 	############################################################################
-	# /tech/api/key/:apikey/edit                          tech_admin_api_editkey
+	# /agent/api/key/:apikey/edit                          agent_admin_api_editkey
 	############################################################################
 
 	/**
@@ -81,7 +81,7 @@ class ApiController extends AbstractController
 
 
 	############################################################################
-	# /tech/api/key/:apikey/info                          tech_admin_api_keyinfo
+	# /agent/api/key/:apikey/info                          agent_admin_api_keyinfo
 	############################################################################
 
 	/**

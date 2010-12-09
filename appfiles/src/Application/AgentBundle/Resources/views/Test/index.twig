@@ -51,7 +51,7 @@
 	</script>
 </head>
 <body>
-<input id="load_this" type="hidden" data-route="person:{% path 'tech_people_view' with ['person_id': person.id] %}" />
+<input id="load_this" type="hidden" data-route="person:{% path 'agent_people_view' with ['person_id': person.id] %}" />
 
 <div id="window_head" class="ui-layout-north">
 	<div id="window_head_top">
@@ -63,8 +63,8 @@
 
 	<div id="window_header_nav">
 		<ul>
-			<li data-route="navpane:{% path 'tech_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'tech_ticketsearch' %}">Tickets</li>
-			<li class="people" data-route="navpane:{% path 'tech_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'tech_peoplesearch' %}">People</li>
+			<li data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Tickets</li>
+			<li class="people" data-route="navpane:{% path 'agent_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'agent_peoplesearch' %}">People</li>
 		</ul>
 	</div>
 </div>

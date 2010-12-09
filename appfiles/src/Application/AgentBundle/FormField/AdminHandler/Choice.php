@@ -3,13 +3,13 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage TechBundle
+ * @subpackage AgentBundle
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\CustomField\AdminHandler;
+namespace Application\AgentBundle\CustomField\AdminHandler;
 
 use \Application\DeskPRO\Entity;
 

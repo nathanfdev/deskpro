@@ -3,13 +3,13 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage TechBundle
+ * @subpackage AgentBundle
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\Controller;
+namespace Application\AgentBundle\Controller;
 
 use \Orb\Util\Strings;
 
@@ -21,7 +21,7 @@ use Application\DeskPRO\App;
 class PollerController extends AbstractController
 {
 	############################################################################
-	# /tech/poller                                         tech_interface_poller
+	# /agent/poller                                         agent_interface_poller
 	############################################################################
 
 	/**

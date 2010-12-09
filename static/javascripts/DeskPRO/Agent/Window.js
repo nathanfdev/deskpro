@@ -26,7 +26,7 @@ DeskPRO.Agent.Window = new Class({
 		
 		this.messageBroker = new DeskPRO.MessageBroker();
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
-			ajaxUrl: BASE_URL + 'tech/poller'
+			ajaxUrl: BASE_URL + 'agent/poller'
 		});
 		
 		$('body').layout({

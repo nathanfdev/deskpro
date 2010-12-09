@@ -3,13 +3,13 @@
  * DeskPRO
  *
  * @package DeskPRO
- * @subpackage TechBundle
+ * @subpackage AgentBundle
  * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Christopher Nadeau <chris@nadeau.ws>
  */
 
-namespace Application\TechBundle\CustomField\AdminHandler;
+namespace Application\AgentBundle\CustomField\AdminHandler;
 
 use \Application\DeskPRO\Entity\FormField;
 
@@ -23,26 +23,26 @@ class Factory
 	private function __construct() { /* static */ }
 
 	/**
-	 * @return Application\TechBundle\CustomField\AdminHandler\AbstractAdminHandler
+	 * @return Application\AgentBundle\CustomField\AdminHandler\AbstractAdminHandler
 	 */
 	public static function createFromFormField(FormField $form_field)
 	{
 		$handler = null;
 		switch ($form_field['handler_class']) {
 			case 'Application\\DeskPRO\\Form\\FieldHandler\\Text':
-				$handler = new \Application\TechBundle\CustomField\AdminHandler\Text($form_field);
+				$handler = new \Application\AgentBundle\CustomField\AdminHandler\Text($form_field);
 				break;
 
 			case 'Application\\DeskPRO\\Form\\FieldHandler\\Textarea':
-				$handler = new \Application\TechBundle\CustomField\AdminHandler\Textarea($form_field);
+				$handler = new \Application\AgentBundle\CustomField\AdminHandler\Textarea($form_field);
 				break;
 
 			case 'Application\\DeskPRO\\Form\\FieldHandler\\Choice':
-				$handler = new \Application\TechBundle\CustomField\AdminHandler\Choice($form_field);
+				$handler = new \Application\AgentBundle\CustomField\AdminHandler\Choice($form_field);
 				break;
 
 			case 'Application\\DeskPRO\\Form\\FieldHandler\\MultipleChoice':
-				$handler = new \Application\TechBundle\CustomField\AdminHandler\MultipleChoice($form_field);
+				$handler = new \Application\AgentBundle\CustomField\AdminHandler\MultipleChoice($form_field);
 				break;
 		}
 		

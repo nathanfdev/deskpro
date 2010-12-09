@@ -1,4 +1,4 @@
-{% extends 'TechBundle:TicketSearch:pane-layout.twig' %}
+{% extends 'AgentBundle:TicketSearch:pane-layout.twig' %}
 {% block meta %}
 <script>
 pageMeta.class = 'DeskPRO.Agent.PageFragment.NavPane.TicketFilters';
@@ -9,7 +9,7 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.NavPane.TicketFilters';
 	<div class="top-box ui-layout-north">
 		<ul>
 			{% for filter in filters %}
-				<li data-route="listpane:{% path 'tech_ticketsearch_runfilter' with ['filter_id': filter.id] %}">
+				<li data-route="listpane:{% path 'agent_ticketsearch_runfilter' with ['filter_id': filter.id] %}">
 					<span class="ticket-filter-count-{{filter.id}}">-</span>
 					{{filter.title}}
 				</li>

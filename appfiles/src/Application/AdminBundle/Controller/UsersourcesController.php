@@ -17,7 +17,7 @@ namespace Application\AdminBundle\Controller;
 class UsersourcesController extends AbstractController
 {
 	############################################################################
-	# /tech/usersources                                   tech_admin_usersources
+	# /agent/usersources                                   agent_admin_usersources
 	############################################################################
 
 	/**
@@ -43,7 +43,7 @@ class UsersourcesController extends AbstractController
 
 
 	############################################################################
-	# /tech/usersources/intro                       tech_admin_usersources_intro
+	# /agent/usersources/intro                       agent_admin_usersources_intro
 	############################################################################
 
 	/**
@@ -60,7 +60,7 @@ class UsersourcesController extends AbstractController
 
 
 	############################################################################
-	# /tech/usersources/:usersource_id/edit          tech_admin_usersources_edit
+	# /agent/usersources/:usersource_id/edit          agent_admin_usersources_edit
 	############################################################################
 
 	/**
@@ -112,7 +112,7 @@ class UsersourcesController extends AbstractController
 	
 
 	############################################################################
-	# /tech/usersources/:usersource_id/info          tech_admin_usersources_info
+	# /agent/usersources/:usersource_id/info          agent_admin_usersources_info
 	############################################################################
 
 	/**

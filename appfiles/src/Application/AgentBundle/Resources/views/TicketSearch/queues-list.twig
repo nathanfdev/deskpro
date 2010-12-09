@@ -1,13 +1,13 @@
-{% extends 'TechBundle::layout.twig' %}
+{% extends 'AgentBundle::layout.twig' %}
 {% block content %}
-<a href="{% path 'tech_ticketqueues_new' %}">Add a new queue</a>
+<a href="{% path 'agent_ticketqueues_new' %}">Add a new queue</a>
 
 {% if queues %}
 	<br/><br />
 	<h1>Defined Queues</h1>
 	<ul>
 		{% for queue in queues %}
-			<li><a href="{% path 'tech_ticketqueues_edit' with ['queue_id': queue.id] %}">{{queue.title}}</a></li>
+			<li><a href="{% path 'agent_ticketqueues_edit' with ['queue_id': queue.id] %}">{{queue.title}}</a></li>
 		{% endfor %}
 	</ul>
 {% endif %}

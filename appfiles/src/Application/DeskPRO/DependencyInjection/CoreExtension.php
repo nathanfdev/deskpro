@@ -57,7 +57,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		// BundleLoader
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\BundleLoader', array(array(
 			'core' => DP_ROOT . '/src/Application/DeskPRO/Resources/language',
-			'tech' => DP_ROOT . '/src/Application/TechBundle/Resources/language',
+			'tech' => DP_ROOT . '/src/Application/AgentBundle/Resources/language',
 			'user' => DP_ROOT . '/src/Application/UserBundle/Resources/language',
 			'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/language',
 		)));
@@ -143,7 +143,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
 			array(
 				'core' => DP_ROOT . '/src/Application/DeskPRO/Resources/settings',
-				'tech' => DP_ROOT . '/src/Application/TechBundle/Resources/settings',
+				'tech' => DP_ROOT . '/src/Application/AgentBundle/Resources/settings',
 				'user' => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
 				'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/settings',
 			),

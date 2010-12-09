@@ -1,9 +1,9 @@
 user:
   resource: UserBundle/Resources/config/routing.yml
 
-tech:
-  prefix: /tech
-  resource: TechBundle/Resources/config/routing.yml
+agent:
+  prefix: /agent
+  resource: AgentBundle/Resources/config/routing.yml
 
 admin:
   prefix: /admin

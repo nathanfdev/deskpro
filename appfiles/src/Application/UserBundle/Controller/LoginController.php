@@ -95,7 +95,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		$identity = $result->getIdentity();
 
 		$this->session->set('auth_person_id', $identity->getIdentity());
-		return $this->redirect($this->get('router')->generate('tech_dashboard', array()));
+		return $this->redirect($this->get('router')->generate('agent_dashboard', array()));
 	}
 
 	protected function _processUsersourceLogin($usersource_id)
@@ -134,7 +134,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 				$person = $login_processor->getPerson();
 
 				$this->session->set('auth_person_id', $person['id']);
-				return $this->redirect($this->get('router')->generate('tech_dashboard', array()));
+				return $this->redirect($this->get('router')->generate('agent_dashboard', array()));
 
 			// Error, go back to login
 			} else {
@@ -171,7 +171,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$person = $login_processor->getPerson();
 
 			$this->session->set('auth_person_id', $person['id']);
-			return $this->redirect($this->get('router')->generate('tech_dashboard', array()));
+			return $this->redirect($this->get('router')->generate('agent_dashboard', array()));
 
 		// Error, go back to login
 		} else {
