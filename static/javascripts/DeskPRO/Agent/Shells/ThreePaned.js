@@ -131,7 +131,17 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	_onTabAdd: function(tabData) {
 		tabData.btnId = Orb.getUniqueId('tab_');
 		
-		var li = $('<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab" title="' + tabData.title + '"><div class="title"><span>'+tabData.title+'</span></div><div class="close"><span /></div></li>');
+		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab';
+			if (tabData.page.TYPENAME != 'basic') {
+				html += ' icon icon-' + tabData.page.TYPENAME;
+			}
+			html += '" title="' + tabData.title + '">';
+		
+			html += '<div class="title"><span>'+tabData.title+'</span></div>';
+			html += '<div class="close"><span /></div>';
+		html += '</li>';
+		
+		var li = $(html);
 		
 		li.appendTo(this.tabStrip);
 		

@@ -223,6 +223,17 @@ ul.tagit input[type="text"] {
 	max-width: 100px;
 }
 
+#pane_tabbar ul li.icon {
+	max-width: 120px;
+	padding-left: 18px;
+	
+	background-repeat: no-repeat;
+	background-position: 6px center;
+}
+
+.icon-ticket { background-image: url(../../images/tab-icon-ticket.png); }
+.icon-person { background-image: url(../../images/tab-icon-person.png); }
+
 #pane_tabbar ul li div.title {
 	width: 80px;
 	line-height: 22px;

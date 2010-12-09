@@ -3,6 +3,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 	
+	TYPENAME: 'person',
+	
 	wrapper: null,
 	hasSetupEmailDlg: false,
 	email_display: null,

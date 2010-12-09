@@ -9,6 +9,8 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment');
  */
 DeskPRO.Agent.PageFragment.Basic = new Class({
 
+	TYPENAME: 'basic',
+
 	scripts: [],
 	stylesheets: [],
 	destroyEls: [],
@@ -19,7 +21,14 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		if (html) {
 			this.html = html;
 		}
+		
+		this.init();
 	},
+	
+	/**
+	 * Empty hook method for children
+	 */
+	init: function() { },
 	
 	
 	
