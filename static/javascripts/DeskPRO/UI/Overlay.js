@@ -92,7 +92,7 @@ DeskPRO.UI.Overlay = new Class({
 		this.elements.wrapperOuter.css({
 			'z-index': this.options.zIndex+1,
 			'position': 'absolute',
-			'top': 100,
+			'top': 60,
 			'left': leftForCenter
 		});
 		this.elements.wrapperOuter.fadeIn(450, (function() {
