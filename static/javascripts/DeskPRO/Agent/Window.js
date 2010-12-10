@@ -50,7 +50,7 @@ DeskPRO.Agent.Window = new Class({
 		this.addPageRouteLoader('ticket', this.loadRoute.bind(this));
 		this.addPageRouteLoader('person', this.loadRoute.bind(this));
 		
-		$('#window_header_nav li').click(function() {
+		$('#window_header_nav li[data-route]').click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 		
@@ -62,7 +62,6 @@ DeskPRO.Agent.Window = new Class({
 		var total = 0;
 		Object.each(counts, function (count, filter_id) {
 			total += count;
-			
 		});
 		
 		$('.ticket-filter-count-all').html('(' + total + ')');

@@ -11,7 +11,7 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-filter-counts'}],
 			'filters.counts',
-			{recurring: true}
+			{recurring: true, minDelay: 15000, minDelayAfterOne: true}
 		);
 		
 		// Set up listener

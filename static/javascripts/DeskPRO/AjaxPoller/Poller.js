@@ -132,10 +132,11 @@ DeskPRO.AjaxPoller.Poller = new Class({
 			var item_data = item_orig_data = item[1];
 			var item_opts = item[2];
 			
-			if (item_opts.minDelay) {
+			if (item_opts.minDelay && !(item_opts.minDelayAfterOne && !item_opts.sentCount)) {
 				// If its too soon, add it back immediately
-				if (item_opts.minDelay < (now.getTime() - item_opts.addedTime().getTime())) {
-					this.addData(item_name, item_orig_data, item_opts);
+				if (item_opts.minDelay > (now.getTime() - item_opts.addedTime.getTime())) {
+					this.addData(item_orig_data, item_name, item_opts);
+					continue;
 				}
 			}
 			
