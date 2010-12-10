@@ -138,8 +138,8 @@ ul.tagit input[type="text"] {
 }
 
 #window_head > #window_head_top {
-	background: #24406a url(../../images/topbar-bg.png) repeat-x top left;
-	border-bottom: 1px solid #151e41;
+	background-color: #124368;
+	border-bottom: 1px solid #356284;
 	height: 20px;
 	overflow: hidden;
 	text-align: right;
@@ -156,29 +156,110 @@ ul.tagit input[type="text"] {
 	font-weight: bold;
 }
 
-#window_head > #window_head_top > .current-user {
+#window_head > #window_head_top > ul.current-user {
 	float: right;
 	line-height: 20px;
 	color: #fff;
 	font-family: Helvetica, sans-serif;
 	font-size: 11px;
-	background: transparent url(../../images/topbar-down-arrow.png) no-repeat right center;
-	padding-right: 25px;
-	margin-right: 20px;
-	cursor: pointer;
+	padding-right: 15px;
 }
 
-#window_head > #window_head_top > .current-user:hover {
-	background-color: #24406a;
+#window_head > #window_head_top > ul.current-user > li {
+	float: left;
+	margin-left: 20px;
+	padding-left: 19px;
+	background-repeat: no-repeat;
+	background-position: center left;
 }
+
+#window_head > #window_head_top > ul.current-user > li.person { background-image: url(../../images/icons/user.png); }
+#window_head > #window_head_top > ul.current-user > li.settings { background-image: url(../../images/icons/process.png); }
+#window_head > #window_head_top > ul.current-user > li.admin { background-image: url(../../images/icons/favorite.png); }
 
 
 
 #window_header_nav {
-	margin-left: 15px;
-	float: left;
+	background: #192449 url(../../images/agent-header-nav-bg.png) repeat-y bottom left;
+	height: 70px;
+	overflow: hidden;
+	font-size: 11px;
 }
 
+#window_header_nav .section {
+	margin: 10px;
+	background-color: #121932;
+	border: 1px solid #4b5579;
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	color: #fff;
+	float: left;
+	padding: 10px 10px 7px 10px;
+}
+
+#window_header_nav .section:hover {
+	-webkit-box-shadow: 1px 1px 15px rgba(255, 255, 255, 0.3);
+	-moz-box-shadow: 1px 1px 15px rgba(255, 255, 255, 0.3);
+	box-shadow: 1px 1px 15px rgba(255, 255, 255, 0.3);
+}
+
+#window_header_nav .section h1 {
+	font-size: 12px;
+	font-family: Helvetica, sans-serif;
+	font-weight: bold;
+	text-align: center;
+	display: block;
+}
+
+#window_header_nav .section ul li {
+	float: left;
+	margin-left: 10px;
+	padding: 3px;
+	
+	cursor: pointer;
+	
+	padding-left: 19px;
+	background-repeat: no-repeat;
+	background-position: center left;
+}
+
+#window_header_nav .section ul li:first-child {
+	margin-left: 0;
+}
+
+#window_header_nav .section ul li.tickets { background-image: url(../../images/icons/mail.png); }
+#window_header_nav .section ul li.tweets { background-image: url(../../images/icons/mail.png); }
+#window_header_nav .section ul li.facebook { background-image: url(../../images/icons/mail.png); }
+#window_header_nav .section ul li.chat { background-image: url(../../images/icons/balloons.png); }
+#window_header_nav .section ul li.leads { background-image: url(../../images/icons/clipboard_text.png); }
+#window_header_nav .section ul li.knowledgebase { background-image: url(../../images/icons/document__pencil.png); }
+#window_header_nav .section ul li.troubleshooters { background-image: url(../../images/icons/lightning.png); }
+#window_header_nav .section ul li.ideas { background-image: url(../../images/icons/bulb.png); }
+#window_header_nav .section ul li.files { background-image: url(../../images/icons/folder_open_document.png); }
+#window_header_nav .section ul li.people { background-image: url(../../images/icons/vcards.png); }
+#window_header_nav .section ul li.organizations { background-image: url(../../images/icons/briefcase.png); }
+
+
+#window_header_nav .section ul li:hover {
+	text-decoration: underline;
+}
+
+#window_header_nav .search-box {
+	float: right;
+}
+
+#window_header_nav .search-box input[type="text"] {
+	-moz-border-radius: 10px;
+	border-radius: 10px;
+	border: 1px inset #fff;
+	color: #000;
+	padding: 2px;
+	font-size: 11px;
+	margin: 20px 15px 0 0;
+	width: 150px;
+}
+
+/*
 #window_header_nav > ul li {
 	margin-left: 6px;
 	padding: 3px 6px 3px 6px;
@@ -200,7 +281,7 @@ ul.tagit input[type="text"] {
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
 }
-
+*/
 
 #pane_tabbar {
 	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
