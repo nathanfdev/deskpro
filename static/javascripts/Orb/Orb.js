@@ -135,7 +135,32 @@ Orb.mouseInElement = function(mouseX, mouseY, el) {
 	}
 	
 	return true;
-}
+};
+
+
+
+/**
+ * Find the highest z-index value.
+ *
+ * @param {jQuery} els A jQuery collection. If non specified, then all elements on the page are scanned.
+ * @return {Integer}
+ */
+Orb.findHighestZindex = function(els) {
+	if (!els) {
+		els = $('body > *');
+	}
+	
+	var highest = 0;
+	els.each(function() {
+		var z = parseInt($(this).css('z-index'));
+		if (z > highest) {
+			highest = z;
+		}
+	});
+	
+	return highest;
+};
+
 
 
 
