@@ -45,6 +45,9 @@ class TicketSearchController extends AbstractController
 		$tpl = 'AgentBundle:TicketSearch:filter-results.twig';
 		if ($this->in->getBool('partial')) {
 			$tpl = 'AgentBundle:TicketSearch:filter-results-list.twig';
+			if (!count($tickets)) {
+				return $this->createResponse('');
+			}
 		}
 
 		return $this->render($tpl, array(

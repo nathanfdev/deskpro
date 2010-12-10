@@ -14,7 +14,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		});
 		
 		$(el).scroll((function() {
-			if ($(el).scrollTop()+20 >= this._scrollInnerHeights() - $('#pane_list').height()) {
+			if ($(el).scrollTop()+40 >= this._scrollInnerHeights() - $('#pane_list').height()) {
 				this.nextSearchPage();
 			}
 		}).bind(this));
@@ -66,6 +66,9 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		
 		if (!html || !html.length) {
 			this.noMoreResults = true;
+			var nomore = $('.no-more-results', this.wrapper);
+			nomore.detach().appendTo(this.wrapper); // make sure its at the bottom
+			nomore.show();
 			return;
 		}
 		

@@ -1188,6 +1188,14 @@ table.list tr.info-line div.department {
 	display: none;
 }
 
+.no-more-results {
+	margin-top: 15px;
+	text-align: center;
+	padding: 10px 0 10px 0;
+	font-size: 12px;
+	display: none;
+}
+
 .page-separator {
 	background-color: #CCCED9;
 	height: 4px;
