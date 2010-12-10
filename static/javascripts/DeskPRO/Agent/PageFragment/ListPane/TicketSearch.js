@@ -10,7 +10,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		
 		this.wrapper = $(el);
 		
-		$('.search-results table > tbody > tr', el).click(function() {
+		$('table > tbody > tr', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 		
