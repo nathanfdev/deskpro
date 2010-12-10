@@ -576,12 +576,9 @@ table.list tr.info-line div.department {
 
 .ticket > h1 {
 	font-family: Tahoma, Arial, Helvetica, sans-serif;
-	font-size: 15pt;
+	font-size: 12pt;
 	margin-left: -8px;
-	padding-bottom: 8px;
-	border-bottom: 1px solid #eee;
 	font-weight: normal;
-	margin-bottom: 10px;
 }
 
 .ticket > .person-overview {
@@ -603,6 +600,15 @@ table.list tr.info-line div.department {
 }
 
 
+.ticket .ticket-info {
+	margin-left: -8px;
+	background-color: #eee;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	padding: 4px;
+	margin-top: 4px;
+	font-size: 10px;
+}
 
 .ticket .ticket-info > dl {
 	float: left;
@@ -610,15 +616,31 @@ table.list tr.info-line div.department {
 }
 
 .ticket .ticket-info > dl > dt {
-	font-style: italic;
+	font-weight: bold;
 	color: #636C78;
-	font-size: 90%;
+	font-size: 9px;
+	padding-bottom: 3px;
 }
 
 .ticket .ticket-info > dl > dd {
 	display: block;
+	padding-left: 3px;
 }
 
+.ticket .ticket-info .edit-btn {
+	float: right;
+	width: 16px;
+	height: 16px;
+	background: transparent url(../../images/icons/edit-gear.png) no-repeat center center;
+	cursor: pointer;
+	margin-right: 5px;
+	margin-top: 4px;
+	visibility: hidden;
+}
+
+.ticket .ticket-info:hover .edit-btn {
+	visibility: visible;
+}
 
 .ticket .messages {
 
@@ -627,33 +649,80 @@ table.list tr.info-line div.department {
 .ticket .messages > ul > li {
 	margin-top: 10px;
 	margin-bottom: 10px;
-	background-color: #EDF4FA;
-	border: 1px solid #386F9C;
 }
 
-.ticket .messages > ul > li div.info {
-	background-color: #D5E1EB;
+.ticket .messages > ul > li > .box {
+	margin-right: 25px;
+	
+	background-color: #f7f8f9;
+	border: 1px solid #a2b4c3;
+	
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	
+	-webkit-box-shadow: 1px 1px 3px rgba(97, 97, 97, 0.5);
+	-moz-box-shadow: 1px 1px 3px rgba(97, 97, 97, 0.5);
+	box-shadow: 1px 1px 3px rgba(97, 97, 97, 0.5);
+	
+	font-size: 11px;
+}
+
+.ticket .messages > ul > li > .edit-btn {
+	float: right;
+	width: 16px;
+	height: 16px;
+	background: transparent url(../../images/icons/edit-gear.png) no-repeat center center;
+	visibility: hidden;
+	cursor: pointer;
+	margin-right: 5px;
+	margin-top: 4px;
+}
+
+.ticket .messages > ul > li:hover > .edit-btn {
+	visibility: visible;
+}
+
+.ticket .messages > ul > li.agent > .box {
+	border: 1px solid #ccd4db;
+}
+
+.ticket .messages > ul > li > .box div.info {
+	background-color: #dee2e6;
 	padding: 5px;
-	border-bottom: 2px solid #788996;
+	border-bottom: 1px solid #a2b4c3;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 6px;
+	border-top-right-radius: px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+	margin: 1px;
 }
 
-.ticket .messages > ul > li div.info cite {
-	font-size: 120%;
+.ticket .messages > ul > li > .box div.info cite {
+	background: transparent url(../../images/icons/message-user.png) no-repeat center left;
+	padding-left: 15px;
 }
 
-.ticket .messages > ul > li.agent div.info cite {
+.ticket .messages > ul > li.agent > .box div.info cite {
+	background: transparent url(../../images/icons/message-agent.png) no-repeat center left;
+}
+
+.ticket .messages > ul > li.agent > .box div.info cite {
 	color: #2B89D6;
 	font-weight: bold;
 }
 
-.ticket .messages > ul > li div.info span.time {
+.ticket .messages > ul > li > .box div.info span.time {
 	font-size: 90%;
 	font-style: italic;
 	color: #666;
 	float: right;
 }
 
-.ticket .messages > ul > li div.message {
+.ticket .messages > ul > li > .box div.message {
 	padding: 8px;
 }
 
@@ -1286,4 +1355,19 @@ ul.sortable-list > li {
 ul.sortable-list > li:hover {
 	background: #E9EFF5 url(../../images/drag-handle.png) no-repeat center right;
 	cursor: move;
+}
+
+
+
+
+
+.agent-reply-placeholder textarea {
+	width: 350px;
+	height: 20px;
+	color: #828282;
+	padding: 3px;
+	border: 1px solid #C9C9C9;
+	background-color: #fff;
+	font-family: sans-serif;
+	font-size: 10px;
 }

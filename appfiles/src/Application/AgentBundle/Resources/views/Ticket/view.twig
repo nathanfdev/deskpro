@@ -7,7 +7,10 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 
 <div class="ticket">
 
-<div class="ticket-info" style="float:right; margin-left: 15px; padding-left: 10px; border-left: 1px solid #ccc;">
+<h1>{{ticket.subject}}</h1>
+
+<div class="ticket-info">
+	<div class="edit-btn"></div>
 	<dl>
 		<dt>Department</dt>
 		<dd>{{ticket.department.title}}</dd>
@@ -24,10 +27,10 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 		<dt>Priority</dt>
 		<dd>{{ticket.priority.title}}</dd>
 	</dl>
+	<br style="clear:both" />
 </div>
 
-<h1>{{ticket.subject}}</h1>
-<br style="clear" />
+<br style="clear:both" />
 
 <div style="float:right">
 	<strong>Assigned To:</strong><br />
@@ -56,14 +59,27 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 
 <div class="messages">
 	<ul>
-		{% for message in ticket.messages %}
-			<li {% if message.person.is_agent %}class="agent"{%endif%}>
+		<li class="agent agent-reply-placeholder">
+			<div class="box">
 				<div class="info">
-					<cite>{{message.person.name}}</cite>
-					<span class="time">{{message.date_created|date('Y-m-d')}}</span>
+					<cite>New Reply</cite>
 				</div>
 				<div class="message">
-					{{message.message_html|raw}}
+					<textarea>Write a new reply...</textarea>
+				</div>
+			</div>
+		</li>
+		{% for message in ticket.messages %}
+			<li {% if message.person.is_agent %}class="agent"{%else%}class="person"{%endif%}>
+				<div class="edit-btn"></div>
+				<div class="box">
+					<div class="info">
+						<cite>{{message.person.name}}</cite>
+						<span class="time">{{message.date_created|date('Y-m-d')}}</span>
+					</div>
+					<div class="message">
+						{{message.message_html|raw}}
+					</div>
 				</div>
 			</li>
 		{% endfor %}
