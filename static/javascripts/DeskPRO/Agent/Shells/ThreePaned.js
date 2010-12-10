@@ -86,13 +86,13 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	
 	setNavPanePage: function(page) {
 		this.navPanePage = page;
-		$('#pane_nav').html(page.getHtml());
+		$('#pane_nav').html(page.getHtml()).scrollTop(0);
 		page.initPage($('#pane_nav'));
 	},
 	
 	setListPanePage: function(page) {
 		this.listPanePage = page;
-		$('#pane_list').html(page.getHtml());
+		$('#pane_list').html(page.getHtml()).scrollTop(0);
 		page.initPage($('#pane_list'));
 	},
 	

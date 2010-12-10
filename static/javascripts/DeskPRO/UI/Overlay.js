@@ -219,7 +219,7 @@ DeskPRO.UI.Overlay = new Class({
 		el.show();
 		
 		$('.overlay-close-trigger', el).click((function () {
-			this.overlayClose();
+			this.closeOverlay();
 		}).bind(this));
 		
 		this.fireEvent('contentSet', {

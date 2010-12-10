@@ -3,7 +3,39 @@ pageMeta.class = 'DeskPRO.Agent.PageFragment.ListPane.TicketSearch';
 pageMeta.pageUrl = '{% path 'agent_ticketsearch_runfilter' with ['filter_id': queue_id] %}?partial=1&page=$page';
 </script>
 
-{% include 'AgentBundle:TicketSearch:filter-results-list.twig' %}
+<div class="display-options overlay">
+	<h1>Display Options</h1>
+	<div style="float: right; width: 100px;">
+		Order By: <select name="order_by">
+			<option value="id.asc">Date Opened</option>
+		</select>
+	</div>
+	<div style="margin-right: 115px;">
+		<strong>Display Elements</strong><br />
+		<ul class="sortable-list">
+			<li><input type="checkbox" name="display_fields[person]" /> Contact Name</li>
+			<li><input type="checkbox" name="display_fields[department]" /> Department</li>
+			<li><input type="checkbox" name="display_fields[product]" /> Category</li>
+			<li><input type="checkbox" name="display_fields[product]" /> Product</li>
+			<li><input type="checkbox" name="display_fields[organization]" /> Organization Name</li>
+			<li><input type="checkbox" name="display_fields[agent]" /> Agent Name</li>
+		</ul>
+	</div>
+	<div class="buttons">
+		<button class="save dp-button">Save</button>
+		<button class="cancel dp-button gray overlay-close-trigger">Cancel</button>
+	</div>
+</div>
+
+<table class="list" cellspacing="0" width="100%">
+	<thead class="display-options-trigger">
+		<tr>
+			<th>User</th>
+			<th width="100">Department</th>
+		</tr>
+	</thead>
+	{% include 'AgentBundle:TicketSearch:filter-results-list.twig' %}
+</table>
 
 <div class="loading-more">
 	Loading more results ...

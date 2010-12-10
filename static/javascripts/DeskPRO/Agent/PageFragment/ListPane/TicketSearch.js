@@ -4,6 +4,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	wrapper: null,
+	overlay: null,
 
 	initPage: function(el) {
 		
@@ -14,17 +15,27 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		});
 		
 		$(el).scroll((function() {
-			if ($(el).scrollTop()+40 >= this._scrollInnerHeights() - $('#pane_list').height()) {
+			if ($(el).scrollTop()+20 >= this._scrollInnerHeights() - $('#pane_list').height()) {
 				this.nextSearchPage();
 			}
 		}).bind(this));
+		
+		this.overlay = new DeskPRO.UI.Overlay({
+			contentElement: $('.display-options:first', this.wrapper),
+			triggerElement: $('.display-options-trigger', this.wrapper),
+			onContentSet: function(eventData) {
+				$('ul.sortable-list', eventData.wrapperEl).sortable({
+					'axis': 'y'
+				});
+			}
+		});
 	},
 	
 	_scrollInnerHeights_cache: null,
 	_scrollInnerHeights: function() {
 		if (this._scrollInnerHeights_cache !== null) return this._scrollInnerHeights_cache;
 		var h = 0;
-		$('#pane_list').children().each(function() {
+		$('#pane_list').children(':visible').each(function() {
 			h += $(this).height();
 		});
 		
@@ -75,7 +86,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		this._scrollInnerHeights_cache = null;
 		
 		var el = $(html);
-		el.appendTo(this.wrapper);
+		el.insertAfter($('.page-set:last', this.wrapper));
 		
 		$('table > tbody > tr', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);

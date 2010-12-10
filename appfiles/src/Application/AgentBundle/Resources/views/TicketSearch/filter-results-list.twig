@@ -1,29 +1,18 @@
-{% if page > 1 %}
-	<div class="page-separator"></div>
-{% endif %}
-<div class="search-results page-set" data-page="{{page}}">
-	<table class="list" cellspacing="0" width="100%">
-		{% for ticket in tickets %}
-		<tbody>
-			<tr data-route="person:{% path 'agent_ticket_view' with ['ticket_id': ticket.id] %}">
-				<td>
-					{{ticket.subject}}
-				</td>
-				<td width="100" align="right">
-					{{ticket.date_created|date('Y-m-d')}}
-				</td>
-			</tr>
-			<tr class="info-line" data-route="person:{% path 'agent_ticket_view' with ['ticket_id': ticket.id] %}">
-				<td colspan="2">
-					<div class="by">by <cite>{{ticket.person.name}}</cite></div>
-					<div class="department">{{ticket.department.title}}</div>
-				</td>
-			</tr>
-		</tbody>
-		{% else %}
-		<tr>
-			<td colspan="4">No tickets</td>
-		</tr>
-		{% endfor %}
-	</table>
-</div> 
+<tbody class="search-results page-set" data-page="{{page}}">
+{% for ticket in tickets %}
+	<tr class="line line-1 subject-line" data-route="person:{% path 'agent_ticket_view' with ['ticket_id': ticket.id] %}">
+		<td colspan="100">
+			<span style="float:right">{{ticket.date_created|date('Y-m-d')}}</span>
+			<span class="subject">{{ticket.subject}}</span>
+		</td>
+	</tr>
+	<tr class="line line-2 info-line" data-route="person:{% path 'agent_ticket_view' with ['ticket_id': ticket.id] %}">
+		<td>
+			<div class="by">by <cite>{{ticket.person.name}}</cite></div>
+		</td>
+		<td>
+			<div class="department">{{ticket.department.title}}</div>
+		</td>
+	</tr>
+{% endfor %}
+</tbody>
