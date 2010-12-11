@@ -102,14 +102,19 @@ DeskPRO.UI.Menu = new Class({
 		var pageWidth = $(document).width();
 		var pageHeight = $(document).height();
 		
+		// If its a click event...
 		if (event.pageX) {
 			var pageX = event.pageX;
 			var pageY = event.pageY;
+		// Otherwise we should be in reference to an element...
 		} else {
 			var pageX = $(event.target).offset().top;
 			var pageY = $(event.target).offset().left;
 		}
 		
+		// Determine which way to open the menu,
+		// We do this so the menu doesn't go off-screen if
+		// its near the edge
 		if (pageX+width < pageWidth) {
 			var left = pageX+4;
 		} else {
