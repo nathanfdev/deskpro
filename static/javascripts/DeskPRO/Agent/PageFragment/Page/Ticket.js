@@ -17,7 +17,186 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		
 		this.wrapper = el;
 		
+		this._initPopout();
+		this._initReplyEvents();
+		this._initTicketActionsMenu();
+		this._initMessageActionsMenu();
+	},
+	
+	displayNewMessage: function(html) {
+		var last_message = $('.messages > ul > li.message-item:first', this.wrapper);
+		var new_message = $(html).hide();
+		new_message.insertBefore(last_message).slideDown();
+	},
+	
+	//#################################################################
+	//# Ticket actions menu
+	//#################################################################
+	
+	ticketActionsMenu: null,
+	_initTicketActionsMenu: function() {
+		var trigger =  $('.ticket-info-edit-btn', this.wrapper);
+		this.ticketActionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: trigger,
+			menuElement: $('.ticket-info-edit-menu:first', this.wrapper),
+			
+			// These two handlers prevent the gear button from disappearing
+			// when not being hovered over anymore. (cuz its only displayed with css :hover)
+			onMenuOpened: function() {
+				trigger.css({'display': 'block'});
+			},
+			onMenuClosed: function() {
+				trigger.css({'display': ''}); //back to default
+			},
+		});
+	},
+	
+	//#################################################################
+	//# Message actions menu
+	//#################################################################
+	
+	messageActionsMenu: null,
+	_initMessageActionsMenu: function() {		
+		this.messageActionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: null,
+			menuElement: $('.ticket-message-edit-menu:first', this.wrapper),
+
+			onMenuOpened: function(data) {
+				var trigger = $(data.menu.getOpenTriggerElement());
+				trigger.css({'display': 'block'});
+			},
+			onMenuClosed: function(data) {
+				var trigger = $(data.menu.getOpenTriggerElement());
+				trigger.css({'display': ''}); //back to default
+			},
+		});
+		
+		// We're using a live event because new messages are always
+		// added. So we take care of opening the menu manually.
+		var menu = this.messageActionsMenu;
+		var ul = $('.messages > ul', this.wrapper)[0];
+		$('.ticket-message-edit-btn', ul).live('click', function(event) {
+			menu.openMenu(event);
+		});
+	},
+	
+	
+	//#################################################################
+	//# New reply
+	//#################################################################
+	
+	_initReplyEvents: function() {
+		$('.agent-reply .placeholder textarea', this.wrapper).focus((function() {
+			this.showEditor();
+		}).bind(this));
+	},
+	
+	showEditor: function() {
+		if (!this._initReplyEditor()) {
+			$('.editor-loading', this.wrapper).show();
+			return;
+		}
+		
+		var wrapper = this.wrapper;
+		$('.agent-reply .placeholder', wrapper).slideUp(function() {
+			$('.agent-reply .reply-area', wrapper).slideDown();
+			$('.editor-loading', wrapper).hide();
+		});
+	},
+	
+	hasInitReplyEditor: false,
+	_initReplyEditor: function() {
+		if (this.hasInitReplyEditor) return true;
+		this.hasInitReplyEditor = true;
+		
+		$('.editor-loading', wrapper).show();
+		
 		var self = this;
+		var wrapper =  this.wrapper;
+		var replyArea = $('.agent-reply .reply-area', this.wrapper);
+		
+		$('.btn-cancel', replyArea).click(function() {
+			$('.agent-reply .reply-area', wrapper).slideUp(function() {
+				$('.agent-reply .placeholder', wrapper).slideDown();
+			});
+		});
+		
+		$('.btn-submit', replyArea).click((function() {
+			this._sendReply();
+		}).bind(this));
+		
+	
+		this.newReplyEditor = $('textarea', replyArea).tinymce({
+			script_url: DP_TINYMCE_URL,
+			theme : "advanced",
+			theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,outdent,indent,|,link,unlink,image,|,code,blockquote,hr,removeformat",
+			theme_advanced_buttons2: "",
+			theme_advanced_buttons3: "",
+			theme_advanced_buttons4: "",
+			theme_advanced_buttons5: "",
+			theme_advanced_toolbar_location: "top",
+			theme_advanced_toolbar_align : "left",
+			theme_advanced_resizing: true,
+			theme_advanced_resize_horizontal: false,
+			theme_advanced_statusbar_location: 'bottom',
+			theme_advanced_path: false,
+			width : "98%",
+			height: '130px',
+			setup: function(ed) {
+				ed.onInit.add(function(ed) {
+					self.showEditor();
+				});
+			}
+		});
+		
+		// the tinymce setup onInit will show the editor when its done
+		return false;
+	},
+	
+	_sendReply: function() {
+		var replyArea = $('.agent-reply .reply-area', this.wrapper);
+		$('.buttons', replyArea).hide();
+		$('.send-reply-load', replyArea).show();
+		
+		var data = {
+			'message': this.newReplyEditor.html()
+		};
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'html',
+			success: function(html) {
+				this._handleSendReplySuccess(html);
+			}
+		});
+	},
+	
+	_handleSendReplySuccess: function(html) {
+		var wrapper = this.wrapper;
+		var replyArea = $('.agent-reply .reply-area', this.wrapper);
+		var ed = this.newReplyEditor;
+		$('.agent-reply .reply-area', wrapper).slideUp((function() {
+			$('.agent-reply .placeholder', wrapper).slideDown();
+			$('.buttons', replyArea).show();
+			$('.send-reply-load', replyArea).hide();
+			ed.html('');
+			
+			this.displayNewMessage(html);
+		}).bind(this));
+	},
+	
+	
+	
+	//#################################################################
+	//# Popout
+	//#################################################################
+	
+	_initPopout: function() {
+		var self = this;
+		var el = this.wrapper;
+		
 		$('.person-overview', el).mouseover(function(event) {
 			self.isMouseOverPopout = true;
 			self.openPopOut(event);
@@ -64,112 +243,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.popout_overview_content.click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
-		
-		$('.agent-reply .placeholder textarea', this.wrapper).focus((function() {
-			this.showEditor();
-		}).bind(this));
-	},
-	
-	showEditor: function() {
-		if (!this.initEditor()) {
-			$('.editor-loading', this.wrapper).show();
-			return;
-		}
-		
-		var wrapper = this.wrapper;
-		$('.agent-reply .placeholder', wrapper).slideUp(function() {
-			$('.agent-reply .reply-area', wrapper).slideDown();
-			$('.editor-loading', wrapper).hide();
-		});
-	},
-	
-	hasInitEditor: false,
-	initEditor: function() {
-		if (this.hasInitEditor) return true;
-		this.hasInitEditor = true;
-		
-		$('.editor-loading', wrapper).show();
-		
-		var self = this;
-		var wrapper =  this.wrapper;
-		var replyArea = $('.agent-reply .reply-area', this.wrapper);
-		
-		$('.btn-cancel', replyArea).click(function() {
-			$('.agent-reply .reply-area', wrapper).slideUp(function() {
-				$('.agent-reply .placeholder', wrapper).slideDown();
-			});
-		});
-		
-		$('.btn-submit', replyArea).click((function() {
-			this.sendReply();
-		}).bind(this));
-		
-	
-		this.newReplyEditor = $('textarea', replyArea).tinymce({
-			script_url: DP_TINYMCE_URL,
-			theme : "advanced",
-			theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,outdent,indent,|,link,unlink,image,|,code,blockquote,hr,removeformat",
-			theme_advanced_buttons2: "",
-			theme_advanced_buttons3: "",
-			theme_advanced_buttons4: "",
-			theme_advanced_buttons5: "",
-			theme_advanced_toolbar_location: "top",
-			theme_advanced_toolbar_align : "left",
-			theme_advanced_resizing: true,
-			theme_advanced_resize_horizontal: false,
-			theme_advanced_statusbar_location: 'bottom',
-			theme_advanced_path: false,
-			width : "98%",
-			height: '130px',
-			setup: function(ed) {
-				ed.onInit.add(function(ed) {
-					self.showEditor();
-				});
-			}
-		});
-		
-		// the tinymce setup onInit will show the editor when its done
-		return false;
-	},
-	
-	sendReply: function() {
-		var replyArea = $('.agent-reply .reply-area', this.wrapper);
-		$('.buttons', replyArea).hide();
-		$('.send-reply-load', replyArea).show();
-		
-		var data = {
-			'message': this.newReplyEditor.html()
-		};
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'html',
-			success: function(html) {
-				this._handleSendReplySuccess(html);
-			}
-		});
-	},
-	
-	_handleSendReplySuccess: function(html) {
-		var wrapper = this.wrapper;
-		var replyArea = $('.agent-reply .reply-area', this.wrapper);
-		var ed = this.newReplyEditor;
-		$('.agent-reply .reply-area', wrapper).slideUp((function() {
-			$('.agent-reply .placeholder', wrapper).slideDown();
-			$('.buttons', replyArea).show();
-			$('.send-reply-load', replyArea).hide();
-			ed.html('');
-			
-			this.displayNewMessage(html);
-		}).bind(this));
-	},
-	
-	displayNewMessage: function(html) {
-		var last_message = $('.messages > ul > li.message-item:first', this.wrapper);
-		var new_message = $(html).hide();
-		new_message.insertBefore(last_message).slideDown();
 	},
 	
 	openPopOut: function(event) {

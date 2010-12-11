@@ -51,6 +51,7 @@ DeskPRO.UI.Overlay = new Class({
 	 * Check to see if the overlay is currently open.
 	 */
 	isOverlayOpen: function() {
+		if (!this.hasInit) return false;
 		return this.elements.wrapper.is(':visible');
 	},
 	

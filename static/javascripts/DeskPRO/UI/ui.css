@@ -1,3 +1,7 @@
+/**********************************************************************
+* Overlay
+***********************************************************************/
+
 .deskpro-overlay-overlay {
 	background: rgba(190, 190, 190, 0.5);
 }
@@ -25,4 +29,68 @@
 	border-radius: 6px;
 	
 	padding: 15px;
+}
+
+
+/**********************************************************************
+* Menu
+***********************************************************************/
+
+.deskpro-menu-outer {
+	border: 1px solid #575757;
+	
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+	
+	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
+}
+
+.deskpro-menu-inner {
+	border: 2px solid rgba(250, 250, 250, 0.7);
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.deskpro-menu {
+	border: 1px solid #575757;
+	-moz-border-radius: 3px;
+	border-radius: 4px;
+
+	padding: 1px;
+	background-color: rgba(11, 11, 11, 0.9);
+	
+	color: #fff;
+}
+
+.deskpro-menu > ul {
+	min-width: 160px;
+}
+
+.deskpro-menu > ul > li {
+	padding: 5px 10px 5px 10px;
+}
+
+.deskpro-menu > ul > li:not(.sep):hover {
+	background: #606c88;
+	background: -moz-linear-gradient(top, #606c88 0%, #3f4c6b 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#606c88), color-stop(100%,#3f4c6b));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', endColorstr='#3f4c6b',GradientType=0 );
+	
+	cursor: pointer;
+}
+
+.deskpro-menu > ul > li.sep {
+	border-bottom: 1px solid #A3A3A3;
+	height: 3px;
+	overflow: hidden;
+	padding: 0;
+	margin: 0 0 3px 0;
+}
+
+.deskpro-menu > ul > li > span.icon {
+	padding-left: 20px;
+	background-repeat: no-repeat;
+	background-position: center left;
 }

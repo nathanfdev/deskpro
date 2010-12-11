@@ -10,7 +10,7 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 <h1>{{ticket.subject}}</h1>
 
 <div class="ticket-info">
-	<div class="edit-btn"></div>
+	<div class="edit-btn ticket-info-edit-btn"></div>
 	<dl>
 		<dt>Department</dt>
 		<dd>{{ticket.department.title}}</dd>
@@ -110,3 +110,15 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 		Open person in new tab
 	</div>
 </div>
+
+<ul class="ticket-info-edit-menu" style="display:none">
+	<li><span class="icon print-ticket">Print Ticket</span></li>
+	<li><span class="icon merge-ticket">Merge Ticket</span></li>
+	<li><span class="icon delete-ticket">Delete Ticket</span></li>
+	<li><span class="icon change-ticket-owner">Change User Owner</span></li>
+</ul>
+<ul class="ticket-message-edit-menu" style="display:none">
+	<li><span class="icon view-unformatted">View Unformatted</span></li>
+	<li><span class="icon view-details">View Details</span></li>
+	<li><span class="icon edit">Edit</span></li>
+</ul>
