@@ -71,6 +71,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $message_hash;
 
 	/**
+	 * The message, will be in HTML!
 	 * @var string
 	 * @orm:Column(name="message", type="string", length=10000)
 	 */
@@ -78,14 +79,29 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getMessageHtml()
 	{
-		return nl2br(htmlspecialchars($this->message), true);
+		return $this->message;
 	}
 
-	/** @orm:PrePersist */
-	public function _prePersist()
+	public function getMessageText()
 	{
-		if (!$this->date_created) {
-			$this->date_created = new \DateTime();
-		}
+		$message = $this->message;
+		$message = strip_tags($message);
+		return $message;
+	}
+
+	public function getMessagePlainHtml()
+	{
+		return nl2br($this->getMessageText());
+	}
+
+	public function setMessage($message)
+	{
+		$this->message = $message;
+		$this->message_hash = sha1($message);
+	}
+
+	public function __construct()
+	{
+		$this->date_created = new \DateTime();
 	}
 }

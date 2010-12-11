@@ -3,31 +3,25 @@
 namespace Application\DeskPRO\Tickets;
 
 use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\TicketQueue;
-use \Symfony\Component\DependencyInjection\ContainerAware;
+use \Application\DeskPRO\Entity;
 
 class TicketEdit
 {
-	/**
-	 * Get an array of various options used on the new ticket page.
-	 *
-	 * @param mixed $person The person we're fetching for. This will define the permissions/context.
-	 * @return array
-	 */
-	public function getNewTicketOptions($person)
+	protected $ticket;
+
+	public function __construct(Entity\Ticket $ticket)
 	{
-		$options = array();
+		$this->ticket = $ticket;
+	}
 
-		if ($personp['is_agent']) {
-			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
-		}
+	public function addMessage(Entity\TicketMessage $message)
+	{
+		$this->ticket->addMessage($message);
+	}
 
-		$options['products']    = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
-		$options['departments'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
-		$options['categories']  = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getAllCategoryNames();
-		$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
-
-		return $options;
+	public function save()
+	{
+		App::getOrm()->persist($this->ticket);
+		App::getOrm()->flush($this->ticket);
 	}
 }

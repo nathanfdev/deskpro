@@ -59,29 +59,29 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 
 <div class="messages">
 	<ul>
-		<li class="agent agent-reply-placeholder">
+		<li class="agent agent-reply">
 			<div class="box">
 				<div class="info">
 					<cite>New Reply</cite>
 				</div>
 				<div class="message">
-					<textarea>Write a new reply...</textarea>
+					<div class="placeholder">
+						<textarea>Write a new reply...</textarea>
+						<div class="editor-loading">Please wait a moment while the editor is loaded</div>
+					</div>
+					<div class="reply-area" style="display:none">
+						<textarea name="reply"></textarea>
+						
+						<div class="buttons">
+							<button class="btn-submit dp-button small">Add Reply</button> or <a href="#" class="btn-cancel">cancel</a>
+						</div>
+						<div class="send-reply-load"><div>Your reply is being sent ...</div></div>
+					</div>
 				</div>
 			</div>
 		</li>
-		{% for message in ticket.messages %}
-			<li {% if message.person.is_agent %}class="agent"{%else%}class="person"{%endif%}>
-				<div class="edit-btn"></div>
-				<div class="box">
-					<div class="info">
-						<cite>{{message.person.name}}</cite>
-						<span class="time">{{message.date_created|date('Y-m-d')}}</span>
-					</div>
-					<div class="message">
-						{{message.message_html|raw}}
-					</div>
-				</div>
-			</li>
+		{% for message in ticket.messages|reverse %}
+			{% include 'AgentBundle:Ticket:ticket-message.twig' with ['message': message] %}
 		{% endfor %}
 	</ul>
 </div>

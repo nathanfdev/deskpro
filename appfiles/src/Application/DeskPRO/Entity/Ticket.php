@@ -95,7 +95,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="product_id", type="integer")
+	 * @orm:Column(name="product_id", type="integer", nullable=true)
 	 */
 	protected $product_id = null;
 
@@ -121,7 +121,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="agent_id", type="integer")
+	 * @orm:Column(name="agent_id", type="integer", nullable=true)
 	 */
 	protected $agent_id = null;
 
@@ -134,7 +134,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="organization_id", type="integer")
+	 * @orm:Column(name="organization_id", type="integer", nullable=true)
 	 */
 	protected $organization_id = null;
 
@@ -265,6 +265,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
+
+		$this->date_created = new \DateTime();
 	}
 
 
@@ -309,11 +312,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	
-	/** @orm:PrePersist */
-	public function _prePersist()
+
+	/**
+	 * Add a message to this ticket.
+	 * 
+	 * @param TicketMessage $message
+	 */
+	public function addMessage(TicketMessage $message)
 	{
-		if (!$this->date_created) {
-			$this->date_created = new \DateTime();
-		}
+		$this->messages->add($message);
+		$message['ticket'] = $this;
 	}
 }

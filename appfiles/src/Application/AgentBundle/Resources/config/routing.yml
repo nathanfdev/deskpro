@@ -12,38 +12,6 @@ agent_interface_poller:
 
 
 ################################################################################
-# Languages
-################################################################################
-
-agent_admin_langs:
-  pattern: /languages
-  defaults: { _controller: AgentBundle:Languages:index }
-
-agent_admin_langs_intro:
-  pattern: /languages/intro
-  defaults: { _controller: AgentBundle:Languages:intro }
-
-agent_admin_langs_editlang:
-  pattern: /languages/:lang_id/edit
-  defaults: { _controller: AgentBundle:Languages:editLang }
-  requirements: { lang_id: "\d+" }
-
-agent_admin_langs_newlang:
-  pattern: /languages/new-language
-  defaults: { _controller: AgentBundle:Languages:editLang, lang_id: 0 }
-
-agent_admin_langs_phrases:
-  pattern: /languages/:lang_id/phrases
-  defaults: { _controller: AgentBundle:Languages:listPhrases}
-  requirements: { lang_id: "\d+", phrase_group: null }
-
-agent_admin_langs_editphrase:
-  pattern: /languages/:lang_id/edit-phrase/:phrase_name
-  defaults: { _controller: AgentBundle:Languages:editPhrase }
-  requirements: { lang_id: "\d+" }
-
-
-################################################################################
 # People
 ################################################################################
 
@@ -119,11 +87,6 @@ agent_ticketsearch:
   pattern: /ticket-search
   defaults: { _controller: AgentBundle:TicketSearch:index }
 
-agent_ticket_view:
-  pattern: /tickets/:ticket_id
-  defaults: { _controller: AgentBundle:Ticket:view }
-  requirements: { filter_id: "\d+" }
-
 agent_ticketsearch_filterspane:
   pattern: /ticket-search/filters-pane
   defaults: { _controller: AgentBundle:TicketSearch:filtersPane }
@@ -145,3 +108,18 @@ agent_ticketqueues_edit:
 agent_ticketqueues_new:
   pattern: /ticket-search/queues/new-queue
   defaults: { _controller: AgentBundle:TicketSearch:editQueue, queue_id: 0 }
+
+
+################################################################################
+# Ticket
+################################################################################
+
+agent_ticket_view:
+  pattern: /tickets/:ticket_id
+  defaults: { _controller: AgentBundle:Ticket:view }
+  requirements: { ticket_id: "\d+" }
+
+agent_ticket_ajaxsavereply:
+  pattern: /tickets/:ticket_id/ajax-save-reply
+  defaults: { _controller: AgentBundle:Ticket:ajaxSaveReply }
+  requirements: { ticket_id: "\d+" }

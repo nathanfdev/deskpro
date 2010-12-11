@@ -1387,7 +1387,7 @@ table.list tr.info-line div.department {
 
 .dp-button:hover { background-color: #111; color: #fff; }
 .dp-button:active { top: 1px; }
-.small.dp-button { font-size: 11px; padding: ; }
+.small.dp-button { font-size: 10px; padding: 4px; }
 .dp-button, .medium.dp-button { font-size: 13px; font-weight: bold; line-height: 1; text-shadow: 0 -1px 1px rgba(0,0,0,0.25); }
 .large.dp-button { font-size: 14px; padding: 8px 14px 9px; }
 
@@ -1442,7 +1442,7 @@ ul.sortable-list > li:hover {
 
 
 
-.agent-reply-placeholder textarea {
+.agent-reply .placeholder textarea {
 	width: 350px;
 	height: 20px;
 	color: #828282;
@@ -1451,4 +1451,26 @@ ul.sortable-list > li:hover {
 	background-color: #fff;
 	font-family: sans-serif;
 	font-size: 10px;
+}
+
+.agent-reply .placeholder .editor-loading {
+	background: transparent url(../../images/loading-small.gif) no-repeat center left;
+	line-height: 18px;
+	padding-left: 20px;
+	font-size: 11px;
+	display: none;
+}
+
+.agent-reply .reply-area .buttons {
+	margin-top: 8px;
+	text-align: center;
+}
+
+.agent-reply .reply-area .send-reply-load { text-align: center; display: none; }
+.agent-reply .reply-area .send-reply-load div {
+	background: transparent url(../../images/loading-small.gif) no-repeat center left;
+	line-height: 18px;
+	padding-left: 20px;
+	font-size: 11px;
+	display: inline;
 }
