@@ -21,12 +21,63 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initReplyEvents();
 		this._initTicketActionsMenu();
 		this._initMessageActionsMenu();
+		this._initTicketOptionsMenus();
 	},
 	
 	displayNewMessage: function(html) {
 		var last_message = $('.messages > ul > li.message-item:first', this.wrapper);
 		var new_message = $(html).hide();
 		new_message.insertBefore(last_message).slideDown();
+	},
+
+	//#################################################################
+	//# Ticket options menus
+	//#################################################################
+		
+	_initTicketOptionsMenus: function() {
+		var options = ['department', 'category', 'product', 'priority'];
+		var self = this;
+		
+		for (var i = 0; i < options.length; i++) {
+			var opt = options[i];
+			var menu = new DeskPRO.UI.Menu({
+				triggerElement: $('.ticket-options-'+opt+'-btn', this.wrapper),
+				menuElement: $('.ticket-options-'+opt+'-menu', this.wrapper),
+				onItemClicked: function(info) {
+					self._handleTicketOptionClick(info);
+				}
+			});
+		}
+	},
+	
+	_handleTicketOptionClick: function(info) {
+		var opt = $(info.itemEl).parent().data('option-name');
+		var itemName = $(info.itemEl).html();
+		var itemId = $(info.itemEl).data('option-id');
+		
+		// Replace the value of in the page
+		var dd = $('.ticket-options-'+opt+'-btn dd').html(itemName);
+		
+		// Update the value in teh DB
+		DeskPRO_Window.startLoadingIndicator();
+		
+		var data = {};
+		data[opt] = itemId;
+		
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-options',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				this._handleTicketOptionSaveSuccess(data);
+			}
+		});
+	},
+	
+	_handleTicketOptionSaveSuccess: function(data) {
+		DeskPRO_Window.stopLoadingIndicator();
 	},
 	
 	//#################################################################

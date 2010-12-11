@@ -61,7 +61,7 @@
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
 			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
-			
+			window.DeskPRO_Window.runPageRoute('ticket:/dp_400/index_dev.php/agent/tickets/3');
 			/*
 			for (var i = 1; i <= 20; i++) {
 				var page = window.DeskPRO_Window.createPageFragment('Testing', 'DeskPRO.Agent.PageFragment.NavPane.Basic');

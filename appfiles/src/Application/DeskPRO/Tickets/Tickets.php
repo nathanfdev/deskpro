@@ -41,11 +41,11 @@ class Tickets
 	 * @param mixed $person The person we're fetching for. This will define the permissions/context.
 	 * @return array
 	 */
-	public function getNewTicketOptions($person)
+	public function getTicketOptions($person)
 	{
 		$options = array();
 
-		if ($personp['is_agent']) {
+		if ($person['is_agent']) {
 			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
 		}
 

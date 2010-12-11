@@ -35,7 +35,28 @@ input.placeholder-visible {
 }
 
 
+.window-loading-indicator {
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomright: 8px;
+	-moz-border-radius-bottomleft: 8px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 8px;
+	border-bottom-left-radius: 8px;
+	
+	border: 1px solid #7A84A3;
+	border-top: none;
+	
+	background: #46537D url(../../images/window-loading.gif) no-repeat center center;
 
+	-webkit-box-shadow: 0px 5px 15px rbga(11, 11, 11, 0.6);
+	-moz-box-shadow: 0px 5px 15px rgba(11, 11, 11, 0.9);
+	box-shadow: 0px 5px 15px rbga(11, 11, 11, 0.6);
+	
+	width: 80px;
+	height: 25px;
+}
 
 
 
@@ -1485,3 +1506,13 @@ ul.sortable-list > li:hover {
 .deskpro-menu li span.icon.view-unformatted { background-image: url(../../images/icons/page_white_text.png); }
 .deskpro-menu li span.icon.view-details { background-image: url(../../images/icons/table_multiple.png); }
 .deskpro-menu li span.icon.edit { background-image: url(../../images/icons/page_edit.png); }
+
+
+.ticket-opt-btn:hover {
+	cursor: pointer;
+}
+
+.ticket-opt-btn:hover dd {
+	text-decoration: underline;
+	color: #367CFF;
+}

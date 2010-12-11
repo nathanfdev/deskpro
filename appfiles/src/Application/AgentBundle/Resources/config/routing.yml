@@ -123,3 +123,8 @@ agent_ticket_ajaxsavereply:
   pattern: /tickets/:ticket_id/ajax-save-reply
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveReply }
   requirements: { ticket_id: "\d+" }
+
+agent_ticket_ajaxsaveoptions:
+  pattern: /tickets/:ticket_id/ajax-save-options
+  defaults: { _controller: AgentBundle:Ticket:ajaxSaveOptions }
+  requirements: { ticket_id: "\d+" }

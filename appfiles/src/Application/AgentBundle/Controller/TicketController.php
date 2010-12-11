@@ -24,13 +24,38 @@ class TicketController extends AbstractController
 	public function viewAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		$person_inner_tab = $this->forward('AgentBundle:Person:view', array('person_id' => $ticket['person_id']))->getContent();
 
 		return $this->render('AgentBundle:Ticket:view.twig', array(
 			'person_inner_tab' => $person_inner_tab,
-			'ticket' => $ticket
+			'ticket' => $ticket,
+			'ticket_options' => $ticket_options
 		));
+	}
+
+	public function ajaxSaveOptionsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		if ($this->in->checkIsset('department')) {
+			$ticket['department_id'] = $this->in->getUint('department');
+		}
+		if ($this->in->checkIsset('category')) {
+			$ticket['category_id'] = $this->in->getUint('category');
+		}
+		if ($this->in->checkIsset('product')) {
+			$ticket['product_id'] = $this->in->getUint('product');
+		}
+		if ($this->in->checkIsset('priority')) {
+			$ticket['priority_id'] = $this->in->getUint('priority');
+		}
+
+		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+		$ticket_edit->save();
+
+		return $this->createJsonResponse(array('success' => 1));
 	}
 
 	public function ajaxSaveReplyAction($ticket_id)

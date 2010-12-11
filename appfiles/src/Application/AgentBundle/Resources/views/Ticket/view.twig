@@ -11,24 +11,25 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 
 <div class="ticket-info">
 	<div class="edit-btn ticket-info-edit-btn"></div>
-	<dl>
+	<dl class="ticket-opt-btn ticket-options-department-btn">
 		<dt>Department</dt>
 		<dd>{{ticket.department.title}}</dd>
 	</dl>
-	<dl>
+	<dl class="ticket-opt-btn ticket-options-category-btn">
 		<dt>Category</dt>
 		<dd>{{ticket.category.title}}</dd>
 	</dl>
-	<dl>
+	<dl class="ticket-opt-btn ticket-options-product-btn">
 		<dt>Product</dt>
 		<dd>{{ticket.product.title}}</dd>
 	</dl>
-	<dl>
+	<dl class="ticket-opt-btn ticket-options-priority-btn">
 		<dt>Priority</dt>
 		<dd>{{ticket.priority.title}}</dd>
 	</dl>
 	<br style="clear:both" />
 </div>
+
 
 <br style="clear:both" />
 
@@ -121,4 +122,24 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 	<li><span class="icon view-unformatted">View Unformatted</span></li>
 	<li><span class="icon view-details">View Details</span></li>
 	<li><span class="icon edit">Edit</span></li>
+</ul>
+<ul class="ticket-options-department-menu" data-option-name="department" style="display:none">
+	{% for id,title in ticket_options.departments %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-category-menu" data-option-name="category" style="display:none">
+	{% for id,title in ticket_options.categories %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-product-menu" data-option-name="product" style="display:none">
+	{% for id,title in ticket_options.products %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-priority-menu" data-option-name="priority" style="display:none">
+	{% for id,title in ticket_options.priorities %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
 </ul>

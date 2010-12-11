@@ -58,6 +58,41 @@ DeskPRO.Agent.Window = new Class({
 		this.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
 	},
 	
+	loadingIndicatorEl: null,
+	loadingIndicatorCount: 0,
+	startLoadingIndicator: function(n) {
+		if (!n) n = 1;
+		this.loadingIndicatorCount += n;
+		this._showHideLoadingIndicator();
+	},
+	stopLoadingIndicator: function(n) {
+		if (!n) n = 1;
+		this.loadingIndicatorCount -= n;
+		if (this.loadingIndicatorCount < 0) this.loadingIndicatorCount = 0;
+		this._showHideLoadingIndicator();
+	},
+	_showHideLoadingIndicator: function() {
+		if (this.loadingIndicatorCount > 0) {
+			if (!this.loadingIndicatorEl) {
+				this.loadingIndicatorEl = $('<div class="window-loading-indicator" style="display:none" />');
+				this.loadingIndicatorEl.appendTo('body');
+			}
+			
+			this.loadingIndicatorEl.css({
+				'position': 'absolute',
+				'top': 0,
+				'left': ($(document).width()/2) - this.loadingIndicatorEl.outerWidth(),
+				'z-index': 100000
+			});
+			
+			this.loadingIndicatorEl.slideDown(250);
+		} else {
+			if (this.loadingIndicatorEl) {
+				this.loadingIndicatorEl.stop().slideUp(150);
+			}
+		}
+	},
+	
 	updateFilterCounts: function (counts) {
 		var total = 0;
 		Object.each(counts, function (count, filter_id) {
