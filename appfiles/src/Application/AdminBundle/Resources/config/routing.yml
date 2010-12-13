@@ -133,23 +133,45 @@ admin_api_newkey:
 
 
 ################################################################################
-# Person Fields
+# People Fields
 ################################################################################
 
-admin_personfields:
-  pattern: /person-fields
-  defaults: { _controller: AdminBundle:PersonFields:index }
+admin_customdefpeople:
+  pattern: /people-fields
+  defaults: { _controller: AdminBundle:CustomDefPeople:index }
 
-admin_personfields_new_choosetype:
-  pattern: /person-fields/new-choose-type
-  defaults: { _controller: AdminBundle:PersonFields:newChooseType, field_id: 0 }
+admin_customdefpeople_new_choosetype:
+  pattern: /people-fields/new-choose-type
+  defaults: { _controller: AdminBundle:CustomDefPeople:newChooseType, field_id: 0 }
 
-admin_personfields_edit:
-  pattern: /person-fields/:field_id/edit
-  defaults: { _controller: AdminBundle:PersonFields:edit }
+admin_customdefpeople_edit:
+  pattern: /people-fields/:field_id/edit
+  defaults: { _controller: AdminBundle:CustomDefPeople:edit }
   requirements: { field_id: "\d+" }
 
-admin_personfields_test:
-  pattern: /person-fields/:field_id/test
-  defaults: { _controller: AdminBundle:PersonFields:test }
+admin_customdefpeople_test:
+  pattern: /people-fields/:field_id/test
+  defaults: { _controller: AdminBundle:CustomDefPeople:test }
+  requirements: { field_id: "\d+" }
+
+################################################################################
+# People Fields
+################################################################################
+
+admin_customdeftickets:
+  pattern: /ticket-fields
+  defaults: { _controller: AdminBundle:CustomDefTickets:index }
+
+admin_customdeftickets_new_choosetype:
+  pattern: /ticket-fields/new-choose-type
+  defaults: { _controller: AdminBundle:CustomDefTickets:newChooseType, field_id: 0 }
+
+admin_customdeftickets_edit:
+  pattern: /ticket-fields/:field_id/edit
+  defaults: { _controller: AdminBundle:CustomDefTickets:edit }
+  requirements: { field_id: "\d+" }
+
+admin_customdeftickets_test:
+  pattern: /ticket-fields/:field_id/test
+  defaults: { _controller: AdminBundle:CustomDefTickets:test }
   requirements: { field_id: "\d+" }

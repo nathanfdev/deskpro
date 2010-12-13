@@ -30,4 +30,15 @@ abstract class AbstractFields
 
 		return $this->getFields();
 	}
+
+
+	public function getEntityName()
+	{
+		return static::ENTITY_NAME;
+	}
+
+	public function getEntityClassname()
+	{
+		return static::ENTITY_CLASS;
+	}
 }

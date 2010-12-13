@@ -4,7 +4,7 @@
 <div class="block" id="block-tables">
 	<div class="content">
 		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{% path 'admin_personfields_new_choosetype' %}" class="button">
+			<a href="{% path route_basename~'new_choosetype' %}" class="button">
 				<img src="{% asset 'images/icons/tick.png' %}" alt="New Field" /> Create New Field
 			</a>
 		</div>
@@ -23,7 +23,7 @@
 						<td>{{field.title}}</td>
 						<td>{{field.handler_class}}</td>
 						<td width="50" style="text-align: right;">
-							<a href="{% path 'admin_personfields_edit' with ['field_id': field.id] %}">Edit</a>
+							<a href="{% path route_basename~'edit' with ['field_id': field.id] %}">Edit</a>
 						</td>
 					</tr>
 				{% else %}

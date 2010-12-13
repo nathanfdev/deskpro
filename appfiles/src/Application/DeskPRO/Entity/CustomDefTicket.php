@@ -16,7 +16,7 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefTicket")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="custom_def_ticket")
  */

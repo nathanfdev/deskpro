@@ -13,22 +13,38 @@ namespace Application\AdminBundle\Controller;
 
 use Application\DeskPRO\App;
 
-use Application\DeskPRO\Entity\CustomDefPerson;
+use Application\DeskPRO\Entity\CustomDefAbstract;
+
+use Orb\Util\Util;
 
 /**
- * Handles manaing person fields
+ * Abstract class for managing custom fields
  */
-class PersonFieldsController extends AbstractController
+abstract class CustomDefAbstractController extends AbstractController
 {
+	const API_NAME = '';
+
+	protected $route_basename;
+
+	public function init()
+	{
+		parent::init();
+
+		$this->tplvars['route_basename'] = $this->route_basename = 'admin_' . \strtolower(str_replace('Controller', '', Util::getBaseClassname($this))) . '_';
+	}
+
 	############################################################################
-	# /agent/person-fields                                     admin_personfields
+	# index
 	############################################################################
 
+	/**
+	 * List fields
+	 */
 	public function indexAction()
 	{
-		$existing_fields = App::getApi('custom_fields.people')->getFields();
+		$existing_fields = $this->getApi()->getFields();
 
-		return $this->render('AdminBundle:PersonFields:index.twig', array(
+		return $this->render($this->getTemplateName('index.twig'), array(
 			'fields' => $existing_fields
 		));
 	}
@@ -36,13 +52,13 @@ class PersonFieldsController extends AbstractController
 
 
 	############################################################################
-	# /agent/person-fields/new-choose-type      admin_personfields_new_choosetype
+	# new-choose-type
 	############################################################################
 
 	public function newChooseTypeAction()
 	{
-		return $this->render('AdminBundle:PersonFields:edit-choosetype.twig', array(
-			
+		return $this->render($this->getTemplateName('edit-choosetype.twig'), array(
+
 		));
 	}
 
@@ -57,7 +73,7 @@ class PersonFieldsController extends AbstractController
 		if ($field_id) {
 			$field = $this->getFieldOr404($field_id);
 		} else {
-			$field = new CustomDefPerson();
+			$field = $this->createNewField();
 			$field['handler_class'] = $this->in->getString('formfield.handler_class');
 		}
 
@@ -82,7 +98,7 @@ class PersonFieldsController extends AbstractController
 			$form->setFormData($_POST);
 			if ($form->isValid()) {
 				$admin_handler->saveField($form);
-				$this->redirectRoute('admin_personfields_edit', array('field_id' => $field['id']));
+				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id']));
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());
@@ -90,25 +106,14 @@ class PersonFieldsController extends AbstractController
 		}
 
 		$parts = explode('\\', $field['handler_class']);
-		$tpl_name = 'AdminBundle:PersonFields:edit-' . strtolower(array_pop($parts)) . '.twig';
+		$tpl_name = 'edit-' . strtolower(array_pop($parts)) . '.twig';
 
 		$vars = array_merge($admin_handler->getTemplateVars(), array(
 			'field' => $field,
 			'form' => $form,
 		));
 
-		return $this->render($tpl_name, $vars);
-	}
-
-
-
-	############################################################################
-	# /agent/person-fields/:field_id/test                 admin_personfields_test
-	############################################################################
-
-	public function testAction()
-	{
-		// TODO show an example of what the field looks like rendered
+		return $this->render($this->getTemplateName($tpl_name), $vars);
 	}
 
 
@@ -116,16 +121,62 @@ class PersonFieldsController extends AbstractController
 	############################################################################
 
 	/**
-	 * @return Application\DeskPRO\Entity\CustomDefPerson
+	 * @return Application\DeskPRO\Entity\CustomDefAbstract
 	 */
 	protected function getFieldOr404($field_id)
 	{
 		try {
-			$field = $this->em->find('DeskPRO:CustomDefPerson', $field_id);
+			$field = $this->em->find($this->getApi()->getEntityName(), $field_id);
 		} catch (\Doctrine\ORM\NoResultException $e) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no field with ID $field_id");
 		}
 
 		return $field;
+	}
+
+
+
+	/**
+	 * Create a new custom field def object.
+	 *
+	 * @return CustomFieldDef
+	 */
+	protected function createNewField()
+	{
+		$classname = $this->getApi()->getEntityClassname();
+
+		$field = new $classname();
+
+		return $field;
+	}
+
+
+	
+	/**
+	 * Get the proper path for a template with this controller.
+	 *
+	 * @param string $tpl
+	 */
+	public function getTemplateName($tpl)
+	{
+		$name = 'AdminBundle:' . str_replace('Controller', '', Util::getBaseClassname($this)) . ':' . $tpl;
+
+		if (!$this->tpl->exists($name)) {
+			$name = 'AdminBundle:CustomDefAbstract:' . $tpl;
+		}
+
+		return $name;
+	}
+
+
+
+	/**
+	 * Get the handler for working with custom fields.
+	 *
+	 * @return Application\DeskPRO\CustomFields\AbstractFields
+	 */
+	public function getApi()
+	{
+		return App::getApi(static::API_NAME);
 	}
 }
