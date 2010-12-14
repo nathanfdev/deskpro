@@ -7,56 +7,79 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 
 <div class="ticket">
 
-<h1>{{ticket.subject}}</h1>
+<div class="ticket-top">
+	<h1>{{ticket.subject}}</h1>
 
-<div class="ticket-info">
-	<div class="edit-btn ticket-info-edit-btn"></div>
-	<dl class="ticket-opt-btn ticket-options-department-btn">
-		<dt>Department</dt>
-		<dd>{{ticket.department.title}}</dd>
-	</dl>
-	<dl class="ticket-opt-btn ticket-options-category-btn">
-		<dt>Category</dt>
-		<dd>{{ticket.category.title}}</dd>
-	</dl>
-	<dl class="ticket-opt-btn ticket-options-product-btn">
-		<dt>Product</dt>
-		<dd>{{ticket.product.title}}</dd>
-	</dl>
-	<dl class="ticket-opt-btn ticket-options-priority-btn">
-		<dt>Priority</dt>
-		<dd>{{ticket.priority.title}}</dd>
-	</dl>
+	<div class="ticket-info">
+		<div class="edit-btn ticket-info-edit-btn"></div>
+		<dl class="ticket-opt-btn ticket-options-department-btn">
+			<dt>Department</dt>
+			<dd>{{ticket.department.title}}</dd>
+		</dl>
+		<dl class="ticket-opt-btn ticket-options-category-btn">
+			<dt>Category</dt>
+			<dd>{{ticket.category.title}}</dd>
+		</dl>
+		<dl class="ticket-opt-btn ticket-options-product-btn">
+			<dt>Product</dt>
+			<dd>{{ticket.product.title}}</dd>
+		</dl>
+		<dl class="ticket-opt-btn ticket-options-priority-btn">
+			<dt>Priority</dt>
+			<dd>{{ticket.priority.title}}</dd>
+		</dl>
+		<br style="clear:both" />
+	</div>
+
 	<br style="clear:both" />
-</div>
+	
+	<div class="person-info-line">
 
+		<div style="float:right">
+			<strong>Assigned To:</strong><br />
+			{% if not ticket.agent_id %}
+				UNASSIGNED
+			{% elseif ticket.agent_id == person.id %}
+				YOU
+			{% else %}
+				{{ticket.agent.name}}
+			{% endif %}
+		</div>
 
-<br style="clear:both" />
-
-<div style="float:right">
-	<strong>Assigned To:</strong><br />
-	{% if not ticket.agent_id %}
-		UNASSIGNED
-	{% elseif ticket.agent_id == person.id %}
-		YOU
-	{% else %}
-		{{ticket.agent.name}}
-	{% endif %}
-</div>
-
-<div class="person-overview">
-	<div class="img">
-		<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
+		<div class="person-overview">
+			<div class="img">
+				<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
+			</div>
+			<div class="info">
+				<h1>{{ticket.person.name}}</h1>
+				{% if ticket.person.primary_email %}
+					{{ticket.person.primary_email.email}}
+				{% endif %}
+			</div>
+		</div>
+		
+		<br style="clear:both" />
 	</div>
-	<div class="info">
-		<h1>{{ticket.person.name}}</h1>
-		{% if ticket.person.primary_email %}
-			{{ticket.person.primary_email.email}}
-		{% endif %}
+	
+	<div class="ticket-custom-fields">
+		<div class="edit-btn ticket-custom-fields-edit-btn"></div>
+	</div>
+	
+	<div class="ticket-custom-fields edit" style="display:none">
+		{% for f in custom_fields %}
+			<div class="field-wrap">
+				<div class="label-wrap"><label>{{f.title}}</label></div>
+				<div class="field-input">
+					{{f.form|render}}
+				</div>
+			</div>
+		{% endfor %}		
+		<div class="buttons">
+			<button class="save-trigger dp-button small">Save</button>
+			<button class="close-trigger dp-button gray small">Cancel</button>
+		</div>
 	</div>
 </div>
-
-<br style="clear:both" />
 
 <div class="messages">
 	<ul>

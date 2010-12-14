@@ -15,7 +15,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	notesSection: null,
 
 	initPage: function(el) {
-		console.log("INIT");
+
 		this.wrapper = el;
 		
 		$('input[placeholder]', this.wrapper).each(function() {

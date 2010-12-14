@@ -28,10 +28,29 @@ class TicketController extends AbstractController
 
 		$person_inner_tab = $this->forward('AgentBundle:Person:view', array('person_id' => $ticket['person_id']))->getContent();
 
+		// Custom fields
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+
+		$custom_fields_form = new \Symfony\Component\Form\FieldGroup('custom_fields');
+		$custom_fields = array();
+		foreach ($ticket_field_defs as $f_def) {
+			$f = $f_def->getHandler()->getFormField();
+			$custom_fields_form->add($f);
+
+
+			$custom_fields[] = array(
+				'field_def' => $f_def,
+				'title' => $f_def['title'],
+				'form' => $f,
+				'rendered' => ''
+			);
+		}
+
 		return $this->render('AgentBundle:Ticket:view.twig', array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
-			'ticket_options' => $ticket_options
+			'ticket_options' => $ticket_options,
+			'custom_fields' => $custom_fields,
 		));
 	}
 

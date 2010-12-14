@@ -22,6 +22,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initTicketActionsMenu();
 		this._initMessageActionsMenu();
 		this._initTicketOptionsMenus();
+		this._initCustomFieldsEditor();
 	},
 	
 	displayNewMessage: function(html) {
@@ -129,6 +130,43 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.ticket-message-edit-btn', ul).live('click', function(event) {
 			menu.openMenu(event);
 		});
+	},
+	
+	//#################################################################
+	//# Custom Fields overlay
+	//#################################################################
+	
+	custom_fields_display: null,
+	custom_fields_edit: null,
+	_initCustomFieldsEditor: function() {
+		$('.ticket-custom-fields-edit-btn', this.wrapper).click((function() {
+			this.showCustomFieldEditor();
+		}).bind(this));
+		
+		this.custom_fields_display = $('.ticket-custom-fields:not(.edit)', this.wrapper);
+		this.custom_fields_edit = $('.ticket-custom-fields.edit', this.wrapper);
+		
+		$('.close-trigger', this.custom_fields_edit).click((function() {
+			this.closeCustomFieldEditor();
+		}).bind(this));
+	},
+	
+	showCustomFieldEditor: function() {
+		
+		var pos = this.custom_fields_display.position();
+		
+		this.custom_fields_edit.css({
+			position: 'absolute',
+			top: pos.top,
+			left: pos.left,
+			width: this.custom_fields_display.width()
+		});
+		
+		this.custom_fields_edit.slideDown();
+	},
+	
+	closeCustomFieldEditor: function() {
+		this.custom_fields_edit.slideUp();
 	},
 	
 	

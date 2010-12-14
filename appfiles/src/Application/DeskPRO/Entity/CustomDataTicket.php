@@ -18,7 +18,7 @@ namespace Application\DeskPRO\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="custom_data_ticket")
  */
-abstract class CustomDataTicket extends \Application\DeskPRO\Domain\DomainObject
+abstract class CustomDataTicket extends CustomDataAbstract
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefTicket

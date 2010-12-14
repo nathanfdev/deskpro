@@ -41,6 +41,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	//protected $parent = null;
 
 	/**
+	 * Field children
+	 *
+	 * MUST BE IMPLEMENT IN CHILD CLASS
+	 *
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="CustomDefXXX", mappedBy="parent_id")
+	 */
+	//protected $children = null;
+
+	/**
 	 * The title
 	 *
 	 * @var string
@@ -49,10 +59,13 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $title = '';
 
 	/**
-	 * The handler class
+	 * The handler class.
+	 *
+	 * May be nullable if the def is a child representing some kind of option.
+	 * For example, a select box has children who we only need the 'title' for.
 	 *
 	 * @var string
-	 * @orm:Column(name="handler_class", type="string", length=255)
+	 * @orm:Column(name="handler_class", type="string", length=255, nullable=true)
 	 */
 	protected $handler_class;
 
@@ -81,7 +94,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->field_children = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 
@@ -105,5 +118,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$this->_handler_instance = new $classname($this);
 
 		return $this->_handler_instance;
+	}
+
+	
+
+	/**
+	 * Get an array of all IDs from this def and down.
+	 *
+	 * @return array
+	 */
+	public function getHierarchyIds()
+	{
+		$ids = array($this->id);
+		foreach ($this->children as $child) {
+			$ids = array_merge($ids, $child->getHierarchyIds());
+		}
+
+		return $ids;
 	}
 }

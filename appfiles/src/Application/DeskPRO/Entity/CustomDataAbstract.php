@@ -66,4 +66,16 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * @orm:Column(name="input", type="text")
 	 */
 	protected $input = 0;
+
+	
+
+	/**
+	 * Get the value or input.
+	 *
+	 * @return mixed
+	 */
+	public function getValue()
+	{
+		return $this->value ? $this->value : $this->input;
+	}
 }

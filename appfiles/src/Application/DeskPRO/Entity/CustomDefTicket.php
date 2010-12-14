@@ -35,5 +35,5 @@ class CustomDefTicket extends CustomDefAbstract
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="CustomDefTicket", mappedBy="parent_id")
 	 */
-	protected $field_children = null;
+	protected $children = null;
 }

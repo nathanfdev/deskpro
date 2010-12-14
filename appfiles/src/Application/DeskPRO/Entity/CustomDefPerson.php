@@ -35,5 +35,5 @@ class CustomDefPerson extends CustomDefAbstract
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="CustomDefPerson", mappedBy="parent_id")
 	 */
-	protected $field_children = null;
+	protected $children = null;
 }
