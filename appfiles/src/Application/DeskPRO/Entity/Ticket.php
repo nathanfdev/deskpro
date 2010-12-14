@@ -151,6 +151,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $messages;
 
 	/**
+	 * @orm:OneToMany(targetEntity="CustomDataTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 */
+	protected $custom_data;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="creation_system", type="string", length=20)
 	 */
@@ -266,6 +271,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->date_created = new \DateTime();
 	}
@@ -322,5 +328,37 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->messages->add($message);
 		$message['ticket'] = $this;
+	}
+
+	
+
+	/**
+	 * Find an existing data record for a field id.
+	 * 
+	 * @param int $field_id
+	 * @return CustomDataTicket
+	 */
+	public function getCustomDataForField($field_id)
+	{
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id) {
+				return $data;
+			}
+		}
+
+		return null;
+	}
+
+	
+
+	/**
+	 * Add a custom data item to this ticket
+	 *
+	 * @param CustomDataTicket $data
+	 */
+	public function addCustomData(CustomDataTicket $data)
+	{
+		$this->custom_data->add($data);
+		$data['ticket'] = $this;
 	}
 }

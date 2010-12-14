@@ -722,14 +722,23 @@ table.list tr.info-line div.department {
 
 .ticket .ticket-custom-fields {
 	margin: 15px;
+	margin-top: 5px;
 }
 
 .ticket .ticket-custom-fields-edit-btn {
-	float: right;
+	text-align: right;
+}
+.ticket .ticket-custom-fields-edit-btn span {
 	width: 16px;
-	height: 16px;
-	background: transparent url(../../images/icons/document__pencil.png) no-repeat center center;
+	line-height: 16px;
+	padding-right: 20px;
+	margin-right: 15px;
+	background: transparent url(../../images/icons/document__pencil.png) no-repeat center right;
 	cursor: pointer;
+	font-size: 9px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+	color: #6E6E6E;
 }
 
 .ticket-custom-fields {
@@ -749,30 +758,29 @@ table.list tr.info-line div.department {
 	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
 }
 
-.ticket-custom-fields.edit .field-wrap {
+.ticket-custom-fields .field-wrap {
 	border-top: 1px solid #d9dbe1;
 	padding: 8px;
-	margin-top: 8px;
 }
 
-.ticket-custom-fields.edit .field-wrap:first-child {
+.ticket-custom-fields .field-wrap:first-child {
 	border-top: none;
 	margin-top: 0;
 }
 
-.ticket-custom-fields.edit .field-wrap .label-wrap {
+.ticket-custom-fields .field-wrap .label-wrap {
 	font-weight: bold;
 	width: 150px;
 	float: left;
-	clear: both;
+
 }
 
-.ticket-custom-fields.edit .field-wrap .field-input {
+.ticket-custom-fields .field-wrap .field-input {
 	margin-left: 155px;
 }
 
-.ticket-custom-fields.edit .field-wrap .field-input input[type="text"],
-.ticket-custom-fields.edit .field-wrap .field-input textarea {
+.ticket-custom-fields .field-wrap .field-input input[type="text"],
+.ticket-custom-fields .field-wrap .field-input textarea {
 	width: 90%;
 }
 
@@ -781,6 +789,17 @@ table.list tr.info-line div.department {
 	text-align: center;
 	padding: 4px 0 4px 0;
 	margin-top: 10px;
+}
+
+.ticket-custom-fields.edit .buttons .loading-on {
+	display: none;
+}
+.ticket-custom-fields.edit .buttons .loading-on span {
+	background: transparent url(../../images/loading-small.gif) no-repeat center left;
+	line-height: 18px;
+	padding-left: 20px;
+	font-size: 11px;
+	text-align: center;
 }
 
 .ticket .person-overview {

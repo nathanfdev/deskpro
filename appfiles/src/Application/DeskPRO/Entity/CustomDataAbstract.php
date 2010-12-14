@@ -20,9 +20,17 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="field_id", type="integer")
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
-	protected $field_id;
+	protected $id;
+
+	/**
+	 * IMPLEMENT IN CHILD CLASS
+	 *
+	 * @var int
+	 * @orm:Column(name="field_id", type="integer")
+	 */
+	//protected $field_id;
 
 	/**
 	 * IMPLEMENT IN CHILD CLASS
@@ -38,7 +46,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="xxx_id", type="integer")
+	 * @orm:Column(name="xxx_id", type="integer")
 	 */
 	//protected $xxx_id;
 
@@ -54,7 +62,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	/**
 	 * User numeric data
 	 *
-	 * @var array
+	 * @var int
 	 * @orm:Column(name="value", type="integer")
 	 */
 	protected $value = 0;
@@ -62,7 +70,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	/**
 	 * User string data
 	 *
-	 * @var array
+	 * @var string
 	 * @orm:Column(name="input", type="text")
 	 */
 	protected $input = 0;
@@ -74,8 +82,18 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 *
 	 * @return mixed
 	 */
-	public function getValue()
+	public function getData()
 	{
 		return $this->value ? $this->value : $this->input;
+	}
+
+
+	public function setData($data)
+	{
+		if ($this->field->getHandler()->getStorageDataType() == 'integer') {
+			$this->value = $data;
+		} else {
+			$this->input = $data;
+		}
 	}
 }

@@ -119,6 +119,11 @@ agent_ticket_view:
   defaults: { _controller: AgentBundle:Ticket:view }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_ajaxsavecustomfields:
+  pattern: /tickets/:ticket_id/ajax-save-custom-fields
+  defaults: { _controller: AgentBundle:Ticket:ajaxSaveCustomFields }
+  requirements: { ticket_id: "\d+" }
+
 agent_ticket_ajaxsavereply:
   pattern: /tickets/:ticket_id/ajax-save-reply
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveReply }

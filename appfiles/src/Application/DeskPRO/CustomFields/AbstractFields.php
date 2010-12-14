@@ -31,6 +31,13 @@ abstract class AbstractFields
 		return $this->getFields();
 	}
 
+	public function getFieldFromId($field_id)
+	{
+		$field = App::getOrm()->getRepository(static::ENTITY_NAME)->find($field_id);
+
+		return $field;
+	}
+
 
 	public function getEntityName()
 	{

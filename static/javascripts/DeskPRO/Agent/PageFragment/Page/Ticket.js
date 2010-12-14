@@ -1,3 +1,4 @@
+
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	
@@ -133,7 +134,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	//#################################################################
-	//# Custom Fields overlay
+	//# Custom Fields popout
 	//#################################################################
 	
 	custom_fields_display: null,
@@ -149,17 +150,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.close-trigger', this.custom_fields_edit).click((function() {
 			this.closeCustomFieldEditor();
 		}).bind(this));
+		
+		$('.save-trigger', this.custom_fields_edit).click((function() {
+			this.saveCustomFields();
+		}).bind(this));
 	},
 	
 	showCustomFieldEditor: function() {
 		
 		var pos = this.custom_fields_display.position();
+		var width = this.custom_fields_display.width()
 		
 		this.custom_fields_edit.css({
 			position: 'absolute',
 			top: pos.top,
 			left: pos.left,
-			width: this.custom_fields_display.width()
+			width: width
 		});
 		
 		this.custom_fields_edit.slideDown();
@@ -167,6 +173,32 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	
 	closeCustomFieldEditor: function() {
 		this.custom_fields_edit.slideUp();
+	},
+	
+	saveCustomFields: function() {
+		$('.buttons .loading-off', this.custom_fields_edit).hide();
+		$('.buttons .loading-on', this.custom_fields_edit).show();
+		
+		var data = $(':input', this.custom_fields_edit).serializeArray();
+		
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-custom-fields',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'html',
+			success: function(html) {
+				this._handleSaveCustomFieldsSuccess(html);
+			}
+		});
+	},
+	
+	_handleSaveCustomFieldsSuccess: function(html) {
+		$('.buttons .loading-on', this.custom_fields_edit).hide();
+		$('.buttons .loading-off', this.custom_fields_edit).show();
+		this.closeCustomFieldEditor();
+		
+		$('.wrap', this.custom_fields_display).html(html);
 	},
 	
 	

@@ -62,16 +62,15 @@ abstract class HandlerAbstract
 	 */
 	public function renderText(array $data)
 	{
-		if (!$data) {
-			return '';
+		// By default, we only know how to render single fields
+		// A multi-value field will have to have its own logic.
+		if (!empty($data['value'])) {
+			$txt = $data['value'];
+		} else {
+			$txt = '';
 		}
 
-		// By default we dont know how to handle an array of
-		// values, so this is just a best guess that'll work fine for
-		// most text-based fields.
-		$data = implode(', ', $data);
-
-		return $data;
+		return $txt;
 	}
 
 
@@ -79,6 +78,9 @@ abstract class HandlerAbstract
 	/**
 	 * Render a field in a given context. This is just a strategy for calling other renderX
 	 * methods.
+	 *
+	 * $data is a data structure `array(value=>..., children=>array(...))` as returned
+	 * from `Application\DeskPRO\CustomFields\Util::createDataHierarchy()`
 	 *
 	 * @param string $context
 	 * @param array $data
@@ -109,5 +111,30 @@ abstract class HandlerAbstract
 	 *
 	 * @return Symfony\Component\Form\Field
 	 */
-	abstract function getFormField();
+	abstract function getFormField(array $data = null);
+
+
+	
+	/**
+	 * Get data from a posted form that we'll store in the database.
+	 *
+	 * This must return an array of field_id=>value.
+	 * If no value is set, then use null.
+	 *
+	 * @return array
+	 */
+	abstract function getDataFromForm(array $form_data);
+
+
+	
+	/**
+	 * Gets the data storage type used for this data. Mostly this will be string,
+	 * but some fields are integers and can benefit if the database stores them as such.
+	 *
+	 * @return string
+	 */
+	public function getStorageDataType()
+	{
+		return 'string';
+	}
 }

@@ -23,17 +23,38 @@ use Orb\Util\Arrays;
 class CustomDefTicket extends CustomDefAbstract
 {
 	/**
-	 * @var CustomDefPeople
-	 * @orm:OneToOne(targetEntity="CustomDefTicket")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @var int
+	 * @orm:Column(name="parent_id", type="integer", nullable=true)
 	 */
-	protected $parent = null;
+	//protected $parent_id = null;
 
 	/**
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="CustomDefTicket", mappedBy="parent_id")
+	 * @orm:OneToMany(targetEntity="CustomDefTicket", mappedBy="parent")
 	 */
 	protected $children = null;
+
+	/**
+	 * @var CustomDefPeople
+	 * @orm:ManyToOne(targetEntity="CustomDefTicket", inversedBy="children")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 */
+	protected $parent = null;
+
+
+	
+	/**
+	 * Create a new data object for this definition.
+	 *
+	 * @return CustomDataTicket
+	 */
+	public function createNewDataObject()
+	{
+		$data = new CustomDataTicket();
+		$data['field'] = $this;
+
+		return $data;
+	}
 }

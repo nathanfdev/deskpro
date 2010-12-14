@@ -18,10 +18,28 @@ use \Application\DeskPRO\Entity;
  */
 class Text extends HandlerAbstract
 {
-	public function getFormField()
+	public function getFormField(array $data = null)
 	{
 		$field = new \Symfony\Component\Form\TextField($this->getFormFieldName());
 
+		if ($data AND !empty($data['value'])) {
+			$field->setData($data['value']);
+		}
+
 		return $field;
+	}
+
+	function getDataFromForm(array $form_data)
+	{
+		$name = $this->getFormFieldName();
+
+		$value = null;
+		if (!empty($form_data[$name])) {
+			$value = $form_data[$name];
+		}
+
+		return array(
+			$this->field_def['id'] => $value
+		);
 	}
 }

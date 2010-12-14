@@ -18,8 +18,14 @@ namespace Application\DeskPRO\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="custom_data_ticket")
  */
-abstract class CustomDataTicket extends CustomDataAbstract
+class CustomDataTicket extends CustomDataAbstract
 {
+	/**
+	 * @var int
+	 * @orm:Column(name="field_id", type="integer")
+	 */
+	protected $field_id;
+	
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefTicket
 	 * @orm:ManyToOne(targetEntity="CustomDefTicket")
@@ -29,7 +35,7 @@ abstract class CustomDataTicket extends CustomDataAbstract
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="ticket_id", type="integer")
+	 * @orm:Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id;
 
