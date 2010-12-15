@@ -91,9 +91,14 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 			</div>
 		</div>
 	{% endif %}
+	
+	<ul class="ticket-tabs">
+		<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
+		<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
+	</ul>
 </div>
 
-<div class="messages">
+<div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
 	<ul>
 		<li class="agent agent-reply">
 			<div class="box">
@@ -120,6 +125,31 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 			{% include 'AgentBundle:Ticket:ticket-message.twig' with ['message': message] %}
 		{% endfor %}
 	</ul>
+</div>
+
+<div class="tab-content attachments" data-tab-trigger=".tab-trigger.attachments">
+	<div class="ticket-attach-upload-btn"><span>Add Attachments</span></div>
+	
+	<div class="ticket-attach" style="display:none">
+		
+	</div>
+	
+	<table class="list" cellspacing="0" width="100%">
+		<thead class="display-options-trigger">
+			<tr>
+				<th>Filename</th>
+				<th width="100">Delete</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for attach in attachments %}
+				<tr>
+					<td>{{attach.filename}}</td>
+					<td><a href="">Delete</a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
 </div>
 
 </div>

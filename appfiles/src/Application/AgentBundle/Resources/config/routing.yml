@@ -10,6 +10,10 @@ agent_interface_poller:
   pattern: /poller
   defaults: { _controller: AgentBundle:Poller:handler }
 
+agent_accept_upload:
+  pattern: /accept-upload
+  defaults: { _controller: AgentBundle:Misc:acceptUpload }
+
 
 ################################################################################
 # People

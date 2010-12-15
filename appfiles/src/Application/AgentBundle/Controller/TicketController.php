@@ -56,13 +56,41 @@ class TicketController extends AbstractController
 			);
 		}
 
+		$attachments = App::getApi('tickets')->getAttachments($ticket);
+
 		return $this->render('AgentBundle:Ticket:view.twig', array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,
 			'custom_fields_has_one_value' => $has_value,
+			'attachments' => $attachments,
 		));
+	}
+	
+
+
+	############################################################################
+	# ajax-save-uploads
+	############################################################################
+
+	public function ajaxSaveUploads($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+
+		$desc = App::getApi('filestorage')->createRandomPath();
+		$desc->writeFromFile($tmp_file);
+
+		$blob_id = $desc->getPath();
+
+		$attach = new Entity\Attachment();
+		$attach['blob_id'] = $blob_id;
+		$attach['object_type'] = 'ticket';
+		$attach['object_id'] = $ticket['id'];
+
+		App::getOrm()->persist($attach);
+		App::getOrm()->flush();
 	}
 
 

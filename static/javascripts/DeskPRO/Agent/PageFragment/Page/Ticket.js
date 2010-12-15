@@ -24,12 +24,50 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initMessageActionsMenu();
 		this._initTicketOptionsMenus();
 		this._initCustomFieldsEditor();
+		this._initTicketTabs();
 	},
 	
 	displayNewMessage: function(html) {
 		var last_message = $('.messages > ul > li.message-item:first', this.wrapper);
 		var new_message = $(html).hide();
 		new_message.insertBefore(last_message).slideDown();
+	},
+	
+	_initTicketUploads: function() {
+		$(".ticket-attach", this.wrapper).plupload({
+			// General settings
+			runtimes : 'flash,silverlight,browserplus,html5',
+			url : 'upload.php',
+			chunk_size : '1mb',
+			unique_names : true,
+
+			// Flash settings
+			flash_swf_url : '/plupload/js/plupload.flash.swf',
+
+			// Silverlight settings
+			silverlight_xap_url : '/plupload/js/plupload.silverlight.xap'
+		});
+	},
+	
+	//#################################################################
+	//# Ticket "tabs"
+	//#################################################################
+	
+	_initTicketTabs: function() {
+		
+		var self = this;
+		$('.ticket-tabs li', this.wrapper).click(function() {
+			self.changeTicketTab($(this).data('tab-for'));
+		});
+	},
+	
+	changeTicketTab: function(to_tab) {
+		console.log(to_tab);
+		$('.tab-content', this.wrapper).removeClass('on');
+		$(to_tab, this.wrapper).addClass('on');
+		
+		$('.tab-trigger', this.wrapper).removeClass('on');
+		$($(to_tab).data('tab-trigger'), this.wrapper).addClass('on');
 	},
 
 	//#################################################################
