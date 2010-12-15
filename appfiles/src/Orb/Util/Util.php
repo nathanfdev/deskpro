@@ -429,4 +429,65 @@ class Util
 		$parts = self::getClassnameParts($obj);
 		return array_pop($parts);
 	}
+
+	
+
+	/**
+	 * Create a UUIDv4 string.
+	 * 
+	 * @return string
+	 */
+	public static function uuid4()
+	{
+		$bits = self::randomData(16);
+
+		$time_low = bin2hex(substr($bits, 0, 4));
+		$time_mid = bin2hex(substr($bits, 4, 2));
+
+		$time_hi_and_version = bin2hex(substr($bits, 6, 2));
+		$time_hi_and_version = hexdec($time_hi_and_version);
+		$time_hi_and_version = $time_hi_and_version >> 4;
+		$time_hi_and_version = $time_hi_and_version | 0x4000;
+
+		$clock_seq_hi_and_reserved = bin2hex(substr($bits, 8, 2));
+		$clock_seq_hi_and_reserved = hexdec($clock_seq_hi_and_reserved);
+		$clock_seq_hi_and_reserved = $clock_seq_hi_and_reserved >> 2;
+		$clock_seq_hi_and_reserved = $clock_seq_hi_and_reserved | 0x8000;
+
+		$node = bin2hex(substr($bits,10, 6));
+
+		return sprintf(
+			'%08s-%04s-%04x-%04x-%012s',
+			$time_low, $time_mid, $time_hi_and_version, $clock_seq_hi_and_reserved, $node
+		);
+	}
+
+	
+
+	/**
+	 * Generate random bytes.
+	 * 
+	 * @param int $len
+	 * @return string
+	 */
+	public static function randomData($len = 250)
+	{
+		$data = '';
+		if (function_exists('openssl_random_pseudo_bytes')) {
+			$data = openssl_random_pseudo_bytes($len);
+		} else {
+			$fp = @fopen('/dev/urandom','rb');
+			if ($fp !== false) {
+				$data = fread($fp, $len);
+				fclose($fp);
+			} else {
+				// Fallback on just rand
+				for($x=0; $x < $len; $x++){
+					$data .= chr(mt_rand(0, 255));
+				}
+			}
+		}
+
+		return $data;
+	}
 }

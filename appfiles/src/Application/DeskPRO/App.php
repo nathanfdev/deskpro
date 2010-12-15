@@ -306,6 +306,7 @@ class App
 		'custom_fields.people'       => 'Application\\DeskPRO\\CustomFields\\PeopleFields',
 		'custom_fields.tickets'      => 'Application\\DeskPRO\\CustomFields\\TicketFields',
 		'custom_fields.util'         => 'Application\\DeskPRO\\CustomFields\\Util',
+		'filestorage'                => '',
 	);
 
 	/**
@@ -328,8 +329,15 @@ class App
 			throw new \OutOfBoundsException("API handler does not exist");
 		}
 
-		$classname = self::$_api_handler_names[$name];
-		self::$_api_handlers[$name] = new $classname();
+		if ($name == 'filestorage') {
+
+			$source = new \Application\DeskPRO\FileStorage\Database(self::getDb());
+			self::$_api_handlers[$name] = $source;
+
+		} else {
+			$classname = self::$_api_handler_names[$name];
+			self::$_api_handlers[$name] = new $classname();
+		}
 
 		return self::$_api_handlers[$name];
 	}

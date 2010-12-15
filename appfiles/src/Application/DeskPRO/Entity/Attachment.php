@@ -15,7 +15,6 @@ namespace Application\DeskPRO\Entity;
  * Attachments are binary file data that can be attached to various things.
  *
  * @orm:Entity
- * @orm:HasLifecycleCallbacks
  * @orm:Table(name="attachments",
  *     indexes={@orm:Index(name="object_idx", columns={"object_type","object_id"})}
  * )
@@ -47,14 +46,6 @@ class Attachment extends \Application\DeskPRO\Domain\DomainObject
 	protected $object_id;
 
 	/**
-	 * The path to the file if it's not stored in the database.
-	 *
-	 * @var string
-	 * @orm:Column(name="save_path", type="string", length=255)
-	 */
-	protected $save_path = '';
-
-	/**
 	 * @var int
 	 * @orm:Column(name="person_id", type="integer")
 	 */
@@ -68,6 +59,12 @@ class Attachment extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
+
+	/**
+	 * @var int
+	 * @orm:Column(name="blob_id", type="integer")
+	 */
+	protected $blob_id;
 
 	/**
 	 * @var \DateTime
@@ -89,7 +86,7 @@ class Attachment extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @orm:Column(name="filesize", type="integer")
 	 */
-	protected $language_id;
+	protected $filesize;
 
 	/**
 	 * The files mimetype
@@ -100,9 +97,7 @@ class Attachment extends \Application\DeskPRO\Domain\DomainObject
 	protected $content_type;
 
 
-
-	/** @orm:PrePersist */
-	public function _prePersist()
+	public function __construct()
 	{
 		$this->date_created = new \DateTime();
 	}

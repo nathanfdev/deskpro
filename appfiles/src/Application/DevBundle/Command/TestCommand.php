@@ -27,35 +27,16 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
-		$this->em = $this->container->get('doctrine.orm.entity_manager');
+		$source = new \Orb\FileStorage\Filesystem('/media/psf/Sites/deskpro/dp_400/appfiles/bin');
+		
+		$file = $source->getFileDescriptor('2010-12/14/3/377aa2b2-21d0-4064-a550-2139e9580e25');
+		$file->output();
 
-		// Profile
-		$person = new \Application\DeskPRO\Entity\Person();
-		$person['password'] = 'pass';
-		$person['first_name'] = 'John';
-		$person['last_name'] = 'Doe';
-		$person['name'] = 'John Doe';
-		$person['is_contact'] = true;
-		$person['is_user'] = true;
-		$person['is_agent'] = true;
-		$this->em->persist($person);
-		$this->em->flush();
+		return;
+		$file = $source->createRandomPath();
+		$file->write('blah blah blah');
 
-		$email = new \Application\DeskPRO\Entity\PersonEmail();
-		$email['email'] = 'admin@example.com';
-		$email['is_validated'] = true;
-		$person->addEmailAddress($email);
-
-		$this->em->persist($person);
-		$this->em->flush();
-
-		// Write the version file which will be used by
-		// upgrade scripts
-		$vfile = DP_ROOT.'/sys/VERSION';
-		$version = new \DateTime();
-		$version = $version->format('Y-m-d H:i:s');
-		if (!@file_put_contents($vfile, $version)) {
-			$output->write("<warn>\n Error writing $vfile\nThis file must contain the value: $version\nIf it does not, upgrading will not work\n</warn>\n");
-		}
+		echo $file->getPath();
+		echo "\n";
 	}
 }

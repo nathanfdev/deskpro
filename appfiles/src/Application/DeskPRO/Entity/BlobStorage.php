@@ -12,34 +12,26 @@
 namespace Application\DeskPRO\Entity;
 
 /**
- * Attachments are binary file data that can be attached to various things.
+ * When blobs are stored in the database, they are stored as muliple parts in this table.
+ *
+ * (Ordering is by id ASC)
  *
  * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="attachments_blobs")
- * )
+ * @orm:Table(name="blobs_storage")
  */
-class AttachmentBlob extends \Application\DeskPRO\Domain\DomainObject
+class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="attachment_id", type="integer")
+	 * @orm:Column(name="blob_id", type="integer")
 	 */
-	protected $attachment_id;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Attachment
-	 * @orm:ManyToOne(targetEntity="Attachment")
-	 * @orm:JoinColumn(name="attachment_id", referencedColumnName="id")
-	 */
-	protected $attachment;
+	protected $blob_id;
 
 	/**
 	 * The users name (best guess from other sources etc)
@@ -47,7 +39,7 @@ class AttachmentBlob extends \Application\DeskPRO\Domain\DomainObject
 	 * @TODO This needs to be a binary type
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="text")
+	 * @orm:Column(name="data", type="text")
 	 */
 	protected $data;
 }

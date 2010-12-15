@@ -18,6 +18,25 @@ use \PDO;
  */
 class Connection extends \Doctrine\DBAL\Connection
 {
+	protected $_max_packet_size = null;
+
+	/**
+	 * Gets the max packet size.
+	 * 
+	 * @return int
+	 */
+	public function getMaxPacketSize()
+	{
+		if ($this->_max_packet_size === null) return $this->_max_packet_size;
+
+		$result = $this->fetchAssoc("SHOW variables LIKE 'max_allowed_packet'");
+		$this->_max_packet_size = $result['Value'];
+
+		return $this->_max_packet_size;
+	}
+
+
+	
 	/**
 	 * Execute a query and return all results indexed with the specified column.
 	 *
