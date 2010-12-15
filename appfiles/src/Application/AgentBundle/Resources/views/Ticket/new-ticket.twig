@@ -1,0 +1,168 @@
+<script>
+pageMeta.class = 'DeskPRO.Agent.PageFragment.Page.Ticket';
+pageMeta.title = 'New Ticket';
+pageMeta.ticket_id = 0;
+</script>
+
+<div class="ticket">
+
+<div class="ticket-top">
+	<h1><input type="text" name="ticket[title]" value="{{ticket.subject}}" /></h1>
+
+	<div class="ticket-info">
+		<div class="edit-btn ticket-info-edit-btn"></div>
+		<dl class="ticket-opt-btn ticket-options-department-btn">
+			<dt>Department</dt>
+			<dd>{{ticket.department.title}}</dd>
+		</dl>
+		<dl class="ticket-opt-btn ticket-options-category-btn">
+			<dt>Category</dt>
+			<dd>{{ticket.category.title}}</dd>
+		</dl>
+		<dl class="ticket-opt-btn ticket-options-product-btn">
+			<dt>Product</dt>
+			<dd>{{ticket.product.title}}</dd>
+		</dl>
+		<dl class="ticket-opt-btn ticket-options-priority-btn">
+			<dt>Priority</dt>
+			<dd>{{ticket.priority.title}}</dd>
+		</dl>
+		<br style="clear:both" />
+	</div>
+
+	<br style="clear:both" />
+	
+	<div class="person-info-line">
+
+		<div style="float:right">
+			<strong>Assigned To:</strong><br />
+			{% if not ticket.agent_id %}
+				UNASSIGNED
+			{% elseif ticket.agent_id == person.id %}
+				YOU
+			{% else %}
+				{{ticket.agent.name}}
+			{% endif %}
+		</div>
+
+		<div class="person-overview">
+			<div class="img">
+				<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
+			</div>
+			<div class="info">
+				<h1>{{ticket.person.name}}</h1>
+				{% if ticket.person.primary_email %}
+					{{ticket.person.primary_email.email}}
+				{% endif %}
+			</div>
+		</div>
+		
+		<br style="clear:both" />
+	</div>
+
+	{% if custom_fields %}
+		<div class="ticket-custom-fields-wrap">
+			{% for f in custom_fields %}
+				<div class="field-wrap">
+					<div class="label-wrap"><label>{{f.title}}</label></div>
+					<div class="field-input">
+						{{f.form|render}}
+					</div>
+				</div>
+			{% endfor %}
+		</div>
+	{% endif %}
+	
+	<ul class="ticket-tabs">
+		<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
+		<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
+	</ul>
+</div>
+
+<div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
+	<ul>
+		<li class="agent agent-reply">
+			<div class="box">
+				<div class="info">
+					<cite>New Reply</cite>
+				</div>
+				<div class="message">
+					<div class="reply-area">
+						<textarea name="reply"></textarea>
+					</div>
+				</div>
+			</div>
+		</li>
+	</ul>
+</div>
+
+<div class="tab-content attachments" data-tab-trigger=".tab-trigger.attachments">
+	<div class="ticket-attach-upload-btn"><span>Add Attachments</span></div>
+	
+	<div class="ticket-attach" style="display:none">
+		
+	</div>
+	
+	<table class="list" cellspacing="0" width="100%">
+		<thead class="display-options-trigger">
+			<tr>
+				<th>Filename</th>
+				<th width="100">Delete</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for attach in attachments %}
+				<tr>
+					<td>{{attach.filename}}</td>
+					<td><a href="">Delete</a></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+</div>
+
+<div class="person-popout" style="display:none">
+	<div class="content">
+		{{person_inner_tab|raw}}
+	</div>
+</div>
+
+<div class="person-overview-popout" style="display:none"></div>
+
+<div class="person-overview-popout-content" style="display:none" data-route="person:{% path 'agent_people_view' with ['person_id': ticket.person_id] %}">
+	<div class="img">
+		<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
+	</div>
+	<div class="info">
+		<h1>{{ticket.person.name}}</h1>
+		{% if ticket.person.primary_email %}
+			{{ticket.person.primary_email.email}}
+		{% endif %}
+	</div>
+	<div class="open-person">
+		Open person in new tab
+	</div>
+</div>
+
+<ul class="ticket-options-department-menu" data-option-name="department" style="display:none">
+	{% for id,title in ticket_options.departments %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-category-menu" data-option-name="category" style="display:none">
+	{% for id,title in ticket_options.categories %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-product-menu" data-option-name="product" style="display:none">
+	{% for id,title in ticket_options.products %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-priority-menu" data-option-name="priority" style="display:none">
+	{% for id,title in ticket_options.priorities %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
