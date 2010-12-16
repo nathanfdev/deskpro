@@ -17,6 +17,8 @@ use Symfony\Component\Console\Input\InputInterface;
 use Symfony\Component\Console\Output\OutputInterface;
 use Symfony\Component\Console\Output\Output;
 
+use \Application\DeskPRO\App;
+
 class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 {
 	protected function configure()
@@ -27,6 +29,11 @@ class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		echo 'Size: ';
+		echo App::getDb()->getMaxPacketSize();
+		echo "\n";
+
+		return;
 		$source = new \Orb\FileStorage\Filesystem('/media/psf/Sites/deskpro/dp_400/appfiles/bin');
 		
 		$file = $source->getFileDescriptor('2010-12/14/3/377aa2b2-21d0-4064-a550-2139e9580e25');

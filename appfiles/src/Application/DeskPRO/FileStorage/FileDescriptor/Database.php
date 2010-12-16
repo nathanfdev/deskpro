@@ -109,7 +109,7 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 
 		// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
 		$max_size = ($this->db->getMaxPacketSize()/2)-200;
-		$parts = $data_len / $max_size;
+		$parts = ceil($data_len / $max_size);
 
 		for ($i = 0; $i < $parts; $i++) {
 			$this->db->insert('blobs_storage', array(
@@ -120,8 +120,8 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 
 		$metadata = array('filesize' => $data_len);
 		if ($metadata) {
-			if (!empty($metadata[self::METADATA_CONTENT_TYPE])) $metadata['content_type'] = $metadata[self::METADATA_CONTENT_TYPE];
-			if (!empty($metadata[self::METADATA_FILENAME]))     $metadata['filename']     = $metadata[self::METADATA_FILENAME];
+			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type'] = $meta[self::METADATA_CONTENT_TYPE];
+			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']     = $meta[self::METADATA_FILENAME];
 		}
 		$this->db->update('blobs', $metadata, array('id' => $this->blob_id));
 
@@ -139,7 +139,7 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	public function writeFromFile($fp_data, $meta = null)
 	{
 		if (!is_resource($fp_data)) {
-			throw new FileStorage\Exception('$fp_data must be a file pointer', 5);
+			throw new \Orb\FileStorage\Exception('$fp_data must be a file pointer', 5);
 		}
 
 		$this->write(stream_get_contents($fp_data), $meta);
@@ -157,9 +157,9 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		}
 
 		$parts = array();
-		$statement = $this->executeQuery("SELECT data FROM blob_storage WHERE blob_id = ?", array($this->blob_id));
+		$statement = $this->db->executeQuery("SELECT data FROM blobs_storage WHERE blob_id = ?", array($this->blob_id));
 
-		while ($row = $statement->fetch(PDO::FETCH_NUM)) {
+		while ($row = $statement->fetch(\PDO::FETCH_NUM)) {
 			$parts[] = $row[0];
 		}
 

@@ -7,6 +7,7 @@
 	<title>DeskPRO</title>
 
 	<link rel="stylesheet" href="{% asset 'javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css' %}" type="text/css" media="screen"  />
+	<link rel="stylesheet" href="{% asset 'javascripts/plupload/css/plupload.queue.css' %}" type="text/css" media="screen"  />
 	<link rel="stylesheet" href="{% asset 'javascripts/DeskPRO/UI/ui.css' %}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{% asset 'javascripts/jquery/tipTip/tipTip.css' %}" type="text/css" media="screen"  />
 	<link rel="stylesheet" href="{% asset 'stylesheets/agent/interface.css' %}" type="text/css" media="screen" />
@@ -14,7 +15,7 @@
 	<!--[if IE 8]>
 	<link rel="stylesheet" href="{% asset 'stylesheets/agent/interface-ie.css' %}" type="text/css" media="screen" />
 	<![endif]-->
-
+	
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.min.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery-ui/jquery-ui.min.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.layout.min.js' %}"></script>
@@ -29,7 +30,7 @@
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/mootools/mootools-core.min.js' %}"></script>
 	
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/plupload/plupload.full.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/plupload/jquery.ui.plupload.min.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/plupload/jquery.plupload.queue.min.js' %}"></script>
 	
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Orb.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Compat.js' %}"></script>
@@ -62,6 +63,8 @@
 
 	<script type="text/javascript">
 		var BASE_URL = '{% path 'index' %}';
+		var ASSETS_BASE_URL = '{% asset '' %}';
+		
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
 			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));

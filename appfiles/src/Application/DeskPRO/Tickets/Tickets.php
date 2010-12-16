@@ -56,23 +56,4 @@ class Tickets
 
 		return $options;
 	}
-
-
-	
-	/**
-	 * Get attachments on a ticket
-	 * 
-	 * @param Entity\Ticket $ticket
-	 * @return array
-	 */
-	public function getAttachments(Entity\Ticket $ticket)
-	{
-		$attachments = App::getOrm()->createQuery("
-			SELECT a
-			FROM DeskPRO:Attachment
-			WHERE a.object_type = ?1 AND a.object_id = ?2
-		")->setParameters(array(1 => 'ticket', 2 => $ticket['id']))->execute();
-
-		return $attachments;
-	}
 }

@@ -1003,6 +1003,25 @@ table.list tr.info-line div.department {
 }
 
 
+.ticket-attach {
+	width: 550px;
+}
+
+.ticket ul.ticket-newreply-attach-list {
+	text-align: right;
+	margin-right: 15px;
+}
+
+.ticket ul.ticket-newreply-attach-list input[type=checkbox] {
+	width: 10px;
+	height: 10px;
+}
+
+
+
+
+
+
 .person-overview-popout {
 	border: 1px solid #000;
 	background-color: #D8DCE3;
@@ -1616,6 +1635,12 @@ table.list tr.info-line div.department {
 	padding-top: 10px;
 	border-top: 1px solid #6B7075;
 	text-align: center;
+}
+
+.deskpro-overlay.no-pad .overlay > .buttons {
+	margin-top: 15px;
+	padding-top: 6px;
+	padding-bottom: 6px;
 }
 
 

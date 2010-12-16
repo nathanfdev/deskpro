@@ -56,4 +56,15 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="content_type", type="string", length=50)
 	 */
 	protected $content_type = null;
+
+	/**
+	 * @var \DateTime
+	 * @orm:Column(name="date_created",type="datetime")
+	 */
+	protected $date_created;
+
+	public function __construct()
+	{
+		$this->date_created = new \DateTime();
+	}
 }

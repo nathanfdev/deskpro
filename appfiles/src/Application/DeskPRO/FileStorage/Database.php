@@ -47,7 +47,7 @@ class Database extends \Orb\FileStorage\AbstractStorage
 	 */
 	public function getFileDescriptor($blob_id)
 	{
-		$desc = new FileDescriptor\Filesystem($blob_id, $this->db);
+		$desc = new FileDescriptor\Database($blob_id, $this->db);
 		return $desc;
 	}
 

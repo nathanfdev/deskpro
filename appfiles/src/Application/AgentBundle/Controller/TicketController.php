@@ -15,6 +15,7 @@ use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
+use \Orb\Util\Util;
 
 /**
  * Handles ticket searches
@@ -56,15 +57,12 @@ class TicketController extends AbstractController
 			);
 		}
 
-		$attachments = App::getApi('tickets')->getAttachments($ticket);
-
 		return $this->render('AgentBundle:Ticket:view.twig', array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,
 			'custom_fields_has_one_value' => $has_value,
-			'attachments' => $attachments,
 		));
 	}
 	
@@ -169,8 +167,36 @@ class TicketController extends AbstractController
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
 		$message = new Entity\TicketMessage();
+		$message['ticket'] = $ticket;
 		$message['person'] = $this->person;
 		$message['message'] = $this->in->getString('message');
+
+		foreach ($this->in->getArrayValue('attach') as $info) {
+
+			if (!$info['save']) {
+				continue;
+			}
+
+			$path = Util::coalesce(ini_get("upload_tmp_dir"), sys_get_temp_dir()) . DIRECTORY_SEPARATOR . "dpupload/" . $info['tmp_name'];
+			$file = new \Symfony\Component\HttpFoundation\File\File($path);
+
+			$desc = App::getApi('filestorage')->createRandomPath();
+
+			$fp = fopen($path, 'r');
+			$desc->writeFromFile($fp, array(
+				'content_type' => $file->getMimeType(),
+				'filename' => $info['name']
+			));
+			fclose($fp);
+
+			$blob_id = $desc->getPath();
+
+			$attach = new Entity\TicketAttachment();
+			$attach['blob_id'] = $blob_id;
+			$attach['person'] = $this->person;
+			
+			$message->addAttachment($attach);
+		}
 
 		$ticket_edit->addMessage($message);
 		$ticket_edit->save();

@@ -2,11 +2,30 @@
 
 namespace Application\AgentBundle\Controller;
 
+use \Application\DeskPRO\App;
+
+use \Orb\Util\Util;
+
 class MiscController extends AbstractController
 {
+	public function showBlobAction($blob_id)
+	{
+		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+		$response = $this->container->get('response');
+		$response->headers->set('Content-Type', $blob['content_type'] . '; filename=' . $blob['filename']);
+		$response->headers->set('Content-Length', $blob['filesize']);
+		$response->headers->set('Content-Disposition', 'inline; filename=' . $blob['filename']);
+
+		$desc = App::getApi('filestorage')->getFileDescriptor($blob['id']);
+		$response->setContent($desc->get());
+
+		return $response;
+	}
+	
     public function acceptTempUploadAction()
     {
-		$targetDir = ini_get("upload_tmp_dir") . DIRECTORY_SEPARATOR . "dpupload";
+		$targetDir = Util::coalesce(ini_get("upload_tmp_dir"), sys_get_temp_dir()) . DIRECTORY_SEPARATOR . "dpupload";
 		$cleanupTargetDir = false; // Remove old files
 		$maxFileAge = 60 * 60 * 3; // Temp file age in seconds
 
@@ -40,15 +59,15 @@ class MiscController extends AbstractController
 			while (($file = readdir($dir)) !== false) {
 				$filePath = $targetDir . DIRECTORY_SEPARATOR . $file;
 
-				// Remove temp files if they are older than the max age
-				if (preg_match('/\\.tmp$/', $file) && (filemtime($filePath) < time() - $maxFileAge)) {
+				// Remove files if they are older than the max age
+				if (filemtime($filePath) < time() - $maxFileAge) {
 					@unlink($filePath);
 				}
 			}
 
 			closedir($dir);
 		} else {
-			die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory."}, "id" : "id"}');
+			die('{"jsonrpc" : "2.0", "error" : {"code": 100, "message": "Failed to open temp directory: '.$targetDir.'"}, "id" : "id"}');
 		}
 
 		// Look for the content type header

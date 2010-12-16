@@ -53,6 +53,11 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
+	 * @orm:OneToMany(targetEntity="TicketAttachment", mappedBy="message", cascade={"persist", "remove", "merge"})
+	 */
+	protected $attachments;
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
@@ -100,8 +105,16 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$this->message_hash = sha1($message);
 	}
 
+	public function addAttachment(TicketAttachment $attach)
+	{
+		$this->attachments->add($attach);
+		$attach['ticket'] = $this->ticket;
+		$attach['message'] = $this;
+	}
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
+		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 }

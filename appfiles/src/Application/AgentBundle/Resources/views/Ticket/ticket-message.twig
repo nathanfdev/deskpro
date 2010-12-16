@@ -7,6 +7,14 @@
 		</div>
 		<div class="message">
 			{{message.message_html|raw}}
+			
+			{% if message.attachments.count() %}
+				<div style="text-align:right; margin-top: 10px;">
+					{% for ticket_attach in message.attachments %}
+						<a href="{% path 'agent_show_blob' with ['blob_id': ticket_attach.blob_id] %}" target="_blank">{{ticket_attach.blob.filename}}</a><br />
+					{% endfor %}
+				</div>
+			{%endif%}
 		</div>
 	</div>
 </li>

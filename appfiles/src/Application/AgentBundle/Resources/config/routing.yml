@@ -11,9 +11,12 @@ agent_interface_poller:
   defaults: { _controller: AgentBundle:Poller:handler }
 
 agent_accept_upload:
-  pattern: /accept-upload
-  defaults: { _controller: AgentBundle:Misc:acceptUpload }
+  pattern: /misc/accept-upload
+  defaults: { _controller: AgentBundle:Misc:acceptTempUpload }
 
+agent_show_blob:
+  pattern: /misc/show-blob/:blob_id
+  defaults: { _controller: AgentBundle:Misc:showBlob }
 
 ################################################################################
 # People

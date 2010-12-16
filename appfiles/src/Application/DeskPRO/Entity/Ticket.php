@@ -146,6 +146,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $organization = null;
 
 	/**
+	 * @orm:OneToMany(targetEntity="TicketAttachment", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 */
+	protected $attachments;
+
+	/**
 	 * @orm:OneToMany(targetEntity="TicketMessage", mappedBy="ticket", cascade={"persist", "remove", "merge"})
 	 */
 	protected $messages;

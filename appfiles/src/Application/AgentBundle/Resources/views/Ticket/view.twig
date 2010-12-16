@@ -111,6 +111,9 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 						<div class="editor-loading">Please wait a moment while the editor is loaded</div>
 					</div>
 					<div class="reply-area" style="display:none">
+						<div class="ticket-attach-upload-btn"><span>Add Attachments</span></div>
+						<ul class="ticket-newreply-attach-list">
+						</ul>
 						<textarea name="reply"></textarea>
 						
 						<div class="buttons">
@@ -128,24 +131,19 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 </div>
 
 <div class="tab-content attachments" data-tab-trigger=".tab-trigger.attachments">
-	<div class="ticket-attach-upload-btn"><span>Add Attachments</span></div>
-	
-	<div class="ticket-attach" style="display:none">
 		
-	</div>
-	
 	<table class="list" cellspacing="0" width="100%">
 		<thead class="display-options-trigger">
 			<tr>
 				<th>Filename</th>
-				<th width="100">Delete</th>
+				<th width="100">View</th>
 			</tr>
 		</thead>
 		<tbody>
-			{% for attach in attachments %}
+			{% for ticket_attach in ticket.attachments %}
 				<tr>
-					<td>{{attach.filename}}</td>
-					<td><a href="">Delete</a></td>
+					<td><a href="{% path 'agent_show_blob' with ['blob_id': ticket_attach.blob_id] %}" target="_blank">{{ticket_attach.blob.filename}}</a></td>
+					<td>{{ticket_attach.blob.filesize}} bytes</td>
 				</tr>
 			{% endfor %}
 		</tbody>
@@ -174,6 +172,13 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 	</div>
 	<div class="open-person">
 		Open person in new tab
+	</div>
+</div>
+
+<div class="ticket-attach overlay no-padd">
+	<div class="ticket-attach-widget"></div>
+	<div class="buttons">
+		<button class="save dp-button small overlay-close-trigger">Done</button>
 	</div>
 </div>
 

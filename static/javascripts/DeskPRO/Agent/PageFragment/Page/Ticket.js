@@ -25,6 +25,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initTicketOptionsMenus();
 		this._initCustomFieldsEditor();
 		this._initTicketTabs();
+		this._initTicketAttach();
 	},
 	
 	displayNewMessage: function(html) {
@@ -33,20 +34,79 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		new_message.insertBefore(last_message).slideDown();
 	},
 	
-	_initTicketUploads: function() {
-		$(".ticket-attach", this.wrapper).plupload({
+	//#################################################################
+	//# Ticket attachments
+	//#################################################################
+	
+	_initTicketAttach: function() {
+		
+		$('.ticket-attach-upload-btn', this.wrapper).click((function() {
+			this.openAttachOverlay();
+		}).bind(this));
+	},
+	
+	openAttachOverlay: function() {
+		if (!this._initAttachOverlay()) {
+			return;
+		}
+		
+		this.ticketAttachOverlay.openOverlay();
+	},
+	
+	ticketAttachOverlay: null,
+	hasInitAttachOverlay: false,
+	_initAttachOverlay: function() {
+		
+		if (this.hasInitAttachOverlay) {
+			return true;
+		}
+		
+		this.hasInitAttachOverlay = true;
+		
+		this.ticketAttachOverlay = new DeskPRO.UI.Overlay({
+			contentElement: $('.ticket-attach.overlay:first', this.wrapper),
+			customClassname: 'no-pad',
+			modalClickClose: false
+		});
+		
+		var self = this;
+		
+		$(".ticket-attach-widget", this.wrapper).pluploadQueue({
 			// General settings
 			runtimes : 'flash,silverlight,browserplus,html5',
-			url : 'upload.php',
+			url : BASE_URL + 'agent/misc/accept-upload',
 			chunk_size : '1mb',
 			unique_names : true,
+			multiple_queues: true,
 
 			// Flash settings
-			flash_swf_url : '/plupload/js/plupload.flash.swf',
+			flash_swf_url : ASSETS_BASE_URL + 'javascripts/plupload/plupload.flash.swf',
 
 			// Silverlight settings
-			silverlight_xap_url : '/plupload/js/plupload.silverlight.xap'
+			silverlight_xap_url : ASSETS_BASE_URL + 'javascripts/plupload/plupload.silverlight.xap',
+			
+			init: {
+				Error: function(up, args) {
+					console.warn('[Upload Error] %o', args);
+				},
+				FileUploaded: function(up, file, info) {
+					console.info('[Upload Done] %o %o', file, info);
+					var name = 'attach['+file.id+']';
+					var html = '<li><input type="checkbox" name="'+name+'[save]" value="1" checked="checked" />';
+					html += '<input type="hidden" name="'+name+'[name]" value="'+file.name+'" />';
+					html += '<input type="hidden" name="'+name+'[tmp_name]" value="'+file.target_name+'" />';
+					html += ' ' + file.name + '</li>';
+					$('.ticket-newreply-attach-list', self.wrapper).append(html);
+				}
+				/*
+				UploadProgress: function(up, file) {
+					console.debug('[Upload Progress] %o', file);
+				}
+				*/
+			}
 		});
+		
+		return true;
 	},
 	
 	//#################################################################
@@ -317,9 +377,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.buttons', replyArea).hide();
 		$('.send-reply-load', replyArea).show();
 		
-		var data = {
-			'message': this.newReplyEditor.html()
-		};
+		var data = $(':input', replyArea).serializeArray();
+		data.push({name: 'message', value: this.newReplyEditor.html() });
+
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
 			type: 'POST',
