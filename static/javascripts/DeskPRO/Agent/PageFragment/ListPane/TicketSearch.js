@@ -31,6 +31,18 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		});
 	},
 	
+	activate: function() {
+		if (this.getMetaData('queue_id')) {
+			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-activated', this.getMetaData('queue_id'));
+		}
+	},
+
+	deactivate: function() {
+		if (this.getMetaData('queue_id')) {
+			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-deactivated', this.getMetaData('queue_id'));
+		}
+	},
+	
 	_scrollInnerHeights_cache: null,
 	_scrollInnerHeights: function() {
 		if (this._scrollInnerHeights_cache !== null) return this._scrollInnerHeights_cache;

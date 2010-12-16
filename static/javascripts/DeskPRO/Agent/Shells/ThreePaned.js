@@ -31,7 +31,8 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			west: {
 				paneSelector: '#pane_nav',
 				size: 185,
-				spacing_open: 2
+				spacing_open: 1,
+				slidable: false
 			},
 			center: {
 				paneSelector: '#pane_shell_inner'
@@ -47,8 +48,9 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			west: {
 				paneSelector: '#pane_list',
 				size: '45%',
-				spacing_open: 2,
-				initClosed: west_is_closed
+				spacing_open: 7,
+				initClosed: west_is_closed,
+				slidable: false
 			},
 			center: {
 				paneSelector: '#pane_content'
@@ -94,15 +96,29 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	},
 	
 	setNavPanePage: function(page) {
+		
+		if (this.navPanePage) {
+			this.navPanePage.deactivate();
+			this.navPanePage.destroyPage();
+		}
+		
 		this.navPanePage = page;
 		$('#pane_nav').html(page.getHtml()).scrollTop(0);
 		page.initPage($('#pane_nav'));
+		page.activate();
 	},
 	
 	setListPanePage: function(page) {
+		
+		if (this.listPanePage) {
+			this.listPanePage.deactivate();
+			this.listPanePage.destroyPage();
+		}
+		
 		this.listPanePage = page;
 		$('#pane_list').html(page.getHtml()).scrollTop(0);
 		page.initPage($('#pane_list'));
+		page.activate();
 	},
 	
 	addTabPage: function(page) {
@@ -115,6 +131,12 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			},
 			callback_remove_content: function(data, container, tabManager) {
 				page.destroyPage(container);
+			},
+			callback_activate: function() {
+				page.activate();
+			},
+			callback_deactivate: function() {
+				page.deactivate();
 			}
 		});
 	},
@@ -170,8 +192,8 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			return;
 		}
 		
-		// If the clicked thing was the close button...
-		if (el_click.parent().is('.close')) {
+		// If the clicked thing was the close button, or if its a middle-click...
+		if (el_click.parent().is('.close') || event.which == 2) {
 			this.tabManager.removeTab(el.data('tab-id'));
 			return;
 		}
@@ -203,18 +225,9 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	},
 	
 	_onTabDeactivate: function(tabData, container, isActivating) {
-		// Activate the last tab now if we're not already in the process
-		// of activating another
-		if (!isActivating) {
-			var last_tab = $(':last', this.tabStrip);
-			if (last_tab.length) {
-				this.tabManager.activateTab(last_tab.data('tab-id'));
-			}
-		}
-		
 		// If a tab was removed, the onmouseout was never fired
 		// so the tooltip saying its title might still appear
-		$('#tiptip_holder').hide();
+		$('#tiptip_holder').clearQueue().hide();
 	},
 	
 	_onTabActivate: function(tabData) {
@@ -225,7 +238,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	_onTabRemove: function(tabData) {
 		$('#' + tabData.btnId).remove();
 		
-		$('#tiptip_holder').hide();
+		$('#tiptip_holder').clearQueue().hide();
 		
 		this.resizeTabListWidth();
 	}

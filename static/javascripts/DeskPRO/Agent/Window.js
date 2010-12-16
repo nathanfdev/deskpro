@@ -274,10 +274,12 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {String} url The URL of the nav pane
 	 */
 	loadNavPane: function(url) {
+		this.startLoadingIndicator();
 		$.ajax({
 			dataType: 'text',
 			url: url,
 			success: (function(data) {
+				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.NavPane.Basic');
 				DeskPRO_Window.getPanedShell().setNavPanePage(page);
 			}).bind(this)
@@ -292,10 +294,12 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {String} url The URL of the list pane.
 	 */
 	loadListPane: function(url) {
+		this.startLoadingIndicator();
 		$.ajax({
 			dataType: 'text',
 			url: url,
 			success: (function(data) {
+				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 				DeskPRO_Window.getPanedShell().setListPanePage(page);
 			}).bind(this)
@@ -310,10 +314,12 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {String} url The URL of the page
 	 */
 	loadPage: function(url) {
+		this.startLoadingIndicator();
 		$.ajax({
 			dataType: 'text',
 			url: url,
 			success: (function(data) {
+				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data);
 				page.setMetaData('routeUrl', url);
 				DeskPRO_Window.getPanedShell().addTabPage(page);
@@ -333,7 +339,7 @@ DeskPRO.Agent.Window = new Class({
 		
 		pageMeta = {
 			'title': false,
-			'class': classname || 'DeskPRO.Agent.PageFragment.Basic'
+			'fragmentClass': classname || 'DeskPRO.Agent.PageFragment.Basic'
 		};
 		
 		var regex = /<script>([\s\S]*?)<\/script>/im;
@@ -347,8 +353,8 @@ DeskPRO.Agent.Window = new Class({
 			}
 		}
 		
-		//console.debug('PageFragment class: %s', pageMeta.class);
-		var fragment_class = Orb.getNamespacedObject(pageMeta.class);
+		//console.debug('PageFragment class: %s', pageMeta.fragmentClass);
+		var fragment_class = Orb.getNamespacedObject(pageMeta.fragmentClass);
 		
 		var page = new fragment_class(html);
 		page.setMetaData(pageMeta);

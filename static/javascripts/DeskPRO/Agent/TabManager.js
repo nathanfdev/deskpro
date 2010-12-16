@@ -12,7 +12,8 @@ DeskPRO.Agent.TabManager = new Class({
 	Implements: [Events, Options],
 	
 	options: {
-		defaultHideMode: 'hide'
+		defaultHideMode: 'hide',
+		activateNew: true
 	},
 	
 	tabs: {},
@@ -95,7 +96,7 @@ DeskPRO.Agent.TabManager = new Class({
 		
 		this.fireEvent('addTab', [data, this]);
 		
-		if (!this.currentTabId) {
+		if (!this.currentTabId || this.options.activateNew) {
 			this.activateTab(id);
 		}
 	},
@@ -110,7 +111,7 @@ DeskPRO.Agent.TabManager = new Class({
 	activateTab: function(id) {
 		
 		if (this.tabs[id] == undefined) {
-			console.log('Unknown tab: %s', id);
+			console.warn('Unknown tab: %s', id);
 			return false;
 		}
 		
@@ -188,6 +189,10 @@ DeskPRO.Agent.TabManager = new Class({
 		// Chance to hook in before the nodes are actually removed
 		this.fireEvent('deactivateTabBefore', [data, this.containerEl, this.isActivating, this]);
 		
+		if (data.callback_deactivate !== undefined) {
+			data.callback_deactivate(data, $('#' + data.wrapperId, this.containerEl), this);
+		}
+		
 		// Removing
 		if (data.hideMode == 'remove') {
 			
@@ -209,10 +214,6 @@ DeskPRO.Agent.TabManager = new Class({
 			if (data.callback_hide_content !== undefined) {
 				data.callback_hide_content(data, $('#' + data.wrapperId, this.containerEl), this);
 			}
-		}
-		
-		if (data.callback_deactivate !== undefined) {
-			data.callback_deactivate(data, $('#' + data.wrapperId, this.containerEl), this);
 		}
 		
 		this.fireEvent('deactivateTab', [data, $('#' + data.wrapperId, this.containerEl), this.isActivating, this]);

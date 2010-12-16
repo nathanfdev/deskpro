@@ -2,7 +2,12 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.NavPane');
 DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 	Extends: DeskPRO.Agent.PageFragment.NavPane.Basic,
 	
+	wrapper: null,
+	
 	initPage: function(el) {
+		
+		this.wrapper = el;
+		
 		$('li', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
@@ -14,8 +19,16 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 			{recurring: true, minDelay: 15000, minDelayAfterOne: true}
 		);
 		
+		// Automatically run the first filter
+		var first_filter = $('ul.filter-list li:first', el);
+		if (first_filter.length) {
+			DeskPRO_Window.runPageRouteFromElement(first_filter);
+		}
+		
 		// Set up listener
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('queue.view-activated', this.highlightActiveQueue.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('queue.view-deactivated', this.unhighlightActiveQueue.bind(this));
 		
 		// Get them now, or very soon, so dont wait for normal polling interval
 		(function() {
@@ -36,5 +49,12 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 				el.addClass('new');
 			}
 		});
+	},
+	
+	highlightActiveQueue: function(queue_id) {
+		$('.queue-' + queue_id, this.wrapper).addClass('on');
+	},
+	unhighlightActiveQueue: function(queue_id) {
+		$('.queue-' + queue_id, this.wrapper).removeClass('on');
 	}
 });

@@ -1,20 +1,16 @@
 {% extends 'AgentBundle:TicketSearch:pane-layout.twig' %}
 {% block meta %}
 <script>
-pageMeta.class = 'DeskPRO.Agent.PageFragment.NavPane.TicketFilters';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.NavPane.TicketFilters';
 </script>
 {% endblock %}
 {% block pane_content %}
-<div class="main-nav with-side-nav">
-	<div class="top-box ui-layout-north">
-		<ul>
-			{% for filter in filters %}
-				<li data-route="listpane:{% path 'agent_ticketsearch_runfilter' with ['filter_id': filter.id] %}">
-					<span class="ticket-filter-count-{{filter.id}}">-</span>
-					{{filter.title}}
-				</li>
-			{% endfor %}
-		</ul>                                    
-	</div>                                       
-</div>
+<ul class="nav-list filter-list">
+	{% for filter in filters %}
+		<li class="queue-{{filter.id}}" data-route="listpane:{% path 'agent_ticketsearch_runfilter' with ['filter_id': filter.id] %}">
+			<span class="ticket-filter-count-{{filter.id}}">-</span>
+			{{filter.title}}
+		</li>
+	{% endfor %}
+</ul>
 {% endblock %}

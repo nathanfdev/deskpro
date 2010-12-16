@@ -484,6 +484,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		// so we want it to stretch as far as we can, minus some wriggle room
 		var width = pos.left - 35;
 		
+		// ... but not too big
+		if (width > 780) {
+			width = 780;
+		}
+		
 		var show_popout = true;
 		if (width < 400) {
 			show_popout = false;

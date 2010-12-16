@@ -30,6 +30,16 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 */
 	init: function() { },
 	
+	/**
+	 * Called when the fragment has been activated (comes into view).
+	 */
+	activate: function() { },
+	
+	/**
+	 * Called when the fragment is deactivated (hidden from view)
+	 */
+	deactivate: function() { },
+	
 	
 	
 	/**
