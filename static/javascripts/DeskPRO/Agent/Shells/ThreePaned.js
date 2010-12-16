@@ -16,6 +16,9 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	navPanePage: null,
 	listPanePage: null,
 	
+	outerLayout: null,
+	innerLayout: null,
+	
 	initialize: function() {
 		this.el = $('#pane_shell');
 		this.htmlEl = $(this.el).get(0);
@@ -24,7 +27,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		// Set up the layout
 		//------------------------------
 		
-		this.el.layout({
+		this.outerLayout = this.el.layout({
 			west: {
 				paneSelector: '#pane_nav',
 				size: 185,
@@ -35,11 +38,17 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			}
 		});
 		
-		$('#pane_shell_inner').layout({
+		var west_is_closed = false;
+		if ($(document).width() < 1350) {
+			west_is_closed = true;
+		}
+		
+		this.innerLayout = $('#pane_shell_inner').layout({
 			west: {
 				paneSelector: '#pane_list',
 				size: '45%',
-				spacing_open: 2
+				spacing_open: 2,
+				initClosed: west_is_closed
 			},
 			center: {
 				paneSelector: '#pane_content'

@@ -146,14 +146,28 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {String} route The route to match, like navpane:tickets:filters
 	 */
 	runPageRoute: function(route) {
+		
+		// Like:
+		// master.masterTag:sectioninfo:moreinfo:url/here/at/end
+		// (There might not be any sectioninfo)
+		// Example:
+		// listpane:/agent/ticket-search/queue/123
 
 		var sections = route.split(':');
 		var master = sections.shift();
+		var masterTag = null;
+		if (master.indexOf('.') != -1) {
+			var tmp = master.split('.');
+			master = tmp.shift();
+			masterTag = tmp.pop();
+		}
+
 		var url = sections.pop();
 
 		var data = {
 			'route': route,
 			'master': master,
+			'masterTag': masterTag,
 			'sections': sections,
 			'url': url,
 			stopListeners: false
@@ -208,7 +222,23 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {Object} routeData
 	 */
 	loadRoute: function(routeData) {
-		switch (routeData.master) {
+		
+		routeData.openInSection = routeData.master;
+		
+		// Rewrote listpane's to normal pages if listpane
+		// is current collapnsed
+		if (routeData.openInSection == 'listpane' && this.getPanedShell().innerLayout.state.west.isClosed) {
+			routeData.openInSection = 'page';
+			
+			// If it's an alt page, they're used to link views
+			// But we don't want to open a new tab automatically
+			// if we're using tabbed mode
+			if (routeData.masterTag == 'alt') {
+				return;
+			}
+		}
+		
+		switch (routeData.openInSection) {
 			case 'navpane':
 				this.loadNavPane(routeData.url);
 				break;
