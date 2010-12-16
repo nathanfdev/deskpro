@@ -65,8 +65,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		
 		this.ticketAttachOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('.ticket-attach.overlay:first', this.wrapper),
-			customClassname: 'no-pad',
-			modalClickClose: false
+			customClassname: 'no-pad'
 		});
 		
 		var self = this;
