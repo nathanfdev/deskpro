@@ -410,10 +410,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//#################################################################
 	//# Popout
 	//#################################################################
-	
+
+	popoutPinIcon: null,
 	_initPopout: function() {
 		var self = this;
 		var el = this.wrapper;
+		
+		this.popoutPinIcon = $('.person-popout .pin-icon', this.wrapper).click((function () {
+			this.togglePinPopout();
+		}).bind(this));
 		
 		$('.person-overview', el).mouseover(function(event) {
 			self.isMouseOverPopout = true;
@@ -464,6 +469,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	openPopOut: function(event) {
+		
+		// Already open
+		if (this.popout.is(':visible')) {
+			return;
+		}
+		
 		var orig = $('.person-overview', this.wrapper);
 		var pos = orig.offset();
 		var wrapper_pos = this.wrapper.offset();
@@ -487,7 +498,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				'overflow': 'auto'
 			});
 			this.popout.css({
-				'top': (wrapper_pos.top - 8),
+				'top': (wrapper_pos.top - 15),
 				'left': (pos.left - this.popout.outerWidth() - 20),
 				'bottom': 30
 			});
@@ -514,7 +525,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		});
 		
 		if (!this.hasInitPopout && show_popout) {
-			this.popoutPage = new DeskPRO.Agent.PageFragment.Page.Person();
+			this.popoutPage = new DeskPRO.Agent.PageFragment.Page.PersonPopout();
 			this.popoutPage.setMetaData({
 				person_id: 1
 			});
@@ -524,8 +535,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}
 	},
 	
+	togglePinPopout: function() {
+		// Turn off
+		if (this.popoutPinIcon.is('.on')) {
+			this.popoutPinIcon.removeClass('on');
+			this.isMouseOverPopout = false;
+			this.closePopoutOnmouseout();
+			
+		// Turn on
+		} else {
+			this.popoutPinIcon.addClass('on');
+			this.popout_overview.hide();
+			this.popout_overview_content.hide()
+		}
+	},
+	
 	closePopoutOnmouseout: function() {
-		if (this.isMouseOverPopout) {
+		if (this.isMouseOverPopout || this.popoutPinIcon.is('.on')) {
 			return;
 		}
 		

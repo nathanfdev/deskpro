@@ -1064,13 +1064,49 @@ table.list tr.info-line div.department {
 .person-popout {
 	padding: 0;
 	background-color: #fff;
-	border: 1px solid #000;
-	-webkit-box-shadow: 0px 0px 5px #3f444d;
-	-moz-box-shadow: 0px 0px 5px #3f444d;
-	box-shadow: 0px 0px 5px #3f444d;
-	-webkit-border-radius: 10px;
-	-moz-border-radius: 10px;
-	border-radius: 10px;
+	border: 3px solid rgba(11, 11, 11, 0.6);
+
+	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
+	
+	-webkit-border-radius: 6px;
+	-moz-border-radius: 6px;
+	border-radius: 6px;
+}
+
+.person-popout .tabbar {
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+
+	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
+	border-bottom: #212121;
+	border-top: 1px solid #333;
+	height: 28px;
+	color: #bababa;
+	font-size: 8pt;
+	font-family: Arial, sans-serif;
+	width: 100%;
+	overflow: hidden;
+}
+
+.person-popout .tabbar .pin-icon {
+	cursor: pointer;
+	background: transparent url(../../images/icons/flag_pink.png) no-repeat center right;
+	height: 28px;
+	width: 16px;
+	margin-right: 8px;
+	float: right;
+}
+
+.person-popout .tabbar .pin-icon.on {
+	background-image: url(../../images/icons/cross.png);
 }
 
 .person-popout > .content {
@@ -1117,7 +1153,7 @@ table.list tr.info-line div.department {
 
 .profile .side {
 	position: absolute;
-	top: 0;
+	top: 30px;
 	right: 0;
 	width: 38%;
 	padding: 8px 15px 15px 15px;
@@ -1714,4 +1750,99 @@ ul.sortable-list > li:hover {
 .ticket-opt-btn:hover dd {
 	text-decoration: underline;
 	color: #367CFF;
+}
+
+
+
+
+
+.tabbar ul li {
+	float: left;
+	border-right: 1px solid #323332;
+	color: #fff;
+	overflow: hidden;
+	cursor: pointer;
+	height: 23px;
+	margin-top: 5px;
+	overflow: hidden;
+	max-width: 100px;
+	background-color: #5c5c5c;
+	border: 1px solid #6e6e6e;
+	border-bottom: none;
+	margin-right: 3px;
+	margin-left: 3px;
+	
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+.tabbar ul li.icon {
+	max-width: 120px;
+	padding-left: 18px;
+	
+	background-repeat: no-repeat;
+	background-position: 6px center;
+}
+
+.icon-ticket { background-image: url(../../images/tab-icon-ticket.png); }
+.icon-person { background-image: url(../../images/tab-icon-person.png); }
+
+.tabbar ul li div.title {
+	width: 80px;
+	line-height: 22px;
+	float: left;
+}
+
+.tabbar ul li div.title span {
+	padding-left: 8px;
+	width: 150px;
+	display: block;
+}
+
+.tabbar ul li div.close {
+	float: right;
+	background: #5c5c5c;
+	width: 10;
+	height: 22px;
+	padding: 0 5px 0 5px;
+	
+	-moz-border-radius-topright: 5px;
+	border-top-right-radius: 5px;
+}
+
+.tabbar ul li.tab-active div.close {
+	background-color: #2a2b2a;
+}
+
+.tabbar ul li div.close span {
+	background: transparent url(../../images/tab-close.png) no-repeat center center;
+	width: 10px;
+	height: 22px;
+	display: block;
+}
+
+.tabbar ul li div.close span:hover {
+	background: transparent url(../../images/tab-close-on.png) no-repeat center center;
+}
+
+.tabbar ul li.tab-active div.close {
+	background-image: none;
+}
+
+.tabbar ul li:first {
+	border-right: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.tabbar ul li.tab-active {
+	background-color: #2a2b2a;
+	border: 1px solid #c5c5c5;
+	border-bottom: none;
 }
