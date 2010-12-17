@@ -70,7 +70,7 @@
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
 			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
-			window.DeskPRO_Window.runPageRoute('ticket:/dp_400/index_dev.php/agent/tickets/3');
+			window.DeskPRO_Window.runPageRoute('ticket:{% path 'agent_ticket_view' with ['ticket_id': 3] %}');
 			/*
 			for (var i = 1; i <= 20; i++) {
 				var page = window.DeskPRO_Window.createPageFragment('Testing', 'DeskPRO.Agent.PageFragment.NavPane.Basic');
@@ -104,31 +104,47 @@
 		<div class="section">
 			<h1>Engage</h1>
 			<ul>
-				<li class="tickets" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:alt:{% path 'agent_ticketsearch' %}">Tickets</li>
-				<li class="dev-feature-inactive tweets" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Tweets</li>
-				<li class="dev-feature-inactive facebook" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Facebook</li>
-				<li class="dev-feature-inactive chat" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Chat</li>
-				<li class="dev-feature-inactive leads" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Leads</li>
+				<li class="icon tickets" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:alt:{% path 'agent_ticketsearch' %}">Tickets</li>
+				<li class="dev-feature-inactive icon tweets" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Tweets</li>
+				<li class="dev-feature-inactive icon facebook" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Facebook</li>
+				<li class="dev-feature-inactive icon chat" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Chat</li>
+				<li class="dev-feature-inactive icon leads" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Leads</li>
 			</ul>
 		</div>
 		<div class="section">
 			<h1>Publish</h1>
 			<ul>
-				<li class="dev-feature-inactive knowledgebase" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Knowledgebase</li>
-				<li class="dev-feature-inactive troubleshooters" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Troubleshooters</li>
-				<li class="dev-feature-inactive ideas" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Ideas</li>
-				<li class="dev-feature-inactive files" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Files</li>
+				<li class="dev-feature-inactive icon knowledgebase" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Knowledgebase</li>
+				<li class="dev-feature-inactive icon troubleshooters" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Troubleshooters</li>
+				<li class="dev-feature-inactive icon ideas" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Ideas</li>
+				<li class="dev-feature-inactive icon files" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Files</li>
 			</ul>
 		</div>
 		<div class="section">
 			<h1>Manage</h1>
 			<ul>
-				<li class="people" data-route="navpane:{% path 'agent_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'agent_peoplesearch' %}">People</li>
-				<li class="dev-feature-inactive organizations" data-route="navpane:{% path 'agent_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'agent_peoplesearch' %}">Organizations</li>
+				<li class="icon people" data-route="navpane:{% path 'agent_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'agent_peoplesearch' %}">People</li>
+				<li class="dev-feature-inactive icon organizations" data-route="navpane:{% path 'agent_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'agent_peoplesearch' %}">Organizations</li>
 			</ul>
 		</div>
-		<div class="search-box">
-			<input type="text" name="q" />
+		<div class="nav-right">
+			<div class="create-box">
+				<span id="create_new_menu_trigger">Create New</span>
+				<ul id="create_new_menu" style="display:none">
+					<li><span class="icon tickets">Ticket</span></li>
+					<li class="sep">-</li>
+					<li><span class="icon people">Person</span></li>
+					<li><span class="icon organizations">Organization</span></li>
+					<li class="sep">-</li>
+					<li><span class="icon knowledgebase">Knowledgebase Article</span></li>
+					<li><span class="icon troubleshooters">Troubleshooters</span></li>
+					<li><span class="icon ideas">Idea</span></li>
+					<li><span class="icon files">File</span></li>
+				</ul>
+			</div>
+			<div class="search-box">
+				<input type="text" name="q" />
+			</div>
 		</div>
 	</div>
 </div>

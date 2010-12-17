@@ -56,6 +56,15 @@ DeskPRO.Agent.Window = new Class({
 		
 		// Set up listener for badge count
 		this.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
+		
+		// Set up create menu
+		var menu = new DeskPRO.UI.Menu({
+			triggerElement: $('#create_new_menu_trigger'),
+			menuElement: $('#create_new_menu'),
+			onItemClicked: function(info) {
+				DeskPRO_Window.runPageRouteFromElement(info.itemEl);
+			}
+		});
 	},
 	
 	loadingIndicatorEl: null,
