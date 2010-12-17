@@ -34,6 +34,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		new_message.insertBefore(last_message).slideDown();
 	},
 	
+	activate: function() {
+		if (this.popoutPinIcon.is('.on')) {
+			this.popout.fadeIn(200);
+		}
+	},
+	
+	deactivate: function() {
+		if (this.popoutPinIcon.is('.on')) {
+			this.popout.fadeOut(200);
+		}
+	},
+	
 	//#################################################################
 	//# Ticket attachments
 	//#################################################################
