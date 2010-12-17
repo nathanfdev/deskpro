@@ -30,6 +30,23 @@ class TicketSearchController extends AbstractController
 	{
 		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
+		if ($this->in->getStringFromCookie('dpa_queue_order')) {
+			$order = explode(',', $this->in->getStringFromCookie('dpa_queue_order'));
+			$queues_unordered = $queues;
+			$queues = array();
+
+			foreach ($order as $id) {
+				$queues[$id] = $queues_unordered[$id];
+				unset($queues_unordered[$id]);
+			}
+
+			if (count($queues_unordered)) {
+				foreach ($queues_unordered as $id => $q) {
+					$queues[$id] = $q;
+				}
+			}
+		}
+
 		return $this->render('AgentBundle:TicketSearch:pane-filters.twig', array(
 			'filters' => $queues
 		));

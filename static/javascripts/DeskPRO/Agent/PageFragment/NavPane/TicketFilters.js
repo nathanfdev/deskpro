@@ -4,11 +4,17 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 	
 	wrapper: null,
 	
+	cancelClickActivateQueue: false,
 	initPage: function(el) {
 		
 		this.wrapper = el;
+		var self = this;
 		
 		$('.main-nav li', el).click(function() {
+			if (self.cancelClickActivateQueue) {
+				self.cancelClickActivateQueue = false;
+				return;
+			}
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 		
@@ -18,6 +24,11 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 			'filters.counts',
 			{recurring: true, minDelay: 15000, minDelayAfterOne: true}
 		);
+		
+		// Get them now, or very soon, so dont wait for normal polling interval
+		(function() {
+			DeskPRO_Window.getPoller().send();
+		}).delay(500);
 		
 		// Automatically run the first filter
 		var first_filter = $('ul.filter-list li:first', el);
@@ -30,16 +41,13 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('queue.view-activated', this.highlightActiveQueue.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('queue.view-deactivated', this.unhighlightActiveQueue.bind(this));
 		
-		// Get them now, or very soon, so dont wait for normal polling interval
-		(function() {
-			DeskPRO_Window.getPoller().send();
-		}).delay(500);
-		
 		// Toggling alt nav
 		var self = this;
 		$('.alt-nav li', this.wrapper).click(function() {
 			self.toggleAltNavTo($(this));
 		}).tipTip();
+		
+		this._initQueueReorder();
 	},
 	
 	toggleAltNavTo: function(el) {
@@ -67,5 +75,39 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 	},
 	unhighlightActiveQueue: function(queue_id) {
 		$('.queue-' + queue_id, this.wrapper).removeClass('on');
+	},
+	
+	
+	//#################################################################
+	//# Drag+drop reorder
+	//#################################################################
+	
+	_initQueueReorder: function() {
+		var self = this;
+		$('ul.filter-list', this.wrapper).sortable({
+			'axis': 'y',
+			'containment': this.wrapper,
+			'distance': 8,
+			'deactivate': function() {
+				self.cancelClickActivateQueue = true;
+			},
+			'update': function() {
+				self.saveQueueOrder();
+			}
+		});
+	},
+	
+	saveQueueOrder: function() {
+		var order = [];
+		
+		$('.main-nav li', this.wrapper).each(function() {
+			var id = $(this).data('queue-id');
+			if (id) {
+				order.push(id);
+			}
+		});
+		
+		order = order.join(',');
+		$.cookie('dpa_queue_order', order);
 	}
 });
