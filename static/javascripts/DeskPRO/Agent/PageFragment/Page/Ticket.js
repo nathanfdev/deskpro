@@ -256,7 +256,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	showCustomFieldEditor: function() {
 		
 		var pos = this.custom_fields_display.position();
-		var width = this.custom_fields_display.width()
+		var width = this.custom_fields_display.width();
+		
+		if (width > 690) {
+			pos.left += width-690; // always want it hugging the right
+			width = 690;
+		}
 		
 		this.custom_fields_edit.css({
 			position: 'absolute',
@@ -463,7 +468,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		});
 		this.destroyEls.push(this.popout_overview_content);
 		
-		this.popout_overview_content.click(function() {
+		$('.info h1', this.popout_overview_content).tipTip({defaultPosition: 'top'});
+		
+		this.popout_overview_content.dblclick(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	},

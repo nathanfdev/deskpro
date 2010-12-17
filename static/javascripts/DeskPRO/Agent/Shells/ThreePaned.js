@@ -40,7 +40,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		});
 		
 		var west_is_closed = false;
-		if ($(document).width() < 1350) {
+		if ($(window).width() < 1350) {
 			west_is_closed = true;
 		}
 		
@@ -62,7 +62,9 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		//------------------------------
 		
 		this.tabStrip = $('#pane_tabs');
-		this.tabStrip.click(this._tabStripClick.bind(this));
+		// Mouseup because firefox doesnt respond to click
+		// for middle clicks
+		this.tabStrip.mouseup(this._tabStripClick.bind(this));
 		
 		this.tabManager = new DeskPRO.Agent.TabManager('#page');
 		var self = this;
@@ -176,6 +178,9 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	},
 	
 	_tabStripClick: function(event) {
+		
+		console.log('event: %o', event);
+		
 		var el_click = $(event.target);
 
 		if (el_click.parent().is('li.tab')) {

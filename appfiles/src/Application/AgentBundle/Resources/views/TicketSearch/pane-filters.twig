@@ -5,7 +5,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.NavPane.TicketFilters';
 </script>
 {% endblock %}
 {% block pane_content %}
-<ul class="nav-list filter-list">
+<ul class="nav-list filter-list nosel">
 	{% for filter in filters %}
 		<li class="queue-{{filter.id}}" data-route="listpane:{% path 'agent_ticketsearch_runfilter' with ['filter_id': filter.id] %}">
 			<span class="ticket-filter-count-{{filter.id}}">-</span>

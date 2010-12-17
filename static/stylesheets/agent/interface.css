@@ -41,9 +41,23 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	box-shadow: 0px 0px 5px #8db6e6;
 }
 
+.dev-feature-inactive {
+	opacity: 0.3 !important;
+}
+
+.nosel {
+	-webkit-user-select: none;
+	-khtml-user-select: none;
+	-moz-user-select: none;
+	-o-user-select: none;
+	user-select: none;
+}
+
 #pane_shell {
 	overflow: hidden;
 }
+
+#tiptip_holder { z-index: 1000000; }
 
 .ui-layout-pane, #pane_nav, #pane_list, #page { /* all 'panes' */ 
 	overflow: auto;
@@ -610,10 +624,16 @@ ul.tagit input[type="text"] {
 }
 
 table.list > thead > tr {
-	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
-	border-bottom: #212121;
-	border-top: 1px solid #333;
-	color: #bababa;
+	background: #ABACB1;
+	background: -moz-linear-gradient(top, #ABACB1 0%, #E7E9EF 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#ABACB1), color-stop(100%,#E7E9EF));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ABACB1', endColorstr='#E7E9EF',GradientType=0 );
+	
+	text-shadow: 1px 1px 2px #F5F5F5;
+	filter: dropshadow(color=#ffffff, offx=0, offy=0);
+	
+	border-bottom: 1px solid #A6A6A6;
+
 	font-size: 8pt;
 	font-family: Arial, sans-serif;
 }
@@ -621,15 +641,18 @@ table.list > thead > tr {
 table.list > thead > tr > th {
 	font-weight: bold;
 	text-align: left;
-	border-right: 1px solid #323332;
-	color: #fff;
+	border-left: 1px solid #A6A6A6;
+	color: #000;
+	font-weight: bold;
 	cursor: pointer;
-	padding: 4px 0 4px 8px;
-	font-size: 10px;
+	padding: 0 0 0 8px;
+	font-size: 7pt;
+	line-height: 22px;
+	height: 22px;
 }
 
-table.list > thead > tr > th:first {
-	border-right: none;
+table.list > thead > tr > th:first-child {
+	border-left: none;
 }
 
 table.list > tbody > tr.line.line-1 {
@@ -1043,15 +1066,6 @@ table.list tr.info-line div.department {
 	font-family: Tahoma, Arial, Helvetica, sans-serif;
 	font-size: 9pt;
 	font-weight: normal;
-}
-
-.person-overview-popout-content .open-person {
-	text-align: right;
-	cursor: pointer;
-	font-style: italic;
-	padding: 5px 15px 0 0;
-	color: #3A4859;
-	font-size: 9px;
 }
 
 .person-popout {

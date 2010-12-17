@@ -1,10 +1,8 @@
 {% block meta %}{% endblock %}
-<ul class="side-nav">
+<ul class="side-nav nosel">
 	<li data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" class="active"><span class="filters">Filters</span></li>
-	<li><span class="filters">Overview</span></li>
-	<li><span class="filters">Flagged</span></li>
-	{#<li data-route="{% path 'agent_ticketsearch_overviewpane' %}"><span class="overview">Overview</span></li>
-	<li data-route="navpane:{% path 'agent_ticketsearch_flaggedpane' %}"><span class="flagged">Flagged</span></li>#}
+	<li class="dev-feature-inactive"><span class="filters">Overview</span></li>
+	<li class="dev-feature-inactive"><span class="filters">Flagged</span></li>
 </ul>
 
 <div class="main-nav with-side-nav">

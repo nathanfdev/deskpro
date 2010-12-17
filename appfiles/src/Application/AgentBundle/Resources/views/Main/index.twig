@@ -95,8 +95,8 @@
 		<div class="logo">DeskPRO</div>
 		<ul class="current-user">
 			<li class="person">{{person.display_name}} (Log Out)</li>
-			<li class="settings">Settings</li>
-			<li class="admin">Admin</li>
+			<li class="dev-feature-inactive settings">Settings</li>
+			<li class="dev-feature-inactive admin">Admin</li>
 		</ul>
 	</div>
 	<div id="window_header_nav">
@@ -104,26 +104,26 @@
 			<h1>Engage</h1>
 			<ul>
 				<li class="tickets" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:alt:{% path 'agent_ticketsearch' %}">Tickets</li>
-				<li class="tweets" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Tweets</li>
-				<li class="facebook" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Facebook</li>
-				<li class="chat" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Chat</li>
-				<li class="leads" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Leads</li>
+				<li class="dev-feature-inactive tweets" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Tweets</li>
+				<li class="dev-feature-inactive facebook" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Facebook</li>
+				<li class="dev-feature-inactive chat" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Chat</li>
+				<li class="dev-feature-inactive leads" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane.alt:{% path 'agent_ticketsearch' %}">Leads</li>
 			</ul>
 		</div>
 		<div class="section">
 			<h1>Publish</h1>
 			<ul>
-				<li class="knowledgebase" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Knowledgebase</li>
-				<li class="troubleshooters" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Troubleshooters</li>
-				<li class="ideas" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Ideas</li>
-				<li class="files" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Files</li>
+				<li class="dev-feature-inactive knowledgebase" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Knowledgebase</li>
+				<li class="dev-feature-inactive troubleshooters" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Troubleshooters</li>
+				<li class="dev-feature-inactive ideas" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Ideas</li>
+				<li class="dev-feature-inactive files" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" data-route-alt="listpane:{% path 'agent_ticketsearch' %}">Files</li>
 			</ul>
 		</div>
 		<div class="section">
 			<h1>Manage</h1>
 			<ul>
 				<li class="people" data-route="navpane:{% path 'agent_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'agent_peoplesearch' %}">People</li>
-				<li class="organizations" data-route="navpane:{% path 'agent_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'agent_peoplesearch' %}">Organizations</li>
+				<li class="dev-feature-inactive organizations" data-route="navpane:{% path 'agent_peoplesearch_labelspane' %}" data-route-alt="listpane:{% path 'agent_peoplesearch' %}">Organizations</li>
 			</ul>
 		</div>
 		<div class="search-box">
@@ -138,10 +138,10 @@
 	</div>
 	<div id="pane_shell_inner">
 		<div id="pane_list">
-
+			
 		</div>
 		<div id="pane_content">
-			<div id="pane_tabbar">
+			<div id="pane_tabbar" class="nosel">
 				<div id="pane_tabs_scroll_left"></div>
 				<div id="pane_tabs_scroll_right"></div>
 				<ul id="pane_tabs"></ul>				

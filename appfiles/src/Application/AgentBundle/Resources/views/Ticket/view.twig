@@ -92,10 +92,12 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 		</div>
 	{% endif %}
 	
+	{% if ticket.attachments.count() %}
 	<ul class="ticket-tabs">
 		<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
 		<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
 	</ul>
+	{% endif %}
 </div>
 
 <div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
@@ -153,7 +155,7 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 </div>
 
 <div class="person-popout" style="display:none">
-	<div class="tabbar">
+	<div class="tabbar nosel">
 		<div class="pin-icon"></div>
 		<ul>
 			<li class="tab icon icon-person tab-active"><div class="title"><span>Ticket User</span></div></li>
@@ -172,13 +174,10 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 		<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
 	</div>
 	<div class="info">
-		<h1>{{ticket.person.name}}</h1>
+		<h1 title="Double-click to open person in a new tab">{{ticket.person.name}}</h1>
 		{% if ticket.person.primary_email %}
 			{{ticket.person.primary_email.email}}
 		{% endif %}
-	</div>
-	<div class="open-person">
-		Open person in new tab
 	</div>
 </div>
 
