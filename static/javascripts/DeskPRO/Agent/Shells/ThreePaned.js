@@ -30,7 +30,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		this.outerLayout = this.el.layout({
 			west: {
 				paneSelector: '#pane_nav',
-				size: 185,
+				size: 165,
 				spacing_open: 1,
 				slidable: false
 			},

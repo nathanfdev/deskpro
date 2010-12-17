@@ -8,7 +8,7 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 		
 		this.wrapper = el;
 		
-		$('li', el).click(function() {
+		$('.main-nav li', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 		
@@ -34,6 +34,17 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 		(function() {
 			DeskPRO_Window.getPoller().send();
 		}).delay(500);
+		
+		// Toggling alt nav
+		var self = this;
+		$('.alt-nav li', this.wrapper).click(function() {
+			self.toggleAltNavTo($(this));
+		}).tipTip();
+	},
+	
+	toggleAltNavTo: function(el) {
+		$('.alt-nav li.active', this.wrapper).removeClass('active');
+		el.addClass('active');
 	},
 	
 	updateFilterCounts: function(counts) {
