@@ -374,6 +374,10 @@ ul.tagit input[type="text"] {
 	overflow: hidden;
 }
 
+#pane_tabbar ul {
+	height: 28px;
+}
+
 #pane_tabbar ul li {
 	float: left;
 	border-right: 1px solid #323332;

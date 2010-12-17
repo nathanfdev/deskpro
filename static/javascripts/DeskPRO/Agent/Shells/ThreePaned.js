@@ -61,6 +61,17 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		// Set up the tab strip
 		//------------------------------
 		
+		var self = this;
+		$('#pane_tabs').sortable({
+			'axis': 'x',
+			'items': '> li',
+			'tolerance': 'intersect',
+			'containment': 'parent',
+			'deactivate': function() {
+				self.cancelClickActivate = true;
+			}
+		});
+		
 		this.tabStrip = $('#pane_tabs');
 		// Mouseup because firefox doesnt respond to click
 		// for middle clicks
@@ -177,9 +188,13 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		}
 	},
 	
+	cancelClickActivate: false,
 	_tabStripClick: function(event) {
 		
-		console.log('event: %o', event);
+		if (this.cancelClickActivate) {
+			this.cancelClickActivate = false;
+			return;
+		}
 		
 		var el_click = $(event.target);
 
@@ -226,7 +241,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		this.resizeTabListWidth();
 		
 		// Add tooltip
-		$(li).tipTip({defaultPosition: 'bottom'});
+		//$(li).tipTip({defaultPosition: 'bottom'});
 	},
 	
 	_onTabDeactivate: function(tabData, container, isActivating) {
