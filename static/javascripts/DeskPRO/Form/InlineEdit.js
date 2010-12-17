@@ -159,6 +159,11 @@ DeskPRO.Form.InlineEdit = new Class({
 	 * Submits all the fields that are currently 'open'.
 	 */
 	submitOpen: function() {
+		
+		if (!this.activeEdits.length) {
+			return;
+		}
+		
 		var data = $('.editable-fields-on :input, .editable-ajax-data :input', this.options['baseElement']).serializeArray();
 		
 		var is_multi = this.activeEdits.length;

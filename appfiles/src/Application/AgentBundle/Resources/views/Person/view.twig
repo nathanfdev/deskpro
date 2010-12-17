@@ -127,37 +127,55 @@ pageMeta.pageIdentity = 'person:{{ticket.id}}';
 		</div>
 	</div>
 	
-	<div class="contact-add-tpl im new" style="display:none">
+	<div class="contact-add-tpl im new show-fields edit" style="display:none; width: 375px">
 		<input type="hidden" name="contact_type" value="instant_message" />
-		{{contact_fields_tpl.instant_message.protocol.render|raw}}
-		{{contact_fields_tpl.instant_message.im.render(['placeholder': 'ID/Nickname'])|raw}}
-		{{contact_fields_tpl.instant_message.comment.render()|raw}}
-		<div>
-			<span class="saving trigger">saving...</span>
-			<span class="save trigger">save</span>
-			<span class="close trigger">cancel</span>
+		<div class="field-wrap">
+			{{contact_fields_tpl.instant_message.protocol.render|raw}}
+			{{contact_fields_tpl.instant_message.im.render(['placeholder': 'ID/Nickname'])|raw}}
+			{{contact_fields_tpl.instant_message.comment.render()|raw}}
+		</div>
+		<div class="buttons">
+			<div class="loading-off">
+				<button class="save trigger dp-button small">Save</button>
+				<button class="close trigger dp-button gray small">Cancel</button>
+			</div>
+			<div class="loading-on">
+				<span>Saving ...</span>
+			</div>
 		</div>
 	</div>
-	<div class="contact-add-tpl address new" style="display:none">
+	<div class="contact-add-tpl address new show-fields edit" style="display:none; width: 375px">
 		<input type="hidden" name="contact_type" value="address" />
-		{{contact_fields_tpl.address.address.render()|raw}}<br />
-		{{contact_fields_tpl.address.country.render(['size': 10, 'placeholder': 'Country'])|raw}}
-		{{contact_fields_tpl.address.comment.render()|raw}}
-		<div>
-			<span class="saving trigger">saving...</span>
-			<span class="save trigger">save</span>
-			<span class="close trigger">cancel</span>
+		<div class="field-wrap">
+			{{contact_fields_tpl.address.address.render()|raw}}<br />
+			{{contact_fields_tpl.address.country.render(['size': 10, 'placeholder': 'Country'])|raw}}
+			{{contact_fields_tpl.address.comment.render()|raw}}
+		</div>
+		<div class="buttons">
+			<div class="loading-off">
+				<button class="save trigger dp-button small">Save</button>
+				<button class="close trigger dp-button gray small">Cancel</button>
+			</div>
+			<div class="loading-on">
+				<span>Saving ...</span>
+			</div>
 		</div>
 	</div>
-	<div class="contact-add-tpl phone new" style="display:none">
+	<div class="contact-add-tpl phone new show-fields edit" style="display:none; width: 375px">
 		<input type="hidden" name="contact_type" value="phone" />
-		{{contact_fields_tpl.phone.country_code.render(['size': 4, 'placeholder': 'Country Code'])|raw}}
-		{{contact_fields_tpl.phone.phone.render(['placeholder': 'Phone Number'])|raw}}
-		{{contact_fields_tpl.phone.comment.render()|raw}}
-		<div>
-			<span class="saving trigger">saving...</span>
-			<span class="save trigger">save</span>
-			<span class="close trigger">cancel</span>
+		<div class="field-wrap">
+			{{contact_fields_tpl.phone.country_code.render(['size': 4, 'placeholder': 'Country Code'])|raw}}
+			{{contact_fields_tpl.phone.phone.render(['placeholder': 'Phone Number'])|raw}}
+			{{contact_fields_tpl.phone.comment.render()|raw}}
+		</div>
+		<div class="buttons">
+			<div class="loading-off">
+				<button class="save trigger dp-button small">Save</button>
+				<button class="close trigger dp-button gray small">Cancel</button>
+			</div>
+			<div class="loading-on">
+				<span>Saving ...</span>
+			</div>
 		</div>
 	</div>
 	

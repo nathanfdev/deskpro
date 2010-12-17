@@ -51,8 +51,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: el,
 			ajax: {
-				url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-save'
+				url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save'
 			}
+		});
+		
+		// Attach click to wrapper because
+		// this same code is used on popout on ticket,
+		// and clicks dont bubble to document click
+		$(this.wrapper).click(function (ev) {
+			editable.handleDocumentClick(ev);
 		});
 		
 		// Email pops up the email dialog
@@ -118,7 +125,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-save-organization',
+			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-organization',
 			data: data,
 			success: this.handleOrgSave.bind(this)
 		});
@@ -174,7 +181,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-save-note',
+			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-note',
 			data: {note: note},
 			success: this.handleNoteSave.bind(this)
 		});
@@ -207,7 +214,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-get-notes',
+			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-get-notes',
 			data: { 'pp': $('.note-list', this.notesSection).data('limit'), 'p': page },
 			success: this.handleGetNotes.bind(this)
 		});
@@ -240,21 +247,29 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		var type = btn.data('add-type');
 		
 		var edit_el = $('.contact-add-tpl.new.'+type, this.wrapper).clone();
+		this.wrapper.append(edit_el)
 		
 		var pos_el = $('.contact-group.'+type, this.contactSection);
 		if (!pos_el.length || pos_el.is(':hidden')) {
 			pos_el = this.contactSection;
 		}
-		var pos = pos_el.offset();
+		var pos = pos_el.position();
 		
-		edit_el.appendTo('body');
+		// Initial positioning
+		// Because .position() needs to work on visible
+		// element, which might cause scrolling
 		edit_el.css({
 			position: 'absolute',
-			left: pos.left - (edit_el.outerWidth() - this.contactSection.outerWidth()),
-			top: pos.top,
-			'z-index': 999999
+			top: 10,
+			left: 10
 		});
 		edit_el.show();
+		
+		edit_el.position({
+			my: 'right top',
+			at: 'right top',
+			of: pos_el
+		});
 		
 		$('.close', edit_el).click(function() {
 			edit_el.remove();
@@ -275,7 +290,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-save-contact',
+			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-contact',
 			data: data,
 			success: (function(data) {
 				this.handleSaveSuccess(data, edit_el);
@@ -382,7 +397,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'tech/people/' + this.meta.person_id + '/ajax-save-emails',
+			url: BASE_URL + 'agent/people/' + this.meta.person_id + '/ajax-save-emails',
 			data: data,
 			success: this.handleEmailSave.bind(this)
 		});

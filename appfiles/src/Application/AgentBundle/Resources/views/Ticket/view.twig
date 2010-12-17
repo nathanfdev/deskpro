@@ -64,14 +64,14 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 	{% if custom_fields %}
 		<div class="ticket-custom-fields-wrap">
 			<div class="edit-btn ticket-custom-fields-edit-btn"><span>Edit Fields</span></div>
-			<div class="ticket-custom-fields">
+			<div class="ticket-custom-fields show-fields">
 				<div class="wrap">
 					{% include 'AgentBundle:Ticket:custom-fields-rendered.twig' with ['custom_fields': custom_fields] %}
 				</div>
 			</div>
 		</div>
 	
-		<div class="ticket-custom-fields edit" style="display:none">
+		<div class="ticket-custom-fields edit show-fields edit-fields-overlay" style="display:none">
 			{% for f in custom_fields %}
 				<div class="field-wrap">
 					<div class="label-wrap"><label>{{f.title}}</label></div>

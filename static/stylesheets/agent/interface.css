@@ -814,59 +814,6 @@ table.list tr.info-line div.department {
 	font-size: 11px;
 }
 
-.ticket-custom-fields.edit {
-	margin-left: 12px;
-	margin-right: 12px;
-	border: 3px solid rgba(11, 11, 11, 0.5);
-	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
-	-moz-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
-	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
-}
-
-.ticket-custom-fields .field-wrap {
-	border-top: 1px solid #d9dbe1;
-	padding: 8px;
-}
-
-.ticket-custom-fields .field-wrap:first-child {
-	border-top: none;
-	margin-top: 0;
-}
-
-.ticket-custom-fields .field-wrap .label-wrap {
-	font-weight: bold;
-	width: 150px;
-	float: left;
-
-}
-
-.ticket-custom-fields .field-wrap .field-input {
-	margin-left: 155px;
-}
-
-.ticket-custom-fields .field-wrap .field-input input[type="text"],
-.ticket-custom-fields .field-wrap .field-input textarea {
-	width: 90%;
-}
-
-.ticket-custom-fields.edit .buttons {
-	background-color: #d9dbe1;
-	text-align: center;
-	padding: 4px 0 4px 0;
-	margin-top: 10px;
-}
-
-.ticket-custom-fields.edit .buttons .loading-on {
-	display: none;
-}
-.ticket-custom-fields.edit .buttons .loading-on span {
-	background: transparent url(../../images/loading-small.gif) no-repeat center left;
-	line-height: 18px;
-	padding-left: 20px;
-	font-size: 11px;
-	text-align: center;
-}
-
 .ticket .person-overview {
 	float: left;
 }
@@ -1451,40 +1398,6 @@ table.list tr.info-line div.department {
 	display: block;
 }
 
-.contact-add-tpl {
-	background-color: #fff;
-	border: 1px solid #40AEF7;
-	padding: 5px 3px 6px 5px;
-	-webkit-border-radius: 4px;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-}
-
-.contact-add-tpl.im {
-
-}
-
-.trigger {
-	font-size: 7pt;
-	background-color: #D8E5ED;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
-	margin-left: 6px;
-	cursor: pointer;
-	float: right;
-}
-
-.contact-add-tpl .trigger.saving { display: none; }
-.contact-add-tpl.saving .trigger.saving { display: block; }
-.contact-add-tpl.saving .trigger.save { display: block; }
-.contact-add-tpl.saving .trigger.cancel { display: block; }
-
-.contact-add-tpl > .trigger:hover {
-	background-color: #BACDD9;
-}
-
-
 
 .hover-edit:hover {
 	background-color: #FAF7D2;
@@ -1845,4 +1758,65 @@ ul.sortable-list > li:hover {
 	background-color: #2a2b2a;
 	border: 1px solid #c5c5c5;
 	border-bottom: none;
+}
+
+
+
+
+
+
+.show-fields.edit {
+	margin-left: 12px;
+	margin-right: 12px;
+	border: 3px solid rgba(11, 11, 11, 0.5);
+	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
+	background-color: #fff;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.show-fields .field-wrap {
+	border-top: 1px solid #d9dbe1;
+	padding: 8px;
+}
+
+.show-fields .field-wrap:first-child {
+	border-top: none;
+	margin-top: 0;
+}
+
+.show-fields .field-wrap .label-wrap {
+	font-weight: bold;
+	width: 150px;
+	float: left;
+
+}
+
+.show-fields .field-wrap .field-input {
+	margin-left: 155px;
+}
+
+.show-fields .field-wrap .field-input input[type="text"],
+.show-fields .field-wrap .field-input textarea {
+	width: 90%;
+}
+
+.show-fields.edit .buttons {
+	background-color: #d9dbe1;
+	text-align: center;
+	padding: 4px 0 4px 0;
+	margin-top: 10px;
+}
+
+.show-fields.edit .buttons .loading-on {
+	display: none;
+}
+.show-fields.edit .buttons .loading-on span {
+	background: transparent url(../../images/loading-small.gif) no-repeat center left;
+	line-height: 18px;
+	padding-left: 20px;
+	font-size: 11px;
+	text-align: center;
 }
