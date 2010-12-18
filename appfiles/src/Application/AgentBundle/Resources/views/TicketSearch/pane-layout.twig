@@ -1,9 +1,9 @@
 {% block meta %}{% endblock %}
 <div class="alt-nav-wrap nosel">
 	<ul class="alt-nav">
-		<li title="Filters" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" class="active"><span>Filters</span></li>
-		<li title="Overview"><span>Overview</span></li>
-		<li title="Flagged"><span>Flagged</span></li>
+		<li title="Filters" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" class="{% if section == 'filters' %}active{%endif%}"><span>Filters</span></li>
+		<li title="Overview" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" class="{% if section == 'overview' %}active{%endif%}"><span>Overview</span></li>
+		<li title="Flagged" data-route="navpane:{% path 'agent_ticketsearch_flaggedpane' %}" class="{% if section == 'flagged' %}flagged{%endif%}"><span>Flagged</span></li>
 	</ul>
 </div>
 

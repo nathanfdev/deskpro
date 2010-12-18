@@ -18,6 +18,10 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 		
+		$('.alt-nav li', el).click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
+		
 		// Set up the poller
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-filter-counts'}],
@@ -40,12 +44,6 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('queue.view-activated', this.highlightActiveQueue.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('queue.view-deactivated', this.unhighlightActiveQueue.bind(this));
-		
-		// Toggling alt nav
-		var self = this;
-		$('.alt-nav li', this.wrapper).click(function() {
-			self.toggleAltNavTo($(this));
-		}).tipTip();
 		
 		this._initQueueReorder();
 	},

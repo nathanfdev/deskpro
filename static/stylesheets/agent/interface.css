@@ -718,6 +718,16 @@ table.list tr.info-line div.department {
 	border-bottom: 2px solid #dddddd;
 }
 
+.ticket .ticket-top .ticket-flag {
+	float: right;
+	display: block;
+	width: 25px;
+	height: 25px;
+	background-repeat: no-repeat;
+	background-position: center center;
+	cursor: pointer;
+}
+
 .ticket .ticket-top > h1 {
 	font-size: 13pt;
 	padding: 4px 4px 6px 4px;
@@ -1821,3 +1831,15 @@ ul.sortable-list > li:hover {
 	font-size: 11px;
 	text-align: center;
 }
+
+#pane_nav ul.nav-list > li.icon { background-repeat: no-repeat; background-position: center left; padding-left: 20px; }
+.icon { background-repeat: no-repeat; background-position: center left; padding-left: 20px; }
+
+.icon-flag-none { background-image: url(../../images/icons/bookmark.png); }
+.icon-flag-blue { background-image: url(../../images/icons/flag_blue.png); }
+.icon-flag-green { background-image: url(../../images/icons/flag_green.png); }
+.icon-flag-orange { background-image: url(../../images/icons/flag_orange.png); }
+.icon-flag-pink { background-image: url(../../images/icons/flag_pink.png); }
+.icon-flag-purple { background-image: url(../../images/icons/flag_purple.png); }
+.icon-flag-red { background-image: url(../../images/icons/flag_red.png); }
+.icon-flag-yellow { background-image: url(../../images/icons/flag_yellow.png); }

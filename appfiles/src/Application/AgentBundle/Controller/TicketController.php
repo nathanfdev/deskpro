@@ -57,38 +57,54 @@ class TicketController extends AbstractController
 			);
 		}
 
+		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
+			'ticket_id' => $ticket_id,
+			'person_id' => $this->person['id']
+		));
+
 		return $this->render('AgentBundle:Ticket:view.twig', array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,
 			'custom_fields_has_one_value' => $has_value,
+			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none'
 		));
 	}
 	
 
 
 	############################################################################
-	# ajax-save-uploads
+	# ajax-save-flagged
 	############################################################################
 
-	public function ajaxSaveUploads($ticket_id)
+	public function ajaxSaveFlaggedAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
-		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+		
+		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
+			'ticket_id' => $ticket_id,
+			'person_id' => $this->person['id']
+		));
+		if (!$ticket_flagged) {
+			$ticket_flagged = new Entity\TicketFlagged();
+			$ticket_flagged['ticket_id'] = $ticket_id;
+			$ticket_flagged['person_id'] = $this->person['id'];
+		}
 
-		$desc = App::getApi('filestorage')->createRandomPath();
-		$desc->writeFromFile($tmp_file);
+		$ticket_flagged['color'] = $this->in->getString('color');
 
-		$blob_id = $desc->getPath();
+		if ($ticket_flagged['color'] == 'none') {
+			if (!$ticket_flagged['id']) {
+				App::getOrm()->remove($ticket_flagged);
+			}
+		} else {
+			App::getOrm()->persist($ticket_flagged);
+		}
 
-		$attach = new Entity\Attachment();
-		$attach['blob_id'] = $blob_id;
-		$attach['object_type'] = 'ticket';
-		$attach['object_id'] = $ticket['id'];
-
-		App::getOrm()->persist($attach);
 		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
 	}
 
 

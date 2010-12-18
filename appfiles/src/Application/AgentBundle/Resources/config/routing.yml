@@ -98,10 +98,18 @@ agent_ticketsearch_filterspane:
   pattern: /ticket-search/filters-pane
   defaults: { _controller: AgentBundle:TicketSearch:filtersPane }
 
+agent_ticketsearch_flaggedpane:
+  pattern: /ticket-search/flagged-pane
+  defaults: { _controller: AgentBundle:TicketSearch:flaggedPane }
+
 agent_ticketsearch_runfilter:
   pattern: /ticket-search/filter/:filter_id
   defaults: { _controller: AgentBundle:TicketSearch:runFilter }
   requirements: { filter_id: "\d+" }
+
+agent_ticketsearch_runflag:
+  pattern: /ticket-search/flag/:flag
+  defaults: { _controller: AgentBundle:TicketSearch:runFlagged }
 
 agent_ticketqueues_list:
   pattern: /ticket-search/queues/list
@@ -139,4 +147,9 @@ agent_ticket_ajaxsavereply:
 agent_ticket_ajaxsaveoptions:
   pattern: /tickets/:ticket_id/ajax-save-options
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveOptions }
+  requirements: { ticket_id: "\d+" }
+
+agent_ticket_ajaxsaveflagged:
+  pattern: /tickets/:ticket_id/ajax-save-flagged
+  defaults: { _controller: AgentBundle:Ticket:ajaxSaveFlagged }
   requirements: { ticket_id: "\d+" }

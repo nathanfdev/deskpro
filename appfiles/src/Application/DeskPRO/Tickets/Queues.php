@@ -119,4 +119,43 @@ class Queues
 			->getRepository('DeskPRO:Ticket')
 			->getTicketsFromIds($page_ids);
 	}
+
+
+
+	/**
+	 * Get flagged tickets
+	 *
+	 * @param string $flag
+	 * @param Person $person
+	 * @param int $page
+	 * @param int $per_page
+	 * @return array
+	 */
+	public function getTicketsFromFlagged($flag, $person, $page = 1, $per_page = 25)
+	{
+		$result_ids = App::getDb()->fetchAllCol("
+			SELECT ticket_id
+			FROM tickets_flagged
+			WHERE person_id = ? AND color = ?
+		", array($person['id'], $flag));
+
+		if ($per_page) {
+			$result_ids = array_chunk($result_ids, $per_page);
+		} else {
+			$result_ids = array($result_ids);
+		}
+
+		// index is 0-based
+		$page--;
+
+		if (!isset($result_ids[$page])) {
+			return array();
+		}
+
+		$page_ids = $result_ids[$page];
+
+		return App::getOrm()
+			->getRepository('DeskPRO:Ticket')
+			->getTicketsFromIds($page_ids);
+	}
 }

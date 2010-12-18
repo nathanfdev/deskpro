@@ -26,6 +26,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initCustomFieldsEditor();
 		this._initTicketTabs();
 		this._initTicketAttach();
+		this._initFlagMenu();
 	},
 	
 	displayNewMessage: function(html) {
@@ -44,6 +45,50 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		if (this.popoutPinIcon.is('.on')) {
 			this.popout.fadeOut(200);
 		}
+	},
+	
+	//#################################################################
+	//# Ticket flag
+	//#################################################################
+	
+	
+	_initFlagMenu: function() {
+		var self = this;
+		var menu = new DeskPRO.UI.Menu({
+			triggerElement: $('.ticket-flag:first', this.wrapper),
+			menuElement: $('.ticket-flag-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				self._handleFlagMenuClick(info);
+			}
+		});
+	},
+	
+	_handleFlagMenuClick: function(info) {
+		var item = $(info.itemEl);
+		var flag = item.data('flag');
+		
+		var m = $('.ticket-flag:first', this.wrapper);
+		var classnames = m.attr('class');
+		classnames = classnames.replace(/\bicon\-flag\-.*\b/, '');
+		classnames += 'icon-flag-' + flag;
+		m.attr('class', classnames);
+		
+		DeskPRO_Window.startLoadingIndicator();
+		
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-flagged',
+			type: 'POST',
+			context: this,
+			data: { color: flag },
+			dataType: 'json',
+			success: function(data) {
+				this._handleFlagMenuClickSuccess(data);
+			}
+		});
+	},
+	
+	_handleFlagMenuClickSuccess: function(data) {
+		DeskPRO_Window.stopLoadingIndicator();
 	},
 	
 	//#################################################################

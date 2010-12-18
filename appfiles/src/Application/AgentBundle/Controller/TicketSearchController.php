@@ -74,6 +74,35 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
+	public function flaggedPaneAction()
+	{
+		return $this->render('AgentBundle:TicketSearch:pane-flagged.twig', array(
+
+		));
+	}
+
+	public function runFlaggedAction($flag)
+	{
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$tickets = App::getApi('tickets.queues')->getTicketsFromFlagged($flag, $page, 50);
+
+		$tpl = 'AgentBundle:TicketSearch:flagged-results.twig';
+		if ($this->in->getBool('partial')) {
+			$tpl = 'AgentBundle:TicketSearch:filter-results-list.twig';
+			if (!count($tickets)) {
+				return $this->createResponse('');
+			}
+		}
+
+		return $this->render($tpl, array(
+			'flag' => $flag,
+			'tickets' => $tickets,
+			'page' => $page
+		));
+	}
+
 	############################################################################
 	# /agent/ticket-search/queues/list                     agent_ticketqueues_list
 	############################################################################

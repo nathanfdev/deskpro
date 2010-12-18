@@ -1,0 +1,26 @@
+<script>
+pageMeta.title = 'Flagged Tickets';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFlagged';
+pageMeta.pageUrl = '{% path 'agent_ticketsearch_runflag' with ['flag': flag] %}?partial=1&page=$page';
+{% if flag %}
+	pageMeta.flag = '{{flag}}';
+{% endif %}
+</script>
+{% set section = 'flagged' %}
+
+<table class="list" cellspacing="0" width="100%">
+	<thead class="nosel">
+		<tr>
+			<th>User</th>
+			<th width="100">Department</th>
+		</tr>
+	</thead>
+	{% include 'AgentBundle:TicketSearch:filter-results-list.twig' %}
+</table>
+
+<div class="loading-more">
+	Loading more results ...
+</div>
+<div class="no-more-results">
+	There are no more results.
+</div>
