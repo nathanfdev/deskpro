@@ -81,12 +81,17 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 }
 
 #pane_list-resizer {
+	width: 1px;
+	background-color: #BBBBBB;
+	
+	/*
 	background: #FBF6FA;
 	background: -moz-linear-gradient(left, #FBF6FA 0%, #DDE5E7 100%);
 	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#FBF6FA), color-stop(100%,#DDE5E7));
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FBF6FA', endColorstr='#DDE5E7',GradientType=1 );
 	border-left: 1px solid #B4B5B9;
 	border-right: 1px solid #B4B5B9;
+	*/
 }
 
 #pane_list-resizer .ui-layout-toggler {
@@ -325,27 +330,25 @@ ul.tagit input[type="text"] {
 
 #window_header_nav .nav-right {
 	float: right;
-	margin-top: 15px;
 	margin-right: 10px;
+	margin-top: 15px;
 }
 
 #window_header_nav .create-box {
-	border-right: 1px solid #4b5579;
-	padding-right: 15px;
-	margin-right: 15px;
-	float: left;
+	text-align: center;
+	width: 150px;
 }
 
 #window_header_nav .create-box span {
 	
 	padding: 0 0 0 20px;
 	color: #fff;
-	font-size: 9pt;
+	font-size: 8pt;
 	font-weight: bold;
 	font-family: Arial, Verdana, sans-serif;
 	background: transparent url(../../images/icons/add.png) no-repeat center left;
 	
-	line-height: 40px;
+	line-height: 23px;
 	
 	text-shadow: 1px 2px 3px #000;
 	filter: dropshadow(color=#575757, offx=1, offy=1);
@@ -358,8 +361,6 @@ ul.tagit input[type="text"] {
 }
 
 #window_header_nav .search-box {
-	float: left;
-	line-height: 40px;
 }
 
 #window_header_nav .search-box input[type="text"] {

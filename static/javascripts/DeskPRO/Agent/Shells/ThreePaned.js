@@ -48,7 +48,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			west: {
 				paneSelector: '#pane_list',
 				size: '45%',
-				spacing_open: 7,
+				spacing_open: 1,
 				initClosed: west_is_closed,
 				slidable: false
 			},
@@ -75,7 +75,8 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		this.tabStrip = $('#pane_tabs');
 		// Mouseup because firefox doesnt respond to click
 		// for middle clicks
-		this.tabStrip.mouseup(this._tabStripClick.bind(this));
+		//this.tabStrip.mouseup(this._tabStripMiddleClick.bind(this));
+		this.tabStrip.single_double_click(this._tabStripClick.bind(this), (function(ev) { ev.isDbl = true; this._tabStripClick.call(this, ev) }).bind(this));
 		
 		this.tabManager = new DeskPRO.Agent.TabManager('#page');
 		var self = this;
@@ -213,7 +214,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		}
 		
 		// If the clicked thing was the close button, or if its a middle-click...
-		if (el_click.parent().is('.close') || event.which == 2) {
+		if (el_click.parent().is('.close') || event.which == 2 || event.isDbl) {
 			this.tabManager.removeTab(el.data('tab-id'));
 			return;
 		}

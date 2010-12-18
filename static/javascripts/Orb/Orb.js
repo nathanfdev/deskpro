@@ -282,3 +282,54 @@ Orb.resourceLoader = {
 		}
 	}
 };
+
+
+
+/**
+ * There is no way to attach a single click handler and a double-click handler.
+ * So to do it, we have to emulate double-click detection by setting a timeout.
+ * If a second click happens before the timeout, then we can run the double-click callback.
+ * If no second click happens and the timeout expires, then we can run the original.
+ *
+ * @param {Function} single_click_callback The single-click function
+ * @param {Function} double_click_callback The double-click function
+ * @param {Integer} timeout How long the user has to make a second-click (default 250)
+ */
+$.fn.single_double_click = function(single_click_callback, double_click_callback, timeout) {
+	timeout = timeout || 250;
+	return this.each(function() {
+	    var clicks = 0;
+		var self = this;
+
+		// ie triggers dblclick instead of click if they are fast
+	    if ($.browser.msie) {
+	        $(this).bind("dblclick", function(event) {
+	            clicks = 2;
+	            double_click_callback.call(self, event);
+	        });
+	        $(this).bind("click", function(event) {
+	            setTimeout(function() {
+	                if (clicks != 2) {
+	                    single_click_callback.call(self, event);
+	                }
+	                clicks = 0;
+	            }, timeout);
+	        });
+	
+	    } else {
+	        $(this).bind("click", function(event) {
+	            clicks++;
+	            if (clicks == 1) {
+	                setTimeout(function() {
+	                    if (clicks == 1) {
+	                        single_click_callback.call(self, event);
+	                    } else {
+	                        double_click_callback.call(self, event);
+	                    }
+	                    clicks = 0;
+	                }, timeout);
+	            }
+	        });
+	    }
+	});
+}
