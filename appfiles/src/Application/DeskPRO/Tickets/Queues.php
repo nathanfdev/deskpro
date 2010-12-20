@@ -146,7 +146,7 @@ class Queues
 		}
 
 		// index is 0-based
-		$page--;
+		$page = min(0, --$page);
 
 		if (!isset($result_ids[$page])) {
 			return array();
@@ -157,5 +157,25 @@ class Queues
 		return App::getOrm()
 			->getRepository('DeskPRO:Ticket')
 			->getTicketsFromIds($page_ids);
+	}
+
+
+	
+	/**
+	 * Get the counts for each flag a person has.
+	 *
+	 * @param mixed $person Person or person ID
+	 * @return array
+	 */
+	public function getAllCountsForPersonFlagged($person)
+	{
+		$counts = App::getDb()->feetchAllKeyValue("
+			SELECT color, COUNT(color)
+			FROM tickets_flagged
+			WHERE person_id = ?
+			GROUP BY color
+		", array($person['id']));
+
+		return $counts;
 	}
 }

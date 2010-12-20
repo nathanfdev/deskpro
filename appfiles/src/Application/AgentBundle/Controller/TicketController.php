@@ -95,7 +95,8 @@ class TicketController extends AbstractController
 		$ticket_flagged['color'] = $this->in->getString('color');
 
 		if ($ticket_flagged['color'] == 'none') {
-			if (!$ticket_flagged['id']) {
+			if (App::getOrm()->contains($ticket_flagged)) {
+				// If its an existing record, we wanna delete it
 				App::getOrm()->remove($ticket_flagged);
 			}
 		} else {

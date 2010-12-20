@@ -1,12 +1,14 @@
 {% block meta %}{% endblock %}
-<div class="alt-nav-wrap nosel">
-	<ul class="alt-nav">
-		<li title="Filters" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" class="{% if section == 'filters' %}active{%endif%}"><span>Filters</span></li>
-		<li title="Overview" data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" class="{% if section == 'overview' %}active{%endif%}"><span>Overview</span></li>
-		<li title="Flagged" data-route="navpane:{% path 'agent_ticketsearch_flaggedpane' %}" class="{% if section == 'flagged' %}flagged{%endif%}"><span>Flagged</span></li>
-	</ul>
-</div>
 
-<div class="main-nav">
-	{% block pane_content %}{% endblock %}
-</div>
+{% set filter_content %}{% block filter_content %}{% endblock %}{%endset%}
+{% set flagged_content %}{% block flagged_content %}{% endblock %}{%endset%}
+{% set overview_content %}{% block overview_content %}{% endblock %}{%endset%}
+
+<h1 data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" class="{% if filter_content %}active{%endif%}">Filters</h1>
+{% if filter_content %}<div class="main-nav">{{filter_content|raw}}</div>{%endif%}
+
+<h1 data-route="navpane:{% path 'agent_ticketsearch_flaggedpane' %}" class="{% if flagged_content %}active{%endif%}">Flagged</h1>
+{% if flagged_content %}<div class="main-nav">{{flagged_content|raw}}</div>{%endif%}
+
+<h1 data-route="navpane:{% path 'agent_ticketsearch_filterspane' %}" class="{% if overview_content %}active{%endif%}">Overview</h1>
+{% if overview_content %}<div class="main-nav">{{overview_content|raw}}</div>{%endif%}

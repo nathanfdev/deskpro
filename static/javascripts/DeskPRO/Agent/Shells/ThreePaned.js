@@ -40,7 +40,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		});
 		
 		var west_is_closed = false;
-		if ($(window).width() < 1350) {
+		if (screen.width && screen.width < 1350) {
 			west_is_closed = true;
 		}
 		

@@ -103,17 +103,16 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 
 <div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
 	<ul>
+		{% for message in ticket.messages %}
+			{% include 'AgentBundle:Ticket:ticket-message.twig' with ['message': message] %}
+		{% endfor %}
 		<li class="agent agent-reply">
 			<div class="box">
 				<div class="info">
 					<cite>New Reply</cite>
 				</div>
 				<div class="message">
-					<div class="placeholder">
-						<textarea>Write a new reply...</textarea>
-						<div class="editor-loading">Please wait a moment while the editor is loaded</div>
-					</div>
-					<div class="reply-area" style="display:none">
+					<div class="reply-area">
 						<div class="ticket-attach-upload-btn"><span>Add Attachments</span></div>
 						<ul class="ticket-newreply-attach-list">
 						</ul>
@@ -127,9 +126,6 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 				</div>
 			</div>
 		</li>
-		{% for message in ticket.messages|reverse %}
-			{% include 'AgentBundle:Ticket:ticket-message.twig' with ['message': message] %}
-		{% endfor %}
 	</ul>
 </div>
 

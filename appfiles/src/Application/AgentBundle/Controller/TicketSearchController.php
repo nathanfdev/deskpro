@@ -86,7 +86,7 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$tickets = App::getApi('tickets.queues')->getTicketsFromFlagged($flag, $page, 50);
+		$tickets = App::getApi('tickets.queues')->getTicketsFromFlagged($flag, $this->person, $page, 50);
 
 		$tpl = 'AgentBundle:TicketSearch:flagged-results.twig';
 		if ($this->in->getBool('partial')) {

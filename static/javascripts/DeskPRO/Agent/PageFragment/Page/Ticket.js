@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	displayNewMessage: function(html) {
-		var last_message = $('.messages > ul > li.message-item:first', this.wrapper);
+		var last_message = $('.messages > ul > li.agent-reply', this.wrapper);
 		var new_message = $(html).hide();
 		new_message.insertBefore(last_message).slideDown();
 	},
@@ -366,9 +366,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//#################################################################
 	
 	_initReplyEvents: function() {
-		$('.agent-reply .placeholder textarea', this.wrapper).focus((function() {
-			this.showEditor();
-		}).bind(this));
+		this.showEditor();
 	},
 	
 	showEditor: function() {
@@ -458,9 +456,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var replyArea = $('.agent-reply .reply-area', this.wrapper);
 		var ed = this.newReplyEditor;
 		$('.agent-reply .reply-area', wrapper).slideUp((function() {
-			$('.agent-reply .placeholder', wrapper).slideDown();
+			//$('.agent-reply .placeholder', wrapper).slideDown();
 			$('.buttons', replyArea).show();
-			$('.send-reply-load', replyArea).hide();
+			//$('.send-reply-load', replyArea).hide();
 			ed.html('');
 			
 			this.displayNewMessage(html);

@@ -7,6 +7,8 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 	cancelClickActivateQueue: false,
 	initPage: function(el) {
 		
+		this.parent(el);
+		
 		this.wrapper = el;
 		var self = this;
 		

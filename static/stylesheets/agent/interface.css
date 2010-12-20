@@ -514,48 +514,25 @@ ul.tagit input[type="text"] {
 	background-color: #DBDFE6;
 }
 
-#pane_nav > .alt-nav-wrap {
-	position: absolute;
-	bottom: 1px;
-	left: 0;
-	right: 0;
-	background-color: #ADB6C7;
-}
-
-#pane_nav > .alt-nav-wrap > ul.alt-nav {
-	height: 25px;
-	overflow: hidden;
-}
-
-#pane_nav > .alt-nav-wrap > ul.alt-nav > li {
-	float: left;
-	height: 25px;
-
+#pane_nav > h1 {
+	padding: 0 4px 0 6px;
+	line-height: 30px;
+	font-weight: bold;
+	font-size: 9pt;
 	cursor: pointer;
-	width: 35px;
-	background: transparent url(../../images/icons/folder_open_document.png) no-repeat center center;
-}
-
-#pane_nav > .alt-nav-wrap > ul.alt-nav > li > span {
-	display: none;
-	line-height: 25px;
-	padding-left: 25px;
-	padding-right: 5px;
-	font-size: 8pt;
-}
-
-#pane_nav > .alt-nav-wrap > ul.alt-nav > li.active {
-	width: auto;
-	background-position: 5px center;
-	background-color: #DBDFE6;
-	border-top: 1px solid #DBDFE6;
-}
-#pane_nav > .alt-nav-wrap > ul.alt-nav > li.active > span {
 	display: block;
+	background: #4F5268;
+	background: -moz-linear-gradient(top, #4F5268 0%, #31323F 100%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#4F5268), color-stop(100%,#31323F));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4F5268', endColorstr='#31323F',GradientType=0 );
+	color: #fff;
+	text-shadow: 0px 0px 1px #000;
+	
+	border-bottom: 1px solid #fff;
 }
 
 #pane_nav > .main-nav {
-	
+	margin-bottom: 25px;
 }
 
 #pane_nav > .main-nav.with-side-nav {
