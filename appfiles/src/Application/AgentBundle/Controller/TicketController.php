@@ -207,9 +207,10 @@ class TicketController extends AbstractController
 			fclose($fp);
 
 			$blob_id = $desc->getPath();
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
 			$attach = new Entity\TicketAttachment();
-			$attach['blob_id'] = $blob_id;
+			$attach['blob'] = $blob;
 			$attach['person'] = $this->person;
 			
 			$message->addAttachment($attach);
