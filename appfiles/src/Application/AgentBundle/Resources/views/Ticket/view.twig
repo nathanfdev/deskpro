@@ -8,15 +8,14 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 <div class="ticket">
 
 <div class="ticket-top">
-	<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}"></span>
-	<h1>{{ticket.subject}}</h1>
+	<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
+	<h1>
+		<span class="ticket-opt-btn ticket-options-department-btn department"><span class="val">{{ticket.department.title}}</span> &rsaquo;</span>
+		{{ticket.subject}}
+	</h1>
 
 	<div class="ticket-info">
 		<div class="edit-btn ticket-info-edit-btn"></div>
-		<dl class="ticket-opt-btn ticket-options-department-btn">
-			<dt>Department</dt>
-			<dd>{{ticket.department.title}}</dd>
-		</dl>
 		<dl class="ticket-opt-btn ticket-options-category-btn">
 			<dt>Category</dt>
 			<dd>{{ticket.category.title}}</dd>

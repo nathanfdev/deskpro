@@ -713,6 +713,15 @@ table.list tr.info-line div.department {
 	filter: dropshadow(color=#ffffff, offx=, offy=1);
 }
 
+.ticket .ticket-top > h1 > .department {
+	font-size: 10pt;
+	line-height: 13pt;
+	color: #485161;
+	
+	text-shadow: 1px 2px 2px #ffffff;
+	filter: dropshadow(color=#ffffff, offx=, offy=1);
+}
+
 .ticket .ticket-top ul.ticket-tabs {
 	margin-top: 10px;
 	height: 21px;

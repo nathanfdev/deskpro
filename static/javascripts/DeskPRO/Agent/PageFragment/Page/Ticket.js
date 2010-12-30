@@ -68,11 +68,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var flag = item.data('flag');
 		
 		var m = $('.ticket-flag:first', this.wrapper);
-		var classnames = m.attr('class');
-		classnames = classnames.replace(/\bicon\-flag\-.*\b/, '');
-		classnames += 'icon-flag-' + flag;
-		m.attr('class', classnames);
 		
+		var old_flag = m.data('flag');
+		
+		m.removeClass('icon-flag-'+old_flag);
+		m.addClass('icon-flag-'+flag);
+		m.data('flag', flag);
+
 		DeskPRO_Window.startLoadingIndicator();
 		
 		$.ajax({
@@ -82,13 +84,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			data: { color: flag },
 			dataType: 'json',
 			success: function(data) {
-				this._handleFlagMenuClickSuccess(data);
+				this._handleFlagMenuClickSuccess(old_flag, flag);
 			}
 		});
 	},
 	
-	_handleFlagMenuClickSuccess: function(data) {
+	_handleFlagMenuClickSuccess: function(old_flag, new_flag) {
 		DeskPRO_Window.stopLoadingIndicator();
+		
+		DeskPRO_Window.getMessageBroker().sendMessage('queue-flagged.flag-changed', {
+			old_flag: old_flag,
+			new_flag: new_flag
+		});
 	},
 	
 	//#################################################################
@@ -212,7 +219,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var itemId = $(info.itemEl).data('option-id');
 		
 		// Replace the value of in the page
-		var dd = $('.ticket-options-'+opt+'-btn dd').html(itemName);
+		var val_el = $('.ticket-options-'+opt+'-btn dd, .ticket-options-'+opt+'-btn .val', this.wrapper);		
+		val_el.html(itemName);
 		
 		// Update the value in teh DB
 		DeskPRO_Window.startLoadingIndicator();
