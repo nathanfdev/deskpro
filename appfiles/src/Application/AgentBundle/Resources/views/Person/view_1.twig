@@ -4,7 +4,7 @@
 {% endblock %}
 {% block content %}
 
-{% set form_url %}{% path 'agent_people_view' with ['person_id': person.id] %}{% endset %}
+{% set form_url %}{{ path('agent_people_view', {'person_id': person.id}) }}{% endset %}
 {{form.renderFormTag(['action': form_url])|raw}}
 {{form.renderHiddenTags()|raw}}
 

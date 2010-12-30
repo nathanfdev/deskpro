@@ -8,7 +8,7 @@
 	</thead>
 	<tbody>
 		{% for person in people_list %}
-			<tr data-route="person:{% path 'agent_people_view' with {'person_id': person.id} %}">
+			<tr data-route="person:{{ path('agent_people_view', {'person_id': person.id}) }}">
 				<td>{{person.display_name}}</td>
 				<td>{{person.primary_email.email|default('No email')}}</td>
 				<td>Labels...</td>

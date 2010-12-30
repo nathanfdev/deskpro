@@ -42,7 +42,7 @@
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js' %}"></script>
 
 	<script type="text/javascript">
-		var BASE_URL = '{% path 'index' %}';
+		var BASE_URL = '{{ path('index') }}';
 	</script>
 
 	{% block extra_head %}{%endblock%}
@@ -55,18 +55,18 @@
 				<ul class="wat-cf">
 					<li>
 						<span style="color: #fff; ">Hello, {{person.display_name}} &middot;</span>
-						<a class="logout" href="{% path 'user_logout' %}">Logout</a>
+						<a class="logout" href="{{ path('user_logout') }}">Logout</a>
 					</li>
 				</ul>
 			</div>
 			<div id="main-navigation">
 				<ul class="wat-cf">
-					<li class="first"><a href="{% path 'admin_customdefpeople' %}">People Fields</a></li>
-					<li class="first"><a href="{% path 'admin_customdeftickets' %}">Ticket Fields</a></li>
-					<li class="first"><a href="{% path 'admin_api' %}">API Keys</a></li>
-					<li class="first"><a href="{% path 'admin_usersources' %}">Usersources</a></li>
-					<li class="first"><a href="{% path 'admin_langs' %}">Languages</a></li>
-					<li class="first"><a href="{% path 'admin_styles' %}">Styles</a></li>
+					<li class="first"><a href="{{ path('admin_customdefpeople') }}">People Fields</a></li>
+					<li class="first"><a href="{{ path('admin_customdeftickets') }}">Ticket Fields</a></li>
+					<li class="first"><a href="{{ path('admin_api') }}">API Keys</a></li>
+					<li class="first"><a href="{{ path('admin_usersources') }}">Usersources</a></li>
+					<li class="first"><a href="{{ path('admin_langs') }}">Languages</a></li>
+					<li class="first"><a href="{{ path('admin_styles') }}">Styles</a></li>
 				</ul>
 			</div>
 		</div>

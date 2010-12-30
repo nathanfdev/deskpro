@@ -15,7 +15,7 @@
 							<td width="10"><!--TODO: Icon--></td>
 							<td>{{phrase_name}}</td>
 							<td>{{phrase}}</td>
-							<td width="50" style="text-align: right;"><a href="{% path 'admin_langs_editphrase' with {'lang_id': lang.id, 'phrase_name': phrase_name} %}">Edit</a>
+							<td width="50" style="text-align: right;"><a href="{{ path('admin_langs_editphrase', {'lang_id': lang.id, 'phrase_name': phrase_name}) }}">Edit</a>
 						</tr>
 					{% endfor %}
 				</table>

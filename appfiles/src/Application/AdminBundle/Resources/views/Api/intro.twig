@@ -20,7 +20,7 @@
 				You currently have no API keys. Before you are able to integrate your apps into your helpdesk,
 				you'll need to create a new API key.
 			</p>
-			<form action="{% path 'admin_api_newkey' %}" method="get">
+			<form action="{{ path('admin_api_newkey') }}" method="get">
 				<div class="group navform wat-cf">
 					<button class="button" type="submit">
 						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Create a new API Key

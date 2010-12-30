@@ -1,4 +1,4 @@
 Log in using your Twitter account.<br />
-<form action="{% path 'user_login_authenticate' with {'usersource_id': usersource.id} %}" method="post">
+<form action="{{ path('user_login_authenticate', {'usersource_id': usersource.id}) }}" method="post">
 	<input type="image" src="http://a0.twimg.com/images/dev/buttons/sign-in-with-twitter-l.png" alt="Log in with Twitter" style="cursor: pointer" />
 </form>

@@ -5,7 +5,7 @@
 $(document).ready(function() {
 	var inline_edit = new DeskPRO.Form.InlineEdit({
 		ajax: {
-			url: '{% path 'agent_people_ajaxsave' with {'person_id': person.id|default(0)} %}'
+			url: '{{ path('agent_people_ajaxsave', {'person_id': person.id|default(0)}) }}'
 		}
 	});
 
@@ -23,8 +23,8 @@ $(document).ready(function() {
 {% endblock %}
 {% block content %}
 
-{% set form_url %}{% path 'agent_people_view' with {'person_id': person.id} %}{% endset %}
-{{form.renderFormTag({'action': form_url})|raw}}
+{% set form_url %}{{ path('agent_people_view', {'person_id': person.id}) }}{% endset %}
+{{form.renderFormTag(['action': form_url])|raw}}
 {{form.renderHiddenTags()|raw}}
 
 <div class="block" id="block-tables">

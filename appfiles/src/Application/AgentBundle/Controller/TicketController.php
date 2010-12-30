@@ -32,6 +32,7 @@ class TicketController extends AbstractController
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		$person_inner_tab = $this->forward('AgentBundle:Person:view', array('person_id' => $ticket['person_id']))->getContent();
+		//$person_inner_tab = '123';
 
 		// Custom fields
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();

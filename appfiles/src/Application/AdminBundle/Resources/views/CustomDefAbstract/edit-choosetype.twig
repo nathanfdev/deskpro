@@ -5,7 +5,7 @@
 	<div class="content">
 		<h2 class="title">Field Types</h2>
 		<div class="inner">
-			<form action="{% path route_basename~'edit' with {'field_id': 0} %}" class="form">
+			<form action="{{ path(route_basename~'edit', ['field_id': 0]) }}" class="form">
 				<table class="table">
 					<tr>
 						<th class="first" width="10">&nbsp;</th>

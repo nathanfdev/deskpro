@@ -28,7 +28,7 @@
 				customizing your sites appearance. Don't worry, you can revert changes at any time if you make a mistake and
 				the style won't be publicly visible until you choose to enable it.
 			</p>
-			<form action="{% path 'admin_styles_newstyle' %}" method="get">
+			<form action="{{ path('admin_styles_newstyle') }}" method="get">
 				<div class="group navform wat-cf">
 					<button class="button" type="submit">
 						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Create a new style

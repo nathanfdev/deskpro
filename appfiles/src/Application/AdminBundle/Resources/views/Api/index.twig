@@ -4,7 +4,7 @@
 <div class="block" id="block-tables">
 	<div class="content">
 		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{% path 'admin_api_newkey' %}" class="button">
+			<a href="{{ path('admin_api_newkey') }}" class="button">
 				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New API Key
 			</a>
 		</div>
@@ -23,8 +23,8 @@
 							{% if apikey.note %}<br />{{apikey.note}}{% endif %}
 						</td>
 						<td class="last">
-							<a href="{% path 'admin_api_infokey' with {'apikey': apikey.id} %}">Info</a> &middot;
-							<a href="{% path 'admin_api_editkey' with {'apikey': apikey.id} %}">Edit</a>
+							<a href="{{ path('admin_api_infokey', {'apikey': apikey.id}) }}">Info</a> &middot;
+							<a href="{{ path('admin_api_editkey', {'apikey': apikey.id}) }}">Edit</a>
 						</td>
 					</tr>
 					{% endfor %}

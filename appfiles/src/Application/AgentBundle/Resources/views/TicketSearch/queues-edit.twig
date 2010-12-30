@@ -34,7 +34,7 @@ $(document).ready(function() {
 });
 </script>
 
-<form action="{% path 'agent_ticketqueues_edit' with {'queue_id': queue.id|default(0)} %}" method="POST">
+<form action="{{ path('agent_ticketqueues_edit', {'queue_id': queue.id|default(0)}) }}" method="POST">
 
 <div class="block"><div class="content">
 	<small>Title</small><br />
@@ -56,7 +56,7 @@ $(document).ready(function() {
 				<div class="remove">-</div>
 			</div>
 		</div>
-		{% include 'AgentBundle:TicketSearch:termbuilder-html.twig' with {'term_options': term_options} %}
+		{% include 'AgentBundle:TicketSearch:termbuilder-html.twig' with ['term_options': term_options] %}
 	</div>
 </div></div>
 

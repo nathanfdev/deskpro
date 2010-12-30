@@ -14,7 +14,7 @@
 						<tr>
 							<td width="10"><!--TODO: Icon--></td>
 							<td>{{template}}</td>
-							<td width="50" style="text-align: right;"><a href="{% path 'admin_styles_edittemplate' with {'style_id': style.id, 'template_name': template} %}">Edit</a>
+							<td width="50" style="text-align: right;"><a href="{{ path('admin_styles_edittemplate', {'style_id': style.id, 'template_name': template}) }}">Edit</a>
 						</tr>
 					{% endfor %}
 				</table>

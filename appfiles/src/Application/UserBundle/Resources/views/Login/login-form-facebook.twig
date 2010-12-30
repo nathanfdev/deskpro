@@ -1,4 +1,4 @@
 Log in using your Facebook account.<br />
-<form action="{% path 'user_login_authenticate' with {'usersource_id': usersource.id} %}" method="post">
+<form action="{{ path('user_login_authenticate', {'usersource_id': usersource.id}) }}" method="post">
 	<input type="image" src="http://developers.facebook.com/images/devsite/login-button.png" alt="Log in with Facebook" style="cursor: pointer" />
 </form>

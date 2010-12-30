@@ -1,12 +1,12 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
-	<tr class="line line-1 subject-line" data-route="ticket:{% path 'agent_ticket_view' with {'ticket_id': ticket.id} %}">
+	<tr class="line line-1 subject-line" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
 		<td colspan="100">
 			<span style="float:right">{{ticket.date_created|date('Y-m-d')}}</span>
 			<span class="subject">{{ticket.subject}}</span>
 		</td>
 	</tr>
-	<tr class="line line-2 info-line" data-route="ticket:{% path 'agent_ticket_view' with {'ticket_id': ticket.id} %}">
+	<tr class="line line-2 info-line" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
 		<td>
 			<div class="by">by <cite>{{ticket.person.name}}</cite></div>
 		</td>

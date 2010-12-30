@@ -4,7 +4,7 @@
 <div class="block" id="block-tables">
 	<div class="content">
 		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{% path 'admin_styles_newstyle' %}" class="button">
+			<a href="{{ path('admin_styles_newstyle') }}" class="button">
 				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New Style
 			</a>
 		</div>
@@ -27,9 +27,9 @@
 							{{style.title}}
 						</td>
 						<td class="last">
-							<a href="{% path 'admin_styles_templates' with {'style_id': style.id} %}">Templates</a> &middot;
-							<a href="{% path 'admin_styles_resources' with {'style_id': style.id} %}">Resources</a> &middot;
-							<a href="{% path 'admin_styles_editstyle' with {'style_id': style.id} %}">Properties</a>
+							<a href="{{ path('admin_styles_templates', {'style_id': style.id}) }}">Templates</a> &middot;
+							<a href="{{ path('admin_styles_resources', {'style_id': style.id}) }}">Resources</a> &middot;
+							<a href="{{ path('admin_styles_editstyle', {'style_id': style.id}) }}">Properties</a>
 						</td>
 					</tr>
 					{% endfor %}
