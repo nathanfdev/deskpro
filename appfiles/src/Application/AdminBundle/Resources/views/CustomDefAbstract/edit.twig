@@ -1,9 +1,9 @@
 {% extends 'AdminBundle::layout.twig' %}
 {% block content %}
 
-{% set form_url %}{% path route_basename~'edit' with ['field_id': field.id|default(0)] %}{% endset %}
+{% set form_url %}{% path route_basename~'edit' with {'field_id': field.id|default(0)} %}{% endset %}
 
-{{form.renderFormTag(['action': form_url, 'method':'POST'])|raw}}
+{{form.renderFormTag({'action': form_url, 'method':'POST'})|raw}}
 {{form.renderHiddenTags()|raw}}
 
 {% block edit_properties %}

@@ -7,7 +7,7 @@
 	<h1>Defined Queues</h1>
 	<ul>
 		{% for queue in queues %}
-			<li><a href="{% path 'agent_ticketqueues_edit' with ['queue_id': queue.id] %}">{{queue.title}}</a></li>
+			<li><a href="{% path 'agent_ticketqueues_edit' with {'queue_id': queue.id} %}">{{queue.title}}</a></li>
 		{% endfor %}
 	</ul>
 {% endif %}

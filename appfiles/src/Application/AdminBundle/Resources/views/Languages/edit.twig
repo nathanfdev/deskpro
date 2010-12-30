@@ -5,10 +5,10 @@
 	<div class="content">
 		<h2 class="title">{% if lang.id %}Edit Language{% else %}Create Language{% endif %}</h2>
 		<div class="inner">
-			<form action="{% path 'admin_langs_editlang' with ['lang_id': lang.id|default(0)] %}" method="post" class="form">
+			<form action="{% path 'admin_langs_editlang' with {'lang_id': lang.id|default(0)} %}" method="post" class="form">
 				<div class="group">
 					<label class="label">Title</label>
-					{{form.get('title').render(['class': 'text_field'])|safe}}
+					{{form.get('title').render({'class': 'text_field'})|safe}}
 				</div>
 				{% if form.has('parent_id') %}
 					<div class="group">
@@ -19,12 +19,12 @@
 				{% endif %}
 				<div class="group">
 					<label class="label">Locale</label>
-					{{form.get('locale').render(['class': 'text_field', 'size': 6])|safe}}
+					{{form.get('locale').render({'class': 'text_field', 'size': 6})|safe}}
 					<span class="description">The locale code used with this language. The locale is a two letter language code and two letter country code. For example: en_US, en_UK, fr_FR.</span>
 				</div>
 				<div class="group">
 					<label class="label">Note</label>
-					{{form.get('note').render(['rows': 10, 'cols': 50, 'class': 'text_area'])|safe}}
+					{{form.get('note').render({'rows': 10, 'cols': 50, 'class': 'text_area'})|safe}}
 					<span class="description">Enter any notes about this language. Notes are only displayed to administrators.</span>
 				</div>
 				<div class="group navform wat-cf">

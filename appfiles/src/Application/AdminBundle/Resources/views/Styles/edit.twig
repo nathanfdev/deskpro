@@ -5,11 +5,11 @@
 	<div class="content">
 		<h2 class="title">{% if style.id %}Edit Style{% else %}Create Style{% endif %}</h2>
 		<div class="inner">
-			<form action="{% path 'admin_styles_editstyle' with ['style_id': style.id|default(0)] %}" method="post" class="form">
+			<form action="{% path 'admin_styles_editstyle' with {'style_id': style.id|default(0)} %}" method="post" class="form">
 				<input type="hidden" name="process" value="1" />
 				<div class="group">
 					<label class="label">Title</label>
-					{{form.get('title').render(['class': 'text_field'])|safe}}
+					{{form.get('title').render({'class': 'text_field'})|safe}}
 				</div>
 				{% if form.has('parent_id') %}
 					<div class="group">
@@ -20,7 +20,7 @@
 				{% endif %}
 				<div class="group">
 					<label class="label">Note</label>
-					{{form.get('note').render(['rows': 10, 'cols': 50, 'class': 'text_area'])|safe}}
+					{{form.get('note').render({'rows': 10, 'cols': 50, 'class': 'text_area'})|safe}}
 					<span class="description">Enter any notes about this style. Notes are only displayed to administrators.</span>
 				</div>
 				<div class="group navform wat-cf">

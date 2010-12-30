@@ -5,7 +5,7 @@
 	<div class="content">
 		<h2 class="title">{{phrase_name}}</h2>
 		<div class="inner">
-			<form action="{% path 'admin_langs_editphrase' with ['lang_id': lang.id, 'phrase_name': phrase_name] %}" method="get" class="form">
+			<form action="{% path 'admin_langs_editphrase' with {'lang_id': lang.id, 'phrase_name': phrase_name} %}" method="get" class="form">
 				<div class="group">
 					<label class="label">Contents</label>
 					<textarea class="text_area" name="phrase_content" rows="25" cols="80">{{phrase_content}}</textarea>
@@ -14,7 +14,7 @@
 					<button class="button" type="submit">
 						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Save
 					</button>
-					<a href="{% path 'admin_styles_templates' with ['style_id': style.id] %}" class="button">
+					<a href="{% path 'admin_styles_templates' with {'style_id': style.id} %}" class="button">
 						<img src="{% asset 'images/icons/cross.png' %}" alt="Cancel"/> Cancel
 					</a>
 				</div>

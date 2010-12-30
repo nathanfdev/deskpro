@@ -23,8 +23,8 @@
 							{% if apikey.note %}<br />{{apikey.note}}{% endif %}
 						</td>
 						<td class="last">
-							<a href="{% path 'admin_api_infokey' with ['apikey': apikey.id] %}">Info</a> &middot;
-							<a href="{% path 'admin_api_editkey' with ['apikey': apikey.id] %}">Edit</a>
+							<a href="{% path 'admin_api_infokey' with {'apikey': apikey.id} %}">Info</a> &middot;
+							<a href="{% path 'admin_api_editkey' with {'apikey': apikey.id} %}">Edit</a>
 						</td>
 					</tr>
 					{% endfor %}

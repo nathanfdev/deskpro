@@ -25,8 +25,8 @@
 							{% if usersource.note %}<br />{{usersource.note}}{% endif %}
 						</td>
 						<td class="last">
-							<a href="{% path 'admin_usersources_info' with ['usersource_id': usersource.id] %}">Info</a> &middot;
-							<a href="{% path 'admin_usersources_edit' with ['usersource_id': usersource.id] %}">Edit</a>
+							<a href="{% path 'admin_usersources_info' with {'usersource_id': usersource.id} %}">Info</a> &middot;
+							<a href="{% path 'admin_usersources_edit' with {'usersource_id': usersource.id} %}">Edit</a>
 						</td>
 					</tr>
 					{% endfor %}

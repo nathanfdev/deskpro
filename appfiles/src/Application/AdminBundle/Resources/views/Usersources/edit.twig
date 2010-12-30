@@ -1,9 +1,9 @@
 {% extends 'AdminBundle::layout.twig' %}
 {% block content %}
 
-{% set form_url %}{% path 'admin_usersources_edit' with ['usersource_id':usersource.id|default(0)] %}{% endset %}
+{% set form_url %}{% path 'admin_usersources_edit' with {'usersource_id':usersource.id|default(0)} %}{% endset %}
 
-{{form.renderFormTag(['action': form_url, 'method':'POST'])|raw}}
+{{form.renderFormTag({'action': form_url, 'method':'POST'})|raw}}
 {{form.renderHiddenTags()|raw}}
 
 <div class="block" id="block-tables">

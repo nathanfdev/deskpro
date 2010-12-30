@@ -7,7 +7,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.NavPane.TicketFlagged';
 {% block flagged_content %}
 <ul class="nav-list flagged-list nosel">
 	{% for color in ['blue','green','orange','pink','purple','red','yellow'] %}
-		<li class="icon icon-flag-{{color}}" data-flat="{{color}}" data-route="listpane:{% path 'agent_ticketsearch_runflag' with ['flag': color] %}">
+		<li class="icon icon-flag-{{color}}" data-flat="{{color}}" data-route="listpane:{% path 'agent_ticketsearch_runflag' with {'flag': color} %}">
 			<span class="ticket-flag ticket-flag-count-{{color}}">-</span>
 			{{color|capitalize}}
 		</li>

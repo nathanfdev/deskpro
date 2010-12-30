@@ -51,7 +51,7 @@
 	</script>
 </head>
 <body>
-<input id="load_this" type="hidden" data-route="person:{% path 'agent_people_view' with ['person_id': person.id] %}" />
+<input id="load_this" type="hidden" data-route="person:{% path 'agent_people_view' with {'person_id': person.id} %}" />
 
 <div id="window_head" class="ui-layout-north">
 	<div id="window_head_top">
