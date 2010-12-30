@@ -73,7 +73,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * @var string
 	 * @orm:Column(name="input", type="text")
 	 */
-	protected $input = 0;
+	protected $input = '';
 
 	
 
