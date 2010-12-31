@@ -18,6 +18,10 @@ agent_show_blob:
   pattern: /misc/show-blob/:blob_id
   defaults: { _controller: AgentBundle:Misc:showBlob }
 
+agent_ajax_save_prefs:
+  pattern: /misc/ajax-save-prefs
+  defaults: { _controller: AgentBundle:Misc:ajaxSavePrefs }
+
 ################################################################################
 # People
 ################################################################################

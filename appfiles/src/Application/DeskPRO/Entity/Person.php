@@ -202,6 +202,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $usergroups;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="PersonPref", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 */
+	protected $preferences;
+
+	/**
 	 * Usersource associations
 	 *
 	 * @var Doctrine\Common\Collections\ArrayCollection
@@ -254,6 +260,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_usergroup_ids = null;
 
+	/**
+	 * An array of name=>value for loaded preferences. These are not obejcts.
+	 * @var array
+	 */
+	protected $_pref_values = array();
+
 
 
 	public function __construct()
@@ -264,11 +276,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->salt = Strings::random(40);
 
-		$this->emails = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->usergroups = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->usersource_assoc = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->emails              = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->usergroups          = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->usersource_assoc    = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->personscraper_assoc = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->contact_data = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 
@@ -352,6 +365,54 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	
+	/**
+	 * Add a preference value to this user.
+	 * 
+	 * @param Entity\PersonPref $pref
+	 */
+	public function addPreference(PersonPref $pref)
+	{
+		$this->preferences->add($pref);
+		$pref['person'] = $this;
+	}
+
+	
+
+	/**
+	 * Get the value of a preference as it's currently stored.
+	 *
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getPref($name)
+	{
+		if (!isset($this->_pref_values[$name])) {
+			$this->_pref_values[$name] = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId($name, $this->id);
+		}
+
+		return $this->_pref_values[$name];
+	}
+
+	
+
+	/**
+	 * Load a group of user prefs
+	 * @param string $pref_group
+	 * @return array
+	 */
+	public function loadPrefGroup($pref_group)
+	{
+		$group = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefgroupForPersonId($pref_group, $this->id, false);
+		$this->_pref_values = array_merge(
+			$this->_pref_values,
+			$group
+		);
+
+		return $group;
+	}
+
+	
 
 	/**
 	 * Get the value of a permission

@@ -98,16 +98,20 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 	},
 	
 	saveQueueOrder: function() {
-		var order = [];
+		var data = [];
 		
 		$('.main-nav li', this.wrapper).each(function() {
 			var id = $(this).data('queue-id');
 			if (id) {
-				order.push(id);
+				data.push({ name: 'prefs[agent.ui.ticket-queues-order][]', value: id });
 			}
 		});
 		
-		order = order.join(',');
-		$.cookie('dpa_queue_order', order);
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'agent/misc/ajax-save-prefs',
+			data: data
+		});
 	}
 });

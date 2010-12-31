@@ -30,8 +30,8 @@ class TicketSearchController extends AbstractController
 	{
 		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
-		if ($this->in->getStringFromCookie('dpa_queue_order')) {
-			$order = explode(',', $this->in->getStringFromCookie('dpa_queue_order'));
+		$order = $this->person->getPref('agent.ui.ticket-queues-order');
+		if ($order) {
 			$queues_unordered = $queues;
 			$queues = array();
 

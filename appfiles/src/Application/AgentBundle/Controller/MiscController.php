@@ -3,11 +3,34 @@
 namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Util;
 
 class MiscController extends AbstractController
 {
+	public function ajaxSavePrefsAction()
+	{
+		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'str_simple') as $pref_name => $value)
+		{
+			$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
+			if (!$pref) {
+				$pref = new Entity\PersonPref();
+				$pref['name'] = $pref_name;
+				$this->person->addPreference($pref);
+			}
+
+			$pref['value'] = $value;
+			App::getOrm()->persist($pref);
+		}
+
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
 	public function showBlobAction($blob_id)
 	{
 		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
