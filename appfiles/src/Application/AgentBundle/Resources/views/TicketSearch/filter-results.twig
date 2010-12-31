@@ -16,25 +16,38 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': queue_
 	<div style="margin-right: 115px;">
 		<strong>Display Elements</strong><br />
 		<ul class="sortable-list">
-			<li><input type="checkbox" name="display_fields[person]" /> Contact Name</li>
-			<li><input type="checkbox" name="display_fields[department]" /> Department</li>
-			<li><input type="checkbox" name="display_fields[product]" /> Category</li>
-			<li><input type="checkbox" name="display_fields[product]" /> Product</li>
-			<li><input type="checkbox" name="display_fields[organization]" /> Organization Name</li>
-			<li><input type="checkbox" name="display_fields[agent]" /> Agent Name</li>
+			<li data-field="person"><input type="checkbox" name="person" /> Contact Name</li>
+			<li data-field="department"><input type="checkbox" name="department" /> Department</li>
+			<li data-field="category"><input type="checkbox" name="category" /> Category</li>
+			<li data-field="product"><input type="checkbox" name="product" /> Product</li>
+			<li data-field="organization"><input type="checkbox" name="organization" /> Organization Name</li>
+			<li data-field="agent"><input type="checkbox" name="agent" /> Agent Name</li>
 		</ul>
 	</div>
 	<div class="buttons">
-		<button class="save dp-button">Save</button>
-		<button class="cancel dp-button gray overlay-close-trigger">Cancel</button>
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">Save</button>
+			<button class="close-trigger dp-button gray small">Cancel</button>
+		</div>
+		<div class="loading-on">
+			<span>Saving ...</span>
+		</div>
 	</div>
 </div>
 
 <table class="list" cellspacing="0" width="100%">
 	<thead class="display-options-trigger nosel">
 		<tr>
-			<th>User</th>
-			<th width="100">Department</th>
+			{% for field in display_fields %}
+				{% if field == 'person' %}<th data-field="person">User</th>
+				{% elseif field == 'department' %}<th data-field="department">Department</th>
+				{% elseif field == 'category' %}<th data-field="category">Category</th>
+				{% elseif field == 'product' %}<th data-field="product">Product</th>
+				{% elseif field == 'product' %}<th data-field="product">Product</th>
+				{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
+				{% elseif field == 'agent' %}<th data-field="agent">Agent</th>
+				{% endif %}
+			{% endfor %}
 		</tr>
 	</thead>
 	{% include 'AgentBundle:TicketSearch:filter-results-list.twig' %}

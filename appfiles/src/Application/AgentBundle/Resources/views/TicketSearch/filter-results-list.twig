@@ -7,12 +7,57 @@
 		</td>
 	</tr>
 	<tr class="line line-2 info-line" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
-		<td>
-			<div class="by">by <cite>{{ticket.person.name}}</cite></div>
-		</td>
-		<td>
-			<div class="department">{{ticket.department.title}}</div>
-		</td>
+		{% for field in display_fields %}
+			{% if field == 'person' %}
+				<td>
+					<div class="by">by <cite>{{ticket.person.name}}</cite></div>
+				</td>
+			{% elseif field == 'department' %}
+				<td>
+					<div class="department">{{ticket.department.title}}</div>
+				</td>
+			{% elseif field == 'category' %}
+				<td>
+					<div class="category">
+						{% if ticket.category %}
+							{{ticket.category.title}}
+						{% else %}
+							None
+						{% endif %}
+					</div>
+				</td>
+			{% elseif field == 'product' %}
+				<td>
+					<div class="product">
+						{% if ticket.product %}
+							{{ticket.product.title}}
+						{% else %}
+							None
+						{% endif %}
+					</div>
+				</td>
+			{% elseif field == 'organization' %}
+				<td>
+					<div class="organization">
+						{% if ticket.organization %}
+							{{ticket.organization.name}}
+						{% else %}
+							None
+						{% endif %}
+					</div>
+				</td>
+			{% elseif field == 'agent' %}
+				<td>
+					<div class="agent">
+						{% if ticket.agent %}
+							{{ticket.agent.display_name}}
+						{% else %}
+							Unassigned
+						{% endif %}
+					</div>
+				</td>
+			{% endif %}
+		{% endfor %}
 	</tr>
 {% endfor %}
 </tbody>

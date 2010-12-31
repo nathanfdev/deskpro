@@ -676,7 +676,7 @@ table.list tr.info-line div.by cite {
 }
 
 table.list tr.info-line div.department {
-	float: right;
+
 }
 
 
@@ -1807,10 +1807,10 @@ ul.sortable-list > li:hover {
 	margin-top: 10px;
 }
 
-.show-fields.edit .buttons .loading-on {
+.buttons .loading-on {
 	display: none;
 }
-.show-fields.edit .buttons .loading-on span {
+.buttons .loading-on span {
 	background: transparent url(../../images/loading-small.gif) no-repeat center left;
 	line-height: 18px;
 	padding-left: 20px;

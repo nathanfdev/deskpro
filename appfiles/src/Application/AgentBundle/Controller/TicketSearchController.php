@@ -67,10 +67,17 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
+		$display_fields = $this->person->getPref('agent.ui.ticket-queues-display-fields.' . $filter_id);
+
+		if (!$display_fields) {
+			$display_fields = array('person', 'department');
+		}
+
 		return $this->render($tpl, array(
 			'queue_id' => $filter_id,
 			'tickets' => $tickets,
-			'page' => $page
+			'page' => $page,
+			'display_fields' => $display_fields
 		));
 	}
 

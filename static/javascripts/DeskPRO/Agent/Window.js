@@ -290,6 +290,7 @@ DeskPRO.Agent.Window = new Class({
 			success: (function(data) {
 				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.NavPane.Basic');
+				page.setMetaData('routeUrl', url);
 				DeskPRO_Window.getPanedShell().setNavPanePage(page);
 			}).bind(this)
 		});
@@ -310,6 +311,7 @@ DeskPRO.Agent.Window = new Class({
 			success: (function(data) {
 				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
+				page.setMetaData('routeUrl', url);
 				DeskPRO_Window.getPanedShell().setListPanePage(page);
 			}).bind(this)
 		});

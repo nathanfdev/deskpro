@@ -14,21 +14,8 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 		
-		$(el).scroll((function() {
-			if ($(el).scrollTop()+20 >= this._scrollInnerHeights() - $('#pane_list').height()) {
-				this.nextSearchPage();
-			}
-		}).bind(this));
-		
-		this.overlay = new DeskPRO.UI.Overlay({
-			contentElement: $('.display-options:first', this.wrapper),
-			triggerElement: $('.display-options-trigger', this.wrapper),
-			onContentSet: function(eventData) {
-				$('ul.sortable-list', eventData.wrapperEl).sortable({
-					'axis': 'y'
-				});
-			}
-		});
+		this.initDisplayOptions();
+		this.initInfiniteScroll();
 	},
 	
 	activate: function() {
@@ -41,6 +28,91 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		if (this.getMetaData('queue_id')) {
 			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-deactivated', this.getMetaData('queue_id'));
 		}
+	},
+	
+	//#########################################################################
+	//# Display options
+	//#########################################################################
+	
+	displayOptionsWrapper: null,
+	displayOptionsOverlay: null,
+	displayOptionsList: null,
+	initDisplayOptions: function() {
+		
+		this.displayOptionsList = $('.display-options:first ul.sortable-list', this.wrapper);
+		var overlay_wrapper = this.displayOptionsWrapper = $('.display-options:first', this.wrapper);
+
+		this.displayOptionsOverlay = new DeskPRO.UI.Overlay({
+			contentElement: overlay_wrapper,
+			triggerElement: $('.display-options-trigger', this.wrapper),
+			onContentSet: function(eventData) {
+				$('ul.sortable-list', eventData.wrapperEl).sortable({
+					'axis': 'y'
+				});
+			}
+		});
+		
+		$('.close-trigger', overlay_wrapper).click((function() {
+			this.displayOptionsOverlay.closeOverlay();
+		}).bind(this));
+		
+		$('.save-trigger', overlay_wrapper).click((function() {
+			this.saveDisplayOptions();
+		}).bind(this));
+		
+		// Set default checked values based on table
+		var self = this;
+		$('.list thead th', this.wrapper).each(function() {
+			$('li[data-field="'+$(this).data('field')+'"] input[type="checkbox"]', self.displayOptionsList).attr('checked', true);
+		});
+	},
+	
+	saveDisplayOptions: function() {
+		
+		$('.buttons .loading-off', this.displayOptionsWrapper).hide();
+		$('.buttons .loading-on', this.displayOptionsWrapper).show();
+		
+		var data = [];
+		var pref_name = 'prefs[agent.ui.ticket-queues-display-fields.' + this.getMetaData('queue_id', 0) +'][]';
+		
+		$('input[type="checkbox"]:checked', this.displayOptionsList).each(function() {
+			data.push({
+				name: pref_name,
+				value: $(this).attr('name')
+			});
+		});
+		
+		// We reload the same page which will have changes applied
+		var url = this.getMetaData('routeUrl');
+		var self = this;
+		
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'agent/misc/ajax-save-prefs',
+			data: data,
+			success: function() {
+				
+				$('.buttons .loading-off', this.displayOptionsWrapper).hide();
+				$('.buttons .loading-on', this.displayOptionsWrapper).show();
+				
+				self.displayOptionsOverlay.closeOverlay();
+				DeskPRO_Window.loadListPane(url);
+			}
+		});
+	},
+	
+	
+	//#########################################################################
+	//# Infinite loading stuff
+	//#########################################################################
+	
+	initInfiniteScroll: function() {
+		this.wrapper.scroll((function() {
+			if (this.wrapper.scrollTop()+20 >= this._scrollInnerHeights() - $('#pane_list').height()) {
+				this.nextSearchPage();
+			}
+		}).bind(this));
 	},
 	
 	_scrollInnerHeights_cache: null,
