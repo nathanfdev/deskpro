@@ -1,5 +1,7 @@
 Orb.createNamespace('DeskPRO.UI');
 
+DeskPRO.UI.Menu_Instances = {};
+
 /**
  * A simple menu handler.
  *
@@ -17,6 +19,7 @@ DeskPRO.UI.Menu = new Class({
 		customClassname: '',
 		zIndex: 1000000,
 		menuElement: null,
+		objectGroup: 'default'
 	},
 	
 	hasInit: false,
@@ -24,7 +27,15 @@ DeskPRO.UI.Menu = new Class({
 	openTriggerEvent: null,
 	
 	initialize: function(options) {
+		
+		this.objectId = Orb.uuid();
+		
 		if (options) this.setOptions(options);
+		
+		if (DeskPRO.UI.Menu_Instances[this.options.objectGroup] === undefined) {
+			DeskPRO.UI.Menu_Instances[this.options.objectGroup] = {};
+		}
+		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = this;
 		
 		if (this.options.triggerElement) {
 			this.setupTriggerElement($(this.options.triggerElement));
@@ -81,6 +92,14 @@ DeskPRO.UI.Menu = new Class({
 		if (this.isMenuOpen()) {
 			return;
 		}
+		
+		// Close all other instances
+		Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup], function(v, k) {
+			if (v.isMenuOpen()) {
+				v.closeMenu();
+			}
+		});
+		
 		
 		this.openTriggerEvent = event;
 		
@@ -237,5 +256,7 @@ DeskPRO.UI.Menu = new Class({
 	 */
 	destroy: function() {
 		this.elements.wrapperOuter.remove();
+		
+		delete DeskPRO.UI.Overlay_Instances[this.options.objectGroup][this.objectId];
 	}
 });

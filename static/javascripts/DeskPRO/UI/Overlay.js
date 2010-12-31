@@ -7,6 +7,8 @@ Orb.createNamespace('DeskPRO.UI');
 DeskPRO.UI.Overlay = new Class({
 	Implements: [Options, Events],
 	
+	objectId: null,
+	
 	options: {
 		triggerElement: null,
 		contentMethod: 'element',
@@ -20,7 +22,8 @@ DeskPRO.UI.Overlay = new Class({
 		isModal: true,
 		zIndex: 1000000,
 		escapeClose: true,
-		modalClickClose: true
+		modalClickClose: true,
+		objectGroup: 'default'
 	},
 	
 	hasInit: false,
@@ -30,6 +33,7 @@ DeskPRO.UI.Overlay = new Class({
 	
 	
 	initialize: function(options) {
+		
 		if (options) this.setOptions(options);
 		
 		if (this.options.triggerElement) {
