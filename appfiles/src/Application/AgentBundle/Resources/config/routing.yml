@@ -82,7 +82,7 @@ agent_peoplesearch:
   defaults: { _controller: AgentBundle:PeopleSearch:search }
 
 agent_peoplesearch_labelspane:
-  pattern: /people-search/filters-pane
+  pattern: /people-search/queues-pane
   defaults: { _controller: AgentBundle:PeopleSearch:labelsPane }
 
 agent_peoplesearch_directorypane:
@@ -98,18 +98,18 @@ agent_ticketsearch:
   pattern: /ticket-search
   defaults: { _controller: AgentBundle:TicketSearch:index }
 
-agent_ticketsearch_filterspane:
-  pattern: /ticket-search/filters-pane
-  defaults: { _controller: AgentBundle:TicketSearch:filtersPane }
+agent_ticketsearch_queuespane:
+  pattern: /ticket-search/queues-pane
+  defaults: { _controller: AgentBundle:TicketSearch:queuesPane }
 
 agent_ticketsearch_flaggedpane:
   pattern: /ticket-search/flagged-pane
   defaults: { _controller: AgentBundle:TicketSearch:flaggedPane }
 
-agent_ticketsearch_runfilter:
-  pattern: /ticket-search/filter/:filter_id
-  defaults: { _controller: AgentBundle:TicketSearch:runFilter }
-  requirements: { filter_id: "\d+" }
+agent_ticketsearch_runqueue:
+  pattern: /ticket-search/queue/:queue_id
+  defaults: { _controller: AgentBundle:TicketSearch:runqueue }
+  requirements: { queue_id: "\d+" }
 
 agent_ticketsearch_runflag:
   pattern: /ticket-search/flag/:flag

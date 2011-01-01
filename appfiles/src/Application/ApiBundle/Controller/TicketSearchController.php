@@ -47,7 +47,7 @@ class TicketSearchController extends AbstractController
 
 
 	/**
-	 * Execute a filter and return results.
+	 * Execute a queue and return results.
 	 * 
 	 * @param int $queue_id
 	 */

@@ -10,7 +10,7 @@ Orb.createNamespace('DeskPRO.Agent');
  * Contains a registry for global app data.
  *
  * Is responsible for "routing" and loading data. The router uses strings and decides where
- * they should be loaded (and how). For example, "navpane:filters/", the first part says it'll
+ * they should be loaded (and how). For example, "navpane:queues/", the first part says it'll
  * be a navpane fragment. The second part is a simple URL we can load via AJAX.
  */
 DeskPRO.Agent.Window = new Class({
@@ -55,7 +55,7 @@ DeskPRO.Agent.Window = new Class({
 		});
 		
 		// Set up listener for badge count
-		this.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
+		this.getMessageBroker().addMessageListener('queues.counts', this.updatequeueCounts.bind(this));
 		
 		// Set up create menu
 		var menu = new DeskPRO.UI.Menu({
@@ -102,13 +102,13 @@ DeskPRO.Agent.Window = new Class({
 		}
 	},
 	
-	updateFilterCounts: function (counts) {
+	updatequeueCounts: function (counts) {
 		var total = 0;
-		Object.each(counts, function (count, filter_id) {
+		Object.each(counts, function (count, queue_id) {
 			total += count;
 		});
 		
-		$('.ticket-filter-count-all').html('(' + total + ')');
+		$('.ticket-queue-count-all').html('(' + total + ')');
 	},
 	
 	getMessageBroker: function() {
@@ -152,7 +152,7 @@ DeskPRO.Agent.Window = new Class({
 	/**
 	 * Loads a route.
 	 * 
-	 * @param {String} route The route to match, like navpane:tickets:filters
+	 * @param {String} route The route to match, like navpane:tickets:queues
 	 */
 	runPageRoute: function(route) {
 		

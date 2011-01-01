@@ -26,7 +26,7 @@ class TicketSearchController extends AbstractController
 		return $this->render('AgentBundle:TicketSearch:list-blank.twig');
 	}
 
-	public function filtersPaneAction()
+	public function queuesPaneAction()
 	{
 		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
@@ -47,34 +47,34 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
-		return $this->render('AgentBundle:TicketSearch:pane-filters.twig', array(
-			'filters' => $queues
+		return $this->render('AgentBundle:TicketSearch:pane-queues.twig', array(
+			'queues' => $queues
 		));
 	}
 
-	public function runFilterAction($filter_id)
+	public function runQueueAction($queue_id)
 	{
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($filter_id, $page, 50);
+		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($queue_id, $page, 50);
 
-		$tpl = 'AgentBundle:TicketSearch:filter-results.twig';
+		$tpl = 'AgentBundle:TicketSearch:queue-results.twig';
 		if ($this->in->getBool('partial')) {
-			$tpl = 'AgentBundle:TicketSearch:filter-results-list.twig';
+			$tpl = 'AgentBundle:TicketSearch:queue-results-list.twig';
 			if (!count($tickets)) {
 				return $this->createResponse('');
 			}
 		}
 
-		$display_fields = $this->person->getPref('agent.ui.ticket-queues-display-fields.' . $filter_id);
+		$display_fields = $this->person->getPref('agent.ui.ticket-queues-display-fields.' . $queue_id);
 
 		if (!$display_fields) {
 			$display_fields = array('person', 'department');
 		}
 
 		return $this->render($tpl, array(
-			'queue_id' => $filter_id,
+			'queue_id' => $queue_id,
 			'tickets' => $tickets,
 			'page' => $page,
 			'display_fields' => $display_fields
@@ -97,7 +97,7 @@ class TicketSearchController extends AbstractController
 
 		$tpl = 'AgentBundle:TicketSearch:flagged-results.twig';
 		if ($this->in->getBool('partial')) {
-			$tpl = 'AgentBundle:TicketSearch:filter-results-list.twig';
+			$tpl = 'AgentBundle:TicketSearch:queue-results-list.twig';
 			if (!count($tickets)) {
 				return $this->createResponse('');
 			}
@@ -115,7 +115,7 @@ class TicketSearchController extends AbstractController
 	############################################################################
 
 	/**
-	 * Just a list of filters
+	 * Just a list of queues
 	 */
 	public function listQueuesAction()
 	{

@@ -8,9 +8,9 @@ class TestController extends AbstractController
     {
 		return $this->renderJson('AgentBundle:Test:test.phpj');
 
-		$filter = $this->em->getRepository('DeskPRO:TicketQueue')->find(3);
+		$queue = $this->em->getRepository('DeskPRO:TicketQueue')->find(3);
 
-		$searcher = $filter->getSearcher();
+		$searcher = $queue->getSearcher();
 		$searcher->enableArchiveSearch();
 
 		print_r($searcher);

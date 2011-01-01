@@ -1,5 +1,5 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.NavPane');
-DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
+DeskPRO.Agent.PageFragment.NavPane.TicketQueues = new Class({
 	Extends: DeskPRO.Agent.PageFragment.NavPane.Basic,
 	
 	wrapper: null,
@@ -26,8 +26,8 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 		
 		// Set up the poller
 		DeskPRO_Window.getPoller().addData(
-			[{name: 'do[]', value: 'get-filter-counts'}],
-			'filters.counts',
+			[{name: 'do[]', value: 'get-queue-counts'}],
+			'queues.counts',
 			{recurring: true, minDelay: 15000, minDelayAfterOne: true}
 		);
 		
@@ -36,14 +36,14 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 			DeskPRO_Window.getPoller().send();
 		}).delay(500);
 		
-		// Automatically run the first filter
-		var first_filter = $('ul.filter-list li:first', el);
-		if (first_filter.length) {
-			DeskPRO_Window.runPageRouteFromElement(first_filter);
+		// Automatically run the first queue
+		var first_queue = $('ul.queue-list li:first', el);
+		if (first_queue.length) {
+			DeskPRO_Window.runPageRouteFromElement(first_queue);
 		}
 		
 		// Set up listener
-		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('queues.counts', this.updatequeueCounts.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('queue.view-activated', this.highlightActiveQueue.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('queue.view-deactivated', this.unhighlightActiveQueue.bind(this));
 		
@@ -55,12 +55,12 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 		el.addClass('active');
 	},
 	
-	updateFilterCounts: function(counts) {
-		Object.each(counts, function (count, filter_id) {
+	updatequeueCounts: function(counts) {
+		Object.each(counts, function (count, queue_id) {
 			var count_str = count;
 			if (count >= 1000) count_str = '1000+';
 
-			var el = $('.ticket-filter-count-' + filter_id).html(count);
+			var el = $('.ticket-queue-count-' + queue_id).html(count);
 
 			if (count == 0) {
 				el.removeClass('new');
@@ -84,7 +84,7 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFilters = new Class({
 	
 	_initQueueReorder: function() {
 		var self = this;
-		$('ul.filter-list', this.wrapper).sortable({
+		$('ul.queue-list', this.wrapper).sortable({
 			'axis': 'y',
 			'containment': this.wrapper,
 			'distance': 8,

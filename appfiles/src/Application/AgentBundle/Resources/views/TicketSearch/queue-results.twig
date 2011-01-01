@@ -1,7 +1,7 @@
 <script>
 pageMeta.title = 'Ticket Queue';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketSearch';
-pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': queue_id}) }}?partial=1&page=$page';
+pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id}) }}?partial=1&page=$page';
 {% if queue_id %}
 	pageMeta.queue_id = {{queue_id}};
 {% endif %}
@@ -50,7 +50,7 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': queue_
 			{% endfor %}
 		</tr>
 	</thead>
-	{% include 'AgentBundle:TicketSearch:filter-results-list.twig' %}
+	{% include 'AgentBundle:TicketSearch:queue-results-list.twig' %}
 </table>
 
 <div class="loading-more">
