@@ -1,12 +1,13 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
-	<tr class="line line-1 subject-line" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
+	<tr class="line line-1 subject-line">
 		<td colspan="100">
 			<span style="float:right">{{ticket.date_created|date('Y-m-d')}}</span>
-			<span class="subject">{{ticket.subject}}</span>
+			<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
+			<span class="subject" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</span>
 		</td>
 	</tr>
-	<tr class="line line-2 info-line" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
+	<tr class="line line-2 info-line">
 		{% for field in display_fields %}
 			{% if field == 'person' %}
 				<td>
