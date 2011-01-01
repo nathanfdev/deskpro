@@ -22,6 +22,14 @@ agent_ajax_save_prefs:
   pattern: /misc/ajax-save-prefs
   defaults: { _controller: AgentBundle:Misc:ajaxSavePrefs }
 
+agent_settings:
+  pattern: /settings
+  defaults: { _controller: AgentBundle:Main:settings }
+
+agent_settings_ticketmacros:
+  pattern: /settings/ticket-macros
+  defaults: { _controller: AgentBundle:Main:settingsTicketMacros }
+
 ################################################################################
 # People
 ################################################################################

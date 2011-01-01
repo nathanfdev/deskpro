@@ -267,7 +267,7 @@ ul.tagit input[type="text"] {
 }
 
 #window_head > #window_head_top > ul.current-user > li.person { background-image: url(../../images/icons/user.png); }
-#window_head > #window_head_top > ul.current-user > li.settings { background-image: url(../../images/icons/process.png); }
+#window_head > #window_head_top > ul.current-user > li.settings { background-image: url(../../images/icons/process.png); cursor: pointer; }
 #window_head > #window_head_top > ul.current-user > li.admin { background-image: url(../../images/icons/favorite.png); }
 
 
@@ -1563,8 +1563,8 @@ table.list tr.info-line div.department {
 
 .gray.dp-button { background-color: #677078; }
 .gray.dp-button:hover { background-color: #7E8991; }
-.green.dp-button { background-color: #91bd09; }
-.green.dp-button:hover { background-color: #749a02; }
+.green.dp-button { background-color: #749a02; }
+.green.dp-button:hover { background-color: #91bd09; }
 .blue.dp-button  background-color: #2daebf; }
 .blue.dp-button:hover { background-color: #007d9a; }
 .red.dp-button { background-color: #e33100; }
