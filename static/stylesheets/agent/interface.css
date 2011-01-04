@@ -699,7 +699,7 @@ ul.tagit input[type="text"] {
 	font-weight: bold;
 }
 
-#pane_nav ul.nav-list li span {
+#pane_nav ul.nav-list li span.count {
 	font-family: Verdana;
 	font-size: 7pt;
 	background-color: #666;

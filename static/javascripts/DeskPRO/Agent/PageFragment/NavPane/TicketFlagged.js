@@ -79,9 +79,9 @@ DeskPRO.Agent.PageFragment.NavPane.TicketFlagged = new Class({
 	},
 	
 	highlightActiveFlag: function(flag) {
-		$('.icon-flag-' + flag, this.wrapper).addClass('on');
+		$('.icon-flag-' + flag, this.wrapper).parent().addClass('on');
 	},
 	unhighlightActiveFlag: function(flag) {
-		$('.icon-flag-' + flag, this.wrapper).removeClass('on');
+		$('.icon-flag-' + flag, this.wrapper).parent().removeClass('on');
 	}
 });
