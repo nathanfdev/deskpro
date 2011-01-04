@@ -20,6 +20,15 @@ input.placeholder-visible {
 
 h1, h2, h3, h4, h5, h6 { font-family: 'Myriad Pro', 'Myriad', helvetica, arial, sans-serif; }
 
+a {
+	color: #4769B3;
+}
+
+a:hover {
+	color: #376CDE;
+	text-decoration: none;
+}
+
 input[type="text"], input[type="password"], textarea {
 	background-color: #f6f8fb;
 	color: #000;
@@ -39,6 +48,11 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	-webkit-box-shadow: 0px 0px 5px #8db6e6;
 	-moz-box-shadow: 0px 0px 5px #8db6e6;
 	box-shadow: 0px 0px 5px #8db6e6;
+}
+
+input.input-title {
+	width: 98%;
+	font-size: 130%;
 }
 
 .dev-feature-inactive {
@@ -1459,7 +1473,6 @@ table.list tr.info-line div.department {
 
 
 .search-form .term {
-	border-bottom: 1px solid #AFB2BA;
 	background-color: #fff;
 	padding: 4px;
 	margin: 3px;
@@ -1929,6 +1942,57 @@ ul.sortable-list > li:hover {
 
 .actions-bar .actions {
 	float: right;
+}
+
+
+
+.form-panel .row {
+	margin-top: 20px;
+}
+
+.form-panel .row:first-of-type {
+	margin-top: none;
+}
+
+.form-panel .row label {
+	font-size: 115%;
+	font-weight: bold;
+	display: block;
+	margin-bottom: 5px;
+	
+	text-shadow: 1px 1px 2px #D3D7E0;
+	filter: dropshadow(color=#D3D7E0, offx=0, offy=0);
+	font-family: Arial, sans-serif;
+}
+
+
+
+.item-list > li .controls {
+	visibility: hidden;
+}
+
+.item-list > li:hover .controls {
+	visibility: visible;
+}
+
+.item-list ul.controls li {
+	float: left;
+	border-left: 1px solid #ABA2A2;
+	padding: 0 4px 0 8px;
+	font-size: 8pt;
+	margin-left: 4px;
+	
+	line-height: 10pt;
+	
+	font-weight: bold;
+}
+
+.item-list ul.controls li:first-child {
+	border-left: none;
+}
+
+.item-list ul.controls .delete a {
+	color: #6E2424;
 }
 
 

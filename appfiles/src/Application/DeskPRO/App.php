@@ -10,6 +10,8 @@
 
 namespace Application\DeskPRO;
 
+use Application\DeskPRO\Entity;
+
 use \Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Strings;
@@ -83,6 +85,39 @@ class App
 	 */
 	protected static $_api_handlers = null;
 
+	/**
+	 * The person who is making the request, or the person who is authorizing
+	 * the request.
+	 *
+	 * @var Person
+	 */
+	protected static $_current_person = null;
+
+
+
+	/**
+	 * Set the person who is making the request, or the person who is authorizing
+	 * the request.
+	 *
+	 * @param Application\DeskPRO\Entity\Person $person
+	 */
+	public static function setCurrentPerson(Entity\Person $person)
+	{
+		self::$_current_person = $person;
+	}
+
+
+	
+	/**
+	 * Get the person who is making the curent request.
+	 * 
+	 * @return Application\DeskPRO\Entity\Person
+	 */
+	public static function getCurrentPerson()
+	{
+		return self::$_current_person;
+	}
+	
 	
 
 	/**

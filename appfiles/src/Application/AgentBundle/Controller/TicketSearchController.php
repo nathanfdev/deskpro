@@ -12,6 +12,7 @@
 namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\Entity\TicketQueue;
+use \Application\DeskPRO\Entity\Ticket;
 use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
@@ -73,11 +74,14 @@ class TicketSearchController extends AbstractController
 			$display_fields = array('person', 'department');
 		}
 
+		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+
 		return $this->render($tpl, array(
 			'queue_id' => $queue_id,
 			'tickets' => $tickets,
 			'page' => $page,
-			'display_fields' => $display_fields
+			'display_fields' => $display_fields,
+			'macros' => $macros
 		));
 	}
 
@@ -178,5 +182,73 @@ class TicketSearchController extends AbstractController
 		$this->em->flush();
 
 		return null;
+	}
+
+
+	############################################################################
+	# ajax-mass-actions
+	############################################################################
+
+	public function ajaxMassActionsAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		$op = $this->in->getString('op');
+		if ($op == 'macro') {
+			$macro = App::getOrm()->getRepository('DeskPRO:TicketMacro')->find($this->in->getUint('macro_id'));
+
+			if (!$macro) {
+				// TODO handle err
+			}
+		}
+
+		App::getOrm()->beginTransaction();
+
+		foreach ($tickets as $ticket) {
+			switch ($op) {
+				case 'macro':
+					$macro->performOnTicket($ticket);
+					break;
+
+				case 'take':
+					$ticket['agent'] = $this->person;
+					App::getOrm()->persist($ticket);
+					break;
+
+				case 'delete':
+					App::getOrm()->remove($ticket);
+					break;
+
+				case 'spam':
+					$ticket['status'] = Ticket::STATUS_HIDDEN;
+					$ticket['hidden_status'] = Ticket::HIDDEN_STATUS_SPAM;
+					App::getOrm()->persist($ticket);
+					break;
+
+				case 'status':
+					switch ($this->in->getString('status')) {
+						case 'awaiting_agent':
+							$ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
+							break;
+
+						case 'awaiting_user':
+							$ticket['status'] = Ticket::STATUS_AWAITING_USER;
+							break;
+
+						case 'resolved':
+							$ticket['status'] = Ticket::STATUS_RESOLVED;
+							break;
+					}
+
+					App::getOrm()->persist($ticket);
+					break;
+			}
+		}
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 }

@@ -65,14 +65,22 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 	<div class="counter"><span class="count">0</span> Selected</div>
 	<div class="actions">
 		<div class="action-selector">
-			<span class="action-title">Select Action...</span><button>Perform Action</button>
+			<span class="action-title">Select Action...</span><button class="action-perform">Perform Action</button>
 		</div>
 	</div>
 	
 	<ul class="action-menu" style="display:none">
-		<li data-op="delete">Delete</li>
 		<li data-op="take">Take Ownership</li>
+		<li data-op="delete">Delete</li>
 		<li data-op="spam">Mark As Spam</li>
+		<li class="sep">-</li>
+		<li data-op="status" data-status="awaiting_agent">Set Status: Awaiting Agent</li>
+		<li data-op="status" data-status="awaiting_user">Set Status: Awaiting User</li>
+		<li data-op="status" data-status="resolved">Set Status: Resolved</li>
+		<li class="sep">-</li>
+		{% for macro in macros %}
+			<li data-op="macro" data-macro-id="{{macro.id}}">{{macro.title}}</li>
+		{% endfor %}
 	</ul>
 	<ul class="selected-menu" style="display:none">
 		<li data-op="all">Select All</li>

@@ -13,10 +13,13 @@ namespace Application\DeskPRO\Domain;
 
 use \Application\DeskPRO\App;
 
+use Doctrine\Common\NotifyPropertyChanged;
+use Doctrine\Common\PropertyChangedListener;
+
 /**
  * The basic entitiy class
  */
-abstract class DomainObject implements \ArrayAccess
+abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 {
 	const TOARRAY_NOOP = 1;
 	const TOARRAY_DEEP = 2;
@@ -24,28 +27,15 @@ abstract class DomainObject implements \ArrayAccess
 	const TOARRAY_LOAD_UNLOADED = 8;
 
 	/**
-	 * An array of properties that have been changed through one of the accessor
-	 * methods.
+	 * Array of listeners
+	 *
+	 * @see addPropertyChangedListener
 	 * @var array
 	 */
-	protected $_properties_changed = array();
-
-	public function __construct(array $params = array())
-	{
-		$this->init($params);
-	}
+	private $_listeners = array();
 
 
-
-	/**
-	 * Init. Will be passed an array of params.
-	 */
-	protected function init(array $params)
-	{
-
-	}
-
-
+	
 	/**
 	 * Set values from an array
 	 * @param array $values The values to set
@@ -129,17 +119,6 @@ abstract class DomainObject implements \ArrayAccess
 		return $keys;
 	}
 
-	
-
-	/**
-	 * Check to see if a certain property has changed.
-	 * @return bool
-	 */
-	public function hasPropertyChanged($prop)
-	{
-		return in_array($prop, $this->_properties_changed);
-	}
-
 
 
 	/**
@@ -163,19 +142,6 @@ abstract class DomainObject implements \ArrayAccess
 	public function set($name, $value)
 	{
 		$this->offsetSet($name, $value);
-	}
-	
-
-
-	/**
-	 * Hook method called when a property has been changed.
-	 *
-	 * @param string $name The property that was changed
-	 * @param mixed $old_value The old value
-	 */
-	protected function onPropertyChanged($property, $old_value)
-	{
-
 	}
 
 
@@ -258,8 +224,7 @@ abstract class DomainObject implements \ArrayAccess
 			$this->$offset = $value;
 		}
 
-		$this->_properties_changed[] = $offset;
-		$this->onPropertyChanged($offset, $old_value);
+		$this->_onPropertyChanged($offset, $old_value, $value);
 	}
 
 
@@ -282,4 +247,34 @@ abstract class DomainObject implements \ArrayAccess
 	{
 		$this->offsetSet($offset, null);
 	}
+
+	
+
+	/**
+	 * @param PropertyChangedListener $listener
+	 */
+    public function addPropertyChangedListener(PropertyChangedListener $listener)
+	{
+		if (empty($this->_listeners['property'])) $this->_listeners['property'] = array();
+
+        $this->_listeners['property'][] = $listener;
+    }
+
+	
+
+	/**
+	 * Notify a prop has changed.
+	 *
+	 * @param string $propName
+	 * @param mixed $oldValue
+	 * @param mixed $newValue
+	 */
+	protected function _onPropertyChanged($prop, $old, $new)
+	{
+        if (!empty($this->_listeners['property'])) {
+            foreach ($this->_listeners['property'] as $listener) {
+                $listener->propertyChanged($this, $prop, $old, $new);
+            }
+        }
+    }
 }

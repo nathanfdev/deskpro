@@ -1,0 +1,133 @@
+{% extends 'AgentBundle:Settings:settings-layout.twig' %}
+{% block current_page "ticket-macros" %}
+{% block page_head %}
+<script type="text/javascript" charset="utf-8">
+$(document).ready(function() {
+	// Set up search builder
+	var editor = new DeskPRO.Form.RuleBuilder($('.search-tpl'));
+	editor.addEvent('newRow', function(new_row) {
+		$('.remove', new_row).click(function() {
+			new_row.remove();
+		});
+	});
+	
+	var to_el = $('.search-form .search-terms');
+	
+	$('.search-form .add-term').data('add-count', 0).click(function() {
+		var count = parseInt($(this).data('add-count'));
+		var basename = 'actions['+count+']';
+	
+		$(this).data('add-count', count+1);
+	
+		editor.addNewRow(to_el, basename);
+	});
+	
+	var count = 0;
+	
+	{% if macro.id %}
+		// Existing actions
+		{% for action in macro.actions %}
+			var basename = 'actions['+count+']';
+			editor.addNewRow(to_el, basename, { rule_type: '{{action.rule_type}}',
+				choice: {
+					{% for k,	v in action %}
+						{{k}}: '{{v}}',
+					{% endfor %}
+					'': null
+				}
+			});
+			count++;
+
+		{% endfor %}
+	{% endif %}
+	
+	$('.search-form .add-term').data('add-count', count)
+});
+</script>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('agent_settings_ticketmacros_edit', { 'macro_id': macro.id|default(0) }) }}" method="post" accept-charset="utf-8">
+
+<div class="form-panel">
+	<div class="row">
+		<label for="macro_title">Macro title</label>
+		<input type="text" name="macro[title]" value="{{macro.title}}" class="input-title" id="macro_title" />
+	</div>
+	
+	<div class="row">
+		<label>Actions</label>
+		<div class="search-form">
+			<div class="search-terms"></div>
+			<div class="term"><span class="add-term">+</span> Add a new action</div>
+		</div>
+	</div>
+</div>
+
+<div style="text-align:center">
+	<button type="submit" class="dp-button">Save Macro</button>
+</div>
+
+</form>
+
+<div class="search-tpl" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="type"></div>
+			<div class="choice"></div>
+			<div class="remove">-</div>
+		</div>
+	</div>
+	<div class="type" title="Department" data-rule-type="department">
+		<div class="choice">
+			<select name="department">
+				{% for id,title in ticket_options.departments %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Category" data-rule-type="category">
+		<div class="choice">
+			<select name="category">
+				{% for id,title in ticket_options.categories %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Product" data-rule-type="product">
+		<div class="choice">
+			<select name="product">
+				{% for id,title in ticket_options.products %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Priority" data-rule-type="priority">
+		<div class="choice">
+			<select name="priority">
+				{% for id,title in ticket_options.priorities %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Agent" data-rule-type="agent">
+		<div class="choice">
+			<select name="agent">
+				{% for id,title in ticket_options.agents %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Ticket Reply" data-rule-type="reply">
+		<div class="choice" style="display:block">
+			<textarea name="reply" cols="80" rows="4"></textarea>
+		</div>
+	</div>
+</div>
+
+{% endblock %}

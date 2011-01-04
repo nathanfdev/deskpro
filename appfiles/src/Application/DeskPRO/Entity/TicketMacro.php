@@ -11,10 +11,12 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+
 /**
  * Ticket macros
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketMacro")
  * @orm:Table(name="ticket_macros")
  */
 class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
@@ -34,7 +36,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
@@ -49,7 +51,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="labels", type="string", length=1000)
 	 */
-	protected $labels;
+	protected $labels = '';
 
 	/**
 	 * @var bool
@@ -68,4 +70,63 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="actions", type="array")
 	 */
 	protected $actions;
+
+
+	public function performOnTicket(Ticket $ticket)
+	{
+		foreach ($this->actions as $action) {
+			switch ($action['rule_type']) {
+				case 'department':
+					$ticket['department_id'] = $action['department'];
+					break;
+
+				case 'category':
+					$ticket['category_id'] = $action['category'];
+					break;
+
+				case 'agent':
+
+					// -1 means "current user" -- used for generic shared macros
+					if ($action['agent'] == -1) {
+						$agent = App::getCurrentPerson();
+						if ($agent) {
+							$action['agent'] = $agent['id'];
+						} else {
+							return;// todo err?
+						}
+					}
+					$ticket['agent_id'] = $action['agent'];
+					break;
+
+				case 'product':
+					$ticket['product_id'] = $action['product'];
+					break;
+				
+				case 'priority':
+					$ticket['priority_id'] = $action['priority'];
+					break;
+
+				case 'reply':
+					$agent = App::getCurrentPerson();
+
+					if (!$agent) {
+						return;
+						//todo err?
+					}
+
+					$message = new Entity\TicketMessage();
+					$message['person']  = $agent;
+					$message['ticket']  = $ticket;
+					$message['message'] = $action['reply'];
+
+					$ticket->addMessage($message);
+
+					App::getOrm()->persist($message);
+
+					break;
+			}
+		}
+
+		App::getOrm()->persist($ticket);
+	}
 }

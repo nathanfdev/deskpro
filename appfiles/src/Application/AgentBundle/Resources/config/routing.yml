@@ -22,13 +22,32 @@ agent_ajax_save_prefs:
   pattern: /misc/ajax-save-prefs
   defaults: { _controller: AgentBundle:Misc:ajaxSavePrefs }
 
+
+################################################################################
+# Settings
+################################################################################
+
 agent_settings:
   pattern: /settings
-  defaults: { _controller: AgentBundle:Main:settings }
+  defaults: { _controller: AgentBundle:Settings:index }
 
 agent_settings_ticketmacros:
   pattern: /settings/ticket-macros
-  defaults: { _controller: AgentBundle:Main:settingsTicketMacros }
+  defaults: { _controller: AgentBundle:Settings:ticketMacros }
+
+agent_settings_ticketmacros_edit:
+  pattern: /settings/ticket-macros/:macro_id
+  defaults: { _controller: AgentBundle:Settings:ticketMacroEdit }
+  requirements: { macro_id: "\d+" }
+
+agent_settings_ticketmacros_new:
+  pattern: /settings/ticket-macros/new
+  defaults: { _controller: AgentBundle:Settings:ticketMacroEdit, macro_id: 0 }
+
+agent_settings_ticketmacros_del:
+  pattern: /settings/ticket-macros/:macro_id/delete
+  defaults: { _controller: AgentBundle:Settings:ticketMacroDelete }
+  requirements: { macro_id: "\d+" }
 
 ################################################################################
 # People
@@ -105,6 +124,10 @@ agent_peoplesearch_directorypane:
 agent_ticketsearch:
   pattern: /ticket-search
   defaults: { _controller: AgentBundle:TicketSearch:index }
+
+agent_ticketsearch_ajaxmassactions:
+  pattern: /ticket-search/ajax-mass-actions
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxMassActions }
 
 agent_ticketsearch_queuespane:
   pattern: /ticket-search/queues-pane

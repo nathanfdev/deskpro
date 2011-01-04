@@ -509,6 +509,22 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	
+	/**
+	 * Get the primary email address, or null if this person has none.
+	 *
+	 * @return string
+	 */
+	public function getPrimaryEmailAddress()
+	{
+		if (!$this->primary_email) {
+			return null;
+		}
+
+		return $this->primary_email['email'];
+	}
+
+
 
 	/**
 	 * Add an email address

@@ -11,11 +11,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+
 /**
  * Ticket
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Ticket")
  * @orm:Table(name="tickets")
+ * @orm:HasLifecycleCallbacks
  */
 class Ticket extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -27,6 +30,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_AWAITING_USER = 'awaiting_user';
 	const STATUS_RESOLVED = 'resolved';
 	const STATUS_CLOSED = 'closed';
+	const STATUS_HIDDEN = 'hidden';
 	
 	const HIDDEN_STATUS_SPAM = 'spam';
 
@@ -272,6 +276,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $participants;
 
+	/**
+	 * Ticket logger
+	 * @var Application\DeskPRO\Tickets\TicketLogListener
+	 */
+	protected $_ticket_logger;
+
 	public function __construct()
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
@@ -279,6 +289,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->date_created = new \DateTime();
+
+		// Automatically create a ticket logger
+		//$ticket_logger = new Application\DeskPRO\Tickets\TicketLog\Logger($this);
+		//$this->_ticket_logger = $ticket_logger;
+		//$this->addPropertyChangedListener($ticket_logger);
 	}
 
 
@@ -333,6 +348,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->messages->add($message);
 		$message['ticket'] = $this;
+
+		$this->_onPropertyChanged('messages', null, $message);
 	}
 
 	
@@ -365,5 +382,57 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->custom_data->add($data);
 		$data['ticket'] = $this;
+	}
+
+
+	public function setDepartmentId($id)
+	{
+		$dep = App::getOrm()->getRepository('DeskPRO:Department')->find($id);
+		$this['department'] = $dep;
+	}
+
+	public function setCategoryId($id)
+	{
+		$cat = App::getOrm()->getRepository('DeskPRO:TicketCategory')->find($id);
+		$this['department'] = $cat;
+	}
+	
+	public function setProductId($id)
+	{
+		$prod = App::getOrm()->getRepository('DeskPRO:Product')->find($id);
+		$this['department'] = $prod;
+	}
+
+	public function setPriorityId($id)
+	{
+		$pri = App::getOrm()->getRepository('DeskPRO:TicketPriority')->find($id);
+		$this['department'] = $pri;
+	}
+
+	public function setAgentId($id)
+	{
+		$agent = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
+		if (!$agent['is_agent']) {
+			// TODO err
+		}
+
+		$this['agent'] = $agent;
+	}
+
+
+	
+	/**
+	 * @orm:PostPersist
+	 */
+	public function saveTicketLogs()
+	{
+		if ($this->_ticket_logger) {
+			$this->_ticket_logger->saveLogs();
+		}
+	}
+
+	public function getTicketLogger()
+	{
+		$this->_ticket_logger;
 	}
 }

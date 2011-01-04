@@ -39,18 +39,33 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 	//# Actions bar
 	//#########################################################################
 	
+	selectedActionData: null,
+	
 	initActionsBar: function() {
 		var action_title = $('.actions-bar .action-title', this.wrapper);
 		var menu = new DeskPRO.UI.Menu({
 			triggerElement: $('.actions-bar .action-title', this.wrapper),
 			menuElement: $('.actions-bar .action-menu', this.wrapper),
-			onItemClicked: function(info) {
+			onItemClicked: (function(info) {
 				var itemEl = $(info.itemEl);
 				
-				action_title.data('op', itemEl.data('op'));
+				this.selectedActionData = {
+					op: itemEl.data('op')
+				};
+				
+				if (itemEl.data('op') == 'macro') {
+					this.selectedActionData['macro_id'] = itemEl.data('macro-id');
+				} else if (itemEl.data('op') == 'status') {
+					this.selectedActionData['status'] = itemEl.data('status');
+				}
+				
 				action_title.html(itemEl.html());
-			}
+			}).bind(this)
 		});
+		
+		$('.actions-bar .action-perform', this.wrapper).click((function() {
+			this.performMassAction();
+		}).bind(this));
 		
 		var table = $('table.list', this.contentWrapper);
 		var count_el = $('.actions-bar .counter .count', this.wrapper);
@@ -97,6 +112,46 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 			// Make sure its visible
 			actions_bar.slideDown('fast');
 		});
+	},
+	
+	performMassAction: function() {
+		if (this.selectedActionData == null) {
+			return;
+		}
+		
+		var data = [];
+		
+		$('input[type="checkbox"].ticket:checked', this.contentWrapper).each(function() {
+			data.push({
+				name: 'ticket_ids[]',
+				value: $(this).val()
+			});
+		});
+		
+		Object.each(this.selectedActionData, function(v,k) {
+			data.push({
+				name: k,
+				value: v
+			});
+		});
+		
+		DeskPRO_Window.startLoadingIndicator();
+		$.ajax({
+			cache: false,
+			type: 'POST',
+			data: data,
+			url: BASE_URL + 'agent/ticket-search/ajax-mass-actions',
+			context: this,
+			dataType: 'json',
+			success: function (data) {
+				this._handleMassActionsReply(data);
+			}
+		});
+	},
+	
+	_handleMassActionsReply: function(data) {
+		DeskPRO_Window.stopLoadingIndicator();
+		console.debug(data);
 	},
 	
 	//#########################################################################
