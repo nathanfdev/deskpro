@@ -34,7 +34,7 @@ DeskPRO.Agent.Window = new Class({
 				paneSelector: '#window_head',
 				spacing_open: 0,
 				spacing_closed: 0,
-				size: 91
+				size: 80
 			},
 			center: {
 				paneSelector: '#pane_shell'

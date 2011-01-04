@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog;
+namespace Application\DeskPRO\Tickets\TicketLog\Actions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
@@ -23,6 +23,11 @@ class Department implements LogActionInterface
 	{
 		$this->old_dep = $old_dep;
 		$this->new_dep = $new_dep;
+	}
+
+	public function getLogName()
+	{
+		return 'changed_department';
 	}
 
 	public function getLogDetails()

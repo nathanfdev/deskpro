@@ -290,12 +290,19 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->date_created = new \DateTime();
 
-		// Automatically create a ticket logger
-		//$ticket_logger = new Application\DeskPRO\Tickets\TicketLog\Logger($this);
-		//$this->_ticket_logger = $ticket_logger;
-		//$this->addPropertyChangedListener($ticket_logger);
+		$this->_initTicketLogger();
 	}
 
+	/**
+	 * @orm:PostLoad
+	 */
+	public function _initTicketLogger()
+	{
+		// Automatically create a ticket logger
+		$ticket_logger = new \Application\DeskPRO\Tickets\TicketLog\Logger($this);
+		$this->_ticket_logger = $ticket_logger;
+		$this->addPropertyChangedListener($ticket_logger);
+	}
 
 
 	/**
@@ -348,6 +355,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->messages->add($message);
 		$message['ticket'] = $this;
+
 
 		$this->_onPropertyChanged('messages', null, $message);
 	}
@@ -420,11 +428,22 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @orm:PreInsert
+	 */
+	public function _preInsert()
+	{
+		if ($this->_ticket_logger) {
+			$action = new \Application\DeskPRO\Tickets\Actions\Created($this);
+			$this->_ticket_logger->logAction($action);
+		}
+	}
 	
 	/**
-	 * @orm:PostPersist
+	 * @orm:PostUpdate
+	 * @orm:PostInsert
 	 */
-	public function saveTicketLogs()
+	public function _saveTicketLogs()
 	{
 		if ($this->_ticket_logger) {
 			$this->_ticket_logger->saveLogs();

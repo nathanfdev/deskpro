@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog;
+namespace Application\DeskPRO\Tickets\TicketLog\Actions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
@@ -23,6 +23,11 @@ class Category implements LogActionInterface
 	{
 		$this->old_cat = $old_cat;
 		$this->new_cat = $new_cat;
+	}
+
+	public function getLogName()
+	{
+		return 'changed_category';
 	}
 
 	public function getLogDetails()

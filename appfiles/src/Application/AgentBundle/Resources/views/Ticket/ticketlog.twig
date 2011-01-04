@@ -1,0 +1,36 @@
+<table class="list" cellspacing="0" width="100%">
+	<thead class="display-options-trigger">
+		<tr>
+			<th>Summary</th>
+			<th>Who</th>
+			<th width="100">Date</th>
+		</tr>
+	</thead>
+	<tbody>
+		{% for log in ticket_logs %}
+			<tr>
+				<td>
+					{% if log.action_type == 'changed_agent' %}
+						Assigned agent changed from {{log.details.old_agent_name}} to {{log.details.new_agent_name}}
+					{% elseif log.action_type == 'ticket_created' %}
+						Ticket created {{log.details.ticket_id}}
+					{% elseif log.action_type == 'changed_category' %}
+						Category changed from {{log.details.old_category_title}} to {{log.details.new_category_title}}
+					{% elseif log.action_type == 'changed_department' %}
+						Department changed from {{log.details.old_department_title}} to {{log.details.new_department_title}}
+					{% elseif log.action_type == 'message_created' %}
+						New reply {{log.details.message_id}}
+					{% elseif log.action_type == 'changed_priority' %}
+						Priority changed from {{log.details.old_priority_title}} to {{log.details.new_priority_title}}
+					{% elseif log.action_type == 'changed_product' %}
+						Product changed from {{log.details.old_product_title}} to {{log.details.new_product_title}}
+					{% elseif log.action_type == 'changed_status' %}
+						Status changed from {{log.details.old_status}} to {{log.details.new_status}}
+					{% endif %}
+				</td>
+				<td>{{log.person.display_name}}</td>
+				<td>{{log.date_created|date('Y-m-d')}}</td>
+			</tr>
+		{% endfor %}
+	</tbody>
+</table>

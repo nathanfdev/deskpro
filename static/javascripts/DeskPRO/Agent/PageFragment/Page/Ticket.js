@@ -185,12 +185,37 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	changeTicketTab: function(to_tab) {
-		console.log(to_tab);
 		$('.tab-content', this.wrapper).removeClass('on');
 		$(to_tab, this.wrapper).addClass('on');
 		
 		$('.tab-trigger', this.wrapper).removeClass('on');
 		$($(to_tab).data('tab-trigger'), this.wrapper).addClass('on');
+		
+		if (to_tab.indexOf('.ticket-log') != -1) {
+			this._loadTicketLog();
+		}
+	},
+	
+	_loadTicketLog: function() {
+		
+		if ($('.tab-content.ticket-log', this.wrapper).data('is-loaded')) {
+			// Already loaded
+			return;
+		}
+		
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-ticket-log',
+			type: 'GET',
+			context: this,
+			dataType: 'html',
+			success: function(html) {
+				this._loadTicketLogSuccess(html);
+			}
+		});
+	},
+	
+	_loadTicketLogSuccess: function(html) {
+		$('.tab-content.ticket-log', this.wrapper).html(html).data('is-loaded', true);
 	},
 
 	//#################################################################

@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 /**
  * Ticket log items
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketLog")
  * @orm:Table(name="tickets_logs")
  */
 class TicketLog extends \Application\DeskPRO\Domain\DomainObject
@@ -60,12 +60,6 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="summary", type="string", length=255)
-	 */
-	protected $summary;
-
-	/**
-	 * @var string
 	 * @orm:Column(name="details", type="array")
 	 */
 	protected $details = array();
@@ -76,11 +70,8 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
-	/** @orm:PrePersist */
-	public function _prePersist()
+	public function __construct()
 	{
-		if (!$this->date_created) {
-			$this->date_created = new \DateTime();
-		}
+		$this->date_created = new \DateTime();
 	}
 }

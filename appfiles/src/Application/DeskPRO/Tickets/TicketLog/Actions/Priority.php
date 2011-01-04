@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog;
+namespace Application\DeskPRO\Tickets\TicketLog\Actions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
@@ -23,6 +23,11 @@ class Priority implements LogActionInterface
 	{
 		$this->old_pri = $old_pri;
 		$this->new_pri = $new_pri;
+	}
+
+	public function getLogName()
+	{
+		return 'changed_priority';
 	}
 
 	public function getLogDetails()

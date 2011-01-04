@@ -107,13 +107,26 @@
 	</div>
 	<div id="window_header_nav">
 		<div class="section">
-			<h1>Engage</h1>
+			<h1>Helpdesk</h1>
 			<ul>
 				<li class="icon tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch') }}">Tickets</li>
-				<li class="dev-feature-inactive icon tweets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Tweets</li>
-				<li class="dev-feature-inactive icon facebook" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Facebook</li>
 				<li class="dev-feature-inactive icon chat" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Chat</li>
+				<li class="dev-feature-inactive icon ideas" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Ideas</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h1>CRM</h1>
+			<ul>
+				<li class="icon people" data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">People</li>
+				<li class="dev-feature-inactive icon organizations" data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">Organizations</li>
 				<li class="dev-feature-inactive icon leads" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Leads</li>
+			</ul>
+		</div>
+		<div class="section">
+			<h1>Social</h1>
+			<ul>
+				<li class="dev-feature-inactive icon tweets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Twitter</li>
+				<li class="dev-feature-inactive icon facebook" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Facebook</li>
 			</ul>
 		</div>
 		<div class="section">
@@ -121,15 +134,7 @@
 			<ul>
 				<li class="dev-feature-inactive icon knowledgebase" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Knowledgebase</li>
 				<li class="dev-feature-inactive icon troubleshooters" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Troubleshooters</li>
-				<li class="dev-feature-inactive icon ideas" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Ideas</li>
 				<li class="dev-feature-inactive icon files" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Files</li>
-			</ul>
-		</div>
-		<div class="section">
-			<h1>Manage</h1>
-			<ul>
-				<li class="icon people" data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">People</li>
-				<li class="dev-feature-inactive icon organizations" data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">Organizations</li>
 			</ul>
 		</div>
 		<div class="nav-right">

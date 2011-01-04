@@ -227,6 +227,22 @@ class TicketController extends AbstractController
 
 
 	############################################################################
+	# ajax-ticket-log
+	############################################################################
+
+	public function ajaxTicketLogAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$ticket_logs = App::getOrm()->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
+
+		return $this->render('AgentBundle:Ticket:ticketlog.twig', array(
+			'ticket_logs' => $ticket_logs
+		));
+	}
+
+
+	############################################################################
 
 	/**
 	 * @return Application\DeskPRO\Entity\Ticket

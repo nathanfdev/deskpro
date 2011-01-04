@@ -294,20 +294,14 @@ ul.tagit input[type="text"] {
 }
 
 #window_header_nav .section {
-	margin: 10px;
+	margin: 5px;
 	background-color: #121932;
 	border: 1px solid #4b5579;
 	-moz-border-radius: 10px;
 	border-radius: 10px;
 	color: #fff;
 	float: left;
-	padding: 10px 10px 7px 10px;
-}
-
-#window_header_nav .section:hover {
-	-webkit-box-shadow: 1px 1px 15px rgba(255, 255, 255, 0.3);
-	-moz-box-shadow: 1px 1px 15px rgba(255, 255, 255, 0.3);
-	box-shadow: 1px 1px 15px rgba(255, 255, 255, 0.3);
+	padding: 8px 6px 7px 6px;
 }
 
 #window_header_nav .section h1 {
@@ -353,8 +347,8 @@ ul.tagit input[type="text"] {
 
 #window_header_nav .nav-right {
 	float: right;
-	margin-right: 10px;
-	margin-top: 15px;
+	margin-right: 5px;
+	margin-top: 10px;
 }
 
 #window_header_nav .create-box {

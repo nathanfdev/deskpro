@@ -92,12 +92,11 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 		</div>
 	{% endif %}
 	
-	{% if ticket.attachments.count() %}
 	<ul class="ticket-tabs">
 		<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
-		<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
+		{% if ticket.attachments.count() %}<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>{% endif %}
+		<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
 	</ul>
-	{% endif %}
 </div>
 
 <div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
@@ -146,6 +145,12 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 			{% endfor %}
 		</tbody>
 	</table>
+</div>
+
+<div class="tab-content ticket-log" data-tab-trigger=".tab-trigger.ticket-log">
+	<div class="loading-more" style="display:block">
+		Loading ticket log ...
+	</div>
 </div>
 
 </div>

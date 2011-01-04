@@ -17,7 +17,7 @@ use \Application\DeskPRO\Entity;
 /**
  * The ticket logger takes care of logging changes done to a ticket.
  */
-class Loggger implements Doctrine\Common\PropertyChangedListener
+class Logger implements \Doctrine\Common\PropertyChangedListener
 {
 	protected $ticket;
 
@@ -30,10 +30,10 @@ class Loggger implements Doctrine\Common\PropertyChangedListener
 
 	public function propertyChanged($sender, $prop, $old_val, $new_val)
 	{
-		$this->log($prop, $old_val, $new_val);
+		$this->logChange($prop, $old_val, $new_val);
 	}
 
-	public function log($prop, $old_val, $new_val)
+	public function logChange($prop, $old_val, $new_val)
 	{
 		$action = null;
 		
@@ -50,11 +50,19 @@ class Loggger implements Doctrine\Common\PropertyChangedListener
 				$action = new Actions\Department($old_val, $new_val);
 				break;
 
-			case 'Priority':
+			case 'messages':
+				if ($new_val) {
+					$action = new Actions\Message($new_val);
+				} else {
+					// $old_val means removed
+				}
+				break;
+
+			case 'priority':
 				$action = new Actions\Priority($old_val, $new_val);
 				break;
 
-			case 'Product':
+			case 'product':
 				$action = new Actions\Product($old_val, $new_val);
 				break;
 
@@ -64,16 +72,24 @@ class Loggger implements Doctrine\Common\PropertyChangedListener
 		}
 
 		if ($action) {
-			$this->entered_logs[$prop] = $action;
+			$name = $action->getLogName();
+			$this->entered_logs[$name] = $action;
 		}
+	}
+
+	public function logAction(Actions\LogActionInterface $action)
+	{
+		$name = $action->getLogName();
+		$this->entered_logs[$name] = $action;
 	}
 
 	public function saveLogs()
 	{
-		foreach ($this->entered_logs as $action) {
+		foreach ($this->entered_logs as $name => $action) {
 			$ticket_log = new Entity\TicketLog();
 			$ticket_log['person'] = App::getCurrentPerson();
 			$ticket_log['ticket'] = $this->ticket;
+			$ticket_log['action_type'] = $name;
 			$ticket_log['details'] = $action->getLogDetails();
 
 			App::getOrm()->persist($ticket_log);

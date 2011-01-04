@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog;
+namespace Application\DeskPRO\Tickets\TicketLog\Actions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
@@ -23,6 +23,11 @@ class Agent implements LogActionInterface
 	{
 		$this->old_agent = $old_agent;
 		$this->new_agent = $new_agent;
+	}
+
+	public function getLogName()
+	{
+		return 'changed_agent';
 	}
 
 	public function getLogDetails()

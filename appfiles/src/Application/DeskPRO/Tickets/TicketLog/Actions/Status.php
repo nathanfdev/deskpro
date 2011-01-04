@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog;
+namespace Application\DeskPRO\Tickets\TicketLog\Actions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
@@ -23,6 +23,11 @@ class Status implements LogActionInterface
 	{
 		$this->old_status = $old_status;
 		$this->new_status = $new_status;
+	}
+
+	public function getLogName()
+	{
+		return 'changed_status';
 	}
 
 	public function getLogDetails()
