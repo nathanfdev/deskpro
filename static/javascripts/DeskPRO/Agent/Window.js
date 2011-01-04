@@ -34,7 +34,7 @@ DeskPRO.Agent.Window = new Class({
 				paneSelector: '#window_head',
 				spacing_open: 0,
 				spacing_closed: 0,
-				size: 80
+				size: 52
 			},
 			center: {
 				paneSelector: '#pane_shell'
@@ -52,6 +52,15 @@ DeskPRO.Agent.Window = new Class({
 		
 		$('#window_header_nav li[data-route]').click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
+		});
+		
+		// Set up tabs
+		$('#window_head_top ul.header-tabs li').click(function() {
+			$('#window_head_top ul.header-tabs li').removeClass('on');
+			$(this).addClass('on');
+			
+			$('#window_header_nav .group.on').removeClass('on');
+			$('#window_header_nav .group.' + $(this).data('tab-name')).addClass('on');
 		});
 		
 		// Set up listener for badge count

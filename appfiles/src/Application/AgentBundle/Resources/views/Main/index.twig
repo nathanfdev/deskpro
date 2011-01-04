@@ -74,23 +74,10 @@
 		
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
-			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
-			window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
-			/*
-			for (var i = 1; i <= 20; i++) {
-				var page = window.DeskPRO_Window.createPageFragment('Testing', 'DeskPRO.Agent.PageFragment.NavPane.Basic');
-				page.TYPENAME = 'ticket';
-				page.setMetaData('title', 'Testing ' + i);
-				
-				window.DeskPRO_Window.getPanedShell().addTabPage(page);
-			}
-			*/
-			/*
-			var menu = new DeskPRO.UI.Menu({
-				triggerElement: '#test_menu_trigger',
-				menuElement: '#test_menu'
-			});
-			*/
+			//window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
+			
+			// Debug: auto load a ticket tab
+			//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
 		});
 	</script>
 </head>
@@ -99,6 +86,12 @@
 <div id="window_head">
 	<div id="window_head_top">
 		<div class="logo">DeskPRO</div>
+		<ul class="header-tabs">
+			<li class="on tickets" data-tab-name="helpdesk">Helpdesk</li>
+			<li data-tab-name="crm">CRM</li>
+			<li data-tab-name="social">Social</li>
+			<li data-tab-name="publish">Publish</li>
+		</ul>
 		<ul class="current-user">
 			<li class="person">{{person.display_name}} (Log Out)</li>
 			<li class="settings settings-link">Settings</li>
@@ -106,7 +99,41 @@
 		</ul>
 	</div>
 	<div id="window_header_nav">
-		<div class="section">
+		<div class="group helpdesk on">
+			<ul>
+				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch') }}"><span class="icon tickets">Tickets</span></li>
+				<li class="chat" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon chat">Chat</span></li>
+				<li class="ideas" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon ideas">Ideas</span></li>
+				<li class="forums" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tickets">Q&amp;A</span></li>
+				<li class="forms" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tickets">Forms</span></li>
+			</ul>
+		</div>
+		<div class="group crm">
+			<ul>
+				<li data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}"><span class="icon people">People</span></li>
+				<li data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}"><span class="dev-feature-inactive icon organizations">Organizations</span></li>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Leads</span></li>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Assets</span></li>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Billing</span></li>
+			</ul>
+		</div>
+		<div class="group social">
+			<ul>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tweets">Twitter</span></li>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon facebook">Facebook</span></li>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon facebook">Referrers</span></li>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon facebook">LinkedIn</span></li>
+			</ul>
+		</div>
+		<div class="group publish">
+			<ul>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon knowledgebase">Knowledgebase</span></li>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon troubleshooters">Troubleshooters</span></li>
+				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon files">Files</span></li>
+			</ul>
+		</div>
+		{#
+		<div class="section on">
 			<h1>Helpdesk</h1>
 			<ul>
 				<li class="icon tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch') }}">Tickets</li>
@@ -137,6 +164,8 @@
 				<li class="dev-feature-inactive icon files" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Files</li>
 			</ul>
 		</div>
+		#}
+
 		<div class="nav-right">
 			<div class="search-box">
 				<input type="text" name="q" />
