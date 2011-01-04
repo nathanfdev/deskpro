@@ -5,12 +5,21 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 
 	wrapper: null,
 	contentWrapper: null,
+	barWrapper: null,
+	layout: null,
 	overlay: null,
 
 	initPage: function(el) {
 		
 		this.wrapper = $(el);
 		this.contentWrapper = $('.content:first', this.wrapper);
+		this.barWrapper = $('.actions-bar:first', this.wrapper);
+		
+		var center_id = Orb.getUniqueId('listpane_');
+		var south_id = Orb.getUniqueId('listpane_');
+		
+		this.contentWrapper.attr('id', center_id);
+		this.barWrapper.attr('id', south_id);
 		
 		$('table > tbody > tr > td .subject', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
@@ -23,16 +32,34 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 	},
 	
 	activate: function() {
-		
 		if (this.getMetaData('queue_id')) {
 			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-activated', this.getMetaData('queue_id'));
 		}
+		
+		this.layout = $('#pane_list').layout({
+			center: {
+				paneSelector: '#' + this.contentWrapper.attr('id')
+			},
+			south: {
+				paneSelector: '#' + this.barWrapper.attr('id'),
+				size: 27,
+				spacing_open: 0,
+				spacing_closed: 0
+			}
+		});
 	},
 
 	deactivate: function() {
 		if (this.getMetaData('queue_id')) {
 			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-deactivated', this.getMetaData('queue_id'));
 		}
+		
+		this.layout.panes.south.remove();
+		this.layout.panes.south = false;
+		this.layout.panes.center.remove();
+		this.layout.panes.center = false;
+		this.layout.destroy();
+		this.layout = null;
 	},
 	
 	//#########################################################################
@@ -233,7 +260,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 	
 	initInfiniteScroll: function() {
 		this.wrapper.scroll((function() {
-			if (this.wrapper.scrollTop()+20 >= this._scrollInnerHeights() - $('#pane_list').height()) {
+			if (this.contentWrapper.scrollTop()+50 >= this._scrollInnerHeights() - this.contentWrapper.height()) {
 				this.nextSearchPage();
 			}
 		}).bind(this));
@@ -243,11 +270,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 	_scrollInnerHeights: function() {
 		if (this._scrollInnerHeights_cache !== null) return this._scrollInnerHeights_cache;
 		var h = 0;
-		$('#pane_list').children(':visible').each(function() {
+		this.contentWrapper.children(':visible').each(function() {
 			h += $(this).height();
 		});
-		
-		console.log(h);
+
 		this._scrollInnerHeights_cache = h;
 		
 		return h;
