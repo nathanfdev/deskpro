@@ -3,6 +3,7 @@
 {% set queue_content %}{% block queue_content %}{% endblock %}{%endset%}
 {% set flagged_content %}{% block flagged_content %}{% endblock %}{%endset%}
 {% set overview_content %}{% block overview_content %}{% endblock %}{%endset%}
+{% set find_content %}{% block find_content %}{% endblock %}{%endset%}
 
 <h1 data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" class="{% if queue_content %}active{%endif%}">Queues</h1>
 {% if queue_content %}<div class="main-nav">{{queue_content|raw}}</div>{%endif%}
@@ -12,3 +13,6 @@
 
 <h1 data-route="navpane:{{ path('agent_ticketsearch_overviewpane') }}" class="{% if overview_content %}active{%endif%}">Overview</h1>
 {% if overview_content %}<div class="main-nav">{{overview_content|raw}}</div>{%endif%}
+
+<h1 data-route="navpane:{{ path('agent_ticketsearch_findpane') }}" class="{% if find_content %}active{%endif%}">Find</h1>
+{% if find_content %}<div class="main-nav">{{find_content|raw}}</div>{%endif%}

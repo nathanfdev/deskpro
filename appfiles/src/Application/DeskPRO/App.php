@@ -283,6 +283,19 @@ class App
 		return self::get(self::SERVICE_ORM);
 	}
 
+
+
+	/**
+	 * Get a repository from the entity manager.
+	 * This is a shortcut for App::getOrm()->getRepository().
+	 *
+	 * @param Doctrine\ORM\EntityRepository
+	 */
+	public static function getEntityRepository($entity)
+	{
+		return self::get(self::SERVICE_ORM)->getRepository($entity);
+	}
+
 	
 
 	/**

@@ -28,7 +28,8 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		this.initDisplayOptions();
 		this.initInfiniteScroll();
 		
-		this.initActionsBar();
+		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
+		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
 	},
 	
 	activate: function() {
@@ -61,125 +62,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		this.layout.destroy();
 		this.layout = null;
 	},
-	
-	//#########################################################################
-	//# Actions bar
-	//#########################################################################
-	
-	selectedActionData: null,
-	
-	initActionsBar: function() {
-		var action_title = $('.actions-bar .action-title', this.wrapper);
-		var menu = new DeskPRO.UI.Menu({
-			triggerElement: $('.actions-bar .action-title', this.wrapper),
-			menuElement: $('.actions-bar .action-menu', this.wrapper),
-			onItemClicked: (function(info) {
-				var itemEl = $(info.itemEl);
-				
-				this.selectedActionData = {
-					op: itemEl.data('op')
-				};
-				
-				if (itemEl.data('op') == 'macro') {
-					this.selectedActionData['macro_id'] = itemEl.data('macro-id');
-				} else if (itemEl.data('op') == 'status') {
-					this.selectedActionData['status'] = itemEl.data('status');
-				}
-				
-				action_title.html(itemEl.html());
-			}).bind(this)
-		});
-		
-		$('.actions-bar .action-perform', this.wrapper).click((function() {
-			this.performMassAction();
-		}).bind(this));
-		
-		var table = $('table.list', this.contentWrapper);
-		var count_el = $('.actions-bar .counter .count', this.wrapper);
-		
-		var menu = new DeskPRO.UI.Menu({
-			triggerElement: $('.actions-bar .counter', this.wrapper),
-			menuElement: $('..actions-bar .selected-menu', this.wrapper),
-			onItemClicked: function(info) {
-				var itemEl = $(info.itemEl);
-				
-				if (itemEl.data('op') == 'none') {
-					$('input[type="checkbox"].ticket', table).attr('checked', false);
-				} else if (itemEl.data('op') == 'all') {
-					$('input[type="checkbox"].ticket', table).attr('checked', true);
-				} else if (itemEl.data('op') == 'invert') {
-					$('input[type="checkbox"].ticket', table).each(function() {
-						if ($(this).is(':checked')) {
-							$(this).attr('checked', false);
-						} else {
-							$(this).attr('checked', true);
-						}
-					});
-				}
-				
-				// Update count
-				count_el.html($('input[type="checkbox"].ticket:checked', table).length);
-			}
-		});
-		
-		var actions_bar = $('.actions-bar', this.wrapper);
-		$('input[type="checkbox"].ticket', this.contentWrapper).live('click', function() {
-			var num =  parseInt(count_el.html());
-			
-			if ($(this).is(':checked')) {
-				num++;
-			} else {
-				num--;
-			}
-			
-			if (num < 0) num = 0;
-			
-			 count_el.html(num);
-			
-			// Make sure its visible
-			actions_bar.slideDown('fast');
-		});
-	},
-	
-	performMassAction: function() {
-		if (this.selectedActionData == null) {
-			return;
-		}
-		
-		var data = [];
-		
-		$('input[type="checkbox"].ticket:checked', this.contentWrapper).each(function() {
-			data.push({
-				name: 'ticket_ids[]',
-				value: $(this).val()
-			});
-		});
-		
-		Object.each(this.selectedActionData, function(v,k) {
-			data.push({
-				name: k,
-				value: v
-			});
-		});
-		
-		DeskPRO_Window.startLoadingIndicator();
-		$.ajax({
-			cache: false,
-			type: 'POST',
-			data: data,
-			url: BASE_URL + 'agent/ticket-search/ajax-mass-actions',
-			context: this,
-			dataType: 'json',
-			success: function (data) {
-				this._handleMassActionsReply(data);
-			}
-		});
-	},
-	
-	_handleMassActionsReply: function(data) {
-		DeskPRO_Window.stopLoadingIndicator();
-		console.debug(data);
-	},
+
 	
 	//#########################################################################
 	//# Display options

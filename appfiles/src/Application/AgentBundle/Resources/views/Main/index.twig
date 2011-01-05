@@ -54,16 +54,20 @@
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/Shells/ThreePaned.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/TabManager.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Basic.js' %}"></script>
+	
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js' %}"></script>
 
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleSearch.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSearch.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFlagged.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js' %}"></script>
 
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/Basic.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketQueues.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketFlagged.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketOverview.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketFind.js' %}"></script>
 
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js' %}"></script>
 	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js' %}"></script>
@@ -75,14 +79,17 @@
 		
 		$(document).ready(function() {
 			window.DeskPRO_Window = new DeskPRO.Agent.Window();
-			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
+			//window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
+			window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
 			
 			// Debug: auto load a ticket tab
-			window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
+			//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
 		});
 	</script>
 </head>
 <body>
+
+<span id="test_route" data-route="navpane:{{ path('agent_ticketsearch_findpane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch_filter') }}" style="display:none"></span>
 
 <div id="window_head">
 	<div id="window_head_top">
@@ -133,39 +140,6 @@
 				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon files">Files</span></li>
 			</ul>
 		</div>
-		{#
-		<div class="section on">
-			<h1>Helpdesk</h1>
-			<ul>
-				<li class="icon tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch') }}">Tickets</li>
-				<li class="dev-feature-inactive icon chat" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Chat</li>
-				<li class="dev-feature-inactive icon ideas" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Ideas</li>
-			</ul>
-		</div>
-		<div class="section">
-			<h1>CRM</h1>
-			<ul>
-				<li class="icon people" data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">People</li>
-				<li class="dev-feature-inactive icon organizations" data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">Organizations</li>
-				<li class="dev-feature-inactive icon leads" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Leads</li>
-			</ul>
-		</div>
-		<div class="section">
-			<h1>Social</h1>
-			<ul>
-				<li class="dev-feature-inactive icon tweets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Twitter</li>
-				<li class="dev-feature-inactive icon facebook" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}">Facebook</li>
-			</ul>
-		</div>
-		<div class="section">
-			<h1>Publish</h1>
-			<ul>
-				<li class="dev-feature-inactive icon knowledgebase" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Knowledgebase</li>
-				<li class="dev-feature-inactive icon troubleshooters" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Troubleshooters</li>
-				<li class="dev-feature-inactive icon files" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}">Files</li>
-			</ul>
-		</div>
-		#}
 
 		<div class="nav-right">
 			<div class="search-box">

@@ -145,6 +145,26 @@ agent_ticketsearch_flaggedpane:
   pattern: /ticket-search/flagged-pane
   defaults: { _controller: AgentBundle:TicketSearch:flaggedPane }
 
+agent_ticketsearch_findpane:
+  pattern: /ticket-search/find-pane
+  defaults: { _controller: AgentBundle:TicketSearch:findPane }
+
+agent_ticketsearch_filter:
+  pattern: /ticket-search/filter
+  defaults: { _controller: AgentBundle:TicketSearch:filter }
+
+agent_ticketsearch_runfilter:
+  pattern: /ticket-search/filter/run
+  defaults: { _controller: AgentBundle:TicketSearch:runFilter }
+
+agent_ticketsearch_search:
+  pattern: /ticket-search/search
+  defaults: { _controller: AgentBundle:TicketSearch:search }
+
+agent_ticketsearch_runsearch:
+  pattern: /ticket-search/search/run
+  defaults: { _controller: AgentBundle:TicketSearch:runSearch }
+
 agent_ticketsearch_runqueue:
   pattern: /ticket-search/queue/:queue_id
   defaults: { _controller: AgentBundle:TicketSearch:runqueue }

@@ -13,6 +13,7 @@ namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\Entity\TicketQueue;
 use \Application\DeskPRO\Entity\Ticket;
+use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
@@ -101,7 +102,7 @@ class TicketSearchController extends AbstractController
 
 		$tpl = 'AgentBundle:TicketSearch:flagged-results.twig';
 		if ($this->in->getBool('partial')) {
-			$tpl = 'AgentBundle:TicketSearch:queue-results-list.twig';
+			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig';
 			if (!count($tickets)) {
 				return $this->createResponse('');
 			}
@@ -142,6 +143,108 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
+
+	############################################################################
+	# find-pane
+	############################################################################
+
+	public function findPaneAction()
+	{
+		return $this->render('AgentBundle:TicketSearch:pane-find.twig', array(
+
+		));
+	}
+
+	public function filterAction()
+	{
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+		
+		return $this->render('AgentBundle:TicketSearch:filter.twig', array(
+			'ticket_options' => $ticket_options,
+		));
+	}
+
+	public function runFilterAction()
+	{
+		$result_cache = false;
+		if ($this->in->getUint('cache_id')) {
+			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+			if ($result_cache['person_id'] != $this->person['id']) {
+				$result_cache = false;
+			}
+		}
+
+		#------------------------------
+		# If there's no result set, we're running
+		# it for the first time
+		#------------------------------
+
+		if (!$result_cache) {
+
+			$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			foreach ($terms as $term) {
+				$data = $term;
+				unset($data['rule_type'], $data['op']);
+
+				if (count($data) == 1) {
+					$data = array_pop($data);
+				}
+
+				$searcher->addTerm($term['rule_type'], $term['op'], $data);
+			}
+
+			//TODO remove when ready for real searches, make it an option in UI
+			$searcher->enableArchiveSearch();
+
+			$results = $searcher->getMatches();
+
+			$result_cache = new Entity\ResultCache();
+			$result_cache['person'] = $this->person;
+			$result_cache['criteria'] = array('terms' => $terms);
+			$result_cache['results'] = $results;
+			$result_cache['num_results'] = count($results);
+
+			App::getOrm()->persist($result_cache);
+			App::getOrm()->flush();
+		}
+
+		#------------------------------
+		# Now fetch tickets
+		#------------------------------
+
+		$total = $result_cache['num_results'];
+		$per_page = 50;
+		$num_pages = ceil($total / $per_page);
+		
+		$cur_page = $this->in->getUint('page');
+		if (!$cur_page OR $cur_page > $num_pages) $cur_page = 1;
+
+		$start_at = ($cur_page - 1) * $per_page;
+
+		$ticket_ids = array_slice($result_cache['results'], $start_at, $per_page);
+		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		$data = array(
+			'cache_id' => $result_cache['id'],
+			'total' => $total
+		);
+
+		$view_params = array(
+			'tickets' => $tickets,
+			'display_fields' => array('department', 'agent', 'person')
+		);
+
+		if ($cur_page == 1) {
+			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results.twig', $view_params);
+		} else {
+			$data['is_partial'] = true;
+			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results-page.twig', $view_params);
+		}
+
+		return $this->createJsonResponse($data);
+	}
 
 
 	############################################################################

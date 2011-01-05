@@ -1,0 +1,109 @@
+<script>
+pageMeta.title = 'Find Tickets with a Filter';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
+pageMeta.pageUrl       = '{{ path('agent_ticketsearch_runfilter') }}?cache_id=$cache_id&page=$page';
+pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_runfilter') }}';
+</script>
+<div class="content">
+	<div class="listpane-top">
+		<div class="criteria">
+
+			<form class="search-form-data">
+			<div class="search-form">
+				<div class="search-terms"></div>
+				<div class="term"><span class="add-term">+</span> Add a new criteria</div>
+			</div>
+			</form>
+			<center>
+				<button class="dp-button run-filter-trigger">Run Filter</button>
+			</center>
+
+			<div class="search-tpl" style="display:none">
+				<div class="row">
+					<div class="term">
+						<div class="type"></div>
+						<div class="choice"></div>
+						<div class="remove">-</div>
+					</div>
+				</div>
+				<div class="type" title="Department" data-rule-type="department">
+					<div class="choice">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+						<select name="department">
+							{% for id,title in ticket_options.departments %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Category" data-rule-type="category">
+					<div class="choice">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+						<select name="category">
+							{% for id,title in ticket_options.categories %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Product" data-rule-type="product">
+					<div class="choice">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+						<select name="product">
+							{% for id,title in ticket_options.products %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Priority" data-rule-type="priority">
+					<div class="choice">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+						<select name="priority">
+							{% for id,title in ticket_options.priorities %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Agent" data-rule-type="agent">
+					<div class="choice">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+						<select name="agent">
+							<option value="0">Unassigned</option>
+							<option value="{{person.id}}">Assigned to me</option>
+							<option value="-1">Assigned to someone other than me</option>
+							<option value="0"></option>
+							{% for id,title in ticket_options.agents %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+			</div>
+		</div>
+		<div class="summary" style="display:none">
+			<div class="toggle" style="float: right;">
+				Edit Filter &raquo;
+			</div>
+			Found <span class="result-count">0</span> tickets
+		</div>
+	</div>
+	<div class="content-real"></div>
+</div>
+{% include 'AgentBundle:TicketSearch:part-action-bar.twig' %}

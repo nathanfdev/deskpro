@@ -1,0 +1,28 @@
+<div class="display-options overlay">
+	<h1>Display Options</h1>
+	<div style="float: right; width: 100px;">
+		Order By: <select name="order_by">
+			<option value="id.asc">Date Opened</option>
+		</select>
+	</div>
+	<div style="margin-right: 115px;">
+		<strong>Display Elements</strong><br />
+		<ul class="sortable-list">
+			<li data-field="person"><input type="checkbox" name="person" /> Contact Name</li>
+			<li data-field="department"><input type="checkbox" name="department" /> Department</li>
+			<li data-field="category"><input type="checkbox" name="category" /> Category</li>
+			<li data-field="product"><input type="checkbox" name="product" /> Product</li>
+			<li data-field="organization"><input type="checkbox" name="organization" /> Organization Name</li>
+			<li data-field="agent"><input type="checkbox" name="agent" /> Agent Name</li>
+		</ul>
+	</div>
+	<div class="buttons">
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">Save</button>
+			<button class="close-trigger dp-button gray small">Cancel</button>
+		</div>
+		<div class="loading-on">
+			<span>Saving ...</span>
+		</div>
+	</div>
+</div>

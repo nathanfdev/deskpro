@@ -1,0 +1,14 @@
+<thead class="display-options-trigger nosel">
+	<tr>
+		{% for field in display_fields %}
+			{% if field == 'person' %}<th data-field="person">User</th>
+			{% elseif field == 'department' %}<th data-field="department">Department</th>
+			{% elseif field == 'category' %}<th data-field="category">Category</th>
+			{% elseif field == 'product' %}<th data-field="product">Product</th>
+			{% elseif field == 'product' %}<th data-field="product">Product</th>
+			{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
+			{% elseif field == 'agent' %}<th data-field="agent">Agent</th>
+			{% endif %}
+		{% endfor %}
+	</tr>
+</thead>

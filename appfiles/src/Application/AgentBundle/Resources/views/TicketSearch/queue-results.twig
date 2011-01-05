@@ -7,51 +7,11 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 {% endif %}
 </script>
 <div class="content">
-	<div class="display-options overlay">
-		<h1>Display Options</h1>
-		<div style="float: right; width: 100px;">
-			Order By: <select name="order_by">
-				<option value="id.asc">Date Opened</option>
-			</select>
-		</div>
-		<div style="margin-right: 115px;">
-			<strong>Display Elements</strong><br />
-			<ul class="sortable-list">
-				<li data-field="person"><input type="checkbox" name="person" /> Contact Name</li>
-				<li data-field="department"><input type="checkbox" name="department" /> Department</li>
-				<li data-field="category"><input type="checkbox" name="category" /> Category</li>
-				<li data-field="product"><input type="checkbox" name="product" /> Product</li>
-				<li data-field="organization"><input type="checkbox" name="organization" /> Organization Name</li>
-				<li data-field="agent"><input type="checkbox" name="agent" /> Agent Name</li>
-			</ul>
-		</div>
-		<div class="buttons">
-			<div class="loading-off">
-				<button class="save-trigger dp-button small">Save</button>
-				<button class="close-trigger dp-button gray small">Cancel</button>
-			</div>
-			<div class="loading-on">
-				<span>Saving ...</span>
-			</div>
-		</div>
-	</div>
+	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.twig' %}
 
 	<table class="list" cellspacing="0" width="100%">
-		<thead class="display-options-trigger nosel">
-			<tr>
-				{% for field in display_fields %}
-					{% if field == 'person' %}<th data-field="person">User</th>
-					{% elseif field == 'department' %}<th data-field="department">Department</th>
-					{% elseif field == 'category' %}<th data-field="category">Category</th>
-					{% elseif field == 'product' %}<th data-field="product">Product</th>
-					{% elseif field == 'product' %}<th data-field="product">Product</th>
-					{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
-					{% elseif field == 'agent' %}<th data-field="agent">Agent</th>
-					{% endif %}
-				{% endfor %}
-			</tr>
-		</thead>
-		{% include 'AgentBundle:TicketSearch:queue-results-list.twig' %}
+		{% include 'AgentBundle:TicketSearch:part-results-list-thead.twig' %}
+		{% include 'AgentBundle:TicketSearch:part-results-list.twig' %}
 	</table>
 
 	<div class="loading-more">
@@ -61,30 +21,4 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 		There are no more results.
 	</div>
 </div>
-<div class="actions-bar">
-	<div class="counter"><span class="count">0</span> Selected</div>
-	<div class="actions">
-		<div class="action-selector">
-			<span class="action-title">Select Action...</span><button class="action-perform">Perform Action</button>
-		</div>
-	</div>
-	
-	<ul class="action-menu" style="display:none">
-		<li data-op="take">Take Ownership</li>
-		<li data-op="delete">Delete</li>
-		<li data-op="spam">Mark As Spam</li>
-		<li class="sep">-</li>
-		<li data-op="status" data-status="awaiting_agent">Set Status: Awaiting Agent</li>
-		<li data-op="status" data-status="awaiting_user">Set Status: Awaiting User</li>
-		<li data-op="status" data-status="resolved">Set Status: Resolved</li>
-		<li class="sep">-</li>
-		{% for macro in macros %}
-			<li data-op="macro" data-macro-id="{{macro.id}}">{{macro.title}}</li>
-		{% endfor %}
-	</ul>
-	<ul class="selected-menu" style="display:none">
-		<li data-op="all">Select All</li>
-		<li data-op="none">Select None</li>
-		<li data-op="invert">Invert Selection</li>
-	</ul>
-</div>
+{% include 'AgentBundle:TicketSearch:part-action-bar.twig' %}
