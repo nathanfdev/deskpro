@@ -78,7 +78,7 @@
 			window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
 			
 			// Debug: auto load a ticket tab
-			//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
+			window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
 		});
 	</script>
 </head>
@@ -102,7 +102,7 @@
 	<div id="window_header_nav">
 		<div class="group helpdesk on">
 			<ul>
-				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_overviewpane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch') }}"><span class="icon tickets">Tickets</span></li>
+				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch') }}"><span class="icon tickets">Tickets</span></li>
 				<li class="chat" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon chat">Chat</span></li>
 				<li class="ideas" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon ideas">Ideas</span></li>
 				<li class="forums" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tickets">Q&amp;A</span></li>
