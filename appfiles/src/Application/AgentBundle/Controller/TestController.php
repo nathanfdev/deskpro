@@ -6,19 +6,17 @@ class TestController extends AbstractController
 {
     public function indexAction()
     {
-		return $this->renderJson('AgentBundle:Test:test.phpj');
+		echo $this->person['id'];
+		
+		$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
+		$grouper->setGrouping('department_id');
+		$grouper->setMode('unassigned');
 
-		$queue = $this->em->getRepository('DeskPRO:TicketQueue')->find(3);
+		$data = $grouper->getDisplayArray();
 
-		$searcher = $queue->getSearcher();
-		$searcher->enableArchiveSearch();
-
-		print_r($searcher);
-
-		echo $searcher->getSql();
+		echo '<pre>';
+		print_r($data);
 
 		exit;
-
-        //return $this->render('AgentBundle:Test:index.twig');
     }
 }

@@ -125,6 +125,14 @@ agent_ticketsearch:
   pattern: /ticket-search
   defaults: { _controller: AgentBundle:TicketSearch:index }
 
+agent_ticketsearch_overviewpane:
+  pattern: /ticket-search/overview-pane
+  defaults: { _controller: AgentBundle:TicketSearch:overviewPane }
+
+agent_ticketsearch_overviewnav:
+  pattern: /ticket-search/overview-nav
+  defaults: { _controller: AgentBundle:TicketSearch:overviewNav }
+
 agent_ticketsearch_ajaxmassactions:
   pattern: /ticket-search/ajax-mass-actions
   defaults: { _controller: AgentBundle:TicketSearch:ajaxMassActions }

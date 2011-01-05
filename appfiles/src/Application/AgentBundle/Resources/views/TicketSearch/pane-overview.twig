@@ -1,0 +1,36 @@
+{% extends 'AgentBundle:TicketSearch:pane-layout.twig' %}
+{% block meta %}
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.NavPane.TicketOverview';
+</script>
+{% endblock %}
+{% block overview_content %}
+<div class="options" style="text-align:center">
+	Grouped by:<br />
+	<span class="grouping-menu-trigger menu grouping1" data-groupby="department_id">Department</span>
+	<span class="no-subgroup" style="font-size: 6pt">(add <span class="grouping-menu-trigger menu">subgroup</span>)</span>
+	<span class="with-subgroup" style="display:none">and <span class="grouping-menu-trigger menu grouping2" data-groupby=""></span></span>
+</div>
+<ul class="grouping-menu" style="display:none">
+	<li data-groupby="none">None</li>
+	<li data-groupby="department_id">Department</li>
+	<li data-groupby="category_id">Category</li>
+	<li data-groupby="priority_id">Priority</li>
+</ul>
+
+<div class="nav-list-wrapper on" data-mode="your">
+	<h4 class="nosel">My Tickets</h4>
+	<div class="list"></div>
+</div>
+
+<div class="nav-list-wrapper" data-mode="unassigned">
+	<h4 class="nosel">Unassigned Tickets</h4>
+	<div class="list"></div>
+</div>
+
+<div class="nav-list-wrapper" data-mode="others">
+	<h4 class="nosel">Others Tickets</h4>
+	<div class="list"></div>
+</div>
+
+{% endblock %}

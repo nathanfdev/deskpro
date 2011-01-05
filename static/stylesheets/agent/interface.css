@@ -673,6 +673,65 @@ ul.tagit input[type="text"] {
 	margin-bottom: 26px;
 }
 
+#pane_nav > .main-nav .options {
+	font-size: 10px;
+	background-color: #FFF;
+	border: 1px solid #A8A8A8;
+	border-top: none;
+	padding: 4px;
+	
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomright: 4px;
+	-moz-border-radius-bottomleft: 4px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 4px;
+	border-bottom-left-radius: 4px;
+	
+	margin: 0 6px 10px 6px;
+}
+
+#pane_nav > .main-nav .options .menu {
+	color: #455487;
+	cursor: pointer;
+}
+
+#pane_nav .nav-list-wrapper {
+}
+
+#pane_nav .nav-list-wrapper h4 {
+	color: #A0A5B8;
+	font-weight: bold;
+	font-size: 13px;
+	padding: 4px;
+	cursor: pointer;
+	
+	text-shadow: 0px 1px 2px #fff;
+}
+
+#pane_nav .nav-list-wrapper h4:hover {
+	text-decoration: underline;
+}
+
+#pane_nav .nav-list-wrapper.on h4 { 
+	color: #657080;
+	cursor: default;
+}
+
+#pane_nav .nav-list-wrapper.on h4:hover {
+	text-decoration: none !important;
+}
+
+#pane_nav .nav-list-wrapper ul.nav-list > li {
+	padding-left: 14px;
+	display: none;
+}
+
+#pane_nav .nav-list-wrapper.on ul.nav-list > li {
+	display: block;
+}
+
 #pane_nav ul.nav-list > li {
 	display: block;
 	font-family: Verdana;
@@ -681,6 +740,19 @@ ul.tagit input[type="text"] {
 	cursor: pointer;
 	
 	text-shadow: 0px 0px 1px #fff;
+}
+
+#pane_nav .nav-list-wrapper ul.nav-list > li.sub {
+	padding-left: 24px !important;
+}
+
+#pane_nav ul.nav-list > li.sub {
+	padding: 3px 5px 3px 10px;
+	font-size: 7pt;
+}
+
+#pane_nav ul.nav-list.small > li span.count {
+	font-size: 6pt;
 }
 
 #pane_nav ul.nav-list > li.on {

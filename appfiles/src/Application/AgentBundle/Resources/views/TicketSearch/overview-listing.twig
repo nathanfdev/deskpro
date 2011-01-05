@@ -1,0 +1,10 @@
+<ul class="nav-list overview-list nosel">
+	{% for group1 in counts %}
+		<li><span class="count">{{group1.total}}</span>{{group1.title}}</li>
+		{% if group1.sub %}
+			{% for group2 in group1.sub %}
+				<li class="sub"><span class="count">{{group2.total}}</span>{{group2.title}}</li>
+			{% endfor %}
+		{% endif %}
+	{% endfor %}
+</ul>

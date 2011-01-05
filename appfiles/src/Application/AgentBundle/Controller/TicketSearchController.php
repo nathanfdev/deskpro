@@ -114,6 +114,36 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
+
+	
+	############################################################################
+	# overview-pane
+	############################################################################
+
+	public function overviewPaneAction()
+	{
+		return $this->render('AgentBundle:TicketSearch:pane-overview.twig', array(
+
+		));
+	}
+
+	public function overviewNavAction()
+	{
+		$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
+		$grouper->setGrouping($this->in->getString('group1'), $this->in->getString('group2'));
+		$grouper->setMode($this->in->getString('mode'), $this->person['id']);
+
+		$display_counts = $grouper->getDisplayArray();
+
+		unset($display_counts[0]);// TODO 0 is the 'total', we'll use that later in the UI
+
+		return $this->render('AgentBundle:TicketSearch:overview-listing.twig', array(
+			'counts' => $display_counts
+		));
+	}
+
+
+
 	############################################################################
 	# /agent/ticket-search/queues/list                     agent_ticketqueues_list
 	############################################################################
