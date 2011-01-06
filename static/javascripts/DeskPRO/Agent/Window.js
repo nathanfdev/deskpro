@@ -22,13 +22,37 @@ DeskPRO.Agent.Window = new Class({
 	messageBroker: null,
 	poller: null,
 
-	initialize: function() {
+	initialize: function() {	
 		
+		this._initBasic();
+		this._initLayout();
+		this._initRoutes();
+		this._initWindowInterface();
+
+	},
+	
+	
+	
+	_initBasic: function() {
 		this.messageBroker = new DeskPRO.MessageBroker();
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
 			ajaxUrl: BASE_URL + 'agent/poller'
 		});
 		
+		// Set up listener for badge count
+		this.getMessageBroker().addMessageListener('queues.counts', this._updatequeueCounts.bind(this));
+	},
+	
+	_updatequeueCounts: function (counts) {
+		var total = 0;
+		Object.each(counts, function (count, queue_id) {
+			total += count;
+		});
+		
+		$('.ticket-queue-count-all').html('(' + total + ')');
+	},
+	
+	_initLayout: function() {
 		$('body').layout({
 			north: {
 				paneSelector: '#window_head',
@@ -43,7 +67,9 @@ DeskPRO.Agent.Window = new Class({
 		
 		var pane = new DeskPRO.Agent.Shells.ThreePaned();
 		this.addShell('paned', pane);
-		
+	},
+	
+	_initRoutes: function() {
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
@@ -53,7 +79,9 @@ DeskPRO.Agent.Window = new Class({
 		$('#window_header_nav li[data-route]').click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
-		
+	},
+	
+	_initWindowInterface: function() {
 		// Set up tabs
 		$('#window_head_top ul.header-tabs li').click(function() {
 			$('#window_head_top ul.header-tabs li').removeClass('on');
@@ -62,9 +90,6 @@ DeskPRO.Agent.Window = new Class({
 			$('#window_header_nav .group.on').removeClass('on');
 			$('#window_header_nav .group.' + $(this).data('tab-name')).addClass('on');
 		});
-		
-		// Set up listener for badge count
-		this.getMessageBroker().addMessageListener('queues.counts', this.updatequeueCounts.bind(this));
 		
 		// Set up create menu
 		var menu = new DeskPRO.UI.Menu({
@@ -99,7 +124,42 @@ DeskPRO.Agent.Window = new Class({
 			win.moveTo(pos_left, pos_top);
 			win.focus();
 		});
+		
+		// Global AJAX handler for errors if no error handler is attached
+		$(document).ajaxError(this._globalHandleAjaxError.bind(this));
 	},
+	
+	
+	
+	//#################################################################
+	//# Getters
+	//#################################################################
+	
+	getMessageBroker: function() {
+		return this.messageBroker;
+	},
+	
+	getPoller: function() {
+		return this.poller;
+	},
+	
+	addShell: function(id, shell) {
+		this.shells[id] = shell;
+	},
+	
+	getShell: function(id) {
+		return this.shells[id];
+	},
+	
+	getPanedShell: function() {
+		return this.getShell('paned');
+	},
+	
+	
+	
+	//#################################################################
+	//# AJAX and loading
+	//#################################################################
 	
 	loadingIndicatorEl: null,
 	loadingIndicatorCount: 0,
@@ -136,36 +196,41 @@ DeskPRO.Agent.Window = new Class({
 		}
 	},
 	
-	updatequeueCounts: function (counts) {
-		var total = 0;
-		Object.each(counts, function (count, queue_id) {
-			total += count;
-		});
+	_globalHandleAjaxError: function(event, XMLHttpRequest, ajaxOptions, thrownError) {
 		
-		$('.ticket-queue-count-all').html('(' + total + ')');
+		// We dont use this handler if there was an error handler used
+		if (ajaxOptions && ajaxOptions.error) return;
+		
+		// Hide the loading indicator
+		this.stopLoadingIndicator(10000);
+		
+		// Show overlay about failed
+		this._showAjaxError();
 	},
 	
-	getMessageBroker: function() {
-		return this.messageBroker;
+	ajaxErrorOverlay: null,
+	_showAjaxError: function() {
+	
+		if (!this.ajaxErrorOverlay) {
+			this.ajaxErrorOverlay = new DeskPRO.UI.Overlay({
+				contentElement: $('#global_ajax_error'),
+				zIndex: 10000000, /* this should be bigger than everything */
+				onContentSet: function(eventData) {
+					$('.close-trigger', eventData.wrapperEl).click((function() {
+						eventData.overlay.closeOverlay();
+					}).bind(this));
+				}
+			});
+		}
+		
+		this.ajaxErrorOverlay.openOverlay();
 	},
 	
-	getPoller: function() {
-		return this.poller;
-	},
-	
-	addShell: function(id, shell) {
-		this.shells[id] = shell;
-	},
-	
-	getShell: function(id) {
-		return this.shells[id];
-	},
-	
-	getPanedShell: function() {
-		return this.getShell('paned');
-	},
 	
 	
+	//#################################################################
+	//# Routes and page loading
+	//#################################################################
 	
 	/**
 	 * Add a loader for a particular prefix.
@@ -423,6 +488,10 @@ DeskPRO.Agent.Window = new Class({
 	},
 	
 	
+	
+	//#################################################################
+	//# Global registry
+	//#################################################################
 	
 	/**
 	 * Get a value from the registry.
