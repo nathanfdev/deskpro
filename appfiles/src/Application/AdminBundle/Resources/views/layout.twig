@@ -1,84 +1,183 @@
-<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Strict//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-strict.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml" lang="en">
+{% set section %}{% block section %}{% endblock %}{% endset %}
+{% if not section %}{% set section = 'setup' %}{% endif %}
+{% set sub_section %}{% block sub_section %}{% endblock %}{% endset %}
+{% if not sub_section %}{% set sub_section = 'settings' %}{% endif %}
+<!DOCTYPE html>
+<html>
 <head>
-	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-	<title>Web App Theme</title>
-	<link rel="stylesheet" href="{% asset 'stylesheets/base.css' %}" type="text/css" media="screen" />
-	<link rel="stylesheet" href="{% asset 'stylesheets/themes/blue/style.css' %}" type="text/css" media="screen" />
+	<meta charset="UTF-8"/>
+	<meta name="robots" content="NOINDEX" />
+	<meta http-equiv="X-UA-Compatible" content="IE=100" />
+	<title>DeskPRO Admin</title>
 
 	<link rel="stylesheet" href="{% asset 'javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css' %}" type="text/css" media="screen"  />
+	<link rel="stylesheet" href="{% asset 'javascripts/DeskPRO/UI/ui.css' %}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{% asset 'javascripts/jquery/tipTip/tipTip.css' %}" type="text/css" media="screen"  />
-	<link rel="stylesheet" href="{% asset 'stylesheets/agent/interface.css' %}" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{% asset 'stylesheets/agent/admin/interface.css' %}" type="text/css" media="screen" />
 
 	<!--[if IE 8]>
 	<link rel="stylesheet" href="{% asset 'stylesheets/agent/interface-ie.css' %}" type="text/css" media="screen" />
 	<![endif]-->
 
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery-ui/jquery-ui.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.layout.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/tipTip/jquery.tipTip.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/tag-it/tag-it.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/mootools/mootools-core.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Orb.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Compat.js' %}"></script>
-
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Form/InlineEdit.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Form/RuleBuilder.js' %}"></script>
-
-	<!-- Agent Interface sources -->
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/Window.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/Shells/ThreePaned.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/TabManager.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Basic.js' %}"></script>
-
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleSearch.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSearch.js' %}"></script>
-
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/Basic.js' %}"></script>
-
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js' %}"></script>
-
-	<script type="text/javascript">
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/headjs/core.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/headjs/load.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/headjs/css3.js' %}"></script>
+	<script type="text/javascript" charset="utf-8">
+		var DP_TINYMCE_URL = '{% asset 'javascripts/tiny_mce/tiny_mce.js' %}';
 		var BASE_URL = '{{ path('index') }}';
-	</script>
+		var ASSETS_BASE_URL = '{% asset '' %}';
 
-	{% block extra_head %}{%endblock%}
+		function _win_exec() {
+			window.DeskPRO_Window = new DeskPRO.Admin.Window();
+		}
+		
+		var head_js_load = [
+			'http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js',
+			'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js',
+			'{% asset 'javascripts/jquery/jquery.cookie.js' %}',
+			'{% asset 'javascripts/jquery/jquery.layout.min.js' %}',
+			{# '{% asset 'javascripts/tiny_mce/jquery.tinymce.js' %}', #}
+
+			'{% asset 'javascripts/jquery/tipTip/jquery.tipTip.min.js' %}',
+			'{% asset 'javascripts/jquery/tag-it/tag-it.js' %}',
+			'{% asset 'javascripts/jquery/jquery.sizes.min.js' %}',
+			'{% asset 'javascripts/jquery/jquery.mousewheel.js' %}',
+			'{% asset 'javascripts/mootools/mootools-core.min.js' %}',
+
+			'{% asset 'javascripts/Orb/Orb.js' %}',
+			'{% asset 'javascripts/Orb/Compat.js' %}',
+
+			'{% asset 'javascripts/DeskPRO/UI/Overlay.js' %}',
+			'{% asset 'javascripts/DeskPRO/UI/Menu.js' %}',
+
+			'{% asset 'javascripts/DeskPRO/Form/InlineEdit.js' %}',
+			'{% asset 'javascripts/DeskPRO/Form/RuleBuilder.js' %}',
+
+			'{% asset 'javascripts/DeskPRO/MessageBroker.js' %}',
+			
+			'{% asset 'javascripts/DeskPRO/Admin/Window.js' %}'
+		];
+		
+		{% block html_headjs_load %}{% endblock %}
+		
+		head.js.apply(head.js, head_js_load);
+
+		head.ready(function() { $(document).ready(function() {
+			_win_exec();
+		}); });
+	</script>
+	{% block html_head %}{% endblock %}
 </head>
-<body>
-	<div id="container">
-		<div id="header">
-			<h1><a href="index.html">DeskPRO Tech Interface</a></h1>
-			<div id="user-navigation">
-				<ul class="wat-cf">
-					<li>
-						<span style="color: #fff; ">Hello, {{person.display_name}} &middot;</span>
-						<a class="logout" href="{{ path('user_logout') }}">Logout</a>
-					</li>
-				</ul>
-			</div>
-			<div id="main-navigation">
-				<ul class="wat-cf">
-					<li class="first"><a href="{{ path('admin_customdefpeople') }}">People Fields</a></li>
-					<li class="first"><a href="{{ path('admin_customdeftickets') }}">Ticket Fields</a></li>
-					<li class="first"><a href="{{ path('admin_api') }}">API Keys</a></li>
-					<li class="first"><a href="{{ path('admin_usersources') }}">Usersources</a></li>
-					<li class="first"><a href="{{ path('admin_langs') }}">Languages</a></li>
-					<li class="first"><a href="{{ path('admin_styles') }}">Styles</a></li>
-				</ul>
-			</div>
+<body class="{% block body_class %}{% endblock %}">
+
+<div id="window_head">
+	<div id="window_head_top">
+		<div class="logo">Admin</div>
+		<ul class="header-tabs">
+			<li {% if section == "setup" %}class="on"{% endif %} data-tab-name="setup">Setup</li>
+			<li {% if section == "agents" %}class="on"{% endif %} data-tab-name="agents">Agents</li>
+			<li {% if section == "tickets" %}class="on"{% endif %} data-tab-name="tickets">Tickets</li>
+			<li {% if section == "helpdesk" %}class="on"{% endif %} data-tab-name="helpdesk">Helpdesk</li>
+			<li {% if section == "social" %}class="on"{% endif %} data-tab-name="social">Social</li>
+			<li {% if section == "crm" %}class="on"{% endif %} data-tab-name="crm">CRM</li>
+			<li {% if section == "integrations" %}class="on"{% endif %} data-tab-name="integrations">Integrations</li>
+			<li {% if section == "publish" %}class="on"{% endif %} data-tab-name="publish">Publish</li>
+			<li {% if section == "server" %}class="on"{% endif %} data-tab-name="server">Server</li>
+		</ul>
+		<ul class="current-user">
+			<li class="person">{{person.display_name}} (<a href="{{ path('user_logout') }}">Log Out</a>)</li>
+			<li class="admin"><a href="{{ path('agent') }}">Agent</a></li>
+		</ul>
+	</div>
+	<div id="window_header_nav">
+		<div class="group setup {% if section == "setup" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == 'settings' %}class="on"{% endif %}><span class="icon tickets">Settings</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Email</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Departments</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Products</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Look &amp; Feel</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Portal</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Language</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Scheduled Tasks</span></li>
+			</ul>
 		</div>
-		<div id="wrapper" class="wat-cf">
-			<div id="main">
-				{% block content%}{%endblock%}
-			</div>
-			<div id="sidebar">
-				{% block sidebar %}{% endblock %}
+		<div class="group agents {% if section == "agents" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Agents</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Agent Groups</span></li>
+			</ul>
+		</div>
+		<div class="group tickets {% if section == "tickets" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Business Rules</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Fields</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Queues</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Macros</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Labels</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Export</span></li>
+			</ul>
+		</div>
+		<div class="group helpdesk {% if section == "helpdesk" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Forms</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Chat</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Ideas</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Q&amp;A</span></li>
+			</ul>
+		</div>
+		<div class="group social {% if section == "social" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Twitter</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Facebook</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">LinkedIn</span></li>
+			</ul>
+		</div>
+		<div class="group crm {% if section == "crm" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Users</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Organizations</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Leads</span></li>
+			</ul>
+		</div>
+		<div class="group integrations {% if section == "integrations" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Widgets</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">API</span></li>
+			</ul>
+		</div>
+		<div class="group publish {% if section == "publish" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Knoweldgebase</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Troubleshooters</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Files</span></li>
+			</ul>
+		</div>
+		<div class="group server {% if section == "server" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Database Tools</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Server Info</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Logs</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Tests</span></li>
+			</ul>
+		</div>
+
+		<div class="nav-right">
+			<div class="search-box">
+				<input type="text" name="q" />
 			</div>
 		</div>
 	</div>
+</div>
+
+{% set nav %}{% block nav %}{% endblock %}{% endset %}
+
+<table cellspacing="0" cellpadding="0" width="100%" id="pane_shell" class="{% if not nav %}no-nav{% endif %}">
+	<tr>
+		{% if nav %}<td id="pane_nav">{{ nav|raw }}</td>{% endif %}
+		<td id="pane_content"><div id="content_wrap">{% block content %}{% endblock %}</div></td>
+	</tr>
+</table>
+
 </body>
 </html>
-

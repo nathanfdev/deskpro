@@ -1,0 +1,47 @@
+.ui-layout-pane, #pane_nav, #pane_list, #page { /* all 'panes' */ 
+	overflow: auto;
+} 
+
+.ui-layout-resizer { /* all 'resizer-bars' */ 
+	background: #DDD; 
+} 
+
+.ui-layout-toggler { /* all 'toggler-buttons' */ 
+	background: #AAA; 
+}
+
+.ui-layout-center {
+	padding:		0;
+	overflow:		hidden;
+}
+
+.ui-layout-content {
+	overflow: auto;
+}
+
+#pane_nav-resizer {
+	width: 1px;
+	background-color: #BBBBBB;
+}
+
+#pane_nav-resizer .ui-layout-toggler {
+
+}
+
+#pane_list-resizer {
+	width: 1px;
+	background-color: #BBBBBB;
+	
+	/*
+	background: #FBF6FA;
+	background: -moz-linear-gradient(left, #FBF6FA 0%, #DDE5E7 100%);
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#FBF6FA), color-stop(100%,#DDE5E7));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FBF6FA', endColorstr='#DDE5E7',GradientType=1 );
+	border-left: 1px solid #B4B5B9;
+	border-right: 1px solid #B4B5B9;
+	*/
+}
+
+#pane_list-resizer .ui-layout-toggler {
+
+}

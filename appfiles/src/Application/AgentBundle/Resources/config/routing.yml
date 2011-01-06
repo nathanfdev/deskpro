@@ -1,3 +1,7 @@
+agent:
+  pattern: /
+  defaults: { _controller: AgentBundle:Main:index }
+
 agent_dashboard:
   pattern: /
   defaults: { _controller: AgentBundle:Main:index }

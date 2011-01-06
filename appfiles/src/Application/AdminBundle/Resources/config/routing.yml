@@ -1,4 +1,4 @@
-admin_dashboard:
+admin:
   pattern: /
   defaults: { _controller: AdminBundle:Main:index }
 
