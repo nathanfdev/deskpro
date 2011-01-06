@@ -470,12 +470,28 @@ DeskPRO.Agent.Window = new Class({
 		var regex = /<script>([\s\S]*?)<\/script>/im;
 		var matches = regex.exec(html);
 		
+		if (!matches || !matches.length) {
+			var regex = /<script\s*type="text\/javascript">([\s\S]*?)<\/script>/im;
+			var matches = regex.exec(html);
+		}
+		
 		if (matches && matches.length) {
 			try {
 				eval(matches[1]);
 			} catch (err) {
 				console.error('Page fragment JS eval error: %o', err);
 			}
+		}
+		
+		// Hard switch that prevents page fragments from
+		// rendering a login page into the interface
+		// - The login page is redirected to within the code when session expires,
+		// so in the template we set this metadata to force this redirect
+		if (pageMeta && pageMeta.goToLogin) {
+			window.location = BASE_URL + 'agent/';
+
+			var page = new DeskPRO.Agent.PageFragment.Basic('');
+			return page;
 		}
 		
 		//console.debug('PageFragment class: %s', pageMeta.fragmentClass);

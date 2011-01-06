@@ -337,6 +337,10 @@ ul.tagit input[type="text"] {
 	padding-right: 15px;
 }
 
+#window_head > #window_head_top > ul.current-user a {
+	color: #fff;
+}
+
 #window_head > #window_head_top > ul.current-user > li {
 	float: left;
 	margin-left: 20px;
