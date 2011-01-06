@@ -1091,8 +1091,7 @@ table.list tr.info-line div.department {
 }
 
 .ticket .messages > ul > li > .box {
-	margin-right: 25px;
-	
+
 	background-color: #f7f8f9;
 	border: 1px solid #a2b4c3;
 	
@@ -1106,18 +1105,19 @@ table.list tr.info-line div.department {
 	font-size: 11px;
 }
 
-.ticket .messages > ul > li > .edit-btn {
-	float: right;
+.ticket .messages > ul > li .edit-btn {
 	width: 16px;
 	height: 16px;
 	background: transparent url(../../images/icons/edit-gear.png) no-repeat center center;
 	display: none;
 	cursor: pointer;
-	margin-right: 5px;
-	margin-top: 4px;
+	margin-left: 4px;
+	display:block;
+	float: right;
+	margin-top: -3px;
 }
 
-.ticket .messages > ul > li:hover > .edit-btn {
+.ticket .messages > ul > li:hover .edit-btn {
 	display: block;
 }
 

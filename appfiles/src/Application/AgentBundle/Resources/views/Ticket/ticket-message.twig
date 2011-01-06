@@ -1,9 +1,11 @@
 <li {% if message.person.is_agent %}class="message-item agent"{%else%}class="message-item person"{%endif%}>
-	<div class="edit-btn ticket-message-edit-btn"></div>
 	<div class="box">
 		<div class="info">
 			<cite>{{message.person.name}}</cite>
-			<span class="time">{{message.date_created|date('Y-m-d')}}</span>
+			<span class="time">
+				<span class="edit-btn ticket-message-edit-btn"></span>
+				submitted online (from 76.167.170.198), {{message.date_created|date('Y-m-d')}}
+			</span>
 		</div>
 		<div class="message">
 			{{message.message_html|raw}}
