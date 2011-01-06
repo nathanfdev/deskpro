@@ -112,27 +112,27 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	setNavPanePage: function(page) {
 		
 		if (this.navPanePage) {
-			this.navPanePage.deactivate();
+			this.navPanePage.fireEvent('deactivate');
 			this.navPanePage.destroyPage();
 		}
 		
 		this.navPanePage = page;
 		$('#pane_nav').html(page.getHtml()).scrollTop(0);
 		page.initPage($('#pane_nav'));
-		page.activate();
+		page.fireEvent('activate');
 	},
 	
 	setListPanePage: function(page) {
 		
 		if (this.listPanePage) {
-			this.listPanePage.deactivate();
+			this.listPanePage.fireEvent('deactivate');
 			this.listPanePage.destroyPage();
 		}
 		
 		this.listPanePage = page;
 		$('#pane_list').html(page.getHtml()).scrollTop(0);
 		page.initPage($('#pane_list'));
-		page.activate();
+		page.fireEvent('activate');
 	},
 	
 	addTabPage: function(page) {
@@ -147,10 +147,10 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 				page.destroyPage(container);
 			},
 			callback_activate: function() {
-				page.activate();
+				page.fireEvent('activate');
 			},
 			callback_deactivate: function() {
-				page.deactivate();
+				page.fireEvent('deactivate');
 			}
 		});
 	},

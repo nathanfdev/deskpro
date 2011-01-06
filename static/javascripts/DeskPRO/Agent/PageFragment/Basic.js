@@ -9,6 +9,8 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment');
  */
 DeskPRO.Agent.PageFragment.Basic = new Class({
 
+	Implements: [Events],
+
 	TYPENAME: 'basic',
 
 	scripts: [],
@@ -23,6 +25,16 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		}
 		
 		this.init();
+		
+		this.addEvent('activate', (function() {
+			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.activated', { page: this });
+		}).bind(this));
+		this.addEvent('deactivate', (function() {
+			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.deactivated', { page: this });
+		}).bind(this));
+
+		this.addEvent('activate', this.activate.bind(this));
+		this.addEvent('deactivate', this.deactivate.bind(this));
 	},
 	
 	/**

@@ -283,11 +283,11 @@ DeskPRO.Agent.Window = new Class({
 		
 		switch (routeData.openInSection) {
 			case 'navpane':
-				this.loadNavPane(routeData.url);
+				this.loadNavPane(routeData.url, routeData);
 				break;
 				
 			case 'listpane':
-				this.loadListPane(routeData.url);
+				this.loadListPane(routeData.url, routeData);
 				break;
 			
 			default:
@@ -304,7 +304,7 @@ DeskPRO.Agent.Window = new Class({
 				
 				if (already_loaded) return;
 			
-				this.loadPage(routeData.url);
+				this.loadPage(routeData.url, routeData);
 				break;
 		}
 	},
@@ -316,7 +316,7 @@ DeskPRO.Agent.Window = new Class({
 	 *
 	 * @param {String} url The URL of the nav pane
 	 */
-	loadNavPane: function(url) {
+	loadNavPane: function(url, routeData) {
 		this.startLoadingIndicator();
 		$.ajax({
 			dataType: 'text',
@@ -324,7 +324,12 @@ DeskPRO.Agent.Window = new Class({
 			success: (function(data) {
 				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.NavPane.Basic');
+				
 				page.setMetaData('routeUrl', url);
+				if (routeData) {
+					page.setMetaData('routeData', routeData);
+				}
+				
 				DeskPRO_Window.getPanedShell().setNavPanePage(page);
 			}).bind(this)
 		});
@@ -337,7 +342,7 @@ DeskPRO.Agent.Window = new Class({
 	 *
 	 * @param {String} url The URL of the list pane.
 	 */
-	loadListPane: function(url) {
+	loadListPane: function(url, routeData) {
 		this.startLoadingIndicator();
 		$.ajax({
 			dataType: 'text',
@@ -345,7 +350,12 @@ DeskPRO.Agent.Window = new Class({
 			success: (function(data) {
 				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
+				
 				page.setMetaData('routeUrl', url);
+				if (routeData) {
+					page.setMetaData('routeData', routeData);
+				}
+				
 				DeskPRO_Window.getPanedShell().setListPanePage(page);
 			}).bind(this)
 		});
@@ -358,7 +368,7 @@ DeskPRO.Agent.Window = new Class({
 	 *
 	 * @param {String} url The URL of the page
 	 */
-	loadPage: function(url) {
+	loadPage: function(url, routeData) {
 		this.startLoadingIndicator();
 		$.ajax({
 			dataType: 'text',
@@ -366,7 +376,12 @@ DeskPRO.Agent.Window = new Class({
 			success: (function(data) {
 				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data);
+				
 				page.setMetaData('routeUrl', url);
+				if (routeData) {
+					page.setMetaData('routeData', routeData);
+				}
+				
 				DeskPRO_Window.getPanedShell().addTabPage(page);
 			}).bind(this)
 		});
