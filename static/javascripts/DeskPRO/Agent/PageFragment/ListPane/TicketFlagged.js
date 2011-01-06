@@ -10,7 +10,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFlagged = new Class({
 		
 		this.wrapper = $(el);
 		
-		$('table > tbody > tr', el).click(function() {
+		$('table > tbody > tr .with-route', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 		
@@ -91,7 +91,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFlagged = new Class({
 		var el = $(html);
 		el.insertAfter($('.page-set:last', this.wrapper));
 		
-		$('table > tbody > tr', el).click(function() {
+		$('table > tbody > tr .with-route', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	}
