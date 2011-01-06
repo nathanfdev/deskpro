@@ -1180,6 +1180,11 @@ table.list tr.info-line div.department {
 	height: 10px;
 }
 
+.ticket textarea.ticket-reply-textarea {
+	width: 99%;
+	height: 50px;
+}
+
 
 
 

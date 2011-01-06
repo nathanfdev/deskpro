@@ -402,66 +402,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.showEditor();
 	},
 	
-	showEditor: function() {
-		if (!this._initReplyEditor()) {
-			$('.editor-loading', this.wrapper).show();
-			return;
-		}
-		
+	showEditor: function() {		
 		var wrapper = this.wrapper;
 		$('.agent-reply .placeholder', wrapper).slideUp(function() {
 			$('.agent-reply .reply-area', wrapper).slideDown();
 			$('.editor-loading', wrapper).hide();
 		});
-	},
-	
-	hasInitReplyEditor: false,
-	_initReplyEditor: function() {
-		if (this.hasInitReplyEditor) return true;
-		this.hasInitReplyEditor = true;
-		
-		$('.editor-loading', wrapper).show();
-		
-		var self = this;
-		var wrapper =  this.wrapper;
-		var replyArea = $('.agent-reply .reply-area', this.wrapper);
-		
-		$('.btn-cancel', replyArea).click(function() {
-			$('.agent-reply .reply-area', wrapper).slideUp(function() {
-				$('.agent-reply .placeholder', wrapper).slideDown();
-			});
-		});
-		
-		$('.btn-submit', replyArea).click((function() {
-			this._sendReply();
-		}).bind(this));
-		
-	
-		this.newReplyEditor = $('textarea', replyArea).tinymce({
-			script_url: DP_TINYMCE_URL,
-			theme : "advanced",
-			theme_advanced_buttons1: "bold,italic,underline,|,bullist,numlist,|,outdent,indent,|,link,unlink,image,|,code,blockquote,hr,removeformat",
-			theme_advanced_buttons2: "",
-			theme_advanced_buttons3: "",
-			theme_advanced_buttons4: "",
-			theme_advanced_buttons5: "",
-			theme_advanced_toolbar_location: "top",
-			theme_advanced_toolbar_align : "left",
-			theme_advanced_resizing: true,
-			theme_advanced_resize_horizontal: false,
-			theme_advanced_statusbar_location: 'bottom',
-			theme_advanced_path: false,
-			width : "98%",
-			height: '130px',
-			setup: function(ed) {
-				ed.onInit.add(function(ed) {
-					self.showEditor();
-				});
-			}
-		});
-		
-		// the tinymce setup onInit will show the editor when its done
-		return false;
 	},
 	
 	_sendReply: function() {

@@ -94,8 +94,6 @@
 				<li data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}"><span class="icon people">People</span></li>
 				<li data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}"><span class="dev-feature-inactive icon organizations">Organizations</span></li>
 				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Leads</span></li>
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Assets</span></li>
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Billing</span></li>
 			</ul>
 		</div>
 		<div class="group social">
@@ -182,7 +180,7 @@
 <script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/headjs/load.js' %}"></script>
 <script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/headjs/css3.js' %}"></script>
 <script type="text/javascript" charset="utf-8">
-	var DP_TINYMCE_URL = '{% asset 'javascripts/tiny_mce/tiny_mce.js' %}';
+	{# var DP_TINYMCE_URL = '{% asset 'javascripts/tiny_mce/tiny_mce.js' %}'; #}
 	var BASE_URL = '{{ path('index') }}';
 	var ASSETS_BASE_URL = '{% asset '' %}';
 	
@@ -203,7 +201,7 @@
 		'http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js',
 		'{% asset 'javascripts/jquery/jquery.cookie.js' %}',
 		'{% asset 'javascripts/jquery/jquery.layout.min.js' %}',
-		'{% asset 'javascripts/tiny_mce/jquery.tinymce.js' %}',
+		{# '{% asset 'javascripts/tiny_mce/jquery.tinymce.js' %}', #}
 
 		'{% asset 'javascripts/jquery/tipTip/jquery.tipTip.min.js' %}',
 		'{% asset 'javascripts/jquery/tag-it/tag-it.js' %}',
