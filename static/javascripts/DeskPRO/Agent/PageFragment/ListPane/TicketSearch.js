@@ -21,7 +21,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		this.contentWrapper.attr('id', center_id);
 		this.barWrapper.attr('id', south_id);
 		
-		$('table > tbody > tr > td .subject', el).click(function() {
+		$('table > tbody > tr .with-route', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 		
@@ -206,7 +206,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		var el = $(html);
 		el.insertAfter($('.page-set:last', this.contentWrapper));
 		
-		$('table > tbody > tr', el).click(function() {
+		$('.with-route', el).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	}

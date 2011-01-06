@@ -113,12 +113,13 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 		}
 		
 		this.cache_id = data.cache_id;
+		var el = $(data.html);
 		
 		if (data.is_partial) {
-			var el = $(data.html);
 			el.insertAfter($('.page-set:last', this.content));
 		} else {		
-			this.contentWrapper.empty().html(data.html);
+			this.contentWrapper.empty();
+			el.appendTo(this.contentWrapper);
 			
 			// Non-partial means completely new table,
 			// so we'll re-configure the new one
@@ -126,5 +127,9 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 			
 			this.barWrapper.show();
 		}
+		
+		$('.with-route', el).click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
 	}
 });

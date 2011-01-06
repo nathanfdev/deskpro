@@ -4,7 +4,7 @@
 		<td colspan="100">
 			<span style="float:right">{{ticket.date_created|date('Y-m-d')}}</span>
 			<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
-			<span class="subject" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</span>
+			<span class="subject with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</span>
 		</td>
 	</tr>
 	<tr class="line line-2 info-line">
