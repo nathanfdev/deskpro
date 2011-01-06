@@ -1,96 +1,33 @@
 <script>
+pageMeta.title = 'Find Tickets by Searching';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketSearch';
+pageMeta.pageUrl       = '{{ path('agent_ticketsearch_runsearch') }}?cache_id=$cache_id&page=$page';
+pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_runsearch') }}';
+{% if autorun %}
+	pageMeta.autorun = true;
+{% endif %}
+{% if preselect_query %}
+	pageMeta.preselectQuery = '{{preselect_query}}';
+{% endif %}
 </script>
+<div class="content">
+	<div class="listpane-top">
+		<div class="criteria">
 
-<div class="search-results">
-	<table class="list" cellspacing="0" width="100%">
-		<thead>
-			<tr>
-				<th>Subject</th>
-				<th>Department</th>
-				<th>Opened</th>
-				<th>User</th>
-			</tr>
-		</thead>
-		<tbody>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-			<tr data-route="person:{{ path('agent_ticket_view', {'ticket_id': 123}) }}">
-				<td>Some subject</td>
-				<td>Sales</td>
-				<td>45m ago</td>
-				<td>John</td>
-			</tr>
-		</tbody>
-	</table>
+			<form class="search-form-data" style="margin-bottom: 4px;">
+				<input type="text" name="search_query" class="search-query" value="" style="width:98%" />
+			</form>
+			<center>
+				<button class="dp-button run-filter-trigger">Search</button>
+			</center>
+		</div>
+		<div class="summary" style="display:none">
+			<div class="toggle" style="float: right;">
+				Search Again &raquo;
+			</div>
+			Found <span class="result-count">0</span> tickets for: <span class="result-search-query">search query</span>
+		</div>
+	</div>
+	<div class="content-real"></div>
 </div>
+{% include 'AgentBundle:TicketSearch:part-action-bar.twig' %}

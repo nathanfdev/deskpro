@@ -182,6 +182,18 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
+	public function searchAction()
+	{
+		// Used to specify terms in the URL and have then show up automatically
+		$preselect_query = $this->in->getString('search_query');
+		$autorun = $this->in->getBool('autorun');
+
+		return $this->render('AgentBundle:TicketSearch:search.twig', array(
+			'preselect_query' => $preselect_query,
+			'autorun' => $autorun
+		));
+	}
+
 	public function runFilterAction()
 	{
 		$result_cache = false;
