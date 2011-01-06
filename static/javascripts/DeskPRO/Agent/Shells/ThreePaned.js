@@ -75,8 +75,8 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		this.tabStrip = $('#pane_tabs');
 		// Mouseup because firefox doesnt respond to click
 		// for middle clicks
-		//this.tabStrip.mouseup(this._tabStripMiddleClick.bind(this));
-		this.tabStrip.single_double_click(this._tabStripClick.bind(this), (function(ev) { ev.isDbl = true; this._tabStripClick.call(this, ev) }).bind(this));
+		this.tabStrip.mouseup(this._tabStripClick.bind(this));
+		//this.tabStrip.click(this._tabStripClick.bind(this));
 		
 		this.tabManager = new DeskPRO.Agent.TabManager('#page');
 		var self = this;
