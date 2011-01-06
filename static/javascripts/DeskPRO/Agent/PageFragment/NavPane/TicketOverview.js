@@ -184,6 +184,16 @@ DeskPRO.Agent.PageFragment.NavPane.TicketOverview = new Class({
 		
 		DeskPRO_Window.stopLoadingIndicator();
 		
-		$('.nav-list-wrapper.on .list', this.wrapper).html(html);
+		var list = $('.nav-list-wrapper.on .list', this.wrapper).html(html);
+		var self = this;
+		$('li', list).click(function() {
+			self._groupItemClicked($(this));
+		});
+	},
+	
+	_groupItemClicked: function(li) {
+		DeskPRO_Window.runPageRouteFromElement(li);
+		$('.nav-list-wrapper.on .list li', this.wrapper).removeClass('on');
+		li.addClass('on');
 	}
 });

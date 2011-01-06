@@ -130,16 +130,28 @@ class TicketSearchController extends AbstractController
 
 	public function overviewNavAction()
 	{
+		$group1 = $this->in->getString('group1');
+		$group2 = $this->in->getString('group2');
+
 		$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
-		$grouper->setGrouping($this->in->getString('group1'), $this->in->getString('group2'));
+		$grouper->setGrouping($group1, $group2);
 		$grouper->setMode($this->in->getString('mode'), $this->person['id']);
 
 		$display_counts = $grouper->getDisplayArray();
 
 		unset($display_counts[0]);// TODO 0 is the 'total', we'll use that later in the UI
 
+		// TODO: Need a cleaner way of converting a group into a searchable item
+		$group1_nosuf = preg_replace('#_id$#', '', $group1);
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_filter') . "?autorun=true&terms[0][rule_type]=$group1_nosuf&terms[0][op]=is&terms[0][$group1_nosuf]=\$group1_id";
+
+		$group2_nosuf = preg_replace('#_id$#', '', $group2);
+		$list_url_group2 = $list_url_group1 . "&terms[1][rule_type]=$group2_nosuf&terms[1][op]=is&terms[1][$group2_nosuf]=\$group2_id";
+
 		return $this->render('AgentBundle:TicketSearch:overview-listing.twig', array(
-			'counts' => $display_counts
+			'counts' => $display_counts,
+			'list_url_group1' => $list_url_group1,
+			'list_url_group2' => $list_url_group2,
 		));
 	}
 
@@ -158,9 +170,15 @@ class TicketSearchController extends AbstractController
 	public function filterAction()
 	{
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		// Used to specify terms in the URL and have then show up automatically
+		$preselect_terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+		$autorun = $this->in->getBool('autorun');
 		
 		return $this->render('AgentBundle:TicketSearch:filter.twig', array(
 			'ticket_options' => $ticket_options,
+			'preselect_terms' => $preselect_terms,
+			'autorun' => $autorun
 		));
 	}
 

@@ -3,6 +3,25 @@ pageMeta.title = 'Find Tickets with a Filter';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
 pageMeta.pageUrl       = '{{ path('agent_ticketsearch_runfilter') }}?cache_id=$cache_id&page=$page';
 pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_runfilter') }}';
+{% if autorun %}
+	pageMeta.autorun = true;
+{% endif %}
+{% if preselect_terms %}
+	pageMeta.preselectTerms = [
+		{% for action in preselect_terms %}
+			{
+				rule_type: '{{action.rule_type}}',
+				op: '{{action.op}}',
+				choice: {
+					{% for k, v in action %}
+						{{k}}: '{{v}}',
+					{% endfor %}
+					'':null
+				}
+			},
+		{% endfor %}
+	];
+{% endif %}
 </script>
 <div class="content">
 	<div class="listpane-top">

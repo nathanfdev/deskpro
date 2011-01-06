@@ -28,6 +28,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 		
 		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
 		this.barWrapper.hide();
+		
+		if (this.getMetaData('autorun')) {
+			this.submitForm();
+		}
 	},
 	
 	activate: function() {		
@@ -62,6 +66,8 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 	},
 	
 	_initFilterForm: function() {
+		var self = this;
+		
 		var editor = new DeskPRO.Form.RuleBuilder($('.search-tpl', this.wrapper));
 		editor.addEvent('newRow', function(new_row) {
 			$('.remove', new_row).click(function() {
@@ -74,13 +80,29 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 			
 			$(this).data('add-count', count+1);
 			
-			editor.addNewRow($('.search-form .search-terms'), basename);
+			editor.addNewRow($('.search-form .search-terms', self.topEl), basename);
 		});
 		
 		var self = this;
 		$('button.run-filter-trigger', this.topEl).click(function() {
 			self.submitForm();
 		});
+		
+		if (this.getMetaData('preselectTerms')) {
+			var count = 0;
+			var preselectTerms = this.getMetaData('preselectTerms');
+			for (var i = 0; i < preselectTerms.length; i++) {
+				if (!preselectTerms[i]) continue;
+
+				editor.addNewRow(
+					$('.search-form .search-terms', self.topEl),
+					'terms['+count+']',
+					preselectTerms[i]
+				);
+			}
+			
+			$('.search-form .add-term', this.topEl).data('add-count', count);
+		}
 	},
 	
 	submitForm: function() {
