@@ -25,19 +25,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		this.centerPane.attr('id', center_id);
 		this.barWrapper.attr('id', south_id);
 		
-		this._initBasic();
-		this._initForm();
-		
-		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
-		this.barWrapper.hide();
-		
-		if (this.getMetaData('autorun')) {
-			this.submitForm();
-		}
-	},
-	
-	activate: function() {		
-		this.layout = $('#pane_list').layout({
+		this.layout = this.wrapper.layout({
 			center: {
 				paneSelector: '#' + this.centerPane.attr('id')
 			},
@@ -48,9 +36,19 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 				spacing_closed: 0
 			}
 		});
+		
+		this._initBasic();
+		this._initForm();
+		
+		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
+		this.barWrapper.hide();
+		
+		if (this.getMetaData('autorun')) {
+			this.submitForm();
+		}
 	},
 
-	deactivate: function() {
+	destroyPage: function() {
 		this.layout.panes.south.remove();
 		this.layout.panes.south = false;
 		this.layout.panes.center.remove();

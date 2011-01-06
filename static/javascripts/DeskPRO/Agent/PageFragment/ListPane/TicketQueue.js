@@ -21,23 +21,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		this.contentWrapper.attr('id', center_id);
 		this.barWrapper.attr('id', south_id);
 		
-		$('table > tbody > tr .with-route', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-		});
-		
-		this.initDisplayOptions();
-		this.initInfiniteScroll();
-		
-		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
-		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
-	},
-	
-	activate: function() {
-		if (this.getMetaData('queue_id')) {
-			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-activated', this.getMetaData('queue_id'));
-		}
-		
-		this.layout = $('#pane_list').layout({
+		this.layout = this.wrapper.layout({
 			center: {
 				paneSelector: '#' + this.contentWrapper.attr('id')
 			},
@@ -48,19 +32,37 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 				spacing_closed: 0
 			}
 		});
-	},
-
-	deactivate: function() {
-		if (this.getMetaData('queue_id')) {
-			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-deactivated', this.getMetaData('queue_id'));
-		}
 		
+		this.initDisplayOptions();
+		this.initInfiniteScroll();
+		
+		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
+		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
+		
+		$('table > tbody > tr .with-route', el).click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
+	},
+	
+	destroyPage: function() {
 		this.layout.panes.south.remove();
 		this.layout.panes.south = false;
 		this.layout.panes.center.remove();
 		this.layout.panes.center = false;
 		this.layout.destroy();
 		this.layout = null;
+	},
+	
+	activate: function() {
+		if (this.getMetaData('queue_id')) {
+			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-activated', this.getMetaData('queue_id'));
+		}
+	},
+
+	deactivate: function() {
+		if (this.getMetaData('queue_id')) {
+			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-deactivated', this.getMetaData('queue_id'));
+		}
 	},
 
 	

@@ -23,6 +23,18 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 		this.centerPane.attr('id', center_id);
 		this.barWrapper.attr('id', south_id);
 		
+		this.layout = this.wrapper.layout({
+			center: {
+				paneSelector: '#' + this.centerPane.attr('id')
+			},
+			south: {
+				paneSelector: '#' + this.barWrapper.attr('id'),
+				size: 27,
+				spacing_open: 0,
+				spacing_closed: 0
+			}
+		});
+		
 		this._initBasic();
 		this._initFilterForm();
 		
@@ -34,21 +46,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 		}
 	},
 	
-	activate: function() {		
-		this.layout = $('#pane_list').layout({
-			center: {
-				paneSelector: '#' + this.centerPane.attr('id')
-			},
-			south: {
-				paneSelector: '#' + this.barWrapper.attr('id'),
-				size: 27,
-				spacing_open: 0,
-				spacing_closed: 0
-			}
-		});
-	},
-
-	deactivate: function() {
+	destroyPage: function() {
 		this.layout.panes.south.remove();
 		this.layout.panes.south = false;
 		this.layout.panes.center.remove();

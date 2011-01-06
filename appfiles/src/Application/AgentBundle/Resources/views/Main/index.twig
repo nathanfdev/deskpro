@@ -62,8 +62,6 @@
 	</div>
 </div>
 
-<span id="test_route" data-route="navpane:{{ path('agent_ticketsearch_findpane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch_filter') }}" style="display:none"></span>
-
 <div id="window_head">
 	<div id="window_head_top">
 		<div class="logo">DeskPRO</div>
@@ -165,6 +163,8 @@
 {####################
  # RESOURCE LOADING
  ####################}
+
+<span id="test_route" data-route="navpane:{{ path('agent_ticketsearch_findpane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch_filter') }}" style="display:none"></span>
 
 <link rel="stylesheet" href="{% asset 'javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css' %}" type="text/css" media="screen"  />
 <link rel="stylesheet" href="{% asset 'javascripts/plupload/css/plupload.queue.css' %}" type="text/css" media="screen"  />
