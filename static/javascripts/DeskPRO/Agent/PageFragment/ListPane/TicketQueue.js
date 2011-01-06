@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
+DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	wrapper: null,
