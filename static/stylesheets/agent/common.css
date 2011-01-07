@@ -79,8 +79,9 @@ input.input-title {
 
 .icon { background-repeat: no-repeat; background-position: center left; padding-left: 20px; }
 .icon.tickets { background-image: url(../../images/icons/mail.png); }
-.icon.tweets { background-image: url(../../images/icons/mail.png); }
-.icon.facebook { background-image: url(../../images/icons/mail.png); }
+.icon.tweets { background-image: url(../../images/icons/social_media_mini_icons/twitter.png); }
+.icon.facebook { background-image: url(../../images/icons/social_media_mini_icons/facebook.png); }
+.icon.linkedin { background-image: url(../../images/icons/social_media_mini_icons/linkedin.png); }
 .icon.chat { background-image: url(../../images/icons/balloons.png); }
 .icon.leads { background-image: url(../../images/icons/clipboard_text.png); }
 .icon.knowledgebase { background-image: url(../../images/icons/document__pencil.png); }
