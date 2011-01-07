@@ -29,7 +29,7 @@ class Util
 		// Create a map of keys
 		$data_keys = array();
 		foreach ($field_datas as $k => $v) {
-			$data_keys[$v['field_id']] = $k;
+			$data_keys[$v['field']['id']] = $k;
 		}
 
 		return $this->_createDataHierarchy($data_keys, $field_datas, $field_defs);

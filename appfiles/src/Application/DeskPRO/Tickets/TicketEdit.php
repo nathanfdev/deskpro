@@ -53,6 +53,6 @@ class TicketEdit
 	public function save()
 	{
 		App::getOrm()->persist($this->ticket);
-		App::getOrm()->flush($this->ticket);
+		App::getOrm()->flush();
 	}
 }
