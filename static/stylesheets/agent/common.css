@@ -208,7 +208,6 @@ table.list > thead > tr {
 	
 	border-bottom: 1px solid #A6A6A6;
 
-	font-size: 8pt;
 	font-family: Arial, sans-serif;
 }
 
@@ -225,35 +224,60 @@ table.list > thead > tr > th {
 	height: 22px;
 }
 
+table.list > thead > tr > th.check-all {
+	padding: 0;
+	padding-left: 2px;
+	padding-right: 3px;
+	margin: 0;
+}
+
 table.list > thead > tr > th:first-child {
 	border-left: none;
 }
 
-table.list > tbody > tr.line.line-1 {
-	border-top: 1px solid #CCCED9;
+table.list > tbody > tr.line-1.hover, table.list > tbody > tr.line-2.hover {
+	background-color: #E8F3FF;
 }
 
-table.list > tbody > tr:nth-child(4n+1),
-table.list > tbody > tr:nth-child(4n+2) {
-	background-color: #F8F8F8;
+table.list > tbody > tr.line-1.on, table.list > tbody > tr.line-2.on {
+	background-color: #D9EBFF;
 }
 
-table.list > tbody > tr.line:line-2 {
-	border-bottom: 1px solid #eee;
+table.list > tbody > tr.line-2 {
+	border-bottom: 1px solid #ddd;
+}
+
+table.list > tbody > tr > td {
+	padding: 0 5px 0 5px;
+	font-size: 7pt;
+	color: #3E4042;
+}
+
+table.list > tbody > tr.line-1 > td {
+	padding-top: 7px;
+	padding-bottom: 4px;
+}
+
+table.list > tbody > tr.line-2 > td {
+	padding-bottom: 7px;
 }
 
 table.list > tbody > tr {
 	background-color: #fff;
 }
 
-table.list > tbody > tr > td {
-	padding: 5px 5px 5px 10px;
-	font-size: 11px;
+table.list > tbody > tr > td.check-all {
+	padding: 0;
+	padding-left: 2px;
+	margin: 0;
+	vertical-align: middle;
 }
 
 table.list tr span.subject {
-	color: #214A6E;
-	font-size: 110%;
+	color: #000;
+	font-size: 8pt;
+	text-shadow: 1px 1px 1px #d4d4d4;
+	filter: dropshadow(color=#d4d4d4, offx=1, offy=0);
 }
 
 table.list tr span.subject:hover {
@@ -261,23 +285,6 @@ table.list tr span.subject:hover {
 	cursor: pointer;
 }
 
-table.list tr.info-line td {
-	padding: 0 5px 5px 10px;
-}
-
-table.list tr.info-line td {
-	font-size: 9px;
-}
-
-table.list tr.info-line div.by {
-	color: #A2AABA;
-	float: left;
-}
-
-table.list tr.info-line div.by cite {
-	color: #A2AABA;
-}
-
-table.list tr.info-line div.department {
-
+table.list tr abbr.timeago {
+	float: right;
 }

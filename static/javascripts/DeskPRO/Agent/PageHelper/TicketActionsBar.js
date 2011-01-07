@@ -19,9 +19,11 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		this._initMenus();
 	},
 	
+	actionMenu: null,
+	selectMenu: null,
 	_initMenus: function() {
 		var action_title = $('.actions-bar .action-title', this.wrapper);
-		var menu = new DeskPRO.UI.Menu({
+		var menu = this.actionMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.actions-bar .action-title', this.wrapper),
 			menuElement: $('.actions-bar .action-menu', this.wrapper),
 			onItemClicked: this._actionMenuItemClicked.bind(this)
@@ -31,7 +33,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			this.performMassAction();
 		}).bind(this));
 		
-		var menu = new DeskPRO.UI.Menu({
+		var menu = this.selectMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.actions-bar .counter', this.wrapper),
 			menuElement: $('..actions-bar .selected-menu', this.wrapper),
 			onItemClicked: this._selectMenuItemClicked.bind(this)
@@ -44,12 +46,41 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	 * Sets up a new active table for the live click events
 	 */
 	setActiveTable: function(tableEl) {
-		this.tableEl = tableEl;
+		this.tableEl = $(tableEl);
 		
 		var self = this;
-		$('input[type="checkbox"].ticket', this.tableEl).live('click', function() {
+		
+		// The header check-all-box should check whole table
+		$('thead > tr > th.check-all > input.check-all-box', this.tableEl).click(function(ev) {
+			ev.stopPropagation();
+			if ($(this).is(':checked')) {
+				self._selectOp('all');
+			} else {
+				self._selectOp('none');
+			}
+		});
+		
+		this.tableEl.delegate('input[type="checkbox"].ticket', 'click', function() {
 			self.handleTicketCheckClick($(this));
 		});
+		
+		$(this.tableEl).delegate('tr', 'hover', function() {
+			self._handleTrHover($(this));
+		});
+	},
+	
+	_handleTrHover: function(tr) {
+		this._getRowLines(tr).toggleClass('hover');
+	},
+	
+	_getRowLines: function(tr) {
+		if (tr.is('.line-1')) {
+			var trs = tr.add(tr.next());
+		} else {
+			var trs = tr.add(tr.prev());
+		}
+		
+		return trs;
 	},
 	
 	
@@ -61,8 +92,10 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		var num =  parseInt(this.countEl.html());
 		
 		if (checkEl.is(':checked')) {
+			this._getRowLines(checkEl.parent().parent()).addClass('on');
 			num++;
 		} else {
+			this._getRowLines(checkEl.parent().parent()).removeClass('on');
 			num--;
 		}
 		
@@ -77,22 +110,27 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	 * Handle menu click on the select menu (select all/none/inverse)
 	 */
 	_selectMenuItemClicked: function(info) {
-		
+		this._selectOp($(info.itemEl).data('op'));
+	},
+	
+	_selectOp: function(op) {
 		// No table defined
 		if (!this.tableEl) return;
 		
-		var itemEl = $(info.itemEl);
-		
-		if (itemEl.data('op') == 'none') {
+		if (op == 'none') {
 			$('input[type="checkbox"].ticket', this.tableEl).attr('checked', false);
-		} else if (itemEl.data('op') == 'all') {
+			$('tr.on', this.tableEl).removeClass('on');
+		} else if (op == 'all') {
 			$('input[type="checkbox"].ticket', this.tableEl).attr('checked', true);
-		} else if (itemEl.data('op') == 'invert') {
+			$('tr', this.tableEl).addClass('on');
+		} else if (op == 'invert') {
 			$('input[type="checkbox"].ticket', this.tableEl).each(function() {
 				if ($(this).is(':checked')) {
 					$(this).attr('checked', false);
+					this._getRowLines($(this).parent().parent()).removeClass('on');
 				} else {
 					$(this).attr('checked', true);
+					this._getRowLines($(this).parent().parent()).addClass('on');
 				}
 			});
 		}
@@ -167,5 +205,5 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	_handleMassActionsReply: function(data) {
 		DeskPRO_Window.stopLoadingIndicator();
 		console.debug(data);
-	},
+	}
 });

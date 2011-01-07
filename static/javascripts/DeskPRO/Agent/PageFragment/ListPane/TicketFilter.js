@@ -143,7 +143,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 			
 			// Non-partial means completely new table,
 			// so we'll re-configure the new one
-			this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
+			this.actionsBarHelper.setActiveTable(el);
 			
 			this.barWrapper.show();
 		}

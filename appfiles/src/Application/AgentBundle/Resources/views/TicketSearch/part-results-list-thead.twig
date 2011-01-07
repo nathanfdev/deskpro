@@ -1,5 +1,6 @@
 <thead class="display-options-trigger nosel">
 	<tr>
+		<th class="check-all"><input type="checkbox" class="check-all-box" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
 		{% for field in display_fields %}
 			{% if field == 'person' %}<th data-field="person">User</th>
 			{% elseif field == 'department' %}<th data-field="department">Department</th>

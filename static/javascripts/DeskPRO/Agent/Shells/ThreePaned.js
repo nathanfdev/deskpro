@@ -121,7 +121,6 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		if (this.navPanePage) {
 			this.navPanePage.fireEvent('deactivate');
 			this.navPanePage.fireEvent('destroy');
-			this.navPanePage.empty();
 		}
 		
 		this.navPanePage = page;

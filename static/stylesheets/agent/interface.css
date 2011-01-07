@@ -1,7 +1,3 @@
-@import url(common.css);
-@import url(ui-layout.css);
-@import url(window-elements.css);
-
 #pane_shell {
 	overflow: hidden;
 }

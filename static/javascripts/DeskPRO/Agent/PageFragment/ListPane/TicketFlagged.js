@@ -9,17 +9,43 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFlagged = new Class({
 	initPage: function(el) {
 		
 		this.wrapper = $(el);
+		this.contentWrapper = $('.content:first', this.wrapper);
+		this.barWrapper = $('.actions-bar:first', this.wrapper);
 		
-		this.initFeaturesOnCollection(el, {
-			routes: ['tr .with-route'],
-			times: ['abbr.timeago']
+		var center_id = Orb.getUniqueId('listpane_');
+		var south_id = Orb.getUniqueId('listpane_');
+		
+		this.contentWrapper.attr('id', center_id);
+		this.barWrapper.attr('id', south_id);
+		
+		this.layout = this.wrapper.layout({
+			center: {
+				paneSelector: '#' + this.contentWrapper.attr('id')
+			},
+			south: {
+				paneSelector: '#' + this.barWrapper.attr('id'),
+				size: 27,
+				spacing_open: 0,
+				spacing_closed: 0
+			}
 		});
 		
-		$(el).scroll((function() {
-			if ($(el).scrollTop()+20 >= this._scrollInnerHeights() - $('#pane_list').height()) {
-				this.nextSearchPage();
-			}
-		}).bind(this));
+		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
+		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
+		
+		this.initFeaturesOnCollection(el, {
+			routes: ['table > tbody > tr .with-route'],
+			times: ['abbr.timeago']
+		});
+	},
+	
+	destroyPage: function() {
+		this.layout.panes.south.remove();
+		this.layout.panes.south = false;
+		this.layout.panes.center.remove();
+		this.layout.panes.center = false;
+		this.layout.destroy();
+		this.layout = null;
 	},
 	
 	activate: function() {

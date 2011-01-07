@@ -111,7 +111,8 @@ class TicketSearchController extends AbstractController
 		return $this->render($tpl, array(
 			'flag' => $flag,
 			'tickets' => $tickets,
-			'page' => $page
+			'page' => $page,
+			'display_fields' => array('person', 'agent')
 		));
 	}
 

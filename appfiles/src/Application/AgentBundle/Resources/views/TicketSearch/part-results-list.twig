@@ -1,62 +1,43 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
-	<tr class="line line-1 subject-line">
+	<tr class="line-1">
+		<td rowspan="2" class="check-all" width="5"><input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></td>
 		<td colspan="100">
-			<abbr style="float:right" class="timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</abbr>
-			<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
+			<abbr class="timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</abbr>
 			<span class="subject with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</span>
 		</td>
 	</tr>
-	<tr class="line line-2 info-line">
+	<tr class="line-2">
 		{% for field in display_fields %}
+			<td class="{{field}}" {% if loop.last %}style="text-align:right"{% endif %}>
 			{% if field == 'person' %}
-				<td>
-					<div class="by">by <cite>{{ticket.person.name}}</cite></div>
-				</td>
+				by <cite>{{ticket.person.name}}</cite>
 			{% elseif field == 'department' %}
-				<td>
-					<div class="department">{{ticket.department.title}}</div>
-				</td>
+				{{ticket.department.title}}
 			{% elseif field == 'category' %}
-				<td>
-					<div class="category">
-						{% if ticket.category %}
-							{{ticket.category.title}}
-						{% else %}
-							None
-						{% endif %}
-					</div>
-				</td>
+				{% if ticket.category %}
+					{{ticket.category.title}}
+				{% else %}
+					None
+				{% endif %}
 			{% elseif field == 'product' %}
-				<td>
-					<div class="product">
-						{% if ticket.product %}
-							{{ticket.product.title}}
-						{% else %}
-							None
-						{% endif %}
-					</div>
-				</td>
+				{% if ticket.product %}
+					{{ticket.product.title}}
+				{% else %}
+					None
+				{% endif %}
 			{% elseif field == 'organization' %}
-				<td>
-					<div class="organization">
-						{% if ticket.organization %}
-							{{ticket.organization.name}}
-						{% else %}
-							None
-						{% endif %}
-					</div>
-				</td>
+				{% if ticket.organization %}
+					{{ticket.organization.name}}
+				{% else %}
+					None
+				{% endif %}
 			{% elseif field == 'agent' %}
-				<td>
-					<div class="agent">
-						{% if ticket.agent %}
-							{{ticket.agent.display_name}}
-						{% else %}
-							Unassigned
-						{% endif %}
-					</div>
-				</td>
+				{% if ticket.agent %}
+					{{ticket.agent.display_name}}
+				{% else %}
+					Unassigned
+				{% endif %}
 			{% endif %}
 		{% endfor %}
 	</tr>
