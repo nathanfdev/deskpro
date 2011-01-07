@@ -31,6 +31,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initFlagMenu();
 	},
 	
+	destroyPage: function() {
+		this.flagMenu.destroy();
+	},
+	
 	displayNewMessage: function(html) {
 		var last_message = $('.messages > ul > li.agent-reply', this.wrapper);
 		var new_message = $(html).hide();
@@ -54,9 +58,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//#################################################################
 	
 	
+	flagMenu: null,
 	_initFlagMenu: function() {
 		var self = this;
-		var menu = new DeskPRO.UI.Menu({
+		this.flagMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.ticket-flag:first', this.wrapper),
 			menuElement: $('.ticket-flag-menu:first', this.wrapper),
 			onItemClicked: function(info) {

@@ -31,6 +31,10 @@ DeskPRO.Agent.PageFragment.NavPane.TicketOverview = new Class({
 		this.loadList();
 	},
 	
+	destroyPage: function() {
+		this.groupingMenu.destroy();
+	},
+	
 	//#################################################################
 	//# Handles switching modes
 	//#################################################################
@@ -62,6 +66,7 @@ DeskPRO.Agent.PageFragment.NavPane.TicketOverview = new Class({
 	groupEl2: null,
 	groupEl2_yes: null,
 	
+	groupingMenu: null,
 	_initGroupingMenu: function() {
 		
 		this.groupMenuEl = $('.grouping-menu', this.wrapper);
@@ -71,7 +76,7 @@ DeskPRO.Agent.PageFragment.NavPane.TicketOverview = new Class({
 		this.groupEl2_yes = $('.options:first .with-subgroup', this.wrapper);
 		
 		var self = this;
-		var menu = new DeskPRO.UI.Menu({
+		this.groupingMenu = menu = new DeskPRO.UI.Menu({
 			triggerElement: $('.grouping-menu-trigger', this.wrapper),
 			menuElement: this.groupMenuEl,
 			onItemClicked: function(info) {

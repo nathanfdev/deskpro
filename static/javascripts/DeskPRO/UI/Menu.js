@@ -255,8 +255,11 @@ DeskPRO.UI.Menu = new Class({
 	 * Destroy this overlay and all of its supporting elements.
 	 */
 	destroy: function() {
-		this.elements.wrapperOuter.remove();
 		
-		delete DeskPRO.UI.Overlay_Instances[this.options.objectGroup][this.objectId];
+		if (this.elements && this.elements.wrapperOuter) {
+			this.elements.wrapperOuter.remove();
+		}
+		
+		delete DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId];
 	}
 });
