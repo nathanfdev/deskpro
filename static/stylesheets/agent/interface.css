@@ -1359,7 +1359,7 @@ ul.sortable-list > li:hover {
 	text-align: center;
 }
 
-.icon-flag-none { background-image: url(../../images/icons/bookmark.png); }
+.icon-flag-none { background-image: url(../../images/icons/flag_gray.png); }
 .icon-flag-blue { background-image: url(../../images/icons/flag_blue.png); }
 .icon-flag-green { background-image: url(../../images/icons/flag_green.png); }
 .icon-flag-orange { background-image: url(../../images/icons/flag_orange.png); }
