@@ -252,6 +252,8 @@ table.list > tbody > tr > td {
 	padding: 0 5px 0 5px;
 	font-size: 7pt;
 	color: #3E4042;
+	padding-top: 7px;
+	padding-bottom: 4px;
 }
 
 table.list > tbody > tr.line-1 > td {
@@ -260,6 +262,7 @@ table.list > tbody > tr.line-1 > td {
 }
 
 table.list > tbody > tr.line-2 > td {
+	padding-top: 0;
 	padding-bottom: 7px;
 }
 

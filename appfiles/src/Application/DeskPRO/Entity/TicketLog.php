@@ -34,7 +34,7 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @orm:OneToOne(targetEntity="Ticket")
+	 * @orm:ManyToOne(targetEntity="Ticket")
 	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
 	protected $ticket = null;
@@ -47,7 +47,7 @@ class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;

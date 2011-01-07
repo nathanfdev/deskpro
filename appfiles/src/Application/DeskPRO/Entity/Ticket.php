@@ -402,19 +402,19 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function setCategoryId($id)
 	{
 		$cat = App::getOrm()->getRepository('DeskPRO:TicketCategory')->find($id);
-		$this['department'] = $cat;
+		$this['category'] = $cat;
 	}
 	
 	public function setProductId($id)
 	{
 		$prod = App::getOrm()->getRepository('DeskPRO:Product')->find($id);
-		$this['department'] = $prod;
+		$this['product'] = $prod;
 	}
 
 	public function setPriorityId($id)
 	{
 		$pri = App::getOrm()->getRepository('DeskPRO:TicketPriority')->find($id);
-		$this['department'] = $pri;
+		$this['priority'] = $pri;
 	}
 
 	public function setAgentId($id)
