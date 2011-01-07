@@ -14,8 +14,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	hasInitPopout: false,
 	popoutPage: null,
 	
+	destroyEls: [],
+	
 	initPage: function(el) {
-		
+
 		this.wrapper = el;
 		
 		this._initPopout();

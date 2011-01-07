@@ -115,6 +115,11 @@ DeskPRO.Agent.TabManager = new Class({
 			return false;
 		}
 		
+		// Already the current tab
+		if (id == this.currentTabId) {
+			return;
+		}
+		
 		this.isActivating = true;
 		
 		if (this.currentTabId) {

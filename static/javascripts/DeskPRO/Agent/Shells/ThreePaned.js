@@ -19,9 +19,16 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 	outerLayout: null,
 	innerLayout: null,
 	
+	paneNavEl: null,
+	paneListEl: null,
+	paneContentEl: null,
+	
 	initialize: function() {
 		this.el = $('#pane_shell');
 		this.htmlEl = $(this.el).get(0);
+		this.paneNavEl = $('#pane_nav');
+		this.paneListEl = $('#pane_list');
+		this.paneContentEl = $('#pane_content');
 		
 		//------------------------------
 		// Set up the layout
@@ -113,12 +120,13 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		
 		if (this.navPanePage) {
 			this.navPanePage.fireEvent('deactivate');
-			this.navPanePage.destroyPage();
+			this.navPanePage.fireEvent('destroy');
+			this.navPanePage.empty();
 		}
 		
 		this.navPanePage = page;
-		$('#pane_nav').html(page.getHtml()).scrollTop(0);
-		page.initPage($('#pane_nav'));
+		this.paneNavEl.empty().html(page.getHtml()).scrollTop(0);
+		page.fireEvent('render', [this.paneNavEl]);
 		page.fireEvent('activate');
 	},
 	
@@ -126,12 +134,12 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		
 		if (this.listPanePage) {
 			this.listPanePage.fireEvent('deactivate');
-			this.listPanePage.destroyPage();
+			this.listPanePage.fireEvent('destroy');
 		}
 		
 		this.listPanePage = page;
-		$('#pane_list').html(page.getHtml()).scrollTop(0);
-		page.initPage($('#pane_list'));
+		this.paneListEl.empty().html(page.getHtml()).scrollTop(0);
+		page.fireEvent('render', [this.paneListEl]);
 		page.fireEvent('activate');
 	},
 	
@@ -141,10 +149,11 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			page: page,
 			title: page.getMetaData('title', 'Untitled'),
 			callback_render: function(data, container, tabManager) {
-				page.initPage(container);
+				container = $(container);
+				page.fireEvent('render', [container]);
 			},
 			callback_remove_content: function(data, container, tabManager) {
-				page.destroyPage(container);
+				page.fireEvent('destroy');
 			},
 			callback_activate: function() {
 				page.fireEvent('activate');

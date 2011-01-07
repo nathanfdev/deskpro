@@ -15,7 +15,6 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 
 	scripts: [],
 	stylesheets: [],
-	destroyEls: [],
 	html: '',
 	meta: {},
 	
@@ -33,8 +32,10 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.deactivated', { page: this });
 		}).bind(this));
 
-		this.addEvent('activate', this.activate.bind(this));
-		this.addEvent('deactivate', this.deactivate.bind(this));
+		this.addEvent('activate', this.activate);
+		this.addEvent('deactivate', this.deactivate);
+		this.addEvent('render', this.initPage);
+		this.addEvent('destroy', this.destroyPage);
 	},
 	
 	/**
@@ -149,14 +150,9 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	
 	/**
 	 * Called after the page should be destroyed. Any specific cleanup required can be done
-	 * here if for example an element was moved during initPage etc.	
-	 *
-	 * @param {jQuery} el The wrapper element
+	 * here if for example an element was moved during initPage etc.
 	 */
-	destroyPage: function(el) {
-		var del = null;
-		while (del = this.destroyEls.pop()) {
-			$(del).remove();
-		}
+	destroyPage: function() {
+
 	},
 });
