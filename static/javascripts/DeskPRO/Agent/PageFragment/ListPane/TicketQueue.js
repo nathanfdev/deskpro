@@ -35,6 +35,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		
 		this.initDisplayOptions();
 		this.initInfiniteScroll();
+		this._initFlagMenu();
 		
 		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
@@ -52,6 +53,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		this.layout.panes.center = false;
 		this.layout.destroy();
 		this.layout = null;
+		
+		if (this.flagMenu) {
+			this.flagMenu.destroy();
+		}
 	},
 	
 	activate: function() {
@@ -66,6 +71,55 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		}
 	},
 
+	//#########################################################################
+	//# Flag menu
+	//#########################################################################
+	
+	flagMenu: null,
+	_initFlagMenu: function() {
+		var self = this;
+		this.flagMenu = new DeskPRO.UI.Menu({
+			menuElement: $('> ul.ticket-flag-menu:first', this.contentWrapper),
+			onItemClicked: function(info) {
+				self._handleFlagMenuClick(info);
+			}
+		});
+		
+		$('table.list:first', this.contentWrapper).delegate('span.ticket-flag', 'click', function(ev) {
+			self.flagMenu.openMenu(ev);
+		});
+	},
+	
+	_handleFlagMenuClick: function(info) {
+		var item = $(info.itemEl);
+		var flag = item.data('flag');
+
+		var m = $(info.menu.getOpenTriggerElement());
+		var ticketId = m.parent().parent().data('ticket-id');
+		
+		var old_flag = m.data('flag');
+		
+		m.removeClass('icon-flag-'+old_flag);
+		m.addClass('icon-flag-'+flag);
+		m.data('flag', flag);
+
+		DeskPRO_Window.startLoadingIndicator();
+		
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + ticketId + '/ajax-save-flagged',
+			type: 'POST',
+			context: this,
+			data: { color: flag },
+			dataType: 'json',
+			success: function(data) {
+				this._handleFlagMenuClickSuccess(old_flag, flag);
+			}
+		});
+	},
+	
+	_handleFlagMenuClickSuccess: function(el, old_flag, new_flag) {
+		DeskPRO_Window.stopLoadingIndicator();
+	},
 	
 	//#########################################################################
 	//# Display options

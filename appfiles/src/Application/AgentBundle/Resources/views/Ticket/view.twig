@@ -189,17 +189,7 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 	</div>
 </div>
 
-<ul class="ticket-flag-menu" style="display:none">
-	<li data-flag="none"><span class="icon icon-flag-none">None</span></li>
-	<li class="sep">-</li>
-	<li data-flag="blue"><span class="icon icon-flag-blue">Blue</span></li>
-	<li data-flag="green"><span class="icon icon-flag-green">Green</span></li>
-	<li data-flag="orange"><span class="icon icon-flag-orange">Orange</span></li>
-	<li data-flag="pink"><span class="icon icon-flag-pink">Pink</span></li>
-	<li data-flag="purple"><span class="icon icon-flag-purple">Purple</span></li>
-	<li data-flag="red"><span class="icon icon-flag-red">Red</span></li>
-	<li data-flag="yellow"><span class="icon icon-flag-yellow">Yellow</span></li>
-</ul>
+{% include 'AgentBundle:Ticket:part-flag-menu.twig' %}
 <ul class="ticket-info-edit-menu" style="display:none">
 	<li><span class="icon print-ticket">Print Ticket</span></li>
 	<li><span class="icon merge-ticket">Merge Ticket</span></li>

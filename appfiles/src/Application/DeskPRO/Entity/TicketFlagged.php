@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 /**
  * Flagged tickets
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFlagged")
  * @orm:Table(name="tickets_flagged")
  */
 class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject

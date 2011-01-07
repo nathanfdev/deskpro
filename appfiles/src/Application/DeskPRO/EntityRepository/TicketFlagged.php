@@ -1,0 +1,33 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\EntityRepository;
+
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
+
+use \Doctrine\ORM\EntityRepository;
+
+use \Orb\Util\Arrays;
+
+class TicketFlagged extends EntityRepository
+{
+	public function getFlagsForTickets($tickets, Entity\Person $person)
+	{
+		$ids = Arrays::flattenToIndex($tickets, 'id');
+		
+		return App::getDb()->feetchAllKeyValue("
+			SELECT ticket_id, color
+			FROM tickets_flagged
+			WHERE ticket_id IN(" . implode(',', $ids) . ") AND person_id = ?
+		", array($person['id']));
+	}
+}

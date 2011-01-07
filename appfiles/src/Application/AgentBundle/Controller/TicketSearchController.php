@@ -60,6 +60,7 @@ class TicketSearchController extends AbstractController
 		if (!$page) $page = 1;
 
 		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($queue_id, $page, 50);
+		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
 
 		$tpl = 'AgentBundle:TicketSearch:queue-results.twig';
 		if ($this->in->getBool('partial')) {
@@ -80,9 +81,12 @@ class TicketSearchController extends AbstractController
 		return $this->render($tpl, array(
 			'queue_id' => $queue_id,
 			'tickets' => $tickets,
+			'flagged_tickets' => $flagged_tickets,
 			'page' => $page,
 			'display_fields' => $display_fields,
-			'macros' => $macros
+			'macros' => $macros,
+			'ticket_flagged_color' => 'none',
+			'show_flag' => true
 		));
 	}
 

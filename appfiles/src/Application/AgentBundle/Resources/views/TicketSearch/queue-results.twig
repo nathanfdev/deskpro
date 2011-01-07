@@ -20,5 +20,7 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 	<div class="no-more-results">
 		There are no more results.
 	</div>
+	
+	{% include 'AgentBundle:Ticket:part-flag-menu.twig' %}
 </div>
 {% include 'AgentBundle:TicketSearch:part-action-bar.twig' %}
