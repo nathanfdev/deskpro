@@ -18,6 +18,11 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	html: '',
 	meta: {},
 	
+	featureSelectors: {
+		routes: [],
+		times: []
+	},
+	
 	initialize: function(html) {
 		if (html) {
 			this.html = html;
@@ -32,6 +37,12 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.deactivated', { page: this });
 		}).bind(this));
 
+		// Auto-init
+		this.addEvent('render', (function(wrapper) {
+			this.initFeaturesOnCollection(wrapper);
+		}).bind(this));
+		
+		// Standard hook methods
 		this.addEvent('activate', this.activate);
 		this.addEvent('deactivate', this.deactivate);
 		this.addEvent('render', this.initPage);
@@ -52,6 +63,38 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 * Called when the fragment is deactivated (hidden from view)
 	 */
 	deactivate: function() { },
+	
+	/**
+	 * Init all standard features (using page-defined selectors) on a wrapper
+	 */
+	initFeaturesOnCollection: function(wrapper, featureSelectors) {
+		
+		featureSelectors = featureSelectors || this.featureSelectors;
+		
+		if (featureSelectors.routes && featureSelectors.routes.length) {
+			this.initRoutesOnCollection($(featureSelectors.routes.join(', '), wrapper));
+		}
+		
+		if (featureSelectors.times && featureSelectors.times.length) {
+			this.initTimesOnCollection($(featureSelectors.times.join(', '), wrapper));
+		}
+	},
+	
+	/**
+	 * Init route loaders on all elements in a collection
+	 */
+	initRoutesOnCollection: function(els) {
+		els.click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
+	},
+	
+	/**
+	 * Init time agos on all elements in a collection
+	 */
+	initTimesOnCollection: function(els) {
+		els.timeago();
+	},
 	
 	
 	

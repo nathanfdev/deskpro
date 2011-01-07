@@ -10,8 +10,9 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFlagged = new Class({
 		
 		this.wrapper = $(el);
 		
-		$('table > tbody > tr .with-route', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
+		this.initFeaturesOnCollection(el, {
+			routes: ['tr .with-route'],
+			times: ['abbr.timeago']
 		});
 		
 		$(el).scroll((function() {
@@ -90,9 +91,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFlagged = new Class({
 		
 		var el = $(html);
 		el.insertAfter($('.page-set:last', this.wrapper));
-		
-		$('table > tbody > tr .with-route', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
+
+		this.initFeaturesOnCollection(el, {
+			routes: ['tr .with-route'],
+			times: ['abbr.timeago']
 		});
 	}
 });

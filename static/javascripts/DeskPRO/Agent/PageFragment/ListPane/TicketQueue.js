@@ -39,8 +39,9 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
 		
-		$('table > tbody > tr .with-route', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
+		this.initFeaturesOnCollection(el, {
+			routes: ['table > tbody > tr .with-route'],
+			times: ['abbr.timeago']
 		});
 	},
 	
@@ -207,9 +208,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		
 		var el = $(html);
 		el.insertAfter($('.page-set:last', this.contentWrapper));
-		
-		$('.with-route', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
+
+		this.initFeaturesOnCollection(el, {
+			routes: ['tr .with-route'],
+			times: ['abbr.timeago']
 		});
 	}
 });

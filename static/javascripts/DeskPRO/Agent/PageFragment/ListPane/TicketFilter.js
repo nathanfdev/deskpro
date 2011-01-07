@@ -148,8 +148,9 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 			this.barWrapper.show();
 		}
 		
-		$('.with-route', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
+		this.initFeaturesOnCollection(el, {
+			routes: ['tr .with-route'],
+			times: ['abbr.timeago']
 		});
 	}
 });
