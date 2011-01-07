@@ -116,6 +116,10 @@ agent_peoplesearch_labelspane:
   pattern: /people-search/queues-pane
   defaults: { _controller: AgentBundle:PeopleSearch:labelsPane }
 
+agent_peoplesearch_findpane:
+  pattern: /people-search/find-pane
+  defaults: { _controller: AgentBundle:PeopleSearch:findPane }
+
 agent_peoplesearch_directorypane:
   pattern: /people-search/directory-pane
   defaults: { _controller: AgentBundle:PeopleSearch:directoryPane }

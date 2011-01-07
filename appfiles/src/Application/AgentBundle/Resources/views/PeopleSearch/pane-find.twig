@@ -1,0 +1,12 @@
+{% extends 'AgentBundle:PeopleSearch:pane-layout.twig' %}
+{% block meta %}
+<script>
+
+</script>
+{% endblock %}
+{% block find_content %}
+<ul class="nav-list flagged-list nosel">
+	<li data-route="listpane:{{ path('agent_peoplesearch') }}">Find with a filter</li>
+	<li data-route="listpane:{{ path('agent_peoplesearch') }}">View directory</li>
+</ul>
+{% endblock %}

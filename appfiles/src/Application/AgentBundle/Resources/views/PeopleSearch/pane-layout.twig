@@ -1,13 +1,8 @@
-<ul class="side-nav">
-	<li data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" class="active"><span class="queues">Labels</span></li>
-	<li data-route="navpane:{{ path('agent_peoplesearch_directorypane') }}"><span class="overview">Directory</span></li>
-</ul>
+{% block meta %}{% endblock %}
 
-<div class="main-nav with-side-nav">
-	<div class="top-box ui-layout-north">
-		Add a Person
-	</div>
-	<div class="ui-layout-center">
-		{% block pane_content %}{% endblock %}
-	</div>
-</div>
+{% set find_content %}{% block find_content %}{% endblock %}{%endset%}
+
+<h1 data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="{% if find_content %}active{%endif%}">Find</h1>
+{% if find_content %}<div class="main-nav">{{find_content|raw}}</div>{%endif%}
+
+<h1 data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="{% if labels_content %}active{%endif%}">Labels</h1>

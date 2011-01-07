@@ -105,4 +105,9 @@ class PeopleSearchController extends AbstractController
 	{
 		return $this->render('AgentBundle:PeopleSearch:pane-labels.twig');
 	}
+	
+	public function findPaneAction()
+	{
+		return $this->render('AgentBundle:PeopleSearch:pane-find.twig');
+	}
 }
