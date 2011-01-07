@@ -142,22 +142,38 @@ class TicketSearchController extends AbstractController
 		$grouper->setGrouping($group1, $group2);
 		$grouper->setMode($this->in->getString('mode'), $this->person['id']);
 
+		$filter_agent_id = null;
+		if ($this->in->getString('mode') == 'your') {
+			$filter_agent_id = $this->person['id'];
+		} elseif ($this->in->getString('mode') == 'unassigned') {
+			$filter_agent_id = 0;
+		} else {
+			$filter_agent_id = -1;
+		}
+
 		$display_counts = $grouper->getDisplayArray();
 
 		unset($display_counts[0]);// TODO 0 is the 'total', we'll use that later in the UI
 
 		// TODO: Need a cleaner way of converting a group into a searchable item
 		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_filter') . "?autorun=true&terms[0][rule_type]=$group1_nosuf&terms[0][op]=is&terms[0][$group1_nosuf]=\$group1_id";
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runoverview') . "?autorun=true&terms[0][rule_type]=$group1_nosuf&terms[0][op]=is&terms[0][$group1_nosuf]=\$group1_id&terms[1][rule_type]=agent&terms[1][op]=is&terms[1][agent]=$filter_agent_id";
 
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
-		$list_url_group2 = $list_url_group1 . "&terms[1][rule_type]=$group2_nosuf&terms[1][op]=is&terms[1][$group2_nosuf]=\$group2_id";
+		$list_url_group2 = $list_url_group1 . "&terms[2][rule_type]=$group2_nosuf&terms[2][op]=is&terms[2][$group2_nosuf]=\$group2_id";
 
 		return $this->render('AgentBundle:TicketSearch:overview-listing.twig', array(
 			'counts' => $display_counts,
 			'list_url_group1' => $list_url_group1,
 			'list_url_group2' => $list_url_group2,
 		));
+	}
+
+	public function overviewRunAction()
+	{
+		$data = $this->_runFilterFromReq();
+		
+		return $this->render('AgentBundle:TicketSearch:overview-results.twig', $data);
 	}
 
 
@@ -199,7 +215,7 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
-	public function runFilterAction()
+	public function _runFilterFromReq()
 	{
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
@@ -252,7 +268,7 @@ class TicketSearchController extends AbstractController
 		$total = $result_cache['num_results'];
 		$per_page = 50;
 		$num_pages = ceil($total / $per_page);
-		
+
 		$cur_page = $this->in->getUint('page');
 		if (!$cur_page OR $cur_page > $num_pages) $cur_page = 1;
 
@@ -277,6 +293,13 @@ class TicketSearchController extends AbstractController
 			$data['is_partial'] = true;
 			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results-page.twig', $view_params);
 		}
+
+		return $data;
+	}
+
+	public function runFilterAction()
+	{
+		$data = $this->_runFilterFromReq();
 
 		return $this->createJsonResponse($data);
 	}

@@ -184,7 +184,17 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.language_id", $op, $choice);
 					break;
 				case self::TERM_AGENT:
-					$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $choice);
+					if ($op == self::OP_IS) {
+						if ($choice == 0) {
+							$wheres[] = "$tickets_table.agent_id IS NULL";
+						} elseif ($choice == -1) {
+							$wheres[] = "$tickets_table.agent_id != " . App::getCurrentPerson();
+						} else {
+							$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $choice);
+						}
+					} else {
+						$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $choice);
+					}
 					break;
 				case self::TERM_STATUS:
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, $choice);

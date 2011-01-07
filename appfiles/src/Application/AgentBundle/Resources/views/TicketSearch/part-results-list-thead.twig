@@ -11,6 +11,6 @@
 			{% elseif field == 'agent' %}<th data-field="agent">Agent</th>
 			{% endif %}
 		{% endfor %}
-		<th class="flag" width="5"></th>
+		{% if show_flag %}<th class="flag" width="5"></th>{% endif %}
 	</tr>
 </thead>

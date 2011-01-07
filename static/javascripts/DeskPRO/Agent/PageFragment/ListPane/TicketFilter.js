@@ -44,6 +44,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 		if (this.getMetaData('autorun')) {
 			this.submitForm();
 		}
+		
+		if (this.getMetaData('doInitContent')) {
+			this._initContent();
+		}
 	},
 	
 	destroyPage: function() {
@@ -149,6 +153,15 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 		}
 		
 		this.initFeaturesOnCollection(el, {
+			routes: ['tr .with-route'],
+			times: ['abbr.timeago']
+		});
+	},
+	
+	_initContent: function() {
+		this.actionsBarHelper.setActiveTable($('table.list', this.contentWrapper));
+		this.barWrapper.show();
+		this.initFeaturesOnCollection($('table.list', this.contentWrapper), {
 			routes: ['tr .with-route'],
 			times: ['abbr.timeago']
 		});

@@ -1,0 +1,13 @@
+<script>
+pageMeta.title = 'Overview';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
+pageMeta.pageUrl       = '{{ path('agent_ticketsearch_runfilter') }}?cache_id=$cache_id&page=$page';
+pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_runfilter') }}';
+pageMeta.doInitContent = true;
+</script>
+<div class="content">
+	<div class="content-real">
+		{{html|raw}}
+	</div>
+</div>
+{% include 'AgentBundle:TicketSearch:part-action-bar.twig' %}
