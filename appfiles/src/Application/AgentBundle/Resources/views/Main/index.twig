@@ -188,7 +188,11 @@
 		// Remove loading overlay
 		$('#window_loading_overlay').remove();
 		
-		window.DeskPRO_Window = new DeskPRO.Agent.Window();
+		window.DeskPRO_Window = new DeskPRO.Agent.Window()
+		window.DeskPRO_Window.set('agent.ui.show-listpane', '{{ show_listpane|default('auto') }}');
+		
+		window.DeskPRO_Window.initPage();
+		
 		window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
 		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
 

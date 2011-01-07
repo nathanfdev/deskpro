@@ -22,13 +22,12 @@ DeskPRO.Agent.Window = new Class({
 	messageBroker: null,
 	poller: null,
 
-	initialize: function() {	
+	initPage: function() {	
 		
 		this._initBasic();
 		this._initLayout();
 		this._initRoutes();
 		this._initWindowInterface();
-
 	},
 	
 	

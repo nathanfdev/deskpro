@@ -46,11 +46,14 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			}
 		});
 		
+		var show_listpane = DeskPRO_Window.get('agent.ui.show-listpane');
 		var west_is_closed = false;
-		if (screen.width && screen.width < 1000) {
+		if (show_listpane == 'never') {
+			west_is_closed = true;
+		} else if (show_listpane == 'auto' && screen.width && screen.width < 1000) {
 			west_is_closed = true;
 		}
-		
+
 		this.innerLayout = $('#pane_shell_inner').layout({
 			west: {
 				paneSelector: '#pane_list',

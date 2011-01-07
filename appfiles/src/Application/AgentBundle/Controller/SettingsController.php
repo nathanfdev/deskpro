@@ -9,7 +9,23 @@ class SettingsController extends AbstractController
 {
 	public function indexAction()
     {
-        return $this->render('AgentBundle:Settings:index.twig');
+		$pref_name = 'agent.ui.show-listpane';
+		if ($this->isPostRequest()) {
+			$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
+			if (!$pref) {
+				$pref = new Entity\PersonPref();
+				$pref['name'] = $pref_name;
+				$this->person->addPreference($pref);
+			}
+
+			$pref['value'] = $this->in->getString('show_listpane');
+			App::getOrm()->persist($pref);
+			App::getOrm()->flush();
+		}
+
+        return $this->render('AgentBundle:Settings:index.twig', array(
+			'show_listpane' => $this->person->getPref($pref_name)
+		));
     }
 
 	
