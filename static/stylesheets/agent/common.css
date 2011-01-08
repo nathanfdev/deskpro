@@ -236,7 +236,6 @@ table.list > thead > tr > th {
 	padding: 0 0 0 8px;
 	font-size: 7pt;
 	line-height: 22px;
-	height: 22px;
 }
 
 table.list > thead > tr > th.check-all {

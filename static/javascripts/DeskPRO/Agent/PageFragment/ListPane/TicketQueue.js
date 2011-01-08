@@ -91,6 +91,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 	},
 	
 	_handleFlagMenuClick: function(info) {
+
 		var item = $(info.itemEl);
 		var flag = item.data('flag');
 

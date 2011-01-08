@@ -182,7 +182,7 @@ DeskPRO.UI.Menu = new Class({
 	 * Fired when a menu item is clicked.
 	 */
 	_menuItemClicked: function(event) {
-		var eventData = { menu: this, event: event, itemEl: event.target, cancelClose: false };
+		var eventData = { menu: this, event: event, itemEl: event.currentTarget, cancelClose: false };
 		
 		this.fireEvent('itemClicked', eventData);
 		event.stopPropagation();
