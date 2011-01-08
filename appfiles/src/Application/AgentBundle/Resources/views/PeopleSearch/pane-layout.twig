@@ -3,6 +3,5 @@
 {% set find_content %}{% block find_content %}{% endblock %}{%endset%}
 
 <h1 data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="{% if find_content %}active{%endif%}">Find</h1>
-{% if find_content %}<div class="main-nav">{{find_content|raw}}</div>{%endif%}
-
+<h1 data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="{% if directory_content %}active{%endif%}">Directory</h1>
 <h1 data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="{% if labels_content %}active{%endif%}">Labels</h1>
