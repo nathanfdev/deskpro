@@ -46,6 +46,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		});
 		
 		if (this.getMetaData('noResults')) {
+			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();
 		}
 	},
@@ -204,7 +205,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 	//#########################################################################
 	
 	initInfiniteScroll: function() {
-		this.wrapper.scroll((function() {
+		//console.log(this.contentWrapper.scrollTop()+50);
+		//console.log(this._scrollInnerHeights() - this.contentWrapper.height());
+		//console.log('-');
+		this.contentWrapper.scroll((function() {
 			if (this.contentWrapper.scrollTop()+50 >= this._scrollInnerHeights() - this.contentWrapper.height()) {
 				this.nextSearchPage();
 			}
