@@ -1,0 +1,47 @@
+{% include 'AgentBundle:Ticket:part-flag-menu.twig' %}
+<ul class="ticket-info-edit-menu" style="display:none">
+	<li><span class="icon icon-keyboard">Take Ticket</span></li>
+	<li><span class="icon icon-key-add">Lock Ticket</span></li>
+	<li><span class="icon icon-page-delete">Delete Ticket</span></li>
+	<li class="sep">-</li>
+	<li><span class="icon print-ticket">Print Ticket</span></li>
+	<li><span class="icon icon-page-merge">Merge Ticket</span></li>
+	<li><span class="icon icon-page-split">Split Ticket</span></li>
+	<li><span class="icon change-ticket-owner">Change User Owner</span></li>
+</ul>
+<ul class="ticket-message-edit-menu" style="display:none">
+	<li><span class="icon view-unformatted">View Unformatted</span></li>
+	<li><span class="icon view-details">View Details</span></li>
+	<li><span class="icon edit">Edit</span></li>
+	<li><span class="icon edit">Quote</span></li>
+</ul>
+<ul class="ticket-macros-menu" style="display:none">
+	{% for macro in macros %}
+		<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-status-menu" data-option-name="status" style="display:none">
+	<li data-option-id="awaiting_agent">Open</li>
+	<li data-option-id="awaiting_user">Pending</li>
+	<li data-option-id="resolved">Resolved</li>
+</ul>
+<ul class="ticket-options-department-menu" data-option-name="department" style="display:none">
+	{% for id,title in ticket_options.departments %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-category-menu" data-option-name="category" style="display:none">
+	{% for id,title in ticket_options.categories %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-product-menu" data-option-name="product" style="display:none">
+	{% for id,title in ticket_options.products %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
+<ul class="ticket-options-priority-menu" data-option-name="priority" style="display:none">
+	{% for id,title in ticket_options.priorities %}
+		<li data-option-id="{{id}}">{{title}}</li>
+	{% endfor %}
+</ul>
