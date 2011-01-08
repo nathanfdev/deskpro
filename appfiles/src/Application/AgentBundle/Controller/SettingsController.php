@@ -57,7 +57,7 @@ class SettingsController extends AbstractController
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no queue with ID $queue_id");
 			}
 		} else {
-			$queue = new TicketQueue;
+			$queue = new Entity\TicketQueue;
 		}
 
 		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
@@ -75,7 +75,7 @@ class SettingsController extends AbstractController
 		));
 	}
 
-	public function _processEditQueue(TicketQueue $queue)
+	public function _processEditQueue(Entity\TicketQueue $queue)
 	{
 		$queue['title'] = $this->in->getString('title');
 		$queue['terms'] = $this->in->getCleanValueArray('terms', 'raw' , 'discard');

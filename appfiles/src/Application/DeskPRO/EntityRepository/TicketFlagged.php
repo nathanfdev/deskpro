@@ -23,6 +23,8 @@ class TicketFlagged extends EntityRepository
 	public function getFlagsForTickets($tickets, Entity\Person $person)
 	{
 		$ids = Arrays::flattenToIndex($tickets, 'id');
+
+		if (!$ids) return array();
 		
 		return App::getDb()->feetchAllKeyValue("
 			SELECT ticket_id, color

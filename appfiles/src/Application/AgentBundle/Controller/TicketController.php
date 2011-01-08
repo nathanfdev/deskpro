@@ -171,6 +171,9 @@ class TicketController extends AbstractController
 		if ($this->in->checkIsset('priority')) {
 			$ticket['priority_id'] = $this->in->getUint('priority');
 		}
+		if ($this->in->checkIsset('status')) {
+			$ticket['status'] = $this->in->getString('status');
+		}
 
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 		$ticket_edit->save();

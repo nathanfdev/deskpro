@@ -30,7 +30,16 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 			</dl>
 			<dl class="ticket-opt-btn ticket-options-status-btn">
 				<dt>Status</dt>
-				<dd>{{ticket.status}}</dd>
+				<dd>
+					{# todo these will be phrases, so this big condition wont be needed #}
+					{% if ticket.status == 'awaiting_agent' %}
+						Open
+					{% elseif ticket.status == 'awaiting_user' %}
+						Pending
+					{% elseif ticket.status == 'resolved' %}
+						Resolved
+					{% endif %}
+				</dd>
 			</dl>
 			<br style="clear:both" />
 		</div>

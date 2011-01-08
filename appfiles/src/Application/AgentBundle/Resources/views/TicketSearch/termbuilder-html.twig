@@ -30,7 +30,7 @@
 		</select>
 	</div>
 	<div class="choice">
-		<select name="status">
+		<select name="agent">
 			<option value="0">Unassigned</option>
 			<option value="-1">Current Agent</option>
 			{% for id,label in term_options.agents %}
@@ -55,7 +55,7 @@
 	</div>
 </div>
 {% if term_options.products %}
-	<div class="type" title="Product" data-rule-type="products">
+	<div class="type" title="Product" data-rule-type="product">
 		<div class="op">
 			<select name="op">
 				<option value="is">is</option>
@@ -63,7 +63,7 @@
 			</select>
 		</div>
 		<div class="choice">
-			<select name="priority">
+			<select name="product">
 				{% for id,label in term_options.products %}
 					<option value="{{id}}">{{label}}</option>
 				{% endfor %}
@@ -89,7 +89,7 @@
 	</div>
 {% endif %}
 {% if term_options.categories %}
-	<div class="type" title="Category" data-rule-type="categories">
+	<div class="type" title="Category" data-rule-type="category">
 		<div class="op">
 			<select name="op">
 				<option value="is">is</option>
@@ -97,7 +97,7 @@
 			</select>
 		</div>
 		<div class="choice">
-			<select name="department">
+			<select name="category">
 				{% for id,label in term_options.categories %}
 					<option value="{{id}}">{{label}}</option>
 				{% endfor %}

@@ -29,6 +29,8 @@ class Ticket extends EntityRepository
 			return false;
 		});
 
+		if (!$ids) return array();
+
 		$tickets = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Ticket t

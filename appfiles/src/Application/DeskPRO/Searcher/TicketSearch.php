@@ -188,7 +188,9 @@ class TicketSearch extends SearcherAbstract
 						if ($choice == 0) {
 							$wheres[] = "$tickets_table.agent_id IS NULL";
 						} elseif ($choice == -1) {
-							$wheres[] = "$tickets_table.agent_id != " . App::getCurrentPerson();
+							$wheres[] = "$tickets_table.agent_id = " . App::getCurrentPerson()->getId();
+						} elseif ($choice == -2) {
+							$wheres[] = "$tickets_table.agent_id != " . App::getCurrentPerson()->getId();
 						} else {
 							$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $choice);
 						}

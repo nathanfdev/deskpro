@@ -5,6 +5,9 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 {% if queue_id %}
 	pageMeta.queue_id = {{queue_id}};
 {% endif %}
+{% if not tickets %}
+	pageMeta.noResults = true;
+{% endif %}
 </script>
 <div class="content">
 	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.twig' %}

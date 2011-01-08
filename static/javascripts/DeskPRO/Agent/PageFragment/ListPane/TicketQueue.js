@@ -44,6 +44,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 			routes: ['table > tbody > tr .with-route'],
 			times: ['abbr.timeago']
 		});
+		
+		if (this.getMetaData('noResults')) {
+			$('.no-more-results', this.contentWrapper).show();
+		}
 	},
 	
 	destroyPage: function() {

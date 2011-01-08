@@ -148,7 +148,7 @@ class TicketSearchController extends AbstractController
 		} elseif ($this->in->getString('mode') == 'unassigned') {
 			$filter_agent_id = 0;
 		} else {
-			$filter_agent_id = -1;
+			$filter_agent_id = -2;
 		}
 
 		$display_counts = $grouper->getDisplayArray();
@@ -157,10 +157,10 @@ class TicketSearchController extends AbstractController
 
 		// TODO: Need a cleaner way of converting a group into a searchable item
 		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runoverview') . "?autorun=true&terms[0][rule_type]=$group1_nosuf&terms[0][op]=is&terms[0][$group1_nosuf]=\$group1_id&terms[1][rule_type]=agent&terms[1][op]=is&terms[1][agent]=$filter_agent_id";
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runoverview') . "?autorun=true&terms[0][rule_type]=agent&terms[0][op]=is&terms[0][agent]=$filter_agent_id&terms[1][rule_type]=status&terms[1][op]=is&terms[1][status]=awaiting_agent&terms[2][rule_type]=$group1_nosuf&terms[2][op]=is&terms[2][$group1_nosuf]=\$group1_id";
 
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
-		$list_url_group2 = $list_url_group1 . "&terms[2][rule_type]=$group2_nosuf&terms[2][op]=is&terms[2][$group2_nosuf]=\$group2_id";
+		$list_url_group2 = $list_url_group1 . "&terms[3][rule_type]=$group2_nosuf&terms[3][op]=is&terms[3][$group2_nosuf]=\$group2_id";
 
 		return $this->render('AgentBundle:TicketSearch:overview-listing.twig', array(
 			'counts' => $display_counts,
