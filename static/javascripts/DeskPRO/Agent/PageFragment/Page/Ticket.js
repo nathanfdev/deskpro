@@ -48,6 +48,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	
 	destroyPage: function() {
 		
+		if (this.popoutPage) {
+			this.popoutPage.destroyPage();
+		}
+		
 		for (var i = 0; i < this.destroyEls.length; i++) {
 			$(this.destroyEls[i]).remove();
 		}
@@ -63,13 +67,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	activate: function() {
-		if (this.popoutPinIcon.is('.on')) {
+		if (this.popoutPinIcon && this.popoutPinIcon.is('.on')) {
 			this.popout.fadeIn(200);
 		}
 	},
 	
 	deactivate: function() {
-		if (this.popoutPinIcon.is('.on')) {
+		if (this.popoutPinIcon && this.popoutPinIcon.is('.on')) {
 			this.popout.fadeOut(200);
 		}
 	},
@@ -544,10 +548,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var self = this;
 		var el = this.wrapper;
 		
-		this.popoutPinIcon = $('.person-popout .pin-icon', this.wrapper).click((function () {
-			this.togglePinPopout();
-		}).bind(this));
-		
 		$('.person-overview', el).mouseover(function(event) {
 			self.isMouseOverPopout = true;
 			self.openPopOut(event);
@@ -555,11 +555,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			self.isMouseOverPopout = false;
 			self.closePopoutOnmouseout.delay(10, self);
 		});
+	},
+
+	_initPopoutEls_done: false,
+	_initPopoutEls: function() {
 		
-		$('.person-popout', el).click(function(event) {
-			event.stopPropagation();
-		});
+		if (this._initPopoutEls_done) return;
+		this._initPopoutEls_done = true;
 		
+		var el = this.contentWrapper;
+		var self = this;
+		
+		this.popoutPinIcon = $('.person-popout .pin-icon', this.wrapper).click((function () {
+			this.togglePinPopout();
+		}).bind(this));
 		
 		this.popout = $('.person-popout', el);
 		this.popout.mouseover(function() {
@@ -567,6 +576,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}).mouseout(function(event) {
 			self.isMouseOverPopout = false;
 			self.closePopoutOnmouseout.delay(10, self);
+		}).click(function(event) {
+			event.stopPropagation();
 		});
 		this.popout.detach().appendTo('body');
 		this.destroyEls.push(this.popout);
@@ -599,6 +610,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	openPopOut: function(event) {
+		
+		this._initPopoutEls();
 		
 		// Already open
 		if (this.popout.is(':visible')) {
@@ -671,6 +684,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	togglePinPopout: function() {
+		
+		if (!this._initPopoutEls_done) return;
+		
 		// Turn off
 		if (this.popoutPinIcon.is('.on')) {
 			this.popoutPinIcon.removeClass('on');
@@ -686,7 +702,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	closePopoutOnmouseout: function() {
-		if (this.isMouseOverPopout || this.popoutPinIcon.is('.on')) {
+		if (!this._initPopoutEls_done || this.isMouseOverPopout || this.popoutPinIcon.is('.on')) {
 			return;
 		}
 		

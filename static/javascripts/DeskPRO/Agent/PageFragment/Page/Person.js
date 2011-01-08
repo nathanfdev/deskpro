@@ -92,6 +92,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		this.initOrgEditable();
 	},
 	
+	destroyPage: function() {
+		if (this.org_dlg) {
+			this.org_dlg.remove();
+		}
+		
+		if (this.email_dlg) {
+			this.email_dlg.remove();
+		}
+	},
+	
 	//#########################################################################
 	//# Company stuff
 	//#########################################################################
