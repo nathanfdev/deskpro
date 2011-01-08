@@ -98,3 +98,10 @@
 	background-repeat: no-repeat;
 	background-position: center left;
 }
+
+/**********************************************************************
+* Simple Tabs
+***********************************************************************/
+
+.deskpro-tab { display: none; }
+.deskpro-tab.on { display: block; }

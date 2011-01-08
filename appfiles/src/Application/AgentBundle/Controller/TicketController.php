@@ -63,13 +63,16 @@ class TicketController extends AbstractController
 			'person_id' => $this->person['id']
 		));
 
+		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+
 		return $this->render('AgentBundle:Ticket:view.twig', array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,
 			'custom_fields_has_one_value' => $has_value,
-			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none'
+			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
+			'macros' => $macros
 		));
 	}
 	

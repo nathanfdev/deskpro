@@ -51,6 +51,10 @@ input[type="text"]:focus, input[type="password"]:focus, textarea:focus {
 	box-shadow: 0px 0px 5px #8db6e6;
 }
 
+input[type="checkbox"].small {
+	width: 10px;
+}
+
 input.input-title {
 	width: 98%;
 	font-size: 130%;
@@ -91,6 +95,16 @@ input.input-title {
 .icon.people { background-image: url(../../images/icons/vcards.png); }
 .icon.organizations { background-image: url(../../images/icons/briefcase.png); }
 
+.icon-script { background-image: url(../../images/icons/script.png); }
+.icon-script-gear { background-image: url(../../images/icons/script_gear.png); }
+.icon-keyboard { background-image: url(../../images/icons/keyboard.png); }
+.icon-mouse { background-image: url(../../images/icons/mouse.png); }
+.icon-key { background-image: url(../../images/icons/key.png); }
+.icon-key-add { background-image: url(../../images/icons/key_add.png); }
+.icon-key-del { background-image: url(../../images/icons/key_delete.png); }
+.icon-page-delete { background-image: url(../../images/icons/page_white_delete.png); }
+.icon-page-merge { background-image: url(../../images/icons/table_go.png); }
+.icon-page-split { background-image: url(../../images/icons/table_relationship.png); }
 
 /**********************************************************
  Buttons

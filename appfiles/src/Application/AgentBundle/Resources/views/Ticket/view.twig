@@ -5,220 +5,257 @@ pageMeta.ticket_id = {{ticket.id}};
 pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 </script>
 
-<div class="ticket">
+<div class="ticket-content">
+	<div class="ticket">
 
-<div class="ticket-top">
-	<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
-	<h1>
-		<span class="ticket-opt-btn ticket-options-department-btn department"><span class="val">{{ticket.department.title}}</span> &rsaquo;</span>
-		{{ticket.subject}}
-	</h1>
+	<div class="ticket-top">
+		<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
+		<h1>
+			<span class="ticket-opt-btn ticket-options-department-btn department"><span class="val">{{ticket.department.title}}</span> &rsaquo;</span>
+			{{ticket.subject}}
+		</h1>
 
-	<div class="ticket-info">
-		<div class="edit-btn ticket-info-edit-btn"></div>
-		<dl class="ticket-opt-btn ticket-options-category-btn">
-			<dt>Category</dt>
-			<dd>{{ticket.category.title}}</dd>
-		</dl>
-		<dl class="ticket-opt-btn ticket-options-product-btn">
-			<dt>Product</dt>
-			<dd>{{ticket.product.title}}</dd>
-		</dl>
-		<dl class="ticket-opt-btn ticket-options-priority-btn">
-			<dt>Priority</dt>
-			<dd>{{ticket.priority.title}}</dd>
-		</dl>
-		<br style="clear:both" />
-	</div>
-
-	<br style="clear:both" />
-	
-	<div class="person-info-line">
-
-		<div style="float:right">
-			<strong>Assigned To:</strong><br />
-			{% if not ticket.agent_id %}
-				UNASSIGNED
-			{% elseif ticket.agent_id == person.id %}
-				YOU
-			{% else %}
-				{{ticket.agent.name}}
-			{% endif %}
+		<div class="ticket-info">
+			<dl class="ticket-opt-btn ticket-options-category-btn">
+				<dt>Category</dt>
+				<dd>{{ticket.category.title}}</dd>
+			</dl>
+			<dl class="ticket-opt-btn ticket-options-product-btn">
+				<dt>Product</dt>
+				<dd>{{ticket.product.title}}</dd>
+			</dl>
+			<dl class="ticket-opt-btn ticket-options-priority-btn">
+				<dt>Priority</dt>
+				<dd>{{ticket.priority.title}}</dd>
+			</dl>
+			<dl class="ticket-opt-btn ticket-options-status-btn">
+				<dt>Status</dt>
+				<dd>{{ticket.status}}</dd>
+			</dl>
+			<br style="clear:both" />
 		</div>
 
-		<div class="person-overview">
-			<div class="img">
-				<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
-			</div>
-			<div class="info">
-				<h1>{{ticket.person.name}}</h1>
-				{% if ticket.person.primary_email %}
-					{{ticket.person.primary_email.email}}
+		<br style="clear:both" />
+	
+		<div class="person-info-line">
+
+			<div style="float:right">
+				<strong>Assigned To:</strong><br />
+				{% if not ticket.agent_id %}
+					UNASSIGNED
+				{% elseif ticket.agent_id == person.id %}
+					YOU
+				{% else %}
+					{{ticket.agent.name}}
 				{% endif %}
 			</div>
-		</div>
-		
-		<br style="clear:both" />
-	</div>
 
-	{% if custom_fields %}
-		<div class="ticket-custom-fields-wrap">
-			<div class="edit-btn ticket-custom-fields-edit-btn"><span>Edit Fields</span></div>
-			<div class="ticket-custom-fields show-fields">
-				<div class="wrap">
-					{% include 'AgentBundle:Ticket:custom-fields-rendered.twig' with {'custom_fields': custom_fields} %}
+			<div class="person-overview">
+				<div class="img">
+					<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
 				</div>
-			</div>
-		</div>
-	
-		<div class="ticket-custom-fields edit show-fields edit-fields-overlay" style="display:none">
-			{% for f in custom_fields %}
-				<div class="field-wrap">
-					<div class="label-wrap"><label>{{f.title}}</label></div>
-					<div class="field-input">
-						{{f.form|render}}
-					</div>
-				</div>
-			{% endfor %}		
-			<div class="buttons">
-				<div class="loading-off">
-					<button class="save-trigger dp-button small">Save</button>
-					<button class="close-trigger dp-button gray small">Cancel</button>
-				</div>
-				<div class="loading-on">
-					<span>Saving ...</span>
-				</div>
-			</div>
-		</div>
-	{% endif %}
-	
-	<ul class="ticket-tabs">
-		<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
-		{% if ticket.attachments.count() %}<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>{% endif %}
-		<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
-	</ul>
-</div>
-
-<div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
-	<ul>
-		{% for message in ticket.messages %}
-			{% include 'AgentBundle:Ticket:ticket-message.twig' with {'message': message} %}
-		{% endfor %}
-		<li class="agent agent-reply">
-			<div class="box">
 				<div class="info">
-					<cite>New Reply</cite>
+					<h1>{{ticket.person.name}}</h1>
+					{% if ticket.person.primary_email %}
+						{{ticket.person.primary_email.email}}
+					{% endif %}
 				</div>
-				<div class="message">
-					<div class="reply-area">
-						<div class="ticket-attach-upload-btn"><span>Add Attachments</span></div>
-						<ul class="ticket-newreply-attach-list">
-						</ul>
-						<textarea class="ticket-reply-textarea" name="reply"></textarea>
-						
-						<div class="buttons">
-							<button class="btn-submit dp-button small">Add Reply</button> or <a href="#" class="btn-cancel">cancel</a>
-						</div>
-						<div class="send-reply-load"><div>Your reply is being sent ...</div></div>
+			</div>
+		
+			<br style="clear:both" />
+		</div>
+
+		{% if custom_fields %}
+			<div class="ticket-custom-fields-wrap">
+				<div class="edit-btn ticket-custom-fields-edit-btn"><span>Edit Fields</span></div>
+				<div class="ticket-custom-fields show-fields">
+					<div class="wrap">
+						{% include 'AgentBundle:Ticket:custom-fields-rendered.twig' with {'custom_fields': custom_fields} %}
 					</div>
 				</div>
 			</div>
-		</li>
-	</ul>
-</div>
-
-<div class="tab-content attachments" data-tab-trigger=".tab-trigger.attachments">
-		
-	<table class="list" cellspacing="0" width="100%">
-		<thead class="display-options-trigger">
-			<tr>
-				<th>Filename</th>
-				<th width="100">View</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for ticket_attach in ticket.attachments %}
-				<tr>
-					<td><a href="{{ path('agent_show_blob', {'blob_id': ticket_attach.blob_id}) }}" target="_blank">{{ticket_attach.blob.filename}}</a></td>
-					<td>{{ticket_attach.blob.filesize}} bytes</td>
-				</tr>
-			{% endfor %}
-		</tbody>
-	</table>
-</div>
-
-<div class="tab-content ticket-log" data-tab-trigger=".tab-trigger.ticket-log">
-	<div class="loading-more" style="display:block">
-		Loading ticket log ...
-	</div>
-</div>
-
-</div>
-
-<div class="person-popout" style="display:none">
-	<div class="tabbar nosel">
-		<div class="pin-icon"></div>
-		<ul>
-			<li class="tab icon icon-person tab-active"><div class="title"><span>Ticket User</span></div></li>
+	
+			<div class="ticket-custom-fields edit show-fields edit-fields-overlay" style="display:none">
+				{% for f in custom_fields %}
+					<div class="field-wrap">
+						<div class="label-wrap"><label>{{f.title}}</label></div>
+						<div class="field-input">
+							{{f.form|render}}
+						</div>
+					</div>
+				{% endfor %}		
+				<div class="buttons">
+					<div class="loading-off">
+						<button class="save-trigger dp-button small">Save</button>
+						<button class="close-trigger dp-button gray small">Cancel</button>
+					</div>
+					<div class="loading-on">
+						<span>Saving ...</span>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+	
+		<ul class="ticket-tabs">
+			<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
+			{% if ticket.attachments.count() %}<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>{% endif %}
+			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
 		</ul>
 	</div>
-	<br style="clear:both"/>
-	<div class="content">
-		{{person_inner_tab|raw}}
+
+	<div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
+		<ul>
+			{% for message in ticket.messages %}
+				{% include 'AgentBundle:Ticket:ticket-message.twig' with {'message': message} %}
+			{% endfor %}
+		</ul>
 	</div>
+
+	<div class="tab-content attachments" data-tab-trigger=".tab-trigger.attachments">
+		
+		<table class="list" cellspacing="0" width="100%">
+			<thead class="display-options-trigger">
+				<tr>
+					<th>Filename</th>
+					<th width="100">View</th>
+				</tr>
+			</thead>
+			<tbody>
+				{% for ticket_attach in ticket.attachments %}
+					<tr>
+						<td><a href="{{ path('agent_show_blob', {'blob_id': ticket_attach.blob_id}) }}" target="_blank">{{ticket_attach.blob.filename}}</a></td>
+						<td>{{ticket_attach.blob.filesize}} bytes</td>
+					</tr>
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	<div class="tab-content ticket-log" data-tab-trigger=".tab-trigger.ticket-log">
+		<div class="loading-more" style="display:block">
+			Loading ticket log ...
+		</div>
+	</div>
+
+	</div>
+
+	<div class="person-popout" style="display:none">
+		<div class="tabbar nosel">
+			<div class="pin-icon"></div>
+			<ul>
+				<li class="tab icon icon-person tab-active"><div class="title"><span>Ticket User</span></div></li>
+			</ul>
+		</div>
+		<br style="clear:both"/>
+		<div class="content">
+			{{person_inner_tab|raw}}
+		</div>
+	</div>
+
+	<div class="person-overview-popout" style="display:none"></div>
+
+	<div class="person-overview-popout-content" style="display:none" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
+		<div class="img">
+			<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
+		</div>
+		<div class="info">
+			<h1 title="Double-click to open person in a new tab">{{ticket.person.name}}</h1>
+			{% if ticket.person.primary_email %}
+				{{ticket.person.primary_email.email}}
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="ticket-attach overlay no-padd">
+		<div class="ticket-attach-widget"></div>
+		<div class="buttons">
+			<button class="save dp-button small overlay-close-trigger">Done</button>
+		</div>
+	</div>
+
+	{% include 'AgentBundle:Ticket:part-flag-menu.twig' %}
+	<ul class="ticket-info-edit-menu" style="display:none">
+		<li><span class="icon icon-keyboard">Take Ticket</span></li>
+		<li><span class="icon icon-key-add">Lock Ticket</span></li>
+		<li><span class="icon icon-page-delete">Delete Ticket</span></li>
+		<li class="sep">-</li>
+		<li><span class="icon print-ticket">Print Ticket</span></li>
+		<li><span class="icon icon-page-merge">Merge Ticket</span></li>
+		<li><span class="icon icon-page-split">Split Ticket</span></li>
+		<li><span class="icon change-ticket-owner">Change User Owner</span></li>
+	</ul>
+	<ul class="ticket-message-edit-menu" style="display:none">
+		<li><span class="icon view-unformatted">View Unformatted</span></li>
+		<li><span class="icon view-details">View Details</span></li>
+		<li><span class="icon edit">Edit</span></li>
+		<li><span class="icon edit">Quote</span></li>
+	</ul>
+	<ul class="ticket-macros-menu" style="display:none">
+		{% for macro in macros %}
+			<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
+		{% endfor %}
+	</ul>
+	<ul class="ticket-options-status-menu" data-option-name="status" style="display:none">
+		<li data-option-id="awaiting_agent">Open</li>
+		<li data-option-id="awaiting_user">Pending</li>
+		<li data-option-id="resolved">Resolved</li>
+	</ul>
+	<ul class="ticket-options-department-menu" data-option-name="department" style="display:none">
+		{% for id,title in ticket_options.departments %}
+			<li data-option-id="{{id}}">{{title}}</li>
+		{% endfor %}
+	</ul>
+	<ul class="ticket-options-category-menu" data-option-name="category" style="display:none">
+		{% for id,title in ticket_options.categories %}
+			<li data-option-id="{{id}}">{{title}}</li>
+		{% endfor %}
+	</ul>
+	<ul class="ticket-options-product-menu" data-option-name="product" style="display:none">
+		{% for id,title in ticket_options.products %}
+			<li data-option-id="{{id}}">{{title}}</li>
+		{% endfor %}
+	</ul>
+	<ul class="ticket-options-priority-menu" data-option-name="priority" style="display:none">
+		{% for id,title in ticket_options.priorities %}
+			<li data-option-id="{{id}}">{{title}}</li>
+		{% endfor %}
+	</ul>
+</div><!-- content -->
+
+<div class="ticket-bar">
+	<div class="bar">
+		<ul class="tools">
+			<li class="macros"><span class="icon icon-script-gear">Macros</span></li>
+			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
+		</ul>
+		<input type="text" class="placeholder" value="Start typing a reply..." />
+	</div>
+	<div class="reply" style="display:none">
+		<form class="reply-form">
+			<div class="reply-area deskpro-tab on">
+				<textarea name="message"></textarea>
+				<button class="dp-button small submit-trigger">Submit</button>
+				<table cellspacing="0" cellpadding="0">
+					<tr><td>
+						<input class="small" type="checkbox" name="options[assign]" /> Assign ticket
+					</td><td>
+						<input class="small" type="checkbox" name="options[email_user]" /> Email reply to user
+					</td></tr>
+					<tr><td>
+						<input class="small" type="checkbox" name="options[status]" checked="checked" /> Change status to <span class="menu-trigger change-status">Pending</span>
+					</td><td>
+						<input class="small" type="checkbox" name="options[cc]" /> CC reply
+					</td></tr>
+				</table>
+			</div>
+			<div class="attachments-area deskpro-tab" style="display:none">
+				...
+			</div>
+		</form>
+	</div>
+	<ul class="ticket-reply-tabs" style="display:none">
+		<li class="tab-trigger on" data-tab-for="div.deskpro-tab.reply-area">Message</li>
+		<li class="tab-trigger" data-tab-for="div.deskpro-tab.attachments-area">Attachments</li>
+		<li class="close-trigger">Close</li>
+	</ul>
 </div>
-
-<div class="person-overview-popout" style="display:none"></div>
-
-<div class="person-overview-popout-content" style="display:none" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
-	<div class="img">
-		<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
-	</div>
-	<div class="info">
-		<h1 title="Double-click to open person in a new tab">{{ticket.person.name}}</h1>
-		{% if ticket.person.primary_email %}
-			{{ticket.person.primary_email.email}}
-		{% endif %}
-	</div>
-</div>
-
-<div class="ticket-attach overlay no-padd">
-	<div class="ticket-attach-widget"></div>
-	<div class="buttons">
-		<button class="save dp-button small overlay-close-trigger">Done</button>
-	</div>
-</div>
-
-{% include 'AgentBundle:Ticket:part-flag-menu.twig' %}
-<ul class="ticket-info-edit-menu" style="display:none">
-	<li><span class="icon print-ticket">Print Ticket</span></li>
-	<li><span class="icon merge-ticket">Merge Ticket</span></li>
-	<li><span class="icon delete-ticket">Delete Ticket</span></li>
-	<li><span class="icon change-ticket-owner">Change User Owner</span></li>
-</ul>
-<ul class="ticket-message-edit-menu" style="display:none">
-	<li><span class="icon view-unformatted">View Unformatted</span></li>
-	<li><span class="icon view-details">View Details</span></li>
-	<li><span class="icon edit">Edit</span></li>
-	<li><span class="icon edit">Quote</span></li>
-</ul>
-<ul class="ticket-options-department-menu" data-option-name="department" style="display:none">
-	{% for id,title in ticket_options.departments %}
-		<li data-option-id="{{id}}">{{title}}</li>
-	{% endfor %}
-</ul>
-<ul class="ticket-options-category-menu" data-option-name="category" style="display:none">
-	{% for id,title in ticket_options.categories %}
-		<li data-option-id="{{id}}">{{title}}</li>
-	{% endfor %}
-</ul>
-<ul class="ticket-options-product-menu" data-option-name="product" style="display:none">
-	{% for id,title in ticket_options.products %}
-		<li data-option-id="{{id}}">{{title}}</li>
-	{% endfor %}
-</ul>
-<ul class="ticket-options-priority-menu" data-option-name="priority" style="display:none">
-	{% for id,title in ticket_options.priorities %}
-		<li data-option-id="{{id}}">{{title}}</li>
-	{% endfor %}
-</ul>

@@ -15,30 +15,51 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	popoutPage: null,
 	
 	destroyEls: [],
+	destroyMenus: [],
 	
 	initPage: function(el) {
 
 		this.wrapper = el;
+		this.contentWrapper = this.wrapper.children('.ticket-content').attr('id', Orb.getUniqueId());
+		this.barWrapper = this.wrapper.children('.ticket-bar').attr('id', Orb.getUniqueId());
+		
+		this.layout = this.wrapper.layout({
+			center: {
+				paneSelector: '#' + this.contentWrapper.attr('id')
+			},
+			south: {
+				paneSelector: '#' + this.barWrapper.attr('id'),
+				size: 27,
+				spacing_open: 0,
+				spacing_closed: 0
+			}
+		});
 		
 		this._initPopout();
-		this._initReplyEvents();
-		this._initTicketActionsMenu();
 		this._initMessageActionsMenu();
 		this._initTicketOptionsMenus();
 		this._initCustomFieldsEditor();
 		this._initTicketTabs();
 		this._initTicketAttach();
 		this._initFlagMenu();
+		
+		this._initReplyBar();
 	},
 	
 	destroyPage: function() {
-		this.flagMenu.destroy();
+		
+		for (var i = 0; i < this.destroyEls.length; i++) {
+			$(this.destroyEls[i]).remove();
+		}
+		
+		for (var i = 0; i < this.destroyMenus.length; i++) {
+			this.destroyMenus[i].destroy();
+		}
 	},
 	
 	displayNewMessage: function(html) {
-		var last_message = $('.messages > ul > li.agent-reply', this.wrapper);
 		var new_message = $(html).hide();
-		new_message.insertBefore(last_message).slideDown();
+		new_message.appendTo($('.messages > ul', this.contentWrapper)).slideDown();
 	},
 	
 	activate: function() {
@@ -68,6 +89,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				self._handleFlagMenuClick(info);
 			}
 		});
+		
+		this.destroyMenus.push(this.flagMenu);
 	},
 	
 	_handleFlagMenuClick: function(info) {
@@ -186,21 +209,16 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	_initTicketTabs: function() {
 		
 		var self = this;
-		$('.ticket-tabs li', this.wrapper).click(function() {
-			self.changeTicketTab($(this).data('tab-for'));
+		var simpleTabs = new DeskPRO.UI.SimpleTabs({
+			context: this.contentWrapper,
+			triggerElements: $('.ticket-tabs li', this.contentWrapper),
+			onTabSwitch: function(info) {
+				if (info.tabEl.is('.ticket-log')) {
+					self._loadTicketLog();
+				}
+			}
 		});
-	},
-	
-	changeTicketTab: function(to_tab) {
-		$('.tab-content', this.wrapper).removeClass('on');
-		$(to_tab, this.wrapper).addClass('on');
-		
-		$('.tab-trigger', this.wrapper).removeClass('on');
-		$($(to_tab).data('tab-trigger'), this.wrapper).addClass('on');
-		
-		if (to_tab.indexOf('.ticket-log') != -1) {
-			this._loadTicketLog();
-		}
+
 	},
 	
 	_loadTicketLog: function() {
@@ -230,7 +248,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//#################################################################
 		
 	_initTicketOptionsMenus: function() {
-		var options = ['department', 'category', 'product', 'priority'];
+		var options = ['department', 'category', 'product', 'priority', 'status'];
 		var self = this;
 		
 		for (var i = 0; i < options.length; i++) {
@@ -242,6 +260,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 					self._handleTicketOptionClick(info);
 				}
 			});
+			this.destroyMenus.push(menu);
 		}
 	},
 	
@@ -277,28 +296,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	//#################################################################
-	//# Ticket actions menu
-	//#################################################################
-	
-	ticketActionsMenu: null,
-	_initTicketActionsMenu: function() {
-		var trigger =  $('.ticket-info-edit-btn', this.wrapper);
-		this.ticketActionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: trigger,
-			menuElement: $('.ticket-info-edit-menu:first', this.wrapper),
-			
-			// These two handlers prevent the gear button from disappearing
-			// when not being hovered over anymore. (cuz its only displayed with css :hover)
-			onMenuOpened: function() {
-				trigger.css({'display': 'block'});
-			},
-			onMenuClosed: function() {
-				trigger.css({'display': ''}); //back to default
-			},
-		});
-	},
-	
-	//#################################################################
 	//# Message actions menu
 	//#################################################################
 	
@@ -317,6 +314,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				trigger.css({'display': ''}); //back to default
 			},
 		});
+		
+		this.destroyMenus.push(this.messageActionsMenu);
 		
 		// We're using a live event because new messages are always
 		// added. So we take care of opening the menu manually.
@@ -400,30 +399,119 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.wrap', this.custom_fields_display).html(html);
 	},
 	
-	
 	//#################################################################
-	//# New reply
+	//# Reply bar
 	//#################################################################
 	
-	_initReplyEvents: function() {
-		this.showEditor();
-	},
+	ticketBar: null,
+	ticketReply: null,
+	ticketReplyTabs: null,
 	
-	showEditor: function() {		
-		var wrapper = this.wrapper;
-		$('.agent-reply .placeholder', wrapper).slideUp(function() {
-			$('.agent-reply .reply-area', wrapper).slideDown();
-			$('.editor-loading', wrapper).hide();
-		});
-	},
+	ticketActionsMenu: null,
+	ticketMacrosMenu: null,
 	
-	_sendReply: function() {
-		var replyArea = $('.agent-reply .reply-area', this.wrapper);
-		$('.buttons', replyArea).hide();
-		$('.send-reply-load', replyArea).show();
+	_initReplyBar: function() {
+		this.ticketBar = this.barWrapper.children('div.bar');
+		this.ticketReply = this.barWrapper.children('div.reply');
 		
-		var data = $(':input', replyArea).serializeArray();
-		data.push({name: 'message', value: this.newReplyEditor.html() });
+		this.ticketReplyTabs = $('.ticket-reply-tabs', this.barWrapper).detach().appendTo('body');
+		this.destroyEls.push(this.ticketReplyTabs);
+		
+		var self = this;
+		$('input.placeholder', this.ticketBar).click(function() {
+			self.toggleReplyBar();
+		});
+		
+		this.ticketReplyTabs.children('li.close-trigger').click(function() {
+			self.toggleReplyBar();
+		});
+		
+		// Send reply
+		$('button.submit-trigger', this.ticketReply).click(function(ev) {
+			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
+			self._sendReply();
+		});
+		
+		// Add +1 to zindex because we need to properly layer the ticketReplyTabs
+		// - Under barWrapper (south pane), but above contentWrapper (content pane)
+		this.barWrapper.css({
+			'z-index': parseInt(this.barWrapper.css('z-index'))+1
+		});
+		
+		// Init ticket reply tabs
+		var simpleTabs = new DeskPRO.UI.SimpleTabs({
+			context: this.ticketReply,
+			triggerElements: this.ticketReplyTabs.children('li.tab-trigger')
+		});
+		
+		// Actions menu
+		this.ticketActionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('ul.tools li.actions', this.ticketBar),
+			menuElement: $('ul.ticket-info-edit-menu:first', this.contentWrapper)
+		});
+		this.destroyMenus.push(this.ticketActionsMenu);
+		
+		// Macros menu
+		this.ticketMacrosMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('ul.tools li.macros', this.ticketBar),
+			menuElement: $('ul.ticket-macros-menu:first', this.contentWrapper)
+		});
+		this.destroyMenus.push(this.ticketMacrosMenu);
+	},
+
+	toggleReplyBar: function(force) {
+		
+		if (!force) {
+			if (this.ticketBar.is(':visible')) {
+				force = 'on';
+			} else {
+				force = 'off';
+			}
+		}
+		
+		if (force == 'on') {
+			this.ticketBar.hide();
+			this.ticketReply.show();
+			this.barWrapper.addClass('expanded');
+			this.layout.sizePane('south', 150);
+			
+			this.ticketReplyTabs.css({
+				'position': 'absolute',
+				'top': this.barWrapper.offset().top - this.ticketReplyTabs.outerHeight() - 2,
+				'left': this.barWrapper.offset().left,
+				'display': 'block',
+				'z-index': parseInt(this.barWrapper.css('z-index'))
+			});
+			
+			// When we open we should scroll down by the new height,
+			// so the same position is visible in the center pane
+			var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
+			this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
+			
+			// Focus textarea
+			$('textarea', this.ticketReply).focus();
+		} else {
+			this.ticketReplyTabs.hide();
+			this.ticketBar.show();
+			this.ticketReply.hide();
+			this.barWrapper.removeClass('expanded');
+			this.layout.sizePane('south', 27);
+			
+			this.ticketReplyTabs.hide();
+		}
+	},
+	
+	isSendingReply: false,
+	_sendReply: function() {
+		
+		if (this.isSendingReply) {
+			return;
+		}
+		
+		$('button.submit-trigger', this.ticketReply).addClass('gray');
+		this.isSendingReply = true;
+		
+		var data = $('form.reply-form', this.ticketReply).serializeArray();
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
@@ -432,25 +520,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			data: data,
 			dataType: 'html',
 			success: function(html) {
+				$('button.submit-trigger', this.ticketReply).removeClass('gray');
+				this.isSendingReply = false;
 				this._handleSendReplySuccess(html);
 			}
 		});
 	},
 	
 	_handleSendReplySuccess: function(html) {
-		var wrapper = this.wrapper;
-		var replyArea = $('.agent-reply .reply-area', this.wrapper);
-		var ed = this.newReplyEditor;
-		$('.agent-reply .reply-area', wrapper).slideUp((function() {
-			//$('.agent-reply .placeholder', wrapper).slideDown();
-			$('.buttons', replyArea).show();
-			//$('.send-reply-load', replyArea).hide();
-			ed.html('');
-			
-			this.displayNewMessage(html);
-		}).bind(this));
+		
+		this.toggleReplyBar('off');
+		this.displayNewMessage(html);
+		$('textarea[name="message"]', this.ticketReply).val('');
 	},
-	
 	
 	
 	//#################################################################
