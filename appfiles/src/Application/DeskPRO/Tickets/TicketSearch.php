@@ -19,7 +19,7 @@ class TicketSearch
 	{
 		$options = array();
 
-		if ($personp['is_agent']) {
+		if ($person['is_agent']) {
 			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
 		}
 

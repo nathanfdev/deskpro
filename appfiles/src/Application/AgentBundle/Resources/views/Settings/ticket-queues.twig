@@ -1,0 +1,35 @@
+{% extends 'AgentBundle:Settings:settings-layout.twig' %}
+{% block current_page "ticket-queues" %}
+{% block content %}
+
+{% if show_saved_flash %}
+	<div style="float:left">
+		Queue was saved successfully!
+	</div>
+{% endif %}
+
+<div style="text-align: right">
+	<a class="dp-button green" href="{{ path('agent_settings_ticketqueues_new') }}">Create Queue</a>
+</div>
+
+<br />
+
+<ul class="item-list">
+	{% for queue in queues %}
+		<li>
+			<div style="float:right">
+				<ul class="controls">
+					<li class="delete"><a href="{{ path('agent_settings_ticketqueues_del', { 'queue_id': queue.id }) }}" onclick="return confirm('Are you sure you want to delete this queue?');">delete</a></li>
+					<li class="edit"><a href="{{ path('agent_settings_ticketqueues_edit', { 'queue_id': queue.id }) }}">edit</a></li>
+				</ul>
+			</div>
+			{{queue.title}}
+		</li>
+	{% else %}
+		<li class="empty-list">
+			You have no defined queues. <a href="{{ path('agent_settings_ticketqueues_new') }}">How about you make one?</a>
+		</li>
+	{% endfor %}
+</ul>
+
+{% endblock %}

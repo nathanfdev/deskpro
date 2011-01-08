@@ -28,6 +28,71 @@ class SettingsController extends AbstractController
 		));
     }
 
+
+	############################################################################
+	# Ticket Queues
+	############################################################################
+
+	/**
+	 * Just a list of queues
+	 */
+	public function ticketQueuesAction()
+	{
+		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
+
+		return $this->render('AgentBundle:Settings:ticket-queues.twig', array(
+			'queues' => $queues
+		));
+	}
+
+	/**
+	 * Edit a queue
+	 */
+	public function ticketQueueEditAction($queue_id)
+	{
+		if ($queue_id) {
+			try {
+				$queue = $this->em->find('DeskPRO:TicketQueue', $queue_id);
+			} catch (\Doctrine\ORM\NoResultException $e) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no queue with ID $queue_id");
+			}
+		} else {
+			$queue = new TicketQueue;
+		}
+
+		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
+
+		if ($this->isPostRequest()) {
+			$errors = $this->_processEditQueue($queue);
+			if (!$errors) {
+				echo "Saved!";
+			}
+		}
+
+		return $this->render('AgentBundle:Settings:ticket-queue-edit.twig', array(
+			'term_options' => $term_options,
+			'queue' => $queue
+		));
+	}
+
+	public function _processEditQueue(TicketQueue $queue)
+	{
+		$queue['title'] = $this->in->getString('title');
+		$queue['terms'] = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+
+		if (!$queue['person_id']) {
+			$queue['person'] = $this->person;
+		}
+
+		$queue['is_global'] = true;
+		$queue['is_enabled'] = true;
+
+		$this->em->persist($queue);
+		$this->em->flush();
+
+		return null;
+	}
+
 	
 	
 	############################################################################

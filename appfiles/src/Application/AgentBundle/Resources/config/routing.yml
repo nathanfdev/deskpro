@@ -53,6 +53,24 @@ agent_settings_ticketmacros_del:
   defaults: { _controller: AgentBundle:Settings:ticketMacroDelete }
   requirements: { macro_id: "\d+" }
 
+agent_settings_ticketqueues:
+  pattern: /settings/ticket-queues
+  defaults: { _controller: AgentBundle:Settings:ticketQueues }
+
+agent_settings_ticketqueues_edit:
+  pattern: /settings/ticket-queues/:queue_id/edit
+  defaults: { _controller: AgentBundle:Settings:ticketQueueEdit }
+  requirements: { queue_id: "\d+" }
+
+agent_settings_ticketqueues_del:
+  pattern: /settings/ticket-queues/:queue_id/delete
+  defaults: { _controller: AgentBundle:Settings:ticketQueueDelete }
+  requirements: { queue_id: "\d+" }
+
+agent_settings_ticketqueues_new:
+  pattern: /settings/ticket-queues/new-queue
+  defaults: { _controller: AgentBundle:Settings:ticketQueueEdit, queue_id: 0 }
+
 ################################################################################
 # People
 ################################################################################
@@ -185,19 +203,6 @@ agent_ticketsearch_runqueue:
 agent_ticketsearch_runflag:
   pattern: /ticket-search/flag/:flag
   defaults: { _controller: AgentBundle:TicketSearch:runFlagged }
-
-agent_ticketqueues_list:
-  pattern: /ticket-search/queues/list
-  defaults: { _controller: AgentBundle:TicketSearch:listQueues }
-
-agent_ticketqueues_edit:
-  pattern: /ticket-search/queues/:queue_id/edit
-  defaults: { _controller: AgentBundle:TicketSearch:editQueue }
-  requirements: { queue_id: "\d+" }
-
-agent_ticketqueues_new:
-  pattern: /ticket-search/queues/new-queue
-  defaults: { _controller: AgentBundle:TicketSearch:editQueue, queue_id: 0 }
 
 
 ################################################################################
