@@ -1,0 +1,12 @@
+{% if custom_fields %}
+	<div class="ticket-custom-fields show-fields">
+		{% for f in custom_fields %}
+			<div class="field-wrap">
+				<div class="label-wrap"><label>{{f.title}}</label></div>
+				<div class="field-input">
+					{{f.form|render}}
+				</div>
+			</div>
+		{% endfor %}		
+	</div>
+{% endif %}

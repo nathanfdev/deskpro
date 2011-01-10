@@ -164,7 +164,7 @@
  # RESOURCE LOADING
  ####################}
 
-<span id="test_route" data-route="navpane:{{ path('agent_ticketsearch_findpane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch_filter') }}" style="display:none"></span>
+<span id="test_route" data-route="page:{{ path('agent_ticket_new') }}" style="display:none"></span>
 
 <link rel="stylesheet" href="{% asset 'javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css' %}" type="text/css" media="screen"  />
 <link rel="stylesheet" href="{% asset 'javascripts/plupload/css/plupload.queue.css' %}" type="text/css" media="screen"  />
@@ -194,10 +194,10 @@
 		window.DeskPRO_Window.initPage();
 		
 		//window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
-		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
+		window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
 
 		// Debug: auto load a ticket tab
-		window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
+		//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
 	}
 </script>
 <script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>

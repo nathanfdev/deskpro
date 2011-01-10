@@ -238,6 +238,30 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		});
 	},
 	
+	_handleSendReply: function(els) {
+		if (this.isSendingReply) {
+			return;
+		}
+
+		$('button.submit-trigger', this.ticketReply).addClass('gray');
+		this.isSendingReply = true;
+
+		var data = els.serializeArray();
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'html',
+			success: function(html) {
+				$('button.submit-trigger', this.ticketReply).removeClass('gray');
+				this.isSendingReply = false;
+				this._handleSendReplySuccess(html);
+			}
+		});
+	},
+	
 	//#################################################################
 	//# Popout
 	//#################################################################

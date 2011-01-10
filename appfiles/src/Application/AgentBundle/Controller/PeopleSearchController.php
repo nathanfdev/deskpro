@@ -72,6 +72,9 @@ class PeopleSearchController extends AbstractController
 	public function performQuickSearchAction()
 	{
 		$q = $this->in->getString('q');
+		if (!$q) {
+			$q = $this->in->getString('term');
+		}
 
 		//TODO proper sql escape
 		$q = addslashes($q);
@@ -92,7 +95,13 @@ class PeopleSearchController extends AbstractController
 		")->getResult();
 		//")->setParameters(array($q, $q))->getResult();
 
-		return $this->render('AgentBundle:PeopleSearch:search_results.twig', array(
+		if ($this->in->getBool('ajax')) {
+			$renderer = 'phpj';
+		} else {
+			$renderer = 'twig';
+		}
+
+		return $this->render("AgentBundle:PeopleSearch:search_results.$renderer", array(
 			'people_list' => $people_list
 		));
 	}

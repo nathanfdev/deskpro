@@ -14,45 +14,48 @@ Orb.Compat.WebForms.placeholder = function(input) {
 
 	if (!input) return null;
 	
-	input = $(input);
-	if (!input.length) return null;
+	input_col = $(input);
+	if (!input_col.length) return null;
 	
-	// Check if its already supported
-	if (input.placeholder && this.isPlaceholderSupported()) return;
-	
-	// Get the palceholder and check that its actually a value
-	var placeholder = input.attr('placeholder');
-	if (!placeholder.length) return;
+	input_col.each(function() {
 
-	// See if we should enable the placeholder now
-	if (input.val() === '' || input.val() == placeholder) {
-		input.val(placeholder);
-		input.addClass('placeholder-visible');
-	}
+		var input = $(this);
+	
+		// Check if its already supported
+		if (input.placeholder && this.isPlaceholderSupported()) return;
+	
+		// Get the palceholder and check that its actually a value
+		var placeholder = input.attr('placeholder');
+		if (!placeholder || !placeholder.length) return;
 
-	var add_event = /*@cc_on'attachEvent'||@*/'addEventListener';
-	
-	input.focus(function() {
-		if (input.is('.placeholder-visible')) {
-			input.val('');
-			input.removeClass('placeholder-visible');
-		}
-	});
-	
-	input.blur(function() {
-		if (input.val() === '') {
-			input.addClass('placeholder-visible');
+		// See if we should enable the placeholder now
+		if (input.val() === '' || input.val() == placeholder) {
 			input.val(placeholder);
-		} else {
-			input.removeClass('placeholder-visible');
+			input.addClass('placeholder-visible');
 		}
-	});
 	
-	if (input.get(0).form) {
-		$(input.get(0).form).submit(function() {
+		input.focus(function() {
 			if (input.is('.placeholder-visible')) {
 				input.val('');
+				input.removeClass('placeholder-visible');
 			}
 		});
-	}
+	
+		input.blur(function() {
+			if (input.val() === '') {
+				input.addClass('placeholder-visible');
+				input.val(placeholder);
+			} else {
+				input.removeClass('placeholder-visible');
+			}
+		});
+	
+		if (input.get(0).form) {
+			$(input.get(0).form).submit(function() {
+				if (input.is('.placeholder-visible')) {
+					input.val('');
+				}
+			});
+		}
+	});
 };

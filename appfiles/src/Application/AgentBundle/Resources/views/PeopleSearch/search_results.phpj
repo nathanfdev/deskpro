@@ -1,0 +1,11 @@
+<?php
+$OUTPUT = array();
+
+foreach ($people_list as $person) {
+	$OUTPUT[] = array(
+		'id' => $person['id'],
+		'name' => $person['display_name'],
+		'email' => $person['primary_email_address'],
+		'label' => $person['display_name'] . ($person['primary_email_address'] ? " <{$person['primary_email_address']}>" : '')
+	);
+}

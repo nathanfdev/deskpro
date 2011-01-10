@@ -1,21 +1,21 @@
 <div class="ticket-info">
-	<dl class="ticket-opt-btn ticket-options-category-btn {% if not ticket.category %}no-value{% endif %}">
+	<dl class="ticket-opt-btn ticket-options-category-btn">
 		<dt>Category</dt>
-		<dd data-no-value="Choose Category">{{ticket.category.title}}</dd>
+		<dd class="{% if not ticket.category %}no-value{% endif %}" data-no-value="Choose Category">{{ticket.category.title}}</dd>
 	</dl>
-	<dl class="ticket-opt-btn ticket-options-product-btn {% if not ticket.product %}no-value{% endif %}">
+	<dl class="ticket-opt-btn ticket-options-product-btn">
 		<dt>Product</dt>
-		<dd data-no-value="Choose Product">{{ticket.product.title}}</dd>
+		<dd class="{% if not ticket.category %}no-value{% endif %}" data-no-value="Choose Product">{{ticket.product.title}}</dd>
 	</dl>
-	<dl class="ticket-opt-btn ticket-options-priority-btn {% if not ticket.priority %}no-value{% endif %}">
+	<dl class="ticket-opt-btn ticket-options-priority-btn">
 		<dt>Priority</dt>
-		<dd data-no-value="Choose Priority">{{ticket.priority.title}}</dd>
+		<dd class="{% if not ticket.category %}no-value{% endif %}" data-no-value="Choose Priority">{{ticket.priority.title}}</dd>
 	</dl>
 	<dl class="ticket-opt-btn ticket-options-status-btn">
 		<dt>Status</dt>
 		<dd>
 			{# todo these will be phrases, so this big condition wont be needed #}
-			{% if ticket.status == 'awaiting_agent' %}
+			{% if not ticket.status or ticket.status == 'awaiting_agent' %}
 				Open
 			{% elseif ticket.status == 'awaiting_user' %}
 				Pending

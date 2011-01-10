@@ -31,14 +31,10 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 				spacing_closed: 0
 			}
 		});
-		
-		this._initPopout();
-		this._initMessageActionsMenu();
+
 		this._initTicketOptionsMenus();
 		this._initCustomFieldsEditor();
-		this._initTicketTabs();
 		this._initTicketAttach();
-		this._initFlagMenu();
 		
 		this._initReplyBar();
 	},
@@ -133,20 +129,41 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	//#################################################################
 		
 	_initTicketOptionsMenus: function() {
-		var options = ['department', 'category', 'product', 'priority', 'status'];
+		var options = ['department', 'category', 'product', 'priority', 'status', 'agent'];
 		var self = this;
 		
 		for (var i = 0; i < options.length; i++) {
 			var opt = options[i];
+			var btnEl = $('.ticket-options-'+opt+'-btn', this.wrapper);
 			var menu = new DeskPRO.UI.Menu({
-				triggerElement: $('.ticket-options-'+opt+'-btn', this.wrapper),
+				triggerElement: btnEl,
 				menuElement: $('.ticket-options-'+opt+'-menu', this.wrapper),
 				onItemClicked: function(info) {
 					self._handleTicketOptionClick(info);
 				}
 			});
 			this.destroyMenus.push(menu);
+			
+			// And if its a no-value, update the proper title
+			if ($('.no-value', btnEl).length) {
+				this._updateTicketOptionValue(opt, null);
+			}
 		}
+	},
+	
+	_updateTicketOptionValue: function(opt, value) {
+		
+		// Replace the value of in the page
+		var val_el = $('.ticket-options-'+opt+'-btn dd, .ticket-options-'+opt+'-btn .val', this.wrapper);		
+		
+		if (!value) {
+			value = val_el.data('no-value');
+			val_el.addClass('no-value');
+		} else {
+			val_el.removeClass('no-value');
+		}
+		
+		val_el.html(value);
 	},
 	
 	_handleTicketOptionClick: function(info) {
@@ -154,9 +171,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var itemName = $(info.itemEl).html();
 		var itemId = $(info.itemEl).data('option-id');
 		
-		// Replace the value of in the page
-		var val_el = $('.ticket-options-'+opt+'-btn dd, .ticket-options-'+opt+'-btn .val', this.wrapper);		
-		val_el.html(itemName);
+		this._updateTicketOptionValue(opt, itemName);
 		
 		this._handleTicketOptionSave(opt, itemId);
 	},
@@ -328,28 +343,11 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	
 	isSendingReply: false,
 	_sendReply: function() {
-		
-		if (this.isSendingReply) {
-			return;
-		}
-		
-		$('button.submit-trigger', this.ticketReply).addClass('gray');
-		this.isSendingReply = true;
-		
-		var data = $('form.reply-form', this.ticketReply).serializeArray();
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'html',
-			success: function(html) {
-				$('button.submit-trigger', this.ticketReply).removeClass('gray');
-				this.isSendingReply = false;
-				this._handleSendReplySuccess(html);
-			}
-		});
+		this._handleSendReply($('form.reply-form', this.ticketReply));
+	},
+	
+	_handleSendReply: function(els) {
+		console.warn('This method should be overriden in a subclass!');
 	},
 	
 	_handleSendReplySuccess: function(html) {

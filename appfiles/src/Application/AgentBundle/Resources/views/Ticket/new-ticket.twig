@@ -3,19 +3,27 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
 pageMeta.title = 'New Ticket';
 pageMeta.ticket_id = 0;
 pageMeta.pageIdentity = 'ticket:new';
+pageMeta.userSearchUrl = '{{ path('agent_peoplesearch_performquick') }}?ajax=1';
 </script>
 
-<div class="ticket-content">
+<div class="ticket-content new-ticket">
 	<div class="ticket">
+	
+	<input type="hidden" name="ticket[department_id]" value="{{ticket.department.id}}" />
+	<input type="hidden" name="ticket[category_id]" value="{{ticket.category.id}}" />
+	<input type="hidden" name="ticket[product_id]" value="{{ticket.product.id}}" />
+	<input type="hidden" name="ticket[priority_id]" value="{{ticket.priority.id}}" />
+	<input type="hidden" name="ticket[status]" value="{{ticket.status}}" />
+	<input type="hidden" name="ticket[person_id]" value="{{ticket.person.id}}" />
 
 	<div class="ticket-top">
 		<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
 		<h1>
-			<span class="ticket-opt-btn ticket-options-department-btn department {% if not ticket.department %}no-value{% endif %}">
-				<span class="val" data-no-value="Choose Department">{{ticket.department.title}}</span>
+			<span class="ticket-opt-btn ticket-options-department-btn department">
+				<span class="val {% if not ticket.category %}no-value{% endif %}" data-no-value="Choose Department">{{ticket.department.title}}</span>
 				&rsaquo;
 			</span>
-			{{ticket.subject}}
+			<input type="text" class="input-title" name="ticket[subject]" value="{{ticket.subject}}" placeholder="Enter ticket title" />
 		</h1>
 
 		{% include 'AgentBundle:Ticket:part-ticket-info.twig' %}
@@ -24,70 +32,23 @@ pageMeta.pageIdentity = 'ticket:new';
 	
 		<div class="person-info-line">
 
-			<div style="float:right">
-				<strong>Assigned To:</strong><br />
-				{% if not ticket.agent_id %}
-					UNASSIGNED
-				{% elseif ticket.agent_id == person.id %}
-					YOU
-				{% else %}
-					{{ticket.agent.name}}
-				{% endif %}
+			<div class="ticket-opt-btn ticket-options-agent-btn agent" style="float:right">
+				<strong>Agent:</strong><br />
+				<span class="val {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.name}}</span>
+			</div>
+			
+			<div class="person-select">
+				<strong>User:</strong><br />
+				<input type="text" class="person-name-search" style="width: 250px" placeholder="Begin typing a name or email address" />
 			</div>
 			
 			<br style="clear:both" />
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-custom-fields.twig' %}
-	
-		<ul class="ticket-tabs">
-			<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
-			{% if ticket.attachments.count() %}<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>{% endif %}
-			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
-		</ul>
-	</div>
-
-	<div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
-		<ul>
-			{% for message in ticket.messages %}
-				{% include 'AgentBundle:Ticket:ticket-message.twig' with {'message': message} %}
-			{% endfor %}
-		</ul>
-	</div>
-
-	<div class="tab-content attachments" data-tab-trigger=".tab-trigger.attachments">
-		
-		<table class="list" cellspacing="0" width="100%">
-			<thead class="display-options-trigger">
-				<tr>
-					<th>Filename</th>
-					<th width="100">View</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for ticket_attach in ticket.attachments %}
-					<tr>
-						<td><a href="{{ path('agent_show_blob', {'blob_id': ticket_attach.blob_id}) }}" target="_blank">{{ticket_attach.blob.filename}}</a></td>
-						<td>{{ticket_attach.blob.filesize}} bytes</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
-	</div>
-
-	<div class="tab-content ticket-log" data-tab-trigger=".tab-trigger.ticket-log">
-		<div class="loading-more" style="display:block">
-			Loading ticket log ...
-		</div>
-	</div>
+		{% include 'AgentBundle:Ticket:part-custom-fields-edit.twig' %}
 
 	</div>
 
-	<div class="ticket-attach overlay no-padd">
-		<div class="ticket-attach-widget"></div>
-		<div class="buttons">
-			<button class="save dp-button small overlay-close-trigger">Done</button>
-		</div>
 	</div>
 
 	{% include 'AgentBundle:Ticket:part-ticket-menus.twig' %}

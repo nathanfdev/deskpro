@@ -254,12 +254,29 @@ ul.tagit input[type="text"] {
  Tickets
 ***********************************************************/
 
+.ticket-content {
+	margin-bottom: 15px; /* some space because ticket-reply-tabs hover over content */
+}
+
+.ticket-content.new-ticket {
+	background-color: #eceef3;
+}
+
+.ticket-content.new-ticket .ticket-opt-btn .no-value {
+	color: #6E5C4D;
+	text-decoration: underline;
+}
+
 .ticket {
 
 }
 
 .ticket > .messages {
 	padding: 15px;
+}
+
+.ticket-content.new-ticket .ticket-top {
+	border-bottom: none !important;
 }
 
 .ticket .ticket-top {
@@ -633,10 +650,6 @@ ul.tagit input[type="text"] {
 
 .person-popout > .content {
 	
-}
-
-.ticket-content {
-	margin-bottom: 15px; /* some space because ticket-reply-tabs hover over content */
 }
 
 .ticket-bar {
