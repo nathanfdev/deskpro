@@ -77,7 +77,6 @@
 		<li {% if current_page == 'settings' %}class="on"{% endif %}><a href="{{ path('agent_settings') }}">Settings</a></li>
 		<li {% if current_page == 'ticket-queues' %}class="on"{% endif %}><a href="{{ path('agent_settings_ticketqueues') }}">Ticket Queues</a></li>
 		<li {% if current_page == 'ticket-macros' %}class="on"{% endif %}><a href="{{ path('agent_settings_ticketmacros') }}">Ticket Macros</a></li>
-		<li {% if current_page == 'labels' %}class="on"{% endif %}>Labels</li>
 	</ul>
 	<div class="page-content">
 		{% block content %}{% endblock %}
