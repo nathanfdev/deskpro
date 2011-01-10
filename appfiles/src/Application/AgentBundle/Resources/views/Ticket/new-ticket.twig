@@ -4,6 +4,7 @@ pageMeta.title = 'New Ticket';
 pageMeta.ticket_id = 0;
 pageMeta.pageIdentity = 'ticket:new';
 pageMeta.userSearchUrl = '{{ path('agent_peoplesearch_performquick') }}?ajax=1';
+pageMeta.newUserUrl = '{{ path('agent_people_new') }}';
 </script>
 
 <div class="ticket-content new-ticket">
@@ -37,9 +38,11 @@ pageMeta.userSearchUrl = '{{ path('agent_peoplesearch_performquick') }}?ajax=1';
 				<span class="val {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.name}}</span>
 			</div>
 			
-			<div class="person-select">
+			<div class="person-select" style="float:left">
+				<a href="#" class="new-person-trigger" style="float:right; font-size: 7pt">create new user</a>
 				<strong>User:</strong><br />
 				<input type="text" class="person-name-search" style="width: 250px" placeholder="Begin typing a name or email address" />
+				
 			</div>
 			
 			<br style="clear:both" />
@@ -52,6 +55,8 @@ pageMeta.userSearchUrl = '{{ path('agent_peoplesearch_performquick') }}?ajax=1';
 	</div>
 
 	{% include 'AgentBundle:Ticket:part-ticket-menus.twig' %}
+	
+	{% include 'AgentBundle:Person:new-user-overlay.twig' %}
 </div><!-- content -->
 
 {% include 'AgentBundle:Ticket:part-ticket-bar.twig' %}

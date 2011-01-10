@@ -34,14 +34,6 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * The person ID
-	 *
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id;
-
-	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")

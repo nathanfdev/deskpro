@@ -223,7 +223,7 @@ DeskPRO.UI.Overlay = new Class({
 		// but our wrapper element is hidden so we dont want the innards to be hidden.
 		el.show();
 		
-		$('.overlay-close-trigger', el).click((function () {
+		$('.overlay-close-trigger, .close-trigger', el).click((function () {
 			this.closeOverlay();
 		}).bind(this));
 		

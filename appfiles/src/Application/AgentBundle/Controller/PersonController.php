@@ -13,6 +13,7 @@ namespace Application\AgentBundle\Controller;
 
 use \Orb\Util\Arrays;
 
+use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\Entity\Person;
 use \Application\DeskPRO\Entity\PersonEmail;
 use \Application\DeskPRO\Entity\PersonContactData;
@@ -402,6 +403,32 @@ class PersonController extends AbstractController
 		));
 	}
 
+	############################################################################
+	# new
+	############################################################################
+
+	public function newAction()
+	{
+		$person = new Entity\Person();
+		$person['first_name'] = $this->in->getString('person.first_name');
+		$person['last_name'] = $this->in->getString('person.last_last');
+
+		$email = new Entity\PersonEmail();
+		$email['email'] = $this->in->getString('person_email.email');
+		$person->addEmailAddress($email);
+
+		App::getOrm()->persist($person);
+		App::getOrm()->flush();
+
+		$data = array(
+			'id' => $person['id'],
+			'name' => $person['display_name'],
+			'email' => $person['primary_email_address'],
+			'label' => $person['display_name'] . ($person['primary_email_address'] ? " <{$person['primary_email_address']}>" : '')
+		);
+
+		return $this->createJsonResponse($data);
+	}
 
 
 	############################################################################

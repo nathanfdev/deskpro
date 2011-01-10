@@ -86,7 +86,7 @@ agent_people_view:
 
 agent_people_new:
   pattern: /people/new-person
-  defaults: { _controller: AgentBundle:Person:view, person_id: 0 }
+  defaults: { _controller: AgentBundle:Person:new }
 
 agent_people_ajaxsave:
   pattern: /people/:person_id/ajax-save

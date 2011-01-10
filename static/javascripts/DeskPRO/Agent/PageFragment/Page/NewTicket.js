@@ -17,10 +17,30 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 		this.toggleReplyBar('on');
 
 		this.ticketReplyTabs.children('li.close-trigger').hide();
-		
+	
+		this._initNewUser();
 		this._initUserChoice();
 	},
 	
+	newUserHelper: null,
+	_initNewUser: function() {
+		$('a.new-person-trigger', this.contentWrapper).click(this._openNewUser.bind(this));
+		this.newUserHelper = new DeskPRO.Agent.PageHelper.NewUserOverlay({
+			context: this.contentWrapper,
+			onAfterSave: this._handleNewUserSaved.bind(this),
+			saveUrl: this.getMetaData('newUserUrl')
+		});
+	},
+	
+	_openNewUser: function(ev) {
+		ev.preventDefault();
+		this.newUserHelper.open();
+	},
+	
+	_handleNewUserSaved: function(info) {
+		var data = info.data;
+		this.loadUser(data);
+	},
 	
 	userSearchEl: null,
 	_initUserChoice: function() {
@@ -33,11 +53,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 	},
 	
 	userSelected: function(ev, ui) {
-		console.log(ui);
+		this.loadUser(ui.item)
 	},
 	
-	loadUser: function(user_id) {
-		$('input[name="ticket\[person_id\]"]', this.contentWrapper);
+	loadUser: function(info) {
+		$('input[name="ticket\[person_id\]"]', this.contentWrapper).val(info.id);
+		this.userSearchEl.val(info.label);
 	},
 	
 	_handleTicketOptionSave: function(option, optionId) {

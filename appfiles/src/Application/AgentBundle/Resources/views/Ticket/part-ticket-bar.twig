@@ -11,18 +11,28 @@
 			<div class="reply-area deskpro-tab on">
 				<textarea name="message"></textarea>
 				<button class="dp-button small submit-trigger">Submit</button>
-				<table cellspacing="0" cellpadding="0">
-					<tr><td>
-						<input class="small" type="checkbox" name="options[assign]" /> Assign ticket
-					</td><td>
-						<input class="small" type="checkbox" name="options[email_user]" /> Email reply to user
-					</td></tr>
-					<tr><td>
-						<input class="small" type="checkbox" name="options[status]" checked="checked" /> Change status to <span class="menu-trigger change-status">Pending</span>
-					</td><td>
-						<input class="small" type="checkbox" name="options[cc]" /> CC reply
-					</td></tr>
-				</table>
+				{% if ticket.id %}
+					<table cellspacing="0" cellpadding="0">
+						<tr><td>
+							<input class="small" type="checkbox" name="options[assign]" /> Assign ticket
+						</td><td>
+							<input class="small" type="checkbox" checked="checked" name="options[email_user]" /> Email user this reply
+						</td></tr>
+						<tr><td>
+							<input class="small" type="checkbox" name="options[status]" checked="checked" /> Change status to <span class="menu-trigger change-status">Pending</span>
+						</td><td>
+							<input class="small" type="checkbox" name="options[cc]" /> CC reply
+						</td></tr>
+					</table>
+				{% else %}
+					<table cellspacing="0" cellpadding="0">
+						<tr><td>
+							<input class="small" type="checkbox" checked="checked" name="options[email_user]" /> Email user about this ticket
+						</td><td>
+							<input class="small" type="checkbox" name="options[cc]" /> CC reply
+						</td></tr>
+					</table>
+				{% endif %}
 			</div>
 			<div class="attachments-area deskpro-tab" style="display:none">
 				...

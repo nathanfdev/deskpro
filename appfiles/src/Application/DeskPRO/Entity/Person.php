@@ -541,7 +541,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this['emails']->add($email);
 
 		$email['person'] = $this;
-		$em->persist($email);
 	}
 
 

@@ -27,6 +27,11 @@ Orb.Compat.WebForms.placeholder = function(input) {
 		// Get the palceholder and check that its actually a value
 		var placeholder = input.attr('placeholder');
 		if (!placeholder || !placeholder.length) return;
+		
+		// Make sure we havent already run the placeholder compat
+		if (input.is('.has-placeholder')) return;
+
+		input.addClass('has-placeholder');
 
 		// See if we should enable the placeholder now
 		if (input.val() === '' || input.val() == placeholder) {
