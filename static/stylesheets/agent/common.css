@@ -105,6 +105,7 @@ input.input-title {
 .icon-page-delete { background-image: url(../../images/icons/page_white_delete.png); }
 .icon-page-merge { background-image: url(../../images/icons/table_go.png); }
 .icon-page-split { background-image: url(../../images/icons/table_relationship.png); }
+.icon-chart { background-image: url(../../images/icons/chart_bar.png); }
 
 /**********************************************************
  Buttons

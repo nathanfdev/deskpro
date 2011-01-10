@@ -101,6 +101,7 @@
 
 #window_head > #window_head_top > ul.current-user a {
 	color: #fff;
+	text-decoration: none;
 }
 
 #window_head > #window_head_top > ul.current-user > li {
