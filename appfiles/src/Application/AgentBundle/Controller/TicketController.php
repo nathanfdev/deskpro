@@ -91,12 +91,15 @@ class TicketController extends AbstractController
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
+		$custom_fields_form = new \Symfony\Component\Form\FieldGroup('custom_fields');
+
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$custom_fields = array();
 		foreach ($ticket_field_defs as $f_def) {
 			$value = !empty($ticket_data_structured[$f_def['id']]) ? $ticket_data_structured[$f_def['id']] : null;
 
 			$f = $f_def->getHandler()->getFormField($value);
+			$custom_fields_form->add($f);
 
 			$custom_fields[] = array(
 				'field_def' => $f_def,
@@ -115,7 +118,55 @@ class TicketController extends AbstractController
 			'macros' => $macros
 		));
 	}
-	
+
+	// Handles actually creating the ticket now
+	public function newAjaxSaveAction()
+	{
+		App::getOrm()->beginTransaction();
+
+		$ticket = new Entity\Ticket();
+		$ticket['department_id']  = $this->in->getUint('ticket.department_id');
+		$ticket['category_id']    = $this->in->getUint('ticket.category_id');
+		$ticket['product_id']     = $this->in->getUint('ticket.product_id');
+		$ticket['priority_id']    = $this->in->getUint('ticket.department_id');
+		$ticket['status']         = $this->in->getString('ticket.status');
+		$ticket['person_id']      = $this->in->getUint('ticket.person_id');
+
+		$ticket['subject']      = $this->in->getString('ticket.subject');
+
+		if (!$ticket['status']) {
+			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
+		}
+
+		$ticket['creation_system'] = Entity\Ticket::CREATED_WEB_AGENT;
+
+		$message = new Entity\TicketMessage();
+		$message['person'] = $this->person;
+		$message['message'] = $this->in->getString('message');
+		$ticket->addMessage($message);
+
+		// Custom fields
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$ticket_field_datas = array();
+		foreach ($ticket_field_defs as $field_def) {
+			$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm($_POST['custom_fields']));
+		}
+
+		foreach ($ticket_field_datas as $field_id => $data) {
+			$ticket->setCustomData($field_id, $data);
+		}
+
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		$data = array(
+			'id' => $ticket['id'],
+			'loadUrl' => $this->generateUrl('agent_ticket_view', array('ticket_id' => $ticket['id']))
+		);
+
+		return $this->createJsonResponse($data);
+	}
 
 
 	############################################################################

@@ -5,6 +5,7 @@ pageMeta.ticket_id = 0;
 pageMeta.pageIdentity = 'ticket:new';
 pageMeta.userSearchUrl = '{{ path('agent_peoplesearch_performquick') }}?ajax=1';
 pageMeta.newUserUrl = '{{ path('agent_people_new') }}';
+pageMeta.submitTicketUrl = '{{ path('agent_people_new_ajaxsave') }}';
 </script>
 
 <div class="ticket-content new-ticket">
@@ -18,7 +19,6 @@ pageMeta.newUserUrl = '{{ path('agent_people_new') }}';
 	<input type="hidden" name="ticket[person_id]" value="{{ticket.person.id}}" />
 
 	<div class="ticket-top">
-		<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
 		<h1>
 			<span class="ticket-opt-btn ticket-options-department-btn department">
 				<span class="val {% if not ticket.category %}no-value{% endif %}" data-no-value="Choose Department">{{ticket.department.title}}</span>

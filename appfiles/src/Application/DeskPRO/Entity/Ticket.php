@@ -22,9 +22,9 @@ use Application\DeskPRO\App;
  */
 class Ticket extends \Application\DeskPRO\Domain\DomainObject
 {
-	const CREATED_WEB_PERSON = 'web_person';
-	const CREATED_WEB_AGENT = 'web_agent';
-	const CREATED_GATEWAT_PERSON = 'gateway_person';
+	const CREATED_WEB_PERSON = 'web.person';
+	const CREATED_WEB_AGENT = 'web.agent';
+	const CREATED_GATEWAT_PERSON = 'gateway.person';
 
 	const STATUS_AWAITING_AGENT = 'awaiting_agent';
 	const STATUS_AWAITING_USER = 'awaiting_user';
@@ -60,7 +60,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="department_id", type="integer")
+	 * @orm:Column(name="department_id", type="integer", nullable=true)
 	 */
 	protected $department_id = null;
 
@@ -73,7 +73,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="category_id", type="integer")
+	 * @orm:Column(name="category_id", type="integer", nullable=true)
 	 */
 	protected $category_id = null;
 
@@ -86,7 +86,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="priority_id", type="integer")
+	 * @orm:Column(name="priority_id", type="integer", nullable=true)
 	 */
 	protected $priority_id = null;
 
@@ -182,9 +182,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @TODO Make this an enum type
 	 *
 	 * @var string
-	 * @orm:Column(name="hidden_status", type="string", length=15)
+	 * @orm:Column(name="hidden_status", type="string", length=15, nullable=true)
 	 */
-	protected $hidden_status;
+	protected $hidden_status = null;
 
 	/**
 	 * @var \DateTime
@@ -356,7 +356,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->messages->add($message);
 		$message['ticket'] = $this;
 
-
 		$this->_onPropertyChanged('messages', null, $message);
 	}
 
@@ -379,6 +378,38 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return null;
 	}
 
+
+	
+	/**
+	 * Set custom field data for a particular field.
+	 *
+	 * @param int $field_id
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	public function setCustomData($field_id, $value)
+	{
+		$custom_data = $this->getCustomDataForField($field_id);
+		if (!$custom_data) {
+			if ($value === null) return null;
+			$field = App::getApi('custom_fields.tickets')->getFieldFromId($field_id);
+			if (!$field) {
+				throw new \Exception("Invalid field_id `$field_id`");
+			}
+			$custom_data = $field->createNewDataObject();
+		}
+
+		if ($value === null) {
+			$this['custom_data']->removeElement($custom_data);
+			return null;
+		}
+
+		$custom_data->setData($value);
+		$this->addCustomData($custom_data);
+
+		return $custom_data;
+	}
+
 	
 
 	/**
@@ -392,39 +423,64 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$data['ticket'] = $this;
 	}
 
+	public function setPersonId($id)
+	{
+		$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
+		$this['person'] = $person;
+	}
 
 	public function setDepartmentId($id)
 	{
-		$dep = App::getOrm()->getRepository('DeskPRO:Department')->find($id);
-		$this['department'] = $dep;
+		if ($id) {
+			$dep = App::getOrm()->getRepository('DeskPRO:Department')->find($id);
+			$this['department'] = $dep;
+		} else {
+			$this['department'] = null;
+		}
 	}
 
 	public function setCategoryId($id)
 	{
-		$cat = App::getOrm()->getRepository('DeskPRO:TicketCategory')->find($id);
-		$this['category'] = $cat;
+		if ($id) {
+			$cat = App::getOrm()->getRepository('DeskPRO:TicketCategory')->find($id);
+			$this['category'] = $cat;
+		} else {
+			$this['category'] = null;
+		}
 	}
 	
 	public function setProductId($id)
 	{
-		$prod = App::getOrm()->getRepository('DeskPRO:Product')->find($id);
-		$this['product'] = $prod;
+		if ($id) {
+			$prod = App::getOrm()->getRepository('DeskPRO:Product')->find($id);
+			$this['product'] = $prod;
+		} else {
+			$this['product'] = null;
+		}
 	}
 
 	public function setPriorityId($id)
 	{
-		$pri = App::getOrm()->getRepository('DeskPRO:TicketPriority')->find($id);
-		$this['priority'] = $pri;
+		if ($id) {
+			$pri = App::getOrm()->getRepository('DeskPRO:TicketPriority')->find($id);
+			$this['priority'] = $pri;
+		} else {
+			$this['priority'] = null;
+		}
 	}
 
 	public function setAgentId($id)
 	{
-		$agent = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
-		if (!$agent['is_agent']) {
-			// TODO err
-		}
+		if ($id) {
+			$agent = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
+			if (!$agent['is_agent']) {
+				// TODO err
+			}
 
-		$this['agent'] = $agent;
+			$this['agent'] = $agent;
+		} else {
+			$this['agent'] = null;
+		}
 	}
 
 

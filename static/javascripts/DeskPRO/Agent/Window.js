@@ -231,6 +231,24 @@ DeskPRO.Agent.Window = new Class({
 	//#################################################################
 	
 	/**
+	 * Checks views for a specific page and removes it
+	 */
+	removePage: function(page) {
+		
+		var tabId = null;
+		Object.each(this.getPanedShell().tabManager.getTabs(), function(v, k) {
+			if (v.page == page) {
+				tabId = k;
+				return false;
+			}
+		});
+		
+		if (tabId) {
+			this.getPanedShell().tabManager.removeTab(tabId);
+		}
+	},
+	
+	/**
 	 * Add a loader for a particular prefix.
 	 *
 	 * @param {String} prefix The prefix to lisen for. Eg "navpane:tickets"
@@ -432,7 +450,14 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {String} url The URL of the page
 	 */
 	loadPage: function(url, routeData) {
+		
+		if (!url) {
+			console.error('No URL provided! routeData: %o', routeData);
+			return;
+		}
+		
 		this.startLoadingIndicator();
+
 		$.ajax({
 			dataType: 'text',
 			url: url,

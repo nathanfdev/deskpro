@@ -62,7 +62,7 @@ DeskPRO.Agent.PageHelper.NewUserOverlay = new Class({
 		$.ajax({
 			url: this.options.saveUrl,
 			data: data,
-			method: 'POST',
+			type: 'POST',
 			dataType: 'json',
 			success: this._handleSaveSuccess.bind(this)
 		});

@@ -10,8 +10,8 @@
 		<form class="reply-form">
 			<div class="reply-area deskpro-tab on">
 				<textarea name="message"></textarea>
-				<button class="dp-button small submit-trigger">Submit</button>
 				{% if ticket.id %}
+					<button class="dp-button small submit-trigger">Submit Reply</button>
 					<table cellspacing="0" cellpadding="0">
 						<tr><td>
 							<input class="small" type="checkbox" name="options[assign]" /> Assign ticket
@@ -25,6 +25,7 @@
 						</td></tr>
 					</table>
 				{% else %}
+					<button class="dp-button small submit-trigger">Save New Ticket</button>
 					<table cellspacing="0" cellpadding="0">
 						<tr><td>
 							<input class="small" type="checkbox" checked="checked" name="options[email_user]" /> Email user about this ticket

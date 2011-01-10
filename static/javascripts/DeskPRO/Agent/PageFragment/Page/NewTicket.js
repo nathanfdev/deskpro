@@ -78,7 +78,26 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 		// Do nothing, we'll save custom fields when the ticket is saved
 	},
 	
-	_handleSendReply: function() {
-		// Do nothing, we'll save the reply when ticket is saved
+	/**
+	 * We're hijacking this event to submit the whole ticket at once
+	 */
+	_handleSendReply: function(els) {
+		var data_els = $(':input', this.contentWrapper).add(els);
+		var data = data_els.serializeArray();
+
+		$.ajax({
+			url: this.getMetaData('submitTicketUrl'),
+			data: data,
+			type: 'POST',
+			dataType: 'json',
+			success: this._handleTicketSubmit.bind(this)
+		});
+	},
+	
+	_handleTicketSubmit: function(data) {
+		console.log(data);
+		
+		DeskPRO_Window.removePage(this);
+		DeskPRO_Window.runPageRoute('ticket:' + data.loadUrl);
 	}
 });

@@ -213,6 +213,10 @@ agent_ticket_new:
   pattern: /tickets/new
   defaults: { _controller: AgentBundle:Ticket:new }
 
+agent_people_new_ajaxsave:
+  pattern: /tickets/new-ajax-save
+  defaults: { _controller: AgentBundle:Ticket:newAjaxSave }
+
 agent_ticket_view:
   pattern: /tickets/:ticket_id
   defaults: { _controller: AgentBundle:Ticket:view }
