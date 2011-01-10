@@ -24,15 +24,9 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 	
 		<div class="person-info-line">
 
-			<div style="float:right">
-				<strong>Assigned To:</strong><br />
-				{% if not ticket.agent_id %}
-					UNASSIGNED
-				{% elseif ticket.agent_id == person.id %}
-					YOU
-				{% else %}
-					{{ticket.agent.name}}
-				{% endif %}
+			<div class="ticket-opt-btn ticket-options-agent-btn agent" style="float:right">
+				<strong>Agent:</strong><br />
+				<span class="val {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.name}}</span>
 			</div>
 
 			<div class="person-overview">
