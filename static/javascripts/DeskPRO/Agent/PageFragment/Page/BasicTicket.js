@@ -267,7 +267,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		});
 		
 		// Send reply
-		$('button.submit-trigger', this.ticketReply).click(function(ev) {
+		$('button.submit-trigger', this.barWrapper).click(function(ev) {
 			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
 			self._sendReply();
 		});
@@ -302,18 +302,23 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	toggleReplyBar: function(force) {
 		
 		if (!force) {
-			if (this.ticketBar.is(':visible')) {
-				force = 'on';
-			} else {
+			if (this.ticketReply.is(':visible')) {
 				force = 'off';
+			} else {
+				force = 'on';
 			}
 		}
 		
 		if (force == 'on') {
-			this.ticketBar.hide();
-			this.ticketReply.show();
+			
+			// TODO: figure out correct css height maths here, where are 140 and 150 coming from?
+			
+			this.ticketReply.show().css({ 'height': 140 });
 			this.barWrapper.addClass('expanded');
-			this.layout.sizePane('south', 150);
+			this.layout.sizePane('south', 150 + this.ticketBar.outerHeight());
+			
+			$('div.placeholder', this.ticketBar).hide();
+			$('div.reply-buttons', this.ticketBar).show();
 			
 			this.ticketReplyTabs.css({
 				'position': 'absolute',
@@ -332,10 +337,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			$('textarea', this.ticketReply).focus();
 		} else {
 			this.ticketReplyTabs.hide();
-			this.ticketBar.show();
 			this.ticketReply.hide();
 			this.barWrapper.removeClass('expanded');
 			this.layout.sizePane('south', 27);
+			
+			$('div.placeholder', this.ticketBar).show();
+			$('div.reply-buttons', this.ticketBar).hide();
 			
 			this.ticketReplyTabs.hide();
 		}

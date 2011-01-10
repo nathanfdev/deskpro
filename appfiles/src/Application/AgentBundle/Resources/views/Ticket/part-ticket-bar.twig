@@ -1,17 +1,9 @@
 <div class="ticket-bar">
-	<div class="bar">
-		<ul class="tools">
-			<li class="macros"><span class="icon icon-script-gear">Macros</span></li>
-			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
-		</ul>
-		<input type="text" class="placeholder" value="Start typing a reply..." />
-	</div>
 	<div class="reply" style="display:none">
 		<form class="reply-form">
 			<div class="reply-area deskpro-tab on">
 				<textarea name="message"></textarea>
 				{% if ticket.id %}
-					<button class="dp-button small submit-trigger">Submit Reply</button>
 					<table cellspacing="0" cellpadding="0">
 						<tr><td>
 							<input class="small" type="checkbox" name="options[assign]" /> Assign ticket
@@ -25,7 +17,6 @@
 						</td></tr>
 					</table>
 				{% else %}
-					<button class="dp-button small submit-trigger">Save New Ticket</button>
 					<table cellspacing="0" cellpadding="0">
 						<tr><td>
 							<input class="small" type="checkbox" checked="checked" name="options[email_user]" /> Email user about this ticket
@@ -39,6 +30,22 @@
 				...
 			</div>
 		</form>
+	</div>
+	<div class="bar">
+		<ul class="tools">
+			<li class="macros"><span class="icon icon-script-gear">Macros</span></li>
+			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
+		</ul>
+		<div class="placeholder">
+			<input type="text" class="placeholder" value="Start typing a reply..." />
+		</div>
+		<div class="reply-buttons" style="display:none; padding-left: 10px;">
+			{% if ticket.id %}
+				<button class="dp-button small submit-trigger">Submit Reply</button>
+			{% else %}
+				<button class="dp-button small submit-trigger">Save New Ticket</button>
+			{% endif %}
+		</div>
 	</div>
 	<ul class="ticket-reply-tabs" style="display:none">
 		<li class="tab-trigger on" data-tab-for="div.deskpro-tab.reply-area">Message</li>

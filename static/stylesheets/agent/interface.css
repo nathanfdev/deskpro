@@ -703,6 +703,15 @@ ul.tagit input[type="text"] {
 	border-left: 1px solid #637385;
 }
 
+.ticket-bar.expanded .bar > ul > li {
+	border-top: 1px solid #637385;
+}
+
+.ticket-bar.expanded .bar > ul > li:first-child {
+	-moz-border-radius-topleft: 4px;
+	border-top-left-radius: 4px;
+}
+
 .ticket-bar .reply {
 	height: 200px;
 	padding: 4px;
