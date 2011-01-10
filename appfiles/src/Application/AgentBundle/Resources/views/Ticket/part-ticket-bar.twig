@@ -1,0 +1,37 @@
+<div class="ticket-bar">
+	<div class="bar">
+		<ul class="tools">
+			<li class="macros"><span class="icon icon-script-gear">Macros</span></li>
+			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
+		</ul>
+		<input type="text" class="placeholder" value="Start typing a reply..." />
+	</div>
+	<div class="reply" style="display:none">
+		<form class="reply-form">
+			<div class="reply-area deskpro-tab on">
+				<textarea name="message"></textarea>
+				<button class="dp-button small submit-trigger">Submit</button>
+				<table cellspacing="0" cellpadding="0">
+					<tr><td>
+						<input class="small" type="checkbox" name="options[assign]" /> Assign ticket
+					</td><td>
+						<input class="small" type="checkbox" name="options[email_user]" /> Email reply to user
+					</td></tr>
+					<tr><td>
+						<input class="small" type="checkbox" name="options[status]" checked="checked" /> Change status to <span class="menu-trigger change-status">Pending</span>
+					</td><td>
+						<input class="small" type="checkbox" name="options[cc]" /> CC reply
+					</td></tr>
+				</table>
+			</div>
+			<div class="attachments-area deskpro-tab" style="display:none">
+				...
+			</div>
+		</form>
+	</div>
+	<ul class="ticket-reply-tabs" style="display:none">
+		<li class="tab-trigger on" data-tab-for="div.deskpro-tab.reply-area">Message</li>
+		<li class="tab-trigger" data-tab-for="div.deskpro-tab.attachments-area">Attachments</li>
+		<li class="close-trigger">Close</li>
+	</ul>
+</div>

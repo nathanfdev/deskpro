@@ -11,38 +11,14 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 	<div class="ticket-top">
 		<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
 		<h1>
-			<span class="ticket-opt-btn ticket-options-department-btn department"><span class="val">{{ticket.department.title}}</span> &rsaquo;</span>
+			<span class="ticket-opt-btn ticket-options-department-btn department {% if not ticket.department %}no-value{% endif %}">
+				<span class="val" data-no-value="Choose Department">{{ticket.department.title}}</span>
+				&rsaquo;
+			</span>
 			{{ticket.subject}}
 		</h1>
 
-		<div class="ticket-info">
-			<dl class="ticket-opt-btn ticket-options-category-btn">
-				<dt>Category</dt>
-				<dd>{{ticket.category.title}}</dd>
-			</dl>
-			<dl class="ticket-opt-btn ticket-options-product-btn">
-				<dt>Product</dt>
-				<dd>{{ticket.product.title}}</dd>
-			</dl>
-			<dl class="ticket-opt-btn ticket-options-priority-btn">
-				<dt>Priority</dt>
-				<dd>{{ticket.priority.title}}</dd>
-			</dl>
-			<dl class="ticket-opt-btn ticket-options-status-btn">
-				<dt>Status</dt>
-				<dd>
-					{# todo these will be phrases, so this big condition wont be needed #}
-					{% if ticket.status == 'awaiting_agent' %}
-						Open
-					{% elseif ticket.status == 'awaiting_user' %}
-						Pending
-					{% elseif ticket.status == 'resolved' %}
-						Resolved
-					{% endif %}
-				</dd>
-			</dl>
-			<br style="clear:both" />
-		</div>
+		{% include 'AgentBundle:Ticket:part-ticket-info.twig' %}
 
 		<br style="clear:both" />
 	
@@ -74,36 +50,7 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 			<br style="clear:both" />
 		</div>
 
-		{% if custom_fields %}
-			<div class="ticket-custom-fields-wrap">
-				<div class="edit-btn ticket-custom-fields-edit-btn"><span>Edit Fields</span></div>
-				<div class="ticket-custom-fields show-fields">
-					<div class="wrap">
-						{% include 'AgentBundle:Ticket:custom-fields-rendered.twig' with {'custom_fields': custom_fields} %}
-					</div>
-				</div>
-			</div>
-	
-			<div class="ticket-custom-fields edit show-fields edit-fields-overlay" style="display:none">
-				{% for f in custom_fields %}
-					<div class="field-wrap">
-						<div class="label-wrap"><label>{{f.title}}</label></div>
-						<div class="field-input">
-							{{f.form|render}}
-						</div>
-					</div>
-				{% endfor %}		
-				<div class="buttons">
-					<div class="loading-off">
-						<button class="save-trigger dp-button small">Save</button>
-						<button class="close-trigger dp-button gray small">Cancel</button>
-					</div>
-					<div class="loading-on">
-						<span>Saving ...</span>
-					</div>
-				</div>
-			</div>
-		{% endif %}
+		{% include 'AgentBundle:Ticket:part-custom-fields.twig' %}
 	
 		<ul class="ticket-tabs">
 			<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
@@ -185,40 +132,4 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 	{% include 'AgentBundle:Ticket:part-ticket-menus.twig' %}
 </div><!-- content -->
 
-<div class="ticket-bar">
-	<div class="bar">
-		<ul class="tools">
-			<li class="macros"><span class="icon icon-script-gear">Macros</span></li>
-			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
-		</ul>
-		<input type="text" class="placeholder" value="Start typing a reply..." />
-	</div>
-	<div class="reply" style="display:none">
-		<form class="reply-form">
-			<div class="reply-area deskpro-tab on">
-				<textarea name="message"></textarea>
-				<button class="dp-button small submit-trigger">Submit</button>
-				<table cellspacing="0" cellpadding="0">
-					<tr><td>
-						<input class="small" type="checkbox" name="options[assign]" /> Assign ticket
-					</td><td>
-						<input class="small" type="checkbox" name="options[email_user]" /> Email reply to user
-					</td></tr>
-					<tr><td>
-						<input class="small" type="checkbox" name="options[status]" checked="checked" /> Change status to <span class="menu-trigger change-status">Pending</span>
-					</td><td>
-						<input class="small" type="checkbox" name="options[cc]" /> CC reply
-					</td></tr>
-				</table>
-			</div>
-			<div class="attachments-area deskpro-tab" style="display:none">
-				...
-			</div>
-		</form>
-	</div>
-	<ul class="ticket-reply-tabs" style="display:none">
-		<li class="tab-trigger on" data-tab-for="div.deskpro-tab.reply-area">Message</li>
-		<li class="tab-trigger" data-tab-for="div.deskpro-tab.attachments-area">Attachments</li>
-		<li class="close-trigger">Close</li>
-	</ul>
-</div>
+{% include 'AgentBundle:Ticket:part-ticket-bar.twig' %}

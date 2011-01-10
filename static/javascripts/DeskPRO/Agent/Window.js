@@ -72,6 +72,7 @@ DeskPRO.Agent.Window = new Class({
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
+		this.addPageRouteLoader('page', this.loadRoute.bind(this));
 		this.addPageRouteLoader('ticket', this.loadRoute.bind(this));
 		this.addPageRouteLoader('person', this.loadRoute.bind(this));
 		
@@ -93,10 +94,8 @@ DeskPRO.Agent.Window = new Class({
 		// Set up create menu
 		var menu = new DeskPRO.UI.Menu({
 			triggerElement: $('#create_new_menu_trigger'),
-			menuElement: $('#create_new_menu'),
-			onItemClicked: function(info) {
-				DeskPRO_Window.runPageRouteFromElement(info.itemEl);
-			}
+			menuElement: $('#create_new_menu')
+			// no click handler, already attached to li's on route handler
 		});
 		
 		// Settings is a window

@@ -23,7 +23,7 @@ use \Orb\Util\Util;
 class TicketController extends AbstractController
 {
 	############################################################################
-	# view-action
+	# view
 	############################################################################
 
 	public function viewAction($ticket_id)
@@ -38,7 +38,10 @@ class TicketController extends AbstractController
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
 
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
 		$custom_fields_form = new \Symfony\Component\Form\FieldGroup('custom_fields');
+
 		$custom_fields = array();
 		$has_value = false;
 		foreach ($ticket_field_defs as $f_def) {
@@ -73,6 +76,40 @@ class TicketController extends AbstractController
 			'custom_fields_has_one_value' => $has_value,
 			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
 			'macros' => $macros
+		));
+	}
+
+	
+
+	############################################################################
+	# new
+	############################################################################
+
+	public function newAction()
+	{
+		$ticket = new Entity\Ticket();
+
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = array();
+		foreach ($ticket_field_defs as $f_def) {
+			$value = !empty($ticket_data_structured[$f_def['id']]) ? $ticket_data_structured[$f_def['id']] : null;
+
+			$f = $f_def->getHandler()->getFormField($value);
+
+			$custom_fields[] = array(
+				'field_def' => $f_def,
+				'title' => $f_def['title'],
+				'form' => $f,
+				'rendered' => false
+			);
+		}
+
+		return $this->render('AgentBundle:Ticket:new-ticket.twig', array(
+			'ticket' => $ticket,
+			'ticket_options' => $ticket_options,
+			'custom_fields' => $custom_fields,
 		));
 	}
 	

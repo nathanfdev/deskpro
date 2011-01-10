@@ -1,12 +1,11 @@
-
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
+
 DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	
-	Extends: DeskPRO.Agent.PageFragment.Basic,
+	Extends: DeskPRO.Agent.PageFragment.Page.BasicTicket,
 	
 	TYPENAME: 'ticket',
 
-	wrapper: null,
 	popout: null,
 	popout_overview: null,
 	
@@ -14,50 +13,23 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	hasInitPopout: false,
 	popoutPage: null,
 	
-	destroyEls: [],
-	destroyMenus: [],
-	
 	initPage: function(el) {
-
-		this.wrapper = el;
-		this.contentWrapper = this.wrapper.children('.ticket-content').attr('id', Orb.getUniqueId());
-		this.barWrapper = this.wrapper.children('.ticket-bar').attr('id', Orb.getUniqueId());
 		
-		this.layout = this.wrapper.layout({
-			center: {
-				paneSelector: '#' + this.contentWrapper.attr('id')
-			},
-			south: {
-				paneSelector: '#' + this.barWrapper.attr('id'),
-				size: 27,
-				spacing_open: 0,
-				spacing_closed: 0
-			}
-		});
+		this.parent(el);
 		
 		this._initPopout();
 		this._initMessageActionsMenu();
-		this._initTicketOptionsMenus();
-		this._initCustomFieldsEditor();
 		this._initTicketTabs();
 		this._initTicketAttach();
 		this._initFlagMenu();
-		
-		this._initReplyBar();
 	},
 	
 	destroyPage: function() {
 		
+		this.parent();
+		
 		if (this.popoutPage) {
 			this.popoutPage.destroyPage();
-		}
-		
-		for (var i = 0; i < this.destroyEls.length; i++) {
-			$(this.destroyEls[i]).remove();
-		}
-		
-		for (var i = 0; i < this.destroyMenus.length; i++) {
-			this.destroyMenus[i].destroy();
 		}
 	},
 	
@@ -77,6 +49,68 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			this.popout.fadeOut(200);
 		}
 	},
+	
+	
+	
+	//#################################################################
+	//# Ticket options menus
+	//#################################################################
+	
+	/**
+	 * Handle saving of a ticket option like department etc
+	 * 
+	 * @see DeskPRO.Agent.PageFragment.Page.BasicTicket._handleTicketOptionClick()
+	 */
+	_handleTicketOptionSave: function(option, optionId) {
+		// Update the value in teh DB
+		DeskPRO_Window.startLoadingIndicator();
+		
+		var data = {};
+		data[option] = optionId;
+		
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-options',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				this._handleTicketOptionSaveSuccess(data);
+			}
+		});
+	},
+	
+	
+	//#################################################################
+	//# Custom Fields popout
+	//#################################################################
+	
+	_saveCustomFields: function(fieldEls) {
+		$('.buttons .loading-off', this.custom_fields_edit).hide();
+		$('.buttons .loading-on', this.custom_fields_edit).show();
+		
+		var data = fieldEls.serializeArray();
+		
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-custom-fields',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'html',
+			success: function(html) {
+				this._handleSaveCustomFieldsSuccess(html);
+			}
+		});
+	},
+	
+	_handleSaveCustomFieldsSuccess: function(html) {
+		$('.buttons .loading-on', this.custom_fields_edit).hide();
+		$('.buttons .loading-off', this.custom_fields_edit).show();
+		this.closeCustomFieldEditor();
+		
+		$('.wrap', this.custom_fields_display).html(html);
+	},
+	
 	
 	//#################################################################
 	//# Ticket flag
@@ -133,80 +167,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 	
 	//#################################################################
-	//# Ticket attachments
-	//#################################################################
-	
-	_initTicketAttach: function() {
-		
-		$('.ticket-attach-upload-btn', this.wrapper).click((function() {
-			this.openAttachOverlay();
-		}).bind(this));
-	},
-	
-	openAttachOverlay: function() {
-		if (!this._initAttachOverlay()) {
-			return;
-		}
-		
-		this.ticketAttachOverlay.openOverlay();
-	},
-	
-	ticketAttachOverlay: null,
-	hasInitAttachOverlay: false,
-	_initAttachOverlay: function() {
-		
-		if (this.hasInitAttachOverlay) {
-			return true;
-		}
-		
-		this.hasInitAttachOverlay = true;
-		
-		this.ticketAttachOverlay = new DeskPRO.UI.Overlay({
-			contentElement: $('.ticket-attach.overlay:first', this.wrapper),
-			customClassname: 'no-pad'
-		});
-		
-		var self = this;
-		
-		$(".ticket-attach-widget", this.wrapper).pluploadQueue({
-			// General settings
-			runtimes : 'flash,silverlight,browserplus,html5',
-			url : BASE_URL + 'agent/misc/accept-upload',
-			chunk_size : '1mb',
-			unique_names : true,
-			multiple_queues: true,
-
-			// Flash settings
-			flash_swf_url : ASSETS_BASE_URL + 'javascripts/plupload/plupload.flash.swf',
-
-			// Silverlight settings
-			silverlight_xap_url : ASSETS_BASE_URL + 'javascripts/plupload/plupload.silverlight.xap',
-			
-			init: {
-				Error: function(up, args) {
-					console.warn('[Upload Error] %o', args);
-				},
-				FileUploaded: function(up, file, info) {
-					console.info('[Upload Done] %o %o', file, info);
-					var name = 'attach['+file.id+']';
-					var html = '<li><input type="checkbox" name="'+name+'[save]" value="1" checked="checked" />';
-					html += '<input type="hidden" name="'+name+'[name]" value="'+file.name+'" />';
-					html += '<input type="hidden" name="'+name+'[tmp_name]" value="'+file.target_name+'" />';
-					html += ' ' + file.name + '</li>';
-					$('.ticket-newreply-attach-list', self.wrapper).append(html);
-				}
-				/*
-				UploadProgress: function(up, file) {
-					console.debug('[Upload Progress] %o', file);
-				}
-				*/
-			}
-		});
-		
-		return true;
-	},
-	
-	//#################################################################
 	//# Ticket "tabs"
 	//#################################################################
 	
@@ -246,58 +206,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	_loadTicketLogSuccess: function(html) {
 		$('.tab-content.ticket-log', this.wrapper).html(html).data('is-loaded', true);
 	},
-
-	//#################################################################
-	//# Ticket options menus
-	//#################################################################
-		
-	_initTicketOptionsMenus: function() {
-		var options = ['department', 'category', 'product', 'priority', 'status'];
-		var self = this;
-		
-		for (var i = 0; i < options.length; i++) {
-			var opt = options[i];
-			var menu = new DeskPRO.UI.Menu({
-				triggerElement: $('.ticket-options-'+opt+'-btn', this.wrapper),
-				menuElement: $('.ticket-options-'+opt+'-menu', this.wrapper),
-				onItemClicked: function(info) {
-					self._handleTicketOptionClick(info);
-				}
-			});
-			this.destroyMenus.push(menu);
-		}
-	},
-	
-	_handleTicketOptionClick: function(info) {
-		var opt = $(info.itemEl).parent().data('option-name');
-		var itemName = $(info.itemEl).html();
-		var itemId = $(info.itemEl).data('option-id');
-		
-		// Replace the value of in the page
-		var val_el = $('.ticket-options-'+opt+'-btn dd, .ticket-options-'+opt+'-btn .val', this.wrapper);		
-		val_el.html(itemName);
-		
-		// Update the value in teh DB
-		DeskPRO_Window.startLoadingIndicator();
-		
-		var data = {};
-		data[opt] = itemId;
-		
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-options',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'json',
-			success: function(data) {
-				this._handleTicketOptionSaveSuccess(data);
-			}
-		});
-	},
-	
-	_handleTicketOptionSaveSuccess: function(data) {
-		DeskPRO_Window.stopLoadingIndicator();
-	},
 	
 	//#################################################################
 	//# Message actions menu
@@ -316,7 +224,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			onMenuClosed: function(data) {
 				var trigger = $(data.menu.getOpenTriggerElement());
 				trigger.css({'display': ''}); //back to default
-			},
+			}
 		});
 		
 		this.destroyMenus.push(this.messageActionsMenu);
@@ -329,215 +237,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			menu.openMenu(event);
 		});
 	},
-	
-	//#################################################################
-	//# Custom Fields popout
-	//#################################################################
-	
-	custom_fields_display: null,
-	custom_fields_edit: null,
-	_initCustomFieldsEditor: function() {
-		$('.ticket-custom-fields-edit-btn', this.wrapper).click((function() {
-			this.showCustomFieldEditor();
-		}).bind(this));
-		
-		this.custom_fields_display = $('.ticket-custom-fields:not(.edit)', this.wrapper);
-		this.custom_fields_edit = $('.ticket-custom-fields.edit', this.wrapper);
-		
-		$('.close-trigger', this.custom_fields_edit).click((function() {
-			this.closeCustomFieldEditor();
-		}).bind(this));
-		
-		$('.save-trigger', this.custom_fields_edit).click((function() {
-			this.saveCustomFields();
-		}).bind(this));
-	},
-	
-	showCustomFieldEditor: function() {
-		
-		var pos = this.custom_fields_display.position();
-		var width = this.custom_fields_display.width();
-		
-		if (width > 690) {
-			pos.left += width-690; // always want it hugging the right
-			width = 690;
-		}
-		
-		this.custom_fields_edit.css({
-			position: 'absolute',
-			top: pos.top,
-			left: pos.left,
-			width: width
-		});
-		
-		this.custom_fields_edit.slideDown();
-	},
-	
-	closeCustomFieldEditor: function() {
-		this.custom_fields_edit.slideUp();
-	},
-	
-	saveCustomFields: function() {
-		$('.buttons .loading-off', this.custom_fields_edit).hide();
-		$('.buttons .loading-on', this.custom_fields_edit).show();
-		
-		var data = $(':input', this.custom_fields_edit).serializeArray();
-		
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-custom-fields',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'html',
-			success: function(html) {
-				this._handleSaveCustomFieldsSuccess(html);
-			}
-		});
-	},
-	
-	_handleSaveCustomFieldsSuccess: function(html) {
-		$('.buttons .loading-on', this.custom_fields_edit).hide();
-		$('.buttons .loading-off', this.custom_fields_edit).show();
-		this.closeCustomFieldEditor();
-		
-		$('.wrap', this.custom_fields_display).html(html);
-	},
-	
-	//#################################################################
-	//# Reply bar
-	//#################################################################
-	
-	ticketBar: null,
-	ticketReply: null,
-	ticketReplyTabs: null,
-	
-	ticketActionsMenu: null,
-	ticketMacrosMenu: null,
-	
-	_initReplyBar: function() {
-		this.ticketBar = this.barWrapper.children('div.bar');
-		this.ticketReply = this.barWrapper.children('div.reply');
-		
-		this.ticketReplyTabs = $('.ticket-reply-tabs', this.barWrapper).detach().appendTo('body');
-		this.destroyEls.push(this.ticketReplyTabs);
-		
-		var self = this;
-		$('input.placeholder', this.ticketBar).click(function() {
-			self.toggleReplyBar();
-		});
-		
-		this.ticketReplyTabs.children('li.close-trigger').click(function() {
-			self.toggleReplyBar();
-		});
-		
-		// Send reply
-		$('button.submit-trigger', this.ticketReply).click(function(ev) {
-			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
-			self._sendReply();
-		});
-		
-		// Add +1 to zindex because we need to properly layer the ticketReplyTabs
-		// - Under barWrapper (south pane), but above contentWrapper (content pane)
-		this.barWrapper.css({
-			'z-index': parseInt(this.barWrapper.css('z-index'))+1
-		});
-		
-		// Init ticket reply tabs
-		var simpleTabs = new DeskPRO.UI.SimpleTabs({
-			context: this.ticketReply,
-			triggerElements: this.ticketReplyTabs.children('li.tab-trigger')
-		});
-		
-		// Actions menu
-		this.ticketActionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('ul.tools li.actions', this.ticketBar),
-			menuElement: $('ul.ticket-info-edit-menu:first', this.contentWrapper)
-		});
-		this.destroyMenus.push(this.ticketActionsMenu);
-		
-		// Macros menu
-		this.ticketMacrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('ul.tools li.macros', this.ticketBar),
-			menuElement: $('ul.ticket-macros-menu:first', this.contentWrapper)
-		});
-		this.destroyMenus.push(this.ticketMacrosMenu);
-	},
-
-	toggleReplyBar: function(force) {
-		
-		if (!force) {
-			if (this.ticketBar.is(':visible')) {
-				force = 'on';
-			} else {
-				force = 'off';
-			}
-		}
-		
-		if (force == 'on') {
-			this.ticketBar.hide();
-			this.ticketReply.show();
-			this.barWrapper.addClass('expanded');
-			this.layout.sizePane('south', 150);
-			
-			this.ticketReplyTabs.css({
-				'position': 'absolute',
-				'top': this.barWrapper.offset().top - this.ticketReplyTabs.outerHeight() - 2,
-				'left': this.barWrapper.offset().left,
-				'display': 'block',
-				'z-index': parseInt(this.barWrapper.css('z-index'))
-			});
-			
-			// When we open we should scroll down by the new height,
-			// so the same position is visible in the center pane
-			var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
-			this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
-			
-			// Focus textarea
-			$('textarea', this.ticketReply).focus();
-		} else {
-			this.ticketReplyTabs.hide();
-			this.ticketBar.show();
-			this.ticketReply.hide();
-			this.barWrapper.removeClass('expanded');
-			this.layout.sizePane('south', 27);
-			
-			this.ticketReplyTabs.hide();
-		}
-	},
-	
-	isSendingReply: false,
-	_sendReply: function() {
-		
-		if (this.isSendingReply) {
-			return;
-		}
-		
-		$('button.submit-trigger', this.ticketReply).addClass('gray');
-		this.isSendingReply = true;
-		
-		var data = $('form.reply-form', this.ticketReply).serializeArray();
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'html',
-			success: function(html) {
-				$('button.submit-trigger', this.ticketReply).removeClass('gray');
-				this.isSendingReply = false;
-				this._handleSendReplySuccess(html);
-			}
-		});
-	},
-	
-	_handleSendReplySuccess: function(html) {
-		
-		this.toggleReplyBar('off');
-		this.displayNewMessage(html);
-		$('textarea[name="message"]', this.ticketReply).val('');
-	},
-	
 	
 	//#################################################################
 	//# Popout

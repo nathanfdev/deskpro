@@ -209,6 +209,10 @@ agent_ticketsearch_runflag:
 # Ticket
 ################################################################################
 
+agent_ticket_new:
+  pattern: /tickets/new
+  defaults: { _controller: AgentBundle:Ticket:new }
+
 agent_ticket_view:
   pattern: /tickets/:ticket_id
   defaults: { _controller: AgentBundle:Ticket:view }

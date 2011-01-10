@@ -117,7 +117,7 @@
 			<div class="create-box">
 				<span id="create_new_menu_trigger">Create New</span>
 				<ul id="create_new_menu" style="display:none">
-					<li><span class="icon tickets">Ticket</span></li>
+					<li data-route="page:{{ path('agent_ticket_new') }}"><span class="icon tickets">Ticket</span></li>
 					<li class="sep">-</li>
 					<li><span class="icon people dev-feature-inactive">Person</span></li>
 					<li><span class="icon organizations dev-feature-inactive">Organization</span></li>
@@ -193,7 +193,7 @@
 		
 		window.DeskPRO_Window.initPage();
 		
-		window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
+		//window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
 		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
 
 		// Debug: auto load a ticket tab
@@ -250,7 +250,9 @@
 <script src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketOverview.js' %}"></script>
 <script src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketFind.js' %}"></script>
 
+<script src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/BasicTicket.js' %}"></script>
 <script src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js' %}"></script>
+<script src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js' %}"></script>
 <script src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js' %}"></script>
 <script src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js' %}"></script>
 
