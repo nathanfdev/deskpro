@@ -15,6 +15,7 @@ use \Symfony\Component\DependencyInjection\ContainerInterface;
 use \Symfony\Component\HttpFoundation\Request;
 use \Symfony\Component\HttpFoundation\Response;
 use \Symfony\Component\EventDispatcher\EventDispatcher;
+use \Symfony\Component\EventDispatcher\Event;
 
 /**
  * The base controller
@@ -48,6 +49,9 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		$this->response          = $this->get('response');
 		$this->event_dispatcher  = $this->get('event_dispatcher');
 
+		$this->event_dispatcher->connect('core.deskpro-pre-action', array($this, '_runPreAction'));
+		$this->event_dispatcher->connect('core.deskpro-post-action', array($this, '_runPostAction'));
+
 		$this->init();
 	}
 
@@ -62,6 +66,15 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	}
 
 
+	
+	public function _runPreAction(Event $event)
+	{
+		$ret = $this->preAction($event->get('action'), $event->get('arguments'));
+		if ($ret) {
+			$event->setReturnValue($ret);
+			return true;
+		}
+	}
 
 	/**
 	 * Called by the HttpKernel before a specific action is executed.
@@ -78,6 +91,15 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	}
 
 
+
+	public function _runPostAction(Event $event)
+	{
+		$ret = $this->postAction($event->get('response'));
+		if ($ret) {
+			$event->setReturnValue($ret);
+			return true;
+		}
+	}
 	
 	/**
 	 * Called by the HttpKernel after an action has been executed.

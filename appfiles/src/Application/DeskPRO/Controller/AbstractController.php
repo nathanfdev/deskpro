@@ -10,7 +10,12 @@
  */
 
 namespace Application\DeskPRO\Controller;
+
 use \Symfony\Component\DependencyInjection\ContainerInterface;
+use \Application\DeskPRO\App;
+
+use \Application\DeskPRO\Build\Upgrader;
+use \Application\DeskPRO\Build\VersionReader;
 
 /**
  * The abstract controller sets up some default objects.
@@ -79,6 +84,25 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 		$this->tpl = $this->get('templating');
 		$this->tpl->resetTemplateVars();
 		$this->tplvars = $this->tpl->getTemplateVarsObject();
+
+		// Automatically redirect to redirect if we need to
+		// - Must be in debug
+		// - In an interface script
+		// - Not an AJAX request (they happen so frequently, lets not bog them down with file check each time)
+		if (App::isDebug() && preg_match('#^Application\\\\(Admin|Agent|User)Bundle\\\\#', get_class($this)) && !$this->request->isXmlHttpRequest()) {
+			
+			$upgrader = new Upgrader();
+			$version = VersionReader::getVersionId(VersionReader::getCurrentVersion());
+			$source_version = VersionReader::getVersionId($upgrader->getNewestVersion());
+
+			if ($version != $source_version) {
+				$this->event_dispatcher->connect('core.deskpro-pre-action', function ($event) {
+					$controller = $event->get('controller');
+					$event->setReturnValue($controller->redirectRoute('dev_build'));
+					return true;
+				}, -5);
+			}
+		}
 	}
 
 

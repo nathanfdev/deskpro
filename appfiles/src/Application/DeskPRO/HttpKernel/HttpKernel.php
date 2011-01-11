@@ -55,8 +55,20 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 		if (isset($controller[0]) AND ($controller[0] instanceof \Application\DeskPRO\HttpKernel\Controller\Controller)) {
 			$controller_obj = $controller[0];
 
-			// Run preaction
-			$retval = $controller_obj->preAction($controller[1], $arguments);
+			// Run pre event
+			$event = new Event($this, 'core.deskpro-pre-action', array(
+				'request_type' => $type,
+				'request' => $request,
+				'controller' => $controller_obj,
+				'action' => $controller[1],
+				'arguments' => $arguments
+			));
+			$this->dispatcher->notifyUntil($event);
+			if ($event->isProcessed()) {
+				$retval = $event->getReturnValue();
+			} else {
+				$retval = null;
+			}
 
 			// call controller if preaction didnt set one
 			if (!$retval OR !($retval instanceof Response)) {
@@ -64,8 +76,22 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 				$retval = $this->filterResponse($retval, $request, sprintf('The controller must return a response (instead of %s).', is_object($event->getReturnValue()) ? 'an object of class '.get_class($event->getReturnValue()) : is_array($event->getReturnValue()) ? 'an array' : str_replace("\n", '', var_export($event->getReturnValue(), true))), $type);
 			}
 
-			// Run postaction
-			$new_retval = $controller_obj->postAction($retval);
+			// Run post event
+			$event = new Event($this, 'core.deskpro-post-action', array(
+				'request_type' => $type,
+				'request' => $request,
+				'controller' => $controller_obj,
+				'action' => $controller[1],
+				'arguments' => $arguments,
+				'response' => $retval
+			));
+			$this->dispatcher->notifyUntil($event);
+			if ($event->isProcessed()) {
+				$new_retval = $event->getReturnValue();
+			} else {
+				$new_retval = null;
+			}
+
 			if ($new_retval AND $new_retval instanceof Response) {
 				// Use returned reponse if it exists
 				$retval = $new_retval;
