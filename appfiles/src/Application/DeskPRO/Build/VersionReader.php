@@ -21,7 +21,7 @@ class VersionReader
 	public static function getCurrentVersion($vfile = null)
 	{
 		if ($vfile === null) {
-			$vfile = ROOT.'/src/VERSION';
+			$vfile = DP_ROOT.'/sys/VERSION';
 		}
 
 		$version = @file_get_contents($vfile);
@@ -32,7 +32,7 @@ class VersionReader
 		}
 
 		if (!$version) {
-			throw new \DomainException('VERSION file does not exist or has an invalid value');
+			throw new \DomainException('VERSION file does not exist or has an invalid value ('.$vfile.')');
 		}
 
 		return $version;

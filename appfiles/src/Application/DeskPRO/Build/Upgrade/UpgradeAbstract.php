@@ -2,8 +2,6 @@
 
 namespace Application\DeskPRO\Build\Upgrade;
 
-use Symfony\Component\Console\Output\OutputInterface;
-
 use Application\DeskPRO\Build\Upgrade\Upgrader;
 
 /**
@@ -15,9 +13,7 @@ use Application\DeskPRO\Build\Upgrade\Upgrader;
  */
 abstract class UpgradeAbstract
 {
-	protected $output;
-
-	public function __construct(OutputInterface $output)
+	public function __construct($output)
 	{
 		$this->output = $output;
 	}

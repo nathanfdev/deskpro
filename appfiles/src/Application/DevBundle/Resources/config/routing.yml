@@ -2,14 +2,22 @@ dev_test:
   pattern: /test
   defaults: { _controller: DevBundle:Test:index }
 
-dev_theme:
-    pattern:  /theme
-    defaults: { _controller: DevBundle:Theme:index }
-
 dev_datagen:
-    pattern:  /data-generator
-    defaults: { _controller: DevBundle:DataGenerator:index }
+  pattern:  /data-generator
+  defaults: { _controller: DevBundle:DataGenerator:index }
 
 dev_datagen_run:
-    pattern:  /data-generator/run
-    defaults: { _controller: DevBundle:DataGenerator:run }
+  pattern:  /data-generator/run
+  defaults: { _controller: DevBundle:DataGenerator:run }
+
+dev_build:
+  pattern: /build
+  defaults: { _controller: DevBundle:Build:index }
+
+dev_build_upgrade:
+  pattern: /build/upgrade
+  defaults: { _controller: DevBundle:Build:upgrade }
+
+dev_build_upgrade_do:
+  pattern: /build/upgrade-do
+  defaults: { _controller: DevBundle:Build:upgradeDo }
