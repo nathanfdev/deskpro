@@ -82,6 +82,12 @@
 			background-color: #D0DEF5;
 		}
 
+		#top {
+			max-width: 900px;
+			margin: 5px auto 0 auto;
+			text-align: right;
+		}
+
 		#container {
 			max-width: 900px;
 			margin: 15px auto 15px auto;
@@ -96,6 +102,7 @@
 	<?php $view['slots']->output('head') ?>
 </head>
 <body>
+<div id="top"><a href="<?php echo $view['router']->generate('dev') ?>">Back to dev main</a></div>
 <div id="container">
 	<?php $view['slots']->output('_content') ?>
 </div>

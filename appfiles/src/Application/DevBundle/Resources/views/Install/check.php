@@ -1,0 +1,62 @@
+<?php $view->extend('DevBundle::layout.php') ?>
+
+<h1>2. Checks</h1>
+
+<table width="100%">
+	<tr class="alt">
+		<td width="100">Check</td>
+		<td>Description</td>
+		<td width="100">Status</td>
+	</tr>
+	<tr>
+		<td>php_version</td>
+		<td>DeskPRO4 requires PHP 5.3.2 or later</td>
+		<td><?php echo $checks['php_version'] ? 'okay' : 'PROBLEM' ?></td>
+	</tr>
+	<tr>
+		<td>ext_pdo_mysql</td>
+		<td>DeskPRO4 requires the <a href="http://php.net/pdo"><var>pdo</var> and <var>pdo_mysql</var></a> extensions.</td>
+		<td><?php echo $checks['ext_pdo_mysql'] ? 'okay' : 'PROBLEM' ?></td>
+	</tr>
+	<tr>
+		<td>ext_intl</td>
+		<td>
+			<p>DeskPRO4 requires the <a href="http://php.net/intl"><var>ext_intl</var></a> extension. This extension is bundled
+			as of PHP 5.3, but your server may be missing if you're using a distribution such as Ubuntu.</p>
+			<p>You can install the extension by using pecl, or in the case of Ubuntu you can use <var>apt-get install php5-intl</var></p>
+		</td>
+		<td><?php echo $checks['ext_intl'] ? 'okay' : 'PROBLEM' ?></td>
+	</tr>
+	<tr>
+		<td>writable_cache</td>
+		<td>
+			<var><?php echo DP_ROOT ?>/sys/cache</var> must be writable by the web server.
+		</td>
+		<td><?php echo $checks['writable_cache'] ? 'okay' : 'PROBLEM' ?></td>
+	</tr>
+	<tr>
+		<td>writable_logs</td>
+		<td>
+			<var><?php echo DP_ROOT ?>/sys/logs</var> must be writable by the web server.
+		</td>
+		<td><?php echo $checks['writable_logs'] ? 'okay' : 'PROBLEM' ?></td>
+	</tr>
+	<tr>
+		<td>config</td>
+		<td>
+			<var><?php echo DP_ROOT ?>/config.php</var> must contain valid database details.
+			<?php if (!empty($checks_msg['config'])): ?>Error info: <?php echo $checks_msg['config'] ?><?php endif ?>
+		</td>
+		<td><?php echo $checks['config'] ? 'okay' : 'PROBLEM' ?></td>
+	</tr>
+</table>
+
+
+<?php if (!$is_error): ?>
+	<p>Looks like all checks pass.</p>
+	<p>
+		<a href="<?php echo $view['router']->generate('dev_install_createtables') ?>">When you're ready to proceed, click here.</a>
+	</p>
+<?php else: ?>
+	<p><strong>Please fix the identified problems then refresh this page.</strong></p>
+<?php endif ?>

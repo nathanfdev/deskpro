@@ -30,26 +30,26 @@ class ApiPeople extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @orm:Id
-	 * @Column(name="api_key", type="string", length=50)
+	 * @orm:Column(name="api_key", type="string", length=50)
 	 */
 	protected $api_key;
 
 	/**
 	 * @var string
 	 * @orm:Id
-	 * @Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer")
 	 */
 	protected $person_id;
 	
 	/**
 	 * @var string
-	 * @Column(name="secret_key", type="string", length=30)
+	 * @orm:Column(name="token", type="string", length=30)
 	 */
 	protected $token;
 
 	/**
 	 * @var string
-	 * @Column(name="secret_key", type="string", length=30)
+	 * @orm:Column(name="token_secret", type="string", length=30)
 	 */
 	protected $token_secret;
 
@@ -57,7 +57,7 @@ class ApiPeople extends \Application\DeskPRO\Domain\DomainObject
 	 * A note or description about the key (ie what its used for).
 	 *
 	 * @var string
-	 * @Column(name="note", type="text")
+	 * @orm:Column(name="note", type="text")
 	 */
 	protected $note = '';
 

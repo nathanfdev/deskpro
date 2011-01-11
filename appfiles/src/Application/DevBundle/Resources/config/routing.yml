@@ -1,6 +1,34 @@
+dev:
+  pattern: /
+  defaults: { _controller: DevBundle:Main:index }
+
+dev_phpinfo:
+  pattern: /php-info
+  defaults: { _controller: DevBundle:Main:phpInfo }
+
+dev_seefile:
+  pattern: /see-file
+  defaults: { _controller: DevBundle:Main:seeFile }
+
+dev_models:
+  pattern: /models
+  defaults: { _controller: DevBundle:Models:index }
+
+dev_models_getsql:
+  pattern: /models/get-sql
+  defaults: { _controller: DevBundle:Models:getSql }
+
 dev_test:
   pattern: /test
   defaults: { _controller: DevBundle:Test:index }
+
+dev_phptest:
+  pattern: /php-test
+  defaults: { _controller: DevBundle:Main:phpTest }
+
+dev_phptest_run:
+  pattern: /php-test/run
+  defaults: { _controller: DevBundle:Main:phpTestRun }
 
 dev_datagen:
   pattern:  /data-generator
@@ -9,6 +37,22 @@ dev_datagen:
 dev_datagen_run:
   pattern:  /data-generator/run
   defaults: { _controller: DevBundle:DataGenerator:run }
+
+dev_install:
+  pattern:  /install
+  defaults: { _controller: DevBundle:Install:index }
+
+dev_install_check:
+  pattern:  /install/check
+  defaults: { _controller: DevBundle:Install:check }
+
+dev_install_createtables:
+  pattern:  /install/create-tables
+  defaults: { _controller: DevBundle:Install:createTables }
+
+dev_install_createdata:
+  pattern:  /install/create-data
+  defaults: { _controller: DevBundle:Install:createData }
 
 dev_build:
   pattern: /build

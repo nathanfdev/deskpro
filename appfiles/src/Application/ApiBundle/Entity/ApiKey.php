@@ -29,7 +29,7 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var string
 	 * @orm:Id
-	 * @Column(name="api_key", type="string", length=50)
+	 * @orm:Column(name="api_key", type="string", length=50)
 	 */
 	protected $api_key;
 

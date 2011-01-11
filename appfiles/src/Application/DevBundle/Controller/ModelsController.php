@@ -1,0 +1,40 @@
+<?php
+
+namespace Application\DevBundle\Controller;
+
+use \Application\DeskPRO\Build\VersionReader;
+use \Application\DeskPRO\Build\Upgrader;
+
+use \Application\DeskPRO\App;
+
+class ModelsController extends \Application\DeskPRO\HttpKernel\Controller\Controller
+{
+	public function indexAction()
+	{
+		$em = $this->get('doctrine.orm.entity_manager');
+		$all_metadata = $em->getMetadataFactory()->getAllMetadata();
+
+		return $this->render('DevBundle:Models:index.php', array(
+			'all_metadata' => $all_metadata,
+		));
+	}
+
+	public function getSqlAction()
+	{
+		$model = '';
+		$all_sql = false;
+		if (!empty($_GET['model'])) {
+			$model = $_GET['model'];
+
+			$em = $this->container->get('doctrine.orm.entity_manager');
+			$metadata = $em->getMetadataFactory()->getMetadataFor($model);
+			$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+			$all_sql = $tool->getCreateSchemaSql(array($metadata));
+		}
+
+		return $this->render('DevBundle:Models:get-sql.php', array(
+			'model' => $model,
+			'all_sql' => $all_sql,
+		));
+	}
+}
