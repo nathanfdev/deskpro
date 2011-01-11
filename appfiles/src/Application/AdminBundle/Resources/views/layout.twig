@@ -84,6 +84,7 @@
 		<div class="logo">Admin</div>
 		<ul class="header-tabs">
 			<li {% if section == "setup" %}class="on"{% endif %} data-tab-name="setup">Setup</li>
+			<li {% if section == "look_and_feel" %}class="on"{% endif %} data-tab-name="look_and_feel">Look &amp; Feel</li>
 			<li {% if section == "agents" %}class="on"{% endif %} data-tab-name="agents">Agents</li>
 			<li {% if section == "tickets" %}class="on"{% endif %} data-tab-name="tickets">Tickets</li>
 			<li {% if section == "helpdesk" %}class="on"{% endif %} data-tab-name="helpdesk">Helpdesk</li>
@@ -109,10 +110,12 @@
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Scheduled Tasks</span></li>
 			</ul>
 		</div>
-		<div class="group agents {% if section == "look_and_feel" %}on{% endif %}">
-			<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Look &amp; Feel</span></li>
-			<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Portal</span></li>
-			<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Language</span></li>
+		<div class="group look_and_feel {% if section == "look_and_feel" %}on{% endif %}">
+			<ul>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Look &amp; Feel</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Portal</span></li>
+				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Language</span></li>
+			</ul>
 		</div>
 		<div class="group agents {% if section == "agents" %}on{% endif %}">
 			<ul>
