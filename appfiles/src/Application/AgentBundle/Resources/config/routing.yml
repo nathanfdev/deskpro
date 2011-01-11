@@ -134,7 +134,7 @@ agent_peoplesearch:
   defaults: { _controller: AgentBundle:PeopleSearch:search }
 
 agent_peoplesearch_labelspane:
-  pattern: /people-search/queues-pane
+  pattern: /people-search/labels-pane
   defaults: { _controller: AgentBundle:PeopleSearch:labelsPane }
 
 agent_peoplesearch_findpane:
@@ -157,6 +157,10 @@ agent_ticketsearch:
 agent_ticketsearch_overviewpane:
   pattern: /ticket-search/overview-pane
   defaults: { _controller: AgentBundle:TicketSearch:overviewPane }
+  
+agent_ticketsearch_labelspane:
+    pattern: /ticket-search/labels-pane
+    defaults: { _controller: AgentBundle:TicketSearch:labelsPane }
 
 agent_ticketsearch_overviewnav:
   pattern: /ticket-search/overview-nav

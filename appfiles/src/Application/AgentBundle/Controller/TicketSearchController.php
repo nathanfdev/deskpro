@@ -303,6 +303,17 @@ class TicketSearchController extends AbstractController
 
 		return $this->createJsonResponse($data);
 	}
+	
+	############################################################################
+	# labels-pane
+	############################################################################
+	
+	public function labelsPaneAction()
+	{
+		return $this->render('AgentBundle:TicketSearch:pane-labels.twig', array(
+
+		));
+	}
 
 
 	############################################################################

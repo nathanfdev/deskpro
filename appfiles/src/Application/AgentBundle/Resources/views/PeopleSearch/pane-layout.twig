@@ -1,7 +1,10 @@
 {% block meta %}{% endblock %}
 
 {% set find_content %}{% block find_content %}{% endblock %}{%endset%}
+{% set directory_content %}{% block directory_content %}{% endblock %}{%endset%}
+{% set labels_content %}{% block labels_content %}{% endblock %}{%endset%}
 
 <h1 data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="{% if find_content %}active{%endif%}">Find</h1>
 <h1 data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="{% if directory_content %}active{%endif%}">Directory</h1>
-<h1 data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="{% if labels_content %}active{%endif%}">Labels</h1>
+<h1 data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" class="{% if labels_content %}active{%endif%}">Labels</h1>
+{{labels_content|raw}}
