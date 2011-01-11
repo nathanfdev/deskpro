@@ -42,6 +42,14 @@
 		<td><?php echo $checks['writable_logs'] ? 'okay' : 'PROBLEM' ?></td>
 	</tr>
 	<tr>
+		<td>writable_version</td>
+		<td>
+			<var><?php echo DP_ROOT ?>/sys/VERSION</var> is a single file that must be writable. Either make the sys directory
+			writable, or create the VERSION file and make it writable.
+		</td>
+		<td><?php echo $checks['writable_version'] ? 'okay' : 'PROBLEM' ?></td>
+	</tr>
+	<tr>
 		<td>config</td>
 		<td>
 			<var><?php echo DP_ROOT ?>/config.php</var> must contain valid database details.

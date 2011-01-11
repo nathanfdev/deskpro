@@ -26,6 +26,7 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 			'ext_intl' => true,
 			'writable_cache' => true,
 			'writable_logs' => true,
+			'writable_version' => true,
 			'config' => true
 		);
 		$checks_msg = array();
@@ -45,6 +46,11 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		}
 		if (!is_writable(DP_ROOT.'/sys/logs')) {
 			$checks['writable_logs'] = false;
+		}
+
+		// Check and also initalize version so its correct format
+		if (!@file_put_contents(DP_ROOT.'/sys/VERSION', '2011-01-01 11:11:11')) {
+			$checks['writable_version'] = false;
 		}
 
 		if ($checks['ext_pdo_mysql']) {
@@ -108,6 +114,11 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 			$this->em->rollback();
 		}
 		$results = ob_get_clean();
+
+		// Insert correct build number
+		$upgrader = new Upgrader();
+		$version = VersionReader::getVersionString($upgrader->getNewestVersion());
+		file_put_contents(DP_ROOT.'/sys/VERSION', $version);
 
 		return $this->render('DevBundle:Install:create-data.php', array(
 			'error' => $error,
