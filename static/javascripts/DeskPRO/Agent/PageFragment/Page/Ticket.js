@@ -22,6 +22,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initTicketTabs();
 		this._initTicketAttach();
 		this._initFlagMenu();
+		this._initLabels();
 	},
 	
 	destroyPage: function() {
@@ -50,7 +51,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}
 	},
 	
-	
+	_initLabels: function() {
+		// Tags
+		$("ul.tagit", this.contentWrapper).tagit({
+			fieldName: 'tags',
+			availableTags: this.getMetaData('tagsAutocompleteUrl'),
+			enableBackspace: false,
+			onchange: this.saveLabels
+		});	
+	},
 	
 	//#################################################################
 	//# Ticket options menus

@@ -31,6 +31,19 @@ class MiscController extends AbstractController
 		));
 	}
 
+	public function ajaxLabelsAutocompleteAction()
+	{
+		$search = $this->in->getString('term');
+		$statement = App::getDb()->executeQuery("SELECT label FROM label_defs WHERE label LIKE ? ORDER BY label ASC LIMIT 50", array('%'.$search.'%'));
+		$array = array();
+
+		while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {
+			$array[] = array('name' => $row['label'], 'value' => $row['label']);
+		}
+
+		return $this->createJsonResponse($array);
+	}
+
 	public function showBlobAction($blob_id)
 	{
 		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);

@@ -1188,24 +1188,6 @@ ul.ticket-reply-tabs li.on {
 
 
 
-
-.section.tags .tags-field {
-	background-color: #fff;
-	border: 1px solid #ccc;
-}
-
-.section.tags .tags-field input {
-	background-color: #fff;
-	border: none;
-	margin: 4px;
-}
-
-
-
-
-
-
-
 /**********************************************************
  Search form sections (top of list pane usually)
 ***********************************************************/

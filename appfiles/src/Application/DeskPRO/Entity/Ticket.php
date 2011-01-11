@@ -165,6 +165,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $custom_data;
 
 	/**
+	 * @orm:OneToMany(targetEntity="LabelTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 */
+	protected $labels;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="creation_system", type="string", length=20)
 	 */
@@ -282,11 +287,14 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_ticket_logger;
 
+	protected $_label_manager = null;
+
 	public function __construct()
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->date_created = new \DateTime();
 
@@ -410,6 +418,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $custom_data;
 	}
 
+
+	/**
+	 * Add a label
+	 * @param Entity\LabelTicket $label
+	 */
+	public function addLabel(Entity\LabelTicket $label)
+	{
+		$label['ticket'] = $this;
+		$this->labels->add($label);
+	}
+
 	
 
 	/**
@@ -509,5 +528,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function getTicketLogger()
 	{
 		$this->_ticket_logger;
+	}
+
+
+	public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelTicket');
+		}
+
+		return $this->_label_manager;
 	}
 }

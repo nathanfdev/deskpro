@@ -30,7 +30,7 @@ class LabelPerson extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="person_id", type="integer")
+	 * @orm:Column(name="person_id", type="integer", nullable=true)
 	 */
 	protected $person_id;
 

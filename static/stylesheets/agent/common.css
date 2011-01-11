@@ -75,6 +75,33 @@ input.input-title {
 
 #tiptip_holder { z-index: 1000000; }
 
+.tags-field {
+	background: transparent url(../../images/icons/tag_blue.png) no-repeat 5px 50%;
+	background-color: transparent;
+	padding-left: 25px;
+}
+
+.tags-field li {
+	font-size: 10px;
+}
+
+.tags-field:hover {
+	background-color: #fff;
+}
+
+.tags-field input[type="text"] {
+	background-color: transparent !important;
+	border: none;
+	margin: 4px;
+}
+
+.tags-field input[type="text"]:hover, .tags-field input[type="text"]:focus {
+	border: none !important;
+	background-color: #fff !important;
+	-webkit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
+}
 
 
 /**********************************************************

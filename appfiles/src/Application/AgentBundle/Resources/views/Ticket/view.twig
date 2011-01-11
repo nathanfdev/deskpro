@@ -3,6 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
 pageMeta.title = '{{ticket.subject}}';
 pageMeta.ticket_id = {{ticket.id}};
 pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
+pageMeta.tagsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 </script>
 
 <div class="ticket-content">
@@ -17,6 +18,12 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 			</span>
 			{{ticket.subject}}
 		</h1>
+		<div class="tags-field">
+			<ul class="tagit">
+				<li>Tag1</li>
+				<li>Tag2</li>
+			</ul>
+		</div>
 
 		{% include 'AgentBundle:Ticket:part-ticket-info.twig' %}
 
