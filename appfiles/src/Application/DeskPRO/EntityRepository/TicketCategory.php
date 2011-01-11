@@ -28,7 +28,7 @@ class TicketCategory extends EntityRepository
 
 		$db = App::getDb();
 		$this->all_category_names = $db->feetchAllKeyValue("
-			SELECT cat.id, CONCAT(dep.title, ': ', cat.title)
+			SELECT cat.id, cat.title
 			FROM ticket_categories cat
 			LEFT JOIN departments AS dep ON (cat.department_id = dep.id)
 			ORDER BY dep.title ASC, cat.title ASC
