@@ -2,20 +2,19 @@ DEVELOPMENT INSTALL
 ===================
 
 
-File Permissions
-================
+REQUIREMENTS
+============
 
-Make sure the following directories exist and are writable:
+- PHP 5.3.2 or later
+-- `pdo` and `pdo_mysql` extensions
+-- `intl` extension. (See note 1)
 
-- `/appfiles/sys/cache`
-- `/appfiles/sys/logs`
+- MySQL 5.1.41 or later
 
-On Linux, make sure the following files are executable:
-
-- `/appfiles/bin/console`
-- `/appfiles/bin/console-dev`
-- `/appfiles/bin/install_vendors.sh`
-- `/appfiles/bin/update_vendors.sh`
+	Note (1):
+	The `intl` extension is bundled with PHP, however some distros do not ship it.
+	You can easily use PECL to install the extension, or your package manager may
+	have a package for it. For example, with Ubuntu: apt-get install php5-intl
 
 
 Vendors
@@ -28,48 +27,25 @@ Vendors are tracked as git submodules. Git does not automatically download submo
 
 This will initiate the submodules in your git tree, and then clone the repositories, and finally the correct revision will be checked out.
 
-If you use SmartGit, choose Remove -> Submodule from the menu to get to these commands.
+If you use SmartGit, choose Remote -> Submodule from the menu to get to these commands.
+
 
 Edit Config
 ===========
 
-Edit `/appfiles/config.php` with your database details.
+- Copy `/appfiles/config.new.php` to `/appfiles/config.php`
+- Edit `/appfiles/config.php` with your database details.
 
-Edit `/sys/config/config.yml` and find the line for `assets_base_urls` and edit it for your web path. (This won't be necessary soon, but needed for now).
 
+RUN INSTALL
+===========
 
-Run Dev Commands
-================
+In your web browser, visit the on-screen installer:
 
-From the console, run the two dev commands.
-
-To create the database and schema:
-
-	$ cd /srv/www/dp_400/appfiles/bin
-	$ ./console-dev dpdev:new-install
-
-To fill in some initial data:
-
-	$ ./console-dev dpdev:new-install-data
-
-Or on Windows, for example using WAMP:
-
-	> cd C:\wamp\www\dp_400\appfiles\bin
-	> C:\wamp\bin\php\php5.3.0\php.exe console-dev dpdev:new-install
-	> C:\wamp\bin\php\php5.3.0\php.exe console-dev dpdev:new-install-data
-
-If something fails, you can use the `-v` switch to get more information with a backtrace:
-
-	$ ./console-dev dpdev:new-install -v
-
-NOTES:
-
-- The `dpdev:new-install` command will DROP the database if it exists! Make a backup if you want to keep it.
-- The `dpdev:new-install` command dynamically generates the schema based on the defined entities. If an entity is incorrect/invalid, then the command will fail. You'll need to either fix the bug or revert to a previous working revision.
-- The `dpdev:new-install-data` creates an admin user with email "admin@example.com" and password "pass".
+	/index_dev.php/dev/install
 
 
 Log In
 ================
 
-View `/index_dev.php/tech/` in your browser and log in with the created admin account.
+View `/index_dev.php/agent/` in your browser and log in with the created admin account.

@@ -21,7 +21,7 @@ app.config:
 #  profiler: { only_exceptions: false }
   templating:
     escaping: htmlspecialchars
-    assets_base_urls: "/dp_400/static" # root paths like this need to have basepath prepended
+#    assets_base_urls: "/dp_400/static" # uncomment to change (ie to cdn), otherwise it's auto-detected
   validation:
     enabled: true
 
