@@ -271,7 +271,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var self = this;
 		var el = this.wrapper;
 		
-		$('.person-overview', el).mouseover(function(event) {
+		$('.person-overview', el).css({'cursor': 'pointer'}).click(function(event) {
 			self.isMouseOverPopout = true;
 			self.openPopOut(event);
 		}).mouseout(function(event) {
