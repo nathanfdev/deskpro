@@ -1,0 +1,22 @@
+{% extends 'AdminBundle::layout.twig' %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.SettingsLabels();
+	DeskPRO_Page.setMetaData('newLabelUrl', '{{ path('admin_labels_ajaxnew') }}');
+	DeskPRO_Page.setMetaData('delLabelUrl', '{{ path('admin_labels_ajaxdel') }}');
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<ul class="item-list">
+	<li class="create">
+		<input type="text" name="label" value="" style="width: 200px;" /> <button class="dp-button small save-trigger">Create New Label</button>
+	</li>
+	{% for label in all_labels %}
+		{% include 'AdminBundle:Settings:labels-row.twig' %}
+	{% endfor %}
+</ul>
+
+{% endblock %}

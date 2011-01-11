@@ -29,4 +29,5 @@ table#pane_shell.no-nav td#pane_content div#content_wrap {
 	background-color: #fff;
 	-moz-border-radius: 8px;
 	border-radius: 8px;
+	max-width: 1000px;
 }

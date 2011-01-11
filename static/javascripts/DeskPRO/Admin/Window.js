@@ -40,6 +40,12 @@ DeskPRO.Admin.Window = new Class({
 			$('#window_header_nav .group.on').removeClass('on');
 			$('#window_header_nav .group.' + $(this).data('tab-name')).addClass('on');
 		});
+		
+		// Click anywhere on the li to go to the link
+		$('#window_header_nav ul li').click(function() {
+			var a = $('a:first', this);
+			window.location = a.attr('href');
+		});
 	},
 	
 	

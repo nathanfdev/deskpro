@@ -7,6 +7,22 @@ admin_test:
   defaults: { _controller: AdminBundle:Test:index }
 
 ################################################################################
+# Labels
+################################################################################
+
+admin_labels:
+  pattern: /settings/labels
+  defaults: { _controller: AdminBundle:Settings:labels }
+
+admin_labels_ajaxnew:
+  pattern: /settings/labels/ajax-new
+  defaults: { _controller: AdminBundle:Settings:labelsAjaxNew }
+
+admin_labels_ajaxdel:
+  pattern: /settings/labels/ajax-delete
+  defaults: { _controller: AdminBundle:Settings:labelsAjaxDelete }
+
+################################################################################
 # Styles
 ################################################################################
 

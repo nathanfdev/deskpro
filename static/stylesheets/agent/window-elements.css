@@ -166,6 +166,11 @@
 	filter: dropshadow(color=#000, offx=1, offy=1);
 }
 
+#window_header_nav .group ul li a {
+	color: #fff;
+	text-decoration: none;
+}
+
 #window_header_nav .group ul li.on, #window_header_nav .group ul li:hover {
 	background: #192449; /* old browsers */
 
