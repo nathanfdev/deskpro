@@ -80,7 +80,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		}).bind(this));
 		
 		// Tags
-		$(".tagit", el).tagit({
+		$("ul.tagit.person", el).tagit({
 			fieldName: 'tags',
 			//inputFieldAppendTo: $('.section.tags .new-tag', this.wrapper),
 			enableBackspace: false
