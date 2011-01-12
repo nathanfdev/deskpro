@@ -2,7 +2,7 @@
 
 namespace DeskPRO\Tests\Domain;
 
-use DeskPRO\Domain\DomainObject;
+use Application\DeskPRO\Domain\DomainObject;
 
 class TestDomainObject extends DomainObject
 {
