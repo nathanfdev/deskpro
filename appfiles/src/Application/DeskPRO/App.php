@@ -93,6 +93,12 @@ class App
 	 */
 	protected static $_current_person = null;
 
+	/**
+	 * Standard loggers
+	 * @var array
+	 */
+	protected static $_standard_loggers = null;
+
 
 
 	/**
@@ -528,5 +534,30 @@ class App
 		if ($value === null) $value = $default;
 
 		return $value;
+	}
+
+
+	/**
+	 * Get a new logger for some kind of thing/session
+	 * 
+	 * @param string $log_name
+	 * @param string $session_name
+	 * @return \Application\DeskPRO\Log\Logger
+	 */
+	public static function createNewLogger($log_name, $session_name)
+	{
+		$logger = new \Application\DeskPRO\Log\Logger();
+		$logger->setLogName($log_name);
+		$logger->setSessionName($session_name);
+
+		// Indent formatter by default
+		$indent_filter = new \Orb\Log\Filter\IndentFilter();
+		$logger->addFilter($indent_filter);
+
+		// Writer to the DB
+		$writer = new \Application\DeskPRO\Log\Writer\LogItemEntity();
+		$logger->addWriter($writer);
+
+		return $logger;
 	}
 }

@@ -9,13 +9,13 @@
 
 namespace Orb\Filter;
 
-class FilterChain extends \Zend\Filter\AbstractFilter
+class FilterChain extends AbstractFilter implements \Countable, \IteratorAggregate
 {
 	/**
 	 * An array of filters
 	 * @var array
 	 */
-	protected $filters = array();
+	protected $_filters = array();
 
 
 	
@@ -26,7 +26,7 @@ class FilterChain extends \Zend\Filter\AbstractFilter
 	 */
 	public function addFilter(\Zend\Filter\Filter $filter)
 	{
-		$this->filters[] = $filter;
+		$this->_filters[] = $filter;
 	}
 
 
@@ -38,7 +38,7 @@ class FilterChain extends \Zend\Filter\AbstractFilter
 	 */
 	public function getFilters()
 	{
-		return $this->filters;
+		return $this->_filters;
 	}
 
 
@@ -51,10 +51,32 @@ class FilterChain extends \Zend\Filter\AbstractFilter
 	 */
 	public function filter($value)
 	{
-		foreach ($this->filters as $filter) {
+		foreach ($this->_filters as $filter) {
 			$value = $filter->filter($value);
 		}
 
 		return $value;
+	}
+
+
+	
+	/**
+	 * Count how many filters there are.
+	 *
+	 * @return int
+	 */
+	public function count()
+	{
+		return count($this->_filters);
+	}
+
+
+
+	/**
+	 * @return \ArrayIterator
+	 */
+	public function getIterator()
+	{
+		return new \ArrayIterator($this->_filters);
 	}
 }
