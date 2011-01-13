@@ -53,6 +53,19 @@ class BuildController extends \Application\DeskPRO\HttpKernel\Controller\Control
 		));
 	}
 
+	public function genBuildClassAction()
+	{
+		$build = new \DateTime();
+		$build_id = VersionReader::getVersionId($build);
+		$build_string = VersionReader::getVersionString($build);
+
+		return $this->render('DevBundle:Build:gen-build-class.php', array(
+			'build_id' => $build_id,
+			'build_string' => $build_string,
+			'build_classname' => 'Upgrade' . $build_id
+		));
+	}
+
 	public function upgradeAction()
 	{
 		$upgrader = new Upgrader();

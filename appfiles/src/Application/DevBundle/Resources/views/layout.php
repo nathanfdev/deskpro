@@ -78,6 +78,8 @@
 		.horizontalForm label input{height:1em;line-height:1.5em;width:auto;margin:.25em .5em 0 0}
 		.horizontalForm label.singleLine{clear:both;float:none;height:1.5em;width:100%;padding:0}
 
+		var { font-family: 'Monaco', 'Courier New', monospace; font-style: normal; color: #415E85; }
+
 		body {
 			background-color: #D0DEF5;
 		}

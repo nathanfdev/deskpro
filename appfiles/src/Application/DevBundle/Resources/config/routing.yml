@@ -58,6 +58,10 @@ dev_build:
   pattern: /build
   defaults: { _controller: DevBundle:Build:index }
 
+dev_build_genclass:
+  pattern: /build/gen-build-class
+  defaults: { _controller: DevBundle:Build:genBuildClass }
+
 dev_build_upgrade:
   pattern: /build/upgrade
   defaults: { _controller: DevBundle:Build:upgrade }

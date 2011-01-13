@@ -46,7 +46,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * procedure.
 	 *
 	 * @var string
-	 * @orm:Column(name="session_name", type="string", length=25)
+	 * @orm:Column(name="session_name", type="string", length=25, nullable=true)
 	 */
 	protected $session_name = null;
 
@@ -54,7 +54,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Any kind of special flag to mark this log item.
 	 *
 	 * @var string
-	 * @orm:Column(name="flag", type="string", length=50)
+	 * @orm:Column(name="flag", type="string", length=50, nullable=true)
 	 */
 	protected $flag = null;
 
@@ -82,9 +82,9 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Other data, such as backtrace or debug info
 	 *
 	 * @var string
-	 * @orm:Column(name="data", type="array")
+	 * @orm:Column(name="data", type="array", nullable=true)
 	 */
-	protected $data;
+	protected $data = null;
 
 	/**
 	 * The date the user was inserted into the system
