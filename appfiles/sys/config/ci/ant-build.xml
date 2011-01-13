@@ -16,12 +16,12 @@
 	</target>
 	<target name="phpcs">
 		<exec executable="phpcs" dir="${basedir}/source" output="${basedir}/build/logs/checkstyle.xml">
-			<arg line="--standard=appfiles/sys/config/phpcs_ruleset.xml --report=checkstyle --extensions=php appfiles/src/Orb appfiles/src/Application"></arg>
+			<arg line="--standard=appfiles/sys/config/ci/phpcs_ruleset.xml --report=checkstyle --extensions=php appfiles/src/Orb appfiles/src/Application"></arg>
 		</exec>
 	</target>
 	<target name="phpmd">
 		<exec executable="phpmd" dir="${basedir}/source">
-			<arg line="--suffixes 'php' 'appfiles/src/Orb,appfiles/src/Application' xml 'appfiles/sys/config/phpmd_rules.xml'"></arg>
+			<arg line="--suffixes 'php' 'appfiles/src/Orb,appfiles/src/Application' xml 'appfiles/sys/config/ci/phpmd_rules.xml'"></arg>
 		</exec>
 	</target>
 </project>
