@@ -11,10 +11,14 @@
 
 namespace Application\ApiBundle\StaticLoader;
 
-class ApiKeyRequestLoader
+class RequestKey
 {
-	public static function getApiKeyFromRequest($container, \Symfony\Component\HttpFoundation\Request $request)
+	public static function getApiKeyFromRequest(\Doctrine\ORM\EntityManager $em, \Symfony\Component\HttpFoundation\Request $request)
 	{
+		static $api_key = null;
+
+		if ($api_key !== null) return $api_key;
+
 		$key_str = false;
 		if (!empty($_SERVER['PHP_AUTH_USER']) AND !empty($_SERVER['PHP_AUTH_PW'])) {
 			$key_str = $_SERVER['PHP_AUTH_USER'].':'.$_SERVER['PHP_AUTH_PW'];
@@ -23,11 +27,15 @@ class ApiKeyRequestLoader
 		} else if (!empty($_REQUEST['API-KEY'])) {
 			$key_str = $_REQUEST['API-KEY'];
 		}
-
+		
 		if (!$key_str) {
+			$api_key = null;
 			return null;
 		}
 
-		return App::getEntityRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
+		$api_key = $em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
+		if (!$api_key) $api_key = null;
+
+		return $api_key;
 	}
 }

@@ -20,7 +20,7 @@ class ApiKey extends EntityRepository
 	 * @param string $key_str
 	 * @return ApiKey
 	 */
-	public function findByKeyString($key_str)
+	public function findByKeyString($key_string)
 	{
 		if (strpos($key_string, ':') === false) return null;
 		

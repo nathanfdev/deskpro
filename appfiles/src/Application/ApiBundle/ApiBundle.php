@@ -8,5 +8,8 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
-	
+	public function registerExtensions(ContainerBuilder $container)
+    {
+		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
+    }
 }

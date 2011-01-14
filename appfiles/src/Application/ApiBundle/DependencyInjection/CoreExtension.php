@@ -13,6 +13,8 @@ namespace Application\ApiBundle\DependencyInjection;
 
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
+use Symfony\Component\DependencyInjection\Definition;
+use Application\DeskPRO\App;
 
 /**
  * Registers basic core stuff
@@ -21,14 +23,17 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 {
 	public function configLoad($config, ContainerBuilder $container)
     {
+		$service_name = 'deskpro.api.request_key';
+
 		$definition = new \Symfony\Component\DependencyInjection\Definition(
-			'Application\ApiBundle\Listener\ApiKeyListener',
+			'Application\\ApiBundle\\StaticLoader\\RequestKey',
 			array(
-				new Reference('service_container')
+				new Reference('doctrine.orm.entity_manager'),
+				new Reference('request')
 			)
 		);
-		$definition->addTag('kernel.listener');
-		$container->setDefinition('deskpro.api.apikeylistener', $definition);
+		$definition->setFactoryMethod('getApiKeyFromRequest');
+		$container->setDefinition($service_name, $definition);
     }
 
 	public function getXsdValidationBasePath()

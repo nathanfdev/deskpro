@@ -37,3 +37,4 @@ deskpro_cache.caches:
 
 deskpro_core.config: ~
 deskpro_agent_core.config: ~
+deskpro_api_core.config: ~

@@ -130,4 +130,50 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		$url = $this->generateUrl($route, $parameters, true);
 		return $this->redirect($url, $status);
 	}
+
+	
+
+	/**
+	 * Create a JSON response.
+	 *
+	 * @param string $content
+	 * @param int $status_code
+	 * @return Response
+	 */
+	public function createJsonResponse($content, $status_code = 200)
+	{
+		$response = $this->container->get('response');
+		$response->headers->set('Content-Type', 'application/json');
+		$response->setStatusCode($status_code);
+
+		if (is_array($content)) {
+			$content = json_encode($content);
+		}
+
+		$response->setContent($content);
+
+		return $response;
+	}
+
+	
+
+	/**
+	 * Render a template and create a JSON response with it.
+	 *
+	 * @param string $view
+	 * @param array $parameters
+	 * @param Response $response
+	 * @return Response
+	 */
+	public function renderJson($view, array $parameters = array(), Response $response = null)
+	{
+		if ($response === null) {
+			$response = $this->container->get('response');
+			$response->headers->set('Content-Type', 'application/json');
+			$response->setStatusCode(200);
+		}
+		$response = $this->container->get('templating')->renderResponse($view, $parameters, $response);
+
+		return $response;
+	}
 }

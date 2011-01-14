@@ -24,16 +24,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	protected $apikey;
 
 	/**
-	 * Flag set in other API controllers that requires a person
-	 * to perform any actions.
+	 * The user context (user making the request, or the one the API key says to use)
+	 * @var Application\DeskPRO\Entity\Person
 	 */
-	protected $require_person = true;
-
+	protected $user;
 
 	
 	protected function init()
 	{
-		$this->apikey = $this['deskpro.api.requestapikey'];
+		$this->apikey = $this->get('deskpro.api.request_key');
+
+		if ($this->apikey) {
+			$this->user = $this->apikey['person'];
+		}
 	}
 
 
@@ -44,43 +47,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	public function preAction($action, $arguments = null)
 	{
 		if ($this->apikey === null) {
-			return $this->createApiErrorResponse(
-				'invalid_api_key',
-				'Invalid API key',
-				'401'
-			);
+			$response = $this->createResponse('', 401, array(
+				'WWW-Authenticate' => 'Basic realm="API"'
+			));
+			return $response;
 		}
-
-		if ($this->require_person AND !$this->getPersonContext()) {
-			return $this->createApiErrorResponse(
-				'invalid_person',
-				'Invalid Person',
-				'401'
-			);
-		}
-	}
-
-
-	
-	/**
-	 * If an action is done on the behalf of a person, then we'll need to have
-	 * those credentials passed.
-	 *
-	 * @return Person
-	 */
-	public function getPersonContext()
-	{
-		// TODO: Work out how to auth other sites or apps etc
-		// oauth?
-
-		$person = null;
-		if (isset($this->session) AND $this->session->get('auth_person_id')) {
-			try {
-				$person = $this->em->find('DeskPRO:Person', $this->session->get('auth_person_id'));
-			} catch (Exception $e) {}
-		}
-
-		return $person;
 	}
 
 
@@ -95,9 +66,23 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function createApiErrorResponse($error_code, $error_message, $status = 400)
 	{
-		return $this->createApiResponse(array(
+		return $this->createJsonResponse(array(
 			'error_code' => $error_code,
 			'error_message' => $error_message
 		), $status);
+	}
+
+
+
+	/**
+	 * Create an API response.
+	 *
+	 * @param array $data
+	 * @param int $status
+	 * @return Response
+	 */
+	public function createApiResponse(array $data, $status = 200)
+	{
+		return $this->createJsonResponse($data, $status = 200);
 	}
 }
