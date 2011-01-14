@@ -126,26 +126,23 @@ admin_usersources_new:
 # API Keys
 ################################################################################
 
-admin_api:
+admin_api_keylist:
   pattern: /api
   defaults: { _controller: AdminBundle:Api:index }
 
-admin_api_intro:
-  pattern: /api/intro
-  defaults: { _controller: AdminBundle:Api:intro }
-
-admin_api_keyinfo:
-  pattern: /api/key/:apikey
-  defaults: { _controller: AdminBundle:Api:infoKey }
-  requirements: { usersource_id: "\d+" }
+admin_api_delkey:
+  pattern: /api/key/:id/del
+  defaults: { _controller: AdminBundle:Api:delKey }
+  requirements: { id: "\d+" }
 
 admin_api_editkey:
-  pattern: /api/key/:apikey/edit
+  pattern: /api/key/:id/edit
   defaults: { _controller: AdminBundle:Api:editKey }
+  requirements: { id: "\d+" }
 
 admin_api_newkey:
-  pattern: /api/new-key
-  defaults: { _controller: AdminBundle:Api:editKey, apikey: 0 }
+  pattern: /api/key/new
+  defaults: { _controller: AdminBundle:Api:editKey, id: 0 }
 
 
 ################################################################################

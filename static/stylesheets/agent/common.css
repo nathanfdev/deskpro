@@ -60,6 +60,16 @@ input.input-title {
 	font-size: 130%;
 }
 
+input.flat {
+	background-color: #fff;
+	border: 1px solid #97a6b6;
+	-moz-border-radius: 0;
+	border-radius: 0;
+	filter: none;
+	text-shadow: none;
+	font-family: 'Monaco', 'Courier New', monospace;
+}
+
 .dev-feature-inactive {
 	opacity: 0.6 !important;
 }
@@ -347,6 +357,40 @@ table.list tr span.subject:hover {
 
 table.list tr abbr.timeago {
 	float: right;
+}
+
+/**********************************************************
+ Main Form Table
+***********************************************************/
+
+table.form {
+	border: 1px solid #D0D2D6;
+}
+
+table.form td {
+	background-color: #fff;
+	padding: 10px;
+}
+
+table.form tr {
+	border-top: 1px solid #D0D2D6;
+}
+table.form tr:first-child {
+	border-top: none;
+}
+
+table.form td.label {
+	background-color: #F0F1F5;
+}
+
+table.form td.label label {
+	color: #307FE6;
+	font-weight: bold;
+	font-size: 120%;
+}
+
+table.form td.label .info {
+	font-size: 8pt;
 }
 
 

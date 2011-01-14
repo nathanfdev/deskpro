@@ -1,39 +1,30 @@
 {% extends 'AdminBundle::layout.twig' %}
+{% block section 'integrations' %}
+{% block sub_section 'api' %}
 {% block content %}
 
-<div class="block" id="block-tables">
-	<div class="content">
-		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{{ path('admin_api_newkey') }}" class="button">
-				<img src="{% asset 'images/icons/tick.png' %}" alt="New Style" /> Create New API Key
-			</a>
-		</div>
-		<h2 class="title">API Keys</h2>
-		<div class="inner">
-			<form action="#" class="form">
-				<table class="table">
-					<tr>
-						<th>Key</th>
-						<th width="250">&nbsp;</th>
-					</tr>
-					{% for apikey in all_apikeys %}
-					<tr class="even">
-						<td>
-							<input type="text" size="40" value="{{apikey.id}}" />
-							{% if apikey.note %}<br />{{apikey.note}}{% endif %}
-						</td>
-						<td class="last">
-							<a href="{{ path('admin_api_infokey', {'apikey': apikey.id}) }}">Info</a> &middot;
-							<a href="{{ path('admin_api_editkey', {'apikey': apikey.id}) }}">Edit</a>
-						</td>
-					</tr>
-					{% endfor %}
-				</table>
-			</form>
-		</div>
-	</div>
+<div style="text-align: right">
+	<a class="dp-button green" href="{{ path('admin_api_newkey') }}">Create API Key</a>
+	<br /><br />
 </div>
 
-{% endblock %}
-{% block sidebar %}
+<ul class="item-list">
+	{% for apikey in all_apikeys %}
+		<li>
+			<div style="float:right">
+				<ul class="controls">
+					<li class="edit"><a href="{{ path('admin_api_editkey', {'id': apikey.id}) }}">view/edit</a></li>
+					<li class="delete"><a href="{{ path('admin_api_delkey', {'id': apikey.id}) }}" onclick="return confirm('Are you sure?');">delete</a></li>
+				</ul>
+			</div>
+			<strong>{{apikey.person.display_name}}</strong>
+			{% if apikey.note %}<p>{{apikey.note}}</p>{% endif %}
+
+			<p>HTTP Basic Auth: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.apikey}}" style="width: 200px;" /></p>
+		</li>
+	{% else %}
+		You have created no API keys.
+	{% endfor %}
+</ul>
+
 {% endblock %}

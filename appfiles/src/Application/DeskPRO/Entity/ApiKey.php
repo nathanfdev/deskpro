@@ -19,7 +19,10 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * API keys are codes that authorize requests against the DeskPRO.
+ * An API key is a simple way to use the api without going through OAuth.
+ * Admins can define an API key, and use the key to authorize requests. Useful
+ * for things like system services. User services (things users want to do)
+ * will want to use OAuth.
  *
  * @orm:Entity
  * @orm:Table(name="api_keys")
@@ -27,17 +30,26 @@ use Orb\Util\Arrays;
 class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="api_key", type="string", length=50)
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @GeneratedValue
 	 */
-	protected $api_key;
+	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="api_secret", type="string", length=50)
+	 * @orm:Column(name="apikey", type="string", length=50)
 	 */
-	protected $api_secret;
+	protected $apikey;
+
+	/**
+	 * @var Application\DeskPRO\Entity\Person
+	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 */
+	protected $person;
 
 	/**
 	 * A note or description about the key (ie what its used for).
@@ -48,9 +60,8 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	protected $note = '';
 
 
-	public function init()
+	public function __construct()
 	{
-		$this->api_key    = Strings::random(50, Strings::CHARS_KEY);
-		$this->api_secret = Strings::random(50, Strings::CHARS_KEY);
+		$this->apikey = Strings::random(50, Strings::CHARS_KEY);
 	}
 }

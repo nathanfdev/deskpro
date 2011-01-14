@@ -1,0 +1,51 @@
+{% extends 'AdminBundle::layout.twig' %}
+{% block section 'integrations' %}
+{% block sub_section 'api' %}
+{% block content %}
+
+<form action="{{ path('admin_api_editkey', {'id': apikey.id|default(0)}) }}" method="post">
+
+<table class="form">
+	{% if apikey.id %}
+	<tr>
+		<td class="label">
+			<label>Key Information</label>
+		</td>
+		<td>
+			ID: {{apikey.id}}<br />
+			Key: {{apikey.apikey}}
+			<hr />
+			HTTP Basic Auth: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.apikey}}" style="width: 200px;" /><br />
+			Example cURL: <input type="text" class="flat" value="curl -u {{apikey.id}}:{{apikey.apikey}} http://deskpro/api/test" style="width: 200px;" />
+		</td>
+	</tr>
+	{% endif %}
+	<tr>
+		<td class="label" width="40%">
+			<label>Note or Description</label>
+		</td>
+		<td>
+			<input type="text" name="api_key[note]" value="{{apikey.note}}" style="width: 90%" />
+		</td>
+	</tr>
+	<tr>
+		<td class="label">
+			<label>User Owner</label>
+			<div class="info">
+				Every API request is made with the authority of an actual
+				user. Enter the person who this API key will be making requests for.
+			</div>
+		</td>
+		<td>
+			<input type="text" name="person_email" value="{{apikey.person.primary_email_address}}" style="width: 300px;"/>
+		</td>
+	</tr>
+</table>
+
+<div style="text-align:center">
+	<button class="dp-button" type="submit">Save</button>
+</div>
+
+</form>
+
+{% endblock %}

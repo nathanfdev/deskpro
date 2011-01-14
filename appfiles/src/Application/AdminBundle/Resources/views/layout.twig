@@ -157,7 +157,7 @@
 		<div class="group integrations {% if section == "integrations" %}on{% endif %}">
 			<ul>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Widgets</span></li>
-				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">API</span></li>
+				<li {% if sub_section == 'api' %}class="on"{% endif %}><span class="icon tickets"><a href="{{ path('admin_api_keylist') }}">API</a></span></li>
 			</ul>
 		</div>
 		<div class="group publish {% if section == "publish" %}on{% endif %}">
