@@ -596,18 +596,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Add a new field
-	 * @param PersonField $field
-	 */
-	public function addFieldData(PersonFieldData $field)
-	{
-		$this->field_data->add($field);
-		$field['person'] = $this;
-	}
-
-
-
-	/**
 	 * Gets field data for 'top' fields, that is, don't return fields that are children.
 	 * Most of the time we work with those values strictly through the parent field.
 	 *
