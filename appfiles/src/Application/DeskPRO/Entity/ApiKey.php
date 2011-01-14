@@ -24,7 +24,7 @@ use Orb\Util\Arrays;
  * for things like system services. User services (things users want to do)
  * will want to use OAuth.
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ApiKey")
  * @orm:Table(name="api_keys")
  */
 class ApiKey extends \Application\DeskPRO\Domain\DomainObject
@@ -40,9 +40,9 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="apikey", type="string", length=50)
+	 * @orm:Column(name="code", type="string", length=25)
 	 */
-	protected $apikey;
+	protected $code;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
@@ -62,6 +62,19 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->apikey = Strings::random(50, Strings::CHARS_KEY);
+		$this->code = Strings::random(25, Strings::CHARS_KEY);
+	}
+	
+
+
+	/**
+	 * Get a "key string". This is a combined ID and code like id:code
+	 * that is used in auth lookups.
+	 *
+	 * @return string
+	 */
+	public function getKeyString()
+	{
+		return $this->id . ':' . $this->code;
 	}
 }

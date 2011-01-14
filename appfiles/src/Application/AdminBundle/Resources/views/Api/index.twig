@@ -20,7 +20,7 @@
 			<strong>{{apikey.person.display_name}}</strong>
 			{% if apikey.note %}<p>{{apikey.note}}</p>{% endif %}
 
-			<p>HTTP Basic Auth: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.apikey}}" style="width: 200px;" /></p>
+			<p>HTTP Basic Auth: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 200px;" /></p>
 		</li>
 	{% else %}
 		You have created no API keys.

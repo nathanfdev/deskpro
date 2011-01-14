@@ -15,21 +15,19 @@ class ApiKeyRequestLoader
 {
 	public static function getApiKeyFromRequest($container, \Symfony\Component\HttpFoundation\Request $request)
 	{
-		$api_key_str = $request->headers->get('X-DeskPRO-API-Key', true);
-		if (!$api_key_str) {
-			$api_key_str = isset($_GET['API-KEY']) ? $_GET['API-KEY'] : false;
-
-			if (!$api_key_str) {
-				return null;
-			}
+		$key_str = false;
+		if (!empty($_SERVER['PHP_AUTH_USER']) AND !empty($_SERVER['PHP_AUTH_PW'])) {
+			$key_str = $_SERVER['PHP_AUTH_USER'].':'.$_SERVER['PHP_AUTH_PW'];
+		} else if ($request->headers->get('X-DeskPRO-API-Key', true)) {
+			$key_str = $request->headers->get('X-DeskPRO-API-Key', true);
+		} else if (!empty($_REQUEST['API-KEY'])) {
+			$key_str = $_REQUEST['API-KEY'];
 		}
 
-		$em = $container->get('doctrine.orm.entity_manager');
-
-		try {
-			return $em->findOneBy('ApiBundle:ApiKey', array('api_key' => $api_key_str));
-		} catch (\Doctrine\ORM\NoResultException $e) {
+		if (!$key_str) {
 			return null;
 		}
+
+		return App::getEntityRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
 	}
 }

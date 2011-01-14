@@ -13,10 +13,10 @@
 		</td>
 		<td>
 			ID: {{apikey.id}}<br />
-			Key: {{apikey.apikey}}
+			Key: {{apikey.code}}
 			<hr />
-			HTTP Basic Auth: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.apikey}}" style="width: 200px;" /><br />
-			Example cURL: <input type="text" class="flat" value="curl -u {{apikey.id}}:{{apikey.apikey}} http://deskpro/api/test" style="width: 200px;" />
+			HTTP Basic Auth: <input type="text" class="flat" value="{{apikey.id}}:{{apikey.code}}" style="width: 200px;" /><br />
+			Example cURL: <input type="text" class="flat" value="curl -u {{apikey.id}}:{{apikey.code}} http://deskpro/api/test" style="width: 200px;" />
 		</td>
 	</tr>
 	{% endif %}
