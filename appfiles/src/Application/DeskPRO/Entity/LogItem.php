@@ -37,7 +37,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * each kind of component (eg. gateways, error_log, etc).
 	 *
 	 * @var string
-	 * @orm:Column(name="log_name", type="string", length=25)
+	 * @orm:Column(name="log_name", type="string", length=50)
 	 */
 	protected $log_name;
 
@@ -46,7 +46,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * procedure.
 	 *
 	 * @var string
-	 * @orm:Column(name="session_name", type="string", length=25, nullable=true)
+	 * @orm:Column(name="session_name", type="string", length=100, nullable=true)
 	 */
 	protected $session_name = null;
 

@@ -10,6 +10,10 @@ dev_seefile:
   pattern: /see-file
   defaults: { _controller: DevBundle:Main:seeFile }
 
+dev_run_workerjob:
+  pattern: /run-worker-job
+  defaults: { _controller: DevBundle:Main:runWorkerJob }
+
 dev_models:
   pattern: /models
   defaults: { _controller: DevBundle:Models:index }

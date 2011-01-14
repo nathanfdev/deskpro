@@ -46,7 +46,7 @@ abstract class AbstractWriter
 	 * @param \Zend\Filter\Filter $filter
 	 * @return AbstractWriter
 	 */
-	public function addFilter(\Orb\Filter\Filter $filter)
+	public function addFilter(\Orb\Filter\FilterInterface $filter)
 	{
 		$this->getFilterChain()->addFilter($filter);
 		return $this;

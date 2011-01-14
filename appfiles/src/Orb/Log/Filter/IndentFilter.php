@@ -7,7 +7,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Orb\Log\Writer;
+namespace Orb\Log\Filter;
 use \Orb\Log\LogItem;
 
 
@@ -19,7 +19,7 @@ use \Orb\Log\LogItem;
  */
 class IndentFilter extends \Orb\Filter\AbstractFilter
 {
-	public function filter(LogItem $log_item)
+	public function filter($log_item)
 	{
 		if (!$log_item) return null;
 

@@ -21,10 +21,10 @@ class LogItem extends \Orb\Log\LogItem
 		$this->_standard_fields[] = self::LOG_NAME;
 		$this->_standard_fields[] = self::FLAG;
 
-		if (!$this[self::LOG_NAME]) {
+		if (!isset($this[self::LOG_NAME])) {
 			$this[self::LOG_NAME] = 'general';
 		}
-		if (!$this[self::FLAG]) {
+		if (!isset($this[self::FLAG])) {
 			$this[self::FLAG] = null;
 		}
 	}

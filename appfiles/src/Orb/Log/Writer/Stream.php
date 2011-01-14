@@ -23,6 +23,12 @@ class Stream extends AbstractWriter
 	protected $_stream = null;
 
 	/**
+	 * If we opened the stream ourselves
+	 * @var bool
+	 */
+	protected $_did_open_stream = false;
+
+	/**
 	 * @param  streamOrUrl     Stream or URL to open as a stream
 	 * @param  mode            Mode, only applicable if a URL is given
 	 */
@@ -48,13 +54,17 @@ class Stream extends AbstractWriter
 				$msg = "\"$stream_or_url\" cannot be opened with mode \"$mode\"";
 				throw new \RuntimeException($msg);
 			}
+
+			$this->_did_open_stream = true;
 		}
+
+		$this->addFilter(new \Orb\Log\Filter\SimpleLineFormatter());
 	}
 
 
 	public function shutdown()
 	{
-		if (is_resource($this->_stream)) {
+		if ($this->_did_open_stream AND is_resource($this->_stream)) {
 			fclose($this->_stream);
 		}
 	}

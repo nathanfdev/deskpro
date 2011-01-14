@@ -7,7 +7,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Orb\Log\Writer;
+namespace Orb\Log\Filter;
 use \Orb\Log\LogItem;
 
 
@@ -34,7 +34,7 @@ class SimpleLineFormatter extends \Orb\Filter\AbstractFilter
 		$this->_time_format = $time_format;
 	}
 
-	public function filter(LogItem $log_item)
+	public function filter($log_item)
 	{
 		if (!$log_item) return null;
 

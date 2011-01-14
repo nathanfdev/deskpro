@@ -26,7 +26,7 @@ class PriorityFilter extends \Orb\Filter\AbstractFilter
 		$this->min_level = $min_level;
 	}
 
-	public function filter(LogItem $log_item)
+	public function filter($log_item)
 	{
 		if (!$log_item) return null;
 

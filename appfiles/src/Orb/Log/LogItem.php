@@ -40,22 +40,22 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 			$this->info = $info;
 		}
 
-		if (!$this[self::DATETIME]) {
+		if (!isset($this[self::DATETIME])) {
 			$this[self::DATETIME] = new \DateTime();
 		}
-		if (!$this[self::PRIORITY]) {
+		if (!isset($this[self::PRIORITY])) {
 			$this[self::PRIORITY] = Logger::INFO;
 		}
-		if (!$this[self::PRIORITY_NAME]) {
+		if (!isset($this[self::PRIORITY_NAME])) {
 			$this[self::PRIORITY_NAME] = $this[self::PRIORITY];
 		}
-		if (!$this[self::MESSAGE]) {
+		if (!isset($this[self::MESSAGE])) {
 			$this[self::MESSAGE] = '';
 		}
-		if (!$this[self::MESSAGE_LINE]) {
+		if (!isset($this[self::MESSAGE_LINE])) {
 			$this[self::MESSAGE_LINE] = $this[self::MESSAGE];
 		}
-		if (!$this[self::SESSION_NAME]) {
+		if (!isset($this[self::SESSION_NAME])) {
 			$this[self::SESSION_NAME] = null;
 		}
 
@@ -183,4 +183,9 @@ class LogItem implements \IteratorAggregate, \ArrayAccess
 		return $this->info[$offset];
 	}
 	/**@#-*/
+
+	public function getIterator()
+	{
+		return new \ArrayIterator($this->info);
+	}
 }

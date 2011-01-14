@@ -24,7 +24,7 @@ class FilterChain extends AbstractFilter implements \Countable, \IteratorAggrega
 	 *
 	 * @param \Zend\Filter\Filter $filter
 	 */
-	public function addFilter(\Zend\Filter\Filter $filter)
+	public function addFilter(FilterInterface $filter)
 	{
 		$this->_filters[] = $filter;
 	}

@@ -96,9 +96,21 @@ class Logger
 	 *
 	 * @param \Zend\Filter\Filter $filter
 	 */
-	public function addFilter(\Orb\Filter\Filter $filter)
+	public function addFilter(\Orb\Filter\FilterInterface $filter)
 	{
 		$this->_writer_chain->addFilter($filter);
+	}
+
+
+	
+	/**
+	 * Add a new writer to this logger.
+	 * 
+	 * @param \Orb\Log\Writer\AbstractWriter $writer
+	 */
+	public function addWriter(\Orb\Log\Writer\AbstractWriter $writer)
+	{
+		$this->_writer_chain->addWriter($writer);
 	}
 
 	
@@ -130,7 +142,7 @@ class Logger
 		$info[LogItem::PRIORITY_NAME] = $this->_priorities[$priority];
 
 		$log_item = $this->createLogInfoObject($info);
-		$this->logItem($info);
+		$this->logItem($log_item);
 	}
 
 	
