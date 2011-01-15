@@ -16,7 +16,7 @@ namespace Application\DeskPRO\Entity;
  * @orm:Entity
  * @orm:Table(name="api_auth_codes")
  */
-class ApiKey extends \Application\DeskPRO\Domain\DomainObject
+class ApiAuthToken extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * The unique ID.
