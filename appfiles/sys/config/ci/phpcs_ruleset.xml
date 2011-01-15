@@ -14,6 +14,7 @@
 		</properties>
 	</rule>
 	<rule ref="Generic.Functions.OpeningFunctionBraceBsdAllman"/>
+	<rule ref="Generic.Commenting.TodoSniff"/>
 	<rule ref="Generic.Metrics.NestingLevel">
 		<properties>
 			<proptery name="nestingLevel" value="5" />
