@@ -1,0 +1,8 @@
+<?php
+$OUTPUT['queues'] = array();
+foreach ($queues as $queue) {
+	$OUTPUT['queues'][] = array(
+		'id' => $queue['id'],
+		'title' => $queue['title']
+	);
+}

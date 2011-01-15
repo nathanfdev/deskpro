@@ -65,7 +65,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 			if (!($mode & self::TOARRAY_LOAD_UNLOADED)) {
 				// If a relation isn't loaded then dont access it, or else we'll lazy load it
-				if (!is_scalar($val) AND !is_array($val) AND !\DeskPRO\ORM\Util\Util::isCollectionInitialized($val)) {
+				if (!is_scalar($val) AND !is_array($val) AND !\Application\DeskPRO\ORM\Util\Util::isCollectionInitialized($val)) {
 					continue;
 				}
 			}

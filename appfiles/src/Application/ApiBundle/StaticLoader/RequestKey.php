@@ -11,6 +11,8 @@
 
 namespace Application\ApiBundle\StaticLoader;
 
+use \Application\DeskPRO\App;
+
 class RequestKey
 {
 	public static function getApiKeyFromRequest(\Doctrine\ORM\EntityManager $em, \Symfony\Component\HttpFoundation\Request $request)
@@ -35,6 +37,10 @@ class RequestKey
 
 		$api_key = $em->getRepository('DeskPRO:ApiKey')->findByKeyString($key_str);
 		if (!$api_key) $api_key = null;
+
+		if ($api_key) {
+			App::setCurrentPerson($api_key['person']);
+		}
 
 		return $api_key;
 	}

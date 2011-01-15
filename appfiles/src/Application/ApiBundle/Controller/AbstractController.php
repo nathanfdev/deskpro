@@ -29,9 +29,57 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	protected $user;
 
+	/**
+	 * Entity manager
+	 * @var Doctrine\ORM\EntityManager
+	 */
+	protected $em;
+
+	/**
+	 * Plain database connection for raw queries
+	 * @var Application\DeskPRO\DBAL\Connection
+	 */
+	protected $db;
+
+	/**
+	 * Input reader
+	 * @var Orb\Input\Reader\Reader
+	 */
+	protected $in;
+
+	/**
+	 * A generic value cleaner
+	 * @var Orb\Input\Cleaner\Cleaner
+	 */
+	protected $cleaner;
+
+	/**
+	 * Shared template vars
+	 * @var ArrayObject
+	 */
+	protected $tplvars;
+
+	/**
+	 * @var Application\DeskPRO\Templating\Engine
+	 */
+	protected $tpl;
+
+	/**
+	 * Fetch settings
+	 * @var Application\DeskPRO\Settings\Settings
+	 */
+	protected $settings;
+
+
 	
 	protected function init()
 	{
+		$this->em       = $this->get('doctrine.orm.entity_manager');
+		$this->db       = $this->get('database_connection');
+		$this->in       = $this->get('deskpro.core.input_reader');
+		$this->cleaner  = $this->get('deskpro.core.input_cleaner');
+		$this->settings = $this->get('deskpro.core.settings');
+		
 		$this->apikey = $this->get('deskpro.api.request_key');
 
 		if ($this->apikey) {

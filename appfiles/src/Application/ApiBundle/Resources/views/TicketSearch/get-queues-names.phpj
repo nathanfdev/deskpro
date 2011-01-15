@@ -1,2 +1,0 @@
-<?php
-$OUTPUT['queues'] = $queues;

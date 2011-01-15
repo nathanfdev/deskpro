@@ -11,7 +11,7 @@
 
 namespace Application\ApiBundle\Controller;
 
-use \Application\DeskPRO\Domain\DomainObject;
+use \Application\DeskPRO\App;
 
 /**
  * Perform searches or get results from queues.
@@ -23,7 +23,7 @@ class TicketSearchController extends AbstractController
 	 */
 	public function getQueueNamesAction()
 	{
-		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
+		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->user);
 
 		return $this->renderJson('ApiBundle:TicketSearch:get-queue-names.phpj', array(
 			'queues' => $queues
@@ -37,10 +37,10 @@ class TicketSearchController extends AbstractController
 	 */
 	public function getQueueCountsAction()
 	{
-		$all_counts = $queues = App::getApi('tickets.queues')->getAllCountsForPersonQueues($this->person);
+		$all_counts = App::getApi('tickets.queues')->getAllCountsForPersonQueues($this->user);
 
 		return $this->renderJson('ApiBundle:TicketSearch:get-queue-counts.phpj', array(
-			'counts' => $counts
+			'counts' => $all_counts
 		));
 	}
 
@@ -69,7 +69,7 @@ class TicketSearchController extends AbstractController
 			'num_pages' => $num_pages,
 			'per_page' => $per_page,
 			'cur_page' => $page,
-			'tickets' => $ret
+			'tickets' => $tickets
 		));
 	}
 }
