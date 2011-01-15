@@ -10,15 +10,17 @@ class Output
 {
 	public $html = false;
 
-	public function write($line, $newline = true)
+	public function write($line)
 	{
 		if ($this->html) {
 			$line = htmlspecialchars($line);
 		}
 
 		echo $line;
-		if ($newline) {
-			echo "\n";// should be pre'd, so dont need htmlspecial
-		}
+	}
+
+	public function writeln($line)
+	{
+		return $this->write($line . "\n");
 	}
 }

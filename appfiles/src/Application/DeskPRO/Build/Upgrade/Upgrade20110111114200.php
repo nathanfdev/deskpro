@@ -9,8 +9,8 @@ class Upgrade20110111114200 extends UpgradeAbstract
 {
 	public function step1()
 	{
-		$this->output->write("Some information here");
-		$this->output->write(__CLASS__ . ' ' . __LINE__);
+		$this->output->writeln("Some information here");
+		$this->output->writeln(__CLASS__ . ' ' . __LINE__);
 
 		return Upgrader::STEP_DONE;
 	}

@@ -15,28 +15,33 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 {
 	protected function configure()
 	{
-		$this->setDefinition(array(
-		))->setName('dpdev:upgrade');
+		$this->setName('dpdev:upgrade')
+			->addOption('upgrade', null, InputOption::VALUE_NONE, 'Perform any neccessary upgrades');
 	}
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		// Check VERSION file exists and is writable
-		$vfile = ROOT.'/sys/VERSION';
+		$vfile = DP_ROOT.'/sys/VERSION';
 		if (!is_file($vfile) OR !is_readable($vfile) OR !is_writable($vfile)) {
-			$output->write("<warn>/sys/VERSION must exist, and be readable and writable</warn>");
+			$output->writeln("<error>/sys/VERSION must exist, and be readable and writable</error>");
 			return -1;
 		}
 
 		try {
 			$version = VersionReader::getCurrentVersion();
 		} catch (\DomainException $e) {
-			$output->write("<warn>/sys/VERSION contains an invalid version</warn>");
+			$output->writeln("<error>/sys/VERSION contains an invalid version</error>");
 			return -1;
+		}
+
+		if ($input->getOption('upgrade')) {
+			return $this->executeUpgrade($input, $output);
 		}
 
 		$upgrader = new Upgrader();
 
+		$version = VersionReader::getCurrentVersion();
 		$source_version = $upgrader->getNewestVersion();
 
 		$output->write("Current Version: " . VersionReader::getVersionString($version) . " (" . VersionReader::getVersionId($version) . ")\n");
@@ -44,13 +49,33 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 
 		$behind = $upgrader->countNewerThan($version);
 		if ($behind) {
-			$output->write("Versions Behind: " . $behind);
+			$output->writeln("Versions Behind: " . $behind);
 			foreach ($upgrader->getAllNewer($version) as $newer_version) {
-				$output->write(VersionReader::getVersionString($newer_version) . " (" . VersionReader::getVersionId($newer_version) . ")\n");
+				$output->write("\t- " . VersionReader::getVersionString($newer_version) . " (" . VersionReader::getVersionId($newer_version) . ")\n");
 			}
 
 			$output->write("\n\n");
 			$output->write("<info>Use the --upgrade switch to perform all the required upgrades</info>");
+		} else {
+			$output->write("All up to date.\n");
+		}
+
+		$output->write("\n");
+	}
+
+	protected function executeUpgrade(InputInterface $input, OutputInterface $output)
+	{
+		$upgrader = new Upgrader();
+
+		$version = VersionReader::getCurrentVersion();
+		$source_version = $upgrader->getNewestVersion();
+
+		$output->write("Current Version: " . VersionReader::getVersionString($version) . " (" . VersionReader::getVersionId($version) . ")\n");
+		$output->write("Source Version:  " . VersionReader::getVersionString($source_version) . " (" . VersionReader::getVersionId($source_version) . ")\n");
+
+		foreach ($upgrader->getAllNewer($version) as $newer_version) {
+			$output->writeln("<info>### Upgrading to " . VersionReader::getVersionString($newer_version) . " (" . VersionReader::getVersionId($newer_version) . ")");
+			$upgrader->performUpgrade($newer_version, $output);
 		}
 
 		$output->write("\n");

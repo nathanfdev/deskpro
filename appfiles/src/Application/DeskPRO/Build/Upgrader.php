@@ -24,8 +24,8 @@ class Upgrader
 		$cur_step = 1;
 		$cur_step_sub = 0;
 
-		$output->write("<info>Upgrade Class: " . \Orb\Util\Util::getBaseClassname($up) . "</info>");
-		$output->write("<info>Steps: {$info['steps']}</info>");
+		$output->writeln("<info>Upgrade Class: " . \Orb\Util\Util::getBaseClassname($up) . "</info>");
+		$output->writeln("<info>Steps: {$info['steps']}</info>");
 
 		// We save the status to the VERSION file
 		// Line1 (current version): 2010-11-26 12:29:00
@@ -39,7 +39,7 @@ class Upgrader
 					$cur_step = $up_status[2];
 					$cur_step_sub = $up_status[3];
 
-					$output->write("<info>Resuming from step $cur_step.$cur_step_sub</info>");
+					$output->writeln("<info>Resuming from step $cur_step.$cur_step_sub</info>");
 				}
 			}
 		}
@@ -51,7 +51,7 @@ class Upgrader
 			while ($dostep) {
 				$dostep = false;
 
-				$output->write("<info>Running $cur_step.$cur_step_sub</info>");
+				$output->writeln("<info>Running $cur_step.$cur_step_sub</info>");
 				$ret = $up->$method($cur_step_sub);
 
 				if ($ret == self::STEP_AGAIN) {
@@ -60,7 +60,7 @@ class Upgrader
 
 					$this->setUpgradeStatus($version, $cur_step, $cur_step_sub);
 				} elseif ($ret == self::STEP_FAILED) {
-					$output->write("<warn>STEP FAILED</warn>");
+					$output->writeln("<warn>STEP FAILED</warn>");
 					return false;
 				}
 			}
@@ -70,7 +70,7 @@ class Upgrader
 			$this->setUpgradeStatus($version, $cur_step, $cur_step_sub);
 		}
 
-		$output->write("<info>UPGRADE COMPLETE</info>");
+		$output->writeln("<info>UPGRADE COMPLETE</info>");
 		$this->setCurrentVersion($version);
 
 		$output->write("\n\n");

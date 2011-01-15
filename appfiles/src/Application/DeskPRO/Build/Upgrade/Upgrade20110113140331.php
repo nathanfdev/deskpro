@@ -9,8 +9,8 @@ class Upgrade20110113140331 extends UpgradeAbstract
 {
 	public function step1()
 	{
-		$this->output->write('Add log_items table');
-
+		$this->output->writeln('Add log_items table');
+return Upgrader::STEP_DONE;
 		try {
 			$db = App::getDb();
 			$db->exec("
@@ -30,7 +30,7 @@ class Upgrade20110113140331 extends UpgradeAbstract
 				) ENGINE=InnoDB
 			");
 		} catch (\Exception $e) {
-			$this->output->write("FAILED: " . $e->getMessage());
+			$this->output->writeln("FAILED: " . $e->getMessage());
 			return Upgrader::STEP_FAILED;
 		}
 
