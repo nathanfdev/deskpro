@@ -32,9 +32,17 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			WHERE us.is_enabled = ?1
 		')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
 
+		$return = $this->in->getStringFromGet('return');
+		if ($return AND $return[0] != '/') {
+			// Always be a path on the current domain,
+			// or else it might be a trick to go to some other domain etc
+			$return = '';
+		}
+
 		return $this->render('UserBundle:Login:index.twig', array(
 			'usersources' => $usersources,
-			'usersource_forms' => $this->_getUsersourceLoginForms($usersources)
+			'usersource_forms' => $this->_getUsersourceLoginForms($usersources),
+			'return' => $return
 		));
 	}
 
@@ -88,18 +96,22 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		$adapter = new \Application\DeskPRO\Auth\Adapter\Local($this->em);
 		$adapter->setCredentials($this->in->getString('email'), $this->in->getString('password'));
 		$result = $adapter->authenticate();
+
 		if (!$result->isValid()) {
-			return $this->redirect($this->get('router')->generate('user_login', array()));
+			return $this->_redirectLoginFailed();
 		}
 
 		$identity = $result->getIdentity();
 
 		$this->session->set('auth_person_id', $identity->getIdentity());
-		return $this->redirect($this->get('router')->generate('agent_dashboard', array()));
+
+		return $this->_redirectLoginSuccess();
 	}
 
 	protected function _processUsersourceLogin($usersource_id)
 	{
+		$return = $this->in->getString('return');
+
 		$usersource = $this->em->find('DeskPRO:Usersource', $usersource_id);
 
 		$adapter = $this->_initUserSourceAdapter($usersource);
@@ -117,7 +129,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 			// Otherwise its an error
 			} else {
-				return $this->redirect($this->get('router')->generate('user_login', array()));
+				return $this->_redirectLoginFailed();
 			}
 
 		#------------------------------
@@ -134,16 +146,30 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 				$person = $login_processor->getPerson();
 
 				$this->session->set('auth_person_id', $person['id']);
-				return $this->redirect($this->get('router')->generate('agent_dashboard', array()));
+				return $this->_redirectLoginSuccess();
 
 			// Error, go back to login
 			} else {
-				return $this->redirect($this->get('router')->generate('user_login', array()));
+				return $this->_redirectLoginFailed();
 			}
 		}
 	}
 
+	protected function _redirectLoginSuccess()
+	{
+		$return = $this->in->getString('return');
+		if ($return) {
+			return $this->redirect($return);
+		} else {
+			return $this->redirectRoute('user');
+		}
+	}
 
+	protected function _redirectLoginFailed()
+	{
+		$return = $this->in->getString('return');
+		return $this->redirectRoute('user_login', array('return' => $return));
+	}
 
 	############################################################################
 	# /login/authenticate-callback/:usersource_id

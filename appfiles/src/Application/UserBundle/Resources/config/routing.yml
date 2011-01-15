@@ -1,4 +1,4 @@
-index:
+user:
   pattern:  /
   defaults: { _controller: UserBundle:Main:index }
 
