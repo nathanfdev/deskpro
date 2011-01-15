@@ -42,7 +42,7 @@ class ApiAuthToken extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="scope", type="string", length=250 nullable=true)
+	 * @orm:Column(name="scope", type="string", length=250, nullable=true)
 	 */
 	protected $scope = null;
 

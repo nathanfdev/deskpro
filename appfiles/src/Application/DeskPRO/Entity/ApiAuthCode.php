@@ -42,13 +42,13 @@ class ApiAuthCode extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="scope", type="string", length=250 nullable=true)
+	 * @orm:Column(name="scope", type="string", length=250, nullable=true)
 	 */
 	protected $scope = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="redirect_url", type="string", length=250 nullable=true)
+	 * @orm:Column(name="redirect_url", type="string", length=250, nullable=true)
 	 */
 	protected $redirect_url = null;
 
