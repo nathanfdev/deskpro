@@ -115,11 +115,13 @@
 <body>
 <div id="container">
 	<div id="topnav">
-		{% if person %}
-			<ul style="float:right; padding-right: 8px;">
+		<ul style="float:right; padding-right: 8px;">
+			{% if person.id %}
 				<li>Welcome, {{person.display_name}} &middot; <a href="{{ path('user_logout') }}">Log Out</a></li>
-			</ul>
-		{% endif %}
+			{% else %}
+				<li>Welcome, Guest &middot; <a href="{{ path('user_login') }}">Log In</a></li>
+			{% endif %}
+		</ul>
 		<ul>
 			<li class="btn"><a href="{{ path('user') }}">Home</a></li>
 		</ul>
