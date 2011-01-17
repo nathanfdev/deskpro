@@ -22,7 +22,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleSearch';
 		</div>
 		<form action="{{ path('agent_peoplesearch_performquick') }}" method="post">
 			<input type="search" name="q" placeholder="Begin typing a name, email address, label or company ..." style="width: 350px" />
-			<img src="{% asset 'images/loading-small.gif' %}" alt="Searching..." class="quick-search-loading" style="display:none" />
+			<img src="{{ asset('images/loading-small.gif') }}" alt="Searching..." class="quick-search-loading" style="display:none" />
 		</form>
 	</div>
 	

@@ -29,11 +29,11 @@
 				</div>
 				<div class="group navform wat-cf">
 					<button class="button" type="submit">
-						<img src="{% asset 'images/icons/tick.png' %}" alt="Save" /> Save
+						<img src="{{ asset('images/icons/tick.png') }}" alt="Save" /> Save
 					</button>
 					{% if style.id %}
 						<a href="{{ path('admin_styles') }}" class="button">
-							<img src="{% asset 'images/icons/cross.png' %}" alt="Cancel"/> Cancel
+							<img src="{{ asset('images/icons/cross.png') }}" alt="Cancel"/> Cancel
 						</a>
 					{% endif %}
 				</div>

@@ -3,43 +3,43 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>Web App Theme</title>
-	<link rel="stylesheet" href="{% asset 'stylesheets/base.css' %}" type="text/css" media="screen" />
-	<link rel="stylesheet" href="{% asset 'stylesheets/themes/blue/style.css' %}" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{{ asset('stylesheets/base.css') }}" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{{ asset('stylesheets/themes/blue/style.css') }}" type="text/css" media="screen" />
 
-	<link rel="stylesheet" href="{% asset 'javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css' %}" type="text/css" media="screen"  />
-	<link rel="stylesheet" href="{% asset 'javascripts/jquery/tipTip/tipTip.css' %}" type="text/css" media="screen"  />
-	<link rel="stylesheet" href="{% asset 'stylesheets/agent/interface.css' %}" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{{ asset('javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css') }}" type="text/css" media="screen"  />
+	<link rel="stylesheet" href="{{ asset('javascripts/jquery/tipTip/tipTip.css') }}" type="text/css" media="screen"  />
+	<link rel="stylesheet" href="{{ asset('stylesheets/agent/interface.css') }}" type="text/css" media="screen" />
 
 	<!--[if IE 8]>
-	<link rel="stylesheet" href="{% asset 'stylesheets/agent/interface-ie.css' %}" type="text/css" media="screen" />
+	<link rel="stylesheet" href="{{ asset('stylesheets/agent/interface-ie.css') }}" type="text/css" media="screen" />
 	<![endif]-->
 
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery-ui/jquery-ui.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/jquery.layout.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/tipTip/jquery.tipTip.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/jquery/tag-it/tag-it.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/mootools/mootools-core.min.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Orb.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/Orb/Compat.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.min.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery-ui/jquery-ui.min.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.layout.min.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/tipTip/jquery.tipTip.min.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/tag-it/tag-it.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/Orb/Compat.js') }}"></script>
 
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Form/InlineEdit.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Form/RuleBuilder.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Form/InlineEdit.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Form/RuleBuilder.js') }}"></script>
 
 	<!-- Agent Interface sources -->
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/Window.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/Shells/ThreePaned.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/TabManager.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Basic.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/Window.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/Shells/ThreePaned.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/TabManager.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Basic.js') }}"></script>
 
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleSearch.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSearch.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleSearch.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSearch.js') }}"></script>
 
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/NavPane/Basic.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/NavPane/Basic.js') }}"></script>
 
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js' %}"></script>
-	<script type="text/javascript" charset="utf-8" src="{% asset 'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js' %}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/Person.js') }}"></script>
 
 	<script type="text/javascript">
 		var BASE_URL = '{{ path('user') }}';
