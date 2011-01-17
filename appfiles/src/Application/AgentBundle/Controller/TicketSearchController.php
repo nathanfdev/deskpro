@@ -25,7 +25,7 @@ class TicketSearchController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->render('AgentBundle:TicketSearch:list-blank.twig');
+		return $this->render('AgentBundle:TicketSearch:list-blank.twig.html');
 	}
 
 	public function queuesPaneAction()
@@ -49,7 +49,7 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
-		return $this->render('AgentBundle:TicketSearch:pane-queues.twig', array(
+		return $this->render('AgentBundle:TicketSearch:pane-queues.twig.html', array(
 			'queues' => $queues
 		));
 	}
@@ -62,9 +62,9 @@ class TicketSearchController extends AbstractController
 		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($queue_id, $page, 50);
 		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
 
-		$tpl = 'AgentBundle:TicketSearch:queue-results.twig';
+		$tpl = 'AgentBundle:TicketSearch:queue-results.twig.html';
 		if ($this->in->getBool('partial')) {
-			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig';
+			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig.html';
 			if (!count($tickets)) {
 				return $this->createResponse('');
 			}
@@ -92,7 +92,7 @@ class TicketSearchController extends AbstractController
 
 	public function flaggedPaneAction()
 	{
-		return $this->render('AgentBundle:TicketSearch:pane-flagged.twig', array(
+		return $this->render('AgentBundle:TicketSearch:pane-flagged.twig.html', array(
 
 		));
 	}
@@ -104,9 +104,9 @@ class TicketSearchController extends AbstractController
 
 		$tickets = App::getApi('tickets.queues')->getTicketsFromFlagged($flag, $this->person, $page, 50);
 
-		$tpl = 'AgentBundle:TicketSearch:flagged-results.twig';
+		$tpl = 'AgentBundle:TicketSearch:flagged-results.twig.html';
 		if ($this->in->getBool('partial')) {
-			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig';
+			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig.html';
 			if (!count($tickets)) {
 				return $this->createResponse('');
 			}
@@ -128,7 +128,7 @@ class TicketSearchController extends AbstractController
 
 	public function overviewPaneAction()
 	{
-		return $this->render('AgentBundle:TicketSearch:pane-overview.twig', array(
+		return $this->render('AgentBundle:TicketSearch:pane-overview.twig.html', array(
 
 		));
 	}
@@ -162,7 +162,7 @@ class TicketSearchController extends AbstractController
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
 		$list_url_group2 = $list_url_group1 . "&terms[3][rule_type]=$group2_nosuf&terms[3][op]=is&terms[3][$group2_nosuf]=\$group2_id";
 
-		return $this->render('AgentBundle:TicketSearch:overview-listing.twig', array(
+		return $this->render('AgentBundle:TicketSearch:overview-listing.twig.html', array(
 			'counts' => $display_counts,
 			'list_url_group1' => $list_url_group1,
 			'list_url_group2' => $list_url_group2,
@@ -173,7 +173,7 @@ class TicketSearchController extends AbstractController
 	{
 		$data = $this->_runFilterFromReq();
 		
-		return $this->render('AgentBundle:TicketSearch:overview-results.twig', $data);
+		return $this->render('AgentBundle:TicketSearch:overview-results.twig.html', $data);
 	}
 
 
@@ -183,7 +183,7 @@ class TicketSearchController extends AbstractController
 
 	public function findPaneAction()
 	{
-		return $this->render('AgentBundle:TicketSearch:pane-find.twig', array(
+		return $this->render('AgentBundle:TicketSearch:pane-find.twig.html', array(
 
 		));
 	}
@@ -196,7 +196,7 @@ class TicketSearchController extends AbstractController
 		$preselect_terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
 		$autorun = $this->in->getBool('autorun');
 		
-		return $this->render('AgentBundle:TicketSearch:filter.twig', array(
+		return $this->render('AgentBundle:TicketSearch:filter.twig.html', array(
 			'ticket_options' => $ticket_options,
 			'preselect_terms' => $preselect_terms,
 			'autorun' => $autorun
@@ -209,7 +209,7 @@ class TicketSearchController extends AbstractController
 		$preselect_query = $this->in->getString('search_query');
 		$autorun = $this->in->getBool('autorun');
 
-		return $this->render('AgentBundle:TicketSearch:search.twig', array(
+		return $this->render('AgentBundle:TicketSearch:search.twig.html', array(
 			'preselect_query' => $preselect_query,
 			'autorun' => $autorun
 		));
@@ -288,10 +288,10 @@ class TicketSearchController extends AbstractController
 		);
 
 		if ($cur_page == 1) {
-			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results.twig', $view_params);
+			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results.twig.html', $view_params);
 		} else {
 			$data['is_partial'] = true;
-			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results-page.twig', $view_params);
+			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results-page.twig.html', $view_params);
 		}
 
 		return $data;
@@ -310,7 +310,7 @@ class TicketSearchController extends AbstractController
 	
 	public function labelsPaneAction()
 	{
-		return $this->render('AgentBundle:TicketSearch:pane-labels.twig', array(
+		return $this->render('AgentBundle:TicketSearch:pane-labels.twig.html', array(
 
 		));
 	}

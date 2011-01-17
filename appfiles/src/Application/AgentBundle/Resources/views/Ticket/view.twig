@@ -25,7 +25,7 @@ pageMeta.tagsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 			</ul>
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-ticket-info.twig' %}
+		{% include 'AgentBundle:Ticket:part-ticket-info.twig.html' %}
 
 		<br style="clear:both" />
 	
@@ -52,7 +52,7 @@ pageMeta.tagsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 			<br style="clear:both" />
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-custom-fields.twig' %}
+		{% include 'AgentBundle:Ticket:part-custom-fields.twig.html' %}
 	
 		<ul class="ticket-tabs">
 			<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
@@ -64,7 +64,7 @@ pageMeta.tagsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 	<div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
 		<ul>
 			{% for message in ticket.messages %}
-				{% include 'AgentBundle:Ticket:ticket-message.twig' with {'message': message} %}
+				{% include 'AgentBundle:Ticket:ticket-message.twig.html' with {'message': message} %}
 			{% endfor %}
 		</ul>
 	</div>
@@ -131,7 +131,7 @@ pageMeta.tagsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 		</div>
 	</div>
 
-	{% include 'AgentBundle:Ticket:part-ticket-menus.twig' %}
+	{% include 'AgentBundle:Ticket:part-ticket-menus.twig.html' %}
 </div><!-- content -->
 
-{% include 'AgentBundle:Ticket:part-ticket-bar.twig' %}
+{% include 'AgentBundle:Ticket:part-ticket-bar.twig.html' %}

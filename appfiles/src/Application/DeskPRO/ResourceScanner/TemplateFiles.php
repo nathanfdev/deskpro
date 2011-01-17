@@ -53,8 +53,8 @@ class TemplateFiles
 	 *
 	 * <code>
 	 * array(
-	 *     'ExampleBundle:Example:index'   => '/src/Application/ExampleBundle/views/Example/index.twig',
-	 *     'WhateverBundle::layout'        => '/src/Bundle/WhateverBundle/views/layout.twig',
+	 *     'ExampleBundle:Example:index'   => '/src/Application/ExampleBundle/views/Example/index.twig.html',
+	 *     'WhateverBundle::layout'        => '/src/Bundle/WhateverBundle/views/layout.twig.html',
 	 * )
 	 * </code>
 	 *
@@ -84,14 +84,14 @@ class TemplateFiles
 		}
 
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->files()->name('*.twig')->in($view_dir);
+		$finder->files()->name('*.twig.html')->in($view_dir);
 
 		$templates = array();
 		foreach ($finder as $filepath) {
-			// /somepath/SomeBundle/Resources/views/Something/index.twig
+			// /somepath/SomeBundle/Resources/views/Something/index.twig.html
 			// -> SomeBundle:Something:index
 			$tplname = str_replace($view_dir . '/', ':', $filepath);
-			$tplname = str_replace('.twig', '', $tplname);
+			$tplname = str_replace('.twig.html', '', $tplname);
 			$tplname = str_replace('/', ':', $tplname);
 			if (substr_count($tplname, ':') < 2) {
 				$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout

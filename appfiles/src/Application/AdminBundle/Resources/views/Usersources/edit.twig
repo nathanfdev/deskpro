@@ -1,4 +1,4 @@
-{% extends 'AdminBundle::layout.twig' %}
+{% extends 'AdminBundle::layout.twig.html' %}
 {% block content %}
 
 {% set form_url %}{{ path('admin_usersources_edit', {'usersource_id':usersource.id|default(0)}) }}{% endset %}

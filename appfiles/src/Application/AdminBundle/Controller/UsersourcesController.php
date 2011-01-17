@@ -37,7 +37,7 @@ class UsersourcesController extends AbstractController
 
 		$this->tplvars['all_usersources'] = $all_usersources;
 
-		return $this->render('AdminBundle:Usersources:index.twig');
+		return $this->render('AdminBundle:Usersources:index.twig.html');
 	}
 
 
@@ -54,7 +54,7 @@ class UsersourcesController extends AbstractController
 		$count = $this->db->fetchColumn("SELECT COUNT(*) FROM usersources LIMIT 1");
 		$this->tplvars['has_no_usersources'] = !$count;
 
-		return $this->render('AdminBundle:Usersources:intro.twig');
+		return $this->render('AdminBundle:Usersources:intro.twig.html');
 	}
 
 
@@ -74,7 +74,7 @@ class UsersourcesController extends AbstractController
 			$usersource = new \Application\DeskPRO\Entity\Usersource();
 
 			if (!$this->in->getString('usersource.handler_class')) {
-				return $this->render('AdminBundle:Usersources:edit-choosetype.twig');
+				return $this->render('AdminBundle:Usersources:edit-choosetype.twig.html');
 			}
 
 			$usersource['handler_class'] = $this->in->getString('usersource.handler_class');
@@ -102,7 +102,7 @@ class UsersourcesController extends AbstractController
 			}
 		}
 		
-		return $this->render('AdminBundle:Usersources:edit.twig', array(
+		return $this->render('AdminBundle:Usersources:edit.twig.html', array(
 			'usersource' => $usersource,
 			'form' => $form,
 			'rendered_type_form' => $admin_handler->renderFormPartial($this, $form)
@@ -122,7 +122,7 @@ class UsersourcesController extends AbstractController
 	{
 		$usersource = $this->getUsersourceOr404($usersource_id);
 
-		return $this->render('AdminBundle:Usersources:info.twig', array(
+		return $this->render('AdminBundle:Usersources:info.twig.html', array(
 			'usersource' => $usersource,
 		));
 	}

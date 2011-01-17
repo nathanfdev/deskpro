@@ -27,7 +27,7 @@ pageMeta.submitTicketUrl = '{{ path('agent_people_new_ajaxsave') }}';
 			<input type="text" class="input-title" name="ticket[subject]" value="{{ticket.subject}}" placeholder="Enter ticket title" />
 		</h1>
 
-		{% include 'AgentBundle:Ticket:part-ticket-info.twig' %}
+		{% include 'AgentBundle:Ticket:part-ticket-info.twig.html' %}
 
 		<br style="clear:both" />
 	
@@ -48,15 +48,15 @@ pageMeta.submitTicketUrl = '{{ path('agent_people_new_ajaxsave') }}';
 			<br style="clear:both" />
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-custom-fields-edit.twig' %}
+		{% include 'AgentBundle:Ticket:part-custom-fields-edit.twig.html' %}
 
 	</div>
 
 	</div>
 
-	{% include 'AgentBundle:Ticket:part-ticket-menus.twig' %}
+	{% include 'AgentBundle:Ticket:part-ticket-menus.twig.html' %}
 	
-	{% include 'AgentBundle:Person:new-user-overlay.twig' %}
+	{% include 'AgentBundle:Person:new-user-overlay.twig.html' %}
 </div><!-- content -->
 
-{% include 'AgentBundle:Ticket:part-ticket-bar.twig' %}
+{% include 'AgentBundle:Ticket:part-ticket-bar.twig.html' %}

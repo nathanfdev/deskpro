@@ -10,11 +10,11 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 {% endif %}
 </script>
 <div class="content">
-	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.twig' %}
+	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.twig.html' %}
 
 	<table class="list" cellspacing="0" width="100%">
-		{% include 'AgentBundle:TicketSearch:part-results-list-thead.twig' %}
-		{% include 'AgentBundle:TicketSearch:part-results-list.twig' %}
+		{% include 'AgentBundle:TicketSearch:part-results-list-thead.twig.html' %}
+		{% include 'AgentBundle:TicketSearch:part-results-list.twig.html' %}
 	</table>
 
 	<div class="loading-more">
@@ -24,6 +24,6 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 		There are no more results.
 	</div>
 	
-	{% include 'AgentBundle:Ticket:part-flag-menu.twig' %}
+	{% include 'AgentBundle:Ticket:part-flag-menu.twig.html' %}
 </div>
-{% include 'AgentBundle:TicketSearch:part-action-bar.twig' %}
+{% include 'AgentBundle:TicketSearch:part-action-bar.twig.html' %}

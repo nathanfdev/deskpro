@@ -38,7 +38,7 @@ class StylesController extends AbstractController
 			return $this->redirect($this->generateUrl('admin_styles_intro', array()));
 		}
 
-        return $this->render('AdminBundle:Styles:index.twig');
+        return $this->render('AdminBundle:Styles:index.twig.html');
     }
 
 
@@ -55,7 +55,7 @@ class StylesController extends AbstractController
 	{
 		$this->tplvars['has_no_styles'] = !((bool)$this->style_hierarchy);
 
-		return $this->render('AdminBundle:Styles:intro.twig');
+		return $this->render('AdminBundle:Styles:intro.twig.html');
 	}
 
 
@@ -119,7 +119,7 @@ class StylesController extends AbstractController
 			}
 		}
 
-		return $this->render('AdminBundle:Styles:edit.twig');
+		return $this->render('AdminBundle:Styles:edit.twig.html');
 	}
 
 
@@ -139,7 +139,7 @@ class StylesController extends AbstractController
 		$template_finder = new \Application\DeskPRO\ResourceScanner\TemplateFiles($this->container);
 		$this->tplvars['template_files'] = $template_finder->getTemplates(true);
 
-		return $this->render('AdminBundle:Styles:style-template-list.twig');
+		return $this->render('AdminBundle:Styles:style-template-list.twig.html');
 	}
 
 
@@ -169,7 +169,7 @@ class StylesController extends AbstractController
 		// TODO fetch current styles contents
 		$this->tplvars['template_content'] = file_get_contents($template_files[$template_name]);
 
-		return $this->render('AdminBundle:Styles:edit-template.twig');
+		return $this->render('AdminBundle:Styles:edit-template.twig.html');
 	}
 
 	

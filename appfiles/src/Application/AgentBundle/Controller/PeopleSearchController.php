@@ -33,7 +33,7 @@ class PeopleSearchController extends AbstractController
 			ORDER BY p.id DESC
 		")->getResult();
 
-		return $this->render('AgentBundle:PeopleSearch:index.twig', array(
+		return $this->render('AgentBundle:PeopleSearch:index.twig.html', array(
 			'people_list' => $people_list
 		));
 	}
@@ -44,7 +44,7 @@ class PeopleSearchController extends AbstractController
 
 	public function searchAction()
 	{
-		return $this->render('AgentBundle:PeopleSearch:search.twig');
+		return $this->render('AgentBundle:PeopleSearch:search.twig.html');
 	}
 
 	############################################################################
@@ -60,7 +60,7 @@ class PeopleSearchController extends AbstractController
 			ORDER BY p.id DESC
 		")->getResult();
 
-		return $this->render('AgentBundle:PeopleSearch:search_results.twig', array(
+		return $this->render('AgentBundle:PeopleSearch:search_results.twig.html', array(
 			'people_list' => $people_list
 		));
 	}
@@ -112,11 +112,11 @@ class PeopleSearchController extends AbstractController
 
 	public function labelsPaneAction()
 	{
-		return $this->render('AgentBundle:PeopleSearch:pane-labels.twig');
+		return $this->render('AgentBundle:PeopleSearch:pane-labels.twig.html');
 	}
 	
 	public function findPaneAction()
 	{
-		return $this->render('AgentBundle:PeopleSearch:pane-find.twig');
+		return $this->render('AgentBundle:PeopleSearch:pane-find.twig.html');
 	}
 }

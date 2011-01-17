@@ -68,7 +68,7 @@ class TicketController extends AbstractController
 
 		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
-		return $this->render('AgentBundle:Ticket:view.twig', array(
+		return $this->render('AgentBundle:Ticket:view.twig.html', array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
@@ -111,7 +111,7 @@ class TicketController extends AbstractController
 
 		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
-		return $this->render('AgentBundle:Ticket:new-ticket.twig', array(
+		return $this->render('AgentBundle:Ticket:new-ticket.twig.html', array(
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,
@@ -235,7 +235,7 @@ class TicketController extends AbstractController
 			);
 		}
 
-		return $this->render('AgentBundle:Ticket:custom-fields-rendered.twig', array(
+		return $this->render('AgentBundle:Ticket:custom-fields-rendered.twig.html', array(
 			'custom_fields' => $custom_fields,
 		));
 	}
@@ -320,7 +320,7 @@ class TicketController extends AbstractController
 		$ticket_edit->addMessage($message);
 		$ticket_edit->save();
 
-		return $this->render('AgentBundle:Ticket:ticket-message.twig', array(
+		return $this->render('AgentBundle:Ticket:ticket-message.twig.html', array(
 			'message' => $message
 		));
 	}
@@ -336,7 +336,7 @@ class TicketController extends AbstractController
 
 		$ticket_logs = App::getOrm()->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
 
-		return $this->render('AgentBundle:Ticket:ticketlog.twig', array(
+		return $this->render('AgentBundle:Ticket:ticketlog.twig.html', array(
 			'ticket_logs' => $ticket_logs
 		));
 	}

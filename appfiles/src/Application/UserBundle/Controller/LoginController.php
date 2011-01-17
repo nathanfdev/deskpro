@@ -39,7 +39,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
-		return $this->render('UserBundle:Login:index.twig', array(
+		return $this->render('UserBundle:Login:index.twig.html', array(
 			'usersources' => $usersources,
 			'usersource_forms' => $this->_getUsersourceLoginForms($usersources),
 			'return' => $return
@@ -52,7 +52,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 		foreach ($usersources as $usersource) {
 			$parts = explode('\\', $usersource['handler_class']);
-			$tpl_name = 'UserBundle:Login:login-form-.twig' . strtolower(array_pop($parts));
+			$tpl_name = 'UserBundle:Login:login-form-.twig.html' . strtolower(array_pop($parts));
 
 			$forms[] = array(
 				'usersource' => $usersource,

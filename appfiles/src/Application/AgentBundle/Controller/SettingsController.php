@@ -23,7 +23,7 @@ class SettingsController extends AbstractController
 			App::getOrm()->flush();
 		}
 
-        return $this->render('AgentBundle:Settings:index.twig', array(
+        return $this->render('AgentBundle:Settings:index.twig.html', array(
 			'show_listpane' => $this->person->getPref($pref_name)
 		));
     }
@@ -40,7 +40,7 @@ class SettingsController extends AbstractController
 	{
 		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
-		return $this->render('AgentBundle:Settings:ticket-queues.twig', array(
+		return $this->render('AgentBundle:Settings:ticket-queues.twig.html', array(
 			'queues' => $queues
 		));
 	}
@@ -69,7 +69,7 @@ class SettingsController extends AbstractController
 			}
 		}
 
-		return $this->render('AgentBundle:Settings:ticket-queue-edit.twig', array(
+		return $this->render('AgentBundle:Settings:ticket-queue-edit.twig.html', array(
 			'term_options' => $term_options,
 			'queue' => $queue
 		));
@@ -107,7 +107,7 @@ class SettingsController extends AbstractController
 			$all_macros = false;
 		}
 
-        return $this->render('AgentBundle:Settings:ticket-macros.twig', array(
+        return $this->render('AgentBundle:Settings:ticket-macros.twig.html', array(
 			'show_saved_flash' => $this->in->getBool('saved'),
 			'all_macros' => $all_macros
 		));
@@ -141,7 +141,7 @@ class SettingsController extends AbstractController
 			return $this->redirectRoute('agent_settings_ticketmacros', array('saved' => 1));
 		}
 
-        return $this->render('AgentBundle:Settings:ticket-macro-edit.twig', array(
+        return $this->render('AgentBundle:Settings:ticket-macro-edit.twig.html', array(
 			'ticket_options' => $ticket_options,
 			'macro' => $macro
 		));

@@ -38,7 +38,7 @@ class LanguagesController extends AbstractController
 			return $this->redirect($this->generateUrl('agent_admin_langs_intro', array()));
 		}
 
-        return $this->render('AdminBundle:Languages:index.twig');
+        return $this->render('AdminBundle:Languages:index.twig.html');
     }
 
 
@@ -55,7 +55,7 @@ class LanguagesController extends AbstractController
 	{
 		$this->tplvars['has_no_langs'] = !((bool)$this->lang_hierarchy);
 
-		return $this->render('AdminBundle:Languages:intro.twig');
+		return $this->render('AdminBundle:Languages:intro.twig.html');
 	}
 
 
@@ -120,7 +120,7 @@ class LanguagesController extends AbstractController
 			}
 		}
 
-		return $this->render('AdminBundle:Languages:edit.twig');
+		return $this->render('AdminBundle:Languages:edit.twig.html');
 	}
 
 
@@ -149,7 +149,7 @@ class LanguagesController extends AbstractController
 
 		$this->tplvars['all_phrases'] = $phrases;
 
-		return $this->render('AdminBundle:Languages:language-phrase-list.twig');
+		return $this->render('AdminBundle:Languages:language-phrase-list.twig.html');
 	}
 
 
@@ -180,7 +180,7 @@ class LanguagesController extends AbstractController
 		// TODO fetch current contents
 		$this->tplvars['phrase_content'] = $group_phrases[$phrase_name];
 
-		return $this->render('AdminBundle:Styles:edit-phrase.twig');
+		return $this->render('AdminBundle:Styles:edit-phrase.twig.html');
 	}
 
 	

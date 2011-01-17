@@ -1,4 +1,4 @@
-{% extends 'AdminBundle::layout.twig' %}
+{% extends 'AdminBundle::layout.twig.html' %}
 {% block content %}
 
 {% set form_url %}{{ path(route_basename~'edit', ['field_id': field.id|default(0)]) }}{% endset %}

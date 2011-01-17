@@ -1,4 +1,4 @@
-{% extends 'AdminBundle::layout.twig' %}
+{% extends 'AdminBundle::layout.twig.html' %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
@@ -16,7 +16,7 @@ function _page_exec() {
 		<input type="text" name="label" value="" style="width: 200px;" /> <button class="dp-button small save-trigger">Create New Label</button>
 	</li>
 	{% for label in all_labels %}
-		{% include 'AdminBundle:Settings:labels-row.twig' %}
+		{% include 'AdminBundle:Settings:labels-row.twig.html' %}
 	{% endfor %}
 </ul>
 

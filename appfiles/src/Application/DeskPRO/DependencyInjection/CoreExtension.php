@@ -97,7 +97,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		// Then the Twig parser that uses it
 		$definition = new Definition('Application\\DeskPRO\\Twig\\Extension\\Helpers', array(new Reference('service_container')));
 		$definition->addTag('twig.extension');
-		$container->setDefinition('deskpro.twig.extension.helpers', $definition);
+		$container->setDefinition('deskpro.twig.html.extension.helpers', $definition);
 	}
 
 

@@ -10,6 +10,6 @@ class DataGeneratorController extends Controller
     {
 		$dbname_generated = 'test_database_' . date('Ymd_Hi');
 
-		return $this->render('DevBundle:DataGenerator:index.twig');
+		return $this->render('DevBundle:DataGenerator:index.twig.html');
     }
 }
