@@ -234,7 +234,7 @@ class GroupingCounter
 		$titles = null;
 		switch ($field) {
 			case 'department_id':
-				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
+				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getFlatDepartmentNames();
 				break;
 			
 			case 'category_id':

@@ -11,28 +11,62 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use \Orb\Util\Arrays;
 
+use \Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
 class Department extends EntityRepository
 {
-	protected $department_names = null;
+	protected $_department_hierarchy = null;
 
-	/**
-	 * @return array
-	 */
-	public function getDepartmentNames()
+	public function getDepartmentsInHierarchy()
 	{
-		if ($this->department_names !== null) return $this->department_names;
+		if ($this->_department_hierarchy !== null) return $this->_department_hierarchy;
 
 		$db = App::getDb();
-		$this->department_names = $db->feetchAllKeyValue("
-			SELECT id, title
+		$departments = $db->fetchAllKeyed("
+			SELECT id, parent_id, title
 			FROM departments
 			ORDER BY title ASC
 		");
 
-		return $this->department_names;
+		$departments = Arrays::intoHierarchy($departments, null);
+		$this->_department_hierarchy = $departments;
+
+		return $departments;
+	}
+
+	/**
+	 * Gets a flat array of department names, indexed by department ID. Children
+	 * names are separated by $sep.
+	 * 
+	 * @return array
+	 */
+	public function getFlatDepartmentNames($sep = ' > ', $include_tops = true)
+	{
+		if ($sep === null) {
+			$sep = ' > ';
+		}
+		return $this->_getFlatDepartmentNames(array(), $this->getDepartmentsInHierarchy(), $sep, $include_tops);
+	}
+
+	protected function _getFlatDepartmentNames($basenames, $deps, $sep, $include_tops)
+	{
+		$names = array();
+
+		foreach ($deps as $dep) {
+			$name = $basenames;
+			$name[] = $dep['title'];
+
+			if (!$dep['children'] OR $include_tops) {
+				$names[] = implode($sep, $name);
+			}
+			if ($dep['children']) {
+				$names = array_merge($names, $this->_getFlatDepartmentNames($name, $dep['children'], $sep, $include_tops));
+			}
+		}
+
+		return $names;
 	}
 }
