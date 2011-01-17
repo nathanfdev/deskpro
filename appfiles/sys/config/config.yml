@@ -26,7 +26,7 @@ app.config:
     enabled: true
 
 doctrine.orm:
-  auto_generate_proxy_classes: true
+  auto_generate_proxy_classes: %kernel.debug%
   mappings:
     DeskPRO: ~
 
