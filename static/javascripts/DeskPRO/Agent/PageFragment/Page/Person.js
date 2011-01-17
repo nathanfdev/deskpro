@@ -79,17 +79,11 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			this.email_dlg.dialog('open');
 		}).bind(this));
 		
-		// Tags
-		$("ul.tagit.person", el).tagit({
-			fieldName: 'tags',
-			//inputFieldAppendTo: $('.section.tags .new-tag', this.wrapper),
-			enableBackspace: false
-		});
-		
 		this.initContactFormEditable(el);
 		this.initNoteFormEditable();
 		this.initNotePagination();
 		this.initOrgEditable();
+		this._initLabels();
 	},
 	
 	destroyPage: function() {
@@ -100,6 +94,49 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		if (this.email_dlg) {
 			this.email_dlg.remove();
 		}
+	},
+	
+	//#########################################################################
+	//# Labels
+	//#########################################################################
+	
+	labelsList: null,
+	_initLabels: function() {
+		// Tags
+		this.labelsList = $("ul.tagit.person", this.wrapper).tagit({
+			availableTags: this.getMetaData('labelsAutocompleteUrl'),
+			enableBackspace: false,
+			fieldName: 'labels',
+			onchange: this.saveLabels.bind(this)
+		});	
+	},
+	
+	_saveLabelsTimeout: null,
+	saveLabels: function() {
+		if (this._saveLabelsTimeout) {
+			window.clearTimeout(this._saveLabelsTimeout);
+		}
+		
+		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+	},
+	
+	_doSaveLabels: function() {
+		var data = $(':input', this.labelsList).serializeArray();
+		
+		$.ajax({
+			url: this.getMetaData('labelsSaveUrl'),
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				this._handleSaveLabelsSuccess(data);
+			}
+		});
+	},
+	
+	_handleSaveLabelsSuccess: function(data) {
+		
 	},
 	
 	//#########################################################################

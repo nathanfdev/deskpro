@@ -121,6 +121,11 @@ agent_people_ajaxget_notes:
   defaults: { _controller: AgentBundle:Person:ajaxGetNotes }
   requirements: { person_id: "\d+" }
 
+agent_person_ajax_labels_save:
+  pattern: /person/{person_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Person:ajaxSaveLabels }
+  requirements: { person_id: "\d+" }
+
 agent_peoplesearch_perform:
   pattern: /people-search/search
   defaults: { _controller: AgentBundle:PeopleSearch:performSearch }

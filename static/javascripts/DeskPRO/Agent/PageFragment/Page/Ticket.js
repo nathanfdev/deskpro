@@ -59,7 +59,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	_initLabels: function() {
 		// Tags
 		this.labelsList = $("ul.tagit.ticket", this.contentWrapper).tagit({
-			fieldName: 'tags',
 			availableTags: this.getMetaData('labelsAutocompleteUrl'),
 			enableBackspace: false,
 			fieldName: 'labels',

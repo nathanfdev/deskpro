@@ -19,6 +19,7 @@ use Orb\Util\Arrays;
 
 use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
 use \Application\DeskPRO\Entity\PersonFieldDada;
+use \Application\DeskPRO\Entity;
 
 /**
  * A "person" is a record in the database that stores information about a person.
@@ -184,6 +185,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $emails;
 
 	/**
+	 * @orm:OneToMany(targetEntity="LabelPerson", mappedBy="person", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 */
+	protected $labels;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="PersonContactData", mappedBy="person", cascade={"persist", "remove", "merge"})
 	 */
@@ -265,6 +271,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var array
 	 */
 	protected $_pref_values = array();
+
+	protected $_label_manager = null;
 
 
 
@@ -635,6 +643,19 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	
+	/**
+	 * Add a label
+	 * @param Entity\LabelTicket $label
+	 */
+	public function addLabel(Entity\LabelPerson $label)
+	{
+		$label['person'] = $this;
+		$this->labels->add($label);
+	}
+
+
+
 	public function getContactDataOfType($type)
 	{
 		if (strpos($type, 'Application\\DeskPRO\\') !== 0) {
@@ -786,5 +807,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return null;
+	}
+
+
+	
+	public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelPerson');
+		}
+
+		return $this->_label_manager;
 	}
 }
