@@ -1329,4 +1329,28 @@ class Arrays
 
 		return $array;
 	}
+
+	
+
+	/**
+	 * Same as PHP's shuffle() except works on assoc arrays by maintaining
+	 * indexes.
+	 *
+	 * @param array $array
+	 */
+	public static function shuffleAssoc(array &$array)
+	{
+		if (!$array) return false;
+
+		$old_array = $array;
+		$array = array();
+		$keys = array_keys($old_array);
+		shuffle($keys);
+
+		foreach ($keys as $k) {
+			$array[$k] = $old_array[$k];
+		}
+
+		return true;
+	}
 }
