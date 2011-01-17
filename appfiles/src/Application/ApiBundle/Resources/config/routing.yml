@@ -14,17 +14,17 @@ api_deskpro_time:
   requirements: { _method: GET }
 
 api_deskpro_setting:
-  pattern: /deskpro/setting/:setting_name
+  pattern: /deskpro/setting/{setting_name}
   defaults: { _controller: ApiBundle:Deskpro:setting }
   requirements: { _method: GET }
 
 api_deskpro_setting_post:
-  pattern: /deskpro/setting/:setting_name
+  pattern: /deskpro/setting/{setting_name}
   defaults: { _controller: ApiBundle:Deskpro:postSetting }
   requirements: { _method: POST }
 
 api_ping_object_updated:
-  pattern: /ping/object-updated/:resource_id/:object_id
+  pattern: /ping/object-updated/{resource_id}/{object_id}
   defaults: { _controller: ApiBundle:ResourcePing:postObjectUpdated }
   requirements: { _method: POST }
 
@@ -39,6 +39,6 @@ api_ticketsearch_queues_getcounts:
   requirements: { _method: GET }
 
 api_ticketsearch_queues_getresults:
-  pattern: /ticket-search/queues/:queue_id/get-results
+  pattern: /ticket-search/queues/{queue_id}/get-results
   defaults: { _controller: ApiBundle:TicketSearch:getQueueResults }
   requirements: { _method: GET, queue_id: "\d+" }

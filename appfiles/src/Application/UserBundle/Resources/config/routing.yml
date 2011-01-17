@@ -15,11 +15,11 @@ user_login_authenticate_local:
   defaults: { _controller: UserBundle:Login:authenticate, usersource_id: 0 }
 
 user_login_authenticate:
-  pattern: /login/authenticate/:usersource_id
+  pattern: /login/authenticate/{usersource_id}
   defaults: { _controller: UserBundle:Login:authenticate, usersource_id: 0 }
   requirements: { usersource_id: "\d+" }
 
 user_login_callback:
-  pattern: /login/authenticate-callback/:usersource_id
+  pattern: /login/authenticate-callback/{usersource_id}
   defaults: { _controller: UserBundle:Login:authenticateCallback }
   requirements: { usersource_id: "\d+" }

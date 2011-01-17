@@ -19,7 +19,7 @@ agent_accept_upload:
   defaults: { _controller: AgentBundle:Misc:acceptTempUpload }
 
 agent_show_blob:
-  pattern: /misc/show-blob/:blob_id
+  pattern: /misc/show-blob/{blob_id}
   defaults: { _controller: AgentBundle:Misc:showBlob }
 
 agent_ajax_save_prefs:
@@ -43,7 +43,7 @@ agent_settings_ticketmacros:
   defaults: { _controller: AgentBundle:Settings:ticketMacros }
 
 agent_settings_ticketmacros_edit:
-  pattern: /settings/ticket-macros/:macro_id
+  pattern: /settings/ticket-macros/{macro_id}
   defaults: { _controller: AgentBundle:Settings:ticketMacroEdit }
   requirements: { macro_id: "\d+" }
 
@@ -52,7 +52,7 @@ agent_settings_ticketmacros_new:
   defaults: { _controller: AgentBundle:Settings:ticketMacroEdit, macro_id: 0 }
 
 agent_settings_ticketmacros_del:
-  pattern: /settings/ticket-macros/:macro_id/delete
+  pattern: /settings/ticket-macros/{macro_id}/delete
   defaults: { _controller: AgentBundle:Settings:ticketMacroDelete }
   requirements: { macro_id: "\d+" }
 
@@ -61,12 +61,12 @@ agent_settings_ticketqueues:
   defaults: { _controller: AgentBundle:Settings:ticketQueues }
 
 agent_settings_ticketqueues_edit:
-  pattern: /settings/ticket-queues/:queue_id/edit
+  pattern: /settings/ticket-queues/{queue_id}/edit
   defaults: { _controller: AgentBundle:Settings:ticketQueueEdit }
   requirements: { queue_id: "\d+" }
 
 agent_settings_ticketqueues_del:
-  pattern: /settings/ticket-queues/:queue_id/delete
+  pattern: /settings/ticket-queues/{queue_id}/delete
   defaults: { _controller: AgentBundle:Settings:ticketQueueDelete }
   requirements: { queue_id: "\d+" }
 
@@ -83,7 +83,7 @@ agent_people:
   defaults: { _controller: AgentBundle:PeopleSearch:index }
 
 agent_people_view:
-  pattern: /people/:person_id
+  pattern: /people/{person_id}
   defaults: { _controller: AgentBundle:Person:view }
   requirements: { person_id: "\d+" }
 
@@ -92,32 +92,32 @@ agent_people_new:
   defaults: { _controller: AgentBundle:Person:new }
 
 agent_people_ajaxsave:
-  pattern: /people/:person_id/ajax-save
+  pattern: /people/{person_id}/ajax-save
   defaults: { _controller: AgentBundle:Person:ajaxSave }
   requirements: { person_id: "\d+" }
 
 agent_people_ajaxsave_emails:
-  pattern: /people/:person_id/ajax-save-emails
+  pattern: /people/{person_id}/ajax-save-emails
   defaults: { _controller: AgentBundle:Person:ajaxSaveEmails }
   requirements: { person_id: "\d+" }
 
 agent_people_ajaxsave_contact:
-  pattern: /people/:person_id/ajax-save-contact
+  pattern: /people/{person_id}/ajax-save-contact
   defaults: { _controller: AgentBundle:Person:ajaxSaveContact }
   requirements: { person_id: "\d+" }
 
 agent_people_ajaxsave_note:
-  pattern: /people/:person_id/ajax-save-note
+  pattern: /people/{person_id}/ajax-save-note
   defaults: { _controller: AgentBundle:Person:ajaxSaveNote }
   requirements: { person_id: "\d+" }
 
 agent_people_ajaxsave_organization:
-  pattern: /people/:person_id/ajax-save-organization
+  pattern: /people/{person_id}/ajax-save-organization
   defaults: { _controller: AgentBundle:Person:ajaxSaveOrganization }
   requirements: { person_id: "\d+" }
 
 agent_people_ajaxget_notes:
-  pattern: /people/:person_id/ajax-get-notes
+  pattern: /people/{person_id}/ajax-get-notes
   defaults: { _controller: AgentBundle:Person:ajaxGetNotes }
   requirements: { person_id: "\d+" }
 
@@ -203,12 +203,12 @@ agent_ticketsearch_runsearch:
   defaults: { _controller: AgentBundle:TicketSearch:runSearch }
 
 agent_ticketsearch_runqueue:
-  pattern: /ticket-search/queue/:queue_id
+  pattern: /ticket-search/queue/{queue_id}
   defaults: { _controller: AgentBundle:TicketSearch:runqueue }
   requirements: { queue_id: "\d+" }
 
 agent_ticketsearch_runflag:
-  pattern: /ticket-search/flag/:flag
+  pattern: /ticket-search/flag/{flag}
   defaults: { _controller: AgentBundle:TicketSearch:runFlagged }
 
 
@@ -225,31 +225,31 @@ agent_people_new_ajaxsave:
   defaults: { _controller: AgentBundle:Ticket:newAjaxSave }
 
 agent_ticket_view:
-  pattern: /tickets/:ticket_id
+  pattern: /tickets/{ticket_id}
   defaults: { _controller: AgentBundle:Ticket:view }
   requirements: { ticket_id: "\d+" }
 
 agent_ticket_ajaxsavecustomfields:
-  pattern: /tickets/:ticket_id/ajax-save-custom-fields
+  pattern: /tickets/{ticket_id}/ajax-save-custom-fields
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveCustomFields }
   requirements: { ticket_id: "\d+" }
 
 agent_ticket_ajaxsavereply:
-  pattern: /tickets/:ticket_id/ajax-save-reply
+  pattern: /tickets/{ticket_id}/ajax-save-reply
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveReply }
   requirements: { ticket_id: "\d+" }
 
 agent_ticket_ajaxsaveoptions:
-  pattern: /tickets/:ticket_id/ajax-save-options
+  pattern: /tickets/{ticket_id}/ajax-save-options
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveOptions }
   requirements: { ticket_id: "\d+" }
 
 agent_ticket_ajaxsaveflagged:
-  pattern: /tickets/:ticket_id/ajax-save-flagged
+  pattern: /tickets/{ticket_id}/ajax-save-flagged
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveFlagged }
   requirements: { ticket_id: "\d+" }
 
 agent_ticket_ajaxticketlog:
-  pattern: /tickets/:ticket_id/ajax-ticket-log
+  pattern: /tickets/{ticket_id}/ajax-ticket-log
   defaults: { _controller: AgentBundle:Ticket:ajaxTicketLog }
   requirements: { ticket_id: "\d+" }
