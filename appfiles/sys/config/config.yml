@@ -27,6 +27,8 @@ app.config:
 
 doctrine.orm:
   auto_generate_proxy_classes: true
+  mappings:
+    DeskPRO: ~
 
 doctrine.dbal:
   dp_from_user_config: db
