@@ -20,6 +20,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_ORGANIZATION  = 'organization';
 	const TERM_LANGUAGE      = 'language';
 	const TERM_PARTICIPANT   = 'participant';
+	const TERM_LABEL         = 'label';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -234,6 +235,42 @@ class TicketSearch extends SearcherAbstract
 							$op = 'LIKE';
 							if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
 							$wheres[] = "$field $op " . $db->quote('%'.$choice.'%');
+							break;
+					}
+					break;
+
+				case self::TERM_LABEL:
+					$field = 'labels_tickets.label';
+
+					$choices_in = array();
+					foreach ((array)$choice as $c) {
+						$choices_in[] = $db->quote($c);
+					}
+					$choices_in = implode(',', $choices_in);
+
+					switch ($op) {
+						case self::OP_IS:
+							$joins[] = 'labels_tickets';
+							$wheres[] = "$field = " . $db->quote($choice);
+							break;
+						case self::OP_NOT:
+							$joins[] = array(
+								'labels_tickets',
+								'LEFT JOIN labels_tickets ON (labels_tickets.ticket_id = tickets.id AND labels_tickets.label = '.$db->quote($choice).')'
+							);
+							$wheres[] = "$field IS NULL";
+							break;
+						case self::OP_CONTAINS:
+							$joins[] = 'labels_tickets';
+							$wheres[] = "$field IN ($choices_in)";
+							break;
+
+						case self::OP_NOTCONTAINS:
+							$joins[] = array(
+								'labels_tickets',
+								"LEFT JOIN labels_tickets ON (labels_tickets.ticket_id = tickets.id AND labels_tickets.label IN ($choices_in)"
+							);
+							$wheres[] = "$field IS NULL";
 							break;
 					}
 					break;

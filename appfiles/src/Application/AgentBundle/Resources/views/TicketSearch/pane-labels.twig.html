@@ -1,13 +1,14 @@
 {% extends 'AgentBundle:TicketSearch:pane-layout.twig.html' %}
 {% block meta %}
 <script>
-
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.NavPane.TicketLabels';
+pageMeta.initRoutesOn = ['ul.tag-cloud li'];
 </script>
 {% endblock %}
 {% block labels_content %}
 <ul class="tag-cloud">
 	{% for label,css_class in cloud %}
-		<li class="{{css_class}}">{{label}}</li>
+		<li class="{{css_class}}" data-route="listpane:{{ path('agent_ticketsearch_run_label', {'label': label}) }}">{{label}}</li>
 	{% endfor %}
 </ul>
 {% endblock %}

@@ -72,6 +72,12 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
+	public function setPerson($person)
+	{
+		$this->person = $person;
+		$this->person_id = $person['id'];
+	}
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
