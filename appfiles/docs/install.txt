@@ -36,6 +36,13 @@ Edit Config
 - Copy `/appfiles/config.new.php` to `/appfiles/config.php`
 - Edit `/appfiles/config.php` with your database details.
 
+FIXES
+=====
+
+Two changes due to bugs need to be made manually.
+
+1. Create the directory `/appfiles/sys/cache/dev/doctrine/orm/Proxies/` and make sure it's writable.
+2. Edit `/appfiles/sys/config/config.yml` and change the value for `assets_base_urls` to your real base url to the 'static' directory on your web server.
 
 RUN INSTALL
 ===========
