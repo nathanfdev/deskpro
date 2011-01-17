@@ -1,6 +1,6 @@
 <?php
 
-namespace Application\DeskPRO\Command;
+namespace Application\DevBundle\Command;
 
 use Symfony\Component\Console\Input\InputArgument;
 use Symfony\Component\Console\Input\InputOption;
@@ -15,7 +15,7 @@ use \Application\DeskPRO\Log\Logger;
 /**
  * Used when Symfony changed naming scheme for tempaltes in PR5
  */
-class RenamerCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class TemplateRenamerCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 {
 	protected $set_verbose = false;
 	protected $ignore_interval = false;
@@ -29,10 +29,10 @@ class RenamerCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->files()->name('/\.twig$/')->in(DP_ROOT . '/src/Application');
+		$finder->files()->name('/\.php/')->in(DP_ROOT . '/src/Application/DevBundle/Resources/views');
 
 		foreach ($finder as $filepath) {
-			$new_filepath = str_replace('.twig', '.twig.html', $filepath);
+			$new_filepath = str_replace('.php', '.php.html', $filepath);
 
 			echo $new_filepath ."\n";
 

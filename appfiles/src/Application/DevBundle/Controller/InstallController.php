@@ -13,7 +13,7 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 	{
 		$config_contents = @file_get_contents(DP_ROOT . '/config.php');
 		
-		return $this->render('DevBundle:Install:index.php', array(
+		return $this->render('DevBundle:Install:index.php.html', array(
 			'config_contents' => $config_contents
 		));
 	}
@@ -66,7 +66,7 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 
 		$is_error = (\array_search(false, $checks) !== false);
 
-		return $this->render('DevBundle:Install:check.php', array(
+		return $this->render('DevBundle:Install:check.php.html', array(
 			'checks' => $checks,
 			'checks_msg' => $checks_msg,
 			'is_error' => $is_error
@@ -88,7 +88,7 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
 		$all_sql = $tool->getCreateSchemaSql($metadata);
 
-		return $this->render('DevBundle:Install:create-tables.php', array(
+		return $this->render('DevBundle:Install:create-tables.php.html', array(
 			'db' => $db,
 			'all_sql' => $all_sql
 		));
@@ -120,7 +120,7 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		$version = VersionReader::getVersionString($upgrader->getNewestVersion());
 		file_put_contents(DP_ROOT.'/sys/VERSION', $version);
 
-		return $this->render('DevBundle:Install:create-data.php', array(
+		return $this->render('DevBundle:Install:create-data.php.html', array(
 			'error' => $error,
 			'results' => $results
 		));

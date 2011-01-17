@@ -11,7 +11,7 @@ class MainController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 {
 	public function indexAction()
 	{
-		return $this->render('DevBundle:Main:index.php', array(
+		return $this->render('DevBundle:Main:index.php.html', array(
 
 		));
 	}
@@ -44,7 +44,7 @@ class MainController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 	public function phpTestAction()
 	{
-		return $this->render('DevBundle:Main:php-test.php', array(
+		return $this->render('DevBundle:Main:php-test.php.html', array(
 
 		));
 	}

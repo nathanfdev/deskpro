@@ -1,4 +1,4 @@
-<?php $view->extend('DevBundle::layout.php') ?>
+<?php $view->extend('DevBundle::layout.php.html') ?>
 <h1>PHP Test</h1>
 <p>Run PHP code in the context of DeskPRO. Alternatively you might want to edit the DevBundle:Test controller at /dev/test.</p>
 <form action="<?php echo $view['router']->generate('dev_phptest_run') ?>" target="runframe" method="post">
