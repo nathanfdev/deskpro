@@ -66,23 +66,8 @@
 		});
 		tag_input.keypress(function(event){
 			var keyCode = event.keyCode || event.which;
-			// Comma/Space/Enter are all valid delimiters for new tags. except when there is an open quote
-			if (
-					keyCode == COMMA || 
-					keyCode == ENTER || 
-					keyCode == TAB ||
-					(
-						keyCode == SPACE &&
-						( 
-							(tag_input.val().trim().replace( /^s*/, "" ).charAt(0) != '"') ||
-							(
-								tag_input.val().trim().charAt(0) == '"' && 
-								tag_input.val().trim().charAt(tag_input.val().trim().length - 1) == '"' && 
-								tag_input.val().trim().length - 1 != 0
-							)
-						)
-					)
-				) {
+			// Comma/Enter/Tab are all valid delimiters for new tags
+			if (keyCode == COMMA || keyCode == ENTER || keyCode == TAB) {
 				
 				event.preventDefault();
 
@@ -97,6 +82,10 @@
 					// Cleaning the input.
 					tag_input.val("");
 				}
+			// If you enter a space, you really mean a dash
+			} else if (keyCode == SPACE) {
+				event.preventDefault();
+				tag_input.val(tag_input.val() + '-');
 			}
 		});
 
