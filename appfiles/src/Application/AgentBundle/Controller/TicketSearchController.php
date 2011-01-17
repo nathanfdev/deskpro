@@ -310,8 +310,13 @@ class TicketSearchController extends AbstractController
 	
 	public function labelsPaneAction()
 	{
-		return $this->render('AgentBundle:TicketSearch:pane-labels.twig.html', array(
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$cloud = $cloud_gen->getCloud();
+		print_r($cloud);
 
+		return $this->render('AgentBundle:TicketSearch:pane-labels.twig.html', array(
+			'cloud' => $cloud
 		));
 	}
 

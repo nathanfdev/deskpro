@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
 /**
  * These are pre-defined labels that are allowed to be used.
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\LabelDef")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="label_defs")
  * )

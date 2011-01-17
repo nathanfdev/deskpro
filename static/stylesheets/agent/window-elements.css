@@ -439,3 +439,18 @@
 }
 
 #pane_nav ul.nav-list > li.icon { background-repeat: no-repeat; background-position: center left; padding-left: 20px; }
+
+#pane_nav ul.tag-cloud {
+	padding: 5px;
+	text-align: center;
+	line-height: 120%;
+}
+
+#pane_nav ul.tag-cloud li {
+	color: #3E5A7A;
+	cursor: pointer;
+}
+
+#pane_nav ul.tag-cloud li:hover {
+	text-decoration: underline;
+}
