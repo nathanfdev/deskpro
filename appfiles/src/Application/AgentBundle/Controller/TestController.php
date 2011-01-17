@@ -2,20 +2,26 @@
 
 namespace Application\AgentBundle\Controller;
 
+use \Application\DeskPRO\App;
+
 class TestController extends AbstractController
 {
     public function indexAction()
     {
-		echo $this->person['id'];
-		
-		$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
-		$grouper->setGrouping('department_id');
-		$grouper->setMode('unassigned');
-
-		$data = $grouper->getDisplayArray();
-
 		echo '<pre>';
-		print_r($data);
+
+		$ticket = App::getEntityRepository('DeskPRO:Ticket')->find(3);
+
+		$labels = array('test', 'test2');
+		$labels = array('test');
+		$ticket->getLabelManager()->setLabelsArray($labels);
+
+		foreach ($ticket['labels'] as $label) {
+			echo $label['label'] . "\n";
+		}
+
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
 
 		exit;
     }

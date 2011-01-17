@@ -3,7 +3,8 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
 pageMeta.title = '{{ticket.subject}}';
 pageMeta.ticket_id = {{ticket.id}};
 pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
-pageMeta.tagsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
+pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
 </script>
 
 <div class="ticket-content">
@@ -20,8 +21,9 @@ pageMeta.tagsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 		</h1>
 		<div class="tags-field">
 			<ul class="tagit ticket">
-				<li>Tag1</li>
-				<li>Tag2</li>
+				{% for label in ticket.labels %}
+					<li>{{label.label}}</li>
+				{% endfor %}
 			</ul>
 		</div>
 

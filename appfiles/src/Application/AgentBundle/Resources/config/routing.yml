@@ -253,3 +253,8 @@ agent_ticket_ajaxticketlog:
   pattern: /tickets/{ticket_id}/ajax-ticket-log
   defaults: { _controller: AgentBundle:Ticket:ajaxTicketLog }
   requirements: { ticket_id: "\d+" }
+
+agent_ticket_ajax_labels_save:
+  pattern: /tickets/{ticket_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Ticket:ajaxSaveLabels }
+  requirements: { ticket_id: "\d+" }

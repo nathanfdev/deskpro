@@ -11,7 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use Application\DeskPRO\App;
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
 
 /**
  * Ticket
@@ -165,7 +166,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $custom_data;
 
 	/**
-	 * @orm:OneToMany(targetEntity="LabelTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 * @orm:OneToMany(targetEntity="LabelTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 

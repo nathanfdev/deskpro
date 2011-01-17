@@ -35,10 +35,10 @@ class LabelManager
 	{
 		$label = self::normalizeLabel($label);
 		
-		foreach ($this->entity[$this->labels_property] as $k => $label) {
-			if ($label['label'] == $label) {
+		foreach ($this->entity[$this->labels_property] as $k => $labelobj) {
+			if ($labelobj['label'] == $label) {
 				$this->entity[$this->labels_property]->remove($k);
-				return $label;
+				return $labelobj;
 			}
 		}
 
@@ -49,16 +49,17 @@ class LabelManager
 	{
 		$label = self::normalizeLabel($label);
 
-		foreach ($this->entity[$this->labels_property] as $label) {
-			if ($label['label'] == $label) {
-				return $label;
+		foreach ($this->entity[$this->labels_property] as $labelobj) {
+			if ($labelobj['label'] == $label) {
+				return $labelobj;
 			}
 		}
 
-		$label = $this->createLabelEntity();
-		$this->entity->addLabel($label);
+		$labelobj = $this->createLabelEntity();
+		$labelobj['label'] = $label;
+		$this->entity->addLabel($labelobj);
 
-		return $label;
+		return $labelobj;
 	}
 	
 	public function getLabelsArray()
@@ -71,7 +72,7 @@ class LabelManager
 		return $labels;
 	}
 
-	public function setLabels(array $labels)
+	public function setLabelsArray(array $labels)
 	{
 		$labels_raw = $labels;
 		$labels = array();
@@ -86,7 +87,7 @@ class LabelManager
 		$removed = array_diff($existing_labels, $labels);
 
 		foreach ($added as $added_label) {
-			$this->addLabel($label);
+			$this->addLabel($added_label);
 		}
 		foreach ($removed as $removed_label) {
 			$this->removeLabel($removed_label);

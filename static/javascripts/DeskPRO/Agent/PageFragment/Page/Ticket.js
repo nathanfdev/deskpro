@@ -51,14 +51,48 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}
 	},
 	
+	//#################################################################
+	//# Labels
+	//#################################################################
+	
+	labelsList: null,
 	_initLabels: function() {
 		// Tags
-		$("ul.tagit.ticket", this.contentWrapper).tagit({
+		this.labelsList = $("ul.tagit.ticket", this.contentWrapper).tagit({
 			fieldName: 'tags',
-			availableTags: this.getMetaData('tagsAutocompleteUrl'),
+			availableTags: this.getMetaData('labelsAutocompleteUrl'),
 			enableBackspace: false,
-			onchange: this.saveLabels
+			fieldName: 'labels',
+			onchange: this.saveLabels.bind(this)
 		});	
+	},
+	
+	_saveLabelsTimeout: null,
+	saveLabels: function() {
+		if (this._saveLabelsTimeout) {
+			window.clearTimeout(this._saveLabelsTimeout);
+		}
+		
+		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+	},
+	
+	_doSaveLabels: function() {
+		var data = $(':input', this.labelsList).serializeArray();
+		
+		$.ajax({
+			url: this.getMetaData('labelsSaveUrl'),
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				this._handleSaveLabelsSuccess(data);
+			}
+		});
+	},
+	
+	_handleSaveLabelsSuccess: function(data) {
+		
 	},
 	
 	//#################################################################

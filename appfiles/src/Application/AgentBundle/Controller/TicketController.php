@@ -276,6 +276,25 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
+	# ajax-save-labels
+	############################################################################
+
+	public function ajaxSaveLabelsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$ticket->getLabelManager()->setLabelsArray($labels);
+
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
+
+
+	############################################################################
 	# ajax-save-reply
 	############################################################################
 
