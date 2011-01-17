@@ -12,22 +12,38 @@
 namespace Application\DeskPRO\Twig\Extension;
 
 use \Symfony\Component\Templating\Engine;
-use \Symfony\Bundle\TwigBundle\TokenParser\HelperTokenParser;
+use \Symfony\Component\DependencyInjection\ContainerInterface;
 
 class Helpers extends \Twig_Extension
 {
-    /**
-     * Returns the token parser instance to add to the existing list.
-     *
-     * @return array An array of Twig_TokenParser instances
-     */
-    public function getTokenParsers()
-    {
-        return array(
-            // {% phrase 'tech.welcome_back_x' with ['Christopher'] %}
-            new HelperTokenParser('phrase', '<phrase> [with <arguments:array>]', 'phrase', 'phrase'),
-        );
-    }
+	protected $container;
+
+	public function __construct(ContainerInterface $container)
+	{
+		$this->container = $container;
+	}
+
+	public function getContainer()
+	{
+		return $this->container;
+	}
+
+	public function getTemplating()
+	{
+		return $this->container->get('templating');
+	}
+
+	public function getFunctions()
+	{
+		return array(
+			'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
+		);
+	}
+
+	public function getPhrase($name, array $parameters = array())
+	{
+		return $this->getTemplating()->get('phrase')->phrase($name, $parameters);
+	}
 
     /**
      * Returns the name of the extension.

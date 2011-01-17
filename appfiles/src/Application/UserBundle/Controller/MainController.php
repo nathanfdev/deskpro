@@ -8,6 +8,6 @@ class MainController extends AbstractController
 {
     public function indexAction()
     {
-        return $this->render('UserBundle:Main:index.twig');
+        return $this->render('UserBundle:Main:index.twig.html');
     }
 }

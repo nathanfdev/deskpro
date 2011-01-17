@@ -48,15 +48,17 @@ class Hybrid extends \Symfony\Bundle\TwigBundle\Loader\Loader
 	 *
 	 * @var Doctrine\DBAL\Connection
 	 */
-	protected $dbconn;
+	protected $dbconn = null;
+
 
 
 	/**
-	 * @param Connection $dbconn
+	 * Set the database connection to use
+	 * @param Doctrine\DBAL\Connection $dbconn
 	 */
-	public function __construct(ContainerInterface $container)
+	public function setDb($dbconn)
 	{
-		$this->dbconn = $container->get('database_connection');
+		$this->dbconn = $dbconn;
 	}
 
 
@@ -71,8 +73,10 @@ class Hybrid extends \Symfony\Bundle\TwigBundle\Loader\Loader
 		$this->style = $style;
 
 		// TODO sort out parent/child hierarchy stuff
-		$this->style_template_info = $this->dbconn->fetchAll('SELECT id, path, updated_at FROM templates WHERE style_id = ?', array($this->style['id']));
-		$this->style_template_info = Arrays::keyFromData('path');
+		if ($this->dbconn) {
+			$this->style_template_info = $this->dbconn->fetchAll('SELECT id, path, updated_at FROM templates WHERE style_id = ?', array($this->style['id']));
+			$this->style_template_info = Arrays::keyFromData('path');
+		}
 	}
 
 

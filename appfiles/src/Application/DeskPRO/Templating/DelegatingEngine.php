@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Templating;
  * Customized template engine that we can assign shared variables to, and also makes the default
  * renderer twig.
  */
-class Engine extends \Symfony\Bundle\FrameworkBundle\Templating\Engine
+class DelegatingEngine extends \Symfony\Bundle\FrameworkBundle\Templating\DelegatingEngine
 {
 	/**
 	 * An array of shared template vars

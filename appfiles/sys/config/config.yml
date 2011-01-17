@@ -1,6 +1,6 @@
 parameters:
     kernel.include_core_classes: false
-    templating.engine.class: "Application\DeskPRO\Templating\Engine"
+    templating.engine.delegating.class: "Application\DeskPRO\Templating\DelegatingEngine"
     http_kernel.class: "Application\DeskPRO\HttpKernel\HttpKernel"
     controller_resolver.class: "Application\DeskPRO\HttpKernel\Controller\ControllerResolver"
     session.class: "Application\DeskPRO\HttpFoundation\Session"

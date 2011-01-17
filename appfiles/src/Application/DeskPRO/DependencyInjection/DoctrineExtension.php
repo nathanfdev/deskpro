@@ -39,7 +39,7 @@ class DoctrineExtension extends \Symfony\Bundle\DoctrineBundle\DependencyInjecti
 		}
 
 		if (isset($connection['driver'])) {
-			$driverOptions['driverClass'] = sprintf('Doctrine\\DBAL\\Driver\\%s\\Driver', $connection['driver']);
+			$driverOptions['driver'] = $connection['driver'];
 		}
 		if (isset($connection['wrapper_class'])) {
 			$driverOptions['wrapperClass'] = $connection['wrapper_class'];

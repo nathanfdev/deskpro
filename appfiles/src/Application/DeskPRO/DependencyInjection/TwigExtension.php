@@ -33,6 +33,6 @@ class TwigExtension extends \Symfony\Bundle\TwigBundle\DependencyInjection\TwigE
 		// And our loader class also needs the service container, because we
 		// fetch a database connection from it
 		$def = $container->getDefinition('twig.loader');
-		$def->setArguments(array(new Reference('service_container')));
+		$def->addMethodCall('setDb', array(new Reference('database_connection')));
     }
 }

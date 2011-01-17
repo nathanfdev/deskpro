@@ -68,8 +68,10 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
     {
         $bundles = array(
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
+			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 
 			new \Symfony\Bundle\ZendBundle\ZendBundle(),
+			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\AdminBundle\AdminBundle(),
