@@ -1,78 +1,18 @@
-Orb.createNamespace('DeskPRO.Agent.Shells');
+Orb.createNamespace('DeskPRO.Agent');
 
-/**
- * The main three-paned interface has a nav pane on the left,
- * a list pane in the center, and then the content area on the right.
- *
- * The content area has a tabbed interface.
- */
-DeskPRO.Agent.Shells.ThreePaned = new Class({
-	el: null,
-	htmlEl: null,
+DeskPRO.Agent.TabStrip = new Class({
+	Implements: [Events, Options],
 	
-	tabManager: null,
 	tabStrip: null,
+	tabManager: null,
 	
-	navPanePage: null,
-	listPanePage: null,
-	
-	outerLayout: null,
-	innerLayout: null,
-	
-	paneNavEl: null,
-	paneListEl: null,
-	paneContentEl: null,
-	
-	initialize: function() {
-		this.el = $('#pane_shell');
-		this.htmlEl = $(this.el).get(0);
-		this.paneNavEl = $('#pane_nav');
-		this.paneListEl = $('#pane_list');
-		this.paneContentEl = $('#pane_content');
-		
-		//------------------------------
-		// Set up the layout
-		//------------------------------
-		
-		this.outerLayout = this.el.layout({
-			west: {
-				paneSelector: '#pane_nav',
-				size: 165,
-				spacing_open: 1,
-				slidable: false
-			},
-			center: {
-				paneSelector: '#pane_shell_inner'
-			}
-		});
-		
-		var show_listpane = DeskPRO_Window.get('agent.ui.show-listpane');
-		var west_is_closed = false;
-		if (show_listpane == 'never') {
-			west_is_closed = true;
-		} else if (show_listpane == 'auto' && screen.width && screen.width < 1000) {
-			west_is_closed = true;
-		}
-
-		this.innerLayout = $('#pane_shell_inner').layout({
-			west: {
-				paneSelector: '#pane_list',
-				size: '45%',
-				spacing_open: 1,
-				initClosed: west_is_closed,
-				slidable: false
-			},
-			center: {
-				paneSelector: '#pane_content'
-			}
-		});
-		
-		//------------------------------
-		// Set up the tab strip
-		//------------------------------
+	initialize: function(tabStrip, tabManager) {
+		this.tabStrip = tabStrip;
+		this.tabManager = tabManager;
 		
 		var self = this;
-		$('#pane_tabs').sortable({
+		
+		this.tabStrip.sortable({
 			'axis': 'x',
 			'items': '> li',
 			'tolerance': 'intersect',
@@ -82,14 +22,11 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			}
 		});
 		
-		this.tabStrip = $('#pane_tabs');
 		// Mouseup because firefox doesnt respond to click
 		// for middle clicks
 		this.tabStrip.mouseup(this._tabStripClick.bind(this));
 		//this.tabStrip.click(this._tabStripClick.bind(this));
-		
-		this.tabManager = new DeskPRO.Agent.TabManager('#page');
-		var self = this;
+
 		this.tabManager.addEvents({
 			addTab: this._onTabAdd.bind(this),
 			activateTab: this._onTabActivate.bind(this),
@@ -102,10 +39,10 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		w = w - (w / 4);
 
 		scroll_el = this.tabStrip.parent();
-		$('#pane_tabs_scroll_left').click(function() {
+		$('.tabs_scroll_left').click(function() {
 			scroll_el.animate({scrollLeft: '-=' + w}, 200);
 		});
-		$('#pane_tabs_scroll_right').click(function() {
+		$('.tabs_scroll_right').click(function() {
 			scroll_el.animate({scrollLeft: '+=' + w}, 200);
 		});
 		
@@ -119,33 +56,9 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		});
 	},
 	
-	setNavPanePage: function(page) {
-		
-		if (this.navPanePage) {
-			this.navPanePage.fireEvent('deactivate');
-			this.navPanePage.fireEvent('destroy');
-		}
-		
-		this.navPanePage = page;
-		this.paneNavEl.empty().html(page.getHtml()).scrollTop(0);
-		page.fireEvent('render', [this.paneNavEl]);
-		page.fireEvent('activate');
-	},
 	
-	setListPanePage: function(page) {
-		
-		if (this.listPanePage) {
-			this.listPanePage.fireEvent('deactivate');
-			this.listPanePage.fireEvent('destroy');
-		}
-		
-		this.listPanePage = page;
-		this.paneListEl.empty().html(page.getHtml()).scrollTop(0);
-		page.fireEvent('render', [this.paneListEl]);
-		page.fireEvent('activate');
-	},
 	
-	addTabPage: function(page) {
+	addTab: function(page) {
 		this.tabManager.addTab(Orb.uuid(), {
 			html: page.getHtml(),
 			page: page,
@@ -166,17 +79,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 		});
 	},
 	
-	/**
-	 * Add a new tab to the tab strip and manager.
-	 *
-	 * @param {String} id The unique ID we can use to identify the tab and its content.
-	 * @param {String} title The title to put on the tab strip button
-	 * @param {String} html The HTML for the page. It'll be lazy-rendered
-	 */
-	addTabHtml: function(id, title, html) {
-		var data = {title: title, html: html};
-		this.tabManager.addTab(id, data);
-	},
+	
 	
 	resizeTabListWidth: function() {
 		var w = 0;
@@ -199,6 +102,7 @@ DeskPRO.Agent.Shells.ThreePaned = new Class({
 			this.tabStrip.parent().removeClass('with-scroller');
 		}
 	},
+	
 	
 	cancelClickActivate: false,
 	_tabStripClick: function(event) {

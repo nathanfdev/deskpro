@@ -14,221 +14,102 @@ Orb.createNamespace('DeskPRO.Agent');
  * be a navpane fragment. The second part is a simple URL we can load via AJAX.
  */
 DeskPRO.Agent.Window = new Class({
-	
-	shells: {},
+
 	routePrefixes: {},
 	registry: {},
 	
 	messageBroker: null,
 	poller: null,
+	
+	pageTabStrip: null,
+	listTabStrip: null,
+	
+	navPanePage: null,
+	paneNavEl: null,
+	
+	outerLayout: null,
+	innerLayout: null,
 
 	initPage: function() {	
-		
 		this._initBasic();
-		this._initLayout();
 		this._initRoutes();
 		this._initWindowInterface();
+		this._initLayout();
 	},
-	
-	
-	
-	_initBasic: function() {
-		this.messageBroker = new DeskPRO.MessageBroker();
-		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
-			ajaxUrl: BASE_URL + 'agent/poller'
-		});
-		
-		// Set up listener for badge count
-		this.getMessageBroker().addMessageListener('queues.counts', this._updatequeueCounts.bind(this));
-	},
-	
-	_updatequeueCounts: function (counts) {
-		var total = 0;
-		Object.each(counts, function (count, queue_id) {
-			total += count;
-		});
-		
-		$('.ticket-queue-count-all').html('(' + total + ')');
-	},
-	
-	_initLayout: function() {
-		$('body').layout({
-			north: {
-				paneSelector: '#window_head',
-				spacing_open: 0,
-				spacing_closed: 0,
-				size: 52
-			},
-			center: {
-				paneSelector: '#pane_shell'
-			}
-		});
-		
-		var pane = new DeskPRO.Agent.Shells.ThreePaned();
-		this.addShell('paned', pane);
-	},
-	
-	_initRoutes: function() {
-		// Set ourselves up as the first route listener
-		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
-		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
-		this.addPageRouteLoader('page', this.loadRoute.bind(this));
-		this.addPageRouteLoader('ticket', this.loadRoute.bind(this));
-		this.addPageRouteLoader('person', this.loadRoute.bind(this));
-		
-		$('#window_header_nav li[data-route]').click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-		});
-	},
-	
-	_initWindowInterface: function() {
-		// Set up tabs
-		$('#window_head_top ul.header-tabs li').click(function() {
-			$('#window_head_top ul.header-tabs li').removeClass('on');
-			$(this).addClass('on');
-			
-			$('#window_header_nav .group.on').removeClass('on');
-			$('#window_header_nav .group.' + $(this).data('tab-name')).addClass('on');
-		});
-		
-		// Set up create menu
-		var menu = new DeskPRO.UI.Menu({
-			triggerElement: $('#create_new_menu_trigger'),
-			menuElement: $('#create_new_menu')
-			// no click handler, already attached to li's on route handler
-		});
-		
-		// Settings is a window
-		$('#window_head_top .settings-link').click(function() {
-			
-			if (screen.width > 1000) var width = 1000;
-			else if (screen.width > 800) var width = 800;
-			else var width = 600;
-			
-			var height = 600;
-			
-			var pos_left = (screen.width - width - 30) / 2;
-			var pos_top = (screen.height - height - 100) / 2;
-			
-			
-			var win = window.open(
-				BASE_URL + 'agent/settings',
-				"settings_win",
-				"width="+width+",height="+height+",left="+pos_left+",top="+pos_top+",toolbar=false,locationbar=false,directories=false,status=false,menubar=false,scrollbars=true,resizable=true,copyhistory=false"
-			);
-			
-			// incase it was ignored
-			win.resizeTo(width, height);
-			win.moveTo(pos_left, pos_top);
-			win.focus();
-		});
-		
-		// Global AJAX handler for errors if no error handler is attached
-		$(document).ajaxError(this._globalHandleAjaxError.bind(this));
-	},
-	
-	
 	
 	//#################################################################
-	//# Getters
+	//# Global registry, getters
 	//#################################################################
 	
+	/**
+	 * Get a value from the registry.
+	 *
+	 * @param {String} id The ID of the item
+	 * @return mixed
+	 */
+	get: function(id) {
+		if (this.registry[id] === undefined) {
+			return null;
+		}
+		
+		return this.registry[id];
+	},
+	
+	
+	
+	/**
+	 * Add or reset a value in the registry.
+	 *
+	 * @param {String} id The ID of the item
+	 * @param mixed value The value of the item
+	 */
+	set: function(id, value) {
+		this.registry[id] = value;
+	},
+	
+	
+	
+	/**
+	 * Get the message broker
+	 */
 	getMessageBroker: function() {
 		return this.messageBroker;
 	},
 	
+	
+	
+	/**
+	 * Get the AJAX poller
+	 */
 	getPoller: function() {
 		return this.poller;
 	},
-	
-	addShell: function(id, shell) {
-		this.shells[id] = shell;
-	},
-	
-	getShell: function(id) {
-		return this.shells[id];
-	},
-	
-	getPanedShell: function() {
-		return this.getShell('paned');
-	},
-	
-	
-	
-	//#################################################################
-	//# AJAX and loading
-	//#################################################################
-	
-	loadingIndicatorEl: null,
-	loadingIndicatorCount: 0,
-	startLoadingIndicator: function(n) {
-		if (!n) n = 1;
-		this.loadingIndicatorCount += n;
-		this._showHideLoadingIndicator();
-	},
-	stopLoadingIndicator: function(n) {
-		if (!n) n = 1;
-		this.loadingIndicatorCount -= n;
-		if (this.loadingIndicatorCount < 0) this.loadingIndicatorCount = 0;
-		this._showHideLoadingIndicator();
-	},
-	_showHideLoadingIndicator: function() {
-		if (this.loadingIndicatorCount > 0) {
-			if (!this.loadingIndicatorEl) {
-				this.loadingIndicatorEl = $('<div class="window-loading-indicator" style="display:none" />');
-				this.loadingIndicatorEl.appendTo('body');
-			}
-			
-			this.loadingIndicatorEl.css({
-				'position': 'absolute',
-				'top': 0,
-				'left': ($(document).width()/2) - this.loadingIndicatorEl.outerWidth(),
-				'z-index': 100000
-			});
-			
-			this.loadingIndicatorEl.slideDown(250);
-		} else {
-			if (this.loadingIndicatorEl) {
-				this.loadingIndicatorEl.stop().slideUp(150);
-			}
-		}
-	},
-	
-	_globalHandleAjaxError: function(event, XMLHttpRequest, ajaxOptions, thrownError) {
-		
-		// We dont use this handler if there was an error handler used
-		if (ajaxOptions && ajaxOptions.error) return;
-		
-		// Hide the loading indicator
-		this.stopLoadingIndicator(10000);
-		
-		// Show overlay about failed
-		this._showAjaxError();
-	},
-	
-	ajaxErrorOverlay: null,
-	_showAjaxError: function() {
-	
-		if (!this.ajaxErrorOverlay) {
-			this.ajaxErrorOverlay = new DeskPRO.UI.Overlay({
-				contentElement: $('#global_ajax_error'),
-				zIndex: 10000000, /* this should be bigger than everything */
-				onContentSet: function(eventData) {
-					$('.close-trigger', eventData.wrapperEl).click((function() {
-						eventData.overlay.closeOverlay();
-					}).bind(this));
-				}
-			});
-		}
-		
-		this.ajaxErrorOverlay.openOverlay();
-	},
-	
 	
 	
 	//#################################################################
 	//# Routes and page loading
 	//#################################################################
+	
+	setNavPanePage: function(page) {
+		
+		if (this.navPanePage) {
+			this.navPanePage.fireEvent('deactivate');
+			this.navPanePage.fireEvent('destroy');
+		}
+		
+		this.navPanePage = page;
+		this.paneNavEl.empty().html(page.getHtml()).scrollTop(0);
+		page.fireEvent('render', [this.paneNavEl]);
+		page.fireEvent('activate');
+	},
+	
+	addListPage: function(page) {
+		this.listTabStrip.addTab(page);
+	},
+	
+	addPageTab: function(page) {
+		this.pageTabStrip.addTab(page);
+	},
 	
 	/**
 	 * Checks views for a specific page and removes it
@@ -236,7 +117,7 @@ DeskPRO.Agent.Window = new Class({
 	removePage: function(page) {
 		
 		var tabId = null;
-		Object.each(this.getPanedShell().tabManager.getTabs(), function(v, k) {
+		Object.each(this.pageTabStrip.tabManager.getTabs(), function(v, k) {
 			if (v.page == page) {
 				tabId = k;
 				return false;
@@ -244,7 +125,7 @@ DeskPRO.Agent.Window = new Class({
 		});
 		
 		if (tabId) {
-			this.getPanedShell().tabManager.removeTab(tabId);
+			this.pageTabStrip.tabManager.removeTab(tabId);
 		}
 	},
 	
@@ -351,7 +232,7 @@ DeskPRO.Agent.Window = new Class({
 		
 		// Rewrote listpane's to normal pages if listpane
 		// is current collapnsed
-		if (routeData.openInSection == 'listpane' && this.getPanedShell().innerLayout.state.west.isClosed) {
+		if (routeData.openInSection == 'listpane' && this.innerLayout.state.west.isClosed) {
 			routeData.openInSection = 'page';
 			
 			// If it's an alt page, they're used to link views
@@ -373,11 +254,11 @@ DeskPRO.Agent.Window = new Class({
 			
 			default:
 				// Check if its already laoded
-				var tabs = DeskPRO_Window.getPanedShell().tabManager.getTabs();
+				var tabs = this.pageTabStrip.tabManager.getTabs();
 				var already_loaded = false;
 				Object.each(tabs, function(tab, tab_id) {
 					if (tab.page.getMetaData('routeUrl') == routeData.url) {
-						DeskPRO_Window.getPanedShell().tabManager.activateTab(tab_id);
+						this.pageTabStrip.tabManager.activateTab(tab_id);
 						already_loaded = true;
 						return false;
 					}
@@ -411,7 +292,7 @@ DeskPRO.Agent.Window = new Class({
 					page.setMetaData('routeData', routeData);
 				}
 				
-				DeskPRO_Window.getPanedShell().setNavPanePage(page);
+				this.setNavPanePage(page);
 			}).bind(this)
 		});
 	},
@@ -437,7 +318,7 @@ DeskPRO.Agent.Window = new Class({
 					page.setMetaData('routeData', routeData);
 				}
 				
-				DeskPRO_Window.getPanedShell().setListPanePage(page);
+				this.addListPage(page);
 			}).bind(this)
 		});
 	},
@@ -470,7 +351,7 @@ DeskPRO.Agent.Window = new Class({
 					page.setMetaData('routeData', routeData);
 				}
 				
-				DeskPRO_Window.getPanedShell().addTabPage(page);
+				this.addPageTab(page);
 			}).bind(this)
 		});
 	},
@@ -529,32 +410,223 @@ DeskPRO.Agent.Window = new Class({
 	
 	
 	//#################################################################
-	//# Global registry
+	//# AJAX and loading
 	//#################################################################
 	
-	/**
-	 * Get a value from the registry.
-	 *
-	 * @param {String} id The ID of the item
-	 * @return mixed
-	 */
-	get: function(id) {
-		if (this.registry[id] === undefined) {
-			return null;
+	loadingIndicatorEl: null,
+	loadingIndicatorCount: 0,
+	startLoadingIndicator: function(n) {
+		if (!n) n = 1;
+		this.loadingIndicatorCount += n;
+		this._showHideLoadingIndicator();
+	},
+	stopLoadingIndicator: function(n) {
+		if (!n) n = 1;
+		this.loadingIndicatorCount -= n;
+		if (this.loadingIndicatorCount < 0) this.loadingIndicatorCount = 0;
+		this._showHideLoadingIndicator();
+	},
+	_showHideLoadingIndicator: function() {
+		if (this.loadingIndicatorCount > 0) {
+			if (!this.loadingIndicatorEl) {
+				this.loadingIndicatorEl = $('<div class="window-loading-indicator" style="display:none" />');
+				this.loadingIndicatorEl.appendTo('body');
+			}
+			
+			this.loadingIndicatorEl.css({
+				'position': 'absolute',
+				'top': 0,
+				'left': ($(document).width()/2) - this.loadingIndicatorEl.outerWidth(),
+				'z-index': 100000
+			});
+			
+			this.loadingIndicatorEl.slideDown(250);
+		} else {
+			if (this.loadingIndicatorEl) {
+				this.loadingIndicatorEl.stop().slideUp(150);
+			}
+		}
+	},
+	
+	_globalHandleAjaxError: function(event, XMLHttpRequest, ajaxOptions, thrownError) {
+		
+		// We dont use this handler if there was an error handler used
+		if (ajaxOptions && ajaxOptions.error) return;
+		
+		// Hide the loading indicator
+		this.stopLoadingIndicator(10000);
+		
+		// Show overlay about failed
+		this._showAjaxError();
+	},
+	
+	ajaxErrorOverlay: null,
+	_showAjaxError: function() {
+	
+		if (!this.ajaxErrorOverlay) {
+			this.ajaxErrorOverlay = new DeskPRO.UI.Overlay({
+				contentElement: $('#global_ajax_error'),
+				zIndex: 10000000, /* this should be bigger than everything */
+				onContentSet: function(eventData) {
+					$('.close-trigger', eventData.wrapperEl).click((function() {
+						eventData.overlay.closeOverlay();
+					}).bind(this));
+				}
+			});
 		}
 		
-		return this.registry[id];
+		this.ajaxErrorOverlay.openOverlay();
 	},
 	
 	
 	
-	/**
-	 * Add or reset a value in the registry.
-	 *
-	 * @param {String} id The ID of the item
-	 * @param mixed value The value of the item
-	 */
-	set: function(id, value) {
-		this.registry[id] = value;
+	//#################################################################
+	//# Inits
+	//#################################################################
+	
+	_initBasic: function() {
+		this.messageBroker = new DeskPRO.MessageBroker();
+		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
+			ajaxUrl: BASE_URL + 'agent/poller'
+		});
+		
+		// Set up listener for badge count
+		this.getMessageBroker().addMessageListener('queues.counts', this._updatequeueCounts.bind(this));
+	},
+	
+	_updatequeueCounts: function (counts) {
+		var total = 0;
+		Object.each(counts, function (count, queue_id) {
+			total += count;
+		});
+		
+		$('.ticket-queue-count-all').html('(' + total + ')');
+	},
+	
+	_initRoutes: function() {
+		// Set ourselves up as the first route listener
+		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
+		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
+		this.addPageRouteLoader('page', this.loadRoute.bind(this));
+		this.addPageRouteLoader('ticket', this.loadRoute.bind(this));
+		this.addPageRouteLoader('person', this.loadRoute.bind(this));
+		
+		var self = this;
+		$('#window_header_nav li[data-route]').click(function() {
+			self.runPageRouteFromElement(this);
+		});
+	},
+	
+	_initWindowInterface: function() {
+		// Set up tabs
+		$('#window_head_top ul.header-tabs li').click(function() {
+			$('#window_head_top ul.header-tabs li').removeClass('on');
+			$(this).addClass('on');
+			
+			$('#window_header_nav .group.on').removeClass('on');
+			$('#window_header_nav .group.' + $(this).data('tab-name')).addClass('on');
+		});
+		
+		// Set up create menu
+		var menu = new DeskPRO.UI.Menu({
+			triggerElement: $('#create_new_menu_trigger'),
+			menuElement: $('#create_new_menu')
+			// no click handler, already attached to li's on route handler
+		});
+		
+		// Settings is a window
+		$('#window_head_top .settings-link').click(function() {
+			
+			if (screen.width > 1000) var width = 1000;
+			else if (screen.width > 800) var width = 800;
+			else var width = 600;
+			
+			var height = 600;
+			
+			var pos_left = (screen.width - width - 30) / 2;
+			var pos_top = (screen.height - height - 100) / 2;
+			
+			
+			var win = window.open(
+				BASE_URL + 'agent/settings',
+				"settings_win",
+				"width="+width+",height="+height+",left="+pos_left+",top="+pos_top+",toolbar=false,locationbar=false,directories=false,status=false,menubar=false,scrollbars=true,resizable=true,copyhistory=false"
+			);
+			
+			// incase it was ignored
+			win.resizeTo(width, height);
+			win.moveTo(pos_left, pos_top);
+			win.focus();
+		});
+		
+		// Global AJAX handler for errors if no error handler is attached
+		$(document).ajaxError(this._globalHandleAjaxError.bind(this));
+	},
+	
+	_initLayout: function() {
+		$('body').layout({
+			north: {
+				paneSelector: '#window_head',
+				spacing_open: 0,
+				spacing_closed: 0,
+				size: 52
+			},
+			center: {
+				paneSelector: '#pane_shell'
+			}
+		});
+
+		this.paneNavEl = $('#pane_nav');
+		
+		//------------------------------
+		// Set up the layout
+		//------------------------------
+		
+		this.outerLayout = $('#pane_shell').layout({
+			west: {
+				paneSelector: '#pane_nav',
+				size: 165,
+				spacing_open: 1,
+				slidable: false
+			},
+			center: {
+				paneSelector: '#pane_shell_inner'
+			}
+		});
+		
+		var show_listpane = this.get('agent.ui.show-listpane');
+		var west_is_closed = false;
+		if (show_listpane == 'never') {
+			west_is_closed = true;
+		} else if (show_listpane == 'auto' && screen.width && screen.width < 1000) {
+			west_is_closed = true;
+		}
+
+		this.innerLayout = $('#pane_shell_inner').layout({
+			west: {
+				paneSelector: '#pane_list_content',
+				size: '45%',
+				spacing_open: 1,
+				initClosed: west_is_closed,
+				slidable: false
+			},
+			center: {
+				paneSelector: '#pane_content'
+			}
+		});
+		
+		//------------------------------
+		// Set up the tab strips
+		//------------------------------
+		
+		this.pageTabStrip = new DeskPRO.Agent.TabStrip(
+			$('#pane_tabs'),
+			new DeskPRO.Agent.TabManager('#page')
+		);
+		
+		this.listTabStrip = new DeskPRO.Agent.TabStrip(
+			$('#pane_list_tabs'),
+			new DeskPRO.Agent.TabManager('#pane_list')
+		);
 	}
 });

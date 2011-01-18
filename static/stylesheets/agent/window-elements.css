@@ -454,3 +454,279 @@
 #pane_nav ul.tag-cloud li:hover {
 	text-decoration: underline;
 }
+
+/**********************************************************
+ Page tabbar
+***********************************************************/
+
+#pane_tabbar {
+	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
+	border-bottom: #212121;
+	border-top: 1px solid #333;
+	height: 28px;
+	color: #bababa;
+	font-size: 8pt;
+	font-family: Arial, sans-serif;
+	width: 100%;
+	overflow: hidden;
+}
+
+#pane_tabbar ul {
+	height: 28px;
+}
+
+#pane_tabbar ul li {
+	float: left;
+	border-right: 1px solid #323332;
+	color: #fff;
+	overflow: hidden;
+	cursor: pointer;
+	height: 23px;
+	margin-top: 5px;
+	overflow: hidden;
+	max-width: 100px;
+	background-color: #5c5c5c;
+	border: 1px solid #6e6e6e;
+	border-bottom: none;
+	margin-right: 3px;
+	margin-left: 3px;
+	
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+#pane_tabbar ul li.icon {
+	max-width: 120px;
+	padding-left: 18px;
+	
+	background-repeat: no-repeat;
+	background-position: 6px center;
+}
+
+.icon-ticket { background-image: url(../../images/tab-icon-ticket.png); }
+.icon-person { background-image: url(../../images/tab-icon-person.png); }
+
+#pane_tabbar ul li div.title {
+	width: 80px;
+	line-height: 22px;
+	float: left;
+}
+
+#pane_tabbar ul li div.title span {
+	padding-left: 8px;
+	width: 150px;
+	display: block;
+}
+
+#pane_tabbar ul li div.close {
+	float: right;
+	background: #5c5c5c;
+	width: 10;
+	height: 22px;
+	padding: 0 5px 0 5px;
+	
+	-moz-border-radius-topright: 5px;
+	border-top-right-radius: 5px;
+}
+
+#pane_tabbar ul li.tab-active div.close {
+	background-color: #2a2b2a;
+}
+
+#pane_tabbar ul li div.close span {
+	background: transparent url(../../images/tab-close.png) no-repeat center center;
+	width: 10px;
+	height: 22px;
+	display: block;
+}
+
+#pane_tabbar ul li div.close span:hover {
+	background: transparent url(../../images/tab-close-on.png) no-repeat center center;
+}
+
+#pane_tabbar ul li.tab-active div.close {
+	background-image: none;
+}
+
+#pane_tabbar ul li:first {
+	border-right: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+#pane_tabbar ul li.tab-active {
+	background-color: #2a2b2a;
+	border: 1px solid #c5c5c5;
+	border-bottom: none;
+}
+
+#pane_tabbar.with-scroller ul {
+	margin-left: 15px;
+	margin-right: 15px;	
+}
+
+#pane_tabs_scroll_left, #pane_tabs_scroll_right { display: none; cursor: pointer; }
+#pane_tabbar.with-scroller #pane_tabs_scroll_left, #pane_tabbar.with-scroller #pane_tabs_scroll_right { display: block; }
+
+#pane_tabs_scroll_left {
+	width: 14px;
+	height: 28px;
+	position: absolute;
+	left: 0;
+	background: #000 url(../../images/page-tabbar-left.png) repeat-y top left;
+}
+
+#pane_tabs_scroll_left:hover { background-image: url(../../images/page-tabbar-left-on.png); }
+
+#pane_tabs_scroll_right {
+	width: 14px;
+	height: 28px;
+	position: absolute;
+	right: 0;
+	background: #000 url(../../images/page-tabbar-right.png) repeat-y top right;
+}
+
+#pane_tabs_scroll_right:hover { background-image: url(../../images/page-tabbar-right-on.png); }
+
+
+/**********************************************************
+ List toolbar
+***********************************************************/
+
+#pane_list_tabbar {
+	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
+	border-bottom: #212121;
+	border-top: 1px solid #333;
+	height: 28px;
+	color: #bababa;
+	font-size: 8pt;
+	font-family: Arial, sans-serif;
+	width: 100%;
+	overflow: hidden;
+}
+
+#pane_list_tabbar ul {
+	height: 28px;
+}
+
+#pane_list_tabbar ul li {
+	float: left;
+	border-right: 1px solid #323332;
+	color: #fff;
+	overflow: hidden;
+	cursor: pointer;
+	height: 23px;
+	margin-top: 5px;
+	overflow: hidden;
+	max-width: 100px;
+	background-color: #5c5c5c;
+	border: 1px solid #6e6e6e;
+	border-bottom: none;
+	margin-right: 3px;
+	margin-left: 3px;
+	
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+#pane_list_tabbar ul li.icon {
+	max-width: 120px;
+	padding-left: 18px;
+	
+	background-repeat: no-repeat;
+	background-position: 6px center;
+}
+
+#pane_list_tabbar ul li div.title {
+	width: 80px;
+	line-height: 22px;
+	float: left;
+}
+
+#pane_list_tabbar ul li div.title span {
+	padding-left: 8px;
+	width: 150px;
+	display: block;
+}
+
+#pane_list_tabbar ul li div.close {
+	float: right;
+	background: #5c5c5c;
+	width: 10;
+	height: 22px;
+	padding: 0 5px 0 5px;
+	
+	-moz-border-radius-topright: 5px;
+	border-top-right-radius: 5px;
+}
+
+#pane_list_tabbar ul li.tab-active div.close {
+	background-color: #2a2b2a;
+}
+
+#pane_list_tabbar ul li div.close span {
+	background: transparent url(../../images/tab-close.png) no-repeat center center;
+	width: 10px;
+	height: 22px;
+	display: block;
+}
+
+#pane_list_tabbar ul li div.close span:hover {
+	background: transparent url(../../images/tab-close-on.png) no-repeat center center;
+}
+
+#pane_list_tabbar ul li.tab-active div.close {
+	background-image: none;
+}
+
+#pane_list_tabbar ul li:first {
+	border-right: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+#pane_list_tabbar ul li.tab-active {
+	background-color: #2a2b2a;
+	border: 1px solid #c5c5c5;
+	border-bottom: none;
+}
+
+#pane_list_tabbar.with-scroller ul {
+	margin-left: 15px;
+	margin-right: 15px;	
+}
+
+#pane_list_tabs_scroll_left, #pane_list_tabs_scroll_right { display: none; cursor: pointer; }
+#pane_list_tabbar.with-scroller #pane_list_tabs_scroll_left, #pane_list_tabbar.with-scroller #pane_list_tabs_scroll_right { display: block; }
+
+#pane_tabs_scroll_left {
+	width: 14px;
+	height: 28px;
+	position: absolute;
+	left: 0;
+	background: #000 url(../../images/page-tabbar-left.png) repeat-y top left;
+}
+
+#pane_tabs_scroll_left:hover { background-image: url(../../images/page-tabbar-left-on.png); }
+
+#pane_tabs_scroll_right {
+	width: 14px;
+	height: 28px;
+	position: absolute;
+	right: 0;
+	background: #000 url(../../images/page-tabbar-right.png) repeat-y top right;
+}
+
+#pane_tabs_scroll_right:hover { background-image: url(../../images/page-tabbar-right-on.png); }

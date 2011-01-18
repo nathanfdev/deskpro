@@ -81,7 +81,7 @@
 	<div id="window_header_nav">
 		<div class="group helpdesk on">
 			<ul>
-				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:alt:{{ path('agent_ticketsearch') }}"><span class="icon tickets">Tickets</span></li>
+				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}"><span class="icon tickets">Tickets</span></li>
 				<li class="chat" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon chat">Chat</span></li>
 				<li class="ideas" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon ideas">Ideas</span></li>
 				<li class="forums" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tickets">Q&amp;A</span></li>
@@ -133,26 +133,7 @@
 	</div>
 </div>
 
-<div id="pane_shell">
-	<div id="pane_nav">
-
-	</div>
-	<div id="pane_shell_inner">
-		<div id="pane_list">
-			
-		</div>
-		<div id="pane_content">
-			<div id="pane_tabbar" class="nosel">
-				<div id="pane_tabs_scroll_left"></div>
-				<div id="pane_tabs_scroll_right"></div>
-				<ul id="pane_tabs"></ul>				
-			</div>
-			<div id="page" class="ui-layout-content">
-
-			</div>
-		</div>
-	</div>
-</div>
+{% include 'AgentBundle:Main:layout-wrappers.twig.html' %}
 
 <div id="global_ajax_error" style="display:none; width: 340px; text-align: center;">
 	<p>A network exception occurred and your last request did not complete. Please try again.</p>
@@ -167,25 +148,13 @@
 
 <span id="test_route" data-route="page:{{ path('agent_ticket_new') }}" style="display:none"></span>
 
-<link rel="stylesheet" href="{{ asset('javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css') }}" type="text/css" media="screen"  />
-<link rel="stylesheet" href="{{ asset('javascripts/plupload/css/plupload.queue.css') }}" type="text/css" media="screen"  />
-<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('javascripts/jquery/tipTip/tipTip.css') }}" type="text/css" media="screen"  />
-
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/common.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/ui-layout.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/window-elements.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/interface.css') }}" type="text/css" media="screen" />
-
-<!--[if IE 8]>
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/interface-ie.css') }}" type="text/css" media="screen" />
-<![endif]-->
+{% include 'AgentBundle:Main:resources.twig.html' %}
 
 <script>
 	var BASE_URL = '{{ path('user') }}';
 	var ASSETS_BASE_URL = '{{ asset('') }}';
 	
-	function _win_exec() {
+	$(document).ready(function() {
 		// Remove loading overlay
 		$('#window_loading_overlay').remove();
 		
@@ -199,69 +168,6 @@
 
 		// Debug: auto load a ticket tab
 		window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
-	}
-</script>
-<script src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
-<script src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>
-<script src="{{ asset('javascripts/jquery/jquery.cookie.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.layout.min.js') }}"></script>
-
-<script src="{{ asset('javascripts/jquery/tipTip/jquery.tipTip.min.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/tag-it/tag-it.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.sizes.min.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.mousewheel.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.timeago.js') }}"></script>
-<script src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
-
-<script src="{{ asset('javascripts/plupload/plupload.full.min.js') }}"></script>
-<script src="{{ asset('javascripts/plupload/jquery.plupload.queue.min.js') }}"></script>
-
-<script src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
-<script src="{{ asset('javascripts/Orb/Compat.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/UI/Overlay.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/UI/Menu.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/UI/SimpleTabs.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Form/InlineEdit.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Form/RuleBuilder.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/MessageBroker.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/AjaxPoller/Poller.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/AjaxPoller/MessagePoller.js') }}"></script>
-
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/Window.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Shells/ThreePaned.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TabManager.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Basic.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageHelper/NewUserOverlay.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleSearch.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketQueue.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFlagged.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketSearch.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/NavPane/Basic.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketQueues.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketFlagged.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketOverview.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketFind.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/NavPane/TicketLabels.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/BasicTicket.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/Person.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js') }}"></script>
-
-<script>
-	$(document).ready(function() {
-		_win_exec();
 	});
 </script>
 
