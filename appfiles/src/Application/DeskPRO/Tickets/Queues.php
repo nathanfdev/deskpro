@@ -169,7 +169,7 @@ class Queues
 	 */
 	public function getAllCountsForPersonFlagged($person)
 	{
-		$counts = App::getDb()->feetchAllKeyValue("
+		$counts = App::getDb()->fetchAllKeyValue("
 			SELECT color, COUNT(color)
 			FROM tickets_flagged
 			WHERE person_id = ?

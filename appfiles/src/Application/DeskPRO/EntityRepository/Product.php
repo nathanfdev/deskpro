@@ -27,7 +27,7 @@ class Product extends EntityRepository
 		if ($this->product_names !== null) return $this->product_names;
 
 		$db = App::getDb();
-		$this->product_names = $db->feetchAllKeyValue("
+		$this->product_names = $db->fetchAllKeyValue("
 			SELECT id, title
 			FROM products
 			ORDER BY title ASC

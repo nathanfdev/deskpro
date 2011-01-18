@@ -27,7 +27,7 @@ class TicketPriority extends EntityRepository
 		if ($this->priority_names !== null) return $this->priority_names;
 
 		$db = App::getDb();
-		$this->priority_names = $db->feetchAllKeyValue("
+		$this->priority_names = $db->fetchAllKeyValue("
 			SELECT id, title
 			FROM ticket_priorities
 			ORDER BY priority ASC

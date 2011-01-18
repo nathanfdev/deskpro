@@ -31,7 +31,7 @@ class LabelDef extends EntityRepository
 
 		switch ($type) {
 			case 'ticket':
-				return $this->getEntityManager()->getConnection()->feetchAllKeyValue("
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 					SELECT label, COUNT(*) AS count
 					FROM labels_tickets
 					GROUP BY label
@@ -41,7 +41,7 @@ class LabelDef extends EntityRepository
 				break;
 
 			case 'person':
-				return $this->getEntityManager()->getConnection()->feetchAllKeyValue("
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 					SELECT label, COUNT(*) AS count
 					FROM labels_people
 					GROUP BY label

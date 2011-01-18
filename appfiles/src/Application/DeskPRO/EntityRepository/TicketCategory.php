@@ -27,7 +27,7 @@ class TicketCategory extends EntityRepository
 		if ($this->all_category_names !== null) return $this->all_category_names;
 
 		$db = App::getDb();
-		$this->all_category_names = $db->feetchAllKeyValue("
+		$this->all_category_names = $db->fetchAllKeyValue("
 			SELECT cat.id, cat.title
 			FROM ticket_categories cat
 			LEFT JOIN departments AS dep ON (cat.department_id = dep.id)
