@@ -180,7 +180,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 	 */
 	protected function _onNotCallable($name, $arguments)
 	{
-		throw new \BadMethodCallException("Method `$orig_name` is undefined");
+		throw new \BadMethodCallException("Method `$name` is undefined");
 	}
 
 
@@ -219,11 +219,14 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 	public function offsetSet($offset, $value)
 	{
-		$old_value = $this[$offset];
-
-		// No change
-		if ($old_value == $value) {
-			return;
+		$old_value = null;
+		if (isset($this[$offset])) {
+			$old_value = $this[$offset];
+			
+			// No change
+			if ($old_value == $value) {
+				return;
+			}
 		}
 
 		$func = "set" . str_replace('_', '', $offset);
