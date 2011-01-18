@@ -69,4 +69,37 @@ class Department extends EntityRepository
 
 		return $names;
 	}
+
+
+	
+	/**
+	 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
+	 *
+	 * @param int $parent_id
+	 * @return array
+	 */
+	public function getIdsInTree($parent_id, $incude_top = true)
+	{
+		$ids = array();
+		if ($incude_top AND $parent_id) {
+			$ids[] = $parent_id;
+		}
+
+		$deps = $this->getDepartmentsInHierarchy();
+		if ($parent_id) {
+			$deps = $deps[$parent_id]['children'];
+		}
+
+		foreach ($deps as $dep) {
+			$ids[] = $dep['id'];
+
+			if ($dep['children']) {
+				foreach ($dep['children'] as $childdep) {
+					$ids[] = $childdep['id'];
+				}
+			}
+		}
+
+		return $ids;
+	}
 }

@@ -170,6 +170,9 @@ class TicketSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_DEPARTMENT:
+					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+					if (count($choice) == 1) $choice = $choice[0];
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice);
 					break;
 				case self::TERM_CATEGORY:
@@ -300,6 +303,9 @@ class TicketSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_DEPARTMENT:
+					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+					if (count($choice) == 1) $choice = $choice[0];
+					
 					if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
 					break;
 				case self::TERM_CATEGORY:
