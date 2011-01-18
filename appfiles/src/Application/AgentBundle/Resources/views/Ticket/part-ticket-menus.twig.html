@@ -49,6 +49,10 @@
 	<li data-option-id="0">Unassigned</li>
 	<li data-option-id="{{person.id}}">Assign to me</li>
 	<li class="sep">-</li>
+	{% for id,title in ticket_options.agent_teams %}
+		<li data-option-id="{{id}}" data-option-type="agent_team">{{title}}</li>
+	{% endfor %}
+	<li class="sep">-</li>
 	{% for id,title in ticket_options.agents %}
 		<li data-option-id="{{id}}">{{title}}</li>
 	{% endfor %}

@@ -23,6 +23,23 @@ admin_labels_ajaxdel:
   defaults: { _controller: AdminBundle:Settings:labelsAjaxDelete }
 
 ################################################################################
+# Agents
+################################################################################
+
+admin_agents_teams:
+  pattern: /agents/teams
+  defaults: { _controller: AdminBundle:Agents:teams }
+
+admin_agents_teams_edit:
+  pattern: /agents/teams/{team_id}/edit
+  defaults: { _controller: AdminBundle:Agents:editTeam }
+  requirements: { team_id: "\d+" }
+
+admin_agents_teams_new:
+  pattern: /agents/teams/new
+  defaults: { _controller: AdminBundle:Agents:editTeam, team_id: 0 }
+
+################################################################################
 # Styles
 ################################################################################
 

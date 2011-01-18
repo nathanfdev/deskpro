@@ -1,0 +1,24 @@
+{% extends 'AdminBundle::layout.twig.html' %}
+{% block section 'agents' %}
+{% block sub_section 'teams' %}
+{% block content %}
+
+<div style="text-align: right">
+	<a class="dp-button green" href="{{ path('admin_agents_teams_new') }}">Create New Team</a>
+	<br /><br />
+</div>
+
+<ul class="item-list">
+	{% for team in all_teams %}
+		<li>
+			<div style="float:right">
+				<ul class="controls">
+					<li class="edit"><a href="{{ path('admin_agents_teams_edit', {'team_id': team.id}) }}">edit</a></li>
+				</ul>
+			</div>
+			{{team.name}}
+		</li>
+	{% endfor %}
+</ul>
+
+{% endblock %}

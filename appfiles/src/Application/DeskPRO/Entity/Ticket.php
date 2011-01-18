@@ -138,6 +138,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $agent = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\AgentTeam
+	 * @orm:ManyToOne(targetEntity="AgentTeam")
+	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id")
+	 */
+	protected $agent_team = null;
+
+	/**
 	 * @var int
 	 * @orm:Column(name="organization_id", type="integer", nullable=true)
 	 */
@@ -489,6 +496,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function setAgent(Entity\Person $agent = null)
+	{
+		$this->agent = $agent;
+
+		if ($agent) {
+			$this['agent_team'] = null;
+		}
+	}
+
 	public function setAgentId($id)
 	{
 		if ($id) {
@@ -498,6 +514,24 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 
 			$this['agent'] = $agent;
+		} else {
+			$this['agent'] = null;
+		}
+	}
+	public function setAgentTeam(Entity\AgentTeam $agent_team = null)
+	{
+		$this->agent_team = $agent_team;
+
+		if ($agent_team) {
+			$this['agent'] = null;
+		}
+	}
+
+	public function setAgentTeamId($id)
+	{
+		if ($id) {
+			$agent_team = App::getOrm()->getRepository('DeskPRO:AgentTeam')->find($id);
+			$this['agent_team'] = $agent_team;
 		} else {
 			$this['agent'] = null;
 		}

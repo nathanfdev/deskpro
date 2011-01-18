@@ -595,6 +595,20 @@ class Strings
 	{
 		return strtolower(preg_replace('#([a-z0-9])([A-Z])#', '$1-$2', $str));
 	}
+	
+
+
+	/**
+	 * Converts a camelCase string to a underscored-string. Example:
+	 * thisDashString becoems this_dash_string
+	 *
+	 * @param   string  $str  The string to work on
+	 * @return  string
+	 */
+	public static function camelCaseToUnderscore($str)
+	{
+		return strtolower(preg_replace('#([a-z0-9])([A-Z])#', '$1_$2', $str));
+	}
 
 
 
