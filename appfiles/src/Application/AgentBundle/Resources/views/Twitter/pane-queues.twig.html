@@ -1,0 +1,16 @@
+{% extends 'AgentBundle:Twitter:pane-layout.twig.html' %}
+{% block meta %}
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.NavPane.TicketQueues';
+</script>
+{% endblock %}
+{% block queue_content %}
+<ul class="nav-list queue-list nosel">
+	{% for queue in queues %}
+		<li class="queue-{{queue.id}}" data-queue-id="{{queue.id}}" data-route="listpane:{{ path('agent_ticketsearch_runqueue', {'queue_id': queue.id}) }}">
+			<span class="count ticket-queue-count-{{queue.id}}">-</span>
+			{{queue.title}}
+		</li>
+	{% endfor %}
+</ul>
+{% endblock %}
