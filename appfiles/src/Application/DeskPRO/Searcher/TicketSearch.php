@@ -14,6 +14,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_CATEGORY      = 'category';
 	const TERM_PRODUCT       = 'product';
 	const TERM_AGENT         = 'agent';
+	const TERM_AGENT_TEAM    = 'agent_team';
 	const TERM_STATUS        = 'status';
 	const TERM_PRIORITY      = 'priority';
 	const TERM_SUBJECT       = 'subject';
@@ -190,7 +191,12 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_AGENT:
 					if ($op == self::OP_IS) {
 						if ($choice == 0) {
-							$wheres[] = "$tickets_table.agent_id IS NULL";
+
+							// Searching for 0 means "unassigned"
+							// This means we also have to make sure the team is null,
+							// since a ticket can be assigned to a team instead of a user
+
+							$wheres[] = "$tickets_table.agent_id IS NULL AND $tickets_table.agent_team_id IS NULL";
 						} elseif ($choice == -1) {
 							$wheres[] = "$tickets_table.agent_id = " . App::getCurrentPerson()->getId();
 						} elseif ($choice == -2) {
@@ -201,6 +207,9 @@ class TicketSearch extends SearcherAbstract
 					} else {
 						$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $choice);
 					}
+					break;
+				case self::TERM_AGENT_TEAM:
+					$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $choice);
 					break;
 				case self::TERM_STATUS:
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, $choice);

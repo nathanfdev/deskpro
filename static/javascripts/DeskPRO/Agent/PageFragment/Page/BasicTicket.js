@@ -170,6 +170,11 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var opt = $(info.itemEl).parent().data('option-name');
 		var itemName = $(info.itemEl).html();
 		var itemId = $(info.itemEl).data('option-id');
+		var itemType = $(info.itemEl).data('option-type');
+		
+		if (opt == 'agent' && itemType == 'agent_team') {
+			opt = 'agent_team';
+		}
 		
 		this._updateTicketOptionValue(opt, itemName);
 		

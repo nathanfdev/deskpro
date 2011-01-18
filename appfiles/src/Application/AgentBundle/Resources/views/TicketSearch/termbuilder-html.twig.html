@@ -39,6 +39,23 @@
 		</select>
 	</div>
 </div>
+{% if term_options.agent_teams %}
+	<div class="type" title="Agent Team" data-rule-type="agent_team">
+		<div class="choice">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<select name="agent_team">
+				{% for id,title in term_options.agent_teams %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
 <div class="type" title="Status" data-rule-type="status">
 	<div class="op">
 		<select name="op">

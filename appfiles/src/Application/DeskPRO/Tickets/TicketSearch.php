@@ -21,6 +21,7 @@ class TicketSearch
 
 		if ($person['is_agent']) {
 			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
+			$options['agent_teams'] = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
 		}
 
 		$options['products']    = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();

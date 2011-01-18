@@ -123,6 +123,15 @@ $(document).ready(function() {
 			</select>
 		</div>
 	</div>
+	<div class="type" title="Agent Team" data-rule-type="agent_team">
+		<div class="choice">
+			<select name="agent_team">
+				{% for id,title in ticket_options.agent_teams %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
 	<div class="type" title="Ticket Reply" data-rule-type="reply">
 		<div class="choice" style="display:block">
 			<textarea name="reply" cols="80" rows="4"></textarea>

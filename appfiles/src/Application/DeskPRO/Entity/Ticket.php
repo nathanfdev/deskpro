@@ -537,6 +537,27 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getIsAssigned()
+	{
+		if ($this->agent OR $this->agent_team) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+	public function getAssignedName()
+	{
+		if ($this->agent) {
+			return $this->agent['display_name'];
+		} elseif ($this->agent_team) {
+			return $this->agent_team['name'];
+		} else {
+			return null;
+		}
+	}
+
 
 	/**
 	 * @orm:PreInsert
