@@ -57,6 +57,41 @@ DeskPRO.Agent.TabStrip = new Class({
 	},
 	
 	
+	getTabs: function() {
+		return this.tabManager.getTabs();
+	},
+	
+	activateTabById: function(tabId) {
+		this.tabManager.activateTab(tabId);
+	},
+	
+	removeTabById: function(tabId) {
+		this.tabManager.removeTab(tabId);
+	},
+	
+	findTabByPage: function(page) {
+		var tabId = false;
+		Object.each(this.tabManager.getTabs(), function(v, k) {
+			if (v.page == page) {
+				tabId = k;
+				return false;
+			}
+		});
+		
+		return tabId;
+	},
+	
+	findTabByRouteUrl: function(routeUrl) {
+		var tabId = false;
+		Object.each(this.tabManager.getTabs(), function(tab, tab_id) {
+			if (tab.page.getMetaData('routeUrl') == routeUrl) {
+				tabId = tab_id;
+				return false;
+			}
+		});
+		
+		return tabId;
+	},
 	
 	addTab: function(page) {
 		this.tabManager.addTab(Orb.uuid(), {

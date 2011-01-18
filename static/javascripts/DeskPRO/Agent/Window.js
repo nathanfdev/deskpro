@@ -116,16 +116,15 @@ DeskPRO.Agent.Window = new Class({
 	 */
 	removePage: function(page) {
 		
-		var tabId = null;
-		Object.each(this.pageTabStrip.tabManager.getTabs(), function(v, k) {
-			if (v.page == page) {
-				tabId = k;
-				return false;
-			}
-		});
-		
+		var tabId = this.pageTabStrip.findTabByPage(page);
 		if (tabId) {
-			this.pageTabStrip.tabManager.removeTab(tabId);
+			this.pageTabStrip.removeTabById(tabId);
+		}
+		tabId = false;
+		
+		tabId = this.listTabStrip.findTabByPage(page);
+		if (tabId) {
+			this.listTabStrip.removeTabById(tabId);
 		}
 	},
 	
@@ -249,23 +248,24 @@ DeskPRO.Agent.Window = new Class({
 				break;
 				
 			case 'listpane':
+			
+				var existTabId = this.listTabStrip.findTabByRouteUrl(routeData.url);
+				if (existTabId) {
+					this.listTabStrip.activateTabById(existTabId);
+					return;
+				}
+			
 				this.loadListPane(routeData.url, routeData);
 				break;
 			
 			default:
 				// Check if its already laoded
-				var tabs = this.pageTabStrip.tabManager.getTabs();
-				var already_loaded = false;
-				Object.each(tabs, function(tab, tab_id) {
-					if (tab.page.getMetaData('routeUrl') == routeData.url) {
-						this.pageTabStrip.tabManager.activateTab(tab_id);
-						already_loaded = true;
-						return false;
-					}
-				});
-				
-				if (already_loaded) return;
-			
+				var existTabId = this.pageTabStrip.findTabByRouteUrl(routeData.url);
+				if (existTabId) {
+					this.pageTabStrip.activateTabById(existTabId);
+					return;
+				}
+							
 				this.loadPage(routeData.url, routeData);
 				break;
 		}
