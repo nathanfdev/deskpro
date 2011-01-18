@@ -274,7 +274,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_label_manager = null;
 
-
+	protected $_helper_manager = null;
 
 	public function __construct()
 	{
@@ -290,6 +290,44 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->personscraper_assoc = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	
+
+	/**
+	 * Add a new helper
+	 *
+	 * @param string $name Name of the helper class
+	 */
+	public function loadHelper($name)
+	{
+		$classname = 'Application\\DeskPRO\\People\\Helpers\\' . $name;
+		$object = new $classname($this);
+
+		$this->getHelperManager()->addHelper($object);
+	}
+
+	/**
+	 * Get a registered helper
+	 * @param string $name
+	 * @return mixed
+	 */
+	public function getHelper($name)
+	{
+		return $this->getHelperManager()->getHelper($name);
+	}
+
+
+	protected function _onNotCallable($name, $arguments)
+	{
+		if ($this->_helper_manager) {
+			$name_l = strtolower($name);
+			if ($this->_helper_manager->isNameCallable($name_l)) {
+				return $this->_helper_manager->callName($name_l, $arguments);
+			}
+		}
+
+		return parent::_onNotCallable($name, $arguments);
 	}
 
 
@@ -818,5 +856,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_label_manager;
+	}
+
+
+	public function getHelperManager()
+	{
+		if ($this->_helper_manager === null) {
+			$this->_helper_manager = new \Orb\Helper\HelperManager();
+		}
+		
+		return $this->_helper_manager;
 	}
 }
