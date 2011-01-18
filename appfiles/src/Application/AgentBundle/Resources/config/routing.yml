@@ -258,3 +258,21 @@ agent_ticket_ajax_labels_save:
   pattern: /tickets/{ticket_id}/ajax-save-labels
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveLabels }
   requirements: { ticket_id: "\d+" }
+
+
+################################################################################
+# Twitter
+################################################################################
+
+agent_twitter:
+  pattern: /twitter
+  defaults: { _controller: AgentBundle:Twitter:index }
+
+agent_twitter_queuespane:
+  pattern: /twitter/queues-pane
+  defaults: { _controller: AgentBundle:Twitter:queuesPane }
+
+agent_twitter_callback:
+  pattern: /twitter/callback
+  defaults: { _controller: AgentBundle:Twitter:callBack }
+
