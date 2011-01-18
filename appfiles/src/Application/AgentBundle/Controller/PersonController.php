@@ -108,7 +108,7 @@ class PersonController extends AbstractController
 
 		// Used in the org dlg popup. TODO need to clean this up.
 		// Likely be an autocomplete field in the dlg
-		$org_options = $db->feetchAllKeyValue("
+		$org_options = $db->fetchAllKeyValue("
 			SELECT id, name
 			FROM organizations
 			ORDER BY name ASC
