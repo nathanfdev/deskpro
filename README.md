@@ -18,6 +18,4 @@ Some more text here
 
 ### Screenshots
 
-![screenshot 1](http://www.mtasa.com/images/c_wipeout.png "Screenshot 1")
-![screenshot 2](http://www.mtasa.com/images/c_bigpeds.png "Screenshot 2")
-![screenshot 3](http://www.mtasa.com/images/c_yougofirst.png "Screenshot 3")
+![screenshot 1](http://www.deskpro.com/sites/all/themes/dptheme/logo.png "Screenshot 1")
