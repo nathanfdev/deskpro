@@ -205,3 +205,19 @@ admin_customdeftickets_test:
   pattern: /ticket-fields/{field_id}/test
   defaults: { _controller: AdminBundle:CustomDefTickets:test }
   requirements: { field_id: "\d+" }
+
+################################################################################
+# Twitter
+################################################################################
+
+admin_twitter:
+  pattern: /twitter
+  defaults: { _controller: AdminBundle:Twitter:index }
+
+admin_twitter_newaccount:
+  pattern: /twitter/newaccount
+  defaults: { _controller: AdminBundle:Twitter:authenticate}
+
+admin_twitter_addaccount:
+  pattern: /twitter/addaccount
+  defaults: { _controller: AdminBundle:Twitter:addaccount}
