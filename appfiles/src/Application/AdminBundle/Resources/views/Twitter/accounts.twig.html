@@ -1,0 +1,23 @@
+{% extends 'AdminBundle::layout.twig.html' %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.SettingsLabels();
+	//DeskPRO_Page.setMetaData('newLabelUrl', '{{ path('admin_labels_ajaxnew') }}');
+	//DeskPRO_Page.setMetaData('delLabelUrl', '{{ path('admin_labels_ajaxdel') }}');
+}
+</script>
+{% endblock %}
+{% block sub_section 'twitter' %}
+{% block content %}
+
+<ul class="item-list">
+	<li class="create">
+                <input type="text" name="label" value="" style="width: 200px;" /> <button style="float:right;" onclick="window.location = '/dp/DeskPRO/index_dev.php/admin/twitter/newaccount'" class="dp-button small">Add New Account</button>
+	</li>
+	{% for label in all_labels %}
+		{% include 'AdminBundle:Twitter:labels-row.twig.html' %}
+	{% endfor %}
+</ul>
+
+{% endblock %}
