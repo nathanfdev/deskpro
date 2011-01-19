@@ -499,10 +499,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function setAgent(Entity\Person $agent = null)
 	{
 		$this->agent = $agent;
-
-		if ($agent) {
-			$this['agent_team'] = null;
-		}
 	}
 
 	public function setAgentId($id)
@@ -521,10 +517,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function setAgentTeam(Entity\AgentTeam $agent_team = null)
 	{
 		$this->agent_team = $agent_team;
-
-		if ($agent_team) {
-			$this['agent'] = null;
-		}
 	}
 
 	public function setAgentTeamId($id)
