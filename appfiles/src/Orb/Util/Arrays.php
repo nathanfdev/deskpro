@@ -797,7 +797,7 @@ class Arrays
 	 * @param  string|int  $index  The index of the immediate sub-array to use
 	 * @return array
 	 */
-	public static function flattenToIndex(array $array, $index = 0)
+	public static function flattenToIndex($array, $index = 0)
 	{
 	    $ret = array();
 
