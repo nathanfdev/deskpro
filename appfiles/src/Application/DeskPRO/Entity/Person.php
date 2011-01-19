@@ -304,7 +304,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$classname = 'Application\\DeskPRO\\People\\Helpers\\' . $name;
 		$object = new $classname($this);
 
-		$this->getHelperManager()->addHelper($object);
+		if (!$this->getHelperManager()->hasHelper($name)) {
+			$this->getHelperManager()->addHelper($object);
+		}
 	}
 
 	/**

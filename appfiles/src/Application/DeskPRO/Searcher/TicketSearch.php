@@ -111,6 +111,29 @@ class TicketSearch extends SearcherAbstract
 			$user_parts = $this->person_search->getSqlParts();
 		}
 
+		$where = '';
+
+		#------------------------------
+		# Standard for permissions
+		#------------------------------
+
+		$agent = App::getCurrentPerson();
+		$agent->loadHelper('AgentPermissions');
+		$agent->loadHelper('AgentTeam');
+
+		// perms only matter if person has permissions applied at all
+		if ($agent->getDisallowedDepartments()) {
+			$where_perm[] = "ticket.agent_id = {$agent['id']}";
+			if ($agent->getAgentTeamIds()) {
+				$where_perm[] = "ticket.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+			}
+			$where_perm[] = "ticket.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+
+			$where_perm = implode(' OR ', $where_perm);
+
+			$where .= "($where_perm) AND ";
+		}
+
 
 		#------------------------------
 		# Add joins
@@ -131,7 +154,6 @@ class TicketSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
-		$where = '';
 		if ($ticket_parts['wheres']) {
 			$where .= implode(" AND ", $ticket_parts['wheres']);
 		}

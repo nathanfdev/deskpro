@@ -19,6 +19,14 @@ use \Doctrine\ORM\EntityRepository;
 class Department extends EntityRepository
 {
 	protected $_department_hierarchy = null;
+	protected $_department_ids = array();
+
+	public function getDepartmentIds()
+	{
+		$this->getDepartmentsInHierarchy();
+
+		return $this->_department_ids;
+	}
 
 	public function getDepartmentsInHierarchy()
 	{
@@ -30,6 +38,8 @@ class Department extends EntityRepository
 			FROM departments
 			ORDER BY title ASC
 		");
+
+		$this->_department_ids = array_keys($departments);
 
 		$departments = Arrays::intoHierarchy($departments, null);
 		$this->_department_hierarchy = $departments;
