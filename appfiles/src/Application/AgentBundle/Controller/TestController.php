@@ -10,18 +10,13 @@ class TestController extends AbstractController
     {
 		echo '<pre>';
 
-		$ticket = App::getEntityRepository('DeskPRO:Ticket')->find(3);
+		$person = $this->person;
+		$person->loadHelper('AgentTeam');
 
-		$labels = array('test', 'test2');
-		$labels = array('test');
-		$ticket->getLabelManager()->setLabelsArray($labels);
+		//print_r($person->getHelper('AgentTeam')->getAgentTeamIds());
 
-		foreach ($ticket['labels'] as $label) {
-			echo $label['label'] . "\n";
-		}
-
-		App::getOrm()->persist($ticket);
-		App::getOrm()->flush();
+		print_r($person->getAgentTeamIds());
+		//print_r($person['agent_team_ids']);
 
 		exit;
     }

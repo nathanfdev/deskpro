@@ -15,24 +15,24 @@ use \Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class Product extends EntityRepository
+class AgentTeam extends EntityRepository
 {
-	protected $product_names = null;
+	protected $_team_names = null;
 
 	/**
 	 * @return array
 	 */
-	public function getProductNames()
+	public function getTeamNames()
 	{
-		if ($this->product_names !== null) return $this->product_names;
+		if ($this->_team_names !== null) return $this->_team_names;
 
 		$db = App::getDb();
-		$this->product_names = $db->fetchAllKeyValue("
-			SELECT id, title
-			FROM products
-			ORDER BY title ASC
+		$this->_team_names = $db->fetchAllKeyValue("
+			SELECT id, name
+			FROM agent_teams
+			ORDER BY name ASC
 		");
 
-		return $this->product_names;
+		return $this->_team_names;
 	}
 }

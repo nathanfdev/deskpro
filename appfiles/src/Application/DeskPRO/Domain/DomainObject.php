@@ -35,7 +35,6 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 	private $_listeners = array();
 
 
-	
 	/**
 	 * Set values from an array
 	 * @param array $values The values to set
@@ -156,7 +155,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 		$match = null;
 		if (!preg_match('#^(get|set)_([a-zA-Z0-9_]+)$#', $name, $match)) {
-			throw new \BadMethodCallException("Method `$orig_name` is undefined");
+			return $this->_onNotCallable($name, $arguments);
 		}
 
 		list(, $type, $prop) = $match;
@@ -174,6 +173,16 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 			$this[$prop] = $arguments[0];
 		}
 	}
+
+
+	/**
+	 * Called when __call finds no suitable attribute to use.
+	 */
+	protected function _onNotCallable($name, $arguments)
+	{
+		throw new \BadMethodCallException("Method `$name` is undefined");
+	}
+
 
 	
 	/**
@@ -210,11 +219,14 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 	public function offsetSet($offset, $value)
 	{
-		$old_value = $this[$offset];
-
-		// No change
-		if ($old_value == $value) {
-			return;
+		$old_value = null;
+		if (isset($this[$offset])) {
+			$old_value = $this[$offset];
+			
+			// No change
+			if ($old_value == $value) {
+				return;
+			}
 		}
 
 		$func = "set" . str_replace('_', '', $offset);
@@ -237,7 +249,9 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 		} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
 			return $this->$offset;
 		} else {
-			throw new \InvalidArgumentException('No such offset exists: ' . $offset);
+			// Always end up calling incase its magic,
+			// it'll throw an error if not set anyway
+			return $this->$func();
 		}
 	}
 

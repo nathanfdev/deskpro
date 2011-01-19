@@ -27,8 +27,69 @@ class Department extends \Application\DeskPRO\Domain\DomainObject
 	protected $id;
 
 	/**
+	 * @var Department
+	 * @orm:OneToOne(targetEntity="Department")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 */
+	protected $parent = null;
+
+	/**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="Department", mappedBy="parent")
+	 * @orm:OrderBy({"title" = "ASC"})
+	 */
+	protected $children = null;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
+
+	public function __construct()
+	{
+		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+
+	/**
+	 * Add a child department
+	 * @param Department $department
+	 */
+	public function addChild(Department $department)
+	{
+		$department['parent'] = $this;
+		$this->children->add($department);
+	}
+
+
+	/**
+	 * Get children
+	 * @return Doctrine\Common\Collections\ArrayCollection
+	 */
+	public function getChildren()
+	{
+		// We only support a second level,
+		// so if *we* are the child, then there are no more
+		if ($this->parent) {
+			// empty collection
+			return new Doctrine\Common\Collections\ArrayCollection();
+		}
+
+		return $this->children;
+	}
+
+
+	
+	/**
+	 * Get all children down the entire tree
+	 *
+	 * Note: Currently only two levels, so this is the same as getChildren()
+	 *
+	 * @return array
+	 */
+	public function getAllChildren()
+	{
+		return $this->getChildren();
+	}
 }

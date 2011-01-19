@@ -27,7 +27,7 @@ class Person extends EntityRepository
 		if ($this->agent_names !== null) return $this->agent_names;
 
 		$db = App::getDb();
-		$this->agent_names = $db->feetchAllKeyValue("
+		$this->agent_names = $db->fetchAllKeyValue("
 			SELECT id, CONCAT_WS(' ', first_name, last_name) AS full_name
 			FROM people
 			WHERE is_agent = 1

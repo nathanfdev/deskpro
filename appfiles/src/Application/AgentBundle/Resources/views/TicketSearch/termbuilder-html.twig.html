@@ -11,15 +11,15 @@
 		<input type="text" name="subject" value="" />
 	</div>
 </div>
-<div class="type" title="Labels" data-rule-type="labels">
+<div class="type" title="Labels" data-rule-type="label">
 	<div class="op">
 		<select name="op">
-			<option value="contains">contains</option>
-			<option value="not_contains">does not contain</option>
+			<option value="is">includes label</option>
+			<option value="not">does not include label</option>
 		</select>
 	</div>
 	<div class="choice">
-		<input type="text" name="labels" value="" />
+		<input type="text" name="label" value="" />
 	</div>
 </div>
 <div class="type" title="Assigned Agent" data-rule-type="agent">
@@ -39,6 +39,23 @@
 		</select>
 	</div>
 </div>
+{% if term_options.agent_teams %}
+	<div class="type" title="Agent Team" data-rule-type="agent_team">
+		<div class="choice">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<select name="agent_team">
+				{% for id,title in term_options.agent_teams %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
 <div class="type" title="Status" data-rule-type="status">
 	<div class="op">
 		<select name="op">

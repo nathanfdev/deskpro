@@ -215,7 +215,7 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
-	public function _runFilterFromReq()
+	public function _runFilterFromReq($terms = null)
 	{
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
@@ -232,7 +232,9 @@ class TicketSearchController extends AbstractController
 
 		if (!$result_cache) {
 
-			$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+			if (!$terms) {
+				$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+			}
 
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 			foreach ($terms as $term) {
@@ -317,6 +319,19 @@ class TicketSearchController extends AbstractController
 		return $this->render('AgentBundle:TicketSearch:pane-labels.twig.html', array(
 			'cloud' => $cloud
 		));
+	}
+
+	public function runLabelAction($label)
+	{
+		$terms = array();
+		$terms[] = array(
+			'rule_type' => 'label',
+			'op' => 'is',
+			'label' => $label
+		);
+		$data = $this->_runFilterFromReq($terms);
+
+		return $this->render('AgentBundle:TicketSearch:overview-results.twig.html', $data);
 	}
 
 

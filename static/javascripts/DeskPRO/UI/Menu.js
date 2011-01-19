@@ -40,10 +40,6 @@ DeskPRO.UI.Menu = new Class({
 		if (this.options.triggerElement) {
 			this.setupTriggerElement($(this.options.triggerElement));
 		}
-
-		$(document).click((function (ev) {
-			this.closeMenu();
-		}).bind(this));
 	},
 	
 	
@@ -146,8 +142,18 @@ DeskPRO.UI.Menu = new Class({
 			var top = pageY - height;
 		}
 		
-		this.elements.wrapperOuter.css({
+		this.elements.shim.css({
 			'z-index': this.options.zIndex+1,
+			'position': 'absolute',
+			'top': 0,
+			'right': 0,
+			'bottom': 0,
+			'left': 0,
+			'background': 'transparent'
+		}).show();
+
+		this.elements.wrapperOuter.css({
+			'z-index': this.options.zIndex+2,
 			'position': 'absolute',
 			'top': top,
 			'left': left
@@ -162,18 +168,21 @@ DeskPRO.UI.Menu = new Class({
 	 * Closes the menu
 	 */
 	closeMenu: function() {
-		if (!this.isMenuOpen()) return;
+		if (!this.isMenuOpen()) return false;
 		
 		var eventData = { menu: this, cancelClose: false };
 		this.fireEvent('beforeMenuClosed', eventData);
 		
-		if (eventData.cancelClose) return;
+		if (eventData.cancelClose) return false;
 		
+		this.elements.shim.hide();
 		this.elements.wrapperOuter.fadeOut(200);
 		
 		this.fireEvent('menuClosed', { menu: this });
 		
 		this.openTriggerEvent = null;
+		
+		return true;
 	},
 	
 	
@@ -202,6 +211,16 @@ DeskPRO.UI.Menu = new Class({
 		
 		if (this.hasInit) return true;
 		this.hasInit = true;
+		
+		this.elements.shim = $('<div />').hide().appendTo('body');
+		this.elements.shim.click((function (ev) {
+			// When we close a menu by clicking off,
+			// lets stop proagation so the click doesn't
+			// inadvertantly activate something else.
+			if (this.closeMenu()) {
+				ev.stopPropagation();
+			}
+		}).bind(this));
 		
 		this._initWrapperElements();
 		
@@ -256,6 +275,10 @@ DeskPRO.UI.Menu = new Class({
 	 * Destroy this overlay and all of its supporting elements.
 	 */
 	destroy: function() {
+		
+		if (this.elements && this.elements.shim) {
+			this.elements.shim.remove();
+		}
 		
 		if (this.elements && this.elements.wrapperOuter) {
 			this.elements.wrapperOuter.remove();

@@ -47,10 +47,11 @@ class Tickets
 
 		if ($person['is_agent']) {
 			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
+			$options['agent_teams'] = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
 		}
 
 		$options['products']    = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
-		$options['departments'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
+		$options['departments'] = App::getOrm()->getRepository('DeskPRO:Department')->getFlatDepartmentNames(null, false);
 		$options['categories']  = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getAllCategoryNames();
 		$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 

@@ -26,7 +26,7 @@ class TicketFlagged extends EntityRepository
 
 		if (!$ids) return array();
 		
-		return App::getDb()->feetchAllKeyValue("
+		return App::getDb()->fetchAllKeyValue("
 			SELECT ticket_id, color
 			FROM tickets_flagged
 			WHERE ticket_id IN(" . implode(',', $ids) . ") AND person_id = ?

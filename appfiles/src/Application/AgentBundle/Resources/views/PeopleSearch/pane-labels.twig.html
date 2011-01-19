@@ -1,4 +1,8 @@
 {% extends 'AgentBundle:PeopleSearch:pane-layout.twig.html' %}
 {% block labels_content %}
-<span style="font-size: 8pt;">Label cloud coming soon</span>
+<ul class="tag-cloud">
+	{% for label,css_class in cloud %}
+		<li class="{{css_class}}">{{label}}</li>
+	{% endfor %}
+</ul>
 {% endblock %}

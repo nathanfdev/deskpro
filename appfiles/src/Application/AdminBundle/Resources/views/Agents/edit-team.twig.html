@@ -1,0 +1,38 @@
+{% extends 'AdminBundle::layout.twig.html' %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	//window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.SettingsLabels();
+	//DeskPRO_Page.setMetaData('newLabelUrl', '{{ path('admin_labels_ajaxnew') }}');
+	//DeskPRO_Page.setMetaData('delLabelUrl', '{{ path('admin_labels_ajaxdel') }}');
+}
+</script>
+{% endblock %}
+{% block section 'agents' %}
+{% block sub_section 'teams' %}
+{% block content %}
+
+<form action="{{ path('admin_agents_teams_edit', {'team_id': team.id|default(0)}) }}" method="post">
+
+<table class="form" width="100%">
+	<tr>
+		<td class="label"><label>Team Name</label></td>
+		<td>
+			<input type="text" name="team[name]" value="{{team.name}}" style="width: 90%" />
+		</td>
+	</tr>
+	<tr>
+		<td class="label" width="40%"><label>Members</label></td>
+		<td>
+			{{ form_field(form.members) }}
+		</td>
+	</tr>
+</table>
+
+<div style="text-align:center">
+	<button class="dp-button" type="submit">Save</button>
+</div>
+
+</form>
+
+{% endblock %}

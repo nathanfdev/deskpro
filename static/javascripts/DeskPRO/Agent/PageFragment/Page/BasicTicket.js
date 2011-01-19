@@ -129,7 +129,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	//#################################################################
 		
 	_initTicketOptionsMenus: function() {
-		var options = ['department', 'category', 'product', 'priority', 'status', 'agent'];
+		var options = ['department', 'category', 'product', 'priority', 'status', 'agent', 'agent_team'];
 		var self = this;
 		
 		for (var i = 0; i < options.length; i++) {
@@ -170,6 +170,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var opt = $(info.itemEl).parent().data('option-name');
 		var itemName = $(info.itemEl).html();
 		var itemId = $(info.itemEl).data('option-id');
+		var itemType = $(info.itemEl).data('option-type');
 		
 		this._updateTicketOptionValue(opt, itemName);
 		

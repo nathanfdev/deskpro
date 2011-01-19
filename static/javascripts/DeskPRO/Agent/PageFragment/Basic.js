@@ -42,6 +42,17 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			this.initFeaturesOnCollection(wrapper);
 		}).bind(this));
 		
+		if (this.getMetaData('initRoutesOn')) {
+			var tmp = this.getMetaData('initRoutesOn');
+			if (typeOf(tmp) == 'string') {
+				tmp = [tmp];
+			}
+			
+			for (var i = 0; i < tmp.length; i++) {
+				this.featureSelectors.routes.push(tmp[i]);
+			}
+		}
+		
 		// Standard hook methods
 		this.addEvent('activate', this.activate);
 		this.addEvent('deactivate', this.deactivate);

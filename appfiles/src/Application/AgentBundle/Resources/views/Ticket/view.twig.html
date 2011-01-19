@@ -33,9 +33,16 @@ pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id':
 	
 		<div class="person-info-line">
 
-			<div class="ticket-opt-btn ticket-options-agent-btn agent" style="float:right">
-				<strong>Agent:</strong><br />
-				<span class="val {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.name}}</span>
+			<div style="float:right">
+				<div class="ticket-opt-btn ticket-options-agent-btn agent">
+					<strong>Agent:</strong><br />
+					<span class="val {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.display_name}}</span>
+				</div>
+				{% if ticket_options.agent_teams %}
+					<div class="ticket-opt-btn ticket-options-agent_team-btn agent_team" style="font-size:7pt">
+						<strong>Team:</strong> <span class="val {% if not ticket.agent_team %}no-value{% endif %}" data-no-value="None">{{ticket.agent_team.name}}</span>
+					</div>
+				{% endif %}
 			</div>
 
 			<div class="person-overview">

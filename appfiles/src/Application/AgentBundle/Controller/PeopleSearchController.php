@@ -11,6 +11,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity\Person;
 use \Application\DeskPRO\Entity\FormField;
 use \Application\DeskPRO\Entity\FormFieldAssociation;
@@ -112,7 +113,13 @@ class PeopleSearchController extends AbstractController
 
 	public function labelsPaneAction()
 	{
-		return $this->render('AgentBundle:PeopleSearch:pane-labels.twig.html');
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('person', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$cloud = $cloud_gen->getCloud();
+
+		return $this->render('AgentBundle:PeopleSearch:pane-labels.twig.html', array(
+			'cloud' => $cloud
+		));
 	}
 	
 	public function findPaneAction()

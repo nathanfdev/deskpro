@@ -120,7 +120,7 @@
 		<div class="group agents {% if section == "agents" %}on{% endif %}">
 			<ul>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Agents</span></li>
-				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Agent Groups</span></li>
+				<li {% if sub_section == 'teams' %}class="on"{% endif %}><a class="icon tickets" href="{{ path('admin_agents_teams') }}">Agent Teams</a></li>
 			</ul>
 		</div>
 		<div class="group tickets {% if section == "tickets" %}on{% endif %}">

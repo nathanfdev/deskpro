@@ -108,7 +108,7 @@ class PersonController extends AbstractController
 
 		// Used in the org dlg popup. TODO need to clean this up.
 		// Likely be an autocomplete field in the dlg
-		$org_options = $db->feetchAllKeyValue("
+		$org_options = $db->fetchAllKeyValue("
 			SELECT id, name
 			FROM organizations
 			ORDER BY name ASC
@@ -428,6 +428,24 @@ class PersonController extends AbstractController
 		);
 
 		return $this->createJsonResponse($data);
+	}
+
+	############################################################################
+	# ajax-save-labels
+	############################################################################
+
+	public function ajaxSaveLabelsAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$person->getLabelManager()->setLabelsArray($labels);
+
+		App::getOrm()->persist($person);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
 	}
 
 

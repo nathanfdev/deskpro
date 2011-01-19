@@ -15,27 +15,20 @@ namespace Application\DeskPRO\Entity;
  * Records labels on people.
  *
  * @orm:Entity
- * @orm:HasLifecycleCallbacks
  * @orm:Table(name="labels_people")
  */
 class LabelPerson extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
+	 * @orm:Id
 	 * @orm:Column(name="label", type="string", length=255)
 	 */
 	protected $label;
 
 	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="person_id", type="integer", nullable=true)
-	 */
-	protected $person_id;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Person
+	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */

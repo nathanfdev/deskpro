@@ -85,9 +85,9 @@ abstract class SearcherAbstract
 
 			$choices_in = "(" . implode(',', $choices_in) . ")";
 
-			if ($op == self::OP_CONTAINS) {
+			if ($op == self::OP_CONTAINS OR $op == self::OP_IS) {
 				$where = "$field IN $choices_in";
-			} elseif ($op == self::OP_NOTCONTAINS) {
+			} elseif ($op == self::OP_NOTCONTAINS OR $op == self::OP_NOT) {
 				$where = "$field NOT IN $choices_in";
 			}
 		} else {

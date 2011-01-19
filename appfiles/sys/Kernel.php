@@ -25,6 +25,11 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 {
 	public function __construct($environment, $debug)
 	{
+		// Normalize locale
+		setlocale(LC_CTYPE, 'C');
+		date_default_timezone_set('UTC');
+		ini_set('default_charset', 'UTF-8');
+
 		parent::__construct($environment, $debug);
 		App::setKernel($this);
 	}

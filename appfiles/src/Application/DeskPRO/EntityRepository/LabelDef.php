@@ -29,16 +29,30 @@ class LabelDef extends EntityRepository
 		// needs new column in LaeblDef to store counts statically, and then
 		// add postInsert code to each label entity to increase the count automatically
 
-		if ($type == 'ticket') {
-			return $this->getEntityManager()->getConnection()->feetchAllKeyValue("
-				SELECT label, COUNT(*) AS count
-				FROM labels_tickets
-				GROUP BY label
-				ORDER BY count DESC
-				LIMIT $limit
-			");
-		} else {
-			throw new \InvalidArgumentException("`$type` is an invlaid label type");
+		switch ($type) {
+			case 'ticket':
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+					SELECT label, COUNT(*) AS count
+					FROM labels_tickets
+					GROUP BY label
+					ORDER BY count DESC
+					LIMIT $limit
+				");
+				break;
+
+			case 'person':
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+					SELECT label, COUNT(*) AS count
+					FROM labels_people
+					GROUP BY label
+					ORDER BY count DESC
+					LIMIT $limit
+				");
+				break;
+
+			default:
+				throw new \InvalidArgumentException("`$type` is an invlaid label type");
+				break;
 		}
 	}
 }

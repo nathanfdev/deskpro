@@ -2,7 +2,9 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Person';
 pageMeta.title = '{{ person.display_name|e('js') }}';
 pageMeta.person_id = {{person.id}};
-pageMeta.pageIdentity = 'person:{{ticket.id}}';
+pageMeta.pageIdentity = 'person:{{person.id}}';
+pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
 </script>
 
 <div class="profile">
@@ -119,8 +121,9 @@ pageMeta.pageIdentity = 'person:{{ticket.id}}';
 			<div>
 				<div class="tags-field">
 					<ul class="tagit person">
-						<li>Tag1</li>
-						<li>Tag2</li>
+						{% for label in person.labels %}
+							<li>{{label.label}}</li>
+						{% endfor %}
 					</ul>
 				</div>
 			</div>

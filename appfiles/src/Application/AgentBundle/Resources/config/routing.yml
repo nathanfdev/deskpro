@@ -121,6 +121,11 @@ agent_people_ajaxget_notes:
   defaults: { _controller: AgentBundle:Person:ajaxGetNotes }
   requirements: { person_id: "\d+" }
 
+agent_person_ajax_labels_save:
+  pattern: /person/{person_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Person:ajaxSaveLabels }
+  requirements: { person_id: "\d+" }
+
 agent_peoplesearch_perform:
   pattern: /people-search/search
   defaults: { _controller: AgentBundle:PeopleSearch:performSearch }
@@ -161,6 +166,10 @@ agent_ticketsearch_overviewpane:
 agent_ticketsearch_labelspane:
     pattern: /ticket-search/labels-pane
     defaults: { _controller: AgentBundle:TicketSearch:labelsPane }
+
+agent_ticketsearch_run_label:
+  pattern: /ticket-search/label/{label}
+  defaults: { _controller: AgentBundle:TicketSearch:runLabel }
 
 agent_ticketsearch_overviewnav:
   pattern: /ticket-search/overview-nav

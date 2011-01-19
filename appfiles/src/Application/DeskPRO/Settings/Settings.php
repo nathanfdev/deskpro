@@ -165,7 +165,7 @@ class Settings implements \ArrayAccess
 		#------------------------------
 
 		$group_in = $this->db->quoteIn($this->_pending_groups, \PDO::PARAM_STR);
-		$db_settings = $this->db->feetchAllKeyValue("
+		$db_settings = $this->db->fetchAllKeyValue("
 			SELECT name, value
 			FROM settings
 			WHERE groupname IN ($group_in)

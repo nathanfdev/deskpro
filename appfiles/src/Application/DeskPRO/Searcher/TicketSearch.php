@@ -14,12 +14,14 @@ class TicketSearch extends SearcherAbstract
 	const TERM_CATEGORY      = 'category';
 	const TERM_PRODUCT       = 'product';
 	const TERM_AGENT         = 'agent';
+	const TERM_AGENT_TEAM    = 'agent_team';
 	const TERM_STATUS        = 'status';
 	const TERM_PRIORITY      = 'priority';
 	const TERM_SUBJECT       = 'subject';
 	const TERM_ORGANIZATION  = 'organization';
 	const TERM_LANGUAGE      = 'language';
 	const TERM_PARTICIPANT   = 'participant';
+	const TERM_LABEL         = 'label';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -109,6 +111,29 @@ class TicketSearch extends SearcherAbstract
 			$user_parts = $this->person_search->getSqlParts();
 		}
 
+		$where = '';
+
+		#------------------------------
+		# Standard for permissions
+		#------------------------------
+
+		$agent = App::getCurrentPerson();
+		$agent->loadHelper('AgentPermissions');
+		$agent->loadHelper('AgentTeam');
+
+		// perms only matter if person has permissions applied at all
+		if ($agent->getDisallowedDepartments()) {
+			$where_perm[] = "ticket.agent_id = {$agent['id']}";
+			if ($agent->getAgentTeamIds()) {
+				$where_perm[] = "ticket.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+			}
+			$where_perm[] = "ticket.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+
+			$where_perm = implode(' OR ', $where_perm);
+
+			$where .= "($where_perm) AND ";
+		}
+
 
 		#------------------------------
 		# Add joins
@@ -129,7 +154,6 @@ class TicketSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
-		$where = '';
 		if ($ticket_parts['wheres']) {
 			$where .= implode(" AND ", $ticket_parts['wheres']);
 		}
@@ -169,6 +193,9 @@ class TicketSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_DEPARTMENT:
+					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+					if (count($choice) == 1) $choice = $choice[0];
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice);
 					break;
 				case self::TERM_CATEGORY:
@@ -196,6 +223,17 @@ class TicketSearch extends SearcherAbstract
 						}
 					} else {
 						$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $choice);
+					}
+					break;
+				case self::TERM_AGENT_TEAM:
+					if ($op == self::OP_IS) {
+						if ($choice == 0) {
+							$wheres[] = "$tickets_table.agent_team_id IS NULL";
+						} else {
+							$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $choice);
+						}
+					} else {
+						$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $choice);
 					}
 					break;
 				case self::TERM_STATUS:
@@ -237,6 +275,42 @@ class TicketSearch extends SearcherAbstract
 							break;
 					}
 					break;
+
+				case self::TERM_LABEL:
+					$field = 'labels_tickets.label';
+
+					$choices_in = array();
+					foreach ((array)$choice as $c) {
+						$choices_in[] = $db->quote($c);
+					}
+					$choices_in = implode(',', $choices_in);
+
+					switch ($op) {
+						case self::OP_IS:
+							$joins[] = 'labels_tickets';
+							$wheres[] = "$field = " . $db->quote($choice);
+							break;
+						case self::OP_NOT:
+							$joins[] = array(
+								'labels_tickets',
+								'LEFT JOIN labels_tickets ON (labels_tickets.ticket_id = tickets.id AND labels_tickets.label = '.$db->quote($choice).')'
+							);
+							$wheres[] = "$field IS NULL";
+							break;
+						case self::OP_CONTAINS:
+							$joins[] = 'labels_tickets';
+							$wheres[] = "$field IN ($choices_in)";
+							break;
+
+						case self::OP_NOTCONTAINS:
+							$joins[] = array(
+								'labels_tickets',
+								"LEFT JOIN labels_tickets ON (labels_tickets.ticket_id = tickets.id AND labels_tickets.label IN ($choices_in)"
+							);
+							$wheres[] = "$field IS NULL";
+							break;
+					}
+					break;
 			}
 		}
 
@@ -263,6 +337,9 @@ class TicketSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_DEPARTMENT:
+					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+					if (count($choice) == 1) $choice = $choice[0];
+					
 					if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
 					break;
 				case self::TERM_CATEGORY:

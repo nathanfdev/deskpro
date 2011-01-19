@@ -99,7 +99,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param int $mode Change to PDO::FETCH_ASSOC if you want to specify a string indexes
 	 * @return array
 	 */
-	public function feetchAllKeyValue($statement, array $params = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM)
+	public function fetchAllKeyValue($statement, array $params = array(), $key_index = 0, $val_index = 1, $mode = PDO::FETCH_NUM)
 	{
 		$statement = $this->executeQuery($statement, $params);
 		$array = array();
