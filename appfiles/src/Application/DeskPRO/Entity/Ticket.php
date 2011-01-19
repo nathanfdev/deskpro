@@ -27,8 +27,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const CREATED_WEB_AGENT = 'web.agent';
 	const CREATED_GATEWAT_PERSON = 'gateway.person';
 
-	const STATUS_AWAITING_AGENT = 'awaiting_agent';
-	const STATUS_AWAITING_USER = 'awaiting_user';
+	const STATUS_OPEN = 'open';
+	const STATUS_PENDING = 'pending';
 	const STATUS_RESOLVED = 'resolved';
 	const STATUS_CLOSED = 'closed';
 	const STATUS_HIDDEN = 'hidden';

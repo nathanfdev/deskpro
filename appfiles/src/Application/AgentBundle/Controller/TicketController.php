@@ -135,7 +135,7 @@ class TicketController extends AbstractController
 		$ticket['subject']      = $this->in->getString('ticket.subject');
 
 		if (!$ticket['status']) {
-			$ticket['status'] = Entity\Ticket::STATUS_AWAITING_AGENT;
+			$ticket['status'] = Entity\Ticket::STATUS_OPEN;
 		}
 
 		$ticket['creation_system'] = Entity\Ticket::CREATED_WEB_AGENT;

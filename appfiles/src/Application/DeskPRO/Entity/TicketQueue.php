@@ -97,6 +97,11 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 
 		foreach ($this->terms as $term) {
+
+			if (!$term OR empty($term['rule_type']) OR !isset($term['op'])) {
+				continue;
+			}
+
 			$data = $term;
 			unset($data['rule_type'], $data['op']);
 

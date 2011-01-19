@@ -38,8 +38,10 @@ class TicketSearchController extends AbstractController
 			$queues = array();
 
 			foreach ($order as $id) {
-				$queues[$id] = $queues_unordered[$id];
-				unset($queues_unordered[$id]);
+				if (isset($queues_unordered[$id])) {
+					$queues[$id] = $queues_unordered[$id];
+					unset($queues_unordered[$id]);
+				}
 			}
 
 			if (count($queues_unordered)) {
@@ -391,11 +393,11 @@ class TicketSearchController extends AbstractController
 				case 'status':
 					switch ($this->in->getString('status')) {
 						case 'awaiting_agent':
-							$ticket['status'] = Ticket::STATUS_AWAITING_AGENT;
+							$ticket['status'] = Ticket::STATUS_OPEN;
 							break;
 
-						case 'awaiting_user':
-							$ticket['status'] = Ticket::STATUS_AWAITING_USER;
+						case 'pending':
+							$ticket['status'] = Ticket::STATUS_PENDING;
 							break;
 
 						case 'resolved':

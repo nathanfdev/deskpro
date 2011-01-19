@@ -285,7 +285,7 @@ class Basic
 	{
 		return array(
 			array(1, 'awaiting_tech'), // 0.1% of 300,000 is 300 tickets
-			array(10, 'awaiting_user'),
+			array(10, 'pending'),
 			array(200, 'resolved'),
 			array(50, 'hidden'),
 			array(800, 'closed'), // remaining are closed

@@ -20,8 +20,8 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 					<li>
 						<span>{{info.total}}</span>
 						<label>
-							{% if info.title == 'awaiting_agent' %}Open
-							{% elseif info.title == 'awaiting_user' %}Pending
+							{% if info.title == 'open' %}Open
+							{% elseif info.title == 'pending' %}Pending
 							{% elseif info.title == 'closed' %}Closed
 							{% elseif info.title == 'resolved' %}Resolved
 							{% elseif info.title == 'hidden' %}Hidden

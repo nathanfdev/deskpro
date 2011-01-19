@@ -15,9 +15,9 @@
 		<dt>Status</dt>
 		<dd>
 			{# todo these will be phrases, so this big condition wont be needed #}
-			{% if not ticket.status or ticket.status == 'awaiting_agent' %}
+			{% if not ticket.status or ticket.status == 'open' %}
 				Open
-			{% elseif ticket.status == 'awaiting_user' %}
+			{% elseif ticket.status == 'pending' %}
 				Pending
 			{% elseif ticket.status == 'resolved' %}
 				Resolved
