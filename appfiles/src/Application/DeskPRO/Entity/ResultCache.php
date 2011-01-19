@@ -61,6 +61,14 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	protected $results = array();
 
 	/**
+	 * Any extra data
+	 *
+	 * @var array
+	 * @orm:Column(name="extra", type="array")
+	 */
+	protected $extra = array();
+
+	/**
 	 * @var int
 	 * @orm:Column(name="num_results", type="integer")
 	 */

@@ -12,6 +12,34 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 <div class="content">
 	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.twig.html' %}
 
+	{% if grouped_info %}
+	<div class="search-top">
+		<ul class="grouping-info">
+			{% for info in grouped_info %}
+				{% if info.id != -1 %}
+					<li>
+						<span>{{info.total}}</span>
+						<label>
+							{% if info.title == 'awaiting_agent' %}Open
+							{% elseif info.title == 'awaiting_user' %}Pending
+							{% elseif info.title == 'closed' %}Closed
+							{% elseif info.title == 'resolved' %}Resolved
+							{% elseif info.title == 'hidden' %}Hidden
+							{% else %}{{info.title}}
+							{% endif %}
+						</span>
+					</li>
+				{% endif %}
+			{% endfor %}
+			<li class="total">
+				<span>{{grouped_info[0].total}}</span>
+				<label>Total</label>
+			</li>
+		</ul>
+		<br class="clear" />
+	</div>
+	{% endif %}
+
 	<table class="list" cellspacing="0" width="100%">
 		{% include 'AgentBundle:TicketSearch:part-results-list-thead.twig.html' %}
 		{% include 'AgentBundle:TicketSearch:part-results-list.twig.html' %}

@@ -244,6 +244,12 @@ class GroupingCounter
 			case 'priority_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 				break;
+
+			default:
+				// No titles? Lets just use the id itself as the 'title'
+				// Useful for phrases like status, that might be rendered English later
+				$titles = array_combine($ids, $ids);
+				break;
 		}
 
 		return $titles;

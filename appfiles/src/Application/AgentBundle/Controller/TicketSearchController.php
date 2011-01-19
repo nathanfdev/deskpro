@@ -59,14 +59,24 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
+		$queue = App::getEntityRepository('DeskPRO:TicketQueue')->find($queue_id);
 		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($queue_id, $page, 50);
 		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
 
+		$grouped_info = null;
 		$tpl = 'AgentBundle:TicketSearch:queue-results.twig.html';
 		if ($this->in->getBool('partial')) {
 			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig.html';
 			if (!count($tickets)) {
 				return $this->createResponse('');
+			}
+		} else {
+
+			// Not partial (meaning not a sub page-load),
+			// also fetch the grouped vars so it goes in the header
+			if ($queue['group_by']) {
+				$grouper = new \Application\DeskPRO\Tickets\SimpleGroupingCounter($queue->getResults(), $queue['group_by']);
+				$grouped_info = $grouper->getDisplayArray();
 			}
 		}
 
@@ -80,13 +90,15 @@ class TicketSearchController extends AbstractController
 
 		return $this->render($tpl, array(
 			'queue_id' => $queue_id,
+			'queue' => $queue,
 			'tickets' => $tickets,
 			'flagged_tickets' => $flagged_tickets,
 			'page' => $page,
 			'display_fields' => $display_fields,
 			'macros' => $macros,
 			'ticket_flagged_color' => 'none',
-			'show_flag' => true
+			'show_flag' => true,
+			'grouped_info' => $grouped_info
 		));
 	}
 

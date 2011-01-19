@@ -30,6 +30,14 @@ a:hover {
 	text-decoration: none;
 }
 
+.clear {
+	clear: both;
+	height: 1px;
+	width: 1px;
+	visibility: hidden;
+	overflow: hidden;
+}
+
 input[type="text"], input[type="password"], textarea {
 	background-color: #f6f8fb;
 	color: #000;
@@ -265,6 +273,66 @@ ul.tag-cloud li.tag-size10 { font-size:2.9em; }
 /**********************************************************
  Main List Table
 ***********************************************************/
+
+div.search-top {
+	background-color: #E1E1E3;
+	border-bottom: 1px solid #878787;
+}
+
+div.search-top .selected-counter {
+	float
+	
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	
+	background-color: #D1CFB4;
+	padding: 1px 4px 1px 4px;
+	
+	font-size: 7pt;
+	
+	padding: 3px 5px 5px 5px;
+	margin: 8px 0 0 5px;
+	
+	text-shadow: 1px 1px 2px #F5F5F5;
+	filter: dropshadow(color=#ffffff, offx=0, offy=0);
+}
+
+div.search-top ul.grouping-info {
+	display: block;
+}
+
+div.search-top ul.grouping-info li {
+	float: left;
+	display: block;
+	padding: 5px;
+	text-align: center;
+	margin-right: 6px;
+	
+	text-shadow: 1px 1px 2px #F5F5F5;
+	filter: dropshadow(color=#ffffff, offx=0, offy=0);
+}
+
+div.search-top ul.grouping-info li.total {
+	float: right;
+}
+
+div.search-top ul.grouping-info li span {
+	font-size: 8pt;
+	
+	-moz-border-radius: 8px;
+	border-radius: 8px;
+	
+	font-weight: bold;
+	
+	background-color: #ABACB1;
+	padding: 1px 4px 1px 4px;
+}
+
+div.search-top ul.grouping-info li label {
+	font-size: 7pt;
+	display: block;
+	margin-top: 3px;
+}
 
 table.list > thead > tr {
 	background: #ABACB1;

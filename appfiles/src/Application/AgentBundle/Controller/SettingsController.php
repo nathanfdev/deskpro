@@ -77,8 +77,9 @@ class SettingsController extends AbstractController
 
 	public function _processEditQueue(Entity\TicketQueue $queue)
 	{
-		$queue['title'] = $this->in->getString('title');
-		$queue['terms'] = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+		$queue['title']    = $this->in->getString('queue.title');
+		$queue['group_by'] = $this->in->getString('queue.group_by');
+		$queue['terms']    = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
 
 		if (!$queue['person_id']) {
 			$queue['person'] = $this->person;

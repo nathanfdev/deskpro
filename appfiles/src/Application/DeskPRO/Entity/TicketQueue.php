@@ -64,6 +64,12 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 	protected $terms;
 
 	/**
+	 * @var string
+	 * @orm:Column(name="group_by", type="string", length=255)
+	 */
+	protected $group_by = '';
+
+	/**
 	 * Results from the last search
 	 * @var array
 	 */
