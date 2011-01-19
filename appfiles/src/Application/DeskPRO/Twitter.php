@@ -17,13 +17,15 @@ use Zend_Http_Client;
  */
 class Twitter
 {
-
         //DeskPro Twitter App configuration Array
-        private $config;
+        private $_config = array(
+                'callbackUrl' => 'http://basiltest.dyndns.biz/dp/DeskPRO/index_dev.php/agent/twitter/callback',
+                'siteUrl' => 'http://twitter.com/oauth',
+                'consumerKey' => 'MmuQ3021xYehoBzjjd3WFg',
+                'consumerSecret' => 'RORtnJhEUkesx7jDZCSHXonIRjLVAeQ9hIXK8MBf9o'
+            );
 
-
-        function __construct($configuration) {
-                $this->config = $configuration;
+        function __construct() {
         }
 
         /*
@@ -34,7 +36,7 @@ class Twitter
         * If Already authenticated, Returns true to the calling function
         */
         function requestAuth(){
-                $consumer = new Zend_Oauth_Consumer($this->config);
+                $consumer = new Zend_Oauth_Consumer($this->_config);
                 /*
                 * Check for already authenticated and
                 * app has TWITTER ACCESS TOKEN
@@ -43,12 +45,11 @@ class Twitter
                     /*
                     * Redirect to twitter API with REQUEST TOKEN
                     */
-                    
                     $token = $consumer->getRequestToken();
                     $_SESSION['TWITTER_REQUEST_TOKEN'] = serialize($token);
                     $consumer->redirect();die;
                 }else{
-                    
+                    $this->getFavourites();
                     return true;
                 }
         }
@@ -59,7 +60,7 @@ class Twitter
         * @param Array $this->config --- Contains configuration of Twitter client
         */
         function handleCallback(){
-                $consumer = new Zend_Oauth_Consumer($this->config);
+                $consumer = new Zend_Oauth_Consumer($this->_config);
 
                 if (!empty($_GET) && isset($_SESSION['TWITTER_REQUEST_TOKEN'])) {
                     $token = $consumer->getAccessToken($_GET, unserialize($_SESSION['TWITTER_REQUEST_TOKEN']));
@@ -70,30 +71,33 @@ class Twitter
                 }
         }
 
-        function getMensions(){
+        function getFavourites(){
+            if(!isset($_SESSION['TWITTER_ACCESS_TOKEN'])){
+                $this->requestAuth();
+            }
             $token = unserialize($_SESSION['TWITTER_ACCESS_TOKEN']);
             $token = (object)$token;
 
-            $client = $token->getHttpClient($this->config);
-
+            $client = $token->getHttpClient($this->_config);
             $client->setUri('http://api.twitter.com/1/favorites.json');
             $client->setMethod(Zend_Http_Client::GET);
+
             $response = $client->request();
-            print_r(json_decode($response->getBody()));die;
+          print_r(json_decode($response->getBody()));die;
             return json_decode($response->getBody());
         }
 
 
         function getFollowersByHandle($screen_name){
             if(!isset($_SESSION['TWITTER_ACCESS_TOKEN'])){
-             //   $this->requestAuth();
+                $this->requestAuth();
             }
 
             $token = unserialize($_SESSION['TWITTER_ACCESS_TOKEN']);
             $token = (object)$token;
 
-            $client = $token->getHttpClient($this->config);
-
+            $client = $token->getHttpClient($this->_config);
+            
             $client->setUri('http://twitter.com/statuses/followers.json');
             $client->setParameterGet('screen_name', $screen_name);
             $client->setMethod(Zend_Http_Client::GET);
