@@ -3,6 +3,7 @@
 namespace Application\DeskPRO\Searcher;
 
 use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 
@@ -18,6 +19,15 @@ abstract class SearcherAbstract
 	const OP_NOTCONTAINS = 'notcontains';
 	const OP_NOOP        = null;
 
+	const ORDER_ASC      = 'ASC';
+	const ORDER_DESC     = 'DESC';
+
+	/**
+	 * The person context
+	 * @var Entity\Person
+	 */
+	protected $person = array();
+
 	/**
 	 * Array of terms we've set.
 	 * term_type=>array(op_type, choice)
@@ -26,8 +36,26 @@ abstract class SearcherAbstract
 	 */
 	protected $terms = array();
 
+	/**
+	 * array(type, direction) of ordering
+	 * @var array
+	 */
+	protected $order_by = array();
 
 
+	
+	/**
+	 * Set the person context to fetch permissions etc form
+	 * 
+	 * @param Entity\Person $person 
+	 */
+	public function setPerson(Entity\Person $person)
+	{
+		$this->person = $person;
+	}
+
+
+	
 	/**
 	 * Set an array of terms at once.
 	 *
@@ -36,6 +64,37 @@ abstract class SearcherAbstract
 	public function setTerms(array $terms)
 	{
 		$this->terms = array_merge($this->terms, $terms);
+	}
+
+
+	
+	/**
+	 * Set the ordering
+	 *
+	 * @param string $type
+	 * @param string $direction
+	 */
+	public function setOrderBy($type, $direction = self::ORDER_DESC)
+	{
+		$this->order_by = array($type, $direction);
+	}
+
+
+	
+	/**
+	 * Set orderBy using a 'code' which is "type:direction" such as "ticket.id:asc".
+	 *
+	 * @param string $order_by_code
+	 */
+	public function setOrderByCode($order_by_code)
+	{
+		if (strpos($order_by_code, ':') === false) {
+			$order_by_code .= ':' . self::ORDER_DESC;
+		}
+
+		list($type, $direction) = explode(':', $order_by_code);
+
+		$this->setOrderBy($type, $direction);
 	}
 
 

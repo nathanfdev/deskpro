@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use \Application\DeskPRO\App;
+
 /**
  * Ticket queues
  *
@@ -70,6 +72,12 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 	protected $group_by = '';
 
 	/**
+	 * @var string
+	 * @orm:Column(name="order_by", type="string", length=255)
+	 */
+	protected $order_by = '';
+
+	/**
 	 * Results from the last search
 	 * @var array
 	 */
@@ -122,7 +130,20 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 
 		$searcher = $this->getSearcher();
 
-		//TODO remove when ready for real searches
+		// TODO make person be passed in directly to this method
+		$person = App::getCurrentPerson();
+		$searcher->setPerson(App::getCurrentPerson());
+
+		$order_by = $person->getPref('agent.ui.ticket-queues-order-by.' . $this->id);
+		if (!$order_by AND $this->order_by) {
+			$order_by = $this->order_by;
+		}
+
+		if ($order_by) {
+			$searcher->setOrderByCode($order_by);
+		}
+
+		// TODO remove when ready for real searches
 		$searcher->enableArchiveSearch();
 
 		$this->_results = $searcher->getMatches();

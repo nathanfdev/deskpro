@@ -44,6 +44,15 @@ $(document).ready(function() {
 		<input type="input" name="queue[title]" class="input-title" value="{{queue.title}}" />
 	</div>
 	<div class="row">
+		<label for="macro_title">Order by</label>
+		<select name="queue[order_by]">
+			<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
+			<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
+			<option value="ticket.priority:desc">Priority (Highest-Lowest)</option>
+			<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+		</select>
+	</div>
+	<div class="row">
 		<label for="macro_title">Group by</label>
 		<select name="queue[group_by]">
 			<option value="">(No grouping)</option>

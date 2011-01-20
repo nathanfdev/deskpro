@@ -179,6 +179,13 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 			});
 		});
 		
+		
+		// and the ordering
+		data.push({
+			name: 'prefs[agent.ui.ticket-queues-order-by.' + this.getMetaData('queue_id', 0) +']',
+			value: $('select[name="order_by"]', this.displayOptionsWrapper).val()
+		});
+		
 		// We reload the same page which will have changes applied
 		var url = this.getMetaData('routeUrl');
 		var self = this;

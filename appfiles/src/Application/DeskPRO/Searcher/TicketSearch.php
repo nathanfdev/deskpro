@@ -34,8 +34,6 @@ class TicketSearch extends SearcherAbstract
 	 */
 	protected $person_search = null;
 
-
-
 	/**
 	 * Set a set of person search terms.
 	 *
@@ -117,21 +115,24 @@ class TicketSearch extends SearcherAbstract
 		# Standard for permissions
 		#------------------------------
 
-		$agent = App::getCurrentPerson();
-		$agent->loadHelper('AgentPermissions');
-		$agent->loadHelper('AgentTeam');
+		$agent = $this->person;
 
-		// perms only matter if person has permissions applied at all
-		if ($agent->getDisallowedDepartments()) {
-			$where_perm[] = "ticket.agent_id = {$agent['id']}";
-			if ($agent->getAgentTeamIds()) {
-				$where_perm[] = "ticket.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+		if ($agent AND $agent['is_agent']) {
+			$agent->loadHelper('AgentPermissions');
+			$agent->loadHelper('AgentTeam');
+
+			// perms only matter if person has permissions applied at all
+			if ($agent->getDisallowedDepartments()) {
+				$where_perm[] = "ticket.agent_id = {$agent['id']}";
+				if ($agent->getAgentTeamIds()) {
+					$where_perm[] = "ticket.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+				}
+				$where_perm[] = "ticket.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+
+				$where_perm = implode(' OR ', $where_perm);
+
+				$where .= "($where_perm) AND ";
 			}
-			$where_perm[] = "ticket.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
-
-			$where_perm = implode(' OR ', $where_perm);
-
-			$where .= "($where_perm) AND ";
 		}
 
 
@@ -151,6 +152,12 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		#------------------------------
+		# Add order by
+		#------------------------------
+		
+		$order_by = $this->getOrderByPart();
+
+		#------------------------------
 		# Add wheres
 		#------------------------------
 
@@ -165,9 +172,64 @@ class TicketSearch extends SearcherAbstract
 			$sql .= " WHERE $where ";
 		}
 
+		$sql .= $order_by;
+
 		$sql .= " LIMIT 1000";
 
+		//die($sql);
+
 		return $sql;
+	}
+
+	
+
+	/**
+	 * Get the ORDER BY clause based on order info set.
+	 * 
+	 * @return string
+	 */
+	public function getOrderByPart()
+	{
+		if (!$this->order_by) {
+			$this->order_by = array('ticket.date_created', 'DESC');
+		}
+
+		list($type, $dir) = $this->order_by;
+
+		$dir = strtoupper($dir);
+		if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+			$dir = self::ORDER_DESC;
+		}
+
+		$order_by = '';
+
+		switch ($type) {
+			case 'ticket.date_created':
+				$order_by = "tickets.id $dir";
+				break;
+
+			case 'ticket.priority':
+				$order_by = "tickets.priority_id $dir"; // TODO will change for actual priority number
+				break;
+
+			case 'ticket.date_resolved':
+				$order_by = "tickets.date_resolved $dir";
+				break;
+			
+			case 'ticket.date_closed':
+				$order_by = "tickets.date_closed $dir";
+				break;
+
+			case 'ticket.last_activity':
+				$order_by = "tickets.date_last_user_reply $dir";
+				break;
+		}
+
+		if ($order_by) {
+			$order_by = "ORDER BY $order_by";
+		}
+
+		return $order_by;
 	}
 
 

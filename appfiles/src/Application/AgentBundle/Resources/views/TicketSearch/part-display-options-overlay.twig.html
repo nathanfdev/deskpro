@@ -2,7 +2,10 @@
 	<h1>Display Options</h1>
 	<div style="float: right; width: 100px;">
 		Order By: <select name="order_by">
-			<option value="id.asc">Date Opened</option>
+			<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
+			<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
+			<option value="ticket.priority:desc">Priority (Highest-Lowest)</option>
+			<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
 		</select>
 	</div>
 	<div style="margin-right: 115px;">

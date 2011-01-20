@@ -79,6 +79,7 @@ class SettingsController extends AbstractController
 	{
 		$queue['title']    = $this->in->getString('queue.title');
 		$queue['group_by'] = $this->in->getString('queue.group_by');
+		$queue['order_by'] = $this->in->getString('queue.order_by');
 		$queue['terms']    = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
 
 		if (!$queue['person_id']) {
