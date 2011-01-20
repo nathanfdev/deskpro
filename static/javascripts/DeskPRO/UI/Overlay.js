@@ -255,7 +255,11 @@ DeskPRO.UI.Overlay = new Class({
 	 * Destroy this overlay and all of its supporting elements.
 	 */
 	destroy: function() {
-		this.elements.wrapperOuter.remove();
-		this.elements.modal.remove();
+		if (this.elements.wrapperOuter) {
+			this.elements.wrapperOuter.remove();
+		}
+		if (this.elements.modal) {
+			this.elements.modal.remove();
+		}
 	}
 });
