@@ -256,7 +256,7 @@ class TicketSearch extends SearcherAbstract
 
 			switch ($term) {
 				case self::TERM_ID:
-					$wheresp[] = $this->_choiceMatch("$ticket_table.id", $op, $choice);
+					$wheres[] = $this->_choiceMatch("$tickets_table.id", $op, $choice);
 					break;
 				case self::TERM_DEPARTMENT:
 					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);

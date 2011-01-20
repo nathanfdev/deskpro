@@ -95,14 +95,15 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		if (field == 'NONE') {
 			this.appendUrl = null;
 		} else {		
-			this.appendUrl = '&filter_group[term]=' + field + '&filter_grouo[id]=' + field_id;
-			$('table.list tbody', this.contentWrapper).remove();
-			this.loadResultPage(1);
+			this.appendUrl = '&filter_group[term]=' + field + '&filter_group[choice]=' + field_id;
 		}
+
+		$('table.list tbody', this.contentWrapper).remove();
+		this.loadResultPage(1);
 		
 		$('div.search-top ul.grouping-info > li', this.contentWrapper).removeClass('on');
 		
-		if (el && field != 'NONE') {
+		if (el) {
 			el.addClass('on');
 		}
 	},
