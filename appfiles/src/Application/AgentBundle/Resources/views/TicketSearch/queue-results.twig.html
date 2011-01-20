@@ -2,6 +2,8 @@
 pageMeta.title = 'Ticket Queue';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketQueue';
 pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id}) }}?partial=1&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id}) }}?';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 {% if queue_id %}
 	pageMeta.queue_id = {{queue_id}};
 {% endif %}

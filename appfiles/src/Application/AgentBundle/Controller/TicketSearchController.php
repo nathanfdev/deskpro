@@ -64,8 +64,13 @@ class TicketSearchController extends AbstractController
 
 		$vars = array(
 			'queue' => $queue,
-			'queue_id' => $queue['id']
+			'queue_id' => $queue['id'],
 		);
+
+		$pref_display_fields = $this->person->getPref('agent.ui.ticket-'.$type.'-display-fields.' . $type_id);
+		if ($pref_display_fields) {
+			$vars['display_fields'] = $pref_display_fields;
+		}
 
 		return $this->_getResponseForTickets('queue', $queue['id'], $results_helper, $vars);
 	}
@@ -110,10 +115,9 @@ class TicketSearchController extends AbstractController
 		}
 
 		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
-		$display_fields = $this->person->getPref('agent.ui.ticket-'.$type.'-display-fields.' . $type_id);
 
-		if (!$display_fields) {
-			$display_fields = array('person', 'department');
+		if (empty($vars['display_fields'])) {
+			$vars['display_fields'] = array('person', 'department');
 		}
 
 		$macros = null;
@@ -127,7 +131,6 @@ class TicketSearchController extends AbstractController
 			'tickets'            => $tickets,
 			'flagged_tickets'    => $flagged_tickets,
 			'page'               => $page,
-			'display_fields'     => $display_fields,
 			'macros'             => $macros,
 			'show_flag'          => true,
 			'grouped_info'       => $grouped_info,
@@ -196,8 +199,7 @@ class TicketSearchController extends AbstractController
 		}
 
 		#------------------------------
-		# If there's no result set, we're running
-		# it for the first time
+		# If there's no result set, we're running it for the first time
 		#------------------------------
 
 		if (!$result_cache) {
@@ -215,14 +217,21 @@ class TicketSearchController extends AbstractController
 				$searcher->addTerm($term['rule_type'], $term['op'], $data);
 			}
 
+			$order_by = $this->in->getString('filter.order_by');
+			$group_by = $this->in->getString('filter.group_by');
+
 			//TODO remove when ready for real searches, make it an option in UI
 			$searcher->enableArchiveSearch();
+
+			if ($order_by) {
+				$searcher->setOrderByCode($order_by);
+			}
 
 			$results = $searcher->getMatches();
 
 			$result_cache = new Entity\ResultCache();
 			$result_cache['person'] = $this->person;
-			$result_cache['criteria'] = array('terms' => $terms);
+			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by, 'group_by' => $group_by);
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
 
@@ -230,12 +239,52 @@ class TicketSearchController extends AbstractController
 			App::getOrm()->flush();
 		}
 
+		#------------------------------
+		# Re-do search if we changed order
+		#------------------------------
+
+		// Prefs are saved into extra[]. Of order_by doesn't match
+		// the order_by in criteria, that means the user changed it
+		// and we have to re-do the search
+
+		if (!empty($result_cache['extra']['order_by']) AND $result_cache['extra']['order_by'] != $result_cache['criteria']['order_by']) {
+			$criteria = $result_cache['criteria'];
+			$criteria['order_by'] = $result_cache['extra']['order_by'];
+
+			$result_cache['criteria'] = $criteria;
+
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->setTerms($result_cache['criteria']['terms']);
+			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
+			$searcher->enableArchiveSearch();
+
+			$results = $searcher->getMatches();
+			$result_cache['results'] = $results;
+			$result_cache['num_results'] = count($results);
+
+			App::getOrm()->persist($result_cache);
+			App::getOrm()->flush();
+		}
+
+		#------------------------------
+		# Serve results
+		#------------------------------
+
 		$results_helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
 
 		$vars = array(
 			'cache' => $result_cache,
 			'cache_id' => $result_cache['id']
 		);
+
+		if (!empty($result_cache['extra']['display_fields'])) {
+			$vars['display_fields'] =$result_cache['extra']['display_fields'];
+		}
+
+		$pref_name = 'agent.ui.ticket-filter-display-fields.' . $result_cache['id'];
+		if (!empty($result_cache['extra'][$pref_name])) {
+			$vars['display_fields'] = $result_cache['extra'][$pref_name];
+		}
 
 		return $this->_getResponseForTickets('filter', $result_cache['id'], $results_helper, $vars);
 	}
@@ -439,6 +488,44 @@ class TicketSearchController extends AbstractController
 			'page' => $page,
 			'display_fields' => array('person', 'agent')
 		));
+	}
+
+	
+	############################################################################
+	# save-result-prefs
+	############################################################################
+
+	public function ajaxSaveResultPrefsAction($cache_id)
+	{
+		$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($cache_id);
+
+		$extra = $result_cache['extra'];
+
+		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'str_simple') as $pref_name => $value)
+		{
+			// Remove trailing .ID for cleaner case test
+			$pref_name = str_replace('.'.$result_cache['id'], '', $pref_name);
+			switch ($pref_name) {
+				case 'agent.ui.ticket-filter-order-by':
+					$pref_name = 'order_by';
+					break;
+				case 'agent.ui.ticket-filter-display-fields':
+					$pref_name = 'display_fields';
+					break;
+				default:
+					throw new \InvalidArgumentException("Invalid preference `$pref_name`");
+					break;
+			}
+
+			$extra[$pref_name] = $value;
+		}
+
+		$result_cache['extra'] = $extra;
+
+		App::getOrm()->persist($result_cache);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 

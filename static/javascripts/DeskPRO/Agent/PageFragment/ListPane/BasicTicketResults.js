@@ -67,6 +67,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		if (this.flagMenu) {
 			this.flagMenu.destroy();
 		}
+		
+		if (this.displayOptionsOverlay) {
+			this.displayOptionsOverlay.destroy();
+		}
 	},
 	
 	//#########################################################################
@@ -210,21 +214,24 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		});
 		
 		// We reload the same page which will have changes applied
-		var url = this.getMetaData('routeUrl');
+		var url = this.getMetaData('refreshUrl');
+		if (this.appendUrl) {
+			url += this.appendUrl;
+		}
+		
 		var self = this;
 		
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'agent/misc/ajax-save-prefs',
+			url: this.getMetaData('saveListPrefsUrl'),
 			data: data,
 			success: function() {
 				
-				$('.buttons .loading-off', this.displayOptionsWrapper).hide();
-				$('.buttons .loading-on', this.displayOptionsWrapper).show();
-				
-				self.displayOptionsOverlay.closeOverlay();
-				DeskPRO_Window.loadListPane(url);
+				DeskPRO_Window.loadListPane(url, null, function() {
+					DeskPRO_Window.removePage(self);
+				});
+
 			}
 		});
 	},

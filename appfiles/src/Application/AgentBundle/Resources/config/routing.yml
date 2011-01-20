@@ -220,6 +220,10 @@ agent_ticketsearch_runflag:
   pattern: /ticket-search/flag/{flag}
   defaults: { _controller: AgentBundle:TicketSearch:runFlagged }
 
+agent_ticketsearch_save_resultprefs:
+  pattern: /ticket-search/save-result-prefs/{cache_id}
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxSaveResultPrefs }
+  requirements: { cache_id: "\d+" }
 
 ################################################################################
 # Ticket

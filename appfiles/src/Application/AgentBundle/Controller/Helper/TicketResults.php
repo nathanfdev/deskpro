@@ -79,12 +79,20 @@ class TicketResults
 		return $helper;
 	}
 
+	/**
+	 * @return Application\AgentBundle\Controller\Helper\TicketResults
+	 */
 	public static function newFromResultCache($controller, ResultCache $result_cache)
 	{
 		$helper = new self($controller);
 		$helper->setTicketIds($result_cache['results']);
 
-		//$helper->setGroupOrderBy($result_cache['results']);
+		if (!empty($result_cache['criteria']['order_by'])) {
+			$helper->setGroupOrderBy($result_cache['criteria']['order_by']);
+		}
+		if (!empty($result_cache['criteria']['group_by'])) {
+			$helper->setGroupField($result_cache['criteria']['group_by']);
+		}
 
 		$extra = $result_cache['extra'];
 		if (!empty($extra['group_by'])) {
@@ -143,7 +151,7 @@ class TicketResults
 		$searcher->addTerm($this->group_field, TicketSearch::OP_IS, $field_id);
 
 		if ($this->order_by) {
-			$searcher->setOrderBy($this->order_by);
+			$searcher->setOrderByCode($this->order_by);
 		}
 
 		$this->grouped_ticket_ids = $searcher->getMatches();
