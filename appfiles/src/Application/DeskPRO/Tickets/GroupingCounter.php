@@ -83,6 +83,28 @@ class GroupingCounter
 		return $return;
 	}
 
+	
+
+
+	/**
+	 * Sort a display array so that the biggest counts are first
+	 * 
+	 * @param array $display_array
+	 */
+	public function sortDisplayArray(array &$display_array)
+	{
+		uasort($display_array, array($this, '_sortDisplayArrayCallback'));
+	}
+
+	public function _sortDisplayArrayCallback($a, $b)
+	{
+		if ($a['total'] == $b['total']) {
+			return 0;
+		}
+
+		return ($a['total'] < $b['total']) ? -1 : 1;
+	}
+
 
 
 	

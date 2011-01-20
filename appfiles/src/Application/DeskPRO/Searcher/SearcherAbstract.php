@@ -69,6 +69,18 @@ abstract class SearcherAbstract
 
 	
 	/**
+	 * Get the current terms
+	 *
+	 * @return array
+	 */
+	public function getTerms()
+	{
+		return $this->terms;
+	}
+
+
+	
+	/**
 	 * Set the ordering
 	 *
 	 * @param string $type
@@ -77,6 +89,18 @@ abstract class SearcherAbstract
 	public function setOrderBy($type, $direction = self::ORDER_DESC)
 	{
 		$this->order_by = array($type, $direction);
+	}
+
+	
+
+	/**
+	 * Get the current order by
+	 *
+	 * @return array
+	 */
+	public function getOrderBy()
+	{
+		return $this->order_by;
 	}
 
 

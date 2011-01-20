@@ -11,6 +11,7 @@
 
 namespace Application\AgentBundle\Controller;
 
+use \Application\DeskPRO\Searcher\TicketSearch;
 use \Application\DeskPRO\Entity\TicketQueue;
 use \Application\DeskPRO\Entity\Ticket;
 use \Application\DeskPRO\Entity;
@@ -61,26 +62,79 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$queue = App::getEntityRepository('DeskPRO:TicketQueue')->find($queue_id);
-		$tickets = App::getApi('tickets.queues')->getTicketsFromQueue($queue_id, $page, 50);
-		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
-
-		$grouped_info = null;
+		$is_partial = false;
 		$tpl = 'AgentBundle:TicketSearch:queue-results.twig.html';
 		if ($this->in->getBool('partial')) {
+			$is_partial = true;
 			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig.html';
-			if (!count($tickets)) {
-				return $this->createResponse('');
-			}
-		} else {
+		}
 
+		#------------------------------
+		# Get the tickets in the queue
+		#------------------------------
+
+		$queue = App::getEntityRepository('DeskPRO:TicketQueue')->find($queue_id);
+		$ticket_ids = $queue->getResults();
+
+		#------------------------------
+		# Get info about the grouped info
+		#------------------------------
+
+		$grouped_info = null;
+		if (!$is_partial) {
 			// Not partial (meaning not a sub page-load),
 			// also fetch the grouped vars so it goes in the header
 			if ($queue['group_by']) {
-				$grouper = new \Application\DeskPRO\Tickets\SimpleGroupingCounter($queue->getResults(), $queue['group_by']);
+				$grouper = new \Application\DeskPRO\Tickets\SimpleGroupingCounter($ticket_ids, $queue['group_by']);
 				$grouped_info = $grouper->getDisplayArray();
+				$grouper->sortDisplayArray($grouped_info);
 			}
 		}
+
+		#------------------------------
+		# The normal listing ...
+		#------------------------------
+
+		$is_grouping = false;
+		
+		if (!$this->in->checkIsset('filter_group') OR !$queue['group_by']) {
+
+			$page_ticket_ids = Arrays::getPageChunk($ticket_ids, $page, 50);
+			$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($page_ticket_ids);
+
+		#------------------------------
+		# ... or we may want to filter on a grouping var
+		#------------------------------
+
+		} else {
+
+			$filter_group = $this->in->getCleanValueArray('filter_group');
+
+			$searcher = new TicketSearch();
+			$searcher->setPerson($this->person);
+			$searcher->enableArchiveSearch();
+			$searcher->addTerm(TicketSearch::TERM_ID, TicketSearch::OP_IS, $ticket_ids);
+			$searcher->addTerm($filter_group['term'], TicketSearch::OP_IS, $filter_group['choice']);
+			$searcher->setOrderBy($queue->getSearcher()->getOrderBy());
+
+			$group_ticket_ids = $searcher->getMatches();
+
+			$page_ticket_ids = Arrays::getPageChunk($group_ticket_ids, $page, 50);
+			$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($page_ticket_ids);
+
+			$is_grouping = true;
+		}
+
+
+		#------------------------------
+		# Send results
+		#------------------------------
+
+		if (!count($tickets) && $is_partial) {
+			return $this->createJsonResponse(array('no_more_results' => true));
+		}
+
+		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
 
 		$display_fields = $this->person->getPref('agent.ui.ticket-queues-display-fields.' . $queue_id);
 
@@ -88,9 +142,12 @@ class TicketSearchController extends AbstractController
 			$display_fields = array('person', 'department');
 		}
 
-		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+		$macros = null;
+		if (!$is_partial) {
+			$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+		}
 
-		return $this->render($tpl, array(
+		$html = $this->renderView($tpl, array(
 			'queue_id' => $queue_id,
 			'queue' => $queue,
 			'tickets' => $tickets,
@@ -100,8 +157,19 @@ class TicketSearchController extends AbstractController
 			'macros' => $macros,
 			'ticket_flagged_color' => 'none',
 			'show_flag' => true,
-			'grouped_info' => $grouped_info
+			'grouped_info' => $grouped_info,
+			'is_grouped_result' => $is_grouping,
 		));
+
+		if ($is_partial) {
+			return $this->createJsonResponse(array(
+				'html' => $html,
+				'page' => $page,
+				'is_grouped_result' => $is_grouping,
+			));
+		} else {
+			return $this->createResponse($html);
+		}
 	}
 
 	public function flaggedPaneAction()

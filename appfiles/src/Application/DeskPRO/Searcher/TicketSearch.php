@@ -10,6 +10,7 @@ use \Application\DeskPRO\Entity;
 
 class TicketSearch extends SearcherAbstract
 {
+	const TERM_ID            = 'id';
 	const TERM_DEPARTMENT    = 'department';
 	const TERM_CATEGORY      = 'category';
 	const TERM_PRODUCT       = 'product';
@@ -254,6 +255,9 @@ class TicketSearch extends SearcherAbstract
 			list($op, $choice) = $info;
 
 			switch ($term) {
+				case self::TERM_ID:
+					$wheresp[] = $this->_choiceMatch("$ticket_table.id", $op, $choice);
+					break;
 				case self::TERM_DEPARTMENT:
 					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
 					if (count($choice) == 1) $choice = $choice[0];

@@ -3,6 +3,7 @@
 namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\App;
+use \Orb\Util\Arrays;
 
 class TestController extends AbstractController
 {
@@ -10,13 +11,9 @@ class TestController extends AbstractController
     {
 		echo '<pre>';
 
-		$person = $this->person;
-		$person->loadHelper('AgentTeam');
+		$array = array(0, 1, 2, 3, 4, 5, 6, 7, 8, 9);
 
-		//print_r($person->getHelper('AgentTeam')->getAgentTeamIds());
-
-		print_r($person->getAgentTeamIds());
-		//print_r($person['agent_team_ids']);
+		print_r(Arrays::getPageChunk($array, 2, 3));
 
 		exit;
     }

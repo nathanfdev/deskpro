@@ -380,7 +380,7 @@ class Reader
 			#----------------------------------------
 
 			} else {
-				throw new BadMethodCallException("Unknown method $name");
+				throw new \BadMethodCallException("Unknown method $method_name");
 			}
 		}
 

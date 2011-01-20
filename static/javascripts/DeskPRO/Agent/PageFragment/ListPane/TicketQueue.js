@@ -8,6 +8,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 	barWrapper: null,
 	layout: null,
 	overlay: null,
+	appendUrl: null,
 
 	initPage: function(el) {
 		
@@ -33,9 +34,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 			}
 		});
 		
-		this.initDisplayOptions();
-		this.initInfiniteScroll();
+		this._initDisplayOptions();
+		this._initInfiniteScroll();
 		this._initFlagMenu();
+		this._initGroupingOptions();
 		
 		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
@@ -73,6 +75,35 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 	deactivate: function() {
 		if (this.getMetaData('queue_id')) {
 			DeskPRO_Window.getMessageBroker().sendMessage('queue.view-deactivated', this.getMetaData('queue_id'));
+		}
+	},
+	
+	//#########################################################################
+	//# Grouping buttons
+	//#########################################################################
+	
+	_initGroupingOptions: function() {
+		
+		var self = this;
+		$('div.search-top ul.grouping-info > li[data-group-field]', this.contentWrapper).click(function() {
+			self.switchToSubgroup($(this).data('group-field'), $(this).data('group-id'), $(this));
+		});
+	},
+	
+	switchToSubgroup: function(field, field_id, el) {
+		
+		if (field == 'NONE') {
+			this.appendUrl = null;
+		} else {		
+			this.appendUrl = '&filter_group[term]=' + field + '&filter_grouo[id]=' + field_id;
+			$('table.list tbody', this.contentWrapper).remove();
+			this.loadResultPage(1);
+		}
+		
+		$('div.search-top ul.grouping-info > li', this.contentWrapper).removeClass('on');
+		
+		if (el && field != 'NONE') {
+			el.addClass('on');
 		}
 	},
 
@@ -134,7 +165,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 	displayOptionsWrapper: null,
 	displayOptionsOverlay: null,
 	displayOptionsList: null,
-	initDisplayOptions: function() {
+	_initDisplayOptions: function() {
 		
 		this.displayOptionsList = $('.display-options:first ul.sortable-list', this.contentWrapper);
 		var overlay_wrapper = this.displayOptionsWrapper = $('.display-options:first', this.contentWrapper);
@@ -211,7 +242,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 	//# Infinite loading stuff
 	//#########################################################################
 	
-	initInfiniteScroll: function() {
+	_initInfiniteScroll: function() {
 		//console.log(this.contentWrapper.scrollTop()+50);
 		//console.log(this._scrollInnerHeights() - this.contentWrapper.height());
 		//console.log('-');
@@ -238,6 +269,11 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 	isLoadingNext: false,
 	noMoreResults: false,
 	nextSearchPage: function() {
+		var last_page = parseInt($('.page-set:last', this.contentWrapper).data('page'));
+		this.loadResultPage(last_page+1)
+	},
+	
+	loadResultPage: function(page) {
 		if (this.isLoadingNext|| this.noMoreResults) return;
 		this.isLoadingNext = true;
 		
@@ -245,28 +281,29 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		loading.detach().appendTo(this.contentWrapper); // make sure its at the bottom
 		loading.show();
 		
-		var last_page = parseInt($('.page-set:last', this.contentWrapper).data('page'));
-		
-		var url = this.getMetaData('pageUrl').replace('$page', last_page+1)
+		var url = this.getMetaData('pageUrl').replace('$page', page);
+		if (this.appendUrl) {
+			url += this.appendUrl;
+		}
 		
 		$.ajax({
 			cache: false,
 			type: 'GET',
 			url: url,
 			context: this,
-			dataType: 'html',
+			dataType: 'json',
 			success: function (data) {
 				this._handleAjaxSuccess(data);
 			}
 		});
 	},
 	
-	_handleAjaxSuccess: function(html) {
+	_handleAjaxSuccess: function(data) {
 		
 		this.isLoadingNext = false;
 		$('.loading-more', this.contentWrapper).hide();
 		
-		if (!html || !html.length) {
+		if (data['no_more_results']) {
 			this.noMoreResults = true;
 			var nomore = $('.no-more-results', this.contentWrapper);
 			nomore.detach().appendTo(this.contentWrapper); // make sure its at the bottom
@@ -276,12 +313,14 @@ DeskPRO.Agent.PageFragment.ListPane.TicketQueue = new Class({
 		
 		this._scrollInnerHeights_cache = null;
 		
+		var html = data['html'];
+		
 		var el = $(html);
-		el.insertAfter($('.page-set:last', this.contentWrapper));
-
 		this.initFeaturesOnCollection(el, {
 			routes: ['tr .with-route'],
 			times: ['abbr.timeago']
 		});
+
+		$('table.list', this.contentWrapper).append(el);
 	}
 });

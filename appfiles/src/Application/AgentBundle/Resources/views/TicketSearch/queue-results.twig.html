@@ -17,7 +17,7 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 		<ul class="grouping-info">
 			{% for info in grouped_info %}
 				{% if info.id != -1 %}
-					<li>
+					<li data-group-id="{{info.id}}" data-group-field="{{queue.group_by}}">
 						<span>{{info.total}}</span>
 						<label>
 							{% if info.title == 'open' %}Open
@@ -31,7 +31,7 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue_id
 					</li>
 				{% endif %}
 			{% endfor %}
-			<li class="total">
+			<li class="total" data-group-field="NONE">
 				<span>{{grouped_info[0].total}}</span>
 				<label>Total</label>
 			</li>
