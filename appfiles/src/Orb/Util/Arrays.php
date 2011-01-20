@@ -1353,4 +1353,36 @@ class Arrays
 
 		return true;
 	}
+	
+
+
+	/**
+	 * Given an array of items, split them into pages and get a certain chunk of them.
+	 *
+	 * For example, given an array of 1000 ID's of results, easily fetch groups of 25
+	 * results from it.
+	 *
+	 * @param array $array
+	 * @param int $page
+	 * @param int $per_page
+	 * @return array
+	 */
+	public static function getPageChunk(array $array, $page, $per_page)
+	{
+		// aka "unlimited per page"
+		if (!$per_page) return $array;
+
+		$count = count($array);
+
+		// Only one page
+		if ($count <= $per_page) return $array;
+
+		$page = max(0, $page);
+		$start = ($page - 1) * $per_page;
+
+		// Invalid page
+		if ($start > $count) return array();
+
+		return array_slice($array, $start, $per_page);
+	}
 }
