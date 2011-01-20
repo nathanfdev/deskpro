@@ -28,7 +28,14 @@ class TwitterController extends AbstractController
             );
 	public function indexAction()
 	{
-                return $this->render('AdminBundle:Twitter:accounts.twig.html');
+                $current_accounts = App::getDb()->fetchAll("
+				SELECT id,twitter_handle
+				FROM twitter_accounts
+				WHERE deleted IS NULL");
+
+                return $this->render('AdminBundle:Twitter:accounts.twig.html', array(
+			'current_accounts' => $current_accounts
+		));
 	}
 
 
@@ -46,7 +53,6 @@ class TwitterController extends AbstractController
         {
                 $twitter = new Zend_Service_Twitter($this->_config);
                 $token = $twitter->getAccessToken($_GET, unserialize($this->session->get('twitter_request_token')));
-                echo "<pre>";print_r($_GET);echo $token;
                 $params = $token;
                 $components = explode("screen_name=",$params);
                 $screen_name = $components[1];
