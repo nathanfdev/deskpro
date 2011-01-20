@@ -278,7 +278,7 @@ DeskPRO.Agent.Window = new Class({
 	 *
 	 * @param {String} url The URL of the nav pane
 	 */
-	loadNavPane: function(url, routeData) {
+	loadNavPane: function(url, routeData, callback) {
 		
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();
@@ -290,6 +290,8 @@ DeskPRO.Agent.Window = new Class({
 				}
 				
 				this.setNavPanePage(page);
+				
+				if (callback) callback();
 			}).bind(this)
 		);
 	},
@@ -301,7 +303,7 @@ DeskPRO.Agent.Window = new Class({
 	 *
 	 * @param {String} url The URL of the list pane.
 	 */
-	loadListPane: function(url, routeData) {
+	loadListPane: function(url, routeData, callback) {
 		
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();
@@ -313,6 +315,8 @@ DeskPRO.Agent.Window = new Class({
 				}
 				
 				this.addListPage(page);
+				
+				if (callback) callback();
 			}).bind(this)
 		);
 	},
@@ -324,7 +328,7 @@ DeskPRO.Agent.Window = new Class({
 	 *
 	 * @param {String} url The URL of the page
 	 */
-	loadPage: function(url, routeData) {
+	loadPage: function(url, routeData, callback) {
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();
@@ -336,6 +340,8 @@ DeskPRO.Agent.Window = new Class({
 				}
 				
 				this.addPageTab(page);
+				
+				if (callback) callback();
 			}).bind(this)
 		);
 	},
