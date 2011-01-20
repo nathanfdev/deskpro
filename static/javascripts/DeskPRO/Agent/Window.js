@@ -279,11 +279,8 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {String} url The URL of the nav pane
 	 */
 	loadNavPane: function(url, routeData) {
-		this.startLoadingIndicator();
-		$.ajax({
-			dataType: 'text',
-			url: url,
-			success: (function(data) {
+		
+		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.NavPane.Basic');
 				
@@ -294,7 +291,7 @@ DeskPRO.Agent.Window = new Class({
 				
 				this.setNavPanePage(page);
 			}).bind(this)
-		});
+		);
 	},
 	
 	
@@ -305,11 +302,8 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {String} url The URL of the list pane.
 	 */
 	loadListPane: function(url, routeData) {
-		this.startLoadingIndicator();
-		$.ajax({
-			dataType: 'text',
-			url: url,
-			success: (function(data) {
+		
+		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 				
@@ -320,7 +314,7 @@ DeskPRO.Agent.Window = new Class({
 				
 				this.addListPage(page);
 			}).bind(this)
-		});
+		);
 	},
 	
 	
@@ -331,6 +325,24 @@ DeskPRO.Agent.Window = new Class({
 	 * @param {String} url The URL of the page
 	 */
 	loadPage: function(url, routeData) {
+
+		this._doAjaxLoadRoute(url, routeData, (function(data) {
+				this.stopLoadingIndicator();
+				var page = this.createPageFragment(data);
+				
+				page.setMetaData('routeUrl', url);
+				if (routeData) {
+					page.setMetaData('routeData', routeData);
+				}
+				
+				this.addPageTab(page);
+			}).bind(this)
+		);
+	},
+	
+	
+	
+	_doAjaxLoadRoute: function(url, routeData, successFn) {
 		
 		if (!url) {
 			console.error('No URL provided! routeData: %o', routeData);
@@ -344,16 +356,9 @@ DeskPRO.Agent.Window = new Class({
 			url: url,
 			success: (function(data) {
 				this.stopLoadingIndicator();
-				var page = this.createPageFragment(data);
-				
-				page.setMetaData('routeUrl', url);
-				if (routeData) {
-					page.setMetaData('routeData', routeData);
-				}
-				
-				this.addPageTab(page);
+				successFn(data);
 			}).bind(this)
-		});
+		});		
 	},
 	
 	

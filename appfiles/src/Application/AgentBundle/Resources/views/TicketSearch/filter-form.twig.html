@@ -1,0 +1,51 @@
+<script>
+pageMeta.title = 'Find Tickets with a Filter';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilterForm';
+pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_runfilter') }}';
+{% if autorun %}
+	pageMeta.autorun = true;
+{% endif %}
+{% if preselect_terms %}
+	pageMeta.preselectTerms = [
+		{% for action in preselect_terms %}
+			{
+				rule_type: '{{action.rule_type}}',
+				op: '{{action.op}}',
+				choice: {
+					{% for k, v in action %}
+						{{k}}: '{{v}}',
+					{% endfor %}
+					'':null
+				}
+			},
+		{% endfor %}
+	];
+{% endif %}
+</script>
+<div class="content">
+	<div class="listpane-top">
+		<div class="criteria">
+
+			<form class="search-form-data">
+			<div class="search-form">
+				<div class="search-terms"></div>
+				<div class="term"><span class="add-term">+</span> Add a new criteria</div>
+			</div>
+			</form>
+			<center>
+				<button class="dp-button run-filter-trigger">Run Filter</button>
+			</center>
+
+			<div class="search-tpl" style="display:none">
+				<div class="row">
+					<div class="term">
+						<div class="type"></div>
+						<div class="choice"></div>
+						<div class="remove">-</div>
+					</div>
+				</div>
+				{% include 'AgentBundle:TicketSearch:termbuilder-html.twig.html' with {'term_options': ticket_options} %}
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,27 @@
+{% if grouped_info %}
+<div class="search-top">
+	<ul class="grouping-info">
+		{% for info in grouped_info %}
+			{% if info.id != -1 %}
+				<li data-group-id="{{info.id}}">
+					<span>{{info.total}}</span>
+					<label>
+						{% if info.title == 'open' %}Open
+						{% elseif info.title == 'pending' %}Pending
+						{% elseif info.title == 'closed' %}Closed
+						{% elseif info.title == 'resolved' %}Resolved
+						{% elseif info.title == 'hidden' %}Hidden
+						{% else %}{{info.title}}
+						{% endif %}
+					</span>
+				</li>
+			{% endif %}
+		{% endfor %}
+		<li class="total on" data-group-id="NONE">
+			<span>{{grouped_info[0].total}}</span>
+			<label>Total</label>
+		</li>
+	</ul>
+	<br class="clear" />
+</div>
+{% endif %}

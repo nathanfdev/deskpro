@@ -59,72 +59,47 @@ class TicketSearchController extends AbstractController
 
 	public function runQueueAction($queue_id)
 	{
-		$page = $this->in->getUint('page');
-		if (!$page) $page = 1;
+		$queue = App::getEntityRepository('DeskPRO:TicketQueue')->find($queue_id);
+		$results_helper = Helper\TicketResults::newFromQueue($this, $queue);
 
+		$vars = array(
+			'queue' => $queue,
+			'queue_id' => $queue['id']
+		);
+
+		return $this->_getResponseForTickets('queue', $queue['id'], $results_helper, $vars);
+	}
+
+	protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())
+	{
 		$is_partial = false;
-		$tpl = 'AgentBundle:TicketSearch:queue-results.twig.html';
+		$tpl = 'AgentBundle:TicketSearch:'.$type.'-results.twig.html';
 		if ($this->in->getBool('partial')) {
 			$is_partial = true;
 			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig.html';
 		}
 
 		#------------------------------
-		# Get the tickets in the queue
-		#------------------------------
-
-		$queue = App::getEntityRepository('DeskPRO:TicketQueue')->find($queue_id);
-		$ticket_ids = $queue->getResults();
-
-		#------------------------------
-		# Get info about the grouped info
+		# Get the tickets to show
 		#------------------------------
 
 		$grouped_info = null;
-		if (!$is_partial) {
-			// Not partial (meaning not a sub page-load),
-			// also fetch the grouped vars so it goes in the header
-			if ($queue['group_by']) {
-				$grouper = new \Application\DeskPRO\Tickets\SimpleGroupingCounter($ticket_ids, $queue['group_by']);
-				$grouped_info = $grouper->getDisplayArray();
-				$grouper->sortDisplayArray($grouped_info);
-			}
+		if (!$is_partial AND $results_helper->isGroupable()) {
+			$grouped_info = $results_helper->getGroupDisplayInfo();
 		}
 
-		#------------------------------
-		# The normal listing ...
-		#------------------------------
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
 
-		$is_grouping = false;
-		
-		if (!$this->in->checkIsset('filter_group') OR !$queue['group_by']) {
-
-			$page_ticket_ids = Arrays::getPageChunk($ticket_ids, $page, 50);
-			$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($page_ticket_ids);
-
-		#------------------------------
-		# ... or we may want to filter on a grouping var
-		#------------------------------
-
+		if (!$this->in->checkIsset('group_field_id')) {
+			// User looking at all results
+			$is_grouping = false;
+			$tickets = $results_helper->getTicketsForPage($page);
 		} else {
-
-			$filter_group = $this->in->getCleanValueArray('filter_group');
-
-			$searcher = new TicketSearch();
-			$searcher->setPerson($this->person);
-			$searcher->enableArchiveSearch();
-			$searcher->addTerm(TicketSearch::TERM_ID, TicketSearch::OP_IS, $ticket_ids);
-			$searcher->addTerm($filter_group['term'], TicketSearch::OP_IS, $filter_group['choice']);
-			$searcher->setOrderBy($queue->getSearcher()->getOrderBy());
-
-			$group_ticket_ids = $searcher->getMatches();
-
-			$page_ticket_ids = Arrays::getPageChunk($group_ticket_ids, $page, 50);
-			$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($page_ticket_ids);
-
+			// User looking at just a group of results
 			$is_grouping = true;
+			$tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('group_field_id'), $page);
 		}
-
 
 		#------------------------------
 		# Send results
@@ -135,8 +110,7 @@ class TicketSearchController extends AbstractController
 		}
 
 		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
-
-		$display_fields = $this->person->getPref('agent.ui.ticket-queues-display-fields.' . $queue_id);
+		$display_fields = $this->person->getPref('agent.ui.ticket-'.$type.'-display-fields.' . $type_id);
 
 		if (!$display_fields) {
 			$display_fields = array('person', 'department');
@@ -147,117 +121,31 @@ class TicketSearchController extends AbstractController
 			$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 		}
 
-		$html = $this->renderView($tpl, array(
-			'queue_id' => $queue_id,
-			'queue' => $queue,
-			'tickets' => $tickets,
-			'flagged_tickets' => $flagged_tickets,
-			'page' => $page,
-			'display_fields' => $display_fields,
-			'macros' => $macros,
-			'ticket_flagged_color' => 'none',
-			'show_flag' => true,
-			'grouped_info' => $grouped_info,
-			'is_grouped_result' => $is_grouping,
+		$vars = array_merge($vars, array(
+			'type'               => $type,
+			'type_id'            => $type_id,
+			'tickets'            => $tickets,
+			'flagged_tickets'    => $flagged_tickets,
+			'page'               => $page,
+			'display_fields'     => $display_fields,
+			'macros'             => $macros,
+			'show_flag'          => true,
+			'grouped_info'       => $grouped_info,
+			'is_grouped_result'  => $is_grouping,
 		));
+
+		$html = $this->renderView($tpl, $vars);
 
 		if ($is_partial) {
 			return $this->createJsonResponse(array(
-				'html' => $html,
-				'page' => $page,
+				'html'              => $html,
+				'page'              => $page,
 				'is_grouped_result' => $is_grouping,
 			));
 		} else {
 			return $this->createResponse($html);
 		}
 	}
-
-	public function flaggedPaneAction()
-	{
-		return $this->render('AgentBundle:TicketSearch:pane-flagged.twig.html', array(
-
-		));
-	}
-
-	public function runFlaggedAction($flag)
-	{
-		$page = $this->in->getUint('page');
-		if (!$page) $page = 1;
-
-		$tickets = App::getApi('tickets.queues')->getTicketsFromFlagged($flag, $this->person, $page, 50);
-
-		$tpl = 'AgentBundle:TicketSearch:flagged-results.twig.html';
-		if ($this->in->getBool('partial')) {
-			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig.html';
-			if (!count($tickets)) {
-				return $this->createResponse('');
-			}
-		}
-
-		return $this->render($tpl, array(
-			'flag' => $flag,
-			'tickets' => $tickets,
-			'page' => $page,
-			'display_fields' => array('person', 'agent')
-		));
-	}
-
-
-	
-	############################################################################
-	# overview-pane
-	############################################################################
-
-	public function overviewPaneAction()
-	{
-		return $this->render('AgentBundle:TicketSearch:pane-overview.twig.html', array(
-
-		));
-	}
-
-	public function overviewNavAction()
-	{
-		$group1 = $this->in->getString('group1');
-		$group2 = $this->in->getString('group2');
-
-		$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
-		$grouper->setGrouping($group1, $group2);
-		$grouper->setMode($this->in->getString('mode'), $this->person['id']);
-
-		$filter_agent_id = null;
-		if ($this->in->getString('mode') == 'your') {
-			$filter_agent_id = $this->person['id'];
-		} elseif ($this->in->getString('mode') == 'unassigned') {
-			$filter_agent_id = 0;
-		} else {
-			$filter_agent_id = -2;
-		}
-
-		$display_counts = $grouper->getDisplayArray();
-
-		unset($display_counts[0]);// TODO 0 is the 'total', we'll use that later in the UI
-
-		// TODO: Need a cleaner way of converting a group into a searchable item
-		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runoverview') . "?autorun=true&terms[0][rule_type]=agent&terms[0][op]=is&terms[0][agent]=$filter_agent_id&terms[1][rule_type]=status&terms[1][op]=is&terms[1][status]=awaiting_agent&terms[2][rule_type]=$group1_nosuf&terms[2][op]=is&terms[2][$group1_nosuf]=\$group1_id";
-
-		$group2_nosuf = preg_replace('#_id$#', '', $group2);
-		$list_url_group2 = $list_url_group1 . "&terms[3][rule_type]=$group2_nosuf&terms[3][op]=is&terms[3][$group2_nosuf]=\$group2_id";
-
-		return $this->render('AgentBundle:TicketSearch:overview-listing.twig.html', array(
-			'counts' => $display_counts,
-			'list_url_group1' => $list_url_group1,
-			'list_url_group2' => $list_url_group2,
-		));
-	}
-
-	public function overviewRunAction()
-	{
-		$data = $this->_runFilterFromReq();
-		
-		return $this->render('AgentBundle:TicketSearch:overview-results.twig.html', $data);
-	}
-
 
 	############################################################################
 	# find-pane
@@ -277,8 +165,8 @@ class TicketSearchController extends AbstractController
 		// Used to specify terms in the URL and have then show up automatically
 		$preselect_terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
 		$autorun = $this->in->getBool('autorun');
-		
-		return $this->render('AgentBundle:TicketSearch:filter.twig.html', array(
+
+		return $this->render('AgentBundle:TicketSearch:filter-form.twig.html', array(
 			'ticket_options' => $ticket_options,
 			'preselect_terms' => $preselect_terms,
 			'autorun' => $autorun
@@ -295,6 +183,61 @@ class TicketSearchController extends AbstractController
 			'preselect_query' => $preselect_query,
 			'autorun' => $autorun
 		));
+	}
+
+	public function runFilterAction()
+	{
+		$result_cache = false;
+		if ($this->in->getUint('cache_id')) {
+			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+			if ($result_cache['person_id'] != $this->person['id']) {
+				$result_cache = false;
+			}
+		}
+
+		#------------------------------
+		# If there's no result set, we're running
+		# it for the first time
+		#------------------------------
+
+		if (!$result_cache) {
+			$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			foreach ($terms as $term) {
+				$data = $term;
+				unset($data['rule_type'], $data['op']);
+
+				if (count($data) == 1) {
+					$data = array_pop($data);
+				}
+
+				$searcher->addTerm($term['rule_type'], $term['op'], $data);
+			}
+
+			//TODO remove when ready for real searches, make it an option in UI
+			$searcher->enableArchiveSearch();
+
+			$results = $searcher->getMatches();
+
+			$result_cache = new Entity\ResultCache();
+			$result_cache['person'] = $this->person;
+			$result_cache['criteria'] = array('terms' => $terms);
+			$result_cache['results'] = $results;
+			$result_cache['num_results'] = count($results);
+
+			App::getOrm()->persist($result_cache);
+			App::getOrm()->flush();
+		}
+
+		$results_helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
+
+		$vars = array(
+			'cache' => $result_cache,
+			'cache_id' => $result_cache['id']
+		);
+
+		return $this->_getResponseForTickets('filter', $result_cache['id'], $results_helper, $vars);
 	}
 
 	public function _runFilterFromReq($terms = null)
@@ -380,12 +323,59 @@ class TicketSearchController extends AbstractController
 
 		return $data;
 	}
+	
+	############################################################################
+	# overview-pane
+	############################################################################
 
-	public function runFilterAction()
+	public function overviewPaneAction()
+	{
+		return $this->render('AgentBundle:TicketSearch:pane-overview.twig.html', array(
+
+		));
+	}
+
+	public function overviewNavAction()
+	{
+		$group1 = $this->in->getString('group1');
+		$group2 = $this->in->getString('group2');
+
+		$grouper = new \Application\DeskPRO\Tickets\GroupingCounter();
+		$grouper->setGrouping($group1, $group2);
+		$grouper->setMode($this->in->getString('mode'), $this->person['id']);
+
+		$filter_agent_id = null;
+		if ($this->in->getString('mode') == 'your') {
+			$filter_agent_id = $this->person['id'];
+		} elseif ($this->in->getString('mode') == 'unassigned') {
+			$filter_agent_id = 0;
+		} else {
+			$filter_agent_id = -2;
+		}
+
+		$display_counts = $grouper->getDisplayArray();
+
+		unset($display_counts[0]);// TODO 0 is the 'total', we'll use that later in the UI
+
+		// TODO: Need a cleaner way of converting a group into a searchable item
+		$group1_nosuf = preg_replace('#_id$#', '', $group1);
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runoverview') . "?autorun=true&terms[0][rule_type]=agent&terms[0][op]=is&terms[0][agent]=$filter_agent_id&terms[1][rule_type]=status&terms[1][op]=is&terms[1][status]=awaiting_agent&terms[2][rule_type]=$group1_nosuf&terms[2][op]=is&terms[2][$group1_nosuf]=\$group1_id";
+
+		$group2_nosuf = preg_replace('#_id$#', '', $group2);
+		$list_url_group2 = $list_url_group1 . "&terms[3][rule_type]=$group2_nosuf&terms[3][op]=is&terms[3][$group2_nosuf]=\$group2_id";
+
+		return $this->render('AgentBundle:TicketSearch:overview-listing.twig.html', array(
+			'counts' => $display_counts,
+			'list_url_group1' => $list_url_group1,
+			'list_url_group2' => $list_url_group2,
+		));
+	}
+
+	public function overviewRunAction()
 	{
 		$data = $this->_runFilterFromReq();
-
-		return $this->createJsonResponse($data);
+		
+		return $this->render('AgentBundle:TicketSearch:overview-results.twig.html', $data);
 	}
 	
 	############################################################################
@@ -414,6 +404,41 @@ class TicketSearchController extends AbstractController
 		$data = $this->_runFilterFromReq($terms);
 
 		return $this->render('AgentBundle:TicketSearch:overview-results.twig.html', $data);
+	}
+
+
+	############################################################################
+	# flagged
+	############################################################################
+
+	public function flaggedPaneAction()
+	{
+		return $this->render('AgentBundle:TicketSearch:pane-flagged.twig.html', array(
+
+		));
+	}
+
+	public function runFlaggedAction($flag)
+	{
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+
+		$tickets = App::getApi('tickets.queues')->getTicketsFromFlagged($flag, $this->person, $page, 50);
+
+		$tpl = 'AgentBundle:TicketSearch:flagged-results.twig.html';
+		if ($this->in->getBool('partial')) {
+			$tpl = 'AgentBundle:TicketSearch:part-results-list.twig.html';
+			if (!count($tickets)) {
+				return $this->createResponse('');
+			}
+		}
+
+		return $this->render($tpl, array(
+			'flag' => $flag,
+			'tickets' => $tickets,
+			'page' => $page,
+			'display_fields' => array('person', 'agent')
+		));
 	}
 
 

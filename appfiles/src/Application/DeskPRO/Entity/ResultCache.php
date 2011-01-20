@@ -38,7 +38,6 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="preferences")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */

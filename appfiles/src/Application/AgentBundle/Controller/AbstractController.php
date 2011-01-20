@@ -47,4 +47,13 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		
 		return false;
 	}
+
+
+	/**
+	 * @return Application\DeskPRO\Entity\Person
+	 */
+	public function getPerson()
+	{
+		return $this->person;
+	}
 }
