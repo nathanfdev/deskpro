@@ -285,3 +285,7 @@ agent_twitter_callback:
   pattern: /twitter/callback
   defaults: { _controller: AgentBundle:Twitter:callBack }
 
+agent_twitter_mensions:
+  pattern: /twitter/mensions/{handle}
+  defaults: { _controller: AgentBundle:Twitter:mensions }
+  
