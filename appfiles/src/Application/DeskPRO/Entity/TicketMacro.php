@@ -72,6 +72,60 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $actions;
 
+	
+
+	/**
+	 * Get a simple array of actions used to pass back to views to update
+	 * UI. $ticket might be null (in the case of mass actions).
+	 *
+	 * @param Entity\Ticket $ticket The context (used ex in replies for replacements)
+	 */
+	public function getActionsArray(Entity\Ticket $ticket = null)
+	{
+		$actions = array();
+
+		foreach ($this->actions as $action) {
+			switch ($action['rule_type']) {
+				case 'department':
+					$actions['department_id'] = $action['department'];
+					break;
+
+				case 'category':
+					$actions['category_id'] = $action['category'];
+					break;
+
+				case 'agent':
+
+					// -1 means "current user" -- used for generic shared macros
+					if ($action['agent'] == -1) {
+						$agent = App::getCurrentPerson();
+						if ($agent) {
+							$action['agent'] = $agent['id'];
+						} else {
+							return;// todo err?
+						}
+					}
+					$actions['agent_id'] = $action['agent'];
+					break;
+
+				case 'product':
+					$actions['product_id'] = $action['product'];
+					break;
+
+				case 'priority':
+					$actions['priority_id'] = $action['priority'];
+					break;
+
+				case 'reply':
+					$actions['reply'] = $action['reply'];
+					$agent = App::getCurrentPerson();
+					break;
+			}
+		}
+
+		return $actions;
+	}
+
 
 	public function performOnTicket(Ticket $ticket)
 	{

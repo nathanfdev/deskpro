@@ -316,9 +316,72 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		// Macros menu
 		this.ticketMacrosMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('ul.tools li.macros', this.ticketBar),
-			menuElement: $('ul.ticket-macros-menu:first', this.contentWrapper)
+			menuElement: $('ul.ticket-macros-menu:first', this.contentWrapper),
+			onItemClicked: this._handleMacroClick.bind(this)
 		});
 		this.destroyMenus.push(this.ticketMacrosMenu);
+		
+		// Macro apply/cancel
+		$('ul.tools li.macros-apply', this.ticketBar).click((function() {
+			this.changeManager.saveChanges();
+			this.toggleMacroApplyBtn('off');
+		}).bind(this));
+		
+		$('ul.tools li.macros-cancel', this.ticketBar).click((function() {
+			this.changeManager.revertChanges();
+			this.toggleMacroApplyBtn('off');
+		}).bind(this));
+	},
+	
+	_handleMacroClick: function(info) {
+		$.ajax({
+			url: this.getMetaData('getMacroUrl').replace('$macro_id', $(info.itemEl).data('macro-id')),
+			type: 'GET',
+			context: this,
+			dataType: 'json',
+			success: function(data) {
+				this._performMacro(data);
+			}
+		});
+	},
+	
+	_performMacro: function (actions) {
+		Object.each(actions, function(action, type) {
+			var prop = this.getPropertyManager(type);
+
+			if (prop) {
+				this.changeManager.addChange(prop, action);
+			} else {
+				console.warn('Unknown property `%s`. Actions: %o', type, actions);
+			}
+		}, this);
+
+		this.changeManager.applyChanges();
+		this.toggleMacroApplyBtn('on');
+	},
+	
+	toggleMacroApplyBtn: function(force) {
+		
+		var ul = $('ul.tools', this.ticketBar);
+		
+		if (!force) {
+			if ($('li.macros', ul).is(':visible')) {
+				force = 'on';
+			} else {
+				force = 'off';
+			}
+		}
+		
+		var otherBtns = $('li.macros, li.actions', ul);;
+		var applyBtns = $('li.macros-apply, li.macros-cancel', ul);
+		
+		if (force == 'on') {
+			otherBtns.hide();
+			applyBtns.show();
+		} else {
+			otherBtns.show();
+			applyBtns.hide();
+		}
 	},
 
 	toggleReplyBar: function(force) {

@@ -43,14 +43,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * The language ID.
-	 *
-	 * @var int
-	 * @orm:Column(name="language_id", type="integer", nullable=true)
-	 */
-	protected $language_id = null;
-
-	/**
 	 * The language associate with the user.
 	 *
 	 * @var \Application\DeskPRO\Entity\Language
@@ -60,23 +52,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $language = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="department_id", type="integer", nullable=true)
-	 */
-	protected $department_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Department
 	 * @orm:ManyToOne(targetEntity="Department")
 	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
 	 */
 	protected $department = null;
-
-	/**
-	 * @var int
-	 * @orm:Column(name="category_id", type="integer", nullable=true)
-	 */
-	protected $category_id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketCategory
@@ -86,23 +66,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $category = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="priority_id", type="integer", nullable=true)
-	 */
-	protected $priority_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\TicketPriority
 	 * @orm:ManyToOne(targetEntity="TicketPriority")
 	 * @orm:JoinColumn(name="priority_id", referencedColumnName="id")
 	 */
 	protected $priority = null;
-
-	/**
-	 * @var int
-	 * @orm:Column(name="product_id", type="integer", nullable=true)
-	 */
-	protected $product_id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Product
@@ -143,12 +111,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id")
 	 */
 	protected $agent_team = null;
-
-	/**
-	 * @var int
-	 * @orm:Column(name="organization_id", type="integer", nullable=true)
-	 */
-	protected $organization_id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
@@ -456,33 +418,48 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this['person'] = $person;
 	}
 
+	public function getDepartmentId()
+	{
+		return $this->department['id'];
+	}
+
 	public function setDepartmentId($id)
 	{
 		if ($id) {
 			$dep = App::getOrm()->getRepository('DeskPRO:Department')->find($id);
-			$this['department'] = $dep;
+			$this->department = $dep;
 		} else {
-			$this['department'] = null;
+			$this->department = null;
 		}
 	}
 
+	public function getCategoryId()
+	{
+		return $this->category['id'];
+	}
+	
 	public function setCategoryId($id)
 	{
 		if ($id) {
 			$cat = App::getOrm()->getRepository('DeskPRO:TicketCategory')->find($id);
-			$this['category'] = $cat;
+			$this->category = $cat;
 		} else {
-			$this['category'] = null;
+			$this->category = null;
 		}
+	}
+
+	public function getProductId()
+	{
+		return $this->product['id'];
 	}
 	
 	public function setProductId($id)
 	{
 		if ($id) {
 			$prod = App::getOrm()->getRepository('DeskPRO:Product')->find($id);
-			$this['product'] = $prod;
+			$this->product = $prod;
 		} else {
-			$this['product'] = null;
+			$this->product = null;
 		}
 	}
 
@@ -490,9 +467,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($id) {
 			$pri = App::getOrm()->getRepository('DeskPRO:TicketPriority')->find($id);
-			$this['priority'] = $pri;
+			$this->priority = $pri;
 		} else {
-			$this['priority'] = null;
+			$this->priority = null;
 		}
 	}
 
@@ -501,6 +478,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->agent = $agent;
 	}
 
+	public function getAgentId()
+	{
+		return $this->agent['id'];
+	}
+	
 	public function setAgentId($id)
 	{
 		if ($id) {
@@ -509,9 +491,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				// TODO err
 			}
 
-			$this['agent'] = $agent;
+			$this->agent = $agent;
 		} else {
-			$this['agent'] = null;
+			$this->agent = null;
 		}
 	}
 	public function setAgentTeam(Entity\AgentTeam $agent_team = null)
@@ -519,13 +501,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->agent_team = $agent_team;
 	}
 
+	public function getAgentTeamId()
+	{
+		return $this->agent_team['id'];
+	}
+
 	public function setAgentTeamId($id)
 	{
 		if ($id) {
 			$agent_team = App::getOrm()->getRepository('DeskPRO:AgentTeam')->find($id);
-			$this['agent_team'] = $agent_team;
-		} else {
-			$this['agent'] = null;
+			$this->agent_team = $agent_team;
 		}
 	}
 

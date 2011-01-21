@@ -292,6 +292,25 @@ DeskPRO.UI.Menu = new Class({
 	
 	
 	/**
+	 * Get the main ul list tag with the menu.
+	 *
+	 * @return jQuery
+	 */
+	getListElement: function() {
+		// Both of these should refer to the same element
+		// but incase after init the list was changed somehow
+		// with an event etc, we'll use the one from elements if its there
+		
+		if (this.elements.list) {
+			return this.elements.list;
+		} else {
+			return this.options.menuElement;
+		}
+	},
+	
+	
+	
+	/**
 	 * Set up a click trigger on an element (or elements).
 	 *
 	 * @param mixed el A selector, an element, or a jQuery collection

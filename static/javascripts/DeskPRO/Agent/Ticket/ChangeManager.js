@@ -16,10 +16,10 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	/**
 	 * @param {DeskPRO.Agent.PageFragment.Page.Ticket} ticketPage
 	 */
-	initiate: function(ticketPage) {
+	initialize: function(ticketPage) {
 		this.ticketPage = ticketPage;
 		this.ticketId   = ticketPage.getMetaData('ticket_id');
-		this.updateUrl  = ticketPage.getMetaData('updateUrl');
+		this.updateUrl  = ticketPage.getMetaData('saveActionsUrl');
 	},
 	
 	
@@ -27,6 +27,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 * Add a change to the set of changes
 	 */
 	addChange: function(property, newValue, applyNow) {
+		this.mode = 'multi';
 		this.changes[property.getName()] = [property, newValue];
 		
 		if (applyNow) {
@@ -40,9 +41,6 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 * Apply a certain new value in the interface
 	 */
 	applyChangeForProperty: function (property, newValue) {
-		var property = change[0];
-		var newValue = change[1];
-
 		this.oldValues[property.getName()] = property.getValue();
 		property.setValue(newValue);
 		
@@ -83,6 +81,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		}, this);
 		
 		this.oldValues = {};
+		
+		this.mode = 'single';
 	},
 	
 	
@@ -103,9 +103,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		property.setValue(newValue);
 		
 		var data = [];
-		this._addPropertyValueToData(data, property.getValue());
+		this._addPropertyValueToData(data, property.getName(), property.getValue());
 		
-		return;
 		$.ajax({
 			type: 'POST',
 			url: this.updateUrl,
@@ -124,15 +123,16 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	saveChanges: function() {
 		var data = [];
 		
-		for (var i = 0; i < this.changes.length; i++) {
-			var property = this.changes[i][0];
+		Object.each(this.changes, function (change) {
+			var property = change[0];
 			var name = property.getName();
 			
-			this._addPropertyValueToData(data, property.getValue());
+			this._addPropertyValueToData(data, property.getName(), property.getValue());
 			property.unhighlightInterfaceElement();
-		}
+		}, this);
 		
-		return;
+		this.mode = 'single';
+		
 		$.ajax({
 			type: 'POST',
 			url: this.updateUrl,
@@ -144,15 +144,15 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		});
 	},
 	
-	_addPropertyValueToData: function(data, propertyValue) {
+	_addPropertyValueToData: function(data, name, propertyValue) {
 		if (typeOf(propertyValue) != 'array') {
-			value = [propertyValue];
+			propertyValue = [propertyValue];
 		}
 		
 		for (var x = 0; x < propertyValue.length; x++) {
 			data.push({
-				name: name,
-				value: value[x]
+				name: 'actions['+name+']',
+				value: propertyValue[x]
 			});
 		}
 	},

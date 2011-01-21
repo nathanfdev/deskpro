@@ -5,6 +5,8 @@ pageMeta.ticket_id = {{ticket.id}};
 pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
+pageMeta.getMacroUrl = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': ticket.id }) }}?macro_id=$macro_id';
+pageMeta.saveActionsUrl = '{{ path('agent_ticket_ajax_save_actions', {'ticket_id': ticket.id }) }}';
 </script>
 <div class="ticket-content">
 	<form class="value-form" style="display:none">
@@ -13,6 +15,7 @@ pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id':
 		<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
 		<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
 		<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
+		<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
 		<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	</form>
 	

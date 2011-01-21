@@ -347,6 +347,20 @@ class TicketController extends AbstractController
 		));
 	}
 
+	############################################################################
+	# ajax-save-actions
+	############################################################################
+
+	public function ajaxSaveActionsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+		$ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
+		$ticket_edit->save();
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
+
 
 	############################################################################
 	# ajax-ticket-log
@@ -361,6 +375,27 @@ class TicketController extends AbstractController
 		return $this->render('AgentBundle:Ticket:ticketlog.twig.html', array(
 			'ticket_logs' => $ticket_logs
 		));
+	}
+
+
+
+	############################################################################
+	# ajax-get-macro-actions
+	############################################################################
+
+	public function ajaxGetMacroAction($ticket_id)
+	{
+		$macro_id = $this->in->getUint('macro_id');
+		$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+
+		$ticket = null;
+		if ($ticket_id) {
+			$ticket = $this->getTicketOr404($ticket_id);
+		}
+
+		$actions = $macro->getActionsArray($ticket);
+
+		return $this->createJsonResponse($actions);
 	}
 
 

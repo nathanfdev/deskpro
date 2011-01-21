@@ -65,15 +65,15 @@ class Department extends EntityRepository
 	{
 		$names = array();
 
-		foreach ($deps as $dep) {
+		foreach ($deps as $k => $dep) {
 			$name = $basenames;
 			$name[] = $dep['title'];
 
 			if (!$dep['children'] OR $include_tops) {
-				$names[] = implode($sep, $name);
+				$names[$k] = implode($sep, $name);
 			}
 			if ($dep['children']) {
-				$names = array_merge($names, $this->_getFlatDepartmentNames($name, $dep['children'], $sep, $include_tops));
+				$names = Arrays::mergeAssoc($names, $this->_getFlatDepartmentNames($name, $dep['children'], $sep, $include_tops));
 			}
 		}
 

@@ -14,6 +14,55 @@ class TicketEdit
 		$this->ticket = $ticket;
 	}
 
+	/**
+	 * Apply a standard actions array to this ticket.
+	 * 
+	 * @param array $actions
+	 */
+	public function applyActions(array $actions)
+	{
+		foreach ($actions as $type => $action) {
+			switch ($type) {
+				case 'department_id':
+					$this->ticket['department_id'] = $action;
+					break;
+
+				case 'category_id':
+					$this->ticket['category_id'] = $action;
+					break;
+
+				case 'agent':
+					$this->ticket['agent_id'] = $action;
+					break;
+
+				case 'product_id':
+					$this->ticket['product_id'] = $action;
+					break;
+
+				case 'priority_id':
+					$this->ticket['priority_id'] = $action;
+					break;
+
+				case 'reply':
+					$agent = App::getCurrentPerson();
+
+					if (!$agent) {
+						continue;
+						//todo err?
+					}
+
+					$message = new Entity\TicketMessage();
+					$message['person']  = $agent;
+					$message['ticket']  = $this->ticket;
+					$message['message'] = $action;
+
+					$this->ticket->addMessage($message);
+
+					break;
+			}
+		}
+	}
+
 	public function addMessage(Entity\TicketMessage $message)
 	{
 		$this->ticket->addMessage($message);

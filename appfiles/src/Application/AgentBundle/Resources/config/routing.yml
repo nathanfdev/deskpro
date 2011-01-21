@@ -272,6 +272,15 @@ agent_ticket_ajax_labels_save:
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveLabels }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_ajax_get_macro:
+  pattern: /tickets/{ticket_id}/ajax-get-macro
+  defaults: { _controller: AgentBundle:Ticket:ajaxGetMacro }
+  requirements: { ticket_id: "\d+" }
+
+agent_ticket_ajax_save_actions:
+  pattern: /tickets/{ticket_id}/ajax-save-actions
+  defaults: { _controller: AgentBundle:Ticket:ajaxSaveActions }
+  requirements: { ticket_id: "\d+" }
 
 ################################################################################
 # Twitter

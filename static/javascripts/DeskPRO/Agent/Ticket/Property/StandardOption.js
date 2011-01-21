@@ -13,8 +13,8 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 	init: function() {
 		var valid_options = ['department_id', 'category_id', 'product_id', 'priority_id', 'status', 'agent_id', 'agent_team_id'];
 		
-		if (!valid_options.indexOf(this.options.optionName)) {
-			throw {'name': 'invalidOptionName', optionName: this.options.optionName};
+		if (valid_options.indexOf(this.options.optionName) == -1) {
+			throw 'invalidOptionName:'+this.options.optionName;
 		}
 		
 		this.optionName = this.options.optionName;
@@ -35,9 +35,9 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 		this.getFormEl().val(value);
 		
 		if (value == "0") value = 0;
-		
+
 		if (value) {
-			var menuEl = $('li[data-option-id="'+value+'"]:first');
+			var menuEl = $('li[data-option-id="'+value+'"]:first', this.menuRepository.getListElement());
 			var displayName = value;
 			if (menuEl.length) {
 				displayName = menuEl.html();
