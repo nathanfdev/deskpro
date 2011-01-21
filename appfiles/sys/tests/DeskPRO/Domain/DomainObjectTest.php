@@ -49,7 +49,7 @@ class DomainObjectTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException BadMethodCallException
 	 */
 	public function testBadVar1()
 	{
@@ -58,7 +58,7 @@ class DomainObjectTest extends \PHPUnit_Framework_TestCase
 	}
 
 	/**
-	 * @expectedException InvalidArgumentException
+	 * @expectedException BadMethodCallException
 	 */
 	public function testBadVar2()
 	{
