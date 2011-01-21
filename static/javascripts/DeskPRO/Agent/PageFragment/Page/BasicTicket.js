@@ -270,6 +270,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			self.toggleReplyBar();
 		});
 		
+		// Since the tabs were added to the document for absolute positioning,
+		// we need to properly hide/show them on activation and deactivation
+		// for when the reply bar is open when switching between tabs
+		this.addEvent('activate', function() { if (self.ticketReply.is(':visible')) self.ticketReplyTabs.show(); });
+		this.addEvent('deactivate', function() { self.ticketReplyTabs.hide(); });
+		
 		// Send reply
 		$('button.submit-trigger', this.barWrapper).click(function(ev) {
 			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
