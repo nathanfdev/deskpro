@@ -67,7 +67,7 @@ class TicketSearchController extends AbstractController
 			'queue_id' => $queue['id'],
 		);
 
-		$pref_display_fields = $this->person->getPref('agent.ui.ticket-'.$type.'-display-fields.' . $type_id);
+		$pref_display_fields = $this->person->getPref('agent.ui.ticket-queue-display-fields.' . $queue['id']);
 		if ($pref_display_fields) {
 			$vars['display_fields'] = $pref_display_fields;
 		}
