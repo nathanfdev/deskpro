@@ -474,5 +474,97 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.popout.hide();
 		this.popout_overview.hide();
 		this.popout_overview_content.hide();
+	},
+	
+	//#################################################################
+	//# Reply bar
+	//#################################################################
+	
+	_initReplyBar: function() {
+		this.parent();
+		
+		var self = this;
+		
+		$('input.reply-assign-trigger', this.ticketReply).click(function(ev) {	
+			// We can uncheck easy
+			if ($(this).val() != '0') {
+				$(this).attr('checked', false).val('0');
+				$('span.reply-assign-label', self.ticketReply).hide().html('');
+				
+			// To check popup the menu
+			} else {			
+				ev.preventDefault();
+				
+				ev.customEvents = new Events();
+				ev.customEvents.addEvent('itemClicked', self._handleReplybarAssign.bind(self));
+			
+				self.ticketOptionsMenus['agent'].openMenu(ev);
+			}
+		});
+		$('span.reply-assign-label', this.ticketReply).click(function(ev) {
+			ev.customEvents = new Events();
+			ev.customEvents.addEvent('itemClicked', self._handleReplybarAssign.bind(self));
+			self.ticketOptionsMenus['agent'].openMenu(ev);
+		});
+
+		var menu = new DeskPRO.UI.Menu({
+			menuElement: $('ul.cc-to-menu:first', this.ticketReply)
+		});
+		this.destroyMenus.push(menu);
+		
+		var ccToInput = $('ul.cc-to-menu:first input', this.ticketReply);
+		
+		var ccCheck = $('input.cc-to-trigger', this.ticketReply).click(function(ev) {
+			
+			// We can uncheck easy
+			if ($(this).val() != '') {
+				$(this).attr('checked', false).val('0');
+				$('span.cc-to-label', self.ticketReply).hide().html('');
+				
+			// To check popup the menu
+			} else {			
+				ev.preventDefault();
+				menu.openMenu(ev);
+				ccCheck.focus();
+			}
+		})
+		$('span.cc-to-label', this.ticketReply).click(function(ev) {
+			menu.openMenu(ev);
+		});
+		
+		var ccSaveBtn = $('button.cc-to-save-trigger', this.ticketReply).click(function(ev) {
+			var val = ccToInput.val().trim();
+			
+			if (val.length) {
+				ccCheck.attr('checked', true).val(val);
+				
+				var labelEl = $('span.cc-to-label', self.ticketReply);
+				var displayName = labelEl.data('label').replace('%email%', val);
+				
+				labelEl.html(displayName).show();
+				
+				menu.closeMenu();
+				
+			} else {
+				ccCheck.attr('checked', false).val('');
+				$('span.cc-to-label', self.ticketReply).hide().html('');
+			}
+		});
+	},
+	
+	_handleReplybarAssign: function(info) {
+		var agentId = $(info.itemEl).data('option-id');
+		var agentName = $(info.itemEl).html();
+		
+		if (agentId) {
+			$('input.reply-assign-trigger', this.ticketReply).attr('checked', true).val(agentId);
+			var labelEl = $('span.reply-assign-label', this.ticketReply);
+			var displayName = labelEl.data('label').replace('%agent%', agentName);
+			
+			labelEl.html(displayName).show();
+		} else {
+			$('input.reply-assign-trigger', this.ticketReply).attr('checked', false).val('0');
+			$('span.reply-assign-label', this.ticketReply).hide().html('');
+		}
 	}
 });

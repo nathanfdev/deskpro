@@ -6,14 +6,21 @@
 				{% if ticket.id %}
 					<table cellspacing="0" cellpadding="0">
 						<tr><td>
-							<input class="small" type="checkbox" name="options[assign]" /> Assign ticket
+							<input class="small reply-assign-trigger" type="checkbox" name="options[assign]" value="0" /> Assign ticket<span class="reply-assign-label" data-label=": %agent%" style="display:none;cursor:pointer;"></span>
 						</td><td>
 							<input class="small" type="checkbox" checked="checked" name="options[email_user]" /> Email user this reply
 						</td></tr>
 						<tr><td>
 							<input class="small" type="checkbox" name="options[status]" checked="checked" /> Change status to <span class="menu-trigger change-status">Pending</span>
 						</td><td>
-							<input class="small" type="checkbox" name="options[cc]" /> CC reply
+							<input class="small cc-to-trigger" type="checkbox" name="options[cc]" value="" /> CC reply<span class="cc-to-label" data-label=": %email%" style="display:none;cursor:pointer;"></span>
+							<ul class="cc-to-menu" style="display:none">
+								<li class="elm">
+									CC reply to:<br />
+									<input type="text" value="" style="width:180px; margin-top: 3px; margin-bottom: 3px;" /><br />
+									<button class="cc-to-save-trigger dp-button x-small">Okay</button>
+								</li>
+							</ul>
 						</td></tr>
 					</table>
 				{% else %}

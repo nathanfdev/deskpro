@@ -127,14 +127,16 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	//#################################################################
 	//# Ticket options menus
 	//#################################################################
-		
+	
+	ticketOptionsMenus: {},
 	_initTicketOptionsMenus: function() {
 		var options = ['department', 'category', 'product', 'priority', 'status', 'agent', 'agent_team'];
 		var self = this;
 		
 		for (var i = 0; i < options.length; i++) {
 			var opt = options[i];
-			var btnEl = $('.ticket-options-'+opt+'-btn', this.wrapper);
+			var btnClass = '.ticket-options-'+opt+'-btn';
+			var btnEl = $(btnClass, this.wrapper);
 			var menu = new DeskPRO.UI.Menu({
 				triggerElement: btnEl,
 				menuElement: $('.ticket-options-'+opt+'-menu', this.wrapper),
@@ -142,6 +144,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 					self._handleTicketOptionClick(info);
 				}
 			});
+			this.ticketOptionsMenus[opt] = menu;
 			this.destroyMenus.push(menu);
 			
 			// And if its a no-value, update the proper title
