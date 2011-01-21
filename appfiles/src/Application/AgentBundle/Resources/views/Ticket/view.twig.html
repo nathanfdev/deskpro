@@ -6,15 +6,24 @@ pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
 pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
 </script>
-
 <div class="ticket-content">
+	<form class="value-form" style="display:none">
+		<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
+		<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
+		<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
+		<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
+		<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
+		<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
+	</form>
+	
+	
 	<div class="ticket">
 
 	<div class="ticket-top">
 		<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
 		<h1>
-			<span class="ticket-opt-btn ticket-options-department-btn department {% if not ticket.department %}no-value{% endif %}">
-				<span class="val" data-no-value="Choose Department">{{ticket.department.title}}</span>
+			<span class="menu-trigger department_id department {% if not ticket.department %}no-value{% endif %}">
+				<span class="prop-val department_id" data-no-value="Choose Department">{{ticket.department.title}}</span>
 				&rsaquo;
 			</span>
 			{{ticket.subject}}
@@ -34,13 +43,13 @@ pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id':
 		<div class="person-info-line">
 
 			<div style="float:right">
-				<div class="ticket-opt-btn ticket-options-agent-btn agent">
+				<div class="menu-trigger agent_id agent">
 					<strong>Agent:</strong><br />
-					<span class="val {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.display_name}}</span>
+					<span class="prop-val agent_id {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.display_name}}</span>
 				</div>
 				{% if ticket_options.agent_teams %}
-					<div class="ticket-opt-btn ticket-options-agent_team-btn agent_team" style="font-size:7pt">
-						<strong>Team:</strong> <span class="val {% if not ticket.agent_team %}no-value{% endif %}" data-no-value="None">{{ticket.agent_team.name}}</span>
+					<div class="menu-trigger agent_team_id agent_team" style="font-size:7pt">
+						<strong>Team:</strong> <span class="prop-val agent_team_id {% if not ticket.agent_team %}no-value{% endif %}" data-no-value="None">{{ticket.agent_team.name}}</span>
 					</div>
 				{% endif %}
 			</div>

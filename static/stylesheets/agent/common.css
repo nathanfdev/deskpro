@@ -90,6 +90,7 @@ input.flat {
 	user-select: none;
 }
 
+.menu-trigger { cursor: pointer; }
 
 #tiptip_holder { z-index: 1000000; }
 

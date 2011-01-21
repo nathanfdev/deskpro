@@ -14,6 +14,9 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	destroyEls: [],
 	destroyMenus: [],
 	
+	changeManager: null,
+	valueForm: null,
+	
 	initPage: function(el) {
 
 		this.wrapper = el;
@@ -31,6 +34,11 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 				spacing_closed: 0
 			}
 		});
+		
+		this.valueForm = $('form.value-form:first', this.contentWrapper);
+		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
+		
+		window.TICKET = this;
 
 		this._initTicketOptionsMenus();
 		this._initCustomFieldsEditor();
@@ -48,6 +56,36 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		for (var i = 0; i < this.destroyMenus.length; i++) {
 			this.destroyMenus[i].destroy();
 		}
+	},
+	
+	//#################################################################
+	//# Property managers
+	//#################################################################
+	
+	propertyManagers: {},
+	
+	getPropertyManager: function(type) {
+		
+		if (this.propertyManagers[type]) {
+			return this.propertyManagers[type];
+		}
+		
+		var manager = null;
+		switch (type) {
+			case 'department_id':
+		 	case 'category_id':
+			case 'product_id':
+			case 'priority_id':
+			case 'status':
+			case 'agent_id':
+			case 'agent_team_id':
+				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this, { optionName: type });
+				break;
+		}
+		
+		this.propertyManagers[type] = manager;
+		
+		return manager;
 	},
 	
 	//#################################################################
@@ -130,16 +168,16 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	
 	ticketOptionsMenus: {},
 	_initTicketOptionsMenus: function() {
-		var options = ['department', 'category', 'product', 'priority', 'status', 'agent', 'agent_team'];
+		var options = ['department_id', 'category_id', 'product_id', 'priority_id', 'status', 'agent_id', 'agent_team_id'];
 		var self = this;
 		
 		for (var i = 0; i < options.length; i++) {
 			var opt = options[i];
-			var btnClass = '.ticket-options-'+opt+'-btn';
+			var btnClass = '.menu-trigger.'+opt+':first';
 			var btnEl = $(btnClass, this.wrapper);
 			var menu = new DeskPRO.UI.Menu({
 				triggerElement: btnEl,
-				menuElement: $('.ticket-options-'+opt+'-menu', this.wrapper),
+				menuElement: $('.ticket-menu.'+opt+':first', this.wrapper),
 				onItemClicked: function(info) {
 					self._handleTicketOptionClick(info);
 				}
@@ -149,43 +187,17 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			
 			// And if its a no-value, update the proper title
 			if ($('.no-value', btnEl).length) {
-				this._updateTicketOptionValue(opt, null);
+				//this._initNoValOption(opt, null);
 			}
 		}
 	},
 	
-	_updateTicketOptionValue: function(opt, value) {
-		
-		// Replace the value of in the page
-		var val_el = $('.ticket-options-'+opt+'-btn dd, .ticket-options-'+opt+'-btn .val', this.wrapper);		
-		
-		if (!value) {
-			value = val_el.data('no-value');
-			val_el.addClass('no-value');
-		} else {
-			val_el.removeClass('no-value');
-		}
-		
-		val_el.html(value);
-	},
-	
 	_handleTicketOptionClick: function(info) {
 		var opt = $(info.itemEl).parent().data('option-name');
-		var itemName = $(info.itemEl).html();
 		var itemId = $(info.itemEl).data('option-id');
-		var itemType = $(info.itemEl).data('option-type');
 		
-		this._updateTicketOptionValue(opt, itemName);
-		
-		this._handleTicketOptionSave(opt, itemId);
-	},
-	
-	_handleTicketOptionSave: function(option, optionId) {
-		console.warn('This method should be overridden in a subclass!');
-	},
-	
-	_handleTicketOptionSaveSuccess: function(data) {
-		DeskPRO_Window.stopLoadingIndicator();
+		var prop = this.getPropertyManager(opt);
+		this.changeManager.setInstantChange(prop, itemId);
 	},
 	
 	//#################################################################
