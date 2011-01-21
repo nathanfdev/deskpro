@@ -105,7 +105,18 @@ DeskPRO.UI.Menu = new Class({
 			event.stopPropagation();
 		}
 		
-		this.fireEvent('beforeMenuOpened', { menu: this });
+		var eventData = { menu: this, cancelOpen: false };
+		
+		if (event && event.customEvents) {
+			event.customEvents.fireEvent('beforeMenuOpened', eventData);
+		} else {
+			this.fireEvent('beforeMenuOpened', eventData);
+		}
+		
+		if (eventData.cancelOpen) {
+			this.openTriggerEvent = null;
+			return;
+		}
 		
 		if (!this.options.zIndex) {
 			this.options.zIndex = Orb.findHighestZindex()+1;
@@ -159,7 +170,12 @@ DeskPRO.UI.Menu = new Class({
 			'left': left
 		});
 		this.elements.wrapperOuter.fadeIn(150);
-		this.fireEvent('menuOpened', { menu: this });
+		
+		if (event && event.customEvents) {
+			event.customEvents.fireEvent('menuOpened', { menu: this });
+		} else {
+			this.fireEvent('menuOpened', { menu: this });
+		}
 	},
 	
 	
@@ -171,14 +187,23 @@ DeskPRO.UI.Menu = new Class({
 		if (!this.isMenuOpen()) return false;
 		
 		var eventData = { menu: this, cancelClose: false };
-		this.fireEvent('beforeMenuClosed', eventData);
+		
+		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
+			this.openTriggerEvent.customEvents.fireEvent('beforeMenuClosed', eventData);
+		} else {
+			this.fireEvent('beforeMenuClosed', eventData);
+		}
 		
 		if (eventData.cancelClose) return false;
 		
 		this.elements.shim.hide();
 		this.elements.wrapperOuter.fadeOut(200);
 		
-		this.fireEvent('menuClosed', { menu: this });
+		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
+			this.openTriggerEvent.customEvents.fireEvent('menuClosed', { menu: this });
+		} else {
+			this.fireEvent('menuClosed', { menu: this });
+		}
 		
 		this.openTriggerEvent = null;
 		
@@ -194,7 +219,18 @@ DeskPRO.UI.Menu = new Class({
 		
 		var eventData = { menu: this, event: event, itemEl: event.currentTarget, cancelClose: false };
 		
-		this.fireEvent('itemClicked', eventData);
+		// "element" items arent actual menu items, they some UI thing
+		// so dont close for them
+		if ($(eventData.itemEl).is('.elm')) {
+			eventData.cancelClose = true;
+		}
+		
+		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
+			this.openTriggerEvent.customEvents.fireEvent('itemClicked', eventData);
+		} else {
+			this.fireEvent('itemClicked', eventData);
+		}
+
 		event.stopPropagation();
 		
 		if (eventData.cancelClose) return;
