@@ -13,8 +13,8 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		this.wrapper = wrapper;
 		this.contentWrapper = contentWrapper;
 		
-		this.actionTitleEl = $('.actions-bar .action-title', this.wrapper);
-		this.countEl = $('.actions-bar .counter .count', this.wrapper);
+		this.actionTitleEl = $('.ticket-bar .action-title', this.wrapper);
+		this.countEl = $('.ticket-bar .counter .count', this.wrapper);
 		
 		this._initMenus();
 	},
@@ -22,20 +22,21 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	actionMenu: null,
 	selectMenu: null,
 	_initMenus: function() {
-		var action_title = $('.actions-bar .action-title', this.wrapper);
 		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.actions-bar .action-title', this.wrapper),
-			menuElement: $('.actions-bar .action-menu', this.wrapper),
+			triggerElement: $('.ticket-bar ul.tools li.actions:first', this.wrapper),
+			menuElement: $('.ticket-bar .ticket-action-menu:first', this.wrapper),
 			onItemClicked: this._actionMenuItemClicked.bind(this)
 		});
 		
-		$('.actions-bar .action-perform', this.wrapper).click((function() {
-			this.performMassAction();
-		}).bind(this));
+		var menu = this.macrosMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.ticket-bar ul.tools li.macros:first', this.wrapper),
+			menuElement: $('.ticket-bar .ticket-macros-menu:first', this.wrapper),
+			onItemClicked: this._macroMenuItemClicked.bind(this)
+		});
 		
 		var menu = this.selectMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.actions-bar .counter', this.wrapper),
-			menuElement: $('..actions-bar .selected-menu', this.wrapper),
+			triggerElement: $('.ticket-bar .counter:first', this.wrapper),
+			menuElement: $('.ticket-bar .selected-menu:forst', this.wrapper),
 			onItemClicked: this._selectMenuItemClicked.bind(this)
 		});
 	},
@@ -116,6 +117,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	_selectOp: function(op) {
 		// No table defined
 		if (!this.tableEl) return;
+		var self = this;
 		
 		if (op == 'none') {
 			$('input[type="checkbox"].ticket', this.tableEl).attr('checked', false);
@@ -127,10 +129,10 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			$('input[type="checkbox"].ticket', this.tableEl).each(function() {
 				if ($(this).is(':checked')) {
 					$(this).attr('checked', false);
-					this._getRowLines($(this).parent().parent()).removeClass('on');
+					self._getRowLines($(this).parent().parent()).removeClass('on');
 				} else {
 					$(this).attr('checked', true);
-					this._getRowLines($(this).parent().parent()).addClass('on');
+					self._getRowLines($(this).parent().parent()).addClass('on');
 				}
 			});
 		}
@@ -205,5 +207,15 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	_handleMassActionsReply: function(data) {
 		DeskPRO_Window.stopLoadingIndicator();
 		console.debug(data);
+	},
+	
+	
+	//#################################################################
+	//# Mass actions preview stuff
+	//#################################################################
+	
+	_macroMenuItemClicked: function(info) {
+		
 	}
+	
 });

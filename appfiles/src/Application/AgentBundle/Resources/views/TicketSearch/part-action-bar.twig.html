@@ -1,12 +1,19 @@
-<div class="actions-bar">
+<div class="ticket-bar">
 	<div class="counter"><span class="count">0</span> Selected</div>
-	<div class="actions">
-		<div class="action-selector">
-			<span class="action-title">Select Action...</span><button class="action-perform">Perform Action</button>
-		</div>
+	<div class="bar">
+		<ul class="tools">
+			<li class="macros-apply" style="display:none"><span class="icon icon-check">Apply</span></li>
+			<li class="macros-cancel" style="display:none"><span class="icon icon-cross">Cancel</span></li>
+			<li class="macros"><span class="icon icon-script-gear">Macros</span></li>
+			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
+		</ul>
 	</div>
-	
-	<ul class="action-menu" style="display:none">
+	<ul class="ticket-macros-menu" style="display:none">
+		{% for macro in macros %}
+			<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
+		{% endfor %}
+	</ul>
+	<ul class="ticket-action-menu" style="display:none">
 		<li data-op="take">Take Ownership</li>
 		<li data-op="delete">Delete</li>
 		<li data-op="spam">Mark As Spam</li>
@@ -14,10 +21,6 @@
 		<li data-op="status" data-status="open">Set Status: Awaiting Agent</li>
 		<li data-op="status" data-status="pending">Set Status: Awaiting User</li>
 		<li data-op="status" data-status="resolved">Set Status: Resolved</li>
-		<li class="sep">-</li>
-		{% for macro in macros %}
-			<li data-op="macro" data-macro-id="{{macro.id}}">{{macro.title}}</li>
-		{% endfor %}
 	</ul>
 	<ul class="selected-menu" style="display:none">
 		<li data-op="all">Select All</li>

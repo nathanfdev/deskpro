@@ -17,7 +17,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		
 		this.wrapper = $(el);
 		this.contentWrapper = $('.content:first', this.wrapper);
-		this.barWrapper = $('.actions-bar:first', this.wrapper);
+		this.barWrapper = $('.ticket-bar:first', this.wrapper);
 		
 		var center_id = Orb.getUniqueId('listpane_');
 		var south_id = Orb.getUniqueId('listpane_');

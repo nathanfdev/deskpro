@@ -534,6 +534,16 @@ ul.tagit input[type="text"] {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7F92AD', endColorstr='#AEBFD1',GradientType=0 ); /* ie */
 }
 
+.ticket-bar .counter {
+	text-shadow: 1px 1px 2px #F5F5F5;
+	filter: dropshadow(color=#ffffff, offx=0, offy=0);
+	float: left;
+	font-size: 8pt;
+	line-height: 26px;
+	padding-left: 6px;
+	cursor: pointer;
+}
+
 .ticket-bar.expanded {
 	border-top: 2px solid #485F85;
 }
