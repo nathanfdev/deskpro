@@ -117,7 +117,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 					break;
 
 				case 'reply':
-					$actions['reply'] = $action['reply'];
+					$actions['new_reply'] = $action['new_reply'];
 					$agent = App::getCurrentPerson();
 					break;
 			}

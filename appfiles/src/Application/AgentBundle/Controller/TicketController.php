@@ -355,10 +355,17 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-		$ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
+		$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
 		$ticket_edit->save();
 
-		return $this->createJsonResponse(array('success' => 1));
+		$data = array();
+		if (isset($result['new_reply'])) {
+			$data['new_reply'] = $this->renderView('AgentBundle:Ticket:ticket-message.twig.html', array(
+				'message' => $result['new_reply']
+			));
+		}
+
+		return $this->createJsonResponse($data);
 	}
 
 

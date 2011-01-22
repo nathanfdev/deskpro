@@ -21,6 +21,8 @@ class TicketEdit
 	 */
 	public function applyActions(array $actions)
 	{
+		$return = array();
+
 		foreach ($actions as $type => $action) {
 			switch ($type) {
 				case 'department_id':
@@ -43,7 +45,11 @@ class TicketEdit
 					$this->ticket['priority_id'] = $action;
 					break;
 
-				case 'reply':
+				case 'status':
+					$this->ticket['status'] = $action;
+					break;
+
+				case 'new_reply':
 					$agent = App::getCurrentPerson();
 
 					if (!$agent) {
@@ -54,13 +60,17 @@ class TicketEdit
 					$message = new Entity\TicketMessage();
 					$message['person']  = $agent;
 					$message['ticket']  = $this->ticket;
-					$message['message'] = $action;
+					$message['message'] = $action['message'];
 
 					$this->ticket->addMessage($message);
+					
+					$return['new_reply'] = $message;
 
 					break;
 			}
 		}
+
+		return $return;
 	}
 
 	public function addMessage(Entity\TicketMessage $message)

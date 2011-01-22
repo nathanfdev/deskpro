@@ -498,7 +498,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				ev.customEvents = new Events();
 				ev.customEvents.addEvent('itemClicked', self._handleReplybarAssign.bind(self));
 			
-				self.ticketOptionsMenus['agent'].openMenu(ev);
+				self.ticketOptionsMenus['agent_id'].openMenu(ev);
 			}
 		});
 		$('span.reply-assign-label', this.ticketReply).click(function(ev) {

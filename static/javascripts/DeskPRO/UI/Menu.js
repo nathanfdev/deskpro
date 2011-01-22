@@ -169,7 +169,7 @@ DeskPRO.UI.Menu = new Class({
 			'top': top,
 			'left': left
 		});
-		this.elements.wrapperOuter.fadeIn(150);
+		this.elements.wrapperOuter.show();
 		
 		if (event && event.customEvents) {
 			event.customEvents.fireEvent('menuOpened', { menu: this });

@@ -30,6 +30,13 @@
 	text-decoration: underline;
 }
 
+textarea.change-on, input.change-on {
+	color: #52463F;
+	text-decoration: none;
+	background-color: #F7F0EB;
+	border: 1px solid #A33F29;
+}
+
 /**********************************************************
  Tagit
 ***********************************************************/

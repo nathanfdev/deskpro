@@ -138,21 +138,59 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			url: this.updateUrl,
 			data: data,
 			dataType: 'json',
+			context: this,
 			success: function(data) {
-				console.log(data);
+				
+				this.changes = {};
+				this.oldValues = {};
+				
+				if (data && typeOf(data) == 'object') {
+					Object.each(data, function (returnValue, type) {
+						var property = this.ticketPage.getPropertyManager(type);
+						property.setIncomingValue(returnValue);
+					}, this);
+				}
 			}
 		});
 	},
 	
 	_addPropertyValueToData: function(data, name, propertyValue) {
-		if (typeOf(propertyValue) != 'array') {
-			propertyValue = [propertyValue];
-		}
 		
-		for (var x = 0; x < propertyValue.length; x++) {
+		// An array of items
+		if (typeOf(propertyValue) == 'array') {
+			for (var x = 0; x < propertyValue.length; x++) {
+				var val = propertyValue[x];
+				
+				// Looks like its already a k:v like from serializeArray
+				if (typeOf(val) == 'object' && val.name !== undefined) {
+					data.push({
+						name: 'actions['+name+']['+val.name+']',
+						value: val.value
+					});
+				
+				// We'll just make it an array of values then
+				} else {
+					data.push({
+						name: 'actions['+name+']',
+						value: val
+					});
+				}
+			}
+
+		// A k:v pair of items
+		} else if (typeOf(propertyValue) == 'object') {
+			Object.each(propertyValue, function(v, k) {
+				data.push({
+					name: 'actions['+name+']['+k+']',
+					value: v
+				});
+			}, this);
+			
+		// A single value
+		} else {
 			data.push({
 				name: 'actions['+name+']',
-				value: propertyValue[x]
+				value: propertyValue
 			});
 		}
 	},
@@ -167,7 +205,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			property = this.ticketPage.getPropertyManager(property);
 		}
 		
-		property.setValue(newValue);
+		property.setIncomingValue(newValue);
 		property.pulseInterfaceElement();
 	}
 });

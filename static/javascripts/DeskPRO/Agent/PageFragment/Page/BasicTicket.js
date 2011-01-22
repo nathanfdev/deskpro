@@ -81,6 +81,9 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			case 'agent_team_id':
 				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this, { optionName: type });
 				break;
+			case 'new_reply':
+				manager = new DeskPRO.Agent.Ticket.Property.NewReply(this);
+				break;
 		}
 		
 		this.propertyManagers[type] = manager;

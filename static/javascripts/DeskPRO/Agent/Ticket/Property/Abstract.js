@@ -24,6 +24,8 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 		this.init();
 	},
 	
+	init: function() {},
+	
 	/**
 	 * Name for the property
 	 *
@@ -53,6 +55,16 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	 */
 	setValue: function(value) {
 		// override
+	},
+	
+	
+	
+	/**
+	 * Sets data that we got from the server. This is usually the same
+	 * as setValue(), but it might be like a new reply or osmething like that.
+	 */ 
+	setIncomingValue: function(value) {
+		this.setValue(value);
 	},
 	
 	
