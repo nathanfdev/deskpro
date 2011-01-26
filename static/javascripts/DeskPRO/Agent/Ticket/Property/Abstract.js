@@ -38,6 +38,22 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	
 	
 	/**
+	 * Used to compare a new value to the current value to see if
+	 * we really need to change anything.
+	 *
+	 * @return {Boolean}
+	 */
+	isSameValue: function(compare) {
+		if (this.getValue() == compare) {
+			return true;
+		}
+		
+		return false;
+	},
+	
+	
+	
+	/**
 	 * Gets the currently set value
 	 *
 	 * @return mixed

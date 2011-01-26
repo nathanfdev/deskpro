@@ -27,6 +27,11 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 * Add a change to the set of changes
 	 */
 	addChange: function(property, newValue, applyNow) {
+		
+		if (property.isSameValue(newValue)) {
+			return;
+		}
+		
 		this.mode = 'multi';
 		this.changes[property.getName()] = [property, newValue];
 		
