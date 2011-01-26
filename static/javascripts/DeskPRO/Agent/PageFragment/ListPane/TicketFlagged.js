@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFlagged = new Class({
 			}
 		});
 		
-		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
+		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this, this.wrapper, this.contentWrapper);
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
 		
 		this.initFeaturesOnCollection(el, {

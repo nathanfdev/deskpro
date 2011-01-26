@@ -2,6 +2,7 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
 
 DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	
+	page: null,
 	wrapper: null,
 	contentWrapper: null,
 	tableEl: null,
@@ -9,7 +10,8 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	actionTitleEl: null,
 	selectedActionData: null,
 	
-	initialize: function(wrapper, contentWrapper) {
+	initialize: function(page, wrapper, contentWrapper) {
+		this.page = page;
 		this.wrapper = wrapper;
 		this.contentWrapper = contentWrapper;
 		
@@ -39,6 +41,23 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			menuElement: $('.ticket-bar .selected-menu:first', this.wrapper),
 			onItemClicked: this._selectMenuItemClicked.bind(this)
 		});
+	},
+	
+	
+	
+	/**
+	 * Get all the ticket ID's currently selected
+	 *
+	 * @return {Array}
+	 */
+	getSelectedTicketIds: function() {
+		var ticket_ids = [];
+		
+		$('input.ticket:checked', this.tableEl).each(function() {
+			ticket_ids.push(parseInt($(this).val()));
+		});
+		
+		return ticket_ids;
 	},
 	
 	
@@ -215,7 +234,74 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	//#################################################################
 	
 	_macroMenuItemClicked: function(info) {
+		var ticket_ids = this.getSelectedTicketIds();
 		
-	}
+		if (!ticket_ids.length) {
+			DeskPRO_Window.showAlert('You need to select one or more tickets to perform actions on.');
+			return;
+		}
+		
+		DeskPRO_Window.startLoadingIndicator();
+		
+		var data = [];
+		Array.each(ticket_ids, function(id) {
+			data.push({
+				name: 'ticket_ids[]',
+				value: id
+			});
+		});
+
+		$.ajax({
+			cache: false,
+			type: 'GET',
+			data: data,
+			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', $(info.itemEl).data('macro-id')),
+			context: this,
+			dataType: 'json',
+			success: function (data) {
+				DeskPRO_Window.stopLoadingIndicator();
+				this.applyMacroActions(ticket_ids, data);
+			}
+		});
+	},
 	
+	applyMacroActions: function(ticket_ids, macro_info) {
+		
+		var changeManager = this.page.changeManager;
+		changeManager.begin(ticket_ids);
+		
+		Object.each(macro_info.all, function(propName, newValue) {
+			var obj = this._getPropClass(propName);
+			console.log(propName);
+			console.log(obj);
+			
+			Array.each(ticket_ids, function(id) {
+				var property = new obj(this.page, id);
+				
+				changeManager.addChange(property, newValue);
+			}, this);
+		}, this);
+		
+		changeManager.applyChanges();
+	},
+	
+	_getPropClass: function(propName) {
+		var obj = null;
+		switch (propName) {
+			case 'department_id':
+		 	case 'category_id':
+			case 'product_id':
+			case 'priority_id':
+			case 'status':
+			case 'agent_id':
+			case 'agent_team_id':
+				obj = DeskPRO.Agent.Ticket.Property.StandardOption;
+				break;
+			case 'new_reply':
+				obj = DeskPRO.Agent.Ticket.Property.NewReply;
+				break;
+		}
+		
+		return obj;
+	}
 });

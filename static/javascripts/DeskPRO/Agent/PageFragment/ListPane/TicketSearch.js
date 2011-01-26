@@ -40,7 +40,7 @@ DeskPRO.Agent.PageFragment.ListPane.TicketSearch = new Class({
 		this._initBasic();
 		this._initForm();
 		
-		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
+		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this, this.wrapper, this.contentWrapper);
 		this.barWrapper.hide();
 		
 		if (this.getMetaData('autorun')) {

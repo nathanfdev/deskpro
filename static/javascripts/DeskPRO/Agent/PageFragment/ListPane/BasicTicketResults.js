@@ -10,8 +10,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	overlay: null,
 	appendUrl: null,
 	
+	actionsBarHelper: null,
+	
 	resultTypeName: 'basic',
 	resultTypeId: 'general',
+	
+	changeManager: null,
 
 	initPage: function(el) {
 		
@@ -43,7 +47,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this._initGroupingOptions();
 
 		
-		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
+		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this, this.wrapper, this.contentWrapper);
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
 
 		this.initFeaturesOnCollection(el, {
@@ -55,6 +59,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();
 		}
+		
+		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
 	},
 	
 	destroyPage: function() {

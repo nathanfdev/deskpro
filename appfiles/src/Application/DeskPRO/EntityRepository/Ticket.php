@@ -12,8 +12,9 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use \Application\DeskPRO\App;
-
 use \Doctrine\ORM\EntityRepository;
+
+use \Orb\Util\Numbers;
 
 class Ticket extends EntityRepository
 {
@@ -23,7 +24,7 @@ class Ticket extends EntityRepository
 		// Do this because Doctrine doesnt have proper IN()
 		// escaping until 2.1
 		$ids = array_filter($ids, function ($val) {
-			if (is_int($val) OR (int)$val == (string)$val) {
+			if (Numbers::isInteger($val)) {
 				return true;
 			}
 			return false;

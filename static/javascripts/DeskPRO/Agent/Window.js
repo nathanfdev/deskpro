@@ -86,6 +86,46 @@ DeskPRO.Agent.Window = new Class({
 	},
 	
 	
+	
+	/**
+	 * Get a name for some type of basic thing (department, category etc).
+	 */
+	getDisplayName: function(type, id) {
+		if (!window.DESKPRO_NAME_REGISTRY[type] || !window.DESKPRO_NAME_REGISTRY[type][id]) {
+			return null;
+		}
+		
+		return window.DESKPRO_NAME_REGISTRY[type][id];
+	},
+	
+	
+	
+	//#################################################################
+	//# Simple UI features
+	//#################################################################
+	
+	_alertOverlay: null,
+	showAlert: function(msg) {
+		this._initAlertOverlay();
+		$('#alert_overlay_msg').html(msg);
+		this._alertOverlay.openOverlay();
+	},
+	
+	_initAlertOverlay: function() {
+		if (this._alertOverlay !== null) return;		
+		
+		this._alertOverlay = new DeskPRO.UI.Overlay({
+			contentElement: $('#alert_overlay'),
+			zIndex: 10000000, /* this should be bigger than everything */
+			onContentSet: function(eventData) {
+				$('.close-trigger', eventData.wrapperEl).click((function() {
+					eventData.overlay.closeOverlay();
+				}).bind(this));
+			}
+		});
+	},
+	
+	
 	//#################################################################
 	//# Routes and page loading
 	//#################################################################

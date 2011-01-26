@@ -127,6 +127,53 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+
+	/**
+	 * Get actions for a collection of tickets.
+	 *
+	 * @param array $tickets
+	 */
+	public function getActionsArrayForCollection($tickets = null)
+	{
+		$actions = array(
+			'all' => $this->getActionsArray()
+		);
+
+		// When we have a collection of tickets, each one might have
+		// a different action value than the main macro. For example, a ticket reply
+		// with replacements.
+		//
+		// So we have the main macro that has global changes, and then with this
+		// loopy here we go through and set specific changes for each ticket.
+		//
+		// By only including speciifc changes, the resulting structure is smaller
+		// and not filled with dupes (so faster for sending back through JSON and having the client process UI indicators)
+		//
+		// We end up with array('all' => array(...), 'tickets' => array(123=>array(specific), 245=>array(specific)...))
+
+		if ($tickets) {
+			$actions['tickets'] = array();
+
+			foreach ($tickets as $ticket) {
+				$ticket_actions = $this->getActionsArray($ticket);
+				
+				foreach ($ticket_actions as $k => $v) {
+
+					// If the all array doesnt have it, or has a different value, we need to include it
+					if (!isset($actions['all'][$k]) OR $actions['all'][$k] != $v) {
+						if (!isset($actions['tickets'][$ticket['id']])) $actions['tickets'][$ticket['id']] = array();
+						
+						$actions['tickets'][$ticket['id']][$k] = $v;
+					}
+				}
+			}
+		}
+
+		return $actions;
+	}
+
+
+	
 	public function performOnTicket(Ticket $ticket)
 	{
 		foreach ($this->actions as $action) {

@@ -9,6 +9,27 @@ use \Orb\Util\Util;
 
 class MiscController extends AbstractController
 {
+	public function getInterfaceDataAction()
+	{
+		$js = array();
+		$js[] = 'window.DESKPRO_NAME_REGISTRY = {};';
+
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent = ' . json_encode(App::getEntityRepository('DeskPRO:Person')->getAgentNames()) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = ' . json_encode(App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames()) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.department = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getFlatDepartmentNames(null, false)) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.product = ' . json_encode(App::getEntityRepository('DeskPRO:Product')->getProductNames()) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getAllCategoryNames()) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode(App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames()) . ';';
+
+		$js = implode("\n", $js);
+
+		$response = $this->response;
+		$response->headers->set('Content-Type', 'application/javascript');
+		$response->setContent($js);
+
+		return $response;
+	}
+
 	public function ajaxSavePrefsAction()
 	{
 		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'str_simple') as $pref_name => $value)

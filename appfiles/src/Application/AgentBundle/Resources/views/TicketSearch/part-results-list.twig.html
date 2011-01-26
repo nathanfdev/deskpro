@@ -1,6 +1,6 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
-	<tr class="line-1" data-ticket-id="{{ticket.id}}">
+	<tr class="ticket-{{ticket.id}} line-1" data-ticket-id="{{ticket.id}}">
 		<td rowspan="2" class="check-all"><input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></td>
 		<td colspan="{{display_fields|length}}">
 			<abbr class="timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</abbr>
@@ -11,37 +11,45 @@
 			<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span></td>
 		{% endif %}
 	</tr>
-	<tr class="line-2" data-ticket-id="{{ticket.id}}">
+	<tr class="ticket-{{ticket.id}} line-2" data-ticket-id="{{ticket.id}}">
 		{% for field in display_fields %}
 			<td class="{{field}}" {% if loop.last %}style="text-align:right"{% endif %}>
 			{% if field == 'person' %}
 				by <cite>{{ticket.person.name}}</cite>
 			{% elseif field == 'department' %}
-				{{ticket.department.title}}
+				<span class="prop-val department_id" data-value="{{ticket.department.id}}">{{ticket.department.title}}</span>
 			{% elseif field == 'category' %}
+				<span class="prop-val category_id" data-value="{{ticket.category.id}}">
 				{% if ticket.category %}
 					{{ticket.category.title}}
 				{% else %}
 					None
 				{% endif %}
+				</span>
 			{% elseif field == 'product' %}
+				<span class="prop-val product_id" data-value="{{ticket.product.id}}">
 				{% if ticket.product %}
 					{{ticket.product.title}}
 				{% else %}
 					None
 				{% endif %}
+				</span>
 			{% elseif field == 'organization' %}
+				<span class="prop-val organization_id" data-value="{{ticket.organization.id}}">
 				{% if ticket.organization %}
 					{{ticket.organization.name}}
 				{% else %}
 					None
 				{% endif %}
+				</span>
 			{% elseif field == 'agent' %}
+				<span class="prop-val agent_id" data-value="{{ticket.agent.id}}">
 				{% if ticket.agent %}
 					{{ticket.agent.display_name}}
 				{% else %}
 					Unassigned
 				{% endif %}
+				</span>
 			{% endif %}
 		{% endfor %}
 	</tr>

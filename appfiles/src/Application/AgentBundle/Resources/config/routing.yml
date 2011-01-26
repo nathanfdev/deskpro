@@ -30,6 +30,10 @@ agent_ajax_labels_autocomplete:
   pattern: /misc/ajax-labels
   defaults: { _controller: AgentBundle:Misc:ajaxLabelsAutocomplete }
 
+agent_interface_data_js:
+  pattern: /misc/interface-data.js
+  defaults: { _controller: AgentBundle:Misc:getInterfaceData }
+
 ################################################################################
 # Settings
 ################################################################################
@@ -224,6 +228,14 @@ agent_ticketsearch_save_resultprefs:
   pattern: /ticket-search/save-result-prefs/{cache_id}
   defaults: { _controller: AgentBundle:TicketSearch:ajaxSaveResultPrefs }
   requirements: { cache_id: "\d+" }
+
+agent_ticketsearch_ajax_get_macro:
+  pattern: /ticket-search/ajax-get-macro
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxGetMacro }
+
+agent_ticketsearch_ajax_save_macro:
+  pattern: /ticket-search/ajax-save-macro
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxSaveMacro }
 
 ################################################################################
 # Ticket
