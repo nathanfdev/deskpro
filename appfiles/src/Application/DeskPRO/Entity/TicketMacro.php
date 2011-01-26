@@ -87,11 +87,15 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($this->actions as $action) {
 			switch ($action['rule_type']) {
 				case 'department':
-					$actions['department_id'] = $action['department'];
+					if ($ticket['department_id'] != $action['department']) {
+						$actions['department_id'] = $action['department'];
+					}
 					break;
 
 				case 'category':
-					$actions['category_id'] = $action['category'];
+					if ($ticket['category_id'] != $action['category']) {
+						$actions['category_id'] = $action['category'];
+					}
 					break;
 
 				case 'agent':
@@ -105,15 +109,22 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 							return;// todo err?
 						}
 					}
-					$actions['agent_id'] = $action['agent'];
+
+					if ($ticket['agent_id'] != $action['agent']) {
+						$actions['agent_id'] = $action['agent'];
+					}
 					break;
 
 				case 'product':
-					$actions['product_id'] = $action['product'];
+					if ($ticket['product_id'] != $action['product']) {
+						$actions['product_id'] = $action['product'];
+					}
 					break;
 
 				case 'priority':
-					$actions['priority_id'] = $action['priority'];
+					if ($ticket['priority_id'] != $action['priority']) {
+						$actions['priority_id'] = $action['priority'];
+					}
 					break;
 
 				case 'reply':
@@ -135,37 +146,11 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getActionsArrayForCollection($tickets = null)
 	{
-		$actions = array(
-			'all' => $this->getActionsArray()
-		);
-
-		// When we have a collection of tickets, each one might have
-		// a different action value than the main macro. For example, a ticket reply
-		// with replacements.
-		//
-		// So we have the main macro that has global changes, and then with this
-		// loopy here we go through and set specific changes for each ticket.
-		//
-		// By only including speciifc changes, the resulting structure is smaller
-		// and not filled with dupes (so faster for sending back through JSON and having the client process UI indicators)
-		//
-		// We end up with array('all' => array(...), 'tickets' => array(123=>array(specific), 245=>array(specific)...))
+		$actions = array();
 
 		if ($tickets) {
-			$actions['tickets'] = array();
-
 			foreach ($tickets as $ticket) {
-				$ticket_actions = $this->getActionsArray($ticket);
-				
-				foreach ($ticket_actions as $k => $v) {
-
-					// If the all array doesnt have it, or has a different value, we need to include it
-					if (!isset($actions['all'][$k]) OR $actions['all'][$k] != $v) {
-						if (!isset($actions['tickets'][$ticket['id']])) $actions['tickets'][$ticket['id']] = array();
-						
-						$actions['tickets'][$ticket['id']][$k] = $v;
-					}
-				}
+				$actions[$ticket['id']] = $this->getActionsArray($ticket);
 			}
 		}
 

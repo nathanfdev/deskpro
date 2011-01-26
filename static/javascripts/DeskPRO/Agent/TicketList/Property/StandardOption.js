@@ -9,6 +9,7 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 	
 	optionName: null,
 	displayNames: null,
+	displayCaption: null,
 	
 	init: function() {
 		var valid_options = ['department_id', 'category_id', 'product_id', 'priority_id', 'status', 'agent_id', 'agent_team_id'];
@@ -20,13 +21,13 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 		this.optionName = this.options.optionName;
 		
 		switch (this.optionName) {
-			case 'department_id': this.displayNameType = 'department'; break;
-			case 'category_id': this.displayNameType = 'category'; break;
-			case 'product_id': this.displayNameType = 'product'; break;
-			case 'priority_id': this.displayNameType = 'priority'; break;
-			case 'status': this.displayNameType = 'status'; break;
-			case 'agent_id': this.displayNameType = 'agent'; break;
-			case 'agent_team_id': this.displayNameType = 'agent_team'; break;
+			case 'department_id': this.displayNameType = 'department'; this.displayCaption = 'Department'; break;
+			case 'category_id': this.displayNameType = 'ticket_category'; this.displayCaption = 'Category'; break;
+			case 'product_id': this.displayNameType = 'product'; this.displayCaption = 'Product'; break;
+			case 'priority_id': this.displayNameType = 'ticket_priority'; this.displayCaption = 'Priority'; break;
+			case 'status': this.displayNameType = 'status'; this.displayCaption = 'Status'; break;
+			case 'agent_id': this.displayNameType = 'agent'; this.displayCaption = 'Agent'; break;
+			case 'agent_team_id': this.displayNameType = 'agent_team'; this.displayCaption = 'Agent Team'; break;
 		}
 	},
 	
@@ -50,13 +51,21 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 				if (!displayName) displayName = value;
 			}
 			
-			this.getInterfaceElement().removeClass('no-value').html(displayName);
+			var text = this.displayCaption + ': ' + displayName;
+					
+			this.getInterfaceElement().removeClass('no-value').text(text);
 		} else {
-			this.getInterfaceElement().addClass('no-value').html('none');
+			this.getInterfaceElement().addClass('no-value').text('none');
 		}
 	},
 	
 	_getInterfaceElement: function() {
-		return $(this._buildSelector('.prop-val.' + this.optionName+':first'), this.ticketPage.actionsBarHelper.tableEl);
+		var el = $(this._buildSelector('.prop-val.' + this.optionName+':first'), this.ticketPage.actionsBarHelper.tableEl);
+		
+		if (!el.length) {
+			el = this.getSublineElement();
+		}
+		
+		return el;
 	}
 });

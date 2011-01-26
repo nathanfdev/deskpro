@@ -380,7 +380,7 @@ table.list > thead > tr > th:first-child {
 	border-left: none;
 }
 
-table.list > tbody > tr.line-1.hover, table.list > tbody > tr.line-2.hover {
+table.list > tbody > tr.line-1.hover, table.list > tbody > tr.line-2.hover, table.list > tbody > tr.line-3.hover {
 	background-color: #E8F3FF;
 }
 
@@ -390,6 +390,23 @@ table.list > tbody > tr.line-1.on, table.list > tbody > tr.line-2.on {
 
 table.list > tbody > tr.line-2 {
 	border-bottom: 1px solid #ddd;
+}
+
+table.list > tbody > tr.line-2.with-line-3 {
+	border-bottom: none !important;
+}
+
+table.list > tbody > tr.line-3 {
+	border-bottom: 1px solid #ddd;
+}
+
+table.list > tbody > tr.line-3 ul li {
+	display: inline;
+	margin-right: 15px;
+}
+
+table.list > tbody > tr.faded {
+	opacity: 0.25;
 }
 
 table.list > tbody > tr > td {
@@ -406,6 +423,16 @@ table.list > tbody > tr.line-1 > td {
 }
 
 table.list > tbody > tr.line-2 > td {
+	padding-top: 0;
+	padding-bottom: 7px;
+}
+
+table.list > tbody > tr.line-2.with-line-3 > td {
+	padding-bottom: 0 !important;
+}
+
+table.list > tbody > tr.line-3 > td {
+	padding-left: 20px;
 	padding-top: 0;
 	padding-bottom: 7px;
 }

@@ -412,6 +412,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$data['ticket'] = $this;
 	}
 
+	public function getPersonId()
+	{
+		return $this->person['id'];
+	}
+
 	public function setPersonId($id)
 	{
 		$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
@@ -420,6 +425,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getDepartmentId()
 	{
+		if (!$this->department) {
+			return 0;
+		}
+		
 		return $this->department['id'];
 	}
 
@@ -435,6 +444,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getCategoryId()
 	{
+		if (!$this->category) {
+			return 0;
+		}
 		return $this->category['id'];
 	}
 	
@@ -450,6 +462,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getProductId()
 	{
+		if (!$this->product) {
+			return 0;
+		}
 		return $this->product['id'];
 	}
 	
@@ -461,6 +476,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this->product = null;
 		}
+	}
+
+	public function getPriorityId()
+	{
+		if (!$this->priority) {
+			return 0;
+		}
+
+		return $this->priority['id'];
 	}
 
 	public function setPriorityId($id)
@@ -480,6 +504,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getAgentId()
 	{
+		if (!$this->agent) {
+			return 0;
+		}
+		
 		return $this->agent['id'];
 	}
 	
@@ -503,6 +531,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getAgentTeamId()
 	{
+		if (!$this->agent_team) {
+			return 0;
+		}
 		return $this->agent_team['id'];
 	}
 

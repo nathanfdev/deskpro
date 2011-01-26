@@ -103,6 +103,22 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 		return sel;
 	},
 	
+	getSublineElement: function() {
+		
+		var line2 = $('tr.ticket-' + this.ticketId + '.line-2', this.ticketPage.actionsBarHelper.tableEl);
+		line2.addClass('with-line-3');
+		var line3 = $('tr.ticket-' + this.ticketId + '.line-3', this.ticketPage.actionsBarHelper.tableEl);
+		line3.show();
+		
+		var ul = $('ul', line3);
+
+		var li = $('<li class="prop-value ' + this.getName() + '"></li>');
+
+		ul.append(li);
+		
+		return li;
+	},
+	
 	
 	/**
 	 * When a property is updated automatically (not from a user action, like in the background),

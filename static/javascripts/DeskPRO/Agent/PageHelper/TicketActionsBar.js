@@ -109,9 +109,11 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	
 	_getRowLines: function(tr) {
 		if (tr.is('.line-1')) {
-			var trs = tr.add(tr.next());
+			var trs = tr.add(tr.next()).add(tr.next());
+		} else if (tr.is('.line-2')) {
+			var trs = tr.add(tr.prev()).add(tr.next());
 		} else {
-			var trs = tr.add(tr.prev());
+			var trs = tr.add(tr.prev()).add(tr.prev().prev());
 		}
 		
 		return trs;
@@ -292,16 +294,15 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		var changeManager = this.page.changeManager;
 		changeManager.begin(ticket_ids);
 
-		Object.each(macro_info.all, function(newValue, propName) {
-			var objinfo = this._getPropClass(propName);
+		Object.each(macro_info, function(actions, ticket_id) {
+			Object.each(actions, function(newValue, propName) {
+				var objinfo = this._getPropClass(propName);
 			
-			if (!objinfo) {
-				return false;
-			}
+				if (!objinfo) {
+					return false;
+				}
 			
-			Array.each(ticket_ids, function(id) {
-
-				var property = new objinfo[0](this.page, id, objinfo[1]);
+				var property = new objinfo[0](this.page, ticket_id, objinfo[1]);
 
 				changeManager.addChange(property, newValue);
 				

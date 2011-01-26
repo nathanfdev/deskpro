@@ -50,7 +50,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 		
 		// Dont care if its the same!
 		if (property.isSameValue(newValue)) {
-			return;
+			//return;
 		}
 		
 		if (!this.changes[id]) this.changes[id] = {};
@@ -84,7 +84,10 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	/**
 	 * Apply all queued changes in the interface
 	 */
-	applyChanges: function() {	
+	applyChanges: function() {
+		
+		$('tr:not(.on, .line-3)', this.ticketPage.contentWrapper).addClass('faded');
+		$('tr.on', this.ticketPage.contentWrapper).removeClass('on');
 
 		Array.each(Object.values(this.changes), function (changes) {
 			Object.each(changes, function(change) {
@@ -117,6 +120,11 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 			}, this);
 		}, this);
 		
+		$('tr', this.ticketPage.contentWrapper).removeClass('with-line-3').removeClass('faded');
+		$('tr.line-3', this.ticketPage.contentWrapper).html('<ul></ul>').hide();
+		
+		this.ticketPage.actionBarHelper._selectOp('none');
+		
 		this.ticketIds = null;
 		this.oldValues = {};
 		this.changes = {};
@@ -134,6 +142,11 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 				property.unhighlightInterfaceElement();
 			}, this);
 		}, this);
+		
+		$('tr', this.ticketPage.contentWrapper).removeClass('with-line-3').removeClass('faded');
+		$('tr.line-3', this.ticketPage.contentWrapper).html('').hide();
+		
+		this.ticketPage.actionBarHelper._selectOp('none');
 		
 		this.ticketIds = null;
 		this.oldValues = {};
