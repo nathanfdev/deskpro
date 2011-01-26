@@ -36,18 +36,19 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				spacing_closed: 0
 			}
 		});
-		
+			
 		this._initDisplayOptions();
 		this._initInfiniteScroll();
 		this._initFlagMenu();
 		this._initGroupingOptions();
+
 		
 		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this.wrapper, this.contentWrapper);
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
-		
+
 		this.initFeaturesOnCollection(el, {
-			routes: ['table > tbody > tr .with-route'],
-			times: ['abbr.timeago']
+			routes: ['tr .with-route'],
+			times: ['tr abbr.timeago']
 		});
 		
 		if (this.getMetaData('noResults')) {
@@ -316,7 +317,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		
 		var el = $(html);
 		this.initFeaturesOnCollection(el, {
-			routes: ['tr .with-route'],
+			routes: ['.with-route'],
 			times: ['abbr.timeago']
 		});
 
