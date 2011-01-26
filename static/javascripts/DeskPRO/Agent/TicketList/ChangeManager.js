@@ -121,9 +121,9 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 		}, this);
 		
 		$('tr', this.ticketPage.contentWrapper).removeClass('with-line-3').removeClass('faded');
-		$('tr.line-3', this.ticketPage.contentWrapper).html('<ul></ul>').hide();
+		$('tr.line-3', this.ticketPage.contentWrapper).hide().find('td > ul').html('')
 		
-		this.ticketPage.actionBarHelper._selectOp('none');
+		this.ticketPage.actionsBarHelper._selectOp('none');
 		
 		this.ticketIds = null;
 		this.oldValues = {};
@@ -144,9 +144,9 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 		}, this);
 		
 		$('tr', this.ticketPage.contentWrapper).removeClass('with-line-3').removeClass('faded');
-		$('tr.line-3', this.ticketPage.contentWrapper).html('').hide();
+		$('tr.line-3', this.ticketPage.contentWrapper).hide().find('td > ul').html('');
 		
-		this.ticketPage.actionBarHelper._selectOp('none');
+		this.ticketPage.actionsBarHelper._selectOp('none');
 		
 		this.ticketIds = null;
 		this.oldValues = {};
