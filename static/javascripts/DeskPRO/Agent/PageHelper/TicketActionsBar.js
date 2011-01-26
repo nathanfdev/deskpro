@@ -9,12 +9,14 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	countEl: null,
 	actionTitleEl: null,
 	selectedActionData: null,
+	ticketBar: null,
 	
 	initialize: function(page, wrapper, contentWrapper) {
 		this.page = page;
 		this.wrapper = wrapper;
 		this.contentWrapper = contentWrapper;
 		
+		this.ticketBar = $('.ticket-bar:first', this.wrapper);
 		this.actionTitleEl = $('.ticket-bar .action-title', this.wrapper);
 		this.countEl = $('.ticket-bar .counter .count', this.wrapper);
 		
@@ -35,6 +37,18 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			menuElement: $('.ticket-bar .ticket-macros-menu:first', this.wrapper),
 			onItemClicked: this._macroMenuItemClicked.bind(this)
 		});
+		
+		// Macro apply/cancel
+		$('ul.tools li.macros-apply', this.ticketBar).click((function() {
+			this.page.changeManager.commitChanges();
+			this.saveMacro();
+			this.toggleMacroApplyBtn('off');
+		}).bind(this));
+		
+		$('ul.tools li.macros-cancel', this.ticketBar).click((function() {
+			this.page.changeManager.revertChanges();
+			this.toggleMacroApplyBtn('off');
+		}).bind(this));
 		
 		var menu = this.selectMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.ticket-bar .counter:first', this.wrapper),
@@ -233,8 +247,14 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	//# Mass actions preview stuff
 	//#################################################################
 	
+	_selectedMacroId: null,
+	_selectedMacroTickets: null,
+	
 	_macroMenuItemClicked: function(info) {
+		this._selectedMacroId = $(info.itemEl).data('macro-id');
+
 		var ticket_ids = this.getSelectedTicketIds();
+		this._selectedMacroTickets = ticket_ids;
 		
 		if (!ticket_ids.length) {
 			DeskPRO_Window.showAlert('You need to select one or more tickets to perform actions on.');
@@ -255,38 +275,47 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			cache: false,
 			type: 'GET',
 			data: data,
-			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', $(info.itemEl).data('macro-id')),
+			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', this._selectedMacroId),
 			context: this,
 			dataType: 'json',
 			success: function (data) {
 				DeskPRO_Window.stopLoadingIndicator();
-				this.applyMacroActions(ticket_ids, data);
+				this.applyMacroActions(data);
 			}
 		});
 	},
 	
-	applyMacroActions: function(ticket_ids, macro_info) {
+	applyMacroActions: function(macro_info) {
+		
+		var ticket_ids = this._selectedMacroTickets;
 		
 		var changeManager = this.page.changeManager;
 		changeManager.begin(ticket_ids);
-		
-		Object.each(macro_info.all, function(propName, newValue) {
-			var obj = this._getPropClass(propName);
-			console.log(propName);
-			console.log(obj);
+
+		Object.each(macro_info.all, function(newValue, propName) {
+			var objinfo = this._getPropClass(propName);
+			
+			if (!objinfo) {
+				return false;
+			}
 			
 			Array.each(ticket_ids, function(id) {
-				var property = new obj(this.page, id);
-				
+
+				var property = new objinfo[0](this.page, id, objinfo[1]);
+
 				changeManager.addChange(property, newValue);
+				
 			}, this);
 		}, this);
 		
 		changeManager.applyChanges();
+		
+		this.toggleMacroApplyBtn('on');
 	},
 	
 	_getPropClass: function(propName) {
 		var obj = null;
+		var opt = null;
 		switch (propName) {
 			case 'department_id':
 		 	case 'category_id':
@@ -295,13 +324,65 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			case 'status':
 			case 'agent_id':
 			case 'agent_team_id':
-				obj = DeskPRO.Agent.Ticket.Property.StandardOption;
+				obj = DeskPRO.Agent.TicketList.Property.StandardOption;
+				opt = {'optionName': propName };
 				break;
 			case 'new_reply':
-				obj = DeskPRO.Agent.Ticket.Property.NewReply;
+			return null;
+				obj = DeskPRO.Agent.TicketList.Property.NewReply;
 				break;
 		}
 		
-		return obj;
+		return [obj, opt];
+	},
+	
+	toggleMacroApplyBtn: function(force) {
+		
+		var ul = $('ul.tools', this.ticketBar);
+		
+		if (!force) {
+			if ($('li.macros', ul).is(':visible')) {
+				force = 'on';
+			} else {
+				force = 'off';
+			}
+		}
+		
+		var otherBtns = $('li.macros, li.actions', ul);;
+		var applyBtns = $('li.macros-apply, li.macros-cancel', ul);
+		
+		if (force == 'on') {
+			otherBtns.hide();
+			applyBtns.show();
+		} else {
+			otherBtns.show();
+			applyBtns.hide();
+		}
+	},
+	
+	saveMacro: function() {
+		var ticket_ids = this._selectedMacroTickets;
+		
+		var data = [];
+		Array.each(ticket_ids, function(id) {
+			data.push({
+				name: 'ticket_ids[]',
+				value: id
+			});
+		});
+		
+		DeskPRO_Window.startLoadingIndicator();
+
+		$.ajax({
+			cache: false,
+			type: 'POST',
+			data: data,
+			url: this.page.getMetaData('saveMacroUrl').replace('$macro_id', this._selectedMacroId),
+			context: this,
+			dataType: 'json',
+			success: function () {
+				DeskPRO_Window.stopLoadingIndicator();
+			}
+		});
 	}
 });

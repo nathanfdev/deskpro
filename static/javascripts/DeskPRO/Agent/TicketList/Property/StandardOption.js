@@ -30,20 +30,23 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 		}
 	},
 	
+	getValue: function() {
+		return this.getInterfaceElement().data('prop-value');
+	},
 	
 	getName: function() {
 		return this.optionName;
 	},
 	
-	setValue: function(value) {
-		this.getFormEl().val(value);
-		
+	setValue: function(value) {		
 		if (value == "0") value = 0;
+
+		this.getInterfaceElement().data('prop-value', value);
 
 		if (value) {
 			var displayName = value;
 			if (this.displayNameType) {
-				displayName = DeskPRO_Window.getDisplayName(this.displayNameType, vlaue);
+				displayName = DeskPRO_Window.getDisplayName(this.displayNameType, value);
 				if (!displayName) displayName = value;
 			}
 			
@@ -54,6 +57,6 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 	},
 	
 	_getInterfaceElement: function() {
-		var sel = this._buildSelector('.prop-val.' + this.optionName+':first', this.ticketPage.actionsBarHelper.tableEl);
+		return $(this._buildSelector('.prop-val.' + this.optionName+':first'), this.ticketPage.actionsBarHelper.tableEl);
 	}
 });

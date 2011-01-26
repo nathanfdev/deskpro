@@ -44,9 +44,14 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	 * Add a change to the set of changes. This applies a change to all tickets.
 	 */
 	addChange: function(property, newValue, applyNow) {
-		
+
 		var name = property.getName();
 		var id = property.getTicketId();
+		
+		// Dont care if its the same!
+		if (property.isSameValue(newValue)) {
+			return;
+		}
 		
 		if (!this.changes[id]) this.changes[id] = {};
 		this.changes[id][name] = [property, newValue];
@@ -80,12 +85,15 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	 * Apply all queued changes in the interface
 	 */
 	applyChanges: function() {	
-		Array.each(Object.values(this.changes), function (change) {
 
-			var property = change[0];
-			var newValue = change[1];
+		Array.each(Object.values(this.changes), function (changes) {
+			Object.each(changes, function(change) {
+
+				var property = change[0];
+				var newValue = change[1];
 			
-			this.applyChangeForProperty(property, newValue);
+				this.applyChangeForProperty(property, newValue);
+			}, this);
 		}, this);
 	},
 	
@@ -95,16 +103,19 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	 * Revert all queuued changes in the interface to their previuos values
 	 */
 	revertChanges: function() {
-		
-		Array.each(Object.values(this.changes), function (change) {
-			var property = change[0];
-			var name = property.getName();
+
+		Array.each(Object.values(this.changes), function (changes) {
+			Object.each(changes, function(change) {
+				var property = change[0];
+				var name = property.getName();
+				var id = property.getTicketId();
 			
-			if (this.oldValues[name] !== undefined) {
-				property.setValue(this.oldValues[name]);
-				property.unhighlightInterfaceElement();
-			}
-		});
+				if (this.oldValues[id][name] !== undefined) {
+					property.setValue(this.oldValues[id][name]);
+					property.unhighlightInterfaceElement();
+				}
+			}, this);
+		}, this);
 		
 		this.ticketIds = null;
 		this.oldValues = {};
@@ -117,9 +128,11 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 	 * Just updates the UI to show we accepted the changes
 	 */
 	commitChanges: function() {
-		Array.each(Object.values(this.changes), function (change) {
-			var property = change[0];
-			property.unhighlightInterfaceElement();
+		Array.each(Object.values(this.changes), function (changes) {
+			Object.each(changes, function(change) {
+				var property = change[0];
+				property.unhighlightInterfaceElement();
+			}, this);
 		}, this);
 		
 		this.ticketIds = null;

@@ -42,8 +42,18 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 	getTicketId: function() {
 		return this.ticketId;
 	},
+	
+	isSameValue: function(compare) {
+		if (this.getValue() == compare) {
+			return true;
+		}
+		
+		return false;
+	},
 
-
+	getValue: function() {
+		// override
+	},
 
 	/**
 	 * Sets a new value. Must also update the UI if needed.
@@ -88,13 +98,7 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 	 * ids this should affect.
 	 */
 	_buildSelector: function(base_sel) {
-		var sel = [];
-		
-		Array.each(this.ticketId, function(id) {
-			sel.push('tr.ticket-' + id + ' ' + base_sel);
-		});
-		
-		sel = sel.join(', ');
+		sel = 'tr.ticket-' + this.ticketId + ' ' + base_sel;
 		
 		return sel;
 	},

@@ -17,9 +17,9 @@
 			{% if field == 'person' %}
 				by <cite>{{ticket.person.name}}</cite>
 			{% elseif field == 'department' %}
-				<span class="prop-val department_id" data-value="{{ticket.department.id}}">{{ticket.department.title}}</span>
+				<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">{{ticket.department.title}}</span>
 			{% elseif field == 'category' %}
-				<span class="prop-val category_id" data-value="{{ticket.category.id}}">
+				<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
 				{% if ticket.category %}
 					{{ticket.category.title}}
 				{% else %}
@@ -27,7 +27,7 @@
 				{% endif %}
 				</span>
 			{% elseif field == 'product' %}
-				<span class="prop-val product_id" data-value="{{ticket.product.id}}">
+				<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
 				{% if ticket.product %}
 					{{ticket.product.title}}
 				{% else %}
@@ -35,7 +35,7 @@
 				{% endif %}
 				</span>
 			{% elseif field == 'organization' %}
-				<span class="prop-val organization_id" data-value="{{ticket.organization.id}}">
+				<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
 				{% if ticket.organization %}
 					{{ticket.organization.name}}
 				{% else %}
@@ -43,7 +43,7 @@
 				{% endif %}
 				</span>
 			{% elseif field == 'agent' %}
-				<span class="prop-val agent_id" data-value="{{ticket.agent.id}}">
+				<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
 				{% if ticket.agent %}
 					{{ticket.agent.display_name}}
 				{% else %}

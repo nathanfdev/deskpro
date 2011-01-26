@@ -12,11 +12,10 @@ DeskPRO.Agent.TicketList.Property.NewReply = new Class({
 	
 	getValue: function() {
 		return '';
-		//return $('form.reply-form', this.ticketPage.ticketReply).serializeArray();
 	},
 	
 	setValue: function(value) {
-		this.getInterfaceElement().val(value);
+		
 	},
 	
 	setIncomingValue: function(value) {

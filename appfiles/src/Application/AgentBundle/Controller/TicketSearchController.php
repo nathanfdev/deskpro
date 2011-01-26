@@ -617,4 +617,26 @@ class TicketSearchController extends AbstractController
 
 		return $this->createJsonResponse($actions);
 	}
+
+	public function ajaxSaveMacroAction()
+	{
+		$macro_id = $this->in->getUint('macro_id');
+		$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		App::getOrm()->beginTransaction();
+
+		foreach ($tickets as $ticket) {
+			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+			$actions = $macro->getActionsArray($ticket);
+			$result = $ticket_edit->applyActions($actions);
+			$ticket_edit->save();
+		}
+
+		App::getOrm()->commit();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }
