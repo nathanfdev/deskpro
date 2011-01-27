@@ -227,6 +227,21 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 				}).bind(this);
 				break;
 
+			case 'open':
+				this._currentActionInfo = {'op': 'open' };
+				this.toggleMacroApplyBtn('on', 'Open');
+				this._applyButtonCallback = (function() {
+
+					this.toggleMacroApplyBtn('off');
+
+					Array.each(this.getSelectedTicketIds(), function(ticket_id) {
+						DeskPRO_Window.runPageRoute('page:' + this.page.getMetaData('viewTicketUrl').replace('$ticket_id', ticket_id));
+					}, this);
+
+					this._selectOp('none');
+				}).bind(this);
+				break;
+
 			case 'standard':
 
 				var optionName = itemEl.data('option-name');
