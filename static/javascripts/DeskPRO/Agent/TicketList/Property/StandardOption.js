@@ -6,20 +6,20 @@ Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
  */
 DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
-	
+
 	optionName: null,
 	displayNames: null,
 	displayCaption: null,
-	
+
 	init: function() {
 		var valid_options = ['department_id', 'category_id', 'product_id', 'priority_id', 'status', 'agent_id', 'agent_team_id'];
-		
+
 		if (valid_options.indexOf(this.options.optionName) == -1) {
 			throw 'invalidOptionName:'+this.options.optionName;
 		}
-		
+
 		this.optionName = this.options.optionName;
-		
+
 		switch (this.optionName) {
 			case 'department_id': this.displayNameType = 'department'; this.displayCaption = 'Department'; break;
 			case 'category_id': this.displayNameType = 'ticket_category'; this.displayCaption = 'Category'; break;
@@ -30,16 +30,16 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 			case 'agent_team_id': this.displayNameType = 'agent_team'; this.displayCaption = 'Agent Team'; break;
 		}
 	},
-	
+
 	getValue: function() {
 		return this.getInterfaceElement().data('prop-value');
 	},
-	
+
 	getName: function() {
 		return this.optionName;
 	},
-	
-	setValue: function(value) {		
+
+	setValue: function(value) {
 		if (value == "0") value = 0;
 
 		this.getInterfaceElement().data('prop-value', value);
@@ -50,22 +50,26 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 				displayName = DeskPRO_Window.getDisplayName(this.displayNameType, value);
 				if (!displayName) displayName = value;
 			}
-			
-			var text = this.displayCaption + ': ' + displayName;
-					
+
+			var text = displayName;
+
+			if (this.getInterfaceElement().is('.generated')) {
+				var text = this.displayCaption + ': ' + displayName;
+			}
+
 			this.getInterfaceElement().removeClass('no-value').text(text);
 		} else {
 			this.getInterfaceElement().addClass('no-value').text('none');
 		}
 	},
-	
+
 	_getInterfaceElement: function() {
 		var el = $(this._buildSelector('.prop-val.' + this.optionName+':first'), this.ticketPage.actionsBarHelper.tableEl);
-		
+
 		if (!el.length) {
 			el = this.getSublineElement();
 		}
-		
+
 		return el;
 	}
 });

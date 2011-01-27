@@ -8,7 +8,7 @@ Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
 DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 
 	Implements: [Events, Options],
-	
+
 	options: {},
 	ticketPage: null,
 	ticketId: null,
@@ -19,17 +19,17 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 	 * @param {Object} options
 	 */
 	initialize: function(ticketPage, ticketId, options) {
-		
+
 		if (options) this.setOptions(options);
-		
+
 		this.ticketPage = ticketPage;
 		this.ticketId = ticketId;
 
 		this.init();
 	},
-	
+
 	init: function() {},
-	
+
 	/**
 	 * Name for the property
 	 *
@@ -38,16 +38,16 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 	getName: function() {
 		// override
 	},
-	
+
 	getTicketId: function() {
 		return this.ticketId;
 	},
-	
+
 	isSameValue: function(compare) {
 		if (this.getValue() == compare) {
 			return true;
 		}
-		
+
 		return false;
 	},
 
@@ -63,18 +63,18 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 	setValue: function(value) {
 		// override
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Sets data that we got from the server.
-	 */ 
+	 */
 	setIncomingValue: function(value) {
 		this.setValue(value);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get the UI element used to display the property.
 	 */
@@ -82,44 +82,44 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 		if (this._interfaceEl !== null) return this._interfaceEl;
 
 		this._interfaceEl = this._getInterfaceElement();
-		
+
 		return this._interfaceEl;
 	},
-	
+
 	_interfaceEl: null,
 	_getInterfaceElement: function() {
 		// override
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Helps build a selector to for getInterfaceElement for all the ticket
 	 * ids this should affect.
 	 */
 	_buildSelector: function(base_sel) {
 		sel = 'tr.ticket-' + this.ticketId + ' ' + base_sel;
-		
+
 		return sel;
 	},
-	
+
 	getSublineElement: function() {
-		
+
 		var line2 = $('tr.ticket-' + this.ticketId + '.line-2', this.ticketPage.actionsBarHelper.tableEl);
 		line2.addClass('with-line-3');
 		var line3 = $('tr.ticket-' + this.ticketId + '.line-3', this.ticketPage.actionsBarHelper.tableEl);
 		line3.show();
-		
+
 		var ul = $('ul', line3);
 
-		var li = $('<li class="prop-value ' + this.getName() + '"></li>');
+		var li = $('<li class="generated prop-value ' + this.getName() + '"></li>');
 
 		ul.append(li);
-		
+
 		return li;
 	},
-	
-	
+
+
 	/**
 	 * When a property is updated automatically (not from a user action, like in the background),
 	 * this pulse action is applied to highlight and fade slowly.
@@ -127,17 +127,17 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 	pulseInterfaceElement: function() {
 		this.getInterfaceElement().effect('highlight', 1200);
 	},
-	
-	
+
+
 	/**
 	 * Highlight the UI element to bring attention to some change.
 	 */
 	highlightInterfaceElement: function() {
 		this.getInterfaceElement().addClass('change-on');
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Remove the UI highlight
 	 */

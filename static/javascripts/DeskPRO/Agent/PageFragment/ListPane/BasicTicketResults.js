@@ -9,26 +9,26 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	layout: null,
 	overlay: null,
 	appendUrl: null,
-	
+
 	actionsBarHelper: null,
-	
+
 	resultTypeName: 'basic',
 	resultTypeId: 'general',
-	
+
 	changeManager: null,
 
 	initPage: function(el) {
-		
+
 		this.wrapper = $(el);
 		this.contentWrapper = $('.content:first', this.wrapper);
 		this.barWrapper = $('.ticket-bar:first', this.wrapper);
-		
+
 		var center_id = Orb.getUniqueId('listpane_');
 		var south_id = Orb.getUniqueId('listpane_');
-		
+
 		this.contentWrapper.attr('id', center_id);
 		this.barWrapper.attr('id', south_id);
-		
+
 		this.layout = this.wrapper.layout({
 			center: {
 				paneSelector: '#' + this.contentWrapper.attr('id')
@@ -40,13 +40,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				spacing_closed: 0
 			}
 		});
-			
+
+		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
+
 		this._initDisplayOptions();
 		this._initInfiniteScroll();
 		this._initFlagMenu();
 		this._initGroupingOptions();
 
-		
+
 		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this, this.wrapper, this.contentWrapper);
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
 
@@ -54,28 +56,26 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			routes: ['tr .with-route'],
 			times: ['tr abbr.timeago']
 		});
-		
+
 		if (this.getMetaData('noResults')) {
 			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();
 		}
-		
-		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
-		
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
 			var sels = [];
 			Array.each(ticket_ids, function(val) {
 				sels.push('tr.ticket-' + val);
 			});
-			
+
 			sels = sels.join(', ');
-			
+
 			$(sels, this.contentWrapper).fadeOut(400, function() {
 				$(this).remove();
 			});
 		}).bind(this));
 	},
-	
+
 	destroyPage: function() {
 		this.layout.panes.south.remove();
 		this.layout.panes.south = false;
@@ -83,41 +83,41 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this.layout.panes.center = false;
 		this.layout.destroy();
 		this.layout = null;
-		
+
 		if (this.flagMenu) {
 			this.flagMenu.destroy();
 		}
-		
+
 		if (this.displayOptionsOverlay) {
 			this.displayOptionsOverlay.destroy();
 		}
 	},
-	
+
 	//#########################################################################
 	//# Grouping buttons
 	//#########################################################################
-	
+
 	_initGroupingOptions: function() {
-		
+
 		var self = this;
 		$('div.search-top ul.grouping-info > li[data-group-id]', this.contentWrapper).click(function() {
 			self.switchToSubgroup($(this).data('group-id'), $(this));
 		});
 	},
-	
+
 	switchToSubgroup: function(field_id, el) {
-		
+
 		if (field_id == 'NONE') {
 			this.appendUrl = null;
-		} else {		
+		} else {
 			this.appendUrl = '&group_field_id=' + field_id;
 		}
 
 		$('table.list tbody', this.contentWrapper).remove();
 		this.loadResultPage(1);
-		
+
 		$('div.search-top ul.grouping-info > li', this.contentWrapper).removeClass('on');
-		
+
 		if (el) {
 			el.addClass('on');
 		}
@@ -126,7 +126,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	//#########################################################################
 	//# Flag menu
 	//#########################################################################
-	
+
 	flagMenu: null,
 	_initFlagMenu: function() {
 		var self = this;
@@ -136,12 +136,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				self._handleFlagMenuClick(info);
 			}
 		});
-		
+
 		$('table.list:first', this.contentWrapper).delegate('span.ticket-flag', 'click', function(ev) {
 			self.flagMenu.openMenu(ev);
 		});
 	},
-	
+
 	_handleFlagMenuClick: function(info) {
 
 		var item = $(info.itemEl);
@@ -149,15 +149,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 		var m = $(info.menu.getOpenTriggerElement());
 		var ticketId = m.parent().parent().data('ticket-id');
-		
+
 		var old_flag = m.data('flag');
-		
+
 		m.removeClass('icon-flag-'+old_flag);
 		m.addClass('icon-flag-'+flag);
 		m.data('flag', flag);
 
 		DeskPRO_Window.startLoadingIndicator();
-		
+
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + ticketId + '/ajax-save-flagged',
 			type: 'POST',
@@ -169,20 +169,20 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			}
 		});
 	},
-	
+
 	_handleFlagMenuClickSuccess: function(el, old_flag, new_flag) {
 		DeskPRO_Window.stopLoadingIndicator();
 	},
-	
+
 	//#########################################################################
 	//# Display options
 	//#########################################################################
-	
+
 	displayOptionsWrapper: null,
 	displayOptionsOverlay: null,
 	displayOptionsList: null,
 	_initDisplayOptions: function() {
-		
+
 		this.displayOptionsList = $('.display-options:first ul.sortable-list', this.contentWrapper);
 		var overlay_wrapper = this.displayOptionsWrapper = $('.display-options:first', this.contentWrapper);
 
@@ -195,59 +195,59 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				});
 			}
 		});
-		
+
 		$('.close-trigger', overlay_wrapper).click((function() {
 			this.displayOptionsOverlay.closeOverlay();
 		}).bind(this));
-		
+
 		$('.save-trigger', overlay_wrapper).click((function() {
 			this.saveDisplayOptions();
 		}).bind(this));
-		
+
 		// Set default checked values based on table
 		var self = this;
 		$('.list thead th', this.contentWrapper).each(function() {
 			$('li[data-field="'+$(this).data('field')+'"] input[type="checkbox"]', self.displayOptionsList).attr('checked', true);
 		});
 	},
-	
+
 	saveDisplayOptions: function() {
-		
+
 		$('.buttons .loading-off', this.displayOptionsWrapper).hide();
 		$('.buttons .loading-on', this.displayOptionsWrapper).show();
-		
+
 		var data = [];
 		var pref_name = 'prefs[agent.ui.ticket-'+ this.resultTypeName + '-display-fields.' + this.resultTypeId +'][]';
-		
+
 		$('input[type="checkbox"]:checked', this.displayOptionsList).each(function() {
 			data.push({
 				name: pref_name,
 				value: $(this).attr('name')
 			});
 		});
-		
-		
+
+
 		// and the ordering
 		data.push({
 			name: 'prefs[agent.ui.ticket-'+ this.resultTypeName + '-order-by.' + this.resultTypeId +']',
 			value: $('select[name="order_by"]', this.displayOptionsWrapper).val()
 		});
-		
+
 		// We reload the same page which will have changes applied
 		var url = this.getMetaData('refreshUrl');
 		if (this.appendUrl) {
 			url += this.appendUrl;
 		}
-		
+
 		var self = this;
-		
+
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
 			url: this.getMetaData('saveListPrefsUrl'),
 			data: data,
 			success: function() {
-				
+
 				DeskPRO_Window.loadListPane(url, null, function() {
 					DeskPRO_Window.removePage(self);
 				});
@@ -255,12 +255,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			}
 		});
 	},
-	
-	
+
+
 	//#########################################################################
 	//# Infinite loading stuff
 	//#########################################################################
-	
+
 	_initInfiniteScroll: function() {
 		//console.log(this.contentWrapper.scrollTop()+50);
 		//console.log(this._scrollInnerHeights() - this.contentWrapper.height());
@@ -271,7 +271,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			}
 		}).bind(this));
 	},
-	
+
 	_scrollInnerHeights_cache: null,
 	_scrollInnerHeights: function() {
 		if (this._scrollInnerHeights_cache !== null) return this._scrollInnerHeights_cache;
@@ -281,30 +281,30 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		});
 
 		this._scrollInnerHeights_cache = h;
-		
+
 		return h;
 	},
-	
+
 	isLoadingNext: false,
 	noMoreResults: false,
 	nextSearchPage: function() {
 		var last_page = parseInt($('.page-set:last', this.contentWrapper).data('page'));
 		this.loadResultPage(last_page+1)
 	},
-	
+
 	loadResultPage: function(page) {
 		if (this.isLoadingNext|| this.noMoreResults) return;
 		this.isLoadingNext = true;
-		
+
 		var loading = $('.loading-more', this.contentWrapper);
 		loading.detach().appendTo(this.contentWrapper); // make sure its at the bottom
 		loading.show();
-		
+
 		var url = this.getMetaData('pageUrl').replace('$page', page);
 		if (this.appendUrl) {
 			url += this.appendUrl;
 		}
-		
+
 		$.ajax({
 			cache: false,
 			type: 'GET',
@@ -316,12 +316,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			}
 		});
 	},
-	
+
 	_handleAjaxSuccess: function(data) {
-		
+
 		this.isLoadingNext = false;
 		$('.loading-more', this.contentWrapper).hide();
-		
+
 		if (data['no_more_results']) {
 			this.noMoreResults = true;
 			var nomore = $('.no-more-results', this.contentWrapper);
@@ -329,11 +329,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			nomore.show();
 			return;
 		}
-		
+
 		this._scrollInnerHeights_cache = null;
-		
+
 		var html = data['html'];
-		
+
 		var el = $(html);
 		this.initFeaturesOnCollection(el, {
 			routes: ['.with-route'],
