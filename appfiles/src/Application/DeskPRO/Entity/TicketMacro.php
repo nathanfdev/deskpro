@@ -72,11 +72,13 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $actions;
 
-	
+
 
 	/**
 	 * Get a simple array of actions used to pass back to views to update
-	 * UI. $ticket might be null (in the case of mass actions).
+	 * UI.
+	 *
+	 * $ticket may be null, in which case no conditions are assumed.
 	 *
 	 * @param Entity\Ticket $ticket The context (used ex in replies for replacements)
 	 */
@@ -87,13 +89,13 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($this->actions as $action) {
 			switch ($action['rule_type']) {
 				case 'department':
-					if ($ticket['department_id'] != $action['department']) {
+					if (!$ticket OR $ticket['department_id'] != $action['department']) {
 						$actions['department_id'] = $action['department'];
 					}
 					break;
 
 				case 'category':
-					if ($ticket['category_id'] != $action['category']) {
+					if (!$ticket OR $ticket['category_id'] != $action['category']) {
 						$actions['category_id'] = $action['category'];
 					}
 					break;
@@ -110,19 +112,19 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 						}
 					}
 
-					if ($ticket['agent_id'] != $action['agent']) {
+					if (!$ticket OR $ticket['agent_id'] != $action['agent']) {
 						$actions['agent_id'] = $action['agent'];
 					}
 					break;
 
 				case 'product':
-					if ($ticket['product_id'] != $action['product']) {
+					if (!$ticket OR $ticket['product_id'] != $action['product']) {
 						$actions['product_id'] = $action['product'];
 					}
 					break;
 
 				case 'priority':
-					if ($ticket['priority_id'] != $action['priority']) {
+					if (!$ticket OR $ticket['priority_id'] != $action['priority']) {
 						$actions['priority_id'] = $action['priority'];
 					}
 					break;
@@ -158,7 +160,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	public function performOnTicket(Ticket $ticket)
 	{
 		foreach ($this->actions as $action) {
@@ -188,7 +190,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 				case 'product':
 					$ticket['product_id'] = $action['product'];
 					break;
-				
+
 				case 'priority':
 					$ticket['priority_id'] = $action['priority'];
 					break;

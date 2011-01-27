@@ -372,7 +372,7 @@ class TicketSearchController extends AbstractController
 
 		return $data;
 	}
-	
+
 	############################################################################
 	# overview-pane
 	############################################################################
@@ -423,14 +423,14 @@ class TicketSearchController extends AbstractController
 	public function overviewRunAction()
 	{
 		$data = $this->_runFilterFromReq();
-		
+
 		return $this->render('AgentBundle:TicketSearch:overview-results.twig.html', $data);
 	}
-	
+
 	############################################################################
 	# labels-pane
 	############################################################################
-	
+
 	public function labelsPaneAction()
 	{
 		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
@@ -490,7 +490,7 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
-	
+
 	############################################################################
 	# save-result-prefs
 	############################################################################
@@ -595,7 +595,16 @@ class TicketSearchController extends AbstractController
 
 		$actions = $macro->getActionsArrayForCollection($tickets);
 
-		return $this->createJsonResponse($actions);
+		$data = array();
+		$data['raw_actions'] = array();
+		$data['ticket_actions'] = $actions;
+
+		$raw_actions = $macro->getActionsArray();
+		if (!empty($raw_actions['new_reply'])) {
+			$data['raw_actions']['new_reply'] = $raw_actions['new_reply'];
+		}
+
+		return $this->createJsonResponse($data);
 	}
 
 	public function ajaxSaveMacroAction()
@@ -608,9 +617,35 @@ class TicketSearchController extends AbstractController
 
 		App::getOrm()->beginTransaction();
 
+		$reply = $this->in->getString('message');
+
 		foreach ($tickets as $ticket) {
 			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 			$actions = $macro->getActionsArray($ticket);
+			if ($reply) {
+				$actions['new_reply'] = $reply;
+			}
+			$result = $ticket_edit->applyActions($actions);
+			$ticket_edit->save();
+		}
+
+		App::getOrm()->commit();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function ajaxMassReplyAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		App::getOrm()->beginTransaction();
+
+		$reply = $this->in->getString('message');
+
+		foreach ($tickets as $ticket) {
+			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+			$actions = array('new_reply' => $reply);
 			$result = $ticket_edit->applyActions($actions);
 			$ticket_edit->save();
 		}

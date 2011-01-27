@@ -1,12 +1,16 @@
 <div class="ticket-bar">
-	<div class="counter"><span class="count">0</span> Selected</div>
+	{% include 'AgentBundle:Ticket:reply-form.twig.html' with {'with_ticket_context': true} %}
 	<div class="bar">
+		<button class="dp-button small submit-trigger" style="display:none;">Submit Mass Reply</button>
 		<ul class="tools">
 			<li class="macros-apply" style="display:none"><span class="icon icon-check">Apply</span></li>
 			<li class="macros-cancel" style="display:none"><span class="icon icon-cross">Cancel</span></li>
 			<li class="macros"><span class="icon icon-script-gear">Macros</span></li>
 			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
 		</ul>
+		<div class="placeholder">
+			<input type="text" class="placeholder" value="Start typing a reply..." />
+		</div>
 	</div>
 	<ul class="ticket-macros-menu" style="display:none">
 		{% for macro in macros %}
@@ -28,10 +32,5 @@
 		<li data-option-id="status" data-status="open">Set Status: Awaiting Agent</li>
 		<li data-option-id="status" data-status="pending">Set Status: Awaiting User</li>
 		<li data-option-id="status" data-status="resolved">Set Status: Resolved</li>
-	</ul>
-	<ul class="selected-menu" style="display:none">
-		<li data-op="all">Select All</li>
-		<li data-op="none">Select None</li>
-		<li data-op="invert">Invert Selection</li>
 	</ul>
 </div>

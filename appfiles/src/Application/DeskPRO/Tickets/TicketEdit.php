@@ -16,7 +16,7 @@ class TicketEdit
 
 	/**
 	 * Apply a standard actions array to this ticket.
-	 * 
+	 *
 	 * @param array $actions
 	 */
 	public function applyActions(array $actions)
@@ -61,10 +61,10 @@ class TicketEdit
 					$message = new Entity\TicketMessage();
 					$message['person']  = $agent;
 					$message['ticket']  = $this->ticket;
-					$message['message'] = $action['message'];
+					$message['message'] = $action['new_reply'];
 
 					$this->ticket->addMessage($message);
-					
+
 					$return['new_reply'] = $message;
 
 					break;

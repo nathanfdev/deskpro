@@ -48,8 +48,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this._initFlagMenu();
 		this._initGroupingOptions();
 
-
-		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this, this.wrapper, this.contentWrapper);
+		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this);
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
 
 		this.initFeaturesOnCollection(el, {

@@ -166,7 +166,7 @@ agent_ticketsearch:
 agent_ticketsearch_overviewpane:
   pattern: /ticket-search/overview-pane
   defaults: { _controller: AgentBundle:TicketSearch:overviewPane }
-  
+
 agent_ticketsearch_labelspane:
     pattern: /ticket-search/labels-pane
     defaults: { _controller: AgentBundle:TicketSearch:labelsPane }
@@ -240,6 +240,10 @@ agent_ticketsearch_ajax_save_macro:
 agent_ticketsearch_ajax_delete_tickets:
   pattern: /ticket-search/ajax-delete-tickets
   defaults: { _controller: AgentBundle:TicketSearch:ajaxDeleteTickets }
+
+agent_ticketsearch_ajax_mass_reply:
+  pattern: /ticket-search/ajax-mass-reply
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxMassReply }
 
 ################################################################################
 # Ticket
@@ -317,4 +321,4 @@ agent_twitter_callback:
 agent_twitter_mensions:
   pattern: /twitter/mensions/{handle}
   defaults: { _controller: AgentBundle:Twitter:mensions }
-  
+

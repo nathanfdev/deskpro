@@ -1,0 +1,29 @@
+<div class="reply" style="display:none">
+	<ul class="ticket-reply-tabs" style="display:none;width: 300px">
+		<li class="tab-trigger on" data-tab-for="div.deskpro-tab.reply-area">Message</li>
+		<li class="tab-trigger" data-tab-for="div.deskpro-tab.attachments-area">Attachments</li>
+		<li class="tab-trigger" data-tab-for="div.deskpro-tab.cc-area">CC</li>
+		<li class="close-trigger">Close</li>
+	</ul>
+	<form class="reply-form">
+		<div class="reply-area deskpro-tab on">
+			<textarea name="message"></textarea>
+			{% if with_ticket_context %}
+				<table cellspacing="0" cellpadding="0">
+					<tr><td>
+						<input class="small reply-assign-trigger" type="checkbox" name="options[assign]" value="0" /> Assign ticket<span class="reply-assign-label" data-label=": %agent%" style="display:none;cursor:pointer;"></span>
+					</td></tr>
+					<tr><td>
+						<input class="small" type="checkbox" name="options[status]" checked="checked" /> Change status to <span class="menu-trigger change-status">Pending</span>
+					</td><td>
+				</table>
+			{% endif %}
+		</div>
+		<div class="attachments-area deskpro-tab" style="display:none">
+			...
+		</div>
+		<div class="cc-area deskpro-tab" style="display:none">
+			...
+		</div>
+	</form>
+</div>
