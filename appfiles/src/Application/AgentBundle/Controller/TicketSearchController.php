@@ -596,6 +596,28 @@ class TicketSearchController extends AbstractController
 		return $this->createJsonResponse(array('success' => true));
 	}
 
+	############################################################################
+	# ajax-delete-ticket
+	############################################################################
+
+	public function ajaxDeleteTicketsAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		$deleted_tickets = array();
+
+		App::getOrm()->beginTransaction();
+		foreach ($tickets as $ticket) {
+			$deleted_tickets[] = $ticket['id'];
+			App::getOrm()->remove($ticket);
+		}
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		return $this->createJsonResponse(array('success' => true, 'deleted_tickets' => $deleted_tickets));
+	}
+
 
 
 	############################################################################

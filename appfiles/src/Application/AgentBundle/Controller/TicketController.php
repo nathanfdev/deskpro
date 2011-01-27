@@ -68,7 +68,12 @@ class TicketController extends AbstractController
 
 		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
-		return $this->render('AgentBundle:Ticket:view.twig.html', array(
+		$tpl = 'AgentBundle:Ticket:view.twig.html';
+		if ($this->in->getBool('print')) {
+			$tpl = 'AgentBundle:Ticket:view-print.twig.html';
+		}
+
+		return $this->render($tpl, array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,

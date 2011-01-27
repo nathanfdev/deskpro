@@ -237,6 +237,10 @@ agent_ticketsearch_ajax_save_macro:
   pattern: /ticket-search/ajax-save-macro
   defaults: { _controller: AgentBundle:TicketSearch:ajaxSaveMacro }
 
+agent_ticketsearch_ajax_delete_tickets:
+  pattern: /ticket-search/ajax-delete-tickets
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxDeleteTickets }
+
 ################################################################################
 # Ticket
 ################################################################################

@@ -7,6 +7,8 @@ pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
 pageMeta.getMacroUrl = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': ticket.id }) }}?macro_id=$macro_id';
 pageMeta.saveActionsUrl = '{{ path('agent_ticket_ajax_save_actions', {'ticket_id': ticket.id }) }}';
+pageMeta.deleteTicketUrl = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
+pageMeta.printTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': ticket.id, 'print': 1}) }}';
 </script>
 <div class="ticket-content">
 	<form class="value-form" style="display:none">

@@ -61,6 +61,19 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		}
 		
 		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
+		
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
+			var sels = [];
+			Array.each(ticket_ids, function(val) {
+				sels.push('tr.ticket-' + val);
+			});
+			
+			sels = sels.join(', ');
+			
+			$(sels, this.contentWrapper).fadeOut(400, function() {
+				$(this).remove();
+			});
+		}).bind(this));
 	},
 	
 	destroyPage: function() {

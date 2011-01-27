@@ -354,6 +354,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		
 		if (force == 'on') {
 			otherBtns.hide();
+			$('li.macros-apply', applyBtns).text('Apply ('+this._selectedMacroTickets+')');
 			applyBtns.show();
 		} else {
 			otherBtns.show();

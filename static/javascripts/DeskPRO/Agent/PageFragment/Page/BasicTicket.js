@@ -45,6 +45,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this._initTicketAttach();
 		
 		this._initReplyBar();
+		
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
+			if (ticket_ids.indexOf(this.getMetaData('ticket_id')) !== -1) {
+				DeskPRO_Window.removePage(this);
+			}
+		}).bind(this));
 	},
 	
 	destroyPage: function() {
@@ -312,7 +318,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		// Actions menu
 		this.ticketActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('ul.tools li.actions', this.ticketBar),
-			menuElement: $('ul.ticket-info-edit-menu:first', this.contentWrapper)
+			menuElement: $('ul.ticket-info-edit-menu:first', this.contentWrapper),
+			onItemClicked: this._handleActionsMenuClick.bind(this)
 		});
 		this.destroyMenus.push(this.ticketActionsMenu);
 		
@@ -334,6 +341,35 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this.changeManager.revertChanges();
 			this.toggleMacroApplyBtn('off');
 		}).bind(this));
+	},
+	
+	_handleActionsMenuClick: function(info) {
+		var op = $(info.itemEl).data('option-id');
+		
+		switch (op) {
+			case 'delete':
+				$.ajax({
+					url: this.getMetaData('deleteTicketUrl'),
+					type: 'GET',
+					data: {'ticket_ids[]': this.getMetaData('ticket_id') },
+					context: this,
+					dataType: 'json',
+					success: function(data) {
+						DeskPRO_Window.getMessageBroker().sendMessage('tickets.deleted', data.deleted_tickets);
+					}
+				});
+				break;
+				
+			case 'print':
+				var width = 700;
+				var height = 550;
+				var win = window.open(
+					this.getMetaData('printTicketUrl'),
+					"print_ticket_win_" + this.getMetaData('ticket_id'),
+					"width="+width+",height="+height+",locationbar=false,directories=false,status=false,copyhistory=false"
+				);
+				break;
+		}
 	},
 	
 	_handleMacroClick: function(info) {
