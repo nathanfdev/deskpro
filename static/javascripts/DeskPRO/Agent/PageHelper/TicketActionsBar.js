@@ -7,7 +7,6 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	contentWrapper: null,
 	tableEl: null,
 	countEl: null,
-	actionTitleEl: null,
 	selectedActionData: null,
 	ticketBar: null,
 	
@@ -17,7 +16,6 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		this.contentWrapper = contentWrapper;
 		
 		this.ticketBar = $('.ticket-bar:first', this.wrapper);
-		this.actionTitleEl = $('.ticket-bar .action-title', this.wrapper);
 		this.countEl = $('.ticket-bar .counter .count', this.wrapper);
 		
 		this._initMenus();
@@ -39,11 +37,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		});
 		
 		// Macro apply/cancel
-		$('ul.tools li.macros-apply', this.ticketBar).click((function() {
-			this.page.changeManager.commitChanges();
-			this.saveMacro();
-			this.toggleMacroApplyBtn('off');
-		}).bind(this));
+		$('ul.tools li.macros-apply', this.ticketBar).click(this._applyButtonClicked.bind(this));
 		
 		$('ul.tools li.macros-cancel', this.ticketBar).click((function() {
 			this.page.changeManager.revertChanges();
@@ -185,17 +179,72 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	_actionMenuItemClicked: function(info) {
 		var itemEl = $(info.itemEl);
 		
-		this.selectedActionData = {
-			op: itemEl.data('op')
-		};
+		var op = itemEl.data('option-id');
 		
-		if (itemEl.data('op') == 'macro') {
-			this.selectedActionData['macro_id'] = itemEl.data('macro-id');
-		} else if (itemEl.data('op') == 'status') {
-			this.selectedActionData['status'] = itemEl.data('status');
+		var ticket_ids = this.getSelectedTicketIds();
+		this._selectedMacroTickets = ticket_ids;
+
+		var data = [];
+		Array.each(ticket_ids, function(id) {
+			data.push({
+				name: 'ticket_ids[]',
+				value: id
+			});
+		});
+		
+		switch (op) {
+			case 'delete':
+				this.toggleMacroApplyBtn('on', 'Delete Tickets');
+				this._applyButtonCallback = (function() {
+					
+					this.toggleMacroApplyBtn('off');
+					
+					$.ajax({
+						url: this.page.getMetaData('deleteTicketUrl'),
+						type: 'GET',
+						data: data,
+						dataType: 'json',
+						success: function(data) {
+							DeskPRO_Window.getMessageBroker().sendMessage('tickets.deleted', data.deleted_tickets);
+						}
+					});
+				}).bind(this);
+				break;
+				
+			case 'standard':
+			
+				var optionName = itemEl.data('option-name');
+				var value = itemEl.data('option-value');
+				
+				var changeManager = this.page.changeManager;
+				changeManager.begin(ticket_ids);
+				
+				var displayName = '';
+				var displayNameType = '';
+				Array.each(ticket_ids, function(ticket_id) {
+					var property = this.createPropertyForTicket(optionName, ticket_id);
+					displayName = property.displayCaption;
+					displayNameType = property.displayNameType;
+					changeManager.addChange(property, value);
+				}, this);
+				
+				this.toggleMacroApplyBtn('on', 'Set ' + displayName + ': ' + DeskPRO_Window.getDisplayName(displayNameType, value));
+				
+				changeManager.applyChanges();
+				
+				data.push({
+					name: 'actions['+optionName+']',
+					value: value
+				});
+				
+				this._applyButtonCallback = (function() {
+					this.toggleMacroApplyBtn('off');
+					this.performMassAction(data);
+					changeManager.commitChanges();
+				}).bind(this);
+			
+				break;
 		}
-		
-		this.actionTitleEl.html(itemEl.html());
 	},
 	
 	
@@ -204,27 +253,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	 * Send the request to the server to perform the actions on the selected
 	 * tickets.
 	 */
-	performMassAction: function() {
-		if (this.selectedActionData == null) {
-			return;
-		}
-		
-		var data = [];
-		
-		$('input[type="checkbox"].ticket:checked', this.contentWrapper).each(function() {
-			data.push({
-				name: 'ticket_ids[]',
-				value: $(this).val()
-			});
-		});
-		
-		Object.each(this.selectedActionData, function(v,k) {
-			data.push({
-				name: k,
-				value: v
-			});
-		});
-		
+	performMassAction: function(data) {	
 		DeskPRO_Window.startLoadingIndicator();
 		$.ajax({
 			cache: false,
@@ -251,6 +280,25 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	
 	_selectedMacroId: null,
 	_selectedMacroTickets: null,
+	_applyButtonCallback: null,
+	
+	createPropertyForTicket: function(propName, ticket_id) {
+		var objinfo = this._getPropClass(propName);
+	
+		if (!objinfo) {
+			return false;
+		}
+	
+		var property = new objinfo[0](this.page, ticket_id, objinfo[1]);
+		
+		return property;
+	},
+	
+	_applyButtonClicked: function() {
+		if (this._applyButtonCallback) {
+			this._applyButtonCallback();
+		}
+	},
 	
 	_macroMenuItemClicked: function(info) {
 		this._selectedMacroId = $(info.itemEl).data('macro-id');
@@ -296,13 +344,11 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 		Object.each(macro_info, function(actions, ticket_id) {
 			Object.each(actions, function(newValue, propName) {
-				var objinfo = this._getPropClass(propName);
-			
-				if (!objinfo) {
-					return false;
+				var property = this.createPropertyForTicket(propName, ticket_id);
+				
+				if (!property) {
+					return;
 				}
-			
-				var property = new objinfo[0](this.page, ticket_id, objinfo[1]);
 
 				changeManager.addChange(property, newValue);
 				
@@ -312,6 +358,12 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		changeManager.applyChanges();
 		
 		this.toggleMacroApplyBtn('on');
+		
+		this._applyButtonCallback = (function() {
+			this.page.changeManager.commitChanges();
+			this.saveMacro();
+			this.toggleMacroApplyBtn('off');
+		}).bind(this);
 	},
 	
 	_getPropClass: function(propName) {
@@ -337,7 +389,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		return [obj, opt];
 	},
 	
-	toggleMacroApplyBtn: function(force) {
+	toggleMacroApplyBtn: function(force, title) {
 		
 		var ul = $('ul.tools', this.ticketBar);
 		
@@ -354,7 +406,8 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		
 		if (force == 'on') {
 			otherBtns.hide();
-			$('li.macros-apply', applyBtns).text('Apply ('+this._selectedMacroTickets+')');
+			if (!title) title = 'Apply';
+			$('li.macros-apply span', ul).text(title + ' ('+this._selectedMacroTickets.length+')');
 			applyBtns.show();
 		} else {
 			otherBtns.show();

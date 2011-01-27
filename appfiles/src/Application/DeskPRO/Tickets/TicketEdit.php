@@ -34,6 +34,7 @@ class TicketEdit
 					break;
 
 				case 'agent':
+				case 'agent_id':
 					$this->ticket['agent_id'] = $action;
 					break;
 

@@ -37,6 +37,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		if (!$this->_userHasPermissions()) {
 			// TODO implement no perms
 		}
+
+		$this->person->loadHelper('AgentTeam');
+		$this->person->loadHelper('AgentPermissions');
 	}
 	
 	protected function _userHasPermissions()

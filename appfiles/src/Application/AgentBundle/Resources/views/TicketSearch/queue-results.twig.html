@@ -6,6 +6,7 @@ pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runqueue', {'queue_id': queue
 pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.getMacroUrl = '{{ path('agent_ticketsearch_ajax_get_macro') }}?macro_id=$macro_id';
 pageMeta.saveMacroUrl = '{{ path('agent_ticketsearch_ajax_save_macro') }}?macro_id=$macro_id';
+pageMeta.deleteTicketUrl = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
 {% if queue_id %}
 	pageMeta.queue_id = {{queue_id}};
 {% endif %}

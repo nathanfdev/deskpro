@@ -538,56 +538,14 @@ class TicketSearchController extends AbstractController
 		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
 		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
 
-		$op = $this->in->getString('op');
-		if ($op == 'macro') {
-			$macro = App::getOrm()->getRepository('DeskPRO:TicketMacro')->find($this->in->getUint('macro_id'));
-
-			if (!$macro) {
-				// TODO handle err
-			}
-		}
+		$actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
 
 		App::getOrm()->beginTransaction();
 
 		foreach ($tickets as $ticket) {
-			switch ($op) {
-				case 'macro':
-					$macro->performOnTicket($ticket);
-					break;
-
-				case 'take':
-					$ticket['agent'] = $this->person;
-					App::getOrm()->persist($ticket);
-					break;
-
-				case 'delete':
-					App::getOrm()->remove($ticket);
-					break;
-
-				case 'spam':
-					$ticket['status'] = Ticket::STATUS_HIDDEN;
-					$ticket['hidden_status'] = Ticket::HIDDEN_STATUS_SPAM;
-					App::getOrm()->persist($ticket);
-					break;
-
-				case 'status':
-					switch ($this->in->getString('status')) {
-						case 'awaiting_agent':
-							$ticket['status'] = Ticket::STATUS_OPEN;
-							break;
-
-						case 'pending':
-							$ticket['status'] = Ticket::STATUS_PENDING;
-							break;
-
-						case 'resolved':
-							$ticket['status'] = Ticket::STATUS_RESOLVED;
-							break;
-					}
-
-					App::getOrm()->persist($ticket);
-					break;
-			}
+			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+			$result = $ticket_edit->applyActions($actions);
+			$ticket_edit->save();
 		}
 
 		App::getOrm()->flush();
