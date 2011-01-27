@@ -5,24 +5,34 @@ Orb.createNamespace('DeskPRO.Agent.TicketList.Property');
  */
 DeskPRO.Agent.TicketList.Property.NewReply = new Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
-	
+
+	displayCaption: 'Reply',
+
 	getName: function() {
 		return 'new_reply';
 	},
-	
+
+	isSameValue: function(compare) {
+		return false;
+	},
+
 	getValue: function() {
-		return '';
+		return null;
 	},
-	
+
 	setValue: function(value) {
-		
+		if (value) {
+			var text = value;
+			this.getInterfaceElement().removeClass('no-value').text(text);
+		}
 	},
-	
+
 	setIncomingValue: function(value) {
 
 	},
-	
+
 	_getInterfaceElement: function() {
-		//return $('form.reply-form textarea[name="message"]:first', this.ticketPage.ticketReply);
+		el = this.getSublineElement();
+		return el;
 	}
 });

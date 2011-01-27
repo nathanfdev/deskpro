@@ -8,8 +8,6 @@ DeskPRO.Agent.TicketList.Property.StandardOption = new Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
 
 	optionName: null,
-	displayNames: null,
-	displayCaption: null,
 
 	init: function() {
 		var valid_options = ['department_id', 'category_id', 'product_id', 'priority_id', 'status', 'agent_id', 'agent_team_id'];

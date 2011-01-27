@@ -9,6 +9,9 @@ DeskPRO.Agent.TicketList.Property.Abstract = new Class({
 
 	Implements: [Events, Options],
 
+	displayNameType: null,
+	displayCaption: null,
+
 	options: {},
 	ticketPage: null,
 	ticketId: null,

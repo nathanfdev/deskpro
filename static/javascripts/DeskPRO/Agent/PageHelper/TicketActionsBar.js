@@ -433,7 +433,6 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 				opt = {'optionName': propName };
 				break;
 			case 'new_reply':
-			return null;
 				obj = DeskPRO.Agent.TicketList.Property.NewReply;
 				break;
 		}
@@ -491,5 +490,54 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 				DeskPRO_Window.stopLoadingIndicator();
 			}
 		});
+	},
+
+	toggleReplyBar: function(force) {
+
+		if (!force) {
+			if (this.ticketReply.is(':visible')) {
+				force = 'off';
+			} else {
+				force = 'on';
+			}
+		}
+
+		if (force == 'on') {
+
+			// TODO: figure out correct css height maths here, where are 140 and 150 coming from?
+
+			this.ticketReply.show().css({ 'height': 140 });
+			this.barWrapper.addClass('expanded');
+			this.layout.sizePane('south', 150 + this.ticketBar.outerHeight());
+
+			$('div.placeholder', this.ticketBar).hide();
+			$('div.reply-buttons', this.ticketBar).show();
+
+			this.ticketReplyTabs.css({
+				'position': 'absolute',
+				'top': this.barWrapper.offset().top - this.ticketReplyTabs.outerHeight() - 2,
+				'left': this.barWrapper.offset().left,
+				'display': 'block',
+				'z-index': parseInt(this.barWrapper.css('z-index'))
+			});
+
+			// When we open we should scroll down by the new height,
+			// so the same position is visible in the center pane
+			var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
+			this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
+
+			// Focus textarea
+			$('textarea', this.ticketReply).focus();
+		} else {
+			this.ticketReplyTabs.hide();
+			this.ticketReply.hide();
+			this.barWrapper.removeClass('expanded');
+			this.layout.sizePane('south', 27);
+
+			$('div.placeholder', this.ticketBar).show();
+			$('div.reply-buttons', this.ticketBar).hide();
+
+			this.ticketReplyTabs.hide();
+		}
 	}
 });
