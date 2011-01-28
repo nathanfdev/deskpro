@@ -486,6 +486,17 @@ table.list tr abbr.timeago {
 	float: right;
 }
 
+table.list tr.urgency-10  { background-color: #fff; }
+table.list tr.urgency-20  { background-color: #F2F5EB; }
+table.list tr.urgency-30  { background-color: #F3F5E6; }
+table.list tr.urgency-40  { background-color: #EFF0DD; }
+table.list tr.urgency-50  { background-color: #EBE7CC; }
+table.list tr.urgency-60  { background-color: #E6E0BE; }
+table.list tr.urgency-70  { background-color: #E6DCBE; }
+table.list tr.urgency-80  { background-color: #E6D8BE; }
+table.list tr.urgency-90  { background-color: #E6CEBE; }
+table.list tr.urgency-100 { background-color: #E6C5BE; }
+
 /**********************************************************
  Main Form Table
 ***********************************************************/

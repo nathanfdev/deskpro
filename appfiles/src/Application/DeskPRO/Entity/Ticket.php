@@ -571,6 +571,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+
+	/**
+	 * Gets the urgency rounded to nearest 10. Useful in ex templates to specify a color
+	 *
+	 * @return int
+	 */
+	public function getRoundedUrgency()
+	{
+		return \Orb\Util\Numbers::roundToMultiple($this->urgency, 10, \Orb\Util\Numbers::ROUND_MULTIPLE_NEAR);
+	}
+
+
 	/**
 	 * @orm:PreInsert
 	 */
