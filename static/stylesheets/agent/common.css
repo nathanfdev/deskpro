@@ -384,16 +384,16 @@ table.list > thead > tr > th:first-child {
 }
 
 table.list > tbody > tr.line-1.hover, table.list > tbody > tr.line-2.hover, table.list > tbody > tr.line-3.hover {
-	background-color: #E8F3FF;
+
 }
 
 table.list > tbody > tr.line-1.on, table.list > tbody > tr.line-2.on , table.list > tbody > tr.line-3.on {
-	background-color: #D9EBFF;
+
 }
 
 table.list.preview-mode > tbody > tr.line-1.on, table.list.preview-mode > tbody > tr.line-2.on, table.list.preview-mode > tbody > tr.line-3.on,
 table.list.preview-mode > tbody > tr.line-1.hover, table.list.preview-mode > tbody > tr.line-2.hover, table.list.preview-mode > tbody > tr.line-3.hover {
-	background-color: #fff !important;
+
 }
 
 table.list > tbody > tr.line-2 {

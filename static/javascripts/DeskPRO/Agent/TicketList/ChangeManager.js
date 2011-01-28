@@ -134,7 +134,7 @@ DeskPRO.Agent.TicketList.ChangeManager = new Class({
 
 		var lines = $('tr.ticket-' + ticketId, this.ticketPage.contentWrapper);
 		lines.filter('tr.line-3').hide().find('td > ul').html('')
-		lines.addClass('faded').removeClass('with-line-3');
+		lines.filter(':not(.line-3)').addClass('faded').removeClass('with-line-3');
 
 		delete this.changes[ticketId];
 

@@ -102,14 +102,6 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		this.tableEl.delegate('input[type="checkbox"].ticket', 'click', function() {
 			self.handleTicketCheckClick($(this));
 		});
-
-		$(this.tableEl).delegate('tr', 'hover', function() {
-			self._handleTrHover($(this));
-		});
-	},
-
-	_handleTrHover: function(tr) {
-		this._getRowLines(tr).toggleClass('hover');
 	},
 
 	_getRowLines: function(tr) {
