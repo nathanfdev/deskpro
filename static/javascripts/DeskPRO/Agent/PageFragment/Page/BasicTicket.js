@@ -17,6 +17,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	changeManager: null,
 	valueForm: null,
 
+	layout: null,
+
 	initPage: function(el) {
 
 		this.wrapper = el;
@@ -51,6 +53,15 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 				DeskPRO_Window.removePage(this);
 			}
 		}).bind(this));
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
+			this._handleResize()
+		}).bind(this));
+	},
+
+	_handleResize: function() {
+		if (!this.layout) return;
+		this.layout.resizeAll();
 	},
 
 	destroyPage: function() {

@@ -73,6 +73,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				$(this).remove();
 			});
 		}).bind(this));
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
+			this._handleResize()
+		}).bind(this));
+	},
+
+	_handleResize: function() {
+		if (!this.layout) return;
+		this.layout.resizeAll();
 	},
 
 	destroyPage: function() {
