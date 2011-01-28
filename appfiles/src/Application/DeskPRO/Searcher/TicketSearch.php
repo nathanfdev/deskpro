@@ -56,7 +56,7 @@ class TicketSearch extends SearcherAbstract
 	}
 
 
-	
+
 	/**
 	 * Are we using archive mode?
 	 *
@@ -67,7 +67,7 @@ class TicketSearch extends SearcherAbstract
 		return $this->is_archive;
 	}
 
-	
+
 
 	/**
 	 * Run the search and return an array of matching ID's.
@@ -85,7 +85,7 @@ class TicketSearch extends SearcherAbstract
 	}
 
 
-	
+
 	/**
 	 * Get the SQL query that'll fetch the results
 	 * @return string
@@ -155,7 +155,7 @@ class TicketSearch extends SearcherAbstract
 		#------------------------------
 		# Add order by
 		#------------------------------
-		
+
 		$order_by = $this->getOrderByPart();
 
 		#------------------------------
@@ -182,17 +182,17 @@ class TicketSearch extends SearcherAbstract
 		return $sql;
 	}
 
-	
+
 
 	/**
 	 * Get the ORDER BY clause based on order info set.
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getOrderByPart()
 	{
 		if (!$this->order_by) {
-			$this->order_by = array('ticket.date_created', 'DESC');
+			$this->order_by = array('ticket.urgency', 'DESC');
 		}
 
 		list($type, $dir) = $this->order_by;
@@ -205,6 +205,10 @@ class TicketSearch extends SearcherAbstract
 		$order_by = '';
 
 		switch ($type) {
+			case 'ticket.urgency':
+				$order_by = "tickets.urgency $dir";
+				break;
+
 			case 'ticket.date_created':
 				$order_by = "tickets.id $dir";
 				break;
@@ -216,7 +220,7 @@ class TicketSearch extends SearcherAbstract
 			case 'ticket.date_resolved':
 				$order_by = "tickets.date_resolved $dir";
 				break;
-			
+
 			case 'ticket.date_closed':
 				$order_by = "tickets.date_closed $dir";
 				break;
@@ -405,7 +409,7 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_DEPARTMENT:
 					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
 					if (count($choice) == 1) $choice = $choice[0];
-					
+
 					if (!$this->_testChoiceMatch($ticket['department_id'], $op, $choice)) return false;
 					break;
 				case self::TERM_CATEGORY:

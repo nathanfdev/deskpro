@@ -7,7 +7,7 @@
 			<span class="subject with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</span>
 		</td>
 		{% if show_flag %}
-			{% set ticket_flagged_color = flagged_tickets[ticket.id]|default('none') %}			
+			{% set ticket_flagged_color = flagged_tickets[ticket.id]|default('none') %}
 			<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span></td>
 		{% endif %}
 	</tr>

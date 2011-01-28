@@ -32,7 +32,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_RESOLVED = 'resolved';
 	const STATUS_CLOSED = 'closed';
 	const STATUS_HIDDEN = 'hidden';
-	
+
 	const HIDDEN_STATUS_SPAM = 'spam';
 
 	/**
@@ -147,7 +147,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @TODO Make this an enum type
-	 * 
+	 *
 	 * @var string
 	 * @orm:Column(name="status", type="string", length=15)
 	 */
@@ -160,6 +160,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="hidden_status", type="string", length=15, nullable=true)
 	 */
 	protected $hidden_status = null;
+
+	/**
+	 * @var int
+	 * @orm:Column(name="urgency", type="integer")
+	 */
+	protected $urgency = 0;
 
 	/**
 	 * @var \DateTime
@@ -286,7 +292,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get a simple array of person ID's of participants.
 	 *
-	 * @return array 
+	 * @return array
 	 */
 	public function getParticipantIds()
 	{
@@ -299,7 +305,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Check if a person ID or a person object is current a participant.
 	 *
@@ -322,11 +328,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return false;
 	}
 
-	
+
 
 	/**
 	 * Add a message to this ticket.
-	 * 
+	 *
 	 * @param TicketMessage $message
 	 */
 	public function addMessage(TicketMessage $message)
@@ -337,11 +343,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('messages', null, $message);
 	}
 
-	
+
 
 	/**
 	 * Find an existing data record for a field id.
-	 * 
+	 *
 	 * @param int $field_id
 	 * @return CustomDataTicket
 	 */
@@ -357,7 +363,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Set custom field data for a particular field.
 	 *
@@ -399,8 +405,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels->add($label);
 	}
 
-	
-
 	/**
 	 * Add a custom data item to this ticket
 	 *
@@ -428,7 +432,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if (!$this->department) {
 			return 0;
 		}
-		
+
 		return $this->department['id'];
 	}
 
@@ -449,7 +453,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 		return $this->category['id'];
 	}
-	
+
 	public function setCategoryId($id)
 	{
 		if ($id) {
@@ -467,7 +471,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 		return $this->product['id'];
 	}
-	
+
 	public function setProductId($id)
 	{
 		if ($id) {
@@ -507,10 +511,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		if (!$this->agent) {
 			return 0;
 		}
-		
+
 		return $this->agent['id'];
 	}
-	
+
 	public function setAgentId($id)
 	{
 		if ($id) {
@@ -577,7 +581,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->_ticket_logger->logAction($action);
 		}
 	}
-	
+
 	/**
 	 * @orm:PostUpdate
 	 * @orm:PostInsert

@@ -46,6 +46,8 @@ $(document).ready(function() {
 	<div class="row">
 		<label for="macro_title">Order by</label>
 		<select name="queue[order_by]">
+			<option value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
+			<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
 			<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
 			<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
 			<option value="ticket.priority:desc">Priority (Highest-Lowest)</option>
@@ -61,7 +63,7 @@ $(document).ready(function() {
 			{% endfor %}
 		</select>
 	</div>
-	
+
 	<div class="row">
 		<label>Criteria</label>
 		<div class="search-form" id="criteria_list">
