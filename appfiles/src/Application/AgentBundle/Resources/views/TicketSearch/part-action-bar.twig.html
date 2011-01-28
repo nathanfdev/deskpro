@@ -18,19 +18,74 @@
 		{% endfor %}
 	</ul>
 	<ul class="ticket-action-menu" style="display:none">
+		<li data-option-id="open">Open in tabs</li>
+		<li class="sep">-</li>
 		<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{person.id}}">Assign to me</li>
 		{% if person.getAgentTeamIds %}
-			<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{person.getAgentTeamIds[0]}}">Assign to my group</li>
+			<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{person.getAgentTeamIds[0]}}">Assign to my team</li>
 		{% endif %}
 		<li class="sep">-</li>
-		<li data-option-id="open">Open in tabs</li>
+		<li>
+			<span>Assign to agent</span>
+			<ul class="submenu">
+				{% for id,title in ticket_options.agents %}
+					<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{id}}">{{title}}</li>
+				{% endfor %}
+			</ul>
+		</li>
+		<li>
+			<span>Assign to agent team</span>
+			<ul class="submenu">
+				{% for id,title in ticket_options.agent_teams %}
+					<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{id}}">{{title}}</li>
+				{% endfor %}
+			</ul>
+		</li>
+		<li class="sep">-</li>
+		<li>
+			<span>Set Department</span>
+			<ul class="submenu">
+				{% for id,title in ticket_options.departments %}
+					<li data-option-id="standard" data-option-name="department_id" data-option-value="{{id}}">{{title}}</li>
+				{% endfor %}
+			</ul>
+		</li>
+		<li>
+			<span>Set Category</span>
+			<ul class="submenu">
+				{% for id,title in ticket_options.categories %}
+					<li data-option-id="standard" data-option-name="category_id" data-option-value="{{id}}">{{title}}</li>
+				{% endfor %}
+			</ul>
+		</li>
+		<li>
+			<span>Set Product</span>
+			<ul class="submenu">
+				{% for id,title in ticket_options.products %}
+					<li data-option-id="standard" data-option-name="product_id" data-option-value="{{id}}">{{title}}</li>
+				{% endfor %}
+			</ul>
+		</li>
+		<li>
+			<span>Set Priority</span>
+			<ul class="submenu">
+				{% for id,title in ticket_options.priorities %}
+					<li data-option-id="standard" data-option-name="priority_id" data-option-value="{{id}}">{{title}}</li>
+				{% endfor %}
+			</ul>
+		</li>
 		<li class="sep">-</li>
 		<li data-option-id="delete"><span class="icon icon-page-delete">Delete Ticket</span></li>
 		<li data-option-id="delete-block"><span class="icon icon-page-delete dev-feature-inactive">Delete Ticket and Block User</span></li>
 		<li data-option-id="spam"><span class="icon icon-page-delete dev-feature-inactive">Mark as Spam</span></li>
 		<li class="sep">-</li>
-		<li data-option-id="status" data-status="open">Set Status: Awaiting Agent</li>
-		<li data-option-id="status" data-status="pending">Set Status: Awaiting User</li>
-		<li data-option-id="status" data-status="resolved">Set Status: Resolved</li>
+		<li>
+			<span>Set Status</span>
+			<ul class="submenu">
+				<li data-option-id="standard" data-option-name="status" data-option-value="open">Open</li>
+				<li data-option-id="standard" data-option-name="status" data-option-value="pending">Pending</li>
+				<li data-option-id="standard" data-option-name="status" data-option-value="resolved">Resolved</li>
+			</ul>
+		</li>
 	</ul>
 </div>

@@ -199,6 +199,10 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 		var ticket_ids = this.getSelectedTicketIds();
 
+		if (!ticket_ids.length) {
+			return;
+		}
+
 		switch (op) {
 			case 'delete':
 				this._currentActionInfo = {'op': 'delete' };
@@ -256,7 +260,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 				this._applyButtonCallback = (function() {
 					this.toggleMacroApplyBtn('off');
 					this.performMassAction(data);
-					changeManager.commitChanges();
+					this.page.changeManager.commitChanges();
 				}).bind(this);
 
 				break;
@@ -312,7 +316,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	 */
 	performMassAction: function(data) {
 
-		Array.each(ticket_ids, function(id) {
+		Array.each(this.getSelectedTicketIds(), function(id) {
 			data.push({
 				name: 'ticket_ids[]',
 				value: id

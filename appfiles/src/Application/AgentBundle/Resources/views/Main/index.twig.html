@@ -5,7 +5,7 @@
 	<meta name="robots" content="NOINDEX" />
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
 	<title>DeskPRO</title>
-	
+
 	<style type="text/css" media="screen">
 		#window_loading_overlay {
 			position:absolute;
@@ -17,38 +17,38 @@
 			z-index: 10000000;
 			text-align: center;
 		}
-		
+
 		#window_loading_overlay .box {
 			width: 400px;
 			text-align: left;
 			margin: 150px auto 0 auto;
-			
+
 			background-color: #fff;
 			padding: 30px;
-			
+
 			-moz-border-radius: 20px;
 			border-radius: 20px;
-			
+
 			-webkit-box-shadow: 5px 5px 5px #000000;
 			-moz-box-shadow: 5px 5px 5px #000000;
 			box-shadow: 5px 5px 5px #000000;
-			
+
 			text-align: center;
 		}
-		
+
 		#window_loading_overlay .box h1 {
 			font-family: Arial, Tahoma, Helvetica, sans-serif;
 			font-size: 14pt;
-						
+
 			text-shadow: 1px 1px 2px #B2BBC2;
 			filter: dropshadow(color=#B2BBC2, offx=1, offy=1);
 		}
-		
+
 		#window_loading_overlay .box p {
 			background: transparent url({{ asset('images/loading-big-circle.gif') }}) no-repeat top center;
 			margin-top: 20px;
 			padding-top: 52px;
-			
+
 			text-shadow: 0px 1px 1px #B2BBC2;
 			filter: dropshadow(color=#B2BBC2, offx=1, offy=1);
 		}
@@ -118,7 +118,10 @@
 			<div class="create-box">
 				<span id="create_new_menu_trigger">Create New</span>
 				<ul id="create_new_menu" style="display:none">
-					<li data-route="page:{{ path('agent_ticket_new') }}"><span class="icon tickets">Ticket</span></li>
+					<li data-route="page:{{ path('agent_ticket_new') }}">
+						<span class="icon tickets">Ticket</span>
+
+					</li>
 					<li class="sep">-</li>
 					<li><span class="icon people dev-feature-inactive">Person</span></li>
 					<li><span class="icon organizations dev-feature-inactive">Organization</span></li>
@@ -159,16 +162,16 @@
 <script>
 	var BASE_URL = '{{ path('user') }}';
 	var ASSETS_BASE_URL = '{{ asset('') }}';
-	
+
 	$(document).ready(function() {
 		// Remove loading overlay
 		$('#window_loading_overlay').remove();
-		
+
 		window.DeskPRO_Window = new DeskPRO.Agent.Window()
 		window.DeskPRO_Window.set('agent.ui.show-listpane', '{{ show_listpane|default('auto') }}');
-		
+
 		window.DeskPRO_Window.initPage();
-		
+
 		window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
 		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
 

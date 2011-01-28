@@ -121,8 +121,10 @@ class TicketSearchController extends AbstractController
 		}
 
 		$macros = null;
+		$ticket_options = null;
 		if (!$is_partial) {
 			$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
+			$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 		}
 
 		$vars = array_merge($vars, array(
@@ -130,6 +132,7 @@ class TicketSearchController extends AbstractController
 			'type_id'            => $type_id,
 			'tickets'            => $tickets,
 			'flagged_tickets'    => $flagged_tickets,
+			'ticket_options'     => $ticket_options,
 			'page'               => $page,
 			'macros'             => $macros,
 			'show_flag'          => true,

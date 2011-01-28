@@ -13,37 +13,48 @@ DeskPRO.UI.Menu_Instances = {};
  */
 DeskPRO.UI.Menu = new Class({
 	Implements: [Options, Events],
-	
+
 	options: {
 		triggerElement: null,
 		customClassname: '',
 		zIndex: 1000000,
 		menuElement: null,
-		objectGroup: 'default'
+		objectGroup: 'default',
+		subMenuConfig: null,
+		parentMenu: null
 	},
-	
+
 	hasInit: false,
 	elements: {},
 	openTriggerEvent: null,
-	
+
+	subMenus: [],
+	openSubMenuId: null,
+	parentMenu: null,
+
 	initialize: function(options) {
-		
+
 		this.objectId = Orb.uuid();
-		
+
 		if (options) this.setOptions(options);
-		
+
+		if (this.options.parentMenu) {
+			this.parentMenu = this.options.parentMenu;
+			delete this.options.parentMenu;
+		}
+
 		if (DeskPRO.UI.Menu_Instances[this.options.objectGroup] === undefined) {
 			DeskPRO.UI.Menu_Instances[this.options.objectGroup] = {};
 		}
 		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = this;
-		
+
 		if (this.options.triggerElement) {
 			this.setupTriggerElement($(this.options.triggerElement));
 		}
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Check to see if the overlay is currently open.
 	 */
@@ -51,28 +62,28 @@ DeskPRO.UI.Menu = new Class({
 		if (!this.hasInit) return false;
 		return this.elements.wrapper.is(':visible');
 	},
-	
-	
+
+
 	/**
 	 * Get the event data that triggered the last menu opener.
 	 */
 	getOpenTriggerEvent: function() {
 		return this.openTriggerEvent;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get the element who triggered the opening of the menu.
 	 */
 	getOpenTriggerElement: function() {
 		if (!this.openTriggerEvent) return null;
-		
+
 		return this.openTriggerEvent.target;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Display the menu. If the event passed is a mouse-generated event,
 	 * then the menu will be displayed where the click took place. If it's
@@ -84,60 +95,72 @@ DeskPRO.UI.Menu = new Class({
 		if (!this._initMenu()) {
 			return;
 		}
-		
+
 		if (this.isMenuOpen()) {
 			return;
 		}
-		
+
 		// Close all other instances
 		Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup], function(v, k) {
 			if (v.isMenuOpen()) {
-				v.closeMenu();
+				//v.closeMenu();
 			}
 		});
-		
-		
+
+
 		this.openTriggerEvent = event;
-		
+
 		if (event.stopPropagation) {
 			// Stop bubbling up, which would call the document
 			// click and immediately close the menu
 			event.stopPropagation();
 		}
-		
+
 		var eventData = { menu: this, cancelOpen: false };
-		
+
 		if (event && event.customEvents) {
 			event.customEvents.fireEvent('beforeMenuOpened', eventData);
 		} else {
 			this.fireEvent('beforeMenuOpened', eventData);
 		}
-		
+
 		if (eventData.cancelOpen) {
 			this.openTriggerEvent = null;
 			return;
 		}
-		
+
 		if (!this.options.zIndex) {
 			this.options.zIndex = Orb.findHighestZindex()+1;
 		}
-		
+
 		var width = this.elements.wrapperOuter.outerWidth();
 		var height = this.elements.wrapperOuter.outerHeight();
-		
+
 		var pageWidth = $(document).width();
 		var pageHeight = $(document).height();
-		
+
+		// If this is a submenu and the parent is open ...
+		if (this.parentMenu !== null && this.parentMenu.isMenuOpen()) {
+
+			var pageX = this.options.parentMenuItem.offset().left + this.options.parentMenuItem.outerWidth()-4;
+			var pageY = this.options.parentMenuItem.offset().top + this.options.parentMenuItem.outerHeight()-4;
+
+			// Position to the left if theres no room
+			if (pageX+width > pageWidth) {
+				pageX = this.options.parentMenuItem.offset().left - width;
+			}
+
 		// If its a click event...
-		if (event.pageX) {
+		} else if (event.pageX) {
 			var pageX = event.pageX;
 			var pageY = event.pageY;
+
 		// Otherwise we should be in reference to an element...
 		} else {
 			var pageX = $(event.target).offset().top;
 			var pageY = $(event.target).offset().left;
 		}
-		
+
 		// Determine which way to open the menu,
 		// We do this so the menu doesn't go off-screen if
 		// its near the edge
@@ -146,13 +169,13 @@ DeskPRO.UI.Menu = new Class({
 		} else {
 			var left = pageX - width - 4;
 		}
-		
+
 		if (pageY+height < pageHeight) {
 			var top = pageY;
 		} else {
-			var top = pageY - height;
+			var top = pageY - height + 4;
 		}
-		
+
 		this.elements.shim.css({
 			'z-index': this.options.zIndex+1,
 			'position': 'absolute',
@@ -163,6 +186,12 @@ DeskPRO.UI.Menu = new Class({
 			'background': 'transparent'
 		}).show();
 
+		// If the parent is open, we dont need our shim
+		// off should close this element and the parents
+		if (this.parentMenu && this.parentMenu.isMenuOpen()) {
+			this.elements.shim.hide();
+		}
+
 		this.elements.wrapperOuter.css({
 			'z-index': this.options.zIndex+2,
 			'position': 'absolute',
@@ -170,61 +199,62 @@ DeskPRO.UI.Menu = new Class({
 			'left': left
 		});
 		this.elements.wrapperOuter.show();
-		
+
 		if (event && event.customEvents) {
 			event.customEvents.fireEvent('menuOpened', { menu: this });
 		} else {
 			this.fireEvent('menuOpened', { menu: this });
 		}
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Closes the menu
 	 */
 	closeMenu: function() {
 		if (!this.isMenuOpen()) return false;
-		
+
 		var eventData = { menu: this, cancelClose: false };
-		
+
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('beforeMenuClosed', eventData);
 		} else {
 			this.fireEvent('beforeMenuClosed', eventData);
 		}
-		
+
 		if (eventData.cancelClose) return false;
-		
+
+		this._closeSubMenu();
 		this.elements.shim.hide();
 		this.elements.wrapperOuter.fadeOut(200);
-		
+
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('menuClosed', { menu: this });
 		} else {
 			this.fireEvent('menuClosed', { menu: this });
 		}
-		
+
 		this.openTriggerEvent = null;
-		
+
 		return true;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Fired when a menu item is clicked.
 	 */
 	_menuItemClicked: function(event) {
-		
+
 		var eventData = { menu: this, event: event, itemEl: event.currentTarget, cancelClose: false };
-		
+
 		// "element" items arent actual menu items, they some UI thing
 		// so dont close for them
 		if ($(eventData.itemEl).is('.elm')) {
 			eventData.cancelClose = true;
 		}
-		
+
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('itemClicked', eventData);
 		} else {
@@ -232,22 +262,76 @@ DeskPRO.UI.Menu = new Class({
 		}
 
 		event.stopPropagation();
-		
+
+		// Pass it to the parent handler by default
+		if (this.parentMenu && this.parentMenu.isMenuOpen()) {
+			this.parentMenu._menuItemClicked(event);
+		}
+
 		if (eventData.cancelClose) return;
-		
+
 		this.closeMenu();
 	},
-	
-	
-	
+
+
+
+	/**
+	 * Fired when a menu item is mouseover
+	 */
+	_menuItemMouseover: function(event) {
+
+		var eventData = { menu: this, event: event, itemEl: event.currentTarget };
+
+		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
+			this.openTriggerEvent.customEvents.fireEvent('itemMouseover', eventData);
+		} else {
+			this.fireEvent('itemMouseover', eventData);
+		}
+
+		event.stopPropagation();
+
+		var itemEl = $(eventData.itemEl);
+		var subMenuId = itemEl.data('submenu-id');
+
+		if (this.openSubMenuId == subMenuId) {
+			return;
+		}
+
+		this._closeSubMenu();
+
+		if (subMenuId === undefined) {
+			return;
+		}
+
+		var subMenu = this.subMenus[subMenuId];
+		subMenu.openMenu(this.openTriggerEvent);
+		this.openSubMenuId = subMenuId;
+		itemEl.addClass('hover');
+	},
+
+
+
+	/**
+	 * Close any open submenu
+	 */
+	_closeSubMenu: function() {
+		if (this.openSubMenuId !== null) {
+			this.subMenus[this.openSubMenuId].closeMenu();
+			this.subMenus[this.openSubMenuId].options.parentMenuItem.removeClass('hover');
+			this.openSubMenuId = null;
+		}
+	},
+
+
+
 	/**
 	 * Init the menu by moving the menu list and created the required wrapper elements.
 	 */
 	_initMenu: function () {
-		
+
 		if (this.hasInit) return true;
 		this.hasInit = true;
-		
+
 		this.elements.shim = $('<div />').hide().appendTo('body');
 		this.elements.shim.click((function (ev) {
 			// When we close a menu by clicking off,
@@ -257,21 +341,53 @@ DeskPRO.UI.Menu = new Class({
 				ev.stopPropagation();
 			}
 		}).bind(this));
-		
+
 		this._initWrapperElements();
-		
+
 		this.elements.list = $(this.options.menuElement);
 		this.elements.list.detach().show().appendTo(this.elements.wrapper);
-		
-		$('li', this.elements.list[0]).live('click', this._menuItemClicked.bind(this));
-		
+
+		if (this.options.subMenuConfig) {
+			var subMenuConfig = this.options.subMenuConfig;
+		} else {
+			var subMenuConfig = {};
+		}
+
+		var lis = $('li', this.elements.list[0]);
+		lis.live('click', this._menuItemClicked.bind(this));
+		lis.live('mouseover', this._menuItemMouseover.bind(this));
+		lis.each((function (i, el) {
+			el = $(el);
+
+			var subMenuEl = el.children('ul.submenu:first');
+			if (subMenuEl.length) {
+
+				subMenuEl.hide();
+
+				var subMenuId = this.subMenus.length;
+				el.addClass('with-submenu');
+				el.data('submenu-id', subMenuId);
+
+				//subMenuEl.hide();
+				subMenuConfig.parentMenu = this;
+				subMenuConfig.subMenuId = subMenuId;
+				subMenuConfig.parentMenuItem = el;
+				subMenuConfig.menuElement = subMenuEl;
+				subMenuConfig.zIndex = this.options.zIndex+1;
+				var subMenu = new DeskPRO.UI.Menu(subMenuConfig);
+				this.subMenus.push(subMenu);
+
+				el.prepend($('<span class="arrow">&#x25B8;</span>'));
+			}
+		}).bind(this));
+
 		this.fireEvent('menuInit', { menu: this });
-		
+
 		return true;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Creates the relevant wrapper elements needed for the menu. Certain designs might need different
 	 * structures, so it's easy to subclass this class and override just this method.
@@ -281,16 +397,16 @@ DeskPRO.UI.Menu = new Class({
 	_initWrapperElements: function() {
 		this.elements.wrapperOuter = $('<div class="deskpro-menu-outer '+this.options.customClassname+'" style="display:none" />');
 		this.elements.wrapperOuter.appendTo('body');
-		
+
 		this.elements.wrapperInner = $('<div class="deskpro-menu-inner '+this.options.customClassname+'" />');
 		this.elements.wrapperInner.appendTo(this.elements.wrapperOuter);
-		
+
 		this.elements.wrapper = $('<div class="deskpro-menu '+this.options.customClassname+'">');
 		this.elements.wrapper.appendTo(this.elements.wrapperInner);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get the main ul list tag with the menu.
 	 *
@@ -300,16 +416,16 @@ DeskPRO.UI.Menu = new Class({
 		// Both of these should refer to the same element
 		// but incase after init the list was changed somehow
 		// with an event etc, we'll use the one from elements if its there
-		
+
 		if (this.elements.list) {
 			return this.elements.list;
 		} else {
 			return this.options.menuElement;
 		}
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Set up a click trigger on an element (or elements).
 	 *
@@ -317,28 +433,34 @@ DeskPRO.UI.Menu = new Class({
 	 */
 	setupTriggerElement: function(el) {
 		el = $(el);
-		
+
 		el.click((function (ev) {
 			this.openMenu(ev);
 			ev.preventDefault();
 		}).bind(this));
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Destroy this overlay and all of its supporting elements.
 	 */
 	destroy: function() {
-		
+
 		if (this.elements && this.elements.shim) {
 			this.elements.shim.remove();
 		}
-		
+
 		if (this.elements && this.elements.wrapperOuter) {
 			this.elements.wrapperOuter.remove();
 		}
-		
+
 		delete DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId];
+
+		Array.each(this.subMenus, function(menuInfo) {
+			menuInfo.menu.destroy();
+		});
+
+		this.subMenus = [];
 	}
 });
