@@ -11,19 +11,44 @@
 			{% if with_ticket_context %}
 				<table cellspacing="0" cellpadding="0">
 					<tr><td>
-						<input class="small reply-assign-trigger" type="checkbox" name="options[assign]" value="0" /> Assign ticket<span class="reply-assign-label" data-label=": %agent%" style="display:none;cursor:pointer;"></span>
-					</td></tr>
-					<tr><td>
-						<input class="small" type="checkbox" name="options[status]" checked="checked" /> Change status to <span class="menu-trigger change-status">Pending</span>
+						<input type="hidden" name="options[agent_id]" value="{{person.id}}" />
+						<input type="hidden" name="options[agent_team_id]" value="{{person.getAgentTeamIds[0]}}" />
+						<input type="hidden" name="options[status]" value="pending" />
+
+						<input class="small reply-assign-trigger" type="checkbox" name="options[do_assign]" value="1" checked="checked" /> Assign ticket to
+						<span class="prop-val trigger agent_id">Me</span>
+						and
+						<span class="prop-val trigger agent_team_id">My Team</span>
 					</td><td>
+						<input class="small" type="checkbox" name="options[do_status]" checked="checked" /> Change status to <span class="prop-val status trigger">Pending</span>
+					</td><tr>
 				</table>
+			<ul class="reply-agent_id-menu" style="display:none">
+				<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{person.id}}">Me</li>
+				<li class="sep">-</li>
+				{% for id,title in ticket_options.agents %}
+					<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{id}}">{{title}}</li>
+				{% endfor %}
+			</ul>
+			<ul class="reply-agent_team_id-menu" style="display:none">
+				<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{person.getAgentTeamIds[0]}}">My Team</li>
+				<li class="sep">-</li>
+				{% for id,title in ticket_options.agent_teams %}
+					<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{id}}">{{title}}</li>
+				{% endfor %}
+			</ul>
+			<ul class="reply-status-menu" style="display:none">
+				<li data-option-id="standard" data-option-name="status" data-option-value="open">Open</li>
+				<li data-option-id="standard" data-option-name="status" data-option-value="pending">Pending</li>
+				<li data-option-id="standard" data-option-name="status" data-option-value="resolved">Resolved</li>
+			</ul>
 			{% endif %}
 		</div>
 		<div class="attachments-area deskpro-tab" style="display:none">
 			...
 		</div>
 		<div class="cc-area deskpro-tab" style="display:none">
-			...
+			<input type="text" value="" /> <button class="dp-button xx-small">Add Email Address</button>
 		</div>
 	</form>
 </div>

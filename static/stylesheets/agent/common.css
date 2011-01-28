@@ -92,6 +92,11 @@ input.flat {
 
 .menu-trigger { cursor: pointer; }
 
+.prop-val.trigger {
+	cursor: pointer;
+	border-bottom: 1px dotted #555;
+}
+
 #tiptip_holder { z-index: 1000000; }
 
 .tags-field {

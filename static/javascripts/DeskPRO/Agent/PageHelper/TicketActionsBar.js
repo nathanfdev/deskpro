@@ -563,6 +563,41 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		});
 
 		$('button.submit-trigger', this.ticketBar).click(this._sendReply.bind(this));
+
+		// Menus to change reply info
+		var menu = this.actionMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('span.trigger.agent_id', this.ticketReply),
+			menuElement: $('.reply-agent_id-menu', this.ticketReply),
+			onItemClicked: (function(info) {
+				var id = $(info.itemEl).data('option-value');
+				var display = DeskPRO_Window.getDisplayName('agent', id);
+
+				$('span.prop-val.agent_id', this.ticketReply).html(display);
+				$('input[name="options[agent_id]"]', this.ticketReply).val(id);
+			}).bind(this)
+		});
+		var menu = this.actionMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('span.trigger.agent_team_id', this.ticketReply),
+			menuElement: $('.reply-agent_team_id-menu', this.ticketReply),
+			onItemClicked: (function(info) {
+				var id = $(info.itemEl).data('option-value');
+				var display = DeskPRO_Window.getDisplayName('agent_team', id);
+
+				$('span.prop-val.agent_team_id', this.ticketReply).html(display);
+				$('input[name="options[agent_team_id]"]', this.ticketReply).val(id);
+			}).bind(this)
+		});
+		var menu = this.actionMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('span.trigger.status', this.ticketReply),
+			menuElement: $('.reply-status-menu', this.ticketReply),
+			onItemClicked: (function(info) {
+				var id = $(info.itemEl).data('option-value');
+				var display = DeskPRO_Window.getDisplayName('status', id);
+
+				$('span.prop-val.status', this.ticketReply).html(id);
+				$('input[name="options[status]"]', this.ticketReply).val(id);
+			}).bind(this)
+		});
 	},
 
 	toggleReplyBar: function(force) {
