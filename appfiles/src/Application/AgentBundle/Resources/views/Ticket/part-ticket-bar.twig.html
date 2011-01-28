@@ -6,20 +6,14 @@
 	{% endif %}
 	<div class="bar">
 		<ul class="tools">
-			<li class="macros-apply" style="display:none"><span class="icon icon-check">Apply</span></li>
+			<li class="submit-reply trigger" style="display:none;"><span class="icon icon-check">{% if ticket.id %}Submit Reply{% else %}Save New ticket{% endif %}</span></li>
+			<li class="macros-apply left-most" style="display:none"><span class="icon icon-check">Apply</span></li>
 			<li class="macros-cancel" style="display:none"><span class="icon icon-cross">Cancel</span></li>
-			<li class="macros"><span class="icon icon-script-gear">Macros</span></li>
+			<li class="macros left-most"><span class="icon icon-script-gear">Macros</span></li>
 			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
 		</ul>
 		<div class="placeholder">
 			<input type="text" class="placeholder" value="Start typing a reply..." />
-		</div>
-		<div class="reply-buttons" style="display:none; padding-left: 10px;">
-			{% if ticket.id %}
-				<button class="dp-button small submit-trigger">Submit Reply</button>
-			{% else %}
-				<button class="dp-button small submit-trigger">Save New Ticket</button>
-			{% endif %}
 		</div>
 	</div>
 </div>

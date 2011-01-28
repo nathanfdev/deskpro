@@ -477,14 +477,15 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this.layout.sizePane('south', 150 + this.ticketBar.outerHeight());
 
 			$('div.placeholder', this.ticketBar).hide();
-			$('div.reply-buttons', this.ticketBar).show();
+			$('li.submit-reply.trigger:first', this.barWrapper).show();
 
 			this.ticketReplyTabs.css({
 				'position': 'absolute',
 				'top': this.barWrapper.offset().top - this.ticketReplyTabs.outerHeight() - 2,
 				'left': this.barWrapper.offset().left,
 				'display': 'block',
-				'z-index': parseInt(this.barWrapper.css('z-index'))
+				'z-index': parseInt(this.barWrapper.css('z-index')),
+				'width': this.barWrapper.width()-50
 			});
 
 			// When we open we should scroll down by the new height,
@@ -501,7 +502,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this.layout.sizePane('south', 27);
 
 			$('div.placeholder', this.ticketBar).show();
-			$('div.reply-buttons', this.ticketBar).hide();
+			$('li.submit-reply.trigger:first', this.barWrapper).hide();
 
 			this.ticketReplyTabs.hide();
 		}

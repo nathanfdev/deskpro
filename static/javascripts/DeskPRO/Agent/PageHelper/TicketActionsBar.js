@@ -612,7 +612,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 			$('div.placeholder', this.ticketBar).hide();
 			$('div.reply-buttons', this.ticketBar).show();
-			$('button.submit-trigger', this.ticketBar).show();
+			$('li.submit-reply.trigger:first', this.barWrapper).show();
 
 			this.ticketReplyTabs.css({
 				'position': 'absolute',
@@ -638,7 +638,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 			$('div.placeholder', this.ticketBar).show();
 			$('div.reply-buttons', this.ticketBar).hide();
-			$('button.submit-trigger', this.ticketBar).hide();
+			$('li.submit-reply.trigger:first', this.barWrapper).hide();
 
 			this.ticketReplyTabs.hide();
 		}
