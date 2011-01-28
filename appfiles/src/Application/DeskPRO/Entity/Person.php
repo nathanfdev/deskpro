@@ -41,6 +41,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * The users profile picture
+	 *
+	 * @var \Application\DeskPRO\Entity\Blob
+	 * @orm:OneToOne(targetEntity="Blob")
+	 * @orm:JoinColumn(name="picture_blob_id", referencedColumnName="id")
+	 */
+	protected $picture_blob = null;
+
+	/**
 	 * Is this person a contact (someone we care about seeing)?
 	 *
 	 * @var bool
@@ -50,7 +59,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Is this person a user (someone with login credentials)?
-	 * 
+	 *
 	 * @var bool
 	 * @orm:Column(name="is_user", type="boolean")
 	 */
@@ -63,7 +72,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="is_agent", type="boolean")
 	 */
 	protected $is_agent = false;
-	
+
 	/**
 	 * The users name (best guess from other sources etc)
 	 *
@@ -197,7 +206,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Usergroups the user belongs to
-	 * 
+	 *
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="Usergroup")
 	 * @orm:JoinTable(name="person2usergroups",
@@ -231,7 +240,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The date the user was inserted into the system
-	 * 
+	 *
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
@@ -292,7 +301,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
-	
+
 
 	/**
 	 * Add a new helper
@@ -352,7 +361,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			return 'ID-' . $this['id'];
 		}
 	}
-	
+
 
 
 	/**
@@ -400,7 +409,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Create a new password hash using the salt and algorithm used with this user.
 	 *
@@ -413,10 +422,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Add a preference value to this user.
-	 * 
+	 *
 	 * @param Entity\PersonPref $pref
 	 */
 	public function addPreference(PersonPref $pref)
@@ -425,7 +434,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$pref['person'] = $this;
 	}
 
-	
+
 
 	/**
 	 * Get the value of a preference as it's currently stored.
@@ -442,7 +451,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_pref_values[$name];
 	}
 
-	
+
 
 	/**
 	 * Load a group of user prefs
@@ -460,7 +469,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $group;
 	}
 
-	
+
 
 	/**
 	 * Get the value of a permission
@@ -508,7 +517,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->_effective_permissions = UsergroupPropertyPermission::coalescePermissionProperties($properties);
 	}
 
-	
+
 
 	/**
 	 * Get an array of usergroup ID's this user belongs to.
@@ -557,7 +566,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Get the primary email address, or null if this person has none.
 	 *
@@ -592,10 +601,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Remove an email address from this user.
-	 * 
+	 *
 	 * Note: This should be run within a transaction if you want to :)
 	 *
 	 * The old PersonEmail will be returned.
@@ -633,7 +642,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Add a new usergroup
-	 * 
+	 *
 	 * @param Usergroup $usergroup
 	 */
 	public function addUsergroup(Usergroup $usergroup)
@@ -664,7 +673,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Get fielddata for a specific field. Returns null if no data for a field exists.
 	 *
@@ -683,7 +692,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Add a label
 	 * @param Entity\LabelTicket $label
@@ -729,7 +738,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 
-	
+
 
 	/**
 	 * Gets the rendered values of fields, indexed by
@@ -748,7 +757,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $array;
 	}
 
-	
+
 
 	/**
 	 * Get a single value
@@ -769,13 +778,48 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return null;
 	}
 
-	
+
+
+	/**
+	 * Uses the emails on the account to search for a gravatar, and saves
+	 * it locally if found.
+	 *
+	 * Returns the new blob object, or null if there was no photo discovered.
+	 *
+	 * @return Blob
+	 */
+	public function setPictureFromGravatar()
+	{
+		foreach ($this->emails as $email) {
+			$hash = md5($email['email']);
+			$url = 'http://www.gravatar.com/avatar/' . $hash . '?d=404&s=80';
+			$image = @file_get_contents($url);
+			if ($image) {
+				$desc = App::getApi('filestorage')->createRandomPath();
+				$desc->write($image, array(
+					'content_type' => 'image/jpeg',
+					'filename' => 'gravatar.jpg'
+				));
+
+				$blob_id = $desc->getPath();
+				$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+				$this->picture_blob = $blob;
+
+				return $blob;
+			}
+		}
+
+		return null;
+	}
+
+
 
 	/**
 	 * Set this persons organization and position.
 	 *
 	 * @param Organization $org
-	 * @param string $position 
+	 * @param string $position
 	 */
 	public function setOrganization(Organization $org, $position = '')
 	{
@@ -783,14 +827,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->organization_position = $position;
 	}
 
-	
+
 	public function __toString()
 	{
 		return $this->getDisplayName();
 	}
 
 
-	
+
 	public function getKeys()
 	{
 		$keys = parent::getKeys();
@@ -828,7 +872,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Get a Person ID from some parameter that might be a person, already a
 	 * person ID, or some object that knows about a person ID.
-	 * 
+	 *
 	 * @param mixed $person
 	 * @return int
 	 */
@@ -850,7 +894,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {
@@ -866,7 +910,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->_helper_manager === null) {
 			$this->_helper_manager = new \Orb\Helper\HelperManager();
 		}
-		
+
 		return $this->_helper_manager;
 	}
 }
