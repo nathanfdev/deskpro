@@ -3,7 +3,35 @@
 ***********************************************************/
 
 #window_head {
+	height: 52px;
+	overflow: hidden;
+}
 
+body.is-demo #window_head {
+	height: 71px;
+}
+
+#window_head > #window_demo_bar {
+	background: #9B140F;
+	background: -moz-linear-gradient(top, #9B140F 0%, #490101 99%);
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#9B140F), color-stop(99%,#490101));
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#9B140F', endColorstr='#490101',GradientType=0 );
+
+	height: 15px;
+	overflow: hidden;
+
+	color: #fff;
+	font-size: 8pt;
+	border-bottom: 1px solid #871F1F;
+	line-height: 14px;
+	text-align: center;
+
+	text-shadow: 1px 1px 1px #383338;
+	filter: dropshadow(color=#383338, offx=1, offy=1);
+}
+
+body.is-demo #window_head > #window_head_top {
+	padding-top: 3px;
 }
 
 #window_head > #window_head_top {
@@ -31,7 +59,7 @@
 	font-family: Helvetica, sans-serif;
 	font-size: 11px;
 	padding-left: 15px;
-	
+
 	margin-top: 3px;
 }
 
@@ -44,7 +72,7 @@
 	background: -moz-linear-gradient(top, #000000 1%, #192449 100%); /* firefox */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(1%,#000000), color-stop(100%,#192449)); /* webkit */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#000000', endColorstr='#192449',GradientType=0 ); /* ie */
-	
+
 	-moz-border-radius-topleft: 8px;
 	-moz-border-radius-topright: 8px;
 	-moz-border-radius-bottomright: 0px;
@@ -53,14 +81,14 @@
 	border-top-right-radius: 5px;
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
-	
+
 	-webkit-box-shadow: 2px 1px 3px #000000;
 	-moz-box-shadow: 2px 1px 3px #000000;
 	box-shadow: 2px 1px 3px #000000;
-	
+
 	text-shadow: 1px 1px 1px #8F96A1;
 	filter: dropshadow(color=#8F96A1, offx=1, offy=1);
-	
+
 	cursor: pointer;
 }
 
@@ -85,7 +113,7 @@
 
 	border: 1px solid #485F85;
 	border-bottom: none;
-	
+
 	text-shadow: 1px 1px 1px #000;
 	filter: dropshadow(color=#000, offx=1, offy=1);
 }
@@ -127,7 +155,7 @@
 	height: 30px;
 	overflow: hidden;
 	font-size: 11px;
-	
+
 	background: #192449; /* old browsers */
 	background: -moz-linear-gradient(top, #192449 0%, #000000 100%); /* firefox */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#192449), color-stop(100%,#000000)); /* webkit */
@@ -151,17 +179,17 @@
 	float: left;
 	line-height: 30px;
 	cursor: pointer;
-	
+
 	padding-left: 15px;
 	padding-right: 15px;
-	
+
 	border-right: 1px solid #333942;
-	
+
 	background: #192449; /* old browsers */
 	background: -moz-linear-gradient(top, #192449 0%, #000000 100%); /* firefox */
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#192449), color-stop(100%,#000000)); /* webkit */
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#192449', endColorstr='#000000',GradientType=0 ); /* ie */
-	
+
 	text-shadow: 1px 1px 1px #000;
 	filter: dropshadow(color=#000, offx=1, offy=1);
 }
@@ -205,9 +233,9 @@
 	float: left;
 	margin-left: 10px;
 	padding: 3px;
-	
+
 	cursor: pointer;
-	
+
 	padding-left: 19px;
 	background-repeat: no-repeat;
 	background-position: center left;
@@ -236,19 +264,19 @@
 }
 
 #window_header_nav .create-box span {
-	
+
 	padding: 0 0 0 20px;
 	color: #fff;
 	font-size: 8pt;
 	font-weight: bold;
 	font-family: Arial, Verdana, sans-serif;
 	background: transparent url(../../images/icons/add.png) no-repeat center left;
-	
+
 	line-height: 30px;
-	
+
 	text-shadow: 1px 2px 3px #000;
 	filter: dropshadow(color=#575757, offx=1, offy=1);
-	
+
 	cursor: pointer;
 }
 
@@ -292,7 +320,7 @@
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#4F5268', endColorstr='#31323F',GradientType=0 );
 	color: #fff;
 	text-shadow: 0px 0px 1px #000;
-	
+
 	border-bottom: 1px solid #fff;
 }
 
@@ -317,7 +345,7 @@
 	border: 1px solid #A8A8A8;
 	border-top: none;
 	padding: 4px;
-	
+
 	-moz-border-radius-topleft: 0px;
 	-moz-border-radius-topright: 0px;
 	-moz-border-radius-bottomright: 4px;
@@ -326,7 +354,7 @@
 	border-top-right-radius: 0px;
 	border-bottom-right-radius: 4px;
 	border-bottom-left-radius: 4px;
-	
+
 	margin: 0 6px 10px 6px;
 }
 
@@ -344,7 +372,7 @@
 	font-size: 13px;
 	padding: 4px;
 	cursor: pointer;
-	
+
 	text-shadow: 0px 1px 2px #fff;
 }
 
@@ -352,7 +380,7 @@
 	text-decoration: underline;
 }
 
-#pane_nav .nav-list-wrapper.on h4 { 
+#pane_nav .nav-list-wrapper.on h4 {
 	color: #657080;
 	cursor: default;
 }
@@ -376,7 +404,7 @@
 	padding: 6px 5px 6px 5px;
 	font-size: 10px;
 	cursor: pointer;
-	
+
 	text-shadow: 0px 0px 1px #fff;
 }
 
@@ -398,7 +426,7 @@
 	background: -moz-linear-gradient(top, #919EC0 0%, #686E87 100%);
 	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#919EC0), color-stop(100%,#686E87));
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#919EC0', endColorstr='#686E87',GradientType=0 );
-	
+
 	color: #fff;
 	font-weight: bold;
 	text-shadow: 0px 0px 1px #000000;
@@ -490,7 +518,7 @@
 	border-bottom: none;
 	margin-right: 3px;
 	margin-left: 3px;
-	
+
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 5px;
 	-moz-border-radius-bottomright: 0px;
@@ -504,7 +532,7 @@
 #pane_tabbar ul li.icon {
 	max-width: 120px;
 	padding-left: 18px;
-	
+
 	background-repeat: no-repeat;
 	background-position: 6px center;
 }
@@ -530,7 +558,7 @@
 	width: 10;
 	height: 22px;
 	padding: 0 5px 0 5px;
-	
+
 	-moz-border-radius-topright: 5px;
 	border-top-right-radius: 5px;
 }
@@ -568,7 +596,7 @@
 
 #pane_tabbar.with-scroller ul {
 	margin-left: 15px;
-	margin-right: 15px;	
+	margin-right: 15px;
 }
 
 #pane_tabs_scroll_left, #pane_tabs_scroll_right { display: none; cursor: pointer; }
@@ -630,7 +658,7 @@
 	border-bottom: none;
 	margin-right: 3px;
 	margin-left: 3px;
-	
+
 	-moz-border-radius-topleft: 5px;
 	-moz-border-radius-topright: 5px;
 	-moz-border-radius-bottomright: 0px;
@@ -644,7 +672,7 @@
 #pane_list_tabbar ul li.icon {
 	max-width: 120px;
 	padding-left: 18px;
-	
+
 	background-repeat: no-repeat;
 	background-position: 6px center;
 }
@@ -667,7 +695,7 @@
 	width: 10;
 	height: 22px;
 	padding: 0 5px 0 5px;
-	
+
 	-moz-border-radius-topright: 5px;
 	border-top-right-radius: 5px;
 }
@@ -705,7 +733,7 @@
 
 #pane_list_tabbar.with-scroller ul {
 	margin-left: 15px;
-	margin-right: 15px;	
+	margin-right: 15px;
 }
 
 #pane_list_tabs_scroll_left, #pane_list_tabs_scroll_right { display: none; cursor: pointer; }

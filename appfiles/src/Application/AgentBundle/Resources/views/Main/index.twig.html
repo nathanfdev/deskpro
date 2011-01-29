@@ -54,7 +54,8 @@
 		}
 	</style>
 </head>
-<body>
+<body class="{% if is_demo %}is-demo{% endif %}">
+
 <div id="window_loading_overlay">
 	<div class="box">
 		<h1>Loading Interface</h1>
@@ -63,6 +64,11 @@
 </div>
 
 <div id="window_head">
+	{% if is_demo %}
+	<div id="window_demo_bar">
+		Your demo expires in 29 days
+	</div>
+	{% endif %}
 	<div id="window_head_top">
 		<div class="logo">DeskPRO</div>
 		<ul class="header-tabs">

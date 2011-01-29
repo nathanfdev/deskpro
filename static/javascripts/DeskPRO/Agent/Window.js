@@ -638,12 +638,16 @@ DeskPRO.Agent.Window = new Class({
 	},
 
 	_initLayout: function() {
+
+		var winhead = $('#window_head');
+		var h = winhead.height();
+
 		$('body').layout({
 			north: {
 				paneSelector: '#window_head',
 				spacing_open: 0,
 				spacing_closed: 0,
-				size: 52
+				size: h
 			},
 			center: {
 				paneSelector: '#pane_shell'
