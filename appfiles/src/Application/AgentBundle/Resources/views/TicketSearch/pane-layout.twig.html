@@ -18,5 +18,9 @@
 <h1 data-route="navpane:{{ path('agent_ticketsearch_labelspane') }}" class="{% if labels_content %}active{%endif%}">Labels</h1>
 {% if labels_content %}<div class="main-nav">{{labels_content|raw}}</div>{%endif%}
 
-<h1 data-route="navpane:{{ path('agent_ticketsearch_findpane') }}" class="{% if find_content %}active{%endif%}">Find</h1>
-{% if find_content %}<div class="main-nav">{{find_content|raw}}</div>{%endif%}
+<ul class="sidebar-links">
+	<li data-route="listpane:{{ path('agent_ticketsearch_filter') }}">Find with a filter</li>
+	<li data-route="listpane:{{ path('agent_ticketsearch_search') }}">Find by searching</li>
+</ul>
+
+<a id="powered_by" href="http://www.deskpro.com/" target="_blank">Powered by DeskPRO</a>
