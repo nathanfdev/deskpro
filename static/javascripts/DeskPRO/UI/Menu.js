@@ -21,6 +21,8 @@ DeskPRO.UI.Menu = new Class({
 		menuElement: null,
 		objectGroup: 'default',
 		subMenuConfig: null,
+		initSubMenusNow: true,
+		initMenuNow: false,
 		parentMenu: null
 	},
 
@@ -50,6 +52,10 @@ DeskPRO.UI.Menu = new Class({
 
 		if (this.options.triggerElement) {
 			this.setupTriggerElement($(this.options.triggerElement));
+		}
+
+		if (this.options.initMenuNow) {
+			this._initMenu();
 		}
 	},
 
@@ -227,7 +233,13 @@ DeskPRO.UI.Menu = new Class({
 
 		this._closeSubMenu();
 		this.elements.shim.hide();
-		this.elements.wrapperOuter.fadeOut(200);
+
+		if (this.parentMenu) {
+			// no fade for submenus
+			this.elements.wrapperOuter.hide();
+		} else {
+			this.elements.wrapperOuter.fadeOut(200);
+		}
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('menuClosed', { menu: this });
@@ -378,6 +390,10 @@ DeskPRO.UI.Menu = new Class({
 				this.subMenus.push(subMenu);
 
 				el.prepend($('<span class="arrow">&#x25B8;</span>'));
+
+				if (this.options.initSubMenusNow) {
+					subMenu._initMenu();
+				}
 			}
 		}).bind(this));
 

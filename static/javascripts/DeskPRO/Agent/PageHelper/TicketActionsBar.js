@@ -41,7 +41,8 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		var menu = this.actionMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.ticket-bar ul.tools li.actions:first', this.wrapper),
 			menuElement: $('.ticket-bar .ticket-action-menu:first', this.wrapper),
-			onItemClicked: this._actionMenuItemClicked.bind(this)
+			onItemClicked: this._actionMenuItemClicked.bind(this),
+			initMenuNow: true
 		});
 
 		var menu = this.macrosMenu = new DeskPRO.UI.Menu({
