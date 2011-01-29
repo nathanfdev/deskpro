@@ -74,7 +74,7 @@ class BlobController extends AbstractController
 		$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
 
 		if ($person['picture_blob']) {
-			$response = return $this->getDownloadResponse($person['picture_blob'], array(
+			$response = $this->getDownloadResponse($person['picture_blob'], array(
 				'size' => $size
 			));
 		} else {
