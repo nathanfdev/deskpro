@@ -20,9 +20,9 @@
 	<!--[if IE 8]>
 	<link rel="stylesheet" href="{{ asset('stylesheets/agent/interface-ie.css') }}" type="text/css" media="screen" />
 	<![endif]-->
-	
+
 	{% block css_files %}{% endblock %}
-	
+
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js" type="text/javascript" charset="utf-8"></script>
 	{#
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.min.js') }}"></script>
@@ -39,27 +39,27 @@
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.sizes.min.js') }}"></script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.mousewheel.js') }}"></script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
-	
+
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/plupload/plupload.full.min.js') }}"></script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/plupload/jquery.plupload.queue.min.js') }}"></script>
-	
+
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/Orb/Compat.js') }}"></script>
-	
+
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/UI/Overlay.js') }}"></script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/UI/Menu.js') }}"></script>
-	
+
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Form/InlineEdit.js') }}"></script>
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/Form/RuleBuilder.js') }}"></script>
-	
+
 	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/DeskPRO/MessageBroker.js') }}"></script>
-	
+
 	{% block js_files %}{% endblock %}
 
 	<script type="text/javascript">
 		var BASE_URL = '{{ path('user') }}';
 		var ASSETS_BASE_URL = '{{ asset('') }}';
-		
+
 		$(document).ready(function() {
 			$('.page-tabs:first li').click(function() {
 				var link = $('a:first', this);
@@ -75,6 +75,7 @@
 	{% set current_page %}{% block current_page %}{% endblock %}{% endset %}
 	<ul class="page-tabs">
 		<li {% if current_page == 'settings' %}class="on"{% endif %}><a href="{{ path('agent_settings') }}">Settings</a></li>
+		<li {% if current_page == 'picture' %}class="on"{% endif %}><a href="{{ path('agent_settings_picture') }}">Picture</a></li>
 		<li {% if current_page == 'ticket-queues' %}class="on"{% endif %}><a href="{{ path('agent_settings_ticketqueues') }}">Ticket Queues</a></li>
 		<li {% if current_page == 'ticket-macros' %}class="on"{% endif %}><a href="{{ path('agent_settings_ticketmacros') }}">Ticket Macros</a></li>
 	</ul>

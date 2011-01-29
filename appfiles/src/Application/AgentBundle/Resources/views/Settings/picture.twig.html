@@ -1,0 +1,18 @@
+{% extends 'AgentBundle:Settings:settings-layout.twig.html' %}
+{% block current_page "picture" %}
+{% block content %}
+
+<ul class="item-list">
+	<li>
+		<strong>Current picture:</strong><br />
+		<img src="{{ path('serve_person_picture', {'person_id': person.id}) }}" alt="" />
+	</li>
+	<li>
+		<strong>Upload new picture</strong><br />
+		<form action="{{ path('agent_settings_picture') }}" method="POST" enctype="multipart/form-data">
+			<input type="file" name="picture" /> <input type="submit" name="do_upload" value="Upload" />
+		</form>
+	</li>
+</ul>
+
+{% endblock %}

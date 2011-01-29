@@ -20,8 +20,8 @@ pageMeta.printTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': ticket.id,
 		<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
 		<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	</form>
-	
-	
+
+
 	<div class="ticket">
 
 	<div class="ticket-top">
@@ -44,13 +44,23 @@ pageMeta.printTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': ticket.id,
 		{% include 'AgentBundle:Ticket:part-ticket-info.twig.html' %}
 
 		<br style="clear:both" />
-	
+
 		<div class="person-info-line">
 
 			<div style="float:right">
 				<div class="menu-trigger agent_id agent">
-					<strong>Agent:</strong><br />
-					<span class="prop-val agent_id {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.display_name}}</span>
+					{% if ticket.agent %}
+						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ path('serve_person_picture_size', {'person_id': ticket.agent.id, 'size': 50}) }}" alt="" width="50" height="50" style="float:right; margin-left: 5px;" />
+					{% else %}
+						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="" alt="" width="50" height="50" style="float:right; margin-left: 5px; display:none" />
+					{% endif %}
+					<span data-picture-element="img.agent-picture" data-no-value-label="Unassigned" class="prop-val agent_id {% if not ticket.agent %}no-value{% endif %}">
+						{% if ticket.agent %}
+							{{ticket.agent.display_name}}
+						{% else %}
+							Unassigned
+						{% endif %}
+					</span>
 				</div>
 				{% if ticket_options.agent_teams %}
 					<div class="menu-trigger agent_team_id agent_team" style="font-size:7pt">
@@ -61,7 +71,7 @@ pageMeta.printTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': ticket.id,
 
 			<div class="person-overview">
 				<div class="img">
-					<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
+					<img src="{{ path('serve_person_picture_size', {'person_id': ticket.person.id, 'size': 50}) }}" alt="" width="50" height="50" />
 				</div>
 				<div class="info">
 					<h1>{{ticket.person.name}}</h1>
@@ -71,12 +81,12 @@ pageMeta.printTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': ticket.id,
 					<div style="font-size: 7pt; color: #6D7C8C; padding-top: 4px;">Click to view information</div>
 				</div>
 			</div>
-		
+
 			<br style="clear:both" />
 		</div>
 
 		{% include 'AgentBundle:Ticket:part-custom-fields.twig.html' %}
-	
+
 		<ul class="ticket-tabs">
 			<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
 			{% if ticket.attachments.count() %}<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>{% endif %}
@@ -93,7 +103,7 @@ pageMeta.printTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': ticket.id,
 	</div>
 
 	<div class="tab-content attachments" data-tab-trigger=".tab-trigger.attachments">
-		
+
 		<table class="list" cellspacing="0" width="100%">
 			<thead class="display-options-trigger">
 				<tr>

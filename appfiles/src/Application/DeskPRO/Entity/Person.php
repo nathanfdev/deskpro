@@ -781,33 +781,54 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Uses the emails on the account to search for a gravatar, and saves
-	 * it locally if found.
+	 * Gets the URL to a picture for the person.
 	 *
-	 * Returns the new blob object, or null if there was no photo discovered.
-	 *
-	 * @return Blob
+	 * @return null|string
 	 */
-	public function setPictureFromGravatar()
+	public function getPictureUrl($size = 80)
 	{
-		foreach ($this->emails as $email) {
-			$hash = md5($email['email']);
-			$url = 'http://www.gravatar.com/avatar/' . $hash . '?d=404&s=80';
-			$image = @file_get_contents($url);
-			if ($image) {
-				$desc = App::getApi('filestorage')->createRandomPath();
-				$desc->write($image, array(
-					'content_type' => 'image/jpeg',
-					'filename' => 'gravatar.jpg'
-				));
+		if ($this->picture_blob) {
+			return $this->picture_blob->getDownloadUrl();
+		}
 
-				$blob_id = $desc->getPath();
-				$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+		if ($this->primary_email) {
+			return 'http://www.gravatar.com/avatar/' . md5(strtolower($this->primary_email['email'])) . '?s='.$size.'&d=identicon';
+		}
 
-				$this->picture_blob = $blob;
+		return null;
+	}
 
-				return $blob;
-			}
+
+
+	/**
+	 * Get the URL to the locally uploaded picture
+	 *
+	 * @return string
+	 */
+	public function getLocalPictureUrl()
+	{
+		if ($this->picture_blob) {
+			return $this->picture_blob->getDownloadUrl();
+		}
+
+		return null;
+	}
+
+
+
+	/**
+	 * Get a gravatar URL
+	 *
+	 * @return string
+	 */
+	public function getGravatarUrl($size, $force = false)
+	{
+		if ($this->primary_email) {
+			return 'http://www.gravatar.com/avatar/' . md5(strtolower($this->primary_email['email'])) . '?s='.$size.'&d=identicon';
+		}
+
+		if ($force) {
+			return 'http://www.gravatar.com/avatar/00000000000000000000000000000000?s='.$size.'&d=identicon';
 		}
 
 		return null;

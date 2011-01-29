@@ -92,12 +92,35 @@ DeskPRO.Agent.Window = new Class({
 	 */
 	getDisplayName: function(type, id) {
 		if (!window.DESKPRO_NAME_REGISTRY[type] || !window.DESKPRO_NAME_REGISTRY[type][id]) {
+			if (!window.DESKPRO_NAME_REGISTRY[type]) {
+				console.warn('Unknown name type %s', type);
+			}
+
 			return null;
 		}
 
 		return window.DESKPRO_NAME_REGISTRY[type][id];
 	},
 
+
+	/**
+	 * Get a URL pattern
+	 */
+	getUrl: function(name, vars) {
+		if (!window.DESKPRO_URL_REGISTRY[name]) {
+			console.warn('Unknown url name %s', name);
+			return null;
+		}
+
+		var url = window.DESKPRO_URL_REGISTRY[name];
+		if (vars) {
+			Object.each(vars, function(v,k) {
+				url.replace('{'+k+'}', v);
+			});
+		}
+
+		return url;
+	},
 
 
 	//#################################################################

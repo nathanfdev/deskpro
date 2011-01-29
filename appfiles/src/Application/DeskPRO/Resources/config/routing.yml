@@ -1,0 +1,13 @@
+serve_blob:
+  pattern: /download/{blob_auth_id}
+  defaults: { _controller: DeskPRO:Blob:showBlob }
+
+serve_person_picture:
+  pattern: /download/person-pic/{person_id}
+  defaults: { _controller: DeskPRO:Blob:personPicture, size: 0 }
+  requirements: { person_id: "\d+" }
+
+serve_person_picture_size:
+  pattern: /download/person-pic/{person_id}/{size}
+  defaults: { _controller: DeskPRO:Blob:personPicture, size: 80 }
+  requirements: { person_id: "\d+", size: "\d+" }

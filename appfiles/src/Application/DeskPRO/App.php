@@ -35,6 +35,7 @@ class App
 	const SERVICE_INPUT_CLEANER   = 'deskpro.core.input_cleaner';
 	const SERVICE_SETTINGS        = 'deskpro.core.settings';
 	const SERVICE_SESSION         = 'session';
+	const SERVICE_ROUTER          = 'router';
 	/**#@-*/
 
 	/**
@@ -113,18 +114,18 @@ class App
 	}
 
 
-	
+
 	/**
 	 * Get the person who is making the curent request.
-	 * 
+	 *
 	 * @return Application\DeskPRO\Entity\Person
 	 */
 	public static function getCurrentPerson()
 	{
 		return self::$_current_person;
 	}
-	
-	
+
+
 
 	/**
 	 * Set the kernel
@@ -143,7 +144,7 @@ class App
 	}
 
 
-	
+
 	/**
 	 * Set a container we'll use in the App to fetch various services
 	 *
@@ -158,7 +159,7 @@ class App
 
 		self::$_containers[$name] = $container;
 	}
-	
+
 
 
 	/**
@@ -192,7 +193,7 @@ class App
 		self::$_default_contaner_name = $name;
 	}
 
-	
+
 
 	/**
 	 * Set the default container to fetch from when using DEFAULT_NAME with a specific
@@ -265,7 +266,7 @@ class App
 		return false;
 	}
 
-	
+
 
 	/**
 	 * Get the DB abstraction object.
@@ -278,7 +279,7 @@ class App
 	}
 
 
-	
+
 	/**
 	 * Get the ORM entity manager.
 	 *
@@ -302,11 +303,11 @@ class App
 		return self::get(self::SERVICE_ORM)->getRepository($entity);
 	}
 
-	
+
 
 	/**
 	 * Get a cache object, or null if no cache exists.
-	 * 
+	 *
 	 * @param string $name Name of the cache
 	 * @return Zend\Cache\Frontend\Core
 	 */
@@ -322,7 +323,7 @@ class App
 	}
 
 
-	
+
 	/**
 	 * Get the kernel
 	 *
@@ -370,7 +371,7 @@ class App
 	 *
 	 * They will likely move to a dedicated DI later. For now, just hard-code
 	 * them in here.
-	 * 
+	 *
 	 * @param string $name Name of the API handler
 	 */
 	public static function getApi($name)
@@ -412,7 +413,7 @@ class App
 			if (!$dir) {
 				$dir = DP_ROOT . '/sys/cache/%env%';
 			}
-			
+
 			$dir = str_replace('%env%', self::$_environment, $dir);
 			$cache_dir = $dir;
 		}
@@ -424,7 +425,7 @@ class App
 
 	/**
 	 * Get the filesystem directory where log files are stored.
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function getLogDir()
@@ -437,7 +438,7 @@ class App
 		return $dir;
 	}
 
-	
+
 
 	/**
 	 * Get the current env
@@ -450,7 +451,7 @@ class App
 	}
 
 
-	
+
 	/**
 	 * Is debug mode enabled?
 	 *
@@ -461,7 +462,7 @@ class App
 		return self::$_debug;
 	}
 
-	
+
 
 	/**
 	 * Check if we're currently running in CLI
@@ -497,7 +498,7 @@ class App
 			$name = self::DEFAULT_NAME;
 			$filename = 'config.php';
 		}
-		
+
 		$filepath = DP_ROOT . "/$filename";
 
 		if (!file_exists($filepath)) {
@@ -539,7 +540,7 @@ class App
 
 	/**
 	 * Get a new logger for some kind of thing/session
-	 * 
+	 *
 	 * @param string $log_name
 	 * @param string $session_name
 	 * @return \Application\DeskPRO\Log\Logger

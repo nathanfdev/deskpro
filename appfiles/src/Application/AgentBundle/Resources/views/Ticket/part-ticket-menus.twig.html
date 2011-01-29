@@ -50,7 +50,12 @@
 	<li data-option-id="{{person.id}}">Assign to me</li>
 	<li class="sep">-</li>
 	{% for id,title in ticket_options.agents %}
-		<li data-option-id="{{id}}">{{title}}</li>
+		<li data-option-id="{{id}}" style="line-height: 15px">
+			<div style="margin-right: 5px; float: left">
+				<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 15}) }}" alt="" width="15" height="15" />
+			</div>
+			{{title}}
+		</li>
 	{% endfor %}
 </ul>
 {% if ticket_options.agent_teams %}

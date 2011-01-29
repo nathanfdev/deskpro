@@ -6,59 +6,89 @@ Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
  */
 DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
-	
+
 	optionName: null,
-	menuRepository: null,
-	
+	displayNameType: 'standardOption',
+
 	init: function() {
 		var valid_options = ['department_id', 'category_id', 'product_id', 'priority_id', 'status', 'agent_id', 'agent_team_id'];
-		
+
 		if (valid_options.indexOf(this.options.optionName) == -1) {
 			throw 'invalidOptionName:'+this.options.optionName;
 		}
-		
+
 		this.optionName = this.options.optionName;
-		
-		this.menuRepository = this.ticketPage.ticketOptionsMenus[this.optionName];
+
+		switch (this.optionName) {
+			case 'department_id': this.displayNameType = 'department'; this.displayCaption = 'Department'; break;
+			case 'category_id': this.displayNameType = 'ticket_category'; this.displayCaption = 'Category'; break;
+			case 'product_id': this.displayNameType = 'product'; this.displayCaption = 'Product'; break;
+			case 'priority_id': this.displayNameType = 'ticket_priority'; this.displayCaption = 'Priority'; break;
+			case 'status': this.displayNameType = 'status'; this.displayCaption = 'Status'; break;
+			case 'agent_id': this.displayNameType = 'agent'; this.displayCaption = 'Agent'; break;
+			case 'agent_team_id': this.displayNameType = 'agent_team'; this.displayCaption = 'Agent Team'; break;
+		}
 	},
-	
-	
+
+
 	getName: function() {
 		return this.optionName;
 	},
-	
+
 	getValue: function() {
 		return this.getFormEl().val();
 	},
-	
+
 	setValue: function(value) {
 		this.getFormEl().val(value);
-		
+
 		if (value == "0") value = 0;
 
-		if (value) {
-			var menuEl = $('li[data-option-id="'+value+'"]:first', this.menuRepository.getListElement());
-			var displayName = value;
-			if (menuEl.length) {
-				displayName = menuEl.html();
+		// some elements (agent) have pictures associated with them
+		var el = this.getInterfaceElement();
+		var pictureEl = null;
+		if (el.data('picture-element')) {
+			pictureEl = $(el.data('picture-element'), el.parent());
+			if (!pictureEl.length) {
+				pictureEl = $(el.data('picture-element'), el.parent.parent());
+				if (!pictureEl.length) {
+					pictureEl = null;
+				}
 			}
-			
+		}
+
+		if (value) {
+			var displayName = value;
+			if (this.displayNameType) {
+				displayName = DeskPRO_Window.getDisplayName(this.displayNameType, value);
+				if (!displayName) displayName = value;
+			}
+
 			this.getInterfaceElement().removeClass('no-value').html(displayName);
+
+			if (pictureEl) {
+				pictureEl.removeClass('no-value').show().attr('src', pictureEl.data('picture-url').replace('{value}', value));
+			}
+
 		} else {
-			this.getInterfaceElement().addClass('no-value').html(this.getDisplayEl().data('no-value'));
+			this.getInterfaceElement().addClass('no-value').html(this.getInterfaceElement().data('no-value-label'));
+
+			if (pictureEl) {
+				pictureEl.addClass('no-value').hide();
+			}
 		}
 	},
-	
+
 	_getInterfaceElement: function() {
 		return $('.prop-val.'+this.optionName+':first', this.ticketPage.contentWrapper);
 	},
-	
+
 	_formEl: null,
 	getFormEl: function() {
 		if (this._formEl !== null) return this._formEl;
-		
+
 		this._formEl = $('input.'+this.optionName+':first', this.ticketPage.valueForm);
-		
+
 		return this._formEl;
 	}
 });

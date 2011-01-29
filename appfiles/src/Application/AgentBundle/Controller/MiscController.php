@@ -12,14 +12,28 @@ class MiscController extends AbstractController
 	public function getInterfaceDataAction()
 	{
 		$js = array();
-		$js[] = 'window.DESKPRO_NAME_REGISTRY = {};';
 
+		// Common names
+		$js[] = 'window.DESKPRO_NAME_REGISTRY = {};';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent = ' . json_encode(App::getEntityRepository('DeskPRO:Person')->getAgentNames()) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = ' . json_encode(App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames()) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.department = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getFlatDepartmentNames(null, true)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.product = ' . json_encode(App::getEntityRepository('DeskPRO:Product')->getProductNames()) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getAllCategoryNames()) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode(App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames()) . ';';
+
+		// Common URLs
+		$js[] = 'window.DESKPRO_URL_REGISTRY = {};';
+		$js[] = 'window.DESKPRO_URL_REGISTRY.serve_person_picture = ' . json_encode(str_replace(
+			array('000'),
+			array('$person_id'),
+			$this->generateUrl('serve_person_picture_size', array('person_id' => '000'))
+		)) . ';';
+		$js[] = 'window.DESKPRO_URL_REGISTRY.serve_person_picture_size = ' . json_encode(str_replace(
+			array('000', '111'),
+			array('{person_id}', '{size}'),
+			$this->generateUrl('serve_person_picture_size', array('person_id' => '000', 'size' => '111'))
+		)) . ';';
 
 		$js = implode("\n", $js);
 
@@ -79,7 +93,7 @@ class MiscController extends AbstractController
 
 		return $response;
 	}
-	
+
     public function acceptTempUploadAction()
     {
 		$targetDir = Util::coalesce(ini_get("upload_tmp_dir"), sys_get_temp_dir()) . DIRECTORY_SEPARATOR . "dpupload";

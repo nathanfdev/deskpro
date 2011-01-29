@@ -42,6 +42,10 @@ agent_settings:
   pattern: /settings
   defaults: { _controller: AgentBundle:Settings:index }
 
+agent_settings_picture:
+  pattern: /settings/picture
+  defaults: { _controller: AgentBundle:Settings:picture }
+
 agent_settings_ticketmacros:
   pattern: /settings/ticket-macros
   defaults: { _controller: AgentBundle:Settings:ticketMacros }

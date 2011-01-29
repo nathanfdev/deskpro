@@ -28,6 +28,48 @@ class SettingsController extends AbstractController
 		));
     }
 
+	############################################################################
+	# Upload picture
+	############################################################################
+
+	public function pictureAction()
+	{
+		if ($this->in->getBool('do_upload')) {
+			$file = $this->request->files->get('picture');
+
+			try {
+				$im = new \Imagick($file->getPath());
+
+				$s = min(100, $im->getImageWidth(), $im->getImageHeight());
+				$im->resizeImage($s, $s, \Imagick::FILTER_LANCZOS, true);
+				$im->setImageFormat('png');
+			} catch (\Exception $e) {
+				die('invalid image');
+			}
+
+			$desc = App::getApi('filestorage')->createRandomPath();
+
+			$desc->write($im->getImageBlob(), array(
+				'content_type' => $file->getMimeType(),
+				'filename' => $file->getOriginalName()
+			));
+
+			$im->destroy();
+			unset($im);
+
+			$blob_id = $desc->getPath();
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$this->person['picture_blob'] = $blob;
+			App::getOrm()->persist($this->person);
+			App::getOrm()->flush();
+		}
+
+		return $this->render('AgentBundle:Settings:picture.twig.html', array(
+
+		));
+	}
+
 
 	############################################################################
 	# Ticket Queues
@@ -95,8 +137,8 @@ class SettingsController extends AbstractController
 		return null;
 	}
 
-	
-	
+
+
 	############################################################################
 	# Ticket Macros
 	############################################################################
