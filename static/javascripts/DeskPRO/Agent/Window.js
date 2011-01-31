@@ -558,6 +558,8 @@ DeskPRO.Agent.Window = new Class({
 	//# Inits
 	//#################################################################
 
+	openTicketIds: [],
+
 	_initBasic: function() {
 		this.messageBroker = new DeskPRO.MessageBroker();
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
@@ -566,6 +568,29 @@ DeskPRO.Agent.Window = new Class({
 
 		// Set up listener for badge count
 		this.getMessageBroker().addMessageListener('queues.counts', this._updatequeueCounts.bind(this));
+
+		// When a ticket is open or closed, apply style
+		var openTicketIds = this.openTicketIds;
+		this.getMessageBroker().addMessageListener('ticket.opened', function (data) {
+			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).addClass('open');
+			openTicketIds.push(data.ticketId);
+		});
+		this.getMessageBroker().addMessageListener('ticket.closed', function (data) {
+			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).removeClass('open');
+			openTicketIds.erase(data.ticketId);
+		});
+	},
+
+	runOpenTicketStateOnElement: function(el) {
+		var openTicketIds = this.openTicketIds;
+
+		$('tr', el).each(function() {
+			var tr = $(this);
+			var ticketId = tr.data('ticket-id');
+			if (openTicketIds.indexOf(ticketId) !== -1) {
+				tr.addClass('open');
+			}
+		})
 	},
 
 	_updatequeueCounts: function (counts) {

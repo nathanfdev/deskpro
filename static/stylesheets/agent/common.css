@@ -475,6 +475,11 @@ table.list tr span.subject {
 	font-size: 8pt;
 	text-shadow: 1px 1px 1px #d4d4d4;
 	filter: dropshadow(color=#d4d4d4, offx=1, offy=0);
+	padding-right: 19px;
+}
+
+table.list tr.open span.subject {
+	background: transparent url(../../images/icons/eye.png) no-repeat top right;
 }
 
 table.list tr span.subject:hover {

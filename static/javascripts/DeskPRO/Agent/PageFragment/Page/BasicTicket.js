@@ -48,6 +48,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		this._initReplyBar();
 
+		DeskPRO_Window.getMessageBroker().sendMessage('ticket.opened', { ticketId: this.getMetaData('ticket_id') });
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
 			if (ticket_ids.indexOf(this.getMetaData('ticket_id')) !== -1) {
 				DeskPRO_Window.removePage(this);
@@ -73,6 +75,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		for (var i = 0; i < this.destroyMenus.length; i++) {
 			this.destroyMenus[i].destroy();
 		}
+
+		DeskPRO_Window.getMessageBroker().sendMessage('ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 
 	//#################################################################

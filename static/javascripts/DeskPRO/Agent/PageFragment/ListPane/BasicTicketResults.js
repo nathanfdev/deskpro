@@ -56,6 +56,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			times: ['tr abbr.timeago']
 		});
 
+		DeskPRO_Window.runOpenTicketStateOnElement(el);
+
 		if (this.getMetaData('noResults')) {
 			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();
@@ -347,6 +349,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			routes: ['.with-route'],
 			times: ['abbr.timeago']
 		});
+
+		DeskPRO_Window.runOpenTicketStateOnElement(el);
 
 		$('table.list', this.contentWrapper).append(el);
 	}
