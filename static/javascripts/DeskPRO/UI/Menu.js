@@ -30,6 +30,9 @@ DeskPRO.UI.Menu = new Class({
 	elements: {},
 	openTriggerEvent: null,
 
+	openedTime: null,
+	cachePosInfo: null,
+
 	subMenus: [],
 	openSubMenuId: null,
 	parentMenu: null,
@@ -106,13 +109,14 @@ DeskPRO.UI.Menu = new Class({
 			return;
 		}
 
-		// Close all other instances
-		Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup], function(v, k) {
-			if (v.isMenuOpen()) {
-				//v.closeMenu();
-			}
-		});
-
+		// Close all other instances (only matters for parent instances)
+		if (!this.parentMenu) {
+			Object.each(DeskPRO.UI.Menu_Instances[this.options.objectGroup], function(v, k) {
+				if (v.isMenuOpen()) {
+					v.closeMenu();
+				}
+			});
+		}
 
 		this.openTriggerEvent = event;
 
@@ -139,63 +143,74 @@ DeskPRO.UI.Menu = new Class({
 			this.options.zIndex = Orb.findHighestZindex()+1;
 		}
 
-		var width = this.elements.wrapperOuter.outerWidth();
-		var height = this.elements.wrapperOuter.outerHeight();
+		// If this is a submenu being re-hovered over to re-open it,
+		// then we dont have to figure out position stuff again because we already did
+		// So we can use the cached info to make it a bit snappier
+		if (this.cachePosInfo && this.openedTime && this.parentMenu && this.parentMenu.openedTime && this.parentMenu.openedTime <= this.openedTime) {
+			var left = this.cachePosInfo.left;
+			var top = this.cachePosInfo.top;
+		} else {
+			var width = this.elements.wrapperOuter.outerWidth();
+			var height = this.elements.wrapperOuter.outerHeight();
 
-		var pageWidth = $(document).width();
-		var pageHeight = $(document).height();
+			var pageWidth = $(document).width();
+			var pageHeight = $(document).height();
 
-		// If this is a submenu and the parent is open ...
-		if (this.parentMenu !== null && this.parentMenu.isMenuOpen()) {
+			// If this is a submenu and the parent is open ...
+			if (this.parentMenu !== null && this.parentMenu.isMenuOpen()) {
 
-			var pageX = this.options.parentMenuItem.offset().left + this.options.parentMenuItem.outerWidth()-4;
-			var pageY = this.options.parentMenuItem.offset().top + this.options.parentMenuItem.outerHeight()-4;
+				var pageX = this.options.parentMenuItem.offset().left + this.options.parentMenuItem.outerWidth()-4;
+				var pageY = this.options.parentMenuItem.offset().top + this.options.parentMenuItem.outerHeight()-4;
 
-			// Position to the left if theres no room
-			if (pageX+width > pageWidth) {
-				pageX = this.options.parentMenuItem.offset().left - width;
+				// Position to the left if theres no room
+				if (pageX+width > pageWidth) {
+					pageX = this.options.parentMenuItem.offset().left - width;
+				}
+
+			// If its a click event...
+			} else if (event.pageX) {
+				var pageX = event.pageX;
+				var pageY = event.pageY;
+
+			// Otherwise we should be in reference to an element...
+			} else {
+				var pageX = $(event.target).offset().top;
+				var pageY = $(event.target).offset().left;
 			}
 
-		// If its a click event...
-		} else if (event.pageX) {
-			var pageX = event.pageX;
-			var pageY = event.pageY;
+			// Determine which way to open the menu,
+			// We do this so the menu doesn't go off-screen if
+			// its near the edge
+			if (pageX+width < pageWidth) {
+				var left = pageX+4;
+			} else {
+				var left = pageX - width - 4;
+			}
 
-		// Otherwise we should be in reference to an element...
-		} else {
-			var pageX = $(event.target).offset().top;
-			var pageY = $(event.target).offset().left;
+			if (pageY+height < pageHeight) {
+				var top = pageY;
+			} else {
+				var top = pageY - height + 4;
+			}
+
+			this.cachePosInfo = {
+				left: left,
+				top: top
+			};
 		}
 
-		// Determine which way to open the menu,
-		// We do this so the menu doesn't go off-screen if
-		// its near the edge
-		if (pageX+width < pageWidth) {
-			var left = pageX+4;
-		} else {
-			var left = pageX - width - 4;
-		}
-
-		if (pageY+height < pageHeight) {
-			var top = pageY;
-		} else {
-			var top = pageY - height + 4;
-		}
-
-		this.elements.shim.css({
-			'z-index': this.options.zIndex+1,
-			'position': 'absolute',
-			'top': 0,
-			'right': 0,
-			'bottom': 0,
-			'left': 0,
-			'background': 'transparent'
-		}).show();
-
-		// If the parent is open, we dont need our shim
-		// off should close this element and the parents
-		if (this.parentMenu && this.parentMenu.isMenuOpen()) {
-			this.elements.shim.hide();
+		// If we have a shim, position it.
+		// We might not if this is a submenu
+		if (this.elements.shim) {
+			this.elements.shim.css({
+				'z-index': this.options.zIndex+1,
+				'position': 'absolute',
+				'top': 0,
+				'right': 0,
+				'bottom': 0,
+				'left': 0,
+				'background': 'transparent'
+			}).show();
 		}
 
 		this.elements.wrapperOuter.css({
@@ -205,6 +220,8 @@ DeskPRO.UI.Menu = new Class({
 			'left': left
 		});
 		this.elements.wrapperOuter.show();
+
+		this.openedTime = new Date();
 
 		if (event && event.customEvents) {
 			event.customEvents.fireEvent('menuOpened', { menu: this });
@@ -232,7 +249,10 @@ DeskPRO.UI.Menu = new Class({
 		if (eventData.cancelClose) return false;
 
 		this._closeSubMenu();
-		this.elements.shim.hide();
+
+		if (this.elements.shim) {
+			this.elements.shim.hide();
+		}
 
 		if (this.parentMenu) {
 			// no fade for submenus
@@ -344,15 +364,19 @@ DeskPRO.UI.Menu = new Class({
 		if (this.hasInit) return true;
 		this.hasInit = true;
 
-		this.elements.shim = $('<div />').hide().appendTo('body');
-		this.elements.shim.click((function (ev) {
-			// When we close a menu by clicking off,
-			// lets stop proagation so the click doesn't
-			// inadvertantly activate something else.
-			if (this.closeMenu()) {
-				ev.stopPropagation();
-			}
-		}).bind(this));
+		// We dont need a shim if we have a parent, because we'll the parents
+		// shim is enough to do whats needed
+		if (!this.parentMenu) {
+			this.elements.shim = $('<div />').hide().appendTo('body');
+			this.elements.shim.click((function (ev) {
+				// When we close a menu by clicking off,
+				// lets stop proagation so the click doesn't
+				// inadvertantly activate something else.
+				if (this.closeMenu()) {
+					ev.stopPropagation();
+				}
+			}).bind(this));
+		}
 
 		this._initWrapperElements();
 
@@ -365,37 +389,44 @@ DeskPRO.UI.Menu = new Class({
 			var subMenuConfig = {};
 		}
 
-		var lis = $('li', this.elements.list[0]);
-		lis.live('click', this._menuItemClicked.bind(this));
-		lis.live('mouseover', this._menuItemMouseover.bind(this));
-		lis.each((function (i, el) {
-			el = $(el);
+		var lis = $('> li', this.elements.list[0]);
 
-			var subMenuEl = el.children('ul.submenu:first');
-			if (subMenuEl.length) {
+		$('li', this.elements.list[0]).live('click', this._menuItemClicked.bind(this));
 
-				subMenuEl.hide();
+		// Set up mouseover events and submenus if we detect any
+		if ($('ul.submenu:first', lis).length) {
+			lis.each((function (i, el) {
+				el = $(el);
 
-				var subMenuId = this.subMenus.length;
-				el.addClass('with-submenu');
-				el.data('submenu-id', subMenuId);
+				// Not using live because specific mouseover events are a bit snappier
+				el.mouseover(this._menuItemMouseover.bind(this));
 
-				//subMenuEl.hide();
-				subMenuConfig.parentMenu = this;
-				subMenuConfig.subMenuId = subMenuId;
-				subMenuConfig.parentMenuItem = el;
-				subMenuConfig.menuElement = subMenuEl;
-				subMenuConfig.zIndex = this.options.zIndex+1;
-				var subMenu = new DeskPRO.UI.Menu(subMenuConfig);
-				this.subMenus.push(subMenu);
+				var subMenuEl = el.children('ul.submenu:first');
+				if (subMenuEl.length) {
 
-				el.prepend($('<span class="arrow">&#x25B8;</span>'));
+					subMenuEl.hide();
 
-				if (this.options.initSubMenusNow) {
-					subMenu._initMenu();
+					var subMenuId = this.subMenus.length;
+					el.addClass('with-submenu');
+					el.data('submenu-id', subMenuId);
+
+					//subMenuEl.hide();
+					subMenuConfig.parentMenu = this;
+					subMenuConfig.subMenuId = subMenuId;
+					subMenuConfig.parentMenuItem = el;
+					subMenuConfig.menuElement = subMenuEl;
+					subMenuConfig.zIndex = this.options.zIndex+1;
+					var subMenu = new DeskPRO.UI.Menu(subMenuConfig);
+					this.subMenus.push(subMenu);
+
+					el.prepend($('<span class="arrow">&#x25B8;</span>'));
+
+					if (this.options.initSubMenusNow) {
+						subMenu._initMenu();
+					}
 				}
-			}
-		}).bind(this));
+			}).bind(this));
+		}
 
 		this.fireEvent('menuInit', { menu: this });
 
