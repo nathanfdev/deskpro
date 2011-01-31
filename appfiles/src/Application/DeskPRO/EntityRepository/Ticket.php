@@ -34,7 +34,7 @@ class Ticket extends EntityRepository
 
 		$tickets = $this->getEntityManager()->createQuery("
 			SELECT t
-			FROM DeskPRO:Ticket t
+			FROM DeskPRO:Ticket t INDEX BY t.id
 			WHERE t.id IN(" . implode(',', $ids) . ")
 			ORDER BY t.id ASC
 		")->execute();

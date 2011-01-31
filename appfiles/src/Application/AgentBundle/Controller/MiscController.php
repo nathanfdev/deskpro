@@ -46,7 +46,7 @@ class MiscController extends AbstractController
 
 	public function ajaxSavePrefsAction()
 	{
-		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'str_simple') as $pref_name => $value)
+		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value)
 		{
 			$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
 			if (!$pref) {

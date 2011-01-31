@@ -55,7 +55,7 @@ class TicketResults
 	 */
 	protected $group_display_info = null;
 
-	
+
 	/**
 	 * @return Application\AgentBundle\Controller\Helper\TicketResults
 	 */
@@ -71,7 +71,7 @@ class TicketResults
 		}
 
 		// Or if the user has their own
-		$group_by = $controller->getPerson()->getPref('agent.ui.ticket-queues-group-by.' . $queue['id']);
+		$group_by = $controller->getPerson()->getPref('agent.ui.ticket-queue-group-by.' . $queue['id']);
 		if ($group_by) {
 			$helper->setGroupField($group_by);
 		}
@@ -110,7 +110,7 @@ class TicketResults
 	}
 
 
-	
+
 	/**
 	 * Set ticket IDs for the search results
 	 * @param array $ticket_ids
@@ -121,7 +121,7 @@ class TicketResults
 	}
 
 
-	
+
 	/**
 	 * Get ticket IDs
 	 *
@@ -185,21 +185,31 @@ class TicketResults
 
 
 
-	
+
 	protected function _getPageFromTicketIds(array $ticket_ids, $page, $per_page)
 	{
 		$page_ticket_ids = Arrays::getPageChunk($ticket_ids, $page, $per_page);
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($page_ticket_ids);
+		$tickets_raw = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($page_ticket_ids);
+
+		// - We'll get a page of results, but that actual page isn't going to be
+		// sorted the way we want, because MySQL was just sent a list of ID's.
+		// - So we'll re-create the array here according to the order they're supposed to be in.
+		$tickets = array();
+		foreach ($ticket_ids as $tid) {
+			if (isset($tickets_raw[$tid])) {
+				$tickets[$tid] = $tickets_raw[$tid];
+			}
+		}
 
 		return $tickets;
 	}
 
 
-	
+
 
 	/**
 	 * Set the grouping field
-	 * 
+	 *
 	 * @param string $field
 	 */
 	public function setGroupField($field)
@@ -208,7 +218,7 @@ class TicketResults
 	}
 
 
-	
+
 	/**
 	 * Set the order by that will be used for sub-grouping. Tickets area
 	 * already sorted, so this is only used for fetching grouped results.
@@ -239,7 +249,7 @@ class TicketResults
 		return $this->group_display_info;
 	}
 
-	
+
 
 	/**
 	 * Do we have enough info to run grouping? aka if we havea group_field set

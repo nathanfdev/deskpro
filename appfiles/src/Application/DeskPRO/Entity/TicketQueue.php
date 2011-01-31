@@ -93,11 +93,11 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 		$this->_results = null;
 	}
 
-	
+
 
 	/**
 	 * Get the searcher for this.
-	 * 
+	 *
 	 * @return Application\DeskPRO\Searcher\TicketSearch
 	 */
 	public function getSearcher()
@@ -134,7 +134,7 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 		$person = App::getCurrentPerson();
 		$searcher->setPerson(App::getCurrentPerson());
 
-		$order_by = $person->getPref('agent.ui.ticket-queues-order-by.' . $this->id);
+		$order_by = $person->getPref('agent.ui.ticket-queue-order-by.' . $this->id);
 		if (!$order_by AND $this->order_by) {
 			$order_by = $this->order_by;
 		}
@@ -147,7 +147,7 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 		$searcher->enableArchiveSearch();
 
 		$this->_results = $searcher->getMatches();
-		
+
 		return $this->_results;
 	}
 
