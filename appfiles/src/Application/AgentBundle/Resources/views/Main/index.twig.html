@@ -87,10 +87,18 @@
 		<div class="group helpdesk on">
 			<ul>
 				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}"><span class="icon tickets">Tickets</span></li>
+				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}"><span class="icon tickets">Phonecall</span></li>
+				<!--
+				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}"><span class="icon tickets">SMS</span></li>
+				-->
 				<li class="chat" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon chat">Chat</span></li>
 				<li class="ideas" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon ideas">Ideas</span></li>
+				<!--
 				<li class="forums" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tickets">Q&amp;A</span></li>
+				-->
+				<!--
 				<li class="forms" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tickets">Forms</span></li>
+				-->
 			</ul>
 		</div>
 		<div class="group crm">
@@ -104,8 +112,12 @@
 			<ul>
 				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tweets">Twitter</span></li>
 				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon facebook">Facebook</span></li>
+				<!--
 				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Referrers</span></li>
+				-->
+				<!--
 				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon linkedin">LinkedIn</span></li>
+				-->
 			</ul>
 		</div>
 		<div class="group publish">
@@ -125,8 +137,10 @@
 				<ul id="create_new_menu" style="display:none">
 					<li data-route="page:{{ path('agent_ticket_new') }}">
 						<span class="icon tickets">Ticket</span>
-
+						<span class="icon tickets">Phonecall</span>
 					</li>
+					<li class="sep">-</li>
+					<li><span class="icon tweets dev-feature-inactive">Tweet</span></li>
 					<li class="sep">-</li>
 					<li><span class="icon people dev-feature-inactive">Person</span></li>
 					<li><span class="icon organizations dev-feature-inactive">Organization</span></li>
