@@ -124,7 +124,6 @@ body.is-demo #window_head > #window_head_top {
 	color: #fff;
 	font-family: Helvetica, sans-serif;
 	font-size: 11px;
-	padding-right: 15px;
 }
 
 #window_head > #window_head_top > ul.current-user a {
@@ -134,15 +133,26 @@ body.is-demo #window_head > #window_head_top {
 
 #window_head > #window_head_top > ul.current-user > li {
 	float: left;
-	margin-left: 20px;
+	margin-right: 20px;
 	padding-left: 19px;
 	background-repeat: no-repeat;
 	background-position: center left;
+	display: block;
+	line-height: 20px;
 }
 
 #window_head > #window_head_top > ul.current-user > li.person { background-image: url(../../images/icons/user.png); }
 #window_head > #window_head_top > ul.current-user > li.settings { background-image: url(../../images/icons/process.png); cursor: pointer; }
 #window_head > #window_head_top > ul.current-user > li.admin { background-image: url(../../images/icons/favorite.png); }
+#window_head > #window_head_top > ul.current-user > li.help {
+	background-image: url(../../images/icons/question_frame.png);
+	width: 16px;
+	height: 20px;
+	overflow: hidden;
+	text-indent: 100px;
+	padding: 0;
+	margin-right: 5px;
+}
 
 #powered_by {
 	position: absolute;
