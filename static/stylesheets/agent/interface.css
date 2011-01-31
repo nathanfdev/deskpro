@@ -548,6 +548,10 @@ ul.tagit input[type="text"] {
 	border-top: 2px solid #485F85;
 }
 
+.ticket-bar.expanded .bar {
+	float: right;
+}
+
 .ticket-bar .bar input[type="text"] {
 	font-size: 10px;
 	width: 300px;
@@ -559,7 +563,9 @@ ul.tagit input[type="text"] {
 }
 
 .ticket-bar .bar > ul {
-	float: right;
+	position: absolute;
+	right: 0;
+	bottom: 0;
 }
 
 .ticket-bar .bar > ul > li {
@@ -605,7 +611,7 @@ ul.tagit input[type="text"] {
 }
 
 .ticket-bar .reply {
-	height: 200px;
+	height: 140px;
 	padding: 4px;
 }
 
@@ -615,7 +621,7 @@ ul.tagit input[type="text"] {
 }
 
 .ticket-bar .reply table {
-	margin-right: 50px;
+
 }
 
 .ticket-bar .reply table td {
@@ -626,16 +632,19 @@ ul.tagit input[type="text"] {
 	font-family: Arial, sans-serif;
 
 	padding-left: 15px;
+	padding-top: 3px;
+}
+
+.ticket-bar .reply table td input {
+	margin:0;
 }
 
 .ticket-bar .reply table td:first-child {
 	padding-left: 0;
 }
 
-.ticket-bar .reply button {
-	float: right;
-	margin: 5px;
-	margin-left: 0;
+.ticket-bar .reply table tr:first-child td {
+	padding-top: 0;
 }
 
 

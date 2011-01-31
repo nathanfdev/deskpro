@@ -485,7 +485,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 			this.ticketReply.show().css({ 'height': 140 });
 			this.barWrapper.addClass('expanded');
-			this.layout.sizePane('south', 150 + this.ticketBar.outerHeight());
+			this.layout.sizePane('south', 110 + this.ticketBar.outerHeight());
 
 			$('div.placeholder', this.ticketBar).hide();
 			$('li.submit-reply.trigger:first', this.barWrapper).show();

@@ -609,7 +609,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 			this.ticketReply.show().css({ 'height': 140 });
 			this.barWrapper.addClass('expanded');
-			this.page.layout.sizePane('south', 150 + this.ticketBar.outerHeight());
+			this.page.layout.sizePane('south', 110 + this.ticketBar.outerHeight());
 
 			$('div.placeholder', this.ticketBar).hide();
 			$('div.reply-buttons', this.ticketBar).show();
