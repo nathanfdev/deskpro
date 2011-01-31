@@ -30,6 +30,8 @@ DeskPRO.Agent.Window = new Class({
 	outerLayout: null,
 	innerLayout: null,
 
+	notifier: null,
+
 	initPage: function() {
 		this._initBasic();
 		this._initRoutes();
@@ -74,6 +76,14 @@ DeskPRO.Agent.Window = new Class({
 	 */
 	getMessageBroker: function() {
 		return this.messageBroker;
+	},
+
+
+	/**
+	 * Get the notifier
+	 */
+	 getNotifier: function() {
+		return this.notifier;
 	},
 
 
@@ -564,6 +574,11 @@ DeskPRO.Agent.Window = new Class({
 		this.messageBroker = new DeskPRO.MessageBroker();
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
 			ajaxUrl: BASE_URL + 'agent/poller'
+		});
+
+		this.notifier = new DeskPRO.Agent.Notifier.Notifier({
+			notifySummaryButton: $('#notify_button'),
+			notifyList: $('#notify_list')
 		});
 
 		// Set up listener for badge count

@@ -83,6 +83,7 @@
 			<li class="admin"><a href="{{ path('admin') }}">Admin</a></li>
 			<li class="help">Help</li>
 		</ul>
+		<div id="notify_button">5 new tickets (+2 other)</div>
 	</div>
 	<div id="window_header_nav">
 		<div class="group helpdesk on">
@@ -167,6 +168,30 @@
 	<div class="buttons" style="margin-top: 30px; text-align: center;">
 		<button class="close-trigger dp-button small">Okay</button>
 	</div>
+</div>
+<div id="notify_list" style="display:none;">
+	<ul>
+		<li id="notify_list_tickets">
+			<h4>Tickets</h4>
+			<ul>
+				<li><span class="dismiss">dismiss</span><a>moved server</a>, <a>problem with script</a> and 2 others in the <a>Troubleshooting</a> queue</li>
+				<li><span class="dismiss">dismiss</span><a>questions</a> in the <a>Sales</a> queue</li>
+			</ul>
+		</li>
+		<li id="notify_list_chat">
+			<h4>Chat</h4>
+			<ul>
+				<li><span class="dismiss">dismiss</span>New chat <a>LDAP integration</a></li>
+			</ul>
+		</li>
+		<li id="notify_list_twitter">
+			<h4>Twitter</h4>
+			<ul>
+				<li><span class="dismiss">dismiss</span>3 new mentions for <a>@deskpro</a></li>
+				<li><span class="dismiss">dismiss</span>1 new direct message to <a>@deskpro</a></li>
+			</ul>
+		</li>
+	</ul>
 </div>
 
 {####################
