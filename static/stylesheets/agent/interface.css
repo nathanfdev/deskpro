@@ -569,7 +569,7 @@ ul.tagit input[type="text"] {
 }
 
 .ticket-bar .bar > ul > li {
-	line-height: 25px;
+	line-height: 26px;
 	text-shadow: 1px 0px 3px #fff;
 	filter: dropshadow(color=#ffffff, offx=0, offy=0);
 
