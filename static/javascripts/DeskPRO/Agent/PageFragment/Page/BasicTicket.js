@@ -121,7 +121,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		var list = $('.file-list', this.barWrapper);
 		$('input', list[0]).live('click', function() {
-			console.log('ere');
 			var el = $(this);
 			var li = el.parent();
 			if (el.is(':checked')) {
@@ -151,7 +150,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 				return $('<li class="uploading">' + file.name + ' <span class="cancel-trigger">Cancel</span></li>');
 			},
 			buildDownloadRow: function (file) {
-				return $('<li class="uploaded"><input type="checkbox" checked="checked" name="attach[]" value="'+ file.blob_id + '" /> <a href="'+ file.download_url + '" target="_blank">' + file.filename + '</a></li>');
+				return $('<li class="uploaded"><input type="checkbox" checked="checked" name="attach[]" value="'+ file.blob_id + '" /> <a href="'+ file.download_url + '" target="_blank">' + file.filename + '</a> <span class="size">('+file.filesize_readable+')</span></li>');
 			}
 		});
 	},

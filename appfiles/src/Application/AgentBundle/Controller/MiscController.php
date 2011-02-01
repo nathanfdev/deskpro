@@ -111,6 +111,7 @@ class MiscController extends AbstractController
 			'blob_id' => $blob['id'],
 			'download_url' => $blob->getDownloadUrl(true),
 			'filename' => $blob['filename'],
+			'filesize_readable' => $blob->getReadableFilesize()
 		));
 	}
 }
