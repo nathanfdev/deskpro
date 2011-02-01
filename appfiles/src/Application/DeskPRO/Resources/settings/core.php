@@ -5,6 +5,9 @@
 	'core.default_timezone' => 'UTC',
 
 	'core.twitter_field_id' => 2, // TODO this should be some kind of 'system field'
-	'core.website_field_id' => 3, // TODO 
+	'core.website_field_id' => 3, // TODO
+
+	'core.use_gravatar' => 1,
+	'core.use_default_gravatar' => 1,
 
 );

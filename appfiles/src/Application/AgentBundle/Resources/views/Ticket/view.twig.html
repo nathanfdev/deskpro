@@ -52,7 +52,7 @@ pageMeta.getMessageQuoteUrl = '{{ path('agent_ticket_message_ajax_getquote', {'t
 			<div style="float:right">
 				<div class="menu-trigger agent_id agent">
 					{% if ticket.agent %}
-						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ path('serve_person_picture_size', {'person_id': ticket.agent.id, 'size': 50}) }}" alt="" width="50" height="50" style="float:right; margin-left: 5px;" />
+						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ ticket.agent.getPictureUrl(50) }}" alt="" width="50" height="50" style="float:right; margin-left: 5px;" />
 					{% else %}
 						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="" alt="" width="50" height="50" style="float:right; margin-left: 5px; display:none" />
 					{% endif %}
@@ -73,7 +73,7 @@ pageMeta.getMessageQuoteUrl = '{{ path('agent_ticket_message_ajax_getquote', {'t
 
 			<div class="person-overview">
 				<div class="img">
-					<img src="{{ path('serve_person_picture_size', {'person_id': ticket.person.id, 'size': 50}) }}" alt="" width="50" height="50" />
+					<img src="{{ ticket.person.getPictureUrl(50) }}" alt="" width="50" height="50" />
 				</div>
 				<div class="info">
 					<h1>{{ticket.person.name}}</h1>

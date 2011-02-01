@@ -69,24 +69,101 @@ class BlobController extends AbstractController
 		return $response;
 	}
 
+
+
+	/**
+	 * This is a special action used in some cases where we need a similar URL to serve
+	 * all pictures. For example, in a Javascript interface we dont want to do an ajax
+	 * call just to get a URL; easier to just render or redirect right in one img request.
+	 */
 	public function personPictureAction($person_id, $size)
 	{
 		$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
 
-		if ($person['picture_blob']) {
-			$response = $this->getDownloadResponse($person['picture_blob'], array(
-				'size' => $size
-			));
+		if ($person->hasPicture()) {
+			if ($person['picture_blob']) {
+				$response = $this->getDownloadResponse($person['picture_blob'], array(
+					'size' => $size
+				));
+			} elseif ($person['gravatar_url']) {
+				$gravatar_url = $person['gravatar_url'];
+				if ($this->request->isSecure()) {
+					$gravatar_url = preg_replace('#^http:#', 'https:', $gravatar_url);
+				}
+				$response = $this->response;
+				$response->setRedirect($gravatar_url);
+			}
 		} else {
-			$gravatar_url = $person->getGravatarUrl($size, true);
-			$response = $this->response;
-			$response->setRedirect($gravatar_url);
+			$response = $this->_serveDefaultPicture($size);
 		}
 
 		$response->setExpires(date_create("+1 days"));
 		$response->setMaxAge(86400);
 		$response->setSharedMaxAge(86400);
 		$response->setPublic();
+
+		return $response;
+	}
+
+
+
+	/**
+	 * Static files
+	 */
+	public function getStaticFileAction($name)
+	{
+		$response = $this->container->get('response');
+
+		$response->setExpires(date_create("+2 years"));
+		$response->setMaxAge(31556926);
+		$response->setSharedMaxAge(31556926);
+		$response->setPublic();
+
+		switch ($name) {
+			case 'pix':
+				$gif = base64_decode(
+					'R0lGODlhAQABALMAAAAAAIAAAACAA'.
+					'ICAAAAAgIAAgACAgMDAwICAgP8AAA'.
+					'D/AP//AAAA//8A/wD//wBiZCH5BAE'.
+					'AAA8ALAAAAAABAAEAAAQC8EUAOw=='
+				);
+				$response->headers->set('Content-Type', 'image/gif; filename=pix.gif');
+				$response->headers->set('Content-Length', strlen($gif));
+				$response->setContent($gif);
+
+				return $response;
+				break;
+
+			case 'default_picture':
+				return $this->_serveDefaultPicture($this->in->getUint('s'));
+				break;
+		}
+
+		throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown name");
+	}
+
+	protected function _serveDefaultPicture($size = 80)
+	{
+		if (!$size) {
+			$size = 80;
+		}
+
+		$response = $this->container->get('response');
+
+		$response->setExpires(date_create("+2 years"));
+		$response->setMaxAge(31556926);
+		$response->setSharedMaxAge(31556926);
+		$response->setPublic();
+
+		$im = new \Imagick();
+		$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default.jpeg');
+		$im->resizeImage($size, $size, \Imagick::FILTER_LANCZOS, true);
+
+		$file = $im->getImageBlob();
+		$size = strlen($file);
+
+		$response->headers->set('Content-Length', $size);
+		$response->setContent($file);
 
 		return $response;
 	}

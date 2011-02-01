@@ -50,6 +50,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $picture_blob = null;
 
 	/**
+	 * The URL to the users gravatar if any
+	 *
+	 * @var string
+	 * @orm:Column(name="gravatar_url", type="text")
+	 */
+	protected $gravatar_url = '';
+
+	/**
 	 * Is this person a contact (someone we care about seeing)?
 	 *
 	 * @var bool
@@ -252,7 +260,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \DateTime
 	 * @orm:Column(name="date_last_login", type="datetime", nullable=true)
 	 */
-	protected $date_last_login;
+	protected $date_last_login = null;
+
+	/**
+	 * The last time the users gravatar (or other 3rd party image) was checked.
+	 *
+	 * @var \DateTime
+	 * @orm:Column(name="date_picture_check", type="datetime", nullable=true)
+	 */
+	protected $date_picture_check = null;
 
 	/**
 	 * If we have set a password for this user, then the plaintext version will be set here.
@@ -781,57 +797,115 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Gets the URL to a picture for the person.
+	 * Set the picture blob
+	 *
+	 * @param Entity\Blob $blob
+	 */
+	public function setPictureBlob(Entity\Blob $blob = null)
+	{
+		$this->picture_blob = $blob;
+	}
+
+
+
+	/**
+	 * Sets the gravatar URL
+	 *
+	 * @param string $url
+	 */
+	public function setGravatarUrl($url)
+	{
+		$this->gravatar_url = $url;
+	}
+
+
+
+	/**
+	 * Gets the URL to a picture for the person. Note that this will always return
+	 * a path to an image, even if it's the default. If you need to check for the
+	 * existance of an image, use hasPicture.
 	 *
 	 * @return null|string
 	 */
-	public function getPictureUrl($size = 80)
+	public function getPictureUrl($size = 80, $secure = null)
 	{
-		if ($this->picture_blob) {
-			return $this->picture_blob->getDownloadUrl();
+		// Null means detect
+		if ($secure === null AND App::isWebRequest()) {
+			$request = App::getRequest();
+			if ($request->isSecure()) {
+				$secure = true;
+			}
 		}
 
-		if ($this->primary_email) {
-			return 'http://www.gravatar.com/avatar/' . md5(strtolower($this->primary_email['email'])) . '?s='.$size.'&d=identicon';
+		$url = false;
+		if ($this->hasPicture()) {
+			if ($this->picture_blob) {
+				$url = App::get('router')->generate('serve_blob', array(
+					'blob_auth_id' => $this->picture_blob->getAuthId(),
+					's' => $size
+				), true);
+
+			} elseif (App::getSetting('core.use_gravatar') AND $this->gravatar_url) {
+				$url = $this->gravatar_url;
+				if ($size != 80) {
+					$url .= '&s=' . $size;
+				}
+			}
 		}
 
-		return null;
+		if (!$url) {
+			$url = App::get('router')->generate('serve_default_picture', array(
+				's' => $size
+			), true);
+		}
+
+		if ($secure) {
+			$url = preg_replace('#^http:#', 'https:', $url);
+		}
+
+		return $url;
 	}
 
 
 
 	/**
-	 * Get the URL to the locally uploaded picture
+	 * Does this user have a picture associated with their account?
 	 *
-	 * @return string
+	 * @return bool
 	 */
-	public function getLocalPictureUrl()
+	public function hasPicture($auto_check = true)
 	{
-		if ($this->picture_blob) {
-			return $this->picture_blob->getDownloadUrl();
+		if ($this->picture_blob OR $this->gravatar_url) {
+			return true;
 		}
 
-		return null;
-	}
+		// Try to auto-update gravatar
+		if (!$this->gravatar_url AND App::getSetting('core.use_gravatar')) {
+			if (!$this->gravatar_url) {
+				$url = null;
 
+				$do_autocheck = false;
+				if ($auto_check && $this->date_picture_check < date_create('-2 days')) {
+					$do_autocheck = true;
+				}
 
+				if (App::getSetting('core.use_default_gravatar') OR ($do_autocheck AND $this->primary_email->hasGravatar())) {
+					$url = $this->primary_email->getGravatarUrl();
+				}
 
-	/**
-	 * Get a gravatar URL
-	 *
-	 * @return string
-	 */
-	public function getGravatarUrl($size, $force = false)
-	{
-		if ($this->primary_email) {
-			return 'http://www.gravatar.com/avatar/' . md5(strtolower($this->primary_email['email'])) . '?s='.$size.'&d=identicon';
+				if ($url) {
+					$this->setGravatarUrl($url);
+					App::getOrm()->persist($this);
+					App::getOrm()->flush();
+				}
+			}
+
+			if ($this->gravatar_url) {
+				return true;
+			}
 		}
 
-		if ($force) {
-			return 'http://www.gravatar.com/avatar/00000000000000000000000000000000?s='.$size.'&d=identicon';
-		}
-
-		return null;
+		return false;
 	}
 
 

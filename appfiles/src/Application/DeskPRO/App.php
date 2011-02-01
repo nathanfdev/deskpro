@@ -36,6 +36,8 @@ class App
 	const SERVICE_SETTINGS        = 'deskpro.core.settings';
 	const SERVICE_SESSION         = 'session';
 	const SERVICE_ROUTER          = 'router';
+	const SERVICE_REQUEST         = 'request';
+	const SERVICE_RESPONSE        = 'response';
 	/**#@-*/
 
 	/**
@@ -288,6 +290,46 @@ class App
 	public static function getOrm()
 	{
 		return self::get(self::SERVICE_ORM);
+	}
+
+
+
+	/**
+	 * Get the request
+	 *
+	 * @return Symfony\Component\HttpFoundation\Request
+	 */
+	public static function getRequest()
+	{
+		return self::get(self::SERVICE_REQUEST);
+	}
+
+
+
+	/**
+	 * Get the response
+	 *
+	 * @return Symfony\Component\HttpFoundation\Response
+	 */
+	public static function getResponse()
+	{
+		return self::get(self::SERVICE_RESPONSE);
+	}
+
+
+
+	/**
+	 * True if this is an http request. We should have a request and response object if so.
+	 *
+	 * @return bool
+	 */
+	public static function isWebRequest()
+	{
+		if (self::has(self::SERVICE_REQUEST) AND self::has(self::SERVICE_RESPONSE)) {
+			return true;
+		}
+
+		return false;
 	}
 
 

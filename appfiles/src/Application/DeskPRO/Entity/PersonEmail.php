@@ -76,6 +76,49 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 
 
 
+	/**
+	 * Gets the gravatar URL for this email
+	 *
+	 * @return string
+	 */
+	public function getGravatarUrl()
+	{
+		$hash = strtolower(md5($this->email));
+		$url = 'http://www.gravatar.com/avatar/' . $hash . '?d=identicon';
+
+		return $url;
+	}
+
+
+
+	/**
+	 * Checks to see if the gravatar for this email address is actually a real avatar (not a default).
+	 *
+	 * @return bool
+	 */
+	public function hasGravatar()
+	{
+		static $is_real = null;
+
+		if ($is_real === null) {
+			$is_real = false;
+
+			$hash = strtolower(md5($this->email));
+			$check_url = 'http://www.gravatar.com/avatar/' . $hash . '?d=404';
+
+			$headers = @get_headers($check_url);
+			if ($headers AND !empty($headers[0])) {
+				if (strpos($headers[0], '200') !== false) {
+					$is_real = true;
+				}
+			}
+		}
+
+		return $is_real;
+	}
+
+
+
 	/** @orm:PrePersist */
 	public function incCreatedAt()
 	{

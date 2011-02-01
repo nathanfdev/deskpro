@@ -11,3 +11,11 @@ serve_person_picture_size:
   pattern: /download/person-pic/{person_id}/{size}
   defaults: { _controller: DeskPRO:Blob:personPicture, size: 80 }
   requirements: { person_id: "\d+", size: "\d+" }
+
+serve_trans_gif:
+  pattern: /download/pixel
+  defaults: { _controller: DeskPRO:Blob:getStaticFile, name: 'pixel' }
+
+serve_default_picture:
+  pattern: /download/person-pic/default
+  defaults: { _controller: DeskPRO:Blob:getStaticFile, name: 'default_picture' }
