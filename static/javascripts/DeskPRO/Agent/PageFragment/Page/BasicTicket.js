@@ -119,6 +119,18 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	_initAttachments: function() {
 		var self = this;
 
+		var list = $('.file-list', this.barWrapper);
+		$('input', list[0]).live('click', function() {
+			console.log('ere');
+			var el = $(this);
+			var li = el.parent();
+			if (el.is(':checked')) {
+				li.removeClass('unchecked');
+			} else {
+				li.addClass('unchecked');
+			}
+		});
+
 		$('form.reply-form', this.barWrapper).fileUploadUI({
 			url: this.getMetaData('uploadAttachUrl'),
 			dropZone: $('div.reply', this.barWrapper),
@@ -139,7 +151,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 				return $('<li class="uploading">' + file.name + ' <span class="cancel-trigger">Cancel</span></li>');
 			},
 			buildDownloadRow: function (file) {
-				return $('<li><input type="checkbox" checked="checked" name="attach[]" value="'+ file.blob_id + '" /> <a href="'+ file.download_url + '" target="_blank">' + file.filename + '</a></li>');
+				return $('<li class="uploaded"><input type="checkbox" checked="checked" name="attach[]" value="'+ file.blob_id + '" /> <a href="'+ file.download_url + '" target="_blank">' + file.filename + '</a></li>');
 			}
 		});
 	},
