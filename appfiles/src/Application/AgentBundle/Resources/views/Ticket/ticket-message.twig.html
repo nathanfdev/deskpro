@@ -6,7 +6,7 @@
 				{{message.person.name}}
 			</cite>
 			<span class="time">
-				<span class="edit-btn ticket-message-edit-btn"></span>
+				<span data-message-id="{{message.id}}" class="edit-btn ticket-message-edit-btn"></span>
 				submitted online (from 76.167.170.198), {{message.date_created|date('Y-m-d')}}
 			</span>
 		</div>

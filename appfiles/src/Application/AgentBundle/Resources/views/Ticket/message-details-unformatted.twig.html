@@ -1,0 +1,5 @@
+{% extends 'AgentBundle:Ticket:message-details-layout.twig.html' %}
+{% block current_page "view-unformatted" %}
+{% block content %}
+<textarea style="font-family: 'Monaco', 'Courier New', monospace; font-size: 9pt; width: 95%; height: 250px;">{{message.message_text}}</textarea>
+{% endblock %}

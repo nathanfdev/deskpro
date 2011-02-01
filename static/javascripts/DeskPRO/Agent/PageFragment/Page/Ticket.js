@@ -254,17 +254,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	messageActionsMenu: null,
 	_initMessageActionsMenu: function() {
+		var self = this;
 		this.messageActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: null,
 			menuElement: $('.ticket-message-edit-menu:first', this.wrapper),
-
-			onMenuOpened: function(data) {
-				var trigger = $(data.menu.getOpenTriggerElement());
-				trigger.css({'display': 'block'});
-			},
-			onMenuClosed: function(data) {
-				var trigger = $(data.menu.getOpenTriggerElement());
-				trigger.css({'display': ''}); //back to default
+			onItemClicked: function(info) {
+				self._doMessageAction($(info.itemEl).data('option-id'), $(info.menu.getOpenTriggerElement()).data('message-id'));
 			}
 		});
 
@@ -277,6 +272,34 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.ticket-message-edit-btn', ul).live('click', function(event) {
 			menu.openMenu(event);
 		});
+	},
+
+	_doMessageAction: function(optionId, messageId) {
+		switch (optionId) {
+			case 'view-details':
+				var overlay = new DeskPRO.UI.Overlay({
+					contentMethod: 'iframe',
+					iframeUrl: this.getMetaData('viewMessageUnformattedUrl').replace('{message_id}', messageId),
+					destroyOnClose: true
+				});
+				overlay.openOverlay();
+				break;
+
+			case 'quote':
+				DeskPRO_Window.startLoadingIndicator();
+				$.ajax({
+					url: this.getMetaData('getMessageQuoteUrl').replace('{message_id}', messageId),
+					type: 'GET',
+					context: this,
+					dataType: 'json',
+					success: function(data) {
+						DeskPRO_Window.stopLoadingIndicator();
+						this.toggleReplyBar('on');
+						$('form.reply-form textarea[name="message"]:first', this.ticketReply).val(data.message_quote + "\n\n");
+					}
+				});
+				break;
+		}
 	},
 
 	_handleSendReply: function(els) {

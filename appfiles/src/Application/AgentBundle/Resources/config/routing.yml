@@ -306,6 +306,16 @@ agent_ticket_ajax_save_actions:
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveActions }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_message_unformatted:
+  pattern: /tickets/{ticket_id}/message-details/{message_id}/unformatted
+  defaults: { _controller: AgentBundle:Ticket:viewUnformattedMessage }
+  requirements: { ticket_id: "\d+", message_id: "\d+" }
+
+agent_ticket_message_ajax_getquote:
+  pattern: /tickets/{ticket_id}/message-details/{message_id}/ajax-get-quote
+  defaults: { _controller: AgentBundle:Ticket:ajaxGetMessageQuote }
+  requirements: { ticket_id: "\d+", message_id: "\d+" }
+
 ################################################################################
 # Twitter
 ################################################################################

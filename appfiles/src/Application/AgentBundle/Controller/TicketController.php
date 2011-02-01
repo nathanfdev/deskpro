@@ -395,6 +395,33 @@ class TicketController extends AbstractController
 
 
 	############################################################################
+	# view-message-details
+	############################################################################
+
+	public function viewUnformattedMessageAction($message_id)
+	{
+		$message = App::getEntityRepository('DeskPRO:TicketMessage')->find($message_id);
+
+		return $this->render('AgentBundle:Ticket:message-details-unformatted.twig.html', array(
+			'message' => $message,
+			'ticket' => $message['ticket']
+		));
+	}
+
+	public function ajaxGetMessageQuoteAction($message_id)
+	{
+		$message = App::getEntityRepository('DeskPRO:TicketMessage')->find($message_id);
+
+		$message_quote = wordwrap($message->getMessageText(), 75, "\n", true);
+		$message_quote = preg_replace('#^#m', "> ", $message_quote);
+
+		return $this->createJsonResponse(array(
+			'message_id' => $message['id'],
+			'message_quote' => $message_quote
+		));
+	}
+
+	############################################################################
 
 	/**
 	 * @return Application\DeskPRO\Entity\Ticket
