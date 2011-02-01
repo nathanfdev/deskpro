@@ -114,7 +114,7 @@ pageMeta.uploadAttachUrl = '{{ path('agent_accept_upload') }}';
 			<tbody>
 				{% for ticket_attach in ticket.attachments %}
 					<tr>
-						<td><a href="{{ path('agent_show_blob', {'blob_id': ticket_attach.blob_id}) }}" target="_blank">{{ticket_attach.blob.filename}}</a></td>
+						<td><a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a></td>
 						<td>{{ticket_attach.blob.filesize}} bytes</td>
 					</tr>
 				{% endfor %}
