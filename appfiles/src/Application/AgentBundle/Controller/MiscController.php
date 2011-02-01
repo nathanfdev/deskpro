@@ -37,6 +37,10 @@ class MiscController extends AbstractController
 			$this->generateUrl('serve_person_picture_size', array('person_id' => '000', 'size' => '111'))
 		)) . ';';
 
+		// Data
+		$js[] = 'window.DESKPRO_DATA_REGISTRY = {}';
+		$js[] = 'window.DESKPRO_DATA_REGISTRY.ticketDepToCatMap = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->departmentToCategoryMap()) . ';';
+
 		$js = implode("\n", $js);
 
 		$response = $this->response;

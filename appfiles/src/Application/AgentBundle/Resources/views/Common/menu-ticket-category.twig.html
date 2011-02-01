@@ -1,12 +1,12 @@
 <ul class="menu category_id {{add_classname}}" data-option-name="category_id" style="display:none">
 	{% for cat in categories %}
 		{% if last_with_child %}
-			<li class="sep" class="cat-{{cat.id}}">-</li>
+			<li data-option-id="{{cat.id}}" class="sep cat-{{cat.id}}">-</li>
 		{% endif %}
 		{% if cat.children %}
 			<li data-option-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
 			{% for subcat in cat.children %}
-				<li data-option-id="{{subcat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
+				<li data-option-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
 			{% endfor %}
 			{% set last_with_child = true %}
 		{% else %}

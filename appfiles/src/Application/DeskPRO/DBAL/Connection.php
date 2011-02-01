@@ -22,7 +22,7 @@ class Connection extends \Doctrine\DBAL\Connection
 
 	/**
 	 * Gets the max packet size.
-	 * 
+	 *
 	 * @return int
 	 */
 	public function getMaxPacketSize()
@@ -36,7 +36,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	}
 
 
-	
+
 	/**
 	 * Execute a query and return all results indexed with the specified column.
 	 *
@@ -69,7 +69,7 @@ class Connection extends \Doctrine\DBAL\Connection
 	 * @param string $group_key
 	 * @param string $index_key
 	 */
-	public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null)
+	public function fetchAllGrouped($statement, array $params = array(), $group_key, $index_key = null, $col_key = null)
 	{
 		$statement = $this->executeQuery($statement, $params);
 		$array = array();
@@ -77,10 +77,15 @@ class Connection extends \Doctrine\DBAL\Connection
 		while ($row = $statement->fetch(PDO::FETCH_ASSOC)) {
 			if (!isset($array[$row[$group_key]])) $array[$row[$group_key]] = array();
 
+			$val = $row;
+			if ($col_key !== null) {
+				$val = $row[$col_key];
+			}
+
 			if ($index_key !== null) {
-				$array[$row[$group_key]][$row[$index]] = $row;
+				$array[$row[$group_key]][$row[$index]] = $val;
 			} else {
-				$array[$row[$group_key]][] = $row;
+				$array[$row[$group_key]][] = $val;
 			}
 		}
 

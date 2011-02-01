@@ -39,6 +39,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
+		this.changeManager.addEvent('changesApplied', this.handleTicketChanges.bind(this));
 
 		window.TICKET = this;
 
@@ -59,6 +60,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
 			this._handleResize()
 		}).bind(this));
+
+		this.handleTicketChanges();
 	},
 
 	_handleResize: function() {
@@ -155,94 +158,31 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		});
 	},
 
-	/*
-	_initTicketAttach: function() {
-
-		$('.ticket-attach-upload-btn', this.wrapper).click((function() {
-			this.openAttachOverlay();
-		}).bind(this));
-	},
-
-	openAttachOverlay: function() {
-		if (!this._initAttachOverlay()) {
-			return;
-		}
-
-		this.ticketAttachOverlay.openOverlay();
-	},
-
-	ticketAttachOverlay: null,
-	hasInitAttachOverlay: false,
-	_initAttachOverlay: function() {
-
-		if (this.hasInitAttachOverlay) {
-			return true;
-		}
-
-		this.hasInitAttachOverlay = true;
-
-		this.ticketAttachOverlay = new DeskPRO.UI.Overlay({
-			contentElement: $('.ticket-attach.overlay:first', this.wrapper),
-			customClassname: 'no-pad'
-		});
-
-		var self = this;
-
-		$(".ticket-attach-widget", this.wrapper).pluploadQueue({
-			// General settings
-			runtimes : 'flash,silverlight,browserplus,html5',
-			url : BASE_URL + 'agent/misc/accept-upload',
-			chunk_size : '1mb',
-			unique_names : true,
-			multiple_queues: true,
-
-			// Flash settings
-			flash_swf_url : ASSETS_BASE_URL + 'javascripts/plupload/plupload.flash.swf',
-
-			// Silverlight settings
-			silverlight_xap_url : ASSETS_BASE_URL + 'javascripts/plupload/plupload.silverlight.xap',
-
-			init: {
-				Error: function(up, args) {
-					console.warn('[Upload Error] %o', args);
-				},
-				FileUploaded: function(up, file, info) {
-					console.info('[Upload Done] %o %o', file, info);
-					var name = 'attach['+file.id+']';
-					var html = '<li><input type="checkbox" name="'+name+'[save]" value="1" checked="checked" />';
-					html += '<input type="hidden" name="'+name+'[name]" value="'+file.name+'" />';
-					html += '<input type="hidden" name="'+name+'[tmp_name]" value="'+file.target_name+'" />';
-					html += ' ' + file.name + '</li>';
-					$('.ticket-newreply-attach-list', self.wrapper).append(html);
-				}
-			}
-		});
-
-		return true;
-	},
-	*/
-
 	//#################################################################
 	//# Ticket options menus
 	//#################################################################
 
 	ticketOptionsMenus: {},
+	ticketOptionsMenuEls: {},
 	_initTicketOptionsMenus: function() {
 		var options = ['department_id', 'category_id', 'product_id', 'priority_id', 'status', 'agent_id', 'agent_team_id'];
 		var self = this;
 
 		for (var i = 0; i < options.length; i++) {
 			var opt = options[i];
+			var menuEl = $('.menu.'+opt+':first', this.wrapper);
+
 			var btnClass = '.menu-trigger.'+opt+':first';
 			var btnEl = $(btnClass, this.wrapper);
 			var menu = new DeskPRO.UI.Menu({
 				triggerElement: btnEl,
-				menuElement: $('.menu.'+opt+':first', this.wrapper),
+				menuElement: menuEl,
 				onItemClicked: function(info) {
 					self._handleTicketOptionClick(info);
 				}
 			});
 			this.ticketOptionsMenus[opt] = menu;
+			this.ticketOptionsMenuEls[opt] = menuEl;
 			this.destroyMenus.push(menu);
 
 			// And if its a no-value, update the proper title
@@ -258,6 +198,38 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		var prop = this.getPropertyManager(opt);
 		this.changeManager.setInstantChange(prop, itemId);
+	},
+
+	handleTicketChanges: function() {
+		// When department is updated, we have to update display
+		// options for category
+
+		var map = DeskPRO_Window.getData('ticketDepToCatMap');
+
+		var depProperty = this.getPropertyManager('department_id');
+		var depId = depProperty.getValue();
+
+		var catProperty = this.getPropertyManager('category_id');
+		var catId = catProperty.getValue();
+
+		var validCatIds = [];
+		if (map[depId]) {
+			validCatIds = map[depId];
+		}
+
+		if (!validCatIds.contains(catId)) {
+			catProperty.setValue(0);
+		}
+
+		console.log(validCatIds);
+
+		// Update the UI menu with correct
+		var catMenuList = this.ticketOptionsMenuEls['category_id'];
+
+		$('li', catMenuList).hide();
+		Array.each(validCatIds, function(id) {
+			$('.cat-'+id, catMenuList).show();
+		});
 	},
 
 	//#################################################################

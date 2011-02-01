@@ -71,7 +71,7 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 			}
 
 		} else {
-			this.getInterfaceElement().addClass('no-value').html(this.getInterfaceElement().data('no-value-label'));
+			this.getInterfaceElement().addClass('no-value').html(this.getInterfaceElement().data('no-value-label') || 'None');
 
 			if (pictureEl) {
 				pictureEl.addClass('no-value').hide();

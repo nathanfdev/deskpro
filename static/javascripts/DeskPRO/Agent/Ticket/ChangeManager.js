@@ -5,6 +5,8 @@ Orb.createNamespace('DeskPRO.Agent.Ticket');
  */
 DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
+	Implements: [Events],
+
 	ticketPage: null,
 	ticketId: null,
 	updateUrl: null,
@@ -60,13 +62,15 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 * Apply all queued changes in the interface
 	 */
 	applyChanges: function() {
-		Object.each(this.changes, function (change) {
 
+		Object.each(this.changes, function (change) {
 			var property = change[0];
 			var newValue = change[1];
 
 			this.applyChangeForProperty(property, newValue);
 		}, this);
+
+		this.fireEvent('changesApplied', { changes: this.changes });
 	},
 
 
@@ -109,6 +113,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		var data = [];
 		this._addPropertyValueToData(data, property.getName(), property.getValue());
+
+		this.fireEvent('changesApplied', { changes: [property, newValue] });
 
 		$.ajax({
 			type: 'POST',

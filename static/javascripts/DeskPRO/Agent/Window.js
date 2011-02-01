@@ -3,13 +3,10 @@ Orb.createNamespace('DeskPRO.Agent');
 /**
  * The super duper Window that connects controls from all over the interface.
  *
- * Contains "shells": A shell is a major part of the interface. Right now, and perhaps
- * always, we only have the three pane interface. But it is possible to for example,
- * completely hide the three-panes and show a totally new layout. A super-tab if you will.
+ * Contains a shared registry (perhaps not used?), global data like display names for agents
+ * and other elements, and data for things like department-to-cat maps.
  *
- * Contains a registry for global app data.
- *
- * Is responsible for "routing" and loading data. The router uses strings and decides where
+ * Is also responsible for "routing" and loading page fragments. The router uses strings and decides where
  * they should be loaded (and how). For example, "navpane:queues/", the first part says it'll
  * be a navpane fragment. The second part is a simple URL we can load via AJAX.
  */
@@ -130,6 +127,20 @@ DeskPRO.Agent.Window = new Class({
 		}
 
 		return url;
+	},
+
+
+	/**
+	 * Get data
+	 * @param name
+	 */
+	getData: function(name) {
+		if (!window.DESKPRO_DATA_REGISTRY[name]) {
+			console.warn('Unknown data name %s', name);
+			return null;
+		}
+
+		return window.DESKPRO_DATA_REGISTRY[name];
 	},
 
 

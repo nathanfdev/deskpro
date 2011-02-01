@@ -440,10 +440,38 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($id) {
 			$dep = App::getOrm()->getRepository('DeskPRO:Department')->find($id);
-			$this->department = $dep;
+			$this['department'] = $dep;
 		} else {
-			$this->department = null;
+			$this['department'] = null;
 		}
+	}
+
+	public function setDepartment(Department $dep)
+	{
+		$this->department = $dep;
+
+		if (!$this->verifyDepartmentCategory()) {
+			$this->category = null;
+		}
+	}
+
+	public function verifyDepartmentCategory()
+	{
+		if (!$this->category) {
+			return true;
+		}
+
+		$map = App::getEntityRepository('DeskPRO:TicketCategory')->departmentToCategoryMap();
+		$valid_cat_ids = array();
+		if (isset($map[$this->department['id']])) {
+			$valid_cat_ids = $map[$this->department['id']];
+		}
+
+		if (!in_array($this->category['id'], $valid_cat_ids)) {
+			return false;
+		}
+
+		return true;
 	}
 
 	public function getCategoryId()
@@ -458,8 +486,21 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($id) {
 			$cat = App::getOrm()->getRepository('DeskPRO:TicketCategory')->find($id);
-			$this->category = $cat;
+			$this['category'] = $cat;
 		} else {
+			$this['category'] = null;
+		}
+	}
+
+	public function setCategory(TicketCategory $cat = null)
+	{
+		if (!$cat) {
+			$this->category = null;
+			return;
+		}
+
+		$this->category = $cat;
+		if (!$this->verifyDepartmentCategory()) {
 			$this->category = null;
 		}
 	}
