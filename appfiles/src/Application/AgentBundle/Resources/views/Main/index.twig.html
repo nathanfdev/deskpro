@@ -169,6 +169,11 @@
 		<button class="close-trigger dp-button small">Okay</button>
 	</div>
 </div>
+<div id="status_msg" style="display:none">
+	<div class="help">(Click anywhere to hide)</div>
+	<div class="message">Some kind of status message here</div>
+	<div class="undo"><button class="dp-button x-small">Undo</button></div>
+</div>
 <div id="notify_list" style="display:none;">
 	<ul>
 		<li id="notify_list_tickets">
@@ -219,7 +224,7 @@
 		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
 
 		// Debug: auto load a ticket tab
-		window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
+		//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
 	});
 </script>
 

@@ -332,7 +332,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 	_handleMassActionsReply: function(data) {
 		DeskPRO_Window.stopLoadingIndicator();
-		console.debug(data);
+		DeskPRO_Window.showStatusMessage('Ticket changes were applied successfully');
 	},
 
 
@@ -507,6 +507,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			dataType: 'json',
 			success: function () {
 				DeskPRO_Window.stopLoadingIndicator();
+				DeskPRO_Window.showStatusMessage('Macro was applied successfully');
 			}
 		});
 	},
@@ -680,6 +681,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 	_handleSendReplySuccess: function(html) {
 
+		DeskPRO_Window.showStatusMessage('Replies were sent successfully');
 		this.toggleReplyBar('off');
 		$('textarea[name="message"]', this.ticketReply).val('');
 	}

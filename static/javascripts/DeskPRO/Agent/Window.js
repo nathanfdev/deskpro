@@ -159,6 +159,46 @@ DeskPRO.Agent.Window = new Class({
 	},
 
 
+
+	/**
+	 * Show a status message.
+	 *
+	 * @param message
+	 * @param options
+	 */
+	showStatusMessage: function(message, options) {
+		options = Object.merge({
+			undoCallback: null,
+			autoClose: 3500,
+			extraClasses: ''
+		}, options||{});
+
+		var wrap = $('#status_msg').removeAttr('class').addClass(options.extraClasses);
+		var timeoutId = null;
+		var closeFn = function() {
+			wrap.slideUp(250);
+			if (timeoutId) {
+				window.clearTimeout(timeoutId);
+			}
+		}
+		wrap.click(closeFn);
+
+		if (options.autoClose) {
+			timeoutId = closeFn.delay(options.autoClose);
+		}
+
+		$('.message:first', wrap).html(message);
+
+		if (options.undoCallback) {
+			$('.undo:first', wrap).one('click', options.undoCallback).show();
+		} else {
+			$('.undo:first', wrap).hide();
+		}
+
+		wrap.slideDown(300);
+	},
+
+
 	//#################################################################
 	//# Routes and page loading
 	//#################################################################
