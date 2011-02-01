@@ -315,24 +315,3 @@ agent_ticket_message_ajax_getquote:
   pattern: /tickets/{ticket_id}/message-details/{message_id}/ajax-get-quote
   defaults: { _controller: AgentBundle:Ticket:ajaxGetMessageQuote }
   requirements: { ticket_id: "\d+", message_id: "\d+" }
-
-################################################################################
-# Twitter
-################################################################################
-
-agent_twitter:
-  pattern: /twitter
-  defaults: { _controller: AgentBundle:Twitter:index }
-
-agent_twitter_queuespane:
-  pattern: /twitter/queues-pane
-  defaults: { _controller: AgentBundle:Twitter:queuesPane }
-
-agent_twitter_callback:
-  pattern: /twitter/callback
-  defaults: { _controller: AgentBundle:Twitter:callBack }
-
-agent_twitter_mensions:
-  pattern: /twitter/mensions/{handle}
-  defaults: { _controller: AgentBundle:Twitter:mensions }
-
