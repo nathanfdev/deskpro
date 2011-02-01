@@ -19,6 +19,7 @@ use \Doctrine\ORM\EntityRepository;
 class Department extends EntityRepository
 {
 	protected $_department_hierarchy = null;
+	protected $_department_names = null;
 	protected $_department_ids = array();
 
 	public function getDepartmentIds()
@@ -41,27 +42,44 @@ class Department extends EntityRepository
 
 		$this->_department_ids = array_keys($departments);
 
+		$this->_department_names = Arrays::flattenToIndex($departments, 'title');
+
 		$departments = Arrays::intoHierarchy($departments, null);
 		$this->_department_hierarchy = $departments;
 
 		return $departments;
 	}
 
+
+
+	/**
+	 * Gets the names for each department, indexed by department ID.
+	 *
+	 * @return array
+	 */
+	public function getDepartmentNames()
+	{
+		$this->getDepartmentsInHierarchy();
+		return $this->_department_names;
+	}
+
+
+
 	/**
 	 * Gets a flat array of department names, indexed by department ID. Children
 	 * names are separated by $sep.
-	 * 
+	 *
 	 * @return array
 	 */
-	public function getFlatDepartmentNames($sep = ' > ', $include_tops = true)
+	public function getFullDepartmentNames($sep = ' > ', $include_tops = true)
 	{
 		if ($sep === null) {
 			$sep = ' > ';
 		}
-		return $this->_getFlatDepartmentNames(array(), $this->getDepartmentsInHierarchy(), $sep, $include_tops);
+		return $this->_getFullDepartmentNames(array(), $this->getDepartmentsInHierarchy(), $sep, $include_tops);
 	}
 
-	protected function _getFlatDepartmentNames($basenames, $deps, $sep, $include_tops)
+	protected function _getFullDepartmentNames($basenames, $deps, $sep, $include_tops)
 	{
 		$names = array();
 
@@ -73,7 +91,7 @@ class Department extends EntityRepository
 				$names[$k] = implode($sep, $name);
 			}
 			if ($dep['children']) {
-				$names = Arrays::mergeAssoc($names, $this->_getFlatDepartmentNames($name, $dep['children'], $sep, $include_tops));
+				$names = Arrays::mergeAssoc($names, $this->_getFullDepartmentNames($name, $dep['children'], $sep, $include_tops));
 			}
 		}
 
@@ -81,7 +99,7 @@ class Department extends EntityRepository
 	}
 
 
-	
+
 	/**
 	 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
 	 *

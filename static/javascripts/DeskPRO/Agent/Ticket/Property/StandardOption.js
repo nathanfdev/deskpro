@@ -20,8 +20,8 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 		this.optionName = this.options.optionName;
 
 		switch (this.optionName) {
-			case 'department_id': this.displayNameType = 'department'; this.displayCaption = 'Department'; break;
-			case 'category_id': this.displayNameType = 'ticket_category'; this.displayCaption = 'Category'; break;
+			case 'department_id': this.displayNameType = 'department_full'; this.displayCaption = 'Department'; break;
+			case 'category_id': this.displayNameType = 'ticket_category_full'; this.displayCaption = 'Category'; break;
 			case 'product_id': this.displayNameType = 'product'; this.displayCaption = 'Product'; break;
 			case 'priority_id': this.displayNameType = 'ticket_priority'; this.displayCaption = 'Priority'; break;
 			case 'status': this.displayNameType = 'status'; this.displayCaption = 'Status'; break;

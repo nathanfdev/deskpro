@@ -288,7 +288,7 @@ class Arrays
         return $array1;
 	}
 
-	
+
 
 	/**
 	 * Goes through an array and makes sure each sub-array contains only unique items.
@@ -309,7 +309,7 @@ class Arrays
 
 		return self::_uniqueDeep($array, $sort_flags);
 	}
-	
+
 	protected static function _uniqueDeep(array $array, $sort_flags)
 	{
 		foreach ($array as $k => $v) {
@@ -756,7 +756,7 @@ class Arrays
 	}
 
 
-	
+
 	/**
 	 * Run reduceToKeys() on an array of arrays. Useful on collections for example.
 	 *
@@ -1330,7 +1330,7 @@ class Arrays
 		return $array;
 	}
 
-	
+
 
 	/**
 	 * Same as PHP's shuffle() except works on assoc arrays by maintaining
@@ -1353,7 +1353,7 @@ class Arrays
 
 		return true;
 	}
-	
+
 
 
 	/**

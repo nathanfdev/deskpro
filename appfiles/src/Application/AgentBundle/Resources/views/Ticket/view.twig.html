@@ -33,8 +33,8 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 		<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
 		<h1>
 			<span class="menu-trigger department_id department {% if not ticket.department %}no-value{% endif %}">
-				<span class="prop-val department_id" data-no-value="Choose Department">{{ticket.department.title}}</span>
-				&rsaquo;
+				<span class="prop-val department_id" data-no-value="Choose Department">{{ticket.department.full_title}}</span>
+				:
 			</span>
 			{{ticket.subject}}
 		</h1>

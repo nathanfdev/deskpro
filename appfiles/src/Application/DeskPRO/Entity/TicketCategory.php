@@ -27,10 +27,18 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="department_id", type="integer")
+	 * @var TicketCategory
+	 * @orm:OneToOne(targetEntity="TicketCategory")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
-	protected $department_id = null;
+	protected $parent = null;
+
+	/**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TicketCategory", mappedBy="parent")
+	 * @orm:OrderBy({"title" = "ASC"})
+	 */
+	protected $children = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
@@ -50,4 +58,64 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
+
+	public function __construct()
+	{
+		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+
+	/**
+	 * Get the 'full' name
+	 *
+	 * @return string
+	 */
+	public function getFullTitle($sep = null)
+	{
+		if ($sep === null) $sep = ' > ';
+
+		if (!$this->parent) {
+			return $this->title;
+		}
+
+		return $this->parent['title'] . $sep . $this->title;
+	}
+
+
+	/**
+	 * Add a child department
+	 * @param Department $department
+	 */
+	public function addChild(TicketCategory $department)
+	{
+		$department['parent'] = $this;
+		$this->children->add($department);
+	}
+
+
+	/**
+	 * Get children
+	 * @return Doctrine\Common\Collections\ArrayCollection
+	 */
+	public function getChildren()
+	{
+		if ($this->parent) {
+			// empty collection
+			return new Doctrine\Common\Collections\ArrayCollection();
+		}
+
+		return $this->children;
+	}
+
+
+
+	/**
+	 * Get all children down the entire tree
+	 *
+	 * @return array
+	 */
+	public function getAllChildren()
+	{
+		return $this->getChildren();
+	}
 }

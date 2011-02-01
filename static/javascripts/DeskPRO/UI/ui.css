@@ -76,7 +76,7 @@
 	padding: 5px 10px 5px 10px;
 }
 
-.deskpro-menu > ul > li:not(.sep):not(.elm):hover,
+.deskpro-menu > ul > li:not(.sep):not(.elm):not(.section-title):hover,
 .deskpro-menu > ul > li.hover {
 	background: #606c88;
 	background: -moz-linear-gradient(top, #606c88 0%, #3f4c6b 100%);
@@ -102,6 +102,12 @@
 
 .deskpro-menu > ul > li > span.arrow {
 	float: right;
+}
+
+.deskpro-menu > ul > li.section-title {
+	color: #cecece;
+	padding-left: 3px;
+	padding-bottom: 3px;
 }
 
 /**********************************************************************

@@ -18,32 +18,26 @@
 		<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
 	{% endfor %}
 </ul>
-<ul class="ticket-menu status" data-option-name="status" style="display:none">
+<ul class="menu status" data-option-name="status" style="display:none">
 	<li data-option-id="open">Open</li>
 	<li data-option-id="pending">Pending</li>
 	<li data-option-id="resolved">Resolved</li>
 </ul>
-<ul class="ticket-menu department_id" data-option-name="department_id" style="display:none">
-	{% for id,title in ticket_options.departments %}
-		<li data-option-id="{{id}}">{{title}}</li>
-	{% endfor %}
-</ul>
-<ul class="ticket-menu category_id" data-option-name="category_id" style="display:none">
-	{% for id,title in ticket_options.categories %}
-		<li data-option-id="{{id}}">{{title}}</li>
-	{% endfor %}
-</ul>
-<ul class="ticket-menu product_id" data-option-name="product_id" style="display:none">
+
+{% include 'AgentBundle:Common:menu-department.twig.html' with {'departments': ticket_options.departments_hierarchy} %}
+{% include 'AgentBundle:Common:menu-ticket-category.twig.html' with {'categories': ticket_options.ticket_categories_hierarchy} %}
+
+<ul class="menu product_id" data-option-name="product_id" style="display:none">
 	{% for id,title in ticket_options.products %}
 		<li data-option-id="{{id}}">{{title}}</li>
 	{% endfor %}
 </ul>
-<ul class="ticket-menu priority_id" data-option-name="priority_id" style="display:none">
+<ul class="menu priority_id" data-option-name="priority_id" style="display:none">
 	{% for id,title in ticket_options.priorities %}
 		<li data-option-id="{{id}}">{{title}}</li>
 	{% endfor %}
 </ul>
-<ul class="ticket-menu agent_id" data-option-name="agent_id" style="display:none">
+<ul class="menu agent_id" data-option-name="agent_id" style="display:none">
 	<li data-option-id="0">Unassigned</li>
 	<li data-option-id="{{person.id}}">Assign to me</li>
 	<li class="sep">-</li>
@@ -57,7 +51,7 @@
 	{% endfor %}
 </ul>
 {% if ticket_options.agent_teams %}
-<ul class="ticket-menu agent_team_id" data-option-name="agent_team_id" style="display:none">
+<ul class="menu agent_team_id" data-option-name="agent_team_id" style="display:none">
 	<li data-option-id="0">None</li>
 	{% for id,title in ticket_options.agent_teams %}
 		<li data-option-id="{{id}}">{{title}}</li>

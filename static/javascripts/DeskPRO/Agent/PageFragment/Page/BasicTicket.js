@@ -237,7 +237,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			var btnEl = $(btnClass, this.wrapper);
 			var menu = new DeskPRO.UI.Menu({
 				triggerElement: btnEl,
-				menuElement: $('.ticket-menu.'+opt+':first', this.wrapper),
+				menuElement: $('.menu.'+opt+':first', this.wrapper),
 				onItemClicked: function(info) {
 					self._handleTicketOptionClick(info);
 				}

@@ -29,10 +29,10 @@ class GroupingCounter
 	protected $this_person_id = null;
 
 
-	
+
 	/**
 	 * Get an array of counts suitable for looping in a template etc
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getDisplayArray()
@@ -48,13 +48,13 @@ class GroupingCounter
 		}
 
 		$return = array();
-		
+
 		foreach ($titles1 as $field1_id => $field1_title) {
 
 			if (!isset($counts[$field1_id])) continue;
 
 			$countinfo = $counts[$field1_id];
-			
+
 			$row = array();
 			$row['id'] = $field1_id;
 			$row['title'] = $field1_title;
@@ -83,12 +83,12 @@ class GroupingCounter
 		return $return;
 	}
 
-	
+
 
 
 	/**
 	 * Sort a display array so that the biggest counts are first
-	 * 
+	 *
 	 * @param array $display_array
 	 */
 	public function sortDisplayArray(array &$display_array)
@@ -107,10 +107,10 @@ class GroupingCounter
 
 
 
-	
+
 	/**
 	 * Get the raw counts
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getCounts()
@@ -160,11 +160,11 @@ class GroupingCounter
 		return $counts;
 	}
 
-	
+
 
 	/**
 	 * Get information about strucutred counts and titles.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getDisplayElementsArray()
@@ -241,7 +241,7 @@ class GroupingCounter
 	}
 
 
-	
+
 	/**
 	 * Get a string of id=>title for a particular field, given IDs.
 	 * Sometimes $ids is not needed (ie departments can all be fetched),
@@ -256,17 +256,17 @@ class GroupingCounter
 		$titles = null;
 		switch ($field) {
 			case 'department_id':
-				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getFlatDepartmentNames();
+				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames();
 				break;
-			
+
 			case 'category_id':
-				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getAllCategoryNames();
+				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getFullCategoryNames();
 				break;
-			
+
 			case 'priority_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 				break;
-				
+
 			default:
 				// Just make all titles the ids themselves by default,
 				// useful for things like status which might be rendered into words after
@@ -298,7 +298,7 @@ class GroupingCounter
 	}
 
 
-	
+
 	/**
 	 * Set the grouping fields.
 	 *

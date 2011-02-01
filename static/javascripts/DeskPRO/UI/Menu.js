@@ -281,9 +281,13 @@ DeskPRO.UI.Menu = new Class({
 
 		var eventData = { menu: this, event: event, itemEl: event.currentTarget, cancelClose: false };
 
-		// "element" items arent actual menu items, they some UI thing
-		// so dont close for them
-		if ($(eventData.itemEl).is('.elm')) {
+		// These elements arent selectable
+		if ($(eventData.itemEl).is('.sep, .disabled, .section-title')) {
+			return false;
+		}
+
+		// "element" items arent actual menu items, they some UI thing so dont close for them
+		if ($(eventData.itemEl).is('.elm, .sep, .section-title')) {
 			eventData.cancelClose = true;
 		}
 

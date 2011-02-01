@@ -52,6 +52,24 @@ class Department extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+
+	/**
+	 * Get the 'full' name of this department by prepending the parents name to it.
+	 *
+	 * @return string
+	 */
+	public function getFullTitle($sep = null)
+	{
+		if ($sep === null) $sep = ' > ';
+
+		if (!$this->parent) {
+			return $this->title;
+		}
+
+		return $this->parent['title'] . $sep . $this->title;
+	}
+
+
 	/**
 	 * Add a child department
 	 * @param Department $department
@@ -80,7 +98,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Get all children down the entire tree
 	 *

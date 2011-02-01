@@ -50,19 +50,11 @@
 		<li class="sep">-</li>
 		<li>
 			<span>Set Department</span>
-			<ul class="submenu">
-				{% for id,title in ticket_options.departments %}
-					<li data-option-id="standard" data-option-name="department_id" data-option-value="{{id}}">{{title}}</li>
-				{% endfor %}
-			</ul>
+			{% include 'AgentBundle:Common:menu-department.twig.html' with {'departments': ticket_options.departments_hierarchy, 'add_classname': 'submenu'} %}
 		</li>
 		<li>
 			<span>Set Category</span>
-			<ul class="submenu">
-				{% for id,title in ticket_options.categories %}
-					<li data-option-id="standard" data-option-name="category_id" data-option-value="{{id}}">{{title}}</li>
-				{% endfor %}
-			</ul>
+			{% include 'AgentBundle:Common:menu-ticket-category.twig.html' with {'categories': ticket_options.ticket_categories_hierarchy, 'add_classname': 'submenu'} %}
 		</li>
 		<li>
 			<span>Set Product</span>

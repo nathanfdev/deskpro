@@ -17,9 +17,11 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_NAME_REGISTRY = {};';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent = ' . json_encode(App::getEntityRepository('DeskPRO:Person')->getAgentNames()) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.agent_team = ' . json_encode(App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames()) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.department = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getFlatDepartmentNames(null, true)) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.department = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getDepartmentNames(null, true)) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.department_full = ' . json_encode(App::getEntityRepository('DeskPRO:Department')->getFullDepartmentNames(null, true)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.product = ' . json_encode(App::getEntityRepository('DeskPRO:Product')->getProductNames()) . ';';
-		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getAllCategoryNames()) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames()) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames(null, true)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode(App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames()) . ';';
 
 		// Common URLs
