@@ -395,12 +395,13 @@ ul.tagit input[type="text"] {
 }
 
 .ticket .messages > ul > li > .box div.info cite {
-	background: transparent url(../../images/icons/message-user.png) no-repeat center left;
-	padding-left: 15px;
+
 }
 
-.ticket .messages > ul > li.agent > .box div.info cite {
-	background: transparent url(../../images/icons/message-agent.png) no-repeat center left;
+.ticket .messages > ul > li > .box div.info img.person-picture {
+	float: left;
+	margin-right: 7px;
+	margin-top: -3px;
 }
 
 .ticket .messages > ul > li.agent > .box div.info cite {

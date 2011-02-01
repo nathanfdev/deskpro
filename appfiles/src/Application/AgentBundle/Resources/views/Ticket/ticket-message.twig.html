@@ -1,7 +1,10 @@
 <li {% if message.person.is_agent %}class="message-item agent"{%else%}class="message-item person"{%endif%}>
 	<div class="box">
 		<div class="info">
-			<cite>{{message.person.name}}</cite>
+			<img class="person-picture" src="{{ path('serve_person_picture_size', {'person_id': message.person.id, 'size': 15}) }}" alt="" />
+			<cite>
+				{{message.person.name}}
+			</cite>
 			<span class="time">
 				<span class="edit-btn ticket-message-edit-btn"></span>
 				submitted online (from 76.167.170.198), {{message.date_created|date('Y-m-d')}}
