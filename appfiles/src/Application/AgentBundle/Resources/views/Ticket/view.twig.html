@@ -1,16 +1,19 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
-pageMeta.title = '{{ticket.subject}}';
-pageMeta.ticket_id = {{ticket.id}};
-pageMeta.pageIdentity = 'ticket:{{ticket.id}}';
-pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
-pageMeta.labelsSaveUrl = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
-pageMeta.getMacroUrl = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': ticket.id }) }}?macro_id=$macro_id';
-pageMeta.saveActionsUrl = '{{ path('agent_ticket_ajax_save_actions', {'ticket_id': ticket.id }) }}';
-pageMeta.deleteTicketUrl = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
-pageMeta.uploadAttachUrl = '{{ path('agent_accept_upload') }}';
-pageMeta.viewMessageUnformattedUrl = '{{ path('agent_ticket_message_unformatted', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
-pageMeta.getMessageQuoteUrl = '{{ path('agent_ticket_message_ajax_getquote', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
+pageMeta.title         = '{{ticket.subject}}';
+pageMeta.ticket_id     = {{ticket.id}};
+pageMeta.pageIdentity  = 'ticket:{{ticket.id}}';
+
+pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete') }}';
+pageMeta.labelsSaveUrl                = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
+pageMeta.getMacroUrl                  = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': ticket.id }) }}?macro_id=$macro_id';
+pageMeta.saveActionsUrl               = '{{ path('agent_ticket_ajax_save_actions', {'ticket_id': ticket.id }) }}';
+pageMeta.deleteTicketUrl              = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
+pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
+pageMeta.viewMessageUnformattedUrl    = '{{ path('agent_ticket_message_unformatted', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
+pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getquote', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
+pageMeta.tabTicketLogUrl              = '{{ path('agent_ticket_ajaxtab_ticketlog', {'ticket_id': ticket.id}) }}';
+pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachments', {'ticket_id': ticket.id}) }}';
 </script>
 <div class="ticket-content">
 	<form class="value-form" style="display:none">
@@ -91,7 +94,7 @@ pageMeta.getMessageQuoteUrl = '{{ path('agent_ticket_message_ajax_getquote', {'t
 
 		<ul class="ticket-tabs">
 			<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
-			{% if ticket.attachments.count() %}<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>{% endif %}
+			<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
 			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
 		</ul>
 	</div>
@@ -104,27 +107,13 @@ pageMeta.getMessageQuoteUrl = '{{ path('agent_ticket_message_ajax_getquote', {'t
 		</ul>
 	</div>
 
-	<div class="tab-content attachments" data-tab-trigger=".tab-trigger.attachments">
-
-		<table class="list" cellspacing="0" width="100%">
-			<thead class="display-options-trigger">
-				<tr>
-					<th>Filename</th>
-					<th width="100">View</th>
-				</tr>
-			</thead>
-			<tbody>
-				{% for ticket_attach in ticket.attachments %}
-					<tr>
-						<td><a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a></td>
-						<td>{{ticket_attach.blob.filesize}} bytes</td>
-					</tr>
-				{% endfor %}
-			</tbody>
-		</table>
+	<div class="tab-content attachments unloaded" data-tab-trigger=".tab-trigger.attachments">
+		<div class="loading-more" style="display:block">
+			Loading attachment list ...
+		</div>
 	</div>
 
-	<div class="tab-content ticket-log" data-tab-trigger=".tab-trigger.ticket-log">
+	<div class="tab-content ticket-log unloaded" data-tab-trigger=".tab-trigger.ticket-log">
 		<div class="loading-more" style="display:block">
 			Loading ticket log ...
 		</div>

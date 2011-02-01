@@ -173,6 +173,29 @@ class TicketController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	############################################################################
+	# Ajax loaded tabs
+	############################################################################
+
+	public function ajaxTabTicketLogAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$ticket_logs = App::getOrm()->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
+
+		return $this->render('AgentBundle:Ticket:tab-ticketlog.twig.html', array(
+			'ticket_logs' => $ticket_logs
+		));
+	}
+
+	public function ajaxTabAttachmentsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		return $this->render('AgentBundle:Ticket:tab-attachments.twig.html', array(
+			'ticket' => $ticket
+		));
+	}
 
 	############################################################################
 	# ajax-save-flagged
@@ -355,24 +378,6 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse($data);
 	}
-
-
-	############################################################################
-	# ajax-ticket-log
-	############################################################################
-
-	public function ajaxTicketLogAction($ticket_id)
-	{
-		$ticket = $this->getTicketOr404($ticket_id);
-
-		$ticket_logs = App::getOrm()->getRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
-
-		return $this->render('AgentBundle:Ticket:ticketlog.twig.html', array(
-			'ticket_logs' => $ticket_logs
-		));
-	}
-
-
 
 	############################################################################
 	# ajax-get-macro-actions

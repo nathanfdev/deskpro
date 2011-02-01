@@ -13,6 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
+use \Orb\Util\Numbers;
 
 /**
  * A blob is just a pointer to data.
@@ -98,6 +99,16 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return false;
+	}
+
+
+
+	/**
+	 * Get the filesize with B, KB, GB etc suffix.
+	 */
+	public function getReadableFilesize()
+	{
+		return Numbers::filesizeDisplay($this->filesize);
 	}
 
 

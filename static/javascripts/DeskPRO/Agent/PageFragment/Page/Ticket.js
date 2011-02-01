@@ -219,33 +219,63 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			triggerElements: $('.ticket-tabs li', this.contentWrapper),
 			onTabSwitch: function(info) {
 				if (info.tabEl.is('.ticket-log')) {
-					self._loadTicketLog();
+					self._loadTicketTab_Log();
+				} else if (info.tabEl.is('.attachments')) {
+					self._loadTicketTab_Attach();
 				}
 			}
 		});
 
 	},
 
-	_loadTicketLog: function() {
+	/**
+ 	 * Resets the 'loaded' status of a tab. If there are changes somewhere,
+	 * its easiest to just reloaded the affected part the next time the user
+	 * needs to see it.
+	 */
+	unloadTicketTab: function(tab) {
+		var contentEl = $('.tab-content.' + tab, this.wrapper);
+		contentEl.html('').addClass('unloaded');
+	},
 
-		if ($('.tab-content.ticket-log', this.wrapper).data('is-loaded')) {
+	_loadTicketTab_Log: function() {
+
+		var contentEl = $('.tab-content.ticket-log', this.wrapper);
+
+		if (!contentEl.is('.unloaded')) {
 			// Already loaded
 			return;
 		}
 
 		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-ticket-log',
+			url: this.getMetaData('tabTicketLogUrl'),
 			type: 'GET',
-			context: this,
 			dataType: 'html',
 			success: function(html) {
-				this._loadTicketLogSuccess(html);
+				contentEl.html(html);
+				contentEl.removeClass('unloaded');
 			}
 		});
 	},
 
-	_loadTicketLogSuccess: function(html) {
-		$('.tab-content.ticket-log', this.wrapper).html(html).data('is-loaded', true);
+	_loadTicketTab_Attach: function() {
+
+		var contentEl = $('.tab-content.attachments', this.wrapper);
+
+		if (!contentEl.is('.unloaded')) {
+			// Already loaded
+			return;
+		}
+
+		$.ajax({
+			url: this.getMetaData('tabAttachmentsUrl'),
+			type: 'GET',
+			dataType: 'html',
+			success: function(html) {
+				contentEl.html(html);
+				contentEl.removeClass('unloaded');
+			}
+		});
 	},
 
 	//#################################################################

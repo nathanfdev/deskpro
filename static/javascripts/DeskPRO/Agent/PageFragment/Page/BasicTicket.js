@@ -561,6 +561,26 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		this.toggleReplyBar('off');
 		this.displayNewMessage(html);
+		this.afterNewReply();
+	},
+
+	afterNewReply: function() {
+		// If there are new attachments, that tab is now stale
+		if ($('.attachments-area ul.file-list li', this.ticketReply).length) {
+			this.unloadTicketTab('attachments');
+		}
+
+		// New reply means theres a ticketlog entry of course
+		this.unloadTicketTab('ticket-log');
+
+		this.resetReply();
+	},
+
+	resetReply: function() {
 		$('textarea[name="message"]', this.ticketReply).val('');
+		$('.attachments-area ul.file-list', this.ticketReply).html('');
+
+		// Make sure reply tab is selected again
+		this.replySimpleTabs.activateTab($('.reply-area.tab-trigger', this.ticketReplyTabs));
 	}
 });

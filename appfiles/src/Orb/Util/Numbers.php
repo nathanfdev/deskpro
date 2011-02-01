@@ -42,7 +42,7 @@ class Numbers
 	}
 
 
-	
+
 	/**
 	 * Check if something is somewhere within the range of two numbers.
 	 *
@@ -111,8 +111,23 @@ class Numbers
 	 */
 	public static function filesizeDisplay($bytes)
 	{
-	    if (!$bytes OR $bytes < 1) {
-	        return '0 B';
+        $parts = self::getFilesizeDisplayParts($bytes);
+		return sprintf('%.2f %s', $parts['number'], $parts['symbol']);
+	}
+
+
+
+	/**
+	 * From a filesize in bytes return an array of the largest unit symbol
+	 * and its size. If you want a string, use filesizeDisplay().
+	 *
+	 * @param  $bytes
+	 * @return array
+	 */
+	public static function getFilesizeDisplayParts($bytes)
+	{
+		if (!$bytes OR $bytes < 1) {
+			return array('number' => 0, 'symbol' => 'B');
 	    }
 
 	    $all_symbols = array('B', 'KB', 'MB', 'GB', 'TB', 'PB', 'EB', 'ZB', 'YB');
@@ -124,7 +139,11 @@ class Numbers
             $sym = $all_symbols[$exp];
         }
 
-        return sprintf('%.2f %s', $val, $sym);
+		return array(
+			'number' => $val,
+			'symbol' => $sym
+		);
+
 	}
 
 
