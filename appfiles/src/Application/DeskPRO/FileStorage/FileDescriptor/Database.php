@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 
 use \Orb\Util\Util;
 use \Orb\Util\Arrays;
+use \Orb\Util\Strings;
 
 class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 {
@@ -54,7 +55,7 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		if ($this->blob_id === null) {
 			return false;
 		}
-		
+
 		if ($this->blob_exists_cache !== null) {
 			return $this->blob_exists_cache;
 		}
@@ -92,11 +93,16 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		$this->db->beginTransaction();
 
 		if (!$this->exists()) {
+			$blob_data = array(
+				'date_created' => date('Y-m-d H:i:s'),
+				'authcode' => Strings::random(20, Strings::CHARS_KEY)
+			);
 			if ($this->blob_id !== null) {
-				$this->db->insert('blobs', array('id' => $this->blob_id));
-			} else {
-				$this->db->insert('blobs', array());
+				$blob_data['id'] = $this->blob_id;
 			}
+
+			$this->db->insert('blobs', $blob_data);
+
 			$this->blob_id = $this->db->lastInsertId();
 			$this->blob_exists_cache = true;
 
@@ -208,7 +214,7 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 
 
 
-	
+
 	/**
 	 * Close the resource once you're done with it.
 	 */

@@ -46,7 +46,7 @@ class TicketController extends AbstractController
 		$has_value = false;
 		foreach ($ticket_field_defs as $f_def) {
 			$value = !empty($ticket_data_structured[$f_def['id']]) ? $ticket_data_structured[$f_def['id']] : null;
-			
+
 			$f = $f_def->getHandler()->getFormField($value);
 			$custom_fields_form->add($f);
 
@@ -84,7 +84,7 @@ class TicketController extends AbstractController
 		));
 	}
 
-	
+
 
 	############################################################################
 	# new
@@ -181,7 +181,7 @@ class TicketController extends AbstractController
 	public function ajaxSaveFlaggedAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
-		
+
 		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
 			'ticket_id' => $ticket_id,
 			'person_id' => $this->person['id']
@@ -218,7 +218,7 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-		
+
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$ticket_field_datas = array();
 		foreach ($ticket_field_defs as $field_def) {
@@ -316,31 +316,14 @@ class TicketController extends AbstractController
 		$message['person'] = $this->person;
 		$message['message'] = $this->in->getString('message');
 
-		foreach ($this->in->getArrayValue('attach') as $info) {
+		foreach ($this->in->getArrayValue('attach') as $blob_id) {
 
-			if (!$info['save']) {
-				continue;
-			}
-
-			$path = Util::coalesce(ini_get("upload_tmp_dir"), sys_get_temp_dir()) . DIRECTORY_SEPARATOR . "dpupload/" . $info['tmp_name'];
-			$file = new \Symfony\Component\HttpFoundation\File\File($path);
-
-			$desc = App::getApi('filestorage')->createRandomPath();
-
-			$fp = fopen($path, 'r');
-			$desc->writeFromFile($fp, array(
-				'content_type' => $file->getMimeType(),
-				'filename' => $info['name']
-			));
-			fclose($fp);
-
-			$blob_id = $desc->getPath();
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
 			$attach = new Entity\TicketAttachment();
 			$attach['blob'] = $blob;
 			$attach['person'] = $this->person;
-			
+
 			$message->addAttachment($attach);
 		}
 

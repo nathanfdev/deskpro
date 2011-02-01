@@ -9,11 +9,11 @@
 		</div>
 		<div class="message">
 			{{message.message_html|raw}}
-			
+
 			{% if message.attachments.count() %}
 				<div style="text-align:right; margin-top: 10px;">
 					{% for ticket_attach in message.attachments %}
-						<a href="{{ path('agent_show_blob', {'blob_id': ticket_attach.blob_id}) }}" target="_blank">{{ticket_attach.blob.filename}}</a><br />
+						<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a><br />
 					{% endfor %}
 				</div>
 			{%endif%}

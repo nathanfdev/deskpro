@@ -1,11 +1,11 @@
 <div class="reply" style="display:none">
 	<ul class="ticket-reply-tabs" style="display:none;width: 300px">
-		<li class="tab-trigger on" data-tab-for="div.deskpro-tab.reply-area">Message</li>
-		<li class="tab-trigger" data-tab-for="div.deskpro-tab.attachments-area">Attachments</li>
-		<li class="tab-trigger" data-tab-for="div.deskpro-tab.cc-area">CC</li>
+		<li class="tab-trigger on message" data-tab-for="div.deskpro-tab.reply-area">Message</li>
+		<li class="tab-trigger attachments" data-tab-for="div.deskpro-tab.attachments-area">Attachments</li>
+		<li class="tab-trigger cc" data-tab-for="div.deskpro-tab.cc-area">CC</li>
 		<li class="close-trigger">Close</li>
 	</ul>
-	<form class="reply-form">
+	<form class="reply-form" method="post">
 		<div class="reply-area deskpro-tab on">
 			<textarea name="message"></textarea>
 			{% if with_ticket_context %}
@@ -46,10 +46,14 @@
 			{% endif %}
 		</div>
 		<div class="attachments-area deskpro-tab" style="display:none">
-			...
+			<div class="file-input">
+				<button class="dp-button x-small">Upload new file</button> or drag and drop files onto this area
+				<input type="file" name="file" multiple="multiple" />
+			</div>
+			<ul class="file-list"></ul>
 		</div>
 		<div class="cc-area deskpro-tab" style="display:none">
-			<input type="text" value="" /> <button class="dp-button xx-small">Add Email Address</button>
+			<input type="text" value="" /> <button class="dp-button x-small">Add Email Address</button>
 		</div>
 	</form>
 </div>

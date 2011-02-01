@@ -44,9 +44,9 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		this._initTicketOptionsMenus();
 		this._initCustomFieldsEditor();
-		this._initTicketAttach();
 
 		this._initReplyBar();
+		this._initAttachments();
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 
@@ -116,6 +116,35 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	//# Ticket attachments
 	//#################################################################
 
+	_initAttachments: function() {
+		var self = this;
+
+		$('form.reply-form', this.barWrapper).fileUploadUI({
+			url: this.getMetaData('uploadAttachUrl'),
+			dropZone: $('div.reply', this.barWrapper),
+			dropZoneEnlarge: function() {
+				self.replySimpleTabs.activateTab($('.attachments.tab-trigger', self.ticketReplyTabs));
+				self.barWrapper.addClass('upload-drop-over')
+			},
+			dropZoneReduce: function() {
+				self.barWrapper.removeClass('upload-drop-over')
+			},
+			formData: function() { return []; },
+			cancelSelector: '.cancel-trigger',
+			uploadTable: $('.file-list', this.barWrapper),
+			downloadTable: $('.file-list', this.barWrapper),
+			initProgressBar: function () { return null; },
+			buildUploadRow: function (files, index) {
+				var file = files[index];
+				return $('<li class="uploading">' + file.name + ' <span class="cancel-trigger">Cancel</span></li>');
+			},
+			buildDownloadRow: function (file) {
+				return $('<li><input type="checkbox" checked="checked" name="attach[]" value="'+ file.blob_id + '" /> <a href="'+ file.download_url + '" target="_blank">' + file.filename + '</a></li>');
+			}
+		});
+	},
+
+	/*
 	_initTicketAttach: function() {
 
 		$('.ticket-attach-upload-btn', this.wrapper).click((function() {
@@ -175,16 +204,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 					html += ' ' + file.name + '</li>';
 					$('.ticket-newreply-attach-list', self.wrapper).append(html);
 				}
-				/*
-				UploadProgress: function(up, file) {
-					console.debug('[Upload Progress] %o', file);
-				}
-				*/
 			}
 		});
 
 		return true;
 	},
+	*/
 
 	//#################################################################
 	//# Ticket options menus
@@ -313,7 +338,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this.addEvent('deactivate', function() { self.ticketReplyTabs.hide(); });
 
 		// Send reply
-		$('button.submit-trigger', this.barWrapper).click(function(ev) {
+		$('li.submit-reply.trigger:first', this.barWrapper).click(function(ev) {
 			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
 			self._sendReply();
 		});
@@ -325,7 +350,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		});
 
 		// Init ticket reply tabs
-		var simpleTabs = new DeskPRO.UI.SimpleTabs({
+		var simpleTabs = this.replySimpleTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.ticketReply,
 			triggerElements: this.ticketReplyTabs.children('li.tab-trigger')
 		});

@@ -9,7 +9,8 @@
 
 namespace Orb\FileStorage\FileDescriptor;
 
-use Orb\FileStorage;
+use \Orb\FileStorage;
+use \Orb\Util\Strings;
 
 /**
  * Working with the local filesystem
@@ -178,7 +179,7 @@ class Filesystem extends AbstractFileDescriptor
 	}
 
 
-	
+
 	/**
 	 * Read data from the file at the path.
 	 */
@@ -257,7 +258,7 @@ class Filesystem extends AbstractFileDescriptor
 		}
 	}
 
-	
+
 
 	/**
 	 * Get the path that can be used to re-create this descriptor.

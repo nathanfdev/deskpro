@@ -534,6 +534,10 @@ ul.tagit input[type="text"] {
 	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#7F92AD', endColorstr='#AEBFD1',GradientType=0 ); /* ie */
 }
 
+.ticket-bar.upload-drop-over {
+	background: #CAD1E8 !important;
+}
+
 .ticket-bar .counter {
 	text-shadow: 1px 1px 2px #F5F5F5;
 	filter: dropshadow(color=#ffffff, offx=0, offy=0);
@@ -647,6 +651,51 @@ ul.tagit input[type="text"] {
 	padding-top: 0;
 }
 
+.ticket-bar .reply .attachments-area .file-input {
+	height: 25px;
+	overflow: hidden;
+}
+
+.ticket-bar .reply .attachments-area .file-input input {
+	position: relative;
+	top: 0;
+	left: 0;
+	margin: 0;
+	border: 300px solid transparent;
+	opacity: 0;
+	-ms-filter: 'alpha(opacity=0)';
+	filter: alpha(opacity=0);
+	-o-transform: translate(-300px, -300px) scale(10);
+	-moz-transform: translate(-800px, 0) scale(10);
+	cursor: pointer;
+}
+
+.ticket-bar .reply .attachments-area .file-input button {
+	position: relative;
+	top: 0;
+	left: 0;
+}
+
+.ticket-bar .reply .attachments-area li {
+	font-size: 8pt;
+}
+
+.ticket-bar .reply .attachments-area li input[type="checkbox"] {
+	width: 10px;
+}
+
+.ticket-bar .reply .attachments-area li.uploading {
+	padding-left: 20px;
+	background: transparent url(../../images/loading-small.gif) no-repeat center left;
+	line-height: 17px;
+}
+
+.ticket-bar .reply .attachments-area li span.cancel-trigger {
+	font-size: 7pt;
+	font-style: italic;
+	cursor: pointer;
+	color: #676D73;
+}
 
 ul.ticket-reply-tabs {
 	line-height: 18px;

@@ -61,7 +61,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $content_type = null;
 
 	/**
-	 * @var int
+	 * @var string
 	 * @orm:Column(name="authcode", type="string", length="20")
 	 */
 	protected $authcode;
@@ -122,6 +122,6 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getDownloadUrl($absolute = false)
 	{
-		return App::get('router')->generate('serve_blob', 'blob_auth_id', $absolute);
+		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId()), $absolute);
 	}
 }
