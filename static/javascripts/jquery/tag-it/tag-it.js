@@ -17,13 +17,21 @@
 		if (options.enableBackspace === undefined) options.enableBackspace = true;
 		if (!options.onchange) options.onchange = function() {};
 
+		var in_init = true;
+
+		var real_onchange = options.onchange;
+		options.onchange = function() {
+			if (in_init) return;
+			return real_onchange();
+		};
+
 		// add the tagit CSS class.
 		el.addClass("tagit");
 
 		// create the input field.
 		if (options.inputFieldAppendTo == el) {
 			var tmp = $('<li class=\"tagit-new\">' + options.inputFieldHtml + '</li>');
-			el.append(tmp);	
+			el.append(tmp);
 		} else {
 			var tmp = $(options.inputFieldHtml);
 			options.inputFieldAppendTo.append(tmp);
@@ -68,7 +76,7 @@
 			var keyCode = event.keyCode || event.which;
 			// Comma/Enter/Tab are all valid delimiters for new tags
 			if (keyCode == COMMA || keyCode == ENTER || keyCode == TAB) {
-				
+
 				event.preventDefault();
 
 				var typed = tag_input.val();
@@ -138,7 +146,7 @@
 			el += "<a class=\"close\">x</a>\n";
 			el += "<input type=\"hidden\" style=\"display:none;\" value=\""+value+"\" name=\"" + options.fieldName + "[]\">\n";
 			el += "</li>\n";
-			
+
 			if (options.inputFieldAppendTo == tag_ul) {
 				var li_search_tags = tag_input.parent();
 				$(el).insertBefore (li_search_tags);
@@ -148,7 +156,7 @@
 			tag_input.val("");
 			options.onchange();
 		}
-		
+
 		this.add = function(value, label) {
 			create_choice(value, label);
 			return this;
@@ -161,7 +169,9 @@
 			});
 			return this;
 		};
-		
+
+		in_init = false;
+
 		return this;
 	};
 
