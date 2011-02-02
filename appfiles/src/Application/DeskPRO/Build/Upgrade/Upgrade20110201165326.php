@@ -13,7 +13,7 @@ class Upgrade20110201165326 extends UpgradeAbstract
 
 		try {
 			App::getDb()->exec("ALTER TABLE  `people` ADD  `gravatar_url` VARCHAR( 150 ) NOT NULL DEFAULT  '' AFTER  `picture_blob_id`");
-			App::getDb()->exec("ALTER TABLE  `people` ADD  `date_picture_check` DATETIME NULL DEFAULT NULL AFTER  `date_picture`");
+			App::getDb()->exec("ALTER TABLE  `people` ADD  `date_picture_check` DATETIME NULL DEFAULT NULL AFTER  `date_last_login`");
 		} catch (\Exception $e) {
 			$this->output->writeln("ERROR: {$e->getMessage()}");
 			return Upgrader::STEP_FAILED;
