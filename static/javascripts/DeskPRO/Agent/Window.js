@@ -621,6 +621,9 @@ DeskPRO.Agent.Window = new Class({
 
 	openTicketIds: [],
 
+	releaseTicketLocks_timeout: null,
+	releaseTicketLocks: [],
+
 	_initBasic: function() {
 		this.messageBroker = new DeskPRO.MessageBroker();
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
@@ -641,10 +644,41 @@ DeskPRO.Agent.Window = new Class({
 			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).addClass('open');
 			openTicketIds.push(data.ticketId);
 		});
-		this.getMessageBroker().addMessageListener('ticket.closed', function (data) {
+		this.getMessageBroker().addMessageListener('ticket.closed', (function (data) {
 			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).removeClass('open');
 			openTicketIds.erase(data.ticketId);
-		});
+
+			this.releaseTicketLocks.push(data.ticketId);
+			if (this.releaseTicketLocks_timeout) {
+				window.clearTimeout(this.releaseTicketLocks_timeout);
+			}
+
+			this.releaseTicketLocks_timeout = (function() {
+
+				if (!this.releaseTicketLocks.length) {
+					return;
+				}
+
+				var data = [];
+				Array.each(this.releaseTicketLocks, function(id) {
+					data.push( {
+						name: 'ticket_ids[]',
+						value: id
+					});
+				});
+				this.releaseTicketLocks = [];
+
+				$.ajax({
+					url: BASE_URL + '/agent/ticket-search/ajax-release-locks',
+					type: 'GET',
+					data: data,
+					dataType: 'json',
+					success: function(data) {
+
+					}
+				});
+			}).delay(3500, this);
+		}).bind(this));
 	},
 
 	runOpenTicketStateOnElement: function(el) {

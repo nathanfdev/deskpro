@@ -73,6 +73,13 @@ class TicketController extends AbstractController
 			$tpl = 'AgentBundle:Ticket:view-print.twig.html';
 		}
 
+		// Get or update the lock on this ticket
+		if (!$ticket->isLocked()) {
+			$ticket->setLockedByAgent($this->person);
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
+		}
+
 		return $this->render($tpl, array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,

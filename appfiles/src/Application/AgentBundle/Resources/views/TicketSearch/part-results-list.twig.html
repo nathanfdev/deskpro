@@ -1,7 +1,9 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
-	<tr class="ticket-{{ticket.id}} line-1 urgency-{{ticket.rounded_urgency}}" data-ticket-id="{{ticket.id}}">
-		<td rowspan="2" class="check-all"><input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></td>
+	<tr class="ticket-{{ticket.id}} line-1 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
+		<td rowspan="2" class="check-all">
+			<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
+		</td>
 		<td colspan="{{display_fields|length}}">
 			<abbr class="timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</abbr>
 			<span class="subject with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</span>
@@ -11,7 +13,7 @@
 			<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span></td>
 		{% endif %}
 	</tr>
-	<tr class="ticket-{{ticket.id}} line-2 urgency-{{ticket.rounded_urgency}}" data-ticket-id="{{ticket.id}}">
+	<tr class="ticket-{{ticket.id}} line-2 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
 		{% for field in display_fields %}
 			<td class="{{field}}" {% if loop.last %}style="text-align:right"{% endif %}>
 			{% if field == 'person' %}

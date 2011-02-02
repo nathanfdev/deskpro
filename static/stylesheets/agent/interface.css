@@ -150,6 +150,24 @@ ul.tagit input[type="text"] {
 	border-bottom: none !important;
 }
 
+.ticket .lock-bar {
+	background: #fefcea; /* old browsers */
+	background: -moz-linear-gradient(top, #fefcea 0%, #f1da36 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefcea), color-stop(100%,#f1da36)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#fefcea', endColorstr='#f1da36',GradientType=0 ); /* ie */
+
+	line-height: 18px;
+	overflow: hidden;
+
+	color: #000;
+	font-size: 8pt;
+	border-bottom: 1px solid #AD9E34;
+	text-align: center;
+
+	text-shadow: 1px 1px 1px #fff;
+	filter: dropshadow(color=#fff, offx=1, offy=1);
+}
+
 .ticket .ticket-top {
 	background-color: #eceef3;
 	border-bottom: 2px solid #dddddd;

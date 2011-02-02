@@ -558,6 +558,29 @@ class TicketSearchController extends AbstractController
 	}
 
 	############################################################################
+	# ajax-release-locks
+	############################################################################
+
+	public function ajaxReleaseLocksAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		App::getOrm()->beginTransaction();
+
+		foreach ($tickets as $ticket) {
+			$ticket->unlockTicket();
+			App::getOrm()->persist($ticket);
+		}
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+
+	############################################################################
 	# ajax-delete-ticket
 	############################################################################
 

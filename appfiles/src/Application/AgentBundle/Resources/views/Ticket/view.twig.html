@@ -29,7 +29,15 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 
 	<div class="ticket">
 
+	{% if ticket.is_locked %}
+		<div class="lock-bar">
+			Note: This ticket is currently locked by {{ ticket.locked_by_agent.display_name }}. You cannot make changes
+			to it until they are finisehd.
+		</div>
+	{% endif %}
+
 	<div class="ticket-top">
+
 		<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
 		<h1>
 			<span class="menu-trigger department_id department {% if not ticket.department %}no-value{% endif %}">

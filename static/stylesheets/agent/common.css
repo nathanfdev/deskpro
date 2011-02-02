@@ -385,6 +385,20 @@ table.list > thead > tr > th:first-child {
 	border-left: none;
 }
 
+table.list > tbody > tr.locked {
+	opacity: 0.4;
+}
+
+table.list > tbody > tr.locked .check-all {
+	background-image: url(../../images/icons/lock.png);
+	background-repeat: no-repeat;
+	background-position: center center;
+}
+
+table.list > tbody > tr.locked .check-all input {
+	display: none;
+}
+
 table.list > tbody > tr.line-1.hover, table.list > tbody > tr.line-2.hover, table.list > tbody > tr.line-3.hover {
 
 }

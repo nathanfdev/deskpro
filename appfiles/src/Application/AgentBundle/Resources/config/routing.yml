@@ -249,6 +249,10 @@ agent_ticketsearch_ajax_mass_reply:
   pattern: /ticket-search/ajax-mass-reply
   defaults: { _controller: AgentBundle:TicketSearch:ajaxMassReply }
 
+agent_ticketsearch_ajax_release_locks:
+  pattern: /ticket-search/ajax-release-locks
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxReleaseLocks }
+
 ################################################################################
 # Ticket
 ################################################################################

@@ -228,10 +228,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $total_to_first_reply = 0;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="locked_by_agent", type="integer")
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="locked_by_agent", referencedColumnName="id")
 	 */
-	protected $locked_by_agent = 0;
+	protected $locked_by_agent = null;
 
 	/**
 	 * @var \DateTime
@@ -611,7 +612,58 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function setLockedByAgentId($agent_id)
+	{
+		if ($agent_id) {
+			$agent = App::getOrm()->getRepository('DeskPRO:Person')->find($agent_id);
+			$this->setLockedByAgent($agent);
+		} else {
+			$this->setLockedByAgent(null);
+		}
+	}
 
+	public function setLockedByAgent(Person $agent = null)
+	{
+		$this->locked_by_agent = $agent;
+		if ($agent) {
+			$this->date_locked = new \DateTime();
+		} else {
+			$this->date_locked = null;
+		}
+	}
+
+	public function unlockTicket()
+	{
+		$this->setLockedByAgentId(null);
+	}
+
+	public function getIsLocked()
+	{
+		return $this->isLocked();
+	}
+
+	public function isLocked()
+	{
+		$lock_timeout = date_create('-' . App::getSetting('core_tickets.lock_timeout') . ' seconds');
+
+		if (!$this->locked_by_agent) {
+			return false;
+		}
+
+		// Timed out
+		if ($this->date_locked < $lock_timeout) {
+			return false;
+		}
+
+		// Check if we have a current user context,
+		// to see if its locked to us
+		$person = App::getCurrentPerson();
+		if ($person AND $this->locked_by_agent['id'] == $person['id']) {
+			return false;
+		}
+
+		return true;
+	}
 
 	/**
 	 * Gets the urgency rounded to nearest 10. Useful in ex templates to specify a color

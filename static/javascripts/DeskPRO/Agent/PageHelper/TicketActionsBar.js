@@ -161,11 +161,11 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			$('input[type="checkbox"].ticket', this.tableEl).attr('checked', false);
 			$('tr.on', this.tableEl).removeClass('on');
 		} else if (op == 'all') {
-			$('input[type="checkbox"].ticket', this.tableEl).attr('checked', true);
+			$('tr:not(.locked) input[type="checkbox"].ticket', this.tableEl).attr('checked', true);
 			$('tr', this.tableEl).addClass('on');
 		} else if (op == 'invert') {
 			$('input[type="checkbox"].ticket', this.tableEl).each(function() {
-				if ($(this).is(':checked')) {
+				if ($(this).is(':checked') && $(this).parent().parent().is(':not(.locked)')) {
 					$(this).attr('checked', false);
 					self._getRowLines($(this).parent().parent()).removeClass('on');
 				} else {
