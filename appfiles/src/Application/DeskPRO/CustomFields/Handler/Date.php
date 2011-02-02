@@ -14,16 +14,17 @@ namespace Application\DeskPRO\CustomFields\Handler;
 use \Application\DeskPRO\Entity;
 
 /**
- * Handles the text field
+ * Handles the date field
  */
-class Text extends HandlerAbstract
+class Date extends HandlerAbstract
 {
 	public function getFormField(array $data = null)
 	{
 		$field = new \Symfony\Component\Form\TextField($this->getFormFieldName());
 
 		if ($data AND !empty($data['value'])) {
-			$field->setData($data['value']);
+			$date = date('Y-m-d', $data['value']);
+			$field->setData($date);
 		}
 
 		return $field;
@@ -36,6 +37,7 @@ class Text extends HandlerAbstract
 		$value = null;
 		if (!empty($form_data[$name])) {
 			$value = $form_data[$name];
+			$value = strtotime($value);
 		}
 
 		return array(

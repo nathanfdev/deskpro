@@ -1,6 +1,6 @@
-{% set section %}{% block section %}{% endblock %}{% endset %}
+{% if not section %}{% set section %}{% block section %}{% endblock %}{% endset %}{% endif %}
+{% if not sub_section %}{% set sub_section %}{% block sub_section %}{% endblock %}{% endset %}{% endif %}
 {% if not section %}{% set section = 'setup' %}{% endif %}
-{% set sub_section %}{% block sub_section %}{% endblock %}{% endset %}
 {% if not sub_section %}{% set sub_section = 'settings' %}{% endif %}
 <!DOCTYPE html>
 <html>
@@ -13,7 +13,7 @@
 	<link rel="stylesheet" href="{{ asset('javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css') }}" type="text/css" media="screen"  />
 	<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{{ asset('javascripts/jquery/tipTip/tipTip.css') }}" type="text/css" media="screen"  />
-	
+
 	<link rel="stylesheet" href="{{ asset('stylesheets/agent/common.css') }}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{{ asset('stylesheets/agent/ui-layout.css') }}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{{ asset('stylesheets/agent/window-elements.css') }}" type="text/css" media="screen" />
@@ -46,7 +46,7 @@
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Form/RuleBuilder.js') }}"></script>
 
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/MessageBroker.js') }}"></script>
-	
+
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Window.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/Basic.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/SettingsLabels.js') }}"></script>
@@ -58,18 +58,18 @@
 
 		function _win_exec() {
 			window.DeskPRO_Window = new DeskPRO.Admin.Window();
-			
+
 			if (window._page_exec) {
 				_page_exec();
 			}
-			
+
 			if (window.DeskPRO_Page) {
 				DeskPRO_Page.initPage();
 			}
 		}
-		
+
 		{% block html_headjs_load %}{% endblock %}
-		
+
 		$(document).ready(function() {
 			_win_exec();
 		});
@@ -126,7 +126,7 @@
 		<div class="group tickets {% if section == "tickets" %}on{% endif %}">
 			<ul>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Business Rules</span></li>
-				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Fields</span></li>
+				<li {% if sub_section == 'fields' %}class="on"{% endif %}><a class="icon tickets" href="{{ path('admin_customdeftickets') }}">Fields</a></li>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Queues</span></li>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Macros</span></li>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Export</span></li>

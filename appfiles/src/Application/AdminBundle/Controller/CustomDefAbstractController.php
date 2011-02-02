@@ -30,7 +30,9 @@ abstract class CustomDefAbstractController extends AbstractController
 	{
 		parent::init();
 
-		$this->tplvars['route_basename'] = $this->route_basename = 'admin_' . \strtolower(str_replace('Controller', '', Util::getBaseClassname($this))) . '_';
+		$this->tplvars['route_basename'] = $this->route_basename = 'admin_' . strtolower(str_replace('Controller', '', Util::getBaseClassname($this))) . '_';
+		$this->tplvars['section'] = strtolower(str_replace(array('CustomDef', 'Controller'), '', Util::getBaseClassname($this)));
+		$this->tplvars['sub_section'] = 'fields';
 	}
 
 	############################################################################
@@ -151,7 +153,7 @@ abstract class CustomDefAbstractController extends AbstractController
 	}
 
 
-	
+
 	/**
 	 * Get the proper path for a template with this controller.
 	 *

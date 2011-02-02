@@ -19,7 +19,7 @@ use Orb\Util\Util;
 
 /**
  * Creates an admin handler based off of a particular form field.
- * 
+ *
  * @static
  */
 class Factory
@@ -35,24 +35,13 @@ class Factory
 
 		$base_classname = Util::getBaseClassname($form_field['handler_class']);
 
-		switch ($base_classname) {
-			case 'Text':
-				$handler = new \Application\AdminBundle\CustomField\AdminHandler\Text($form_field);
-				break;
+		// The handler classname should be the same basename, but different namespace
+		$handler_classname = 'Application\\AdminBundle\\CustomField\\AdminHandler\\' . $base_classname;
 
-			case 'Textarea':
-				$handler = new \Application\AdminBundle\CustomField\AdminHandler\Textarea($form_field);
-				break;
-
-			case 'Choice':
-				$handler = new \Application\AdminBundle\CustomField\AdminHandler\Choice($form_field);
-				break;
-
-			case 'MultipleChoice':
-				$handler = new \Application\AdminBundle\CustomField\AdminHandler\MultipleChoice($form_field);
-				break;
+		if (class_exists($handler_classname)) {
+			$handler = new $handler_classname($form_field);
 		}
-		
+
 		if (!$handler) {
 			throw new \InvalidArgumentException("Unknown AdminHandler for {$form_field['handler_class']}");
 		}

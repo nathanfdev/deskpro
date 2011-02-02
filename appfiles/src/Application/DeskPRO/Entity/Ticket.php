@@ -372,7 +372,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @param mixed $value
 	 * @return mixed
 	 */
-	public function setCustomData($field_id, $value)
+	public function setCustomData($field_id, $value_type, $value)
 	{
 		$custom_data = $this->getCustomDataForField($field_id);
 		if (!$custom_data) {
@@ -389,7 +389,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			return null;
 		}
 
-		$custom_data->setData($value);
+		$custom_data[$value_type] = $value;
 		$this->addCustomData($custom_data);
 
 		return $custom_data;

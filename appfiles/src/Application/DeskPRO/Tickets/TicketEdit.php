@@ -81,12 +81,12 @@ class TicketEdit
 
 	public function setCustomDataAll(array $ticket_field_datas)
 	{
-		foreach ($ticket_field_datas as $field_id => $value) {
-			$this->setCustomData($field_id, $value);
+		foreach ($ticket_field_datas as $info) {
+			$this->setCustomData($info[0], $info[1], $info[2]);
 		}
 	}
 
-	public function setCustomData($field_id, $value)
+	public function setCustomData($field_id, $value_type, $value)
 	{
 		$custom_data = $this->ticket->getCustomDataForField($field_id);
 		if (!$custom_data) {
@@ -104,7 +104,7 @@ class TicketEdit
 			return null;
 		}
 
-		$custom_data->setData($value);
+		$custom_data[$value_type] = $value;
 		$this->ticket->addCustomData($custom_data);
 
 		return $custom_data;

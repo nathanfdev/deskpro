@@ -12,9 +12,9 @@
 namespace Application\AdminBundle\CustomField\AdminHandler;
 
 /**
- * Handles editing and creating text field definitions
+ * Email address type
  */
-class Textarea extends Text
+class TextEmail extends Text
 {
 
 }

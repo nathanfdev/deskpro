@@ -33,7 +33,7 @@ abstract class HandlerAbstract
 		$this->field_def = $field_def;
 	}
 
-	
+
 
 	/**
 	 * Get the standard name/ID for this element in an HTML form.
@@ -105,7 +105,7 @@ abstract class HandlerAbstract
 	}
 
 
-	
+
 	/**
 	 * Get the form field
 	 *
@@ -114,27 +114,14 @@ abstract class HandlerAbstract
 	abstract function getFormField(array $data = null);
 
 
-	
+
 	/**
 	 * Get data from a posted form that we'll store in the database.
 	 *
-	 * This must return an array of field_id=>value.
+	 * This must return an array of array(field_id, type, value)
 	 * If no value is set, then use null.
 	 *
 	 * @return array
 	 */
 	abstract function getDataFromForm(array $form_data);
-
-
-	
-	/**
-	 * Gets the data storage type used for this data. Mostly this will be string,
-	 * but some fields are integers and can benefit if the database stores them as such.
-	 *
-	 * @return string
-	 */
-	public function getStorageDataType()
-	{
-		return 'string';
-	}
 }

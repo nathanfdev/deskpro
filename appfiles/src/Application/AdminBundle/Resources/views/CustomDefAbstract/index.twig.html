@@ -1,40 +1,31 @@
 {% extends 'AdminBundle::layout.twig.html' %}
 {% block content %}
 
-<div class="block" id="block-tables">
-	<div class="content">
-		<div style="float: right; padding: 5px 5px 0 0;">
-			<a href="{{ path(route_basename~'new_choosetype') }}" class="button">
-				<img src="{{ asset('images/icons/tick.png') }}" alt="New Field" /> Create New Field
-			</a>
-		</div>
-		<h2 class="title">Fields</h2>
-		<div class="inner">
-			<table class="table">
-				<tr>
-					<th class="first" width="10">ID</th>
-					<th>Title</th>
-					<th>Type</th>
-					<th width="250">&nbsp;</th>
-				</tr>
-				{% for field in fields %}
-					<tr>
-						<td width="10">{{field.id}}</td>
-						<td>{{field.title}}</td>
-						<td>{{field.handler_class}}</td>
-						<td width="50" style="text-align: right;">
-							<a href="{{ path(route_basename~'edit', ['field_id': field.id]) }}">Edit</a>
-						</td>
-					</tr>
-				{% else %}
-					<tr>
-						<td colspan="4">You have no fields defined</td>
-					</tr>
-				{% endfor %}
-			</table>
-		</div>
-	</div>
+<div style="text-align: right">
+	<a class="dp-button green" href="{{ path(route_basename~'new_choosetype') }}">Create New Field</a>
+	<br /><br />
 </div>
+
+<ul class="item-list">
+	{% for field in fields %}
+		<li>
+			<div style="float:right">
+				<ul class="controls">
+					<li class="edit"><a href="{{ path(route_basename~'edit', {'field_id': field.id}) }}">Edit</a></li>
+				</ul>
+			</div>
+			<div style="float:left;">#{{field.id}}</div>
+			<div style="margin-left: 65px">
+				<strong>{{field.title}}</strong>
+				<div style="font-size: 90%">{{field.handler_class}}</div>
+			</div>
+		</li>
+	{% else %}
+		<li>
+			You have no custom fields defined.
+		</li>
+	{% endfor %}
+</ul>
 
 {% endblock %}
 {% block sidebar %}

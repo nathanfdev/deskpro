@@ -1,43 +1,29 @@
 {% extends 'AdminBundle::layout.twig.html' %}
 {% block content %}
 
-{% set form_url %}{{ path(route_basename~'edit', ['field_id': field.id|default(0)]) }}{% endset %}
+{% set form_url %}{{ path(route_basename~'edit', {'field_id': field.id|default(0)}) }}{% endset %}
 
-{{form.renderFormTag(['action': form_url, 'method':'POST'])|raw}}
+{{form.renderFormTag({'action': form_url, 'method':'POST'})|raw}}
 {{form.renderHiddenTags()|raw}}
 
 {% block edit_properties %}
-<div class="block" id="block-tables">
-	<div class="content">
-		<h2 class="title">Field Properties</h2>
-		<div class="inner">
-			<table class="table">
-				<tr class="even">
-					<td>Type</td>
-					<td>{{field.handler_class}}</td>
-				</tr>
-				<tr>
-					<td>Title</td>
-					<td>{{form.field_properties.title.render()|raw()}}</td>
-				</tr>
-			</table>
-		</div>
+<div class="form-panel">
+	<div class="row">
+		<label>Type</label>
+		{{field.handler_class}}
+	</div>
+
+	<div class="row">
+		<label>Title</label>
+		{{form.field_properties.title.render()|raw()}}
 	</div>
 </div>
 {% endblock %}
 
 {% block custom_form %}{% endblock %}
 
-<div class="block">
-	<div class="content">
-		<div class="innter" style="padding: 10px">
-			<div class="group navform wat-cf">
-				<button class="button" type="submit">
-					<img src="{{ asset('images/icons/tick.png') }}" alt="Save" /> Save
-				</button>
-			</div>
-		</div>
-	</div>
+<div style="margin-top: 15px; text-align: center;">
+	<button class="dp-button green" type="submit">Save</button>
 </div>
 
 </form>

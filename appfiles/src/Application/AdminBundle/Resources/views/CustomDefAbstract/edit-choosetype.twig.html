@@ -1,57 +1,68 @@
 {% extends 'AdminBundle::layout.twig.html' %}
 {% block content %}
 
-<div class="block" id="block-tables">
-	<div class="content">
-		<h2 class="title">Field Types</h2>
-		<div class="inner">
-			<form action="{{ path(route_basename~'edit', ['field_id': 0]) }}" class="form">
-				<table class="table">
-					<tr>
-						<th class="first" width="10">&nbsp;</th>
-						<th>Type</th>
-					</tr>
-					<tr class="even">
-						<td><input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Text" /></td>
-						<td>
-							<strong>Text</strong><br />
-							This is a simple one-line text box
-						</td>
-					</tr>
-					<tr class="even">
-						<td><input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Textarea" /></td>
-						<td>
-							<strong>Textarea</strong><br />
-							This is a multi-line textarea.
-						</td>
-					</tr>
-					<tr class="even">
-						<td><input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Choice" /></td>
-						<td>
-							<strong>Choice</strong><br />
-							This field lets the user choose one or more pre-defined options. This field can be rendered
-							as a drop-down select box, a series of radio buttons, or a series of checkboxes.
-						</td>
-					</tr>
-					<tr class="even">
-						<td><input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\MultipleChoice" /></td>
-						<td>
-							<strong>Multiple Choice</strong><br />
-							This field presents multiple pre-defiend choices to a user, and lets the user choose amongst them.
-						</td>
-					</tr>
-				</table>
-				<div class="actions-bar wat-cf">
-					<div class="actions">
-						<button class="button" type="submit">
-							Choose Type
-						</button>
-					</div>
-				</div>
-			</form>
+<h1>Choose Type</h1>
+<p>Choose which kind of form field you want to define.</p>
+
+<br /><br />
+
+<form action="{{ path(route_basename~'edit', {'field_id': 0}) }}" class="form">
+
+<ul class="item-list">
+	<li>
+		<div style="float:left">
+			<input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Text" />
 		</div>
-	</div>
+		<div style="margin-left: 50px;">
+			<strong>Text</strong><br />
+			This is a simple one-line text box. There are also some specialty types:<br />
+			<input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\TextUrl" /> URL<br />
+			<input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\TextEmail" /> Email addres<br />
+		</div>
+	</li>
+	<li>
+		<div style="float:left">
+			<input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Textarea" />
+		</div>
+		<div style="margin-left: 50px;">
+			<strong>Textarea</strong><br />
+			This is a multi-line text box that can be used for longer entries like descriptions or notes.
+		</div>
+	</li>
+	<li>
+		<div style="float:left">
+			<input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Choice" />
+		</div>
+		<div style="margin-left: 50px;">
+			<strong>Choice</strong><br />
+			This is a drop-down select box or radio buttons that let a user choose from a set of predefined options.
+		</div>
+	</li>
+	<li>
+		<div style="float:left">
+			<input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\ChoiceMulti" />
+		</div>
+		<div style="margin-left: 50px;">
+			<strong>Mulitple Choice</strong><br />
+			This is a select box or group of checkboxes that let a user choose multiple values from a set of predefined options.
+		</div>
+	</li>
+	<li>
+		<div style="float:left">
+			<input type="radio" name="formfield[handler_class]" value="Application\DeskPRO\CustomFields\Handler\Date" />
+		</div>
+		<div style="margin-left: 50px;">
+			<strong>Date</strong><br />
+			Thie date field lets you select a date using a calendar widget.
+		</div>
+	</li>
+</ul>
+
+<div style="margin-top: 15px; text-align: center">
+	<button class="dp-button">Continue</button>
 </div>
+
+</form>
 
 {% endblock %}
 {% block sidebar %}

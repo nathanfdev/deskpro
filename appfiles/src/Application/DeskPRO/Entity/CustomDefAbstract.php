@@ -46,7 +46,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * MUST BE IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="CustomDefXXX", mappedBy="parent_id")
+	 * @orm:OneToMany(targetEntity="CustomDefXXX", mappedBy="parent_id", cascade={"persist", "remove", "merge"})
 	 */
 	//protected $children = null;
 
@@ -67,7 +67,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="handler_class", type="string", length=255, nullable=true)
 	 */
-	protected $handler_class;
+	protected $handler_class = null;
 
 	/**
 	 * Options for the field
@@ -75,16 +75,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="options", type="array")
 	 */
 	protected $options = array();
-
-	/**
-	 * Field children
-	 *
-	 * MUST BE IMPLEMENT IN CHILD CLASS
-	 *
-	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="FormField", mappedBy="parent_id")
-	 */
-	//protected $field_children = null;
 
 	/**
 	 * @var Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
@@ -96,6 +86,49 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
 	}
+
+
+
+	/**
+	 * Add a child to this field
+	 *
+	 * @param CustomDefAbstract $def
+	 */
+	public function addChild(CustomDefAbstract $def)
+	{
+		$this->children->add($def);
+		$def['parent'] = $this;
+	}
+
+
+
+	/**
+	 * Remove a child field
+	 *
+	 * @param CustomDefAbstract $def
+	 */
+	public function removeChild(CustomDefAbstract $def)
+	{
+		$this->children->removeElement($def);
+	}
+
+
+
+	/**
+	 * Remove a child based on the childs field id
+	 *
+	 * @param int $def_id
+	 */
+	public function removeChildId($def_id)
+	{
+		foreach ($this->children as $k => $v) {
+			if ($v['id'] == $def_id) {
+				$this->children->remove($k);
+				return;
+			}
+		}
+	}
+
 
 
 	/**
@@ -120,20 +153,54 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_handler_instance;
 	}
 
-	
+
 
 	/**
 	 * Get an array of all IDs from this def and down.
 	 *
 	 * @return array
 	 */
-	public function getHierarchyIds()
+	public function getAllChildIds()
 	{
 		$ids = array($this->id);
 		foreach ($this->children as $child) {
-			$ids = array_merge($ids, $child->getHierarchyIds());
+			$ids = array_merge($ids, $child->getAllChildIds());
 		}
 
 		return $ids;
+	}
+
+
+
+	/**
+	 * Creates a new instance of the same type and sets its parent to this object.
+	 * Note that you should still add it to the tree with addField.
+	 *
+	 * @return CustomDefAbstract
+	 */
+	public function createChild()
+	{
+		$obj = new self();
+		$obj['parent'] = $this;
+
+		return $obj;
+	}
+
+
+
+	/**
+	 * Get the value of an option, or a default value if none is set.
+	 *
+	 * @param  $name
+	 * @param null $default
+	 * @return array|null
+	 */
+	public function getOption($name, $default = null)
+	{
+		if (!isset($this->options[$name])) {
+			return $default;
+		}
+
+		return $this->options[$name];
 	}
 }

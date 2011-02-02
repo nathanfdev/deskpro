@@ -20,6 +20,9 @@ use \Orb\Util\Arrays;
 
 /**
  * Handles editing and creating single-select field definitions
+ *
+ * Choices are made up of all null children, and optionally a Text
+ * for "other".
  */
 class Choice extends AbstractAdminHandler
 {
@@ -38,7 +41,8 @@ class Choice extends AbstractAdminHandler
 
 		// The current choices are those set in the fielddef
 		$val = array();
-		foreach ($this->custom_def['field_children'] as $child) {
+		foreach ($this->custom_def['children'] as $child) {
+			if ($child['handler_class']) continue; // would be "other"
 			$val[] = $child['title'];
 		}
 		$f->setData(implode("\n", $val));
@@ -56,16 +60,16 @@ class Choice extends AbstractAdminHandler
 	 */
 	protected function handleSave(\Orb\Form\Field\FieldGroup $formgroup)
 	{
-		$em = App::getOrm();
-		
 		$new = array();
 		$remove = array();
 		$have = array();
-		
+
 		$from_form = explode("\n", Strings::standardEol($formgroup['choices']->getData()));
 		$from_form = Arrays::removeEmptyString($from_form);
 
 		foreach ($this->custom_def['field_children'] as $child) {
+			if ($child['handler_class']) continue; // would be "other"
+
 			if (!in_array($child['title'], $from_form)) {
 				$remove[] = $child;
 			} else {
@@ -81,32 +85,17 @@ class Choice extends AbstractAdminHandler
 
 		if ($new) {
 			foreach ($new as $title) {
-				$child = new Entity\PersonField();
+				$child = $this->custom_def->createChild();
 				$child['title'] = $title;
-				$child['handler_class'] = 'x';
 
-				$this->custom_def['field_children']->add($child);
-				$child['parent'] = $this->custom_def;
-
-				$em->persist($child);
+				$this->custom_def->addChild($child);
 			}
 		}
 
 		if ($remove) {
 			foreach ($remove as $child) {
-				$this->custom_def['field_children']->removeElement($child);
-				$em->remove($child);
+				$this->removeChild($child);
 			}
 		}
-
-		// We'll save id=>title here just so we dont have to fetch
-		// children collection when we want to use this field
-
-		$choices_plain = array();
-		foreach ($this->custom_def['field_children'] as $child) {
-			$choices_plain[$child['id']] = $child['title'];
-		}
-
-		$this->custom_def['options'] = array('choices' => $choices_plain);
 	}
 }

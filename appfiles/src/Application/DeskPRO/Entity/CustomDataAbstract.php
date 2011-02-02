@@ -75,7 +75,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 */
 	protected $input = '';
 
-	
+
 
 	/**
 	 * Get the value or input.
@@ -85,15 +85,5 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	public function getData()
 	{
 		return $this->value ? $this->value : $this->input;
-	}
-
-
-	public function setData($data)
-	{
-		if ($this->field->getHandler()->getStorageDataType() == 'integer') {
-			$this->value = $data;
-		} else {
-			$this->input = $data;
-		}
 	}
 }
