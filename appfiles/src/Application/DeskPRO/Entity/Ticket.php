@@ -379,7 +379,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		if (!$custom_data) {
 			if ($value === null) return null;
-			$field = App::getApi('custom_fields.tickets')->getFieldFromId($field_id);
+
+			$is_new = true;
+
+			$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($field_id);
 			if (!$field) {
 				throw new \Exception("Invalid field_id `$field_id`");
 			}

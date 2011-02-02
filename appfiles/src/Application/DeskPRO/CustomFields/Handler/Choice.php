@@ -18,16 +18,42 @@ use \Application\DeskPRO\Entity;
  */
 class Choice extends HandlerAbstract
 {
+	/**
+	 * Render the field
+	 */
+	public function renderText(array $data)
+	{
+		$val = array();
+
+		foreach ($this->field_def['children'] as $child) {
+			$id = $child['id'];
+			if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
+				$val[] = $child['title'];
+			}
+		}
+
+		$val = implode(', ', $val);
+
+		return $val;
+	}
+
 	public function getFormField(array $data = null)
 	{
 		$options = array();
 		$has_other = false;
 
+		$selected_options = array();
+
 		foreach ($this->field_def['children'] as $child) {
+			$id = $child['id'];
 			if ($child['handler_class']) {
-				$has_other = $child['id'];
+				$has_other = $id;
 			} else {
-				$options[$child['id']] = $child['title'];
+				$options[$id] = $child['title'];
+
+				if (isset($data['children'][$id]) AND isset($data['children'][$id]['value'])) {
+					$selected_options[] = $id;
+				}
 			}
 		}
 
@@ -35,6 +61,9 @@ class Choice extends HandlerAbstract
 		$field_choice = new \Symfony\Component\Form\ChoiceField('choice', array(
 			'choices' => $options
 		));
+		if ($selected_options) {
+			$field_choice->setData($selected_options);
+		}
 		$field_group->add($field_choice);
 
 		if ($has_other) {
@@ -74,6 +103,8 @@ class Choice extends HandlerAbstract
 					$value[2] = 1;
 				}
 			}
+
+			$all_values[] = $value;
 		}
 
 		return $all_values;
