@@ -18,6 +18,11 @@ use \Application\DeskPRO\Entity;
  */
 class Date extends HandlerAbstract
 {
+	public function renderText(array $data)
+	{
+		return date('M d, Y', $data['value']);
+	}
+
 	public function getFormField(array $data = null)
 	{
 		$field = new \Symfony\Component\Form\DateField($this->getFormFieldName(), array(
@@ -27,8 +32,7 @@ class Date extends HandlerAbstract
 		));
 
 		if ($data AND !empty($data['value'])) {
-			$date = date('Y-m-d', $data['value']);
-			$field->setData($date);
+			$field->setData($data['value']);
 		}
 
 		return $field;
@@ -45,7 +49,7 @@ class Date extends HandlerAbstract
 		}
 
 		return array(
-			array($this->field_def['id'], 'input', $value)
+			array($this->field_def['id'], 'value', $value)
 		);
 	}
 }

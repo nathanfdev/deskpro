@@ -47,7 +47,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 	}
 
 
-	
+
 	/**
 	 * Get a simple array representation of this entity
 	 *
@@ -95,8 +95,8 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 		return $values;
 	}
 
-	
-	
+
+
 	/**
 	 * Get an array of keys that can be used on this object to access certain data.
 	 *
@@ -130,7 +130,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 		return $this->offsetGet($name);
 	}
 
-	
+
 
 	/**
 	 * Set the value of a property. Same as using $entity[something]
@@ -184,7 +184,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 	}
 
 
-	
+
 	/**
 	 * @return Doctrine\ORM\EntityRepository
 	 */
@@ -198,7 +198,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 
 		return $em->getRepository("DeskPRO:$entity");
 	}
-	
+
 	############################################################################
 	# ArrayAccess Implementation
 	############################################################################
@@ -222,7 +222,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 		$old_value = null;
 		if (isset($this[$offset])) {
 			$old_value = $this[$offset];
-			
+
 			// No change
 			if ($old_value == $value) {
 				return;
@@ -262,7 +262,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 		$this->offsetSet($offset, null);
 	}
 
-	
+
 
 	/**
 	 * @param PropertyChangedListener $listener
@@ -274,7 +274,7 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
         $this->_listeners['property'][] = $listener;
     }
 
-	
+
 
 	/**
 	 * Notify a prop has changed.

@@ -164,8 +164,8 @@ class TicketController extends AbstractController
 			$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm($_POST['custom_fields']));
 		}
 
-		foreach ($ticket_field_datas as $field_id => $data) {
-			$ticket->setCustomData($field_id, $data);
+		foreach ($ticket_field_datas as $info) {
+			$ticket->setCustomData($info[0], $info[1], $info[2]);
 		}
 
 		App::getOrm()->persist($ticket);
@@ -247,16 +247,16 @@ class TicketController extends AbstractController
 	public function ajaxSaveCustomFieldsAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
-		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$ticket_field_datas = array();
 		foreach ($ticket_field_defs as $field_def) {
-			$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm($_POST['custom_fields']));
+			foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
+				$ticket->setCustomData($info[0], $info[1], $info[2]);
+			}
 		}
 
-		$ticket_edit->setCustomDataAll($ticket_field_datas);
-		$ticket_edit->save();
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
 
 		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
 		$custom_fields = array();
@@ -271,8 +271,8 @@ class TicketController extends AbstractController
 		}
 
 		return $this->render('AgentBundle:Ticket:custom-fields-rendered.twig.html', array(
-			'custom_fields' => $custom_fields,
-		));
+																						 'custom_fields' => $custom_fields,
+																					));
 	}
 
 

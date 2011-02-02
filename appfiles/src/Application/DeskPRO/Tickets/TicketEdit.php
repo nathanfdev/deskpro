@@ -7,6 +7,9 @@ use \Application\DeskPRO\Entity;
 
 class TicketEdit
 {
+	/**
+	 * Application\DeskPRO\Entity\Ticket
+	 */
 	protected $ticket;
 
 	public function __construct(Entity\Ticket $ticket)
@@ -82,32 +85,8 @@ class TicketEdit
 	public function setCustomDataAll(array $ticket_field_datas)
 	{
 		foreach ($ticket_field_datas as $info) {
-			$this->setCustomData($info[0], $info[1], $info[2]);
+			$this->ticket->setCustomData($info[0], $info[1], $info[2]);
 		}
-	}
-
-	public function setCustomData($field_id, $value_type, $value)
-	{
-		$custom_data = $this->ticket->getCustomDataForField($field_id);
-		if (!$custom_data) {
-			if ($value === null) return null;
-			$field = App::getApi('custom_fields.tickets')->getFieldFromId($field_id);
-			if (!$field) {
-				throw new \Exception("Invalid field_id `$field_id`");
-			}
-			$custom_data = $field->createNewDataObject();
-		}
-
-		if ($value === null) {
-			$this->ticket['custom_data']->removeElement($custom_data);
-			App::getOrm()->remove($custom_data);
-			return null;
-		}
-
-		$custom_data[$value_type] = $value;
-		$this->ticket->addCustomData($custom_data);
-
-		return $custom_data;
 	}
 
 	public function save()

@@ -130,7 +130,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $messages;
 
 	/**
-	 * @orm:OneToMany(targetEntity="CustomDataTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 * @orm:OneToMany(targetEntity="CustomDataTicket", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
 
@@ -375,13 +375,16 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function setCustomData($field_id, $value_type, $value)
 	{
 		$custom_data = $this->getCustomDataForField($field_id);
+		$is_new = false;
+
 		if (!$custom_data) {
 			if ($value === null) return null;
 			$field = App::getApi('custom_fields.tickets')->getFieldFromId($field_id);
 			if (!$field) {
 				throw new \Exception("Invalid field_id `$field_id`");
 			}
-			$custom_data = $field->createNewDataObject();
+			$custom_data = new CustomDataTicket();
+			$custom_data['field'] = $field;
 		}
 
 		if ($value === null) {
@@ -390,7 +393,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$custom_data[$value_type] = $value;
-		$this->addCustomData($custom_data);
+
+		if ($is_new) {
+			$this->addCustomData($custom_data);
+		}
 
 		return $custom_data;
 	}
