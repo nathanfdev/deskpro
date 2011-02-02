@@ -12,7 +12,7 @@ class Upgrade20110202043649 extends UpgradeAbstract
 		$this->output->writeln('Alter ticket_categories tables');
 
 		try {
-			App::getDb()->exec("ALTER TABLE  `ticket_categories` ADD  `parent_id` AFTER `id` INT NULL DEFAULT NULL");
+			App::getDb()->exec("ALTER TABLE  `ticket_categories` ADD  `parent_id` INT NULL DEFAULT NULL AFTER `id`");
 			App::getDb()->exec("UPDATE ticket_categories SET parent_id = FLOOR(1 + (RAND() * 4)) WHERE id > 4");
 		} catch (\Exception $e) {
 			$this->output->writeln("ERROR: {$e->getMessage()}");
