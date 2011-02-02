@@ -880,7 +880,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		// Try to auto-update gravatar
-		if (!$this->gravatar_url AND App::getSetting('core.use_gravatar')) {
+		if (!$this->gravatar_url AND $this->primary_email AND App::getSetting('core.use_gravatar')) {
 			if (!$this->gravatar_url) {
 				$url = null;
 

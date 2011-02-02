@@ -96,6 +96,7 @@ class BlobController extends AbstractController
 				if ($this->request->isSecure()) {
 					$gravatar_url = preg_replace('#^http:#', 'https:', $gravatar_url);
 				}
+				$gravatar_url .= '&s=' . $size;
 				$response = $this->response;
 				$response->setRedirect($gravatar_url);
 			}
