@@ -420,6 +420,33 @@ ul.tagit input[type="text"] {
 	padding: 8px;
 }
 
+.ticket .messages ul.attachment-list {
+	margin-top: 10px;
+	padding-top: 5px;
+	border-top: 1px solid #C5CDD4;
+	padding-left: 8px;
+
+	background: #FFFFFF; /* old browsers */
+	background: -moz-linear-gradient(top, #FFFFFF 0%, #F7F8F9 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(100%,#F7F8F9)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#F7F8F9',GradientType=0 ); /* ie */
+}
+
+.ticket .messages ul.attachment-list > li {
+	line-height: 18px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+.ticket .messages ul.attachment-list > li span.size {
+	font-size: 7pt;
+	color: #5E5E5E;
+}
+
+.ticket .messages ul.attachment-list > li img.preview {
+	text-align: right;
+	vertical-align: middle;
+	margin-right: 6px;
+}
 
 .ticket-attach {
 	width: 550px;

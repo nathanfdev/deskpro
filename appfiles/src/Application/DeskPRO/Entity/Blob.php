@@ -82,6 +82,21 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Get the file extension
+	 *
+	 * @return string
+	 */
+	public function getExtension()
+	{
+		$pos = strrpos($this->filename, '.');
+		if ($pos === false) return '';
+
+		return substr($this->filename, $pos+1);
+	}
+
+
+
+	/**
 	 * Is the file an image?
 	 *
 	 * @return bool

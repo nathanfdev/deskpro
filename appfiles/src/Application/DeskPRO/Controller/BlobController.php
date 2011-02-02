@@ -24,7 +24,8 @@ class BlobController extends AbstractController
 		}
 
 		return $this->getDownloadResponse($blob, array(
-			'size' => $this->in->getString('s')
+			'size' => $this->in->getString('s'),
+			'size-fit' => $this->in->getBool('size-fit')
 		));
 	}
 
@@ -56,7 +57,12 @@ class BlobController extends AbstractController
 		if (!empty($options['size']) AND $blob->isImage()) {
 			$im = new \Imagick();
 			$im->readImageBlob($file, $blob['filename']);
-			$im->resizeImage($options['size'], $options['size'], \Imagick::FILTER_LANCZOS, true);
+
+			if (empty($options['size-fit']) OR (!empty($options['size-fit']) AND $options['size-fit'])) {
+				$im->scaleImage($options['size'], $options['size'], true);
+			} else {
+				$im->scaleImage($options['size'], $options['size'], false);
+			}
 
 			$file = $im->getImageBlob();
 			$size = strlen($file);

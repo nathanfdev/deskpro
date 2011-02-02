@@ -177,6 +177,8 @@ ul.tag-cloud li.tag-size10 { font-size:2.9em; }
 .icon-check { background-image: url(../../images/icons/tick.png); }
 .icon-cross { background-image: url(../../images/icons/cross.png); }
 
+.icon-attachment  { background-image: url(../../images/icons/page_attach.png); }
+
 /**********************************************************
  Buttons
 ***********************************************************/

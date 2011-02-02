@@ -62,6 +62,11 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		}).bind(this));
 
 		this.handleTicketChanges();
+
+		var self = this;
+		$('div.messages > ul > li').each(function() {
+			self._initMessage($(this));
+		});
 	},
 
 	_handleResize: function() {
@@ -80,6 +85,22 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		}
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ticket.closed', { ticketId: this.getMetaData('ticket_id') });
+	},
+
+	_initMessage: function(messageEl) {
+		var imageEls = $('ul.attachment-list li.is-image a', messageEl);
+
+		imageEls.colorbox({
+			title: function(){ var url = $(this).attr('href'); return '<a href="'+url+'" target="_blank">Open In New Window</a>' },
+			width: '50%',
+			height: '50%',
+			initialWidth: '200',
+			initialHeight: '150',
+			scalePhotos: true,
+			photo: true,
+			opacity: 0.5,
+			transition: 'none'
+		});
 	},
 
 	//#################################################################
