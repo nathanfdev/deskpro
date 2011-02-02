@@ -67,7 +67,7 @@ class Choice extends AbstractAdminHandler
 		$from_form = explode("\n", Strings::standardEol($formgroup['choices']->getData()));
 		$from_form = Arrays::removeEmptyString($from_form);
 
-		foreach ($this->custom_def['field_children'] as $child) {
+		foreach ($this->custom_def['children'] as $child) {
 			if ($child['handler_class']) continue; // would be "other"
 
 			if (!in_array($child['title'], $from_form)) {

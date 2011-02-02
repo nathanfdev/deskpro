@@ -23,7 +23,7 @@ class Choice extends HandlerAbstract
 		$options = array();
 		$has_other = false;
 
-		foreach ($this->field_def->children as $child) {
+		foreach ($this->field_def['children'] as $child) {
 			if ($child['handler_class']) {
 				$has_other = $child['id'];
 			} else {
@@ -33,7 +33,7 @@ class Choice extends HandlerAbstract
 
 		$field_group = new \Symfony\Component\Form\FieldGroup($this->getFormFieldName());
 		$field_choice = new \Symfony\Component\Form\ChoiceField('choice', array(
-			'options' => $options
+			'choices' => $options
 		));
 		$field_group->add($field_choice);
 
@@ -56,7 +56,7 @@ class Choice extends HandlerAbstract
 
 		$all_values = array();
 
-		foreach ($this->field_def->children as $child) {
+		foreach ($this->field_def['children'] as $child) {
 			$value = array($child['id'], 'value', null);
 			// "other" field
 			if ($child['handler_class']) {

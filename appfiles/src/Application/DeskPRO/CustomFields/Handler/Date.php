@@ -20,7 +20,11 @@ class Date extends HandlerAbstract
 {
 	public function getFormField(array $data = null)
 	{
-		$field = new \Symfony\Component\Form\TextField($this->getFormFieldName());
+		$field = new \Symfony\Component\Form\DateField($this->getFormFieldName(), array(
+			'widget' => 'input',
+			'type' => 'timestamp',
+			'format' => 'medium',
+		));
 
 		if ($data AND !empty($data['value'])) {
 			$date = date('Y-m-d', $data['value']);
