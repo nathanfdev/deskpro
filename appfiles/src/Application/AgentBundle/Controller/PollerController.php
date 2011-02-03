@@ -12,6 +12,7 @@
 namespace Application\AgentBundle\Controller;
 
 use \Orb\Util\Strings;
+use \Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
 
@@ -36,7 +37,12 @@ class PollerController extends AbstractController
 		foreach ($dos as $do) {
 			$do = Strings::dashToCamelCase($do);
 			$method = $do . 'Message';
-			$data[] = $this->$method();
+			$method_data = $this->$method();
+			$method_data = Arrays::removeFalsey($method_data);
+
+			if ($method_data) {
+				$data = array_merge($data, $method_data);
+			}
 		}
 
 		return $this->createJsonResponse(json_encode(array(
@@ -53,7 +59,7 @@ class PollerController extends AbstractController
 	{
 		$all_counts = $queues = App::getApi('tickets.queues')->getAllCountsForPersonQueues($this->person);
 
-		return array('queues.counts', $all_counts);
+		return array(array('queues.counts', $all_counts));
 	}
 
 
@@ -65,7 +71,7 @@ class PollerController extends AbstractController
 	{
 		$all_counts = $queues = App::getApi('tickets.queues')->getAllCountsForPersonFlagged($this->person);
 
-		return array('queue-flagged.counts', $all_counts);
+		return array(array('queue-flagged.counts', $all_counts));
 	}
 
 	############################################################################

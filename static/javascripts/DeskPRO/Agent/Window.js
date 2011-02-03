@@ -633,7 +633,6 @@ DeskPRO.Agent.Window = new Class({
 		var self = this;
 		this.getPoller().addData(
 			function() {
-				console.log('now');
 				if (!self.openTicketIds.length) return false;
 				var data = [];
 				data.push({ name: 'do[]', value: 'check-tickets'});

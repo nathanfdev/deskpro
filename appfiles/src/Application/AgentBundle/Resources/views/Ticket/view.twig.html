@@ -101,16 +101,38 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 		{% include 'AgentBundle:Ticket:part-custom-fields.twig.html' %}
 
 		<ul class="ticket-tabs">
-			<li class="tab-trigger messages on" data-tab-for=".tab-content.messages">Messages</li>
+			<li class="tab-trigger ticket-messages messages on" data-tab-for=".tab-content.ticket-messages">Messages</li>
+			<li class="tab-trigger notes" data-tab-for=".tab-content.notes">Notes</li>
 			<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
 			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
 		</ul>
 	</div>
 
-	<div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
+	<div class="tab-content on messages ticket-messages" data-tab-trigger=".tab-trigger.ticket-messages">
 		<ul>
 			{% for message in ticket.messages %}
 				{% include 'AgentBundle:Ticket:ticket-message.twig.html' with {'message': message} %}
+			{% endfor %}
+		</ul>
+	</div>
+
+	<div class="tab-content on messages notes" data-tab-trigger=".tab-trigger.notes">
+		<ul>
+			<li class="message-item agent is-note new-note">
+				<div class="box">
+					<div class="info"><cite>New Note</cite></div>
+					<div class="message">
+						<textarea style="width:98%; height: 80px;"></textarea>
+						<div style="text-align:center; margin-top: 9px;">
+							<button class="dp-button x-small">Add Note</button>
+						</div>
+					</div>
+				</div>
+			</li>
+			{% for message in ticket.messages %}
+				{% if message.is_agent_note %}
+					{% include 'AgentBundle:Ticket:ticket-message.twig.html' with {'message': message} %}
+				{% endif %}
 			{% endfor %}
 		</ul>
 	</div>

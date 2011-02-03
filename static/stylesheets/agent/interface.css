@@ -397,16 +397,33 @@ ul.tagit input[type="text"] {
 	border: 1px solid #ccd4db;
 }
 
+.ticket .messages > ul > li.is-note > .box {
+	border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	-webkit-box-shadow: none !important;
+	-moz-box-shadow: none !important;
+	box-shadow: none !important;
+}
+.ticket .messages > ul > li.is-note > .box div.info {
+	border-radius: 0 !important;
+	-moz-border-radius: 0 !important;
+	background-color: #f7f8f9;
+	border-bottom: 1px solid #CCD4DB;
+}
+
+.ticket .messages > ul > li.is-note > .box div.info img,
+.ticket .messages > ul > li.is-note > .box div.info .edit-btn {
+	display: none;
+}
+
 .ticket .messages > ul > li > .box div.info {
 	background-color: #dee2e6;
 	padding: 5px;
 	border-bottom: 1px solid #a2b4c3;
 	-moz-border-radius-topleft: 6px;
-	-moz-border-radius-topright: px;
 	-moz-border-radius-bottomright: 0px;
 	-moz-border-radius-bottomleft: 0px;
 	border-top-left-radius: 6px;
-	border-top-right-radius: px;
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
 	margin: 1px;

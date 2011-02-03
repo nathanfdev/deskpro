@@ -1,4 +1,4 @@
-<li {% if message.person.is_agent %}class="message-item agent"{%else%}class="message-item person"{%endif%}>
+<li {% if message.person.is_agent %}class="message-item agent {% if message.is_agent_note %}is-note{% endif %}"{%else%}class="message-item person"{%endif%}>
 	<div class="box">
 		<div class="info">
 			<img class="person-picture" src="{{ path('serve_person_picture_size', {'person_id': message.person.id, 'size': 15}) }}" alt="" />

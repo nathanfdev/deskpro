@@ -22,6 +22,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initTicketTabs();
 		this._initFlagMenu();
 		this._initLabels();
+		this._initTicketNotes();
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.check.' + this.getMetaData('ticket_id'), this.handleTicketCheck.bind(this));
 	},
@@ -37,7 +38,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	displayNewMessage: function(html) {
 		var new_message = $(html).hide();
-		new_message.appendTo($('.messages > ul', this.contentWrapper)).slideDown();
+		new_message.appendTo($('ticket-messages > ul', this.contentWrapper)).slideDown();
 
 		this._initMessage(new_message);
 	},
@@ -59,6 +60,37 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		if (!info.isLocked) {
 			$('div.lock-bar:first', this.contentWrapper).hide();
 		}
+	},
+
+	//#################################################################
+	//# Labels
+	//#################################################################
+
+	newnoteWrapper: null,
+	_initTicketNotes: function() {
+		this.newnoteWrapper = $('li.new-note:first', this.contentWrapper);
+		$('button', this.newnoteWrapper).click(this.saveNewNote.bind(this));
+	},
+
+	saveNewNote: function() {
+		var data = [];
+		data.push({
+			name: 'message',
+			value: $('textarea', this.newnoteWrapper).val()
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-note',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'html',
+			success: function(html) {
+				$('textarea', this.newnoteWrapper).val('');
+				this.newnoteWrapper.parent().append(html);
+				this._handleSendReplySuccess(html);
+			}
+		});
 	},
 
 	//#################################################################
@@ -309,7 +341,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		// We're using a live event because new messages are always
 		// added. So we take care of opening the menu manually.
 		var menu = this.messageActionsMenu;
-		var ul = $('.messages > ul', this.wrapper)[0];
+		var ul = $('.ticket-messages > ul', this.wrapper)[0];
 		$('.ticket-message-edit-btn', ul).live('click', function(event) {
 			menu.openMenu(event);
 		});

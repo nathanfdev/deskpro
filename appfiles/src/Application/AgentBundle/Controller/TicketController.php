@@ -365,6 +365,25 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function ajaxSaveNoteAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+
+		$message = new Entity\TicketMessage();
+		$message['ticket'] = $ticket;
+		$message['person'] = $this->person;
+		$message['message'] = $this->in->getString('message');
+		$message['is_agent_note'] = true;
+
+		$ticket_edit->addMessage($message);
+		$ticket_edit->save();
+
+		return $this->render('AgentBundle:Ticket:ticket-message.twig.html', array(
+			'message' => $message
+		));
+	}
+
 	############################################################################
 	# ajax-save-actions
 	############################################################################
