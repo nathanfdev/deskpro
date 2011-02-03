@@ -7,12 +7,11 @@ DeskPRO.Agent.Widgetable = new Class({
 		commonOptions = commonOptions || {};
 
 		Array.each(widgetInfos, function(info) {
+
+			if (!info || typeOf(info) != 'object') return;
+
 			var widget_class = Orb.getNamespacedObject(info.class);
-			var options = Object.merge(commonOptions, {
-				widgetId: info.id,
-				widgetNameId: info.name_id,
-				__wrapperSelector: info.wrapperSelector
-			});
+			var options = Object.merge(commonOptions, { __wrapperSelector: info.wrapperSelector }, info.options||{});
 
 			var widget = new widget_class(options);
 			if (typeOf(info.prefs) == 'object') {

@@ -76,49 +76,42 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * The JS classname that contains the widget handler.
 	 *
 	 * @var string
-	 * @orm:Column(name="js_widget_class", type="string", length=200)
+	 * @orm:Column(name="js_widget_class", type="string", length=200, nullable=true)
 	 */
 	protected $js_widget_class;
 
 	/**
-	 * The template used to render the widget HTML
+	 * The PHP class that handles fetch data/processing
 	 *
 	 * @var string
-	 * @orm:Column(name="template_name", type="string", length=200)
+	 * @orm:Column(name="php_widget_class", type="string", length=200, nullable=true)
+	 */
+	protected $php_widget_class;
+
+	/**
+	 * The template used to render the widget HTML.
+	 *
+	 * @var string
+	 * @orm:Column(name="template_name", type="string", length=200, nullable=true)
 	 */
 	protected $template_name;
 
 
-
 	/**
-	 * Get preferences for this widget based on the current person.
-	 * This will fetch from the person prefs, and then from session.
+	 * Get the handler for this widget class.
 	 *
-	 * @return array
+	 * @return Application\DeskPRO\Widgets\HandlerInterface
 	 */
-	public function getPrefsForCurrentPerson()
+	public function getHandler($context, array $options)
 	{
-		$prefs = array();
-
-		$pref_prefix = 'widget.' . $this->name_id . '.';
-
-		// From person
-		$person = App::getCurrentPerson();
-		if ($person AND $person['id']) {
-			$prefs = $person->loadPrefGroup($pref_prefix);
+		if ($this->php_widget_class) {
+			$classname = $this->php_widget_class;
+		} else {
+			$classname = 'Application\\DeskPRO\\Widgets\\WidgetHandler';
 		}
 
-		// From session
-		$session = App::getSession();
-		if ($session) {
-			foreach ($session->getAttributes() as $k => $v) {
-				if (strpos($k, $pref_prefix) === 0) {
-					$k = str_replace($k, '', $k);
-					$prefs[$k] = $v;
-				}
-			}
-		}
+		$handler = new $classname($this, $context, $options);
 
-		return $prefs;
+		return $handler;
 	}
 }

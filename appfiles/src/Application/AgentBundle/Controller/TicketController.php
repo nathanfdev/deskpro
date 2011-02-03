@@ -81,7 +81,15 @@ class TicketController extends AbstractController
 		}
 
 		// Widgets
-		$widgets = App::getEntityRepository('DeskPRO:Widget')->getWidgetsForSection('agent.ticket');
+		$widget_recs = App::getEntityRepository('DeskPRO:Widget')->getWidgetsForSection('agent.ticket');
+		$widgets = array();
+		if (count($widget_recs)) {
+			$widgets = \Application\DeskPRO\Widgets\Factory::createHandlersForWidgets(
+				$widget_recs,
+				'agent.ticket',
+				array('ticket' => $ticket, 'person' => $this->person)
+			);
+		}
 
 		return $this->render($tpl, array(
 			'person_inner_tab' => $person_inner_tab,
