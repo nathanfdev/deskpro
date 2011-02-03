@@ -114,7 +114,7 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 
 		$cats = $this->getCategoriesInHierarchy();
 		if ($parent_id) {
-			if (empty($cats[$parent_id]['children'])) return array();
+			if (empty($cats[$parent_id]) OR empty($cats[$parent_id]['children'])) return array();
 			$cats = $cats[$parent_id]['children'];
 		}
 

@@ -10,7 +10,7 @@
 
 	<div class="ticket-custom-fields edit show-fields edit-fields-overlay" style="display:none">
 		{% for f in custom_fields %}
-			<div class="field-wrap">
+			<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
 				<div class="label-wrap"><label>{{f.title}}</label></div>
 				<div class="field-input">
 					{{ form_field(f.form, {}, {}, 'AgentBundle:Ticket:custom-field-forms.twig.html') }}
