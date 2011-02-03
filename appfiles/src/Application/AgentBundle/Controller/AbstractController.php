@@ -19,6 +19,8 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$this->person = $this->session->getPerson();
 		$this->tplvars['person'] = $this->person;
+
+		$this->session->start();
 		$this->tplvars['proxy_key'] = md5($this->session->getId() . App::getAppSecret());
 	}
 
