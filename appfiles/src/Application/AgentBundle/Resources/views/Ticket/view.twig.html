@@ -31,8 +31,8 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 
 	{% if ticket.is_locked %}
 		<div class="lock-bar">
-			Note: This ticket is currently locked by {{ ticket.locked_by_agent.display_name }}. You cannot make changes
-			to it until they are finisehd.
+			This ticket is currently in use by {{ ticket.locked_by_agent.display_name }}. You may want to avoid
+			making changes until they are finished with it.
 		</div>
 	{% endif %}
 

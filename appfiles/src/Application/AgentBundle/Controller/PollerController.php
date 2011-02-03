@@ -67,4 +67,26 @@ class PollerController extends AbstractController
 
 		return array('queue-flagged.counts', $all_counts);
 	}
+
+	############################################################################
+	# getCheckTickets
+	############################################################################
+
+	public function checkTicketsMessage()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('check-ticket-ids', 'uint', 'discard');
+		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		$messages = array();
+		foreach ($tickets as $ticket) {
+			$msg_id = 'tickets.check.' . $ticket['id'];
+			$msg_data = array();
+
+			$msg_data['isLocked'] = $ticket->isLocked();
+
+			$messages[$msg_id] = $msg_data;
+		}
+
+		return $messages;
+	}
 }

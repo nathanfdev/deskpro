@@ -630,6 +630,24 @@ DeskPRO.Agent.Window = new Class({
 			ajaxUrl: BASE_URL + 'agent/poller'
 		});
 
+		var self = this;
+		this.getPoller().addData(
+			function() {
+				console.log('now');
+				if (!self.openTicketIds.length) return false;
+				var data = [];
+				data.push({ name: 'do[]', value: 'check-tickets'});
+
+				Array.each(self.openTicketIds, function(id) {
+					data.push({ name: 'check-ticket-ids[]', value: id });
+				});
+
+				return data;
+			},
+			'tickets.check',
+			{recurring: true, minDelay: 30000 }
+		);
+
 		this.notifier = new DeskPRO.Agent.Notifier.Notifier({
 			notifySummaryButton: $('#notify_button'),
 			notifyList: $('#notify_list')
@@ -639,14 +657,13 @@ DeskPRO.Agent.Window = new Class({
 		this.getMessageBroker().addMessageListener('queues.counts', this._updatequeueCounts.bind(this));
 
 		// When a ticket is open or closed, apply style
-		var openTicketIds = this.openTicketIds;
 		this.getMessageBroker().addMessageListener('ticket.opened', function (data) {
 			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).addClass('open');
-			openTicketIds.push(data.ticketId);
+			self.openTicketIds.push(data.ticketId);
 		});
 		this.getMessageBroker().addMessageListener('ticket.closed', (function (data) {
 			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).removeClass('open');
-			openTicketIds.erase(data.ticketId);
+			self.openTicketIds.erase(data.ticketId);
 
 			this.releaseTicketLocks.push(data.ticketId);
 			if (this.releaseTicketLocks_timeout) {
@@ -682,12 +699,12 @@ DeskPRO.Agent.Window = new Class({
 	},
 
 	runOpenTicketStateOnElement: function(el) {
-		var openTicketIds = this.openTicketIds;
+		var self = this;
 
 		$('tr', el).each(function() {
 			var tr = $(this);
 			var ticketId = tr.data('ticket-id');
-			if (openTicketIds.indexOf(ticketId) !== -1) {
+			if (self.openTicketIds.indexOf(ticketId) !== -1) {
 				tr.addClass('open');
 			}
 		})

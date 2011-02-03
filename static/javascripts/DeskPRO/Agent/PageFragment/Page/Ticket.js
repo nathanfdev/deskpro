@@ -22,6 +22,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initTicketTabs();
 		this._initFlagMenu();
 		this._initLabels();
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.check.' + this.getMetaData('ticket_id'), this.handleTicketCheck.bind(this));
 	},
 
 	destroyPage: function() {
@@ -49,6 +51,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	deactivate: function() {
 		if (this.popoutPinIcon && this.popoutPinIcon.is('.on')) {
 			this.popout.fadeOut(200);
+		}
+	},
+
+
+	handleTicketCheck: function(info) {
+		if (!info.isLocked) {
+			$('div.lock-bar:first', this.contentWrapper).hide();
 		}
 	},
 
