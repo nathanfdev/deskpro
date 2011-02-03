@@ -67,6 +67,9 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		$('div.messages > ul > li').each(function() {
 			self._initMessage($(this));
 		});
+
+		// Custom field widgets
+		$('input.date-field', this.contentWrapper).datepicker({ 'dateFormat': 'M d, yy'});
 	},
 
 	_handleResize: function() {
@@ -242,8 +245,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			catProperty.setValue(0);
 		}
 
-		console.log(validCatIds);
-
 		// Update the UI menu with correct
 		var catMenuList = this.ticketOptionsMenuEls['category_id'];
 
@@ -251,6 +252,51 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		Array.each(validCatIds, function(id) {
 			$('.cat-'+id, catMenuList).show();
 		});
+
+		// We have to run rules to check custom fields now
+		var ticketInfo = {
+			department_id: depId,
+			category_id: catId,
+			product_id: this.getPropertyManager('product_id').getValue()
+		};
+
+		var rules = window.DESKPRO_CUSTOM_TICKET_DEF_RULES;
+		if (!rules) {
+			rules = [];
+		}
+
+		var hide = [];
+		Array.each(rules, function (ruleFn) {
+			var actions = ruleFn(ticketInfo);
+			if (!actions) return;
+
+			var do_stop = false;
+
+			Array.each(actions, function (action) {
+				if (action[0] == 'show') {
+					hide.erase(action[1]);
+				} else if (action[0] == 'hide') {
+					hide.include(action[1]);
+				} else if(action[0] == 'stop_rules') {
+					do_stop = true;
+				}
+			});
+
+			// Dont exec any more rules
+			if (do_stop) {
+				return true;
+			}
+		});
+
+		var allFields = $('.custom-field', this.contentWrapper);
+
+		if (hide.length) {
+			var hideSel = '.custom-field-' + hide.join(', .custom-field-');
+			allFields.not(hideSel).show();
+			allFields.filter(hideSel).hide();
+		} else {
+			allFields.show();
+		}
 	},
 
 	//#################################################################
