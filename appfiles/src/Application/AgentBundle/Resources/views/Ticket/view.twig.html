@@ -14,6 +14,17 @@ pageMeta.viewMessageUnformattedUrl    = '{{ path('agent_ticket_message_unformatt
 pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getquote', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
 pageMeta.tabTicketLogUrl              = '{{ path('agent_ticket_ajaxtab_ticketlog', {'ticket_id': ticket.id}) }}';
 pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachments', {'ticket_id': ticket.id}) }}';
+pageMeta.widgets = [
+{% for widget in widgets %}
+	{
+		'class': '{{widget.js_widget_class}}',
+		'id': '{{widget.id}}',
+		'name_id': '{{widget.name_id}}',
+		'wrapperSelector': 'div.tab-content.widget-{{widget.id}}',
+		'prefs': {{ widget.getPrefsForCurrentPerson()|json_encode }}
+	}{% if not loop.last %},{%endif%}
+{% endfor %}
+];
 </script>
 <div class="ticket-content">
 	<form class="value-form" style="display:none">
@@ -105,6 +116,9 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 			<li class="tab-trigger notes" data-tab-for=".tab-content.notes">Notes</li>
 			<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
 			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
+			{% for widget in widgets %}
+				<li class="tab-trigger widget-{{widget.id}}" data-tab-for=".tab-content.widget-{{widget.id}}">{{widget.data.tab_title}}</li>
+			{% endfor %}
 		</ul>
 	</div>
 
@@ -116,7 +130,7 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 		</ul>
 	</div>
 
-	<div class="tab-content on messages notes" data-tab-trigger=".tab-trigger.notes">
+	<div class="tab-content messages notes" data-tab-trigger=".tab-trigger.notes">
 		<ul>
 			<li class="message-item agent is-note new-note">
 				<div class="box">
@@ -148,6 +162,12 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 			Loading ticket log ...
 		</div>
 	</div>
+
+	{% for widget in widgets %}
+		<div class="tab-content widget-{{widget.id}}" data-tab-trigger=".tab-trigger.widget-{{widget.id}}">
+			{% include widget.template_name %}
+		</div>
+	{% endfor %}
 
 	</div>
 

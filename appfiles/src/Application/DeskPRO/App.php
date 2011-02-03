@@ -319,6 +319,18 @@ class App
 
 
 	/**
+	 * Get the session
+	 *
+	 * @return Symfony\Application\DeskPRO\HttpFoundation\Session
+	 */
+	public static function getSession()
+	{
+		return self::get(self::SERVICE_SESSION);
+	}
+
+
+
+	/**
 	 * True if this is an http request. We should have a request and response object if so.
 	 *
 	 * @return bool
@@ -378,6 +390,23 @@ class App
 		}
 
 		return self::$_kernel;
+	}
+
+
+
+	/**
+	 * Get a secret key used for various hashing.
+	 *
+	 * @return string
+	 */
+	public static function getAppSecret()
+	{
+		$secret = self::getSetting('core.app_secret');
+		if (!$secret) {
+			$secret = 'secret';
+		}
+
+		return $secret;
 	}
 
 

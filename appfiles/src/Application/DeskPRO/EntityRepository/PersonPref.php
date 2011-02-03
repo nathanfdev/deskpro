@@ -41,7 +41,7 @@ class PersonPref extends EntityRepository
 
 		$ret_prefs = array();
 
-		while ($pref = $statement->fetch(PDO::FETCH_ASSOC)) {
+		while ($pref = $statement->fetch(\PDO::FETCH_ASSOC)) {
 			$pref_name = $pref['name'];
 			if ($trim_group_prefix) {
 				$pref_name = substr($pref_name, $preg_group_len);
@@ -58,7 +58,7 @@ class PersonPref extends EntityRepository
 	}
 
 
-	
+
 	/**
 	 * Get the value of a specific setting.
 	 *

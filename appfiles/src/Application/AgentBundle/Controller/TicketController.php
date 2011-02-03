@@ -80,6 +80,9 @@ class TicketController extends AbstractController
 			App::getOrm()->flush();
 		}
 
+		// Widgets
+		$widgets = App::getEntityRepository('DeskPRO:Widget')->getWidgetsForSection('agent.ticket');
+
 		return $this->render($tpl, array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
@@ -87,7 +90,8 @@ class TicketController extends AbstractController
 			'custom_fields' => $custom_fields,
 			'custom_fields_has_one_value' => $has_value,
 			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
-			'macros' => $macros
+			'macros' => $macros,
+			'widgets' => $widgets
 		));
 	}
 

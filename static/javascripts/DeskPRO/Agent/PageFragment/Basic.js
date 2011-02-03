@@ -9,7 +9,7 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment');
  */
 DeskPRO.Agent.PageFragment.Basic = new Class({
 
-	Implements: [Events],
+	Implements: [Events, DeskPRO.Agent.Widgetable],
 
 	TYPENAME: 'basic',
 
@@ -17,19 +17,19 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	stylesheets: [],
 	html: '',
 	meta: {},
-	
+
 	featureSelectors: {
 		routes: [],
 		times: []
 	},
-	
+
 	initialize: function(html) {
 		if (html) {
 			this.html = html;
 		}
-		
+
 		this.init();
-		
+
 		this.addEvent('activate', (function() {
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.activated', { page: this });
 		}).bind(this));
@@ -41,56 +41,67 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		this.addEvent('render', (function(wrapper) {
 			this.initFeaturesOnCollection(wrapper);
 		}).bind(this));
-		
+
 		if (this.getMetaData('initRoutesOn')) {
 			var tmp = this.getMetaData('initRoutesOn');
 			if (typeOf(tmp) == 'string') {
 				tmp = [tmp];
 			}
-			
+
 			for (var i = 0; i < tmp.length; i++) {
 				this.featureSelectors.routes.push(tmp[i]);
 			}
 		}
-		
+
+		this.addEvent('render', function(el) {
+			if (this.getMetaData('widgets')) {
+				this.initWidgets(this.getMetaData('widgets'), {
+					personId: DESKPRO_PERSON_ID,
+					deskproPath: BASE_URL,
+					proxyKey: DESKPRO_PROXY_KEY
+				});
+				this.initWidgetsDom(el);
+			}
+		});
+
 		// Standard hook methods
 		this.addEvent('activate', this.activate);
 		this.addEvent('deactivate', this.deactivate);
 		this.addEvent('render', this.initPage);
 		this.addEvent('destroy', this.destroyPage);
 	},
-	
+
 	/**
 	 * Empty hook method for children
 	 */
 	init: function() { },
-	
+
 	/**
 	 * Called when the fragment has been activated (comes into view).
 	 */
 	activate: function() { },
-	
+
 	/**
 	 * Called when the fragment is deactivated (hidden from view)
 	 */
 	deactivate: function() { },
-	
+
 	/**
 	 * Init all standard features (using page-defined selectors) on a wrapper
 	 */
 	initFeaturesOnCollection: function(wrapper, featureSelectors) {
-		
+
 		featureSelectors = featureSelectors || this.featureSelectors;
-		
+
 		if (featureSelectors.routes && featureSelectors.routes.length) {
 			this.initRoutesOnCollection($(featureSelectors.routes.join(', '), wrapper));
 		}
-		
+
 		if (featureSelectors.times && featureSelectors.times.length) {
 			this.initTimesOnCollection($(featureSelectors.times.join(', '), wrapper));
 		}
 	},
-	
+
 	/**
 	 * Init route loaders on all elements in a collection
 	 */
@@ -99,16 +110,16 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	},
-	
+
 	/**
 	 * Init time agos on all elements in a collection
 	 */
 	initTimesOnCollection: function(els) {
 		els.timeago();
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Set metadata about this page.
 	 *
@@ -123,9 +134,9 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			this.meta[name] = value;
 		}
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get a hash of all the metadata.
 	 *
@@ -134,9 +145,9 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	getAllMetaData: function() {
 		return this.meta;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get a specific piece of metadata.
 	 *
@@ -147,16 +158,16 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		if (default_value === undefined) {
 			default_value = null;
 		}
-		
+
 		if (this.meta[name] === undefined) {
 			return default_value;
 		}
-		
+
 		return this.meta[name];
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get the scripts required by this fragment.
 	 *
@@ -165,9 +176,9 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	getScripts: function() {
 		return this.scripts;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get stylesheets required by this fragment
 	 *
@@ -176,9 +187,9 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	getStylesheets: function() {
 		return this.stylesheets;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get the HTML source for this fragment.
 	 *
@@ -187,9 +198,9 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	getHtml: function() {
 		return this.html;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Should be called after all resources are laoded and after the
 	 * HTML is in the dom.
@@ -197,11 +208,11 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 * @param {jQuery} el The wrapper element
 	 */
 	initPage: function(el) {
-		
+
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Called after the page should be destroyed. Any specific cleanup required can be done
 	 * here if for example an element was moved during initPage etc.

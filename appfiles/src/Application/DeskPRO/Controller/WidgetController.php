@@ -1,0 +1,121 @@
+<?php
+
+namespace Application\DeskPRO\Controller;
+
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
+
+use \Orb\Util\Util;
+use \Orb\Util\Strings;
+
+class ProxyController extends AbstractController
+{
+	/**
+	 * The $key is a md5 of the session ID and the app secret.
+	 * This is just to verify that all proxy requests are done on purpose
+	 * by us.
+	 *
+	 * @param  $key
+	 */
+	public function proxyAction($key)
+	{
+		if (!App::isDebug() OR $key != 'DBEUG') {
+			$session = App::getSession();
+			$check_key = md5($session->getId() . App::getAppSecret());
+
+			if ($check_key != $key)  {
+				return $this->createResponse('Invalid key', 403);
+			}
+		}
+
+		$url = $this->in->getString('url');
+		$urlinfo = @parse_url($url);
+		if (!$url OR !$urlinfo OR empty($urlinfo['scheme']) OR !preg_match('#^https?#', $urlinfo['scheme'])) {
+			return $this->createResponse('Bad url', 400);
+		}
+
+		$ch = curl_init($url);
+		if ($this->isPostRequest()) {
+			curl_setopt($ch, CURLOPT_POST, true);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, $_POST);
+		}
+
+		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
+		curl_setopt($ch, CURLOPT_HEADER, false);
+		curl_setopt($ch, CURLOPT_USERAGENT, 'DeskPRO AJAX Proxy');
+		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+
+		$contents = curl_exec($ch);
+		$info = curl_getinfo($ch);
+		curl_close($ch);
+
+		$response = $this->response;
+
+		if ($info['content_type']) {
+			$response->headers->set('Content-Type', $info['content_type']);
+		}
+		if ($info['http_code']) {
+			$response->setStatusCode($info['http_code']);
+		}
+
+		$response->setContent($contents);
+
+		return $response;
+	}
+
+
+
+	/**
+	 * Saves user preferences for a particular widget.
+	 *
+	 * @param  $key
+	 */
+	public function saveUserPrefsAction($key, $widget_id)
+	{
+		$session = App::getSession();
+
+		if (!App::isDebug() OR $key != 'DBEUG') {
+			$check_key = md5($session->getId() . App::getAppSecret());
+
+			if ($check_key != $key)  {
+				return $this->createResponse('Invalid key', 403);
+			}
+		}
+
+		$widget = App::getEntityRepository('DeskPRO:Widget')->find($widget_id);
+		$pref_prefix = 'widget.' . $widget_id['name_id'] . '.';
+
+		$person = $session->getPerson();
+
+		// If the user is logged in, we can save to prefs
+		if ($person['id']) {
+			foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value)
+			{
+				$pref_name = $pref_prefix . $pref_name;
+				$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
+				if (!$pref) {
+					$pref = new Entity\PersonPref();
+					$pref['name'] = $pref_name;
+					$this->person->addPreference($pref);
+				}
+
+				$pref['value'] = $value;
+				App::getOrm()->persist($pref);
+			}
+
+			App::getOrm()->flush();
+
+		// Otherwise save to session
+		} else {
+			foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value)
+			{
+				$pref_name = $pref_prefix . $pref_name;
+				$session->set($pref_name, $value);
+			}
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+}

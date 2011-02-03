@@ -1,3 +1,7 @@
+proxy:
+  pattern: /proxy/{key}
+  defaults: { _controller: DeskPRO:Widget:proxy }
+
 serve_blob:
   pattern: /download/{blob_auth_id}
   defaults: { _controller: DeskPRO:Blob:showBlob }
