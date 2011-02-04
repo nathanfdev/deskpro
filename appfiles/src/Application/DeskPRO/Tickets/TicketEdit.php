@@ -41,6 +41,11 @@ class TicketEdit
 					$this->ticket['agent_id'] = $action;
 					break;
 
+				case 'agent_team':
+				case 'agent_team_id':
+					$this->ticket['agent_team_id'] = $action;
+					break;
+
 				case 'product_id':
 					$this->ticket['product_id'] = $action;
 					break;
