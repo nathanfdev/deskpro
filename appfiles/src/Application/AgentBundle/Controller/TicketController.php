@@ -41,25 +41,7 @@ class TicketController extends AbstractController
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
 		$custom_fields_form = new \Symfony\Component\Form\FieldGroup('custom_fields');
-
-		$custom_fields = array();
-		$has_value = false;
-		foreach ($ticket_field_defs as $f_def) {
-			$value = !empty($ticket_data_structured[$f_def['id']]) ? $ticket_data_structured[$f_def['id']] : null;
-
-			$f = $f_def->getHandler()->getFormField($value);
-			$custom_fields_form->add($f);
-
-			$rendered = $value ? $f_def->getHandler()->renderHtml($value) : null;
-			if ($rendered) $has_value = true;
-
-			$custom_fields[] = array(
-				'field_def' => $f_def,
-				'title' => $f_def['title'],
-				'form' => $f,
-				'rendered' =>  $rendered
-			);
-		}
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
 		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
 			'ticket_id' => $ticket_id,

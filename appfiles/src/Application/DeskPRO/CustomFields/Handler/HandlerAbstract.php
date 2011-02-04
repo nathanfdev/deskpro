@@ -124,4 +124,32 @@ abstract class HandlerAbstract
 	 * @return array
 	 */
 	abstract function getDataFromForm(array $form_data);
+
+
+	/**
+	 * Gets an array of search operation types we can perform against this
+	 * field.
+	 *
+	 * @return array
+	 */
+	public function getSearchCapabilities()
+	{
+		// Not searchable by default
+		return array();
+	}
+
+
+	/**
+	 * Get the type of search this field sholud be on.
+	 *
+	 * - Text/input have 'input'
+	 * - Dates/numric have 'value'
+	 * - Fields that use an option go by 'id'
+	 *
+	 * @return string
+	 */
+	public function getSearchType()
+	{
+		return 'input';
+	}
 }

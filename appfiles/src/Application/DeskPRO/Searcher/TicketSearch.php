@@ -3,6 +3,8 @@
 namespace Application\DeskPRO\Searcher;
 
 use \Application\DeskPRO\App;
+
+use \Orb\Util\Util;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 
@@ -23,6 +25,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_LANGUAGE      = 'language';
 	const TERM_PARTICIPANT   = 'participant';
 	const TERM_LABEL         = 'label';
+	const TERM_TICKET_FIELD  = 'ticket_field';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -142,7 +145,11 @@ class TicketSearch extends SearcherAbstract
 		#------------------------------
 
 		foreach ($ticket_parts['joins'] as $j) {
-			$sql .= "LEFT JOIN $j ON $j.ticket_id = $table.id ";
+			if (is_array($j)) {
+				$sql .= $j[1] . " ";
+			} else {
+				$sql .= "LEFT JOIN $j ON $j.ticket_id = $table.id ";
+			}
 		}
 
 		if ($user_parts) {
@@ -176,8 +183,6 @@ class TicketSearch extends SearcherAbstract
 		$sql .= $order_by;
 
 		$sql .= " LIMIT 1000";
-
-		//die($sql);
 
 		return $sql;
 	}
@@ -257,6 +262,15 @@ class TicketSearch extends SearcherAbstract
 
 		foreach ($this->terms as $term => $info) {
 			list($op, $choice) = $info;
+
+			$term_id = null;
+
+			// $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
+			$m = null;
+			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+				$term = $m[1];
+				$term_id = $m[2];
+			}
 
 			switch ($term) {
 				case self::TERM_ID:
@@ -381,10 +395,72 @@ class TicketSearch extends SearcherAbstract
 							break;
 					}
 					break;
+
+				case self::TERM_TICKET_FIELD:
+
+					$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
+					if (!$field) break;
+
+					$search_type = $field->getHandler()->getSearchType();
+
+					switch ($search_type) {
+						case 'input':
+						case 'value':
+
+							$join_id = Util::requestUniqueId();
+							$joins[] = array(
+								'custom_data_ticket',
+								"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id = $term_id)"
+							);
+
+							$field = 'custom_data_ticket_'.$join_id.'.'.$search_type;
+							switch ($op) {
+								case self::OP_IS:
+									$wheres[] = "$field = " . $db->quote($choice);
+									break;
+								case self::OP_NOT:
+									$wheres[] = "$field != " . $db->quote($choice);
+									break;
+								case self::OP_CONTAINS:
+								case self::OP_NOTCONTAINS:
+									$op = 'LIKE';
+									if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
+									$wheres[] = "$field $op " . $db->quote('%'.$choice.'%');
+									break;
+							}
+							break;
+
+						case 'id':
+							$join_id = Util::requestUniqueId();
+							$choices_in = array();
+							foreach ((array)$choice as $c) {
+								$choices_in[] = (int)$c;
+							}
+							$choices_in = implode(',', $choices_in);
+
+							$field = 'custom_data_ticket_'.$join_id.'.field_id';
+							switch ($op) {
+								case self::OP_CONTAINS:
+									$joins[] = array(
+										'custom_data_ticket',
+										"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id)"
+									);
+									$wheres[] = "$field IN ($choices_in)";
+									break;
+
+								case self::OP_NOTCONTAINS:
+									$joins[] = array(
+										'custom_data_ticket',
+										"LEFT JOIN AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id IN ($choices_in)"
+									);
+									$wheres[] = "$field IS NULL";
+									break;
+							}
+							break;
+					}
+					break;
 			}
 		}
-
-		$joins = array_unique($joins);
 
 		return array(
 			'joins' => $joins,

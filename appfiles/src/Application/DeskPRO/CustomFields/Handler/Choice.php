@@ -57,7 +57,7 @@ class Choice extends HandlerAbstract
 			}
 		}
 
-		$field_group = new \Symfony\Component\Form\FieldGroup($this->getFormFieldName());
+		$field_group = new \Symfony\Component\Form\FieldGroup($this->getFormFieldName(), array('virtual' => true));
 		$field_choice = new \Symfony\Component\Form\ChoiceField('choice', array(
 			'choices' => $options
 		));
@@ -108,5 +108,15 @@ class Choice extends HandlerAbstract
 		}
 
 		return $all_values;
+	}
+
+	public function getSearchCapabilities()
+	{
+		return array('contains', 'notcontains');
+	}
+
+	public function getSearchType()
+	{
+		return 'id';
 	}
 }

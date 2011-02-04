@@ -38,6 +38,33 @@ abstract class AbstractFields
 		return $field;
 	}
 
+	public function getFieldsDisplayArray($field_defs, $data_structured = array(), $field_group = null)
+	{
+		$custom_fields = array();
+		$has_value = false;
+		foreach ($field_defs as $f_def) {
+			$value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
+
+			$f = $f_def->getHandler()->getFormField($value);
+
+			if ($field_group) {
+				$field_group->add($f);
+			}
+
+			$rendered = $value ? $f_def->getHandler()->renderHtml($value) : null;
+			if ($rendered) $has_value = true;
+
+			$custom_fields[] = array(
+				'field_def' => $f_def,
+				'title' => $f_def['title'],
+				'form' => $f,
+				'rendered' =>  $rendered
+			);
+		}
+
+		return $custom_fields;
+	}
+
 
 	public function getEntityName()
 	{

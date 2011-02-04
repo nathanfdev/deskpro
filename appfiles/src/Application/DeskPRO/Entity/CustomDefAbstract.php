@@ -10,6 +10,8 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -201,5 +203,17 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->options[$name];
+	}
+
+
+
+	/**
+	 * Fetch the search capabiltiies supported by the field.
+	 *
+	 * @return array
+	 */
+	public function getSearchCapabilities()
+	{
+		return $this->getHandler()->getSearchCapabilities();
 	}
 }

@@ -42,4 +42,14 @@ class Text extends HandlerAbstract
 			array($this->field_def['id'], 'input', $value)
 		);
 	}
+
+	public function getSearchCapabilities()
+	{
+		return array('is', 'not', 'contains', 'notcontains');
+	}
+
+	public function getSearchType()
+	{
+		return 'input';
+	}
 }

@@ -141,3 +141,20 @@
 		</div>
 	</div>
 {% endif %}
+{% if term_options.custom_ticket_fields %}
+	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% for field in term_options.custom_ticket_fields %}
+		<div class="type" title="Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+			<div class="op">
+				<select name="op">
+					{% for op in field.field_def.search_capabilities %}
+						<option value="{{op}}">{{op_lang[op]}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<div class="choice">
+				{{ form_field(field.form) }}
+			</div>
+		</div>
+	{% endfor %}
+{% endif %}

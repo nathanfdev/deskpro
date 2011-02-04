@@ -104,6 +104,10 @@ class SettingsController extends AbstractController
 
 		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
 
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$term_options['custom_ticket_fields'] = $custom_fields;
+
 		if ($this->isPostRequest()) {
 			$errors = $this->_processEditQueue($queue);
 			if (!$errors) {

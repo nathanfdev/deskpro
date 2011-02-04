@@ -52,4 +52,14 @@ class Date extends HandlerAbstract
 			array($this->field_def['id'], 'value', $value)
 		);
 	}
+
+	public function getSearchCapabilities()
+	{
+		return array('is', 'not', 'gt', 'lt');
+	}
+
+	public function getSearchType()
+	{
+		return 'value';
+	}
 }

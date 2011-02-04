@@ -25,7 +25,7 @@ $(document).ready(function() {
 				rule_type: '{{term.rule_type}}',
 				op: '{{term.op}}',
 				choice: {
-					{% for k,v in term %}{{k}}: '{{v}}',{% endfor %}
+					{% for k,v in term %}{{k}}: {{v|json_encode|raw}},{% endfor %}
 					nothing: null
 				}
 			});
