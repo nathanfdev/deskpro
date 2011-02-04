@@ -87,7 +87,12 @@ DeskPRO.Agent.Notifier.Notifier = new Class({
 			return;
 		}
 
-		var pos = this.list.position({
+		this.list.css({
+			position: 'absoloute',
+			left: 0,
+			top: 0
+		});
+		this.list.position({
 			my: 'right top',
 			at: 'right bottom',
 			of: this.button,
