@@ -1,6 +1,6 @@
-Orb.createNamespace('DeskPRO');
+Orb.createNamespace('DeskPRO.Widget');
 
-DeskPRO.Widget = new Class({
+DeskPRO.Widget.Widget = new Class({
 
 	Implements: [Events, Options],
 
@@ -80,15 +80,50 @@ DeskPRO.Widget = new Class({
 	 *
 	 * @param options
 	 */
-	remoteAjax: function(options) {
+	ajax: function(options) {
 
-		if (options.dataType && options.dataType != 'jsonp') {
-			var url = escape(options.url);
-			options.url = this.options.deskproPath + '/proxy/' + this.options.proxyKey + '?url=' + url;
+		if (!options.dataType || options.dataType != 'jsonp') {
+
+			// Handle GET URL's ourselves, since we'll use the url
+			// directly in the proxy
+			var url = options.url;
+			if (options.data && options.type == 'GET') {
+				if (url.indexOf('?')) {
+					url += '&';
+				} else {
+					url += '?';
+				}
+
+				url += $.serialize(options.data);
+				options.data = null;
+			}
+			url = escape(url);
+
+			options.url = this.options.deskproPath + 'proxy/' + this.options.proxyKey + '?url=' + url;
 		}
+
+		if (!options.headers) options.headers = {};
+
+		// Reset username/password, the proxy will send these on.
+		// Some browsers don't send this info if we dont have a realm,
+		// so we'll just pass it along in these headers
+		if (options.username) {
+			options.headers['X-DeskPRO-Proxy-Username'] = options.username;
+			delete options.username;
+		}
+		if (options.password) {
+			options.headers['X-DeskPRO-Proxy-Password'] = options.password;
+			delete options.password;
+		}
+
+		if (!options.success) options.success = function(r) { console.log(r); };
+		if (!options.error) options.error = function(m, e) { console.log(m); console.log(e); };
+
+		console.log(options);
 
 		return $.ajax(options);
 	},
+
 
 
    /**

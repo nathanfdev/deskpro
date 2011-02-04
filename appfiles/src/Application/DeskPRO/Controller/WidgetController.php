@@ -8,7 +8,7 @@ use \Application\DeskPRO\Entity;
 use \Orb\Util\Util;
 use \Orb\Util\Strings;
 
-class ProxyController extends AbstractController
+class WidgetController extends AbstractController
 {
 	/**
 	 * The $key is a md5 of the session ID and the app secret.
@@ -37,13 +37,22 @@ class ProxyController extends AbstractController
 		$ch = curl_init($url);
 		if ($this->isPostRequest()) {
 			curl_setopt($ch, CURLOPT_POST, true);
-			curl_setopt($ch, CURLOPT_POSTFIELDS, $_POST);
+			curl_setopt($ch, CURLOPT_POSTFIELDS, file_get_contents('php://input'));
 		}
 
+		if ($this->request->headers->get('X-DeskPRO-Proxy-Username') OR $this->request->headers->get('X-DeskPRO-Proxy-Password')) {
+			curl_setopt($ch, CURLOPT_USERPWD, $this->request->headers->get('X-DeskPRO-Proxy-Username','').':'.$this->request->headers->get('X-DeskPRO-Proxy-Password',''));
+			curl_setopt($ch, CURLOPT_HTTPAUTH, CURLAUTH_BASIC);
+		}
+
+		if (!empty($_SERVER['CONTENT_TYPE'])) {
+			curl_setopt($ch, CURLOPT_HTTPHEADER, array('Content-Type: ' . $_SERVER['CONTENT_TYPE']));
+		}
 		curl_setopt($ch, CURLOPT_FOLLOWLOCATION, true);
 		curl_setopt($ch, CURLOPT_HEADER, false);
 		curl_setopt($ch, CURLOPT_USERAGENT, 'DeskPRO AJAX Proxy');
 		curl_setopt($ch, CURLOPT_RETURNTRANSFER, true);
+		curl_setopt($ch, CURLINFO_HEADER_OUT, true);
 
 		$contents = curl_exec($ch);
 		$info = curl_getinfo($ch);

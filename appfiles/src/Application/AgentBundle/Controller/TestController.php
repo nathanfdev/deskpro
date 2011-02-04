@@ -12,11 +12,18 @@ class TestController extends AbstractController
     {
 
 		$widget = new Entity\Widget();
-		$widget['name_id'] = 'com_deskpro_example';
+		$widget['name_id'] = 'com_deskpro_campfire_announce';
 		$widget['section'] = 'agent.ticket';
-		$widget['js_widget_class'] = 'com_deskpro_example';
-		$widget['template_name'] = 'DeskPRO:Widgets:com_deskpro_example.twig.html';
-		$widget['data'] = array('tab_title' => 'My Widget');
+		$widget['js_widget_class'] = 'DeskPRO.Widget.CampfireAnnounce';
+		$widget['template_name'] = 'DeskPRO:Widgets:com_deskpro_campfire_announce.twig.html';
+		$widget['data'] = array(
+			'tab_title' => 'My Widget',
+			'api_info' => array(
+				'authToken' => 'xxx',
+				'roomId' => '374745',
+				'accountName' => 'deskpro'
+			)
+		);
 
 		App::getOrm()->persist($widget);
 		App::getOrm()->flush();
