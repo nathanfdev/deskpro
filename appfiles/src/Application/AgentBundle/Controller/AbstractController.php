@@ -36,7 +36,15 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				$return = $this->request->getRequestUri();
 			}
-			return $this->redirect($this->get('router')->generate('user_login', array('return' => $return)));
+
+
+			if ($this->request->isXmlHttpRequest()) {
+				$redirect_url = $this->get('router')->generate('user_login', array('return' => $this->get('router')->generate('agent')));
+				return $this->createJsonResponse(array('error' => 'session_expired', 'redirect_login' => $redirect_url), 403);
+			}
+
+			$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
+			return $this->redirect($redirect_url);
 		}
 
 		if (!$this->_userHasPermissions()) {

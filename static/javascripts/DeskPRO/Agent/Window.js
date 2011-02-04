@@ -585,6 +585,27 @@ DeskPRO.Agent.Window = new Class({
 
 	_globalHandleAjaxError: function(event, XMLHttpRequest, ajaxOptions, thrownError) {
 
+		this.stopLoadingIndicator(1000);
+
+		if (XMLHttpRequest && XMLHttpRequest.status && XMLHttpRequest.status == '403') {
+			var data = XMLHttpRequest.responseText;
+			try {
+				data = $.parseJSON(data);
+			} catch (e) {
+				data = null;
+			}
+
+			if (data && data.error && data.error == 'session_expired') {
+				window.location = data.redirect_login;
+				ajaxOptions.error = null;
+				ajaxOptions.complete = null;
+
+				this.showStatusMessage('Your session has timed out, you must log in');
+
+				return;
+			}
+		}
+
 		// We dont use this handler if there was an error handler used
 		if (ajaxOptions && ajaxOptions.error) return;
 
