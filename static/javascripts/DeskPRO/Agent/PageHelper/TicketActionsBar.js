@@ -457,6 +457,9 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			case 'new_reply':
 				obj = DeskPRO.Agent.TicketList.Property.NewReply;
 				break;
+			case 'flag':
+				obj = DeskPRO.Agent.TicketList.Property.Flag;
+				break;
 			case 'ticket_field':
 				obj = DeskPRO.Agent.TicketList.Property.TicketField;
 				opt = { fieldId: propId };

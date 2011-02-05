@@ -68,6 +68,17 @@ class TicketEdit
 					$this->ticket['status'] = $action;
 					break;
 
+				case 'flag':
+					$agent = App::getCurrentPerson();
+
+					if (!$agent) {
+						continue;
+						//todo err?
+					}
+
+					$this->ticket->setFlagForPerson($agent, $action);
+					break;
+
 				case 'new_reply':
 					$agent = App::getCurrentPerson();
 

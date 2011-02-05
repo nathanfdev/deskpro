@@ -674,6 +674,48 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return true;
 	}
 
+
+
+	/**
+	 * Set a flag color for this ticket for a particular perosn.
+	 * $color of null or 'none' removes the flag.
+	 *
+	 * @param Person $person
+	 * @param string $color
+	 * @return TicketFlagged
+	 */
+	public function setFlagForPerson($person, $color = null)
+	{
+		if ($color == 'none') $color = null;
+
+		$ticket_flagged = App::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
+			'ticket_id' => $this->id,
+			'person_id' => $person['id']
+		));
+		if (!$ticket_flagged) {
+
+			// doesnt exist, and no color, nothing to do
+			if (!$color) {
+				return null;
+			}
+
+			$ticket_flagged = new Entity\TicketFlagged();
+			$ticket_flagged['ticket_id'] = $this->id;
+			$ticket_flagged['person_id'] = $person['id'];
+		}
+
+		if (!$color) {
+			App::getOrm()->remove($ticket_flagged);
+			$ticket_flagged = null;
+		} else {
+			$ticket_flagged['color'] = $color;
+		}
+
+		App::getOrm()->flush();
+
+		return $ticket_flagged;
+	}
+
 	/**
 	 * Gets the urgency rounded to nearest 10. Useful in ex templates to specify a color
 	 *

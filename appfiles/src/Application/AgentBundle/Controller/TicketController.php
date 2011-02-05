@@ -205,29 +205,7 @@ class TicketController extends AbstractController
 	public function ajaxSaveFlaggedAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
-
-		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
-			'ticket_id' => $ticket_id,
-			'person_id' => $this->person['id']
-		));
-		if (!$ticket_flagged) {
-			$ticket_flagged = new Entity\TicketFlagged();
-			$ticket_flagged['ticket_id'] = $ticket_id;
-			$ticket_flagged['person_id'] = $this->person['id'];
-		}
-
-		$ticket_flagged['color'] = $this->in->getString('color');
-
-		if ($ticket_flagged['color'] == 'none') {
-			if (App::getOrm()->contains($ticket_flagged)) {
-				// If its an existing record, we wanna delete it
-				App::getOrm()->remove($ticket_flagged);
-			}
-		} else {
-			App::getOrm()->persist($ticket_flagged);
-		}
-
-		App::getOrm()->flush();
+		$ticket->setFlagForPerson($this->person, $this->in->getString('color'));
 
 		return $this->createJsonResponse(array('success' => 1));
 	}

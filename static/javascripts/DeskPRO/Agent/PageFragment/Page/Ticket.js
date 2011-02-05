@@ -216,29 +216,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 
 	_handleFlagMenuClick: function(info) {
-		var item = $(info.itemEl);
-		var flag = item.data('flag');
+		var opt = 'flag';
+		var itemId = $(info.itemEl).data('flag');
 
-		var m = $('.ticket-flag:first', this.wrapper);
-
-		var old_flag = m.data('flag');
-
-		m.removeClass('icon-flag-'+old_flag);
-		m.addClass('icon-flag-'+flag);
-		m.data('flag', flag);
-
-		DeskPRO_Window.startLoadingIndicator();
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-flagged',
-			type: 'POST',
-			context: this,
-			data: { color: flag },
-			dataType: 'json',
-			success: function(data) {
-				this._handleFlagMenuClickSuccess(old_flag, flag);
-			}
-		});
+		var prop = this.getPropertyManager(opt);
+		this.changeManager.setInstantChange(prop, itemId);
 	},
 
 	_handleFlagMenuClickSuccess: function(old_flag, new_flag) {
