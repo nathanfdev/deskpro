@@ -151,6 +151,10 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 					$agent = App::getCurrentPerson();
 					break;
 
+				case 'add_participant':
+					$actions['add_participant'] = $action['add_participant'];
+					break;
+
 				case 'ticket_field':
 
 					$value = $action;

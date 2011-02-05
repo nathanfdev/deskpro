@@ -20,23 +20,11 @@ namespace Application\DeskPRO\Entity;
 class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="ticket_id", type="integer")
-	 */
-	protected $ticket_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:ManyToOne(targetEntity="Ticket", inversedBy="participants")
 	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
 	protected $ticket = null;
-
-	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person

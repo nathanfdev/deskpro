@@ -102,6 +102,22 @@ pageMeta.widgets = [
 			</div>
 
 			<br style="clear:both" />
+
+			<div class="ticket-participants">
+				<ul>
+					{% for participant in ticket.participants %}
+						<li data-option-id="{{participant.id}}" style="line-height: 15px">
+							<div style="margin-right: 5px; float: left">
+								<img src="{{ participant.getPictureUrl(15) }}" alt="" width="15" height="15" />
+							</div>
+							{{participant.display_name}}
+						</li>
+					{% endfor %}
+					<li class="add-trigger" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '15'})|replace({'000': '{person_id}'}) }}"><span>Add a new participant</span></li>
+				</ul>
+			</div>
+
+			<br style="clear:both" />
 		</div>
 
 		{% include 'AgentBundle:Ticket:part-custom-fields.twig.html' %}
@@ -190,13 +206,6 @@ pageMeta.widgets = [
 			{% if ticket.person.primary_email %}
 				{{ticket.person.primary_email.email}}
 			{% endif %}
-		</div>
-	</div>
-
-	<div class="ticket-attach overlay no-padd">
-		<div class="ticket-attach-widget"></div>
-		<div class="buttons">
-			<button class="save dp-button small overlay-close-trigger">Done</button>
 		</div>
 	</div>
 

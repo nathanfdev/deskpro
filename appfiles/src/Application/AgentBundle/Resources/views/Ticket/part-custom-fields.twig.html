@@ -1,7 +1,7 @@
 {% if custom_fields %}
 	<div class="ticket-custom-fields-wrap">
-		<div class="edit-btn ticket-custom-fields-edit-btn"><span>Edit Fields</span></div>
-		<div class="ticket-custom-fields show-fields">
+		<div class="edit-btn ticket-custom-fields-edit-btn" style="float:right"><span>Edit Fields</span></div>
+		<div class="ticket-custom-fields show-fields" style="clear:right">
 			<div class="wrap">
 				{% include 'AgentBundle:Ticket:custom-fields-rendered.twig.html' with {'custom_fields': custom_fields} %}
 			</div>

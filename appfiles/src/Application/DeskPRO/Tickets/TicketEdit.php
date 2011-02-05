@@ -79,6 +79,18 @@ class TicketEdit
 					$this->ticket->setFlagForPerson($agent, $action);
 					break;
 
+				case 'add_participant':
+
+					$person = App::getEntityRepository('DeskPRO:Perosn')->find($action['add_participant']);
+
+					if (!$person) {
+						continue;
+					}
+
+					$this->ticket->addParticipant($person);
+
+					break;
+
 				case 'new_reply':
 					$agent = App::getCurrentPerson();
 

@@ -78,7 +78,6 @@ class TicketController extends AbstractController
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,
-			'custom_fields_has_one_value' => $has_value,
 			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
 			'macros' => $macros,
 			'widgets' => $widgets

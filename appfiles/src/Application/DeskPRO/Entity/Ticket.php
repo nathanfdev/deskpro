@@ -254,7 +254,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TicketParticipant", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 * @orm:OneToMany(targetEntity="TicketParticipant", mappedBy="ticket", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $participants;
 
@@ -299,7 +299,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$ids = array();
 		foreach ($this->participants as $p) {
-			$ids[] = $p['person_id'];
+			$ids[] = $p['person']['id'];
 		}
 
 		return $ids;
@@ -321,12 +321,64 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		foreach ($this->participants as $p) {
-			if ($p['person_id'] == $person_id) {
-				return true;
+			if ($p['person']['id'] == $person_id) {
+				return $p;
 			}
 		}
 
 		return false;
+	}
+
+
+
+	/**
+	 * Add a participant
+	 *
+	 * @param $person_or_id
+	 * @return TicketParticipant
+	 */
+	public function addParticipant($person_or_id)
+	{
+		$person = $person_or_id;
+		if (!($person instanceof Person)) {
+			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
+		}
+
+		if ($ticket_part = $this->hasParticipant($person)) {
+			return $ticket_part;
+		}
+
+		$ticket_part = new TicketParticipant();
+		$ticket_part['person'] = $person;
+		$ticket_part['ticket'] = $this;
+		$this->participants->add($ticket_part);
+
+		return $ticket_part;
+	}
+
+
+
+	/**
+	 * Remove a participant
+	 *
+	 * @param  $person_or_id
+	 * @return null
+	 */
+	public function removeParticipant($person_or_id)
+	{
+		$person = $person_or_id;
+		if (!($person instanceof Person)) {
+			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
+		}
+
+		foreach ($this->participants as $k => $p) {
+			if ($p['person']['id'] == $person['id']) {
+				$this->participants->remove($k);
+				return $p;
+			}
+		}
+
+		return null;
 	}
 
 

@@ -236,6 +236,22 @@ ul.tagit input[type="text"] {
 	padding: 0px 6px 6px 6px;
 }
 
+.ticket .ticket-top .ticket-participants {
+	float: left;
+	padding-top: 5px;
+	padding-bottom: 4px;
+}
+.ticket .ticket-top .ticket-participants ul li {
+	font-size: 8pt;
+}
+
+.ticket .ticket-top .ticket-participants ul li.add-trigger {
+	background-color: #CCD0DB;
+	padding: 3px;
+	font-size: 7pt;
+	cursor: pointer;
+}
+
 .ticket .ticket-custom-fields {
 	margin: 15px;
 	margin-top: 5px;
