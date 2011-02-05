@@ -133,14 +133,16 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	/**
 	 * Save the changes for all queued items
 	 */
-	saveChanges: function() {
-		var data = [];
+	saveChanges: function(data) {
+		data = data || [];
 
 		Object.each(this.changes, function (change) {
 			var property = change[0];
 			var name = property.getName();
 
-			this._addPropertyValueToData(data, property.getName(), property.getValue());
+			if (!property.isDisplayOnly()) {
+				this._addPropertyValueToData(data, property.getName(), property.getValue());
+			}
 			property.unhighlightInterfaceElement();
 		}, this);
 

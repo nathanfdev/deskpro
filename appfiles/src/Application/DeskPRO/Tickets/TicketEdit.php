@@ -26,8 +26,18 @@ class TicketEdit
 	{
 		$return = array();
 
-		foreach ($actions as $type => $action) {
-			switch ($type) {
+		foreach ($actions as $term => $action) {
+
+			$term_id = null;
+
+			// $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
+			$m = null;
+			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+				$term = $m[1];
+				$term_id = $m[2];
+			}
+
+			switch ($term) {
 				case 'department_id':
 					$this->ticket['department_id'] = $action;
 					break;
@@ -74,6 +84,15 @@ class TicketEdit
 					$this->ticket->addMessage($message);
 
 					$return['new_reply'] = $message;
+
+					break;
+
+				case 'ticket_field':
+
+					$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
+					foreach ($field->getHandler()->getDataFromForm($action['value']) as $info) {
+						$this->ticket->setCustomData($info[0], $info[1], $info[2]);
+					}
 
 					break;
 			}

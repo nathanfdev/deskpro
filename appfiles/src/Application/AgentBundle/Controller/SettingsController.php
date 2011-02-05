@@ -179,15 +179,51 @@ class SettingsController extends AbstractController
 
 		if ($this->isPostRequest()) {
 
+			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+
 			$macro['title'] = $this->in->getString('macro.title');
 			$macro['is_global'] = true;
-			$macro['actions'] = $this->in->getCleanValueArray('actions', 'raw', 'str_simple');
+
+			$actions = $this->in->getCleanValueArray('actions', 'raw', 'str_simple');
+			foreach ($actions as $k => &$action) {
+
+				// This complexity is because the values expected by the field handlers to render
+				// data was written to handle the models in the db,
+				// but here saving the macro we only have a form, so we're hacking together
+				// fake model data so we have the correct data structure.
+				// see Ticket::setCustomData
+				if (strpos($action['rule_type'], 'ticket_field') === 0) {
+					$field_id = preg_replace('#^ticket_field\[(.*?)\]$#', '$1', $action['rule_type']);
+					$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($field_id);
+
+					$action_custm_datas = array();
+
+					foreach ($field->getHandler()->getDataFromForm($_POST['actions'][$k]) as $info) {
+						$custom_data = new Entity\CustomDataTicket();
+						$custom_data['field'] = $field;
+						$custom_data[$info[1]] = $info[2];
+
+						$action_custm_datas[] = $custom_data;
+					}
+
+					$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($action_custm_datas, $ticket_field_defs);
+					$ticket_data_structured = $ticket_data_structured[$field_id];
+
+					$action['renderable_value'] = $ticket_data_structured;
+				}
+			}
+
+			$macro['actions'] = $actions;
 
 			App::getOrm()->persist($macro);
 			App::getOrm()->flush();
 
 			return $this->redirectRoute('agent_settings_ticketmacros', array('saved' => 1));
 		}
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$ticket_options['custom_ticket_fields'] = $custom_fields;
 
         return $this->render('AgentBundle:Settings:ticket-macro-edit.twig.html', array(
 			'ticket_options' => $ticket_options,

@@ -7,7 +7,7 @@ Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 
 	Implements: [Events, Options],
-	
+
 	options: {},
 	ticketPage: null,
 
@@ -16,27 +16,27 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	 * @param {Object} options
 	 */
 	initialize: function(ticketPage, options) {
-		
+
 		if (options) this.setOptions(options);
-		
+
 		this.ticketPage = ticketPage;
 
 		this.init();
 	},
-	
+
 	init: function() {},
-	
+
 	/**
 	 * Name for the property
 	 *
 	 * @return {String}
 	 */
 	getName: function() {
-		
+
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Used to compare a new value to the current value to see if
 	 * we really need to change anything.
@@ -47,12 +47,12 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 		if (this.getValue() == compare) {
 			return true;
 		}
-		
+
 		return false;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Gets the currently set value
 	 *
@@ -61,9 +61,9 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	getValue: function() {
 		// override
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Sets a new value. Must also update the UI if needed.
 	 *
@@ -72,19 +72,19 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	setValue: function(value) {
 		// override
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Sets data that we got from the server. This is usually the same
 	 * as setValue(), but it might be like a new reply or osmething like that.
-	 */ 
+	 */
 	setIncomingValue: function(value) {
 		this.setValue(value);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Get the UI element used to display the property.
 	 */
@@ -92,16 +92,16 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 		if (this._interfaceEl !== null) return this._interfaceEl;
 
 		this._interfaceEl = this._getInterfaceElement();
-		
+
 		return this._interfaceEl;
 	},
-	
+
 	_interfaceEl: null,
 	_getInterfaceElement: function() {
 		// override
 	},
-	
-	
+
+
 	/**
 	 * When a property is updated automatically (not from a user action, like in the background),
 	 * this pulse action is applied to highlight and fade slowly.
@@ -109,21 +109,25 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	pulseInterfaceElement: function() {
 		this.getInterfaceElement().effect('highlight', 1200);
 	},
-	
-	
+
+
 	/**
 	 * Highlight the UI element to bring attention to some change.
 	 */
 	highlightInterfaceElement: function() {
 		this.getInterfaceElement().addClass('change-on');
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Remove the UI highlight
 	 */
 	unhighlightInterfaceElement: function() {
 		this.getInterfaceElement().removeClass('change-on');
+	},
+
+	isDisplayOnly: function() {
+		return false;
 	}
 });

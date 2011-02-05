@@ -85,9 +85,21 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	public function getActionsArray(Entity\Ticket $ticket = null)
 	{
 		$actions = array();
+		$preview = array();
 
 		foreach ($this->actions as $action) {
-			switch ($action['rule_type']) {
+
+			$term = $action['rule_type'];
+			$term_id = null;
+
+			// $term of ticket_field[12] becomes $term=ticket_field, $term_id=12
+			$m = null;
+			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+				$term = $m[1];
+				$term_id = $m[2];
+			}
+
+			switch ($term) {
 				case 'department':
 					if (!$ticket OR $ticket['department_id'] != $action['department']) {
 						$actions['department_id'] = $action['department'];
@@ -132,6 +144,26 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 				case 'reply':
 					$actions['new_reply'] = $action['new_reply'];
 					$agent = App::getCurrentPerson();
+					break;
+
+				case 'ticket_field':
+
+					$value = $action;
+					unset($value['rule_type'], $value['op'], $value['renderable_value']);
+
+					$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
+					if (!$field) {
+						break;
+					}
+
+					$act = array(
+						'type' => 'ticket_field',
+						'field_id' => $term_id,
+						'value' => $value,
+						'value_display' => $field->getHandler()->renderHtml($action['renderable_value'])
+					);
+
+					$actions[$action['rule_type']] = $act;
 					break;
 			}
 		}

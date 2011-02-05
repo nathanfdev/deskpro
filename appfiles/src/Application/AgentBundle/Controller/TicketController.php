@@ -387,6 +387,27 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id);
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 		$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
+
+		$macro_id = $this->in->getUint('macro_id');
+		if ($macro_id) {
+			$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+			$all_macro_actions = $macro->getActionsArray($ticket);
+			$apply_macro_actions = array();
+
+			// Only ticket fields need to be applied this way,
+			// the other actions were performed on the actual ticket interface
+			// and sent in the request, and applied normally above
+			foreach ($all_macro_actions as $k => $action) {
+				if (strpos($k, 'ticket_field') === 0) {
+					$apply_macro_actions[$k] = $action;
+				}
+			}
+
+			if ($apply_macro_actions) {
+				$ticket_edit->applyActions($apply_macro_actions);
+			}
+		}
+
 		$ticket_edit->save();
 
 		$data = array();

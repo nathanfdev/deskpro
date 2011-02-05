@@ -112,7 +112,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 	propertyManagers: {},
 
-	getPropertyManager: function(type) {
+	getPropertyManager: function(type, type_id) {
 
 		if (this.propertyManagers[type]) {
 			return this.propertyManagers[type];
@@ -131,6 +131,9 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 				break;
 			case 'new_reply':
 				manager = new DeskPRO.Agent.Ticket.Property.NewReply(this);
+				break;
+			case 'ticket_field':
+				manager = new DeskPRO.Agent.Ticket.Property.TicketField(this, { fieldId: type_id });
 				break;
 		}
 
@@ -423,13 +426,21 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// Macro apply/cancel
 		$('ul.tools li.macros-apply', this.ticketBar).click((function() {
-			this.changeManager.saveChanges();
+			var data = [];
+			if (this._currentMacroId) {
+				data.push({ name: 'macro_id', value: this._currentMacroId });
+			}
+			this.changeManager.saveChanges(data);
 			this.toggleMacroApplyBtn('off');
+
+			this._currentMacroId = null;
 		}).bind(this));
 
 		$('ul.tools li.macros-cancel', this.ticketBar).click((function() {
 			this.changeManager.revertChanges();
 			this.toggleMacroApplyBtn('off');
+
+			this._currentMacroId = null;
 		}).bind(this));
 
 		// Menus to change reply info
@@ -497,9 +508,11 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		}
 	},
 
+	_currentMacroId: null,
 	_handleMacroClick: function(info) {
+		this._currentMacroId = $(info.itemEl).data('macro-id');
 		$.ajax({
-			url: this.getMetaData('getMacroUrl').replace('$macro_id', $(info.itemEl).data('macro-id')),
+			url: this.getMetaData('getMacroUrl').replace('$macro_id', this._currentMacroId),
 			type: 'GET',
 			context: this,
 			dataType: 'json',
@@ -511,9 +524,20 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 	_performMacro: function (actions) {
 		Object.each(actions, function(action, type) {
-			var prop = this.getPropertyManager(type);
+
+			var type_id = null;
+			var m = /^(.*?)\[(.*?)\]$/.exec(type);
+			if (m !== null) {
+				type = m[1];
+				type_id = m[2];
+			}
+
+			var prop = this.getPropertyManager(type, type_id);
 
 			if (prop) {
+				if (typeOf(action) == 'object' && action.value_display) {
+					action = action.value_display;//custom fields
+				}
 				this.changeManager.addChange(prop, action);
 			} else {
 				console.warn('Unknown property `%s`. Actions: %o', type, actions);

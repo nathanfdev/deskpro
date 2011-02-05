@@ -10,20 +10,20 @@ $(document).ready(function() {
 			new_row.remove();
 		});
 	});
-	
+
 	var to_el = $('.search-form .search-terms');
-	
+
 	$('.search-form .add-term').data('add-count', 0).click(function() {
 		var count = parseInt($(this).data('add-count'));
 		var basename = 'actions['+count+']';
-	
+
 		$(this).data('add-count', count+1);
-	
+
 		editor.addNewRow(to_el, basename);
 	});
-	
+
 	var count = 0;
-	
+
 	{% if macro.id %}
 		// Existing actions
 		{% for action in macro.actions %}
@@ -40,7 +40,7 @@ $(document).ready(function() {
 
 		{% endfor %}
 	{% endif %}
-	
+
 	$('.search-form .add-term').data('add-count', count)
 });
 </script>
@@ -54,7 +54,7 @@ $(document).ready(function() {
 		<label for="macro_title">Macro title</label>
 		<input type="text" name="macro[title]" value="{{macro.title}}" class="input-title" id="macro_title" />
 	</div>
-	
+
 	<div class="row">
 		<label>Actions</label>
 		<div class="search-form">
@@ -155,6 +155,15 @@ $(document).ready(function() {
 			<textarea name="new_reply" cols="80" rows="4"></textarea>
 		</div>
 	</div>
+	{% if ticket_options.custom_ticket_fields %}
+		{% for field in ticket_options.custom_ticket_fields %}
+			<div class="type" title="Set Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+				<div class="choice">
+					{{ form_field(field.form) }}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
 </div>
 
 {% endblock %}

@@ -344,7 +344,15 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	_applyButtonCallback: null,
 
 	createPropertyForTicket: function(propName, ticket_id) {
-		var objinfo = this._getPropClass(propName);
+
+		var propId = null;
+		var m = /^(.*?)\[(.*?)\]$/.exec(propName);
+		if (m !== null) {
+			propName = m[1];
+			propId = m[2];
+		}
+
+		var objinfo = this._getPropClass(propName, propId);
 
 		if (!objinfo) {
 			return false;
@@ -413,6 +421,10 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 					return;
 				}
 
+				if (typeOf(newValue) == 'object' && newValue.value_display) {
+					newValue = newValue.value_display;//custom fields
+				}
+
 				changeManager.addChange(property, newValue);
 
 			}, this);
@@ -428,7 +440,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		}).bind(this);
 	},
 
-	_getPropClass: function(propName) {
+	_getPropClass: function(propName, propId) {
 		var obj = null;
 		var opt = null;
 		switch (propName) {
@@ -444,6 +456,10 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 				break;
 			case 'new_reply':
 				obj = DeskPRO.Agent.TicketList.Property.NewReply;
+				break;
+			case 'ticket_field':
+				obj = DeskPRO.Agent.TicketList.Property.TicketField;
+				opt = { fieldId: propId };
 				break;
 		}
 
