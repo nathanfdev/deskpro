@@ -604,6 +604,11 @@ DeskPRO.Agent.Window = new Class({
 
 				return;
 			}
+
+			if (data && data.error && data.error == 'not_allowed') {
+				this.showStatusMessage('The action you attempted to execute is not allowed:<br />' + data.errorMessage);
+				return;
+			}
 		}
 
 		// We dont use this handler if there was an error handler used

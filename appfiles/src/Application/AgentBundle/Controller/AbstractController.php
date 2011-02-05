@@ -65,6 +65,19 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	}
 
 
+
+	/**
+	 * Create a reponse that indicates a permissions error.
+	 *
+	 * @param string $message The message to show the user
+	 * @return Response
+	 */
+	protected function createPermissionErrorResponse($message)
+	{
+		return $this->createJsonResponse(array('error' => 'not_allowed', 'message' => $message), 403);
+	}
+
+
 	/**
 	 * @return Application\DeskPRO\Entity\Person
 	 */
