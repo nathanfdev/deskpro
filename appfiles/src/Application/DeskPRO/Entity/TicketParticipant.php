@@ -21,6 +21,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
+	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Ticket", inversedBy="participants")
 	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
@@ -28,6 +29,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
+	 * @orm:Id
 	 * @orm:OneToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
