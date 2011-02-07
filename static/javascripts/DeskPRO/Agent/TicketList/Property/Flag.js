@@ -4,6 +4,7 @@ DeskPRO.Agent.TicketList.Property.Flag = new Class({
 	Extends: DeskPRO.Agent.TicketList.Property.Abstract,
 
 	optionName: 'flag',
+	displayCaption: 'Flag',
 
 	init: function() {
 

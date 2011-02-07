@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use \Orb\Util\Arrays;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
@@ -146,9 +148,31 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 					$agent = App::getCurrentPerson();
 					break;
 
+				case 'status':
+					$actions['status'] = $action['status'];
+					break;
+
 				case 'flag':
 					$actions['flag'] = $action['flag'];
 					$agent = App::getCurrentPerson();
+					break;
+
+				case 'add_labels':
+					$actions['add_labels'] = explode(',', $action['labels']);
+					$actions['add_labels'] = array_walk($actions['add_labels'], 'trim');
+					$actions['add_labels'] = Arrays::removeFalsey($actions['add_labels']);
+					if (!$actions['add_labels']) {
+						unset($actions['add_labels']);
+					}
+					break;
+
+				case 'remove_labels':
+					$actions['remove_labels'] = explode(',', $action['labels']);
+					$actions['remove_labels'] = array_walk($actions['remove_labels'], 'trim');
+					$actions['remove_labels'] = Arrays::removeFalsey($actions['remove_labels']);
+					if (!$actions['remove_labels']) {
+						unset($actions['remove_labels']);
+					}
 					break;
 
 				case 'add_participant':

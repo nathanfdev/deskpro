@@ -72,6 +72,10 @@
 				{% endfor %}
 			</ul>
 		</li>
+		<li>
+			<span>Set Flag</span>
+			{% include 'AgentBundle:Common:menu-flags.twig.html' with {'add_classname': 'submenu'} %}
+		</li>
 		<li class="sep">-</li>
 		<li data-option-id="delete"><span class="icon icon-page-delete">Delete Ticket</span></li>
 		<li data-option-id="delete-block"><span class="icon icon-page-delete dev-feature-inactive">Delete Ticket and Block User</span></li>

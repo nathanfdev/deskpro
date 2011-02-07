@@ -188,7 +188,19 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	_actionMenuItemClicked: function(info) {
 		var itemEl = $(info.itemEl);
 
-		var op = itemEl.data('option-id');
+		var typeEl = itemEl;
+
+		if (!typeEl.data('option-name')) {
+			typeEl = typeEl.parent();
+			if (!typeEl.data('option-name')) typeEl = typeEl.parent();
+			if (!typeEl.data('option-name')) typeEl = typeEl.parent();
+			if (!typeEl.data('option-name')) typeEl = typeEl.parent();
+		}
+
+		var op = typeEl.data('option-id');
+		if (!op) {
+			op = 'standard';
+		}
 
 		var ticket_ids = this.getSelectedTicketIds();
 
@@ -233,7 +245,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 			case 'standard':
 
-				var optionName = itemEl.data('option-name');
+				var optionName = itemEl.data('option-name') || typeEl.data('option-name');
 				var value = itemEl.data('option-value');
 
 				this._currentActionInfo = {'op': 'standard', 'name': optionName, 'value': value };
@@ -242,7 +254,12 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 				// just so we can get a caption for the button on the next line
 				var property = props[0];
 
-				this.toggleMacroApplyBtn('on', 'Set ' + property.displayCaption + ': ' + DeskPRO_Window.getDisplayName(property.displayNameType, value));
+				var display_value = DeskPRO_Window.getDisplayName(property.displayNameType, value);
+				if (!display_value) {
+					display_value = value;
+				}
+
+				this.toggleMacroApplyBtn('on', 'Set ' + property.displayCaption + ': ' + display_value);
 
 				var data = [];
 				data.push({

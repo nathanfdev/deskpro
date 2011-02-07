@@ -4,13 +4,13 @@
 			<li class="sep">-</li>
 		{% endif %}
 		{% if dep.children %}
-			<li data-option-id="{{dep.id}}" class="section-title">{{dep.title}}</li>
+			<li data-option-value="{{dep.id}}" class="section-title">{{dep.title}}</li>
 			{% for subdep in dep.children %}
-				<li data-option-id="{{subdep.id}}">{{subdep.title}}</li>
+				<li data-option-value="{{subdep.id}}">{{subdep.title}}</li>
 			{% endfor %}
 			{% set last_with_child = true %}
 		{% else %}
-			<li data-option-id="{{dep.id}}">{{dep.title}}</li>
+			<li data-option-value="{{dep.id}}">{{dep.title}}</li>
 			{% set last_with_child = false %}
 		{% endif %}
 	{% endfor %}
