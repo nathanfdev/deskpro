@@ -16,6 +16,7 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 	<div class="ticket">
 
 	<form class="value-form" style="display:none">
+		<input type="hidden" name="person_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
 		<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
 		<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
 		<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
@@ -31,7 +32,7 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 				<span class="prop-val department_id {% if not ticket.department %}no-value{% endif %}" data-no-value="Choose Department">{{ticket.department.full_title|default('Choose Department')}}</span>
 				:
 			</span>
-			<input type="text" class="input-title" name="ticket[subject]" value="{{ticket.subject}}" placeholder="Enter ticket title" />
+			<input type="text" class="input-title" name="subject" value="{{ticket.subject}}" placeholder="Enter ticket title" />
 		</h1>
 
 		{% include 'AgentBundle:Ticket:part-ticket-info.twig.html' %}

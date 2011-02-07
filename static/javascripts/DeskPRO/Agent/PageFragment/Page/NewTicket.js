@@ -1,27 +1,27 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
 DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
-	
+
 	Extends: DeskPRO.Agent.PageFragment.Page.BasicTicket,
-	
+
 	TYPENAME: 'newticket',
-	
+
 	initPage: function(el) {
 
 		this.parent(el);
 
-		Orb.Compat.WebForms.placeholder($('input[name="ticket\[subject\]"]', this.wrapper));
+		Orb.Compat.WebForms.placeholder($('input[name="subject"]', this.wrapper));
 		Orb.Compat.WebForms.placeholder($('input.person-name-search', this.wrapper));
-		
+
 		// Reply box always open
 		this.toggleReplyBar('on');
 
 		this.ticketReplyTabs.children('li.close-trigger').hide();
-	
+
 		this._initNewUser();
 		this._initUserChoice();
 	},
-	
+
 	newUserHelper: null,
 	_initNewUser: function() {
 		$('a.new-person-trigger', this.contentWrapper).click(this._openNewUser.bind(this));
@@ -31,17 +31,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			saveUrl: this.getMetaData('newUserUrl')
 		});
 	},
-	
+
 	_openNewUser: function(ev) {
 		ev.preventDefault();
 		this.newUserHelper.open();
 	},
-	
+
 	_handleNewUserSaved: function(info) {
 		var data = info.data;
 		this.loadUser(data);
 	},
-	
+
 	userSearchEl: null,
 	_initUserChoice: function() {
 		this.userSearchEl = $('input.person-name-search', this.wrapper);
@@ -51,33 +51,20 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			select: this.userSelected.bind(this)
 		});
 	},
-	
+
 	userSelected: function(ev, ui) {
 		this.loadUser(ui.item)
 	},
-	
+
 	loadUser: function(info) {
-		$('input[name="ticket\[person_id\]"]', this.contentWrapper).val(info.id);
+		$('input[name="person_id"]', this.contentWrapper).val(info.id);
 		this.userSearchEl.val(info.label);
 	},
-	
-	_handleTicketOptionSave: function(option, optionId) {
-		if (option == 'status') {
-			var inputSel = 'input[name="ticket\[status\]"]';
-		} else {
-			var inputSel = 'input[name="ticket\['+option+'_id\]"]';
-		}
-		
-		console.log(inputSel);
-		
-		var el = $(inputSel, this.contentWrapper);
-		el.val(optionId);
-	},
-	
+
 	_saveCustomFields: function() {
 		// Do nothing, we'll save custom fields when the ticket is saved
 	},
-	
+
 	/**
 	 * We're hijacking this event to submit the whole ticket at once
 	 */
@@ -93,10 +80,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			success: this._handleTicketSubmit.bind(this)
 		});
 	},
-	
+
 	_handleTicketSubmit: function(data) {
 		console.log(data);
-		
+
 		DeskPRO_Window.removePage(this);
 		DeskPRO_Window.runPageRoute('ticket:' + data.loadUrl);
 	}

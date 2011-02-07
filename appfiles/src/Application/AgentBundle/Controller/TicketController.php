@@ -130,14 +130,16 @@ class TicketController extends AbstractController
 		App::getOrm()->beginTransaction();
 
 		$ticket = new Entity\Ticket();
-		$ticket['department_id']  = $this->in->getUint('ticket.department_id');
-		$ticket['category_id']    = $this->in->getUint('ticket.category_id');
-		$ticket['product_id']     = $this->in->getUint('ticket.product_id');
-		$ticket['priority_id']    = $this->in->getUint('ticket.department_id');
-		$ticket['status']         = $this->in->getString('ticket.status');
-		$ticket['person_id']      = $this->in->getUint('ticket.person_id');
+		$ticket['agent_id']  = $this->in->getUint('agent_id');
+		$ticket['agent_team_id']  = $this->in->getUint('agent_team_id');
+		$ticket['department_id']  = $this->in->getUint('department_id');
+		$ticket['category_id']    = $this->in->getUint('category_id');
+		$ticket['product_id']     = $this->in->getUint('product_id');
+		$ticket['priority_id']    = $this->in->getUint('department_id');
+		$ticket['status']         = $this->in->getString('status');
+		$ticket['person_id']      = $this->in->getUint('person_id');
 
-		$ticket['subject']      = $this->in->getString('ticket.subject');
+		$ticket['subject']      = $this->in->getString('subject');
 
 		if (!$ticket['status']) {
 			$ticket['status'] = Entity\Ticket::STATUS_OPEN;
