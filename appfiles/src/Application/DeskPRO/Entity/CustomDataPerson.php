@@ -13,12 +13,12 @@ namespace Application\DeskPRO\Entity;
 
 /**
  * Custom ticket data
- * 
+ *
  * @orm:Entity
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="custom_data_person")
  */
-abstract class CustomDataPerson extends CustomDataAbstract
+class CustomDataPerson extends CustomDataAbstract
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefPerson
@@ -28,15 +28,14 @@ abstract class CustomDataPerson extends CustomDataAbstract
 	protected $field = null;
 
 	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
+
+	public function getPersonId()
+	{
+		return $this->person['id'];
+	}
 }

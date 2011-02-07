@@ -431,6 +431,7 @@ class App
 		'tickets.search'             => 'Application\\DeskPRO\\Tickets\\TicketSearch',
 		'custom_fields.people'       => 'Application\\DeskPRO\\CustomFields\\PeopleFields',
 		'custom_fields.tickets'      => 'Application\\DeskPRO\\CustomFields\\TicketFields',
+		'custom_fields.organizations'      => 'Application\\DeskPRO\\CustomFields\\OrganizationFields',
 		'custom_fields.util'         => 'Application\\DeskPRO\\CustomFields\\Util',
 		'filestorage'                => '',
 	);

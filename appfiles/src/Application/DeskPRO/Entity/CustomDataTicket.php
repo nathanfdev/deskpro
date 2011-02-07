@@ -13,19 +13,13 @@ namespace Application\DeskPRO\Entity;
 
 /**
  * Custom ticket data
- * 
+ *
  * @orm:Entity
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="custom_data_ticket")
  */
 class CustomDataTicket extends CustomDataAbstract
 {
-	/**
-	 * @var int
-	 * @orm:Column(name="field_id", type="integer")
-	 */
-	protected $field_id;
-	
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefTicket
 	 * @orm:ManyToOne(targetEntity="CustomDefTicket")
@@ -34,15 +28,14 @@ class CustomDataTicket extends CustomDataAbstract
 	protected $field = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="ticket_id", type="integer")
-	 */
-	protected $ticket_id;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:ManyToOne(targetEntity="Ticket")
 	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
 	protected $ticket;
+
+	public function getTicketId()
+	{
+		return $this->ticket['id'];
+	}
 }

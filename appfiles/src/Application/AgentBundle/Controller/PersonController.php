@@ -53,19 +53,12 @@ class PersonController extends AbstractController
 
 		$form = $this->_getForm($person);
 
-		// All-in-one array for template
-		$custom_fields = array();
-//		foreach ($form->getCustomFields() as $f) {
-//			$form_field = $form['custom_fields']['field_' . $f['id']];
-//			$custom_fields[] = array(
-//				'id' => $f['id'],
-//				'html_id' => $form_field->getFormId(),
-//				'rendered_value' => $person->renderSingleFieldValue($f['id']),
-//				'field_def' => $f,
-//				'form_field' => $form_field
-//			);
-//		}
+		// Custom fields
+		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $field_defs);
 
+		$custom_fields_form = new \Symfony\Component\Form\FieldGroup('custom_fields');
+		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
 
 		#------------------------------
 		# Contact fields: empty tpls
@@ -148,7 +141,7 @@ class PersonController extends AbstractController
 		$start = ($page - 1) * $per_page;
 
 		$em = App::getOrm();
-		
+
 		$notes = $em->createQuery("
 			SELECT n, a
 			FROM DeskPRO:PersonNote n
@@ -165,7 +158,7 @@ class PersonController extends AbstractController
 		foreach ($notes as $note) {
 			$html[] = $this->renderView('AgentBundle:Person:note-li.twig.html', array('note' => $note));
 		}
-		
+
 		$html = implode('', $html);
 
 		return $this->createJsonResponse(array(
@@ -189,7 +182,7 @@ class PersonController extends AbstractController
 		} else {
 			$person = new Person();
 		}
-	
+
 		$form = $this->_getForm($person);
 
 		switch ($this->in->getString('action')) {
@@ -428,6 +421,41 @@ class PersonController extends AbstractController
 		);
 
 		return $this->createJsonResponse($data);
+	}
+
+	############################################################################
+	# ajax-save-custom-fields
+	############################################################################
+
+	public function ajaxSaveCustomFieldsAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		foreach ($field_defs as $field_def) {
+			foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
+				$person->setCustomData($info[0], $info[1], $info[2]);
+			}
+		}
+
+		App::getOrm()->persist($person);
+		App::getOrm()->flush();
+
+		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $field_defs);
+		$custom_fields = array();
+		foreach ($field_defs as $f_def) {
+			$f = $f_def->getHandler()->getFormField();
+
+			$custom_fields[] = array(
+				'field_def' => $f_def,
+				'title' => $f_def['title'],
+				'rendered' => $data_structured[$f_def['id']] ? $f_def->getHandler()->renderHtml($data_structured[$f_def['id']]) : false
+			);
+		}
+
+		return $this->render('AgentBundle:Person:custom-fields-rendered.twig.html', array(
+			'custom_fields' => $custom_fields,
+		));
 	}
 
 	############################################################################

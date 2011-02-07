@@ -185,7 +185,7 @@ admin_customdefpeople_test:
   requirements: { field_id: "\d+" }
 
 ################################################################################
-# People Fields
+# Ticket Fields
 ################################################################################
 
 admin_customdeftickets:
@@ -204,4 +204,26 @@ admin_customdeftickets_edit:
 admin_customdeftickets_test:
   pattern: /ticket-fields/{field_id}/test
   defaults: { _controller: AdminBundle:CustomDefTickets:test }
+  requirements: { field_id: "\d+" }
+
+################################################################################
+# Organization Fields
+################################################################################
+
+admin_customdeforganizations:
+  pattern: /organization-fields
+  defaults: { _controller: AdminBundle:CustomDefOrganizations:index }
+
+admin_customdeforganizations_new_choosetype:
+  pattern: /organization-fields/new-choose-type
+  defaults: { _controller: AdminBundle:CustomDefOrganizations:newChooseType, field_id: 0 }
+
+admin_customdeforganizations_edit:
+  pattern: /organization-fields/{field_id}/edit
+  defaults: { _controller: AdminBundle:CustomDefOrganizations:edit }
+  requirements: { field_id: "\d+" }
+
+admin_customdeforganizations_test:
+  pattern: /organization-fields/{field_id}/test
+  defaults: { _controller: AdminBundle:CustomDefOrganizations:test }
   requirements: { field_id: "\d+" }

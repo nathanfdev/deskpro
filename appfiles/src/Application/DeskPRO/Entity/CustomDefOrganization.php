@@ -16,15 +16,14 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefPerson")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="custom_def_people")
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefOrganization")
+ * @orm:Table(name="custom_def_organizations")
  */
-class CustomDefPerson extends CustomDefAbstract
+class CustomDefOrganization extends CustomDefAbstract
 {
 	/**
-	 * @var CustomDefPeople
-	 * @orm:ManyToOne(targetEntity="CustomDefPerson", inversedBy="children")
+	 * @var CustomDefOrganization
+	 * @orm:ManyToOne(targetEntity="CustomDefOrganization", inversedBy="children")
 	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent = null;
@@ -33,7 +32,7 @@ class CustomDefPerson extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="CustomDefTicket", mappedBy="parent", cascade={"persist", "remove", "merge"})
+	 * @orm:OneToMany(targetEntity="CustomDefOrganization", mappedBy="parent", cascade={"persist", "remove", "merge"})
 	 */
 	protected $children = null;
 }

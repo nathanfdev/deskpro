@@ -18,7 +18,6 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
-use \Application\DeskPRO\Entity\PersonFieldDada;
 use \Application\DeskPRO\Entity;
 
 /**
@@ -207,6 +206,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $labels;
 
 	/**
+	 * @orm:OneToMany(targetEntity="CustomDataPerson", mappedBy="person", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 */
+	protected $custom_data;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="PersonContactData", mappedBy="person", cascade={"persist", "remove", "merge"})
 	 */
@@ -314,6 +318,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->usersource_assoc    = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->personscraper_assoc = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
@@ -584,6 +589,77 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Find an existing data record for a field id.
+	 *
+	 * @param int $field_id
+	 * @return CustomDataPerson
+	 */
+	public function getCustomDataForField($field_id)
+	{
+		foreach ($this->custom_data as $data) {
+			if ($data['field_id'] == $field_id) {
+				return $data;
+			}
+		}
+
+		return null;
+	}
+
+
+
+	/**
+	 * Set custom field data for a particular field.
+	 *
+	 * @param int $field_id
+	 * @param mixed $value
+	 * @return mixed
+	 */
+	public function setCustomData($field_id, $value_type, $value)
+	{
+		$custom_data = $this->getCustomDataForField($field_id);
+		$is_new = false;
+
+		if (!$custom_data) {
+			if ($value === null) return null;
+
+			$is_new = true;
+
+			$field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($field_id);
+			if (!$field) {
+				throw new \Exception("Invalid field_id `$field_id`");
+			}
+			$custom_data = new CustomDataPerson();
+			$custom_data['field'] = $field;
+		}
+
+		if ($value === null) {
+			$this['custom_data']->removeElement($custom_data);
+			return null;
+		}
+
+		$custom_data[$value_type] = $value;
+
+		if ($is_new) {
+			$this->addCustomData($custom_data);
+		}
+
+		return $custom_data;
+	}
+
+	/**
+	 * Add a custom data item to this ticket
+	 *
+	 * @param CustomDataTicket $data
+	 */
+	public function addCustomData(CustomDataPerson $data)
+	{
+		$this->custom_data->add($data);
+		$data['person'] = $this;
+	}
+
+
+
+	/**
 	 * Get the primary email address, or null if this person has none.
 	 *
 	 * @return string
@@ -669,49 +745,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Gets field data for 'top' fields, that is, don't return fields that are children.
-	 * Most of the time we work with those values strictly through the parent field.
-	 *
-	 * @return array
-	 */
-	public function getFields()
-	{
-		return array();
-		$array = array();
-
-		foreach ($this->field_data as $f) {
-			if ($f['parent_id']) continue;
-
-			$array[$f['person_field_id']] = $f;
-		}
-
-		return $array;
-	}
-
-
-
-	/**
-	 * Get fielddata for a specific field. Returns null if no data for a field exists.
-	 *
-	 * @param $field_id
-	 * @return PersonFieldData
-	 */
-	public function getField($field_id)
-	{
-		foreach ($this->field_data as $f) {
-			if ($f['person_field_id'] == $field_id AND !$f['parent_id']) {
-				return $f;
-			}
-		}
-
-		return null;
-	}
-
-
-
-	/**
 	 * Add a label
-	 * @param Entity\LabelTicket $label
+	 * @param Entity\LabelPerson $label
 	 */
 	public function addLabel(Entity\LabelPerson $label)
 	{
@@ -750,48 +785,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function getPhones()
 	{
 		return $this->getContactDataOfType('phone');
-	}
-
-
-
-
-
-	/**
-	 * Gets the rendered values of fields, indexed by
-	 *
-	 * @array
-	 */
-	public function renderFieldValues($context = 'html')
-	{
-		$array = array();
-
-		foreach ($this->field_data as $f) {
-			if ($f['parent_id']) continue;
-			$array[$f['person_field_id']] = $f->renderContext($context);
-		}
-
-		return $array;
-	}
-
-
-
-	/**
-	 * Get a single value
-	 *
-	 * @param int $person_field_id
-	 * @param string $context
-	 * @return string|null Null if no field value
-	 */
-	public function renderSingleFieldValue($person_field_id, $context = 'html')
-	{
-		foreach ($this->field_data as $f) {
-			if ($f['parent_id']) continue;
-			if ($f['person_field_id'] == $person_field_id) {
-				return $f->renderContext($context);
-			}
-		}
-
-		return null;
 	}
 
 

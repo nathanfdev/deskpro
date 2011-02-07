@@ -5,6 +5,7 @@ pageMeta.person_id = {{person.id}};
 pageMeta.pageIdentity = 'person:{{person.id}}';
 pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
+pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_id': person.id }) }}';
 </script>
 
 <div class="profile">
@@ -96,7 +97,37 @@ pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id':
 				{% include 'AgentBundle:Person:contact-section.twig.html' with {'person': person} %}
 			</div>
 		</div>
-		
+
+		{% if custom_fields %}
+			<div class="section person-custom-fields">
+				<span class="edit-trigger trigger">edit</span>
+				<h5>Fields</h5>
+				<div class="wrap">
+					{% include 'AgentBundle:Person:custom-fields-rendered.twig.html' with {'custom_fields': custom_fields} %}
+				</div>
+			</div>
+
+			<div class="person-custom-fields edit show-fields edit-fields-overlay" style="display:none">
+				{% for f in custom_fields %}
+					<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
+						<div class="label-wrap"><label>{{f.title}}</label></div>
+						<div class="field-input">
+							{{ form_field(f.form, {}, {}, 'AgentBundle:Ticket:custom-field-forms.twig.html') }}
+						</div>
+					</div>
+				{% endfor %}
+				<div class="buttons">
+					<div class="loading-off">
+						<button class="save-trigger dp-button small">Save</button>
+						<button class="close-trigger dp-button gray small">Cancel</button>
+					</div>
+					<div class="loading-on">
+						<span>Saving ...</span>
+					</div>
+				</div>
+			</div>
+		{% endif %}
+
 		<div class="section">
 			<h5>Tickets</h5>
 			<div>
@@ -129,7 +160,7 @@ pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id':
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="contact-add-tpl im new show-fields edit" style="display:none; width: 375px">
 		<input type="hidden" name="contact_type" value="instant_message" />
 		<div class="field-wrap">
@@ -181,7 +212,7 @@ pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id':
 			</div>
 		</div>
 	</div>
-	
+
 	<div class="org-edit-dlg" style="display:none" title="Organization">
 		<select name="organization_id">{{org_options|raw}}</select>
 		<br />

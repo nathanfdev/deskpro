@@ -26,14 +26,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 
 	/**
 	 * IMPLEMENT IN CHILD CLASS
-	 *
-	 * @var int
-	 * @orm:Column(name="field_id", type="integer")
-	 */
-	//protected $field_id;
-
-	/**
-	 * IMPLEMENT IN CHILD CLASS
 	 * The form field this is attached to
 	 *
 	 * @var \Application\DeskPRO\Entity\CustomDefXXX
@@ -41,14 +33,6 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
 	 */
 	//protected $field = null;
-
-	/**
-	 * IMPLEMENT IN CHILD CLASS
-	 *
-	 * @var int
-	 * @orm:Column(name="xxx_id", type="integer")
-	 */
-	//protected $xxx_id;
 
 	/**
 	 * IMPLEMENT IN CHILD CLASS
@@ -85,5 +69,11 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	public function getData()
 	{
 		return $this->value ? $this->value : $this->input;
+	}
+
+
+	public function getFieldId()
+	{
+		return $this->field['id'];
 	}
 }

@@ -147,9 +147,10 @@
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">LinkedIn</span></li>
 			</ul>
 		</div>
-		<div class="group crm {% if section == "crm" %}on{% endif %}">
+		<div class="group crm people {% if section == "crm" or section == "people" %}on{% endif %}">
 			<ul>
-				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Users</span></li>
+				<li {% if sub_section == 'fields' %}class="on"{% endif %}><a href="{{ path('admin_customdefpeople') }}" class="icon tickets">Fields</a></li>
+				<li {% if sub_section == 'org_fields' %}class="on"{% endif %}><a href="{{ path('admin_customdeforganizations') }}" class="icon tickets">Organization Fields</a></li>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Organizations</span></li>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Leads</span></li>
 			</ul>

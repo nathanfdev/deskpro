@@ -463,17 +463,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $custom_data;
 	}
 
-
-	/**
-	 * Add a label
-	 * @param Entity\LabelTicket $label
-	 */
-	public function addLabel(Entity\LabelTicket $label)
-	{
-		$label['ticket'] = $this;
-		$this->labels->add($label);
-	}
-
 	/**
 	 * Add a custom data item to this ticket
 	 *
@@ -483,6 +472,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->custom_data->add($data);
 		$data['ticket'] = $this;
+	}
+
+
+	/**
+	 * Add a label
+	 * @param Entity\LabelTicket $label
+	 */
+	public function addLabel(Entity\LabelTicket $label)
+	{
+		$label['ticket'] = $this;
+		$this->labels->add($label);
 	}
 
 	public function getPersonId()

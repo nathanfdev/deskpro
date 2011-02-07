@@ -216,4 +216,9 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return $this->getHandler()->getSearchCapabilities();
 	}
+
+	public function getParentId()
+	{
+		return $this->parent['id'];
+	}
 }
