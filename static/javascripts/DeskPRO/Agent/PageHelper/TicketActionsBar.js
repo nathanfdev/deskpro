@@ -474,6 +474,14 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			case 'new_reply':
 				obj = DeskPRO.Agent.TicketList.Property.NewReply;
 				break;
+			case 'add_labels':
+				obj = DeskPRO.Agent.TicketList.Property.Labels;
+				opt = { mode: 'add' };
+				break;
+			case 'remove_labels':
+				obj = DeskPRO.Agent.TicketList.Property.Labels;
+				opt = { mode: 'remove' };
+				break;
 			case 'flag':
 				obj = DeskPRO.Agent.TicketList.Property.Flag;
 				break;

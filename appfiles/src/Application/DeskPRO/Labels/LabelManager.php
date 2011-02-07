@@ -34,7 +34,7 @@ class LabelManager
 	public function removeLabel($label)
 	{
 		$label = self::normalizeLabel($label);
-		
+
 		foreach ($this->entity[$this->labels_property] as $k => $labelobj) {
 			if ($labelobj['label'] == $label) {
 				$this->entity[$this->labels_property]->remove($k);
@@ -61,14 +61,14 @@ class LabelManager
 
 		return $labelobj;
 	}
-	
+
 	public function getLabelsArray()
 	{
 		$labels = array();
 		foreach ($this->entity[$this->labels_property] as $label) {
 			$labels[] = $label['label'];
 		}
-		
+
 		return $labels;
 	}
 
@@ -96,7 +96,7 @@ class LabelManager
 
 	public static function normalizeLabel($label)
 	{
-		$label = strtolower($label);
+		$label = strtolower(trim($label));
 		$label = str_replace(' ', '-', $label);
 
 		return $label;

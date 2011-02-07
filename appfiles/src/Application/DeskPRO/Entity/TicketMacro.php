@@ -159,7 +159,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
 				case 'add_labels':
 					$actions['add_labels'] = explode(',', $action['labels']);
-					$actions['add_labels'] = array_walk($actions['add_labels'], 'trim');
+					array_walk($actions['add_labels'], 'trim');
 					$actions['add_labels'] = Arrays::removeFalsey($actions['add_labels']);
 					if (!$actions['add_labels']) {
 						unset($actions['add_labels']);
@@ -168,7 +168,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
 				case 'remove_labels':
 					$actions['remove_labels'] = explode(',', $action['labels']);
-					$actions['remove_labels'] = array_walk($actions['remove_labels'], 'trim');
+					array_walk($actions['remove_labels'], 'trim');
 					$actions['remove_labels'] = Arrays::removeFalsey($actions['remove_labels']);
 					if (!$actions['remove_labels']) {
 						unset($actions['remove_labels']);

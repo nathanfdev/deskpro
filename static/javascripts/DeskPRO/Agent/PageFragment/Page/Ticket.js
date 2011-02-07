@@ -111,7 +111,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	labelsList: null,
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $("ul.tagit.ticket", this.contentWrapper).tagit({
+		this.labelsList = $("ul.tagit.ticket", this.contentWrapper);
+		this.labelsTagit = this.labelsList.tagit({
 			availableTags: this.getMetaData('labelsAutocompleteUrl'),
 			enableBackspace: false,
 			fieldName: 'labels',
@@ -121,6 +122,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	_saveLabelsTimeout: null,
 	saveLabels: function() {
+		if (this.changeManager.hasChanges()) {
+			// If change manager has changes, we dont save new/removed
+			// tags
+			return;
+		}
+
 		if (this._saveLabelsTimeout) {
 			window.clearTimeout(this._saveLabelsTimeout);
 		}

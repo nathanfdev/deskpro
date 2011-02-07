@@ -118,7 +118,13 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 		this.getInterfaceElement().addClass('change-on');
 	},
 
+	changePersisted: function() {
 
+	},
+
+	changeReverted: function() {
+
+	},
 
 	/**
 	 * Remove the UI highlight
@@ -128,6 +134,10 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	},
 
 	isDisplayOnly: function() {
+		return false;
+	},
+
+	isAdditionOnly: function() {
 		return false;
 	}
 });

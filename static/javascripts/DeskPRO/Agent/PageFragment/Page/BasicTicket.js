@@ -119,6 +119,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			case 'agent_team_id':
 				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this, { optionName: type });
 				break;
+			case 'add_labels':
+				manager = new DeskPRO.Agent.Ticket.Property.Labels(this, { mode: 'add' });
+				break;
+			case 'remove_labels':
+				manager = new DeskPRO.Agent.Ticket.Property.Labels(this, { mode: 'remove' });
+				break;
 			case 'flag':
 				manager = new DeskPRO.Agent.Ticket.Property.Flag(this);
 				break;

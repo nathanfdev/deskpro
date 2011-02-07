@@ -25,6 +25,15 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	},
 
 
+	hasChanges: function() {
+		if (Object.getLength(this.changes)) {
+			return true;
+		}
+
+		return false;
+	},
+
+
 	/**
 	 * Add a change to the set of changes
 	 */
@@ -87,6 +96,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				property.setValue(this.oldValues[name]);
 				property.unhighlightInterfaceElement();
 			}
+
+			property.changeReverted();
 		}, this);
 
 		this.oldValues = {};
@@ -110,6 +121,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		// Otherwise change and send one
 		property.setValue(newValue);
+		property.changePersisted();
 
 		var data = [];
 		this._addPropertyValueToData(data, property.getName(), property.getValue());
@@ -146,6 +158,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				this._addPropertyValueToData(data, property.getName(), property.getValue());
 			}
 			property.unhighlightInterfaceElement();
+			property.changePersisted();
 		}, this);
 
 		this.mode = 'single';
@@ -191,7 +204,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				// We'll just make it an array of values then
 				} else {
 					data.push({
-						name: 'actions['+name+']',
+						name: 'actions['+name+'][]',
 						value: val
 					});
 				}

@@ -79,6 +79,18 @@ class TicketEdit
 					$this->ticket->setFlagForPerson($agent, $action);
 					break;
 
+				case 'add_labels':
+					foreach ((array)$action as $label) {
+						$this->ticket->getLabelManager()->addLabel($label);
+					}
+					break;
+
+				case 'remove_labels':
+					foreach ((array)$action as $label) {
+						$this->ticket->getLabelManager()->removeLabel($label);
+					}
+					break;
+
 				case 'add_participant':
 
 					$person = App::getEntityRepository('DeskPRO:Perosn')->find($action['add_participant']);
