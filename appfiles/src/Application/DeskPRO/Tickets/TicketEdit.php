@@ -64,6 +64,10 @@ class TicketEdit
 					$this->ticket['priority_id'] = $action;
 					break;
 
+				case 'workflow_id':
+					$this->ticket['workflow_id'] = $action;
+					break;
+
 				case 'status':
 					$this->ticket['status'] = $action;
 					break;

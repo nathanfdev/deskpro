@@ -123,6 +123,15 @@ $(document).ready(function() {
 			</select>
 		</div>
 	</div>
+	<div class="type" title="Workflow" data-rule-type="workflow">
+		<div class="choice">
+			<select name="workflow">
+				{% for id,title in ticket_options.ticket_workflows %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
 	<div class="type" title="Agent" data-rule-type="agent">
 		<div class="choice">
 			<select name="agent">

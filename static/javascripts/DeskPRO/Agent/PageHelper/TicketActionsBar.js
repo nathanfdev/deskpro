@@ -465,6 +465,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		 	case 'category_id':
 			case 'product_id':
 			case 'priority_id':
+			case 'workflow_id':
 			case 'status':
 			case 'agent_id':
 			case 'agent_team_id':

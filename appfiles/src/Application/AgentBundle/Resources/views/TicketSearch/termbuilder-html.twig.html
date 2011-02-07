@@ -141,6 +141,23 @@
 		</div>
 	</div>
 {% endif %}
+{% if term_options.ticket_workflows %}
+	<div class="type" title="Workflow" data-rule-type="workflow">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+			</select>
+		</div>
+		<div class="choice">
+			<select name="workflow">
+				{% for id,label in term_options.ticket_workflows %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+{% endif %}
 {% if term_options.custom_ticket_fields %}
 	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in term_options.custom_ticket_fields %}

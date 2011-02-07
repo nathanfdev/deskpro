@@ -11,6 +11,10 @@
 		<dt>Priority</dt>
 		<dd class="prop-val priority_id {% if not ticket.category %}no-value{% endif %}" data-no-value-label="None">{{ticket.priority.title|default('None')}}</dd>
 	</dl>
+	<dl class="menu-trigger workflow_id">
+		<dt>Workflow</dt>
+		<dd class="prop-val workflow_id {% if not ticket.workflow %}no-value{% endif %}" data-no-value-label="None">{{ticket.workflow.title|default('None')}}</dd>
+	</dl>
 	<dl class="menu-trigger status">
 		<dt>Status</dt>
 		<dd class="prop-val status">

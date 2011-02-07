@@ -135,7 +135,8 @@ class TicketController extends AbstractController
 		$ticket['department_id']  = $this->in->getUint('department_id');
 		$ticket['category_id']    = $this->in->getUint('category_id');
 		$ticket['product_id']     = $this->in->getUint('product_id');
-		$ticket['priority_id']    = $this->in->getUint('department_id');
+		$ticket['priority_id']    = $this->in->getUint('priority_id');
+		$ticket['workflow_id']    = $this->in->getUint('workflow_id');
 		$ticket['status']         = $this->in->getString('status');
 		$ticket['person_id']      = $this->in->getUint('person_id');
 

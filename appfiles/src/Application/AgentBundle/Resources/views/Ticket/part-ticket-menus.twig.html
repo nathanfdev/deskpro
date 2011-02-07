@@ -26,6 +26,7 @@
 
 {% include 'AgentBundle:Common:menu-department.twig.html' with {'departments': ticket_options.departments_hierarchy} %}
 {% include 'AgentBundle:Common:menu-ticket-category.twig.html' with {'categories': ticket_options.ticket_categories_hierarchy} %}
+{% include 'AgentBundle:Common:menu-ticket-workflow.twig.html' with {'workflows': ticket_options.ticket_workflows } %}
 
 <ul class="menu product_id" data-option-name="product_id" style="display:none">
 	{% for id,title in ticket_options.products %}

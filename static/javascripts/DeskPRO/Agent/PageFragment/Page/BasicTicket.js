@@ -113,6 +113,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			case 'department_id':
 		 	case 'category_id':
 			case 'product_id':
+			case 'workflow_id':
 			case 'priority_id':
 			case 'status':
 			case 'agent_id':
@@ -191,7 +192,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	ticketOptionsMenus: {},
 	ticketOptionsMenuEls: {},
 	_initTicketOptionsMenus: function() {
-		var options = ['department_id', 'category_id', 'product_id', 'priority_id', 'status', 'agent_id', 'agent_team_id'];
+		var options = ['department_id', 'category_id', 'product_id', 'priority_id', 'workflow_id', 'status', 'agent_id', 'agent_team_id'];
 		var self = this;
 
 		for (var i = 0; i < options.length; i++) {

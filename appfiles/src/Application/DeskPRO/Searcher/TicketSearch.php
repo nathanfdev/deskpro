@@ -19,6 +19,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_AGENT         = 'agent';
 	const TERM_AGENT_TEAM    = 'agent_team';
 	const TERM_STATUS        = 'status';
+	const TERM_WORKFLOW      = 'workflow';
 	const TERM_PRIORITY      = 'priority';
 	const TERM_SUBJECT       = 'subject';
 	const TERM_ORGANIZATION  = 'organization';
@@ -290,6 +291,9 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_PRIORITY:
 					$wheres[] = $this->_choiceMatch("$tickets_table.product_id", $op, $choice);
+					break;
+				case self::TERM_WORKFLOW:
+					$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice);
 					break;
 				case self::TERM_LANGUAGE:
 					$wheres[] = $this->_choiceMatch("$tickets_table.language_id", $op, $choice);

@@ -73,6 +73,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $priority = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\TicketWorkflow
+	 * @orm:ManyToOne(targetEntity="TicketWorkflow")
+	 * @orm:JoinColumn(name="workflow_id", referencedColumnName="id")
+	 */
+	protected $workflow = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Product
 	 * @orm:ManyToOne(targetEntity="Product")
 	 * @orm:JoinColumn(name="product_id", referencedColumnName="id")
@@ -601,6 +608,25 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->priority = $pri;
 		} else {
 			$this->priority = null;
+		}
+	}
+
+	public function getWorkflowId()
+	{
+		if (!$this->priority) {
+			return 0;
+		}
+
+		return $this->workflow['id'];
+	}
+
+	public function setWorkflowId($id)
+	{
+		if ($id) {
+			$work = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->find($id);
+			$this->workflow = $work;
+		} else {
+			$this->workflow = null;
 		}
 	}
 

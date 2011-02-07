@@ -29,6 +29,7 @@ pageMeta.widgets = [
 		<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
 		<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
 		<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
+		<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
 		<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	</form>
 

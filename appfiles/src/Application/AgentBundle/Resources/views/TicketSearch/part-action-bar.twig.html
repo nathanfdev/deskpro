@@ -73,6 +73,10 @@
 			</ul>
 		</li>
 		<li>
+			<span>Set Workflow</span>
+			{% include 'AgentBundle:Common:menu-ticket-workflow.twig.html' with {'workflows': ticket_options.ticket_workflows, 'add_classname': 'submenu'} %}
+		</li>
+		<li>
 			<span>Set Flag</span>
 			{% include 'AgentBundle:Common:menu-flags.twig.html' with {'add_classname': 'submenu'} %}
 		</li>
