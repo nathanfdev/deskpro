@@ -97,12 +97,12 @@ class PeopleSearchController extends AbstractController
 		//")->setParameters(array($q, $q))->getResult();
 
 		if ($this->in->getBool('ajax')) {
-			$renderer = 'phpj';
+			$ext = 'jsonphp.json';
 		} else {
-			$renderer = 'twig';
+			$ext = 'twig.html';
 		}
 
-		return $this->render("AgentBundle:PeopleSearch:search_results.$renderer", array(
+		return $this->render("AgentBundle:PeopleSearch:search_results.$ext", array(
 			'people_list' => $people_list
 		));
 	}
@@ -121,7 +121,7 @@ class PeopleSearchController extends AbstractController
 			'cloud' => $cloud
 		));
 	}
-	
+
 	public function findPaneAction()
 	{
 		return $this->render('AgentBundle:PeopleSearch:pane-find.twig.html');

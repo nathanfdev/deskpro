@@ -6,14 +6,11 @@ parameters:
     session.class: "Application\DeskPRO\HttpFoundation\Session"
 
 services:
-  templating.renderer.phpvar:
-    class: Orb\Templating\Renderer\PhpVarRenderer
+  templating.engine.jsonphp:
+    class: Orb\Templating\Engine\PhpVarJsonEngine
+    arguments: [@templating.loader]
     tags:
-      - { name: templating.renderer, alias: phpv }
-  templating.renderer.phpjson:
-    class: Orb\Templating\Renderer\PhpVarJsonRenderer
-    tags:
-      - { name: templating.renderer, alias: phpj }
+      - { name: templating.engine, alias: jsonphp }
 
 app.config:
   charset: UTF-8

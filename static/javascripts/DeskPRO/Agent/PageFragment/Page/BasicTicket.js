@@ -49,14 +49,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this._initReplyBar();
 		this._initAttachments();
 
-		DeskPRO_Window.getMessageBroker().sendMessage('ticket.opened', { ticketId: this.getMetaData('ticket_id') });
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
-			if (ticket_ids.indexOf(this.getMetaData('ticket_id')) !== -1) {
-				DeskPRO_Window.removePage(this);
-			}
-		}).bind(this));
-
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
 			this._handleResize()
 		}).bind(this));
@@ -86,8 +78,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		for (var i = 0; i < this.destroyMenus.length; i++) {
 			this.destroyMenus[i].destroy();
 		}
-
-		DeskPRO_Window.getMessageBroker().sendMessage('ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 
 	_initMessage: function(messageEl) {
@@ -223,8 +213,15 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	},
 
 	_handleTicketOptionClick: function(info) {
-		var opt = $(info.itemEl).parent().data('option-name');
+		var typeEl = $(info.itemEl);
+		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
+		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
+		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
+		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
+
+		var opt = typeEl.data('option-name');
 		var itemId = $(info.itemEl).data('option-id');
+		if (!itemId) itemId = $(info.itemEl).data('option-value');
 
 		var prop = this.getPropertyManager(opt);
 		this.changeManager.setInstantChange(prop, itemId);

@@ -6,23 +6,30 @@ pageMeta.pageIdentity = 'ticket:new';
 pageMeta.userSearchUrl = '{{ path('agent_peoplesearch_performquick') }}?ajax=1';
 pageMeta.newUserUrl = '{{ path('agent_people_new') }}';
 pageMeta.submitTicketUrl = '{{ path('agent_people_new_ajaxsave') }}';
+
+pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete') }}';
+pageMeta.getMacroUrl                  = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': 0 }) }}?macro_id=$macro_id';
+pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 </script>
 
 <div class="ticket-content new-ticket">
 	<div class="ticket">
-	
-	<input type="hidden" name="ticket[department_id]" value="{{ticket.department.id}}" />
-	<input type="hidden" name="ticket[category_id]" value="{{ticket.category.id}}" />
-	<input type="hidden" name="ticket[product_id]" value="{{ticket.product.id}}" />
-	<input type="hidden" name="ticket[priority_id]" value="{{ticket.priority.id}}" />
-	<input type="hidden" name="ticket[status]" value="{{ticket.status}}" />
-	<input type="hidden" name="ticket[person_id]" value="{{ticket.person.id}}" />
+
+	<form class="value-form" style="display:none">
+		<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
+		<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
+		<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
+		<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
+		<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
+		<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
+		<input type="hidden" name="status" class="status" value="{{ticket.status|default('Open')}}" />
+	</form>
 
 	<div class="ticket-top">
 		<h1>
-			<span class="ticket-opt-btn ticket-options-department-btn department">
-				<span class="val {% if not ticket.category %}no-value{% endif %}" data-no-value="Choose Department">{{ticket.department.title}}</span>
-				&rsaquo;
+			<span class="menu-trigger department_id department {% if not ticket.department %}no-value{% endif %}">
+				<span class="prop-val department_id {% if not ticket.department %}no-value{% endif %}" data-no-value="Choose Department">{{ticket.department.full_title|default('Choose Department')}}</span>
+				:
 			</span>
 			<input type="text" class="input-title" name="ticket[subject]" value="{{ticket.subject}}" placeholder="Enter ticket title" />
 		</h1>
@@ -30,21 +37,38 @@ pageMeta.submitTicketUrl = '{{ path('agent_people_new_ajaxsave') }}';
 		{% include 'AgentBundle:Ticket:part-ticket-info.twig.html' %}
 
 		<br style="clear:both" />
-	
+
 		<div class="person-info-line">
 
-			<div class="ticket-opt-btn ticket-options-agent-btn agent" style="float:right">
-				<strong>Agent:</strong><br />
-				<span class="val {% if not ticket.agent %}no-value{% endif %}" data-no-value="Unassigned">{{ticket.agent.name}}</span>
+			<div style="float:right">
+				<div class="menu-trigger agent_id agent">
+					{% if ticket.agent %}
+						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ ticket.agent.getPictureUrl(50) }}" alt="" width="50" height="50" style="float:right; margin-left: 5px;" />
+					{% else %}
+						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="" alt="" width="50" height="50" style="float:right; margin-left: 5px; display:none" />
+					{% endif %}
+					<span data-picture-element="img.agent-picture" data-no-value-label="Unassigned" class="prop-val agent_id {% if not ticket.agent %}no-value{% endif %}">
+						{% if ticket.agent %}
+							{{ticket.agent.display_name}}
+						{% else %}
+							Unassigned
+						{% endif %}
+					</span>
+				</div>
+				{% if ticket_options.agent_teams %}
+					<div class="menu-trigger agent_team_id agent_team" style="font-size:7pt">
+						<strong>Team:</strong> <span class="prop-val agent_team_id {% if not ticket.agent_team %}no-value{% endif %}" data-no-value="None">{{ticket.agent_team.name}}</span>
+					</div>
+				{% endif %}
 			</div>
-			
+
 			<div class="person-select" style="float:left">
 				<a href="#" class="new-person-trigger" style="float:right; font-size: 7pt">create new user</a>
 				<strong>User:</strong><br />
 				<input type="text" class="person-name-search" style="width: 250px" placeholder="Begin typing a name or email address" />
-				
+
 			</div>
-			
+
 			<br style="clear:both" />
 		</div>
 
@@ -55,7 +79,7 @@ pageMeta.submitTicketUrl = '{{ path('agent_people_new_ajaxsave') }}';
 	</div>
 
 	{% include 'AgentBundle:Ticket:part-ticket-menus.twig.html' %}
-	
+
 	{% include 'AgentBundle:Person:new-user-overlay.twig.html' %}
 </div><!-- content -->
 

@@ -203,7 +203,7 @@
  # RESOURCE LOADING
  ####################}
 
-<span id="test_route" data-route="navpane:{{ path('agent_ticketsearch_findpane') }}" style="display:none"></span>
+<span id="test_route" data-route="page:{{ path('agent_ticket_new') }}" style="display:none"></span>
 
 {% include 'AgentBundle:Main:resources.twig.html' %}
 
@@ -222,8 +222,8 @@
 
 		window.DeskPRO_Window.initPage();
 
-		window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
-		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
+		//window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
+		window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
 
 		// Debug: auto load a ticket tab
 		//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');

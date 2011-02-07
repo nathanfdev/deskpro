@@ -24,6 +24,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initLabels();
 		this._initTicketNotes();
 
+
+		DeskPRO_Window.getMessageBroker().sendMessage('ticket.opened', { ticketId: this.getMetaData('ticket_id') });
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
+			if (ticket_ids.indexOf(this.getMetaData('ticket_id')) !== -1) {
+				DeskPRO_Window.removePage(this);
+			}
+		}).bind(this));
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.check.' + this.getMetaData('ticket_id'), this.handleTicketCheck.bind(this));
 	},
 
@@ -34,6 +43,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		if (this.popoutPage) {
 			this.popoutPage.destroyPage();
 		}
+
+		DeskPRO_Window.getMessageBroker().sendMessage('ticket.closed', { ticketId: this.getMetaData('ticket_id') });
 	},
 
 	displayNewMessage: function(html) {

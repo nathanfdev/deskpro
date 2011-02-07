@@ -1,15 +1,15 @@
 <div class="ticket-info">
 	<dl class="menu-trigger category_id">
 		<dt>Category</dt>
-		<dd class="prop-val category_id {% if not ticket.category %}no-value{% endif %}" data-no-value-label="None">{{ticket.category.full_title}}</dd>
+		<dd class="prop-val category_id {% if not ticket.category %}no-value{% endif %}" data-no-value-label="None">{{ticket.category.full_title|default('None')}}</dd>
 	</dl>
 	<dl class="menu-trigger product_id">
 		<dt>Product</dt>
-		<dd class="prop-val product_id {% if not ticket.category %}no-value{% endif %}" data-no-value-label="None">{{ticket.product.title}}</dd>
+		<dd class="prop-val product_id {% if not ticket.category %}no-value{% endif %}" data-no-value-label="None">{{ticket.product.title|default('None')}}</dd>
 	</dl>
 	<dl class="menu-trigger priority_id">
 		<dt>Priority</dt>
-		<dd class="prop-val priority_id {% if not ticket.category %}no-value{% endif %}" data-no-value-label="None">{{ticket.priority.title}}</dd>
+		<dd class="prop-val priority_id {% if not ticket.category %}no-value{% endif %}" data-no-value-label="None">{{ticket.priority.title|default('None')}}</dd>
 	</dl>
 	<dl class="menu-trigger status">
 		<dt>Status</dt>
