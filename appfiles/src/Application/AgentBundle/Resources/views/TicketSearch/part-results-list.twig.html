@@ -52,6 +52,21 @@
 					Unassigned
 				{% endif %}
 				</span>
+			{% else %}
+				{% for f in ticket_field_defs %}
+					{% if field == 'ticket_fields['~f.id~']' %}
+					<div class="prop-val ticket_fields_{{f.id}}">
+						{{ticket.renderCustomField(f.id)}}
+					</div>
+					{% endif %}
+				{% endfor %}
+				{% for f in person_field_defs %}
+					{% if field == 'person_fields['~f.id~']' %}
+					<div class="prop-val person_fields_{{f.id}}">
+						{{ticket.person.renderCustomField(f.id)}}
+					</div>
+					{% endif %}
+				{% endfor %}
 			{% endif %}
 		{% endfor %}
 	</tr>

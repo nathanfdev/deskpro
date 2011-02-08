@@ -127,6 +127,10 @@ class TicketSearchController extends AbstractController
 			$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 		}
 
+		// ticket and person defs for columns
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+
 		$vars = array_merge($vars, array(
 			'type'               => $type,
 			'type_id'            => $type_id,
@@ -138,6 +142,8 @@ class TicketSearchController extends AbstractController
 			'show_flag'          => true,
 			'grouped_info'       => $grouped_info,
 			'is_grouped_result'  => $is_grouping,
+			'ticket_field_defs'  => $ticket_field_defs,
+			'person_field_defs'  => $person_field_defs,
 		));
 
 		$html = $this->renderView($tpl, $vars);
