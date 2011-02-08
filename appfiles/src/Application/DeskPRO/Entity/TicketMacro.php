@@ -283,4 +283,52 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
 		App::getOrm()->persist($ticket);
 	}
+
+	public function performOnPerson(Entity\Person $person)
+	{
+		$did_change = false;
+
+		foreach ($this->actions as $action) {
+
+			$term = $action['rule_type'];
+			$term_id = null;
+
+			// $term of people_field[12] becomes $term=people_field, $term_id=12
+			$m = null;
+			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+				$term = $m[1];
+				$term_id = $m[2];
+			}
+
+			switch ($term) {
+				case 'people_field':
+
+					$value = $action;
+					unset($value['rule_type'], $value['op'], $value['renderable_value']);
+
+					$field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
+					if (!$field) {
+						break;
+					}
+
+					foreach ($field->getHandler()->getDataFromForm($value) as $info) {
+						$person->setCustomData($info[0], $info[1], $info[2]);
+					}
+
+					$did_change = true;
+					break;
+
+				case 'person_organization_id':
+					$person['organization_id'] = $action['person_organization_id'];
+					$did_change = true;
+					break;
+			}
+		}
+
+		if ($did_change) {
+			App::getOrm()->persist($person);
+		}
+
+		return $did_change;
+	}
 }

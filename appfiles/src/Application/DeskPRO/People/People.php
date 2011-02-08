@@ -19,4 +19,14 @@ class People
 			->getRepository('DeskPRO:Ticket')
 			->getTicketsFromIds($ids);
 	}
+
+
+	public function getPeopleOptions()
+	{
+		$options = array();
+
+		$options['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+
+		return $options;
+	}
 }

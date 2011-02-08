@@ -187,6 +187,24 @@ $(document).ready(function() {
 			</div>
 		{% endfor %}
 	{% endif %}
+	<div class="type" title="Set User Organization" data-rule-type="person_organization_id">
+		<div class="choice">
+			<select name="person_organization_id">
+				{% for id,title in ticket_options.people_organizations %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% if ticket_options.custom_people_fields %}
+		{% for field in ticket_options.custom_people_fields %}
+			<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-type="people_field[{{field.field_def.id}}]">
+				<div class="choice">
+					{{ form_field(field.form) }}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
 </div>
 
 {% endblock %}

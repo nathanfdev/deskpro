@@ -322,6 +322,24 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getOrganizationId()
+	{
+		if ($this->organization) {
+			return $this->organization['id'];
+		} else {
+			return 0;
+		}
+	}
+
+	public function setOrganizationId($org_id)
+	{
+		if ($org_id) {
+			$org = App::getEntityRepository('DeskPRO:Organization')->find($org_id);
+			$this->organization = $org;
+		} else {
+			$this->organization = null;
+		}
+	}
 
 
 	/**

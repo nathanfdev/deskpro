@@ -24,8 +24,7 @@ use \Application\DeskPRO\Entity;
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Organization")
  * @orm:Table(name="organizations")
  */
 class Organization extends \Application\DeskPRO\Domain\DomainObject

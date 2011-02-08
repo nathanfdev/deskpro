@@ -368,6 +368,8 @@ class TicketController extends AbstractController
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 		$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
 
+		App::getOrm()->beginTransaction();
+
 		$macro_id = $this->in->getUint('macro_id');
 		if ($macro_id) {
 			$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
@@ -383,12 +385,18 @@ class TicketController extends AbstractController
 				}
 			}
 
+			// We need to manually apply to the user since ticketedit doesnt care about that
+			$macro->performOnPerson($ticket['person']);
+
 			if ($apply_macro_actions) {
 				$ticket_edit->applyActions($apply_macro_actions);
 			}
 		}
 
 		$ticket_edit->save();
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
 
 		$data = array();
 		if (isset($result['new_reply'])) {

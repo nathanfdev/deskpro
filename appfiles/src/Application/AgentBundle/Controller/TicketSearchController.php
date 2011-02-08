@@ -653,8 +653,13 @@ class TicketSearchController extends AbstractController
 			}
 			$result = $ticket_edit->applyActions($actions);
 			$ticket_edit->save();
+
+			// We need to manually apply to the user since ticketedit doesnt care about that
+			$macro->performOnPerson($ticket['person']);
+			App::getOrm()->persist($ticket['person']);
 		}
 
+		App::getOrm()->flush();
 		App::getOrm()->commit();
 
 		return $this->createJsonResponse(array('success' => true));

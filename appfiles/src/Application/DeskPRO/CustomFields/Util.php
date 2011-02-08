@@ -12,14 +12,14 @@ class Util
 	/**
 	 * This converts a collection of data items into an array structure
 	 * that matches the hierarchy of field definitions.
-	 * 
+	 *
 	 * Custom field values in the database are 'flat', and when displaying values
 	 * we need to pass a proper structure to a field defition for rendering. This is
-	 * easy for simple fields like text or textarea, but we need this method for 
+	 * easy for simple fields like text or textarea, but we need this method for
 	 * complex fields that have multiple levels, like a date.
 	 *
 	 * @see Application\DeskPRO\CustomFields\Handler\HandlerAbstract\renderContext
-	 * 
+	 *
 	 * @param $field_datas
 	 * @param $field_defs
 	 * @return array
@@ -51,5 +51,41 @@ class Util
 		}
 
 		return $structure;
+	}
+
+
+
+	/**
+	 * Use this to get a structured "data array" used with form handlers render(). This essentially emulates
+	 * created all the data records, and then returns the structured array. So if you need the correct array format,
+	 * but dont need to store the values in a real data table (eg macros), then you can use this method.
+	 *
+	 * @param  $field_id
+	 * @param array $form_data
+	 * @param  $entity_def
+	 * @param  $entity_data
+	 * @return array
+	 */
+	public function getRenderableDataArrayFromForm(array $form_data, $field_id, $entity_def, $entity_data)
+	{
+		$field_defs = App::getEntityRepository($entity_def)->getFields();
+		$field = App::getEntityRepository($entity_def)->find($field_id);
+
+		$action_custm_datas = array();
+
+		$data_classname = App::getEntityRepository($entity_data)->getEntityName();
+
+		foreach ($field->getHandler()->getDataFromForm($form_data) as $info) {
+			$custom_data = new $data_classname();
+			$custom_data['field'] = $field;
+			$custom_data[$info[1]] = $info[2];
+
+			$action_custm_datas[] = $custom_data;
+		}
+
+		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($action_custm_datas, $field_defs);
+		$data_structured = $data_structured[$field_id];
+
+		$action['renderable_value'] = $data_structured;
 	}
 }
