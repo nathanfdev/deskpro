@@ -42,7 +42,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The organization name
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="text")
+	 * @orm:Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
 

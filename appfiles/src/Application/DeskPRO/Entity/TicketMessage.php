@@ -78,7 +78,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The message, will be in HTML!
 	 * @var string
-	 * @orm:Column(name="message", type="string", length=10000)
+	 * @orm:Column(name="message", type="text")
 	 */
 	protected $message;
 

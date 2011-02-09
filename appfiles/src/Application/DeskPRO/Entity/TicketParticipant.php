@@ -30,7 +30,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:Id
-	 * @orm:OneToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
