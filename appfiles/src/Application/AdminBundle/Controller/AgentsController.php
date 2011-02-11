@@ -27,7 +27,7 @@ class AgentsController extends AbstractController
 			ORDER BY t.name ASC
 		")->execute();
 
-		return $this->render('AdminBundle:Agents:teams.twig.html', array(
+		return $this->render('AdminBundle:Agents:teams.html.twig', array(
 			'all_teams' => $all_teams
 		));
 	}
@@ -105,7 +105,7 @@ class AgentsController extends AbstractController
 		$form_members->setData($current_ids);
 		$form->add($form_members);
 
-		return $this->render('AdminBundle:Agents:edit-team.twig.html', array(
+		return $this->render('AdminBundle:Agents:edit-team.html.twig', array(
 			'team' => $team,
 			'form' => $form
 		));

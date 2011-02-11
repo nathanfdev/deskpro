@@ -46,7 +46,7 @@ abstract class CustomDefAbstractController extends AbstractController
 	{
 		$existing_fields = $this->getApi()->getFields();
 
-		return $this->render($this->getTemplateName('index.twig.html'), array(
+		return $this->render($this->getTemplateName('index.html.twig'), array(
 			'fields' => $existing_fields
 		));
 	}
@@ -59,7 +59,7 @@ abstract class CustomDefAbstractController extends AbstractController
 
 	public function newChooseTypeAction()
 	{
-		return $this->render($this->getTemplateName('edit-choosetype.twig.html'), array(
+		return $this->render($this->getTemplateName('edit-choosetype.html.twig'), array(
 
 		));
 	}
@@ -108,7 +108,7 @@ abstract class CustomDefAbstractController extends AbstractController
 		}
 
 		$parts = explode('\\', $field['handler_class']);
-		$tpl_name = 'edit-' . strtolower(array_pop($parts)) . '.twig.html';
+		$tpl_name = 'edit-' . strtolower(array_pop($parts)) . '.html.twig';
 
 		$vars = array_merge($admin_handler->getTemplateVars(), array(
 			'field' => $field,

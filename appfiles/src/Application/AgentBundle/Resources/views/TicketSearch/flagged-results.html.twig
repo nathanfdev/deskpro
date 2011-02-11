@@ -10,8 +10,8 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runflag', {'flag': flag}) }}?par
 
 <div class="content">
 	<table class="list" cellspacing="0" width="100%">
-		{% include 'AgentBundle:TicketSearch:part-results-list-thead.twig.html' %}
-		{% include 'AgentBundle:TicketSearch:part-results-list.twig.html' %}
+		{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
+		{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
 	</table>
 
 	<div class="loading-more">
@@ -21,4 +21,4 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runflag', {'flag': flag}) }}?par
 		There are no more results.
 	</div>
 </div>
-{% include 'AgentBundle:TicketSearch:part-action-bar.twig.html' %}
+{% include 'AgentBundle:TicketSearch:part-action-bar.html.twig' %}

@@ -27,7 +27,7 @@ class SettingsController extends AbstractController
 			ORDER BY label.label ASC
 		")->execute();
 
-		return $this->render('AdminBundle:Settings:labels.twig.html', array(
+		return $this->render('AdminBundle:Settings:labels.html.twig', array(
 			'all_labels' => $all_labels
 		));
 	}
@@ -54,7 +54,7 @@ class SettingsController extends AbstractController
 		App::getOrm()->persist($label);
 		App::getOrm()->flush();
 
-		$html = $this->renderView('AdminBundle:Settings:labels-row.twig.html', array('label' => $label));
+		$html = $this->renderView('AdminBundle:Settings:labels-row.html.twig', array('label' => $label));
 
 		return $this->createJsonResponse(array('html' => $html));
 	}

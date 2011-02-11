@@ -1,4 +1,4 @@
-{% extends 'TwigBundle::form.twig.html' %}
+{% extends 'TwigBundle::form.html.twig' %}
 {% block date_field %}
 	{% if field.isfield %}
 		{% set attr = attr|merge({'class': attr.class~' date-field', 'style': 'width: 200px'}) %}

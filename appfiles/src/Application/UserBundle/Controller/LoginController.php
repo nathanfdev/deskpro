@@ -39,7 +39,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 			$return = '';
 		}
 
-		return $this->render('UserBundle:Login:index.twig.html', array(
+		return $this->render('UserBundle:Login:index.html.twig', array(
 			'usersources' => $usersources,
 			'usersource_forms' => $this->_getUsersourceLoginForms($usersources),
 			'return' => $return
@@ -52,7 +52,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 		foreach ($usersources as $usersource) {
 			$parts = explode('\\', $usersource['handler_class']);
-			$tpl_name = 'UserBundle:Login:login-form-.twig.html' . strtolower(array_pop($parts));
+			$tpl_name = 'UserBundle:Login:login-form-.html.twig' . strtolower(array_pop($parts));
 
 			$forms[] = array(
 				'usersource' => $usersource,
@@ -64,7 +64,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	}
 
 
-	
+
 	############################################################################
 	# /logout
 	############################################################################
@@ -72,7 +72,7 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	public function logoutAction()
 	{
 		$this->session->setAttributes(array());
-		
+
 		return $this->redirectRoute('user_login');
 	}
 

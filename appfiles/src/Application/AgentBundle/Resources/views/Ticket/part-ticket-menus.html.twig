@@ -1,4 +1,4 @@
-{% include 'AgentBundle:Ticket:part-flag-menu.twig.html' %}
+{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
 <ul class="ticket-info-edit-menu" style="display:none">
 	<li data-option-id="delete"><span class="icon icon-page-delete">Delete Ticket</span></li>
 	<li data-option-id="delete-block"><span class="icon icon-page-delete dev-feature-inactive">Delete Ticket and Block User</span></li>
@@ -24,9 +24,9 @@
 	<li data-option-id="resolved">Resolved</li>
 </ul>
 
-{% include 'AgentBundle:Common:menu-department.twig.html' with {'departments': ticket_options.departments_hierarchy} %}
-{% include 'AgentBundle:Common:menu-ticket-category.twig.html' with {'categories': ticket_options.ticket_categories_hierarchy} %}
-{% include 'AgentBundle:Common:menu-ticket-workflow.twig.html' with {'workflows': ticket_options.ticket_workflows } %}
+{% include 'AgentBundle:Common:menu-department.html.twig' with {'departments': ticket_options.departments_hierarchy} %}
+{% include 'AgentBundle:Common:menu-ticket-category.html.twig' with {'categories': ticket_options.ticket_categories_hierarchy} %}
+{% include 'AgentBundle:Common:menu-ticket-workflow.html.twig' with {'workflows': ticket_options.ticket_workflows } %}
 
 <ul class="menu product_id" data-option-name="product_id" style="display:none">
 	{% for id,title in ticket_options.products %}

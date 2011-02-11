@@ -24,7 +24,7 @@ class LanguagesController extends AbstractController
 	}
 
 
-	
+
 	############################################################################
 	# index
 	############################################################################
@@ -38,7 +38,7 @@ class LanguagesController extends AbstractController
 			return $this->redirect($this->generateUrl('agent_admin_langs_intro', array()));
 		}
 
-        return $this->render('AdminBundle:Languages:index.twig.html');
+        return $this->render('AdminBundle:Languages:index.html.twig');
     }
 
 
@@ -55,7 +55,7 @@ class LanguagesController extends AbstractController
 	{
 		$this->tplvars['has_no_langs'] = !((bool)$this->lang_hierarchy);
 
-		return $this->render('AdminBundle:Languages:intro.twig.html');
+		return $this->render('AdminBundle:Languages:intro.html.twig');
 	}
 
 
@@ -120,7 +120,7 @@ class LanguagesController extends AbstractController
 			}
 		}
 
-		return $this->render('AdminBundle:Languages:edit.twig.html');
+		return $this->render('AdminBundle:Languages:edit.html.twig');
 	}
 
 
@@ -138,7 +138,7 @@ class LanguagesController extends AbstractController
 
 		$lang_finder = new \Application\DeskPRO\ResourceScanner\LanguageFiles($this->container);
 		$bundled_groups = $lang_finder->getGroups();
-		
+
 		$phrases = array();
 
 		foreach ($bundled_groups as $bundle => $groups) {
@@ -149,7 +149,7 @@ class LanguagesController extends AbstractController
 
 		$this->tplvars['all_phrases'] = $phrases;
 
-		return $this->render('AdminBundle:Languages:language-phrase-list.twig.html');
+		return $this->render('AdminBundle:Languages:language-phrase-list.html.twig');
 	}
 
 
@@ -180,10 +180,10 @@ class LanguagesController extends AbstractController
 		// TODO fetch current contents
 		$this->tplvars['phrase_content'] = $group_phrases[$phrase_name];
 
-		return $this->render('AdminBundle:Styles:edit-phrase.twig.html');
+		return $this->render('AdminBundle:Styles:edit-phrase.html.twig');
 	}
 
-	
+
 
 	############################################################################
 

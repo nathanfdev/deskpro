@@ -61,7 +61,7 @@ pageMeta.widgets = [
 			</ul>
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-ticket-info.twig.html' %}
+		{% include 'AgentBundle:Ticket:part-ticket-info.html.twig' %}
 
 		<br style="clear:both" />
 
@@ -121,7 +121,7 @@ pageMeta.widgets = [
 			<br style="clear:both" />
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-custom-fields.twig.html' %}
+		{% include 'AgentBundle:Ticket:part-custom-fields.html.twig' %}
 
 		<ul class="ticket-tabs">
 			<li class="tab-trigger ticket-messages messages on" data-tab-for=".tab-content.ticket-messages">Messages</li>
@@ -137,7 +137,7 @@ pageMeta.widgets = [
 	<div class="tab-content on messages ticket-messages" data-tab-trigger=".tab-trigger.ticket-messages">
 		<ul>
 			{% for message in ticket.messages %}
-				{% include 'AgentBundle:Ticket:ticket-message.twig.html' with {'message': message} %}
+				{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
 			{% endfor %}
 		</ul>
 	</div>
@@ -157,7 +157,7 @@ pageMeta.widgets = [
 			</li>
 			{% for message in ticket.messages %}
 				{% if message.is_agent_note %}
-					{% include 'AgentBundle:Ticket:ticket-message.twig.html' with {'message': message} %}
+					{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
 				{% endif %}
 			{% endfor %}
 		</ul>
@@ -210,7 +210,7 @@ pageMeta.widgets = [
 		</div>
 	</div>
 
-	{% include 'AgentBundle:Ticket:part-ticket-menus.twig.html' %}
+	{% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
 </div><!-- content -->
 
-{% include 'AgentBundle:Ticket:part-ticket-bar.twig.html' %}
+{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}

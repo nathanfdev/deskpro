@@ -1,5 +1,5 @@
 <div class="ticket-bar">
-	{% include 'AgentBundle:Ticket:reply-form.twig.html' with {'with_ticket_context': true} %}
+	{% include 'AgentBundle:Ticket:reply-form.html.twig' with {'with_ticket_context': true} %}
 	<div class="bar">
 		<button class="dp-button small submit-trigger" style="display:none;">Submit Mass Reply</button>
 		<ul class="tools">
@@ -50,11 +50,11 @@
 		<li class="sep">-</li>
 		<li>
 			<span>Set Department</span>
-			{% include 'AgentBundle:Common:menu-department.twig.html' with {'departments': ticket_options.departments_hierarchy, 'add_classname': 'submenu'} %}
+			{% include 'AgentBundle:Common:menu-department.html.twig' with {'departments': ticket_options.departments_hierarchy, 'add_classname': 'submenu'} %}
 		</li>
 		<li>
 			<span>Set Category</span>
-			{% include 'AgentBundle:Common:menu-ticket-category.twig.html' with {'categories': ticket_options.ticket_categories_hierarchy, 'add_classname': 'submenu'} %}
+			{% include 'AgentBundle:Common:menu-ticket-category.html.twig' with {'categories': ticket_options.ticket_categories_hierarchy, 'add_classname': 'submenu'} %}
 		</li>
 		<li>
 			<span>Set Product</span>
@@ -74,11 +74,11 @@
 		</li>
 		<li>
 			<span>Set Workflow</span>
-			{% include 'AgentBundle:Common:menu-ticket-workflow.twig.html' with {'workflows': ticket_options.ticket_workflows, 'add_classname': 'submenu'} %}
+			{% include 'AgentBundle:Common:menu-ticket-workflow.html.twig' with {'workflows': ticket_options.ticket_workflows, 'add_classname': 'submenu'} %}
 		</li>
 		<li>
 			<span>Set Flag</span>
-			{% include 'AgentBundle:Common:menu-flags.twig.html' with {'add_classname': 'submenu'} %}
+			{% include 'AgentBundle:Common:menu-flags.html.twig' with {'add_classname': 'submenu'} %}
 		</li>
 		<li class="sep">-</li>
 		<li data-option-id="delete"><span class="icon icon-page-delete">Delete Ticket</span></li>

@@ -83,7 +83,7 @@
 		body {
 			background-color: #fff;
 		}
-		
+
 		/**********************************************************
 		 Tickets
 		***********************************************************/
@@ -371,10 +371,10 @@
 			</ul>
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-ticket-info.twig.html' %}
+		{% include 'AgentBundle:Ticket:part-ticket-info.html.twig' %}
 
 		<br style="clear:both" />
-	
+
 		<div class="person-info-line">
 
 			<div style="float:right">
@@ -400,17 +400,17 @@
 					{% endif %}
 				</div>
 			</div>
-		
+
 			<br style="clear:both" />
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-custom-fields.twig.html' %}
+		{% include 'AgentBundle:Ticket:part-custom-fields.html.twig' %}
 	</div>
-	
+
 	<div class="tab-content on messages" data-tab-trigger=".tab-trigger.messages">
 		<ul>
 			{% for message in ticket.messages %}
-				{% include 'AgentBundle:Ticket:ticket-message.twig.html' with {'message': message} %}
+				{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
 			{% endfor %}
 		</ul>
 	</div>

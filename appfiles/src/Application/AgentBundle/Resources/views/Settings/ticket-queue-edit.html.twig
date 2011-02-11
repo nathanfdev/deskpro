@@ -1,4 +1,4 @@
-{% extends 'AgentBundle:Settings:settings-layout.twig.html' %}
+{% extends 'AgentBundle:Settings:settings-layout.html.twig' %}
 {% block current_page "ticket-queues" %}
 {% block page_head %}
 <script type="text/javascript">
@@ -79,7 +79,7 @@ $(document).ready(function() {
 					<div class="remove">-</div>
 				</div>
 			</div>
-			{% include 'AgentBundle:TicketSearch:termbuilder-html.twig.html' with {'term_options': term_options} %}
+			{% include 'AgentBundle:TicketSearch:termbuilder-html.html.twig' with {'term_options': term_options} %}
 		</div>
 	</div>
 </div>

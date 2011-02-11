@@ -108,7 +108,7 @@ class PersonController extends AbstractController
 		");
 		$org_options = Arrays::implodeTemplate($org_options, "<option value=\"{KEY}\">{VAL}</option>");
 
-		return $this->render('AgentBundle:Person:view.twig.html', array(
+		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
 			'form' => $form,
 			'fields' => $form->getCustomFields(),
@@ -156,7 +156,7 @@ class PersonController extends AbstractController
 		$html = array();
 
 		foreach ($notes as $note) {
-			$html[] = $this->renderView('AgentBundle:Person:note-li.twig.html', array('note' => $note));
+			$html[] = $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note));
 		}
 
 		$html = implode('', $html);
@@ -312,7 +312,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'dlg_html' => $this->renderView('AgentBundle:Person:email-dlg-li.twig.html', array('person' => $person))
+			'dlg_html' => $this->renderView('AgentBundle:Person:email-dlg-li.html.twig', array('person' => $person))
 		));
 	}
 
@@ -358,7 +358,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'contact_html' => $this->renderView('AgentBundle:Person:contact-section.twig.html', array('person' => $person))
+			'contact_html' => $this->renderView('AgentBundle:Person:contact-section.html.twig', array('person' => $person))
 		));
 	}
 
@@ -392,7 +392,7 @@ class PersonController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'note_li_html' => $this->renderView('AgentBundle:Person:note-li.twig.html', array('note' => $note))
+			'note_li_html' => $this->renderView('AgentBundle:Person:note-li.html.twig', array('note' => $note))
 		));
 	}
 
@@ -453,7 +453,7 @@ class PersonController extends AbstractController
 			);
 		}
 
-		return $this->render('AgentBundle:Person:custom-fields-rendered.twig.html', array(
+		return $this->render('AgentBundle:Person:custom-fields-rendered.html.twig', array(
 			'custom_fields' => $custom_fields,
 		));
 	}

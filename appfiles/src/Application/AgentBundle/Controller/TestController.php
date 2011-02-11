@@ -15,7 +15,7 @@ class TestController extends AbstractController
 		$widget['name_id'] = 'com_deskpro_campfire_announce';
 		$widget['section'] = 'agent.ticket';
 		$widget['js_widget_class'] = 'DeskPRO.Widget.CampfireAnnounce';
-		$widget['template_name'] = 'DeskPRO:Widgets:com_deskpro_campfire_announce.twig.html';
+		$widget['template_name'] = 'DeskPRO:Widgets:com_deskpro_campfire_announce.html.twig';
 		$widget['data'] = array(
 			'tab_title' => 'My Widget',
 			'api_info' => array(

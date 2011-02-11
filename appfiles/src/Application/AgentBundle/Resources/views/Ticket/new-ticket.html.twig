@@ -35,7 +35,7 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 			<input type="text" class="input-title" name="subject" value="{{ticket.subject}}" placeholder="Enter ticket title" />
 		</h1>
 
-		{% include 'AgentBundle:Ticket:part-ticket-info.twig.html' %}
+		{% include 'AgentBundle:Ticket:part-ticket-info.html.twig' %}
 
 		<br style="clear:both" />
 
@@ -73,15 +73,15 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 			<br style="clear:both" />
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-custom-fields-edit.twig.html' %}
+		{% include 'AgentBundle:Ticket:part-custom-fields-edit.html.twig' %}
 
 	</div>
 
 	</div>
 
-	{% include 'AgentBundle:Ticket:part-ticket-menus.twig.html' %}
+	{% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
 
-	{% include 'AgentBundle:Person:new-user-overlay.twig.html' %}
+	{% include 'AgentBundle:Person:new-user-overlay.html.twig' %}
 </div><!-- content -->
 
-{% include 'AgentBundle:Ticket:part-ticket-bar.twig.html' %}
+{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}

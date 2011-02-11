@@ -17,13 +17,13 @@ pageMeta.massReplyUrl = '{{ path('agent_ticketsearch_ajax_mass_reply') }}';
 {% endif %}
 </script>
 <div class="content">
-	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.twig.html' %}
+	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
 
-	{% include 'AgentBundle:TicketSearch:part-results-grouping.twig.html' %}
+	{% include 'AgentBundle:TicketSearch:part-results-grouping.html.twig' %}
 
 	<table class="list" cellspacing="0" width="100%">
-		{% include 'AgentBundle:TicketSearch:part-results-list-thead.twig.html' %}
-		{% include 'AgentBundle:TicketSearch:part-results-list.twig.html' %}
+		{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
+		{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
 	</table>
 
 	<div class="loading-more">
@@ -33,6 +33,6 @@ pageMeta.massReplyUrl = '{{ path('agent_ticketsearch_ajax_mass_reply') }}';
 		There are no more results.
 	</div>
 
-	{% include 'AgentBundle:Ticket:part-flag-menu.twig.html' %}
+	{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
 </div>
-{% include 'AgentBundle:TicketSearch:part-action-bar.twig.html' %}
+{% include 'AgentBundle:TicketSearch:part-action-bar.html.twig' %}

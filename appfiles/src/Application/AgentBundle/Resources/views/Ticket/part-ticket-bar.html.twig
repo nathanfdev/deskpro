@@ -1,8 +1,8 @@
 <div class="ticket-bar">
 	{% if ticket.id %}
-		{% include 'AgentBundle:Ticket:reply-form.twig.html' with {'with_ticket_context': true} %}
+		{% include 'AgentBundle:Ticket:reply-form.html.twig' with {'with_ticket_context': true} %}
 	{% else %}
-		{% include 'AgentBundle:Ticket:reply-form.twig.html' with {'with_ticket_context': false} %}
+		{% include 'AgentBundle:Ticket:reply-form.html.twig' with {'with_ticket_context': false} %}
 	{% endif %}
 	<div class="bar">
 		<ul class="tools">

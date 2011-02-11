@@ -35,7 +35,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 			<div>
 				<dl class="note-list" data-limit="5">
 					{% for note in notes %}
-						{% include 'AgentBundle:Person:note-li.twig.html' with {'note': note} %}
+						{% include 'AgentBundle:Person:note-li.html.twig' with {'note': note} %}
 					{% endfor %}
 				</dl>
 				{% if note_pages %}
@@ -94,7 +94,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 			<span class="add trigger" data-add-type="phone">add phone</span>
 			<h5>Contact</h5>
 			<div class="content">
-				{% include 'AgentBundle:Person:contact-section.twig.html' with {'person': person} %}
+				{% include 'AgentBundle:Person:contact-section.html.twig' with {'person': person} %}
 			</div>
 		</div>
 
@@ -103,7 +103,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 				<span class="edit-trigger trigger">edit</span>
 				<h5>Fields</h5>
 				<div class="wrap">
-					{% include 'AgentBundle:Person:custom-fields-rendered.twig.html' with {'custom_fields': custom_fields} %}
+					{% include 'AgentBundle:Person:custom-fields-rendered.html.twig' with {'custom_fields': custom_fields} %}
 				</div>
 			</div>
 
@@ -112,7 +112,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 					<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
 						<div class="label-wrap"><label>{{f.title}}</label></div>
 						<div class="field-input">
-							{{ form_field(f.form, {}, {}, 'AgentBundle:Ticket:custom-field-forms.twig.html') }}
+							{{ form_field(f.form, {}, {}, 'AgentBundle:Ticket:custom-field-forms.html.twig') }}
 						</div>
 					</div>
 				{% endfor %}
@@ -221,7 +221,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 
 	<div class="email-edit-dlg" style="display:none" title="Contact Emails">
 		<ul class="emails-list">
-			{% include 'AgentBundle:Person:email-dlg-li.twig.html' with {'person': person} %}
+			{% include 'AgentBundle:Person:email-dlg-li.html.twig' with {'person': person} %}
 		</ul>
 		<div class="add-email">
 			New email: <input type="text" class="new-email-input" value="" /> <input type="button" class="new-email-btn" value="Add" />

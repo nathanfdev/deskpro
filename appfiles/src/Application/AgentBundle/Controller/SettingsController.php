@@ -23,7 +23,7 @@ class SettingsController extends AbstractController
 			App::getOrm()->flush();
 		}
 
-        return $this->render('AgentBundle:Settings:index.twig.html', array(
+        return $this->render('AgentBundle:Settings:index.html.twig', array(
 			'show_listpane' => $this->person->getPref($pref_name)
 		));
     }
@@ -65,7 +65,7 @@ class SettingsController extends AbstractController
 			App::getOrm()->flush();
 		}
 
-		return $this->render('AgentBundle:Settings:picture.twig.html', array(
+		return $this->render('AgentBundle:Settings:picture.html.twig', array(
 
 		));
 	}
@@ -82,7 +82,7 @@ class SettingsController extends AbstractController
 	{
 		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
 
-		return $this->render('AgentBundle:Settings:ticket-queues.twig.html', array(
+		return $this->render('AgentBundle:Settings:ticket-queues.html.twig', array(
 			'queues' => $queues
 		));
 	}
@@ -115,7 +115,7 @@ class SettingsController extends AbstractController
 			}
 		}
 
-		return $this->render('AgentBundle:Settings:ticket-queue-edit.twig.html', array(
+		return $this->render('AgentBundle:Settings:ticket-queue-edit.html.twig', array(
 			'term_options' => $term_options,
 			'queue' => $queue
 		));
@@ -155,7 +155,7 @@ class SettingsController extends AbstractController
 			$all_macros = false;
 		}
 
-        return $this->render('AgentBundle:Settings:ticket-macros.twig.html', array(
+        return $this->render('AgentBundle:Settings:ticket-macros.html.twig', array(
 			'show_saved_flash' => $this->in->getBool('saved'),
 			'all_macros' => $all_macros
 		));
@@ -223,7 +223,7 @@ class SettingsController extends AbstractController
 		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
-        return $this->render('AgentBundle:Settings:ticket-macro-edit.twig.html', array(
+        return $this->render('AgentBundle:Settings:ticket-macro-edit.html.twig', array(
 			'ticket_options' => $ticket_options,
 			'macro' => $macro
 		));

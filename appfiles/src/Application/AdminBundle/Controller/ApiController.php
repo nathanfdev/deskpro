@@ -36,7 +36,7 @@ class ApiController extends AbstractController
 
 		$this->tplvars['all_apikeys'] = $all_apikeys;
 
-		return $this->render('AdminBundle:Api:index.twig.html');
+		return $this->render('AdminBundle:Api:index.html.twig');
 	}
 
 
@@ -64,13 +64,13 @@ class ApiController extends AbstractController
 			App::getOrm()->flush();
 		}
 
-		return $this->render('AdminBundle:Api:edit-key.twig.html', array(
+		return $this->render('AdminBundle:Api:edit-key.html.twig', array(
 			'apikey' => $apikey
 		));
 	}
 
 
-	
+
 	############################################################################
 	# delete
 	############################################################################

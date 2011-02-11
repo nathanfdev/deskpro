@@ -8,7 +8,7 @@ class MainController extends AbstractController
 {
     public function indexAction()
     {
-        return $this->render('AgentBundle:Main:index.twig.html', array(
+        return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'is_demo' => $this->in->checkIsset('show-demo-bar')
 		));

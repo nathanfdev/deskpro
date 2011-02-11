@@ -15,7 +15,7 @@ class StylesController extends AbstractController
 	protected function init()
 	{
 		parent::init();
-		
+
 		$this->style_hierarchy = $this->db->fetchAllKeyed("SELECT id, parent_id, title FROM styles ORDER BY title ASC");
 		$this->style_hierarchy = Arrays::intoHierarchy($this->style_hierarchy);
 		$this->style_hierarchy = Arrays::flattenHierarchy($this->style_hierarchy);
@@ -38,11 +38,11 @@ class StylesController extends AbstractController
 			return $this->redirect($this->generateUrl('admin_styles_intro', array()));
 		}
 
-        return $this->render('AdminBundle:Styles:index.twig.html');
+        return $this->render('AdminBundle:Styles:index.html.twig');
     }
 
 
-	
+
 	############################################################################
 	# intro
 	############################################################################
@@ -55,7 +55,7 @@ class StylesController extends AbstractController
 	{
 		$this->tplvars['has_no_styles'] = !((bool)$this->style_hierarchy);
 
-		return $this->render('AdminBundle:Styles:intro.twig.html');
+		return $this->render('AdminBundle:Styles:intro.html.twig');
 	}
 
 
@@ -81,7 +81,7 @@ class StylesController extends AbstractController
 
 		$this->tplvars['style'] = $style;
 
-		
+
 		#-------------------------
 		# Set up the form and validator
 		#-------------------------
@@ -104,7 +104,7 @@ class StylesController extends AbstractController
 
 		$this->tplvars['form'] = $form;
 
-		
+
 		#-------------------------
 		# If the form was submitted, try and save it
 		#-------------------------
@@ -119,7 +119,7 @@ class StylesController extends AbstractController
 			}
 		}
 
-		return $this->render('AdminBundle:Styles:edit.twig.html');
+		return $this->render('AdminBundle:Styles:edit.html.twig');
 	}
 
 
@@ -139,7 +139,7 @@ class StylesController extends AbstractController
 		$template_finder = new \Application\DeskPRO\ResourceScanner\TemplateFiles($this->container);
 		$this->tplvars['template_files'] = $template_finder->getTemplates(true);
 
-		return $this->render('AdminBundle:Styles:style-template-list.twig.html');
+		return $this->render('AdminBundle:Styles:style-template-list.html.twig');
 	}
 
 
@@ -169,10 +169,10 @@ class StylesController extends AbstractController
 		// TODO fetch current styles contents
 		$this->tplvars['template_content'] = file_get_contents($template_files[$template_name]);
 
-		return $this->render('AdminBundle:Styles:edit-template.twig.html');
+		return $this->render('AdminBundle:Styles:edit-template.html.twig');
 	}
 
-	
+
 
 
 

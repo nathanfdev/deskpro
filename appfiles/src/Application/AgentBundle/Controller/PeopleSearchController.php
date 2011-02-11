@@ -34,7 +34,7 @@ class PeopleSearchController extends AbstractController
 			ORDER BY p.id DESC
 		")->getResult();
 
-		return $this->render('AgentBundle:PeopleSearch:index.twig.html', array(
+		return $this->render('AgentBundle:PeopleSearch:index.html.twig', array(
 			'people_list' => $people_list
 		));
 	}
@@ -45,7 +45,7 @@ class PeopleSearchController extends AbstractController
 
 	public function searchAction()
 	{
-		return $this->render('AgentBundle:PeopleSearch:search.twig.html');
+		return $this->render('AgentBundle:PeopleSearch:search.html.twig');
 	}
 
 	############################################################################
@@ -61,7 +61,7 @@ class PeopleSearchController extends AbstractController
 			ORDER BY p.id DESC
 		")->getResult();
 
-		return $this->render('AgentBundle:PeopleSearch:search_results.twig.html', array(
+		return $this->render('AgentBundle:PeopleSearch:search_results.html.twig', array(
 			'people_list' => $people_list
 		));
 	}
@@ -117,13 +117,13 @@ class PeopleSearchController extends AbstractController
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$cloud = $cloud_gen->getCloud();
 
-		return $this->render('AgentBundle:PeopleSearch:pane-labels.twig.html', array(
+		return $this->render('AgentBundle:PeopleSearch:pane-labels.html.twig', array(
 			'cloud' => $cloud
 		));
 	}
 
 	public function findPaneAction()
 	{
-		return $this->render('AgentBundle:PeopleSearch:pane-find.twig.html');
+		return $this->render('AgentBundle:PeopleSearch:pane-find.html.twig');
 	}
 }

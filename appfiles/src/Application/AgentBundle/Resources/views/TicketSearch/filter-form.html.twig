@@ -62,7 +62,7 @@ pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_runfilter') }}';
 						<div class="remove">-</div>
 					</div>
 				</div>
-				{% include 'AgentBundle:TicketSearch:termbuilder-html.twig.html' with {'term_options': ticket_options} %}
+				{% include 'AgentBundle:TicketSearch:termbuilder-html.html.twig' with {'term_options': ticket_options} %}
 			</div>
 		</div>
 	</div>
