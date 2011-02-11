@@ -97,9 +97,9 @@ class PeopleSearchController extends AbstractController
 		//")->setParameters(array($q, $q))->getResult();
 
 		if ($this->in->getBool('ajax')) {
-			$ext = 'jsonphp.json';
+			$ext = 'json.jsonphp';
 		} else {
-			$ext = 'twig.html';
+			$ext = 'html.twig';
 		}
 
 		return $this->render("AgentBundle:PeopleSearch:search_results.$ext", array(
