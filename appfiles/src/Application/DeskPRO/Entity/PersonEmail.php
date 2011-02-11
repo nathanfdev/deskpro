@@ -20,7 +20,7 @@ use Orb\Util\Arrays;
  *
  * @orm:Entity
  * @orm:HasLifecycleCallbacks
- * @orm:Table(name="people_emails"
+ * @orm:Table(name="people_emails",
  *     indexes={
  *         @orm:Index(name="email_domain_idx", columns={"email_domain"})
  * })
