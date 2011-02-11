@@ -28,7 +28,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Department
-	 * @orm:OneToOne(targetEntity="Department")
+	 * @orm:ManyToOne(targetEntity="Department")
 	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent = null;

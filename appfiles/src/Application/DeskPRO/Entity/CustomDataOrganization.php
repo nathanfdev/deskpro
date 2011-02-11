@@ -15,23 +15,27 @@ namespace Application\DeskPRO\Entity;
  * Custom organization data
  *
  * @orm:Entity
- * @orm:Table(name="custom_data_organizations")
+ * @orm:Table(name="custom_data_organizations", indexes={
+ *     @orm:Index(name="field_id_idx", columns={"field_id","organization_id"})
+ * })
  */
 class CustomDataOrganization extends CustomDataAbstract
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefOrganization
-	 * @orm:ManyToOne(targetEntity="CustomDefOrganization")
-	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
-	 */
-	protected $field = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Organization
 	 * @orm:ManyToOne(targetEntity="Organization")
 	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:Id
 	 */
 	protected $organization;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\CustomDefOrganization
+	 * @orm:ManyToOne(targetEntity="CustomDefOrganization")
+	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
+	 * @orm:Id
+	 */
+	protected $field = null;
 
 	public function getOrganizationId()
 	{

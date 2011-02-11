@@ -20,7 +20,10 @@ use Orb\Util\Arrays;
  *
  * @orm:Entity
  * @orm:HasLifecycleCallbacks
- * @orm:Table(name="people_emails")
+ * @orm:Table(name="people_emails"
+ *     indexes={
+ *         @orm:Index(name="email_domain_idx", columns={"email_domain"})
+ * })
  */
 class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -47,6 +50,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="email", type="string", length=255)
 	 */
 	protected $email;
+
+	/**
+	 * The email address domain
+	 *
+	 * @var string
+	 * @orm:Column(name="email_domain", type="string", length=255)
+	 */
+	protected $email_domain;
 
 	/**
 	 * @var bool
@@ -115,6 +126,19 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $is_real;
+	}
+
+
+
+	/**
+	 * Set email
+	 *
+	 * @param string $email
+	 */
+	public function setEmail($email)
+	{
+		$this->email = $email;
+		list (, $this->email_domain) = explode('@', $email, 2);
 	}
 
 

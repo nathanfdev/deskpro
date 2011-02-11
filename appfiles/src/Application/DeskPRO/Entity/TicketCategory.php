@@ -28,7 +28,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var TicketCategory
-	 * @orm:OneToOne(targetEntity="TicketCategory")
+	 * @orm:ManyToOne(targetEntity="TicketCategory")
 	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent = null;

@@ -19,12 +19,6 @@ namespace Application\DeskPRO\Entity;
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 */
-	protected $id;
-
-	/**
 	 * IMPLEMENT IN CHILD CLASS
 	 * The form field this is attached to
 	 *

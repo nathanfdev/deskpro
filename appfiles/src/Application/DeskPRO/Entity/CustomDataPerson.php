@@ -16,23 +16,28 @@ namespace Application\DeskPRO\Entity;
  *
  * @orm:Entity
  * @orm:HasLifecycleCallbacks
- * @orm:Table(name="custom_data_person")
+ * @orm:Table(name="custom_data_person",
+ *     indexes={
+ *         @orm:Index(name="field_id_idx", columns={"field_id","person_id"})
+ * })
  */
 class CustomDataPerson extends CustomDataAbstract
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\CustomDefPerson
-	 * @orm:ManyToOne(targetEntity="CustomDefTicket")
-	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
-	 */
-	protected $field = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:Id
 	 */
 	protected $person;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\CustomDefPerson
+	 * @orm:ManyToOne(targetEntity="CustomDefTicket")
+	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
+	 * @orm:Id
+	 */
+	protected $field = null;
 
 	public function getPersonId()
 	{

@@ -254,12 +254,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $has_attachments = false;
 
 	/**
-	 * @var bool
-	 * @orm:Column(name="is_archived", type="boolean")
-	 */
-	protected $is_archived = false;
-
-	/**
 	 * @var string
 	 * @orm:Column(name="subject", type="string", length=255)
 	 */
@@ -772,6 +766,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return true;
+	}
+
+	public function getIsArchived()
+	{
+		if ($this->status == 'closed' OR $this->status =='resolved') {
+			return true;
+		}
+
+		return false;
 	}
 
 
