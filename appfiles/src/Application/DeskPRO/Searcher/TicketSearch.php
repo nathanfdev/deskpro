@@ -103,10 +103,10 @@ class TicketSearch extends SearcherAbstract
 			}
 			$u_table = 'people_search';
 		} else {
-			$table = 'tickets_search';
+			$table = 'tickets_search_active';
 		}
 
-		$sql = "SELECT $table.id FROM $table ";
+		$sql = "SELECT $table.id FROM $table AS tickets ";
 
 		$ticket_parts = $this->getSqlParts();
 		$user_parts = null;
@@ -128,11 +128,11 @@ class TicketSearch extends SearcherAbstract
 
 			// perms only matter if person has permissions applied at all
 			if ($agent->getDisallowedDepartments()) {
-				$where_perm[] = "ticket.agent_id = {$agent['id']}";
+				$where_perm[] = "tickets.agent_id = {$agent['id']}";
 				if ($agent->getAgentTeamIds()) {
-					$where_perm[] = "ticket.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+					$where_perm[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
 				}
-				$where_perm[] = "ticket.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+				$where_perm[] = "tickets.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
 
 				$where_perm = implode(' OR ', $where_perm);
 
@@ -251,10 +251,7 @@ class TicketSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
-		$tickets_table = 'tickets_search';
-		if ($this->is_archive) {
-			$tickets_table = 'tickets';
-		}
+		$tickets_table = 'tickets';
 
 		$db = App::getDb();
 

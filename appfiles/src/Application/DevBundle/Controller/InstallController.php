@@ -12,7 +12,7 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 	public function indexAction()
 	{
 		$config_contents = @file_get_contents(DP_ROOT . '/config.php');
-		
+
 		return $this->render('DevBundle:Install:index.php.html', array(
 			'config_contents' => $config_contents
 		));
@@ -88,6 +88,16 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
 		$all_sql = $tool->getCreateSchemaSql($metadata);
 
+		$data_reader = new \Application\DeskPRO\Install\InstallData('other_tables.sql');
+		foreach ($data_reader as $sql) {
+			$all_sql[] = $sql;
+		}
+
+		$data_reader = new \Application\DeskPRO\Install\InstallData('triggers.sql');
+		foreach ($data_reader as $sql) {
+			$all_sql[] = $sql;
+		}
+
 		return $this->render('DevBundle:Install:create-tables.php.html', array(
 			'db' => $db,
 			'all_sql' => $all_sql
@@ -98,7 +108,7 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 	{
 		$output = new \Application\DeskPRO\Build\Output();
 		$output->html = true;
-		
+
 		$this->em = App::getOrm();
 
 		$error = false;
