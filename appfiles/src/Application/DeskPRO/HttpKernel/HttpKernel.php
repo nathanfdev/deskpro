@@ -23,15 +23,15 @@ use \Symfony\Component\HttpFoundation\Response;
  * that can be used to perform actions before or after an action, and can override the response object
  * in those cases.
  */
-class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
+class HttpKernel extends \Symfony\Bundle\FrameworkBundle\HttpKernel
 {
 	protected function handleRaw(Request $request, $type = self::MASTER_REQUEST)
 	{
 		// request
         $event = new Event($this, 'core.request', array('request_type' => $type, 'request' => $request));
-        $this->dispatcher->notifyUntil($event);
+        $ret = $this->dispatcher->notifyUntil($event);
         if ($event->isProcessed()) {
-            return $this->filterResponse($event->getReturnValue(), $request, 'A "core.request" listener returned a non response object.', $type);
+            return $this->filterResponse($ret, $request, 'A "core.request" listener returned a non response object.', $type);
         }
 
 		// load controller
@@ -40,8 +40,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 		}
 
 		$event = new Event($this, 'core.controller', array('request_type' => $type, 'request' => $request));
-        $this->dispatcher->filter($event, $controller);
-        $controller = $event->getReturnValue();
+        $controller = $this->dispatcher->filter($event, $controller);
 
         // controller must be a callable
         if (!is_callable($controller)) {
@@ -63,10 +62,8 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 				'action' => $controller[1],
 				'arguments' => $arguments
 			));
-			$this->dispatcher->notifyUntil($event);
-			if ($event->isProcessed()) {
-				$retval = $event->getReturnValue();
-			} else {
+			$retval = $this->dispatcher->notifyUntil($event);
+			if (!$event->isProcessed()) {
 				$retval = null;
 			}
 
@@ -85,10 +82,8 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 				'arguments' => $arguments,
 				'response' => $retval
 			));
-			$this->dispatcher->notifyUntil($event);
-			if ($event->isProcessed()) {
-				$new_retval = $event->getReturnValue();
-			} else {
+			$new_retval = $this->dispatcher->notifyUntil($event);
+			if (!$event->isProcessed()) {
 				$new_retval = null;
 			}
 
@@ -96,7 +91,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 				// Use returned reponse if it exists
 				$retval = $new_retval;
 			}
-			
+
 		// Regular, any callable controller
 		} else {
 			$retval = call_user_func_array($controller, $arguments);
@@ -104,8 +99,8 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 
 		// view
         $event = new Event($this, 'core.view', array('request_type' => $type, 'request' => $request));
-        $this->dispatcher->filter($event, $retval);
+        $ret = $this->dispatcher->filter($event, $retval);
 
-        return $this->filterResponse($event->getReturnValue(), $request, sprintf('The controller must return a response (instead of %s).', is_object($event->getReturnValue()) ? 'an object of class '.get_class($event->getReturnValue()) : is_array($event->getReturnValue()) ? 'an array' : str_replace("\n", '', var_export($event->getReturnValue(), true))), $type);
+        return $this->filterResponse($ret, $request, sprintf('The controller must return a response (instead of %s).', is_object($ret) ? 'an object of class '.get_class($ret) : is_array($ret) ? 'an array' : str_replace("\n", '', var_export($ret, true))), $type);
 	}
 }

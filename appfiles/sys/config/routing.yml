@@ -1,17 +1,17 @@
 deskpro:
-  resource: DeskPRO/Resources/config/routing.yml
+  resource: @DeskPRO/Resources/config/routing.yml
 
 user:
-  resource: UserBundle/Resources/config/routing.yml
+  resource: @UserBundle/Resources/config/routing.yml
 
 agent:
   prefix: /agent
-  resource: AgentBundle/Resources/config/routing.yml
+  resource: @AgentBundle/Resources/config/routing.yml
 
 admin:
   prefix: /admin
-  resource: AdminBundle/Resources/config/routing.yml
+  resource: @AdminBundle/Resources/config/routing.yml
 
 api:
   prefix: /api
-  resource: ApiBundle/Resources/config/routing.yml
+  resource: @ApiBundle/Resources/config/routing.yml

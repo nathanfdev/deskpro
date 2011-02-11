@@ -15,8 +15,11 @@ use \Application\DeskPRO\App;
 
 class RequestKey
 {
-	public static function getApiKeyFromRequest(\Doctrine\ORM\EntityManager $em, \Symfony\Component\HttpFoundation\Request $request)
+	public static function getApiKeyFromRequest()
 	{
+		$em = App::getOrm();
+		$request = App::getRequest();
+
 		static $api_key = null;
 
 		if ($api_key !== null) return $api_key;
@@ -29,7 +32,7 @@ class RequestKey
 		} else if (!empty($_REQUEST['API-KEY'])) {
 			$key_str = $_REQUEST['API-KEY'];
 		}
-		
+
 		if (!$key_str) {
 			$api_key = null;
 			return null;

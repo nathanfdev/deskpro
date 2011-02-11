@@ -74,6 +74,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
         $bundles = array(
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
+			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
 
 			new \Symfony\Bundle\ZendBundle\ZendBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
@@ -114,7 +115,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
 		return $basePath.$environment.'.yml';
 	}
-	
+
 	public function getCacheDir()
 	{
 		return App::getCacheDir();
@@ -137,5 +138,5 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
 class KernelCli extends Kernel
 {
-	
+
 }

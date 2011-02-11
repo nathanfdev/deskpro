@@ -12,4 +12,14 @@ class ApiBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
     {
 		$container->registerExtension(new \Application\ApiBundle\DependencyInjection\CoreExtension());
     }
+
+	public function getNamespace()
+	{
+		return __NAMESPACE__;
+	}
+
+	public function getPath()
+	{
+		return __DIR__;
+	}
 }

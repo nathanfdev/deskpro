@@ -13,6 +13,12 @@ class DoctrineExtension extends \Symfony\Bundle\DoctrineBundle\DependencyInjecti
 {
 	protected function loadDbalConnection(array $connection, ContainerBuilder $container)
 	{
+		print_r($connection);exit;
+		if ($connection['dbname'] === '__dp_from_user_config__') {
+			$connection['dbname'] = '';
+			$connection['dp_from_user_config'] = true;
+		}
+
 		if (!isset($connection['dp_from_user_config'])) {
 			parent::loadDbalConnection($connection, $container);
 			return;

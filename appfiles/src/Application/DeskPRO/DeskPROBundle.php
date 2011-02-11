@@ -8,18 +8,28 @@ use Symfony\Component\DependencyInjection\ContainerBuilder;
 
 class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
+	public function __construct()
+	{
+		$this->name = 'DeskPRO';
+	}
+
 	public function registerExtensions(ContainerBuilder $container)
     {
 		// TODO sort out Hybrid loader again for gold
 		//$container->registerExtension(new \Application\DeskPRO\DependencyInjection\TwigExtension());
 
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\DoctrineExtension());
+        //$container->registerExtension(new \Application\DeskPRO\DependencyInjection\DoctrineExtension());
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CacheExtension());
     }
 
-	public function getName()
-    {
-        return 'DeskPRO';
-    }
+	public function getNamespace()
+	{
+		return __NAMESPACE__;
+	}
+
+	public function getPath()
+	{
+		return __DIR__;
+	}
 }

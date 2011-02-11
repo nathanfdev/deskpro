@@ -20,7 +20,7 @@ use \Symfony\Component\Templating\Loader\LoaderInterface;
  * a special $OUTPUT variable. This is useful in cases where lots PHP processing is
  * taking place, or in cases where you don't want superfluous whitespace etc.
  */
-class PhpVarEngine extends \Symfony\Component\Templating\PhpEngine
+class PhpVarEngine extends \Symfony\Bundle\FrameworkBundle\Templating\PhpEngine
 {
 	public function evaluate(Storage $template, array $parameters = array())
 	{

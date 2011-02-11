@@ -90,7 +90,7 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 		// - In an interface script
 		// - Not an AJAX request (they happen so frequently, lets not bog them down with file check each time)
 		if (App::isDebug() && preg_match('#^Application\\\\(Admin|Agent|User)Bundle\\\\#', get_class($this)) && !$this->request->isXmlHttpRequest()) {
-			
+
 			$upgrader = new Upgrader();
 			$version = VersionReader::getVersionId(VersionReader::getCurrentVersion());
 			$source_version = VersionReader::getVersionId($upgrader->getNewestVersion());

@@ -13,7 +13,7 @@ namespace Orb\Util;
  * A simple extension to the Symfony class loader that adds ability to map specific
  * classes to specific files. Useful for single-classes.
  */
-class ClassLoader extends \Symfony\Component\HttpFoundation\UniversalClassLoader
+class ClassLoader extends \Symfony\Component\ClassLoader\UniversalClassLoader
 {
 	/**
 	 * An array of classname => file
@@ -21,11 +21,11 @@ class ClassLoader extends \Symfony\Component\HttpFoundation\UniversalClassLoader
 	 */
 	protected $class_map = array();
 
-	
+
 
 	/**
 	 * Get the current class map.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getClassNameMap()

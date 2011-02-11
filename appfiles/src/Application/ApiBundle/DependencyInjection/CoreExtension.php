@@ -26,11 +26,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$service_name = 'deskpro.api.request_key';
 
 		$definition = new \Symfony\Component\DependencyInjection\Definition(
-			'Application\\ApiBundle\\StaticLoader\\RequestKey',
-			array(
-				new Reference('doctrine.orm.entity_manager'),
-				new Reference('request')
-			)
+			'Application\\ApiBundle\\StaticLoader\\RequestKey'
 		);
 		$definition->setFactoryMethod('getApiKeyFromRequest');
 		$container->setDefinition($service_name, $definition);
