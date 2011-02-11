@@ -57,7 +57,7 @@ class PersonController extends AbstractController
 		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $field_defs);
 
-		$custom_fields_form = new \Symfony\Component\Form\FieldGroup('custom_fields');
+		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
 		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
 
 		#------------------------------

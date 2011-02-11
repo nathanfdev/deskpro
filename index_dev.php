@@ -6,4 +6,4 @@ use \DeskPRO\Kernel\Kernel;
 use Symfony\Component\HttpFoundation\Request;
 
 $kernel = new Kernel('dev', true);
-$kernel->handle(new Request())->send();
+$kernel->handle(Request::createFromGlobals())->send();

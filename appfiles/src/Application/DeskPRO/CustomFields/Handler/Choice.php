@@ -57,7 +57,7 @@ class Choice extends HandlerAbstract
 			}
 		}
 
-		$field_group = new \Symfony\Component\Form\FieldGroup($this->getFormFieldName(), array('virtual' => true));
+		$field_group = new \Symfony\Component\Form\CollectionField($this->getFormFieldName(), array('virtual' => true));
 		$field_choice = new \Symfony\Component\Form\ChoiceField('choice', array(
 			'choices' => $options
 		));
