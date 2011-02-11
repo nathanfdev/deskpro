@@ -45,7 +45,7 @@ class TemplateFiles
 		}
 	}
 
-	
+
 
 	/**
 	 * Scan a bundle directory for all templates, and return a map of template names
@@ -53,8 +53,8 @@ class TemplateFiles
 	 *
 	 * <code>
 	 * array(
-	 *     'ExampleBundle:Example:index'   => '/src/Application/ExampleBundle/views/Example/index.twig.html',
-	 *     'WhateverBundle::layout'        => '/src/Bundle/WhateverBundle/views/layout.twig.html',
+	 *     'ExampleBundle:Example:index'   => '/src/Application/ExampleBundle/views/Example/index.html.twig',
+	 *     'WhateverBundle::layout'        => '/src/Bundle/WhateverBundle/views/layout.html.twig',
 	 * )
 	 * </code>
 	 *
@@ -84,14 +84,14 @@ class TemplateFiles
 		}
 
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->files()->name('*.twig.html')->in($view_dir);
+		$finder->files()->name('*.html.twig')->in($view_dir);
 
 		$templates = array();
 		foreach ($finder as $filepath) {
-			// /somepath/SomeBundle/Resources/views/Something/index.twig.html
+			// /somepath/SomeBundle/Resources/views/Something/index.html.twig
 			// -> SomeBundle:Something:index
 			$tplname = str_replace($view_dir . '/', ':', $filepath);
-			$tplname = str_replace('.twig.html', '', $tplname);
+			$tplname = str_replace('.html.twig', '', $tplname);
 			$tplname = str_replace('/', ':', $tplname);
 			if (substr_count($tplname, ':') < 2) {
 				$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
@@ -105,7 +105,7 @@ class TemplateFiles
 	}
 
 
-	
+
 	/**
 	 * Get templates for all known bundles.
 	 *

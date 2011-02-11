@@ -56,7 +56,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	}
 
 
-	
+
 	/**
 	 * An empty callback function
 	 */
@@ -66,13 +66,13 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	}
 
 
-	
+
 	public function _runPreAction(Event $event)
 	{
 		$ret = $this->preAction($event->get('action'), $event->get('arguments'));
 		if ($ret) {
-			$event->setReturnValue($ret);
-			return true;
+			$event->setProcessed();
+			return $ret;
 		}
 	}
 
@@ -96,11 +96,11 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	{
 		$ret = $this->postAction($event->get('response'));
 		if ($ret) {
-			$event->setReturnValue($ret);
-			return true;
+			$event->setProcessed();
+			return $ret;
 		}
 	}
-	
+
 	/**
 	 * Called by the HttpKernel after an action has been executed.
 	 *
@@ -131,7 +131,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		return $this->redirect($url, $status);
 	}
 
-	
+
 
 	/**
 	 * Create a JSON response.
@@ -155,7 +155,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		return $response;
 	}
 
-	
+
 
 	/**
 	 * Render a template and create a JSON response with it.

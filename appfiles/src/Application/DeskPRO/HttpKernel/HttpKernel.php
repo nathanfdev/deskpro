@@ -25,6 +25,7 @@ use \Symfony\Component\HttpFoundation\Response;
  */
 class HttpKernel extends \Symfony\Bundle\FrameworkBundle\HttpKernel
 {
+
 	protected function handleRaw(Request $request, $type = self::MASTER_REQUEST)
 	{
 		// request

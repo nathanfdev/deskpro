@@ -48,7 +48,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$container->setDefinition('session', $definition);
 	}
 
-	
+
 	/**
 	 * Sets up the translater
 	 */
@@ -97,7 +97,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		// Then the Twig parser that uses it
 		$definition = new Definition('Application\\DeskPRO\\Twig\\Extension\\Helpers', array(new Reference('service_container')));
 		$definition->addTag('twig.extension');
-		$container->setDefinition('deskpro.twig.html.extension.helpers', $definition);
+		$container->setDefinition('deskpro.html.twig.extension.helpers', $definition);
 	}
 
 
@@ -134,7 +134,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 	}
 
 
-	
+
 	/**
 	 * Sets up the settings loader
 	 */

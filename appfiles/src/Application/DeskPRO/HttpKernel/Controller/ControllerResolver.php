@@ -27,12 +27,9 @@ class ControllerResolver extends \Symfony\Bundle\FrameworkBundle\Controller\Cont
         if (false === strpos($controller, '::')) {
             $count = substr_count($controller, ':');
             if (2 == $count) {
-                // controller in the a:b:c notation then
-                $controller = $this->converter->fromShortNotation($controller);
+                                $controller = $this->parser->parse($controller);
             } elseif (1 == $count) {
-                // controller in the service:method notation
-                list($service, $method) = explode(':', $controller);
-
+                                list($service, $method) = explode(':', $controller);
                 return array($this->container->get($service), $method);
             } else {
                 throw new \LogicException(sprintf('Unable to parse the controller name "%s".', $controller));
