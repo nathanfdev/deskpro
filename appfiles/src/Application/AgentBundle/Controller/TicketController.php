@@ -320,7 +320,7 @@ class TicketController extends AbstractController
 		$message['person'] = $this->person;
 		$message['message'] = $this->in->getString('message');
 
-		foreach ($this->in->getArrayValue('attach') as $blob_id) {
+		foreach ($this->in->getCleanValueArray('attach') as $blob_id) {
 
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 

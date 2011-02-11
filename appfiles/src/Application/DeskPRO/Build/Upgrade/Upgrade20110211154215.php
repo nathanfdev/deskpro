@@ -8,7 +8,7 @@ use \Application\DeskPRO\Build\Upgrader;
 class Upgrade20110211154215 extends UpgradeAbstract
 {
 	public function step1()
-	{return Upgrader::STEP_DONE;
+	{
 		$this->output->writeln('Create people_emails table');
 
 		try {
@@ -25,7 +25,7 @@ class Upgrade20110211154215 extends UpgradeAbstract
 	}
 
 	public function step2()
-	{return Upgrader::STEP_DONE;
+	{
 		$this->output->writeln('Add second message table');
 
 		try {
