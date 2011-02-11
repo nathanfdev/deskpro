@@ -38,7 +38,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
 	 */
 	protected $id = null;
 

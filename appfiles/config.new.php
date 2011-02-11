@@ -25,6 +25,7 @@ $CONFIG['db']['password'] = '';
  * The name of the database
  */
 $CONFIG['db']['dbname'] = 'deskpro';
+$CONFIG['db']['dbname'] = 'newtest';
 
 /**
  * The database driver. Currently only pdo_mysql is supported.
