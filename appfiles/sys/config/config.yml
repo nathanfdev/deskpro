@@ -12,6 +12,9 @@ services:
     arguments: [@templating.name_parser, @service_container, @templating.loader]
     tags:
       - { name: templating.engine, alias: jsonphp }
+  session.storage:
+    class: Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage
+    arguments: [@doctrine.orm.entity_manager, %session.storage.native.options%]
 
 app.config:
   charset: UTF-8

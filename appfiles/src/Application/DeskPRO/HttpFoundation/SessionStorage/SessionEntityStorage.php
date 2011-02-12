@@ -11,6 +11,9 @@
 
 namespace Application\DeskPRO\HttpFoundation\SessionStorage;
 
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity\Session;
+
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -18,17 +21,40 @@ use Orb\Util\Util;
 /**
  * This storage uses the Session entity for storing session info.
  */
-class SessionEntityStorage extends \Symfony\Component\HttpFoundation\SessionStorage\NativeSessionStorage
+class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface
 {
 	/**
-	 * @var \Doctrine\ORM\EntityManager
+	 * @var Doctrine\ORM\EntityManager
 	 */
     protected $em;
+
+	/**
+	 * @var Application\DeskPRO\DBAL\Connection
+	 */
+	protected $db;
+
+	protected static $sessionStarted = false;
 
     public function __construct(\Doctrine\ORM\EntityManager $em, $options = null)
     {
         $this->em = $em;
-        parent::__construct($options);
+		$this->db = $em->getConnection();
+
+		if (!$options) $options = array();
+		$options['name'] = App::getSetting('core.sessions_cookie_name');
+
+        $cookieDefaults = session_get_cookie_params();
+
+        $this->options = array_merge(array(
+            'name'          => 'dpsid',
+            'lifetime'      => $cookieDefaults['lifetime'],
+            'path'          => $cookieDefaults['path'],
+            'domain'        => $cookieDefaults['domain'],
+            'secure'        => $cookieDefaults['secure'],
+            'httponly'      => isset($cookieDefaults['httponly']) ? $cookieDefaults['httponly'] : false,
+        ), $options);
+
+        session_name($this->options['name']);
     }
 
 
@@ -36,24 +62,56 @@ class SessionEntityStorage extends \Symfony\Component\HttpFoundation\SessionStor
     /**
      * Starts the session.
      */
-    public function start()
-    {
-        if (self::$sessionStarted) {
-            return;
-        }
+	public function start()
+	{
+		if (self::$sessionStarted) {
+			return;
+		}
 
-        // use this object as the session handler
-        session_set_save_handler(
-            array($this, 'sessionOpen'),
-            array($this, 'sessionClose'),
-            array($this, 'sessionRead'),
-            array($this, 'sessionWrite'),
-            array($this, 'sessionDestroy'),
-            array($this, 'sessionGC')
-        );
+		session_set_save_handler(
+			array($this, 'sessionOpen'),
+			array($this, 'sessionClose'),
+			array($this, 'sessionRead'),
+			array($this, 'sessionWrite'),
+			array($this, 'sessionDestroy'),
+			array($this, 'sessionGC')
+		);
 
-        parent::start();
-    }
+		session_set_cookie_params(
+			$this->options['lifetime'],
+			$this->options['path'],
+			$this->options['domain'],
+			$this->options['secure'],
+			$this->options['httponly']
+		);
+
+		// disable native cache limiter as this is managed by HeaderBag directly
+		session_cache_limiter(false);
+
+		// We want to use our own sessionid's, so we have to do this check
+		// to see if we need to create a new entity
+		$session_id = empty($_COOKIE[$this->options['name']]) ? null : $_COOKIE[$this->options['name']];
+		$session = null;
+		if ($session_id) {
+			$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
+		}
+
+		if (!$session) {
+			$session = new \Application\DeskPRO\Entity\Session();
+			$this->em->persist($session);
+			$this->em->flush();
+
+			session_id($session->getSessionCode());
+		}
+
+		session_start();
+
+		self::$sessionStarted = true;
+
+		// We set this here to force saving of sessions
+		// every time, so the date_last is updated
+		$_SESSION['.'] = mt_rand(1, 999999);
+	}
 
 
 
@@ -79,7 +137,6 @@ class SessionEntityStorage extends \Symfony\Component\HttpFoundation\SessionStor
      */
     public function sessionClose()
     {
-        // do nothing
         return true;
     }
 
@@ -96,20 +153,10 @@ class SessionEntityStorage extends \Symfony\Component\HttpFoundation\SessionStor
      */
     public function sessionDestroy($id)
     {
-        // get table/column
-        $db_table  = $this->options['db_table'];
-        $db_id_col = $this->options['db_id_col'];
+		$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($id);
 
-        // delete the record associated with this id
-        $sql = 'DELETE FROM '.$db_table.' WHERE '.$db_id_col.'= ?';
-
-        try {
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(1, $id, \PDO::PARAM_STR);
-            $stmt->execute();
-        } catch (\PDOException $e) {
-            throw new \RuntimeException(sprintf('PDOException was thrown when trying to manipulate session data. Message: %s', $e->getMessage()));
-        }
+		$this->em->remove($session);
+		$this->em->flush();
 
         return true;
     }
@@ -125,15 +172,8 @@ class SessionEntityStorage extends \Symfony\Component\HttpFoundation\SessionStor
      */
     public function sessionGC($lifetime)
     {
-		$conn = $this->em->getConnection();
-
 		$datetime = date('Y-m-d H:i:s', time() - $lifetime);
-
-        try {
-			$conn->executeQuery('DELETE FROM sessions WHERE updated_at < ?', array($datetime));
-        } catch (\PDOException $e) {
-            throw new \RuntimeException(sprintf('PDOException was thrown when trying to manipulate session data. Message: %s', $e->getMessage()));
-        }
+		$this->db->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
 
         return true;
     }
@@ -151,40 +191,12 @@ class SessionEntityStorage extends \Symfony\Component\HttpFoundation\SessionStor
      */
     public function sessionRead($id)
     {
-        // get table/columns
-        $db_table    = $this->options['db_table'];
-        $db_data_col = $this->options['db_data_col'];
-        $db_id_col   = $this->options['db_id_col'];
-        $db_time_col = $this->options['db_time_col'];
+		$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($id);
+		if ($session) {
+			return $session['data'];
+		}
 
-        try {
-            $sql = 'SELECT '.$db_data_col.' FROM '.$db_table.' WHERE '.$db_id_col.'=?';
-
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(1, $id, \PDO::PARAM_STR, 255);
-
-            $stmt->execute();
-            // it is recommended to use fetchAll so that PDO can close the DB cursor
-            // we anyway expect either no rows, or one row with one column. fetchColumn, seems to be buggy #4777
-            $sessionRows = $stmt->fetchAll(\PDO::FETCH_NUM);
-
-            if (count($sessionRows) == 1) {
-                return $sessionRows[0][0];
-            } else {
-                // session does not exist, create it
-                $sql = 'INSERT INTO '.$db_table.'('.$db_id_col.', '.$db_data_col.', '.$db_time_col.') VALUES (?, ?, ?)';
-
-                $stmt = $this->db->prepare($sql);
-                $stmt->bindParam(1, $id, \PDO::PARAM_STR);
-                $stmt->bindValue(2, '', \PDO::PARAM_STR);
-                $stmt->bindValue(3, time(), \PDO::PARAM_INT);
-                $stmt->execute();
-
-                return '';
-            }
-        } catch (\PDOException $e) {
-            throw new \RuntimeException(sprintf('PDOException was thrown when trying to manipulate session data. Message: %s', $e->getMessage()));
-        }
+		return '';
     }
 
 
@@ -201,23 +213,99 @@ class SessionEntityStorage extends \Symfony\Component\HttpFoundation\SessionStor
      */
     public function sessionWrite($id, $data)
     {
-        // get table/column
-        $db_table    = $this->options['db_table'];
-        $db_data_col = $this->options['db_data_col'];
-        $db_id_col   = $this->options['db_id_col'];
-        $db_time_col = $this->options['db_time_col'];
+		// Because of when the session is written, we cant use the ORM here,
+		// because the manager has lost its reference to the session state
+		$id = Session::getIdFromCode($id);
+		$sess_rec = array();
+		$sess_rec['data'] = $data;
+		$sess_rec['date_last'] = date('Y-m-d H:i:s', time());
+		$sess_rec['is_person'] = 0;
+		$sess_rec['person_id'] = null;
 
-        $sql = 'UPDATE '.$db_table.' SET '.$db_data_col.' = ?, '.$db_time_col.' = '.time().' WHERE '.$db_id_col.'= ?';
+		if (!empty($_SESSION['auth_person_id'])) {
+			$sess_rec['is_person'] = 1;
+			$sess_rec['person_id'] = $_SESSION['auth_person_id'];
+		}
 
-        try {
-            $stmt = $this->db->prepare($sql);
-            $stmt->bindParam(1, $data, \PDO::PARAM_STR);
-            $stmt->bindParam(2, $id, \PDO::PARAM_STR);
-            $stmt->execute();
-        } catch (\PDOException $e) {
-            throw new \RuntimeException(sprintf('PDOException was thrown when trying to manipulate session data. Message: %s', $e->getMessage()));
-        }
+		$this->db->update('sessions', $sess_rec, array('id' => $id));
 
         return true;
+    }
+
+	public function getId()
+	{
+		if (!self::$sessionStarted) {
+			throw new \RuntimeException('The session must be started before reading its ID');
+		}
+
+		return session_id();
+	}
+
+    /**
+     * Reads data from this storage.
+     *
+     * The preferred format for a key is directory style so naming conflicts can be avoided.
+     *
+     * @param string $key A unique key identifying your data
+     *
+     * @return mixed Data associated with the key
+     */
+    public function read($key, $default = null)
+    {
+        return array_key_exists($key, $_SESSION) ? $_SESSION[$key] : $default;
+    }
+
+    /**
+     * Removes data from this storage.
+     *
+     * The preferred format for a key is directory style so naming conflicts can be avoided.
+     *
+     * @param  string $key  A unique key identifying your data
+     *
+     * @return mixed Data associated with the key
+     */
+    public function remove($key)
+    {
+        $retval = null;
+
+        if (isset($_SESSION[$key])) {
+            $retval = $_SESSION[$key];
+            unset($_SESSION[$key]);
+        }
+
+        return $retval;
+    }
+
+    /**
+     * Writes data to this storage.
+     *
+     * The preferred format for a key is directory style so naming conflicts can be avoided.
+     *
+     * @param string $key   A unique key identifying your data
+     * @param mixed  $data  Data associated with your key
+     *
+     */
+    public function write($key, $data)
+    {
+        $_SESSION[$key] = $data;
+    }
+
+    /**
+     * Regenerates id that represents this storage.
+     *
+     * @param  Boolean $destroy Destroy session when regenerating?
+     *
+     * @return Boolean True if session regenerated, false if error
+     *
+     */
+    public function regenerate($destroy = false)
+    {
+        if (self::$sessionIdRegenerated) {
+            return;
+        }
+
+        session_regenerate_id($destroy);
+
+        self::$sessionIdRegenerated = true;
     }
 }

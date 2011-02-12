@@ -10,15 +10,19 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use \Application\DeskPRO\App;
+
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
 /**
  * Active user sessions
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="sessions")
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Session")
+ * @orm:Table(name="sessions", indexes={
+ *     @orm:Index(name="date_last_idx", columns={"date_last","is_person"})
+ * })
  */
 class Session extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -28,28 +32,24 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
 	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
 	 */
-	protected $id = null;
-
+	protected $id;
 
 	/**
 	 * The authcode for the session to verify an id
 	 *
 	 * @var string
-	 * @orm:Column(name="password", type="string", length=15)
+	 * @orm:Column(name="auth", type="string", length=15)
 	 */
-	protected $auth = null;
-
+	protected $auth;
 
 	/**
-	 * The user this session belong to
+	 * The person the session belongs to.
 	 *
 	 * @var int
-	 * @orm:Column(name="user_id", type="integer", nullable=true)
+	 * @orm:Column(name="person_id", type="integer", nullable=true)
 	 */
-	protected $user_id = null;
-
+	protected $person_id = null;
 
 	/**
 	 * @var string
@@ -57,23 +57,29 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $data = '';
 
+	/**
+	 * @var string
+	 * @orm:Column(name="is_person", type="boolean")
+	 */
+	protected $is_person = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="created_at",type="datetime")
+	 * @orm:Column(name="date_created",type="datetime")
 	 */
-	protected $created_at;
-
+	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="updated_at",type="datetime")
+	 * @orm:Column(name="date_last",type="datetime")
 	 */
-	protected $updated_at;
+	protected $date_last;
 
 	public function __construct()
 	{
-		$this->auth = Strings::random(15, Strings::CHARS_ALPHA_I);
+		$this->auth = Strings::random(15, Strings::CHARS_KEY);
+		$this->date_created = new \DateTime();
+		$this->date_last = new \DateTime();
 	}
 
 
@@ -83,23 +89,68 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return string
 	 */
-	public function getSessionId()
+	public function getSessionCode()
 	{
 		$id_enc = Util::baseEncode($this->id, Util::BASE36_ALPHABET);
 		return $id_enc . '-' . $this->auth;
 	}
 
 
-	
-	/** @orm:PrePersist */
-	public function incCreatedAt()
+
+	/**
+	 * Check a session code against some kind o finput to see
+	 * if they match.
+	 *
+	 * @return bool
+	 */
+	public function checkSessionCode($session_code)
 	{
-		$this->created_at = $this->updated_at = new \DateTime();
+		return ($this->getSessionCode() === $session_code);
 	}
 
-	/** @orm:PreUpdate */
-	public function incUpdatedAt()
+
+
+	public function setPerson(Person $person = null)
 	{
-		$this->updated_at = new \DateTime();
+		if (!$person) {
+			$this->setPersonId(0);
+		} else {
+			$this->setPersonId($person['id']);
+		}
+	}
+
+	public function setPersonId($person_id)
+	{
+		if ($person_id) {
+			$this->is_person = true;
+			$this->person_id = $person_id;
+		} else {
+			$this->is_person = false;
+			$this->person_id = null;
+		}
+	}
+
+	public function getPerson()
+	{
+		if (!$this->person_id) {
+			return null;
+		}
+
+		return App::getEntityRepository('DeskPRO:Person')->find($this->person_id);
+	}
+
+	public function updateLastTime()
+	{
+		$this->date_last = new \DateTime();
+	}
+
+	public static function getIdFromCode($sess_code)
+	{
+		if (!strpos($sess_code, '-')) return null;
+
+		list ($session_id, ) = explode('-', $sess_code, 2);
+		$session_id = Util::baseDecode($session_id, Util::BASE36_ALPHABET);
+
+		return $session_id;
 	}
 }

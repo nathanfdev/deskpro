@@ -12,4 +12,6 @@
 	'core.use_gravatar' => 1,
 	'core.use_default_gravatar' => 1,
 
+	'core.sessions_cookie_name' => 'dpsid',
+
 );
