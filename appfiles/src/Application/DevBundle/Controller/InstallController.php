@@ -38,9 +38,6 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		if (!extension_loaded('pdo') OR !extension_loaded('pdo_mysql') OR !class_exists('PDO')) {
 			$checks['ext_pdo_mysql'] = false;
 		}
-		if (!extension_loaded('intl') OR !class_exists('Locale')) {
-			$checks['ext_intl'] = false;
-		}
 
 		@mkdir(DP_ROOT.'/sys/cache/dev/doctrine/orm/Proxies', 0777, true);
 		if (!is_writable(DP_ROOT.'/sys/cache')) {
