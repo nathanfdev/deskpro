@@ -11,7 +11,7 @@ class MainController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 {
 	public function indexAction()
 	{
-		return $this->render('DevBundle:Main:index.php.html', array(
+		return $this->render('DevBundle:Main:index.html.php', array(
 
 		));
 	}
@@ -44,7 +44,7 @@ class MainController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 	public function phpTestAction()
 	{
-		return $this->render('DevBundle:Main:php-test.php.html', array(
+		return $this->render('DevBundle:Main:php-test.html.php', array(
 
 		));
 	}
@@ -66,7 +66,7 @@ class MainController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$worker_job = App::getEntityRepository('DeskPRO:WorkerJob')->find(@$_GET['id']);
 
 		$runner = new \Application\DeskPRO\WorkerProcess\Runner\Standard();
-		
+
 		$fp = fopen('php://memory', 'r+');
 		$runner->setCustomLoggerInit(function ($logger) use ($fp) {
 			$out_writer = new \Orb\Log\Writer\Stream($fp);

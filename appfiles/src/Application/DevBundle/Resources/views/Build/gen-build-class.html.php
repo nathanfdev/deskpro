@@ -1,4 +1,4 @@
-<?php $view->extend('DevBundle::layout.php.html') ?>
+<?php $view->extend('DevBundle::layout.html.php') ?>
 <h1>New Build Class</h1>
 <ul>
 	<li>Copy this code template into <var>appfiles/src/Application/DeskPRO/Build/Upgrade/<strong><?php echo $build_classname ?>.php</strong></var> and edit it</li>

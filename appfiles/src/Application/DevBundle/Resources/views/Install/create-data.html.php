@@ -1,4 +1,4 @@
-<?php $view->extend('DevBundle::layout.php.html') ?>
+<?php $view->extend('DevBundle::layout.html.php') ?>
 <h1>4. Create Data</h1>
 
 <textarea style="width: 95%; height: 200px; font-family: 'Monaco', 'Courier New', monospace;"><?php echo $results ?></textarea>

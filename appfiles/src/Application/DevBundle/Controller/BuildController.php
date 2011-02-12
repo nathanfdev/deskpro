@@ -25,7 +25,7 @@ class BuildController extends \Application\DeskPRO\HttpKernel\Controller\Control
 	public function indexAction()
 	{
 		$upgrader = new Upgrader();
-		
+
 		$version = VersionReader::getCurrentVersion();
 		$version_id = VersionReader::getVersionId($version);
 		$source_version = $upgrader->getNewestVersion();
@@ -42,7 +42,7 @@ class BuildController extends \Application\DeskPRO\HttpKernel\Controller\Control
 			}
 		}
 
-		return $this->render('DevBundle:Build:index.php.html', array(
+		return $this->render('DevBundle:Build:index.html.php', array(
 			'version_file'        => DP_ROOT.'/sys/VERSION',
 			'version'             => VersionReader::getVersionString($version),
 			'version_id'          => $version_id,
@@ -59,7 +59,7 @@ class BuildController extends \Application\DeskPRO\HttpKernel\Controller\Control
 		$build_id = VersionReader::getVersionId($build);
 		$build_string = VersionReader::getVersionString($build);
 
-		return $this->render('DevBundle:Build:gen-build-class.php.html', array(
+		return $this->render('DevBundle:Build:gen-build-class.html.php', array(
 			'build_id' => $build_id,
 			'build_string' => $build_string,
 			'build_classname' => 'Upgrade' . $build_id
@@ -88,7 +88,7 @@ class BuildController extends \Application\DeskPRO\HttpKernel\Controller\Control
 			return $this->redirectRoute('dev_build');
 		}
 
-		return $this->render('DevBundle:Build:upgrade.php.html', array(
+		return $this->render('DevBundle:Build:upgrade.html.php', array(
 			'version'             => VersionReader::getVersionString($version),
 			'behind_versions'     => $behind_versions,
 		));
@@ -111,7 +111,7 @@ HTML;
 
 		echo '<strong>Performing ' . VersionReader::getVersionString($version) . '</strong><br /><br />';
 		echo '<pre>';
-		
+
 		$output = new \Application\DeskPRO\Build\Output();
 		$output->html = true;
 		$status = $upgrader->performUpgrade($version, $output);

@@ -1,4 +1,4 @@
-<?php $view->extend('DevBundle::layout.php.html') ?>
+<?php $view->extend('DevBundle::layout.html.php') ?>
 
 <table width="100%">
 	<tr class="alt">

@@ -32,7 +32,7 @@ class TemplateRenamerCommand extends \Symfony\Bundle\FrameworkBundle\Command\Com
 		$finder->files()->name('/\.php/')->in(DP_ROOT . '/src/Application/DevBundle/Resources/views');
 
 		foreach ($finder as $filepath) {
-			$new_filepath = str_replace('.php', '.php.html', $filepath);
+			$new_filepath = str_replace('.php', '.html.php', $filepath);
 
 			echo $new_filepath ."\n";
 

@@ -1,4 +1,4 @@
-<?php $view->extend('DevBundle::layout.php.html') ?>
+<?php $view->extend('DevBundle::layout.html.php') ?>
 
 <h1>1. Edit Config</h1>
 <p>

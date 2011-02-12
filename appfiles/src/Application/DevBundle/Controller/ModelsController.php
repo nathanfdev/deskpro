@@ -14,7 +14,7 @@ class ModelsController extends \Application\DeskPRO\HttpKernel\Controller\Contro
 		$em = $this->get('doctrine.orm.entity_manager');
 		$all_metadata = $em->getMetadataFactory()->getAllMetadata();
 
-		return $this->render('DevBundle:Models:index.php.html', array(
+		return $this->render('DevBundle:Models:index.html.php', array(
 			'all_metadata' => $all_metadata,
 		));
 	}
@@ -32,7 +32,7 @@ class ModelsController extends \Application\DeskPRO\HttpKernel\Controller\Contro
 			$all_sql = $tool->getCreateSchemaSql(array($metadata));
 		}
 
-		return $this->render('DevBundle:Models:get-sql.php.html', array(
+		return $this->render('DevBundle:Models:get-sql.html.php', array(
 			'model' => $model,
 			'all_sql' => $all_sql,
 		));

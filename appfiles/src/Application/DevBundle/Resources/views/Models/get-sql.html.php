@@ -1,4 +1,4 @@
-<?php $view->extend('DevBundle::layout.php.html') ?>
+<?php $view->extend('DevBundle::layout.html.php') ?>
 
 <h1>Get Model SQL</h1>
 <form action="<?php echo $view['router']->generate('dev_models_getsql') ?>" method="get">

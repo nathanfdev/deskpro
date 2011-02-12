@@ -1,4 +1,4 @@
-<?php $view->extend('DevBundle::layout.php.html') ?>
+<?php $view->extend('DevBundle::layout.html.php') ?>
 <?php $view['slots']->start('head') ?>
 <script type="text/javascript">
 var Upgrader = {
