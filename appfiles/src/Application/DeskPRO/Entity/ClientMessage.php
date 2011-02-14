@@ -68,7 +68,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * original push sent only a short.
 	 *
 	 * @var string
-	 * @orm:Column(name="channel", type="string", length=15)
+	 * @orm:Column(name="auth", type="string", length=15)
 	 */
 	protected $auth;
 
