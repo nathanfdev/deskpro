@@ -40,9 +40,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
         $this->em = $em;
 		$this->db = $em->getConnection();
 
-		if (!$options) $options = array();
-		$options['name'] = App::getSetting('core.sessions_cookie_name');
-
         $cookieDefaults = session_get_cookie_params();
 
         $this->options = array_merge(array(
@@ -76,6 +73,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			array($this, 'sessionDestroy'),
 			array($this, 'sessionGC')
 		);
+
+		$this->options['name'] = App::getSetting('core.sessions_cookie_name');
 
 		session_set_cookie_params(
 			$this->options['lifetime'],
