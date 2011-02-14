@@ -18,6 +18,7 @@ use Orb\Util\Web;
  * CSS resource
  *
  * @orm:Entity
+ * @orm:Table(name="style_resource_css")
  */
 class StyleResourceCss extends StyleResource
 {

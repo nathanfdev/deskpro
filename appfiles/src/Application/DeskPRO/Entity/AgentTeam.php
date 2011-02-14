@@ -46,13 +46,13 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="AgentTeamMember", joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="team_id", referencedColumnName="id")})
+     * @orm:JoinTable(name="agent_team_members", joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="team_id", referencedColumnName="id")})
 	 * @orm:OrderBy({"first_name" = "ASC", "last_name" = "ASC"})
 	 */
 	protected $members = null;
 
 
-	
+
 	public function addPerson(Entity\Person $person)
 	{
 		$this->members->add($person);

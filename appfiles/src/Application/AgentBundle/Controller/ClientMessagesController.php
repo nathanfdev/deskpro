@@ -19,20 +19,69 @@ use Application\DeskPRO\App;
 /**
  * Handles AJAX serving of client messages
  */
-class PollerController extends AbstractController
+class ClientMessagesController extends AbstractController
 {
 	public function getNewMessagesAction($since)
 	{
-		$since = new \DateTime("@$since");
+		// Automatically ping
+		// AJAX clients dont send ping manually, it's just part of this call
+		$this->person->loadHelper('ClientChannelSubscriptions', array('session' => $this->session));
+		$this->person->clientChannelSubs->pingSubscriptions();
 
 		$data = array();
-		$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForPrivateId("person:{$this->person['id']}", $since);
+		$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForPrivateId("session:{$this->session['id']}", $since);
 		foreach ($all_messages as $message) {
 			$handler = $message->getHandler();
 
-			$data[] = $handler->getMessage('ajax');
+			$data[] = array(
+				$message['channel'],
+				$handler->getMessage('ajax')
+			);
 		}
 
 		return $this->createJsonResponse($data);
+	}
+
+	public function pingSubscriptionsAction()
+	{
+		$this->person->loadHelper('ClientChannelSubscriptions', array('session' => $this->session));
+		$subs = $this->person->clientChannelSubs->pingSubscriptions();
+
+		$sub_channels = array();
+		foreach ($subs as $sub) {
+			$sub_channels[] = $sub['channel'];
+		}
+
+		return $this->createJsonResponse(array('channels' => $sub_channels));
+	}
+
+	public function subscribeChannelsAction()
+	{
+		$channels = $this->in->getCleanValueArray('channels', 'string', 'discard');
+
+		$this->person->loadHelper('ClientChannelSubscriptions', array('session' => $this->session));
+		$subs = $this->person->clientChannelSubs->subscrubeChannels($channels);
+
+		$names = array();
+		foreach ($subs as $sub) {
+			$names[] = $sub['channel'];
+		}
+
+		return $this->createJsonResponse(array('subscribed_channels' => $names));
+	}
+
+	public function unsubscribeChannelAction()
+	{
+		$channels = $this->in->getCleanValueArray('channels', 'string', 'discard');
+
+		$this->person->loadHelper('ClientChannelSubscriptions', array('session' => $this->session));
+		$subs = $this->person->clientChannelSubs->unsubscrubeChannels($channels);
+
+		$names = array();
+		foreach ($subs as $sub) {
+			$names[] = $sub['channel'];
+		}
+
+		return $this->createJsonResponse(array('unsubscribed_channels' => $names));
 	}
 }

@@ -347,12 +347,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param string $name Name of the helper class
 	 */
-	public function loadHelper($name)
+	public function loadHelper($name, array $options = array())
 	{
 		$classname = 'Application\\DeskPRO\\People\\Helpers\\' . $name;
-		$object = new $classname($this);
 
 		if (!$this->getHelperManager()->hasHelper($name)) {
+			$object = new $classname($this, $options);
 			$this->getHelperManager()->addHelper($object);
 		}
 	}

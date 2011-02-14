@@ -12,10 +12,15 @@ Orb.createNamespace('DeskPRO.Agent');
  */
 DeskPRO.Agent.Window = new Class({
 
+	Implements: [Options],
+
+	options: {},
+
 	routePrefixes: {},
 	registry: {},
 
 	messageBroker: null,
+	messageChanneler: null,
 	poller: null,
 
 	pageTabStrip: null,
@@ -28,6 +33,12 @@ DeskPRO.Agent.Window = new Class({
 	innerLayout: null,
 
 	notifier: null,
+
+	initialize: function(options) {
+		if (options) {
+			this.setOptions(options);
+		}
+	},
 
 	initPage: function() {
 		this._initBasic();
@@ -652,26 +663,20 @@ DeskPRO.Agent.Window = new Class({
 
 	_initBasic: function() {
 		this.messageBroker = new DeskPRO.MessageBroker();
+
+		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, {
+			ajaxMessageUrl: this.options.messageChanneler.ajaxMessageUrl,
+			ajaxSubscribeUrl: this.options.messageChanneler.ajaxSubscribeUrl,
+			ajaxUnsubscribeUrl: this.options.messageChanneler.ajaxUnsubscribeUrl
+		});
+
+		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
-			ajaxUrl: BASE_URL + 'agent/poller'
+			ajaxUrl: BASE_URL + 'agent/poller',
+			interval: 3600000
 		});
 
 		var self = this;
-		this.getPoller().addData(
-			function() {
-				if (!self.openTicketIds.length) return false;
-				var data = [];
-				data.push({ name: 'do[]', value: 'check-tickets'});
-
-				Array.each(self.openTicketIds, function(id) {
-					data.push({ name: 'check-ticket-ids[]', value: id });
-				});
-
-				return data;
-			},
-			'tickets.check',
-			{recurring: true, minDelay: 30000 }
-		);
 
 		this.notifier = new DeskPRO.Agent.Notifier.Notifier({
 			notifySummaryButton: $('#notify_button'),

@@ -217,7 +217,14 @@
 		// Remove loading overlay
 		$('#window_loading_overlay').remove();
 
-		window.DeskPRO_Window = new DeskPRO.Agent.Window();
+		window.DeskPRO_Window = new DeskPRO.Agent.Window({
+			messageChanneler: {
+				ajaxMessagesUrl: '{{ path('agent_messages_getnew') }}',
+				ajaxSubscribeUrl: '{{ path('agent_messages_subscribe_channels') }}',
+				ajaxUnsubscribeUrl: '{{ path('agent_messages_unsubscribe_channels') }}'
+			}
+		});
+
 		window.DeskPRO_Window.set('agent.ui.show-listpane', '{{ show_listpane|default('auto') }}');
 
 		window.DeskPRO_Window.initPage();

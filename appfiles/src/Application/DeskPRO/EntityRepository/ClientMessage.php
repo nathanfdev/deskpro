@@ -15,9 +15,9 @@ use \Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class CustomDataTicket extends EntityRepository
+class ClientMessage extends EntityRepository
 {
-	public function getMessagesForPrivateId($private_id, $since = null)
+	public function getMessagesForPrivateId($private_id, $since_id = null)
 	{
 		$params = array($private_id);
 
@@ -26,7 +26,7 @@ class CustomDataTicket extends EntityRepository
 		$qb->where('m.private_id IS NULL OR m.private_id = ?');
 
 		if ($since) {
-			$qb->andWhere('m.date_created > ?');
+			$qb->andWhere('m.id > ?');
 			$params[] = $since;
 		}
 
