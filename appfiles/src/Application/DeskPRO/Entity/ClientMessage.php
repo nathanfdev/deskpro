@@ -34,7 +34,7 @@ use \Application\DeskPRO\App;
  * @orm:HasLifecycleCallbacks
  * @orm:Entity
  * @orm:Table(name="client_messages", indexes={
- *     @orm:Index(name="date_created", columns={"date_created", "private_id"})
+ *     @orm:Index(name="date_created", columns={"date_created", "private_channel_id"})
  * })
  */
 class ClientMessage extends \Application\DeskPRO\Domain\DomainObject

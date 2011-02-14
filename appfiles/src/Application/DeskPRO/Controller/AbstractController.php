@@ -98,8 +98,8 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 			if ($version != $source_version) {
 				$this->event_dispatcher->connect('core.deskpro-pre-action', function ($event) {
 					$controller = $event->get('controller');
-					$event->setReturnValue($controller->redirectRoute('dev_build'));
-					return true;
+					$event->setProcessed();
+					return $controller->redirectRoute('dev_build');
 				}, -5);
 			}
 		}
