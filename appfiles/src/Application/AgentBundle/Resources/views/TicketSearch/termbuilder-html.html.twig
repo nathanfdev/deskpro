@@ -32,7 +32,23 @@
 	<div class="choice">
 		<select name="agent">
 			<option value="0">Unassigned</option>
-			<option value="-1">Current Agent</option>
+			<option value="-1">Me</option>
+			{% for id,label in term_options.agents %}
+				<option value="{{id}}">{{label}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="type" title="Participants" data-rule-type="participant">
+	<div class="op">
+		<select name="op">
+			<option value="is">include</option>
+			<option value="not">does not include</option>
+		</select>
+	</div>
+	<div class="choice">
+		<select name="agent">
+			<option value="-1">Me</option>
 			{% for id,label in term_options.agents %}
 				<option value="{{id}}">{{label}}</option>
 			{% endfor %}
@@ -49,6 +65,8 @@
 				</select>
 			</div>
 			<select name="agent_team">
+				<option value="0">No team</option>
+				<option value="-1">Any of my teams</option>
 				{% for id,title in term_options.agent_teams %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}

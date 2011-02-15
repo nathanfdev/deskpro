@@ -80,7 +80,14 @@ class SettingsController extends AbstractController
 	 */
 	public function ticketQueuesAction()
 	{
-		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
+		$queues_all = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
+
+		$queues = array();
+		foreach ($queues_all as $q) {
+			if (!$q['sys_name']) {
+				$queues[] = $q;
+			}
+		}
 
 		return $this->render('AgentBundle:Settings:ticket-queues.html.twig', array(
 			'queues' => $queues
@@ -93,9 +100,12 @@ class SettingsController extends AbstractController
 	public function ticketQueueEditAction($queue_id)
 	{
 		if ($queue_id) {
-			try {
-				$queue = $this->em->find('DeskPRO:TicketQueue', $queue_id);
-			} catch (\Doctrine\ORM\NoResultException $e) {
+			$queue = $this->em->find('DeskPRO:TicketQueue', $queue_id);
+			if ($queue AND $queue['sys_name']) {
+				$queue = null;
+			}
+
+			if (!$queue) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no queue with ID $queue_id");
 			}
 		} else {

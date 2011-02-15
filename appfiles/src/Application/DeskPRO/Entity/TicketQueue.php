@@ -17,7 +17,9 @@ use \Application\DeskPRO\App;
  * Ticket queues
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketQueue")
- * @orm:Table(name="ticket_queues")
+ * @orm:Table(name="ticket_queues",
+ *     uniqueConstraints={@orm:UniqueConstraint(name="sys_name_unique", columns={"sys_name"})}
+ * )
  */
 class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -27,12 +29,6 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 	 * @GeneratedValue
 	 */
 	protected $id = null;
-
-	/**
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -60,6 +56,12 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_global = false;
 
 	/**
+	 * @var bool
+	 * @orm:Column(name="sys_name", type="string", length="50", nullable=true)
+	 */
+	protected $sys_name = null;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="terms", type="array")
 	 */
@@ -82,6 +84,24 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 	 * @var array
 	 */
 	protected $_results = null;
+
+	public function getPersonId()
+	{
+		if ($this->person === null) {
+			return 0;
+		}
+
+		return $this->person['id'];
+	}
+
+	public function setPersonId($id)
+	{
+		if ($id) {
+			$this->person = App::getEntityRepository('DeskPRO:Person')->find($id);
+		} else {
+			$this->person = null;
+		}
+	}
 
 
 

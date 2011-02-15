@@ -33,7 +33,7 @@ class TicketQueue extends EntityRepository
 		$queues = $this->getEntityManager()->createQuery("
 			SELECT q
 			FROM DeskPRO:TicketQueue q INDEX BY q.id
-			WHERE q.person_id = ?1 OR q.is_global = true
+			WHERE q.person = ?1 OR q.is_global = true
 			ORDER BY q.title ASC
 		")->setParameter(1, $person_id)->execute();
 

@@ -214,6 +214,12 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		$this->em->persist($ent);
 
 		$this->em->flush();
+
+		// Other data
+		$data_reader = new \Application\DeskPRO\Install\InstallData('data.php');
+		foreach ($data_reader as $php) {
+			eval($php);
+		}
 	}
 
 	protected function _createUsergroups($output)

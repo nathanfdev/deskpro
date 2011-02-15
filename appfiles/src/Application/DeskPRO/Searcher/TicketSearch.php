@@ -391,6 +391,13 @@ class TicketSearch extends SearcherAbstract
 					if ($op == self::OP_IS) {
 						if ($choice == 0) {
 							$wheres[] = "$tickets_table.agent_team_id IS NULL";
+						} elseif ($choice == -1) {
+							$person = App::getCurrentPerson();
+							$person->loadHelper('AgentTeam');
+							$team_ids = $person->getAgentTeamIds();
+							if ($team_ids) {
+								$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $team_ids, true);
+							}
 						} else {
 							$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $choice, true);
 						}

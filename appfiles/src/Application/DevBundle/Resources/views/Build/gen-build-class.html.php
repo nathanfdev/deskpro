@@ -17,11 +17,14 @@ class <?php echo $build_classname ?> extends UpgradeAbstract
 {
 	public function step1()
 	{
-		$this->output->writeln('My Upgrade');
+		$this->output->writeln('My upgrade step');
 
-		// Add your code in here to create or alter tables,
-		// or anything else you need to do.
-		// Return Upgrader::STEP_FAILED on failure.
+		try {
+			App::getDb()->exec("SOME SQL");
+		} catch (\Exception $e) {
+			$this->output->writeln("ERROR: {$e->getMessage()}");
+			return Upgrader::STEP_FAILED;
+		}
 
 		return Upgrader::STEP_DONE;
 	}

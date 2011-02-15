@@ -33,12 +33,17 @@ class InstallData implements \IteratorAggregate
 		$this->tags = array();
 		$this->data = array();
 
-		$file = file_get_contents($this->filepath);
+		// prefix here so the array_shift below gets rid of junk,
+		// but doesnt bug out if theres a BEGIN right on the first line
+		$file = "\n\nxxx\n\n" . file_get_contents($this->filepath);
 
 		$parts = preg_split('/^##BEGIN:(.*?)##\s*$/m', $file, -1, PREG_SPLIT_NO_EMPTY | PREG_SPLIT_DELIM_CAPTURE);
 		if (!$parts) {
 			return;
 		}
+
+		// remove first part of the file because its not part of any section
+		array_shift($parts);
 
 		$_desc_str = null;
 		foreach ($parts as $part) {
