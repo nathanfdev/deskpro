@@ -63,7 +63,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Options for the job
-	 * 
+	 *
 	 * @var array
 	 * @orm:Column(name="data", type="array", nullable=true)
 	 */
@@ -71,14 +71,14 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * The most ideal interval for this task to run.
-	 * 
-	 * @orm:Column(name="interval", type="integer")
+	 *
+	 * @orm:Column(name="run_interval", type="integer")
 	 */
 	protected $interval = 3600;
 
 	/**
 	 * The last time this job was run
-	 * 
+	 *
 	 * @var DateTime
 	 * @orm:Column(name="last_run_date",type="datetime", nullable=true)
 	 */
