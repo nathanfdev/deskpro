@@ -38,7 +38,7 @@ class ClientChannelSubscriptions implements \Orb\Helper\ShortCallableInterface
 	public function getShortCallableNames()
 	{
 		return array(
-			'clientChannelSubs' => '_getthis',
+			'getClientChannelSubs' => '_getthis',
 		);
 	}
 
@@ -57,7 +57,7 @@ class ClientChannelSubscriptions implements \Orb\Helper\ShortCallableInterface
 	 */
 	public function getSubscriptions()
 	{
-		$subs = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($this->session['id']);
+		$subs = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($this->session->getEntityId());
 
 		return $subs;
 	}
@@ -71,7 +71,7 @@ class ClientChannelSubscriptions implements \Orb\Helper\ShortCallableInterface
 	 */
 	public function pingSubscriptions()
 	{
-		$subs = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($this->session['id']);
+		$subs = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($this->session->getEntityId());
 
 		App::getOrm()->beginTransaction();
 
@@ -80,6 +80,7 @@ class ClientChannelSubscriptions implements \Orb\Helper\ShortCallableInterface
 			App::getOrm()->persist($sub);
 		}
 
+		App::getOrm()->flush();
 		App::getOrm()->commit();
 
 		return true;
@@ -101,26 +102,26 @@ class ClientChannelSubscriptions implements \Orb\Helper\ShortCallableInterface
 			$channels = (array)$channels;
 		}
 
-		App::getOrb()->beginTransaction();
+		App::getOrm()->beginTransaction();
 
 		$subs = array();
 		foreach ($channels as $channel) {
-			$sub = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->findSubscriptionForClient($this->session['id']);
+			$sub = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->findSubscriptionForClient($channel, $this->session->getEntityId());
 			if (!$sub) {
 				$sub = new Entity\ClientChannelSubscription();
 			}
 
 			$sub->updatePingTime();
-			$sub['channel_id'] = $channel;
-			$sub['session'] = $this->session;
-			$sub['private_channel_id'] = "session:{$this->session['id']}";
+			$sub['channel'] = $channel;
+			$sub['session_id'] = $this->session->getEntityId();
 
 			App::getOrm()->persist($sub);
 
 			$subs[] = $sub;
 		}
 
-		App::getOrb()->commit();
+		App::getOrm()->flush();
+		App::getOrm()->commit();
 
 		// If we were given only one (not an array), then
 		// return the one instead of an array
@@ -147,11 +148,11 @@ class ClientChannelSubscriptions implements \Orb\Helper\ShortCallableInterface
 			$channels = (array)$channels;
 		}
 
-		App::getOrb()->beginTransaction();
+		App::getOrm()->beginTransaction();
 
 		$subs = array();
 		foreach ($channels as $channel) {
-			$sub = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->findSubscriptionForClient($this->session['id']);
+			$sub = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->findSubscriptionForClient($channel, $this->session->getEntityId());
 			if (!$sub) continue;
 
 			App::getOrm()->remove($sub);
@@ -159,7 +160,8 @@ class ClientChannelSubscriptions implements \Orb\Helper\ShortCallableInterface
 			$subs[] = $sub;
 		}
 
-		App::getOrb()->commit();
+		App::getOrm()->flush();
+		App::getOrm()->commit();
 
 		// If we were given only one (not an array), then
 		// return the one instead of an array

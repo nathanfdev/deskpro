@@ -652,7 +652,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		}
 
 		// New reply means theres a ticketlog entry of course
-		this.unloadTicketTab('ticket-log');
+		this.unloadTicketTab('notes');
 
 		this.resetReply();
 	},

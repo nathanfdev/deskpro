@@ -17,17 +17,34 @@ use \Doctrine\ORM\EntityRepository;
 
 class ClientMessage extends EntityRepository
 {
-	public function getMessagesForPrivateId($private_id, $since_id = null)
+	public function getMessagesForClient($session_id, $since_id = null)
 	{
-		$params = array($private_id);
+		$channels = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($session_id);
+		$names = array();
+		$names_like = array();
+		foreach ($channels as $ch) {
+			$names[] = "'{$ch['channel']}'";
+			$names_like[] = "m.channel LIKE '{$ch['channel']}.%'";
+		}
+
+		if (!$names) {
+			return array();
+		}
+
+		$names = implode(',', $names);
+		$names_like = implode(' OR ', $names_like);
+
+		$params = array();
 
 		$qb = $this->createQueryBuilder('m');
 		$qb->select('m');
-		$qb->where('m.private_id IS NULL OR m.private_id = ?');
+		$qb->where('m.channel IN (' . $names . ') OR ('. $names_like . ')');
 
-		if ($since) {
-			$qb->andWhere('m.id > ?');
-			$params[] = $since;
+		if ($since_id) {
+			$qb->andWhere('m.id > :since_id');
+			$params['since_id'] = $since_id;
+		} else {
+			$qb->setMaxResults(100);
 		}
 
 		$qb->orderBy('m.id', 'asc');

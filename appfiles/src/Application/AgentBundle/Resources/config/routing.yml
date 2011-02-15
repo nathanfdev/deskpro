@@ -37,7 +37,7 @@ agent_interface_data_js:
 
 
 agent_messages_getnew:
-  pattern: /client-messages/get-new-messages/{since}
+  pattern: /client-messages/get-new-messages
   defaults: { _controller: AgentBundle:ClientMessages:getNewMessages, since: "0" }
   requirements: { since: "\d+" }
 
@@ -349,3 +349,8 @@ agent_ticket_message_ajax_getquote:
   pattern: /tickets/{ticket_id}/message-details/{message_id}/ajax-get-quote
   defaults: { _controller: AgentBundle:Ticket:ajaxGetMessageQuote }
   requirements: { ticket_id: "\d+", message_id: "\d+" }
+
+agent_ticket_ajax_getmessages:
+  pattern: /tickets/{ticket_id}/ajax-get-messages
+  defaults: { _controller: AgentBundle:Ticket:ajaxGetMessages }
+  requirements: { ticket_id: "\d+" }

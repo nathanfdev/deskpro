@@ -34,4 +34,9 @@ class Message implements LogActionInterface
 			'message_id' => $this->message['id']
 		);
 	}
+
+	public function getMessage()
+	{
+		return $this->message;
+	}
 }

@@ -25,13 +25,14 @@ class ClientChannelSubscription extends EntityRepository
 		}
 
 		$expire = new \DateTime('-10 minutes');
+		$expire = $expire->format('Y-m-d H:m:s');
 
 		$subs = $this->getEntityManager()->createQuery("
 			SELECT s
 			FROM DeskPRO:ClientChannelSubscription s
-			WHERE session_id = ?1
-			AND date_ping > ?2
-		")->execute(array($session_id, $expire));
+			WHERE s.session = ?1
+			AND s.date_ping > ?2
+		")->execute(array(1=>$session_id, 2=>$expire));
 
 		return $subs;
 	}
@@ -42,17 +43,17 @@ class ClientChannelSubscription extends EntityRepository
 			$session_id = $session_id['id'];
 		}
 
-		$sub = $this->getEntityManager()->createQuery("
+		$subs = $this->getEntityManager()->createQuery("
 			SELECT s
 			FROM DeskPRO:ClientChannelSubscription s
-			WHERE session_id = ?1 AND channel = ?2
-			LIMIT 1
-		")->execute(array($session_id, $channel))->first();
+			WHERE s.session = ?1 AND s.channel = ?2
+			ORDER BY s.id DESC
+		")->setMaxResults(1)->execute(array(1=>$session_id, 2=>$channel));
 
-		if (!$sub) {
+		if (!$subs OR !count($subs)) {
 			return null;
 		}
 
-		return $sub;
+		return $subs[0];
 	}
 }

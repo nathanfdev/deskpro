@@ -15,6 +15,8 @@ DeskPRO.MessageChanneler.AbstractChanneler = new Class({
 
 	initialize: function(messageBroker, options) {
 		this.messageBroker = messageBroker;
+		if (options) this.setOptions(options);
+
 		this._init();
 	},
 

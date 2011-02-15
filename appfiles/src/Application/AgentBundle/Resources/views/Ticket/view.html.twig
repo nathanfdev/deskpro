@@ -14,6 +14,7 @@ pageMeta.viewMessageUnformattedUrl    = '{{ path('agent_ticket_message_unformatt
 pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getquote', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
 pageMeta.tabTicketLogUrl              = '{{ path('agent_ticket_ajaxtab_ticketlog', {'ticket_id': ticket.id}) }}';
 pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachments', {'ticket_id': ticket.id}) }}';
+pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
 pageMeta.widgets = [
 {% for widget in widgets %}
 	{{ widget.getJsInitObject('div.tab-content.widget-' ~ widget.id)|json_encode|raw }}

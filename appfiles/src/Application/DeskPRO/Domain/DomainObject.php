@@ -170,6 +170,12 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 			if (!isset($arguments[0])) {
 				$arguments = array(null);
 			}
+
+			if (isset($this->$prop)) {
+				$old_val = $this->$prop;
+				$this->_onPropertyChanged($prop, $old_val, $arguments[0]);
+			}
+
 			$this[$prop] = $arguments[0];
 		}
 	}

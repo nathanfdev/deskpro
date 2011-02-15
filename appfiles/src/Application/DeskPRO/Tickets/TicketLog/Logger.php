@@ -36,7 +36,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 	public function logChange($prop, $old_val, $new_val)
 	{
 		$action = null;
-		
+
 		switch ($prop) {
 			case 'agent':
 				$action = new Actions\Agent($old_val, $new_val);
@@ -85,6 +85,8 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 	public function saveLogs()
 	{
+		App::getOrm()->beginTransaction();
+
 		foreach ($this->entered_logs as $name => $action) {
 			$ticket_log = new Entity\TicketLog();
 			$ticket_log['person'] = App::getCurrentPerson();
@@ -96,5 +98,53 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		}
 
 		App::getOrm()->flush();
+		App::getOrm()->commit();
+	}
+
+	public function triggerEvents()
+	{
+		App::getOrm()->beginTransaction();
+
+		#------------------------------
+		# New messages
+		#------------------------------
+
+		if (isset($this->entered_logs['message_created'])) {
+			$client_message = new Entity\ClientMessage();
+			$client_message['channel'] = 'tickets.new-messages';
+			$client_message['data'] = array(
+				'ticket_id' => $this->ticket['id'],
+				'message_id' => $this->entered_logs['message_created']->getMessage()->getId()
+			);
+
+			App::getOrm()->persist($client_message);
+		}
+
+		#------------------------------
+		# Other changes
+		#------------------------------
+
+		// Only trigger a general 'change' when we have
+		// changes that arent new messages
+		$num = count($this->entered_logs);
+		if (isset($this->entered_logs['messages'])) $num--;
+
+		if ($num) {
+			$client_message = new Entity\ClientMessage();
+			$client_message['channel'] = 'tickets.updated';
+			$client_message['data'] = array(
+				'ticket_id' => $this->ticket['id']
+			);
+
+			App::getOrm()->persist($client_message);
+		}
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+	}
+
+	public function reset()
+	{
+		$this->entered_logs = array();
 	}
 }

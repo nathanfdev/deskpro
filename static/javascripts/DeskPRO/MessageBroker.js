@@ -11,12 +11,13 @@ Orb.createNamespace('DeskPRO');
  * </code>
  */
 DeskPRO.MessageBroker = new Class({
-	
+
 	messageTransformers: {},
 	messageListeners: {},
-	
-	
-	
+	tagged: {},
+
+
+
 	/**
 	 * Forward a message type to a separate broker instance.
 	 *
@@ -28,9 +29,9 @@ DeskPRO.MessageBroker = new Class({
 			messageBroker.sendMessage(name, data);
 		});
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Send a message to all listeners.
 	 *
@@ -40,16 +41,16 @@ DeskPRO.MessageBroker = new Class({
 	sendMessage: function (name, data) {
 
 		data = this.transformMessage(name, data);
-		
+
 		if (this.messageListeners[name] !== undefined) {
 			this.messageListeners[name].each(function(callback) {
 				callback(data, name);
 			});
 		}
-		
+
 		var nameparts = name.split('.');
 		var cur_name = null;
-		
+
 		while (nameparts.pop()) {
 			cur_name = nameparts.join('.') + '.*';
 			if (this.messageListeners[cur_name] !== undefined) {
@@ -59,9 +60,9 @@ DeskPRO.MessageBroker = new Class({
 			}
 		}
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Run all transformers on some data
 	 *
@@ -70,16 +71,16 @@ DeskPRO.MessageBroker = new Class({
 	 * @return {Object} The transformed data
 	 */
 	transformMessage: function (name, data) {
-		
+
 		if (this.messageTransformers[name] !== undefined) {
 			this.messageTransformers[name].each(function(callback) {
 				data = callback(data, name);
 			});
 		}
-	
+
 		var nameparts = name.split('.');
 		var cur_name = null;
-		
+
 		while (nameparts.pop()) {
 			cur_name = nameparts.join('.') + '.*';
 			if (this.messageTransformers[cur_name] !== undefined) {
@@ -88,11 +89,11 @@ DeskPRO.MessageBroker = new Class({
 				});
 			}
 		}
-		
+
 		return data;
 	},
-	
-	
+
+
 
 	/**
 	 * Add a message transformer. `name` follows same rules as `addMessageListener()`.
@@ -104,12 +105,12 @@ DeskPRO.MessageBroker = new Class({
 		if (this.messageTransformers[name] === undefined) {
 			this.messageTransformers[name] = [];
 		}
-		
+
 		this.messageTransformers[name].push(callback);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Add a listener on a message.
 	 *
@@ -120,16 +121,24 @@ DeskPRO.MessageBroker = new Class({
 	 * @param {String} name Message name
 	 * @param {Function} callback Callback to execute with message
 	 */
-	addMessageListener: function(name, callback) {
+	addMessageListener: function(name, callback, tag) {
 		if (this.messageListeners[name] === undefined) {
 			this.messageListeners[name] = [];
 		}
-		
+
 		this.messageListeners[name].push(callback);
+
+		if (tag) {
+			if (!this.tagged[tag]) {
+				this.tagged[tag] = [];
+			}
+
+			this.tagged[tag].push([name, callback]);
+		}
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Remove a listener
 	 *
@@ -140,10 +149,25 @@ DeskPRO.MessageBroker = new Class({
 		if (this.messageListeners[name] === undefined) {
 			return;
 		}
-		
+
 		var index = this.messageListeners[name].indexOf(callback);
 		if (index != -1) {
 			this.messageListeners[name].splice(index, 1);
 		}
+	},
+
+
+
+	/**
+	 * Remove all listeners tagged with a certain tag.
+	 *
+	 * @param tag
+	 */
+	removeTaggedListeners: function(tag) {
+		if (!this.tagged[tag]) return;
+
+		Array.each(this.tagged[tag], function (x) {
+			this.removeMessageListener(x[0], x[1]);
+		}, this);
 	}
 });

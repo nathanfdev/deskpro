@@ -7,18 +7,37 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 	Extends: DeskPRO.MessageChanneler.AbstractChanneler,
 
 	poller: null,
+	lastMessageId: null,
+
 	_init: function() {
 		this.poller = new DeskPRO.AjaxPoller.Poller({
-			ajaxUrl: this.options.ajaxMessageUrl,
-			interval: 20000
+			ajaxUrl: this.options.ajaxMessagesUrl,
+			interval: 5000,
+			ajaxType: 'GET'
 		});
+
+		this.poller.addData((function () {
+			if (!this.lastMessageId) return null;
+			return { 'since': this.lastMessageId };
+		}).bind(this), 'since', { recurring: true });
+
 		this.poller.addEvent('ajaxSuccess', this.handleMessageAjax.bind(this));
+
+		if (this.options.lastMessageId) {
+			this.lastMessageId = this.options.lastMessageId;
+		}
 	},
 
 	handleMessageAjax: function(data) {
-		Array.each(data, function(d) {
-			this.sendMessage(d[0], d[1]);
-		}, this);
+		if (data.last_id) {
+			this.lastMessageId = data.last_id;
+		}
+
+		if (data.messages) {
+			Array.each(data.messages, function(d) {
+				this.sendMessage(d[0], d[1]);
+			}, this);
+		}
 	},
 
 
@@ -32,7 +51,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 		this._add_subs.include(channel);
 
 		if (this._add_subs_timeout) {
-			window.clearTimout(this._add_subs_timeout);
+			window.clearTimeout(this._add_subs_timeout);
 		}
 
 		this._add_subs_timeout = this._sendSubscribeChannels.delay(300, this);
@@ -64,7 +83,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 		this._del_subs.include(channel);
 
 		if (this._del_subs_timeout) {
-			window.clearTimout(this._del_subs_timeout);
+			window.clearTimeout(this._del_subs_timeout);
 		}
 
 		this._del_subs_timeout = this._sendUnsubscribeChannels.delay(300, this);

@@ -595,7 +595,7 @@ class Strings
 	{
 		return strtolower(preg_replace('#([a-z0-9])([A-Z])#', '$1-$2', $str));
 	}
-	
+
 
 
 	/**
@@ -862,10 +862,10 @@ class Strings
 	}
 
 
-	
+
 	/**
 	 * Creates a string of k="v", suitable for use as HTML tag attributes.
-	 * 
+	 *
 	 * @param  array $attributes  The attributes to string together
 	 * @param  bool  $do_escape   Escape values?
 	 * @return string
@@ -887,5 +887,39 @@ class Strings
 		}
 
 		return implode(' ', $attr);
+	}
+
+
+
+	/**
+	 * Just like explode() except its meant to be used with a limit where the explode happens
+	 * from right to left.
+	 *
+	 * <code>
+	 * $str = 'my.example.string.here';
+	 * print_r(explode('.', $str, 2)); // array('my', 'example.string.here');
+	 * print_r(Strings::rexplode('.', $str, 2)); // array('my.example.string', 'here');
+	 * </code>
+	 *
+	 * @param  $delim
+	 * @param  $string
+	 * @param int $count
+	 * @return array
+	 */
+	public static function rexplode($delim, $string, $count = 2)
+	{
+		$parts = explode($delim, $string);
+		$len = count($parts);
+		if ($len <= $count) {
+			return $parts;
+		}
+
+		$offset = $len - $count + 1;
+		$parts = array_merge(
+			array(implode($delim, array_slice($parts, 0, $offset))),
+			array_slice($parts, $offset)
+		);
+
+		return $parts;
 	}
 }

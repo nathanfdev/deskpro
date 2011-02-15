@@ -399,6 +399,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->messages->add($message);
 		$message['ticket'] = $this;
 
+		if ($message['person']['is_agent']) {
+			$this['date_last_agent_reply'] = new \DateTime();
+		} else {
+			$this['date_last_user_reply'] = new \DateTime();
+		}
+
 		$this->_onPropertyChanged('messages', null, $message);
 	}
 
@@ -601,9 +607,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($id) {
 			$prod = App::getOrm()->getRepository('DeskPRO:Product')->find($id);
-			$this->product = $prod;
+			$this['product'] = $prod;
 		} else {
-			$this->product = null;
+			$this['product'] = null;
 		}
 	}
 
@@ -620,9 +626,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($id) {
 			$pri = App::getOrm()->getRepository('DeskPRO:TicketPriority')->find($id);
-			$this->priority = $pri;
+			$this['priority'] = $pri;
 		} else {
-			$this->priority = null;
+			$this['priority'] = null;
 		}
 	}
 
@@ -639,9 +645,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($id) {
 			$work = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->find($id);
-			$this->workflow = $work;
+			$this['workflow'] = $work;
 		} else {
-			$this->workflow = null;
+			$this['workflow'] = null;
 		}
 	}
 
@@ -667,14 +673,14 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				// TODO err
 			}
 
-			$this->agent = $agent;
+			$this['agent'] = $agent;
 		} else {
-			$this->agent = null;
+			$this['agent'] = null;
 		}
 	}
 	public function setAgentTeam(Entity\AgentTeam $agent_team = null)
 	{
-		$this->agent_team = $agent_team;
+		$this['agent_team'] = $agent_team;
 	}
 
 	public function getAgentTeamId()
@@ -689,7 +695,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($id) {
 			$agent_team = App::getOrm()->getRepository('DeskPRO:AgentTeam')->find($id);
-			$this->agent_team = $agent_team;
+			$this['agent_team'] = $agent_team;
+		} else {
+			$this['agent_team'] = null;
 		}
 	}
 
@@ -848,6 +856,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_ticket_logger) {
 			$this->_ticket_logger->saveLogs();
+			$this->_ticket_logger->triggerEvents();
+			$this->_ticket_logger->reset();
 		}
 	}
 

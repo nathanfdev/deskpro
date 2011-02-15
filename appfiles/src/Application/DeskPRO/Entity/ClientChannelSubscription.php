@@ -21,8 +21,8 @@ use \Application\DeskPRO\App;
  * The client continuously verifies the list of subscriptions and they expire after a
  * time (for example, if the client disconnects without letting us know).
  *
- * @orm:Entity
- * @orm:Table(name="client_message_subscriptions", indexes={
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ClientChannelSubscription")
+ * @orm:Table(name="client_channel_subscriptions", indexes={
  *     @orm:Index(name="date_ping", columns={"date_ping"}),
  *     @orm:Index(name="channel", columns={"channel"})
  * })
@@ -72,7 +72,15 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->date_ping    = new \DateTime();
-		$this->auth = Strings::random(15, Strings::CHARS_KEY);
+	}
+
+	public function setSessionId($session_id)
+	{
+		if ($session_id) {
+			$this->session = App::getEntityRepository('DeskPRO:Session')->find($session_id);
+		} else {
+			$this->session = null;
+		}
 	}
 
 

@@ -11,6 +11,7 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 
 	Implements: [Events, DeskPRO.Agent.Widgetable],
 
+	pageUuid: null,
 	TYPENAME: 'basic',
 
 	scripts: [],
@@ -24,6 +25,9 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	},
 
 	initialize: function(html) {
+
+		this.pageUid = Orb.uuid();
+
 		if (html) {
 			this.html = html;
 		}

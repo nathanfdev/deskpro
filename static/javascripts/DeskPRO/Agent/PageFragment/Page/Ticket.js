@@ -25,15 +25,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initTicketNotes();
 
 
-		DeskPRO_Window.getMessageBroker().sendMessage('ticket.opened', { ticketId: this.getMetaData('ticket_id') });
+		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
 			if (ticket_ids.indexOf(this.getMetaData('ticket_id')) !== -1) {
 				DeskPRO_Window.removePage(this);
 			}
-		}).bind(this));
+		}).bind(this), this.pageUid);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.check.' + this.getMetaData('ticket_id'), this.handleTicketCheck.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.check.' + this.getMetaData('ticket_id'), this.handleTicketCheck.bind(this), this.pageUid);
+		//DeskPRO_Window.getMessageBroker().addMessageListener('tickets.updated.' + this.getMetaData('ticket_id'), this.getTicketUpdates.bind(this), this.pageUid);
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-messages.' + this.getMetaData('ticket_id'), this.getNewTicketMessages.bind(this), this.pageUid);
 	},
 
 	destroyPage: function() {
@@ -44,7 +46,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			this.popoutPage.destroyPage();
 		}
 
-		DeskPRO_Window.getMessageBroker().sendMessage('ticket.closed', { ticketId: this.getMetaData('ticket_id') });
+		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
+		DeskPRO_Window.getMessageBroker().removeTaggedListeners(this.pageUid);
 	},
 
 	displayNewMessage: function(html) {
@@ -152,6 +155,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	_handleSaveLabelsSuccess: function(data) {
 
+	},
+
+	getNewTicketMessages: function() {
+		var last_id = $('li.message-item:last', this.contentWrapper).data('message-id');
+
+		$.ajax({
+			url: this.getMetaData('getMessagesUrl'),
+			type: 'POST',
+			context: this,
+			data: { since: last_id },
+			dataType: 'json',
+			success: function(data) {
+
+				Array.each(data.messages, function (html) {
+					this.displayNewMessage(html);
+				}, this);
+
+				if (data.has_notes) {
+					this.unloadTicketTab('ticket-notes');
+				}
+			}
+		});
 	},
 
 	//#################################################################

@@ -13,6 +13,8 @@ namespace Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
 
+use \Orb\Util\Strings;
+
 /**
  * A client message is somethign we send to the browser.
  *
@@ -32,10 +34,8 @@ use \Application\DeskPRO\App;
  * the ID through the socket.
  *
  * @orm:HasLifecycleCallbacks
- * @orm:Entity
- * @orm:Table(name="client_messages", indexes={
- *     @orm:Index(name="date_created", columns={"date_created", "private_channel_id"})
- * })
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ClientMessage")
+ * @orm:Table(name="client_messages")
  */
 class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -54,16 +54,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $channel;
 
 	/**
-	 * A private channel. This is generally 'person:id' or 'session:id'. It is up
-	 * to the message server implementation to enforce this auth requirement.
-	 * (Ex in the ajax script we can just check the currently logged in user).
-	 *
-	 * @var string
-	 * @orm:Column(name="private_channel_id", type="string", length="150", nullable=true)
-	 */
-	protected $private_channel_id = null;
-
-	/**
 	 * The auth is used when a client wants to fetch a "full" answer, if the
 	 * original push sent only a short.
 	 *
@@ -74,9 +64,9 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="handler_class", type="string", length=15)
+	 * @orm:Column(name="handler_class", type="string", length=255)
 	 */
-	protected $handler_class;
+	protected $handler_class = 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray';
 
 	/**
 	 * Data to give the handler
@@ -85,6 +75,14 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="data", type="array")
 	 */
 	protected $data = array();
+
+	/**
+	 * The client ID (usully sessionid) that created this message.
+	 * This is so when we fetch messages, we don't get our own messages back.
+	 *
+	 * @orm:Column(name="created_by_client", type="string", length=255)
+	 */
+	protected $created_by_client = '';
 
 	/**
 	 * @var \DateTime
@@ -110,6 +108,13 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 		if (App::has('event_dispatcher')) {
 			$this->event_dispatcher = App::get('event_dispatcher');
 		}
+
+		if (App::has('session')) {
+			$session = App::get('session');
+			try {
+				$this->created_by_client = $session->getEntityId();
+			} catch (\Exception $e) {}
+		}
 	}
 
 
@@ -121,7 +126,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	public function getHandler()
 	{
 		$handler_class = $this->handler_class;
-		$handler = new $handler_class($this->data);
+		$handler = new $handler_class($this);
 
 		return $handler;
 	}

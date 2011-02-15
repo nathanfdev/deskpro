@@ -456,6 +456,38 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
+	# get-ticket-messages
+	############################################################################
+
+	public function ajaxGetMessagesAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$data = array('messages' => array());
+
+		$since = $this->in->getUint('since');
+
+		$messages = App::getOrm()->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMessage m
+			WHERE m.ticket = ?1 AND m.id > ?2
+		")->execute(array(1=>$ticket, 2=> $since));
+
+		foreach ($messages as $message) {
+			$data['messages'][] = $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
+				'message' => $message
+			));
+
+			if ($message['is_agent_note']) {
+				$data['has_notes'] = true;
+			}
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
+
+	############################################################################
 
 	/**
 	 * @return Application\DeskPRO\Entity\Ticket

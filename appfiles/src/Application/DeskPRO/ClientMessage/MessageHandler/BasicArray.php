@@ -15,27 +15,18 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
- * A message handler decides how to take a message and compose a suitable
- * data packet for the client. For example, it might just be an ID so the
- * client can callback for full data, or it might be all the data now etc.
+ * A basic message encoder simply returns the data.
  */
-abstract class AbstractMessageHandler
+class BasicArray extends AbstractMessageHandler
 {
-	/**
-	 * @var Application\DeskPRO\Entity\ClientMessage
-	 */
-	protected $message;
-
-	public function __construct(Entity\ClientMessage $message)
-	{
-		$this->message = $message;
-	}
-
 	/**
 	 * Get the message to give the client.
 	 *
 	 * @param  $context
 	 * @return mixed
 	 */
-	abstract function getMessage($context);
+	function getMessage($context)
+	{
+		return $this->message['data'];
+	}
 }

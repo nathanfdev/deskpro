@@ -4,41 +4,43 @@ Orb.createNamespace('DeskPRO.AjaxPoller');
  * An AJAX poller takes a bunch of data and sends it in packs based on an interval.
  */
 DeskPRO.AjaxPoller.Poller = new Class({
-	
+
 	Implements: [Events, Options],
-	
+
 	dataTransformers: [],
 	queuedData: [],
 	messageBroker: null,
-	
+
 	maxDelayTimers: [],
-	
+
 	autoSendTimeout: null,
 
 	options: {
 		ajaxUrl: null,
-		interval: 6000
+		interval: 6000,
+		alwaysRequest: false,
+		ajaxType: 'POST'
 	},
-	
-	
-	
+
+
+
 	/**
 	 * @option {String} ajaxUrl The URL that will handle the data we POST with this poller.
 	 * @option {Integer} interval Interval time in milliseconds where the queue is sent automatically.
 	 *                            Note that specific items may have a max wait time that might fire the interval
 	 *                            before this time.
-	 * 
+	 *
 	 * @param {DeskPRO.MessageBroker} messageBroker The message broker to send return data through
 	 * @param {Object} options Options to set.
 	 */
-	initialize: function(options) {	
+	initialize: function(options) {
 		this.setOptions(options);
-		
+
 		this.autoSendTimeout = this.send.delay(this.options.interval, this);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Data transformers intercept data before it's sent and can change it
 	 * or augment it.
@@ -46,9 +48,9 @@ DeskPRO.AjaxPoller.Poller = new Class({
 	addDataTransformer: function(name, callback) {
 		this.dataTransformers.push(callback);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Run the data transformers on a piece of data to be sent.
 	 */
@@ -56,7 +58,7 @@ DeskPRO.AjaxPoller.Poller = new Class({
 
 		var nameparts = name.split('.');
 		var cur_name = null;
-		
+
 		while (nameparts.pop()) {
 			cur_name = nameparts.join('.') + '.*';
 			if (this.dataTransformers[cur_name] !== undefined) {
@@ -65,12 +67,12 @@ DeskPRO.AjaxPoller.Poller = new Class({
 				});
 			}
 		}
-		
+
 		return data;
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Add some data to send on the next poll.
 	 *
@@ -86,52 +88,52 @@ DeskPRO.AjaxPoller.Poller = new Class({
 	addData: function(data, name, options) {
 		name = name || 'default';
 		options = options || {};
-		
+
 		if (options.addedTime === undefined) {
 			options.addedTime = new Date();
 		}
-		
+
 		if (options.maxDelay) {
 			(function() {
 				this.send();
-			}).delay(options.maxDelay, this);		
+			}).delay(options.maxDelay, this);
 		}
-		
+
 		this.queuedData.push([name, data, options]);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Send all queued data items now.
 	 */
 	send: function() {
-		
+
 		this._clearDelays();
-		
-		if (!this.queuedData.length) {
+
+		if (!this.options.alwaysRequest && !this.queuedData.length) {
 			this.autoSendTimeout = this.send.delay(this.options.interval, this);
 			return;
 		}
-		
+
 		//------------------------------
 		// Build data to send
 		//------------------------------
-		
+
 		var now = new Date();
-		
+
 		var send_data = [];
 		var sent_info = [];
-		
+
 		var queuedData = this.queuedData;
 		this.queuedData = [];
-		
+
 		var item = null;
 		while (item = queuedData.shift()) {
 			var item_name = item[0];
 			var item_data = item_orig_data = item[1];
 			var item_opts = item[2];
-			
+
 			if (item_opts.minDelay && !(item_opts.minDelayAfterOne && !item_opts.sentCount)) {
 				// If its too soon, add it back immediately
 				if (item_opts.minDelay > (now.getTime() - item_opts.addedTime.getTime())) {
@@ -139,15 +141,15 @@ DeskPRO.AjaxPoller.Poller = new Class({
 					continue;
 				}
 			}
-			
+
 			if (typeOf(item_data) == 'function') {
 				item_data = item_data(item_name, {}, item_opts);
 			}
-			
+
 			item_data = this.transformData(item_name, item_data, item_opts);
-			
+
 			if (!item_data) continue;
-			
+
 			if (typeOf(item_data) == 'array') {
 				send_data.append(item_data);
 			} else {
@@ -155,22 +157,22 @@ DeskPRO.AjaxPoller.Poller = new Class({
 					send_data.push({ name: k, value: v });
 				});
 			}
-			
+
 			sent_info.push([item_orig_data, item_name, item_opts]);
 		}
-		
-		if (!sent_info.length) {
+
+		if (!this.options.alwaysRequest && !sent_info.length) {
 			this._handleAjaxSuccess({}, sent_info);
 			return;
 		}
-		
+
 		//------------------------------
 		// Send data
 		//------------------------------
-		
+
 		$.ajax({
 			cache: false,
-			type: 'POST',
+			type: this.options.ajaxType,
 			url: this.options.ajaxUrl,
 			context: this,
 			data: send_data,
@@ -180,9 +182,9 @@ DeskPRO.AjaxPoller.Poller = new Class({
 			}
 		});
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Handles AJAX success.
 	 *
@@ -199,36 +201,36 @@ DeskPRO.AjaxPoller.Poller = new Class({
 			var item_name = item[0];
 			var item_data = item[1];
 			var item_opts = item[2];
-			
+
 			if (item_opts.recurring) {
 				item_opts.lastSent = new Date();
 
 				if (item_opts.sentCount === undefined) item_opts.sentCount = 0;
 				item_opts.sentCount++;
-				
+
 				// Delete addedTime so minDelay check will reset too
 				delete item_opts.addedTime;
-				
+
 				this.addData(item_name, item_data, item_opts);
 			}
 		}
-		
+
 		this.fireEvent('ajaxSuccess', data);
-		
+
 		// Start auto timer
 		this.autoSendTimeout = this.send.delay(this.options.interval, this);
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Clear all delay timeouts
 	 */
 	_clearDelays: function() {
-		
+
 		this.autoSendTimeout = window.clearTimeout(this.autoSendTimeout);
 		this.autoSendTimeout = null;
-		
+
 		var t = null;
 		while (t = this.maxDelayTimers.pop()) {
 			window.clearTimeout(t);

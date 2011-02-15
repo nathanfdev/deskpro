@@ -664,11 +664,9 @@ DeskPRO.Agent.Window = new Class({
 	_initBasic: function() {
 		this.messageBroker = new DeskPRO.MessageBroker();
 
-		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, {
-			ajaxMessageUrl: this.options.messageChanneler.ajaxMessageUrl,
-			ajaxSubscribeUrl: this.options.messageChanneler.ajaxSubscribeUrl,
-			ajaxUnsubscribeUrl: this.options.messageChanneler.ajaxUnsubscribeUrl
-		});
+		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
+		this.messageChanneler.subscribeChannel('tickets.new-messages');
+		this.messageChanneler.subscribeChannel('tickets.updated');
 
 		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
@@ -687,11 +685,11 @@ DeskPRO.Agent.Window = new Class({
 		this.getMessageBroker().addMessageListener('queues.counts', this._updatequeueCounts.bind(this));
 
 		// When a ticket is open or closed, apply style
-		this.getMessageBroker().addMessageListener('ticket.opened', function (data) {
+		this.getMessageBroker().addMessageListener('ui.ticket.opened', function (data) {
 			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).addClass('open');
 			self.openTicketIds.push(data.ticketId);
 		});
-		this.getMessageBroker().addMessageListener('ticket.closed', (function (data) {
+		this.getMessageBroker().addMessageListener('ui.ticket.closed', (function (data) {
 			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).removeClass('open');
 			self.openTicketIds.erase(data.ticketId);
 
@@ -725,6 +723,16 @@ DeskPRO.Agent.Window = new Class({
 					}
 				});
 			}).delay(3500, this);
+		}).bind(this));
+
+		// Re-dispatch ticket messages to their specific tickets
+		this.getMessageBroker().addMessageListener('tickets.new-messages', (function(data) {
+			var name = 'tickets.new-messages.' + data.ticket_id;
+			this.getMessageBroker().sendMessage(name, data);
+		}).bind(this));
+		this.getMessageBroker().addMessageListener('tickets.updated', (function(data) {
+			var name = 'tickets.updated.' + data.ticket_id;
+			this.getMessageBroker().sendMessage(name, data);
 		}).bind(this));
 	},
 
