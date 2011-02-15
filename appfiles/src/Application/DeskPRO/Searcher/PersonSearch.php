@@ -13,36 +13,10 @@ class PersonSearch extends SearcherAbstract
 	const TERM_ORGANIZATION   = 'organization';
 	const TERM_LANGUAGE       = 'language';
 	const TERM_EMAIL          = 'email';
+	const TERM_EMAIL_DOMAIN   = 'email_domain';
 	const TERM_NAME           = 'name';
-
-	/**
-	 * True to search in the non-search tables (aka all tickets not just active)
-	 * @var bool
-	 */
-	protected $is_archive = false;
-
-
-	
-	/**
-	 * Search old (closed) tickets that are archived (aka not in the search tables).
-	 */
-	public function enableArchiveSearch()
-	{
-		$this->is_archive = true;
-	}
-
-
-
-	/**
-	 * Are we using archive mode?
-	 *
-	 * @return bool
-	 */
-	public function isArchiveSearch()
-	{
-		return $this->is_archive;
-	}
-
+	const TERM_PERSON_FIELD   = 'person_field';
+	const TERM_LABEL          = 'label';
 
 
 	/**
@@ -68,13 +42,7 @@ class PersonSearch extends SearcherAbstract
 	 */
 	public function getSql()
 	{
-		if ($this->is_archive) {
-			$table = 'people';
-		} else {
-			$table = 'people_search';
-		}
-
-		$sql = "SELECT $table.id FROM $table ";
+		$sql = "SELECT people.id FROM $table ";
 
 		$parts = $this->getSqlParts();
 
@@ -84,7 +52,11 @@ class PersonSearch extends SearcherAbstract
 		#------------------------------
 
 		foreach ($parts['joins'] as $j) {
-			$sql .= "LEFT JOIN $j ON $j.ticket_id = $table.id ";
+			if (is_array($j)) {
+				$sql .= $j[1] . " ";
+			} else {
+				$sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
+			}
 		}
 
 		#------------------------------
@@ -98,7 +70,7 @@ class PersonSearch extends SearcherAbstract
 		return $sql;
 	}
 
-	
+
 
 	/**
 	 * Get the SQL parts we need in the query.
@@ -128,15 +100,14 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
 					break;
 				case self::TERM_EMAIL:
-					if (!$this->is_archive) {
-						$table = 'people_emails_search';
-					} else {
-						$table = 'people_emails';
-					}
-
-					$joins[] = $table;
+					$joins[] = 'people_emails';
 
 					switch ($op) {
+						case self::OP_IS:
+						case self::OP_NOT:
+							$wheres[] = "$table.email $op " . $db->quote($choice);
+							break;
+
 						case self::OP_CONTAINS:
 						case self::OP_NOTCONTAINS:
 							$op = 'LIKE';
@@ -144,8 +115,23 @@ class PersonSearch extends SearcherAbstract
 							$wheres[] = "$table.email $op " . $db->quote('%'.$choice.'%');
 							break;
 					}
+					break;
+				case self::TERM_EMAIL_DOMAIN:
+					$joins[] = 'people_emails';
 
-					$wheres[] = $this->_choiceMatch("$table.email", $op, $choice);
+					switch ($op) {
+						case self::OP_IS:
+						case self::OP_NOT:
+							$wheres[] = "$table.email_domain $op " . $db->quote($choice);
+							break;
+
+						case self::OP_CONTAINS:
+						case self::OP_NOTCONTAINS:
+							$op = 'LIKE';
+							if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
+							$wheres[] = "$table.email_domain $op " . $db->quote('%'.$choice.'%');
+							break;
+					}
 					break;
 				case self::TERM_NAME:
 					switch ($op) {
@@ -157,6 +143,106 @@ class PersonSearch extends SearcherAbstract
 							break;
 					}
 					break;
+
+				case self::TERM_LABEL:
+					$field = 'labels_people.label';
+
+					$choices_in = array();
+					foreach ((array)$choice as $c) {
+						$choices_in[] = $db->quote($c);
+					}
+					$choices_in = implode(',', $choices_in);
+
+					switch ($op) {
+						case self::OP_IS:
+							$joins[] = 'labels_people';
+							$wheres[] = "$field = " . $db->quote($choice);
+							break;
+						case self::OP_NOT:
+							$joins[] = array(
+								'labels_people',
+								'LEFT JOIN labels_people ON (labels_people.person_id = people.id AND labels_people.label = '.$db->quote($choice).')'
+							);
+							$wheres[] = "$field IS NULL";
+							break;
+						case self::OP_CONTAINS:
+							$joins[] = 'labels_people';
+							$wheres[] = "$field IN ($choices_in)";
+							break;
+
+						case self::OP_NOTCONTAINS:
+							$joins[] = array(
+								'labels_people',
+								"LEFT JOIN labels_people ON (labels_people.person_id = people.id AND labels_people.label IN ($choices_in)"
+							);
+							$wheres[] = "$field IS NULL";
+							break;
+					}
+					break;
+
+				case self::TERM_PERSON_FIELD:
+
+					$field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
+					if (!$field) break;
+
+					$search_type = $field->getHandler()->getSearchType();
+
+					switch ($search_type) {
+						case 'input':
+						case 'value':
+
+							$join_id = Util::requestUniqueId();
+							$joins[] = array(
+								'custom_data_person',
+								"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id = $term_id)"
+							);
+
+							$field = 'custom_data_person_'.$join_id.'.'.$search_type;
+							switch ($op) {
+								case self::OP_IS:
+									$wheres[] = "$field = " . $db->quote($choice);
+									break;
+								case self::OP_NOT:
+									$wheres[] = "$field != " . $db->quote($choice);
+									break;
+								case self::OP_CONTAINS:
+								case self::OP_NOTCONTAINS:
+									$op = 'LIKE';
+									if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
+									$wheres[] = "$field $op " . $db->quote('%'.$choice.'%');
+									break;
+							}
+							break;
+
+						case 'id':
+							$join_id = Util::requestUniqueId();
+							$choices_in = array();
+							foreach ((array)$choice as $c) {
+								$choices_in[] = (int)$c;
+							}
+							$choices_in = implode(',', $choices_in);
+
+							$field = 'custom_data_person_'.$join_id.'.field_id';
+							switch ($op) {
+								case self::OP_CONTAINS:
+									$joins[] = array(
+										'custom_data_person',
+										"LEFT JOIN custom_data_person AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id)"
+									);
+									$wheres[] = "$field IN ($choices_in)";
+									break;
+
+								case self::OP_NOTCONTAINS:
+									$joins[] = array(
+										'custom_data_person',
+										"LEFT JOIN AS custom_data_person_$join_id ON (custom_data_person_$join_id.person_id = people.id AND custom_data_person_$join_id.field_id IN ($choices_in)"
+									);
+									$wheres[] = "$field IS NULL";
+									break;
+							}
+							break;
+					}
+					break; // end TERM_PERSON_FIELD
 			}
 		}
 

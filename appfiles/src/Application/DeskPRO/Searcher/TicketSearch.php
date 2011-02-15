@@ -27,6 +27,11 @@ class TicketSearch extends SearcherAbstract
 	const TERM_PARTICIPANT   = 'participant';
 	const TERM_LABEL         = 'label';
 	const TERM_TICKET_FIELD  = 'ticket_field';
+	const TERM_DATE_CREATED  = 'date_created';
+	const TERM_DATE_RESOLVED = 'date_resolved';
+	const TERM_DATE_LAST_USER_REPLY   = 'date_last_user_reply';
+	const TERM_DATE_LAST_AGENT_REPLY  = 'date_last_agent_reply';
+	const TERM_URGENCY       = 'urgency';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -120,23 +125,30 @@ class TicketSearch extends SearcherAbstract
 		# Standard for permissions
 		#------------------------------
 
-		$agent = $this->person;
+		if ($this->person AND $this->person['is_agent']) {
 
-		if ($agent AND $agent['is_agent']) {
-			$agent->loadHelper('AgentPermissions');
-			$agent->loadHelper('AgentTeam');
+			$agent = $this->person;
+			if ($agent AND $agent['is_agent']) {
+				$agent->loadHelper('AgentPermissions');
+				$agent->loadHelper('AgentTeam');
 
-			// perms only matter if person has permissions applied at all
-			if ($agent->getDisallowedDepartments()) {
-				$where_perm[] = "tickets.agent_id = {$agent['id']}";
-				if ($agent->getAgentTeamIds()) {
-					$where_perm[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+				// perms only matter if person has permissions applied at all
+				if ($agent->getDisallowedDepartments()) {
+
+					$ticket_parts['joins'] = array('ticket_participants_perm', "LEFT JOIN ticket_participants AS part_check ON (part_check.ticket_id = tickets.id)");
+
+					$where_perm[] = "tickets.agent_id = {$agent['id']}";
+					if ($agent->getAgentTeamIds()) {
+						$where_perm[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+					}
+
+					$where_perm[] = "tickets.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+					$where_perm[] = "part_check.person_id = {$agent['id']}";
+
+					$where_perm = implode(' OR ', $where_perm);
+
+					$where = "($where_perm) AND ";
 				}
-				$where_perm[] = "tickets.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
-
-				$where_perm = implode(' OR ', $where_perm);
-
-				$where .= "($where_perm) AND ";
 			}
 		}
 
@@ -288,6 +300,22 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_PRIORITY:
 					$wheres[] = $this->_choiceMatch("$tickets_table.product_id", $op, $choice);
+					break;
+				case self::TERM_URGENCY:
+					$wheres[] = $this->_choiceMatch("$tickets_table.urgency", $op, $choice);
+					break;
+				case self::TERM_DATE_CREATED:
+					$wheres[] = $this->_choiceMatch("$tickets_table.date_created", $op, $choice);
+					break;
+				case self::TERM_DATE_RESOLVED:
+					$wheres[] = $this->_choiceMatch("$tickets_table.date_resolved", $op, $choice);
+					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved', 'closed'));
+					break;
+				case self::TERM_DATE_LAST_USER_REPLY:
+					$wheres[] = $this->_choiceMatch("$tickets_table.date_last_user_reply", $op, $choice);
+					break;
+				case self::TERM_DATE_LAST_AGENT_REPLY:
+					$wheres[] = $this->_choiceMatch("$tickets_table.date_last_agent_reply", $op, $choice);
 					break;
 				case self::TERM_WORKFLOW:
 					$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice);
