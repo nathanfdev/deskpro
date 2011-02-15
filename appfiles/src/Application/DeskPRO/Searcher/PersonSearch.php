@@ -10,6 +10,7 @@ use \Application\DeskPRO\Entity;
 
 class PersonSearch extends SearcherAbstract
 {
+	const TERM_ID             = 'id';
 	const TERM_ORGANIZATION   = 'organization';
 	const TERM_LANGUAGE       = 'language';
 	const TERM_EMAIL          = 'email';
@@ -17,6 +18,7 @@ class PersonSearch extends SearcherAbstract
 	const TERM_NAME           = 'name';
 	const TERM_PERSON_FIELD   = 'person_field';
 	const TERM_LABEL          = 'label';
+	const TERM_DATE_CREATED   = 'date_created';
 
 
 	/**
@@ -42,9 +44,10 @@ class PersonSearch extends SearcherAbstract
 	 */
 	public function getSql()
 	{
-		$sql = "SELECT people.id FROM $table ";
+		$sql = "SELECT people.id FROM people ";
 
 		$parts = $this->getSqlParts();
+		$order_by = $this->getOrderByPart();
 
 
 		#------------------------------
@@ -59,15 +62,101 @@ class PersonSearch extends SearcherAbstract
 			}
 		}
 
+		if (is_array($order_by)) {
+			list ($order_join, $order_by) = $order_by;
+
+			$sql .= " $order_join ";
+		}
+
 		#------------------------------
 		# Add wheres
 		#------------------------------
 
-		$sql .= "WHERE ";
-		$sql .= implode(" AND ", $parts['wheres']);
+		if ($parts['wheres']) {
+			$sql .= "WHERE ";
+			$sql .= implode(" AND ", $parts['wheres']);
+		}
+
+		$sql .= " GROUP BY people.id ";
+		$sql .= $order_join;
 		$sql .= " LIMIT 1000";
 
 		return $sql;
+	}
+
+
+
+	/**
+	 * Get the ORDER BY clause based on order info set.
+	 *
+	 * @return string
+	 */
+	public function getOrderByPart()
+	{
+		if (!$this->order_by) {
+			$this->order_by = array('people.date_created', 'DESC');
+		}
+
+		list($type, $dir) = $this->order_by;
+
+		$dir = strtoupper($dir);
+		if ($dir != self::ORDER_ASC AND $dir != self::ORDER_DESC) {
+			$dir = self::ORDER_DESC;
+		}
+
+		$term_id = null;
+
+		// $term of people_field[12] becomes $type=people_field, $term_id=12
+		$m = null;
+		if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+			$type = $m[1];
+			$term_id = $m[2];
+		}
+
+		$order_by = '';
+
+		switch ($type) {
+			case 'people.name':
+				$order_by = "ORDER BY people.last_name $dir";
+				break;
+
+			case 'people.date_created':
+				$order_by = "ORDER BY people.id $dir";
+				break;
+
+			case 'people.email':
+				$order_by = array(
+					"INNER JOIN people_emails AS sort_table ON (sort_table.id = people.primary_email_id)",
+					"sort_table.email $dir"
+				);
+				break;
+
+			case 'people.organization':
+				$order_by = array(
+					"INNER JOIN organizations AS sort_table ON (sort_table.id = people.organization_id)",
+					"sort_table.name $dir"
+				);
+				break;
+
+			case 'people.people_field':
+				$field = App::getEntityRepository('DeskPRO:CustomDefPerson')->find($term_id);
+				if (!$field) break;
+
+				$search_type = $field->getHandler()->getSearchType();
+
+				switch ($search_type) {
+					case 'input':
+					case 'value':
+						$order_by = arary(
+							"INNER JOIN custom_data_person AS sort_table ON (sort_table.person_id = people.id AND sort_table.id = $term_id)",
+							"ORDER BY sort_table.$search_type $dir"
+						);
+						break;
+				}
+				break;
+		}
+
+		return $order_by;
 	}
 
 
@@ -90,9 +179,25 @@ class PersonSearch extends SearcherAbstract
 		$joins = array();
 
 		foreach ($this->terms as $term => $info) {
+
+			$join_id = Util::requestUniqueId();
+			$join_name = "j_$join_id";
+
 			list($op, $choice) = $info;
 
+			$term_id = null;
+
+			// $term of people_field[12] becomes $term=people_field, $term_id=12
+			$m = null;
+			if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+				$term = $m[1];
+				$term_id = $m[2];
+			}
+
 			switch ($term) {
+				case self::TERM_ID:
+					$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
+					break;
 				case self::TERM_LANGUAGE:
 					$wheres[] = $this->_choiceMatch("$people_table.language_id", $op, $choice);
 					break;
@@ -100,82 +205,77 @@ class PersonSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
 					break;
 				case self::TERM_EMAIL:
-					$joins[] = 'people_emails';
-
-					switch ($op) {
-						case self::OP_IS:
-						case self::OP_NOT:
-							$wheres[] = "$table.email $op " . $db->quote($choice);
-							break;
-
-						case self::OP_CONTAINS:
-						case self::OP_NOTCONTAINS:
-							$op = 'LIKE';
-							if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-							$wheres[] = "$table.email $op " . $db->quote('%'.$choice.'%');
-							break;
-					}
+					$joins[] = array(
+						'people_emails',
+						"LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.email", $op, $choice);
 					break;
 				case self::TERM_EMAIL_DOMAIN:
-					$joins[] = 'people_emails';
-
-					switch ($op) {
-						case self::OP_IS:
-						case self::OP_NOT:
-							$wheres[] = "$table.email_domain $op " . $db->quote($choice);
-							break;
-
-						case self::OP_CONTAINS:
-						case self::OP_NOTCONTAINS:
-							$op = 'LIKE';
-							if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-							$wheres[] = "$table.email_domain $op " . $db->quote('%'.$choice.'%');
-							break;
-					}
+					$joins[] = array(
+						'people_emails',
+						"LEFT JOIN people_emails AS $join_name ON ($join_name.person_id = people.id)"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.email_domain", $op, $choice);
 					break;
+
+				case self::TERM_DATE_CREATED:
+					$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
+					break;
+
 				case self::TERM_NAME:
-					switch ($op) {
-						case self::OP_CONTAINS:
-						case self::OP_NOTCONTAINS:
-							$op = 'LIKE';
-							if ($op == self::OP_NOTCONTAINS) $op = 'NOT LIKE';
-							$wheres[] = "$people_table.name $op " . $db->quote('%'.$choice.'%');
-							break;
-					}
+					$w = '(';
+					$w .= $this->_stringMatch("people.name", $op, $choice);
+					$w .= " OR ";
+					$w .= $this->_stringMatch("people.first_name", $op, $choice);
+					$w .= " OR ";
+					$w .= $this->_stringMatch("people.last_name", $op, $choice);
+					$w .= ')';
+
+					$wheres[] = $w;
+
 					break;
 
 				case self::TERM_LABEL:
-					$field = 'labels_people.label';
+					$this->_normalizeOpAndChoice($op, $choice);
 
 					$choices_in = array();
-					foreach ((array)$choice as $c) {
-						$choices_in[] = $db->quote($c);
+					if (is_array($choice)) {
+						foreach ((array)$choice as $c) {
+							$choices_in[] = $db->quote($c);
+						}
+						$choices_in = implode(',', $choices_in);
 					}
-					$choices_in = implode(',', $choices_in);
 
 					switch ($op) {
 						case self::OP_IS:
-							$joins[] = 'labels_people';
-							$wheres[] = "$field = " . $db->quote($choice);
+							$joins[] = array(
+								'labels_people',
+								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
+							);
+							$wheres[] = "$join_name.label = " . $db->quote($choice);
 							break;
 						case self::OP_NOT:
 							$joins[] = array(
 								'labels_people',
-								'LEFT JOIN labels_people ON (labels_people.person_id = people.id AND labels_people.label = '.$db->quote($choice).')'
+								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = '.$db->quote($choice).')"
 							);
-							$wheres[] = "$field IS NULL";
+							$wheres[] = "$join_name.person_id IS NULL";
 							break;
 						case self::OP_CONTAINS:
-							$joins[] = 'labels_people';
-							$wheres[] = "$field IN ($choices_in)";
+							$joins[] = array(
+								'labels_people',
+								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
+							);
+							$wheres[] = "$join_name.label IN ($choices_in)";
 							break;
 
 						case self::OP_NOTCONTAINS:
 							$joins[] = array(
 								'labels_people',
-								"LEFT JOIN labels_people ON (labels_people.person_id = people.id AND labels_people.label IN ($choices_in)"
+								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label IN ($choices_in)"
 							);
-							$wheres[] = "$field IS NULL";
+							$wheres[] = "$join_name.person_id IS NULL";
 							break;
 					}
 					break;

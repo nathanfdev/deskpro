@@ -296,7 +296,7 @@ class Arrays
 	 * @param arary $array
 	 * @return array
 	 */
-	public static function uniqueDeep(array $array, $sort_flags = \SORT_STRING)
+	public static function uniqueDeep(array $array, $sort_flags = SORT_STRING)
 	{
 		$args = func_get_args();
 

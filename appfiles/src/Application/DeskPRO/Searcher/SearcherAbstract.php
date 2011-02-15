@@ -4,6 +4,8 @@ namespace Application\DeskPRO\Searcher;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
+
+use \Orb\Util\Util;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 
@@ -15,6 +17,7 @@ abstract class SearcherAbstract
 	const OP_GT          = 'gt';
 	const OP_LTE         = 'lte';
 	const OP_GTE         = 'gte';
+	const OP_BETWEEN     = 'between';
 	const OP_CONTAINS    = 'contains';
 	const OP_NOTCONTAINS = 'notcontains';
 	const OP_NOOP        = null;
@@ -31,7 +34,7 @@ abstract class SearcherAbstract
 	/**
 	 * Array of terms we've set.
 	 * term_type=>array(op_type, choice)
-	 * 
+	 *
 	 * @var array
 	 */
 	protected $terms = array();
@@ -43,11 +46,11 @@ abstract class SearcherAbstract
 	protected $order_by = array();
 
 
-	
+
 	/**
 	 * Set the person context to fetch permissions etc form
-	 * 
-	 * @param Entity\Person $person 
+	 *
+	 * @param Entity\Person $person
 	 */
 	public function setPerson(Entity\Person $person)
 	{
@@ -55,7 +58,7 @@ abstract class SearcherAbstract
 	}
 
 
-	
+
 	/**
 	 * Set an array of terms at once.
 	 *
@@ -67,7 +70,7 @@ abstract class SearcherAbstract
 	}
 
 
-	
+
 	/**
 	 * Get the current terms
 	 *
@@ -79,7 +82,7 @@ abstract class SearcherAbstract
 	}
 
 
-	
+
 	/**
 	 * Set the ordering
 	 *
@@ -91,7 +94,7 @@ abstract class SearcherAbstract
 		$this->order_by = array($type, $direction);
 	}
 
-	
+
 
 	/**
 	 * Get the current order by
@@ -104,7 +107,7 @@ abstract class SearcherAbstract
 	}
 
 
-	
+
 	/**
 	 * Set orderBy using a 'code' which is "type:direction" such as "ticket.id:asc".
 	 *
@@ -146,18 +149,192 @@ abstract class SearcherAbstract
 	abstract public function getMatches();
 
 
+
 	/**
-	 * Build a "where" part on simple fields given a choice.
+	 * Build a "where" part given two dates.
+	 *
+	 * $choice should be an array, first value date1 and second is date2.
+	 * If not datetime objects, they're considered to mean "seconds in the past" and will be calculated.
+	 *
+	 * @param  $field
+	 * @param  $op
+	 * @param \DateTime|null $date1
+	 * @param \DateTime|null $date2
+	 * @return string
+	 */
+	protected function _dateMatch($field, $op, $choice)
+	{
+		$where = '';
+
+		$choice = (array)$choice;
+		$date1 = !empty($choice[0]) ? $choice[0] : null;
+		$date2 = !empty($choice[1]) ? $choice[1] : null;
+
+		if ($date1 AND !($date1 instanceof \DateTime)) {
+			$date1 = new \DateTime("-{$date1} seconds");
+		}
+		if ($date2 AND !($date2 instanceof \DateTime)) {
+			$date2 = new \DateTime("-{$date2} seconds");
+		}
+
+		// There should always be at least one date
+		if ($date1 === null AND $date2 === null) {
+			return '';
+		}
+
+		// Normalize operations
+		if ($op == self::OP_LT) $op = self::OP_LTE;
+		if ($op == self::OP_GT) $op = self::OP_GTE;
+
+		// Between with only one date is invalid, so
+		// we'll decide which op we really want to do
+		if ($op == self::OP_BETWEEN && ($date1 === null or $date2 === null)) {
+			if ($date1) {
+				$op = self::OP_GTE;
+			} else {
+				$op = self::OP_LTE;
+			}
+		}
+
+		if ($op == self::OP_BETWEEN) {
+			$where = "$field BETWEEN '" . $date1->format('Y-m-d H:m:s') . "' AND '" . $date2->format('Y-m-d H:m:s') . "'";
+		} elseif ($op == self::OP_GTE) {
+			$date = Util::coalesce($date1, $date2);
+			$where = "$field >= '" . $date1->format('Y-m-d H:m:s') . "'";
+		} else {
+			$date = Util::coalesce($date1, $date2);
+			$where = "$field <= '" . $date1->format('Y-m-d H:m:s') . "'";
+		}
+	}
+
+
+
+	/**
+	 * Does a string match. If op is of the 'contains' type, then a LIKE is performed.
 	 *
 	 * @param  $field
 	 * @param  $op
 	 * @param  $choice
 	 * @return string
 	 */
-	protected function _choiceMatch($field, $op, $choice)
+	protected function _stringMatch($field, $op, $choice)
+	{
+		$where = '';
+
+		if (is_array($choice) AND count($choice) == 1) {
+			$choice = Arrays::getFirstItem($choice);
+		}
+
+		$db = App::getDb();
+		if ($op == self::OP_IS OR $op == self::OP_NOT) {
+			$choices_in = (array)$choice;
+			array_walk($choices_in, function($v, $k) use ($db) {
+				$v = $db->quote($v);
+			});
+
+			$choices_in = "(" . implode(',', $choices_in) . ")";
+
+			if ($op == self::OP_IS) {
+				$where = "$field IN $choices_in";
+			} elseif ($op == self::OP_NOT) {
+				$where = "$field NOT IN $choices_in";
+			}
+
+		} else {
+			$choices_in = (array)$choice;
+			array_walk($choices_in, function($v, $k) use ($db) {
+				$v = $db->quote('%' . $v . '%');
+			});
+
+			if ($op == self::OP_CONTAINS) {
+				$where = "($field LIKE " . implode(" OR $field LIKE ", $choices_in) . ")";
+			} else {
+				$where = "($field NOT LIKE " . implode(" AND $field NOT LIKE ", $choices_in) . ")";
+			}
+		}
+
+		return $where;
+	}
+
+
+
+	/**
+	 * Build a where part for a range field (date/integer).
+	 *
+	 * @param  $field
+	 * @param  $op
+	 * @param  $choice
+	 * @return string
+	 */
+	protected function _rangeMatch($field, $op, $choice)
+	{
+		$where = '';
+
+		$choice = (array)$choice;
+		$range1 = !empty($choice[0]) ? $choice[0] : null;
+		$range2 = !empty($choice[1]) ? $choice[1] : null;
+
+		// There should always be at least one date
+		if ($range1 === null AND $range2 === null) {
+			return '';
+		}
+
+		// Normalize operations
+		if ($op == self::OP_LT) $op = self::OP_LTE;
+		if ($op == self::OP_GT) $op = self::OP_GTE;
+
+		// Between with only one date is invalid, so
+		// we'll decide which op we really want to do
+		if ($op == self::OP_BETWEEN && ($range1 === null or $range2 === null)) {
+			if ($range1) {
+				$op = self::OP_GTE;
+			} else {
+				$op = self::OP_LTE;
+			}
+		}
+
+		if ($op == self::OP_BETWEEN) {
+			$where = "$field BETWEEN $range1 AND $range2";
+		} elseif ($op == self::OP_GTE) {
+			$range1 = Util::coalesce($range1, $range2);
+			$where = "$field >= $range1";
+		} else {
+			$range1 = Util::coalesce($range1, $range2);
+			$where = "$field <= $range1";
+		}
+
+		return $where;
+	}
+
+
+
+	/**
+	 * Build a "where" part on simple fields given a choice.
+	 *
+	 * $is_id treats 0-values as NULL.
+	 *
+	 * @param  $field
+	 * @param  $op
+	 * @param  $choice
+	 * @return string
+	 */
+	protected function _choiceMatch($field, $op, $choice, $is_id = false)
 	{
 		$db = App::getDb();
 		$where = '';
+
+		if (is_array($choice) AND count($choice) == 1) {
+			$choice = Arrays::getFirstItem($choice);
+		}
+
+		// Normalize op
+		if (is_array($choice)) {
+			if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+			if ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+		} else {
+			if ($op == self::OP_CONTAINS) $op = self::OP_IS;
+			if ($op == self::OP_NOTCONTAINS) $op = self::OP_NOT;
+		}
 
 		if (is_array($choice)) {
 
@@ -168,13 +345,14 @@ abstract class SearcherAbstract
 
 			$choices_in = "(" . implode(',', $choices_in) . ")";
 
-			if ($op == self::OP_CONTAINS OR $op == self::OP_IS) {
+			if ($op == self::OP_CONTAINS) {
 				$where = "$field IN $choices_in";
-			} elseif ($op == self::OP_NOTCONTAINS OR $op == self::OP_NOT) {
+			} elseif ($op == self::OP_NOTCONTAINS) {
 				$where = "$field NOT IN $choices_in";
 			}
+
 		} else {
-			if ($choice === 0 OR $choice === '0') {
+			if ($is_id AND ($choice === 0 OR $choice === '0')) {
 				$choice = 'NULL';
 				$op = ($op == self::OP_IS) ? "IS" : "IS NOT";
 			}
@@ -187,5 +365,22 @@ abstract class SearcherAbstract
 		}
 
 		return $where;
+	}
+
+
+	protected function _normalizeOpAndChoice(&$op, &$choice)
+	{
+		if (is_array($choice) AND count($choice) == 1) {
+			$choice = Arrays::getFirstItem($choice);
+		}
+
+		// Normalize op
+		if (is_array($choice)) {
+			if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+			if ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+		} else {
+			if ($op == self::OP_CONTAINS) $op = self::OP_IS;
+			if ($op == self::OP_NOTCONTAINS) $op = self::OP_NOT;
+		}
 	}
 }

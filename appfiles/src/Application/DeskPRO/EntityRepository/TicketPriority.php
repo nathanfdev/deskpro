@@ -35,4 +35,17 @@ class TicketPriority extends EntityRepository
 
 		return $this->priority_names;
 	}
+
+
+
+	/**
+	 * Get all priority IDs in the order they are meant to go
+	 *
+	 * @return array
+	 */
+	public function getIdsInOrder()
+	{
+		$names = $this->getPriorityNames();
+		return array_keys($names);
+	}
 }
