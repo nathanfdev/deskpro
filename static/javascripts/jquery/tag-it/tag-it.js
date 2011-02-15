@@ -90,10 +90,6 @@
 					// Cleaning the input.
 					tag_input.val("");
 				}
-			// If you enter a space, you really mean a dash
-			} else if (keyCode == SPACE) {
-				event.preventDefault();
-				tag_input.val(tag_input.val() + '-');
 			}
 		});
 

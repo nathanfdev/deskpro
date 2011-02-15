@@ -11,16 +11,19 @@ admin_test:
 ################################################################################
 
 admin_labels:
-  pattern: /settings/labels
+  pattern: /settings/labels/{label_type}
   defaults: { _controller: AdminBundle:Settings:labels }
+  requirements: { label_type: "[a-z]+" }
 
 admin_labels_ajaxnew:
-  pattern: /settings/labels/ajax-new
+  pattern: /settings/labels/ajax-new/{label_type}
   defaults: { _controller: AdminBundle:Settings:labelsAjaxNew }
+  requirements: { label_type: "[a-z]+" }
 
 admin_labels_ajaxdel:
-  pattern: /settings/labels/ajax-delete
+  pattern: /settings/labels/ajax-delete/{label_type}
   defaults: { _controller: AdminBundle:Settings:labelsAjaxDelete }
+  requirements: { label_type: "[a-z]+" }
 
 ################################################################################
 # Agents

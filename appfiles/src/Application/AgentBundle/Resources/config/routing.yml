@@ -27,8 +27,9 @@ agent_ajax_save_prefs:
   defaults: { _controller: AgentBundle:Misc:ajaxSavePrefs }
 
 agent_ajax_labels_autocomplete:
-  pattern: /misc/ajax-labels
+  pattern: /misc/ajax-labels/{label_type}
   defaults: { _controller: AgentBundle:Misc:ajaxLabelsAutocomplete }
+  requirements: { label_type: "[a-z]+" }
 
 agent_interface_data_js:
   pattern: /misc/interface-data.js

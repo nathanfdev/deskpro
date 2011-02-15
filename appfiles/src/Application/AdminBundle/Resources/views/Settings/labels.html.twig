@@ -3,13 +3,21 @@
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
 	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.SettingsLabels();
-	DeskPRO_Page.setMetaData('newLabelUrl', '{{ path('admin_labels_ajaxnew') }}');
-	DeskPRO_Page.setMetaData('delLabelUrl', '{{ path('admin_labels_ajaxdel') }}');
+	DeskPRO_Page.setMetaData('newLabelUrl', '{{ path('admin_labels_ajaxnew', {'label_type': label_type}) }}');
+	DeskPRO_Page.setMetaData('delLabelUrl', '{{ path('admin_labels_ajaxdel', {'label_type': label_type}) }}');
 }
 </script>
 {% endblock %}
 {% block sub_section 'labels' %}
 {% block content %}
+
+<div style="text-align:right; padding-bottom: 10px;">
+	<a class="icon tickets" href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">Tickets</a>
+	&middot;
+	<a class="icon tickets" href="{{ path('admin_labels', {'label_type': 'people'}) }}">People</a>
+	&middot;
+	<a class="icon tickets" href="{{ path('admin_labels', {'label_type': 'organizations'}) }}">Organizations</a>
+</div>
 
 <ul class="item-list">
 	<li class="create">

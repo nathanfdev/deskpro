@@ -106,7 +106,7 @@
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Email</span></li>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Departments</span></li>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Products</span></li>
-				<li {% if sub_section == 'labels' %}class="on"{% endif %}><a class="icon tickets" href="{{ path('admin_labels') }}">Labels</a></li>
+				<li {% if sub_section == 'labels' %}class="on"{% endif %}><a class="icon tickets" href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">Labels</a></li>
 				<li {% if sub_section == '' %}class="on"{% endif %}><span class="icon tickets">Scheduled Tasks</span></li>
 			</ul>
 		</div>

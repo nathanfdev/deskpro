@@ -89,10 +89,17 @@ class MiscController extends AbstractController
 		));
 	}
 
-	public function ajaxLabelsAutocompleteAction()
+	public function ajaxLabelsAutocompleteAction($label_type)
 	{
 		$search = $this->in->getString('term');
-		$statement = App::getDb()->executeQuery("SELECT label FROM label_defs WHERE label LIKE ? ORDER BY label ASC LIMIT 50", array('%'.$search.'%'));
+		$statement = App::getDb()->executeQuery("
+			SELECT label
+			FROM label_defs
+			WHERE label_type = ? AND label LIKE ?
+			ORDER BY label ASC
+			LIMIT 50",
+		array($label_type, '%'.$search.'%'));
+
 		$array = array();
 
 		while ($row = $statement->fetch(\PDO::FETCH_ASSOC)) {

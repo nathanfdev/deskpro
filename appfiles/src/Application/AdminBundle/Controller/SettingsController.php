@@ -19,36 +19,38 @@ use \Orb\Util\Util;
 
 class SettingsController extends AbstractController
 {
-	public function labelsAction()
+	public function labelsAction($label_type)
 	{
 		$all_labels = App::getOrm()->createQuery("
 			SELECT label
 			FROM DeskPRO:LabelDef label
+			WHERE label.label_type = ?1
 			ORDER BY label.label ASC
-		")->execute();
+		")->execute(array(1=>$label_type));
 
 		return $this->render('AdminBundle:Settings:labels.html.twig', array(
-			'all_labels' => $all_labels
+			'all_labels' => $all_labels,
+			'label_type' => $label_type
 		));
 	}
 
-	public function labelsAjaxNewAction()
+	public function labelsAjaxNewAction($label_type)
 	{
 		$label_str = strtolower($this->in->getString('label'));
-		$label_str = str_replace(' ', '-', $label_str);
 
 		// Invalid
-		if (!preg_match('#^[a-z0-9\-]+$#', $label_str)) {
+		if (!preg_match('#^[a-z0-9\- ]+$#', $label_str)) {
 			return $this->createJsonResponse(array('errorMessage' => 'Please only enter letters, numbers and dashes'));
 		}
 
 		// Already exists
-		$label = App::getEntityRepository('DeskPRO:LabelDef')->find($label_str);
+		$label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $label_str));
 		if ($label) {
 			return $this->createJsonResponse(array('errorMessage' => 'That label already exists'));
 		}
 
 		$label = new Entity\LabelDef();
+		$label['label_type'] = $label_type;
 		$label['label'] = $label_str;
 
 		App::getOrm()->persist($label);
@@ -59,9 +61,10 @@ class SettingsController extends AbstractController
 		return $this->createJsonResponse(array('html' => $html));
 	}
 
-	public function labelsAjaxDeleteAction()
+	public function labelsAjaxDeleteAction($label_type)
 	{
-		$label = App::getEntityRepository('DeskPRO:LabelDef')->find($this->in->getString('label'));
+		$label_str = strtolower($this->in->getString('label'));
+		$label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $label_str));
 		if (!$label) {
 			return $this->createJsonResponse(array('errorMessage' => 'No such label exists'));
 		}

@@ -3,7 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Person';
 pageMeta.title = '{{ person.display_name|e('js') }}';
 pageMeta.person_id = {{person.id}};
 pageMeta.pageIdentity = 'person:{{person.id}}';
-pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete') }}';
+pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'people'}) }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
 pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_id': person.id }) }}';
 </script>

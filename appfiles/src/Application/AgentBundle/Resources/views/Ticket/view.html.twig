@@ -4,7 +4,7 @@ pageMeta.title         = '{{ticket.subject}}';
 pageMeta.ticket_id     = {{ticket.id}};
 pageMeta.pageIdentity  = 'ticket:{{ticket.id}}';
 
-pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete') }}';
+pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'tickets'}) }}';
 pageMeta.labelsSaveUrl                = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';
 pageMeta.getMacroUrl                  = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': ticket.id }) }}?macro_id=$macro_id';
 pageMeta.saveActionsUrl               = '{{ path('agent_ticket_ajax_save_actions', {'ticket_id': ticket.id }) }}';
