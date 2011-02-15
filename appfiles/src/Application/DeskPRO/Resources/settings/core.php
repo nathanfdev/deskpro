@@ -13,5 +13,6 @@
 	'core.use_default_gravatar' => 1,
 
 	'core.sessions_cookie_name' => 'dpsid',
+	'core.sessions_lifetime' => 3600,
 
 );

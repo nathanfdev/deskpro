@@ -75,6 +75,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		);
 
 		$this->options['name'] = App::getSetting('core.sessions_cookie_name');
+		$this->options['lifetime'] = App::getSetting('core.sessions_lifetime');
 
 		session_set_cookie_params(
 			$this->options['lifetime'],
@@ -163,7 +164,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 
 
     /**
-     * Cleans up old sessions.
+     * Cleans up old sessions. This is a noop, sessions are cleaned on cron.
      *
      * @param  int $lifetime  The lifetime of a session in seconds
      * @return bool true
@@ -171,9 +172,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
      */
     public function sessionGC($lifetime)
     {
-		$datetime = date('Y-m-d H:i:s', time() - $lifetime);
-		$this->db->executeUpdate("DELETE FROM sessions WHERE date_last < ?", array($datetime));
-
         return true;
     }
 
@@ -221,9 +219,10 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		$sess_rec['is_person'] = 0;
 		$sess_rec['person_id'] = null;
 
-		if (!empty($_SESSION['auth_person_id'])) {
+
+		if (!empty($_SESSION['_symfony2']['auth_person_id'])) {
 			$sess_rec['is_person'] = 1;
-			$sess_rec['person_id'] = $_SESSION['auth_person_id'];
+			$sess_rec['person_id'] = $_SESSION['_symfony2']['auth_person_id'];
 		}
 
 		$this->db->update('sessions', $sess_rec, array('id' => $id));
@@ -238,6 +237,15 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		}
 
 		return session_id();
+	}
+
+	public function getEntityId()
+	{
+		$id = $this->getId();
+		list($entity_id, ) = explode('-', $id, 2);
+		$entity_id = Util::baseDecode($entity_id, 'base36');
+
+		return $entity_id;
 	}
 
     /**

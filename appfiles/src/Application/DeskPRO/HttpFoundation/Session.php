@@ -113,6 +113,12 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	}
 
 
+	public function getEntityId()
+    {
+        return $this->storage->getEntityId();
+    }
+
+
 
 	public function getIterator()
 	{
