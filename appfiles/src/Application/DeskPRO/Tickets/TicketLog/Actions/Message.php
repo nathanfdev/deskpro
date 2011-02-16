@@ -39,4 +39,9 @@ class Message implements LogActionInterface
 	{
 		return $this->message;
 	}
+
+	public function getEventType()
+	{
+		return 'message_created';
+	}
 }

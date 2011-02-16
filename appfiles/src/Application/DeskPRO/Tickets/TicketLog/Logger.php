@@ -14,14 +14,16 @@ namespace Application\DeskPRO\Tickets\TicketLog;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
+use \Orb\Util\Arrays;
+
 /**
  * The ticket logger takes care of logging changes done to a ticket.
  */
 class Logger implements \Doctrine\Common\PropertyChangedListener
 {
 	protected $ticket;
-
 	protected $entered_logs = array();
+	protected $events = array();
 
 	public function __construct(Entity\Ticket $ticket)
 	{
@@ -31,6 +33,11 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 	public function propertyChanged($sender, $prop, $old_val, $new_val)
 	{
 		$this->logChange($prop, $old_val, $new_val);
+	}
+
+	protected function _addEventType($event_type)
+	{
+		Arrays::pushUnique($this->events, $event_type);
 	}
 
 	public function logChange($prop, $old_val, $new_val)
@@ -87,7 +94,12 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 	{
 		App::getOrm()->beginTransaction();
 
+		$prop_types = array('agent');
+
 		foreach ($this->entered_logs as $name => $action) {
+
+			$this->_addEventType($action->getEventType());
+
 			$ticket_log = new Entity\TicketLog();
 			$ticket_log['person'] = App::getCurrentPerson();
 			$ticket_log['ticket'] = $this->ticket;
@@ -105,16 +117,30 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 	{
 		App::getOrm()->beginTransaction();
 
+		$notify_types = array();
+
+		if (in_array('ticket_created', $this->events)) {
+			$notify_types[] = 'new_ticket';
+		}
+
 		#------------------------------
 		# New messages
 		#------------------------------
 
-		if (isset($this->entered_logs['message_created'])) {
+		if (in_array('message_created', $this->events)) {
+
+			$message = $this->entered_logs['message_created']->getMessage();
+			if (!$message['person']['is_agent'] OR $message['is_agent_note']) {
+				$notify_types[] = 'new_reply';
+			} else {
+				$notify_types[] = 'new_agent_reply';
+			}
+
 			$client_message = new Entity\ClientMessage();
 			$client_message['channel'] = 'tickets.new-messages';
 			$client_message['data'] = array(
 				'ticket_id' => $this->ticket['id'],
-				'message_id' => $this->entered_logs['message_created']->getMessage()->getId()
+				'message_id' => $message['id']
 			);
 
 			App::getOrm()->persist($client_message);
@@ -124,12 +150,10 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		# Other changes
 		#------------------------------
 
-		// Only trigger a general 'change' when we have
-		// changes that arent new messages
-		$num = count($this->entered_logs);
-		if (isset($this->entered_logs['messages'])) $num--;
+		if (in_array('property', $this->events)) {
 
-		if ($num) {
+			$notify_types[] = 'property_change';
+
 			$client_message = new Entity\ClientMessage();
 			$client_message['channel'] = 'tickets.updated';
 			$client_message['data'] = array(
@@ -141,6 +165,30 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 		App::getOrm()->flush();
 		App::getOrm()->commit();
+
+		$this->sendNotifications($notify_types);
+	}
+
+	protected function sendNotifications(array $notify_types)
+	{
+		if (!$notify_types) return;
+
+		$matching_queues = array();
+
+		$all_queues = App::getEntityRepository('DeskPRO:TicketQueue')->findAll();
+		foreach ($all_queues as $q) {
+			$searcher = $q->getSearcher();
+			if ($searcher->doesTicketMatch($this->ticket)) {
+				$matching_queues[] = $q['id'];
+			}
+		}
+
+		if (!$matching_queues) return;
+
+		$notifs = App::getEntityRepository('DeskPRO:AgentNotification')->getNotifications($matching_queues, $notify_types);
+		if (!$notifs) return;
+
+
 	}
 
 	public function reset()

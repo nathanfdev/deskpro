@@ -41,4 +41,9 @@ class Agent implements LogActionInterface
 			'new_agent_email' => $this->new_agent['primary_email_address'],
 		);
 	}
+
+	public function getEventType()
+	{
+		return 'property';
+	}
 }

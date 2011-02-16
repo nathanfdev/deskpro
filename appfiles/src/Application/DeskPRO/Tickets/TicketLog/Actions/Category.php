@@ -39,4 +39,9 @@ class Category implements LogActionInterface
 			'new_category_title' => $this->new_cat['title'],
 		);
 	}
+
+	public function getEventType()
+	{
+		return 'property';
+	}
 }

@@ -39,4 +39,9 @@ class Product implements LogActionInterface
 			'new_product_title' => $this->new_product['title'],
 		);
 	}
+
+	public function getEventType()
+	{
+		return 'property';
+	}
 }

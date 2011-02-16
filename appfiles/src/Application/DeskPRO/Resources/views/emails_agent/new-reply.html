@@ -1,0 +1,11 @@
+{% extends 'DeskPRO:emails_agent:layout.html.twig' %}
+{% import 'DeskPRO:emails_agent:layout-macros.html.twig' %}
+{% block content %}
+	{% set section_content %}
+		{% include 'DeskPRO:emails_agent:ticket-info.html.twig' %}
+		<br><br >
+		{{new_message.message_text()}}
+		<br><br>
+		{% include 'DeskPRO:emails_agent:ticket-diff.html.twig' %}
+	{% endset %}
+{% endblock %}

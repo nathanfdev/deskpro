@@ -1,0 +1,49 @@
+<table cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+		<td width="50%">
+			By <b>{{ticket.person.display_name}}</b>
+			<br>({{ticket.person.primary_email.email}})
+		</td>
+		<td width="50%">
+			<table cellspacing="0" cellpadding="3" width="100%">
+				<tr>
+					<td width="130">Agent</td>
+					<td>{{ticket.agent.display_name|default('None')}}</td>
+				</tr>
+				<tr>
+					<td width="130">Team</td>
+					<td>{{ticket.agent_team.name|default('None')}}</td>
+				</tr>
+				<tr>
+					<td width="130">Category</td>
+					<td>{{ticket.category.full_title|default('None')}}</td>
+				</tr>
+				<tr>
+					<td width="130">Product</td>
+					<td>{{ticket.product.title|default('None')}}</td>
+				</tr>
+				<tr>
+					<td width="130">Priority</td>
+					<td>{{ticket.priority.title|default('None')}}</td>
+				</tr>
+				<tr>
+					<td width="130">Workflow</td>
+					<td>{{ticket.workflow.title|default('None')}}</td>
+				</tr>
+				<tr>
+					<td width="130">Status</td>
+					<td>
+						{# todo these will be phrases, so this big condition wont be needed #}
+						{% if not ticket.status or ticket.status == 'open' %}
+							Open
+						{% elseif ticket.status == 'pending' %}
+							Pending
+						{% elseif ticket.status == 'resolved' %}
+							Resolved
+						{% endif %}
+					</td>
+				</tr>
+			</table>
+		</td>
+	</tr>
+</table>

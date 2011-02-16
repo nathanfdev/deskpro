@@ -41,4 +41,9 @@ class Priority implements LogActionInterface
 			'new_priority_pri' => $this->new_pri['priority'],
 		);
 	}
+
+	public function getEventType()
+	{
+		return 'property';
+	}
 }

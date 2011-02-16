@@ -37,4 +37,9 @@ class Status implements LogActionInterface
 			'new_status' => $this->new_status,
 		);
 	}
+
+	public function getEventType()
+	{
+		return 'property';
+	}
 }

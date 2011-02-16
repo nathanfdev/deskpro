@@ -1,0 +1,36 @@
+<b>CHANGES:</b><br>
+<table cellspacing="0" cellpadding="3" width="100%">
+	{% for info,type in ticket_diff %}
+		{% if type == 'changed_agent' %}
+			<tr>
+				<td width="130">Agent</td>
+				<td>From <a href="mailto:{{old_agent_email}}">{{old_agent_name}}</a> to <a href="mailto:{{new_agent_email}}">{{new_agent_name}}</a></td>
+			</tr>
+		{% elseif type == 'changed_category' %}
+			<tr>
+				<td width="130">Category</td>
+				<td>From {{old_category_title}} to {{new_category_title}}</td>
+			</tr>
+		{% elseif type == 'changed_department' %}
+			<tr>
+				<td width="130">Department</td>
+				<td>From {{old_department_title}} to {{new_department_title}}</td>
+			</tr>
+		{% elseif type == 'changed_priority' %}
+			<tr>
+				<td width="130">Priority</td>
+				<td>From {{old_priority_title}} to {{new_priority_title}}</td>
+			</tr>
+		{% elseif type == 'changed_product' %}
+			<tr>
+				<td width="130">Product</td>
+				<td>From {{old_product_title}} to {{new_product_title}}</td>
+			</tr>
+		{% elseif type == 'changed_status' %}
+			<tr>
+				<td width="130">Status</td>
+				<td>From {{old_status}} to {{new_status}}</td>
+			</tr>
+		{% endif %}
+	{% endfor %}
+</table>

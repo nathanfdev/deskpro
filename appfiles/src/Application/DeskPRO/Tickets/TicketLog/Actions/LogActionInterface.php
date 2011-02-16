@@ -35,4 +35,9 @@ interface LogActionInterface
 	 * @return string
 	 */
 	public function getLogName();
+
+	/**
+	 * The type of action this represents
+	 */
+	public function getEventType();
 }

@@ -39,4 +39,9 @@ class Department implements LogActionInterface
 			'new_department_title' => $this->new_dep['title'],
 		);
 	}
+
+	public function getEventType()
+	{
+		return 'property';
+	}
 }

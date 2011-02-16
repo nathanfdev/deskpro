@@ -34,4 +34,9 @@ class Created implements LogActionInterface
 			'ticket_id' => $this->ticket['id']
 		);
 	}
+
+	public function getEventType()
+	{
+		return 'ticket_created';
+	}
 }
