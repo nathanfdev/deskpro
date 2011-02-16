@@ -201,14 +201,14 @@ body {
 	
 	float: left;
 	
-	-moz-border-radius-topleft: 6px;
-	-moz-border-radius-topright: 0px;
-	-moz-border-radius-bottomright: 0px;
-	-moz-border-radius-bottomleft: 6px;
-	border-top-left-radius: 6px;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
-	border-bottom-left-radius: 6px;
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-topright: 6px;
+	-moz-border-radius-bottomright: 6px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 0px;
 }
 
 #header .search input {
@@ -226,41 +226,123 @@ body {
 	
 	display: block;
 	float: left;
-	
-	font-size: 9px;
+
 	color: #545d63;
 	height: 21px;
 	line-height: 20px;
 	padding-left: 5px;
 	padding-right: 5px;
 	border-right: 1px solid #d0d6dc;
-	border-left: 1px solid #d0d6dc;
-}
-
-#header .search-wrap button {
-	border: none;
-	outline: none;
-	background: #ecf1f5 url(../images/magnifier.png) no-repeat center center;
-	text-indent: -1000px;
-	width: 25px;
-	height: 21px;
-	padding: 3px;
 	
-	float: right;
-	display: block;
-	
-	-moz-border-radius-topleft: 0px;
-	-moz-border-radius-topright: 6px;
-	-moz-border-radius-bottomright: 6px;
-	-moz-border-radius-bottomleft: 0px;
+	-moz-border-radius-topleft: 6px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 6px;
 	border-top-left-radius: 6px;
 	border-top-right-radius: 0px;
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 6px;
+	
+	text-indent: -1000px;
+	overflow: hidden;
+	background-position: center center;
+	background-repeat: no-repeat;
+	width: 16px;
 }
 
+#header .search-wrap .type-select:hover {
+	border-bottom-left-radius: 0px;
+	-moz-border-radius-bottomleft: 0px;
+}
 
+#header .search-wrap .type-select.all { background-image: url(../images/wand.png); }
+#header .search-wrap .type-select.tickets { background-image: url(../images/notif-tickets.png); }
+#header .search-wrap .type-select.twitter { background-image: url(../images/notif-twitter.png); }
 
+#header .search-wrap .type-select .type-list {
+	display:none;
+	background-color: #ecf1f5;
+
+	position: absolute;
+	top: 27px;
+	z-index: 1000;
+	margin-left: -5px;
+	-webkit-box-shadow: 1px 1px 3px #0d0d0d;
+	-moz-box-shadow: 1px 2px 3px #0d0d0d;
+	box-shadow: 1px 1px 3px #0d0d0d;
+}
+
+#header .search-wrap .type-select .type-list > li {
+	color: #000;
+	text-indent: 0;
+	padding: 3px 10px 3px 23px;
+	background-position: 3px 50%;
+	background-repeat: no-repeat;
+	cursor: pointer;
+}
+
+#header .search-wrap .type-select .type-list li.all { background-image: url(../images/wand.png); }
+#header .search-wrap .type-select .type-list li.tickets { background-image: url(../images/notif-tickets.png); }
+#header .search-wrap .type-select .type-list li.twitter { background-image: url(../images/notif-twitter.png); }
+
+#header .search-wrap .type-select .type-list > li:hover {
+	background-color: #fff;
+}
+
+#header .search-wrap .type-select:hover .type-list {
+	display: block;
+}
+
+#header .search-wrap .search-results {
+	display: none;
+	position: absolute;
+	background-color: #fff;
+	top: 30px;
+	-webkit-box-shadow: 1px 1px 8px #0d0d0d;
+	-moz-box-shadow: 1px 2px 8px #0d0d0d;
+	box-shadow: 1px 1px 8px #0d0d0d;
+
+	margin-left: -4px;
+	border: 1px solid #888;
+	
+	width: 300px;
+	z-index: 1000;
+}
+
+#header .search-wrap .search-results.on {
+	display: block;
+}
+
+#header .search-wrap .search-results .row {
+	border-top: 1px solid #ddd;
+	clear: both;
+	padding: 6px 6px 6px 6px;
+}
+
+#header .search-wrap .search-results label {
+	float: left;
+	width: 90px;
+	font-family: 'Myriad Pro', 'Myriad', helvetica, arial, sans-serif;
+	color: #58616E;
+	font-weight: bold;
+	font-size: 8pt;
+	padding-top: 3px;
+}
+
+#header .search-wrap .search-results ul {
+	margin-left: 95px;
+}
+
+#header .search-wrap .search-results ul li {
+	font-size: 8pt;
+	padding: 5px 6px 5px 6px;
+}
+
+#header .search-wrap .search-results ul li:hover {
+	background-color: #1C4985;
+	color: #fff;
+	cursor: pointer;
+}
 
 #header > ul.user-nav {
 	float: right;

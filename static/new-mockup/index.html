@@ -34,11 +34,51 @@
 <div id="header">
 	<h1>DeskPRO</h1>
 	<div class="search-wrap">
-		<div class="search">
-			<input type="input" name="q" value="" placeholder="Search" />
+		<div class="type-select all">
+			Search
+			<ul class="type-list">
+				<li data-name="all" class="all">All</li>
+				<li data-name="tickets" class="tickets">Tickets</li>
+				<li data-name="twitter" class="twitter">Twitter</li>
+			</ul>
 		</div>
-		<div class="type-select">Search All</div>
-		<button>Search</button>
+		<div class="search">
+			<input type="input" id="search_box" name="q" value="" placeholder="Search" />
+			<div class="search-results" id="search_results">
+				<div class="row">
+					<ul>
+						<li>Show all results</li>
+					</ul>
+				</div>
+				<div class="row">
+					<label>Tickets</label>
+					<ul>
+						<li>Some ticket</li>
+						<li>Some ticket</li>
+						<li>Some ticket</li>
+						<li>Some ticket</li>
+					</ul>
+				</div>
+				<div class="row">
+					<label>People</label>
+					<ul>
+						<li>Some people</li>
+						<li>Some people</li>
+						<li>Some people</li>
+						<li>Some people</li>
+					</ul>
+				</div>
+				<div class="row">
+					<label>Organizations</label>
+					<ul>
+						<li>Some company</li>
+						<li>Some company</li>
+						<li>Some company</li>
+						<li>Some company</li>
+					</ul>
+				</div>
+			</div>	
+		</div>
 	</div>
 	
 	<div class="notifications">

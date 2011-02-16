@@ -21,6 +21,18 @@ DeskPRO.Agent.UI.Layout = new Class({
 		$('#nav .event-message-wrap button').click(function() {
 			$('#nav .event-message-wrap').fadeOut(300);
 		});
+		
+		
+		$('div.type-select li').click(function() {
+			$('div.type-select').removeClass('all').removeClass('tickets').removeClass('twitter');
+			$('div.type-select').addClass($(this).data('name'));
+		});
+		
+		$('#search_box').focus(function() {
+			$('#search_results').addClass('on');
+		}).blur(function() {
+			$('#search_results').removeClass('on');
+		});
 	},
 	
 	resizeColumns: function() {
