@@ -167,6 +167,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		App::getOrm()->commit();
 
 		$this->sendNotifications($notify_types);
+		$this->executeTriggers($notify_types);
 	}
 
 	protected function sendNotifications(array $notify_types)
@@ -188,11 +189,40 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		$notifs = App::getEntityRepository('DeskPRO:AgentNotification')->getNotifications($matching_queues, $notify_types);
 		if (!$notifs) return;
 
+		$ticket_email = new \Application\DeskPRO\Email\Notification\Ticket($this->ticket, $this->entered_logs);
+		$ticket_email->sendNotifications($notifs);
+	}
 
+	public function executeTriggers()
+	{
+		$events = array();
+		if (in_array('new_ticket', $this->events)) {
+			$events[] = 'new_ticket';
+		}
+		if (in_array('new_reply', $this->events) OR in_array('new_agent_reply', $this->events)) {
+			$events[] = 'new_ticket';
+		}
+		if (in_array('property_change', $this->events)) {
+			$events[] = 'property_change';
+		}
+
+		App::getOrm()->beginTransaction();
+
+		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($events);
+		foreach ($all_triggers as $trigger) {
+			if ($trigger->checkTicketMatch($this->ticket)) {
+				$trigger->performActions($this->ticket);
+				App::getOrm()->persist($this->ticket);
+			}
+		}
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
 	}
 
 	public function reset()
 	{
 		$this->entered_logs = array();
+		$this->events = array();
 	}
 }
