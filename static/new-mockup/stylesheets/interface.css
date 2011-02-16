@@ -503,8 +503,8 @@ body {
 	-moz-border-radius-topright: 6px;
 	-moz-border-radius-bottomright: 6px;
 	-moz-border-radius-bottomleft: 6px;
-	border-top-left-radius: 6px;
-	border-top-right-radius: 0px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 6px;
 	border-bottom-right-radius: 6px;
 	border-bottom-left-radius: 6px;
 	
@@ -711,10 +711,10 @@ ul.tag-cloud li.tag-size10 { font-size:2.9em; }
 	-moz-border-radius-topright: 6px;
 	-moz-border-radius-bottomright: 6px;
 	-moz-border-radius-bottomleft: 0px;
-	border-top-left-radius: 6px;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 0px;
-	border-bottom-left-radius: 6px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 6px;
+	border-bottom-right-radius: 6px;
+	border-bottom-left-radius: 0px;
 	
 	border: 1px solid #ccc;
 	border-left: none;
@@ -747,11 +747,7 @@ table#layout {
 	padding: 0;
 	margin: 0;
 	width: 100%;
-	position: absolute;
-	top: 80px;
-	left: 0;
-	right: 0;
-	bottom: 0;
+	position: relative;
 }
 
 table#layout > tbody > tr > td {

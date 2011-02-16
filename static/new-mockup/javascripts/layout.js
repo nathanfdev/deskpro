@@ -36,7 +36,7 @@ DeskPRO.Agent.UI.Layout = new Class({
 	},
 	
 	resizeColumns: function() {
-		var h = this.layoutEl.outerHeight() - 32; // 30=padding
+		var h = $(document).height() - this.layoutEl.offset().top - 32; // 30=padding
 		$('div.pane', this.layoutEl).height(h);
 	},
 	
