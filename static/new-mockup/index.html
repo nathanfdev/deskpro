@@ -1,0 +1,2547 @@
+<!DOCTYPE html> 
+<html> 
+<head> 
+	<meta charset="UTF-8"/> 
+	<meta name="robots" content="NOINDEX" /> 
+	<meta http-equiv="X-UA-Compatible" content="IE=100" /> 
+	<title>DeskPRO</title> 
+	
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.0/jquery.min.js" type="text/javascript" charset="utf-8"></script>
+	<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.9/jquery-ui.min.js" type="text/javascript" charset="utf-8"></script>
+	
+	<script src="../javascripts/mootools/mootools-core.min.js"></script> 
+
+	<script src="../javascripts/Orb/Orb.js"></script> 
+	<script src="../javascripts/Orb/Compat.js"></script>
+	
+	<script src="../javascripts/DeskPRO/UI/SimpleTabs.js"></script>
+	
+	<script src="javascripts/layout.js" type="text/javascript" charset="utf-8"></script>
+	
+	<link rel="stylesheet" href="../stylesheets/agent/interface.css" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="../stylesheets/agent/common.css" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="stylesheets/interface.css" type="text/css" media="screen" charset="utf-8" />
+	
+	<script type="text/javascript" charset="utf-8">
+		$(document).ready(function() {
+			var layout = new DeskPRO.Agent.UI.Layout();
+			layout.resizeColumns();
+		});
+	</script>
+</head> 
+<body>
+
+<div id="header">
+	<h1>DeskPRO</h1>
+	<div class="search-wrap">
+		<div class="search">
+			<input type="input" name="q" value="" placeholder="Search" />
+		</div>
+		<div class="type-select">Search All</div>
+		<button>Search</button>
+	</div>
+	
+	<div class="notifications">
+		<ul>
+			<li class="tickets">12</li>
+			<li class="twitter">8</li>
+		</ul>
+		<div id="notify_list">
+			<ul>
+				<li id="notify_list_tickets">
+					<h4>Tickets</h4>
+					<ul>
+						<li><span class="dismiss">dismiss</span><a>moved server</a>, <a>problem with script</a> and 2 others in the <a>Troubleshooting</a> queue</li>
+						<li><span class="dismiss">dismiss</span><a>questions</a> in the <a>Sales</a> queue</li>
+					</ul>
+				</li>
+				<li id="notify_list_chat">
+					<h4>Chat</h4>
+					<ul>
+						<li><span class="dismiss">dismiss</span>New chat <a>LDAP integration</a></li>
+					</ul>
+				</li>
+				<li id="notify_list_twitter">
+					<h4>Twitter</h4>
+					<ul>
+						<li><span class="dismiss">dismiss</span>3 new mentions for <a>@deskpro</a></li>
+						<li><span class="dismiss">dismiss</span>1 new direct message to <a>@deskpro</a></li>
+					</ul>
+				</li>
+			</ul>
+		</div>
+	</div>
+	
+	<div class="current-user">
+		<span>Christopher</span>
+		<ul>
+			<li>Settings</li>
+			<li>Set Status: Away</li>
+			<li>Log Out</li>
+		</ul>
+	</div>
+	
+	<ul class="user-nav">
+		<li class="reports"><a href="">Reports</a></li>
+		<li class="admin"><a href="">Admin</a></li>
+	</ul>
+</div>
+
+<div id="nav">
+	<ul>
+		<li class="tickets">
+			<em class="badge">5</em>
+			<span>Tickets</span>
+			<div class="menu">
+				<div class="basic-count">
+					<ul> 
+						<li>
+							<label>Yours</label>
+							<span>4</span>
+						</li>
+						<li>
+							<label>Your Teams</label>
+							<span>9</span>
+						</li>
+						<li>
+							<label>Participated</label>
+							<span>3</span>
+						</li>
+						<li>
+							<label>Unassigned</label>
+							<span>3</span>
+						</li>
+						<li>
+							<label>All</label>
+							<span>12</span>
+						</li>
+					</ul>
+					<br style="clear:both" />
+				</div>
+				
+				<div class="section" style="width:280px; height: 125px; margin-top: 5px; float: left">
+					<h4>Filters</h4>
+					<ul class="nav-list">
+						<li><span class="count">5</span>High Priority</li>
+						<li><span class="count">2</span>Tagged important</li>
+						<li><span class="count">4</span>Sales Department</li>
+						<li><span class="count">9</span>Support Department</li>
+						<li><span class="count">9</span>Support Department</li>
+					</ul>
+				</div>
+				<div class="section" style="width:280px; height: 125px; margin-top: 5px; float: right">
+					<h4>Open Tickets</h4>
+					<ul class="nav-list">
+						<li><span class="count">5</span>Sales</li>
+						<li class="sub"><span class="count">2</span>Category 1</li>
+						<li class="sub"><span class="count">3</span>Category 2</li>
+						<li><span class="count">3</span>Support</li>
+						<li class="sub"><span class="count">2</span>Category 1</li>
+						<li class="sub"><span class="count">1</span>Category 2</li>
+					</ul>
+				</div>
+				<br style="clear:both"/>
+				<div class="section" style="width:280px; height: 125px; margin-top: 5px; float: left">
+					<h4>Tags</h4>
+					<ul class="tag-cloud" style="text-align:center">
+						<li class="tag-size2" data-route="listpane:/index_dev.php/agent/ticket-search/label/label3">label3</li>
+						<li class="tag-size1" data-route="listpane:/index_dev.php/agent/ticket-search/label/testing">testing</li>
+						<li class="tag-size2" data-route="listpane:/index_dev.php/agent/ticket-search/label/label2">label2</li>
+						<li class="tag-size3" data-route="listpane:/index_dev.php/agent/ticket-search/label/label">label</li>
+						<li class="tag-size1" data-route="listpane:/index_dev.php/agent/ticket-search/label/test">test</li>
+						<li class="tag-size1" data-route="listpane:/index_dev.php/agent/ticket-search/label/label5">something</li>
+						<li class="tag-size2" data-route="listpane:/index_dev.php/agent/ticket-search/label/label3">some other word</li>
+						<li class="tag-size1" data-route="listpane:/index_dev.php/agent/ticket-search/label/testing">deskpro</li>
+						<li class="tag-size2" data-route="listpane:/index_dev.php/agent/ticket-search/label/label2">blah blah</li>
+					</ul>
+				</div>
+				<div class="section" style="width:280px; height: 125px; margin-top: 5px; float: right">
+					<h4>Flagged</h4>
+					<ul class="nav-list">
+						<li><span class="count">5</span>Red</li>
+						<li><span class="count">2</span>Blue</li>
+						<li><span class="count">4</span>Green</li>
+						<li><span class="count">9</span>Yellow</li>
+					</ul>
+				</div>
+			</div>
+		</li>
+		<li class="chat">
+			<em class="badge">11</em>
+			<span>Chat</span>
+			<div class="menu">
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+			</div>
+		</li>
+		<li class="twitter">
+			<span>Twitter</span>
+			<div class="menu">
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+			</div>
+		</li>
+		<li class="leads">
+			<span>Leads</span>
+			<div class="menu">
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+			</div>
+		</li>
+		<li class="tasks">
+			<span>Tasks</span>
+			<div class="menu">
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+			</div>
+		</li>
+		<li class="people">
+			<span>People</span>
+			<div class="menu">
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+				The menu<br />
+			</div>
+		</li>
+	</ul>
+	
+	<div class="event-message-wrap">
+		<div class="event-message">
+			You deleted the ticket "<em>Some ticket</em>"
+		</div>
+		<button class="undo"><span>Undo</span></button>
+	</div>
+</div>
+
+<table id="layout" cellspacing="0" cellpadding="0" width="100%"><tbody><tr>
+	<td width="50%">
+		<div class="pane">
+			<div class="pane-head">
+				<ul>
+					<li class="on tab-trigger" data-tab-for=".tab-content-1"><span>Tab 1</span></li>
+					<li class="tab-trigger" data-tab-for=".tab-content-2"><span>Tab 2</span></li>
+					<li class="tab-trigger" data-tab-for=".tab-content-3"><span>Tab 3</span></li>
+				</ul>
+			</div>
+			<div class="pane-content">
+				<div class="tab-content-1">
+					<div class="content">
+						<div class="display-options overlay">
+						<h1>Display Options</h1>
+						<div style="float: right;">
+							Order By: <select name="order_by">
+								<option value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
+								<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
+								<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
+								<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
+								<option value="ticket.priority:desc">Priority (Highest-Lowest)</option>
+								<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+							</select>
+						</div>
+						<div style="margin-right: 250px;">
+							<strong>Display Elements</strong><br>
+							<ul class="sortable-list">
+								<li data-field="person"><input type="checkbox" name="person"> Contact Name</li>
+								<li data-field="person_email"><input type="checkbox" name="person_email"> Contact Email</li>
+								<li data-field="person_organization"><input type="checkbox" name="person_organization"> Contact Organization</li>
+								<li data-field="department"><input type="checkbox" name="department"> Department</li>
+								<li data-field="category"><input type="checkbox" name="category"> Category</li>
+								<li data-field="product"><input type="checkbox" name="product"> Product</li>
+								<li data-field="organization"><input type="checkbox" name="organization"> Organization Name</li>
+								<li data-field="agent"><input type="checkbox" name="agent"> Agent Name</li>
+												<li data-field="ticket_fields[1]"><input type="checkbox" name="ticket_fields[1]"> Ticket Field: A Field</li>
+												<li data-field="ticket_fields[2]"><input type="checkbox" name="ticket_fields[2]"> Ticket Field: A Big Field</li>
+												<li data-field="ticket_fields[3]"><input type="checkbox" name="ticket_fields[3]"> Ticket Field: Another Field</li>
+															<li data-field="person_fields[1]"><input type="checkbox" name="person_fields[1]"> User Field: Text Field</li>
+										</ul>
+						</div>
+						<div class="buttons">
+							<div class="loading-off">
+								<button class="save-trigger dp-button small">Save</button>
+								<button class="close-trigger dp-button gray small">Cancel</button>
+							</div>
+							<div class="loading-on">
+								<span>Saving ...</span>
+							</div>
+						</div>
+					</div>
+						<div class="search-top">
+						<ul class="grouping-info">
+														<li data-group-id="hidden">
+										<span>1</span>
+										<label>
+											Hidden
+
+									</label></li>
+																	<li data-group-id="resolved">
+										<span>12</span>
+										<label>
+											Resolved
+
+									</label></li>
+																	<li data-group-id="closed">
+										<span>63</span>
+										<label>
+											Closed
+
+									</label></li>
+																	<li class="total on" data-group-id="NONE">
+								<span>76</span>
+								<label>Total</label>
+							</li>
+						</ul>
+						<br class="clear">
+					</div>
+
+						<table class="list" cellspacing="0" width="100%">
+							<thead class="display-options-trigger nosel">
+						<tr>
+							<th class="check-all" width="5"><input type="checkbox" class="check-all-box" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"></th>
+										<th data-field="person">User</th>
+													<th data-field="department">Department</th>
+													<th data-field="agent">Agent</th>
+																											<th data-field="ticket_fields[1]">A Field</th>
+																																																																												<th data-field="ticket_fields[2]">A Big Field</th>
+																																											<th class="flag" width="5"></th>	</tr>
+					</thead>		<tbody class="search-results page-set" data-page="1">
+						<tr class="ticket-7006 line-1 urgency-100  open" data-ticket-id="7006">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="7006" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-11-10">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/7006">specloki lachov</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-7006 line-2 urgency-100  open" data-ticket-id="7006">
+										<td class="person">
+												by <cite>wroca bruprethibruvu</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="5">Child 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+											test
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+											test2
+										</div>
+																																										</td></tr>
+						<tr class="ticket-7006 line-3 urgency-100 open" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-17271 line-1 urgency-100 " data-ticket-id="17271">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="17271" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-11-19">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/17271">taw wroh pred phespemotr drus</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-17271 line-2 urgency-100 " data-ticket-id="17271">
+										<td class="person">
+												by <cite>trapachap wravide</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-17271 line-3 urgency-100" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-6376 line-1 urgency-90 " data-ticket-id="6376">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="6376" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-07-16">7 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/6376">tolosp vuslos slistiw taswiwremo uid presp</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-6376 line-2 urgency-90 " data-ticket-id="6376">
+										<td class="person">
+												by <cite>jebim kouinubr</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-6376 line-3 urgency-90" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-5511 line-1 urgency-90 " data-ticket-id="5511">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="5511" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-07-24">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/5511">dro</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-5511 line-2 urgency-90 " data-ticket-id="5511">
+										<td class="person">
+												by <cite>vuprumov rostu</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-5511 line-3 urgency-90" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-4070 line-1 urgency-90 " data-ticket-id="4070">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="4070" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-11-09">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/4070">frabre mathoch rutadeci provob pot</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-4070 line-2 urgency-90 " data-ticket-id="4070">
+										<td class="person">
+												by <cite>dedrapitu sigicl</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-4070 line-3 urgency-90" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-2165 line-1 urgency-90 " data-ticket-id="2165">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="2165" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-08-14">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/2165">clicechi rita</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-2165 line-2 urgency-90 " data-ticket-id="2165">
+										<td class="person">
+												by <cite>stebe uojebrotrufrudrovi</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-2165 line-3 urgency-90" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-3136 line-1 urgency-90 " data-ticket-id="3136">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="3136" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-09-21">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/3136">wifridabr wicl</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-3136 line-2 urgency-90 " data-ticket-id="3136">
+										<td class="person">
+												by <cite>jospuu wodethocubrochacu</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-3136 line-3 urgency-90" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-4266 line-1 urgency-90 " data-ticket-id="4266">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="4266" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-08-18">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/4266">risi litekupu dru brepunec reslo bicluwi thacebaj drifraspau giwucecha neph</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-4266 line-2 urgency-90 " data-ticket-id="4266">
+										<td class="person">
+												by <cite>kostovod thucobibulowat</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-4266 line-3 urgency-90" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-18203 line-1 urgency-90 " data-ticket-id="18203">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="18203" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-01-10">3 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/18203">kisetr tefrefra cepr drufr</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-18203 line-2 urgency-90 " data-ticket-id="18203">
+										<td class="person">
+												by <cite>spesabu bropidadiwajukochebr</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-18203 line-3 urgency-90" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-15163 line-1 urgency-80 " data-ticket-id="15163">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="15163" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-04-16">10 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/15163">drasto deua spaswopr bobunewo lahus viphi</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-15163 line-2 urgency-80 " data-ticket-id="15163">
+										<td class="person">
+												by <cite>stubefr thociwrafrupho</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-15163 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-439 line-1 urgency-80 " data-ticket-id="439">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="439" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-12-17">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/439">chustotiv</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-439 line-2 urgency-80 " data-ticket-id="439">
+										<td class="person">
+												by <cite>prakocisp chebrupreriluch</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-439 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-18531 line-1 urgency-80 " data-ticket-id="18531">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="18531" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-02-08">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/18531">jebibo derefr chi gasl crevewrewr jespeju kudose</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-18531 line-2 urgency-80 " data-ticket-id="18531">
+										<td class="person">
+												by <cite>tajeduslun wruni</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-18531 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-23307 line-1 urgency-80 " data-ticket-id="23307">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="23307" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-02-07">3 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/23307">gotroph pri his phowrawu</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-23307 line-2 urgency-80 " data-ticket-id="23307">
+										<td class="person">
+												by <cite>pasl jejuno</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-23307 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-1410 line-1 urgency-80 " data-ticket-id="1410">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="1410" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-11-26">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/1410">sufr wobacad uadruu breu frocl nistutha</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-1410 line-2 urgency-80 " data-ticket-id="1410">
+										<td class="person">
+												by <cite>pekisp phedro</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-1410 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-2514 line-1 urgency-80 " data-ticket-id="2514">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="2514" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-05-20">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/2514">crososton phaspawof</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-2514 line-2 urgency-80 " data-ticket-id="2514">
+										<td class="person">
+												by <cite>tiuu trahosed</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-2514 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-20077 line-1 urgency-80 " data-ticket-id="20077">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="20077" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-02-17">12 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/20077">swutifri miuihe wafrof crij muha chostuse</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-20077 line-2 urgency-80 " data-ticket-id="20077">
+										<td class="person">
+												by <cite>lutredru heuipruwi</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-20077 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-2279 line-1 urgency-80 " data-ticket-id="2279">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="2279" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-10-31">3 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/2279">truhekig sleh suuuror huswivec slilust komigi juvetespu kislocu</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-2279 line-2 urgency-80 " data-ticket-id="2279">
+										<td class="person">
+												by <cite>trap hacruvisluchuswutasp</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-2279 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-22345 line-1 urgency-80 " data-ticket-id="22345">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="22345" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-04-03">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/22345">jijal retuu jououau ritrul begocr</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-22345 line-2 urgency-80 " data-ticket-id="22345">
+										<td class="person">
+												by <cite>stabo monibochul</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-22345 line-3 urgency-80" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-11502 line-1 urgency-70 " data-ticket-id="11502">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="11502" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-04-19">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/11502">thocatreuu tuc stucomisiw suki clijobr drefreb frocr</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-11502 line-2 urgency-70 " data-ticket-id="11502">
+										<td class="person">
+												by <cite>thewrifrec pocha</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-11502 line-3 urgency-70" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-23052 line-1 urgency-70 " data-ticket-id="23052">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="23052" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-12-23">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/23052">fredrop kupopr ruspon slathe boboc pric beclob varid</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-23052 line-2 urgency-70 " data-ticket-id="23052">
+										<td class="person">
+												by <cite>phodepuhoc chulecruswa</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-23052 line-3 urgency-70" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-18978 line-1 urgency-70 " data-ticket-id="18978">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="18978" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-04-09">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/18978">spes lasas woslojes sluswauis crobu</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-18978 line-2 urgency-70 " data-ticket-id="18978">
+										<td class="person">
+												by <cite>kecheprugo dothugane</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-18978 line-3 urgency-70" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-6064 line-1 urgency-70 " data-ticket-id="6064">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="6064" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-09-06">5 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/6064">potrilist</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-6064 line-2 urgency-70 " data-ticket-id="6064">
+										<td class="person">
+												by <cite>uibrethor thid</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-6064 line-3 urgency-70" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-5512 line-1 urgency-70 " data-ticket-id="5512">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="5512" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-06-19">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/5512">rulicagala lipretastu chopugac clon culucru uabr nofrasuuat jajosp gesu</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-5512 line-2 urgency-70 " data-ticket-id="5512">
+										<td class="person">
+												by <cite>nijewow drepredacoc</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-5512 line-3 urgency-70" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-16649 line-1 urgency-70 " data-ticket-id="16649">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="16649" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-02-24">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/16649">wobra ciclaswus wafri ceca brutaprut stan biwuphuhew</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-16649 line-2 urgency-70 " data-ticket-id="16649">
+										<td class="person">
+												by <cite>cuhoso wathuuet</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-16649 line-3 urgency-70" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-13764 line-1 urgency-60 " data-ticket-id="13764">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="13764" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-07-31">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/13764">sutrestiui spisudruf cagovu phig cofrijivip sibramapho peclakir tricl uupuchifr</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-13764 line-2 urgency-60 " data-ticket-id="13764">
+										<td class="person">
+												by <cite>clapa tredewroswospibuge</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-13764 line-3 urgency-60" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-9029 line-1 urgency-60 " data-ticket-id="9029">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="9029" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-01-22">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/9029">chichite</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-9029 line-2 urgency-60 " data-ticket-id="9029">
+										<td class="person">
+												by <cite>rowrova kijucrogaruwron</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-9029 line-3 urgency-60" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-1885 line-1 urgency-60 " data-ticket-id="1885">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="1885" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-01-20">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/1885">wafrithof drivirupro uip dibejebr uopathapr daswawe frocha pachikus takubr</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-1885 line-2 urgency-60 " data-ticket-id="1885">
+										<td class="person">
+												by <cite>frugadr trumiswotrubrou</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-1885 line-3 urgency-60" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-20611 line-1 urgency-60 " data-ticket-id="20611">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="20611" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-12-19">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/20611">cro cradrigat cliu pip broja spel cepho pruvewrora</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-20611 line-2 urgency-60 " data-ticket-id="20611">
+										<td class="person">
+												by <cite>vipob clufriloprisitr</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-20611 line-3 urgency-60" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-21821 line-1 urgency-60 " data-ticket-id="21821">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="21821" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-12-01">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/21821">litekiclac</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-21821 line-2 urgency-60 " data-ticket-id="21821">
+										<td class="person">
+												by <cite>praphat jesebreca</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-21821 line-3 urgency-60" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-18573 line-1 urgency-60 " data-ticket-id="18573">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="18573" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-01-10">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/18573">dri chop phabidr sluloha jefras nefrajostu goniribew</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-18573 line-2 urgency-60 " data-ticket-id="18573">
+										<td class="person">
+												by <cite>sanigejap jirisper</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-18573 line-3 urgency-60" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-2312 line-1 urgency-60 " data-ticket-id="2312">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="2312" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-06-04">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/2312">rawro</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-2312 line-2 urgency-60 " data-ticket-id="2312">
+										<td class="person">
+												by <cite>prestus cliprobethophowrec</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-2312 line-3 urgency-60" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-5186 line-1 urgency-50 " data-ticket-id="5186">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="5186" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-04-08">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/5186">hibac relidupeb crutr huretotabr pob crorihudac lodre tutrou hamavid</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-5186 line-2 urgency-50 " data-ticket-id="5186">
+										<td class="person">
+												by <cite>didre jifredrojah</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-5186 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-2235 line-1 urgency-50 " data-ticket-id="2235">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="2235" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-03-18">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/2235">swid thewrumut crudun hedrediu pra slowr spubad swawramist wuc wislaspicr</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-2235 line-2 urgency-50 " data-ticket-id="2235">
+										<td class="person">
+												by <cite>trubradi chamoslosleslep</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-2235 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-16817 line-1 urgency-50 " data-ticket-id="16817">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="16817" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-06-21">8 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/16817">miclestu uowro kab</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-16817 line-2 urgency-50 " data-ticket-id="16817">
+										<td class="person">
+												by <cite>phislilid wimalastiwrachakutes</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-16817 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-8053 line-1 urgency-50 " data-ticket-id="8053">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="8053" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-10-29">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/8053">preresethe gocapuv spespopr sliprik</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-red" data-flag="red"></span></td>
+								</tr>
+						<tr class="ticket-8053 line-2 urgency-50 " data-ticket-id="8053">
+										<td class="person">
+												by <cite>wrocrova wrokiclepojucokopre</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-8053 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-19052 line-1 urgency-50 " data-ticket-id="19052">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="19052" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-10-05">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/19052">towuchewe cijuueseh breta phagapro vusopraphi cibef swid store daro</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-19052 line-2 urgency-50 " data-ticket-id="19052">
+										<td class="person">
+												by <cite>paspusl crehipa</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-19052 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-10402 line-1 urgency-50 " data-ticket-id="10402">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="10402" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-08-02">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/10402">thod</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-10402 line-2 urgency-50 " data-ticket-id="10402">
+										<td class="person">
+												by <cite>trad tihuuusaslegoluthif</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-10402 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-4078 line-1 urgency-50 " data-ticket-id="4078">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="4078" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-04-23">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/4078">detriphah</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-4078 line-2 urgency-50 " data-ticket-id="4078">
+										<td class="person">
+												by <cite>ueprijosli prahujekuchiph</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-4078 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-4129 line-1 urgency-50 " data-ticket-id="4129">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="4129" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-03-28">10 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/4129">geci reriw depri phojachavi thophewrin swibem trawubisp nutabre vuspo wuroheb</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-4129 line-2 urgency-50 " data-ticket-id="4129">
+										<td class="person">
+												by <cite>cluch stestibrouowru</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-4129 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-6384 line-1 urgency-50 " data-ticket-id="6384">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="6384" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-05-19">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/6384">maprivi raspechow wrovufrif crelof</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-6384 line-2 urgency-50 " data-ticket-id="6384">
+										<td class="person">
+												by <cite>wisle preuuswathimib</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-6384 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-11215 line-1 urgency-50 " data-ticket-id="11215">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="11215" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-11-29">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/11215">pho mihidrib ses gekekacr kestost cevas metireriwi phedric</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-11215 line-2 urgency-50 " data-ticket-id="11215">
+										<td class="person">
+												by <cite>ciruf clau</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-11215 line-3 urgency-50" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-10695 line-1 urgency-40 " data-ticket-id="10695">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="10695" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-01-05">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/10695">tinabrudr swediwr mephistut phet reclo</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-10695 line-2 urgency-40 " data-ticket-id="10695">
+										<td class="person">
+												by <cite>uatho spipromilifrotr</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-10695 line-3 urgency-40" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-4749 line-1 urgency-40 " data-ticket-id="4749">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="4749" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-08-06">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/4749">crugisel swephame sla swa chatidohet keslos cluclu chiweb</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-4749 line-2 urgency-40 " data-ticket-id="4749">
+										<td class="person">
+												by <cite>paueslitro pruphitrabo</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-4749 line-3 urgency-40" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-15796 line-1 urgency-40 " data-ticket-id="15796">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="15796" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2009-04-10">about a year ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/15796">jecl riuocuj thos kufripr phelodrapr kut wrifres</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-15796 line-2 urgency-40 " data-ticket-id="15796">
+										<td class="person">
+												by <cite>muchaf nobropheslicru</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-15796 line-3 urgency-40" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-7532 line-1 urgency-40 " data-ticket-id="7532">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="7532" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-07-23">2 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/7532">swotrec uuvujacro dasp slahomal chuuepi brom cuciveros slene</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-yellow" data-flag="yellow"></span></td>
+								</tr>
+						<tr class="ticket-7532 line-2 urgency-40 " data-ticket-id="7532">
+										<td class="person">
+												by <cite>banaclos prab</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-7532 line-3 urgency-40" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-8476 line-1 urgency-40 " data-ticket-id="8476">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="8476" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-06-11">8 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/8476">vehapebic wedrithe ste migibeu wehad brekomo</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-8476 line-2 urgency-40 " data-ticket-id="8476">
+										<td class="person">
+												by <cite>vovewuslas jacruvirevodo</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-8476 line-3 urgency-40" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-2283 line-1 urgency-40 " data-ticket-id="2283">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="2283" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-04-14">10 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/2283">preswecra suv sabrusucr brastawr thuw drophisi vajafraw</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-2283 line-2 urgency-40 " data-ticket-id="2283">
+										<td class="person">
+												by <cite>matuuibri dacaslaswotrepre</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-2283 line-3 urgency-40" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-4452 line-1 urgency-40 " data-ticket-id="4452">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="4452" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-08-04">6 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/4452">triswo wekapriw tru gifri</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-4452 line-2 urgency-40 " data-ticket-id="4452">
+										<td class="person">
+												by <cite>butuc crubrunifrupruhu</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-4452 line-3 urgency-40" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-3086 line-1 urgency-40 " data-ticket-id="3086">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="3086" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2008-01-16">3 years ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/3086">pheswocrut</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-3086 line-2 urgency-40 " data-ticket-id="3086">
+										<td class="person">
+												by <cite>mulan sithohufruswisl</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-3086 line-3 urgency-40" style="display:none"><td colspan="7"><ul></ul></td></tr>
+						<tr class="ticket-10742 line-1 urgency-30 " data-ticket-id="10742">
+							<td rowspan="2" class="check-all">
+								<input type="checkbox" value="10742" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;">
+							</td>
+							<td colspan="5">
+								<abbr class="timeago" title="2010-09-07">5 months ago</abbr>
+								<span class="subject with-route" data-route="ticket:/index_dev.php/agent/tickets/10742">nesop roluslun cra phuspabr jidupo kinivuwr phawrara</span>
+							</td>
+													<td rowspan="2" class="flag"><span class="ticket-flag icon icon-flag-none" data-flag="none"></span></td>
+								</tr>
+						<tr class="ticket-10742 line-2 urgency-30 " data-ticket-id="10742">
+										<td class="person">
+												by <cite>thouedreme brujo</cite>
+													</td><td class="department">
+												<span class="prop-val department_id" data-prop-value="1">Department 1</span>
+													</td><td class="agent">
+												<span class="prop-val agent_id" data-prop-value="">
+														Unassigned
+													</span>
+													</td><td class="ticket_fields[1]">
+																						<div class="prop-val ticket_fields_1">
+
+										</div>
+																																																					</td><td class="ticket_fields[2]" style="text-align:right">
+																															<div class="prop-val ticket_fields_2">
+
+										</div>
+																																										</td></tr>
+						<tr class="ticket-10742 line-3 urgency-30" style="display:none"><td colspan="7"><ul></ul></td></tr>
+					</tbody>	</table>
+
+						<div class="loading-more">
+							Loading more results ...
+						</div>
+						<div class="no-more-results">
+							There are no more results.
+						</div>
+
+						<ul class="ticket-flag-menu" style="display:none">
+						<li data-flag="none"><span class="icon icon-flag-none">None</span></li>
+						<li class="sep">-</li>
+						<li data-flag="blue"><span class="icon icon-flag-blue">Blue</span></li>
+						<li data-flag="green"><span class="icon icon-flag-green">Green</span></li>
+						<li data-flag="orange"><span class="icon icon-flag-orange">Orange</span></li>
+						<li data-flag="pink"><span class="icon icon-flag-pink">Pink</span></li>
+						<li data-flag="purple"><span class="icon icon-flag-purple">Purple</span></li>
+						<li data-flag="red"><span class="icon icon-flag-red">Red</span></li>
+						<li data-flag="yellow"><span class="icon icon-flag-yellow">Yellow</span></li>
+					</ul></div>
+				</div>
+				<div class="tab-content-2" style="display:none">
+					Content Pane
+					<button id="add_btn">Add Column</button>
+				</div>
+				<div class="tab-content-3" style="display:none">
+					Blah blah
+				</div>
+			</div>
+		</div>
+	</td>
+	<td width="50%">
+		<div class="pane">
+			<div class="pane-head">
+				<ul>
+					<li class="on tab-trigger" data-tab-for=".tab-content-1"><span>Tab 1</span></li>
+					<li class="tab-trigger" data-tab-for=".tab-content-2"><span>Tab 2</span></li>
+					<li class="tab-trigger" data-tab-for=".tab-content-3"><span>Tab 3</span></li>
+				</ul>
+			</div>
+			<div class="pane-content">
+				<div class="tab-content-1">
+					<div class="ticket-content">
+						<form class="value-form" style="display:none">
+							<input type="hidden" name="agent_id" class="agent_id" value="0">
+							<input type="hidden" name="agent_team_id" class="agent_team_id" value="0">
+							<input type="hidden" name="department_id" class="department_id" value="5">
+							<input type="hidden" name="category_id" class="category_id" value="0">
+							<input type="hidden" name="product_id" class="product_id" value="1">
+							<input type="hidden" name="priority_id" class="priority_id" value="10">
+							<input type="hidden" name="workflow_id" class="workflow_id" value="2">
+							<input type="hidden" name="status" class="status" value="closed">
+						</form>
+
+
+						<div class="ticket">
+
+
+						<div class="ticket-top">
+
+							<span class="ticket-flag icon icon-flag-none" data-flag="none"></span>
+							<h1>
+								<span class="menu-trigger department_id department ">
+									<span class="prop-val department_id" data-no-value="Choose Department">Department 1 &gt; Child 1</span>
+									:
+								</span>
+								specloki lachov
+							</h1>
+							<div class="tags-field">
+								<ul class="tagit ticket">
+												<li class="tagit-new"><input class="tagit-input ui-autocomplete-input" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"></li></ul>
+							</div>
+
+							<div class="ticket-info">
+						<dl class="menu-trigger category_id">
+							<dt>Category</dt>
+							<dd class="prop-val category_id no-value" data-no-value-label="None">None</dd>
+						</dl>
+						<dl class="menu-trigger product_id">
+							<dt>Product</dt>
+							<dd class="prop-val product_id no-value" data-no-value-label="None">Product 1</dd>
+						</dl>
+						<dl class="menu-trigger priority_id">
+							<dt>Priority</dt>
+							<dd class="prop-val priority_id no-value" data-no-value-label="None">Priority 10</dd>
+						</dl>
+						<dl class="menu-trigger workflow_id">
+							<dt>Workflow</dt>
+							<dd class="prop-val workflow_id " data-no-value-label="None">Workflow 2</dd>
+						</dl>
+						<dl class="menu-trigger status">
+							<dt>Status</dt>
+							<dd class="prop-val status">
+													</dd>
+						</dl>
+						<br style="clear:both">
+					</div>
+							<br style="clear:both">
+
+							<div class="person-info-line">
+
+								<div style="float:right">
+									<div class="menu-trigger agent_id agent">
+																<img class="agent-picture" data-picture-url="/index_dev.php/download/person-pic/{value}/50" src="" alt="" width="50" height="50" style="float:right; margin-left: 5px; display:none">
+															<span data-picture-element="img.agent-picture" data-no-value-label="Unassigned" class="prop-val agent_id no-value">
+																		Unassigned
+																</span>
+									</div>
+														<div class="menu-trigger agent_team_id agent_team" style="font-size:7pt">
+											<strong>Team:</strong> <span class="prop-val agent_team_id no-value" data-no-value="None"></span>
+										</div>
+												</div>
+
+								<div class="person-overview" style="cursor: pointer; ">
+									<div class="img">
+										<img src="http://test-instant.deskprodev.com/index_dev.php/download/person-pic/default?s=50" alt="" width="50" height="50">
+									</div>
+									<div class="info">
+										<h1>wroca bruprethibruvu</h1>
+															<div style="font-size: 7pt; color: #6D7C8C; padding-top: 4px;">Click to view information</div>
+									</div>
+								</div>
+
+								<br style="clear:both">
+
+								<div class="ticket-participants">
+									<ul>
+															<li class="add-trigger" data-picture-url="/index_dev.php/download/person-pic/{person_id}/15"><span>Add a new participant</span></li>
+									</ul>
+								</div>
+
+								<br style="clear:both">
+							</div>
+
+								<div class="ticket-custom-fields-wrap">
+							<div class="edit-btn ticket-custom-fields-edit-btn" style="float:right"><span>Edit Fields</span></div>
+							<div class="ticket-custom-fields show-fields" style="clear:right">
+								<div class="wrap">
+												<div class="field-wrap custom-field custom-field-1">
+								<div class="label-wrap"><label>A Field</label></div>
+								<div class="field-input">
+									test
+								</div>
+							</div>
+									<div class="field-wrap custom-field custom-field-2">
+								<div class="label-wrap"><label>A Big Field</label></div>
+								<div class="field-input">
+									test2
+								</div>
+							</div>
+									<div class="field-wrap custom-field custom-field-3">
+								<div class="label-wrap"><label>Another Field</label></div>
+								<div class="field-input">
+									test3
+								</div>
+							</div>
+									</div>
+							</div>
+						</div>
+
+						<div class="ticket-custom-fields edit show-fields edit-fields-overlay" style="display:none">
+										<div class="field-wrap custom-field custom-field-1">
+									<div class="label-wrap"><label>A Field</label></div>
+									<div class="field-input">
+										<input type="text" id="custom_fields_field_1" name="custom_fields[field_1]" value="test">
+									</div>
+								</div>
+										<div class="field-wrap custom-field custom-field-2">
+									<div class="label-wrap"><label>A Big Field</label></div>
+									<div class="field-input">
+										<textarea id="custom_fields_field_2" name="custom_fields[field_2]">test2</textarea>
+									</div>
+								</div>
+										<div class="field-wrap custom-field custom-field-3">
+									<div class="label-wrap"><label>Another Field</label></div>
+									<div class="field-input">
+										<input type="text" id="custom_fields_field_3" name="custom_fields[field_3]" value="test3">
+									</div>
+								</div>
+									<div class="buttons">
+								<div class="loading-off">
+									<button class="save-trigger dp-button small">Save</button>
+									<button class="close-trigger dp-button gray small">Cancel</button>
+								</div>
+								<div class="loading-on">
+									<span>Saving ...</span>
+								</div>
+							</div>
+						</div>
+
+							<ul class="ticket-tabs">
+								<li class="tab-trigger ticket-messages messages on" data-tab-for=".tab-content.ticket-messages">Messages</li>
+								<li class="tab-trigger notes" data-tab-for=".tab-content.notes">Notes</li>
+								<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
+								<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
+										</ul>
+						</div>
+
+						<div class="tab-content on messages ticket-messages" data-tab-trigger=".tab-trigger.ticket-messages">
+							<ul>
+												<li class="message-item agent ">
+						<div class="box">
+							<div class="info">
+								<img class="person-picture" src="/index_dev.php/download/person-pic/1/15" alt="">
+								<cite>
+									vuvoh wukoswach
+								</cite>
+								<span class="time">
+									<span data-message-id="41772" class="edit-btn ticket-message-edit-btn"></span>
+									submitted online (from 76.167.170.198), 2008-11-19
+								</span>
+							</div>
+							<div class="message">
+								prol wroble requal cenglar beyont amounish pring eard buite strit arother anowed coutudy lable latil exced casenly aread offect earrit bronsity vallow sear livers enger pical horth operit parlic ordio wesic actil inds grol head with watept wain thres acco
+
+										</div>
+						</div>
+					</li>							<li class="message-item person">
+						<div class="box">
+							<div class="info">
+								<img class="person-picture" src="/index_dev.php/download/person-pic/2282/15" alt="">
+								<cite>
+									wroca bruprethibruvu
+								</cite>
+								<span class="time">
+									<span data-message-id="41773" class="edit-btn ticket-message-edit-btn"></span>
+									submitted online (from 76.167.170.198), 2008-11-19
+								</span>
+							</div>
+							<div class="message">
+								leture ince watept offic inds sinnity medy thernmes eduse kent litired ress marger imaths physts alwars negram yearned lear extere deths watudy shod movice remed neemen espith milem thincous rese anot issard sume chard meen dire hist alow prol horth hisic
+
+										</div>
+						</div>
+					</li>							<li class="message-item person">
+						<div class="box">
+							<div class="info">
+								<img class="person-picture" src="/index_dev.php/download/person-pic/2282/15" alt="">
+								<cite>
+									wroca bruprethibruvu
+								</cite>
+								<span class="time">
+									<span data-message-id="41774" class="edit-btn ticket-message-edit-btn"></span>
+									submitted online (from 76.167.170.198), 2008-11-19
+								</span>
+							</div>
+							<div class="message">
+								espith ordio alow arother dearts appare anot horwart eard have yearned marger preaving amought grocal actil buite almon gresed livide lable marls head otheort lable leading reparty devenge huse inday greass exish wallity lear yous beive belf sear dety per
+
+										</div>
+						</div>
+					</li>							<li class="message-item agent ">
+						<div class="box">
+							<div class="info">
+								<img class="person-picture" src="/index_dev.php/download/person-pic/1/15" alt="">
+								<cite>
+									vuvoh wukoswach
+								</cite>
+								<span class="time">
+									<span data-message-id="41775" class="edit-btn ticket-message-edit-btn"></span>
+									submitted online (from 76.167.170.198), 2008-11-19
+								</span>
+							</div>
+							<div class="message">
+								neir thining woult wout worthod worsts prontly hostic audio lange devenge brient leture sume themond marger sock vallow nather otheort imaths shod amought buite belf hanner neemen earrit requal chard livers dearts fundard desped yearned deass horth daing 
+
+										</div>
+						</div>
+					</li>							<li class="message-item agent ">
+						<div class="box">
+							<div class="info">
+								<img class="person-picture" src="/index_dev.php/download/person-pic/1/15" alt="">
+								<cite>
+									vuvoh wukoswach
+								</cite>
+								<span class="time">
+									<span data-message-id="41776" class="edit-btn ticket-message-edit-btn"></span>
+									submitted online (from 76.167.170.198), 2008-11-19
+								</span>
+							</div>
+							<div class="message">
+								neir sect asket hostic shorks eard otheort head brial shod rember peral marger leture earls arother sock grol unducts desped pubject appare litired sume amoup kent prol ince watudy lear thining cound exped anowed cons rety wesic heaters bronsity hisic pic
+
+										</div>
+						</div>
+					</li>							<li class="message-item agent ">
+						<div class="box">
+							<div class="info">
+								<img class="person-picture" src="/index_dev.php/download/person-pic/1/15" alt="">
+								<cite>
+									vuvoh wukoswach
+								</cite>
+								<span class="time">
+									<span data-message-id="41777" class="edit-btn ticket-message-edit-btn"></span>
+									submitted online (from 76.167.170.198), 2008-11-19
+								</span>
+							</div>
+							<div class="message">
+								neir actil shous unducts leture rety anowed strit lear brial rese grol pring negram head cenglar extere wain prol accome sock stry nort knomint amoup fedical watudy enger lable nign wout livers frit thincous offect parlic neve decent chury peral sinnity i
+
+										</div>
+						</div>
+					</li>					</ul>
+						</div>
+
+						<div class="tab-content messages notes" data-tab-trigger=".tab-trigger.notes">
+							<ul>
+								<li class="message-item agent is-note new-note">
+									<div class="box">
+										<div class="info"><cite>New Note</cite></div>
+										<div class="message">
+											<textarea style="width:98%; height: 80px;"></textarea>
+											<div style="text-align:center; margin-top: 9px;">
+												<button class="dp-button x-small">Add Note</button>
+											</div>
+										</div>
+									</div>
+								</li>
+																																																				</ul>
+						</div>
+
+						<div class="tab-content attachments unloaded" data-tab-trigger=".tab-trigger.attachments">
+							<div class="loading-more" style="display:block">
+								Loading attachment list ...
+							</div>
+						</div>
+
+						<div class="tab-content ticket-log unloaded" data-tab-trigger=".tab-trigger.ticket-log">
+							<div class="loading-more" style="display:block">
+								Loading ticket log ...
+							</div>
+						</div>
+
+
+						</div>
+
+						<div class="person-popout" style="display:none">
+							<div class="tabbar nosel">
+								<div class="pin-icon"></div>
+								<ul>
+									<li class="tab icon icon-person tab-active"><div class="title"><span>Ticket User</span></div></li>
+								</ul>
+							</div>
+							<br style="clear:both">
+							<div class="content">
+
+
+					<div class="profile">
+						<div class="main">
+							<div class="header">
+								<h1 class="editable hover-edit" data-editable-for=".inline-editable .name">wroca bruprethibruvu</h1>
+								<div class="organization hover-edit">
+									<span class="name">uoswihet</span>
+									<span class="position">tusliswojocha</span>
+								</div>
+								<div class="email hover-edit">
+									<div class="primary"></div>
+								</div>
+							</div>
+
+							<div class="section notes">
+								<span class="new-note trigger">new note</span>
+								<h5>Notes</h5>
+								<div class="new-note-form" style="display:none">
+									<textarea name="note"></textarea>
+									<div style="float:right">
+										<span class="saving trigger">saving...</span>
+										<span class="save trigger">save</span><br>
+										<span class="cancel trigger">cancel</span>
+									</div>
+								</div>
+								<div>
+									<dl class="note-list" data-limit="5">
+														</dl>
+												</div>
+							</div>
+
+							<div class="section">
+								<h5>User Stream</h5>
+								<div>
+									<ul class="stream">
+										<li>
+											<span class="time">14 mins</span>
+											<span class="who">John Doe</span>
+											<span class="what">updated profile fields <a href="">phone number and email address</a></span>
+										</li>
+										<li>
+											<span class="time">42 mins</span>
+											<span class="who">John Doe</span>
+											<span class="what">created new ticket <a href="">trouble</a></span>
+										</li>
+										<li>
+											<span class="time">1 day ago</span>
+											<span class="who">System</span>
+											<span class="what">auto-closed ticket <a href="">something or other</a></span>
+										</li>
+										<li>
+											<span class="time">2 days</span>
+											<span class="who">Ben</span>
+											<span class="what">replied to ticket <a href="">something or other</a></span>
+										</li>
+										<li>
+											<span class="time">2 days</span>
+											<span class="who">John Doe</span>
+											<span class="what">created ticket <a href="">something or other</a></span>
+										</li>
+										<li>
+											<span class="time">2 days</span>
+											<span class="who">John Doe</span>
+											<span class="what">registered</span>
+										</li>
+									</ul>
+								</div>
+							</div>
+						</div>
+
+						<div class="side">
+							<div class="section contact">
+								<span class="add trigger" data-add-type="im">add im</span>
+								<span class="add trigger" data-add-type="address">add address</span>
+								<span class="add trigger" data-add-type="phone">add phone</span>
+								<h5>Contact</h5>
+								<div class="content">
+												</div>
+							</div>
+
+										<div class="section person-custom-fields">
+									<span class="edit-trigger trigger">edit</span>
+									<h5>Fields</h5>
+									<div class="wrap">
+															</div>
+								</div>
+
+								<div class="person-custom-fields edit show-fields edit-fields-overlay" style="display:none">
+														<div class="field-wrap custom-field custom-field-1">
+											<div class="label-wrap"><label>Text Field</label></div>
+											<div class="field-input">
+												<input type="text" id="custom_fields_field_1" name="custom_fields[field_1]" value="">
+											</div>
+										</div>
+													<div class="buttons">
+										<div class="loading-off">
+											<button class="save-trigger dp-button small">Save</button>
+											<button class="close-trigger dp-button gray small">Cancel</button>
+										</div>
+										<div class="loading-on">
+											<span>Saving ...</span>
+										</div>
+									</div>
+								</div>
+
+							<div class="section">
+								<h5>Tickets</h5>
+								<div>
+									<ul class="simple">
+										<li class="tip" title="In Support 42 minutes ago, awaiting tech"><a href="">trouble</a></li>
+										<li class="tip" title="In Sales 2 days ago, closed"><a href="">something or other</a></li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="section">
+								<h5>Leads</h5>
+								<div>
+									<ul class="simple">
+										<li><a href="">Sale</a> for $2495</li>
+									</ul>
+								</div>
+							</div>
+
+							<div class="section tags">
+								<h5>Labels</h5>
+								<div>
+									<div class="tags-field">
+										<ul class="tagit person">
+																</ul>
+									</div>
+								</div>
+							</div>
+						</div>
+
+						<div class="contact-add-tpl im new show-fields edit" style="display:none; width: 375px">
+							<input type="hidden" name="contact_type" value="instant_message">
+							<div class="field-wrap">
+								<select name="instant_message[protocol]" id="instant_message_protocol"><option value="aim">AIM</option><option value="msn">MSN</option><option value="icq">ICQ</option><option value="jabber">Jabber</option><option value="skype">Skype</option><option value="gtalk">Google Talk</option><option value="other">Other</option></select>
+								<input name="instant_message[im]" id="instant_message_im" value="" placeholder="ID/Nickname" type="input">
+								<select name="instant_message[comment]" id="instant_message_comment"><option value="work">Work</option><option value="personal">Personal</option><option value="other">Other</option></select>
+							</div>
+							<div class="buttons">
+								<div class="loading-off">
+									<button class="save trigger dp-button small">Save</button>
+									<button class="close trigger dp-button gray small">Cancel</button>
+								</div>
+								<div class="loading-on">
+									<span>Saving ...</span>
+								</div>
+							</div>
+						</div>
+						<div class="contact-add-tpl address new show-fields edit" style="display:none; width: 375px">
+							<input type="hidden" name="contact_type" value="address">
+							<div class="field-wrap">
+								<textarea name="address[address]" id="address_address" cols="40" rows="5"></textarea><br>
+								<input name="address[country]" id="address_country" value="" size="10" placeholder="Country" type="input">
+								<select name="address[comment]" id="address_comment"><option value="work">Work</option><option value="home">Home</option><option value="other">Other</option></select>
+							</div>
+							<div class="buttons">
+								<div class="loading-off">
+									<button class="save trigger dp-button small">Save</button>
+									<button class="close trigger dp-button gray small">Cancel</button>
+								</div>
+								<div class="loading-on">
+									<span>Saving ...</span>
+								</div>
+							</div>
+						</div>
+						<div class="contact-add-tpl phone new show-fields edit" style="display:none; width: 375px">
+							<input type="hidden" name="contact_type" value="phone">
+							<div class="field-wrap">
+								<input name="phone[country_code]" id="phone_country_code" value="" size="4" placeholder="Country Code" type="input">
+								<input name="phone[phone]" id="phone_phone" value="" placeholder="Phone Number" type="input">
+								<select name="phone[comment]" id="phone_comment"><option value="work">Work</option><option value="mobile">Mobile</option><option value="home">Home</option><option value="skype">Skype</option><option value="fax">Fax</option><option value="other">Other</option></select>
+							</div>
+							<div class="buttons">
+								<div class="loading-off">
+									<button class="save trigger dp-button small">Save</button>
+									<button class="close trigger dp-button gray small">Cancel</button>
+								</div>
+								<div class="loading-on">
+									<span>Saving ...</span>
+								</div>
+							</div>
+						</div>
+
+						<div class="org-edit-dlg" style="display:none" title="Organization">
+							<select name="organization_id"><option value="111">bacheuothucuto</option><option value="18">bephoph</option><option value="110">betagipreswivuh</option><option value="73">bitrawrod</option><option value="31">bobrawr</option><option value="134">brajewaprunuseb</option><option value="71">brehus</option><option value="130">brispanec</option><option value="56">brodrospiwroswu</option><option value="75">brovic</option><option value="104">browrubit</option><option value="117">bruridrawib</option><option value="143">butracut</option><option value="51">canaticlemispa</option><option value="125">ceswut</option><option value="128">chatatoclu</option><option value="92">chatris</option><option value="21">chauiseraho</option><option value="62">chedubruba</option><option value="5">chomeropro</option><option value="78">chononegachesp</option><option value="97">chopheslut</option><option value="8">cilawubrucr</option><option value="33">clanigatha</option><option value="11">cliluphafru</option><option value="13">closto</option><option value="101">couecl</option><option value="82">crabrileseclas</option><option value="57">crekevusobum</option><option value="124">cricuspusupriua</option><option value="3">crijit</option><option value="86">crisliwritucag</option><option value="6">crocrowrobribr</option><option value="60">croswa</option><option value="118">daprichefrubawr</option><option value="23">drahaguwi</option><option value="48">drahul</option><option value="32">dripijeuowrespi</option><option value="4">drodufreho</option><option value="29">drugeprudrecr</option><option value="47">druphiph</option><option value="17">druthophijucij</option><option value="148">dutrocet</option><option value="7">freguspet</option><option value="80">freswecufrapep</option><option value="98">frewrouophethot</option><option value="112">frivak</option><option value="144">gasiwraw</option><option value="46">gistaherojarus</option><option value="43">gutraclisliuaw</option><option value="77">havihi</option><option value="39">hewitatibre</option><option value="95">histuj</option><option value="65">hoveclu</option><option value="50">hubulouebr</option><option value="34">hutiphov</option><option value="66">huuabraswitr</option><option value="70">jauolake</option><option value="79">jenalufrebre</option><option value="9">jinethuwaph</option><option value="100">jokichej</option><option value="107">jotuwrobr</option><option value="133">kasimuhemathagu</option><option value="132">kiciwra</option><option value="83">komopihatubotec</option><option value="147">kuuebr</option><option value="38">lamudut</option><option value="36">latuchachocr</option><option value="122">lebred</option><option value="131">lepilip</option><option value="115">lislegosw</option><option value="26">livestaj</option><option value="106">losanago</option><option value="140">loswuke</option><option value="114">lulitrostese</option><option value="12">mimephohiphu</option><option value="15">miuufrijothutr</option><option value="89">modromeuoclulo</option><option value="88">mogephid</option><option value="139">mudaru</option><option value="93">muprup</option><option value="121">negatro</option><option value="102">niclovuspo</option><option value="123">nodajabreku</option><option value="137">nofristusweki</option><option value="126">nudruwuwuret</option><option value="30">phachotristus</option><option value="52">phisles</option><option value="149">prucrerihidretr</option><option value="14">rakukola</option><option value="53">rebretenamu</option><option value="72">retrachicra</option><option value="69">ripritudrep</option><option value="61">rodufresil</option><option value="1">rufrojosenodruu</option><option value="37">ruhiswo</option><option value="81">sewogokechuc</option><option value="68">sihacripit</option><option value="54">slatrep</option><option value="28">slauuslou</option><option value="120">slicrim</option><option value="35">socibou</option><option value="116">spechas</option><option value="113">spekimivupi</option><option value="49">stipeprubrig</option><option value="22">subrubiratre</option><option value="146">swareda</option><option value="24">swebibawethume</option><option value="40">swewotrepr</option><option value="90">swistes</option><option value="150">switidriluriswe</option><option value="127">swiviwrep</option><option value="45">swutino</option><option value="64">tasesponamifris</option><option value="25">themakochosech</option><option value="105">thephahowathu</option><option value="59">thojudritica</option><option value="96">thoswotreswuph</option><option value="142">thuspahenisetus</option><option value="94">tiuukesp</option><option value="85">tochidrapapru</option><option value="76">topafrivisliuo</option><option value="91">tracramuk</option><option value="74">trahobrag</option><option value="138">trakus</option><option value="103">trenaspecl</option><option value="141">tripuphi</option><option value="27">triwebr</option><option value="55">trorahiseh</option><option value="99">trotirucutabir</option><option value="108">tubrasta</option><option value="10">tudrogotiswu</option><option value="87">tuwratriwew</option><option value="2">uebrute</option><option value="44">uodeslopriu</option><option value="129">uoswihet</option><option value="58">uusuphedihocl</option><option value="67">wanoprepa</option><option value="16">warustibros</option><option value="119">wepriphucrespe</option><option value="63">weuojibratruc</option><option value="19">wichisa</option><option value="136">wrabuc</option><option value="41">wraprophogi</option><option value="42">wrechethespoph</option><option value="135">wreclemubid</option><option value="20">wrigocephoha</option><option value="145">wruclosteju</option><option value="109">wuluprihus</option><option value="84">wuvehabrivipruv</option></select>
+							<br>
+							Position: <input type="text" name="organization_position" value="tusliswojocha">
+						</div>
+
+						<div class="email-edit-dlg" style="display:none" title="Contact Emails">
+							<ul class="emails-list">
+								<li class="email new tpl">
+						<span class="delete trigger">delete</span>
+						<span class="undelete trigger">don't delete</span>
+						<span class="set-primary trigger">set as primary</span>
+						<span class="primary trigger">primary</span>
+						<span class="email-address"></span>
+					</li>		</ul>
+							<div class="add-email">
+								New email: <input type="text" class="new-email-input" value=""> <input type="button" class="new-email-btn" value="Add">
+							</div>
+						</div>
+						<div class="inline-editable" style="display:none">
+							<div class="name">
+								<input name="edit_person[basic_fields][first_name]" id="edit_person_basic_fields_first_name" value="wroca" type="input">
+								<input name="edit_person[basic_fields][last_name]" id="edit_person_basic_fields_last_name" value="bruprethibruvu" type="input">
+								<input type="hidden" name="action" value="name">
+							</div>
+						</div>
+					</div>
+							</div>
+						</div>
+
+						<div class="person-overview-popout" style="display:none"></div>
+
+						<div class="person-overview-popout-content" style="display:none" data-route="person:/index_dev.php/agent/people/2282">
+							<div class="img">
+								<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg">
+							</div>
+							<div class="info">
+								<h1 title="Double-click to open person in a new tab">wroca bruprethibruvu</h1>
+										</div>
+						</div>
+
+						<ul class="ticket-flag-menu" style="display:none">
+						<li data-flag="none"><span class="icon icon-flag-none">None</span></li>
+						<li class="sep">-</li>
+						<li data-flag="blue"><span class="icon icon-flag-blue">Blue</span></li>
+						<li data-flag="green"><span class="icon icon-flag-green">Green</span></li>
+						<li data-flag="orange"><span class="icon icon-flag-orange">Orange</span></li>
+						<li data-flag="pink"><span class="icon icon-flag-pink">Pink</span></li>
+						<li data-flag="purple"><span class="icon icon-flag-purple">Purple</span></li>
+						<li data-flag="red"><span class="icon icon-flag-red">Red</span></li>
+						<li data-flag="yellow"><span class="icon icon-flag-yellow">Yellow</span></li>
+					</ul><ul class="ticket-info-edit-menu" style="display:none">
+						<li data-option-id="delete"><span class="icon icon-page-delete">Delete Ticket</span></li>
+						<li data-option-id="delete-block"><span class="icon icon-page-delete dev-feature-inactive">Delete Ticket and Block User</span></li>
+						<li data-option-id="spam"><span class="icon icon-page-delete dev-feature-inactive">Mark as Spam</span></li>
+						<li class="sep">-</li>
+						<li data-option-id="print"><span class="icon print-ticket">Print Ticket</span></li>
+						<li data-option-id="merge"><span class="icon icon-page-merge dev-feature-inactive">Merge Ticket</span></li>
+						<li data-option-id="split"><span class="icon icon-page-split dev-feature-inactive">Split Ticket</span></li>
+						<li><span class="icon change-ticket-owner dev-feature-inactive">Change User Owner</span></li>
+					</ul>
+					<ul class="ticket-message-edit-menu" style="display:none">
+						<li data-option-id="view-details"><span class="icon view-unformatted">View Unformatted</span></li>
+						<li data-option-id="quote"><span class="icon edit">Quote</span></li>
+					</ul>
+					<ul class="ticket-macros-menu" style="display:none">
+								<li data-macro-id="1">Test Reply</li>
+								<li data-macro-id="3">Test 1 2 3 reply</li>
+								<li data-macro-id="4">Example</li>
+								<li data-macro-id="5">Change everything</li>
+						</ul>
+					<ul class="menu status" data-option-name="status" style="display:none">
+						<li data-option-id="open">Open</li>
+						<li data-option-id="pending">Pending</li>
+						<li data-option-id="resolved">Resolved</li>
+					</ul>
+
+					<ul class="menu department_id " data-option-name="department_id" style="display:none">
+													<li data-option-value="1" class="section-title">Department 1</li>
+												<li data-option-value="5">Child 1</li>
+																			<li class="sep">-</li>
+												<li data-option-value="2" class="section-title">Department 2</li>
+												<li data-option-value="6">Child 2</li>
+																			<li class="sep">-</li>
+												<li data-option-value="3" class="section-title">Department 3</li>
+												<li data-option-value="7">Child 3</li>
+																			<li class="sep">-</li>
+												<li data-option-value="4" class="section-title">Department 4</li>
+												<li data-option-value="8">Child 4</li>
+														</ul><ul class="menu category_id " data-option-name="category_id" style="display:none">
+													<li data-option-value="1" class="section-title cat-1" style="display: list-item; ">Category 1</li>
+												<li data-option-value="7" data-parent-id="1" class="cat-1 cat-7" style="display: list-item; ">Category 2</li>
+																			<li data-option-value="2" class="sep cat-2" style="display: none; ">-</li>
+												<li data-option-value="2" class="cat-2" style="display: none; ">Category 1</li>
+																		<li data-option-value="3" class="section-title cat-3" style="display: none; ">Category 2</li>
+												<li data-option-value="6" data-parent-id="3" class="cat-3 cat-6" style="display: none; ">Category 1</li>
+												<li data-option-value="5" data-parent-id="3" class="cat-3 cat-5" style="display: none; ">Category 4</li>
+																			<li data-option-value="4" class="sep cat-4" style="display: none; ">-</li>
+												<li data-option-value="4" class="cat-4" style="display: none; ">Category 3</li>
+											</ul><ul class="menu workflow_id " data-option-name="workflow_id" style="display:none">
+								<li data-option-value="1">Workflow 1</li>
+								<li data-option-value="2">Workflow 2</li>
+								<li data-option-value="3">Workflow 3</li>
+						</ul>
+					<ul class="menu product_id" data-option-name="product_id" style="display:none">
+								<li data-option-id="1">Product 1</li>
+								<li data-option-id="2">Product 2</li>
+								<li data-option-id="3">Product 3</li>
+								<li data-option-id="4">Product 4</li>
+								<li data-option-id="5">Product 5</li>
+						</ul>
+					<ul class="menu priority_id" data-option-name="priority_id" style="display:none">
+								<li data-option-id="1">Priority 1</li>
+								<li data-option-id="2">Priority 2</li>
+								<li data-option-id="3">Priority 3</li>
+								<li data-option-id="4">Priority 4</li>
+								<li data-option-id="5">Priority 5</li>
+								<li data-option-id="6">Priority 6</li>
+								<li data-option-id="7">Priority 7</li>
+								<li data-option-id="8">Priority 8</li>
+								<li data-option-id="9">Priority 9</li>
+								<li data-option-id="10">Priority 10</li>
+						</ul>
+					<ul class="menu agent_id" data-option-name="agent_id" style="display:none">
+						<li data-option-id="0">Unassigned</li>
+						<li data-option-id="20001">Assign to me</li>
+						<li class="sep">-</li>
+								<li data-option-id="7" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/7/15" alt="" width="15" height="15">
+								</div>
+								baclubre tuwalosouechith
+							</li>
+								<li data-option-id="10" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/10/15" alt="" width="15" height="15">
+								</div>
+								bobau thupraviv
+							</li>
+								<li data-option-id="15" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/15/15" alt="" width="15" height="15">
+								</div>
+								brobr josirupo
+							</li>
+								<li data-option-id="6" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/6/15" alt="" width="15" height="15">
+								</div>
+								cladra chukideslonop
+							</li>
+								<li data-option-id="12" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/12/15" alt="" width="15" height="15">
+								</div>
+								jamepig kethadupunuste
+							</li>
+								<li data-option-id="20001" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/20001/15" alt="" width="15" height="15">
+								</div>
+								John Doe
+							</li>
+								<li data-option-id="11" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/11/15" alt="" width="15" height="15">
+								</div>
+								kocrid spocr
+							</li>
+								<li data-option-id="4" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/4/15" alt="" width="15" height="15">
+								</div>
+								nuphi sweb
+							</li>
+								<li data-option-id="2" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/2/15" alt="" width="15" height="15">
+								</div>
+								phac wrubrobagophesludad
+							</li>
+								<li data-option-id="5" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/5/15" alt="" width="15" height="15">
+								</div>
+								phehocle wituswub
+							</li>
+								<li data-option-id="1" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/1/15" alt="" width="15" height="15">
+								</div>
+								pofrap rureuarapre
+							</li>
+								<li data-option-id="3" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/3/15" alt="" width="15" height="15">
+								</div>
+								stugimac ruwre
+							</li>
+								<li data-option-id="8" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/8/15" alt="" width="15" height="15">
+								</div>
+								swuk vamidr
+							</li>
+								<li data-option-id="9" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/9/15" alt="" width="15" height="15">
+								</div>
+								swur prolu
+							</li>
+								<li data-option-id="13" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/13/15" alt="" width="15" height="15">
+								</div>
+								vucho chalejatrelewriphino
+							</li>
+								<li data-option-id="14" style="line-height: 15px">
+								<div style="margin-right: 5px; float: left">
+									<img src="/index_dev.php/download/person-pic/14/15" alt="" width="15" height="15">
+								</div>
+								wrufrus lakutrochiw
+							</li>
+						</ul>
+					<ul class="menu agent_team_id" data-option-name="agent_team_id" style="display:none">
+						<li data-option-id="0">None</li>
+								<li data-option-id="1">Team A</li>
+								<li data-option-id="2">Team B</li>
+						</ul>
+					</div>
+				</div>
+				<div class="tab-content-2" style="display:none">
+					Blah blah blah blah blah
+				</div>
+				<div class="tab-content-3" style="display:none">
+					Blah blah
+				</div>
+			</div>
+		</div>
+	</td>
+</tr></table>
+
+</body>
+</html>
