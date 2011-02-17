@@ -5,6 +5,7 @@ parameters:
   controller_resolver.class: "Application\DeskPRO\HttpKernel\Controller\ControllerResolver"
   session.class: "Application\DeskPRO\HttpFoundation\Session"
   doctrine.dbal.connection_factory_class: "Application\DeskPRO\DBAL\ConnectionFactory"
+  swiftmailer.class: "Application\DeskPRO\Mail\Mailer"
 
 services:
   templating.engine.jsonphp:
@@ -15,6 +16,9 @@ services:
   session.storage:
     class: Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage
     arguments: [@doctrine.orm.entity_manager, %session.storage.native.options%]
+  swiftmailer.transport.dp_delegating:
+    class: Application\DeskPRO\Mail\Transport\DelegatingTransport
+    arguments: [@swiftmailer.transport.eventdispatcher]
 
 app.config:
   charset: UTF-8
@@ -39,6 +43,9 @@ doctrine.orm:
 doctrine.dbal:
   options: { from_user_config: 'db' }
   wrapper_class: "Application\DeskPRO\DBAL\Connection"
+
+swiftmailer.config:
+  transport: 'dp_delegating'
 
 deskpro_cache.caches:
   phrases: ~

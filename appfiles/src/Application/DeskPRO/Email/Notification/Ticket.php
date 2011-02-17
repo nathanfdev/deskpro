@@ -18,6 +18,9 @@ use Orb\Util\Arrays;
 
 /**
  * Used to send email notifications
+ *
+ * TODO need to sort out 'from' addresses so they use the proper
+ * ticket account.
  */
 class Ticket
 {
@@ -71,6 +74,14 @@ class Ticket
 			'subject' => $email_subject,
 			'agent' => $person
 		));
+
+		$message = new \Orb\Mail\Message();
+		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+		$message->setSubject($email_subject);
+		$message->setBody($email_body, 'text/html');
+		$message->enableQueueHint();
+
+		App::getMailer()->send($message);
 	}
 
 	public function sendNewReply(Entity\Person $person)
@@ -85,6 +96,14 @@ class Ticket
 			'agent' => $person,
 			'ticket_diff' => $this->_getPropertyChanges()
 		));
+
+		$message = new \Orb\Mail\Message();
+		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+		$message->setSubject($email_subject);
+		$message->setBody($email_body, 'text/html');
+		$message->enableQueueHint();
+
+		App::getMailer()->send($message);
 	}
 
 	public function sendPropChange(Entity\Person $person)
@@ -97,6 +116,14 @@ class Ticket
 			'agent' => $person,
 			'ticket_diff' => $this->_getPropertyChanges()
 		));
+
+		$message = new \Orb\Mail\Message();
+		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+		$message->setSubject($email_subject);
+		$message->setBody($email_body, 'text/html');
+		$message->enableQueueHint();
+
+		App::getMailer()->send($message);
 	}
 
 	protected function _getPropertyChanges()

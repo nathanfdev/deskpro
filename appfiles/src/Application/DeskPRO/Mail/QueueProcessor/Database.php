@@ -9,6 +9,8 @@
 
 namespace Application\DeskPRO\Mail\QueueProcessor;
 
+use \Application\DeskPRO\App;
+
 use Orb\Util\Strings;
 use Orb\Util\Util;
 
@@ -81,8 +83,8 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 		$db->beginTransaction();
 
 		$db->insert('sendmail_queue', array(
-			'subject' => $message->getSubject(),
-			'to' => $message->getTo(),
+			'subject' => Util::coalesce($message->getSubject(), ''),
+			'to_address' => Util::coalesce(implode(', ', (array)$message->getTo()), ''),
 			'date_created' => date('Y-m-d H:m:s')
 		));
 		$queue_id = $db->lastInsertId();
@@ -91,11 +93,11 @@ class Database implements \Orb\Mail\QueueProcessor\QueueProcessorInterface
 		$data_len = strlen($message);
 
 		// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
-		$max_size = ($this->db->getMaxPacketSize()/2)-200;
+		$max_size = ($db->getMaxPacketSize()/2)-200;
 		$parts = ceil($data_len / $max_size);
 
 		for ($i = 0; $i < $parts; $i++) {
-			$this->db->insert('sendmail_queue_part', array(
+			$db->insert('sendmail_queue_part', array(
 				'sendmail_queue_id' => $queue_id,
 				'data' => substr($message, $i * $max_size, $max_size)
 			));

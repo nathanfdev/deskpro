@@ -17,7 +17,7 @@ namespace Application\DeskPRO\Entity;
  * @orm:Entity
  * @orm:Table(name="sendmail_queue")
  */
-class EmailQueue extends \Application\DeskPRO\Domain\DomainObject
+class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
@@ -33,9 +33,9 @@ class EmailQueue extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="to", type="string", length=255)
+	 * @orm:Column(name="to_address", type="string", length=255)
 	 */
-	protected $to;
+	protected $to_address;
 
 	/**
 	 * @var int

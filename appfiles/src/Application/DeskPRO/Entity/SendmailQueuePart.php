@@ -27,7 +27,7 @@ class SendmailQueuePart extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\SendmailQueue
-	 * @orm:OneToOne(targetEntity="SendmailQueue")
+	 * @orm:ManyToOne(targetEntity="SendmailQueue")
 	 * @orm:JoinColumn(name="sendmail_queue_id", referencedColumnName="id")
 	 */
 	protected $queue = null;

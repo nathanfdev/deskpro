@@ -18,7 +18,7 @@ use \Orb\Util\Util;
 /**
  * Queue mail transport
  */
-class QueueTransport extends Swift_Transport
+class QueueTransport implements \Swift_Transport
 {
 	protected $_queue_processor;
 	protected $_event_dispatcher;
@@ -49,7 +49,7 @@ class QueueTransport extends Swift_Transport
 		$this->_queue_processor->shutdownQueue();
 	}
 
-	public function send(Message $message, &$failedRecipients = null)
+	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
 		if ($evt = $this->_event_dispatcher->createSendEvent($this, $message)) {
 			$this->_event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
@@ -58,7 +58,7 @@ class QueueTransport extends Swift_Transport
 			}
 		}
 
-		$success = $this->_queue_processor->queueMessage($message);
+		$success = $this->_queue_processor->addQueuedMessage($message);
 
 		if ($evt) {
 			$evt->setResult($success ? \Swift_Events_SendEvent::RESULT_SUCCESS : \Swift_Events_SendEvent::RESULT_FAILED);
@@ -68,7 +68,7 @@ class QueueTransport extends Swift_Transport
 		return 1;
 	}
 
-	public function registerPlugin(Swift_Events_EventListener $plugin)
+	public function registerPlugin(\Swift_Events_EventListener $plugin)
 	{
 		$this->_eventDispatcher->bindEventListener($plugin);
 	}
