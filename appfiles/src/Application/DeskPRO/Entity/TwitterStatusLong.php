@@ -40,50 +40,34 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="public", type="boolean")
+	 * @orm:Column(name="is_public", type="boolean")
 	 */
-	protected $public = false;
+	protected $is_public = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="created_at", type="datetime")
+	 * @orm:Column(name="date_created", type="datetime")
 	 */
-	protected $created_at;
+	protected $date_created;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="read", type="boolean")
+	 * @orm:Column(name="is_read", type="boolean")
 	 */
-	protected $read = false;
+	protected $is_read = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="read_at", type="datetime", nullable=true)
+	 * @orm:Column(name="date_read", type="datetime", nullable=true)
 	 */
-	protected $read_at = null;
+	protected $date_read = null;
 
 	/**
 	 * Constructor.
 	 */
 	public function __construct()
 	{
-		$this->created_at = new \DateTime();
-	}
-
-	/**
-	 * @return TwitterStatus
-	 */
-	public function getStatus()
-	{
-		return $this->status;
-	}
-
-	/**
-	 * @param TwitterStatus $status
-	 */
-	public function setStatus(TwitterStatus $status)
-	{
-		$this->status = $status;
+		$this->date_created = new \DateTime();
 	}
 
 	/**
@@ -91,7 +75,11 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getStatusId()
 	{
-		return null !== $this->status ? $this->status->getId() : null;
+		if (null !== $this->status) {
+			return $this->status->getId();
+		}
+
+		return 0;
 	}
 
 	/**
@@ -99,35 +87,11 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setStatusId($id)
 	{
-		$this->status = null;
-
 		if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
 			$this->status = $status;
+		} else {
+			$this->status = null;
 		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getText()
-	{
-		return $this->text;
-	}
-
-	/**
-	 * @param string $text
-	 */
-	public function setText($text)
-	{
-		$this->text = $text;
-	}
-
-	/**
-	 * @return Boolean
-	 */
-	public function getPublic()
-	{
-		return $this->public;
 	}
 
 	/**
@@ -135,39 +99,7 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function isPublic()
 	{
-		return (Boolean) $this->public;
-	}
-
-	/**
-	 * @param Boolean $public
-	 */
-	public function setPublic(Boolean $public)
-	{
-		$this->public = $public;
-	}
-
-	/**
-	 * @return \DateTime
-	 */
-	public function getCreatedAt()
-	{
-		return $this->create_at;
-	}
-
-	/**
-	 * @param \DateTime $date
-	 */
-	public function setCreatedAt(\DateTime $date)
-	{
-		$this->created_at = $date;
-	}
-
-	/**
-	 * @return Boolean
-	 */
-	public function getRead()
-	{
-		return $this->read;
+		return (Boolean) $this->is_public;
 	}
 
 	/**
@@ -175,14 +107,6 @@ class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function isRead()
 	{
-		return (Boolean) $this->read;
-	}
-
-	/**
-	 * @param Boolean $read
-	 */
-	public function setRead(Boolean $read)
-	{
-		$this->read = $read;
+		return (Boolean) $this->is_read;
 	}
 }

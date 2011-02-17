@@ -37,27 +37,15 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 	protected $term;
 
 	/**
-	 * @return TwitterAccount
-	 */
-	public function getAccount()
-	{
-		return $this->account;
-	}
-
-	/**
-	 * @param TwitterAccount $account
-	 */
-	public function setAccount(TwitterAccount $account)
-	{
-		$this->account = $account;
-	}
-
-	/**
 	 * @return integer
 	 */
 	public function getAccountId()
 	{
-		return null !== $this->account ? $this->account->getId() : null;
+		if (null !== $this->account) {
+			return $this->account->getId();
+		}
+		
+		return 0;
 	}
 
 	/**
@@ -70,21 +58,5 @@ class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this->account = null;
 		}
-	}
-
-	/**
-	 * @return string
-	 */
-	public function getTerm()
-	{
-		return $this->term;
-	}
-
-	/**
-	 * @param string $term
-	 */
-	public function setTerm($term)
-	{
-		$this->term = $term;
 	}
 }

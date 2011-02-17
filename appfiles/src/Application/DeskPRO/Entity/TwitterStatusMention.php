@@ -50,27 +50,15 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	protected $ends = 0;
 
 	/**
-	 * @return TwitterStatus
-	 */
-	public function getStatus()
-	{
-		return $this->status;
-	}
-
-	/**
-	 * @param TwitterStatus $status
-	 */
-	public function setStatus(TwitterStatus $status)
-	{
-		$this->status = $status;
-	}
-
-	/**
 	 * @return integer
 	 */
 	public function getStatusId()
 	{
-		return null !== $this->status ? $this->status->getId() : null;
+		if (null !== $this->status) {
+			return $this->status->getId();
+		}
+
+		return 0;
 	}
 
 	/**
@@ -83,22 +71,6 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 		if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
 			$this->status = $status;
 		}
-	}
-
-	/**
-	 * @return TwitterUser
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
-
-	/**
-	 * @param TwitterUser $user
-	 */
-	public function setUser(TwitterUser $user)
-	{
-		$this->user = $user;
 	}
 
 	/**
@@ -119,37 +91,5 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this->user = null;
 		}
-	}
-
-	/**
-	 * @return integer
-	 */
-	public function getStarts()
-	{
-		return $this->starts;
-	}
-
-	/**
-	 * @param integer $starts
-	 */
-	public function setStarts($starts)
-	{
-		$this->starts = $starts;
-	}
-
-	/**
-	 * @return integer
-	 */
-	public function getEnds()
-	{
-		return $this->ends;
-	}
-
-	/**
-	 * @param integer $ends
-	 */
-	public function setEnds($ends)
-	{
-		$this->ends = $ends;
 	}
 }

@@ -57,15 +57,15 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="protected", type="boolean")
+	 * @orm:Column(name="is_protected", type="boolean")
 	 */
-	protected $protected = false;
+	protected $is_protected = false;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="verified", type="boolean")
+	 * @orm:Column(name="is_verified", type="boolean")
 	 */
-	protected $verified = false;
+	protected $is_verified = false;
 
 	/**
 	 * @var string
@@ -75,9 +75,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="geo_enabled", type="boolean")
+	 * @orm:Column(name="is_geo_enabled", type="boolean")
 	 */
-	protected $geo_enabled = false;
+	protected $is_geo_enabled = false;
 
 	/**
 	 * @var double
@@ -101,9 +101,17 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @return Boolean
 	 */
-	public function getGeoEnabled()
+	public function isProtected()
 	{
-		return $this->geo_enabled;
+		return (Boolean) $this->is_protected;
+	}
+
+	/**
+	 * @return Boolean
+	 */
+	public function isVerified()
+	{
+		return (Boolean) $this->is_verified;
 	}
 
 	/**
@@ -111,46 +119,6 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function isGeoEnabled()
 	{
-		return (Boolean) $this->geo_enabled;
-	}
-
-	/**
-	 * @param Boolean $enabled
-	 */
-	public function setGeoEnabled(Boolean $enabled)
-	{
-		$this->geo_enabled = $enabled;
-	}
-
-	/**
-	 * @return double
-	 */
-	public function getGeoLatitude()
-	{
-		return $this->geo_latitude;
-	}
-
-	/**
-	 * @param double $latitude
-	 */
-	public function setGeoLatitude($latitude)
-	{
-		$this->geo_latitude = $latitude;
-	}
-
-	/**
-	 * @return double
-	 */
-	public function getGeoLongitude()
-	{
-		return $this->geo_longitude;
-	}
-
-	/**
-	 * @param double $longitude
-	 */
-	public function setGeoLongitude($longitude)
-	{
-		$this->geo_longitude = $longitude;
+		return (Boolean) $this->is_geo_enabled;
 	}
 }

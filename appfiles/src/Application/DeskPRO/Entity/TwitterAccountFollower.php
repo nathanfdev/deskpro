@@ -72,27 +72,15 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @return TwitterAccount
-	 */
-	public function getAccount()
-	{
-		return $this->account;
-	}
-
-	/**
-	 * @param TwitterAccount $account
-	 */
-	public function setAccount(TwitterAccount $account)
-	{
-		$this->account = $account;
-	}
-
-	/**
 	 * @return integer
 	 */
 	public function getAccountId()
 	{
-		return null !== $this->account ? $this->account->getId() : null;
+		if (null !== $this->account) {
+			return $this->account->getId();
+		}
+		
+		return 0;
 	}
 
 	/**
@@ -108,27 +96,15 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @return TwitterUser
-	 */
-	public function getUser()
-	{
-		return $this->user;
-	}
-
-	/**
-	 * @param TwitterUser $user
-	 */
-	public function setUser(TwitterUser $user)
-	{
-		$this->user = $user;
-	}
-
-	/**
 	 * @return integer
 	 */
 	public function getUserId()
 	{
-		return null !== $this->user ? $this->user->getId() : null;
+		if (null !== $this->user) {
+			return $this->user->getId();
+		}
+		
+		return 0;
 	}
 
 	/**
@@ -164,21 +140,13 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @return string
-	 */
-	public function getRole()
-	{
-		return $this->role;
-	}
-
-	/**
 	 * @param string $role
 	 * @throws \InvalidArgumentException
 	 */
 	public function setRole($role)
 	{
 		if (!in_array($role, array(self::ROLE_FOLLOWED, self::ROLE_FOLLOWING))) {
-			throw new \InvalidArgumentException(sprintf('Invalid role "" specified.', $role));
+			throw new \InvalidArgumentException(sprintf('Invalid role "%s" specified.', $role));
 		}
 
 		$this->role = $role;
