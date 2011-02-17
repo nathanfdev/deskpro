@@ -46,5 +46,7 @@ class Mailer extends \Swift_Mailer
 
 			$this->registerPlugin(new \Orb\Mail\Plugins\DebugToFile($filepath));
 		}
+
+		$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress(App::getConfig('mail.default_from')));
 	}
 }
