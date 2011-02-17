@@ -22,7 +22,7 @@ use \Application\DeskPRO\Entity;
  * An agent team is a group of agents. Similar to usergroups but for agents.
  *
  * @orm:Entity
- * @orm:Table(name="agent_team_members")
+ * @orm:Table(name="agent_team_members2")
  */
 class AgentTeamMember extends \Application\DeskPRO\Domain\DomainObject
 {
