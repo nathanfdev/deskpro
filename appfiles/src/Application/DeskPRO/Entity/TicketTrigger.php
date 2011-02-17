@@ -79,7 +79,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Entity\Ticket $ticket
 	 * @return bool
 	 */
-	public function checkTicketMatch(Entity\Ticket $ticket)
+	public function checkTicketMatch(Ticket $ticket)
 	{
 		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms);
 		return $ticket_terms->doesTicketMatch($ticket);
@@ -92,7 +92,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param Entity\Ticket $ticket
 	 */
-	public function performActions(Entity\Ticket $ticket)
+	public function performActions(Ticket $ticket)
 	{
 		$ticket_actions = new \Application\DeskPRO\Tickets\TicketActions($this->actions);
 		$actions = $ticket_actions->getActionsArray($ticket);
