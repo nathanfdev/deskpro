@@ -25,7 +25,7 @@ class Message extends \Swift_Message
 	 */
 	public $meta = array();
 
-	public function setQueueHint()
+	public function enableQueueHint()
 	{
 		$this->_queue_hint = true;
 	}

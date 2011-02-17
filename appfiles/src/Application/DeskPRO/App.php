@@ -38,7 +38,7 @@ class App
 	const SERVICE_ROUTER          = 'router';
 	const SERVICE_REQUEST         = 'request';
 	const SERVICE_RESPONSE        = 'response';
-	const SERVICE_MAILER          = 'swiftmailer.mailer';
+	const SERVICE_MAILER          = 'mailer';
 	/**#@-*/
 
 	/**

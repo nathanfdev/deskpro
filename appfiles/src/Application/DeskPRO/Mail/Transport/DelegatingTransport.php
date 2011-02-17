@@ -19,7 +19,7 @@ use \Orb\Util\Util;
  * This transport takes care of initializing any other transports based on settings
  * etc, and also queuing.
  */
-class DelegatingTransport extends \Swift_Transport
+class DelegatingTransport implements \Swift_Transport
 {
 	protected $queue_disabled = false;
 
@@ -44,7 +44,7 @@ class DelegatingTransport extends \Swift_Transport
 
 	public function isQueueEnabled()
 	{
-		return $this->queue_disabled;
+		return !$this->queue_disabled;
 	}
 
 	/**
@@ -78,10 +78,10 @@ class DelegatingTransport extends \Swift_Transport
 
 	}
 
-	public function send(Message $message, &$failedRecipients = null)
+	public function send(\Swift_Mime_Message $message, &$failedRecipients = null)
 	{
-		if ($evt = $this->_event_dispatcher->createSendEvent($this, $message)) {
-			$this->_event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
+		if ($evt = $this->event_dispatcher->createSendEvent($this, $message)) {
+			$this->event_dispatcher->dispatchEvent($evt, 'beforeSendPerformed');
 			if ($evt->bubbleCancelled()) {
 				return 0;
 			}
@@ -104,14 +104,28 @@ class DelegatingTransport extends \Swift_Transport
 
 		if ($evt) {
 			$evt->setResult($success ? \Swift_Events_SendEvent::RESULT_SUCCESS : \Swift_Events_SendEvent::RESULT_FAILED);
-			$this->_event_dispatcher->dispatchEvent($evt, 'sendPerformed');
+			$this->event_dispatcher->dispatchEvent($evt, 'sendPerformed');
 		}
 
 		return $success;
 	}
 
-	public function registerPlugin(Swift_Events_EventListener $plugin)
+	public function getTransportForMessage($message)
 	{
-		$this->_eventDispatcher->bindEventListener($plugin);
+		// TODO this needs to sort out SMTP settings etc
+		// for the message (usually based on the 'from')
+
+		static $phpmail = null;
+
+		if ($phpmail === null) {
+			$phpmail = new \Swift_MailTransport();
+		}
+
+		return $phpmail;
+	}
+
+	public function registerPlugin(\Swift_Events_EventListener $plugin)
+	{
+		$this->event_dispatcher->bindEventListener($plugin);
 	}
 }
