@@ -30,6 +30,7 @@ class Ticket
 	public function __construct(Entity\Ticket $ticket, array $actions = array())
 	{
 		$this->ticket = $ticket;
+		$this->actions = $actions;
 	}
 
 	public function sendNotifications(array $notifications)
@@ -75,7 +76,8 @@ class Ticket
 			'agent' => $person
 		));
 
-		$message = new \Orb\Mail\Message();
+		echo $email_body;
+		$message = App::getMailer()->createMessage();
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 		$message->setSubject($email_subject);
 		$message->setBody($email_body, 'text/html');
@@ -97,7 +99,7 @@ class Ticket
 			'ticket_diff' => $this->_getPropertyChanges()
 		));
 
-		$message = new \Orb\Mail\Message();
+		$message = App::getMailer()->createMessage();
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 		$message->setSubject($email_subject);
 		$message->setBody($email_body, 'text/html');
@@ -117,7 +119,7 @@ class Ticket
 			'ticket_diff' => $this->_getPropertyChanges()
 		));
 
-		$message = new \Orb\Mail\Message();
+		$message = App::getMailer()->createMessage();
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 		$message->setSubject($email_subject);
 		$message->setBody($email_body, 'text/html');

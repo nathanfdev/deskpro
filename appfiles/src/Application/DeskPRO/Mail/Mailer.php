@@ -49,4 +49,13 @@ class Mailer extends \Swift_Mailer
 
 		$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress(App::getConfig('mail.default_from')));
 	}
+
+	/**
+	 * @return \Orb\Mail\Message
+	 */
+	public function createMessage()
+	{
+		$message = \Orb\Mail\Message::newInstance();
+		return $message;
+	}
 }

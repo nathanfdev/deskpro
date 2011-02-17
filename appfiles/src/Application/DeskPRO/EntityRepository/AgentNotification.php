@@ -48,14 +48,14 @@ class AgentNotification extends EntityRepository
 		$matching_queues = array_unique($matching_queues);
 		$matching_queues = implode(',', $matching_queues);
 
-		$notify_types = $db->quoteIn($v);
+		$notify_types = $db->quoteIn($notify_types);
 
 		$notifs = $db->fetchAllGrouped("
 			SELECT person_id, notify_type
 			FROM agent_notifications
 			WHERE queue_id IN ($matching_queues) AND notify_type IN ($notify_types)
 			GROUP BY person_id
-		", array(), 'person_id', 'null', 'notify_type');
+		", array(), 'person_id', null, 'notify_type');
 
 		return $notifs;
 	}

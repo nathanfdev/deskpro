@@ -79,26 +79,68 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Entity\Ticket $ticket
 	 * @return bool
 	 */
-	public function checkTicketMatch(Ticket $ticket)
+	public function checkTicketMatch(Ticket $ticket, array $logs = array())
 	{
 		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms);
-		return $ticket_terms->doesTicketMatch($ticket);
+		$match = $ticket_terms->doesTicketMatch($ticket);
+
+		// Check some specific terms only we know about here
+		if ($match) {
+			foreach ($this->terms as $term => $info) {
+				list($op, $choice) = $info;
+
+				switch ($term) {
+					case 'message_type':
+						if (!isset($logs['message_created'])) {
+							return false;
+						}
+						$message = $logs['message_created']->getMessage();
+
+						$is = false;
+						if ($message['is_agent_note'] AND $info['type'] == 'note') {
+							$is = true;
+						} elseif ($message['person']['is_agent'] AND $info['type'] == 'agent_reply') {
+							$is = true;
+						} elseif ($info['type'] == 'user_reply') {
+							$is = true;
+						}
+
+						if (!($op == 'is' AND $is) AND !($op == 'not' AND !$is)) {
+							return false;
+						}
+						break;
+
+				}
+			}
+		}
+
+		return $match;
 	}
 
 
 
 	/**
-	 * Perform the actions on the ticket
+	 * Gets actions we can perform against the ticket with a ticket editor object.
 	 *
 	 * @param Entity\Ticket $ticket
+	 * @return array
 	 */
-	public function performActions(Ticket $ticket)
+	public function getEditActions(Ticket $ticket, array $logs = array())
 	{
 		$ticket_actions = new \Application\DeskPRO\Tickets\TicketActions($this->actions);
 		$actions = $ticket_actions->getActionsArray($ticket);
 
-		$ticket_edit = new \Application\DeskPRO\Tickets\TicketEdit($ticket);
-		$ticket_edit->applyActions($actions);
+		return $actions;
+	}
+
+
+
+	/**
+	 * Run any non-editor actions now. For example, callbacks.
+	 */
+	public function performExternalActions(Ticket $ticket, array $logs = array())
+	{
+
 	}
 
 

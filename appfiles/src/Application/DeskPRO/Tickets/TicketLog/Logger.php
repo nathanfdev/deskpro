@@ -21,6 +21,11 @@ use \Orb\Util\Arrays;
  */
 class Logger implements \Doctrine\Common\PropertyChangedListener
 {
+	/**
+	 * When true, performing ticket actions which shouldnt cause additional triggers to run again
+	 * @var bool
+	 */
+	protected $is_performing = false;
 	protected $ticket;
 	protected $entered_logs = array();
 	protected $events = array();
@@ -90,8 +95,12 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		$this->entered_logs[$name] = $action;
 	}
 
-	public function saveLogs()
+	public function done()
 	{
+		if (!$this->entered_logs) {
+			return;
+		}
+
 		App::getOrm()->beginTransaction();
 
 		$prop_types = array('agent');
@@ -111,15 +120,26 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 		App::getOrm()->flush();
 		App::getOrm()->commit();
+
+		$events = $this->events;
+		$log_actions = $this->entered_logs;
+
+		// Clear current state
+		$this->events = array();
+		$this->entered_logs = array();
+
+		if (!$this->is_performing) {
+			$this->triggerEvents($events, $log_actions);
+		}
 	}
 
-	public function triggerEvents()
+	public function triggerEvents($events, $log_actions)
 	{
 		App::getOrm()->beginTransaction();
 
 		$notify_types = array();
 
-		if (in_array('ticket_created', $this->events)) {
+		if (in_array('ticket_created', $events)) {
 			$notify_types[] = 'new_ticket';
 		}
 
@@ -127,9 +147,9 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		# New messages
 		#------------------------------
 
-		if (in_array('message_created', $this->events)) {
+		if (in_array('message_created', $events)) {
 
-			$message = $this->entered_logs['message_created']->getMessage();
+			$message = $log_actions['message_created']->getMessage();
 			if (!$message['person']['is_agent'] OR $message['is_agent_note']) {
 				$notify_types[] = 'new_reply';
 			} else {
@@ -150,7 +170,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		# Other changes
 		#------------------------------
 
-		if (in_array('property', $this->events)) {
+		if (in_array('property', $events)) {
 
 			$notify_types[] = 'property_change';
 
@@ -166,11 +186,11 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 
-		$this->sendNotifications($notify_types);
-		$this->executeTriggers($notify_types);
+		$this->sendNotifications($events, $log_actions, $notify_types);
+		$this->executeTriggers($events, $log_actions);
 	}
 
-	protected function sendNotifications(array $notify_types)
+	protected function sendNotifications($events, $log_actions, array $notify_types)
 	{
 		if (!$notify_types) return;
 
@@ -189,40 +209,52 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		$notifs = App::getEntityRepository('DeskPRO:AgentNotification')->getNotifications($matching_queues, $notify_types);
 		if (!$notifs) return;
 
-		$ticket_email = new \Application\DeskPRO\Email\Notification\Ticket($this->ticket, $this->entered_logs);
+		$ticket_email = new \Application\DeskPRO\Email\Notification\Ticket($this->ticket, $log_actions);
 		$ticket_email->sendNotifications($notifs);
 	}
 
-	public function executeTriggers()
+	public function executeTriggers($events, $log_actions)
 	{
 		$events = array();
-		if (in_array('new_ticket', $this->events)) {
+		if (in_array('new_ticket', $events)) {
 			$events[] = 'new_ticket';
 		}
-		if (in_array('new_reply', $this->events) OR in_array('new_agent_reply', $this->events)) {
+		if (in_array('new_reply', $events) OR in_array('new_agent_reply', $events)) {
 			$events[] = 'new_ticket';
 		}
-		if (in_array('property_change', $this->events)) {
+		if (in_array('property_change', $events)) {
 			$events[] = 'property_change';
 		}
 
-		App::getOrm()->beginTransaction();
-
 		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($events);
+		$action_sets = array();
 		foreach ($all_triggers as $trigger) {
-			if ($trigger->checkTicketMatch($this->ticket)) {
-				$trigger->performActions($this->ticket);
-				App::getOrm()->persist($this->ticket);
+			if ($trigger->checkTicketMatch($this->ticket, $log_actions)) {
+				$action_sets[] = $trigger->getActions($this->ticket, $log_actions);
+
 			}
 		}
 
+		$this->is_performing = true;
+
+		App::getOrm()->beginTransaction();
+
+		$ticket_edit = new \Application\DeskPRO\Tickets\TicketEdit($this->ticket);
+		foreach ($action_sets as $actions) {
+			$ticket_edit->applyActions($actions);
+		}
+		App::getOrm()->persist($this->ticket);
+
 		App::getOrm()->flush();
 		App::getOrm()->commit();
-	}
 
-	public function reset()
-	{
-		$this->entered_logs = array();
-		$this->events = array();
+		// Now loop again to perform external triggers
+		foreach ($all_triggers as $trigger) {
+			if ($trigger->checkTicketMatch($this->ticket, $log_actions)) {
+				$trigger->performExternalActions($this->ticket, $log_actions);
+			}
+		}
+
+		$this->is_performing = false;
 	}
 }

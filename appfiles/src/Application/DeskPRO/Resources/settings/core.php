@@ -15,5 +15,5 @@
 	'core.sessions_cookie_name' => 'dpsid',
 	'core.sessions_lifetime' => 3600,
 
-	'core.use_mail_queue'  => 'smart',
+	'core.use_mail_queue'  => 'never',
 );

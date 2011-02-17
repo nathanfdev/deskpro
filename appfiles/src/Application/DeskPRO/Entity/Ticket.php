@@ -855,9 +855,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function _saveTicketLogs()
 	{
 		if ($this->_ticket_logger) {
-			$this->_ticket_logger->saveLogs();
-			$this->_ticket_logger->triggerEvents();
-			$this->_ticket_logger->reset();
+			$this->_ticket_logger->done();
 		}
 	}
 
