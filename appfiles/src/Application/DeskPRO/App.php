@@ -38,6 +38,7 @@ class App
 	const SERVICE_ROUTER          = 'router';
 	const SERVICE_REQUEST         = 'request';
 	const SERVICE_RESPONSE        = 'response';
+	const SERVICE_MAILER          = 'swiftmailer.mailer';
 	/**#@-*/
 
 	/**
@@ -326,6 +327,18 @@ class App
 	public static function getSession()
 	{
 		return self::get(self::SERVICE_SESSION);
+	}
+
+
+
+	/**
+	 * Get the mailer
+	 *
+	 * @return Swift_Mailer
+	 */
+	public static function getMailer()
+	{
+		return self::get(self::SERVICE_MAILER);
 	}
 
 
