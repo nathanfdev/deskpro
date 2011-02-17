@@ -27,7 +27,10 @@ DeskPRO.UI.SimpleTabs = new Class({
 			this.triggerEls = $(this.triggerEls, this.options.context);
 		}
 
-		this.triggerEls.click(this._handleTabClick.bind(this));
+		var self = this;
+		this.triggerEls.click(function(ev) {
+			self._handleTabClick(this, ev);
+		});
 
 		// If none are active, then go and activate the first
 		if (this.triggerEls.is(this.options.activeClassname)) {
@@ -39,8 +42,8 @@ DeskPRO.UI.SimpleTabs = new Class({
 		this.activateTab(firstTab);
 	},
 
-	_handleTabClick: function(event) {
-		var tab = $(event.target);
+	_handleTabClick: function(el, event) {
+		var tab = $(el);
 		this.activateTab(tab, event);
 	},
 
