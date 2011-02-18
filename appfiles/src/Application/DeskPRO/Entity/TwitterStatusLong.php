@@ -20,15 +20,24 @@ use \Application\DeskPRO\Entity;
  *
  * Long Reply/Message w/ URL Shortener.
  *
+ * @orm:Entity
  * @orm:Table(name="twitter_statuses_long")
  * @orm:HasLifecycleCallbacks
  */
 class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * @var integer
+	 * @orm:Id
+	 * @orm:GeneratedValue(strategy="AUTO")
+	 * @orm:Column(name="id", type="bigint")
+	 */
+	protected $id;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @orm:ManyToOne(targetEntity="TwitterStatus")
-	 * @orm:JoinColumn(name="status_id", referencedColumnName="id", nullable=true)
+	 * @orm:OneToOne(targetEntity="TwitterStatus")
+	 * @orm:JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
 

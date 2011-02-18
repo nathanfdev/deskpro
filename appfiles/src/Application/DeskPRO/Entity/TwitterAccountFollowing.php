@@ -16,13 +16,13 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
- * Twitter Status Mention
+ * Twitter Account following a User
  *
  * @orm:Entity
- * @orm:Table(name="twitter_statuses_mentions")
+ * @orm:Table(name="twitter_accounts_following")
  * @orm:HasLifecycleCallbacks
  */
-class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
+class TwitterAccountFollowing extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -33,52 +33,40 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	protected $id;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @orm:ManyToOne(targetEntity="TwitterStatus")
-	 * @orm:JoinColumn(name="status_id", referencedColumnName="id")
+	 * @var \Application\DeskPRO\Entity\TwitterAccount
+	 * @orm:ManyToOne(targetEntity="TwitterAccount", inversedBy="following")
+	 * @orm:JoinColumn(name="account_id", referencedColumnName="id")
 	 */
-	protected $status;
+	protected $account;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="mentions")
+	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="following")
 	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
 
 	/**
-	 * @var integer
-	 * @orm:Column(name="starts", type="integer")
-	 */
-	protected $starts = 0;
-
-	/**
-	 * @var integer
-	 * @orm:Column(name="ends", type="integer")
-	 */
-	protected $ends = 0;
-
-	/**
 	 * @return integer
 	 */
-	public function getStatusId()
+	public function getAccountId()
 	{
-		if (null !== $this->status) {
-			return $this->status->getId();
+		if (null !== $this->account) {
+			return $this->account->getId();
 		}
-
+		
 		return 0;
 	}
 
 	/**
 	 * @param integer $id
 	 */
-	public function setStatusId($id)
+	public function setAccountId($id)
 	{
-		$this->status = null;
-
-		if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
-			$this->status = $status;
+		if ($id && $account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id)) {
+			$this->account = $account;
+		} else {
+			$this->account = null;
 		}
 	}
 
@@ -87,7 +75,11 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getUserId()
 	{
-		return null !== $this->user ? $this->user->getId() : null;
+		if (null !== $this->user) {
+			return $this->user->getId();
+		}
+		
+		return 0;
 	}
 
 	/**

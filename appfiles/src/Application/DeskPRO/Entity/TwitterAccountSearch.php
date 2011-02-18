@@ -18,14 +18,23 @@ use \Application\DeskPRO\Entity;
 /**
  * Twitter Account Search
  *
+ * @orm:Entity
  * @orm:Table(name="twitter_accounts_searches")
  * @orm:HasLifecycleCallbacks
  */
 class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * @var integer
+	 * @orm:Id
+	 * @orm:GeneratedValue(strategy="AUTO")
+	 * @orm:Column(name="id", type="bigint")
+	 */
+	protected $id;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 * @orm:ManyToOne(targetEntity="TwitterAccount")
+	 * @orm:ManyToOne(targetEntity="TwitterAccount", inversedBy="searches")
 	 * @orm:JoinColumn(name="account_id", referencedColumnName="id")
 	 */
 	protected $account;

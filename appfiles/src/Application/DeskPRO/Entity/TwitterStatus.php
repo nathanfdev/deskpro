@@ -18,6 +18,7 @@ use \Application\DeskPRO\Entity;
 /**
  * Twitter Status
  *
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterStatus")
  * @orm:Table(name="twitter_statuses")
  * @orm:HasLifecycleCallbacks
  */
@@ -33,7 +34,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser")
+	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="statuses")
 	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
@@ -46,24 +47,30 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @orm:ManyToOne(targetEntity="TwitterStatus")
+	 * @orm:ManyToOne(targetEntity="TwitterStatus", inversedBy="replies")
 	 * @orm:JoinColumn(name="in_reply_to_status_id", referencedColumnName="id", nullable=true)
 	 */
-	protected $in_reply_to_status = null;
+	protected $in_reply_to_status;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="in_reply_to_status")
+	 */
+	protected $replies;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser")
+	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="replies")
 	 * @orm:JoinColumn(name="in_reply_to_user_id", referencedColumnName="id", nullable=true)
 	 */
-	protected $in_reply_to_user = null;
+	protected $in_reply_to_user;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser")
+	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="messages")
 	 * @orm:JoinColumn(name="recipient_id", referencedColumnName="id", nullable=true)
 	 */
-	protected $recipient = null;
+	protected $recipient;
 
 	/**
 	 * @var Boolean
@@ -93,25 +100,54 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	 * @var double
 	 * @orm:Column(name="geo_latitude", type="decimal", nullable=true, precision=10, scale=5)
 	 */
-	protected $geo_latitude = null;
+	protected $geo_latitude;
 
 	/**
 	 * @var double
 	 * @orm:Column(name="geo_longitude", type="decimal", nullable=true, precision=10, scale=5)
 	 */
-	protected $geo_longitude = null;
+	protected $geo_longitude;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="text", type="string", length=4000, nullable=true)
+	 * @orm:Column(name="source", type="string", length=4000, nullable=true)
 	 */
-	protected $source = null;
+	protected $source;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\TwitterStatusLong
+	 * @orm:OneToOne(targetEntity="TwitterStatusLong", mappedBy="status")
+	 */
+	protected $long;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatusMention", mappedBy="status")
+	 */
+	protected $mentions;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatusTag", mappedBy="status")
+	 */
+	protected $tags;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatusUrl", mappedBy="status")
+	 */
+	protected $urls;
 
 	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
+		$this->replies = new \Doctrine\Common\Collections\ArrayCollection();
+
+		$this->mentions = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->tags = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->urls = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -136,6 +172,14 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this->user = null;
 		}
+	}
+
+	/**
+	 * @return Boolean
+	 */
+	protected function hasLongVersion()
+	{
+		return null !== $this->long_version;
 	}
 
 	/**

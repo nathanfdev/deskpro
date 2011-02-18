@@ -18,6 +18,7 @@ use \Application\DeskPRO\Entity;
 /**
  * Twitter User
  *
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterUser")
  * @orm:Table(name="twitter_users")
  * @orm:HasLifecycleCallbacks
  */
@@ -33,25 +34,25 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="name", type="string", size="40")
+	 * @orm:Column(name="name", type="string", length=40)
 	 */
 	protected $name;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="screen_name", type="string", size="20")
+	 * @orm:Column(name="screen_name", type="string", length=20)
 	 */
 	protected $screen_name;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="language", type="string", size="200")
+	 * @orm:Column(name="profile_image_url", type="string", length=200)
 	 */
 	protected $profile_image_url;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="language", type="string", size="3")
+	 * @orm:Column(name="language", type="string", length=3)
 	 */
 	protected $language;
 
@@ -69,7 +70,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="location", type="string", size="255")
+	 * @orm:Column(name="location", type="string", length=255)
 	 */
 	protected $location;
 
@@ -92,10 +93,46 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	protected $geo_longitude = null;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="status")
+	 */
+	protected $statuses;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatusMention", mappedBy="user")
+	 */
+	protected $mentions;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="recipient")
+	 */
+	protected $messages;
+	
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterAccountFollowing", mappedBy="user")
+	 */
+	protected $following;
+	
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterAccountFollower", mappedBy="user")
+	 */
+	protected $followers;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
 	{
+		$this->statuses = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->mentions = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
+
+		$this->followers = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->following = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**

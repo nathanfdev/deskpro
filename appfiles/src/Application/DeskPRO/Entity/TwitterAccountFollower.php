@@ -16,60 +16,35 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
- * Twitter Account Follower
+ * Twitter Account followed by a User
  *
- * Whether Account is following User or Account is followed by User is
- * determined by the `role` field.
- *
- *   ROLE_FOLLOWED:  Account <- User
- *   ROLE_FOLLOWING: Account -> User
- *
+ * @orm:Entity
  * @orm:Table(name="twitter_accounts_followers")
  * @orm:HasLifecycleCallbacks
  */
 class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * Account is followed by User.
-	 *
-	 * @var string
+	 * @var integer
+	 * @orm:Id
+	 * @orm:GeneratedValue(strategy="AUTO")
+	 * @orm:Column(name="id", type="bigint")
 	 */
-	const ROLE_FOLLOWED = 'followed';
-
-	/**
-	 * Account is following User.
-	 *
-	 * @var string
-	 */
-	const ROLE_FOLLOWING = 'following';
+	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 * @orm:ManyToOne(targetEntity="TwitterAccount")
+	 * @orm:ManyToOne(targetEntity="TwitterAccount", inversedBy="followers")
 	 * @orm:JoinColumn(name="account_id", referencedColumnName="id")
 	 */
 	protected $account;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser")
+	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="followers")
 	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
-
-	/**
-	 * @var string
-	 * @orm:Column(name="role", type="string")
-	 */
-	protected $role = self::ROLE_FOLLOWED;
-
-	/**
-	 * Constructor.
-	 */
-	public function __construct()
-	{
-		$this->role = self::ROLE_FOLLOWED;
-	}
 
 	/**
 	 * @return integer
@@ -117,38 +92,5 @@ class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this->user = null;
 		}
-	}
-
-	/**
-	 * Whether Account is followed by User.
-	 *
-	 * @return Boolean
-	 */
-	public function isFollowed()
-	{
-		return self::ROLE_FOLLOWED == $this->role;
-	}
-
-	/**
-	 * Whether Account is following User.
-	 *
-	 * @return Boolean
-	 */
-	public function isFollowing()
-	{
-		return self::ROLE_FOLLOWING == $this->role;
-	}
-
-	/**
-	 * @param string $role
-	 * @throws \InvalidArgumentException
-	 */
-	public function setRole($role)
-	{
-		if (!in_array($role, array(self::ROLE_FOLLOWED, self::ROLE_FOLLOWING))) {
-			throw new \InvalidArgumentException(sprintf('Invalid role "%s" specified.', $role));
-		}
-
-		$this->role = $role;
 	}
 }

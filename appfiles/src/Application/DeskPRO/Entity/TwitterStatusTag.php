@@ -18,15 +18,24 @@ use \Application\DeskPRO\Entity;
 /**
  * Twitter Status Tag
  *
+ * @orm:Entity
  * @orm:Table(name="twitter_statuses_tags")
  * @orm:HasLifecycleCallbacks
  */
 class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * @var integer
+	 * @orm:Id
+	 * @orm:GeneratedValue(strategy="AUTO")
+	 * @orm:Column(name="id", type="bigint")
+	 */
+	protected $id;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
 	 * @orm:ManyToOne(targetEntity="TwitterStatus")
-	 * @orm:JoinColumn(name="status_id", referencedColumnName="id", nullable=true)
+	 * @orm:JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
 

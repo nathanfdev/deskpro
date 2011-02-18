@@ -27,30 +27,70 @@ use \Application\DeskPRO\Entity;
 class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * The unique ID.
-	 *
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
+	 * @var integer
+	 * @orm:Id
+	 * @orm:GeneratedValue(strategy="NONE")
+	 * @orm:Column(name="id", type="bigint")
 	 */
-	protected $id = null;
-
+	protected $id;
 
 	/**
-         * The access token recieved from Twitter
-         *
-	 * @var string
-	 * @orm:Column(name="access_token", type="string", length=255)
+	 * @var \Application\DeskPRO\Entity\TwitterUser
+	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="account")
+	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
 	 */
-	protected $access_token;
-
+	protected $user;
 
 	/**
-         * Twitter handle of the account
-         *
-	 * @var string
-	 * @orm:Column(name="twitter_handle", type="string", length=255)
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterAccountFollowing", mappedBy="account")
 	 */
-	protected $twitter_handle;
+	protected $following;
 
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterAccountFollower", mappedBy="account")
+	 */
+	protected $followers;
+	
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterAccountSearch", mappedBy="account")
+	 */
+	protected $searches;
+
+	/**
+	 * Constructor
+	 */
+	public function __construct()
+	{
+		$this->followers = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->following = new \Doctrine\Common\Collections\ArrayCollection();
+
+		$this->searches = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getUserId()
+	{
+		if (null !== $this->user) {
+			return $this->user->getId();
+		}
+		
+		return 0;
+	}
+
+	/**
+	 * @param integer $id
+	 */
+	public function setUserId($id)
+	{
+		if ($id && $user = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find($id)) {
+			$this->user = $user;
+		} else {
+			$this->user = null;
+		}
+	}
 }
