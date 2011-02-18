@@ -53,6 +53,14 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $note = '';
 
+	/**
+	 * Is this an agent group?
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_agent_group", type="boolean")
+	 */
+	protected $is_agent_group = false;
+
 
 	/**
 	 * Properties attached to this usergroup

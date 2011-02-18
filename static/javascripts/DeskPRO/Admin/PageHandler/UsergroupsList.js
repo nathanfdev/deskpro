@@ -1,0 +1,24 @@
+Orb.createNamespace('DeskPRO.Admin.PageHandler');
+
+DeskPRO.Admin.PageHandler.UsergroupsList = new Class({
+	Extends: DeskPRO.Admin.PageHandler.Basic,
+
+	initPage: function() {
+		this.initPopoutTriggers();
+		DeskPRO_Window.getMessageBroker().addMessageListener('usergroups.list.change', this.handleListChange.bind(this));
+	},
+
+	handleListChange: function(info) {
+		var list = $('ul.item-list:first');
+		var exist = $('li.usergroup-'+info.usergroup_id);
+
+		var row = $(info.row_html);
+		this.initPopoutTriggers(row);
+
+		if (exist.length) {
+			exist.replaceWith(row);
+		} else {
+			list.prepend(row);
+		}
+	}
+});

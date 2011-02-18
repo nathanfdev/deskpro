@@ -19,6 +19,8 @@ DeskPRO.UI.Overlay = new Class({
 			dataType: 'html'
 		},
 		iframeUrl: null,
+		maxHeight: 700,
+		maxWidth: 900,
 		destroyOnClose: false,
 		customClassname: '',
 		isModal: true,
@@ -97,13 +99,15 @@ DeskPRO.UI.Overlay = new Class({
 			var w = $(document).width() - 250;
 			var h = $(document).height() - 150;
 
+			if (w > this.options.maxWidth) w = this.options.maxWidth;
+			if (h > this.options.maxHeight) h = this.options.maxHeight;
+
 			$('iframe:first', this.elements.wrapper).css({ width: w, height: h });
 
-			this.elements.wrapperOuter.position({
-				'my': 'center center',
-				'at': 'center center',
-				'of': document.body
-			});
+			var x = ($(document).width() - this.elements.wrapperOuter.outerWidth()) / 2;
+			var y = ($(document).height() - this.elements.wrapperOuter.outerHeight()) / 2;
+
+			this.elements.wrapperOuter.css({'left': x, 'top': y});
 
 		} else {
 			var w = this.elements.wrapperOuter.outerWidth();

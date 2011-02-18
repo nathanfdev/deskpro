@@ -230,3 +230,16 @@ admin_customdeforganizations_test:
   pattern: /organization-fields/{field_id}/test
   defaults: { _controller: AdminBundle:CustomDefOrganizations:test }
   requirements: { field_id: "\d+" }
+
+################################################################################
+# Usergroups
+################################################################################
+
+admin_usergroups:
+  pattern: /usergroups
+  defaults: { _controller: AdminBundle:Usergroups:list }
+
+admin_usergroups_edit:
+  pattern: /usergroups/{usergroup_id}
+  defaults: { _controller: AdminBundle:Usergroups:edit }
+  requirements: { usergroup_id: "\d+" }
