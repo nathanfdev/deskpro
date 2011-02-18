@@ -243,3 +243,16 @@ admin_usergroups_edit:
   pattern: /usergroups/{usergroup_id}
   defaults: { _controller: AdminBundle:Usergroups:edit }
   requirements: { usergroup_id: "\d+" }
+
+################################################################################
+# Departments
+################################################################################
+
+admin_departments:
+  pattern: /departments
+  defaults: { _controller: AdminBundle:Departments:list }
+
+admin_departments_edit:
+  pattern: /departments/{department_id}
+  defaults: { _controller: AdminBundle:Departments:edit }
+  requirements: { department_id: "\d+" }

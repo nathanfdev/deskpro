@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use \Application\DeskPRO\App;
+
 /**
  * Departments
  *
@@ -51,6 +53,23 @@ class Department extends \Application\DeskPRO\Domain\DomainObject
 		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getParentId()
+	{
+		if ($this->parent) {
+			return $this->parent['id'];
+		}
+
+		return 0;
+	}
+
+	public function setParentId($id)
+	{
+		if ($id) {
+			$this->parent = App::getEntityRepository('DeskPRO:Department')->find($id);
+		} else {
+			$this->parent = null;
+		}
+	}
 
 
 	/**

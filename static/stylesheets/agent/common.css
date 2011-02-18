@@ -576,3 +576,8 @@ ul.item-list > li:first-of-type {
 ul.item-list > li.empty-list {
 	text-align: center;
 }
+
+
+ul.item-list > li.sub {
+	padding: 6px 10px 6px 20px;
+}

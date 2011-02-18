@@ -1,0 +1,25 @@
+#header {
+	height: 35px;
+	overflow: hidden;
+	background-color: #EBE7D3;
+}
+
+#header h1 {
+	font-family: 'Myriad Pro', 'Myriad', Helvetica, "Lucida Grande","Lucida Sans Unicode",Arial,Verdana,sans-serif;
+	font-size: 18pt;
+	font-weight: normal;
+	line-height: 38px;
+	margin-left: 10px;
+
+	text-shadow: 1px 1px 3px #ffffff;
+	filter: dropshadow(color=#ffffff, offx=, offy=1);
+}
+
+#footer {
+	height: 25px;
+	overflow: hidden;
+	padding: 6px 10px 14px 10px;
+	background-color: #5A7696;
+	border-top: 2px solid #50657D;
+	text-align: right;
+}

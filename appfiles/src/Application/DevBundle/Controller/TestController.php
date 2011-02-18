@@ -22,25 +22,25 @@ class TestController extends Controller
 		print_r($trigger->getEditActions($ticket));
 
 		exit;
-		$plugin = new Entity\Plugin();
+		$plugin = new \Application\DeskPRO\Entity\Plugin();
 		$plugin['plugin_callback'] = 'Application\\DeskPRO\\Plugin\\TicketTrigger\\SayCampfire::sayEvent';
 		$plugin['callback_options'] = array(
 			'campfire_account_name' => 'deskpro',
-			'campfire_room_id' => '379794',
+			'campfire_room_id' => '43826',
 			'campfire_api_token' => '8fda7258703a5a2d9ce76dfc87f9f7a46b26f7a7'
 		);
-		App::getOrm()->persist($plugin);
-		App::getOrm()->flush();
+		\Application\DeskPRO\App::getOrm()->persist($plugin);
+		\Application\DeskPRO\App::getOrm()->flush();
 
 
-		$trigger = new Entity\TicketTrigger();
+		$trigger = new \Application\DeskPRO\Entity\TicketTrigger();
 		$trigger['title'] = 'Announce to campfire';
 		$trigger['event_trigger'] = 'new_reply';
 		$trigger['actions'] = array(
 			array('rule_type' => 'trigger_plugin', 'plugin_id' => 1)
 		);
-		App::getOrm()->persist($trigger);
-		App::getOrm()->flush();
+		\Application\DeskPRO\App::getOrm()->persist($trigger);
+		\Application\DeskPRO\App::getOrm()->flush();
 
 		exit;
     }

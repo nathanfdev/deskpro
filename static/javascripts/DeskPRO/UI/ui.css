@@ -35,6 +35,15 @@
 	padding: 0;
 }
 
+.deskpro-overlay.iframe {
+	background-color: transparent;
+	-moz-border-radius: 0px;
+	border-radius: 0px;
+}
+
+.deskpro-overlay.iframe iframe {
+	background-color: #fff;
+}
 
 /**********************************************************************
 * Menu

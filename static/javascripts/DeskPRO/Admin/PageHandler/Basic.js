@@ -10,8 +10,6 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 
 	},
 
-
-
 	/**
 	 * Init all triggers to become iframe overlays.
 	 *
@@ -20,6 +18,7 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 	initPopoutTriggers: function(context) {
 		if (!context) context = $(document);
 
+		var self = this;
 		$('.popout-trigger', context).click(function(ev) {
 			var el = $(this);
 			ev.preventDefault();
@@ -27,14 +26,27 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 			var url = el.attr('href');
 			if (!url) url = el.data('href');
 
+			var maxHeight = 700;
+			var maxWidth = 900;
+
+			if (el.data('width')) maxWidth = el.data('width');
+			if (el.data('height')) maxHeight = el.data('height');
+
 			var overlay = new DeskPRO.UI.Overlay({
 				contentMethod: 'iframe',
 				iframeUrl: url,
-				destroyOnClose: true
+				destroyOnClose: true,
+				maxWidth: maxWidth,
+				maxHeight: maxHeight
 			});
 			overlay.openOverlay();
+
+			overlay.addEvent('destroyed', function() { delete overlay; self._openedOverlay = null; });
+
+			self._openedOverlay = overlay;
 		});
 	},
+	_openedOverlay: null,
 
 	/**
 	 * Set metadata about this page.
@@ -83,6 +95,23 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 	},
 
 
+
+	handleListChange: function(info) {
+		var list = $('ul.item-list:first');
+		var exist = $('li.'+info.typename+'-'+info.usergroup_id);
+
+		var row = $(info.row_html);
+		this.initPopoutTriggers(row);
+
+		if (exist.length) {
+			exist.replaceWith(row);
+		} else {
+			list.prepend(row);
+		}
+	},
+
+
+
 	/**
 	 * Get the parent windows DeskPRO_Window object. Used for when the child
 	 * needs to send a message back to the parent, such as if something needs to be updated.
@@ -96,5 +125,24 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 		}
 
 		return parent_win;
+	},
+
+
+	/**
+	 * Sends a message through to the parent window to close this popout.
+	 */
+	closeThisPopout: function() {
+		if (this.getThisOverlay()) {
+			this.getThisOverlay().closeOverlay();
+		}
+	},
+
+
+	getThisOverlay: function() {
+		if (window.parent && window.parent.DeskPRO_Page && window.parent.DeskPRO_Page._openedOverlay) {
+			return window.parent.DeskPRO_Page._openedOverlay;
+		}
+
+		return null;
 	}
 });

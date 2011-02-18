@@ -30,6 +30,7 @@ DeskPRO.UI.Overlay = new Class({
 		objectGroup: 'default'
 	},
 
+	isDestroyed: false,
 	hasInit: false,
 	hasSentAjax: false,
 	elements: {},
@@ -96,16 +97,16 @@ DeskPRO.UI.Overlay = new Class({
 
 		if (this.options.contentMethod == 'iframe') {
 
-			var w = $(document).width() - 250;
-			var h = $(document).height() - 150;
+			var w = $(window).width() - 250;
+			var h = $(window).height() - 150;
 
 			if (w > this.options.maxWidth) w = this.options.maxWidth;
 			if (h > this.options.maxHeight) h = this.options.maxHeight;
 
 			$('iframe:first', this.elements.wrapper).css({ width: w, height: h });
 
-			var x = ($(document).width() - this.elements.wrapperOuter.outerWidth()) / 2;
-			var y = ($(document).height() - this.elements.wrapperOuter.outerHeight()) / 2;
+			var x = ($(window).width() - this.elements.wrapperOuter.outerWidth()) / 2;
+			var y = ($(window).height() - this.elements.wrapperOuter.outerHeight()) / 2;
 
 			this.elements.wrapperOuter.css({'left': x, 'top': y});
 
@@ -214,12 +215,13 @@ DeskPRO.UI.Overlay = new Class({
 
 			case 'iframe':
 
-				var el = $('<iframe src="'+this.options.iframeUrl+'"></iframe>');
+				var name = 'iframe_' + Orb.uuid();
+				var el = $('<iframe name="'+name+'" src="'+this.options.iframeUrl+'"></iframe>');
 
 				this._setContent(el);
 				this.hasInit = true;
 
-				this.elements.wrapper.addClass('no-pad');
+				this.elements.wrapper.addClass('no-pad').addClass('iframe');
 
 				return true;
 				break;
@@ -302,5 +304,13 @@ DeskPRO.UI.Overlay = new Class({
 		if (this.elements.modal) {
 			this.elements.modal.remove();
 		}
+		this.isDestroyed = true;
+
+		this.fireEvent('destroyed');
+	},
+
+
+	isDestroyed: function() {
+		return this.isDestroyed;
 	}
 });

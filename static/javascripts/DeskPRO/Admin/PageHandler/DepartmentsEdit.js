@@ -1,11 +1,12 @@
 Orb.createNamespace('DeskPRO.Admin.PageHandler');
 
-DeskPRO.Admin.PageHandler.UsergroupsEdit = new Class({
+DeskPRO.Admin.PageHandler.DepartmentsEdit = new Class({
 	Extends: DeskPRO.Admin.PageHandler.Basic,
 
-	usergroup_id: 0,
-	initialize: function(usergroup_id) {
-		this.usergroup_id = usergroup_id;
+	department_id: 0,
+	initialize: function(department_id, parent_id) {
+		this.department_id = department_id;
+		this.parent_id = parent_id;
 	},
 
 	initPage: function() {
@@ -22,10 +23,11 @@ DeskPRO.Admin.PageHandler.UsergroupsEdit = new Class({
 		var parent_win = this.getOpenerDeskPRO();
 		if (!parent_win) return;
 
-		parent_win.getMessageBroker().sendMessage('usergroups.list.change', {
-			usergroup_id: this.usergroup_id,
+		parent_win.getMessageBroker().sendMessage('departments.list.change', {
+			department_id: this.department_id,
+			parent_id: this.parent_id,
 			row_html: row_html,
-			typename: 'usergroup'
+			typename: 'department'
 		});
 	}
 });
