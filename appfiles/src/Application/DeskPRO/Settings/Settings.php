@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Settings;
 
+use \Application\DeskPRO\App;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -25,7 +27,7 @@ class Settings implements \ArrayAccess
 	 */
 	protected $settings_paths = array();
 
-	
+
 	/**
 	 * Plain database connection for raw queries
 	 * @var Application\DeskPRO\DBAL\Connection
@@ -89,7 +91,7 @@ class Settings implements \ArrayAccess
 		return $this->settings[$name];
 	}
 
-	
+
 
 	/**
 	 * Manually set the value for one or more settings. Note that these values are
@@ -174,6 +176,17 @@ class Settings implements \ArrayAccess
 
 		$this->_loaded_groups = array_merge($this->_loaded_groups, $this->_pending_groups);
 		$this->_pending_groups = array();
+
+		#------------------------------
+		# Config overrides
+		#------------------------------
+
+		// Always merge with those from config file, they are effectively
+		// hard-coded overrides (ex useful if something broke and you have to disable)
+		$config_settings = App::getConfig('SETTINGS');
+		if ($config_settings) {
+			$this->settings = array_merge($this->settings, $config_settings);
+		}
 	}
 
 
