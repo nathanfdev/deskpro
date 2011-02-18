@@ -17,6 +17,7 @@ use \Application\DeskPRO\App;
  * Ticket queues
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketTrigger")
+ * @orm:HasLifecycleCallbacks
  * @orm:Table(name="ticket_triggers")
  */
 class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
@@ -51,7 +52,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="event_trigger_option", type="string", length=255)
 	 */
-	protected $event_trigger_option;
+	protected $event_trigger_option = '';
 
 	/**
 	 * @var bool
@@ -63,13 +64,13 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="terms", type="array")
 	 */
-	protected $terms;
+	protected $terms = array();
 
 	/**
 	 * @var string
 	 * @orm:Column(name="actions", type="array")
 	 */
-	protected $actions;
+	protected $actions = array();
 
 
 
@@ -81,6 +82,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function checkTicketMatch(Ticket $ticket, array $logs = array())
 	{
+		$this->terms = (array)$this->terms;
+
 		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms);
 		$match = $ticket_terms->doesTicketMatch($ticket);
 
@@ -140,7 +143,15 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function performExternalActions(Ticket $ticket, array $logs = array())
 	{
-
+		foreach ($this->actions as $action) {
+			if ($action['rule_type'] == 'trigger_plugin') {
+				$plugin = App::getEntityRepository('DeskPRO:Plugin')->find($action['plugin_id']);
+				$plugin->executePlugin(array(
+					'ticket' => $ticket,
+					'logs' => $logs
+				));
+			}
+		}
 	}
 
 
@@ -179,5 +190,26 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$tickets = $qb->exeute($params);
 
 		return $tickets;
+	}
+
+
+	/**
+	 * @orm:PostDelete
+	 */
+	public function _removeAssocPlugins()
+	{
+		App::getOrm()->beginTransaction();
+
+		foreach ($this->actions as $action) {
+			if ($action['rule_type'] == 'trigger_plugin') {
+				$plugin = App::getEntityRepository('DeskPRO:Plugin')->find($action['plugin_id']);
+				if ($plugin['associated_object'] == "TicketTrigger:{$this->id}") {
+					App::getOrm()->remove($plugin);
+				}
+			}
+		}
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
 	}
 }

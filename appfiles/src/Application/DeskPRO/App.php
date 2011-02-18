@@ -344,6 +344,18 @@ class App
 
 
 	/**
+	 * Get the router
+	 *
+	 * @return Symfony\Component\Routing\Router
+	 */
+	public static function getRouter()
+	{
+		return self::get(self::SERVICE_ROUTER);
+	}
+
+
+
+	/**
 	 * True if this is an http request. We should have a request and response object if so.
 	 *
 	 * @return bool

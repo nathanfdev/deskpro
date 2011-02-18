@@ -31,9 +31,9 @@ class TicketTrigger extends EntityRepository
 		}
 
 		$db = App::getDb();
-		$events = $db->quoteIn($v);
+		$events = $db->quoteIn($events);
 
-		$events = $this->getEntityManager()->createQuery("
+		$triggers = $this->getEntityManager()->createQuery("
 			SELECT trig
 			FROM DeskPRO:TicketTrigger trig
 			WHERE trig.event_trigger IN ($events)

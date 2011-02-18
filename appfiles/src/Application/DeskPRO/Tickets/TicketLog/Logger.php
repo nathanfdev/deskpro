@@ -215,38 +215,40 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 	public function executeTriggers($events, $log_actions)
 	{
-		$events = array();
+		$trigger_events = array();
 		if (in_array('new_ticket', $events)) {
-			$events[] = 'new_ticket';
+			$trigger_events[] = 'new_ticket';
 		}
-		if (in_array('new_reply', $events) OR in_array('new_agent_reply', $events)) {
-			$events[] = 'new_ticket';
+		if (in_array('message_created', $events)) {
+			$trigger_events[] = 'new_reply';
 		}
 		if (in_array('property_change', $events)) {
-			$events[] = 'property_change';
+			$trigger_events[] = 'property_change';
 		}
 
-		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($events);
+		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($trigger_events);
 		$action_sets = array();
 		foreach ($all_triggers as $trigger) {
 			if ($trigger->checkTicketMatch($this->ticket, $log_actions)) {
-				$action_sets[] = $trigger->getActions($this->ticket, $log_actions);
-
+				$action_sets[] = $trigger->getEditActions($this->ticket, $log_actions);
 			}
 		}
 
+		$action_sets = Arrays::removeFalsey($action_sets);
+
 		$this->is_performing = true;
+		if ($action_sets) {
+			App::getOrm()->beginTransaction();
 
-		App::getOrm()->beginTransaction();
+			$ticket_edit = new \Application\DeskPRO\Tickets\TicketEdit($this->ticket);
+			foreach ($action_sets as $actions) {
+				$ticket_edit->applyActions($actions);
+			}
+			App::getOrm()->persist($this->ticket);
 
-		$ticket_edit = new \Application\DeskPRO\Tickets\TicketEdit($this->ticket);
-		foreach ($action_sets as $actions) {
-			$ticket_edit->applyActions($actions);
+			App::getOrm()->flush();
+			App::getOrm()->commit();
 		}
-		App::getOrm()->persist($this->ticket);
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
 
 		// Now loop again to perform external triggers
 		foreach ($all_triggers as $trigger) {
