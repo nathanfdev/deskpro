@@ -160,7 +160,7 @@ DeskPRO.UI.Menu = new Class({
 			if (this.parentMenu !== null && this.parentMenu.isMenuOpen()) {
 
 				var pageX = this.options.parentMenuItem.offset().left + this.options.parentMenuItem.outerWidth()-4;
-				var pageY = this.options.parentMenuItem.offset().top + this.options.parentMenuItem.outerHeight()-4;
+				var pageY = this.options.parentMenuItem.offset().top;
 
 				// Position to the left if theres no room
 				if (pageX+width > pageWidth) {
