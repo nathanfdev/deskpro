@@ -40,6 +40,16 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
 		parent::boot();
 		App::setContainer($this->container, 'default');
+
+		// Lazyload exception listener for the error handler
+		set_error_handler(function($errno, $errstr, $errfile, $errline) {
+			if (!App::has('exception_listener')) {
+				return false;
+			}
+
+			$listener = App::get('exception_listener');
+			$listener->handleError($errno, $errstr, $errfile, $errline);
+		}, E_ALL | E_STRICT);
 	}
 
 

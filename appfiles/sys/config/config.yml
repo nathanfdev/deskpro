@@ -6,6 +6,7 @@ parameters:
   session.class: "Application\DeskPRO\HttpFoundation\Session"
   doctrine.dbal.connection_factory_class: "Application\DeskPRO\DBAL\ConnectionFactory"
   swiftmailer.class: "Application\DeskPRO\Mail\Mailer"
+  exception_listener.class: "Application\DeskPRO\Debug\ExceptionListener"
 
 services:
   templating.engine.jsonphp:
