@@ -38,6 +38,14 @@ DeskPRO.Agent.UI.Layout = new Class({
 	resizeColumns: function() {
 		var h = $(document).height() - this.layoutEl.offset().top - 32; // 30=padding
 		$('div.pane', this.layoutEl).height(h);
+		
+		// Fit all inner iframes
+		$('div.pane-content iframe.fitted', this.layoutRowEl).each(function() {
+			var div = $(this).parent().parent(); // parent=tab, parentparent = pane-content
+			var h = div.height();
+			
+			$(this).height(h-1);
+		});
 	},
 	
 	addColumn: function() {

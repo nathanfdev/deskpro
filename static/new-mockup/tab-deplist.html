@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<meta charset="UTF-8"/>
+	<meta name="robots" content="NOINDEX" />
+	<meta http-equiv="X-UA-Compatible" content="IE=100" />
+	<title>DeskPRO Admin</title>
+
+	<link rel="stylesheet" href="../javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css" type="text/css" media="screen"  />
+	<link rel="stylesheet" href="../javascripts/DeskPRO/UI/ui.css" type="text/css" media="screen" />
+
+	<link rel="stylesheet" href="../javascripts/jquery/tipTip/tipTip.css" type="text/css" media="screen"  />
+
+	<link rel="stylesheet" href="../stylesheets/agent/common.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="../stylesheets/agent/ui-layout.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="../stylesheets/agent/window-elements.css" type="text/css" media="screen" />
+	<link rel="stylesheet" href="../stylesheets/agent/admin/interface.css" type="text/css" media="screen" />
+
+	<!--[if IE 8]>
+	<link rel="stylesheet" href="../stylesheets/agent/interface-ie.css" type="text/css" media="screen" />
+	<![endif]-->
+
+	<style type="text/css">
+			body.popout #pane_shell {
+				top: 0;
+			}
+
+			body.popout #content_wrap {
+				max-width: 10000px;
+			}
+		</style>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.js"></script>
+
+	<script type="text/javascript" src="http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.7/jquery-ui.min.js"></script>
+	<script type="text/javascript" src="../javascripts/jquery/jquery.cookie.js"></script>
+	<script type="text/javascript" src="../javascripts/jquery/jquery.layout.min.js"></script>
+	
+	<script type="text/javascript" src="../javascripts/jquery/tipTip/jquery.tipTip.min.js"></script>
+	<script type="text/javascript" src="../javascripts/jquery/tag-it/tag-it.js"></script>
+	<script type="text/javascript" src="../javascripts/jquery/jquery.sizes.min.js"></script>
+
+	<script type="text/javascript" src="../javascripts/jquery/jquery.mousewheel.js"></script>
+	<script type="text/javascript" src="../javascripts/mootools/mootools-core.min.js"></script>
+
+	<script type="text/javascript" src="../javascripts/Orb/Orb.js"></script>
+	<script type="text/javascript" src="../javascripts/Orb/Compat.js"></script>
+
+	<script type="text/javascript" src="../javascripts/DeskPRO/UI/Overlay.js"></script>
+
+	<script type="text/javascript" src="../javascripts/DeskPRO/UI/Menu.js"></script>
+
+</head>
+
+<body class="popout">
+
+<table cellspacing="0" cellpadding="0" width="100%" id="pane_shell" class="no-nav">
+	<tr>
+				<td id="pane_content"><div id="content_wrap">
+<div style="text-align:right; padding-bottom: 10px;">
+	<a class="icon tickets popout-trigger" href="/dp_400/index_dev.php/admin/departments/0">Create New Department</a>
+</div>
+
+<div class="dep-lists">
+	<ul class="item-list department-list-1">
+		<li class="department department-1 " data-department-id="1">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/1" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<strong>Department 1!</strong>
+			</div>
+</li>					<li class="department department-11 sub" data-department-id="11">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/11" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+
+	</div>
+	<div>
+		Child 1
+			</div>
+</li>					<li class="department department-26 sub" data-department-id="26">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/26" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+
+	</div>
+	<div>
+		New 2
+			</div>
+</li>					<li class="department department-25 sub" data-department-id="25">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/25" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+
+	</div>
+	<div>
+		New Department
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-2">
+		<li class="department department-2 " data-department-id="2">
+	<div style="float:right">
+		<ul class="controls">
+
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/2" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		<strong>Department 2</strong>
+			</div>
+</li>					<li class="department department-12 sub" data-department-id="12">
+	<div style="float:right">
+
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/12" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		Child 2
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-3">
+
+		<li class="department department-3 " data-department-id="3">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/3" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		<strong>Department 3</strong>
+
+			</div>
+</li>					<li class="department department-13 sub" data-department-id="13">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/13" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+
+		Child 3
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-4">
+		<li class="department department-4 " data-department-id="4">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/4" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+
+	</div>
+	<div>
+		<strong>Department 4</strong>
+			</div>
+</li>					<li class="department department-14 sub" data-department-id="14">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/14" class="popout-trigger" data-height="300">edit</a></li>
+
+		</ul>
+	</div>
+	<div>
+		Child 4
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-23">
+		<li class="department department-23 " data-department-id="23">
+	<div style="float:right">
+
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/23" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		<strong>Information</strong>
+			</div>
+</li>			</ul><br />
+
+	<ul class="item-list department-list-10">
+		<li class="department department-10 " data-department-id="10">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/10" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+
+		<strong>Information</strong>
+			</div>
+</li>					<li class="department department-20 sub" data-department-id="20">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/20" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+
+	<div>
+		Child 10
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-7">
+		<li class="department department-7 " data-department-id="7">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/7" class="popout-trigger" data-height="300">edit</a></li>
+
+		</ul>
+	</div>
+	<div>
+		<strong>Information</strong>
+			</div>
+</li>					<li class="department department-17 sub" data-department-id="17">
+	<div style="float:right">
+		<ul class="controls">
+
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/17" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		Child 7
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-24">
+		<li class="department department-24 " data-department-id="24">
+
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/24" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		<strong>My New Department</strong>
+			</div>
+
+</li>			</ul><br />
+	<ul class="item-list department-list-9">
+		<li class="department department-9 " data-department-id="9">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/9" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+
+	<div>
+		<strong>Sales</strong>
+			</div>
+</li>					<li class="department department-19 sub" data-department-id="19">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/19" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+
+	</div>
+	<div>
+		Child 9
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-6">
+		<li class="department department-6 " data-department-id="6">
+	<div style="float:right">
+		<ul class="controls">
+
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/6" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		<strong>Sales</strong>
+			</div>
+</li>					<li class="department department-16 sub" data-department-id="16">
+	<div style="float:right">
+
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/16" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		Child 6
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-22">
+
+		<li class="department department-22 " data-department-id="22">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/22" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		<strong>Sales</strong>
+
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-21">
+		<li class="department department-21 " data-department-id="21">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/21" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+
+	</div>
+	<div>
+		<strong>Support</strong>
+			</div>
+</li>			</ul><br />
+	<ul class="item-list department-list-5">
+		<li class="department department-5 " data-department-id="5">
+	<div style="float:right">
+
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/5" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		<strong>Support</strong>
+			</div>
+</li>					<li class="department department-15 sub" data-department-id="15">
+
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/15" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		Child 5
+			</div>
+</li>			</ul><br />
+
+	<ul class="item-list department-list-8">
+		<li class="department department-8 " data-department-id="8">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/8" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+
+		<strong>Support</strong>
+			</div>
+</li>					<li class="department department-18 sub" data-department-id="18">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="/dp_400/index_dev.php/admin/departments/18" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+
+	<div>
+		Child 8
+			</div>
+</li>			</ul><br />
+</div>
+
+</div></td>
+	</tr>
+</table>
+
+</body>
+</html>
