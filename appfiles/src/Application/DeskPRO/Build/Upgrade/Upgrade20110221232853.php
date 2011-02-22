@@ -43,7 +43,7 @@ class Upgrade20110221232853 extends UpgradeAbstract
 		$this->output->writeln('Insert default style');
 
 		try {
-			App::getDb()->exec("CREATE TABLE styles (id INT AUTO_INCREMENT NOT NULL, parent_id INT DEFAULT NULL, title VARCHAR(255) NOT NULL, note LONGTEXT NOT NULL, created_at DATETIME NOT NULL, INDEX styles_parent_id_idx (parent_id), PRIMARY KEY(id)) ENGINE = InnoDB");
+			App::getDb()->exec("INSERT INTO `styles` (`id`, `parent_id`, `title`, `note`, `created_at`) VALUES (1, NULL, 'Default', 'Test!!!', '2011-02-21 00:00:00')");
 		} catch (\Exception $e) {
 			$this->output->writeln("ERROR: {$e->getMessage()}");
 			return Upgrader::STEP_FAILED;
