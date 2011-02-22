@@ -70,6 +70,10 @@ admin_styles_edittemplate:
   defaults: { _controller: AdminBundle:Styles:editTemplate }
   requirements: { style_id: "\d+" }
 
+admin_styles_reverttemplate:
+  pattern: /styles/{style_id}/templates/revert-template
+  defaults: { _controller: AdminBundle:Styles:revertTemplate }
+  requirements: { style_id: "\d+" }
 
 ################################################################################
 # Languages

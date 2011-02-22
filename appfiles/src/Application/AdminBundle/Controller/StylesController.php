@@ -160,6 +160,20 @@ class StylesController extends AbstractController
 		));
 	}
 
+	public function revertTemplateAction($style_id)
+	{
+		$style = $this->getStyleOr404($style_id);
+		$template_name = $this->in->getString('template_name');
+
+		$template = $style->getTemplate($template_name);
+		if ($template) {
+			App::getOrm()->remove($template);
+			App::getOrm()->flush();
+		}
+
+		return $this->redirectRoute('admin_styles_templates', array('style_id' => $style['id']));
+	}
+
 
 
 
