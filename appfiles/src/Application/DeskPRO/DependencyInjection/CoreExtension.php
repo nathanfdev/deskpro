@@ -27,6 +27,7 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		$this->loadTranslation($container);
 		$this->loadPhraseTemplateHelper($container);
 		$this->loadSettings($container);
+		$this->loadDoctrineCaches($container);
 
 		// Dont need this. When changing session storage to DB, we'll
 		// need to have JUST the session.storage definition
@@ -151,6 +152,31 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		));
 		$definition->addMethodCall('loadGroups', array('core'));
 		$container->setDefinition('deskpro.core.settings', $definition);
+	}
+
+	protected function loadDoctrineCaches(ContainerBuilder $container)
+	{
+		if (App::isDebug()) {
+			return;
+		}
+
+		if (App::getConfig('doctrine.cache.type') == 'sqlite') {
+			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache');
+			$definition->addMethodCall('setDbFile', array(
+				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',
+				'query_cache',
+				'doctrinecache'
+			));
+			$container->setDefinition('doctrine.orm.default_query_cache', $definition);
+
+			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache');
+			$definition->addMethodCall('setDbFile', array(
+				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',
+				'metadata_cache',
+				'doctrinecache'
+			));
+			$container->setDefinition('doctrine.orm.default_metadata_cache', $definition);
+		}
 	}
 
 
