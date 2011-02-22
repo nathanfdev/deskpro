@@ -48,11 +48,7 @@ admin_agents_teams_new:
 
 admin_styles:
   pattern: /styles
-  defaults: { _controller: AdminBundle:Styles:index }
-
-admin_styles_intro:
-  pattern: /styles/intro
-  defaults: { _controller: AdminBundle:Styles:intro }
+  defaults: { _controller: AdminBundle:Styles:listStyles }
 
 admin_styles_showstyle:
   pattern: /styles/{style_id}
@@ -64,22 +60,13 @@ admin_styles_editstyle:
   defaults: { _controller: AdminBundle:Styles:editStyle }
   requirements: { style_id: "\d+" }
 
-admin_styles_newstyle:
-  pattern: /styles/new-style
-  defaults: { _controller: AdminBundle:Styles:editStyle, style_id: 0 }
-
-admin_styles_resources:
-  pattern: /styles/{style_id}/resources
-  defaults: { _controller: AdminBundle:Styles:styleResourceList }
-  requirements: { style_id: "\d+" }
-
 admin_styles_templates:
   pattern: /styles/{style_id}/templates
   defaults: { _controller: AdminBundle:Styles:styleTemplateList }
   requirements: { style_id: "\d+" }
 
 admin_styles_edittemplate:
-  pattern: /styles/{style_id}/templates/{template_name}
+  pattern: /styles/{style_id}/templates/edit-template
   defaults: { _controller: AdminBundle:Styles:editTemplate }
   requirements: { style_id: "\d+" }
 

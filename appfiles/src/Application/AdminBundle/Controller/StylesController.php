@@ -2,6 +2,8 @@
 
 namespace Application\AdminBundle\Controller;
 
+use \Application\DeskPRO\App;
+use \Application\AdminBundle\Form\EditStyleForm;
 use \Orb\Util\Arrays;
 use \Symfony\Component\Form;
 
@@ -16,49 +18,29 @@ class StylesController extends AbstractController
 	{
 		parent::init();
 
-		$this->style_hierarchy = $this->db->fetchAllKeyed("SELECT id, parent_id, title FROM styles ORDER BY title ASC");
-		$this->style_hierarchy = Arrays::intoHierarchy($this->style_hierarchy);
-		$this->style_hierarchy = Arrays::flattenHierarchy($this->style_hierarchy);
-
-		$this->tplvars['all_styles'] = $this->style_hierarchy;
+		$this->_setHierarchyVar();
 	}
 
-
+	protected function _setHierarchyVar()
+	{
+		$this->style_hierarchy = $this->db->fetchAllKeyed("SELECT id, parent_id, title, note FROM styles ORDER BY title ASC");
+		$this->style_hierarchy = Arrays::intoHierarchy($this->style_hierarchy);
+		$this->style_hierarchy = Arrays::flattenHierarchy($this->style_hierarchy);
+	}
 
 	############################################################################
-	# index
+	# list styles
 	############################################################################
 
 	/**
 	 * Shows a list of currents styles
 	 */
-	public function indexAction()
+	public function listStylesAction()
     {
-		if (!$this->style_hierarchy) {
-			return $this->redirect($this->generateUrl('admin_styles_intro', array()));
-		}
-
-        return $this->render('AdminBundle:Styles:index.html.twig');
+        return $this->render('AdminBundle:Styles:list-styles.html.twig', array(
+			'style_hierarchy' => $this->style_hierarchy
+		));
     }
-
-
-
-	############################################################################
-	# intro
-	############################################################################
-
-	/**
-	 * Shows an introduction to what styles are etc. A user is automatically redirected
-	 * here when no styles exist yet.
-	 */
-	public function introAction()
-	{
-		$this->tplvars['has_no_styles'] = !((bool)$this->style_hierarchy);
-
-		return $this->render('AdminBundle:Styles:intro.html.twig');
-	}
-
-
 
 	############################################################################
 	# id/edit-style | new-style
@@ -79,47 +61,30 @@ class StylesController extends AbstractController
 			$style = new \Application\DeskPRO\Entity\Style();
 		}
 
-		$this->tplvars['style'] = $style;
+		$form = EditStyleForm::create($this->get('form.context'), 'style', array('style' => $style));
+		$form->bind($this->get('request'), $style);
 
+		$is_edited = false;
+		$row_html = false;
+		if ($this->in->getBool('process')) {
+			$is_edited = true;
+			App::getOrm()->persist($style);
+			App::getOrm()->flush();
 
-		#-------------------------
-		# Set up the form and validator
-		#-------------------------
+			$this->_setHierarchyVar();// reset data in hierarchy
+			$row_html = $this->renderView('AdminBundle:Styles:list-styles-row.html.twig', array('style' => $this->style_hierarchy[$style['id']]));
 
-		$form = new Form\Form('style', $style, $this->get('validator'));
-		$form->add(new Form\TextField('title'));
-
-		if (!$style['id'] AND $this->style_hierarchy) {
-			foreach ($this->style_hierarchy as $s) {
-				$indent = '';
-				if ($s['depth']) $indent = str_repeat('--', $s['depth']) . ' ';
-
-				$choices[$s['id']] = $indent . $s['title'];
-			}
-
-			$f = new Form\ChoiceField('parent_id', array('choices' => $choices));
-			$form->add($f);
-		}
-		$form->add(new Form\TextAreaField('note'));
-
-		$this->tplvars['form'] = $form;
-
-
-		#-------------------------
-		# If the form was submitted, try and save it
-		#-------------------------
-
-		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bind($this->get('request')->request->get('style'));
-			if ($form->isValid()) {
-				$this->em->persist($style);
-				$this->em->flush();
-
-				return $this->redirect($this->generateUrl('admin_styles_showstyle', array('style_id' => $style['id'])));
-			}
+			// Recreate form because parent_id field cant be changed, so we need to get rid of it
+			$form = EditStyleForm::create($this->get('form.context'), 'style', array('style' => $style));
+			$form->setData($style);
 		}
 
-		return $this->render('AdminBundle:Styles:edit.html.twig');
+		return $this->render('AdminBundle:Styles:edit-style.html.twig', array(
+			'style' => $style,
+			'form'      => $form,
+			'is_edited' => $is_edited,
+			'row_html'  => $row_html
+		));
 	}
 
 
@@ -134,12 +99,15 @@ class StylesController extends AbstractController
 	public function styleTemplateListAction($style_id)
 	{
 		$style = $this->getStyleOr404($style_id);
-		$this->tplvars['style'] = $style;
 
-		$template_finder = new \Application\DeskPRO\ResourceScanner\TemplateFiles($this->container);
-		$this->tplvars['template_files'] = $template_finder->getTemplates(true);
+		$template_finder = new \Application\DeskPRO\ResourceScanner\TemplateFiles();
+		$changed_templates = $style->getCustomTemplateNames();
 
-		return $this->render('AdminBundle:Styles:style-template-list.html.twig');
+		return $this->render('AdminBundle:Styles:list-templates.html.twig', array(
+			'style' => $style,
+			'template_files' => $template_finder->getTempaltesInAllBundles(),
+			'changed_templates' => $changed_templates
+		));
 	}
 
 
@@ -150,26 +118,46 @@ class StylesController extends AbstractController
 	/**
 	 * Edit a template
 	 */
-	public function editTemplateAction($style_id, $template_name)
+	public function editTemplateAction($style_id)
 	{
 		$style = $this->getStyleOr404($style_id);
-		$this->tplvars['style'] = $style;
 
-		$template_finder = new \Application\DeskPRO\Style\TemplateFileScanner($this->container);
-		$template_files = $template_finder->getTemplates();
+		$template_name = $this->in->getString('template_name');
 
-		$template_files = Arrays::flatten($template_files);
-		if (!isset($template_files[$template_name])) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no template called `$template_name`");
+		$template_finder = new \Application\DeskPRO\ResourceScanner\TemplateFiles();
+		$template_file = $template_finder->getPathForTemplate($template_name);
+
+		if (!is_file($template_file)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no template with that name");
 		}
 
-		$this->tplvars['template_name'] = $template_name;
-		$this->tplvars['style'] = $style;
+		$default_template_contents = file_get_contents($template_file);
+		$template = $style->getTemplate($template_name);
+		if ($template) {
+			$template_contents = $template['template'];
+		} else {
+			$template_contents = $default_template_contents;
+		}
 
-		// TODO fetch current styles contents
-		$this->tplvars['template_content'] = file_get_contents($template_files[$template_name]);
+		if ($this->in->getBool('process')) {
+			if (!$template) {
+				$template = $style->getTemplateObject($template_name);
+			}
 
-		return $this->render('AdminBundle:Styles:edit-template.html.twig');
+			$template['template'] = $this->in->getString('template_contents');
+
+			App::getOrm()->persist($template);
+			App::getOrm()->flush();
+
+			$template_contents = $template['template'];
+		}
+
+		return $this->render('AdminBundle:Styles:edit-template.html.twig', array(
+			'style' => $style,
+			'template_name' => $template_name,
+			'template_contents' => $template_contents,
+			'default_template_contents' => $default_template_contents
+		));
 	}
 
 

@@ -10,8 +10,9 @@
  */
 
 namespace Application\DeskPRO\ResourceScanner;
-use Symfony\Component\DependencyInjection\Container;
-use Orb\Util\Arrays;
+
+use \Application\DeskPRO\App;
+use \Orb\Util\Arrays;
 
 /**
  * The style system uses templates from the database first, and falls back onto the filesystem.
@@ -20,86 +21,55 @@ use Orb\Util\Arrays;
  */
 class TemplateFiles
 {
-	protected $bundle_dirs = array();
-	protected $bundles = array();
-
-	public function __construct(Container $container)
+	public function getTempaltesInAllBundles()
 	{
-		$this->bundle_dirs = $container->getParameter('kernel.bundle_dirs');
-		$bundles = $container->getParameter('kernel.bundles');
+		$all_bundle_info = App::getApplicationBundleInfo();
 
-		// Filter out those we dont want
-		$filter_out = array('Symfony\\');
-		foreach ($bundles as $k => $v) {
-			$add = true;
-			foreach ($filter_out as $str) {
-				if (strpos($v, $str) === 0) {
-					$add = false;
-					break;
-				}
-			}
-
-			if ($add) {
-				$this->bundles[] = $v;
+		$templates = array();
+		foreach ($all_bundle_info as $bundle => $bundle_info) {
+			$tpls = $this->getTemplatesInBundle($bundle);
+			if ($tpls) {
+				$templates[$bundle] = $this->getTemplatesInBundle($bundle);
 			}
 		}
+
+		return $templates;
 	}
 
-
-
 	/**
-	 * Scan a bundle directory for all templates, and return a map of template names
-	 * and the corresponding file:
+	 * Get an array of templates in a given bundle
 	 *
-	 * <code>
-	 * array(
-	 *     'ExampleBundle:Example:index'   => '/src/Application/ExampleBundle/views/Example/index.html.twig',
-	 *     'WhateverBundle::layout'        => '/src/Bundle/WhateverBundle/views/layout.html.twig',
-	 * )
-	 * </code>
-	 *
-	 * @param string $bundle
+	 * @param  $bundle
 	 * @return array
 	 */
-	public function getBundleTemplates($bundle)
+	public function getTemplatesInBundle($bundle)
 	{
-		$bundle_dir = null;
-		$bundle_name = null;
-
-		foreach ($this->bundle_dirs as $ns => $dir) {
-			if (strpos($bundle, $ns) === 0) {
-				$bundle_dir = $dir . str_replace('\\', '/', str_replace($ns, '', $bundle));
-				// Remove the bundlename at the end cuz its duplciated
-				$bundle_dir = substr($bundle_dir, 0, strrpos($bundle_dir, '/'));
-
-				$bundle_name = substr($bundle_dir, strrpos($bundle_dir, '/')+1);
-				break;
-			}
-		}
-
-		$view_dir = $bundle_dir . '/Resources/views';
-
-		if (!$bundle_dir OR !is_dir($bundle_dir) OR !is_dir($view_dir)) {
+		$all_bundle_info = App::getApplicationBundleInfo();
+		if (!isset($all_bundle_info[$bundle])) {
 			return array();
 		}
 
+		$bundle_info = $all_bundle_info[$bundle];
+
+		$dir = $bundle_info['path'] . '/Resources/views';
+
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->files()->name('*.html.twig')->in($view_dir);
+		$finder->files()->name('*.twig')->in($dir);
 
 		$templates = array();
 		foreach ($finder as $filepath) {
-			// /somepath/SomeBundle/Resources/views/Something/index.html.twig
-			// -> SomeBundle:Something:index
-			$tplname = str_replace($view_dir . '/', ':', $filepath);
-			$tplname = str_replace('.html.twig', '', $tplname);
+
+			$tplname = str_replace($dir . '/', ':', $filepath);
 			$tplname = str_replace('/', ':', $tplname);
 			if (substr_count($tplname, ':') < 2) {
 				$tplname = ':' . $tplname; // for layouts that are in top dir, MyBundle::layout
 			}
-			$tplname = $bundle_name . $tplname;
+			$tplname = $bundle . $tplname;
 
-			$templates[$tplname] = $filepath;
+			$templates[] = $tplname;
 		}
+
+		sort($templates, \SORT_STRING);
 
 		return $templates;
 	}
@@ -107,23 +77,31 @@ class TemplateFiles
 
 
 	/**
-	 * Get templates for all known bundles.
+	 * Get the filepath for a template
 	 *
-	 * @return array
+	 * @param  $template
+	 * @return null|string
 	 */
-	public function getTemplates($nameonly = false)
+	public function getPathForTemplate($template)
 	{
-		$templates = array();
-
-		foreach ($this->bundles as $bundle) {
-			$templates[$bundle] = $this->getBundleTemplates($bundle);
-			if ($nameonly) {
-				$templates[$bundle] = array_keys($templates[$bundle]);
-			}
+		if (substr_count($template, ':') != 2) {
+			return null;
 		}
 
-		$templates = Arrays::removeFalsey($templates);
+		list ($bundle, $section, $name) = explode(':', $template, 3);
 
-		return $templates;
+		$all_bundle_info = App::getApplicationBundleInfo();
+		if (!isset($all_bundle_info[$bundle])) {
+			return null;
+		}
+		$bundle_info = $all_bundle_info[$bundle];
+
+		$path = $bundle_info['path'] . '/Resources/views/';
+		if ($section) {
+			$path .= $section . '/';
+		}
+		$path .= $name;
+
+		return $path;
 	}
 }

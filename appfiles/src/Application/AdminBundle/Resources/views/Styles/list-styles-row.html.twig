@@ -1,0 +1,16 @@
+<li class="style style-{{style.id}}" data-style-id="{{style.id}}">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="{{ path('admin_styles_editstyle', {'style_id': style.id}) }}" class="popout-trigger" data-height="300">edit</a></li>
+			<li class="view"><a href="{{ path('admin_styles_templates', {'style_id': style.id}) }}">edit templates</a></li>
+		</ul>
+	</div>
+	<div>
+		<div {% if style.depth %}style="margin-left: {{ style.depth * 10 }}"{% endif %}>
+		<strong>{{style.title}}</strong>
+		{% if style.note %}
+			<br />
+			<small>{{style.note}}</small>
+		{% endif %}
+	</div>
+</li>

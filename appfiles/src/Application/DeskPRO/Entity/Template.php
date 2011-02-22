@@ -16,7 +16,7 @@ use Orb\Util\Arrays;
 /**
  * Templates used in the system
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Template")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="templates")
  */
@@ -32,26 +32,14 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
-
-	/**
-	 * The style ID.
-	 *
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="style_id", type="integer")
-	 */
-	protected $style_id = null;
-
-
 	/**
 	 * The style this template belongs to
 	 *
 	 * @var Style
-	 * @orm:OneToOne(targetEntity="Style")
+	 * @orm:ManyToOne(targetEntity="Style")
 	 * @orm:JoinColumn(name="style_id", referencedColumnName="id")
 	 */
 	protected $style;
-
 
 	/**
 	 * The path of the template
@@ -61,19 +49,17 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $path;
 
-
 	/**
 	 * @var string
 	 * @orm:Column(name="template", type="text")
 	 */
-	protected $template;
-
+	protected $template = '';
 
 	/**
 	 * @var string
 	 * @orm:Column(name="template_compiled", type="text")
 	 */
-	protected $template_compiled;
+	protected $template_compiled = '';
 
 	/**
 	 * @var \DateTime
@@ -81,21 +67,43 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $created_at;
 
-
 	/**
 	 * @var \DateTime
 	 * @orm:Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 
-	/** @orm:PrePersist */
-	public function incCreatedAt()
+	public function __construct()
 	{
-		$this->created_at = $this->updated_at = new \DateTime();
+		$this->created_at = new \DateTime();
+		$this->updated_at = new \DateTime();
+	}
+
+	public function setTemplate($code)
+	{
+		$this->template = $code;
+
+		// Erase compiled code when we update the tpl,
+		// so it'll be updated when next rendered
+		$this->template_compiled = '';
+	}
+
+	public function setStyleId($style_id)
+	{
+		if ($style_id) {
+			$this->style = App::getEntityRepository('DeskPRO:Style')->find($style_id);
+		} else {
+			$this->style = null;
+		}
+	}
+
+	public function getStyleId()
+	{
+		return $this->style ? $this->style['id'] : 0;
 	}
 
 	/** @orm:PreUpdate */
-	public function incUpdatedAt()
+	public function _incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();
 	}

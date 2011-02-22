@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use \Application\DeskPRO\App;
+
 use \Symfony\Component\Validator\Constraints;
 use \Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -21,7 +23,6 @@ use \Orb\Util\Arrays;
  * Settings used by the system.
  *
  * @orm:Entity
- * @orm:HasLifecycleCallbacks
  * @orm:Table(name="styles")
  */
 class Style extends \Application\DeskPRO\Domain\DomainObject
@@ -36,24 +37,12 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
-
-	/**
-	 * The parent style ID. All styles at least descened from 1, the default.
-	 *
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="parent_id", type="integer")
-	 */
-	protected $parent_id = null;
-
-
 	/**
 	 * @var Style
-	 * @orm:OneToOne(targetEntity="Style")
+	 * @orm:ManyToOne(targetEntity="Style")
 	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent;
-
 
 	/**
 	 * Title of the style
@@ -63,7 +52,6 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $title;
 
-
 	/**
 	 * A note or description about the style
 	 *
@@ -72,36 +60,51 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $note;
 
-
 	/**
 	 * @var \DateTime
 	 * @orm:Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
-	public function setParentId($parent_id)
-	{
-		$this->parent_id = $parent_id;
-
-		// TODO: Cache parents hierarchy later so template fetching is easier
-		$this->_parent_has_changed = true;
-	}
-
-
-	/** @orm:PrePersist */
-	public function _incCreatedAt()
+	public function __construct()
 	{
 		$this->created_at = new \DateTime();
 	}
 
-
-	/**
-	 * Load validators for use with the validator service.
-	 * 
-	 * @param ClassMetadata $metadata
-	 */
-	public static function loadValidatorMetadata(ClassMetadata $metadata)
+	public function setParentId($parent_id)
 	{
-		$metadata->addPropertyConstraint('title', new Constraints\NotBlank());
+		if ($parent_id) {
+			$this->parent = App::getEntityRepository('DeskPRO:Style')->find($parent_id);
+		} else {
+			$this->parent = null;
+		}
+	}
+
+	public function getParentId()
+	{
+		return $this->parent ? $this->parent['id'] : 0;
+	}
+
+
+	public function getTemplate($template_name)
+	{
+		return App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($template_name, $this);
+	}
+
+	public function getTemplateObject($template_name)
+	{
+		$tpl = $this->getTemplate($template_name);
+		if (!$tpl) {
+			$tpl = new Template();
+			$tpl['path'] = $template_name;
+			$tpl['style'] = $this;
+		}
+
+		return $tpl;
+	}
+
+	public function getCustomTemplateNames()
+	{
+		return App::getEntityRepository('DeskPRO:Template')->getCustomTemplateNamesInStyle($this);
 	}
 }

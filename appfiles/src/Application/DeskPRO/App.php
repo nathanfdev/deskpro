@@ -658,4 +658,43 @@ class App
 
 		return $logger;
 	}
+
+
+
+	/**
+	 * Get information about the DeskPRO system bundles.
+	 *
+	 * @static
+	 * @return array
+	 */
+	public static function getApplicationBundleInfo()
+	{
+		return array(
+			'AdminBundle' => array(
+				'bundle' => 'AdminBundle',
+				'namespace' => 'Application\\AdminBundle',
+				'path' => DP_ROOT . '/src/Application/AdminBundle'
+			),
+			'ApiBundle' => array(
+				'bundle' => 'ApiBundle',
+				'namespace' => 'Application\\ApiBundle',
+				'path' => DP_ROOT . '/src/Application/ApiBundle'
+			),
+			'DeskPRO' => array(
+				'bundle' => 'DeskPRO',
+				'namespace' => 'Application\\DeskPRO',
+				'path' => DP_ROOT . '/src/Application/DeskPRO'
+			),
+			'AgentBundle' => array(
+				'bundle' => 'AgentBundle',
+				'namespace' => 'Application\\AgentBundle',
+				'path' => DP_ROOT . '/src/Application/AgentBundle'
+			),
+			'UserBundle' => array(
+				'bundle' => 'UserBundle',
+				'namespace' => 'Application\\UserBundle',
+				'path' => DP_ROOT . '/src/Application/UserBundle'
+			),
+		);
+	}
 }

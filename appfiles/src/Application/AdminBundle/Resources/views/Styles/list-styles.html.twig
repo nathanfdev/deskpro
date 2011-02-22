@@ -1,0 +1,26 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block section 'crm' %}
+{% block sub_section 'usergroups' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/StylesList.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.StylesList();
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<div style="text-align:right; padding-bottom: 10px;">
+	<a class="icon tickets popout-trigger" href="{{ path('admin_styles_editstyle', {'style_id': '0'}) }}" data-height="350">Create New Style</a>
+</div>
+
+<ul class="item-list">
+	{% for style in style_hierarchy %}
+		{% include 'AdminBundle:Styles:list-styles-row.html.twig' %}
+	{% endfor %}
+</ul>
+
+{% endblock %}

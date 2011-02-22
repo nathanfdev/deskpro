@@ -1,0 +1,10 @@
+<li class="template {% if template in changed_templates %}customized{% endif %}" data-template-name="{{template}}">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="{{ path('admin_styles_edittemplate', {'style_id': style.id, 'template_name': template}) }}" class="popout-trigger">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		{{template}}
+	</div>
+</li>
