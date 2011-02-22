@@ -62,3 +62,6 @@ $CONFIG['db']['driver'] = 'pdo_mysql';
  * Path to store cache files. Defaults to appfiles/sys/cache
  */
 //$CONFIG['cache_dir'] = '/some/path';
+
+// Include debug file (all debug options are disabled by default)
+require(DP_ROOT . '/debug.php');

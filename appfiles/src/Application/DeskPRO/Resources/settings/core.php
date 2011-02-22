@@ -4,6 +4,7 @@
 	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
 
 	'core.default_language_id' => 0,
+	'core.default_style_id' => 1,
 	'core.guest_usergroup_id' => 3,
 	'core.default_timezone' => 'UTC',
 

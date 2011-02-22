@@ -27,14 +27,14 @@ class Mailer extends \Swift_Mailer
 	{
 		parent::__construct($transport);
 
-		if (App::getConfig('debug_mail_force_to')) {
-			$this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress(App::getConfig('debug_mail_force_to')));
+		if (App::getConfig('debug.mail.force_to')) {
+			$this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress(App::getConfig('debug.mail.force_to')));
 		}
-		if (App::getConfig('debug_mail_disable_send')) {
+		if (App::getConfig('debug.mail.disable_send')) {
 			$this->registerPlugin(new \Orb\Mail\Plugins\CancelSend());
 		}
-		if (App::getConfig('debug_mail_debug_to_file')) {
-			$filepath = App::getConfig('debug_mail_debug_to_file');
+		if (App::getConfig('debug.mail.save_to_file')) {
+			$filepath = App::getConfig('debug.mail.save_to_file');
 			if ($filepath === true) {
 				$filepath = '%log_dir%/emails';
 			}
