@@ -1,0 +1,43 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('priority', {{priority.id|default(0)}});
+
+	{% if row_html %}
+		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
+	{% endif %}
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>{% if priority.id %}Edit Priority{% else %}New Priority{% endif %}</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_ticketpris_edit', {'priority_id': priority.id|default(0)}) }}" method="post">
+{{ form_hidden(form) }}
+<input type="hidden" name="process" value="1" />
+
+<div class="form-panel">
+	<div class="row">
+		<label>Title</label>
+		{{ form_field(form.title) }}
+	</div>
+	<div class="row">
+		<label>Priority</label>
+		{{ form_field(form.priority) }}
+	</div>
+</div>
+
+<br /><br />
+
+</form>
+{% endblock %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Save</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
+{% endblock %}

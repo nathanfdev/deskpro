@@ -236,6 +236,37 @@ admin_usergroups_edit:
   requirements: { usergroup_id: "\d+" }
 
 ################################################################################
+# Organization
+################################################################################
+
+admin_organizations:
+  pattern: /organizations
+  defaults: { _controller: AdminBundle:Organizations:list }
+
+admin_organizations_edit:
+  pattern: /organizations/{organization_id}
+  defaults: { _controller: AdminBundle:Organizations:edit }
+  requirements: { organization_id: "\d+" }
+
+################################################################################
+# Products
+################################################################################
+
+admin_products:
+  pattern: /products
+  defaults: { _controller: AdminBundle:Products:list }
+
+admin_products_edit:
+  pattern: /products/{product_id}
+  defaults: { _controller: AdminBundle:Products:edit }
+  requirements: { product_id: "\d+" }
+
+admin_products_del:
+  pattern: /products/{product_id}/delete
+  defaults: { _controller: AdminBundle:Products:delete }
+  requirements: { product_id: "\d+" }
+
+################################################################################
 # Departments
 ################################################################################
 
@@ -247,3 +278,29 @@ admin_departments_edit:
   pattern: /departments/{department_id}
   defaults: { _controller: AdminBundle:Departments:edit }
   requirements: { department_id: "\d+" }
+
+################################################################################
+# Ticket Priorities
+################################################################################
+
+admin_ticketpris:
+  pattern: /tickets/priorities
+  defaults: { _controller: AdminBundle:TicketPriorities:list }
+
+admin_ticketpris_edit:
+  pattern: /tickets/priorities/{priority_id}
+  defaults: { _controller: AdminBundle:TicketPriorities:edit }
+  requirements: { priority_id: "\d+" }
+
+################################################################################
+# Ticket Workflows
+################################################################################
+
+admin_ticketworks:
+  pattern: /tickets/workflows
+  defaults: { _controller: AdminBundle:TicketWorkflows:list }
+
+admin_ticketworks_edit:
+  pattern: /tickets/workflows/{workflow_id}
+  defaults: { _controller: AdminBundle:TicketWorkflows:edit }
+  requirements: { workflow_id: "\d+" }

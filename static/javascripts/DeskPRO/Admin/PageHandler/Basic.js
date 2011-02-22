@@ -98,7 +98,7 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 
 	handleListChange: function(info) {
 		var list = $('ul.item-list:first');
-		var exist = $('li.'+info.typename+'-'+info.usergroup_id);
+		var exist = $('li.'+info.typename+'-'+info[info.typename+'_id']);
 
 		var row = $(info.row_html);
 		this.initPopoutTriggers(row);

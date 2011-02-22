@@ -36,5 +36,5 @@ class TicketPriority extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @orm:Column(name="priority", type="integer")
 	 */
-	protected $priority = 0;
+	protected $priority = 10;
 }

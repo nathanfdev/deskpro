@@ -1,0 +1,26 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block section 'crm' %}
+{% block sub_section 'usergroups' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<div style="text-align:right; padding-bottom: 10px;">
+	<a class="icon tickets popout-trigger" href="{{ path('admin_organizations_edit', {'organization_id': '0'}) }}" data-height="200" data-width="400">Create New Organization</a>
+</div>
+
+<ul class="item-list">
+	{% for organization in all_organizations %}
+		{% include 'AdminBundle:Organizations:list-row.html.twig' %}
+	{% endfor %}
+</ul>
+
+{% endblock %}
