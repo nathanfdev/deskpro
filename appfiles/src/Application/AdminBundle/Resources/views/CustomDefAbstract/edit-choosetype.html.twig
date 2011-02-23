@@ -1,10 +1,18 @@
-{% extends 'AdminBundle::layout.html.twig' %}
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('', 0);
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>Choose field type</h1>
+{% endblock %}
 {% block content %}
-
-<h1>Choose Type</h1>
-<p>Choose which kind of form field you want to define.</p>
-
-<br /><br />
 
 <form action="{{ path(route_basename~'edit', {'field_id': 0}) }}" class="form">
 
@@ -58,12 +66,10 @@
 	</li>
 </ul>
 
-<div style="margin-top: 15px; text-align: center">
-	<button class="dp-button">Continue</button>
-</div>
-
 </form>
 
 {% endblock %}
-{% block sidebar %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Continue</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
 {% endblock %}

@@ -56,6 +56,7 @@
 	<script type="text/javascript" charset="utf-8">
 		var BASE_URL = '{{ path('user') }}';
 		var ASSETS_BASE_URL = '{{ asset('') }}';
+		if (!window.DESKPRO_URL_REGISTRY) window.DESKPRO_URL_REGISTRY = {};
 
 		function _win_exec() {
 			window.DeskPRO_Window = new DeskPRO.Admin.PopoutWindow();

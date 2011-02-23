@@ -284,6 +284,11 @@ admin_departments_designer:
   defaults: { _controller: AdminBundle:Departments:designer }
   requirements: { department_id: "\d+" }
 
+admin_departments_designer_ajaxfetchfield:
+  pattern: /departments/{department_id}/designer/ajax-fetch-field/{field_id}
+  defaults: { _controller: AdminBundle:Departments:designerAjaxFetchField }
+  requirements: { department_id: "\d+", field_id: "\d+" }
+
 ################################################################################
 # Ticket Priorities
 ################################################################################

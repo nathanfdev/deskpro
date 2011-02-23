@@ -7,6 +7,7 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
+	window.DESKPRO_URL_REGISTRY['admin_departments_designer_ajaxfetchfield'] = '{{ path('admin_departments_designer_ajaxfetchfield', {'department_id': department.id, 'field_id': '000'})|replace({'000': '{field_id}'}) }}';
 	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentDesigner();
 }
 </script>
@@ -15,16 +16,13 @@ function _page_exec() {
 
 <div style="float:right; width: 200px">
 	<div class="available-display-items">
-		<ul>
+		<ul class="field-list">
 			{% for field in custom_fields %}
-				<li class="custom_field_{{field.id}}" data-item-name="{{field.title}}" data-item-id="custom_field.{{field.field_def.id}}">
-					{{field.title}}
-					<div style="display:none" class="rendered">
-						{{ form_field(field.form, {}, {}, ['AgentBundle:Ticket:custom-field-forms.html.twig']) }}
-					</div>
-					<button class="dp-button x-small add-trigger">Add</button>
-				</li>
+				{% include 'AdminBundle:Departments:designer-field-choicerow.html.twig' %}
 			{% endfor %}
+			<li style="text-align:right;">
+				<button class="dp-button green x-small popout-trigger" data-href="{{ path('admin_customdeftickets_new_choosetype') }}" data-height="400">New custom field</button>
+			</li>
 		</ul>
 	</div>
 </div>

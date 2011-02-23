@@ -8,11 +8,14 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 		this.department_id = department_id;
 
 		$('#display_item').template('display_item');
+		DeskPRO_Window.getMessageBroker().addMessageListener('field.change', this.fetchNewlyCreatedField.bind(this));
 	},
 
 	initPage: function() {
+		this.initPopoutTriggers();
+
 		var self = this;
-		$('.available-display-items .add-trigger').click(function() {
+		$('.available-display-items .add-trigger').live('click', function() {
 			var el = $(this);
 			var parent = el.parent();
 
@@ -97,6 +100,25 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 			var basename = 'terms_any['+itemId+']['+count+']';
 			$(this).data('add-count', count+1);
 			editor2.addNewRow(to_el2, basename);
+		});
+	},
+
+	fetchNewlyCreatedField: function (info) {
+		var field_id = info.field_id;
+		$.ajax({
+			url: DeskPRO_Window.getUrl('admin_departments_designer_ajaxfetchfield', {field_id: field_id}),
+			dataType: 'json',
+			type: 'GET',
+			success: function(data) {
+				var ul = $('ul.field-list:first');
+				var last = $('li:last', ul);
+				var exist = $('li.field-' + field_id);
+				if (exist.length) {
+					exist.replaceWith(data.html);
+				} else {
+					last.before(data.html);
+				}
+			}
 		});
 	}
 });

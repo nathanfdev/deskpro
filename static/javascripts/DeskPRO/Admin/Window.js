@@ -10,58 +10,58 @@ Orb.createNamespace('DeskPRO.Admin');
  * automatically once the page is ready.
  */
 DeskPRO.Admin.Window = new Class({
-	
+
 	Implements: [Events],
-	
+
 	registry: {},
 	messageBroker: null,
 
-	initialize: function() {	
+	initialize: function() {
 		this._initBasic();
 		this._initWindowInterface();
-		
+
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
 		}
 	},
-	
-	
-	
+
+
+
 	_initBasic: function() {
 		this.messageBroker = new DeskPRO.MessageBroker();
 	},
-	
+
 	_initWindowInterface: function() {
 		// Set up tabs
 		$('#window_head_top ul.header-tabs li').click(function() {
 			$('#window_head_top ul.header-tabs li').removeClass('on');
 			$(this).addClass('on');
-			
+
 			$('#window_header_nav .group.on').removeClass('on');
 			$('#window_header_nav .group.' + $(this).data('tab-name')).addClass('on');
 		});
-		
+
 		// Click anywhere on the li to go to the link
 		$('#window_header_nav ul li').click(function() {
 			var a = $('a:first', this);
 			window.location = a.attr('href');
 		});
 	},
-	
-	
-	
+
+
+
 	//#################################################################
 	//# Getters
 	//#################################################################
-	
+
 	getMessageBroker: function() {
 		return this.messageBroker;
 	},
-	
+
 	//#################################################################
 	//# Global registry
 	//#################################################################
-	
+
 	/**
 	 * Get a value from the registry.
 	 *
@@ -72,12 +72,12 @@ DeskPRO.Admin.Window = new Class({
 		if (this.registry[id] === undefined) {
 			return null;
 		}
-		
+
 		return this.registry[id];
 	},
-	
-	
-	
+
+
+
 	/**
 	 * Add or reset a value in the registry.
 	 *
@@ -86,5 +86,25 @@ DeskPRO.Admin.Window = new Class({
 	 */
 	set: function(id, value) {
 		this.registry[id] = value;
-	}
+	},
+
+
+	/**
+	 * Get a URL pattern
+	 */
+	getUrl: function(name, vars) {
+		if (!window.DESKPRO_URL_REGISTRY[name]) {
+			console.warn('Unknown url name %s', name);
+			return null;
+		}
+
+		var url = window.DESKPRO_URL_REGISTRY[name];
+		if (vars) {
+			Object.each(vars, function(v,k) {
+				url = url.replace('{'+k+'}', v);
+			});
+		}
+
+		return url;
+	},
 });

@@ -1,25 +1,26 @@
 {% extends 'AdminBundle::layout.html.twig' %}
+{% block section 'tickets' %}
+{% block sub_section 'priorities' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
+}
+</script>
+{% endblock %}
 {% block content %}
 
 <div style="text-align: right">
-	<a class="dp-button green" href="{{ path(route_basename~'new_choosetype') }}">Create New Field</a>
+	<a class="dp-button green popout-trigger" href="{{ path(route_basename~'new_choosetype') }}">Create New Field</a>
 	<br /><br />
 </div>
 
 <ul class="item-list">
 	{% for field in fields %}
-		<li>
-			<div style="float:right">
-				<ul class="controls">
-					<li class="edit"><a href="{{ path(route_basename~'edit', {'field_id': field.id}) }}">Edit</a></li>
-				</ul>
-			</div>
-			<div style="float:left;">#{{field.id}}</div>
-			<div style="margin-left: 65px">
-				<strong>{{field.title}}</strong>
-				<div style="font-size: 90%">{{field.handler_class}}</div>
-			</div>
-		</li>
+		{% include 'AdminBundle:CustomDefAbstract:list-row.html.twig' %}
 	{% else %}
 		<li>
 			You have no custom fields defined.

@@ -107,4 +107,20 @@ class DepartmentsController extends AbstractController
 			'term_options' => $term_options
 		));
 	}
+
+	public function designerAjaxFetchFieldAction($field_id)
+	{
+		// Custom fields
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields_dummy');
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $custom_fields_form);
+
+		$html = '';
+		if (isset($custom_fields[$field_id])) {
+			$field = $custom_fields[$field_id];
+			$html = $this->renderView('AdminBundle:Departments:designer-field-choicerow.html.twig', array('field' => $field));
+		}
+
+		return $this->createJsonResponse(array('html' => $html));
+	}
 }

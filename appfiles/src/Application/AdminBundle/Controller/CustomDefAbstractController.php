@@ -100,11 +100,16 @@ abstract class CustomDefAbstractController extends AbstractController
 			$form->setFormData($_POST);
 			if ($form->isValid()) {
 				$admin_handler->saveField($form);
-				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id']));
+				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id'], 'saved' => 1));
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());
 			}
+		}
+
+		$row_html = false;
+		if ($this->in->getBool('saved')) {
+			$row_html = $this->renderView('AdminBundle:CustomDefAbstract:list-row.html.twig', array('field' => $field));
 		}
 
 		$parts = explode('\\', $field['handler_class']);
@@ -113,6 +118,8 @@ abstract class CustomDefAbstractController extends AbstractController
 		$vars = array_merge($admin_handler->getTemplateVars(), array(
 			'field' => $field,
 			'form' => $form,
+			'saved' => $this->in->getBool('saved'),
+			'row_html' => $row_html
 		));
 
 		return $this->render($this->getTemplateName($tpl_name), $vars);

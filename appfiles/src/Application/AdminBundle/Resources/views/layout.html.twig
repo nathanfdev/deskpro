@@ -56,6 +56,7 @@
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';
 		var BASE_URL = '{{ path('user') }}';
 		var ASSETS_BASE_URL = '{{ asset('') }}';
+		if (!window.DESKPRO_URL_REGISTRY) window.DESKPRO_URL_REGISTRY = {};
 
 		function _win_exec() {
 			window.DeskPRO_Window = new DeskPRO.Admin.Window();

@@ -54,7 +54,8 @@ abstract class AbstractFields
 			$rendered = $value ? $f_def->getHandler()->renderHtml($value) : null;
 			if ($rendered) $has_value = true;
 
-			$custom_fields[] = array(
+			$custom_fields[$f_def['id']] = array(
+				'id' => $f_def['id'],
 				'field_def' => $f_def,
 				'title' => $f_def['title'],
 				'form' => $f,

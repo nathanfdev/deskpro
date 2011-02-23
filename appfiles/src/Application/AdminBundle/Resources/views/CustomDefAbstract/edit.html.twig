@@ -1,4 +1,22 @@
-{% extends 'AdminBundle::layout.html.twig' %}
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/FieldEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.FieldEdit({{ field.id|default(0) }});
+
+	{% if saved %}
+		DeskPRO_Page.tellParentUpdated();
+		DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
+	{% endif %}
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>{% if field.id %}Edit Field{% else %}New Field{% endif %}</h1>
+{% endblock %}
 {% block content %}
 
 {% set form_url %}{{ path(route_basename~'edit', {'field_id': field.id|default(0)}) }}{% endset %}
@@ -22,12 +40,10 @@
 
 {% block custom_form %}{% endblock %}
 
-<div style="margin-top: 15px; text-align: center;">
-	<button class="dp-button green" type="submit">Save</button>
-</div>
-
 </form>
 
 {% endblock %}
-{% block sidebar %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Save</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
 {% endblock %}

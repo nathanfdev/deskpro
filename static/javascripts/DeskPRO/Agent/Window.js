@@ -133,7 +133,7 @@ DeskPRO.Agent.Window = new Class({
 		var url = window.DESKPRO_URL_REGISTRY[name];
 		if (vars) {
 			Object.each(vars, function(v,k) {
-				url.replace('{'+k+'}', v);
+				url = url.replace('{'+k+'}', v);
 			});
 		}
 
