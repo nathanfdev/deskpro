@@ -94,10 +94,14 @@ class DepartmentsController extends AbstractController
 	public function designerAction($department_id)
 	{
 		$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
-		$custom_fields = App::getApi('custom_fields.tickets')->getFields();
 		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
 
-		return $this->render('AdminBundle:Departments:edit.html.twig', array(
+		// Custom fields
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields_dummy');
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $custom_fields_form);
+
+		return $this->render('AdminBundle:Departments:designer.html.twig', array(
 			'department' => $department,
 			'custom_fields' => $custom_fields,
 			'term_options' => $term_options

@@ -279,6 +279,11 @@ admin_departments_edit:
   defaults: { _controller: AdminBundle:Departments:edit }
   requirements: { department_id: "\d+" }
 
+admin_departments_designer:
+  pattern: /departments/{department_id}/designer
+  defaults: { _controller: AdminBundle:Departments:designer }
+  requirements: { department_id: "\d+" }
+
 ################################################################################
 # Ticket Priorities
 ################################################################################

@@ -285,6 +285,94 @@ ul.tag-cloud li.tag-size10 { font-size:2.9em; }
 	color: #6E2424;
 }
 
+.item-list div.rules-wrap {
+	background-color: #fff;
+	padding: 4px;
+	border: 1px solid #3389D4;
+}
+
+.item-list .toggle-rules {
+	font-size: 10px;
+	margin-bottom: 4px;
+	margin-left: 4px;
+}
+
+.item-list .toggle-rules em {
+	cursor: pointer;
+	color: #1B83DE;
+	font-style: normal;
+}
+
+.item-list .ruletype {
+	background-color: #E9EEF2;
+	padding: 2px;
+	border: 1px solid #CCD6DE;
+}
+
+.item-list .search-form {
+	border-top: 1px solid #C8CACC;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+.item-list .septop {
+	border-top: 1px solid #C8CACC;
+	margin-top: 8px;
+	margin-bottom: 8px;
+}
+
+/**********************************************************
+ Search form sections (top of list pane usually)
+***********************************************************/
+
+.search-form .term {
+	background-color: #fff;
+	padding: 4px;
+	margin: 3px;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.search-form .term .type, .search-form .term .op, .search-form .term .choice {
+	display: inline;
+}
+
+.search-form .term .remove {
+	font-size: 9pt;
+	color: #fff;
+	background-color: #BA3C3C;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	cursor: pointer;
+	float: left;
+	margin-right: 5px;
+	width: 15px;
+	height: 15px;
+	line-height: 12px;
+	text-align: center;
+	overflow: hidden;
+	display: block;
+}
+
+.search-form .add-term {
+	font-size: 9pt;
+	color: #fff;
+	background-color: #468733;
+	-webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	cursor: pointer;
+	float: left;
+	margin-right: 5px;
+	width: 15px;
+	height: 15px;
+	line-height: 12px;
+	text-align: center;
+	overflow: hidden;
+	display: block;
+}
 
 /**********************************************************
  Main List Table

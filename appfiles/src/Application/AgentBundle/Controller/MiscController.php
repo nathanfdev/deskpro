@@ -42,22 +42,30 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_DATA_REGISTRY = {}';
 		$js[] = 'window.DESKPRO_DATA_REGISTRY.ticketDepToCatMap = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->departmentToCategoryMap()) . ';';
 
-		// Custom field rules
-		$js[] = "window.DESKPRO_CUSTOM_TICKET_DEF_RULES = [];";
-		$all_rules = App::getOrm()->createQuery("
-			SELECT r
-			FROM DeskPRO:CustomDefTicketRule r
-			ORDER BY r.run_order ASC
+		// Ticket display elements
+		$js[] = "window.DESKPRO_TICKET_DISPLAY = {};";
+		$display_elements = App::getOrm()->createQuery("
+			SELECT d
+			FROM DeskPRO:DepartmentTicketDisplay d
+			ORDER BY d.display_order ASC
 		")->execute();
 		$done_deps = array();
-		foreach ($all_rules as $rule) {
-			if (!in_array($rule['department']['id'], $done_deps)) {
-				$done_deps[] = $rule['department']['id'];
-				//$js[] = "window.DESKPRO_CUSTOM_TICKET_DEF_RULES[" . $rule['department']['id'] . "] = []";
+		foreach ($display_elements as $d) {
+			if (!in_array($d['department_id'], $done_deps)) {
+				$done_deps[] = $rule['department_id'];
+				$js[] = "window.DESKPRO_TICKET_DISPLAY[{$d['id']}] = []";
 			}
-			$js[] = "window.DESKPRO_CUSTOM_TICKET_DEF_RULES.push(" . $rule->compileToJavascript() . ");";
+
+			$js[] = "window.DESKPRO_TICKET_DISPLAY[{$d['id']}].push(" . json_encode(array(
+				'element_type' => $d['element_type'],
+				'element_id' => $d['element_id'],
+				'initial_state' => $d['initial_state'],
+				'check' => $d->compileToJavascript()
+			)) . ");";
 		}
 
+		// Custom field rules
+		$js[] = "window.DESKPRO_CUSTOM_TICKET_DEF_RULES = [];";
 		$js = implode("\n", $js);
 
 		$response = $this->response;

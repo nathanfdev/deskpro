@@ -17,8 +17,11 @@ function _page_exec() {
 	<div class="available-display-items">
 		<ul>
 			{% for field in custom_fields %}
-				<li class="custom_field_{{field.id}}" data-item-name="{{field.title}}" data-item-id="custom_field[{{field.id}}]">
+				<li class="custom_field_{{field.id}}" data-item-name="{{field.title}}" data-item-id="custom_field.{{field.field_def.id}}">
 					{{field.title}}
+					<div style="display:none" class="rendered">
+						{{ form_field(field.form, {}, {}, ['AgentBundle:Ticket:custom-field-forms.html.twig']) }}
+					</div>
 					<button class="dp-button x-small add-trigger">Add</button>
 				</li>
 			{% endfor %}
@@ -34,16 +37,30 @@ function _page_exec() {
 
 <script id="display_item" type="text/x-jquery-tmpl">
 	<li>
+		<div style="float:right">
+			<span class="toggle-rules on">Field always enabled <em>(Set display rules)</em></span>
+			<span class="toggle-rules off" style="display:none;"><em>Remove rules</em></span>
+		</div>
+
 		<input type="hidden" name="display_items[]" value="${itemId}" />
-		<strong>${name}</strong>
-		<div class="no-rules-wrap"><span class="toggle-rules">Set display rules</span></div>
-		<div class="rules-wrap">
-			<span class="toggle-rules">Erase display rules</span>
-			This is <select name="initial_display[${itemId}]"><option value="visible">initially visible</option><option value="hidden">initially hidden</option></select>.
-			Toggle visibility when <select name="rule_match_type[${itemId}]"><option value="any">any</option><option value="all">all</option></select> of these rules match:
-			<div class="search-form">
+		<input type="hidden" class="display_items_withrules" name="display_items_withrules[${itemId}]" value="0" />
+		<strong>${name}</strong><br />
+		<div class="rendered"></div>
+		<div class="rules-wrap" style="display:none; margin-top: 10px;">
+			Initially <select name="initial_display[${itemId}]"><option value="visible">visible</option><option value="hidden">hidden</option></select>,
+			and then toggle when <span class="ruletype">all</span> of these rules match:
+			<div class="search-form ruletype-all">
 				<div class="rule-list"></div>
 				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+			</div>
+			<br /><br />
+			and when <span class="ruletype">any</span> of these rules match:
+			<div class="search-form ruletype-any">
+				<div class="rule-list"></div>
+				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+			</div>
+			<div class="septop">
+				<input type="checkbox" name="agent_only[${itemId}]" value="1" /> Only show this for agents
 			</div>
 		</div>
 	</li>
@@ -75,7 +92,7 @@ function _page_exec() {
 			</div>
 		</div>
 	{% endif %}
-	{% if term_options.categories %}
+	{% if term_options.ticket_categories_full %}
 		<div class="type" title="Category" data-rule-type="category">
 			<div class="op">
 				<select name="op">
@@ -85,7 +102,7 @@ function _page_exec() {
 			</div>
 			<div class="choice">
 				<select name="category">
-					{% for id,label in term_options.categories %}
+					{% for id,label in term_options.ticket_categories_full %}
 						<option value="{{id}}">{{label}}</option>
 					{% endfor %}
 				</select>
@@ -129,5 +146,7 @@ function _page_exec() {
 		</div>
 	{% endif %}
 </div>
+
+<br style="clear:both;" />
 
 {% endblock %}

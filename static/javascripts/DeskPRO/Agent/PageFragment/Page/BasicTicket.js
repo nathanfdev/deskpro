@@ -267,46 +267,47 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var ticketInfo = {
 			department_id: depId,
 			category_id: catId,
-			product_id: this.getPropertyManager('product_id').getValue()
+			product_id: this.getPropertyManager('product_id').getValue(),
+			priority_id: this.getPropertyManager('priority_id').getValue(),
+			workflow_id: this.getPropertyManager('workflow_id').getValue()
 		};
 
-		var rules = window.DESKPRO_CUSTOM_TICKET_DEF_RULES;
-		if (!rules) {
-			rules = [];
+		var display_elements = [];
+		if (window.DESKPRO_TICKET_DISPLAY && window.DESKPRO_TICKET_DISPLAY[depId]) {
+			display_elements = window.DESKPRO_TICKET_DISPLAY[depId];
 		}
 
+		var show = [];
 		var hide = [];
-		Array.each(rules, function (ruleFn) {
-			var actions = ruleFn(ticketInfo);
-			if (!actions) return;
+		Array.each(display_elements, function(info) {
+			var pass = info.check(ticketInfo);
 
-			var do_stop = false;
+			var state = info.initial_state;
 
-			Array.each(actions, function (action) {
-				if (action[0] == 'show') {
-					hide.erase(action[1]);
-				} else if (action[0] == 'hide') {
-					hide.include(action[1]);
-				} else if(action[0] == 'stop_rules') {
-					do_stop = true;
+			if (pass) {
+				if (state == 'hidden') {
+					state = 'visible';
+				} else {
+					state = 'hidden';
 				}
-			});
+			} else {
+				if (state == 'visible') {
+					state = 'hidden';
+				} else {
+					state = 'visible';
+				}
+			}
 
-			// Dont exec any more rules
-			if (do_stop) {
-				return true;
+			if (state == 'hidden') {
+				hide.push('.' + info.element_type + '-' + info.element_id);
+			} else {
+				show.push('.' + info.element_type + '-' + info.element_id);
 			}
 		});
 
-		var allFields = $('.custom-field', this.contentWrapper);
-
-		if (hide.length) {
-			var hideSel = '.custom-field-' + hide.join(', .custom-field-');
-			allFields.not(hideSel).show();
-			allFields.filter(hideSel).hide();
-		} else {
-			allFields.show();
-		}
+		var displayElements = $('.display-element', this.contentWrapper);
+		displayElements.filter(hide.join(', ')).hide();
+		displayElements.filter(show.join(', ')).show();
 	},
 
 	//#################################################################

@@ -18,19 +18,29 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 
 			var itemName = parent.data('item-name');
 			var itemId = parent.data('item-id');
-			var idClass = itemId.replace(/[^a-zA-Z0-9_]/, '_');
+			var idClass = itemId.replace(/[^a-zA-Z0-9_]/g, '_');
+			var rendered = false;
+			if ($('div.rendered', parent).length) {
+				rendered = $('div.rendered', parent).clone();
+			}
 
 			// So we dont add it twice, hide it
 			$('.' + idClass).hide();
 
-			self.addDisplayItem(itemName, itemId);
+			self.addDisplayItem(itemName, itemId, rendered);
 		});
 	},
 
-	addDisplayItem: function(itemName, itemId) {
-		var data = {name: name, itemId: itemId };
+	addDisplayItem: function(itemName, itemId, rendered) {
+		var data = {name: itemName, itemId: itemId };
 
 		var item = $.tmpl('display_item', data).appendTo('#display_item_list');
+		if (rendered) {
+			$('div.rendered', item).replaceWith(rendered);
+			rendered.show();
+		} else {
+			$('div.rendered', item).remove();
+		}
 
 		this.initDisplayItem(item, itemId);
 	},
@@ -40,12 +50,22 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 			var norules = $('.no-rules-wrap', itemEl);
 			var rules = $('.rules-wrap', itemEl);
 
-			if (norules.is(':hidden')) {
+			var link_on = $('.toggle-rules.on', itemEl);
+			var link_off = $('.toggle-rules.off', itemEl);
+			var f = $('.display_items_withrules', itemEl);
+
+			if (f.val() == '1') {
+				f.val('0');
 				rules.hide();
+				link_off.hide();
 				norules.show();
+				link_on.show();
 			} else {
+				f.val('1');
 				norules.hide();
+				link_on.hide();
 				rules.show();
+				link_off.show();
 			}
 		});
 
@@ -55,13 +75,28 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 				new_row.remove();
 			});
 		});
-		var to_el = $('.search-form .rule-list', itemEl);
+		var to_el = $('.search-form.ruletype-all .rule-list', itemEl);
 
-		$('.search-form .add-term').data('add-count', 0).click(function() {
+		$('.search-form.ruletype-all .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
-			var basename = 'terms['+itemId+']['+count+']';
+			var basename = 'terms_all['+itemId+']['+count+']';
 			$(this).data('add-count', count+1);
 			editor.addNewRow(to_el, basename);
+		});
+
+		var editor2 = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
+		editor2.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+		var to_el2 = $('.search-form.ruletype-any .rule-list', itemEl);
+
+		$('.search-form.ruletype-any .add-term').data('add-count', 0).click(function() {
+			var count = parseInt($(this).data('add-count'));
+			var basename = 'terms_any['+itemId+']['+count+']';
+			$(this).data('add-count', count+1);
+			editor2.addNewRow(to_el2, basename);
 		});
 	}
 });
