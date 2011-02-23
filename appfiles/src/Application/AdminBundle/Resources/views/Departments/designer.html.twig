@@ -1,0 +1,133 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block section 'setup' %}
+{% block sub_section 'departments' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/DepartmentDesigner.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentDesigner();
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<div style="float:right; width: 200px">
+	<div class="available-display-items">
+		<ul>
+			{% for field in custom_fields %}
+				<li class="custom_field_{{field.id}}" data-item-name="{{field.title}}" data-item-id="custom_field[{{field.id}}]">
+					{{field.title}}
+					<button class="dp-button x-small add-trigger">Add</button>
+				</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+
+<div style="margin-right: 210px">
+	<ul class="item-list" id="display_item_list">
+
+	</ul>
+</div>
+
+<script id="display_item" type="text/x-jquery-tmpl">
+	<li>
+		<input type="hidden" name="display_items[]" value="${itemId}" />
+		<strong>${name}</strong>
+		<div class="no-rules-wrap"><span class="toggle-rules">Set display rules</span></div>
+		<div class="rules-wrap">
+			<span class="toggle-rules">Erase display rules</span>
+			This is <select name="initial_display[${itemId}]"><option value="visible">initially visible</option><option value="hidden">initially hidden</option></select>.
+			Toggle visibility when <select name="rule_match_type[${itemId}]"><option value="any">any</option><option value="all">all</option></select> of these rules match:
+			<div class="search-form">
+				<div class="rule-list"></div>
+				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+			</div>
+		</div>
+	</li>
+</script>
+
+<div id="criteria_tpl" class="search-builder-tpl" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="type"></div>
+			<div class="op"></div>
+			<div class="choice"></div>
+			<div class="remove">-</div>
+		</div>
+	</div>
+	{% if term_options.products %}
+		<div class="type" title="Product" data-rule-type="product">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="choice">
+				<select name="product">
+					{% for id,label in term_options.products %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.categories %}
+		<div class="type" title="Category" data-rule-type="category">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="choice">
+				<select name="category">
+					{% for id,label in term_options.categories %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.priorities %}
+		<div class="type" title="Priority" data-rule-type="priority">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					<option value="lt">is less than</option>
+					<option value="gt">is greater than</option>
+				</select>
+			</div>
+			<div class="choice">
+				<select name="priority">
+					{% for id,label in term_options.priorities %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.ticket_workflows %}
+		<div class="type" title="Workflow" data-rule-type="workflow">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="choice">
+				<select name="workflow">
+					{% for id,label in term_options.ticket_workflows %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+</div>
+
+{% endblock %}

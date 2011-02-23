@@ -83,4 +83,24 @@ class DepartmentsController extends AbstractController
 			'row_html'  => $row_html
 		));
 	}
+
+	############################################################################
+	# designer
+	############################################################################
+
+	/**
+	 * "Designs" a department: sets custom ticket rules etc
+	 */
+	public function designerAction($department_id)
+	{
+		$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
+		$custom_fields = App::getApi('custom_fields.tickets')->getFields();
+		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
+
+		return $this->render('AdminBundle:Departments:edit.html.twig', array(
+			'department' => $department,
+			'custom_fields' => $custom_fields,
+			'term_options' => $term_options
+		));
+	}
 }
