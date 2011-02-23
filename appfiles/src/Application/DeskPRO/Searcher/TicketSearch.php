@@ -219,8 +219,12 @@ class TicketSearch extends SearcherAbstract
 	 */
 	public function getOrderByPart()
 	{
+		if (!$this->order_by AND $this->person_search AND $this->person_search->getOrderBy()) {
+			return $this->person_search->getOrderByPart();
+		}
+
 		// Set a default if none
-		if (!$this->order_by AND !$this->person_search->getOrderBy()) {
+		if (!$this->order_by) {
 			$this->order_by = array('ticket.urgency', 'DESC');
 		}
 
@@ -233,7 +237,7 @@ class TicketSearch extends SearcherAbstract
 
 		$term_id = null;
 		$m = null;
-		if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+		if (preg_match('#^(.*?)\[(.*?)\]$#', $type, $m)) {
 			$type = $m[1];
 			$term_id = $m[2];
 		}
@@ -294,10 +298,6 @@ class TicketSearch extends SearcherAbstract
 						break;
 				}
 				break;
-		}
-
-		if (!$order_by AND $this->person_search) {
-			$order_by = $this->person_search->getOrderBy();
 		}
 
 		return $order_by;
