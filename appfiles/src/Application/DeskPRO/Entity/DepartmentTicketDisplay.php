@@ -166,7 +166,7 @@ class DepartmentTicketDisplay extends \Application\DeskPRO\Domain\DomainObject
 			$js[] = "var any_check = function(ticket){return true;};";
 		}
 
-		$js[] = "if (any_check(t) AND all_check(t)) return true; else return false;";
+		$js[] = "if (any_check(t) && all_check(t)) return true; else return false;";
 		$js[] = "}";
 
 		$js = implode(' ', $js);

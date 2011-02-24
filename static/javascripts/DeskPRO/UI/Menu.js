@@ -193,6 +193,10 @@ DeskPRO.UI.Menu = new Class({
 				var top = pageY - height + 4;
 			}
 
+			if (top < 0) {
+				top = 5;
+			}
+
 			this.cachePosInfo = {
 				left: left,
 				top: top

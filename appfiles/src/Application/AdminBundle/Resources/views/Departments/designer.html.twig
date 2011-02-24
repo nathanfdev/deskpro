@@ -15,6 +15,9 @@ function _page_exec() {
 {% endblock %}
 {% block content %}
 
+<form action="{{ path('admin_departments_designer', {'department_id': department.id}) }}" method="post">
+<input type="hidden" name="process" value="1" />
+
 <div style="float:right; width: 200px">
 	<div class="available-display-items">
 		<strong>Ticket Fields</strong>
@@ -23,7 +26,7 @@ function _page_exec() {
 				{% include 'AdminBundle:Departments:designer-field-choicerow.html.twig' %}
 			{% endfor %}
 			<li style="text-align:right;">
-				<button class="dp-button green x-small popout-trigger" data-href="{{ path('admin_customdeftickets_new_choosetype') }}" data-height="400">New custom field</button>
+				<a class="dp-button green x-small popout-trigger" href="{{ path('admin_customdeftickets_new_choosetype') }}" data-height="400">New custom field</a>
 			</li>
 		</ul>
 
@@ -34,7 +37,7 @@ function _page_exec() {
 				{% include 'AdminBundle:Departments:designer-widget-choicerow.html.twig' %}
 			{% endfor %}
 			<li style="text-align:right;">
-				<button class="dp-button green x-small popout-trigger" data-href="{{ path('admin_ticketwidgets_new_choosetype') }}">New widget</button>
+				<a class="dp-button green x-small popout-trigger" href="{{ path('admin_ticketwidgets_new_choosetype') }}">New widget</a>
 			</li>
 		</ul>
 	</div>
@@ -45,6 +48,12 @@ function _page_exec() {
 
 	</ul>
 </div>
+
+<div style="margin-top: 10px; text-align: center">
+	<button class="dp-button green" type="submit">Save</button>
+</div>
+
+</form>
 
 <script id="display_item" type="text/x-jquery-tmpl">
 	<li>

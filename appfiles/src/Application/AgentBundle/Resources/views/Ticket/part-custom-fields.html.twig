@@ -5,7 +5,7 @@
 			<div class="wrap">
 				{% include 'AgentBundle:Ticket:custom-fields-rendered.html.twig' with {'custom_fields': custom_fields} %}
 				{% for widget in widgets['agent.ticket.display'] %}
-					<div class="field-wrap widget widget-{{widget.id}}">
+					<div class="field-wrap widget widget-{{widget.id}} display-element">
 						{% include widget.template_name %}
 					</div>
 				{% endfor %}
@@ -15,7 +15,7 @@
 
 	<div class="ticket-custom-fields edit show-fields edit-fields-overlay" style="display:none">
 		{% for f in custom_fields %}
-			<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
+			<div class="field-wrap custom-field custom-field-{{f.field_def.id}} ticket_field-{{f.field_def.id}} display-element">
 				<div class="label-wrap"><label>{{f.title}}</label></div>
 				<div class="field-input">
 					{{ form_field(f.form, {}, {}, ['AgentBundle:Ticket:custom-field-forms.html.twig']) }}

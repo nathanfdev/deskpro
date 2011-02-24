@@ -1,6 +1,6 @@
 {% for f in custom_fields %}
 	{% if f.rendered %}
-		<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
+		<div class="field-wrap custom-field custom-field-{{f.field_def.id}} ticket_field-{{f.field_def.id}} display-element">
 			<div class="label-wrap"><label>{{f.title}}</label></div>
 			<div class="field-input">
 				{{f.rendered|raw}}

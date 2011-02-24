@@ -130,7 +130,7 @@ pageMeta.widgets = [
 			<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
 			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
 			{% for widget in widgets['agent.ticket.tabs'] %}
-				<li class="tab-trigger widget-{{widget.id}}" data-tab-for=".tab-content.widget-{{widget.id}}">{{widget.tab_title}}</li>
+				<li class="tab-trigger widget-{{widget.id}} display-element" data-tab-for=".tab-content.widget-{{widget.id}}">{{widget.tab_title|default(widget.note)}}</li>
 			{% endfor %}
 		</ul>
 	</div>
@@ -177,7 +177,7 @@ pageMeta.widgets = [
 	</div>
 
 	{% for widget in widgets['agent.ticket.tabs'] %}
-		<div class="tab-content widget-{{widget.id}}" data-tab-trigger=".tab-trigger.widget-{{widget.id}}">
+		<div class="tab-content widget-{{widget.id}} display-element" data-tab-trigger=".tab-trigger.widget-{{widget.id}}">
 			{% include widget.template_name %}
 		</div>
 	{% endfor %}

@@ -46,6 +46,7 @@ class Cleaner
 		'str_raw'       => 'str_raw',
 		'rawstr'        => 'str_raw',
 		'rawstring'     => 'str_raw',
+		'array'         => 'array',
 	);
 
 
@@ -127,6 +128,10 @@ class Cleaner
 			case 'str_raw':
 				$value = (string)$value;
 				break;
+
+			case 'array':
+				$value = (array)$value;
+				break;
 		}
 
 		return $value;
@@ -175,7 +180,7 @@ class Cleaner
 	 *
 	 * This uses phputf8 from sourceforge if it's available. If it's not available,
 	 * this cleaner does nothing.
-	 * 
+	 *
 	 * @link http://sourceforge.net/projects/phputf8/
 	 *
 	 * @param string|array $string The string to work on, or an array to go through

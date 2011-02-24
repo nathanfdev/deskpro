@@ -39,6 +39,7 @@ class WidgetHandler implements \ArrayAccess
 		$this->data['widget']        = $widget;
 		$this->data['id']            = $widget['id'];
 		$this->data['name_id']       = $widget['name_id'];
+		$this->data['note']          = $widget['note'];
 		$this->data['section']       = $widget['section'];
 		$this->data['template_name'] = $widget['template_name'];
 		$this->data['template_name'] = $widget['template_name'];

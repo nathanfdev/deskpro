@@ -52,16 +52,22 @@ class MiscController extends AbstractController
 		$done_deps = array();
 		foreach ($display_elements as $d) {
 			if (!in_array($d['department_id'], $done_deps)) {
-				$done_deps[] = $rule['department_id'];
-				$js[] = "window.DESKPRO_TICKET_DISPLAY[{$d['id']}] = []";
+				$done_deps[] = $d['department_id'];
+				$js[] = "window.DESKPRO_TICKET_DISPLAY[{$d['department_id']}] = [];";
 			}
 
-			$js[] = "window.DESKPRO_TICKET_DISPLAY[{$d['id']}].push(" . json_encode(array(
+			$token = '%%%replacetoken' . mt_rand(1000,9999) . '%%%';
+
+			$line = "window.DESKPRO_TICKET_DISPLAY[{$d['department_id']}].push(" . json_encode(array(
 				'element_type' => $d['element_type'],
 				'element_id' => $d['element_id'],
 				'initial_state' => $d['initial_state'],
-				'check' => $d->compileToJavascript()
+				'check' => $token
 			)) . ");";
+
+			// Cheap and simple way to insert a function literal while still using json_encode for the other values
+			$line = str_replace('"'.$token.'"', $d->compileToJavascript(), $line);
+			$js[] = $line;
 		}
 
 		// Custom field rules

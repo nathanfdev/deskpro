@@ -278,7 +278,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		}
 
 		var show = [];
-		var hide = [];
 		Array.each(display_elements, function(info) {
 			var pass = info.check(ticketInfo);
 
@@ -287,26 +286,19 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			if (pass) {
 				if (state == 'hidden') {
 					state = 'visible';
-				} else {
-					state = 'hidden';
 				}
 			} else {
-				if (state == 'visible') {
-					state = 'hidden';
-				} else {
+				if (state != 'visible') {
 					state = 'visible';
 				}
 			}
 
-			if (state == 'hidden') {
-				hide.push('.' + info.element_type + '-' + info.element_id);
-			} else {
+			if (state == 'visible') {
 				show.push('.' + info.element_type + '-' + info.element_id);
 			}
 		});
 
-		var displayElements = $('.display-element', this.contentWrapper);
-		displayElements.filter(hide.join(', ')).hide();
+		var displayElements = $('.display-element', this.contentWrapper).hide();
 		displayElements.filter(show.join(', ')).show();
 	},
 
