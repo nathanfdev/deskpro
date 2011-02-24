@@ -30,6 +30,20 @@ a:hover {
 	text-decoration: none;
 }
 
+.left { float: left; }
+.right { float: right; }
+.clear {
+	clear: both;
+	height: 1px;
+	width: 1px;
+	visibility: hidden;
+	overflow: hidden;
+}
+
+img {
+	border: none;
+}
+
 .clear {
 	clear: both;
 	height: 1px;

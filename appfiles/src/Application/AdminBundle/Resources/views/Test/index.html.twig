@@ -70,21 +70,28 @@
 	{% block html_head %}{% endblock %}
 	{% block page_js_exec %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}">
-
+<body>
 <div id="header">
 	<div id="header-top">
 		<div class="wrapper">
 			<div class="left box-header">
 				<a href="index.html#" title="" class="logo">DeskPRO</a> 
 			</div>
-
+		
 			<div class="left box-header select">
+				<div class="type-select">
+					<span class="icn-dropdown floating"></span>
+					<ul>
+						<li class="search-all">Search All</li>
+						<li class="search-tickets">Tickets</li>
+						<li class="search-users">Users</li>
+					</ul>
+				</div>
 				<form id="search-form"action="index.html#" method="post">
 					<input type="text" name="search" Value="Search">
 				</form>
 			</div>
-
+		
 			<div class="left box-header  notifications">
 				<ul>
 					<li><span class="icn-bar tickets"></span><div class="counter"><span class="counter">12</span></div></li>
@@ -92,20 +99,20 @@
 				</ul>
 				<span class="white-drop"></span>
 			</div>
-
+		
 			<div class="right box-header current-user">
 				<div class="wrapper-top-bar">
 					<div class="current-user-avatar">
 
 					</div>
 					<div class="current-user-name">
-						<span>{{person.display_name}}</span>
+						<span>Christopher</span>
 					</div>
 					<span class="white-drop"></span>
-
+				
 				</div>
 			</div>
-
+		
 			<div class="right box-header actions">
 				<div class="wrapper-top-bar">
 					<ul>
@@ -114,28 +121,28 @@
 						<li class="keyboard"><a href="index.html" title="">Keyboard</a></li>
 						<li class="network active"><a href="index.html" title="">Network</a></li>
 						<li class="sound"><a href="index.html" title="">Sound</a></li>
-
+					
 					</ul>
 				</div>
 			</div>
-
+		
 			<div class="right box-header admin-actions">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="admin"><a href="{{ path('agent') }}" title="Go to agent interface">Agent</a></li>
+						<li class="admin"><a href="index.html" title="">Admin</a></li>
 						<li class="billing"><a href="index.html" title="">Billing</a></li>
 						<li class="reports"><a href="index.html" title="">Reports</a></li>
 					</ul>
 				</div>
 			</div>
-
+		
 		</div>
 	</div>
 
 	<div id="header-bottom">
 		<div class="wrapper">
-
-
+		
+		
 			<div class="left box-header-bot nav">
 				<div class="wrapper-top-bar">
 					<ul>
@@ -152,20 +159,21 @@
 						<li class="ideas-nav"><a href="index.html" title="">Ideas</a></li>					
 					</ul>
 				</div>
-			</div
-
+			</div>
+		
+		
+			<div class="right box-header-bot undo">
+				<div class="wrapper-top-bar">
+					<div class="name-file">
+						<span>You deleted the ticket <strong>"Some ticket"</strong></span>
+					</div>
+					<a href="index.html" title="" class="btn-undo"><span></span>Undo</a>
+				</div>
+			</div>
+		
 		</div>
 	</div>
 </div>
-
-<div style="padding: 15px;">
-	<table cellspacing="0" cellpadding="0" width="100%" id="pane_shell" class="{% if not nav %}no-nav{% endif %}">
-		<tr>
-			{% if nav %}<td id="pane_nav">{{ nav|raw }}</td>{% endif %}
-			<td id="pane_content"><div id="content_wrap">{% block content %}{% endblock %}</div></td>
-		</tr>
-	</table>
-</div>
-
+	
 </body>
 </html>

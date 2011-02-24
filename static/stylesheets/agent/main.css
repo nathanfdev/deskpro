@@ -1,0 +1,463 @@
+
+body {
+    background-color: #fff;
+	font: 12px/21px Arial, Helvetica, sans-serif;
+	color:#3c3e3f;
+	text-shadow: 0 1px #fff;
+	letter-spacing: .1px;
+}
+
+/**************************************
+Header
+***************************************/
+
+#header-top {
+	width: 100%;
+	height: 35px;
+	border-bottom: 1px solid #333c48;
+	color: #fff;
+	text-shadow: 0 1px 1px #212a35;
+	
+	background: #6b7888;
+	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#647182 ), to(#8591a0));
+    background: -moz-linear-gradient(90deg, #647182, #8591a0 );
+}
+
+#header a {
+	text-decoration:none;
+	color:#c03131;
+	
+	-webkit-transition:all .2s ease-out;
+	-moz-transition:all .2s ease-out;
+	-o-transition:all .2s ease-out;
+}
+
+#header a:hover {
+	opacity: .6;	
+	cursor:pointer;
+}
+
+#header .wrapper {
+	padding: 0 15px;
+	overflow: hidden;
+}
+
+#header .box-header {
+	height: 35px;
+	position: relative;
+}
+
+#header .box-header-bot {
+	height: 65px;
+	position: relative;
+}
+
+
+#header .wrapper-top-bar {
+	margin-top: 4px;
+	overflow: hidden;
+}
+
+#header a.logo {
+	display: block;
+	height: 15px;
+	width: 83px;
+	background: url("../../images/agent/bg-logo.png") no-repeat;	
+	text-indent: -9999px;
+	margin-top: 8px;
+}
+
+/**  Type Select**/
+
+#header .select {
+	margin: 2px 0 0 20px;
+}
+
+#header .type-select {
+	width: 35px;
+	position: absolute;
+	overflow: hidden;
+	top: 4px;
+	left: 0;
+	padding-left: 10px;
+	background: #ececec;
+	border-right: 1px solid #d8dadb;
+	border-top: 1px solid #fff;
+	
+	-webkit-border-radius: 15px 0 0 15px;
+    -moz-border-radius: 15px 0 0 15px;
+    border-radius: 15px 0 0 15px;
+}
+
+#header .icn-dropdown.floating {
+	position: absolute;
+	top: 1px;
+	right: -1px;
+}
+
+#header .icn-dropdown {
+	display: block;
+	width: 9px;
+	height: 6px;
+	background: url("../../images/agent/icn-sprite.png") 4px -78px no-repeat, #ececec ;
+	position: absolute;
+	top: 1px;
+	right: -1px;
+	padding: 5px;
+	cursor: pointer;
+}
+
+#header .type-select ul {
+	width: 233px;
+	overflow: hidden;
+}
+
+#header .type-select ul li {
+	float: left;
+	margin-right: 12px;
+	padding-left: 21px;
+	background: url("../../images/agent/icn-sprite.png") left 2px no-repeat;
+	font-size: 12px ;
+	color: #3c3e3f;
+	text-shadow: 0 1px 0 #fff;
+	cursor: pointer;
+}
+
+.#header type-select ul li: {
+}
+
+#header .type-select ul li.search-tickets {
+	background-position: left -27px;
+}
+
+#header .type-select ul li.search-users {
+	background-position: left -54px;
+}
+
+#header #search-form input {
+	width: 200px;
+	border: 1px solid #636f7d;
+	font-size: 12px;
+	padding: 4px 12px 4px 50px;
+	margin-top: 3px;
+	color: #d3d5d7;
+	
+	-webkit-box-shadow: 0 1px 0 #949da8;
+    -moz-box-shadow: 0 1px 0 #949da8;
+    box-shadow: 0 1px 0 #949da8;
+
+	-webkit-border-radius: 15px;
+    -moz-border-radius: 15px;
+    border-radius: 15px;
+}
+
+/** Notifications **/
+#header .notifications {
+	margin: 6px 0 0 15px;
+}
+
+#header .notifications ul {
+	overflow: hidden;
+	float: left;
+}
+
+#header .notifications ul li {
+	float: left;
+	margin-right: 6px;
+}
+
+#header .notifications ul li span{
+	font-size: 11px;
+	color: #fff;
+	text-shadow: 0 1px 1px #000;
+}
+
+#header .notifications ul li span:first-child{
+	text-indent: -9999px;
+}
+
+#header .notifications ul li span.icn-bar{
+	display: block;
+	background: url("../../images/agent/icn-sprite.png") left -92px no-repeat;
+	text-indent: -999px;
+	width: 16px;
+	height: 16px;
+	float: left;
+	margin-right: 4px;
+	margin-top: 1px;
+}
+
+#header .notifications ul li span.chat{
+	background-position: left -113px;
+}
+
+#header .notifications ul li div.counter {
+	float: left;
+	background: #79aff0;
+	height: 20px;
+	padding: 1px 2px 1px 2px;	
+	
+	-webkit-box-shadow: inset 0 1px 0 #98c4f9;
+    -moz-box-shadow:inset 0 1px 0 #98c4f9;
+    box-shadow: inset 0 1px 0 #98c4f9;
+	
+	
+	-webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+}
+
+#header .notifications ul li div.counter span {
+	background: #54606e;
+	padding: 3px 10px;
+	
+	-webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+    border-radius: 10px;
+
+	-webkit-box-shadow:  0 1px 0 #98c4f9, inset 0 1px 0 #3d4550;
+    -moz-box-shadow: 0 1px 0 #98c4f9, inset 0 1px 0 #3d4550;
+    box-shadow:  0 1px 0 #98c4f9, inset 0 1px 0 #3d4550;
+}
+
+#header .white-drop {
+	display: block;
+	width: 16px;
+	height: 12px;
+	float: left;
+	margin: 8px 0 0 5px;
+	background: url("../../images/agent/icn-sprite.png") left -139px;
+
+}
+
+/** User**/
+#header .current-user {
+	padding-left: 15px;
+	border-left: 1px solid #55606f;
+	
+	-webkit-box-shadow:  inset 1px 0 0 #848f9d;
+    -moz-box-shadow: inset 1px 0 0 #848f9d;
+    box-shadow:  inset 1px 0 0 #848f9d;
+}
+
+#header .current-user-avatar {
+	float: left;
+	margin-bottom: 2px;
+	
+	-webkit-box-shadow: 0 1px 0 #929ba7;
+    -moz-box-shadow:  0 1px 0 #929ba7;
+    box-shadow:  0 1px 0 #929ba7;
+}
+
+#header .current-user-name {
+	float: left;
+}
+
+#header .current-user-name span {
+	font-weight: bold;
+	font-size: 12px;
+	line-height: 20px;
+	margin: 2px 0 0 6px;
+	display: block;
+}
+
+#header .actions {
+	padding-left: 10px;
+}
+
+#header .actions .wrapper-top-bar {
+	margin-top: 7px;
+}
+
+#header .actions ul li{
+	float: left;
+	margin-right: 7px;
+}
+
+#header .actions ul li.active a{
+}
+
+#header .actions ul li a{
+	display: block;
+	width: 18px;
+	height: 18px;
+	background: url("../../images/agent/icn-sprite.png") left -311px no-repeat;
+	text-indent: -9999px;
+}
+
+#header .actions ul li.network a{
+	background-position: left -287px;
+}
+
+#header .actions ul li.network.active a{
+	background-position: right -287px;
+}
+
+#header .actions ul li.keyboard a{
+	background-position: left -264px;
+}
+
+#header .actions ul li.multi a{
+	background-position: left -244px;
+}
+
+#header .actions ul li.help a{
+	background-position: left -220px;
+}
+
+#header .admin-actions .wrapper-top-bar {
+	margin-top: 6px;
+}
+
+#header .admin-actions {
+	border-right: 1px solid #55606f;
+	padding-right: 10px;
+	
+	-webkit-box-shadow:  inset -1px 0 0 #848f9d;
+    -moz-box-shadow: inset -1px 0 0 #848f9d;
+    box-shadow:  inset -1px 0 0 #848f9d;
+}
+
+#header .admin-actions .wrapper-top-bar{
+	margin-top: 7px;
+} 
+
+#header .admin-actions ul li {
+	float: left;
+	margin-right: 6px;
+}
+
+#header .admin-actions ul li a{
+	display: block;
+	padding-left: 23px;
+	background: url("../../images/agent/icn-sprite.png") left -197px no-repeat;
+}
+
+#header .admin-actions ul li a {
+	color: #fff;
+}
+
+#header .admin-actions ul li.billing a{
+	background-position: left -178px;
+}
+
+#header .admin-actions ul li.admin a{
+	background-position: left -160px;
+}
+
+/** 2nd Bar Header**/
+
+#header-bottom {
+	width: 100%;
+	height: 65px;
+	border-bottom: 1px solid #bbbdc4;
+	background: #ecedf1;
+	background: url("../../images/agent/bg-header-bottom.jpg") repeat-x;
+}
+
+#header .nav .wrapper-top-bar {
+	margin-top: 8px;
+}
+
+#header .nav ul li{
+	float: left;
+	margin-right: 13px;
+	
+}
+#header .nav ul li a {
+	display: block;
+	background: url("../../images/agent/icn-nav-sprite.png") 14px top no-repeat;
+	padding: 32px 3px 0 3px;
+	color: #3c3e3f;
+	font-weight: bold;
+}
+
+#header .nav ul li.chats-nav a {
+	background-position: -58px top;
+}
+
+#header .nav ul li.twitter-nav a {
+	background-position: -120px top;
+}
+
+#header .nav ul li.facebook-nav a {
+	background-position: -180px top;
+}
+
+#header .nav ul li.calls-nav a {
+	background-position: -265px top;
+}
+
+#header .nav ul li.users-nav a {
+	background-position: -316px top;
+}
+
+#header .nav ul li.deals-nav a {
+	background-position: -378px top;
+}
+
+#header .nav ul li.calendar-nav a {
+	background-position: -438px top;
+}
+
+#header .nav ul li.tasks-nav a {
+	background-position: -510px top;
+}
+
+#header .nav ul li.publish-nav a {
+	background-position: -577px top;
+}
+
+#header .nav ul li.ideas-nav a {
+	background-position: -652px top;
+}
+
+/** Undo **/
+
+#header .undo .wrapper-top-bar {
+	margin-top: 15px;
+}
+
+#header .name-file {
+	background: #e6e8ec;
+	padding: 5px 10px;
+	float: left;
+	
+	-webkit-border-radius: 3px 0 0 3px;
+    -moz-border-radius: 3px 0 0 3px;
+    border-radius: 3px 0 0 3px;
+
+	-webkit-box-shadow:  inset 0 1px 0 #b9bdc9, 0 1px 0 #fff;
+    -moz-box-shadow: inset 0 1px 0 #b9bdc9, 0 1px 0 #fff;
+    box-shadow:  inset 0 1px 0 #b9bdc9, 0 1px 0 #fff;
+}
+
+#header .btn-undo {
+	color: #fff;
+	text-shadow: 0 -1px 0 #376fb3;
+	float: left;
+	border: 1px solid #1f5a9d;
+	padding: 4px 8px 4px 6px;
+	
+	background: #4687d8;
+	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#3572ce ), to(#5896de));
+    background: -moz-linear-gradient(90deg, #3572ce, #5896de );
+
+	-webkit-box-shadow:  inset 0 1px 0 #8db8ec;
+    -moz-box-shadow: inset 0 1px 0 #8db8ec;
+    box-shadow: inset 0 1px 0 #8db8ec;
+
+	-webkit-border-radius: 0 3px 3px 0;
+    -moz-border-radius: 0 3px 3px 0;
+    border-radius: 0 3px 3px 0;	
+}
+
+#header .btn-undo span{
+	display: block;
+	width: 18px;
+	height: 12px;
+	background: url("../../images/agent/icn-sprite.png") left -351px no-repeat;
+	float: left;
+	margin: 3px 3px 0 0;
+}
