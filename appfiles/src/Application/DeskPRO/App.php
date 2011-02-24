@@ -109,7 +109,7 @@ class App
 	 * Set the person who is making the request, or the person who is authorizing
 	 * the request.
 	 *
-	 * @param Application\DeskPRO\Entity\Person $person
+	 * @param \Application\DeskPRO\Entity\Person $person
 	 */
 	public static function setCurrentPerson(Entity\Person $person)
 	{
@@ -121,7 +121,7 @@ class App
 	/**
 	 * Get the person who is making the curent request.
 	 *
-	 * @return Application\DeskPRO\Entity\Person
+	 * @return \Application\DeskPRO\Entity\Person
 	 */
 	public static function getCurrentPerson()
 	{
@@ -274,7 +274,7 @@ class App
 	/**
 	 * Get the DB abstraction object.
 	 *
-	 * @return Application\DeskPRO\DBAL\Connection
+	 * @return \Application\DeskPRO\DBAL\Connection
 	 */
 	public static function getDb()
 	{
@@ -286,7 +286,7 @@ class App
 	/**
 	 * Get the ORM entity manager.
 	 *
-	 * @return Doctrine\ORM\EntityManager
+	 * @return \Doctrine\ORM\EntityManager
 	 */
 	public static function getOrm()
 	{
@@ -298,7 +298,7 @@ class App
 	/**
 	 * Get the request
 	 *
-	 * @return Symfony\Component\HttpFoundation\Request
+	 * @return \Symfony\Component\HttpFoundation\Request
 	 */
 	public static function getRequest()
 	{
@@ -310,7 +310,7 @@ class App
 	/**
 	 * Get the response
 	 *
-	 * @return Symfony\Component\HttpFoundation\Response
+	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
 	public static function getResponse()
 	{
@@ -322,7 +322,7 @@ class App
 	/**
 	 * Get the session
 	 *
-	 * @return Symfony\Application\DeskPRO\HttpFoundation\Session
+	 * @return \Symfony\Application\DeskPRO\HttpFoundation\Session
 	 */
 	public static function getSession()
 	{
@@ -334,7 +334,7 @@ class App
 	/**
 	 * Get the mailer
 	 *
-	 * @return Swift_Mailer
+	 * @return \Swift_Mailer
 	 */
 	public static function getMailer()
 	{
@@ -346,7 +346,7 @@ class App
 	/**
 	 * Get the router
 	 *
-	 * @return Symfony\Component\Routing\Router
+	 * @return \Symfony\Component\Routing\Router
 	 */
 	public static function getRouter()
 	{
@@ -375,7 +375,7 @@ class App
 	 * Get a repository from the entity manager.
 	 * This is a shortcut for App::getOrm()->getRepository().
 	 *
-	 * @param Doctrine\ORM\EntityRepository
+	 * @param \Doctrine\ORM\EntityRepository
 	 */
 	public static function getEntityRepository($entity)
 	{
@@ -388,7 +388,7 @@ class App
 	 * Get a cache object, or null if no cache exists.
 	 *
 	 * @param string $name Name of the cache
-	 * @return Zend\Cache\Frontend\Core
+	 * @return \Zend\Cache\Frontend\Core
 	 */
 	public static function getCache($name)
 	{
@@ -406,7 +406,7 @@ class App
 	/**
 	 * Get the kernel
 	 *
-	 * @return Application\DeskPRO\Kernel\Kernel
+	 * @return \Application\DeskPRO\Kernel\Kernel
 	 */
 	public static function getKernel()
 	{

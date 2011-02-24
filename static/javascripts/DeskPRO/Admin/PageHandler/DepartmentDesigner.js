@@ -16,37 +16,54 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 		this.initPopoutTriggers();
 
 		var self = this;
-		$('.available-display-items .add-trigger').live('click', function() {
-			var el = $(this);
-			var parent = el.parent();
+		
+		$('#display_item_list').sortable({
+			items: "li:not(#no_elements_message)",
+			axis: 'y',
+			sort: function() {
+				// gets added unintentionally by droppable interacting with sortable
+				// using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
+				$( this ).removeClass("drop-active");
+			},
+			stop: function(event, ui) {
+				
+				$('#no_elements_message').hide();
+				
+				$('li.original', this).each(function() {
+				
+					var el = $(this);
+					var itemName = el.data('item-name');
+					var itemId = el.data('item-id');
+					var idClass = itemId.replace(/[^a-zA-Z0-9_]/g, '_');
+					var rendered = false;
+					if ($('div.rendered', parent).length) {
+						rendered = $('div.rendered', el).clone();
+					}
 
-			var itemName = parent.data('item-name');
-			var itemId = parent.data('item-id');
-			var idClass = itemId.replace(/[^a-zA-Z0-9_]/g, '_');
-			var rendered = false;
-			if ($('div.rendered', parent).length) {
-				rendered = $('div.rendered', parent).clone();
+					var data = {name: itemName, itemId: itemId };
+
+					var item = $.tmpl('display_item', data);
+					if (rendered) {
+						$('div.rendered', item).replaceWith(rendered);
+						rendered.show();
+					} else {
+						$('div.rendered', item).remove();
+					}
+					
+					$('.available-display-items .' + idClass).hide();
+
+					el.replaceWith(item);
+				
+					self.initDisplayItem(item, itemId);
+				});
 			}
-
-			// So we dont add it twice, hide it
-			$('.' + idClass).hide();
-
-			self.addDisplayItem(itemName, itemId, rendered);
 		});
-	},
-
-	addDisplayItem: function(itemName, itemId, rendered) {
-		var data = {name: itemName, itemId: itemId };
-
-		var item = $.tmpl('display_item', data).appendTo('#display_item_list');
-		if (rendered) {
-			$('div.rendered', item).replaceWith(rendered);
-			rendered.show();
-		} else {
-			$('div.rendered', item).remove();
-		}
-
-		this.initDisplayItem(item, itemId);
+		
+		$('.available-display-items li.display-item').draggable({
+			appendTo: 'body',
+			helper: 'clone',
+			connectToSortable: '#display_item_list'
+		});	
 	},
 
 	initDisplayItem: function(itemEl, itemId) {

@@ -1,5 +1,4 @@
-<li class="ticket_field_{{field.field_def.id}} field-{{field.field_def.id}}" data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}" style="clear:right; padding-bottom: 12px;">
-	<a class="dp-button x-small add-trigger" style="float:right">Add</a>
+<li class="ticket_field_{{field.field_def.id}} field-{{field.field_def.id}} display-item original" data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}">
 	{{field.title}}
 	<div style="display:none" class="rendered">
 		{{ form_field(field.form, {}, {}, ['AgentBundle:Ticket:custom-field-forms.html.twig']) }}

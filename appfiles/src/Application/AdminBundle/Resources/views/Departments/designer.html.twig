@@ -12,40 +12,91 @@ function _page_exec() {
 	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentDesigner();
 }
 </script>
+<style type="text/css">
+.available-display-items {
+	background-color: #F5F5F5;
+	font-size: 8pt;
+}
+
+.available-display-items h4 {
+	font-size: 12pt;
+	background-color: #BACADE;
+	padding: 4px;
+	margin-top: 10px;
+}
+
+.available-display-items h4:first-child {
+	margin-top: 0;
+}
+
+.display-item {
+	background-color: #E4E7EB;
+	padding: 3px;
+	border: 1px solid #C2C6CC;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin: 4px 8px 4px 8px;
+	list-style-type: none;
+}
+
+.display-item:hover {
+	cursor: move;
+	background-color: #fff;
+}
+
+#display_item_list {
+	margin-top: 10px;
+}
+
+#display_item_list.drop-active {
+
+}
+#display_item_list.drop-active li {
+	background-color: #EDECC2;
+}
+
+#display_item_list.droppable-hover li {
+	background-color: #FFFB8C;
+}
+
+</style>
 {% endblock %}
 {% block content %}
 
 <form action="{{ path('admin_departments_designer', {'department_id': department.id}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-<div style="float:right; width: 200px">
+<div style="float:left; width: 200px">
 	<div class="available-display-items">
-		<strong>Ticket Fields</strong>
+		<h4>Ticket Fields</h4>
 		<ul class="field-list">
 			{% for field in custom_fields %}
 				{% include 'AdminBundle:Departments:designer-field-choicerow.html.twig' %}
 			{% endfor %}
-			<li style="text-align:right;">
+			<li style="text-align:center;">
 				<a class="dp-button green x-small popout-trigger" href="{{ path('admin_customdeftickets_new_choosetype') }}" data-height="400">New custom field</a>
 			</li>
 		</ul>
 
 		<br />
-		<strong>Widgets</strong>
+		<h4>Widgets</h4>
 		<ul class="widget-list">
 			{% for widget in widgets %}
 				{% include 'AdminBundle:Departments:designer-widget-choicerow.html.twig' %}
 			{% endfor %}
-			<li style="text-align:right;">
+			<li style="text-align:center;">
 				<a class="dp-button green x-small popout-trigger" href="{{ path('admin_ticketwidgets_new_choosetype') }}">New widget</a>
 			</li>
 		</ul>
 	</div>
 </div>
 
-<div style="margin-right: 210px">
+<div style="margin-left: 220px">
 	<ul class="item-list" id="display_item_list">
-
+		<li id="no_elements_message">
+			You have not enabled any display elements for this department.
+			To add items, drag and drop elements from the right onto	this area.
+		</li>
 	</ul>
 </div>
 

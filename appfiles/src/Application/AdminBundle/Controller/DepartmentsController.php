@@ -76,6 +76,8 @@ class DepartmentsController extends AbstractController
 			$form->setData($department);
 		}
 
+
+
 		return $this->render('AdminBundle:Departments:edit.html.twig', array(
 			'department' => $department,
 			'form'      => $form,
