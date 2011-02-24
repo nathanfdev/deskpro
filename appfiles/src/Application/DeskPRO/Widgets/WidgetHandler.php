@@ -23,15 +23,13 @@ use \Application\DeskPRO\Entity;
 class WidgetHandler implements \ArrayAccess
 {
 	protected $widget;
-	protected $context;
 	protected $options;
 
 	protected $data = array();
 
-	public function __construct(Entity\Widget $widget, $context, array $options = array())
+	public function __construct(Entity\Widget $widget, array $options = array())
 	{
 		$this->widget = $widget;
-		$this->context = $context;
 		$this->options = $options;
 
 		if ($this->widget['data']) {
@@ -41,10 +39,10 @@ class WidgetHandler implements \ArrayAccess
 		$this->data['widget']        = $widget;
 		$this->data['id']            = $widget['id'];
 		$this->data['name_id']       = $widget['name_id'];
+		$this->data['section']       = $widget['section'];
 		$this->data['template_name'] = $widget['template_name'];
 		$this->data['template_name'] = $widget['template_name'];
 
-		$this->data['context'] = $context;
 		$this->data['options'] = $options;
 
 		$this->init();

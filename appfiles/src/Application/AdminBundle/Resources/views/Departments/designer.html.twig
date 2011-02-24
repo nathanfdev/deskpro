@@ -7,7 +7,8 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DESKPRO_URL_REGISTRY['admin_departments_designer_ajaxfetchfield'] = '{{ path('admin_departments_designer_ajaxfetchfield', {'department_id': department.id, 'field_id': '000'})|replace({'000': '{field_id}'}) }}';
+	window.DESKPRO_URL_REGISTRY['admin_departments_designer_ajaxfetchfield']  = '{{ path('admin_departments_designer_ajaxfetchfield', {'department_id': department.id, 'field_id': '000'})|replace({'000': '{field_id}'}) }}';
+	window.DESKPRO_URL_REGISTRY['admin_departments_designer_ajaxfetchwidget'] = '{{ path('admin_departments_designer_ajaxfetchwidget', {'department_id': department.id, 'widget_id': '000'})|replace({'000': '{widget_id}'}) }}';
 	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentDesigner();
 }
 </script>
@@ -16,12 +17,24 @@ function _page_exec() {
 
 <div style="float:right; width: 200px">
 	<div class="available-display-items">
+		<strong>Ticket Fields</strong>
 		<ul class="field-list">
 			{% for field in custom_fields %}
 				{% include 'AdminBundle:Departments:designer-field-choicerow.html.twig' %}
 			{% endfor %}
 			<li style="text-align:right;">
 				<button class="dp-button green x-small popout-trigger" data-href="{{ path('admin_customdeftickets_new_choosetype') }}" data-height="400">New custom field</button>
+			</li>
+		</ul>
+
+		<br />
+		<strong>Widgets</strong>
+		<ul class="widget-list">
+			{% for widget in widgets %}
+				{% include 'AdminBundle:Departments:designer-widget-choicerow.html.twig' %}
+			{% endfor %}
+			<li style="text-align:right;">
+				<button class="dp-button green x-small popout-trigger" data-href="{{ path('admin_ticketwidgets_new_choosetype') }}">New widget</button>
 			</li>
 		</ul>
 	</div>
@@ -36,7 +49,7 @@ function _page_exec() {
 <script id="display_item" type="text/x-jquery-tmpl">
 	<li>
 		<div style="float:right">
-			<span class="toggle-rules on">Field always enabled <em>(Set display rules)</em></span>
+			<span class="toggle-rules on">Always enabled <em>(Set display rules)</em></span>
 			<span class="toggle-rules off" style="display:none;"><em>Remove rules</em></span>
 		</div>
 

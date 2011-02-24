@@ -68,10 +68,13 @@ class TicketController extends AbstractController
 		if (count($widget_recs)) {
 			$widgets = \Application\DeskPRO\Widgets\Factory::createHandlersForWidgets(
 				$widget_recs,
-				'agent.ticket',
 				array('ticket' => $ticket, 'person' => $this->person)
 			);
 		}
+
+		$widgets = Arrays::groupItems($widgets, 'section', true);
+		if (!isset($widgets['agent.ticket.tabs'])) $widgets['agent.ticket.tabs'] = array();
+		if (!isset($widgets['agent.ticket.display'])) $widgets['agent.ticket.display'] = array();
 
 		return $this->render($tpl, array(
 			'person_inner_tab' => $person_inner_tab,

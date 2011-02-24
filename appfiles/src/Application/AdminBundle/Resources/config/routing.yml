@@ -201,6 +201,23 @@ admin_customdeftickets_test:
   requirements: { field_id: "\d+" }
 
 ################################################################################
+# Ticket Widgets
+################################################################################
+
+admin_ticketwidgets:
+  pattern: /tickets/widgets
+  defaults: { _controller: AdminBundle:TicketWidgets:list }
+
+admin_ticketwidgets_new_choosetype:
+  pattern: /tickets/widgets/new-choose-type
+  defaults: { _controller: AdminBundle:TicketWidgets:newChooseType }
+
+admin_ticketwidgets_edit:
+  pattern: /tickets/widgets/{widget_id}/edit
+  defaults: { _controller: AdminBundle:TicketWidgets:edit }
+  requirements: { widget_id: "\d+" }
+
+################################################################################
 # Organization Fields
 ################################################################################
 
@@ -288,6 +305,11 @@ admin_departments_designer_ajaxfetchfield:
   pattern: /departments/{department_id}/designer/ajax-fetch-field/{field_id}
   defaults: { _controller: AdminBundle:Departments:designerAjaxFetchField }
   requirements: { department_id: "\d+", field_id: "\d+" }
+
+admin_departments_designer_ajaxfetchwidget:
+  pattern: /departments/{department_id}/designer/ajax-fetch-widget/{widget_id}
+  defaults: { _controller: AdminBundle:Departments:designerAjaxFetchWidget }
+  requirements: { department_id: "\d+", widget_id: "\d+" }
 
 ################################################################################
 # Ticket Priorities

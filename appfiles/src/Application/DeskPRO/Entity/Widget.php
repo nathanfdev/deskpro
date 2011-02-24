@@ -41,6 +41,14 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	protected $name_id = '';
 
 	/**
+	 * Note/title for this widget, reminder for admin
+	 *
+	 * @var string
+	 * @orm:Column(name="note", type="string", length=255)
+	 */
+	protected $note = '';
+
+	/**
 	 * An array of CSS files this widget loads.
 	 *
 	 * @var array
@@ -102,7 +110,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return Application\DeskPRO\Widgets\HandlerInterface
 	 */
-	public function getHandler($context, array $options)
+	public function getHandler(array $options)
 	{
 		if ($this->php_widget_class) {
 			$classname = $this->php_widget_class;
@@ -110,7 +118,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 			$classname = 'Application\\DeskPRO\\Widgets\\WidgetHandler';
 		}
 
-		$handler = new $classname($this, $context, $options);
+		$handler = new $classname($this, $options);
 
 		return $handler;
 	}

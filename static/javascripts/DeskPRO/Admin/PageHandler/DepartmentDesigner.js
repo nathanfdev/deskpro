@@ -9,6 +9,7 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 
 		$('#display_item').template('display_item');
 		DeskPRO_Window.getMessageBroker().addMessageListener('field.change', this.fetchNewlyCreatedField.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('widget.change', this.fetchNewlyCreatedWidget.bind(this));
 	},
 
 	initPage: function() {
@@ -113,6 +114,25 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 				var ul = $('ul.field-list:first');
 				var last = $('li:last', ul);
 				var exist = $('li.field-' + field_id);
+				if (exist.length) {
+					exist.replaceWith(data.html);
+				} else {
+					last.before(data.html);
+				}
+			}
+		});
+	},
+
+	fetchNewlyCreatedWidget: function (info) {
+		var widget_id = info.widget_id;
+		$.ajax({
+			url: DeskPRO_Window.getUrl('admin_departments_designer_ajaxfetchwidget', {widget_id: widget_id}),
+			dataType: 'json',
+			type: 'GET',
+			success: function(data) {
+				var ul = $('ul.widget-list:first');
+				var last = $('li:last', ul);
+				var exist = $('li.widget-' + widget_id);
 				if (exist.length) {
 					exist.replaceWith(data.html);
 				} else {

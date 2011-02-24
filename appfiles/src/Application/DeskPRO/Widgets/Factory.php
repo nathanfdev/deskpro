@@ -20,7 +20,7 @@ class Factory
 		$handlers = array();
 
 		foreach ($widgets as $w) {
-			$handlers[] = $w->getHandler($context, $options);
+			$handlers[$w['id']] = $w->getHandler($options);
 		}
 
 		return $handlers;

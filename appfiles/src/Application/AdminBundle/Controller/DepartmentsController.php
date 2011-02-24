@@ -101,10 +101,14 @@ class DepartmentsController extends AbstractController
 		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields_dummy');
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $custom_fields_form);
 
+		// widgets
+		$widgets = App::getEntityRepository('DeskPRO:Widget')->getWidgetsForSection(array('agent.ticket', 'user.ticket'));
+
 		return $this->render('AdminBundle:Departments:designer.html.twig', array(
 			'department' => $department,
 			'custom_fields' => $custom_fields,
-			'term_options' => $term_options
+			'term_options' => $term_options,
+			'widgets' => $widgets
 		));
 	}
 
@@ -120,6 +124,14 @@ class DepartmentsController extends AbstractController
 			$field = $custom_fields[$field_id];
 			$html = $this->renderView('AdminBundle:Departments:designer-field-choicerow.html.twig', array('field' => $field));
 		}
+
+		return $this->createJsonResponse(array('html' => $html));
+	}
+
+	public function designerAjaxFetchWidgetAction($widget_id)
+	{
+		$widget = App::getEntityRepository('DeskPRO:Widget')->find($widget_id);
+		$html = $this->renderView('AdminBundle:Departments:designer-widget-choicerow.html.twig', array('widget' => $widget));
 
 		return $this->createJsonResponse(array('html' => $html));
 	}

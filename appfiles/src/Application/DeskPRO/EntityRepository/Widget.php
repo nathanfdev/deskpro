@@ -20,11 +20,23 @@ class Widget extends EntityRepository
 {
 	public function getWidgetsForSection($section)
 	{
+		$likes = array();
+		$params = array();
+
+		$x = 0;
+		foreach ((array)$section as $s) {
+			$x++;
+			$likes[] = "w.section LIKE ?$x";
+			$params[$x] = $s . '%';
+		}
+
+		$likes = implode(' OR ', $likes);
+
 		$widgets = $this->getEntityManager()->createQuery("
 			SELECT w
 			FROM DeskPRO:Widget w
-			WHERE w.section LIKE ?1
-		")->setParameter(1, $section . '%')->execute();
+			WHERE $likes
+		")->setParameters($params)->execute();
 
 		return $widgets;
 	}

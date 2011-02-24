@@ -1385,4 +1385,52 @@ class Arrays
 
 		return array_slice($array, $start, $per_page);
 	}
+
+
+
+	/**
+	 * Use a key in an array of arrays as a grouping variable.
+	 *
+	 * <code>
+	 * $array = array(
+	 *     array('type' => 'foo', 'name' => 'Example 1'),
+	 *     array('type' => 'foo', 'name' => 'Example 2'),
+	 *     array('type' => 'bar', 'name' => 'Example 3'),
+	 *     array('type' => 'bar', 'name' => 'Example 4'),
+	 * );
+	 *
+	 * $array = Arrays::groupItems($array);
+	 * // array(
+	 * //     'foo' => array(
+	 * //         array('type' => 'foo', 'name' => 'Example 1'),
+	 * //         array('type' => 'foo', 'name' => 'Example 2'),
+	 * //     ),
+	 * //     'bar' => array(
+	 * //         array('type' => 'bar', 'name' => 'Example 3'),
+	 * //         array('type' => 'var', 'name' => 'Example 4'),
+	 * //     ),
+	 * // );
+	 * </code>
+	 *
+	 * @param array $array
+	 * @param $group_key
+	 * @return array
+	 */
+	public static function groupItems($array, $group_key, $preserve_keys = false)
+	{
+		$ret = array();
+
+		foreach ($array as $k => $v) {
+			$group = $v[$group_key];
+			if (!isset($ret[$group])) $ret[$group] = array();
+
+			if ($preserve_keys) {
+				$ret[$group][$k] = $v;
+			} else {
+				$ret[$group][] = $v;
+			}
+		}
+
+		return $ret;
+	}
 }

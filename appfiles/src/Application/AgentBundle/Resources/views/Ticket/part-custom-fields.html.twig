@@ -4,6 +4,11 @@
 		<div class="ticket-custom-fields show-fields" style="clear:right">
 			<div class="wrap">
 				{% include 'AgentBundle:Ticket:custom-fields-rendered.html.twig' with {'custom_fields': custom_fields} %}
+				{% for widget in widgets['agent.ticket.display'] %}
+					<div class="field-wrap widget widget-{{widget.id}}">
+						{% include widget.template_name %}
+					</div>
+				{% endfor %}
 			</div>
 		</div>
 	</div>

@@ -16,7 +16,7 @@ pageMeta.tabTicketLogUrl              = '{{ path('agent_ticket_ajaxtab_ticketlog
 pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachments', {'ticket_id': ticket.id}) }}';
 pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
 pageMeta.widgets = [
-{% for widget in widgets %}
+{% for widget in widgets['agent.ticket.tabs']|merge(widgets['agent.ticket.display']) %}
 	{{ widget.getJsInitObject('div.tab-content.widget-' ~ widget.id)|json_encode|raw }}
 	{% if not loop.last %},{%endif%}
 {% endfor %}
@@ -129,7 +129,7 @@ pageMeta.widgets = [
 			<li class="tab-trigger notes" data-tab-for=".tab-content.notes">Notes</li>
 			<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
 			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
-			{% for widget in widgets %}
+			{% for widget in widgets['agent.ticket.tabs'] %}
 				<li class="tab-trigger widget-{{widget.id}}" data-tab-for=".tab-content.widget-{{widget.id}}">{{widget.tab_title}}</li>
 			{% endfor %}
 		</ul>
@@ -176,7 +176,7 @@ pageMeta.widgets = [
 		</div>
 	</div>
 
-	{% for widget in widgets %}
+	{% for widget in widgets['agent.ticket.tabs'] %}
 		<div class="tab-content widget-{{widget.id}}" data-tab-trigger=".tab-trigger.widget-{{widget.id}}">
 			{% include widget.template_name %}
 		</div>

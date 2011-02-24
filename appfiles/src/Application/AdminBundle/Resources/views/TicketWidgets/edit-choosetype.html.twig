@@ -1,0 +1,45 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('', 0);
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>Choose Widget Type</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_ticketwidgets_edit', {'widget_id': widget.id|default(0)}) }}" class="form" method="post">
+
+<input type="hidden" name="widget[template_name]" value="DeskPRO:Widgets:deskpro_content.html.twig" />
+
+<strong>Widget Location</strong>
+<ul class="item-list">
+	<li>
+		<input type="radio" name="widget[section]" value="agent.ticket.display" checked="checked" /> Display field in agent interface<br />
+		<input type="radio" name="widget[section]" value="agent.ticket.tabs" /> Tab in agent interface<br />
+		<input type="radio" name="widget[section]" value="user.ticket.display" /> Display field in user interface<br />
+	</li>
+</ul>
+
+<br />
+
+<strong>Widget Type</strong>
+<ul class="item-list">
+	<li>
+		<input type="radio" name="widget[name_id]" value="deskpro_content" checked="checked" /> Simple HTML content
+	</li>
+</ul>
+
+</form>
+
+{% endblock %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Continue</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
+{% endblock %}
