@@ -63,94 +63,87 @@
 	</div>
 </div>
 
-<div id="window_head">
-	{% if is_demo %}
-	<div id="window_demo_bar">
-		Your demo expires in 29 days
-	</div>
-	{% endif %}
-	<div id="window_head_top">
-		<ul class="header-tabs">
-			<li class="on tickets" data-tab-name="helpdesk">Helpdesk</li>
-			<li data-tab-name="crm">CRM</li>
-			<li data-tab-name="social">Social</li>
-			<li data-tab-name="publish">Publish</li>
-		</ul>
-		<ul class="current-user">
-			<li class="person">{{person.display_name}} (<a href="{{ path('user_logout') }}">Log Out</a>)</li>
-			<li class="settings settings-link">Settings</li>
-			<li class="reports icon-chart">Reports</li>
-			<li class="admin"><a href="{{ path('admin') }}">Admin</a></li>
-			<li class="help">Help</li>
-		</ul>
-		<div id="notify_button">5 new tickets (+2 other)</div>
-	</div>
-	<div id="window_header_nav">
-		<div class="group helpdesk on">
-			<ul>
-				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}"><span class="icon tickets">Tickets</span></li>
-				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}"><span class="icon tickets">Phonecall</span></li>
-				<!--
-				<li class="tickets" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}"><span class="icon tickets">SMS</span></li>
-				-->
-				<li class="chat" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon chat">Chat</span></li>
-				<li class="ideas" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon ideas">Ideas</span></li>
-				<!--
-				<li class="forums" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tickets">Q&amp;A</span></li>
-				-->
-				<!--
-				<li class="forms" data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon tickets">Forms</span></li>
-				-->
-			</ul>
-		</div>
-		<div class="group crm">
-			<ul>
-				<li data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}"><span class="icon people">People</span></li>
-				<li data-route="navpane:{{ path('agent_peoplesearch_labelspane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}"><span class="dev-feature-inactive icon organizations">Organizations</span></li>
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Leads</span></li>
-			</ul>
-		</div>
-		<div class="group social">
-			<ul>
-				<li data-route="navpane:{{ path('agent_twitter_accountspane') }}" data-route-alt="listpane.alt:{{ path('agent_twitter_index') }}"><span class="dev-feature-inactive icon tweets">Twitter</span></li>
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon facebook">Facebook</span></li>
-				<!--
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon leads">Referrers</span></li>
-				-->
-				<!--
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane.alt:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon linkedin">LinkedIn</span></li>
-				-->
-			</ul>
-		</div>
-		<div class="group publish">
-			<ul>
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon knowledgebase">Knowledgebase</span></li>
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon troubleshooters">Troubleshooters</span></li>
-				<li data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" data-route-alt="listpane:{{ path('agent_ticketsearch') }}"><span class="dev-feature-inactive icon files">Files</span></li>
-			</ul>
-		</div>
+<div id="header">
+	<div id="header-top">
+		<div class="wrapper">
+			<div class="left box-header">
+				<a href="index.html#" title="" class="logo">DeskPRO</a> 
+			</div>
 
-		<div class="nav-right">
-			<div class="search-box">
-				<input type="text" name="q" />
+			<div class="left box-header select">
+				<form id="search-form"action="index.html#" method="post">
+					<input type="text" name="search" Value="Search">
+				</form>
 			</div>
-			<div class="create-box">
-				<span id="create_new_menu_trigger">Create New</span>
-				<ul id="create_new_menu" style="display:none">
-					<li data-route="page:{{ path('agent_ticket_new') }}"><span class="icon tickets">Ticket</span></li>
-					<li data-route="page:{{ path('agent_ticket_new') }}"><span class="icon tickets">Phonecall</span></li>
-					<li class="sep">-</li>
-					<li><span class="icon tweets dev-feature-inactive">Tweet</span></li>
-					<li class="sep">-</li>
-					<li><span class="icon people dev-feature-inactive">Person</span></li>
-					<li><span class="icon organizations dev-feature-inactive">Organization</span></li>
-					<li class="sep">-</li>
-					<li><span class="icon knowledgebase dev-feature-inactive">Knowledgebase Article</span></li>
-					<li><span class="icon troubleshooters dev-feature-inactive">Troubleshooters</span></li>
-					<li><span class="icon ideas dev-feature-inactive">Idea</span></li>
-					<li><span class="icon files dev-feature-inactive">File</span></li>
+
+			<div class="left box-header  notifications">
+				<ul>
+					<li><span class="icn-bar tickets"></span><div class="counter"><span class="counter">12</span></div></li>
+					<li><span class="icn-bar chat"></span><div class="counter"><span class="counter">2</span></div></li>
 				</ul>
+				<span class="white-drop"></span>
 			</div>
+
+			<div class="right box-header current-user">
+				<div class="wrapper-top-bar">
+					<div class="current-user-avatar">
+
+					</div>
+					<div class="current-user-name">
+						<span>{{person.display_name}}</span>
+					</div>
+					<span class="white-drop"></span>
+
+				</div>
+			</div>
+
+			<div class="right box-header actions">
+				<div class="wrapper-top-bar">
+					<ul>
+						<li class="help"><a href="index.html" title="Help">Help</a></li>
+						<li class="multi"><a href="index.html" title="Multilingual">Multilingual</a></li>
+						<li class="keyboard"><a href="index.html" title="Toggle keyboard shortcuts">Keyboard</a></li>
+						<li class="network active"><a href="index.html" title="Network status">Network</a></li>
+						<li class="sound"><a href="index.html" title="Toggle sound notifications">Sound</a></li>
+					</ul>
+				</div>
+			</div>
+
+			<div class="right box-header admin-actions">
+				<div class="wrapper-top-bar">
+					<ul>
+						<li class="admin"><a href="{{ path('admin') }}" title="Go to agent interface">Admin</a></li>
+						<li class="billing"><a href="index.html" title="">Billing</a></li>
+						<li class="reports"><a href="index.html" title="">Reports</a></li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div id="header-bottom">
+		<div class="wrapper">
+
+
+			<div class="left box-header-bot nav">
+				<div class="wrapper-top-bar">
+					<ul>
+						<li class="tickets-nav"><a data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" title="">Tickets</a></li>
+						<li class="chats-nav"><a href="index.html" title="">Chats</a></li>
+						<li class="twitter-nav"><a href="index.html" title="">Twitter</a></li>
+						<li class="facebook-nav"><a href="index.html" title="">Facebook</a></li>
+						<li class="calls-nav"><a href="index.html" title="">Calls</a></li>
+						<li class="users-nav"><a data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}" title="">Users</a></li>
+						<li class="deals-nav"><a href="index.html" title="">Deals</a></li>
+						<li class="calendar-nav"><a href="index.html" title="">Calendar</a></li>
+						<li class="tasks-nav"><a href="index.html" title="">Tasks</a></li>
+						<li class="publish-nav"><a href="index.html" title="">Publish</a></li>
+						<li class="ideas-nav"><a href="index.html" title="">Ideas</a></li>					
+					</ul>
+				</div>
+			</div
+
 		</div>
 	</div>
 </div>
@@ -173,30 +166,6 @@
 	<div class="help">(Click anywhere to hide)</div>
 	<div class="message">Some kind of status message here</div>
 	<div class="undo"><button class="dp-button x-small">Undo</button></div>
-</div>
-<div id="notify_list" style="display:none;">
-	<ul>
-		<li id="notify_list_tickets">
-			<h4>Tickets</h4>
-			<ul>
-				<li><span class="dismiss">dismiss</span><a>moved server</a>, <a>problem with script</a> and 2 others in the <a>Troubleshooting</a> queue</li>
-				<li><span class="dismiss">dismiss</span><a>questions</a> in the <a>Sales</a> queue</li>
-			</ul>
-		</li>
-		<li id="notify_list_chat">
-			<h4>Chat</h4>
-			<ul>
-				<li><span class="dismiss">dismiss</span>New chat <a>LDAP integration</a></li>
-			</ul>
-		</li>
-		<li id="notify_list_twitter">
-			<h4>Twitter</h4>
-			<ul>
-				<li><span class="dismiss">dismiss</span>3 new mentions for <a>@deskpro</a></li>
-				<li><span class="dismiss">dismiss</span>1 new direct message to <a>@deskpro</a></li>
-			</ul>
-		</li>
-	</ul>
 </div>
 
 {####################

@@ -1,15 +1,18 @@
 
 body {
     background-color: #fff;
-	font: 12px/21px Arial, Helvetica, sans-serif;
 	color:#3c3e3f;
-	text-shadow: 0 1px #fff;
-	letter-spacing: .1px;
 }
 
 /**************************************
 Header
 ***************************************/
+
+#header {
+	font: 12px/21px Arial, Helvetica, sans-serif;
+	text-shadow: 0 1px #fff;
+	letter-spacing: .1px;
+}
 
 #header-top {
 	width: 100%;

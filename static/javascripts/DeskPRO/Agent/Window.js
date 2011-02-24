@@ -41,6 +41,9 @@ DeskPRO.Agent.Window = new Class({
 	},
 
 	initPage: function() {
+		this.interfaceEffects = new DeskPRO.Agent.InterfaceEffects();
+		this.interfaceEffects.initPage();
+		
 		this._initBasic();
 		this._initRoutes();
 		this._initWindowInterface();
@@ -766,7 +769,8 @@ DeskPRO.Agent.Window = new Class({
 		this.addPageRouteLoader('person', this.loadRoute.bind(this));
 
 		var self = this;
-		$('#window_header_nav li[data-route]').click(function() {
+		$('#header li a[data-route]').click(function(ev) {
+			ev.preventDefault();
 			self.runPageRouteFromElement(this);
 		});
 	},
@@ -819,12 +823,12 @@ DeskPRO.Agent.Window = new Class({
 
 	_initLayout: function() {
 
-		var winhead = $('#window_head');
+		var winhead = $('#header');
 		var h = winhead.height();
 
 		$('body').layout({
 			north: {
-				paneSelector: '#window_head',
+				paneSelector: '#header',
 				spacing_open: 0,
 				spacing_closed: 0,
 				size: h

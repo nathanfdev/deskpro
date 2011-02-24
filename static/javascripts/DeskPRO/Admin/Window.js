@@ -15,8 +15,13 @@ DeskPRO.Admin.Window = new Class({
 
 	registry: {},
 	messageBroker: null,
+	interfaceEffects: null,
 
 	initialize: function() {
+		
+		this.interfaceEffects = new DeskPRO.Agent.InterfaceEffects();
+		this.interfaceEffects.initPage();
+		
 		this._initBasic();
 		this._initWindowInterface();
 
