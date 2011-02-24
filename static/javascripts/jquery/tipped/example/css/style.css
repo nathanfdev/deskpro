@@ -1,0 +1,29 @@
+body {
+  font: 11px/18px Verdana, "Lucida Grande", "Lucida Sans Unicode", Arial, sans-serif;
+}
+
+#page { margin: 0 auto; width: 800px; padding-top: 35px;}
+
+#logo { width: 246px; height: 67px; float: left; margin-bottom: 18px; clear: both; }
+
+h1, h2 { clear: both; font-family: Georgia, Palatino, Times, "Times New Roman"; font-style: italic; font-weight: normal;}
+h1 { font-size: 21px; line-height: 23px; }
+h2 { font-size: 18px; line-height: 19px; }
+
+#demonstrations { float: left; clear: both; width: 100%; margin-bottom: 18px; }
+#demonstrations .demonstration {
+  float: left;
+  width: 72px;
+  border: 1px solid #e0e0e0;
+  border-right-color: #dcdcdc;
+  border-bottom-color: #dcdcdc;
+  height: 32px;
+  margin: 0 5px 5px 0;
+  background: #efefef;
+  cursor: pointer;
+}
+#demonstrations .demonstration img {
+  float: left;
+  width: 72px;
+  height: 32px;
+}
