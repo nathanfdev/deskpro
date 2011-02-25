@@ -20,7 +20,7 @@ Header
 	border-bottom: 1px solid #333c48;
 	color: #fff;
 	text-shadow: 0 1px 1px #212a35;
-	
+
 	background: #6b7888;
 	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#647182 ), to(#8591a0));
     background: -moz-linear-gradient(90deg, #647182, #8591a0 );
@@ -29,14 +29,14 @@ Header
 #header a {
 	text-decoration:none;
 	color:#c03131;
-	
+
 	-webkit-transition:all .2s ease-out;
 	-moz-transition:all .2s ease-out;
 	-o-transition:all .2s ease-out;
 }
 
 #header a:hover {
-	opacity: .6;	
+	opacity: .6;
 	cursor:pointer;
 }
 
@@ -65,7 +65,7 @@ Header
 	display: block;
 	height: 15px;
 	width: 83px;
-	background: url("../../images/agent/bg-logo.png") no-repeat;	
+	background: url("../../images/agent/bg-logo.png") no-repeat;
 	text-indent: -9999px;
 	margin-top: 8px;
 }
@@ -86,7 +86,7 @@ Header
 	background: #ececec;
 	border-right: 1px solid #d8dadb;
 	border-top: 1px solid #fff;
-	
+
 	-webkit-border-radius: 15px 0 0 15px;
     -moz-border-radius: 15px 0 0 15px;
     border-radius: 15px 0 0 15px;
@@ -144,7 +144,7 @@ Header
 	padding: 4px 12px 4px 50px;
 	margin-top: 3px;
 	color: #d3d5d7;
-	
+
 	-webkit-box-shadow: 0 1px 0 #949da8;
     -moz-box-shadow: 0 1px 0 #949da8;
     box-shadow: 0 1px 0 #949da8;
@@ -167,6 +167,7 @@ Header
 #header .notifications ul li {
 	float: left;
 	margin-right: 6px;
+	white-space:nowrap;
 }
 
 #header .notifications ul li span{
@@ -195,16 +196,16 @@ Header
 }
 
 #header .notifications ul li div.counter {
-	float: left;
+	margin-left: 20px;
 	background: #79aff0;
 	height: 20px;
-	padding: 1px 2px 1px 2px;	
-	
+	padding: 1px 2px 1px 2px;
+
 	-webkit-box-shadow: inset 0 1px 0 #98c4f9;
     -moz-box-shadow:inset 0 1px 0 #98c4f9;
     box-shadow: inset 0 1px 0 #98c4f9;
-	
-	
+
+
 	-webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
@@ -214,7 +215,7 @@ Header
 #header .notifications ul li div.counter span {
 	background: #54606e;
 	padding: 3px 10px;
-	
+
 	-webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
@@ -228,7 +229,7 @@ Header
 	display: block;
 	width: 16px;
 	height: 12px;
-	float: left;
+	float: right;
 	margin: 8px 0 0 5px;
 	background: url("../../images/agent/icn-sprite.png") left -139px;
 
@@ -238,7 +239,7 @@ Header
 #header .current-user {
 	padding-left: 15px;
 	border-left: 1px solid #55606f;
-	
+
 	-webkit-box-shadow:  inset 1px 0 0 #848f9d;
     -moz-box-shadow: inset 1px 0 0 #848f9d;
     box-shadow:  inset 1px 0 0 #848f9d;
@@ -247,7 +248,7 @@ Header
 #header .current-user-avatar {
 	float: left;
 	margin-bottom: 2px;
-	
+
 	-webkit-box-shadow: 0 1px 0 #929ba7;
     -moz-box-shadow:  0 1px 0 #929ba7;
     box-shadow:  0 1px 0 #929ba7;
@@ -316,7 +317,7 @@ Header
 #header .admin-actions {
 	border-right: 1px solid #55606f;
 	padding-right: 10px;
-	
+
 	-webkit-box-shadow:  inset -1px 0 0 #848f9d;
     -moz-box-shadow: inset -1px 0 0 #848f9d;
     box-shadow:  inset -1px 0 0 #848f9d;
@@ -324,7 +325,7 @@ Header
 
 #header .admin-actions .wrapper-top-bar{
 	margin-top: 7px;
-} 
+}
 
 #header .admin-actions ul li {
 	float: left;
@@ -366,7 +367,7 @@ Header
 #header .nav ul li{
 	float: left;
 	margin-right: 13px;
-	
+
 }
 #header .nav ul li a {
 	display: block;
@@ -426,7 +427,7 @@ Header
 	background: #e6e8ec;
 	padding: 5px 10px;
 	float: left;
-	
+
 	-webkit-border-radius: 3px 0 0 3px;
     -moz-border-radius: 3px 0 0 3px;
     border-radius: 3px 0 0 3px;
@@ -442,7 +443,7 @@ Header
 	float: left;
 	border: 1px solid #1f5a9d;
 	padding: 4px 8px 4px 6px;
-	
+
 	background: #4687d8;
 	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#3572ce ), to(#5896de));
     background: -moz-linear-gradient(90deg, #3572ce, #5896de );
@@ -453,7 +454,7 @@ Header
 
 	-webkit-border-radius: 0 3px 3px 0;
     -moz-border-radius: 0 3px 3px 0;
-    border-radius: 0 3px 3px 0;	
+    border-radius: 0 3px 3px 0;
 }
 
 #header .btn-undo span{
