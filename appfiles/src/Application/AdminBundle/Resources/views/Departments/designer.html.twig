@@ -165,7 +165,7 @@ function _page_exec() {
 		<input type="hidden" name="display_items[]" value="${itemId}" />
 
 		<div class="rules-wrap" id="rule_builder_${idClass}" data-id-class="${idClass}" style="display:none; min-width: 500px; height: 230px; overflow: auto; margin-bottom: 11px;">
-			Initially <select name="initial_display[${itemId}]"><option value="visible">visible</option><option value="hidden">hidden</option></select>,
+			Initially <select name="initial_display[${itemId}]"><option value="hidden">hidden</option><option value="visible">visible</option></select>,
 			and then toggle when <span class="ruletype">all</span> of these rules match:
 			<div class="septop">
 				<input type="checkbox" name="agent_only[${itemId}]" value="1" /> Only show this for agents

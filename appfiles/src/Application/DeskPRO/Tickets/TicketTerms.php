@@ -6,8 +6,22 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\Searcher\TicketSearch;
 
+use \Orb\Util\Numbers;
+use \Orb\Util\Arrays;
+
 class TicketTerms
 {
+	const OP_IS          = 'is';
+	const OP_NOT         = 'not';
+	const OP_LT          = 'lt';
+	const OP_GT          = 'gt';
+	const OP_LTE         = 'lte';
+	const OP_GTE         = 'gte';
+	const OP_BETWEEN     = 'between';
+	const OP_CONTAINS    = 'contains';
+	const OP_NOTCONTAINS = 'notcontains';
+	const OP_NOOP        = null;
+
 	protected $terms = array();
 
 	public function __construct(array $terms)
@@ -23,8 +37,14 @@ class TicketTerms
 	 */
 	public function doesTicketMatch(Entity\Ticket $ticket)
 	{
-		foreach ($this->terms as $term => $info) {
-			list($op, $choice) = $info;
+		foreach ($this->terms as $info) {
+
+			$term = $info['rule_type'];
+			if (!$term) continue;
+
+			$op = $info['op'];
+			$choice = $info;
+			unset($choice['rule_type'], $choice['op']);
 
 			if (!$this->testTerm($ticket, $term, $op, $choice)) {
 				return false;
@@ -37,7 +57,13 @@ class TicketTerms
 	public function doesTicketMatchAny(Entity\Ticket $ticket)
 	{
 		foreach ($this->terms as $term => $info) {
-			list($op, $choice) = $info;
+
+			$term = $info['rule_type'];
+			if (!$term) continue;
+
+			$op = $info['op'];
+			$choice = $info;
+			unset($choice['rule_type'], $choice['op']);
 
 			if ($this->testTerm($ticket, $term, $op, $choice)) {
 				return true;
@@ -160,8 +186,15 @@ class TicketTerms
 			$test_bottom = 'return false;';
 		}
 
-		foreach ($this->terms as $term => $info) {
-			list($op, $choice) = $info;
+		foreach ($this->terms as $info) {
+
+			$term = $info['rule_type'];
+
+			if (!$term) continue;
+
+			$op = $info['op'];
+			$choice = $info;
+			unset($choice['rule_type'], $choice['op']);
 
 			switch ($term) {
 				case TicketSearch::TERM_DEPARTMENT:
@@ -218,14 +251,25 @@ class TicketTerms
 
 	protected function _compileJsChoiceTermCondition($value, $op, $choice)
 	{
+		if (count($choice) == 1) {
+			$choice = array_pop($choice);
+		}
+
 		if (is_array($choice)) {
+			if (Arrays::checkAll($choice, function($v) { return Numbers::isInteger($v); })) {
+				$choice = Arrays::castToType($choice, 'integer');
+			}
+
 			$choice = json_encode(array_values($choice));
 			if ($op == self::OP_IS) {
-				return "if ($choice.indexOf($value) === -1) ";
-			} elseif ($op == self::OP_NOT) {
 				return "if ($choice.indexOf($value) !== -1) ";
+			} elseif ($op == self::OP_NOT) {
+				return "if ($choice.indexOf($value) === -1) ";
 			}
 		} else {
+			if (Numbers::isInteger($choice)) {
+				$choice = (int)$choice;
+			}
 			$choice = json_encode($choice);
 			if ($op == self::OP_IS) {
 				return "if ($value == $choice) ";

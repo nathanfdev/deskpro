@@ -279,18 +279,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		var show = [];
 		Array.each(display_elements, function(info) {
+
 			var pass = info.check(ticketInfo);
-
 			var state = info.initial_state;
-
 			if (pass) {
-				if (state == 'hidden') {
-					state = 'visible';
-				}
-			} else {
-				if (state != 'visible') {
-					state = 'visible';
-				}
+				if (state == 'hidden') state = 'visible';
+				else state = 'hidden';
 			}
 
 			if (state == 'visible') {
