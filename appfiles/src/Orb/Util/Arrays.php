@@ -1433,4 +1433,25 @@ class Arrays
 
 		return $ret;
 	}
+
+
+
+	/**
+	 * Run a callback test on all items of an array, and return true if
+	 * every item of the array passes.
+	 *
+	 * @param  $array
+	 * @param  $callback
+	 * @return bool
+	 */
+	public static function checkAll($array, $callback)
+	{
+		foreach ($array as $k => $v) {
+			if (!call_user_func($callback, $v, $k)) {
+				return false;
+			}
+		}
+
+		return true;
+	}
 }
