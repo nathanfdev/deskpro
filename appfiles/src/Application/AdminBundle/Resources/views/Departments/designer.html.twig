@@ -10,6 +10,38 @@ function _page_exec() {
 	window.DESKPRO_URL_REGISTRY['admin_departments_designer_ajaxfetchfield']  = '{{ path('admin_departments_designer_ajaxfetchfield', {'department_id': department.id, 'field_id': '000'})|replace({'000': '{field_id}'}) }}';
 	window.DESKPRO_URL_REGISTRY['admin_departments_designer_ajaxfetchwidget'] = '{{ path('admin_departments_designer_ajaxfetchwidget', {'department_id': department.id, 'widget_id': '000'})|replace({'000': '{widget_id}'}) }}';
 	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.DepartmentDesigner();
+
+	// init pre-selections
+	{% for display_element in display_elements %}
+		var el = {};
+		el.idClass = '{{display_element.element_type}}_{{display_element.element_id}}';
+		el.initial_state = '{{display_element.initial_state}}';
+		el.is_agent_only = {% if display_element.is_agent_only %}true{% else %}false{%endif%};
+		{% if display_element.conds_all %}
+			el.conds_all = [];
+			{% for term in display_element.conds_all %}
+				el.conds_all.push(['{{term.rule_type}}', {
+					{% for k,v in term %}
+						{{k}}: '{{v}}',
+					{% endfor %}
+					'': null
+				}]);
+			{% endfor %}
+		{% endif %}
+		{% if display_element.conds_any %}
+			el.conds_any = [];
+			{% for term in display_element.conds_any %}
+				el.conds_any.push(['{{term.rule_type}}', {
+					{% for k,v in term %}
+						{{k}}: '{{v}}',
+					{% endfor %}
+					'': null
+				}]);
+			{% endfor %}
+		{% endif %}
+
+		DeskPRO_Page.addDefinedDisplayElement(el);
+	{% endfor %}
 }
 </script>
 <style type="text/css">
@@ -59,6 +91,22 @@ function _page_exec() {
 	background-color: #FFFB8C;
 }
 
+#display_item_list li {
+	background-color: #F0F1F5;
+	font-size: 10px;
+	cursor: move;
+}
+
+#display_item_list li .remove {
+	color: #820D0D;
+	padding-right: 9px;
+	margin-right: 6px;
+	border-right: 1px solid #D0D2D6;
+	cursor: pointer;
+}
+#display_item_list li .edit-rules {
+	cursor: pointer;
+}
 </style>
 {% endblock %}
 {% block content %}
@@ -107,19 +155,21 @@ function _page_exec() {
 </form>
 
 <script id="display_item" type="text/x-jquery-tmpl">
-	<li>
+	<li id="display_item_${idClass}" data-id-class="${idClass}" data-item-id="${itemId}">
 		<div style="float:right">
-			<span class="toggle-rules on">Always enabled <em>(Set display rules)</em></span>
-			<span class="toggle-rules off" style="display:none;"><em>Remove rules</em></span>
+			<span class="remove">Remove this</span>
+			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${idClass}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
 		</div>
 
-		<input type="hidden" name="display_items[]" value="${itemId}" />
-		<input type="hidden" class="display_items_withrules" name="display_items_withrules[${itemId}]" value="0" />
 		<strong>${name}</strong><br />
-		<div class="rendered"></div>
-		<div class="rules-wrap" style="display:none; margin-top: 10px;">
+		<input type="hidden" name="display_items[]" value="${itemId}" />
+
+		<div class="rules-wrap" id="rule_builder_${idClass}" data-id-class="${idClass}" style="display:none; min-width: 500px; height: 230px; overflow: auto; margin-bottom: 11px;">
 			Initially <select name="initial_display[${itemId}]"><option value="visible">visible</option><option value="hidden">hidden</option></select>,
 			and then toggle when <span class="ruletype">all</span> of these rules match:
+			<div class="septop">
+				<input type="checkbox" name="agent_only[${itemId}]" value="1" /> Only show this for agents
+			</div>
 			<div class="search-form ruletype-all">
 				<div class="rule-list"></div>
 				<div class="term"><span class="add-term">+</span> Add a new rule</div>
@@ -129,9 +179,6 @@ function _page_exec() {
 			<div class="search-form ruletype-any">
 				<div class="rule-list"></div>
 				<div class="term"><span class="add-term">+</span> Add a new rule</div>
-			</div>
-			<div class="septop">
-				<input type="checkbox" name="agent_only[${itemId}]" value="1" /> Only show this for agents
 			</div>
 		</div>
 	</li>

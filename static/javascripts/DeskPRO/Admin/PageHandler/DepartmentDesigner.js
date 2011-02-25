@@ -16,7 +16,7 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 		this.initPopoutTriggers();
 
 		var self = this;
-		
+
 		$('#display_item_list').sortable({
 			items: "li:not(#no_elements_message)",
 			axis: 'y',
@@ -26,70 +26,56 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 				$( this ).removeClass("drop-active");
 			},
 			stop: function(event, ui) {
-				
-				$('#no_elements_message').hide();
-				
 				$('li.original', this).each(function() {
-				
 					var el = $(this);
-					var itemName = el.data('item-name');
-					var itemId = el.data('item-id');
-					var idClass = itemId.replace(/[^a-zA-Z0-9_]/g, '_');
-					var rendered = false;
-					if ($('div.rendered', parent).length) {
-						rendered = $('div.rendered', el).clone();
-					}
-
-					var data = {name: itemName, itemId: itemId };
-
-					var item = $.tmpl('display_item', data);
-					if (rendered) {
-						$('div.rendered', item).replaceWith(rendered);
-						rendered.show();
-					} else {
-						$('div.rendered', item).remove();
-					}
-					
-					$('.available-display-items .' + idClass).hide();
-
-					el.replaceWith(item);
-				
-					self.initDisplayItem(item, itemId);
+					self.addDisplayItemFromEl(el, true);
 				});
 			}
 		});
-		
+
 		$('.available-display-items li.display-item').draggable({
 			appendTo: 'body',
 			helper: 'clone',
 			connectToSortable: '#display_item_list'
-		});	
+		});
+	},
+
+	addDisplayItemFromEl: function(el, do_replace) {
+
+		$('#no_elements_message').hide();
+
+		var itemName = el.data('item-name');
+		var itemId = el.data('item-id');
+		var idClass = itemId.replace(/[^a-zA-Z0-9_]/g, '_');
+		var rendered = false;
+		if ($('div.rendered', parent).length) {
+			rendered = $('div.rendered', el).clone();
+		}
+
+		var data = {name: itemName, itemId: itemId, idClass: idClass };
+
+		var item = $.tmpl('display_item', data);
+		if (rendered) {
+			$('div.rendered', item).replaceWith(rendered);
+			rendered.show();
+		} else {
+			$('div.rendered', item).remove();
+		}
+
+		$('.available-display-items .' + idClass).hide();
+
+		if (do_replace) {
+			el.replaceWith(item);
+		} else {
+			$('#display_item_list').append(item);
+		}
+
+		this.initDisplayItem(item, itemId);
+
+		return item;
 	},
 
 	initDisplayItem: function(itemEl, itemId) {
-		$('.toggle-rules', itemEl).click(function() {
-			var norules = $('.no-rules-wrap', itemEl);
-			var rules = $('.rules-wrap', itemEl);
-
-			var link_on = $('.toggle-rules.on', itemEl);
-			var link_off = $('.toggle-rules.off', itemEl);
-			var f = $('.display_items_withrules', itemEl);
-
-			if (f.val() == '1') {
-				f.val('0');
-				rules.hide();
-				link_off.hide();
-				norules.show();
-				link_on.show();
-			} else {
-				f.val('1');
-				norules.hide();
-				link_on.hide();
-				rules.show();
-				link_off.show();
-			}
-		});
-
 		var editor = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 		editor.addEvent('newRow', function(new_row) {
 			$('.remove', new_row).click(function() {
@@ -98,12 +84,16 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 		});
 		var to_el = $('.search-form.ruletype-all .rule-list', itemEl);
 
+		var self = this;
+		$('.remove', itemEl).click(function() { self.removeDisplayItem(itemEl); });
+
 		$('.search-form.ruletype-all .add-term').data('add-count', 0).click(function() {
-			var count = parseInt($(this).data('add-count'));
+			var count = parseInt(itemEl.data('editor-all-add-count'));
 			var basename = 'terms_all['+itemId+']['+count+']';
-			$(this).data('add-count', count+1);
+			itemEl.data('editor-all-add-count', count+1);
 			editor.addNewRow(to_el, basename);
 		});
+		itemEl.data('editor-all', editor);
 
 		var editor2 = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 		editor2.addEvent('newRow', function(new_row) {
@@ -114,11 +104,26 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 		var to_el2 = $('.search-form.ruletype-any .rule-list', itemEl);
 
 		$('.search-form.ruletype-any .add-term').data('add-count', 0).click(function() {
-			var count = parseInt($(this).data('add-count'));
+			var count = parseInt(itemEl.data('editor-any-add-count'));
 			var basename = 'terms_any['+itemId+']['+count+']';
-			$(this).data('add-count', count+1);
+			itemEl.data('editor-all-any-count', count+1);
 			editor2.addNewRow(to_el2, basename);
 		});
+		itemEl.data('editor-any', editor2);
+	},
+
+	removeDisplayItem: function(itemEl) {
+		itemEl.remove();
+		$('.available-display-items .' + itemEl.data('id-class')).show();
+		if ($('#display_item_list > li').length == 1) {
+			$('#no_elements_message').show();
+		}
+	},
+
+	resetFormItems: function(content, element) {
+		var el = $('.rules-wrap', content);
+		var idclass = el.data('id-class');
+		el.detach().hide().appendTo($('#display_item_'+idclass));
 	},
 
 	fetchNewlyCreatedField: function (info) {
@@ -157,5 +162,38 @@ DeskPRO.Admin.PageHandler.DepartmentDesigner = new Class({
 				}
 			}
 		});
+	},
+
+	addDefinedDisplayElement: function(display_element) {
+		var el = $('.available-display-items li.' + display_element.idClass);
+		var item = this.addDisplayItemFromEl(el, false);
+
+		$('input[name^="initial_display"]', item).val(display_element.initial_display);
+		if (display_element.is_agent_only) {
+			$('input[name^="agent_only"]', item).attr('checked', true);
+		}
+
+		var itemId = item.data('item-id');
+
+		if (display_element.conds_all) {
+			var editor = item.data('editor-all');
+			var to_el = $('.search-form.ruletype-all .rule-list', item);
+			Array.each(display_element.conds_all, function(v) {
+				var count = parseInt(item.data('editor-all-add-count'));
+				var basename = 'terms_all['+itemId+']['+count+']';
+				item.data('editor-all-all-count', count+1);
+				editor.addNewRow(to_el, basename, { rule_type: v[0], choice: v[1]});
+			});
+		}
+		if (display_element.conds_any) {
+			var editor = item.data('editor-any');
+			var to_el = $('.search-form.ruletype-any .rule-list', item);
+			Array.each(display_element.conds_any, function(v) {
+				var count = parseInt(item.data('editor-any-add-count'));
+				var basename = 'terms_any['+itemId+']['+count+']';
+				item.data('editor-all-any-count', count+1);
+				editor.addNewRow(to_el, basename, { rule_type: v[0], choice: v[1]});
+			});
+		}
 	}
 });

@@ -110,8 +110,16 @@ class DepartmentsController extends AbstractController
 		// widgets
 		$widgets = App::getEntityRepository('DeskPRO:Widget')->getWidgetsForSection(array('agent.ticket', 'user.ticket'));
 
+		// Existing rules:
+		$display_elements = App::getOrm()->createQuery("
+			SELECT d
+			FROM DeskPRO:DepartmentTicketDisplay d
+			WHERE d.department = ?1
+		")->execute(array(1=>$department));
+
 		return $this->render('AdminBundle:Departments:designer.html.twig', array(
 			'department' => $department,
+			'display_elements' => $display_elements,
 			'custom_fields' => $custom_fields,
 			'term_options' => $term_options,
 			'widgets' => $widgets
@@ -122,9 +130,6 @@ class DepartmentsController extends AbstractController
 	{
 		// The items we've added
 		$display_items = $this->in->getCleanValueArray('display_items', 'string', 'discard');
-
-		// An array of itemid=>0/1, where 1 means there are rules, 0 means the item is always displayed
-		$display_items_withrules = $this->in->getCleanValueArray('display_items_withrules', 'string', 'string');
 
 		// Array of itemid=>initial display, 'visible' or 'hidden'
 		$display_items_initial = $this->in->getCleanValueArray('initial_display', 'string', 'string');
@@ -142,6 +147,7 @@ class DepartmentsController extends AbstractController
 			DELETE FROM DeskPRO:DepartmentTicketDisplay d
 			WHERE d.department = ?1
 		")->execute(array(1=>$department));
+		App::getOrm()->flush();
 
 		$order_count = 0;
 		foreach ($display_items as $display_item_id) {
@@ -170,11 +176,11 @@ class DepartmentsController extends AbstractController
 			}
 
 			if (isset($display_items_terms_all[$display_item_id]) AND $display_items_terms_all[$display_item_id]) {
-				$display['terms_all'] = $display_items_terms_all[$display_item_id];
+				$display['conds_all'] = $display_items_terms_all[$display_item_id];
 			}
 
 			if (isset($display_items_terms_any[$display_item_id]) AND $display_items_terms_any[$display_item_id]) {
-				$display['terms_any'] = $display_items_terms_any[$display_item_id];
+				$display['conds_any'] = $display_items_terms_any[$display_item_id];
 			}
 
 			App::getOrm()->persist($display);
