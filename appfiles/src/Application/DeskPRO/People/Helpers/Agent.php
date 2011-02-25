@@ -1,0 +1,184 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\People\Helpers;
+
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
+
+/**
+ * Helper added to People who are agents, works with agent-specific stuff.
+ */
+class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Helper\ShortCallableInterface
+{
+	protected $person;
+	protected $_access = null;
+	protected $_agent_teams = null;
+	protected $_agent_team_ids = null;
+
+	protected $_dep_allowed_ids = null;
+	protected $_dep_disallowed_ids = null;
+
+	public function __construct(Entity\Person $person)
+	{
+		$this->person = $person;
+	}
+
+	public function _getThis()
+	{
+		return $this;
+	}
+
+	public function getShortCallableNames()
+	{
+		return array(
+			'getAgent' => '_getThis',
+			'agent' => '_getThis',
+		);
+	}
+
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\AgentAccess
+	 */
+	public function getAccess()
+	{
+		if ($this->_access !== null) return $this->_access;
+
+		$this->_access = App::getEntityRepository('DeskPRO:AgentAccess')->find($this->person['id']);
+		return $this->_access;
+	}
+
+
+
+	/**
+	 * Get the permissions helper
+	 *
+	 * @return \Application\DeskPRO\People\Helpers\AgentPermissions
+	 */
+	public function getPermissions()
+	{
+		if ($this->_permissions !== null) return $this->_permissions;
+
+		$this->_permissions = new AgentPermissions($this->person);
+		return $this->_permissions;
+	}
+
+
+
+	/**
+	 * Get a collection of teams the user is part of
+	 *
+	 * @return \Doctrine\Common\Collections\ArrayCollection
+	 */
+	public function getTeams()
+	{
+		if ($this->_agent_teams !== null) return $this->_agent_teams;
+
+		$this->_agent_teams = App::getOrm()->createQuery("
+			SELECT t
+			FROM DeskPRO:AgentTeam t
+			LEFT JOIN t.members p
+			WHERE p.id = ?1
+		")->execute(array(1=>$this->person['id']));;
+
+		return $this->_agent_teams;
+	}
+
+
+	/**
+	 * Get an array of team IDs the user is part of.
+	 *
+	 * @return array
+	 */
+	public function getTeamIds()
+	{
+		if ($this->_agent_team_ids !== null) return $this->_agent_team_ids;
+
+		$this->_agent_team_ids = array();
+		foreach ($this->getTeams() as $team) {
+			$this->_agent_team_ids[] = $team['id'];
+		}
+
+		return $this->_agent_team_ids;
+	}
+
+
+
+	/**
+	 * Add the user to a team.
+	 *
+	 * @param \Application\DeskPRO\Entity\AgentTeam $team
+	 * @return void
+	 */
+	public function addToTeam(Entity\AgentTeam $team)
+	{
+		return $team->addPerson($this);
+	}
+
+
+
+	/**
+	 * Check if the user is allowed to use a particular department
+	 *
+	 * @param int|Department $dep
+	 * @return bool
+	 */
+	public function isDepartmentAllowed($dep)
+	{
+		if ($dep instanceof Entity\Department) {
+			$dep = $dep['id'];
+		}
+
+		return in_array($dep, $this->getAllowedDepartments());
+	}
+
+
+
+	/**
+	 * Get an array of departments the user isn't allowed to see
+	 *
+	 * @return array
+	 */
+	public function getDisallowedDepartmentIds()
+	{
+		if ($this->_dep_disallowed_ids !== null) return $this->_dep_disallowed_ids;
+
+		$all_ids = App::getEntityRepository('DeskPRO:Department')->getDepartmentIds();
+		$allowed_ids = $this->getAllowedDepartments();
+
+		$disallowed_ids = array_diff($all_ids, $allowed_ids);
+
+		$this->_dep_disallowed_ids = $disallowed_ids;
+
+		return $this->_dep_disallowed_ids;
+	}
+
+
+
+	/**
+	 * Get an array of departments the user is allowed to see
+	 *
+	 * @return array
+	 */
+	public function getAllowedDepartmentIds()
+	{
+		if ($this->_dep_allowed_ids !== null) return $this->_dep_allowed_ids;
+
+		$this->_dep_allowed_ids = array();
+		foreach ($this->_access['departments'] as $dep) {
+			$this->_dep_allowed_ids[] = $dep['id'];
+		}
+
+		return $this->_dep_allowed_ids;
+	}
+}

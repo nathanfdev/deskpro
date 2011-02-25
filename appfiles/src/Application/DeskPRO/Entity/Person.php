@@ -78,7 +78,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var bool
 	 * @orm:Column(name="is_agent", type="boolean")
 	 */
-	protected $is_agent = false;
+	protected $is_agent = 0;
 
 	/**
 	 * The users name (best guess from other sources etc)
@@ -219,7 +219,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Usergroups the user belongs to
 	 *
-	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="Usergroup")
 	 * @orm:JoinTable(name="person2usergroups",
 	 *     joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")},

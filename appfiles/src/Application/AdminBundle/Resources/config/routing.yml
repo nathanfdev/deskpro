@@ -29,6 +29,27 @@ admin_labels_ajaxdel:
 # Agents
 ################################################################################
 
+admin_agents:
+  pattern: /agents
+  defaults: { _controller: AdminBundle:Agents:agents }
+
+admin_agents_groupbyteam:
+  pattern: /agents/group-by-team
+  defaults: { _controller: AdminBundle:Agents:agents, group_by: "team" }
+
+admin_agents_groupbyusergroup:
+  pattern: /agents/group-by-usergroup
+  defaults: { _controller: AdminBundle:Agents:agents, group_by: "usergroup" }
+
+admin_agents_new:
+  pattern: /agents/new
+  defaults: { _controller: AdminBundle:Agents:newAgent }
+
+admin_agents_edit:
+  pattern: /agents/{agent_id}/edit
+  defaults: { _controller: AdminBundle:Agents:editAgent }
+  requirements: { agent_id: "\d+" }
+
 admin_agents_teams:
   pattern: /agents/teams
   defaults: { _controller: AdminBundle:Agents:teams }

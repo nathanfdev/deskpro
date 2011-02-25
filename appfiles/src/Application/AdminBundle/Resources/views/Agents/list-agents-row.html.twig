@@ -1,0 +1,37 @@
+<tr class="agent person-{{agent.person.id}}" data-person-id="{{agent.person.id}}">
+	<td>
+		{{person.display_name}} &lt;{{person.primary_email_address}}&gt;
+	</td>
+	<td>
+		<ul>
+			{% for team in person.agent.teams %}
+				<li>{{team.name}}</li>
+			{% endfor %}
+		</ul>
+	</td>
+	<td>
+		<ul>
+			{% if person.agent.access.access_agent %}<li>Agent</li>{% endif %}
+			{% if person.agent.access.access_admin %}<li>Admin</li>{% endif %}
+			{% if person.agent.access.access_reports %}<li>Reports</li>{% endif %}
+			{% if person.agent.access.access_billing %}<li>Billing</li>{% endif %}
+		</ul>
+	</td>
+	<td>
+		<ul>
+			{% for dep in agent.departments %}
+				<li>{{dep.title}}</li>
+			{% endfor %}
+		</ul>
+	</td>
+	<td>
+		<ul>
+			{% for usergroup in person.usergroups %}
+				<li>{{usergroup.title}}</li>
+			{% endfor %}
+		</ul>
+	</td>
+	<td>
+		Edit
+	</td>
+</tr>

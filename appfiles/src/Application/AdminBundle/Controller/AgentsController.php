@@ -19,6 +19,33 @@ use \Orb\Util\Util;
 
 class AgentsController extends AbstractController
 {
+	############################################################################
+	# agents
+	############################################################################
+
+	public function agentsAction($group_by = null)
+	{
+		$all_agents = App::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			LEFT JOIN p.usergroups u
+			WHERE p.is_agent = true
+			ORDER BY p.first_name, p.last_name
+		")->execute();
+
+		foreach ($all_agents as $agent) {
+			$agent->loadHelper('Agent');
+		}
+
+		return $this->render('AdminBundle:Agents:list.html.twig', array(
+			'all_agents' => $all_agents
+		));
+	}
+
+	############################################################################
+	# teams
+	############################################################################
+
 	public function teamsAction()
 	{
 		$all_teams = App::getOrm()->createQuery("
