@@ -1,0 +1,207 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketTriggersEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketTriggersEdit({{trigger.id|default(0)}});
+
+	{% if row_html %}
+		DeskPRO_Page.tellParentUpdated();
+		DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
+	{% endif %}
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id|default(0)}) }}" method="post">
+{{ form_hidden(form) }}
+<input type="hidden" name="process" value="1" />
+
+<div class="form-panel">
+	<div class="row">
+		<label>Title</label>
+		{{ form_field(form.title) }}
+	</div>
+	{% if form.event_trigger_option %}
+		<div class="row">
+			<label>Minutes until trigger is executed</label>
+			{{ form_field(form.event_trigger_option) }}
+		</div>
+	{% endif %}
+	<div class="row">
+		<label>Criteria</label>
+		<div class="criteria-form search-form">
+			<div class="search-terms"></div>
+			<div class="term"><span class="add-term">+</span> Add a new action</div>
+		</div>
+	</div>
+	<div class="row">
+		<label>Actions</label>
+		<div class="actions-form search-form">
+			<div class="search-terms"></div>
+			<div class="term"><span class="add-term">+</span> Add a new action</div>
+		</div>
+	</div>
+</div>
+
+</form>
+
+<div id="criteria-tpl" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="type"></div>
+			<div class="op"></div>
+			<div class="choice"></div>
+			<div class="remove">-</div>
+		</div>
+	</div>
+	{% include 'AgentBundle:TicketSearch:termbuilder-html.html.twig' with {'term_options': term_options} %}
+</div>
+
+<div class="actions-tpl" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="type"></div>
+			<div class="choice"></div>
+			<div class="remove">-</div>
+		</div>
+	</div>
+	<div class="type" title="Status" data-rule-type="status">
+		<div class="choice">
+			<select name="status">
+				<option value="open">Open</option>
+				<option value="pending">Pending</option>
+				<option value="resolved">Resolved</option>
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Department" data-rule-type="department">
+		<div class="choice">
+			<select name="department">
+				{% for id,title in ticket_options.departments %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Category" data-rule-type="category">
+		<div class="choice">
+			<select name="category">
+				{% for id,title in ticket_options.categories %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Product" data-rule-type="product">
+		<div class="choice">
+			<select name="product">
+				{% for id,title in ticket_options.products %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Priority" data-rule-type="priority">
+		<div class="choice">
+			<select name="priority">
+				{% for id,title in ticket_options.priorities %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Workflow" data-rule-type="workflow">
+		<div class="choice">
+			<select name="workflow">
+				{% for id,title in ticket_options.ticket_workflows %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Agent" data-rule-type="agent">
+		<div class="choice">
+			<select name="agent">
+				{% for id,title in ticket_options.agents %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Agent Team" data-rule-type="agent_team">
+		<div class="choice">
+			<select name="agent_team">
+				{% for id,title in ticket_options.agent_teams %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Add Labels" data-rule-type="add_labels">
+		<div class="choice">
+			<input type="text" name="labels" />
+		</div>
+	</div>
+	<div class="type" title="Remove Labels" data-rule-type="remove_labels">
+		<div class="choice">
+			<input type="text" name="labels" />
+		</div>
+	</div>
+	<div class="type" title="Set Flag" data-rule-type="flag">
+		<div class="choice">
+			<select name="flag">
+				<option value="blue">Blue</option>
+				<option value="green">Green</option>
+				<option value="orange">Orange</option>
+				<option value="pink">Pink</option>
+				<option value="purple">Purple</option>
+				<option value="red">Red</option>
+				<option value="yellow">Yellow</option>
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Ticket Reply" data-rule-type="reply">
+		<div class="choice" style="display:block">
+			<textarea name="new_reply" cols="80" rows="4"></textarea>
+		</div>
+	</div>
+	{% if ticket_options.custom_ticket_fields %}
+		{% for field in ticket_options.custom_ticket_fields %}
+			<div class="type" title="Set Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+				<div class="choice">
+					{{ form_field(field.form) }}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+	<div class="type" title="Set User Organization" data-rule-type="person_organization_id">
+		<div class="choice">
+			<select name="person_organization_id">
+				{% for id,title in ticket_options.people_organizations %}
+					<option value="{{id}}">{{title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% if ticket_options.custom_people_fields %}
+		{% for field in ticket_options.custom_people_fields %}
+			<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-type="people_field[{{field.field_def.id}}]">
+				<div class="choice">
+					{{ form_field(field.form) }}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+</div>
+{% endblock %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Save</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
+{% endblock %}

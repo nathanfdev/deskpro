@@ -1,0 +1,10 @@
+<li class="priority trigger-{{trigger.id}}" data-trigger-id="{{trigger.id}}">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id}) }}" class="popout-trigger">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		{{trigger.title}}
+	</div>
+</li>

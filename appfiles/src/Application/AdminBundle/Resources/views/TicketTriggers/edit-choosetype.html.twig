@@ -1,0 +1,55 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('', 0);
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>Choose Trigger Type</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_tickettriggers_edit', {'trigger_id': '0'}) }}" class="form" method="post">
+
+<strong>Action Triggers</strong>
+<ul class="item-list">
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="new_ticket" checked="checked" /> New Ticket
+	</li>
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="new_reply" /> New Reply
+	</li>
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="property_change" /> Ticket Updated
+	</li>
+</ul>
+
+<br />
+<strong>Action Triggers</strong>
+<ul class="item-list">
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="time_unresolved" /> Time ticket has been unresolved
+	</li>
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="time_user_waiting" /> Time user has been waiting
+	</li>
+	<li>
+		<input type="radio" name="trigger[event_trigger]" value="time_agent_waiting" /> Time agent has been waiting
+	</li>
+	<li>
+		Execute trigger after <input type="text" name="trigger[event_trigger_option]" value="" size="10" /> minutes
+	</li>
+</ul>
+
+</form>
+
+{% endblock %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Continue</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
+{% endblock %}

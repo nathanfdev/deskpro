@@ -218,6 +218,23 @@ admin_ticketwidgets_edit:
   requirements: { widget_id: "\d+" }
 
 ################################################################################
+# Ticket Triggers
+################################################################################
+
+admin_tickettriggers:
+  pattern: /tickets/triggers
+  defaults: { _controller: AdminBundle:TicketTriggers:list }
+
+admin_tickettriggers_new_choosetype:
+  pattern: /tickets/triggers/new-choose-type
+  defaults: { _controller: AdminBundle:TicketTriggers:newChooseType }
+
+admin_tickettriggers_edit:
+  pattern: /tickets/triggers/{trigger_id}/edit
+  defaults: { _controller: AdminBundle:TicketTriggers:edit }
+  requirements: { trigger_id: "\d+" }
+
+################################################################################
 # Organization Fields
 ################################################################################
 
