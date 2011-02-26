@@ -30,6 +30,11 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 	public function __construct(Entity\Person $person)
 	{
 		$this->person = $person;
+
+		if (!$this->person['is_agent']) {
+			$this->person = null;
+			throw new \Exception('The agent helper is only applicable on agents');
+		}
 	}
 
 	public function _getThis()
@@ -55,6 +60,13 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 		if ($this->_access !== null) return $this->_access;
 
 		$this->_access = App::getEntityRepository('DeskPRO:AgentAccess')->find($this->person['id']);
+
+		// The user has no access :o
+		if (!$this->_access) {
+			$this->_access = new Entity\AgentAccess();
+			$this->_access['person'] = $this->person;
+		}
+
 		return $this->_access;
 	}
 

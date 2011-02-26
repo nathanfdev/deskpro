@@ -36,7 +36,7 @@ class AgentAccess extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="Department")
+	 * @orm:ManyToMany(targetEntity="Department", cascade={"persist", "remove", "merge"})
      * @orm:JoinTable(name="agent_department_members", joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="person_id")}, inverseJoinColumns={@orm:JoinColumn(name="department_id", referencedColumnName="id")})
 	 */
 	protected $departments = null;
@@ -72,4 +72,9 @@ class AgentAccess extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="access_reports", type="boolean")
 	 */
 	protected $access_reports = false;
+
+	public function __construct()
+	{
+		$this->departments = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 }

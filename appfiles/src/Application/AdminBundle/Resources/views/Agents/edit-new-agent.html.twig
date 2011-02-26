@@ -1,0 +1,33 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('agent', 0);
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>New Agent</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_agents_new') }}" method="post">
+<input type="hidden" name="process" value="1" />
+
+<div class="form-panel">
+	<div class="row">
+		<label>Email Address</label>
+		<input type="text" name="email" value="" />
+	</div>
+</div>
+
+</form>
+
+{% endblock %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Create agent and continue</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
+{% endblock %}

@@ -46,9 +46,9 @@ admin_agents_new:
   defaults: { _controller: AdminBundle:Agents:newAgent }
 
 admin_agents_edit:
-  pattern: /agents/{agent_id}/edit
+  pattern: /agents/{person_id}/edit
   defaults: { _controller: AdminBundle:Agents:editAgent }
-  requirements: { agent_id: "\d+" }
+  requirements: { person_id: "\d+" }
 
 admin_agents_teams_edit:
   pattern: /agents/teams/{team_id}/edit

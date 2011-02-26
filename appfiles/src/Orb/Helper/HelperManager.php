@@ -42,7 +42,7 @@ class HelperManager
 		}
 
 		$name = strtolower($name);
-		
+
 		if (isset($this->_helpers[$name])) {
 			throw new \InvalidArgumentException("`$name` has already been registered.");
 		}
@@ -67,7 +67,7 @@ class HelperManager
 	}
 
 
-	
+
 	/**
 	 * Check to see if a helper of a specific type has been registerd.
 	 *
@@ -95,7 +95,7 @@ class HelperManager
 	}
 
 
-	
+
 	/**
 	 * Is a certain helper added yet?
 	 *
@@ -108,7 +108,7 @@ class HelperManager
 	}
 
 
-	
+
 	/**
 	 * Get a helper
 	 *
@@ -126,7 +126,25 @@ class HelperManager
 	}
 
 
-	
+
+	/**
+	 * Remove a helper
+	 *
+	 * @param string $name
+	 * @return void
+	 */
+	public function removeHelper($name)
+	{
+		$name = strtolower($name);
+		if (!isset($this->_helpers[$name])) {
+			throw new \OutOfBoundsException("No helper `$name` is registered");
+		}
+
+		unset($this->_helpers[$name]);
+	}
+
+
+
 	/**
 	 * Is a certain name callable given our helpers?
 	 *
@@ -142,7 +160,7 @@ class HelperManager
 		return false;
 	}
 
-	
+
 
 	/**
 	 * Call a certain callable

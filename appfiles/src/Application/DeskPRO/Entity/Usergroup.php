@@ -19,7 +19,7 @@ use Orb\Util\Arrays;
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Usergroup")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="usergroups")
  */
@@ -35,7 +35,6 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $id = null;
 
-
 	/**
 	 * Title of the usergroup
 	 *
@@ -43,7 +42,6 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
-
 
 	/**
 	 * A note or description about the usergroup

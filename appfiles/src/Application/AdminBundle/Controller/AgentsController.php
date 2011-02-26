@@ -13,6 +13,10 @@ namespace Application\AdminBundle\Controller;
 
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
+
+use \Application\AdminBundle\Form as AdminForm;
+use \Application\AdminBundle\FormModel as AdminFormModel;
+
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 use \Orb\Util\Util;
@@ -60,7 +64,85 @@ class AgentsController extends AbstractController
 	}
 
 	############################################################################
-	# edit
+	# new-agent
+	############################################################################
+
+	public function newAgentAction()
+	{
+		if ($this->in->getBool('process')) {
+			$email_address = $this->in->getString('email');
+			$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email_address);
+
+			if ($person AND !$person['is_agent']) {
+				$person['is_agent'] = true;
+				App::getOrm()->beginTransaction();
+				App::getOrm()->persist($person);
+				App::getOrm()->flush();
+				App::getOrm()->commit();
+			}
+
+			if (!$person) {
+				$person = new Entity\Person();
+				$email = new Entity\PersonEmail();
+				$email['email'] = $email_address;
+				$email['is_validated'] = true;
+
+				$person->addEmailAddress($email);
+				$person['is_agent'] = true;
+
+				App::getOrm()->beginTransaction();
+				App::getOrm()->persist($person);
+				App::getOrm()->flush();
+				App::getOrm()->commit();
+			}
+
+			return $this->redirectRoute('admin_agents_edit', array('person_id' => $person['id']));
+		}
+
+		return $this->render('AdminBundle:Agents:edit-new-agent.html.twig', array(
+
+		));
+	}
+
+	############################################################################
+	# edit-agent
+	############################################################################
+
+	public function editAgentAction($person_id)
+	{
+		$person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+		$person->loadHelper('Agent');
+
+		$agent_form_model = new AdminFormModel\EditAgent($person);
+		$form = AdminForm\EditAgentForm::create($this->get('form.context'), 'agent');
+		$form->bind($this->get('request'), $agent_form_model);
+
+		$is_edited = false;
+		$row_html = false;
+		if ($this->in->getBool('process')) {
+			$is_edited = true;
+
+			App::getOrm()->beginTransaction();
+			$agent_form_model->persist();
+			App::getOrm()->flush();
+			App::getOrm()->commit();
+
+			// reset helper so it has correct ids etc
+			$person->getHelperManager()->removeHelper('Agent');
+			$person->loadHelper('Agent');
+
+			$row_html = $this->renderView('AdminBundle:Agents:list-agents-row.html.twig', array('person' => $person));
+		}
+
+		return $this->render('AdminBundle:Agents:edit-agent.html.twig', array(
+			'person' => $person,
+			'form' => $form
+		));
+	}
+
+
+	############################################################################
+	# edit-team
 	############################################################################
 
 	/**

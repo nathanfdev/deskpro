@@ -104,6 +104,16 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 	 */
 	public function getKeys()
 	{
+		return $this->getFieldKeys();
+	}
+
+
+
+	/**
+	 * Get an array of keys that correspond to real database fields.
+	 */
+	public function getFieldKeys()
+	{
 		$r = new \ReflectionObject($this);
 		$props = $r->getProperties(\ReflectionProperty::IS_PRIVATE | \ReflectionProperty::IS_PROTECTED);
 
@@ -116,6 +126,34 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 		}
 
 		return $keys;
+	}
+
+
+
+	/**
+	 * Checks to see if a particular field on this object exists and is a real database field.
+	 * By convention, this is any protected property on the object whose name doesnt start with an underscore.
+	 *
+	 * @param stirng $field
+	 * @return bool
+	 */
+	public function propertyFieldExists($field)
+	{
+		// If it begins with an undercore, then by convention its not a field
+		if ($field[0] === '_') return false;
+
+		try {
+			$r = new \ReflectionObject($this);
+			$prop = $r->getProperty($field);
+		} catch (\ReflectionException $e) {
+			return false;
+		}
+
+		if ($prop->isProtected() OR $prop->isPrivate()) {
+			return true;
+		}
+
+		return false;
 	}
 
 

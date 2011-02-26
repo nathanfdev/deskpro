@@ -1,0 +1,66 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentEdit({{person.id|default(0)}});
+
+	{% if row_html %}
+		window.DeskPRO_Page.updateParent({{ row_html|json_encode|raw }});
+	{% endif %}
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>Edit Agent</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_agents_edit', {'person_id': person.id|default(0)}) }}" method="post">
+<input type="hidden" name="process" value="1" />
+
+<div class="form-panel">
+	<div class="row">
+		<label>First and Last Name</label>
+		{{ form_field(form.first_name) }}
+		{{ form_field(form.last_name) }}
+	</div>
+	<div class="row">
+		<label>Email Address</label>
+		{{ form_field(form.email) }}
+	</div>
+	<div class="row">
+		<label>Password</label>
+		{{ form_field(form.password) }}
+	</div>
+	<div class="row">
+		<label>Access Zones</label>
+		<div class="field">{{ form_field(form.access_zones) }}</div>
+
+	</div>
+	<div class="row">
+		<label>Teams</label>
+		<div class="field checkselect" style="max-height: 100px; overflow: auto; padding: 5px;">{{ form_field(form.agent_teams) }}</div>
+		<br class="clear" />
+	</div>
+	<div class="row">
+		<label>Department Permissions</label>
+		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_field(form.allowed_departments) }}</div>
+		<br class="clear" />
+	</div>
+	<div class="row">
+		<label>Agent Groups</label>
+		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_field(form.usergroups) }}</div>
+		<br class="clear" />
+	</div>
+</div>
+
+</form>
+
+{% endblock %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Save</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
+{% endblock %}

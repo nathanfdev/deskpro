@@ -38,22 +38,26 @@ class Person extends EntityRepository
 	}
 
 
-	
+
 	/**
 	 * Find a person by their email address.
-	 * 
+	 *
 	 * @param string $email
 	 * @return Person
 	 */
 	public function findOneByEmail($email)
 	{
-		$person = $this->getEntityManager()->createQuery("
-			SELECT p
-			FROM DeskPRO:Person p
-			LEFT JOIN p.emails e
-			WHERE e.email = ?1
-			ORDER BY p.id ASC
-		")->setParameter(1, $email)->setMaxResults(1)->getSingleResult();
+		try {
+			$person = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				LEFT JOIN p.emails e
+				WHERE e.email = ?1
+				ORDER BY p.id ASC
+			")->setParameter(1, $email)->setMaxResults(1)->getSingleResult();
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			return null;
+		}
 
 		return $person;
 	}

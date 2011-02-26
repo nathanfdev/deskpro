@@ -158,7 +158,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="timezome", type="string", length=50)
 	 */
-	protected $timezone;
+	protected $timezone = 'UTC';
 
 	/**
 	 * Every person has a local login capability with this password and using
@@ -176,14 +176,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="salt", type="string", length=40)
 	 */
 	protected $salt;
-
-	/**
-	 * The primary email id.
-	 *
-	 * @var int
-	 * @orm:Column(name="primary_email_id", type="integer", nullable=true)
-	 */
-	protected $primary_email_id = null;
 
 	/**
 	 * The primary email address used by this account
