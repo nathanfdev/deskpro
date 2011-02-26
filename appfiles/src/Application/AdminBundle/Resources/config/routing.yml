@@ -50,18 +50,23 @@ admin_agents_edit:
   defaults: { _controller: AdminBundle:Agents:editAgent }
   requirements: { agent_id: "\d+" }
 
-admin_agents_teams:
-  pattern: /agents/teams
-  defaults: { _controller: AdminBundle:Agents:teams }
-
 admin_agents_teams_edit:
   pattern: /agents/teams/{team_id}/edit
   defaults: { _controller: AdminBundle:Agents:editTeam }
   requirements: { team_id: "\d+" }
 
 admin_agents_teams_new:
-  pattern: /agents/teams/new
+  pattern: /agents/groups/new
   defaults: { _controller: AdminBundle:Agents:editTeam, team_id: 0 }
+
+admin_agents_groups_edit:
+  pattern: /agents/groups/{usergroup_id}/edit
+  defaults: { _controller: AdminBundle:Agents:editGroup }
+  requirements: { usergroup_id: "\d+" }
+
+admin_agents_groups_new:
+  pattern: /agents/groups/new
+  defaults: { _controller: AdminBundle:Agents:editGroup, usergroup_id: 0 }
 
 ################################################################################
 # Styles

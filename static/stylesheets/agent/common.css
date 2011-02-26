@@ -336,6 +336,95 @@ ul.tag-cloud li.tag-size10 { font-size:2.9em; }
 }
 
 /**********************************************************
+ Table list
+***********************************************************/
+
+div.table-list-wrap {
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+
+	background-color: #BCC6D6;
+	padding: 2px;
+	border: 1px solid #979FAD;
+}
+
+div.table-list-wrap a.create-link {
+	float: right;
+	color: #303E40;
+	text-decoration: none;
+	margin: 4px 4px 0 0;
+}
+
+div.table-list-wrap a.create-link:hover {
+	text-decoration: underline;
+}
+
+div.table-list-wrap > h2 {
+	background: #BCC6D6; /* old browsers */
+	background: -moz-linear-gradient(top, #BCC6D6 0%, #96A1B3 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#BCC6D6), color-stop(100%,#96A1B3)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#BCC6D6', endColorstr='#96A1B3',GradientType=0 ); /* ie */
+
+	font-size: 12pt;
+	padding: 4px;
+
+	margin-left: -2px;
+	margin-right: -2px;
+}
+
+table.table-list {
+	border-collapse: collapse;
+	border: 1px solid #DFDFDF;
+}
+
+table.table-list > thead > tr > th {
+	background: #e5e5e5; /* old browsers */
+	background: -moz-linear-gradient(top, #e5e5e5 0%, #ffffff 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e5e5e5), color-stop(100%,#ffffff)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#e5e5e5', endColorstr='#ffffff',GradientType=0 ); /* ie */
+
+	border-bottom: 1px solid #A6A6A6;
+	border-left: 1px solid #DFDFDF;
+
+	color: #5D5D5D;
+	font-size: 11px;
+	font-weight: bold;
+	line-height: 18px;
+	padding: 0 3px 0 3px;
+
+	text-align: left;
+}
+
+table.table-list > tbody > tr > td {
+	padding: 6px 6px 6px 10px;
+	border-left: 1px solid #EDEDED;
+	border-bottom: 1px solid #DFDFDF;
+	font-size: 9pt;
+	background-color: #fff;
+}
+
+table.table-list > tbody > tr > td.controls {
+	padding: 0 2px 0 2px;
+	vertical-align: middle;
+}
+
+table.table-list > tbody > tr:hover > td {
+	background-color: #F3F6FA;
+}
+
+ul.comma-list {
+	margin: 0;
+	padding: 0;
+}
+
+ul.comma-list li {
+	display: inline;
+}
+
+ul.comma-list li:after { content: ", "; }
+ul.comma-list li:last-child:after { content: ""; }
+
+/**********************************************************
  Search form sections (top of list pane usually)
 ***********************************************************/
 

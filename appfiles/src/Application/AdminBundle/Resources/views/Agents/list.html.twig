@@ -2,43 +2,73 @@
 {% block section 'tickets' %}
 {% block sub_section 'priorities' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentsList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentsList();
 }
 </script>
 {% endblock %}
 {% block content %}
 
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_agents_new') }}" data-height="350" data-width="400">Create Agent</a>
+<div style="float:left; width: 290px;">
+	<div class="table-list-wrap">
+		<a class="icon tickets create-link popout-trigger" href="{{ path('admin_agents_teams_new') }}" data-height="300" data-width="400">Create Team</a>
+		<h2>Teams</h2>
+		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+			<tbody id="teams_rows">
+				{% for team in all_teams %}
+					{% include 'AdminBundle:Agents:list-teams-row.html.twig' %}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	<br />
+
+	<div class="table-list-wrap">
+		<a class="icon tickets create-link popout-trigger" href="{{ path('admin_agents_groups_new') }}">Create Group</a>
+		<h2>Permission Groups</h2>
+		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+			<tbody id="usergroups_rows">
+				{% for usergroup in all_usergroups %}
+					{% include 'AdminBundle:Agents:list-usergroups-row.html.twig' %}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
 </div>
 
-<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
-	<thead>
-		<tr>
-			<td>Agent</td>
-			<td>Teams</td>
-			<td>Zones</td>
-			<td>Departments</td>
-			<td>Permissions</td>
-			<td>&nbsp;</td>
-		</tr>
-	</thead>
-	{% if grouping %}
-		{% for group in grouping %}
-			{% include 'AdminBundle:Agents:list-grouped-agents-row.html.twig' %}
-		{% endfor %}
-	{% else %}
-		<tbody>
-			{% for person in all_agents %}
-				{% include 'AdminBundle:Agents:list-agents-row.html.twig' %}
+<div class="table-list-wrap" style="margin-left: 300px;">
+	<a class="icon tickets create-link popout-trigger" href="{{ path('admin_agents_new') }}" data-height="350" data-width="400">Create Agent</a>
+	<h2>Agents</h2>
+	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+		<thead>
+			<tr>
+				<th>Agent</th>
+				<th>Teams</th>
+				<th>Zones</th>
+				<th>Departments</th>
+				<th>Permissions</th>
+				<th width="5">&nbsp;</th>
+			</tr>
+		</thead>
+		{% if grouping %}
+			{% for group in grouping %}
+				{% include 'AdminBundle:Agents:list-grouped-agents-row.html.twig' %}
 			{% endfor %}
-		</tbody>
-	{% endif %}
-</table>
+		{% else %}
+			<tbody>
+				{% for person in all_agents %}
+					{% include 'AdminBundle:Agents:list-agents-row.html.twig' %}
+				{% endfor %}
+			</tbody>
+		{% endif %}
+	</table>
+</div>
+
+<br class="clear" />
 
 {% endblock %}

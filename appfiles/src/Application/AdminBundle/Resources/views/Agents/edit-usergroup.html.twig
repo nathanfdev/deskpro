@@ -1,11 +1,11 @@
 {% extends 'AdminBundle::layout_popout.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentGroupEdit.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/AgentUsergroupEdit.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentGroupEdit({{usergroup.id|default(0)}});
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.AgentUsergroupEdit({{usergroup.id|default(0)}});
 
 	{% if row_html %}
 		window.DeskPRO_Page.updateParent({{ usergroup.title|json_encode|raw}}, {{ row_html|json_encode|raw }});
@@ -14,11 +14,11 @@ function _page_exec() {
 </script>
 {% endblock %}
 {% block header %}
-	<h1>{% if usergroup.id %}Edit Usergroup{% else %}New Usergroup{% endif %}</h1>
+	<h1>{% if usergroup.id %}Edit Group{% else %}New Group{% endif %}</h1>
 {% endblock %}
 {% block content %}
 
-<form action="{{ path('admin_usergroups_edit', {'usergroup_id': usergroup.id|default(0)}) }}" method="post">
+<form action="{{ path('admin_agents_groups_edit', {'usergroup_id': usergroup.id|default(0)}) }}" method="post">
 <input type="hidden" name="process" value="1" />
 
 <div class="form-panel">

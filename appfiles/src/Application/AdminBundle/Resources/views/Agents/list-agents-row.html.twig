@@ -1,11 +1,12 @@
 <tr class="agent person-{{agent.person.id}}" data-person-id="{{agent.person.id}}">
 	<td>
-		{{person.display_name}} &lt;{{person.primary_email_address}}&gt;
+		{{person.display_name}}<br />
+		{{person.primary_email_address}}
 	</td>
 	<td>
-		<ul>
+		<ul class="comma-list">
 			{% for team in person.agent.teams %}
-				<li>{{team.name}}</li>
+				<li class="team-{{team.id}}-name">{{team.name}}</li>
 			{% endfor %}
 		</ul>
 	</td>
@@ -18,20 +19,20 @@
 		</ul>
 	</td>
 	<td>
-		<ul>
+		<ul class="comma-list">
 			{% for dep in agent.departments %}
 				<li>{{dep.title}}</li>
 			{% endfor %}
 		</ul>
 	</td>
 	<td>
-		<ul>
+		<ul class="comma-list">
 			{% for usergroup in person.usergroups %}
 				<li>{{usergroup.title}}</li>
 			{% endfor %}
 		</ul>
 	</td>
-	<td>
-		Edit
+	<td class="controls">
+		<a href=""><img src="{{ asset('images/icons/cog.png') }}" title="Edit" alt="Edit" /></a>
 	</td>
 </tr>
