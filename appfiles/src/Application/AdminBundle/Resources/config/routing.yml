@@ -355,6 +355,19 @@ admin_departments_designer_ajaxfetchwidget:
   requirements: { department_id: "\d+", widget_id: "\d+" }
 
 ################################################################################
+# Ticket categories
+################################################################################
+
+admin_ticketcats:
+  pattern: /tickets/categories
+  defaults: { _controller: AdminBundle:TicketCategories:list }
+
+admin_ticketcats_edit:
+  pattern: /tickets/categories/{category_id}
+  defaults: { _controller: AdminBundle:TicketCategories:edit }
+  requirements: { category_id: "\d+" }
+
+################################################################################
 # Ticket Priorities
 ################################################################################
 

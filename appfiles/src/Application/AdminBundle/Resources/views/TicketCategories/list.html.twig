@@ -1,0 +1,31 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block section 'crm' %}
+{% block sub_section 'usergroups' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketCategoriesList.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketCategoriesList();
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<div style="text-align:right; padding-bottom: 10px;">
+	<a class="icon tickets popout-trigger" href="{{ path('admin_ticketcats', {'category_id': '0'}) }}">Create New Category</a>
+</div>
+
+<div class="cat-lists">
+{% for category in all_categories %}
+	<ul class="item-list categor-list-{{category.id}}">
+		{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
+		{% for sub_cat in category.children %}
+			{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true } %}
+		{% endfor %}
+	</ul><br />
+{% endfor %}
+</div>
+
+{% endblock %}

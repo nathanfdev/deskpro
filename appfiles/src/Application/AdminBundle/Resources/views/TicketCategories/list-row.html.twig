@@ -1,0 +1,12 @@
+<li class="category category-{{category.id}} {% if category.parent %}sub{% endif %}" data-category-id="{{category.id}}">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="{{ path('admin_ticketcats_edit', {'category_id': category.id}) }}" class="popout-trigger" data-height="300">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		{% if not category.parent %}<strong>{{category.title}}</strong>
+		{% else %}{{category.title}}
+		{% endif %}
+	</div>
+</li>
