@@ -35,8 +35,8 @@ class CombinationLoader implements LoaderInterface
 	 */
 	protected $cache_prefix;
 
-	
-	
+
+
 	/**
 	 * Set a cacher to cache phrasegroups.
 	 *
@@ -84,7 +84,7 @@ class CombinationLoader implements LoaderInterface
 		return $this->cache_prefix;
 	}
 
-	
+
 
 	/**
 	 * Add a loader to the chain. Later loaders override phrases fetched from
@@ -98,14 +98,15 @@ class CombinationLoader implements LoaderInterface
 	}
 
 
-	
+
 	/**
 	 * Loads phrase groups
-	 * 
+	 *
 	 * @param array $groups Groups to load
+	 * @param \Application\DeskPRO\Entity\Locale $locale
 	 * @return array
 	 */
-	public function load($groups)
+	public function load($groups, $locale)
 	{
 		#------------------------------
 		# See if we can fetch any fully-formed groups from the cache
@@ -141,7 +142,7 @@ class CombinationLoader implements LoaderInterface
 
 			foreach ($this->loaders as $loader) {
 				try {
-					$loader_phrases = $loader->load($groups);
+					$loader_phrases = $loader->load($groups, $locale);
 
 					// Loaders return array(group=>array(phrases), group2=>array(phrases)..)
 					// So we'll merge all loader groups into one master array
@@ -196,7 +197,7 @@ class CombinationLoader implements LoaderInterface
 
 		return $phrases;
 	}
-	
+
 
 
 	/**
@@ -212,7 +213,7 @@ class CombinationLoader implements LoaderInterface
 		}
 	}
 
-	
+
 
 	/**
 	 * Invalidate a group of phrases in the cache.

@@ -1,4 +1,22 @@
 <?php
+##BEGIN:locale.language##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$l = new \Application\DeskPRO\Entity\Language();
+$l['title'] = 'Default Engligh';
+\Application\DeskPRO\App::getOrm()->persist($l);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:locale.locale##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$l = new \Application\DeskPRO\Entity\Locale();
+$l['title'] = 'English (US)';
+$l['language_id'] = 1;
+$l['locale'] = 'en_US';
+\Application\DeskPRO\App::getOrm()->persist($l);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
 ##BEGIN:create_queue.agent##
 \Application\DeskPRO\App::getOrm()->beginTransaction();
 $q = new \Application\DeskPRO\Entity\TicketQueue();

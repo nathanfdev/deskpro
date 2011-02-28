@@ -11,6 +11,8 @@
 
 namespace Application\AdminBundle\Controller;
 
+use \Application\DeskPRO\App;
+
 /**
  * Handles creating/editing of Usersources
  */
@@ -18,6 +20,12 @@ class TestController extends AbstractController
 {
 	public function indexAction()
 	{
-		return $this->render('AdminBundle:Test:index.html.twig');
+		$cat = App::getEntityRepository('DeskPRO:Department')->find(1);
+
+		//$tr = App::get('deskpro.core.translate');
+		//echo $tr->phrase($cat);
+
+		//exit;
+		return $this->render('AdminBundle:Test:index.html.twig', array('cat' => $cat));
 	}
 }

@@ -113,21 +113,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $secret_string;
 
 	/**
-	 * The language ID.
+	 * The locale associate with the user.
 	 *
-	 * @var int
-	 * @orm:Column(name="language_id", type="integer", nullable=true)
+	 * @var \Application\DeskPRO\Entity\Locale
+	 * @orm:ManyToOne(targetEntity="Locale")
+	 * @orm:JoinColumn(name="locale_id", referencedColumnName="id")
 	 */
-	protected $language_id = null;
-
-	/**
-	 * The language associate with the user.
-	 *
-	 * @var \Application\DeskPRO\Entity\Language
-	 * @orm:ManyToOne(targetEntity="Language")
-	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
-	 */
-	protected $language = null;
+	protected $locale = null;
 
 	/**
 	 * @var int

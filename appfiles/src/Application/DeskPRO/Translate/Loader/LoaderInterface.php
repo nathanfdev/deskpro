@@ -25,7 +25,8 @@ interface LoaderInterface
 	 * </code>
 	 *
 	 * @param array $group The groups to load
+	 * @param \Application\DeskPRO\Entity\Locale $locale
 	 * @return array Array of name=>phrase
 	 */
-	public function load($groups);
+	public function load($groups, $locale);
 }

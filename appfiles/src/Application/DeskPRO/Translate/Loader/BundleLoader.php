@@ -37,8 +37,11 @@ class BundleLoader implements LoaderInterface
 
 
 
-	public function load($groups)
+	public function load($groups, $locale)
 	{
+		// We dont actually use locale here. the bundle loader
+		// is always english, used as the default.
+
 		if (!is_array($groups)) $groups = array($groups);
 
 		$phrases = array();
@@ -53,11 +56,11 @@ class BundleLoader implements LoaderInterface
 			list($bundle_name, $name) = $bundle_parts;
 
 			if (!isset($this->bundle_paths[$bundle_name])) {
-				throw new \InvalidArgumentException("No bundle named `$group`");
+				continue;
 			}
 
 			$filepath = $this->bundle_paths[$bundle_name] . '/' . $name . '.php';
-			
+
 			if (!is_file($filepath)) {
 				return array();
 			}

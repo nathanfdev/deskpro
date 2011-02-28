@@ -42,10 +42,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * The language associate with the user.
+	 * The locale associate with the user.
 	 *
-	 * @var \Application\DeskPRO\Entity\Language
-	 * @orm:ManyToOne(targetEntity="Language")
+	 * @var \Application\DeskPRO\Entity\Locale
+	 * @orm:ManyToOne(targetEntity="Locale")
 	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
 	 */
 	protected $language = null;

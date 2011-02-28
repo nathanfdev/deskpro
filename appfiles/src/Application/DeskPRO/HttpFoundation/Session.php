@@ -28,10 +28,10 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	protected $person;
 
 	/**
-	 * The language used for this user
-	 * @var Application\DeskPRO\Entity\Language
+	 * The lcoale used for this user
+	 * @var Application\DeskPRO\Entity\Locale
 	 */
-	protected $language;
+	protected $locale;
 
 
 
@@ -69,41 +69,48 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 
 	/**
-	 * Get the locale the user wants.
+	 * Get the locale code. Note that this is the string code xx_XX. Use
+	 * getLocaleObject if you want the object.
+	 *
+	 * (It's the code because some Symfony components expects it to be).
 	 *
 	 * @return string
 	 */
 	public function getLocale()
 	{
-		$language = $this->getLanguage();
+		$locale = $this->getLocaleObject();
 
-		if (!$language) {
-			return 'en_US';
-		} else {
-			return $language['locale'];
-		}
+		return $locale['locale'];
 	}
 
 
+
 	/**
-	 * Get the language the user wants.
+	 * Get the locale object the user wants.
 	 *
-	 * TODO: Currently there is no Language object for default (0) where phrases
-	 * etc are gathered from filesystem. Perhaps this needs to change, or maybe
-	 * make a LanguageDefault subclass like we did with PersonGuest.
-	 *
-	 * @return Application\DeskPRO\Entity\Language
+	 * @return Application\DeskPRO\Entity\Locale
 	 */
-	public function getLanguage()
+	public function getLocaleObject()
 	{
-		if ($this->language !== null) return $this->language;
+		if ($this->locale !== null) return $this->locale;
 
 		$person = $this->getPerson();
-		if ($person['language']) {
-			$this->language = $person['language'];
-		} else {
-			$this->language = 0;
+		if ($person['id']) {
+			$this->locale = $person['locale'];
+		} elseif ($this->get('locale_id')) {
+			$this->locale = App::getEntityRepository('DeskPRO:Locale')->find($this->get('locale_id'));
 		}
+
+		if (!$this->locale) {
+			$this->locale = App::getEntityRepository('DeskPRO:Locale')->find(App::getSetting('core.default_locale_id'));
+		}
+
+		// still no locale? we might be pre-install, lets use the fake one
+		if (!$this->locale) {
+			$this->locale = \Application\DeskPRO\Translate\SystemLocale::getInstance();
+		}
+
+		return $this->locale;
 	}
 
 

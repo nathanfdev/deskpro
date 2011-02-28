@@ -23,41 +23,29 @@ class DbLoader implements LoaderInterface
 	protected $dbconn;
 
 	/**
-	 * @var array
-	 */
-	protected $language_ids = array();
-
-
-
-	/**
 	 * @param \Application\DeskPRO\DBAL\Connection $dbconn
 	 */
-	public function __construct(\DeskPRO\DBAL\Connection $dbconn)
+	public function __construct(\Application\DeskPRO\DBAL\Connection $dbconn)
 	{
 		$this->dbconn = $dbconn;
 	}
-	
-	
-	
-	/**
-	 * Set the language ID's to fetch from.
-	 * 
-	 * @param array $language_ids 
-	 */
-	public function setLanguageIds(array $language_ids)
+
+	public function load($groups, $locale)
 	{
-		$this->language_ids = $language_ids;
-	}
+		// No locale means we have nothing to do here,
+		// usually means we're in an area without db yet (pre install?)
+		if (!$locale OR !$locale['id']) {
+			return array();
+		}
 
-
-
-	public function load($groups)
-	{
 		$group_in = "'" . implode("','", $groups) . "'";
-		
-		// 0 contains non-language language like cat names and such
-		$langs = $this->language_ids;
-		$langs[] = 0;
+
+		$langs = $locale->getAllParentIds();
+		$langs[] = $locale['id'];
+
+		// null contains non-language language like cat names and such
+		$langs[] = 'NULL';
+
 		$lang_in = implode(',', $langs);
 
 		// Note that ordering by lang id here is an easy way to give child phrases
@@ -65,10 +53,11 @@ class DbLoader implements LoaderInterface
 		// their ID's are always higher.
 
 		$q = $this->dbconn->query("
-			SELECT DISTINCT name, phrase, groupname
+			SELECT name, phrase, groupname
 			FROM phrases
 			WHERE language_id IN ($lang_in) AND groupname IN ($group_in)
-			ORDER BY language_id DESC
+			GROUP BY name
+			ORDER language_id DESC
 		");
 
 		$phrases = array();

@@ -1454,4 +1454,28 @@ class Arrays
 
 		return true;
 	}
+
+
+
+	/**
+	 * Like array_walk() but the callback can take the key by reference to change it.
+	 *
+	 * @param  $array
+	 * @param  $callback function ($key, $value)
+	 * @return array
+	 */
+	public static function walkKeys($array, $callback)
+	{
+		$keys = array_keys($keys);
+
+		foreach ($keys as $k) {
+			call_user_func($callback, array($k, $array[$k]));
+		}
+
+		$values = array_values($array);
+
+		$array = array_combine($keys, $values);
+
+		return $array;
+	}
 }

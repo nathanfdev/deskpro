@@ -15,6 +15,11 @@ services:
     arguments: [@templating.name_parser, @service_container, @templating.loader]
     tags:
       - { name: templating.engine, alias: jsonphp }
+  twig.helpers.deskpro_templating:
+    class: Application\DeskPRO\Twig\Extension\TemplatingExtension
+    arguments: [@service_container]
+    tags:
+      - { name: twig.extension }
   session.storage:
     class: Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage
     arguments: [@doctrine.orm.entity_manager, %session.storage.native.options%]

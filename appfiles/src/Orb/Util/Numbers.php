@@ -34,6 +34,10 @@ class Numbers
 	 */
 	public static function isInteger($value)
 	{
+		if (!is_scalar($value) OR is_array($value)) {
+			return false;
+		}
+
 		if (is_int($value) OR (int)$value == $value) {
 			return true;
 		}
