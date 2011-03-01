@@ -1,0 +1,26 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/LanguagePhraseGroupList.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.LanguagePhraseGroupList();
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<h1 style="font-size: 14pt;margin-bottom: 10px;">Phrase Groups in {{language.title}}</h1>
+
+{% for bundle, group_list in group_files %}
+	<h3>{{bundle}}</h3>
+	<ul class="item-list">
+		{% for phrasegroup in group_list %}
+			{% include 'AdminBundle:Languages:list-phrasegroups-row.html.twig' %}
+		{% endfor %}
+	</ul>
+	<br /><br />
+{% endfor %}
+
+{% endblock %}

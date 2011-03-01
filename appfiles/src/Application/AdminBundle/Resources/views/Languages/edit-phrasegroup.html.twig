@@ -1,0 +1,48 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	$('button.save-trigger').click(function() {
+		$('form:first').submit();
+	});
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>Edit Phrase Group: {{phrasegroup}}</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_langs_editphrasegroup', {'language_id': language.id, 'phrasegroup': phrasegroup}) }}" method="post">
+<input type="hidden" name="process" value="1" />
+
+<div class="table-list-wrap">
+	<h2>Phrases</h2>
+	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+		<thead>
+			<tr>
+				<th>Phrase</th>
+				<th>Translated</th>
+				<th>Original</th>
+			</tr>
+		</thead>
+		<tbody id="teams_rows">
+			{% for phrase_name,orig_phrase in orig_phrases %}
+				<tr>
+					<td>{{phrase_name}}</td>
+					<td><input type="text" name="trans[{{phrase_name}}]" value="{{lang_phrases[phrase_name].phrase}}" style="width:99%;" /></td>
+					<td><input type="text" value="{{orig_phrase}}" style="width:99%;" /></td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+</form>
+{% endblock %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Save</button>
+	<button class="dp-button gray cancel-trigger">Cancel</button>
+{% endblock %}

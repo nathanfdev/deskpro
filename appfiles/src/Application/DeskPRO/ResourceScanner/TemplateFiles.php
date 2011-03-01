@@ -29,7 +29,7 @@ class TemplateFiles
 		foreach ($all_bundle_info as $bundle => $bundle_info) {
 			$tpls = $this->getTemplatesInBundle($bundle);
 			if ($tpls) {
-				$templates[$bundle] = $this->getTemplatesInBundle($bundle);
+				$templates[$bundle] = $tpls;
 			}
 		}
 

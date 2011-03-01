@@ -57,7 +57,8 @@ class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Ext
 		// BundleLoader
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\BundleLoader', array(array(
 			'core' => DP_ROOT . '/src/Application/DeskPRO/Resources/language',
-			'tech' => DP_ROOT . '/src/Application/AgentBundle/Resources/language',
+			'api' => DP_ROOT . '/src/Application/AgentBundle/Resources/language',
+			'agent' => DP_ROOT . '/src/Application/AgentBundle/Resources/language',
 			'user' => DP_ROOT . '/src/Application/UserBundle/Resources/language',
 			'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/language',
 		)));

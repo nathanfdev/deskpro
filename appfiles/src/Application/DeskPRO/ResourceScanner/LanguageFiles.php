@@ -10,95 +10,73 @@
  */
 
 namespace Application\DeskPRO\ResourceScanner;
-use Symfony\Component\DependencyInjection\Container;
-use Orb\Util\Arrays;
+
+use \Application\DeskPRO\App;
+use \Orb\Util\Arrays;
 
 /**
- * Scans the filesystem for language files
+ * The lang system uses phrases from the DB, and then falls back on the
+ * English phrases defined in the filesystem. This scans all the bundles for
+ * phrase files
  */
 class LanguageFiles
 {
-	protected $bundle_dirs = array();
-	protected $bundles = array();
-
-	public function __construct(Container $container)
+	public function getGroupsInAllBundles()
 	{
-		$this->bundle_dirs = $container->getParameter('kernel.bundle_dirs');
-		$bundles = $container->getParameter('kernel.bundles');
+		$all_bundle_info = App::getApplicationBundleInfo();
 
-		// Filter out those we dont want
-		$filter_out = array('Symfony\\');
-		foreach ($bundles as $k => $v) {
-			$add = true;
-			foreach ($filter_out as $str) {
-				if (strpos($v, $str) === 0) {
-					$add = false;
-					break;
-				}
-			}
-
-			if ($add) {
-				$this->bundles[] = $v;
+		$phrasegroups = array();
+		foreach ($all_bundle_info as $bundle => $bundle_info) {
+			$groups = $this->getGroupsInBundle($bundle);
+			if ($groups) {
+				$phrasegroups[$bundle] = $groups;
 			}
 		}
+
+		return $phrasegroups;
 	}
 
 
 
 	/**
-	 * Scan a bundle directory for all language files, and return a map of groups
-	 * and the corresponding file:
+	 * Get an array of language groups in a given bundle
 	 *
-	 * <code>
-	 * array(
-	 *     'example'            => '/src/Application/ExampleBundle/language/example.php',
-	 *     'whatever_core'      => '/src/Bundle/WhateverBundle/language/core.php',
-	 * )
-	 * </code>
-	 *
-	 * @param string $bundle
+	 * @param  $bundle
 	 * @return array
 	 */
-	public function getBundleGroups($bundle)
+	public function getGroupsInBundle($bundle)
 	{
-		$bundle_dir = null;
-		$bundle_name = null;
-
-		foreach ($this->bundle_dirs as $ns => $dir) {
-			if (strpos($bundle, $ns) === 0) {
-				$bundle_dir = $dir . str_replace('\\', '/', str_replace($ns, '', $bundle));
-				// Remove the bundlename at the end cuz its duplciated
-				$bundle_dir = substr($bundle_dir, 0, strrpos($bundle_dir, '/'));
-
-				$bundle_name = substr($bundle_dir, strrpos($bundle_dir, '/')+1);
-				$bundle_name = str_replace('Bundle', '', $bundle_name);
-				$bundle_name = strtolower($bundle_name);
-				break;
-			}
+		$all_bundle_info = App::getApplicationBundleInfo();
+		if (!isset($all_bundle_info[$bundle])) {
+			return array();
 		}
 
-		$lang_dir = $bundle_dir . '/Resources/language';
+		$bundle_info = $all_bundle_info[$bundle];
 
-		if (!$bundle_dir OR !is_dir($bundle_dir) OR !is_dir($lang_dir)) {
+		$dir = $bundle_info['path'] . '/Resources/language';
+		if (!is_dir($dir)) {
 			return array();
 		}
 
 		$finder = new \Symfony\Component\Finder\Finder();
-		$finder->files()->name('*.php')->in($lang_dir);
+		$finder->files()->name('*.php')->in($dir);
 
 		$groups = array();
 		foreach ($finder as $filepath) {
 
-			$groupname = basename($filepath, '.php');
-			if ($groupname != $bundle_name) {
-				$groupname = $bundle_name . '_' . $groupname;
+			// Groups are shortname_subname
+			// Or if its the main core group of a bundle, simply shortname
+
+			$name = str_replace($dir . '/', '', $filepath);
+			$name = str_replace('.php', '', $name);
+
+			if ($name != $bundle_info['shortname']) {
+				$name = $bundle_info['shortname'] . '_' . $name;
 			}
 
-			// /somepath/SomeBundle/Resources/language/whatever.php
-			// -> some_whatever
-
-			$groups[$groupname] = $filepath;
+			$groups[] = $name;
 		}
+		sort($groups, \SORT_STRING);
 
 		return $groups;
 	}
@@ -106,36 +84,30 @@ class LanguageFiles
 
 
 	/**
-	 * Get templates for all known bundles.
+	 * Get the filepath for a group
 	 *
-	 * @return array
+	 * @param  $groupname
+	 * @return null|string
 	 */
-	public function getGroups($nameonly = false)
+	public function getPathForGroup($groupname)
 	{
-		$groups = array();
-
-		foreach ($this->bundles as $bundle) {
-			$groups[$bundle] = $this->getBundleGroups($bundle);
-			if ($nameonly) {
-				$groups[$bundle] = array_keys($groups[$bundle]);
-			}
+		if (strpos($groupname, '_') !== false) {
+			$bundle_shortname = explode('_', $groupname, 2);
+		} else {
+			$bundle_shortname = $groupname;
 		}
 
-		$groups = Arrays::removeFalsey($groups);
+		$bundle = App::getBundleFromShortname($bundle_shortname);
 
-		return $groups;
-	}
-
-
-
-	public function getPhrasesInFile($file, $just_names = false)
-	{
-		$phrases = include($file);
-
-		if ($just_names) {
-			return array_keys($phrases);
+		$all_bundle_info = App::getApplicationBundleInfo();
+		if (!isset($all_bundle_info[$bundle])) {
+			return null;
 		}
 
-		return $phrases;
+		$bundle_info = $all_bundle_info[$bundle];
+
+		$path = $bundle_info['path'] . '/Resources/language/' . $groupname . '.php';
+
+		return $path;
 	}
 }

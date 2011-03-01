@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use \Application\DeskPRO\App;
+
 use \Symfony\Component\Validator\Constraints;
 use \Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -58,4 +60,19 @@ class Locale extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
+
+
+	public function getLanguageId()
+	{
+		if (!$this->language) {
+			return 0;
+		}
+
+		return $this->language['id'];
+	}
+
+	public function setLanguageId($language_id)
+	{
+		$this->language = App::getEntityRepository('DeskPRO:Language')->find($language_id);
+	}
 }

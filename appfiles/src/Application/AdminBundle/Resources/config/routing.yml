@@ -102,35 +102,40 @@ admin_styles_reverttemplate:
   requirements: { style_id: "\d+" }
 
 ################################################################################
+# locales
+################################################################################
+
+admin_locales:
+  pattern: /locales
+  defaults: { _controller: AdminBundle:Locales:list }
+
+admin_locales_edit:
+  pattern: /locales/{locale_id}/edit
+  defaults: { _controller: AdminBundle:Locales:edit }
+  requirements: { locale_id: "\d+" }
+
+################################################################################
 # Languages
 ################################################################################
 
 admin_langs:
-  pattern: /languages
-  defaults: { _controller: AdminBundle:Languages:index }
-
-admin_langs_intro:
-  pattern: /languages/intro
-  defaults: { _controller: AdminBundle:Languages:intro }
+  pattern: /locales/languages
+  defaults: { _controller: AdminBundle:Languages:listLanguages }
 
 admin_langs_editlang:
-  pattern: /languages/{lang_id}/edit
-  defaults: { _controller: AdminBundle:Languages:editLang }
-  requirements: { lang_id: "\d+" }
-
-admin_langs_newlang:
-  pattern: /languages/new-language
-  defaults: { _controller: AdminBundle:Languages:editLang, lang_id: 0 }
+  pattern: /locales/languages/{language_id}/edit
+  defaults: { _controller: AdminBundle:Languages:editLanguage }
+  requirements: { language_id: "\d+" }
 
 admin_langs_phrases:
-  pattern: /languages/{lang_id}/phrases
+  pattern: /locales/languages/{language_id}/phrases
   defaults: { _controller: AdminBundle:Languages:listPhrases}
-  requirements: { lang_id: "\d+", phrase_group: null }
+  requirements: { language_id: "\d+", phrase_group: null }
 
-admin_langs_editphrase:
-  pattern: /languages/{lang_id}/edit-phrase/{phrase_name}
-  defaults: { _controller: AdminBundle:Languages:editPhrase }
-  requirements: { lang_id: "\d+" }
+admin_langs_editphrasegroup:
+  pattern: /locales/languages/{language_id}/edit-phrasegroup
+  defaults: { _controller: AdminBundle:Languages:editPhraseGroup }
+  requirements: { language_id: "\d+" }
 
 
 ################################################################################

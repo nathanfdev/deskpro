@@ -671,30 +671,48 @@ class App
 	{
 		return array(
 			'AdminBundle' => array(
+				'shortname' => 'admin',
 				'bundle' => 'AdminBundle',
 				'namespace' => 'Application\\AdminBundle',
 				'path' => DP_ROOT . '/src/Application/AdminBundle'
 			),
 			'ApiBundle' => array(
+				'shortname' => 'api',
 				'bundle' => 'ApiBundle',
 				'namespace' => 'Application\\ApiBundle',
 				'path' => DP_ROOT . '/src/Application/ApiBundle'
 			),
 			'DeskPRO' => array(
+				'shortname' => 'core',
 				'bundle' => 'DeskPRO',
 				'namespace' => 'Application\\DeskPRO',
 				'path' => DP_ROOT . '/src/Application/DeskPRO'
 			),
 			'AgentBundle' => array(
+				'shortname' => 'agent',
 				'bundle' => 'AgentBundle',
 				'namespace' => 'Application\\AgentBundle',
 				'path' => DP_ROOT . '/src/Application/AgentBundle'
 			),
 			'UserBundle' => array(
+				'shortname' => 'user',
 				'bundle' => 'UserBundle',
 				'namespace' => 'Application\\UserBundle',
 				'path' => DP_ROOT . '/src/Application/UserBundle'
 			),
 		);
+	}
+
+	public static function getBundleFromShortname($shortname)
+	{
+		static $map = array(
+			'admin' => 'AdminBundle',
+			'api' => 'ApiBundle',
+			'core' => 'DeskPRO',
+			'agent' => 'AgentBundle',
+			'user' => 'UserBundle'
+		);
+
+		return $map[$shortname];
 	}
 }

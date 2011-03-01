@@ -2,6 +2,9 @@
 
 namespace Application\AdminBundle\Controller;
 
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
+use \Application\AdminBundle\Form\EditLanguageForm;
 use \Orb\Util\Arrays;
 use \Symfony\Component\Form;
 
@@ -10,117 +13,80 @@ class LanguagesController extends AbstractController
 	/**
 	 * @var array
 	 */
-	protected $lang_hierarchy = array();
+	protected $language_hierarchy = array();
 
 	protected function init()
 	{
 		parent::init();
 
-		$this->lang_hierarchy = $this->db->fetchAllKeyed("SELECT id, parent_id, locale, title FROM languages ORDER BY title ASC");
-		$this->lang_hierarchy = Arrays::intoHierarchy($this->lang_hierarchy);
-		$this->lang_hierarchy = Arrays::flattenHierarchy($this->lang_hierarchy);
-
-		$this->tplvars['all_langs'] = $this->lang_hierarchy;
+		$this->_setHierarchyVar();
 	}
 
-
+	protected function _setHierarchyVar()
+	{
+		$this->language_hierarchy = $this->db->fetchAllKeyed("SELECT id, parent_id, title FROM languages ORDER BY title ASC");
+		$this->language_hierarchy = Arrays::intoHierarchy($this->language_hierarchy);
+		$this->language_hierarchy = Arrays::flattenHierarchy($this->language_hierarchy);
+	}
 
 	############################################################################
-	# index
+	# list languages
 	############################################################################
 
 	/**
 	 * Shows a list of current langs
 	 */
-	public function indexAction()
+	public function listLanguagesAction()
     {
-		if (!$this->lang_hierarchy) {
-			return $this->redirect($this->generateUrl('agent_admin_langs_intro', array()));
-		}
-
-        return $this->render('AdminBundle:Languages:index.html.twig');
+        return $this->render('AdminBundle:Languages:list-languages.html.twig', array(
+			'language_hierarchy' => $this->language_hierarchy
+		));
     }
 
 
-
 	############################################################################
-	# intro
-	############################################################################
-
-	/**
-	 * Shows an introduction to what langs are etc. A user is automatically redirected
-	 * here when no langs exist yet.
-	 */
-	public function introAction()
-	{
-		$this->tplvars['has_no_langs'] = !((bool)$this->lang_hierarchy);
-
-		return $this->render('AdminBundle:Languages:intro.html.twig');
-	}
-
-
-
-	############################################################################
-	# id/edit | new-language
+	# edit language
 	############################################################################
 
 	/**
-	 * Form
+	 * Edit a language
 	 */
-	public function editLangAction($lang_id)
+	public function editLanguageAction($language_id)
 	{
 		#-------------------------
-		# Get the lang we're working on
+		# Get the style we're working on
 		#-------------------------
 
-		if ($lang_id) {
-			$lang = $this->getLangOr404($lang_id);
+		if ($language_id) {
+			$language = $this->getLanguageOr404($language_id);
 		} else {
-			$lang = new \Application\DeskPRO\Entity\Language();
+			$language = new \Application\DeskPRO\Entity\Language();
 		}
 
-		$this->tplvars['lang'] = $lang;
+		$form = EditLanguageForm::create($this->get('form.context'), 'language', array('language' => $language));
+		$form->bind($this->get('request'), $language);
 
+		$is_edited = false;
+		$row_html = false;
+		if ($this->in->getBool('process')) {
+			$is_edited = true;
+			App::getOrm()->persist($language);
+			App::getOrm()->flush();
 
-		#-------------------------
-		# Set up the form and validator
-		#-------------------------
+			$this->_setHierarchyVar();// reset data in hierarchy
+			$row_html = $this->renderView('AdminBundle:Languages:list-languages-row.html.twig', array('language' => $this->language_hierarchy[$language['id']]));
 
-		$form = new Form\Form('lang', $lang, $this->get('validator'));
-		$form->add(new Form\TextField('title'));
-		$form->add(new Form\TextField('locale'));
-
-		if (!$lang['id'] AND $this->lang_hierarchy) {
-			foreach ($this->lang_hierarchy as $s) {
-				$indent = '';
-				if ($s['depth']) $indent = str_repeat('--', $s['depth']) . ' ';
-
-				$choices[$s['id']] = $indent . $s['title'];
-			}
-
-			$f = new Form\ChoiceField('parent_id', array('choices' => $choices));
-			$form->add($f);
-		}
-		$form->add(new Form\TextAreaField('note'));
-
-		$this->tplvars['form'] = $form;
-
-
-		#-------------------------
-		# If the form was submitted, try and save it
-		#-------------------------
-
-		if ($this->get('request')->getMethod() == 'POST') {
-			$form->bind($this->get('request')->request->get('lang'));
-			if ($form->isValid()) {
-				$this->em->persist($lang);
-				$this->em->flush();
-
-				return $this->redirect($this->generateUrl('admin_langs_phrases', array('lang_id' => $lang['id'])));
-			}
+			// Recreate form because parent_id field cant be changed, so we need to get rid of it
+			$form = EditLanguageForm::create($this->get('form.context'), 'language', array('language' => $language));
+			$form->setData($language);
 		}
 
-		return $this->render('AdminBundle:Languages:edit.html.twig');
+		return $this->render('AdminBundle:Languages:edit-language.html.twig', array(
+			'language' => $language,
+			'form'      => $form,
+			'is_edited' => $is_edited,
+			'row_html'  => $row_html
+		));
 	}
 
 
@@ -131,56 +97,88 @@ class LanguagesController extends AbstractController
 	/**
 	 * List phrases
 	 */
-	public function listPhrasesAction($lang_id)
+	public function listPhrasesAction($language_id)
 	{
-		$lang = $this->getLangOr404($lang_id);
-		$this->tplvars['lang'] = $lang;
+		$language = $this->getLanguageOr404($language_id);
 
-		$lang_finder = new \Application\DeskPRO\ResourceScanner\LanguageFiles($this->container);
-		$bundled_groups = $lang_finder->getGroups();
+		$lang_finder = new \Application\DeskPRO\ResourceScanner\LanguageFiles();
+		//$changed_templates = $style->getCustomTemplateNames();
 
-		$phrases = array();
-
-		foreach ($bundled_groups as $bundle => $groups) {
-			foreach ($groups as $group => $groupfile) {
-				$phrases[$group] = $lang_finder->getPhrasesInFile($groupfile);
-			}
-		}
-
-		$this->tplvars['all_phrases'] = $phrases;
-
-		return $this->render('AdminBundle:Languages:language-phrase-list.html.twig');
+		return $this->render('AdminBundle:Languages:list-phrasegroups.html.twig', array(
+			'language' => $language,
+			'group_files' => $lang_finder->getGroupsInAllBundles(),
+			//'changed_templates' => $changed_templates
+		));
 	}
 
 
 	############################################################################
-	# id/phrases/somephrasename
+	# edit phrase group
 	############################################################################
 
 	/**
 	 * Edit a phrase
 	 */
-	public function editPhraseAction($lang_id, $phrase_name)
+	public function editPhraseGroupAction($language_id)
 	{
-		$lang = $this->getLangOr404($lang_id);
-		$this->tplvars['lang'] = $lang;
+		$language = $this->getLanguageOr404($language_id);
 
-		$lang_finder = new \Application\DeskPRO\ResourceScanner\LanguageFiles($this->container);
-		$bundled_groups = $lang_finder->getGroups();
+		$phrasegroup = $this->in->getString('phrasegroup');
+		$lang_finder = new \Application\DeskPRO\ResourceScanner\LanguageFiles();
 
-		$bundled_groups = Arrays::flatten($bundled_groups);
-		if (!isset($bundled_groups[$phrase_name])) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no phrase called `$phrase_name`");
+		$phrase_file = $lang_finder->getPathForGroup($phrasegroup);
+		if (!is_file($phrase_file)) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no phrase group with that name");
 		}
 
-		$this->tplvars['phrase_name'] = $phrase_name;
+		$orig_phrases = require($phrase_file);
+		$lang_phrases = App::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:Phrase p INDEX BY p.name
+			WHERE p.language = ?1 AND p.groupname = ?2
+		")->execute(array(1=>$language, 2=>$phrasegroup));
 
-		$group_phrases = $lang_finder->getPhrasesInFile($bundled_groups[$phrase_name]);
+		if ($this->in->getBool('process')) {
 
-		// TODO fetch current contents
-		$this->tplvars['phrase_content'] = $group_phrases[$phrase_name];
+			App::getOrm()->beginTransaction();
 
-		return $this->render('AdminBundle:Styles:edit-phrase.html.twig');
+			foreach ($orig_phrases as $phrase_name => $orig_phrase) {
+				$editted = $this->in->getString(array('trans', $phrase_name));
+				$phrase = null;
+				if (isset($lang_phrases[$phrase_name])) {
+					$phrase = $lang_phrases[$phrase_name];
+				}
+
+				// not edited, remove
+				if (!$editted OR $editted == $orig_phrase) {
+					if ($phrase) {
+						App::getOrm()->remove($phrase);
+						unset($lang_phrases[$phrase_name]);
+					}
+
+				// edited, create or update
+				} else {
+					if (!$phrase) {
+						$phrase = new Entity\Phrase();
+						$phrase['language'] = $language;
+						$phrase['name'] = $phrase_name;
+					}
+
+					$phrase['phrase'] = $editted;
+					App::getOrm()->persist($phrase);
+				}
+			}
+
+			App::getOrm()->flush();
+			App::getOrm()->commit();
+		}
+
+		return $this->render('AdminBundle:Languages:edit-phrasegroup.html.twig', array(
+			'language' => $language,
+			'phrasegroup' => $phrasegroup,
+			'orig_phrases' => $orig_phrases,
+			'lang_phrases' => $lang_phrases
+		));
 	}
 
 
@@ -190,18 +188,18 @@ class LanguagesController extends AbstractController
 	/**
 	 * @return Application\DeskPRO\Entity\Language
 	 */
-	protected function getLangOr404($lang_id)
+	protected function getLanguageOr404($language_id)
 	{
 		try {
-			$lang = $this->em->createQuery('
+			$language = $this->em->createQuery('
 				SELECT l
 				FROM DeskPRO:Language l
 				WHERE l.id = ?1'
-			)->setParameter(1, $lang_id)->getSingleResult();
+			)->setParameter(1, $language_id)->getSingleResult();
 		} catch (\Doctrine\ORM\NoResultException $e) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no language with ID $lang_id");
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no language with ID $language_id");
 		}
 
-		return $lang;
+		return $language;
 	}
 }
