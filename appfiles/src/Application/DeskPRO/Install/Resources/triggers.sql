@@ -6,7 +6,6 @@ BEGIN
 		INSERT INTO tickets_search_active
 		SET
 			id                       = NEW.id,
-			language_id              = NEW.language_id,
 			category_id              = NEW.category_id,
 			priority_id              = NEW.priority_id,
 			workflow_id              = NEW.workflow_id,
@@ -34,7 +33,6 @@ BEGIN
 		INSERT INTO tickets_search_message_active
 		SET
 			ticket_id                = NEW.id,
-			language_id              = NEW.language_id,
 			category_id              = NEW.category_id,
 			priority_id              = NEW.priority_id,
 			workflow_id              = NEW.workflow_id,
@@ -59,7 +57,6 @@ BEGIN
 	INSERT INTO tickets_search_message
 		SET
 			ticket_id                = NEW.id,
-			language_id              = NEW.language_id,
 			category_id              = NEW.category_id,
 			priority_id              = NEW.priority_id,
 			workflow_id              = NEW.workflow_id,
@@ -95,7 +92,6 @@ BEGIN
 		INSERT INTO tickets_search_active
 		SET
 			id                       = NEW.id,
-			language_id              = NEW.language_id,
 			category_id              = NEW.category_id,
 			priority_id              = NEW.priority_id,
 			workflow_id              = NEW.workflow_id,
@@ -120,7 +116,6 @@ BEGIN
 			INSERT INTO tickets_search_message_active
 			SET
 				ticket_id                = NEW.id,
-				language_id              = NEW.language_id,
 				category_id              = NEW.category_id,
 				priority_id              = NEW.priority_id,
 				workflow_id              = NEW.workflow_id,
@@ -145,7 +140,6 @@ BEGIN
 		UPDATE tickets_search_active
 		SET
 			id                       = NEW.id,
-			language_id              = NEW.language_id,
 			category_id              = NEW.category_id,
 			priority_id              = NEW.priority_id,
 			workflow_id              = NEW.workflow_id,
@@ -168,7 +162,6 @@ BEGIN
 
 		UPDATE tickets_search_message
 		SET
-			language_id              = NEW.language_id,
 			category_id              = NEW.category_id,
 			priority_id              = NEW.priority_id,
 			workflow_id              = NEW.workflow_id,
@@ -192,7 +185,6 @@ BEGIN
 
 	UPDATE tickets_search_message_active
 	SET
-		language_id              = NEW.language_id,
 		category_id              = NEW.category_id,
 		priority_id              = NEW.priority_id,
 		workflow_id              = NEW.workflow_id,
