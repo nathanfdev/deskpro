@@ -42,15 +42,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * The locale associate with the user.
-	 *
-	 * @var \Application\DeskPRO\Entity\Locale
-	 * @orm:ManyToOne(targetEntity="Locale")
-	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
-	 */
-	protected $language = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Department
 	 * @orm:ManyToOne(targetEntity="Department")
 	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
@@ -782,6 +773,27 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return false;
+	}
+
+
+
+	/**
+	 * Gets messages we should be showing to the user. In other words,
+	 * messages that are not private agent notes.
+	 *
+	 * @return array
+	 */
+	public function getDisplayableMessages()
+	{
+		$ret = array();
+
+		foreach ($this->messages as $msg) {
+			if (!$msg['is_agent_note']) {
+				$ret[] = $msg;
+			}
+		}
+
+		return $ret;
 	}
 
 

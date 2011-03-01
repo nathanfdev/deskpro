@@ -23,3 +23,17 @@ user_login_callback:
   pattern: /login/authenticate-callback/{usersource_id}
   defaults: { _controller: UserBundle:Login:authenticateCallback }
   requirements: { usersource_id: "\d+" }
+
+
+################################################################################
+# Tickets
+################################################################################
+
+user_tickets:
+  pattern: /tickets
+  defaults: { _controller: UserBundle:Tickets:list }
+
+user_tickets_view:
+  pattern: /tickets/{ticket_id}
+  defaults: { _controller: UserBundle:Tickets:view }
+  requirements: { ticket_id: "\d+" }

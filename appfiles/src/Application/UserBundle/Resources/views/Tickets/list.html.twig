@@ -1,0 +1,30 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+<div class="table-list-wrap">
+	<h2>{{ phrase('user_tickets.your_tickets') }}</h2>
+	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+		<thead>
+			<tr>
+				<th>{{ phrase('core_tickets.subject') }}</th>
+				<th>{{ phrase('core.department') }}</th>
+				<th>{{ phrase('core_tickets.category') }}</th>
+				<th>{{ phrase('core_tickets.agent') }}</th>
+				<th>{{ phrase('core_tickets.status') }}</th>
+			</tr>
+		</thead>
+		<tbody>
+			{% for ticket in tickets %}
+				<tr>
+					<td><a href="{{ path('user_tickets_view', {'ticket_id': ticket.id }) }}">{{ ticket.subject }}</a></td>
+					<td>{{ phrase(ticket.department) }}</td>
+					<td>{{ phrase(ticket.category)|default(phrase('core.none')) }}</td>
+					<td>{{ phrase('core_tickets.status_' ~ ticket.status) }}</td>
+					<td>{{ ticket.agent.display_name|default(phrase('core.unassigned')) }}</td>
+				</tr>
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+{% endblock %}

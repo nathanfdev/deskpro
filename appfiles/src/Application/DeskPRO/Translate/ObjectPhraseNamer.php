@@ -49,7 +49,9 @@ class ObjectPhraseNamer
 
 		if ($object instanceof \ArrayAccess) {
 			if ($property === null) {
-				if (isset($object['title'])) {
+				if (isset($object['full_title'])) {
+					return $object['full_title'];
+				} elseif (isset($object['title'])) {
 					return $object['title'];
 				} elseif (isset($object['name'])) {
 					return $object['title'];

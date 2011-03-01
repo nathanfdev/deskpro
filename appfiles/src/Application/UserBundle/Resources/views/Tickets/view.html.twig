@@ -1,0 +1,38 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+<h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ ticket.subject }}</h1>
+
+<table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
+	<td>
+		<small>{{ phrase('core_tickets.subject') }}</small><br />
+		{{ phrase(ticket.department) }}
+	</td>
+	<td>
+		<small>{{ phrase('core_tickets.category') }}</small><br />
+		{{ phrase(ticket.category)|default(phrase('core.none')) }}
+	</td>
+	<td>
+		<small>{{ phrase('core_tickets.status') }}</small><br />
+		{{ phrase('core_tickets.status_' ~ ticket.status) }}
+	</td>
+	<td>
+		<small>{{ phrase('core_tickets.agent') }}</small><br />
+		{{ ticket.agent.display_name|default(phrase('core.unassigned')) }}
+	</td>
+</tr></table>
+
+{% for message in ticket.displayable_messages %}
+	<div style="border: 2px solid #ddd; margin-bottom: 15px;">
+		<div style="background-color: #ddd;">
+			<img src="{{ message.person.getPictureUrl(50) }}" alt="" style="float:left; margin-right: 6px; "/>
+			{{ message.person.display_name }}
+			<br style="clear:left" />
+		</div>
+		<div style="padding: 10px">
+			{{ message.message_html|raw }}
+		</div>
+	</div>
+{% endfor %}
+
+{% endblock %}
