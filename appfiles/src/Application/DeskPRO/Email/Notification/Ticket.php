@@ -41,6 +41,8 @@ class Ticket
 				continue;
 			}
 
+			App::getTranslator()->setLocale($person['locale']);
+
 			$notify_types = Entity\AgentNotification::reduceNotificationTypes($notify_types);
 
 			foreach ($notify_types as $type) {
@@ -63,6 +65,9 @@ class Ticket
 				}
 			}
 		}
+
+		// Reset translator to current context
+		App::getTranslator()->setLocale(App::getCurrentPerson()->getLocale());
 	}
 
 	public function sendNewTicket(Entity\Person $person)
