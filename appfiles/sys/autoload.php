@@ -8,6 +8,8 @@ set_include_path(
 	.PATH_SEPARATOR.
 	DP_ROOT.'/vendor/zend/library'
 	.PATH_SEPARATOR.
+	DP_ROOT.'/vendor/ezcomponents'
+	.PATH_SEPARATOR.
 	get_include_path()
 );
 
@@ -34,9 +36,15 @@ $loader->registerPrefixes(array(
 ));
 
 $loader->registerClassNames(array(
-	'LightOpenID'          => DP_ROOT.'/vendor/lightopenid/openid.php',
-	'Facebook'             => DP_ROOT.'/vendor/facebook/src/facebook.php',
-	'FacebookApiException' => DP_ROOT.'/vendor/facebook/src/facebook.php',
+	'LightOpenID'                     => DP_ROOT.'/vendor/lightopenid/openid.php',
+	'Facebook'                        => DP_ROOT.'/vendor/facebook/src/facebook.php',
+	'FacebookApiException'            => DP_ROOT.'/vendor/facebook/src/facebook.php',
+	'MimeMailParser'                  => DP_ROOT.'/vendor/php-mime-mail-parser/MimeMailParser.php',
+	'MimeMailParser_attachment'       => DP_ROOT.'/vendor/php-mime-mail-parser/attachment.class.php',
 ));
 
 $loader->register();
+
+// ezC autoloading
+require DP_ROOT.'/vendor/ezcomponents/Base/src/ezc_bootstrap.php';
+spl_autoload_register(array('ezcBase', 'autoload'), true, true);
