@@ -6,7 +6,53 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
 	<title>DeskPRO</title>
 
+	<style type="text/css" media="screen">
+	#window_loading_overlay {
+		position:absolute;
+		top: 0;
+		right: 0;
+		bottom: 0;
+		left: 0;
+		background-color: #165887;
+		z-index: 10000000;
+		text-align: center;
+	}
 
+	#window_loading_overlay .box {
+		width: 400px;
+		text-align: left;
+		margin: 150px auto 0 auto;
+
+		background-color: #fff;
+		padding: 30px;
+
+		-moz-border-radius: 20px;
+		border-radius: 20px;
+
+		-webkit-box-shadow: 5px 5px 5px #000000;
+		-moz-box-shadow: 5px 5px 5px #000000;
+		box-shadow: 5px 5px 5px #000000;
+
+		text-align: center;
+	}
+
+	#window_loading_overlay .box h1 {
+		font-family: Arial, Tahoma, Helvetica, sans-serif;
+		font-size: 14pt;
+
+		text-shadow: 1px 1px 2px #B2BBC2;
+		filter: dropshadow(color=#B2BBC2, offx=1, offy=1);
+	}
+
+	#window_loading_overlay .box p {
+		background: transparent url({{ asset('images/loading-big-circle.gif') }}) no-repeat top center;
+		margin-top: 20px;
+		padding-top: 52px;
+
+		text-shadow: 0px 1px 1px #B2BBC2;
+		filter: dropshadow(color=#B2BBC2, offx=1, offy=1);
+	}
+	</style>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}">
 

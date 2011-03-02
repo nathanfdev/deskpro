@@ -779,11 +779,21 @@ DeskPRO.Agent.Window = new Class({
 		var self = this;
 		// Click opens the submenu
 		$('#header .nav ul > li').click(function(ev) {
-			$('#header .nav ul > li.on').removeClass('on');
+			// If we're already open, clicking should toggle to closed
+			var doopen = true;
+			if ($(this).is('.on')) {
+				doopen = false;
+			}
+
+			$('#header .nav ul > li').removeClass('on off');
 			$('#header .nav ul > li .wrap-dropdown').hide();
-			$('.wrap-dropdown', this).show();
-			$(this).addClass('on');
-			$('#header .nav ul > li:not(.on)').addClass('off');
+
+			if (doopen) {
+				$('.wrap-dropdown', this).show();
+				$(this).addClass('on');
+				$('#header .nav ul > li:not(.on)').addClass('off');
+			}
+
 			ev.preventDefault();
 			ev.stopPropagation();
 		});
