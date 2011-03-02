@@ -17,6 +17,8 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	_initAfterInitialData: function() {
 		if (this._initerCount > 0) return; //notyet
 
+		this._initFilters();
+
 		// Get them now, or very soon, so dont wait for normal polling interval
 		(function() {
 			DeskPRO_Window.getPoller().send();
