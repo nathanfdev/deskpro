@@ -43,7 +43,7 @@ DeskPRO.Agent.Window = new Class({
 	initPage: function() {
 		this.interfaceEffects = new DeskPRO.Agent.InterfaceEffects();
 		this.interfaceEffects.initPage();
-		
+
 		this._initBasic();
 		this._initRoutes();
 		this._initWindowInterface();
@@ -776,20 +776,20 @@ DeskPRO.Agent.Window = new Class({
 	},
 
 	_initWindowInterface: function() {
-		// Set up tabs
-		$('#window_head_top ul.header-tabs li').click(function() {
-			$('#window_head_top ul.header-tabs li').removeClass('on');
+		var self = this;
+		// Click opens the submenu
+		$('#header .nav ul > li').click(function(ev) {
+			$('#header .nav ul > li.on').removeClass('on');
+			$('#header .nav ul > li .wrap-dropdown').hide();
+			$('.wrap-dropdown', this).show();
 			$(this).addClass('on');
-
-			$('#window_header_nav .group.on').removeClass('on');
-			$('#window_header_nav .group.' + $(this).data('tab-name')).addClass('on');
+			$('#header .nav ul > li:not(.on)').addClass('off');
+			ev.preventDefault();
+			ev.stopPropagation();
 		});
-
-		// Set up create menu
-		var menu = new DeskPRO.UI.Menu({
-			triggerElement: $('#create_new_menu_trigger'),
-			menuElement: $('#create_new_menu')
-			// no click handler, already attached to li's on route handler
+		$(document).click(function() {
+			$('#header .nav ul > li').removeClass('on off');
+			$('#header .nav ul > li .wrap-dropdown').hide();
 		});
 
 		// Settings is a window

@@ -6,53 +6,7 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
 	<title>DeskPRO</title>
 
-	<style type="text/css" media="screen">
-		#window_loading_overlay {
-			position:absolute;
-			top: 0;
-			right: 0;
-			bottom: 0;
-			left: 0;
-			background-color: #165887;
-			z-index: 10000000;
-			text-align: center;
-		}
 
-		#window_loading_overlay .box {
-			width: 400px;
-			text-align: left;
-			margin: 150px auto 0 auto;
-
-			background-color: #fff;
-			padding: 30px;
-
-			-moz-border-radius: 20px;
-			border-radius: 20px;
-
-			-webkit-box-shadow: 5px 5px 5px #000000;
-			-moz-box-shadow: 5px 5px 5px #000000;
-			box-shadow: 5px 5px 5px #000000;
-
-			text-align: center;
-		}
-
-		#window_loading_overlay .box h1 {
-			font-family: Arial, Tahoma, Helvetica, sans-serif;
-			font-size: 14pt;
-
-			text-shadow: 1px 1px 2px #B2BBC2;
-			filter: dropshadow(color=#B2BBC2, offx=1, offy=1);
-		}
-
-		#window_loading_overlay .box p {
-			background: transparent url({{ asset('images/loading-big-circle.gif') }}) no-repeat top center;
-			margin-top: 20px;
-			padding-top: 52px;
-
-			text-shadow: 0px 1px 1px #B2BBC2;
-			filter: dropshadow(color=#B2BBC2, offx=1, offy=1);
-		}
-	</style>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}">
 
@@ -63,6 +17,8 @@
 	</div>
 </div>
 
+{% include 'AgentBundle:Main:layout-wrappers.html.twig' %}
+
 <div id="header">
 	<div id="header-top">
 		<div class="wrapper">
@@ -70,24 +26,101 @@
 				<a href="index.html#" title="" class="logo">DeskPRO</a>
 			</div>
 
+			{# search start #}
 			<div class="left box-header select">
-				<form id="search-form" action="index.html#" method="post">
-					<input type="text" name="search" value="Search" />
+				<div class="type-select all">
+					<span class="icn-dropdown floating"></span>
+					<ul class="dropdown">
+						<li class="search-all"><a href="" title="">Search All</a></li>
+						<li class="search-tickets"><a href="" title="">Tickets</a></li>
+						<li class="search-users"><a href="" title="">Users</a></li>
+					</ul>
+				</div>
+				<form id="search-form"action="#" method="post">
+					<input type="text" name="search" Value="Search">
 				</form>
-			</div>
 
-			<div class="left box-header notifications">
-				<ul>
+				<div class="wrap-dropdown search-drop">
+					<div class="top-results">
+						<a href="#" title="">Show All Results</a>
+					</div>
+					<div class="wrap-results">
+
+						<div class="results">
+							<div class="left title-list">
+								<span class="title-list-tickets">52 Tickets</span>
+							</div>
+							<div class="right results-list">
+								<ul>
+									<li><a href="" title="">Some Ticket</a></li>
+									<li><a href="" title="">Some Ticket</a></li>
+									<li><a href="" title="">Some Ticket</a></li>
+									<li><a href="" title="">View all Tickets</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="results">
+							<div class="left title-list">
+								<span class="title-list-people"> 3 People</span>
+							</div>
+							<div class="right results-list">
+								<ul>
+									<li><a href="" title="">Some People</a></li>
+									<li><a href="" title="">Some People</a></li>
+									<li><a href="" title="">Some People</a></li>
+									<li><a href="" title="">View all People</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="results">
+							<div class="left title-list">
+								<span class="title-list-orga">10 Organizations</span>
+							</div>
+							<div class="right results-list">
+								<ul>
+									<li><a href="" title="">Some Organizations</a></li>
+									<li><a href="" title="">Some Organizations</a></li>
+									<li><a href="" title="">Some Organizations</a></li>
+									<li><a href="" title="">View all Organizations</a></li>
+								</ul>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			{# search end #}
+
+			{# notifications start #}
+			<div class="left box-header  notifications">
+				<ul class="noti-menu">
 					<li><span class="icn-bar tickets"></span><div class="counter"><span class="counter">12</span></div></li>
 					<li><span class="icn-bar chat"></span><div class="counter"><span class="counter">2</span></div></li>
 				</ul>
 				<span class="white-drop"></span>
+
+				<div class="wrap-dropdown noti-drop">
+					<ul>
+						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="tweet-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="tweet-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+					</ul>
+					<div class="bot-noti">
+						<a href="" title="">400 More Results</a>
+					</div>
+				</div>
 			</div>
+			{# notifications end #}
 
 			<div class="right box-header current-user">
 				<div class="wrapper-top-bar">
 					<div class="current-user-avatar">
-
+						<img src="{{ asset('images/avatar-user.png') }}" alt="" />
 					</div>
 					<div class="current-user-name">
 						<span>{{person.display_name}}</span>
@@ -95,26 +128,103 @@
 					<span class="white-drop"></span>
 
 				</div>
-			</div>
 
-			<div class="right box-header actions">
-				<div class="wrapper-top-bar">
+				<div class="wrap-dropdown user-drop">
 					<ul>
-						<li class="help"><a href="index.html" title="Help">Help</a></li>
-						<li class="multi"><a href="index.html" title="Multilingual">Multilingual</a></li>
-						<li class="keyboard"><a href="index.html" title="Toggle keyboard shortcuts">Keyboard</a></li>
-						<li class="network active"><a href="index.html" title="Network status">Network</a></li>
-						<li class="sound"><a href="index.html" title="Toggle sound notifications">Sound</a></li>
+						<li class="ticket-noti"><a href="" title="">Settings</a></li>
+						<li class="ticket-noti"><a href="" title="">Set status: away</a></li>
+						<li class="ticket-noti"><a href="" title="">Log-out</a></li>
 					</ul>
 				</div>
 			</div>
 
+			{# actions start #}
+			<div class="right box-header actions">
+				<div class="wrapper-top-bar">
+					<ul class="act-list">
+						<li class="help"><a href="" title="">Help</a></li>
+						<li class="multi"><a href="" title="">Multilingual</a>
+
+							<div class="wrap-dropdown lang-drop">
+								<ul>
+									<li class="lang-en"><a href="" title="">English</a></li>
+									<li class="lang-es"><a href="" title="">Español</a></li>
+									<li class="lang-pr"><a href="" title="">Portugues</a></li>
+								</ul>
+							</div>
+
+						</li>
+						<li class="keyboard"><a href="" title="">Keyboard</a>
+
+							<div class="wrap-dropdown key-drop">
+								<div class="block-shorts">
+									<h5>Category</h5>
+									<ul>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here Some </p></li>
+									</ul>
+								</div>
+
+								<div class="block-shorts">
+									<h5>Category</h5>
+									<ul>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here Some </p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+									</ul>
+								</div>
+
+								<div class="block-shorts">
+									<h5>Category</h5>
+									<ul>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here Some </p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+									</ul>
+								</div>
+
+								<div class="block-shorts">
+									<h5>Category</h5>
+									<ul>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here Some </p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+									</ul>
+								</div>
+							</div>
+
+						</li>
+						<li class="network active"><a href="" title="">Network</a></li>
+						<li class="sound"><a href="" title="">Sound</a></li>
+
+					</ul>
+				</div>
+			</div>
+			{# actions end #}
+
 			<div class="right box-header admin-actions">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="admin"><a href="{{ path('admin') }}" title="Go to agent interface">Admin</a></li>
-						<li class="billing"><a href="index.html" title="">Billing</a></li>
-						<li class="reports"><a href="index.html" title="">Reports</a></li>
+						<li class="admin"><a href="" title="">Admin</a></li>
+						<li class="billing"><a href="" title="">Billing</a></li>
+						<li class="reports"><a href="" title="">Reports</a></li>
 					</ul>
 				</div>
 			</div>
@@ -129,9 +239,90 @@
 			<div class="left box-header-bot nav">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="tickets-nav"><a data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" title="">Tickets</a></li>
-						<li class="chats-nav"><a href="index.html" title="">Chats</a></li>
-						<li class="twitter-nav"><a href="index.html" title="">Twitter</a></li>
+						<li class="tickets-nav">
+							<span class="nav-counter">12</span>
+							<a>Tickets</a>
+							{# tickets menu start #}
+							<div class="wrap-dropdown n-drop tickets-drop">
+									<div class="top-tickets-info">
+										<ol>
+											<li>Yours<span class="ticket-counter">4</span></li>
+											<li>Your Teams<span class="ticket-counter">4</span></li>
+											<li>Participated<span class="ticket-counter">4</span></li>
+											<li>Unassigned<span class="ticket-counter">4</span></li>
+											<li>All<span class="ticket-counter">4</span></li>
+										</ol>
+									</div>
+
+									<div class="tickets-content">
+
+										<div class="inner-container">
+											<div class="inner-container-title filters">
+												<h3>Filters</h3>
+											</div>
+											<div class="inner-container-content">
+												<ol>
+													<li><a href="" title="">High Priority <span class="list-counter">4</span></a></li>
+													<li><a href="" title="">Tagged Important <span class="list-counter">4</span></a></li>
+													<li><a href="" title="">Sales Department <span class="list-counter">4</span></a></li>
+													<li><a href="" title="">Support Department <span class="list-counter">4</span></a> </li>
+													<li><a href="" title="">Support Department <span class="list-counter">4</span></a></li>
+												</ol>
+											</div>
+										</div>
+
+
+										<div class="inner-container">
+											<div class="inner-container-title open-tickets">
+												<h3>Open Tickets</h3>
+											</div>
+											<div class="inner-container-content">
+												<ol>
+													<li><a href="" title="">Sales <span class="list-counter">4</span></a></li>
+													<li class="sub-list"><a href="" title="">Category 1 <span class="list-counter">4</span></a></li>
+													<li class="sub-list"><a href="" title="">Category 2 <span class="list-counter">4</span></a></li>
+													<li><a href="" title="">Support</a></li>
+													<li class="sub-list"><a href="" title="">Category 1 <span class="list-counter">4</span></a></li>
+													<li class="sub-list"><a href="" title="">Category 1 <span class="list-counter">4</span></a></li>
+												</ol>
+											</div>
+										</div>
+
+										<div class="inner-container">
+											<div class="inner-container-title tags-title">
+												<h3>Popular Tags</h3>
+											</div>
+											<div class="inner-container-content">
+												<ol class="tags">
+													<a style="font-size: 13px;"href="" title="">blahh blah </a>
+													<a style="font-size: 15px;"href="" title="">Tags</a>
+													<a style="font-size: 20px;" href="" title="">other tag</a>
+													<a  style="font-size: 40px;"href="" title="">blog</a>
+													<a  style="font-size: 10px;"href="" title="">green tag</a>
+												</ol>
+											</div>
+										</div>
+
+										<div class="inner-container">
+											<div class="inner-container-title flag-title">
+												<h3>Flagged</h3>
+											</div>
+											<div class="inner-container-content">
+												<ol class="flags">
+													<li class="flag-red"><a href="" title="">Red <span class="list-counter">4</span></a></li>
+													<li class="flag-blue"><a href="" title="">Blue <span class="list-counter">4</span></a></li>
+													<li class="flag-green"><a href="" title="">Green <span class="list-counter">4</span></a></li>
+													<li class="flag-yellow"><a href="" title="">Yellow <span class="list-counter">4</span></a> </li>
+												</ol>
+											</div>
+										</div>
+
+								</div>
+							</div>
+							{# tickets menu end #}
+						</li>
+						<li class="chats-nav"><span class="nav-counter">1</span><a href="index.html" title="">Chats</a></li>
+						<li class="twitter-nav"><span class="nav-counter">8</span><a href="index.html" title="">Twitter</a></li>
 						<li class="facebook-nav"><a href="index.html" title="">Facebook</a></li>
 						<li class="calls-nav"><a href="index.html" title="">Calls</a></li>
 						<li class="users-nav"><a data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}" title="">Users</a></li>
@@ -147,8 +338,6 @@
 		</div>
 	</div>
 </div>
-
-{% include 'AgentBundle:Main:layout-wrappers.html.twig' %}
 
 <div id="global_ajax_error" style="display:none; width: 340px; text-align: center;">
 	<p>A network exception occurred and your last request did not complete. Please try again.</p>
