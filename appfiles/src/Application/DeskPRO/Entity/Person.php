@@ -289,6 +289,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_helper_manager = null;
 
+	public static function newRegularPerson()
+	{
+		$person = new self();
+
+		$usergroup = App::getEntityRepository('DeskPRO:Usergroup')->find(App::getSetting('core.default_usergroup_id'));
+		$person->addUsergroup($usergroup);
+
+		return $person;
+	}
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
@@ -362,6 +372,44 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return parent::_onNotCallable($name, $arguments);
+	}
+
+
+	public function getLocale()
+	{
+		if ($this->locale) {
+			return $this->locale;
+		}
+
+		return App::getEntityRepository('DeskPRO:Locale')->find(App::getSetting('core.default_locale_id'));
+	}
+
+	public function getLocaleId()
+	{
+		return $this->getLocale()->getId();
+	}
+
+	public function getActualLocale()
+	{
+		return $this->locale;
+	}
+
+	public function getActualLocaleId()
+	{
+		if ($this->locale) {
+			return $this->locale;
+		}
+
+		return 0;
+	}
+
+	public function setLocaleId($locale_id)
+	{
+		if ($locale_id) {
+			$this->locale = App::getEntityRepository('DeskPRO:Locale')->find($locale);
+		} else {
+			$this->locale = null;
+		}
 	}
 
 

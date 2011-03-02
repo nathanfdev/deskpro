@@ -5,7 +5,8 @@
 
 	'core.default_locale_id' => 1,
 	'core.default_style_id' => 1,
-	'core.guest_usergroup_id' => 3,
+	'core.default_usergroup_id' => 2,
+	'core.guest_usergroup_id' => 1,
 	'core.default_timezone' => 'UTC',
 
 	'core.use_gravatar' => 1,

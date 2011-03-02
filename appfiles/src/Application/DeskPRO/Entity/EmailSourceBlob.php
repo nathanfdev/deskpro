@@ -15,7 +15,6 @@ namespace Application\DeskPRO\Entity;
  * Raw email data
  *
  * @orm:Entity
- * @orm:HasLifecycleCallbacks
  * @orm:Table(name="email_sources_blobs")
  */
 class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
@@ -28,14 +27,8 @@ class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="source_id", type="integer")
-	 */
-	protected $source_id;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\EmailSource
-	 * @orm:OneToOne(targetEntity="EmailSource")
+	 * @orm:ManyToOne(targetEntity="EmailSource")
 	 * @orm:JoinColumn(name="source_id", referencedColumnName="id")
 	 */
 	protected $source = null;
@@ -44,7 +37,7 @@ class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
 	 * @TODO This needs to be a binary type
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="text")
+	 * @orm:Column(name="data", type="text")
 	 */
 	protected $data;
 }

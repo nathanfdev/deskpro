@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Entity;
 
 /**
  * An email gateway contains info about how to read emails from an email account.
- * 
+ *
  * @orm:Entity
  * @orm:Table(name="email_gateways")
  */
@@ -22,17 +22,24 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
 	 */
 	protected $id = null;
 
 	/**
-	 * The name of the account. Eg the email address
+	 * The human name of the account.
 	 *
 	 * @var string
 	 * @orm:Column(name="name", type="text", length=100)
 	 */
 	protected $name = '';
+
+	/**
+	 * The email address for the account.
+	 *
+	 * @var string
+	 * @orm:Column(name="address", type="text", length=255)
+	 */
+	protected $address;
 
 	/**
 	 * The connection class that handles connecting/downloading etc.

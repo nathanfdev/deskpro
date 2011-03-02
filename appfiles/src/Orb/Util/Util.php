@@ -17,11 +17,11 @@ namespace Orb\Util;
  */
 class Util
 {
-	const BASE62_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
-	const BASE36_ALPHABET = '0123456789abcdefghijklmnopqrstuvwxyz';
+	const BASE62_ALPHABET  = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+	const BASE36_ALPHABET  = '0123456789abcdefghijklmnopqrstuvwxyz';
+	const LETTERS_ALPHABET = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
 
-	
-	
+
 	/**
 	 * Get the type of a variable. If it's an object, also get the classname.
 	 *
@@ -31,7 +31,7 @@ class Util
 	public static function typeof($var)
 	{
 		$type = gettype($var);
-		
+
 		if ($type == 'object') {
 			$type .= ':' . get_class($var);
 		}
@@ -168,6 +168,7 @@ class Util
 	{
 		if ($alphabet == 'base62') $alphabet = self::BASE62_ALPHABET;
 		elseif ($alphabet == 'base36') $alphabet = self::BASE36_ALPHABET;
+		elseif ($alphabet == 'letters') $alphabet = self::LETTERS_ALPHABET;
 
 		if ($num == 0) {
 			return $alphabet[0];
@@ -199,7 +200,8 @@ class Util
 	{
 		if ($alphabet == 'base62') $alphabet = self::BASE62_ALPHABET;
 		elseif ($alphabet == 'base36') $alphabet = self::BASE36_ALPHABET;
-		
+		elseif ($alphabet == 'letters') $alphabet = self::LETTERS_ALPHABET;
+
 		$alphabet = str_split($alphabet);
 		$base = sizeof($alphabet);
 		$strlen = strlen($string);
@@ -271,7 +273,7 @@ class Util
 	/**
 	 * Create a new object and pass $args as arguments to the constructor.
 	 * Same as callUserConstructor but this takes an array of arguments instead.
-	 * 
+	 *
 	 * @param string $classname  The class to instantiate
 	 * @param array  $args       Args to pass to the constructor
 	 * @return $classname
@@ -301,7 +303,7 @@ class Util
 		return $obj;
 	}
 
-	
+
 
 	/**
 	 * Create a new object and pass arguments to the constructor.
@@ -360,7 +362,7 @@ class Util
 
 		return $token;
 	}
-	
+
 
 
 	/**
@@ -415,12 +417,12 @@ class Util
 		return explode('\\', $classname);
 	}
 
-	
+
 
 	/**
 	 * Get the base name of a class. That is, the classname itself without the full
 	 * namespace path.
-	 * 
+	 *
 	 * @param obj $obj
 	 * @return string
 	 */
@@ -430,11 +432,11 @@ class Util
 		return array_pop($parts);
 	}
 
-	
+
 
 	/**
 	 * Create a UUIDv4 string.
-	 * 
+	 *
 	 * @return string
 	 */
 	public static function uuid4()
@@ -462,11 +464,11 @@ class Util
 		);
 	}
 
-	
+
 
 	/**
 	 * Generate random bytes.
-	 * 
+	 *
 	 * @param int $len
 	 * @return string
 	 */
@@ -489,5 +491,86 @@ class Util
 		}
 
 		return $data;
+	}
+
+
+
+	/**
+	 * This takes an array of numbers, and encodes them as an alpha string (0-26 as a-z).
+	 *
+	 * @param array $parts
+	 * @return void
+	 */
+	public static function encodeNumberSegments(array $parts, $alphabet = 'base36')
+	{
+		// This works by encoding the numbers as strings,
+		// and then prefixing each number in a final string
+		// by the length (num chars) its encoded form is.
+		// So CBC, B means the first number is 2 digits long, so the
+		// decoder reads 'BC', and decodes it into an integer part.
+		// Then repeat. This works because the signifier digit (the first C)
+		// is always 1 digit long, which allows for 26-digit numbers (huge!).
+
+		$enc_numbers = array();
+		foreach ($parts as $num) {
+			$enc_numbers[] = self::baseEncode($num, $alphabet);
+		}
+
+		$enc_string = array();
+		foreach ($enc_numbers as $enc_num) {
+			$len = strlen($enc_num);
+			$len_enc = self::baseEncode($len, $alphabet);
+			$enc_string[] = "{$len_enc}{$enc_num}";
+		}
+
+		return implode('', $enc_string);
+	}
+
+
+
+	/**
+	 * Decodes an array of integers from encodeNumberSegments().
+	 *
+	 * @param  $encoded_string
+	 * @return int[]
+	 */
+	public static function decodeNumberSegments($encoded_string, $alphabet = 'base36')
+	{
+		$encoded_string = strtolower($encoded_string);
+
+		// Must be A-Z only
+		if (!preg_match('#^[a-z0-9]+$#', $encoded_string)) {
+			return array();
+		}
+
+		$parts = array();
+		$len = strlen($encoded_string);
+		$pos = 0;
+		$state = 0; // 0=sig, 1=num
+		$read_len = 0;
+
+		while ($pos < $len) {
+			if ($state == 0) {
+				$read_len = self::baseDecode($encoded_string[$pos], $alphabet);
+				$state = 1;
+				$pos++;
+			} elseif ($state == 1) {
+
+				$read = '';
+				for ($i = 0; $i < $read_len; $i++) {
+					$read .= $encoded_string[$pos];
+					$pos++;
+					if ($pos > $len) return array(); // invalid
+				}
+
+				$num = self::baseDecode($read, $alphabet);
+				$parts[] = $num;
+
+				$state = 0;
+				$read_len = 0;
+			}
+		}
+
+		return $parts;
 	}
 }

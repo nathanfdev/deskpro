@@ -39,6 +39,7 @@ class App
 	const SERVICE_REQUEST         = 'request';
 	const SERVICE_RESPONSE        = 'response';
 	const SERVICE_MAILER          = 'mailer';
+	const SERVICE_TRANSLATOR      = 'deskpro.core.translate';
 	/**#@-*/
 
 	/**
@@ -339,6 +340,18 @@ class App
 	public static function getMailer()
 	{
 		return self::get(self::SERVICE_MAILER);
+	}
+
+
+
+	/**
+	 * Get the translator
+	 *
+	 * @return \Application\DeskPRO\Translate\Translate
+	 */
+	public static function getTranslator()
+	{
+		return self::get(self::SERVICE_TRANSLATOR);
 	}
 
 
