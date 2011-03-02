@@ -17,6 +17,28 @@ DeskPRO.Agent.WindowElement.MainMenu.Abstract = new Class({
 		this.menuEl = $('div.wrap-dropdown:first', this.buttonEl);
 		this.otherButtonEls = $('#header .nav ul > li:not(.' + this.buttonClass + ')');
 
+		// Capture clicks for on dataRoute's
+		var self = this;
+		this.menuEl.delegate('[data-route]', 'click', function(ev) {
+			var evData = {'event': ev, 'cancelClose': false, preventDefault: true };
+			self.fireEvent('clickRoute', [ev, evData]);
+
+			if (evData.preventDefault) {
+				ev.preventDefault();
+			}
+			if (evData.cancelClose) {
+				return;
+			}
+
+			DeskPRO_Window.runPageRouteFromElement(this);
+			self.closeMenu();
+		});
+
+		this.menuEl.click(function(ev) {
+			//cancel bubbling to document which clsoes the menu
+			ev.stopPropagation();
+		});
+
 		this.init();
 	},
 
@@ -32,5 +54,9 @@ DeskPRO.Agent.WindowElement.MainMenu.Abstract = new Class({
 		badgeEl.fadeOut(300, function() {
 			badgeEl.html(num).fadeIn(300);
 		});
+	},
+
+	closeMenu: function() {
+		DeskPRO_Window._closeWindowMenus();
 	}
 });

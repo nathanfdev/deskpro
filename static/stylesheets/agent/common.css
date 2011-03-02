@@ -150,20 +150,20 @@ input.flat {
 
 
 
-ul.tag-cloud li {
+.tag-cloud li {
 	display: inline;
 }
 
-ul.tag-cloud li.tag-size1  { font-size:1.0em; }
-ul.tag-cloud li.tag-size2  { font-size:1.3em; }
-ul.tag-cloud li.tag-size3  { font-size:1.5em; }
-ul.tag-cloud li.tag-size4  { font-size:1.7em; }
-ul.tag-cloud li.tag-size5  { font-size:1.9em; }
-ul.tag-cloud li.tag-size6  { font-size:2.1em; }
-ul.tag-cloud li.tag-size7  { font-size:2.3em; }
-ul.tag-cloud li.tag-size8  { font-size:2.5em; }
-ul.tag-cloud li.tag-size9  { font-size:2.7em; }
-ul.tag-cloud li.tag-size10 { font-size:2.9em; }
+.tag-cloud li.tag-size1  { font-size:1.0em; }
+.tag-cloud li.tag-size2  { font-size:1.3em; }
+.tag-cloud li.tag-size3  { font-size:1.5em; }
+.tag-cloud li.tag-size4  { font-size:1.7em; }
+.tag-cloud li.tag-size5  { font-size:1.9em; }
+.tag-cloud li.tag-size6  { font-size:2.1em; }
+.tag-cloud li.tag-size7  { font-size:2.3em; }
+.tag-cloud li.tag-size8  { font-size:2.5em; }
+.tag-cloud li.tag-size9  { font-size:2.7em; }
+.tag-cloud li.tag-size10 { font-size:2.9em; }
 
 /**********************************************************
  Icons

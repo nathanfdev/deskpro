@@ -775,7 +775,10 @@ DeskPRO.Agent.Window = new Class({
 		});
 	},
 
-	_closeWindowMenus: function() {
+	_closeWindowMenus: function(ev) {
+
+		if (ev && ev._noCloseMenu) return;
+
 		// Fire close events on open menu
 		var currentOpen = $('#header .nav ul > li').removeClass('on');
 		if (currentOpen.length && currentOpen.data('menuHandler')) {
@@ -789,7 +792,7 @@ DeskPRO.Agent.Window = new Class({
 		var self = this;
 
 		// Click opens the submenu
-		$('#header .nav ul > li').click(function(ev) {
+		$('#header .nav > .wrapper-top-bar > ul > li').click(function(ev) {
 			// If we're already open, clicking should toggle to closed
 			var doopen = true;
 			if ($(this).is('.on')) {
@@ -811,8 +814,8 @@ DeskPRO.Agent.Window = new Class({
 			ev.preventDefault();
 			ev.stopPropagation();
 		});
-		$(document).click(function() {
-			self._closeWindowMenus();
+		$(document).click(function(ev) {
+			self._closeWindowMenus(ev);
 		});
 
 		// Window elements

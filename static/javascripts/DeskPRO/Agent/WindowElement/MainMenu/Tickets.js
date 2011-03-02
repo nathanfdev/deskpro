@@ -7,22 +7,15 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 	init: function () {
 
-		window.MAINMENU_TICKET = this;
-
 		// Sends ajax to fetch initial data
 		this._initInitialData();
 
-	},
-
-	_initAfterInitialData: function() {
-		if (this._initerCount > 0) return; //notyet
-
-		this._initFilters();
-
-		// Get them now, or very soon, so dont wait for normal polling interval
-		(function() {
-			DeskPRO_Window.getPoller().send();
-		}).delay(500);
+		var self = this;
+		this.addEvent('clickRoute', function(event, evData) {
+			if (self.cancelClickActivateFilter) {
+				evData.cancelClose = true;
+			}
+		});
 	},
 
 	// we use a counter to make sure initAfterInitialData is only fired once, after all panes are loaded
@@ -66,10 +59,34 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	},
 
 
+	/**
+	 * After all ajax calls from initInitialData is done, we
+	 * can initiate the actual sections.
+	 */
+	_initAfterInitialData: function() {
+		if (this._initerCount > 0) return; //notyet
+
+		this._initFilters();
+		this._initFlagged();
+		this._initOverview();
+
+		// Send poller now
+		(function() {
+			DeskPRO_Window.getPoller().send();
+		}).delay(500);
+	},
+
+
 
 	//#########################################################################
 	// Filter functionality
 	//#########################################################################
+
+	/**
+	 * When true, clicking on a route is cancelled because
+	 * it was fired by a drag+drop, not an actual click.
+	 */
+	cancelClickActivateFilter: false,
 
 	_initFilters: function() {
 		DeskPRO_Window.getPoller().addData(
@@ -78,7 +95,39 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 			{recurring: true, minDelay: 15000, minDelayAfterOne: true}
 		);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('queues.counts', this.updateQueueCounts.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('queues.counts', this.updateFilterCounts.bind(this));
+
+		// Drag+drop to reorder
+		var self = this;
+		$('ol#filters_list').sortable({
+			'axis': 'y',
+			'containment': this.wrapper,
+			'distance': 8,
+			'deactivate': function() {
+				self.cancelClickActivateFilter = true;
+			},
+			'update': function() {
+				self.saveFilterOrder();
+			}
+		});
+	},
+
+	saveFilterOrder: function() {
+		var data = [];
+
+		$('ol#filters_list > li').each(function() {
+			var id = $(this).data('queue-id');
+			if (id) {
+				data.push({ name: 'prefs[agent.ui.ticket-queues-order][]', value: id });
+			}
+		});
+
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'agent/misc/ajax-save-prefs',
+			data: data
+		});
 	},
 
 	/**
@@ -86,7 +135,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	 *
 	 * @param {Object} counts
 	 */
-	updateQueueCounts: function(counts) {
+	updateFilterCounts: function(counts) {
 		var badgeCount = 0;
 
 		Object.each(counts, function (count, queue_id) {
@@ -110,13 +159,202 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	// Flags functionality
 	//#########################################################################
 
-	 _initFlagged: function() {
+	_initFlagged: function() {
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.counts', this.updateCounts.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.view-activated', this.highlightActiveFlag.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.view-deactivated', this.unhighlightActiveFlag.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.flag-changed', this.changeCountsForSwitch.bind(this));
+		DeskPRO_Window.getPoller().addData(
+			[{name: 'do[]', value: 'get-flagged-counts'}],
+			'queue-flagged.counts',
+			{recurring: true, minDelay: 60000, minDelayAfterOne: true}
+		);
 
-	 }
+		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.counts', this.updateFlagCounts.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.flag-changed', this.changeFlagCountsForSwitch.bind(this));
+	},
 
+	updateFlagCounts: function(counts) {
+
+		$('ol#flagged_list span.list-counter').html('0');
+
+		Object.each(counts, (function (count, flag) {
+			this.updateFlagCountFor(flag, count);
+		}).bind(this))
+	},
+
+	updateFlagCountFor: function(flag, count) {
+		var count_str = count;
+		if (count >= 1000) {
+			count_str = '1000+';
+		} else if (count < 0) {
+			count = 0;
+			count_str = '0';
+		}
+
+		var el = $('#flag_' + flag + '_count').html(count_str);
+	},
+
+	changeFlagCountsForSwitch: function(info) {
+
+		var old_flag_count = parseInt($('#flag_' + info.old_flag + '_count').html());
+		var new_flag_count = parseInt($('#flag_' + info.new_flag + '_count').html());
+
+		this.updateFlagCountFor(info.old_flag, old_flag_count-1);
+		this.updateFlagCountFor(info.new_flag, new_flag_count+1);
+	},
+
+	//#########################################################################
+	// Overview functionality
+	//#########################################################################
+
+	_initOverview: function() {
+		this._initoverviewGroupingMenu();
+		this.overviewLoadList();
+	},
+
+	overviewGroupMenuEl: null,
+	overviewGroupEl1: null,
+	overviewGroupEl2: null,
+	overviewGroupEl2_yes: null,
+
+	overviewGroupingMenu: null,
+	overviewModeMenu: null,
+	_initoverviewGroupingMenu: function() {
+
+		this.overviewGroupMenuEl   = $('#overview_grouping_menu');
+		this.overviewModeMenuEl    = $('#overview_mode_menu');
+		this.overviewModeEl        = $('#grouping_options .mode');
+		this.overviewGroupEl1      = $('#grouping_options .grouping1');
+		this.overviewGroupEl2      = $('#grouping_options .grouping2');
+		this.overviewGroupEl2_no   = $('#grouping_options .no-subgroup');
+		this.overviewGroupEl2_yes  = $('#grouping_options .with-subgroup');
+
+		var self = this;
+		this.overviewGroupingMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('#grouping_options .grouping-menu-trigger'),
+			menuElement: this.overviewGroupMenuEl,
+			onItemClicked: function(info) {
+				info.event.stopPropagation();
+				self._handleGroupingChanged(info);
+			},
+			onBeforeMenuOpened: function(info) {
+				$('li[data-groupby]', self.overviewGroupMenuEl).show();
+
+				var event = info.menu.getOpenTriggerEvent();
+				var triggerEl = $(event.target);
+
+				if (triggerEl.is('.grouping1')) {
+					$('li[data-groupby="none"]', self.overviewGroupMenuEl).hide();
+				} else {
+					var grouping1 = self.overviewGroupEl1.data('groupby');
+
+					// Hide primary grouping form sub-grouping menu
+					$('li[data-groupby="'+grouping1+'"]', self.overviewGroupMenuEl).hide();
+				}
+			}
+		});
+
+		this.overviewModeMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('#grouping_options .mode-menu-trigger'),
+			menuElement: this.overviewModeMenuEl,
+			onItemClicked: function(info) {
+				self._handleModeChanged(info);
+			}
+		});
+	},
+
+	_handleModeChanged: function (info) {
+		var itemEl = $(info.itemEl);
+		var mode = itemEl.data('mode');
+		var modeTitle = itemEl.text();
+
+		this.overviewModeEl.text(modeTitle).data('mode', mode);
+		this.overviewLoadList();
+	},
+
+	_handleGroupingChanged: function(info) {
+		var grouping1 = this.overviewGroupEl1.data('groupby');
+		var grouping2 = this.overviewGroupEl2.data('groupby');
+
+		var event = info.menu.getOpenTriggerEvent();
+		var triggerEl = $(event.target);
+		var itemEl = $(info.itemEl);
+
+		if (triggerEl.is('.grouping1')) {
+			grouping1 = itemEl.data('groupby');
+			if (grouping1 == grouping2) {
+				grouping2 = '';
+			}
+		} else {
+			grouping2 = itemEl.data('groupby');
+		}
+
+		if (!grouping1 || grouping1 == 'none') grouping1 = 'department';
+		if (!grouping2 || grouping2 == 'none') grouping2 = '';
+
+		this.overviewUpdateGrouping(grouping1, grouping2);
+		this.overviewLoadList();
+	},
+
+	/**
+	 * This just updates the page to show proper texts etc for the particular groups
+	 */
+	overviewUpdateGrouping: function(grouping1, grouping2) {
+		var grouping1_menuItemEl = $('[data-groupby="'+grouping1+'"]', this.overviewGroupMenuEl);
+
+		if (grouping2 && grouping2.length) {
+			var grouping2_menuItemEl = $('[data-groupby="'+grouping2+'"]', this.overviewGroupMenuEl);;
+		} else {
+			grouping2 = false;
+			var grouping2_menuItemEl = $();
+		}
+
+		// Update
+		this.overviewGroupEl1.html(grouping1_menuItemEl.html()).data('groupby', grouping1);
+
+		if (grouping2) {
+			this.overviewGroupEl2.html(grouping2_menuItemEl.html()).data('groupby', grouping2);
+			this.overviewGroupEl2_no.hide();
+			this.overviewGroupEl2_yes.show();
+		} else {
+			this.overviewGroupEl2.html('').data('groupby', '');
+			this.overviewGroupEl2_no.show();
+			this.overviewGroupEl2_yes.hide();
+		}
+	},
+
+	/**
+	 * This loads the lists for the currently selected group and mode
+	 */
+	overviewLoadList: function() {
+
+		DeskPRO_Window.startLoadingIndicator();
+
+		var grouping1 = this.overviewGroupEl1.data('groupby');
+		var grouping2 = this.overviewGroupEl2.data('groupby') || '';
+		var mode = this.overviewModeEl.data('mode');
+
+		var data = {
+			group1: grouping1,
+			group2: grouping2,
+			mode: mode
+		};
+
+		// Send AJAX
+		$.ajax({
+			url: BASE_URL + 'agent/ticket-search/overview-nav',
+			type: 'GET',
+			data: data,
+			context: this,
+			dataType: 'html',
+			success: function(html) {
+				this._overviewGroupListLoaded(html);
+			}
+		});
+	},
+
+	_overviewGroupListLoaded: function(html) {
+
+		DeskPRO_Window.stopLoadingIndicator();
+
+		var list = $('#overview_list').html(html);
+	}
 });

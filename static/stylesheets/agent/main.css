@@ -827,11 +827,9 @@ background-color: #edeff3;
 }
 
 #header .inner-container {
-	width: 257px;
-	float: left;
 	background: #f8f8f9;
 	border: 1px solid #dfe2e8;
-	margin: 10px 0 10px 10px;
+	margin: 10px 5px 10px 5px;
 
 	-webkit-border-radius: 5px;
     -moz-border-radius: 5px;
@@ -865,6 +863,21 @@ background-color: #edeff3;
 
 #header .inner-container-title.flag-title h3 {
 	background-position: 3px -641px;
+}
+
+#header .inner-container-subtitle {
+	font-size: 7pt;
+	border-bottom: 1px solid #dfe2e8;
+}
+
+#header .inner-container-subtitle.open-tickets {
+	text-align: center;
+}
+
+#header .inner-container-subtitle.open-tickets .menu {
+	color: #606770;
+	cursor: pointer;
+	text-decoration: underline;
 }
 
 #header .inner-container-content {
@@ -917,9 +930,14 @@ background-color: #edeff3;
 	text-align: center;
 }
 
+#header .inner-container-content ol.tags li {
+	display: inline;
+}
+
 #header .inner-container-content ol.tags  a {
 	margin: 5px;
 	color: #5E5E5E;
+	display: inline;
 }
 
 #header .inner-container-content ol.flags li {
