@@ -1,16 +1,6 @@
-{% extends 'AgentBundle:TicketSearch:pane-layout.html.twig' %}
-{% block meta %}
-<script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.NavPane.TicketFlagged';
-</script>
-{% endblock %}
-{% block flagged_content %}
-<ul class="nav-list flagged-list nosel">
-	{% for color in ['blue','green','orange','pink','purple','red','yellow'] %}
-		<li data-flat="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
-			<span class="count ticket-flag ticket-flag-count-{{color}}">-</span>
-			<span class="icon icon-flag-{{color}}">{{color|capitalize}}</span>
-		</li>
-	{% endfor %}
-</ul>
-{% endblock %}
+{% for color in ['blue','green','orange','pink','purple','red','yellow'] %}
+	<li class="flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
+		<span id="flag_{{color}}_count" class="list-counter">-</span>
+		{{ phrase('agent.flag_' ~ color) }}
+	</li>
+{% endfor %}

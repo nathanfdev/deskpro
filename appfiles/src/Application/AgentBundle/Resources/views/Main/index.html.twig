@@ -286,17 +286,17 @@
 				<div class="wrapper-top-bar">
 					<ul>
 						<li class="tickets-nav">
-							<span class="nav-counter">12</span>
+							<span class="nav-counter" style="display:none">0</span>
 							<a>Tickets</a>
 							{# tickets menu start #}
 							<div class="wrap-dropdown n-drop tickets-drop">
 									<div class="top-tickets-info">
 										<ol>
-											<li>Yours<span class="ticket-counter">4</span></li>
-											<li>Your Teams<span class="ticket-counter">4</span></li>
-											<li>Participated<span class="ticket-counter">4</span></li>
-											<li>Unassigned<span class="ticket-counter">4</span></li>
-											<li>All<span class="ticket-counter">4</span></li>
+											<li>Yours<span class="ticket-counter" id="filter_agent_count">0</span></li>
+											<li>Your Teams<span class="ticket-counter" id="filter_agent_team_count">0</span></li>
+											<li>Participated<span class="ticket-counter" id="filter_participant_count">0</span></li>
+											<li>Unassigned<span class="ticket-counter" id="filter_unassigned_count">0</span></li>
+											<li>All<span class="ticket-counter" id="filter_all_count">0</span></li>
 										</ol>
 									</div>
 
@@ -307,12 +307,7 @@
 												<h3>Filters</h3>
 											</div>
 											<div class="inner-container-content">
-												<ol>
-													<li><a href="" title="">High Priority <span class="list-counter">4</span></a></li>
-													<li><a href="" title="">Tagged Important <span class="list-counter">4</span></a></li>
-													<li><a href="" title="">Sales Department <span class="list-counter">4</span></a></li>
-													<li><a href="" title="">Support Department <span class="list-counter">4</span></a> </li>
-													<li><a href="" title="">Support Department <span class="list-counter">4</span></a></li>
+												<ol id="filters_list">
 												</ol>
 											</div>
 										</div>
@@ -336,16 +331,10 @@
 
 										<div class="inner-container">
 											<div class="inner-container-title tags-title">
-												<h3>Popular Tags</h3>
+												<h3>Popular Labels</h3>
 											</div>
 											<div class="inner-container-content">
-												<ol class="tags">
-													<a style="font-size: 13px;"href="" title="">blahh blah </a>
-													<a style="font-size: 15px;"href="" title="">Tags</a>
-													<a style="font-size: 20px;" href="" title="">other tag</a>
-													<a  style="font-size: 40px;"href="" title="">blog</a>
-													<a  style="font-size: 10px;"href="" title="">green tag</a>
-												</ol>
+												<ol id="labels_cloud_list" class="tags"></ol>
 											</div>
 										</div>
 
@@ -354,12 +343,7 @@
 												<h3>Flagged</h3>
 											</div>
 											<div class="inner-container-content">
-												<ol class="flags">
-													<li class="flag-red"><a href="" title="">Red <span class="list-counter">4</span></a></li>
-													<li class="flag-blue"><a href="" title="">Blue <span class="list-counter">4</span></a></li>
-													<li class="flag-green"><a href="" title="">Green <span class="list-counter">4</span></a></li>
-													<li class="flag-yellow"><a href="" title="">Yellow <span class="list-counter">4</span></a> </li>
-												</ol>
+												<ol id="flagged_list" class="flags"></ol>
 											</div>
 										</div>
 
@@ -367,16 +351,45 @@
 							</div>
 							{# tickets menu end #}
 						</li>
-						<li class="chats-nav"><span class="nav-counter">1</span><a href="index.html" title="">Chats</a></li>
-						<li class="twitter-nav"><span class="nav-counter">8</span><a href="index.html" title="">Twitter</a></li>
-						<li class="facebook-nav"><a href="index.html" title="">Facebook</a></li>
-						<li class="calls-nav"><a href="index.html" title="">Calls</a></li>
-						<li class="users-nav"><a data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}" title="">Users</a></li>
-						<li class="deals-nav"><a href="index.html" title="">Deals</a></li>
-						<li class="calendar-nav"><a href="index.html" title="">Calendar</a></li>
-						<li class="tasks-nav"><a href="index.html" title="">Tasks</a></li>
-						<li class="publish-nav"><a href="index.html" title="">Publish</a></li>
-						<li class="ideas-nav"><a href="index.html" title="">Ideas</a></li>
+						<li class="chats-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Chats</a>
+						</li>
+						<li class="twitter-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Twitter</a></li>
+						<li class="facebook-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Facebook</a>
+						</li>
+						<li class="calls-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Calls</a>
+						</li>
+						<li class="users-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}" title="">Users</a>
+						</li>
+						<li class="deals-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Deals</a>
+						</li>
+						<li class="calendar-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Calendar</a>
+						</li>
+						<li class="tasks-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Tasks</a>
+						</li>
+						<li class="publish-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Publish</a>
+						</li>
+						<li class="ideas-nav">
+							<span class="nav-counter" style="display:none">0</span>
+							<a href="index.html" title="">Ideas</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -438,7 +451,7 @@
 		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
 
 		// Debug: auto load a ticket tab
-		window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
+		//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
 		//window.DeskPRO_Window.runPageRoute('person:{{ path('agent_people_view', {'person_id': 20001}) }}');
 	});
 </script>

@@ -6,6 +6,7 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Util;
+use \Orb\Util\Arrays;
 
 class MiscController extends AbstractController
 {
@@ -41,6 +42,10 @@ class MiscController extends AbstractController
 		// Data
 		$js[] = 'window.DESKPRO_DATA_REGISTRY = {}';
 		$js[] = 'window.DESKPRO_DATA_REGISTRY.ticketDepToCatMap = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->departmentToCategoryMap()) . ';';
+
+		$system_queues = App::getDb()->fetchAllKeyValue("SELECT id, sys_name FROM ticket_queues WHERE is_global=1 AND sys_name IS NOT NULL");
+		$system_queues = Arrays::castToType($system_queues, 'string', 'int');
+		$js[] = 'window.DESKPRO_DATA_REGISTRY.systemQueues = ' . json_encode($system_queues) . ';';
 
 		// Ticket display elements
 		$js[] = "window.DESKPRO_TICKET_DISPLAY = {};";
