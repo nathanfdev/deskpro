@@ -18,10 +18,10 @@ DeskPRO.Admin.Window = new Class({
 	interfaceEffects: null,
 
 	initialize: function() {
-		
+
 		this.interfaceEffects = new DeskPRO.Agent.InterfaceEffects();
 		this.interfaceEffects.initPage();
-		
+
 		this._initBasic();
 		this._initWindowInterface();
 
@@ -37,20 +37,7 @@ DeskPRO.Admin.Window = new Class({
 	},
 
 	_initWindowInterface: function() {
-		// Set up tabs
-		$('#window_head_top ul.header-tabs li').click(function() {
-			$('#window_head_top ul.header-tabs li').removeClass('on');
-			$(this).addClass('on');
-
-			$('#window_header_nav .group.on').removeClass('on');
-			$('#window_header_nav .group.' + $(this).data('tab-name')).addClass('on');
-		});
-
-		// Click anywhere on the li to go to the link
-		$('#window_header_nav ul li').click(function() {
-			var a = $('a:first', this);
-			window.location = a.attr('href');
-		});
+		var menuOpener = new DeskPRO.Admin.WindowElement.MainMenuOpener();
 	},
 
 
@@ -111,5 +98,5 @@ DeskPRO.Admin.Window = new Class({
 		}
 
 		return url;
-	},
+	}
 });

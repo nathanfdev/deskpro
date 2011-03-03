@@ -775,6 +775,60 @@ background-color: #edeff3;
 	background-position: -652px top;
 }
 
+#header .nav ul  > li.setup-nav > a { background: url("../../images/nav-icons/Settings.png") no-repeat center top; }
+#header .nav ul  > li.server-nav > a { background: url("../../images/nav-icons/Server.png") no-repeat center top; }
+#header .nav ul  > li.agents-nav > a { background: url("../../images/nav-icons/Agents.png") no-repeat center top; }
+#header .nav ul  > li.portal-nav > a { background: url("../../images/nav-icons/Portal.png") no-repeat center top; }
+#header .nav ul  > li.integrations-nav > a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
+#header .nav ul  > li.integrations-nav > a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
+
+/** Dropdown icon-menu **/
+#header .nav ol.icon-menu {
+
+}
+
+#header .nav ol.icon-menu > li {
+	padding: 4px 8px 3px 38px;
+	background-position: 5px 50%;
+	background-repeat: no-repeat;
+	cursor: pointer;
+	line-height: 140%;
+}
+
+#header .nav ol.icon-menu > li a {
+	font-size: 11pt;
+	color: #464B54;
+}
+
+#header .nav ol.icon-menu > li p {
+	margin: 0;
+	padding: 0;
+}
+
+#header .nav ol.icon-menu > li.link-settings { background-image: url("../../images/nav-icons/Settings.png"); }
+#header .nav ol.icon-menu > li.link-departments { background-image: url("../../images/nav-icons/Labels.png"); }
+#header .nav ol.icon-menu > li.link-products { background-image: url("../../images/nav-icons/Products.png"); }
+#header .nav ol.icon-menu > li.link-email { background-image: url("../../images/nav-icons/Email.png"); }
+#header .nav ol.icon-menu > li.link-languages { background-image: url("../../images/nav-icons/Languages.png"); }
+#header .nav ol.icon-menu > li.link-scheduled-task { background-image: url("../../images/nav-icons/Escalations.png"); }
+#header .nav ol.icon-menu > li.link-database-tools { background-image: url("../../images/nav-icons/Database.png"); }
+#header .nav ol.icon-menu > li.link-server-info { background-image: url("../../images/nav-icons/Server.png"); }
+#header .nav ol.icon-menu > li.link-logs { background-image: url("../../images/nav-icons/Macros.png"); }
+#header .nav ol.icon-menu > li.link-tests { background-image: url("../../images/nav-icons/Widgets.png"); }
+#header .nav ol.icon-menu > li.link-labels { background-image: url("../../images/nav-icons/Labels.png"); }
+#header .nav ol.icon-menu > li.link-ticket-filters { background-image: url("../../images/nav-icons/Filters.png"); }
+#header .nav ol.icon-menu > li.link-fields { background-image: url("../../images/nav-icons/Widgets.png"); }
+#header .nav ol.icon-menu > li.link-ticket-triggers { background-image: url("../../images/nav-icons/Escalations.png"); }
+#header .nav ol.icon-menu > li.link-ticket-macros { background-image: url("../../images/nav-icons/Macros.png"); }
+#header .nav ol.icon-menu > li.link-ticket-macros { background-image: url("../../images/nav-icons/Macros.png"); }
+#header .nav ol.icon-menu > li.link-leads-statuses { background-image: url("../../images/nav-icons/Widgets.png"); }
+#header .nav ol.icon-menu > li.link-knowledgebase { background-image: url("../../images/nav-icons/Portal.png"); }
+#header .nav ol.icon-menu > li.link-troubleshooters { background-image: url("../../images/nav-icons/Portal.png"); }
+#header .nav ol.icon-menu > li.link-downloads { background-image: url("../../images/nav-icons/Portal.png"); }
+#header .nav ol.icon-menu > li.link-widgets { background-image: url("../../images/nav-icons/Widgets.png"); }
+#header .nav ol.icon-menu > li.link-api { background-image: url("../../images/nav-icons/API.png"); }
+#header .nav ol.icon-menu > li.link-plugins { background-image: url("../../images/nav-icons/Settings.png"); }
+
 /** Ticket Dropdown **/
 #header .tickets-drop {
 	width: 600px;
@@ -958,11 +1012,11 @@ background-color: #edeff3;
 }
 
 /** Global Dropdown */
-#header .wrap-dropdown.global ol {
+#header .wrap-dropdown.global > ol {
 	margin: 5px 0;
 }
 
-#header .wrap-dropdown.global ol li {
+#header .wrap-dropdown.global > ol > li {
 	margin-bottom: 2px;
 	padding: 0 7px;
 }
@@ -1001,9 +1055,6 @@ padding: 7px 7px 0 7px;
 
 }
 /** Publish Dropdown **/
-#header .publish-drop ol li {
-
-}
 
 #header .publish-drop ol li a {
 	font-weight: bold;

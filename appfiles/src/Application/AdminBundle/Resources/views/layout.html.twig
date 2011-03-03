@@ -46,6 +46,12 @@
 
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/MessageBroker.js') }}"></script>
 
+	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js') }}"></script>
+	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js') }}"></script>
+
+	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/MainMenuOpener.js') }}"></script>
+	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/BasicMainMenu.js') }}"></script>
+
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Agent/InterfaceEffects.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Window.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/Basic.js') }}"></script>
@@ -86,24 +92,101 @@
 				<a href="index.html#" title="" class="logo">DeskPRO</a>
 			</div>
 
+			{# search start #}
 			<div class="left box-header select">
-				<form id="search-form" action="index.html#" method="post">
-					<input type="text" name="search" Value="Search" />
+				<div class="type-select all">
+					<span class="icn-dropdown floating"></span>
+					<ul class="dropdown">
+						<li class="search-all"><a href="">Search All</a></li>
+						<li class="search-tickets"><a href="">Tickets</a></li>
+						<li class="search-users"><a href="">Users</a></li>
+					</ul>
+				</div>
+				<form id="search-form"action="#" method="post">
+					<input type="text" name="search" Value="Search">
 				</form>
-			</div>
 
+				<div class="wrap-dropdown search-drop">
+					<div class="top-results">
+						<a href="#" title="">Show All Results</a>
+					</div>
+					<div class="wrap-results">
+
+						<div class="results">
+							<div class="left title-list">
+								<span class="title-list-tickets">52 Tickets</span>
+							</div>
+							<div class="right results-list">
+								<ul>
+									<li><a href="">Some Ticket</a></li>
+									<li><a href="">Some Ticket</a></li>
+									<li><a href="">Some Ticket</a></li>
+									<li><a href="">View all Tickets</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="results">
+							<div class="left title-list">
+								<span class="title-list-people"> 3 People</span>
+							</div>
+							<div class="right results-list">
+								<ul>
+									<li><a href="">Some People</a></li>
+									<li><a href="">Some People</a></li>
+									<li><a href="">Some People</a></li>
+									<li><a href="">View all People</a></li>
+								</ul>
+							</div>
+						</div>
+
+						<div class="results">
+							<div class="left title-list">
+								<span class="title-list-orga">10 Organizations</span>
+							</div>
+							<div class="right results-list">
+								<ul>
+									<li><a href="">Some Organizations</a></li>
+									<li><a href="">Some Organizations</a></li>
+									<li><a href="">Some Organizations</a></li>
+									<li><a href="">View all Organizations</a></li>
+								</ul>
+							</div>
+						</div>
+
+					</div>
+				</div>
+			</div>
+			{# search end #}
+
+			{# notifications start #}
 			<div class="left box-header  notifications">
-				<ul>
+				<ul class="noti-menu">
 					<li><span class="icn-bar tickets"></span><div class="counter"><span class="counter">12</span></div></li>
 					<li><span class="icn-bar chat"></span><div class="counter"><span class="counter">2</span></div></li>
 				</ul>
 				<span class="white-drop"></span>
+
+				<div class="wrap-dropdown noti-drop">
+					<ul>
+						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="tweet-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="tweet-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
+					</ul>
+					<div class="bot-noti">
+						<a href="">400 More Results</a>
+					</div>
+				</div>
 			</div>
+			{# notifications end #}
 
 			<div class="right box-header current-user">
 				<div class="wrapper-top-bar">
 					<div class="current-user-avatar">
-
+						<img src="{{ asset('images/avatar-user.png') }}" alt="" />
 					</div>
 					<div class="current-user-name">
 						<span>{{person.display_name}}</span>
@@ -111,26 +194,103 @@
 					<span class="white-drop"></span>
 
 				</div>
-			</div>
 
-			<div class="right box-header actions">
-				<div class="wrapper-top-bar">
+				<div class="wrap-dropdown user-drop">
 					<ul>
-						<li class="help"><a href="index.html" title="Help">Help</a></li>
-						<li class="multi"><a href="index.html" title="Multilingual">Multilingual</a></li>
-						<li class="keyboard"><a href="index.html" title="Toggle keyboard shortcuts">Keyboard</a></li>
-						<li class="network active"><a href="index.html" title="Network status">Network</a></li>
-						<li class="sound"><a href="index.html" title="Toggle sound notifications">Sound</a></li>
+						<li class="ticket-noti"><a href="">Settings</a></li>
+						<li class="ticket-noti"><a href="">Set status: away</a></li>
+						<li class="ticket-noti"><a href="">Log-out</a></li>
 					</ul>
 				</div>
 			</div>
 
+			{# actions start #}
+			<div class="right box-header actions">
+				<div class="wrapper-top-bar">
+					<ul class="act-list">
+						<li class="help"><a href="">Help</a></li>
+						<li class="multi"><a href="">Multilingual</a>
+
+							<div class="wrap-dropdown lang-drop">
+								<ul>
+									<li class="lang-en"><a href="">English</a></li>
+									<li class="lang-es"><a href="">Español</a></li>
+									<li class="lang-pr"><a href="">Portugues</a></li>
+								</ul>
+							</div>
+
+						</li>
+						<li class="keyboard"><a href="">Keyboard</a>
+
+							<div class="wrap-dropdown key-drop">
+								<div class="block-shorts">
+									<h5>Category</h5>
+									<ul>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here Some </p></li>
+									</ul>
+								</div>
+
+								<div class="block-shorts">
+									<h5>Category</h5>
+									<ul>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here Some </p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+									</ul>
+								</div>
+
+								<div class="block-shorts">
+									<h5>Category</h5>
+									<ul>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here Some </p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+									</ul>
+								</div>
+
+								<div class="block-shorts">
+									<h5>Category</h5>
+									<ul>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here Some </p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+										<li><span class="short">ctrl + swift  →</span><p>Some action here</p></li>
+									</ul>
+								</div>
+							</div>
+
+						</li>
+						<li class="network active"><a href="">Network</a></li>
+						<li class="sound"><a href="">Sound</a></li>
+
+					</ul>
+				</div>
+			</div>
+			{# actions end #}
+
 			<div class="right box-header admin-actions">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="admin"><a href="{{ path('agent') }}" title="Go to agent interface">Agent</a></li>
-						<li class="billing"><a href="index.html" title="">Billing</a></li>
-						<li class="reports"><a href="index.html" title="">Reports</a></li>
+						<li class="admin"><a href="">Admin</a></li>
+						<li class="billing"><a href="">Billing</a></li>
+						<li class="reports"><a href="">Reports</a></li>
 					</ul>
 				</div>
 			</div>
@@ -145,17 +305,180 @@
 			<div class="left box-header-bot nav">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="tickets-nav"><a href="index.html" title="">Tickets</a></li>
-						<li class="chats-nav"><a href="index.html" title="">Chats</a></li>
-						<li class="twitter-nav"><a href="index.html" title="">Twitter</a></li>
-						<li class="facebook-nav"><a href="index.html" title="">Facebook</a></li>
-						<li class="calls-nav"><a href="index.html" title="">Calls</a></li>
-						<li class="users-nav"><a href="index.html" title="">Users</a></li>
-						<li class="deals-nav"><a href="index.html" title="">Deals</a></li>
-						<li class="calendar-nav"><a href="index.html" title="">Calendar</a></li>
-						<li class="tasks-nav"><a href="index.html" title="">Tasks</a></li>
-						<li class="publish-nav"><a href="index.html" title="">Publish</a></li>
-						<li class="ideas-nav"><a href="index.html" title="">Ideas</a></li>
+						<li class="setup-nav">
+							<a>Setup</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-settings">
+										<a href="">Settings</a>
+										<p>Change your helpdesk settings, like your website URL</p>
+									</li>
+									<li class="link-departments">
+										<a href="{{ path('admin_departments') }}">Departments</a>
+										<p>Manage your departments</p>
+									</li>
+									<li class="link-products">
+										<a href="{{ path('admin_products') }}">Products</a>
+										<p>Manage your products</p>
+									</li>
+									<li class="link-email">
+										<a href="">Email</a>
+										<p>Manage email addresses, SMTP settings and gateways.</p>
+									</li>
+									<li class="link-languages">
+										<a href="{{ path('admin_locales') }}">Languages</a>
+										<p>Manage locales and languages.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
+
+						<li class="server-nav">
+							<a>Server</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-scheduled-task">
+										<a href="">Scheduled Tasks</a>
+										<p>View and manage scheduled tasks like email collection and cleanup</p>
+									</li>
+									<li class="link-database-tools">
+										<a href="">Database Tools</a>
+										<p>View information about your database</p>
+									</li>
+									<li class="link-server-info">
+										<a href="">Server Info</a>
+										<p>View information about your server and its capabilities</p>
+									</li>
+									<li class="link-logs">
+										<a href="">Logs</a>
+										<p>Check error logs and email collection logs</p>
+									</li>
+									<li class="link-tests">
+										<a href="">Tests</a>
+										<p>Tests to ensure proper operations of your server.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
+
+						<li class="agents-nav">
+							<a>Agents</a>
+						</li>
+
+						<li class="tickets-nav">
+							<a>Tickets</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-ticket-filters">
+										<a href="">Filters</a>
+										<p>Create filters that will appear in agent interface to help your team find tickets faster.</p>
+									</li>
+									<li class="link-fields">
+										<a href="{{ path('admin_departments') }}">Fields</a>
+										<p>Create custom fields that can be added to tickets, and mapped to specific departments and other criteria.</p>
+									</li>
+									<li class="link-ticket-triggers">
+										<a href="{{ path('admin_tickettriggers') }}">Business Rules</a>
+										<p>Define triggers to change or escalate tickets, or send notifications, based on certain criteria</p>
+									</li>
+									<li class="link-ticket-macros">
+										<a href="">Macros</a>
+										<p>Create groups of actions that can be performed on tickets with a single click.</p>
+									</li>
+									<li class="link-labels">
+										<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">Labels</a>
+										<p>Define labels that can be applied to tickets to help organize your helpdesk.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
+
+						<li class="users-nav">
+							<a>Users</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-fields">
+										<a href="{{ path('admin_customdefpeople') }}">Fields</a>
+										<p>Create custom fields that can be added to users.</p>
+									</li>
+									<li class="link-labels">
+										<a href="{{ path('admin_labels', {'label_type': 'people'}) }}">Labels</a>
+										<p>Define labels that can be applied to users.</p>
+									</li>
+									<li class="link-fields">
+										<a href="{{ path('admin_customdeforganizations') }}">Organization Fields</a>
+										<p>Create custom fields that can be added to organizations.</p>
+									</li>
+									<li class="link-labels">
+										<a href="{{ path('admin_labels', {'label_type': 'organizations'}) }}">Organization Labels</a>
+										<p>Define labels that can be applied to organizations.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
+
+						<li class="deals-nav">
+							<a>Leads</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-leads-statuses">
+										<a href="">Statuses</a>
+										<p>Manage stauses for leads.</p>
+									</li>
+									<li class="link-fields">
+										<a href="">Fields</a>
+										<p>Create custom fields that can be added to leads.</p>
+									</li>
+									<li class="link-labels">
+										<a href="">Labels</a>
+										<p>Define labels that can be applied to leads.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
+
+						<li class="chats-nav"><a>Chats</a></li>
+						<li class="twitter-nav"><a>Twitter</a></li>
+
+						<li class="portal-nav">
+							<a>Portal</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-knowledgebase">
+										<a href="">Knowledgebase</a>
+										<p>Manage display options for your knowledgebase and articles</p>
+									</li>
+									<li class="link-downloads">
+										<a href="">Downloads</a>
+										<p>Manage display options for your downloads section</p>
+									</li>
+									<li class="link-troubleshooters">
+										<a href="">Troubleshooters</a>
+										<p>Manage display options for your troubleshooters section</p>
+									</li>
+								</ol>
+							</div>
+						</li>
+
+						<li class="integrations-nav">
+							<a>Integrations</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-widgets">
+										<a href="">Widgets</a>
+										<p>Manage widgets that are added to pages.</p>
+									</li>
+									<li class="link-api">
+										<a href="{{ path('admin_api_keylist') }}">API</a>
+										<p>Manage your API keys and usage.</p>
+									</li>
+									<li class="link-plugins">
+										<a href="">Plugins</a>
+										<p>Manage or install plugins.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
 					</ul>
 				</div>
 			</div>

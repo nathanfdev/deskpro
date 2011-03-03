@@ -775,51 +775,10 @@ DeskPRO.Agent.Window = new Class({
 		});
 	},
 
-	_closeWindowMenus: function(ev) {
-
-		if (ev && ev._noCloseMenu) return;
-
-		// Fire close events on open menu
-		var currentOpen = $('#header .nav > .wrapper-top-bar > ul > li').removeClass('on');
-		if (currentOpen.length && currentOpen.data('menuHandler')) {
-			currentOpen.data('menuHandler').fireEvent('menuClose');
-		}
-
-		$('#header .nav > .wrapper-top-bar > ul > li').removeClass('on off');
-		$('#header .nav > .wrapper-top-bar > ul > li .wrap-dropdown').hide();
-	},
 	_initWindowInterface: function() {
 		var self = this;
 
-		// Click opens the submenu
-		$('#header .nav > .wrapper-top-bar > ul > li').click(function(ev) {
-			// If we're already open, clicking should toggle to closed
-			var doopen = true;
-			if ($(this).is('.on')) {
-				doopen = false;
-			}
-
-			self._closeWindowMenus();
-
-			if (doopen) {
-				$('.wrap-dropdown', this).show();
-				$(this).addClass('on');
-				$('#header .nav > .wrapper-top-bar > ul > li:not(.on)').addClass('off');
-
-				if ($(this).data('menuHandler')) {
-					$(this).data('menuHandler').fireEvent('menuOpene');
-				}
-			}
-
-			ev.preventDefault();
-			ev.stopPropagation();
-		});
-		$(document).click(function(ev) {
-			self._closeWindowMenus(ev);
-		});
-
-		// Window elements
-		var ticketMenu = new DeskPRO.Agent.WindowElement.MainMenu.Tickets();
+		var menuOpener = new DeskPRO.Agent.WindowElement.MainMenuOpener();
 
 		// Settings is a window
 		$('#window_head_top .settings-link').click(function() {

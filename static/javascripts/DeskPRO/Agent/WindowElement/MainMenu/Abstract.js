@@ -11,7 +11,6 @@ DeskPRO.Agent.WindowElement.MainMenu.Abstract = new Class({
 
 	initialize: function() {
 		this.buttonEl = $('#header .nav ul > li.' + this.buttonClass + ':first');
-		this.buttonEl.data('menuHandler', this);
 
 		this.badgeEl = $('span.nav-counter:first', this.buttonEl);
 		this.menuEl = $('div.wrap-dropdown:first', this.buttonEl);
