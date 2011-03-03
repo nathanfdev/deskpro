@@ -725,7 +725,7 @@ background-color: #edeff3;
 }
 
 
-#header .nav ul  > li > a {
+#header .nav .wrapper-top-bar > ul  > li > a {
 	display: block;
 	background: url("../../images/icn-nav-sprite.png") 13px top no-repeat;
 	padding: 32px 3px 0 3px;
@@ -735,61 +735,62 @@ background-color: #edeff3;
 	line-height: 10px;
 }
 
-#header .nav ul li.chats-nav >a {
+#header .nav .wrapper-top-bar > ul li.chats-nav >a {
 	background-position: -60px top;
 }
 
-#header .nav ul li.twitter-nav > a {
+#header .nav .wrapper-top-bar > ul li.twitter-nav > a {
 	background-position: -122px top;
 }
 
-#header .nav ul li.facebook-nav  >a {
+#header .nav .wrapper-top-bar > ul li.facebook-nav  >a {
 	background-position: -182px top;
 }
 
-#header .nav ul li.calls-nav  >a {
+#header .nav .wrapper-top-bar > ul li.calls-nav  >a {
 	background-position: -268px top;
 }
 
-#header .nav ul li.users-nav > a {
+#header .nav .wrapper-top-bar > ul li.users-nav > a {
 	background-position: -321px top;
 }
 
-#header .nav ul li.deals-nav  > a {
+#header .nav .wrapper-top-bar > ul li.deals-nav  > a {
 	background-position: -381px top;
 }
 
-#header .nav ul li.calendar-nav > a {
+#header .nav .wrapper-top-bar > ul li.calendar-nav > a {
 	background-position: -440px top;
 }
 
-#header .nav ul li.tasks-nav > a {
+#header .nav .wrapper-top-bar > ul li.tasks-nav > a {
 	background-position: -513px top;
 }
 
-#header .nav ul li.publish-nav > a {
+#header .nav .wrapper-top-bar > ul li.publish-nav > a {
 	background-position: -577px top;
 }
 
-#header .nav ul li.ideas-nav > a {
+#header .nav .wrapper-top-bar > ul li.ideas-nav > a {
 	background-position: -652px top;
 }
 
-#header .nav ul  > li.setup-nav > a { background: url("../../images/nav-icons/Settings.png") no-repeat center top; }
-#header .nav ul  > li.server-nav > a { background: url("../../images/nav-icons/Server.png") no-repeat center top; }
-#header .nav ul  > li.agents-nav > a { background: url("../../images/nav-icons/Agents.png") no-repeat center top; }
-#header .nav ul  > li.portal-nav > a { background: url("../../images/nav-icons/Portal.png") no-repeat center top; }
-#header .nav ul  > li.integrations-nav > a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
-#header .nav ul  > li.integrations-nav > a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
+#header .nav .wrapper-top-bar > ul  > li.setup-nav > a { background: url("../../images/nav-icons/Settings.png") no-repeat center top; }
+#header .nav .wrapper-top-bar > ul  > li.server-nav > a { background: url("../../images/nav-icons/Server.png") no-repeat center top; }
+#header .nav .wrapper-top-bar > ul  > li.agents-nav > a { background: url("../../images/nav-icons/Agents.png") no-repeat center top; }
+#header .nav .wrapper-top-bar > ul  > li.portal-nav > a { background: url("../../images/nav-icons/Portal.png") no-repeat center top; }
+#header .nav .wrapper-top-bar > ul  > li.integrations-nav > a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
+#header .nav .wrapper-top-bar > ul  > li.integrations-nav > a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
 
 /** Dropdown icon-menu **/
 #header .nav ol.icon-menu {
-
+	max-width: 300px;
 }
 
 #header .nav ol.icon-menu > li {
-	padding: 4px 8px 3px 38px;
-	background-position: 5px 50%;
+	padding: 5px 8px 5px 40px;
+	margin: 4px 0 4px 0;
+	background-position: 6px 8px;
 	background-repeat: no-repeat;
 	cursor: pointer;
 	line-height: 140%;
@@ -803,6 +804,14 @@ background-color: #edeff3;
 #header .nav ol.icon-menu > li p {
 	margin: 0;
 	padding: 0;
+}
+
+#header .nav ol.icon-menu ul {
+	list-style-type: square;
+	margin-left: 15px;
+}
+#header .nav ol.icon-menu ul li a {
+	font-size: 8pt;
 }
 
 #header .nav ol.icon-menu > li.link-settings { background-image: url("../../images/nav-icons/Settings.png"); }
