@@ -661,7 +661,7 @@ background-color: #edeff3;
 #header .nav .wrapper-top-bar {
 }
 
-#header .nav ul > li {
+#header .nav > .wrapper-top-bar > ul > li {
 	float: left;
 	margin-right: 5px;
 	padding: 5px 4px 15px 4px;
@@ -674,7 +674,7 @@ background-color: #edeff3;
     border-radius: 5px 5px 0 0;
 }
 
-#header .nav ul > li:hover {
+#header .nav > .wrapper-top-bar > ul > li:hover {
 	background: #fff;
 
 	border:1px solid #c3c4c9;
@@ -684,7 +684,7 @@ background-color: #edeff3;
     box-shadow: inset 0 3px #f5f5f5, 0 2px 3px #b1b5c1;
 }
 
-#header .nav ul > li.on {
+#header .nav > .wrapper-top-bar > ul > li.on {
 	background: #fff;
 
 	border:1px solid #c3c4c9;
@@ -694,8 +694,8 @@ background-color: #edeff3;
     box-shadow: inset 0 3px #f5f5f5, 0 2px 3px #b1b5c1;
 }
 
-#header .nav ul > li.off {
-	opacity: 0.4;
+#header .nav > .wrapper-top-bar > ul > li.off {
+	opacity: 0.2;
 }
 
 #header span.nav-counter {
@@ -1125,7 +1125,7 @@ padding: 7px 7px 0 7px;
 	margin: 6px 0 0 -5px;
 	position: absolute;
 	overflow: hidden;
-	z-index: 9999999;
+	z-index: 99999;
 	background: #f8f8f8;
 
 	-webkit-box-shadow: 0 1px 4px rgba(0, 0, 0, .5), inset 0 1px #fff;
@@ -1163,4 +1163,48 @@ padding: 7px 7px 0 7px;
 #header .multi:hover .wrap-dropdown,
 #header .keyboard:hover .wrap-dropdown {
 	display: block;
+}
+
+/* Dropdowns tabs */
+#header li.on > ul.wrap-dropdown-tabs {
+	display: block;
+}
+
+#header ul.wrap-dropdown-tabs {
+	display: none;
+	z-index: 99998;
+	position: absolute;
+	margin-left: 50px;
+	margin-top: -11px;
+}
+
+#header ul.wrap-dropdown-tabs > li {
+	line-height: 25px;
+	float: left;
+	display: block;
+
+	margin-left: 15px;
+
+	font-weight: bold;
+	border: 1px solid #A6A8AD;
+	border-bottom: none;
+	padding: 0 10px 6px 10px;
+
+	color: #3C3E3F;
+	background: #fff;
+
+	-webkit-box-shadow:  inset 0 3px #f5f5f5, 0 2px 3px #b1b5c1;
+    -moz-box-shadow: inset 0 3px #f5f5f5, 0 2px 3px #b1b5c1;
+    box-shadow: inset 0 3px #f5f5f5, 0 2px 3px #b1b5c1;
+
+	cursor: pointer;
+
+	-moz-border-radius-topleft: 3px;
+	-moz-border-radius-topright: 3px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 3px;
+	border-top-right-radius: 3px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
 }

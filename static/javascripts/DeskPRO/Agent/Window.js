@@ -780,13 +780,13 @@ DeskPRO.Agent.Window = new Class({
 		if (ev && ev._noCloseMenu) return;
 
 		// Fire close events on open menu
-		var currentOpen = $('#header .nav ul > li').removeClass('on');
+		var currentOpen = $('#header .nav > .wrapper-top-bar > ul > li').removeClass('on');
 		if (currentOpen.length && currentOpen.data('menuHandler')) {
 			currentOpen.data('menuHandler').fireEvent('menuClose');
 		}
 
-		$('#header .nav ul > li').removeClass('on off');
-		$('#header .nav ul > li .wrap-dropdown').hide();
+		$('#header .nav > .wrapper-top-bar > ul > li').removeClass('on off');
+		$('#header .nav > .wrapper-top-bar > ul > li .wrap-dropdown').hide();
 	},
 	_initWindowInterface: function() {
 		var self = this;
@@ -804,7 +804,7 @@ DeskPRO.Agent.Window = new Class({
 			if (doopen) {
 				$('.wrap-dropdown', this).show();
 				$(this).addClass('on');
-				$('#header .nav ul > li:not(.on)').addClass('off');
+				$('#header .nav > .wrapper-top-bar > ul > li:not(.on)').addClass('off');
 
 				if ($(this).data('menuHandler')) {
 					$(this).data('menuHandler').fireEvent('menuOpene');
