@@ -1001,20 +1001,28 @@ padding: 7px 7px 0 7px;
 
 }
 /** Publish Dropdown **/
+#header .publish-drop ol li {
+
+}
 
 #header .publish-drop ol li a {
 	font-weight: bold;
 	color: #3C3E3F !important;
-	padding: 4px 0 4px 20px;
-	background: url("../../images/icn-sprite.png") -4px -781px no-repeat;
+	padding: 4px 10px 4px 45px;
+	line-height: 45px;
+	display: block;
 }
 
 #header .publish-drop ol li.link-files a {
-	background-position: -4px -805px;
+	background: url("../../images/icn-files.png") no-repeat center left;
 }
 
-#header .publish-drop ol li.link-help a {
-	background-position: -4px -828px;
+#header .publish-drop ol li.link-know a {
+	background: url("../../images/icn-knowledgebase.png") no-repeat center left;
+}
+
+#header .publish-drop ol li.link-trouble a {
+	background: url("../../images/icn-troubleshooter.png") no-repeat center left;
 }
 
 /** Undo **/
