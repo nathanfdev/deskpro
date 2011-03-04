@@ -82,7 +82,7 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
 			$('.wrap-dropdown', li).show();
 			li.addClass('on');
 			var ul = li.parent();
-			$('li:not(.on)', ul).addClass('off');
+			$('> li:not(.on)', ul).addClass('off');
 
 			if (li.data('menuHandler')) {
 				li.data('menuHandler').fireEvent('menuOpen');
