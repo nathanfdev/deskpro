@@ -67,6 +67,14 @@ class Strings
 	 */
 	const EQUALSLINES_DUPE_ADD_ARRAY = 2;
 
+	/**
+	 * When set, we will autoload php-utf8 functions and catch
+	 * dynamic calls to utf8_xxx functions.
+	 *
+	 * @var string
+	 */
+	protected static $php_utf8_dir = null;
+
 
 
 	/**
@@ -921,5 +929,89 @@ class Strings
 		);
 
 		return $parts;
+	}
+
+
+
+	/**
+	 * Set the path to the php-utf8 library functions, and thereby enable
+	 * dynamic calling of utf8_xxx calls on this string class.
+	 *
+	 * @param string $dir
+	 * @return void
+	 */
+	public static function setPhpUtf8Dir($dir)
+	{
+		self::$php_utf8_dir = $dir;
+	}
+
+	public static function __callStatic($name, $args)
+	{
+		if (!self::$php_utf8_dir) {
+			throw new \BadMethodCallException('Unknown method `'.$name.'`');
+		}
+
+		static $funcmap = array(
+			'utf8_strlen'                      => '__CORE__',
+			'utf8_strpos'                      => '__CORE__',
+			'utf8_strrpos'                     => '__CORE__',
+			'utf8_substr'                      => '__CORE__',
+			'utf8_strtolower'                  => '__CORE__',
+			'utf8_strtoupper'                  => '__CORE__',
+			'utf8_strlen'                      => '__CORE__',
+			'utf8_strpos'                      => '__CORE__',
+			'utf8_strrpos'                     => '__CORE__',
+			'utf8_substr'                      => '__CORE__',
+			'utf8_strtolower'                  => '__CORE__',
+			'utf8_strtoupper'                  => '__CORE__',
+			'utf8_ord'                         => 'ord.php',
+			'utf8_ireplace'                    => 'str_ireplace.php',
+			'utf8_str_pad'                     => 'str_pad.php',
+			'utf8_str_split'                   => 'str_split.php',
+			'utf8_strcasecmp'                  => 'strcasecmp.php',
+			'utf8_strcspn'                     => 'strcspn.php',
+			'utf8_stristr'                     => 'stristr.php',
+			'utf8_strrev'                      => 'strrev.php',
+			'utf8_strspn'                      => 'strspn.php',
+			'utf8_substr_replace'              => 'substr_replace.php',
+			'utf8_ltrim'                       => 'trim.php',
+			'utf8_rtrim'                       => 'trim.php',
+			'utf8_trim'                        => 'trim.php',
+			'utf8_ucfirst'                     => 'ucfirst.php',
+			'utf8_ucwords'                     => 'ucwords.php',
+			'utf8_ucwords_callback'            => 'ucwords.php',
+			'utf8_is_ascii'                    => 'utils/ascii.php',
+			'utf8_is_ascii_ctrl'               => 'utils/ascii.php',
+			'utf8_strip_non_ascii'             => 'utils/ascii.php',
+			'utf8_strip_ascii_ctrl'            => 'utils/ascii.php',
+			'utf8_strip_non_ascii_ctrl'        => 'utils/ascii.php',
+			'utf8_accents_to_ascii'            => 'utils/ascii.php',
+			'utf8_bad_find'                    => 'utils/bad.php',
+			'utf8_bad_findall'                 => 'utils/bad.php',
+			'utf8_bad_strip'                   => 'utils/bad.php',
+			'utf8_bad_replace'                 => 'utils/bad.php',
+			'utf8_bad_identify'                => 'utils/bad.php',
+			'utf8_bad_explain'                 => 'utils/bad.php',
+			'utf8_byte_position'               => 'utils/position.php',
+			'utf8_locate_current_chr'          => 'utils/position.php',
+			'utf8_locate_next_chr'             => 'utils/position.php',
+			'utf8_specials_pattern'            => 'utils/specials.php',
+			'utf8_is_word_chars'               => 'utils/specials.php',
+			'utf8_strip_specials'              => 'utils/specials.php',
+			'utf8_to_unicode'                  => 'utils/unicode.php',
+			'utf8_from_unicode'                => 'utils/unicode.php',
+			'utf8_is_valid'                    => 'utils/validation.php',
+			'utf8_compliant'                   => 'utils/validation.php',
+		);
+
+		if (isset($funcmap[$name])) {
+			require_once(self::$php_utf8_dir . '/ORB_LOAD.php');
+			if ($funcmap[$name] !== '__CORE__') {
+				require_once(self::$php_utf8_dir . '/' . $funcmap[$name]);
+			}
+			return call_user_func_array($name, $args);
+		} else {
+			throw new \BadMethodCallException('Unknown method `'.$name.'`');
+		}
 	}
 }

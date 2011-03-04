@@ -41,6 +41,9 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 		parent::boot();
 		App::setContainer($this->container, 'default');
 
+		// Set phputf8 strings
+		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
+
 		// Lazyload exception listener for the error handler
 		set_error_handler(function($errno, $errstr, $errfile, $errline) {
 			if (!App::has('exception_listener')) {
