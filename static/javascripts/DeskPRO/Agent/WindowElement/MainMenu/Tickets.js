@@ -543,7 +543,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 		);
 
 		this.resetLablesIndexScroller();
-		
+
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',

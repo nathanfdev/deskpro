@@ -391,25 +391,26 @@ Header
 #header .noti-drop ul li {
 	margin-bottom: 2px;
 	padding: 2px 8px 2px 25px;
-	background: url("../../images/icn-sprite.png") left -439px no-repeat;
+	background: url("../../images/icn-sprite.png") left -438px no-repeat;
 	color: #55595C;
 	text-shadow: 0 1px 1px #fff;
+	line-height: 16px;
 }
 
 #header .noti-drop ul li span {
-	font-size: 9pt;
+	font-size: 8pt;
 }
 
 #header .noti-drop ul li em {
 	float: right;
 	font-style: normal;
-	font-size: 8pt;
+	font-size: 7pt;
 	margin-left: 6px;
 	color:#80868C;
 }
 
 #header .noti-drop ul li.tweet-noti {
-	background-position: left -461px;
+	background-position: left -460px;
 }
 
 #header .noti-drop ul li:hover {
