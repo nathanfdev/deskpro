@@ -820,6 +820,16 @@ background-color: #edeff3;
 	font-size: 8pt;
 }
 
+#header .nav ol.icon-menu.single-line > li {
+	background-position: 6px 50%;
+	line-height: 25px;
+	padding: 3px 8px 3px 37px;
+}
+
+#header .nav ol.icon-menu.single-line > li a {
+	font-size: 10pt;
+}
+
 #header .nav ol.icon-menu > li.link-settings { background-image: url("../../images/nav-icons/Settings.png"); }
 #header .nav ol.icon-menu > li.link-departments { background-image: url("../../images/nav-icons/Labels.png"); }
 #header .nav ol.icon-menu > li.link-products { background-image: url("../../images/nav-icons/Products.png"); }
@@ -1091,27 +1101,6 @@ padding: 7px 7px 0 7px;
 	background: url("../../images/icn-sprite.png") 4px -752px no-repeat, -webkit-gradient(linear, 0 bottom, 0 top, from(#6ba0ec ), to(#98c2f4));
 	background: url("../../images/icn-sprite.png") 4px -752px no-repeat, -moz-linear-gradient(90deg, #6ba0ec, #98c2f4 );
 
-}
-/** Publish Dropdown **/
-
-#header .publish-drop ol li a {
-	font-weight: bold;
-	color: #3C3E3F !important;
-	padding: 4px 10px 4px 45px;
-	line-height: 45px;
-	display: block;
-}
-
-#header .publish-drop ol li.link-files a {
-	background: url("../../images/icn-files.png") no-repeat center left;
-}
-
-#header .publish-drop ol li.link-know a {
-	background: url("../../images/icn-knowledgebase.png") no-repeat center left;
-}
-
-#header .publish-drop ol li.link-trouble a {
-	background: url("../../images/icn-troubleshooter.png") no-repeat center left;
 }
 
 /** Publish Dropdown **/
