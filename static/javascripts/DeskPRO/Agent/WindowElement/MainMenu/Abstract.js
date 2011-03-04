@@ -6,8 +6,8 @@ DeskPRO.Agent.WindowElement.MainMenu.Abstract = new Class({
 	buttonClass: null, // children enter the classname of their button
 	buttonEl: null,
 	badgeEl: null,
-	otherButtonEls: null,
 	menuEl: null,
+	tabEl: null,
 	options: {},
 
 	initialize: function(buttonEl, options) {
@@ -16,10 +16,14 @@ DeskPRO.Agent.WindowElement.MainMenu.Abstract = new Class({
 
 		this.badgeEl = $('span.nav-counter:first', this.buttonEl);
 		this.menuEl = $('div.wrap-dropdown:first', this.buttonEl);
-		this.otherButtonEls = $('#header .nav ul > li:not(.' + this.buttonClass + ')');
+		this.tabEl = $('ul.wrap-dropdown-tabs:first', this.buttonEl);
 
 		// Capture clicks for on dataRoute's
 		var self = this;
+		this.tabEl.delegate('[data-route]', 'click', function(ev) {
+			DeskPRO_Window.runPageRouteFromElement(this);
+			self.closeMenu();
+		});
 		this.menuEl.delegate('[data-route]', 'click', function(ev) {
 			var evData = {'event': ev, 'cancelClose': false, preventDefault: true };
 			self.fireEvent('clickRoute', [ev, evData]);

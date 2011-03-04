@@ -12,7 +12,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 		var self = this;
 		this.addEvent('clickRoute', function(event, evData) {
-			if (self.cancelClickActivateFilter) {
+			if (self.cancelClickActivateFilter || self.cancelClickActivateFlag) {
 				evData.cancelClose = true;
 			}
 		});
@@ -106,6 +106,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 				self.cancelClickActivateFilter = true;
 			},
 			'update': function() {
+				self.cancelClickActivateFilter = false;
 				self.saveFilterOrder();
 			}
 		});
@@ -184,6 +185,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 				self.cancelClickActivateFlag = true;
 			},
 			'update': function() {
+				self.cancelClickActivateFlag = false;
 				self.saveFlagOrder();
 			}
 		});

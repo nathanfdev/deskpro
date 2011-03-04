@@ -7,7 +7,7 @@ pageMeta.userSearchUrl = '{{ path('agent_peoplesearch_performquick') }}?ajax=1';
 pageMeta.newUserUrl = '{{ path('agent_people_new') }}';
 pageMeta.submitTicketUrl = '{{ path('agent_people_new_ajaxsave') }}';
 
-pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete') }}';
+pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
 pageMeta.getMacroUrl                  = '{{ path('agent_ticket_ajax_get_macro', {'ticket_id': 0 }) }}?macro_id=$macro_id';
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 </script>
