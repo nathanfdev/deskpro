@@ -370,6 +370,16 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
+	public function labelsIndexPaneAction()
+	{
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
+		$index = $label_lister->getIndexList();
+
+		return $this->render('AgentBundle:TicketSearch:pane-labels-index.html.twig', array(
+			'labels_index' => $index
+		));
+	}
+
 	############################################################################
 	# flagged
 	############################################################################

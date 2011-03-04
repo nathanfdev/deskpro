@@ -193,8 +193,12 @@ agent_ticketsearch_overviewpane:
   defaults: { _controller: AgentBundle:TicketSearch:overviewPane }
 
 agent_ticketsearch_labelspane:
-    pattern: /ticket-search/labels-pane
-    defaults: { _controller: AgentBundle:TicketSearch:labelsPane }
+  pattern: /ticket-search/labels-pane
+  defaults: { _controller: AgentBundle:TicketSearch:labelsPane }
+
+agent_ticketsearch_labelsindexpane:
+  pattern: /ticket-search/labels-index-pane
+  defaults: { _controller: AgentBundle:TicketSearch:labelsIndexPane }
 
 agent_ticketsearch_overviewnav:
   pattern: /ticket-search/overview-nav

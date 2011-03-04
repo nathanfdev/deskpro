@@ -878,21 +878,41 @@ background-color: #edeff3;
 	width: 600px;
 }
 
-#header .tickets-drop .flag-title #flagged_edit_btn {
-	display: none;
+/* the ytrack el is given an absolute width when we're sliding stuff
+in and out, so we dont want actual scrollbars */
+#header .wrap-dropdown .y-track {
+	overflow: hidden;
+}
+
+#header .wrap-dropdown .inner-container-title .hover-reveal {
+	display:none;
 	float: right;
 	padding: 3px 6px 0 0;
 }
 
-#header .tickets-drop .flag-title #flagged_save_btn {
-	display: none;
-	float: right;
-	padding: 3px 6px 0 0;
-}
-
-#header .tickets-drop .inner-container:hover .flag-title #flagged_edit_btn {
+#header .wrap-dropdown .inner-container:hover .inner-container-title .hover-reveal {
 	display: block;
 }
+
+#header .tickets-drop #flagged_edit_btn,
+#header .tickets-drop #ticket_labels_viewall {
+	display: none;
+	float: right;
+	padding: 3px 6px 0 0;
+}
+
+#header .tickets-drop  #flagged_save_btn {
+	display: none;
+	float: right;
+	padding: 3px 6px 0 0;
+}
+
+#header .tickets-drop .inner-container:hover #flagged_edit_btn,
+#header .tickets-drop .inner-container:hover #ticket_labels_viewall {
+	display: block;
+}
+
+
 
 #header .top-tickets-info {
 	background: #f3f4f5;
@@ -1310,3 +1330,29 @@ padding: 7px 7px 0 7px;
 	border-bottom-right-radius: 0px;
 	border-bottom-left-radius: 0px;
 }
+
+
+dl#ticket_labels_list {
+	margin: 10px 5px 10px 5px;
+}
+
+dl#ticket_labels_list dt {
+	float: left;
+	clear: left;
+	font-size: 9pt;
+	font-weight: bold;
+	width: 20px;
+	padding-bottom: 10px;
+	text-align: center;
+}
+
+dl#ticket_labels_list dd {
+	margin-left: 33px;
+	padding-top: 2px;
+	padding-bottom: 10px;
+	color: #333 !important;
+}
+dl#ticket_labels_list dd a{
+	color: #333 !important;
+}
+

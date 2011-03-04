@@ -7,6 +7,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 		// Sends ajax to fetch initial data
 		this._initInitialData();
+		this._initBeforeData();
 
 		var self = this;
 		this.addEvent('clickRoute', function(event, evData) {
@@ -14,6 +15,10 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 				evData.cancelClose = true;
 			}
 		});
+	},
+
+	_initBeforeData: function() {
+		this._initLabelsSwitcher();
 	},
 
 	// we use a counter to make sure initAfterInitialData is only fired once, after all panes are loaded
@@ -452,5 +457,103 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 		var list = $('#overview_list').html(html);
 		//this.overviewScrollbar.update();
+	},
+
+	//#########################################################################
+	// Labels
+	//#########################################################################
+
+	_initLabelsSwitcher: function() {
+		// Clicking between show-index and goback buttons
+		$('#ticket_labels_viewall').click(this.showLabelsList.bind(this));
+		$('#ticket_labels_index_back').click(this.hideLabelsList.bind(this));
+	},
+
+	showLabelsList: function() {
+		this.menuEl.css({
+			'width': this.menuEl.width(),
+			'height': this.menuEl.height(),
+			'overflow': 'hidden'
+		});
+
+		$('#tickets_main_section').css({
+			'width': $('#tickets_main_section').width(),
+			'height': $('#tickets_main_section').height(),
+			'overflow': 'hidden'
+		});
+
+		$('#tickets_labels_list_section').css({
+			'width': $('#tickets_main_section').width(),
+			'height': $('#tickets_main_section').height(),
+			'overflow': 'hidden'
+		}).show();
+
+		$('#ticket_labels_index_content').css({
+			'height': $('#tickets_labels_list_section').height() - 42,
+			'overflow': 'auto'
+		});
+
+		$('> div.y-track', this.menuEl).css({
+			'width': ($('#tickets_main_section').width()*2) + 100
+		});
+
+		$('#tickets_main_section, #tickets_labels_list_section').css({'float':'left'});
+
+		this.menuEl.scrollLeft(0);
+		var pos = $('#tickets_labels_list_section').position().left;
+		this.menuEl.animate(
+			{ scrollLeft: pos },
+			300,
+			'linear'
+		);
+
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'agent/ticket-search/labels-index-pane',
+			dataType: 'html',
+			success: function(html) {
+				$('#ticket_labels_index_content').html(html)
+			}
+		});
+	},
+
+	hideLabelsList: function() {
+		var self = this;
+		$('#ticket_labels_index_content').empty();
+		this.menuEl.animate(
+			{ scrollLeft: 0 },
+			300,
+			'linear',
+			function() {
+				self._cleanupLabelsSlide();
+			}
+		);
+	},
+
+	_cleanupLabelsSlide: function() {
+		this.menuEl.css({
+			'width': 'auto',
+			'height': 'auto',
+			'overflow': ''
+		});
+
+		$('#tickets_main_section').css({
+			'width': 'auto',
+			'height': 'auto',
+			'overflow': ''
+		});
+
+		$('#tickets_labels_list_section').css({
+			'width': 'auto',
+			'height': 'auto',
+			'overflow': ''
+		}).hide();
+
+		$('> div.y-track', this.menuEl).css({
+			'width': 'auto'
+		});
+
+		$('#tickets_main_section, #tickets_labels_list_section').css({'float':''});
 	}
 });

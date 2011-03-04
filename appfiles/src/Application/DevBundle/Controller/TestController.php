@@ -7,14 +7,13 @@ use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
+use \Orb\Util\Strings;
+
 class TestController extends Controller
 {
     public function indexAction()
     {
-		$cache = new \Orb\Doctrine\Common\Cache\SqliteCache();
-		$cache->setDbFile('MEMORY', 'cache1', 'main');
-		$cache->save('test', 'Woo!');
-		echo $cache->fetch('test');
+		echo Strings::utf8_strtolower('ABC');
 		exit;
     }
 }
