@@ -1,3 +1,11 @@
+#scrollbar1 .thumb .end,
+#scrollbar1 .thumb { background-color: #003D5D; }
+#scrollbar1 .scrollbar { position: relative; float: right; width: 15px; }
+#scrollbar1 .track { background-color: #D8EEFD; height: 100%; width:13px; position: relative; padding: 0 1px; }
+#scrollbar1 .thumb { height: 20px; width: 13px; cursor: pointer; overflow: hidden; position: absolute; top: 0; }
+#scrollbar1 .thumb .end { overflow: hidden; height: 5px; width: 13px; }
+#scrollbar1 .disable{ display: none; }
+
 #pane_shell {
 	overflow: hidden;
 }

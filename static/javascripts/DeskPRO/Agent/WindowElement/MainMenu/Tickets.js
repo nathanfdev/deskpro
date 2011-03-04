@@ -296,9 +296,13 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	// Overview functionality
 	//#########################################################################
 
+	overviewScrollbar: null,
 	_initOverview: function() {
 		this._initoverviewGroupingMenu();
 		this.overviewLoadList();
+
+		// Scrollbar
+		//this.overviewScrollbar = $('#overview_list_wrap').tinyscrollbar();
 	},
 
 	overviewGroupMenuEl: null,
@@ -447,5 +451,6 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 		DeskPRO_Window.stopLoadingIndicator();
 
 		var list = $('#overview_list').html(html);
+		//this.overviewScrollbar.update();
 	}
 });
