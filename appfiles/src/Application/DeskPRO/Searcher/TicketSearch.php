@@ -46,6 +46,8 @@ class TicketSearch extends SearcherAbstract
 	 */
 	protected $person_search = null;
 
+	public $_last_sql = null;
+
 	/**
 	 * Set a set of person search terms.
 	 *
@@ -206,6 +208,8 @@ class TicketSearch extends SearcherAbstract
 		$sql .= $order_by;
 
 		$sql .= " LIMIT 1000";
+
+		$this->_last_sql = $sql;
 
 		return $sql;
 	}

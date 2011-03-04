@@ -323,6 +323,10 @@ abstract class SearcherAbstract
 		$db = App::getDb();
 		$where = '';
 
+		if (!$choice) {
+			return '0'; // no choices, always fails!
+		}
+
 		if (is_array($choice) AND count($choice) == 1) {
 			$choice = Arrays::getFirstItem($choice);
 		}

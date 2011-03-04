@@ -304,90 +304,6 @@ class TicketSearchController extends AbstractController
 		return $this->_getResponseForTickets('filter', $result_cache['id'], $results_helper, $vars);
 	}
 
-	public function _runFilterFromReq($terms = null)
-	{
-		$result_cache = false;
-		if ($this->in->getUint('cache_id')) {
-			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
-			if ($result_cache['person_id'] != $this->person['id']) {
-				$result_cache = false;
-			}
-		}
-
-		#------------------------------
-		# If there's no result set, we're running
-		# it for the first time
-		#------------------------------
-
-		if (!$result_cache) {
-
-			if (!$terms) {
-				$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
-			}
-
-			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-			foreach ($terms as $term) {
-				$data = $term;
-				unset($data['rule_type'], $data['op']);
-
-				if (count($data) == 1) {
-					$data = array_pop($data);
-				}
-
-				$searcher->addTerm($term['rule_type'], $term['op'], $data);
-			}
-
-			//TODO remove when ready for real searches, make it an option in UI
-			$searcher->enableArchiveSearch();
-
-			$results = $searcher->getMatches();
-
-			$result_cache = new Entity\ResultCache();
-			$result_cache['person'] = $this->person;
-			$result_cache['criteria'] = array('terms' => $terms);
-			$result_cache['results'] = $results;
-			$result_cache['num_results'] = count($results);
-
-			App::getOrm()->persist($result_cache);
-			App::getOrm()->flush();
-		}
-
-		#------------------------------
-		# Now fetch tickets
-		#------------------------------
-
-		$total = $result_cache['num_results'];
-		$per_page = 50;
-		$num_pages = ceil($total / $per_page);
-
-		$cur_page = $this->in->getUint('page');
-		if (!$cur_page OR $cur_page > $num_pages) $cur_page = 1;
-
-		$start_at = ($cur_page - 1) * $per_page;
-
-		$ticket_ids = array_slice($result_cache['results'], $start_at, $per_page);
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-
-		$data = array(
-			'cache_id' => $result_cache['id'],
-			'total' => $total
-		);
-
-		$view_params = array(
-			'tickets' => $tickets,
-			'display_fields' => array('department', 'agent', 'person')
-		);
-
-		if ($cur_page == 1) {
-			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results.html.twig', $view_params);
-		} else {
-			$data['is_partial'] = true;
-			$data['html'] = $this->renderView('AgentBundle:TicketSearch:filter-results-page.html.twig', $view_params);
-		}
-
-		return $data;
-	}
-
 	############################################################################
 	# overview-pane
 	############################################################################
@@ -408,13 +324,17 @@ class TicketSearchController extends AbstractController
 		$grouper->setGrouping($group1, $group2);
 		$grouper->setMode($this->in->getString('mode'), $this->person['id']);
 
-		$filter_agent_id = null;
-		if ($this->in->getString('mode') == 'your') {
-			$filter_agent_id = $this->person['id'];
+		$mode_crit = '';
+		if ($this->in->getString('mode') == 'agent') {
+			$mode_crit = "terms[0][rule_type]=agent&terms[0][op]=is&terms[0][agent]=-1";
+		} elseif ($this->in->getString('mode') == 'agent_team') {
+			$mode_crit = "terms[0][rule_type]=agent_team&terms[0][op]=is&terms[0][agent_team]=-1";
+		} elseif ($this->in->getString('mode') == 'participant') {
+			$mode_crit = "terms[0][rule_type]=participant&terms[0][op]=is&terms[0][person_id]=".$this->person['id'];
 		} elseif ($this->in->getString('mode') == 'unassigned') {
-			$filter_agent_id = 0;
+			$mode_crit = "terms[0][rule_type]=agent&terms[0][op]=is&terms[0][agent]=0";
 		} else {
-			$filter_agent_id = -2;
+			// all, no crit
 		}
 
 		$display_counts = $grouper->getDisplayArray();
@@ -423,23 +343,16 @@ class TicketSearchController extends AbstractController
 
 		// TODO: Need a cleaner way of converting a group into a searchable item
 		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runoverview') . "?autorun=true&terms[0][rule_type]=agent&terms[0][op]=is&terms[0][agent]=$filter_agent_id&terms[1][rule_type]=status&terms[1][op]=is&terms[1][status]=awaiting_agent&terms[2][rule_type]=$group1_nosuf&terms[2][op]=is&terms[2][$group1_nosuf]=\$group1_id";
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runfilter') . "?$mode_crit&terms[5][rule_type]=status&terms[5][op]=is&terms[5][status]=open&terms[6][rule_type]=$group1_nosuf&terms[6][op]=is&terms[6][$group1_nosuf]=\$group1_id";
 
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
-		$list_url_group2 = $list_url_group1 . "&terms[3][rule_type]=$group2_nosuf&terms[3][op]=is&terms[3][$group2_nosuf]=\$group2_id";
+		$list_url_group2 = $list_url_group1 . "&terms[7][rule_type]=$group2_nosuf&terms[7][op]=is&terms[7][$group2_nosuf]=\$group2_id";
 
 		return $this->render('AgentBundle:TicketSearch:overview-listing.html.twig', array(
 			'counts' => $display_counts,
 			'list_url_group1' => $list_url_group1,
 			'list_url_group2' => $list_url_group2,
 		));
-	}
-
-	public function overviewRunAction()
-	{
-		$data = $this->_runFilterFromReq();
-
-		return $this->render('AgentBundle:TicketSearch:overview-results.html.twig', $data);
 	}
 
 	############################################################################
@@ -456,20 +369,6 @@ class TicketSearchController extends AbstractController
 			'cloud' => $cloud
 		));
 	}
-
-	public function runLabelAction($label)
-	{
-		$terms = array();
-		$terms[] = array(
-			'rule_type' => 'label',
-			'op' => 'is',
-			'label' => $label
-		);
-		$data = $this->_runFilterFromReq($terms);
-
-		return $this->render('AgentBundle:TicketSearch:overview-results.html.twig', $data);
-	}
-
 
 	############################################################################
 	# flagged

@@ -196,10 +196,6 @@ agent_ticketsearch_labelspane:
     pattern: /ticket-search/labels-pane
     defaults: { _controller: AgentBundle:TicketSearch:labelsPane }
 
-agent_ticketsearch_run_label:
-  pattern: /ticket-search/label/{label}
-  defaults: { _controller: AgentBundle:TicketSearch:runLabel }
-
 agent_ticketsearch_overviewnav:
   pattern: /ticket-search/overview-nav
   defaults: { _controller: AgentBundle:TicketSearch:overviewNav }

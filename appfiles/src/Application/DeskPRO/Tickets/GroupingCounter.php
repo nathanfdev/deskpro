@@ -30,7 +30,7 @@ class GroupingCounter
 	protected $mode = 'unassigned';
 	protected $this_person_id = null;
 
-
+	protected $terms = array();
 
 	/**
 	 * Get an array of counts suitable for looping in a template etc

@@ -115,7 +115,7 @@ class Department extends EntityRepository
 
 		$deps = $this->getDepartmentsInHierarchy();
 		if ($parent_id) {
-			if (empty($deps[$parent_id]) OR empty($deps[$parent_id]['children'])) return array();
+			if (empty($deps[$parent_id]) OR empty($deps[$parent_id]['children'])) return $ids; // $ids because it'll have top if requested with $include_top
 			$deps = $deps[$parent_id]['children'];
 		}
 
