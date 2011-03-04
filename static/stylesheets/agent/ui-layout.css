@@ -25,6 +25,14 @@
 	overflow: hidden;
 }
 
+.ui-layout-toggler-west-closed {
+	background: #fff url("../../images/toggle-rt.gif") no-repeat center left;
+}
+
+.ui-layout-toggler-west-open:hover {
+	background: #fff url("../../images/toggle-lt.gif") no-repeat center left;
+}
+
 #pane_nav-resizer {
 	width: 1px;
 	background-color: #BBBBBB;

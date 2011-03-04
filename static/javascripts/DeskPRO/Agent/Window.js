@@ -762,7 +762,7 @@ DeskPRO.Agent.Window = new Class({
 		var menuOpener = new DeskPRO.Agent.WindowElement.MainMenuOpener();
 
 		// Settings is a window
-		$('#window_head_top .settings-link').click(function() {
+		$('#user_settings_link').click(function() {
 
 			if (screen.width > 1000) var width = 1000;
 			else if (screen.width > 800) var width = 800;

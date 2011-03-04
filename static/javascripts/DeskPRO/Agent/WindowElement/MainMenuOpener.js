@@ -1,12 +1,34 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement');
 
 DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
-	initialize: function() {
+	Implements: [Options],
+	options: {
+		menuSelectors: []
+	},
+
+	allMenus: null,
+
+	initialize: function(options) {
 
 		var self = this;
 
+		this.options.menuSelectors.push('#header .nav > .wrapper-top-bar > ul > li');
+		this.options.menuSelectors.push('#header .box-header.notifications');
+		this.options.menuSelectors.push('#header .box-header.current-user');
+		this.options.menuSelectors.push('#header .box-header.actions > .wrapper-top-bar > ul > li.with-menu');
+		this.allMenus = $();
+
+		for (var i = 0; i < this.options.menuSelectors.length; i++) {
+			var a = this.options.menuSelectors[i];
+			if (typeOf(a) == 'string') {
+				a = $(a);
+			}
+
+			this.allMenus = this.allMenus.add(a);
+		}
+
 		// Click opens the submenu
-		$('#header .nav > .wrapper-top-bar > ul > li').each(function() {
+		this.allMenus.each(function() {
 			var li = $(this);
 			var class = self.getMenuHandlerClass(li);
 			if (class) {
@@ -37,13 +59,13 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
 		if (event && event._noCloseMenu) return;
 
 		// Fire close events on open menu
-		var currentOpen = $('#header .nav > .wrapper-top-bar > ul > li').removeClass('on');
+		var currentOpen = this.allMenus.filter('.on:first').removeClass('on');
 		if (currentOpen.length && currentOpen.data('menuHandler')) {
 			currentOpen.data('menuHandler').fireEvent('menuClose');
 		}
 
-		$('#header .nav > .wrapper-top-bar > ul > li').removeClass('on off');
-		$('#header .nav > .wrapper-top-bar > ul > li .wrap-dropdown').hide();
+		this.allMenus.removeClass('on off');
+		$('.wrap-dropdown', this.allMenus).hide();
 	},
 
 	openMenu: function(li, event) {
@@ -59,7 +81,8 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
 		if (doopen) {
 			$('.wrap-dropdown', li).show();
 			li.addClass('on');
-			$('#header .nav > .wrapper-top-bar > ul > li:not(.on)').addClass('off');
+			var ul = li.parent();
+			$('li:not(.on)', ul).addClass('off');
 
 			if (li.data('menuHandler')) {
 				li.data('menuHandler').fireEvent('menuOpen');

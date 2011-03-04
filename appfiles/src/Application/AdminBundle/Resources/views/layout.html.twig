@@ -160,7 +160,7 @@
 			{# search end #}
 
 			{# notifications start #}
-			<div class="left box-header  notifications">
+			<div class="left box-header notifications">
 				<ul class="noti-menu">
 					<li><span class="icn-bar tickets"></span><div class="counter"><span class="counter">12</span></div></li>
 					<li><span class="icn-bar chat"></span><div class="counter"><span class="counter">2</span></div></li>
@@ -199,7 +199,7 @@
 					<ul>
 						<li class="ticket-noti"><a href="">Settings</a></li>
 						<li class="ticket-noti"><a href="">Set status: away</a></li>
-						<li class="ticket-noti"><a href="">Log-out</a></li>
+						<li class="ticket-noti"><a href="{{ path('user_logout') }}">Log Out</a></li>
 					</ul>
 				</div>
 			</div>
@@ -209,7 +209,7 @@
 				<div class="wrapper-top-bar">
 					<ul class="act-list">
 						<li class="help"><a href="">Help</a></li>
-						<li class="multi"><a href="">Multilingual</a>
+						<li class="multi with-menu"><a href="">Multilingual</a>
 
 							<div class="wrap-dropdown lang-drop">
 								<ul>
@@ -220,7 +220,7 @@
 							</div>
 
 						</li>
-						<li class="keyboard"><a href="">Keyboard</a>
+						<li class="keyboard with-menu"><a href="">Keyboard</a>
 
 							<div class="wrap-dropdown key-drop">
 								<div class="block-shorts">
