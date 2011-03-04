@@ -5,63 +5,8 @@
 	<meta name="robots" content="NOINDEX" />
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
 	<title>DeskPRO</title>
-
-	<style type="text/css" media="screen">
-	#window_loading_overlay {
-		position:absolute;
-		top: 0;
-		right: 0;
-		bottom: 0;
-		left: 0;
-		background-color: #165887;
-		z-index: 10000000;
-		text-align: center;
-	}
-
-	#window_loading_overlay .box {
-		width: 400px;
-		text-align: left;
-		margin: 150px auto 0 auto;
-
-		background-color: #fff;
-		padding: 30px;
-
-		-moz-border-radius: 20px;
-		border-radius: 20px;
-
-		-webkit-box-shadow: 5px 5px 5px #000000;
-		-moz-box-shadow: 5px 5px 5px #000000;
-		box-shadow: 5px 5px 5px #000000;
-
-		text-align: center;
-	}
-
-	#window_loading_overlay .box h1 {
-		font-family: Arial, Tahoma, Helvetica, sans-serif;
-		font-size: 14pt;
-
-		text-shadow: 1px 1px 2px #B2BBC2;
-		filter: dropshadow(color=#B2BBC2, offx=1, offy=1);
-	}
-
-	#window_loading_overlay .box p {
-		background: transparent url({{ asset('images/loading-big-circle.gif') }}) no-repeat top center;
-		margin-top: 20px;
-		padding-top: 52px;
-
-		text-shadow: 0px 1px 1px #B2BBC2;
-		filter: dropshadow(color=#B2BBC2, offx=1, offy=1);
-	}
-	</style>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}">
-
-<div id="window_loading_overlay">
-	<div class="box">
-		<h1>Loading Interface</h1>
-		<p>Please wait while the interface is loaded</p>
-	</div>
-</div>
 
 {% include 'AgentBundle:Main:layout-wrappers.html.twig' %}
 
@@ -69,7 +14,7 @@
 	<div id="header-top">
 		<div class="wrapper">
 			<div class="left box-header">
-				<a href="index.html#" title="" class="logo">DeskPRO</a>
+				<a href="index.html#" class="logo">DeskPRO</a>
 			</div>
 
 			{# search start #}
@@ -77,9 +22,9 @@
 				<div class="type-select all">
 					<span class="icn-dropdown floating"></span>
 					<ul class="dropdown">
-						<li class="search-all"><a href="" title="">Search All</a></li>
-						<li class="search-tickets"><a href="" title="">Tickets</a></li>
-						<li class="search-users"><a href="" title="">Users</a></li>
+						<li class="search-all"><a href="">Search All</a></li>
+						<li class="search-tickets"><a href="">Tickets</a></li>
+						<li class="search-users"><a href="">Users</a></li>
 					</ul>
 				</div>
 				<form id="search-form"action="#" method="post">
@@ -88,7 +33,7 @@
 
 				<div class="wrap-dropdown search-drop">
 					<div class="top-results">
-						<a href="#" title="">Show All Results</a>
+						<a href="#">Show All Results</a>
 					</div>
 					<div class="wrap-results">
 
@@ -98,10 +43,10 @@
 							</div>
 							<div class="right results-list">
 								<ul>
-									<li><a href="" title="">Some Ticket</a></li>
-									<li><a href="" title="">Some Ticket</a></li>
-									<li><a href="" title="">Some Ticket</a></li>
-									<li><a href="" title="">View all Tickets</a></li>
+									<li><a href="">Some Ticket</a></li>
+									<li><a href="">Some Ticket</a></li>
+									<li><a href="">Some Ticket</a></li>
+									<li><a href="">View all Tickets</a></li>
 								</ul>
 							</div>
 						</div>
@@ -112,10 +57,10 @@
 							</div>
 							<div class="right results-list">
 								<ul>
-									<li><a href="" title="">Some People</a></li>
-									<li><a href="" title="">Some People</a></li>
-									<li><a href="" title="">Some People</a></li>
-									<li><a href="" title="">View all People</a></li>
+									<li><a href="">Some People</a></li>
+									<li><a href="">Some People</a></li>
+									<li><a href="">Some People</a></li>
+									<li><a href="">View all People</a></li>
 								</ul>
 							</div>
 						</div>
@@ -126,10 +71,10 @@
 							</div>
 							<div class="right results-list">
 								<ul>
-									<li><a href="" title="">Some Organizations</a></li>
-									<li><a href="" title="">Some Organizations</a></li>
-									<li><a href="" title="">Some Organizations</a></li>
-									<li><a href="" title="">View all Organizations</a></li>
+									<li><a href="">Some Organizations</a></li>
+									<li><a href="">Some Organizations</a></li>
+									<li><a href="">Some Organizations</a></li>
+									<li><a href="">View all Organizations</a></li>
 								</ul>
 							</div>
 						</div>
@@ -157,7 +102,7 @@
 						<li class="ticket-noti"><span>New “How do I buy DeskPRO?” (5 mins ago)</span></li>
 					</ul>
 					<div class="bot-noti">
-						<a href="" title="">400 More Results</a>
+						<a href="">400 More Results</a>
 					</div>
 				</div>
 			</div>
@@ -177,9 +122,9 @@
 
 				<div class="wrap-dropdown user-drop">
 					<ul>
-						<li class="ticket-noti"><a href="" title="">Settings</a></li>
-						<li class="ticket-noti"><a href="" title="">Set status: away</a></li>
-						<li class="ticket-noti"><a href="" title="">Log-out</a></li>
+						<li class="ticket-noti"><a href="">Settings</a></li>
+						<li class="ticket-noti"><a href="">Set status: away</a></li>
+						<li class="ticket-noti"><a href="">Log-out</a></li>
 					</ul>
 				</div>
 			</div>
@@ -188,19 +133,19 @@
 			<div class="right box-header actions">
 				<div class="wrapper-top-bar">
 					<ul class="act-list">
-						<li class="help"><a href="" title="">Help</a></li>
-						<li class="multi"><a href="" title="">Multilingual</a>
+						<li class="help"><a href="">Help</a></li>
+						<li class="multi"><a href="">Multilingual</a>
 
 							<div class="wrap-dropdown lang-drop">
 								<ul>
-									<li class="lang-en"><a href="" title="">English</a></li>
-									<li class="lang-es"><a href="" title="">Español</a></li>
-									<li class="lang-pr"><a href="" title="">Portugues</a></li>
+									<li class="lang-en"><a href="">English</a></li>
+									<li class="lang-es"><a href="">Español</a></li>
+									<li class="lang-pr"><a href="">Portugues</a></li>
 								</ul>
 							</div>
 
 						</li>
-						<li class="keyboard"><a href="" title="">Keyboard</a>
+						<li class="keyboard"><a href="">Keyboard</a>
 
 							<div class="wrap-dropdown key-drop">
 								<div class="block-shorts">
@@ -257,8 +202,8 @@
 							</div>
 
 						</li>
-						<li class="network active"><a href="" title="">Network</a></li>
-						<li class="sound"><a href="" title="">Sound</a></li>
+						<li class="network active"><a href="">Network</a></li>
+						<li class="sound"><a href="">Sound</a></li>
 
 					</ul>
 				</div>
@@ -268,9 +213,9 @@
 			<div class="right box-header admin-actions">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="admin"><a href="" title="">Admin</a></li>
-						<li class="billing"><a href="" title="">Billing</a></li>
-						<li class="reports"><a href="" title="">Reports</a></li>
+						<li class="admin"><a href="{{ path('admin') }}">Admin</a></li>
+						<li class="billing"><a href="">Billing</a></li>
+						<li class="reports"><a href="">Reports</a></li>
 					</ul>
 				</div>
 			</div>
@@ -296,66 +241,67 @@
 						</li>
 						<li class="chats-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Chats</a>
+							<a href="index.html">Chats</a>
 						</li>
 						<li class="twitter-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Twitter</a></li>
-						<li class="facebook-nav">
+							<a href="index.html">Twitter</a></li>
+
+						{#<li class="facebook-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Facebook</a>
-						</li>
+							<a href="index.html">Facebook</a>
+						</li>#}
 						<li class="calls-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Calls</a>
+							<a href="index.html">Calls</a>
 						</li>
 						<li class="users-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}" title="">Users</a>
+							<a data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">Users</a>
 						</li>
 						<li class="deals-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Deals</a>
+							<a href="index.html">Deals</a>
 						</li>
 						<li class="calendar-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Calendar</a>
+							<a href="index.html">Calendar</a>
 						</li>
 						<li class="tasks-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Tasks</a>
+							<a href="index.html">Tasks</a>
 						</li>
 						<li class="publish-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Publish</a>
+							<a href="index.html">Publish</a>
 							{# publish menu start #}
 							<div class="wrap-dropdown n-drop global publish-drop">
 								<ol>
-									<li class="link-know"><a href="" title="">Knowledgebase</a></li>
-									<li class="link-files"><a href="" title="">Files</a></li>
-									<li class="link-trouble"><a href="" title="">Troubleshooters</a></li>
+									<li class="link-know"><a href="">Knowledgebase</a></li>
+									<li class="link-files"><a href="">Files</a></li>
+									<li class="link-trouble"><a href="">Troubleshooters</a></li>
 								</ol>
 							</div>
 							{# publish menu end #}
 						</li>
 						<li class="ideas-nav">
 							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html" title="">Ideas</a>
+							<a href="index.html">Ideas</a>
 							{# ideas menu start #}
 							<div class="wrap-dropdown n-drop global ideas-drop">
 								<ol>
 									<li class="link-know">
-										<a href="" title="">Knowledgebase</a>
+										<a href="">Knowledgebase</a>
 										<div>Create and edit articles</div>
 										<br class="clear" />
 									</li>
 									<li class="link-files">
-										<a href="" title="">Files</a>
+										<a href="">Files</a>
 										<div>Upload new files</div>
 										<br class="clear" />
 									</li>
 									<li class="link-trouble">
-										<a href="" title="">Troubleshooters</a>
+										<a href="">Troubleshooters</a>
 										<div>Create step by step guides</div>
 										<br class="clear" />
 									</li>
@@ -404,8 +350,7 @@
 	var DESKPRO_PROXY_KEY = '{{ proxy_key }}';
 
 	$(document).ready(function() {
-		// Remove loading overlay
-		$('#window_loading_overlay').remove();
+		$('pane_shell').css('display', '');
 
 		window.DeskPRO_Window = new DeskPRO.Agent.Window({
 			messageChanneler: {
