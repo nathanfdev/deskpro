@@ -62,26 +62,58 @@ class PersonPref extends EntityRepository
 	/**
 	 * Get the value of a specific setting.
 	 *
-	 * @param string $pref_name
+	 * @param string|array $pref_name A pref name or array of names
 	 * @param int $person_id
 	 * @return mixed
 	 */
 	public function getPrefForPersonId($pref_name, $person_id)
 	{
-		$pref = $this->getEntityManager()->getConnection()->fetchAssoc("
-			SELECT value_str, value_array
-			FROM people_prefs
-			WHERE person_id = ? AND name = ?
-		", array($person_id, $pref_name));
+		if (is_array($pref_name)) {
+			$is_single = false;
+			$args = array($person_id);
+			$args = array_merge($args, $pref_name);
 
-		if (!$pref) {
-			return null;
+			$in_str = implode(',', array_fill(0, count($pref_name), '?'));
+
+			$prefs = App::getDb()->fetchAllKeyed("
+				SELECT name, value_str, value_array
+				FROM people_prefs
+				WHERE person_id = ? AND name IN ($in_str)
+			", $args, 'name');
+
+			if (!$prefs) {
+				return array();
+			}
+		} else {
+			$is_single = true;
+			$pref = $this->getEntityManager()->getConnection()->fetchAssoc("
+				SELECT value_str, value_array
+				FROM people_prefs
+				WHERE person_id = ? AND name = ?
+			", array($person_id, $pref_name));
+
+			if (!$pref) {
+				return null;
+			}
+
+			$prefs = array($pref_name => $pref);
 		}
 
-		if ($pref['value_array']) {
-			$pref['value_array'] = @unserialize($pref['value_array']);
+		$ret = array();
+		foreach ($prefs as $pref_name => $pref) {
+			if ($pref['value_array']) {
+				$pref['value_array'] = @unserialize($pref['value_array']);
+			}
+
+			$pref = is_array($pref['value_array']) ? $pref['value_array'] : $pref['value_str'];
+
+			$ret[$pref_name] = $pref;
 		}
 
-		return is_array($pref['value_array']) ? $pref['value_array'] : $pref['value_str'];
+		if ($is_single) {
+			return array_pop($ret);
+		} else {
+			return $ret;
+		}
 	}
 }

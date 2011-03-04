@@ -1,16 +1,18 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement.MainMenu');
 
 DeskPRO.Agent.WindowElement.MainMenu.Abstract = new Class({
-	Implements: [Events],
+	Implements: [Events, Options],
 
 	buttonClass: null, // children enter the classname of their button
 	buttonEl: null,
 	badgeEl: null,
 	otherButtonEls: null,
 	menuEl: null,
+	options: {},
 
-	initialize: function(buttonEl) {
+	initialize: function(buttonEl, options) {
 		this.buttonEl = buttonEl;
+		if (options) this.setOptions(options);
 
 		this.badgeEl = $('span.nav-counter:first', this.buttonEl);
 		this.menuEl = $('div.wrap-dropdown:first', this.buttonEl);
@@ -56,6 +58,8 @@ DeskPRO.Agent.WindowElement.MainMenu.Abstract = new Class({
 	},
 
 	closeMenu: function() {
-		DeskPRO_Window._closeWindowMenus();
+		if (this.options.mainMenuOpener) {
+			this.options.mainMenuOpener.closeMenus();
+		}
 	}
 });

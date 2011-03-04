@@ -1,6 +1,7 @@
-{% for color in ['blue','green','orange','pink','purple','red','yellow'] %}
+{% import 'AgentBundle:Common:macro-flagname.html.twig'  as flagnamer %}
+{% for color in flags %}
 	<li class="flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
 		<span id="flag_{{color}}_count" class="list-counter">-</span>
-		<a>{{ phrase('agent.flag_' ~ color) }}</a>
+		<a>{{ flagnamer.flag_name(color, person) }}</a>
 	</li>
 {% endfor %}

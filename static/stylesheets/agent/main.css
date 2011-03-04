@@ -843,6 +843,22 @@ background-color: #edeff3;
 	width: 600px;
 }
 
+#header .tickets-drop .flag-title #flagged_edit_btn {
+	display: none;
+	float: right;
+	padding: 3px 6px 0 0;
+}
+
+#header .tickets-drop .flag-title #flagged_save_btn {
+	display: none;
+	float: right;
+	padding: 3px 6px 0 0;
+}
+
+#header .tickets-drop .inner-container:hover .flag-title #flagged_edit_btn {
+	display: block;
+}
+
 #header .top-tickets-info {
 	background: #f3f4f5;
 	border-bottom: 1px solid #e7e9ef;
@@ -867,6 +883,7 @@ background-color: #edeff3;
 	float: left;
 	color: #4D5054;
 	font-weight: bold;
+	cursor: pointer;
 }
 
 #header .top-tickets-info ol li:hover {

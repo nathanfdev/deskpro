@@ -101,7 +101,6 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 		var self = this;
 		$('ol#filters_list').sortable({
 			'axis': 'y',
-			'containment': this.wrapper,
 			'distance': 8,
 			'deactivate': function() {
 				self.cancelClickActivateFilter = true;
@@ -159,6 +158,12 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	// Flags functionality
 	//#########################################################################
 
+	/**
+	 * When true, clicking on a route is cancelled because
+	 * it was fired by a drag+drop, not an actual click.
+	 */
+	cancelClickActivateFlag: false,
+
 	_initFlagged: function() {
 
 		DeskPRO_Window.getPoller().addData(
@@ -169,6 +174,41 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.counts', this.updateFlagCounts.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.flag-changed', this.changeFlagCountsForSwitch.bind(this));
+
+		// Drag+drop to reorder
+		var self = this;
+		$('ol#flagged_list').sortable({
+			'axis': 'y',
+			'distance': 8,
+			'deactivate': function() {
+				self.cancelClickActivateFlag = true;
+			},
+			'update': function() {
+				self.saveFlagOrder();
+			}
+		});
+
+		// Editable
+		$('#flagged_edit_btn').click(this.startFlagEdit.bind(this));
+		$('#flagged_save_btn').click(this.saveFlagEdit.bind(this));
+	},
+
+	saveFlagOrder: function() {
+		var data = [];
+
+		$('ol#flagged_list > li').each(function() {
+			var flag = $(this).data('flag');
+			if (flag) {
+				data.push({ name: 'prefs[agent.ui.ticket-flag-order][]', value: flag });
+			}
+		});
+
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'agent/misc/ajax-save-prefs',
+			data: data
+		});
 	},
 
 	updateFlagCounts: function(counts) {
@@ -199,6 +239,53 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 		this.updateFlagCountFor(info.old_flag, old_flag_count-1);
 		this.updateFlagCountFor(info.new_flag, new_flag_count+1);
+	},
+
+	startFlagEdit: function() {
+		$('#flagged_list > li').each(function() {
+			var li = $(this);
+			li.children().hide();
+
+			var name = $('> a', li).text().trim();
+			var flag = li.data('flag');
+
+			var input = $('<input type="input" name="'+flag+'" />');
+			input.val(name);
+			input.click(function(ev) { ev.stopPropagation(); });
+
+			li.append(input);
+		});
+
+		$('#flagged_edit_btn').hide();
+		$('#flagged_save_btn').show();
+	},
+
+	saveFlagEdit: function() {
+		var data = [];
+
+		$('#flagged_list > li').each(function() {
+			var li = $(this);
+			var input = $('> input', li);
+			if (!input.val().trim().length) {
+				input.val(input.attr('name'));
+			}
+
+			$('> a', li).text(input.val());
+			data.push({ name: 'prefs[agent.ui.flag.'+input.attr('name')+']', value: input.val()});
+
+			input.remove();
+			li.children().show();
+		});
+
+		$('#flagged_edit_btn').css({ 'display': ''});
+		$('#flagged_save_btn').hide();
+
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'agent/misc/ajax-save-prefs',
+			data: data
+		});
 	},
 
 	//#########################################################################

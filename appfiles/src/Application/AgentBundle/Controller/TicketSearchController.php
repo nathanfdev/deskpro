@@ -75,6 +75,12 @@ class TicketSearchController extends AbstractController
 		return $this->_getResponseForTickets('queue', $queue['id'], $results_helper, $vars);
 	}
 
+	public function runNamedQueueAction($queue_name)
+	{
+		$queue = App::getEntityRepository('DeskPRO:TicketQueue')->findOneBy(array('sys_name' => $queue_name));
+		return $this->runQueueAction($queue['id']);
+	}
+
 	protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())
 	{
 		$is_partial = false;
@@ -471,8 +477,29 @@ class TicketSearchController extends AbstractController
 
 	public function flaggedPaneAction()
 	{
-		return $this->render('AgentBundle:TicketSearch:pane-flagged.html.twig', array(
+		$flags = array('blue','green','orange','pink','purple','red','yellow');
+		$flags = array_combine(array_values($flags), $flags);
 
+		$order = $this->person->getPref('agent.ui.ticket-flag-order');
+		if ($order) {
+			$flags_unordered = $flags;
+			$flags = array();
+
+			foreach ($order as $id) {
+				if (isset($flags_unordered[$id])) {
+					$flags[] = $flags_unordered[$id];
+					unset($flags_unordered[$id]);
+				}
+			}
+
+			if (count($flags_unordered)) {
+				foreach ($flags_unordered as $id) {
+					$flags[] = $id;
+				}
+			}
+		}
+		return $this->render('AgentBundle:TicketSearch:pane-flagged.html.twig', array(
+			'flags' => $flags
 		));
 	}
 

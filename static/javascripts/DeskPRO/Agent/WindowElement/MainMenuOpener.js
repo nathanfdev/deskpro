@@ -10,7 +10,7 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
 			var li = $(this);
 			var class = self.getMenuHandlerClass(li);
 			if (class) {
-				var handler = new class(li);
+				var handler = new class(li, {'mainMenuOpener': self});
 				li.data('menuHandler', handler);
 			}
 
