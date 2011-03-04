@@ -3,8 +3,6 @@ Orb.createNamespace('DeskPRO.Agent.WindowElement.MainMenu');
 DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	Extends: DeskPRO.Agent.WindowElement.MainMenu.Abstract,
 
-	buttonClass: 'tickets-nav',
-
 	init: function () {
 
 		// Sends ajax to fetch initial data

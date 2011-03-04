@@ -16,6 +16,8 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
 		this.options.menuSelectors.push('#header .box-header.notifications');
 		this.options.menuSelectors.push('#header .box-header.current-user');
 		this.options.menuSelectors.push('#header .box-header.actions > .wrapper-top-bar > ul > li.with-menu');
+		this.options.menuSelectors.push('#window_search_type');
+		this.options.menuSelectors.push('#window_search_form');
 		this.allMenus = $();
 
 		for (var i = 0; i < this.options.menuSelectors.length; i++) {

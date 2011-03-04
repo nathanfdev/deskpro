@@ -19,66 +19,68 @@
 
 			{# search start #}
 			<div class="left box-header select">
-				<div class="type-select all">
+				<div class="type-select all" id="window_search_type" data-search-type="all" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxType">
 					<span class="icn-dropdown floating"></span>
-					<ul class="dropdown">
-						<li class="search-all"><a href="">Search All</a></li>
-						<li class="search-tickets"><a href="">Tickets</a></li>
-						<li class="search-users"><a href="">Users</a></li>
+					<ul class="wrap-dropdown searchtype">
+						<li data-search-type="all" class="search-all"><span>Search All</span></li>
+						<li data-search-type="tickets" class="search-tickets"><span>Tickets</span></li>
+						<li data-search-type="users" class="search-users"><span>Users</span></li>
 					</ul>
 				</div>
-				<form id="search-form"action="#" method="post">
-					<input type="text" name="search" Value="Search">
-				</form>
+				<div id="window_search_form" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults">
+					<form id="search-form" action="#" method="post">
+						<input id="window_search_box" type="text" name="search" Value="Search" />
+					</form>
 
-				<div class="wrap-dropdown search-drop">
-					<div class="top-results">
-						<a href="#">Show All Results</a>
-					</div>
-					<div class="wrap-results">
-
-						<div class="results">
-							<div class="left title-list">
-								<span class="title-list-tickets">52 Tickets</span>
-							</div>
-							<div class="right results-list">
-								<ul>
-									<li><a href="">Some Ticket</a></li>
-									<li><a href="">Some Ticket</a></li>
-									<li><a href="">Some Ticket</a></li>
-									<li><a href="">View all Tickets</a></li>
-								</ul>
-							</div>
+					<div class="wrap-dropdown search-drop">
+						<div class="top-results">
+							<a href="#" title="">Show All Results</a>
 						</div>
+						<div class="wrap-results">
 
-						<div class="results">
-							<div class="left title-list">
-								<span class="title-list-people"> 3 People</span>
+							<div class="results">
+								<div class="left title-list">
+									<span class="title-list-tickets">52 Tickets</span>
+								</div>
+								<div class="right results-list">
+									<ul>
+										<li><a href="">Some Ticket</a></li>
+										<li><a href="">Some Ticket</a></li>
+										<li><a href="">Some Ticket</a></li>
+										<li><a href="">View all Tickets</a></li>
+									</ul>
+								</div>
 							</div>
-							<div class="right results-list">
-								<ul>
-									<li><a href="">Some People</a></li>
-									<li><a href="">Some People</a></li>
-									<li><a href="">Some People</a></li>
-									<li><a href="">View all People</a></li>
-								</ul>
+
+							<div class="results">
+								<div class="left title-list">
+									<span class="title-list-people"> 3 People</span>
+								</div>
+								<div class="right results-list">
+									<ul>
+										<li><a href="">Some People</a></li>
+										<li><a href="">Some People</a></li>
+										<li><a href="">Some People</a></li>
+										<li><a href="">View all People</a></li>
+									</ul>
+								</div>
 							</div>
+
+							<div class="results">
+								<div class="left title-list">
+									<span class="title-list-orga">10 Organizations</span>
+								</div>
+								<div class="right results-list">
+									<ul>
+										<li><a href="">Some Organizations</a></li>
+										<li><a href="">Some Organizations</a></li>
+										<li><a href="">Some Organizations</a></li>
+										<li><a href="">View all Organizations</a></li>
+									</ul>
+								</div>
+							</div>
+
 						</div>
-
-						<div class="results">
-							<div class="left title-list">
-								<span class="title-list-orga">10 Organizations</span>
-							</div>
-							<div class="right results-list">
-								<ul>
-									<li><a href="">Some Organizations</a></li>
-									<li><a href="">Some Organizations</a></li>
-									<li><a href="">Some Organizations</a></li>
-									<li><a href="">View all Organizations</a></li>
-								</ul>
-							</div>
-						</div>
-
 					</div>
 				</div>
 			</div>
