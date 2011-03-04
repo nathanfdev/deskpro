@@ -87,6 +87,10 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
 			$('> li:not(.on)', ul).addClass('off');
 
 			if (li.data('menuHandler')) {
+				if (!li.is('.has-opened')) {
+					li.data('menuHandler').fireEvent('menuFirstOpen');
+					li.addClass('has-opened');
+				}
 				li.data('menuHandler').fireEvent('menuOpen');
 			}
 		}

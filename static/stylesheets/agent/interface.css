@@ -1,10 +1,49 @@
-#scrollbar1 .thumb .end,
-#scrollbar1 .thumb { background-color: #003D5D; }
-#scrollbar1 .scrollbar { position: relative; float: right; width: 15px; }
-#scrollbar1 .track { background-color: #D8EEFD; height: 100%; width:13px; position: relative; padding: 0 1px; }
-#scrollbar1 .thumb { height: 20px; width: 13px; cursor: pointer; overflow: hidden; position: absolute; top: 0; }
-#scrollbar1 .thumb .end { overflow: hidden; height: 5px; width: 13px; }
-#scrollbar1 .disable{ display: none; }
+.with-scrollbar .thumb .end,
+.with-scrollbar .thumb { background-color: #003D5D; }
+.with-scrollbar .viewport { height: 200px; overflow: hidden; position: relative; }
+.with-scrollbar .overview { position: absolute; left: 0; top: 0; right: 0; }
+.with-scrollbar .scrollbar { position: relative; float: right; width: 6px; }
+.with-scrollbar .track {
+	background-color: #BEC4CF; height: 100%; width:6px; position: relative; padding: 0;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	background: #BEC4CF; /* old browsers */
+	background: -moz-linear-gradient(left, #BEC4CF 21%, #E5E5E5 50%, #BEC4CF 81%); /* firefox */
+	background: -webkit-gradient(linear, left top, right top, color-stop(21%,#BEC4CF), color-stop(50%,#E5E5E5), color-stop(81%,#BEC4CF)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#BEC4CF', endColorstr='#BEC4CF',GradientType=1 ); /* ie */
+}
+.with-scrollbar .thumb {
+	height: 20px; width: 6px; cursor: pointer; overflow: hidden; position: absolute; top: 0;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
+	background: #606c88; /* old browsers */
+	background: -moz-linear-gradient(left, #606c88 0%, #3f4c6b 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#606c88), color-stop(100%,#3f4c6b)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', endColorstr='#3f4c6b',GradientType=1 ); /* ie */
+}
+.with-scrollbar .thumb .end {
+	display:none;
+}
+.with-scrollbar .disable{ display: none; }
+
+.with-scrollbar.scrollbar-disabled .viewport {
+	position: static;
+}
+
+.with-scrollbar.scrollbar-disabled .scrollbar {
+	display: none;
+}
+
+.inner-container-content.with-scrollbar {
+	position: relative;
+}
+.inner-container-content.with-scrollbar .viewport {
+	margin-right: 9px;
+}
+
+.inner-container-content.scrollbar-disabled .viewport {
+	margin-right: 0;
+}
 
 #pane_shell {
 	overflow: hidden;

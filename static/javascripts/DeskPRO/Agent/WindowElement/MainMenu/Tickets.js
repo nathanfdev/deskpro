@@ -15,6 +15,9 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 				evData.cancelClose = true;
 			}
 		});
+
+		this.addEvent('menuFirstOpen', this.resetFilterScroller.bind(this));
+		this.addEvent('menuOpen', this.resetGroupScroller.bind(this));
 	},
 
 	_initBeforeData: function() {
@@ -32,6 +35,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 			success: function(html) {
 				$('ol#filters_list').html(html);
 				this._initerCount--;
+				this.resetFilterScroller();
 				this._initAfterInitialData();
 			}
 		});
@@ -113,6 +117,23 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 				self.saveFilterOrder();
 			}
 		});
+	},
+
+	resetFilterScroller: function() {
+		var wrap = $('#filters_list_wrap');
+
+		var viewport = $('#filters_list_wrap > .viewport');
+		var list = $('#filters_list');
+
+		if (list.outerHeight() < 200) {
+			wrap.addClass('scrollbar-disabled');
+			viewport.height(list.outerHeight() + 12);
+		} else {
+			wrap.removeClass('scrollbar-disabled');
+			viewport.height(200);
+		}
+
+		wrap.tinyscrollbar();
 	},
 
 	saveFilterOrder: function() {
@@ -301,13 +322,9 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	// Overview functionality
 	//#########################################################################
 
-	overviewScrollbar: null,
 	_initOverview: function() {
 		this._initoverviewGroupingMenu();
 		this.overviewLoadList();
-
-		// Scrollbar
-		//this.overviewScrollbar = $('#overview_list_wrap').tinyscrollbar();
 	},
 
 	overviewGroupMenuEl: null,
@@ -456,7 +473,25 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 		DeskPRO_Window.stopLoadingIndicator();
 
 		var list = $('#overview_list').html(html);
-		//this.overviewScrollbar.update();
+
+		this.resetGroupScroller();
+	},
+
+	resetGroupScroller: function() {
+		var wrap = $('#overview_list_wrap');
+
+		var viewport = $('#overview_list_wrap > .viewport');
+		var list = $('#overview_list');
+
+		if (list.outerHeight() < 200) {
+			wrap.addClass('scrollbar-disabled');
+			viewport.height(list.outerHeight() + 12);
+		} else {
+			wrap.removeClass('scrollbar-disabled');
+			viewport.height(200);
+		}
+
+		wrap.tinyscrollbar();
 	},
 
 	//#########################################################################
@@ -507,15 +542,37 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 			'linear'
 		);
 
+		this.resetLablesIndexScroller();
+		
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
 			url: BASE_URL + 'agent/ticket-search/labels-index-pane',
 			dataType: 'html',
+			context: this,
 			success: function(html) {
 				$('#ticket_labels_index_content').html(html)
+				this.resetLablesIndexScroller();
 			}
 		});
+	},
+
+	resetLablesIndexScroller: function() {
+		var wrap = $('#ticket_labels_index_content_wrap');
+
+		var viewport = $('#ticket_labels_index_content_wrap > .viewport');
+		var list = $('#ticket_labels_index_content');
+
+		var height_thresh = $('#tickets_labels_list_section').height() - 42;
+		viewport.height(height_thresh);
+
+		wrap.tinyscrollbar();
+
+		if ($('> .scrollbar', wrap).is('.disable')) {
+			wrap.addClass('scrollbar-disabled');
+		} else {
+			wrap.removeClass('scrollbar-disabled');
+		}
 	},
 
 	hideLabelsList: function() {
@@ -533,25 +590,25 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 	_cleanupLabelsSlide: function() {
 		this.menuEl.css({
-			'width': 'auto',
-			'height': 'auto',
+			'width': '',
+			'height': '',
 			'overflow': ''
 		});
 
 		$('#tickets_main_section').css({
-			'width': 'auto',
-			'height': 'auto',
+			'width': '',
+			'height': '',
 			'overflow': ''
 		});
 
 		$('#tickets_labels_list_section').css({
-			'width': 'auto',
-			'height': 'auto',
+			'width': '',
+			'height': '',
 			'overflow': ''
 		}).hide();
 
 		$('> div.y-track', this.menuEl).css({
-			'width': 'auto'
+			'width': ''
 		});
 
 		$('#tickets_main_section, #tickets_labels_list_section').css({'float':''});

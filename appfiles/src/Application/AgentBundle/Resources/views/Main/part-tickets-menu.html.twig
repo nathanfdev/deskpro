@@ -26,9 +26,12 @@
 						<div class="inner-container-title filters">
 							<h3>Filters</h3>
 						</div>
-						<div class="inner-container-content">
-							<ol id="filters_list">
-							</ol>
+						<div class="inner-container-content with-scrollbar" id="filters_list_wrap">
+							<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+							<div class="viewport"><div class="overview">
+								<ol id="filters_list">
+								</ol>
+							</div></div>
 						</div>
 					</div>
 
@@ -55,9 +58,11 @@
 							<span class="no-subgroup">(add <span class="grouping-menu-trigger menu">subgroup</span>)</span>
 							<span class="with-subgroup" style="display:none">and <span class="grouping-menu-trigger menu grouping2" data-groupby=""></span></span>
 						</div>
-						<div class="inner-container-content" id="overview_list_wrap" style="max-height: 300px; overflow: auto;">
-							{#<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>#}
-							<ol id="overview_list"></ol>
+						<div class="inner-container-content with-scrollbar" id="overview_list_wrap">
+							<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+							<div class="viewport"><div class="overview">
+								<ol id="overview_list"></ol>
+							</div></div>
 						</div>
 					</div>
 					<ul id="overview_mode_menu" class="mode-menu" style="display:none">
@@ -100,8 +105,11 @@
 					<div id="ticket_labels_index_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
 					<h3>Labels Index</h3>
 				</div>
-				<div class="inner-container-content" id="ticket_labels_index_content">
-					Loading...
+				<div class="inner-container-content with-scrollbar" id="ticket_labels_index_content_wrap">
+					<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+					<div class="viewport"><div class="overview">
+						<div id="ticket_labels_index_content">Loading...</div>
+					</div></div>
 				</div>
 			</div>
 		</div>
