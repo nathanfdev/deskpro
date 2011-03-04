@@ -30,7 +30,7 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
 		}
 
 		// Click opens the submenu
-		this.allMenus.each(function() {
+		this.allMenus.filter(':not(.no-menu)').each(function() {
 			var li = $(this);
 			var class = self.getMenuHandlerClass(li);
 			if (class) {
