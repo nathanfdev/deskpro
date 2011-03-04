@@ -139,7 +139,7 @@ class TicketSearch extends SearcherAbstract
 				// perms only matter if person has permissions applied at all
 				if ($agent->getDisallowedDepartments()) {
 
-					$ticket_parts['joins'] = array('ticket_participants_perm', "LEFT JOIN ticket_participants AS part_check ON (part_check.ticket_id = tickets.id)");
+					$ticket_parts['joins'] = array('tickets_participants_perm', "LEFT JOIN tickets_participants AS part_check ON (part_check.ticket_id = tickets.id)");
 
 					$where_perm[] = "tickets.agent_id = {$agent['id']}";
 					if ($agent->getAgentTeamIds()) {

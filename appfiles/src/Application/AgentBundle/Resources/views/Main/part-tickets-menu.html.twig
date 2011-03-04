@@ -43,10 +43,10 @@
 
 				<div class="inner-container">
 					<div class="inner-container-title open-tickets">
-						<h3>Open Tickets</h3>
+						<h3>Grouped Tickets</h3>
 					</div>
 					<div class="inner-container-subtitle open-tickets" id="grouping_options">
-						<span class="mode-menu-trigger mode menu" data-mode="your">Your tickets</span>
+						<span class="mode-menu-trigger mode menu" data-mode="agent">Your tickets</span>
 						grouped by
 						<span class="grouping-menu-trigger menu grouping1" data-groupby="department_id">Department</span>
 						<span class="no-subgroup">(add <span class="grouping-menu-trigger menu">subgroup</span>)</span>
@@ -57,15 +57,20 @@
 					</div>
 				</div>
 				<ul id="overview_mode_menu" class="mode-menu" style="display:none">
-					<li data-mode="your">Your tickets</li>
+					<li data-mode="agent">Your tickets</li>
+					<li data-mode="participant">Participated tickets</li>
+					<li data-mode="agent_team">Your teams tickets</li>
 					<li data-mode="unassigned">Unassigned tickets</li>
-					<li data-mode="others">Others tickets</li>
+					<li data-mode="all">All tickets</li>
 				</ul>
 				<ul id="overview_grouping_menu" class="grouping-menu" style="display:none">
 					<li data-groupby="none">None</li>
 					<li data-groupby="department_id">Department</li>
 					<li data-groupby="category_id">Category</li>
 					<li data-groupby="priority_id">Priority</li>
+					<li data-groupby="product_id">Product</li>
+					<li data-groupby="agent_id">Agent</li>
+					<li data-groupby="workflwo_id">Workflow</li>
 				</ul>
 
 				<div class="inner-container">

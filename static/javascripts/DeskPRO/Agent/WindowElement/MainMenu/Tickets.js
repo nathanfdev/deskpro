@@ -145,7 +145,11 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 			var system_name = DeskPRO_Window.getData('systemQueues')[queue_id];
 			if (system_name) {
-				badgeCount += count;
+
+				if (system_name == 'all') {
+					badgeCount = count;
+				}
+
 				var el = $('#filter_' + system_name + '_count').html(count_str);
 			} else {
 				var el = $('#filter_' + queue_id + '_count').html(count_str);

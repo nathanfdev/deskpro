@@ -18,9 +18,11 @@ use \Orb\Util\Arrays;
 
 class GroupingCounter
 {
-	const MODE_YOUR       = 'your';
-	const MODE_UNASSIGNED = 'unassigned';
-	const MODE_OTHERS     = 'others';
+	const MODE_AGENT         = 'agent';
+	const MODE_AGENT_TEAM    = 'agent_team';
+	const MODE_PARTICIPANT   = 'participant';
+	const MODE_UNASSIGNED    = 'unassigned';
+	const MODE_ALL           = 'all';
 
 	protected $grouping1 = 'department_id';
 	protected $grouping2 = null;
@@ -124,19 +126,45 @@ class GroupingCounter
 		}
 		$select_fields[] = 'COUNT(*) AS total';
 
+		$wheres = array('tickets.status = \'open\'');
 
-		$wheres = array('tickets.status = ?');
-		$params = array('open');
+		// Standard agent perms
+		$agent = App::getEntityRepository('DeskPRO:Person')->find($this->this_person_id);
+		$agent->loadHelper('AgentPermissions');
+		$agent->loadHelper('AgentTeam');
+
+		// perms only matter if person has permissions applied at all
+		if ($agent->getDisallowedDepartments()) {
+
+			$where_perm = array();
+			$where_perm[] = "tickets.agent_id = {$agent['id']}";
+
+			if ($agent->getAgentTeamIds()) {
+				$where_perm[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+			}
+
+			$where_perm[] = "tickets.department_id IN (" . implode(',', $agent->getAllowedDepartments()) . ")";
+			$where_perm[] = "part_check.person_id = {$agent['id']}";
+
+			$where_perm = implode(' OR ', $where_perm);
+
+			$where[] = "($where_perm)";
+		}
 
 		switch ($this->mode) {
-			case self::MODE_YOUR:
-				$wheres[] = 'tickets.agent_id = ?';
-				$params[] = $this->this_person_id;
+			case self::MODE_AGENT:
+				$wheres[] = 'tickets.agent_id = ' . $agent['id'];
 				break;
 
-			case self::MODE_OTHERS:
-				$wheres[] = 'tickets.agent_id != ?';
-				$params[] = $this->this_person_id;
+			case self::MODE_AGENT_TEAM:
+				$wheres[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+				break;
+
+			case self::MODE_PARTICIPANT:
+				$wheres[] = "tickets.agent_team_id IN (" . implode(',', $agent->getAgentTeamIds()) . ")";
+				break;
+
+			case self::MODE_ALL:
 				break;
 
 			case self::MODE_UNASSIGNED:
@@ -145,17 +173,19 @@ class GroupingCounter
 		}
 
 		//SELECT tickets.department_id, tickets.priority_id, COUNT(*) as cnt FROM tickets GROUP BY tickets.department_id, tickets.priority_id WITH ROLLUP
-
+		// TODO this should be using active table
 		$sql = "
 			SELECT " . implode(', ', $select_fields) . "
 			FROM tickets
+			LEFT JOIN tickets_participants ON (tickets_participants.ticket_id = tickets.id)
+			LEFT JOIN tickets_participants AS part_check ON (part_check.ticket_id = tickets.id)
 			WHERE " . implode(' AND ', $wheres) . "
 			$group_by WITH ROLLUP
 		";
 
 		$db = App::getDb();
 
-		$counts = $db->fetchAll($sql, $params);
+		$counts = $db->fetchAll($sql);
 
 		return $counts;
 	}
@@ -259,8 +289,20 @@ class GroupingCounter
 				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames();
 				break;
 
+			case 'product_id':
+				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
+				break;
+
 			case 'category_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getFullCategoryNames();
+				break;
+
+			case 'agent_id':
+				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
+				break;
+
+			case 'workflow_id':
+				$titles = App::getOrm()->getRepository('DeskPRO:Workflow')->getWorkflowNames();
 				break;
 
 			case 'priority_id':
@@ -291,7 +333,7 @@ class GroupingCounter
 	{
 		$this->mode = $mode;
 
-		if ($mode == self::MODE_YOUR OR $mode == self::MODE_OTHERS) {
+		if ($mode == self::MODE_AGENT OR $mode == self::MODE_ALL) {
 			if ($opt === null) $opt = App::getCurrentPerson()->getId();
 			$this->this_person_id = $opt;
 		}
