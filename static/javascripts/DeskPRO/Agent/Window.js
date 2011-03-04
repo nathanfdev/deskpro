@@ -26,10 +26,7 @@ DeskPRO.Agent.Window = new Class({
 	pageTabStrip: null,
 	listTabStrip: null,
 
-	navPanePage: null,
-	paneNavEl: null,
-
-	outerLayout: null,
+	layout: null,
 	innerLayout: null,
 
 	notifier: null,
@@ -228,19 +225,6 @@ DeskPRO.Agent.Window = new Class({
 	//# Routes and page loading
 	//#################################################################
 
-	setNavPanePage: function(page) {
-
-		if (this.navPanePage) {
-			this.navPanePage.fireEvent('deactivate');
-			this.navPanePage.fireEvent('destroy');
-		}
-
-		this.navPanePage = page;
-		this.paneNavEl.empty().html(page.getHtml()).scrollTop(0);
-		page.fireEvent('render', [this.paneNavEl]);
-		page.fireEvent('activate');
-	},
-
 	addListPage: function(page) {
 		this.listTabStrip.addTab(page);
 	},
@@ -369,7 +353,7 @@ DeskPRO.Agent.Window = new Class({
 
 		// Rewrote listpane's to normal pages if listpane
 		// is current collapnsed
-		if (routeData.openInSection == 'listpane' && this.innerLayout.state.west.isClosed) {
+		if (routeData.openInSection == 'listpane' && this.layout.state.west.isClosed) {
 			routeData.openInSection = 'page';
 
 			// If it's an alt page, they're used to link views
@@ -382,9 +366,6 @@ DeskPRO.Agent.Window = new Class({
 
 		switch (routeData.openInSection) {
 			case 'navpane':
-				this.loadNavPane(routeData.url, routeData);
-				break;
-
 			case 'listpane':
 
 				var existTabId = this.listTabStrip.findTabByRouteUrl(routeData.url);
@@ -814,36 +795,6 @@ DeskPRO.Agent.Window = new Class({
 		var winhead = $('#header');
 		var h = winhead.height();
 
-		$('body').layout({
-			north: {
-				paneSelector: '#header',
-				spacing_open: 0,
-				spacing_closed: 0,
-				size: h
-			},
-			center: {
-				paneSelector: '#pane_shell'
-			}
-		});
-
-		this.paneNavEl = $('#pane_nav');
-
-		//------------------------------
-		// Set up the layout
-		//------------------------------
-
-		this.outerLayout = $('#pane_shell').layout({
-			west: {
-				paneSelector: '#pane_nav',
-				size: 165,
-				spacing_open: 1,
-				slidable: false
-			},
-			center: {
-				paneSelector: '#pane_shell_inner'
-			}
-		});
-
 		var show_listpane = this.get('agent.ui.show-listpane');
 		var west_is_closed = false;
 		if (show_listpane == 'never') {
@@ -852,11 +803,20 @@ DeskPRO.Agent.Window = new Class({
 			west_is_closed = true;
 		}
 
-		this.innerLayout = $('#pane_shell_inner').layout({
+		this.layout = this.innerLayout = $('body').layout({
+			applyDefaultStyles: false,
+			north: {
+				paneSelector: '#header',
+				spacing_open: 0,
+				spacing_closed: 0,
+				resizable: false,
+				size: h
+			},
 			west: {
 				paneSelector: '#pane_list_content',
-				size: '45%',
-				spacing_open: 1,
+				size: '50%',
+				spacing_open: 10,
+				spacing_closed: 10,
 				initClosed: west_is_closed,
 				slidable: false,
 				onresize: function() {
@@ -865,6 +825,8 @@ DeskPRO.Agent.Window = new Class({
 			},
 			center: {
 				paneSelector: '#pane_content',
+				spacing_open: 10,
+				spacing_closed: 10,
 				onresize: function() {
 					DeskPRO_Window.getMessageBroker().sendMessage('window.innerLayout.resize');
 				}

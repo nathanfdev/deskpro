@@ -342,7 +342,8 @@
 	var DESKPRO_PROXY_KEY = '{{ proxy_key }}';
 
 	$(document).ready(function() {
-		$('pane_shell').css('display', '');
+		$('pane_list_content').css('display', '');
+		$('pane_content').css('display', '');
 
 		window.DeskPRO_Window = new DeskPRO.Agent.Window({
 			messageChanneler: {
