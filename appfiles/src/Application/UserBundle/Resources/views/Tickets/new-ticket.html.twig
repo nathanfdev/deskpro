@@ -1,0 +1,53 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+<form action="{{ path('user_tickets_new') }}" method="post">
+<input type="hidden" name="process" value="1" />
+
+<h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">
+<input type="text" class="input-title" name="subject" value="{{ticket.subject|default('Enter subject')}}" style="font-size: 100%" />
+</h1>
+
+<table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
+	<td>
+		<small>Department</small><br />
+		<select name="department_id">
+			{% for dep in ticket_options.departments_hierarchy %}
+				<option value="{{dep.id}}">{{dep.title}}</option>
+				{% if dep.children %}
+					{% for subdep in dep.children %}
+						<option value="{{subdep.id}}">-- {{subdep.title}}</option>
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+		</select>
+	</td>
+	<td>
+		<small>{{ phrase('core_tickets.category') }}</small><br />
+		<select name="category_id">
+			{% for cat in ticket_options.ticket_categories_hierarchy %}
+				<option value="{{cat.id}}">{{cat.title}}</option>
+				{% if cat.children %}
+					{% for subcat in cat.children %}
+						<option value="{{subcat.id}}">-- {{subcat.title}}</option>
+					{% endfor %}
+				{% endif %}
+			{% endfor %}
+		</select>
+	</td>
+</tr></table>
+
+<div style="border: 2px solid #ddd; margin-bottom: 15px;">
+	<div style="background-color: #ddd;">
+		<img src="{{ person.getPictureUrl(50) }}" alt="" style="float:left; margin-right: 6px; "/>
+		{{ person.display_name }}
+		<br style="clear:left" />
+	</div>
+	<div style="padding: 10px">
+		<textarea name="message">Enter your message</textarea>
+	</div>
+</div>
+
+<input type="submit" value="Submit" />
+
+{% endblock %}

@@ -3,11 +3,93 @@
 namespace Application\UserBundle\Controller;
 
 use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
 class TicketsController extends AbstractController
 {
+	################################################################################
+	# new-ticket
+	################################################################################
+
+	/**
+	 * Create a new ticket
+	 */
+    public function newAction()
+    {
+		$ticket = new Entity\Ticket();
+
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
+
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = array();
+		foreach ($ticket_field_defs as $f_def) {
+			$value = !empty($ticket_data_structured[$f_def['id']]) ? $ticket_data_structured[$f_def['id']] : null;
+
+			$f = $f_def->getHandler()->getFormField($value);
+			$custom_fields_form->add($f);
+
+			$custom_fields[] = array(
+				'field_def' => $f_def,
+				'title' => $f_def['title'],
+				'form' => $f,
+				'rendered' => false
+			);
+		}
+
+		if ($this->in->getBool('process')) {
+			App::getOrm()->beginTransaction();
+
+			$ticket = new Entity\Ticket();
+			$ticket['department_id']  = $this->in->getUint('department_id');
+			$ticket['category_id']    = $this->in->getUint('category_id');
+			$ticket['product_id']     = $this->in->getUint('product_id');
+			$ticket['priority_id']    = $this->in->getUint('priority_id');
+			$ticket['workflow_id']    = $this->in->getUint('workflow_id');
+			$ticket['status']         = 'open';
+			$ticket['person_id']      = $this->person['id'];
+
+			$ticket['subject']      = $this->in->getString('subject');
+			$ticket['creation_system'] = Entity\Ticket::CREATED_WEB_PERSON;
+
+			$message = new Entity\TicketMessage();
+			$message['person'] = $this->person;
+			$message['message'] = $this->in->getString('message');
+			$ticket->addMessage($message);
+
+			// Custom fields
+			/*
+			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+			$ticket_field_datas = array();
+			foreach ($ticket_field_defs as $field_def) {
+				$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm($_POST['custom_fields']));
+			}
+
+			foreach ($ticket_field_datas as $info) {
+				$ticket->setCustomData($info[0], $info[1], $info[2]);
+			}
+
+			 */
+
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
+			App::getOrm()->commit();
+
+			return $this->redirectRoute('user_tickets_view', array('ticket_id' => $ticket['id']));
+		}
+
+		return $this->render('UserBundle:Tickets:new-ticket.html.twig', array(
+			'ticket' => $ticket,
+			'ticket_options' => $ticket_options,
+			'custom_fields' => $custom_fields
+		));
+    }
+
+
+
 	################################################################################
 	# list
 	################################################################################

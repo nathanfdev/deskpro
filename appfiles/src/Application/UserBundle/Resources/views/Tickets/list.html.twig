@@ -1,6 +1,10 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
 
+<div style="text-align:right">
+	<a href="{{ path('user_tickets_new') }}">Create Ticket</a>
+</div>
+
 <div class="table-list-wrap">
 	<h2>{{ phrase('user_tickets.your_tickets') }}</h2>
 	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">

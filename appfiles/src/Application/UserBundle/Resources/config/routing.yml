@@ -37,3 +37,7 @@ user_tickets_view:
   pattern: /tickets/{ticket_id}
   defaults: { _controller: UserBundle:Tickets:view }
   requirements: { ticket_id: "\d+" }
+
+user_tickets_new:
+  pattern: /tickets/new
+  defaults: { _controller: UserBundle:Tickets:new }
