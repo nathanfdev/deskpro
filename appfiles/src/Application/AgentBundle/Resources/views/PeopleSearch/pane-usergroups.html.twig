@@ -1,0 +1,6 @@
+{% for id,name in all_usergroups %}
+	<li class="usergorup-{{id}}" data-usergroup-id="{{id}}" data-route="">
+		<span class="list-counter" id="usergroup_{{id}}_count">0</span>
+		<a>{{name}}</a>
+	</li>
+{% endfor %}
