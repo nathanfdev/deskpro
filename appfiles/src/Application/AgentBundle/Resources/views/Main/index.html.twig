@@ -19,7 +19,7 @@
 
 			{# search start #}
 			<div class="left box-header select">
-				<div class="type-select all" id="window_search_type" data-search-type="all" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxType">
+				<div class="type-select users" id="window_search_type" data-search-type="users" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxType">
 					<span class="icn-dropdown floating"></span>
 					<ul class="wrap-dropdown searchtype">
 						<li data-search-type="all" class="search-all"><span>Search All</span></li>
@@ -29,53 +29,44 @@
 				</div>
 				<div id="window_search_form" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults">
 					<form id="search-form" action="#" method="post">
-						<input id="window_search_box" type="text" name="search" Value="Search" />
+						<input id="window_search_box" type="text" name="search" value="" />
 					</form>
 
 					<div class="wrap-dropdown search-drop">
-						<div class="top-results">
-							<a href="#" title="">Show All Results</a>
+						<div class="top-results" id="window_search_loading" style="display:none">
+							<span>Loading results</span>
 						</div>
+						{#<div class="top-results">
+							<a href="#" title="">Show All Results</a>
+						</div>#}
 						<div class="wrap-results">
 
-							<div class="results">
+							<div class="results" id="window_search_tickets" style="display:none">
 								<div class="left title-list">
-									<span class="title-list-tickets">52 Tickets</span>
+									<span class="title-list-tickets">Tickets</span>
 								</div>
 								<div class="right results-list">
 									<ul>
-										<li><a href="">Some Ticket</a></li>
-										<li><a href="">Some Ticket</a></li>
-										<li><a href="">Some Ticket</a></li>
-										<li><a href="">View all Tickets</a></li>
 									</ul>
 								</div>
 							</div>
 
-							<div class="results">
+							<div class="results" id="window_search_people" style="display:none">
 								<div class="left title-list">
-									<span class="title-list-people"> 3 People</span>
+									<span class="title-list-people">People</span>
 								</div>
 								<div class="right results-list">
 									<ul>
-										<li><a href="">Some People</a></li>
-										<li><a href="">Some People</a></li>
-										<li><a href="">Some People</a></li>
-										<li><a href="">View all People</a></li>
 									</ul>
 								</div>
 							</div>
 
-							<div class="results">
+							<div class="results" id="window_search_organizations" style="display:none">
 								<div class="left title-list">
-									<span class="title-list-orga">10 Organizations</span>
+									<span class="title-list-orga">Organizations</span>
 								</div>
 								<div class="right results-list">
 									<ul>
-										<li><a href="">Some Organizations</a></li>
-										<li><a href="">Some Organizations</a></li>
-										<li><a href="">Some Organizations</a></li>
-										<li><a href="">View all Organizations</a></li>
 									</ul>
 								</div>
 							</div>
@@ -334,6 +325,11 @@
 				lastMessageId: {{last_message_id}}
 			}
 		});
+
+		{% if constant('DP_DEBUG') %}
+			window.DeskPRO_Window.DEBUG = {
+			};
+		{% endif %}
 
 		window.DeskPRO_Window.set('agent.ui.show-listpane', '{{ show_listpane|default('auto') }}');
 

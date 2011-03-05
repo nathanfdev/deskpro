@@ -80,6 +80,10 @@ class PeopleSearchController extends AbstractController
 		//TODO proper sql escape
 		$q = addslashes($q);
 
+		$limit = $this->in->getUint('limit');
+		if (!$limit) $limit = 10;
+		$limit = min($limit, 100);
+
 		$people_list = $this->em->createQuery("
 			SELECT p, p_email
 			FROM DeskPRO:Person p
@@ -92,17 +96,23 @@ class PeopleSearchController extends AbstractController
 				OR p.last_name LIKE '%$q%'
 				OR emails.email LIKE '%$q%'
 				OR org.name LIKE '%$q%'
-			ORDER BY p.id DESC
-		")->getResult();
+			GROUP BY p.id
+			ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
+		")->setMaxResults($limit)->getResult();
 		//")->setParameters(array($q, $q))->getResult();
 
-		if ($this->in->getBool('ajax')) {
-			$ext = 'json.jsonphp';
+		$format = $this->in->getString('format');
+
+		if ($format == 'json' OR (!$format AND $this->in->getBool('ajax'))) {
+			$tpl = "AgentBundle:PeopleSearch:search_results.json.jsonphp";
 		} else {
-			$ext = 'html.twig';
+			$tpl = "AgentBundle:PeopleSearch:search_results.html.twig";
+			if ($format == 'simplelist') {
+				$tpl = "AgentBundle:PeopleSearch:search-results-simplelist.html.twig";
+			}
 		}
 
-		return $this->render("AgentBundle:PeopleSearch:search_results.$ext", array(
+		return $this->render($tpl, array(
 			'people_list' => $people_list
 		));
 	}

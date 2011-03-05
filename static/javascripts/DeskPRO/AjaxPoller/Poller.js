@@ -22,6 +22,8 @@ DeskPRO.AjaxPoller.Poller = new Class({
 		ajaxType: 'POST'
 	},
 
+	disabled: false,
+
 
 
 	/**

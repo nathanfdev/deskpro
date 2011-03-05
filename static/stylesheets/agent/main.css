@@ -258,14 +258,14 @@ Header
 }
 
 #header .results-list {
-	width: 160px;
+	width: 380px;
 	text-align: left;
 	padding-top: 5px;
 	border-left: 1px solid #e5e6e9;
 }
 
 #header .results-list ul li {
-	padding: 0 0 0 8px;
+	padding: 2px 8px 2px 8px;
 }
 
 #header .results-list ul li:hover {
@@ -276,6 +276,12 @@ Header
 	color: #838689;
 	display: block;
 	font-weight: normal;
+}
+
+#header .results-list ul li span {
+	float: right;
+	font-size: 7pt;
+	margin-left: 20px;
 }
 
 #header .results-list ul li:last-child a {
@@ -1357,3 +1363,9 @@ dl#ticket_labels_list dd a{
 	color: #333 !important;
 }
 
+
+
+#window_search_loading span {
+	background: transparent url("../../images/loading-small.gif") no-repeat center left;
+	padding: 4px 0 4px 20px;
+}

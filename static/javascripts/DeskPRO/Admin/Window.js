@@ -11,6 +11,7 @@ Orb.createNamespace('DeskPRO.Admin');
  */
 DeskPRO.Admin.Window = new Class({
 
+	DEBUG: {},
 	Implements: [Events],
 
 	registry: {},

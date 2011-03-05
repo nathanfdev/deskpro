@@ -31,6 +31,13 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 		ini_set('default_charset', 'UTF-8');
 
 		parent::__construct($environment, $debug);
+
+		if ($this->isDebug()) {
+			define('DP_DEBUG', true);
+		} else {
+			define('DP_DEBUG', false);
+		}
+
 		App::setKernel($this);
 	}
 

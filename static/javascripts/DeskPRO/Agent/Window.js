@@ -14,6 +14,7 @@ DeskPRO.Agent.Window = new Class({
 
 	Implements: [Options],
 
+	DBEUG: {},
 	options: {},
 
 	routePrefixes: {},
