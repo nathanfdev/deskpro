@@ -212,4 +212,18 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 	}
+
+
+
+	/**
+	 * @return string
+	 */
+	public function getTriggerType()
+	{
+		if (strpos($this->event_trigger, 'time_') === 0) {
+			return 'escalation';
+		} else {
+			return 'trigger';
+		}
+	}
 }

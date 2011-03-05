@@ -16,6 +16,7 @@ function _page_exec() {
 
 <form action="{{ path('admin_tickettriggers_edit', {'trigger_id': '0'}) }}" class="form" method="post">
 
+{% if trigger_type == 'trigger' %}
 <strong>Action Triggers</strong>
 <ul class="item-list">
 	<li>
@@ -29,7 +30,7 @@ function _page_exec() {
 	</li>
 </ul>
 
-<br />
+{% else %}
 <strong>Action Triggers</strong>
 <ul class="item-list">
 	<li>
@@ -45,6 +46,7 @@ function _page_exec() {
 		Execute trigger after <input type="text" name="trigger[event_trigger_option]" value="" size="10" /> minutes
 	</li>
 </ul>
+{% endif %}
 
 </form>
 

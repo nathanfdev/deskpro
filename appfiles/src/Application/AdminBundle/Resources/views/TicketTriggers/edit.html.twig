@@ -15,7 +15,11 @@ function _page_exec() {
 </script>
 {% endblock %}
 {% block header %}
-	<h1>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</h1>
+	{% if trigger.trigger_type == 'trigger' %}
+		<h1>{% if trigger.id %}Edit Trigger{% else %}New Trigger{% endif %}</h1>
+	{% else %}
+		<h1>{% if trigger.id %}Edit Escalation{% else %}New Escalation{% endif %}</h1>
+	{% endif %}
 {% endblock %}
 {% block content %}
 

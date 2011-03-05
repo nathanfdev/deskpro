@@ -31,11 +31,20 @@ class TicketTriggersController extends AbstractController
 		$all_triggers = App::getOrm()->createQuery("
 			SELECT t
 			FROM DeskPRO:TicketTrigger t
+			WHERE t.event_trigger NOT LIKE '%time_%'
+			ORDER BY t.title ASC
+		")->execute();
+
+		$all_escalations = App::getOrm()->createQuery("
+			SELECT t
+			FROM DeskPRO:TicketTrigger t
+			WHERE t.event_trigger LIKE '%time_%'
 			ORDER BY t.title ASC
 		")->execute();
 
 		return $this->render('AdminBundle:TicketTriggers:list.html.twig', array(
 			'all_triggers' => $all_triggers,
+			'all_escalations' => $all_escalations,
 		));
 	}
 
@@ -43,11 +52,11 @@ class TicketTriggersController extends AbstractController
 	# new-choose-type
 	############################################################################
 
-	public function newChooseTypeAction()
+	public function newChooseTypeAction($trigger_type)
 	{
 		//$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
 		return $this->render('AdminBundle:TicketTriggers:edit-choosetype.html.twig', array(
-
+			'trigger_type' => $trigger_type
 		));
 	}
 

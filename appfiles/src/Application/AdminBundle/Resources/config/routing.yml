@@ -253,12 +253,16 @@ admin_ticketwidgets_edit:
 ################################################################################
 
 admin_tickettriggers:
-  pattern: /tickets/triggers
+  pattern: /tickets/triggers-escalations
   defaults: { _controller: AdminBundle:TicketTriggers:list }
 
 admin_tickettriggers_new_choosetype:
   pattern: /tickets/triggers/new-choose-type
-  defaults: { _controller: AdminBundle:TicketTriggers:newChooseType }
+  defaults: { _controller: AdminBundle:TicketTriggers:newChooseType, trigger_type: "trigger" }
+
+admin_ticketescalations_new_choosetype:
+  pattern: /tickets/escalations/new-choose-type
+  defaults: { _controller: AdminBundle:TicketTriggers:newChooseType, trigger_type: "escalation" }
 
 admin_tickettriggers_edit:
   pattern: /tickets/triggers/{trigger_id}/edit

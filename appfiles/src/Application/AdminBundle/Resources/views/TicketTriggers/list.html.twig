@@ -13,14 +13,30 @@ function _page_exec() {
 {% endblock %}
 {% block content %}
 
-<div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_tickettriggers_new_choosetype') }}">Create New Trigger</a>
+<div class="table-list-wrap">
+	<a class="icon tickets create-link popout-trigger" href="{{ path('admin_tickettriggers_new_choosetype') }}">Create Trigger</a>
+	<h2>Triggers</h2>
+	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+		<tbody id="teams_rows">
+			{% for trigger in all_triggers %}
+				{% include 'AdminBundle:TicketTriggers:list-row.html.twig' %}
+			{% endfor %}
+		</tbody>
+	</table>
 </div>
 
-<ul class="item-list">
-	{% for trigger in all_triggers %}
-		{% include 'AdminBundle:TicketTriggers:list-row.html.twig' %}
-	{% endfor %}
-</ul>
+<br />
+
+<div class="table-list-wrap">
+	<a class="icon tickets create-link popout-trigger" href="{{ path('admin_ticketescalations_new_choosetype') }}">Create Escalation</a>
+	<h2>Escalations</h2>
+	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+		<tbody id="teams_rows">
+			{% for trigger in all_escalations %}
+				{% include 'AdminBundle:TicketTriggers:list-row.html.twig' %}
+			{% endfor %}
+		</tbody>
+	</table>
+</div>
 
 {% endblock %}
