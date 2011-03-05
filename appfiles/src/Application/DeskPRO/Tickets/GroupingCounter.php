@@ -333,10 +333,7 @@ class GroupingCounter
 	{
 		$this->mode = $mode;
 
-		if ($mode == self::MODE_AGENT OR $mode == self::MODE_ALL) {
-			if ($opt === null) $opt = App::getCurrentPerson()->getId();
-			$this->this_person_id = $opt;
-		}
+		$this->this_person_id = $opt;
 	}
 
 
