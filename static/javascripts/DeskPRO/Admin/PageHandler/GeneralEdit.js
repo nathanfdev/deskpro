@@ -5,9 +5,11 @@ DeskPRO.Admin.PageHandler.GeneralEdit = new Class({
 
 	record_id: 0,
 	record_type: '',
-	initialize: function(record_type, record_id) {
+	parent_name: 'DeskPRO_Window',
+	initialize: function(record_type, record_id, parent_name) {
 		this.record_type = record_type,
 		this.record_id = record_id;
+		this.parent_name = parent_naem || 'DeskPRO_Window';
 	},
 
 	initPage: function() {
@@ -21,7 +23,7 @@ DeskPRO.Admin.PageHandler.GeneralEdit = new Class({
 	},
 
 	updateParentListRow: function(row_html) {
-		var parent_win = this.getOpenerDeskPRO();
+		var parent_win = this.getOpenerDeskPRO(this.parent_name);
 		if (!parent_win) return;
 
 		var data = {};

@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use \Application\DeskPRO\App;
+
 /**
  * Ticket categories
  *

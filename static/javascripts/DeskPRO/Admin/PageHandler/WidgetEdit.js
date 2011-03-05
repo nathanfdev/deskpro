@@ -19,14 +19,14 @@ DeskPRO.Admin.PageHandler.WidgetEdit = new Class({
 	},
 
 	tellParentUpdated: function() {
-		var parent_win = this.getOpenerDeskPRO();
+		var parent_win = this.getOpenerDeskPRO('DeskPRO_Page_TicketWidgets');
 		if (!parent_win) return;
 
 		parent_win.getMessageBroker().sendMessage('widget.change', {widget_id: this.widget_id});
 	},
 
 	updateParentListRow: function(row_html) {
-		var parent_win = this.getOpenerDeskPRO();
+		var parent_win = this.getOpenerDeskPRO('DeskPRO_Page_TicketWidgets');
 		if (!parent_win) return;
 
 		var data = {};

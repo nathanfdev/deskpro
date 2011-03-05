@@ -4,12 +4,12 @@ DeskPRO.Admin.PageHandler.GeneralList = new Class({
 	Extends: DeskPRO.Admin.PageHandler.Basic,
 
 	initPage: function() {
-		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('list.change', this.handleListChange.bind(this));
+		this.initPopoutTriggers(this.contextEl);
+		DeskPRO_Window.getMessageBroker().addMessageListener(this.contextEl.attr('id') + '.change', this.handleListChange.bind(this));
 	},
 
 	handleListChange: function(info) {
-		var list = $('ul.item-list:first');
+		var list = $('ul.item-list:first', this.contextEl);
 		var exist = $(info.item_selector, list);
 
 		var row = $(info.row_html);

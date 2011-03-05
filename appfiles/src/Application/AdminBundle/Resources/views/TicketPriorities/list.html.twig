@@ -1,16 +1,15 @@
-{% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'tickets' %}
-{% block sub_section 'priorities' %}
+{% extends 'AdminBundle::layout_subpage.html.twig' %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
-}
+window._page_exec_stack.push(function() {
+	window.DeskPRO_Page_TicketPriorities = new DeskPRO.Admin.PageHandler.GeneralList('#ticket_priorities');
+});
 </script>
 {% endblock %}
+{% block page_id "ticket_priorities" %}
 {% block content %}
 
 <div style="text-align:right; padding-bottom: 10px;">

@@ -1,7 +1,3 @@
-{% if not section %}{% set section %}{% block section %}{% endblock %}{% endset %}{% endif %}
-{% if not sub_section %}{% set sub_section %}{% block sub_section %}{% endblock %}{% endset %}{% endif %}
-{% if not section %}{% set section = 'setup' %}{% endif %}
-{% if not sub_section %}{% set sub_section = 'settings' %}{% endif %}
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
@@ -38,6 +34,7 @@
 	<script type="text/javascript" src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/Orb/Compat.js') }}"></script>
 
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/UI/SimpleTabs.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/UI/Overlay.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/UI/Menu.js') }}"></script>
 
@@ -64,15 +61,28 @@
 		var ASSETS_BASE_URL = '{{ asset('') }}';
 		if (!window.DESKPRO_URL_REGISTRY) window.DESKPRO_URL_REGISTRY = {};
 
+		window._page_exec_stack = [];
 		function _win_exec() {
 			window.DeskPRO_Window = new DeskPRO.Admin.Window();
 
 			if (window._page_exec) {
-				_page_exec();
+				window._page_exec_stack.push(_page_exec);
+			}
+
+			for (var i = 0; i < window._page_exec_stack.length; i++) {
+				window._page_exec_stack[i]();
 			}
 
 			if (window.DeskPRO_Page) {
 				DeskPRO_Page.initPage();
+			}
+
+			// Init all others too
+			var re = /^DeskPRO_Page_/;
+			for (i in window) {
+				if (re.test(i)) {
+					window[i].initPage();
+				}
 			}
 		}
 
@@ -85,7 +95,7 @@
 	{% block html_head %}{% endblock %}
 	{% block page_js_exec %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %}">
+<body id="{% block page_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
 
 <div id="header">
 	<div id="header-top">
@@ -378,11 +388,15 @@
 										<p>Create filters that will appear in agent interface to help your team find tickets faster.</p>
 									</li>
 									<li class="link-fields">
-										<a href="{{ path('admin_departments') }}">Fields</a>
+										<a href="{{ path('admin_customdeftickets') }}">Fields</a>
 										<p>Create custom fields that can be added to tickets, and mapped to specific departments and other criteria.</p>
 									</li>
+									<li class="link-fields">
+										<a href="{{ path('admin_tickets_properties') }}">Properties</a>
+										<p>Manage ticket properties like categories, priorities, workflows and widgets.</p>
+									</li>
 									<li class="link-ticket-triggers">
-										<a href="{{ path('admin_tickettriggers') }}">Business Rules</a>
+										<a href="{{ path('admin_tickettriggers') }}">Triggers and Escalations</a>
 										<p>Define triggers to change or escalate tickets, or send notifications, based on certain criteria</p>
 									</li>
 									<li class="link-ticket-macros">

@@ -5,7 +5,7 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('priority', {{priority.id|default(0)}});
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('priority', {{priority.id|default(0)}}, 'DeskPRO_Page_TicketPriorities');
 
 	{% if row_html %}
 		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
@@ -13,6 +13,7 @@ function _page_exec() {
 }
 </script>
 {% endblock %}
+{% block page_id "ticket_priorities" %}
 {% block header %}
 	<h1>{% if priority.id %}Edit Priority{% else %}New Priority{% endif %}</h1>
 {% endblock %}

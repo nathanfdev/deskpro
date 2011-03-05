@@ -5,7 +5,7 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('workflow', {{workflow.id|default(0)}});
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('workflow', {{workflow.id|default(0)}}, 'DeskPRO_Page_TicketWorkflows');
 
 	{% if row_html %}
 		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
@@ -13,6 +13,7 @@ function _page_exec() {
 }
 </script>
 {% endblock %}
+{% block page_id "ticket_workflows" %}
 {% block header %}
 	<h1>{% if workflow.id %}Edit Workflow{% else %}New Workflow{% endif %}</h1>
 {% endblock %}

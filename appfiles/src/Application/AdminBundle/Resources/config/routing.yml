@@ -6,6 +6,10 @@ admin_test:
   pattern: /test
   defaults: { _controller: AdminBundle:Test:index }
 
+admin_tickets_properties:
+  pattern: /tickets/properties
+  defaults: { _controller: AdminBundle:TicketProperties:list }
+
 ################################################################################
 # Labels
 ################################################################################

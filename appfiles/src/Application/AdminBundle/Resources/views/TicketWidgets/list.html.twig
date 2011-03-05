@@ -1,16 +1,15 @@
-{% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'tickets' %}
-{% block sub_section 'priorities' %}
+{% extends 'AdminBundle::layout_subpage.html.twig' %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
-}
+window._page_exec_stack.push(function() {
+	window.DeskPRO_Page_TicketWidgets = new DeskPRO.Admin.PageHandler.GeneralList('#ticket_widgets');
+});
 </script>
 {% endblock %}
+{% block page_id "ticket_widgets" %}
 {% block content %}
 
 <div style="text-align:right; padding-bottom: 10px;">
@@ -18,7 +17,7 @@ function _page_exec() {
 </div>
 
 <ul class="item-list">
-	{% for priority in all_widgets %}
+	{% for widget in all_widgets %}
 		{% include 'AdminBundle:TicketWidgets:list-row.html.twig' %}
 	{% endfor %}
 </ul>

@@ -1,0 +1,39 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block section 'tickets' %}
+{% block sub_section 'priorities' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketProperties.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketProperties();
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<div id="ticket_properties_tabs" class="tab-box nosel">
+	<ul>
+		<li class="tab-trigger tab-categories on" data-tab-for=".tab-content.tab-categories"><div class="title"><span>Categories</span></div></li>
+		<li class="tab-trigger tab-priorities" data-tab-for=".tab-content.tab-priorities"><div class="title"><span>Priorities</span></div></li>
+		<li class="tab-trigger tab-workflows" data-tab-for=".tab-content.tab-workflows"><div class="title"><span>Workflows</span></div></li>
+		<li class="tab-trigger tab-widgets" data-tab-for=".tab-content.tab-widgets"><div class="title"><span>Widgets</span></div></li>
+	</ul>
+</div>
+<div class="tab-box-content">
+	<div class="tab-content tab-categories on" data-tab-trigger=".tab-trigger.ticket-categories">
+		{{tabs.categories|raw}}
+	</div>
+	<div class="tab-content tab-priorities" data-tab-trigger=".tab-trigger.ticket-priorities">
+		{{tabs.priorities|raw}}
+	</div>
+	<div class="tab-content tab-workflows" data-tab-trigger=".tab-trigger.ticket-workflows">
+		{{tabs.workflows|raw}}
+	</div>
+	<div class="tab-content tab-widgets" data-tab-trigger=".tab-trigger.ticket-widgets">
+		{{tabs.widgets|raw}}
+	</div>
+</div>
+
+{% endblock %}

@@ -79,7 +79,7 @@
 	{% block html_head %}{% endblock %}
 	{% block page_js_exec %}{% endblock %}
 </head>
-<body class="{% block body_class %}{% endblock %} popout">
+<body id="{% block page_id %}{% endblock %}" class="{% block body_class %}{% endblock %} popout">
 <div class="wrap ui-layout-center">
 <div id="header">{% block header %}{% endblock %}</div>
 

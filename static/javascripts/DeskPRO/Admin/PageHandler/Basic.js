@@ -6,6 +6,15 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 
 	meta: {},
 
+	contextEl: null,
+	initialize: function(context) {
+		if (context) {
+			this.contextEl = $(context);
+		} else {
+			this.contextEl = $(body);
+		}
+	},
+
 	initPage: function() {
 
 	},
@@ -16,7 +25,7 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 	 * @param context
 	 */
 	initPopoutTriggers: function(context) {
-		if (!context) context = $(document);
+		if (!context) context = this.contextEl;
 
 		var self = this;
 		$('.popout-trigger', context).click(function(ev) {
@@ -116,12 +125,18 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 	 * Get the parent windows DeskPRO_Window object. Used for when the child
 	 * needs to send a message back to the parent, such as if something needs to be updated.
 	 */
-	getOpenerDeskPRO: function() {
+	getOpenerDeskPRO: function(page_name) {
+
+		// page_name not yet used, but may be useful later
+
+		// name of the deskpro window obj
+		var name = 'DeskPRO_Window';
+
 		var parent_win = null;
-		if (window.opener && window.opener.DeskPRO_Window) {
-			parent_win = window.opener.DeskPRO_Window;
-		} else if (window.parent && window.parent.DeskPRO_Window) {
-			parent_win = window.parent.DeskPRO_Window;
+		if (window.opener && window.opener[name]) {
+			parent_win = window.opener[name];
+		} else if (window.parent && window.parent[name]) {
+			parent_win = window.parent[name];
 		}
 
 		return parent_win;

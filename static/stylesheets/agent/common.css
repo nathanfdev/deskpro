@@ -793,3 +793,93 @@ ul.item-list > li.empty-list {
 ul.item-list > li.sub {
 	padding: 6px 10px 6px 20px;
 }
+
+/**********************************************************
+ List toolbar
+***********************************************************/
+
+.tab-box {
+	background: #292a29 url(../../images/page-tabbar-bg.png) repeat-x top left;
+	border-bottom: #212121;
+	border-top: 1px solid #333;
+	height: 28px;
+	color: #bababa;
+	font-size: 8pt;
+	font-family: Arial, sans-serif;
+	width: 100%;
+	overflow: hidden;
+}
+
+.tab-box ul {
+	height: 28px;
+}
+
+.tab-box ul li {
+	float: left;
+	border-right: 1px solid #323332;
+	color: #fff;
+	overflow: hidden;
+	cursor: pointer;
+	height: 23px;
+	margin-top: 5px;
+	overflow: hidden;
+	max-width: 100px;
+	background-color: #5c5c5c;
+	border: 1px solid #6e6e6e;
+	border-bottom: none;
+	margin-right: 3px;
+	margin-left: 3px;
+
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+.tab-box ul li.icon {
+	max-width: 120px;
+	padding-left: 18px;
+
+	background-repeat: no-repeat;
+	background-position: 6px center;
+}
+
+.tab-box ul li div.title {
+	width: 80px;
+	line-height: 22px;
+	float: left;
+}
+
+.tab-box ul li div.title span {
+	padding-left: 8px;
+	width: 150px;
+	display: block;
+}
+
+.tab-box ul li:first {
+	border-right: none;
+	margin-left: 0;
+	padding-left: 0;
+}
+
+.tab-box ul li.on {
+	background-color: #2a2b2a;
+	border: 1px solid #c5c5c5;
+	border-bottom: none;
+}
+
+.tab-box-content {
+	border: 1px solid #000;
+	padding: 15px;
+}
+
+.tab-box-content > .tab-content {
+	display: none;
+}
+.tab-box-content > .tab-content.on {
+	display: block;
+}
