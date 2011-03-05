@@ -21,7 +21,7 @@ DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults = new Class({
 
 	shouldShowMenu: function() {
 		var check = $('#window_search_form .results, #window_search_loading');
-		if (!check.is(':visible')) {
+		if (!check.is('.is-vis')) {
 			return false;
 		}
 
@@ -36,7 +36,7 @@ DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults = new Class({
 			return;
 		}
 
-		$('#window_search_loading').show();
+		$('#window_search_loading').show().addClass('is-vis');
 		if (!$('#window_search_form .search-drop:first').is(':visible')) {
 			this.options.mainMenuOpener.openMenu($('#window_search_form'));
 		}
@@ -73,7 +73,7 @@ DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults = new Class({
 			data: {term: val, format: 'simplelist', limit: 5},
 			context: this,
 			success: function(data) {
-				$('#window_search_loading').hide();
+				$('#window_search_loading').hide().removeClass('is-vis');
 				this._handleUserResults(data);
 			}
 		});
@@ -89,7 +89,7 @@ DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults = new Class({
 	},
 
 	updateList: function(type, items) {
-		var wrap = $('#window_search_' + type);
+		var wrap = $('#window_search_' + type).addClass('is-vis');
 		var list = $('> .results-list > ul', wrap);
 
 		list.html(items);
@@ -97,7 +97,8 @@ DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults = new Class({
 	},
 
 	clearList: function() {
-		$('#window_search_form .results').hide();
+		$('#window_search_loading').hide().removeClass('is-vis');
+		$('#window_search_form .results').hide().removeClass('is-vis');
 		$('#window_search_form .results-list > ul').html('');
 
 		if (this.queryChanged_timeout) {

@@ -794,6 +794,22 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Get the primary email address ID
+	 *
+	 * @return int
+	 */
+	public function getPrimaryEmailId()
+	{
+		if (!$this->primary_email) {
+			return 0;
+		}
+
+		return $this->primary_email['id'];
+	}
+
+
+
+	/**
 	 * Add an email address
 	 *
 	 * @param PersonEmail $email
