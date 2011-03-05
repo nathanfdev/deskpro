@@ -235,6 +235,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $personscraper_assoc;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:ManyToMany(targetEntity="TwitterAccount", mappedBy="persons")
+	 */
+	protected $twitter_accounts;
+
+	/**
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
@@ -280,6 +286,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $_usergroup_ids = null;
 
 	/**
+	 * An array of usergroupids this user belongs to
+	 *
+	 * @var array
+	 */
+	protected $_twitter_account_ids = null;
+
+	/**
 	 * An array of name=>value for loaded preferences. These are not obejcts.
 	 * @var array
 	 */
@@ -321,6 +334,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->twitter_accounts    = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	public function getOrganizationId()
@@ -661,7 +675,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		// Otherwise we'll try and just fetch simple values
 		// with a quick query
 		} else {
-			$this->_usergroup_ids = $db->fetchAllCol("
+			$this->_usergroup_ids = App::getDb()->fetchAllCol("
 				SELECT usergroup_id
 				FROM user2usergroups
 				WHERE person_id = {$this->id}
@@ -669,6 +683,36 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_usergroup_ids;
+	}
+
+
+
+	/**
+	 * Get an array of twitter account ID's this user belongs to.
+	 *
+	 * @return array
+	 */
+	public function getTwitterAccountIds()
+	{
+		if ($this->_twitter_account_ids !== null) {
+			return $this->_twitter_account_ids;
+		}
+
+		// If we have the usergroups collection, we can just use that
+		if (ORM_Util::isCollectionInitialized($this->twitter_accounts)) {
+			$this->_twitter_account_ids = array();
+			foreach ($this->twitter_accounts as $ta) {
+				$this->_twitter_account_ids[] = $ta->getId();
+			}
+		} else {
+			$this->_twitter_account_ids = App::getDb()->fetchAllCol("
+				SELECT account_id
+				FROM twitter_accounts_person
+				WHERE person_id = {$this->id}
+			");
+		}
+
+		return $this->_twitter_account_ids;
 	}
 
 

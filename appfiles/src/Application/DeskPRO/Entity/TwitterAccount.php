@@ -52,12 +52,22 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:OneToMany(targetEntity="TwitterAccountFollower", mappedBy="account")
 	 */
 	protected $followers;
-	
+
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="TwitterAccountSearch", mappedBy="account")
 	 */
 	protected $searches;
+
+    /**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+     * @orm:ManyToMany(targetEntity="Person", inversedBy="twitter_accounts")
+     * @orm:JoinTable(name="twitter_accounts_person",
+     *   joinColumns={@orm:JoinColumn(name="account_id", referencedColumnName="id")},
+     *   inverseJoinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")}
+     * )
+     */
+	protected $persons;
 
 	/**
 	 * Constructor
@@ -66,8 +76,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->followers = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->following = new \Doctrine\Common\Collections\ArrayCollection();
-
 		$this->searches = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->persons = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -78,7 +88,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->user) {
 			return $this->user->getId();
 		}
-		
+
 		return 0;
 	}
 
