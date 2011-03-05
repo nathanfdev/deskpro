@@ -21,8 +21,8 @@ DeskPRO.Agent.WindowElement.MainMenu.Abstract = new Class({
 		// Capture clicks for on dataRoute's
 		var self = this;
 		this.tabEl.delegate('[data-route]', 'click', function(ev) {
+			//self.closeMenu(); // it already closes due to bubbling up, dont need this
 			DeskPRO_Window.runPageRouteFromElement(this);
-			self.closeMenu();
 		});
 		this.menuEl.delegate('[data-route]', 'click', function(ev) {
 			var evData = {'event': ev, 'cancelClose': false, preventDefault: true };

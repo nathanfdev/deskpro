@@ -949,7 +949,11 @@ in and out, so we dont want actual scrollbars */
 }
 
 #header .top-tickets-info ol li:hover {
-	background: none !important;
+	background: #EBEFF2 !important;
+}
+
+#header .top-tickets-info ol li:hover .ticket-counter {
+	background-color: #C23E3E;
 }
 
 #header .top-tickets-info ol li span.ticket-counter {
@@ -1259,6 +1263,18 @@ padding: 7px 7px 0 7px;
 	-webkit-border-radius: 0 0 3px 3px;
     -moz-border-radius: 0 0 3px 3px;
     border-radius: 0 0 3px 3px;
+}
+
+#header .wrap-dropdown-tabs .new-ticket {
+	padding-left: 26px;
+	background: url("../../images/icn-sprite.png") 4px -752px no-repeat, -webkit-gradient(linear, 0 bottom, 0 top, from(#6ba0ec ), to(#98c2f4));
+	background: url("../../images/icn-sprite.png") 4px -752px no-repeat, -moz-linear-gradient(90deg, #6ba0ec, #98c2f4 );
+}
+
+#header .wrap-dropdown-tabs .search {
+	padding-left: 26px;
+	background: url("../../images/icn-sprite.png") 4px -752px no-repeat, -webkit-gradient(linear, 0 bottom, 0 top, from(#6ba0ec ), to(#98c2f4));
+	background: url("../../images/icn-sprite.png") 4px -752px no-repeat, -moz-linear-gradient(90deg, #6ba0ec, #98c2f4 );
 }
 
 #header .wrap-dropdown.has-tabs {
