@@ -1,0 +1,7 @@
+{% block content %}
+	<ol>
+		<li data-route="">Starred Tweets<span class="status-counter" id="twitter_starred_statuses_count">{{ statuses.starred }}</span></li>
+		<li data-route="">My Tweets<span class="status-counter" id="twitter_my_statuses_count">{{ statuses.my }}</span></li>
+		<li data-route="">Team Tweets<span class="status-counter" id="twitter_team_statuses_count">{{ statuses.team }}</span></li>
+	</ol>
+{% endblock %}

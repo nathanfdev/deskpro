@@ -1,7 +1,55 @@
-{% block meta %}
-<script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.NavPane.Twitter';
-</script>
+{% block content %}
+	<table cellspacing="0" cellpadding="0" width="100%">
+	{% for account in accounts %}
+		{# @TODO: add cycle/modulo for </tr><tr> #}
+		<tr>
+			<td valign="top" width="50%">
+				<div class="inner-container">
+					<div class="inner-container-title labels-index">
+						<h3><a data-route="listpane:{{ path('agent_twitter_statuses', {'account_id': account.id}) }}">@{{ account.user.name }}</a></h3>
+					</div>
+					<div class="inner-container-content with-scrollbar" id="twitter-account-{{ account.id }}">
+						<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+						<div class="viewport"><div class="overview">
+							<ol>
+								<li class="" data-route="">
+									<span class="list-counter" id="twitter_{{ account.id }}_direct_count">0</span>
+									Direct
+								</li>
+								<li class="" data-route="">
+									<span class="list-counter" id="twitter_{{ account.id }}_replies_count">0</span>
+									Replies
+								</li>
+								<li class="" data-route="">
+									<span class="list-counter" id="twitter_{{ account.id }}_mentions_count">0</span>
+									Mentions
+								</li>
+								<li class="" data-route="">
+									<span class="list-counter" id="twitter_{{ account.id }}_retweets_count">0</span>
+									ReTweets
+								</li>
+								<li class="" data-route="">
+									<span class="list-counter" id="twitter_{{ account.id }}_new_followers_count">0</span>
+									New Followers
+								</li>
+								<li class="" data-route="">
+									<span class="list-counter" id="twitter_{{ account.id }}_searches_count">0</span>
+									Searches
+								</li>
+								<li class="" data-route="">
+									<span class="list-counter" id="twitter_{{ account.id }}_followers_count">0</span>
+									Followers
+								</li>
+								<li class="" data-route="">
+									<span class="list-counter" id="twitter_{{ account.id }}_sent_count">0</span>
+									Sent
+								</li>
+							</ol>
+						</div></div>
+					</div>
+				</div>
+			</td>
+		</tr>
+	{% endfor %}
+	</table>
 {% endblock %}
-
-Twitter Pane Accounts

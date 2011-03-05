@@ -371,10 +371,14 @@ agent_ticket_ajax_getmessages:
 # Twitter
 ################################################################################
 
-agent_twitter_index:
-  pattern: /twitter
-  defaults: { _controller: AgentBundle:Twitter:index }
+agent_twitter_statuses:
+  pattern: /twitter/statuses/{account_id}
+  defaults: { _controller: AgentBundle:Twitter:statuses }
 
 agent_twitter_accountspane:
-  pattern: /twitter/accounts-pane
+  pattern: /twitter/pane/accounts
   defaults: { _controller: AgentBundle:Twitter:accountsPane }
+
+agent_twitter_statusespane:
+  pattern: /twitter/pane/statuses
+  defaults: { _controller: AgentBundle:Twitter:statusesPane }

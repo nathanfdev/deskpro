@@ -1,0 +1,120 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Twitter';
+pageMeta.title = '@{{ account.user.name }}';
+</script>
+
+<style type="text/css" media="screen">
+	.twitter-head {
+		background-color: #F0EFE4;
+		border-bottom: 1px solid #A6A594;
+		padding: 4px;
+	}
+
+	.twitter-head .display-options {
+		float: right;
+		font-size: 10px;
+	}
+
+	.twitter-listing > ul > li {
+		margin-bottom: 10px;
+		background-color: #F7F9FA;
+		clear: both;
+	}
+
+	.twitter-listing ul li .head {
+		background-color: #DDE4EB;
+		font-size: 10px;
+		padding: 2px;
+	}
+
+	.twitter-listing ul li .head cite {
+
+	}
+
+	.twitter-listing ul li .head span.response {
+		float: right;
+	}
+
+	.twitter-listing ul li .photo {
+		float: left;
+		width: 50px;
+	}
+
+	.twitter-listing ul li .content {
+		margin-left: 55px;
+	}
+
+	.twitter-listing ul li .content .tweet {
+		background-color: #fff;
+		padding: 8px;
+	}
+
+	.twitter-listing ul li .content .notes {
+		font-size: 10px;
+		padding-left: 20px;
+	}
+
+	.twitter-listing ul li .content .note {
+
+	}
+
+	.twitter-listing ul li .content .note em {
+		color: #838D96;
+		padding-left: 5px;
+	}
+
+	.twitter-listing ul li .content .controls li {
+		float: right;
+		padding-right: 10px;
+		font-size: 10px;
+	}
+</style>
+
+<div class="twitter-head">
+	@{{ account.user.name }} stream
+	<div class="display-options">
+		<div style="float:right">
+			<select>
+				<option name="asc">Oldest First</opion>
+				<option name="desc">Newest First</option>
+			</select>
+		</div>
+		<div style="margin-right:120px">
+			<input name="myself" type="checkbox" /> Show @{{ account.user.name }}'s tweets<br />
+			<input name="archived" type="checkbox" /> Show archived tweets
+		</div>
+	</div>
+	<br style="clear:both;" />
+</div>
+<div class="twitter-listing">
+	<ul>
+	{% for status in statuses %}
+		<li class="tweet-item">
+			<div class="head">
+			{% if status.in_reply_to_status or status.in_reply_to_user %}
+				{# <span class="response">In response to @ " ..."</span> #}
+			{% endif %}
+				<cite>{{ status.user.screen_name }} / @{{ status.user.name }}</cite>
+			</div>
+			<div class="photo"><img src="{{ status.user.profile_image_url }}" border="0" /></div>
+			<div class="content">
+				<div class="tweet">{{ status.text }}</div>
+				{#
+				<div class="notes">
+					<div class="note"><em class="time">22 minutes ago</em></div>
+				</div>
+				#}
+				<div class="controls">
+					<ul>
+						<li><a>Archive</a></li>
+						<li><a>Reply</a></li>
+						<li><a>Retweet</a></li>
+						<li><a>Assign</a></li>
+						<li><a>Add Note</a></li>
+					</ul>
+				</div>
+			</div>
+		</li>
+	{% endfor %}
+	</ul>
+</div>

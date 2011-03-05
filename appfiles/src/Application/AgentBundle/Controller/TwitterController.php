@@ -11,18 +11,57 @@
 
 namespace Application\AgentBundle\Controller;
 
+use \Application\DeskPRO\App;
+
 /**
  * Handles creating/editing of Twitter Accounts
  */
 class TwitterController extends AbstractController
 {
-	public function indexAction()
+	public function statusesAction($account_id)
 	{
-		return $this->render('AgentBundle:Twitter:index.html.twig');
+		// fetch selected account
+		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')
+			->findOneById($account_id);
+
+		// @TODO improve check if person/team is "owner" :)
+		foreach ($this->person->getTwitterAccounts() as $account) {
+			if ($account_id == $account['id']) {
+				break;
+			}
+		}
+
+		$archived = false;
+
+		// @TODO add checkboxes / filters / paging
+		$statuses = App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->findByUser($account['user']['id']);
+
+		return $this->render('AgentBundle:Twitter:statuses.html.twig', array(
+			'account'  => $account,
+			'statuses' => $statuses
+		));
 	}
 
 	public function accountsPaneAction()
 	{
-		return $this->render('AgentBundle:Twitter:pane-accounts.html.twig');
+		return $this->render('AgentBundle:Twitter:pane-accounts.html.twig', array(
+			'accounts' => $this->person->getTwitterAccounts()
+		));
+	}
+
+	public function statusesPaneAction()
+	{
+		$accounts = $this->person->getTwitterAccountIds();
+
+		$statuses = array(
+			'starred' => 0,
+			'my'      => 0,
+			'team'    => 0
+		);
+
+		return $this->render('AgentBundle:Twitter:pane-statuses.html.twig', array(
+			'statuses' => $statuses
+		));
 	}
 }
