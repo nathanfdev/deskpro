@@ -336,6 +336,10 @@
 										<a href="{{ path('admin_products') }}">Products</a>
 										<p>Manage your products</p>
 									</li>
+									<li class="link-portal">
+										<a href="">Portal</a>
+										<p>Change the appearance of your helpdesk homepage.</p>
+									</li>
 									<li class="link-email">
 										<a href="">Email</a>
 										<p>Manage email addresses, SMTP settings and gateways.</p>
@@ -380,6 +384,52 @@
 							<a href="{{ path('admin_agents') }}">Agents</a>
 						</li>
 
+						<li class="users-nav">
+							<a>Users</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-fields">
+										<a href="{{ path('admin_customdefpeople') }}">Fields</a>
+										<p>Create custom fields that can be added to users.</p>
+									</li>
+									<li class="link-labels">
+										<a href="{{ path('admin_labels', {'label_type': 'people'}) }}">Labels</a>
+										<p>Define labels that can be applied to users.</p>
+									</li>
+									<li class="link-fields">
+										<a href="{{ path('admin_customdeforganizations') }}">Organization Fields</a>
+										<p>Create custom fields that can be added to organizations.</p>
+									</li>
+									<li class="link-labels">
+										<a href="{{ path('admin_labels', {'label_type': 'organizations'}) }}">Organization Labels</a>
+										<p>Define labels that can be applied to organizations.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
+
+						<li class="integrations-nav">
+							<a>Integrate</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-widgets">
+										<a href="">Widgets</a>
+										<p>Manage widgets that are added to pages.</p>
+									</li>
+									<li class="link-api">
+										<a href="{{ path('admin_api_keylist') }}">API</a>
+										<p>Manage your API keys and usage.</p>
+									</li>
+									<li class="link-plugins">
+										<a href="">Plugins</a>
+										<p>Manage or install plugins.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
+
+						<li class="sep">-</li>
+
 						<li class="tickets-nav">
 							<a>Tickets</a>
 							<div class="wrap-dropdown n-drop setup-drop">
@@ -412,30 +462,6 @@
 							</div>
 						</li>
 
-						<li class="users-nav">
-							<a>Users</a>
-							<div class="wrap-dropdown n-drop setup-drop">
-								<ol class="icon-menu">
-									<li class="link-fields">
-										<a href="{{ path('admin_customdefpeople') }}">Fields</a>
-										<p>Create custom fields that can be added to users.</p>
-									</li>
-									<li class="link-labels">
-										<a href="{{ path('admin_labels', {'label_type': 'people'}) }}">Labels</a>
-										<p>Define labels that can be applied to users.</p>
-									</li>
-									<li class="link-fields">
-										<a href="{{ path('admin_customdeforganizations') }}">Organization Fields</a>
-										<p>Create custom fields that can be added to organizations.</p>
-									</li>
-									<li class="link-labels">
-										<a href="{{ path('admin_labels', {'label_type': 'organizations'}) }}">Organization Labels</a>
-										<p>Define labels that can be applied to organizations.</p>
-									</li>
-								</ol>
-							</div>
-						</li>
-
 						<li class="deals-nav">
 							<a>Leads</a>
 							<div class="wrap-dropdown n-drop setup-drop">
@@ -458,49 +484,12 @@
 
 						<li class="chats-nav"><a>Chats</a></li>
 						<li class="twitter-nav"><a>Twitter</a></li>
+						<li class="portal-nav"><a>Troubles</a></li>
+						<li class="portal-nav"><a>&nbsp;&nbsp;&nbsp;&nbsp;KB&nbsp;</a></li>
 
-						<li class="portal-nav">
-							<a>Portal</a>
-							<div class="wrap-dropdown n-drop setup-drop">
-								<ol class="icon-menu">
-									<li class="link-knowledgebase">
-										<a href="">Knowledgebase</a>
-										<p>Manage display options for your knowledgebase and articles</p>
-										<ul>
-											<li><a href="">Manage knowledgebase fields</a></li>
-										</ul>
-									</li>
-									<li class="link-downloads">
-										<a href="">Downloads</a>
-										<p>Manage display options for your downloads section</p>
-									</li>
-									<li class="link-troubleshooters">
-										<a href="">Troubleshooters</a>
-										<p>Manage display options for your troubleshooters section</p>
-									</li>
-								</ol>
-							</div>
-						</li>
+						<li class="sep">-</li>
 
-						<li class="integrations-nav">
-							<a>Integrations</a>
-							<div class="wrap-dropdown n-drop setup-drop">
-								<ol class="icon-menu">
-									<li class="link-widgets">
-										<a href="">Widgets</a>
-										<p>Manage widgets that are added to pages.</p>
-									</li>
-									<li class="link-api">
-										<a href="{{ path('admin_api_keylist') }}">API</a>
-										<p>Manage your API keys and usage.</p>
-									</li>
-									<li class="link-plugins">
-										<a href="">Plugins</a>
-										<p>Manage or install plugins.</p>
-									</li>
-								</ol>
-							</div>
-						</li>
+						<li class="integrations-nav"><a>Add (4)</a></li>
 					</ul>
 				</div>
 			</div>

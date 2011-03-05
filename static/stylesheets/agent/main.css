@@ -756,6 +756,22 @@ background-color: #edeff3;
 	z-index: 400;
 }
 
+#header .nav .wrapper-top-bar > ul  > li.sep {
+	background: #3C3E3F !important;
+	width: 1px !important;
+	overflow: hidden !important;
+	border: none !important;
+	padding: 0 !important;;
+	margin: -3px 4px; 0 0 !important;
+	-webkit-box-shadow:  none !important;
+    -moz-box-shadow: none !important;
+    box-shadow: none !important;
+	-webkit-border-radius: 0;
+    -moz-border-radius: 0;
+    border-radius: 0;
+	opacity: 0.2;
+	line-height: 64px;
+}
 
 #header .nav .wrapper-top-bar > ul  > li > a {
 	display: block;
@@ -810,7 +826,6 @@ background-color: #edeff3;
 #header .nav .wrapper-top-bar > ul  > li.setup-nav > a { background: url("../../images/nav-icons/Settings.png") no-repeat center top; }
 #header .nav .wrapper-top-bar > ul  > li.server-nav > a { background: url("../../images/nav-icons/Server.png") no-repeat center top; }
 #header .nav .wrapper-top-bar > ul  > li.agents-nav > a { background: url("../../images/nav-icons/Agents.png") no-repeat center top; }
-#header .nav .wrapper-top-bar > ul  > li.portal-nav > a { background: url("../../images/nav-icons/Portal.png") no-repeat center top; }
 #header .nav .wrapper-top-bar > ul  > li.integrations-nav > a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
 #header .nav .wrapper-top-bar > ul  > li.integrations-nav > a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
 
@@ -860,6 +875,7 @@ background-color: #edeff3;
 #header .nav ol.icon-menu > li.link-departments { background-image: url("../../images/nav-icons/Labels.png"); }
 #header .nav ol.icon-menu > li.link-products { background-image: url("../../images/nav-icons/Products.png"); }
 #header .nav ol.icon-menu > li.link-email { background-image: url("../../images/nav-icons/Email.png"); }
+#header .nav ol.icon-menu > li.link-portal { background-image: url("../../images/nav-icons/Portal.png"); }
 #header .nav ol.icon-menu > li.link-languages { background-image: url("../../images/nav-icons/Languages.png"); }
 #header .nav ol.icon-menu > li.link-scheduled-task { background-image: url("../../images/nav-icons/Escalations.png"); }
 #header .nav ol.icon-menu > li.link-database-tools { background-image: url("../../images/nav-icons/Database.png"); }
