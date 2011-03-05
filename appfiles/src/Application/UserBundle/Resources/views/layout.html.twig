@@ -197,6 +197,9 @@ table.table-list > tbody > tr:hover > td {
 		</ul>
 		<ul>
 			<li class="btn"><a href="{{ path('user') }}">Home</a></li>
+			{% if person.id %}
+				<li class="btn"><a href="{{ path('user_tickets') }}">Tickets</a></li>
+			{% endif %}
 		</ul>
 	</div>
 	<div id="page">{% block content %}{% endblock %}</div>

@@ -11,7 +11,7 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 		if (context) {
 			this.contextEl = $(context);
 		} else {
-			this.contextEl = $(body);
+			this.contextEl = $(document.body);
 		}
 	},
 
