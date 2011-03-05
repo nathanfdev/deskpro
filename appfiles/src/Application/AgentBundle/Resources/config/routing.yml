@@ -179,6 +179,13 @@ agent_peoplesearch_directorypane:
   pattern: /people-search/directory-pane
   defaults: { _controller: AgentBundle:PeopleSearch:directoryPane }
 
+agent_peoplesearch_labelsindexpane:
+  pattern: /people-search/labels-index-pane
+  defaults: { _controller: AgentBundle:PeopleSearch:labelsIndexPane }
+
+agent_peoplesearch_usergroupspane:
+  pattern: /people-search/usergroups-pane
+  defaults: { _controller: AgentBundle:PeopleSearch:usergroupsPane }
 
 ################################################################################
 # Ticket Search

@@ -240,10 +240,7 @@
 							<span class="nav-counter" style="display:none">0</span>
 							<a href="index.html">Calls</a>
 						</li>
-						<li class="users-nav">
-							<span class="nav-counter" style="display:none">0</span>
-							<a data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" data-route-alt="listpane:{{ path('agent_peoplesearch') }}">Users</a>
-						</li>
+						{% include 'AgentBundle:Main:part-people-menu.html.twig' %}
 						<li class="deals-nav">
 							<span class="nav-counter" style="display:none">0</span>
 							<a href="index.html">Deals</a>

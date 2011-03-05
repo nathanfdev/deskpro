@@ -1,0 +1,52 @@
+<li class="users-nav" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.People">
+	<a>People</a>
+	<ul class="wrap-dropdown-tabs">
+		<li data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="search">Search</li>
+	</ul>
+	<div class="wrap-dropdown n-drop users-drop has-tabs"><div class="y-track">
+		{# people_main_section #}
+		<div id="people_main_section">
+			<div class="people-content">
+
+				<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%">
+
+					<div class="inner-container">
+						<div class="inner-container-title labels-index">
+							<h3>Labels</h3>
+						</div>
+						<div class="inner-container-content with-scrollbar" id="people_labels_index_content_wrap">
+							<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+							<div class="viewport"><div class="overview">
+								<div id="people_labels_index_content"></div>
+							</div></div>
+						</div>
+					</div>
+
+				</td><td valign="top" width="50%">
+
+					<div class="inner-container">
+						<div class="inner-container-title open-tickets">
+							<h3>Directory</h3>
+						</div>
+						<div class="inner-container-content" style="text-align:center;">
+							{% for a in range('A','Z') %}
+								<a>{{a}}</a>{% if loop.index % 13 == 0 %}<br />{% elseif not loop.last %} &middot; {% endif %}
+							{% endfor %}
+						</div>
+					</div>
+
+					<div class="inner-container">
+						<div class="inner-container-title">
+							<h3>Groups</h3>
+						</div>
+						<div class="inner-container-content">
+							<ol id="people_groups_list"></ol>
+						</div>
+					</div>
+
+				</td></tr></table>
+			</div>
+		</div>
+		{# /people_main_section #}
+	</div></div>
+</li>

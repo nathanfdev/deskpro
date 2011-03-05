@@ -880,9 +880,12 @@ background-color: #edeff3;
 #header .nav ol.icon-menu > li.link-api { background-image: url("../../images/nav-icons/API.png"); }
 #header .nav ol.icon-menu > li.link-plugins { background-image: url("../../images/nav-icons/Settings.png"); }
 
-/** Ticket Dropdown **/
 #header .tickets-drop {
 	width: 600px;
+}
+
+#header .users-drop {
+	width: 500px;
 }
 
 /* the ytrack el is given an absolute width when we're sliding stuff
