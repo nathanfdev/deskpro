@@ -2,6 +2,8 @@
 	overflow: auto;
 }
 
+.ui-layout-resizer-west-open { opacity: 0; }
+
 .ui-layout-resizer { /* all 'resizer-bars' */
 	background: #fff;
 }
