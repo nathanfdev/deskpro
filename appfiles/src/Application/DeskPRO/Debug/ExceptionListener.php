@@ -91,6 +91,22 @@ class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionLis
 				'line' => $exception->getLine()
 			));
 		} catch (\Exception $e) {}
+
+		if (App::getConfig('debug.email_on_error')) {
+			try {
+				$message = App::getMailer()->createMessage();
+				$message->setTo(App::getConfig('debug.email_on_error'));
+				$message->setSubject("[DeskPRO Error] $summary");
+				$message->setBody(print_r(array(
+					'trace' => $trace,
+					'class' => get_class($exception),
+					'file' => $exception->getFile(),
+					'line' => $exception->getLine()
+				), true));
+
+				App::getMailer()->send($message);
+			} catch (\Exception $e) {}
+		}
 	}
 
 	public function _stripPathPrefix($content)
