@@ -26,6 +26,10 @@ class ModelsController extends \Application\DeskPRO\HttpKernel\Controller\Contro
 		if (!empty($_GET['model'])) {
 			$model = $_GET['model'];
 
+			if (strpos($model, ':') === false) {
+				$model = 'DeskPRO:' . $model;
+			}
+
 			$em = $this->container->get('doctrine.orm.entity_manager');
 			$metadata = $em->getMetadataFactory()->getMetadataFor($model);
 			$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
