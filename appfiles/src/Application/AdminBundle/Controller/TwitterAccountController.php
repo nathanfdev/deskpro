@@ -37,6 +37,10 @@ class TwitterAccountController extends AbstractController
 		$account = App::getORM()->getRepository('DeskPRO:TwitterAccount')
 			->findById($account_id);
 
+		if (!$account) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Twitter Account "'.$account_id.'" not found.');
+		}
+
 		return $this->render('AdminBundle:TwitterAccount:edit.html.twig', array(
 			'account' => $account
 		));
