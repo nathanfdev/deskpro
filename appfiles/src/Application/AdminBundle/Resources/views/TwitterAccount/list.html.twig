@@ -1,0 +1,38 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+
+{% block section 'twitter' %}
+{% block sub_section 'accounts' %}
+
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+{% endblock %}
+
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
+}
+</script>
+{% endblock %}
+
+{% block content %}
+
+<div style="text-align: right">
+	<a class="dp-button green popout-trigger" href="{{ path('admin_twitter_accounts_new') }}">Create New Account</a>
+	<br /><br />
+</div>
+
+<ul class="item-list">
+	{% for account in accounts %}
+		{% include 'AdminBundle:TwitterAccount:list-row.html.twig' %}
+	{% else %}
+		<li>
+			You have no accounts defined.
+		</li>
+	{% endfor %}
+</ul>
+
+{% endblock %}
+
+{% block sidebar %}
+{% endblock %}

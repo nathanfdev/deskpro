@@ -483,7 +483,17 @@
 						</li>
 
 						<li class="chats-nav"><a>Chats</a></li>
-						<li class="twitter-nav"><a>Twitter</a></li>
+						<li class="twitter-nav">
+							<a>Twitter</a>
+							<div class="wrap-dropdown n-drop setup-drop">
+								<ol class="icon-menu">
+									<li class="link-accounts">
+										<a href="{{ path('admin_twitter_accounts') }}">Accounts</a>
+										<p>Manage Twitter Accounts.</p>
+									</li>
+								</ol>
+							</div>
+						</li>
 						<li class="ideas-nav"><a>Ideas</a></li>
 						<li class="portal-nav"><a>Troubles</a></li>
 						<li class="portal-nav"><a>&nbsp;&nbsp;&nbsp;&nbsp;KB&nbsp;</a></li>
