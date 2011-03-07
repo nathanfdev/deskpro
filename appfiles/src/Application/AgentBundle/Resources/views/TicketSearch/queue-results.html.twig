@@ -21,10 +21,12 @@ pageMeta.massReplyUrl = '{{ path('agent_ticketsearch_ajax_mass_reply') }}';
 
 	{% include 'AgentBundle:TicketSearch:part-results-grouping.html.twig' %}
 
-	<table class="list" cellspacing="0" width="100%">
-		{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
-		{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
-	</table>
+	<div class="inner-box-tab-content box-list">
+		<table class="list" cellspacing="0" width="100%">
+			{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
+			{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
+		</table>
+	</div>
 
 	<div class="loading-more">
 		Loading more results ...

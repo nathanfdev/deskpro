@@ -1,10 +1,9 @@
 {% if grouped_info %}
-<div class="search-top">
-	<ul class="grouping-info">
+<div class="inner-box-tab-content top-box">
+	<ul>
 		{% for info in grouped_info %}
 			{% if info.id != -1 %}
 				<li data-group-id="{{info.id}}">
-					<span>{{info.total}}</span>
 					<label>
 						{% if info.title == 'open' %}Open
 						{% elseif info.title == 'pending' %}Pending
@@ -14,14 +13,14 @@
 						{% else %}{{info.title}}
 						{% endif %}
 					</span>
+					<span class="counter">{{info.total}}</span>
 				</li>
 			{% endif %}
 		{% endfor %}
 		<li class="total on" data-group-id="NONE">
-			<span>{{grouped_info[0].total}}</span>
 			<label>Total</label>
+			<span class="counter">{{grouped_info[0].total}}</span>
 		</li>
 	</ul>
-	<br class="clear" />
 </div>
 {% endif %}

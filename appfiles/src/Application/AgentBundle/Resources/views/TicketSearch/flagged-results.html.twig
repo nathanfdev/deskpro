@@ -9,10 +9,12 @@ pageMeta.pageUrl = '{{ path('agent_ticketsearch_runflag', {'flag': flag}) }}?par
 {% set section = 'flagged' %}
 
 <div class="content">
-	<table class="list" cellspacing="0" width="100%">
-		{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
-		{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
-	</table>
+	<div class="inner-box-tab-content box-list">
+		<table class="list" cellspacing="0" width="100%">
+			{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
+			{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
+		</table>
+	</div>
 
 	<div class="loading-more">
 		Loading more results ...
