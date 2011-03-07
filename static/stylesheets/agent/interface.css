@@ -55,49 +55,10 @@
 	padding-bottom: 10px;
 }
 
-#pane_list_content #pane_list {
-	border: 1px solid #49515C;
-
-	-moz-border-radius-topleft: 0px;
-	-moz-border-radius-topright: 0px;
-	-moz-border-radius-bottomright: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	border-top-left-radius: 0px;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px;
-}
-
 #pane_content {
 	padding-top: 10px;
 	padding-right: 10px;
 	padding-bottom: 10px;
-}
-
-#pane_content #page {
-	border: 1px solid #49515C;
-
-	-moz-border-radius-topleft: 0px;
-	-moz-border-radius-topright: 0px;
-	-moz-border-radius-bottomright: 3px;
-	-moz-border-radius-bottomleft: 3px;
-	border-top-left-radius: 0px;
-	border-top-right-radius: 0px;
-	border-bottom-right-radius: 3px;
-	border-bottom-left-radius: 3px;
-}
-
-#pane_list_tabbar, #pane_list_tabs,
-#pane_tabbar, #pane_tabs
-{
-	-moz-border-radius-topleft: 3px;
-	-moz-border-radius-topright: 3px;
-	-moz-border-radius-bottomright: 0px;
-	-moz-border-radius-bottomleft: 0px;
-	border-top-left-radius: 3px;
-	border-top-right-radius: 3px;
-	border-bottom-right-radius: 0px;
-	border-bottom-left-radius: 0px;
 }
 
 .window-loading-indicator {
