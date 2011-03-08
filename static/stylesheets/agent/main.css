@@ -897,14 +897,21 @@ background-color: #edeff3;
 	font-size: 8pt;
 }
 
+#header .nav ol.icon-menu.single-line {
+	margin-top: 0;
+}
 #header .nav ol.icon-menu.single-line > li {
-	background-position: 6px 50%;
-	line-height: 25px;
-	padding: 3px 8px 3px 37px;
+	background-position: 50% 6px;
+	padding: 38px 8px 6px 8px;
+	margin-top: 0;
+	float: left;
+	min-width: 35px;
+	text-align: center;
+	font-family: 'Helvetica Neue',Arial,Helvetica,sans-serif;
 }
 
 #header .nav ol.icon-menu.single-line > li a {
-	font-size: 10pt;
+	font-size: 11px;
 }
 
 #header .nav ol.icon-menu > li.link-settings { background-image: url("../../images/nav-icons/Settings.png"); }
@@ -927,6 +934,7 @@ background-color: #edeff3;
 #header .nav ol.icon-menu > li.link-deals-statuses { background-image: url("../../images/nav-icons/Widgets.png"); }
 #header .nav ol.icon-menu > li.link-knowledgebase { background-image: url("../../images/nav-icons/Knowledgebase.png"); }
 #header .nav ol.icon-menu > li.link-files { background-image: url("../../images/nav-icons/Files.png"); background-position: 11px 50%; }
+#header .nav ol.icon-menu.single-line > li.link-files { background-image: url("../../images/nav-icons/Files.png"); background-position: 50% 6px; }
 #header .nav ol.icon-menu > li.link-troubleshooters { background-image: url("../../images/nav-icons/Troubleshooters.png"); }
 #header .nav ol.icon-menu > li.link-widgets { background-image: url("../../images/nav-icons/Widgets.png"); }
 #header .nav ol.icon-menu > li.link-api { background-image: url("../../images/nav-icons/API.png"); }
