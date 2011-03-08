@@ -95,6 +95,8 @@ Header
 #header .wrapper-top-bar {
 	padding-top: 4px;
 	overflow: hidden;
+
+	font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
 }
 
 #header a.logo {
@@ -477,6 +479,7 @@ background-color: #edeff3;
 
 #header .current-user-name {
 	float: left;
+	font-family: 'Lucida Sans', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
 }
 
 #header .current-user-name span {
@@ -580,6 +583,7 @@ background-color: #edeff3;
 #header .admin-actions ul li {
 	float: left;
 	margin-right: 6px;
+	font-family: 'Lucida Sans', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
 }
 
 #header .admin-actions ul li a {
@@ -706,6 +710,7 @@ background-color: #edeff3;
     border-radius: 5px 5px 0 0;
 
 	z-index: 400;
+	min-width: 40px;
 }
 
 #header .nav > .wrapper-top-bar > ul > li:hover {
@@ -740,16 +745,17 @@ background-color: #edeff3;
 	position: absolute;
 	margin-top: -7px;
 	margin-left: 28px;
-	padding: 1px 4px;
+	padding: 2px 4px 1px 4px;
 	background: #e34d4d;
-	line-height: 14px;
-	font-size: 11px;
+	line-height: 13px;
+	font-size: 10px;
 	font-weight: bold;
 	color: #fff;
 	text-shadow: 0 1px 1px #8f1313;
 	border: 2px solid #fff;
 	background-clip: padding-box;
 
+	font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
 
 	-webkit-border-radius: 10px;
     -moz-border-radius: 10px;
@@ -768,6 +774,7 @@ background-color: #edeff3;
 #header .nav .wrapper-top-bar > ul  > li.sep {
 	background: #3C3E3F !important;
 	width: 1px !important;
+	min-width: 1px !important;
 	overflow: hidden !important;
 	border: none !important;
 	padding: 0 !important;;
@@ -787,9 +794,9 @@ background-color: #edeff3;
 	background: url("../../images/icn-nav-sprite.png") 13px top no-repeat;
 	padding: 32px 3px 0 3px;
 	color: #3c3e3f;
-	font-weight: bold;
 
 	line-height: 10px;
+	font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
 }
 
 #header .nav .wrapper-top-bar > ul li.chats-nav >a {
@@ -987,9 +994,9 @@ in and out, so we dont want actual scrollbars */
 #header .top-tickets-info ol li span.ticket-counter {
 	margin-left: 5px;
 
-	padding: 1px 4px;
+	padding: 2px 4px 1px 4px;
 	background: #e34d4d;
-	line-height: 14px;
+	line-height: 13px;
 	font-size: 11px;
 	font-weight: bold;
 	color: #fff;
