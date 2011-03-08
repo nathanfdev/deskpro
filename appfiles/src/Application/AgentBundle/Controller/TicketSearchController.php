@@ -301,7 +301,7 @@ class TicketSearchController extends AbstractController
 			$vars['display_fields'] = $result_cache['extra'][$pref_name];
 		}
 
-		return $this->_getResponseForTickets('filter', $result_cache['id'], $results_helper, $vars);
+		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $results_helper, $vars);
 	}
 
 	############################################################################
@@ -343,7 +343,7 @@ class TicketSearchController extends AbstractController
 
 		// TODO: Need a cleaner way of converting a group into a searchable item
 		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_customfilter') . "?$mode_crit&terms[5][rule_type]=status&terms[5][op]=is&terms[5][status]=open&terms[6][rule_type]=$group1_nosuf&terms[6][op]=is&terms[6][$group1_nosuf]=\$group1_id";
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runcustomfilter') . "?$mode_crit&terms[5][rule_type]=status&terms[5][op]=is&terms[5][status]=open&terms[6][rule_type]=$group1_nosuf&terms[6][op]=is&terms[6][$group1_nosuf]=\$group1_id";
 
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
 		$list_url_group2 = $list_url_group1 . "&terms[7][rule_type]=$group2_nosuf&terms[7][op]=is&terms[7][$group2_nosuf]=\$group2_id";
