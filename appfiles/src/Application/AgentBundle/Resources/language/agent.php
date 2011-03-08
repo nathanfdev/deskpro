@@ -1,6 +1,6 @@
 <?php return array(
 
-	'agent.filter_yours' => 'Yours',
+	'agent.filter_agent' => 'Yours',
 	'agent.filter_participant' => 'Participated',
 	'agent.filter_agent_team' => 'Your Teams',
 	'agent.filter_unassigned' => 'Unassigned',
