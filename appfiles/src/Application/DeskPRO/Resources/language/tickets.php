@@ -12,4 +12,6 @@
 	'core_tickets.category'          => 'Category',
 	'core_tickets.status'            => 'Status',
 	'core_tickets.agent'             => 'Agent',
+	'core_tickets.workflow'          => 'Workflow',
+	'core_tickets.priority'          => 'Priority',
 );

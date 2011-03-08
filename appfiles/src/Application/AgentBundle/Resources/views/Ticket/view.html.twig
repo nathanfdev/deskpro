@@ -1,6 +1,6 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
-pageMeta.title         = '{{ticket.subject}}';
+pageMeta.title         = {{ticket.subject|json_encode|raw}};
 pageMeta.ticket_id     = {{ticket.id}};
 pageMeta.pageIdentity  = 'ticket:{{ticket.id}}';
 

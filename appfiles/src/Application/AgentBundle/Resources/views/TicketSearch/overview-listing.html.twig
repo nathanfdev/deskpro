@@ -1,11 +1,11 @@
 {% for group1 in counts %}
-	<li data-route="listpane:{{ list_url_group1|replace({ '$group1_id': group1.id }) }}">
+	<li data-route="listpane:{{ list_url_group1|replace({ '$group1_id': group1.id, '$page_title': phrase('agent.title_grouped_by_x', {'fieldname': group1.title})|raw_url_encode }) }}">
 		<span class="list-counter">{{group1.total}}</span>
 		<a>{{group1.title}}</a>
 	</li>
 	{% if group1.sub %}
 		{% for group2 in group1.sub %}
-			<li data-route="listpane:{{ list_url_group2|replace({ '$group1_id': group1.id, '$group2_id': group2.id }) }}" class="sub-list">
+			<li data-route="listpane:{{ list_url_group2|replace({ '$group1_id': group1.id, '$group2_id': group2.id, '$page_title': phrase('agent.title_grouped_by_xy', {'fieldname': group1.title, 'fieldname2': group2.title })|raw_url_encode }) }}" class="sub-list">
 				<span class="list-counter">{{group2.total}}</span>
 				<a>{{group2.title}}</a>
 			</li>

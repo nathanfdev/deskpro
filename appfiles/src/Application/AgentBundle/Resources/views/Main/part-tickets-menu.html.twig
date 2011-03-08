@@ -73,13 +73,13 @@
 						<li data-mode="all">All tickets</li>
 					</ul>
 					<ul id="overview_grouping_menu" class="grouping-menu" style="display:none">
-						<li data-groupby="none">None</li>
-						<li data-groupby="department_id">Department</li>
-						<li data-groupby="category_id">Category</li>
-						<li data-groupby="priority_id">Priority</li>
-						<li data-groupby="product_id">Product</li>
-						<li data-groupby="agent_id">Agent</li>
-						<li data-groupby="workflow_id">Workflow</li>
+						<li data-groupby="none">{{ phrase('core.none') }}</li>
+						<li data-groupby="department_id">{{ phrase('core.department') }}</li>
+						<li data-groupby="category_id">{{ phrase('core_tickets.category') }}</li>
+						<li data-groupby="priority_id">{{ phrase('core_tickets.priority') }}</li>
+						<li data-groupby="product_id">{{ phrase('core.product') }}</li>
+						<li data-groupby="agent_id">{{ phrase('core_tickets.agent') }}</li>
+						<li data-groupby="workflow_id">{{ phrase('core_tickets.workflow') }}</li>
 					</ul>
 
 					<div class="inner-container">

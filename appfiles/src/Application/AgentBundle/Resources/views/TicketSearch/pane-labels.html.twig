@@ -1,3 +1,3 @@
 {% for label,css_class in cloud %}
-	<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_ticketsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+	<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?page_title={{ phrase('core.label_x', {'label': label})|raw_url_encode }}&terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
 {% endfor %}

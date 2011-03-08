@@ -334,7 +334,7 @@ class Translate
 			$values = array_values($vars);
 
 			array_walk($keys, function (&$val) {
-				$val = '{' . $val . '}';
+				$val = '{{' . $val . '}}';
 			});
 
 			$vars = array_combine($keys, $values);
