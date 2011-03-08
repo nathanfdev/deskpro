@@ -31,3 +31,6 @@
 [submodule "appfiles/vendor/zend1"]
 	path = appfiles/vendor/zend1
 	url = git://github.com/mridgway/Zend-Framework-1.x-Mirror.git
+[submodule "appfiles/vendor/twitteroauth"]
+	path = appfiles/vendor/twitteroauth
+	url = git://github.com/abraham/twitteroauth.git
