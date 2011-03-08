@@ -38,6 +38,8 @@ class LanguagesController extends AbstractController
 	 */
 	public function listLanguagesAction()
     {
+		$this->rememberLastPage();
+
         return $this->render('AdminBundle:Languages:list-languages.html.twig', array(
 			'language_hierarchy' => $this->language_hierarchy
 		));

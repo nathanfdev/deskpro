@@ -28,6 +28,8 @@ class ApiController extends AbstractController
 	 */
 	public function indexAction()
 	{
+		$this->rememberLastPage();
+
 		$all_apikeys = $this->em->createQuery("
 			SELECT k
 			FROM DeskPRO:ApiKey k

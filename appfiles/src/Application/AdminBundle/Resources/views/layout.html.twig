@@ -512,12 +512,8 @@
 	</div>
 </div>
 
-<div style="padding: 15px;">
-	<table cellspacing="0" cellpadding="0" width="100%" id="pane_shell" class="{% if not nav %}no-nav{% endif %}">
-		<tr>
-			<td id="pane_content"><div id="content_wrap">{% block content %}{% endblock %}</div></td>
-		</tr>
-	</table>
+<div class="admin-single-content">
+	{% block content %}{% endblock %}
 </div>
 
 </body>

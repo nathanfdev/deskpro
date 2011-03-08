@@ -323,7 +323,7 @@ class App
 	/**
 	 * Get the session
 	 *
-	 * @return \Symfony\Application\DeskPRO\HttpFoundation\Session
+	 * @return \Application\DeskPRO\HttpFoundation\Session
 	 */
 	public static function getSession()
 	{

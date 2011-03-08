@@ -1660,6 +1660,16 @@ border-left: none;
 
 
 
+.admin-single-content {
+	border: 1px solid #8a939e;
+	-webkit-border-radius: 3px 3px 3px 3px;
+    -moz-border-radius: 3px 3px 3px 3px;
+    border-radius: 3px 3px 3px 3px;
+	background: #fff;
+	padding: 20px;
+	margin: 10px;
+}
+
 
 
 /** List Box **/

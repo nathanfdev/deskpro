@@ -30,6 +30,8 @@ class LocalesController extends AbstractController
 	 */
 	public function listAction()
 	{
+		$this->rememberLastPage();
+
 		$all_locales = $this->em->createQuery("
 			SELECT l
 			FROM DeskPRO:Locale l
