@@ -604,7 +604,11 @@ background-color: #edeff3;
 
 #header .admin-actions ul li.agent a {
 	background: transparent url("../../images/nav-icons/small-agent.png") no-repeat center left;
-	padding-left: 19px;
+	padding-left: 19
+
+
+
+	px;
 }
 
 #header .admin-actions ul li.billing a {
@@ -708,6 +712,7 @@ background-color: #edeff3;
 }
 
 #header .nav .wrapper-top-bar {
+	padding-right: 8px;
 }
 
 #header .nav > .wrapper-top-bar > ul > li {
@@ -747,7 +752,6 @@ background-color: #edeff3;
 }
 
 #header .nav > .wrapper-top-bar > ul > li.off {
-	z-index: 400;
 	opacity: 0.2;
 }
 
@@ -779,7 +783,7 @@ background-color: #edeff3;
 }
 
 #header .off span.nav-counter {
-	z-index: 400;
+
 }
 
 #header .nav .wrapper-top-bar > ul  > li.sep {
