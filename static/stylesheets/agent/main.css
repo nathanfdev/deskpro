@@ -808,7 +808,7 @@ background-color: #edeff3;
 	background-position: -268px top;
 }
 
-#header .nav .wrapper-top-bar > ul li.users-nav > a {
+#header .nav .wrapper-top-bar > ul li.people-nav > a {
 	background-position: -321px top;
 }
 
@@ -909,13 +909,13 @@ background-color: #edeff3;
 	width: 600px;
 }
 
-#header .users-drop {
+#header .people-drop {
 	width: 500px;
 }
 
 /* the ytrack el is given an absolute width when we're sliding stuff
 in and out, so we dont want actual scrollbars */
-#header .wrap-dropdown .y-track {
+#header .wrap-dropdown .x-track {
 	overflow: hidden;
 }
 
@@ -1004,6 +1004,18 @@ in and out, so we dont want actual scrollbars */
 	-webkit-box-shadow:  0 0px 2px #766B6B;
     -moz-box-shadow: inset 0 1px 0 #e55858, 0  0px 2px #766B6B;
     box-shadow: 0 0px 2px #766B6B;
+}
+
+#header .people-drop #people_labels_viewall,
+#header .people-drop #org_labels_viewall {
+	display: none;
+	float: right;
+	padding: 3px 6px 0 0;
+}
+
+#header .people-drop .inner-container:hover #people_labels_viewall,
+#header .people-drop .inner-container:hover #org_labels_viewall {
+	display: block;
 }
 
 #header .inner-container {

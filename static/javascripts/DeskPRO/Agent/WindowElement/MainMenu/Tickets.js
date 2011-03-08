@@ -528,7 +528,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 			'overflow': 'auto'
 		});
 
-		$('> div.y-track', this.menuEl).css({
+		$('> div.x-track', this.menuEl).css({
 			'width': ($('#tickets_main_section').width()*2) + 100
 		});
 
@@ -607,7 +607,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 			'overflow': ''
 		}).hide();
 
-		$('> div.y-track', this.menuEl).css({
+		$('> div.x-track', this.menuEl).css({
 			'width': ''
 		});
 

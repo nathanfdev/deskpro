@@ -1,37 +1,36 @@
-<li class="users-nav" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.People">
+<li class="people-nav" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.People">
 	<a>People</a>
 	<ul class="wrap-dropdown-tabs">
 		<li data-route="navpane:{{ path('agent_peoplesearch_findpane') }}" class="search">Search</li>
 	</ul>
-	<div class="wrap-dropdown n-drop users-drop has-tabs"><div class="y-track">
+	<div class="wrap-dropdown n-drop people-drop has-tabs"><div class="x-track">
 		{# people_main_section #}
 		<div id="people_main_section">
 			<div class="people-content">
 
-				<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%">
-
-					<div class="inner-container">
-						<div class="inner-container-title labels-index">
-							<h3>Labels</h3>
-						</div>
-						<div class="inner-container-content with-scrollbar" id="people_labels_index_content_wrap">
-							<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
-							<div class="viewport"><div class="overview">
-								<div id="people_labels_index_content"></div>
-							</div></div>
-						</div>
-					</div>
-
-				</td><td valign="top" width="50%">
+				<table cellspacing="0" cellpadding="0" width="100%"><tr><td colspan="2">
 
 					<div class="inner-container">
 						<div class="inner-container-title open-tickets">
 							<h3>Directory</h3>
 						</div>
 						<div class="inner-container-content" style="text-align:center;">
+							<a>#</a> &middot;
 							{% for a in range('A','Z') %}
-								<a>{{a}}</a>{% if loop.index % 13 == 0 %}<br />{% elseif not loop.last %} &middot; {% endif %}
+								<a>{{a}}</a>{% if not loop.last %} &middot; {% endif %}
 							{% endfor %}
+						</div>
+					</div>
+
+				</td></tr><tr><td valign="top" width="52%">
+
+					<div class="inner-container">
+						<div class="inner-container-title tags-title">
+							<div id="people_labels_viewall"><a>View all labels</a></div>
+							<h3>People Labels</h3>
+						</div>
+						<div class="inner-container-content">
+							<ol id="people_labels_cloud_list" class="tags tag-cloud"></ol>
 						</div>
 					</div>
 
@@ -44,9 +43,55 @@
 						</div>
 					</div>
 
+				</td><td valign="top" width="48%">
+
+					<div class="inner-container">
+						<div class="inner-container-title tags-title">
+							<div id="org_labels_viewall"><a>View all labels</a></div>
+							<h3>Oragnization Labels</h3>
+						</div>
+						<div class="inner-container-content">
+							<ol id="org_labels_cloud_list" class="tags tag-cloud"></ol>
+						</div>
+					</div>
+
 				</td></tr></table>
 			</div>
 		</div>
 		{# /people_main_section #}
+
+		{# people_labels_list_section #}
+		<div id="people_labels_list_section" style="display:none">
+			<div class="inner-container">
+				<div class="inner-container-title flag-title">
+					<div id="people_labels_index_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<h3>People Labels Index</h3>
+				</div>
+				<div class="inner-container-content with-scrollbar" id="people_labels_index_content_wrap">
+					<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+					<div class="viewport"><div class="overview">
+						<div id="people_labels_index_content">Loading...</div>
+					</div></div>
+				</div>
+			</div>
+		</div>
+		{# /people_labels_list_section #}
+
+		{# org_labels_list_section #}
+		<div id="org_labels_list_section" style="display:none">
+			<div class="inner-container">
+				<div class="inner-container-title flag-title">
+					<div id="org_labels_index_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<h3>Organization Labels Index</h3>
+				</div>
+				<div class="inner-container-content with-scrollbar" id="org_labels_index_content_wrap">
+					<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+					<div class="viewport"><div class="overview">
+						<div id="org_labels_index_content">Loading...</div>
+					</div></div>
+				</div>
+			</div>
+		</div>
+		{# /org_labels_list_section #}
 	</div></div>
 </li>

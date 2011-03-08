@@ -171,6 +171,18 @@ agent_peoplesearch_labelspane:
   pattern: /people-search/labels-pane
   defaults: { _controller: AgentBundle:PeopleSearch:labelsPane }
 
+agent_peoplesearch_labelsindexpane:
+  pattern: /people-search/labels-index-pane
+  defaults: { _controller: AgentBundle:PeopleSearch:labelsIndexPane }
+
+agent_peoplesearch_org_labelspane:
+  pattern: /people-search/org-labels-pane
+  defaults: { _controller: AgentBundle:PeopleSearch:orgLabelsPane }
+
+agent_peoplesearch_org_labelsindexpane:
+  pattern: /people-search/org-labels-index-pane
+  defaults: { _controller: AgentBundle:PeopleSearch:orgLabelsIndexPane }
+
 agent_peoplesearch_findpane:
   pattern: /people-search/find-pane
   defaults: { _controller: AgentBundle:PeopleSearch:findPane }
@@ -178,10 +190,6 @@ agent_peoplesearch_findpane:
 agent_peoplesearch_directorypane:
   pattern: /people-search/directory-pane
   defaults: { _controller: AgentBundle:PeopleSearch:directoryPane }
-
-agent_peoplesearch_labelsindexpane:
-  pattern: /people-search/labels-index-pane
-  defaults: { _controller: AgentBundle:PeopleSearch:labelsIndexPane }
 
 agent_peoplesearch_usergroupspane:
   pattern: /people-search/usergroups-pane

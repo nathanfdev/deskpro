@@ -7,8 +7,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 		// Sends ajax to fetch initial data
 		this._initInitialData();
-
-		this.addEvent('menuOpen', this.resetLablesIndexScroller.bind(this));
+		console.log('people');
 	},
 
 	// we use a counter to make sure initAfterInitialData is only fired once, after all panes are loaded
@@ -18,12 +17,25 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'agent/people-search/labels-index-pane',
+			url: BASE_URL + 'agent/people-search/labels-pane',
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				$('#people_labels_index_content').html(html)
-				this.resetLablesIndexScroller();
+				$('#people_labels_cloud_list').html(html)
+				this._initerCount--;
+				this._initAfterInitialData();
+			}
+		});
+
+		this._initerCount++;
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: BASE_URL + 'agent/people-search/org-labels-pane',
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				$('#org_labels_cloud_list').html(html)
 				this._initerCount--;
 				this._initAfterInitialData();
 			}
@@ -50,23 +62,158 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 	 */
 	_initAfterInitialData: function() {
 		if (this._initerCount > 0) return; //notyet
+
+		this._initLabelsSwitcher();
 	},
 
-	resetLablesIndexScroller: function() {
+	//#########################################################################
+	// Labels
+	//#########################################################################
 
-		var wrap = $('#people_labels_index_content_wrap');
+	_initLabelsSwitcher: function() {
+		// Clicking between show-index and goback buttons
+		$('#people_labels_viewall').click((function(ev) {
+			this.showLabelsList('people');
+		}).bind(this));
+		$('#people_labels_index_back').click((function(ev) {
+			this.hideLabelsList('people');
+		}).bind(this));
 
-		var viewport = $('#people_labels_index_content_wrap > .viewport');
-		var list = $('#people_labels_index_content');
+		$('#org_labels_viewall').click((function(ev) {
+			this.showLabelsList('org');
+		}).bind(this));
+		$('#org_labels_index_back').click((function(ev) {
+			this.hideLabelsList('org')
+		}).bind(this));
+	},
 
-		if (list.outerHeight() < 300) {
-			wrap.addClass('scrollbar-disabled');
-			viewport.height(list.outerHeight() + 12);
-		} else {
-			wrap.removeClass('scrollbar-disabled');
-			viewport.height(300);
+	showLabelsList: function(type) {
+
+		if (!type) type = 'people';
+
+		this.menuEl.css({
+			'width': this.menuEl.width(),
+			'height': this.menuEl.height(),
+			'overflow': 'hidden'
+		});
+
+		$('#people_main_section').css({
+			'width': $('#people_main_section').width(),
+			'height': $('#people_main_section').height(),
+			'overflow': 'hidden'
+		});
+
+		$('#'+type+'_labels_list_section').css({
+			'width': $('#people_main_section').width(),
+			'height': $('#people_main_section').height(),
+			'overflow': 'hidden'
+		}).show();
+
+		$('#'+type+'_labels_index_content').css({
+			'height': $('#'+type+'_labels_list_section').height() - 42,
+			'overflow': 'auto'
+		});
+
+		$('> div.x-track', this.menuEl).css({
+			'width': ($('#people_main_section').width()*2) + 100
+		});
+
+		$('#people_main_section, #people_labels_list_section, #org_labels_list_section').css({'float':'left'});
+
+		this.menuEl.scrollLeft(0);
+		var pos = $('#'+type+'_labels_list_section').position().left;
+		this.menuEl.animate(
+			{ scrollLeft: pos },
+			300,
+			'linear'
+		);
+
+		this.resetLablesIndexScroller(type);
+
+		var url = BASE_URL + 'agent/people-search/labels-index-pane';
+		if (type == 'org') {
+			url = BASE_URL + 'agent/people-search/org-labels-index-pane';
 		}
 
+		$.ajax({
+			timeout: 20000,
+			type: 'POST',
+			url: url,
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				$('#'+type+'_labels_index_content').html(html)
+				this.resetLablesIndexScroller(type);
+			}
+		});
+	},
+
+	resetLablesIndexScroller: function(type) {
+
+		if (!type) type = 'people';
+
+		var wrap = $('#'+type+'_labels_index_content_wrap');
+
+		var viewport = $('#'+type+'_labels_index_content_wrap > .viewport');
+		var list = $('#'+type+'_labels_index_content');
+
+		var height_thresh = $('#'+type+'_labels_list_section').height() - 42;
+		viewport.height(height_thresh);
+
 		wrap.tinyscrollbar();
+
+		if ($('> .scrollbar', wrap).is('.disable')) {
+			wrap.addClass('scrollbar-disabled');
+		} else {
+			wrap.removeClass('scrollbar-disabled');
+		}
+	},
+
+	hideLabelsList: function(type) {
+
+		if (!type) type = 'people';
+
+		var self = this;
+		$('#'+type+'_labels_index_content').empty();
+		this.menuEl.animate(
+			{ scrollLeft: 0 },
+			300,
+			'linear',
+			function() {
+				self._cleanupLabelsSlide();
+			}
+		);
+	},
+
+	_cleanupLabelsSlide: function() {
+		this.menuEl.css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		});
+
+		$('#people_main_section').css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		});
+
+		$('#people_labels_list_section').css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		}).hide();
+
+		$('#org_labels_list_section').css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		}).hide();
+
+		$('> div.x-track', this.menuEl).css({
+			'width': ''
+		});
+
+		$('#people_main_section, #people_labels_list_section, #org_labels_list_section').css({'float':''});
 	}
 });
