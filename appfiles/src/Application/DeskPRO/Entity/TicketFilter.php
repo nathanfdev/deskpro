@@ -16,12 +16,12 @@ use \Application\DeskPRO\App;
 /**
  * Ticket queues
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketQueue")
- * @orm:Table(name="ticket_queues",
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFilter")
+ * @orm:Table(name="ticket_filters",
  *     uniqueConstraints={@orm:UniqueConstraint(name="sys_name_unique", columns={"sys_name"})}
  * )
  */
-class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
+class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
@@ -154,7 +154,7 @@ class TicketQueue extends \Application\DeskPRO\Domain\DomainObject
 		$person = App::getCurrentPerson();
 		$searcher->setPerson(App::getCurrentPerson());
 
-		$order_by = $person->getPref('agent.ui.ticket-queue-order-by.' . $this->id);
+		$order_by = $person->getPref('agent.ui.ticket-filter-order-by.' . $this->id);
 		if (!$order_by AND $this->order_by) {
 			$order_by = $this->order_by;
 		}

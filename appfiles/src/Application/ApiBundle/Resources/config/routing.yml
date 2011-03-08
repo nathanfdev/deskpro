@@ -28,17 +28,17 @@ api_ping_object_updated:
   defaults: { _controller: ApiBundle:ResourcePing:postObjectUpdated }
   requirements: { _method: POST }
 
-api_ticketsearch_queues_getnames:
-  pattern: /ticket-search/get-queue-names
-  defaults: { _controller: ApiBundle:TicketSearch:getQueueNames }
+api_ticketsearch_filters_getnames:
+  pattern: /ticket-search/get-filter-names
+  defaults: { _controller: ApiBundle:TicketSearch:getFilterNames }
   requirements: { _method: GET }
 
-api_ticketsearch_queues_getcounts:
-  pattern: /ticket-search/get-queue-counts
-  defaults: { _controller: ApiBundle:TicketSearch:getQueueCounts }
+api_ticketsearch_filters_getcounts:
+  pattern: /ticket-search/get-filter-counts
+  defaults: { _controller: ApiBundle:TicketSearch:getFilterCounts }
   requirements: { _method: GET }
 
-api_ticketsearch_queues_getresults:
-  pattern: /ticket-search/queues/{queue_id}/get-results
-  defaults: { _controller: ApiBundle:TicketSearch:getQueueResults }
-  requirements: { _method: GET, queue_id: "\d+" }
+api_ticketsearch_filters_getresults:
+  pattern: /ticket-search/filters/{filter_id}/get-results
+  defaults: { _controller: ApiBundle:TicketSearch:getFilterResults }
+  requirements: { _method: GET, filter_id: "\d+" }

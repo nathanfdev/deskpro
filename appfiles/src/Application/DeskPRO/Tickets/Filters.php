@@ -4,101 +4,101 @@ namespace Application\DeskPRO\Tickets;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\TicketQueue;
+use \Application\DeskPRO\Entity\TicketFilter;
 use \Symfony\Component\DependencyInjection\ContainerAware;
 
-class Queues
+class Filters
 {
 	/**
-	 * Find all queues a person can use.
+	 * Find all filters a person can use.
 	 *
 	 * @param mixed $person Person or person ID
-	 * @return array Collection of TicketQueue entities
+	 * @return array Collection of TicketFilter entities
 	 */
-	public function getQueuesForPerson($person)
+	public function getFiltersForPerson($person)
 	{
 		return App::getOrm()
-			->getRepository('DeskPRO:TicketQueue')
-			->getQueuesForPerson($person);
+			->getRepository('DeskPRO:TicketFilter')
+			->getFiltersForPerson($person);
 	}
 
 
-	
+
 	/**
-	 * Get a ticket queue from an ID
-	 * @param int $ticket_queue_id
-	 * @return TicketQueue
+	 * Get a ticket filter from an ID
+	 * @param int $ticket_filter_id
+	 * @return TicketFilter
 	 */
-	public function getQueueFromId($ticket_queue_id)
+	public function getFilterFromId($ticket_filter_id)
 	{
 		return App::getOrm()
-			->getRepository('DeskPRO:TicketQueue')
-			->find($ticket_queue_id);
+			->getRepository('DeskPRO:TicketFilter')
+			->find($ticket_filter_id);
 	}
 
 
-	
+
 	/**
-	 * Get the number of results in a queue.
+	 * Get the number of results in a filter.
 	 *
-	 * @param TicketQueue $ticket_queue
+	 * @param TicketFilter $ticket_filter
 	 * @return int
 	 */
-	public function getCountForQueue($ticket_queue)
+	public function getCountForFilter($ticket_filter)
 	{
-		$ticket_queue = App::getOrm()->getRepository('DeskPRO:TicketQueue')->getTicketQueueFromVar($ticket_queue);
+		$ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
 
-		return $ticket_queue->getResultsCount();
+		return $ticket_filter->getResultsCount();
 	}
 
 
 
 	/**
-	 * Get the counts for each queue a person can see.
+	 * Get the counts for each filter a person can see.
 	 *
 	 * @param mixed $person Person or person ID
 	 * @return array
 	 */
-	public function getAllCountsForPersonQueues($person)
+	public function getAllCountsForPersonFilters($person)
 	{
-		$coll = $this->getQueuesForPerson($person);
-		return $this->getAllCountsForQueuesCollection($coll);
+		$coll = $this->getFiltersForPerson($person);
+		return $this->getAllCountsForFiltersCollection($coll);
 	}
 
 
-	
+
 	/**
-	 * Get counts for each queue in a collection.
-	 * 
-	 * @param array $ticket_queues
+	 * Get counts for each filter in a collection.
+	 *
+	 * @param array $ticket_filters
 	 * @return array
 	 */
-	public function getAllCountsForQueuesCollection($ticket_queues)
+	public function getAllCountsForFiltersCollection($ticket_filters)
 	{
 		$counts = array();
 
-		foreach ($ticket_queues as $ticket_queue) {
-			$counts[$ticket_queue['id']] = $ticket_queue->getResultsCount();
+		foreach ($ticket_filters as $ticket_filter) {
+			$counts[$ticket_filter['id']] = $ticket_filter->getResultsCount();
 		}
 
 		return $counts;
 	}
 
 
-	
+
 	/**
-	 * Get ticket results from a queue
-	 * 
-	 * @param TicketQueue $ticket_queue
+	 * Get ticket results from a filter
+	 *
+	 * @param TicketFilter $ticket_filter
 	 * @param int $page
 	 * @param int $per_page
 	 * @return array
 	 */
-	public function getTicketsFromQueue($ticket_queue, $page = 1, $per_page = 25)
+	public function getTicketsFromFilter($ticket_filter, $page = 1, $per_page = 25)
 	{
-		$ticket_queue = App::getOrm()->getRepository('DeskPRO:TicketQueue')->getTicketQueueFromVar($ticket_queue);
+		$ticket_filter = App::getOrm()->getRepository('DeskPRO:TicketFilter')->getTicketFilterFromVar($ticket_filter);
 
-		$result_ids = $ticket_queue->getResults();
+		$result_ids = $ticket_filter->getResults();
 
 		if ($per_page) {
 			$result_ids = array_chunk($result_ids, $per_page);
@@ -160,7 +160,7 @@ class Queues
 	}
 
 
-	
+
 	/**
 	 * Get the counts for each flag a person has.
 	 *

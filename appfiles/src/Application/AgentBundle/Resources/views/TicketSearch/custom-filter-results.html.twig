@@ -1,0 +1,35 @@
+<script>
+pageMeta.title = 'Ticket Filter';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
+pageMeta.pageUrl = '{{ path('agent_ticketsearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_ticketsearch_customfilter') }}?cache_id={{cache_id}}';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ticketsearch_save_resultprefs', {'cache_id': cache_id}) }}';
+{% if cache_id %}
+	pageMeta.cache_id = {{cache_id}};
+{% endif %}
+{% if not tickets %}
+	pageMeta.noResults = true;
+{% endif %}
+</script>
+<div class="content">
+	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
+
+	{% include 'AgentBundle:TicketSearch:part-results-grouping.html.twig' %}
+
+	<div class="inner-box-tab-content box-list">
+		<table class="list" cellspacing="0" width="100%">
+			{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
+			{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
+		</table>
+	</div>
+
+	<div class="loading-more">
+		Loading more results ...
+	</div>
+	<div class="no-more-results">
+		There are no more results.
+	</div>
+
+	{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
+</div>
+{% include 'AgentBundle:TicketSearch:part-action-bar.html.twig' %}

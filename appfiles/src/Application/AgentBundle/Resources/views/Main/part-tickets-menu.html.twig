@@ -3,18 +3,18 @@
 	<a>Tickets</a>
 	<ul class="wrap-dropdown-tabs">
 		<li data-route="page:{{ path('agent_ticket_new') }}"><span class="new-ticket">Create Ticket</span></li>
-		<li data-route="page:{{ path('agent_ticketsearch_filter') }}"><span class="search">Search</span></li>
+		<li data-route="page:{{ path('agent_ticketsearch_customfilter') }}"><span class="search">Search</span></li>
 	</ul>
 	<div class="wrap-dropdown n-drop tickets-drop has-tabs"><div class="x-track">
 		{# tickets_main_section #}
 		<div id="tickets_main_section">
 			<div class="top-tickets-info">
 				<ol>
-					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedqueue', {'queue_name': 'agent'}) }}">Yours<span class="ticket-counter" id="filter_agent_count">0</span></li>
-					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedqueue', {'queue_name': 'participant'}) }}">Participated<span class="ticket-counter" id="filter_participant_count">0</span></li>
-					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedqueue', {'queue_name': 'agent_team'}) }}">Your Teams<span class="ticket-counter" id="filter_agent_team_count">0</span></li>
-					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedqueue', {'queue_name': 'unassigned'}) }}">Unassigned<span class="ticket-counter" id="filter_unassigned_count">0</span></li>
-					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedqueue', {'queue_name': 'all'}) }}">All<span class="ticket-counter" id="filter_all_count">0</span></li>
+					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent'}) }}">Yours<span class="ticket-counter" id="filter_agent_count">0</span></li>
+					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'participant'}) }}">Participated<span class="ticket-counter" id="filter_participant_count">0</span></li>
+					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent_team'}) }}">Your Teams<span class="ticket-counter" id="filter_agent_team_count">0</span></li>
+					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'unassigned'}) }}">Unassigned<span class="ticket-counter" id="filter_unassigned_count">0</span></li>
+					<li data-route="listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'all'}) }}">All<span class="ticket-counter" id="filter_all_count">0</span></li>
 				</ol>
 			</div>
 

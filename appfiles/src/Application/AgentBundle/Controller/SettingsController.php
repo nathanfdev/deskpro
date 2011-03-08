@@ -72,44 +72,44 @@ class SettingsController extends AbstractController
 
 
 	############################################################################
-	# Ticket Queues
+	# Ticket Filters
 	############################################################################
 
 	/**
-	 * Just a list of queues
+	 * Just a list of filters
 	 */
-	public function ticketQueuesAction()
+	public function ticketFiltersAction()
 	{
-		$queues_all = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
+		$filters_all = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
 
-		$queues = array();
-		foreach ($queues_all as $q) {
+		$filters = array();
+		foreach ($filters_all as $q) {
 			if (!$q['sys_name']) {
-				$queues[] = $q;
+				$filters[] = $q;
 			}
 		}
 
-		return $this->render('AgentBundle:Settings:ticket-queues.html.twig', array(
-			'queues' => $queues
+		return $this->render('AgentBundle:Settings:ticket-filters.html.twig', array(
+			'filters' => $filters
 		));
 	}
 
 	/**
-	 * Edit a queue
+	 * Edit a filter
 	 */
-	public function ticketQueueEditAction($queue_id)
+	public function ticketFilterEditAction($filter_id)
 	{
-		if ($queue_id) {
-			$queue = $this->em->find('DeskPRO:TicketQueue', $queue_id);
-			if ($queue AND $queue['sys_name']) {
-				$queue = null;
+		if ($filter_id) {
+			$filter = $this->em->find('DeskPRO:TicketFilter', $filter_id);
+			if ($filter AND $filter['sys_name']) {
+				$filter = null;
 			}
 
-			if (!$queue) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no queue with ID $queue_id");
+			if (!$filter) {
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no filter with ID $filter_id");
 			}
 		} else {
-			$queue = new Entity\TicketQueue;
+			$filter = new Entity\TicketFilter;
 		}
 
 		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
@@ -119,33 +119,33 @@ class SettingsController extends AbstractController
 		$term_options['custom_ticket_fields'] = $custom_fields;
 
 		if ($this->isPostRequest()) {
-			$errors = $this->_processEditQueue($queue);
+			$errors = $this->_processEditFilter($filter);
 			if (!$errors) {
 				echo "Saved!";
 			}
 		}
 
-		return $this->render('AgentBundle:Settings:ticket-queue-edit.html.twig', array(
+		return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', array(
 			'term_options' => $term_options,
-			'queue' => $queue
+			'filter' => $filter
 		));
 	}
 
-	public function _processEditQueue(Entity\TicketQueue $queue)
+	public function _processEditFilter(Entity\TicketFilter $filter)
 	{
-		$queue['title']    = $this->in->getString('queue.title');
-		$queue['group_by'] = $this->in->getString('queue.group_by');
-		$queue['order_by'] = $this->in->getString('queue.order_by');
-		$queue['terms']    = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+		$filter['title']    = $this->in->getString('filter.title');
+		$filter['group_by'] = $this->in->getString('filter.group_by');
+		$filter['order_by'] = $this->in->getString('filter.order_by');
+		$filter['terms']    = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
 
-		if (!$queue['person_id']) {
-			$queue['person'] = $this->person;
+		if (!$filter['person_id']) {
+			$filter['person'] = $this->person;
 		}
 
-		$queue['is_global'] = true;
-		$queue['is_enabled'] = true;
+		$filter['is_global'] = true;
+		$filter['is_enabled'] = true;
 
-		$this->em->persist($queue);
+		$this->em->persist($filter);
 		$this->em->flush();
 
 		return null;

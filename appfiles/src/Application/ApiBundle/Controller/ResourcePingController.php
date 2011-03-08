@@ -27,8 +27,8 @@ class ResourcePingController extends AbstractController
 	 */
 	public function postObjectUpdated($resource_id, $record_id)
 	{
-		$queue = $this['deskpro.core.queue_factory']->createForQueue('object_updated');
-		$queue->send("$resource_id:$record_id");
+		$filter = $this['deskpro.core.filter_factory']->createForFilter('object_updated');
+		$filter->send("$resource_id:$record_id");
 
 		return $this->createApiResponse(array('success' => true));
 	}

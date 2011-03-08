@@ -32,12 +32,12 @@ class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 	const NOTIFY_PROPERTY_CHANGE    = 'property_change';
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketQueue
+	 * @var \Application\DeskPRO\Entity\TicketFilter
 	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="TicketQueue")
-	 * @orm:JoinColumn(name="queue_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="TicketFilter")
+	 * @orm:JoinColumn(name="filter_id", referencedColumnName="id")
 	 */
-	protected $queue = null;
+	protected $filter = null;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person

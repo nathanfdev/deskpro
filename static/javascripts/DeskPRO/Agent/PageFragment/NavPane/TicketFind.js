@@ -1,20 +1,20 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.NavPane');
 DeskPRO.Agent.PageFragment.NavPane.TicketFind = new Class({
 	Extends: DeskPRO.Agent.PageFragment.NavPane.Basic,
-	
+
 	wrapper: null,
-	
-	cancelClickActivateQueue: false,
+
+	cancelClickActivateFilter: false,
 	initPage: function(el) {
-		
+
 		this.parent(el);
-		
+
 		this.wrapper = el;
 		var self = this;
-		
+
 		$('.main-nav li', el).click(function() {
-			if (self.cancelClickActivateQueue) {
-				self.cancelClickActivateQueue = false;
+			if (self.cancelClickActivateFilter) {
+				self.cancelClickActivateFilter = false;
 				return;
 			}
 			DeskPRO_Window.runPageRouteFromElement(this);

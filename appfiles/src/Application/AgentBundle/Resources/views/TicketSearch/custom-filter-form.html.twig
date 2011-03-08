@@ -1,7 +1,7 @@
 <script>
 pageMeta.title = 'Find Tickets with a Filter';
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilterForm';
-pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_runfilter') }}';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm';
+pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_customfilter') }}';
 {% if autorun %}
 	pageMeta.autorun = true;
 {% endif %}
@@ -44,7 +44,7 @@ pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_runfilter') }}';
 					<select name="filter[group_by]">
 						<option value="">(No grouping)</option>
 						{% for id,name in {'priority_id':'Priority', 'status': 'Status', 'department_id': 'Department', 'category_id': 'Category', 'product_id': 'Product', 'agent_id': 'Agent', 'agent_team_id': 'Agent Team'} %}
-							<option value="{{id}}" {%if queue.group_by == id %}selected="selected"{%endif%}>{{name}}</option>
+							<option value="{{id}}" {%if filter.group_by == id %}selected="selected"{%endif%}>{{name}}</option>
 						{% endfor %}
 					</select>
 				</div>

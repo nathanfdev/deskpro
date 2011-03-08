@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
 
 /**
- * Ticket queues
+ * Ticket triggers
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketTrigger")
  * @orm:HasLifecycleCallbacks

@@ -80,23 +80,23 @@ agent_settings_ticketmacros_del:
   defaults: { _controller: AgentBundle:Settings:ticketMacroDelete }
   requirements: { macro_id: "\d+" }
 
-agent_settings_ticketqueues:
-  pattern: /settings/ticket-queues
-  defaults: { _controller: AgentBundle:Settings:ticketQueues }
+agent_settings_ticketfilters:
+  pattern: /settings/ticket-filters
+  defaults: { _controller: AgentBundle:Settings:ticketFilters }
 
-agent_settings_ticketqueues_edit:
-  pattern: /settings/ticket-queues/{queue_id}/edit
-  defaults: { _controller: AgentBundle:Settings:ticketQueueEdit }
-  requirements: { queue_id: "\d+" }
+agent_settings_ticketfilters_edit:
+  pattern: /settings/ticket-filters/{filter_id}/edit
+  defaults: { _controller: AgentBundle:Settings:ticketFilterEdit }
+  requirements: { filter_id: "\d+" }
 
-agent_settings_ticketqueues_del:
-  pattern: /settings/ticket-queues/{queue_id}/delete
-  defaults: { _controller: AgentBundle:Settings:ticketQueueDelete }
-  requirements: { queue_id: "\d+" }
+agent_settings_ticketfilters_del:
+  pattern: /settings/ticket-filters/{filter_id}/delete
+  defaults: { _controller: AgentBundle:Settings:ticketFilterDelete }
+  requirements: { filter_id: "\d+" }
 
-agent_settings_ticketqueues_new:
-  pattern: /settings/ticket-queues/new-queue
-  defaults: { _controller: AgentBundle:Settings:ticketQueueEdit, queue_id: 0 }
+agent_settings_ticketfilters_new:
+  pattern: /settings/ticket-filters/new-filter
+  defaults: { _controller: AgentBundle:Settings:ticketFilterEdit, filter_id: 0 }
 
 ################################################################################
 # People
@@ -227,9 +227,9 @@ agent_ticketsearch_ajaxmassactions:
   pattern: /ticket-search/ajax-mass-actions
   defaults: { _controller: AgentBundle:TicketSearch:ajaxMassActions }
 
-agent_ticketsearch_queuespane:
-  pattern: /ticket-search/queues-pane
-  defaults: { _controller: AgentBundle:TicketSearch:queuesPane }
+agent_ticketsearch_filterspane:
+  pattern: /ticket-search/filters-pane
+  defaults: { _controller: AgentBundle:TicketSearch:filtersPane }
 
 agent_ticketsearch_flaggedpane:
   pattern: /ticket-search/flagged-pane
@@ -239,13 +239,13 @@ agent_ticketsearch_findpane:
   pattern: /ticket-search/find-pane
   defaults: { _controller: AgentBundle:TicketSearch:findPane }
 
-agent_ticketsearch_filter:
-  pattern: /ticket-search/filter
-  defaults: { _controller: AgentBundle:TicketSearch:filter }
+agent_ticketsearch_customfilter:
+  pattern: /ticket-search/custom-filter
+  defaults: { _controller: AgentBundle:TicketSearch:customFilter }
 
-agent_ticketsearch_runfilter:
-  pattern: /ticket-search/filter/run
-  defaults: { _controller: AgentBundle:TicketSearch:runFilter }
+agent_ticketsearch_runcustomfilter:
+  pattern: /ticket-search/custom-filter/run
+  defaults: { _controller: AgentBundle:TicketSearch:runCustomFilter }
 
 agent_ticketsearch_search:
   pattern: /ticket-search/search
@@ -255,14 +255,14 @@ agent_ticketsearch_runsearch:
   pattern: /ticket-search/search/run
   defaults: { _controller: AgentBundle:TicketSearch:runSearch }
 
-agent_ticketsearch_runqueue:
-  pattern: /ticket-search/queue/{queue_id}
-  defaults: { _controller: AgentBundle:TicketSearch:runqueue }
-  requirements: { queue_id: "\d+" }
+agent_ticketsearch_runfilter:
+  pattern: /ticket-search/filter/{filter_id}
+  defaults: { _controller: AgentBundle:TicketSearch:runfilter }
+  requirements: { filter_id: "\d+" }
 
-agent_ticketsearch_runnamedqueue:
-  pattern: /ticket-search/queue/{queue_name}
-  defaults: { _controller: AgentBundle:TicketSearch:runNamedQueue }
+agent_ticketsearch_runnamedfilter:
+  pattern: /ticket-search/filter/{filter_name}
+  defaults: { _controller: AgentBundle:TicketSearch:runNamedFilter }
 
 agent_ticketsearch_runflag:
   pattern: /ticket-search/flag/{flag}

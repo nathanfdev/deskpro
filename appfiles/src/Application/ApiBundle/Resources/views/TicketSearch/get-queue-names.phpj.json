@@ -1,8 +1,8 @@
 <?php
-$OUTPUT['queues'] = array();
-foreach ($queues as $queue) {
-	$OUTPUT['queues'][] = array(
-		'id' => $queue['id'],
-		'title' => $queue['title']
+$OUTPUT['filters'] = array();
+foreach ($filters as $filter) {
+	$OUTPUT['filters'][] = array(
+		'id' => $filter['id'],
+		'title' => $filter['title']
 	);
 }

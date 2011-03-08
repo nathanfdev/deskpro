@@ -1,0 +1,8 @@
+{% for filter in filters %}
+	{% if not filter.sys_name %}
+		<li class="filter-{{filter.id}}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+			<span class="list-counter" id="filter_{{filter.id}}_count">-</span>
+			<a>{{filter.title}}</a>
+		</li>
+	{% endif %}
+{% endfor %}

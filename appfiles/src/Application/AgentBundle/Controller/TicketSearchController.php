@@ -12,7 +12,7 @@
 namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\Searcher\TicketSearch;
-use \Application\DeskPRO\Entity\TicketQueue;
+use \Application\DeskPRO\Entity\TicketFilter;
 use \Application\DeskPRO\Entity\Ticket;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
@@ -29,56 +29,56 @@ class TicketSearchController extends AbstractController
 		return $this->render('AgentBundle:TicketSearch:list-blank.html.twig');
 	}
 
-	public function queuesPaneAction()
+	public function filtersPaneAction()
 	{
-		$queues = App::getApi('tickets.queues')->getQueuesForPerson($this->person);
+		$filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
 
-		$order = $this->person->getPref('agent.ui.ticket-queues-order');
+		$order = $this->person->getPref('agent.ui.ticket-filters-order');
 		if ($order) {
-			$queues_unordered = $queues;
-			$queues = array();
+			$filters_unordered = $filters;
+			$filters = array();
 
 			foreach ($order as $id) {
-				if (isset($queues_unordered[$id])) {
-					$queues[$id] = $queues_unordered[$id];
-					unset($queues_unordered[$id]);
+				if (isset($filters_unordered[$id])) {
+					$filters[$id] = $filters_unordered[$id];
+					unset($filters_unordered[$id]);
 				}
 			}
 
-			if (count($queues_unordered)) {
-				foreach ($queues_unordered as $id => $q) {
-					$queues[$id] = $q;
+			if (count($filters_unordered)) {
+				foreach ($filters_unordered as $id => $q) {
+					$filters[$id] = $q;
 				}
 			}
 		}
 
-		return $this->render('AgentBundle:TicketSearch:pane-queues.html.twig', array(
-			'queues' => $queues
+		return $this->render('AgentBundle:TicketSearch:pane-filters.html.twig', array(
+			'filters' => $filters
 		));
 	}
 
-	public function runQueueAction($queue_id)
+	public function runFilterAction($filter_id)
 	{
-		$queue = App::getEntityRepository('DeskPRO:TicketQueue')->find($queue_id);
-		$results_helper = Helper\TicketResults::newFromQueue($this, $queue);
+		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
+		$results_helper = Helper\TicketResults::newFromFilter($this, $filter);
 
 		$vars = array(
-			'queue' => $queue,
-			'queue_id' => $queue['id'],
+			'filter' => $filter,
+			'filter_id' => $filter['id'],
 		);
 
-		$pref_display_fields = $this->person->getPref('agent.ui.ticket-queue-display-fields.' . $queue['id']);
+		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
 		if ($pref_display_fields) {
 			$vars['display_fields'] = $pref_display_fields;
 		}
 
-		return $this->_getResponseForTickets('queue', $queue['id'], $results_helper, $vars);
+		return $this->_getResponseForTickets('filter', $filter['id'], $results_helper, $vars);
 	}
 
-	public function runNamedQueueAction($queue_name)
+	public function runNamedFilterAction($filter_name)
 	{
-		$queue = App::getEntityRepository('DeskPRO:TicketQueue')->findOneBy(array('sys_name' => $queue_name));
-		return $this->runQueueAction($queue['id']);
+		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
+		return $this->runFilterAction($filter['id']);
 	}
 
 	protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())
@@ -176,7 +176,7 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
-	public function filterAction()
+	public function customFilterAction()
 	{
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
@@ -184,7 +184,7 @@ class TicketSearchController extends AbstractController
 		$preselect_terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
 		$autorun = $this->in->getBool('autorun');
 
-		return $this->render('AgentBundle:TicketSearch:filter-form.html.twig', array(
+		return $this->render('AgentBundle:TicketSearch:custom-filter-form.html.twig', array(
 			'ticket_options' => $ticket_options,
 			'preselect_terms' => $preselect_terms,
 			'autorun' => $autorun
@@ -203,7 +203,7 @@ class TicketSearchController extends AbstractController
 		));
 	}
 
-	public function runFilterAction()
+	public function runCustomFilterAction()
 	{
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
@@ -343,7 +343,7 @@ class TicketSearchController extends AbstractController
 
 		// TODO: Need a cleaner way of converting a group into a searchable item
 		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runfilter') . "?$mode_crit&terms[5][rule_type]=status&terms[5][op]=is&terms[5][status]=open&terms[6][rule_type]=$group1_nosuf&terms[6][op]=is&terms[6][$group1_nosuf]=\$group1_id";
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_customfilter') . "?$mode_crit&terms[5][rule_type]=status&terms[5][op]=is&terms[5][status]=open&terms[6][rule_type]=$group1_nosuf&terms[6][op]=is&terms[6][$group1_nosuf]=\$group1_id";
 
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
 		$list_url_group2 = $list_url_group1 . "&terms[7][rule_type]=$group2_nosuf&terms[7][op]=is&terms[7][$group2_nosuf]=\$group2_id";
@@ -417,7 +417,7 @@ class TicketSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$tickets = App::getApi('tickets.queues')->getTicketsFromFlagged($flag, $this->person, $page, 50);
+		$tickets = App::getApi('tickets.filters')->getTicketsFromFlagged($flag, $this->person, $page, 50);
 
 		$tpl = 'AgentBundle:TicketSearch:flagged-results.html.twig';
 		if ($this->in->getBool('partial')) {

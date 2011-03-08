@@ -269,7 +269,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	_handleFlagMenuClickSuccess: function(old_flag, new_flag) {
 		DeskPRO_Window.stopLoadingIndicator();
 
-		DeskPRO_Window.getMessageBroker().sendMessage('queue-flagged.flag-changed', {
+		DeskPRO_Window.getMessageBroker().sendMessage('filter-flagged.flag-changed', {
 			old_flag: old_flag,
 			new_flag: new_flag
 		});
