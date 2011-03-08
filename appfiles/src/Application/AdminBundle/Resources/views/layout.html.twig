@@ -328,21 +328,21 @@
 										<a href="">Settings</a>
 										<p>Change your helpdesk settings, like your website URL</p>
 									</li>
+									<li class="link-email">
+										<a href="">Email</a>
+										<p>Manage email addresses, SMTP settings and gateways.</p>
+									</li>
 									<li class="link-departments">
 										<a href="{{ path('admin_departments') }}">Departments</a>
 										<p>Manage your departments</p>
-									</li>
-									<li class="link-products">
-										<a href="{{ path('admin_products') }}">Products</a>
-										<p>Manage your products</p>
 									</li>
 									<li class="link-portal">
 										<a href="">Portal</a>
 										<p>Change the appearance of your helpdesk homepage.</p>
 									</li>
-									<li class="link-email">
-										<a href="">Email</a>
-										<p>Manage email addresses, SMTP settings and gateways.</p>
+									<li class="link-products">
+										<a href="{{ path('admin_products') }}">Products</a>
+										<p>Manage your products</p>
 									</li>
 									<li class="link-languages">
 										<a href="{{ path('admin_locales') }}">Languages</a>
@@ -434,17 +434,13 @@
 							<a>Tickets</a>
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
-									<li class="link-ticket-filters">
-										<a href="">Filters</a>
-										<p>Create filters that will appear in agent interface to help your team find tickets faster.</p>
-									</li>
-									<li class="link-fields">
-										<a href="{{ path('admin_customdeftickets') }}">Fields</a>
-										<p>Create custom fields that can be added to tickets, and mapped to specific departments and other criteria.</p>
-									</li>
 									<li class="link-fields">
 										<a href="{{ path('admin_tickets_properties') }}">Properties</a>
 										<p>Manage ticket properties like categories, priorities, workflows and widgets.</p>
+									</li>
+									<li class="link-ticket-filters">
+										<a href="">Filters</a>
+										<p>Create filters that will appear in agent interface to help your team find tickets faster.</p>
 									</li>
 									<li class="link-ticket-triggers">
 										<a href="{{ path('admin_tickettriggers') }}">Triggers and Escalations</a>
@@ -453,6 +449,10 @@
 									<li class="link-ticket-macros">
 										<a href="">Macros</a>
 										<p>Create groups of actions that can be performed on tickets with a single click.</p>
+									</li>
+									<li class="link-fields">
+										<a href="{{ path('admin_customdeftickets') }}">Fields</a>
+										<p>Create custom fields that can be added to tickets, and mapped to specific departments and other criteria.</p>
 									</li>
 									<li class="link-labels">
 										<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">Labels</a>
@@ -463,16 +463,12 @@
 						</li>
 
 						<li class="deals-nav">
-							<a>Leads</a>
+							<a>Deals</a>
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
-									<li class="link-leads-statuses">
-										<a href="">Statuses</a>
-										<p>Manage stauses for leads.</p>
-									</li>
 									<li class="link-fields">
 										<a href="">Fields</a>
-										<p>Create custom fields that can be added to leads.</p>
+										<p>Managed deal statuses and custom fields.</p>
 									</li>
 									<li class="link-labels">
 										<a href="">Labels</a>
@@ -496,7 +492,7 @@
 						</li>
 						<li class="ideas-nav"><a>Ideas</a></li>
 						<li class="troubleshooters-nav"><a>Troubles</a></li>
-						<li class="downloads-nav"><a>Downloads</a></li>
+						<li class="downloads-nav"><a>Files</a></li>
 						<li class="knowledgebase-nav"><a>KB</a></li>
 
 						<li class="sep">-</li>
