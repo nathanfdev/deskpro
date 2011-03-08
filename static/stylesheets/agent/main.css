@@ -596,6 +596,17 @@ background-color: #edeff3;
 	color: #fff;
 }
 
+#header .admin-actions ul li.portal a {
+	background: transparent url("../../images/nav-icons/small-portal.png") no-repeat center left;
+	padding-left: 20px;
+	margin-left: 3px;
+}
+
+#header .admin-actions ul li.agent a {
+	background: transparent url("../../images/nav-icons/small-agent.png") no-repeat center left;
+	padding-left: 19px;
+}
+
 #header .admin-actions ul li.billing a {
 	background-position: left -179px;
 }
