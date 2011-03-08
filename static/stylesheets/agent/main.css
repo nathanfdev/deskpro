@@ -987,10 +987,12 @@ in and out, so we dont want actual scrollbars */
 
 #header .top-tickets-info ol li:first-child {
 	border-left: none;
+	width: 75px;
 }
 
 #header .top-tickets-info ol li:last-child {
 	border-right: none;
+	width: 75px;
 }
 
 #header .top-tickets-info ol li {
@@ -1001,6 +1003,8 @@ in and out, so we dont want actual scrollbars */
 	color: #4D5054;
 	font-weight: bold;
 	cursor: pointer;
+	width: 97px;
+	text-align: center;
 }
 
 #header .top-tickets-info ol li:hover {
