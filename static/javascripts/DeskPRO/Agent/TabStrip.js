@@ -164,7 +164,7 @@ DeskPRO.Agent.TabStrip = new Class({
 		}
 
 		// If the clicked thing was the close button, or if its a middle-click...
-		if (el_click.parent().is('.close-tab') || event.which == 2 || event.isDbl) {
+		if (el_click.is('.close-tab') || event.which == 2 || event.isDbl) {
 			this.tabManager.removeTab(el.data('tab-id'));
 			return;
 		}
