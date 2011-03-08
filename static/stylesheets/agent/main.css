@@ -710,7 +710,7 @@ background-color: #edeff3;
     border-radius: 5px 5px 0 0;
 
 	z-index: 400;
-	min-width: 40px;
+	min-width: 30px;
 }
 
 #header .nav > .wrapper-top-bar > ul > li:hover {
@@ -791,52 +791,72 @@ background-color: #edeff3;
 
 #header .nav .wrapper-top-bar > ul  > li > a {
 	display: block;
-	background: url("../../images/icn-nav-sprite.png") 13px top no-repeat;
+	background-repeat: no-repeat;
+	background-position: top center;
 	padding: 32px 3px 0 3px;
 	color: #3c3e3f;
 
 	line-height: 10px;
 	font-family: 'Helvetica Neue', Arial, Helvetica, sans-serif;
+
+	text-align: center;
 }
 
+#header .nav .wrapper-top-bar > ul li.tickets-nav >a {
+	background-image: url("../../images/nav-icons/Tickets.png");
+}
+
+
 #header .nav .wrapper-top-bar > ul li.chats-nav >a {
-	background-position: -60px top;
+	background-image: url("../../images/nav-icons/Chat.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.twitter-nav > a {
-	background-position: -122px top;
+	background-image: url("../../images/nav-icons/Twitter.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.facebook-nav  >a {
-	background-position: -182px top;
+	background-image: url("../../images/nav-icons/Facebook.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.calls-nav  >a {
-	background-position: -268px top;
+	background-image: url("../../images/nav-icons/Calls.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.people-nav > a {
-	background-position: -321px top;
+	background-image: url("../../images/nav-icons/People.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.deals-nav  > a {
-	background-position: -381px top;
+	background-image: url("../../images/nav-icons/Leads.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.calendar-nav > a {
-	background-position: -440px top;
+	background-image: url("../../images/nav-icons/Calendar.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.tasks-nav > a {
-	background-position: -513px top;
+	background-image: url("../../images/nav-icons/Tasks.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.publish-nav > a {
-	background-position: -577px top;
+	background-image: url("../../images/nav-icons/Publish.png");
 }
 
 #header .nav .wrapper-top-bar > ul li.ideas-nav > a {
-	background-position: -652px top;
+	background-image: url("../../images/nav-icons/Ideas.png");
+}
+
+#header .nav .wrapper-top-bar > ul li.downloads-nav > a {
+	background-image: url("../../images/nav-icons/Downloads.png");
+}
+
+#header .nav .wrapper-top-bar > ul li.troubleshooters-nav > a {
+	background-image: url("../../images/nav-icons/Troubleshooters.png");
+}
+
+#header .nav .wrapper-top-bar > ul li.knowledgebase-nav > a {
+	background-image: url("../../images/nav-icons/Knowledgebase.png");
 }
 
 #header .nav .wrapper-top-bar > ul  > li.setup-nav > a { background: url("../../images/nav-icons/Settings.png") no-repeat center top; }
@@ -905,9 +925,9 @@ background-color: #edeff3;
 #header .nav ol.icon-menu > li.link-ticket-macros { background-image: url("../../images/nav-icons/Macros.png"); }
 #header .nav ol.icon-menu > li.link-ticket-macros { background-image: url("../../images/nav-icons/Macros.png"); }
 #header .nav ol.icon-menu > li.link-leads-statuses { background-image: url("../../images/nav-icons/Widgets.png"); }
-#header .nav ol.icon-menu > li.link-knowledgebase { background-image: url("../../images/nav-icons/Portal.png"); }
-#header .nav ol.icon-menu > li.link-troubleshooters { background-image: url("../../images/nav-icons/Portal.png"); }
-#header .nav ol.icon-menu > li.link-downloads { background-image: url("../../images/nav-icons/Portal.png"); }
+#header .nav ol.icon-menu > li.link-knowledgebase { background-image: url("../../images/nav-icons/Knowledgebase.png"); }
+#header .nav ol.icon-menu > li.link-downloads { background-image: url("../../images/nav-icons/Downloads.png"); background-position: 11px 50%; }
+#header .nav ol.icon-menu > li.link-troubleshooters { background-image: url("../../images/nav-icons/Troubleshooters.png"); }
 #header .nav ol.icon-menu > li.link-widgets { background-image: url("../../images/nav-icons/Widgets.png"); }
 #header .nav ol.icon-menu > li.link-api { background-image: url("../../images/nav-icons/API.png"); }
 #header .nav ol.icon-menu > li.link-plugins { background-image: url("../../images/nav-icons/Settings.png"); }
@@ -1310,6 +1330,8 @@ padding: 7px 7px 0 7px;
 	-webkit-border-radius: 0 0 3px 3px;
     -moz-border-radius: 0 0 3px 3px;
     border-radius: 0 0 3px 3px;
+
+	text-align: left;
 }
 
 #header .wrap-dropdown-tabs .new-ticket {
