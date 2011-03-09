@@ -29,6 +29,10 @@ if (!Orb) var Orb = {};
  * </code>
 */
 Orb.Class = function(properties) {
+	
+	// Special initializer that disables constructor when we're
+	// calling from within a subclass constructor
+	Orb.Class.is_initializing = false;
 
 	//------------------------------
 	// DisableParentCall: true
@@ -61,19 +65,6 @@ Orb.Class = function(properties) {
 
 	delete properties.DisableParentCall;
 	
-	
-	// Special initializer that disables constructor when we're
-	// calling from within a subclass constructor
-	var is_initializing = false;
-	function newProto(class) {
-		is_initializing = true;
-		var obj = new class();
-		is_initializing = false;
-
-		return obj;
-	}
-	
-	
 	//------------------------------
 	// Extends: SomeClass
 	//
@@ -82,9 +73,10 @@ Orb.Class = function(properties) {
 	//------------------------------
 	
 	if (properties.Extends) {
-		var parent = properties.Extends;
-		var parent_proto = parent.prototype;
-		var proto = newProto(parent);
+		var parent_proto = properties.Extends.prototype;
+		Orb.Class.is_initializing = true;
+		var proto = new properties.Extends;
+		Orb.Class.is_initializing = false;
 	} else {
 		var parent_proto = {};
 		var proto = new (function() { });
@@ -105,7 +97,7 @@ Orb.Class = function(properties) {
 			var mixin = properties.Implements[i];
 			for (var name in mixin) {
 				if (!mixin.prototype || mixin.prototype.hasOwnProperty(name)) {
-					prototype[name] = mixin[name];
+					proto[name] = mixin[name];
 				}
 			}
 		}
@@ -153,17 +145,19 @@ Orb.Class = function(properties) {
 	}
 		
 	var newClass = function() {
-		if (is_initializing) return;
-		var real = newProto(arguments.callee);
-		if (real.initialize) {
-			real.initialize.apply(real, arguments);
+		if (Orb.Class.is_initializing) {
+			return;
+		}
+
+		if (this.initialize) {
+			this.initialize.apply(this, arguments);
 		}
 		
 		// Easy reference to the class object
 		// Ex to use the set ClassVars easier
-		real.CLASS = newClass;
+		this.CLASS = newClass;
 		
-		return real;
+		return this;
 	}
 	
 	if (static_props) {
