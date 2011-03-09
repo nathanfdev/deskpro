@@ -36,10 +36,10 @@ class TwitterAccountController extends AbstractController
 	{
 		// @TODO make configurable
 		$config = array(
-			'callbackUrl' => $this->generateUrl('admin_twitter_accounts_authorize', array(), true),
-    		'siteUrl' => 'http://twitter.com/oauth',
-			'consumerKey' => 'VlVgYGmZBQqFUbMvVopzdQ',
-			'consumerSecret' => 'shgfckgHZrNz8UzNkwUYVQPi90fLJrZOaIUmzAVU9fE'
+			'callbackUrl'    => $this->generateUrl('admin_twitter_accounts_authorize', array(), true),
+			'siteUrl'        => 'http://twitter.com/oauth',
+			'consumerKey'    => '8F0tLXjdjVDDsovNjWJw',
+			'consumerSecret' => '2naz7yxp6TBnEXwP9EnzLC0WU2Vwg60vm17tMntOo'
 		);
 
 		$consumer = new \Zend_Oauth_Consumer($config);
