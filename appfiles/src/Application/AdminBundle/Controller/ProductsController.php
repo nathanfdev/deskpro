@@ -30,6 +30,8 @@ class ProductsController extends AbstractController
 	 */
 	public function listAction()
 	{
+		$this->rememberLastPage();
+
 		$all_products = App::getOrm()->createQuery("
 			SELECT p
 			FROM DeskPRO:Product p

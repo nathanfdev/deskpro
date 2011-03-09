@@ -56,20 +56,31 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 	 *
 	 * @return array
 	 */
-	public function getCategoryNames()
+	public function getCategoryNames($for_ids = null)
 	{
 		$this->getCategoriesInHierarchy();
-		return $this->_cat_names;
+		if ($for_ids === null) {
+			return $this->_cat_names;
+		}
+
+		$ret = array();
+		foreach ($for_ids as $id) {
+			if (isset($this->_cat_names[$id])) {
+				$ret[] = $this->_cat_names[$id];
+			}
+		}
+
+		return $ret;
 	}
 
 
 
-	/**
-	 * Gets a flat array of cat names, indexed by cat ID. Children
-	 * names are separated by $sep.
-	 *
-	 * @return array
-	 */
+		/**
+		 * Gets a flat array of cat names, indexed by cat ID. Children
+		 * names are separated by $sep.
+		 *
+		 * @return array
+		 */
 	public function getFullCategoryNames($sep = ' > ', $include_tops = true)
 	{
 		if ($sep === null) {
@@ -78,7 +89,7 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 		return $this->_getFullCategoryNames(array(), $this->getCategoriesInHierarchy(), $sep, $include_tops);
 	}
 
-	protected function _getFullCategoryNames($basenames, $cats, $sep, $include_tops)
+		protected function _getFullCategoryNames($basenames, $cats, $sep, $include_tops)
 	{
 		$names = array();
 
@@ -99,13 +110,13 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 
 
 
-	/**
-	 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
-	 *
-	 * @param int $parent_id
-	 * @return array
-	 */
-	public function getIdsInTree($parent_id, $incude_top = true)
+		/**
+		 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
+		 *
+		 * @param int $parent_id
+		 * @return array
+		 */
+		public function getIdsInTree($parent_id, $incude_top = true)
 	{
 		$ids = array();
 		if ($incude_top AND $parent_id) {
@@ -133,13 +144,13 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 
 
 
-	/**
-	 * Returns an array indexed by department ID whose value is an array of
-	 * categories enabled for it.
-	 *
-	 * @return array
-	 */
-	public function departmentToCategoryMap()
+		/**
+		 * Returns an array indexed by department ID whose value is an array of
+		 * categories enabled for it.
+		 *
+		 * @return array
+		 */
+		public function departmentToCategoryMap()
 	{
 		$map = App::getDb()->fetchAllGrouped("
 			SELECT id, department_id
@@ -181,4 +192,4 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 
 		return $map;
 	}
-}
+	}

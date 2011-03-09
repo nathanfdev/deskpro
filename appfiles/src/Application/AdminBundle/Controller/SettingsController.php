@@ -21,6 +21,8 @@ class SettingsController extends AbstractController
 {
 	public function labelsAction($label_type)
 	{
+		$this->rememberLastPage();
+
 		$all_labels = App::getOrm()->createQuery("
 			SELECT label
 			FROM DeskPRO:LabelDef label

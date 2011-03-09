@@ -8,7 +8,7 @@ DeskPRO.AjaxPoller.Poller = new Class({
 	Implements: [Events, Options],
 
 	dataTransformers: [],
-	queuedData: [],
+	filterdData: [],
 	messageBroker: null,
 
 	maxDelayTimers: [],
@@ -28,7 +28,7 @@ DeskPRO.AjaxPoller.Poller = new Class({
 
 	/**
 	 * @option {String} ajaxUrl The URL that will handle the data we POST with this poller.
-	 * @option {Integer} interval Interval time in milliseconds where the queue is sent automatically.
+	 * @option {Integer} interval Interval time in milliseconds where the filter is sent automatically.
 	 *                            Note that specific items may have a max wait time that might fire the interval
 	 *                            before this time.
 	 *
@@ -101,19 +101,19 @@ DeskPRO.AjaxPoller.Poller = new Class({
 			}).delay(options.maxDelay, this);
 		}
 
-		this.queuedData.push([name, data, options]);
+		this.filterdData.push([name, data, options]);
 	},
 
 
 
 	/**
-	 * Send all queued data items now.
+	 * Send all filterd data items now.
 	 */
 	send: function() {
 
 		this._clearDelays();
 
-		if (!this.options.alwaysRequest && !this.queuedData.length) {
+		if (!this.options.alwaysRequest && !this.filterdData.length) {
 			this.autoSendTimeout = this.send.delay(this.options.interval, this);
 			return;
 		}
@@ -127,11 +127,11 @@ DeskPRO.AjaxPoller.Poller = new Class({
 		var send_data = [];
 		var sent_info = [];
 
-		var queuedData = this.queuedData;
-		this.queuedData = [];
+		var filterdData = this.filterdData;
+		this.filterdData = [];
 
 		var item = null;
-		while (item = queuedData.shift()) {
+		while (item = filterdData.shift()) {
 			var item_name = item[0];
 			var item_data = item_orig_data = item[1];
 			var item_opts = item[2];

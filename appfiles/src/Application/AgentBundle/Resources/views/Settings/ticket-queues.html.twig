@@ -1,33 +1,33 @@
 {% extends 'AgentBundle:Settings:settings-layout.html.twig' %}
-{% block current_page "ticket-queues" %}
+{% block current_page "ticket-filters" %}
 {% block content %}
 
 {% if show_saved_flash %}
 	<div style="float:left">
-		Queue was saved successfully!
+		Filter was saved successfully!
 	</div>
 {% endif %}
 
 <div style="text-align: right">
-	<a class="dp-button green" href="{{ path('agent_settings_ticketqueues_new') }}">Create Queue</a>
+	<a class="dp-button green" href="{{ path('agent_settings_ticketfilters_new') }}">Create Filter</a>
 </div>
 
 <br />
 
 <ul class="item-list">
-	{% for queue in queues %}
+	{% for filter in filters %}
 		<li>
 			<div style="float:right">
 				<ul class="controls">
-					<li class="delete"><a href="{{ path('agent_settings_ticketqueues_del', { 'queue_id': queue.id }) }}" onclick="return confirm('Are you sure you want to delete this queue?');">delete</a></li>
-					<li class="edit"><a href="{{ path('agent_settings_ticketqueues_edit', { 'queue_id': queue.id }) }}">edit</a></li>
+					<li class="delete"><a href="{{ path('agent_settings_ticketfilters_del', { 'filter_id': filter.id }) }}" onclick="return confirm('Are you sure you want to delete this filter?');">delete</a></li>
+					<li class="edit"><a href="{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id }) }}">edit</a></li>
 				</ul>
 			</div>
-			{{queue.title}}
+			{{filter.title}}
 		</li>
 	{% else %}
 		<li class="empty-list">
-			You have no defined queues. <a href="{{ path('agent_settings_ticketqueues_new') }}">How about you make one?</a>
+			You have no defined filters. <a href="{{ path('agent_settings_ticketfilters_new') }}">How about you make one?</a>
 		</li>
 	{% endfor %}
 </ul>

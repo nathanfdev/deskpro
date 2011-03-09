@@ -175,7 +175,7 @@ input.flat {
 .icon.facebook { background-image: url(../../images/icons/social_media_mini_icons/facebook.png); }
 .icon.linkedin { background-image: url(../../images/icons/social_media_mini_icons/linkedin.png); }
 .icon.chat { background-image: url(../../images/icons/balloons.png); }
-.icon.leads { background-image: url(../../images/icons/clipboard_text.png); }
+.icon.deals { background-image: url(../../images/icons/clipboard_text.png); }
 .icon.knowledgebase { background-image: url(../../images/icons/document__pencil.png); }
 .icon.troubleshooters { background-image: url(../../images/icons/lightning.png); }
 .icon.ideas { background-image: url(../../images/icons/bulb.png); }
@@ -560,6 +560,7 @@ div.search-top ul.grouping-info li label {
 	margin-top: 3px;
 }
 
+/*
 table.list > thead > tr {
 	background: #ABACB1;
 	background: -moz-linear-gradient(top, #ABACB1 0%, #E7E9EF 100%);
@@ -718,17 +719,17 @@ table.list tr span.subject:hover {
 table.list tr abbr.timeago {
 	float: right;
 }
-
-table.list tr.urgency-10  { background-color: #fff; }
-table.list tr.urgency-20  { background-color: #F2F5EB; }
-table.list tr.urgency-30  { background-color: #F3F5E6; }
-table.list tr.urgency-40  { background-color: #EFF0DD; }
-table.list tr.urgency-50  { background-color: #EBE7CC; }
-table.list tr.urgency-60  { background-color: #E6E0BE; }
-table.list tr.urgency-70  { background-color: #E6DCBE; }
-table.list tr.urgency-80  { background-color: #E6D8BE; }
-table.list tr.urgency-90  { background-color: #E6CEBE; }
-table.list tr.urgency-100 { background-color: #E6C5BE; }
+*/
+table.list tr.urgency-10  .check { background-color: #fff; }
+table.list tr.urgency-20  .check { background-color: #F2F5EB; }
+table.list tr.urgency-30  .check { background-color: #F3F5E6; }
+table.list tr.urgency-40  .check { background-color: #EFF0DD; }
+table.list tr.urgency-50  .check { background-color: #EBE7CC; }
+table.list tr.urgency-60  .check { background-color: #E6E0BE; }
+table.list tr.urgency-70  .check { background-color: #E6DCBE; }
+table.list tr.urgency-80  .check { background-color: #E6D8BE; }
+table.list tr.urgency-90  .check { background-color: #E6CEBE; }
+table.list tr.urgency-100 .check { background-color: #E6C5BE; }
 
 /**********************************************************
  Main Form Table

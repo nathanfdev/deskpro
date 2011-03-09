@@ -323,7 +323,7 @@ class App
 	/**
 	 * Get the session
 	 *
-	 * @return \Symfony\Application\DeskPRO\HttpFoundation\Session
+	 * @return \Application\DeskPRO\HttpFoundation\Session
 	 */
 	public static function getSession()
 	{
@@ -464,7 +464,7 @@ class App
 
 	protected static $_api_handler_names = array(
 		'tickets'                    => 'Application\\DeskPRO\\Tickets\\Tickets',
-		'tickets.queues'             => 'Application\\DeskPRO\\Tickets\\Queues',
+		'tickets.filters'            => 'Application\\DeskPRO\\Tickets\\Filters',
 		'tickets.edit'               => 'Application\\DeskPRO\\Tickets\\TicketEdit',
 		'tickets.search'             => 'Application\\DeskPRO\\Tickets\\TicketSearch',
 		'custom_fields.people'       => 'Application\\DeskPRO\\CustomFields\\PeopleFields',

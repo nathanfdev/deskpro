@@ -1,7 +1,7 @@
 <li class="field-{{field.id}}">
 	<div style="float:right">
 		<ul class="controls">
-			<li class="edit"><a class="popout-trigger" href="{{ path('admin_twitter_account_edit', {'field_id': field.id}) }}">Edit</a></li>
+			<li class="edit"><a class="popout-trigger" href="{{ path(route_basename~'edit', {'field_id': field.id}) }}">Edit</a></li>
 		</ul>
 	</div>
 	<div style="float:left;">#{{field.id}}</div>

@@ -30,6 +30,8 @@ class TicketPropertiesController extends AbstractController
 	 */
 	public function listAction()
 	{
+		$this->rememberLastPage();
+
 		$tabs = array(
 			'categories' => $this->forward('AdminBundle:TicketCategories:list')->getContent(),
 			'priorities' => $this->forward('AdminBundle:TicketPriorities:list')->getContent(),

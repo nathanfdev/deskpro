@@ -23,6 +23,8 @@ class OrganizationsController extends AbstractController
 {
 	public function listAction()
 	{
+		$this->rememberLastPage();
+
 		$all_organizations = App::getOrm()->createQuery("
 			SELECT o
 			FROM DeskPRO:Organization o

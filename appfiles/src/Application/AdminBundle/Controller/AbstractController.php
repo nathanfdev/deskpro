@@ -2,6 +2,8 @@
 
 namespace Application\AdminBundle\Controller;
 
+use \Application\DeskPRO\App;
+
 abstract class AbstractController extends \Application\DeskPRO\Controller\AbstractController
 {
 	/**
@@ -38,13 +40,21 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			// TODO implement no perms
 		}
 	}
-	
+
 	protected function _userHasPermissions()
 	{
 		if ($this->person['is_agent']) {
 			return true;
 		}
-		
+
 		return false;
+	}
+
+	protected function rememberLastPage($url = null)
+	{
+		if (!$url) {
+			$url = App::getRequest()->getRequestUri();
+		}
+		App::getSession()->set('admin_last_page', $url);
 	}
 }

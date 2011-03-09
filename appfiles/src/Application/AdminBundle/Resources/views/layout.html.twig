@@ -176,8 +176,8 @@
 			{# notifications start #}
 			<div class="left box-header notifications">
 				<ul class="noti-menu">
-					<li><span class="icn-bar tickets"></span><div class="counter"><span class="counter">12</span></div></li>
-					<li><span class="icn-bar chat"></span><div class="counter"><span class="counter">2</span></div></li>
+					<li><div class="counter"><span class="counter">12</span></div><span class="icn-bar tickets">Tickets</span></li>
+					<li><div class="counter"><span class="counter">2</span></div><span class="icn-bar chat">Chat</span></li>
 				</ul>
 				<span class="white-drop"></span>
 
@@ -200,7 +200,7 @@
 			<div class="right box-header current-user">
 				<div class="wrapper-top-bar">
 					<div class="current-user-avatar">
-						<img src="{{ asset('images/avatar-user.png') }}" alt="" />
+						<img src="{{person.getPictureUrl(16)}}" alt="" />
 					</div>
 					<div class="current-user-name">
 						<span>{{person.display_name}}</span>
@@ -302,8 +302,8 @@
 			<div class="right box-header admin-actions">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="admin"><a href="{{ path('agent') }}">Agent</a></li>
-						<li class="admin"><a href="{{ path('user') }}">Portal</a></li>
+						<li class="agent"><a href="{{ path('agent') }}">Agent</a></li>
+						<li class="portal"><a href="{{ path('user') }}">Portal</a></li>
 						<li class="billing"><a href="">Billing</a></li>
 						<li class="reports"><a href="">Reports</a></li>
 					</ul>
@@ -328,21 +328,21 @@
 										<a href="">Settings</a>
 										<p>Change your helpdesk settings, like your website URL</p>
 									</li>
+									<li class="link-email">
+										<a href="">Email</a>
+										<p>Manage email addresses, SMTP settings and gateways.</p>
+									</li>
 									<li class="link-departments">
 										<a href="{{ path('admin_departments') }}">Departments</a>
 										<p>Manage your departments</p>
-									</li>
-									<li class="link-products">
-										<a href="{{ path('admin_products') }}">Products</a>
-										<p>Manage your products</p>
 									</li>
 									<li class="link-portal">
 										<a href="">Portal</a>
 										<p>Change the appearance of your helpdesk homepage.</p>
 									</li>
-									<li class="link-email">
-										<a href="">Email</a>
-										<p>Manage email addresses, SMTP settings and gateways.</p>
+									<li class="link-products">
+										<a href="{{ path('admin_products') }}">Products</a>
+										<p>Manage your products</p>
 									</li>
 									<li class="link-languages">
 										<a href="{{ path('admin_locales') }}">Languages</a>
@@ -384,7 +384,7 @@
 							<a href="{{ path('admin_agents') }}">Agents</a>
 						</li>
 
-						<li class="users-nav">
+						<li class="people-nav">
 							<a>Users</a>
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
@@ -434,17 +434,13 @@
 							<a>Tickets</a>
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
-									<li class="link-ticket-filters">
-										<a href="">Filters</a>
-										<p>Create filters that will appear in agent interface to help your team find tickets faster.</p>
-									</li>
-									<li class="link-fields">
-										<a href="{{ path('admin_customdeftickets') }}">Fields</a>
-										<p>Create custom fields that can be added to tickets, and mapped to specific departments and other criteria.</p>
-									</li>
 									<li class="link-fields">
 										<a href="{{ path('admin_tickets_properties') }}">Properties</a>
 										<p>Manage ticket properties like categories, priorities, workflows and widgets.</p>
+									</li>
+									<li class="link-ticket-filters">
+										<a href="">Filters</a>
+										<p>Create filters that will appear in agent interface to help your team find tickets faster.</p>
 									</li>
 									<li class="link-ticket-triggers">
 										<a href="{{ path('admin_tickettriggers') }}">Triggers and Escalations</a>
@@ -453,6 +449,10 @@
 									<li class="link-ticket-macros">
 										<a href="">Macros</a>
 										<p>Create groups of actions that can be performed on tickets with a single click.</p>
+									</li>
+									<li class="link-fields">
+										<a href="{{ path('admin_customdeftickets') }}">Fields</a>
+										<p>Create custom fields that can be added to tickets, and mapped to specific departments and other criteria.</p>
 									</li>
 									<li class="link-labels">
 										<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">Labels</a>
@@ -463,20 +463,16 @@
 						</li>
 
 						<li class="deals-nav">
-							<a>Leads</a>
+							<a>Deals</a>
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
-									<li class="link-leads-statuses">
-										<a href="">Statuses</a>
-										<p>Manage stauses for leads.</p>
-									</li>
 									<li class="link-fields">
 										<a href="">Fields</a>
-										<p>Create custom fields that can be added to leads.</p>
+										<p>Managed deal statuses and custom fields.</p>
 									</li>
 									<li class="link-labels">
 										<a href="">Labels</a>
-										<p>Define labels that can be applied to leads.</p>
+										<p>Define labels that can be applied to deals.</p>
 									</li>
 								</ol>
 							</div>
@@ -495,12 +491,15 @@
 							</div>
 						</li>
 						<li class="ideas-nav"><a>Ideas</a></li>
-						<li class="portal-nav"><a>Troubles</a></li>
-						<li class="portal-nav"><a>&nbsp;&nbsp;&nbsp;&nbsp;KB&nbsp;</a></li>
+						<li class="troubleshooters-nav"><a>Troubles</a></li>
+						<li class="files-nav"><a>Files</a></li>
+						<li class="knowledgebase-nav"><a>KB</a></li>
 
 						<li class="sep">-</li>
-
-						<li class="integrations-nav"><a>Add (4)</a></li>
+						<li class="integrations-nav">
+							<span class="nav-counter">4</span>
+							<a>Add</a>
+						</li>
 					</ul>
 				</div>
 			</div>
@@ -509,12 +508,8 @@
 	</div>
 </div>
 
-<div style="padding: 15px;">
-	<table cellspacing="0" cellpadding="0" width="100%" id="pane_shell" class="{% if not nav %}no-nav{% endif %}">
-		<tr>
-			<td id="pane_content"><div id="content_wrap">{% block content %}{% endblock %}</div></td>
-		</tr>
-	</table>
+<div class="admin-single-content">
+	{% block content %}{% endblock %}
 </div>
 
 </body>

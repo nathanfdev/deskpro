@@ -17,22 +17,38 @@ use \Doctrine\ORM\EntityRepository;
 
 class Product extends EntityRepository
 {
-	protected $product_names = null;
+	protected $_product_names = null;
 
-	/**
-	 * @return array
-	 */
-	public function getProductNames()
+	protected function _loadProductNames()
 	{
-		if ($this->product_names !== null) return $this->product_names;
+		if ($this->_product_names !== null) return;
 
 		$db = App::getDb();
-		$this->product_names = $db->fetchAllKeyValue("
+		$this->_product_names = $db->fetchAllKeyValue("
 			SELECT id, title
 			FROM products
 			ORDER BY title ASC
 		");
+	}
 
-		return $this->product_names;
+	/**
+	 * @return array
+	 */
+	public function getProductNames($for_ids = null)
+	{
+		$this->_loadProductNames();
+
+		if ($for_ids === null) {
+			return $this->_product_names;
+		}
+
+		$ret = array();
+		foreach ($for_ids as $id) {
+			if (isset($this->_product_names[$id])) {
+				$ret[] = $this->_product_names[$id];
+			}
+		}
+
+		return $ret;
 	}
 }

@@ -12,7 +12,7 @@
 namespace Application\AgentBundle\Controller\Helper;
 
 use \Application\DeskPRO\Searcher\TicketSearch;
-use \Application\DeskPRO\Entity\TicketQueue;
+use \Application\DeskPRO\Entity\TicketFilter;
 use \Application\DeskPRO\Entity\ResultCache;
 use \Application\DeskPRO\Entity\Ticket;
 use \Application\DeskPRO\Entity;
@@ -59,19 +59,19 @@ class TicketResults
 	/**
 	 * @return Application\AgentBundle\Controller\Helper\TicketResults
 	 */
-	public static function newFromQueue($controller, TicketQueue $queue)
+	public static function newFromFilter($controller, TicketFilter $filter)
 	{
 		$helper = new self($controller);
-		$helper->setTicketIds($queue->getResults());
+		$helper->setTicketIds($filter->getResults());
 
-		$helper->setGroupOrderBy($queue->getSearcher()->getOrderBy());
+		$helper->setGroupOrderBy($filter->getSearcher()->getOrderBy());
 
-		if ($queue['group_by']) {
-			$helper->setGroupField($queue['group_by']);
+		if ($filter['group_by']) {
+			$helper->setGroupField($filter['group_by']);
 		}
 
 		// Or if the user has their own
-		$group_by = $controller->getPerson()->getPref('agent.ui.ticket-queue-group-by.' . $queue['id']);
+		$group_by = $controller->getPerson()->getPref('agent.ui.ticket-filter-group-by.' . $filter['id']);
 		if ($group_by) {
 			$helper->setGroupField($group_by);
 		}

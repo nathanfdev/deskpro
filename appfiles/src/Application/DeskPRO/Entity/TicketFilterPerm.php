@@ -15,11 +15,11 @@ namespace Application\DeskPRO\Entity;
  * Ticket macro permissions
  *
  * @orm:Entity
- * @orm:Table(name="ticket_queues_perms",
+ * @orm:Table(name="ticket_filters_perms",
  *     indexes={@orm:Index(name="object_idx", columns={"object_type", "object_id"})}
  * )
  */
-class TicketQueuePerm extends \Application\DeskPRO\Domain\DomainObject
+class TicketFilterPerm extends \Application\DeskPRO\Domain\DomainObject
 {
 	const TYPE_DEPARTMENT = 'department';
 	const TYPE_USERGROUP = 'usergroup';
@@ -34,16 +34,16 @@ class TicketQueuePerm extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="queue_id", type="integer", nullable=true)
+	 * @orm:Column(name="filter_id", type="integer", nullable=true)
 	 */
-	protected $queue_id = null;
+	protected $filter_id = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketQueue
-	 * @orm:OneToOne(targetEntity="TicketQueue")
-	 * @orm:JoinColumn(name="queue_id", referencedColumnName="id")
+	 * @var \Application\DeskPRO\Entity\TicketFilter
+	 * @orm:OneToOne(targetEntity="TicketFilter")
+	 * @orm:JoinColumn(name="filter_id", referencedColumnName="id")
 	 */
-	protected $queue = null;
+	protected $filter = null;
 
 	/**
 	 * The type of object this is attached to (should be the table name of

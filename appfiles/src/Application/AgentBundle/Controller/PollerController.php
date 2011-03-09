@@ -55,11 +55,11 @@ class PollerController extends AbstractController
 	# getFilterCounts
 	############################################################################
 
-	public function getQueueCountsMessage()
+	public function getFilterCountsMessage()
 	{
-		$all_counts = $queues = App::getApi('tickets.queues')->getAllCountsForPersonQueues($this->person);
+		$all_counts = $filters = App::getApi('tickets.filters')->getAllCountsForPersonFilters($this->person);
 
-		return array(array('queues.counts', $all_counts));
+		return array(array('filters.counts', $all_counts));
 	}
 
 
@@ -69,9 +69,9 @@ class PollerController extends AbstractController
 
 	public function getFlaggedCountsMessage()
 	{
-		$all_counts = $queues = App::getApi('tickets.queues')->getAllCountsForPersonFlagged($this->person);
+		$all_counts = $filters = App::getApi('tickets.filters')->getAllCountsForPersonFlagged($this->person);
 
-		return array(array('queue-flagged.counts', $all_counts));
+		return array(array('filter-flagged.counts', $all_counts));
 	}
 
 	############################################################################

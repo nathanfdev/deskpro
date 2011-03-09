@@ -259,6 +259,61 @@ abstract class SearcherAbstract
 
 
 	/**
+	 * Get a summary string for a term
+	 *
+	 * @param  $field
+	 * @param  $op
+	 * @param  $choice
+	 * @return string
+	 */
+	protected function _rangeSummary($field, $op, $choice)
+	{
+		$summary = '';
+
+		$choice = (array)$choice;
+		$range1 = !empty($choice[0]) ? $choice[0] : null;
+		$range2 = !empty($choice[1]) ? $choice[1] : null;
+
+		// There should always be at least one
+		if ($range1 === null AND $range2 === null) {
+			return '';
+		}
+
+		// Normalize operations
+		if ($op == self::OP_LT) $op = self::OP_LTE;
+		if ($op == self::OP_GT) $op = self::OP_GTE;
+
+		if ($op == self::OP_BETWEEN && ($range1 === null or $range2 === null)) {
+			if ($range1) {
+				$op = self::OP_GTE;
+			} else {
+				$op = self::OP_LTE;
+			}
+		}
+
+		if ($op == self::OP_BETWEEN) {
+			$summary = App::getTranslator()->phrase('core.x_is_between_y_and_z', array(
+				'field' => $field,
+				'value1' => $range1,
+				'value2' => $range2
+			));
+		} elseif ($op == self::OP_GTE) {
+			$summary = App::getTranslator()->phrase('core.x_is_greater_than_z', array(
+				'field' => $field,
+				'value' => $range1,
+			));
+		} else {
+			$summary = App::getTranslator()->phrase('core.x_is_less_than_z', array(
+				'field' => $field,
+				'value' => $range1,
+			));
+		}
+
+		return $summary;
+	}
+
+
+	/**
 	 * Build a where part for a range field (date/integer).
 	 *
 	 * @param  $field
@@ -369,6 +424,55 @@ abstract class SearcherAbstract
 		}
 
 		return $where;
+	}
+
+
+
+	/**
+	 * @param  $field
+	 * @param  $op
+	 * @param  $choice
+	 * @param bool $is_id
+	 * @return string
+	 */
+	protected function _choiceSummary($field, $op, $choice, $title_callback = null)
+	{
+		$summary = '';
+
+		if (!$choice) {
+			return '';
+		}
+
+		if (is_array($choice) AND count($choice) == 1) {
+			$choice = Arrays::getFirstItem($choice);
+		}
+
+		// Normalize op
+		if (is_array($choice)) {
+			if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+			if ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+		} else {
+			if ($op == self::OP_CONTAINS) $op = self::OP_IS;
+			if ($op == self::OP_NOTCONTAINS) $op = self::OP_NOT;
+		}
+
+		if ($title_callback) {
+			$title = call_user_func($title_callback, $choice, $field);
+		} else {
+			$title = $choice;
+		}
+
+		if (is_array($title)) {
+			$title = implode(', ', (array)$title);
+		}
+
+		if ($op == self::OP_IS OR $op == self::OP_CONTAINS) {
+			$summary = App::getTranslator()->phrase('core.x_is_y', array('field' => $field, 'value' => $title));
+		} else {
+			$summary = App::getTranslator()->phrase('core.x_is_not_y', array('field' => $field, 'value' => $title));
+		}
+
+		return $summary;
 	}
 
 

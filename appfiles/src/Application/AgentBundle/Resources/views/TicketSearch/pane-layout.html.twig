@@ -1,13 +1,13 @@
 {% block meta %}{% endblock %}
 
-{% set queue_content %}{% block queue_content %}{% endblock %}{%endset%}
+{% set filter_content %}{% block filter_content %}{% endblock %}{%endset%}
 {% set flagged_content %}{% block flagged_content %}{% endblock %}{%endset%}
 {% set overview_content %}{% block overview_content %}{% endblock %}{%endset%}
 {% set find_content %}{% block find_content %}{% endblock %}{%endset%}
 {% set labels_content %}{% block labels_content %}{% endblock %}{%endset%}
 
-<h1 data-route="navpane:{{ path('agent_ticketsearch_queuespane') }}" class="{% if queue_content %}active{%endif%}">Queues</h1>
-{% if queue_content %}<div class="main-nav">{{queue_content|raw}}</div>{%endif%}
+<h1 data-route="navpane:{{ path('agent_ticketsearch_filterspane') }}" class="{% if filter_content %}active{%endif%}">Filters</h1>
+{% if filter_content %}<div class="main-nav">{{filter_content|raw}}</div>{%endif%}
 
 <h1 data-route="navpane:{{ path('agent_ticketsearch_flaggedpane') }}" class="{% if flagged_content %}active{%endif%}">Flagged</h1>
 {% if flagged_content %}<div class="main-nav">{{flagged_content|raw}}</div>{%endif%}
@@ -19,7 +19,7 @@
 {% if labels_content %}<div class="main-nav">{{labels_content|raw}}</div>{%endif%}
 
 <ul class="sidebar-links">
-	<li data-route="listpane:{{ path('agent_ticketsearch_filter') }}">Find with a filter</li>
+	<li data-route="listpane:{{ path('agent_ticketsearch_customfilter') }}">Find with a filter</li>
 	<li data-route="listpane:{{ path('agent_ticketsearch_search') }}">Find by searching</li>
 </ul>
 

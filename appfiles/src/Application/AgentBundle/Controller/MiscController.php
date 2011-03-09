@@ -43,9 +43,9 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_DATA_REGISTRY = {}';
 		$js[] = 'window.DESKPRO_DATA_REGISTRY.ticketDepToCatMap = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->departmentToCategoryMap()) . ';';
 
-		$system_queues = App::getDb()->fetchAllKeyValue("SELECT id, sys_name FROM ticket_queues WHERE is_global=1 AND sys_name IS NOT NULL");
-		$system_queues = Arrays::castToType($system_queues, 'string', 'int');
-		$js[] = 'window.DESKPRO_DATA_REGISTRY.systemQueues = ' . json_encode($system_queues) . ';';
+		$system_filters = App::getDb()->fetchAllKeyValue("SELECT id, sys_name FROM ticket_filters WHERE is_global=1 AND sys_name IS NOT NULL");
+		$system_filters = Arrays::castToType($system_filters, 'string', 'int');
+		$js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = ' . json_encode($system_filters) . ';';
 
 		// Ticket display elements
 		$js[] = "window.DESKPRO_TICKET_DISPLAY = {};";

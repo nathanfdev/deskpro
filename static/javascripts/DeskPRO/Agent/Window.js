@@ -7,7 +7,7 @@ Orb.createNamespace('DeskPRO.Agent');
  * and other elements, and data for things like department-to-cat maps.
  *
  * Is also responsible for "routing" and loading page fragments. The router uses strings and decides where
- * they should be loaded (and how). For example, "navpane:queues/", the first part says it'll
+ * they should be loaded (and how). For example, "navpane:filters/", the first part says it'll
  * be a navpane fragment. The second part is a simple URL we can load via AJAX.
  */
 DeskPRO.Agent.Window = new Class({
@@ -270,7 +270,7 @@ DeskPRO.Agent.Window = new Class({
 	/**
 	 * Loads a route.
 	 *
-	 * @param {String} route The route to match, like navpane:tickets:queues
+	 * @param {String} route The route to match, like navpane:tickets:filters
 	 */
 	runPageRoute: function(route) {
 
@@ -278,7 +278,7 @@ DeskPRO.Agent.Window = new Class({
 		// master.masterTag:sectioninfo:moreinfo:url/here/at/end
 		// (There might not be any sectioninfo)
 		// Example:
-		// listpane:/agent/ticket-search/queue/123
+		// listpane:/agent/ticket-search/filter/123
 
 		var sections = route.split(':');
 		var master = sections.shift();
@@ -667,7 +667,7 @@ DeskPRO.Agent.Window = new Class({
 		});
 
 		// Set up listener for badge count
-		this.getMessageBroker().addMessageListener('queues.counts', this._updatequeueCounts.bind(this));
+		this.getMessageBroker().addMessageListener('filters.counts', this._updatefilterCounts.bind(this));
 
 		// When a ticket is open or closed, apply style
 		this.getMessageBroker().addMessageListener('ui.ticket.opened', function (data) {
@@ -733,13 +733,13 @@ DeskPRO.Agent.Window = new Class({
 		})
 	},
 
-	_updatequeueCounts: function (counts) {
+	_updatefilterCounts: function (counts) {
 		var total = 0;
-		Object.each(counts, function (count, queue_id) {
+		Object.each(counts, function (count, filter_id) {
 			total += count;
 		});
 
-		$('.ticket-queue-count-all').html('(' + total + ')');
+		$('.ticket-filter-count-all').html('(' + total + ')');
 	},
 
 	_initRoutes: function() {

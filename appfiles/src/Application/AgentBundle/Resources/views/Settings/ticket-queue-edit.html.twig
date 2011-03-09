@@ -1,5 +1,5 @@
 {% extends 'AgentBundle:Settings:settings-layout.html.twig' %}
-{% block current_page "ticket-queues" %}
+{% block current_page "ticket-filters" %}
 {% block page_head %}
 <script type="text/javascript">
 $(document).ready(function() {
@@ -19,8 +19,8 @@ $(document).ready(function() {
 		editor.addNewRow($('#criteria_list .search-terms'), basename);
 	});
 
-	{% if queue.terms %}
-		{% for id,term in queue.terms %}
+	{% if filter.terms %}
+		{% for id,term in filter.terms %}
 			editor.addNewRow($('#criteria_list .search-terms'), 'terms[exist_{{id}}]', {
 				rule_type: '{{term.rule_type}}',
 				op: '{{term.op}}',
@@ -36,16 +36,16 @@ $(document).ready(function() {
 {% endblock %}
 {% block content %}
 
-<form action="{{ path('agent_settings_ticketqueues_edit', { 'queue_id': queue.id|default(0) }) }}" method="post" accept-charset="utf-8">
+<form action="{{ path('agent_settings_ticketfilters_edit', { 'filter_id': filter.id|default(0) }) }}" method="post" accept-charset="utf-8">
 
 <div class="form-panel">
 	<div class="row">
-		<label for="macro_title">Queue title</label>
-		<input type="input" name="queue[title]" class="input-title" value="{{queue.title}}" />
+		<label for="macro_title">Filter title</label>
+		<input type="input" name="filter[title]" class="input-title" value="{{filter.title}}" />
 	</div>
 	<div class="row">
 		<label for="macro_title">Order by</label>
-		<select name="queue[order_by]">
+		<select name="filter[order_by]">
 			<option value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
 			<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
 			<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
@@ -56,10 +56,10 @@ $(document).ready(function() {
 	</div>
 	<div class="row">
 		<label for="macro_title">Group by</label>
-		<select name="queue[group_by]">
+		<select name="filter[group_by]">
 			<option value="">(No grouping)</option>
 			{% for id,name in {'priority_id':'Priority', 'status': 'Status', 'department_id': 'Department', 'category_id': 'Category', 'product_id': 'Product', 'agent_id': 'Agent', 'agent_team_id': 'Agent Team'} %}
-				<option value="{{id}}" {%if queue.group_by == id %}selected="selected"{%endif%}>{{name}}</option>
+				<option value="{{id}}" {%if filter.group_by == id %}selected="selected"{%endif%}>{{name}}</option>
 			{% endfor %}
 		</select>
 	</div>
@@ -85,7 +85,7 @@ $(document).ready(function() {
 </div>
 
 <div style="text-align:center">
-	<button type="submit" class="dp-button">Save Queue</button>
+	<button type="submit" class="dp-button">Save Filter</button>
 </div>
 
 </form>

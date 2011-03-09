@@ -17,22 +17,35 @@ use \Doctrine\ORM\EntityRepository;
 
 class TicketWorkflow extends EntityRepository
 {
-	protected $workflow_names = null;
+	protected $_workflow_names = null;
 
-	/**
-	 * @return array
-	 */
-	public function getWorkflowNames()
+	protected function _loadWorkflowNames()
 	{
-		if ($this->workflow_names !== null) return $this->workflow_names;
+		if ($this->_workflow_names !== null) return;
 
 		$db = App::getDb();
-		$this->workflow_names = $db->fetchAllKeyValue("
+		$this->_workflow_names = $db->fetchAllKeyValue("
 			SELECT id, title
 			FROM ticket_workflows
 			ORDER BY title ASC
 		");
+	}
 
-		return $this->workflow_names;
+	public function getWorkflowNames($for_ids = null)
+	{
+		$this->_loadWorkflowNames();
+
+		if ($for_ids === null) {
+			return $this->_workflow_names;
+		}
+
+		$ret = array();
+		foreach ($for_ids as $id) {
+			if (isset($this->_workflow_names[$id])) {
+				$ret[] = $this->_workflow_names[$id];
+			}
+		}
+
+		return $ret;
 	}
 }

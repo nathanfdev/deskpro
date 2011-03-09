@@ -223,5 +223,5 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 */
 	destroyPage: function() {
 
-	},
+	}
 });

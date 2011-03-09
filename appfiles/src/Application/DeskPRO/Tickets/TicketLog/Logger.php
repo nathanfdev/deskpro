@@ -194,19 +194,19 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 	{
 		if (!$notify_types) return;
 
-		$matching_queues = array();
+		$matching_filters = array();
 
-		$all_queues = App::getEntityRepository('DeskPRO:TicketQueue')->findAll();
-		foreach ($all_queues as $q) {
+		$all_filters = App::getEntityRepository('DeskPRO:TicketFilter')->findAll();
+		foreach ($all_filters as $q) {
 			$searcher = $q->getSearcher();
 			if ($searcher->doesTicketMatch($this->ticket)) {
-				$matching_queues[] = $q['id'];
+				$matching_filters[] = $q['id'];
 			}
 		}
 
-		if (!$matching_queues) return;
+		if (!$matching_filters) return;
 
-		$notifs = App::getEntityRepository('DeskPRO:AgentNotification')->getNotifications($matching_queues, $notify_types);
+		$notifs = App::getEntityRepository('DeskPRO:AgentNotification')->getNotifications($matching_filters, $notify_types);
 		if (!$notifs) return;
 
 		$ticket_email = new \Application\DeskPRO\Email\Notification\Ticket($this->ticket, $log_actions);

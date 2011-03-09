@@ -5,6 +5,10 @@
 
 $CONFIG['debug'] = array();
 
+/**
+ * Email a copy of errors to this address.
+ */
+//$CONFIG['email_on_error'] = 'example@email.com';
 
 ################################################################################
 # Mail related

@@ -40,10 +40,20 @@ class LabelDef extends EntityRepository
 				");
 				break;
 
-			case 'person':
+			case 'people':
 				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 					SELECT label, COUNT(*) AS count
 					FROM labels_people
+					GROUP BY label
+					ORDER BY count DESC
+					LIMIT $limit
+				");
+				break;
+
+			case 'organizations':
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+					SELECT label, COUNT(*) AS count
+					FROM labels_organizations
 					GROUP BY label
 					ORDER BY count DESC
 					LIMIT $limit

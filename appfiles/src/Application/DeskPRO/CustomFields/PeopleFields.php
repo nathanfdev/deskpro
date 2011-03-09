@@ -4,7 +4,7 @@ namespace Application\DeskPRO\CustomFields;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity\Person;
-use \Application\DeskPRO\Entity\TicketQueue;
+use \Application\DeskPRO\Entity\TicketFilter;
 use \Symfony\Component\DependencyInjection\ContainerAware;
 
 class PeopleFields extends AbstractFields

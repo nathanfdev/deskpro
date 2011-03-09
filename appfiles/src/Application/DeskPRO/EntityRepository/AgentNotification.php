@@ -20,7 +20,7 @@ use \Doctrine\ORM\EntityRepository;
 class AgentNotification extends EntityRepository
 {
 	/**
-	 * Fetch an array of notification subscriptions we have on a set of queues,
+	 * Fetch an array of notification subscriptions we have on a set of filters,
 	 * and for a set of types.
 	 *
 	 * This is used after a change to figure out who wants notifications.
@@ -30,30 +30,30 @@ class AgentNotification extends EntityRepository
 	 *
 	 * @return array
 	 */
-	public function getNotifications(array $matching_queues, array $notify_types)
+	public function getNotifications(array $matching_filters, array $notify_types)
 	{
 		if (!$notify_types) {
 			return array();
 		}
 
 		$db = App::getDb();
-		$matching_queues = array_filter($matching_queues, function ($val) {
+		$matching_filters = array_filter($matching_filters, function ($val) {
 			if (Numbers::isInteger($val)) {
 				return true;
 			}
 			return false;
 		});
 
-		$matching_queues = Arrays::removeFalsey($matching_queues);
-		$matching_queues = array_unique($matching_queues);
-		$matching_queues = implode(',', $matching_queues);
+		$matching_filters = Arrays::removeFalsey($matching_filters);
+		$matching_filters = array_unique($matching_filters);
+		$matching_filters = implode(',', $matching_filters);
 
 		$notify_types = $db->quoteIn($notify_types);
 
 		$notifs = $db->fetchAllGrouped("
 			SELECT person_id, notify_type
 			FROM agent_notifications
-			WHERE queue_id IN ($matching_queues) AND notify_type IN ($notify_types)
+			WHERE filter_id IN ($matching_filters) AND notify_type IN ($notify_types)
 			GROUP BY person_id
 		", array(), 'person_id', null, 'notify_type');
 

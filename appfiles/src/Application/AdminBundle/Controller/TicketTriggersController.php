@@ -28,6 +28,8 @@ class TicketTriggersController extends AbstractController
 
 	public function listAction()
 	{
+		$this->rememberLastPage();
+
 		$all_triggers = App::getOrm()->createQuery("
 			SELECT t
 			FROM DeskPRO:TicketTrigger t

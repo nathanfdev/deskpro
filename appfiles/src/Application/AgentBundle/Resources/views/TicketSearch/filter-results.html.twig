@@ -1,11 +1,20 @@
 <script>
-pageMeta.title = 'Ticket Queue';
+{% if filter.sys_name %}
+	pageMeta.title = {{ phrase('agent.filter_' ~ filter.sys_name)|json_encode|raw }};
+{% else %}
+	pageMeta.title = {{ filter.title|json_encode|raw }};
+{% endif %}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
-pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter') }}?cache_id={{cache_id}}';
-pageMeta.saveListPrefsUrl = '{{ path('agent_ticketsearch_save_resultprefs', {'cache_id': cache_id}) }}';
-{% if cache_id %}
-	pageMeta.cache_id = {{cache_id}};
+pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?partial=1&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
+pageMeta.getMacroUrl = '{{ path('agent_ticketsearch_ajax_get_macro') }}?macro_id=$macro_id';
+pageMeta.saveMacroUrl = '{{ path('agent_ticketsearch_ajax_save_macro') }}?macro_id=$macro_id';
+pageMeta.deleteTicketUrl = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
+pageMeta.viewTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '$ticket_id'}) }}';
+pageMeta.massReplyUrl = '{{ path('agent_ticketsearch_ajax_mass_reply') }}';
+{% if filter_id %}
+	pageMeta.filter_id = {{filter_id}};
 {% endif %}
 {% if not tickets %}
 	pageMeta.noResults = true;
@@ -16,10 +25,12 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ticketsearch_save_resultprefs', {'ca
 
 	{% include 'AgentBundle:TicketSearch:part-results-grouping.html.twig' %}
 
-	<table class="list" cellspacing="0" width="100%">
-		{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
-		{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
-	</table>
+	<div class="inner-box-tab-content box-list">
+		<table class="list" cellspacing="0" width="100%">
+			{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
+			{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
+		</table>
+	</div>
 
 	<div class="loading-more">
 		Loading more results ...

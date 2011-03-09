@@ -29,7 +29,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	_initInitialData: function() {
 		this._initerCount++;
 		$.ajax({
-			url: BASE_URL + 'agent/ticket-search/queues-pane',
+			url: BASE_URL + 'agent/ticket-search/filters-pane',
 			dataType: 'html',
 			context: this,
 			success: function(html) {
@@ -97,12 +97,12 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 	_initFilters: function() {
 		DeskPRO_Window.getPoller().addData(
-			[{name: 'do[]', value: 'get-queue-counts'}],
-			'queues.counts',
+			[{name: 'do[]', value: 'get-filter-counts'}],
+			'filters.counts',
 			{recurring: true, minDelay: 15000, minDelayAfterOne: true}
 		);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('queues.counts', this.updateFilterCounts.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
 
 		// Drag+drop to reorder
 		var self = this;
@@ -140,9 +140,9 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 		var data = [];
 
 		$('ol#filters_list > li').each(function() {
-			var id = $(this).data('queue-id');
+			var id = $(this).data('filter-id');
 			if (id) {
-				data.push({ name: 'prefs[agent.ui.ticket-queues-order][]', value: id });
+				data.push({ name: 'prefs[agent.ui.ticket-filters-order][]', value: id });
 			}
 		});
 
@@ -162,12 +162,12 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	updateFilterCounts: function(counts) {
 		var badgeCount = 0;
 
-		Object.each(counts, function (count, queue_id) {
+		Object.each(counts, function (count, filter_id) {
 			var count_str = count;
-			queue_id = parseInt(queue_id);
+			filter_id = parseInt(filter_id);
 			if (count >= 1000) count_str = '1000+';
 
-			var system_name = DeskPRO_Window.getData('systemQueues')[queue_id];
+			var system_name = DeskPRO_Window.getData('systemFilters')[filter_id];
 			if (system_name) {
 
 				if (system_name == 'all') {
@@ -176,7 +176,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 				var el = $('#filter_' + system_name + '_count').html(count_str);
 			} else {
-				var el = $('#filter_' + queue_id + '_count').html(count_str);
+				var el = $('#filter_' + filter_id + '_count').html(count_str);
 			}
 		});
 
@@ -197,12 +197,12 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-flagged-counts'}],
-			'queue-flagged.counts',
+			'filter-flagged.counts',
 			{recurring: true, minDelay: 60000, minDelayAfterOne: true}
 		);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.counts', this.updateFlagCounts.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('queue-flagged.flag-changed', this.changeFlagCountsForSwitch.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('filter-flagged.counts', this.updateFlagCounts.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('filter-flagged.flag-changed', this.changeFlagCountsForSwitch.bind(this));
 
 		// Drag+drop to reorder
 		var self = this;
@@ -528,7 +528,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 			'overflow': 'auto'
 		});
 
-		$('> div.y-track', this.menuEl).css({
+		$('> div.x-track', this.menuEl).css({
 			'width': ($('#tickets_main_section').width()*2) + 100
 		});
 
@@ -607,7 +607,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 			'overflow': ''
 		}).hide();
 
-		$('> div.y-track', this.menuEl).css({
+		$('> div.x-track', this.menuEl).css({
 			'width': ''
 		});
 

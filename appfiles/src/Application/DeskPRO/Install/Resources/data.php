@@ -17,9 +17,9 @@ $l['locale'] = 'en_US';
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
 
-##BEGIN:create_queue.agent##
+##BEGIN:create_filter.agent##
 \Application\DeskPRO\App::getOrm()->beginTransaction();
-$q = new \Application\DeskPRO\Entity\TicketQueue();
+$q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
 $q['title']      = 'Your Tickets';
@@ -41,9 +41,9 @@ $q['terms']      = array(array(
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
 
-##BEGIN:create_queue.agent_team##
+##BEGIN:create_filter.agent_team##
 \Application\DeskPRO\App::getOrm()->beginTransaction();
-$q = new \Application\DeskPRO\Entity\TicketQueue();
+$q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
 $q['title']      = 'Your Teams Tickets';
@@ -65,9 +65,9 @@ $q['terms']      = array(array(
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
 
-##BEGIN:create_queue.participant##
+##BEGIN:create_filter.participant##
 \Application\DeskPRO\App::getOrm()->beginTransaction();
-$q = new \Application\DeskPRO\Entity\TicketQueue();
+$q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
 $q['title']      = 'You\'re a Participant';
@@ -89,9 +89,9 @@ $q['terms']      = array(array(
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
 
-##BEGIN:create_queue.unassigned##
+##BEGIN:create_filter.unassigned##
 \Application\DeskPRO\App::getOrm()->beginTransaction();
-$q = new \Application\DeskPRO\Entity\TicketQueue();
+$q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
 $q['title']      = 'Unassigned';
@@ -113,9 +113,9 @@ $q['terms']      = array(array(
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
 
-##BEGIN:create_queue.all##
+##BEGIN:create_filter.all##
 \Application\DeskPRO\App::getOrm()->beginTransaction();
-$q = new \Application\DeskPRO\Entity\TicketQueue();
+$q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
 $q['title']      = 'All';
