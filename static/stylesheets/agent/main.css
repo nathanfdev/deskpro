@@ -1719,7 +1719,7 @@ border-left: none;
 
 .list > thead tr th {
 	font-weight: normal;
-	padding: 2px 0 2px 8px;
+	padding: 3px;
 	border-left: 1px solid #b4bdc8;
 	border-right: 1px solid #fff;
 
@@ -1753,8 +1753,12 @@ border-left: none;
 	text-align: left;
 }
 
-.list > tbody tr td{
-	padding-left: 8px;
+.list td.check-all {
+	padding: 0 2px 0 2px;
+}
+
+.list tbody td.check-all {
+	padding-top: 3px;
 }
 
 .list > tbody tr.line-2 td, .wrap-check, .wrap-flag {
@@ -1762,11 +1766,11 @@ border-left: none;
 }
 
 .list > tbody tr.line-1 td {
-	padding-top: 5px;
+	padding-top: 3px;
 }
 
 .list > tbody tr.line-2 td {
-	padding-bottom: 5px;
+	padding-bottom: 3px;
 	line-height: 14px;
 }
 
@@ -1778,7 +1782,7 @@ border-left: none;
 }
 
 .list > tbody tr td.wrap-flag {
-	padding-left: 0px;
+	padding: 0 2px 0 0;
 }
 
 .list td.subject a {
