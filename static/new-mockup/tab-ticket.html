@@ -309,6 +309,16 @@
 			t.initPage();
 		});
 	</script>
+	<style type="text/css" media="screen">
+		.show-fields .field-wrap .label-wrap {
+			width: 90px !important;
+		}
+		
+		.show-fields .field-wrap .field-input {
+			margin: 0 !important;
+			text-align: right !important;
+		}
+	</style>
 </head> 
 <body>
 	
@@ -331,135 +341,153 @@
 
 			<div class="ticket-top">
 
-				<span class="ticket-flag icon icon-flag-none" data-flag="none"></span>
+				<div style="float:left; padding: 4px; margin-right: 10px;">
+					<img src="images/contacts-user-validate.png" />
+					<Br />Open
+				</div>
+				<div style="float:right; width: 250px; margin: 2px 2px;">
+					<div class="ticket-custom-fields-wrap">
+						<div class="ticket-custom-fields show-fields">
+							<div class="wrap" style="background-color: #eee; font-weight: bold; text-align: center;">
+								Properties
+						</div>
+							<div class="wrap">
+											<div class="field-wrap custom-field custom-field-1">
+							<div class="label-wrap"><label>Category</label></div>
+							<div class="field-input">
+								None
+							</div>
+						</div>
+								<div class="field-wrap custom-field custom-field-2">
+							<div class="label-wrap"><label>Product</label></div>
+							<div class="field-input">
+								Product 1
+							</div>
+						</div>
+								<div class="field-wrap custom-field custom-field-3">
+							<div class="label-wrap"><label>Priority</label></div>
+							<div class="field-input">
+								Priority
+							</div>
+						</div>
+						<div class="field-wrap custom-field custom-field-2">
+					<div class="label-wrap"><label>Workflow</label></div>
+					<div class="field-input">
+						Workflow
+					</div>
+				</div>
+								</div>
+						</div>
+					</div>
+
+					<div class="ticket-custom-fields-wrap">
+						<div class="ticket-custom-fields show-fields">
+							<div class="wrap" style="background-color: #eee; font-weight: bold; text-align: center;">
+								Times
+						</div>
+							<div class="wrap">
+											<div class="field-wrap custom-field custom-field-1">
+							<div class="label-wrap"><label>Created</label></div>
+							<div class="field-input">
+								24 days ago
+							</div>
+						</div>
+								<div class="field-wrap custom-field custom-field-2">
+							<div class="label-wrap"><label>Waiting time</label></div>
+							<div class="field-input">
+								22 minutes
+							</div>
+						</div>
+								<div class="field-wrap custom-field custom-field-3">
+							<div class="label-wrap" style="width: 140px !important;"><label>Total waiting time</label></div>
+							<div class="field-input">
+								12 hours
+							</div>
+						</div>
+								</div>
+						</div>
+					</div>
+					
+					<div class="ticket-custom-fields-wrap">
+						<div class="ticket-custom-fields show-fields" style="clear:right">
+							<div class="wrap">
+											<div class="field-wrap custom-field custom-field-1">
+							<div class="label-wrap"><label>A Field</label></div>
+							<div class="field-input">
+								test
+							</div>
+						</div>
+								<div class="field-wrap custom-field custom-field-2">
+							<div class="label-wrap"><label>A Big Field</label></div>
+							<div class="field-input">
+								test2
+							</div>
+						</div>
+								<div class="field-wrap custom-field custom-field-3">
+							<div class="label-wrap"><label>Another Field</label></div>
+							<div class="field-input">
+								test3
+							</div>
+						</div>
+								</div>
+						</div>
+					</div>
+				</div>
 				<h1>
 					<span class="menu-trigger department_id department ">
 						<span class="prop-val department_id" data-no-value="Choose Department">Department 1 &gt; Child 1</span>
-						:
 					</span>
-					specloki lachov
+					<Br />
+					Subject Line
 				</h1>
-				<div class="tags-field">
-					<ul class="tagit ticket">
-									<li class="tagit-new"><input class="tagit-input ui-autocomplete-input" type="text" autocomplete="off" role="textbox" aria-autocomplete="list" aria-haspopup="true"></li></ul>
+				<div class="tags-field" style="margin-top: 15px;">
+					Label, label, label
+				</div>
+				
+				<div style="float:left; margin-left: 10px;">
+					<ul class="ticket-tabs">
+						<li class="tab-trigger ticket-messages messages on" data-tab-for=".tab-content.ticket-messages">Participants</li>
+						<li class="tab-trigger ticket-messages messages" data-tab-for=".tab-content.ticket-messages">Some Widget</li>
+					</ul>
+					<div style="border: 1px solid #BDBFC7; padding: 5px;">
+						<table cellspacing="0" cellpadding="0" width="100%">
+							<tr>
+								<td>
+									<small style="font-weight:bold; font-size: 10px;">Agent</small><br />
+									<img src="http://www.gravatar.com/avatar/205e460b479e2e5b48aec07710c08d50?s=50" /><br />
+									John Doe<br />
+									<em style="font-size: 10px">Sales Team</em>
+								</td>
+								<td style="padding-left: 10px;">
+									<small style="font-weight: bold; font-size: 10px;">Participants (<span style="text-decoration:underline;">manage</span>)</small><br />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=15" style="float:left;margin-right: 8px" />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&amp;s=15" style="float:left;margin-right: 8px" />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=monsterid&amp;s=15" style="float:left;margin-right: 8px" />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&amp;s=15" style="float:left;margin-right: 8px" />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=retro&amp;s=15" style="float:left;margin-right: 8px" />
+								</td>
+							</tr>
+							<tr>
+								<td style="padding-top: 5px;">
+									<small style="font-weight:bold; font-size: 10px;">User</small><br />
+									<img src="http://www.gravatar.com/avatar/205e460b479e2e5bdaaec07710c08d50?s=50" /><br />
+									Mike Smith<br />
+									<em style="font-size: 10px">Some Organization</em>
+								</td>
+								<td style="padding-left: 10px; padding-top: 5px;">
+									<small style="font-weight: bold; font-size: 10px;">Participants (<span style="text-decoration:underline;">manage</span>)</small><br />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=15" style="float:left;margin-right: 8px" />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=identicon&amp;s=15" style="float:left;margin-right: 8px" />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=monsterid&amp;s=15" style="float:left;margin-right: 8px" />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=wavatar&amp;s=15" style="float:left;margin-right: 8px" />
+									<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=retro&amp;s=15" style="float:left;margin-right: 8px" />
+								</td>
+							</tr>
+						</table>
+					</div>
 				</div>
 
-				<div class="ticket-info">
-			<dl class="menu-trigger category_id">
-				<dt>Category</dt>
-				<dd class="prop-val category_id no-value" data-no-value-label="None">None</dd>
-			</dl>
-			<dl class="menu-trigger product_id">
-				<dt>Product</dt>
-				<dd class="prop-val product_id no-value" data-no-value-label="None">Product 1</dd>
-			</dl>
-			<dl class="menu-trigger priority_id">
-				<dt>Priority</dt>
-				<dd class="prop-val priority_id no-value" data-no-value-label="None">Priority 10</dd>
-			</dl>
-			<dl class="menu-trigger workflow_id">
-				<dt>Workflow</dt>
-				<dd class="prop-val workflow_id " data-no-value-label="None">Workflow 2</dd>
-			</dl>
-			<dl class="menu-trigger status">
-				<dt>Status</dt>
-				<dd class="prop-val status">
-										</dd>
-			</dl>
-			<br style="clear:both">
-		</div>
-				<br style="clear:both">
-
-				<div class="person-info-line">
-
-					<div style="float:right">
-						<div class="menu-trigger agent_id agent">
-													<img class="agent-picture" data-picture-url="/index_dev.php/download/person-pic/{value}/50" src="" alt="" width="50" height="50" style="float:right; margin-left: 5px; display:none">
-												<span data-picture-element="img.agent-picture" data-no-value-label="Unassigned" class="prop-val agent_id no-value">
-															Unassigned
-													</span>
-						</div>
-											<div class="menu-trigger agent_team_id agent_team" style="font-size:7pt">
-								<strong>Team:</strong> <span class="prop-val agent_team_id no-value" data-no-value="None"></span>
-							</div>
-									</div>
-
-					<div class="person-overview" style="cursor: pointer; ">
-						<div class="img">
-							<img src="http://test-instant.deskprodev.com/index_dev.php/download/person-pic/default?s=50" alt="" width="50" height="50">
-						</div>
-						<div class="info">
-							<h1>wroca bruprethibruvu</h1>
-												<div style="font-size: 7pt; color: #6D7C8C; padding-top: 4px;">Click to view information</div>
-						</div>
-					</div>
-
-					<br style="clear:both">
-
-					<div class="ticket-participants">
-						<ul>
-												<li class="add-trigger" data-picture-url="/index_dev.php/download/person-pic/{person_id}/15"><span>Add a new participant</span></li>
-						</ul>
-					</div>
-
-					<br style="clear:both">
-				</div>
-
-					<div class="ticket-custom-fields-wrap">
-				<div class="edit-btn ticket-custom-fields-edit-btn" style="float:right"><span>Edit Fields</span></div>
-				<div class="ticket-custom-fields show-fields" style="clear:right">
-					<div class="wrap">
-									<div class="field-wrap custom-field custom-field-1">
-					<div class="label-wrap"><label>A Field</label></div>
-					<div class="field-input">
-						test
-					</div>
-				</div>
-						<div class="field-wrap custom-field custom-field-2">
-					<div class="label-wrap"><label>A Big Field</label></div>
-					<div class="field-input">
-						test2
-					</div>
-				</div>
-						<div class="field-wrap custom-field custom-field-3">
-					<div class="label-wrap"><label>Another Field</label></div>
-					<div class="field-input">
-						test3
-					</div>
-				</div>
-						</div>
-				</div>
-			</div>
-
-			<div class="ticket-custom-fields edit show-fields edit-fields-overlay" style="display:none">
-							<div class="field-wrap custom-field custom-field-1">
-						<div class="label-wrap"><label>A Field</label></div>
-						<div class="field-input">
-							<input type="text" id="custom_fields_field_1" name="custom_fields[field_1]" value="test">
-						</div>
-					</div>
-							<div class="field-wrap custom-field custom-field-2">
-						<div class="label-wrap"><label>A Big Field</label></div>
-						<div class="field-input">
-							<textarea id="custom_fields_field_2" name="custom_fields[field_2]">test2</textarea>
-						</div>
-					</div>
-							<div class="field-wrap custom-field custom-field-3">
-						<div class="label-wrap"><label>Another Field</label></div>
-						<div class="field-input">
-							<input type="text" id="custom_fields_field_3" name="custom_fields[field_3]" value="test3">
-						</div>
-					</div>
-						<div class="buttons">
-					<div class="loading-off">
-						<button class="save-trigger dp-button small">Save</button>
-						<button class="close-trigger dp-button gray small">Cancel</button>
-					</div>
-					<div class="loading-on">
-						<span>Saving ...</span>
-					</div>
-				</div>
-			</div>
+			<br style="clear:both" />
 
 				<ul class="ticket-tabs">
 					<li class="tab-trigger ticket-messages messages on" data-tab-for=".tab-content.ticket-messages">Messages</li>
