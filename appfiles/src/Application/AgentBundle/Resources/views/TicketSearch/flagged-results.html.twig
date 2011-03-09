@@ -1,6 +1,8 @@
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 <script>
-pageMeta.title = 'Flagged Tickets';
+pageMeta.title = 'Flagged: {{flagnamer.flag_name(flag, person)}}';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFlagged';
+pageMeta.flag = '{{flag}}';
 pageMeta.pageUrl = '{{ path('agent_ticketsearch_runflag', {'flag': flag}) }}?partial=1&page=$page';
 {% if flag %}
 	pageMeta.flag = '{{flag}}';

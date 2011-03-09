@@ -176,11 +176,11 @@ DeskPRO.Agent.TabStrip = new Class({
 	_onTabAdd: function(tabData) {
 		tabData.btnId = Orb.getUniqueId('tab_');
 
-		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab';
+		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab tipped';
 			if (tabData.page.TYPENAME != 'basic') {
 				html += ' icon icon-' + tabData.page.TYPENAME;
 			}
-			html += '" title="' + tabData.title + '">';
+			html += '" data-tipped="' + tabData.title + '" data-tipped-options="skin: \'light\', showDelay: 1, target: \'mouse\', hook: \'topmiddle\'">';
 
 			html += '<a class="link">'+tabData.title+'</a>';
 			html += '<a class="close-tab">Close</a>';

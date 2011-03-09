@@ -14,7 +14,11 @@
 
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/main.css') }}" type="text/css" media="screen" />
 
-<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+{% if constant('DP_DEBUG') %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.js"></script>
+{% else %}
+	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js"></script>
+{% endif %}
 <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.10/jquery-ui.min.js"></script>
 <script src="{{ asset('javascripts/jquery/jquery.cookie.js') }}"></script>
@@ -34,7 +38,12 @@
 <script type="text/javascript" src="{{ asset('javascripts/jquery/tipped/js/tipped/tipped.js') }}"></script>
 <script src="{{ asset('javascripts/jquery/fileupload/jquery.fileupload.js') }}"></script>
 <script src="{{ asset('javascripts/jquery/fileupload/jquery.fileupload-ui.js') }}"></script>
-<script src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
+
+{% if constant('DP_DEBUG') %}
+	<script src="{{ asset('javascripts/mootools/mootools-core.js') }}"></script>
+{% else %}
+	<script src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
+{% endif %}
 
 <script src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
 <script src="{{ asset('javascripts/Orb/Compat.js') }}"></script>

@@ -1560,6 +1560,12 @@ Tabs
 	cursor: pointer;
 }
 
+.pane-tabs > ul > li > a.link {
+	max-width: 80px;
+	overflow: hidden;
+	white-space:nowrap;
+}
+
 .pane-tabs > ul > li.active-tab, .pane-tabs > ul > li.on {
 	background: #fff;
 
@@ -1598,7 +1604,10 @@ Tabs
 	text-shadow: 0 1px 1px rgba(0,0,0, .5);
 }
 
-.pane-tabs > ul > li.icon-ticket a.link {
+.pane-tabs > ul > li.icon-ticket a.link,
+.pane-tabs > ul > li.icon-ticket-custom-filter a.link,
+.pane-tabs > ul > li.icon-ticket-filter a.link,
+.pane-tabs > ul > li.icon-ticket-flagged a.link {
 	padding-left: 17px;
 	background: url("../../images/icn-sprite.png") -7px -585px no-repeat;
 }
