@@ -75,6 +75,17 @@ class TicketSearchController extends AbstractController
 		return $this->_getResponseForTickets('filter', $filter['id'], $results_helper, $vars);
 	}
 
+	public function getFilterSummaryAction($filter_id)
+	{
+		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
+		$searcher = $filter->getSearcher();
+
+		return $this->render('AgentBundle:TicketSearch:filter-tip-summary.html.twig', array(
+			'filter' => $filter,
+			'summary' => $searcher->getSummary()
+		));
+	}
+
 	public function runNamedFilterAction($filter_name)
 	{
 		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));

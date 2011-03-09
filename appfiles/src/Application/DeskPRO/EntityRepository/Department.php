@@ -57,10 +57,22 @@ class Department extends EntityRepository
 	 *
 	 * @return array
 	 */
-	public function getDepartmentNames()
+	public function getDepartmentNames($for_ids = null)
 	{
 		$this->getDepartmentsInHierarchy();
-		return $this->_department_names;
+
+		if ($for_ids === null) {
+			return $this->_department_names;
+		}
+
+		$ret = array();
+		foreach ($for_ids as $id) {
+			if (isset($this->_department_names[$id])) {
+				$ret[] = $this->_department_names[$id];
+			}
+		}
+
+		return $ret;
 	}
 
 

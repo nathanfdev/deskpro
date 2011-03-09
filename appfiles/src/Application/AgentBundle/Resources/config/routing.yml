@@ -260,6 +260,11 @@ agent_ticketsearch_runfilter:
   defaults: { _controller: AgentBundle:TicketSearch:runfilter }
   requirements: { filter_id: "\d+" }
 
+agent_ticketsearch_filter_getsummary:
+  pattern: /ticket-search/filter/{filter_id}/get-summary
+  defaults: { _controller: AgentBundle:TicketSearch:getFilterSummary }
+  requirements: { filter_id: "\d+" }
+
 agent_ticketsearch_runnamedfilter:
   pattern: /ticket-search/filter/{filter_name}
   defaults: { _controller: AgentBundle:TicketSearch:runNamedFilter }
