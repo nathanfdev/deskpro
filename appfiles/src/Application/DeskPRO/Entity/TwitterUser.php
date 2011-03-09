@@ -81,18 +81,6 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_geo_enabled = false;
 
 	/**
-	 * @var double
-	 * @orm:Column(name="geo_latitude", type="decimal", nullable=true, precision=10, scale=5)
-	 */
-	protected $geo_latitude = null;
-
-	/**
-	 * @var double
-	 * @orm:Column(name="geo_longitude", type="decimal", nullable=true, precision=10, scale=5)
-	 */
-	protected $geo_longitude = null;
-
-	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="status")
 	 */
@@ -109,13 +97,13 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="recipient")
 	 */
 	protected $messages;
-	
+
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="TwitterAccountFollowing", mappedBy="user")
 	 */
 	protected $following;
-	
+
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="TwitterAccountFollower", mappedBy="user")
