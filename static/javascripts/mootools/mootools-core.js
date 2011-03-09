@@ -1186,7 +1186,7 @@ var implement = function(key, value, retain){
 		if (value == null) return this;
 	}
 
-	if (!typeOf(value) == 'function'){
+	if (typeOf(value) == 'function'){
 		if (value.$hidden) return this;
 		this.prototype[key] = (retain) ? value : wrap(this, key, value);
 	} else {
