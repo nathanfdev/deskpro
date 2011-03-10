@@ -99,11 +99,9 @@ pageMeta.title = '@{{ account.user.name }}';
 			<div class="photo"><img src="{{ status.user.profile_image_url }}" border="0" /></div>
 			<div class="content">
 				<div class="tweet">{{ status.text }}</div>
-				{#
 				<div class="notes">
-					<div class="note"><em class="time">22 minutes ago</em></div>
+					<div class="note"><em class="time">{{ status.date_created|date('m/d/Y H:i:s') }}{# 22 minutes ago #}</em></div>
 				</div>
-				#}
 				<div class="controls">
 					<ul>
 						<li><a>Archive</a></li>

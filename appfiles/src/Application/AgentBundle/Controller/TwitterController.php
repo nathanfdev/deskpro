@@ -33,9 +33,13 @@ class TwitterController extends AbstractController
 
 		$archived = false;
 
+		// fetch following users (= public timeline tweeter)
+		$followingIds   = $account->getFollowingIds();
+		$followingIds[] = $account['user']['id'];
+
 		// @TODO add checkboxes / filters / paging
-		$statuses = App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findByUser($account['user']['id']);
+		$statuses = App::getORM()->getRepository('DeskPRO:TwitterStatus')
+			->findByUserIds($followingIds);
 
 		return $this->render('AgentBundle:Twitter:statuses.html.twig', array(
 			'account'  => $account,

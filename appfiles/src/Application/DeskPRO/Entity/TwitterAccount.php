@@ -60,10 +60,20 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	protected $following;
 
 	/**
+	 * @var array
+	 */
+	protected $_following_ids;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="TwitterAccountFollower", mappedBy="account")
 	 */
 	protected $followers;
+
+	/**
+	 * @var array
+	 */
+	protected $_follower_ids;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -114,5 +124,44 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this->user = null;
 		}
+	}
+
+	public function getFollowingIds()
+	{
+		if (is_array($this->_following_ids)) {
+			return $this->_following_ids;
+		}
+
+		$this->_following_ids = App::getDb()->fetchAllCol("
+			SELECT user_id
+			FROM twitter_accounts_following
+			WHERE account_id = ?
+			ORDER BY id DESC
+		", array($this['id']));
+
+		if (!is_array($this->_following_ids)) {
+			$this->_following_ids = array($this->_following_ids);
+		}
+
+		return $this->_following_ids;
+	}
+
+	public function getFollowerIds()
+	{
+		if (is_array($this->_follower_ids)) {
+			return $this->_follower_ids;
+		}
+		$this->_follower_ids = App::getDb()->fetchAllCol("
+			SELECT user_id
+			FROM twitter_accounts_followers
+			WHERE account_id = ?
+			ORDER BY id DESC
+		", array($this['id']));
+
+		if (!is_array($this->_follower_ids)) {
+			$this->_follower_ids = array($this->_follower_ids);
+		}
+
+		return $this->_follower_ids;
 	}
 }
