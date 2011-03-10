@@ -41,6 +41,8 @@ $loader->registerClassNames(array(
 	'FacebookApiException'            => DP_ROOT.'/vendor/facebook/src/facebook.php',
 	'MimeMailParser'                  => DP_ROOT.'/vendor/php-mime-mail-parser/MimeMailParser.php',
 	'MimeMailParser_attachment'       => DP_ROOT.'/vendor/php-mime-mail-parser/attachment.class.php',
+	'Phirehose'                       => DP_ROOT.'/vendor/phirehose/Phirehose.php',
+	'UserstreamPhirehose'             => DP_ROOT.'/vendor/phirehose/UserstreamPhirehose.php',
 ));
 
 $loader->register();
