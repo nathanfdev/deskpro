@@ -70,7 +70,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="location", type="string", length=255)
+	 * @orm:Column(name="location", type="string", length=255, nullable=true)
 	 */
 	protected $location;
 
