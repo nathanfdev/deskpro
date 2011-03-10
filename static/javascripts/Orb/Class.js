@@ -113,7 +113,7 @@ Orb.Class = function(properties) {
 			}
 			proto[name] = value;
 		} else {
-			proto[name] = value;
+			throw "Error: Non-function property in class. Set properties in an initializer method, never in the class body!";
 		}
 	}
 
