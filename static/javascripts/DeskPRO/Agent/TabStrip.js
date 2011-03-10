@@ -1,14 +1,12 @@
 Orb.createNamespace('DeskPRO.Agent');
 
-DeskPRO.Agent.TabStrip = new Class({
-	Implements: [Events, Options],
-
-	tabStrip: null,
-	tabManager: null,
+DeskPRO.Agent.TabStrip = new Orb.Class({
+	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	initialize: function(tabStrip, tabManager) {
 		this.tabStrip = tabStrip;
 		this.tabManager = tabManager;
+		this.cancelClickActivate = false;
 
 		var self = this;
 
@@ -138,8 +136,6 @@ DeskPRO.Agent.TabStrip = new Class({
 		}
 	},
 
-
-	cancelClickActivate: false,
 	_tabStripClick: function(event) {
 
 		if (this.cancelClickActivate) {

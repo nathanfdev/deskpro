@@ -10,32 +10,41 @@ Orb.createNamespace('DeskPRO.Agent');
  * they should be loaded (and how). For example, "navpane:filters/", the first part says it'll
  * be a navpane fragment. The second part is a simple URL we can load via AJAX.
  */
-DeskPRO.Agent.Window = new Class({
+DeskPRO.Agent.Window = new Orb.Class({
 
-	Implements: [Options],
-
-	DBEUG: {},
-	options: {},
-
-	routePrefixes: {},
-	registry: {},
-
-	messageBroker: null,
-	messageChanneler: null,
-	poller: null,
-
-	pageTabStrip: null,
-	listTabStrip: null,
-
-	layout: null,
-	innerLayout: null,
-
-	notifier: null,
+	Implements: [Orb.Util.Options],
 
 	initialize: function(options) {
+
+		this.DBEUG = {};
+		this.options = {};
+
+		this.routePrefixes = {};
+		this.registry = {};
+
+		this.messageBroker = null;
+		this.messageChanneler = null;
+		this.poller = null;
+
+		this.pageTabStrip = null;
+		this.listTabStrip = null;
+
+		this.layout = null;
+		this.innerLayout = null;
+
+		this.notifier = null;
+		this.options = {};
 		
+		this._alertOverlay = null;
 		
+		this.loadingIndicatorEl = null;
+		this.loadingIndicatorCount = 0;
+		this.ajaxErrorOverlay = null;
 		
+		this.openTicketIds = [];
+		this.releaseTicketLocks_timeout = null;
+		this.releaseTicketLocks = [];
+
 		if (options) {
 			this.setOptions(options);
 		}
@@ -163,7 +172,6 @@ DeskPRO.Agent.Window = new Class({
 	//# Simple UI features
 	//#################################################################
 
-	_alertOverlay: null,
 	showAlert: function(msg) {
 		this._initAlertOverlay();
 		$('#alert_overlay_msg').html(msg);
@@ -547,8 +555,6 @@ DeskPRO.Agent.Window = new Class({
 	//# AJAX and loading
 	//#################################################################
 
-	loadingIndicatorEl: null,
-	loadingIndicatorCount: 0,
 	startLoadingIndicator: function(n) {
 		if (!n) n = 1;
 		this.loadingIndicatorCount += n;
@@ -620,7 +626,6 @@ DeskPRO.Agent.Window = new Class({
 		this._showAjaxError();
 	},
 
-	ajaxErrorOverlay: null,
 	_showAjaxError: function() {
 
 		if (!this.ajaxErrorOverlay) {
@@ -643,11 +648,6 @@ DeskPRO.Agent.Window = new Class({
 	//#################################################################
 	//# Inits
 	//#################################################################
-
-	openTicketIds: [],
-
-	releaseTicketLocks_timeout: null,
-	releaseTicketLocks: [],
 
 	_initBasic: function() {
 		this.messageBroker = new DeskPRO.MessageBroker();
