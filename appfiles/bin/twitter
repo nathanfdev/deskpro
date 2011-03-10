@@ -36,6 +36,9 @@ $config->setClassMetadataFactoryName('Doctrine\\ORM\\Mapping\\ClassMetadataFacto
 $em = EntityManager::create($connectionOptions, $config);
 
 use Application\DeskPRO\Entity\TwitterStatus;
+use Application\DeskPRO\Entity\TwitterStatusMention;
+use Application\DeskPRO\Entity\TwitterStatusTag;
+use Application\DeskPRO\Entity\TwitterStatusUrl;
 use Application\DeskPRO\Entity\TwitterUser;
 
 /**
@@ -105,73 +108,209 @@ class UserStreamConsumer extends \UserstreamPhirehose
 
 		// check if status is a tweet
 		if (isset($status['text'])) {
-			// check if Twitter status exists
-			if ($this->em->getRepository('DeskPRO:TwitterStatus')->find($status['id_str'])) {
-				return;
-			}
+			echo 'TWEET ADDED W/ ID: '.$status['id_str'].PHP_EOL;
+			return $this->processStatus($status);
+		}
 
-			// check if Twitter user exists
-			$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($status['user']['id_str']);
-			if (!$user) {
-				// create Twitter user
-				$user                      = new TwitterUser();
-				$user['id']                = $status['user']['id_str'];
-				$user['name']              = $status['user']['name'];
-				$user['screen_name']       = $status['user']['screen_name'];
-				$user['profile_image_url'] = $status['user']['profile_image_url'];
-				$user['language']          = $status['user']['lang'];
-				$user['is_protected']      = $status['user']['protected'];
-				$user['is_verified']       = $status['user']['verified'];
-				$user['location']          = $status['user']['location'];
-				$user['is_geo_enabled']    = $status['user']['geo_enabled'];
+		// check friend list
+		if (isset($status['friends'])) {
+			return $this->processFriends($status['friends']);
+		}
 
-				// persist entity
-				$this->em->persist($user);
+		if (isset($status['delete'])) {
+			return $this->processDeletion($status['delete']);
+		}
 
-				// flush changes
-				$this->em->flush();
-			}
+		// @TODO add elsewhat handling
+		echo 'SOMETHING ELSE, LOOK:'.PHP_EOL;
+		print_r($status); echo PHP_EOL.PHP_EOL;
+	}
 
-			// create Twitter status
-			$tweet = new TwitterStatus();
-			$tweet['id'] = $status['id_str'];
-			$tweet['user'] = $user;
-			$tweet['text'] = $status['text'];
-			$tweet['is_truncated'] = $status['truncated'];
-			$tweet['is_favorited'] = $status['favorited'];
-			$tweet['is_archived'] = false;
-			$tweet['date_created'] = new \DateTime($status['created_at']);
-			$tweet['source'] = $status['source'];
+	/**
+	 * Process a new Twitter status.
+	 *
+	 * @param array $tweet The Twitter status
+	 * @return void
+	 */
+	protected function processStatus(array $tweet)
+	{
+		// check if Twitter status exists
+		if ($this->em->getRepository('DeskPRO:TwitterStatus')->find($tweet['id_str'])) {
+			return true;
+		}
 
-			// @TODO add geo informations
-			// $tweet['geo_latitude'];
-			// $tweet['geo_longitude'];
+		// fetch Twitter user
+		$user = $this->getUser($tweet['user']);
 
-			// @TODO add entities handling
-			// ->urls
-			// ->hashtags
-			// ->user_mentions
+		// create Twitter status
+		$status                 = new TwitterStatus();
+		$status['id']           = $tweet['id_str'];
+		$status['user']         = $user;
+		$status['text']         = $tweet['text'];
+		$status['is_truncated'] = $tweet['truncated'];
+		$status['is_favorited'] = $tweet['favorited'];
+		$status['is_archived']  = false;
+		$status['date_created'] = new \DateTime($tweet['created_at']);
+		$status['source']       = $tweet['source'];
 
-			// @TODO add in_reply_* handling
+		// @TODO add geo informations
+		// $status['geo_latitude'] = $tweet['geo'][];
+		// $status['geo_longitude'] = $tweet['geo'][];
 
-			// persist entity
-			$this->em->persist($tweet);
+		// persist entity
+		$this->em->persist($status);
 
-			// flush changes
+		// flush changes
+		$this->em->flush();
+
+		// @TODO add in_reply_* handling
+
+		// fetch urls
+		foreach ($tweet['entities']['urls'] as $url) {
+			$this->processUrl($status, $url);
+		}
+
+		// flush changes
+		$this->em->flush();
+
+		// fetch hashtags
+		foreach ($tweet['entities']['hashtags'] as $hashtag) {
+			$this->processHashtag($status, $hashtag);
+		}
+
+		// flush changes
+		$this->em->flush();
+
+		// fetch mentions
+		foreach ($tweet['entities']['user_mentions'] as $mention) {
+			$this->processMention($status, $mention);
+		}
+
+		// flush changes
+		$this->em->flush();
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\TwitterStatus $status
+	 * @param array $url
+	 * @return \Application\DeskPRO\Entity\TwitterStatusUrl
+	 */
+	protected function processUrl(TwitterStatus $status, array $url)
+	{
+		$entity           = new TwitterStatusUrl();
+		$entity['status'] = $status;
+		$entity['url']    = $url['url'];
+		$entity['starts'] = $url['indices'][0];
+		$entity['ends']   = $url['indices'][1];
+
+		$this->em->persist($entity);
+
+		return $entity;
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\TwitterStatus $status
+	 * @param array $hashtag
+	 * @return \Application\DeskPRO\Entity\TwitterStatusTag
+	 */
+	protected function processTag(TwitterStatus $status, array $tag)
+	{
+		$entity           = new TwitterStatusTag();
+		$entity['status'] = $status;
+		$entity['hash']   = $tag['text'];
+		$entity['starts'] = $tag['indices'][0];
+		$entity['ends']   = $tag['indices'][1];
+
+		$this->em->persist($entity);
+
+		return $entity;
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\TwitterStatus $status
+	 * @param array $hashtag
+	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
+	 */
+	protected function processMention(TwitterStatus $status, array $mention)
+	{
+		$entity = new TwitterStatusMention();
+		$entity['status'] = $status;
+
+		// @TODO check if Twitter user exists
+		$entity->setUserId($mention['id_str']);
+
+		$entity['starts'] = $mention['indices'][0];
+		$entity['ends']   = $mention['indices'][1];
+
+		$this->em->persist($entity);
+
+		return $entity;
+	}
+
+	/**
+	 * Retrieve (and create, if needed) a Twitter user.
+	 *
+	 * @param array $user An array of Twitter user data
+	 * @return \Application\DeskPRO\Entity\TwitterUser
+	 */
+	protected function getUser(array $user)
+	{
+		// check if Twitter user exists
+		$entity = $this->em->getRepository('DeskPRO:TwitterUser')->find($user['id_str']);
+		if ($entity) {
+			return $entity;
+		}
+
+		// create Twitter user
+		$entity                      = new TwitterUser();
+		$entity['id']                = $user['id_str'];
+		$entity['name']              = $user['name'];
+		$entity['screen_name']       = $user['screen_name'];
+		$entity['profile_image_url'] = $user['profile_image_url'];
+		$entity['language']          = $user['lang'];
+		$entity['is_protected']      = $user['protected'];
+		$entity['is_verified']       = $user['verified'];
+		$entity['location']          = $user['location'];
+		$entity['is_geo_enabled']    = $user['geo_enabled'];
+
+		// persist entity
+		$this->em->persist($entity);
+
+		// flush changes
+		$this->em->flush();
+
+		return $entity;
+	}
+
+	/**
+	 * Process friend list (list of Twitter users following).
+	 *
+	 * @param array $friendIds List of Twitter users following
+	 * @return void
+	 */
+	protected function processFriends(array $friendIds)
+	{
+
+	}
+
+
+	/**
+	 * Process a deletion.
+	 *
+	 * @param array $deletion Data of deletion
+	 * @return Boolean
+	 */
+	protected function processDeletion(array $deletion)
+	{
+		// delete a Twitter status
+		if (isset($deletion['status'])) {
+			$status = $this->em->getRepository('DeskPRO:TwitterStatus')
+				->find($deletion['status']['id_str']);
+
+			$this->em->delete($status);
 			$this->em->flush();
 
-			echo 'TWEET ADDED W/ ID: '.$tweet['id'].PHP_EOL;
-
-		// it's not a status
-		} else {
-			// @TODO add elsewhat handling
-			echo 'SOMETHING ELSE, LOOK:'.PHP_EOL;
-			echo '(and write it down ...)'.PHP_EOL;
-			print_r($status);
-			echo PHP_EOL.PHP_EOL;
-
-			// discovered so far ...
-			// -> 'friends', 'delete'
+			return true;
 		}
 	}
 }
