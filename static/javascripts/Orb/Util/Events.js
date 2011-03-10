@@ -1,9 +1,18 @@
 Orb.createNamespace('Orb.Util');
 
 Orb.Util.Events = {
-	__events: {},
+	
+	__initEventsObj: function() {
+		if (!this.__events) this.__events = {};
+	},
+	
+	normalizeEventName: function(type) {
+		return type.toLowerCase().replace(/^on/, '');
+	},
 
 	addEvent: function(type, fn, internal){
+		type = this.normalizeEventName(type);
+		this.__initEventsObj();
 		this.__events[type] = (this.__events[type] || []).include(fn);
 		if (internal) fn.internal = true;
 		return this;
@@ -15,6 +24,8 @@ Orb.Util.Events = {
 	},
 
 	fireEvent: function(type, args, delay){
+		type = this.normalizeEventName(type);
+		this.__initEventsObj();
 		var events = this.__events[type];
 		if (!events) return this;
 		args = Array.from(args);
@@ -26,6 +37,8 @@ Orb.Util.Events = {
 	},
 	
 	removeEvent: function(type, fn){
+		type = this.normalizeEventName(type);
+		this.__initEventsObj();
 		var events = this.__events[type];
 		if (events && !fn.internal){
 			var index =  events.indexOf(fn);
@@ -41,6 +54,7 @@ Orb.Util.Events = {
 			return this;
 		}
 
+		this.__initEventsObj();
 		for (type in this.__events){
 			if (events && events != type) continue;
 			var fns = this.__events[type];
