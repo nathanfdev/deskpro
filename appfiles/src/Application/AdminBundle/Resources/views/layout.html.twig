@@ -31,7 +31,10 @@
 	<script type="text/javascript" src="{{ asset('javascripts/jquery/jquery.mousewheel.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
 
-	<script type="text/javascript" src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
+	<script src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
+	<script src="{{ asset('javascripts/Orb/Class.js') }}"></script>
+	<script src="{{ asset('javascripts/Orb/Util/Options.js') }}"></script>
+	<script src="{{ asset('javascripts/Orb/Util/Events.js') }}"></script>
 	<script type="text/javascript" src="{{ asset('javascripts/Orb/Compat.js') }}"></script>
 
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/UI/SimpleTabs.js') }}"></script>
@@ -43,6 +46,10 @@
 
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/MessageBroker.js') }}"></script>
 
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Agent/InterfaceEffects.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Window.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/Basic.js') }}"></script>
+
 	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js') }}"></script>
 	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js') }}"></script>
 	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxType.js') }}"></script>
@@ -50,10 +57,6 @@
 
 	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/MainMenuOpener.js') }}"></script>
 	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/BasicMainMenu.js') }}"></script>
-
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Agent/InterfaceEffects.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Window.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/Basic.js') }}"></script>
 
 	<script type="text/javascript" charset="utf-8">
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';
@@ -64,6 +67,7 @@
 		window._page_exec_stack = [];
 		function _win_exec() {
 			window.DeskPRO_Window = new DeskPRO.Admin.Window();
+			window.DeskPRO_Window.initPage();
 
 			if (window._page_exec) {
 				window._page_exec_stack.push(_page_exec);

@@ -9,17 +9,20 @@ Orb.createNamespace('DeskPRO.Admin');
  * If a page defines the special function DeskPRO_Window_Init(), it will be called
  * automatically once the page is ready.
  */
-DeskPRO.Admin.Window = new Class({
+DeskPRO.Admin.Window = new Orb.Class({
 
-	DEBUG: {},
-	Implements: [Events],
-
-	registry: {},
-	messageBroker: null,
-	interfaceEffects: null,
+	Implements: [Orb.Util.Events],
 
 	initialize: function() {
 
+		this.DEBUG = {};
+		this.registry = {};
+		this.messageBroker = null;
+		this.interfaceEffects = null;
+
+	},
+
+	initPage: function() {
 		this.interfaceEffects = new DeskPRO.Agent.InterfaceEffects();
 		this.interfaceEffects.initPage();
 
@@ -30,8 +33,6 @@ DeskPRO.Admin.Window = new Class({
 			window.DeskPRO_Window_Init();
 		}
 	},
-
-
 
 	_initBasic: function() {
 		this.messageBroker = new DeskPRO.MessageBroker();
