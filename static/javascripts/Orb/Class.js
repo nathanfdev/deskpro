@@ -1,38 +1,6 @@
 if (!Orb) var Orb = {};
 
-/**
- * Use Orb.Class for simple inhertiance and mix-in capabilities with Javascript.
- * 
- * <code>
- * var Animal = Orb.Class({
- * 	colorStr: 'black',
- * 	
- * 	color: function() {
- * 		alert(this.colorStr);
- * 	},
- * 	sound: function() {
- * 		alert('rawr');
- * 	}
- * });
- * 
- * var Dog = Orb.Class({
- * 	Extends: Animal,
- * 	ClassVars: {
- * 		BLAH: 'test'
- * 	},
- * 	
- * 	sound: function() {
- * 		this.parent();
- * 		alert(this.CLASS.BLAH);
- * 	}
- * });
- * </code>
-*/
 Orb.Class = function(properties) {
-	
-	// Special initializer that disables constructor when we're
-	// calling from within a subclass constructor
-	Orb.Class.is_initializing = false;
 
 	//------------------------------
 	// DisableParentCall: true
@@ -72,15 +40,15 @@ Orb.Class = function(properties) {
 	// into this new one we're making
 	//------------------------------
 	
-	if (properties.Extends) {
-		var parent_proto = properties.Extends.prototype;
-		Orb.Class.is_initializing = true;
-		var proto = new properties.Extends;
-		Orb.Class.is_initializing = false;
-	} else {
-		var parent_proto = {};
-		var proto = new (function() { });
+	if (!properties.Extends) {
+		properties.Extends = function() {};
 	}
+	
+	var parent_class = properties.Extends;
+	var parent_proto = parent_class.prototype;
+	parent_class.__is_prototyping = true;
+	var proto = new parent_class;
+	delete parent_class.__is_prototyping;
 	
 	delete properties.Extends;
 	
@@ -97,7 +65,9 @@ Orb.Class = function(properties) {
 			var mixin = properties.Implements[i];
 			for (var name in mixin) {
 				if (!mixin.prototype || mixin.prototype.hasOwnProperty(name)) {
-					proto[name] = mixin[name];
+					if (typeof mixin[name] == 'function') {
+						proto[name] = mixin[name];
+					}
 				}
 			}
 		}
@@ -132,21 +102,25 @@ Orb.Class = function(properties) {
 		
 		var value = properties[name];
 
-		if (typeof value == 'function' && checkParentUse(value)) {
-			value = (function(func, name) {
-				return function() {
-					this.parent = parent_proto[name];
-					func.apply(this, arguments);
-				};
-			})(value, name);
+		if (typeof value == 'function') {
+			if (checkParentUse(value)) {
+				value = (function(func, name) {
+					return function() {
+						this.parent = parent_proto[name];
+						func.apply(this, arguments);
+					};
+				})(value, name);
+			}
+			proto[name] = value;
+		} else {
+			proto[name] = value;
 		}
-		
-		proto[name] = value;
 	}
-		
+
 	var newClass = function() {
-		if (Orb.Class.is_initializing) {
-			return;
+		
+		if (newClass.__is_prototyping) {
+			return this;
 		}
 
 		if (this.initialize) {
@@ -156,6 +130,7 @@ Orb.Class = function(properties) {
 		// Easy reference to the class object
 		// Ex to use the set ClassVars easier
 		this.CLASS = newClass;
+		this.SUPER = parent_class;
 		
 		return this;
 	}
