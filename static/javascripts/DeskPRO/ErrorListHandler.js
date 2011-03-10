@@ -1,16 +1,17 @@
 Orb.createNamespace('DeskPRO');
 
-DeskPRO.ErrorListHandler = new Class({
-	Implements: Options,
-	
-	options: {
-		errorContainerSelector: '.errors',
-		errorListSelector: 'ul'
-	},
+DeskPRO.ErrorListHandler = new Orb.Class({
+	Implements: [Orb.Util.Options],
 	
 	initialize: function (options) {
-		options = options ||{};
-		this.setOptions(options);
+		this.options: {
+			errorContainerSelector: '.errors',
+			errorListSelector: 'ul'
+		};
+		
+		if (options) {
+			this.setOptions(options);
+		}
 	},
 
 	/**

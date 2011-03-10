@@ -3,28 +3,9 @@ Orb.createNamespace('DeskPRO.AjaxPoller');
 /**
  * An AJAX poller takes a bunch of data and sends it in packs based on an interval.
  */
-DeskPRO.AjaxPoller.Poller = new Class({
+DeskPRO.AjaxPoller.Poller = new Orb.Class({
 
-	Implements: [Events, Options],
-
-	dataTransformers: [],
-	filterdData: [],
-	messageBroker: null,
-
-	maxDelayTimers: [],
-
-	autoSendTimeout: null,
-
-	options: {
-		ajaxUrl: null,
-		interval: 6000,
-		alwaysRequest: false,
-		ajaxType: 'POST'
-	},
-
-	disabled: false,
-
-
+	Implements: [Orb.Util.Events, Orb.Util.Options],
 
 	/**
 	 * @option {String} ajaxUrl The URL that will handle the data we POST with this poller.
@@ -36,6 +17,24 @@ DeskPRO.AjaxPoller.Poller = new Class({
 	 * @param {Object} options Options to set.
 	 */
 	initialize: function(options) {
+		
+		this.dataTransformers = [];
+		this.filterdData = [];
+		this.messageBroker = null;
+
+		this.maxDelayTimers = [];
+
+		this.autoSendTimeout = null;
+
+		this.options = {
+			ajaxUrl: null,
+			interval: 6000,
+			alwaysRequest: false,
+			ajaxType: 'POST'
+		};
+
+		this.disabled = false;
+		
 		this.setOptions(options);
 
 		this.autoSendTimeout = this.send.delay(this.options.interval, this);

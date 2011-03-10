@@ -4,40 +4,39 @@ Orb.createNamespace('DeskPRO.UI');
  * This creates an overlay (optionally modal) whose contents can be fetched via AJAX,
  * or already exist within the page.
  */
-DeskPRO.UI.Overlay = new Class({
-	Implements: [Options, Events],
-
-	objectId: null,
-
-	options: {
-		triggerElement: null,
-		contentMethod: 'element',
-		contentElement: null,
-		contentAjax: {
-			url: '',
-			type	: 'GET',
-			dataType: 'html'
-		},
-		iframeUrl: null,
-		maxHeight: 700,
-		maxWidth: 900,
-		destroyOnClose: false,
-		customClassname: '',
-		isModal: true,
-		zIndex: 1000000,
-		escapeClose: true,
-		modalClickClose: true,
-		objectGroup: 'default'
-	},
-
-	isDestroyed: false,
-	hasInit: false,
-	hasSentAjax: false,
-	elements: {},
-
-
+DeskPRO.UI.Overlay = new Orb.Class({
+	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
+		
+		// Init vars
+		this.objectId = null,
+
+		this.options = {
+			triggerElement: null,
+			contentMethod: 'element',
+			contentElement: null,
+			contentAjax: {
+				url: '',
+				type	: 'GET',
+				dataType: 'html'
+			},
+			iframeUrl: null,
+			maxHeight: 700,
+			maxWidth: 900,
+			destroyOnClose: false,
+			customClassname: '',
+			isModal: true,
+			zIndex: 1000000,
+			escapeClose: true,
+			modalClickClose: true,
+			objectGroup: 'default'
+		};
+
+		this.isDestroyed = false;
+		this.hasInit = false;
+		this.hasSentAjax = false;
+		this.elements = {};
 
 		if (options) this.setOptions(options);
 

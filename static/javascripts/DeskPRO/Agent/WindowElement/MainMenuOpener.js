@@ -1,14 +1,14 @@
 Orb.createNamespace('DeskPRO.Agent.WindowElement');
 
-DeskPRO.Agent.WindowElement.MainMenuOpener = new Class({
-	Implements: [Options],
-	options: {
-		menuSelectors: []
-	},
-
-	allMenus: null,
+DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
+	Implements: [Orb.Util.Options],
 
 	initialize: function(options) {
+		
+		this.allMenus = null;
+		this.options = {
+			menuSelectors: []
+		};
 
 		var self = this;
 

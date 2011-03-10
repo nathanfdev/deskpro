@@ -13,7 +13,9 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		echo Strings::utf8_strtolower('ABC');
+		$test = new \Zend_Oauth_Consumer();
+		$test = new \Zend_Oauth_Consumer();
+		$test2 = new \Zend_Service_Twitter();
 		exit;
     }
 }

@@ -10,13 +10,13 @@ Orb.createNamespace('DeskPRO');
  * messageBroker.sendMessage('example.message.test', "Hello, world!");
  * </code>
  */
-DeskPRO.MessageBroker = new Class({
+DeskPRO.MessageBroker = new Orb.Class({
 
-	messageTransformers: {},
-	messageListeners: {},
-	tagged: {},
-
-
+	initialize: function() {
+		this.messageTransformers = {};
+		this.messageListeners = {};
+		this.tagged = {};
+	},
 
 	/**
 	 * Forward a message type to a separate broker instance.

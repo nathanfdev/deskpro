@@ -6,19 +6,21 @@ Orb.createNamespace('DeskPRO.UI');
  * toggles an 'on' CSS class on elements, so it's up to you to style the elements. For example,
  * content elements without 'on' sholud be display:none etc.
  */
-DeskPRO.UI.SimpleTabs = new Class({
-	Implements: [Options, Events],
-
-	options: {
-		triggerElements: '.tab-trigger',
-		activeClassname: 'on',
-		context: document
-	},
-
-	lastActiveTab: null,
-	triggerEls: null,
+DeskPRO.UI.SimpleTabs = new Orb.Class({
+	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
+		
+		// Initial values
+		this.options = {
+			triggerElements: '.tab-trigger',
+			activeClassname: 'on',
+			context: document
+		};
+
+		this.lastActiveTab = null;
+		this.triggerEls = null;
+		
 		if (options) this.setOptions(options);
 
 		this.triggerEls = this.options.triggerElements;

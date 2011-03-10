@@ -11,34 +11,37 @@ DeskPRO.UI.Menu_Instances = {};
  *
  * TODO: Handle nested menus.
  */
-DeskPRO.UI.Menu = new Class({
+DeskPRO.UI.Menu = new Orb.Class({
 
-	Implements: [Options, Events],
-
-	options: {
-		triggerElement: null,
-		customClassname: '',
-		zIndex: 1000000,
-		menuElement: null,
-		objectGroup: 'default',
-		subMenuConfig: null,
-		initSubMenusNow: false,
-		initMenuNow: false,
-		parentMenu: null
-	},
-
-	hasInit: false,
-	elements: {},
-	openTriggerEvent: null,
-
-	openedTime: null,
-	cachePosInfo: null,
-
-	subMenus: [],
-	openSubMenuId: null,
-	parentMenu: null,
+	DisableParentCall: true,
+	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
+		
+		// Initialize
+		this.options = {
+			triggerElement: null,
+			customClassname: '',
+			zIndex: 1000000,
+			menuElement: null,
+			objectGroup: 'default',
+			subMenuConfig: null,
+			initSubMenusNow: false,
+			initMenuNow: false,
+			parentMenu: null
+		};
+
+		this.hasInit = false;
+		this.elements = {};
+		this.openTriggerEvent = null;
+
+		this.openedTime = null;
+		this.cachePosInfo = null;
+
+		this.subMenus = [];
+		this.openSubMenuId = null;
+		this.parentMenu = null;
+		
 
 		this.objectId = Orb.uuid();
 

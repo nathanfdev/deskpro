@@ -4,16 +4,15 @@ Orb.createNamespace('DeskPRO.MessageChanneler');
  * A message channeler handles subscribing to channels, and delivering messages
  * from the server to the message broker, which in turn notifies any listeners.
  */
-DeskPRO.MessageChanneler.AbstractChanneler = new Class({
+DeskPRO.MessageChanneler.AbstractChanneler = new Orb.Class({
 
-	Implements: [Options],
-
-	messageBroker: null,
-	channels: [],
-
-	options: {},
+	Implements: [Orb.Util.Options],
 
 	initialize: function(messageBroker, options) {
+		
+		this.channels = [];
+		this.options = {};
+		
 		this.messageBroker = messageBroker;
 		if (options) this.setOptions(options);
 

@@ -10,10 +10,8 @@ Orb.createNamespace('DeskPRO.AjaxPoller');
  * 
  * These messages are passed through a message broker for handling in the app.
  */
-DeskPRO.AjaxPoller.MessagePoller = new Class({
+DeskPRO.AjaxPoller.MessagePoller = new Orb.Class({
 	Extends: DeskPRO.AjaxPoller.Poller,
-	
-	messageBroker: null,
 	
 	initialize: function(messageBroker, options) {
 		this.parent(options);

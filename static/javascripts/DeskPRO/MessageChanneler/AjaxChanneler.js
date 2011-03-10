@@ -6,10 +6,14 @@ Orb.createNamespace('DeskPRO.MessageChanneler');
 DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 	Extends: DeskPRO.MessageChanneler.AbstractChanneler,
 
-	poller: null,
-	lastMessageId: null,
-
 	_init: function() {
+		
+		this._add_subs = [];
+		this._add_subs_timeout = null;
+		this._del_subs = [];
+		this._del_subs_timeout = null;
+		
+		this.lastMessageId = null;
 		this.poller = new DeskPRO.AjaxPoller.Poller({
 			ajaxUrl: this.options.ajaxMessagesUrl,
 			interval: 5000,
@@ -45,8 +49,6 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 	//# Handle subcriptions
 	//#########################################################################
 
-	_add_subs: [],
-	_add_subs_timeout: null,
 	subscribeChannel: function(channel) {
 		this._add_subs.include(channel);
 
@@ -76,9 +78,6 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 		});
 	},
 
-
-	_del_subs: [],
-	_del_subs_timeout: null,
 	unsubscribeChannel: function(channel) {
 		this._del_subs.include(channel);
 

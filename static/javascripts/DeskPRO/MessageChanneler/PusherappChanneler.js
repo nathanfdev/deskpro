@@ -6,8 +6,13 @@ Orb.createNamespace('DeskPRO.MessageChanneler');
 DeskPRO.MessageChanneler.PusherappChanneler = new Class({
 	Extends: DeskPRO.MessageChanneler.AbstractChanneler,
 
-	socket: null,
 	_init: function() {
+		
+		this._add_subs = [];
+		this._add_subs_timeout = null;
+		this._del_subs = [];
+		this._del_subs_timeout = null;
+		
 		this.socket = new Pusher(this.options.apiKey);
 	},
 
@@ -35,8 +40,6 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Class({
 	//# Handle subcriptions
 	//#########################################################################
 
-	_add_subs: [],
-	_add_subs_timeout: null,
 	subscribeChannel: function(channel) {
 
 		var channel = this.socket.subscribe(channel);
@@ -82,9 +85,6 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Class({
 		});
 	},
 
-
-	_del_subs: [],
-	_del_subs_timeout: null,
 	unsubscribeChannel: function(channel) {
 		this._del_subs.include(channel);
 

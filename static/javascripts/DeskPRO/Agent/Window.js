@@ -33,6 +33,9 @@ DeskPRO.Agent.Window = new Class({
 	notifier: null,
 
 	initialize: function(options) {
+		
+		
+		
 		if (options) {
 			this.setOptions(options);
 		}
