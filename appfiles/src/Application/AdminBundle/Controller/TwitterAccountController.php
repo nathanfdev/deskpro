@@ -105,7 +105,7 @@ class TwitterAccountController extends AbstractController
 			$repos = $em->getRepository('DeskPRO:TwitterUser');
 
 			// check if Twitter user already exists
-			$twitterUser = $twitter->user->show($accessToken->getParam('screen_name'))
+			$twitterUser = $twitter->user->show($accessToken->getParam('screen_name'));
 			$user        = $repos->find((integer) $twitterUser->id);
 			if (!$user) {
 				$user = $this->mapTwitterUserToEntity($twitterUser);
