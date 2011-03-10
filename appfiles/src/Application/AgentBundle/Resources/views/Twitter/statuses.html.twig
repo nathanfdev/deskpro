@@ -94,7 +94,7 @@ pageMeta.title = '@{{ account.user.name }}';
 			{% if status.in_reply_to_status or status.in_reply_to_user %}
 				{# <span class="response">In response to @ " ..."</span> #}
 			{% endif %}
-				<cite>{{ status.user.screen_name }} / @{{ status.user.name }}</cite>
+				<cite>{{ status.user.name }} / @{{ status.user.screen_name }}</cite>
 			</div>
 			<div class="photo"><img src="{{ status.user.profile_image_url }}" border="0" /></div>
 			<div class="content">
