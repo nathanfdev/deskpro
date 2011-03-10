@@ -334,13 +334,25 @@ class Translate
 			$values = array_values($vars);
 
 			array_walk($keys, function (&$val) {
-				$val = '{' . $val . '}';
+				$val = '{{' . $val . '}}';
 			});
 
 			$vars = array_combine($keys, $values);
 		}
 
-		return strtr($phrase_text, $vars);
+		$phrase_text = strtr($phrase_text, $vars);
+
+		// A second pass detects phrase. replacements that might've been put in by replacements themselves
+		$m = null;
+		if (preg_match_all('#{{phrase\.([a-zA-Z0-9\-_\.]+)}}#', $phrase_text, $m)) {
+			foreach ($m[1] as $sub_phrase_name) {
+				if ($sub_phrase_name == $phrase_name) continue; //prevent loops
+				$sub_phrase_text = $this->phrase($sub_phrase_name, $vars, $locale);
+				$phrase_text = str_replace("{{phrase.$sub_phrase_name}}", $sub_phrase_text, $phrase_text);
+			}
+		}
+
+		return $phrase_text;
 	}
 
 

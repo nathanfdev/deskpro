@@ -17,59 +17,97 @@
 	<script src="../javascripts/Orb/Compat.js"></script>
 	
 	<script src="../javascripts/DeskPRO/UI/SimpleTabs.js"></script>
+	<script src="../javascripts/DeskPRO/UI/Overlay.js"></script>
 	
 	<script src="javascripts/layout.js" type="text/javascript" charset="utf-8"></script>
 	
 	<link rel="stylesheet" href="stylesheets/interface2.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="stylesheets/common.css" type="text/css" media="screen" charset="utf-8" />
 	<link rel="stylesheet" href="stylesheets/interface.css" type="text/css" media="screen" charset="utf-8" />
+	<link rel="stylesheet" href="../javascripts/DeskPRO/UI/ui.css" type="text/css" media="screen" charset="utf-8" />
 	
 	<script type="text/javascript" charset="utf-8">
-
+		$(document).ready(function() {
+			new DeskPRO.UI.Overlay({
+				contentElement: $('.display-options.overlay'),
+				triggerElement: $('.display-options-trigger')
+			});
+			
+			$('#actions input[type="checkbox"]').click(function() {
+				var p = $('div', $(this).parent().parent());
+				if ($(this).is(':checked')) {
+					p.show();
+				} else {
+					p.hide();
+				}
+			});
+			
+			$('#macro_group_sel').change(function() {
+				var id = "macro_" + $('#macro_group_sel').val();
+				$('#macro_one, #macro_twp').hide();
+				$('#' + id).show();
+			});
+		});
 	</script>
 </head> 
 <body>
 
 	
 		<div class="content">
-			<div class="display-options overlay">
-			<h1>Display Options</h1>
-			<div style="float: right;">
-				Order By: <select name="order_by">
-					<option value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
-					<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
-					<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
-					<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
-					<option value="ticket.priority:desc">Priority (Highest-Lowest)</option>
-					<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
-				</select>
-			</div>
-			<div style="margin-right: 250px;">
-				<strong>Display Elements</strong><br>
-				<ul class="sortable-list">
-					<li data-field="person"><input type="checkbox" name="person"> Contact Name</li>
-					<li data-field="person_email"><input type="checkbox" name="person_email"> Contact Email</li>
-					<li data-field="person_organization"><input type="checkbox" name="person_organization"> Contact Organization</li>
-					<li data-field="department"><input type="checkbox" name="department"> Department</li>
-					<li data-field="category"><input type="checkbox" name="category"> Category</li>
-					<li data-field="product"><input type="checkbox" name="product"> Product</li>
-					<li data-field="organization"><input type="checkbox" name="organization"> Organization Name</li>
-					<li data-field="agent"><input type="checkbox" name="agent"> Agent Name</li>
-									<li data-field="ticket_fields[1]"><input type="checkbox" name="ticket_fields[1]"> Ticket Field: A Field</li>
-									<li data-field="ticket_fields[2]"><input type="checkbox" name="ticket_fields[2]"> Ticket Field: A Big Field</li>
-									<li data-field="ticket_fields[3]"><input type="checkbox" name="ticket_fields[3]"> Ticket Field: Another Field</li>
-												<li data-field="person_fields[1]"><input type="checkbox" name="person_fields[1]"> User Field: Text Field</li>
-							</ul>
-			</div>
-			<div class="buttons">
-				<div class="loading-off">
-					<button class="save-trigger dp-button small">Save</button>
-					<button class="close-trigger dp-button gray small">Cancel</button>
+			<div class="display-options overlay ticket"><div class="ticket-top">
+				<h1>Actions</h1>
+				<table cellspacing="0" cellpadding="0" width="100%">
+					<tr>
+						<td width="60%">
+							<table cellspacing="0" cellpadding="0" width="100%" id="actions">
+								<tr><td width="5"><input type="checkbox"/></td><td>Assign to agent</td><td><div style="display:none"><select><option>Agent 1</option><option>Agent 2</option></select></div></td></tr>
+								<tr><td width="5"><input type="checkbox"/></td><td>Assign to team</td><td><div style="display:none"><select><option>Agent 1</option><option>Agent 2</option></select></div></td></tr>
+								<tr><td width="5"><input type="checkbox"/></td><td>Set Department</td><td><div style="display:none"><select><option>Dep 1</option><option>Dep 2</option></select></div></td></tr>
+								<tr><td width="5"><input type="checkbox"/></td><td>Set Category</td><td><div style="display:none"><select><option>Cat 1</option><option>Cat 2</option></select></div></td></tr>
+								<tr><td width="5"><input type="checkbox"/></td><td>Set Priority</td><td><div style="display:none"><select><option>Pri 1</option><option>Pri 2</option></select></div></td></tr>
+								<tr><td width="5"><input type="checkbox"/></td><td>Set Workflow</td><td><div style="display:none"><select><option>Pri 1</option><option>Pri 2</option></select></div></td></tr>
+								<tr><td width="5"><input type="checkbox"/></td><td>Set Field</td><td><div style="display:none"><input type="text"/></div></td></tr>
+								<tr><td width="5"><input type="checkbox"/></td><td>Set Bigger Field</td><td><div style="display:none"><textarea></textarea></div></td></tr>
+							</table>
+						</td>
+						<td>
+							Macro group: <select id="macro_group_sel"><option value="one">Support</option><option value="two">Sales</option></select>
+							<div id="macro_one">
+								<input type="checkbox" /> Macro 1<br />
+								<input type="checkbox" /> Macro 2<br />
+								<input type="checkbox" /> Macro 3<br />
+								<input type="checkbox" /> Macro 4<br />
+								<input type="checkbox" /> Macro 5<br />
+								<input type="checkbox" /> Macro 6<br />
+							</div>
+							<div id="macro_two" style="display:none">
+								<input type="checkbox" /> Macro 1<br />
+								<input type="checkbox" /> Macro 2<br />
+								<input type="checkbox" /> Macro 3<br />
+								<input type="checkbox" /> Macro 4<br />
+								<input type="checkbox" /> Macro 5<br />
+								<input type="checkbox" /> Macro 6<br />
+							</div>
+						</td>
+					</tr>
+				</table>
+				<ul class="ticket-tabs">
+					<li class="tab-trigger ticket-messages messages on" data-tab-for=".tab-content.ticket-messages">Reply</li>
+					<li class="tab-trigger ticket-messages messages" data-tab-for=".tab-content.ticket-messages">CC</li>
+					<li class="tab-trigger ticket-messages messages" data-tab-for=".tab-content.ticket-messages">Attachments</li>
+				</ul>
+				<div style="border: 1px solid #BDBFC7; padding: 5px;">
+					<textarea style="width: 99%; height: 140px;">Some text
+						A second line of text</textarea>
+					</div>
+					<div class="buttons">
+						<div class="loading-off">
+							<button class="save-trigger dp-button small">Save</button>
+							<button class="close-trigger dp-button gray small">Cancel</button>
+						</div>
+					</div>
 				</div>
-				<div class="loading-on">
-					<span>Saving ...</span>
-				</div>
-			</div>
+			</div></div>
 		</div>
 			<div class="search-top">
 			<ul class="grouping-info">

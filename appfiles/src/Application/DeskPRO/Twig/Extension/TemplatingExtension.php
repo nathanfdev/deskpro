@@ -32,21 +32,28 @@ class TemplatingExtension extends \Twig_Extension
         return $this->container->get('templating');
     }
 
-    public function getFilters()
-    {
-        return array();
-    }
-
     public function getFunctions()
     {
         return array(
-            'phrase'   => new \Twig_Function_Method($this, 'getPhrase')
+            'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
+        );
+    }
+
+	public function getFilters()
+    {
+        return array(
+            'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
         );
     }
 
 	public function getPhrase($phrase_name, array $vars = array())
 	{
 		return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
+	}
+
+	public function rawUrlEncode($str)
+	{
+		return rawurlencode($str);
 	}
 
     /**

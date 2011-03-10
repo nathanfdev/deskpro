@@ -75,6 +75,17 @@ class TicketSearchController extends AbstractController
 		return $this->_getResponseForTickets('filter', $filter['id'], $results_helper, $vars);
 	}
 
+	public function getFilterSummaryAction($filter_id)
+	{
+		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
+		$searcher = $filter->getSearcher();
+
+		return $this->render('AgentBundle:TicketSearch:filter-tip-summary.html.twig', array(
+			'filter' => $filter,
+			'summary' => $searcher->getSummary()
+		));
+	}
+
 	public function runNamedFilterAction($filter_name)
 	{
 		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->findOneBy(array('sys_name' => $filter_name));
@@ -301,7 +312,11 @@ class TicketSearchController extends AbstractController
 			$vars['display_fields'] = $result_cache['extra'][$pref_name];
 		}
 
-		return $this->_getResponseForTickets('filter', $result_cache['id'], $results_helper, $vars);
+		if ($this->in->getString('page_title')) {
+			$vars['page_title'] = $this->in->getString('page_title');
+		}
+
+		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $results_helper, $vars);
 	}
 
 	############################################################################
@@ -343,7 +358,7 @@ class TicketSearchController extends AbstractController
 
 		// TODO: Need a cleaner way of converting a group into a searchable item
 		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_customfilter') . "?$mode_crit&terms[5][rule_type]=status&terms[5][op]=is&terms[5][status]=open&terms[6][rule_type]=$group1_nosuf&terms[6][op]=is&terms[6][$group1_nosuf]=\$group1_id";
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runcustomfilter') . "?page_title=\$page_title&$mode_crit&terms[5][rule_type]=status&terms[5][op]=is&terms[5][status]=open&terms[6][rule_type]=$group1_nosuf&terms[6][op]=is&terms[6][$group1_nosuf]=\$group1_id";
 
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
 		$list_url_group2 = $list_url_group1 . "&terms[7][rule_type]=$group2_nosuf&terms[7][op]=is&terms[7][$group2_nosuf]=\$group2_id";

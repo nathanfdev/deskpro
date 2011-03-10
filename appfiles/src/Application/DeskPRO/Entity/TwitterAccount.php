@@ -29,10 +29,22 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var integer
 	 * @orm:Id
-	 * @orm:GeneratedValue(strategy="NONE")
+	 * @orm:GeneratedValue(strategy="IDENTITY")
 	 * @orm:Column(name="id", type="bigint")
 	 */
 	protected $id;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="oauth_token", type="string", length=4000)
+	 */
+	protected $oauth_token;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="oauth_token_secret", type="string", length=4000)
+	 */
+	protected $oauth_token_secret;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser

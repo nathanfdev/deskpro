@@ -12,6 +12,7 @@ DeskPRO.UI.Menu_Instances = {};
  * TODO: Handle nested menus.
  */
 DeskPRO.UI.Menu = new Class({
+
 	Implements: [Options, Events],
 
 	options: {
@@ -21,7 +22,7 @@ DeskPRO.UI.Menu = new Class({
 		menuElement: null,
 		objectGroup: 'default',
 		subMenuConfig: null,
-		initSubMenusNow: true,
+		initSubMenusNow: false,
 		initMenuNow: false,
 		parentMenu: null
 	},
@@ -344,6 +345,7 @@ DeskPRO.UI.Menu = new Class({
 		}
 
 		var subMenu = this.subMenus[subMenuId];
+		subMenu._initMenu();
 		subMenu.openMenu(this.openTriggerEvent);
 		this.openSubMenuId = subMenuId;
 		itemEl.addClass('hover');
@@ -397,41 +399,39 @@ DeskPRO.UI.Menu = new Class({
 			var subMenuConfig = {};
 		}
 
-		var lis = $('> li', this.elements.list[0]);
-
 		$('li', this.elements.list[0]).live('click', this._menuItemClicked.bind(this));
 
+		var subs = $('> li > ul.submenu', this.elements.list[0]);
+
 		// Set up mouseover events and submenus if we detect any
-		if ($('ul.submenu:first', lis).length) {
-			lis.each((function (i, el) {
-				el = $(el);
+		if (subs.length) {
+			subs.each((function (i, el) {
+
+				var subMenuEl = $(el);
+				el = $(subMenuEl.parent());
 
 				// Not using live because specific mouseover events are a bit snappier
 				el.mouseover(this._menuItemMouseover.bind(this));
 
-				var subMenuEl = el.children('ul.submenu:first');
-				if (subMenuEl.length) {
+				subMenuEl.hide();
 
-					subMenuEl.hide();
+				var subMenuId = this.subMenus.length;
+				el.addClass('with-submenu');
+				el.data('submenu-id', subMenuId);
 
-					var subMenuId = this.subMenus.length;
-					el.addClass('with-submenu');
-					el.data('submenu-id', subMenuId);
+				//subMenuEl.hide();
+				subMenuConfig.parentMenu = this;
+				subMenuConfig.subMenuId = subMenuId;
+				subMenuConfig.parentMenuItem = el;
+				subMenuConfig.menuElement = subMenuEl;
+				subMenuConfig.zIndex = this.options.zIndex+1;
+				var subMenu = new DeskPRO.UI.Menu(subMenuConfig);
+				this.subMenus.push(subMenu);
 
-					//subMenuEl.hide();
-					subMenuConfig.parentMenu = this;
-					subMenuConfig.subMenuId = subMenuId;
-					subMenuConfig.parentMenuItem = el;
-					subMenuConfig.menuElement = subMenuEl;
-					subMenuConfig.zIndex = this.options.zIndex+1;
-					var subMenu = new DeskPRO.UI.Menu(subMenuConfig);
-					this.subMenus.push(subMenu);
+				el.prepend($('<span class="arrow">&#x25B8;</span>'));
 
-					el.prepend($('<span class="arrow">&#x25B8;</span>'));
-
-					if (this.options.initSubMenusNow) {
-						subMenu._initMenu();
-					}
+				if (this.options.initSubMenusNow) {
+					subMenu._initMenu();
 				}
 			}).bind(this));
 		}

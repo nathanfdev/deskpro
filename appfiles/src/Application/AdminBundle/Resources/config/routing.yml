@@ -418,6 +418,10 @@ admin_twitter_accounts_new:
   pattern: /twitter/account/new
   defaults: { _controller: AdminBundle:TwitterAccount:new }
 
+admin_twitter_accounts_authorize:
+  pattern: /twitter/account/authorize
+  defaults: { _controller: AdminBundle:TwitterAccount:authorize }
+
 admin_twitter_accounts_edit:
   pattern: /twitter/account/{account_id}
   defaults: { _controller: AdminBundle:TwitterAccount:edit }

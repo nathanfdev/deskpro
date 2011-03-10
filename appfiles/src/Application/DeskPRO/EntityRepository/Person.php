@@ -17,24 +17,37 @@ use \Doctrine\ORM\EntityRepository;
 
 class Person extends EntityRepository
 {
-	protected $agent_names = null;
+	protected $_agent_names = null;
 
-	/**
-	 * @return array
-	 */
-	public function getAgentNames()
+	protected function _loadAgentNames()
 	{
-		if ($this->agent_names !== null) return $this->agent_names;
+		if ($this->_agent_names !== null) return;
 
 		$db = App::getDb();
-		$this->agent_names = $db->fetchAllKeyValue("
+		$this->_agent_names = $db->fetchAllKeyValue("
 			SELECT id, CONCAT_WS(' ', first_name, last_name) AS full_name
 			FROM people
 			WHERE is_agent = 1
 			ORDER BY full_name ASC
 		");
+	}
 
-		return $this->agent_names;
+	public function getAgentNames($for_ids = null)
+	{
+		$this->_loadAgentNames();
+
+		if ($for_ids === null) {
+			return $this->_agent_names;
+		}
+
+		$ret = array();
+		foreach ($for_ids as $id) {
+			if (isset($this->_agent_names[$id])) {
+				$ret[] = $this->_agent_names[$id];
+			}
+		}
+
+		return $ret;
 	}
 
 

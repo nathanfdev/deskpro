@@ -176,8 +176,8 @@
 			{# notifications start #}
 			<div class="left box-header notifications">
 				<ul class="noti-menu">
-					<li><span class="icn-bar tickets"></span><div class="counter"><span class="counter">12</span></div></li>
-					<li><span class="icn-bar chat"></span><div class="counter"><span class="counter">2</span></div></li>
+					<li><div class="counter"><span class="counter">12</span></div><span class="icn-bar tickets">Tickets</span></li>
+					<li><div class="counter"><span class="counter">2</span></div><span class="icn-bar chat">Chat</span></li>
 				</ul>
 				<span class="white-drop"></span>
 
@@ -200,7 +200,7 @@
 			<div class="right box-header current-user">
 				<div class="wrapper-top-bar">
 					<div class="current-user-avatar">
-						<img src="{{ asset('images/avatar-user.png') }}" alt="" />
+						<img src="{{person.getPictureUrl(16)}}" alt="" />
 					</div>
 					<div class="current-user-name">
 						<span>{{person.display_name}}</span>
@@ -302,8 +302,8 @@
 			<div class="right box-header admin-actions">
 				<div class="wrapper-top-bar">
 					<ul>
-						<li class="admin"><a href="{{ path('agent') }}">Agent</a></li>
-						<li class="admin"><a href="{{ path('user') }}">Portal</a></li>
+						<li class="agent"><a href="{{ path('agent') }}">Agent</a></li>
+						<li class="portal"><a href="{{ path('user') }}">Portal</a></li>
 						<li class="billing"><a href="">Billing</a></li>
 						<li class="reports"><a href="">Reports</a></li>
 					</ul>

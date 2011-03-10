@@ -164,7 +164,7 @@ DeskPRO.Agent.TabStrip = new Class({
 		}
 
 		// If the clicked thing was the close button, or if its a middle-click...
-		if (el_click.parent().is('.close-tab') || event.which == 2 || event.isDbl) {
+		if (el_click.is('.close-tab') || event.which == 2 || event.isDbl) {
 			this.tabManager.removeTab(el.data('tab-id'));
 			return;
 		}
@@ -176,11 +176,11 @@ DeskPRO.Agent.TabStrip = new Class({
 	_onTabAdd: function(tabData) {
 		tabData.btnId = Orb.getUniqueId('tab_');
 
-		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab';
+		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab tipped';
 			if (tabData.page.TYPENAME != 'basic') {
 				html += ' icon icon-' + tabData.page.TYPENAME;
 			}
-			html += '" title="' + tabData.title + '">';
+			html += '" data-tipped="' + tabData.title + '" data-tipped-options="skin: \'light\', showDelay: 1, target: \'mouse\', hook: \'topmiddle\'">';
 
 			html += '<a class="link">'+tabData.title+'</a>';
 			html += '<a class="close-tab">Close</a>';

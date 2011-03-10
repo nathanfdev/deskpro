@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html>
+<html xmlns="http://www.w3.org/1999/xhtml">
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<meta name="robots" content="NOINDEX" />
@@ -27,9 +27,9 @@
 						<li data-search-type="users" class="search-users"><span>Users</span></li>
 					</ul>
 				</div>
-				<div id="window_search_form" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults">
+				<div id="window_search_form" autocomplete="off" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults">
 					<form id="search-form" action="#" method="post">
-						<input id="window_search_box" type="text" name="search" value="" />
+						<input id="window_search_box" autocomplete="off" type="text" name="search" value="" />
 					</form>
 
 					<div class="wrap-dropdown search-drop">
@@ -80,8 +80,8 @@
 			{# notifications start #}
 			<div class="left box-header notifications">
 				<ul class="noti-menu">
-					<li><span class="icn-bar tickets"></span><div class="counter"><span class="counter">12</span></div></li>
-					<li><span class="icn-bar chat"></span><div class="counter"><span class="counter">2</span></div></li>
+					<li><div class="counter"><span class="counter">12</span></div><span class="icn-bar tickets">Tickets</span></li>
+					<li><div class="counter"><span class="counter">2</span></div><span class="icn-bar chat">Chat</span></li>
 				</ul>
 				<span class="white-drop"></span>
 
@@ -104,7 +104,7 @@
 			<div class="right box-header current-user">
 				<div class="wrapper-top-bar">
 					<div class="current-user-avatar">
-						<img src="{{ asset('images/avatar-user.png') }}" alt="" />
+						<img src="{{person.getPictureUrl(16)}}" alt="" />
 					</div>
 					<div class="current-user-name">
 						<span>{{person.display_name}}</span>
@@ -207,7 +207,7 @@
 				<div class="wrapper-top-bar">
 					<ul>
 						<li class="admin"><a href="{{ path('admin') }}">Admin</a></li>
-						<li class="admin"><a href="{{ path('user') }}">Portal</a></li>
+						<li class="portal"><a href="{{ path('user') }}">Portal</a></li>
 						<li class="billing"><a href="">Billing</a></li>
 						<li class="reports"><a href="">Reports</a></li>
 					</ul>
@@ -257,9 +257,9 @@
 							{# publish menu start #}
 							<div class="wrap-dropdown n-drop global publish-drop">
 								<ol class="icon-menu single-line">
-									<li class="link-knowledgebase"><a href="">Knowledgebase</a></li>
+									<li class="link-knowledgebase"><a href="">KB</a></li>
+									<li class="link-troubleshooters"><a href="">Troubles</a></li>
 									<li class="link-files"><a href="">Files</a></li>
-									<li class="link-troubleshooters"><a href="">Troubleshooters</a></li>
 								</ol>
 							</div>
 							{# publish menu end #}

@@ -3,6 +3,8 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults,
 
+	TYPENAME: 'ticket-filter',
+
 	resultTypeName: 'filter',
 	resultTypeId: 0,
 

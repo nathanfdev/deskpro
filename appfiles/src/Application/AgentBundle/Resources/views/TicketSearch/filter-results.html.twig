@@ -1,5 +1,9 @@
 <script>
-pageMeta.title = 'Ticket Filter';
+{% if filter.sys_name %}
+	pageMeta.title = {{ phrase('agent.filter_' ~ filter.sys_name)|json_encode|raw }};
+{% else %}
+	pageMeta.title = {{ filter.title|json_encode|raw }};
+{% endif %}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
 pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?partial=1&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?';

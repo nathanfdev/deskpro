@@ -1,26 +1,26 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.TicketFilterForm = new Class({
+DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	wrapper: null,
 
 	initPage: function(el) {
-		
+
 		this.wrapper = $(el);
-		
+
 		this._initBasic();
 		this._initFilterForm();
-		
+
 		if (this.getMetaData('autorun')) {
 			this.submitForm();
 		}
 	},
-	
+
 	destroyPage: function() {
 
 	},
-	
+
 	_initBasic: function() {
 		var self = this;
 		$('> .summary > .toggle', this.wrapper).click(function() {
@@ -28,10 +28,10 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilterForm = new Class({
 			$('> .criteria', self.wrapper).slideDown();
 		});
 	},
-	
+
 	_initFilterForm: function() {
 		var self = this;
-		
+
 		var editor = new DeskPRO.Form.RuleBuilder($('.search-tpl', this.wrapper));
 		editor.addEvent('newRow', function(new_row) {
 			$('.remove', new_row).click(function() {
@@ -41,17 +41,17 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilterForm = new Class({
 		$('.search-form .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
-			
+
 			$(this).data('add-count', count+1);
-			
+
 			editor.addNewRow($('.search-form .search-terms', self.wrapper), basename);
 		});
-		
+
 		var self = this;
 		$('button.run-filter-trigger', this.wrapper).click(function() {
 			self.submitForm();
 		});
-		
+
 		if (this.getMetaData('preselectTerms')) {
 			var count = 0;
 			var preselectTerms = this.getMetaData('preselectTerms');
@@ -64,15 +64,15 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilterForm = new Class({
 					preselectTerms[i]
 				);
 			}
-			
+
 			$('.search-form .add-term', this.wrapper).data('add-count', count);
 		}
 	},
-	
+
 	submitForm: function() {
-		
+
 		DeskPRO_Window.startLoadingIndicator();
-		
+
 		var data = $('form.search-form-data', this.wrapper).serializeArray();
 
 		$.ajax({
@@ -90,11 +90,11 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilterForm = new Class({
 			}
 		});
 	},
-	
+
 	_handleAjaxResults: function(data) {
-		
+
 		DeskPRO_Window.removePage(this);
-		
+
 		var page = DeskPRO_Window.createPageFragment(data);
 		DeskPRO_Window.addListPage(page);
 	}

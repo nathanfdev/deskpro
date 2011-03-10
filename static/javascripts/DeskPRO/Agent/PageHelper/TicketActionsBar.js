@@ -38,11 +38,12 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	actionMenu: null,
 	selectMenu: null,
 	_initMenus: function() {
+
 		var menu = this.actionMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.ticket-bar ul.tools li.actions:first', this.wrapper),
 			menuElement: $('.ticket-bar .ticket-action-menu:first', this.wrapper),
 			onItemClicked: this._actionMenuItemClicked.bind(this),
-			initMenuNow: true
+			initMenuNow: false
 		});
 
 		var menu = this.macrosMenu = new DeskPRO.UI.Menu({
@@ -91,7 +92,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		var self = this;
 
 		// The header check-all-box should check whole table
-		$('thead > tr > th.check-all > input.check-all-box', this.tableEl).click(function(ev) {
+		$('> thead:first > tr > th.check-all > input.check-all-box:first', this.tableEl).click(function(ev) {
 			ev.stopPropagation();
 			if ($(this).is(':checked')) {
 				self._selectOp('all');
@@ -278,7 +279,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	},
 
 	_addTicketIdsToCurrentAction: function(ticket_ids) {
-		if (typeOf(ticket_ids) != 'array') {
+		if (!$.isArray(ticket_ids)) {
 			ticket_ids = [ticket_ids];
 		}
 
@@ -311,7 +312,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	},
 
 	_removeTicketIdsToCurrentAction: function(ticket_ids) {
-		if (typeOf(ticket_ids) != 'array') {
+		if (!$.isArray(ticket_ids)) {
 			ticket_ids = [ticket_ids];
 		}
 
@@ -438,7 +439,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 					return;
 				}
 
-				if (typeOf(newValue) == 'object' && newValue.value_display) {
+				if (newValue.value_display) {
 					newValue = newValue.value_display;//custom fields
 				}
 
