@@ -126,6 +126,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	/**
+	 * Retrieve a list of Twitter users this account follows.
+	 *
+	 * @return array
+	 */
 	public function getFollowingIds()
 	{
 		if (is_array($this->_following_ids)) {
@@ -146,6 +151,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_following_ids;
 	}
 
+	/**
+	 * Retrieve a list of Twitter users following this account.
+	 *
+	 * @return array
+	 */
 	public function getFollowerIds()
 	{
 		if (is_array($this->_follower_ids)) {
