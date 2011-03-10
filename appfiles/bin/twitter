@@ -1,0 +1,214 @@
+#!/usr/bin/env php
+<?php
+
+define('DP_ROOT', realpath(__DIR__ . '/../'));
+require_once DP_ROOT.'/sys/autoload.php';
+require_once DP_ROOT.'/config.php';
+
+$env = 'dev';
+if (isset($_SERVER['argv'][1])) {
+	$env = trim($_SERVER['argv'][1]);
+}
+
+use Doctrine\ORM\EntityManager,
+    Doctrine\ORM\Configuration;
+
+$connectionOptions = $CONFIG['db'];
+
+$cacheImpl = new \Doctrine\Common\Cache\ArrayCache;
+
+$annotReader = new \Doctrine\Common\Annotations\AnnotationReader();
+$annotReader->setAnnotationNamespaceAlias('Doctrine\\ORM\\Mapping\\', 'orm');
+
+$driverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
+$driverImpl->addDriver(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($annotReader, array(0 => DP_ROOT.'/appfiles/src/Application/DeskPRO/Entity')), 'Application\\DeskPRO\\Entity');
+
+$config = new Configuration;
+$config->setMetadataCacheImpl($cacheImpl);
+$config->setQueryCacheImpl($cacheImpl);
+$config->setMetadataDriverImpl($driverImpl);
+$config->setEntityNamespaces(array('DeskPRO' => 'Application\\DeskPRO\\Entity'));
+$config->setProxyDir(DP_ROOT.'/sys/cache/'.$env.'/doctrine/orm/Proxies');
+$config->setProxyNamespace('Proxies');
+$config->setAutoGenerateProxyClasses(true);
+$config->setClassMetadataFactoryName('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
+
+$em = EntityManager::create($connectionOptions, $config);
+
+use Application\DeskPRO\Entity\TwitterStatus;
+use Application\DeskPRO\Entity\TwitterUser;
+
+/**
+ * Concrete Twitter API User Stream consuming class.
+ *
+ * @author Pierre Minnieur <pm@pierre-minnieur.de>
+ */
+class UserStreamConsumer extends \UserstreamPhirehose
+{
+	/**
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	protected $em;
+
+	/**
+	 * @var array
+	 */
+	protected $log = array();
+
+	/**
+	 * Suppress Phirehose @error_log output.
+	 *
+	 * @param string $message
+	 * @return void
+	 */
+	protected function log($message)
+	{
+		$this->log[] = $message;
+	}
+
+	/**
+	 * Retrieve the Doctrine EntityManager instance.
+	 *
+	 * @return \Doctrine\ORM\EntityManager
+	 */
+	public function getEntityManager()
+	{
+		return $this->em;
+	}
+
+	/**
+	 * Inject the Doctrine EntityManager instance.
+	 *
+	 * @param \Doctrine\ORM\EntityManager $em
+	 * @return void
+	 */
+	public function setEntityManager(\Doctrine\ORM\EntityManager $em)
+	{
+		$this->em = $em;
+	}
+
+	/**
+	 * Process raw streaming data.
+	 *
+	 * @param string $status
+	 * @return void
+	 */
+	public function enqueueStatus($status) {
+		// skip "ping -> pong"
+		$status = trim($status);
+		if (!strlen($status)) {
+			return;
+		}
+
+		// decode json
+		$status = json_decode($status, true);
+
+		// check if status is a tweet
+		if (isset($status['text'])) {
+			// check if Twitter status exists
+			if ($this->em->getRepository('DeskPRO:TwitterStatus')->find($status['id_str'])) {
+				return;
+			}
+
+			// check if Twitter user exists
+			$user = $this->em->getRepository('DeskPRO:TwitterUser')->find($status['user']['id_str']);
+			if (!$user) {
+				// create Twitter user
+				$user                      = new TwitterUser();
+				$user['id']                = $status['user']['id_str'];
+				$user['name']              = $status['user']['name'];
+				$user['screen_name']       = $status['user']['screen_name'];
+				$user['profile_image_url'] = $status['user']['profile_image_url'];
+				$user['language']          = $status['user']['lang'];
+				$user['is_protected']      = $status['user']['protected'];
+				$user['is_verified']       = $status['user']['verified'];
+				$user['location']          = $status['user']['location'];
+				$user['is_geo_enabled']    = $status['user']['geo_enabled'];
+
+				// persist entity
+				$this->em->persist($user);
+
+				// flush changes
+				$this->em->flush();
+			}
+
+			// create Twitter status
+			$tweet = new TwitterStatus();
+			$tweet['id'] = $status['id_str'];
+			$tweet['user'] = $user;
+			$tweet['text'] = $status['text'];
+			$tweet['is_truncated'] = $status['truncated'];
+			$tweet['is_favorited'] = $status['favorited'];
+			$tweet['is_archived'] = false;
+			$tweet['date_created'] = new \DateTime($status['created_at']);
+			$tweet['source'] = $status['source'];
+
+			// @TODO add geo informations
+			// $tweet['geo_latitude'];
+			// $tweet['geo_longitude'];
+
+			// @TODO add entities handling
+			// ->urls
+			// ->hashtags
+			// ->user_mentions
+
+			// @TODO add in_reply_* handling
+
+			// persist entity
+			$this->em->persist($tweet);
+
+			// flush changes
+			$this->em->flush();
+
+			echo 'TWEET ADDED W/ ID: '.$tweet['id'].PHP_EOL;
+
+		// it's not a status
+		} else {
+			// @TODO add elsewhat handling
+			echo 'SOMETHING ELSE, LOOK:'.PHP_EOL;
+			echo '(and write it down ...)'.PHP_EOL;
+			print_r($status);
+			echo PHP_EOL.PHP_EOL;
+
+			// discovered so far ...
+			// -> 'friends', 'delete'
+		}
+	}
+}
+
+// @TODO make configurable
+define('TWITTER_CONSUMER_KEY',    '8F0tLXjdjVDDsovNjWJw');
+define('TWITTER_CONSUMER_SECRET', '2naz7yxp6TBnEXwP9EnzLC0WU2Vwg60vm17tMntOo');
+
+// fork process for each Twitter account
+foreach ($em->getRepository('DeskPRO:TwitterAccount')->findAll() as $account) {
+	// fork process
+	$pid = pcntl_fork();
+
+	/**
+	 * FAILURE
+	 */
+	if (-1 === $pid) {
+		throw new \Exception(sprintf('Forking for account "%s" failed', $account['id']));
+
+	/**
+	 * PARENT
+	 */
+	} else if (0 < $pid) {
+		// @TODO add inter process communication
+		pcntl_wait($status);
+
+	/**
+	 * CHILD
+	 */
+	} else {
+		// initialize User Stream consumer
+		$stream = new UserStreamConsumer($account['oauth_token'], $account['oauth_token_secret']);
+		$stream->setEntityManager($em);
+
+		// start consuming
+		$stream->consume();
+
+		// @TODO add inter process communication
+	}
+}
