@@ -25,6 +25,9 @@ DeskPRO.Agent.Layout.FooterLayout = Orb.Class({
 		var h = this.paneWrapper.height();
 
 		var foot_height = 26;
+		if ($('.tab-bottom', this.footer).length) {
+			foot_height = 33;
+		}
 		this.footer.css({
 			height: foot_height,
 			width: w,

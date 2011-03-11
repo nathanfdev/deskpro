@@ -577,10 +577,6 @@ ul.tagit input[type="text"] {
 	margin-right: 6px;
 }
 
-.ticket-attach {
-	width: 550px;
-}
-
 .ticket ul.ticket-newreply-attach-list {
 	text-align: right;
 	margin-right: 15px;

@@ -1,19 +1,36 @@
-<div class="ticket-bar">
-	{% if ticket.id %}
-		{% include 'AgentBundle:Ticket:reply-form.html.twig' with {'with_ticket_context': true} %}
-	{% else %}
-		{% include 'AgentBundle:Ticket:reply-form.html.twig' with {'with_ticket_context': false} %}
-	{% endif %}
-	<div class="bar">
-		<ul class="tools">
-			<li class="submit-reply trigger" style="display:none;"><span class="icon icon-check">{% if ticket.id %}Reply{% else %}Create{% endif %}</span></li>
-			<li class="macros-apply left-most" style="display:none"><span class="icon icon-check">Apply</span></li>
-			<li class="macros-cancel" style="display:none"><span class="icon icon-cross">Cancel</span></li>
-			<li class="macros left-most"><span class="icon icon-script-gear">Macros</span></li>
-			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
-		</ul>
-		<div class="placeholder">
-			<input type="text" class="placeholder" value="Start typing a reply..." />
+<div class="tab-bottom-wrap">
+	<div class="tab-bottom-open" style="display:none">
+		<div class="tab-bottom-tabs">
+			<ul>
+				<li class="tab-bottom-active"><a href="">Message</a></li>
+				<li><a href="">CC</a></li>
+				<li><a href="">Attachment</a></li>
+			</ul>
+			<a class="close-tab-open"href="">Close</a>
+		</div>
+
+		<div class="tab-bottom-contents">
+			<div class="content-tab-bottom">
+				<textarea>Start typing a reply...</textarea>
+				<div class="message-options">
+					<ul>
+						<li class="option"><input type="checkbox"><span>Assign ticket to Me and My Team</span></li>
+						<li class="option"><input type="checkbox"><span>Change status to Pending</span></li>
+						<li class="reply"><span class="icon-send"></span><input type="submit" value="Reply"></li>
+					</ul>
+				</div>
+			</div>
+
+		</div>
+	</div>
+
+	<div class="tab-bottom">
+		<input type="text" value="Start typing a reply..." />
+		<div class="bar-actions">
+			<ul>
+				<li class="macros"><a href="" >Macros</a></li>
+				<li class="actions"><a href="" >Actions</a></li>
+			</ul>
 		</div>
 	</div>
 </div>

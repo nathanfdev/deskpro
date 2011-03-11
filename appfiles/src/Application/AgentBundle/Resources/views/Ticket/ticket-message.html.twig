@@ -1,18 +1,17 @@
-<li data-message-id="{{message.id}}" class="message-{{message.id}} message-item {% if message.person.is_agent %}agent{% if message.is_agent_note %} is-note{% endif %}{%else%}person{%endif%}">
-	<div class="box">
-		<div class="info">
-			<img class="person-picture" src="{{ path('serve_person_picture_size', {'person_id': message.person.id, 'size': 15}) }}" alt="" />
-			<cite>
-				{{message.person.name}}
-			</cite>
-			<span class="time">
-				<span data-message-id="{{message.id}}" class="edit-btn ticket-message-edit-btn"></span>
-				submitted online (from 76.167.170.198), {{message.date_created|date('Y-m-d')}}
-			</span>
+<div data-message-id="{{message.id}}" class="message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}admin-message{% else %}user-message{% endif %}">
+	<div class="message-avatar left">
+		<img src="{{ message.person.getPictureUrl(35) }}" alt="" width="35" height="35" />
+	</div>
+	<div class="message-body right">
+		<div class="message-meta">
+			<span class="arrow-left"></span>
+			<h4>{{message.person.name}}</h4>
+			<span class="timestamp">submitted online (from 76.167.170.198), <span class="timeago" title="{{message.date_created|date('c')}}">{{message.date_created|date('Y-m-d')}}</span></span>
 		</div>
-		<div class="message">
-			{{message.message_html|raw}}
-
+		<div class="message-text">
+			<p>
+				{{message.message_html|raw}}
+			</p>
 			{% if message.attachments.count() %}
 				<ul class="attachment-list">
 					{% for ticket_attach in message.attachments %}
@@ -28,4 +27,4 @@
 			{%endif%}
 		</div>
 	</div>
-</li>
+</div>

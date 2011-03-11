@@ -23,198 +23,304 @@ pageMeta.widgets = [
 ];
 </script>
 <div class="layout-content">
-<div class="ticket-content">
-	<form class="value-form" style="display:none">
-		<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
-		<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
-		<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
-		<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
-		<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
-		<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
-		<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
-		<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
-	</form>
+<form class="value-form" style="display:none">
+	<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
+	<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
+	<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
+	<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
+	<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
+	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
+	<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
+	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
+</form>
+{% if ticket.is_locked %}
+	<div class="lock-bar">
+		This ticket is currently in use by {{ ticket.locked_by_agent.display_name }}. You may want to avoid
+		making changes until they are finished with it.
+	</div>
+{% endif %}
 
+<div class="inner-box-tab-content-2">
+	<div class="ticket-status">
+		<span class="ticket-{{ticket.status}}">{{ phrase('core_tickets.status_' ~ ticket.status) }}</span>
+	</div>
+	<div class="ticket-info-top">
+	<span class="ticket-source" class="prop-val department_id" data-no-value="Choose Department">
+		{{ticket.department.full_title}}
+	</span>
+	<h3>
+		{{ticket.subject}}
+	</h3>
+	</div>
+</div>
 
-	<div class="ticket">
+{# Info Wrap #}
+<div class="ticket-info-wrapper">
 
-	{% if ticket.is_locked %}
-		<div class="lock-bar">
-			This ticket is currently in use by {{ ticket.locked_by_agent.display_name }}. You may want to avoid
-			making changes until they are finished with it.
-		</div>
-	{% endif %}
-
-	<div class="ticket-top">
-
-		<span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span>
-		<h1>
-			<span class="menu-trigger department_id department {% if not ticket.department %}no-value{% endif %}">
-				<span class="prop-val department_id" data-no-value="Choose Department">{{ticket.department.full_title}}</span>
-				:
-			</span>
-			{{ticket.subject}}
-		</h1>
-		<div class="tags-field">
-			<ul class="tagit ticket">
+	{# Top Left #}
+	<div class="ticket-info left">
+		<div class="ticket-tags">
+			<span class="tag-icon"></span>
+			<ul>
 				{% for label in ticket.labels %}
-					<li>{{label.label}}</li>
+					<li><span>{{label.label}}</span></li>
 				{% endfor %}
 			</ul>
 		</div>
 
-		{% include 'AgentBundle:Ticket:part-ticket-info.html.twig' %}
+		{# Top Tabs #}
+		<div class="container-tabbed-wrap ticket-participants">
 
-		<br style="clear:both" />
-
-		<div class="person-info-line">
-
-			<div style="float:right">
-				<div class="menu-trigger agent_id agent">
-					{% if ticket.agent %}
-						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ ticket.agent.getPictureUrl(50) }}" alt="" width="50" height="50" style="float:right; margin-left: 5px;" />
-					{% else %}
-						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="" alt="" width="50" height="50" style="float:right; margin-left: 5px; display:none" />
-					{% endif %}
-					<span data-picture-element="img.agent-picture" data-no-value-label="Unassigned" class="prop-val agent_id {% if not ticket.agent %}no-value{% endif %}">
-						{% if ticket.agent %}
-							{{ticket.agent.display_name}}
-						{% else %}
-							Unassigned
-						{% endif %}
-					</span>
-				</div>
-				{% if ticket_options.agent_teams %}
-					<div class="menu-trigger agent_team_id agent_team" style="font-size:7pt">
-						<strong>Team:</strong> <span class="prop-val agent_team_id {% if not ticket.agent_team %}no-value{% endif %}" data-no-value="None">{{ticket.agent_team.name}}</span>
-					</div>
-				{% endif %}
-			</div>
-
-			<div class="person-overview">
-				<div class="img">
-					<img src="{{ ticket.person.getPictureUrl(50) }}" alt="" width="50" height="50" />
-				</div>
-				<div class="info">
-					<h1>{{ticket.person.name}}</h1>
-					{% if ticket.person.primary_email %}
-						{{ticket.person.primary_email.email}}
-					{% endif %}
-					<div style="font-size: 7pt; color: #6D7C8C; padding-top: 4px;">Click to view information</div>
-				</div>
-			</div>
-
-			<br style="clear:both" />
-
-			<div class="ticket-participants">
+			<div class="container-tabbed-tabs">
 				<ul>
-					{% for participant in ticket.participants %}
-						<li data-option-id="{{participant.id}}" style="line-height: 15px">
-							<div style="margin-right: 5px; float: left">
-								<img src="{{ participant.getPictureUrl(15) }}" alt="" width="15" height="15" />
-							</div>
-							{{participant.display_name}}
-						</li>
-					{% endfor %}
-					<li class="add-trigger" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '15'})|replace({'000': '{person_id}'}) }}"><span>Add a new participant</span></li>
+					<li class="container-tabbed-tabs-active"><a href="#">Participants</a></li>
 				</ul>
 			</div>
 
-			<br style="clear:both" />
-		</div>
+			<div class="container-tabbed">
+				<div class="container-tabbed-contents">
 
-		{% include 'AgentBundle:Ticket:part-custom-fields.html.twig' %}
+					{# Tab: Participants #}
+					<div class="container-tabbed-content-tab">
+						<div class="row agent menu-trigger agent_id agent">
+							<div class="left col-inner name-image">
+								<span>Agent</span>
+								{% if ticket.agent %}
+									<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ ticket.agent.getPictureUrl(50) }}" alt="" width="50" height="50" />
+									<h4 data-picture-element="img.agent-picture" data-no-value-label="{{ phrase('core.unassigned') }}" class="prop-val agent_id">{{ ticket.agent.display_name }}</h4>
+								{% else %}
+									<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
+									<h4 data-picture-element="img.agent-picture" data-no-value-label="{{ phrase('core.unassigned') }}" class="prop-val agent_id no-value">{{ phrase('core.unassigned') }}</h4>
+								{% endif %}
+							</div>
 
-		<ul class="ticket-tabs">
-			<li class="tab-trigger ticket-messages messages on" data-tab-for=".tab-content.ticket-messages">Messages</li>
-			<li class="tab-trigger notes" data-tab-for=".tab-content.notes">Notes</li>
-			<li class="tab-trigger attachments" data-tab-for=".tab-content.attachments">Attachments</li>
-			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log">Ticket Log</li>
-			{% for widget in widgets['agent.ticket.tabs'] %}
-				<li class="tab-trigger widget-{{widget.id}} display-element" data-tab-for=".tab-content.widget-{{widget.id}}">{{widget.tab_title|default(widget.note)}}</li>
-			{% endfor %}
-		</ul>
-	</div>
+							<div class="left col-inner name-image menu-trigger agent_team_id agent_team">
+								<span>Team</span>
+								{% if ticket.agent_team %}
+									<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
+									<h4 class="prop-val agent_team_id" data-no-value="{{ phrase('core.none') }}">{{ ticket.agent_team.name }}</h4>
+								{% else %}
+									<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
+									<h4 class="prop-val agent_team_id no-value" data-no-value="{{ phrase('core.none') }}">{{ phrase('core.none') }}</h4>
+								{% endif %}
+							</div>
 
-	<div class="tab-content on messages ticket-messages" data-tab-trigger=".tab-trigger.ticket-messages">
-		<ul>
-			{% for message in ticket.messages %}
-				{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
-			{% endfor %}
-		</ul>
-	</div>
-
-	<div class="tab-content messages notes" data-tab-trigger=".tab-trigger.notes">
-		<ul>
-			<li class="message-item agent is-note new-note">
-				<div class="box">
-					<div class="info"><cite>New Note</cite></div>
-					<div class="message">
-						<textarea style="width:98%; height: 80px;"></textarea>
-						<div style="text-align:center; margin-top: 9px;">
-							<button class="dp-button x-small">Add Note</button>
+							<div class="left col-inner partis">
+								<span>Participants <a href="#">edit</a></span>
+								<ul>
+								</ul>
+							</div>
 						</div>
+
+						<div class="row-break"></div>
+
+						<div class="row ">
+							<div class="left col-inner name-image">
+								<span>User</span>
+								<img src="{{ ticket.person.getPictureUrl(50) }}" alt="" width="50" height="50" />
+								<h4>{{ ticket.person.display_name }}</h4>
+							</div>
+
+							<div class="left col-inner name-image">
+								<span>Organization</span>
+								<img src="images/pic-agent-2.png" />
+								<h4>None</h4>
+							</div>
+
+							<div class="left col-inner partis">
+								<span>Participants <a href="#">edit</a></span>
+								<ul>
+								</ul>
+							</div>
+						</div>
+
+
+					</div>
+					{# /Tab: Participants #}
+				</div>
+			</div>
+
+		</div>
+		{# /Top Tabs #}
+	</div>
+	{# /Top Left #}
+
+	{# Top Right #}
+	<div class="ticket-properties right">
+
+		{# Box Properties #}
+		<div class="table-container">
+			<div class="table-title">
+				<h4>Ticket Properties</h4>
+			</div>
+			<div class="table-content">
+
+				<div class="row-table-cotent category_id">
+					<div class="col-table-content title-col">
+						<span>Category</span>
+					</div>
+					<div class="col-table-content prop-val">
+						<span class="{% if not ticket.category %}no-value{% endif %}">{{ticket.category.full_title|default('None')}}</span>
 					</div>
 				</div>
-			</li>
-			{% for message in ticket.messages %}
-				{% if message.is_agent_note %}
-					{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
-				{% endif %}
+
+				<div class="row-table-cotent dark product_id">
+					<div class="col-table-content title-col">
+						<span>Product</span>
+					</div>
+					<div class="col-table-content">
+						<span class="{% if not ticket.category %}no-value{% endif %}">{{ticket.product.title|default('None')}}</span>
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Priority</span>
+					</div>
+					<div class="col-table-content">
+						<span class="{% if not ticket.category %}no-value{% endif %}">{{ticket.priority.title|default('None')}}</span>
+					</div>
+				</div>
+				<div class="row-table-cotent dark workflow_id">
+					<div class="col-table-content title-col">
+						<span>Workflow</span>
+					</div>
+					<div class="col-table-content">
+						<span class="{% if not ticket.workflow %}no-value{% endif %}">{{ticket.workflow.title|default('None')}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Box Properties #}
+
+		{# Box Times #}
+		<div class="table-container">
+			<div class="table-title">
+				<h4>Dates and Times</h4>
+			</div>
+			<div class="table-content">
+
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Created</span>
+					</div>
+					<div class="col-table-content">
+						<span class="timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>
+					</div>
+				</div>
+
+				<div class="row-table-cotent dark">
+					<div class="col-table-content title-col">
+						<span>Waiting Time</span>
+					</div>
+					<div class="col-table-content">
+						<span>12 hours</span>
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Total Waiting Time</span>
+					</div>
+					<div class="col-table-content">
+						<span>43 hours</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Box Times #}
+	</div>
+	{# /Top Right #}
+</div>
+{# /Info Wrap #}
+
+
+{# Main Tabs #}
+<div class="full-container-tabbed messages-container">
+	{# Tab Triggers #}
+	<div class="full-container-tabbed-tabs">
+		<ul>
+			<li class="tab-trigger ticket-messages on" data-tab-for=".tab-content.ticket-messages"><a>Messages</a></li>
+			<li class="tab-trigger ticket-notes" data-tab-for=".tab-content.ticket-notes"><a>Notes</a></li>
+			<li class="tab-trigger ticket-attach" data-tab-for=".tab-content.ticket-attach"><a>Attachments</a></li>
+			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log"><a>Log</a></li>
+			{% for widget in widgets['agent.ticket.tabs'] %}
+				<li class="tab-trigger widget-{{widget.id}}" data-tab-for=".tab-content.widget-{{widget.id}}"><a>{{widget.tab_title|default(widget.note)}}</a></li>
 			{% endfor %}
 		</ul>
 	</div>
+	{# /Tab Triggers #}
 
-	<div class="tab-content attachments unloaded" data-tab-trigger=".tab-trigger.attachments">
-		<div class="loading-more" style="display:block">
+	{# Tab Contents #}
+	<div class="full-container-tabbed-contents-wrap">
+		{# Tab: Messages #}
+		<div class="full-container-tabbed-contents tab-content ticket-messages" data-tab-trigger=".tab-trigger.ticket-messages">
+			<div class="full-tab-content">
+				<div class="messages-wrap">
+					{% for message in ticket.messages %}
+						{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		{# /Tab Messages #}
+
+		{# Tab Notes #}
+		<div class="full-container-tabbed-contents tab-content ticket-notes" data-tab-trigger=".tab-trigger.ticket-notes">
+			<div class="full-tab-content">
+				<div class="messages-wrap">
+					{% for message in ticket.messages %}
+						{% if message.is_agent_note %}
+							{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
+						{% endif %}
+					{% endfor %}
+
+					<div class="message admin-message">
+						<div class="message-avatar left">
+							<img src="{{ person.getPictureUrl(35) }}" alt="" width="35" height="35" />
+						</div>
+						<div class="message-body right">
+							<div class="message-meta">
+								<span class="arrow-left"></span>
+								<h4>{{ person.display_name }}</h4>
+							</div>
+							<div class="message-text">
+								<p>
+									<textarea style="width:98%; height: 80px;"></textarea>
+									<div style="text-align:center; margin-top: 9px;">
+										<button class="dp-button x-small">Add Note</button>
+									</div>
+								</p>
+							</div>
+						</div>
+					</div>
+
+				</div>
+			</div>
+		</div>
+		{# /Tab Notes #}
+
+		{# Tab Attach #}
+		<div class="full-container-tabbed-contents tab-content ticket-attach unloaded" data-tab-trigger=".tab-trigger.ticket-attach">
 			Loading attachment list ...
 		</div>
-	</div>
+		{# /Tab Attach #}
 
-	<div class="tab-content ticket-log unloaded" data-tab-trigger=".tab-trigger.ticket-log">
-		<div class="loading-more" style="display:block">
+		{# Tab Attach #}
+		<div class="full-container-tabbed-contents tab-content ticket-log unloaded" data-tab-trigger=".tab-trigger.ticket-log">
 			Loading ticket log ...
 		</div>
+		{# /Tab Attach #}
+
+		{% for widget in widgets['agent.ticket.tabs'] %}
+			<div class="full-container-tabbed-contents tab-content widget-{{widget.id}}" data-tab-trigger=".tab-trigger.widget-{{widget.id}}">
+				{% include widget.template_name %}
+			</div>
+		{% endfor %}
 	</div>
-
-	{% for widget in widgets['agent.ticket.tabs'] %}
-		<div class="tab-content widget-{{widget.id}} display-element" data-tab-trigger=".tab-trigger.widget-{{widget.id}}">
-			{% include widget.template_name %}
-		</div>
-	{% endfor %}
-
-	</div>
-
-	<div class="person-popout" style="display:none">
-		<div class="tabbar nosel">
-			<div class="pin-icon"></div>
-			<ul>
-				<li class="tab icon icon-person tab-active"><div class="title"><span>Ticket User</span></div></li>
-			</ul>
-		</div>
-		<br style="clear:both"/>
-		<div class="content">
-			{{person_inner_tab|raw}}
-		</div>
-	</div>
-
-	<div class="person-overview-popout" style="display:none"></div>
-
-	<div class="person-overview-popout-content" style="display:none" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
-		<div class="img">
-			<img src="http://a1.twimg.com/profile_images/582127009/Photo-on-2009-11-22-at-19.58-2-large_normal.jpg" />
-		</div>
-		<div class="info">
-			<h1 title="Double-click to open person in a new tab">{{ticket.person.name}}</h1>
-			{% if ticket.person.primary_email %}
-				{{ticket.person.primary_email.email}}
-			{% endif %}
-		</div>
-	</div>
-
-	{% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
-</div><!-- content -->
+	{# /Tab Contents #}
+</div>
+{# /Main Tabs #}
 </div>
 <div class="layout-footer">
-{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
+<div class="tab-bottom-wrap">
+	{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
 </div>

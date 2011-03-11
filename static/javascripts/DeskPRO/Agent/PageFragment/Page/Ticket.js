@@ -284,11 +284,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var self = this;
 		var simpleTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.contentWrapper,
-			triggerElements: $('.ticket-tabs li', this.contentWrapper),
+			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper),
 			onTabSwitch: function(info) {
 				if (info.tabEl.is('.ticket-log')) {
 					self._loadTicketTab_Log();
-				} else if (info.tabEl.is('.attachments')) {
+				} else if (info.tabEl.is('.ticket-attach')) {
 					self._loadTicketTab_Attach();
 				}
 			}

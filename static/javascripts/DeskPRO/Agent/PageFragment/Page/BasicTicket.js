@@ -22,8 +22,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	initPage: function(el) {
 
 		this.wrapper = el;
-		this.contentWrapper = this.wrapper.children('.ticket-content').attr('id', Orb.getUniqueId());
-		this.barWrapper = this.wrapper.children('.ticket-bar').attr('id', Orb.getUniqueId());
+		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
+		this.barWrapper = this.wrapper.children('.layout-footer').attr('id', Orb.getUniqueId());
 
 		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
 
