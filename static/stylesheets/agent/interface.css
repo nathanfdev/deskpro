@@ -141,7 +141,7 @@ textarea.change-on, input.change-on {
 .ui-autocomplete-loading {
 	background: white url(images/ui-anim_basic_16x16.gif) right center no-repeat;
 }
-
+/*
 ul.tagit {
 	padding:1px 5px;
 	overflow:auto;
@@ -198,7 +198,7 @@ ul.tagit input[type="text"] {
 	background-color:#FFFFFF;
 	color:#333333;
 }
-
+*/
 /**********************************************************
  Tickets
 ***********************************************************/

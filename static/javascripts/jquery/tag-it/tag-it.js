@@ -12,7 +12,7 @@
 
 		// option defaults
 		if (!options.fieldName) options.fieldName = 'tags';
-		if (!options.inputFieldHtml) options.inputFieldHtml = "<input class=\"tagit-input\" type=\"text\" />";
+		if (!options.inputFieldHtml) options.inputFieldHtml = "<input class=\"tagit-input\" type=\"text\" data-placeholder=\"add...\" value=\"add...\" />";
 		if (!options.inputFieldAppendTo) options.inputFieldAppendTo = el;
 		if (options.enableBackspace === undefined) options.enableBackspace = true;
 		if (!options.onchange) options.onchange = function() {};
@@ -31,6 +31,17 @@
 		// create the input field.
 		if (options.inputFieldAppendTo == el) {
 			var tmp = $('<li class=\"tagit-new\">' + options.inputFieldHtml + '</li>');
+			$('input', tmp).focus(function() {
+				if ($(this).val() == $(this).data('placeholder')) {
+					$(this).val('');
+				}
+				$(this).addClass('editting');
+			}).blur(function() {
+				if (!$(this).val().trim().length) {
+					$(this).val($(this).data('placeholder'));
+					$(this).removeClass('editting');
+				}
+			});
 			el.append(tmp);
 		} else {
 			var tmp = $(options.inputFieldHtml);
@@ -88,7 +99,7 @@
 						create_choice (typed);
 					}
 					// Cleaning the input.
-					tag_input.val("");
+					tag_input.val(tag_input.data('placeholder')).removeClass('editting');
 				}
 			}
 		});
@@ -137,8 +148,8 @@
 		}
 		function create_choice (value, label){
 			var el = "";
-			el  = "<li class=\"tagit-choice\">\n";
-			el += label || value + "\n";
+			el  = "<li class=\"tagit-choice\">\n<span>";
+			el += label || value + "</span>\n";
 			el += "<a class=\"close\">x</a>\n";
 			el += "<input type=\"hidden\" style=\"display:none;\" value=\""+value+"\" name=\"" + options.fieldName + "[]\">\n";
 			el += "</li>\n";

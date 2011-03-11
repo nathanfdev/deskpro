@@ -42,10 +42,10 @@ pageMeta.widgets = [
 
 <div class="inner-box-tab-content-2">
 	<div class="ticket-status">
-		<span class="ticket-{{ticket.status}}">{{ phrase('core_tickets.status_' ~ ticket.status) }}</span>
+		<span class="ticket-{{ticket.status}} prop-val menu-trigger status">{{ phrase('core_tickets.status_' ~ ticket.status) }}</span>
 	</div>
 	<div class="ticket-info-top">
-	<span class="ticket-source" class="prop-val department_id" data-no-value="Choose Department">
+	<span class="ticket-source prop-val menu-trigger department_id" data-no-value="Choose Department">
 		{{ticket.department.full_title}}
 	</span>
 	<h3>
@@ -155,12 +155,12 @@ pageMeta.widgets = [
 			</div>
 			<div class="table-content">
 
-				<div class="row-table-cotent category_id">
+				<div class="row-table-cotent">
 					<div class="col-table-content title-col">
 						<span>Category</span>
 					</div>
 					<div class="col-table-content prop-val">
-						<span class="{% if not ticket.category %}no-value{% endif %}">{{ticket.category.full_title|default('None')}}</span>
+						<span class="prop-val menu-trigger category_id {% if not ticket.category %}no-value{% endif %}">{{ticket.category.full_title|default('None')}}</span>
 					</div>
 				</div>
 
@@ -169,7 +169,7 @@ pageMeta.widgets = [
 						<span>Product</span>
 					</div>
 					<div class="col-table-content">
-						<span class="{% if not ticket.category %}no-value{% endif %}">{{ticket.product.title|default('None')}}</span>
+						<span class="prop-val menu-trigger product_id {% if not ticket.category %}no-value{% endif %}">{{ticket.product.title|default('None')}}</span>
 					</div>
 				</div>
 				<div class="row-table-cotent">
@@ -177,7 +177,7 @@ pageMeta.widgets = [
 						<span>Priority</span>
 					</div>
 					<div class="col-table-content">
-						<span class="{% if not ticket.category %}no-value{% endif %}">{{ticket.priority.title|default('None')}}</span>
+						<span class="prop-val menu-trigger priority_id {% if not ticket.category %}no-value{% endif %}">{{ticket.priority.title|default('None')}}</span>
 					</div>
 				</div>
 				<div class="row-table-cotent dark workflow_id">
@@ -185,7 +185,7 @@ pageMeta.widgets = [
 						<span>Workflow</span>
 					</div>
 					<div class="col-table-content">
-						<span class="{% if not ticket.workflow %}no-value{% endif %}">{{ticket.workflow.title|default('None')}}</span>
+						<span class="prop-val menu-trigger workflow_id {% if not ticket.workflow %}no-value{% endif %}">{{ticket.workflow.title|default('None')}}</span>
 					</div>
 				</div>
 			</div>
@@ -229,6 +229,8 @@ pageMeta.widgets = [
 		{# /Box Times #}
 	</div>
 	{# /Top Right #}
+
+	{% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
 </div>
 {# /Info Wrap #}
 

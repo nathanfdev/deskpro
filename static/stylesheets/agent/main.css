@@ -1859,9 +1859,11 @@ border-left: none;
 	display: block;
 }
 
-.ticket-status span.ticket-open{
-	background-position: 7px -928px;
-}
+.ticket-status span.ticket-open { background-position: 7px -928px; }
+.ticket-status span.ticket-closed { background-position: 7px -928px; }
+.ticket-status span.ticket-resolved { background-position: 7px -928px; }
+.ticket-status span.ticket-pending { background-position: 7px -928px; }
+.ticket-status span.ticket-hidden { background-position: 7px -928px; }
 
 .ticket-info-top {
 	float: left;
@@ -1919,7 +1921,37 @@ border-left: none;
 }
 
 .ticket-tags ul li span {
-	padding: 3px 5px;
+	padding: 3px 0 3px 5px;
+}
+
+.ticket-tags ul li:hover a {
+	visibility: visible;
+}
+.ticket-tags ul li a {
+	visibility: hidden;
+	padding: 0 2px;
+	margin-right: 2px;
+	line-height: 8px;
+	font-size: 7px;
+	cursor: pointer;
+	background-color: #D8DCE6;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+	-webkit-border-radius: 7px;
+}
+
+.ticket-tags ul li.tagit-new input {
+	border: none;
+	background-color: transparent;
+	outline: none;
+	width: 35px;
+	color: #B4B8BF;
+	font-style: italic;
+}
+
+.ticket-tags ul li.tagit-new input.editting {
+	color: #000;
+	font-style: normal;
 }
 
 .ticket-participants {

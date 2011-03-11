@@ -105,10 +105,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			case 'product_id':
 			case 'workflow_id':
 			case 'priority_id':
-			case 'status':
 			case 'agent_id':
 			case 'agent_team_id':
 				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this, { optionName: type });
+				break;
+			case 'status':
+				manager = new DeskPRO.Agent.Ticket.Property.Status(this, { optionName: 'status'});
 				break;
 			case 'add_labels':
 				manager = new DeskPRO.Agent.Ticket.Property.Labels(this, { mode: 'add' });
@@ -188,9 +190,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		for (var i = 0; i < options.length; i++) {
 			var opt = options[i];
 			var menuEl = $('.menu.'+opt+':first', this.wrapper);
-
-			var btnClass = '.menu-trigger.'+opt+':first';
-			var btnEl = $(btnClass, this.wrapper);
+			var btnEl = $('.menu-trigger.' + opt + ':first', this.wrapper);
 			var menu = new DeskPRO.UI.Menu({
 				triggerElement: btnEl,
 				menuElement: menuEl,
@@ -201,11 +201,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this.ticketOptionsMenus[opt] = menu;
 			this.ticketOptionsMenuEls[opt] = menuEl;
 			this.destroyMenus.push(menu);
-
-			// And if its a no-value, update the proper title
-			if ($('.no-value', btnEl).length) {
-				//this._initNoValOption(opt, null);
-			}
 		}
 	},
 
