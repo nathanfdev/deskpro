@@ -22,6 +22,7 @@ pageMeta.widgets = [
 {% endfor %}
 ];
 </script>
+<div class="layout-content">
 <div class="ticket-content">
 	<form class="value-form" style="display:none">
 		<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
@@ -213,5 +214,7 @@ pageMeta.widgets = [
 
 	{% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
 </div><!-- content -->
-
+</div>
+<div class="layout-footer">
 {% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
+</div>

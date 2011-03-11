@@ -29,17 +29,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this.contentWrapper.attr('id', center_id);
 		this.barWrapper.attr('id', south_id);
 
-		this.layout = this.wrapper.layout({
-			center: {
-				paneSelector: '#' + this.contentWrapper.attr('id')
-			},
-			south: {
-				paneSelector: '#' + this.barWrapper.attr('id'),
-				size: 27,
-				spacing_open: 0,
-				spacing_closed: 0
-			}
-		});
+		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
 
 		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
 

@@ -365,7 +365,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// Rewrote listpane's to normal pages if listpane
 		// is current collapnsed
-		if (routeData.openInSection == 'listpane' && this.layout.state.west.isClosed) {
+		if (routeData.openInSection == 'listpane' && false /* layout west is closed todo */) {
 			routeData.openInSection = 'page';
 
 			// If it's an alt page, they're used to link views
@@ -793,54 +793,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Global AJAX handler for errors if no error handler is attached
 		$(document).ajaxError(this._globalHandleAjaxError.bind(this));
 	},
-
+	
 	_initLayout: function() {
-
-		var winhead = $('#header');
-		var h = winhead.height();
-
-		var show_listpane = this.get('agent.ui.show-listpane');
-		var west_is_closed = false;
-		if (show_listpane == 'never') {
-			west_is_closed = true;
-		} else if (show_listpane == 'auto' && screen.width && screen.width < 1000) {
-			west_is_closed = true;
-		}
-
-		this.layout = this.innerLayout = $('body').layout({
-			applyDefaultStyles: false,
-			north: {
-				paneSelector: '#header',
-				spacing_open: 0,
-				spacing_closed: 0,
-				resizable: false,
-				size: h
-			},
-			west: {
-				paneSelector: '#pane_list_content',
-				size: '50%',
-				spacing_open: 10,
-				spacing_closed: 10,
-				initClosed: west_is_closed,
-				slidable: false,
-				onresize: function() {
-					DeskPRO_Window.getMessageBroker().sendMessage('window.innerLayout.resize');
-				}
-			},
-			center: {
-				paneSelector: '#pane_content',
-				spacing_open: 10,
-				spacing_closed: 10,
-				onresize: function() {
-					DeskPRO_Window.getMessageBroker().sendMessage('window.innerLayout.resize');
-				}
-			}
-		});
-
-		//------------------------------
-		// Set up the tab strips
-		//------------------------------
-
+		
+		this.layout = new DeskPRO.Agent.Layout.WindowLayout();
+	
 		this.pageTabStrip = new DeskPRO.Agent.TabStrip(
 			$('#pane_tabs'),
 			new DeskPRO.Agent.TabManager('#page')

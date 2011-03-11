@@ -1,19 +1,27 @@
-{# display:none here so it doesnt look strange when loading,
-   it's toggled after load is done #}
-<div id="pane_list_content" class="pane" style="display:none">
-	<div id="pane_list_tabbar" class="pane-tabs nosel">
-		<div id="pane_list_tabs_scroll_left"></div>
-		<div id="pane_list_tabs_scroll_right"></div>
-		<ul id="pane_list_tabs"></ul>
-	</div>
-	<div id="pane_list" class="pane-content ui-layout-content"></div>
-</div>
-
-<div id="pane_content" class="pane" style="display:none">
-	<div id="pane_tabbar" class="pane-tabs nosel">
-		<div id="pane_tabs_scroll_left"></div>
-		<div id="pane_tabs_scroll_right"></div>
-		<ul id="pane_tabs"></ul>
-	</div>
-	<div id="page" class="pane-content ui-layout-content"></div>
-</div>
+<table id="window_panes" cellspacing="0" cellpadding="0" style="display:none">
+	<tbody>
+		<tr>
+			<td>
+				<div id="pane_list_content" class="window-pane pane">
+					<div id="pane_list_tabbar" class="pane-tabs nosel">
+						<div id="pane_list_tabs_scroll_left"></div>
+						<div id="pane_list_tabs_scroll_right"></div>
+						<ul id="pane_list_tabs"></ul>
+					</div>
+					<div id="pane_list" class="pane-content"></div>
+				</div>
+			</td>
+			<td>
+				<div id="pane_content" class="window-pane pane">
+					<div id="pane_tabbar" class="pane-tabs nosel">
+						<div id="pane_tabs_scroll_left"></div>
+						<div id="pane_tabs_scroll_right"></div>
+						<ul id="pane_tabs"></ul>
+					</div>
+					<div id="page" class="pane-content"></div>
+				</div>
+			</td>
+		</tr>
+	</tbody>
+</table>
+<div id="pane_resizer" class="pane-resizer"></div>

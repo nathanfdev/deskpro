@@ -90,7 +90,7 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 
 		data.wrapperId = Orb.getUniqueId('tab_');
 		data.isInserted = false;
-		data.html = '<div id="'+data.wrapperId+'" style="display:none; position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: auto;">' + data.html + '</div>';
+		data.html = '<div id="'+data.wrapperId+'">' + data.html + '</div>';
 
 		this.tabs[id] = data;
 

@@ -8,8 +8,6 @@
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}">
 
-{% include 'AgentBundle:Main:layout-wrappers.html.twig' %}
-
 <div id="header">
 	<div id="header-top">
 		<div class="wrapper">
@@ -276,6 +274,8 @@
 	</div>
 </div>
 
+{% include 'AgentBundle:Main:layout-wrappers.html.twig' %}
+
 <div id="global_ajax_error" style="display:none; width: 340px; text-align: center;">
 	<p>A network exception occurred and your last request did not complete. Please try again.</p>
 	<div class="buttons" style="margin-top: 30px; text-align: center;">
@@ -324,6 +324,7 @@
 
 		{% if constant('DP_DEBUG') %}
 			window.DeskPRO_Window.DEBUG = {
+				disableMenuHandlers: true
 			};
 		{% endif %}
 
@@ -336,8 +337,8 @@
 		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route2'));
 
 		// Debug: auto load a ticket tab
-		//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
-		//window.DeskPRO_Window.runPageRoute('listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent'}) }}');
+		window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
+		window.DeskPRO_Window.runPageRoute('listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent'}) }}');
 		//window.DeskPRO_Window.runPageRoute('person:{{ path('agent_people_view', {'person_id': 20001}) }}');
 	});
 </script>

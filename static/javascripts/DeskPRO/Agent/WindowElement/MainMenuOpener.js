@@ -4,7 +4,7 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
 	Implements: [Orb.Util.Options],
 
 	initialize: function(options) {
-		
+
 		this.allMenus = null;
 		this.options = {
 			menuSelectors: []
@@ -49,7 +49,7 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
 	},
 
 	getMenuHandlerClass: function(li) {
-		if (li.data('menu-handler')) {
+		if (li.data('menu-handler') && !DeskPRO_Window.DEBUG.disableMenuHandlers) {
 			return Orb.getNamespacedObject(li.data('menu-handler'));
 		}
 

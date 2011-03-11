@@ -115,6 +115,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 
 	resizeTabListWidth: function() {
+		return;
 		var w = 0;
 		$('> li', this.tabStrip).each(function() {
 			w += $(this).outerWidth();

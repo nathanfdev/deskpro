@@ -45,20 +45,39 @@
 	margin-right: 0;
 }
 
+.table-layout {
+	table-layout: fixed;
+}
+
+#window_panes {
+	table-layout: fixed;
+}
+
+#window_panes > tbody > tr > td {
+	padding: 5px;
+}
+
+#window_panes > tbody > tr > td:first-child {
+	padding-left: 10px;
+}
+
+#window_panes > tbody > tr > td:last-child {
+	padding-right: 10px;
+}
+
 #pane_shell {
 	overflow: hidden;
 }
 
-#pane_list_content {
-	padding-top: 10px;
-	padding-left: 10px;
-	padding-bottom: 10px;
+.pane-resizer {
+	width: 5px;
+	background-color: transparent;
+	cursor: w-resize;
 }
 
-#pane_content {
-	padding-top: 10px;
-	padding-right: 10px;
-	padding-bottom: 10px;
+.pane-resizer.ui-draggable-dragging {
+	background-color: #000;
+	opacity: 0.3;
 }
 
 .window-loading-indicator {
@@ -662,6 +681,7 @@ ul.tagit input[type="text"] {
 }
 
 .ticket-bar {
+	position: relative;
 	height: 26px;
 	overflow: hidden;
 

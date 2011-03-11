@@ -25,17 +25,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this.contentWrapper = this.wrapper.children('.ticket-content').attr('id', Orb.getUniqueId());
 		this.barWrapper = this.wrapper.children('.ticket-bar').attr('id', Orb.getUniqueId());
 
-		this.layout = this.wrapper.layout({
-			center: {
-				paneSelector: '#' + this.contentWrapper.attr('id')
-			},
-			south: {
-				paneSelector: '#' + this.barWrapper.attr('id'),
-				size: 27,
-				spacing_open: 0,
-				spacing_closed: 0
-			}
-		});
+		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
