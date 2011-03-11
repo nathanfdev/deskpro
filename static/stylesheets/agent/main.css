@@ -1706,7 +1706,6 @@ border-left: none;
 /** List Box **/
 
 .list > thead > tr > th, .list > tbody > tr > td {
-	line-height: 19px;
 	font-size: 11px;
 	font-family: Arial,Helvetica,sans-serif;
 }
@@ -1766,11 +1765,12 @@ border-left: none;
 }
 
 .list > tbody tr.line-1 td {
-	padding-top: 3px;
+	padding: 3px;
+	padding-bottom: 0;
 }
 
 .list > tbody tr.line-2 td {
-	padding-bottom: 3px;
+	padding: 3px;
 	line-height: 14px;
 }
 

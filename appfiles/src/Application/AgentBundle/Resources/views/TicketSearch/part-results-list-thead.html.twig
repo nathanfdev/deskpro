@@ -1,6 +1,7 @@
 <thead class="display-options-trigger nosel">
 	<tr>
 		<th class="check-all check" width="5"><input type="checkbox" class="check-all-box" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
+		<th></th>
 		{% for field in display_fields %}
 			{% if field == 'person' %}<th data-field="person">User</th>
 			{% elseif field == 'person_email' %}<th data-field="person">User Email</th>
@@ -10,7 +11,7 @@
 			{% elseif field == 'product' %}<th data-field="product">Product</th>
 			{% elseif field == 'product' %}<th data-field="product">Product</th>
 			{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
-			{% elseif field == 'agent' %}<th data-field="agent">Agent</th>
+			{% elseif field == 'agent' and 0 %}<th data-field="agent">Agent</th>
 			{% else %}
 				{% for f in ticket_field_defs %}
 					{% if field == 'ticket_fields['~f.id~']' %}
@@ -24,6 +25,6 @@
 				{% endfor %}
 			{% endif %}
 		{% endfor %}
-		{% if show_flag %}<th class="flag" width="5"></th>{% endif %}
+		{% if show_flag and 0 %}<th class="flag" width="5"></th>{% endif %}
 	</tr>
 </thead>
