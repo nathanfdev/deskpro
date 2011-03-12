@@ -348,18 +348,20 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	ticketMacrosMenu: null,
 
 	_initReplyBar: function() {
-		this.ticketBar = this.barWrapper.children('div.bar');
-		this.ticketReply = this.barWrapper.children('div.reply');
+		this.ticketBar = $('div.tab-bottom:first', this.barWrapper);
+		this.ticketReply = $('div.tab-bottom-open:first', this.barWrapper);
 
-		this.ticketReplyTabs = $('.ticket-reply-tabs', this.barWrapper).detach().appendTo('body');
-		this.destroyEls.push(this.ticketReplyTabs);
+		console.log(this.ticketBar);
+		console.log(this.ticketReply);
+
+		this.ticketReplyTabs = $('.tab-bottom-tabs', this.barWrapper);
 
 		var self = this;
 		$('input.placeholder', this.ticketBar).click(function() {
 			self.toggleReplyBar();
 		});
 
-		this.ticketReplyTabs.children('li.close-trigger').click(function() {
+		$('a.close-trigger', this.ticketReplyTabs).click(function() {
 			self.toggleReplyBar();
 		});
 
@@ -375,16 +377,10 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			self._sendReply();
 		});
 
-		// Add +1 to zindex because we need to properly layer the ticketReplyTabs
-		// - Under barWrapper (south pane), but above contentWrapper (content pane)
-		this.barWrapper.css({
-			'z-index': parseInt(this.barWrapper.css('z-index'))+1
-		});
-
 		// Init ticket reply tabs
 		var simpleTabs = this.replySimpleTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.ticketReply,
-			triggerElements: this.ticketReplyTabs.children('li.tab-trigger')
+			triggerElements: $('li.tab-trigger', this.ticketReplyTabs)
 		});
 
 		// Actions menu
@@ -563,41 +559,33 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		if (force == 'on') {
 
-			// TODO: figure out correct css height maths here, where are 140 and 150 coming from?
-
-			this.ticketReply.show().css({ 'height': 140 });
+			this.ticketReply.show();
 			this.barWrapper.addClass('expanded');
-			this.layout.sizePane('south', 110 + this.ticketBar.outerHeight());
+			this.layout.expandFooter();
+
+			var msg = $('.tab-content.reply-reply', this.ticketReply);
+			$('.tab-content').css({
+				height: msg.height(),
+				overflow: 'auto'
+			});
 
 			$('div.placeholder', this.ticketBar).hide();
 			$('li.submit-reply.trigger:first', this.barWrapper).show();
 
-			this.ticketReplyTabs.css({
-				'position': 'absolute',
-				'top': this.barWrapper.offset().top - this.ticketReplyTabs.outerHeight() - 2,
-				'left': this.barWrapper.offset().left,
-				'display': 'block',
-				'z-index': parseInt(this.barWrapper.css('z-index')),
-				'width': this.barWrapper.width()-50
-			});
-
 			// When we open we should scroll down by the new height,
 			// so the same position is visible in the center pane
-			var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
-			this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
+			//var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
+			//this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
 
 			// Focus textarea
 			$('textarea', this.ticketReply).focus();
 		} else {
-			this.ticketReplyTabs.hide();
+			this.layout.collapseFooter();
 			this.ticketReply.hide();
 			this.barWrapper.removeClass('expanded');
-			this.layout.sizePane('south', 27);
 
 			$('div.placeholder', this.ticketBar).show();
 			$('li.submit-reply.trigger:first', this.barWrapper).hide();
-
-			this.ticketReplyTabs.hide();
 		}
 	},
 

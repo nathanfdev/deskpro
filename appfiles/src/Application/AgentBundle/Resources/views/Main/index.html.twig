@@ -329,7 +329,7 @@
 
 		{% if constant('DP_DEBUG') %}
 			window.DeskPRO_Window.DEBUG = {
-				disableMenuHandlers: false
+				disableMenuHandlers: true
 			};
 		{% endif %}
 
@@ -343,7 +343,7 @@
 
 		// Debug: auto load a ticket tab
 		window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
-		window.DeskPRO_Window.runPageRoute('listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent'}) }}');
+		//window.DeskPRO_Window.runPageRoute('listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent'}) }}');
 		//window.DeskPRO_Window.runPageRoute('person:{{ path('agent_people_view', {'person_id': 20001}) }}');
 	});
 </script>

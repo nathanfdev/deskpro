@@ -27,6 +27,9 @@ DeskPRO.Agent.Layout.FooterLayout = Orb.Class({
 		var foot_height = 26;
 		if ($('.tab-bottom', this.footer).length) {
 			foot_height = 33;
+			if (this.isFooterOpen) {
+				foot_height = 213;
+			}
 		}
 		this.footer.css({
 			height: foot_height,
@@ -41,5 +44,15 @@ DeskPRO.Agent.Layout.FooterLayout = Orb.Class({
 		});
 
 		this.fireEvent('resized', [this]);
+	},
+
+	expandFooter: function() {
+		this.isFooterOpen = true;
+		this.doLayout();
+	},
+
+	collapseFooter: function() {
+		this.isFooterOpen = false;
+		this.doLayout();
 	}
 });
