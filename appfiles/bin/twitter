@@ -127,20 +127,49 @@ class UserStreamConsumer extends \UserstreamPhirehose
 	}
 
 	/**
+	 * Retrieve a Twitter status.
+	 *
+	 * @param integer|string $id
+	 * @return null|\Application\DeskPRO\Entity\TwitterStatus
+	 */
+	protected function findStatus($id)
+	{
+		return $this->em->getRepository('DeskPRO:TwitterStatus')->find($id);
+	}
+
+	/**
+	 * Retrieve a Twitter user.
+	 *
+	 * @param integer|string $id
+	 * @return null|\Application\DeskPRO\Entity\TwitterUser
+	 */
+	protected function findUser($id)
+	{
+		return $this->em->getRepository('DeskPRO:TwitterUser')->find($id);
+	}
+
+	/**
 	 * Process a new Twitter status.
 	 *
 	 * @param array $tweet The Twitter status
-	 * @return void
+	 * @return Boolean
 	 */
 	protected function processStatus(array $tweet)
 	{
 		// check if Twitter status exists
-		if ($this->em->getRepository('DeskPRO:TwitterStatus')->find($tweet['id_str'])) {
+		if ($this->findStatus($tweet['id_str'])) {
 			return true;
 		}
 
 		// fetch Twitter user
-		$user = $this->getUser($tweet['user']);
+		$user = $this->findUser($tweet['user']['id_str']);
+		if (!$user) {
+			// create user entity
+			$user = \Orb\Service\Twitter\User::createEntityFromJson($tweet['user']);
+
+			// persist entity
+			$this->em->persist($user);
+		}
 
 		// create Twitter status
 		$status                 = new TwitterStatus();
@@ -203,6 +232,7 @@ class UserStreamConsumer extends \UserstreamPhirehose
 		$entity['starts'] = $url['indices'][0];
 		$entity['ends']   = $url['indices'][1];
 
+		// persist entity
 		$this->em->persist($entity);
 
 		return $entity;
@@ -221,6 +251,7 @@ class UserStreamConsumer extends \UserstreamPhirehose
 		$entity['starts'] = $tag['indices'][0];
 		$entity['ends']   = $tag['indices'][1];
 
+		// persist entity
 		$this->em->persist($entity);
 
 		return $entity;
@@ -233,51 +264,32 @@ class UserStreamConsumer extends \UserstreamPhirehose
 	 */
 	protected function processMention(TwitterStatus $status, array $mention)
 	{
-		$entity = new TwitterStatusMention();
+		$entity           = new TwitterStatusMention();
 		$entity['status'] = $status;
 
 		// @TODO check if Twitter user exists
-		$entity->setUserId($mention['id_str']);
+		$user = $this->findUser($mention['id_str']);
+		if (!$user) {
+			// @TODO check if we need an access token
+			$twitter = new \Zend_Service_Twitter(array(), \Orb\Service\Twitter\Oauth::getConsumer());
 
+			// fetch user data
+			// @TODO check limit for API calls / hour
+			$xml = $twitter->user->show($mention['id_str']);
+
+			// create user entity
+			$user = \Orb\Service\Twitter\User::createEntityFromXML($xml);
+
+			// persist entity
+			$this->em->persist($entity);
+		}
+
+		$entity['user']   = $user;
 		$entity['starts'] = $mention['indices'][0];
 		$entity['ends']   = $mention['indices'][1];
 
-		$this->em->persist($entity);
-
-		return $entity;
-	}
-
-	/**
-	 * Retrieve (and create, if needed) a Twitter user.
-	 *
-	 * @param array $user An array of Twitter user data
-	 * @return \Application\DeskPRO\Entity\TwitterUser
-	 */
-	protected function getUser(array $user)
-	{
-		// check if Twitter user exists
-		$entity = $this->em->getRepository('DeskPRO:TwitterUser')->find($user['id_str']);
-		if ($entity) {
-			return $entity;
-		}
-
-		// create Twitter user
-		$entity                      = new TwitterUser();
-		$entity['id']                = $user['id_str'];
-		$entity['name']              = $user['name'];
-		$entity['screen_name']       = $user['screen_name'];
-		$entity['profile_image_url'] = $user['profile_image_url'];
-		$entity['language']          = $user['lang'];
-		$entity['is_protected']      = $user['protected'];
-		$entity['is_verified']       = $user['verified'];
-		$entity['location']          = $user['location'];
-		$entity['is_geo_enabled']    = $user['geo_enabled'];
-
 		// persist entity
 		$this->em->persist($entity);
-
-		// flush changes
-		$this->em->flush();
 
 		return $entity;
 	}
@@ -286,11 +298,11 @@ class UserStreamConsumer extends \UserstreamPhirehose
 	 * Process friend list (list of Twitter users following).
 	 *
 	 * @param array $friendIds List of Twitter users following
-	 * @return void
+	 * @return Boolean
 	 */
 	protected function processFriends(array $friendIds)
 	{
-
+		return true;
 	}
 
 
@@ -304,8 +316,7 @@ class UserStreamConsumer extends \UserstreamPhirehose
 	{
 		// delete a Twitter status
 		if (isset($deletion['status'])) {
-			$status = $this->em->getRepository('DeskPRO:TwitterStatus')
-				->find($deletion['status']['id_str']);
+			$status = $this->findStatus($deletion['status']['id_str']);
 
 			$this->em->delete($status);
 			$this->em->flush();
@@ -315,9 +326,8 @@ class UserStreamConsumer extends \UserstreamPhirehose
 	}
 }
 
-// @TODO make configurable
-define('TWITTER_CONSUMER_KEY',    '8F0tLXjdjVDDsovNjWJw');
-define('TWITTER_CONSUMER_SECRET', '2naz7yxp6TBnEXwP9EnzLC0WU2Vwg60vm17tMntOo');
+define('TWITTER_CONSUMER_KEY',    \Orb\Service\Twitter\Oauth::getConsumerKey());
+define('TWITTER_CONSUMER_SECRET', \Orb\Service\Twitter\Oauth::getConsumerSecret());
 
 // fork process for each Twitter account
 foreach ($em->getRepository('DeskPRO:TwitterAccount')->findAll() as $account) {

@@ -42,27 +42,6 @@ class TwitterAccountController extends AbstractController
 	}
 
 	/**
-	 * Retrieve a pre-configured Zend OAuth Consumer instance.
-	 * May be used with Zend Service Twitter.
-	 *
-	 * @return \Zend_Oauth_Consumer
-	 */
-	protected function getOauthConsumer()
-	{
-		// @TODO make configurable
-		$config = array(
-			'callbackUrl'    => $this->generateUrl('admin_twitter_accounts_authorize', array(), true),
-			'siteUrl'        => 'http://twitter.com/oauth',
-			'consumerKey'    => '8F0tLXjdjVDDsovNjWJw',
-			'consumerSecret' => '2naz7yxp6TBnEXwP9EnzLC0WU2Vwg60vm17tMntOo'
-		);
-
-		$consumer = new \Zend_Oauth_Consumer($config);
-
-		return $consumer;
-	}
-
-	/**
 	 * Request permission from Twitter for DeskPRO application.
 	 *
 	 * @return Symfony\Component\HttpFoundation\Response
@@ -70,7 +49,7 @@ class TwitterAccountController extends AbstractController
 	public function newAction()
 	{
 		// generate request token
-		$consumer     = $this->getOauthConsumer();
+		$consumer     = \Orb\Service\Twitter\Oauth::getConsumer();
 		$requestToken = $consumer->getRequestToken();
 
 		// store request token in session
@@ -92,7 +71,7 @@ class TwitterAccountController extends AbstractController
 
 		try {
 			// request access token
-			$consumer    = $this->getOauthConsumer();
+			$consumer    = \Orb\Service\Twitter\Oauth::getConsumer();
 			$accessToken = $consumer->getAccessToken($get, unserialize($this->session->get(self::TWITTER_REQUEST_TOKEN)));
 
 			// initialize Twitter service
@@ -108,7 +87,7 @@ class TwitterAccountController extends AbstractController
 			$twitterUser = $twitter->user->show($accessToken->getParam('screen_name'));
 			$user        = $repos->find((integer) $twitterUser->id);
 			if (!$user) {
-				$user = $this->mapTwitterUserToEntity($twitterUser);
+				$user = \Orb\Service\Twitter\User::createEntityFromXML($twitterUser);
 			}
 
 			// persist entity
@@ -132,7 +111,7 @@ class TwitterAccountController extends AbstractController
 				// check if Twitter user already exists
 				$following = $repos->find((integer) $twitterFollowing->id);
 				if (!$following) {
-					$following = $this->mapTwitterUserToEntity($twitterFollowing);
+					$following = \Orb\Service\Twitter\User::createEntityFromXML($twitterFollowing);
 				}
 
 				// create Twitter account following
@@ -154,7 +133,7 @@ class TwitterAccountController extends AbstractController
 				// check if Twitter user already exists
 				$follower = $repos->find((integer) $twitterFollower->id);
 				if (!$follower) {
-					$follower = $this->mapTwitterUserToEntity($twitterFollower);
+					$follower = \Orb\Service\Twitter\User::createEntityFromXML($twitterFollower);
 				}
 
 				// create Twitter account follower
@@ -176,26 +155,6 @@ class TwitterAccountController extends AbstractController
 		}
 
 		return $this->createResponse('<script language="javascript">window.close()</script>');
-	}
-
-	/**
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $twitterUser
-	 * @return \Application\DeskPRO\Entity\TwitterUser
-	 */
-	protected function mapTwitterUserToEntity($twitterUser)
-	{
-		$user                      = new TwitterUser();
-		$user['id']                = (integer) $twitterUser->id;
-		$user['name']              = (string) $twitterUser->name;
-		$user['screen_name']       = (string) $twitterUser->screen_name;
-		$user['profile_image_url'] = (string) $twitterUser->profile_image_url;
-		$user['language']          = (string) $twitterUser->lang;
-		$user['is_protected']      = (Boolean) (integer) $twitterUser->protected;
-		$user['is_verified']       = (Boolean) (integer) $twitterUser->verified;
-		$user['location']          = (string) $twitterUser->location;
-		$user['is_geo_enabled']    = (Boolean) (integer) $twitterUser->geo_enabled;
-
-		return $user;
 	}
 
 	/**
