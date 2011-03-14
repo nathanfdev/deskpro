@@ -253,7 +253,7 @@ class UserStream extends \UserstreamPhirehose
 			$user = \Orb\Service\Twitter\User::createEntityFromXML($xml);
 
 			// persist entity
-			$this->em->persist($entity);
+			$this->em->persist($user);
 
 			// flush changes
 			$this->em->flush();
