@@ -291,7 +291,31 @@ class UserStream extends \UserstreamPhirehose
 	{
 		// delete a Twitter status
 		if (isset($deletion['status'])) {
-			$entity = $this->findStatus($deletion['status']['id_str']);
+			$status = $this->findStatus($deletion['status']['id_str']);
+
+			// delete mentions
+			foreach ($status['mentions'] as $mention) {
+				$this->em->delete($mention);
+			}
+
+			// flush changes
+			$this->em->flush();
+
+			// delete URLs
+			foreach ($status['urls'] as $url) {
+				$this->em->delete($url);
+			}
+
+			// flush changes
+			$this->em->flush();
+
+			// delete tags
+			foreach ($status['tags'] as $tag) {
+				$this->em->delete($tag);
+			}
+
+			// flush changes
+			$this->em->flush();
 
 			// delete entity
 			$this->em->delete($entity);
