@@ -173,7 +173,7 @@ class UserStream extends \UserstreamPhirehose
 
 		// fetch hashtags
 		foreach ($tweet['entities']['hashtags'] as $hashtag) {
-			$this->processHashtag($status, $hashtag);
+			$this->processTag($status, $hashtag);
 		}
 
 		// flush changes
