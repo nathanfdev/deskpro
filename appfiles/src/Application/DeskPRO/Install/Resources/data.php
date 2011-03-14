@@ -137,7 +137,7 @@ $q['terms']      = array(
 \Application\DeskPRO\App::getOrm()->beginTransaction();
 $s = new \Application\DeskPRO\Entity\Style();
 $s['title'] = 'Default';
-$s['note'] = '';
+$s['note'] = 'Default style';
 \Application\DeskPRO\App::getOrm()->persist($s);
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();

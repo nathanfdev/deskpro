@@ -58,7 +58,7 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="note", type="text")
 	 */
-	protected $note;
+	protected $note = '';
 
 	/**
 	 * @var \DateTime
