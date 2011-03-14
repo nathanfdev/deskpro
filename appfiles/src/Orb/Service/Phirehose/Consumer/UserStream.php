@@ -138,6 +138,9 @@ class UserStream extends \UserstreamPhirehose
 
 			// persist entity
 			$this->em->persist($user);
+
+			// flush changes
+			$this->em->flush();
 		}
 
 		// create Twitter status
@@ -251,6 +254,9 @@ class UserStream extends \UserstreamPhirehose
 
 			// persist entity
 			$this->em->persist($entity);
+
+			// flush changes
+			$this->em->flush();
 		}
 
 		$entity['user']   = $user;
@@ -285,9 +291,12 @@ class UserStream extends \UserstreamPhirehose
 	{
 		// delete a Twitter status
 		if (isset($deletion['status'])) {
-			$status = $this->findStatus($deletion['status']['id_str']);
+			$entity = $this->findStatus($deletion['status']['id_str']);
 
-			$this->em->delete($status);
+			// delete entity
+			$this->em->delete($entity);
+
+			// flush changes
 			$this->em->flush();
 
 			return true;
