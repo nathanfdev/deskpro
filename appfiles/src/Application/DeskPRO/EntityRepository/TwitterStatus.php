@@ -21,9 +21,10 @@ class TwitterStatus extends EntityRepository
 {
 	/**
 	 * @param array $userIds An array of TwitterUser ids
+	 * @param Boolean $includeArchived (optional)
 	 * @return array
 	 */
-	public function findByUserIds(array $userIds)
+	public function findByUserIds(array $userIds, $includeArchived = false)
 	{
 		$userIds = array_filter($userIds, function ($value) {
 			if (Numbers::isInteger($value)) {
@@ -37,12 +38,19 @@ class TwitterStatus extends EntityRepository
 			return array();
 		}
 
-		$statuses = $this->getEntityManager()->createQuery("
+		$query = "
 			SELECT s
 			FROM DeskPRO:TwitterStatus s
 			WHERE s.user IN (".implode(',', $userIds).")
-			ORDER BY s.date_created DESC
-		")->execute();
+		";
+
+		if (!$includeArchived) {
+			$query .= " AND s.is_archived = 0 ";
+		}
+
+		$query .= "ORDER BY s.date_created DESC";
+
+		$statuses = $this->getEntityManager()->createQuery($query)->execute();
 
 		return $statuses;
 	}

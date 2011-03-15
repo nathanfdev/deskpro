@@ -82,9 +82,17 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="status")
+	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="user")
 	 */
 	protected $statuses;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="in_reply_to_user")
+	 */
+	protected $replies;
+
+	// protected $retweets;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -116,6 +124,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->statuses = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->replies  = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->mentions = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
 

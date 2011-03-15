@@ -174,4 +174,25 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
 		return $this->_follower_ids;
 	}
+
+	/**
+	 * Retrieve a timeline for this account.
+	 *
+	 * @param Boolean $includeArchived (optional)
+	 * @param Boolean $includeAccount (optional)
+	 * @return array
+	 */
+	public function getTimeline($includeArchived = false, $includeAccount = false)
+	{
+		// get ids of users account is following
+		$followingIds = $this->getFollowingIds();
+
+		// include accounts' user id
+		if ($includeAccount) {
+			$followingIds[] = $this->getUserId();
+		}
+
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->findByUserIds($followingIds, $includeArchived);
+	}
 }

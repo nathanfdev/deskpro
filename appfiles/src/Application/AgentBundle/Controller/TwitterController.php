@@ -18,35 +18,42 @@ use \Application\DeskPRO\App;
  */
 class TwitterController extends AbstractController
 {
+	/**
+	 * Display statuses for provided account.
+	 *
+	 * @param integer $account_id The account id.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
 	public function statusesAction($account_id)
 	{
-		// fetch selected account
-		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')
-			->findOneById($account_id);
-
-		// @TODO improve check if person/team is "owner" :)
-		foreach ($this->person->getTwitterAccounts() as $account) {
-			if ($account_id == $account['id']) {
-				break;
-			}
+		// check if account id is in persons account id list
+		if (!in_array($account_id, $this->person->getTwitterAccountIds())) {
+			throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
 		}
 
-		$archived = false;
+		// check if account exists
+		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($account_id);
+		if (!$account) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $account_id));
+		}
 
-		// fetch following users (= public timeline tweeter)
-		$followingIds   = $account->getFollowingIds();
-		$followingIds[] = $account['user']['id'];
-
-		// @TODO add checkboxes / filters / paging
-		$statuses = App::getORM()->getRepository('DeskPRO:TwitterStatus')
-			->findByUserIds($followingIds);
+		// @TODO use request variables
+		$includeArchived = false;
+		$includeAccount  = false;
 
 		return $this->render('AgentBundle:Twitter:statuses.html.twig', array(
 			'account'  => $account,
-			'statuses' => $statuses
+			'statuses' => $account->getTimeline($includeArchived, $includeAccount)
 		));
 	}
 
+	/**
+	 * Display accounts for Super Menu.
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
 	public function accountsPaneAction()
 	{
 		return $this->render('AgentBundle:Twitter:pane-accounts.html.twig', array(
@@ -54,15 +61,27 @@ class TwitterController extends AbstractController
 		));
 	}
 
+	/**
+	 * Display statuses overview for Super Menu.
+	 *
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
 	public function statusesPaneAction()
 	{
-		$accounts = $this->person->getTwitterAccountIds();
+		// fetch persons' accounts
+		$accounts = $this->person->getTwitterAccounts();
 
+		// statuses counters
 		$statuses = array(
 			'starred' => 0,
-			'my'      => 0,
+			'account' => 0,
 			'team'    => 0
 		);
+
+		// iterate accounts, count statuses
+		foreach ($accounts as $account) {
+			// @TODO count statuses
+		}
 
 		return $this->render('AgentBundle:Twitter:pane-statuses.html.twig', array(
 			'statuses' => $statuses

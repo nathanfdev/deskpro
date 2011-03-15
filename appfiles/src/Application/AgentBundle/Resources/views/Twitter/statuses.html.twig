@@ -1,6 +1,6 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Twitter';
-pageMeta.title = '@{{ account.user.name }}';
+pageMeta.title = '@{{ account.user.screen_name|escape }}';
 </script>
 
 <style type="text/css" media="screen">
@@ -37,7 +37,12 @@ pageMeta.title = '@{{ account.user.name }}';
 
 	.twitter-listing ul li .photo {
 		float: left;
-		width: 50px;
+		width: 48px;
+	}
+
+	.twitter-listing ul li .photo img {
+		width: 48px;
+		height: 48px;
 	}
 
 	.twitter-listing ul li .content {
