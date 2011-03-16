@@ -34,4 +34,15 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="code", type="string", length=12)
+	 */
+	protected $code = null;
+
+	public function __construct()
+	{
+		$this->code = Strings::random(12, Strings::CHARS_KEY);
+	}
 }

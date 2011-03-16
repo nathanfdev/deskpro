@@ -450,6 +450,24 @@ class App
 
 
 	/**
+	 * Get the reference generator
+	 *
+	 * @return \Application\DeskPRO\RefGenerator\RefGeneratorInterface
+	 */
+	public static function getRefGenerator()
+	{
+		static $refer;
+
+		if (!$refer) {
+			$refer = new \Application\DeskPRO\RefGenerator\RandomRef();
+		}
+
+		return $refer;
+	}
+
+
+
+	/**
 	 * Get the value of a setting.
 	 *
 	 * @param string $name The name of the setting to get

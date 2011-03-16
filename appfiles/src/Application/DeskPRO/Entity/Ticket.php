@@ -14,6 +14,8 @@ namespace Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
+use \Orb\Util\Strings;
+
 /**
  * Ticket
  *
@@ -41,6 +43,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
 	protected $id = null;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="ref", type="string", length=25)
+	 */
+	protected $ref = null;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="code", type="string", length=12)
+	 */
+	protected $code = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
@@ -272,6 +286,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->date_created = new \DateTime();
+
+		$this->code = Strings::random(12, Strings::CHARS_KEY);
 
 		$this->_initTicketLogger();
 	}
@@ -855,6 +871,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function _preInsert()
 	{
+		// Get the new ref
+		$this->ref = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
+
 		if ($this->_ticket_logger) {
 			$action = new \Application\DeskPRO\Tickets\Actions\Created($this);
 			$this->_ticket_logger->logAction($action);
