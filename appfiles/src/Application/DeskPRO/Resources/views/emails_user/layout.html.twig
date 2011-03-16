@@ -1,0 +1,49 @@
+ <html lang="en">
+  <head>
+    <meta content="text/html; charset=utf-8" http-equiv="Content-Type">
+    <title>
+      {{subject}}
+    </title>
+	<style type="text/css">
+	a:hover { text-decoration: none !important; }
+	.header h1 {color: #47c8db; font: bold 32px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 40px;}
+	.header p {color: #c6c6c6; font: normal 12px Helvetica, Arial, sans-serif; margin: 0; padding: 0; line-height: 18px;}
+
+	.content h2 {color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif;  }
+	.content p {color:#767676; font-weight: normal; margin: 0; padding: 0; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif;}
+	.content a {color: #0eb6ce; text-decoration: none;}
+	.footer p {font-size: 11px; color:#7d7a7a; margin: 0; padding: 0; font-family: Helvetica, Arial, sans-serif;}
+	.footer a {color: #0eb6ce; text-decoration: none;}
+	</style>
+  </head>
+  <body style="margin: 0; padding: 0; background: #4b4b4b url('{{ asset('email_templates/modern/images/bg_email.png', true) }}');" bgcolor="#4b4b4b">
+  		<table cellpadding="0" cellspacing="0" border="0" align="center" width="100%" style="padding: 35px 0; background: #4b4b4b url('{{ asset('email_templates/modern/images/bg_email.png', true) }}');">
+		  <tr>
+		  	<td align="center" style="margin: 0; padding: 0; background: url('{{ asset('email_templates/modern/images/bg_email.png', true) }}') ;" >
+				<table cellpadding="0" cellspacing="0" border="0" align="center" width="600" style="font-family: Helvetica, Arial, sans-serif; background: #fff;" bgcolor="#fff">
+
+					<tr>
+			        <td width="600" valign="top" align="left" style="font-family: Helvetica, Arial, sans-serif; padding: 20px 0 0;" class="content">
+						<table cellpadding="0" cellspacing="0" border="0"  style="color: #717171; font: normal 11px Helvetica, Arial, sans-serif; margin: 0; padding: 0;" width="600">
+						<tr>
+							<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset('email_templates/modern/images/spacer.gif', true) }}" alt="space" width="20"></td>
+							<td style="padding: 0;  font-family: Helvetica, Arial, sans-serif; background: url('{{ asset('email_templates/modern/images/bg_date_wide.png', true) }}') no-repeat left top; height:20px; line-height: 20px;"  align="center" width="558" height="20">
+								<h3 style="color:#666; font-weight: bold; text-transform: uppercase; margin: 0; padding: 0; line-height: 10px; font-size: 10px;">{{subject}}</h3>
+							</td>
+							<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset('email_templates/modern/images/spacer.gif', true) }}" alt="space" width="20"></td>
+						</tr>
+						{% block content %}{% endblock %}
+						</table>
+					</td>
+
+			      </tr>
+				  	<tr>
+						<td width="600" align="left" style="padding: font-size: 0; line-height: 0; height: 3px;" height="3" colspan="2"><img src="{{ asset('email_templates/modern/images/bg_bottom.png', true) }}" alt="header bg"></td>
+				      </tr>
+				</table><!-- body -->
+		  	</td>
+		  	</td>
+		</tr>
+    </table>
+  </body>
+</html>

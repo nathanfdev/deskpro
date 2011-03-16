@@ -1,0 +1,7 @@
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' %}
+{% block content %}
+	{% set section_content %}
+		{{new_message.message_text()}}
+	{% endset %}
+{% endblock %}

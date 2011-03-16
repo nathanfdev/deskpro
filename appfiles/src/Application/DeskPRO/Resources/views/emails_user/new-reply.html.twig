@@ -1,0 +1,8 @@
+{% extends 'DeskPRO:emails_agent:layout.html.twig' %}
+{% import 'DeskPRO:emails_agent:layout-macros.html.twig' as layout %}
+{% block content %}
+	{% set section_content %}
+		{{new_message.message_text}}
+	{% endset %}
+	{{ layout.email_section('Ticket', section_content) }}
+{% endblock %}

@@ -371,6 +371,21 @@ class Arrays
 
 
 	/**
+	 * Just like unshiftAssoc() except this creates a copy of the array
+	 * and returns it.
+	 *
+	 * @return array
+	 */
+	public static function unshiftAssocReturn($array, $key, $value)
+	{
+		self::unshiftAssoc($array, $key, $value);
+
+		return $array;
+	}
+
+
+
+	/**
 	 * Remove all falsey values from an array.
 	 *
 	 * @param    array    $array    The array to work on
@@ -725,6 +740,33 @@ class Arrays
 	            self::_flattenHierarcy($new_array, $arr[$child_key], $index_key, $child_key, $depth_key, $current_depth+1, $count);
 	        }
 	    }
+	}
+
+
+
+	/**
+	 * Takes an array hierarchy and converts it into a k=>title array suitable for a flat select box.
+	 *
+	 * @param array $array
+	 * @param string $index_key
+	 * @param string $title_key
+	 * @param string $indent
+	 * @return array
+	 */
+	public static function selectArrayFromHierarchy($array, $index_key = 'id', $title_key = 'title', $indent = '--')
+	{
+		$flat = self::flattenHierarchy($array);
+
+		$options = array();
+		foreach ($flat as $i) {
+			$indent = '';
+			if (!empty($i['depth']) AND $i['depth'] > 0) {
+				$indent = str_repeat($indent, $i['depth']) . ' ';
+			}
+			$options[$i[$index_key]] = $indent . $i[$title_key];
+		}
+
+		return $options;
 	}
 
 

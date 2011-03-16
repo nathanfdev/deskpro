@@ -33,6 +33,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_CLOSED = 'closed';
 	const STATUS_HIDDEN = 'hidden';
 
+	const HIDDEN_STATUS_VALIDATING = 'validating';
 	const HIDDEN_STATUS_SPAM = 'spam';
 
 	/**

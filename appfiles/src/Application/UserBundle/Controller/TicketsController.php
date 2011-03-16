@@ -1,4 +1,13 @@
 <?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage UserBundle
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
 
 namespace Application\UserBundle\Controller;
 
@@ -6,6 +15,9 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
+
+use \Application\UserBundle\Form\NewTicketForm;
+use \Application\UserBundle\Form\NewTicketUserForm;
 
 class TicketsController extends AbstractController
 {
@@ -22,69 +34,51 @@ class TicketsController extends AbstractController
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
-
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$custom_fields = array();
-		foreach ($ticket_field_defs as $f_def) {
-			$value = !empty($ticket_data_structured[$f_def['id']]) ? $ticket_data_structured[$f_def['id']] : null;
+		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $custom_fields_form);
 
-			$f = $f_def->getHandler()->getFormField($value);
-			$custom_fields_form->add($f);
-
-			$custom_fields[] = array(
-				'field_def' => $f_def,
-				'title' => $f_def['title'],
-				'form' => $f,
-				'rendered' => false
-			);
+		$new_ticket = new \Application\UserBundle\NewTicket();
+		if ($this->person['id']) {
+			$new_ticket->setPerson($this->person);
 		}
+		$new_ticket_form = new NewTicketForm('newticket', array(
+			'ticket_options' => $ticket_options,
+			'custom_fields' => $custom_fields_form
+		));
+
+		$new_ticket_form->bind($this->request, $new_ticket);
 
 		if ($this->in->getBool('process')) {
-			App::getOrm()->beginTransaction();
 
-			$ticket = new Entity\Ticket();
-			$ticket['department_id']  = $this->in->getUint('department_id');
-			$ticket['category_id']    = $this->in->getUint('category_id');
-			$ticket['product_id']     = $this->in->getUint('product_id');
-			$ticket['priority_id']    = $this->in->getUint('priority_id');
-			$ticket['workflow_id']    = $this->in->getUint('workflow_id');
-			$ticket['status']         = 'open';
-			$ticket['person_id']      = $this->person['id'];
+			$new_ticket->save();
 
-			$ticket['subject']      = $this->in->getString('subject');
-			$ticket['creation_system'] = Entity\Ticket::CREATED_WEB_PERSON;
-
-			$message = new Entity\TicketMessage();
-			$message['person'] = $this->person;
-			$message['message'] = $this->in->getString('message');
-			$ticket->addMessage($message);
-
-			// Custom fields
-			/*
-			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-			$ticket_field_datas = array();
-			foreach ($ticket_field_defs as $field_def) {
-				$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm($_POST['custom_fields']));
+			// If this is a new person, we will ask them to complete registrion by
+			// choosing a password etc
+			if ($new_ticket->is_new_person) {
+				$this->session->set('finish_register_person', $new_ticket->person['id']);
+				$this->session->set('after_register', $this->generateUrl('user_tickets_view', array('ticket_id' => $ticket['id']), true));
+				return $this->redirectRoute('user_register_finish');
 			}
 
-			foreach ($ticket_field_datas as $info) {
-				$ticket->setCustomData($info[0], $info[1], $info[2]);
+			// If this isnt a new person but they arent registered, we have no choice but
+			// to show a standard confirmation page. They'll get a link in their email to view
+			// the web interface. But we cant give them another chance to register now incase
+			// this user is an imposter. The confirmation email we send serves doubly as a
+			// confirmation in that case
+			if (!$new_ticket->person['is_user']) {
+				return $this->redirectRoute('user_tickets_new_thanks', array('ticket_id' => $ticket['id']));
 			}
 
-			 */
-
-			App::getOrm()->persist($ticket);
-			App::getOrm()->flush();
-			App::getOrm()->commit();
-
+			// We get here if the user is a real user, they should already be logged in then
 			return $this->redirectRoute('user_tickets_view', array('ticket_id' => $ticket['id']));
 		}
 
 		return $this->render('UserBundle:Tickets:new-ticket.html.twig', array(
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
-			'custom_fields' => $custom_fields
+			'custom_fields' => $custom_fields,
+			'form' => $new_ticket_form,
 		));
     }
 

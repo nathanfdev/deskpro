@@ -81,6 +81,24 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_agent = 0;
 
 	/**
+	 * Has this user ever confirmed themselves via email?
+	 * Individual email addresses must be confirmed as well, but this
+	 * is an account-wide flag that says the user is at least real.
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_confirmed", type="boolean")
+	 */
+	protected $is_confirmed = false;
+
+	/**
+	 * Has this user ever confirmed themselves via email?
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_email_confirmed", type="boolean")
+	 */
+	protected $is_agent_confirmed = false;
+
+	/**
 	 * The users name (best guess from other sources etc)
 	 *
 	 * @var string
@@ -309,6 +327,26 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_helper_manager = null;
 
+	/**
+	 * A "contact person" is simply a person record. They have no login credentials, they are not
+	 * a full user.
+	 *
+	 * @static
+	 * @return Person
+	 */
+	public static function newContactPerson()
+	{
+		$person = new self();
+
+		return $person;
+	}
+
+	/**
+	 * A regular person is a person who can log in. They are a full user.
+	 *
+	 * @static
+	 * @return Person
+	 */
 	public static function newRegularPerson()
 	{
 		$person = new self();

@@ -2,6 +2,8 @@
 
 namespace Application\DeskPRO\CustomFields;
 
+use \Orb\Util\Arrays;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity\Person;
 use \Application\DeskPRO\Entity\TicketFilter;
@@ -9,6 +11,24 @@ use \Symfony\Component\DependencyInjection\ContainerAware;
 
 class Util
 {
+	/**
+	 * Standard form field naming has the key as field_X. So this is the same as
+	 * createDataHierarchy except the key is the standard form name
+	 *
+	 * @return array
+	 */
+	public function createFormData($field_datas, $field_defs)
+	{
+		$data = $this->createDataHierarchy($field_datas, $field_defs);
+		$data = Arrays::walkKeys($data, function (&$k) {
+			$k = 'field_' . $k;
+		});
+
+		return $k;
+	}
+
+
+
 	/**
 	 * This converts a collection of data items into an array structure
 	 * that matches the hierarchy of field definitions.
