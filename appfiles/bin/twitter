@@ -1,6 +1,8 @@
 #!/usr/bin/env php
 <?php
 
+declare(ticks=1);
+
 define('DP_ROOT', realpath(__DIR__ . '/../'));
 require_once DP_ROOT.'/sys/autoload.php';
 require_once DP_ROOT.'/config.php';
@@ -36,6 +38,7 @@ define('TWITTER_CONSUMER_KEY',    \Orb\Service\Twitter\Oauth::getConsumerKey());
 define('TWITTER_CONSUMER_SECRET', \Orb\Service\Twitter\Oauth::getConsumerSecret());
 
 // fork process for each Twitter account
+$pids = array();
 foreach ($em->getRepository('DeskPRO:TwitterAccount')->findAll() as $account) {
 	// fork process
 	$pid = pcntl_fork();
@@ -44,14 +47,15 @@ foreach ($em->getRepository('DeskPRO:TwitterAccount')->findAll() as $account) {
 	 * FAILURE
 	 */
 	if (-1 === $pid) {
-		throw new \Exception(sprintf('Forking for account "%s" failed', $account['id']));
+		@error_log(sprintf('Forking for account "%s" failed', $account['id']));
 
 	/**
 	 * PARENT
 	 */
 	} else if (0 < $pid) {
-		// @TODO add inter process communication
-		pcntl_wait($status);
+		// store pid, continue
+		$pids[$account['id']] = $pid;
+		continue;
 
 	/**
 	 * CHILD
@@ -63,7 +67,10 @@ foreach ($em->getRepository('DeskPRO:TwitterAccount')->findAll() as $account) {
 
 		// start consuming
 		$consumer->consume();
-
-		// @TODO add inter process communication
 	}
+}
+
+while (true) {
+	// @TODO add inter process communication, daemonize
+	sleep(1);
 }
