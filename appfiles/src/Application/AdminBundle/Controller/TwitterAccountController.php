@@ -99,8 +99,12 @@ class TwitterAccountController extends AbstractController
 			$account['oauth_token_secret'] = $accessToken->getParam('oauth_token_secret');
 			$account['user']               = $user;
 
-			// persist entity
+			// add person to account
+			$account['persons']->add($this->person);
+
+			// persist entities
 			$em->persist($account);
+			$em->persist($this->person);
 
 			// flush changes
 			$em->flush();
