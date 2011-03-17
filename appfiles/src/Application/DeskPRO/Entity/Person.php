@@ -94,7 +94,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Has this user ever confirmed themselves via email?
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_email_confirmed", type="boolean")
+	 * @orm:Column(name="is_agent_confirmed", type="boolean")
 	 */
 	protected $is_agent_confirmed = false;
 
