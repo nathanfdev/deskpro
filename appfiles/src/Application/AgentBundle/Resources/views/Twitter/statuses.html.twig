@@ -1,6 +1,7 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Twitter';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Twitter';
 pageMeta.title = '@{{ account.user.screen_name|escape }}';
+pageMeta.getStatusesUrl = '{{ path('agent_twitter_statuses', {'account_id': account.id}) }}?partial=1';
 </script>
 
 <style type="text/css" media="screen">
@@ -79,45 +80,18 @@ pageMeta.title = '@{{ account.user.screen_name|escape }}';
 	@{{ account.user.screen_name }} stream
 	<div class="display-options">
 		<div style="float:right">
-			<select>
+			<select name="sortbydate">
 				<option name="asc">Oldest First</opion>
 				<option name="desc">Newest First</option>
 			</select>
 		</div>
 		<div style="margin-right:120px">
-			<input name="myself" type="checkbox" /> Show @{{ account.user.screen_name }}'s tweets<br />
+			<input name="account" type="checkbox" /> Show @{{ account.user.screen_name }}'s tweets<br />
 			<input name="archived" type="checkbox" /> Show archived tweets
 		</div>
 	</div>
 	<br style="clear:both;" />
 </div>
 <div class="twitter-listing">
-	<ul>
-	{% for status in statuses %}
-		<li class="tweet-item">
-			<div class="head">
-			{% if status.in_reply_to_status or status.in_reply_to_user %}
-				{# <span class="response">In response to @ " ..."</span> #}
-			{% endif %}
-				<cite>{{ status.user.name }} / @{{ status.user.screen_name }}</cite>
-			</div>
-			<div class="photo"><img src="{{ status.user.profile_image_url }}" border="0" /></div>
-			<div class="content">
-				<div class="tweet">{{ status.text }}</div>
-				<div class="notes">
-					<div class="note"><em class="time">{{ status.date_created|date('m/d/Y H:i:s') }}{# 22 minutes ago #}</em></div>
-				</div>
-				<div class="controls">
-					<ul>
-						<li><a>Archive</a></li>
-						<li><a>Reply</a></li>
-						<li><a>Retweet</a></li>
-						<li><a>Assign</a></li>
-						<li><a>Add Note</a></li>
-					</ul>
-				</div>
-			</div>
-		</li>
-	{% endfor %}
-	</ul>
+	{% include 'AgentBundle:Twitter:part-statuses.html.twig' %}
 </div>

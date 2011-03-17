@@ -39,13 +39,33 @@ class TwitterController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $account_id));
 		}
 
-		// @TODO use request variables
-		$includeArchived = false;
-		$includeAccount  = false;
+		// sort by date, ascending or descending
+		$sortByDate = $this->in->getValue('sortbydate');
+		if (!$sortByDate) {
+			$sortByDate = 'asc';
+		}
 
+		// whether include archived and/or account statuses
+		$includeArchived = $this->in->getBool('include.archived');
+		$includeAccount  = $this->in->getBool('include.account');
+
+		// fetch public timeline
+		$statuses = $account->getTimeline($includeArchived, $includeAccount, $sortByDate);
+
+		// check if is partial
+		if ($this->in->getBool('partial')) {
+			// render json response
+			return $this->createJsonResponse(array(
+				'statuses' => $this->renderView('AgentBundle:Twitter:part-statuses.html.twig', array(
+					'statuses' => $statuses
+				))
+			));
+		}
+
+		// render html response
 		return $this->render('AgentBundle:Twitter:statuses.html.twig', array(
 			'account'  => $account,
-			'statuses' => $account->getTimeline($includeArchived, $includeAccount)
+			'statuses' => $statuses
 		));
 	}
 

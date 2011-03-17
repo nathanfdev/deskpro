@@ -1,0 +1,28 @@
+<ul>
+{% for status in statuses %}
+	<li class="tweet-item">
+		<div class="head">
+		{% if status.in_reply_to_status or status.in_reply_to_user %}
+			{# <span class="response">In response to @ " ..."</span> #}
+		{% endif %}
+			<cite>{{ status.user.name }} / @{{ status.user.screen_name }}</cite>
+		</div>
+		<div class="photo"><img src="{{ status.user.profile_image_url }}" border="0" /></div>
+		<div class="content">
+			<div class="tweet">{{ status.text }}</div>
+			<div class="notes">
+				<div class="note"><em class="time">{{ status.date_created|date('m/d/Y H:i:s') }}{# 22 minutes ago #}</em></div>
+			</div>
+			<div class="controls">
+				<ul>
+					<li><a>Archive</a></li>
+					<li><a>Reply</a></li>
+					<li><a>Retweet</a></li>
+					<li><a>Assign</a></li>
+					<li><a>Add Note</a></li>
+				</ul>
+			</div>
+		</div>
+	</li>
+{% endfor %}
+</ul>

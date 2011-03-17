@@ -180,9 +180,10 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @param Boolean $includeArchived (optional)
 	 * @param Boolean $includeAccount (optional)
+	 * @param string $sortByDate (optional)
 	 * @return array
 	 */
-	public function getTimeline($includeArchived = false, $includeAccount = false)
+	public function getTimeline($includeArchived = false, $includeAccount = false, $sortByDate = 'asc')
 	{
 		// get ids of users account is following
 		$followingIds = $this->getFollowingIds();
@@ -193,6 +194,6 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findByUserIds($followingIds, $includeArchived);
+			->findByUserIds($followingIds, $includeArchived, $sortByDate);
 	}
 }
