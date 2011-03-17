@@ -12,34 +12,38 @@ if (isset($_SERVER['argv'][1])) {
 	$env = trim($_SERVER['argv'][1]);
 }
 
-$connectionOptions = $CONFIG['db'];
+function bootstrap($connectionOptions, $env) {
+	// $connectionOptions = $CONFIG['db'];
 
-$cacheImpl = new \Doctrine\Common\Cache\ArrayCache;
+	$cacheImpl = new \Doctrine\Common\Cache\ArrayCache;
 
-$annotReader = new \Doctrine\Common\Annotations\AnnotationReader();
-$annotReader->setAnnotationNamespaceAlias('Doctrine\\ORM\\Mapping\\', 'orm');
+	$annotReader = new \Doctrine\Common\Annotations\AnnotationReader();
+	$annotReader->setAnnotationNamespaceAlias('Doctrine\\ORM\\Mapping\\', 'orm');
 
-$driverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
-$driverImpl->addDriver(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($annotReader, array(0 => DP_ROOT.'/appfiles/src/Application/DeskPRO/Entity')), 'Application\\DeskPRO\\Entity');
+	$driverImpl = new \Doctrine\ORM\Mapping\Driver\DriverChain();
+	$driverImpl->addDriver(new \Doctrine\ORM\Mapping\Driver\AnnotationDriver($annotReader, array(0 => DP_ROOT.'/appfiles/src/Application/DeskPRO/Entity')), 'Application\\DeskPRO\\Entity');
 
-$config = new \Doctrine\ORM\Configuration;
-$config->setMetadataCacheImpl($cacheImpl);
-$config->setQueryCacheImpl($cacheImpl);
-$config->setMetadataDriverImpl($driverImpl);
-$config->setEntityNamespaces(array('DeskPRO' => 'Application\\DeskPRO\\Entity'));
-$config->setProxyDir(DP_ROOT.'/sys/cache/'.$env.'/doctrine/orm/Proxies');
-$config->setProxyNamespace('Proxies');
-$config->setAutoGenerateProxyClasses(true);
-$config->setClassMetadataFactoryName('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
+	$config = new \Doctrine\ORM\Configuration;
+	$config->setMetadataCacheImpl($cacheImpl);
+	$config->setQueryCacheImpl($cacheImpl);
+	$config->setMetadataDriverImpl($driverImpl);
+	$config->setEntityNamespaces(array('DeskPRO' => 'Application\\DeskPRO\\Entity'));
+	$config->setProxyDir(DP_ROOT.'/sys/cache/'.$env.'/doctrine/orm/Proxies');
+	$config->setProxyNamespace('Proxies');
+	$config->setAutoGenerateProxyClasses(true);
+	$config->setClassMetadataFactoryName('Doctrine\\ORM\\Mapping\\ClassMetadataFactory');
 
-$em = \Doctrine\ORM\EntityManager::create($connectionOptions, $config);
+	$em = \Doctrine\ORM\EntityManager::create($connectionOptions, $config);
+
+	return $em;
+}
 
 define('TWITTER_CONSUMER_KEY',    \Orb\Service\Twitter\Oauth::getConsumerKey());
 define('TWITTER_CONSUMER_SECRET', \Orb\Service\Twitter\Oauth::getConsumerSecret());
 
 // fork process for each Twitter account
 $pids = array();
-foreach ($em->getRepository('DeskPRO:TwitterAccount')->findAll() as $account) {
+foreach (bootstrap($CONFIG['db'], $env)->getRepository('DeskPRO:TwitterAccount')->findAll() as $account) {
 	// fork process
 	$pid = pcntl_fork();
 
@@ -63,7 +67,7 @@ foreach ($em->getRepository('DeskPRO:TwitterAccount')->findAll() as $account) {
 	} else {
 		// initialize User Stream consumer
 		$consumer = new \Orb\Service\Phirehose\Consumer\UserStream($account['oauth_token'], $account['oauth_token_secret']);
-		$consumer->setEntityManager($em);
+		$consumer->setEntityManager(bootstrap($CONFIG['db'], $env));
 
 		// start consuming
 		$consumer->consume();
