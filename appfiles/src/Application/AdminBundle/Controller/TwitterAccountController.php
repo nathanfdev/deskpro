@@ -66,13 +66,13 @@ class TwitterAccountController extends AbstractController
 	 */
 	public function authorizeAction()
 	{
-		// this pretty much sucks, but I can't figure out how to access $_GET
-		parse_str(parse_url($this->request->getRequestUri(), PHP_URL_QUERY), $get);
-
 		try {
 			// request access token
 			$consumer    = \Orb\Service\Twitter\Oauth::getConsumer();
-			$accessToken = $consumer->getAccessToken($get, unserialize($this->session->get(self::TWITTER_REQUEST_TOKEN)));
+			$accessToken = $consumer->getAccessToken(
+				$this->request->query->all(),
+				unserialize($this->session->get(self::TWITTER_REQUEST_TOKEN))
+			);
 
 			// initialize Twitter service
 			$twitter = new \Zend_Service_Twitter(array(
