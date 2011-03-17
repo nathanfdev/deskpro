@@ -9,7 +9,7 @@ DeskPRO.Admin.PageHandler.GeneralEdit = new Class({
 	initialize: function(record_type, record_id, parent_name) {
 		this.record_type = record_type,
 		this.record_id = record_id;
-		this.parent_name = parent_naem || 'DeskPRO_Window';
+		this.parent_name = parent_name || 'DeskPRO_Window';
 	},
 
 	initPage: function() {
