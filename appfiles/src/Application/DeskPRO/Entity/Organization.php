@@ -50,6 +50,14 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:OneToMany(targetEntity="CustomDataOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
+	
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TaskAssociatedOrganization", mappedBy="organization")
+	 */
+	protected $task_associations;
+	
+	
 
 	/**
 	 * @orm:OneToMany(targetEntity="LabelOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -69,6 +77,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels              = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->task_associations   = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 

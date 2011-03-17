@@ -334,6 +334,32 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $_helper_manager = null;
 
 	/**
+	 * The tasks created by this user.
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="Task", mappedBy="creator", cascade={"persist", "remove", "merge"})
+	 */
+	protected $created_tasks;
+	
+	/**
+	 * The tasks assigned to this user.
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="Task", mappedBy="assigned_agent", cascade={"persist", "remove", "merge"})
+	 */
+	protected $assigned_tasks;
+	
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TaskComment", mappedBy="person")
+	 */
+	protected $task_comments;
+	
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TaskAssociatedPerson", mappedBy="person")
+	 */
+	protected $task_associations;
+
+	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
 	 *
@@ -378,9 +404,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
-
 		$this->twitter_accounts     = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->twitter_status_notes = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->created_tasks       = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->assigned_tasks      = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->task_comments       = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->task_associations   = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	public function getOrganizationId()

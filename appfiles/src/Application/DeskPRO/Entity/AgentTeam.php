@@ -51,6 +51,23 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $members = null;
 
+  /**
+	 * The tasks assigned to this team.
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="Task", mappedBy="assigned_agent_team", cascade={"persist", "remove", "merge"})
+	 */
+	protected $assigned_tasks;
+
+
+
+	/**
+	 * Creates a new team.
+	 */
+	public function __construct()
+	{
+		$this->assigned_tasks = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
 
 
 	public function addPerson(Entity\Person $person)
