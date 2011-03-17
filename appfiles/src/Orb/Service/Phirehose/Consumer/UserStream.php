@@ -4,6 +4,8 @@ namespace Orb\Service\Phirehose\Consumer;
 
 use \Doctrine\ORM\EntityManager;
 
+use \Application\DeskPRO\Entity\TwitterAccountFollowing;
+use \Application\DeskPRO\Entity\TwitterAccountFollower;
 use \Application\DeskPRO\Entity\TwitterStatus;
 use \Application\DeskPRO\Entity\TwitterStatusMention;
 use \Application\DeskPRO\Entity\TwitterStatusTag;
@@ -81,6 +83,16 @@ class UserStream extends \UserstreamPhirehose
 			return $this->processStatus($status);
 		}
 
+		// check direct message
+		if (isset($status['direct_message'])) {
+			return $this->processDirectMessage($status['direct_message']);
+		}
+
+		// check event
+		if (isset($status['event'])) {
+			return $this->processEvent($status);
+		}
+
 		// check friend list
 		if (isset($status['friends'])) {
 			return $this->processFriends($status['friends']);
@@ -91,7 +103,7 @@ class UserStream extends \UserstreamPhirehose
 		}
 
 		// @TODO add elsewhat handling
-		echo 'SOMETHING ELSE, LOOK:'.PHP_EOL;
+		echo 'UNKNOWN STATUS, LOOK:'.PHP_EOL;
 		print_r($status); echo PHP_EOL.PHP_EOL;
 	}
 
@@ -270,6 +282,189 @@ class UserStream extends \UserstreamPhirehose
 	}
 
 	/**
+	 * Process direct message.
+	 *
+	 * @param array $message
+	 * @param array $hashtag
+	 * @return \Application\DeskPRO\Entity\TwitterStatus
+	 */
+	protected function processDirectMessage(array $message)
+	{
+		// check if Twitter status exists
+		if ($this->findStatus($message['id_str'])) {
+			return true;
+		}
+
+		// fetch sending Twitter user (sender)
+		$sender = $this->findUser($message['sender']['id_str']);
+		if (!$sender) {
+			// create user entity
+			$sender = \Orb\Service\Twitter\User::createEntityFromJson($message['sender']);
+
+			// persist entity
+			$this->em->persist($sender);
+
+			// flush changes
+			$this->em->flush();
+		}
+
+		// fetch retrieving Twitter user (recipient)
+		$recipient = $this->findUser($message['recipient']['id_str']);
+		if (!$recipient) {
+			// create user entity
+			$recipient = \Orb\Service\Twitter\User::createEntityFromJson($message['recipient']);
+
+			// persist entity
+			$this->em->persist($recipient);
+
+			// flush changes
+			$this->em->flush();
+		}
+
+		// create Twitter status
+		$status                 = new TwitterStatus();
+		$status['id']           = $message['id_str'];
+		$status['user']         = $sender;
+		$status['recipient']    = $recipient;
+		$status['text']         = $message['text'];
+		$status['is_truncated'] = false;
+		$status['is_favorited'] = false;
+		$status['is_archived']  = false;
+		$status['date_created'] = new \DateTime($message['created_at']);
+
+		// @TODO check if direct messages can have entities (Mentions, URLs, Tags)
+
+		return $status;
+	}
+
+	/**
+	 * Process event.
+	 *
+	 * @param array $event
+	 * @return mixed
+	 */
+	protected function processEvent(array $event)
+	{
+		switch ($event['event']) {
+			case 'follow':
+				return $this->processFollowEvent($event);
+		}
+
+		echo 'UNKNOWN EVENT, LOOK:'.PHP_EOL;
+		print_r($event); echo PHP_EOL.PHP_EOL;
+	}
+
+	/**
+	 * Process 'follow' event.
+	 *
+	 * @param array $event
+	 * @return Boolean
+	 * @fixme logic needs some revisiting, it seems to not work properly
+	 *        followers table is filled twice, following table is not touched.
+	 *        maybe parameters must be replaced or something like that.
+	 */
+	protected function processFollowEvent(array $event)
+	{
+		// target['following'] => 1 | means target is followed by source
+		// source['following'] => 1 | means source is followed by target, also
+
+		// track process
+		$processed = false;
+
+		// fetch followed Twitter user (target)
+		$target     = $event['target'];
+		$targetUser = $this->findUser($target['id_str']);
+		if (!$targetUser) {
+			// create user entity
+			$targetUser = \Orb\Service\Twitter\User::createEntityFromJson($target);
+
+			// persist entity
+			$this->em->persist($targetUser);
+
+			// flush changes
+			$this->em->flush();
+
+			// track process
+			$processed = true;
+		}
+
+		// fetch following Twitter user (source)
+		$source     = $event['source'];
+		$sourceUser = $this->findUser($source['id_str']);
+		if (!$sourceUser) {
+			// create user entity
+			$sourceUser = \Orb\Service\Twitter\User::createEntityFromJson($source);
+
+			// persist entity
+			$this->em->persist($sourceUser);
+
+			// flush changes
+			$this->em->flush();
+
+			// track process
+			$processed = true;
+		}
+
+		// check if is target is followed by source
+		if (1 == $target['following']) {
+			// check if target user is a registered account
+			$targetAccount = $this->em->getRepository('DeskPRO:TwitterAccount')
+				->findOneByUser($targetUser['id']);
+
+			if ($targetAccount) {
+				// check if target is already followed
+				$targetFollowing = $this->em->getRepository('DeskPRO:TwitterAccountFollower')
+					->findOneByAccountIdAndUserId($targetAccount['id'], $sourceUser['id']);
+
+				if (!$targetFollowing) {
+					$targetFollowing            = new TwitterAccountFollower();
+					$targetFollowing['account'] = $targetAccount;
+					$targetFollowing['user']    = $sourceUser;
+
+					// persist entity
+					$this->em->persist($targetFollowing);
+
+					// flush changes
+					$this->em->flush();
+
+					// track process
+					$processed = true;
+				}
+			}
+		}
+
+		// check if is source is followed by target
+		if (1 == $source['following']) {
+			// check if source user is a registered account
+			$sourceAccount = $this->em->getRepository('DeskPRO:TwitterAccount')
+				->findOneByUser($sourceUser['id']);
+
+			if ($sourceAccount) {
+				// check if source is already followed
+				$sourceFollowing = $this->em->getRepository('DeskPRO:TwitterAccountFollowing')
+					->findOneByAccountIdAndUserId($sourceAccount['id'], $targetUser['id']);
+
+				if (!$sourceFollowing) {
+					$sourceFollowing            = new TwitterAccountFollowing();
+					$sourceFollowing['account'] = $sourceAccount;
+					$sourceFollowing['user']    = $targetUser;
+
+					// persist entities
+					$this->em->persist($sourceFollowing);
+
+					// flush changes
+					$this->em->flush();
+
+					// track process
+					$processed = true;
+				}
+			}
+		}
+
+		return $processed;
+	}
+
+	/**
 	 * Process friend list (list of Twitter users following).
 	 *
 	 * @param array $friendIds List of Twitter users following
@@ -279,7 +474,6 @@ class UserStream extends \UserstreamPhirehose
 	{
 		return true;
 	}
-
 
 	/**
 	 * Process a deletion.
@@ -295,7 +489,7 @@ class UserStream extends \UserstreamPhirehose
 
 			// delete mentions
 			foreach ($status['mentions'] as $mention) {
-				$this->em->delete($mention);
+				$this->em->remove($mention);
 			}
 
 			// flush changes
@@ -303,7 +497,7 @@ class UserStream extends \UserstreamPhirehose
 
 			// delete URLs
 			foreach ($status['urls'] as $url) {
-				$this->em->delete($url);
+				$this->em->remove($url);
 			}
 
 			// flush changes
@@ -311,7 +505,7 @@ class UserStream extends \UserstreamPhirehose
 
 			// delete tags
 			foreach ($status['tags'] as $tag) {
-				$this->em->delete($tag);
+				$this->em->remove($tag);
 			}
 
 			// flush changes
@@ -325,5 +519,8 @@ class UserStream extends \UserstreamPhirehose
 
 			return true;
 		}
+
+		echo 'UNKNOWN DELETION, LOOK:'.PHP_EOL;
+		print_r($deletion); echo PHP_EOL.PHP_EOL;
 	}
 }
