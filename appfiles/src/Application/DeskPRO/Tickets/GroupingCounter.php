@@ -312,7 +312,11 @@ class GroupingCounter
 			default:
 				// Just make all titles the ids themselves by default,
 				// useful for things like status which might be rendered into words after
-				$titles = array_combine($ids, $ids);
+				if ($ids) {
+					$titles = array_combine($ids, $ids);
+				} else {
+					$titles = array();
+				}
 				break;
 		}
 
