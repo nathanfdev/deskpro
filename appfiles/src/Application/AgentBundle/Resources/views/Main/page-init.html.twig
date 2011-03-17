@@ -1,0 +1,40 @@
+<script>
+	var BASE_URL = '{{ path('user') }}';
+	var ASSETS_BASE_URL = '{{ asset('') }}';
+	var DESKPRO_PERSON_ID = {{ person.id }};
+	var DESKPRO_PROXY_KEY = '{{ proxy_key }}';
+
+	$(document).ready(function() {
+		$('pane_list_content').css('display', '');
+		$('pane_content').css('display', '');
+
+		window.DeskPRO_Window = new DeskPRO.Agent.Window({
+			messageChanneler: {
+				ajaxMessagesUrl: '{{ path('agent_messages_getnew') }}',
+				ajaxSubscribeUrl: '{{ path('agent_messages_subscribe_channels') }}',
+				ajaxUnsubscribeUrl: '{{ path('agent_messages_unsubscribe_channels') }}',
+				lastMessageId: {{last_message_id}}
+			}
+		});
+
+		{% if constant('DP_DEBUG') %}
+			window.DeskPRO_Window.DEBUG = {
+				disableMenuHandlers: {% if js_debug.disableMenuHandlers %}true{% else %}false{% endif %}
+			};
+		{% endif %}
+
+		window.DeskPRO_Window.set('agent.ui.show-listpane', '{{ show_listpane|default('auto') }}');
+
+		window.DeskPRO_Window.initPage();
+
+		{% if not js_debug.noAutoLoadFilter %}
+			window.DeskPRO_Window.runPageRoute('listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent', 'load_first': 1}) }}');
+		{% endif %}
+
+		{% if js_debug.autoLoadRoutes %}
+			{% for i in js_debug.autoLoadRoutes %}
+				window.DeskPRO_Window.runPageRoute('{{i[0]}}:{{ path(i[1], i[2]) }}');
+			{% endfor %}
+		{% endif %}
+	});
+</script>

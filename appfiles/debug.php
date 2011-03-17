@@ -46,3 +46,18 @@ $CONFIG['debug']['templates'] = array();
  * When enabled, templates are never fetched from the database.
  */
 //$CONFIG['debug']['templates']['disable_db_templates'] = true;
+
+/**
+ * These options are passed to JS handlers to enable various debug options.
+ */
+$CONFIG['debug']['js'] = array(
+	// Disables menu handlers in the agent interface
+	//'disableMenuHandlers' => true,
+
+	// Do not automatically load a filter when first entering agent UI
+	//'noAutoLoadFilter' => true,
+
+	// Run these routes automatically when first entering the agent UI
+	// array(array('ticket', 'route_name', array('param' => 'xxx')))
+	//'autoLoadRoutes' => array(),
+);

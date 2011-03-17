@@ -307,46 +307,7 @@
 <span id="test_route2" data-route="listpane:/dp_400/index_dev.php/agent/ticket-search/filter/5" style="display:none"></span>
 
 {% include 'AgentBundle:Main:resources.html.twig' %}
-
-<script>
-	var BASE_URL = '{{ path('user') }}';
-	var ASSETS_BASE_URL = '{{ asset('') }}';
-	var DESKPRO_PERSON_ID = {{ person.id }};
-	var DESKPRO_PROXY_KEY = '{{ proxy_key }}';
-
-	$(document).ready(function() {
-		$('pane_list_content').css('display', '');
-		$('pane_content').css('display', '');
-
-		window.DeskPRO_Window = new DeskPRO.Agent.Window({
-			messageChanneler: {
-				ajaxMessagesUrl: '{{ path('agent_messages_getnew') }}',
-				ajaxSubscribeUrl: '{{ path('agent_messages_subscribe_channels') }}',
-				ajaxUnsubscribeUrl: '{{ path('agent_messages_unsubscribe_channels') }}',
-				lastMessageId: {{last_message_id}}
-			}
-		});
-
-		{% if constant('DP_DEBUG') %}
-			window.DeskPRO_Window.DEBUG = {
-				disableMenuHandlers: false
-			};
-		{% endif %}
-
-		window.DeskPRO_Window.set('agent.ui.show-listpane', '{{ show_listpane|default('auto') }}');
-
-		window.DeskPRO_Window.initPage();
-
-		//window.DeskPRO_Window.runPageRouteFromElement($('#window_header_nav .tickets'));
-		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route'));
-		//window.DeskPRO_Window.runPageRouteFromElement($('#test_route2'));
-
-		// Debug: auto load a ticket tab
-		//window.DeskPRO_Window.runPageRoute('ticket:{{ path('agent_ticket_view', {'ticket_id': 3}) }}');
-		//window.DeskPRO_Window.runPageRoute('listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent'}) }}');
-		//window.DeskPRO_Window.runPageRoute('person:{{ path('agent_people_view', {'person_id': 20001}) }}');
-	});
-</script>
+{% include 'AgentBundle:Main:page-init.html.twig' %}
 
 </body>
 </html>

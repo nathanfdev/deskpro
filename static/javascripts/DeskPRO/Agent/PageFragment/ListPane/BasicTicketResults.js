@@ -17,7 +17,19 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 	changeManager: null,
 
+	loadFirst: false,
+
 	initPage: function(el) {
+
+		this.loadFirst = this.getMetaData('loadFirst');
+		if (this.loadFirst) {
+			this.loadFirst = false;
+
+			var a = $('td.subject:first a.with-route:first', el);
+			if (a.length) {
+				DeskPRO_Window.runPageRouteFromElement(a);
+			}
+		}
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('.content:first', this.wrapper);
@@ -343,5 +355,14 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		DeskPRO_Window.runOpenTicketStateOnElement(el);
 
 		$('table.list', this.contentWrapper).append(el);
+
+		if (this.loadFirst) {
+			this.loadFirst = false;
+
+			var a = $('td.subject:first a.with-route:first', el);
+			if (a.length) {
+				DeskPRO_Window.runPageRouteFromElement(a);
+			}
+		}
 	}
 });

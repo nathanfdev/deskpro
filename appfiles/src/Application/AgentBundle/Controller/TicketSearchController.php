@@ -161,6 +161,7 @@ class TicketSearchController extends AbstractController
 			'is_grouped_result'  => $is_grouping,
 			'ticket_field_defs'  => $ticket_field_defs,
 			'person_field_defs'  => $person_field_defs,
+			'load_first'         => $this->in->getBool('load_first')
 		));
 
 		$html = $this->renderView($tpl, $vars);
