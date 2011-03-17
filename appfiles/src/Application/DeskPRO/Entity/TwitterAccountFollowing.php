@@ -18,7 +18,7 @@ use \Application\DeskPRO\Entity;
 /**
  * Twitter Account following a User
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterAccountFollowing")
  * @orm:Table(name="twitter_accounts_following")
  * @orm:HasLifecycleCallbacks
  */
@@ -54,7 +54,7 @@ class TwitterAccountFollowing extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->account) {
 			return $this->account->getId();
 		}
-		
+
 		return 0;
 	}
 
@@ -78,7 +78,7 @@ class TwitterAccountFollowing extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->user) {
 			return $this->user->getId();
 		}
-		
+
 		return 0;
 	}
 
