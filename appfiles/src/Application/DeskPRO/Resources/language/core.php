@@ -18,6 +18,10 @@
 	'core.agent'         => 'Agent',
 	'core.agent_team'    => 'Agent Team',
 	'core.label'         => 'Label',
+	'core.locale'        => 'Locale',
+	'core.organization'  => 'Organization',
+	'core.usergroup'     => 'Usergroup',
+	'core.email'         => 'Email',
 
 	'core.id'            => 'ID',
 

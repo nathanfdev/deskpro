@@ -488,14 +488,28 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.startLoadingIndicator();
 
-		$.ajax({
-			dataType: 'text',
-			url: url,
-			success: (function(data) {
-				this.stopLoadingIndicator();
-				successFn(data);
-			}).bind(this)
-		});
+		if (routeData.postData) {
+			$.ajax({
+				dataType: 'text',
+				url: url,
+				type: 'POST',
+				data: routeData.postData,
+				success: (function(data) {
+					this.stopLoadingIndicator();
+					successFn(data);
+				}).bind(this)
+			});
+		} else {
+			$.ajax({
+				dataType: 'text',
+				url: url,
+				type: 'GET',
+				success: (function(data) {
+					this.stopLoadingIndicator();
+					successFn(data);
+				}).bind(this)
+			});
+		}
 	},
 
 

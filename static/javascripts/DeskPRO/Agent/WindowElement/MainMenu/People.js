@@ -7,7 +7,9 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 		// Sends ajax to fetch initial data
 		this._initInitialData();
-		console.log('people');
+
+        this._initLabelsSwitcher();
+        this._initSearchSwitcher();
 	},
 
 	// we use a counter to make sure initAfterInitialData is only fired once, after all panes are loaded
@@ -31,7 +33,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		$.ajax({
 			timeout: 20000,
 			type: 'POST',
-			url: BASE_URL + 'agent/people-search/org-labels-pane',
+			url: BASE_URL + 'agent/organization-search/labels-pane',
 			dataType: 'html',
 			context: this,
 			success: function(html) {
@@ -62,8 +64,6 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 	 */
 	_initAfterInitialData: function() {
 		if (this._initerCount > 0) return; //notyet
-
-		this._initLabelsSwitcher();
 	},
 
 	//#########################################################################
@@ -132,7 +132,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 		var url = BASE_URL + 'agent/people-search/labels-index-pane';
 		if (type == 'org') {
-			url = BASE_URL + 'agent/people-search/org-labels-index-pane';
+			url = BASE_URL + 'agent/organization-search/labels-index-pane';
 		}
 
 		$.ajax({
@@ -215,5 +215,157 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		});
 
 		$('#people_main_section, #people_labels_list_section, #org_labels_list_section').css({'float':''});
+	},
+
+
+    //#########################################################################
+	// Search
+	//#########################################################################
+
+    _initSearchSwitcher: function() {
+		// Clicking between show-index and goback buttons
+		$('#people_search_section_btn').click((function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            ev._noCloseMenu = true;
+            
+			this.showSearchSection();
+		}).bind(this));
+		$('#people_search_section_back').click((function(ev) {
+			this.hideSearchSection('people');
+		}).bind(this));
+
+        // The terms build
+        // Set up search builder
+		var editor = new DeskPRO.Form.RuleBuilder($('#people_search_section .search-builder-tpl'));
+		editor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+		$('#people_search_section .search-form .add-term').data('add-count', 0).click(function() {
+			var count = parseInt($(this).data('add-count'));
+			var basename = 'criteria['+count+']';
+
+			$(this).data('add-count', count+1);
+
+			editor.addNewRow($('.search-form .search-terms'), basename);
+		});
+
+		$('#people_search_submit').click((function(ev) {
+			ev.preventDefault();
+
+			var form = $('#people_search_section form:first');
+			var url = form.attr('action');
+
+			var data = form.serializeArray();
+
+			DeskPRO_Window.loadListPane(url, { postData: data });
+
+			this.closeMenu();
+		}).bind(this));
+	},
+
+    showSearchSection: function() {
+
+        $('#people_search_section .search-terms').empty();
+
+		this.menuEl.css({
+			'width': this.menuEl.width(),
+			'height': this.menuEl.height(),
+			'overflow': 'hidden'
+		});
+
+		$('#people_main_section').css({
+			'width': $('#people_main_section').width(),
+			'height': $('#people_main_section').height(),
+			'overflow': 'hidden'
+		});
+
+		$('#people_search_section').css({
+			'width': $('#people_main_section').width(),
+			'height': $('#people_main_section').height(),
+			'overflow': 'hidden'
+		}).show();
+
+		$('#people_search_section_content').css({
+			'height': $('#people_search_section').height() - 42,
+			'overflow': 'auto'
+		});
+
+		$('> div.x-track', this.menuEl).css({
+			'width': ($('#people_main_section').width()*2) + 100
+		});
+
+		$('#people_main_section, #people_search_section').css({'float':'left'});
+
+		this.menuEl.scrollLeft(0);
+		var pos = $('#people_search_section').position().left;
+
+        this.resetSearchScroller();
+        
+		this.menuEl.animate(
+			{ scrollLeft: pos },
+			300,
+			'linear'
+		);
+	},
+
+    hideSearchSection: function(type) {
+
+		var self = this;
+		this.menuEl.animate(
+			{ scrollLeft: 0 },
+			300,
+			'linear',
+			function() {
+				self._cleanupSearchSlide();
+			}
+		);
+	},
+
+    _cleanupSearchSlide: function() {
+		this.menuEl.css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		});
+
+		$('#people_main_section').css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		});
+
+		$('#people_search_section').css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		}).hide();
+
+		$('> div.x-track', this.menuEl).css({
+			'width': ''
+		});
+
+		$('#people_main_section, #people_search_section').css({'float':''});
+	},
+
+    resetSearchScroller: function(type) {
+
+		var wrap = $('#people_search_section_wrap');
+
+		var viewport = $('#people_search_section_wrap > .viewport');
+		var list = $('#people_search_section_content');
+
+		var height_thresh = $('#people_search_section').height() - 42;
+		viewport.height(height_thresh);
+
+		wrap.tinyscrollbar();
+
+		if ($('> .scrollbar', wrap).is('.disable')) {
+			wrap.addClass('scrollbar-disabled');
+		} else {
+			wrap.removeClass('scrollbar-disabled');
+		}
 	}
 });

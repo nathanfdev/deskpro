@@ -22,17 +22,52 @@ class Organization extends EntityRepository
 	/**
 	 * @return array
 	 */
-	public function getOrganizationNames()
+	public function getOrganizationNames($for_ids = null)
 	{
-		if ($this->organization_names !== null) return $this->organization_names;
+		if ($this->organization_names == null) {
 
-		$db = App::getDb();
-		$this->organization_names = $db->fetchAllKeyValue("
-			SELECT id, name
-			FROM organizations
-			ORDER BY name ASC
-		");
+            $db = App::getDb();
+            $this->organization_names = $db->fetchAllKeyValue("
+                SELECT id, name
+                FROM organizations
+                ORDER BY name ASC
+            ");
+        }
 
-		return $this->organization_names;
+        if ($for_ids === null) {
+		    return $this->organization_names;
+        }
+
+        $ret = array();
+        foreach ($for_ids as $id) {
+            $ret[$id] = $this->organization_names[$id];
+        }
+
+        return $ret;
+	}
+
+
+	public function getOrganizationsFromIds(array $ids)
+	{
+		// Only valid ID's please :)
+		// Do this because Doctrine doesnt have proper IN()
+		// escaping until 2.1
+		$ids = array_filter($ids, function ($val) {
+			if (Numbers::isInteger($val)) {
+				return true;
+			}
+			return false;
+		});
+
+		if (!$ids) return array();
+
+		$orgs = $this->getEntityManager()->createQuery("
+			SELECT o
+			FROM DeskPRO:Organization o INDEX BY o.id
+			WHERE o.id IN(" . implode(',', $ids) . ")
+			ORDER BY o.id ASC
+		")->execute();
+
+		return $orgs;
 	}
 }

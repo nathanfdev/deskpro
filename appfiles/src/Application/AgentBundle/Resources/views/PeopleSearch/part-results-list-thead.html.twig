@@ -1,0 +1,15 @@
+<thead class="display-options-trigger nosel">
+	<tr>
+		<th></th>
+		{% for field in display_fields %}
+			{% if field == 'email_address' %}<th data-field="person">Email</th>
+			{% else %}
+				{% for f in person_field_defs %}
+					{% if field == 'person_fields['~f.id~']' %}
+					<th data-field="person_fields[{{f.id}}]">{{f.title}}</th>
+					{% endif %}
+				{% endfor %}
+			{% endif %}
+		{% endfor %}
+	</tr>
+</thead>

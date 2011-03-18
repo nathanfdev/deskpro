@@ -155,9 +155,9 @@ agent_person_ajaxsavecustomfields:
   defaults: { _controller: AgentBundle:Person:ajaxSaveCustomFields }
   requirements: { person_id: "\d+" }
 
-agent_peoplesearch_perform:
+agent_peoplesearch_customfilter:
   pattern: /people-search/search
-  defaults: { _controller: AgentBundle:PeopleSearch:performSearch }
+  defaults: { _controller: AgentBundle:PeopleSearch:search }
 
 agent_peoplesearch_performquick:
   pattern: /people-search/search-quick
@@ -175,14 +175,6 @@ agent_peoplesearch_labelsindexpane:
   pattern: /people-search/labels-index-pane
   defaults: { _controller: AgentBundle:PeopleSearch:labelsIndexPane }
 
-agent_peoplesearch_org_labelspane:
-  pattern: /people-search/org-labels-pane
-  defaults: { _controller: AgentBundle:PeopleSearch:orgLabelsPane }
-
-agent_peoplesearch_org_labelsindexpane:
-  pattern: /people-search/org-labels-index-pane
-  defaults: { _controller: AgentBundle:PeopleSearch:orgLabelsIndexPane }
-
 agent_peoplesearch_findpane:
   pattern: /people-search/find-pane
   defaults: { _controller: AgentBundle:PeopleSearch:findPane }
@@ -194,6 +186,19 @@ agent_peoplesearch_directorypane:
 agent_peoplesearch_usergroupspane:
   pattern: /people-search/usergroups-pane
   defaults: { _controller: AgentBundle:PeopleSearch:usergroupsPane }
+
+
+################################################################################
+# Org search
+################################################################################
+
+agent_orgsearch_labelspane:
+  pattern: /organization-search/labels-pane
+  defaults: { _controller: AgentBundle:OrganizationSearch:labelsPane }
+
+agent_orgsearch_labelsindexpane:
+  pattern: /organization-search/labels-index-pane
+  defaults: { _controller: AgentBundle:OrganizationSearch:labelsIndexPane }
 
 ################################################################################
 # Ticket Search

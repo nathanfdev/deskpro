@@ -12,7 +12,8 @@ class PersonSearch extends SearcherAbstract
 {
 	const TERM_ID             = 'id';
 	const TERM_ORGANIZATION   = 'organization';
-	const TERM_LANGUAGE       = 'language';
+	const TERM_USERGROUP      = 'usergroup';
+	const TERM_LOCALE         = 'locale';
 	const TERM_EMAIL          = 'email';
 	const TERM_EMAIL_DOMAIN   = 'email_domain';
 	const TERM_NAME           = 'name';
@@ -78,7 +79,7 @@ class PersonSearch extends SearcherAbstract
 		}
 
 		$sql .= " GROUP BY people.id ";
-		$sql .= $order_join;
+		$sql .= $order_by;
 		$sql .= " LIMIT 1000";
 
 		return $sql;
@@ -93,8 +94,9 @@ class PersonSearch extends SearcherAbstract
 	 */
 	public function getOrderByPart()
 	{
+		// Set a default if none
 		if (!$this->order_by) {
-			$this->order_by = array('people.date_created', 'DESC');
+			$this->order_by = array('people.id', 'DESC');
 		}
 
 		list($type, $dir) = $this->order_by;
@@ -105,13 +107,12 @@ class PersonSearch extends SearcherAbstract
 		}
 
 		$term_id = null;
-
-		// $term of people_field[12] becomes $type=people_field, $term_id=12
 		$m = null;
-		if (preg_match('#^(.*?)\[(.*?)\]$#', $term, $m)) {
+		if (preg_match('#^(.*?)\[(.*?)\]$#', $type, $m)) {
 			$type = $m[1];
 			$term_id = $m[2];
 		}
+
 
 		$order_by = '';
 
@@ -168,10 +169,7 @@ class PersonSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
-		$people_table = 'people_search';
-		if ($this->is_archive) {
-			$people_table = 'people';
-		}
+		$people_table = 'people';
 
 		$db = App::getDb();
 
@@ -179,7 +177,6 @@ class PersonSearch extends SearcherAbstract
 		$joins = array();
 
 		foreach ($this->terms as $term => $info) {
-
 			$join_id = Util::requestUniqueId();
 			$join_name = "j_$join_id";
 
@@ -195,14 +192,37 @@ class PersonSearch extends SearcherAbstract
 			}
 
 			switch ($term) {
-				case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
+                case self::TERM_ID:
+					$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
-				case self::TERM_LANGUAGE:
-					$wheres[] = $this->_choiceMatch("$people_table.language_id", $op, $choice);
+                case self::TERM_LOCALE:
+					$this->summary[] = $this->_choiceSummary($tr->phrase('core.locale'), $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:Locale')->getLocaleNames((array)$choice);
+						return $titles;
+					});
+
+					$wheres[] = $this->_choiceMatch("$people_table.locale_id", $op, $choice, true);
 					break;
 				case self::TERM_ORGANIZATION:
+                    $this->summary[] = $this->_choiceSummary($tr->phrase('core.organization'), $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames((array)$choice);
+						return $titles;
+					});
 					$wheres[] = $this->_choiceMatch("$people_table.organization_id", $op, $choice);
+					break;
+                case self::TERM_USERGROUP:
+                    $joins[] = array(
+                        'person2usergroups',
+                        "LEFT JOIN person2usergroups AS $join_name ON ($join_name.person_id = $people_table.id)"
+                    );
+
+                    $this->summary[] = $this->_choiceSummary($tr->phrase('core.usergroup'), $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames((array)$choice);
+						return $titles;
+					});
+                        
+					$wheres[] = $this->_choiceMatch("$join_name.usergroup_id", $op, $choice);
 					break;
 				case self::TERM_EMAIL:
 					$joins[] = array(

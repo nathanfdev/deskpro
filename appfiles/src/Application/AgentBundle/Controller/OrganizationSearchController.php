@@ -11,8 +11,7 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\Searcher\TicketSearch;
-use \Application\DeskPRO\Entity\TicketFilter;
+use \Application\DeskPRO\Searcher\OrganizationSearch;
 use \Application\DeskPRO\Entity\Ticket;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
@@ -20,27 +19,27 @@ use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 
 /**
- * Handles searching for people
+ * Handles searching for orgs
  */
-class PeopleSearchController extends AbstractController
+class OrganizationSearchController extends AbstractController
 {
-	protected function _getResponseForPeople($type, $type_id, $results_helper, array $vars = array())
+	protected function _getResponseForOrgs($type, $type_id, $results_helper, array $vars = array())
 	{
 		$is_partial = false;
-		$tpl = 'AgentBundle:PeopleSearch:'.$type.'-results.html.twig';
+		$tpl = 'AgentBundle:OrganizationSearch:'.$type.'-results.html.twig';
 		if ($this->in->getBool('partial')) {
 			$is_partial = true;
-			$tpl = 'AgentBundle:PeopleSearch:part-results-list.html.twig';
+			$tpl = 'AgentBundle:OrganizationSearch:part-results-list.html.twig';
 		}
 
 		#------------------------------
-		# Get the tickets to show
+		# Get the results to show
 		#------------------------------
 
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$people = $results_helper->getPeopleForPage($page);
+		$people = $results_helper->getOrgsForPage($page);
 
 		#------------------------------
 		# Send results
@@ -55,14 +54,14 @@ class PeopleSearchController extends AbstractController
 		}
 
 		// person defs for columns
-		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 
 		$vars = array_merge($vars, array(
 			'type'               => $type,
 			'type_id'            => $type_id,
-			'people'             => $people,
+			'organizations'      => $organizations,
 			'page'               => $page,
-			'person_field_defs'  => $person_field_defs,
+			'org_field_defs'     => $org_field_defs,
 			'load_first'         => $this->in->getBool('load_first')
 		));
 
@@ -100,7 +99,7 @@ class PeopleSearchController extends AbstractController
 		if (!$result_cache) {
 			$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
 
-			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+			$searcher = new \Application\DeskPRO\Searcher\OrganizationSearch();
 			foreach ($terms as $term) {
 				$data = $term;
 				unset($data['rule_type'], $data['op']);
@@ -144,7 +143,7 @@ class PeopleSearchController extends AbstractController
 
 			$result_cache['criteria'] = $criteria;
 
-			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+			$searcher = new \Application\DeskPRO\Searcher\OrganizationSearch();
 			$searcher->setTerms($result_cache['criteria']['terms']);
 			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
 
@@ -160,7 +159,7 @@ class PeopleSearchController extends AbstractController
 		# Serve results
 		#------------------------------
 
-		$results_helper = Helper\PeopleResults::newFromResultCache($this, $result_cache);
+		$results_helper = Helper\OrganizationResults::newFromResultCache($this, $result_cache);
 
 		$vars = array(
 			'cache' => $result_cache,
@@ -171,7 +170,7 @@ class PeopleSearchController extends AbstractController
 			$vars['display_fields'] =$result_cache['extra']['display_fields'];
 		}
 
-		$pref_name = 'agent.ui.people-filter-display-fields.' . $result_cache['id'];
+		$pref_name = 'agent.ui.org-filter-display-fields.' . $result_cache['id'];
 		if (!empty($result_cache['extra'][$pref_name])) {
 			$vars['display_fields'] = $result_cache['extra'][$pref_name];
 		}
@@ -180,126 +179,31 @@ class PeopleSearchController extends AbstractController
 			$vars['page_title'] = $this->in->getString('page_title');
 		}
 
-		return $this->_getResponseForPeople('custom-filter', $result_cache['id'], $results_helper, $vars);
-	}
-
-	############################################################################
-	# /agent/people-search/quick-search            agent_peoplesearch_performquick
-	############################################################################
-
-	public function performQuickSearchAction()
-	{
-		$q = $this->in->getString('q');
-		if (!$q) {
-			$q = $this->in->getString('term');
-		}
-
-		//TODO proper sql escape
-		$q = addslashes($q);
-
-		$limit = $this->in->getUint('limit');
-		if (!$limit) $limit = 10;
-		$limit = min($limit, 100);
-
-		$people_list = $this->em->createQuery("
-			SELECT p, p_email
-			FROM DeskPRO:Person p
-			LEFT JOIN p.primary_email p_email
-			LEFT JOIN p.emails emails
-			LEFT JOIN p.organization org
-			WHERE
-				p.name LIKE '%$q%'
-				OR p.first_name LIKE '%$q%'
-				OR p.last_name LIKE '%$q%'
-				OR emails.email LIKE '%$q%'
-				OR org.name LIKE '%$q%'
-			GROUP BY p.id
-			ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
-		")->setMaxResults($limit)->getResult();
-		//")->setParameters(array($q, $q))->getResult();
-
-		$format = $this->in->getString('format');
-
-		if ($format == 'json' OR (!$format AND $this->in->getBool('ajax'))) {
-			$tpl = "AgentBundle:PeopleSearch:search_results.json.jsonphp";
-		} else {
-			$tpl = "AgentBundle:PeopleSearch:search_results.html.twig";
-			if ($format == 'simplelist') {
-				$tpl = "AgentBundle:PeopleSearch:search-results-simplelist.html.twig";
-			}
-		}
-
-		return $this->render($tpl, array(
-			'people_list' => $people_list
-		));
-	}
-
-	############################################################################
-	# labels-pane
-	############################################################################
-
-	public function labelsPaneAction()
-	{
-		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
-		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-		$cloud = $cloud_gen->getCloud();
-
-		return $this->render('AgentBundle:PeopleSearch:pane-labels.html.twig', array(
-			'cloud' => $cloud
-		));
-	}
-
-	public function labelsIndexPaneAction()
-	{
-		$label_lister = new \Application\DeskPRO\Labels\LabelLister('people');
-		$index = $label_lister->getIndexList();
-
-		return $this->render('AgentBundle:PeopleSearch:pane-labels-index.html.twig', array(
-			'labels_index' => $index
-		));
+		return $this->_getResponseForOrgs('custom-filter', $result_cache['id'], $results_helper, $vars);
 	}
 
 	############################################################################
 	# org-labels-pane
 	############################################################################
 
-	public function orgLabelsPaneAction()
+	public function labelsPaneAction()
 	{
 		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$cloud = $cloud_gen->getCloud();
 
-		return $this->render('AgentBundle:PeopleSearch:pane-org-labels.html.twig', array(
+		return $this->render('AgentBundle:OrganizationSearch:pane-org-labels.html.twig', array(
 			'cloud' => $cloud
 		));
 	}
 
-	public function orgLabelsIndexPaneAction()
+	public function labelsIndexPaneAction()
 	{
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
 		$index = $label_lister->getIndexList();
 
-		return $this->render('AgentBundle:PeopleSearch:pane-org-labels-index.html.twig', array(
+		return $this->render('AgentBundle:OrganizationSearch:pane-org-labels-index.html.twig', array(
 			'labels_index' => $index
 		));
-	}
-
-	############################################################################
-	# usergroups-pane
-	############################################################################
-
-	public function usergroupsPaneAction()
-	{
-		$all_usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-
-		return $this->render('AgentBundle:PeopleSearch:pane-usergroups.html.twig', array(
-			'all_usergroups' => $all_usergroups
-		));
-	}
-
-
-	public function findPaneAction()
-	{
-		return $this->render('AgentBundle:PeopleSearch:pane-find.html.twig');
 	}
 }

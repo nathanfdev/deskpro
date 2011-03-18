@@ -23,7 +23,7 @@ use Orb\Util\Arrays;
  * Locale. A locale defines various formats (number formatting, times, dates etc),
  * as well as which language is used.
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Locale")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="locales")
  */

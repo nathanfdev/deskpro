@@ -14,6 +14,7 @@ namespace Application\DeskPRO\EntityRepository;
 use \Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
+use \Orb\Util\Numbers;
 
 class Person extends EntityRepository
 {
@@ -73,5 +74,30 @@ class Person extends EntityRepository
 		}
 
 		return $person;
+	}
+
+
+	public function getPeopleFromIds(array $ids)
+	{
+		// Only valid ID's please :)
+		// Do this because Doctrine doesnt have proper IN()
+		// escaping until 2.1
+		$ids = array_filter($ids, function ($val) {
+			if (Numbers::isInteger($val)) {
+				return true;
+			}
+			return false;
+		});
+
+		if (!$ids) return array();
+
+		$people = $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p INDEX BY p.id
+			WHERE p.id IN(" . implode(',', $ids) . ")
+			ORDER BY p.id ASC
+		")->execute();
+
+		return $people;
 	}
 }
