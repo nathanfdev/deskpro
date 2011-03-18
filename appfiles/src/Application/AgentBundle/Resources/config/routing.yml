@@ -187,6 +187,11 @@ agent_peoplesearch_usergroupspane:
   pattern: /people-search/usergroups-pane
   defaults: { _controller: AgentBundle:PeopleSearch:usergroupsPane }
 
+agent_peoplesearch_save_resultprefs:
+  pattern: /people-search/save-result-prefs/{cache_id}
+  defaults: { _controller: AgentBundle:PeopleSearch:ajaxSaveResultPrefs }
+  requirements: { cache_id: "\d+" }
+
 
 ################################################################################
 # Org search
@@ -199,6 +204,15 @@ agent_orgsearch_labelspane:
 agent_orgsearch_labelsindexpane:
   pattern: /organization-search/labels-index-pane
   defaults: { _controller: AgentBundle:OrganizationSearch:labelsIndexPane }
+
+agent_orgsearch_customfilter:
+  pattern: /organization-search/search
+  defaults: { _controller: AgentBundle:OrganizationSearch:search }
+
+agent_orgsearch_save_resultprefs:
+  pattern: /people-search/save-result-prefs/{cache_id}
+  defaults: { _controller: AgentBundle:OrganizationSearch:ajaxSaveResultPrefs }
+  requirements: { cache_id: "\d+" }
 
 ################################################################################
 # Ticket Search

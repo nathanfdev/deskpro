@@ -39,18 +39,26 @@ class OrganizationSearchController extends AbstractController
 		$page = $this->in->getUint('page');
 		if (!$page) $page = 1;
 
-		$people = $results_helper->getOrgsForPage($page);
+		$organizations = $results_helper->getOrgsForPage($page);
+
+		// Members count
+		$members_count = App::getDb()->fetchAllKeyValue("
+			SELECT organization_id, COUNT(*)
+			FROM people
+			WHERE organization_id IS NOT NULL
+			GROUP BY organization_id
+		");
 
 		#------------------------------
 		# Send results
 		#------------------------------
 
-		if (!count($people) && $is_partial) {
+		if (!count($organizations) && $is_partial) {
 			return $this->createJsonResponse(array('no_more_results' => true));
 		}
 
 		if (empty($vars['display_fields'])) {
-			$vars['display_fields'] = array('email_address');
+			$vars['display_fields'] = array('members_count');
 		}
 
 		// person defs for columns
@@ -60,6 +68,7 @@ class OrganizationSearchController extends AbstractController
 			'type'               => $type,
 			'type_id'            => $type_id,
 			'organizations'      => $organizations,
+			'members_count'      => $members_count,
 			'page'               => $page,
 			'org_field_defs'     => $org_field_defs,
 			'load_first'         => $this->in->getBool('load_first')
@@ -205,5 +214,42 @@ class OrganizationSearchController extends AbstractController
 		return $this->render('AgentBundle:OrganizationSearch:pane-org-labels-index.html.twig', array(
 			'labels_index' => $index
 		));
+	}
+
+	############################################################################
+	# save-result-prefs
+	############################################################################
+
+	public function ajaxSaveResultPrefsAction($cache_id)
+	{
+		$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($cache_id);
+
+		$extra = $result_cache['extra'];
+
+		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'str_simple') as $pref_name => $value)
+		{
+			// Remove trailing .ID for cleaner case test
+			$pref_name = str_replace('.'.$result_cache['id'], '', $pref_name);
+			switch ($pref_name) {
+				case 'agent.ui.org-filter-order-by':
+					$pref_name = 'order_by';
+					break;
+				case 'agent.ui.org-filter-display-fields':
+					$pref_name = 'display_fields';
+					break;
+				default:
+					throw new \InvalidArgumentException("Invalid preference `$pref_name`");
+					break;
+			}
+
+			$extra[$pref_name] = $value;
+		}
+
+		$result_cache['extra'] = $extra;
+
+		App::getOrm()->persist($result_cache);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 }

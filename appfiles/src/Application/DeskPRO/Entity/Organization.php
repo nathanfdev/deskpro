@@ -126,4 +126,19 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$data['organization'] = $this;
 	}
 
+
+	/**
+	 * Render a custom field
+	 */
+	public function renderCustomField($field_id, $context = 'html')
+	{
+		$f_def = App::getEntityRepository('DeskPRO:CustomDefOrganization')->find($field_id);
+
+		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($this->custom_data, array($f_def));
+
+		$value = !empty($data_structured[$f_def['id']]) ? $data_structured[$f_def['id']] : null;
+		$rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
+
+		return $rendered;
+	}
 }

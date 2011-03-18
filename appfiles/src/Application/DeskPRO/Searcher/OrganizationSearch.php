@@ -11,7 +11,6 @@ use \Application\DeskPRO\Entity;
 class OrganizationSearch extends SearcherAbstract
 {
 	const TERM_ID             = 'id';
-	const TERM_ORGANIZATION   = 'name';
 	const TERM_NAME           = 'name';
 	const TERM_ORGANIZATION_FIELD   = 'organization_field';
 	const TERM_LABEL          = 'label';
@@ -40,7 +39,7 @@ class OrganizationSearch extends SearcherAbstract
 	 */
 	public function getSql()
 	{
-		$sql = "SELECT organization.id FROM organizations ";
+		$sql = "SELECT organizations.id FROM organizations ";
 
 		$parts = $this->getSqlParts();
 		$order_by = $this->getOrderByPart();
@@ -126,7 +125,7 @@ class OrganizationSearch extends SearcherAbstract
 					case 'input':
 					case 'value':
 						$order_by = arary(
-							"INNER JOIN custom_data_organization AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
+							"INNER JOIN custom_data_organizations AS sort_table ON (sort_table.organization_id = organizations.id AND sort_table.id = $term_id)",
 							"ORDER BY sort_table.$search_type $dir"
 						);
 						break;
@@ -146,9 +145,10 @@ class OrganizationSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
-		$people_table = 'organizations';
+		$org_table = 'organizations';
 
 		$db = App::getDb();
+		$tr = App::getTranslator();
 
 		$wheres = array();
 		$joins = array();
@@ -170,12 +170,12 @@ class OrganizationSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
+					$wheres[] = $this->_rangeMatch("$org_table.id", $op, $choice, true);
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
+				
 				case self::TERM_NAME:
 					$wheres[] = $this->_stringMatch("organizations.name", $op, $choice);;
-
 					break;
 
 				case self::TERM_LABEL:
@@ -192,30 +192,30 @@ class OrganizationSearch extends SearcherAbstract
 					switch ($op) {
 						case self::OP_IS:
 							$joins[] = array(
-								'labels_people',
-								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
+								'labels_organizations',
+								"LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id)"
 							);
 							$wheres[] = "$join_name.label = " . $db->quote($choice);
 							break;
 						case self::OP_NOT:
 							$joins[] = array(
-								'labels_people',
-								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label = '.$db->quote($choice).')"
+								'labels_organizations',
+								"LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label = '.$db->quote($choice).')"
 							);
 							$wheres[] = "$join_name.person_id IS NULL";
 							break;
 						case self::OP_CONTAINS:
 							$joins[] = array(
-								'labels_people',
-								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id)"
+								'labels_organizations',
+								"LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id)"
 							);
 							$wheres[] = "$join_name.label IN ($choices_in)";
 							break;
 
 						case self::OP_NOTCONTAINS:
 							$joins[] = array(
-								'labels_people',
-								"LEFT JOIN labels_people AS $join_name ON ($join_name.person_id = people.id AND $join_name.label IN ($choices_in)"
+								'labels_organizations',
+								"LEFT JOIN labels_organizations AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.label IN ($choices_in)"
 							);
 							$wheres[] = "$join_name.person_id IS NULL";
 							break;
@@ -235,8 +235,8 @@ class OrganizationSearch extends SearcherAbstract
 
 							$join_id = Util::requestUniqueId();
 							$joins[] = array(
-								'custom_data_organization',
-								"LEFT JOIN custom_data_organization AS $join_id ON ($join_id.person_id = organizations.id AND $join_id.field_id = $term_id)"
+								'custom_data_organizations',
+								"LEFT JOIN custom_data_organizations AS $join_id ON ($join_id.organization_id = organizations.id AND $join_id.field_id = $term_id)"
 							);
 
 							$field = $join_id.'.'.$search_type;
@@ -268,16 +268,16 @@ class OrganizationSearch extends SearcherAbstract
 							switch ($op) {
 								case self::OP_CONTAINS:
 									$joins[] = array(
-										'custom_data_organization',
-										"LEFT JOIN custom_data_organization AS $join_id ON ($join_id.person_id = people.id)"
+										'custom_data_organizations',
+										"LEFT JOIN custom_data_organizations AS $join_id ON ($join_id.organization_id = organizations.id)"
 									);
 									$wheres[] = "$field IN ($choices_in)";
 									break;
 
 								case self::OP_NOTCONTAINS:
 									$joins[] = array(
-										'custom_data_organization',
-										"LEFT JOIN custom_data_organization AS $join_id ON ($join_id.person_id = people.id AND $join_id.field_id IN ($choices_in)"
+										'custom_data_organizations',
+										"LEFT JOIN custom_data_organizations AS $join_id ON ($join_id.organization_id = organizations.id AND $join_id.field_id IN ($choices_in)"
 									);
 									$wheres[] = "$field IS NULL";
 									break;

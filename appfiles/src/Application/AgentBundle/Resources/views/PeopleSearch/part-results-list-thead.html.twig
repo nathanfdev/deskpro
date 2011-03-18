@@ -2,7 +2,9 @@
 	<tr>
 		<th></th>
 		{% for field in display_fields %}
-			{% if field == 'email_address' %}<th data-field="person">Email</th>
+			{% if field == 'email_address' %}<th data-field="email_address">Email</th>
+			{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
+			{% elseif field == 'locale' %}<th data-field="Locale">Locale</th>
 			{% else %}
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' %}

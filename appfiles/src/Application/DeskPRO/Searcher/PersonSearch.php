@@ -3,6 +3,8 @@
 namespace Application\DeskPRO\Searcher;
 
 use \Application\DeskPRO\App;
+	
+use \Orb\Util\Util;
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 
@@ -172,6 +174,7 @@ class PersonSearch extends SearcherAbstract
 		$people_table = 'people';
 
 		$db = App::getDb();
+		$tr = App::getTranslator();
 
 		$wheres = array();
 		$joins = array();
@@ -193,7 +196,7 @@ class PersonSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
+					$wheres[] = $this->_rangeMatch("$people_table.id", $op, $choice, true);
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
                 case self::TERM_LOCALE:

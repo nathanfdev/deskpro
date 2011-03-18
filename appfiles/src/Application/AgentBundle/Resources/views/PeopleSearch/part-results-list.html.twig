@@ -21,7 +21,7 @@
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' %}
 					<div class="prop-val person_fields_{{f.id}}">
-						{{ticket.person.renderCustomField(f.id)}}
+						{{p.renderCustomField(f.id)}}
 					</div>
 					{% endif %}
 				{% endfor %}

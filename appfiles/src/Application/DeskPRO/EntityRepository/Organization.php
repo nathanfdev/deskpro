@@ -15,6 +15,8 @@ use \Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
+use \Orb\Util\Numbers;
+
 class Organization extends EntityRepository
 {
 	protected $organization_names = null;

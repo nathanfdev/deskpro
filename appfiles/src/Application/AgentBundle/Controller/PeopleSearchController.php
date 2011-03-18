@@ -302,4 +302,41 @@ class PeopleSearchController extends AbstractController
 	{
 		return $this->render('AgentBundle:PeopleSearch:pane-find.html.twig');
 	}
+
+	############################################################################
+	# save-result-prefs
+	############################################################################
+
+	public function ajaxSaveResultPrefsAction($cache_id)
+	{
+		$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($cache_id);
+
+		$extra = $result_cache['extra'];
+
+		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'str_simple') as $pref_name => $value)
+		{
+			// Remove trailing .ID for cleaner case test
+			$pref_name = str_replace('.'.$result_cache['id'], '', $pref_name);
+			switch ($pref_name) {
+				case 'agent.ui.people-filter-order-by':
+					$pref_name = 'order_by';
+					break;
+				case 'agent.ui.people-filter-display-fields':
+					$pref_name = 'display_fields';
+					break;
+				default:
+					throw new \InvalidArgumentException("Invalid preference `$pref_name`");
+					break;
+			}
+
+			$extra[$pref_name] = $value;
+		}
+
+		$result_cache['extra'] = $extra;
+
+		App::getOrm()->persist($result_cache);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }

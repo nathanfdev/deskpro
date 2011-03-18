@@ -10,6 +10,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
         this._initLabelsSwitcher();
         this._initSearchSwitcher();
+        this._initOrgSearchSwitcher();
 	},
 
 	// we use a counter to make sure initAfterInitialData is only fired once, after all panes are loaded
@@ -358,6 +359,158 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		var list = $('#people_search_section_content');
 
 		var height_thresh = $('#people_search_section').height() - 42;
+		viewport.height(height_thresh);
+
+		wrap.tinyscrollbar();
+
+		if ($('> .scrollbar', wrap).is('.disable')) {
+			wrap.addClass('scrollbar-disabled');
+		} else {
+			wrap.removeClass('scrollbar-disabled');
+		}
+	},
+
+
+	//#########################################################################
+	// Org Search
+	//#########################################################################
+
+    _initOrgSearchSwitcher: function() {
+		// Clicking between show-index and goback buttons
+		$('#org_search_section_btn').click((function(ev) {
+            ev.preventDefault();
+            ev.stopPropagation();
+            ev._noCloseMenu = true;
+
+			this.showOrgSearchSection();
+		}).bind(this));
+		$('#org_search_section_back').click((function(ev) {
+			this.hideOrgSearchSection('people');
+		}).bind(this));
+
+        // The terms build
+        // Set up search builder
+		var editor = new DeskPRO.Form.RuleBuilder($('#org_search_section .search-builder-tpl'));
+		editor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+		$('#org_search_section .search-form .add-term').data('add-count', 0).click(function() {
+			var count = parseInt($(this).data('add-count'));
+			var basename = 'criteria['+count+']';
+
+			$(this).data('add-count', count+1);
+
+			editor.addNewRow($('.search-form .search-terms'), basename);
+		});
+
+		$('#org_search_submit').click((function(ev) {
+			ev.preventDefault();
+
+			var form = $('#org_search_section form:first');
+			var url = form.attr('action');
+
+			var data = form.serializeArray();
+
+			DeskPRO_Window.loadListPane(url, { postData: data });
+
+			this.closeMenu();
+		}).bind(this));
+	},
+
+    showOrgSearchSection: function() {
+
+        $('#org_search_section .search-terms').empty();
+
+		this.menuEl.css({
+			'width': this.menuEl.width(),
+			'height': this.menuEl.height(),
+			'overflow': 'hidden'
+		});
+
+		$('#people_main_section').css({
+			'width': $('#people_main_section').width(),
+			'height': $('#people_main_section').height(),
+			'overflow': 'hidden'
+		});
+
+		$('#org_search_section').css({
+			'width': $('#people_main_section').width(),
+			'height': $('#people_main_section').height(),
+			'overflow': 'hidden'
+		}).show();
+
+		$('#org_search_section_content').css({
+			'height': $('#org_search_section').height() - 42,
+			'overflow': 'auto'
+		});
+
+		$('> div.x-track', this.menuEl).css({
+			'width': ($('#people_main_section').width()*2) + 100
+		});
+
+		$('#people_main_section, #org_search_section').css({'float':'left'});
+
+		this.menuEl.scrollLeft(0);
+		var pos = $('#org_search_section').position().left;
+
+        this.resetOrgSearchScroller();
+
+		this.menuEl.animate(
+			{ scrollLeft: pos },
+			300,
+			'linear'
+		);
+	},
+
+    hideOrgSearchSection: function(type) {
+
+		var self = this;
+		this.menuEl.animate(
+			{ scrollLeft: 0 },
+			300,
+			'linear',
+			function() {
+				self._cleanupOrgSearchSlide();
+			}
+		);
+	},
+
+    _cleanupOrgSearchSlide: function() {
+		this.menuEl.css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		});
+
+		$('#people_main_section').css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		});
+
+		$('#org_search_section').css({
+			'width': '',
+			'height': '',
+			'overflow': ''
+		}).hide();
+
+		$('> div.x-track', this.menuEl).css({
+			'width': ''
+		});
+
+		$('#people_main_section, #org_search_section').css({'float':''});
+	},
+
+    resetOrgSearchScroller: function(type) {
+
+		var wrap = $('#org_search_section_wrap');
+
+		var viewport = $('#org_search_section_wrap > .viewport');
+		var list = $('#org_search_section_content');
+
+		var height_thresh = $('#org_search_section').height() - 42;
 		viewport.height(height_thresh);
 
 		wrap.tinyscrollbar();

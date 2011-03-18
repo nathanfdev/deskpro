@@ -1,7 +1,8 @@
 <li class="people-nav" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.People">
 	<a>People</a>
 	<ul class="wrap-dropdown-tabs">
-		<li id="people_search_section_btn"><span class="search">Search</span></li>
+		<li id="people_search_section_btn"><span class="search">Search People</span></li>
+		<li id="org_search_section_btn"><span class="search">Search Organizations</span></li>
 	</ul>
 	<div class="wrap-dropdown n-drop people-drop has-tabs"><div class="x-track">
 		{# people_main_section #}
@@ -99,7 +100,7 @@
 			<div class="inner-container">
 				<div class="inner-container-title flag-title">
 					<div id="people_search_section_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
-					<h3>Search</h3>
+					<h3>Search People</h3>
 				</div>
 				<div class="inner-container-content with-scrollbar" id="people_search_section_wrap">
 					<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
@@ -250,5 +251,83 @@
 			</div>
 		</div>
 		{# /people_search_section #}
+	
+		{# org_search_section #}
+		<div id="org_search_section" style="display:none">
+			<div class="inner-container">
+				<div class="inner-container-title flag-title">
+					<div id="org_search_section_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<h3>Search Organizations</h3>
+				</div>
+				<div class="inner-container-content with-scrollbar" id="org_search_section_wrap">
+					<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+					<div class="viewport"><div class="overview">
+						<div id="org_search_section_content">
+
+							<div class="search-form">
+								<form action="{{ path('agent_orgsearch_customfilter') }}" method="post">
+									<div class="search-form">
+										<div class="search-terms"></div>
+										<div class="term"><span class="add-term">+</span> Add a new search term</div>
+									</div>
+									<center><input type="submit" value="search" id="org_search_submit" /></center>
+								</form>
+							</div>
+
+							<div class="search-builder-tpl" style="display:none">
+								<div class="row">
+									<div class="term">
+										<div class="type"></div>
+										<div class="op"></div>
+										<div class="choice"></div>
+										<div class="remove">-</div>
+									</div>
+								</div>
+								<div class="type" title="Organization ID" data-rule-type="id">
+									<div class="op">
+										<select name="op">
+											<option value="gte">is greater than</option>
+											<option value="lte">is less than</option>
+										</select>
+									</div>
+									<div class="choice">
+										<input type="text" name="id" value="" />
+									</div>
+								</div>
+								<div class="type" title="Organization Name" data-rule-type="name">
+									<div class="op">
+										<select name="op">
+											<option value="contains">is</option>
+											<option value="notcontains">is not</option>
+										</select>
+									</div>
+									<div class="choice">
+										<input type="text" name="name" value="" />
+									</div>
+								</div>
+								{% if org_fields %}
+									{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
+									{% for field in org_fields %}
+										<div class="type" title="Field: {{field.field_def.title}}" data-rule-type="organization_field[{{field.field_def.id}}]">
+											<div class="op">
+												<select name="op">
+													{% for op in field.field_def.search_capabilities %}
+														<option value="{{op}}">{{op_lang[op]}}</option>
+													{% endfor %}
+												</select>
+											</div>
+											<div class="choice">
+												{{ form_field(field.form) }}
+											</div>
+										</div>
+									{% endfor %}
+								{% endif %}
+							</div>
+						</div>
+					</div></div>
+				</div>
+			</div>
+		</div>
+		{# /org_search_section #}
 	</div></div>
 </li>
