@@ -7,11 +7,11 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleCustomFilter';
 pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}';
-pageMeta.saveListPrefsUrl = '{{ path('agent_peoplesearch_customfilter', {'cache_id': cache_id}) }}';
+pageMeta.saveListPrefsUrl = '{{ path('agent_peoplesearch_save_resultprefs', {'cache_id': cache_id}) }}';
 {% if cache_id %}
 	pageMeta.cache_id = {{cache_id}};
 {% endif %}
-{% if not tickets %}
+{% if not people %}
 	pageMeta.noResults = true;
 {% endif %}
 </script>

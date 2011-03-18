@@ -488,7 +488,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.startLoadingIndicator();
 
-		if (routeData.postData) {
+		if (routeData && routeData.postData) {
 			$.ajax({
 				dataType: 'text',
 				url: url,

@@ -16,10 +16,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 	initPage: function(el) {
 
 		this.wrapper = $(el);
-		this.contentWrapper = this.wrapper;
+		this.contentWrapper = $('div.content:first', this.wrapper);
 
 		this._initDisplayOptions();
-		this._initInfiniteScroll();
 
 		this.initFeaturesOnCollection(el, {
 			routes: ['tr .with-route'],
@@ -40,6 +39,14 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 		if (this.displayOptionsOverlay) {
 			this.displayOptionsOverlay.destroy();
 		}
+	},
+
+	activate: function() {
+		this.attachInfiniteScroll();
+	},
+
+	deactivate: function() {
+		this.deattachInfiniteScroll();
 	},
 
 	//#########################################################################
@@ -129,28 +136,25 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 	//# Infinite loading stuff
 	//#########################################################################
 
-	_initInfiniteScroll: function() {
-		//console.log(this.contentWrapper.scrollTop()+50);
-		//console.log(this._scrollInnerHeights() - this.contentWrapper.height());
-		//console.log('-');
-		this.contentWrapper.scroll((function() {
-			if (this.contentWrapper.scrollTop()+50 >= this._scrollInnerHeights() - this.contentWrapper.height()) {
-				this.nextSearchPage();
-			}
-		}).bind(this));
+	attachInfiniteScroll: function() {
+		this._handleOnScroll_bound = this._handleOnScroll.bind(this);
+		this.wrapper.parent().scroll(this._handleOnScroll_bound);
+	},
+	deattachInfiniteScroll: function() {
+		if (this._handleOnScroll_bound) {
+			this.wrapper.parent().unbind('scroll', this._handleOnScroll_bound);
+			this._handleOnScroll_bound = null;
+		}
 	},
 
-	_scrollInnerHeights_cache: null,
-	_scrollInnerHeights: function() {
-		if (this._scrollInnerHeights_cache !== null) return this._scrollInnerHeights_cache;
-		var h = 0;
-		this.contentWrapper.children(':visible').each(function() {
-			h += $(this).height();
-		});
+	_handleOnScroll_bound: null,
+	_handleOnScroll: function() {
+		var scrolling_area = this.wrapper.parent();
+		var content_area = this.contentWrapper;
 
-		this._scrollInnerHeights_cache = h;
-
-		return h;
+		if ((scrolling_area.scrollTop()+50+scrolling_area.height()) >= content_area.height()) {
+			this.nextSearchPage();
+		}
 	},
 
 	isLoadingNext: false,

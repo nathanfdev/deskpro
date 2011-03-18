@@ -13,9 +13,20 @@
 			<td class="{{field}}" {% if loop.last and display_fields|length > 1 %}style="text-align:right"{% endif %}>
 			{% if field == 'email_address' %}
 				<span class="prop-val email_address">{{p.primary_email_address}}</span>
+			{% elseif field == 'organization' %}
+				<span class="prop-val email_address">{{p.organization.name|default('None')}}</span>
+			{% elseif field == 'locale' %}
+				<span class="prop-val email_address">{{p.locale.title|default('Default')}}</span>
+			{% else %}
+				{% for f in person_field_defs %}
+					{% if field == 'person_fields['~f.id~']' %}
+					<div class="prop-val person_fields_{{f.id}}">
+						{{ticket.person.renderCustomField(f.id)}}
+					</div>
+					{% endif %}
+				{% endfor %}
 			{% endif %}
 		{% endfor %}
 	</tr>
-	<tr class="ticket-{{ticket.id}} line-3 urgency-{{ticket.rounded_urgency}}" style="display:none"><td colspan="{{display_fields|length + 2}}"><ul></ul></td></tr>
 {% endfor %}
 </tbody>

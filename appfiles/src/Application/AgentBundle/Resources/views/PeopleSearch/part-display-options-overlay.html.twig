@@ -2,28 +2,18 @@
 	<h1>Display Options</h1>
 	<div style="float: right;">
 		Order By: <select name="order_by">
-			<option value="ticket.urgency:desc">Urgency (Highest-Lowest)</option>
-			<option value="ticket.urgency:asc">Urgency (Lowest-Highest)</option>
-			<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
-			<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
-			<option value="ticket.priority:desc">Priority (Highest-Lowest)</option>
-			<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+			<option value="person.id:desc">Date Craeted (Newest-Oldest)</option>
+			<option value="person.id:asc">Date Craeted (Oldest-Newest)</option>
+			<option value="person.name:asc">Name (A-Z)</option>
+			<option value="person.name:desc">Name (Z-A)</option>
 		</select>
 	</div>
 	<div style="margin-right: 250px;">
 		<strong>Display Elements</strong><br />
 		<ul class="sortable-list">
-			<li data-field="person"><input type="checkbox" name="person" /> Contact Name</li>
-			<li data-field="person_email"><input type="checkbox" name="person_email" /> Contact Email</li>
-			<li data-field="person_organization"><input type="checkbox" name="person_organization" /> Contact Organization</li>
-			<li data-field="department"><input type="checkbox" name="department" /> Department</li>
-			<li data-field="category"><input type="checkbox" name="category" /> Category</li>
-			<li data-field="product"><input type="checkbox" name="product" /> Product</li>
-			<li data-field="organization"><input type="checkbox" name="organization" /> Organization Name</li>
-			<li data-field="agent"><input type="checkbox" name="agent" /> Agent Name</li>
-			{% for f in ticket_field_defs %}
-				<li data-field="ticket_fields[{{f.id}}]"><input type="checkbox" name="ticket_fields[{{f.id}}]" /> Ticket Field: {{f.title}}</li>
-			{% endfor %}
+			<li data-field="email_address"><input type="checkbox" name="email_address" /> Email Address</li>
+			<li data-field="organization"><input type="checkbox" name="organization" /> Organization</li>
+			<li data-field="locale"><input type="checkbox" name="locale" /> Locale</li>
 			{% for f in person_field_defs %}
 				<li data-field="person_fields[{{f.id}}]"><input type="checkbox" name="person_fields[{{f.id}}]" /> User Field: {{f.title}}</li>
 			{% endfor %}
