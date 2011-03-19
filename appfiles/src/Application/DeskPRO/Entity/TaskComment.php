@@ -74,10 +74,10 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Creates a new comment with the provided content.
 	 * 
-	 * @param Entity\Person $creator The comment's creator.
+	 * @param \Application\DeskPRO\Entity\Person $creator The comment's creator.
 	 * @param string $content The comment's content
 	 */
-	public function __construct(Entity\Person $creator, $content)
+	public function __construct(Person $creator, $content)
 	{
 		$this->person = $creator;
 		$this->content = $content;

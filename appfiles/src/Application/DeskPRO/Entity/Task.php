@@ -328,9 +328,9 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	
 	/**
 	 * Adds a label
-	 * @param Entity\LabelTicket $label
+	 * @param \Application\DeskPRO\Entity\LabelTicket $label
 	 */
-	public function addLabel(Entity\LabelTask $label)
+	public function addLabel(LabelTask $label)
 	{
 		$label['ticket'] = $this;
 		$this->labels->add($label);
@@ -341,12 +341,12 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Adds a comment to the task.
 	 *
-	 * @param Entity\Person $author The comment's author
+	 * @param \Application\DeskPRO\Entity\Person $author The comment's author
 	 * @param string $comment_content The comment's content
 	 */
-	public function addComment(Entity\Person $author, $comment_content)
+	public function addComment(Person $author, $comment_content)
 	{
-		$comment = new Entity\TaskComment($author, $comment_content);
+		$comment = new TaskComment($author, $comment_content);
 		$comment->task = $this;
 		
 		$this->comments->add($comment);

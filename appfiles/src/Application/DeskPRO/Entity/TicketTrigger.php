@@ -77,7 +77,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Check to see if a ticket matches
 	 *
-	 * @param Entity\Ticket $ticket
+	 * @param Ticket $ticket
 	 * @return bool
 	 */
 	public function checkTicketMatch(Ticket $ticket, array $logs = array())

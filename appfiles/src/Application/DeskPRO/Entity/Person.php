@@ -1103,9 +1103,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Add a label
-	 * @param Entity\LabelPerson $label
+	 * @param \Application\DeskPRO\Entity\LabelPerson $label
 	 */
-	public function addLabel(Entity\LabelPerson $label)
+	public function addLabel(LabelPerson $label)
 	{
 		$label['person'] = $this;
 		$this->labels->add($label);
@@ -1149,9 +1149,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Set the picture blob
 	 *
-	 * @param Entity\Blob $blob
+	 * @param \Application\DeskPRO\Entity\Blob $blob
 	 */
-	public function setPictureBlob(Entity\Blob $blob = null)
+	public function setPictureBlob(Blob $blob = null)
 	{
 		$this->picture_blob = $blob;
 	}

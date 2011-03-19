@@ -515,9 +515,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Add a label
-	 * @param Entity\LabelTicket $label
+	 * @param \Application\DeskPRO\Entity\LabelTicket $label
 	 */
-	public function addLabel(Entity\LabelTicket $label)
+	public function addLabel(LabelTicket $label)
 	{
 		$label['ticket'] = $this;
 		$this->labels->add($label);
@@ -668,7 +668,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function setAgent(Entity\Person $agent = null)
+	public function setAgent(Person $agent = null)
 	{
 		$this->agent = $agent;
 	}
@@ -695,7 +695,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this['agent'] = null;
 		}
 	}
-	public function setAgentTeam(Entity\AgentTeam $agent_team = null)
+	public function setAgentTeam(AgentTeam $agent_team = null)
 	{
 		$this['agent_team'] = $agent_team;
 	}
@@ -847,7 +847,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 				return null;
 			}
 
-			$ticket_flagged = new Entity\TicketFlagged();
+			$ticket_flagged = new TicketFlagged();
 			$ticket_flagged['ticket_id'] = $this->id;
 			$ticket_flagged['person_id'] = $person['id'];
 		}
