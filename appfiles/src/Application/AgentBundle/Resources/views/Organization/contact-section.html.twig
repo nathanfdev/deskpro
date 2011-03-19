@@ -1,0 +1,42 @@
+{% if person.phones %}
+	<div class="row-table-cotent">
+		<div class="col-table-content title-col">
+			<span>Phone</span>
+		</div>
+		<div class="col-table-content prop-val">
+			<ul class="phones-list">
+				{% for i in organization.phones %}
+					<li>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+{% endif %}
+{% if organization.addresses %}
+	<div class="row-table-cotent">
+		<div class="col-table-content title-col">
+			<span>Address</span>
+		</div>
+		<div class="col-table-content prop-val">
+			<ul class="addresses-list">
+				{% for i in organization.addresses %}
+					<li>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+{% endif %}
+{% if organization.ims %}
+	<div class="row-table-cotent">
+		<div class="col-table-content title-col">
+			<span>Messaging</span>
+		</div>
+		<div class="col-table-content prop-val">
+			<ul class="ims-list">
+				{% for i in organization.ims %}
+					<li>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+{% endif %}

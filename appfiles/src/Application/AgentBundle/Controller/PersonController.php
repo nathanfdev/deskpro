@@ -369,7 +369,7 @@ class PersonController extends AbstractController
 
 		$em = App::getOrm();
 		$em->beginTransaction();
-		$this->person->addContactData($contact_data);
+		$person->addContactData($contact_data);
 		$em->persist($contact_data);
 		$em->flush();
 		$em->commit();
