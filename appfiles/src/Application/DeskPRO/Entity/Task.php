@@ -121,7 +121,7 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="LabelTask", mappedBy="task")
+	 * @orm:OneToMany(targetEntity="LabelTask", mappedBy="task", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
