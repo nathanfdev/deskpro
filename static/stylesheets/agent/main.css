@@ -1890,6 +1890,16 @@ border-left: none;
 	text-decoration: none;
 }
 
+.person-info-top {
+	margin-left: 8px;
+}
+
+.person-info-top .organization {
+	font-size: 11px;
+	margin: 4px 0 0 0;
+	padding: 0 0 5px 0;
+}
+
 .ticket-info {
 	width: 55%;
 	margin: 10px 0 0 9px;
@@ -1961,6 +1971,70 @@ border-left: none;
 
 .ticket-participants {
 	margin-top: 20px;
+}
+
+.tags-wrap {
+	overflow: hidden;
+}
+
+.tags-wrap span.tag-icon {
+	display: block;
+	width: 16px;
+	height: 16px;
+	background: url("../../images/icn-sprite.png") left -978px no-repeat;
+	float: left;
+	margin-top: 2px;
+}
+
+.tags-wrap ul {
+	overflow: hidden;
+	margin-left: 5px;
+	float: left;
+}
+
+.tags-wrap ul li {
+	float: left;
+	background: #f3f4f6;
+	border: 1px solid #bfc1c3;
+	margin-right: 3px;
+
+	-webkit-box-shadow: inset 0 1px 0 #fff;
+    -moz-box-shadow: inset 0 1px 0 #fff;
+    box-shadow: inset 0 1px 0 #fff;
+}
+
+.tags-wrap ul li span {
+	padding: 3px 0 3px 5px;
+}
+
+.tags-wrap ul li:hover a {
+	visibility: visible;
+}
+.tags-wrap ul li a {
+	visibility: hidden;
+	padding: 0 2px;
+	margin-right: 2px;
+	line-height: 8px;
+	font-size: 7px;
+	cursor: pointer;
+	background-color: #D8DCE6;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
+	-webkit-border-radius: 7px;
+}
+
+.tags-wrap ul li.tagit-new input {
+	border: none;
+	background-color: transparent;
+	outline: none;
+	width: 35px;
+	color: #B4B8BF;
+	font-style: italic;
+}
+
+.tags-wrap ul li.tagit-new input.editting {
+	color: #000;
+	font-style: normal;
 }
 
 /** For Tabbed Content **/
@@ -2107,6 +2181,21 @@ border-left: none;
 	-webkit-border-radius: 3px 3px 0 0;
     -moz-border-radius: 3px 3px 0 0;
     border-radius: 3px 3px 0 0;
+
+	position: relative;
+}
+
+.table-container .table-title a.hover-link {
+	display: none;
+	position: absolute;
+	right: 5px;
+	cursor: pointer;
+
+	margin: 0;
+}
+
+.table-container:hover .table-title a.hover-link {
+	display:block;
 }
 
 .table-container .table-title h4{
@@ -2487,4 +2576,33 @@ border-left: none;
 
 .full-container-tabbed-contents-wrap .tab-content.on {
 	display: block;
+}
+
+ul.activity-stream {}
+ul.activity-stream > li {
+	padding: 2px 8px;
+}
+
+ul.activity-stream > li .time {
+	float: right;
+	color: #ddd;
+}
+
+.new-note-placeholder {
+	padding: 4px 8px;
+	background-color: #F0F5FA;
+	border: 1px solid #5192dd;
+
+	-webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+
+	-webkit-box-shadow:  0 0 4px #A5CDFE;
+    -moz-box-shadow: 0 0 4px #A5CDFE;
+    box-shadow: 0 0 4px #A5CDFE;
+}
+
+.new-note-placeholder span {
+	color: #5192dd;
+	cursor: pointer;
 }

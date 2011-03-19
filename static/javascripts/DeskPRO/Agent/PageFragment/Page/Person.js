@@ -18,32 +18,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 		this.wrapper = el;
 
+		var self = this;
+
 		$('input[placeholder]', this.wrapper).each(function() {
 			Orb.Compat.WebForms.placeholder(this);
 		})
 
-		// Collapsible headings
-		$('.section', el).each(function() {
-			var sec = $(this);
-			var title = $('h5', sec);
-			var content = $('div:first', sec);
-
-			title.click(function(ev) {
-				ev.stopPropagation();
-				if (content.is(':visible')) {
-					content.slideUp(function() { sec.addClass('closed'); });
-
-				} else {
-					sec.removeClass('closed');
-					content.slideDown();
-				}
-			});
-		});
-
-		$('.tip', el).tipTip({defaultPosition: 'left'});
-
 		// Name is editable
-		var name = $('.main .header h1:first', el);
+		var name = $('h3.name.editable:first', el);
 		if (!name.attr('id')) {
 			name.attr('id', Orb.getUniqueId());
 		}
@@ -75,11 +57,20 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			open: this.initEmailDlg.bind(this)
 		});
 
-		this.email_display.dblclick((function() {
-			this.email_dlg.dialog('open');
-		}).bind(this));
-
-		this.initContactFormEditable(el);
+		//edit-contact-info
+		this.editContactInfoMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.edit-contact-info:first', this.wrapper),
+			menuElement: $('.contact-info-edit-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var type = $(info.itemEl).data('edit-type');
+				if (type == 'email') {
+					self.email_dlg.dialog('open');
+				} else {
+					self.startContactAdd(type);
+				}
+			}
+		});
+		
 		this.initNoteFormEditable();
 		this.initNotePagination();
 		this.initOrgEditable();
@@ -104,7 +95,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	custom_fields_display: null,
 	custom_fields_edit: null,
 	_initCustomFieldsEditor: function() {
-		$('.person-custom-fields .edit-trigger', this.wrapper).click((function() {
+		$('.person-custom-fields-edit:first', this.wrapper).click((function() {
 			this.showCustomFieldEditor();
 		}).bind(this));
 
@@ -136,7 +127,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		this.custom_fields_edit.position({
 			my: 'right top',
 			at: 'right top',
-			of: this.custom_fields_display
+			of: $('.properties-info-list-wrap', this.wrapper)
 		});
 
 		this.custom_fields_edit.slideDown();
@@ -157,19 +148,21 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'html',
-			success: function(html) {
-				this._handleSaveCustomFieldsSuccess(html);
+			dataType: 'json',
+			success: function(data) {
+				this._handleSaveCustomFieldsSuccess(data);
 			}
 		});
 	},
 
-	_handleSaveCustomFieldsSuccess: function(html) {
+	_handleSaveCustomFieldsSuccess: function(data) {
 		$('.buttons .loading-on', this.custom_fields_edit).hide();
 		$('.buttons .loading-off', this.custom_fields_edit).show();
 		this.closeCustomFieldEditor();
 
-		$('.wrap', this.custom_fields_display).html(html);
+		$('.wrap', this.custom_fields_display).html(data.custom_fields_html);
+
+		$('ul.usergroups-list', this.wrapper).html('<li>' + data.usergroup_names.join('</li><li>') + '</li>');
 	},
 
 	//#########################################################################
@@ -179,7 +172,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	labelsList: null,
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $("ul.tagit.person", this.wrapper).tagit({
+		this.labelsList = $(".people-tags ul", this.wrapper).tagit({
 			availableTags: this.getMetaData('labelsAutocompleteUrl'),
 			enableBackspace: false,
 			fieldName: 'labels',
@@ -230,7 +223,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			height: 200
 		});
 
-		$('.profile .header .organization').dblclick((function() {
+		$('.organization.hover-edit:first', this.wrapper).dblclick((function() {
 			this.org_dlg.dialog('open');
 		}).bind(this));
 	},
@@ -255,8 +248,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	},
 
 	handleOrgSave: function(data) {
-		$('.header .organization .name').html(data.organization_name);
-		$('.header .organization .position').html(data.organization_position);
+		$('.organization.hover-edit:first .name').html(data.organization_name);
+		$('.organization.hover-edit:first .position').html(data.organization_position);
 		this.org_dlg.dialog('close');
 	},
 
@@ -265,13 +258,14 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	//#########################################################################
 
 	initNoteFormEditable: function() {
-		this.notesSection = $('.section.notes', this.wrapper);
+		this.notesSection = $('.notes-wrap:first', this.wrapper);
 
 		$('.trigger.new-note', this.notesSection).click((function() {
 			this.openNoteEdtiable();
 		}).bind(this));
 
-		$('.new-note-form .trigger.cancel', this.notesSection).click((function() {
+		$('.new-note-form .trigger.cancel', this.notesSection).click((function(ev) {
+			ev.preventDefault();
 			this.closeNoteEditable();
 		}).bind(this));
 
@@ -281,19 +275,24 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	},
 
 	openNoteEdtiable: function() {
+		$('.trigger.new-note', this.notesSection).hide();
+
 		var form = $('.new-note-form', this.notesSection);
 		if (form.is(':hidden')) {
-			$('.new-note-form textarea').val('');
+			$('.new-note-form textarea', this.notesSection).val('');
 			form.slideDown();
 		}
 	},
 
 	closeNoteEditable: function() {
+
 		$('.new-note-form textarea').val('');
 		var form = $('.new-note-form', this.notesSection);
 		if (form.is(':visible')) {
 			form.slideUp();
 		}
+
+		$('.trigger.new-note', this.notesSection).show();
 	},
 
 	saveNote: function() {
@@ -355,27 +354,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	//# Contact form stuff
 	//#########################################################################
 
-	initContactFormEditable: function(el) {
-		this.contactSection = $('.section.contact', el);
-
-		var add_btn = $('.add.trigger', this.contactSection);
-		var self = this;
-		add_btn.click(function() {
-			self.startContactAdd($(this));
-		});
-	},
-
-	startContactAdd: function(btn) {
-
-		var type = btn.data('add-type');
+	startContactAdd: function(type) {
 
 		var edit_el = $('.contact-add-tpl.new.'+type, this.wrapper).clone();
 		this.wrapper.append(edit_el)
 
-		var pos_el = $('.contact-group.'+type, this.contactSection);
-		if (!pos_el.length || pos_el.is(':hidden')) {
-			pos_el = this.contactSection;
-		}
+		var pos_el = $('.contact-info-list-wrap:first', this.wrapper);
 		var pos = pos_el.position();
 
 		// Initial positioning
@@ -406,7 +390,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 	saveContact: function(edit_el) {
 
-		var data = edit_el.children().serializeArray();
+		var data = $(':input, select, textarea', edit_el).serializeArray();
 
 		edit_el.addClass('saving');
 
@@ -423,7 +407,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	},
 
 	handleSaveSuccess: function(data, edit_el) {
-		$('.section.contact .content').html(data.contact_html);
+		$('.contact-info-list-wrap:first', this.wrapper).html(data.contact_html);
 
 		edit_el.remove();
 	},
@@ -528,5 +512,9 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 	handleEmailSave: function(data) {
 		$('ul.emails-list', this.email_dlg).empty().html(data.dlg_html);
+
+		var html = '<li>' + data.emails_list.join('</li><li>') + '</li>';
+
+		$('.contact-info-list-wrap:first ul.emails-list:first', this.wrapper).html(html);
 	}
 });

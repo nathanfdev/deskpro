@@ -1,24 +1,56 @@
+{% if person.emails %}
+	<div class="row-table-cotent">
+		<div class="col-table-content title-col">
+			<span>Email</span>
+		</div>
+		<div class="col-table-content prop-val">
+			<ul class="emails-list">
+				{% for i in person.emails %}
+					<li>{{i.email}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+{% endif %}
 {% if person.phones %}
-	<dl class="contact-group phone">
-		<dt>Phone</dt>
-		{% for i in person.phones %}
-			<dd>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</dd>
-		{% endfor %}
-	</dl>
+	<div class="row-table-cotent">
+		<div class="col-table-content title-col">
+			<span>Phone</span>
+		</div>
+		<div class="col-table-content prop-val">
+			<ul class="phones-list">
+				{% for i in person.phones %}
+					<li>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
 {% endif %}
 {% if person.addresses %}
-	<dl class="contact-group address">
-		<dt>Phone</dt>
-		{% for i in person.addresses %}
-			<dd>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</dd>
-		{% endfor %}
-	</dl>
+	<div class="row-table-cotent">
+		<div class="col-table-content title-col">
+			<span>Address</span>
+		</div>
+		<div class="col-table-content prop-val">
+			<ul class="addresses-list">
+				{% for i in person.addresses %}
+					<li>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
 {% endif %}
 {% if person.ims %}
-	<dl class="contact-group im">
-		<dt>Instant Messaging</dt>
-		{% for i in person.ims %}
-			<dd>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</dd>
-		{% endfor %}
-	</dl>
+	<div class="row-table-cotent">
+		<div class="col-table-content title-col">
+			<span>Messaging</span>
+		</div>
+		<div class="col-table-content prop-val">
+			<ul class="ims-list">
+				{% for i in person.ims %}
+					<li>[{{i.comment}}] {{i.field_1}} {{i.field_2}}</li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
 {% endif %}

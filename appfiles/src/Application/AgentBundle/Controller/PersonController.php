@@ -108,6 +108,15 @@ class PersonController extends AbstractController
 		");
 		$org_options = Arrays::implodeTemplate($org_options, "<option value=\"{KEY}\">{VAL}</option>");
 
+		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$usergroups_form = new \Symfony\Component\Form\ChoiceField('usergroups', array(
+			'choices' => $usergroup_names,
+			'multiple' => true
+		));
+		$ids = array();
+		foreach ($person['usergroups'] as $ug) $ids[] = $ug['id'];
+		$usergroups_form->setData($ids);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
 			'form' => $form,
@@ -116,7 +125,9 @@ class PersonController extends AbstractController
 			'contact_fields_tpl' => $contact_fields_tpl,
 			'notes' => $notes,
 			'note_pages' => $note_pages,
-			'org_options' => $org_options
+			'org_options' => $org_options,
+			'usergroups_names' => $usergroup_names,
+			'usergroups_form' => $usergroups_form,
 		));
 	}
 
@@ -309,10 +320,16 @@ class PersonController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
+		$emails_list = array();
+		foreach ($person['emails'] as $email) {
+			$emails_list[] = $email['email'];
+		}
+
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'person_id' => $person['id'],
-			'dlg_html' => $this->renderView('AgentBundle:Person:email-dlg-li.html.twig', array('person' => $person))
+			'dlg_html' => $this->renderView('AgentBundle:Person:email-dlg-li.html.twig', array('person' => $person)),
+			'emails_list' => $emails_list
 		));
 	}
 
@@ -338,7 +355,9 @@ class PersonController extends AbstractController
 		$contact_data = new PersonContactData();
 		$contact_data['handler_class'] = get_class($handler);
 
-		foreach ($_POST[$handler->getSimpleName()] as $k => $v) {
+		$post_data = isset($_POST[$handler->getSimpleName()]) ? $_POST[$handler->getSimpleName()] : array();
+
+		foreach ($post_data as $k => $v) {
 			$field_k = $k;
 			if ($k != 'comment') {
 				$field_k = $handler->mapNameToField($k);
@@ -453,8 +472,25 @@ class PersonController extends AbstractController
 			);
 		}
 
-		return $this->render('AgentBundle:Person:custom-fields-rendered.html.twig', array(
-			'custom_fields' => $custom_fields,
+		// Usergroups
+		$db = App::getDb();
+		$db->delete('person2usergroups', array('person_id' => $person['id']));
+
+		$usergroups = $this->in->getCleanValueArray('usergroups', 'uint', 'discard');
+		if (!$usergroups) return;
+
+		foreach ($usergroups as $u) {
+			$db->insert('person2usergroups', array(
+				'person_id' => $person['id'],
+				'usergroup_id' => $u
+			));
+		}
+
+		$usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames($usergroups);
+
+		return $this->createJsonResponse(array(
+			'custom_fields_html' => $this->renderView('AgentBundle:Person:custom-fields-rendered.html.twig', array('custom_fields' => $custom_fields)),
+			'usergroup_names' => array_values($usergroups)
 		));
 	}
 
