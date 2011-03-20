@@ -34,7 +34,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:ManyToOne(targetEntity="Organization")
 	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
-	protected $person;
+	protected $organization;
 
 	/**
 	 * The agent that added the note

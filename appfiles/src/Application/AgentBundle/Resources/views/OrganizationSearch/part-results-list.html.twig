@@ -5,7 +5,7 @@
 			<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="30" height="30" />
 		</td>
 		<td colspan="{{display_fields|length-1}}" class="subject">
-			<a class="with-route" data-route="person:{{ path('agent_people_view', {'person_id': org.id}) }}">{{org.name}}</a>
+			<a class="with-route" data-route="person:{{ path('agent_org_view', {'organization_id': org.id}) }}">{{org.name}}</a>
 		</td>
 	</tr>
 	<tr class="{% if loop.index % 2 == 0 %}white{% endif %} person-{{org.id}} line-2" data-organization-id="{{org.id}}">

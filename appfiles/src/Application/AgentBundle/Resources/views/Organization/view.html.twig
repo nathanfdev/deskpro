@@ -12,7 +12,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_org_ajaxsavecustomfields', {'organizati
 <div class="inner-box-tab-content-2">
 	<div class="person-info-top">
 		<div style="float:left; margin-right: 7px; padding: 4px 0;">
-			<img src="{{ person.getPictureUrl(45) }}" alt="" width="45" height="45" />
+			<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="45" height="45" />
 		</div>
 		<h3 class="name editable hover-edit" data-editable-for=".inline-editable .name">{{organization.name}}</h3>
 	</div>
@@ -113,6 +113,15 @@ pageMeta.saveFieldsUrl = '{{ path('agent_org_ajaxsavecustomfields', {'organizati
 				<h4>Properties</h4>
 			</div>
 			<div class="table-content properties-info-list-wrap">
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Members</span>
+					</div>
+					<div class="col-table-content prop-val">
+						<a class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=organization&amp;terms[0][op]=is&amp;terms[0][organization]={{organization.id}}">{{members_count|default(0)}}</a> members
+					</div>
+				</div>
+
 				{% if custom_fields %}
 					<div class="person-custom-fields">
 						{% include 'AgentBundle:Organization:custom-fields-rendered.html.twig' with {'custom_fields': custom_fields} %}

@@ -2606,3 +2606,7 @@ ul.activity-stream > li .time {
 	color: #5192dd;
 	cursor: pointer;
 }
+
+.with-route {
+	cursor: pointer;
+}

@@ -51,9 +51,24 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $custom_data;
 
+	/**
+	 * @orm:OneToMany(targetEntity="LabelOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 */
+	protected $labels;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="OrganizationContactData", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 */
+	protected $contact_data;
+
+	protected $_label_manager = null;
+
 	public function __construct()
 	{
 		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->labels              = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 
@@ -140,5 +155,76 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$rendered = $value ? $f_def->getHandler()->renderContext($context, $value) : null;
 
 		return $rendered;
+	}
+
+
+
+	/**
+	 * Add a label
+	 * @param Entity\LabelOrganization $label
+	 */
+	public function addLabel(Entity\LabelOrganization $label)
+	{
+		$label['organization'] = $this;
+		$this->labels->add($label);
+	}
+
+
+	
+	/**
+	 * Add contact data
+	 *
+	 * @param OrganizationContactData $contact_data
+	 */
+	public function addContactData(OrganizationContactData $contact_data)
+	{
+		$em = App::getOrm();
+
+		$this['contact_data']->add($contact_data);
+
+		$contact_data['organization'] = $this;
+		$em->persist($contact_data);
+	}
+
+
+	public function getContactDataOfType($type)
+	{
+		if (strpos($type, 'Application\\DeskPRO\\') !== 0) {
+			$type = \Application\DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
+		}
+
+		$ret = array();
+		foreach ($this->contact_data as $contact_data) {
+			if ($contact_data['handler_class'] == $type) {
+				$ret[] = $contact_data;
+			}
+		}
+
+		return $ret;
+	}
+
+	public function getIms()
+	{
+		return $this->getContactDataOfType('instant_message');
+	}
+
+	public function getAddresses()
+	{
+		return $this->getContactDataOfType('address');
+	}
+
+	public function getPhones()
+	{
+		return $this->getContactDataOfType('phone');
+	}
+
+
+	public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelOrganization');
+		}
+
+		return $this->_label_manager;
 	}
 }
