@@ -35,6 +35,30 @@ admin_labels_ajaxdel:
   requirements: { label_type: "[a-z]+" }
 
 ################################################################################
+# Banning
+###############################################################################
+
+admin_banning:
+  pattern: /banning
+  defaults: { _controller: AdminBundle:Banning:list }
+
+admin_banning_newip:
+  pattern: /banning/ips/new
+  defaults: { _controller: AdminBundle:Banning:newIpBan }
+
+admin_banning_newemail:
+  pattern: /banning/emails/new
+  defaults: { _controller: AdminBundle:Banning:newEmailBan }
+
+admin_banning_delip:
+  pattern: /banning/ips/remove
+  defaults: { _controller: AdminBundle:Banning:removeIpBan }
+
+admin_banning_delemail:
+  pattern: /banning/emails/remove
+  defaults: { _controller: AdminBundle:Banning:removeEmailBan }
+
+################################################################################
 # Agents
 ################################################################################
 

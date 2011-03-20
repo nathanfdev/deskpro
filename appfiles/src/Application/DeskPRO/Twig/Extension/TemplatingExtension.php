@@ -36,6 +36,7 @@ class TemplatingExtension extends \Twig_Extension
     {
         return array(
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
+            'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
         );
     }
 
@@ -49,6 +50,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function getPhrase($phrase_name, array $vars = array())
 	{
 		return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
+	}
+
+	public function getMd5($string)
+	{
+		return md5($string);
 	}
 
 	public function rawUrlEncode($str)
