@@ -30,8 +30,12 @@ class SettingsController extends AbstractController
 			ORDER BY label.label ASC
 		")->execute(array(1=>$label_type));
 
+		// Get a count for each
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts($label_type, false);
+
 		return $this->render('AdminBundle:Settings:labels.html.twig', array(
 			'all_labels' => $all_labels,
+			'label_counts' => $label_counts,
 			'label_type' => $label_type
 		));
 	}

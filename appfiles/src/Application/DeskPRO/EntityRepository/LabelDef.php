@@ -34,7 +34,7 @@ class LabelDef extends EntityRepository
 					FROM labels_tickets
 					GROUP BY label
 					ORDER BY count DESC
-					LIMIT $limit
+					" . ($limit ? "LIMIT $limit" : '') . "
 				");
 				break;
 
@@ -44,7 +44,7 @@ class LabelDef extends EntityRepository
 					FROM labels_people
 					GROUP BY label
 					ORDER BY count DESC
-					LIMIT $limit
+					" . ($limit ? "LIMIT $limit" : '') . "
 				");
 				break;
 
@@ -54,7 +54,7 @@ class LabelDef extends EntityRepository
 					FROM labels_organizations
 					GROUP BY label
 					ORDER BY count DESC
-					LIMIT $limit
+					" . ($limit ? "LIMIT $limit" : '') . "
 				");
 				break;
 
