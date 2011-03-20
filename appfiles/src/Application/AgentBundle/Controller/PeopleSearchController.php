@@ -292,8 +292,15 @@ class PeopleSearchController extends AbstractController
 	{
 		$all_usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
 
+		$usergroup_counts = App::getDb()->fetchAllKeyValue("
+			SELECT usergroup_id, COUNT(*)
+			FROM person2usergroups
+			GROUP BY usergroup_id
+		");
+
 		return $this->render('AgentBundle:PeopleSearch:pane-usergroups.html.twig', array(
-			'all_usergroups' => $all_usergroups
+			'all_usergroups' => $all_usergroups,
+			'usergroup_counts' => $usergroup_counts
 		));
 	}
 
