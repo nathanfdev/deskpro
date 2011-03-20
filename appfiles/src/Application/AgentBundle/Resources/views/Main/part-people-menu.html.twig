@@ -16,9 +16,9 @@
 							<h3>Directory</h3>
 						</div>
 						<div class="inner-container-content" style="text-align:center;">
-							<a>#</a> &middot;
+							<a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=directory_name&amp;terms[0][op]=is&amp;terms[0][letter]=OTHER&amp;page_title={{ 'Directory Misc'|raw_url_encode }}">#</a> &middot;
 							{% for a in range('A','Z') %}
-								<a>{{a}}</a>{% if not loop.last %} &middot; {% endif %}
+								<a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=directory_name&amp;terms[0][op]=is&amp;terms[0][letter]={{a}}&amp;page_title={{ 'Directory ' ~ a|raw_url_encode }}">{{a}}</a>{% if not loop.last %} &middot; {% endif %}
 							{% endfor %}
 						</div>
 					</div>

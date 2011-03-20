@@ -22,6 +22,7 @@ class PersonSearch extends SearcherAbstract
 	const TERM_PERSON_FIELD   = 'person_field';
 	const TERM_LABEL          = 'label';
 	const TERM_DATE_CREATED   = 'date_created';
+	const TERM_DIRECTORY_NAME = 'directory_name';
 
 
 	/**
@@ -256,6 +257,21 @@ class PersonSearch extends SearcherAbstract
 					$w .= ')';
 
 					$wheres[] = $w;
+
+					break;
+
+				case self::TERM_DIRECTORY_NAME:
+
+					if ($choice == 'OTHER') {
+						$where[] = "people.last_name RLIKE '^[^A-Za-z]'";
+					} else {
+						$letter = $choice[0];
+						if (!preg_match('#^[a-zA-Z]#', $letter)) {
+							$letter = 'A';
+						}
+
+						$where[] = "people.last_name LIKE '%$letter'";
+					}
 
 					break;
 
