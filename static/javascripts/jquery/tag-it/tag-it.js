@@ -54,7 +54,7 @@
 		// add existing tags
 		el.children("li").each(function(){
 			if (!$(this).hasClass('tagit-new')) {
-				create_choice($(this).html());
+				create_choice($('span', this).eq(0).html());
 				$(this).remove();
 			}
 		});
