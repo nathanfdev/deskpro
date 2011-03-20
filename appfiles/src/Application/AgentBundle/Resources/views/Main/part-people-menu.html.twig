@@ -227,6 +227,39 @@
 										<input type="text" name="name" value="" />
 									</div>
 								</div>
+								<div class="type" title="Contact Phone" data-rule-type="contact_phone">
+									<div class="op">
+										<select name="op">
+											<option value="contains">is</option>
+											<option value="notcontains">is not</option>
+										</select>
+									</div>
+									<div class="choice">
+										<input type="text" name="phone" value="" />
+									</div>
+								</div>
+								<div class="type" title="Contact Address" data-rule-type="contact_address">
+									<div class="op">
+										<select name="op">
+											<option value="contains">is</option>
+											<option value="notcontains">is not</option>
+										</select>
+									</div>
+									<div class="choice">
+										<input type="text" name="address" value="" />
+									</div>
+								</div>
+								<div class="type" title="Contact Instant Messaging" data-rule-type="contact_im">
+									<div class="op">
+										<select name="op">
+											<option value="contains">is</option>
+											<option value="notcontains">is not</option>
+										</select>
+									</div>
+									<div class="choice">
+										<input type="text" name="im" value="" />
+									</div>
+								</div>
 								{% if people_fields %}
 									{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
 									{% for field in people_fields %}
@@ -303,6 +336,39 @@
 									</div>
 									<div class="choice">
 										<input type="text" name="name" value="" />
+									</div>
+								</div>
+								<div class="type" title="Contact Phone" data-rule-type="contact_phone">
+									<div class="op">
+										<select name="op">
+											<option value="contains">is</option>
+											<option value="notcontains">is not</option>
+										</select>
+									</div>
+									<div class="choice">
+										<input type="text" name="phone" value="" />
+									</div>
+								</div>
+								<div class="type" title="Contact Address" data-rule-type="contact_address">
+									<div class="op">
+										<select name="op">
+											<option value="contains">is</option>
+											<option value="notcontains">is not</option>
+										</select>
+									</div>
+									<div class="choice">
+										<input type="text" name="address" value="" />
+									</div>
+								</div>
+								<div class="type" title="Contact Instant Messaging" data-rule-type="contact_im">
+									<div class="op">
+										<select name="op">
+											<option value="contains">is</option>
+											<option value="notcontains">is not</option>
+										</select>
+									</div>
+									<div class="choice">
+										<input type="text" name="im" value="" />
 									</div>
 								</div>
 								{% if org_fields %}

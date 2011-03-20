@@ -242,7 +242,7 @@ abstract class SearcherAbstract
 
 		} else {
 			$choices_in = (array)$choice;
-			array_walk($choices_in, function($v, $k) use ($db) {
+			array_walk($choices_in, function(&$v, $k) use ($db) {
 				$v = $db->quote('%' . $v . '%');
 			});
 

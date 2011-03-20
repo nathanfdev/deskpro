@@ -15,6 +15,10 @@ class OrganizationSearch extends SearcherAbstract
 	const TERM_NAME           = 'name';
 	const TERM_ORGANIZATION_FIELD   = 'organization_field';
 	const TERM_LABEL          = 'label';
+	const TERM_DIRECTORY_NAME = 'directory_name';
+	const TERM_CONTACT_PHONE    = 'contact_phone';
+	const TERM_CONTACT_ADDRESS  = 'contact_address';
+	const TERM_CONTACT_IM       = 'contact_im';
 
 
 	/**
@@ -179,6 +183,58 @@ class OrganizationSearch extends SearcherAbstract
 					$wheres[] = $this->_stringMatch("organizations.name", $op, $choice);;
 					break;
 
+				case self::TERM_DIRECTORY_NAME:
+
+					if ($choice == 'OTHER') {
+						$where[] = "organizations.name RLIKE '^[^A-Za-z]'";
+					} else {
+						$letter = $choice[0];
+						if (!preg_match('#^[a-zA-Z]#', $letter)) {
+							$letter = 'A';
+						}
+
+						$where[] = "organizations.name LIKE '%$letter'";
+					}
+
+					break;
+
+				case self::TERM_CONTACT_PHONE:
+
+					$choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
+					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\Phone');
+
+					$joins[] = array(
+						'organizations_contact_data',
+						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.handler_class = '$handler_class')"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.field_2", $op, $choice);
+
+					break;
+
+				case self::TERM_CONTACT_ADDRESS:
+
+					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\Address');
+
+					$joins[] = array(
+						'organizations_contact_data',
+						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.handler_class = '$handler_class')"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice);
+
+					break;
+
+				case self::TERM_CONTACT_IM:
+
+					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\InstantMessage');
+
+					$joins[] = array(
+						'organizations_contact_data',
+						"LEFT JOIN organizations_contact_data AS $join_name ON ($join_name.organization_id = organizations.id AND $join_name.handler_class = '$handler_class')"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice);
+
+					break;
+
 				case self::TERM_LABEL:
 					$this->_normalizeOpAndChoice($op, $choice);
 
@@ -286,6 +342,11 @@ class OrganizationSearch extends SearcherAbstract
 							break;
 					}
 					break; // end TERM_PERSON_FIELD
+
+				default:
+					echo "Unknown term $term ($term_id)";
+					exit;
+					break;
 			}
 		}
 

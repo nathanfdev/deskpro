@@ -45,4 +45,14 @@ class Phone extends AbstractContactFieldHandler
 
 		return $group;
 	}
+
+	public function transformFormToStored($value)
+	{
+		$ret = parent::transformFormToStored($value);
+
+		// Try to normalize it a bit so we can search easier
+		$ret['field_10'] = preg_replace('#[^0-9A-Za-z]#', '', $ret[2]);
+
+		return $ret;
+	}
 }

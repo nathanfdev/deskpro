@@ -246,7 +246,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		});
 		$('#people_search_section .search-form .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
-			var basename = 'criteria['+count+']';
+			var basename = 'terms['+count+']';
 
 			$(this).data('add-count', count+1);
 
@@ -398,7 +398,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		});
 		$('#org_search_section .search-form .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
-			var basename = 'criteria['+count+']';
+			var basename = 'terms['+count+']';
 
 			$(this).data('add-count', count+1);
 

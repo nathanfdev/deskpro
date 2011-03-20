@@ -23,6 +23,9 @@ class PersonSearch extends SearcherAbstract
 	const TERM_LABEL          = 'label';
 	const TERM_DATE_CREATED   = 'date_created';
 	const TERM_DIRECTORY_NAME = 'directory_name';
+	const TERM_CONTACT_PHONE    = 'contact_phone';
+	const TERM_CONTACT_ADDRESS  = 'contact_address';
+	const TERM_CONTACT_IM       = 'contact_im';
 
 
 	/**
@@ -272,6 +275,43 @@ class PersonSearch extends SearcherAbstract
 
 						$where[] = "people.last_name LIKE '%$letter'";
 					}
+
+					break;
+
+				case self::TERM_CONTACT_PHONE:
+
+					$choice = preg_replace('#[^0-9A-Za-z]#', '', $choice);
+					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\Phone');
+
+					$joins[] = array(
+						'people_contact_data',
+						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.handler_class = '$handler_class')"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.field_20", $op, $choice);
+
+					break;
+
+				case self::TERM_CONTACT_ADDRESS:
+
+					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\Address');
+
+					$joins[] = array(
+						'people_contact_data',
+						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.handler_class = '$handler_class')"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice);
+
+					break;
+
+				case self::TERM_CONTACT_IM:
+
+					$handler_class = addslashes('Application\\DeskPRO\\Form\\ContactFieldHandler\\InstantMessage');
+
+					$joins[] = array(
+						'people_contact_data',
+						"LEFT JOIN people_contact_data AS $join_name ON ($join_name.person_id = people.id AND $join_name.handler_class = '$handler_class')"
+					);
+					$wheres[] = $this->_stringMatch("$join_name.field_1", $op, $choice);
 
 					break;
 
