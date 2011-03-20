@@ -1,4 +1,5 @@
 <?php
+
 /**
  * DeskPRO
  *
@@ -12,6 +13,8 @@
 namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\App;
+
+use \Application\DeskPRO\Entity\TwitterStatusNote;
 
 /**
  * Handles creating/editing of Twitter Accounts
@@ -46,7 +49,7 @@ class TwitterController extends AbstractController
 		}
 
 		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getBool('include.archived');
+		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
 		// fetch public timeline

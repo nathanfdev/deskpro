@@ -259,6 +259,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $twitter_accounts;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatusNote", mappedBy="person")
+	 */
+	protected $twitter_status_notes;
+
+	/**
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
@@ -372,7 +378,9 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->twitter_accounts    = new \Doctrine\Common\Collections\ArrayCollection();
+
+		$this->twitter_accounts     = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->twitter_status_notes = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	public function getOrganizationId()

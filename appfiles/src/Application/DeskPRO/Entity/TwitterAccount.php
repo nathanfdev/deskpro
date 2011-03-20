@@ -48,7 +48,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="account")
+	 * @orm:OneToOne(targetEntity="TwitterUser", inversedBy="account")
 	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;

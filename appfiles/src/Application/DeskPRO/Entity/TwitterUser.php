@@ -119,6 +119,12 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	protected $followers;
 
 	/**
+	 * @var Application\DeskPRO\EntityRepository\TwitterAccount
+	 * @orm:OneToOne(targetEntity="TwitterAccount", mappedBy="user")
+	 */
+	protected $account;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()

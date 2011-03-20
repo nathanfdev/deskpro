@@ -467,3 +467,11 @@ agent_twitter_accountspane:
 agent_twitter_statusespane:
   pattern: /twitter/pane/statuses
   defaults: { _controller: AgentBundle:Twitter:statusesPane }
+
+agent_twitter_ajaxsave_archive:
+  pattern: /twitter/status/ajax-archive
+  defaults: { _controller: AgentBundle:TwitterStatus:ajaxSaveArchive }
+
+agent_twitter_ajaxsave_note:
+  pattern: /twitter/status/ajax-note
+  defaults: { _controller: AgentBundle:TwitterStatus:ajaxSaveNote }

@@ -2,6 +2,8 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Twitter';
 pageMeta.title = '@{{ account.user.screen_name|escape }}';
 pageMeta.getStatusesUrl = '{{ path('agent_twitter_statuses', {'account_id': account.id}) }}?partial=1';
+pageMeta.saveArchiveUrl = '{{ path('agent_twitter_ajaxsave_archive') }}';
+pageMeta.saveNoteUrl = '{{ path('agent_twitter_ajaxsave_note') }}';
 </script>
 
 <style type="text/css" media="screen">
@@ -74,14 +76,24 @@ pageMeta.getStatusesUrl = '{{ path('agent_twitter_statuses', {'account_id': acco
 		padding-right: 10px;
 		font-size: 10px;
 	}
+
+	.twitter-note {
+		display: none;
+	}
 </style>
+
+<div class="twitter-note">
+	<form>
+		<textarea name="text" rows="2" cols="40"></textarea>
+	</form>
+</div>
 
 <div class="twitter-head">
 	@{{ account.user.screen_name }} stream
 	<div class="display-options">
 		<div style="float:right">
 			<select name="sortbydate">
-				<option name="asc">Oldest First</opion>
+				<option name="asc">Oldest First</option>
 				<option name="desc">Newest First</option>
 			</select>
 		</div>
@@ -90,8 +102,9 @@ pageMeta.getStatusesUrl = '{{ path('agent_twitter_statuses', {'account_id': acco
 			<input name="archived" type="checkbox" /> Show archived tweets
 		</div>
 	</div>
-	<br style="clear:both;" />
+	<br style="clear:both" />
 </div>
+
 <div class="twitter-listing">
 	{% include 'AgentBundle:Twitter:part-statuses.html.twig' %}
 </div>

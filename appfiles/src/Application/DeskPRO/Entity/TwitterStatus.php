@@ -139,6 +139,12 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	protected $urls;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatusNote", mappedBy="status")
+	 */
+	protected $notes;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -148,6 +154,8 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		$this->mentions = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->tags = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->urls = new \Doctrine\Common\Collections\ArrayCollection();
+
+		$this->notes = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
@@ -158,7 +166,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->user) {
 			return $this->user->getId();
 		}
-		
+
 		return 0;
 	}
 
@@ -206,7 +214,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->in_reply_to_status) {
 			return $this->in_reply_to_status->getId();
 		}
-		
+
 		return 0;
 	}
 
@@ -230,7 +238,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->in_reply_to_user) {
 			return $this->in_reply_to_user->getId();
 		}
-		
+
 		return 0;
 	}
 
@@ -254,7 +262,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->recipient) {
 			return $this->recipient->getId();
 		}
-		
+
 		return 0;
 	}
 
@@ -293,5 +301,4 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return (Boolean) $this->is_archived;
 	}
-
 }
