@@ -27,6 +27,29 @@ use \Application\DeskPRO\App;
  */
 class PersonController extends AbstractController
 {
+	public function newPersonFromPaneAction()
+	{
+		$person = new Person();
+		$person['first_name'] = $this->in->getString('first_name');
+		$person['last_name'] = $this->in->getString('last_name');
+
+		if ($this->in->getString('email_address')) {
+			$email = new PersonEmail();
+			$email['email'] = $this->in->getString('email_address');
+			$email['is_validated'] = true;
+
+			$person->addEmailAddress($email);
+		}
+
+		App::getOrm()->persist($person);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'person_id' => $person['id']
+		));
+	}
+
+
 	############################################################################
 	# /agent/people/:person_id                                   agent_people_view
 	############################################################################

@@ -2610,3 +2610,8 @@ ul.activity-stream > li .time {
 .with-route {
 	cursor: pointer;
 }
+
+
+table.padded-1 td {
+	padding: 3px 8px;
+}

@@ -102,6 +102,10 @@ agent_settings_ticketfilters_new:
 # People
 ################################################################################
 
+agent_people_newfrompane:
+  pattern: /people-search/new-person
+  defaults: { _controller: AgentBundle:Person:newPersonFromPane }
+
 agent_people:
   pattern: /people
   defaults: { _controller: AgentBundle:PeopleSearch:index }
@@ -196,6 +200,10 @@ agent_peoplesearch_save_resultprefs:
 ################################################################################
 # Org
 ################################################################################
+
+agent_org_newfrompane:
+  pattern: /organization-search/new-organization
+  defaults: { _controller: AgentBundle:Organization:newOrgFromPane }
 
 agent_org_view:
   pattern: /organizations/{organization_id}

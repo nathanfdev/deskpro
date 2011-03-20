@@ -25,6 +25,19 @@ use \Application\DeskPRO\App;
  */
 class OrganizationController extends AbstractController
 {
+	public function newOrgFromPaneAction()
+	{
+		$org = new Organization();
+		$org['name'] = $this->in->getString('name');
+
+		App::getOrm()->persist($org);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'organization_id' => $org['id']
+		));
+	}
+
 	############################################################################
 	# view
 	############################################################################
