@@ -31,4 +31,14 @@ function _page_exec() {
 	{% endfor %}
 </ul>
 
+<div id="rename_label_overlay" class="rename-label overlay" style="display:none">
+	<input type="hidden" class="rename-url" value="{{ path('admin_labels_rename', {'label_type': label_type}) }}?old_label={old_label}&amp;new_label={new_label}" />
+	Rename <strong class="old-label">label</strong> to:<br />
+	<input type="text" class="new-label" value="" style="width: 99%" />
+	
+	<div style="text-align:center; margin-top: 15px;">
+		<button class="dp-button x-small green save-trigger">Rename</button>
+	</div>
+</div>
+
 {% endblock %}

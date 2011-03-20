@@ -394,6 +394,22 @@ class App
 	{
 		return self::get(self::SERVICE_ORM)->getRepository($entity);
 	}
+	
+
+
+	/**
+	 * Get the classname for an entity
+	 *
+	 * @return string
+	 */
+	public static function getEntityClass($entity)
+	{
+		list ($namespace, $entity) = explode(':', $entity, 2);
+
+		$class = "Application\\$namespace\\Entity\\$entity";
+
+		return $class;
+	}
 
 
 

@@ -16,8 +16,6 @@ use \Doctrine\ORM\EntityRepository;
 
 class LabelDef extends EntityRepository
 {
-	protected $department_names = null;
-
 	/**
 	 * Get the top counts for labels of a certain type.
 	 *
@@ -64,5 +62,46 @@ class LabelDef extends EntityRepository
 				throw new \InvalidArgumentException("`$type` is an invlaid label type");
 				break;
 		}
+	}
+
+	/**
+	 * Get the name of the label entity given a type.
+	 *
+	 * @static
+	 * @param  $label_type
+	 * @return null|string
+	 */
+	public function getLabelEntityFromType($label_type)
+	{
+		switch ($label_type) {
+			case 'organizations':
+				return 'DeskPRO:LabelOrganization';
+				break;
+
+			case 'people':
+				return 'DeskPRO:LabelPerson';
+				break;
+
+			case 'tickets':
+				return 'DeskPRO:LabelTicket';
+				break;
+		}
+
+		return null;
+	}
+
+	/**
+	 * A tablename=>entityname array of objects that have label capabiltiies.
+	 *
+	 * @static
+	 * @return array
+	 */
+	public function getLabelEntities()
+	{
+		return array(
+			'labels_organizations' => 'DeskPRO:LabelOrganization',
+			'labels_people'        => 'DeskPRO:LabelPerson',
+			'labels_tickets'       => 'DeskPRO:LabelTicket',
+		);
 	}
 }

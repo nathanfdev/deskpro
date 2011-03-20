@@ -265,6 +265,18 @@ abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
 		return $em->getRepository("DeskPRO:$entity");
 	}
 
+
+
+	/**
+	 * Get the table name for this entity
+	 *
+	 * @return string
+	 */
+	public static function getTableName()
+	{
+		return App::getOrm()->getClassMetadata(get_called_class())->getTableName();
+	}
+
 	############################################################################
 	# ArrayAccess Implementation
 	############################################################################

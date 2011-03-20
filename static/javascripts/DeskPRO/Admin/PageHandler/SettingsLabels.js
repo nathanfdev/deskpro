@@ -15,6 +15,15 @@ DeskPRO.Admin.PageHandler.SettingsLabels = new Class({
 		$('ul.item-list').delegate('li.delete-trigger', 'click', function(ev) {
 			ev.preventDefault();
 			self.deleteLabel($(this).parent().parent().parent());
+		}).delegate('li.rename-trigger', 'click', function(ev) {
+			ev.preventDefault();
+			self.renameLabel($(this).parent().parent().parent());
+		});
+
+		$('#rename_label_overlay button.save-trigger').click(this.doRenameLabel.bind(this));
+
+		this.renameOverlay = new DeskPRO.UI.Overlay({
+			contentElement: $('#rename_label_overlay')
 		});
 	},
 	
@@ -36,6 +45,26 @@ DeskPRO.Admin.PageHandler.SettingsLabels = new Class({
 				this._handleSaveLabelSuccess(data);
 			}
 		});
+	},
+
+	renameLabel: function(li) {
+		var label = li.data('label');
+
+		$('#rename_label_overlay .old-label').text(label);
+		$('#rename_label_overlay .new-label').val('');
+
+		this.renameOverlay.openOverlay();
+	},
+
+	doRenameLabel: function() {
+		var old_label = $('#rename_label_overlay .old-label').text();
+		var new_label = $('#rename_label_overlay .new-label').val();
+
+		var url = $('#rename_label_overlay .rename-url').val();
+		url = url.replace('{old_label}', escape(old_label));
+		url = url.replace('{new_label}', escape(new_label));
+
+		window.location = url;
 	},
 	
 	_handleSaveLabelSuccess: function(data) {

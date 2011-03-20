@@ -76,4 +76,36 @@ class SettingsController extends AbstractController
 
 		return $this->createJsonResponse(array('success' => 1));
 	}
+
+	public function renameLabelAction($label_type)
+	{
+		$old_label_str = strtolower($this->in->getString('old_label'));
+		$new_label_str = strtolower($this->in->getString('new_label'));
+		
+		$old_label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $old_label_str));
+
+		App::getOrm()->beginTransaction();
+
+		$label = App::getEntityRepository('DeskPRO:LabelDef')->find(array('label_type' => $label_type, 'label' => $new_label_str));
+		if (!$label) {
+			$label = new Entity\LabelDef();
+			$label['label_type'] = $label_type;
+			$label['label'] = $new_label_str;
+
+			App::getOrm()->persist($label);
+			App::getOrm()->flush();
+		}
+
+		$t = $label->getLabelTable();
+		App::getDb()->executeUpdate("UPDATE IGNORE $t SET label = ? WHERE label = ?", array($old_label_str, $new_label_str));
+		App::getDb()->executeUpdate("DELETE FROM $t WHERE label = ?", array($old_label_str));
+
+		App::getOrm()->remove($old_label);
+		App::getOrm()->flush();
+
+		App::getOrm()->commit();
+
+		// Redirect back to type
+		return $this->redirectRoute('admin_labels', array('label_type' => $label_type));
+	}
 }

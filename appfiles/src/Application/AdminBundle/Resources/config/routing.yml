@@ -19,6 +19,11 @@ admin_labels:
   defaults: { _controller: AdminBundle:Settings:labels }
   requirements: { label_type: "[a-z]+" }
 
+admin_labels_rename:
+  pattern: /settings/labels/{label_type}/rename
+  defaults: { _controller: AdminBundle:Settings:renameLabel}
+  requirements: { label_type: "[a-z]+" }
+
 admin_labels_ajaxnew:
   pattern: /settings/labels/ajax-new/{label_type}
   defaults: { _controller: AdminBundle:Settings:labelsAjaxNew }
