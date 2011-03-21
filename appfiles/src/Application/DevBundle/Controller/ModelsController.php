@@ -41,4 +41,13 @@ class ModelsController extends \Application\DeskPRO\HttpKernel\Controller\Contro
 			'all_sql' => $all_sql,
 		));
 	}
+
+	public function regenerateProxiesAction()
+	{
+		$warmer = new \Symfony\Bundle\DoctrineBundle\CacheWarmer\ProxyCacheWarmer(App::getContainer());
+		$warmer->warmUp(null /* doctrine has its own config for cache dir */);
+
+		return $this->render('DevBundle:Models:regenerate-proxies-done.html.php', array(
+		));
+	}
 }

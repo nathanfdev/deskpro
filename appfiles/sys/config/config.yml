@@ -43,7 +43,7 @@ app.config:
     auto_start: false
 
 doctrine.orm:
-  auto_generate_proxy_classes: %kernel.debug%
+  auto_generate_proxy_classes: false
   mappings:
     DeskPRO: ~
 

@@ -3,7 +3,7 @@
 namespace Application\DeskPRO\Build;
 
 use Symfony\Component\Finder\Finder;
-
+use Application\DeskPRO\App;
 use Orb\Util\Arrays;
 
 class Upgrader
@@ -68,6 +68,14 @@ class Upgrader
 			$cur_step_sub = 0; //reset
 			$cur_step++; // go on to next step
 			$this->setUpgradeStatus($version, $cur_step, $cur_step_sub);
+		}
+
+		try {
+			$output->writeln("<info>Regenerating proxies</info>");
+			$warmer = new \Symfony\Bundle\DoctrineBundle\CacheWarmer\ProxyCacheWarmer(App::getContainer());
+			$warmer->warmUp(null /* doctrine has its own config for cache dir */);
+		} catch (Exception $e) {
+			$output->writeln("<warn>Regenerating proxies failed: {$e->getMessage()}</warn>");
 		}
 
 		$output->writeln("<info>UPGRADE COMPLETE</info>");

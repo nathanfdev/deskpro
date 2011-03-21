@@ -10,6 +10,7 @@ use Symfony\Component\Console\Output\Output;
 
 use \Application\DeskPRO\Build\VersionReader;
 use \Application\DeskPRO\Build\Upgrader;
+use \Application\DeskPRO\App;
 
 class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 {
@@ -73,9 +74,20 @@ class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 		$output->write("Current Version: " . VersionReader::getVersionString($version) . " (" . VersionReader::getVersionId($version) . ")\n");
 		$output->write("Source Version:  " . VersionReader::getVersionString($source_version) . " (" . VersionReader::getVersionId($source_version) . ")\n");
 
+		$did = false;
 		foreach ($upgrader->getAllNewer($version) as $newer_version) {
+			$did = true;
 			$output->writeln("<info>### Upgrading to " . VersionReader::getVersionString($newer_version) . " (" . VersionReader::getVersionId($newer_version) . ")");
 			$upgrader->performUpgrade($newer_version, $output);
+		}
+
+		if (!$did) {
+			// Always regen proxies even if no upgrade required,
+			// the test-instant site uses this command to update it itself
+			try {
+				$warmer = new \Symfony\Bundle\DoctrineBundle\CacheWarmer\ProxyCacheWarmer(App::getContainer());
+				$warmer->warmUp(null /* doctrine has its own config for cache dir */);
+			} catch (Exception $e) {}
 		}
 
 		$output->write("\n");

@@ -22,6 +22,10 @@ dev_models_getsql:
   pattern: /models/get-sql
   defaults: { _controller: DevBundle:Models:getSql }
 
+dev_models_regenerateproxies:
+  pattern: /models/regenerate-proxies
+  defaults: { _controller: DevBundle:Models:regenerateProxies }
+
 dev_test:
   pattern: /test
   defaults: { _controller: DevBundle:Test:index }

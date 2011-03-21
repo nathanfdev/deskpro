@@ -170,7 +170,7 @@ class App
 	 * Get a registered container.
 	 *
 	 * @param string $name
-	 * @return ContainerInterface
+	 * @return \Symfony\Component\DependencyInjection\ContainerInterface
 	 */
 	public static function getContainer($name = self::DEFAULT_NAME)
 	{
