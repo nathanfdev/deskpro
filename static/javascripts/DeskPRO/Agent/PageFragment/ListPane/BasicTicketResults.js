@@ -89,13 +89,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	},
 
 	destroyPage: function() {
-		this.layout.panes.south.remove();
-		this.layout.panes.south = false;
-		this.layout.panes.center.remove();
-		this.layout.panes.center = false;
-		this.layout.destroy();
-		this.layout = null;
-
 		if (this.flagMenu) {
 			this.flagMenu.destroy();
 		}

@@ -28,6 +28,7 @@ class LabelDef extends EntityRepository
 		// add postInsert code to each label entity to increase the count automatically
 
 		switch ($type) {
+			case 'tickets':
 			case 'ticket':
 				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
 					SELECT label, COUNT(*) AS count

@@ -414,7 +414,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 			$(this).data('add-count', count+1);
 
-			editor.addNewRow($('.search-form .search-terms'), basename);
+			editor.addNewRow($('#people_search_section .search-form .search-terms'), basename);
 		});
 
 		$('#people_search_submit').click((function(ev) {
@@ -566,7 +566,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 			$(this).data('add-count', count+1);
 
-			editor.addNewRow($('.search-form .search-terms'), basename);
+			editor.addNewRow($('#org_search_section .search-form .search-terms'), basename);
 		});
 
 		$('#org_search_submit').click((function(ev) {
