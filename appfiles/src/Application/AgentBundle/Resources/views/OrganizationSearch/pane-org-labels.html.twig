@@ -1,3 +1,5 @@
 {% for label,css_class in cloud %}
 	<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+{% else %}
+	<li>View an organization to label it. The most popular labels will show here.</li>
 {% endfor %}
