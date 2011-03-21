@@ -19,7 +19,8 @@
 
 		{% if constant('DP_DEBUG') %}
 			window.DeskPRO_Window.DEBUG = {
-				disableMenuHandlers: {% if js_debug.disableMenuHandlers %}true{% else %}false{% endif %}
+				disableMenuHandlers: {% if js_debug.disableMenuHandlers %}true{% else %}false{% endif %},
+				enableMenuHandlers: {% if js_debug.enableMenuHandlers %}{{ js_debug.enableMenuHandlers|json_encode|raw }}{% else %}false{% endif %}
 			};
 		{% endif %}
 

@@ -54,6 +54,9 @@ $CONFIG['debug']['js'] = array(
 	// Disables menu handlers in the agent interface
 	//'disableMenuHandlers' => true,
 
+	// When the above option is true, still enable these
+	//'enableMenuHandlers' => array('DeskPRO.Agent.WindowElement.MainMenu.People'),
+
 	// Do not automatically load a filter when first entering agent UI
 	//'noAutoLoadFilter' => true,
 
