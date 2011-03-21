@@ -1400,23 +1400,25 @@ padding: 7px 7px 0 7px;
 	z-index: 99998;
 	position: absolute;
 	margin-left: 80px;
-	margin-top: -16px;
+	margin-top: -13px;
 }
 
 #header ul.wrap-dropdown-tabs > li {
-	line-height: 29px;
 	float: left;
 	display: block;
 
-	padding: 0 10px;
+	padding: 5px 7px 5px 7px;
 	margin-left: 10px;
 
+	line-height: 16px;
+	font-size: 8pt;
+
 	color: #fff;
-	text-shadow: 0 -1px 0px #5084c5;
+	
 	font-weight: bold;
 	border: 1px solid #5084c5;
 	background-color: #84b4f1;
-
+	text-shadow: 0 -1px 0px #5084c5;
 	background: #6ba0ec;
     background: -moz-linear-gradient(90deg, #6ba0ec, #98c2f4 );
     background: -webkit-gradient(linear, 0 bottom, 0 top, from(#6ba0ec ), to(#98c2f4));
@@ -1444,20 +1446,31 @@ padding: 7px 7px 0 7px;
 }
 
 #header .wrap-dropdown-tabs .new-ticket {
-	padding-left: 20px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	background: url("../../images/icn-sprite.png") 0 -757px no-repeat;
+	line-height: 15px;
+	font-size: 11px;
+	padding-left: 18px;
+	background: url("../../images/white-plus.png") no-repeat left top;
+	display: block;
 }
 
 #header .wrap-dropdown-tabs .search {
-	padding-left: 20px;
-	padding-top: 2px;
-	padding-bottom: 2px;
-	background: url("../../images/icn-sprite.png") 0 -757px no-repeat;
+	line-height: 15px;
+	font-size: 11px;
+	padding-left: 18px;
+	background: url("../../images/white-plus.png") no-repeat left top;
+	display: block;
 }
 
-
+/*
+ * Mac applies text-shadow differently which makes the icon and text
+ * look off center by-1px (quite noticable with such small icons).
+ * It's to do with differences in text rendering/smoothing on these platforms.
+ * Fixing it on mac makes it look weird on windows, and visa-versa.
+ * So only way way to fix is to hard-code this hack.
+ */
+.osmac #header ul.wrap-dropdown-tabs > li > div > div {
+	padding-top: 1px;
+}
 
 dl#ticket_labels_list {
 	margin: 10px 5px 10px 5px;
