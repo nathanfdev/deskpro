@@ -11,11 +11,6 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 		// Sends ajax to fetch initial data
 		this._initInitialData();
-
-        this._initLabelsSwitcher();
-        this._initSearchSwitcher();
-        this._initOrgSearchSwitcher();
-		this._initCreateSwitcher();
 	},
 
 	// we use a counter to make sure initAfterInitialData is only fired once, after all panes are loaded
@@ -70,6 +65,11 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 	 */
 	_initAfterInitialData: function() {
 		if (this._initerCount > 0) return; //notyet
+
+		this._initLabelsSwitcher();
+        this._initSearchSwitcher();
+        this._initOrgSearchSwitcher();
+		this._initCreateSwitcher();
 	},
 
 	//#########################################################################
@@ -238,11 +238,13 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 			self.resetSearchScroller();
 		});
 
-		$('#people_search_section').click((function(ev) {
+		$('#people_search_form').submit((function(ev) {
 			ev.preventDefault();
 
-			var form = $('#people_search_section form:first');
+			var form = $('#people_search_form');
 			var url = form.attr('action');
+			console.log(form);
+			console.log(url);
 
 			var data = form.serializeArray();
 
@@ -290,6 +292,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		editor.addEvent('newRow', function(new_row) {
 			$('.remove', new_row).click(function() {
 				new_row.remove();
+				self.resetOrgSearchScroller();
 			});
 		});
 		$('#org_search_section .search-form .add-term').data('add-count', 0).click(function() {
@@ -299,12 +302,13 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 			$(this).data('add-count', count+1);
 
 			editor.addNewRow($('#org_search_section .search-form .search-terms'), basename);
+			self.resetOrgSearchScroller();
 		});
 
-		$('#org_search_submit').click((function(ev) {
+		$('#org_search_form').submit((function(ev) {
 			ev.preventDefault();
 
-			var form = $('#org_search_section form:first');
+			var form = $('#org_search_form');
 			var url = form.attr('action');
 
 			var data = form.serializeArray();

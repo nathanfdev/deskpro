@@ -173,12 +173,12 @@
 						<div id="people_search_section_content">
 
 							<div class="search-form">
-								<form action="{{ path('agent_peoplesearch_customfilter') }}" method="post">
+								<form action="{{ path('agent_peoplesearch_customfilter') }}" method="post" id="people_search_form">
 									<div class="search-form">
 										<div class="search-terms"></div>
 										<div class="term"><span class="add-term">+</span> Add a new search term</div>
 									</div>
-									<center><input type="submit" value="search" id="people_search_submit" /></center>
+									<center><input type="submit" value="search" /></center>
 								</form>
 							</div>
 
@@ -363,12 +363,12 @@
 						<div id="org_search_section_content">
 
 							<div class="search-form">
-								<form action="{{ path('agent_orgsearch_customfilter') }}" method="post">
+								<form action="{{ path('agent_orgsearch_customfilter') }}" method="post" id="org_search_form">
 									<div class="search-form">
 										<div class="search-terms"></div>
 										<div class="term"><span class="add-term">+</span> Add a new search term</div>
 									</div>
-									<center><input type="submit" value="search" id="org_search_submit" /></center>
+									<center><input type="submit" value="search" /></center>
 								</form>
 							</div>
 
