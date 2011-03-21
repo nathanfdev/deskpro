@@ -51,7 +51,7 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
 	getMenuHandlerClass: function(li) {
 		var handler = li.data('menu-handler');
 		if (handler) {
-			if (!DeskPRO_Window.DEBUG.disableMenuHandlers) {
+			if (DeskPRO_Window.DEBUG.disableMenuHandlers) {
 				if (!DeskPRO_Window.DEBUG.enableMenuHandlers || DeskPRO_Window.DEBUG.enableMenuHandlers.indexOf(li.data('menu-handler')) === -1) {
 					return false;
 				}
