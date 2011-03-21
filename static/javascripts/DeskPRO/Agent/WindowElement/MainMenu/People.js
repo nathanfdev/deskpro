@@ -5,6 +5,10 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 	init: function () {
 
+		this.slideHandler = new DeskPRO.Agent.WindowElement.MainMenuSlider({
+			menuLi: this.buttonEl
+		});
+
 		// Sends ajax to fetch initial data
 		this._initInitialData();
 
@@ -73,16 +77,12 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 	//#########################################################################
 
 	_initCreateSwitcher: function() {
-		$('#people_create_section_btn').click((function(ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            ev._noCloseMenu = true;
 
-			this.showCreateSection();
-		}).bind(this));
-		$('#people_create_section_back').click((function(ev) {
-			this.hideCreateSection('people');
-		}).bind(this));
+		var self = this;
+		this.slideHandler.addEvent('duringSlideView', function(slide) {
+			if (slide.attr('id') != 'people_create_section') return;
+			self.resetCreateScroller();
+		});
 
 		var self = this;
 		$('#create_person_form').submit(function(ev) {
@@ -128,90 +128,6 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		});
 	},
 
-	showCreateSection: function() {
-
-        $('#people_create_section .search-terms').empty();
-
-		this.menuEl.css({
-			'width': this.menuEl.width(),
-			'height': this.menuEl.height(),
-			'overflow': 'hidden'
-		});
-
-		$('#people_main_section').css({
-			'width': $('#people_main_section').width(),
-			'height': $('#people_main_section').height(),
-			'overflow': 'hidden'
-		});
-
-		$('#people_create_section').css({
-			'width': $('#people_main_section').width(),
-			'height': $('#people_main_section').height(),
-			'overflow': 'hidden'
-		}).show();
-
-		$('#people_create_section_content').css({
-			'height': $('#people_search_section').height() - 42,
-			'overflow': 'auto'
-		});
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ($('#people_main_section').width()*2) + 100
-		});
-
-		$('#people_main_section, #people_create_section').css({'float':'left'});
-
-		this.menuEl.scrollLeft(0);
-		var pos = $('#people_create_section').position().left;
-
-        this.resetCreateScroller();
-
-		this.menuEl.animate(
-			{ scrollLeft: pos },
-			300,
-			'linear'
-		);
-	},
-
-    hideCreateSection: function(type) {
-
-		var self = this;
-		this.menuEl.animate(
-			{ scrollLeft: 0 },
-			300,
-			'linear',
-			function() {
-				self._cleanupCreateSlide();
-			}
-		);
-	},
-
-    _cleanupCreateSlide: function() {
-		this.menuEl.css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
-
-		$('#people_main_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
-
-		$('#people_create_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		}).hide();
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ''
-		});
-
-		$('#people_main_section, #people_create_section').css({'float':''});
-	},
-
     resetCreateScroller: function(type) {
 
 		var wrap = $('#people_create_section_wrap');
@@ -236,63 +152,20 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 	//#########################################################################
 
 	_initLabelsSwitcher: function() {
-		// Clicking between show-index and goback buttons
-		$('#people_labels_viewall').click((function(ev) {
-			this.showLabelsList('people');
-		}).bind(this));
-		$('#people_labels_index_back').click((function(ev) {
-			this.hideLabelsList('people');
-		}).bind(this));
+		var self = this;
+		this.slideHandler.addEvent('duringSlideView', function(slide) {
+			if (slide.attr('id') != 'people_labels_list_section') return;
+			self.showLabelsList('people');
+		});
 
-		$('#org_labels_viewall').click((function(ev) {
-			this.showLabelsList('org');
-		}).bind(this));
-		$('#org_labels_index_back').click((function(ev) {
-			this.hideLabelsList('org')
-		}).bind(this));
+		this.slideHandler.addEvent('duringSlideView', function(slide) {
+			if (slide.attr('id') != 'org_labels_list_section') return;
+			self.showLabelsList('org');
+		});
 	},
 
 	showLabelsList: function(type) {
-
-		if (!type) type = 'people';
-
-		this.menuEl.css({
-			'width': this.menuEl.width(),
-			'height': this.menuEl.height(),
-			'overflow': 'hidden'
-		});
-
-		$('#people_main_section').css({
-			'width': $('#people_main_section').width(),
-			'height': $('#people_main_section').height(),
-			'overflow': 'hidden'
-		});
-
-		$('#'+type+'_labels_list_section').css({
-			'width': $('#people_main_section').width(),
-			'height': $('#people_main_section').height(),
-			'overflow': 'hidden'
-		}).show();
-
-		$('#'+type+'_labels_index_content').css({
-			'height': $('#'+type+'_labels_list_section').height() - 42,
-			'overflow': 'auto'
-		});
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ($('#people_main_section').width()*2) + 100
-		});
-
-		$('#people_main_section, #people_labels_list_section, #org_labels_list_section').css({'float':'left'});
-
-		this.menuEl.scrollLeft(0);
-		var pos = $('#'+type+'_labels_list_section').position().left;
-		this.menuEl.animate(
-			{ scrollLeft: pos },
-			300,
-			'linear'
-		);
-
+		
 		this.resetLablesIndexScroller(type);
 
 		var url = BASE_URL + 'agent/people-search/labels-index-pane';
@@ -334,71 +207,17 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		}
 	},
 
-	hideLabelsList: function(type) {
-
-		if (!type) type = 'people';
-
-		var self = this;
-		$('#'+type+'_labels_index_content').empty();
-		this.menuEl.animate(
-			{ scrollLeft: 0 },
-			300,
-			'linear',
-			function() {
-				self._cleanupLabelsSlide();
-			}
-		);
-	},
-
-	_cleanupLabelsSlide: function() {
-		this.menuEl.css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
-
-		$('#people_main_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
-
-		$('#people_labels_list_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		}).hide();
-
-		$('#org_labels_list_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		}).hide();
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ''
-		});
-
-		$('#people_main_section, #people_labels_list_section, #org_labels_list_section').css({'float':''});
-	},
-
-
     //#########################################################################
 	// Search
 	//#########################################################################
 
     _initSearchSwitcher: function() {
-		// Clicking between show-index and goback buttons
-		$('#people_search_section_btn').click((function(ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            ev._noCloseMenu = true;
-            
-			this.showSearchSection();
-		}).bind(this));
-		$('#people_search_section_back').click((function(ev) {
-			this.hideSearchSection('people');
-		}).bind(this));
+
+		var self = this;
+		this.slideHandler.addEvent('duringSlideView', function(slide) {
+			if (slide.attr('id') != 'people_search_section') return;
+			self.resetSearchScroller();
+		});
 
         // The terms build
         // Set up search builder
@@ -406,6 +225,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 		editor.addEvent('newRow', function(new_row) {
 			$('.remove', new_row).click(function() {
 				new_row.remove();
+				self.resetSearchScroller();
 			});
 		});
 		$('#people_search_section .search-form .add-term').data('add-count', 0).click(function() {
@@ -415,9 +235,10 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 			$(this).data('add-count', count+1);
 
 			editor.addNewRow($('#people_search_section .search-form .search-terms'), basename);
+			self.resetSearchScroller();
 		});
 
-		$('#people_search_submit').click((function(ev) {
+		$('#people_search_section').click((function(ev) {
 			ev.preventDefault();
 
 			var form = $('#people_search_section form:first');
@@ -429,90 +250,6 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 			this.closeMenu();
 		}).bind(this));
-	},
-
-    showSearchSection: function() {
-
-        $('#people_search_section .search-terms').empty();
-
-		this.menuEl.css({
-			'width': this.menuEl.width(),
-			'height': this.menuEl.height(),
-			'overflow': 'hidden'
-		});
-
-		$('#people_main_section').css({
-			'width': $('#people_main_section').width(),
-			'height': $('#people_main_section').height(),
-			'overflow': 'hidden'
-		});
-
-		$('#people_search_section').css({
-			'width': $('#people_main_section').width(),
-			'height': $('#people_main_section').height(),
-			'overflow': 'hidden'
-		}).show();
-
-		$('#people_search_section_content').css({
-			'height': $('#people_search_section').height() - 42,
-			'overflow': 'auto'
-		});
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ($('#people_main_section').width()*2) + 100
-		});
-
-		$('#people_main_section, #people_search_section').css({'float':'left'});
-
-		this.menuEl.scrollLeft(0);
-		var pos = $('#people_search_section').position().left;
-
-        this.resetSearchScroller();
-        
-		this.menuEl.animate(
-			{ scrollLeft: pos },
-			300,
-			'linear'
-		);
-	},
-
-    hideSearchSection: function(type) {
-
-		var self = this;
-		this.menuEl.animate(
-			{ scrollLeft: 0 },
-			300,
-			'linear',
-			function() {
-				self._cleanupSearchSlide();
-			}
-		);
-	},
-
-    _cleanupSearchSlide: function() {
-		this.menuEl.css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
-
-		$('#people_main_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
-
-		$('#people_search_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		}).hide();
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ''
-		});
-
-		$('#people_main_section, #people_search_section').css({'float':''});
 	},
 
     resetSearchScroller: function(type) {
@@ -540,17 +277,12 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 	//#########################################################################
 
     _initOrgSearchSwitcher: function() {
-		// Clicking between show-index and goback buttons
-		$('#org_search_section_btn').click((function(ev) {
-            ev.preventDefault();
-            ev.stopPropagation();
-            ev._noCloseMenu = true;
 
-			this.showOrgSearchSection();
-		}).bind(this));
-		$('#org_search_section_back').click((function(ev) {
-			this.hideOrgSearchSection('people');
-		}).bind(this));
+		var self = this;
+		this.slideHandler.addEvent('duringSlideView', function(slide) {
+			if (slide.attr('id') != 'org_search_section') return;
+			self.resetOrgSearchScroller();
+		});
 
         // The terms build
         // Set up search builder
@@ -581,90 +313,6 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
 
 			this.closeMenu();
 		}).bind(this));
-	},
-
-    showOrgSearchSection: function() {
-
-        $('#org_search_section .search-terms').empty();
-
-		this.menuEl.css({
-			'width': this.menuEl.width(),
-			'height': this.menuEl.height(),
-			'overflow': 'hidden'
-		});
-
-		$('#people_main_section').css({
-			'width': $('#people_main_section').width(),
-			'height': $('#people_main_section').height(),
-			'overflow': 'hidden'
-		});
-
-		$('#org_search_section').css({
-			'width': $('#people_main_section').width(),
-			'height': $('#people_main_section').height(),
-			'overflow': 'hidden'
-		}).show();
-
-		$('#org_search_section_content').css({
-			'height': $('#org_search_section').height() - 42,
-			'overflow': 'auto'
-		});
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ($('#people_main_section').width()*2) + 100
-		});
-
-		$('#people_main_section, #org_search_section').css({'float':'left'});
-
-		this.menuEl.scrollLeft(0);
-		var pos = $('#org_search_section').position().left;
-
-        this.resetOrgSearchScroller();
-
-		this.menuEl.animate(
-			{ scrollLeft: pos },
-			300,
-			'linear'
-		);
-	},
-
-    hideOrgSearchSection: function(type) {
-
-		var self = this;
-		this.menuEl.animate(
-			{ scrollLeft: 0 },
-			300,
-			'linear',
-			function() {
-				self._cleanupOrgSearchSlide();
-			}
-		);
-	},
-
-    _cleanupOrgSearchSlide: function() {
-		this.menuEl.css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
-
-		$('#people_main_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
-
-		$('#org_search_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		}).hide();
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ''
-		});
-
-		$('#people_main_section, #org_search_section').css({'float':''});
 	},
 
     resetOrgSearchScroller: function(type) {

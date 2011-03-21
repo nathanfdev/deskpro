@@ -1059,15 +1059,13 @@ in and out, so we dont want actual scrollbars */
     box-shadow: 0 0px 2px #766B6B;
 }
 
-#header .people-drop #people_labels_viewall,
-#header .people-drop #org_labels_viewall {
+#header .people-drop .hoverview {
 	display: none;
 	float: right;
 	padding: 3px 6px 0 0;
 }
 
-#header .people-drop .inner-container:hover #people_labels_viewall,
-#header .people-drop .inner-container:hover #org_labels_viewall {
+#header .people-drop .inner-container:hover .hoverview {
 	display: block;
 }
 

@@ -1,9 +1,9 @@
 <li class="people-nav" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.People">
 	<a>People</a>
 	<ul class="wrap-dropdown-tabs">
-		<li id="people_search_section_btn"><span class="search">Search People</span></li>
-		<li id="org_search_section_btn"><span class="search">Search Organizations</span></li>
-		<li id="people_create_section_btn"><span class="search">Create</span></li>
+		<li class="slider-trigger" data-slide-to="people_search_section"><span class="search">Search People</span></li>
+		<li class="slider-trigger" data-slide-to="org_search_section"><span class="search">Search Organizations</span></li>
+		<li class="slider-trigger" data-slide-to="people_create_section"><span class="search">Create</span></li>
 	</ul>
 	<div class="wrap-dropdown n-drop people-drop has-tabs"><div class="x-track">
 		{# people_main_section #}
@@ -28,7 +28,7 @@
 
 					<div class="inner-container">
 						<div class="inner-container-title tags-title">
-							<div id="people_labels_viewall"><a>View all labels</a></div>
+							<div class="slider-trigger hoverview" data-slide-to="people_labels_list_section"><a>View all labels</a></div>
 							<h3>People Labels</h3>
 						</div>
 						<div class="inner-container-content">
@@ -49,7 +49,7 @@
 
 					<div class="inner-container">
 						<div class="inner-container-title tags-title">
-							<div id="org_labels_viewall"><a>View all labels</a></div>
+							<div class="slider-trigger hoverview" data-slide-to="org_labels_list_section"><a>View all labels</a></div>
 							<h3>Oragnization Labels</h3>
 						</div>
 						<div class="inner-container-content">
@@ -66,7 +66,7 @@
 		<div id="people_labels_list_section" style="display:none">
 			<div class="inner-container">
 				<div class="inner-container-title flag-title">
-					<div id="people_labels_index_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<div style="float:right; margin: 3px 3px 0 0;"><a class="slider-trigger" data-slide-to="people_main_section">Go Back</a></div>
 					<h3>People Labels Index</h3>
 				</div>
 				<div class="inner-container-content with-scrollbar" id="people_labels_index_content_wrap">
@@ -83,7 +83,7 @@
 		<div id="org_labels_list_section" style="display:none">
 			<div class="inner-container">
 				<div class="inner-container-title flag-title">
-					<div id="org_labels_index_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<div style="float:right; margin: 3px 3px 0 0;"><a class="slider-trigger" data-slide-to="people_main_section">Go Back</a></div>
 					<h3>Organization Labels Index</h3>
 				</div>
 				<div class="inner-container-content with-scrollbar" id="org_labels_index_content_wrap">
@@ -100,52 +100,59 @@
 		<div id="people_create_section" style="display:none">
 			<div class="inner-container">
 				<div class="inner-container-title flag-title">
-					<div id="people_create_section_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<div style="float:right; margin: 3px 3px 0 0;"><a class="slider-trigger" data-slide-to="people_main_section">Go Back</a></div>
 					<h3>Create</h3>
 				</div>
 				<div class="inner-container-content with-scrollbar" id="people_create_section_wrap">
 					<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 					<div class="viewport"><div class="overview">
 						<div id="people_create_section_content">
-							<h3>Create a new person</h3>
-							<form id="create_person_form" action="{{ path('agent_people_newfrompane') }}">
-								<table cellspacing="0" cellpadding="0" class="padded-1">
-									<tr>
-										<td>First name</td>
-										<td><input type="text" name="first_name" value="" /></td>
-									</tr>
-									<tr>
-										<td>Last name</td>
-										<td><input type="text" name="last_name" value="" /></td>
-									</tr>
-									<tr>
-										<td>Email</td>
-										<td><input type="text" name="email_address" value="" /></td>
-									</tr>
-									<tr>
-										<td>&nbsp;</td>
-										<td>
-											<button class="dp-button x-small green">Create Person</button>
-										</td>
-									</tr>
-								</table>
-							</form>
+							<table cellspacing="0" cellpadding="0" width="100%" border="0"><tr>
+								<td width="50%" style="padding: 8px 4px 8px 8px;" valign="top">
+									
+									<form id="create_person_form" action="{{ path('agent_people_newfrompane') }}">
+									<h3>Create a new person</h3>
+									<table cellspacing="0" cellpadding="0">
+										<tr>
+											<td style="padding: 0 4px 4px 0;">First:</td>
+											<td style="padding: 0 0 4px 0;"><input type="text" name="first_name" value="" /></td>
+										</tr>
+										<tr>
+											<td style="padding: 0 4px 4px 0;">Last:</td>
+											<td style="padding: 0 0 4px 0;"><input type="text" name="last_name" value="" /></td>
+										</tr>
+										<tr>
+											<td style="padding: 0 4px 4px 0;">Email:</td>
+											<td style="padding: 0 0 4px 0;"><input type="text" name="email_address" value="" /></td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td>
+											<td>
+												<button class="dp-button x-small green">Create Person</button>
+											</td>
+										</tr>
+									</table>
+									</form>
 
-							<h3 style="margin-top: 10px;">Create a new organization</h3>
-							<form id="create_org_form" action="{{ path('agent_org_newfrompane') }}">
-								<table cellspacing="0" cellpadding="0" class="padded-1">
-									<tr>
-										<td>Name</td>
-										<td><input type="text" name="name" value="" /></td>
-									</tr>
-									<tr>
-										<td>&nbsp;</td>
-										<td>
-											<button class="dp-button x-small green">Create Organization</button>
-										</td>
-									</tr>
-								</table>
-							</form>
+								</td><td width="50%" style="padding: 8px 4px 8px 8px;" valign="top">
+
+									<h3>Create a new organization</h3>
+									<form id="create_org_form" action="{{ path('agent_org_newfrompane') }}">
+									<table cellspacing="0" cellpadding="0" class="padded-1">
+										<tr>
+											<td style="padding: 0 4px 4px 0;">Name</td>
+											<td style="padding: 0 0 4px 0;"><input type="text" name="name" value="" /></td>
+										</tr>
+										<tr>
+											<td>&nbsp;</td>
+											<td>
+												<button class="dp-button x-small green">Create Organization</button>
+											</td>
+										</tr>
+									</table>
+									</form>
+
+							</td></tr></table>
 						</div>
 					</div></div>
 				</div>
@@ -157,7 +164,7 @@
 		<div id="people_search_section" style="display:none">
 			<div class="inner-container">
 				<div class="inner-container-title flag-title">
-					<div id="people_search_section_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<div style="float:right; margin: 3px 3px 0 0;"><a class="slider-trigger" data-slide-to="people_main_section">Go Back</a></div>
 					<h3>Search People</h3>
 				</div>
 				<div class="inner-container-content with-scrollbar" id="people_search_section_wrap">
@@ -347,7 +354,7 @@
 		<div id="org_search_section" style="display:none">
 			<div class="inner-container">
 				<div class="inner-container-title flag-title">
-					<div id="org_search_section_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<div style="float:right; margin: 3px 3px 0 0;"><a class="slider-trigger" data-slide-to="people_main_section">Go Back</a></div>
 					<h3>Search Organizations</h3>
 				</div>
 				<div class="inner-container-content with-scrollbar" id="org_search_section_wrap">
