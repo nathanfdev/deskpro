@@ -214,7 +214,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
     _initSearchSwitcher: function() {
 
 		var self = this;
-		this.slideHandler.addEvent('duringSlideView', function(slide) {
+		this.slideHandler.addEvent('view', function(slide) {
 			if (slide.attr('id') != 'people_search_section') return;
 			self.resetSearchScroller();
 		});
@@ -281,7 +281,7 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
     _initOrgSearchSwitcher: function() {
 
 		var self = this;
-		this.slideHandler.addEvent('duringSlideView', function(slide) {
+		this.slideHandler.addEvent('view', function(slide) {
 			if (slide.attr('id') != 'org_search_section') return;
 			self.resetOrgSearchScroller();
 		});
