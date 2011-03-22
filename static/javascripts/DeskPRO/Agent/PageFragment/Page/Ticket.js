@@ -52,7 +52,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	displayNewMessage: function(html) {
 		var new_message = $(html).hide();
-		new_message.appendTo($('.ticket-messages > ul', this.contentWrapper)).slideDown();
+		new_message.appendTo($('.ticket-messages .messages-wrap', this.contentWrapper)).slideDown();
 
 		this._initMessage(new_message);
 	},
@@ -328,7 +328,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	_loadTicketTab_Attach: function() {
 
-		var contentEl = $('.tab-content.attachments', this.wrapper);
+		var contentEl = $('.tab-content.ticket-attach', this.wrapper);
 
 		if (!contentEl.is('.unloaded')) {
 			// Already loaded

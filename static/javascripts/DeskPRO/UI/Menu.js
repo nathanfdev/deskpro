@@ -493,8 +493,8 @@ DeskPRO.UI.Menu = new Orb.Class({
 		el = $(el);
 
 		el.click((function (ev) {
-			this.openMenu(ev);
 			ev.preventDefault();
+			this.openMenu(ev);
 		}).bind(this));
 	},
 

@@ -109,7 +109,7 @@ class Translate
 		$this->_locale = $locale;
 		$this->_loaded_locales[$locale['id']] = $locale;
 
-		if ($last_id AND $load_previous_groups) {
+		if ($last_id AND $load_previous_groups AND isset($this->_loaded_groups[$last_id])) {
 			$this->loadPhraseGroups($this->_loaded_groups[$last_id], $locale);
 		}
 	}

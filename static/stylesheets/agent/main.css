@@ -2380,6 +2380,7 @@ border-left: none;
 	border-right: 1px solid #bac1cd;
 	border-left: 1px solid #87929f;
 	padding: 7px 10px;
+	cursor: pointer;
 }
 
 .tab-bottom .bar-actions ul li:first-child {
@@ -2467,6 +2468,7 @@ border-left: none;
     box-shadow: -1px 0 0 #888d97;
 
 	text-decoration: none;
+	cursor: pointer;
 }
 
 

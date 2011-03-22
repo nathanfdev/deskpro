@@ -372,7 +372,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this.addEvent('deactivate', function() { self.ticketReplyTabs.hide(); });
 
 		// Send reply
-		$('li.submit-reply.trigger:first', this.barWrapper).click(function(ev) {
+		$('button.submit-reply-trigger', this.barWrapper).click(function(ev) {
 			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
 			self._sendReply();
 		});
@@ -385,7 +385,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// Actions menu
 		this.ticketActionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('ul.tools li.actions', this.ticketBar),
+			triggerElement: $('.bar-actions li.actions', this.ticketBar),
 			menuElement: $('ul.ticket-info-edit-menu:first', this.contentWrapper),
 			onItemClicked: this._handleActionsMenuClick.bind(this)
 		});
@@ -393,14 +393,14 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// Macros menu
 		this.ticketMacrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('ul.tools li.macros', this.ticketBar),
+			triggerElement: $('.bar-actions li.macros', this.ticketBar),
 			menuElement: $('ul.ticket-macros-menu:first', this.contentWrapper),
 			onItemClicked: this._handleMacroClick.bind(this)
 		});
 		this.destroyMenus.push(this.ticketMacrosMenu);
 
 		// Macro apply/cancel
-		$('ul.tools li.macros-apply', this.ticketBar).click((function() {
+		$('.bar-actions li.macros-apply', this.ticketBar).click((function() {
 			var data = [];
 			if (this._currentMacroId) {
 				data.push({ name: 'macro_id', value: this._currentMacroId });
@@ -411,7 +411,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this._currentMacroId = null;
 		}).bind(this));
 
-		$('ul.tools li.macros-cancel', this.ticketBar).click((function() {
+		$('.bar-actions li.macros-cancel', this.ticketBar).click((function() {
 			this.changeManager.revertChanges();
 			this.toggleMacroApplyBtn('off');
 
@@ -525,7 +525,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 	toggleMacroApplyBtn: function(force) {
 
-		var ul = $('ul.tools', this.ticketBar);
+		var ul = $('.bar-actions', this.ticketBar);
 
 		if (!force) {
 			if ($('li.macros', ul).is(':visible')) {
@@ -535,8 +535,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			}
 		}
 
-		var otherBtns = $('li.macros, li.actions', ul);;
-		var applyBtns = $('li.macros-apply, li.macros-cancel', ul);
+		var otherBtns = $('li:not(.macro-on)', ul);
+		var applyBtns = $('li.macro-on', ul);
 
 		if (force == 'on') {
 			otherBtns.hide();
@@ -569,7 +569,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 				overflow: 'auto'
 			});
 
-			$('div.placeholder', this.ticketBar).hide();
+			$('input.placeholder', this.ticketBar).hide();
 			$('li.submit-reply.trigger:first', this.barWrapper).show();
 
 			// When we open we should scroll down by the new height,
@@ -584,14 +584,14 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this.ticketReply.hide();
 			this.barWrapper.removeClass('expanded');
 
-			$('div.placeholder', this.ticketBar).show();
+			$('input.placeholder', this.ticketBar).show();
 			$('li.submit-reply.trigger:first', this.barWrapper).hide();
 		}
 	},
 
 	isSendingReply: false,
 	_sendReply: function() {
-		this._handleSendReply($('form.reply-form', this.ticketReply));
+		this._handleSendReply($(':input, textarea, select', $('.reply-form-fields',this.ticketReply)));
 	},
 
 	_handleSendReply: function(els) {

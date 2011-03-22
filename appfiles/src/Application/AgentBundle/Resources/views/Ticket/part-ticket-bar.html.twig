@@ -12,22 +12,27 @@
 		<div class="tab-bottom-contents">
 			{# Reply area #}
 			<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
-				<textarea name="message"></textarea>
-				<table cellspacing="0" cellpadding="0">
-					<tr><td>
-						<input type="hidden" name="options[agent_id]" value="{{person.id}}" />
-						<input type="hidden" name="options[agent_team_id]" value="{{person.getAgentTeamIds[0]}}" />
-						<input type="hidden" name="options[status]" value="pending" />
+				<div class="reply-form-fields">
+					<textarea name="message"></textarea>
+					<div style="float: right; padding: 5px 5px 0 0;">
+						<button class="dp-button black x-small submit-reply-trigger">Add Reply</button>
+					</div>
+					<table cellspacing="0" cellpadding="0">
+						<tr><td>
+							<input type="hidden" name="options[agent_id]" value="{{person.id}}" />
+							<input type="hidden" name="options[agent_team_id]" value="{{person.getAgentTeamIds[0]}}" />
+							<input type="hidden" name="options[status]" value="pending" />
 
-						<input class="small reply-assign-trigger" type="checkbox" name="options[do_assign]" value="1" checked="checked" /> Assign ticket to
-						<span class="prop-val trigger agent_id">Me</span>
-						and
-						<span class="prop-val trigger agent_team_id">My Team</span>
-					</td></tr>
-					<tr><td>
-						<input class="small" type="checkbox" name="options[do_status]" checked="checked" /> Change status to <span class="prop-val status trigger">Pending</span>
-					</td><tr>
-				</table>
+							<input class="small reply-assign-trigger" type="checkbox" name="options[do_assign]" value="1" checked="checked" /> Assign ticket to
+							<span class="prop-val trigger agent_id">Me</span>
+							and
+							<span class="prop-val trigger agent_team_id">My Team</span>
+						</td></tr>
+						<tr><td>
+							<input class="small" type="checkbox" name="options[do_status]" checked="checked" /> Change status to <span class="prop-val status trigger">Pending</span>
+						</td></tr>
+					</table>
+				</div>
 				<ul class="reply-agent_id-menu" style="display:none">
 					<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{person.id}}">Me</li>
 					<li class="sep">-</li>
@@ -67,6 +72,8 @@
 		<input type="text" class="placeholder" value="Start typing a reply..." />
 		<div class="bar-actions">
 			<ul>
+				<li class="macro-on macros-apply" style="display:none">Apply</li>
+				<li class="macro-on macros-cancel" style="display:none">Cancel</li>
 				<li class="macros"><a href="" >Macros</a></li>
 				<li class="actions"><a href="" >Actions</a></li>
 			</ul>
