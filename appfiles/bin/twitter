@@ -68,6 +68,7 @@ foreach (bootstrap($CONFIG['db'], $env)->getRepository('DeskPRO:TwitterAccount')
 		// initialize User Stream consumer
 		$consumer = new \Orb\Service\Phirehose\Consumer\UserStream($account['oauth_token'], $account['oauth_token_secret']);
 		$consumer->setEntityManager(bootstrap($CONFIG['db'], $env));
+		$consumer->setTwitterAccount($account);
 
 		// start consuming
 		$consumer->consume();

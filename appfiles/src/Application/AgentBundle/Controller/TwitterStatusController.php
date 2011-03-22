@@ -16,6 +16,8 @@ use \Application\DeskPRO\App;
 
 use \Application\DeskPRO\Entity\TwitterStatusNote;
 
+use \Orb\Service\Twitter\Twitter;
+
 /**
  * Handles creating/editing of Twitter Accounts
  */
@@ -37,6 +39,30 @@ class TwitterStatusController extends AbstractController
 		// @TODO add account <-> person check for status (via timeline/followers)
 
 		return $status;
+	}
+
+	/**
+	 * Check account security.
+	 *
+	 * @param integer $id The account id.
+	 * @return \Application\DeskPRO\Entity\TwitterAccount
+	 * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
+	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
+	 */
+	protected function getAccount($id)
+	{
+		// check if account id is in persons account id list
+		if (!in_array($id, $this->person->getTwitterAccountIds())) {
+			throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
+		}
+
+		// check if account exists
+		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($id);
+		if (!$account) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $id));
+		}
+
+		return $account;
 	}
 
 	/**
@@ -105,15 +131,16 @@ class TwitterStatusController extends AbstractController
 		$response = array('success' => true);
 
 		try {
-			$status = $this->getStatus($this->in->getInt('status_id'));
+			$status  = $this->getStatus($this->in->getInt('status_id'));
+			$account = $this->getAccount($this->in->getInt('reply.account'));
 
-			// @TODO add reply code
-			// 1) send to twitter
-			// 2) store in db (user stream should do that?)
+			// @TODO add private reply
+			// $type = $this->in->getValue('reply.type');
 
-			// $em = App::getOrm();
-			// $em->persist($);
-			// $em->flush();
+			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
+
+			// @TODO analyse response if it actually worked
+			/* $response = */ $twitter->status->update($this->in->getValue('reply.text'), $status['id']);
 		} catch (\Exception $e) {
 			$response = array(
 				'success' => false,

@@ -196,4 +196,16 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
 			->findByUserIds($followingIds, $includeArchived, $sortByDate);
 	}
+
+	/**
+	 * @return \Zend_Oauth_Token_Access
+	 */
+	public function getOauthAccessToken()
+	{
+		$accessToken = new \Zend_Oauth_Token_Access();
+		$accessToken->setToken($this['oauth_token']);
+		$accessToken->setTokenSecret($this['oauth_token_secret']);
+
+		return $accessToken;
+	}
 }

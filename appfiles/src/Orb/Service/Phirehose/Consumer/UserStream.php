@@ -20,6 +20,11 @@ use \Application\DeskPRO\Entity\TwitterUser;
 class UserStream extends \UserstreamPhirehose
 {
 	/**
+	 * @var \Application\DeskPRO\Entity\TwitterAccount
+	 */
+	protected $account;
+
+	/**
 	 * @var \Doctrine\ORM\EntityManager
 	 */
 	protected $em;
@@ -59,6 +64,37 @@ class UserStream extends \UserstreamPhirehose
 	public function setEntityManager(\Doctrine\ORM\EntityManager $em)
 	{
 		$this->em = $em;
+	}
+
+	/**
+	 * Retrieve the Twitter account  instance.
+	 *
+	 * @return \Application\DeskPRO\Entity\TwitterAccount
+	 */
+	public function getTwitterAccount()
+	{
+		return $this->account;
+	}
+
+	/**
+	 * Inject the Twitter account instance.
+	 *
+	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
+	 * @return void
+	 */
+	public function setTwitterAccount(\Application\DeskPRO\Entity\TwitterAccount $account)
+	{
+		$this->account = $account;
+	}
+
+	/**
+	 * @return \Zend_Service_Twitter
+	 */
+	public function getTwitterService()
+	{
+		return \Orb\Service\Twitter\Twitter::getTwitterService(
+			$this->getTwitterAccount()->getOauthAccessToken()
+		);
 	}
 
 	/**
@@ -254,8 +290,8 @@ class UserStream extends \UserstreamPhirehose
 		// @TODO check if Twitter user exists
 		$user = $this->findUser($mention['id_str']);
 		if (!$user) {
-			// @TODO check if we need an access token
-			$twitter = new \Zend_Service_Twitter(array(), \Orb\Service\Twitter\Oauth::getConsumer(true));
+			// get Twitter service
+			$twitter = $this->getTwitterService();
 
 			// fetch user data
 			// @TODO check limit for API calls / hour

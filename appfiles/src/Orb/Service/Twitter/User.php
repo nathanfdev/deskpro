@@ -14,7 +14,7 @@ class User
 	{
 		// @TODO check against \SimpleXMLElement & \Zend_Rest_Client_Result
 
-		$entity = new TwitterUser();
+		$entity                      = new TwitterUser();
 		$entity['id']                = (integer) $user->id;
 		$entity['name']              = (string) $user->name;
 		$entity['screen_name']       = (string) $user->screen_name;
@@ -34,7 +34,7 @@ class User
 	 */
 	static public function createEntityFromJson(array $user)
 	{
-		$entity = new TwitterUser();
+		$entity                      = new TwitterUser();
 		$entity['id']                = $user['id_str'];
 		$entity['name']              = $user['name'];
 		$entity['screen_name']       = $user['screen_name'];

@@ -42,6 +42,17 @@ class TwitterAccountController extends AbstractController
 	}
 
 	/**
+	 * @return \Zend_Oauth_Consumer
+	 */
+	protected function getConsumer()
+	{
+		$callbackUrl = $this->generateUrl('admin_twitter_accounts_authorize', array(), true);
+		$consumer    = \Orb\Service\Twitter\Oauth::getConsumer($callbackUrl);
+
+		return $consumer;
+	}
+
+	/**
 	 * Request permission from Twitter for DeskPRO application.
 	 *
 	 * @return Symfony\Component\HttpFoundation\Response
@@ -49,7 +60,7 @@ class TwitterAccountController extends AbstractController
 	public function newAction()
 	{
 		// generate request token
-		$consumer     = \Orb\Service\Twitter\Oauth::getConsumer();
+		$consumer     = $this->getConsumer();
 		$requestToken = $consumer->getRequestToken();
 
 		// store request token in session
@@ -67,17 +78,15 @@ class TwitterAccountController extends AbstractController
 	public function authorizeAction()
 	{
 		try {
-			// request access token
-			$consumer    = \Orb\Service\Twitter\Oauth::getConsumer();
+			// get access token
+			$consumer    = $this->getConsumer();
 			$accessToken = $consumer->getAccessToken(
 				$this->request->query->all(),
 				unserialize($this->session->get(self::TWITTER_REQUEST_TOKEN))
 			);
 
 			// initialize Twitter service
-			$twitter = new \Zend_Service_Twitter(array(
-				'accessToken' => $accessToken
-			), $consumer);
+			$twitter = \Orb\Service\Twitter\Twitter::getTwitterService($accessToken, $consumer);
 
 			// Entity Manager & Repository
 			$em    = App::getORM();

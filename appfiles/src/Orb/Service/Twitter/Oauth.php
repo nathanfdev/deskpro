@@ -34,10 +34,10 @@ class Oauth
 	}
 
 	/**
-	 * @param Boolean $isConsole Whether we are in a Console environment (optional)
+	 * @param string $callbackUrl (optional)
 	 * @return \Zend_Oauth_Consumer
 	 */
-	static public function getConsumer($isConsole = false)
+	static public function getConsumer($callbackUrl = null)
 	{
 		if (null !== self::$consumer) {
 			return self::$consumer;
@@ -51,10 +51,8 @@ class Oauth
 		);
 
 		// apply callback url on non-cli environments
-		if (true !== $isConsole) {
-			// @TODO we may start the router/container manually in CLI?
-			$config['callbackUrl'] = App::getContainer()->get('router')
-				->generate('admin_twitter_accounts_authorize', array(), true);
+		if (null !== $callbackUrl) {
+			$config['callbackUrl'] = $callbackUrl;
 		}
 
 		// create Zend Oauth Consumer

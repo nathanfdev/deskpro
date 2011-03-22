@@ -152,14 +152,14 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 		var buttons = $('li.tweet-item .retweet a', this.listing);
 
 		buttons.click($.proxy(function(e) {
-			this.retweet($(e.target).parents('li.tweet-item').attr('data-status-id'));
+			this.doRetweet($(e.target).parents('li.tweet-item').attr('data-status-id'));
 
 			e.preventDefault();
 			return false;
 		}, this));
 	},
 
-	retweet: function(id) {
+	doRetweet: function(id) {
 		$.ajax({
 			url: this.getMetaData('saveRetweetUrl'),
 			dataType: 'json',
@@ -214,7 +214,7 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 
 				reply.remove();
 
-				this.reply(status, data);
+				this.doReply(status, data);
 
 				e.preventDefault();
 				return false;
@@ -228,13 +228,13 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 		}, this));
 	},
 
-	reply: function(id, reply) {
+	doReply: function(id, data) {
 		$.ajax({
 			url: this.getMetaData('saveReplyUrl'),
 			dataType: 'json',
 			data: {
 				status_id: id,
-				reply: reply
+				reply: data
 			},
 			context: this,
 			success: function(json) {
@@ -252,14 +252,14 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 
 		buttons.click($.proxy(function(e) {
 			// $.data('status-id') results in math(status-id - 4) so use .attr()
-			this.archive($(e.target).parents('li.tweet-item').attr('data-status-id'));
+			this.doArchive($(e.target).parents('li.tweet-item').attr('data-status-id'));
 
 			e.preventDefault();
 			return false;
 		}, this));
 	},
 
-	archive: function(id) {
+	doArchive: function(id) {
 		$.ajax({
 			url: this.getMetaData('saveArchiveUrl'),
 			dataType: 'json',
