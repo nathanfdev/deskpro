@@ -353,8 +353,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this.ticketBar = $('div.tab-bottom:first', this.barWrapper);
 		this.ticketReply = $('div.tab-bottom-open:first', this.barWrapper);
 
-		console.log(this.ticketBar);
-		console.log(this.ticketReply);
 
 		this.ticketReplyTabs = $('.tab-bottom-tabs', this.barWrapper);
 
@@ -366,12 +364,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		$('a.close-trigger', this.ticketReplyTabs).click(function() {
 			self.toggleReplyBar();
 		});
-
-		// Since the tabs were added to the document for absolute positioning,
-		// we need to properly hide/show them on activation and deactivation
-		// for when the reply bar is open when switching between tabs
-		this.addEvent('activate', function() { if (self.ticketReply.is(':visible')) self.ticketReplyTabs.show(); });
-		this.addEvent('deactivate', function() { self.ticketReplyTabs.hide(); });
 
 		// Send reply
 		$('button.submit-reply-trigger', this.barWrapper).click(function(ev) {
@@ -566,10 +558,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this.layout.expandFooter();
 
 			var msg = $('.tab-content.reply-reply', this.ticketReply);
-			$('.tab-content').css({
-				height: msg.height(),
-				overflow: 'auto'
-			});
 
 			$('input.placeholder', this.ticketBar).hide();
 			$('li.submit-reply.trigger:first', this.barWrapper).show();
