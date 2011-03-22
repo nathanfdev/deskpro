@@ -14,9 +14,35 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_peoplesearch_save_resultprefs', {'ca
 {% if not people %}
 	pageMeta.noResults = true;
 {% endif %}
+pageMeta.preselectTerms = [
+	{% for type,info in preselect_terms %}
+		{
+			rule_type: '{{type}}',
+			op: '{{info[0]}}',
+			choice: {
+				0: '{{info[1]}}'
+			}
+		},
+	{% endfor %}
+];
 </script>
 <div class="content">
 	{% include 'AgentBundle:PeopleSearch:part-display-options-overlay.html.twig' %}
+	{% include 'AgentBundle:PeopleSearch:part-terms-overlay.html.twig' %}
+
+	<div class="inner-box-tab-content top-box">
+		<ul>
+			{#
+			<li>
+				<a class="edit-terms-trigger" style="cursor:pointer;">Edit search terms</a>
+			</li>
+			#}
+			<li class="total on" data-group-id="NONE">
+				<label>Total</label>
+				<span class="counter">{{num_results}}</span>
+			</li>
+		</ul>
+	</div>
 
 	<div class="inner-box-tab-content box-list">
 		<table class="list" cellspacing="0" width="100%">

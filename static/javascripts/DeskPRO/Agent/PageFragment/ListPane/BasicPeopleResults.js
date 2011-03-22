@@ -19,6 +19,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 		this.contentWrapper = $('div.content:first', this.wrapper);
 
 		this._initDisplayOptions();
+		this._initTermsOverlay();
 
 		this.initFeaturesOnCollection(el, {
 			routes: ['tr .with-route'],
@@ -47,6 +48,45 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 
 	deactivate: function() {
 		this.deattachInfiniteScroll();
+	},
+
+	//#########################################################################
+	//# Edit terms overlay
+	//#########################################################################
+
+	_initTermsOverlay: function() {
+		var overlay_wrapper = this.displayOptionsWrapper = $('.display-terms:first', this.contentWrapper);
+		var terms = this.getMetaData('preselectTerms');
+
+		this.termsOverlay = new DeskPRO.UI.Overlay({
+			contentElement: overlay_wrapper,
+			triggerElement: $('.edit-terms-trigger', this.contentWrapper),
+			onContentSet: function(eventData) {
+				var editor = new DeskPRO.Form.RuleBuilder($('.search-builder-tpl', overlay_wrapper));
+				editor.addEvent('newRow', function(new_row) {
+					$('.remove', new_row).click(function() {
+						new_row.remove();
+					});
+				});
+
+				$('.add-term', overlay_wrapper).data('add-count', 0).click(function() {
+					var count = parseInt($(this).data('add-count'));
+					var basename = 'terms['+count+']';
+
+					$(this).data('add-count', count+1);
+
+					editor.addNewRow($('.search-terms', overlay_wrapper), basename);
+				});
+
+				Object.each(terms, function(term) {
+					editor.addNewRow($('.search-terms', overlay_wrapper), 'terms[exist_{{id}}]', term);
+				});
+			}
+		});
+
+		$('.save-trigger', overlay_wrapper).click((function() {
+			this.submitSearchTerms();
+		}).bind(this));
 	},
 
 	//#########################################################################

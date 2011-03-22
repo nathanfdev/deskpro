@@ -180,6 +180,9 @@ class PeopleSearchController extends AbstractController
 			$vars['page_title'] = $this->in->getString('page_title');
 		}
 
+		$vars['preselect_terms'] = $result_cache['criteria'];
+		$vars['num_results'] = $result_cache['num_results'];
+
 		return $this->_getResponseForPeople('custom-filter', $result_cache['id'], $results_helper, $vars);
 	}
 
