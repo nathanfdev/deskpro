@@ -2398,13 +2398,17 @@ border-left: none;
 	font-weight: bold;
 	text-shadow: 0 -1px 0 #657087;
 	padding: 2px 0 2px 18px;
-	background: url("../../images/icn-sprite.png") left -1064px no-repeat;
 	text-decoration: none;
 }
 
-.tab-bottom .bar-actions ul li.actions a{
-	background-position: left -1087px;
-}
+.tab-bottom .bar-actions ul li.actions a { background: url("../../images/icn-sprite.png") left -1087px no-repeat; }
+.tab-bottom .bar-actions ul li.macros a  { background: url("../../images/icn-sprite.png") left -1064px no-repeat; }
+.tab-bottom .bar-actions ul li.send-reply a  { background: url("../../images/icn-sprite.png") left -1064px no-repeat; }
+.tab-bottom .bar-actions ul li.send-reply.is-loading a  { background: none !important; padding-left: 4px; }
+.tab-bottom .bar-actions ul li.send-reply a { display:inline; }
+.tab-bottom .bar-actions ul li.send-reply a.loading-msg  { display:none; }
+.tab-bottom .bar-actions ul li.send-reply.is-loading a { display:none; }
+.tab-bottom .bar-actions ul li.send-reply.is-loading a.loading-msg  { display:inline }
 
 .tab-bottom-tabs {
 	background: url("../../images/bg-tabs-bottom.png") repeat-x;

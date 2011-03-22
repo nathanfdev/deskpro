@@ -353,7 +353,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this.ticketBar = $('div.tab-bottom:first', this.barWrapper);
 		this.ticketReply = $('div.tab-bottom-open:first', this.barWrapper);
 
-
 		this.ticketReplyTabs = $('.tab-bottom-tabs', this.barWrapper);
 
 		var self = this;
@@ -597,6 +596,9 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 	_handleSendReplySuccess: function(html) {
 
+		var spinnerContainer = $('.send-reply .spinner', this.ticketBar).hide().empty();
+		spinnerContainer.parent().removeClass('is-loading');
+
 		this.toggleReplyBar('off');
 		this.displayNewMessage(html);
 		this.afterNewReply();
@@ -619,6 +621,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		$('.attachments-area ul.file-list', this.ticketReply).html('');
 
 		// Make sure reply tab is selected again
-		this.replySimpleTabs.activateTab($('.reply-area.tab-trigger', this.ticketReplyTabs));
+		this.replySimpleTabs.activateTab($('.reply-reply.tab-trigger', this.ticketReplyTabs));
 	}
 });

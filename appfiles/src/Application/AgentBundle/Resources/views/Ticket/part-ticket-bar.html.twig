@@ -9,7 +9,7 @@
 			<span class="close-tab-open close-trigger">Close</span>
 		</div>
 
-		<div class="tab-bottom-contents" style="height:149px;">
+		<div class="tab-bottom-contents" style="height:134px;">
 			{# Reply area #}
 			<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
 				<div class="reply-form-fields">
@@ -18,7 +18,7 @@
 					<input type="hidden" name="options[agent_team_id]" value="{{person.getAgentTeamIds[0]}}" />
 					<input type="hidden" name="options[status]" value="pending" />
 
-					<table cellspacing="0" cellpadding="0" style="margin-top: 12px;">
+					<table cellspacing="0" cellpadding="0" style="margin-top: 5px;">
 						<tr>
 							<td width="5" valign="middle" style="vertical-align:middle; padding-right: 5px;">
 								<input class="small reply-assign-trigger" type="checkbox" name="options[do_assign]" value="1" checked="checked" />
@@ -76,7 +76,7 @@
 			<ul>
 				<li class="macro-on macros-apply" style="display:none"><a>Apply</a></li>
 				<li class="macro-on macros-cancel" style="display:none"><a>Cancel</a></li>
-				<li class="send-reply" style="display:none"><a>Send Reply</a></li>
+				<li class="send-reply" style="display:none"><div class="spinner" style="float:left;display:none;"></div><a>Send Reply</a><a class="loading-msg">Sending</a></li>
 				<li class="macros"><a>Macros</a></li>
 				<li class="actions"><a>Actions</a></li>
 			</ul>
