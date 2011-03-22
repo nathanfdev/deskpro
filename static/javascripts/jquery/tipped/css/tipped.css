@@ -25,8 +25,8 @@
   -o-transition-property: opacity;
   transition-property: opacity;
 }
-.t_Tooltip.hidden { opacity: 0; }
-.t_Tooltip.visible { opacity: 1; }
+.t_Tooltip.t_hidden { opacity: 0; }
+.t_Tooltip.t_visible { opacity: 1; }
 
 .t_Skin {
   position: absolute;
@@ -122,7 +122,11 @@
   left: auto;
   width: 100%;
 }
-
+.t_Tooltip .t_ContentContainer {
+  float: left;
+  clear: both;
+  position: relative;  
+}
 .t_UpdateQueue .t_ContentContainer {
   position: absolute;
   top: 0;

@@ -1,16 +1,18 @@
-/*  BridgeJS 1.0
+/*  BridgeJS 1.0.5
  *  (c) 2010-2011 Nick Stakenburg - http://www.nickstakenburg.com
  *
  *  Bridge is freely distributable under the terms of an MIT-style license.
  *
  *  Adapter API largely based on PrototypeJS (http://www.prototypejs.org)
+ *
+ *  GitHub: https://github.com/staaky/bridgejs
  */
 
 (function() {
 var _Bridge = window.Bridge;
 
 var Bridge = {
-  Version: '1.0',
+  Version: '1.0.5',
 
   options: {
     adapter: 'auto', // one of 'Prototype', 'jQuery' or 'auto'
@@ -18,18 +20,26 @@ var Bridge = {
   },
 
   Framework: {
-    Prototype: {
-      included: !!window.Prototype && Prototype.Version,
-      required:  '1.7'
-    },
     jQuery: {
       included: !!window.jQuery && jQuery.fn.jquery,
       required: '1.5'
+    },
+    Prototype: {
+      included: !!window.Prototype && Prototype.Version,
+      required:  '1.7'
     }
   },
 
   insertScript: function(source) {
-    document.write("<script type='text/javascript' src='" + source + "'><\/script>");
+    try {
+      document.write("<script type='text/javascript' src='" + source + "'><\/script>");
+    } catch(e) {
+      var head = document.head || document.getElementsByTagName('head')[0],
+          script = document.createElement('script');
+      script.type = 'text/javascript';
+      script.src = source;
+      head.appendChild(script);
+    }
   },
 
   start: function() {
@@ -82,7 +92,7 @@ var Bridge = {
                  list.substring(lastComma + 2);
         }
 
-        throw("BridgeJS requires " + list + " included before bridge.js");
+        alert("BridgeJS requires " + list + " included before bridge.js");
       }
     }
 

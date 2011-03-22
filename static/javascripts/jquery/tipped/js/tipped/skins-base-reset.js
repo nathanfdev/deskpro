@@ -34,8 +34,8 @@ Bridge.Object.extend(Tipped.Skins || (Tipped.Skins = {}), {
       selector: 'viewport',
       flip: false
     },
-    fadeDuration: .22,
-    showDelay: .14,
+    fadeDuration: .18,
+    showDelay: .05,
     hideDelay: 0,
     radius: {
       size: 3,
@@ -68,6 +68,7 @@ Bridge.Object.extend(Tipped.Skins || (Tipped.Skins = {}), {
       opacity: .3
     },
     showOn: 'mousemove',
+    spinner: true,
     stem: {
       corner: {
         height: 7,
