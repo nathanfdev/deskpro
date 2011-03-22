@@ -214,6 +214,10 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
     _initSearchSwitcher: function() {
 
 		var self = this;
+		this.slideHandler.addEvent('beforeView', function(slide) {
+			if (slide.attr('id') != 'people_search_section') return;
+			$('#people_search_section .search-form .search-terms').empty();
+		});
 		this.slideHandler.addEvent('view', function(slide) {
 			if (slide.attr('id') != 'people_search_section') return;
 			self.resetSearchScroller();
@@ -281,6 +285,10 @@ DeskPRO.Agent.WindowElement.MainMenu.People = new Class({
     _initOrgSearchSwitcher: function() {
 
 		var self = this;
+		this.slideHandler.addEvent('beforeView', function(slide) {
+			if (slide.attr('id') != 'org_search_section') return;
+			$('#org_search_section .search-form .search-terms').empty();
+		});
 		this.slideHandler.addEvent('view', function(slide) {
 			if (slide.attr('id') != 'org_search_section') return;
 			self.resetOrgSearchScroller();

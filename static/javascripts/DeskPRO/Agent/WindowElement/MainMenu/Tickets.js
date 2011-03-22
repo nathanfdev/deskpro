@@ -554,6 +554,10 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
     _initSearchSwitcher: function() {
 
 		var self = this;
+		this.slideHandler.addEvent('beforeView', function(slide) {
+			if (slide.attr('id') != 'tickets_search_section') return;
+			$('#tickets_search_section .search-form .search-terms').empty();
+		});
 		this.slideHandler.addEvent('view', function(slide) {
 			if (slide.attr('id') != 'tickets_search_section') return;
 			self.resetSearchScroller();
