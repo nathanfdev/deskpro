@@ -81,14 +81,25 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 	findTabByRouteUrl: function(routeUrl) {
 		var tabId = false;
-		Object.each(this.tabManager.getTabs(), function(tab, tab_id) {
+		Object.each(this.tabManager.getTabs(), function(tab) {
 			if (tab.page.getMetaData('routeUrl') == routeUrl) {
-				tabId = tab_id;
+				tabId = tab.id;
 				return false;
 			}
 		});
 
 		return tabId;
+	},
+
+	getTabByRouteUrl: function(routeUrl) {
+		var tabId = this.findTabByRouteUrl(routeUrl);
+		if (!tabId) return null;
+
+		return this.getTabById(tabId);
+	},
+
+	getTabById: function(tabId) {
+		return this.tabManager.getTab(tabId);
 	},
 
 	addTab: function(page) {

@@ -14,6 +14,12 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	pageUuid: null,
 	TYPENAME: 'basic',
 
+	/**
+	 * When this is true, the loader (in Window) will allow duplicates
+	 * of a tab with the same thing
+	 */
+	allowDupe: false,
+
 	scripts: [],
 	stylesheets: [],
 	html: '',

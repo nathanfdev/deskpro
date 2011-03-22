@@ -46,7 +46,7 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 	 * @return {Object}
 	 */
 	getTab: function(id) {
-		if (this.tabs[id] != undefined) {
+		if (this.tabs[id] == undefined) {
 			return null;
 		}
 

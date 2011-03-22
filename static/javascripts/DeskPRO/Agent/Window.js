@@ -377,54 +377,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		switch (routeData.openInSection) {
-			case 'navpane':
 			case 'listpane':
-
-				var existTabId = this.listTabStrip.findTabByRouteUrl(routeData.url);
-				if (existTabId) {
-					this.listTabStrip.activateTabById(existTabId);
-					return;
-				}
-
 				this.loadListPane(routeData.url, routeData);
 				break;
 
 			default:
-				// Check if its already laoded
-				var existTabId = this.pageTabStrip.findTabByRouteUrl(routeData.url);
-				if (existTabId) {
-					this.pageTabStrip.activateTabById(existTabId);
-					return;
-				}
-
 				this.loadPage(routeData.url, routeData);
 				break;
 		}
-	},
-
-
-
-	/**
-	 * Load a URL and treat it as a nav pane.
-	 *
-	 * @param {String} url The URL of the nav pane
-	 */
-	loadNavPane: function(url, routeData, callback) {
-
-		this._doAjaxLoadRoute(url, routeData, (function(data) {
-				this.stopLoadingIndicator();
-				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.NavPane.Basic');
-
-				page.setMetaData('routeUrl', url);
-				if (routeData) {
-					page.setMetaData('routeData', routeData);
-				}
-
-				this.setNavPanePage(page);
-
-				if (callback) callback();
-			}).bind(this)
-		);
 	},
 
 
@@ -435,6 +395,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param {String} url The URL of the list pane.
 	 */
 	loadListPane: function(url, routeData, callback) {
+
+		var existTab = this.listTabStrip.getTabByRouteUrl(url);
+		if (existTab && !(existTab.page && existTab.page.allowDupe)) {
+			this.listTabStrip.activateTabById(existTab.id);
+			return;
+		}
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();
@@ -460,6 +426,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param {String} url The URL of the page
 	 */
 	loadPage: function(url, routeData, callback) {
+
+		var existTab = this.pageTabStrip.getTabByRouteUrl(url);
+		if (existTab && !(existTab.page && existTab.page.allowDupe)) {
+			this.pageTabStrip.activateTabById(existTab.id);
+			return;
+		}
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();

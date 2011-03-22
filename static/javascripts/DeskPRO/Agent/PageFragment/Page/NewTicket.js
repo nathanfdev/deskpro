@@ -4,6 +4,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Page.BasicTicket,
 
+	allowDupe: true,
 	TYPENAME: 'newticket',
 
 	initPage: function(el) {
