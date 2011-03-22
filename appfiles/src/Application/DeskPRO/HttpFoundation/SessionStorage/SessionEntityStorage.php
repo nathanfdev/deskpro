@@ -75,7 +75,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		);
 
 		$this->options['name'] = App::getSetting('core.sessions_cookie_name');
-		$this->options['lifetime'] = App::getSetting('core.sessions_lifetime');
+
+		// this is COOKIE liftime. We always want it to be a session cookie
+		// (exists until browser closes). It shouldnt be the lifetime of the session,
+		// that is a seprate matter. If this is say an hour, then the users cookie is removed
+		// after an hour and they loose their session even though it's still valid on the server.
+		$this->options['lifetime'] = 0;
 
 		session_set_cookie_params(
 			$this->options['lifetime'],
@@ -96,7 +101,10 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($session_id);
 		}
 
-		if (!$session) {
+		// Sessions are deleted on cron, but we'll also enforce it here
+		$cutoff = time() - App::getSetting('core.sessions_lifetime');
+
+		if (!$session OR $session['date_last']->getTimestamp() < $cutoff) {
 			$session = new \Application\DeskPRO\Entity\Session();
 			$this->em->persist($session);
 			$this->em->flush();
