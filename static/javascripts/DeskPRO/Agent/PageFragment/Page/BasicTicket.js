@@ -361,12 +361,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			self.toggleReplyBar();
 		});
 
-		$('a.close-trigger', this.ticketReplyTabs).click(function() {
+		$('.close-trigger', this.ticketReplyTabs).click(function() {
 			self.toggleReplyBar();
 		});
 
 		// Send reply
-		$('button.submit-reply-trigger', this.barWrapper).click(function(ev) {
+		$('li.send-reply', this.barWrapper).click(function(ev) {
 			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
 			self._sendReply();
 		});
@@ -553,6 +553,9 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		if (force == 'on') {
 
+			$('.bar-actions li:not(.send-reply)', this.barWrapper).hide();
+			$('.bar-actions li.send-reply', this.barWrapper).show();
+
 			this.ticketReply.show();
 			this.barWrapper.addClass('expanded');
 			this.layout.expandFooter();
@@ -570,6 +573,10 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			// Focus textarea
 			$('textarea', this.ticketReply).focus();
 		} else {
+
+			$('.bar-actions li.send-reply', this.barWrapper).hide();
+			$('.bar-actions li:not(.send-reply, .macro-on)', this.barWrapper).show();
+
 			this.layout.collapseFooter();
 			this.ticketReply.hide();
 			this.barWrapper.removeClass('expanded');
