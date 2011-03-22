@@ -234,6 +234,9 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 	 * @param {String} id The tab ID
 	 */
 	removeTab: function(id) {
+
+		Tipped.hideAll();
+
 		if (this.tabs[id] == undefined) {
 			return false;
 		}
