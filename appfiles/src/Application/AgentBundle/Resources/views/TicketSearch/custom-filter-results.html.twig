@@ -15,6 +15,7 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ticketsearch_save_resultprefs', {'ca
 	pageMeta.noResults = true;
 {% endif %}
 </script>
+<div class="layout-content">
 <div class="content">
 	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
 
@@ -36,4 +37,7 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ticketsearch_save_resultprefs', {'ca
 
 	{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
 </div>
-{% include 'AgentBundle:TicketSearch:part-action-bar.html.twig' %}
+</div>
+<div class="layout-footer is-ticket-list">
+	{% include 'AgentBundle:TicketSearch:part-action-bar.html.twig' %}
+</div>

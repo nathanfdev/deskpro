@@ -46,7 +46,7 @@ pageMeta.widgets = [
 	</div>
 	<div class="ticket-info-top">
 	<span class="ticket-source prop-val menu-trigger department_id" data-no-value="Choose Department">
-		{{ticket.department.full_title}}
+		{{ticket.department.full_title|default('Choose Department')}}
 	</span>
 	<h3>
 		{{ticket.subject}}
@@ -323,6 +323,5 @@ pageMeta.widgets = [
 {# /Main Tabs #}
 </div>
 <div class="layout-footer">
-<div class="tab-bottom-wrap">
 	{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
 </div>

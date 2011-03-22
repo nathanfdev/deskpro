@@ -1,16 +1,33 @@
-<div class="ticket-bar" style="position:relative;">
-	{% include 'AgentBundle:Ticket:reply-form.html.twig' with {'with_ticket_context': true} %}
-	<div class="bar">
-		<button class="dp-button small submit-trigger" style="display:none;">Submit Mass Reply</button>
-		<ul class="tools">
-			<li class="submit-reply trigger" style="display:none;"><span class="icon icon-check">Reply (<span class="count">0</span>)</span></li>
-			<li class="macros-apply left-most" style="display:none"><span class="icon icon-check">Apply</span></li>
-			<li class="macros-cancel" style="display:none"><span class="icon icon-cross">Cancel</span></li>
-			<li class="macros left-most"><span class="icon icon-script-gear">Macros</span></li>
-			<li class="actions"><span class="icon icon-mouse">Actions</span></li>
-		</ul>
-		<div class="placeholder">
-			<input type="text" class="placeholder" value="Start typing a reply..." />
+<div class="tab-bottom-wrap">
+	<div class="tab-bottom-open" style="display:none">
+		<div class="tab-bottom-tabs">
+			<ul>
+				<li class="tab-trigger reply-reply on" data-tab-for=".tab-content.reply-reply"><a>Message</a></li>
+			</ul>
+			<a class="close-tab-open close-trigger">Close</a>
+		</div>
+		<div class="tab-bottom-contents">
+			{# Reply area #}
+			<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
+				<div class="reply-form-fields">
+					<textarea name="message"></textarea>
+					<div style="text-align: right; padding: 5px 5px 0 0;">
+						<button class="dp-button black x-small submit-reply-trigger">Add Reply</button>
+					</div>
+				</div>
+			</div>
+			{# /Reply Area #}
+		</div>
+	</div>
+	<div class="tab-bottom">
+		<input type="text" class="placeholder" value="Start typing a reply..." />
+		<div class="bar-actions">
+			<ul>
+				<li class="macro-on macros-apply" style="display:none">Apply</li>
+				<li class="macro-on macros-cancel" style="display:none">Cancel</li>
+				<li class="macros"><a href="" >Macros</a></li>
+				<li class="actions"><a href="" >Actions</a></li>
+			</ul>
 		</div>
 	</div>
 	<ul class="ticket-macros-menu" style="display:none">

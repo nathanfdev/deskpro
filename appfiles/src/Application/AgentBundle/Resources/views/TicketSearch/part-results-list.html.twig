@@ -6,7 +6,6 @@
 		</td>
 		<td rowspan="2" width="20" style="vertical-align: middle; padding: 4px; white-space:nowrap;">
 			{% if ticket.agent %}<img src="{{ticket.agent.getPictureUrl(35)}}" width="30" height="30" class="tipped" data-tipped="{{ticket.agent.display_name}}" />{% else %}<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=30" width="30" height="30" class="tipped" data-tipped="Unassigned" />{% endif %}
-			<img src="{{ticket.person.getPictureUrl(35)}}" width="30" height="30" class="tipped" data-tipped="{{ticket.person.display_name}}" />
 		</td>
 		<td colspan="{{display_fields|length-1}}" class="subject">
 			<span style="float:right" class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>

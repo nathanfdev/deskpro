@@ -13,12 +13,12 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	barWrapper: null,
 
 	initialize: function(page) {
+
+		this.layout = page.layout;
+
 		this.page = page;
 		this.wrapper = this.page.wrapper;
 		this.contentWrapper = this.page.contentWrapper;
-
-		this.ticketBar = $('.ticket-bar:first', this.wrapper);
-		this.barWrapper = this.ticketBar;
 
 		this._initReplyBar();
 		this._initMenus();
@@ -40,15 +40,15 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	_initMenus: function() {
 
 		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.ticket-bar ul.tools li.actions:first', this.wrapper),
-			menuElement: $('.ticket-bar .ticket-action-menu:first', this.wrapper),
+			triggerElement: $('.bar-actions .actions', this.wrapper),
+			menuElement: $('.ticket-action-menu:first', this.wrapper),
 			onItemClicked: this._actionMenuItemClicked.bind(this),
 			initMenuNow: false
 		});
 
 		var menu = this.macrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.ticket-bar ul.tools li.macros:first', this.wrapper),
-			menuElement: $('.ticket-bar .ticket-macros-menu:first', this.wrapper),
+			triggerElement: $('.bar-actions .macros', this.wrapper),
+			menuElement: $('.ticket-macros-menu:first', this.wrapper),
 			onItemClicked: (function (info) {
 				var macroId = $(info.itemEl).data('macro-id');
 				this._loadMacro(macroId, this.getSelectedTicketIds());
@@ -56,9 +56,9 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		});
 
 		// Macro apply/cancel
-		$('ul.tools li.macros-apply', this.ticketBar).click(this._applyButtonClicked.bind(this));
+		$('.bar-actions li.macros-apply', this.ticketBar).click(this._applyButtonClicked.bind(this));
 
-		$('ul.tools li.macros-cancel', this.ticketBar).click((function() {
+		$('.bar-actions li.macros-cancel', this.ticketBar).click((function() {
 			this.page.changeManager.revertChanges();
 			this.toggleMacroApplyBtn('off');
 		}).bind(this));
@@ -498,7 +498,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 	toggleMacroApplyBtn: function(force, title) {
 
-		var ul = $('ul.tools', this.ticketBar);
+		var ul = $('.bar-actions', this.ticketBar);
 
 		if (!force) {
 			if ($('li.macros', ul).is(':visible')) {
@@ -508,13 +508,11 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			}
 		}
 
-		var otherBtns = $('li.macros, li.actions', ul);;
-		var applyBtns = $('li.macros-apply, li.macros-cancel', ul);
+		var otherBtns = $('li:not(.macro-on)', ul);
+		var applyBtns = $('li.macro-on', ul);
 
 		if (force == 'on') {
 			otherBtns.hide();
-			if (!title) title = 'Apply';
-			$('li.macros-apply span', ul).html(title + ' (<span class="count">'+this.getSelectedTicketIds().length+'</span>)');
 			applyBtns.show();
 		} else {
 			otherBtns.show();
@@ -563,29 +561,21 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	//#################################################################
 
 	_initReplyBar: function() {
-		this.ticketBar = this.barWrapper.children('div.bar');
-		this.ticketReply = this.barWrapper.children('div.reply');
-
-		this.ticketReplyTabs = $('.ticket-reply-tabs', this.barWrapper).detach().appendTo('body');
-		//this.page.destroyEls.push(this.ticketReplyTabs);
+		this.barWrapper = $('div.tab-bottom-wrap:first', this.wrapper);
+		this.ticketBar = $('div.tab-bottom:first', this.wrapper);
+		this.ticketReply = $('div.tab-bottom-open:first', this.wrapper);
 
 		var self = this;
 		$('input.placeholder', this.ticketBar).click(function() {
-			self.toggleReplyBar();
+			self.toggleReplyBar('on');
 		});
 
-		this.ticketReplyTabs.children('li.close-trigger').click(function() {
-			self.toggleReplyBar();
+		$('.close-trigger', this.ticketReply).click(function() {
+			self.toggleReplyBar('off');
 		});
-
-		// Since the tabs were added to the document for absolute positioning,
-		// we need to properly hide/show them on activation and deactivation
-		// for when the reply bar is open when switching between tabs
-		this.page.addEvent('activate', function() { if (self.ticketReply.is(':visible')) self.ticketReplyTabs.show(); });
-		this.page.addEvent('deactivate', function() { self.ticketReplyTabs.hide(); });
 
 		// Send reply
-		$('button.submit-trigger', this.barWrapper).click(function(ev) {
+		$('button.submit-reply-trigger', this.barWrapper).click(function(ev) {
 			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
 			self._sendReply();
 		});
@@ -596,13 +586,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			'z-index': parseInt(this.barWrapper.css('z-index'))+1
 		});
 
-		// Init ticket reply tabs
-		var simpleTabs = new DeskPRO.UI.SimpleTabs({
-			context: this.ticketReply,
-			triggerElements: this.ticketReplyTabs.children('li.tab-trigger')
-		});
-
-		$('button.submit-trigger', this.ticketBar).click(this._sendReply.bind(this));
+		$('button.submit-reply-trigger', this.ticketBar).click(this._sendReply.bind(this));
 
 		// Menus to change reply info
 		var menu = this.actionMenu = new DeskPRO.UI.Menu({
@@ -652,43 +636,32 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 		if (force == 'on') {
 
-			// TODO: figure out correct css height maths here, where are 140 and 150 coming from?
-
-			this.ticketReply.show().css({ 'height': 140 });
+			this.ticketReply.show();
 			this.barWrapper.addClass('expanded');
-			this.page.layout.sizePane('south', 110 + this.ticketBar.outerHeight());
+			this.layout.expandFooter();
 
-			$('div.placeholder', this.ticketBar).hide();
-			$('div.reply-buttons', this.ticketBar).show();
-			$('li.submit-reply.trigger:first', this.barWrapper).show();
-
-			this.ticketReplyTabs.css({
-				'position': 'absolute',
-				'top': this.barWrapper.offset().top - this.ticketReplyTabs.outerHeight() - 2,
-				'left': this.barWrapper.offset().left,
-				'display': 'block',
-				'z-index': parseInt(this.barWrapper.css('z-index')),
-				'width': this.barWrapper.width()-50
+			var msg = $('.tab-content.reply-reply', this.ticketReply);
+			$('.tab-content').css({
+				height: msg.height(),
+				overflow: 'auto'
 			});
+
+			$('input.placeholder', this.ticketBar).hide();
 
 			// When we open we should scroll down by the new height,
 			// so the same position is visible in the center pane
-			var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
-			this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
+			//var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
+			//this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
 
 			// Focus textarea
 			$('textarea', this.ticketReply).focus();
 		} else {
-			this.ticketReplyTabs.hide();
+			this.layout.collapseFooter();
 			this.ticketReply.hide();
 			this.barWrapper.removeClass('expanded');
-			this.page.layout.sizePane('south', 27);
 
-			$('div.placeholder', this.ticketBar).show();
-			$('div.reply-buttons', this.ticketBar).hide();
+			$('input.placeholder', this.ticketBar).show();
 			$('li.submit-reply.trigger:first', this.barWrapper).hide();
-
-			this.ticketReplyTabs.hide();
 		}
 	},
 
