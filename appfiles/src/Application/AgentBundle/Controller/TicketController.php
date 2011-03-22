@@ -141,7 +141,7 @@ class TicketController extends AbstractController
 		$ticket['priority_id']    = $this->in->getUint('priority_id');
 		$ticket['workflow_id']    = $this->in->getUint('workflow_id');
 		$ticket['status']         = $this->in->getString('status');
-		$ticket['person_id']      = $this->in->getUint('person_id');
+		$ticket['person_id']      = min($this->in->getUint('person_id'), $this->person['id']); // TODO handle no person selected
 
 		$ticket['subject']      = $this->in->getString('subject');
 
@@ -160,7 +160,7 @@ class TicketController extends AbstractController
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$ticket_field_datas = array();
 		foreach ($ticket_field_defs as $field_def) {
-			$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm($_POST['custom_fields']));
+			$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm(isset($_POST['custom_fields']) ? $_POST['custom_fields'] : array()));
 		}
 
 		foreach ($ticket_field_datas as $info) {

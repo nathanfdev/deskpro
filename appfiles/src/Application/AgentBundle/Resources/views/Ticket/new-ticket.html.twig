@@ -12,76 +12,202 @@ pageMeta.getMacroUrl                  = '{{ path('agent_ticket_ajax_get_macro', 
 pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 </script>
 
-<div class="ticket-content new-ticket">
-	<div class="ticket">
-
+<div class="layout-content">
 	<form class="value-form" style="display:none">
-		<input type="hidden" name="person_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
+		<input type="hidden" name="person_id" class="person_id" value="{{ticket.person.id|default(0)}}" />
 		<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
 		<input type="hidden" name="agent_team_id" class="agent_team_id" value="{{ticket.agent_team.id|default(0)}}" />
 		<input type="hidden" name="department_id" class="department_id" value="{{ticket.department.id|default(0)}}" />
 		<input type="hidden" name="category_id" class="category_id" value="{{ticket.category.id|default(0)}}" />
 		<input type="hidden" name="product_id" class="product_id" value="{{ticket.product.id|default(0)}}" />
 		<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
-		<input type="hidden" name="status" class="status" value="{{ticket.status|default('Open')}}" />
+		<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
+		<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	</form>
-
-	<div class="ticket-top">
-		<h1>
-			<span class="menu-trigger department_id department {% if not ticket.department %}no-value{% endif %}">
-				<span class="prop-val department_id {% if not ticket.department %}no-value{% endif %}" data-no-value="Choose Department">{{ticket.department.full_title|default('Choose Department')}}</span>
-				:
-			</span>
-			<input type="text" class="input-title" name="subject" value="{{ticket.subject}}" placeholder="Enter ticket title" />
-		</h1>
-
-		{% include 'AgentBundle:Ticket:part-ticket-info.html.twig' %}
-
-		<br style="clear:both" />
-
-		<div class="person-info-line">
-
-			<div style="float:right">
-				<div class="menu-trigger agent_id agent">
-					{% if ticket.agent %}
-						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ ticket.agent.getPictureUrl(50) }}" alt="" width="50" height="50" style="float:right; margin-left: 5px;" />
-					{% else %}
-						<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="" alt="" width="50" height="50" style="float:right; margin-left: 5px; display:none" />
-					{% endif %}
-					<span data-picture-element="img.agent-picture" data-no-value-label="Unassigned" class="prop-val agent_id {% if not ticket.agent %}no-value{% endif %}">
-						{% if ticket.agent %}
-							{{ticket.agent.display_name}}
-						{% else %}
-							Unassigned
-						{% endif %}
-					</span>
-				</div>
-				{% if ticket_options.agent_teams %}
-					<div class="menu-trigger agent_team_id agent_team" style="font-size:7pt">
-						<strong>Team:</strong> <span class="prop-val agent_team_id {% if not ticket.agent_team %}no-value{% endif %}" data-no-value="None">{{ticket.agent_team.name}}</span>
-					</div>
-				{% endif %}
-			</div>
-
-			<div class="person-select" style="float:left">
-				<a href="#" class="new-person-trigger" style="float:right; font-size: 7pt">create new user</a>
-				<strong>User:</strong><br />
-				<input type="text" class="person-name-search" style="width: 250px" placeholder="Begin typing a name or email address" />
-
-			</div>
-
-			<br style="clear:both" />
+	{% if ticket.is_locked %}
+		<div class="lock-bar">
+			This ticket is currently in use by {{ ticket.locked_by_agent.display_name }}. You may want to avoid
+			making changes until they are finished with it.
 		</div>
+	{% endif %}
 
-		{% include 'AgentBundle:Ticket:part-custom-fields-edit.html.twig' %}
-
+	<div class="inner-box-tab-content-2">
+		<div class="ticket-status">
+			<span class="ticket-{{ticket.status|default('open')}} prop-val menu-trigger status">{{ phrase('core_tickets.status_' ~ ticket.status|default('open')) }}</span>
+		</div>
+		<div class="ticket-info-top">
+		<span class="ticket-source prop-val menu-trigger department_id" data-no-value="Choose Department" style="margin-top: 2px;">
+			Choose Department
+		</span>
+		<h3>
+			<input type="text" name="subject" style="padding: 1px; margin-top: 2px; width: 200px;" value="{{ticket.subject}}" placeholder="Enter ticket title" />
+		</h3>
+		</div>
 	</div>
 
+	{# Info Wrap #}
+	<div class="ticket-info-wrapper">
+
+		{# Top Left #}
+		<div class="ticket-info left">
+			<div class="ticket-tags">
+				<span class="tag-icon"></span>
+				<ul>
+					{% for label in ticket.labels %}
+						<li><span>{{label.label}}</span></li>
+					{% endfor %}
+				</ul>
+			</div>
+
+			{# Top Tabs #}
+			<div class="container-tabbed-wrap ticket-participants">
+
+				<div class="container-tabbed-tabs">
+					<ul>
+						<li class="container-tabbed-tabs-active"><a href="#">Participants</a></li>
+					</ul>
+				</div>
+
+				<div class="container-tabbed">
+					<div class="container-tabbed-contents">
+
+						{# Tab: Participants #}
+						<div class="container-tabbed-content-tab">
+							<div class="row agent menu-trigger agent_id agent">
+								<div class="left col-inner name-image">
+									<span>Agent</span>
+									{% if ticket.agent %}
+										<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ ticket.agent.getPictureUrl(50) }}" alt="" width="50" height="50" />
+										<h4 data-picture-element="img.agent-picture" data-no-value-label="{{ phrase('core.unassigned') }}" class="prop-val agent_id">{{ ticket.agent.display_name }}</h4>
+									{% else %}
+										<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
+										<h4 data-picture-element="img.agent-picture" data-no-value-label="{{ phrase('core.unassigned') }}" class="prop-val agent_id no-value">{{ phrase('core.unassigned') }}</h4>
+									{% endif %}
+								</div>
+
+								<div class="left col-inner name-image menu-trigger agent_team_id agent_team">
+									<span>Team</span>
+									{% if ticket.agent_team %}
+										<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
+										<h4 class="prop-val agent_team_id" data-no-value="{{ phrase('core.none') }}">{{ ticket.agent_team.name }}</h4>
+									{% else %}
+										<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
+										<h4 class="prop-val agent_team_id no-value" data-no-value="{{ phrase('core.none') }}">{{ phrase('core.none') }}</h4>
+									{% endif %}
+								</div>
+							</div>
+
+							<div class="row-break"></div>
+
+							<div class="row ">
+								<div class="left col-inner name-image">
+									<span>User <a href="#" class="new-person-trigger" style="font-size: 7pt">create new user</a></span>
+									<div class="person-select" style="margin-left: 6px;">
+										<input type="text" class="person-name-search" style="width: 250px" placeholder="Begin typing a name or email address" />
+									</div>
+								</div>
+							</div>
+
+
+						</div>
+						{# /Tab: Participants #}
+					</div>
+				</div>
+
+			</div>
+			{# /Top Tabs #}
+		</div>
+		{# /Top Left #}
+
+		{# Top Right #}
+		<div class="ticket-properties right">
+
+			{# Box Properties #}
+			<div class="table-container">
+				<div class="table-title">
+					<h4>Ticket Properties</h4>
+				</div>
+				<div class="table-content">
+
+					<div class="row-table-cotent">
+						<div class="col-table-content title-col">
+							<span>Category</span>
+						</div>
+						<div class="col-table-content prop-val">
+							<span class="prop-val menu-trigger category_id {% if not ticket.category %}no-value{% endif %}">{{ticket.category.full_title|default('None')}}</span>
+						</div>
+					</div>
+
+					<div class="row-table-cotent dark product_id">
+						<div class="col-table-content title-col">
+							<span>Product</span>
+						</div>
+						<div class="col-table-content">
+							<span class="prop-val menu-trigger product_id {% if not ticket.category %}no-value{% endif %}">{{ticket.product.title|default('None')}}</span>
+						</div>
+					</div>
+					<div class="row-table-cotent">
+						<div class="col-table-content title-col">
+							<span>Priority</span>
+						</div>
+						<div class="col-table-content">
+							<span class="prop-val menu-trigger priority_id {% if not ticket.category %}no-value{% endif %}">{{ticket.priority.title|default('None')}}</span>
+						</div>
+					</div>
+					<div class="row-table-cotent dark workflow_id">
+						<div class="col-table-content title-col">
+							<span>Workflow</span>
+						</div>
+						<div class="col-table-content">
+							<span class="prop-val menu-trigger workflow_id {% if not ticket.workflow %}no-value{% endif %}">{{ticket.workflow.title|default('None')}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+			{# /Box Properties #}
+		</div>
+		{# /Top Right #}
+
+		{% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
 	</div>
+	{# /Info Wrap #}
+</div>
 
-	{% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
+<div class="layout-footer no-expander">
+	<div class="tab-bottom-wrap">
+		<div class="tab-bottom-wrap">
+		<div class="tab-bottom-open">
+			<div class="tab-bottom-tabs">
+				<ul>
+					<li class="tab-trigger reply-reply on" data-tab-for=".tab-content.reply-reply"><a>Message</a></li>
+					<li class="tab-trigger reply-cc" data-tab-for=".tab-content.reply-cc"><a>CC</a></li>
+					<li class="tab-trigger reply-attach" data-tab-for=".tab-content.reply-attach"><a>Attachment</a></li>
+				</ul>
+			</div>
 
-	{% include 'AgentBundle:Person:new-user-overlay.html.twig' %}
-</div><!-- content -->
+			<div class="tab-bottom-contents">
+				{# Reply area #}
+				<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
+					<div class="reply-form-fields">
+						<textarea name="message"></textarea>
+						<div style="text-align:right; padding: 5px 5px 0 0;">
+							<button class="dp-button black x-small submit-reply-trigger">Create Ticket</button>
+						</div>
+					</div>
+				</div>
+				{# /Reply Area #}
 
-{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
+				<div class="content-tab-bottom content-tab-bottom reply-attach tab-content" data-tab-trigger=".tab-trigger.reply-attach">
+					<div class="file-input">
+						<button class="dp-button x-small">Upload new file</button> or drag and drop files onto this area
+						<input type="file" name="file" multiple="multiple" />
+					</div>
+					<ul class="file-list"></ul>
+				</div>
+				<div class="content-tab-bottom cc-area reply-cc tab-content" data-tab-trigger=".tab-trigger.reply-cc">
+					<input type="text" value="" /> <button class="dp-button x-small">Add Email Address</button>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -38,6 +38,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-messages.' + this.getMetaData('ticket_id'), this.getNewTicketMessages.bind(this), this.pageUid);
 	},
 
+	_initLayout: function() {
+		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
+	},
+
 	destroyPage: function() {
 
 		this.parent();

@@ -13,13 +13,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 		Orb.Compat.WebForms.placeholder($('input[name="subject"]', this.wrapper));
 		Orb.Compat.WebForms.placeholder($('input.person-name-search', this.wrapper));
 
-		// Reply box always open
-		this.toggleReplyBar('on');
-
-		this.ticketReplyTabs.children('li.close-trigger').hide();
-
 		this._initNewUser();
 		this._initUserChoice();
+	},
+
+	_initLayout: function() {
+		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
 	},
 
 	newUserHelper: null,

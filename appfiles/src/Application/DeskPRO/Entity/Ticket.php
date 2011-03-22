@@ -288,6 +288,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 
 		$this->code = Strings::random(12, Strings::CHARS_KEY);
+		$this->ref = Strings::random(12, Strings::CHARS_KEY);
 
 		$this->_initTicketLogger();
 	}

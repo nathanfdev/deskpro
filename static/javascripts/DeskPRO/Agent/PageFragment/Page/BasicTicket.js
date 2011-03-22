@@ -25,7 +25,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.barWrapper = this.wrapper.children('.layout-footer').attr('id', Orb.getUniqueId());
 
-		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
+		this._initLayout();
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
@@ -53,6 +53,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		// Custom field widgets
 		$('input.date-field', this.contentWrapper).datepicker({ 'dateFormat': 'M d, yy'});
 	},
+
+	_initLayout: function() { },
 
 	_handleResize: function() {
 		if (!this.layout) return;
