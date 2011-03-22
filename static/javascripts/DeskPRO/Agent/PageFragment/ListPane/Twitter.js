@@ -111,6 +111,7 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 			}, this));
 
 			note.show();
+			area.focus();
 
 			e.preventDefault();
 			return false;
