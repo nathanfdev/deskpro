@@ -82,58 +82,54 @@ pageMeta.widgets = [
 
 					{# Tab: Participants #}
 					<div class="container-tabbed-content-tab">
-						<div class="row agent menu-trigger agent_id agent">
-							<div class="left col-inner name-image">
-								<span>Agent</span>
-								{% if ticket.agent %}
-									<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ ticket.agent.getPictureUrl(50) }}" alt="" width="50" height="50" />
-									<h4 data-picture-element="img.agent-picture" data-no-value-label="{{ phrase('core.unassigned') }}" class="prop-val agent_id">{{ ticket.agent.display_name }}</h4>
-								{% else %}
-									<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '50'})|replace({'000': '{value}'}) }}" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
-									<h4 data-picture-element="img.agent-picture" data-no-value-label="{{ phrase('core.unassigned') }}" class="prop-val agent_id no-value">{{ phrase('core.unassigned') }}</h4>
-								{% endif %}
-							</div>
+						<table cellspacing="0" cellpadding="0" border="0" class="participants-table">
+							<tr>
+								<td class="col-inner name-image agent menu-trigger agent_id agent">
+									<span>Agent</span>
+									{% if ticket.agent %}
+										<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '30'})|replace({'000': '{value}'}) }}" src="{{ ticket.agent.getPictureUrl(30) }}" alt="" width="30" height="30" />
+										<h4 data-picture-element="img.agent-picture" data-no-value-label="{{ phrase('core.unassigned') }}" class="prop-val agent_id">{{ ticket.agent.display_name }}</h4>
+									{% else %}
+										<img class="agent-picture" data-picture-url="{{ path('serve_person_picture_size', {'person_id': '000', 'size': '30'})|replace({'000': '{value}'}) }}" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="30" height="30" />
+										<h4 data-picture-element="img.agent-picture" data-no-value-label="{{ phrase('core.unassigned') }}" class="prop-val agent_id no-value">{{ phrase('core.unassigned') }}</h4>
+									{% endif %}
+								</td>
+								<td class="col-inner name-image menu-trigger agent_team_id agent_team">
+									<span>Team</span>
+									{% if ticket.agent_team %}
+										<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="30" height="30" />
+										<h4 class="prop-val agent_team_id" data-no-value="{{ phrase('core.none') }}">{{ ticket.agent_team.name }}</h4>
+									{% else %}
+										<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="30" height="30" />
+										<h4 class="prop-val agent_team_id no-value" data-no-value="{{ phrase('core.none') }}">{{ phrase('core.none') }}</h4>
+									{% endif %}
+								</td>
+								<td class="col-inner partis">
+									<span>Participants<a>edit</a></span>
+									<ul>
+									</ul>
+								</td>
+							</tr>
+							<tr>
+								<td class="col-inner name-image">
+									<span>User</span>
+									<img src="{{ ticket.person.getPictureUrl(30) }}" alt="" width="30" height="30" />
+									<h4>{{ ticket.person.display_name }}</h4>
+								</td>
 
-							<div class="left col-inner name-image menu-trigger agent_team_id agent_team">
-								<span>Team</span>
-								{% if ticket.agent_team %}
-									<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
-									<h4 class="prop-val agent_team_id" data-no-value="{{ phrase('core.none') }}">{{ ticket.agent_team.name }}</h4>
-								{% else %}
-									<img class="agent-picture" src="{{ asset('images/pic-agent-2.png') }}" alt="" width="50" height="50" />
-									<h4 class="prop-val agent_team_id no-value" data-no-value="{{ phrase('core.none') }}">{{ phrase('core.none') }}</h4>
-								{% endif %}
-							</div>
+								<td class="col-inner name-image">
+									<span>Organization</span>
+									<img src="{{ asset('images/pic-agent-2.png') }}" alt="" width="30" height="30" />
+									<h4>None</h4>
+								</td>
 
-							<div class="left col-inner partis">
-								<span>Participants <a href="#">edit</a></span>
-								<ul>
-								</ul>
-							</div>
-						</div>
-
-						<div class="row-break"></div>
-
-						<div class="row ">
-							<div class="left col-inner name-image">
-								<span>User</span>
-								<img src="{{ ticket.person.getPictureUrl(50) }}" alt="" width="50" height="50" />
-								<h4>{{ ticket.person.display_name }}</h4>
-							</div>
-
-							<div class="left col-inner name-image">
-								<span>Organization</span>
-								<img src="images/pic-agent-2.png" />
-								<h4>None</h4>
-							</div>
-
-							<div class="left col-inner partis">
-								<span>Participants <a href="#">edit</a></span>
-								<ul>
-								</ul>
-							</div>
-						</div>
-
+								<td class="col-inner partis">
+									<span>Participants<a>edit</a></span>
+									<ul>
+									</ul>
+								</td>
+							</tr>
+						</table>
 
 					</div>
 					{# /Tab: Participants #}
@@ -142,6 +138,7 @@ pageMeta.widgets = [
 
 		</div>
 		{# /Top Tabs #}
+		<br class="clear" />
 	</div>
 	{# /Top Left #}
 

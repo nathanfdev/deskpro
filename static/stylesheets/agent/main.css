@@ -2048,6 +2048,10 @@ border-left: none;
 	font-style: normal;
 }
 
+.container-tabbed-wrap {
+	float: left;
+}
+
 /** For Tabbed Content **/
 .container-tabbed-tabs {
 	z-index: 600;
@@ -2118,48 +2122,63 @@ border-left: none;
 }
 
 /**/
-
-.row {
-	overflow: hidden;
-	padding: 4px 0px;
+table.participants-table {
+	
 }
 
-.row-break {
-	border-bottom: 1px dotted #e3e3e3;
-	margin: 1px 0;
+table.participants-table td.col-inner {
+	padding: 4px 3px;
+	padding-top: 6px;
 }
 
-.row .col-inner {
+table.participants-table tr:first-child td.col-inner {
+	padding-bottom: 6px;
+	border-bottom: 1px solid #e3e3e3;
+}
+
+table.participants-table td.col-inner {
 	min-width: 70px;
-	width: 29%;
 	text-align: center;
 	line-height: 100%;
+	padding-left: 5px;
 }
 
-.row .col-inner span {
+table.participants-table td.col-inner span {
 	display: block;
 	color: #BBC0C5;
 	padding-bottom: 3px;
 }
 
-.row .col-inner h4 {
+table.participants-table td.col-inner h4 {
 	padding-top: 3px;
 }
 
-.row .partis {
+table.participants-table .partis {
 	text-align: left;
-	width: 37%;
 }
 
-.row .partis span a {
+table.participants-table .partis span {
+	cursor: pointer;
+}
+
+table.participants-table .partis:hover span a {
 	background: url("../../images/icn-sprite.png") left -1005px no-repeat;
+}
+table.participants-table .partis span a {
 	padding-left: 11px;
 	color: #5d676e;
 	font-weight: bold;
-	margin-left: 12px;
+	margin-left: 2px;
+	text-indent: -1000px;
+	line-height: 6px;
+	overflow: hidden;
+	width: 2px;
+	height: 10px;
+	cursor: pointer;
+	display: inline-block;
 }
 
-.row .partis ul li{
+table.participants-table .partis ul li{
 	float: left;
 	margin: 0 4px 4px 0;
 }
