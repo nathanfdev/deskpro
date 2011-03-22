@@ -141,7 +141,7 @@ class TicketController extends AbstractController
 		$ticket['priority_id']    = $this->in->getUint('priority_id');
 		$ticket['workflow_id']    = $this->in->getUint('workflow_id');
 		$ticket['status']         = $this->in->getString('status');
-		$ticket['person_id']      = min($this->in->getUint('person_id'), $this->person['id']); // TODO handle no person selected
+		$ticket['person_id']      = max($this->in->getUint('person_id'), $this->person['id']); // TODO handle no person selected
 
 		$ticket['subject']      = $this->in->getString('subject');
 
