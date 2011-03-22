@@ -3,7 +3,7 @@
 	<a>Tickets</a>
 	<ul class="wrap-dropdown-tabs">
 		<li data-route="page:{{ path('agent_ticket_new') }}"><div class="new-ticket"><div>Create Ticket</div></div></li>
-		<li data-route="page:{{ path('agent_ticketsearch_customfilter') }}"><div class="search"><div>Search</div></div></li>
+		<li class="slider-trigger" data-slide-to="tickets_search_section"><div class="search"><div>Search</div></div></li>
 	</ul>
 	<div class="wrap-dropdown n-drop tickets-drop has-tabs"><div class="x-track">
 		{# tickets_main_section #}
@@ -37,7 +37,7 @@
 
 					<div class="inner-container">
 						<div class="inner-container-title tags-title">
-							<div id="ticket_labels_viewall"><a>View All</a></div>
+							<div class="slider-trigger hoverview" data-slide-to="tickets_labels_list_section"><a>View all</a></div>
 							<h3>Popular Labels</h3>
 						</div>
 						<div class="inner-container-content">
@@ -98,11 +98,11 @@
 		</div>
 		{# /tickets_main_section #}
 
-		{# tickets_main_section #}
+		{# tickets_labels_list_section #}
 		<div id="tickets_labels_list_section" style="display:none">
 			<div class="inner-container">
 				<div class="inner-container-title flag-title">
-					<div id="ticket_labels_index_back" style="float:right; margin: 3px 3px 0 0;"><a>Go Back</a></div>
+					<div style="float:right; margin: 3px 3px 0 0;"><a class="slider-trigger" data-slide-to="tickets_main_section">Go Back</a></div>
 					<h3>Labels Index</h3>
 				</div>
 				<div class="inner-container-content with-scrollbar" id="ticket_labels_index_content_wrap">
@@ -113,5 +113,62 @@
 				</div>
 			</div>
 		</div>
+		{# /tickets_labels_list_section #}
+
+		{# tickets_search_section #}
+		<div id="tickets_search_section" style="display:none">
+			<div class="inner-container">
+				<div class="inner-container-title flag-title">
+					<div style="float:right; margin: 3px 3px 0 0;"><a class="slider-trigger" data-slide-to="tickets_main_section">Go Back</a></div>
+					<h3>Ticket Search</h3>
+				</div>
+				<div class="inner-container-content with-scrollbar" id="tickets_search_section_wrap">
+					<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+					<div class="viewport"><div class="overview">
+						<div id="tickets_search_section_content">
+
+							<div class="search-form">
+								<form action="{{ path('agent_ticketsearch_runcustomfilter') }}" method="post" id="tickets_search_form">
+									<div class="search-terms"></div>
+									<div class="term"><span class="add-term">+</span> Add a new criteria</div>
+									<div class="term">
+										Order by
+										<select name="filter[order_by]">
+											<option value="ticket.date_created:desc">Date Opened (Newer-Older)</option>
+											<option value="ticket.date_created:asc">Date Opened (Older-Newer)</option>
+											<option value="ticket.priority:desc">Priority (Highest-Lowest)</option>
+											<option value="ticket.priority:asc">Priority (Lowest-Highest)</option>
+										</select>
+									</div>
+									<div class="term">
+										Group by
+										<select name="filter[group_by]">
+											<option value="">(No grouping)</option>
+											{% for id,name in {'priority_id':'Priority', 'status': 'Status', 'department_id': 'Department', 'category_id': 'Category', 'product_id': 'Product', 'agent_id': 'Agent', 'agent_team_id': 'Agent Team'} %}
+												<option value="{{id}}" {%if filter.group_by == id %}selected="selected"{%endif%}>{{name}}</option>
+											{% endfor %}
+										</select>
+									</div>
+									<center><input type="submit" value="search" /></center>
+								</form>
+							</div>
+
+							<div class="search-builder-tpl" style="display:none">
+								<div class="row">
+									<div class="term">
+										<div class="type"></div>
+										<div class="op"></div>
+										<div class="choice"></div>
+										<div class="remove">-</div>
+									</div>
+								</div>
+								{% include 'AgentBundle:TicketSearch:termbuilder-html.html.twig' with {'term_options': ticket_options} %}
+							</div>
+						</div>
+					</div></div>
+				</div>
+			</div>
+		</div>
+		{# /tickets_search_section #}
 	</div></div>
 </li>

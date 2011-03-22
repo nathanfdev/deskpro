@@ -31,6 +31,8 @@ class MainController extends AbstractController
 		$org_field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 		$org_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($org_field_defs);
 
+		// Ticket options for search pane of tickets menu
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
@@ -40,6 +42,7 @@ class MainController extends AbstractController
 			'titles' => $titles,
 			'people_fields' => $people_fields,
 			'org_fields' => $org_fields,
+			'ticket_options' => $ticket_options
 		));
     }
 }

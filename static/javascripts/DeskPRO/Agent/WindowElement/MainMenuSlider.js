@@ -82,7 +82,7 @@ DeskPRO.Agent.WindowElement.MainMenuSlider = new Orb.Class({
 		}
 
 		if (this.openSlide && slide.attr('id') == this.openSlide.attr('id')) {
-			return;
+			//return;
 		}
 
 		if (slide.attr('id') == this.main.attr('id')) {

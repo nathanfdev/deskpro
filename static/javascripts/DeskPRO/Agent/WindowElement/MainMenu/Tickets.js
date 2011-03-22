@@ -21,6 +21,9 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	},
 
 	_initBeforeData: function() {
+		this.slideHandler = new DeskPRO.Agent.WindowElement.MainMenuSlider({
+			menuLi: this.buttonEl
+		});
 		this._initLabelsSwitcher();
 	},
 
@@ -72,6 +75,8 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	 */
 	_initAfterInitialData: function() {
 		if (this._initerCount > 0) return; //notyet
+
+		this._initSearchSwitcher();
 
 		this._initFilters();
 		this._initFlagged();
@@ -499,48 +504,15 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	//#########################################################################
 
 	_initLabelsSwitcher: function() {
-		// Clicking between show-index and goback buttons
-		$('#ticket_labels_viewall').click(this.showLabelsList.bind(this));
-		$('#ticket_labels_index_back').click(this.hideLabelsList.bind(this));
+
+		var self = this;
+		this.slideHandler.addEvent('view', function(slide) {
+			if (slide.attr('id') != 'tickets_labels_list_section') return;
+			self.showLabelsList();
+		});
 	},
 
 	showLabelsList: function() {
-		this.menuEl.css({
-			'width': this.menuEl.width(),
-			'height': this.menuEl.height(),
-			'overflow': 'hidden'
-		});
-
-		$('#tickets_main_section').css({
-			'width': $('#tickets_main_section').width(),
-			'height': $('#tickets_main_section').height(),
-			'overflow': 'hidden'
-		});
-
-		$('#tickets_labels_list_section').css({
-			'width': $('#tickets_main_section').width(),
-			'height': $('#tickets_main_section').height(),
-			'overflow': 'hidden'
-		}).show();
-
-		$('#ticket_labels_index_content').css({
-			'height': $('#tickets_labels_list_section').height() - 42,
-			'overflow': 'auto'
-		});
-
-		$('> div.x-track', this.menuEl).css({
-			'width': ($('#tickets_main_section').width()*2) + 100
-		});
-
-		$('#tickets_main_section, #tickets_labels_list_section').css({'float':'left'});
-
-		this.menuEl.scrollLeft(0);
-		var pos = $('#tickets_labels_list_section').position().left;
-		this.menuEl.animate(
-			{ scrollLeft: pos },
-			300,
-			'linear'
-		);
 
 		this.resetLablesIndexScroller();
 
@@ -575,42 +547,69 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 		}
 	},
 
-	hideLabelsList: function() {
+	//#########################################################################
+	// Search
+	//#########################################################################
+
+    _initSearchSwitcher: function() {
+
 		var self = this;
-		$('#ticket_labels_index_content').empty();
-		this.menuEl.animate(
-			{ scrollLeft: 0 },
-			300,
-			'linear',
-			function() {
-				self._cleanupLabelsSlide();
-			}
-		);
+		this.slideHandler.addEvent('view', function(slide) {
+			if (slide.attr('id') != 'tickets_search_section') return;
+			self.resetSearchScroller();
+		});
+
+        // The terms build
+        // Set up search builder
+		var editor = new DeskPRO.Form.RuleBuilder($('#tickets_search_section_content .search-builder-tpl'));
+		editor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+				self.resetSearchScroller();
+			});
+		});
+		$('#tickets_search_section .add-term').data('add-count', 0).click(function() {
+			var count = parseInt($(this).data('add-count'));
+			var basename = 'terms['+count+']';
+
+			$(this).data('add-count', count+1);
+
+			editor.addNewRow($('#tickets_search_section_content .search-terms'), basename);
+			self.resetSearchScroller();
+		});
+
+		$('#tickets_search_form').submit((function(ev) {
+			ev.preventDefault();
+
+			var form = $('#tickets_search_form');
+			var url = form.attr('action');
+			console.log(form);
+			console.log(url);
+
+			var data = form.serializeArray();
+
+			DeskPRO_Window.loadListPane(url, { postData: data });
+
+			this.closeMenu();
+		}).bind(this));
 	},
 
-	_cleanupLabelsSlide: function() {
-		this.menuEl.css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
+    resetSearchScroller: function(type) {
 
-		$('#tickets_main_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		});
+		var wrap = $('#tickets_search_section_wrap');
 
-		$('#tickets_labels_list_section').css({
-			'width': '',
-			'height': '',
-			'overflow': ''
-		}).hide();
+		var viewport = $('#tickets_search_section_wrap > .viewport');
+		var list = $('#tickets_search_section_content');
 
-		$('> div.x-track', this.menuEl).css({
-			'width': ''
-		});
+		var height_thresh = $('#tickets_search_section').height() - 42;
+		viewport.height(height_thresh);
 
-		$('#tickets_main_section, #tickets_labels_list_section').css({'float':''});
+		wrap.tinyscrollbar();
+
+		if ($('> .scrollbar', wrap).is('.disable')) {
+			wrap.addClass('scrollbar-disabled');
+		} else {
+			wrap.removeClass('scrollbar-disabled');
+		}
 	}
 });

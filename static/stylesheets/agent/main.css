@@ -1059,13 +1059,13 @@ in and out, so we dont want actual scrollbars */
     box-shadow: 0 0px 2px #766B6B;
 }
 
-#header .people-drop .hoverview {
+#header .inner-container .hoverview {
 	display: none;
 	float: right;
 	padding: 3px 6px 0 0;
 }
 
-#header .people-drop .inner-container:hover .hoverview {
+#header .inner-container:hover .hoverview {
 	display: block;
 }
 
