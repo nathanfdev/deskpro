@@ -60,6 +60,7 @@ class TwitterController extends AbstractController
 			// render json response
 			return $this->createJsonResponse(array(
 				'statuses' => $this->renderView('AgentBundle:Twitter:part-statuses.html.twig', array(
+					'account'  => $account,
 					'statuses' => $statuses
 				))
 			));

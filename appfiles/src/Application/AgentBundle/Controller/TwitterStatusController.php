@@ -40,7 +40,91 @@ class TwitterStatusController extends AbstractController
 	}
 
 	/**
-	 * @param integer $status_id
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
+	 */
+	public function ajaxSaveNoteAction()
+	{
+		$response = array('success' => true);
+
+		try {
+			$status = $this->getStatus($this->in->getInt('status_id'));
+
+			$note                 = new TwitterStatusNote();
+			$note['status']       = $status;
+			$note['person']       = $this->person;
+			$note['text']         = $this->in->getValue('text');
+
+			$em = App::getOrm();
+			$em->persist($note);
+			$em->flush();
+		} catch (\Exception $e) {
+			$response = array(
+				'success' => false,
+				'error'   => $e->getMessage()
+			);
+		}
+
+		return $this->createJsonResponse($response);
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
+	 */
+	public function ajaxSaveRetweetAction()
+	{
+		$response = array('success' => true);
+
+		try {
+			$status = $this->getStatus($this->in->getInt('status_id'));
+
+			// @TODO add retweet code
+			// 1) send to twitter
+			// 2) store in db (user stream should do that?)
+
+			// $em = App::getOrm();
+			// $em->persist($);
+			// $em->flush();
+		} catch (\Exception $e) {
+			$response = array(
+				'success' => false,
+				'error'   => $e->getMessage()
+			);
+		}
+
+		return $this->createJsonResponse($response);
+	}
+
+	/**
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
+	 */
+	public function ajaxSaveReplyAction()
+	{
+		$response = array('success' => true);
+
+		try {
+			$status = $this->getStatus($this->in->getInt('status_id'));
+
+			// @TODO add reply code
+			// 1) send to twitter
+			// 2) store in db (user stream should do that?)
+
+			// $em = App::getOrm();
+			// $em->persist($);
+			// $em->flush();
+		} catch (\Exception $e) {
+			$response = array(
+				'success' => false,
+				'error'   => $e->getMessage()
+			);
+		}
+
+		return $this->createJsonResponse($response);
+	}
+
+	/**
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
 	 */
@@ -59,36 +143,6 @@ class TwitterStatusController extends AbstractController
 
 			$em = App::getOrm();
 			$em->persist($status);
-			$em->flush();
-		} catch (\Exception $e) {
-			$response = array(
-				'success' => false,
-				'error'   => $e->getMessage()
-			);
-		}
-
-		return $this->createJsonResponse($response);
-	}
-
-	/**
-	 * @param integer $status_id
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @see \Application\AgentBundle\Controller\TwitterController::getStatus()
-	 */
-	public function ajaxSaveNoteAction()
-	{
-		$response = array('success' => true);
-
-		try {
-			$status = $this->getStatus($this->in->getInt('status_id'));
-
-			$note                 = new TwitterStatusNote();
-			$note['status']       = $status;
-			$note['person']       = $this->person;
-			$note['text']         = $this->in->getValue('text');
-
-			$em = App::getOrm();
-			$em->persist($note);
 			$em->flush();
 		} catch (\Exception $e) {
 			$response = array(

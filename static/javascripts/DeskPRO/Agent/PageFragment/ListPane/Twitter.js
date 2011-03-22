@@ -6,6 +6,7 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 	head: null,
 	listing: null,
 	note: null,
+	reply: null,
 
 	initPage: function(el) {
 		this.parent(el);
@@ -17,6 +18,7 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 		this.head    = $('.twitter-head', el);
 		this.listing = $('.twitter-listing', el);
 		this.note    = $('.twitter-note', el);
+		this.reply   = $('.twitter-reply', el);
 
 		this._initOrderBySelectField();
 		this._initIncludeFields();
@@ -150,18 +152,99 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 		var buttons = $('li.tweet-item .retweet a', this.listing);
 
 		buttons.click($.proxy(function(e) {
+			this.retweet($(e.target).parents('li.tweet-item').attr('data-status-id'));
+
 			e.preventDefault();
 			return false;
 		}, this));
+	},
+
+	retweet: function(id) {
+		$.ajax({
+			url: this.getMetaData('saveRetweetUrl'),
+			dataType: 'json',
+			data: { status_id: id },
+			context: this,
+			success: function(json) {
+				if (json.success) {
+					this.reload();
+				}
+
+				// @TODO handle json.error
+			}
+		});
 	},
 
 	_initReply: function() {
 		var buttons = $('li.tweet-item .reply a', this.listing);
 
 		buttons.click($.proxy(function(e) {
+			var status = $(e.target).parents('li.tweet-item').attr('data-status-id'),
+				reply  = this.reply.clone(),
+				area   = $('textarea[name=text]', reply);
+
+			$(e.target).parents('li.tweet-item').append(reply);
+
+			// close on ESCAPE
+			var closeOnEscape = function(e) {
+				if (e.which != 27) {
+					return true;
+				}
+
+				reply.remove();
+
+				// only once
+				$(document).unbind('keydown', closeOnEscape);
+
+				return true;
+			};
+			$(document).keydown(closeOnEscape);
+
+			// submit on ENTER
+			reply.keypress($.proxy(function(e) {
+				if (e.which != 13) {
+					return true;
+				}
+
+				var data = {
+					text:    area.val(),
+					type:    $('input[type=radio][name=type]:checked', reply).val(),
+					account: $('input[type=radio][name="account"]:checked', reply).val()
+				};
+
+				reply.remove();
+
+				this.reply(status, data);
+
+				e.preventDefault();
+				return false;
+			}, this));
+
+			reply.show();
+			area.focus();
+
 			e.preventDefault();
 			return false;
 		}, this));
+	},
+
+	reply: function(id, reply) {
+		$.ajax({
+			url: this.getMetaData('saveReplyUrl'),
+			dataType: 'json',
+			data: {
+				status_id: id,
+				reply: reply
+			},
+			context: this,
+			success: function(json) {
+				if (json.success) {
+					this.reload();
+				}
+
+				// @TODO handle json.error
+			}
+		});
 	},
 
 	_initArchive: function() {

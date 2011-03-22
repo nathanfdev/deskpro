@@ -2,8 +2,9 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Twitter';
 pageMeta.title = '@{{ account.user.screen_name|escape }}';
 pageMeta.getStatusesUrl = '{{ path('agent_twitter_statuses', {'account_id': account.id}) }}?partial=1';
-pageMeta.saveArchiveUrl = '{{ path('agent_twitter_ajaxsave_archive') }}';
 pageMeta.saveNoteUrl = '{{ path('agent_twitter_ajaxsave_note') }}';
+pageMeta.saveRetweetUrl = '{{ path('agent_twitter_ajaxsave_retweet') }}';
+pageMeta.saveArchiveUrl = '{{ path('agent_twitter_ajaxsave_archive') }}';
 </script>
 
 <style type="text/css" media="screen">
@@ -77,13 +78,41 @@ pageMeta.saveNoteUrl = '{{ path('agent_twitter_ajaxsave_note') }}';
 		font-size: 10px;
 	}
 
-	.twitter-note {
+	.twitter-note, .twitter-reply {
 		display: none;
 	}
 </style>
 
 <div class="twitter-note">
 	<form>
+		<textarea name="text" rows="2" cols="40"></textarea>
+	</form>
+</div>
+
+<div class="twitter-reply">
+	<form>
+		<div class="type">
+			<ul>
+				<li>
+					<input type="radio" id="twitter-reply-type-private" name="type" value="private" />
+					<label for="twitter-reply-type-private">Private</label>
+				</li>
+				<li>
+					<input type="radio" id="twitter-reply-type-public" name="type" value="public" checked="checked" />
+					<label for="twitter-reply-type-public">Public</label>
+				</li>
+			</ul>
+		</div>
+		<div class="accounts">
+			</ul>
+			{% for person_account in person.twitter_accounts %}
+				<li>
+					<input type="radio" id="twitter-reply-account-{{ person_account.id }}" name="account" value="{{ person_account.id }}" {% if person_account.id == account.id %}checked="checked"{% endif %} />
+					<label for="twitter-reply-account-{{ person_account.id }}">{{ person_account.user.screen_name }}</label>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
 		<textarea name="text" rows="2" cols="40"></textarea>
 	</form>
 </div>
