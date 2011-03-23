@@ -119,11 +119,21 @@ class TicketController extends AbstractController
 
 		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 
+		$initial_person = null;
+		if ($this->in->getUint('person_id')) {
+			$initial_person = App::getEntityRepository('DeskPRO:Person')->find($this->in->getUint('person_id'));
+		}
+
+		if ($initial_person) {
+			$ticket['person'] = $initial_person;
+		}
+
 		return $this->render('AgentBundle:Ticket:new-ticket.html.twig', array(
 			'ticket' => $ticket,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,
-			'macros' => $macros
+			'macros' => $macros,
+			'initial_person' => $initial_person
 		));
 	}
 

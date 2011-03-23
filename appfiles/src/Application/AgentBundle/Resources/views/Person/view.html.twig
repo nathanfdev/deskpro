@@ -107,6 +107,16 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 			</div>
 			<div class="table-content contact-info-list-wrap">
 				{% include 'AgentBundle:Person:contact-section.html.twig' with {'person': person} %}
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Create</span>
+					</div>
+					<div class="col-table-content prop-val">
+						<ul>
+							<li><a class="with-route" data-route="page:{{ path('agent_ticket_new', {'person_id': person.id}) }}">Create ticket</a></li>
+						</ul>
+					</div>
+				</div>
 			</div>
 		</div>
 		{# /Box Contact #}

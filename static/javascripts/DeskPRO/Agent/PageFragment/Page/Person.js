@@ -20,6 +20,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 		var self = this;
 
+		this.initRoutesOnCollection($('.with-route', this.wrapper));
+
 		$('input[placeholder]', this.wrapper).each(function() {
 			Orb.Compat.WebForms.placeholder(this);
 		})

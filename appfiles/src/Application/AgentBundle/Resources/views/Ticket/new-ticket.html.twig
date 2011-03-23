@@ -103,7 +103,7 @@ pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
 								<div class="left col-inner name-image">
 									<span>User <a href="#" class="new-person-trigger" style="font-size: 7pt">create new user</a></span>
 									<div class="person-select" style="margin-left: 6px;">
-										<input type="text" class="person-name-search" style="width: 250px" placeholder="Begin typing a name or email address" />
+										<input type="text" class="person-name-search" style="width: 250px" value="{{ticket.person.display_name}} <{{ticket.person.primary_email_address}}>" placeholder="Begin typing a name or email address" />
 									</div>
 								</div>
 							</div>
