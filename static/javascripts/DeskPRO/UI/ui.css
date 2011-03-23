@@ -2,43 +2,135 @@
 * Overlay
 ***********************************************************************/
 
+.overlay-main input[type=text] {
+	width: 95%;
+	margin-top: 5px;
+}
+
+/* The modal background, dims out the screen */
 .deskpro-overlay-overlay {
-	background: rgba(190, 190, 190, 0.5);
+	position: absolute;
+	top: 0;
+	left: 0;
+	bottom: 0;
+	right: 0;
+	background: url("../../../images/bg-overlay-light.png") repeat;
+	z-index: 100000;
 }
 
+/* Main overlay wrapper */
 .deskpro-overlay-outer {
-	background: rgba(11, 11, 11, 0.6);
+	position: absolute;
+	z-index: 100001;
+	background: url("../../../images/bg-overlay-padding.png") repeat;
+	border: 1px solid #3c434d;
+	padding: 8px ;
 
-	padding: 8px;
+	-webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
 
-	-moz-border-radius: 8px;
-	border-radius: 8px;
-
-	-webkit-box-shadow: 9px 9px 40px rgba(0, 0, 0, 0.5);
-	-moz-box-shadow: 9px 9px 40px rgba(0, 0, 0, 0.5);
-	box-shadow: 9px 9px 40px rgba(0, 0, 0, 0.5);
+	-webkit-box-shadow:   inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
+    -moz-box-shadow: inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
+    box-shadow: inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
 }
 
+.close-overlay {
+	display: block;
+	width: 29px;
+	height: 29px;
+	text-indent: -99999px;
+	background: url("../../../images/icn-sprite.png") left -1200px no-repeat;
+	position: absolute;
+	right: -15px;
+	top: -15px;
+
+	-webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20xpx;
+
+	-webkit-box-shadow:0 1px 5px rgba(0,0,0,.4);
+    -moz-box-shadow: 0 1px 5px rgba(0,0,0,.4);
+    box-shadow: 0 1px 5px rgba(0,0,0,.4);
+}
+
+.close-overlay:hover {
+	opacity: 1;
+
+	-webkit-box-shadow:0 0 5px red;
+    -moz-box-shadow: 0 0 5px red;
+    box-shadow: 0 0 5px red;
+}
+
+/* The inner wrapper */
 .deskpro-overlay {
-	background-color: #fff;
+	position: relative;
+	background: #fff;
+
+	-webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+
+}
+
+.overlay-title {
+	border-bottom: 1px solid #d3d9e0;
+
+	-webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+
+	background: #eef1f5;
+	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#ebeef3 ), to(#f0f3f6));
+    background: -moz-linear-gradient(90deg, #ebeef3, #f0f3f6 );
+}
+
+.overlay-title h4{
+	font-size: 15px;
+	font-weight: bold;
+	color: #46515f;
+	text-shadow: 0 1px 0 #fff;
+	padding: 10px;
+}
+
+.overlay-content {
+	padding: 10px;
+	font-size: 13px;
+
+	-webkit-box-shadow: 0 1px 1px #959ba1;
+    -moz-box-shadow: 0 1px 1px #959ba1;
+    box-shadow: 0 1px 1px #959ba1;
 
 	min-width: 300px;
 	min-height: 100px;
-
-	-moz-border-radius: 6px;
-	border-radius: 6px;
-
-	padding: 15px;
 }
 
-.deskpro-overlay.no-pad {
-	padding: 0;
+.overlay-actions {
+	padding: 11px;
+	text-align: center;
+
+
+	-webkit-border-radius: 0 0 3px 3px;
+    -moz-border-radius: 0 0 3px 3px;
+    border-radius: 0 0 3px 3px;
+
+	background: #ced3d9;
+	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#d8dce1 ), to(#c2c8cf));
+    background: -moz-linear-gradient(90deg, #d8dce1, #c2c8cf );
+
+	-webkit-box-shadow: inset 0 1px 1px #959ba1, 0 1px 1px #3d4041;
+    -moz-box-shadow: inset  0 1px 1px #959ba1, 0 1px 1px #3d4041;
+    box-shadow: inset 0 1px 1px #959ba1, 0 1px 1px #3d4041;
 }
 
 .deskpro-overlay.iframe {
 	background-color: transparent;
 	-moz-border-radius: 0px;
 	border-radius: 0px;
+}
+
+.deskpro-overlay.iframe .overlay-content {
+	padding: 0;
 }
 
 .deskpro-overlay.iframe iframe {

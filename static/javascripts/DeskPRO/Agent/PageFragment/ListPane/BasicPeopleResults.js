@@ -105,8 +105,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 
 		var data = form.serializeArray();
 
-		$('.buttons .loading-off', this.displayTermsWrapper).hide();
-		$('.buttons .loading-on', this.displayTermsWrapper).show();
+		$('.loading-off', this.displayTermsWrapper).hide();
+		$('.loading-on', this.displayTermsWrapper).show();
 
 		var self = this;
 		DeskPRO_Window.loadListPane(url, { postData: data }, function() {
@@ -153,8 +153,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 
 	saveDisplayOptions: function() {
 
-		$('.buttons .loading-off', this.displayOptionsWrapper).hide();
-		$('.buttons .loading-on', this.displayOptionsWrapper).show();
+		$('.loading-off', this.displayOptionsWrapper).hide();
+		$('.loading-on', this.displayOptionsWrapper).show();
 
 		var data = [];
 		var pref_name = 'prefs[agent.ui.people-'+ this.resultTypeName + '-display-fields.' + this.resultTypeId +'][]';

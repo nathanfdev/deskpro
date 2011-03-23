@@ -1,183 +1,187 @@
 <div class="display-terms overlay">
-	<h1>Search Terms</h1>
-	<div style="margin-right: 250px;">
-		<div class="search-form">
-			<form action="{{ path('agent_peoplesearch_customfilter') }}" method="post" class="people_search_form">
-				<input type="hidden" name="copy_display_options" value="{{cache_id}}" />
-				<div class="search-form">
-					<div class="search-terms"></div>
-					<div class="term"><span class="add-term">+</span> Add a new search term</div>
-				</div>
-			</form>
-		</div>
-
-		<div class="search-builder-tpl" style="display:none">
-			<div class="row">
-				<div class="term">
-					<div class="type"></div>
-					<div class="op"></div>
-					<div class="choice"></div>
-					<div class="remove">-</div>
-				</div>
-			</div>
-			<div class="type" title="Organization" data-rule-type="organization">
-				<div class="op">
-					<select name="op">
-						<option value="is">is</option>
-						<option value="not">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<select name="organization">
-						{% for id,title in titles.organizations %}
-							<option value="{{id}}">{{title}}</option>
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-			<div class="type" title="Usergroup" data-rule-type="usergroup">
-				<div class="op">
-					<select name="op">
-						<option value="is">is</option>
-						<option value="not">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<select name="usergroup">
-						{% for id,title in titles.usergroups %}
-							<option value="{{id}}">{{title}}</option>
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-			<div class="type" title="Person ID" data-rule-type="id">
-				<div class="op">
-					<select name="op">
-						<option value="gte">is greater than</option>
-						<option value="lte">is less than</option>
-					</select>
-				</div>
-				<div class="choice">
-					<input type="text" name="id" value="" />
-				</div>
-			</div>
-			<div class="type" title="Locale" data-rule-type="locale">
-				<div class="op">
-					<select name="op">
-						<option value="is">is</option>
-						<option value="not">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<select name="locale">
-						{% for id,title in titles.locales %}
-							<option value="{{id}}">{{title}}</option>
-						{% endfor %}
-					</select>
-				</div>
-			</div>
-
-			<div class="type" title="Email Domain" data-rule-type="email_domain">
-				<div class="op">
-					<select name="op">
-						<option value="is">is</option>
-						<option value="not">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<input type="text" name="email_domain" value="" />
-				</div>
-			</div>
-			<div class="type" title="Email Domain" data-rule-type="email_domain">
-				<div class="op">
-					<select name="op">
-						<option value="is">is</option>
-						<option value="not">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<input type="text" name="email_domain" value="" />
-				</div>
-			</div>
-			<div class="type" title="Labels" data-rule-type="label">
-				<div class="op">
-					<select name="op">
-						<option value="is">includes label</option>
-						<option value="not">does not include label</option>
-					</select>
-				</div>
-				<div class="choice">
-					<input type="text" name="label" value="" />
-				</div>
-			</div>
-			<div class="type" title="Name" data-rule-type="name">
-				<div class="op">
-					<select name="op">
-						<option value="contains">is</option>
-						<option value="notcontains">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<input type="text" name="name" value="" />
-				</div>
-			</div>
-			<div class="type" title="Contact Phone" data-rule-type="contact_phone">
-				<div class="op">
-					<select name="op">
-						<option value="contains">is</option>
-						<option value="notcontains">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<input type="text" name="phone" value="" />
-				</div>
-			</div>
-			<div class="type" title="Contact Address" data-rule-type="contact_address">
-				<div class="op">
-					<select name="op">
-						<option value="contains">is</option>
-						<option value="notcontains">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<input type="text" name="address" value="" />
-				</div>
-			</div>
-			<div class="type" title="Contact Instant Messaging" data-rule-type="contact_im">
-				<div class="op">
-					<select name="op">
-						<option value="contains">is</option>
-						<option value="notcontains">is not</option>
-					</select>
-				</div>
-				<div class="choice">
-					<input type="text" name="im" value="" />
-				</div>
-			</div>
-			{% if people_fields %}
-				{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
-				{% for field in people_fields %}
-					<div class="type" title="Field: {{field.field_def.title}}" data-rule-type="person_field[{{field.field_def.id}}]">
-						<div class="op">
-							<select name="op">
-								{% for op in field.field_def.search_capabilities %}
-									<option value="{{op}}">{{op_lang[op]}}</option>
-								{% endfor %}
-							</select>
-						</div>
-						<div class="choice">
-							{{ form_field(field.form) }}
-						</div>
+	<div class="overlay-title">
+		<h4>Search Terms</h4>
+	</div>
+	<div class="overlay-content">
+		<div style="margin-right: 250px;">
+			<div class="search-form">
+				<form action="{{ path('agent_peoplesearch_customfilter') }}" method="post" class="people_search_form">
+					<input type="hidden" name="copy_display_options" value="{{cache_id}}" />
+					<div class="search-form">
+						<div class="search-terms"></div>
+						<div class="term"><span class="add-term">+</span> Add a new search term</div>
 					</div>
-				{% endfor %}
-			{% endif %}
+				</form>
+			</div>
+
+			<div class="search-builder-tpl" style="display:none">
+				<div class="row">
+					<div class="term">
+						<div class="type"></div>
+						<div class="op"></div>
+						<div class="choice"></div>
+						<div class="remove">-</div>
+					</div>
+				</div>
+				<div class="type" title="Organization" data-rule-type="organization">
+					<div class="op">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<select name="organization">
+							{% for id,title in titles.organizations %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Usergroup" data-rule-type="usergroup">
+					<div class="op">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<select name="usergroup">
+							{% for id,title in titles.usergroups %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Person ID" data-rule-type="id">
+					<div class="op">
+						<select name="op">
+							<option value="gte">is greater than</option>
+							<option value="lte">is less than</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" name="id" value="" />
+					</div>
+				</div>
+				<div class="type" title="Locale" data-rule-type="locale">
+					<div class="op">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<select name="locale">
+							{% for id,title in titles.locales %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+
+				<div class="type" title="Email Domain" data-rule-type="email_domain">
+					<div class="op">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" name="email_domain" value="" />
+					</div>
+				</div>
+				<div class="type" title="Email Domain" data-rule-type="email_domain">
+					<div class="op">
+						<select name="op">
+							<option value="is">is</option>
+							<option value="not">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" name="email_domain" value="" />
+					</div>
+				</div>
+				<div class="type" title="Labels" data-rule-type="label">
+					<div class="op">
+						<select name="op">
+							<option value="is">includes label</option>
+							<option value="not">does not include label</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" name="label" value="" />
+					</div>
+				</div>
+				<div class="type" title="Name" data-rule-type="name">
+					<div class="op">
+						<select name="op">
+							<option value="contains">is</option>
+							<option value="notcontains">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" name="name" value="" />
+					</div>
+				</div>
+				<div class="type" title="Contact Phone" data-rule-type="contact_phone">
+					<div class="op">
+						<select name="op">
+							<option value="contains">is</option>
+							<option value="notcontains">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" name="phone" value="" />
+					</div>
+				</div>
+				<div class="type" title="Contact Address" data-rule-type="contact_address">
+					<div class="op">
+						<select name="op">
+							<option value="contains">is</option>
+							<option value="notcontains">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" name="address" value="" />
+					</div>
+				</div>
+				<div class="type" title="Contact Instant Messaging" data-rule-type="contact_im">
+					<div class="op">
+						<select name="op">
+							<option value="contains">is</option>
+							<option value="notcontains">is not</option>
+						</select>
+					</div>
+					<div class="choice">
+						<input type="text" name="im" value="" />
+					</div>
+				</div>
+				{% if people_fields %}
+					{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
+					{% for field in people_fields %}
+						<div class="type" title="Field: {{field.field_def.title}}" data-rule-type="person_field[{{field.field_def.id}}]">
+							<div class="op">
+								<select name="op">
+									{% for op in field.field_def.search_capabilities %}
+										<option value="{{op}}">{{op_lang[op]}}</option>
+									{% endfor %}
+								</select>
+							</div>
+							<div class="choice">
+								{{ form_field(field.form) }}
+							</div>
+						</div>
+					{% endfor %}
+				{% endif %}
+			</div>
 		</div>
 	</div>
-	<div class="buttons">
+	<div class="overlay-actions">
 		<div class="loading-off">
 			<button class="save-trigger dp-button small">Search</button>
 		</div>
-		<div class="loading-on">
+		<div class="loading-on" style="display:none">
 			<span>Loading ...</span>
 		</div>
 	</div>

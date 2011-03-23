@@ -201,10 +201,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			}
 		});
 
-		$('.close-trigger', overlay_wrapper).click((function() {
-			this.displayOptionsOverlay.closeOverlay();
-		}).bind(this));
-
 		$('.save-trigger', overlay_wrapper).click((function() {
 			this.saveDisplayOptions();
 		}).bind(this));
@@ -218,8 +214,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 	saveDisplayOptions: function() {
 
-		$('.buttons .loading-off', this.displayOptionsWrapper).hide();
-		$('.buttons .loading-on', this.displayOptionsWrapper).show();
+		$('.loading-off', this.displayOptionsWrapper).hide();
+		$('.loading-on', this.displayOptionsWrapper).show();
 
 		var data = [];
 		var pref_name = 'prefs[agent.ui.ticket-'+ this.resultTypeName + '-display-fields.' + this.resultTypeId +'][]';

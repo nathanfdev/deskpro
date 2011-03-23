@@ -30,7 +30,8 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			zIndex: 1000000,
 			escapeClose: true,
 			modalClickClose: true,
-			objectGroup: 'default'
+			objectGroup: 'default',
+			addClose: true
 		};
 
 		this.isDestroyed = false;
@@ -265,7 +266,19 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		// but our wrapper element is hidden so we dont want the innards to be hidden.
 		el.show();
 
-		$('.overlay-close-trigger, .close-trigger', el).click((function () {
+		// If the caller didnt provide full markup for the content, we'll wrap it ourselves
+		if (!$('div.overlay-content:first', el).length) {
+			var insideEl = el;
+			var el = $('<div class="overlay-content" />');
+			insideEl.wrap(el);
+		}
+
+		if (this.options.addClose) {
+			$('div.overlay-content:first', this.elements.wrapper).prepend('<a class="close-overlay close-trigger">Close</a>');
+		}
+
+		$('.overlay-close-trigger, .close-trigger', this.elements.wrapper).click((function (ev) {
+			ev.preventDefault();
 			this.closeOverlay();
 		}).bind(this));
 
