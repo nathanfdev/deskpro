@@ -29,7 +29,13 @@
 		window.DeskPRO_Window.initPage();
 
 		{% if not js_debug.noAutoLoadFilter %}
-			window.DeskPRO_Window.runPageRoute('listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent', 'load_first': 1}) }}');
+			{% if restore_state %}
+				{% for url in restore_state.tabs %}
+					window.DeskPRO_Window.runPageRoute({{url|json_encode|raw}});
+				{% endfor %}
+			{% else %}
+				window.DeskPRO_Window.runPageRoute('listpane:{{ path('agent_ticketsearch_runnamedfilter', {'filter_name': 'agent', 'load_first': 1}) }}');
+			{% endif %}
 		{% endif %}
 
 		{% if js_debug.autoLoadRoutes %}

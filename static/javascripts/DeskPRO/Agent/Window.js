@@ -46,6 +46,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.releaseTicketLocks_timeout = null;
 		this.releaseTicketLocks = [];
 
+		this.winStateQueue = [];
+
 		if (options) {
 			this.setOptions(options);
 		}
@@ -59,6 +61,48 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initRoutes();
 		this._initWindowInterface();
 		this._initLayout();
+	},
+
+	windowStateUpdated: function(type) {
+		this.winStateQueue.include(type);
+
+		if (this.saveWindowState_timeout) {
+			window.clearTimeout(this.saveWindowState_timeout);
+		}
+
+		this.saveWindowState_timeout = this.saveWindowState.delay(4500, this);
+	},
+
+	saveWindowState: function() {
+		var data = [];
+
+		if (this.winStateQueue.contains('tabs')) {
+			Object.each(this.pageTabStrip.getTabs(), function (tab) {
+				if (tab.page && tab.page.getMetaData('routeUrl') && !tab.page.noRestoreTab) {
+					data.push({'name': 'tabs[]', 'value': 'page:' + tab.page.getMetaData('routeUrl')});
+				}
+			});
+			Object.each(this.listTabStrip.getTabs(), function (tab) {
+				if (tab.page && tab.page.getMetaData('routeUrl') && !tab.page.noRestoreTab) {
+					data.push({'name': 'tabs[]', 'value': 'listpane:' + tab.page.getMetaData('routeUrl')});
+				}
+			});
+		}
+
+		this.winStateQueue = [];
+
+		if (!data.length) {
+			return;
+		}
+
+		$.ajax({
+			dataType: 'json',
+			url: BASE_URL + 'agent/misc/ajax-save-state',
+			type: 'POST',
+			data: data,
+			success: function() {},
+			error: function() {}
+		});
 	},
 
 	//#################################################################
@@ -825,9 +869,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 			new DeskPRO.Agent.TabManager('#page')
 		);
 
+		this.pageTabStrip.tabManager.addEvent('addTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
+		this.pageTabStrip.tabManager.addEvent('removeTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
+
 		this.listTabStrip = new DeskPRO.Agent.TabStrip(
 			$('#pane_list_tabs'),
 			new DeskPRO.Agent.TabManager('#pane_list')
 		);
+
+		this.listTabStrip.tabManager.addEvent('addTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
+		this.listTabStrip.tabManager.addEvent('removeTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
 	}
 });

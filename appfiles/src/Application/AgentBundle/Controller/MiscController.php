@@ -108,6 +108,27 @@ class MiscController extends AbstractController
 		));
 	}
 
+	public function ajaxSaveStateAction()
+	{
+		$value = array();
+		$value['tabs'] = $this->in->getCleanValueArray('tabs', 'raw', 'discard');
+
+		$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => 'agent.ui.state'));
+		if (!$pref) {
+			$pref = new Entity\PersonPref();
+			$pref['name'] = 'agent.ui.state';
+			$this->person->addPreference($pref);
+		}
+		$pref['value'] = $value;
+
+		App::getOrm()->persist($pref);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
 	public function ajaxLabelsAutocompleteAction($label_type)
 	{
 		$search = $this->in->getString('term');

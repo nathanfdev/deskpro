@@ -71,6 +71,14 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 	public function logoutAction()
 	{
+		// When an agent actually logs out, we should be clearing the state
+		if ($this->person['is_agent']) {
+			App::getDb()->executeUpdate("
+				DELETE FROM people_prefs
+				WHERE person_id = ? AND name = ?
+			", array($this->person['id'], 'agent.ui.state'));
+		}
+
 		$this->session->setAttributes(array());
 
 		return $this->redirectRoute('user_login');

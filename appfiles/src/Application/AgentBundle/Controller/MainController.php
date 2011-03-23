@@ -34,6 +34,11 @@ class MainController extends AbstractController
 		// Ticket options for search pane of tickets menu
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
+		$state_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => 'agent.ui.state'));
+		if ($state_pref) {
+			$restore_state = $state_pref['value'];
+		}
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'is_demo' => $this->in->checkIsset('show-demo-bar'),
@@ -42,7 +47,8 @@ class MainController extends AbstractController
 			'titles' => $titles,
 			'people_fields' => $people_fields,
 			'org_fields' => $org_fields,
-			'ticket_options' => $ticket_options
+			'ticket_options' => $ticket_options,
+			'restore_state' => $restore_state,
 		));
     }
 }
