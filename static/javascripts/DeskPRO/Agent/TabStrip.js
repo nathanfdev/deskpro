@@ -10,6 +10,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var self = this;
 
+		/* TODO: This is causing weird errors when closing, presume because close click being
+		misintrepeted as start of drag
 		this.tabStrip.sortable({
 			'axis': 'x',
 			'items': '> li',
@@ -19,6 +21,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				self.cancelClickActivate = true;
 			}
 		});
+		*/
 
 		// Mouseup because firefox doesnt respond to click
 		// for middle clicks
@@ -155,6 +158,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			return;
 		}
 
+		this.cancelClickActivate = true;
+
 		var el_click = $(event.target);
 
 		if (el_click.parent().is('li.tab')) {
@@ -171,14 +176,30 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			return;
 		}
 
+		event.preventDefault();
+		event.stopPropagation();
+		
+		var tabId = el.data('tab-id');
+
 		// If the clicked thing was the close button, or if its a middle-click...
 		if (el_click.is('.close-tab') || event.which == 2 || event.isDbl) {
-			this.tabManager.removeTab(el.data('tab-id'));
+			var tab = this.getTabById(tabId);
+			if (tab.page && tab.page.fireEvent) {
+				event.deskpro = {cancelClose: false};
+				tab.page.fireEvent('closeTab', [event, tab]);
+
+				if (event.deskpro.cancelClose) {
+					return;
+				}
+			}
+			this.tabManager.removeTab(tabId);
 			return;
 		}
 
 		// Otherwise activate the tab
-		this.tabManager.activateTab(el.data('tab-id'));
+		this.tabManager.activateTab(tabId);
+
+		this.cancelClickActivate = false;
 	},
 
 	_onTabAdd: function(tabData) {

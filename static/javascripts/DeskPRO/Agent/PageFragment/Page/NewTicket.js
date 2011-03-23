@@ -16,6 +16,25 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 
 		this._initNewUser();
 		this._initUserChoice();
+
+		var self = this;
+		var els = $(':input', this.wrapper).change(function(ev) {
+			self.userHasInputted = true;
+		});
+		this.addEvent('closeTab', this.handleUserCloseTab.bind(this));
+	},
+
+	handleUserCloseTab: function(event) {
+		var self = this;
+		if (this.userHasInputted) {
+			event.deskpro.cancelClose = true;
+			DeskPRO_Window.showConfirm(
+				'This ticket has not been saved, are yo usure you want to close the tab?',
+				function() {
+					DeskPRO_Window.removePage(self);
+				}
+			);
+		}
 	},
 
 	_initLayout: function() {

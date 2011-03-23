@@ -36,7 +36,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.options = {};
 		
 		this._alertOverlay = null;
-		
+		this._confirmOverlay = null;
+
 		this.loadingIndicatorEl = null;
 		this.loadingIndicatorCount = 0;
 		this.ajaxErrorOverlay = null;
@@ -178,6 +179,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._alertOverlay.openOverlay();
 	},
 
+	showConfirm: function(msg, callback_yes, callback_no) {
+		this._initConfirmOverlay();
+
+		this._confirmOverlay_callback_yes = callback_yes || function() { };
+		this._confirmOverlay_callback_no = callback_no || function() { };
+
+		$('#confirm_overlay_msg').html(msg);
+		this._confirmOverlay.openOverlay();
+	},
+
 	_initAlertOverlay: function() {
 		if (this._alertOverlay !== null) return;
 
@@ -192,6 +203,31 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 	},
 
+	_initConfirmOverlay: function() {
+		if (this._confirmOverlay !== null) return;
+
+		this._confirmOverlay_callback_yes = function() { };
+		this._confirmOverlay_callback_no = function() { };
+
+		var self = this;
+
+		this._confirmOverlay = new DeskPRO.UI.Overlay({
+			contentElement: $('#confirm_overlay'),
+			zIndex: 10000000, /* this should be bigger than everything */
+			onContentSet: function(eventData) {
+				$('.cancel-trigger', eventData.wrapperEl).click((function() {
+					eventData.overlay.closeOverlay();
+					self._confirmOverlay_callback_no();
+					self._confirmOverlay_callback_no = function() {};
+				}).bind(this));
+				$('.okay-trigger', eventData.wrapperEl).click((function() {
+					eventData.overlay.closeOverlay();
+					self._confirmOverlay_callback_yes();
+					self._confirmOverlay_callback_yes = function() {};
+				}).bind(this));
+			}
+		});
+	},
 
 
 	/**
