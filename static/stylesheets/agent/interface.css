@@ -624,14 +624,21 @@ ul.tagit input[type="text"] {
 	font-weight: normal;
 }
 
-.person-popout {
-	padding: 0;
-	background-color: #fff;
-	border: 3px solid rgba(11, 11, 11, 0.6);
+.person-popout-outer {
+	background-color: #E1E3E6;
+	-webkit-border-radius: 7px;
+	-moz-border-radius: 7px;
+	border-radius: 7px;
 
 	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
 	-moz-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
 	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
+}
+
+.person-popout {
+	padding: 0;
+	background-color: #fff;
+	border: 3px solid rgba(11, 11, 11, 0.6);
 
 	-webkit-border-radius: 6px;
 	-moz-border-radius: 6px;

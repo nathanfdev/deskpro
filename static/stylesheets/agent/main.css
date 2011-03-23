@@ -2651,3 +2651,49 @@ ul.activity-stream > li .time {
 table.padded-1 td {
 	padding: 3px 8px;
 }
+
+ul.person-popout-tabs {
+	position: absolute;
+}
+
+ul.person-popout-tabs li {
+	display: block;
+	float: right;
+
+	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
+}
+
+ul.person-popout-tabs li {
+	float: left;
+	margin-left: 10px;
+
+	padding: 4px 8px;
+	border: 1px solid #E1E3E6;
+	border-bottom: 0;
+
+	background: #afb5c2;
+
+	-webkit-border-radius: 3px 3px 0 0;
+    -moz-border-radius: 3px 3px 0 0;
+    border-radius: 3px 3px 0 0;
+
+	cursor: pointer;
+}
+
+ul.person-popout-tabs li:hover {
+	background: #afb5c2;
+	border-bottom: 1px solid #afb5c2;
+	text-shadow: 0 -1px 0 #657087;
+
+	-webkit-box-shadow: inset 0 2px #c0c5cf;
+    -moz-box-shadow: inset 0 2px #c0c5cf;
+    box-shadow: inset 0 2px #c0c5cf;
+}
+
+ul.person-popout-tabs li a{
+	color: #fff;
+	text-shadow: none;
+	font-weight: bold;
+}

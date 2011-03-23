@@ -15,6 +15,7 @@ pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getq
 pageMeta.tabTicketLogUrl              = '{{ path('agent_ticket_ajaxtab_ticketlog', {'ticket_id': ticket.id}) }}';
 pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachments', {'ticket_id': ticket.id}) }}';
 pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
+pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
 pageMeta.widgets = [
 {% for widget in widgets['agent.ticket.tabs']|merge(widgets['agent.ticket.display']) %}
 	{{ widget.getJsInitObject('div.tab-content.widget-' ~ widget.id)|json_encode|raw }}
@@ -111,7 +112,7 @@ pageMeta.widgets = [
 								</td>
 							</tr>
 							<tr>
-								<td class="col-inner name-image">
+								<td class="col-inner name-image person-overview" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">
 									<span>User</span>
 									<img src="{{ ticket.person.getPictureUrl(30) }}" alt="" width="30" height="30" />
 									<h4>{{ ticket.person.display_name }}</h4>
@@ -316,6 +317,15 @@ pageMeta.widgets = [
 		{% endfor %}
 	</div>
 	{# /Tab Contents #}
+
+	<ul class="person-popout-tabs" style="display:none">
+		<li class="move-to-tab"><a>Move into tab</a></li>
+		<li class="close"><a>Close</a></li>
+	</ul>
+	<div class="person-popout-outer" style="display:none"></div>
+	<div class="person-popout" style="display:none">
+		Loading ...
+	</div>
 </div>
 {# /Main Tabs #}
 </div>

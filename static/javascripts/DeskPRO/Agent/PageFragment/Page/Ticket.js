@@ -443,17 +443,30 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//# Popout
 	//#################################################################
 
-	popoutPinIcon: null,
+	personPopoutHtml: null,
+	personPopoutWaiting: false,
 	_initPopout: function() {
 		var self = this;
 		var el = this.wrapper;
 
+		// AJAX load the fragment now
+		var url = this.getMetaData('viewPersonUrl');
+		$.ajax({
+			dataType: 'text',
+			url: url,
+			type: 'GET',
+			success: function(html) {
+				self.personPopoutHtml = html;
+				if (self.personPopoutWaiting) {
+					self.personPopoutWaiting = false;
+					self._initPopoutPageFragment();
+				}
+			}
+		});
+
 		$('.person-overview', el).css({'cursor': 'pointer'}).click(function(event) {
 			self.isMouseOverPopout = true;
 			self.openPopOut(event);
-		}).mouseout(function(event) {
-			self.isMouseOverPopout = false;
-			self.closePopoutOnmouseout.delay(10, self);
 		});
 	},
 
@@ -466,46 +479,30 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var el = this.contentWrapper;
 		var self = this;
 
-		this.popoutPinIcon = $('.person-popout .pin-icon', this.wrapper).click((function () {
-			this.togglePinPopout();
-		}).bind(this));
-
-		this.popout = $('.person-popout', el);
-		this.popout.mouseover(function() {
-			self.isMouseOverPopout = true;
-		}).mouseout(function(event) {
-			self.isMouseOverPopout = false;
-			self.closePopoutOnmouseout.delay(10, self);
-		}).click(function(event) {
+		this.popout = $('.person-popout:first', el);
+		this.popout.click(function(event) {
+			// Any clicks that bubble here should stop now
 			event.stopPropagation();
 		});
 		this.popout.detach().appendTo('body');
 		this.destroyEls.push(this.popout);
 
-		this.popout_overview = $('.person-overview-popout', el);
-		this.popout_overview.mouseover(function() {
-			self.isMouseOverPopout = true;
-		}).mouseout(function() {
-			self.isMouseOverPopout = false;
-			self.closePopoutOnmouseout.delay(10, self);
+		this.popoutOuter = $('.person-popout-outer:first', el);
+		this.popoutOuter.detach().appendTo('body');
+		this.destroyEls.push(this.popoutOuter);
+
+		this.popoutTabs = $('.person-popout-tabs:first', el);
+		this.popoutTabs.detach().appendTo('body');
+		this.destroyEls.push(this.popoutTabs);
+
+		var self = this;
+		$('.close:first', this.popoutTabs).click(function() {
+			self.closePopout();
 		});
-		this.popout_overview.detach().appendTo('body');
-		this.destroyEls.push(this.popout_overview);
 
-		this.popout_overview_content = $('.person-overview-popout-content', el);
-		this.popout_overview_content.detach().appendTo('body');
-		this.popout_overview_content.mouseover(function() {
-			self.isMouseOverPopout = true;
-		}).mouseout(function() {
-			self.isMouseOverPopout = false;
-			self.closePopoutOnmouseout.delay(10, self);
-		});
-		this.destroyEls.push(this.popout_overview_content);
-
-		$('.info h1', this.popout_overview_content).tipTip({defaultPosition: 'top'});
-
-		this.popout_overview_content.dblclick(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
+		$('.move-to-tab:first', this.popoutTabs).click(function() {
+			DeskPRO_Window.runPageRouteFromElement($('.person-overview', self.wrapper));
+			self.closePopout();
 		});
 	},
 
@@ -518,7 +515,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			return;
 		}
 
-		var orig = $('.person-overview', this.wrapper);
+		var orig = $('.person-overview:first', this.wrapper);
 		var pos = orig.offset();
 		var wrapper_pos = this.wrapper.offset();
 
@@ -545,70 +542,56 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				'width': width,
 				'overflow': 'auto'
 			});
+
+			// Separate on purpose, we need the outerWidth which
+			// wont be correct until the above rules are applied
 			this.popout.css({
-				'top': (wrapper_pos.top - 15),
+				'top': (wrapper_pos.top - 8),
 				'left': (pos.left - this.popout.outerWidth() - 20),
 				'bottom': 30
 			});
-		}
 
-		this.popout_overview_content.css({
-			'position': 'absolute',
-			'top': pos.top - this.popout_overview_content.padding().top,
-			'left': pos.left - this.popout_overview_content.padding().left,
-			'display': 'block',
-			'width': orig.width() + 25,
-			'height': orig.height(),
-			'z-index': 999996
-		})
-
-		this.popout_overview.css({
-			'position': 'absolute',
-			'top': pos.top - this.popout_overview.padding().top,
-			'left': pos.left - this.popout_overview.padding().left - 20,
-			'display': 'block',
-			'width': orig.width() + 30,
-			'height': orig.height(),
-			'z-index': 999996
-		});
-
-		if (!this.hasInitPopout && show_popout) {
-			this.popoutPage = new DeskPRO.Agent.PageFragment.Page.PersonPopout();
-			this.popoutPage.setMetaData({
-				person_id: 1
+			var poppos = this.popout.offset();
+			this.popoutOuter.css({
+				'position': 'absolute',
+				'display': 'block',
+				'z-index': 999997,
+				'width': width+2+6, //2px for thi sborder, 6px for the popout border
+				'overflow': 'auto',
+				'top': poppos.top-1,
+				'left': poppos.left-1,
+				'bottom': 29 //popout bottom (30) -1 for the white border
 			});
 
-			this.popoutPage.initPage(this.popout);
-			this.hasInitPopout = true;
+			this.popoutTabs.css({
+				'z-index': 999996,
+				'display': 'block',
+				'top': (wrapper_pos.top - 30),
+				'left': (pos.left - 260)
+			});
+		}
+
+		if (!this.hasInitPopout && show_popout) {
+			if (this.personPopoutHtml) {
+				this._initPopoutPageFragment();
+			} else {
+				this.personPopoutWaiting = true;
+			}
 		}
 	},
 
-	togglePinPopout: function() {
-
-		if (!this._initPopoutEls_done) return;
-
-		// Turn off
-		if (this.popoutPinIcon.is('.on')) {
-			this.popoutPinIcon.removeClass('on');
-			this.isMouseOverPopout = false;
-			this.closePopoutOnmouseout();
-
-		// Turn on
-		} else {
-			this.popoutPinIcon.addClass('on');
-			this.popout_overview.hide();
-			this.popout_overview_content.hide()
-		}
-	},
-
-	closePopoutOnmouseout: function() {
-		if (!this._initPopoutEls_done || this.isMouseOverPopout || this.popoutPinIcon.is('.on')) {
-			return;
-		}
-
+	closePopout: function() {
 		this.popout.hide();
-		this.popout_overview.hide();
-		this.popout_overview_content.hide();
+		this.popoutOuter.hide();
+		this.popoutTabs.hide();
+	},
+
+	_initPopoutPageFragment: function() {
+		this.popoutPage = DeskPRO_Window.createPageFragment(this.personPopoutHtml);
+		this.popout.html(this.personPopoutHtml);
+		this.personPopoutHtml = null;
+		this.popoutPage.initPage(this.popout);
+		this.hasInitPopout = true;
 	},
 
 	//#################################################################
