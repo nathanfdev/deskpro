@@ -1859,8 +1859,13 @@ border-left: none;
 }
 
 .inner-box-tab-content-2 h3 {
-	font-size: 14px;
-	padding-top: 3px;
+	font-size: 11px;
+	
+	margin-top: 1px;
+	margin-left: -6px;
+	padding-left: 19px;
+	font-family: Arial,Helvetica,sans-serif;
+	background: url("../../images/elbow-end.gif") no-repeat 0 2px;
 }
 
 .ticket-status {
