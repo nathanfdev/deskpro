@@ -40,8 +40,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 		if (this.displayOptionsOverlay) {
 			this.displayOptionsOverlay.destroy();
 		}
-		if (this.displaTermsWrapper) {
-			this.displaTermsWrapper.destroy();
+		if (this.termsOverlay) {
+			this.termsOverlay.destroy();
 		}
 	},
 
@@ -58,7 +58,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 	//#########################################################################
 
 	_initTermsOverlay: function() {
-		var overlay_wrapper = this.displaTermsWrapper = $('.display-terms:first', this.contentWrapper);
+		var overlay_wrapper = this.displayTermsWrapper = $('.display-terms:first', this.contentWrapper);
 		var terms = this.getMetaData('preselectTerms').terms;
 
 		this.termsOverlay = new DeskPRO.UI.Overlay({
@@ -100,13 +100,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 	},
 
 	submitSearchTerms: function() {
-		var form = $('form.people_search_form:first', this.displaTermsWrapper);
+		var form = $('form.people_search_form:first', this.displayTermsWrapper);
 		var url = form.attr('action');
 
 		var data = form.serializeArray();
 
-		$('.buttons .loading-off', this.displaTermsWrapper).hide();
-		$('.buttons .loading-on', this.displaTermsWrapper).show();
+		$('.buttons .loading-off', this.displayTermsWrapper).hide();
+		$('.buttons .loading-on', this.displayTermsWrapper).show();
 
 		var self = this;
 		DeskPRO_Window.loadListPane(url, { postData: data }, function() {

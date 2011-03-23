@@ -88,7 +88,7 @@ class PeopleSearchController extends AbstractController
 		$result_cache = false;
 		if ($this->in->getUint('cache_id')) {
 			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
-			if ($result_cache['person_id'] != $this->person['id']) {
+			if (!$result_cache OR $result_cache['person_id'] != $this->person['id']) {
 				$result_cache = false;
 			}
 		}
@@ -98,6 +98,15 @@ class PeopleSearchController extends AbstractController
 		#------------------------------
 
 		if (!$result_cache) {
+
+			$old_result_cache = false;
+			if ($this->in->getUint('copy_display_options')) {
+				$old_result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('copy_display_options'));
+				if (!$old_result_cache OR $old_result_cache['person_id'] != $this->person['id']) {
+					$old_result_cache = false;
+				}
+			}
+
 			$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
 
 			$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
@@ -114,6 +123,10 @@ class PeopleSearchController extends AbstractController
 
 			$order_by = $this->in->getString('filter.order_by');
 
+			if ($old_result_cache AND isset($result_cache['extra']['order_by'])) {
+				$order_by = $result_cache['extra']['order_by'];
+			}
+
 			if ($order_by) {
 				$searcher->setOrderByCode($order_by);
 			}
@@ -125,6 +138,10 @@ class PeopleSearchController extends AbstractController
 			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
+
+			if ($old_result_cache) {
+				$result_cache['extra'] = $old_result_cache['extra'];
+			}
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();
