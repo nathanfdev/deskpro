@@ -18,15 +18,10 @@ namespace Application\DeskPRO\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="labels_tickets")
  */
-class LabelTicket extends \Application\DeskPRO\Domain\DomainObject
+class LabelTicket extends LabelAssocAbstract
 {
-	/**
-	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="label", type="string", length=255)
-	 */
-	protected $label;
-
+	const LABEL_TYPENAME = 'tickets';
+	
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:Id

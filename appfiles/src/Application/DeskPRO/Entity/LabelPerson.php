@@ -17,14 +17,9 @@ namespace Application\DeskPRO\Entity;
  * @orm:Entity
  * @orm:Table(name="labels_people")
  */
-class LabelPerson extends \Application\DeskPRO\Domain\DomainObject
+class LabelPerson extends LabelAssocAbstract
 {
-	/**
-	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="label", type="string", length=255)
-	 */
-	protected $label;
+	const LABEL_TYPENAME = 'people';
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
