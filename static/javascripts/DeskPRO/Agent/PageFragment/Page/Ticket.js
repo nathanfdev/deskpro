@@ -17,6 +17,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		this.parent(el);
 
+		this.initRoutesOnCollection($('.with-route', this.wrapper));
+
 		this._initPopout();
 		this._initMessageActionsMenu();
 		this._initTicketTabs();
