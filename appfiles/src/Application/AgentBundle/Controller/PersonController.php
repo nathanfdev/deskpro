@@ -121,6 +121,15 @@ class PersonController extends AbstractController
 			$note_pages = range(1, ceil($notes_count / 5));
 		}
 
+		#------------------------------
+		# Users tickets
+		#------------------------------
+
+		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person);
+
+		#------------------------------
+		# Misc info needed
+		#------------------------------
 
 		// Used in the org dlg popup. TODO need to clean this up.
 		// Likely be an autocomplete field in the dlg
@@ -151,6 +160,7 @@ class PersonController extends AbstractController
 			'org_options' => $org_options,
 			'usergroups_names' => $usergroup_names,
 			'usergroups_form' => $usergroups_form,
+			'person_tickets' => $person_tickets
 		));
 	}
 

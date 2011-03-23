@@ -43,6 +43,27 @@ class Ticket extends EntityRepository
 		return $tickets;
 	}
 
+	
+
+	/**
+	 * Get all tickets a person owns, or is a participant in.
+	 * This is usually used to fetch a list of tickets for an end-user.
+	 *
+	 * @return array
+	 */
+	public function getPersonTickets(Entity\Person $person, $limit = null)
+	{
+		$tickets = $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t INDEX BY t.id
+			LEFT JOIN t.participants p
+			WHERE t.person = ?1 OR p.person = ?2
+			ORDER BY t.id DESC
+		")->setParameters(array(1=>$person, 2=>$person))->setMaxResults($limit)->execute();
+
+		return $tickets;
+	}
+
 
 
 	/**

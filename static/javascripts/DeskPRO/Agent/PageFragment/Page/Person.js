@@ -72,6 +72,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 				}
 			}
 		});
+
+		// The main tabs at the bottom of the page
+		var simpleTabs = new DeskPRO.UI.SimpleTabs({
+			context: $('.full-container-tabbed', this.wrapper),
+			triggerElements: $('.full-container-tabbed-tabs li', this.wrapper)
+		});
 		
 		this.initNoteFormEditable();
 		this.initNotePagination();

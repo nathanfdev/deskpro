@@ -107,16 +107,6 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 			</div>
 			<div class="table-content contact-info-list-wrap">
 				{% include 'AgentBundle:Person:contact-section.html.twig' with {'person': person} %}
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Create</span>
-					</div>
-					<div class="col-table-content prop-val">
-						<ul>
-							<li><a class="with-route" data-route="page:{{ path('agent_ticket_new', {'person_id': person.id}) }}">Create ticket</a></li>
-						</ul>
-					</div>
-				</div>
 			</div>
 		</div>
 		{# /Box Contact #}
@@ -194,6 +184,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 	<div class="full-container-tabbed-tabs">
 		<ul>
 			<li class="tab-trigger person-notes on" data-tab-for=".tab-content.person-notes"><a>Notes</a></li>
+			<li class="tab-trigger person-tickets" data-tab-for=".tab-content.person-tickets"><a>Tickets</a></li>
 		</ul>
 	</div>
 	{# /Tab Triggers #}
@@ -201,7 +192,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 	{# Tab Contents #}
 	<div class="full-container-tabbed-contents-wrap">
 		{# Tab: Notes #}
-		<div class="full-container-tabbed-contents tab-content person-messages on" data-tab-trigger=".tab-trigger.person-messages">
+		<div class="full-container-tabbed-contents tab-content person-notes on" data-tab-trigger=".tab-trigger.person-notes">
 			<div class="full-tab-content">
 				<div class="messages-wrap notes-wrap">
 
@@ -239,6 +230,61 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 			</div>
 		</div>
 		{# /Tab: Notes #}
+
+		{# Tab: Tickets #}
+			<div class="full-container-tabbed-contents tab-content person-tickets" data-tab-trigger=".tab-trigger.person-tickets" style="display:none">
+
+				<div class="inner-box-tab-content top-box">
+					<ul>
+						<li>
+							<a class="with-route" data-route="page:{{ path('agent_ticket_new', {'person_id': person.id}) }}">Create new ticket</a>
+						</li>
+						<li class="total on">
+							<label>Total</label>
+							<span class="counter">{{ person_tickets|length }}</span>
+						</li>
+					</ul>
+				</div>
+
+				<div class="inner-box-tab-content box-list">
+					<table class="list" cellspacing="0" width="100%">
+						<thead>
+							<tr>
+								<th>Subject</th>
+								<th>Department</th>
+								<th width="100">Status</th>
+								<th width="100">Agent / Team</th>
+								<th width="100">Date Created</th>
+							</tr>
+						</thead>
+						<tbody>
+							{% for ticket in person_tickets %}
+								<tr class="line-1 {% if loop.index0 is odd %}white{% endif %}">
+									<td><a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ticket.subject}}</a></td>
+									<td>{{ ticket.department.title }}</td>
+									<td>{{ phrase('core_tickets.status_' ~ ticket.status) }}</td>
+									<td>
+										{% if not ticket.agent and not ticket.agent_team %}q
+											Unassigned
+										{% else %}
+											<div>{{ ticket.agent.display_name }}</div>
+											<div>{{ ticket.agent_team.name }}</div>
+										{% endif %}
+									</td>
+									<td>
+										<span class="timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>
+									</td>
+								</tr>
+							{% else %}
+								<tr>
+									<td colspan="4">This user has no tickets.</td>
+								</tr>
+							{% endfor %}
+						</tbody>
+					</table>
+				</div>
+			</div>
+		{# /Tab: Tickets #}
 	</div>
 	{# /Tab Contents #}
 </div>
@@ -325,233 +371,3 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 		New email: <input type="text" class="new-email-input" value="" /> <input type="button" class="new-email-btn" value="Add" />
 	</div>
 </div>
-
-{#
-<div class="profile">
-	<div class="main">
-		<div class="header">
-			<h1 class="editable hover-edit" data-editable-for=".inline-editable .name">{{person.display_name}}</h1>
-			<div class="organization hover-edit">
-				<span class="name">{{person.organization.name}}</span>
-				<span class="position">{{person.organization_position}}</span>
-			</div>
-			<div class="email hover-edit">
-				<div class="primary">{{person.primary_email.email}}</div>
-			</div>
-		</div>
-
-		<div class="section notes">
-			<span class="new-note trigger">new note</span>
-			<h5>Notes</h5>
-			<div class="new-note-form" style="display:none">
-				<textarea name="note"></textarea>
-				<div style="float:right">
-					<span class="saving trigger">saving...</span>
-					<span class="save trigger">save</span><br/>
-					<span class="cancel trigger">cancel</span>
-				</div>
-			</div>
-			<div>
-				<dl class="note-list" data-limit="5">
-					{% for note in notes %}
-						{% include 'AgentBundle:Person:note-li.html.twig' with {'note': note} %}
-					{% endfor %}
-				</dl>
-				{% if note_pages %}
-					<ul class="pages">
-						{% for i in note_pages %}
-							<li class="page-{{i}} {%if i == 1 %}active{%endif%}" data-page="{{i}}">{{i}}</li>
-						{% endfor %}
-					</ul>
-				{% endif %}
-			</div>
-		</div>
-
-		<div class="section">
-			<h5>User Stream</h5>
-			<div>
-				<ul class="stream">
-					<li>
-						<span class="time">14 mins</span>
-						<span class="who">John Doe</span>
-						<span class="what">updated profile fields <a href="">phone number and email address</a></span>
-					</li>
-					<li>
-						<span class="time">42 mins</span>
-						<span class="who">John Doe</span>
-						<span class="what">created new ticket <a href="">trouble</a></span>
-					</li>
-					<li>
-						<span class="time">1 day ago</span>
-						<span class="who">System</span>
-						<span class="what">auto-closed ticket <a href="">something or other</a></span>
-					</li>
-					<li>
-						<span class="time">2 days</span>
-						<span class="who">Ben</span>
-						<span class="what">replied to ticket <a href="">something or other</a></span>
-					</li>
-					<li>
-						<span class="time">2 days</span>
-						<span class="who">John Doe</span>
-						<span class="what">created ticket <a href="">something or other</a></span>
-					</li>
-					<li>
-						<span class="time">2 days</span>
-						<span class="who">John Doe</span>
-						<span class="what">registered</span>
-					</li>
-				</ul>
-			</div>
-		</div>
-	</div>
-
-	<div class="side">
-		<div class="section contact">
-			<span class="add trigger" data-add-type="im">add im</span>
-			<span class="add trigger" data-add-type="address">add address</span>
-			<span class="add trigger" data-add-type="phone">add phone</span>
-			<h5>Contact</h5>
-			<div class="content">
-				{% include 'AgentBundle:Person:contact-section.html.twig' with {'person': person} %}
-			</div>
-		</div>
-
-		{% if custom_fields %}
-			<div class="section person-custom-fields">
-				<span class="edit-trigger trigger">edit</span>
-				<h5>Fields</h5>
-				<div class="wrap">
-					{% include 'AgentBundle:Person:custom-fields-rendered.html.twig' with {'custom_fields': custom_fields} %}
-				</div>
-			</div>
-
-			<div class="person-custom-fields edit show-fields edit-fields-overlay" style="display:none">
-				{% for f in custom_fields %}
-					<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
-						<div class="label-wrap"><label>{{f.title}}</label></div>
-						<div class="field-input">
-							{{ form_field(f.form, {}, {}, ['AgentBundle:Ticket:custom-field-forms.html.twig']) }}
-						</div>
-					</div>
-				{% endfor %}
-				<div class="buttons">
-					<div class="loading-off">
-						<button class="save-trigger dp-button small">Save</button>
-						<button class="close-trigger dp-button gray small">Cancel</button>
-					</div>
-					<div class="loading-on">
-						<span>Saving ...</span>
-					</div>
-				</div>
-			</div>
-		{% endif %}
-
-		<div class="section">
-			<h5>Tickets</h5>
-			<div>
-				<ul class="simple">
-					<li class="tip" title="In Support 42 minutes ago, awaiting tech"><a href="">trouble</a></li>
-					<li class="tip" title="In Sales 2 days ago, closed"><a href="">something or other</a></li>
-				</ul>
-			</div>
-		</div>
-
-		<div class="section">
-			<h5>Leads</h5>
-			<div>
-				<ul class="simple">
-					<li><a href="">Sale</a> for $2495</li>
-				</ul>
-			</div>
-		</div>
-
-		<div class="section tags">
-			<h5>Labels</h5>
-			<div>
-				<div class="tags-field">
-					<ul class="tagit person">
-						{% for label in person.labels %}
-							<li>{{label.label}}</li>
-						{% endfor %}
-					</ul>
-				</div>
-			</div>
-		</div>
-	</div>
-
-	<div class="contact-add-tpl im new show-fields edit" style="display:none; width: 375px">
-		<input type="hidden" name="contact_type" value="instant_message" />
-		<div class="field-wrap">
-			{{contact_fields_tpl.instant_message.protocol.render|raw}}
-			{{contact_fields_tpl.instant_message.im.render({'placeholder': 'ID/Nickname'})|raw}}
-			{{contact_fields_tpl.instant_message.comment.render()|raw}}
-		</div>
-		<div class="buttons">
-			<div class="loading-off">
-				<button class="save trigger dp-button small">Save</button>
-				<button class="close trigger dp-button gray small">Cancel</button>
-			</div>
-			<div class="loading-on">
-				<span>Saving ...</span>
-			</div>
-		</div>
-	</div>
-	<div class="contact-add-tpl address new show-fields edit" style="display:none; width: 375px">
-		<input type="hidden" name="contact_type" value="address" />
-		<div class="field-wrap">
-			{{contact_fields_tpl.address.address.render()|raw}}<br />
-			{{contact_fields_tpl.address.country.render({'size': 10, 'placeholder': 'Country'})|raw}}
-			{{contact_fields_tpl.address.comment.render()|raw}}
-		</div>
-		<div class="buttons">
-			<div class="loading-off">
-				<button class="save trigger dp-button small">Save</button>
-				<button class="close trigger dp-button gray small">Cancel</button>
-			</div>
-			<div class="loading-on">
-				<span>Saving ...</span>
-			</div>
-		</div>
-	</div>
-	<div class="contact-add-tpl phone new show-fields edit" style="display:none; width: 375px">
-		<input type="hidden" name="contact_type" value="phone" />
-		<div class="field-wrap">
-			{{contact_fields_tpl.phone.country_code.render({'size': 4, 'placeholder': 'Country Code'})|raw}}
-			{{contact_fields_tpl.phone.phone.render({'placeholder': 'Phone Number'})|raw}}
-			{{contact_fields_tpl.phone.comment.render()|raw}}
-		</div>
-		<div class="buttons">
-			<div class="loading-off">
-				<button class="save trigger dp-button small">Save</button>
-				<button class="close trigger dp-button gray small">Cancel</button>
-			</div>
-			<div class="loading-on">
-				<span>Saving ...</span>
-			</div>
-		</div>
-	</div>
-
-	<div class="org-edit-dlg" style="display:none" title="Organization">
-		<select name="organization_id">{{org_options|raw}}</select>
-		<br />
-		Position: <input type="text" name="organization_position" value="{{person.organization_position}}" />
-	</div>
-
-	<div class="email-edit-dlg" style="display:none" title="Contact Emails">
-		<ul class="emails-list">
-			{% include 'AgentBundle:Person:email-dlg-li.html.twig' with {'person': person} %}
-		</ul>
-		<div class="add-email">
-			New email: <input type="text" class="new-email-input" value="" /> <input type="button" class="new-email-btn" value="Add" />
-		</div>
-	</div>
-	<div class="inline-editable" style="display:none">
-		<div class="name">
-			{{form.findField('basic_fields.first_name').render()|raw}}
-			{{form.findField('basic_fields.last_name').render()|raw}}
-			<input type="hidden" name="action" value="name" />
-		</div>
-	</div>
-</div>
-#}
