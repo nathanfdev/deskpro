@@ -273,7 +273,7 @@ pageMeta.widgets = [
 						{% endif %}
 					{% endfor %}
 
-					<div class="message admin-message">
+					<div class="message admin-message new-note">
 						<div class="message-avatar left">
 							<img src="{{ person.getPictureUrl(35) }}" alt="" width="35" height="35" />
 						</div>
@@ -286,7 +286,12 @@ pageMeta.widgets = [
 								<p>
 									<textarea style="width:98%; height: 80px;"></textarea>
 									<div style="text-align:center; margin-top: 9px;">
-										<button class="dp-button x-small">Add Note</button>
+										<div class="loading-off">
+											<button class="dp-button x-small">Add Note</button>
+										</div>
+										<div class="loading-on" style="display:none">
+											Saving ...
+										</div>
 									</div>
 								</p>
 							</div>

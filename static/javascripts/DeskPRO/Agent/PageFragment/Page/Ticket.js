@@ -93,11 +93,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	newnoteWrapper: null,
 	_initTicketNotes: function() {
-		this.newnoteWrapper = $('li.new-note:first', this.contentWrapper);
+		this.newnoteWrapper = $('.new-note:first', this.contentWrapper);
 		$('button', this.newnoteWrapper).click(this.saveNewNote.bind(this));
 	},
 
 	saveNewNote: function() {
+
+		var loadingOn = $('.loading-on', this.newnoteWrapper).show();
+		var loadingOff = $('.loading-off', this.newnoteWrapper).hide();
+
 		var data = [];
 		data.push({
 			name: 'message',
@@ -111,8 +115,14 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			data: data,
 			dataType: 'html',
 			success: function(html) {
+				loadingOn.hide();
+				loadingOff.show();
+
 				$('textarea', this.newnoteWrapper).val('');
-				this.newnoteWrapper.parent().append(html);
+				var el = $(html);
+				this.newnoteWrapper.before(el);
+				this._initMessage(el);
+
 				this._handleSendReplySuccess(html);
 			}
 		});
