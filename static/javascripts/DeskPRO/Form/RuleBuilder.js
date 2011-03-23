@@ -49,7 +49,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 	initialize: function(ruleTpl) {
 		this.ruleTpl = ruleTpl;
 
-		this.typeSelectHtml = ['<select name="rule_type"><option value=""></option>'];
+		this.typeSelectHtml = ['<select name="rule_type" class="rule_type"><option value=""></option>'];
 		$('> .type', this.ruleTpl).each((function(i,el) {
 			this.typeSelectHtml.push('<option value="' + $(el).data('rule-type') + '">' + $(el).attr('title') + '</option>');
 		}).bind(this));
@@ -83,21 +83,27 @@ DeskPRO.Form.RuleBuilder = new Class({
 		if (existing) {
 			select.val(existing.rule_type);
 			this.handleSelectChange(new_row);
-			$('.op:first select', new_row).val(existing.op);
+			$('.op:first select', new_row).val(existing.op).addClass('op');
 
-			Object.each(existing.choice, function(val, name) {
-				var name_safe = name.replace(/\[/, '\\[').replace(/\]/, '\\]');
-				if (typeOf(val) == 'object') {
-					Object.each(val, function(subval, subname) {
-						var sub_name = name_safe + "["+subname+"]";
-						var sub_name_safe = name_safe + "\\["+subname+"\\]";
-						var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval);
-						console.log(el);
-					}, this);
-				} else {
-					var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val);
-				}
-			}, this);
+			if (typeOf(existing.choice) != 'object') {
+				// If its just one item, then we'll just assume its the first field
+				$(':input, textarea, select', new_row).filter(':not(.op, .rule_type)').first().val(existing.choice);
+			} else {
+				// Otherwise we'll assume its a k=>v array
+				Object.each(existing.choice, function(val, name) {
+					var name_safe = name.replace(/\[/, '\\[').replace(/\]/, '\\]');
+					if (typeOf(val) == 'object') {
+						Object.each(val, function(subval, subname) {
+							var sub_name = name_safe + "["+subname+"]";
+							var sub_name_safe = name_safe + "\\["+subname+"\\]";
+							var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval);
+							console.log(el);
+						}, this);
+					} else {
+						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val);
+					}
+				}, this);
+			}
 		}
 
 		// Handle when its type is changed

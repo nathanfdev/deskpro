@@ -183,6 +183,17 @@ class PeopleSearchController extends AbstractController
 		$vars['preselect_terms'] = $result_cache['criteria'];
 		$vars['num_results'] = $result_cache['num_results'];
 
+		// Used in the search form again
+        $titles = array();
+        $titles['organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+        $titles['usergroups'] = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+        $titles['locales'] = App::getEntityRepository('DeskPRO:Locale')->getLocaleNames();
+		$vars['titles'] = $titles;
+
+		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$people_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
+		$vars['people_fields'] = $people_fields;
+
 		return $this->_getResponseForPeople('custom-filter', $result_cache['id'], $results_helper, $vars);
 	}
 

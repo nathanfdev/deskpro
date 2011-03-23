@@ -40,6 +40,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 		if (this.displayOptionsOverlay) {
 			this.displayOptionsOverlay.destroy();
 		}
+		if (this.displaTermsWrapper) {
+			this.displaTermsWrapper.destroy();
+		}
 	},
 
 	activate: function() {
@@ -55,8 +58,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 	//#########################################################################
 
 	_initTermsOverlay: function() {
-		var overlay_wrapper = this.displayOptionsWrapper = $('.display-terms:first', this.contentWrapper);
-		var terms = this.getMetaData('preselectTerms');
+		var overlay_wrapper = this.displaTermsWrapper = $('.display-terms:first', this.contentWrapper);
+		var terms = this.getMetaData('preselectTerms').terms;
 
 		this.termsOverlay = new DeskPRO.UI.Overlay({
 			contentElement: overlay_wrapper,
@@ -78,8 +81,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 					editor.addNewRow($('.search-terms', overlay_wrapper), basename);
 				});
 
-				Object.each(terms, function(term) {
-					editor.addNewRow($('.search-terms', overlay_wrapper), 'terms[exist_{{id}}]', term);
+				Object.each(terms, function(info, type) {
+					var id = Orb.uuid();
+					var op = info[0];
+					var choice = info[1];
+					editor.addNewRow($('.search-terms', overlay_wrapper), 'terms[exist_' + id + ']', {
+						rule_type: type,
+						op: op,
+						choice: choice
+					});
 				});
 			}
 		});
@@ -87,6 +97,21 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 		$('.save-trigger', overlay_wrapper).click((function() {
 			this.submitSearchTerms();
 		}).bind(this));
+	},
+
+	submitSearchTerms: function() {
+		var form = $('form.people_search_form:first', this.displaTermsWrapper);
+		var url = form.attr('action');
+
+		var data = form.serializeArray();
+
+		$('.buttons .loading-off', this.displaTermsWrapper).hide();
+		$('.buttons .loading-on', this.displaTermsWrapper).show();
+
+		var self = this;
+		DeskPRO_Window.loadListPane(url, { postData: data }, function() {
+			DeskPRO_Window.removePage(self);
+		});
 	},
 
 	//#########################################################################
