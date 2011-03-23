@@ -92,6 +92,11 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	protected $persons;
 
 	/**
+	 * @var array
+	 */
+	protected $_person_ids;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -173,6 +178,30 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_follower_ids;
+	}
+
+	/**
+	 * Retrieve a list of associated Person ids.
+	 *
+	 * @return array
+	 */
+	public function getPersonIds()
+	{
+		if (is_array($this->_person_ids)) {
+			return $this->_person_ids;
+		}
+
+		$this->_person_ids = App::getDb()->fetchAllCol("
+			SELECT person_id
+			FROM twitter_accounts_person
+			WHERE account_id = ?
+		", array($this['id']));
+
+		if (!is_array($this->_person_ids)) {
+			$this->_person_ids = array($this->_person_ids);
+		}
+
+		return $this->_person_ids;
 	}
 
 	/**

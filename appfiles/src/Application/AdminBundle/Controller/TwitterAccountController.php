@@ -102,18 +102,26 @@ class TwitterAccountController extends AbstractController
 			// persist entity
 			$em->persist($user);
 
-			// create Twitter account
-			$account                       = new TwitterAccount();
+			// check if Twitter account already exists
+			$account = $em->getRepository('DeskPRO:TwitterAccount')->findOneByUser($user['id']);
+			if (!$account) {
+				// create Twitter account
+				$account         = new TwitterAccount();
+				$account['user'] = $user;
+			}
+
+			// update OAuth credentials, regardless if its a new or an old account
 			$account['oauth_token']        = $accessToken->getParam('oauth_token');
 			$account['oauth_token_secret'] = $accessToken->getParam('oauth_token_secret');
-			$account['user']               = $user;
 
 			// add person to account
-			$account['persons']->add($this->person);
+			if (!in_array($this->person['id'], $account->getPersonIds())) {
+				$account['persons']->add($this->person);
+				$em->persist($this->person);
+			}
 
 			// persist entities
 			$em->persist($account);
-			$em->persist($this->person);
 
 			// flush changes
 			$em->flush();
