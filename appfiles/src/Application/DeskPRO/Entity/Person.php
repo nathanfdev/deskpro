@@ -166,7 +166,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The timezone associated with this user.
 	 *
 	 * @var string
-	 * @orm:Column(name="timezome", type="string", length=50)
+	 * @orm:Column(name="timezone", type="string", length=50)
 	 */
 	protected $timezone = 'UTC';
 
