@@ -163,7 +163,10 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 		$.ajax({
 			url: this.getMetaData('saveRetweetUrl'),
 			dataType: 'json',
-			data: { status_id: id },
+			data: {
+				status_id: id,
+				account_id: this.getMetaData('accountId')
+			},
 			context: this,
 			success: function(json) {
 				if (json.success) {
@@ -206,15 +209,13 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 					return true;
 				}
 
-				var data = {
-					text:    area.val(),
-					type:    $('input[type=radio][name=type]:checked', reply).val(),
-					account: $('input[type=radio][name="account"]:checked', reply).val()
-				};
+				var text       = area.val(),
+					type       = $('input[type=radio][name=type]:checked', reply).val(),
+					account_id = $('input[type=radio][name="account"]:checked', reply).val();
 
 				reply.remove();
 
-				this.doReply(status, data);
+				this.doReply(status, text, type, account_id);
 
 				e.preventDefault();
 				return false;
@@ -228,13 +229,15 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 		}, this));
 	},
 
-	doReply: function(id, data) {
+	doReply: function(id, text, type, account_id) {
 		$.ajax({
 			url: this.getMetaData('saveReplyUrl'),
 			dataType: 'json',
 			data: {
 				status_id: id,
-				reply: data
+				account_id: id,
+				text: text,
+				type: type
 			},
 			context: this,
 			success: function(json) {

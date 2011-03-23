@@ -103,15 +103,13 @@ class TwitterStatusController extends AbstractController
 		$response = array('success' => true);
 
 		try {
-			$status = $this->getStatus($this->in->getInt('status_id'));
+			$status  = $this->getStatus($this->in->getInt('status_id'));
+			$account = $this->getAccount($this->in->getInt('account_id'));
 
-			// @TODO add retweet code
-			// 1) send to twitter
-			// 2) store in db (user stream should do that?)
+			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
 
-			// $em = App::getOrm();
-			// $em->persist($);
-			// $em->flush();
+			// @TODO analyse response if it actually worked
+			/* $response = */ $twitter->status->retweet($status['id']);
 		} catch (\Exception $e) {
 			$response = array(
 				'success' => false,
@@ -132,15 +130,15 @@ class TwitterStatusController extends AbstractController
 
 		try {
 			$status  = $this->getStatus($this->in->getInt('status_id'));
-			$account = $this->getAccount($this->in->getInt('reply.account'));
+			$account = $this->getAccount($this->in->getInt('account_id'));
 
 			// @TODO add private reply
-			// $type = $this->in->getValue('reply.type');
+			// $type = $this->in->getValue('type');
 
 			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
 
 			// @TODO analyse response if it actually worked
-			/* $response = */ $twitter->status->update($this->in->getValue('reply.text'), $status['id']);
+			/* $response = */ $twitter->status->update($this->in->getValue('text'), $status['id']);
 		} catch (\Exception $e) {
 			$response = array(
 				'success' => false,
