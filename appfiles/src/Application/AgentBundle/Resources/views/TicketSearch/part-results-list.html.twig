@@ -42,7 +42,7 @@
 			{% elseif field == 'organization' %}
 				<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
 				{% if ticket.organization %}
-					{{ticket.organization.name}}
+					<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
 				{% else %}
 					None
 				{% endif %}
