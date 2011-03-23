@@ -1922,7 +1922,7 @@ border-left: none;
 
 .ticket-info {
 	width: 55%;
-	margin: 10px 0 0 9px;
+	margin: 5px 0 0 9px;
 }
 
 .ticket-tags {
@@ -1990,7 +1990,7 @@ border-left: none;
 }
 
 .ticket-participants {
-	margin-top: 20px;
+	margin-top: 8px;
 }
 
 .tags-wrap {
@@ -2196,7 +2196,7 @@ table.participants-table .partis ul li{
 
 .ticket-properties {
 	width: 41%;
-	margin: 10px 9px 0 0;
+	margin: 5px 9px 0 0;
 }
 
 .table-container:first-child {
