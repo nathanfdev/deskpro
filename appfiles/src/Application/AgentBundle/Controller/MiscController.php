@@ -25,6 +25,13 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_category_full = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->getFullCategoryNames(null, true)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_priority = ' . json_encode(App::getEntityRepository('DeskPRO:TicketPriority')->getPriorityNames()) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.ticket_workflow = ' . json_encode(App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames()) . ';';
+		$js[] = 'window.DESKPRO_NAME_REGISTRY.status = ' . json_encode(array(
+			'open' => App::getTranslator()->phrase('core_tickets.status_open'),
+			'pending' => App::getTranslator()->phrase('core_tickets.status_pending'),
+			'hidden' => App::getTranslator()->phrase('core_tickets.status_hidden'),
+			'resolved' => App::getTranslator()->phrase('core_tickets.status_resolved'),
+			'closed' => App::getTranslator()->phrase('core_tickets.status_closed'),
+		)) . ';';
 
 		// Common URLs
 		$js[] = 'window.DESKPRO_URL_REGISTRY = {};';
