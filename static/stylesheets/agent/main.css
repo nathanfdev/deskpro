@@ -2706,3 +2706,14 @@ ul.person-popout-tabs li a{
 	text-shadow: none;
 	font-weight: bold;
 }
+
+
+/* This is applied to table listings, its needed because
+the div that wraps a table has a border, but if the table overflows
+(ie width too small and needs a scrollbar on the pane), by default
+the div wont overflow with it, so we end up with a strange border
+cutting down in the middle of columns. This is one of the only available
+fixes */
+.box-list {
+	display: inline-block;
+}
