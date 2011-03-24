@@ -508,7 +508,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			}
 		}
 
-		var otherBtns = $('li:not(.macro-on)', ul);
+		var otherBtns = $('li:not(.macro-on, .send-reply)', ul);
 		var applyBtns = $('li.macro-on', ul);
 
 		if (force == 'on') {
