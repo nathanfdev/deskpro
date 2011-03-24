@@ -71,6 +71,9 @@ class TicketSearchController extends AbstractController
 		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
 		if ($pref_display_fields) {
 			$vars['display_fields'] = $pref_display_fields;
+		} else {
+			// Default display fields based on the filter
+			$result_cache->setExtraData('display_fields', $this->_suggestedDisplayFields($filter->getSearcher()));
 		}
 
 		$vars['filter'] = $filter;
@@ -180,6 +183,33 @@ class TicketSearchController extends AbstractController
 		}
 	}
 
+	protected function _suggestedDisplayFields(TicketSearch $searcher)
+	{
+		$display_fields = array();
+
+		$specific_fields = $searcher->getSpecificFields();
+
+		if (!in_array('department', $specific_fields)) {
+			$display_fields[] = 'department';
+		}
+
+		$display_fields[] = 'date_created';
+
+		$max = 3;
+		foreach ($searcher->getTermFields() as $term) {
+			if (!in_array($term, $specific_fields)) {
+				$display_fields[] = $term;
+			}
+
+			$display_fields = array_unique($display_fields);
+			if (count($display_fields) >= $max) {
+				break;
+			}
+		}
+
+		return $display_fields;
+	}
+
 	############################################################################
 	# find-pane
 	############################################################################
@@ -265,6 +295,9 @@ class TicketSearchController extends AbstractController
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
 			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
+
+			// Default display fields based on our search
+			$result_cache->setExtraData('display_fields', $this->_suggestedDisplayFields($searcher));
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();

@@ -58,6 +58,14 @@ class TicketSearch extends SearcherAbstract
 	 */
 	protected $summary = null;
 
+	/**
+	 * An array of search terms that are specific, as in only allow a single
+	 * value (so not ranges or IN() types). For example, a single department or organization
+	 *
+	 * @return array
+	 */
+	protected $specific_fields = array();
+
 	public $_last_sql = null;
 
 	/**
@@ -96,12 +104,24 @@ class TicketSearch extends SearcherAbstract
 	/**
 	 * Get the summary of crtiera
 	 *
-	 * @array
+	 * @return array
 	 */
 	public function getSummary()
 	{
 		$this->getSqlParts();
 		return $this->summary;
+	}
+
+
+	/**
+	 * Get specific fields in this search
+	 *
+	 * @return array
+	 */
+	public function getSpecificFields()
+	{
+		$this->getSqlParts();
+		return $this->specific_fields;
 	}
 
 
@@ -376,6 +396,11 @@ class TicketSearch extends SearcherAbstract
 					});
 
 					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_DEPARTMENT;
+					}
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice, true);
 					break;
 				case self::TERM_CATEGORY:
@@ -383,6 +408,10 @@ class TicketSearch extends SearcherAbstract
 						$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames((array)$choice);
 						return $titles;
 					});
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_CATEGORY;
+					}
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.category_id", $op, $choice, true);
 					break;
@@ -392,9 +421,18 @@ class TicketSearch extends SearcherAbstract
 						return $titles;
 					});
 
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_PRODUCT;
+					}
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.product_id", $op, $choice, true);
 					break;
 				case self::TERM_PRIORITY:
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_PRIORITY;
+					}
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.priority_id", $op, $choice, true);
 					break;
 				case self::TERM_URGENCY:
@@ -423,9 +461,19 @@ class TicketSearch extends SearcherAbstract
 						$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames((array)$choice);
 						return $titles;
 					});
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_WORKFLOW;
+					}
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice. true);
 					break;
 				case self::TERM_LANGUAGE:
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_LANGUAGE;
+					}
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true);
 					break;
 				case self::TERM_AGENT:
@@ -435,6 +483,9 @@ class TicketSearch extends SearcherAbstract
 					} elseif ($choice == -1) {
 						$this->summary[] = $tr->phrase('core.agent_is_me');
 						$wheres[] = "$tickets_table.agent_id = " . App::getCurrentPerson()->getId();
+
+						$this->specific_fields[] = self::TERM_AGENT;
+
 					} elseif ($choice == -2) {
 						$this->summary[] = $tr->phrase('core.agent_is_not_me');
 						$wheres[] = "$tickets_table.agent_id != " . App::getCurrentPerson()->getId();
@@ -443,6 +494,11 @@ class TicketSearch extends SearcherAbstract
 							$titles = App::getEntityRepository('DeskPRO:People')->getAgentNames((array)$choice);
 							return $titles;
 						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_AGENT;
+						}
+
 						$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $choice, true);
 					}
 					break;
@@ -462,6 +518,11 @@ class TicketSearch extends SearcherAbstract
 							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
 							return $titles;
 						});
+
+						if (count($choice) == 1) {
+							$this->specific_fields[] = self::TERM_AGENT_TEAM;
+						}
+
 						$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $choice, true);
 					}
 					break;
@@ -471,6 +532,11 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_ORGANIZATION:
 					$this->summary[] = $this->_choiceSummary($tr->phrase('core_tickets.organization'), $op, $choice);
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_ORGANIZATION;
+					}
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.organization", $op, $choice, true);
 					break;
 				case self::TERM_PARTICIPANT:

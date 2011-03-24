@@ -30,58 +30,75 @@
 	</tr>
 	<tr class="{% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-2 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
 		{% for field in display_fields %}{% if field != 'agent' %}
-			<td class="{{field}}" {% if loop.last %}style="text-align:right"{% endif %}>
 			{% if field == 'date_created' %}
-				<span class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>
+				<td class="{{field}}">
+					<span class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>
+				</td>
 			{% elseif field == 'person' %}
-				{{ticket.person.display_name}}
+				<td class="{{field}}">
+					{{ticket.person.display_name}}
+				</td>
 			{% elseif field == 'department' %}
-				{{ticket.department.title}}
+				<td class="{{field}}">
+					{{ticket.department.title}}
+				</td>
 			{% elseif field == 'category' %}
-				<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
-				{% if ticket.category %}
-					{{ticket.category.title}}
-				{% else %}
-					None
-				{% endif %}
-				</span>
+				<td class="{{field}}">
+					<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
+					{% if ticket.category %}
+						{{ticket.category.title}}
+					{% else %}
+						None
+					{% endif %}
+					</span>
+				</div>
 			{% elseif field == 'product' %}
-				<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
-				{% if ticket.product %}
-					{{ticket.product.title}}
-				{% else %}
-					None
-				{% endif %}
-				</span>
+				<td class="{{field}}">
+					<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
+					{% if ticket.product %}
+						{{ticket.product.title}}
+					{% else %}
+						None
+					{% endif %}
+					</span>
+				</td>
 			{% elseif field == 'organization' %}
-				<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
-				{% if ticket.organization %}
-					<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
-				{% else %}
-					None
-				{% endif %}
-				</span>
+				<td class="{{field}}">
+					<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
+					{% if ticket.organization %}
+						<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
+					{% else %}
+						None
+					{% endif %}
+					</span>
+				</td>
 			{% elseif field == 'agent' %}
-				<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
-				{% if ticket.agent %}
-					{{ticket.agent.display_name}}
-				{% else %}
-					Unassigned
-				{% endif %}
-				</span>
+				<td class="{{field}}">
+					<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
+					{% if ticket.agent %}
+						{{ticket.agent.display_name}}
+					{% else %}
+						Unassigned
+					{% endif %}
+					</span>
+				</td>
 			{% else %}
 				{% for f in ticket_field_defs %}
 					{% if field == 'ticket_fields['~f.id~']' %}
-					<div class="prop-val ticket_fields_{{f.id}}">
-						{{ticket.renderCustomField(f.id)}}
-					</div>
+						<td class="ticket-field">
+							<div class="prop-val ticket_fields_{{f.id}}">
+								{{ticket.renderCustomField(f.id)}}
+							</div>
+						</td>
 					{% endif %}
 				{% endfor %}
 				{% for f in person_field_defs %}
 					{% if field == 'person_fields['~f.id~']' %}
-					<div class="prop-val person_fields_{{f.id}}">
-						{{ticket.person.renderCustomField(f.id)}}
-					</div>
+						<td class="person-field">
+							<div class="prop-val person_fields_{{f.id}}">
+								{{ticket.person.renderCustomField(f.id)}}
+							</div>
+						</td>
 					{% endif %}
 				{% endfor %}
 			{% endif %}

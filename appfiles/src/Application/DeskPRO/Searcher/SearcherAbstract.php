@@ -82,6 +82,23 @@ abstract class SearcherAbstract
 	}
 
 
+	/**
+	 * Get an array of fields the searcher has set. (so just the 'type' codes, not op/choices).
+	 *
+	 * @return array
+	 */
+	public function getTermFields()
+	{
+		$terms = $this->getTerms();
+		$fields = array();
+		foreach ($terms as $term => $x) {
+			$fields[] = $term;
+		}
+
+		return $fields;
+	}
+
+
 
 	/**
 	 * Set the ordering
