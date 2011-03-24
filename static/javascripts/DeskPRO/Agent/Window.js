@@ -217,9 +217,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//# Simple UI features
 	//#################################################################
 
-	showAlert: function(msg) {
+	showAlert: function(msg, class) {
 		this._initAlertOverlay();
 		$('#alert_overlay_msg').html(msg);
+
+		var wrapper = this._alertOverlay.elements.wrapperOuter;
+		var wrapperModel = this._alertOverlay.elements.modal;
+		if (wrapper.data('added-class')) {
+			wrapper.removeClass(wrapper.data('added-class'));
+			wrapperModel.removeClass(wrapper.data('added-class'));
+			wrapper.data('added-class', null);
+		}
+		if (class) {
+			wrapper.addClass(class);
+			wrapperModel.addClass(class);
+			wrapper.data('added-class', class);
+		}
+
 		this._alertOverlay.openOverlay();
 	},
 
@@ -245,6 +259,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}).bind(this));
 			}
 		});
+
+		// Need to init it now because showAlert will try to set a
+		// class on it sometimes, and we need the elements ready
+		this._alertOverlay.initOverlay();
 	},
 
 	_initConfirmOverlay: function() {
