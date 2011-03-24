@@ -73,7 +73,7 @@ class TicketSearchController extends AbstractController
 			$vars['display_fields'] = $pref_display_fields;
 		} else {
 			// Default display fields based on the filter
-			$result_cache->setExtraData('display_fields', $this->_suggestedDisplayFields($filter->getSearcher()));
+			$vars['display_fields'] = $this->_suggestedDisplayFields($filter->getSearcher());
 		}
 
 		$vars['filter'] = $filter;

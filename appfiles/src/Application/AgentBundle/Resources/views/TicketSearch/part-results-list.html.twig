@@ -9,7 +9,7 @@
 		</td>
 		<td colspan="{{display_fields|length}}" class="subject tipped">
 			<cite class="person-name">
-				<a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': ticket.person.id}) }}">
+				<a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
 					{{ticket.person.getDisplayContactShort(35)}}
 				</a>
 			</cite>
