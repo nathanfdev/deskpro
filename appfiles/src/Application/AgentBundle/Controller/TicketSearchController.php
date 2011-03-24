@@ -87,7 +87,7 @@ class TicketSearchController extends AbstractController
 		$searcher = $filter->getSearcher();
 
 		return $this->render('AgentBundle:TicketSearch:filter-tip-summary.html.twig', array(
-			'title' => $filter['ittle'],
+			'title' => $filter['title'],
 			'terms_summary' => $searcher->getSummary()
 		));
 	}
@@ -232,18 +232,6 @@ class TicketSearchController extends AbstractController
 		return $this->render('AgentBundle:TicketSearch:custom-filter-form.html.twig', array(
 			'ticket_options' => $ticket_options,
 			'preselect_terms' => $preselect_terms,
-			'autorun' => $autorun
-		));
-	}
-
-	public function searchAction()
-	{
-		// Used to specify terms in the URL and have then show up automatically
-		$preselect_query = $this->in->getString('search_query');
-		$autorun = $this->in->getBool('autorun');
-
-		return $this->render('AgentBundle:TicketSearch:search.html.twig', array(
-			'preselect_query' => $preselect_query,
 			'autorun' => $autorun
 		));
 	}
