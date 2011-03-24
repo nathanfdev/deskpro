@@ -246,9 +246,15 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var catMenuList = this.ticketOptionsMenuEls['category_id'];
 
 		$('li', catMenuList).hide();
+		var did_show = false;
 		Array.each(validCatIds, function(id) {
+			did_show = true;
 			$('.cat-'+id, catMenuList).show();
 		});
+
+		if (!did_show) {
+			$('li.no-cats', catMenuList).show();
+		}
 
 		// We have to run rules to check custom fields now
 		var ticketInfo = {
