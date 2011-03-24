@@ -23,6 +23,10 @@ a {
 	cursor: pointer;
 }
 
+.pad {
+	padding: 5px;
+}
+
 /**************************************
 Header
 ***************************************/
@@ -1651,6 +1655,11 @@ Tabs
     border-radius: 3px;
 }
 
+.inner-box-tab-content.no-pad {
+	padding: 0 !important;
+	margin: 0 !important;
+}
+
 .inner-box-tab-content.top-box {
 	overflow: hidden;
 	height: 33px;
@@ -2708,12 +2717,8 @@ ul.person-popout-tabs li a{
 }
 
 
-/* This is applied to table listings, its needed because
-the div that wraps a table has a border, but if the table overflows
-(ie width too small and needs a scrollbar on the pane), by default
-the div wont overflow with it, so we end up with a strange border
-cutting down in the middle of columns. This is one of the only available
-fixes */
 .box-list {
-	display: inline-block;
+	display: table;
+	border-collapse: separate;
+	width: 100%;
 }

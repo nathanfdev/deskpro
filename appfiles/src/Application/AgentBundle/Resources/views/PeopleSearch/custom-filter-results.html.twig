@@ -32,11 +32,13 @@ pageMeta.preselectTerms = {{preselect_terms|json_encode|raw}};
 		</ul>
 	</div>
 
-	<div class="inner-box-tab-content box-list">
-		<table class="list" cellspacing="0" width="100%">
-			{% include 'AgentBundle:PeopleSearch:part-results-list-thead.html.twig' %}
-			{% include 'AgentBundle:PeopleSearch:part-results-list.html.twig' %}
-		</table>
+	<div class="pad">
+		<div class="inner-box-tab-content box-list no-pad">
+			<table class="list" cellspacing="0" width="100%">
+				{% include 'AgentBundle:PeopleSearch:part-results-list-thead.html.twig' %}
+				{% include 'AgentBundle:PeopleSearch:part-results-list.html.twig' %}
+			</table>
+		</div>
 	</div>
 
 	<div class="loading-more">
