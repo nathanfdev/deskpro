@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 /**
  * Ticket messages
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketMessage")
  * @orm:Table(name="tickets_messages")
  */
 class TicketMessage extends \Application\DeskPRO\Domain\DomainObject

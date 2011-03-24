@@ -87,6 +87,30 @@ class TicketController extends AbstractController
 		));
 	}
 
+	############################################################################
+	# view-tip
+	############################################################################
+
+	/**
+	 * Serves up a tool-tip description for the ticket
+	 *
+	 * @param  $ticket_id
+	 */
+	public function viewTipAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$message = null;
+		try {
+			$message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($ticket);
+		} catch (\Exception $e) {};
+
+		return $this->render('AgentBundle:Ticket:ticket-tip.html.twig', array(
+			'ticket' => $ticket,
+			'message' => $message
+		));
+	}
+
 
 
 	############################################################################
