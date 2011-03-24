@@ -65,12 +65,15 @@ class TicketSearchController extends AbstractController
 		$vars = array(
 			'filter' => $filter,
 			'filter_id' => $filter['id'],
+			'terms_summary' => $filter->getSearcher()->getSummary()
 		);
 
 		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
 		if ($pref_display_fields) {
 			$vars['display_fields'] = $pref_display_fields;
 		}
+
+		$vars['filter'] = $filter;
 
 		return $this->_getResponseForTickets('filter', $filter['id'], $results_helper, $vars);
 	}
@@ -81,8 +84,8 @@ class TicketSearchController extends AbstractController
 		$searcher = $filter->getSearcher();
 
 		return $this->render('AgentBundle:TicketSearch:filter-tip-summary.html.twig', array(
-			'filter' => $filter,
-			'summary' => $searcher->getSummary()
+			'title' => $filter['ittle'],
+			'terms_summary' => $searcher->getSummary()
 		));
 	}
 
@@ -261,6 +264,7 @@ class TicketSearchController extends AbstractController
 			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by, 'group_by' => $group_by);
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
+			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();
@@ -288,6 +292,7 @@ class TicketSearchController extends AbstractController
 			$results = $searcher->getMatches();
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
+			$result_cache['extra']['terms_summary'] = $searcher->getSummary();
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();
@@ -301,7 +306,8 @@ class TicketSearchController extends AbstractController
 
 		$vars = array(
 			'cache' => $result_cache,
-			'cache_id' => $result_cache['id']
+			'cache_id' => $result_cache['id'],
+			'terms_summary' => $result_cache->getExtraData('terms_summary')
 		);
 
 		if (!empty($result_cache['extra']['display_fields'])) {

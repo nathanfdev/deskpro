@@ -89,4 +89,31 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->date_created = new \DateTime();
 	}
+
+
+	
+	/**
+	 * Get some data from the extra array
+	 */
+	public function getExtraData($key, $default = null)
+	{
+		return (isset($this->extra[$key]) ? $this->extra[$key] : $default);
+	}
+
+
+	/**
+	 * Set some data on the extra array.
+	 *
+	 * @param  $key
+	 * @param  $value
+	 * @return void
+	 */
+	public function setExtraData($key, $value)
+	{
+		if ($value === null) {
+			unset($this->extra[$key]);
+		} else {
+			$this->extra[$key] = $value;
+		}
+	}
 }

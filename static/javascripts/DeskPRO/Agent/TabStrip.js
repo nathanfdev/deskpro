@@ -209,7 +209,24 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			if (tabData.page.TYPENAME != 'basic') {
 				html += ' icon icon-' + tabData.page.TYPENAME;
 			}
-			html += '" data-tipped="' + tabData.title + '" data-tipped-options="skin: \'light\', showDelay: 1, target: \'mouse\', hook: \'topmiddle\'">';
+
+			if (tabData.page.getMetaData('tabTip')) {
+				if (tabData.page.getMetaData('tabTip').indexOf('.') === 0) {
+
+					// This means the tip is in an actual element in the tab
+					// Note that due to the way the tab manager works, we havent actually rendered
+					// the html yet, so this element doesnt exist yet.
+					// We'll give the tip an ID, and in _onTabActivate we'll give the tip that ID
+					// when the element is rendered.
+
+					tabData.page.setMetaData('fetchTabTip', true);
+					html += '" data-tipped="' + tabData.btnId + '_tip' + '" data-tipped-options="inline: true, skin: \'light\', showDelay: 1, hook: \'topmiddle\'">';
+				} else {
+					html += '" data-tipped="' + tabData.tabTip + '" data-tipped-options="skin: \'light\', showDelay: 1, hook: \'topmiddle\'">';
+				}
+			} else {
+				html += '" data-tipped="' + tabData.title + '" data-tipped-options="skin: \'light\', showDelay: 1, hook: \'topmiddle\'">';
+			}
 
 			html += '<a class="link">'+tabData.title+'</a>';
 			html += '<a class="close-tab">Close</a>';
@@ -233,6 +250,17 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	_onTabActivate: function(tabData) {
 		$('li', this.tabStrip).removeClass('active-tab');
 		$('#' + tabData.btnId, this.tabStrip).addClass('active-tab');
+
+		// Now that the tab has been rendered, we'll have access to
+		// the tip element, so we should give it the appropriate ID
+		// so Tipped can find it
+		if (tabData.page.getMetaData('fetchTabTip')) {
+			tabData.page.setMetaData('fetchTabTip', null);
+			var tipId = tabData.btnId + '_tip';
+			if (!document.getElementById(tipId)) {
+				$('#' + tabData.wrapperId + ' ' + tabData.page.getMetaData('tabTip')).attr('id', tipId);
+			}
+		}
 	},
 
 	_onTabRemove: function(tabData) {

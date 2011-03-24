@@ -1,9 +1,13 @@
 <script>
-{% if page_title %}
-	pageMeta.title = {{ page_title|json_encode|raw }};
-{% else %}
-	pageMeta.title = 'Filter';
+{% if not page_title %}
+	{% if filter.title %}
+		{% set page_title = filter.title %}
+	{% else %}
+		{% set page_title = 'Search' %}
+		pageMeta.tabTip = '.tip-filter-terms';
+	{% endif %}
 {% endif %}
+pageMeta.title = {{ page_title|json_encode|raw }};
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
 pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?cache_id={{cache_id}}';
@@ -16,6 +20,9 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ticketsearch_save_resultprefs', {'ca
 {% endif %}
 </script>
 <div class="layout-content">
+<div class="tip-filter-terms" style="display:none">
+	{% include 'AgentBundle:TicketSearch:filter-tip-summary.html.twig' with {'title': page_title, 'terms_summary': terms_summary} %}
+</div>
 <div class="content">
 	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
 
