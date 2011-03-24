@@ -28,7 +28,7 @@ DeskPRO.Agent.Layout.FooterLayout = Orb.Class({
 			var foot_height = 166;
 		} else if (this.footer.is('.is-ticket-list')) {
 			if (this.isFooterOpen) {
-				var foot_height = 200;
+				var foot_height = 175;
 			} else {
 				var foot_height = 33;
 			}
