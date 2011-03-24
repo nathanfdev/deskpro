@@ -60,6 +60,9 @@ $CONFIG['debug']['js'] = array(
 	// Do not automatically load a filter when first entering agent UI
 	//'noAutoLoadFilter' => true,
 
+	// Disables the AJAX that saves and relaods previous state
+	//'disableSaveState' => true,
+
 	// Run these routes automatically when first entering the agent UI
 	// array(array('ticket', 'route_name', array('param' => 'xxx')))
 	//'autoLoadRoutes' => array(),

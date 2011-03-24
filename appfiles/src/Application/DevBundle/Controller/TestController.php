@@ -13,9 +13,8 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		$test = new \Zend_Oauth_Consumer();
-		$test = new \Zend_Oauth_Consumer();
-		$test2 = new \Zend_Service_Twitter();
+		$p = App::getEntityRepository('DeskPRO:Person')->find(6535);
+		echo $p->getDisplayContactShort(10);
 		exit;
     }
 }

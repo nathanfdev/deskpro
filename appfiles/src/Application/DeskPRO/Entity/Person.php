@@ -500,6 +500,110 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	
+
+	/**
+	 * Gets this persons name and their primary email address
+	 * 
+	 * @return string
+	 */
+	public function getDisplayContact()
+	{
+		$display = $this->getDisplayName();
+		if ($this->getPrimaryEmailAddress()) {
+			$display .= " ({$this->getPrimaryEmailAddress()})";
+		}
+
+		return $display;
+	}
+
+
+	/**
+	 * Gets this persons name and primary email address. If their name is
+	 * long, we'll try to initialize it or try other ways to shorten the name
+	 * to the specified number of characters.
+	 *
+	 * @return string
+	 */
+	public function getDisplayContactShort($max_len = 40)
+	{
+		/*
+		 * n = name
+		 * e = email
+		 * fi = first initial
+		 * li = last initial
+		 * fn = first name
+		 * ln = last name
+		 */
+		$try = array(
+			array('fn', 'ln', '(e)'),
+			array('fi', 'ln', '(e)'),
+			array('fn', 'li', '(e)'),
+			array('n', '(e)'),
+			array('fn', 'ln'),
+			array('fi', 'ln'),
+			array('fn', 'li'),
+			array('fi', 'li', '(e)'),
+			array('fi', 'li'),
+			array('e'),
+			array('n')
+		);
+
+		foreach ($try as $k => $elements) {
+
+			$display = array();
+			foreach ($elements as $el) {
+				switch ($el) {
+					case 'n':
+						if (!$this->name) continue 2;
+						$display[] = $this->name;
+						break;
+
+					case 'fi':
+						if (!$this->first_name) continue 2;
+						$display[] = $this->first_name[0];
+						break;
+
+					case 'fn':
+						if (!$this->first_name) continue 2;
+						$display[] = $this->first_name;
+						break;
+
+					case 'li':
+						if (!$this->last_name) continue 2;
+						$display[] = $this->last_name[0];
+						break;
+
+					case 'ln':
+						if (!$this->last_name) continue 2;
+						$display[] = $this->last_name;
+						break;
+
+					case '(e)':
+					case 'e':
+						if (!$this->getPrimaryEmailAddress()) continue 2;
+
+						if ($el == '(e)') {
+							$display[] = "({$this->getPrimaryEmailAddress()})";
+						} else {
+							$display[] = $this->getPrimaryEmailAddress();
+						}
+						break;
+				}
+			}
+
+			$display = implode(' ', $display);
+
+			if (strlen($display) <= $max_len) {
+				return $display;
+			}
+		}
+
+		// If we got down here, we have no choice but to show
+		// whatever we have
+		return $this->getDisplayName();
+	}
+
 
 
 	/**

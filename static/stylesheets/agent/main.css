@@ -1813,7 +1813,7 @@ border-left: none;
 	padding: 0 2px 0 0;
 }
 
-.list td.subject a {
+.list td a.subject-link {
 	color: #3c3e3f;
 	font-weight: bold;
 	cursor: pointer;
@@ -1822,6 +1822,12 @@ border-left: none;
 	display: block;
 	white-space: nowrap;
 	border-right: 4px solid transparent;
+}
+
+.list td.subject .person-name {
+	float: right;
+	line-height: 13px;
+	padding-left: 10px;
 }
 
 .list a.flag-list {

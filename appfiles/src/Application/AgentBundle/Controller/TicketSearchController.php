@@ -137,7 +137,7 @@ class TicketSearchController extends AbstractController
 		$flagged_tickets = App::getEntityRepository('DeskPRO:TicketFlagged')->getFlagsForTickets($tickets, $this->person);
 
 		if (empty($vars['display_fields'])) {
-			$vars['display_fields'] = array('person', 'department');
+			$vars['display_fields'] = array('date_created', 'department');
 		}
 
 		$macros = null;

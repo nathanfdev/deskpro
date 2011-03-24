@@ -24,6 +24,7 @@
 				<li data-field="product"><input type="checkbox" name="product" /> Product</li>
 				<li data-field="organization"><input type="checkbox" name="organization" /> Organization Name</li>
 				<li data-field="agent"><input type="checkbox" name="agent" /> Agent Name</li>
+				<li data-field="date_created"><input type="checkbox" name="date_created" /> Date Opened</li>
 				{% for f in ticket_field_defs %}
 					<li data-field="ticket_fields[{{f.id}}]"><input type="checkbox" name="ticket_fields[{{f.id}}]" /> Ticket Field: {{f.title}}</li>
 				{% endfor %}

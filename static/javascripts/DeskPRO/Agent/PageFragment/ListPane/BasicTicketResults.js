@@ -54,8 +54,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
 
 		this.initFeaturesOnCollection(el, {
-			routes: ['tr .with-route'],
-			times: ['tr abbr.timeago']
+			routes: ['.with-route'],
+			times: ['.timeago']
 		});
 
 		DeskPRO_Window.runOpenTicketStateOnElement(el);
@@ -338,7 +338,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		var el = $(html);
 		this.initFeaturesOnCollection(el, {
 			routes: ['.with-route'],
-			times: ['abbr.timeago']
+			times: ['.timeago']
 		});
 
 		DeskPRO_Window.runOpenTicketStateOnElement(el);

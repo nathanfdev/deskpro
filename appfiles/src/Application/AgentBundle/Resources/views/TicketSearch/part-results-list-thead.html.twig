@@ -12,6 +12,7 @@
 			{% elseif field == 'product' %}<th data-field="product">Product</th>
 			{% elseif field == 'organization' %}<th data-field="organization">Organization</th>
 			{% elseif field == 'agent' and 0 %}<th data-field="agent">Agent</th>
+			{% elseif field == 'date_created' %}<th data-field="date_created">Date Opened</th>
 			{% else %}
 				{% for f in ticket_field_defs %}
 					{% if field == 'ticket_fields['~f.id~']' %}

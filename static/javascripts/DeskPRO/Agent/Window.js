@@ -64,6 +64,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	windowStateUpdated: function(type) {
+
+		if (this.DEBUG.disableSaveState) return;
+
 		this.winStateQueue.include(type);
 
 		if (this.saveWindowState_timeout) {
