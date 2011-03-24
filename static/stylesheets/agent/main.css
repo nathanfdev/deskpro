@@ -1625,7 +1625,11 @@ Tabs
 .pane-tabs > ul > li.icon-ticket a.link,
 .pane-tabs > ul > li.icon-ticket-custom-filter a.link,
 .pane-tabs > ul > li.icon-ticket-filter a.link,
-.pane-tabs > ul > li.icon-ticket-flagged a.link {
+.pane-tabs > ul > li.icon-ticket-flagged a.link,
+.pane-tabs > ul > li.icon-people-custom-filter a.link,
+.pane-tabs > ul > li.icon-organization-custom-filter a.link,
+.pane-tabs > ul > li.icon-newticket a.link,
+.pane-tabs > ul > li.icon-person a.link {
 	padding-left: 17px;
 	background: url("../../images/icn-sprite.png") -7px -585px no-repeat;
 }

@@ -27,6 +27,12 @@ class PersonSearch extends SearcherAbstract
 	const TERM_CONTACT_ADDRESS  = 'contact_address';
 	const TERM_CONTACT_IM       = 'contact_im';
 
+	/**
+	 * Summary of terms in phrases
+	 * @var array
+	 */
+	protected $summary = null;
+
 
 	/**
 	 * Run the search and return an array of matching ID's.
@@ -41,6 +47,19 @@ class PersonSearch extends SearcherAbstract
 		$people_ids = $db->fetchAllCol($this->getSql());
 
 		return $people_ids;
+	}
+
+
+
+	/**
+	 * Get the summary of crtiera
+	 *
+	 * @array
+	 */
+	public function getSummary()
+	{
+		$this->getSqlParts();
+		return $this->summary;
 	}
 
 

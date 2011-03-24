@@ -2,7 +2,7 @@
 {% if page_title %}
 	pageMeta.title = {{ page_title|json_encode|raw }};
 {% else %}
-	pageMeta.title = 'Organization Search';
+	pageMeta.title = 'Search';
 {% endif %}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.OrganizationCustomFilter';
 pageMeta.pageUrl = '{{ path('agent_orgsearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';

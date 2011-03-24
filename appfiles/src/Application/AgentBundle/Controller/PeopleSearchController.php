@@ -138,6 +138,7 @@ class PeopleSearchController extends AbstractController
 			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
+			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
 			if ($old_result_cache) {
 				$result_cache['extra'] = $old_result_cache['extra'];
@@ -168,6 +169,7 @@ class PeopleSearchController extends AbstractController
 			$results = $searcher->getMatches();
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
+			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();
@@ -181,7 +183,8 @@ class PeopleSearchController extends AbstractController
 
 		$vars = array(
 			'cache' => $result_cache,
-			'cache_id' => $result_cache['id']
+			'cache_id' => $result_cache['id'],
+			'terms_summary' => $result_cache->getExtraData('terms_summary')
 		);
 
 		if (!empty($result_cache['extra']['display_fields'])) {

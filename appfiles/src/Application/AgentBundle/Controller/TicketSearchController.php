@@ -292,7 +292,7 @@ class TicketSearchController extends AbstractController
 			$results = $searcher->getMatches();
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
-			$result_cache['extra']['terms_summary'] = $searcher->getSummary();
+			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();
