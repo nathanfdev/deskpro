@@ -299,10 +299,16 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	setupTriggerElement: function(el) {
 		el = $(el);
 
-		el.click((function (ev) {
+		var fn = (function (ev) {
 			this.openOverlay();
 			ev.preventDefault();
-		}).bind(this));
+		}).bind(this);
+
+		if (el.is('.dbl-click-trigger')) {
+			el.dblclick(fn);
+		} else {
+			el.click();
+		}
 	},
 
 
