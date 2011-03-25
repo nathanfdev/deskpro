@@ -387,8 +387,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		// We're using a live event because new messages are always
 		// added. So we take care of opening the menu manually.
 		var menu = this.messageActionsMenu;
-		var ul = $('.ticket-messages > ul', this.wrapper)[0];
-		$('.ticket-message-edit-btn', ul).live('click', function(event) {
+		var wrap = $('.messages-wrap:first', this.wrapper)[0];
+		$('.ticket-message-edit-btn', wrap).live('click', function(event) {
 			menu.openMenu(event);
 		});
 	},
@@ -414,7 +414,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 					success: function(data) {
 						DeskPRO_Window.stopLoadingIndicator();
 						this.toggleReplyBar('on');
-						$('form.reply-form textarea[name="message"]:first', this.ticketReply).val(data.message_quote + "\n\n");
+						$('div.reply-form-fields:first textarea[name="message"]:first', this.ticketReply).val(data.message_quote + "\n\n");
 					}
 				});
 				break;
