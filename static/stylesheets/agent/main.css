@@ -1642,12 +1642,12 @@ Tabs
 	margin: 3px 0px 0px 6px;
 	text-indent: -9999px;
 	width: 12px;
-	height: 12px;
-	background: url("../../images/icn-sprite.png") left -863px;
+	height: 13px;
+	background: url("../../images/icn-sprite.png") left -862px;
 }
 
 .pane-tabs > ul > li a.close-tab:hover {
-	background-position: left -880px;
+	background-position: left -879px;
 }
 
 .pane-tabs > ul > li a {
@@ -1666,7 +1666,7 @@ Tabs
 .pane-tabs > ul > li.icon-newticket a.link,
 .pane-tabs > ul > li.icon-person a.link {
 	padding-left: 17px;
-	background: url("../../images/icn-sprite.png") -7px -585px no-repeat;
+	background: url("../../images/icn-sprite.png") -7px -583px no-repeat;
 }
 
 .pane-content{
@@ -2355,9 +2355,10 @@ table.participants-table .partis ul li{
 }
 
 .message-body {
-	width: 90%;
+	margin-left: 55px;
 	background: #f9f9f9;
 	border: 1px solid #cad0d7;
+	margin-top: 5px;
 
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
@@ -2792,4 +2793,9 @@ ul.person-popout-tabs li a{
 	position: absolute;
 	height: 23px;
 	margin-top: -20px;
+}
+
+.ticket-message-edit-btn:hover {
+	text-decoration: underline;
+	cursor: pointer;
 }
