@@ -16,6 +16,7 @@ pageMeta.tabTicketLogUrl              = '{{ path('agent_ticket_ajaxtab_ticketlog
 pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachments', {'ticket_id': ticket.id}) }}';
 pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
+pageMeta.getUpdatedCountsUrl          = '{{ path('agent_ticket_ajaxgetupdatedcounts', {'ticket_id': ticket.id}) }}';
 pageMeta.widgets = [
 {% for widget in widgets['agent.ticket.tabs']|merge(widgets['agent.ticket.display']) %}
 	{{ widget.getJsInitObject('div.tab-content.widget-' ~ widget.id)|json_encode|raw }}
@@ -238,10 +239,10 @@ pageMeta.widgets = [
 	{# Tab Triggers #}
 	<div class="full-container-tabbed-tabs">
 		<ul>
-			<li class="tab-trigger ticket-messages on" data-tab-for=".tab-content.ticket-messages"><a>Messages</a></li>
-			<li class="tab-trigger ticket-notes" data-tab-for=".tab-content.ticket-notes"><a>Notes</a></li>
-			<li class="tab-trigger ticket-attach" data-tab-for=".tab-content.ticket-attach"><a>Attachments</a></li>
-			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log"><a>Log</a></li>
+			<li class="tab-trigger ticket-messages on" data-tab-for=".tab-content.ticket-messages"><a>Messages <em class="ticket-messages-count">({{counts.messages}})</em></a></li>
+			<li class="tab-trigger ticket-notes" data-tab-for=".tab-content.ticket-notes"><a>Notes <em class="ticket-notes-count">({{counts.notes}})</em></a></li>
+			<li class="tab-trigger ticket-attach" data-tab-for=".tab-content.ticket-attach"><a>Attachments <em class="ticket-attachments-count">({{counts.attachments}})</em></a></li>
+			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log"><a>Log <em class="ticket-logs-count">({{counts.logs}})</em></a></li>
 			{% for widget in widgets['agent.ticket.tabs'] %}
 				<li class="tab-trigger widget-{{widget.id}}" data-tab-for=".tab-content.widget-{{widget.id}}"><a>{{widget.tab_title|default(widget.note)}}</a></li>
 			{% endfor %}
@@ -304,16 +305,16 @@ pageMeta.widgets = [
 		{# /Tab Notes #}
 
 		{# Tab Attach #}
-		<div class="full-container-tabbed-contents tab-content ticket-attach unloaded" data-tab-trigger=".tab-trigger.ticket-attach">
-			Loading attachment list ...
+		<div class="full-container-tabbed-contents tab-content ticket-attach" data-tab-trigger=".tab-trigger.ticket-attach">
+			{% include 'AgentBundle:Ticket:tab-attachments.html.twig' with {'message': message} %}
 		</div>
 		{# /Tab Attach #}
 
-		{# Tab Attach #}
+		{# Tab Log #}
 		<div class="full-container-tabbed-contents tab-content ticket-log unloaded" data-tab-trigger=".tab-trigger.ticket-log">
 			Loading ticket log ...
 		</div>
-		{# /Tab Attach #}
+		{# /Tab Log #}
 
 		{% for widget in widgets['agent.ticket.tabs'] %}
 			<div class="full-container-tabbed-contents tab-content widget-{{widget.id}}" data-tab-trigger=".tab-trigger.widget-{{widget.id}}">

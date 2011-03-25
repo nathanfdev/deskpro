@@ -396,6 +396,11 @@ agent_ticket_viewtip:
   defaults: { _controller: AgentBundle:Ticket:viewTip }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_ajaxgetupdatedcounts:
+  pattern: /tickets/{ticket_id}/ajax-get-updated-counts
+  defaults: { _controller: AgentBundle:Ticket:getUpdatedCounts }
+  requirements: { ticket_id: "\d+" }
+
 agent_ticket_ajaxsavecustomfields:
   pattern: /tickets/{ticket_id}/ajax-save-custom-fields
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveCustomFields }

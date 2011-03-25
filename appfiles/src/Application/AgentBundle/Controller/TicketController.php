@@ -83,8 +83,46 @@ class TicketController extends AbstractController
 			'custom_fields' => $custom_fields,
 			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
 			'macros' => $macros,
-			'widgets' => $widgets
+			'widgets' => $widgets,
+			'counts' => $this->_fetchTicketCounts($ticket)
 		));
+	}
+
+	protected function _fetchTicketCounts($ticket)
+	{
+		$counts = array();
+		$counts['messages'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets_messages
+			WHERE ticket_id = ?
+		", array($ticket['id']));
+
+		$counts['notes'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets_messages
+			WHERE ticket_id = ? AND is_agent_note = 1
+		", array($ticket['id']));
+
+		$counts['attachments'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets_attachments
+			WHERE ticket_id = ?
+		", array($ticket['id']));
+
+		$counts['logs'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets_logs
+			WHERE ticket_id = ?
+		", array($ticket['id']));
+
+		return $counts;
+	}
+
+	public function getUpdatedCountsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		return $this->createJsonResponse($this->_fetchTicketCounts($ticket));
 	}
 
 	############################################################################

@@ -624,7 +624,26 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		// New reply means theres a ticketlog entry of course
 		this.unloadTicketTab('notes');
 
+		this.updateCounts();
+
 		this.resetReply();
+	},
+
+	updateCounts: function() {
+		var wrap = $('.full-container-tabbed-tabs', this.wrapper);
+		
+		$.ajax({
+			url: this.getMetaData('getUpdatedCountsUrl'),
+			type: 'GET',
+			context: this,
+			dataType: 'json',
+			success: function(counts) {
+				Object.each(counts, function(v,k) {
+					var sel = '.ticket-' + k + '-count';
+					$(sel, wrap).html('(' + v + ')');
+				});
+			}
+		});
 	},
 
 	resetReply: function() {
