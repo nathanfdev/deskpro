@@ -492,3 +492,16 @@ agent_twitter_ajaxsave_reply:
 agent_twitter_ajaxsave_archive:
   pattern: /twitter/status/ajax-archive
   defaults: { _controller: AgentBundle:TwitterStatus:ajaxSaveArchive }
+
+################################################################################
+# Tasks
+################################################################################
+
+agent_tasks_count_pending:
+  pattern: /tasks/pending/count
+  defaults: { _controller: AgentBundle:Task:countPending }
+  
+agent_tasks_list_pending:
+  pattern: /tasks/pending/list
+  defaults: { _controller: AgentBundle:Task:listPending }
+
