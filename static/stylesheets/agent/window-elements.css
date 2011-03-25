@@ -468,11 +468,54 @@ body.is-demo #window_head > #window_head_top {
 	width: 150px;
 }
 
+.pane-tabs {
+	position: relative;
+}
 
+.tab-list-wrap.with-scroller > ul {
+	margin-left: 10px;
+	margin-right: 10px;
+}
 
-#pane_tabs_scroll_left, #pane_tabs_scroll_right { display: none; cursor: pointer; }
-#pane_list_tabs_scroll_left, #pane_list_tabs_scroll_right { display: none; cursor: pointer; }
+#pane_tabs_scroll_left, #pane_tabs_scroll_right,
+#pane_list_tabs_scroll_left, #pane_list_tabs_scroll_right {
+	display:none;
+	cursor: pointer;
+	width: 6px;
+	height: 18px;
+	margin-top: 6px;
+	background-color: #fff;
 
+	
+}
+
+#pane_tabs_scroll_left, #pane_list_tabs_scroll_left {
+	position: absolute;
+	left: 0;
+
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 0px;
+}
+
+#pane_tabs_scroll_right, #pane_list_tabs_scroll_right {
+	position: absolute;
+	right: 0;
+
+-moz-border-radius-topleft: 5px;
+-moz-border-radius-topright: 0px;
+-moz-border-radius-bottomright: 0px;
+-moz-border-radius-bottomleft: 5px;
+border-top-left-radius: 5px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 0px;
+border-bottom-left-radius: 5px;
+}
 
 
 /**********************************************************

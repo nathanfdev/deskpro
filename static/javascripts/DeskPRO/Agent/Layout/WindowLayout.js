@@ -135,7 +135,7 @@ DeskPRO.Agent.Layout.WindowLayout = Orb.Class({
 				width: w-2 //2=leftright border
 			});
 
-			$('> ul:first', pane_tabs).width(w-this.TABSTRIP_W_ALTER);
+			$(pane_tabs).width(w-2);
 		}
 	},
 

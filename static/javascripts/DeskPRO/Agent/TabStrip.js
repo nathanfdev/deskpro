@@ -124,12 +124,13 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 				page.fireEvent('deactivate');
 			}
 		});
+
+		this.resizeTabListWidth();
 	},
 
 
 
 	resizeTabListWidth: function() {
-		return;
 		var w = 0;
 		$('> li', this.tabStrip).each(function() {
 			w += $(this).outerWidth();

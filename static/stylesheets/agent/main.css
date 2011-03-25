@@ -1591,12 +1591,12 @@ Tabs
 
 }
 
-.pane-tabs > ul {
+.pane-tabs ul {
 	margin-left: 5px;
 	margin-top: 3px;
 }
 
-.pane-tabs > ul > li {
+.pane-tabs ul > li {
 	padding: 5px;
 	float: left;
 	margin-right: 8px;
@@ -1613,13 +1613,13 @@ Tabs
 	cursor: pointer;
 }
 
-.pane-tabs > ul > li > a.link {
+.pane-tabs ul > li > a.link {
 	max-width: 80px;
 	overflow: hidden;
 	white-space:nowrap;
 }
 
-.pane-tabs > ul > li.active-tab, .pane-tabs > ul > li.on {
+.pane-tabs ul > li.active-tab, .pane-tabs ul > li.on {
 	background: #fff;
 
 	-webkit-box-shadow: 0 0px 3px rgba(0,0,0, .6);
@@ -1627,16 +1627,16 @@ Tabs
     box-shadow: 0 0px 3px rgba(0,0,0, .6),inset 0 2px #f5f5f5;
 }
 
-.pane-tabs > ul > li.active-tab a, .pane-tabs > ul > li.on a {
+.pane-tabs ul > li.active-tab a, .pane-tabs ul > li.on a {
 	color: #3C3E3F;
 	text-shadow: none;
 }
 
-.pane-tabs > ul > li.active-tab a.close-tab{
+.pane-tabs ul > li.active-tab a.close-tab{
 	opacity: .5;
 }
 
-.pane-tabs > ul > li > a.close-tab {
+.pane-tabs ul > li > a.close-tab {
 	opacity: .5;
 	display: block;
 	margin: 3px 0px 0px 6px;
@@ -1646,25 +1646,25 @@ Tabs
 	background: url("../../images/icn-sprite.png") left -862px;
 }
 
-.pane-tabs > ul > li a.close-tab:hover {
+.pane-tabs ul > li a.close-tab:hover {
 	background-position: left -879px;
 }
 
-.pane-tabs > ul > li a {
+.pane-tabs ul > li a {
 	float: left;
 	font-weight: bold;
 	color: #C8D0D9;
 	text-shadow: 0 1px 1px rgba(0,0,0, .5);
 }
 
-.pane-tabs > ul > li.icon-ticket a.link,
-.pane-tabs > ul > li.icon-ticket-custom-filter a.link,
-.pane-tabs > ul > li.icon-ticket-filter a.link,
-.pane-tabs > ul > li.icon-ticket-flagged a.link,
-.pane-tabs > ul > li.icon-people-custom-filter a.link,
-.pane-tabs > ul > li.icon-organization-custom-filter a.link,
-.pane-tabs > ul > li.icon-newticket a.link,
-.pane-tabs > ul > li.icon-person a.link {
+.pane-tabs ul > li.icon-ticket a.link,
+.pane-tabs ul > li.icon-ticket-custom-filter a.link,
+.pane-tabs ul > li.icon-ticket-filter a.link,
+.pane-tabs ul > li.icon-ticket-flagged a.link,
+.pane-tabs ul > li.icon-people-custom-filter a.link,
+.pane-tabs ul > li.icon-organization-custom-filter a.link,
+.pane-tabs ul > li.icon-newticket a.link,
+.pane-tabs ul > li.icon-person a.link {
 	padding-left: 17px;
 	background: url("../../images/icn-sprite.png") -7px -583px no-repeat;
 }
