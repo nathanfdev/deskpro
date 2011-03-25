@@ -497,6 +497,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadListPane: function(url, routeData, callback) {
 
+		if ($('#pane_list_tabs li').length >= 5) {
+			DeskPRO_Window.showAlert('You have too many tabs open on the left. Close one before trying to open another', 'error');
+			return;
+		}
+
 		var existTab = this.listTabStrip.getTabByRouteUrl(url);
 		if (existTab && !(existTab.page && existTab.page.allowDupe)) {
 			this.listTabStrip.activateTabById(existTab.id);
@@ -527,6 +532,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * @param {String} url The URL of the page
 	 */
 	loadPage: function(url, routeData, callback) {
+
+		if ($('#pane_tabs li').length >= 5) {
+			DeskPRO_Window.showAlert('You have too many tabs open on the right. Close one before trying to open another', 'error');
+			return;
+		}
 
 		var existTab = this.pageTabStrip.getTabByRouteUrl(url);
 		if (existTab && !(existTab.page && existTab.page.allowDupe)) {

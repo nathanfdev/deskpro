@@ -468,8 +468,10 @@ body.is-demo #window_head > #window_head_top {
 	width: 150px;
 }
 
-.pane-tabs {
+.pane-tabs ul {
 	position: relative;
+	margin-left: 10px;
+	margin-right: 10px;
 }
 
 .tab-list-wrap.with-scroller > ul {

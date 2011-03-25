@@ -11,10 +11,7 @@ class TestController extends AbstractController
 {
     public function indexAction()
     {
-		$filter = APp::getEntityRepository('DeskPRO:TicketFilter')->find(5);
-
-		$s = $filter->getSearcher();
-		print_r($s->getSummary());
+		echo "Test";
 
 		exit;
     }
