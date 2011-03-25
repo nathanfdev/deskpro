@@ -47,17 +47,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		});
 
 		// Email pops up the email dialog
+		this.initEmailDlg();
 		this.email_display = $('.main .header .email:first', el);
-		this.email_dlg =  $('.email-edit-dlg', el).dialog({
-			autoOpen: false,
-			buttons: {
-				'Save': this.saveEmails.bind(this),
-				'Cancel': function() { $(this).dialog('close'); }
-			},
-			width: 450,
-			height: 300,
-			open: this.initEmailDlg.bind(this)
-		});
 
 		//edit-contact-info
 		this.editContactInfoMenu = new DeskPRO.UI.Menu({
@@ -66,7 +57,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			onItemClicked: function(info) {
 				var type = $(info.itemEl).data('edit-type');
 				if (type == 'email') {
-					self.email_dlg.dialog('open');
+					self.showEmailEditor();
 				} else {
 					self.startContactAdd(type);
 				}
@@ -221,19 +212,46 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	//#########################################################################
 
 	initOrgEditable: function() {
-		this.org_dlg =  $('.org-edit-dlg', this.wrapper).dialog({
-			autoOpen: false,
-			buttons: {
-				'Save': this.saveOrg.bind(this),
-				'Cancel': function() { $(this).dialog('close'); }
-			},
-			width: 300,
-			height: 200
-		});
+
+		this.org_dlg = $('.org-edit-dlg', this.wrapper).detach().appendTo($('body'));
+
+		$('.close-trigger', this.org_dlg).click((function() {
+			this.closeOrgEditor();
+		}).bind(this));
+
+		var self = this;
+		$('.save-trigger', this.org_dlg).click((function() {
+			var fieldEls = $(':input', self.org_dlg);
+			this.saveOrg();
+		}).bind(this));
 
 		$('.organization.hover-edit:first', this.wrapper).dblclick((function() {
-			this.org_dlg.dialog('open');
+			this.showOrgEditor();
 		}).bind(this));
+	},
+
+	showOrgEditor: function() {
+
+		var width = this.org_dlg.width();
+		if (width < 350) width = 350;
+
+		this.org_dlg.css({
+			position: 'absolute',
+			width: width,
+			'z-index': 10000
+		});
+
+		this.org_dlg.position({
+			my: 'left top',
+			at: 'left top',
+			of: $('.organization.hover-edit:first', this.wrapper)
+		});
+
+		this.org_dlg.slideDown();
+	},
+
+	closeOrgEditor: function() {
+		this.org_dlg.slideUp();
 	},
 
 	saveOrg: function() {
@@ -258,7 +276,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	handleOrgSave: function(data) {
 		$('.organization.hover-edit:first .name').html(data.organization_name);
 		$('.organization.hover-edit:first .position').html(data.organization_position);
-		this.org_dlg.dialog('close');
+		this.closeOrgEditor();
 	},
 
 	//#########################################################################
@@ -425,8 +443,21 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	//#########################################################################
 
 	initEmailDlg: function() {
-		if (this.hasSetupEmailDlg) return;
-		this.hasSetupEmailDlg = true;
+
+		this.email_dlg = $('.email-edit-dlg', this.wrapper).detach().appendTo($('body'));
+
+		$('.close-trigger', this.email_dlg).click((function() {
+			this.closeEmailEditor();
+		}).bind(this));
+
+		var self = this;
+		$('.save-trigger', this.email_dlg).click((function() {
+			this.saveEmails();
+		}).bind(this));
+
+		$('.organization.hover-edit:first', this.wrapper).dblclick((function() {
+			this.showEmailEditor();
+		}).bind(this));
 
 		$('ul.emails-list', this.email_dlg).click(function(ev) {
 			var el = $(ev.target);
@@ -460,6 +491,30 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			$('.emails-list', this.email_dlg).append(tpl);
 
 		}).bind(this));
+	},
+
+	showEmailEditor: function() {
+
+		var width = this.email_dlg.width();
+		if (width < 350) width = 350;
+
+		this.email_dlg.css({
+			position: 'absolute',
+			width: width,
+			'z-index': 10000
+		});
+
+		this.email_dlg.position({
+			my: 'left top',
+			at: 'left top',
+			of: $('.contact-info-list-wrap:first', this.wrapper)
+		});
+
+		this.email_dlg.slideDown();
+	},
+
+	closeEmailEditor: function() {
+		this.email_dlg.slideUp();
 	},
 
 	saveEmails: function() {
@@ -524,5 +579,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		var html = '<li>' + data.emails_list.join('</li><li>') + '</li>';
 
 		$('.contact-info-list-wrap:first ul.emails-list:first', this.wrapper).html(html);
+
+		this.closeEmailEditor();
 	}
 });

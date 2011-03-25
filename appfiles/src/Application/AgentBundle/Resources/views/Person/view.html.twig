@@ -357,17 +357,31 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 	</div>
 </div>
 
-<div class="org-edit-dlg" style="display:none" title="Organization">
+<div class="org-edit-dlg show-fields edit-fields-overlay edit" style="display:none">
 	<select name="organization_id">{{org_options|raw}}</select>
 	<br />
 	Position: <input type="text" name="organization_position" value="{{person.organization_position}}" />
+	<div class="buttons">
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">Save</button>
+			<button class="close-trigger dp-button gray small">Cancel</button>
+		</div>
+	</div>
 </div>
 
-<div class="email-edit-dlg" style="display:none" title="Contact Emails">
-	<ul class="emails-list">
-		{% include 'AgentBundle:Person:email-dlg-li.html.twig' with {'person': person} %}
-	</ul>
-	<div class="add-email">
-		New email: <input type="text" class="new-email-input" value="" /> <input type="button" class="new-email-btn" value="Add" />
+<div class="email-edit-dlg show-fields edit-fields-overlay edit" style="display:none;">
+	<div style="padding: 5px">
+		<ul class="emails-list">
+			{% include 'AgentBundle:Person:email-dlg-li.html.twig' with {'person': person} %}
+		</ul>
+		<div class="add-email">
+			New email: <input type="text" class="new-email-input" value="" /> <input type="button" class="new-email-btn" value="Add" />
+		</div>
+	</div>
+	<div class="buttons">
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">Save</button>
+			<button class="close-trigger dp-button gray small">Cancel</button>
+		</div>
 	</div>
 </div>
