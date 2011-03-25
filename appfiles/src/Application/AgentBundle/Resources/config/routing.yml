@@ -358,6 +358,18 @@ agent_ticketsearch_ajax_get_macro:
   pattern: /ticket-search/ajax-get-macro
   defaults: { _controller: AgentBundle:TicketSearch:ajaxGetMacro }
 
+agent_ticketsearch_ajax_get_macro_actions:
+  pattern: /ticket-search/ajax-get-macro-actions
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxGetMacroActions }
+
+agent_ticketsearch_ajax_preview_actions:
+  pattern: /ticket-search/ajax-preview-actions
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxPreviewActions }
+
+agent_ticketsearch_ajax_save_actions:
+  pattern: /ticket-search/ajax-save-actions
+  defaults: { _controller: AgentBundle:TicketSearch:ajaxSaveActions }
+
 agent_ticketsearch_ajax_save_macro:
   pattern: /ticket-search/ajax-save-macro
   defaults: { _controller: AgentBundle:TicketSearch:ajaxSaveMacro }

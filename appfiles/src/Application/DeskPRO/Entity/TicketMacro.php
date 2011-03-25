@@ -74,6 +74,25 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $actions;
 
+	public function getActionsArrayDesc()
+	{
+		$ret = array();
+
+		foreach ($this->actions as $info) {
+			if (!isset($info['rule_type'])) continue;
+
+			$type = $info['rule_type'];
+			unset($info['rule_type']);
+
+			if (count($info) == 1) {
+				$info = array_pop($info);
+			}
+
+			$ret[$type] = $info;
+		}
+
+		return $ret;
+	}
 
 
 	/**

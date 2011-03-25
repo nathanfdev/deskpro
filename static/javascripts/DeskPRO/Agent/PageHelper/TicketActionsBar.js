@@ -19,9 +19,9 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		this.page = page;
 		this.wrapper = this.page.wrapper;
 		this.contentWrapper = this.page.contentWrapper;
+		this.ticketBar = this.page.barWrapper;
 
-		this._initReplyBar();
-		this._initMenus();
+		this.initOverlay();
 
 		// Some style stuff on certain change manager states
 		this.page.changeManager.addEvent('changesCleared', (function () {
@@ -33,38 +33,129 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 			this.toggleMacroApplyBtn('off');
 		}).bind(this));
+
+		var self = this;
+		$('li.macros-apply').click(function() {
+			self.saveActions();
+		});
+
+		$('li.macros-cancel').click(function() {
+			self._removeTicketIdsToCurrentAction(self.getSelectedTicketIds());
+			self.toggleMacroApplyBtn('off');
+		});
 	},
 
-	actionMenu: null,
-	selectMenu: null,
-	_initMenus: function() {
+	initOverlay: function() {
 
-		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.bar-actions .actions', this.wrapper),
-			menuElement: $('.ticket-action-menu:first', this.wrapper),
-			onItemClicked: this._actionMenuItemClicked.bind(this),
-			initMenuNow: false
+		var self = this;
+
+		this.actionsWrap = $('.mass-actions:first', this.ticketBar);
+
+		$('div.overlay-content:first', this.actionsWrap).css({
+			'width': $('#pane_list_content').width() + 100,
+			'max-height': $('#pane_list_content').height()
 		});
 
-		var menu = this.macrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.bar-actions .macros', this.wrapper),
-			menuElement: $('.ticket-macros-menu:first', this.wrapper),
-			onItemClicked: (function (info) {
-				var macroId = $(info.itemEl).data('macro-id');
-				this._loadMacro(macroId, this.getSelectedTicketIds());
-			}).bind(this)
+		this.actionsOverlay = new DeskPRO.UI.Overlay({
+			contentElement: this.actionsWrap,
+			triggerElement: $('li.actions', this.ticketBar),
+			onBeforeOverlayOpened: function() {
+				var countEl = $('.check-count span', self.ticketBar);
+				$('.check-count-overlay', self.actionsWrap).html(countEl.html());
+			}
 		});
 
-		// Macro apply/cancel
-		$('.bar-actions li.macros-apply', this.ticketBar).click(this._applyButtonClicked.bind(this));
+		$('select.apply-macro-select', this.actionsWrap).change(function() {
+			self.loadMacroActions();
+		});
 
-		$('.bar-actions li.macros-cancel', this.ticketBar).click((function() {
-			this.page.changeManager.revertChanges();
-			this.toggleMacroApplyBtn('off');
+		$('.save-trigger', this.actionsWrap).click((function() {
+			this._loadActions(this.getSelectedTicketIds());
 		}).bind(this));
+
+		// Set default checked values based on table
+		this.actionsEditor = new DeskPRO.Form.RuleBuilder($('.actions-tpl', this.actionsWrap));
+		this.actionsEditor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+
+		// Init ticket reply tabs
+		var simpleTabs = this.replySimpleTabs = new DeskPRO.UI.SimpleTabs({
+			context: $('.ticket-reply', this.actionsWrap),
+			triggerElements: $('li.tab-trigger', $('.ticket-reply', this.actionsWrap))
+		});
+
+		var to_el = $('.actions-form .actions-terms', this.actionsWrap);
+
+		$('.actions-form .add-term', this.actionsWrap).data('add-count', 0).click(function() {
+			var count = parseInt($(this).data('add-count'));
+			var basename = 'actions['+count+']';
+
+			$(this).data('add-count', count+1);
+
+			self.actionsEditor.addNewRow(to_el, basename);
+		});
 	},
 
+	loadMacroActions: function() {
 
+		var macro_id = parseInt($('select.apply-macro-select').val());
+		if (!macro_id) {
+			return;
+		}
+
+		var spinnerContainer = $('.macro-selector .spinner', this.actionsWrap).show().empty();
+		var spinner = new Spinner(spinnerContainer, {
+			radii: [4,8],
+			padding: 0
+		}).play();
+
+		$.ajax({
+			cache: false,
+			type: 'POST',
+			data: {'macro_id': macro_id},
+			url: BASE_URL + 'agent/ticket-search/ajax-get-macro-actions',
+			context: this,
+			dataType: 'json',
+			success: function (data) {
+				console.log(data);
+
+				var reply_text = false;
+
+				Object.each(data.macro_actions, function(info, type) {
+
+					var countel = $('.actions-form .add-term', this.actionsWrap);
+					var count = parseInt(countel.data('add-count'));
+					var basename = 'actions['+count+']';
+
+					countel.data('add-count', count+1);
+
+					if (type == 'reply') {
+						reply_text = info;
+					} else {
+
+						var id = Orb.uuid();
+						var op = info[0];
+						var choice = info[1];
+						this.actionsEditor.addNewRow($('.actions-terms', this.actionsWrap), basename, {
+							rule_type: type,
+							choice: info
+						});
+					}
+				}, this);
+
+				if (reply_text) {
+					$('textarea', this.actionsWrap).val(reply_text);
+				}
+			},
+			complete: function() {
+				spinner.remove();
+				spinnerContainer.empty();
+			}
+		});
+	},
 
 	/**
 	 * Get all the ticket ID's currently selected
@@ -80,8 +171,6 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 		return ticket_ids;
 	},
-
-
 
 	/**
 	 * Sets up a new active table for the live click events
@@ -118,13 +207,11 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		return trs;
 	},
 
-
-
 	/**
 	 * Handle when a ticket checkbox is checked or unchecked.
 	 */
 	handleTicketCheckClick: function(checkEl) {
-		var countEl = $('.count', this.ticketBar);
+		var countEl = $('.check-count span', this.ticketBar);
 		var num =  parseInt(countEl.html());
 		if (!num) {
 			num = 0;
@@ -148,10 +235,8 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 		if (num < 0) num = 0;
 
-		countEl.html(num);
+		this.updateCount(num);
 	},
-
-
 
 	_selectOp: function(op) {
 		// No table defined
@@ -177,104 +262,18 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		}
 
 		// Update count
-		$('.count', this.ticketBar).html($('input[type="checkbox"].ticket:checked', this.tableEl).length);
+		this.updateCount($('input[type="checkbox"].ticket:checked', this.tableEl).length);
 	},
 
+	updateCount: function(num) {
+		num = parseInt(num);
 
-	_currentActionInfo: null,
-	/**
-	 * When the action is selected from the menu, update the title
-	 * in the UI and set the action data.
-	 */
-	_actionMenuItemClicked: function(info) {
-		var itemEl = $(info.itemEl);
-
-		var typeEl = itemEl;
-
-		if (!typeEl.data('option-name')) {
-			typeEl = typeEl.parent();
-			if (!typeEl.data('option-name')) typeEl = typeEl.parent();
-			if (!typeEl.data('option-name')) typeEl = typeEl.parent();
-			if (!typeEl.data('option-name')) typeEl = typeEl.parent();
-		}
-
-		var op = typeEl.data('option-id');
-		if (!op) {
-			op = 'standard';
-		}
-
-		var ticket_ids = this.getSelectedTicketIds();
-
-		if (!ticket_ids.length) {
-			return;
-		}
-
-		switch (op) {
-			case 'delete':
-				this._currentActionInfo = {'op': 'delete' };
-				this.toggleMacroApplyBtn('on', 'Delete Tickets');
-				this._applyButtonCallback = (function() {
-
-					this.toggleMacroApplyBtn('off');
-
-					$.ajax({
-						url: this.page.getMetaData('deleteTicketUrl'),
-						type: 'GET',
-						data: data,
-						dataType: 'json',
-						success: function(data) {
-							DeskPRO_Window.getMessageBroker().sendMessage('tickets.deleted', data.deleted_tickets);
-						}
-					});
-				}).bind(this);
-				break;
-
-			case 'open':
-				this._currentActionInfo = {'op': 'open' };
-				this.toggleMacroApplyBtn('on', 'Open');
-				this._applyButtonCallback = (function() {
-
-					this.toggleMacroApplyBtn('off');
-
-					Array.each(this.getSelectedTicketIds(), function(ticket_id) {
-						DeskPRO_Window.runPageRoute('page:' + this.page.getMetaData('viewTicketUrl').replace('$ticket_id', ticket_id));
-					}, this);
-
-					this._selectOp('none');
-				}).bind(this);
-				break;
-
-			case 'standard':
-
-				var optionName = itemEl.data('option-name') || typeEl.data('option-name');
-				var value = itemEl.data('option-value');
-
-				this._currentActionInfo = {'op': 'standard', 'name': optionName, 'value': value };
-				var props = this._addTicketIdsToCurrentAction(ticket_ids);
-
-				// just so we can get a caption for the button on the next line
-				var property = props[0];
-
-				var display_value = DeskPRO_Window.getDisplayName(property.displayNameType, value);
-				if (!display_value) {
-					display_value = value;
-				}
-
-				this.toggleMacroApplyBtn('on', 'Set ' + property.displayCaption + ': ' + display_value);
-
-				var data = [];
-				data.push({
-					name: 'actions['+optionName+']',
-					value: value
-				});
-
-				this._applyButtonCallback = (function() {
-					this.toggleMacroApplyBtn('off');
-					this.performMassAction(data);
-					this.page.changeManager.commitChanges();
-				}).bind(this);
-
-				break;
+		if (num == 0) {
+			this.layout.collapseFooter();
+			$('.check-count span', this.ticketBar).html(0);
+		} else {
+			this.layout.expandFooter();
+			$('.check-count span', this.ticketBar).html(num);
 		}
 	},
 
@@ -283,32 +282,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			ticket_ids = [ticket_ids];
 		}
 
-		if (!this._currentActionInfo) {
-			return;
-		}
-
-		// Macro mode, we need to send new IDs through ajax to get actions
-		if (this._currentActionInfo.op == 'macro') {
-			this._loadMacro(this._currentActionInfo.macroId, ticket_ids);
-
-		// Action mode, we can apply imediatley
-		} else if (this._currentActionInfo.op == 'standard') {
-
-			var changeManager = this.page.changeManager;
-			changeManager.begin(ticket_ids);
-
-			var properties = [];
-			Array.each(ticket_ids, function(ticket_id) {
-				var property = this.createPropertyForTicket(this._currentActionInfo.name, ticket_id);
-				changeManager.addChange(property, this._currentActionInfo.value);
-
-				properties.push(property);
-			}, this);
-
-			changeManager.applyChanges();
-
-			return properties;
-		}
+		this._loadActions(ticket_ids);
 	},
 
 	_removeTicketIdsToCurrentAction: function(ticket_ids) {
@@ -321,44 +295,10 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		}, this);
 	},
 
-	/**
-	 * Send the request to the server to perform the actions on the selected
-	 * tickets.
-	 */
-	performMassAction: function(data) {
-
-		Array.each(this.getSelectedTicketIds(), function(id) {
-			data.push({
-				name: 'ticket_ids[]',
-				value: id
-			});
-		});
-
-		DeskPRO_Window.startLoadingIndicator();
-		$.ajax({
-			cache: false,
-			type: 'POST',
-			data: data,
-			url: BASE_URL + 'agent/ticket-search/ajax-mass-actions',
-			context: this,
-			dataType: 'json',
-			success: function (data) {
-				this._handleMassActionsReply(data);
-			}
-		});
-	},
-
-	_handleMassActionsReply: function(data) {
-		DeskPRO_Window.stopLoadingIndicator();
-		DeskPRO_Window.showStatusMessage('Ticket changes were applied successfully');
-	},
-
-
 	//#################################################################
 	//# Mass actions preview stuff
 	//#################################################################
 
-	_selectedMacroId: null,
 	_applyButtonCallback: null,
 
 	createPropertyForTicket: function(propName, ticket_id) {
@@ -387,17 +327,20 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		}
 	},
 
-	_loadMacro: function(macroId, ticket_ids) {
-		this._currentActionInfo = {'op': 'macro', 'macroId': macroId };
-
-		if (!ticket_ids.length) {
-			DeskPRO_Window.showAlert('You need to select one or more tickets to perform actions on.');
-			return;
-		}
-
+	_loadActions: function(ticket_ids) {
+		
 		DeskPRO_Window.startLoadingIndicator();
 
-		var data = [];
+		var loadingOff = $('.loading-off').hide();
+		var loadingOn = $('.loading-on').show().empty();
+		var spinner = new Spinner(loadingOn, {
+			radii: [4,8],
+			padding: 0
+		}).play();
+
+		var data = $(':input, select, textarea', $('.actions-terms', this.actionsWrap)).serializeArray();
+		data.combine($(':input, select, textarea', $('.ticket-reply', this.actionsWrap)).serializeArray());
+
 		Array.each(ticket_ids, function(id) {
 			data.push({
 				name: 'ticket_ids[]',
@@ -409,24 +352,24 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			cache: false,
 			type: 'GET',
 			data: data,
-			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', this._currentActionInfo.macroId),
+			url: BASE_URL + 'agent/ticket-search/ajax-preview-actions',
 			context: this,
 			dataType: 'json',
 			success: function (data) {
 				DeskPRO_Window.stopLoadingIndicator();
-				this.applyMacroActions(data, ticket_ids);
+				
+				this.actionsOverlay.closeOverlay();
+				spinner.remove();
+				loadingOn.empty().hide();
+				loadingOff.show();
+
+				this.applyActions(data, ticket_ids);
+
 			}
 		});
 	},
 
-	applyMacroActions: function(macro_info, ticket_ids) {
-
-		// Reset reply area if this is the first
-		if (!this.page.changeManager.hasChanges) {
-			if (macro_info.raw_actions.new_reply) {
-				$('form.reply-form textarea', this.ticketReply).val(macro_info.raw_actions.new_reply);
-			}
-		}
+	applyActions: function(macro_info, ticket_ids) {
 
 		var changeManager = this.page.changeManager;
 		changeManager.begin(ticket_ids);
@@ -453,7 +396,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		this.toggleMacroApplyBtn('on');
 
 		this._applyButtonCallback = (function() {
-			this.saveMacro();
+			this.saveActions();
 			this.toggleMacroApplyBtn('off');
 		}).bind(this);
 	},
@@ -520,24 +463,18 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		}
 	},
 
-	saveMacro: function() {
+	saveActions: function() {
 		var ticket_ids = this.getSelectedTicketIds();
 
-		var data = [];
+		var data = $(':input, select, textarea', $('.actions-terms', this.actionsWrap)).serializeArray();
+		data.combine($(':input, select, textarea', $('.ticket-reply', this.actionsWrap)).serializeArray());
+
 		Array.each(ticket_ids, function(id) {
 			data.push({
 				name: 'ticket_ids[]',
 				value: id
 			});
 		});
-
-		var reply = $('form.reply-form textarea', this.ticketReply).val().trim();
-		if (reply.length) {
-			data.push({
-				'name': 'new_reply',
-				'value': reply
-			});
-		}
 
 		this.page.changeManager.commitChanges();
 		DeskPRO_Window.startLoadingIndicator();
@@ -546,169 +483,13 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			cache: false,
 			type: 'POST',
 			data: data,
-			url: this.page.getMetaData('saveMacroUrl').replace('$macro_id', this._currentActionInfo.macroId),
+			url: BASE_URL + 'agent/ticket-search/ajax-save-actions',
 			context: this,
 			dataType: 'json',
 			success: function () {
 				DeskPRO_Window.stopLoadingIndicator();
-				DeskPRO_Window.showStatusMessage('Macro was applied successfully');
+				DeskPRO_Window.showStatusMessage('Actions were applied successfully');
 			}
 		});
-	},
-
-	//#################################################################
-	//# To do with reply area
-	//#################################################################
-
-	_initReplyBar: function() {
-		this.barWrapper = $('div.tab-bottom-wrap:first', this.wrapper);
-		this.ticketBar = $('div.tab-bottom:first', this.wrapper);
-		this.ticketReply = $('div.tab-bottom-open:first', this.wrapper);
-
-		var self = this;
-		$('input.placeholder', this.ticketBar).click(function() {
-			self.toggleReplyBar('on');
-		});
-
-		$('.close-trigger', this.ticketReply).click(function() {
-			self.toggleReplyBar('off');
-		});
-
-		// Send reply
-		$('button.submit-reply-trigger', this.barWrapper).click(function(ev) {
-			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
-			self._sendReply();
-		});
-
-		// Add +1 to zindex because we need to properly layer the ticketReplyTabs
-		// - Under barWrapper (south pane), but above contentWrapper (content pane)
-		this.barWrapper.css({
-			'z-index': parseInt(this.barWrapper.css('z-index'))+1
-		});
-
-		$('button.submit-reply-trigger', this.ticketBar).click(this._sendReply.bind(this));
-
-		// Menus to change reply info
-		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('span.trigger.agent_id', this.ticketReply),
-			menuElement: $('.reply-agent_id-menu', this.ticketReply),
-			onItemClicked: (function(info) {
-				var id = $(info.itemEl).data('option-value');
-				var display = DeskPRO_Window.getDisplayName('agent', id);
-
-				$('span.prop-val.agent_id', this.ticketReply).html(display);
-				$('input[name="options[agent_id]"]', this.ticketReply).val(id);
-			}).bind(this)
-		});
-		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('span.trigger.agent_team_id', this.ticketReply),
-			menuElement: $('.reply-agent_team_id-menu', this.ticketReply),
-			onItemClicked: (function(info) {
-				var id = $(info.itemEl).data('option-value');
-				var display = DeskPRO_Window.getDisplayName('agent_team', id);
-
-				$('span.prop-val.agent_team_id', this.ticketReply).html(display);
-				$('input[name="options[agent_team_id]"]', this.ticketReply).val(id);
-			}).bind(this)
-		});
-		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('span.trigger.status', this.ticketReply),
-			menuElement: $('.reply-status-menu', this.ticketReply),
-			onItemClicked: (function(info) {
-				var id = $(info.itemEl).data('option-value');
-				var display = DeskPRO_Window.getDisplayName('status', id);
-
-				$('span.prop-val.status', this.ticketReply).html(id);
-				$('input[name="options[status]"]', this.ticketReply).val(id);
-			}).bind(this)
-		});
-	},
-
-	toggleReplyBar: function(force) {
-
-		if (!force) {
-			if (this.ticketReply.is(':visible')) {
-				force = 'off';
-			} else {
-				force = 'on';
-			}
-		}
-
-		if (force == 'on') {
-
-			$('.bar-actions li:not(.send-reply)', this.barWrapper).hide();
-			$('.bar-actions li.send-reply', this.barWrapper).show();
-
-			this.ticketReply.show();
-			this.barWrapper.addClass('expanded');
-			this.layout.expandFooter();
-
-			var msg = $('.tab-content.reply-reply', this.ticketReply);
-			$('.tab-content').css({
-				height: msg.height(),
-				overflow: 'auto'
-			});
-
-			$('input.placeholder', this.ticketBar).hide();
-
-			// When we open we should scroll down by the new height,
-			// so the same position is visible in the center pane
-			//var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
-			//this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
-
-			// Focus textarea
-			$('textarea', this.ticketReply).focus();
-		} else {
-
-			$('.bar-actions li.send-reply', this.barWrapper).hide();
-			$('.bar-actions li:not(.send-reply, .macro-on)', this.barWrapper).show();
-
-			this.layout.collapseFooter();
-			this.ticketReply.hide();
-			this.barWrapper.removeClass('expanded');
-
-			$('input.placeholder', this.ticketBar).show();
-			$('li.submit-reply.trigger:first', this.barWrapper).hide();
-		}
-	},
-
-	isSendingReply: false,
-	_sendReply: function() {
-		this._handleSendReply($('form.reply-form', this.ticketReply));
-	},
-
-	_handleSendReply: function(els) {
-		$('button.submit-trigger', this.ticketReply).addClass('gray');
-
-		var data = els.serializeArray();
-
-		var ticket_ids = this.getSelectedTicketIds();
-
-		Array.each(ticket_ids, function(id) {
-			data.push({
-				name: 'ticket_ids[]',
-				value: id
-			});
-		});
-
-		$.ajax({
-			url: this.page.getMetaData('massReplyUrl'),
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'html',
-			success: function(html) {
-				$('button.submit-trigger', this.ticketReply).removeClass('gray');
-				this.isSendingReply = false;
-				this._handleSendReplySuccess(html);
-			}
-		});
-	},
-
-	_handleSendReplySuccess: function(html) {
-
-		DeskPRO_Window.showStatusMessage('Replies were sent successfully');
-		this.toggleReplyBar('off');
-		$('textarea[name="message"]', this.ticketReply).val('');
 	}
 });

@@ -33,7 +33,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 		this.wrapper = $(el);
 		this.contentWrapper = $('.content:first', this.wrapper);
-		this.barWrapper = $('.ticket-bar:first', this.wrapper);
+		this.barWrapper = $('div.layout-footer:first', this.wrapper);
 
 		this.listColDrag = new DeskPRO.Agent.PageHelper.ListColDrag({
 			table: $('table:first', this.contentWrapper).get(0),
@@ -51,7 +51,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this.contentWrapper.attr('id', center_id);
 		this.barWrapper.attr('id', south_id);
 
-		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
+		this.layout = new DeskPRO.Agent.Layout.FooterActionbarLayout(this.wrapper);
 
 		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
 

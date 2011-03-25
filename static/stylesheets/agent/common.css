@@ -445,12 +445,25 @@ ul.comma-list li:last-child:after { content: ""; }
 ***********************************************************/
 
 .search-form .term {
-	background-color: #fff;
+	font-size: 11px;
+	line-height: 15px;
+	background-color: #F5F7FA;
+	
 	padding: 4px;
-	margin: 3px;
+	margin: 0 0 9px 0;
 	-webkit-border-radius: 3px;
 	-moz-border-radius: 3px;
 	border-radius: 3px;
+
+	-webkit-box-shadow: 0px 0px 2px #a5abb5;
+-moz-box-shadow: 0px 0px 2px #a5abb5;
+box-shadow: 0px 0px 2px #a5abb5;
+}
+
+.search-form .term:hover {
+-webkit-box-shadow: 0px 0px 2px #737880;
+-moz-box-shadow: 0px 0px 2px #737880;
+box-shadow: 0px 0px 2px #737880;
 }
 
 .search-form .term .type, .search-form .term .op, .search-form .term .choice {
@@ -458,39 +471,23 @@ ul.comma-list li:last-child:after { content: ""; }
 }
 
 .search-form .term .remove {
-	font-size: 9pt;
-	color: #fff;
-	background-color: #BA3C3C;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
+	width: 11px;
+	background: transparent url("../../images/action-remove.png") no-repeat center center;
+	text-indent: -1000px;
+	overflow: hidden;
 	cursor: pointer;
 	float: left;
 	margin-right: 5px;
-	width: 15px;
-	height: 15px;
-	line-height: 12px;
-	text-align: center;
-	overflow: hidden;
-	display: block;
 }
 
 .search-form .add-term {
-	font-size: 9pt;
-	color: #fff;
-	background-color: #468733;
-	-webkit-border-radius: 3px;
-	-moz-border-radius: 3px;
-	border-radius: 3px;
+	width: 11px;
+	background: transparent url("../../images/action-add.png") no-repeat center center;
+	text-indent: -1000px;
+	overflow: hidden;
 	cursor: pointer;
 	float: left;
 	margin-right: 5px;
-	width: 15px;
-	height: 15px;
-	line-height: 12px;
-	text-align: center;
-	overflow: hidden;
-	display: block;
 }
 
 /**********************************************************

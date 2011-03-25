@@ -1,112 +1,211 @@
 <div class="tab-bottom-wrap">
-	<div class="tab-bottom-open" style="display:none">
-		<div class="tab-bottom-tabs">
-			<ul>
-				<li class="tab-trigger reply-reply on" data-tab-for=".tab-content.reply-reply"><a>Message</a></li>
-			</ul>
-			<a class="close-tab-open close-trigger">Close</a>
-		</div>
-		<div class="tab-bottom-contents">
-			{# Reply area #}
-			<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
-				<div class="reply-form-fields">
-					<textarea name="message"></textarea>
-				</div>
-			</div>
-			{# /Reply Area #}
-		</div>
-	</div>
 	<div class="tab-bottom">
-		<input type="text" class="placeholder" value="Start typing a reply..." />
+		<div class="check-count">
+			<span>0</span> selected
+		</div>
 		<div class="bar-actions">
 			<ul>
-				<li class="macro-on macros-apply" style="display:none">Apply</li>
-				<li class="macro-on macros-cancel" style="display:none">Cancel</li>
-				<li class="send-reply" style="display:none"><div class="spinner" style="float:left;display:none;"></div><a>Send Reply</a><a class="loading-msg">Sending</a></li>
-				<li class="macros"><a href="" >Macros</a></li>
-				<li class="actions"><a href="" >Actions</a></li>
+				<li class="macro-on macros-apply" style="display:none"><a>Apply</a></li>
+				<li class="macro-on macros-cancel" style="display:none"><a>Cancel</a></li>
+				<li class="actions"><a>Mass Actions</a></li>
 			</ul>
 		</div>
 	</div>
-	<ul class="ticket-macros-menu" style="display:none">
-		{% for macro in macros %}
-			<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
-		{% endfor %}
-	</ul>
-	<ul class="ticket-action-menu" style="display:none">
-		<li data-option-id="open">Open in tabs</li>
-		<li class="sep">-</li>
-		<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{person.id}}">Assign to me</li>
-		{% if person.getAgentTeamIds %}
-			<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{person.getAgentTeamIds[0]}}">Assign to my team</li>
-		{% endif %}
-		<li class="sep">-</li>
-		<li>
-			<span>Assign to agent</span>
-			<ul class="submenu">
-				{% for id,title in ticket_options.agents %}
-					<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{id}}" style="line-height: 15px">
-						<div style="margin-right: 5px; float: left">
-							<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 15}) }}" alt="" width="15" height="15" />
+	<div class="mass-actions overlay">
+		<div class="overlay-title">
+			<div class="macro-selector">
+				<div class="spinner"></div>
+				<select class="apply-macro-select">
+					<option value="0">Apply a macro</option>
+					<option value="0"></option>
+					{% for macro in macros %}
+						<option value="{{macro.id}}">{{macro.title}}</option>
+					{% endfor %}
+				</select>
+			</div>
+			<h4>Apply actions to <span class="check-count-overlay"></span> tickets</h4>
+		</div>
+
+		<div class="overlay-content" style="padding-bottom: 15px;">
+			<div class="row">
+				<div class="actions-form search-form">
+					<div class="actions-terms search-terms"></div>
+					<div class="term"><span class="add-term">+</span> Add a new action</div>
+				</div>
+			</div>
+
+			<div class="tab-bottom-wrap inner ticket-reply" style="padding-top: 15px;">
+				<div class="tab-bottom-open">
+					<div class="tab-bottom-tabs">
+						<ul>
+							<li class="tab-trigger reply-reply on" data-tab-for=".tab-content.reply-reply"><a>Message</a></li>
+							<li class="tab-trigger reply-cc" data-tab-for=".tab-content.reply-cc"><a>CC</a></li>
+							<li class="tab-trigger reply-attach" data-tab-for=".tab-content.reply-attach"><a>Attachment</a></li>
+						</ul>
+					</div>
+
+					<div class="tab-bottom-contents" style="height:113px;">
+						{# Reply area #}
+						<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
+							<div class="reply-form-fields">
+								<textarea name="message"></textarea>
+							</div>
 						</div>
-						{{title}}
-					</li>
-				{% endfor %}
-			</ul>
-		</li>
-		<li>
-			<span>Assign to agent team</span>
-			<ul class="submenu">
-				{% for id,title in ticket_options.agent_teams %}
-					<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{id}}">{{title}}</li>
-				{% endfor %}
-			</ul>
-		</li>
-		<li class="sep">-</li>
-		<li>
-			<span>Set Department</span>
-			{% include 'AgentBundle:Common:menu-department.html.twig' with {'departments': ticket_options.departments_hierarchy, 'add_classname': 'submenu'} %}
-		</li>
-		<li>
-			<span>Set Category</span>
-			{% include 'AgentBundle:Common:menu-ticket-category.html.twig' with {'categories': ticket_options.ticket_categories_hierarchy, 'add_classname': 'submenu'} %}
-		</li>
-		<li>
-			<span>Set Product</span>
-			<ul class="submenu">
-				{% for id,title in ticket_options.products %}
-					<li data-option-id="standard" data-option-name="product_id" data-option-value="{{id}}">{{title}}</li>
-				{% endfor %}
-			</ul>
-		</li>
-		<li>
-			<span>Set Priority</span>
-			<ul class="submenu">
-				{% for id,title in ticket_options.priorities %}
-					<li data-option-id="standard" data-option-name="priority_id" data-option-value="{{id}}">{{title}}</li>
-				{% endfor %}
-			</ul>
-		</li>
-		<li>
-			<span>Set Workflow</span>
-			{% include 'AgentBundle:Common:menu-ticket-workflow.html.twig' with {'workflows': ticket_options.ticket_workflows, 'add_classname': 'submenu'} %}
-		</li>
-		<li>
-			<span>Set Flag</span>
-			{% include 'AgentBundle:Common:menu-flags.html.twig' with {'add_classname': 'submenu'} %}
-		</li>
-		<li class="sep">-</li>
-		<li data-option-id="delete"><span class="icon icon-page-delete">Delete Ticket</span></li>
-		<li data-option-id="delete-block"><span class="icon icon-page-delete dev-feature-inactive">Delete Ticket and Block User</span></li>
-		<li data-option-id="spam"><span class="icon icon-page-delete dev-feature-inactive">Mark as Spam</span></li>
-		<li class="sep">-</li>
-		<li>
-			<span>Set Status</span>
-			<ul class="submenu">
-				<li data-option-id="standard" data-option-name="status" data-option-value="open">Open</li>
-				<li data-option-id="standard" data-option-name="status" data-option-value="pending">Pending</li>
-				<li data-option-id="standard" data-option-name="status" data-option-value="resolved">Resolved</li>
-			</ul>
-		</li>
-	</ul>
+						{# /Reply Area #}
+
+						<div class="content-tab-bottom content-tab-bottom reply-attach tab-content" data-tab-trigger=".tab-trigger.reply-attach">
+							<div class="file-input">
+								<button class="dp-button x-small">Upload new file</button> or drag and drop files onto this area
+								<input type="file" name="file" multiple="multiple" />
+							</div>
+							<ul class="file-list"></ul>
+						</div>
+						<div class="content-tab-bottom cc-area reply-cc tab-content" data-tab-trigger=".tab-trigger.reply-cc">
+							<input type="text" value="" /> <button class="dp-button x-small">Add Email Address</button>
+						</div>
+					</div>
+				</div>
+			</div>
+
+			<div class="actions-tpl" style="display:none">
+				<div class="row">
+					<div class="term">
+						<div class="type"></div>
+						<div class="choice"></div>
+						<div class="remove">-</div>
+					</div>
+				</div>
+				<div class="type" title="Status" data-rule-type="status">
+					<div class="choice">
+						<select name="status">
+							<option value="open">Open</option>
+							<option value="pending">Pending</option>
+							<option value="resolved">Resolved</option>
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Department" data-rule-type="department">
+					<div class="choice">
+						<select name="department">
+							{% for id,title in ticket_options.departments %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Category" data-rule-type="category">
+					<div class="choice">
+						<select name="category">
+							{% for id,title in ticket_options.categories %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Product" data-rule-type="product">
+					<div class="choice">
+						<select name="product">
+							{% for id,title in ticket_options.products %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Priority" data-rule-type="priority">
+					<div class="choice">
+						<select name="priority">
+							{% for id,title in ticket_options.priorities %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Workflow" data-rule-type="workflow">
+					<div class="choice">
+						<select name="workflow">
+							{% for id,title in ticket_options.ticket_workflows %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Agent" data-rule-type="agent">
+					<div class="choice">
+						<select name="agent">
+							{% for id,title in ticket_options.agents %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Agent Team" data-rule-type="agent_team">
+					<div class="choice">
+						<select name="agent_team">
+							{% for id,title in ticket_options.agent_teams %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				<div class="type" title="Add Labels" data-rule-type="add_labels">
+					<div class="choice">
+						<input type="text" name="labels" />
+					</div>
+				</div>
+				<div class="type" title="Remove Labels" data-rule-type="remove_labels">
+					<div class="choice">
+						<input type="text" name="labels" />
+					</div>
+				</div>
+				<div class="type" title="Set Flag" data-rule-type="flag">
+					<div class="choice">
+						<select name="flag">
+							<option value="blue">Blue</option>
+							<option value="green">Green</option>
+							<option value="orange">Orange</option>
+							<option value="pink">Pink</option>
+							<option value="purple">Purple</option>
+							<option value="red">Red</option>
+							<option value="yellow">Yellow</option>
+						</select>
+					</div>
+				</div>
+				{% if ticket_options.custom_ticket_fields %}
+					{% for field in ticket_options.custom_ticket_fields %}
+						<div class="type" title="Set Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+							<div class="choice">
+								{{ form_field(field.form) }}
+							</div>
+						</div>
+					{% endfor %}
+				{% endif %}
+				<div class="type" title="Set User Organization" data-rule-type="person_organization_id">
+					<div class="choice">
+						<select name="person_organization_id">
+							{% for id,title in ticket_options.people_organizations %}
+								<option value="{{id}}">{{title}}</option>
+							{% endfor %}
+						</select>
+					</div>
+				</div>
+				{% if ticket_options.custom_people_fields %}
+					{% for field in ticket_options.custom_people_fields %}
+						<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-type="people_field[{{field.field_def.id}}]">
+							<div class="choice">
+								{{ form_field(field.form) }}
+							</div>
+						</div>
+					{% endfor %}
+				{% endif %}
+			</div>
+		</div>
+		<div class="overlay-actions">
+			<div class="loading-off">
+				<button class="save-trigger dp-button small">View Changes</button>
+			</div>
+			<div class="loading-on" style="display:none">
+				
+			</div>
+		</div>
+	</div>
 </div>

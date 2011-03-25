@@ -148,6 +148,15 @@ class TicketSearchController extends AbstractController
 		if (!$is_partial) {
 			$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
 			$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+			$ticket_options['custom_ticket_fields'] = $custom_fields;
+
+			// People studd
+			$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+			$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+			$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 		}
 
 		// ticket and person defs for columns
@@ -616,6 +625,80 @@ class TicketSearchController extends AbstractController
 		}
 
 		return $this->createJsonResponse($data);
+	}
+
+	public function ajaxGetMacroActionsAction()
+	{
+		$macro_id = $this->in->getUint('macro_id');
+		$macro = App::getEntityRepository('DeskPRO:TicketMacro')->find($macro_id);
+
+		return $this->createJsonResponse(array(
+			'macro_id' => $macro['id'],
+			'macro_actions' => $macro->getActionsArrayDesc()
+		));
+	}
+
+	public function ajaxPreviewActionsAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		// Use a dummy TicketMacro so we can get an actions array easily
+		$macro = new Entity\TicketMacro();
+		$got_actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+
+		if ($this->in->getString('message')) {
+			$got_actions[] = array('rule_type' => 'reply', 'new_reply' => $this->in->getString('message'));
+		}
+
+		$macro['actions'] = $got_actions;
+
+		$actions = $macro->getActionsArrayForCollection($tickets);
+
+		$data = array();
+		$data['raw_actions'] = array();
+		$data['ticket_actions'] = $actions;
+
+		$raw_actions = $macro->getActionsArray();
+		if (!empty($raw_actions['new_reply'])) {
+			$data['raw_actions']['new_reply'] = $raw_actions['new_reply'];
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
+	public function ajaxSaveActionsAction()
+	{
+		$ticket_ids = $this->in->getCleanValueArray('ticket_ids', 'uint', 'discard');
+		$tickets = App::getOrm()->getRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
+
+		// Use a dummy TicketMacro so we can get an actions array easily
+		$macro = new Entity\TicketMacro();
+		$got_actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+
+		if ($this->in->getString('message')) {
+			$got_actions[] = array('rule_type' => 'reply', 'new_reply' => $this->in->getString('message'));
+		}
+
+		$macro['actions'] = $got_actions;
+
+		App::getOrm()->beginTransaction();
+
+		foreach ($tickets as $ticket) {
+			$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
+			$actions = $macro->getActionsArray($ticket);
+			$result = $ticket_edit->applyActions($actions);
+			$ticket_edit->save();
+
+			// We need to manually apply to the user since ticketedit doesnt care about that
+			$macro->performOnPerson($ticket['person']);
+			App::getOrm()->persist($ticket['person']);
+		}
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 
 	public function ajaxSaveMacroAction()

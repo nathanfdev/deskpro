@@ -307,7 +307,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		if (el.is('.dbl-click-trigger')) {
 			el.dblclick(fn);
 		} else {
-			el.click();
+			el.click(fn);
 		}
 	},
 

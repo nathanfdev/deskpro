@@ -85,14 +85,16 @@ DeskPRO.Form.RuleBuilder = new Class({
 			this.handleSelectChange(new_row);
 			$('.op:first select', new_row).val(existing.op).addClass('op');
 
-			if (typeOf(existing.choice) != 'object') {
+			if (typeof val == 'string' || typeof val == 'number' || typeOf(existing.choice) != 'object') {
 				// If its just one item, then we'll just assume its the first field
 				$(':input, textarea, select', new_row).filter(':not(.op, .rule_type)').first().val(existing.choice);
 			} else {
 				// Otherwise we'll assume its a k=>v array
 				Object.each(existing.choice, function(val, name) {
 					var name_safe = name.replace(/\[/, '\\[').replace(/\]/, '\\]');
-					if (typeOf(val) == 'object') {
+					if (typeof val == 'string' || typeof val == 'number') {
+						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val);
+					} else if (typeOf(val) == 'object') {
 						Object.each(val, function(subval, subname) {
 							var sub_name = name_safe + "["+subname+"]";
 							var sub_name_safe = name_safe + "\\["+subname+"\\]";

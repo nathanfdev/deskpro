@@ -2424,6 +2424,23 @@ table.participants-table .partis ul li{
 	padding: 4px 8px;
 }
 
+.tab-bottom-wrap {
+	font: 11px/19px Arial,Helvetica,sans-serif;
+}
+
+.tab-bottom-within {
+	height: 33px;
+	border-top: 1px solid #737E8B;
+
+	-webkit-box-shadow:  inset 0 1px 0 #cdd1da;
+    -moz-box-shadow: inset 0 1px 0 #cdd1da;
+    box-shadow: inset 0 1px 0 #cdd1da;
+
+	background-color: #a9b1c0;
+	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#99a2b3 ), to(#b6bdca));
+    background: -moz-linear-gradient(90deg, #99a2b3, #b6bdca );
+}
+
 .tab-bottom {
 	height: 33px;
 	width: 100%;
@@ -2436,6 +2453,12 @@ table.participants-table .partis ul li{
 	background-color: #a9b1c0;
 	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#99a2b3 ), to(#b6bdca));
     background: -moz-linear-gradient(90deg, #99a2b3, #b6bdca );
+}
+
+.tab-bottom .check-count {
+	float: left;
+	line-height: 33px;
+	padding-left: 8px;
 }
 
 .tab-bottom input{
@@ -2492,6 +2515,17 @@ table.participants-table .partis ul li{
 .tab-bottom .bar-actions ul li.send-reply a.loading-msg  { display:none; }
 .tab-bottom .bar-actions ul li.send-reply.is-loading a { display:none; }
 .tab-bottom .bar-actions ul li.send-reply.is-loading a.loading-msg  { display:inline }
+
+.inner .tab-bottom-tabs {
+	-moz-border-radius-topleft: 4px;
+-moz-border-radius-topright: 4px;
+-moz-border-radius-bottomright: 0px;
+-moz-border-radius-bottomleft: 0px;
+border-top-left-radius: 4px;
+border-top-right-radius: 4px;
+border-bottom-right-radius: 0px;
+border-bottom-left-radius: 0px;
+}
 
 .tab-bottom-tabs {
 	background: url("../../images/bg-tabs-bottom.png") repeat-x;
@@ -2558,6 +2592,16 @@ table.participants-table .partis ul li{
 	cursor: pointer;
 }
 
+.inner .tab-bottom-contents {
+-moz-border-radius-topleft: 0px;
+-moz-border-radius-topright: 0px;
+-moz-border-radius-bottomright: 4px;
+-moz-border-radius-bottomleft: 4px;
+border-top-left-radius: 0px;
+border-top-right-radius: 0px;
+border-bottom-right-radius: 4px;
+border-bottom-left-radius: 4px;
+}
 
 .tab-bottom-contents {
 	border-top: 1px solid #4e5460;
@@ -2798,4 +2842,18 @@ ul.person-popout-tabs li a{
 .ticket-message-edit-btn:hover {
 	text-decoration: underline;
 	cursor: pointer;
+}
+
+
+.mass-actions.overlay .macro-selector {
+	float: right;
+	padding: 8px 25px 0 0;
+}
+.mass-actions.overlay .macro-selector select {
+	font-size: 11px;
+}
+
+.mass-actions.overlay .macro-selector .spinner {
+	float: left;
+	padding-right: 6px;
 }
