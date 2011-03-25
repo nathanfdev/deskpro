@@ -5,6 +5,7 @@ DeskPRO.Agent.PageHelper.ListColDrag = new Orb.Class({
 
 	initialize: function(options) {
 		this.options = {
+			table: null,
 			onlyRowSel: null,
 			onlyRowColOffset: 0
 		};
@@ -25,16 +26,19 @@ DeskPRO.Agent.PageHelper.ListColDrag = new Orb.Class({
 
 				return el;
 			},
-			start: function() {
+			start: function(event, ui) {
+				event.stopPropagation();
 				var index = $(this).index();
 				$(this).closest('table').data('drag_col_index', index);
 			},
 			stop: function() {
 				self.moveIndicator.hide();
-			}
+			},
+			scope: 'col-drag'
 		});
 
 		this.dropHeads.droppable({
+			scope: 'col-drag',
 			over: function(event, ui) {
 				var index = $(this).index();
 				var pos = $(this).offset();

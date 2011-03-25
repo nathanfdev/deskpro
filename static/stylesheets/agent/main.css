@@ -2776,3 +2776,20 @@ ul.person-popout-tabs li a{
 	display: none;
 	position: absolute;
 }
+.col-resizer {
+	float: right;
+	position: relative;
+	right: -3px;
+	width: 2px;
+	height: 20px;
+	cursor: col-resize;
+	border-right: 3px solid transparent;
+}
+
+.col-resizer-helper {
+	width: 1px;
+	border-right: 1px solid #000;
+	position: absolute;
+	height: 23px;
+	margin-top: -20px;
+}
