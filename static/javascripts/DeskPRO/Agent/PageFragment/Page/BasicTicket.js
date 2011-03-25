@@ -52,6 +52,11 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// Custom field widgets
 		$('input.date-field', this.contentWrapper).datepicker({ 'dateFormat': 'M d, yy'});
+
+		this.initFeaturesOnCollection(this.wrapper, {
+			routes: [],
+			times: ['.timeago']
+		});
 	},
 
 	_initLayout: function() { },
