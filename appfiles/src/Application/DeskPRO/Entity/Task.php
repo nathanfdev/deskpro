@@ -8,13 +8,12 @@
  * @license http://www.deskpro.com/license-agreement DeskPRO License
  * @author Ricardo Rauch <ricardo@gravityonmars.com>
  */
-
 namespace Application\DeskPRO\Entity;
 
 /**
  * Task entity definition
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Task")
  * @orm:Table(name="tasks")
  */
 class Task extends \Application\DeskPRO\Domain\DomainObject
@@ -99,6 +98,14 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_completed;
 	
 	/**
+	 * The task creator's id.
+	 * 
+	 * @var int
+	 * @orm:Column(name="person_id", type="integer", nullable=false)
+	 */
+	protected $person_id;
+	
+	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="created_tasks")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", nullable=false)
@@ -106,11 +113,27 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	protected $person;
 	
 	/**
+	 * The assigned agent's id.
+	 * 
+	 * @var int
+	 * @orm:Column(name="assigned_agent_id", type="integer", nullable=false)
+	 */
+	protected $assigned_agent_id;
+	
+	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="assigned_tasks")
 	 * @orm:JoinColumn(name="assigned_agent_id", referencedColumnName="id", nullable=true)
 	 */
 	protected $assigned_agent;
+	
+	/**
+	 * The assigned agent team's id.
+	 * 
+	 * @var int
+	 * @orm:Column(name="assigned_agent_team_id", type="integer", nullable=false)
+	 */
+	protected $assigned_agent_team_id;
 	
 	/**
 	 * @var Application\DeskPRO\Entity\AgentTeam
