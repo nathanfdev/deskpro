@@ -2732,3 +2732,12 @@ ul.person-popout-tabs li a{
 	border-collapse: separate;
 	width: 100%;
 }
+
+.col-move {
+	background: transparent url("../../images/col-move-top.gif") no-repeat center center;
+	width: 9px;
+	height: 9px;
+	overflow: hidden;
+	display: none;
+	position: absolute;
+}

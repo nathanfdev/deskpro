@@ -35,6 +35,13 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this.contentWrapper = $('.content:first', this.wrapper);
 		this.barWrapper = $('.ticket-bar:first', this.wrapper);
 
+		//dragtable.makeDraggable($('table:first', this.contentWrapper).get(0));
+		this.listColDrag = new DeskPRO.Agent.PageHelper.ListColDrag({
+			table: $('table:first', this.contentWrapper).get(0),
+			onlyRowSel: '.line-2',
+			onlyRowColOffset: 2
+		});
+
 		var center_id = Orb.getUniqueId('listpane_');
 		var south_id = Orb.getUniqueId('listpane_');
 
