@@ -71,6 +71,14 @@ class TicketActions
 					}
 					break;
 
+				case 'agent_team':
+
+					if (!$ticket OR $ticket['agent_team_id'] != $action['agent_team']) {
+						$actions['agent_team_id'] = $action['agent_team'];
+					}
+
+					break;
+
 				case 'product':
 					if (!$ticket OR $ticket['product_id'] != $action['product']) {
 						$actions['product_id'] = $action['product'];

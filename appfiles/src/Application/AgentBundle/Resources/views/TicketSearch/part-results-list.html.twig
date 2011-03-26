@@ -40,7 +40,9 @@
 				</td>
 			{% elseif field == 'department' %}
 				<td class="{{field}}">
-					{{ticket.department.title}}
+					<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
+						{{ticket.department.title}}
+					</span>
 				</td>
 			{% elseif field == 'category' %}
 				<td class="{{field}}">
@@ -77,6 +79,16 @@
 					<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
 					{% if ticket.agent %}
 						{{ticket.agent.display_name}}
+					{% else %}
+						Unassigned
+					{% endif %}
+					</span>
+				</td>
+			{% elseif field == 'agent_team' %}
+				<td class="{{field}}">
+					<span class="prop-val agent_team_id" data-prop-value="{{ticket.agent_team.name}}">
+					{% if ticket.agent %}
+						{{ticket.agent_team.name}}
 					{% else %}
 						Unassigned
 					{% endif %}

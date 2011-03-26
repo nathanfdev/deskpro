@@ -72,7 +72,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="actions", type="array")
 	 */
-	protected $actions;
+	protected $actions = array();
 
 	public function getActionsArrayDesc()
 	{
