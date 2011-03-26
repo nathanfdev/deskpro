@@ -101,7 +101,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 	loadMacroActions: function() {
 
-		var macro_id = parseInt($('select.apply-macro-select').val());
+		var macro_id = parseInt($('select.apply-macro-select', this.actionsWrap).val());
 		if (!macro_id) {
 			return;
 		}
