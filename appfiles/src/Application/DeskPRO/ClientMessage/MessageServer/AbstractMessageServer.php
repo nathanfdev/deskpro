@@ -25,7 +25,7 @@ abstract class AbstractMessageServer
 	public function __construct(array $options)
 	{
 		$event_dispatcher = App::get('event_dispatcher');
-		$event_dispatcher->connect('deskpro.client_message.new'. array($this, '_handleNewMessageEvent'));
+		$event_dispatcher->addListener('DeskPRO_onNewClientMessage', $this);
 
 		$this->init($options);
 	}
@@ -37,7 +37,7 @@ abstract class AbstractMessageServer
 
 
 
-	protected function _handleNewMessageEvent(Event $event)
+	public function DeskPRO_onNewClientMessage(Event $event)
 	{
 		$this->handleNewMessage($event->getSubject());
 	}

@@ -11,8 +11,6 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
-use Symfony\Component\DependencyInjection\Extension\Extension;
-use Symfony\Component\DependencyInjection\Loader\XmlFileLoader;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 
@@ -23,9 +21,9 @@ use Symfony\Component\DependencyInjection\Reference;
  */
 class TwigExtension extends \Symfony\Bundle\TwigBundle\DependencyInjection\TwigExtension
 {
-	public function configLoad($config, ContainerBuilder $container)
+	public function load(array $config, ContainerBuilder $container)
     {
-		parent::configLoad($config, $container);
+		parent::load($config, $container);
 
 		// Set our loader class
         $container->setParameter('twig.loader.class', 'Application\\DeskPRO\\Twig\\Loader\\Hybrid');

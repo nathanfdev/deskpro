@@ -35,6 +35,7 @@ class MainController extends AbstractController
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		$state_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => 'agent.ui.state'));
+		$restore_state = null;
 		if ($state_pref) {
 			$restore_state = $state_pref['value'];
 		}

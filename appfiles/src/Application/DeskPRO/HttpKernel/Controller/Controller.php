@@ -49,8 +49,8 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		$this->response          = $this->get('response');
 		$this->event_dispatcher  = $this->get('event_dispatcher');
 
-		$this->event_dispatcher->connect('core.deskpro-pre-action', array($this, '_runPreAction'));
-		$this->event_dispatcher->connect('core.deskpro-post-action', array($this, '_runPostAction'));
+		$this->event_dispatcher->addListener('DeskPRO_onControllerPreAction', $this);
+		$this->event_dispatcher->addListener('DeskPRO_onControllerPostAction', $this);
 
 		$this->init();
 	}
@@ -67,12 +67,11 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
 
 
-	public function _runPreAction(Event $event)
+	public function DeskPRO_onControllerPreAction($event)
 	{
 		$ret = $this->preAction($event->get('action'), $event->get('arguments'));
 		if ($ret) {
-			$event->setProcessed();
-			return $ret;
+			$event->setResponse($ret);
 		}
 	}
 
@@ -92,12 +91,11 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 
 
 
-	public function _runPostAction(Event $event)
+	public function DeskPRO_onControllerPostAction($event)
 	{
 		$ret = $this->postAction($event->get('response'));
 		if ($ret) {
-			$event->setProcessed();
-			return $ret;
+			$event->setResponse($ret);
 		}
 	}
 
@@ -129,6 +127,26 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	{
 		$url = $this->generateUrl($route, $parameters, true);
 		return $this->redirect($url, $status);
+	}
+
+
+
+	/**
+	 * Create a regular html response
+	 *
+	 * @param string $content
+	 * @param int $status_code
+	 * @return Response
+	 */
+	public function createResponse($content, $status_code = 200)
+	{
+		$response = $this->container->get('response');
+		$response->headers->set('Content-Type', 'text/html');
+		$response->setStatusCode($status_code);
+
+		$response->setContent($content);
+
+		return $response;
 	}
 
 

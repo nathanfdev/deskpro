@@ -26,9 +26,13 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 {
 	public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null)
 	{
-		if (isset($params['driverOptions']['from_user_config'])) {
-			$key = $params['driverOptions']['from_user_config'];
-			unset($params['driverOptions']['from_user_config']);
+		$params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
+
+		$host = $params['host'];
+		$m = null;
+		if (preg_match('#^from_user_config.(.*?)$#', $host, $m)) {
+			$key = $m[1];
+			unset($params['host']);
 
 			$params = array_merge($params, App::getConfig($key));
 		}

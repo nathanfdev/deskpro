@@ -11,24 +11,24 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
-use Symfony\Component\DependencyInjection\Reference;
-use Symfony\Component\DependencyInjection\Definition;
+
 use Application\DeskPRO\App;
 
 /**
  * Registeres cache services
  */
-class CacheExtension extends \Symfony\Component\DependencyInjection\Extension\Extension
+class CacheExtension extends Extension
 {
-	public function cachesLoad($config, ContainerBuilder $container)
-    {
-    	if (!$config) return;
+	public function load(array $config, ContainerBuilder $container)
+	{
+		if (!$config) return;
 
     	foreach ($config as $name => $cache_options) {
     		$this->loadCacheService($name, $cache_options, $container);
     	}
-    }
+	}
 
     protected function loadCacheService($name, $cache_options, ContainerBuilder $container)
     {

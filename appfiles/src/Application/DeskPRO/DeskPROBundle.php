@@ -13,13 +13,14 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 		$this->name = 'DeskPRO';
 	}
 
-	public function registerExtensions(ContainerBuilder $container)
+	public function build(ContainerBuilder $container)
     {
-		// TODO sort out Hybrid loader again for gold
-		//$container->registerExtension(new \Application\DeskPRO\DependencyInjection\TwigExtension());
+        // register the extension(s) found in DependencyInjection/ directory
+        parent::build($container);
 
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CacheExtension());
+        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\SwiftmailerExtension());
     }
 
 	public function getNamespace()

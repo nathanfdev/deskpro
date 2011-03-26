@@ -7,12 +7,12 @@ parameters:
   doctrine.dbal.connection_factory_class: "Application\DeskPRO\DBAL\ConnectionFactory"
   swiftmailer.class: "Application\DeskPRO\Mail\Mailer"
   exception_listener.class: "Application\DeskPRO\Debug\ExceptionListener"
-  twig.loader.class: "Application\DeskPRO\Twig\Loader\HybridLoader"
+  twig.loader.class: "Application\DeskPRO\Twig\\Loader\HybridLoader"
 
 services:
   templating.engine.jsonphp:
     class: Orb\Templating\Engine\PhpVarJsonEngine
-    arguments: [@templating.name_parser, @service_container, @templating.loader]
+    arguments: [@templating.name_parser, @service_container, @templating.loader, @templating.globals]
     tags:
       - { name: templating.engine, alias: jsonphp }
   twig.helpers.deskpro_templating:
@@ -20,20 +20,19 @@ services:
     arguments: [@service_container]
     tags:
       - { name: twig.extension }
-  session.storage:
-    class: Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage
-    arguments: [@doctrine.orm.entity_manager, %session.storage.native.options%]
+#  session.storage:
+#    class: Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage
+#    arguments: [@doctrine.orm.entity_manager, %session.storage.native.options%]
   swiftmailer.transport.dp_delegating:
     class: Application\DeskPRO\Mail\Transport\DelegatingTransport
     arguments: [@swiftmailer.transport.eventdispatcher]
 
-app.config:
+framework:
   charset: UTF-8
   router: { resource: "%kernel.root_dir%/config/routing.yml" }
 #  profiler: { only_exceptions: false }
   templating:
     engines: ['twig', 'php', 'jsonphp']
-    escaping: htmlspecialchars
     assets_base_urls: "/dp_400/static/" # replace with your real basepath
   validation:
     enabled: true
@@ -42,21 +41,24 @@ app.config:
     lifetime: 3600
     auto_start: false
 
-doctrine.orm:
-  auto_generate_proxy_classes: false
-  mappings:
-    DeskPRO: ~
+doctrine:
+  orm:
+    auto_generate_proxy_classes: false
+    default_entity_manager: default
+    entity_managers:
+      default:
+          mappings:
+            DeskPRO: ~
+  dbal:
+    default_connection: default
+    connections:
+      default:
+        host: 'from_user_config.db'
 
-doctrine.dbal:
-  options: { from_user_config: 'db' }
-  wrapper_class: "Application\DeskPRO\DBAL\Connection"
-
-swiftmailer.config:
+swiftmailer:
   transport: 'dp_delegating'
 
-deskpro_cache.caches:
-  phrases: ~
+#deskpro_cache:
+#  phrases: ~
 
-deskpro_core.config: ~
-deskpro_agent_core.config: ~
-deskpro_api_core.config: ~
+deskpro_core: ~

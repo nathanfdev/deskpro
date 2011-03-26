@@ -11,6 +11,7 @@
 
 namespace Application\ApiBundle\DependencyInjection;
 
+use Symfony\Component\DependencyInjection\Extension\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
@@ -19,9 +20,9 @@ use Application\DeskPRO\App;
 /**
  * Registers basic core stuff
  */
-class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Extension
+class CoreExtension extends Extension
 {
-	public function configLoad($config, ContainerBuilder $container)
+	public function load($config, ContainerBuilder $container)
     {
 		$service_name = 'deskpro.api.request_key';
 

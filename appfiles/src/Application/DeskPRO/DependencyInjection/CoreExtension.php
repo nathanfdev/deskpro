@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\DependencyInjection;
 
+use Symfony\Component\HttpKernel\DependencyInjection\Extension;
 use Symfony\Component\DependencyInjection\ContainerBuilder;
 use Symfony\Component\DependencyInjection\Reference;
 use Symfony\Component\DependencyInjection\Definition;
@@ -19,14 +20,17 @@ use Application\DeskPRO\App;
 /**
  * Registers basic core stuff
  */
-class CoreExtension extends \Symfony\Component\DependencyInjection\Extension\Extension
+class CoreExtension extends Extension
 {
-	public function configLoad($config, ContainerBuilder $container)
+	public function load(array $config, ContainerBuilder $container)
     {
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
 		$this->loadDoctrineCaches($container);
+
+		$definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
+		$container->setDefinition('response', $definition);
 
 		// Dont need this. When changing session storage to DB, we'll
 		// need to have JUST the session.storage definition

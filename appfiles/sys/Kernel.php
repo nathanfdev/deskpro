@@ -13,8 +13,7 @@ namespace DeskPRO\Kernel;
 
 require(DP_ROOT.'/sys/autoload.php');
 
-use \Symfony\Component\DependencyInjection\Loader\LoaderInterface;
-use \Symfony\Component\DependencyInjection\ContainerBuilder;
+use Symfony\Component\Config\Loader\LoaderInterface;
 
 use \Application\DeskPRO\App;
 
@@ -99,7 +98,6 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
 
 			new \Symfony\Bundle\ZendBundle\ZendBundle(),
-			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
 			new \Application\AdminBundle\AdminBundle(),
@@ -150,11 +148,7 @@ class Kernel extends \Symfony\Component\HttpKernel\Kernel
 
 	public function registerContainerConfiguration(LoaderInterface $loader)
 	{
-		$container = new ContainerBuilder();
-
-		$loader->load($this->getLocalConfigurationFile($this->getEnvironment()));
-
-		return $container;
+		$loader->load(__DIR__.'/config/config_'.$this->getEnvironment().'.yml');
 	}
 }
 

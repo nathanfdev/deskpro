@@ -23,6 +23,11 @@ use Orb\Util\Util;
  */
 class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionStorage\SessionStorageInterface
 {
+	static protected $sessionIdRegenerated = false;
+    static protected $sessionStarted       = false;
+
+	protected $options;
+
 	/**
 	 * @var Doctrine\ORM\EntityManager
 	 */
@@ -32,8 +37,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 	 * @var Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
-
-	protected static $sessionStarted = false;
 
     public function __construct(\Doctrine\ORM\EntityManager $em, $options = null)
     {
@@ -221,6 +224,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		// Because of when the session is written, we cant use the ORM here,
 		// because the manager has lost its reference to the session state
 		$id = Session::getIdFromCode($id);
+
 		$sess_rec = array();
 		$sess_rec['data'] = $data;
 		$sess_rec['date_last'] = date('Y-m-d H:i:s', time());

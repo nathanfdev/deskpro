@@ -122,7 +122,11 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 
 	public function getEntityId()
     {
-        return $this->storage->getEntityId();
+		if ($this->storage instanceof \Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage) {
+        	return $this->storage->getEntityId();
+		} else {
+			return 0;
+		}
     }
 
 

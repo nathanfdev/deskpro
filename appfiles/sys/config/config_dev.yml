@@ -4,17 +4,17 @@ imports:
 parameters:
     kernel.debug: true
 
-app.config:
+framework:
   router:   { resource: "%kernel.root_dir%/config/routing_dev.yml" }
 
 #webprofiler.config:
 #  toolbar: true
 #  intercept_redirects: false
 
-twig.config:
-  auto_reload: true
+twig:
+  debug:            %kernel.debug%
 
-zend.config:
+zend:
   logger:
     priority: debug
     path:     %kernel.root_dir%/logs/%kernel.environment%.log
