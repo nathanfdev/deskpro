@@ -13,62 +13,83 @@ namespace Application\DeskPRO\Debug;
 use \Application\DeskPRO\App;
 
 use \Orb\Log\Logger;
+use \Orb\Util\Strings;
 
-use \Symfony\Component\EventDispatcher\EventInterface;
-use \Symfony\Component\HttpKernel\Log\LoggerInterface;
-use \Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
-use \Symfony\Component\HttpKernel\HttpKernelInterface;
-use \Symfony\Component\HttpKernel\Exception\FlattenException;
-use \Symfony\Component\HttpFoundation\Request;
+use Symfony\Component\HttpKernel\Log\LoggerInterface;
+use Symfony\Component\HttpKernel\Log\DebugLoggerInterface;
+use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
+use Symfony\Component\HttpKernel\HttpKernelInterface;
+use Symfony\Component\HttpKernel\Exception\FlattenException;
+use Symfony\Component\HttpKernel\Exception\HttpExceptionInterface;
+use Symfony\Component\HttpFoundation\Request;
 
 class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionListener
 {
 	public function __construct($controller, LoggerInterface $logger = null)
-    {
-        $this->controller = $controller;
-        $this->logger = $logger;
+	{
+		$this->controller = $controller;
+		$this->logger = $logger;
 
 		set_error_handler(array($this, 'handleError'), E_ALL | E_STRICT);
-    }
+	}
 
-	public function handle(EventInterface $event)
+	public function onCoreException(GetResponseForExceptionEvent $event)
 	{
 		static $handling;
 
-        if ($handling === true) return false;
-        $handling = true;
+		if ($handling === true) return false;
+		$handling = true;
 
-        $exception = $event->get('exception');
-        $request = $event->get('request');
+		$exception = $event->getException();
+		$request = $event->getRequest();
 
-		error_log(sprintf('Uncaught PHP Exception %s: "%s" at %s line %s', get_class($exception), $exception->getMessage(), $exception->getFile(), $exception->getLine()));
+		if (null !== $this->logger) {
+			$this->logger->err(sprintf('%s: %s (uncaught exception)', get_class($exception), $exception->getMessage()));
+		} else {
+			error_log(sprintf('Uncaught PHP Exception %s: "%s" at %s line %s', get_class($exception), $exception->getMessage(), $exception->getFile(), $exception->getLine()));
+		}
+
 		$this->_logException($exception);
 
-        $attributes = array(
-            '_controller' => $this->controller,
-            'exception'   => FlattenException::create($exception),
+		$logger = null !== $this->logger ? $this->logger->getDebugLogger() : null;
+		$flattenException = FlattenException::create($exception);
+		if ($exception instanceof HttpExceptionInterface) {
+			$flattenException->setStatusCode($exception->getStatusCode());
+			$flattenException->setHeaders($exception->getHeaders());
+		}
 
-            // when using CLI, we force the format to be TXT
-            'format'      => 0 === strncasecmp(PHP_SAPI, 'cli', 3) ? 'txt' : $request->getRequestFormat(),
-        );
+		$flattenException->_dp_sn = $exception->_dp_sn;
 
-        $request = $request->duplicate(null, null, $attributes);
+		$attributes = array(
+			'_controller' => $this->controller,
+			'exception'   => $flattenException,
+			'logger'      => $logger,
+			// when using CLI, we force the format to be TXT
+			'format'      => 0 === strncasecmp(PHP_SAPI, 'cli', 3) ? 'txt' : $request->getRequestFormat(),
+		);
 
-        try {
-            $response = $event->getSubject()->handle($request, HttpKernelInterface::SUB_REQUEST, true);
-        } catch (\Exception $e) {
-            $message = sprintf('Exception thrown when handling an exception (%s: %s)', get_class($e), $e->getMessage());
-            error_log($message);
+		$request = $request->duplicate(null, null, $attributes);
 
-            // re-throw the exception as this is a catch-all
-            throw $exception;
-        }
+		try {
+			$response = $event->getKernel()->handle($request, HttpKernelInterface::SUB_REQUEST, true);
+		} catch (\Exception $e) {
+			$message = sprintf('Exception thrown when handling an exception (%s: %s)', get_class($e), $e->getMessage());
+			if (null !== $this->logger) {
+				$this->logger->err($message);
+			} else {
+				error_log($message);
+			}
 
-        $event->setProcessed();
+			// set handling to false otherwise it wont be able to handle further more
+			$handling = false;
 
-        $handling = false;
+			// re-throw the exception as this is a catch-all
+			throw $exception;
+		}
 
-        return $response;
+		$event->setResponse($response);
+
+		$handling = false;
 	}
 
 	protected function _logException(\Exception $exception)
@@ -82,9 +103,12 @@ class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionLis
 		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
 		$trace = $this->_stripPathPrefix($exception->getTraceAsString());
 
+		$exception->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+
 		try {
 			$logger = App::createNewLogger('error_log', null);
 			$logger->log($summary, 3, array(
+				'session_name' => $exception->_dp_sn,
 				'trace' => $trace,
 				'class' => get_class($exception),
 				'file' => $exception->getFile(),
@@ -98,6 +122,7 @@ class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionLis
 				$message->setTo(App::getConfig('debug.email_on_error'));
 				$message->setSubject("[DeskPRO Error] $summary");
 				$message->setBody(print_r(array(
+					'session_name' => $exception->_dp_sn,
 					'trace' => $trace,
 					'class' => get_class($exception),
 					'file' => $exception->getFile(),
@@ -124,8 +149,8 @@ class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionLis
 
 		static $handling;
 
-        if ($handling === true) return false;
-        $handling = true;
+		if ($handling === true) return false;
+		$handling = true;
 
 		$die = false;
 

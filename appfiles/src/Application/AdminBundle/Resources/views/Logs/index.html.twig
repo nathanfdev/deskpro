@@ -1,0 +1,32 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block content %}
+
+<div class="table-list-wrap">
+	<h2>Logs</h2>
+	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+		<tbody>
+			<tr>
+				<td width="200">
+					<strong><a href="{{ path('admin_logs_errors') }}">Error Logs</a></strong>
+				</td>
+				<td>
+					Error logs contain recorded information about errors and exceptions on your helpdesk.
+					Errors should generally not happen, so any logged information here is worth investigating.
+				</td>
+			</tr>
+
+			<tr>
+				<td>
+					<strong>Look up SN</strong>
+				</td>
+				<td>
+					If you have a SN code for a specific error, you can look it up here.
+					<hr />
+					SN Code: <input type="text" id="sn_code" /> <button class="dp-button x-small" onclick="window.location=BASE_URL+'admin/logs/sn/' + $('#sn_code').val()">View</button>
+				</td>
+			</tr>
+		</tbody>
+	</table>
+</div>
+
+{% endblock %}

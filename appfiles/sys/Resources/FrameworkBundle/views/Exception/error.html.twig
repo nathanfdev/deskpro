@@ -12,5 +12,13 @@
             what you were doing when this error occurred. We will fix it as soon
             as possible. Sorry for any inconvenience caused.
         </div>
+
+		{% if exception._dp_sn %}
+		<div>
+			If you continue to experience problems, contact the administrator with the
+			code <strong>SN {{exception._dp_sn}}</strong>.
+		</div>
+		<!--[[SN:{{exception._dp_sn}}]]-->
+		{% endif %}
     </body>
 </html>

@@ -685,17 +685,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 	},
 
-	_globalHandleAjaxError: function(event, XMLHttpRequest, ajaxOptions, thrownError) {
+	_globalHandleAjaxError: function(event, XMLHttpRequest, ajaxOptions, errorThrown) {
 
 		this.stopLoadingIndicator(1000);
 
+		// We dont care about aborts
+		if (XMLHttpRequest.statusText && XMLHttpRequest.statusText == 'abort') {
+			return;
+		}
+
+		var data = XMLHttpRequest.responseText;
+		try {
+			data = $.parseJSON(data);
+		} catch (e) {
+			data = null;
+		}
+
 		if (XMLHttpRequest && XMLHttpRequest.status && XMLHttpRequest.status == '403') {
-			var data = XMLHttpRequest.responseText;
-			try {
-				data = $.parseJSON(data);
-			} catch (e) {
-				data = null;
-			}
 
 			if (data && data.error && data.error == 'session_expired') {
 				window.location = data.redirect_login;
@@ -716,26 +722,42 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// We dont use this handler if there was an error handler used
 		if (ajaxOptions && ajaxOptions.error) return;
 
-		// Hide the loading indicator
-		this.stopLoadingIndicator(10000);
+		var sn = null;
+		if (data && data.sn) {
+			sn = data.sn;
+		} else {
+			var match = /\[\[SN:(.*?)\]\]/.exec(XMLHttpRequest.responseText);
+			if (match) {
+				sn = match[1];
+			}
+		}
+
+		console.log(sn);
 
 		// Show overlay about failed
-		this._showAjaxError();
+		if (sn) {
+			this._showAjaxError('If the error persists, give your administrator this code: SN' + sn);
+		} else {
+			this._showAjaxError();
+		}
 	},
 
-	_showAjaxError: function() {
+	_showAjaxError: function(message) {
+
+		$('#global_ajax_error_info').empty();
+		if (message) {
+			$('#global_ajax_error_info').html(message);
+		}
 
 		if (!this.ajaxErrorOverlay) {
 			this.ajaxErrorOverlay = new DeskPRO.UI.Overlay({
 				contentElement: $('#global_ajax_error'),
-				zIndex: 10000000, /* this should be bigger than everything */
-				onContentSet: function(eventData) {
-					$('.close-trigger', eventData.wrapperEl).click((function() {
-						eventData.overlay.closeOverlay();
-					}).bind(this));
-				}
+				zIndex: 10000000 /* this should be bigger than everything */
 			});
 		}
+
+		this.ajaxErrorOverlay.initOverlay(); // needed so we can access wrapperOuter next
+		this.ajaxErrorOverlay.elements.wrapperOuter.addClass('error');
 
 		this.ajaxErrorOverlay.openOverlay();
 	},

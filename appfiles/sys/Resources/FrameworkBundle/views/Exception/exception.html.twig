@@ -1,10 +1,13 @@
 <div class="sf-exceptionreset">
     <div id="message">
-        <div style="float: left; width: 600px">
+        <div>
+			{% if exception._dp_sn %}
+				<div style="float:right; color: #9C3A52;">
+					<abbr title="SN: This code can be retrieved by the administrator for more information about this error">SN</abbr> {{exception._dp_sn}}
+				</div>
+				<!--[[SN:{{exception._dp_sn}}]]-->
+			{% endif %}
             <h1>
-				{% if exception_sn %}
-					(SN {{exception_sn}})
-				{% endif %}
 				{{ exception.message|replace({"\n": '<br />'})|format_file_from_text }}
 			</h1>
             <h2><strong>{{ status_code }}</strong> {{ status_text }} - {{ exception.class|abbr_class }}</h2>

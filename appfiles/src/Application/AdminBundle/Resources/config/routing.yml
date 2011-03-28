@@ -454,3 +454,33 @@ admin_twitter_accounts_authorize:
 admin_twitter_accounts_edit:
   pattern: /twitter/account/{account_id}
   defaults: { _controller: AdminBundle:TwitterAccount:edit }
+
+################################################################################
+# Logs
+################################################################################
+
+admin_logs:
+  pattern: /logs
+  defaults: { _controller: AdminBundle:Logs:index }
+
+admin_logs_view:
+  pattern: /logs/{log_id}
+  defaults: { _controller: AdminBundle:Logs:view }
+  requirements: { log_id: "\d+" }
+
+admin_logs_view_sn:
+  pattern: /logs/sn/{log_sn}
+  defaults: { _controller: AdminBundle:Logs:viewSn }
+
+admin_logs_errors:
+  pattern: /logs/errors
+  defaults: { _controller: AdminBundle:Logs:errorLogs, page: 1 }
+
+admin_logs_errors_page:
+  pattern: /logs/errors/{page}
+  defaults: { _controller: AdminBundle:Logs:errorLogs }
+  requirements: { page: "\d+" }
+
+admin_logs_errors_clear:
+  pattern: /logs/errors/clear-all
+  defaults: { _controller: AdminBundle:Logs:errorLogsClearAll }

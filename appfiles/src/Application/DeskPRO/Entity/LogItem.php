@@ -16,7 +16,7 @@ use Orb\Util\Arrays;
 /**
  * General logs
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\LogItem")
  * @orm:Table(name="log_items",
  *     indexes={
  *         @orm:Index(name="log_name_idx", columns={"log_name","session_name"}),

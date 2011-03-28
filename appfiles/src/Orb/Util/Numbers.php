@@ -176,4 +176,43 @@ class Numbers
 			return ceil(ceil($number) / $multiple) * $multiple;
 		}
 	}
+
+
+
+	/**
+	 * Get an array of pageinfo useful for building up paginination in templates.
+	 * You get an array with:
+	 * - prev: int of previous page, or false if no prev
+	 * - next: int of next page, or false if no next
+	 * - first: int of first page (1, obviously)
+	 * - last: int of last page
+	 * - pages: range() of page numbers useful in a loop
+	 * - curpage: The current page
+	 *
+	 *
+	 * @param int $num_results   The total number of results
+	 * @param int $page          The current page you're on
+	 * @param int $per_page      How many results per page
+	 * @param int $pad           How many page numbers around the current to show
+	 * @return array
+	 */
+	public static function getPaginationPages($num_results, $page, $per_page, $pad = 5)
+	{
+		$info = array();
+
+		$num_pages = ceil($num_results / $per_page);
+		if (!$num_pages) $num_pages = 1;
+
+		$range_start = max(1, $page - $pad);
+		$range_end = min($num_pages, $range_start + 5);
+
+		$info['pages'] = range($range_start, $range_end);
+		$info['prev'] = ($page != 1) ? $page-1 : false;
+		$info['next'] = ($page < $num_pages) ? $page+1 : false;
+		$info['first'] = 1;
+		$info['last'] = $num_pages;
+		$info['curpage'] = $page;
+
+		return $info;
+	}
 }
