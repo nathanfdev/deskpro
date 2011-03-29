@@ -821,7 +821,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.releaseTicketLocks = [];
 
 				$.ajax({
-					url: BASE_URL + '/agent/ticket-search/ajax-release-locks',
+					url: BASE_URL + 'agent/ticket-search/ajax-release-locks',
 					type: 'GET',
 					data: data,
 					dataType: 'json',
