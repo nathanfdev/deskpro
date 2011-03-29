@@ -947,6 +947,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		App::getOrm()->remove($del);
+		App::getOrm()->persist($this);
 	}
 
 
@@ -978,6 +979,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->hidden_status = self::HIDDEN_STATUS_DELETED;
 
 		App::getOrm()->persist($del);
+		App::getOrm()->persist($this);
 	}
 
 	

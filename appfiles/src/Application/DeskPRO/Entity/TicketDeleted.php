@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+
 /**
  * A log of deleted tickets
  *
@@ -21,21 +23,25 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="ticket_id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id;
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="new_ticket_id", type="integer")
+	 * @orm:Id
+	 * @orm:Column(name="new_ticket_id", type="integer")
 	 */
 	protected $new_ticket_id = 0;
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="by_person_id", type="integer")
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="by_person_id", referencedColumnName="id")
 	 */
-	protected $by_person_id;
+	protected $by_person;
 
 	/**
 	 * @var \DateTime
@@ -52,5 +58,24 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
+	}
+
+
+	public function getByPersonId()
+	{
+		if ($this->by_person) {
+			return $this->by_person['id'];
+		}
+
+		return 0;
+	}
+
+	public function setByPersonId($id)
+	{
+		if ($id) {
+			$this->by_person = App::getEntityRepository('DeskPRO:Person')->find($id);
+		} else {
+			$this->by_person = null;
+		}
 	}
 }

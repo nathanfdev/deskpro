@@ -45,8 +45,20 @@ pageMeta.widgets = [
 
 {% if ticket.status == 'hidden' %}
 	<div class="ticket-hidden-bar">
-		This ticket is currently hidden because: <span>{{ phrase('core_tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
-		This means it won't show up in most search results and it will not generate agent notifications.
+		{% if ticket.hidden_status == 'deleted' %}
+			This ticket was deleted by {{ ticket_deleted.by_person.display_name }} on {{ ticket_deleted.date_created|date('Y-m-d') }}.
+			{% if ticket_deleted.reason %}
+				<br />Reason: {{ ticket_deleted.reason }}
+			{% endif %}
+
+			<br />
+			<div style="padding: 5px">
+				<button class="dp-button x-small undelete-trigger">Undelete Ticket</button>
+			</div>
+		{% else %}
+			This ticket is currently hidden because: <span>{{ phrase('core_tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
+			This means it won't show up in most search results and it will not generate agent notifications.
+		{% endif %}
 	</div>
 {% endif %}
 

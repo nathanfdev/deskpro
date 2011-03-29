@@ -76,9 +76,15 @@ class TicketController extends AbstractController
 		if (!isset($widgets['agent.ticket.tabs'])) $widgets['agent.ticket.tabs'] = array();
 		if (!isset($widgets['agent.ticket.display'])) $widgets['agent.ticket.display'] = array();
 
+		$ticket_deleted = null;
+		if ($ticket['hidden_status'] == 'deleted') {
+			$ticket_deleted = $ticket->getDeletionRecord();
+		}
+
 		return $this->render($tpl, array(
 			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
+			'ticket_deleted' => $ticket_deleted,
 			'ticket_options' => $ticket_options,
 			'custom_fields' => $custom_fields,
 			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
@@ -577,7 +583,7 @@ class TicketController extends AbstractController
 		$reason = $this->in->getString('reason');
 
 		App::getOrm()->beginTransaction();
-		$ticket->deleteTicket($this->person, $ticket);
+		$ticket->deleteTicket($this->person, $reason);
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 
