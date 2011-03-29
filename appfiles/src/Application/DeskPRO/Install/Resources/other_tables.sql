@@ -1,7 +1,6 @@
 ##BEGIN:create_table.tickets_search_active##
 CREATE TABLE `tickets_search_active` (
   `id` int(11) NOT NULL,
-  `language_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
   `priority_id` int(11) DEFAULT NULL,
@@ -36,7 +35,6 @@ CREATE TABLE `tickets_search_subject` (
 ##BEGIN:create_table.tickets_search_message##
 CREATE TABLE `tickets_search_message` (
   `ticket_id` int(11) NOT NULL,
-  `language_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
   `priority_id` int(11) DEFAULT NULL,
@@ -66,7 +64,6 @@ CREATE TABLE `tickets_search_message` (
 ##BEGIN:create_table.tickets_search_message_active##
 CREATE TABLE `tickets_search_message_active` (
   `ticket_id` int(11) NOT NULL,
-  `language_id` int(11) DEFAULT NULL,
   `department_id` int(11) DEFAULT NULL,
   `category_id` int(11) DEFAULT NULL,
   `priority_id` int(11) DEFAULT NULL,

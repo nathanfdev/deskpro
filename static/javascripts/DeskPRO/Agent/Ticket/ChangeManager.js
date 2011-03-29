@@ -194,8 +194,16 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			for (var x = 0; x < propertyValue.length; x++) {
 				var val = propertyValue[x];
 
+				// Specific name means its taking care of the actions[] array prefix itself,
+				// used when theres a composite field like status/hidden_status
+				if (typeOf(val) == 'object' && val.full_name !== undefined) {
+					data.push({
+						name: val.full_name,
+						value: val.value
+					});
+
 				// Looks like its already a k:v like from serializeArray
-				if (typeOf(val) == 'object' && val.name !== undefined) {
+				} else if (typeOf(val) == 'object' && val.name !== undefined) {
 					data.push({
 						name: 'actions['+name+']['+val.name+']',
 						value: val.value

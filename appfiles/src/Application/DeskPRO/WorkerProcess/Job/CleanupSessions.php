@@ -19,6 +19,8 @@ use \Application\DeskPRO\Log\Logger;
  */
 class CleanupSessions extends AbstractJob
 {
+	const DEFAULT_INTERVAL = 3600;
+
 	public function run()
 	{
 		$datetime = date('Y-m-d H:i:s', time() - App::getSetting('core.sessions_lifetime'));

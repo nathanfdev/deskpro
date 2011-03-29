@@ -19,8 +19,10 @@ use \Application\DeskPRO\Log\Logger;
  *
  * Both are quite short-lived at 10 minutes.
  */
-class CleanupSessions extends AbstractJob
+class CleanupClientMessages extends AbstractJob
 {
+	const DEFAULT_INTERVAL = 86400;
+
 	public function run()
 	{
 		#------------------------------

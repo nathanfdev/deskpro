@@ -1938,11 +1938,15 @@ border-left: none;
 	display: block;
 }
 
-.ticket-status span.ticket-open { background-position: 7px -928px; }
-.ticket-status span.ticket-closed { background-position: 7px -928px; }
-.ticket-status span.ticket-resolved { background-position: 7px -928px; }
-.ticket-status span.ticket-pending { background-position: 7px -928px; }
-.ticket-status span.ticket-hidden { background-position: 7px -928px; }
+.ticket-status.ticket-hidden {
+	background: #EBEBEB;
+}
+
+.ticket-status.ticket-open span { background-position: 7px -928px; }
+.ticket-status.ticket-closed span { background-position: 7px -928px; }
+.ticket-status.ticket-resolved span { background-position: 7px -928px; }
+.ticket-status.ticket-pending span { background-position: 7px -928px; }
+.ticket-status.ticket-hidden span { background-position: 7px -928px; }
 
 .ticket-info-top {
 	float: left;

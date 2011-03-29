@@ -34,6 +34,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_URGENCY        = 'urgency';
 	const TERM_USER_WAITING   = 'user_waiting';
 	const TERM_AGENT_WAITING  = 'agent_waiting';
+	const TERM_ARCHIVE_SEARCH  = 'archive_search';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -149,18 +150,6 @@ class TicketSearch extends SearcherAbstract
 	 */
 	public function getSql()
 	{
-		if ($this->is_archive) {
-			$table = 'tickets';
-			if ($this->person_search) {
-				$this->person_search->enableArchiveSearch();
-			}
-			$u_table = 'people_search';
-		} else {
-			$table = 'tickets_search_active';
-		}
-
-		$sql = "SELECT $table.id FROM $table AS tickets ";
-
 		$ticket_parts = $this->getSqlParts();
 		$user_parts = null;
 		if ($this->person_search) {
@@ -170,6 +159,14 @@ class TicketSearch extends SearcherAbstract
 		$order_by = $this->getOrderByPart();
 
 		$where = '';
+
+		if ($this->isArchiveSearch()) {
+			$table = 'tickets';
+		} else {
+			$table = 'tickets_search_active';
+		}
+
+		$sql = "SELECT tickets.id FROM $table AS tickets ";
 
 		#------------------------------
 		# Standard for permissions
@@ -211,12 +208,12 @@ class TicketSearch extends SearcherAbstract
 			if (is_array($j)) {
 				$sql .= $j[1] . " ";
 			} else {
-				$sql .= "LEFT JOIN $j ON $j.ticket_id = $table.id ";
+				$sql .= "LEFT JOIN $j ON $j.ticket_id = tickets.id ";
 			}
 		}
 
 		if ($user_parts AND $user_parts['joins']) {
-			$sql .= "INNER JOIN people ON (people.id = $table.person_id) ";
+			$sql .= "INNER JOIN people ON (people.id = tickets.person_id) ";
 
 			foreach ($user_parts['joins'] as $j) {
 				if (is_array($j)) {
@@ -389,6 +386,11 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
+				case self::TERM_ARCHIVE_SEARCH:
+					if ($choice) {
+						$this->enableArchiveSearch();
+					}
+					break;
 				case self::TERM_DEPARTMENT:
 					$this->summary[] = $this->_choiceSummary($tr->phrase('core.department'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames((array)$choice);
@@ -528,6 +530,19 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_STATUS:
 					$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $tr->phrase('core_tickets.status'), 'value' => $tr->phrase('core_tickets.status_' . $choice)));
+
+					$archive_statuses = array_filter((array)$choice, function($val) {
+						if ($val != 'open' AND $val != 'pending') {
+							return true;
+						}
+
+						return false;
+					});
+
+					if ($archive_statuses) {
+						$this->enableArchiveSearch();
+					}
+
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, $choice);
 					break;
 				case self::TERM_ORGANIZATION:

@@ -76,8 +76,8 @@ class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 			$group_jobs = App::getOrm()->createQuery("
 				SELECT j
 				FROM DeskPRO:WorkerJob j
-				WHERE j.worker_group = ?
-			")->setParameter(1, $input->getOption('group'));
+				WHERE j.worker_group = ?1
+			")->setParameter(1, $input->getOption('group'))->execute();
 
 			if (!count($group_jobs)) {
 				$output->writeln('<warn>No jobs in that worker group</warn>');

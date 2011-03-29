@@ -163,9 +163,6 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 			$searcher->setOrderByCode($order_by);
 		}
 
-		// TODO remove when ready for real searches
-		$searcher->enableArchiveSearch();
-
 		$this->_results = $searcher->getMatches();
 
 		return $this->_results;

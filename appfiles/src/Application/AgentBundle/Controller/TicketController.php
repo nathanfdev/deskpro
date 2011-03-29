@@ -29,6 +29,8 @@ class TicketController extends AbstractController
 	public function viewAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket['status'] = 'hidden';
+		$ticket['hidden_status'] = 'spam';
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		$person_inner_tab = $this->forward('AgentBundle:Person:view', array('person_id' => $ticket['person_id']))->getContent();

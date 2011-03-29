@@ -34,16 +34,24 @@ pageMeta.widgets = [
 	<input type="hidden" name="priority_id" class="priority_id" value="{{ticket.priority.id|default(0)}}" />
 	<input type="hidden" name="workflow_id" class="workflow_id" value="{{ticket.workflow.id|default(0)}}" />
 	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
+	<input type="hidden" name="hidden_status" class="hidden_status" value="{{ticket.hidden_status}}" />
 </form>
 {% if ticket.is_locked %}
-	<div class="lock-bar">
+	<div class="ticket-lock-bar">
 		This ticket is currently in use by {{ ticket.locked_by_agent.display_name }}. You may want to avoid
 		making changes until they are finished with it.
 	</div>
 {% endif %}
 
+{% if ticket.status == 'hidden' %}
+	<div class="ticket-hidden-bar">
+		This ticket is currently hidden because: <span>{{ phrase('core_tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
+		This means it won't show up in most search results and it will not generate agent notifications.
+	</div>
+{% endif %}
+
 <div class="inner-box-tab-content-2">
-	<div class="ticket-status">
+	<div class="ticket-status ticket-{{ticket.status}}">
 		<span class="ticket-{{ticket.status}} prop-val menu-trigger status">{{ phrase('core_tickets.status_' ~ ticket.status) }}</span>
 	</div>
 	<div class="ticket-info-top">

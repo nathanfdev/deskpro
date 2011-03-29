@@ -141,3 +141,55 @@ $s['note'] = 'Default style';
 \Application\DeskPRO\App::getOrm()->persist($s);
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:create_jobs.cleanup_client_messages##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_client_messages';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup Client Messages';
+$j['description'] = 'Cleanup expired client polling messages';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupClientMessages';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupClientMessages::DEFAULT_INTERVAL;
+\Application\DeskPRO\App::getOrm()->persist($j);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:create_jobs.cleanup_sessions##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'cleanup_sessions';
+$j['worker_group'] = 'cleanup';
+$j['title'] = 'Cleanup Client Messages';
+$j['description'] = 'Cleanup expired sessions';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupSessions';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupSessions::DEFAULT_INTERVAL;
+\Application\DeskPRO\App::getOrm()->persist($j);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:create_jobs.ensure_search_tables##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'ensure_search_tables';
+$j['worker_group'] = 'ensure_search_tables';
+$j['title'] = 'Ensure Search Tables';
+$j['description'] = 'Checks to make sure volatile search tables are fileld (i.e., in event of a reboot they are re-filled)';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\EnsureSearchTables';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\EnsureSearchTables::DEFAULT_INTERVAL;
+\Application\DeskPRO\App::getOrm()->persist($j);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:create_jobs.sendmail_queue##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'sendmail_queue';
+$j['worker_group'] = 'sendmail_queue';
+$j['title'] = 'Sendmail Queue';
+$j['description'] = 'Attempts to send queued mail, or re-send fail mail';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\SendmailQueue';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SendmailQueue::DEFAULT_INTERVAL;
+\Application\DeskPRO\App::getOrm()->persist($j);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();

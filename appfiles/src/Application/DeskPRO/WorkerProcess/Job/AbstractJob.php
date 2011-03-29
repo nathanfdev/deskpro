@@ -18,6 +18,8 @@ use \Application\DeskPRO\Log\Logger;
  */
 abstract class AbstractJob
 {
+	const DEFAULT_INTERVAL = 3600;
+
 	protected $options = array();
 
 	/**

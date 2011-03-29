@@ -72,7 +72,7 @@ class InstallData implements \IteratorAggregate
 			}
 
 			if (!isset($this->tags[$tag])) $this->tags[$tag] = array();
-			$this->tags[$tag][] = $name;
+			$this->tags[$tag][] = "$tag.$name";
 
 			$part = trim($part);
 			if ($this->filetype == 'sql') {
@@ -88,12 +88,18 @@ class InstallData implements \IteratorAggregate
 	 */
 	public function getAllForTag($tag)
 	{
+		$ret = array();
+
 		$this->_read();
 		if (!isset($this->tags[$tag])) {
 			throw new \InvalidArgumentException("No such tag `$tag`");
 		}
 
-		return $this->tags[$tag];
+		foreach ($this->tags[$tag] as $name) {
+			$ret[$name] = $this->get($name);
+		}
+
+		return $ret;
 	}
 
 	/**

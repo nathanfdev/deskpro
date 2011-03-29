@@ -33,6 +33,14 @@ abstract class AbstractRunner
 	protected $_job_cache = array();
 
 
+	public function runJobs($jobs)
+	{
+		foreach ($jobs as $job) {
+			$this->runJob($job);
+		}
+	}
+
+
 	
 	/**
 	 *
@@ -72,8 +80,8 @@ abstract class AbstractRunner
 			return $this->_job_cache[$job_worker['id']];
 		}
 
-		$logger = $this->getLoggerForWorkerJob($worker_job);
-		$job = $worker_job->createJobObj($logger);
+		$logger = $this->getLoggerForWorkerJob($job_worker);
+		$job = $job_worker->createJobObj($logger);
 		$this->_job_cache[$job_worker['id']] = $job;
 
 		return $job;

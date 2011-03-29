@@ -7,6 +7,9 @@
 	'core_tickets.status_resolved'    => 'Resolved',
 	'core_tickets.status_closed'      => 'Closed',
 
+	'core_tickets.hidden_status_spam' => 'Spam',
+	'core_tickets.hidden_status_validating' => 'User awaiting validation',
+
 	// Names of ticket fields
 	'core_tickets.urgency'           => 'Urgency',
 	'core_tickets.subject'           => 'Subject',

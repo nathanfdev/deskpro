@@ -22,6 +22,8 @@ use \Application\DeskPRO\Mail\Transport\DelegatingTransport;
  */
 class SendmailQueue extends AbstractJob
 {
+	const DEFAULT_INTERVAL = 60;
+
 	protected $count_success;
 	protected $count_failed;
 

@@ -277,9 +277,6 @@ class TicketSearchController extends AbstractController
 			$order_by = $this->in->getString('filter.order_by');
 			$group_by = $this->in->getString('filter.group_by');
 
-			//TODO remove when ready for real searches, make it an option in UI
-			$searcher->enableArchiveSearch();
-
 			if ($order_by) {
 				$searcher->setOrderByCode($order_by);
 			}
@@ -317,7 +314,6 @@ class TicketSearchController extends AbstractController
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 			$searcher->setTerms($result_cache['criteria']['terms']);
 			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
-			$searcher->enableArchiveSearch();
 
 			$results = $searcher->getMatches();
 			$result_cache['results'] = $results;

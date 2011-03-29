@@ -25,13 +25,6 @@ class Standard extends AbstractRunner
 		$this->is_verbose = true;
 	}
 
-	public function runJobs($jobs)
-	{
-		foreach ($jobs as $job) {
-			$this->runJob($job);
-		}
-	}
-
 	public function _initLogger(Logger $logger, Entity\WorkerJob $worker_job)
 	{
 		if ($this->is_verbose) {
