@@ -11,10 +11,11 @@
 
 namespace Application\DeskPRO\ClientMessage\MessageServer;
 
-use \Symfony\Component\EventDispatcher\Event;
+use \Application\DeskPRO\ClientMessage\Event;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
+
 
 /**
  * A message server is something that listenes on the ClientMessages event
@@ -39,7 +40,7 @@ abstract class AbstractMessageServer
 
 	public function DeskPRO_onNewClientMessage(Event $event)
 	{
-		$this->handleNewMessage($event->getSubject());
+		$this->handleNewMessage($event->getClientMessage());
 	}
 
 

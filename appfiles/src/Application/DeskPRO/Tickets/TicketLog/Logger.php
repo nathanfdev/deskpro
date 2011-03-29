@@ -141,6 +141,15 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 		if (in_array('ticket_created', $events)) {
 			$notify_types[] = 'new_ticket';
+
+			$client_message = new Entity\ClientMessage();
+			$client_message['channel'] = 'tickets.new-tickets';
+			$client_message['data'] = array(
+				'ticket_id' => $this->ticket['id'],
+				'subject' => $this->ticket['subject']
+			);
+
+			App::getOrm()->persist($client_message);
 		}
 
 		#------------------------------

@@ -96,7 +96,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * it'll listen to this even and can handle pushing the message through
 	 * to clients.
 	 *
-	 * @var Symfony\Component\EventDispatcher\EventDispatcher
+	 * @var \Symfony\Component\EventDispatcher\EventDispatcher
 	 */
 	protected $event_dispatcher = null;
 
@@ -139,7 +139,8 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if (!$this->event_dispatcher) return;
 
-		$event = new \Symfony\Component\EventDispatcher\Event($this, 'deskpro.client_message.new');
-		$this->event_dispatcher->notify($event);
+		$event = new \Application\DeskPRO\ClientMessage\Event($this);
+
+		$this->event_dispatcher->dispatch('DeskPRO_onNewClientMessage', $event);
 	}
 }

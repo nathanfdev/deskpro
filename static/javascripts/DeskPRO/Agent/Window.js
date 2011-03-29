@@ -772,6 +772,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.messageBroker = new DeskPRO.MessageBroker();
 
 		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
+		this.messageChanneler.subscribeChannel('tickets.new-tickets');
 		this.messageChanneler.subscribeChannel('tickets.new-messages');
 		this.messageChanneler.subscribeChannel('tickets.updated');
 

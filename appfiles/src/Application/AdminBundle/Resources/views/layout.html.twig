@@ -55,6 +55,7 @@
 	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js') }}"></script>
 	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxType.js') }}"></script>
 	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxResults.js') }}"></script>
+	<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/Notifications.js') }}"></script>
 
 	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/MainMenuOpener.js') }}"></script>
 	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/BasicMainMenu.js') }}"></script>
@@ -179,24 +180,19 @@
 			{# search end #}
 
 			{# notifications start #}
-			<div class="left box-header notifications">
+			<div class="left box-header notifications" id="notifications_wrap" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.Notifications">
 				<ul class="noti-menu">
-					<li><div class="counter"><span class="counter">12</span></div><span class="icn-bar tickets">Tickets</span></li>
-					<li><div class="counter"><span class="counter">2</span></div><span class="icn-bar chat">Chat</span></li>
+					<li><div class="counter"><span class="counter" id="tickets_counter">1</span></div><span class="icn-bar tickets">Tickets</span></li>
+					<li style="display:none"><div class="counter"><span class="counter">0</span></div><span class="icn-bar chat">Chat</span></li>
 				</ul>
 				<span class="white-drop"></span>
 
 				<div class="wrap-dropdown noti-drop">
-					<ul>
-						<li class="ticket-noti"><em>5 minutes ago</em><span>New “How do I buy DeskPRO?”</span></li>
-						<li class="ticket-noti"><em>5 minutes ago</em><span>New “How do I buy DeskPRO?”</span></li>
-						<li class="ticket-noti"><em>5 minutes ago</em><span>New “How do I buy DeskPRO?”</span></li>
-						<li class="tweet-noti"><em>5 minutes ago</em><span>New “How do I buy DeskPRO?”</span></li>
-						<li class="tweet-noti"><em>5 minutes ago</em><span>New “How do I buy DeskPRO?”</span></li>
-						<li class="ticket-noti"><em>5 minutes ago</em><span>New “How do I buy DeskPRO?”</span></li>
+					<ul id="notifications_list">
+						<li class="ticket-noti tickets-123" data-type="tickets" data-type-id="123"><em class="timeago">5 minutes ago</em><em class="remove">mark as read</em><span>New “How do I buy DeskPRO?”</span></li>
 					</ul>
 					<div class="bot-noti">
-						<a href="">400 More Results</a>
+						<a class="mark-all-read">Mark all as read</a>
 					</div>
 				</div>
 			</div>

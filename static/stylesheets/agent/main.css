@@ -421,8 +421,27 @@ Header
 	line-height: 16px;
 }
 
+
+#header .noti-drop ul li .remove {
+	display: none;
+	color: #BA002E;
+	cursor: pointer;
+}
+
+#header .noti-drop ul li .remove:hover {
+	text-decoration: underline;
+}
+
+#header .noti-drop ul li:hover .remove { display: inline; }
+#header .noti-drop ul li:hover .timeago { display: none; }
+
 #header .noti-drop ul li span {
 	font-size: 8pt;
+	cursor: pointer;
+}
+
+#header .noti-drop ul li span:hover {
+	text-decoration: underline;
 }
 
 #header .noti-drop ul li em {
