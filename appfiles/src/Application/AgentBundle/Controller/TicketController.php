@@ -561,11 +561,36 @@ class TicketController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
+	############################################################################
+	# delete
+	############################################################################
+
+	/**
+	 * Soft-deletes a ticket
+	 *
+	 * @param  $ticket_id
+	 */
+	public function deleteAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$reason = $this->in->getString('reason');
+
+		App::getOrm()->beginTransaction();
+		$ticket->deleteTicket($this->person, $ticket);
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
 
 	############################################################################
 
 	/**
-	 * @return Application\DeskPRO\Entity\Ticket
+	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	protected function getTicketOr404($ticket_id)
 	{

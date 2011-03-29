@@ -19,6 +19,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		this.initRoutesOnCollection($('.with-route', this.wrapper));
 
+		this._initTicketActionsMenu();
 		this._initPopout();
 		this._initMessageActionsMenu();
 		this._initTicketTabs();
@@ -370,6 +371,72 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//#################################################################
 	//# Message actions menu
 	//#################################################################
+
+	ticketActionsMenu: null,
+	_initTicketActionsMenu: function() {
+		console.log('ere');
+		console.log($('.ticket-actions-trigger:first', this.wrapper));
+		console.log($('.ticket-actions-menu:first', this.wrapper));
+		var self = this;
+		this.ticketActionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.ticket-actions-trigger:first', this.wrapper),
+			menuElement: $('.ticket-actions-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var op = $(info.itemEl).data('op');
+
+				if (op == 'delete') {
+					self.showDeleteOverlay();
+				}
+			}
+		});
+
+		this.destroyMenus.push(this.ticketActionsMenu);
+	},
+
+	deleteOverlay: null,
+	_initDeleteOverlay: function() {
+
+		if (this.deleteOverlay) return;
+
+		var el = $('.delete-ticket-overlay:first', this.wrapper);
+		this.deleteOverlay = new DeskPRO.UI.Overlay({
+			contentElement: el
+		});
+
+		$('.save-trigger', el).click((function() {
+			this.doTicketDelete();
+		}).bind(this));
+	},
+
+	showDeleteOverlay: function() {
+		this._initDeleteOverlay();
+		this.deleteOverlay.openOverlay();
+	},
+
+	doTicketDelete: function() {
+
+		$('.delete-ticket-overlay .loading-off', this.wrapper).hide();
+		$('.delete-ticket-overlay .loading-on', this.wrapper).show();
+
+		var data = [];
+		data.push({
+			name: 'reason',
+			value: $('.delete-reason', this.wrapper).val()
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/delete',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'json',
+			success: function(data) {
+				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/', null, function() {
+					DeskPRO_Window.removePage(self);
+				});
+			}
+		});
+	},
 
 	messageActionsMenu: null,
 	_initMessageActionsMenu: function() {

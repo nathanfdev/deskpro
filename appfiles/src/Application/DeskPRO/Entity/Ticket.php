@@ -37,6 +37,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	const HIDDEN_STATUS_VALIDATING = 'validating';
 	const HIDDEN_STATUS_SPAM = 'spam';
+	const HIDDEN_STATUS_DELETED = 'deleted';
 
 	/**
 	 * @var int
@@ -874,6 +875,112 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return \Orb\Util\Numbers::roundToMultiple($this->urgency, 10, \Orb\Util\Numbers::ROUND_MULTIPLE_NEAR);
 	}
 
+	
+
+	/**
+	 * Get the deletion record if there is one
+	 *
+	 * @return \Application\DeskPRO\Entity\TicketDeleted
+	 */
+	public function getDeletionRecord()
+	{
+		try {
+			$del = App::getOrm()->createQuery("
+				SELECT d
+				FROM DeskPRO:TicketDeleted d
+				WHERE d.ticket_id = ?1
+			")->setParameter(1, $this->id)->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $del;
+	}
+
+
+
+	/**
+	 * Is this ticket deleted?
+	 *
+	 * @return bool
+	 */
+	public function getIsDeleted()
+	{
+		if ($this->hidden_status == self::HIDDEN_STATUS_DELETED) {
+			return true;
+		}
+
+		return false;
+	}
+
+
+
+	public function setStatus($status)
+	{
+		if ($status != 'hidden' AND $this->status == 'hidden' AND $this->hidden_status == 'deleted') {
+			$this->undeleteTicket();
+		}
+
+		if ($status != 'hidden') {
+			$this->hidden_status = null;
+		}
+
+		$this->status = $status;
+	}
+
+
+
+	/**
+	 * Undelete a ticket.
+	 *
+	 * This will set the status to 'open' if it wasn't changed before.
+	 */
+	public function undeleteTicket()
+	{
+		$del = $this->getDeletionRecord();
+		if (!$del) {
+			return;
+		}
+
+		if ($this->status == 'hidden') {
+			$this->status = self::STATUS_OPEN;
+		}
+
+		App::getOrm()->remove($del);
+	}
+
+
+	
+	/**
+	 * Soft-delete a ticket
+	 * 
+	 * @param null $person
+	 * @param string $reason
+	 * @return void
+	 */
+	public function deleteTicket($person = null, $reason = '')
+	{
+		$del = $this->getDeletionRecord();
+		if (!$del) {
+			$del = new TicketDeleted();
+		}
+
+		if (!$person) {
+			$person = App::getCurrentPerson();
+		}
+
+		$del['ticket_id']     = $this->id;
+		$del['by_person_id']  = $person['id'];
+		$del['new_ticket_id'] = 0;
+		$del['reason']        = $reason;
+
+		$this->status        = self::STATUS_HIDDEN;
+		$this->hidden_status = self::HIDDEN_STATUS_DELETED;
+
+		App::getOrm()->persist($del);
+	}
+
+	
 
 	/**
 	 * @orm:PreInsert

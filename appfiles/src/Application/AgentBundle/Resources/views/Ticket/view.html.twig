@@ -50,7 +50,8 @@ pageMeta.widgets = [
 	</div>
 {% endif %}
 
-<div class="inner-box-tab-content-2">
+<div class="inner-box-tab-content-2 ticket-element">
+	<div class="ticket-actions-trigger">Actions</div>
 	<div class="ticket-status ticket-{{ticket.status}}">
 		<span class="ticket-{{ticket.status}} prop-val menu-trigger status">{{ phrase('core_tickets.status_' ~ ticket.status) }}</span>
 	</div>

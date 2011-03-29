@@ -33,6 +33,7 @@ class MiscController extends AbstractController
 			'closed' => App::getTranslator()->phrase('core_tickets.status_closed'),
 		)) . ';';
 		$js[] = 'window.DESKPRO_NAME_REGISTRY.hidden_status = ' . json_encode(array(
+			'deleted' => App::getTranslator()->phrase('core_tickets.hidden_status_deleted'),
 			'spam' => App::getTranslator()->phrase('core_tickets.hidden_status_spam'),
 			'validating' => App::getTranslator()->phrase('core_tickets.hidden_status_validating'),
 		)) . ';';

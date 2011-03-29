@@ -61,3 +61,25 @@
 	{% endfor %}
 </ul>
 {% endif %}
+
+<ul class="ticket-actions-menu" style="display:none">
+	<li data-op="delete">Delete ticket</li>
+</ul>
+<div class="delete-ticket-overlay overlay" style="display:none">
+	<div class="overlay-title">
+		<h4>Display Options</h4>
+	</div>
+
+	<div class="overlay-content">
+		Reason for deleting: <input type="text" value="" class="delete-reason" style="width: 200px;" />
+	</div>
+
+	<div class="overlay-actions">
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">Delete</button>
+		</div>
+		<div class="loading-on" style="display:none">
+			<span>Deleting ...</span>
+		</div>
+	</div>
+</div>

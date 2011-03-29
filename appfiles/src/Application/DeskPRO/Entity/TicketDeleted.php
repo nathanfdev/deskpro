@@ -49,11 +49,8 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $reason;
 
-	/** @orm:PrePersist */
-	public function _prePersist()
+	public function __construct()
 	{
-		if (!$this->date_created) {
-			$this->date_created = new \DateTime();
-		}
+		$this->date_created = new \DateTime();
 	}
 }

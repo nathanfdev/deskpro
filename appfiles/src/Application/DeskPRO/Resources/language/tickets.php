@@ -7,7 +7,8 @@
 	'core_tickets.status_resolved'    => 'Resolved',
 	'core_tickets.status_closed'      => 'Closed',
 
-	'core_tickets.hidden_status_spam' => 'Spam',
+	'core_tickets.hidden_status_spam'       => 'Spam',
+	'core_tickets.hidden_status_deleted'    => 'Deleted',
 	'core_tickets.hidden_status_validating' => 'User awaiting validation',
 
 	// Names of ticket fields

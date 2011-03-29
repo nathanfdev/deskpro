@@ -366,6 +366,10 @@ class TicketSearch extends SearcherAbstract
 		$wheres = array();
 		$joins = array();
 
+		// If we dont set a status, we will automatically
+		// exclude 'hidden' tickets
+		$set_status = false;
+
 		foreach ($this->terms as $term => $info) {
 			$join_id = Util::requestUniqueId();
 			$join_name = "j_$join_id";
@@ -529,6 +533,7 @@ class TicketSearch extends SearcherAbstract
 					}
 					break;
 				case self::TERM_STATUS:
+					$set_status = true;
 					$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $tr->phrase('core_tickets.status'), 'value' => $tr->phrase('core_tickets.status_' . $choice)));
 
 					$archive_statuses = array_filter((array)$choice, function($val) {
@@ -700,6 +705,10 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('pending'));
 					break;
 			}
+		}
+
+		if (!$set_status) {
+			$wheres[] = $this->_choiceMatch("$tickets_table.status", self::OP_NOT, 'hidden');
 		}
 
 		$this->sql_parts = array(
