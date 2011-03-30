@@ -20,7 +20,7 @@
 		<tbody>
 			{% for ticket in tickets %}
 				<tr>
-					<td><a href="{{ path('user_tickets_view', {'ticket_id': ticket.id }) }}">{{ ticket.subject }}</a></td>
+					<td><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.ref }) }}">{{ ticket.subject }}</a></td>
 					<td>{{ phrase(ticket.department) }}</td>
 					<td>{{ phrase(ticket.category)|default(phrase('core.none')) }}</td>
 					<td>{{ phrase('core_tickets.status_' ~ ticket.status) }}</td>

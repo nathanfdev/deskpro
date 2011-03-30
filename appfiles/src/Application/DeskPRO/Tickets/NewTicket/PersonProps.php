@@ -37,7 +37,7 @@ class PersonProps
 		if ($person) {
 			$this->first_name = $person['first_name'];
 			$this->last_name  = $person['last_name'];
-			$this->email      = $person->getDefaultEmailAddress();
+			$this->email      = $person->getPrimaryEmailAddress();
 
 			//todo prefill fields
 		}

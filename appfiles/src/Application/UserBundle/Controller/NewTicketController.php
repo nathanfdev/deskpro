@@ -29,36 +29,47 @@ class NewTicketController extends AbstractController
 	 */
     public function newAction()
     {
-		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket($this->person);
+		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
+			Entity\Ticket::CREATED_WEB_PERSON,
+			$this->person
+		);
 
 		$form = new NewTicketForm('newticket', array(
 			'person' => $this->person,
+			'validator' => $this->get('validator')
 		));
 
 		$form->bind($this->get('request'), $newticket);
 
 		if ($form->isValid()) {
-			$new_ticket->save();
-	
-			// If this is a new person, we will ask them to complete registrion by
-			// choosing a password etc
-			if ($new_ticket->is_new_person) {
-				$this->session->set('finish_register_person', $new_ticket->person['id']);
-				$this->session->set('after_register', $this->generateUrl('user_tickets_view', array('ticket_id' => $ticket['id']), true));
+			$ticket = $newticket->save();
+			$person = $ticket['person'];
+
+			// If this is a new person, we'll forward them to full reg page
+			if ($person->isNewPerson()) {
+				$this->session->set('finish_register_person', $person['id']);
+				$this->session->set('after_register', $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket['ref']), true));
+
+				$ticket_access = $this->session->get('ticket_access', array());
+				$ticket_access[] = $ticket['id'];
+				$this->session->set('ticket_access', $ticket_access);
+
 				return $this->redirectRoute('user_register_finish');
 			}
 
 			// If this isnt a new person but they arent registered, we have no choice but
-			// to show a standard confirmation page. They'll get a link in their email to view
-			// the web interface. But we cant give them another chance to register now incase
-			// this user is an imposter. The confirmation email we send serves doubly as a
-			// confirmation in that case
-			if (!$new_ticket->person['is_user']) {
-				return $this->redirectRoute('user_tickets_new_thanks', array('ticket_id' => $ticket['id']));
+			// to show a standard thanks page.
+			// - We cant direct them right to the ticket because the user might be an imposter
+			// of an previously submitted email, and showing them the full ticket might reveal
+			// other personal info such as custom fields/widgets
+			// - And we cant redirect them to full registration for the same reason
+			// - They'll get an email with a link to the web interface though, so this isnt so bad
+			if (!$person['is_user']) {
+				return $this->redirectRoute('user_tickets_new_thanks', array('ticket_ref' => $ticket['ref']));
 			}
 
 			// We get here if the user is a real user, they should already be logged in then
-			return $this->redirectRoute('user_tickets_view', array('ticket_id' => $ticket['id']));
+			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['ref']));
 		}
 
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(

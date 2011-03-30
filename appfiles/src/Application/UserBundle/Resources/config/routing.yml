@@ -42,11 +42,11 @@ user_tickets:
   pattern: /tickets
   defaults: { _controller: UserBundle:Tickets:list }
 
-user_tickets_view:
-  pattern: /tickets/{ticket_id}
-  defaults: { _controller: UserBundle:Tickets:view }
-  requirements: { ticket_id: "\d+" }
-
+# This must be before _view, so /new isnt considered a ticket with ref 'new'
 user_tickets_new:
   pattern: /tickets/new
   defaults: { _controller: UserBundle:NewTicket:new }
+
+user_tickets_view:
+  pattern: /tickets/{ticket_ref}
+  defaults: { _controller: UserBundle:Tickets:view }

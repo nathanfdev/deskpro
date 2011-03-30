@@ -22,7 +22,7 @@ class RegisterController extends AbstractController
 {
 	public function finishAction()
 	{
-		$person = App::getEntityRepository('DeskPRO:Person')->find($this->session->get('finish_register_person'));
+		$person = App::getEntityRepository('DeskPRO:Person')->find($this->session->get('finish_register_person', 0));
 
 		// Invalid person if they dont exist or already are registered.
 		// just pop the user back to index

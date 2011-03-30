@@ -51,9 +51,9 @@ class TicketsController extends AbstractController
 	/**
 	 * View a ticket
 	 */
-	public function viewAction($ticket_id)
+	public function viewAction($ticket_ref)
 	{
-		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket = $this->getTicketOr404($ticket_ref);
 
 		// Custom fields
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -83,12 +83,12 @@ class TicketsController extends AbstractController
 	/**
 	 * @return Application\DeskPRO\Entity\Ticket
 	 */
-	protected function getTicketOr404($ticket_id)
+	protected function getTicketOr404($ticket_ref)
 	{
-		$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket_id);
+		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 
 		if (!$ticket OR $ticket['person_id'] != $this->person['id']) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
 		}
 
 		return $ticket;

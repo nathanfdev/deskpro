@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace \Application\DeskPRO\RefGenerator;
+namespace Application\DeskPRO\RefGenerator;
 
 interface RefGeneratorInterface
 {

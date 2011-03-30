@@ -29,7 +29,9 @@ class NewTicket
 	 */
 	public $ticket;
 
-	public function __construct(Entity\Person $person = null)
+	public $creation_system;
+
+	public function __construct($creation_system, Entity\Person $person = null)
 	{
 		if ($person AND !$person['id']) {
 			$person = null;
@@ -37,6 +39,8 @@ class NewTicket
 
 		$this->person = new PersonProps($person);
 		$this->ticket = new TicketProps();
+
+		$this->creation_system = $creation_system;
 	}
 
 	public function save()
@@ -75,12 +79,11 @@ class NewTicket
 			$email = $person->findEmailAddress($this->person->email);
 			if (!$email) {
 				$email = new Entity\PersonEmail();
-				$email['email'] = $this->email;
+				$email['email'] = $this->person->email;
 				$email['is_validated'] = false;
 
 				$person->addEmailAddress($email);
 			}
-
 			App::getOrm()->persist($person);
 			App::getOrm()->flush();
 
@@ -89,8 +92,10 @@ class NewTicket
 			#------------------------------
 
 			$ticket = new Entity\Ticket();
+			$ticket['creation_system']  = $this->creation_system;
 			$ticket['person']  = $person;
 			$ticket['subject'] = $this->ticket->subject;
+			$ticket['person_email'] = $email;
 
 			foreach (array('department_id', 'category_id', 'product_id', 'priority_id') as $prop) {
 				$ticket[$prop] = $this->ticket->$prop;
@@ -106,10 +111,14 @@ class NewTicket
 			$ticket['hidden_status'] = Entity\Ticket::HIDDEN_STATUS_VALIDATING;
 
 			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
+			App::getOrm()->commit();
 
 		} catch (\Exception $e) {
 			App::getOrm()->rollback();
 			throw $e;
 		}
+
+		return $ticket;
 	}
 }

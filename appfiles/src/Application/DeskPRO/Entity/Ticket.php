@@ -93,12 +93,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $product = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
@@ -106,10 +100,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="agent_id", type="integer", nullable=true)
+	 * @var \Application\DeskPRO\Entity\PersonEmail
+	 * @orm:ManyToOne(targetEntity="PersonEmail")
+	 * @orm:JoinColumn(name="person_email_id", referencedColumnName="id")
 	 */
-	protected $agent_id = null;
+	protected $person_email = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -533,6 +528,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$person = App::getOrm()->getRepository('DeskPRO:Person')->find($id);
 		$this['person'] = $person;
+	}
+
+	public function getPersonEmail()
+	{
+		if ($this->person_email) {
+			return $this->person_email;
+		} else {
+			return $this->person['primary_email'];
+		}
 	}
 
 	public function getDepartmentId()
@@ -985,7 +989,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	
 
 	/**
-	 * @orm:PreInsert
+	 * @orm:PrePersist
 	 */
 	public function _preInsert()
 	{
@@ -993,7 +997,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->ref = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
 
 		if ($this->_ticket_logger) {
-			$action = new \Application\DeskPRO\Tickets\Actions\Created($this);
+			$action = new \Application\DeskPRO\Tickets\TicketLog\Actions\Created($this);
 			$this->_ticket_logger->logAction($action);
 		}
 	}

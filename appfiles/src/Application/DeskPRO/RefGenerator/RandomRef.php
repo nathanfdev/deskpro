@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace \Application\DeskPRO\RefGenerator;
+namespace Application\DeskPRO\RefGenerator;
 
 use \Application\DeskPRO\App;
 
@@ -19,7 +19,7 @@ class RandomRef implements RefGeneratorInterface
 {
 	public function generateReference($entity_name)
 	{
-		$table = App::getEntityRepository($entity_name)->getClassMetadata()->getTableName();
+		$table = App::getOrm()->getClassMetadata(App::getEntityClass($entity_name))->getTableName();
 		$field = 'ref';
 
 		$stmt = App::getDb()->prepare("SELECT COUNT(*) FROM `$table` WHERE `$field` = ? LIMIT 1");

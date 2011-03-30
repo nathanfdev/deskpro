@@ -333,6 +333,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	protected $_helper_manager = null;
 
+	protected $_is_new_person = false;
+
 	/**
 	 * The tasks created by this user.
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -391,6 +393,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
+		$this->_is_new_person = true;
+
 		$this->date_created = new \DateTime();
 		$this->secret_string = Strings::random(40);
 		$this->timezone = 'UTC';
@@ -1275,6 +1279,27 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return false;
+	}
+
+
+	
+	/**
+	 * Is this a newly created person?
+	 *
+	 * It's important to realize the context of when a person is "new." This simply means
+	 * that THIS object is new (was created with a constructor). If the object is persisted,
+	 * then the person gains an ID etc but is still "new".
+	 *
+	 * As soon as the EntityManager
+	 * loses the map (eg. page is refreshed, command ends, or the EM is clear()ed), then
+	 * the person is no longer considered new, because they will have been hydrated and the
+	 * constructor not called.
+	 *
+	 * @return bool
+	 */
+	public function isNewPerson()
+	{
+		return $this->_is_new_person;
 	}
 
 

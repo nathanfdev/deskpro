@@ -129,7 +129,7 @@ class NewTicketForm extends \Symfony\Component\Form\Form
 		#------------------------------
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$custom_fields_form = new Form\Form('custom_fields');
+		$custom_fields_form = new Form\CollectionField('custom_fields');
 
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $custom_fields_form);
 		$this->ticket_fields = $custom_fields;
