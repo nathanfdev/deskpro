@@ -193,3 +193,16 @@ $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SendmailQueue::DEFAULT_I
 \Application\DeskPRO\App::getOrm()->persist($j);
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:create_jobs.hard_delete_tickets##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$j = new \Application\DeskPRO\Entity\WorkerJob();
+$j['id'] = 'hard_delete_tickets';
+$j['worker_group'] = 'hard_delete_tickets';
+$j['title'] = 'Hard Delete Tickets';
+$j['description'] = 'Processes tickets that were soft-deleted long ago and permanantly deletes them';
+$j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\HardDeleteTickets';
+$j['interval'] = \Application\DeskPRO\WorkerProcess\Job\HardDeleteTickets::DEFAULT_INTERVAL;
+\Application\DeskPRO\App::getOrm()->persist($j);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
