@@ -39,7 +39,7 @@ framework:
   session:
     default_locale: en
     lifetime: 3600
-    auto_start: false
+    auto_start: true
 
 doctrine:
   orm:
