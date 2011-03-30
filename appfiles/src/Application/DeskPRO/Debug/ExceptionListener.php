@@ -194,11 +194,30 @@ class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionLis
 
 		$trace = '';
 		foreach(debug_backtrace() as $k=>$v){
-			if($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){
-				$trace .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]\n";
-			}else{
-				$trace .= "#".$k." ".$v['function']."() called at [".@$v['file'].":".@$v['line']."]\n";
+
+			$line = "#$k ";
+
+			if (isset($v['object'])) {
+				$line .= get_class($v['object']) . "::";
+			} elseif (isset($v['class'])) {
+				$line .= $v['class'] . "::";
 			}
+
+			$line .= "{$v['function']}(";
+
+			if (!empty($v['args'])) {
+				$line .= $this->varToString($v['args']);
+			}
+
+			$line .= ")";
+
+			if (!empty($v['file'])) {
+				$line .= " called at [{$v['file']}:{$v['line']}]";
+			}
+
+			$line .= "\n";
+
+			$trace .= $line;
 		}
 
 		$trace = $this->_stripPathPrefix($trace);
@@ -228,4 +247,22 @@ class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionLis
 
 		return true;
 	}
+
+	private function varToString($var)
+    {
+        if (is_object($var)) {
+            return sprintf('[object](%s)', get_class($var));
+        }
+        if (is_array($var)) {
+            $a = array();
+            foreach ($var as $k => $v) {
+                $a[] = sprintf('%s => %s', $k, $this->varToString($v));
+            }
+            return sprintf("[array](%s)", implode(', ', $a));
+        }
+        if (is_resource($var)) {
+            return '[resource]';
+        }
+        return str_replace("\n", '', var_export((string) $var, true));
+    }
 }
