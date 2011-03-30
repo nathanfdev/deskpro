@@ -1,9 +1,12 @@
 <thead class="display-options-trigger dbl-click-trigger nosel">
 	<tr>
-		<th class="check-all check not-draggable not-resizable" width="5"><input type="checkbox" class="check-all-box" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
+		{% if not disable_actions %}
+			<th class="check-all check not-draggable not-resizable" width="5"><input type="checkbox" class="check-all-box" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
+		{% endif %}
 		<th class="not-draggable not-resizable" width="35"></th>
 		{% for field in display_fields %}
 			{% if field == 'person' %}<th data-field="person">User</th>
+			{% elseif field == 'deleted_reason' %}<th data-field="deleted_reason">Deleted Reason</th>
 			{% elseif field == 'person_email' %}<th data-field="person">User Email</th>
 			{% elseif field == 'person_organization' %}<th data-field="person_organization">Organization</th>
 			{% elseif field == 'department' %}<th data-field="department">Department</th>

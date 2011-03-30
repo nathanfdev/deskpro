@@ -24,6 +24,8 @@
 
 	'core_tickets.participants'      => 'Participants',
 
+	'core_tickets.ticket_is_deleted' => 'Ticket is deleted',
+
 	'core_tickets.date_created'                      => 'Date Created',
 	'core_tickets.date_resolved'                     => 'Date Resolved',
 	'core_tickets.date_first_agent_reply'            => 'Date of First Agent Reply',

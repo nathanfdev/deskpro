@@ -32,8 +32,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		}
 
 		this.wrapper = $(el);
-		this.contentWrapper = $('.content:first', this.wrapper);
 		this.barWrapper = $('div.layout-footer:first', this.wrapper);
+
+		if (!this.barWrapper.length) {
+			var mock_bottom = true;
+		} else {
+			var mock_bottom = false;
+		}
+		
+		this.contentWrapper = $('.content:first', this.wrapper);
 
 		this.listColDrag = new DeskPRO.Agent.PageHelper.ListColDrag({
 			table: $('table:first', this.contentWrapper).get(0),
@@ -51,7 +58,20 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this.contentWrapper.attr('id', center_id);
 		this.barWrapper.attr('id', south_id);
 
-		this.layout = new DeskPRO.Agent.Layout.FooterActionbarLayout(this.wrapper);
+		if (mock_bottom) {
+			this.layout = {
+				wrapper: this.wrapper,
+				paneWrapper: this.wrapper.parent(),
+				content: this.contentWrapper,
+				footer: $(),
+				isFooterOpen: false,
+				doLayout: function() {},
+				expandFooter: function() {},
+				collapseFooter: function() {}
+			};
+		} else {
+			this.layout = new DeskPRO.Agent.Layout.FooterActionbarLayout(this.wrapper);
+		}
 
 		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
 
@@ -60,8 +80,28 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this._initFlagMenu();
 		this._initGroupingOptions();
 
-		this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this);
-		this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
+		if (mock_bottom) {
+			this.actionsBarHelper = {
+				page: null,
+				wrapper: null,
+				contentWrapper: null,
+				tableEl: null,
+				selectedActionData: null,
+				ticketBar: null,
+				barWrapper: null,
+				initOverlay: function() {},
+				getSelectedTicketIds: function() { },
+				setActiveTable: function() {},
+				handleTicketCheckClick: function() {},
+				updateCount: function() {},
+				applyActions: function() {},
+				toggleMacroApplyBtn: function() {},
+				saveActions: function() {}
+			};
+		} else {
+			this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this);
+			this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
+		}
 
 		this.initFeaturesOnCollection(el, {
 			routes: ['.with-route'],

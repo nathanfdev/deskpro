@@ -1,9 +1,11 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
 	<tr class="{% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-1 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
-		<td class="check-all" rowspan="2" style="vertical-align: middle;">
-			<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
-		</td>
+		{% if not disable_actions %}
+			<td class="check-all" rowspan="2" style="vertical-align: middle;">
+				<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
+			</td>
+		{% endif %}
 		<td rowspan="2" width="20" style="vertical-align: middle; padding: 4px; white-space:nowrap;">
 			{% if ticket.agent %}<img src="{{ticket.agent.getPictureUrl(35)}}" width="30" height="30" class="tipped" data-tipped="{{ticket.agent.display_name}}" />{% else %}<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=30" width="30" height="30" class="tipped" data-tipped="Unassigned" />{% endif %}
 		</td>
@@ -33,6 +35,15 @@
 			{% if field == 'date_created' %}
 				<td class="{{field}}">
 					<span class="timestamp timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</span>
+				</td>
+			{% elseif field == 'deleted_reason' %}
+				<td class="{{field}}">
+					{% if deleted_tickets[ticket.id] %}
+						Deleted by {{ deleted_tickets[ticket.id].by_person.display_name }}
+						{% if deleted_tickets[ticket.id].reason %}
+							because: {{ deleted_tickets[ticket.id].reason }}
+						{% endif %}
+					{% endif %}
 				</td>
 			{% elseif field == 'person' %}
 				<td class="{{field}}">

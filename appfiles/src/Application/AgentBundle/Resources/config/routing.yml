@@ -323,6 +323,10 @@ agent_ticketsearch_runcustomfilter:
   pattern: /ticket-search/custom-filter/run
   defaults: { _controller: AgentBundle:TicketSearch:runCustomFilter }
 
+agent_ticketsearch_deletedlist:
+  pattern: /ticket-search/deleted-list
+  defaults: { _controller: AgentBundle:TicketSearch:deletedList }
+
 agent_ticketsearch_search:
   pattern: /ticket-search/search
   defaults: { _controller: AgentBundle:TicketSearch:search }

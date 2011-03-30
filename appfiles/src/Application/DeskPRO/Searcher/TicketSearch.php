@@ -35,6 +35,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_USER_WAITING   = 'user_waiting';
 	const TERM_AGENT_WAITING  = 'agent_waiting';
 	const TERM_ARCHIVE_SEARCH  = 'archive_search';
+	const TERM_DELETED         = 'deleted';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -408,6 +409,15 @@ class TicketSearch extends SearcherAbstract
 					}
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice, true);
+					break;
+				case self::TERM_DELETED:
+					$set_status = true;
+					$this->summary[] = $tr->phrase('core_tickets.ticket_is_deleted');
+					$wheres[] = $this->_choiceMatch("$tickets_table.status", self::OP_IS, 'hidden');
+					$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", self::OP_IS, 'deleted');
+
+					$this->enableArchiveSearch();
+
 					break;
 				case self::TERM_CATEGORY:
 					$this->summary[] = $this->_choiceSummary($tr->phrase('core_tickets.category'), $op, $choice, function($choice) {

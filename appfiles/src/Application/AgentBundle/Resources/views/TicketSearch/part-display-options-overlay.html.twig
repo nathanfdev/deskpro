@@ -17,6 +17,9 @@
 		<div style="margin-right: 250px;">
 			<strong>Display Elements</strong><br />
 			<ul class="sortable-list">
+				{% if show_deleted_reason %}
+					<li data-field="deleted_reason"><input type="checkbox" name="deleted_reason" /> Deleted Reason</li>
+				{% endif %}
 				<li data-field="person"><input type="checkbox" name="person" /> Contact Name</li>
 				<li data-field="person_email"><input type="checkbox" name="person_email" /> Contact Email</li>
 				<li data-field="department"><input type="checkbox" name="department" /> Department</li>

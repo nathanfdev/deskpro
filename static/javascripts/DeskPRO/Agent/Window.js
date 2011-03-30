@@ -541,7 +541,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		if (!routeData.ignoreExist) {
+		if (routeData && !routeData.ignoreExist) {
 			var existTab = this.listTabStrip.getTabByRouteUrl(url);
 			if (existTab && !(existTab.page && existTab.page.allowDupe)) {
 				this.listTabStrip.activateTabById(existTab.id);
@@ -579,7 +579,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		if (!routeData.ignoreExist) {
+		if (routeData && !routeData.ignoreExist) {
 			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
 			if (existTab && !(existTab.page && existTab.page.allowDupe)) {
 				this.pageTabStrip.activateTabById(existTab.id);

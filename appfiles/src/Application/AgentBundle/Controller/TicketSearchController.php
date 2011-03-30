@@ -220,6 +220,112 @@ class TicketSearchController extends AbstractController
 	}
 
 	############################################################################
+	# deleted-list
+	############################################################################
+
+	// TODO handling if search results with the cache etc should be refactored
+	// theres dupe code, particularly around updating results based on new order
+	
+	/**
+	 * Listing of soft-deleted tickets
+	 */
+	public function deletedListAction()
+	{
+		$result_cache = false;
+		if ($this->in->getUint('cache_id')) {
+			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($this->in->getUint('cache_id'));
+			if ($result_cache['person_id'] != $this->person['id']) {
+				$result_cache = false;
+			}
+		}
+
+		#------------------------------
+		# If there's no result set, we're running it for the first time
+		#------------------------------
+
+		if (!$result_cache) {
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->addTerm('deleted', 'is', 1);
+
+			$results = $searcher->getMatches();
+
+			$result_cache = new Entity\ResultCache();
+			$result_cache['person'] = $this->person;
+			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => '', 'group_by' => '');
+			$result_cache['results'] = $results;
+			$result_cache['num_results'] = count($results);
+			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
+
+			// Default display fields based on our search
+			$result_cache->setExtraData('display_fields', array('deleted_reason'));
+
+			App::getOrm()->persist($result_cache);
+			App::getOrm()->flush();
+		}
+
+		#------------------------------
+		# Re-do search if we changed order
+		#------------------------------
+
+		// Prefs are saved into extra[]. Of order_by doesn't match
+		// the order_by in criteria, that means the user changed it
+		// and we have to re-do the search
+
+		if (!empty($result_cache['extra']['order_by']) AND $result_cache['extra']['order_by'] != $result_cache['criteria']['order_by']) {
+			$criteria = $result_cache['criteria'];
+			$criteria['order_by'] = $result_cache['extra']['order_by'];
+
+			$result_cache['criteria'] = $criteria;
+
+			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
+			$searcher->setTerms($result_cache['criteria']['terms']);
+			$searcher->setOrderByCode($result_cache['criteria']['order_by']);
+
+			$results = $searcher->getMatches();
+			$result_cache['results'] = $results;
+			$result_cache['num_results'] = count($results);
+			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
+
+			App::getOrm()->persist($result_cache);
+			App::getOrm()->flush();
+		}
+
+		#------------------------------
+		# Serve results
+		#------------------------------
+
+		$results_helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
+
+		// Fetch deleted ticket info
+		$deleted_tickets = null;
+		if ($result_cache['results']) {
+			$deleted_tickets = App::getOrm()->createQuery("
+				SELECT d
+				FROM DeskPRO:TicketDeleted d INDEX BY d.ticket_id
+				LEFT JOIN d.by_person p
+				WHERE d.ticket_id IN (" . implode(',', $result_cache['results']) . ")
+			");
+		}
+
+		$vars = array(
+			'cache' => $result_cache,
+			'cache_id' => $result_cache['id'],
+			'deleted_tickets' => $deleted_tickets,
+			'show_deleted_reason' => true,
+			'disable_actions' => true
+		);
+		
+		$pref_name = 'agent.ui.ticket-filter-display-fields.' . $result_cache['id'];
+		if (!empty($result_cache['extra'][$pref_name])) {
+			$vars['display_fields'] = $result_cache['extra'][$pref_name];
+		}
+
+		$vars['page_title'] = 'Deleted';
+
+		return $this->_getResponseForTickets('deleted-list', $result_cache['id'], $results_helper, $vars);
+	}
+
+	############################################################################
 	# find-pane
 	############################################################################
 
