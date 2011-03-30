@@ -12,6 +12,21 @@ class Upgrade20110330024841 extends UpgradeAbstract
 		$this->output->writeln('Create HardDeleteTickets worker job');
 
 		try {
+			App::getDb()->exec("DROP TABLE IF EXISTS `worker_jobs`");
+			App::getDb()->exec("
+				CREATE TABLE `worker_jobs` (
+				  `id` varchar(50) NOT NULL,
+				  `worker_group` varchar(50) DEFAULT NULL,
+				  `title` varchar(100) NOT NULL,
+				  `description` varchar(100) NOT NULL,
+				  `job_class` varchar(100) NOT NULL,
+				  `data` longtext,
+				  `run_interval` int(11) NOT NULL,
+				  `last_run_date` datetime DEFAULT NULL,
+				  PRIMARY KEY (`id`)
+				) ENGINE=InnoDB
+			");
+
 			\Application\DeskPRO\App::getOrm()->beginTransaction();
 			$j = new \Application\DeskPRO\Entity\WorkerJob();
 			$j['id'] = 'hard_delete_tickets';
