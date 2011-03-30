@@ -11,15 +11,15 @@
 	<tr>
 		<td>
 			<small>First Name</small> {{ form_field(form.person.first_name) }}<br />
-			<small>First Name</small> {{ form_field(form.person.last_name) }}<br />
+			<small>Last Name</small> {{ form_field(form.person.last_name) }}<br />
 		</td>
 	</tr>
 
-	{% if form.email_address %}
+	{% if form.person.email %}
 		<tr>
 			<td>
 				<small>Email Address</strong><br />
-				{{ form_field(form.email_address) }}
+				{{ form_field(form.person.email) }}
 			</td>
 		</tr>
 	{% endif %}
@@ -35,16 +35,21 @@
 		<small>{{ phrase('core_tickets.category') }}</small><br />
 		{{ property_fields.form_department_select('newticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id) }}
 	</td>
+	{% if form.ticket.product_id %}
 	<td>
 		<small>{{ phrase('core.product') }}</small><br />
 		{{ form_field(form.ticket.product_id) }}
 	</td>
+	{% endif %}
+	{% if form.ticket.priority_id %}
 	<td>
 		<small>{{ phrase('core_tickets.priority') }}</small><br />
 		{{ form_field(form.ticket.priority_id) }}
 	</td>
+	{% endif %}
 </tr></table>
 
+{#
 <table cellspacing="5" cellpadding="0" border="0" width="100%">
 	{% for f in custom_fields %}
 		<tr>
@@ -55,10 +60,11 @@
 		</tr>
 	{% endfor %}
 </table>
+#}
 
 <div style="margin: 10px 0 10px 0;">
 	{{ form_field(form.ticket.subject) }}
-	{{ form_field(form.ticket_message) }}
+	{{ form_field(form.ticket.message) }}
 </div>
 
 <input type="submit" value="Submit" />

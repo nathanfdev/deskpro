@@ -1088,6 +1088,25 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Get the email record for a specific address
+	 *
+	 * @return Email
+	 */
+	public function findEmailAddress($email_address)
+	{
+		$email_address = strtolower($email_address);
+
+		foreach ($this->emails as $email) {
+			if ($email['email'] == $email_address) {
+				return $email;
+			}
+		}
+
+		return null;
+	}
+
+
 
 	/**
 	 * Add a new usergroup

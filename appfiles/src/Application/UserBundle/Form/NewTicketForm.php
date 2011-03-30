@@ -18,77 +18,132 @@ use \Orb\Util\Arrays;
 
 use \Symfony\Component\Form;
 
+/**
+ * The new ticket form
+ */
 class NewTicketForm extends \Symfony\Component\Form\Form
 {
+	/**
+	 * The actual person (logged in)
+	 */
+	protected $person;
+
+	/**
+	 * A person object we'll use for things like permissions.
+	 * So if the person is a guest, then this is a guest object
+	 * with basic properties.
+	 */
+	protected $mock_person;
+
+	protected $ticket_options;
+	protected $ticket_fields;
+
 	protected function configure()
 	{
-		$this->setDataClass('Application\\UserBundle\\NewTicket');
+		$this->configurePersonForm();
+		$this->configureTicketForm();
+	}
 
-		#------------------------------
-		# User fields
-		#------------------------------
 
-		$person_form = new Form\Form('person');
-		$this->add($person_form);
 
+	/**
+	 * Configures the person form
+	 */
+	protected function configurePersonForm()
+	{
 		$this->addOption('person');
-		$person = $this->getOption('person', array('property_path' => 'person_values'));
 
-		$person_form->add(new Form\TextField('first_name'));
-		$person_form->add(new Form\TextField('last_name'));
+		$this->person = $this->getOption('person');
 
-		if (!$person OR !$person['id']) {
-			$this->add(new Form\TextField('email_address', array(
-				'property_path' => 'email_address'
-			)));
+		if ($this->person AND $this->person['id']) {
+			$this->mock_person = $this->person;
+		} else {
+			$this->person = null;
+			
+			// We need this for some things to get basic permissions
+			$this->mock_person = Entity\Person::newContactPerson();
 		}
 
+		$form = new Form\Form('person');
+		$this->add($form);
+
+
 		#------------------------------
-		# Ticket fields
+		# Standard fields
 		#------------------------------
 
-		$this->addRequiredOption('ticket_options');
-		$this->addRequiredOption('custom_fields');
+		$form->add(new Form\TextField('first_name'));
+		$form->add(new Form\TextField('last_name'));
 
-		$ticket_form = new Form\Form('ticket', array('property_path' => 'ticket_values'));
-		$this->add($ticket_form);
+		if (!$this->person) {
+			$form->add(new Form\TextField('email'));
+		}
+	}
 
-		$ticket_form->add(new Form\TextField('subject'));
 
-		$ticket_options = $this->getOption('ticket_options');
+	/**
+	 * Configures the ticket form
+	 */
+	protected function configureTicketForm()
+	{
+		$form = new Form\Form('ticket');
+		$this->add($form);
+
+		#------------------------------
+		# Standard fields
+		#------------------------------
+
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->mock_person);
+
+		$this->ticket_options = $ticket_options;
+
+		$form->add(new Form\TextField('subject'));
+		$form->add(new Form\TextareaField('message'));
+
 		if (!empty($ticket_options['departments_hierarchy'])) {
-			$ticket_form->add(new Form\ChoiceField('department_id', array(
+			$form->add(new Form\ChoiceField('department_id', array(
 				'choices' => Arrays::selectArrayFromHierarchy($ticket_options['departments_hierarchy'], 'id', 'title')
 			)));
 		}
 
 		if (!empty($ticket_options['ticket_categories_hierarchy'])) {
-			$ticket_form->add(new Form\ChoiceField('category_id', array(
+			$form->add(new Form\ChoiceField('category_id', array(
 				'choices' => Arrays::selectArrayFromHierarchy($ticket_options['ticket_categories_hierarchy'], 'id', 'title')
 			)));
 		}
 
 		if (!empty($ticket_options['priorities'])) {
-			$ticket_form->add(new Form\ChoiceField('priority_id', array(
+			$form->add(new Form\ChoiceField('priority_id', array(
 				'choices' => Arrays::unshiftAssocReturn($ticket_options['priorities'], '', '')
 			)));
 		}
 
 		if (!empty($ticket_options['products'])) {
-			$ticket_form->add(new Form\ChoiceField('product_id', array(
+			$form->add(new Form\ChoiceField('product_id', array(
 				'choices' => Arrays::unshiftAssocReturn($ticket_options['products'], '', '')
 			)));
-		}
-
-		if ($this->getOption('custom_fields')) {
-			$ticket_form->add($this->getOption('custom_fields'));
-		}
+		}	
 
 		#------------------------------
-		# TIcket message
+		# Custom fields
 		#------------------------------
 
-		$this->add(new Form\TextareaField('ticket_message', array('property_path' => 'ticket_message')));
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields_form = new Form\Form('custom_fields');
 
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $custom_fields_form);
+		$this->ticket_fields = $custom_fields;
+
+		$form->add($custom_fields_form);
+	}
+
+	public function getTicketOptions()
+	{
+		return $this->ticket_options;
+	}
+
+	public function getTicketFields()
+	{
+		return $this->ticket_fields;
 	}
 }
