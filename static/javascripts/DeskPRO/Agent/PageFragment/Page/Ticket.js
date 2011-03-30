@@ -407,6 +407,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.save-trigger', this.deleteOverlayEl).click((function() {
 			this.doTicketDelete();
 		}).bind(this));
+
+		this.destroyOverlays.push(this.deleteOverlay);
 	},
 
 	showDeleteOverlay: function() {
@@ -416,8 +418,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	doTicketDelete: function() {
 
-		$('.delete-ticket-overlay .loading-off', this.deleteOverlayEl).hide();
-		$('.delete-ticket-overlay .loading-on', this.deleteOverlayEl).show();
+		$('.loading-off', this.deleteOverlayEl).hide();
+		$('.loading-on', this.deleteOverlayEl).show();
 
 		var data = [];
 		data.push({
@@ -425,15 +427,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			value: $('.delete-reason', this.deleteOverlayEl).val()
 		});
 
+		var self = this;
+
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/delete',
 			type: 'POST',
-			context: this,
 			data: data,
 			dataType: 'json',
 			success: function(data) {
-				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id'), null, function() {
+
+				// Reload the ticket page
+				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true}, function(page) {
 					DeskPRO_Window.removePage(self);
+
+					var ticket_title = self.getMetaData('title');
+					if (ticket_title.length > 20) {
+						ticket_title = ticket_title.substr(0, 20) + ' ...';
+					}
+					ticket_title = Orb.escapeHtml(ticket_title);
+					DeskPRO_Window.showUndoMessage("Deleted ticket \""+ticket_title+"\"", function() {
+						page.doTicketUndelete();
+					});
 				});
 			}
 		});

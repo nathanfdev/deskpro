@@ -163,6 +163,19 @@ Orb.findHighestZindex = function(els) {
 
 
 
+/**
+ * Escape special HTML characters.
+ * 
+ * @param string
+ */
+Orb.escapeHtml = function(string) {
+	return string.replace(/&/g, "&amp;")
+		.replace(/>/g, "&gt;")
+		.replace(/</g, "&lt;")
+		.replace(/"/g, "&quot;");
+};
+
+
 
 /**
  * Simple way to load Javascript and CSS files on-demand.

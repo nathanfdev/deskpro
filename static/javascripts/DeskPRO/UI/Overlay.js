@@ -316,6 +316,9 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	 * Destroy this overlay and all of its supporting elements.
 	 */
 	destroy: function() {
+
+		this.fireEvent('beforeDestroy', [this]);
+
 		if (this.elements.wrapperOuter) {
 			this.elements.wrapperOuter.remove();
 		}
@@ -324,7 +327,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}
 		this.isDestroyed = true;
 
-		this.fireEvent('destroyed');
+		this.fireEvent('destroyed', [this]);
 	},
 
 

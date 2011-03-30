@@ -13,6 +13,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 	destroyEls: [],
 	destroyMenus: [],
+	destroyOverlays: [],
 
 	changeManager: null,
 	valueForm: null,
@@ -74,6 +75,10 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		for (var i = 0; i < this.destroyMenus.length; i++) {
 			this.destroyMenus[i].destroy();
+		}
+
+		for (var i = 0; i < this.destroyOverlays.length; i++) {
+			this.destroyOverlays[i].destroy();
 		}
 	},
 

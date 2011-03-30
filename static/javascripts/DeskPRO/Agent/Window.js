@@ -303,34 +303,73 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	showStatusMessage: function(message, options) {
 		options = Object.merge({
-			undoCallback: null,
-			autoClose: 3500,
+			btnCallback: null,
+			btnText: 'Dismiss',
+			autoClose: 4500,
 			extraClasses: ''
 		}, options||{});
 
-		var wrap = $('#status_msg').removeAttr('class').addClass(options.extraClasses);
+		// undoCallback for bc, use btnCallback please
+		if (options.undoCallback) {
+			options.btnCallback = options.undoCallback;
+			delete options.undoCallback;
+		}
+
+		var wrap = $('#status_box');
+
+		if (wrap.data('added-classes')) {
+			wrap.removeClass(wrap.data('added-classes'));
+			wrap.data('added-classes', null);
+		}
+
+		if (options.extraClasses) {
+			wrap.addClass(options.extraClasses);
+			wrap.data('added-classes', options.extraClasses);
+		}
+
 		var timeoutId = null;
 		var closeFn = function() {
-			wrap.slideUp(250);
+			wrap.fadeOut(250);
 			if (timeoutId) {
 				window.clearTimeout(timeoutId);
 			}
 		}
-		wrap.click(closeFn);
 
 		if (options.autoClose) {
 			timeoutId = closeFn.delay(options.autoClose);
 		}
 
-		$('.message:first', wrap).html(message);
+		$('#status_message').html(message);
+		$('#status_dismiss_button em').html(options.btnText);
 
-		if (options.undoCallback) {
-			$('.undo:first', wrap).one('click', options.undoCallback).show();
+		if (options.btnCallback) {
+			$('#status_dismiss_button').one('click', function(ev) {
+				closeFn();
+				options.btnCallback(ev, options);
+			});
 		} else {
-			$('.undo:first', wrap).hide();
+			$('#status_dismiss_button').one('click', function(ev) {
+				closeFn();
+			});
 		}
 
-		wrap.slideDown(300);
+		wrap.fadeIn(300);
+	},
+
+
+	
+	/**
+	 * Shows a status message with defaults for an 'undo' type button.
+	 *
+	 * @param message
+	 * @param callback
+	 */
+	showUndoMessage: function(message, callback) {
+		this.showStatusMessage(message, {
+			btnCallback: callback,
+			btnText: 'Undo',
+			extraClasses: 'undo'
+		});
 	},
 
 
@@ -502,10 +541,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		var existTab = this.listTabStrip.getTabByRouteUrl(url);
-		if (existTab && !(existTab.page && existTab.page.allowDupe)) {
-			this.listTabStrip.activateTabById(existTab.id);
-			return;
+		if (!routeData.ignoreExist) {
+			var existTab = this.listTabStrip.getTabByRouteUrl(url);
+			if (existTab && !(existTab.page && existTab.page.allowDupe)) {
+				this.listTabStrip.activateTabById(existTab.id);
+				return;
+			}
 		}
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
@@ -519,7 +560,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				this.addListPage(page);
 
-				if (callback) callback();
+				if (callback) callback(page);
 			}).bind(this)
 		);
 	},
@@ -538,12 +579,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		var existTab = this.pageTabStrip.getTabByRouteUrl(url);
-		if (existTab && !(existTab.page && existTab.page.allowDupe)) {
-			this.pageTabStrip.activateTabById(existTab.id);
-			return;
+		if (!routeData.ignoreExist) {
+			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
+			if (existTab && !(existTab.page && existTab.page.allowDupe)) {
+				this.pageTabStrip.activateTabById(existTab.id);
+				return;
+			}
 		}
-
+		
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data);
@@ -555,7 +598,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 				this.addPageTab(page);
 
-				if (callback) callback();
+				if (callback) callback(page);
 			}).bind(this)
 		);
 	},

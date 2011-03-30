@@ -1343,14 +1343,16 @@ padding: 7px 7px 0 7px;
 
 /** Undo **/
 
-#header .undo {
+#header .status-box {
 	margin-right: 10px;
 }
 
-#header .undo .wrapper-top-bar {
+#header .status-box .wrapper-top-bar {
 	margin-top: 19px;
 	padding-bottom: 2px;
 }
+
+#header .status-box em { font-style: normal; }
 
 #header .name-file {
 	background: #e6e8ec;
@@ -1366,7 +1368,7 @@ padding: 7px 7px 0 7px;
     box-shadow:  inset 0 1px 0 #b9bdc9, 0 1px 0 #fff;
 }
 
-#header .btn-undo {
+#header .status-box .btn {
 	color: #fff;
 	text-shadow: 0 -1px 0 #376fb3;
 	float: left;
@@ -1386,7 +1388,11 @@ padding: 7px 7px 0 7px;
     border-radius: 0 3px 3px 0;
 }
 
-#header .btn-undo span {
+#header .status-box .btn span {
+	display: none;
+}
+
+#header .status-box.undo .btn span {
 	display: block;
 	width: 18px;
 	height: 12px;
