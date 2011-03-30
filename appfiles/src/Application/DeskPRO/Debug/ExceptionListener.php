@@ -192,10 +192,14 @@ class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionLis
 
 		$errfile = $this->_stripPathPrefix($errfile);
 
-		//ob_start();
-		//debug_print_backtrace();
-		//$trace = ob_get_clean();
 		$trace = '';
+		foreach(debug_backtrace() as $k=>$v){
+			if($v['function'] == "include" || $v['function'] == "include_once" || $v['function'] == "require_once" || $v['function'] == "require"){
+				$trace .= "#".$k." ".$v['function']."(".$v['args'][0].") called at [".$v['file'].":".$v['line']."]\n";
+			}else{
+				$trace .= "#".$k." ".$v['function']."() called at [".@$v['file'].":".@$v['line']."]\n";
+			}
+		}
 
 		$trace = $this->_stripPathPrefix($trace);
 
@@ -214,8 +218,6 @@ class ExceptionListener extends \Symfony\Component\HttpKernel\Debug\ExceptionLis
 
 		if (in_array(ini_get('display_errors'), array(1, '1', 'on', 'On', true))) {
 			echo $summary;
-			echo "\n";
-			echo $trace;
 		}
 
 		$handling = false;
