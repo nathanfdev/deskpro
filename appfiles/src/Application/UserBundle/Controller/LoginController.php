@@ -13,6 +13,8 @@ namespace Application\UserBundle\Controller;
 
 use \Application\DeskPRO\Auth\LoginProcessor;
 
+use Application\DeskPRO\App;
+
 class LoginController extends \Application\DeskPRO\Controller\AbstractController
 {
 	############################################################################
@@ -110,6 +112,11 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 		}
 
 		$identity = $result->getIdentity();
+
+		$person = $identity['person'];
+		$person->setLastLoginAt();
+		App::getOrm()->persist($person);
+		App::getOrm()->flush();
 
 		$this->session->set('auth_person_id', $identity->getIdentity());
 
