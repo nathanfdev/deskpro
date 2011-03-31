@@ -953,7 +953,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->status = $status;
 
-		$this->getTicketLogger()->logChange('status', array($old_status, $old_hstatus), array($this->status, $this->hidden_status));
+		$this->_onPropertyChanged('status', $old_status, $this->status);
 	}
 
 	public function setHiddenStatus($hstatus)
@@ -962,8 +962,8 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$old_hstatus = $this->hidden_status;
 
 		$this->hidden_status = $hstatus;
-		
-		$this->getTicketLogger()->logChange('status', array($old_status, $old_hstatus), array($this->status, $this->hidden_status));
+
+		$this->_onPropertyChanged('hidden_status', $old_status, $this->status);
 	}
 
 

@@ -81,6 +81,10 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 			case 'status':
 				$action = new Actions\Status($old_val, $new_val);
 				break;
+
+			case 'hidden_status':
+				$action = new Actions\Status($old_val, $new_val);
+				break;
 		}
 
 		if ($action) {
@@ -214,9 +218,9 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 		// If the ticket used to be waiting validation and now is open,
 		// that means we need to send the newticket emails now
-		if (isset($log_actions['status'])) {
-			$status_change = $log_actions['status']->getLogDetails();
-			if ($status_change['old_status'][1] == 'validating' AND $status_change['new_status'][0] == 'open') {
+		if ($this->ticket['status'] == 'open' AND ($log_actions['hidden_status'])) {
+			$status_change = $log_actions['hidden_status']->getLogDetails();
+			if ($status_change['old_status'] == 'validating') {
 				$notify_types[] = 'new_ticket';
 			}
 		}
