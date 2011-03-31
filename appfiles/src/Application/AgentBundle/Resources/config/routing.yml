@@ -503,6 +503,26 @@ agent_twitter_status_list:
   pattern: /twitter/statuses/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:list }
 
+agent_twitter_message_list:
+  pattern: /twitter/messages/{account_id}
+  defaults: { _controller: AgentBundle:TwitterStatus:listMessages }
+
+agent_twitter_reply_list:
+  pattern: /twitter/replies/{account_id}
+  defaults: { _controller: AgentBundle:TwitterStatus:listReplies }
+
+agent_twitter_mention_list:
+  pattern: /twitter/mentions/{account_id}
+  defaults: { _controller: AgentBundle:TwitterStatus:listMentions }
+
+agent_twitter_retweet_list:
+  pattern: /twitter/retweets/{account_id}
+  defaults: { _controller: AgentBundle:TwitterStatus:listRetweets }
+
+agent_twitter_sent_list:
+  pattern: /twitter/statuses/{account_id}
+  defaults: { _controller: AgentBundle:TwitterStatus:list }
+
 agent_twitter_status_ajaxsave_note:
   pattern: /twitter/status/ajax-note
   defaults: { _controller: AgentBundle:TwitterStatus:ajaxSaveNote }

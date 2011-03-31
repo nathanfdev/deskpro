@@ -14,7 +14,8 @@ namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\App;
 
-use \Application\DeskPRO\Entity\TwitterStatusNote;
+use \Application\DeskPRO\Entity\TwitterAccount,
+    \Application\DeskPRO\Entity\TwitterStatusNote;
 
 use \Orb\Service\Twitter\Twitter;
 
@@ -28,21 +29,10 @@ class TwitterStatusController extends AbstractController
 	 *
 	 * @param integer $account_id The account id.
 	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
-	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
 	 */
 	public function listAction($account_id)
 	{
-		// check if account id is in persons account id list
-		if (!in_array($account_id, $this->person->getTwitterAccountIds())) {
-			throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
-		}
-
-		// check if account exists
-		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($account_id);
-		if (!$account) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $account_id));
-		}
+		$account = $this->getAccount($account_id);
 
 		// sort by date, ascending or descending
 		$sortByDate = $this->in->getValue('sortbydate');
@@ -57,22 +47,118 @@ class TwitterStatusController extends AbstractController
 		// fetch public timeline
 		$statuses = $account->getTimeline($includeArchived, $includeAccount, $sortByDate);
 
+		return $this->renderList($account, $statuses);
+	}
+
+	/**
+	 * Display messages for provided account.
+	 *
+	 * @param integer $account_id The account id.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listMessagesAction($account_id)
+	{
+		$account = $this->getAccount($account_id);
+		$messages = array();
+
+		return $this->renderList($account, $messages);
+	}
+
+	/**
+	 * Display replies for provided account.
+	 *
+	 * @param integer $account_id The account id.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listRepliesAction($account_id)
+	{
+		$account = $this->getAccount($account_id);
+		$replies = array();
+
+		return $this->renderList($account, $replies);
+	}
+
+	/**
+	 * Display mentions for provided account.
+	 *
+	 * @param integer $account_id The account id.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listMentionsAction($account_id)
+	{
+		$account = $this->getAccount($account_id);
+		$mentions = array();
+
+		return $this->renderList($account, $mentions);
+	}
+
+	/**
+	 * Display retweets for provided account.
+	 *
+	 * @param integer $account_id The account id.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listRetweetsAction($account_id)
+	{
+		$account = $this->getAccount($account_id);
+		$retweets = array();
+
+		return $this->renderList($account, $retweets);
+	}
+
+	/**
+	 * Display sent statuses for provided account.
+	 *
+	 * @param integer $account_id The account id.
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	public function listSentAction($account_id)
+	{
+		$account = $this->getAccount($account_id);
+		$statuses = array();
+
+		return $this->renderList($account, $statuses);
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
+	 * @param array $statuses
+	 * @param array $template Partial template to use
+	 * @return \Symfony\Component\HttpFoundation\Response
+	 */
+	protected function renderList(TwitterAccount $account, array $statuses, array $templates = array())
+	{
+		// merge default templates
+		$templates = array_merge(array(
+			'part' => 'status',
+			'head' => 'status',
+			'ctrl' => 'status',
+		), $templates);
+
+		// parse partial templates
+		foreach ($templates as $template => $name) {
+			if (false === strpos(':', $name)) {
+				$templates[$template] = sprintf('AgentBundle:TwitterStatus:%s-%s.html.twig', $template, $name);
+			}
+		}
+
+		// view parameters
+		$parameters = array(
+			'templates' => $templates,
+			'account' => $account,
+			'statuses' => $statuses,
+		);
+
 		// check if is partial
 		if ($this->in->getBool('partial')) {
 			// render json response
 			return $this->createJsonResponse(array(
-				'statuses' => $this->renderView('AgentBundle:TwitterStatus:part-status.html.twig', array(
-					'account'  => $account,
-					'statuses' => $statuses
-				))
+				'statuses' => $this->renderView($templates['part'], $parameters)
 			));
 		}
 
 		// render html response
-		return $this->render('AgentBundle:TwitterStatus:list.html.twig', array(
-			'account'  => $account,
-			'statuses' => $statuses
-		));
+		return $this->render('AgentBundle:TwitterStatus:list.html.twig', $parameters);
 	}
 
 	/**

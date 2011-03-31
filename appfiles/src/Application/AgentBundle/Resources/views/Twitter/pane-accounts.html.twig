@@ -11,19 +11,19 @@
 						<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 						<div class="viewport"><div class="overview">
 							<ol>
-								<li class="" data-route="">
+								<li class="" data-route="listpane:{{ path('agent_twitter_message_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_direct_count">{{ account.timeline.count }}</span>
 									Direct
 								</li>
-								<li class="" data-route="">
+								<li class="" data-route="listpane:{{ path('agent_twitter_reply_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_replies_count">{{ account.user.replies.count }}</span>
 									Replies
 								</li>
-								<li class="" data-route="">
+								<li class="" data-route="listpane:{{ path('agent_twitter_mention_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_mentions_count">{{ account.user.mentions.count }}</span>
 									Mentions
 								</li>
-								<li class="" data-route="">
+								<li class="" data-route="listpane:{{ path('agent_twitter_retweet_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_retweets_count">0</span>
 									ReTweets
 								</li>
@@ -39,7 +39,7 @@
 									<span class="list-counter" id="twitter_{{ account.id }}_followers_count">{{ account.followers.count }}</span>
 									Followers
 								</li>
-								<li class="" data-route="">
+								<li class="" data-route="listpane:{{ path('agent_twitter_sent_list', {'account_id': account.id}) }}">
 									<span class="list-counter" id="twitter_{{ account.id }}_sent_count">{{ account.user.statuses.count }}</span>
 									Sent
 								</li>

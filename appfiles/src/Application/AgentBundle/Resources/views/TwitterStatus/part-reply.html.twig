@@ -1,0 +1,28 @@
+
+<div class="twitter-reply">
+	<form>
+		<div class="type">
+			<ul>
+				<li>
+					<input type="radio" id="twitter-reply-type-private" name="type" value="private" />
+					<label for="twitter-reply-type-private">Private</label>
+				</li>
+				<li>
+					<input type="radio" id="twitter-reply-type-public" name="type" value="public" checked="checked" />
+					<label for="twitter-reply-type-public">Public</label>
+				</li>
+			</ul>
+		</div>
+		<div class="accounts">
+			</ul>
+			{% for person_account in person.twitter_accounts %}
+				<li>
+					<input type="radio" id="twitter-reply-account-{{ person_account.id }}" name="account" value="{{ person_account.id }}" {% if person_account.id == account.id %}checked="checked"{% endif %} />
+					<label for="twitter-reply-account-{{ person_account.id }}">{{ person_account.user.screen_name }}</label>
+				</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<textarea name="text" rows="2" cols="40"></textarea>
+	</form>
+</div>

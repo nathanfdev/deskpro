@@ -2943,3 +2943,81 @@ ul.person-popout-tabs li a{
 .ticket-element:hover .ticket-actions-trigger {
 	display: block;
 }
+
+/**
+ * TWITTER
+ */
+
+.twitter-head {
+	background-color: #F0EFE4;
+	border-bottom: 1px solid #A6A594;
+	padding: 4px;
+}
+
+.twitter-head .display-options {
+	float: right;
+	font-size: 10px;
+}
+
+.twitter-listing > ul > li {
+	margin-bottom: 10px;
+	background-color: #F7F9FA;
+	clear: both;
+}
+
+.twitter-listing ul li .head {
+	background-color: #DDE4EB;
+	font-size: 10px;
+	padding: 2px;
+}
+
+.twitter-listing ul li .head cite {
+
+}
+
+.twitter-listing ul li .head span.response {
+	float: right;
+}
+
+.twitter-listing ul li .photo {
+	float: left;
+	width: 48px;
+}
+
+.twitter-listing ul li .photo img {
+	width: 48px;
+	height: 48px;
+}
+
+.twitter-listing ul li .content {
+	margin-left: 55px;
+}
+
+.twitter-listing ul li .content .tweet {
+	background-color: #fff;
+	padding: 8px;
+}
+
+.twitter-listing ul li .content .notes {
+	font-size: 10px;
+	padding-left: 20px;
+}
+
+.twitter-listing ul li .content .note {
+
+}
+
+.twitter-listing ul li .content .note em {
+	color: #838D96;
+	padding-left: 5px;
+}
+
+.twitter-listing ul li .content .controls li {
+	float: right;
+	padding-right: 10px;
+	font-size: 10px;
+}
+
+.twitter-note, .twitter-reply {
+	display: none;
+}

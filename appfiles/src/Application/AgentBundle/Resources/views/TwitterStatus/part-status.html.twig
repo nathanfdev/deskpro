@@ -23,13 +23,7 @@
 			{% endfor %}
 			</div>
 			<div class="controls">
-				<ul>
-					<li class="archive"><a>{% if status.is_archived %}Archived{% else %}Archive{% endif %}</a></li>
-					<li class="reply"><a>Reply</a></li>
-					<li class="retweet"><a>Retweet</a></li>
-					<li class="assign"><a>Assign</a></li>
-					<li class="note"><a>Add Note</a></li>
-				</ul>
+				{% include templates.ctrl %}
 			</div>
 		</div>
 	</li>
