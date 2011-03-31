@@ -1029,26 +1029,35 @@ in and out, so we dont want actual scrollbars */
 
 
 
-#header .top-tickets-info {
+#header .top-tickets-info,
+#header .top-twitter-info {
 	background: #f3f4f5;
 	border-bottom: 1px solid #e7e9ef;
 }
 
-#header .top-tickets-info ol {
+#header .top-tickets-info ol,
+#header .top-twitter-info ol {
 	overflow: hidden;
 }
 
-#header .top-tickets-info ol li:first-child {
+#header .top-tickets-info ol li:first-child,
+#header .top-twitter-info ol li:first-child {
 	border-left: none;
 	width: 75px;
 }
 
-#header .top-tickets-info ol li:last-child {
+#header .top-tickets-info ol li:last-child,
+#header .top-twitter-info ol li:last-child {
 	border-right: none;
 	width: 75px;
 }
 
-#header .top-tickets-info ol li {
+#header .top-twitter-info ol li {
+	width: auto !important;
+}
+
+#header .top-tickets-info ol li,
+#header .top-twitter-info ol li {
 	border-right: 1px solid #fff;
 	border-left: 1px solid #e8ebed;
 	padding: 10px 15px;
@@ -1060,15 +1069,18 @@ in and out, so we dont want actual scrollbars */
 	text-align: center;
 }
 
-#header .top-tickets-info ol li:hover {
+#header .top-tickets-info ol li:hover,
+#header .top-twitter-info ol li:hover {
 	background: #EBEFF2 !important;
 }
 
-#header .top-tickets-info ol li:hover .ticket-counter {
+#header .top-tickets-info ol li:hover .ticket-counter,
+#header .top-twitter-info ol li:hover .status-counter {
 	background-color: #C23E3E;
 }
 
-#header .top-tickets-info ol li span.ticket-counter {
+#header .top-tickets-info ol li span.ticket-counter,
+#header .top-twitter-info ol li span.status-counter {
 	margin-left: 5px;
 
 	padding: 2px 4px 1px 4px;
@@ -1101,7 +1113,7 @@ in and out, so we dont want actual scrollbars */
 }
 
 #header .tasks-drop > div > div {
-  padding: 10px;  
+  padding: 10px;
 }
 
 #header .tasks-drop #tasks_overview > ul > li {
@@ -1129,7 +1141,7 @@ in and out, so we dont want actual scrollbars */
   font-size: 14px;
   font-weight: bold;
   margin-bottom: 5px;
-} 
+}
 
 #header .inner-container {
 	background: #f8f8f9;
@@ -1482,7 +1494,7 @@ padding: 7px 7px 0 7px;
 	font-size: 8pt;
 
 	color: #fff;
-	
+
 	font-weight: bold;
 	border: 1px solid #5084c5;
 	background-color: #84b4f1;
@@ -1939,7 +1951,7 @@ border-left: none;
 
 .inner-box-tab-content-2 h3 {
 	font-size: 11px;
-	
+
 	margin-top: 1px;
 	margin-left: -6px;
 	padding-left: 19px;
@@ -2215,7 +2227,7 @@ border-left: none;
 
 /**/
 table.participants-table {
-	
+
 }
 
 table.participants-table td.col-inner {
