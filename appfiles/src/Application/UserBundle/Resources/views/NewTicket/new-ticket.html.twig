@@ -1,5 +1,12 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% import "UserBundle:Common:property-fields.html.twig" as property_fields %}
+{% block head %}
+<script type="text/javascript" src="{{ path('data_interface_data', {'types': ['tickets']}) }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/User/Page/NewTicket.js') }}"></script>
+<script type="text/javascript">
+	DeskPRO_Window.setPageHandler(new DeskPRO.User.Page.NewTicket());
+</script>
+{% endblock %}
 {% block content %}
 
 <form action="{{ path('user_tickets_new') }}" method="post">
@@ -29,30 +36,29 @@
 <table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
 	<td>
 		<small>Department</small><br />
-		{{ property_fields.form_department_select('newticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id) }}
+		{{ property_fields.form_department_select('newticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
 	</td>
-	<td>
+	<td id="category_select_wrap">
 		<small>{{ phrase('core_tickets.category') }}</small><br />
-		{{ property_fields.form_department_select('newticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id) }}
+		{{ property_fields.form_category_select('newticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
 	</td>
 	{% if form.ticket.product_id %}
 	<td>
 		<small>{{ phrase('core.product') }}</small><br />
-		{{ form_field(form.ticket.product_id) }}
+		{{ form_field(form.ticket.product_id, {'class': 'product_id'}) }}
 	</td>
 	{% endif %}
 	{% if form.ticket.priority_id %}
 	<td>
 		<small>{{ phrase('core_tickets.priority') }}</small><br />
-		{{ form_field(form.ticket.priority_id) }}
+		{{ form_field(form.ticket.priority_id, {'class': 'priority_id'}) }}
 	</td>
 	{% endif %}
 </tr></table>
 
-{#
 <table cellspacing="5" cellpadding="0" border="0" width="100%">
 	{% for f in custom_fields %}
-		<tr>
+		<tr class="ticket-display-element ticket_field-{{f.field_def.id}}">
 			<td>
 				<small>{{ phrase(f.field_def) }}</small><br />
 				{{ form_field(f.form, {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}
@@ -60,7 +66,6 @@
 		</tr>
 	{% endfor %}
 </table>
-#}
 
 <div style="margin: 10px 0 10px 0;">
 	{{ form_field(form.ticket.subject) }}

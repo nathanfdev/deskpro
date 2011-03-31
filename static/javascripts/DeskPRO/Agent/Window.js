@@ -12,17 +12,12 @@ Orb.createNamespace('DeskPRO.Agent');
  */
 DeskPRO.Agent.Window = new Orb.Class({
 
-	Implements: [Orb.Util.Options],
+	Extends: DeskPRO.BasicWindow,
 
-	initialize: function(options) {
-
-		this.DBEUG = {};
-		this.options = {};
+	init: function() {
 
 		this.routePrefixes = {};
-		this.registry = {};
 
-		this.messageBroker = null;
 		this.messageChanneler = null;
 		this.poller = null;
 
@@ -47,10 +42,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.releaseTicketLocks = [];
 
 		this.winStateQueue = [];
-
-		if (options) {
-			this.setOptions(options);
-		}
 	},
 
 	initPage: function() {
@@ -111,42 +102,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//#################################################################
 	//# Global registry, getters
 	//#################################################################
-
-	/**
-	 * Get a value from the registry.
-	 *
-	 * @param {String} id The ID of the item
-	 * @return mixed
-	 */
-	get: function(id) {
-		if (this.registry[id] === undefined) {
-			return null;
-		}
-
-		return this.registry[id];
-	},
-
-
-
-	/**
-	 * Add or reset a value in the registry.
-	 *
-	 * @param {String} id The ID of the item
-	 * @param mixed value The value of the item
-	 */
-	set: function(id, value) {
-		this.registry[id] = value;
-	},
-
-
-
-	/**
-	 * Get the message broker
-	 */
-	getMessageBroker: function() {
-		return this.messageBroker;
-	},
-
 
 	/**
 	 * Get the notifier
@@ -812,7 +767,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//#################################################################
 
 	_initBasic: function() {
-		this.messageBroker = new DeskPRO.MessageBroker();
 
 		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
 		this.messageChanneler.subscribeChannel('tickets.new-tickets');

@@ -3,7 +3,7 @@
 <head>
 	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
 	<title>DeskPRO</title>
-	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+
 	<style type="text/css" media="screen">
 		html,body,div,span,object,iframe,blockquote,pre,abbr,address,cite,code,del,dfn,em,img,ins,kbd,q,samp,small,strong,var,fieldset,form,table,caption,tbody,tfoot,thead,tr,th,td,article,aside,dialog,figure,footer,header,hgroup,menu,nav,section,time,mark,audio,video{vertical-align:baseline;margin:0;padding:0}
 		article,aside,dialog,figure,footer,header,hgroup,menu,nav,section,time,mark,audio,video {display:block}
@@ -182,6 +182,28 @@ table.table-list > tbody > tr:hover > td {
 	background-color: #F3F6FA;
 }
 	</style>
+
+	<script src="{{ asset('javascripts/modernizr.min.js') }}"></script>
+	<script type="text/javascript" src="https://ajax.googleapis.com/ajax/libs/jquery/1.4.4/jquery.min.js"></script>
+	<script src="{{ asset('javascripts/jquery/jquery.timeago.js') }}"></script>
+	<script src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
+
+	<script src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
+	<script src="{{ asset('javascripts/Orb/Class.js') }}"></script>
+	<script src="{{ asset('javascripts/Orb/Util/Options.js') }}"></script>
+	<script src="{{ asset('javascripts/Orb/Util/Events.js') }}"></script>
+	<script src="{{ asset('javascripts/Orb/Compat.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/BasicWindow.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/MessageBroker.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/User/Window.js') }}"></script>
+	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/User/Page/Abstract.js') }}"></script>
+
+	<script type="text/javascript">
+		window.DeskPRO_Window = new DeskPRO.User.Window();
+		$(document).ready(function() {
+			window.DeskPRO_Window.initPage();
+		});
+	</script>
 
 	{% block head %}{% endblock %}
 </head>

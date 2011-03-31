@@ -23,3 +23,8 @@ serve_trans_gif:
 serve_default_picture:
   pattern: /download/person-pic/default
   defaults: { _controller: DeskPRO:Blob:getStaticFile, name: 'default_picture' }
+
+data_interface_data:
+  pattern: /data/interface-data.{_format}
+  defaults: { _controller: DeskPRO:Data:interfaceData, _format: js }
+  requirements: { _format: js }
