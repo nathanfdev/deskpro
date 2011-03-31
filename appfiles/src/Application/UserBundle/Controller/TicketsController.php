@@ -89,6 +89,44 @@ class TicketsController extends AbstractController
 		));
 	}
 
+	################################################################################
+	# view-with-auth
+	################################################################################
+
+	/**
+	 * View a ticket
+	 */
+	public function viewWithAuthAction($ticket_ref, $ticket_auth)
+	{
+		// If we're currently logged in, then the auth is meaningless
+		if ($this->person['id']) {
+			return $this->view($ticket_ref);
+		}
+		
+		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+		if (!$ticket OR $ticket['code'] != $ticket_auth) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		// Add this ticket to allowed tickets in session
+		$this->session_allowed[] = $ticket['id'];
+		$this->session->set('ticket_access', $this->session_allowed);
+
+		// And also mark the user and ticket as validated
+		App::getOrm()->beginTransaction();
+
+		$ticket->person_email['is_validated'] = true;
+		$ticket['status'] = Entity\Ticket::STATUS_OPEN;
+
+		App::getOrm()->persist($ticket->person_email);
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		// Regular ticket page
+		return $this->viewAction($ticket_ref);
+	}
+
 	/**
 	 * @return Application\DeskPRO\Entity\Ticket
 	 */

@@ -902,6 +902,25 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function isHidden()
+	{
+		return $this->getIsHidden();
+	}
+
+	public function getIsHidden()
+	{
+		if ($this->status == self::STATUS_HIDDEN) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function isDeleted()
+	{
+		return $this->getIsDeleted();
+	}
+
 
 	/**
 	 * Is this ticket deleted?
@@ -921,6 +940,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setStatus($status)
 	{
+		$old_status = $this->status;
+		$old_hstatus = $this->hidden_status;
+
 		if ($status != 'hidden' AND $this->status == 'hidden' AND $this->hidden_status == 'deleted') {
 			$this->undeleteTicket();
 		}
@@ -930,6 +952,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		$this->status = $status;
+
+		$this->getTicketLogger()->logChange('status', array($old_status, $old_hstatus), array($this->status, $this->hidden_status));
+	}
+
+	public function setHiddenStatus($hstatus)
+	{
+		$old_status = $this->status;
+		$old_hstatus = $this->hidden_status;
+
+		$this->hidden_status = $hstatus;
+		
+		$this->getTicketLogger()->logChange('status', array($old_status, $old_hstatus), array($this->status, $this->hidden_status));
 	}
 
 

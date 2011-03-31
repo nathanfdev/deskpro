@@ -195,12 +195,32 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 
-		$this->sendNotifications($events, $log_actions, $notify_types);
+		$this->sendAgentNotifications($events, $log_actions, $notify_types);
 		$this->executeTriggers($events, $log_actions);
 	}
 
-	protected function sendNotifications($events, $log_actions, array $notify_types)
+	protected function sendUserNotifications($events, $log_actions, array $notify_types)
 	{
+		$ticket_email = new \Application\DeskPRO\Email\AgentNotification\Ticket($this->ticket, $log_actions);
+		$ticket_email->sendNotifications($notify_types);
+	}
+
+	protected function sendAgentNotifications($events, $log_actions, array $notify_types)
+	{
+		// No agents get notifications of hidden tickets
+		if ($this->ticket->isHidden()) {
+			return;
+		}
+
+		// If the ticket used to be waiting validation and now is open,
+		// that means we need to send the newticket emails now
+		if (isset($log_actions['status'])) {
+			$status_change = $log_actions['status']->getLogDetails();
+			if ($status_change['old_status'][1] == 'validating' AND $status_change['new_status'][0] == 'open') {
+				$notify_types[] = 'new_ticket';
+			}
+		}
+
 		if (!$notify_types) return;
 
 		$matching_filters = array();
@@ -218,7 +238,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		$notifs = App::getEntityRepository('DeskPRO:AgentNotification')->getNotifications($matching_filters, $notify_types);
 		if (!$notifs) return;
 
-		$ticket_email = new \Application\DeskPRO\Email\Notification\Ticket($this->ticket, $log_actions);
+		$ticket_email = new \Application\DeskPRO\Email\AgentNotification\Ticket($this->ticket, $log_actions);
 		$ticket_email->sendNotifications($notifs);
 	}
 

@@ -85,6 +85,11 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_validated = null;
 
+	public function __construct()
+	{
+		$this->date_created = new \DateTime();
+	}
+
 
 
 	/**
@@ -142,21 +147,15 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-
-	/** @orm:PrePersist */
-	public function incCreatedAt()
+	
+	public function setIsValidated($yesno)
 	{
-		$this->date_created = new \DateTime();
-		if ($this->is_validated AND !$this->date_validated) {
-			$this->date_validated = new \DateTime();
-		}
-	}
+		$this->is_validated = $yesno;
 
-	/** @PreSave */
-	public function incValidatedAt()
-	{
-		if ($this->is_validated AND !$this->date_validated) {
+		if ($yesno) {
 			$this->date_validated = new \DateTime();
+		} else {
+			$this->date_validated = null;
 		}
 	}
 }
