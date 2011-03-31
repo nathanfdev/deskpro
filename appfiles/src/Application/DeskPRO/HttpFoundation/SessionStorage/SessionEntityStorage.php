@@ -29,12 +29,12 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 	protected $options;
 
 	/**
-	 * @var Doctrine\ORM\EntityManager
+	 * @var \Doctrine\ORM\EntityManager
 	 */
     protected $em;
 
 	/**
-	 * @var Application\DeskPRO\DBAL\Connection
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 
@@ -230,7 +230,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		$sess_rec['date_last'] = date('Y-m-d H:i:s', time());
 		$sess_rec['is_person'] = 0;
 		$sess_rec['person_id'] = null;
-
 
 		if (!empty($_SESSION['_symfony2']['auth_person_id'])) {
 			$sess_rec['is_person'] = 1;

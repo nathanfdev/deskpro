@@ -24,25 +24,25 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 {
 	/**
 	 * Entity manager
-	 * @var Doctrine\ORM\EntityManager
+	 * @var \Doctrine\ORM\EntityManager
 	 */
 	protected $em;
 
 	/**
 	 * Plain database connection for raw queries
-	 * @var Application\DeskPRO\DBAL\Connection
+	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
 	protected $db;
 
 	/**
 	 * Input reader
-	 * @var Orb\Input\Reader\Reader
+	 * @var \Orb\Input\Reader\Reader
 	 */
 	protected $in;
 
 	/**
 	 * A generic value cleaner
-	 * @var Orb\Input\Cleaner\Cleaner
+	 * @var \Orb\Input\Cleaner\Cleaner
 	 */
 	protected $cleaner;
 
@@ -53,19 +53,19 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	protected $tplvars;
 
 	/**
-	 * @var Application\DeskPRO\Templating\Engine
+	 * @var \Application\DeskPRO\Templating\Engine
 	 */
 	protected $tpl;
 
 	/**
 	 * Fetch settings
-	 * @var Application\DeskPRO\Settings\Settings
+	 * @var \Application\DeskPRO\Settings\Settings
 	 */
 	protected $settings;
 
 	/**
 	 * The session
-	 * @var Application\DeskPRO\HttpFoundation\Session
+	 * @var \Application\DeskPRO\HttpFoundation\Session
 	 */
 	protected $session;
 

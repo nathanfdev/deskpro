@@ -20,9 +20,9 @@ services:
     arguments: [@service_container]
     tags:
       - { name: twig.extension }
-#  session.storage:
-#    class: Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage
-#    arguments: [@doctrine.orm.entity_manager, %session.storage.native.options%]
+  session.storage:
+    class: Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage
+    arguments: [@doctrine.orm.entity_manager, %session.storage.native.options%]
   swiftmailer.transport.dp_delegating:
     class: Application\DeskPRO\Mail\Transport\DelegatingTransport
     arguments: [@swiftmailer.transport.eventdispatcher]

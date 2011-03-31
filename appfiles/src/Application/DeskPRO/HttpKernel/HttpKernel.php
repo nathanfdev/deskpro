@@ -52,7 +52,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 
         try {
 			 try {
-				return $this->handleRaw($request, $type);
+				$response = $this->handleRaw($request, $type);
 			} catch (\Exception $e) {
 				if (false === $catch) {
 					throw $e;
@@ -66,6 +66,13 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
         }
 
         $this->container->leaveScope('request');
+
+		// Do to gc/cleanup in php we have to write the session manually before
+		// objects are destructed
+		if ($s = $request->getSession()) {
+			$s->save();
+			session_write_close();
+		}
 
         return $response;
     }
