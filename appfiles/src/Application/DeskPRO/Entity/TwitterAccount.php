@@ -237,4 +237,38 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
 		return $accessToken;
 	}
+
+	/**
+	 * @return integer
+	 */
+	public function countStarredStatuses()
+	{
+		$userIds = $this->getFollowingIds();
+		$userIds[] = $this->getUserId();
+
+		return App::getDb()->fetchColumn(sprintf("
+			SELECT COUNT(s.id)
+			FROM twitter_statuses s
+			WHERE s.user_id IN (%s)
+			AND s.is_favorited = 1
+		", implode(',', $userIds)));
+	}
+
+	/**
+	 * @return integer
+	 * @todo implement
+	 */
+	public function countAssignedStatusesToAgent()
+	{
+		return 0;
+	}
+
+	/**
+	 * @return integer
+	 * @todo implement
+	 */
+	public function countAssignedStatusesToTeam()
+	{
+		return 0;
+	}
 }

@@ -104,7 +104,9 @@ class TwitterController extends AbstractController
 
 		// iterate accounts, count statuses
 		foreach ($accounts as $account) {
-			// @TODO count statuses
+			$statuses['starred'] += $account->countStarredStatuses();
+			$statuses['account'] += $account->countAssignedStatusesToAgent();
+			$statuses['team'] += $account->countAssignedStatusesToTeam();
 		}
 
 		return $this->render('AgentBundle:Twitter:pane-statuses.html.twig', array(
