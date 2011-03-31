@@ -29,6 +29,7 @@ class Date extends HandlerAbstract
 			'widget' => 'input',
 			'type' => 'timestamp',
 			'format' => 'medium',
+			'required' => false
 		));
 
 		if ($data AND !empty($data['value'])) {

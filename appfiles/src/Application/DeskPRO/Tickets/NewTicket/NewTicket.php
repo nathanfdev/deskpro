@@ -107,8 +107,20 @@ class NewTicket
 			$ticket_message['message'] = $this->ticket->message;
 			$ticket->addMessage($ticket_message);
 
-			$ticket['status']        = Entity\Ticket::STATUS_HIDDEN;
-			$ticket['hidden_status'] = Entity\Ticket::HIDDEN_STATUS_VALIDATING;
+			if ($ticket->person_email['is_validated']) {
+				$ticket['status']        = Entity\Ticket::STATUS_OPEN;
+			} else {
+				$ticket['status']        = Entity\Ticket::STATUS_HIDDEN;
+				$ticket['hidden_status'] = Entity\Ticket::HIDDEN_STATUS_VALIDATING;
+			}
+
+			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+			$raw_custom_fields = isset($_POST['newticket']['custom_fields']) ? $_POST['newticket']['custom_fields'] : array();
+			foreach ($ticket_field_defs as $field_def) {
+				foreach ($field_def->getHandler()->getDataFromForm($raw_custom_fields) as $info) {
+					$ticket->setCustomData($info[0], $info[1], $info[2]);
+				}
+			}
 
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();

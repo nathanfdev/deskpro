@@ -58,7 +58,7 @@
 
 <table cellspacing="5" cellpadding="0" border="0" width="100%">
 	{% for f in custom_fields %}
-		<tr class="ticket-display-element ticket_field-{{f.field_def.id}}">
+		<tr class="ticket-display-element ticket_field-{{f.field_def.id}}" style="display:none">
 			<td>
 				<small>{{ phrase(f.field_def) }}</small><br />
 				{{ form_field(f.form, {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}

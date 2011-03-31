@@ -57,9 +57,11 @@ class Choice extends HandlerAbstract
 			}
 		}
 
-		$field_group = new \Symfony\Component\Form\CollectionField($this->getFormFieldName(), array('virtual' => true));
+		/* Symfony bug to do with nested arrays? causes warning, for now lets just use a normal select
+		$field_group = new \Symfony\Component\Form\Form($this->getFormFieldName(), array('required' => false));
 		$field_choice = new \Symfony\Component\Form\ChoiceField('choice', array(
-			'choices' => $options
+			'choices' => $options,
+			'required' => false,
 		));
 		if ($selected_options) {
 			$field_choice->setData($selected_options);
@@ -72,11 +74,24 @@ class Choice extends HandlerAbstract
 		}
 
 		return $field_group;
+		 */
+
+		$field_choice = new \Symfony\Component\Form\ChoiceField($this->getFormFieldName(), array(
+			'choices' => $options,
+			'required' => false,
+		));
+		if ($selected_options) {
+			$field_choice->setData($selected_options);
+		}
+
+		return $field_choice;
 	}
 
 	function getDataFromForm(array $form_data)
 	{
 		$name = $this->getFormFieldName();
+
+		$form_data[$name] = array('choice' => $form_data[$name]);// TODO fix for above
 
 		$from_data_choices = null;
 		if (isset($form_data[$name]['choice'])) {

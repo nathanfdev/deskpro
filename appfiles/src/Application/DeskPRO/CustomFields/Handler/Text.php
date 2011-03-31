@@ -20,7 +20,7 @@ class Text extends HandlerAbstract
 {
 	public function getFormField(array $data = null)
 	{
-		$field = new \Symfony\Component\Form\TextField($this->getFormFieldName());
+		$field = new \Symfony\Component\Form\TextField($this->getFormFieldName(), array('required' => false));
 
 		if ($data AND !empty($data['value'])) {
 			$field->setData($data['value']);
