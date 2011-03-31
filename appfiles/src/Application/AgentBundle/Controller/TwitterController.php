@@ -22,58 +22,6 @@ use \Application\DeskPRO\Entity\TwitterStatusNote;
 class TwitterController extends AbstractController
 {
 	/**
-	 * Display statuses for provided account.
-	 *
-	 * @param integer $account_id The account id.
-	 * @return \Symfony\Component\HttpFoundation\Response
-	 * @throws \Symfony\Component\Security\Core\Exception\AccessDeniedException
-	 * @throws \Symfony\Component\HttpKernel\Exception\NotFoundHttpException
-	 */
-	public function statusesAction($account_id)
-	{
-		// check if account id is in persons account id list
-		if (!in_array($account_id, $this->person->getTwitterAccountIds())) {
-			throw new \Symfony\Component\Security\Core\Exception\AccessDeniedException();
-		}
-
-		// check if account exists
-		$account = App::getOrm()->getRepository('DeskPRO:TwitterAccount')->find($account_id);
-		if (!$account) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException(sprintf('There is no account with ID "%d"', $account_id));
-		}
-
-		// sort by date, ascending or descending
-		$sortByDate = $this->in->getValue('sortbydate');
-		if (!$sortByDate) {
-			$sortByDate = 'asc';
-		}
-
-		// whether include archived and/or account statuses
-		$includeArchived = $this->in->getValue('include.archived');
-		$includeAccount  = $this->in->getBool('include.account');
-
-		// fetch public timeline
-		$statuses = $account->getTimeline($includeArchived, $includeAccount, $sortByDate);
-
-		// check if is partial
-		if ($this->in->getBool('partial')) {
-			// render json response
-			return $this->createJsonResponse(array(
-				'statuses' => $this->renderView('AgentBundle:Twitter:part-statuses.html.twig', array(
-					'account'  => $account,
-					'statuses' => $statuses
-				))
-			));
-		}
-
-		// render html response
-		return $this->render('AgentBundle:Twitter:statuses.html.twig', array(
-			'account'  => $account,
-			'statuses' => $statuses
-		));
-	}
-
-	/**
 	 * Display accounts for Super Menu.
 	 *
 	 * @return \Symfony\Component\HttpFoundation\Response

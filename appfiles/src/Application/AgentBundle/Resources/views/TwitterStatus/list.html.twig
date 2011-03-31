@@ -1,12 +1,12 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.Twitter';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
 pageMeta.title = '@{{ account.user.screen_name|escape }}';
 pageMeta.accountId = '{{ account.id }}';
-pageMeta.getStatusesUrl = '{{ path('agent_twitter_statuses', {'account_id': account.id}) }}?partial=1';
-pageMeta.saveNoteUrl = '{{ path('agent_twitter_ajaxsave_note') }}';
-pageMeta.saveRetweetUrl = '{{ path('agent_twitter_ajaxsave_retweet') }}';
-pageMeta.saveReplyUrl = '{{ path('agent_twitter_ajaxsave_reply') }}';
-pageMeta.saveArchiveUrl = '{{ path('agent_twitter_ajaxsave_archive') }}';
+pageMeta.statusListUrl = '{{ path('agent_twitter_status_list', {'account_id': account.id}) }}?partial=1';
+pageMeta.saveNoteUrl = '{{ path('agent_twitter_status_ajaxsave_note') }}';
+pageMeta.saveRetweetUrl = '{{ path('agent_twitter_status_ajaxsave_retweet') }}';
+pageMeta.saveReplyUrl = '{{ path('agent_twitter_status_ajaxsave_reply') }}';
+pageMeta.saveArchiveUrl = '{{ path('agent_twitter_status_ajaxsave_archive') }}';
 </script>
 
 <style type="text/css" media="screen">
@@ -137,5 +137,5 @@ pageMeta.saveArchiveUrl = '{{ path('agent_twitter_ajaxsave_archive') }}';
 </div>
 
 <div class="twitter-listing">
-	{% include 'AgentBundle:Twitter:part-statuses.html.twig' %}
+	{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
 </div>

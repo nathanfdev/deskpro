@@ -491,14 +491,6 @@ agent_ticket_delete:
 # Twitter
 ################################################################################
 
-agent_twitter_statuses:
-  pattern: /twitter/statuses/{account_id}
-  defaults: { _controller: AgentBundle:Twitter:statuses }
-
-agent_twitter_user:
-  pattern: /twitter/user/{user_id}
-  defaults: { _controller: AgentBundle:TwitterUser:view }
-
 agent_twitter_accountspane:
   pattern: /twitter/pane/accounts
   defaults: { _controller: AgentBundle:Twitter:accountsPane }
@@ -507,21 +499,29 @@ agent_twitter_statusespane:
   pattern: /twitter/pane/statuses
   defaults: { _controller: AgentBundle:Twitter:statusesPane }
 
-agent_twitter_ajaxsave_note:
+agent_twitter_status_list:
+  pattern: /twitter/statuses/{account_id}
+  defaults: { _controller: AgentBundle:TwitterStatus:list }
+
+agent_twitter_status_ajaxsave_note:
   pattern: /twitter/status/ajax-note
   defaults: { _controller: AgentBundle:TwitterStatus:ajaxSaveNote }
 
-agent_twitter_ajaxsave_retweet:
+agent_twitter_status_ajaxsave_retweet:
   pattern: /twitter/status/ajax-retweet
   defaults: { _controller: AgentBundle:TwitterStatus:ajaxSaveRetweet }
 
-agent_twitter_ajaxsave_reply:
+agent_twitter_status_ajaxsave_reply:
   pattern: /twitter/status/ajax-reply
   defaults: { _controller: AgentBundle:TwitterStatus:ajaxSaveReply }
 
-agent_twitter_ajaxsave_archive:
+agent_twitter_status_ajaxsave_archive:
   pattern: /twitter/status/ajax-archive
   defaults: { _controller: AgentBundle:TwitterStatus:ajaxSaveArchive }
+
+agent_twitter_user:
+  pattern: /twitter/user/{user_id}
+  defaults: { _controller: AgentBundle:TwitterUser:view }
 
 ################################################################################
 # Tasks
@@ -530,7 +530,7 @@ agent_twitter_ajaxsave_archive:
 agent_tasks_count_pending:
   pattern: /tasks/pending/count
   defaults: { _controller: AgentBundle:Task:countPending }
-  
+
 agent_tasks_list_pending:
   pattern: /tasks/pending/list
   defaults: { _controller: AgentBundle:Task:listPending }

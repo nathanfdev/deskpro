@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
+DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	el: null,
@@ -58,7 +58,7 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 
 	reload: function() {
 		$.ajax({
-			url: this.getMetaData('getStatusesUrl'),
+			url: this.getMetaData('statusListUrl'),
 			dataType: 'json',
 			data: this.getDisplayOptions(),
 			context: this,
