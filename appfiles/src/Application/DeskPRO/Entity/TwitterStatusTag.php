@@ -80,4 +80,30 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 			$this->status = $status;
 		}
 	}
+
+	/**
+	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $tag
+	 * @return \Application\DeskPRO\Entity\TwitterStatusTag
+	 */
+	static public function createFromXML($tag)
+	{
+		$entity = new self();
+		print_r($tag);
+
+		return $entity;
+	}
+
+	/**
+	 * @param array $status
+	 * @return \Application\DeskPRO\Entity\TwitterStatusTag
+	 */
+	static public function createFromJson(array $tag)
+	{
+		$entity = new self();
+		$entity['hash']   = $tag['text'];
+		$entity['starts'] = $tag['indices'][0];
+		$entity['ends']   = $tag['indices'][1];
+
+		return $entity;
+	}
 }

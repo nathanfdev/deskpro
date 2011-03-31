@@ -182,7 +182,7 @@ class UserStream extends \UserstreamPhirehose
 		$user = $this->findUser($tweet['user']['id_str']);
 		if (!$user) {
 			// create user entity
-			$user = \Orb\Service\Twitter\User::createEntityFromJson($tweet['user']);
+			$user = TwitterUser::createFromJson($tweet['user']);
 
 			// persist entity
 			$this->em->persist($user);
@@ -192,19 +192,8 @@ class UserStream extends \UserstreamPhirehose
 		}
 
 		// create Twitter status
-		$status                 = new TwitterStatus();
-		$status['id']           = $tweet['id_str'];
-		$status['user']         = $user;
-		$status['text']         = $tweet['text'];
-		$status['is_truncated'] = $tweet['truncated'];
-		$status['is_favorited'] = $tweet['favorited'];
-		$status['is_archived']  = false;
-		$status['date_created'] = new \DateTime($tweet['created_at']);
-		$status['source']       = $tweet['source'];
-
-		// @TODO add geo informations
-		// $status['geo_latitude'] = $tweet['geo'][];
-		// $status['geo_longitude'] = $tweet['geo'][];
+		$status         = TwitterStatus::createFromJson($tweet);
+		$status['user'] = $user;
 
 		// persist entity
 		$this->em->persist($status);
@@ -246,11 +235,8 @@ class UserStream extends \UserstreamPhirehose
 	 */
 	protected function processUrl(TwitterStatus $status, array $url)
 	{
-		$entity           = new TwitterStatusUrl();
+		$entity = TwitterStatusUrl::createFromJson($url);
 		$entity['status'] = $status;
-		$entity['url']    = $url['url'];
-		$entity['starts'] = $url['indices'][0];
-		$entity['ends']   = $url['indices'][1];
 
 		// persist entity
 		$this->em->persist($entity);
@@ -265,11 +251,8 @@ class UserStream extends \UserstreamPhirehose
 	 */
 	protected function processTag(TwitterStatus $status, array $tag)
 	{
-		$entity           = new TwitterStatusTag();
+		$entity = TwitterStatusTag::createFromJson($tag);
 		$entity['status'] = $status;
-		$entity['hash']   = $tag['text'];
-		$entity['starts'] = $tag['indices'][0];
-		$entity['ends']   = $tag['indices'][1];
 
 		// persist entity
 		$this->em->persist($entity);
@@ -284,7 +267,7 @@ class UserStream extends \UserstreamPhirehose
 	 */
 	protected function processMention(TwitterStatus $status, array $mention)
 	{
-		$entity           = new TwitterStatusMention();
+		$entity = TwitterStatusMention::createFromJson($mention);
 		$entity['status'] = $status;
 
 		// @TODO check if Twitter user exists
@@ -298,7 +281,7 @@ class UserStream extends \UserstreamPhirehose
 			$xml = $twitter->user->show($mention['id_str']);
 
 			// create user entity
-			$user = \Orb\Service\Twitter\User::createEntityFromXML($xml);
+			$user = TwitterUser::createFromXML($xml);
 
 			// persist entity
 			$this->em->persist($user);
@@ -307,9 +290,7 @@ class UserStream extends \UserstreamPhirehose
 			$this->em->flush();
 		}
 
-		$entity['user']   = $user;
-		$entity['starts'] = $mention['indices'][0];
-		$entity['ends']   = $mention['indices'][1];
+		$entity['user'] = $user;
 
 		// persist entity
 		$this->em->persist($entity);
@@ -335,7 +316,7 @@ class UserStream extends \UserstreamPhirehose
 		$sender = $this->findUser($message['sender']['id_str']);
 		if (!$sender) {
 			// create user entity
-			$sender = \Orb\Service\Twitter\User::createEntityFromJson($message['sender']);
+			$sender = TwitterUser::createFromJson($message['sender']);
 
 			// persist entity
 			$this->em->persist($sender);
@@ -348,7 +329,7 @@ class UserStream extends \UserstreamPhirehose
 		$recipient = $this->findUser($message['recipient']['id_str']);
 		if (!$recipient) {
 			// create user entity
-			$recipient = \Orb\Service\Twitter\User::createEntityFromJson($message['recipient']);
+			$recipient = TwitterUser::createFromJson($message['recipient']);
 
 			// persist entity
 			$this->em->persist($recipient);
@@ -412,7 +393,7 @@ class UserStream extends \UserstreamPhirehose
 		$targetUser = $this->findUser($target['id_str']);
 		if (!$targetUser) {
 			// create user entity
-			$targetUser = \Orb\Service\Twitter\User::createEntityFromJson($target);
+			$targetUser = TwitterUser::createFromJson($target);
 
 			// persist entity
 			$this->em->persist($targetUser);
@@ -429,7 +410,7 @@ class UserStream extends \UserstreamPhirehose
 		$sourceUser = $this->findUser($source['id_str']);
 		if (!$sourceUser) {
 			// create user entity
-			$sourceUser = \Orb\Service\Twitter\User::createEntityFromJson($source);
+			$sourceUser = TwitterUser::createFromJson($source);
 
 			// persist entity
 			$this->em->persist($sourceUser);

@@ -65,7 +65,7 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 		if (null !== $this->status) {
 			return $this->status->getId();
 		}
-		
+
 		return 0;
 	}
 
@@ -79,5 +79,31 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this->status = null;
 		}
+	}
+
+	/**
+	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $url
+	 * @return \Application\DeskPRO\Entity\TwitterStatusUrl
+	 */
+	static public function createFromXML($url)
+	{
+		$entity = new self();
+		print_r($url);
+
+		return $entity;
+	}
+
+	/**
+	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $url
+	 * @return \Application\DeskPRO\Entity\TwitterStatusUrl
+	 */
+	static public function createFromJson(array $url)
+	{
+		$entity = new self();
+		$entity['url']    = $url['url'];
+		$entity['starts'] = $url['indices'][0];
+		$entity['ends']   = $url['indices'][1];
+
+		return $entity;
 	}
 }

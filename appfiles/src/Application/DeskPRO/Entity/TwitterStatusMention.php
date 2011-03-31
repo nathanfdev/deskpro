@@ -101,4 +101,29 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 			$this->user = null;
 		}
 	}
+
+	/**
+	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $mention
+	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
+	 */
+	static public function createFromXML($mention)
+	{
+		$entity = new self();
+		print_r($mention);
+
+		return $entity;
+	}
+
+	/**
+	 * @param array $mention
+	 * @return \Application\DeskPRO\Entity\TwitterStatusMention
+	 */
+	static public function createFromJson(array $mention)
+	{
+		$entity = new self();
+		$entity['starts'] = $mention['indices'][0];
+		$entity['ends']   = $mention['indices'][1];
+
+		return $entity;
+	}
 }

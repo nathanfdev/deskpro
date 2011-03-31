@@ -301,4 +301,50 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return (Boolean) $this->is_archived;
 	}
+
+	/**
+	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $status
+	 * @return \Application\DeskPRO\Entity\TwitterStatus
+	 */
+	static public function createFromXML($status)
+	{
+		// @TODO check against \SimpleXMLElement & \Zend_Rest_Client_Result
+
+		$entity                 = new self();
+		$entity['id']           = (string) $status->id;
+		$entity['text']         = (string) $status->text;
+		$entity['is_truncated'] = (Boolean) (integer) $status->truncated;
+		$entity['is_favorited'] = (Boolean) (integer) $status->favorited;
+		$entity['is_archived']  = false;
+		$entity['date_created'] = new \DateTime((string) $status->created_at);
+		$entity['source']       = (string) $status->source;
+
+		// @TODO add geo informations
+		// $entity['geo_latitude'] = (float) $status['geo'][];
+		// $entity['geo_longitude'] = (float) $status['geo'][];
+
+		return $entity;
+	}
+
+	/**
+	 * @param array $status
+	 * @return \Application\DeskPRO\Entity\TwitterStatus
+	 */
+	static public function createFromJson(array $status)
+	{
+		$entity                 = new self();
+		$entity['id']           = $status['id_str'];
+		$entity['text']         = $status['text'];
+		$entity['is_truncated'] = $status['truncated'];
+		$entity['is_favorited'] = $status['favorited'];
+		$entity['is_archived']  = false;
+		$entity['date_created'] = new \DateTime($status['created_at']);
+		$entity['source']       = $status['source'];
+
+		// @TODO add geo informations
+		// $entity['geo_latitude'] = $json['geo'][];
+		// $entity['geo_longitude'] = $json['geo'][];
+
+		return $entity;
+	}
 }

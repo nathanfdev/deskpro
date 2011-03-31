@@ -16,6 +16,10 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity\TwitterAccount;
 use \Application\DeskPRO\Entity\TwitterAccountFollowing;
 use \Application\DeskPRO\Entity\TwitterAccountFollower;
+use \Application\DeskPRO\Entity\TwitterStatus;
+use \Application\DeskPRO\Entity\TwitterStatusMention;
+use \Application\DeskPRO\Entity\TwitterStatusTag;
+use \Application\DeskPRO\Entity\TwitterStatusUrl;
 use \Application\DeskPRO\Entity\TwitterUser;
 
 use \Application\AdminBundle\Form\EditTwitterAccountForm;
@@ -78,8 +82,8 @@ class TwitterAccountController extends AbstractController
 	public function authorizeAction()
 	{
 		try {
-			// get access token
-			$consumer    = $this->getConsumer();
+			// get OAuth access token
+			$consumer = $this->getConsumer();
 			$accessToken = $consumer->getAccessToken(
 				$this->request->query->all(),
 				unserialize($this->session->get(self::TWITTER_REQUEST_TOKEN))
@@ -88,30 +92,22 @@ class TwitterAccountController extends AbstractController
 			// initialize Twitter service
 			$twitter = \Orb\Service\Twitter\Twitter::getTwitterService($accessToken, $consumer);
 
-			// Entity Manager & Repository
-			$em    = App::getORM();
-			$repos = $em->getRepository('DeskPRO:TwitterUser');
-
 			// check if Twitter user already exists
 			$twitterUser = $twitter->user->show($accessToken->getParam('screen_name'));
-			$user        = $repos->find((integer) $twitterUser->id);
-			if (!$user) {
-				$user = \Orb\Service\Twitter\User::createEntityFromXML($twitterUser);
-			}
+			$user = $this->getOrCreateUser($twitterUser);
 
-			// persist entity
+			$em = App::getOrm();
 			$em->persist($user);
 
 			// check if Twitter account already exists
 			$account = $em->getRepository('DeskPRO:TwitterAccount')->findOneByUser($user['id']);
 			if (!$account) {
-				// create Twitter account
-				$account         = new TwitterAccount();
+				$account = new TwitterAccount();
 				$account['user'] = $user;
 			}
 
 			// update OAuth credentials, regardless if its a new or an old account
-			$account['oauth_token']        = $accessToken->getParam('oauth_token');
+			$account['oauth_token'] = $accessToken->getParam('oauth_token');
 			$account['oauth_token_secret'] = $accessToken->getParam('oauth_token_secret');
 
 			// add person to account
@@ -120,29 +116,22 @@ class TwitterAccountController extends AbstractController
 				$em->persist($this->person);
 			}
 
-			// persist entities
 			$em->persist($account);
-
-			// flush changes
 			$em->flush();
+
+			// fetch user timelines
+			$this->importTimeline($account, $twitter->status->publicTimeline());
+			$this->importTimeline($account, $twitter->status->friendsTimeline());
+			// $this->importTimeline($account, $twitter->status->userTimeline());
 
 			// fetch friends (following)
 			// @TODO check pagination (we only recieve 100 friends at once)
-			foreach ($twitter->user->friends()->user as $twitterFollowing) {
-				// check if Twitter user already exists
-				$following = $repos->find((integer) $twitterFollowing->id);
-				if (!$following) {
-					$following = \Orb\Service\Twitter\User::createEntityFromXML($twitterFollowing);
-				}
-
+			foreach ($twitter->user->friends()->user as $user) {
 				// create Twitter account following
-				$accountFollowing            = new TwitterAccountFollowing();
-				$accountFollowing['account'] = $account;
-				$accountFollowing['user']    = $following;
-
-				// persist entities
+				$following            = new TwitterAccountFollowing();
+				$following['account'] = $account;
+				$following['user']    = $this->getOrCreateUser($user);
 				$em->persist($following);
-				$em->persist($accountFollowing);
 			}
 
 			// flush changes
@@ -150,32 +139,65 @@ class TwitterAccountController extends AbstractController
 
 			// fetch followers
 			// @TODO check pagination (we only recieve 100 followers at once)
-			foreach ($twitter->user->followers()->user as $twitterFollower) {
-				// check if Twitter user already exists
-				$follower = $repos->find((integer) $twitterFollower->id);
-				if (!$follower) {
-					$follower = \Orb\Service\Twitter\User::createEntityFromXML($twitterFollower);
-				}
-
+			foreach ($twitter->user->followers()->user as $user) {
 				// create Twitter account follower
-				$accountFollower            = new TwitterAccountFollower();
-				$accountFollower['account'] = $account;
-				$accountFollower['user']    = $follower;
-
-				// persist entities
+				$follower            = new TwitterAccountFollower();
+				$follower['account'] = $account;
+				$follower['user']    = $this->getOrCreateUser($user);
 				$em->persist($follower);
-				$em->persist($accountFollower);
 			}
 
 			// flush changes
 			$em->flush();
 		} catch (\Exception $e) { // Zend_Oauth_Exception
 			return $this->render('AdminBundle:TwitterAccount:authorize-error.html.twig', array(
-				'error' => $e
+				'error' => array(
+					'class' => get_class($e),
+					'message' => $e->getMessage(),
+					'code' => $e->getCode(),
+				)
 			));
 		}
 
 		return $this->createResponse('<script language="javascript">window.close()</script>');
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
+	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $timeline
+	 * @return void
+	 */
+	protected function importTimeline(TwitterAccount $account, $timeline)
+	{
+		$em = App::getOrm();
+
+		foreach ($timeline->status as $tweet) {
+			$status = $em->getRepository('DeskPRO:TwitterStatus')->find((integer) $tweet->id);
+			if ($status) {
+				continue;
+			}
+
+			$status = TwitterStatus::createFromXML($tweet);
+			$status['user'] = $this->getOrCreateUser($tweet->user);
+			$em->persist($status);
+		}
+
+		$em->flush();
+	}
+
+	/**
+	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $user
+	 * @return \Application\DeskPRO\Entity\TwitterUser
+	 */
+	protected function getOrCreateUser($user)
+	{
+		$entity = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find((integer) $user->id);
+		if (!$entity) {
+			$entity = TwitterUser::createFromXML($user);
+			App::getOrm()->persist($entity);
+		}
+
+		return $entity;
 	}
 
 	/**
