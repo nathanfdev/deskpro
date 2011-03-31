@@ -28,8 +28,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.innerLayout = null;
 
 		this.notifier = null;
-		this.options = {};
-		
+
 		this._alertOverlay = null;
 		this._confirmOverlay = null;
 
