@@ -115,7 +115,6 @@ class UserStream extends \UserstreamPhirehose
 
 		// check if status is a tweet
 		if (isset($status['text'])) {
-			echo 'TWEET ADDED W/ ID: '.$status['id_str'].PHP_EOL;
 			return $this->processStatus($status);
 		}
 
@@ -173,9 +172,9 @@ class UserStream extends \UserstreamPhirehose
 	 */
 	protected function processStatus(array $tweet)
 	{
-		// check if Twitter status exists
+		// skip if Twitter status exists
 		if ($this->findStatus($tweet['id_str'])) {
-			return true;
+			return false;
 		}
 
 		// fetch Twitter user
@@ -183,22 +182,14 @@ class UserStream extends \UserstreamPhirehose
 		if (!$user) {
 			// create user entity
 			$user = TwitterUser::createFromJson($tweet['user']);
-
-			// persist entity
 			$this->em->persist($user);
-
-			// flush changes
 			$this->em->flush();
 		}
 
 		// create Twitter status
-		$status         = TwitterStatus::createFromJson($tweet);
+		$status = TwitterStatus::createFromJson($tweet);
 		$status['user'] = $user;
-
-		// persist entity
 		$this->em->persist($status);
-
-		// flush changes
 		$this->em->flush();
 
 		// @TODO add in_reply_* handling
@@ -208,24 +199,17 @@ class UserStream extends \UserstreamPhirehose
 			$this->processUrl($status, $url);
 		}
 
-		// flush changes
-		$this->em->flush();
-
 		// fetch hashtags
 		foreach ($tweet['entities']['hashtags'] as $hashtag) {
 			$this->processTag($status, $hashtag);
 		}
-
-		// flush changes
-		$this->em->flush();
 
 		// fetch mentions
 		foreach ($tweet['entities']['user_mentions'] as $mention) {
 			$this->processMention($status, $mention);
 		}
 
-		// flush changes
-		$this->em->flush();
+		return true;
 	}
 
 	/**
@@ -237,9 +221,8 @@ class UserStream extends \UserstreamPhirehose
 	{
 		$entity = TwitterStatusUrl::createFromJson($url);
 		$entity['status'] = $status;
-
-		// persist entity
 		$this->em->persist($entity);
+		$this->em->flush();
 
 		return $entity;
 	}
@@ -253,9 +236,8 @@ class UserStream extends \UserstreamPhirehose
 	{
 		$entity = TwitterStatusTag::createFromJson($tag);
 		$entity['status'] = $status;
-
-		// persist entity
 		$this->em->persist($entity);
+		$this->em->flush();
 
 		return $entity;
 	}
@@ -273,27 +255,16 @@ class UserStream extends \UserstreamPhirehose
 		// @TODO check if Twitter user exists
 		$user = $this->findUser($mention['id_str']);
 		if (!$user) {
-			// get Twitter service
-			$twitter = $this->getTwitterService();
-
-			// fetch user data
 			// @TODO check limit for API calls / hour
-			$xml = $twitter->user->show($mention['id_str']);
-
 			// create user entity
-			$user = TwitterUser::createFromXML($xml);
-
-			// persist entity
+			$user = TwitterUser::createFromXML($this->getTwitterService()->user->show($mention['id_str']));
 			$this->em->persist($user);
-
-			// flush changes
 			$this->em->flush();
 		}
 
 		$entity['user'] = $user;
-
-		// persist entity
 		$this->em->persist($entity);
+		$this->em->flush();
 
 		return $entity;
 	}
@@ -309,7 +280,7 @@ class UserStream extends \UserstreamPhirehose
 	{
 		// check if Twitter status exists
 		if ($this->findStatus($message['id_str'])) {
-			return true;
+			return false;
 		}
 
 		// fetch sending Twitter user (sender)
@@ -317,11 +288,7 @@ class UserStream extends \UserstreamPhirehose
 		if (!$sender) {
 			// create user entity
 			$sender = TwitterUser::createFromJson($message['sender']);
-
-			// persist entity
 			$this->em->persist($sender);
-
-			// flush changes
 			$this->em->flush();
 		}
 
@@ -330,28 +297,21 @@ class UserStream extends \UserstreamPhirehose
 		if (!$recipient) {
 			// create user entity
 			$recipient = TwitterUser::createFromJson($message['recipient']);
-
-			// persist entity
 			$this->em->persist($recipient);
-
-			// flush changes
 			$this->em->flush();
 		}
 
 		// create Twitter status
-		$status                 = new TwitterStatus();
-		$status['id']           = $message['id_str'];
-		$status['user']         = $sender;
-		$status['recipient']    = $recipient;
-		$status['text']         = $message['text'];
-		$status['is_truncated'] = false;
-		$status['is_favorited'] = false;
-		$status['is_archived']  = false;
-		$status['date_created'] = new \DateTime($message['created_at']);
+		$status = TwitterStatus::createFromJson($tweet);
+		$status['user'] = $sender;
+		$status['recipient'] = $recipient;
 
 		// @TODO check if direct messages can have entities (Mentions, URLs, Tags)
 
-		return $status;
+		$this->em->persist($status);
+		$this->em->flush();
+
+		return true;
 	}
 
 	/**
@@ -369,6 +329,8 @@ class UserStream extends \UserstreamPhirehose
 
 		echo 'UNKNOWN EVENT, LOOK:'.PHP_EOL;
 		print_r($event); echo PHP_EOL.PHP_EOL;
+
+		return false;
 	}
 
 	/**
@@ -394,11 +356,7 @@ class UserStream extends \UserstreamPhirehose
 		if (!$targetUser) {
 			// create user entity
 			$targetUser = TwitterUser::createFromJson($target);
-
-			// persist entity
 			$this->em->persist($targetUser);
-
-			// flush changes
 			$this->em->flush();
 
 			// track process
@@ -411,11 +369,7 @@ class UserStream extends \UserstreamPhirehose
 		if (!$sourceUser) {
 			// create user entity
 			$sourceUser = TwitterUser::createFromJson($source);
-
-			// persist entity
 			$this->em->persist($sourceUser);
-
-			// flush changes
 			$this->em->flush();
 
 			// track process
@@ -437,11 +391,7 @@ class UserStream extends \UserstreamPhirehose
 					$targetFollowing            = new TwitterAccountFollower();
 					$targetFollowing['account'] = $targetAccount;
 					$targetFollowing['user']    = $sourceUser;
-
-					// persist entity
 					$this->em->persist($targetFollowing);
-
-					// flush changes
 					$this->em->flush();
 
 					// track process
@@ -465,11 +415,7 @@ class UserStream extends \UserstreamPhirehose
 					$sourceFollowing            = new TwitterAccountFollowing();
 					$sourceFollowing['account'] = $sourceAccount;
 					$sourceFollowing['user']    = $targetUser;
-
-					// persist entities
 					$this->em->persist($sourceFollowing);
-
-					// flush changes
 					$this->em->flush();
 
 					// track process
@@ -489,7 +435,7 @@ class UserStream extends \UserstreamPhirehose
 	 */
 	protected function processFriends(array $friendIds)
 	{
-		return true;
+		return false;
 	}
 
 	/**
@@ -503,35 +449,38 @@ class UserStream extends \UserstreamPhirehose
 		// delete a Twitter status
 		if (isset($deletion['status'])) {
 			$status = $this->findStatus($deletion['status']['id_str']);
+			if (!$status) {
+				return false;
+			}
 
 			// delete mentions
-			foreach ($status['mentions'] as $mention) {
-				$this->em->remove($mention);
-			}
+			if ($status['mentions']->count()) {
+				foreach ($status['mentions'] as $mention) {
+					$this->em->remove($mention);
+				}
 
-			// flush changes
-			$this->em->flush();
+				$this->em->flush();
+			}
 
 			// delete URLs
-			foreach ($status['urls'] as $url) {
-				$this->em->remove($url);
-			}
+			if ($status['urls']->count()) {
+				foreach ($status['urls'] as $url) {
+					$this->em->remove($url);
+				}
 
-			// flush changes
-			$this->em->flush();
+				$this->em->flush();
+			}
 
 			// delete tags
-			foreach ($status['tags'] as $tag) {
-				$this->em->remove($tag);
+			if ($status['tags']->count()) {
+				foreach ($status['tags'] as $tag) {
+					$this->em->remove($tag);
+				}
+
+				$this->em->flush();
 			}
 
-			// flush changes
-			$this->em->flush();
-
-			// delete entity
-			$this->em->delete($entity);
-
-			// flush changes
+			$this->em->remove($status);
 			$this->em->flush();
 
 			return true;
@@ -539,5 +488,7 @@ class UserStream extends \UserstreamPhirehose
 
 		echo 'UNKNOWN DELETION, LOOK:'.PHP_EOL;
 		print_r($deletion); echo PHP_EOL.PHP_EOL;
+
+		return false;
 	}
 }
