@@ -436,7 +436,6 @@ abstract class UserstreamPhirehose extends Phirehose {
 
 	    // sorting
 	    ksort($sigParams);
-		print_r($sigParams);
 
 	    // signing
 	    $oauth['oauth_signature'] = $this->encode_rfc3986($this->generateSignature($method, $url, $sigParams));
@@ -477,7 +476,6 @@ abstract class UserstreamPhirehose extends Phirehose {
 	    $method = $this->encode_rfc3986($method); // don't need this but why not?
 
 	    $signatureBaseString = "{$method}&{$normalizedUrl}&{$concatenatedParams}";
-	    var_dump($signatureBaseString);
 
 	    # sign the signature string
 	    $key = $this->encode_rfc3986(TWITTER_CONSUMER_SECRET) . '&' . $this->encode_rfc3986($this->password);
