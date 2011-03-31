@@ -1,7 +1,7 @@
 {% block content %}
 	<table cellspacing="0" cellpadding="0" width="100%">
 	{% for account in accounts %}
-		{% if loop.index is odd %}<tr>{% endif %}
+		{% if loop.first or loop.index0 is divisibleby(3) %}<tr>{% endif %}
 			<td valign="top" width="50%">
 				<div class="inner-container">
 					<div class="inner-container-title labels-index">
@@ -48,7 +48,7 @@
 					</div>
 				</div>
 			</td>
-		{% if loop.index is even %}</tr>{% endif %}
+		{% if loop.last or loop.index is divisibleby(3) %}</tr>{% endif %}
 	{% endfor %}
 	</table>
 {% endblock %}
