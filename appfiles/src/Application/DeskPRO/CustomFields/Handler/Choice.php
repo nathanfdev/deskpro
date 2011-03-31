@@ -91,6 +91,7 @@ class Choice extends HandlerAbstract
 	{
 		$name = $this->getFormFieldName();
 
+		if (!isset($form_data[$name])) $form_data[$name] = null;
 		$form_data[$name] = array('choice' => $form_data[$name]);// TODO fix for above
 
 		$from_data_choices = null;
