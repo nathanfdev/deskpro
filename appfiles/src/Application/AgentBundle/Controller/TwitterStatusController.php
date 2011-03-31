@@ -41,7 +41,7 @@ class TwitterStatusController extends AbstractController
 		// fetch public timeline
 		$statuses = $account->getTimeline($includeArchived, $includeAccount, $this->getSortByDate());
 
-		return $this->renderList($account, $statuses, 'stream');
+		return $this->renderList($account, $statuses, 'statuses');
 	}
 
 	/**
@@ -55,10 +55,7 @@ class TwitterStatusController extends AbstractController
 		$account = $this->getAccount($account_id);
 		$messages = $account->getMessages($this->getSortByDate());
 
-		return $this->renderList($account, $messages, 'messages', array(
-			'head' => 'message',
-			'ctrl' => null
-		));
+		return $this->renderList($account, $messages, 'messages');
 	}
 
 	/**
@@ -134,30 +131,14 @@ class TwitterStatusController extends AbstractController
 	/**
 	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
 	 * @param array $statuses
-	 * @param string $title
-	 * @param array $template Partial template to use
+	 * @param string $type
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	protected function renderList(TwitterAccount $account, array $statuses, $title, array $templates = array())
+	protected function renderList(TwitterAccount $account, array $statuses, $type)
 	{
-		// merge default templates
-		$templates = array_merge(array(
-			'part' => 'status',
-			'head' => 'status',
-			'ctrl' => 'status',
-		), $templates);
-
-		// parse partial templates
-		foreach ($templates as $template => $name) {
-			if (null !== $name && false === strpos(':', $name)) {
-				$templates[$template] = sprintf('AgentBundle:TwitterStatus:%s-%s.html.twig', $template, $name);
-			}
-		}
-
 		// view parameters
 		$parameters = array(
-			'title' => ucfirst($title),
-			'templates' => $templates,
+			'type' => $type,
 			'account' => $account,
 			'statuses' => $statuses,
 		);
@@ -166,7 +147,7 @@ class TwitterStatusController extends AbstractController
 		if ($this->in->getBool('partial')) {
 			// render json response
 			return $this->createJsonResponse(array(
-				'statuses' => $this->renderView($templates['part'], $parameters)
+				'statuses' => $this->renderView('AgentBundle:TwitterStatus:part-status.html.twig', $parameters)
 			));
 		}
 

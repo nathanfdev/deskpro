@@ -1,10 +1,34 @@
 <script>
-pageMeta.title = '{{ title|escape }}: @{{ account.user.screen_name|escape }}';
+pageMeta.title = '{{ type|escape }}: @{{ account.user.screen_name|escape }}';
 pageMeta.accountId = '{{ account.id }}';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TwitterStatus';
+pageMeta.statusListUrl = '{{ path('agent_twitter_'~type~'_list', {'account_id': account.id}) }}?partial=1';
+pageMeta.saveNoteUrl = '{{ path('agent_twitter_status_ajaxsave_note') }}';
+pageMeta.saveRetweetUrl = '{{ path('agent_twitter_status_ajaxsave_retweet') }}';
+pageMeta.saveReplyUrl = '{{ path('agent_twitter_status_ajaxsave_reply') }}';
+pageMeta.saveArchiveUrl = '{{ path('agent_twitter_status_ajaxsave_archive') }}';
 </script>
 
-{% include templates.head %}
+{% include 'AgentBundle:TwitterStatus:part-note.html.twig' %}
+{% include 'AgentBundle:TwitterStatus:part-reply.html.twig' %}
+
+<div class="twitter-head">
+	@{{ account.user.screen_name }} stream
+	<div class="display-options">
+		<div style="float:right">
+			<select name="sortbydate">
+				<option name="asc">Oldest First</option>
+				<option name="desc">Newest First</option>
+			</select>
+		</div>
+		<div style="margin-right:120px">
+			<input name="account" type="checkbox" /> Show @{{ account.user.screen_name }}'s tweets<br />
+			<input name="archived" type="checkbox" /> Show archived tweets
+		</div>
+	</div>
+	<br style="clear:both" />
+</div>
 
 <div class="twitter-listing">
-	{% include templates.part %}
+	{% include 'AgentBundle:TwitterStatus:part-status.html.twig' %}
 </div>

@@ -7,7 +7,9 @@
 		{% endif %}
 			<cite>{{ status.user.name }} / @{{ status.user.screen_name }}</cite>
 		</div>
-		<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}"><img src="{{ status.user.profile_image_url }}" border="0" /></div>
+		<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
+			<img src="{{ status.user.profile_image_url }}" border="0" />
+		</div>
 		<div class="content">
 			<div class="tweet">{{ status.text }}</div>
 			<div class="notes">
@@ -22,11 +24,17 @@
 				</div>
 			{% endfor %}
 			</div>
-		{% if templates.ctrl is not none %}
 			<div class="controls">
-				{% include templates.ctrl %}
+				<ul>
+					<li class="archive"><a>{% if status.is_archived %}Archived{% else %}Archive{% endif %}</a></li>
+					<li class="reply"><a>Reply</a></li>
+				{% if status.isMessage is sameas(false) %}
+					<li class="retweet"><a>Retweet</a></li>
+				{% endif %}
+					<li class="assign"><a>Assign</a></li>
+					<li class="note"><a>Add Note</a></li>
+				</ul>
 			</div>
-		{% endif %}
 		</div>
 	</li>
 {% endfor %}
