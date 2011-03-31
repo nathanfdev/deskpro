@@ -1054,6 +1054,7 @@ in and out, so we dont want actual scrollbars */
 
 #header .top-twitter-info ol li {
 	width: auto !important;
+	white-space: nowrap;
 }
 
 #header .top-tickets-info ol li,
