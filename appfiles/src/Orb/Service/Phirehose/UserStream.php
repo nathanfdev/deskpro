@@ -109,6 +109,7 @@ class UserStream extends \UserstreamPhirehose
 		}
 
 		$this->connection->insert('twitter_stream', array(
+			'account_id' => $this->account['id'],
 			'event' => $event,
 			'data' => serialize($status)
 		));
