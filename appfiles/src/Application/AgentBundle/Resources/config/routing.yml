@@ -502,26 +502,32 @@ agent_twitter_statusespane:
 agent_twitter_statuses_list:
   pattern: /twitter/statuses/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:list }
+  requirements: { account_id: "\d+" }
 
 agent_twitter_messages_list:
   pattern: /twitter/messages/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:listMessages }
+  requirements: { account_id: "\d+" }
 
 agent_twitter_replies_list:
   pattern: /twitter/replies/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:listReplies }
+  requirements: { account_id: "\d+" }
 
 agent_twitter_mentions_list:
   pattern: /twitter/mentions/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:listMentions }
+  requirements: { account_id: "\d+" }
 
 agent_twitter_retweets_list:
   pattern: /twitter/retweets/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:listRetweets }
+  requirements: { account_id: "\d+" }
 
 agent_twitter_outgoing_list:
   pattern: /twitter/outgoing/{account_id}
   defaults: { _controller: AgentBundle:TwitterStatus:listOutgoing }
+  requirements: { account_id: "\d+" }
 
 agent_twitter_status_ajaxsave_note:
   pattern: /twitter/status/ajax-note
@@ -542,6 +548,15 @@ agent_twitter_status_ajaxsave_archive:
 agent_twitter_user:
   pattern: /twitter/user/{user_id}
   defaults: { _controller: AgentBundle:TwitterUser:view }
+  requirements: { user_id: "\d+" }
+
+agent_twitter_user_ajaxsave_follow:
+  pattern: /twitter/user/ajax-follow
+  defaults: { _controller: AgentBundle:TwitterUser:ajaxSaveFollow }
+
+agent_twitter_user_ajaxsave_unfollow:
+  pattern: /twitter/user/ajax-unfollow
+  defaults: { _controller: AgentBundle:TwitterUser:ajaxSaveUnfollow }
 
 ################################################################################
 # Tasks

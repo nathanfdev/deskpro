@@ -436,8 +436,7 @@ abstract class UserstreamPhirehose extends Phirehose {
 
 	    // sorting
 	    ksort($sigParams);
-
-	    print_r($sigParams);
+		print_r($sigParams);
 
 	    // signing
 	    $oauth['oauth_signature'] = $this->encode_rfc3986($this->generateSignature($method, $url, $sigParams));

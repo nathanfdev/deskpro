@@ -11,8 +11,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 
 	initPage: function(el) {
 		this.el = $(el);
-		this.parent(this.el);
-
 		this.head = $('.twitter-head', this.el);
 		this.listing = $('.twitter-listing', this.el);
 		this.note = $('.twitter-note', this.el);
@@ -39,6 +37,8 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	_initControls: function() {
+		this._initFollow();
+		this._initUnfollow();
 		this._initAddNote();
 		this._initAssign();
 		this._initRetweet();
@@ -93,6 +93,59 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 		});
 	},
 
+	_initFollow: function() {
+		var buttons = $('li.tweet-item .user .controls .follow a', this.listing);
+
+		buttons.click($.proxy(function(e) {
+			this.doFollow($(e.target).parents('div.user').attr('data-user-id'));
+		}, this));
+	},
+
+	doFollow: function(id) {
+		$.ajax({
+			url: this.getMetaData('saveFollowUrl'),
+			dataType: 'json',
+			data: {
+				account_id: this.getMetaData('accountId'),
+				user_id: id
+			},
+			context: this,
+			success: function(json) {
+				if (json.success) {
+					this.reload();
+				}
+
+				// @TODO handle json.error
+			}
+		});
+	},
+
+	_initUnfollow: function() {
+		var buttons = $('li.tweet-item .user .controls .unfollow a', this.listing);
+
+		buttons.click($.proxy(function(e) {
+			this.doUnfollow($(e.target).parents('div.user').attr('data-user-id'));
+		}, this));
+	},
+
+	doUnfollow: function(id) {
+		$.ajax({
+			url: this.getMetaData('saveUnfollowUrl'),
+			dataType: 'json',
+			data: {
+				account_id: this.getMetaData('accountId'),
+				user_id: id
+			},
+			context: this,
+			success: function(json) {
+				if (json.success) {
+					this.reload();
+				}
+
+				// @TODO handle json.error
+			}
+		});
+	},
 
 	_initAddNote: function() {
 		var buttons = $('li.tweet-item .note a', this.listing);
