@@ -1,6 +1,6 @@
 <ul>
 {% for status in statuses %}
-	<li class="tweet-item" data-status-id="{{ status.id }}">
+	<li class="tweet-item{% if status.is_archived %} archived{% endif %}" data-status-id="{{ status.id }}">
 		<div class="head">
 		{% if status.in_reply_to_status or status.in_reply_to_user %}
 			{# <span class="response">In response to @ " ..."</span> #}
@@ -12,19 +12,21 @@
 			<div class="tweet">{{ status.text }}</div>
 			<div class="notes">
 				<div class="note">
-					<em class="time">{{ status.date_created|date('m/d/Y H:i:s') }}{# 22 minutes ago #}</em>
+					<em class="time" title="{{ status.date_created|date('c') }}">{{ status.date_created|date('r') }}</em>
 				</div>
 			{% for note in status.notes %}
 				<div class="note" data-note-id="{{ note.id }}">
 					<span class="person">{{ note.person.display_name }}</span>
-					<em class="time">{{ status.date_created|date('m/d/Y H:i:s') }}</em>
+					<em class="time" title="{{ note.date_created|date('c') }}">{{ note.date_created|date('r') }}</em>
 					<div class="text">{{ note.text }}</div>
 				</div>
 			{% endfor %}
 			</div>
+		{% if templates.ctrl is not none %}
 			<div class="controls">
 				{% include templates.ctrl %}
 			</div>
+		{% endif %}
 		</div>
 	</li>
 {% endfor %}

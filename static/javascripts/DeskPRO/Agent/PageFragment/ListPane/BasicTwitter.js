@@ -12,11 +12,15 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTwitter = new Class({
 		this.listing = $('.twitter-listing', el);
 
 		this._initHead();
+		this._initListing();
 		this._initStatusControls();
 	},
 
 	_initHead: function() {
+	},
 
+	_initListing: function() {
+		this.initTimesOnCollection($('.notes .note .time', this.listing));
 	},
 
 	_initStatusControls: function() {

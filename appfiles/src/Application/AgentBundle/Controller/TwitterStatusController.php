@@ -34,20 +34,14 @@ class TwitterStatusController extends AbstractController
 	{
 		$account = $this->getAccount($account_id);
 
-		// sort by date, ascending or descending
-		$sortByDate = $this->in->getValue('sortbydate');
-		if (!$sortByDate) {
-			$sortByDate = 'asc';
-		}
-
 		// whether include archived and/or account statuses
 		$includeArchived = $this->in->getValue('include.archived');
 		$includeAccount  = $this->in->getBool('include.account');
 
 		// fetch public timeline
-		$statuses = $account->getTimeline($includeArchived, $includeAccount, $sortByDate);
+		$statuses = $account->getTimeline($includeArchived, $includeAccount, $this->getSortByDate());
 
-		return $this->renderList($account, $statuses);
+		return $this->renderList($account, $statuses, 'stream');
 	}
 
 	/**
@@ -59,9 +53,12 @@ class TwitterStatusController extends AbstractController
 	public function listMessagesAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$messages = array();
+		$messages = $account->getMessages($this->getSortByDate());
 
-		return $this->renderList($account, $messages);
+		return $this->renderList($account, $messages, 'messages', array(
+			'head' => 'message',
+			'ctrl' => null
+		));
 	}
 
 	/**
@@ -73,9 +70,9 @@ class TwitterStatusController extends AbstractController
 	public function listRepliesAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$replies = array();
+		$replies = $account->getReplies($this->getSortByDate());
 
-		return $this->renderList($account, $replies);
+		return $this->renderList($account, $replies, 'replies');
 	}
 
 	/**
@@ -87,9 +84,9 @@ class TwitterStatusController extends AbstractController
 	public function listMentionsAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$mentions = array();
+		$mentions = $account->getMentions($this->getSortByDate());
 
-		return $this->renderList($account, $mentions);
+		return $this->renderList($account, $mentions, 'mentions');
 	}
 
 	/**
@@ -101,9 +98,9 @@ class TwitterStatusController extends AbstractController
 	public function listRetweetsAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$retweets = array();
+		$retweets = $account->getRetweets($this->getSortByDate());
 
-		return $this->renderList($account, $retweets);
+		return $this->renderList($account, $retweets, 'retweets');
 	}
 
 	/**
@@ -112,21 +109,36 @@ class TwitterStatusController extends AbstractController
 	 * @param integer $account_id The account id.
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	public function listSentAction($account_id)
+	public function listOutgoingAction($account_id)
 	{
 		$account = $this->getAccount($account_id);
-		$statuses = array();
+		$statuses = $account->getOutgoing($this->getSortByDate());
 
-		return $this->renderList($account, $statuses);
+		return $this->renderList($account, $statuses, 'outgoing');
+	}
+
+	/**
+	 * @return string
+	 */
+	protected function getSortByDate()
+	{
+		// sort by date, ascending or descending
+		$sortByDate = $this->in->getValue('sortbydate');
+		if (!$sortByDate) {
+			$sortByDate = 'asc';
+		}
+
+		return $sortByDate;
 	}
 
 	/**
 	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
 	 * @param array $statuses
+	 * @param string $title
 	 * @param array $template Partial template to use
 	 * @return \Symfony\Component\HttpFoundation\Response
 	 */
-	protected function renderList(TwitterAccount $account, array $statuses, array $templates = array())
+	protected function renderList(TwitterAccount $account, array $statuses, $title, array $templates = array())
 	{
 		// merge default templates
 		$templates = array_merge(array(
@@ -137,13 +149,14 @@ class TwitterStatusController extends AbstractController
 
 		// parse partial templates
 		foreach ($templates as $template => $name) {
-			if (false === strpos(':', $name)) {
+			if (null !== $name && false === strpos(':', $name)) {
 				$templates[$template] = sprintf('AgentBundle:TwitterStatus:%s-%s.html.twig', $template, $name);
 			}
 		}
 
 		// view parameters
 		$parameters = array(
+			'title' => ucfirst($title),
 			'templates' => $templates,
 			'account' => $account,
 			'statuses' => $statuses,

@@ -15,6 +15,13 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 		this._initPhotos();
 	},
 
+	_afterLoading: function() {
+		this._initListing();
+		this._initStatusControls();
+
+		this._initPhotos();
+	},
+
 	_initHead: function() {
 		this._initOrderBySelectField();
 		this._initIncludeFields();
@@ -26,11 +33,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 		this._initRetweet();
 		this._initReply();
 		this._initArchive();
-	},
-
-	_afterLoading: function() {
-		this._initPhotos();
-		this._initStatusControls();
 	},
 
 	_initOrderBySelectField: function() {

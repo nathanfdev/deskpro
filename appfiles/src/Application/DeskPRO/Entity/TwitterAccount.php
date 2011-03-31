@@ -227,6 +227,66 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Retrieve a list of messages for this account.
+	 *
+	 * @param string $sortByDate (optional)
+	 * @return array
+	 */
+	public function getMessages($sortByDate = 'asc')
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->findMessagesForUserId($this->getUserId(), $sortByDate);
+	}
+
+	/**
+	 * Retrieve a list of replies for this account.
+	 *
+	 * @param string $sortByDate (optional)
+	 * @return array
+	 */
+	public function getReplies($sortByDate = 'asc')
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->findRepliesForUserId($this->getUserId(), $sortByDate);
+	}
+
+	/**
+	 * Retrieve a list of mentions for this account.
+	 *
+	 * @param string $sortByDate (optional)
+	 * @return array
+	 */
+	public function getMentions($sortByDate = 'asc')
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->findMentionsForUserId($this->getUserId(), $sortByDate);
+	}
+
+	/**
+	 * Retrieve a list of retweets for this account.
+	 *
+	 * @param string $sortByDate (optional)
+	 * @return array
+	 */
+	public function getRetweets($sortByDate = 'asc')
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->findRetweetsForUserId($this->getUserId(), $sortByDate);
+	}
+
+	/**
+	 * Retrieve a list of sent statuses for this account.
+	 *
+	 * @param string $sortByDate (optional)
+	 * @return array
+	 */
+	public function getOutgoing($sortByDate = 'asc')
+	{
+		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
+			->findOutgoingByUserId($this->getUserId(), $sortByDate);
+	}
+
+	/**
 	 * @return \Zend_Oauth_Token_Access
 	 */
 	public function getOauthAccessToken()

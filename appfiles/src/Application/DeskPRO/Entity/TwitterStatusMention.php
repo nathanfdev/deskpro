@@ -34,7 +34,7 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @orm:ManyToOne(targetEntity="TwitterStatus")
+	 * @orm:ManyToOne(targetEntity="TwitterStatus", inversedBy="mentions")
 	 * @orm:JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
