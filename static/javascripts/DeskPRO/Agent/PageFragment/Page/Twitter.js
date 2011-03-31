@@ -6,8 +6,8 @@ DeskPRO.Agent.PageFragment.Page.Twitter = new Class({
 	initPage: function(el) {
 		this.parent(el);
 
-		$('li', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-		});
+		//$('li', el).click(function() {
+		//	DeskPRO_Window.runPageRouteFromElement(this);
+		//});
 	}
 });

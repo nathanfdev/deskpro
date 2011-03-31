@@ -3,17 +3,15 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
+	el: null,
 	head: null,
 	listing: null,
 	note: null,
 	reply: null,
 
 	initPage: function(el) {
-		this.parent(el);
-
-		/* $('li', el).click(function() {
-			DeskPRO_Window.runPageRouteFromElement(this);
-		}); */
+		this.el = el;
+		this.parent(this.el);
 
 		this.head    = $('.twitter-head', el);
 		this.listing = $('.twitter-listing', el);
@@ -22,6 +20,14 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 
 		this._initOrderBySelectField();
 		this._initIncludeFields();
+
+		this._afterLoading();
+	},
+
+	_afterLoading: function() {
+		$('div.photo', this.el).click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
 
 		this._initButtons();
 	},
@@ -59,7 +65,7 @@ DeskPRO.Agent.PageFragment.ListPane.Twitter = new Class({
 			success: function(json) {
 				this.listing.html(json.statuses);
 
-				this._initButtons();
+				this._afterLoading();
 			}
 		});
 	},
