@@ -1215,6 +1215,10 @@ in and out, so we dont want actual scrollbars */
 	display: block;
 }
 
+#header .twitter-content .inner-container-content ol li {
+	white-space: nowrap;
+}
+
 #header .sub-list {
 	padding-left: 20px !important;
 	color: #9999a1;
