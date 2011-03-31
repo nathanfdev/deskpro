@@ -47,6 +47,10 @@ user_tickets_new:
   pattern: /tickets/new
   defaults: { _controller: UserBundle:NewTicket:new }
 
+user_tickets_new_thanks:
+  pattern: /tickets/new/thanks/{ticket_ref}
+  defaults: { _controller: UserBundle:NewTicket:thanks }
+
 user_tickets_view:
   pattern: /tickets/{ticket_ref}
   defaults: { _controller: UserBundle:Tickets:view }

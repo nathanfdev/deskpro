@@ -48,6 +48,7 @@ class NewTicketController extends AbstractController
 			// If this is a new person, we'll forward them to full reg page
 			if ($person->isNewPerson()) {
 				$this->session->set('finish_register_person', $person['id']);
+				$this->session->set('finish_register_mode', array('type' => 'ticket', 'id' => $ticket['id']));
 				$this->session->set('after_register', $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket['ref']), true));
 
 				$ticket_access = $this->session->get('ticket_access', array());
@@ -57,18 +58,24 @@ class NewTicketController extends AbstractController
 				return $this->redirectRoute('user_register_finish');
 			}
 
+			// If the person is a user, but they arent logged in, then they have to now
+			if ($person['is_user'] AND $this->person['id'] != $person['id']) {
+				return $this->redirectRoute('user_login', array('return' => $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['ref']))));
+			}
+
 			// If this isnt a new person but they arent registered, we have no choice but
 			// to show a standard thanks page.
 			// - We cant direct them right to the ticket because the user might be an imposter
 			// of an previously submitted email, and showing them the full ticket might reveal
-			// other personal info such as custom fields/widgets
+			// other personal info in custom fields/widgets
 			// - And we cant redirect them to full registration for the same reason
-			// - They'll get an email with a link to the web interface though, so this isnt so bad
+			// - They'll get an email with a link to the web interface though, so at that point we know they're true
 			if (!$person['is_user']) {
+				$this->session->set('submitted_ticket', $ticket['ref']);
 				return $this->redirectRoute('user_tickets_new_thanks', array('ticket_ref' => $ticket['ref']));
 			}
 
-			// We get here if the user is a real user, they should already be logged in then
+			// We get here if the user is a real user and they're logged in
 			return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['ref']));
 		}
 
@@ -78,4 +85,22 @@ class NewTicketController extends AbstractController
 			'form' => $form,
 		));
     }
+
+	################################################################################
+	# thanks
+	################################################################################
+
+	public function thanksAction($ticket_ref)
+	{
+		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+
+		// Must exist, and match the ref n the session (so theres no info leak)
+		if (!$ticket OR $ticket['ref'] != $this->session->get('submitted_ticket')) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+		}
+
+		return $this->render('UserBundle:NewTicket:thanks.html.twig', array(
+			'ticket' => $ticket
+		));
+	}
 }

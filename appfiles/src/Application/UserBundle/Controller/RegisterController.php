@@ -26,43 +26,57 @@ class RegisterController extends AbstractController
 
 		// Invalid person if they dont exist or already are registered.
 		// just pop the user back to index
-		if (!$person OR $person['is_user']) {
+		if (!$person OR $person['is_user'] OR !$this->session->get('finish_register_mode')) {
 			return $this->redirectRoute('user');
 		}
 
-		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
-		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs, $person['custom_data'], $custom_fields_form);
+		$vars = array(
+			'person' => $person
+		);
 
-		$reg_person = new \Application\UserBundle\RegPerson();
-		$reg_person->setPerson($person);
+		$modeinfo = $this->session->get('finish_register_mode');
+		switch ($modeinfo['type']) {
+			case 'ticket':
+				$tpl = 'finish-ticket.html.twig';
+				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($modeinfo['id']);
 
-		$reg_form = new RegPersonForm('register', array(
-			'custom_fields' => $custom_fields
-		));
+				$vars['ticket'] = $ticket;
+				break;
 
-		$reg_form->bind($this->request, $reg_person);
+			default:
+				// invalid :o
+				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
+				break;
+		}
 
 		if ($this->in->getBool('process')) {
+			$password = $this->in->getString('password');
+			$password2 = $this->in->getString('password2');
 
-			$this->session->remove('finish_register_person');
+			if ($password == $password2) {
+				$person['password'] = $password;
+				$person['is_user'] = true;
 
-			$reg_form->save();
+				App::getOrm()->persist($person);
+				App::getOrm()->flush();
 
-			if ($this->session->get('after_register')) {
-				$url = $this->session->get('after_register');
+				$this->session->set('auth_person_id', $person['id']);
+
+				$after_url = $this->session->get('after_register');
+
+				// Unset some sess vars
 				$this->session->remove('after_register');
+				$this->session->remove('finish_register_person');
+				$this->session->remove('finish_register_mode');
 
-				return $this->redirect($url);
+				if ($after_register) {
+					return $this->redirect($after_url);
+				} else {
+					return $this->redirectRoute('user');
+				}
 			}
-
-			return $this->redirectRoute('user');
 		}
 
-		return $this->render('UserBundle:Register:finish.html.twig', array(
-			'person' => $person,
-			'custom_fields' => $custom_fields,
-			'form' => $reg_form,
-		));
+		return $this->render('UserBundle:Register:' . $tpl, $vars);
 	}
 }

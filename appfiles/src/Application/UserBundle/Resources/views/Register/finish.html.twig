@@ -2,30 +2,27 @@
 {% import "UserBundle:Common:property-fields.html.twig" as property_fields %}
 {% block content %}
 
+{% block finish_pre %}{% endblock %}
+
+<div style="width: 220px; float:right; margin-left: 10px; background-color: #eee;">
+	Here are some other benifits:
+	<ul>
+		<li>Never have to validate your tickets again</li>
+		<li>Easily view all your submitted tickets, and create new ones</li>
+		<li>Manage your profile, like adding multiple email addresses</li>
+	</ul>
+</div>
+<h2 style="font-size: 15px;">Optionally set a password</h2>
+<p>
+	Create an account now so you can log in later to easier interact with our helpdesk:
+</p>
 <form action="{{ path('user_register_finish') }}" method="post">
-{{ form_hidden(form) }}
-<input type="hidden" name="process" value="1" />
+	<input type="hidden" name="process" value="1" />
+	Set a password: <input type="password" name="password" value="" /><br />
+	Repeat: <input type="password" name="password2" value="" /><br />
+	<input type="submit" value="Register my account" />
+</form>
 
-<h1>Choose a password</h1>
-<table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
-	<td>
-		Password: {{ form_field(form.password) }}<br />
-		Repeat: {{ form_field(form.password2) }}
-	</td>
-</tr></table>
-
-<h1>Information</h1>
-<table cellspacing="5" cellpadding="0" border="0" width="100%">
-	{% for f in custom_fields %}
-		<tr>
-			<td>
-				<small>{{ phrase(f.field_def) }}</small><br />
-				{{ form_field(f.form, {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}
-			</td>
-		</tr>
-	{% endfor %}
-</table>
-
-<input type="submit" value="Submit" />
+<br style="clear:both;" />
 
 {% endblock %}

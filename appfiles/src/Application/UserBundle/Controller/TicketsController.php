@@ -16,11 +16,20 @@ use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
-use \Application\UserBundle\Form\NewTicketForm;
-use \Application\UserBundle\Form\NewTicketUserForm;
 
 class TicketsController extends AbstractController
 {
+	protected $session_allowed = array();
+
+	protected function init()
+	{
+		parent::init();
+
+		if ($this->session->get('ticket_access')) {
+			$this->session_allowed = $this->session->get('ticket_access');
+		}
+	}
+
 	################################################################################
 	# list
 	################################################################################
@@ -83,11 +92,11 @@ class TicketsController extends AbstractController
 	/**
 	 * @return Application\DeskPRO\Entity\Ticket
 	 */
-	protected function getTicketOr404($ticket_ref)
+	protected function getTicketOr404($ticket_ref, $authcode = null)
 	{
 		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 
-		if (!$ticket OR $ticket['person_id'] != $this->person['id']) {
+		if (!$ticket OR ($ticket['person_id'] != $this->person['id'] AND !in_array($ticket['id'], $this->session_allowed))) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
 		}
 
