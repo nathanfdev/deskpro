@@ -19,7 +19,9 @@ use \Application\DeskPRO\Entity;
  * Twitter Account following a User
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterAccountFollowing")
- * @orm:Table(name="twitter_accounts_following")
+ * @orm:Table(name="twitter_accounts_following", uniqueConstraints={
+ *     @orm:UniqueConstraint(name="account_user_idx", columns={"account_id", "user_id"})
+ * })
  * @orm:HasLifecycleCallbacks
  */
 class TwitterAccountFollowing extends \Application\DeskPRO\Domain\DomainObject
