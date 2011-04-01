@@ -138,6 +138,12 @@ class TicketsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
 		}
 
+		// Set the current person context
+		if ($this->person != $ticket->person) {
+			$this->person = $ticket->person;
+			App::setCurrentPerson($ticket->person);
+		}
+
 		return $ticket;
 	}
 }

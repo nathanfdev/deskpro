@@ -947,23 +947,22 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->undeleteTicket();
 		}
 
-		if ($status != 'hidden') {
-			$this->hidden_status = null;
-		}
-
 		$this->status = $status;
 
 		$this->_onPropertyChanged('status', $old_status, $this->status);
+
+		if ($status != 'hidden') {
+			$this->setHiddenStatus(null);
+		}
 	}
 
 	public function setHiddenStatus($hstatus)
 	{
-		$old_status = $this->status;
 		$old_hstatus = $this->hidden_status;
 
 		$this->hidden_status = $hstatus;
 
-		$this->_onPropertyChanged('hidden_status', $old_status, $this->status);
+		$this->_onPropertyChanged('hidden_status', $old_hstatus, $this->hidden_status);
 	}
 
 

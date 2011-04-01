@@ -89,7 +89,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 				break;
 
 			case 'hidden_status':
-				$action = new Actions\Status($old_val, $new_val);
+				$action = new Actions\HiddenStatus($old_val, $new_val);
 				break;
 		}
 
@@ -126,7 +126,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 			}
 
 			if (!$ticket_log['person'] OR !$ticket_log['person']['id']) {
-				continue;
+				$ticket_log['person'] = $this->ticket->person;
 			}
 
 			$ticket_log['ticket'] = $this->ticket;
@@ -159,22 +159,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 		if (in_array('ticket_created', $events)) {
 			$notify_types[] = 'new_ticket';
-
-			if ($this->ticket['status'] != 'hidden') {
-				$client_message = new Entity\ClientMessage();
-				$client_message['channel'] = 'tickets.new-tickets';
-				$client_message['data'] = array(
-					'ticket_id' => $this->ticket['id'],
-					'subject' => $this->ticket['subject']
-				);
-
-				App::getOrm()->persist($client_message);
-			}
 		}
-
-		#------------------------------
-		# New messages
-		#------------------------------
 
 		if (in_array('message_created', $events)) {
 
@@ -184,36 +169,10 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 			} else {
 				$notify_types[] = 'new_agent_reply';
 			}
-
-			if ($this->ticket['status'] != 'hidden') {
-				$client_message = new Entity\ClientMessage();
-				$client_message['channel'] = 'tickets.new-messages';
-				$client_message['data'] = array(
-					'ticket_id' => $this->ticket['id'],
-					'message_id' => $message['id']
-				);
-
-				App::getOrm()->persist($client_message);
-			}
 		}
 
-		#------------------------------
-		# Other changes
-		#------------------------------
-
 		if (in_array('property', $events)) {
-
 			$notify_types[] = 'property_change';
-
-			if ($this->ticket['status'] != 'hidden') {
-				$client_message = new Entity\ClientMessage();
-				$client_message['channel'] = 'tickets.updated';
-				$client_message['data'] = array(
-					'ticket_id' => $this->ticket['id']
-				);
-
-				App::getOrm()->persist($client_message);
-			}
 		}
 
 		App::getOrm()->flush();
@@ -238,15 +197,51 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		}
 
 		// If the ticket used to be waiting validation and now is open,
-		// that means we need to send the newticket emails now
-		if ($this->ticket['status'] == 'open' AND isset($log_actions['hidden_status'])) {
-			$status_change = $log_actions['hidden_status']->getLogDetails();
+		// that means we need to send the newticket events
+		if ($this->ticket['status'] == 'open' AND isset($log_actions['changed_hidden_status'])) {
+			$status_change = $log_actions['changed_hidden_status']->getLogDetails();
 			if ($status_change['old_status'] == 'validating') {
-				$notify_types[] = 'new_ticket';
+				Arrays::pushUnique($notify_types, 'new_ticket');
+				Arrays::pushUnique($events, 'ticket_created');
 			}
 		}
 
 		if (!$notify_types) return;
+
+		if (in_array('ticket_created', $events)) {
+			$client_message = new Entity\ClientMessage();
+			$client_message['channel'] = 'tickets.new-tickets';
+			$client_message['data'] = array(
+				'ticket_id' => $this->ticket['id'],
+				'subject' => $this->ticket['subject']
+			);
+			App::getOrm()->persist($client_message);
+			App::getOrm()->flush();
+		}
+
+		if (in_array('message_created', $events)) {
+			$client_message = new Entity\ClientMessage();
+			$client_message['channel'] = 'tickets.new-messages';
+			$client_message['data'] = array(
+				'ticket_id' => $this->ticket['id'],
+				'message_id' => $message['id']
+			);
+
+			App::getOrm()->persist($client_message);
+			App::getOrm()->flush();
+		}
+
+		if (in_array('property', $events)) {
+			$client_message = new Entity\ClientMessage();
+			$client_message['channel'] = 'tickets.updated';
+			$client_message['data'] = array(
+				'ticket_id' => $this->ticket['id']
+			);
+
+			App::getOrm()->persist($client_message);
+			App::getOrm()->flush();
+		}
+
 
 		$matching_filters = array();
 
