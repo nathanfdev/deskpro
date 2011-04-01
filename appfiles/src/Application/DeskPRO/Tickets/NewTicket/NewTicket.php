@@ -121,9 +121,10 @@ class NewTicket
 					$ticket->setCustomData($info[0], $info[1], $info[2]);
 				}
 			}
-
+			
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
+
 			App::getOrm()->commit();
 
 		} catch (\Exception $e) {

@@ -27,7 +27,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 	 */
 	protected $is_performing = false;
 	protected $ticket;
-	protected $entered_logs = array();
+	public $entered_logs = array();
 	protected $events = array();
 
 	public function __construct(Entity\Ticket $ticket)
@@ -37,6 +37,12 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 	public function propertyChanged($sender, $prop, $old_val, $new_val)
 	{
+		// If the ticket isnt created yet, then we dont care
+		// about property changes, because they havent really changed have they?
+		if (!$this->ticket['id']) {
+			return;
+		}
+		
 		$this->logChange($prop, $old_val, $new_val);
 	}
 
@@ -107,14 +113,22 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 		App::getOrm()->beginTransaction();
 
-		$prop_types = array('agent');
-
 		foreach ($this->entered_logs as $name => $action) {
 
 			$this->_addEventType($action->getEventType());
 
 			$ticket_log = new Entity\TicketLog();
 			$ticket_log['person'] = App::getCurrentPerson();
+			if ($name == 'ticket_created') {
+				if (!$ticket_log['person'] OR !$ticket_log['person']['id']) {
+					$ticket_log['person'] = $this->ticket->person;
+				}
+			}
+
+			if (!$ticket_log['person'] OR !$ticket_log['person']['id']) {
+				continue;
+			}
+
 			$ticket_log['ticket'] = $this->ticket;
 			$ticket_log['action_type'] = $name;
 			$ticket_log['details'] = $action->getLogDetails();
@@ -146,14 +160,16 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 		if (in_array('ticket_created', $events)) {
 			$notify_types[] = 'new_ticket';
 
-			$client_message = new Entity\ClientMessage();
-			$client_message['channel'] = 'tickets.new-tickets';
-			$client_message['data'] = array(
-				'ticket_id' => $this->ticket['id'],
-				'subject' => $this->ticket['subject']
-			);
+			if ($this->ticket['status'] != 'hidden') {
+				$client_message = new Entity\ClientMessage();
+				$client_message['channel'] = 'tickets.new-tickets';
+				$client_message['data'] = array(
+					'ticket_id' => $this->ticket['id'],
+					'subject' => $this->ticket['subject']
+				);
 
-			App::getOrm()->persist($client_message);
+				App::getOrm()->persist($client_message);
+			}
 		}
 
 		#------------------------------
@@ -169,14 +185,16 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 				$notify_types[] = 'new_agent_reply';
 			}
 
-			$client_message = new Entity\ClientMessage();
-			$client_message['channel'] = 'tickets.new-messages';
-			$client_message['data'] = array(
-				'ticket_id' => $this->ticket['id'],
-				'message_id' => $message['id']
-			);
+			if ($this->ticket['status'] != 'hidden') {
+				$client_message = new Entity\ClientMessage();
+				$client_message['channel'] = 'tickets.new-messages';
+				$client_message['data'] = array(
+					'ticket_id' => $this->ticket['id'],
+					'message_id' => $message['id']
+				);
 
-			App::getOrm()->persist($client_message);
+				App::getOrm()->persist($client_message);
+			}
 		}
 
 		#------------------------------
@@ -187,25 +205,28 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 			$notify_types[] = 'property_change';
 
-			$client_message = new Entity\ClientMessage();
-			$client_message['channel'] = 'tickets.updated';
-			$client_message['data'] = array(
-				'ticket_id' => $this->ticket['id']
-			);
+			if ($this->ticket['status'] != 'hidden') {
+				$client_message = new Entity\ClientMessage();
+				$client_message['channel'] = 'tickets.updated';
+				$client_message['data'] = array(
+					'ticket_id' => $this->ticket['id']
+				);
 
-			App::getOrm()->persist($client_message);
+				App::getOrm()->persist($client_message);
+			}
 		}
 
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 
 		$this->sendAgentNotifications($events, $log_actions, $notify_types);
+		$this->sendUserNotifications($events, $log_actions, $notify_types);
 		$this->executeTriggers($events, $log_actions);
 	}
 
 	protected function sendUserNotifications($events, $log_actions, array $notify_types)
 	{
-		$ticket_email = new \Application\DeskPRO\Email\AgentNotification\Ticket($this->ticket, $log_actions);
+		$ticket_email = new \Application\DeskPRO\Email\UserNotification\Ticket($this->ticket, $log_actions);
 		$ticket_email->sendNotifications($notify_types);
 	}
 
@@ -218,7 +239,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 
 		// If the ticket used to be waiting validation and now is open,
 		// that means we need to send the newticket emails now
-		if ($this->ticket['status'] == 'open' AND ($log_actions['hidden_status'])) {
+		if ($this->ticket['status'] == 'open' AND isset($log_actions['hidden_status'])) {
 			$status_change = $log_actions['hidden_status']->getLogDetails();
 			if ($status_change['old_status'] == 'validating') {
 				$notify_types[] = 'new_ticket';

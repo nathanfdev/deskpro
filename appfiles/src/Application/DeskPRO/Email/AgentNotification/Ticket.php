@@ -67,12 +67,12 @@ class Ticket
 		}
 
 		// Reset translator to current context
-		App::getTranslator()->setLocale(App::getCurrentPerson()->getLocale());
+		App::getTranslator()->setLocale(null);
 	}
 
 	public function sendNewTicket(Entity\Person $person)
 	{
-		$new_message = $this->actions['message_created']->getMessage();
+		$new_message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($this->ticket);
 		$email_subject = 'New Ticket: ' . $this->ticket['subject'];
 		$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-ticket.html.twig', array(
 			'ticket' => $this->ticket,

@@ -268,7 +268,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Ticket logger
-	 * @var Application\DeskPRO\Tickets\TicketLogListener
+	 * @var \Application\DeskPRO\Tickets\TicketLog\Logger
 	 */
 	protected $_ticket_logger;
 
@@ -1038,7 +1038,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @orm:PostUpdate
-	 * @orm:PostInsert
+	 * @orm:PostPersist
 	 */
 	public function _saveTicketLogs()
 	{
@@ -1049,7 +1049,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getTicketLogger()
 	{
-		$this->_ticket_logger;
+		return $this->_ticket_logger;
 	}
 
 

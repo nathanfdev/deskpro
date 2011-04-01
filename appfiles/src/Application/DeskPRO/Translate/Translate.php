@@ -59,6 +59,13 @@ class Translate
 	protected $_loaded_locales = array();
 
 	/**
+	 * The default locale, used when calling setLocale with no argument
+	 * This is the first locale set
+	 * @var \Application\DeskPRO\Entity\Locale
+	 */
+	protected $_default_locale = null;
+
+	/**
 	 * Set the locale we're using right now by default
 	 * @var \Application\DeskPRO\Entity\Locale
 	 */
@@ -99,8 +106,17 @@ class Translate
 	 * @param bool $load_previous_groups
 	 * @return void
 	 */
-	public function setLocale(\Application\DeskPRO\Entity\Locale $locale, $load_previous_groups = true)
+	public function setLocale(\Application\DeskPRO\Entity\Locale $locale = null, $load_previous_groups = true)
 	{
+		// If this is the first locale, we'll consider it the "default"
+		if ($locale AND $this->_locale === null) {
+			$this->_default_locale = $locale;
+		}
+
+		if (!$locale) {
+			$locale = $this->_default_locale;
+		}
+
 		$last_id = null;
 		if ($this->_locale) {
 			$last_id = $this->_locale['id'];
@@ -112,6 +128,17 @@ class Translate
 		if ($last_id AND $load_previous_groups AND isset($this->_loaded_groups[$last_id])) {
 			$this->loadPhraseGroups($this->_loaded_groups[$last_id], $locale);
 		}
+	}
+
+	
+
+	/**
+	 * Set the default locale. This just makes it easier to switch "back" to it when
+	 * using setLocale(null).
+	 */
+	public function setDefaultLocale(\Application\DeskPRO\Entity\Locale $locale)
+	{
+		$this->_default_locale = $locale;
 	}
 
 

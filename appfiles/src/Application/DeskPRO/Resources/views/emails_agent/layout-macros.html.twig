@@ -1,17 +1,17 @@
 {% macro email_section(title, content) %}
 <tr>
-	<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset('email_templates/modern/images/spacer.gif', true) }}" alt="space" width="20"></td>
+	<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset_full('email_templates/modern/images/spacer.gif') }}" alt="space" width="20"></td>
 	<td style="padding: 20px 0 0;" align="left">
 		<h2 style="color:#646464; font-weight: bold; margin: 0; padding: 0; line-height: 26px; font-size: 18px; font-family: Helvetica, Arial, sans-serif; ">{{title|raw}}</h2>
 	</td>
-	<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset('email_templates/modern/images/spacer.gif', true) }}" alt="space" width="20"></td>
+	<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset_full('email_templates/modern/images/spacer.gif') }}" alt="space" width="20"></td>
 </tr>
 <tr>
-	<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset('email_templates/modern/images/spacer.gif', true) }}" alt="space" width="20"></td>
+	<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset_full('email_templates/modern/images/spacer.gif') }}" alt="space" width="20"></td>
 	<td style="padding: 15px 0 15px; color:#767676; font-weight: normal; line-height: 20px; font-size: 12px;font-family: Helvetica, Arial, sans-serif;"  valign="top">
 		{{content|raw}}
-		<img src="{{ asset('email_templates/modern/images/divider_wide.png', true) }}" alt="" style="border-top: 10px solid #fff;width: 558px">
+		<img src="{{ asset_full('email_templates/modern/images/divider_wide.png') }}" alt="" style="border-top: 10px solid #fff;width: 558px">
 	</td>
-	<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset('email_templates/modern/images/spacer.gif', true) }}" alt="space" width="20"></td>
+	<td width="21" style="font-size: 1px; line-height: 1px;"><img src="{{ asset_full('email_templates/modern/images/spacer.gif') }}" alt="space" width="20"></td>
 </tr>
 {% endmacro %}

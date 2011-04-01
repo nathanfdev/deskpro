@@ -12,7 +12,8 @@
 namespace Application\DeskPRO\Twig\Extension;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
-
+use Application\DeskPRO\App;
+	
 class TemplatingExtension extends \Twig_Extension
 {
     protected $container;
@@ -37,6 +38,7 @@ class TemplatingExtension extends \Twig_Extension
         return array(
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
             'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
+			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
         );
     }
 
@@ -55,6 +57,12 @@ class TemplatingExtension extends \Twig_Extension
 	public function getMd5($string)
 	{
 		return md5($string);
+	}
+
+	public function assetFull($location, $packageName = null)
+	{
+		$url = $this->container->get('templating.helper.assets')->getUrl($location, $packageName);
+		return App::getSetting('core.deskpro_url') . ltrim($url, '/');
 	}
 
 	public function rawUrlEncode($str)
