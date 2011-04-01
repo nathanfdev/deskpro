@@ -61,7 +61,8 @@ class UserStream extends \UserstreamPhirehose
 	}
 
 	/**
-	 * @return array
+	 * @param array $account
+	 * @return void
 	 */
 	public function setAccount(array $account)
 	{
@@ -74,7 +75,8 @@ class UserStream extends \UserstreamPhirehose
 	 * @param string $status
 	 * @return void
 	 */
-	public function enqueueStatus($status) {
+	public function enqueueStatus($status)
+	{
 		// skip "ping -> pong"
 		if (null === $status || !strlen(trim($status))) {
 			return false;

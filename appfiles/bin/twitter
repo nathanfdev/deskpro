@@ -12,22 +12,13 @@ if (isset($_SERVER['argv'][1])) {
 	$env = trim($_SERVER['argv'][1]);
 }
 
-function bootstrap($connectionOptions, $env) {
-	$conn = \Doctrine\DBAL\DriverManager::getConnection($connectionOptions);
-	return $conn;
-}
-
-define('TWITTER_CONSUMER_KEY',    \Orb\Service\Twitter\Oauth::getConsumerKey());
-define('TWITTER_CONSUMER_SECRET', \Orb\Service\Twitter\Oauth::getConsumerSecret());
-
-// bootstrap
-$connection = bootstrap($CONFIG['db'], $env);
-$accounts = $connection->fetchAll("SELECT * FROM twitter_accounts");
-echo sprintf("found %d accounts ... spawning child processes\n", count($accounts));
-
 // fork process for each Twitter account
+$bootstrap = function() use ($CONFIG, $env) {
+	return \Doctrine\DBAL\DriverManager::getConnection($CONFIG['db']);
+};
+
 $pids = array();
-foreach ($accounts as $account) {
+$fork = function(array $account) use (&$pids, $bootstrap) {
 	// fork process
 	$pid = pcntl_fork();
 
@@ -43,7 +34,7 @@ foreach ($accounts as $account) {
 	} else if (0 < $pid) {
 		// store pid, continue
 		$pids[$account['id']] = $pid;
-		continue;
+		return;
 
 	/**
 	 * CHILD
@@ -51,22 +42,40 @@ foreach ($accounts as $account) {
 	} else {
 		// initialize User Stream consumer
 		$consumer = new \Orb\Service\Phirehose\UserStream($account['oauth_token'], $account['oauth_token_secret']);
-		$consumer->setConnection(bootstrap($CONFIG['db'], $env));
+		$consumer->setConnection($bootstrap());
 		$consumer->setAccount($account);
 
 		// start consuming
-		echo sprintf("  start consuming (pid: %d, account: %d)\n", getmypid(), $account['id']);
 		$consumer->consume();
 
 		exit(0);
 	}
-}
+};
+
+define('TWITTER_CONSUMER_KEY', \Orb\Service\Twitter\Oauth::getConsumerKey());
+define('TWITTER_CONSUMER_SECRET', \Orb\Service\Twitter\Oauth::getConsumerSecret());
+
+// open database connection
+$connection = $bootstrap();
 
 $timer = 0;
 while (true) {
-	sleep(1);
+	if (0 == $timer || 0 == $timer % 15) {
+		$query = "SELECT * FROM twitter_accounts";
+		if (count($pids) > 0) {
+			$query .= sprintf(" WHERE id NOT IN (%s)", implode(',', array_keys($pids)));
+		}
 
-	if (0 == ++$timer % 60) {
+		foreach ($connection->fetchAll($query) as $account) {
+			if (!in_array($account['id'], array_keys($pids))) {
+				$fork($account);
+			}
+		}
+
+		$connection->close();
+	}
+
+	if (0 == $timer || 0 == $timer % 60) {
 		$timer = 0;
 		echo sprintf(
 			"pid: %d (forks: %d)\n  time: %s\n  memory: %s KB (peak: %s KB)\n",
@@ -75,4 +84,7 @@ while (true) {
 			number_format(memory_get_peak_usage(true) / 1024, 0, ',', '.')
 		);
 	}
+
+	sleep(1);
+	$timer++;
 }
