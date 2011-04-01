@@ -42,6 +42,11 @@ DeskPRO.MessageChanneler.AbstractChanneler = new Orb.Class({
 	},
 
 	sendMessage: function(channel, message) {
+
+		if (DeskPRO_Window && DeskPRO_Window.getDebug('logClientMessages')) {
+			console.log('channel(%s): %o', channel, message);
+		}
+
 		this.messageBroker.sendMessage(channel, message);
 	}
 });

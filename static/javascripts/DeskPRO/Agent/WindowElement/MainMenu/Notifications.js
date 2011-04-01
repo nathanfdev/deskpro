@@ -24,7 +24,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 		// New tickets coming in
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-tickets', function(data) {
 			var url = 'ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id;
-			self.addItem('tickets', data.ticket_id, data.title, url);
+			self.addItem('tickets', data.ticket_id, data.subject, url);
 		});
 
 		// When a ticket is opened, we can go ahead and remove the event as "read"
@@ -46,9 +46,9 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 	addItem: function(type, id, title, url) {
 
 		var date = (new Date()).toUTCString();
-		var li = $('<li class="'+type+' '+type+'-'+id+'" data-type="'+type+'" data-type-id="'+id+'"><em class="remove">mark as read</em><em class="timeago">'+date+'</em><span data-route="'+url+'">'+title+'</li>');
+		var li = $('<li class="'+type+' '+type+'-'+id+'" data-type="'+type+'" data-type-id="'+id+'"><em class="remove">mark as read</em><em class="timeago">'+date+'</em><span data-route="'+url+'">'+title+'</span></li>');
 
-		li.timeago();
+		$('.timeago', li).timeago();
 		$('span', li).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
@@ -116,12 +116,12 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 
 		el.text(total);
 		if (total > 0) {
-			el.parent().parent().show();
+			el.parent().parent().show().addClass('on');
 		} else {
-			el.parent().parent().hide();
+			el.parent().parent().hide().removeClass('on');
 		}
 
-		var visible_li = $('li:visible', $('#notifications_wrap .noti-menu'));
+		var visible_li = $('li.on', $('#notifications_wrap .noti-menu'));
 
 		if (!visible_li.length) {
 			$('#notifications_wrap').hide();

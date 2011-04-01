@@ -21,7 +21,8 @@
 			window.DeskPRO_Window.DEBUG = {
 				disableMenuHandlers: {% if js_debug.disableMenuHandlers %}true{% else %}false{% endif %},
 				enableMenuHandlers: {% if js_debug.enableMenuHandlers %}{{ js_debug.enableMenuHandlers|json_encode|raw }}{% else %}false{% endif %},
-				disableSaveState: {% if js_debug.disableSaveState %}true{% else %}false{% endif %}
+				disableSaveState: {% if js_debug.disableSaveState %}true{% else %}false{% endif %},
+				logClientMessages: {% if js_debug.logClientMessages %}true{% else %}false{% endif %}
 			};
 		{% endif %}
 

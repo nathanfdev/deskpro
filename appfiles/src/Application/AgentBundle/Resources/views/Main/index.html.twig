@@ -81,19 +81,19 @@
 			{# search end #}
 
 			{# notifications start #}
-			<div class="left box-header notifications" id="notifications_wrap" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.Notifications">
+			<div class="left box-header notifications" id="notifications_wrap" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.Notifications" style="display:none">
 				<ul class="noti-menu">
-					<li><div class="counter"><span class="counter" id="tickets_counter">0</span></div><span class="icn-bar tickets">Tickets</span></li>
-					<li><div class="counter"><span class="counter" id="chats_counter">0</span></div><span class="icn-bar chat">Chat</span></li>
+					<li style="display:none"><div class="counter"><span class="counter" id="tickets_counter">0</span></div><span class="icn-bar tickets">Tickets</span></li>
+					<li style="display:none"><div class="counter"><span class="counter" id="chats_counter">0</span></div><span class="icn-bar chat">Chat</span></li>
 				</ul>
 				<span class="white-drop"></span>
 
 				<div class="wrap-dropdown noti-drop">
 					<ul id="notifications_list">
 					</ul>
-					{#<div class="bot-noti">
-						<a href="">400 More Results</a>
-					</div>#}
+					<div class="bot-noti">
+						<a class="mark-all-read">Mark all as read</a>
+					</div>
 				</div>
 			</div>
 			{# notifications end #}

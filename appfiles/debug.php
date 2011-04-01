@@ -66,4 +66,7 @@ $CONFIG['debug']['js'] = array(
 	// Run these routes automatically when first entering the agent UI
 	// array(array('ticket', 'route_name', array('param' => 'xxx')))
 	//'autoLoadRoutes' => array(),
+
+	// Write incoming client messages to console.log (see AbstractChanneler)
+	//'logClientMessages' => true,
 );
