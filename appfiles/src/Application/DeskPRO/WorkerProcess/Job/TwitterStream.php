@@ -72,7 +72,7 @@ class TwitterStream extends AbstractJob
 			}
 
 			if (true === $success) {
-				$this->connection->delete('twitter_stream', array(
+				$this->db->delete('twitter_stream', array(
 					'id' => $event['id']
 				));
 
@@ -235,7 +235,25 @@ class TwitterStream extends AbstractJob
 
 	protected function processFriends(TwitterAccount $account, array $data)
 	{
-		return false;
+		if (!count($data['friends'])) {
+			return true;
+		}
+
+		$diff = array_diff(array_unique($data['friends']), $account->getFollowingIds(false));
+		foreach ($diff as $id) {
+			if (!($user = $this->findUser($id))) {
+				$user = TwitterUser::createFromXML($this->getTwitter($account['id'])->user->show($id));
+				$this->em->persist($user);
+			}
+
+			$following = new TwitterAccountFollowing();
+			$following['account'] = $account;
+			$following['user'] = $user;
+			$this->em->persist($following);
+			$this->em->flush();
+		}
+
+		return true;
 	}
 
 	protected function processDelete(TwitterAccount $account, array $data)
