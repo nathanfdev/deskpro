@@ -134,11 +134,12 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Retrieve a list of Twitter users this account follows.
 	 *
+	 * @param Boolean $cache (optional)
 	 * @return array
 	 */
-	public function getFollowingIds()
+	public function getFollowingIds($cache = true)
 	{
-		if (is_array($this->_following_ids)) {
+		if (true === $cache && is_array($this->_following_ids)) {
 			return $this->_following_ids;
 		}
 
@@ -153,19 +154,21 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 			$this->_following_ids = array($this->_following_ids);
 		}
 
-		return $this->_following_ids;
+		return array_unique($this->_following_ids);
 	}
 
 	/**
 	 * Retrieve a list of Twitter users following this account.
 	 *
+	 * @param Boolean $cache (optional)
 	 * @return array
 	 */
-	public function getFollowerIds()
+	public function getFollowerIds($cache = true)
 	{
-		if (is_array($this->_follower_ids)) {
+		if (true === $cache && is_array($this->_follower_ids)) {
 			return $this->_follower_ids;
 		}
+
 		$this->_follower_ids = App::getDb()->fetchAllCol("
 			SELECT user_id
 			FROM twitter_accounts_followers
@@ -177,7 +180,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 			$this->_follower_ids = array($this->_follower_ids);
 		}
 
-		return $this->_follower_ids;
+		return array_unique($this->_follower_ids);
 	}
 
 	/**
