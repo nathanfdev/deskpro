@@ -171,15 +171,13 @@ class TwitterAccountController extends AbstractController
 	{
 		$em = App::getOrm();
 
-		foreach ($timeline->status as $tweet) {
-			$status = $em->getRepository('DeskPRO:TwitterStatus')->find((integer) $tweet->id);
-			if ($status) {
-				continue;
+		foreach ($timeline->status as $status) {
+			$entity = $em->getRepository('DeskPRO:TwitterStatus')->find((string) $status->id);
+			if (!$entity) {
+				$entity = TwitterStatus::createFromXML($status);
+				$entity['user'] = $this->getOrCreateUser($status->user);
+				$em->persist($entity);
 			}
-
-			$status = TwitterStatus::createFromXML($tweet);
-			$status['user'] = $this->getOrCreateUser($tweet->user);
-			$em->persist($status);
 		}
 
 		$em->flush();
@@ -191,7 +189,7 @@ class TwitterAccountController extends AbstractController
 	 */
 	protected function getOrCreateUser($user)
 	{
-		$entity = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find((integer) $user->id);
+		$entity = App::getOrm()->getRepository('DeskPRO:TwitterUser')->find((string) $user->id);
 		if (!$entity) {
 			$entity = TwitterUser::createFromXML($user);
 			App::getOrm()->persist($entity);
