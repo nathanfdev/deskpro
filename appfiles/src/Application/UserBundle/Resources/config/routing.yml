@@ -31,7 +31,7 @@ user_login_callback:
 
 user_register_finish:
   pattern: /register/finish
-  defaults: { _controller: UserBundle:RegisteR:finish }
+  defaults: { _controller: UserBundle:Register:finish }
 
 
 ################################################################################
