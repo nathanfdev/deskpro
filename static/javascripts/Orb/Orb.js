@@ -345,4 +345,105 @@ $.fn.single_double_click = function(single_click_callback, double_click_callback
 	        });
 	    }
 	});
-}
+};
+
+
+
+// Resize watcher. Elements dont have a resize event, so the only way to know
+// when they've changed is to poll them and compare current w/h with a previously
+// recorded w/h.
+//
+// This event handler is based on: http://github.com/cowboy/jquery-resize/
+(function($,window,undefined){
+	var elems = $([]);
+
+	var jq_resize = $.resize = $.extend( $.resize, {} );
+	jq_resize.delay = 300;
+	
+    var timeout_id;
+
+	$.event.special.resize = {
+
+		setup: function() {
+			// window has its own resize event
+			if (this.setTimeout) { return false; }
+
+			var elem = $(this);
+
+			elems = elems.add( elem );
+
+			$.data( this, 'resize-special-event', { w: elem.width(), h: elem.height() } );
+
+			if (elems.length === 1) {
+				loopy();
+			}
+		},
+
+		teardown: function() {
+			if (this.setTimeout) { return false; }
+
+			var elem = $(this);
+			elems = elems.not(elem);
+
+			elem.removeData('resize-special-event');
+
+			// If this is the last element removed, stop the polling loop.
+			if (!elems.length) {
+				clearTimeout(timeout_id);
+			}
+		},
+
+		add: function( handleObj ) {
+			if (this['setTimeout'] ) { return false; }
+
+			var old_handler;
+
+			// The new_handler function is executed every time the event is triggered.
+			// This is used to update the internal element data store with the width
+			// and height when the event is triggered manually, to avoid double-firing
+			// of the event callback. See the "Double firing issue in jQuery 1.3.2"
+			// comments above for more information.
+
+			function new_handler( e, w, h ) {
+				var elem = $(this),
+				data = $.data(this, 'resize-special-event');
+
+				// If called from the polling loop, w and h will be passed in as
+				// arguments. If called manually, via .trigger( 'resize' ) or .resize(),
+				// those values will need to be computed.
+				data.w = w !== undefined ? w : elem.width();
+				data.h = h !== undefined ? h : elem.height();
+
+				old_handler.apply( this, arguments );
+			};
+
+			old_handler = handleObj.handler;
+			handleObj.handler = new_handler;
+		}
+
+	};
+
+	function loopy() {
+		timeout_id = window.setTimeout(function() {
+
+			// Iterate over all elements to which the 'resize' event is bound.
+			elems.each(function(){
+				var elem = $(this),
+				width = elem.width(),
+				height = elem.height(),
+				data = $.data( this, 'resize-special-event' );
+
+				// If element size has changed since the last time, update the element
+				// data store and trigger the 'resize' event.
+				if ( width !== data.w || height !== data.h ) {
+					elem.trigger('resize', [ data.w = width, data.h = height ]);
+				}
+
+			});
+
+			loopy();
+
+		}, jq_resize.delay);
+	};
+
+})(jQuery,this);

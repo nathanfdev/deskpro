@@ -9,6 +9,10 @@ DeskPRO.Agent.Layout.FooterLayout = Orb.Class({
 		this.wrapper.addClass('has-layout').data('layout', this);
 
 		this.content  = $('div.layout-content:first', this.wrapper);
+		this.viewPort = $('> div.viewport:first', this.content);
+		if (!this.viewPort.length) {
+			this.viewPort = null;
+		}
 		this.footer = $('div.layout-footer:first', this.wrapper);
 
 		var parentLayout = this.paneWrapper.closest('.has-layout');
@@ -53,6 +57,16 @@ DeskPRO.Agent.Layout.FooterLayout = Orb.Class({
 			width: w,
 			overflow: 'auto'
 		});
+
+		if (this.viewPort) {
+			this.viewPort.css({
+				height: h-foot_height
+			});
+
+			this.content.css({
+				overflow: 'hidden'
+			});
+		}
 
 		this.fireEvent('resized', [this]);
 	},

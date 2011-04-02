@@ -17,6 +17,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		this.parent(el);
 
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		$('div.overview:first, div.viewport:first', this.contentWrapper).resize(function() {
+			// When size changes within the pane, need to re-size the scroll
+			cw.update();
+		});
+
 		this.initRoutesOnCollection($('.with-route', this.wrapper));
 
 		this._initTicketActionsMenu();
