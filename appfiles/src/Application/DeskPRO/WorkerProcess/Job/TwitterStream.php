@@ -49,6 +49,7 @@ class TwitterStream extends AbstractJob
 			SELECT *
 			FROM twitter_stream
 			WHERE account_id IS NOT NULL
+			AND event != 'unknown'
 			ORDER BY date_created ASC
 			LIMIT %d
 		", self::EVENT_LIMIT));
@@ -138,8 +139,9 @@ class TwitterStream extends AbstractJob
 	 */
 	protected function processStatus(TwitterAccount $account, array $data)
 	{
+		// event could be removed if status exists
 		if ($this->findStatus($data['id_str'])) {
-			return false;
+			return true;
 		}
 
 		if (!($user = $this->findUser($data['user']['id_str']))) {
@@ -153,17 +155,17 @@ class TwitterStream extends AbstractJob
 
 		// fetch mentions
 		foreach ($data['entities']['user_mentions'] as $mention) {
-			$mention = $this->processStatusMention($account, $status, $mention);
+			$this->processStatusMention($account, $status, $mention);
 		}
 
 		// fetch hashtags
 		foreach ($data['entities']['hashtags'] as $hashtag) {
-			$tag = $this->processStatusTag($status, $hashtag);
+			$this->processStatusTag($status, $hashtag);
 		}
 
 		// fetch urls
 		foreach ($data['entities']['urls'] as $url) {
-			$url = $this->processStatusUrl($status, $url);
+			$this->processStatusUrl($status, $url);
 		}
 
 		$this->em->flush();
@@ -258,6 +260,56 @@ class TwitterStream extends AbstractJob
 
 	protected function processDelete(TwitterAccount $account, array $data)
 	{
+		if (isset($data['delete']['status'])) {
+			return $this->processDeleteStatus($data['delete']['status']);
+		}
+
 		return false;
+	}
+
+	protected function processDeleteStatus(array $data)
+	{
+		// event could be removed if status does not exist
+		if (!($status = $this->findStatus($data['id_str']))) {
+			return true;
+		}
+
+		// delete long status
+		if ($status['long']) {
+			$this->em->remove($status['long']);
+		}
+
+		// delete notes
+		if ($status['notes']->count()) {
+			foreach ($status['notes'] as $tag) {
+				$this->em->remove($tag);
+			}
+		}
+
+		// delete mentions
+		if ($status['mentions']->count()) {
+			foreach ($status['mentions'] as $mention) {
+				$this->em->remove($mention);
+			}
+		}
+
+		// delete URLs
+		if ($status['urls']->count()) {
+			foreach ($status['urls'] as $url) {
+				$this->em->remove($url);
+			}
+		}
+
+		// delete tags
+		if ($status['tags']->count()) {
+			foreach ($status['tags'] as $tag) {
+				$this->em->remove($tag);
+			}
+		}
+
+		$this->em->remove($status);
+		$this->em->flush();
+
+		return true;
 	}
 }
