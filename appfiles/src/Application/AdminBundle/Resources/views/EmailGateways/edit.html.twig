@@ -1,0 +1,44 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('gateway', {{gateway.id|default(0)}}, 'DeskPRO_Page_EmailGateways');
+
+	{% if row_html %}
+		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
+	{% endif %}
+}
+</script>
+{% endblock %}
+{% block page_id "email_gateways" %}
+{% block header %}
+	<h1>{% if gateway.id %}Edit Gateway{% else %}New Gateway{% endif %}</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_emailgateways_edit', {'gateway_id': gateway.id|default(0)}) }}" method="post">
+{{ form_hidden(form) }}
+<input type="hidden" name="process" value="1" />
+
+<div class="form-panel">
+	<div class="row">
+		<label>Title</label>
+		{{ form_field(form.title) }}
+	</div>
+	<div class="row">
+		<label>Address</label>
+		{{ form_field(form.address) }}
+	</div>
+</div>
+
+<br /><br />
+
+</form>
+{% endblock %}
+{% block footer %}
+	<button class="dp-button small save-trigger">Save</button>
+
+{% endblock %}

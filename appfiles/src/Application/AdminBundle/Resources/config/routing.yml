@@ -484,3 +484,16 @@ admin_logs_errors_page:
 admin_logs_errors_clear:
   pattern: /logs/errors/clear-all
   defaults: { _controller: AdminBundle:Logs:errorLogsClearAll }
+
+################################################################################
+# Email Gateways
+################################################################################
+
+admin_emailgateways:
+  pattern: /email-gateways
+  defaults: { _controller: AdminBundle:EmailGateways:list }
+
+admin_emailgateways_edit:
+  pattern: /email-gateways/{gateway_id}
+  defaults: { _controller: AdminBundle:EmailGateways:edit }
+  requirements: { gateway_id: "\d+" }
