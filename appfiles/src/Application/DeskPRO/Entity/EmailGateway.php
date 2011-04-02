@@ -11,10 +11,12 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+
 /**
  * An email gateway contains info about how to read emails from an email account.
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailGateway")
  * @orm:Table(name="email_gateways")
  */
 class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
@@ -47,7 +49,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="connection_class", type="string", length=80)
 	 */
-	protected $connection_class;
+	protected $connection_class = '';
 
 	/**
 	 * Options for the connection handler
@@ -78,4 +80,18 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="date_last_login", type="datetime", nullable=true)
 	 */
 	protected $date_last_login = null;
+
+
+	
+	/**
+	 * Get a new instance of the processor class for an email
+	 *
+	 * @param \Application\DeskPRO\EmailGateway\Reader\AbstractReader $reader
+	 * @return \Application\DeskPRO\EmailGateway\AbstractGateway
+	 */
+	public function getNewProcessor(AbstractReader $reader)
+	{
+		$proc = new $this->processor_class($this, $reader);
+		return $proc;
+	}
 }

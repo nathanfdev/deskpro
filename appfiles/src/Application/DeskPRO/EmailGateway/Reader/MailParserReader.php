@@ -8,7 +8,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\EmailGateway\Parser;
+namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item;

@@ -335,7 +335,7 @@ class App
 	/**
 	 * Get the mailer
 	 *
-	 * @return \Swift_Mailer
+	 * @return \Application\DeskPRO\Mail\Mailer
 	 */
 	public static function getMailer()
 	{

@@ -12,6 +12,7 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use \Application\DeskPRO\Entity\Ticket;
 
 /**
  * Detects a ticket based off of the code in the TO address that
@@ -51,7 +52,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		$account_pattern = preg_quote($account_pattern, '#');
 		$account_pattern = str_replace('TICKET_CODE', '(?P<code>[A-Z]{5,})', $account_pattern);
 
-		$this->account_pattern = $account_pattern;
+		$this->account_pattern = '#^' . $account_pattern . '#$';
 	}
 
 

@@ -12,6 +12,7 @@ namespace Application\DeskPRO\EmailGateway\Ticket;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use \Application\DeskPRO\Entity\Ticket;
 
 /**
  * Detects a ticket based off of codes in the subject or body.

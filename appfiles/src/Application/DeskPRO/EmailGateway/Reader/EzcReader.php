@@ -8,7 +8,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\EmailGateway\Parser;
+namespace Application\DeskPRO\EmailGateway\Reader;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\EmailGateway\Reader\Item;
@@ -37,7 +37,6 @@ class EzcReader extends AbstractReader
 	function __construct()
 	{
 		$opt = new \ezcMailParserOptions();
-		$opt->parseTextAttachmentsAsFiles = true;
 
 		$this->parser = new \ezcMailParser($opt);
 	}
@@ -67,7 +66,7 @@ class EzcReader extends AbstractReader
 	{
 		$emails = array();
 
-		foreach ($this->cc as $cc) {
+		foreach ($this->mail->cc as $cc) {
 			$email = new Item\EmailAddress();
 			$email->name = $cc->name;
 			$email->email = $cc->email;
@@ -80,11 +79,17 @@ class EzcReader extends AbstractReader
 
 	protected function _getToAddresses()
 	{
-		$email = new Item\EmailAddress();
-		$email->name = $this->mail->to->name;
-		$email->email = $this->mail->to->email;
+		$emails = array();
 
-		return $email;
+		foreach ($this->mail->to as $to) {
+			$email = new Item\EmailAddress();
+			$email->name = $to->name;
+			$email->email = $to->email;
+
+			$emails[] = $email;
+		}
+
+		return $emails;
 	}
 
 	protected function _getFromAddress()
@@ -122,7 +127,7 @@ class EzcReader extends AbstractReader
 
 	protected function _getBodyHtml()
 	{
-		foreach ($this->mail->fetchParts('ezcMailText') as $part) {
+		foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
 			if ($part->subType == 'html') {
 				$body = new Item\BodyHtml();
 				$body->body = $part->text;
@@ -141,7 +146,7 @@ class EzcReader extends AbstractReader
 
 	protected function _getBodyText()
 	{
-		foreach ($this->mail->fetchParts('ezcMailText') as $part) {
+		foreach ($this->mail->fetchParts(array('ezcMailText')) as $part) {
 			if ($part->subType == 'plain') {
 				$body = new Item\BodyHtml();
 				$body->body = $part->text;

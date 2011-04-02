@@ -40,7 +40,6 @@ abstract class AbstractGateway
 		$this->gateway = $gateway;
 		$this->reader  = $reader;
 		$this->options = $options;
-		$this->run();
 	}
 
 	abstract public function run();

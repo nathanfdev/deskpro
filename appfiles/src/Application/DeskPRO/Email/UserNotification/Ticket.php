@@ -74,9 +74,12 @@ class Ticket
 		));
 
 		$message = App::getMailer()->createMessage();
+		
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 		$message->setSubject($email_subject);
 		$message->setBody($email_body, 'text/html');
+		$message->getHeaders()->addIdHeader('ticket-' . $this->ticket['ref'] . '-' . Strings::random(10, Strings::CHARS_ALPHA_IU) . '@deskpro');
+		$message->getHeaders()->addTextHeader('In-Reply-To', 'ticket-' . $this->ticket['ref'] . '@deskpro');
 		$message->enableQueueHint();
 
 		App::getMailer()->send($message);
@@ -115,6 +118,8 @@ class Ticket
 		$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 		$message->setSubject($email_subject);
 		$message->setBody($email_body, 'text/html');
+		$message->getHeaders()->addIdHeader('ticket-' . $this->ticket['ref'] . '-' . Strings::random(10, Strings::CHARS_ALPHA_IU) . '@deskpro');
+		$message->getHeaders()->addTextHeader('In-Reply-To', 'ticket-' . $this->ticket['ref'] . '@deskpro');
 		$message->enableQueueHint();
 
 		App::getMailer()->send($message);

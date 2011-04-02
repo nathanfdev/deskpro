@@ -14,6 +14,9 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\EmailGateway\AbstractGateway;
 use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use \Application\DeskPRO\EmailGateway\Ticket\CodeTicketDetector;
+use \Application\DeskPRO\EmailGateway\Ticket\ToEmailTicketDetector;
+use \Application\DeskPRO\EmailGateway\Ticket\InReplyToDetector;
 
 class TicketGateway extends AbstractGateway
 {
@@ -32,10 +35,22 @@ class TicketGateway extends AbstractGateway
 		}
 
 		$ticket = $detector->findExistingTicket($this->reader);
+
+		if (!$ticket) {
+			// Try to find it from In-Reply-To
+			$detector = new InReplyToDetector();
+			$ticket = $detector->findExistingTicket($this->reader);
+		}
+
+		if (!$ticket) {
+			// Finally try a subject match
+			$detector = new SubjectMatchDetector();
+			$ticket = $detector->findExistingTicket($this->reader);
+		}
+
 		if ($ticket) {
 			$person = $detector->findExistingPerson($ticket, $this->reader);
 		}
-
 
 		#-------------------------
 		# If we have aticket and user, run reply,
@@ -54,7 +69,7 @@ class TicketGateway extends AbstractGateway
 			if ($person) {
 				$person_processor->passPerson($person);
 			} else {
-				$person = $person_processor->findPerson();
+				$person = $person_processor->createPerson();
 			}
 
 			return $this->runNewTicket($person);
@@ -87,7 +102,37 @@ class TicketGateway extends AbstractGateway
 
 		$ticket_edit->save();
 
+		if ($this->reader->getCcAddresses()) {
+			$this->handleCc($ticket, $this->reader->getCcAddresses());
+		}
+
 		return $message;
+	}
+
+	public function handleCc($ticket, array $ccs)
+	{
+		App::getOrm()->beginTransaction();
+
+		foreach ($ccs as $cc) {
+			$person_processor = new PersonFromEmailProcessor();
+			// TODO change processor to accept email obj
+
+			$cc_person = $person_processor->findPerson($cc);
+			if ($cc_person) {
+				$person_processor->passPerson($cc_person);
+			} else {
+				$cc_person = $person_processor->createPerson($cc);
+			}
+
+			App::getOrm()->persist($cc_person);
+			App::getOrm()->flush();
+
+			if (!$ticket->hasParticipant($cc_person)) {
+				$ticket->addParticipant($cc_person);
+			}
+		}
+
+		App::getOrm()->commit();
 	}
 
 
@@ -117,22 +162,31 @@ class TicketGateway extends AbstractGateway
 	# New Ticket
 	############################################################################
 
-	protected function newTicket(Entity\Person $person)
+	protected function runNewTicket(Entity\Person $person)
 	{
-		#-------------------------
-		# Create the ticket
-		#-------------------------
+		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
+			Entity\Ticket::CREATED_GATEWAT_PERSON,
+			$person
+		);
 
-		$ticket = new Entity\Ticket();
-		$ticket['status']  = Entity\Ticket::STATUS_OPEN;
-		$ticket['person']  = $person;
-		$ticket['subject'] = $this->reader->getSubject()->getSubject();
-		$ticket['creation_system'] = Entity\Ticket::CREATED_GATEWAT_PERSON;
-		App::getOrm()->persist($ticket);
-		App::getOrm()->flush();
+		$newticket->ticket->subject = $this->reader->getSubject();
+		if ($this->reader->getBodyText()->getBody()) {
+			$newticket->ticket->message = $this->reader->getBodyHtml()->getBody();
+		} else {
+			$newticket->ticket->message = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+		}
 
-		$message = $this->doNewReply($ticket, $person);
+		$dep_id = App::getDb()->fetchColumn("SELECT id FROM departments WHERE parent_id IS NULL ORDER BY title ASC LIMIT 1");
+		$newticket->ticket->department_id = $dep_id;
 
-		return $message;
+		App::getOrm()->beginTransaction();
+		$ticket = $newticket->save();
+
+		if ($this->reader->getCcAddresses()) {
+			$this->handleCc($ticket, $this->reader->getCcAddresses());
+		}
+		App::getOrm()->commit();
+
+		return $ticket;
 	}
 }
