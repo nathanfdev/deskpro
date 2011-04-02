@@ -14,7 +14,7 @@ namespace Application\AdminBundle\Controller;
 use \Application\DeskPRO\App;
 
 use \Application\DeskPRO\Entity\TwitterAccount;
-use \Application\DeskPRO\Entity\TwitterAccountFollowing;
+use \Application\DeskPRO\Entity\TwitterAccountFriend;
 use \Application\DeskPRO\Entity\TwitterAccountFollower;
 use \Application\DeskPRO\Entity\TwitterStatus;
 use \Application\DeskPRO\Entity\TwitterStatusMention;
@@ -127,11 +127,10 @@ class TwitterAccountController extends AbstractController
 			// fetch friends (following)
 			// @TODO check pagination (we only recieve 100 friends at once)
 			foreach ($twitter->user->friends()->user as $user) {
-				// create Twitter account following
-				$following            = new TwitterAccountFollowing();
-				$following['account'] = $account;
-				$following['user']    = $this->getOrCreateUser($user);
-				$em->persist($following);
+				$friend = new TwitterAccountFriend();
+				$friend['account'] = $account;
+				$friend['user'] = $this->getOrCreateUser($user);
+				$em->persist($friend);
 			}
 
 			// flush changes

@@ -208,10 +208,10 @@ class TwitterStatusController extends AbstractController
 		try {
 			$status = $this->getStatus($this->in->getInt('status_id'));
 
-			$note                 = new TwitterStatusNote();
-			$note['status']       = $status;
-			$note['person']       = $this->person;
-			$note['text']         = $this->in->getValue('text');
+			$note = new TwitterStatusNote();
+			$note['status'] = $status;
+			$note['person'] = $this->person;
+			$note['text'] = $this->in->getValue('text');
 
 			$em = App::getOrm();
 			$em->persist($note);
@@ -261,7 +261,7 @@ class TwitterStatusController extends AbstractController
 		$response = array('success' => true);
 
 		try {
-			$status  = $this->getStatus($this->in->getInt('status_id'));
+			$status = $this->getStatus($this->in->getInt('status_id'));
 			$account = $this->getAccount($this->in->getInt('account_id'));
 
 			// @TODO add private reply

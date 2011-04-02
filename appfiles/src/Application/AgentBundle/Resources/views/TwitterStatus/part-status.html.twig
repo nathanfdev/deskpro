@@ -14,7 +14,7 @@
 		{% if status.user.id is not sameas(account.user.id) %}
 			<div class="controls">
 				<ul>
-				{% if status.user.id in account.following_ids %}
+				{% if status.user.id in account.friend_ids %}
 					<li class="unfollow"><a>Unfollow</a></li>
 				{% else %}
 					<li class="follow"><a>Follow</a></li>

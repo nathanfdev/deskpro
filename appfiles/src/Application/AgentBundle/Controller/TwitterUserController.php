@@ -66,16 +66,16 @@ class TwitterUserController extends AbstractController
 		$user = $this->getUser($this->in->getInt('user_id'));
 		$success = false;
 
-		if (!in_array($user['id'], $account->getFollowingIds())) {
+		if (!in_array($user['id'], $account->getFriendIds())) {
 			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
 			/* $response = */ $twitter->friendship->create($user['id']);
-			$following = new TwitterAccountFollowing();
 
-			$following['account'] = $account;
-			$following['user'] = $user;
+			$friend = new TwitterAccountFriend();
+			$friend['account'] = $account;
+			$friend['user'] = $user;
 
 			$em = App::getOrm();
-			$em->persist($following);
+			$em->persist($friend);
 			$em->flush();
 
 			$success = true;
@@ -90,15 +90,15 @@ class TwitterUserController extends AbstractController
 		$user = $this->getUser($this->in->getInt('user_id'));
 		$success = false;
 
-		if (in_array($user['id'], $account->getFollowingIds())) {
+		if (in_array($user['id'], $account->getFriendIds())) {
 			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
 			/* $response = */ $twitter->friendship->destroy($user['id']);
 
 			$em = App::getOrm();
-			$following = $em->getRepository('DeskPRO:TwitterAccountFollowing')
+			$friend = $em->getRepository('DeskPRO:TwitterAccountFriend')
 				->findOneByAccountIdAndUserId($account['id'], $userId);
 
-			$em->remove($following);
+			$em->remove($friend);
 			$em->flush();
 
 			$success = true;

@@ -108,9 +108,9 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterAccountFollowing", mappedBy="user")
+	 * @orm:OneToMany(targetEntity="TwitterAccountFriend", mappedBy="user")
 	 */
-	protected $following;
+	protected $friends;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -134,8 +134,8 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 		$this->mentions = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
 
+		$this->friends = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->followers = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->following = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**

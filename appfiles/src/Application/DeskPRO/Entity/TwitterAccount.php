@@ -55,14 +55,14 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterAccountFollowing", mappedBy="account")
+	 * @orm:OneToMany(targetEntity="TwitterAccountFriend", mappedBy="account")
 	 */
-	protected $following;
+	protected $friends;
 
 	/**
 	 * @var array
 	 */
-	protected $_following_ids;
+	protected $_friend_ids;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
@@ -101,8 +101,8 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function __construct()
 	{
+		$this->friends = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->followers = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->following = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->searches = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->persons = new \Doctrine\Common\Collections\ArrayCollection();
 	}
@@ -137,24 +137,24 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Boolean $cache (optional)
 	 * @return array
 	 */
-	public function getFollowingIds($cache = true)
+	public function getFriendIds($cache = true)
 	{
-		if (true === $cache && is_array($this->_following_ids)) {
-			return $this->_following_ids;
+		if (true === $cache && is_array($this->_friend_ids)) {
+			return $this->_friend_ids;
 		}
 
-		$this->_following_ids = App::getDb()->fetchAllCol("
+		$this->_friend_ids = App::getDb()->fetchAllCol("
 			SELECT user_id
-			FROM twitter_accounts_following
+			FROM twitter_accounts_friends
 			WHERE account_id = ?
 			ORDER BY id DESC
 		", array($this['id']));
 
-		if (!is_array($this->_following_ids)) {
-			$this->_following_ids = array($this->_following_ids);
+		if (!is_array($this->_friend_ids)) {
+			$this->_friend_ids = array($this->_friend_ids);
 		}
 
-		return array_unique($this->_following_ids);
+		return array_unique($this->_friend_ids);
 	}
 
 	/**
@@ -218,15 +218,15 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	public function getTimeline($includeArchived = false, $includeAccount = false, $sortByDate = 'asc')
 	{
 		// get ids of users account is following
-		$followingIds = $this->getFollowingIds();
+		$friendIds = $this->getFriendIds();
 
 		// include accounts' user id
 		if ($includeAccount) {
-			$followingIds[] = $this->getUserId();
+			$friendIds[] = $this->getUserId();
 		}
 
 		return App::getOrm()->getRepository('DeskPRO:TwitterStatus')
-			->findByUserIds($followingIds, $includeArchived, $sortByDate);
+			->findByUserIds($friendIds, $includeArchived, $sortByDate);
 	}
 
 	/**
@@ -306,7 +306,7 @@ class TwitterAccount extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function countStarredStatuses()
 	{
-		$userIds = $this->getFollowingIds();
+		$userIds = $this->getFriendIds();
 		$userIds[] = $this->getUserId();
 
 		return App::getDb()->fetchColumn(sprintf("

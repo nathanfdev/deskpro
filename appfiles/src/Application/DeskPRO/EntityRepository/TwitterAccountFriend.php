@@ -15,28 +15,29 @@ use \Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class TwitterAccountFollowing extends EntityRepository
+class TwitterAccountFriend extends EntityRepository
 {
 	/**
 	 * @param integer $accountId
 	 * @param integer $userId
-	 * @return null|\Application\DeskPRO\Entity\TwitterAccountFollowing
+	 * @return null|\Application\DeskPRO\Entity\TwitterAccountFriend
 	 */
 	public function findOneByAccountIdAndUserId($accountId, $userId)
 	{
-		$following = $this->getEntityManager()->createQuery("
+		$friend = $this->getEntityManager()->createQuery("
 			SELECT f
-			FROM   DeskPRO:TwitterAccountFollowing f
-			WHERE  f.account = :account AND f.user = :user
+			FROM DeskPRO:TwitterAccountFriend f
+			WHERE f.account = :account
+			AND f.user = :user
 		")->setMaxResults(1)->execute(array(
 			'account' => $accountId,
-			'user'    => $userId
+			'user' => $userId
 		));
 
-		if (!$following || count($following) != 1) {
+		if (!$friend || count($friend) != 1) {
 			return null;
 		}
 
-		return $following;
+		return $friend;
 	}
 }

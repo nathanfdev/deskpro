@@ -18,13 +18,13 @@ use \Application\DeskPRO\Entity;
 /**
  * Twitter Account following a User
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterAccountFollowing")
- * @orm:Table(name="twitter_accounts_following", uniqueConstraints={
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterAccountFriend")
+ * @orm:Table(name="twitter_accounts_friends", uniqueConstraints={
  *     @orm:UniqueConstraint(name="account_user_idx", columns={"account_id", "user_id"})
  * })
  * @orm:HasLifecycleCallbacks
  */
-class TwitterAccountFollowing extends \Application\DeskPRO\Domain\DomainObject
+class TwitterAccountFriend extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
@@ -36,14 +36,14 @@ class TwitterAccountFollowing extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 * @orm:ManyToOne(targetEntity="TwitterAccount", inversedBy="following")
+	 * @orm:ManyToOne(targetEntity="TwitterAccount", inversedBy="friend")
 	 * @orm:JoinColumn(name="account_id", referencedColumnName="id")
 	 */
 	protected $account;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="following")
+	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="friend")
 	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;

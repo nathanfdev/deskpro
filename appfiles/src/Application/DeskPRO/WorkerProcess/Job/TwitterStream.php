@@ -15,7 +15,7 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Log\Logger;
 
 use \Application\DeskPRO\Entity\TwitterAccount;
-use \Application\DeskPRO\Entity\TwitterAccountFollowing;
+use \Application\DeskPRO\Entity\TwitterAccountFriend;
 use \Application\DeskPRO\Entity\TwitterAccountFollower;
 use \Application\DeskPRO\Entity\TwitterStatus;
 use \Application\DeskPRO\Entity\TwitterStatusMention;
@@ -239,17 +239,17 @@ class TwitterStream extends AbstractJob
 			return true;
 		}
 
-		$diff = array_diff(array_unique($data['friends']), $account->getFollowingIds(false));
+		$diff = array_diff(array_unique($data['friends']), $account->getFriendIds(false));
 		foreach ($diff as $id) {
 			if (!($user = $this->findUser($id))) {
 				$user = TwitterUser::createFromXML($this->getTwitter($account['id'])->user->show($id));
 				$this->em->persist($user);
 			}
 
-			$following = new TwitterAccountFollowing();
-			$following['account'] = $account;
-			$following['user'] = $user;
-			$this->em->persist($following);
+			$friend = new TwitterAccountFriend();
+			$friend['account'] = $account;
+			$friend['user'] = $user;
+			$this->em->persist($friend);
 			$this->em->flush();
 		}
 
