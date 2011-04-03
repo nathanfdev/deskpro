@@ -1,6 +1,109 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Twitter';
-pageMeta.title         = '{{user.name|escape}} / @{{user.screen_name|escape}}';
-pageMeta.user_id       = {{user.id}};
-pageMeta.pageIdentity  = 'twitter:user:{{user.id}}';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.TwitterUser';
+
+pageMeta.title = '@{{user.screen_name|escape}}';
+pageMeta.userId = '{{ user.id|escape }}';
+pageMeta.pageIdentity = 'twitter:user:{{ user.id|escape }}';
 </script>
+
+<div class="profile layout-content">
+
+	<div class="inner-box-tab-content-2">
+		<div class="person-info-top">
+			<div style="float:left; margin-right: 7px; padding: 4px 0;">
+				<img src="{{ user.profile_image_url }}" alt="" />
+			</div>
+			<h3 class="name">@{{ user.screen_name}}</h3>
+			<h4 class="name">{{ user.name }}</h4>
+		</div>
+	</div>
+
+	<div class="ticket-properties right">
+		<div class="table-container">
+			<div class="table-title">
+				<h4>Profile</h4>
+			</div>
+			<div class="table-content contact-info-list-wrap">
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Language</span>
+					</div>
+					<div class="col-table-content prop-val">
+						{{ user.language }}
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Location</span>
+					</div>
+					<div class="col-table-content prop-val">
+						{% if user.location is none %}unknown{% else %}{{ user.location }}{% endif %}
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Protected</span>
+					</div>
+					<div class="col-table-content prop-val">
+						{% if user.is_protected %}yes{% else %}no{% endif %}
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Verified</span>
+					</div>
+					<div class="col-table-content prop-val">
+						{% if user.is_verified %}yes{% else %}no{% endif %}
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>GEO</span>
+					</div>
+					<div class="col-table-content prop-val">
+						{% if user.is_geo_enabled %}yes{% else %}no{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	<div class="full-container-tabbed messages-container">
+		<div class="full-container-tabbed-tabs">
+			<ul>
+				<li class="tab-trigger twitter-statuses" data-tab-for=".tab-content.twitter-statuses"><a>Statuses</a></li>
+				<li class="tab-trigger twitter-messages" data-tab-for=".tab-content.twitter-messages"><a>Messages</a></li>
+				<li class="tab-trigger twitter-mentions" data-tab-for=".tab-content.twitter-mentions"><a>Mentions</a></li>
+			</ul>
+		</div>
+		<div class="full-container-tabbed-contents-wrap">
+			<div class="full-container-tabbed-contents tab-content twitter-statuses" data-tab-trigger=".tab-trigger.twitter-statuses">
+				<div class="full-tab-content">
+					<div class="note-list">
+					{% for status in user.statuses %}
+						{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+					{% endfor %}
+					</div>
+				</div>
+			</div>
+			<div class="full-container-tabbed-contents tab-content twitter-messages" data-tab-trigger=".tab-trigger.twitter-messages">
+				<div class="full-tab-content">
+					<div class="note-list">
+					{% for status in user.messages %}
+						{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+					{% endfor %}
+					</div>
+				</div>
+			</div>
+			<div class="full-container-tabbed-contents tab-content twitter-mentions" data-tab-trigger=".tab-trigger.twitter-mentions">
+				<div class="full-tab-content">
+					<div class="note-list">
+					{% for mention in user.mentions %}
+						{% set status = mention.status %}
+						{% include 'AgentBundle:TwitterUser:part-status.html.twig' %}
+					{% endfor %}
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>

@@ -1,0 +1,19 @@
+<div class="message note-{{ status.id }} note-message user-message" data-status-id="{{ status.id }}">
+	<div class="message-avatar left">
+		<img src="{{ user.profile_image_url }}" width="35" height="35" alt="@{{ status.user.screen_name|escape }}" />
+	</div>
+	<div class="message-body">
+		<div class="message-meta">
+			<span class="arrow-left"></span>
+			<h4>@{{ status.user.screen_name }}</h4>
+			<span class="timestamp">
+				<span class="timeago" title="{{ status.date_created|date('c') }}">{{ status.date_created|date('r') }}</span>
+			</span>
+		</div>
+		<div class="message-text">
+			<p>
+				{{ status.text }}
+			</p>
+		</div>
+	</div>
+</div>

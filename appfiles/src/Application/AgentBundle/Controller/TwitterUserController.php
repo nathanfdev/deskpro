@@ -56,7 +56,7 @@ class TwitterUserController extends AbstractController
 	public function viewAction($user_id)
 	{
 		return $this->render('AgentBundle:TwitterUser:view.html.twig', array(
-			'user' => $this->getUser($this->in->getInt('user_id'))
+			'user' => $this->getUser($user_id)
 		));
 	}
 
