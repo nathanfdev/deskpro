@@ -29,7 +29,7 @@
 			</div>
 		</div>
 		<div class="content">
-			<div class="tweet">{{ status.text }}</div>
+			<div class="tweet">{{ status.parsed_text|raw }}</div>
 			<div class="notes">
 				<div class="note">
 					<em class="time" title="{{ status.date_created|date('c') }}">{{ status.date_created|date('r') }}</em>
