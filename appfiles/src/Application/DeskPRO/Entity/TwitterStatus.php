@@ -145,6 +145,11 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	protected $notes;
 
 	/**
+	 * @var string
+	 */
+	protected $_parsed_text;
+
+	/**
 	 * Constructor
 	 */
 	public function __construct()
@@ -300,6 +305,61 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	public function isArchived()
 	{
 		return (Boolean) $this->is_archived;
+	}
+
+	/**
+	 * Retrieve a parsed version of status' text.
+	 *
+	 * @return string
+	 */
+	public function getParsedText()
+	{
+		if (null !== $this->_parsed_text) {
+			return $this->_parsed_text;
+		}
+
+		$replacements = array();
+		foreach ($this['mentions'] as $mention) {
+			$replacements[$mention['starts']] = $mention;
+		}
+		foreach ($this['tags'] as $tag) {
+			$replacements[$tag['starts']] = $tag;
+		}
+		foreach ($this['urls'] as $url) {
+			$replacements[$url['starts']] = $url;
+		}
+
+		if (!count($replacements)) {
+			$this->_parsed_text = $this['text'];
+			return $this->_parsed_text;
+		}
+
+		ksort($replacements);
+
+		$cursor = 0;
+		$this->_parsed_text = '';
+		foreach ($replacements as $starts => $replacement) {
+			$this->_parsed_text .= substr($this['text'], $cursor, $starts - $cursor);
+			$replace = substr($this['text'], $starts, $replacement['ends'] - $starts);
+			$cursor = $replacement['ends'];
+
+			switch (get_class($replacement)) {
+				case 'Application\\DeskPRO\\Entity\\TwitterStatusMention':
+					$this->_parsed_text .= sprintf('<a class="mention" data-user-id="%s">@%s</a>', $replacement['user']['id'], htmlspecialchars($replacement['user']['screen_name']));
+					break;
+				case 'Application\\DeskPRO\\Entity\\TwitterStatusTag':
+					$this->_parsed_text .= sprintf('<a class="hash" data-hash="%1$s">#%1$s</a>', htmlspecialchars($replacement['hash']));
+					break;
+				case 'Application\\DeskPRO\\Entity\\TwitterStatusUrl':
+					$this->_parsed_text .= sprintf('<a class="url" href="%s" target="_twitter_url_%s">%s</a>', htmlspecialchars($replacement['url']), md5($replacement['id']), $replace);
+					break;
+				default:
+					$this->_parsed_text .= $replace;
+					break;
+			}
+		}
+
+		return $this->_parsed_text;
 	}
 
 	/**
