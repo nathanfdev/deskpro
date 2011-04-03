@@ -48,9 +48,8 @@ class TwitterStream extends AbstractJob
 		$events = $this->db->fetchAll(sprintf("
 			SELECT *
 			FROM twitter_stream
-			WHERE account_id IS NOT NULL
-			AND event != 'unknown'
-			ORDER BY date_created ASC
+			WHERE account_id IS NOT NULL AND event != 'unknown'
+			ORDER BY date_created ASC, id ASC
 			LIMIT %d
 		", self::EVENT_LIMIT));
 
@@ -69,6 +68,7 @@ class TwitterStream extends AbstractJob
 					unserialize($event['data'])
 				);
 			} catch (\Exception $e) {
+				// $this->logStatus('exception catched', $e);
 				$success = false;
 			}
 
@@ -81,7 +81,7 @@ class TwitterStream extends AbstractJob
 			}
 		}
 
-		// $this->logStatus('processed events: '.$processed);
+		// $this->logStatus('processed events', $processed);
 	}
 
 	/**
