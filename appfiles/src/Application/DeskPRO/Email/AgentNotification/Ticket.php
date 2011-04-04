@@ -72,6 +72,8 @@ class Ticket
 
 	public function sendNewTicket(Entity\Person $person)
 	{
+		$tac = $this->ticket->findAccessCodeForPerson($person);
+
 		$new_message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($this->ticket);
 		$email_subject = 'New Ticket: ' . $this->ticket['subject'];
 		$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-ticket.html.twig', array(
@@ -79,7 +81,8 @@ class Ticket
 			'new_message' => $new_message,
 			'subject' => $email_subject,
 			'agent' => $person,
-			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
+			'access_code' => $tac['code'],
+			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
 		));
 
 		echo $email_body;
@@ -94,6 +97,8 @@ class Ticket
 
 	public function sendNewReply(Entity\Person $person)
 	{
+		$tac = $this->ticket->findAccessCodeForPerson($person);
+
 		$new_message = $this->actions['message_created']->getMessage();
 		$changes = $this->_getPropertyChanges();
 		$email_subject = 'New Reply: ' . $this->ticket['subject'];
@@ -103,7 +108,8 @@ class Ticket
 			'subject' => $email_subject,
 			'agent' => $person,
 			'ticket_diff' => $this->_getPropertyChanges(),
-			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
+			'access_code' => $tac['code'],
+			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
 		));
 
 		$message = App::getMailer()->createMessage();
@@ -117,6 +123,8 @@ class Ticket
 
 	public function sendPropChange(Entity\Person $person)
 	{
+		$tac = $this->ticket->findAccessCodeForPerson($person);
+		
 		$changes = $this->_getPropertyChanges();
 		$email_subject = 'Ticket Changed: ' . $this->ticket['subject'];
 		$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-reply.html.twig', array(
@@ -124,7 +132,8 @@ class Ticket
 			'subject' => $email_subject,
 			'agent' => $person,
 			'ticket_diff' => $this->_getPropertyChanges(),
-			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
+			'access_code' => $tac['code'],
+			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
 		));
 
 		$message = App::getMailer()->createMessage();

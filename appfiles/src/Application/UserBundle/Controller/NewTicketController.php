@@ -52,7 +52,7 @@ class NewTicketController extends AbstractController
 				$this->session->set('after_register', $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket['ref']), true));
 
 				$ticket_access = $this->session->get('ticket_access', array());
-				$ticket_access[] = $ticket['id'];
+				$ticket_access[$ticket['id']] = array('person_id' => $ticket['person_id']);
 				$this->session->set('ticket_access', $ticket_access);
 
 				return $this->redirectRoute('user_register_finish');

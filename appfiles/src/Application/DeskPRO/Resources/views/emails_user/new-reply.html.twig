@@ -1,10 +1,10 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
-	{% if access_code %}<!--ACCESS CODE: (#{{access_code}})-->{% endif %}
+	<!--ACCESS CODE: (#{{access_code_full}})-->
 	View your ticket online at:<br>
-	<a href="{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': ticket.code}) }}">
-		{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': ticket.code}) }}
+	<a href="{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}">
+		{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}
 	</a>
 	{% set section_content %}
 		{{new_message.message_text}}

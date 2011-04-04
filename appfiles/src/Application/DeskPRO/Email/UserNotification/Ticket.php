@@ -64,6 +64,8 @@ class Ticket
 
 	public function sendNewTicket(Entity\Person $person)
 	{
+		$tac = $this->ticket->findAccessCodeForPerson($person);
+		
 		$new_message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($this->ticket);
 		$email_subject = 'New ticket: ' . $this->ticket['subject'];
 		$email_body = App::get('templating')->render('DeskPRO:emails_user:new-ticket.html.twig', array(
@@ -71,7 +73,8 @@ class Ticket
 			'new_message' => $new_message,
 			'subject' => $email_subject,
 			'person' => $person,
-			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
+			'access_code' => $tac['code'],
+			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
 		));
 
 		$message = App::getMailer()->createMessage();
@@ -106,6 +109,8 @@ class Ticket
 
 	public function sendNewReply(Entity\Person $person)
 	{
+		$tac = $this->ticket->findAccessCodeForPerson($person);
+
 		$new_message = $this->actions['message_created']->getMessage();
 		$email_subject = 'New Reply: ' . $this->ticket['subject'];
 		$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-reply.html.twig', array(
@@ -113,7 +118,8 @@ class Ticket
 			'new_message' => $new_message,
 			'subject' => $email_subject,
 			'person' => $person,
-			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
+			'access_code' => $tac['code'],
+			'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
 		));
 
 		$message = App::getMailer()->createMessage();

@@ -104,12 +104,12 @@ class TicketsController extends AbstractController
 		}
 		
 		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
-		if (!$ticket OR $ticket['code'] != $ticket_auth) {
+		if (!$ticket OR !($tac = $ticket->findAccessCode($ticket_auth))) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();
 		}
 
 		// Add this ticket to allowed tickets in session
-		$this->session_allowed[] = $ticket['id'];
+		$this->session_allowed[$ticket['id']] = array('person_id' => $tac->person['id']);
 		$this->session->set('ticket_access', $this->session_allowed);
 
 		// And also mark the user and ticket as validated
@@ -134,14 +134,16 @@ class TicketsController extends AbstractController
 	{
 		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 
-		if (!$ticket OR ($ticket['person_id'] != $this->person['id'] AND !in_array($ticket['id'], $this->session_allowed))) {
+		if (!$ticket OR ($ticket['person_id'] != $this->person['id'] AND !isset($this->session_allowed[$ticket['id']]))) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
 		}
 
+		$person = App::getEntityRepository('DeskPRO:Person')->find($this->session_allowed[$ticket['id']]['person_id']);
+
 		// Set the current person context
-		if ($this->person != $ticket->person) {
-			$this->person = $ticket->person;
-			App::setCurrentPerson($ticket->person);
+		if ($this->person != $person) {
+			$this->person = $person;
+			App::setCurrentPerson($person);
 		}
 
 		return $ticket;

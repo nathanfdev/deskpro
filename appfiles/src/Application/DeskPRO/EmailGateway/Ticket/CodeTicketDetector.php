@@ -17,7 +17,7 @@ use \Application\DeskPRO\Entity\Ticket;
 /**
  * Detects a ticket based off of codes in the subject or body.
  *
- * We look for (#AAAAA) in either the subject or body.
+ * We look for (#ref-AAAAA) in either the subject or body.
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
@@ -42,16 +42,19 @@ class CodeTicketDetector implements TicketDetectorInterface
 		$search_text = implode(' ', $search_text);
 
 		$matches = null;
-		if (preg_match_all('/\(#([A-Z]{6,})\)/', $search_text, $matches)) {
+		if (preg_match_all('/\(#(([A-Za-z0-9\-]+)\-[A-Z]{5,})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			return null;
 		}
 
-		foreach ($matches[2] as $access_code) {
-			$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($access_code);
-			if ($tac) {
-				$this->_found_tac = $tac;
-				return $tac['ticket'];
-			}
+		foreach ($matches as $m) {
+			$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($m[1]);
+			if (!$ticket) continue;
+
+			$tac = $ticket->findAccessCode($m[2]);
+			if (!$tac) continue;
+
+			$this->_found_tac = $tac;
+			return $tac['ticket'];
 		}
 
 		return null;

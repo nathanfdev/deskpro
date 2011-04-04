@@ -1064,6 +1064,24 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return null;
 	}
 
+
+
+	/**
+	 * Find an access code
+	 *
+	 * @return TicketAccessCode
+	 */
+	public function findAccessCode($code)
+	{
+		foreach ($this->access_codes as $tac) {
+			if ($tac['code'] = $code) {
+				return $tac;
+			}
+		}
+
+		return null;
+	}
+
 	
 
 	/**
