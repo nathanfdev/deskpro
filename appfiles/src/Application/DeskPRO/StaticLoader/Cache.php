@@ -16,7 +16,7 @@ namespace Application\DeskPRO\StaticLoader;
  *
  * In sys/config/config.yml, something like:
  * <code>
- * deskpro_cache.caches:
+ * deskpro_cache:
  *   someid: ~
  * </code>
  *
@@ -42,8 +42,13 @@ class Cache
 		$backend_name = $options['backend'];
 		unset($options['backend']);
 
+		$enable = true;
+		if (\Application\DeskPRO\App::getConfig('disable_caching')) {
+			$enable = false;
+		}
+
 		$frontend_options = array(
-			'caching' => true,
+			'caching' => $enable,
 			'cache_id_prefix' => $name,
 			'lifetine' => null,
 			'logging' => false,
@@ -59,23 +64,32 @@ class Cache
 
 		// Used in File backend
 		if (isset($options['cache_dir'])) {
-			$options['cache_dir'] = str_replace('%kernel.cache_dir%', $cache_dir, $options['cache_dir']);
-
-			// Make sure it exists
-			if (!is_dir($options['cache_dir'])) {
-				if (@mkdir($options['cache_dir'])) {
-					@chmod($options['cache_dir'], \Orb\Util\Util::ifsetor($options['hashed_directory_umask'], 0744));
-				}
-			}
+			$options['cache_dir'] = self::_initCachePath($options['cache_dir'], $cache_dir, false);
 		}
 
-		// Used in SQLite backend
-		if (isset($options['cache_db_complete_path '])) {
-			$options['cache_db_complete_path'] = str_replace('%kernel.cache_dir%', $cache_dir, $options['cache_db_complete_path']);
+		// Sqlite
+		if (isset($options['cache_db_complete_path'])) {
+			$options['cache_db_complete_path'] = self::_initCachePath($options['cache_db_complete_path'], $cache_dir, true);
 		}
 
 		$cache = \Zend\Cache\Cache::factory('Core', $backend_name, $frontend_options, $options);
 
 		return $cache;
+	}
+
+	protected static function _initCachePath($dir, $cache_dir, $is_file)
+	{
+		$dir = str_replace('%kernel.cache_dir%', $cache_dir, $dir);
+
+		$realdir = $dir;
+		if ($is_file) {
+			$realdir = dirname($dir);
+		}
+
+		if (!is_dir($realdir)) {
+			@mkdir($realdir, 0777, true);
+		}
+
+		return $dir;
 	}
 }

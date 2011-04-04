@@ -23,12 +23,16 @@ class Product extends EntityRepository
 	{
 		if ($this->_product_names !== null) return;
 
-		$db = App::getDb();
-		$this->_product_names = $db->fetchAllKeyValue("
-			SELECT id, title
-			FROM products
-			ORDER BY title ASC
-		");
+		if (($this->_product_names = App::getCache('common')->load('product_names')) === false) {
+			$db = App::getDb();
+			$this->_product_names = $db->fetchAllKeyValue("
+				SELECT id, title
+				FROM products
+				ORDER BY title ASC
+			");
+
+			App::getCache('common')->save($this->_product_names, null, array('products'));
+		}
 	}
 
 	/**
@@ -50,5 +54,25 @@ class Product extends EntityRepository
 		}
 
 		return $ret;
+	}
+
+
+
+	/**
+	 * Invalidates caches
+	 */
+	public function invalidateCaches()
+	{
+		App::getCache('common')->clean('matchingTag', array('products'));
+	}
+
+	/**
+	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+	 * @param  $sql
+	 * @return void
+	 */
+	public function invalidateFromQuery($sql)
+	{
+		$this->invalidateCaches();
 	}
 }

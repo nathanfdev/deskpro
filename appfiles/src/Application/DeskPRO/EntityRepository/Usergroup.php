@@ -31,14 +31,17 @@ class Usergroup extends EntityRepository
 	public function getUsergroupNames($for_ids = null)
 	{
 		if ($this->_usergroup_names === null) {
+			if (($this->_usergroup_names = App::getCache('common')->load('usergroup_names')) === false) {
+				$db = App::getDb();
+				$this->_usergroup_names = $db->fetchAllKeyValue("
+					SELECT id, title
+					FROM usergroups
+					WHERE is_agent_group = 0
+					ORDER BY title ASC
+				");
 
-            $db = App::getDb();
-            $this->_usergroup_names = $db->fetchAllKeyValue("
-                SELECT id, title
-                FROM usergroups
-                WHERE is_agent_group = 0
-                ORDER BY title ASC
-            ");
+				App::getCache('common')->save($this->_usergroup_names, null, array('usergroups'));
+			}
         }
 
         if ($for_ids === null) {
@@ -64,14 +67,37 @@ class Usergroup extends EntityRepository
 	{
 		if ($this->_agent_usergroup_names !== null) return $this->_agent_usergroup_names;
 
-		$db = App::getDb();
-		$this->_agent_usergroup_names = $db->fetchAllKeyValue("
-			SELECT id, title
-			FROM usergroups
-			WHERE is_agent_group = 0
-			ORDER BY title ASC
-		");
+		if (($this->_agent_usergroup_names = App::getCache('common')->load('agent_usergroup_names')) === false) {
+			$db = App::getDb();
+			$this->_agent_usergroup_names = $db->fetchAllKeyValue("
+				SELECT id, title
+				FROM usergroups
+				WHERE is_agent_group = 0
+				ORDER BY title ASC
+			");
+
+			App::getCache('common')->save($this->_agent_usergroup_names, null, array('usergroups'));
+		}
 
 		return $this->_agent_usergroup_names;
+	}
+
+
+	/**
+	 * Invalidates caches
+	 */
+	public function invalidateCaches()
+	{
+		App::getCache('common')->clean('matchingTag', array('usergroups'));
+	}
+
+	/**
+	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+	 * @param  $sql
+	 * @return void
+	 */
+	public function invalidateFromQuery($sql)
+	{
+		$this->invalidateCaches();
 	}
 }

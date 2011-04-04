@@ -26,25 +26,13 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @GeneratedValue
 	 */
 	protected $id = null;
-
-	/**
-	 * @var int
-	 * @orm:Column(name="ticket_id", type="integer")
-	 */
-	protected $ticket_id = null;
-
+	
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:ManyToOne(targetEntity="Ticket")
 	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
 	protected $ticket = null;
-
-	/**
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person

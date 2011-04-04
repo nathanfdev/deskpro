@@ -32,7 +32,7 @@ class CustomDataTicket extends CustomDataAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefTicket
-	 * @orm:ManyToOne(targetEntity="CustomDefTicket")
+	 * @orm:ManyToOne(targetEntity="CustomDefTicket", fetch="EAGER")
 	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
 	 * @orm:Id
 	 */

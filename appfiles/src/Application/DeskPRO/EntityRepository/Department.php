@@ -33,21 +33,35 @@ class Department extends EntityRepository
 	{
 		if ($this->_department_hierarchy !== null) return $this->_department_hierarchy;
 
-		$db = App::getDb();
-		$departments = $db->fetchAllKeyed("
-			SELECT id, parent_id, title
-			FROM departments
-			ORDER BY title ASC
-		");
+		$dep_info = App::getCache('common')->load('department_info');
 
-		$this->_department_ids = array_keys($departments);
+		if ($dep_info) {
+			foreach ($dep_info as $k => $v) {
+				$this->$k = $v;
+			}
+		} else {
+			$db = App::getDb();
+			$departments = $db->fetchAllKeyed("
+				SELECT id, parent_id, title
+				FROM departments
+				ORDER BY title ASC
+			");
 
-		$this->_department_names = Arrays::flattenToIndex($departments, 'title');
+			$this->_department_ids = array_keys($departments);
 
-		$departments = Arrays::intoHierarchy($departments, null);
-		$this->_department_hierarchy = $departments;
+			$this->_department_names = Arrays::flattenToIndex($departments, 'title');
 
-		return $departments;
+			$departments = Arrays::intoHierarchy($departments, null);
+			$this->_department_hierarchy = $departments;
+
+			App::getCache('common')->save(array(
+				'_department_hierarchy' => $this->_department_hierarchy,
+				'_department_names' => $this->_department_names,
+				'_department_ids' => $this->_department_ids,
+			), 'department_info', array('departments'));
+		}
+
+		return $this->_department_hierarchy;
 	}
 
 
@@ -142,5 +156,25 @@ class Department extends EntityRepository
 		}
 
 		return $ids;
+	}
+	
+
+
+	/**
+	 * Invalidates caches associated with agent teams
+	 */
+	public function invalidateCaches()
+	{
+		App::getCache('common')->clean('matchingTag', array('departments'));
+	}
+
+	/**
+	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+	 * @param  $sql
+	 * @return void
+	 */
+	public function invalidateFromQuery($sql)
+	{
+		$this->invalidateCaches();
 	}
 }

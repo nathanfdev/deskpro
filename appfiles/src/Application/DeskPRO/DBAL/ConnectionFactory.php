@@ -37,6 +37,8 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			$params = array_merge($params, App::getConfig($key));
 		}
 
-		return parent::createConnection($params, $config, $eventManager);
+		$conn = parent::createConnection($params, $config, $eventManager);
+
+		return $conn;
 	}
 }

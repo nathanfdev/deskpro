@@ -23,6 +23,7 @@ use \Application\DeskPRO\Entity;
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\AgentTeam")
  * @orm:Table(name="agent_teams")
+ * @orm:HasLifecycleCallbacks
  */
 class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 {

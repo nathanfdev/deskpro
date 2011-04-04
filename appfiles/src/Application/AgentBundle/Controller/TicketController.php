@@ -28,11 +28,8 @@ class TicketController extends AbstractController
 
 	public function viewAction($ticket_id)
 	{
-		$ticket = $this->getTicketOr404($ticket_id);
+		$ticket = $this->getTicketOr404($ticket_id, true);
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-
-		$person_inner_tab = $this->forward('AgentBundle:Person:view', array('person_id' => $ticket['person_id']))->getContent();
-		//$person_inner_tab = '123';
 
 		// Custom fields
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -82,7 +79,6 @@ class TicketController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
-			'person_inner_tab' => $person_inner_tab,
 			'ticket' => $ticket,
 			'ticket_deleted' => $ticket_deleted,
 			'ticket_options' => $ticket_options,
@@ -598,9 +594,35 @@ class TicketController extends AbstractController
 	/**
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
-	protected function getTicketOr404($ticket_id)
+	protected function getTicketOr404($ticket_id, $full = false)
 	{
-		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+		if ($full) {
+			$ticket = App::getOrm()->createQuery("
+				SELECT
+					ticket, messages, message_person,
+					ticket_parts, ticket_dep, ticket_prod, ticket_cat, ticket_pri,
+					ticket_person, ticket_person_email, ticket_agent, ticket_agent_team,
+					ticket_attach, ticket_custom_data, ticket_custom_data_field
+				FROM DeskPRO:Ticket ticket
+				LEFT JOIN ticket.messages messages
+				LEFT JOIN messages.person message_person
+				LEFT JOIN ticket.participants ticket_parts
+				LEFT JOIN ticket.department ticket_dep
+				LEFT JOIN ticket.product ticket_prod
+				LEFT JOIN ticket.category ticket_cat
+				LEFT JOIN ticket.priority ticket_pri
+				LEFT JOIN ticket.person ticket_person
+				LEFT JOIN ticket.person_email ticket_person_email
+				LEFT JOIN ticket.agent ticket_agent
+				LEFT JOIN ticket.agent_team ticket_agent_team
+				LEFT JOIN ticket.attachments ticket_attach
+				LEFT JOIN ticket.custom_data ticket_custom_data
+				LEFT JOIN ticket_custom_data.field ticket_custom_data_field
+				WHERE ticket.id = ?1
+			")->setParameter(1, $ticket_id)->getSingleResult();
+		} else {
+			$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
+		}
 
 		if (!$ticket) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");

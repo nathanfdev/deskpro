@@ -97,16 +97,15 @@ class BlobController extends AbstractController
 					$gravatar_url = preg_replace('#^http:#', 'https:', $gravatar_url);
 				}
 				$gravatar_url .= '&s=' . $size;
-				$response = $this->response;
-				$response->setRedirect($gravatar_url);
+				$response = new \Symfony\Component\HttpFoundation\RedirectResponse($gravatar_url);
+				$response->setExpires(date_create("+1 days"));
+				$response->setMaxAge(86400);
+				$response->setSharedMaxAge(86400);
 			}
 		} else {
 			$response = $this->_serveDefaultPicture($size);
 		}
 
-		$response->setExpires(date_create("+1 days"));
-		$response->setMaxAge(86400);
-		$response->setSharedMaxAge(86400);
 		$response->setPublic();
 
 		return $response;

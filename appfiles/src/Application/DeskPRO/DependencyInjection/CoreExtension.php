@@ -24,18 +24,25 @@ class CoreExtension extends Extension
 {
 	public function load(array $config, ContainerBuilder $container)
     {
+		$definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
+		$container->setDefinition('response', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\CacheInvalidator');
+		$container->setDefinition('deskpro.dbal.logger.cache_invalidator', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\QueryLogger');
+		$definition->addMethodCall('addSlowLogRule', array(31, 0));
+		$container->setDefinition('deskpro.dbal.logger.query_logger', $definition);
+
+		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\DelegateLogger');
+		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.cache_invalidator')));
+		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger')));
+		$container->setDefinition('doctrine.dbal.logger', $definition);
+
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
 		$this->loadDoctrineCaches($container);
-
-		$definition = new Definition('Symfony\\Component\\HttpFoundation\\Response');
-		$container->setDefinition('response', $definition);
-
-		// Dont need this. When changing session storage to DB, we'll
-		// need to have JUST the session.storage definition
-		// (? or maybe not, check if we cant do it from just config)
-		//$this->loadSession($container);
     }
 
 
@@ -143,11 +150,7 @@ class CoreExtension extends Extension
 
 	protected function loadDoctrineCaches(ContainerBuilder $container)
 	{
-		if (App::isDebug()) {
-			return;
-		}
-
-		if (App::getConfig('doctrine.cache.type') == 'sqlite') {
+		if (App::getConfig('doctrine_cache_type') == 'sqlite') {
 			$definition = new Definition('Orb\\Doctrine\\Common\\Cache\\SqliteCache');
 			$definition->addMethodCall('setDbFile', array(
 				$container->getParameter('kernel.cache_dir') . '/doctrinecache.db',

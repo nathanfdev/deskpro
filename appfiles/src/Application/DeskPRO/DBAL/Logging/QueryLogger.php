@@ -11,12 +11,14 @@
 
 namespace Application\DeskPRO\DBAL\Logging;
 
+use Application\DeskPRO\App;
+
 use \Orb\Log\Logger;
 
 /**
  * Log various query information
  */
-class Logger implements \Doctrine\DBAL\Logging\SQLLogger
+class QueryLogger implements \Doctrine\DBAL\Logging\SQLLogger
 {
 	const TYPE_SELECT = 1;
 	const TYPE_UPDATE = 2;
@@ -38,10 +40,18 @@ class Logger implements \Doctrine\DBAL\Logging\SQLLogger
 
 	protected $_query_counter = 0;
 	protected $_query_total_time = 0.0;
-	
+
+	/**
+	 * True when logging a query to the log. We need this incase the logger
+	 * itself is logging to the database, we dont want to log the log of the log log
+	 * @var bool
+	 */
+	protected $_is_logging = false;
+
 	public function startQuery($sql, array $params = null, array $types = null)
 	{
-		if (!$this->_is_slowlog_enabled) return;
+		if ($this->_is_logging) return;
+		if (!$this->_is_enabled) return;
 
 		$sql = trim($sql);
 		if (preg_match('#^SELECT#i', $sql)) {
@@ -71,7 +81,8 @@ class Logger implements \Doctrine\DBAL\Logging\SQLLogger
 
 	public function stopQuery()
 	{
-		if (!$this->_is_slowlog_enabled OR $this->_last_query == -1) return;
+		if ($this->_is_logging) return;
+		if (!$this->_is_enabled OR $this->_last_query == -1) return;
 
 		$queryinfo = &$this->_queries[$this->_last_query];
 		$queryinfo['time_end']   = microtime(true);
@@ -80,14 +91,31 @@ class Logger implements \Doctrine\DBAL\Logging\SQLLogger
 		$this->_query_counter++;
 		$this->_query_total_time += $queryinfo['time_taken'];
 
-		if ($this->_logger) {
-			foreach ($this->_slowlog_rules as $rule) {
-				if (($queryinfo['query_type'] & $rule[0]) AND $queryinfo['time_taken'] >= $rule[1]) {
-					$this->_logger->log('Slow query: ' . $queryinfo['sql'], Logger::NOTICE, array('queryinfo' => $queryinfo));
-					break;
+		$this->_is_logging = true;
+
+		$trace = false;
+		$table = false;
+		foreach ($this->_slowlog_rules as $rule) {
+			if (($queryinfo['query_type'] & $rule[0]) AND $queryinfo['time_taken'] >= $rule[1]) {
+				if (!$trace) {
+					try { throw new \Exception(); } catch (\Exception $e) { $trace = str_replace(DP_ROOT, '', $e->getTraceAsString()); }
 				}
+				if (!$table) {
+					if (preg_match('#\s+(FROM|INSERT INTO|UPDATE|DELETE FROM)\s+(.*?)\s+#', $queryinfo['sql'], $m)) {
+						$table = $m[2];
+					} else {
+						$table = $queryinfo['sql'];
+					}
+				}
+
+				$queryinfo['trace'] = $trace;
+
+				$this->getLogger()->log("SQL log against $table", Logger::NOTICE, array('queryinfo' => $queryinfo));
+				break;
 			}
 		}
+
+		$this->_is_logging = false;
 	}
 
 
@@ -191,6 +219,10 @@ class Logger implements \Doctrine\DBAL\Logging\SQLLogger
 	 */
 	public function getLogger()
 	{
+		if (!$this->_logger) {
+			$this->_logger = App::createNewLogger('query-log', microtime(true));
+		}
+
 		return $this->_logger;
 	}
 }

@@ -32,21 +32,36 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 	{
 		if ($this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
 
-		$db = App::getDb();
-		$cats = $db->fetchAllKeyed("
-			SELECT id, parent_id, title
-			FROM ticket_categories
-			ORDER BY title ASC
-		");
+		$cat_info = App::getCache('common')->load('ticket_category_info');
 
-		$this->_cat_ids = array_keys($cats);
+		if ($cat_info) {
+			foreach ($cat_info as $k => $v) {
+				$this->$k = $v;
+			}
+		} else {
 
-		$this->_cat_names = Arrays::flattenToIndex($cats, 'title');
+			$db = App::getDb();
+			$cats = $db->fetchAllKeyed("
+				SELECT id, parent_id, title
+				FROM ticket_categories
+				ORDER BY title ASC
+			");
 
-		$cats = Arrays::intoHierarchy($cats, null);
-		$this->_cats_hierarchy = $cats;
+			$this->_cat_ids = array_keys($cats);
 
-		return $cats;
+			$this->_cat_names = Arrays::flattenToIndex($cats, 'title');
+
+			$cats = Arrays::intoHierarchy($cats, null);
+			$this->_cats_hierarchy = $cats;
+
+			App::getCache('common')->save(array(
+				'_cats_hierarchy' => $this->_cats_hierarchy,
+				'_cat_names' => $this->_cat_names,
+				'_cat_ids' => $this->_cat_ids,
+			), 'ticket_category_info', array('ticket_categories'));
+		}
+
+		return $this->_cats_hierarchy;
 	}
 
 
@@ -110,13 +125,13 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 
 
 
-		/**
-		 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
-		 *
-		 * @param int $parent_id
-		 * @return array
-		 */
-		public function getIdsInTree($parent_id, $incude_top = true)
+	/**
+	 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
+	 *
+	 * @param int $parent_id
+	 * @return array
+	 */
+	public function getIdsInTree($parent_id, $incude_top = true)
 	{
 		$ids = array();
 		if ($incude_top AND $parent_id) {
@@ -144,13 +159,13 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 
 
 
-		/**
-		 * Returns an array indexed by department ID whose value is an array of
-		 * categories enabled for it.
-		 *
-		 * @return array
-		 */
-		public function departmentToCategoryMap()
+	/**
+	 * Returns an array indexed by department ID whose value is an array of
+	 * categories enabled for it.
+	 *
+	 * @return array
+	 */
+	public function departmentToCategoryMap()
 	{
 		$map = App::getDb()->fetchAllGrouped("
 			SELECT id, department_id
@@ -192,4 +207,24 @@ class TicketCategory extends \Doctrine\ORM\EntityRepository
 
 		return $map;
 	}
+
+
+
+	/**
+	 * Invalidates caches
+	 */
+	public function invalidateCaches()
+	{
+		App::getCache('common')->clean('matchingTag', array('ticket_categories'));
 	}
+
+	/**
+	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+	 * @param  $sql
+	 * @return void
+	 */
+	public function invalidateFromQuery($sql)
+	{
+		$this->invalidateCaches();
+	}
+}

@@ -19,30 +19,36 @@ use \Orb\Util\Numbers;
 
 class Organization extends EntityRepository
 {
-	protected $organization_names = null;
+	protected $_organization_names = null;
+
+
 
 	/**
 	 * @return array
 	 */
 	public function getOrganizationNames($for_ids = null)
 	{
-		if ($this->organization_names == null) {
+		if ($this->_organization_names == null) {
 
-            $db = App::getDb();
-            $this->organization_names = $db->fetchAllKeyValue("
-                SELECT id, name
-                FROM organizations
-                ORDER BY name ASC
-            ");
+			if (($this->_organization_names = App::getCache('common')->load('organization_names')) === false) {
+				$db = App::getDb();
+				$this->_organization_names = $db->fetchAllKeyValue("
+					SELECT id, name
+					FROM organizations
+					ORDER BY name ASC
+				");
+
+				App::getCache('common')->save($this->_organization_names, null, array('organizations'));
+			}
         }
 
         if ($for_ids === null) {
-		    return $this->organization_names;
+		    return $this->_organization_names;
         }
 
         $ret = array();
         foreach ($for_ids as $id) {
-            $ret[$id] = $this->organization_names[$id];
+            $ret[$id] = $this->_organization_names[$id];
         }
 
         return $ret;
@@ -71,5 +77,25 @@ class Organization extends EntityRepository
 		")->execute();
 
 		return $orgs;
+	}
+
+
+
+	/**
+	 * Invalidates caches
+	 */
+	public function invalidateCaches()
+	{
+		App::getCache('common')->clean('matchingTag', array('organizations'));
+	}
+
+	/**
+	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+	 * @param  $sql
+	 * @return void
+	 */
+	public function invalidateFromQuery($sql)
+	{
+		$this->invalidateCaches();
 	}
 }

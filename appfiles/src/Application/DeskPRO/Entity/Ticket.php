@@ -59,70 +59,70 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
-	 * @orm:ManyToOne(targetEntity="Department")
+	 * @orm:ManyToOne(targetEntity="Department", fetch="EAGER")
 	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
 	 */
 	protected $department = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketCategory
-	 * @orm:ManyToOne(targetEntity="TicketCategory")
+	 * @orm:ManyToOne(targetEntity="TicketCategory", fetch="EAGER")
 	 * @orm:JoinColumn(name="category_id", referencedColumnName="id")
 	 */
 	protected $category = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketPriority
-	 * @orm:ManyToOne(targetEntity="TicketPriority")
+	 * @orm:ManyToOne(targetEntity="TicketPriority", fetch="EAGER")
 	 * @orm:JoinColumn(name="priority_id", referencedColumnName="id")
 	 */
 	protected $priority = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketWorkflow
-	 * @orm:ManyToOne(targetEntity="TicketWorkflow")
+	 * @orm:ManyToOne(targetEntity="TicketWorkflow", fetch="EAGER")
 	 * @orm:JoinColumn(name="workflow_id", referencedColumnName="id")
 	 */
 	protected $workflow = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Product
-	 * @orm:ManyToOne(targetEntity="Product")
+	 * @orm:ManyToOne(targetEntity="Product", fetch="EAGER")
 	 * @orm:JoinColumn(name="product_id", referencedColumnName="id")
 	 */
 	protected $product = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 * @orm:ManyToOne(targetEntity="PersonEmail")
+	 * @orm:ManyToOne(targetEntity="PersonEmail", fetch="EAGER")
 	 * @orm:JoinColumn(name="person_email_id", referencedColumnName="id")
 	 */
 	protected $person_email = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
 	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
 	 */
 	protected $agent = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam
-	 * @orm:ManyToOne(targetEntity="AgentTeam")
+	 * @orm:ManyToOne(targetEntity="AgentTeam", fetch="EAGER")
 	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id")
 	 */
 	protected $agent_team = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @orm:ManyToOne(targetEntity="Organization")
+	 * @orm:ManyToOne(targetEntity="Organization", fetch="EAGER")
 	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization = null;

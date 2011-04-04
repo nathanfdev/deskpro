@@ -43,7 +43,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users profile picture
 	 *
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @orm:OneToOne(targetEntity="Blob")
+	 * @orm:OneToOne(targetEntity="Blob", fetch="EAGER")
 	 * @orm:JoinColumn(name="picture_blob_id", referencedColumnName="id")
 	 */
 	protected $picture_blob = null;
@@ -134,22 +134,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The locale associate with the user.
 	 *
 	 * @var \Application\DeskPRO\Entity\Locale
-	 * @orm:ManyToOne(targetEntity="Locale")
+	 * @orm:ManyToOne(targetEntity="Locale", fetch="EAGER")
 	 * @orm:JoinColumn(name="locale_id", referencedColumnName="id")
 	 */
 	protected $locale = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="organization_id", type="integer", nullable=true)
-	 */
-	protected $organization_id = null;
-
-	/**
 	 * The users organization
 	 *
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @orm:ManyToOne(targetEntity="Organization")
+	 * @orm:ManyToOne(targetEntity="Organization", fetch="EAGER")
 	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization = null;

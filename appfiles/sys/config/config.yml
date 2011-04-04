@@ -9,6 +9,7 @@ parameters:
   exception_listener.class: "Application\DeskPRO\Debug\ExceptionListener"
   twig.loader.class: "Application\DeskPRO\Twig\\Loader\HybridLoader"
 
+
 services:
   templating.engine.jsonphp:
     class: Orb\Templating\Engine\PhpVarJsonEngine
@@ -54,11 +55,12 @@ doctrine:
     connections:
       default:
         host: 'from_user_config.db'
+        logging: true
 
 swiftmailer:
   transport: 'dp_delegating'
 
-#deskpro_cache:
-#  phrases: ~
+deskpro_cache:
+  common: ~
 
 deskpro_core: ~

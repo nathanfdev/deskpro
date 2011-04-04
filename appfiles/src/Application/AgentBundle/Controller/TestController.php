@@ -11,7 +11,8 @@ class TestController extends AbstractController
 {
     public function indexAction()
     {
-		echo "Test";
+		$v = App::getCache('common')->load('department_info');
+		print_r($v);
 
 		exit;
     }

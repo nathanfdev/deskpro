@@ -24,7 +24,7 @@ class CustomDefTicket extends CustomDefAbstract
 {
 	/**
 	 * @var CustomDefPeople
-	 * @orm:ManyToOne(targetEntity="CustomDefTicket", inversedBy="children")
+	 * @orm:ManyToOne(targetEntity="CustomDefTicket", inversedBy="children", fetch="EAGER")
 	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
 	 */
 	protected $parent = null;
@@ -33,7 +33,7 @@ class CustomDefTicket extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="CustomDefTicket", mappedBy="parent", cascade={"persist", "remove", "merge"})
+	 * @orm:OneToMany(targetEntity="CustomDefTicket", mappedBy="parent", cascade={"persist", "remove", "merge"}, fetch="EAGER")
 	 */
 	protected $children = null;
 }

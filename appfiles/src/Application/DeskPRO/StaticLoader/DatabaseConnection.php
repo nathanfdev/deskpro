@@ -10,6 +10,7 @@
 
 namespace Application\DeskPRO\StaticLoader;
 
+use Application\DeskPRO\App;
 
 /**
  * This static loader is used with the DI to get a database connection using run-time values
@@ -35,6 +36,10 @@ class DatabaseConnection
 
 		$args[0] = array_merge($args[0], \Application\DeskPRO\App::getConfig($key));
 
-		return call_user_func_array(array('Doctrine\DBAL\DriverManager', 'getConnection'), $args);
+		$conn = call_user_func_array(array('Doctrine\DBAL\DriverManager', 'getConnection'), $args);
+
+		if (App::has('doctrine.dbal.logger')) {
+			
+		}
 	}
 }

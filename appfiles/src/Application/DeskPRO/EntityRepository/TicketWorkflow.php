@@ -23,12 +23,17 @@ class TicketWorkflow extends EntityRepository
 	{
 		if ($this->_workflow_names !== null) return;
 
-		$db = App::getDb();
-		$this->_workflow_names = $db->fetchAllKeyValue("
-			SELECT id, title
-			FROM ticket_workflows
-			ORDER BY title ASC
-		");
+		if (($this->_workflow_names = App::getCache('common')->load('workflow_names')) === false) {
+
+			$db = App::getDb();
+			$this->_workflow_names = $db->fetchAllKeyValue("
+				SELECT id, title
+				FROM ticket_workflows
+				ORDER BY title ASC
+			");
+
+			App::getCache('common')->save($this->_workflow_names, null, array('ticket_workflows'));
+		}
 	}
 
 	public function getWorkflowNames($for_ids = null)
@@ -47,5 +52,24 @@ class TicketWorkflow extends EntityRepository
 		}
 
 		return $ret;
+	}
+
+
+	/**
+	 * Invalidates caches
+	 */
+	public function invalidateCaches()
+	{
+		App::getCache('common')->clean('matchingTag', array('ticket_workflows'));
+	}
+
+	/**
+	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+	 * @param  $sql
+	 * @return void
+	 */
+	public function invalidateFromQuery($sql)
+	{
+		$this->invalidateCaches();
 	}
 }

@@ -23,12 +23,16 @@ class AgentTeam extends EntityRepository
 	{
 		if ($this->_team_names !== null) return $this->_team_names;
 
-		$db = App::getDb();
-		$this->_team_names = $db->fetchAllKeyValue("
-			SELECT id, name
-			FROM agent_teams
-			ORDER BY name ASC
-		");
+		if (($this->_team_names = App::getCache('common')->load('agent_team_names')) === false) {
+			$db = App::getDb();
+			$this->_team_names = $db->fetchAllKeyValue("
+				SELECT id, name
+				FROM agent_teams
+				ORDER BY name ASC
+			");
+
+			App::getCache('common')->save($this->_team_names, null, array('agent_teams'));
+		}
 
 		return $this->_team_names;
 	}
@@ -49,5 +53,25 @@ class AgentTeam extends EntityRepository
 		}
 
 		return $ret;
+	}
+
+
+
+	/**
+	 * Invalidates caches associated with agent teams
+	 */
+	public function invalidateCaches()
+	{
+		App::getCache('common')->clean('matchingTag', array('agent_teams'));
+	}
+
+	/**
+	 * @see \Application\DeskPRO\DBAL\Logging\CacheInvalidor
+	 * @param  $sql
+	 * @return void
+	 */
+	public function invalidateFromQuery($sql)
+	{
+		$this->invalidateCaches();
 	}
 }

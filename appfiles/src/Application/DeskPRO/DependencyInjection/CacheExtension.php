@@ -25,7 +25,7 @@ class CacheExtension extends Extension
 	{
 		if (!$config) return;
 
-    	foreach ($config as $name => $cache_options) {
+    	foreach ($config[0] as $name => $cache_options) {
     		$this->loadCacheService($name, $cache_options, $container);
     	}
 	}
@@ -44,6 +44,7 @@ class CacheExtension extends Extension
 				$container->getParameter('kernel.cache_dir')
 			)
 		);
+		$definition->setFactoryClass('Application\\DeskPRO\\StaticLoader\\Cache');
 		$definition->setFactoryMethod('getCache');
 		$container->setDefinition($service_name, $definition);
     }

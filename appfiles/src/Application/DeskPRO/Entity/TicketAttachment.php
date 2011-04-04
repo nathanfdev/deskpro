@@ -24,12 +24,6 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
 	protected $id = null;
-	
-	/**
-	 * @var int
-	 * @orm:Column(name="ticket_id", type="integer")
-	 */
-	protected $ticket_id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
@@ -39,42 +33,24 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 	protected $ticket;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id;
-
-	/**
 	 * Who created the attachment
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="blob_id", type="integer")
-	 */
-	protected $blob_id;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @orm:ManyToOne(targetEntity="Blob")
+	 * @orm:ManyToOne(targetEntity="Blob", fetch="EAGER")
 	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id")
 	 */
 	protected $blob;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="message_id", type="integer", nullable=true)
-	 */
-	protected $message_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\TicketMessage
-	 * @orm:ManyToOne(targetEntity="TicketMessage")
+	 * @orm:ManyToOne(targetEntity="TicketMessage", fetch="EAGER")
 	 * @orm:JoinColumn(name="message_id", referencedColumnName="id")
 	 */
 	protected $message = null;
