@@ -94,9 +94,6 @@ abstract class AbstractFetcher
 			App::getOrm()->persist($source);
 			App::getOrm()->flush();
 
-			$db->insert('email_sources', $source);
-			$source['id'] = $db->lastInsertId();
-
 			$data_len = strlen($raw_message->content);
 
 			// /2 for worst-case scenario of every character needing escape, -200 for wiggle room fo rest of query
@@ -110,6 +107,8 @@ abstract class AbstractFetcher
 				));
 			}
 
+			App::getOrm()->commit();
+
 			#------------------------------
 			# Delete message on the server
 			#------------------------------
@@ -120,8 +119,6 @@ abstract class AbstractFetcher
 			App::getOrm()->rollback();
 			throw $e;
 		}
-
-		App::getOrm()->commit();
 
 		$source->_raw = $raw_message->content;
 

@@ -16,7 +16,7 @@ use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 
 use Orb\Util\Util;
 
-class ReadEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class ReadEmailFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 {
 	protected $set_verbose = false;
 	protected $ignore_interval = false;
@@ -24,7 +24,7 @@ class ReadEmailCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
 
 	protected function configure()
 	{
-		$this->setName('dp:read-email');
+		$this->setName('dp:read-email-file');
 		$this->addOption('file', 'f', InputOption::VALUE_REQUIRED, 'Read email in from a file');
 		$this->addOption('stdin', 'd', InputOption::VALUE_NONE, 'Read email in from stdin');
 		$this->addOption('gateway', 'g', InputOption::VALUE_REQUIRED, 'Force the email to read into this gateway email address. Otherwise the gateway is guessed from the "To" address');

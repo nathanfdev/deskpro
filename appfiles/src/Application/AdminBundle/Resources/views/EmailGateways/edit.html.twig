@@ -5,7 +5,7 @@
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('gateway', {{gateway.id|default(0)}}, 'DeskPRO_Page_EmailGateways');
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('gateway', {{gateway.id|default(0)}});
 
 	{% if row_html %}
 		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
@@ -26,11 +26,28 @@ function _page_exec() {
 <div class="form-panel">
 	<div class="row">
 		<label>Title</label>
-		{{ form_field(form.title) }}
+		{{ form_field(form.name) }}
 	</div>
 	<div class="row">
-		<label>Address</label>
+		<label>Email Address</label>
 		{{ form_field(form.address) }}
+	</div>
+
+	<div class="row">
+		<label>POP3 Connection Information</label>
+		<table cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>Server<br />{{ form_field(form.connection_options.server) }}</td>
+				<td>Port<br />{{ form_field(form.connection_options.port, {'size':4}) }}</td>
+				<td>{{ form_field(form.connection_options.ssl) }} SSL</td>
+			</tr>
+		</table>
+		<table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 5px;">
+			<tr>
+				<td width="50%">Username<br />{{ form_field(form.connection_options.username) }}</td>
+				<td>Password<br />{{ form_field(form.connection_options.password) }}</td>
+			</tr>
+		</table>
 	</div>
 </div>
 

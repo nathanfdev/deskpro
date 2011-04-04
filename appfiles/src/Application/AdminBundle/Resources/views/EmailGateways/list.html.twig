@@ -1,6 +1,6 @@
-{% extends 'AdminBundle::layout_subpage.html.twig' %}
+{% extends 'AdminBundle::layout.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/EmailGatewaysList.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
@@ -13,7 +13,7 @@ window._page_exec_stack.push(function() {
 {% block content %}
 
 <div style="text-align:right; padding-bottom: 10px;">
-	<a class="icon tickets popout-trigger" href="{{ path('admin_emailgateways_edit', {'gateway_id': '0'}) }}" data-height="350" data-width="400">Create New Gateway</a>
+	<a class="icon tickets popout-trigger" href="{{ path('admin_emailgateways_edit', {'gateway_id': '0'}) }}" data-height="400" data-width="580">Create New Gateway</a>
 </div>
 
 <ul class="item-list">

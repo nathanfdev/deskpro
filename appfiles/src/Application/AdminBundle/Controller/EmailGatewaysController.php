@@ -23,7 +23,7 @@ class EmailGatewaysController extends AbstractController
 
 		$all_gateways = $this->em->createQuery("
 			SELECT g
-			FROM DeskPRO:EmailGateways g
+			FROM DeskPRO:EmailGateway g
 			ORDER BY g.name ASC
 		")->getResult();
 
@@ -47,7 +47,10 @@ class EmailGatewaysController extends AbstractController
 			$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($gateway_id);
 		}
 
-		$form = EditGatewayForm::create($this->get('form.context'), 'gateway', array(gateway => $gateway));
+		$gateway['connection_class'] = 'Application\\DeskPRO\\EmailGateway\\Fetcher\\Pop3';
+		$gateway['processor_class']  = 'Application\\DeskPRO\\EmailGateway\\TicketGateway';
+
+		$form = EditGatewayForm::create($this->get('form.context'), 'gateway', array('gateway' => $gateway));
 		$form->bind($this->get('request'), $gateway);
 
 		$is_edited = false;
@@ -58,10 +61,6 @@ class EmailGatewaysController extends AbstractController
 			App::getOrm()->flush();
 
 			$row_html = $this->renderView('AdminBundle:EmailGateways:list-row.html.twig', array('gateway' => $gateway));
-
-			// Recreate form because parent_id field cant be changed, so we need to get rid of it
-			$form = EditDepartmentForm::create($this->get('form.context'), 'gateway', array('gateway' => $gateway));
-			$form->setData($gateway);
 		}
 
 		return $this->render('AdminBundle:EmailGateways:edit.html.twig', array(

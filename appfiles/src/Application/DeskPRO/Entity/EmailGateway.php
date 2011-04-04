@@ -94,4 +94,17 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 		$proc = new $this->processor_class($this, $reader);
 		return $proc;
 	}
+
+	
+
+	/**
+	 * Get a new instance of the fetcher class
+	 *
+	 * @return \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher
+	 */
+	public function getNewFetcher()
+	{
+		$fetcher = new $this->connection_class($this);
+		return $fetcher;
+	}
 }

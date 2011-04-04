@@ -29,12 +29,6 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="gateway_id", type="integer")
-	 */
-	protected $gateway_id;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 * @orm:ManyToOne(targetEntity="EmailGateway")
 	 * @orm:JoinColumn(name="gateway_id", referencedColumnName="id")

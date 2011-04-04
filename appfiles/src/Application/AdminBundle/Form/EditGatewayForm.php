@@ -24,7 +24,15 @@ class EditGatewayForm extends \Symfony\Component\Form\Form
 	{
 		$this->addRequiredOption('gateway');
 
-		$this->add(new Form\TextField('title'));
+		$this->add(new Form\TextField('name'));
 		$this->add(new Form\TextField('address'));
+
+		$form = new Form\Form('connection_options');
+		$this->add($form);
+		$form->add(new Form\TextField('server'));
+		$form->add(new Form\TextField('username'));
+		$form->add(new Form\TextField('password'));
+		$form->add(new Form\TextField('port'));
+		$form->add(new Form\CheckboxField('ssl', array('required' => false)));
 	}
 }
