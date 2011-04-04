@@ -133,6 +133,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $attachments;
 
 	/**
+	 * @orm:OneToMany(targetEntity="TicketAccessCode", mappedBy="ticket", cascade={"persist", "remove", "merge"})
+	 */
+	protected $access_codes;
+
+	/**
 	 * @orm:OneToMany(targetEntity="TicketMessage", mappedBy="ticket", cascade={"persist", "remove", "merge"})
 	 */
 	protected $messages;
@@ -1017,6 +1022,46 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		App::getOrm()->persist($del);
 		App::getOrm()->persist($this);
+	}
+
+
+
+	/**
+	 * Add an access code for a person
+	 *
+	 * @param PersonEmail $email
+	 */
+	public function addAccessCodeForPerson(Person $person)
+	{
+		if ($tac = $this->findAccessCodeForPerson($person)) {
+			return $tac;
+		}
+
+		$tac = new TicketAccessCode();
+		$tac['ticket'] = $this;
+		$tac['person'] = $person;
+		$this->access_codes->add($tac);
+
+		App::getOrm()->persist($tac);
+		App::getOrm()->flush();
+	}
+
+	
+
+	/**
+	 * Find the access code for a person if it exists
+	 *
+	 * @return TicketAccessCode
+	 */
+	public function findAccessCodeForPerson(Person $person)
+	{
+		foreach ($this->access_codes as $tac) {
+			if ($tac->person = $person) {
+				return $tac;
+			}
+		}
+
+		return null;
 	}
 
 	

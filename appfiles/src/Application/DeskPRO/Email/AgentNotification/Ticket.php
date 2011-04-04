@@ -78,7 +78,8 @@ class Ticket
 			'ticket' => $this->ticket,
 			'new_message' => $new_message,
 			'subject' => $email_subject,
-			'agent' => $person
+			'agent' => $person,
+			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
 		));
 
 		echo $email_body;
@@ -101,7 +102,8 @@ class Ticket
 			'new_message' => $new_message,
 			'subject' => $email_subject,
 			'agent' => $person,
-			'ticket_diff' => $this->_getPropertyChanges()
+			'ticket_diff' => $this->_getPropertyChanges(),
+			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
 		));
 
 		$message = App::getMailer()->createMessage();
@@ -121,7 +123,8 @@ class Ticket
 			'ticket' => $this->ticket,
 			'subject' => $email_subject,
 			'agent' => $person,
-			'ticket_diff' => $this->_getPropertyChanges()
+			'ticket_diff' => $this->_getPropertyChanges(),
+			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
 		));
 
 		$message = App::getMailer()->createMessage();

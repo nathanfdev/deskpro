@@ -70,7 +70,8 @@ class Ticket
 			'ticket' => $this->ticket,
 			'new_message' => $new_message,
 			'subject' => $email_subject,
-			'person' => $person
+			'person' => $person,
+			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
 		));
 
 		$message = App::getMailer()->createMessage();
@@ -112,6 +113,7 @@ class Ticket
 			'new_message' => $new_message,
 			'subject' => $email_subject,
 			'person' => $person,
+			'access_code' => $this->ticket->findAccessCodeForPerson($person)->getCode()
 		));
 
 		$message = App::getMailer()->createMessage();

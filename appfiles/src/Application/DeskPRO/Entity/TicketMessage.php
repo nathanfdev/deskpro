@@ -16,6 +16,7 @@ namespace Application\DeskPRO\Entity;
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketMessage")
  * @orm:Table(name="tickets_messages")
+ * @orm:HasLifecycleCallbacks
  */
 class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -116,5 +117,16 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->date_created = new \DateTime();
 		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	/**
+	 * When a new message is added to a ticket, make sure the person has
+	 * their own access code ready to use.
+	 * 
+	 * @orm:PostPersist
+	 */
+	public function initPersonAccessCode()
+	{
+		$this->ticket->addAccessCodeForPerson($this->person);
 	}
 }
