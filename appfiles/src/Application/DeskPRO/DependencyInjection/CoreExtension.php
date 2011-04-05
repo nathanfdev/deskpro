@@ -36,7 +36,7 @@ class CoreExtension extends Extension
 
 		$definition = new Definition('Application\\DeskPRO\\DBAL\\Logging\\DelegateLogger');
 		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.cache_invalidator')));
-		$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger')));
+		//$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger')));
 		$container->setDefinition('doctrine.dbal.logger', $definition);
 
 		$this->loadInputReader($container);

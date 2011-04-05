@@ -36,13 +36,13 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
 
 	/**
-	 * @orm:OneToMany(targetEntity="TicketAttachment", mappedBy="message", cascade={"persist", "remove", "merge"})
+	 * @orm:OneToMany(targetEntity="TicketAttachment", mappedBy="message", cascade={"persist", "remove", "merge"}, fetch="EAGER")
 	 */
 	protected $attachments;
 

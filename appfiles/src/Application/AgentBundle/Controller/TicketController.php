@@ -601,6 +601,7 @@ class TicketController extends AbstractController
 				SELECT
 					ticket, messages, message_person,
 					ticket_parts, ticket_dep, ticket_prod, ticket_cat, ticket_pri,
+					ticket_org,
 					ticket_person, ticket_person_email, ticket_agent, ticket_agent_team,
 					ticket_attach, ticket_custom_data, ticket_custom_data_field
 				FROM DeskPRO:Ticket ticket
@@ -611,6 +612,7 @@ class TicketController extends AbstractController
 				LEFT JOIN ticket.product ticket_prod
 				LEFT JOIN ticket.category ticket_cat
 				LEFT JOIN ticket.priority ticket_pri
+				LEFT JOIN ticket.organization ticket_org
 				LEFT JOIN ticket.person ticket_person
 				LEFT JOIN ticket.person_email ticket_person_email
 				LEFT JOIN ticket.agent ticket_agent
