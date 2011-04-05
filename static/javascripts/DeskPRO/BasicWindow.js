@@ -9,7 +9,7 @@ DeskPRO.BasicWindow = new Orb.Class({
 
 	initialize: function(options) {
 
-		this.DBEUG = {};
+		this.DEBUG = {};
 		this.options = this.getDefaultOptions();
 		this.registry = {};
 
