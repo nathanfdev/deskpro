@@ -35,6 +35,10 @@ class Cache
 			$options = array_merge($options, $user_options);
 		}
 
+		if (!$user_options) {
+			return null;
+		}
+
 		if (!isset($options['backend'])) {
 			throw new \InvalidArgumentException("Mising backend option for cache config `$key`");
 		}

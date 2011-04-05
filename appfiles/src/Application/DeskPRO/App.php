@@ -424,7 +424,7 @@ class App
 	{
 		$service_name = 'deskpro.cache.' . $name;
 
-		if (self::has($service_name)) {
+		if (self::has($service_name) AND self::get($service_name)) {
 			return self::get($service_name);
 		}
 
