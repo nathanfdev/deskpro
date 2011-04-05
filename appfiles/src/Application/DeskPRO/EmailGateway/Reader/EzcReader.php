@@ -55,8 +55,10 @@ class EzcReader extends AbstractReader
 		$header->name = $name;
 
 		$parts = $this->mail->getHeader($name, true);
-		foreach ($parts as $p) {
-			$header->header_parts[] = \ezcMailTools::mimeDecode($name, 'utf-8');
+		if ($parts) {
+			foreach ($parts as $p) {
+				$header->header_parts[] = \ezcMailTools::mimeDecode($name, 'utf-8');
+			}
 		}
 
 		return $header;
@@ -113,7 +115,7 @@ class EzcReader extends AbstractReader
 	{
 		$attachments = array();
 
-		foreach ($this->mail->fetchParts('ezcMailFile') as $part) {
+		foreach ($this->mail->fetchParts(array('ezcMailFile')) as $part) {
 			$attach = new Item\Attachment();
 			$attach->file_name = basename($part->fileName);
 			$attach->mime_type = $part->mimeType;

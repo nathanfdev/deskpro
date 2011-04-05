@@ -35,11 +35,16 @@ class InReplyToDetector implements TicketDetectorInterface
 	public function findExistingTicket(AbstractReader $reader)
 	{
 		$this->_found_person = null;
-		$in_reply_to = $reader->getHeader('In-Reply-To');
-		if (is_array($in_reply_to)) {
-			$in_reply_to = implode(' ', $in_reply_to);
+		$in_reply_to_objs = $reader->getHeader('In-Reply-To');
+		if (!$in_reply_to_objs OR !$in_reply_to_objs->header_parts) null;
+
+		$in_reply_to = array();
+		foreach ($in_reply_to_objs->header_parts as $h) {
+			$in_reply_to[] = $h;
 		}
 
+		$in_reply_to = implode(' ', $in_reply_to);
+		
 		$match_ref = Strings::extractRegexMatch('#ticket\-(.*?)@#', $in_reply_to, 1);
 		if (!$match_ref) return null;
 

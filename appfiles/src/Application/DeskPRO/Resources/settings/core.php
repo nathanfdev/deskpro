@@ -1,6 +1,7 @@
 <?php return array(
 
 	'core.deskpro_url' => 'http://localhost/',
+	'core.deskpro_assets_full_url' => 'http://localhost/static/',
 	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
 
 	'core.default_locale_id' => 1,

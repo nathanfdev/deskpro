@@ -17,24 +17,28 @@ use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 use \Application\DeskPRO\EmailGateway\Ticket\CodeTicketDetector;
 use \Application\DeskPRO\EmailGateway\Ticket\ToEmailTicketDetector;
 use \Application\DeskPRO\EmailGateway\Ticket\InReplyToDetector;
+use \Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
 
 class TicketGateway extends AbstractGateway
 {
 	public function run()
 	{
-		$person_processor = new PersonFromEmailProcessor($this->reader);
+		$person_processor = new PersonFromEmailProcessor();
 
 		#-------------------------
 		# Run detectors to see if its a reply
 		#-------------------------
 
+		$ticket = null;
 		if (App::getSetting('core_tickets.gateway_catchall')) {
 			$detector = new ToEmailTicketDetector(App::getSetting('core_tickets.gateway_catchall'));
-		} else {
-			$detector = new CodeTicketDetector();
+			$ticket = $detector->findExistingTicket($this->reader);
 		}
 
-		$ticket = $detector->findExistingTicket($this->reader);
+		if (!$ticket) {
+			$detector = new CodeTicketDetector();
+			$ticket = $detector->findExistingTicket($this->reader);
+		}
 
 		if (!$ticket) {
 			// Try to find it from In-Reply-To
@@ -58,18 +62,18 @@ class TicketGateway extends AbstractGateway
 		#-------------------------
 
 		if ($ticket AND $person) {
-			$person_processor->passPerson($person);
+			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 			if ($person['is_agent']) {
 				return $this->runNewAgentReply($ticket, $person);
 			} else {
 				return $this->runNewUserReply($ticket, $person);
 			}
 		} else {
-			$person = $person_processor->findPerson();
+			$person = $person_processor->findPerson($this->reader->getFromAddress());
 			if ($person) {
-				$person_processor->passPerson($person);
+				$person_processor->passPerson($this->reader->getFromAddress(), $person);
 			} else {
-				$person = $person_processor->createPerson();
+				$person = $person_processor->createPerson($this->reader->getFromAddress());
 			}
 
 			return $this->runNewTicket($person);
@@ -115,11 +119,10 @@ class TicketGateway extends AbstractGateway
 
 		foreach ($ccs as $cc) {
 			$person_processor = new PersonFromEmailProcessor();
-			// TODO change processor to accept email obj
 
 			$cc_person = $person_processor->findPerson($cc);
 			if ($cc_person) {
-				$person_processor->passPerson($cc_person);
+				$person_processor->passPerson($cc, $cc_person);
 			} else {
 				$cc_person = $person_processor->createPerson($cc);
 			}
@@ -130,6 +133,9 @@ class TicketGateway extends AbstractGateway
 			if (!$ticket->hasParticipant($cc_person)) {
 				$ticket->addParticipant($cc_person);
 			}
+
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
 		}
 
 		App::getOrm()->commit();
@@ -169,7 +175,7 @@ class TicketGateway extends AbstractGateway
 			$person
 		);
 
-		$newticket->ticket->subject = $this->reader->getSubject();
+		$newticket->ticket->subject = $this->reader->getSubject()->subject;
 		if ($this->reader->getBodyText()->getBody()) {
 			$newticket->ticket->message = $this->reader->getBodyHtml()->getBody();
 		} else {

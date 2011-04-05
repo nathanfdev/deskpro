@@ -224,7 +224,7 @@ class Logger implements \Doctrine\Common\PropertyChangedListener
 			$client_message['channel'] = 'tickets.new-messages';
 			$client_message['data'] = array(
 				'ticket_id' => $this->ticket['id'],
-				'message_id' => $message['id']
+				'message_id' => $log_actions['message_created']->getMessage()->getId()
 			);
 
 			App::getOrm()->persist($client_message);

@@ -36,13 +36,13 @@ class CodeTicketDetector implements TicketDetectorInterface
 		$this->_found_tac = null;
 
 		$search_text = array();
-		$search_text[] = $reader->getSubject()->getSubject();
+		$search_text[] = $reader->getSubject()->subject;
 		$search_text[] = $reader->getBodyText()->getBody();
 		$search_text[] = strip_tags($reader->getBodyHtml()->getBody());
 		$search_text = implode(' ', $search_text);
 
 		$matches = null;
-		if (preg_match_all('/\(#(([A-Za-z0-9\-]+)\-[A-Z]{5,})\)/', $search_text, $matches, PREG_SET_ORDER)) {
+		if (!preg_match_all('/\(#([A-Za-z0-9\-]+)\-([A-Z]{5})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			return null;
 		}
 

@@ -105,6 +105,9 @@ class NewTicket
 			$ticket_message['person']  = $person;
 			$ticket_message['ticket']  = $ticket;
 			$ticket_message['message'] = $this->ticket->message;
+			if (!$ticket_message['message']) {
+				$ticket_message['message'] = '(no message)';
+			}
 			$ticket->addMessage($ticket_message);
 
 			if ($ticket->person_email['is_validated']) {

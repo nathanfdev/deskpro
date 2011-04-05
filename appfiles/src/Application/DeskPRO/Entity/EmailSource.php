@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+
 /**
  * Raw email sources
  *
@@ -116,7 +118,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->_raw !== null) return $this->_raw;
 
 		$parts = array();
-		$statement = $this->db->executeQuery("SELECT data FROM email_sources_blobs WHERE source_id = ?", array($this->id));
+		$statement = App::getDb()->executeQuery("SELECT data FROM email_sources_blobs WHERE source_id = ?", array($this->id));
 
 		while ($row = $statement->fetch(\PDO::FETCH_NUM)) {
 			$parts[] = $row[0];

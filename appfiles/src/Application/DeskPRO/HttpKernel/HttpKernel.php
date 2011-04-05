@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\HttpKernel;
 
+use Application\DeskPRO\App;
+
 use Symfony\Component\HttpKernel\Controller\ControllerResolverInterface;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
@@ -69,9 +71,11 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 
 		// Do to gc/cleanup in php we have to write the session manually before
 		// objects are destructed
-		if ($s = $request->getSession()) {
-			$s->save();
-			session_write_close();
+		if (!App::isCli()) {
+			if ($s = $request->getSession()) {
+				$s->save();
+				session_write_close();
+			}
 		}
 
         return $response;

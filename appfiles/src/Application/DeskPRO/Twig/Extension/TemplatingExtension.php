@@ -59,10 +59,9 @@ class TemplatingExtension extends \Twig_Extension
 		return md5($string);
 	}
 
-	public function assetFull($location, $packageName = null)
+	public function assetFull($location)
 	{
-		$url = $this->container->get('templating.helper.assets')->getUrl($location, $packageName);
-		return App::getSetting('core.deskpro_url') . ltrim($url, '/');
+		return App::getSetting('core.deskpro_assets_full_url') . ltrim($location, '/');
 	}
 
 	public function rawUrlEncode($str)

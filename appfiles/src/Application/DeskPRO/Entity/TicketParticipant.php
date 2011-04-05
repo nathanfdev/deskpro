@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Orb\Util\Strings;
+
 /**
  * Links participants to tickets
  *
