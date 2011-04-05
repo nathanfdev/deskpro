@@ -29,14 +29,14 @@ class TicketMessage extends EntityRepository
 	 */
 	public function getFirstTicketMessage($ticket)
 	{
-		if ($ticket instanceof Entity\Ticket) {
-			$ticket = $ticket['id'];
+		if (!($ticket instanceof Entity\Ticket)) {
+			$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
 		}
 
 		$message = $this->getEntityManager()->createQuery("
 			SELECT m
 			FROM DeskPRO:TicketMessage m
-			WHERE m.ticket_id = ?1
+			WHERE m.ticket = ?1
 			ORDER BY m.id ASC
 		")->setParameter(1, $ticket)->setMaxResults(1)->getSingleResult();
 

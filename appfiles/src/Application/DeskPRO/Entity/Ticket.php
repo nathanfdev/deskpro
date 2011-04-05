@@ -293,6 +293,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->custom_data = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->task_associations = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->access_codes = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->date_created = new \DateTime();
 

@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\App;
+
 /**
  * Ticket messages
  *
@@ -71,6 +73,32 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $message;
 
+	public function __construct()
+	{
+		$this->date_created = new \DateTime();
+		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function setTicketId($id)
+	{
+		$this->ticket = App::getEntityRepository('DeskPRO:Ticket')->find($id);
+	}
+
+	public function getTicketId()
+	{
+		return $this->ticket['id'];
+	}
+
+	public function setPersonId($id)
+	{
+		$this->person = App::getEntityRepository('DeskPRO:Person')->find($id);
+	}
+
+	public function getPersonId()
+	{
+		return $this->person['id'];
+	}
+
 	public function getMessageHtml()
 	{
 		return $this->message;
@@ -99,12 +127,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$this->attachments->add($attach);
 		$attach['ticket'] = $this->ticket;
 		$attach['message'] = $this;
-	}
-
-	public function __construct()
-	{
-		$this->date_created = new \DateTime();
-		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	/**
