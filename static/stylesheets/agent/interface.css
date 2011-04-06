@@ -393,13 +393,19 @@ ul.tagit input[type="text"] {
 	display: block;
 }
 
-.ticket-custom-fields {
-	background-color: #fff;
-	border: 1px solid #d9dbe1;
-	-moz-border-radius: 5px;
-	border-radius: 5px;
-	font-size: 11px;
+.table-title .ticket-custom-fields-edit-btn {
+	display:none;
 }
+
+.table-title:hover .ticket-custom-fields-edit-btn {
+	display: block;
+}
+
+.ticket-custom-fields-edit-btn {
+	float: right;
+	font-size: 10px;
+}
+
 
 .ticket .person-overview {
 	float: left;

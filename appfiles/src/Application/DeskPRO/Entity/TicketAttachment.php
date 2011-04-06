@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 /**
  * Ticket attachments
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAttachment")
  * @orm:Table(name="tickets_attachments")
  */
 class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject

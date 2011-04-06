@@ -31,14 +31,88 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id, true);
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		// Custom fields
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
+		$ticket_attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
 
-		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
+		$counts = $this->_fetchTicketCounts($ticket);
+
+		#------------------------------
+		# Custom fields
+		#------------------------------
+
+		if (($ticket_custom_fields_block = App::getEntityRepository('DeskPRO:Cache')->load("ticket_custom_fields.{$ticket['id']}.agent_block")) === false) {
+			// Custom fields
+			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+			$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
+
+			// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+			// So dont remove it even though it looks like it's not used! :-)
+			$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
+			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
+
+			$ticket_custom_fields_block = $this->renderView('AgentBundle:Ticket:part-custom-fields.html.twig', array(
+				'ticket' => $ticket,
+				'ticket_field_defs' => $ticket_field_defs,
+				'custom_fields_form' => $custom_fields_form,
+				'custom_fields' => $custom_fields
+			));
+
+			App::getEntityRepository('DeskPRO:Cache')->save("ticket_custom_fields.{$ticket['id']}.agent_block", $ticket_custom_fields_block, 259200);
+		}
+
+		#------------------------------
+		# Messages
+		#------------------------------
+
+		if (($ticket_messages_blockcache = App::getEntityRepository('DeskPRO:Cache')->load("ticket_messages.{$ticket['id']}.agent_block")) === false) {
+
+			$message_count = 0;
+			$note_count = 0;
+
+			$ticket_messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket);
+			// Group attachments into messages so we can place them into each message
+			$ticket_message_attachments = array();
+			foreach ($ticket_attachments as $attach) {
+				if (!isset($ticket_message_attachments[$attach['message']['id']])) {
+					$ticket_message_attachments[$attach['message']['id']] = array();
+				}
+
+				$ticket_message_attachments[$attach['message']['id']][] = $attach['id'];
+			}
+
+			foreach ($ticket_messages as $m) {
+				if ($m['is_agent_note']) {
+					$note_count++;
+				} else {
+					$message_count++;
+				}
+			}
+
+			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-block.html.twig', array(
+				'ticket' => $ticket,
+				'ticket_messages' => $ticket_messages,
+				'ticket_message_attachments' => $ticket_attachments
+			));
+
+			$ticket_notes_block = $this->renderView('AgentBundle:Ticket:ticket-notes-block.html.twig', array(
+				'ticket' => $ticket,
+				'ticket_messages' => $ticket_messages,
+				'ticket_message_attachments' => $ticket_attachments
+			));
+
+			$ticket_messages_blockcache = array(
+				'ticket_messages_block' => $ticket_messages_block,
+				'ticket_notes_block' => $ticket_notes_block,
+				'message_count' => $message_count,
+				'note_count' => $note_count
+			);
+
+			App::getEntityRepository('DeskPRO:Cache')->save("ticket_messages.{$ticket['id']}.agent_block", $ticket_messages_blockcache, 259200);
+		}
+
+		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
+		$ticket_notes_block = $ticket_messages_blockcache['ticket_notes_block'];
+		$counts['messages'] = $ticket_messages_blockcache['message_count'];
+		$counts['notes'] = $ticket_messages_blockcache['note_count'];
 
 		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
 			'ticket_id' => $ticket_id,
@@ -80,30 +154,24 @@ class TicketController extends AbstractController
 
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
+			'ticket_attachments' => $ticket_attachments,
+
+			'ticket_custom_fields_block' => $ticket_custom_fields_block,
+			'ticket_messages_block' => $ticket_messages_block,
+			'ticket_notes_block' => $ticket_notes_block,
+
 			'ticket_deleted' => $ticket_deleted,
 			'ticket_options' => $ticket_options,
-			'custom_fields' => $custom_fields,
 			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
 			'macros' => $macros,
 			'widgets' => $widgets,
-			'counts' => $this->_fetchTicketCounts($ticket)
+			'counts' => $counts
 		));
 	}
 
 	protected function _fetchTicketCounts($ticket)
 	{
 		$counts = array();
-		$counts['messages'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM tickets_messages
-			WHERE ticket_id = ?
-		", array($ticket['id']));
-
-		$counts['notes'] = App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM tickets_messages
-			WHERE ticket_id = ? AND is_agent_note = 1
-		", array($ticket['id']));
 
 		$counts['attachments'] = App::getDb()->fetchColumn("
 			SELECT COUNT(*)
@@ -596,35 +664,7 @@ class TicketController extends AbstractController
 	 */
 	protected function getTicketOr404($ticket_id, $full = false)
 	{
-		if ($full) {
-			$ticket = App::getOrm()->createQuery("
-				SELECT
-					ticket, messages, message_person,
-					ticket_parts, ticket_dep, ticket_prod, ticket_cat, ticket_pri,
-					ticket_org,
-					ticket_person, ticket_person_email, ticket_agent, ticket_agent_team,
-					ticket_attach, ticket_custom_data, ticket_custom_data_field
-				FROM DeskPRO:Ticket ticket
-				LEFT JOIN ticket.messages messages
-				LEFT JOIN messages.person message_person
-				LEFT JOIN ticket.participants ticket_parts
-				LEFT JOIN ticket.department ticket_dep
-				LEFT JOIN ticket.product ticket_prod
-				LEFT JOIN ticket.category ticket_cat
-				LEFT JOIN ticket.priority ticket_pri
-				LEFT JOIN ticket.organization ticket_org
-				LEFT JOIN ticket.person ticket_person
-				LEFT JOIN ticket.person_email ticket_person_email
-				LEFT JOIN ticket.agent ticket_agent
-				LEFT JOIN ticket.agent_team ticket_agent_team
-				LEFT JOIN ticket.attachments ticket_attach
-				LEFT JOIN ticket.custom_data ticket_custom_data
-				LEFT JOIN ticket_custom_data.field ticket_custom_data_field
-				WHERE ticket.id = ?1
-			")->setParameter(1, $ticket_id)->getSingleResult();
-		} else {
-			$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
-		}
+		$ticket = $this->em->find('DeskPRO:Ticket', $ticket_id);
 
 		if (!$ticket) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_id");

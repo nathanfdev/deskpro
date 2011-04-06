@@ -39,19 +39,20 @@ $CONFIG['db']['driver'] = 'pdo_mysql';
 # Cache Options
 ################################################################################
 
+################################################################################
+# Cache Options
+################################################################################
+
 /**
- * Phrase caching caches entire phrase groups, meaning neither the database
- * nor even the filesystem is touched when fething phrases.
+ * The common cache includes things like names of categories, settings,
+ * and other common object attributes.
  */
-//$CONFIG['cache_phrases'] = array(
-//	'backend' => 'File',
-//	'cache_dir' => '%kernel.cache_dir%/cache_phrases',
-//	'file_locking' => true,
-//	'read_control' => true,
-//	'read_control_type' => 'strlen',
-//	'hashed_directory_level' => 0,
-//	'cache_file_umask' => 0744,
+//$CONFIG['cache_common'] = array(
+//	'backend' => 'Sqlite',
+//	'cache_db_complete_path' => '%kernel.cache_dir%/cache_common.db',
 //);
+//
+//$CONFIG['doctrine_cache_type'] = 'sqlite';
 
 
 ################################################################################

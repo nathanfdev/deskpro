@@ -44,12 +44,11 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	protected $auth;
 
 	/**
-	 * The person the session belongs to.
-	 *
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer", nullable=true)
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
-	protected $person_id = null;
+	protected $person = null;
 
 	/**
 	 * @var string
@@ -123,20 +122,19 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($person_id) {
 			$this->is_person = true;
-			$this->person_id = $person_id;
+			$this->person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
 		} else {
 			$this->is_person = false;
-			$this->person_id = null;
+			$this->person = null;
 		}
 	}
 
-	public function getPerson()
+	public function getPersonId()
 	{
-		if (!$this->person_id) {
-			return null;
+		if ($this->person) {
+			return $this->person['id'];
 		}
-
-		return App::getEntityRepository('DeskPRO:Person')->find($this->person_id);
+		return 0;
 	}
 
 	public function updateLastTime()

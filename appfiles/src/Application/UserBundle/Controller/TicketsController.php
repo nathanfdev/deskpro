@@ -98,11 +98,6 @@ class TicketsController extends AbstractController
 	 */
 	public function viewWithAuthAction($ticket_ref, $ticket_auth)
 	{
-		// If we're currently logged in, then the auth is meaningless
-		if ($this->person['id']) {
-			return $this->view($ticket_ref);
-		}
-		
 		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 		if (!$ticket OR !($tac = $ticket->findAccessCode($ticket_auth))) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();

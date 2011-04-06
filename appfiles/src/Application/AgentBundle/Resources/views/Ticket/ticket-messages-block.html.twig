@@ -1,0 +1,3 @@
+{% for message in ticket.messages %}
+	{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
+{% endfor %}

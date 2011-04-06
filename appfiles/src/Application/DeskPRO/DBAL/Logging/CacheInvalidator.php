@@ -32,6 +32,7 @@ class CacheInvalidator implements \Doctrine\DBAL\Logging\SQLLogger
 		'ticket_priorities'  => 'DeskPRO:TicketPriority',
 		'ticket_workflows'   => 'DeskPRO:TicketWorkflow',
 		'usergroups'         => 'DeskPRO:Usergroup',
+		'settings'           => 'DeskPRO:Setting',
 	);
 
 	public function startQuery($sql, array $params = null, array $types = null)

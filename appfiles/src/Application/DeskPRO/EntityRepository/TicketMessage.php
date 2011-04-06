@@ -42,4 +42,24 @@ class TicketMessage extends EntityRepository
 
 		return $message;
 	}
+
+
+	/**
+	 * Get all messages in a ticket
+	 * 
+	 * @param  $ticket
+	 * @return array
+	 */
+	public function getTicketMessages($ticket)
+	{
+		$messages = $this->getEntityManager()->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMessage m
+			LEFT JOIN m.person p
+			WHERE m.ticket = ?1
+			ORDER BY m.id ASC
+		")->setParameter(1, $ticket)->execute();
+
+		return $messages;
+	}
 }

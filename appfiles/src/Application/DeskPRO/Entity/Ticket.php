@@ -484,6 +484,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->addCustomData($custom_data);
 		}
 
+		if ($this->id) {
+			App::getEntityRepository('DeskPRO:Cache')->delete("ticket_custom_fields.{$this->id}");
+		}
+
 		return $custom_data;
 	}
 

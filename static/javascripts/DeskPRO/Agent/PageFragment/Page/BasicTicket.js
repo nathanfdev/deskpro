@@ -312,6 +312,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		this.custom_fields_display = $('.ticket-custom-fields:not(.edit)', this.wrapper);
 		this.custom_fields_edit = $('.ticket-custom-fields.edit', this.wrapper);
+		this.custom_fields_edit.detach().appendTo(this.custom_fields_display.parent().parent().parent().parent());
 
 		$('.close-trigger', this.custom_fields_edit).click((function() {
 			this.closeCustomFieldEditor();

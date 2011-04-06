@@ -16,7 +16,7 @@ use Orb\Util\Arrays;
 /**
  * Settings used by the system.
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Setting")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="settings")
  */

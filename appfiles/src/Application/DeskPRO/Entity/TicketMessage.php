@@ -44,7 +44,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
-	 * @orm:OneToMany(targetEntity="TicketAttachment", mappedBy="message", cascade={"persist", "remove", "merge"}, fetch="EAGER")
+	 * @orm:OneToMany(targetEntity="TicketAttachment", mappedBy="message", cascade={"persist", "remove", "merge"})
 	 */
 	protected $attachments;
 
@@ -137,6 +137,10 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function initPersonAccessCode()
 	{
+		if ($this->id) {
+			App::getEntityRepository('DeskPRO:Cache')->delete("ticket_messages.{$this->ticket['id']}");
+		}
+
 		$this->ticket->addAccessCodeForPerson($this->person);
 	}
 }

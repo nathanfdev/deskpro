@@ -55,6 +55,12 @@ class Settings implements \ArrayAccess
 	 */
 	protected $_loaded_groups = array();
 
+	/**
+	 * Have loaded custom settings yet?
+	 * @var bool
+	 */
+	protected $_has_loaded_db = false;
+
 
 
 	public function __construct(array $settings_paths, \Application\DeskPRO\DBAL\Connection $db = null)
@@ -166,13 +172,21 @@ class Settings implements \ArrayAccess
 		# Load from db (user-specified overrides)
 		#------------------------------
 
-		$group_in = $this->db->quoteIn($this->_pending_groups, \PDO::PARAM_STR);
-		$db_settings = $this->db->fetchAllKeyValue("
-			SELECT name, value
-			FROM settings
-			WHERE groupname IN ($group_in)
-		");
-		$this->settings = array_merge($this->settings, $db_settings);
+		if (!$this->_has_loaded_db) {
+
+			$this->_has_loaded_db = true;
+
+			if (($db_settings = App::getCache('common')->load('settings')) === false) {
+				$db_settings = $this->db->fetchAllKeyValue("
+					SELECT name, value
+					FROM settings
+				");
+
+				App::getCache('common')->save($db_settings, null, array('settings'));
+			}
+
+			$this->settings = array_merge($this->settings, $db_settings);
+		}
 
 		$this->_loaded_groups = array_merge($this->_loaded_groups, $this->_pending_groups);
 		$this->_pending_groups = array();
