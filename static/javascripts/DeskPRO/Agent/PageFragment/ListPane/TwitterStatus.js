@@ -122,7 +122,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 		var buttons = $('.follow a', this.content);
 
 		buttons.click($.proxy(function(e) {
-			this.doFollow($(e.target).parents('div.user').attr('data-user-id'));
+			this.doFollow($(e.target).parents('.status').attr('data-user-id'));
 		}, this));
 	},
 
@@ -149,7 +149,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 		var buttons = $('.unfollow a', this.content);
 
 		buttons.click($.proxy(function(e) {
-			this.doUnfollow($(e.target).parents('div.user').attr('data-user-id'));
+			this.doUnfollow($(e.target).parents('.status').attr('data-user-id'));
 		}, this));
 	},
 

@@ -1,5 +1,5 @@
 {% for status in statuses %}
-	<div class="status status-{{ status.id }}" data-status-id="{{ status.id }}">
+	<div class="status status-{{ status.id }}" data-status-id="{{ status.id }}" data-user-id="{{ status.user.id }}">
 		<div class="avatar">
 			<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
 				<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
