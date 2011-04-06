@@ -14,6 +14,8 @@ namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\App;
 
+use \Application\DeskPRO\Entity\TwitterAccountFriend;
+
 use \Orb\Service\Twitter\Twitter;
 
 /**
