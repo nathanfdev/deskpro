@@ -62,7 +62,7 @@ class TwitterAccountController extends AbstractController
 	protected function getConsumer()
 	{
 		$callbackUrl = $this->generateUrl('admin_twitter_accounts_authorize', array(), true);
-		$consumer    = \Orb\Service\Twitter\Oauth::getConsumer($callbackUrl);
+		$consumer	= \Orb\Service\Twitter\Oauth::getConsumer($callbackUrl);
 
 		return $consumer;
 	}
@@ -75,7 +75,7 @@ class TwitterAccountController extends AbstractController
 	public function newAction()
 	{
 		// generate request token
-		$consumer     = $this->getConsumer();
+		$consumer	 = $this->getConsumer();
 		$requestToken = $consumer->getRequestToken();
 
 		// store request token in session
@@ -133,31 +133,32 @@ class TwitterAccountController extends AbstractController
 			// fetch user timelines
 			$this->importTimeline($account, $twitter->status->publicTimeline());
 			$this->importTimeline($account, $twitter->status->friendsTimeline());
-			// $this->importTimeline($account, $twitter->status->userTimeline());
+			$this->importTimeline($account, $twitter->status->userTimeline());
 
 			// fetch friends (following)
 			// @TODO check pagination (we only recieve 100 friends at once)
+			$friendIds = $account->getFriendIds();
 			foreach ($twitter->user->friends()->user as $user) {
-				$friend = new TwitterAccountFriend();
-				$friend['account'] = $account;
-				$friend['user'] = $this->getOrCreateUser($user);
-				$em->persist($friend);
+				if (!in_array((integer) $user->id, $friendIds)) {
+					$friend = new TwitterAccountFriend();
+					$friend['account'] = $account;
+					$friend['user'] = $this->getOrCreateUser($user);
+					$em->persist($friend);
+				}
 			}
-
-			// flush changes
 			$em->flush();
 
 			// fetch followers
 			// @TODO check pagination (we only recieve 100 followers at once)
+			$followerIds = $account->getFollowerIds();
 			foreach ($twitter->user->followers()->user as $user) {
-				// create Twitter account follower
-				$follower            = new TwitterAccountFollower();
-				$follower['account'] = $account;
-				$follower['user']    = $this->getOrCreateUser($user);
-				$em->persist($follower);
+				if (!in_array((integer) $user->id, $followerIds)) {
+					$follower = new TwitterAccountFollower();
+					$follower['account'] = $account;
+					$follower['user'] = $this->getOrCreateUser($user);
+					$em->persist($follower);
+				}
 			}
-
-			// flush changes
 			$em->flush();
 		} catch (\Exception $e) { // Zend_Oauth_Exception
 			return $this->render('AdminBundle:TwitterAccount:authorize-error.html.twig', array(
@@ -183,9 +184,18 @@ class TwitterAccountController extends AbstractController
 
 		foreach ($timeline->status as $status) {
 			$entity = $em->getRepository('DeskPRO:TwitterStatus')->find((string) $status->id);
+                
 			if (!$entity) {
 				$entity = TwitterStatus::createFromXML($status);
 				$entity['user'] = $this->getOrCreateUser($status->user);
+
+				if (isset($status->retweeted_status)) {
+					$retweet = TwitterStatus::createFromXML($status->retweeted_status);
+					$retweet['user'] = $this->getOrCreateUser($status->retweeted_status->user);
+					$entity['retweet'] = $retweet;
+					$em->persist($retweet);
+				}
+
 				$em->persist($entity);
 			}
 		}
