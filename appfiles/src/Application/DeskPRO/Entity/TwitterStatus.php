@@ -59,6 +59,19 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	protected $replies;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\TwitterStatus
+	 * @orm:ManyToOne(targetEntity="TwitterStatus", inversedBy="retweets")
+	 * @orm:JoinColumn(name="retweet_id", referencedColumnName="id", nullable=true)
+	 */
+	protected $retweet;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="retweet")
+	 */
+	protected $retweets;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
 	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="replies")
 	 * @orm:JoinColumn(name="in_reply_to_user_id", referencedColumnName="id", nullable=true)
@@ -155,6 +168,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->replies = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->retweets = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->mentions = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->tags = new \Doctrine\Common\Collections\ArrayCollection();
@@ -232,6 +246,30 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 			$this->in_reply_to_status = $status;
 		} else {
 			$this->in_reply_to_status = null;
+		}
+	}
+
+	/**
+	 * @return integer
+	 */
+	public function getRetweetId()
+	{
+		if (null !== $this->retweet) {
+			return $this->retweet->getId();
+		}
+
+		return 0;
+	}
+
+	/**
+	 * @param integer $id
+	 */
+	public function setRetweetId($id)
+	{
+		if ($id && $status = App::getOrm()->getRepository('DeskPRO:TwitterStatus')->find($id)) {
+			$this->retweet = $status;
+		} else {
+			$this->retweet = null;
 		}
 	}
 
