@@ -29,16 +29,21 @@
 					<span class="timeago" title="{{ retweet.date_created|date('c') }}">{{ retweet.date_created|date('r') }}</span>
 				</div>
 			{% endif %}
-			{% if status.in_reply_to_status %}
-				<div class="reply">to <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': in_reply_to_status.user.id}) }}">@{{ status.in_reply_to_status.user.screen_name }}</span> <span class="text">"{{ status.in_reply_to_status.text }}"</span></div>
-			{% endif %}
 				<div class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
 					<h4 class="screen_name">@{{ status.user.screen_name }}</h4>
 					<span class="name">{{ status.user.name }}</span>
 				</div>
 			</div>
-			<div class="text">
+			<div class="content">
 				<p>{{ status.parsed_text|raw }}</p>
+			{% if status.in_reply_to_status %}
+				{% set reply = status.in_reply_to_status %}
+				<div class="reply">
+					in reply to "<span class="text">{{ reply.parsed_text|raw }}</span>"
+					by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': reply.user.id}) }}">@{{ reply.user.screen_name }}</span>
+					<span class="timeago" title="{{ reply.date_created|date('c') }}">{{ reply.date_created|date('r') }}</span>
+				</div>
+			{% endif %}
 			</div>
 			<div class="meta">
 				<span class="timestamp">

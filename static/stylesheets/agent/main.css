@@ -2953,7 +2953,7 @@ ul.person-popout-tabs li a{
 	display: none;
 }
 
-.twitter .content {
+.twitter > .content {
 	padding: 5px;
 }
 
@@ -3039,7 +3039,7 @@ ul.person-popout-tabs li a{
 	position: absolute;
 }
 
-.twitter .status .head .user:hover {
+.twitter .status .user:hover {
 	cursor: pointer;
 }
 
@@ -3051,22 +3051,31 @@ ul.person-popout-tabs li a{
 	color: #969BA5;
 }
 
-.twitter .status .head .reply,
 .twitter .status .head .retweet {
 	float: right;
 }
 
-.twitter .status .head .retweet {
+.twitter .status .head .retweet,
+.twitter .status .content .reply {
 	color: #969BA5;
 }
 
-.twitter .status .head .retweet .user {
+.twitter .status .head .retweet .user,
+.twitter .status .body .reply .user,
+.twitter .status .content .reply .text {
 	color: #3C3E3F;
 }
 
-.twitter .status .text {
+.twitter .status .content p,
+.twitter .status .content .reply {
 	padding: 4px 8px;
-	position: relative;
+}
+
+.twitter .status .content .reply {
+	border-top: 1px solid #D2D7E0;
+	-webkit-box-shadow: inset 0 1px 0 white;
+	-moz-box-shadow: inset 0 1px 0 white;
+	box-shadow: inset 0 1px 0 white;
 }
 
 .twitter .status .meta {

@@ -72,6 +72,8 @@ class TwitterStream extends AbstractJob
 				$success = false;
 			}
 
+		//	$this->em->clear();
+
 			if (true === $success) {
 				$this->db->delete('twitter_stream', array(
 					'id' => $event['id']
@@ -165,6 +167,24 @@ class TwitterStream extends AbstractJob
 
 			$status['retweet'] = $retweet;
 			$this->em->persist($retweet);
+		}
+
+		// reply
+		if (null !== $data['in_reply_to_status_id_str']) {
+			if (!($reply = $this->findStatus($data['in_reply_to_status_id_str']))) {
+				$replyXml = $this->getTwitter($account['id'])->status->show($data['in_reply_to_status_id_str']);
+				if (!($replyUser = $this->findUser((integer) $replyXml->user->id))) {
+					$replyUser = TwitterUser::createFromXML($replyXml->user);
+					$this->em->persist($replyUser);
+				}
+
+				$reply = TwitterStatus::createFromXML($replyXml);
+				$reply['user'] = $replyUser;
+				$this->em->persist($reply);
+			}
+
+			$status['in_reply_to_status'] = $reply;
+			$status['in_reply_to_user'] = $user;
 		}
 
 		// fetch mentions
