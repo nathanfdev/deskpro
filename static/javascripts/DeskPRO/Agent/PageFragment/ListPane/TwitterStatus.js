@@ -57,14 +57,14 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	_initIncludeFields: function() {
 		$('.display-options input:checkbox', this.header).change($.proxy(this.reload, this));
 
-		$('.display-options label', this.header).each(function() {
-			var label = $(this),
-				input = $('.display-options input[name='+label.data('for')+']'),
+		$('.display-options label', this.header).each($.proxy(function(idx, el) {
+			var label = $(el),
+				input = $('.display-options input[name='+label.data('for')+']', this.header),
 				id = Orb.getUniqueId('twitter_options_'+label.data('for'));
 
 			input.attr('id', id);
 			label.attr('for', id);
-		});
+		}, this));
 	},
 
 	_initUserPageLinks: function() {
