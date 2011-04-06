@@ -19,6 +19,10 @@ use \Orb\Util\Numbers;
 
 class TwitterStatus extends EntityRepository
 {
+	/**
+	 * @param string $sortByDate (optional)
+	 * @return string
+	 */
 	protected function normalizeSortByDate($sortByDate = 'asc')
 	{
 		// check that sort by date is asc or desc
@@ -30,12 +34,28 @@ class TwitterStatus extends EntityRepository
 	}
 
 	/**
+	 * @param integer $limit
+	 * @param integer $page
+	 * @return integer
+	 */
+	protected function calculateOffset($limit, $page)
+	{
+		if (1 <= $page) {
+			$page = 0;
+		}
+
+		return $page * $limit;
+	}
+
+	/**
 	 * @param array $userIds An array of TwitterUser ids
 	 * @param Boolean $includeArchived (optional)
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findByUserIds(array $userIds, $includeArchived = false, $sortByDate = 'ASC')
+	public function findByUserIds(array $userIds, $includeArchived = false, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$userIds = array_filter($userIds, function ($value) {
 			if (Numbers::isInteger($value)) {
@@ -60,9 +80,13 @@ class TwitterStatus extends EntityRepository
 			$query .= " AND s.is_archived = 0 ";
 		}
 
-		$query .= sprintf("ORDER BY s.date_created %s", $this->normalizeSortByDate($sortByDate));
+		$query .= sprintf(" ORDER BY s.date_created %s", $this->normalizeSortByDate($sortByDate));
 
-		$statuses = $this->getEntityManager()->createQuery($query)->execute();
+		$statuses = $this->getEntityManager()
+			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
+			->execute();
 
 		return $statuses;
 	}
@@ -70,9 +94,11 @@ class TwitterStatus extends EntityRepository
 	/**
 	 * @param integer $id
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findMessagesForUserId($id, $sortByDate = 'ASC')
+	public function findMessagesForUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = sprintf("
 			SELECT s
@@ -85,6 +111,8 @@ class TwitterStatus extends EntityRepository
 		return $this
 			->getEntityManager()
 			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
 			->execute(array(
 				'user_id' => $id
 			));
@@ -93,9 +121,11 @@ class TwitterStatus extends EntityRepository
 	/**
 	 * @param integer $id
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findRepliesForUserId($id, $sortByDate = 'ASC')
+	public function findRepliesForUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = sprintf("
 			SELECT r
@@ -111,6 +141,8 @@ class TwitterStatus extends EntityRepository
 		return $this
 			->getEntityManager()
 			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
 			->execute(array(
 				'user_id' => $id
 			));
@@ -119,9 +151,11 @@ class TwitterStatus extends EntityRepository
 	/**
 	 * @param integer $id
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findMentionsForUserId($id, $sortByDate = 'ASC')
+	public function findMentionsForUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = sprintf("
 			SELECT s
@@ -134,6 +168,8 @@ class TwitterStatus extends EntityRepository
 	 	return $this
 			->getEntityManager()
 			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
 			->execute(array(
 				'user_id' => $id
 			));
@@ -142,7 +178,7 @@ class TwitterStatus extends EntityRepository
 	/**
 	 * @todo implement
 	 */
-	public function findRetweetsForUserId($id, $sortByDate = 'ASC')
+	public function findRetweetsForUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 	 	return array();
 	}
@@ -150,9 +186,11 @@ class TwitterStatus extends EntityRepository
 	/**
 	 * @param integer $id
 	 * @param string $sortByDate (optional)
+	 * @param integer $limit (optional)
+	 * @param integer $page (optional)
 	 * @return array
 	 */
-	public function findOutgoingByUserId($id, $sortByDate = 'ASC')
+	public function findOutgoingByUserId($id, $sortByDate = 'ASC', $limit = 25, $page = 1)
 	{
 		$query = sprintf("
 			SELECT s
@@ -164,6 +202,8 @@ class TwitterStatus extends EntityRepository
 	 	return $this
 			->getEntityManager()
 			->createQuery($query)
+			->setMaxResults($limit)
+			->setFirstResult($this->calculateOffset($limit, $page))
 			->execute(array(
 				'user_id' => $id
 			));
