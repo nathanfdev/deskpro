@@ -18,10 +18,10 @@ namespace Application\DeskPRO\Entity;
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="labels_news")
  */
-class LabelArticle extends LabelAssocAbstract
+class LabelNews extends LabelAssocAbstract
 {
 	const LABEL_TYPENAME = 'news';
-	
+
 	/**
 	 * @var \Application\DeskPRO\Entity\News
 	 * @orm:Id

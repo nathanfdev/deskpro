@@ -22,6 +22,7 @@ use Orb\Util\Arrays;
 class RatingIdea extends RatingAbstract
 {
 	/**
+	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Idea", inversedBy="comment")
 	 * @orm:JoinColumn(name="idea_id", referencedColumnName="id")
 	 */
