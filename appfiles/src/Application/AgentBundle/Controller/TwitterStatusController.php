@@ -203,7 +203,8 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveNoteAction()
 	{
-		$response = array('success' => true);
+		$success = false;
+		$error = null;
 
 		try {
 			$status = $this->getStatus($this->in->getInt('status_id'));
@@ -216,14 +217,13 @@ class TwitterStatusController extends AbstractController
 			$em = App::getOrm();
 			$em->persist($note);
 			$em->flush();
+
+			$success = true;
 		} catch (\Exception $e) {
-			$response = array(
-				'success' => false,
-				'error'   => $e->getMessage()
-			);
+			$error = $e->getMessage();
 		}
 
-		return $this->createJsonResponse($response);
+		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
 	}
 
 	/**
@@ -232,24 +232,25 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveRetweetAction()
 	{
-		$response = array('success' => true);
+		$success = false;
+		$error = null;
 
 		try {
-			$status  = $this->getStatus($this->in->getInt('status_id'));
+			$status = $this->getStatus($this->in->getInt('status_id'));
 			$account = $this->getAccount($this->in->getInt('account_id'));
 
 			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
-
-			// @TODO analyse response if it actually worked
-			/* $response = */ $twitter->status->retweet($status['id']);
+			$response = $twitter->status->retweet($status['id']);
+			if (isset($response->error)) {
+				$error = (string) $response->error;
+			} else {
+				$success = true;
+			}
 		} catch (\Exception $e) {
-			$response = array(
-				'success' => false,
-				'error'   => $e->getMessage()
-			);
+			$error = $e->getMessage();
 		}
 
-		return $this->createJsonResponse($response);
+		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
 	}
 
 	/**
@@ -258,7 +259,8 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveReplyAction()
 	{
-		$response = array('success' => true);
+		$success = false;
+		$error = null;
 
 		try {
 			$status = $this->getStatus($this->in->getInt('status_id'));
@@ -268,17 +270,17 @@ class TwitterStatusController extends AbstractController
 			// $type = $this->in->getValue('type');
 
 			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
-
-			// @TODO analyse response if it actually worked
-			/* $response = */ $twitter->status->update($this->in->getValue('text'), $status['id']);
+			$response = $twitter->status->update($this->in->getValue('text'), $status['id']);
+			if (isset($response->error)) {
+				$error = (string) $response->error;
+			} else {
+				$success = true;
+			}
 		} catch (\Exception $e) {
-			$response = array(
-				'success' => false,
-				'error'   => $e->getMessage()
-			);
+			$error = $e->getMessage();
 		}
 
-		return $this->createJsonResponse($response);
+		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
 	}
 
 	/**
@@ -287,7 +289,8 @@ class TwitterStatusController extends AbstractController
 	 */
 	public function ajaxSaveArchiveAction()
 	{
-		$response = array('success' => true);
+		$success = false;
+		$error = null;
 
 		try {
 			$status = $this->getStatus($this->in->getValue('status_id'));
@@ -301,13 +304,12 @@ class TwitterStatusController extends AbstractController
 			$em = App::getOrm();
 			$em->persist($status);
 			$em->flush();
+
+			$success = true;
 		} catch (\Exception $e) {
-			$response = array(
-				'success' => false,
-				'error'   => $e->getMessage()
-			);
+			$error = $e->getMessage();
 		}
 
-		return $this->createJsonResponse($response);
+		return $this->createJsonResponse(array('success' => $success, 'error' => $error));
 	}
 }

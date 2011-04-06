@@ -138,9 +138,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 			success: function(json) {
 				if (json.success) {
 					this.reload();
+				} else {
+					alert(json.error);
 				}
-
-				// @TODO handle json.error
 			}
 		});
 	},
@@ -165,9 +165,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 			success: function(json) {
 				if (json.success) {
 					this.reload();
+				} else {
+					alert(json.error);
 				}
-
-				// @TODO handle json.error
 			}
 		});
 	},
@@ -235,9 +235,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 			success: function(json) {
 				if (json.success) {
 					this.reload();
+				} else {
+					alert(json.error);
 				}
-
-				// @TODO handle json.error
 			}
 		});
 	},
@@ -274,9 +274,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 			success: function(json) {
 				if (json.success) {
 					this.reload();
+				} else {
+					alert(json.error);
 				}
-
-				// @TODO handle json.error
 			}
 		});
 	},
@@ -349,9 +349,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 			success: function(json) {
 				if (json.success) {
 					this.reload();
+				} else {
+					alert(json.error);
 				}
-
-				// @TODO handle json.error
 			}
 		});
 	},
@@ -377,9 +377,9 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 			success: function(json) {
 				if (json.success) {
 					this.reload();
+				} else {
+					alert(json.error);
 				}
-
-				// @TODO handle json.error
 			}
 		})
 	}
