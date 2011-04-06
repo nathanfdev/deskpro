@@ -1,6 +1,6 @@
-<div class="message note-{{ status.id }} note-message user-message" data-status-id="{{ status.id }}">
+<div class="message status-{{ status.id }}" data-status-id="{{ status.id }}">
 	<div class="message-avatar left">
-		<img src="{{ user.profile_image_url }}" width="35" height="35" alt="@{{ status.user.screen_name|escape }}" />
+		<img src="{{ status.user.profile_image_url }}" width="35" height="35" alt="@{{ status.user.screen_name|escape }}" />
 	</div>
 	<div class="message-body">
 		<div class="message-meta">

@@ -394,7 +394,7 @@ class App
 	{
 		return self::get(self::SERVICE_ORM)->getRepository($entity);
 	}
-	
+
 
 
 	/**

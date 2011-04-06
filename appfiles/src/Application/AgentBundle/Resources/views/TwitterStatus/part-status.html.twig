@@ -1,59 +1,64 @@
-<ul>
 {% for status in statuses %}
-	<li class="tweet-item{% if status.is_archived %} archived{% endif %}" data-status-id="{{ status.id }}">
-		<div class="head">
-		{% if status.in_reply_to_status %}
-			<span class="response">In response to @{{ status.in_reply_to_status.user.screen_name }} "{{ status.in_reply_to_status.text }}"</span>
-		{% endif %}
-			<cite>{{ status.user.name }} / @{{ status.user.screen_name }}</cite>
-		</div>
-		<div class="user" data-user-id="{{ status.user.id }}">
+	<div class="status status-{{ status.id }}" data-status-id="{{ status.id }}">
+		<div class="avatar">
 			<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
-				<img src="{{ status.user.profile_image_url }}" border="0" />
+				<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
 			</div>
+			<div class="user-meta">
 		{% if status.user.id is not sameas(account.user.id) %}
-			<div class="controls">
-				<ul>
-				{% if status.user.id in account.friend_ids %}
-					<li class="unfollow"><a>Unfollow</a></li>
-				{% else %}
-					<li class="follow"><a>Follow</a></li>
-				{% endif %}
-				</ul>
-			</div>
+			{% if status.user.id in account.friend_ids %}
+				<span class="unfollow"><a>Unfollow</a></span>
+			{% else %}
+				<span class="follow"><a>Follow</a></span>
+			{% endif %}
 		{% endif %}
-			<div class="notes">
-				<ul>
-					<li class="tweets"><span class="tweet-counter">{{ status.user.statuses.count }}</span> Tweets</li>
-				</ul>
 			</div>
 		</div>
-		<div class="content">
-			<div class="tweet">{{ status.parsed_text|raw }}</div>
-			<div class="notes">
-				<div class="note">
-					<em class="time" title="{{ status.date_created|date('c') }}">{{ status.date_created|date('r') }}</em>
+		<div class="body">
+			<div class="head">
+				<span class="arrow-left"></span>
+				<div class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
+					<h4 class="screen_name">@{{ status.user.screen_name }}</h4>
+					<span class="name">{{ status.user.name }}</span>
 				</div>
+			{% if status.in_reply_to_status %}
+				<div class="reply">@{{ status.in_reply_to_status.user.screen_name }} "{{ status.in_reply_to_status.parsed_text|raw }}"</div>
+			{% endif %}
+			</div>
+			<div class="text">
+				<p>{{ status.parsed_text|raw }}</p>
+			</div>
+			<div class="meta">
+				<span class="timestamp">
+					<span class="timeago" title="{{ status.date_created|date('c') }}">{{ status.date_created|date('r') }}</span>
+				</span>
+				<span class="controls">
+					<span class="archive"><a>{% if status.is_archived %}Archived{% else %}Archive{% endif %}</a></span>
+					<span class="reply"><a>Reply</a></span>
+				{% if status.isMessage is sameas(false) %}
+					<span class="retweet"><a>Retweet</a></span>
+				{% endif %}
+					<span class="assign"><a>Assign</a></span>
+					<span class="note"><a>Add Note</a></span>
+				</span>
+			</div>
+		{% if status.notes.count %}
+			<div class="notes">
 			{% for note in status.notes %}
 				<div class="note" data-note-id="{{ note.id }}">
-					<span class="person">{{ note.person.display_name }}</span>
-					<em class="time" title="{{ note.date_created|date('c') }}">{{ note.date_created|date('r') }}</em>
-					<div class="text">{{ note.text }}</div>
+					<span class="user">
+						{{ note.person.name }}
+					</span>
+					<span class="timestamp">
+						<span class="timeago" title="{{ note.date_created|date('c') }}">{{ note.date_created|date('r') }}</span>
+					</span>
+					<span class="text">
+						{{ note.text }}
+					</span>
 				</div>
 			{% endfor %}
 			</div>
-			<div class="controls">
-				<ul>
-					<li class="archive"><a>{% if status.is_archived %}Archived{% else %}Archive{% endif %}</a></li>
-					<li class="reply"><a>Reply</a></li>
-				{% if status.isMessage is sameas(false) %}
-					<li class="retweet"><a>Retweet</a></li>
-				{% endif %}
-					<li class="assign"><a>Assign</a></li>
-					<li class="note"><a>Add Note</a></li>
-				</ul>
-			</div>
+		{% endif %}
 		</div>
-	</li>
+	</div>
 {% endfor %}
-</ul>

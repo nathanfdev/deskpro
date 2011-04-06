@@ -3,36 +3,39 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
-	el: null,
-	head: null,
-	listing: null,
-	note: null,
-	reply: null,
+	wrapper: null,
+	header: null,
+	content: null,
+
+	// note: null,
+	// reply: null,
 
 	initPage: function(el) {
-		this.el = $(el);
-		this.head = $('.twitter-head', this.el);
-		this.listing = $('.twitter-listing', this.el);
-		this.note = $('.twitter-note', this.el);
-		this.reply = $('.twitter-reply', this.el);
+		this.wrapper = $(el);
 
-		this._initHead();
-		this._initListing();
+		this.header = $('.header', this.wrapper);
+		this.content = $('.content', this.wrapper);
+
+		this.note = $('.form-note', this.wrapper);
+		this.reply = $('.form-reply', this.wrapper);
+
+		this._initHeader();
+		this._initContent();
 		this._initControls();
 	},
 
 	_afterLoading: function() {
-		this._initListing();
+		this._initContent();
 		this._initControls();
 	},
 
-	_initHead: function() {
+	_initHeader: function() {
 		this._initOrderBySelectField();
 		this._initIncludeFields();
 	},
 
-	_initListing: function() {
-		this._initPhotos();
+	_initContent: function() {
+		this._initUserPageLinks();
 		this._initTimeago();
 	},
 
@@ -47,32 +50,44 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	_initOrderBySelectField: function() {
-		$('.display-options select[name=sortbydate]', this.head)
+		$('.display-options select[name=sortbydate]', this.header)
 			.change($.proxy(this.reload, this));
 	},
 
 	_initIncludeFields: function() {
-		$('.display-options input:checkbox', this.head)
-			.change($.proxy(this.reload, this));
+		$('.display-options input:checkbox', this.header).change($.proxy(this.reload, this));
+
+		$('.display-options label', this.header).each(function() {
+			var label = $(this),
+				input = $('.display-options input[name='+label.data('for')+']'),
+				id = Orb.getUniqueId('twitter_options_'+label.data('for'));
+
+			input.attr('id', id);
+			label.attr('for', id);
+		});
 	},
 
-	_initPhotos: function() {
-		$('div.photo', this.el).click(function() {
+	_initUserPageLinks: function() {
+		$('.photo', this.content).click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
+
+		$('.user', this.content).click(function() {
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 	},
 
 	_initTimeago: function() {
-		this.initTimesOnCollection($('.notes .note .time', this.listing));
+		this.initTimesOnCollection($('.timeago', this.content));
 	},
 
 	_getDisplayOptions: function() {
 		var options = {
-			sortbydate: $('.display-options select[name=sortbydate] option:selected', this.head).attr('name'),
+			sortbydate: $('.display-options select[name=sortbydate] option:selected', this.header).attr('name'),
 			include: {}
 		};
 
-		$('.display-options input:checkbox', this.head).each(function() {
+		$('.display-options input:checkbox', this.header).each(function() {
 			var field = $(this);
 			options.include[field.attr('name')] = field.attr('checked') ? 1 : 0;
 		});
@@ -87,14 +102,24 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 			data: this._getDisplayOptions(),
 			context: this,
 			success: function(json) {
-				this.listing.html(json.statuses);
+				this.content.html(json.statuses);
 				this._afterLoading();
 			}
 		});
 	},
 
+	highlightStatus: function(id) {
+		console.log($('.status-'+id, this.content));
+		$('.status', this.content).removeClass('highlight');
+		$('.status-'+id, this.content).addClass('highlight');
+	},
+
+	downlightStatus: function(id) {
+		$('.status-'+id, this.content).removeClass('highlight');
+	},
+
 	_initFollow: function() {
-		var buttons = $('li.tweet-item .user .controls .follow a', this.listing);
+		var buttons = $('.follow a', this.content);
 
 		buttons.click($.proxy(function(e) {
 			this.doFollow($(e.target).parents('div.user').attr('data-user-id'));
@@ -121,7 +146,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	_initUnfollow: function() {
-		var buttons = $('li.tweet-item .user .controls .unfollow a', this.listing);
+		var buttons = $('.unfollow a', this.content);
 
 		buttons.click($.proxy(function(e) {
 			this.doUnfollow($(e.target).parents('div.user').attr('data-user-id'));
@@ -148,20 +173,23 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	_initAddNote: function() {
-		var buttons = $('li.tweet-item .note a', this.listing);
+		var buttons = $('.controls .note a', this.content);
 
 		buttons.click($.proxy(function(e) {
-			var status = $(e.target).parents('li.tweet-item').attr('data-status-id'),
+			var status = $(e.target).parents('.status').attr('data-status-id'),
 				note = this.note.clone(),
 				area = $('textarea[name=text]', note);
 
-			$(e.target).parents('li.tweet-item').append(note);
+			$(e.target).parents('.status').append(note);
+			this.highlightStatus(status);
 
 			// close on ESCAPE
-			var closeOnEscape = function(e) {
+			var closeOnEscape = $.proxy(function(e) {
 				if (e.which != 27) {
 					return true;
 				}
+
+				this.downlightStatus(status);
 
 				note.remove();
 
@@ -169,7 +197,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 				$(document).unbind('keydown', closeOnEscape);
 
 				return true;
-			};
+			}, this);
 			$(document).keydown(closeOnEscape);
 
 			// submit on ENTER
@@ -215,7 +243,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	_initAssign: function() {
-		var buttons = $('li.tweet-item .assign a', this.listing);
+		var buttons = $('.controls .assign a', this.content);
 
 		buttons.click($.proxy(function(e) {
 			e.preventDefault();
@@ -224,10 +252,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	_initRetweet: function() {
-		var buttons = $('li.tweet-item .retweet a', this.listing);
+		var buttons = $('.controls .retweet a', this.content);
 
 		buttons.click($.proxy(function(e) {
-			this.doRetweet($(e.target).parents('li.tweet-item').attr('data-status-id'));
+			this.doRetweet($(e.target).parents('.status').attr('data-status-id'));
 
 			e.preventDefault();
 			return false;
@@ -254,20 +282,23 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	_initReply: function() {
-		var buttons = $('li.tweet-item .reply a', this.listing);
+		var buttons = $('.controls .reply a', this.content);
 
 		buttons.click($.proxy(function(e) {
-			var status = $(e.target).parents('li.tweet-item').attr('data-status-id'),
+			var status = $(e.target).parents('.status').attr('data-status-id'),
 				reply = this.reply.clone(),
 				area = $('textarea[name=text]', reply);
 
-			$(e.target).parents('li.tweet-item').append(reply);
+			$(e.target).parents('.status').append(reply);
+			this.highlightStatus(status);
 
 			// close on ESCAPE
-			var closeOnEscape = function(e) {
+			var closeOnEscape = $.proxy(function(e) {
 				if (e.which != 27) {
 					return true;
 				}
+
+				this.downlightStatus(status);
 
 				reply.remove();
 
@@ -275,7 +306,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 				$(document).unbind('keydown', closeOnEscape);
 
 				return true;
-			};
+			}, this);
 			$(document).keydown(closeOnEscape);
 
 			// submit on ENTER
@@ -326,11 +357,11 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	_initArchive: function() {
-		var buttons = $('li.tweet-item .archive a', this.listing);
+		var buttons = $('.controls .archive a', this.content);
 
 		buttons.click($.proxy(function(e) {
 			// $.data('status-id') results in math(status-id - 4) so use .attr()
-			this.doArchive($(e.target).parents('li.tweet-item').attr('data-status-id'));
+			this.doArchive($(e.target).parents('.status').attr('data-status-id'));
 
 			e.preventDefault();
 			return false;
