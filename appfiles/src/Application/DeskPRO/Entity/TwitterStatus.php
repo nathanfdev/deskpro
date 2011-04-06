@@ -405,6 +405,10 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
+		if (strlen($this['text']) != $cursor) {
+			$this->_parsed_text .= substr($this['text'], $cursor);
+		}
+
 		return $this->_parsed_text;
 	}
 
