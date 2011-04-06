@@ -274,6 +274,14 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @return Boolean
+	 */
+	public function isRetweet()
+	{
+		return null !== $this->retweet;
+	}
+
+	/**
 	 * @return integer
 	 */
 	public function getInReplyToUserId()

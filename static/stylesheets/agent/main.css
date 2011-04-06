@@ -3051,6 +3051,19 @@ ul.person-popout-tabs li a{
 	color: #969BA5;
 }
 
+.twitter .status .head .reply,
+.twitter .status .head .retweet {
+	float: right;
+}
+
+.twitter .status .head .retweet {
+	color: #969BA5;
+}
+
+.twitter .status .head .retweet .user {
+	color: #3C3E3F;
+}
+
 .twitter .status .text {
 	padding: 4px 8px;
 	position: relative;

@@ -1,5 +1,11 @@
 {% for status in statuses %}
-	<div class="status status-{{ status.id }}" data-status-id="{{ status.id }}" data-user-id="{{ status.user.id }}">
+{% if status.isRetweet is sameas(true) %}
+	{% set retweet = status %}
+	{% set status = status.retweet %}
+{% else %}
+	{% set retweet = null %}
+{% endif %}
+	<div class="status status-{{ status.id }}{% if retweet %} retweet {% endif %}{%if status.in_reply_to_status %} reply {% endif %}" data-status-id="{{ status.id }}" data-user-id="{{ status.user.id }}">
 		<div class="avatar">
 			<div class="photo" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
 				<img src="{{ status.user.profile_image_url }}" width="48" height="48" border="0" />
@@ -17,13 +23,16 @@
 		<div class="body">
 			<div class="head">
 				<span class="arrow-left"></span>
+			{% if retweet %}
+				<div class="retweet">by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}">@{{ retweet.user.screen_name }}</span></div>
+			{% endif %}
+			{% if status.in_reply_to_status %}
+				<div class="reply">to <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': in_reply_to_status.user.id}) }}">@{{ status.in_reply_to_status.user.screen_name }}</span> <span class="text">"{{ status.in_reply_to_status.text }}"</span></div>
+			{% endif %}
 				<div class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': status.user.id}) }}">
 					<h4 class="screen_name">@{{ status.user.screen_name }}</h4>
 					<span class="name">{{ status.user.name }}</span>
 				</div>
-			{% if status.in_reply_to_status %}
-				<div class="reply">@{{ status.in_reply_to_status.user.screen_name }} "{{ status.in_reply_to_status.parsed_text|raw }}"</div>
-			{% endif %}
 			</div>
 			<div class="text">
 				<p>{{ status.parsed_text|raw }}</p>

@@ -153,6 +153,20 @@ class TwitterStream extends AbstractJob
 		$status['user'] = $user;
 		$this->em->persist($status);
 
+		// retweet
+		if (isset($data['retweeted_status'])) {
+			if (!$this->processStatus($account, $data['retweeted_status'])) {
+				return false;
+			}
+
+			if (!($retweet = $this->findStatus($data['retweeted_status']['id_str']))) {
+				return false;
+			}
+
+			$status['retweet'] = $retweet;
+			$this->em->persist($retweet);
+		}
+
 		// fetch mentions
 		foreach ($data['entities']['user_mentions'] as $mention) {
 			$this->processStatusMention($account, $status, $mention);
