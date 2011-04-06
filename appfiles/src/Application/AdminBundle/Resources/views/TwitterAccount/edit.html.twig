@@ -1,14 +1,44 @@
 {% extends 'AdminBundle::layout_popout.html.twig' %}
 
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('twitter_accounts', {{ account.id|default(0) }});
+
+	{% if row_html %}
+		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
+	{% endif %}
+}
+</script>
+{% endblock %}
+
+{% block page_id "twitter_accounts" %}
+
 {% block header %}
-	<h1>Modify Twitter Account "@{{ account.user.name }}"</h1>
+	<h1>Modify Twitter Account "@{{ account.user.screen_name }}"</h1>
 {% endblock %}
 
 {% block content %}
-
+<form action="{{ path('admin_twitter_accounts_edit', {'account_id': account.id|default(0)}) }}" method="post">
+	{{ form_hidden(form) }}
+	<input type="hidden" name="process" value="1" />
+	<div class="form-panel">
+		<div class="row">
+			<label>OAuth Token</label>
+			{{ form_field(form.oauth_token) }}
+		</div>
+		<div class="row">
+			<label>OAuth Token Secret</label>
+			{{ form_field(form.oauth_token_secret) }}
+		</div>
+	</div>
+</form>
 {% endblock %}
 
 {% block footer %}
 	<button class="dp-button small save-trigger">Save</button>
-
 {% endblock %}

@@ -20,5 +20,9 @@ class EditTwitterAccountForm extends \Symfony\Component\Form\Form
 {
 	protected function configure()
 	{
+		$this->addRequiredOption('account');
+
+		$this->add(new Form\TextField('oauth_token'));
+		$this->add(new Form\TextField('oauth_token_secret'));
 	}
 }

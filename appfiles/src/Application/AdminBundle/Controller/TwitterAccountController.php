@@ -22,6 +22,9 @@ use \Application\DeskPRO\Entity\TwitterStatusTag;
 use \Application\DeskPRO\Entity\TwitterStatusUrl;
 use \Application\DeskPRO\Entity\TwitterUser;
 
+use \Orb\Service\Twitter\Oauth,
+	\Orb\Service\Twitter\Twitter;
+
 use \Application\AdminBundle\Form\EditTwitterAccountForm;
 
 /**
@@ -39,9 +42,17 @@ class TwitterAccountController extends AbstractController
 	public function listAction()
 	{
 		$accounts = App::getORM()->getRepository('DeskPRO:TwitterAccount')->findAll();
+		$verified = array();
+		foreach ($accounts as $account) {
+			$credentials = Twitter::getTwitterService($account->getOauthAccessToken())
+				->account->verifyCredentials();
+
+			$verified[$account['id']] = !isset($credentials->error);
+		}
 
 		return $this->render('AdminBundle:TwitterAccount:list.html.twig', array(
-			'accounts' => $accounts
+			'accounts' => $accounts,
+			'verified' => $verified,
 		));
 	}
 
@@ -90,7 +101,7 @@ class TwitterAccountController extends AbstractController
 			);
 
 			// initialize Twitter service
-			$twitter = \Orb\Service\Twitter\Twitter::getTwitterService($accessToken, $consumer);
+			$twitter = Twitter::getTwitterService($accessToken, $consumer);
 
 			// check if Twitter user already exists
 			$twitterUser = $twitter->user->show($accessToken->getParam('screen_name'));
@@ -205,19 +216,31 @@ class TwitterAccountController extends AbstractController
 	 */
 	public function editAction($account_id)
 	{
-		$account = App::getORM()->getRepository('DeskPRO:TwitterAccount')
-			->findById($account_id);
-
-		if (!$account) {
+		if (!($account = App::getORM()->getRepository('DeskPRO:TwitterAccount')->find($account_id))) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Twitter Account "'.$account_id.'" not found.');
 		}
 
-		$form = EditTwitterAccountForm::create($this->get('form.context'), 'account', array());
+		$form = EditTwitterAccountForm::create($this->get('form.context'), 'account', array('account' => $account));
 		$form->bind($this->get('request'), $account);
+
+		$is_edited = false;
+		$row_html = false;
+
+		if ($this->in->getBool('process')) {
+			$is_edited = true;
+			App::getOrm()->persist($account);
+			App::getOrm()->flush();
+
+			$row_html = $this->renderView('AdminBundle:TwitterAccount:list-row.html.twig', array(
+				'account' => $account
+			));
+		}
 
 		return $this->render('AdminBundle:TwitterAccount:edit.html.twig', array(
 			'account' => $account,
-			'form' => $form
+			'form' => $form,
+			'is_edited' => $is_edited,
+			'row_html' => $row_html
 		));
 	}
 }

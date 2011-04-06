@@ -1,19 +1,18 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 
-{% block section 'twitter' %}
-{% block sub_section 'accounts' %}
-
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
 {% endblock %}
 
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
-}
+window._page_exec_stack.push(function() {
+	window.DeskPRO_Page_TwitterAccountsList = new DeskPRO.Admin.PageHandler.GeneralList('#twitter_accounts');
+});
 </script>
 {% endblock %}
+
+{% block page_id 'twitter_accounts' %}
 
 {% block content %}
 
