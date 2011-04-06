@@ -38,6 +38,6 @@ class TwitterAccountFriend extends EntityRepository
 			return null;
 		}
 
-		return $friend;
+		return $friend[0];
 	}
 }

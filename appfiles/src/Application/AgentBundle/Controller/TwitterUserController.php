@@ -14,6 +14,8 @@ namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\App;
 
+use \Orb\Service\Twitter\Twitter;
+
 /**
  * Handles creating/editing of Twitter Users
  */
@@ -96,12 +98,14 @@ class TwitterUserController extends AbstractController
 
 			$em = App::getOrm();
 			$friend = $em->getRepository('DeskPRO:TwitterAccountFriend')
-				->findOneByAccountIdAndUserId($account['id'], $userId);
+				->findOneByAccountIdAndUserId($account['id'], $user['id']);
 
-			$em->remove($friend);
-			$em->flush();
+			if ($friend) {
+				$em->remove($friend);
+				$em->flush();
 
-			$success = true;
+				$success = true;
+			}
 		}
 
 		return $this->createJsonResponse(array('success' => $success));

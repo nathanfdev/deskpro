@@ -37,6 +37,6 @@ class TwitterAccountFollower extends EntityRepository
 			return null;
 		}
 
-		return $follower;
+		return $follower[0];
 	}
 }
