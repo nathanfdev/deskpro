@@ -24,7 +24,10 @@
 			<div class="head">
 				<span class="arrow-left"></span>
 			{% if retweet %}
-				<div class="retweet">by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}">@{{ retweet.user.screen_name }}</span></div>
+				<div class="retweet">
+                    retweeted by <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': retweet.user.id}) }}">@{{ retweet.user.screen_name }}</span>
+                    <span class="timeago" title="{{ retweet.date_created|date('c') }}">{{ retweet.date_created|date('r') }}</span>
+                </div>
 			{% endif %}
 			{% if status.in_reply_to_status %}
 				<div class="reply">to <span class="user" data-route="page:{{ path('agent_twitter_user', {'user_id': in_reply_to_status.user.id}) }}">@{{ status.in_reply_to_status.user.screen_name }}</span> <span class="text">"{{ status.in_reply_to_status.text }}"</span></div>
