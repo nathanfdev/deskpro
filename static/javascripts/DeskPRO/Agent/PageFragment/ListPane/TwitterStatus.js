@@ -98,11 +98,11 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	reload: function() {
 		$.ajax({
 			url: this.getMetaData('statusListUrl'),
-			dataType: 'json',
+			dataType: 'html',
 			data: this._getDisplayOptions(),
 			context: this,
-			success: function(json) {
-				this.content.html(json.statuses);
+			success: function(html) {
+				this.content.html(html);
 				this._afterLoading();
 			}
 		});

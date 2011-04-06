@@ -145,10 +145,7 @@ class TwitterStatusController extends AbstractController
 
 		// check if is partial
 		if ($this->in->getBool('partial')) {
-			// render json response
-			return $this->createJsonResponse(array(
-				'statuses' => $this->renderView('AgentBundle:TwitterStatus:part-status.html.twig', $parameters)
-			));
+			return $this->render('AgentBundle:TwitterStatus:part-status.html.twig', $parameters);
 		}
 
 		// render html response
