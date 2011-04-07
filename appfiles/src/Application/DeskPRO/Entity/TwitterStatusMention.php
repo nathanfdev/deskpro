@@ -109,7 +109,8 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	static public function createFromXML($mention)
 	{
 		$entity = new self();
-		print_r($mention);
+		$entity['starts'] = (integer) $mention->attributes()->start;
+		$entity['ends'] = (integer) $mention->attributes()->end;
 
 		return $entity;
 	}
@@ -122,7 +123,7 @@ class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$entity = new self();
 		$entity['starts'] = $mention['indices'][0];
-		$entity['ends']   = $mention['indices'][1];
+		$entity['ends'] = $mention['indices'][1];
 
 		return $entity;
 	}

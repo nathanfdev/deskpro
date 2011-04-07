@@ -88,7 +88,9 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 	static public function createFromXML($url)
 	{
 		$entity = new self();
-		print_r($url);
+		$entity['url'] = (string) $url->url;
+		$entity['starts'] = (integer) $url->attributes()->start;
+		$entity['ends'] = (integer) $url->attributes()->end;
 
 		return $entity;
 	}
@@ -100,9 +102,9 @@ class TwitterStatusUrl extends \Application\DeskPRO\Domain\DomainObject
 	static public function createFromJson(array $url)
 	{
 		$entity = new self();
-		$entity['url']    = $url['url'];
+		$entity['url'] = $url['url'];
 		$entity['starts'] = $url['indices'][0];
-		$entity['ends']   = $url['indices'][1];
+		$entity['ends'] = $url['indices'][1];
 
 		return $entity;
 	}

@@ -88,7 +88,9 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 	static public function createFromXML($tag)
 	{
 		$entity = new self();
-		print_r($tag);
+		$entity['hash'] = (string) $tag->text;
+		$entity['starts'] = (integer) $tag->attributes()->start;
+		$entity['ends'] = (integer) $tag->attributes()->end;
 
 		return $entity;
 	}
@@ -100,9 +102,9 @@ class TwitterStatusTag extends \Application\DeskPRO\Domain\DomainObject
 	static public function createFromJson(array $tag)
 	{
 		$entity = new self();
-		$entity['hash']   = $tag['text'];
+		$entity['hash'] = $tag['text'];
 		$entity['starts'] = $tag['indices'][0];
-		$entity['ends']   = $tag['indices'][1];
+		$entity['ends'] = $tag['indices'][1];
 
 		return $entity;
 	}

@@ -35,6 +35,11 @@ class TwitterAccountController extends AbstractController
 	const TWITTER_REQUEST_TOKEN = 'twitter_request_token';
 
 	/**
+	 * @var \Orb\Service\Twitter\Twitter
+	 */
+	protected $twitter;
+
+	/**
 	 * List of Twitter accounts.
 	 *
 	 * @return Symfony\Component\HttpFoundation\Response
@@ -101,10 +106,10 @@ class TwitterAccountController extends AbstractController
 			);
 
 			// initialize Twitter service
-			$twitter = Twitter::getTwitterService($accessToken, $consumer);
+			$this->twitter = Twitter::getTwitterService($accessToken, $consumer);
 
 			// check if Twitter user already exists
-			$twitterUser = $twitter->user->show($accessToken->getParam('screen_name'));
+			$twitterUser = $this->twitter->user->show($accessToken->getParam('screen_name'));
 			$user = $this->getOrCreateUser($twitterUser);
 
 			$em = App::getOrm();
@@ -131,14 +136,15 @@ class TwitterAccountController extends AbstractController
 			$em->flush();
 
 			// fetch user timelines
-			$this->importTimeline($account, $twitter->status->publicTimeline());
-			$this->importTimeline($account, $twitter->status->friendsTimeline());
-			$this->importTimeline($account, $twitter->status->userTimeline());
+			$this->importTimeline($account, 'public');
+			$this->importTimeline($account, 'home');
+			$this->importTimeline($account, 'friends');
+			$this->importTimeline($account, 'user');
 
 			// fetch friends (following)
 			// @TODO check pagination (we only recieve 100 friends at once)
 			$friendIds = $account->getFriendIds();
-			foreach ($twitter->user->friends()->user as $user) {
+			foreach ($this->twitter->user->friends()->user as $user) {
 				if (!in_array((integer) $user->id, $friendIds)) {
 					$friend = new TwitterAccountFriend();
 					$friend['account'] = $account;
@@ -151,7 +157,7 @@ class TwitterAccountController extends AbstractController
 			// fetch followers
 			// @TODO check pagination (we only recieve 100 followers at once)
 			$followerIds = $account->getFollowerIds();
-			foreach ($twitter->user->followers()->user as $user) {
+			foreach ($this->twitter->user->followers()->user as $user) {
 				if (!in_array((integer) $user->id, $followerIds)) {
 					$follower = new TwitterAccountFollower();
 					$follower['account'] = $account;
@@ -175,32 +181,92 @@ class TwitterAccountController extends AbstractController
 
 	/**
 	 * @param \Application\DeskPRO\Entity\TwitterAccount $account
-	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $timeline
+	 * @param string $timeline
 	 * @return void
 	 */
-	protected function importTimeline(TwitterAccount $account, $timeline)
+	protected function importTimeline(TwitterAccount $account, $method)
 	{
-		$em = App::getOrm();
+		$method = sprintf('status%sTimeline', ucfirst(strtolower($method)));
+		$timeline = call_user_func(
+			array($this->twitter, $method),
+			array('include_entities' => true)
+		);
 
 		foreach ($timeline->status as $status) {
-			$entity = $em->getRepository('DeskPRO:TwitterStatus')->find((string) $status->id);
-                
-			if (!$entity) {
-				$entity = TwitterStatus::createFromXML($status);
-				$entity['user'] = $this->getOrCreateUser($status->user);
+			$this->processStatus($status);
+		}
 
-				if (isset($status->retweeted_status)) {
-					$retweet = TwitterStatus::createFromXML($status->retweeted_status);
-					$retweet['user'] = $this->getOrCreateUser($status->retweeted_status->user);
-					$entity['retweet'] = $retweet;
-					$em->persist($retweet);
+		App::getOrm()->flush();
+	}
+
+	/**
+	 * @param \SimpleXMLElement|\Zend_Rest_Client_Result $status
+	 * @return \Application\DeskPRO\Entity\TwitterStatus
+	 */
+	protected function processStatus($status)
+	{
+		$em = App::getOrm();
+		$entity = $em->getRepository('DeskPRO:TwitterStatus')->find((string) $status->id);
+
+		if (!$entity) {
+			$entity = TwitterStatus::createFromXML($status);
+			$entity['user'] = $this->getOrCreateUser($status->user);
+			$em->persist($entity);
+
+			// retweet
+			if (!empty($status->retweeted_status)) {
+				$retweet = $this->processStatus($status->retweeted_status);
+				$entity['retweet'] = $retweet;
+				$em->persist($retweet);
+			}
+
+			// reply
+			if (!empty($status->in_reply_to_status_id)) {
+				$replyXml = $this->twitter->status->show(
+					(string) $status->in_reply_to_status_id,
+					array('include_entities' => true)
+				);
+				$reply = $this->processStatus($replyXml);
+				$entity['reply'] = $reply;
+				$em->persist($reply);
+			}
+
+			// mentions
+			if (!empty($status->entities->user_mentions)) {
+				foreach ($status->entities->user_mentions->user_mention as $mention) {
+					if (!($mentionUser = $em->getRepository('DeskPRO:TwitterUser')->find((string) $mention->id))) {
+						$mentionUserXml = $this->twitter->user->show((string) $mention->id);
+						$mentionUser = TwitterUser::createFromXML($mentionUserXml);
+						$em->persist($mentionUser);
+					}
+
+					$mention = TwitterStatusMention::createFromXML($mention);
+					$mention['status'] = $entity;
+					$mention['user'] = $mentionUser;
+					$em->persist($mention);
 				}
+			}
 
-				$em->persist($entity);
+			// tags
+			if (!empty($status->entities->hashtags)) {
+				foreach ($status->entities->hashtags->hashtag as $tag) {
+					$tag = TwitterStatusTag::createFromXML($tag);
+					$tag['status'] = $entity;
+					$em->persist($tag);
+				}
+			}
+
+			// urls
+			if (!empty($status->entities->urls)) {
+				foreach ($status->entities->urls->url as $url) {
+					$url = TwitterStatusUrl::createFromXML($url);
+					$url['status'] = $entity;
+					$em->persist($url);
+				}
 			}
 		}
 
-		$em->flush();
+		return $entity;
 	}
 
 	/**

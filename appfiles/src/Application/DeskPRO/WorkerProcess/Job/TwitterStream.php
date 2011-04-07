@@ -68,6 +68,7 @@ class TwitterStream extends AbstractJob
 					unserialize($event['data'])
 				);
 			} catch (\Exception $e) {
+				echo $e->getMessage().PHP_EOL;
 				// $this->logStatus('exception catched', $e);
 				$success = false;
 			}
@@ -167,13 +168,19 @@ class TwitterStream extends AbstractJob
 
 			$status['retweet'] = $retweet;
 			$this->em->persist($retweet);
+
+			// @todo process retweet entities
 		}
 
 		// reply
 		if (null !== $data['in_reply_to_status_id_str']) {
 			if (!($reply = $this->findStatus($data['in_reply_to_status_id_str']))) {
-				$replyXml = $this->getTwitter($account['id'])->status->show($data['in_reply_to_status_id_str']);
-				if (!($replyUser = $this->findUser((integer) $replyXml->user->id))) {
+				$replyXml = $this->getTwitter($account['id'])->status->show(
+					$data['in_reply_to_status_id_str'],
+					array('include_entities' => true)
+				);
+
+				if (!($replyUser = $this->findUser((string) $replyXml->user->id))) {
 					$replyUser = TwitterUser::createFromXML($replyXml->user);
 					$this->em->persist($replyUser);
 				}
@@ -181,6 +188,8 @@ class TwitterStream extends AbstractJob
 				$reply = TwitterStatus::createFromXML($replyXml);
 				$reply['user'] = $replyUser;
 				$this->em->persist($reply);
+
+				// @todo process reply entities
 			}
 
 			$status['in_reply_to_status'] = $reply;
