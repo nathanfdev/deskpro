@@ -1,0 +1,13 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+<div style="float:left; width: 200px">
+	{% for cat in categories %}
+		&middot; {{cat.id}}
+	{% endfor %}
+</div>
+<div style="margin-left: 210px;">
+	{# todo insert ideas without cat filter here #}
+</div>
+
+{% endblock %}

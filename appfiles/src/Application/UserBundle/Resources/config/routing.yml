@@ -58,3 +58,19 @@ user_tickets_view:
 user_tickets_view_auth:
   pattern: /tickets/{ticket_ref}/{ticket_auth}
   defaults: { _controller: UserBundle:Tickets:viewWithAuth }
+
+################################################################################
+# Article
+################################################################################
+
+user_articles:
+  pattern: /articles
+  defaults: { _controller: UserBundle:Articles:index }
+
+user_articles_cat:
+  pattern: /articles/cat/{category_id}
+  defaults: { _controller: UserBundle:Articles:category }
+
+user_articles_article:
+  pattern: /articles/view/{article_id}/{slug}
+  defaults: { _controller: UserBundle:Articles:article }

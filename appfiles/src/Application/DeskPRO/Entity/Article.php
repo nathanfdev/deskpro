@@ -13,13 +13,14 @@ namespace Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
+use \Application\DeskPRO\Markdown;
 
 use \Orb\Util\Strings;
 
 /**
  * Ticket
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Article")
  * @orm:Table(name="articles")
  */
 class Article extends \Application\DeskPRO\Domain\DomainObject
@@ -58,9 +59,40 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
+	 * @orm:Column(name="excerpt", type="string", length=1000)
+	 */
+	protected $excerpt = '';
+
+	/**
+	 * @var string
 	 * @orm:Column(name="content", type="text")
 	 */
 	protected $content;
+
+	/**
+	 * View counts
+	 *
+	 * @var string
+	 * @orm:Column(name="view_count", type="integer")
+	 */
+	protected $view_count = 0;
+
+	/**
+	 * Total rating
+	 *
+	 * @var string
+	 * @orm:Column(name="total_rating", type="integer")
+	 */
+	protected $total_rating = 0;
+
+	/**
+	 * Total rating
+	 *
+	 * @var string
+	 * @orm:Column(name="num_ratings", type="integer")
+	 */
+	protected $num_ratings = 0;
+
 
 	/**
 	 * Is the article currently listed for users to read?
@@ -102,7 +134,18 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function getExcerptHtml()
+	{
+		return Markdown::format($this->excerpt);
+	}
+
+	public function getContentHtml()
+	{
+		return Markdown::format($this->content);
 	}
 
 	public function getLabelManager()

@@ -95,6 +95,11 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getExcerptHtml()
+	{
+		return Markdown::format($this->excerpt);
+	}
+
 	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {

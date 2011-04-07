@@ -16,7 +16,7 @@ use \Application\DeskPRO\App;
 /**
  * Ticket categories
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleCategory")
  * @orm:Table(name="article_categories")
  */
 class ArticleCategory extends \Application\DeskPRO\Domain\DomainObject
@@ -60,5 +60,11 @@ class ArticleCategory extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+
+	public function getContentHtml()
+	{
+		return Markdown::format($this->content);
 	}
 }

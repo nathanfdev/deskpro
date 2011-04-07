@@ -1,0 +1,42 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+<h3>
+	{% for c in parents %}
+		{{c.title}} /
+	{% endfor %}
+	{{category.title}}
+</h3>
+<hr />
+
+<table cellpadding="0" cellspacing="0" width="100%" border="0">
+	<tr>
+		{% for cat in subcategories %}
+			{% if loop.index0 is divisibleby(3) %}</tr><tr>{% endif %}
+			<td width="33%">
+				<h3><a href="{{ path('user_articles_cat', {'category_id': cat.id}) }}">{{ cat.title }}</a></h3>
+				{% if cat.children %}
+					<div>
+						{% for subcat in cat.children %}
+						<a href="{{ path('user_articles_cat', {'category_id': subcat.id}) }}">{{ subcat.title }}</a>{% if not loop.last %}, {% endif %}
+						{% endfor %}
+					</div>
+				{% endif %}
+			</td>
+		{% endfor %}
+	</tr>
+</table>
+
+<table cellpadding="0" cellspacing="0" width="100%" border="0">
+	{% for article in articles %}
+		<tr>
+			<td>
+				<strong><a href="{{ path('user_articles_article', {'article_id': article.id, 'slug': article.slug}) }}">{{article.title}}</a></strong><br />
+				{% if article.excerpt %}
+					{{article.excerpt_html}}
+				{% endif %}
+			</td>
+		</tr>
+	{% endfor %}
+</table>
+
+{% endblock %}
