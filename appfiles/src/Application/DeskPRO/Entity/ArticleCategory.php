@@ -13,41 +13,16 @@ namespace Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
 
+use DoctrineExtensions\NestedSet\Node;
+
 /**
- * Ticket categories
+ * Article categories
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleCategory")
  * @orm:Table(name="article_categories")
  */
-class ArticleCategory extends \Application\DeskPRO\Domain\DomainObject
+class ArticleCategory extends CategoryAbstract
 {
-	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
-	 */
-	protected $id = null;
-
-	/**
-	 * @var TicketCategory
-	 * @orm:ManyToOne(targetEntity="TicketCategory")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
-	 */
-	protected $parent = null;
-
-	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TicketCategory", mappedBy="parent")
-	 * @orm:OrderBy({"title" = "ASC"})
-	 */
-	protected $children = null;
-
-	/**
-	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
-	 */
-	protected $title;
-
 	/**
 	 * If this is true, then all the articles and categories under this category
 	 * is treated as a book (aka manual).
@@ -57,14 +32,15 @@ class ArticleCategory extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $is_book = false;
 
-	public function __construct()
-	{
-		$this->children = new \Doctrine\Common\Collections\ArrayCollection();
-	}
+	/**
+	 * @gedmo:TreeParent
+	 * @orm:ManyToOne(targetEntity="ArticleCategory", inversedBy="children")
+	 */
+	protected $parent;
 
-
-	public function getContentHtml()
-	{
-		return Markdown::format($this->content);
-	}
+	/**
+	 * @orm:OneToMany(targetEntity="ArticleCategory", mappedBy="parent")
+	 * @orm:OrderBy({"lft" = "ASC"})
+	 */
+	protected $children;
 }

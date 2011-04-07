@@ -1,0 +1,104 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Entity;
+
+use \Application\DeskPRO\App;
+
+use DoctrineExtensions\NestedSet\Node;
+
+/**
+ * Basic hierarchicial category entity. Hierarchy is maintained automatically
+ * by a Doctrine NestedSet implementation
+ *
+ * @gedmo:Tree(type="nested")
+ * @orm:MappedSuperclass
+ */
+class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
+{
+	/**
+	 * @var int
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 */
+	protected $id = null;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="title", type="string", length=255)
+	 */
+	protected $title;
+
+	// IMPLEMENT IN CHILDREN : Limitation of doctrine mapping, you have to map these with the correct targets
+	///**
+	// * @gedmo:TreeParent
+	// * @orm:ManyToOne(targetEntity="CategoryAbstract", inversedBy="children")
+	// */
+	//protected $parent;
+	//
+	///**
+	// * @orm:OneToMany(targetEntity="CategoryAbstract", mappedBy="parent")
+	// * @orm:OrderBy({"lft" = "ASC"})
+	// */
+	//protected $children;
+
+	/**
+	 * @gedmo:TreeRoot
+	 * @orm:Column(name="root", type="integer")
+	 */
+	protected $root;
+
+	/**
+	 * @gedmo:TreeLevel
+	 * @orm:Column(name="depth", type="integer")
+	 */
+	protected $depth;
+
+	/**
+	 * @gedmo:TreeLeft
+	 * @orm:Column(name="lft", type="integer")
+	 */
+	protected $lft;
+
+	/**
+	 * @gedmo:TreeRight
+	 * @orm:Column(name="rgt", type="integer")
+	 */
+	protected $rgt;
+
+	/**
+	 * Local cache of some structure info with this category
+	 * @var array()
+	 */
+	protected $_structure = array();
+
+
+	
+	/**
+	 * Get all IDs of this tree, from this node and downwards.
+	 *
+	 * @param  $including_this Include this nodes ID in the array of ids
+	 * @return void
+	 */
+	public function getTreeIds($including_this = true)
+	{
+		if (!isset($this->_structure['all_child_ids'])) {
+			$ids = App::getEntityRepository(get_class($this))->childrenIds($this);
+			$this->_structure['all_child_ids'] = $ids;
+		}
+
+		$ids = $this->_structure['all_child_ids'];
+		if ($including_this) {
+			array_unshift($ids, $this->id);
+		}
+
+		return $ids;
+	}
+}

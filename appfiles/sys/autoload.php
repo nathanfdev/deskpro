@@ -25,6 +25,7 @@ $loader->registerNamespaces(array(
     'Doctrine\\DBAL\\Migrations' => DP_ROOT.'/vendor/doctrine-migrations/lib',
     'Doctrine\\DBAL'             => DP_ROOT.'/vendor/doctrine-dbal/lib',
     'Doctrine'                   => DP_ROOT.'/vendor/doctrine-orm/lib',
+	'Gedmo'                      => DP_ROOT.'/vendor/DoctrineExtensions/lib',
     'Zend'                       => DP_ROOT.'/vendor/zend/library',
 ));
 

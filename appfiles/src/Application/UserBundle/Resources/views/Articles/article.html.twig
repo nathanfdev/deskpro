@@ -1,0 +1,29 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+<h4>{{article.title}}</h4>
+<hr />
+{% for categories in all_categories %}
+	&middot; {% for c in categories %}
+		{{c.title}}{% if not loop.last %} / {% endif %}
+	{% endfor %}
+	<br />
+{% endfor %}
+<hr />
+
+{{article.content_html|raw}}
+
+<div style="backgorund-color: #eee; padding: 10px; margin-top: 15px;">
+	Name: <input type="text" name="name" /> (public)<br />
+	Email: <input type="text" name="email" /> (private, never revealed)<br />
+	<textarea name="comment" cols="80" rows="5"></textarea>
+
+	<hr />
+
+	{% for comment in comments %}
+		<div style="background-color: #fff; padding: 6px; margin: 10px;">
+			{{comment.content_html}}
+		</div>
+	{% endfor %}
+</div>
+
+{% endblock %}

@@ -25,10 +25,13 @@ class ArticlesController extends AbstractController
 	 */
 	public function indexAction()
 	{
-		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHierarchy();
+		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getRootNodes();
 
-		return $this->render('UserBundle:Article:index.html.twig', array(
+		$newest_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($cats);
+
+		return $this->render('UserBundle:Articles:index.html.twig', array(
 			'categories' => $cats,
+			'newest_articles' => $newest_articles
 		));
 	}
 
@@ -55,7 +58,7 @@ class ArticlesController extends AbstractController
 		// Articles
 		$articles = App::getEntityRepository('DeskPRO:Article')->getArticlesInCategory($category);
 
-		return $this->render('UserBundle:Article:category.html.twig', array(
+		return $this->render('UserBundle:Articles:category.html.twig', array(
 			'category' => $category,
 			'parents' => $parents,
 			'subcategories' => $subcategories,
@@ -89,7 +92,7 @@ class ArticlesController extends AbstractController
 			$all_categories[$cat['id']] = array_reverse($cats);
 		}
 
-		return $this->render('UserBundle:Article:article.html.twig', array(
+		return $this->render('UserBundle:Articles:article.html.twig', array(
 			'article' => $article,
 			'all_categories' => $all_categories,
 		));
