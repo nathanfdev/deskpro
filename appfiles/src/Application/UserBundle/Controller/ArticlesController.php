@@ -27,11 +27,15 @@ class ArticlesController extends AbstractController
 	{
 		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getRootNodes();
 
-		$newest_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($cats);
+		$newest_cat_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($cats);
+		$newest_articles     = App::getEntityRepository('DeskPRO:Article')->getNewest();
+		$top_rated_articles  = App::getEntityRepository('DeskPRO:Article')->getTopRated();
 
 		return $this->render('UserBundle:Articles:index.html.twig', array(
-			'categories' => $cats,
-			'newest_articles' => $newest_articles
+			'categories'          => $cats,
+			'newest_cat_articles' => $newest_cat_articles,
+			'newest_articles'     => $newest_articles,
+			'top_rated_articles'  => $top_rated_articles
 		));
 	}
 
@@ -45,23 +49,13 @@ class ArticlesController extends AbstractController
 	public function categoryAction($category_id)
 	{
 		$category = App::getEntityRepository('DeskPRO:ArticleCategory')->find($category_id);
-		$parents = array();
+		$category_path = $category->getTreeParents();
 
-		$p = $category['parent'];
-		while ($p) {
-			$parents[] = $p;
-			$p = $p['parent'];
-		}
-
-		$subcategories = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHierarchy($category['id']);
-
-		// Articles
-		$articles = App::getEntityRepository('DeskPRO:Article')->getArticlesInCategory($category);
+		$articles = App::getEntityRepository('DeskPRO:Article')->getInNode($category);
 
 		return $this->render('UserBundle:Articles:category.html.twig', array(
 			'category' => $category,
-			'parents' => $parents,
-			'subcategories' => $subcategories,
+			'category_path' => $category_path,
 			'articles' => $articles
 		));
 	}

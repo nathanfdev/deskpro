@@ -1,25 +1,27 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
 
+{% include 'UserBundle:Articles:category-list.html.twig' %}
+
 <table cellpadding="0" cellspacing="0" width="100%" border="0">
 	<tr>
-		{% for cat in categories %}
-			{% if loop.index0 is divisibleby(2) %}</tr><tr>{% endif %}
-			<td width="33%" valign="top" style="vertical-align:top">
-				<strong><a href="{{ path('user_articles_cat', {'category_id': cat.id}) }}">{{ cat.title }}</a></strong>
-				{% if cat.children|length %}
-					<div style="font-size:11px;border-top:1px solid #eee; border-bottom: 1px solid #eee; padding: 5px;">
-						{% for subcat in cat.children %}
-						<a href="{{ path('user_articles_cat', {'category_id': subcat.id}) }}">{{ subcat.title }}</a>{% if not loop.last %}, {% endif %}
-						{% endfor %}
-					</div>
-				{% endif %}
-				{% for article in newest_articles[cat.id] %}
-					&middot; <a href="{{ path('user_articles_view', {'article_id': article.id, 'slug': article.slug}) }}">{{ article.title }}</a>
-				{% endfpr %}
-			</td>
-		{% endfor %}
+		<td width="33%" valign="top" style="vertical-align:top">
+			<h3 style="margin: 0; padding: 5px; background-color: #ccc">
+				Newest
+			</h3>
+			{% for article in newest_articles %}
+				&middot; <a href="{{ path('user_articles_article', {'article_id': article.id, 'slug': article.slug}) }}">{{ article.title }}</a><br />
+			{% endfor %}
+		</td>
+		<td width="33%" valign="top" style="vertical-align:top">
+			<h3 style="margin: 0; padding: 5px; background-color: #ccc">
+				Top Rated
+			</h3>
+			{% for article in top_rated_articles %}
+				&middot; <a href="{{ path('user_articles_article', {'article_id': article.id, 'slug': article.slug}) }}">{{ article.title }}</a><br />
+			{% endfor %}
+		</td>
 	</tr>
-</table>
+</tr>
 
 {% endblock %}

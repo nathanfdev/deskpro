@@ -27,58 +27,87 @@ class Article extends EntityRepository
 	 */
 	public function getNewestInNodes($nodes, $num = 2)
 	{
-		// Mysql doesnt have a great way to do this. One way is to use
-		// variables and inner queries, another way is to do this and just union
-		// the brains out of things. Either way this result'll need to be cached
+		// This needs to be cached since it's quite costly
+		// to get the top results in each category with mysql. And
+		// then we have to worry about dupes based on articles being in
+		// multiple categories as well. So this is the cleanest way i think,
+		// even though its inefficient. But who cares it should be cached.
 
-		// Using native SQL to get ID's first, and then pass it to doctrine to hydrate.
-		// Again, not very performant, but it's cleaner. Alternative is to run the native
-		// query and then use Doctrine's ResultSetMapping. But who cares since we're caching anyway
+		$all_articles = array();
 
-		// An array of childid=>top
-		// We'll use after to sort articles from deep in the hierarchy
-		// under their top-most parent
-		$children_to_top = array();
+		// Articles can be in multiple categories, but we should only be showing them once
+		// So we need to not in() them using ID's we fetched in earlier iterations
+		$done_articles = array(0);
 
-		$sql = array();
 		foreach ($nodes as $node) {
-			$child_ids = $node->getTreeIds(true);
+			$cat_ids = $node->getTreeIds(true);
 
-			$children_to_top = array_merge($children_to_top, array_fill_keys($child_ids, $node['id']));
-			
-			$sql[] = "
-				SELECT id
-				FROM articles
-				LEFT JOIN article_to_categories map ON (map.article_id = articles.id)
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a INDEX BY a.id
+				LEFT JOIN a.categories cat
 				WHERE
-					map.category_id IN (" . implode(',', $child_ids) . ")
-					AND articles.is_published = 1
-				ORDER BY articles.id
-				DESC LIMIT $num
-			";
+					cat.id IN (".implode(',',$cat_ids).")
+					AND a.id NOT IN (".implode(',',$done_articles).")
+					AND a.is_published = true
+				GROUP BY a.id
+				ORDER BY a.id DESC
+			")->setMaxResults($num)
+			  ->execute();
+
+			if (count($articles)) {
+				$all_articles[$node['id']] = $articles;
+				$done_articles = array_merge($done_articles, array_keys($articles));
+			}
 		}
 
-		$sql = "(" . implode(') UNION (', $sql) . ")";
-		$ids = App::getDb()->fetchAllCol($sql);
+		return $all_articles;
+	}
 
-		if (!$ids) {
-			return array();
+
+	
+	public function getNewest($num = 10, $node = false)
+	{
+		if ($node) {
+			$cat_ids = $node->getTreeIds(true);
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a INDEX BY a.id
+				LEFT JOIN a.categories cat
+				WHERE a.is_published = true AND cat.id IN (" . implode(',',$cat_ids) . ")
+				ORDER BY a.id DESC
+			")->setMaxResults($num)->execute();
+		} else {
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a INDEX BY a.id
+				WHERE a.is_published = true
+				ORDER BY a.id DESC
+			")->setMaxResults($num)->execute();
 		}
 
-		$articles_all = $this->getEntityManager()->createQuery("
-			SELECT a
-			FROM DeskPRO:Article a
-			WHERE a.id IN(?1)
-			ORDER BY a.id DESC
-		")->setParameter(1, implode(',', $ids))->execute();
+		return $articles;
+	}
 
-		// Group them into their nodes
-		$articles = array();
-		foreach ($articles_all as $art) {
-			$top_cat = $children_to_top[$art['category']['id']];
-			if (!isset($articles[$top_cat])) $articles[$top_cat] = array();
 
-			$articles[$top_cat][] = $art;
+	public function getTopRated($num = 10, $node = false)
+	{
+		if ($node) {
+			$cat_ids = $node->getTreeIds(true);
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a INDEX BY a.id
+				LEFT JOIN a.categories cat
+				WHERE a.is_published = true AND cat.id IN (" . implode(',',$cat_ids) . ")
+				ORDER BY a.total_rating DESC
+			")->setMaxResults($num)->execute();
+		} else {
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a INDEX BY a.id
+				WHERE a.is_published = true
+				ORDER BY a.total_rating DESC
+			")->setMaxResults($num)->execute();
 		}
 
 		return $articles;
@@ -86,7 +115,7 @@ class Article extends EntityRepository
 
 
 
-	public function getArticlesInCategory($category)
+	public function getInNode($node)
 	{
 		return $this->getEntityManager()->createQuery("
 			SELECT a
@@ -94,6 +123,6 @@ class Article extends EntityRepository
 			LEFT JOIN a.categories c
 			WHERE c = ?1
 			ORDER BY a.id DESC
-		")->setParameter(1, $category)->execute();
+		")->setParameter(1, $node)->execute();
 	}
 }

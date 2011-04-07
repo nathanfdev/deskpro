@@ -82,6 +82,22 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	
 	/**
+	 * Gets all parents in the tree, in order (left to right, aka, top to bottom)
+	 *
+	 * @return array
+	 */
+	public function getTreeParents()
+	{
+		if (isset($this->_structure['all_parents'])) return $this->_structure['all_parents'];
+
+		$this->_structure['all_parents'] = App::getEntityRepository(get_class($this))->getPath($this);
+
+		return $this->_structure['all_parents'];
+	}
+
+
+	
+	/**
 	 * Get all IDs of this tree, from this node and downwards.
 	 *
 	 * @param  $including_this Include this nodes ID in the array of ids
