@@ -1,0 +1,27 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+<small>
+<a href="{{ path('user_downloads') }}">Downloads</a> /
+{% for cat in category_path %}
+	<a href="{{ path('user_downloads_cat', {'category_id': cat.id}) }}">{{cat.title}}</a> /
+{% endfor %}
+</small>
+<h3 style="margin:0;">{{download.title}}</h3>
+<hr />
+
+<div style="float: left; width: 190px">
+	<strong>{{download.blob.filename}}</strong> ({{download.blob.readable_filesize}})
+	<br />
+	<small>Uploaded on {{download.date_created|date('Y-m-d')}}</small>
+</div>
+
+<div style="margin-left: 200px">
+	{{ download.content_html|raw }}
+	<br /><br />
+
+	<button class="dp-button green">Download</button>
+</div>
+
+<br style="clear:left" />
+
+{% endblock %}

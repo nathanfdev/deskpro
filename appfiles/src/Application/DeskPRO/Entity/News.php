@@ -13,13 +13,14 @@ namespace Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
+use \Application\DeskPRO\Markdown;
 
 use \Orb\Util\Strings;
 
 /**
  * News
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\News")
  * @orm:Table(name="news")
  */
 class News extends \Application\DeskPRO\Domain\DomainObject
@@ -29,6 +30,13 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
 	protected $id = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\TicketCategory
+	 * @orm:ManyToOne(targetEntity="DownloadCategory", fetch="EAGER")
+	 * @orm:JoinColumn(name="category_id", referencedColumnName="id")
+	 */
+	protected $category;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -50,7 +58,7 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	protected $content;
 
 	/**
-	 * Is the article currently listed for users to read?
+	 * Is the news item currently listed for users to read?
 	 *
 	 * @var bool
 	 * @orm:Column(name="is_published", type="boolean")
@@ -64,13 +72,6 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_created;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="NewsCategory", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="news_to_categories", joinColumns={@orm:JoinColumn(name="news_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="category_id", referencedColumnName="id")})
-	 */
-	protected $categories;
-
-	/**
 	 * @orm:OneToMany(targetEntity="LabelNews", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
@@ -82,6 +83,28 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function getIntroHtml()
+	{
+		$content = $this->content;
+
+		// The intro part is whatever text is before a line of three dashes
+		$parts = preg_split("#[\r\n]+\-{3,}[\r\n]+#", $content, 2);
+
+		$content = trim($parts[0]);
+
+		return Markdown::format($content);
+	}
+
+	public function getContentHtml()
+	{
+		$content = $this->content;
+
+		// Remove the intro separator
+		$content = preg_replace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
+
+		return Markdown::format($content);
 	}
 
 	public function getLabelManager()

@@ -13,13 +13,14 @@ namespace Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
+use \Application\DeskPRO\Markdown;
 
 use \Orb\Util\Strings;
 
 /**
  * A download/file available from the protal
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Download")
  * @orm:Table(name="downloads")
  */
 class Download extends \Application\DeskPRO\Domain\DomainObject
@@ -29,6 +30,13 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
 	protected $id = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\TicketCategory
+	 * @orm:ManyToOne(targetEntity="DownloadCategory", fetch="EAGER")
+	 * @orm:JoinColumn(name="category_id", referencedColumnName="id")
+	 */
+	protected $category;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -63,16 +71,18 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	protected $blob;
 
 	/**
+	 * Total number of downloads
+	 *
+	 * @var string
+	 * @orm:Column(name="num_downloads", type="integer")
+	 */
+	protected $num_downloads = 0;
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
-
-	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToOne(targetEntity="DownloadCategory", cascade={"persist", "remove", "merge"})
-	 */
-	protected $category;
 
 	/**
 	 * @orm:OneToMany(targetEntity="LabelDownload", mappedBy="download", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -88,10 +98,15 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getContentHtml()
+	{
+		return Markdown::format($this->content);
+	}
+
 	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelArticle');
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelDownload');
 		}
 
 		return $this->_label_manager;

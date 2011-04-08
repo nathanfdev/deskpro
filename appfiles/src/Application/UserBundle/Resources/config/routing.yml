@@ -60,7 +60,7 @@ user_tickets_view_auth:
   defaults: { _controller: UserBundle:Tickets:viewWithAuth }
 
 ################################################################################
-# Article
+# Articles
 ################################################################################
 
 user_articles:
@@ -74,3 +74,36 @@ user_articles_cat:
 user_articles_article:
   pattern: /articles/view/{article_id}/{slug}
   defaults: { _controller: UserBundle:Articles:article }
+
+
+################################################################################
+# Downloads
+################################################################################
+
+user_downloads:
+  pattern: /downloads
+  defaults: { _controller: UserBundle:Downloads:index }
+
+user_downloads_cat:
+  pattern: /downloads/folder/{category_id}
+  defaults: { _controller: UserBundle:Downloads:category }
+
+user_downloads_file:
+  pattern: /downloads/file/{download_id}/{slug}
+  defaults: { _controller: UserBundle:Downloads:file }
+
+################################################################################
+# News
+################################################################################
+
+user_news:
+  pattern: /news
+  defaults: { _controller: UserBundle:News:index, category_id: 0 }
+
+user_news_cat:
+  pattern: /news/category/{category_id}
+  defaults: { _controller: UserBundle:News:index }
+
+user_news_view:
+  pattern: /news/view/{post_id}
+  defaults: { _controller: UserBundle:News:view }

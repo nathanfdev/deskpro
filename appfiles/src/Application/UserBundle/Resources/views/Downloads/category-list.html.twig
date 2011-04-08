@@ -1,0 +1,7 @@
+<ul>
+{% for cat in categories %}
+	<li>
+		<a href="{{ path('user_downloads_cat', {'category_id': cat.id}) }}">{{ cat.title }}</a>
+	</li>
+{% endfor %}
+</ul>

@@ -16,10 +16,10 @@ use \Application\DeskPRO\App;
 /**
  * Idea categories
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadCategory")
- * @orm:Table(name="download_categories")
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\NewsCategory")
+ * @orm:Table(name="news_categories")
  */
-class DownloadCategory extends CategoryAbstract
+class NewsCategory extends CategoryAbstract
 {
 	/**
 	 * @gedmo:TreeParent

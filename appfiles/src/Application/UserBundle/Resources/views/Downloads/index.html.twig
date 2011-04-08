@@ -1,0 +1,27 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+{% include 'UserBundle:Downloads:category-list.html.twig' %}
+
+<table cellpadding="0" cellspacing="0" width="100%" border="0">
+	<tr>
+		<td width="33%" valign="top" style="vertical-align:top">
+			<h3 style="margin: 0; padding: 5px; background-color: #ccc">
+				Newest
+			</h3>
+			{% for download in newest_downloads %}
+				&middot; <a href="{{ path('user_downloads_file', {'download_id': download.id, 'slug': download.slug}) }}">{{ download.title }}</a><br />
+			{% endfor %}
+		</td>
+		<td width="33%" valign="top" style="vertical-align:top">
+			<h3 style="margin: 0; padding: 5px; background-color: #ccc">
+				Most Popular
+			</h3>
+			{% for download in popular_downloads %}
+				&middot; <a href="{{ path('user_downloads_file', {'download_id': download.id, 'slug': download.slug}) }}">{{ download.title }}</a><br />
+			{% endfor %}
+		</td>
+	</tr>
+</tr>
+
+{% endblock %}

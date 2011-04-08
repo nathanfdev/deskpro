@@ -1,0 +1,24 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+<div style="float:left; width: 190px;">
+	{% include 'UserBundle:News:category-list.html.twig' %}
+</div>
+
+<div style="margin-left:200px;">
+	{% for post in posts %}
+		<div style="border-bottom: 1px solid #ccc; padding-bottom: 10px; margin-bottom: 10px;">
+			<div style="float:right">
+				{{post.date_created|date('Y-m-d')}}<br />
+				<img src="{{post.person.getPictureUrl(40)}}" width="40" height="40" />
+			</div>
+			<h4><a href="{{ path('user_news_view', {'post_id': post.id}) }}">{{post.title}}</a></h4>
+
+			{{post.intro_html|raw}}
+		</div>
+	{% endfor %}
+</div>
+
+<br style="clear:both" />
+
+{% endblock %}
