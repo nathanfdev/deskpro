@@ -15,6 +15,7 @@ use Orb\Util\Strings;
 use Orb\Util\Util;
 
 use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
 
 /**
  * Session is able to load up a user, their locale etc.
@@ -32,6 +33,45 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 	 * @var Application\DeskPRO\Entity\Locale
 	 */
 	protected $locale;
+
+	/**
+	 * Starts the session storage.
+	 */
+	public function start()
+	{
+		if (true === $this->started) {
+			return;
+		}
+
+		parent::start();
+
+		// Also make sure the user is a visitor
+		$vis_id = empty($_COOKIE['dpvid']) ? null : $_COOKIE['dpvid'];
+		$vis = null;
+		if ($vis_id) {
+			$vis = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($vis_id);
+		}
+		if (!$vis) {
+			$vis = App::getEntityRepository('DeskPRO:Visitor')->smartFind(
+				App::getRequest()->getClientIp(),
+				empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT']
+			);
+		}
+
+		if (!$vis) {
+			$vis = new Entity\Visitor();
+			$vis['ip_address'] = App::getRequest()->getClientIp();
+			$vis['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
+		}
+
+		$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
+		$vis['date_last'] = new \DateTime();
+
+		App::getOrm()->persist($vis);
+		App::getOrm()->flush();
+
+		setcookie('dpvid', $vis['visitor_code'], time()+15778463);
+	}
 
 
 
