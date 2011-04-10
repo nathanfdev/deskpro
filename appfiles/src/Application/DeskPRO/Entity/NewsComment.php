@@ -16,14 +16,14 @@ use Orb\Util\Arrays;
 /**
  * Comments on articles
  *
- * @orm:Entity
- * @orm:Table(name="comments_article")
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\NewsComment")
+ * @orm:Table(name="news_comments")
  */
-class CommentArticle extends CommentAbstract
+class NewsComment extends CommentAbstract
 {
 	/**
-	 * @orm:ManyToOne(targetEntity="Article", inversedBy="comment")
-	 * @orm:JoinColumn(name="article_id", referencedColumnName="id")
+	 * @orm:ManyToOne(targetEntity="News", inversedBy="comment")
+	 * @orm:JoinColumn(name="news_id", referencedColumnName="id")
 	 */
-	protected $article;
+	protected $news;
 }

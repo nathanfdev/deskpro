@@ -16,15 +16,18 @@
 <br style="clear:both" />
 
 <div style="background-color: #eee; padding: 10px; margin-top: 15px;">
-	Name: <input type="text" name="name" /> (public)<br />
-	Email: <input type="text" name="email" /> (private, never revealed)<br />
-	<textarea name="comment" cols="80" rows="5"></textarea>
-
+	<form action="{{ path('user_news_newcomment', {'post_id': post.id}) }}" method="post">
+	Name: <input type="text" name="new_comment[name]" /> (public)<br />
+	Email: <input type="text" name="new_comment[email]" /> (private, never revealed)<br />
+	<textarea name="new_comment[content]" cols="80" rows="5"></textarea>
+	<input type="submit" value="Submit" />
+	</form>
 	<hr />
 
 	{% for comment in comments %}
 		<div style="background-color: #fff; padding: 6px; margin: 10px;">
-			{{comment.content_html}}
+			<em>{{comment.name}}</em>:<br />
+			{{comment.content_html|raw}}
 		</div>
 	{% endfor %}
 </div>

@@ -64,11 +64,45 @@ class NewsController extends AbstractController
 		$category = $post->category;
 		$category_path = $category->getTreeParents();
 
+		$comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($post);
+
 		return $this->render('UserBundle:News:view.html.twig', array(
 			'post' => $post,
 			'category_path' => $category_path,
 			'category' => $category,
 			'categories' => $categories,
+			'comments' => $comments
+		));
+	}
+
+
+
+	/**
+	 * Submit a new comment
+	 *
+	 * @param  $post_id
+	 */
+	public function newCommentAction($post_id)
+	{
+		$post = App::getEntityRepository('DeskPRO:News')->find($post_id);
+		if (!$post) {
+			die('invalid');
+		}
+		
+		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));
+		$new_comment = new \Application\DeskPRO\Comments\NewComment(
+			'Application\\DeskPRO\\Entity\\NewsComment',
+			array('news' => $post)
+		);
+
+		$form->bind($this->get('request'), $new_comment);
+
+		if ($form->isValid()) {
+			$comment = $new_comment->save();
+		}
+
+		return $this->redirectRoute('user_news_view', array(
+			'post_id' => $post['id']
 		));
 	}
 }

@@ -86,9 +86,44 @@ class ArticlesController extends AbstractController
 			$all_categories[$cat['id']] = array_reverse($cats);
 		}
 
+		$comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
+
 		return $this->render('UserBundle:Articles:article.html.twig', array(
 			'article' => $article,
 			'all_categories' => $all_categories,
+			'comments' => $comments
+		));
+	}
+
+	
+
+	/**
+	 * Submit a new comment
+	 *
+	 * @param  $article_id
+	 */
+	public function newCommentAction($article_id)
+	{
+		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
+		if (!$article) {
+			die('invalid');
+		}
+
+		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));
+		$new_comment = new \Application\DeskPRO\Comments\NewComment(
+			'Application\\DeskPRO\\Entity\\ArticleComment',
+			array('article' => $article)
+		);
+
+		$form->bind($this->get('request'), $new_comment);
+
+		if ($form->isValid()) {
+			$comment = $new_comment->save();
+		}
+
+		return $this->redirectRoute('user_articles_article', array(
+			'article_id' => $article['id'],
+			'slug' => $article['slug']
 		));
 	}
 }

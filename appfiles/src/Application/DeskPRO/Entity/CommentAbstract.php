@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Markdown;
+
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -22,9 +24,9 @@ use Orb\Util\Arrays;
  */
 class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-	const STATUS_OPEN = 'visible';
+	const STATUS_OPEN       = 'visible';
 	const STATUS_VALIDATING = 'validating';
-	const STATUS_DELETED = 'deleted';
+	const STATUS_DELETED    = 'deleted';
 
 	/**
 	 * The unique ID.
@@ -43,13 +45,25 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
+	 * @orm:Column(name="email", type="string", length=255, nullable=true)
+	 */
+	protected $email = null;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="name", type="string", length=255, nullable=true)
+	 */
+	protected $name = null;
+
+	/**
+	 * @var string
 	 * @orm:Column(name="content", type="text")
 	 */
 	protected $content;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="status", type="string", length=15)
+	 * @orm:Column(name="status", type="string", length=30)
 	 */
 	protected $status;
 
@@ -63,5 +77,10 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->status = 'visible';
 		$this->date_created = new \DateTime();
+	}
+
+	public function getContentHtml()
+	{
+		return Markdown::format($this->content);
 	}
 }

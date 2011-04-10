@@ -75,6 +75,9 @@ user_articles_article:
   pattern: /articles/view/{article_id}/{slug}
   defaults: { _controller: UserBundle:Articles:article }
 
+user_articles_newcomment:
+  pattern: /articles/new-comment/{article_id}
+  defaults: { _controller: UserBundle:Articles:newComment }
 
 ################################################################################
 # Downloads
@@ -108,6 +111,10 @@ user_news_view:
   pattern: /news/view/{post_id}
   defaults: { _controller: UserBundle:News:view }
 
+user_news_newcomment:
+  pattern: /news/new-comment/{post_id}
+  defaults: { _controller: UserBundle:News:newComment }
+
 ################################################################################
 # Ideas
 ################################################################################
@@ -115,6 +122,10 @@ user_news_view:
 user_ideas_view:
   pattern: /ideas/view/{idea_id}
   defaults: { _controller: UserBundle:Ideas:view }
+
+user_ideas_newcomment:
+  pattern: /ideas/new-comment/{idea_id}
+  defaults: { _controller: UserBundle:Ideas:newComment }
 
 user_ideas_vote:
   pattern: /ideas/view/{idea_id}/vote

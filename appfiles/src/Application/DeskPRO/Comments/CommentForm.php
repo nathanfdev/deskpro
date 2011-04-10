@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Comments\Form;
+namespace Application\DeskPRO\Comments;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;

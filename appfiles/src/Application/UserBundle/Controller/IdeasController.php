@@ -103,6 +103,8 @@ class IdeasController extends AbstractController
 
 		$spend_on_this = min($num_votes_remain+$num_votes_this, 3);
 
+		$comments = App::getEntityRepository('DeskPRO:IdeaComment')->getComments($idea);
+
 		return $this->render('UserBundle:Ideas:view.html.twig', array(
 			'num_votes' => $num_votes,
 			'num_votes_this' => $num_votes_this,
@@ -113,6 +115,8 @@ class IdeasController extends AbstractController
 			'category_path' => $category_path,
 			'category'      => $category,
 			'categories'    => $categories,
+
+			'comments' => $comments
 		));
 	}
 
@@ -153,5 +157,36 @@ class IdeasController extends AbstractController
 		App::getOrm()->flush();
 
 		return $this->redirectRoute('user_ideas_view', array('idea_id' => $idea['id']));
+	}
+
+
+
+	/**
+	 * Submit a new comment
+	 *
+	 * @param  $article_id
+	 */
+	public function newCommentAction($idea_id)
+	{
+		$idea = App::getEntityRepository('DeskPRO:Idea')->find($idea_id);
+		if (!$idea) {
+			die('invalid');
+		}
+
+		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));
+		$new_comment = new \Application\DeskPRO\Comments\NewComment(
+			'Application\\DeskPRO\\Entity\\IdeaComment',
+			array('idea' => $idea)
+		);
+
+		$form->bind($this->get('request'), $new_comment);
+
+		if ($form->isValid()) {
+			$comment = $new_comment->save();
+		}
+
+		return $this->redirectRoute('user_ideas_view', array(
+			'idea_id' => $idea['id'],
+		));
 	}
 }
