@@ -16,21 +16,20 @@ use \Application\DeskPRO\App;
 /**
  * Idea categories
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaCategory")
  * @orm:Table(name="idea_categories")
  */
-class IdeaCategory extends \Application\DeskPRO\Domain\DomainObject
+class IdeaCategory extends CategoryAbstract
 {
 	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @gedmo:TreeParent
+	 * @orm:ManyToOne(targetEntity="IdeaCategory", inversedBy="children")
 	 */
-	protected $id = null;
+	protected $parent;
 
 	/**
-	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @orm:OneToMany(targetEntity="IdeaCategory", mappedBy="parent")
+	 * @orm:OrderBy({"lft" = "ASC"})
 	 */
-	protected $title;
+	protected $children;
 }

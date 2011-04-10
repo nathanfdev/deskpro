@@ -24,15 +24,21 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 {
 	/**
 	 * The person this session belongs to
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
 
 	/**
 	 * The lcoale used for this user
-	 * @var Application\DeskPRO\Entity\Locale
+	 * @var \Application\DeskPRO\Entity\Locale
 	 */
 	protected $locale;
+
+	/**
+	 * The current visitor
+	 * @var \Application\DeskPRO\Entity\Visitor
+	 */
+	protected $visitor;
 
 	/**
 	 * Starts the session storage.
@@ -70,10 +76,24 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		App::getOrm()->persist($vis);
 		App::getOrm()->flush();
 
+		$this->visitor = $vis;
+
 		setcookie('dpvid', $vis['visitor_code'], time()+15778463);
 	}
 
 
+
+	/**
+	 * Get the current visitor record
+	 *
+	 * @return \Application\DeskPRO\Entity\Visitor
+	 */
+	public function getVisitor()
+	{
+		return $this->visitor;
+	}
+
+	
 
 	/**
 	 * Get the logged in Person

@@ -14,23 +14,27 @@ namespace Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
+use Application\DeskPRO\Markdown;
+
 use \Orb\Util\Strings;
 
 /**
  * Ideas (feedback)
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Idea")
  * @orm:Table(name="ideas")
  */
 class Idea extends \Application\DeskPRO\Domain\DomainObject
 {
-	const STATUS_OPEN = 'visible';
-	const STATUS_VALIDATING = 'validating';
-	const STATUS_DELETED = 'deleted';
+	const STATUS_NEW      = 'new';
+	const STATUS_REVIEW   = 'review';
+	const STATUS_ACCEPTED = 'accepted';
+	const STATUS_DECLINED = 'declined';
+	const STATUS_HIDDEN   = 'hidden';
 
-	const COMPLETION_STATUS_REVIEW = 'review';
-	const COMPLETION_STATUS_ACCEPTED = 'accepted';
-	const COMPLETION_STATUS_DECLINED = 'declined';
+	const HIDDEN_STATUS_VALIDATING = 'validating';
+	const HIDDEN_STATUS_SPAM = 'spam';
+	const HIDDEN_STATUS_DELETED = 'deleted';
 
 	/**
 	 * @var int
@@ -65,9 +69,15 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="completion_status", type="string", length=15)
+	 * @orm:Column(name="hidden_status", type="string", length=15, nullable=true)
 	 */
-	protected $completion_status;
+	protected $hidden_status = null;
+
+	/**
+	 * @var int
+	 * @orm:Column(name="num_votes", type="integer")
+	 */
+	protected $num_votes = 0;
 
 	/**
 	 * @var \DateTime
@@ -95,9 +105,9 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
-	public function getExcerptHtml()
+	public function getContentHtml()
 	{
-		return Markdown::format($this->excerpt);
+		return Markdown::format($this->content);
 	}
 
 	public function getLabelManager()
@@ -107,5 +117,17 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_label_manager;
+	}
+
+
+	public function recountVotes()
+	{
+		if (!$this->id) return;
+
+		$this['num_votes'] = App::getDb()->fetchColumn("
+			SELECT SUM(num_votes)
+			FROM idea_votes
+			WHERE idea_id = ?
+		", array($this->id));
 	}
 }

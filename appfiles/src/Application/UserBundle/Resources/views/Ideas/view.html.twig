@@ -1,0 +1,61 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+<div style="float:left; width: 190px;">
+	{% include 'UserBundle:Ideas:category-list.html.twig' %}
+</div>
+
+<div style="margin-left:200px;">
+	<div style="float:left; width:80px">
+		{{idea.num_votes}} votes
+	</div>
+	<div style="margin-left:90px">
+		<div style="float:right">
+			{{idea.date_created|date('Y-m-d')}}
+		</div>
+
+		<small>
+		<a href="{{ path('user_ideas') }}">Ideas</a> /
+		{% for cat in category_path %}
+			<a href="{{ path('user_ideas_cat', {'category_id': cat.id}) }}">{{cat.title}}</a> /
+		{% endfor %}
+		<a href="{{ path('user_ideas_cat', {'category_id': category.id}) }}">{{category.title}}</a>
+		</small>
+		<h4>{{idea.title}}</h4>
+
+		{{idea.content_html|raw}}
+
+		<div style="background-color: #eee; padding: 10px; margin-top: 8px;">
+			<form action="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}" method="post">
+				You have {{num_votes_remain}} votes remaining.
+				<br />
+				{% if num_votes_this %}
+					You've used {{num_votes_this}} votes on this idea. Change your vote:
+				{% else %}
+					Vote on this idea:
+				{% endif %}
+				<input type="radio" value="1" name="vote" {% if num_votes_this == 1 or not num_votes_this %}checked="checked"{% endif %}/>1
+				<input type="radio" value="2" name="vote" {% if num_votes_this == 2 %}checked="checked"{% endif %}/>2
+				<input type="radio" value="3" name="vote" {% if num_votes_this == 3 %}checked="checked"{% endif %}/>3
+				<input type="submit" value="vote" />
+			</form>
+		</div>
+	</div>
+</div>
+
+<br style="clear:both" />
+
+<div style="background-color: #eee; padding: 10px; margin-top: 15px;">
+	Name: <input type="text" name="name" /> (public)<br />
+	Email: <input type="text" name="email" /> (private, never revealed)<br />
+	<textarea name="comment" cols="80" rows="5"></textarea>
+
+	<hr />
+
+	{% for comment in comments %}
+		<div style="background-color: #fff; padding: 6px; margin: 10px;">
+			{{comment.content_html}}
+		</div>
+	{% endfor %}
+</div>
+
+{% endblock %}

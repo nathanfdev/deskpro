@@ -16,82 +16,142 @@ use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
-use \Application\UserBundle\Form\RegPersonForm;
-
-class ArticlesController extends AbstractController
+class IdeasController extends AbstractController
 {
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function indexAction()
+	public function indexAction($category_id, $status, $sort = 'date')
 	{
-		$cats = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategories();
+		$categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getRootNodes();
 
-		return $this->render('UserBundle:Idea:index.html.twig', array(
-			'categories' => $cats,
-		));
-	}
+		$category = null;
+		$category_path = null;
+		if ($category_id) {
+			$category = App::getEntityRepository('DeskPRO:IdeaCategory')->find($category_id);
+			if (!$category) die('invalid');
 
-
-
-	/**
-	 * View a category listing
-	 *
-	 * @param  $category_id
-	 */
-	public function categoryAction($category_id)
-	{
-		$category = App::getEntityRepository('DeskPRO:ArticleCategory')->find($category_id);
-		$parents = array();
-
-		$p = $category['parent'];
-		while ($p) {
-			$parents[] = $p;
-			$p = $p['parent'];
+			$category_path = $category->getTreeParents();
 		}
 
-		$subcategories = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHierarchy($category['id']);
+		$ideas = App::getEntityRepository('DeskPRO:Idea')->getIdeas(
+			$status,
+			$category,
+			$sort,
+			100
+		);
 
-		// Articles
-		$articles = App::getEntityRepository('DeskPRO:Article')->getArticlesInCategory($category);
-
-		return $this->render('UserBundle:Article:category.html.twig', array(
-			'category' => $category,
-			'parents' => $parents,
-			'subcategories' => $subcategories,
-			'articles' => $articles
+		return $this->render('UserBundle:Ideas:index.html.twig', array(
+			'categories'      => $categories,
+			'category'        => $category,
+			'category_path'   => $category_path,
+			'status'          => $status,
+			'ideas'           => $ideas
 		));
 	}
 
 
+
 	/**
-	 * View an article listing
+	 * View an idea
 	 *
-	 * @param  $article_id
+	 * @param  $idea_id
 	 */
-	public function articleAction($article_id, $slug)
+	public function viewAction($idea_id)
 	{
-		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
-		if (!$article) {
+		$idea = App::getEntityRepository('DeskPRO:Idea')->find($idea_id);
+		if (!$idea) {
 			die('invalid');
 		}
 
-		$all_categories = array();
-		foreach ($article['categories'] as $cat) {
-			$cats = array();
-			$cats[] = $cat;
-			$p = $cat['parent'];
-			while ($p) {
-				$cats[] = $p;
-				$p = $p['parent'];
-			}
+		$categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getRootNodes();
 
-			$all_categories[$cat['id']] = array_reverse($cats);
+		$category = $idea->category;
+		$category_path = $category->getTreeParents();
+
+		// Get number of votes user has
+		if ($this->person['id']) {
+			$num_votes = App::getDb()->fetchColumn("
+				SELECT SUM(num_votes)
+				FROM idea_votes
+				WHERE person_id = ? AND is_returned = 0
+			", array($this->person['id']));
+
+			$num_votes_this = App::getDb()->fetchColumn("
+				SELECT num_votes
+				FROM idea_votes
+				WHERE person_id = ? AND idea_id = ?
+			", array($this->person['id'], $idea['id']));
+		} else {
+			$num_votes = App::getDb()->fetchColumn("
+				SELECT SUM(num_votes)
+				FROM idea_votes
+				WHERE visitor_id = ? AND is_returned = 0
+			", array(App::getSession()->getVisitor()->getId()));
+
+			$num_votes_this = App::getDb()->fetchColumn("
+				SELECT num_votes
+				FROM idea_votes
+				WHERE visitor_id = ? AND idea_id = ?
+			", array(App::getSession()->getVisitor()->getId(), $idea['id']));
 		}
 
-		return $this->render('UserBundle:Article:article.html.twig', array(
-			'article' => $article,
-			'all_categories' => $all_categories,
+		if (!$num_votes) $num_votes = 0;
+		if (!$num_votes_this) $num_votes_this = 0;
+
+		$num_votes_remain = 10 - $num_votes;
+
+		$spend_on_this = min($num_votes_remain+$num_votes_this, 3);
+
+		return $this->render('UserBundle:Ideas:view.html.twig', array(
+			'num_votes' => $num_votes,
+			'num_votes_this' => $num_votes_this,
+			'num_votes_remain' => $num_votes_remain,
+			'spend_on_this' => $spend_on_this,
+
+			'idea'          => $idea,
+			'category_path' => $category_path,
+			'category'      => $category,
+			'categories'    => $categories,
 		));
+	}
+
+
+	/**
+	 * View an idea
+	 *
+	 * @param  $idea_id
+	 */
+	public function voteAction($idea_id)
+	{
+		$idea = App::getEntityRepository('DeskPRO:Idea')->find($idea_id);
+		if (!$idea) {
+			die('invalid');
+		}
+
+		if ($this->person['id']) {
+			App::getDb()->delete('idea_votes', array('idea_id' => $idea['id'], 'person_id' => $this->person['id']));
+		}
+
+		App::getDb()->delete('idea_votes', array('idea_id' => $idea['id'], 'visitor_id' => App::getSession()->getVisitor()->getId()));
+
+		$vote = new Entity\IdeaVote();
+		$vote['idea'] = $idea;
+		if ($this->person['id']) {
+			$vote['person'] = $this->person;
+		} else {
+			$vote['visitor'] = App::getSession()->getVisitor();
+		}
+		$vote['num_votes'] = $this->in->getUint('vote');
+		$vote['date_created'] = new \DateTime();
+
+		App::getOrm()->persist($vote);
+		App::getOrm()->flush();
+
+		$idea->recountVotes();
+		App::getOrm()->persist($idea);
+		App::getOrm()->flush();
+
+		return $this->redirectRoute('user_ideas_view', array('idea_id' => $idea['id']));
 	}
 }

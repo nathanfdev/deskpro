@@ -107,3 +107,31 @@ user_news_cat:
 user_news_view:
   pattern: /news/view/{post_id}
   defaults: { _controller: UserBundle:News:view }
+
+################################################################################
+# Ideas
+################################################################################
+
+user_ideas_view:
+  pattern: /ideas/view/{idea_id}
+  defaults: { _controller: UserBundle:Ideas:view }
+
+user_ideas_vote:
+  pattern: /ideas/view/{idea_id}/vote
+  defaults: { _controller: UserBundle:Ideas:vote }
+
+user_ideas:
+  pattern: /ideas
+  defaults: { _controller: UserBundle:Ideas:index, category_id: 0, status: new }
+
+user_ideas_status:
+  pattern: /ideas/all/{status}
+  defaults: { _controller: UserBundle:Ideas:index, category_id: 0 }
+
+user_ideas_cat:
+  pattern: /ideas/{category_id}
+  defaults: { _controller: UserBundle:Ideas:index, status: new }
+
+user_ideas_cat_status:
+  pattern: /ideas/{category_id}/{status}
+  defaults: { _controller: UserBundle:Ideas:index }

@@ -1,0 +1,23 @@
+<div style="background-color: #eee; padding: 3px;">
+	<ul>
+		<li style="margin-bottom: 15px;">
+			{% if not status or status == 'new' %}
+				<a href="{{ path('user_ideas') }}">
+			{% else %}
+				<a href="{{ path('user_ideas_status', {'status': status}) }}">
+			{% endif %}
+			All Ideas
+			</a>
+		</li>
+	{% for cat in categories %}
+		<li>
+			{% if not status or status == 'new' %}
+				<a href="{{ path('user_ideas_cat', {'category_id': cat.id}) }}">
+			{% else %}
+				<a href="{{ path('user_ideas_cat_status', {'category_id': cat.id, 'status': status}) }}">
+			{% endif %}
+			{{ cat.title }}</a>
+		</li>
+	{% endfor %}
+	</ul>
+</div>
