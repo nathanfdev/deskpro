@@ -1,0 +1,65 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('email_from', {{email_from.id|default(0)}});
+
+	{% if row_html %}
+		window.DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
+	{% endif %}
+}
+</script>
+{% endblock %}
+{% block page_id "email_from" %}
+{% block header %}
+	<h1>{% if email_from.id %}Edit From Address{% else %}New From Address{% endif %}</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_emailfroms_edit', {'email_id': email_from.id|default(0)}) }}" method="post">
+{{ form_hidden(form) }}
+<input type="hidden" name="process" value="1" />
+
+<div class="form-panel">
+	<div class="row">
+		<label>From Name</label>
+		{{ form_field(form.name) }}
+	</div>
+	<div class="row">
+		<label>Email Address</label>
+		{{ form_field(form.address) }}
+	</div>
+
+	{% if form.transport_options.sendmail_path %}
+		<div class="row">
+			<label>Path to Sendmail <small>(example: /usr/bin/sendmail)</small></label>
+			{{ form_field(form.transport_options.sendmail_path) }}
+		</div>
+	{% elseif form.transport_options.server %}
+		<table cellpadding="0" cellspacing="0" width="100%">
+			<tr>
+				<td>Server<br />{{ form_field(form.transport_options.server) }}</td>
+				<td>Port<br />{{ form_field(form.transport_options.port, {'size':4}) }}</td>
+				<td>{{ form_field(form.transport_options.ssl) }}</td>
+			</tr>
+		</table>
+		<table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 5px;">
+			<tr>
+				<td width="50%">Username<br />{{ form_field(form.transport_options.username) }}</td>
+				<td>Password<br />{{ form_field(form.transport_options.password) }}</td>
+			</tr>
+		</table>
+	{% endif %}
+</div>
+
+<br /><br />
+
+</form>
+{% endblock %}
+{% block footer %}
+	<button class="dp-button small save-trigger">Save</button>
+
+{% endblock %}

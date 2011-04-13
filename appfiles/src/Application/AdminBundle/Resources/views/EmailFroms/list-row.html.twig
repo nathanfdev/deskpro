@@ -1,0 +1,10 @@
+<li class="email_from email_from-{{email_from.id}}" data-email_from-id="{{email_from.id}}">
+	<div style="float:right">
+		<ul class="controls">
+			<li class="edit edit-trigger"><a href="{{ path('admin_emailfroms_edit', {'email_id': email_from.id}) }}" class="popout-trigger" data-height="400" data-width="580">edit</a></li>
+		</ul>
+	</div>
+	<div>
+		{{email_from.name}} &lt;{{email_from.address}}&gt;
+	</div>
+</li>

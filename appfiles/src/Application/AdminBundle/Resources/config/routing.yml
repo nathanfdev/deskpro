@@ -497,3 +497,20 @@ admin_emailgateways_edit:
   pattern: /email-gateways/{gateway_id}
   defaults: { _controller: AdminBundle:EmailGateways:edit }
   requirements: { gateway_id: "\d+" }
+
+################################################################################
+# Email Froms
+################################################################################
+
+admin_emailfroms:
+  pattern: /email-from-addresses
+  defaults: { _controller: AdminBundle:EmailFroms:list }
+
+admin_emailfroms_edit:
+  pattern: /email-from-addresses/{email_id}
+  defaults: { _controller: AdminBundle:EmailFroms:edit }
+  requirements: { email_id: "\d+" }
+
+admin_emailfroms_new:
+  pattern: /email-from-addresses/new
+  defaults: { _controller: AdminBundle:EmailFroms:new }

@@ -1,0 +1,44 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	$('#continue_btn').click(function() {
+		$('#new_from_form').submit();
+	});
+}
+</script>
+{% endblock %}
+{% block page_id "email_froms_new" %}
+{% block header %}
+	<h1>New From Address</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_emailfroms_edit', {'email_id': '0'}) }}" method="post" id="new_from_form">
+
+<div class="form-panel">
+	<div class="row">
+		<label><input type="radio" name="type" value="smtp" /> SMTP</label>
+		Use an SMTP server to send mail.
+	</div>
+
+	<div class="row">
+		<label><input type="radio" name="type" value="sendmail" /> Sendmail</label>
+		Use the sendmail (or compatible binary such as postfix or exim) command on your server to send mail.
+	</div>
+
+	<div class="row">
+		<label><input type="radio" name="type" value="mail" /> Native Mail</label>
+		Use PHP's native mail() function.
+	</div>
+</div>
+
+<br /><br />
+
+</form>
+{% endblock %}
+{% block footer %}
+	<button class="dp-button small save-trigger" id="continue_btn">Continue</button>
+{% endblock %}
