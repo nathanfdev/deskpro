@@ -934,6 +934,33 @@ class Strings
 	}
 
 
+	
+	/**
+	 * Test a "star" wildcard match. This is a simplified sort of regex
+	 * match where a star in the pattern is a non-greedy dot.
+	 *
+	 * Example: test-*@example.com is the regex test\-(.*?)@example\.com
+	 *
+	 * @param string $pattern The pattern that has the star wildcard character in it
+	 * @param string $test    The string to test
+	 * @param mixed  $matches A variable to put matches into
+	 * @return string
+	 */
+	public static function isStarMatch($pattern, $test, &$matches = null)
+	{
+		// No wildcard in it, just a straight up comparison is needed
+		if (strpos($pattern, '*') === false) {
+			return ($pattern == $test);
+		}
+
+		$pattern = preg_quote($pattern, '#');
+		$pattern = str_replace('\\*', '(.*?)', $pattern);
+		$pattern = "#^$pattern$#";
+
+		return preg_match($pattern, $test, $matches);
+	}
+
+
 
 	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable

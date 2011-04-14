@@ -110,18 +110,26 @@ class DelegatingTransport implements \Swift_Transport
 		return $success;
 	}
 
-	public function getTransportForMessage($message)
+	public function getTransportForMessage(\Swift_Mime_Message $message)
 	{
-		// TODO this needs to sort out SMTP settings etc
-		// for the message (usually based on the 'from')
+		$from_address_model = $message->getFrom();
+		$from_address = $from_address_model->getAddresses();
 
-		static $phpmail = null;
+		if (!$from_address) $from_address = '';
+		else $from_address = $from_address[0];
 
-		if ($phpmail === null) {
-			$phpmail = new \Swift_MailTransport();
+		$from_account = App::getEntityRepository('DeskPRO:EmailFrom')->findFromAddress($from_address);
+		if ($from_account) {
+			$tr = $from_account->getTransport();
+		} else {
+			try {
+				App::logErrorMessage('mail_send', 'WARN', "No account found to send from {$from_account}", array('raw_message' => $message->toString()));
+			} catch (\Exception $e) {}
+
+			$tr = new \Swift_MailTransport();
 		}
 
-		return $phpmail;
+		return $tr;
 	}
 
 	public function registerPlugin(\Swift_Events_EventListener $plugin)

@@ -137,6 +137,10 @@ class Logger
 	 */
 	public function log($message, $priority, array $info = array())
 	{
+		if (is_string($priority)) {
+			$priority = constant('Orb\\Log\\Logger::' . $priority);
+		}
+
 		$info[LogItem::MESSAGE] = $message;
 		$info[LogItem::PRIORITY] = $priority;
 		$info[LogItem::PRIORITY_NAME] = $this->_priorities[$priority];

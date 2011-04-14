@@ -723,6 +723,22 @@ class App
 		return $logger;
 	}
 
+	
+
+	/**
+	 * Log a single error message to the standard error_log with subtype $type.
+	 *
+	 * @param string $type A type identifier
+	 * @param int|string $priority The priority
+	 * @param string $message The error message
+	 * @param array $data Additional debug info
+	 */
+	public static function logErrorMessage($type, $priority, $message, array $data = array())
+	{
+		$logger = self::createNewLogger('error_log.'.$type, null);
+		$logger->log($message, $priority, $data);
+	}
+
 
 
 	/**

@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Entity;
 /**
  * A "from" email address, and how to send emails (SMTP, native etc) from it.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailGateway")
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailFrom")
  * @orm:Table(name="email_from")
  */
 class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
@@ -95,6 +95,8 @@ class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
 
 		switch ($options['type']) {
 			case 'smtp':
+				if (!$options['ssl']) $options['ssl'] = null;
+
 				$tr = \Swift_SmtpTransport::newInstance($options['server'], $options['port'], $options['ssl']);
 
 				if (!empty($options['username']) OR !empty($options['password'])) {
