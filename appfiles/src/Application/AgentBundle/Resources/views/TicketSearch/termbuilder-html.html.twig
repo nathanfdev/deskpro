@@ -170,6 +170,39 @@
 		</div>
 	</div>
 {% endif %}
+<div class="type" title="Originated interface" data-rule-type="creation_system">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="choice">
+		<select name="creation_system">
+			<option value="web">Web interface</option>
+			<option value="web.person">-- By user</option>
+			<option value="web.agent">-- By agent on behalf of user</option>
+			<option value="gateway">Email</option>
+		</select>
+	</div>
+</div>
+{% if term_options.gateway_names %}
+<div class="type" title="Receiving gateway account" data-rule-type="receiving_gateway">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="choice">
+		<select name="receiving_gateway">
+			{% for id,label in term_options.gateway_names %}
+				<option value="{{id}}">{{label}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+{% endif %}
 {% if term_options.ticket_workflows %}
 	<div class="type" title="Workflow" data-rule-type="workflow">
 		<div class="op">

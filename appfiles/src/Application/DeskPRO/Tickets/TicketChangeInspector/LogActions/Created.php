@@ -9,37 +9,34 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog\Actions;
+namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-class HiddenStatus implements LogActionInterface
+class Created implements LogActionInterface
 {
-	protected $old_status;
-	protected $new_status;
+	protected $ticket;
 
-	public function __construct($old_status, $new_status)
+	public function __construct($ticket)
 	{
-		$this->old_status = $old_status;
-		$this->new_status = $new_status;
+		$this->ticket = $ticket;
 	}
 
 	public function getLogName()
 	{
-		return 'changed_hidden_status';
+		return 'ticket_created';
 	}
 
 	public function getLogDetails()
 	{
 		return array(
-			'old_status' => $this->old_status,
-			'new_status' => $this->new_status,
+			'ticket_id' => $this->ticket['id']
 		);
 	}
 
 	public function getEventType()
 	{
-		return 'property';
+		return 'ticket_created';
 	}
 }

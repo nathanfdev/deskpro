@@ -101,7 +101,7 @@ class TicketTriggersController extends AbstractController
 			'form'      => $form,
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html,
-			'term_options' => $term_options
+			'term_options' => $term_options,
 		));
 	}
 }

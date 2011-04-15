@@ -6,6 +6,8 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\Searcher\TicketSearch;
 
+use \Application\DeskPRO\Tickets\TicketChangeTracker;
+
 use \Orb\Util\Numbers;
 use \Orb\Util\Arrays;
 
@@ -22,6 +24,12 @@ class TicketTerms
 	const OP_NOTCONTAINS = 'notcontains';
 	const OP_NOOP        = null;
 
+	const OP_CHANGED            = 'changed';
+	const OP_CHANGED_TO         = 'changed_to';
+	const OP_CHANGED_FROM       = 'changed_from';
+	const OP_NOT_CHANGED_TO     = 'not_changed_to';
+	const OP_NOT_CHANGED_FROM   = 'not_changed_from';
+
 	protected $terms = array();
 
 	public function __construct(array $terms)
@@ -29,13 +37,14 @@ class TicketTerms
 		$this->terms = $terms;
 	}
 
+
 	/**
 	 * Check a specific ticket against these terms to see if it matches.
 	 *
 	 * @param Ticket $ticket
 	 * @return bool
 	 */
-	public function doesTicketMatch(Entity\Ticket $ticket)
+	public function doesTicketMatch(Entity\Ticket $ticket, TicketChangeTracker $tracker = null)
 	{
 		foreach ($this->terms as $info) {
 
@@ -46,15 +55,25 @@ class TicketTerms
 			$choice = $info;
 			unset($choice['rule_type'], $choice['op']);
 
-			if (!$this->testTerm($ticket, $term, $op, $choice)) {
-				return false;
+			if (strpos($op, 'changed') !== false) {
+				if ($tracker) {
+					if (!$this->testChangedTerm($ticket, $tracker, $term, $op, $choice)) {
+						return false;
+					}
+				} else {
+					return false;
+				}
+			} else {
+				if (!$this->testTerm($ticket, $term, $op, $choice)) {
+					return false;
+				}
 			}
 		}
 
 		return true;
 	}
 
-	public function doesTicketMatchAny(Entity\Ticket $ticket)
+	public function doesTicketMatchAny(Entity\Ticket $ticket, TicketChangeTracker $tracker = null)
 	{
 		foreach ($this->terms as $term => $info) {
 
@@ -71,6 +90,37 @@ class TicketTerms
 		}
 
 		return false;
+	}
+
+	public function testChangedTerm(Entity\Ticket $ticket, TicketChangeTracker $tracker, $term, $op, $choice)
+	{
+		if (!$tracker->isPropertyChanged($term)) {
+			return false;
+		}
+
+		// No specific value check
+		if ($op == 'changed') {
+			return true;
+		}
+
+		$info = $tracker->getChangedProperty($term);
+
+		if (strpos($op, '_to') !== false) {
+			$val = $info['new'];
+		} else {
+			$val = $info['old'];
+		}
+
+		$ticket2 = clone $ticket;
+		$ticket2[$term] = $val;
+
+		if (strpos($op, 'not_') !== false) {
+			$pass = $this->testTerm($ticket2, $term, 'not', $choice);
+		} else {
+			$pass = $this->testTerm($ticket2, $term, 'is', $choice);
+		}
+
+		return $pass;
 	}
 
 	public function testTerm(Entity\Ticket $ticket, $term, $op, $choice)

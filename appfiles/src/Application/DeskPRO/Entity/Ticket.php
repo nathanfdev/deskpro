@@ -153,6 +153,15 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $labels;
 
 	/**
+	 * The gateway this ticket originated from
+	 * 
+	 * @var \Application\DeskPRO\Entity\EmailGateway
+	 * @orm:ManyToOne(targetEntity="EmailGateway")
+	 * @orm:JoinColumn(name="email_gateway_id", referencedColumnName="id")
+	 */
+	protected $email_gateway = null;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="creation_system", type="string", length=20)
 	 */
@@ -273,7 +282,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Ticket logger
-	 * @var \Application\DeskPRO\Tickets\TicketLog\Logger
+	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketChangeTracker
 	 */
 	protected $_ticket_logger;
 
@@ -301,6 +310,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->ref = Strings::random(12, Strings::CHARS_KEY);
 
 		$this->_initTicketLogger();
+		$this->_ticket_logger->recordExtra('ticket_created', true);
 	}
 
 	/**
@@ -308,8 +318,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function _initTicketLogger()
 	{
-		// Automatically create a ticket logger
-		$ticket_logger = new \Application\DeskPRO\Tickets\TicketLog\Logger($this);
+		$ticket_logger = new \Application\DeskPRO\Tickets\TicketChangeTracker($this);
 		$this->_ticket_logger = $ticket_logger;
 		$this->addPropertyChangedListener($ticket_logger);
 	}
@@ -730,6 +739,25 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this['agent_team'] = $agent_team;
 		} else {
 			$this['agent_team'] = null;
+		}
+	}
+
+	public function getEmailGatewayId()
+	{
+		if (!$this->email_gateway) {
+			return 0;
+		}
+
+		return $this->email_gateway['id'];
+	}
+
+	public function setEmailGatewayId($id)
+	{
+		if ($id) {
+			$g = App::getOrm()->getRepository('DeskPRO:EmailGateway')->find($id);
+			$this['email_gateway'] = $g;
+		} else {
+			$this['email_gateway'] = null;
 		}
 	}
 

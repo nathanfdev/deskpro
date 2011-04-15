@@ -24,6 +24,8 @@ class TicketSearch
 			$options['agent_teams'] = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
 		}
 
+		$options['gateway_names'] = App::getOrm()->getRepository('DeskPRO:EmailGateway')->getGatewayNames();
+
 		$options['departments_hierarchy'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
 		$options['departments_full'] = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames(null, false);
 		$options['departments'] = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames(null, false);

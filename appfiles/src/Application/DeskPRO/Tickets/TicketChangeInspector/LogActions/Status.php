@@ -9,39 +9,37 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog\Actions;
+namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-class Message implements LogActionInterface
+class Status implements LogActionInterface
 {
-	protected $message;
+	protected $old_status;
+	protected $new_status;
 
-	public function __construct($message)
+	public function __construct($old_status, $new_status)
 	{
-		$this->message = $message;
+		$this->old_status = $old_status;
+		$this->new_status = $new_status;
 	}
 
 	public function getLogName()
 	{
-		return 'message_created';
+		return 'changed_status';
 	}
 
 	public function getLogDetails()
 	{
 		return array(
-			'message_id' => $this->message['id']
+			'old_status' => $this->old_status,
+			'new_status' => $this->new_status,
 		);
-	}
-
-	public function getMessage()
-	{
-		return $this->message;
 	}
 
 	public function getEventType()
 	{
-		return 'message_created';
+		return 'property';
 	}
 }

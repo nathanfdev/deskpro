@@ -9,34 +9,32 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog\Actions;
+namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-class Department implements LogActionInterface
+class HiddenStatus implements LogActionInterface
 {
-	protected $old_dep;
-	protected $new_dep;
+	protected $old_status;
+	protected $new_status;
 
-	public function __construct($old_dep, $new_dep)
+	public function __construct($old_status, $new_status)
 	{
-		$this->old_dep = $old_dep;
-		$this->new_dep = $new_dep;
+		$this->old_status = $old_status;
+		$this->new_status = $new_status;
 	}
 
 	public function getLogName()
 	{
-		return 'changed_department';
+		return 'changed_hidden_status';
 	}
 
 	public function getLogDetails()
 	{
 		return array(
-			'old_department_id' => $this->old_dep['id'],
-			'old_department_title' => $this->old_dep['title'],
-			'new_department_id' => $this->new_dep['id'],
-			'new_department_title' => $this->new_dep['title'],
+			'old_status' => $this->old_status,
+			'new_status' => $this->new_status,
 		);
 	}
 

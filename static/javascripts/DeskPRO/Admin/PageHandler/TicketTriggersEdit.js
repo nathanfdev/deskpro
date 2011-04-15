@@ -28,15 +28,13 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 			});
 		});
 
-		var to_el = $('.criteria-form .search-terms');
-
 		$('.criteria-form .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
-			var basename = 'actions['+count+']';
+			var basename = 'terms['+count+']';
 
 			$(this).data('add-count', count+1);
 
-			self.criteriaEditor.addNewRow(to_el, basename);
+			self.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename);
 		});
 
 		// Actions builder
@@ -47,16 +45,18 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 			});
 		});
 
-		to_el = $('.actions-form .search-terms');
-
 		$('.actions-form .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'actions['+count+']';
 
 			$(this).data('add-count', count+1);
 
-			self.actionsEditor.addNewRow(to_el, basename);
+			self.actionsEditor.addNewRow($('.actions-form .search-terms'), basename);
 		});
+
+		if (this.init_options_callback) {
+			this.init_options_callback();
+		}
 	},
 
 	updateParentListRow: function(row_html) {

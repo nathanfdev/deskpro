@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog\Actions;
+namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;

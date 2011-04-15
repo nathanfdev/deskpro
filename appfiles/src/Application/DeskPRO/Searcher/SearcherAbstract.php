@@ -234,7 +234,7 @@ abstract class SearcherAbstract
 	 * @param  $choice
 	 * @return string
 	 */
-	protected function _stringMatch($field, $op, $choice)
+	protected function _stringMatch($field, $op, $choice, $suffix_only = false, $force_like = false)
 	{
 		$where = '';
 
@@ -243,7 +243,7 @@ abstract class SearcherAbstract
 		}
 
 		$db = App::getDb();
-		if ($op == self::OP_IS OR $op == self::OP_NOT) {
+		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
 			$choices_in = (array)$choice;
 			array_walk($choices_in, function($v, $k) use ($db) {
 				$v = $db->quote($v);
@@ -259,8 +259,12 @@ abstract class SearcherAbstract
 
 		} else {
 			$choices_in = (array)$choice;
-			array_walk($choices_in, function(&$v, $k) use ($db) {
-				$v = $db->quote('%' . $v . '%');
+			array_walk($choices_in, function(&$v, $k) use ($db, $suffix_only) {
+				if ($suffix_only) {
+					$v = $db->quote($v . '%');
+				} else {
+					$v = $db->quote('%' . $v . '%');
+				}
 			});
 
 			if ($op == self::OP_CONTAINS) {
@@ -506,6 +510,190 @@ abstract class SearcherAbstract
 		} else {
 			if ($op == self::OP_CONTAINS) $op = self::OP_IS;
 			if ($op == self::OP_NOTCONTAINS) $op = self::OP_NOT;
+		}
+	}
+
+
+	###################################################################
+	# test methods test terms statically against some value
+	###################################################################
+
+	protected function _testDateMatch($value, $op, $choice)
+	{
+		$choice = (array)$choice;
+		$date1 = !empty($choice[0]) ? $choice[0] : null;
+		$date2 = !empty($choice[1]) ? $choice[1] : null;
+
+		if ($date1 AND !($date1 instanceof \DateTime)) {
+			$date1 = new \DateTime("-{$date1} seconds");
+		}
+		if ($date2 AND !($date2 instanceof \DateTime)) {
+			$date2 = new \DateTime("-{$date2} seconds");
+		}
+
+		// There should always be at least one date
+		if ($date1 === null AND $date2 === null) {
+			return false;
+		}
+
+		// Normalize operations
+		if ($op == self::OP_LT) $op = self::OP_LTE;
+		if ($op == self::OP_GT) $op = self::OP_GTE;
+
+		// Between with only one date is invalid, so
+		// we'll decide which op we really want to do
+		if ($op == self::OP_BETWEEN && ($date1 === null or $date2 === null)) {
+			if ($date1) {
+				$op = self::OP_GTE;
+			} else {
+				$op = self::OP_LTE;
+			}
+		}
+
+		if ($date1) $date1 = $date1->getTimestamp(); else $date1 = 0;
+		if ($date2) $date2 = $date2->getTimestamp(); else $date2 = 0;
+
+		if ($value instanceof \DateTime) {
+			$value = $value->getTimestamp();
+		} elseif (is_string($value) AND !ctype_digit($value)) {
+			$value = strtotime($value);
+		}
+
+		if ($op == self::OP_BETWEEN) {
+			return ($value >= $date1 AND $value <= $date2);
+		} elseif ($op == self::OP_GTE) {
+			$date = $date1 ? $date1 : $date2;
+			return ($value >= $date);
+		} else {
+			$date = $date1 ? $date1 : $date2;
+			return ($value <= $date);
+		}
+	}
+
+	protected function _testStringMatch($value, $op, $choice, $suffix_only = false, $force_like = false)
+	{
+		if (is_array($choice) AND count($choice) == 1) {
+			$choice = Arrays::getFirstItem($choice);
+		}
+
+		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
+			$choices_in = (array)$choice;
+
+			$found = false;
+			foreach ($choices_in as $c) {
+				if (strpos($value, $c) === 0) {
+					$found = true;
+					break;
+				}
+			}
+
+			if ($op == self::OP_IS) {
+				return $found;
+			} else {
+				return (!$found);
+			}
+
+		} else {
+
+			$choices_in = (array)$choice;
+
+			$found = false;
+			foreach ($choices_in as $c) {
+				if ($suffix_only) {
+					if (\Orb\Util\Strings::endsWith($c, $value)) {
+						$found = true;
+						break;
+					}
+				} else {
+					if (strpos($value, $c) !== false) {
+						$found = true;
+						break;
+					}
+				}
+			}
+
+			if ($op == self::OP_CONTAINS) {
+				return $found;
+			} else {
+				return (!$found);
+			}
+		}
+	}
+
+	protected function _testRangeMatch($value, $op, $choice)
+	{
+		$choice = (array)$choice;
+		$range1 = !empty($choice[0]) ? $choice[0] : null;
+		$range2 = !empty($choice[1]) ? $choice[1] : null;
+
+		// There should always be at least one date
+		if ($range1 === null AND $range2 === null) {
+			return false;
+		}
+
+		// Normalize operations
+		if ($op == self::OP_LT) $op = self::OP_LTE;
+		if ($op == self::OP_GT) $op = self::OP_GTE;
+
+		// Between with only one date is invalid, so
+		// we'll decide which op we really want to do
+		if ($op == self::OP_BETWEEN && ($range1 === null or $range2 === null)) {
+			if ($range1) {
+				$op = self::OP_GTE;
+			} else {
+				$op = self::OP_LTE;
+			}
+		}
+
+		if ($op == self::OP_BETWEEN) {
+			return ($value >= $range1 AND $value <= $range2);
+		} elseif ($op == self::OP_GTE) {
+			$range1 = Util::coalesce($range1, $range2);
+			return ($value >= $range1);
+		} else {
+			$range1 = Util::coalesce($range1, $range2);
+			return ($value <= $range1);
+		}
+	}
+
+	protected function _testChoiceMatch($value, $op, $choice, $is_id = false)
+	{
+		if (!$choice) {
+			return false; // no choices, always fails!
+		}
+
+		if (is_array($choice) AND count($choice) == 1) {
+			$choice = Arrays::getFirstItem($choice);
+		}
+
+		// Normalize op
+		if (is_array($choice)) {
+			if ($op == self::OP_IS) $op = self::OP_CONTAINS;
+			if ($op == self::OP_NOT) $op = self::OP_NOTCONTAINS;
+		} else {
+			if ($op == self::OP_CONTAINS) $op = self::OP_IS;
+			if ($op == self::OP_NOTCONTAINS) $op = self::OP_NOT;
+		}
+
+		if (is_array($choice)) {
+
+			$found = in_array($value, (array)$choice);
+
+			if ($op == self::OP_CONTAINS) {
+				return $found;
+			} elseif ($op == self::OP_NOTCONTAINS) {
+				return !$found;
+			}
+
+		} else {
+
+			$found = in_array($value, (array)$choice);
+
+			if ($op == self::OP_IS) {
+				return $found;
+			} elseif ($op == self::OP_NOT) {
+				return !$found;
+			}
 		}
 	}
 }

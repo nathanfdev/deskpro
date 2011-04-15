@@ -12,30 +12,32 @@ use \Application\DeskPRO\Entity;
 
 class TicketSearch extends SearcherAbstract
 {
-	const TERM_ID            = 'id';
-	const TERM_DEPARTMENT    = 'department';
-	const TERM_CATEGORY      = 'category';
-	const TERM_PRODUCT       = 'product';
-	const TERM_AGENT         = 'agent';
-	const TERM_AGENT_TEAM    = 'agent_team';
-	const TERM_STATUS        = 'status';
-	const TERM_WORKFLOW      = 'workflow';
-	const TERM_PRIORITY      = 'priority';
-	const TERM_SUBJECT       = 'subject';
-	const TERM_ORGANIZATION  = 'organization';
-	const TERM_LANGUAGE      = 'language';
-	const TERM_PARTICIPANT   = 'participant';
-	const TERM_LABEL         = 'label';
-	const TERM_TICKET_FIELD  = 'ticket_field';
-	const TERM_DATE_CREATED  = 'date_created';
-	const TERM_DATE_RESOLVED = 'date_resolved';
-	const TERM_DATE_LAST_USER_REPLY   = 'date_last_user_reply';
-	const TERM_DATE_LAST_AGENT_REPLY  = 'date_last_agent_reply';
-	const TERM_URGENCY        = 'urgency';
-	const TERM_USER_WAITING   = 'user_waiting';
-	const TERM_AGENT_WAITING  = 'agent_waiting';
-	const TERM_ARCHIVE_SEARCH  = 'archive_search';
-	const TERM_DELETED         = 'deleted';
+	const TERM_ID                        = 'id';
+	const TERM_DEPARTMENT                = 'department';
+	const TERM_CATEGORY                  = 'category';
+	const TERM_PRODUCT                   = 'product';
+	const TERM_AGENT                     = 'agent';
+	const TERM_AGENT_TEAM                = 'agent_team';
+	const TERM_STATUS                    = 'status';
+	const TERM_WORKFLOW                  = 'workflow';
+	const TERM_PRIORITY                  = 'priority';
+	const TERM_SUBJECT                   = 'subject';
+	const TERM_ORGANIZATION              = 'organization';
+	const TERM_LANGUAGE                  = 'language';
+	const TERM_PARTICIPANT               = 'participant';
+	const TERM_LABEL                     = 'label';
+	const TERM_TICKET_FIELD              = 'ticket_field';
+	const TERM_DATE_CREATED              = 'date_created';
+	const TERM_DATE_RESOLVED             = 'date_resolved';
+	const TERM_DATE_LAST_USER_REPLY      = 'date_last_user_reply';
+	const TERM_DATE_LAST_AGENT_REPLY     = 'date_last_agent_reply';
+	const TERM_URGENCY                   = 'urgency';
+	const TERM_USER_WAITING              = 'user_waiting';
+	const TERM_AGENT_WAITING             = 'agent_waiting';
+	const TERM_ARCHIVE_SEARCH            = 'archive_search';
+	const TERM_DELETED                   = 'deleted';
+	const TERM_CREATION_SYSTEM           = 'creation_system';
+	const TERM_RECEIVING_GATEWAY         = 'receiving_gateway';
 
 	/**
 	 * True to search in the non-search tables (aka all tickets not just active)
@@ -714,6 +716,27 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_dateMatch("$tickets_table.date_agent_waiting", $op, $choice);
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('pending'));
 					break;
+
+				case self::TERM_CREATION_SYSTEM:
+					$set_status = true;
+					$this->summary[] = $tr->phrase('core.x_is_y', array(
+						'field' => $tr->phrase('core_tickets.creation_system'),
+						'value' => $tr->phrase('core_tickets.creation_system_' . str_replace('.', '_', $choice))
+					));
+					$wheres[] = $this->_stringMatch("$tickets_table.creation_system", $op, $choice, true, true);
+					break;
+				case self::TERM_RECEIVING_GATEWAY:
+					$this->summary[] = $this->_choiceSummary($tr->phrase('core_tickets.receiving_gateway'), $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:EmailGateway')->getGatewayNames((array)$choice);
+						return $titles;
+					});
+
+					if (count($choice) == 1) {
+						$this->specific_fields[] = self::TERM_RECEIVING_GATEWAY;
+					}
+
+					$wheres[] = $this->_choiceMatch("$tickets_table.email_gateway_id", $op, $choice. true);
+					break;
 			}
 		}
 
@@ -809,26 +832,17 @@ class TicketSearch extends SearcherAbstract
 							break;
 					}
 					break;
+
+				case self::TERM_CREATION_SYSTEM:
+					if (!$this->_testStringMatch($ticket['creation_system'], $op, $choice, true, true)) return false;
+					break;
+				
+				case self::TERM_RECEIVING_GATEWAY:
+					if (!$this->_testChoiceMatch($ticket['email_gateway_id'], $op, $choice. true)) return false;
+					break;
 			}
 		}
 
 		return true;
-	}
-
-	protected function _testChoiceMatch($value, $op, $choice)
-	{
-		if (is_array($choice)) {
-			if ($op == self::OP_IS) {
-				return in_array($value, $choice);
-			} elseif ($op == self::OP_NOT) {
-				return !in_array($value, $choice);
-			}
-		} else {
-			if ($op == self::OP_IS) {
-				return $value == $choice;
-			} elseif ($op == self::OP_NOT) {
-				return $value != $choice;
-			}
-		}
 	}
 }

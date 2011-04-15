@@ -29,17 +29,18 @@ class App
 	/**#@+
 	 * Names of common services
 	 */
-	const SERVICE_DB              = 'database_connection';
-	const SERVICE_ORM             = 'doctrine.orm.entity_manager';
-	const SERVICE_INPUT_READER    = 'deskpro.core.input_reader';
-	const SERVICE_INPUT_CLEANER   = 'deskpro.core.input_cleaner';
-	const SERVICE_SETTINGS        = 'deskpro.core.settings';
-	const SERVICE_SESSION         = 'session';
-	const SERVICE_ROUTER          = 'router';
-	const SERVICE_REQUEST         = 'request';
-	const SERVICE_RESPONSE        = 'response';
-	const SERVICE_MAILER          = 'mailer';
-	const SERVICE_TRANSLATOR      = 'deskpro.core.translate';
+	const SERVICE_DB                 = 'database_connection';
+	const SERVICE_ORM                = 'doctrine.orm.entity_manager';
+	const SERVICE_INPUT_READER       = 'deskpro.core.input_reader';
+	const SERVICE_INPUT_CLEANER      = 'deskpro.core.input_cleaner';
+	const SERVICE_SETTINGS           = 'deskpro.core.settings';
+	const SERVICE_SESSION            = 'session';
+	const SERVICE_ROUTER             = 'router';
+	const SERVICE_REQUEST            = 'request';
+	const SERVICE_RESPONSE           = 'response';
+	const SERVICE_MAILER             = 'mailer';
+	const SERVICE_TRANSLATOR         = 'deskpro.core.translate';
+	const SERVICE_EVENT_DISPATCHER   = 'event_dispatcher';
 	/**#@-*/
 
 	/**
@@ -364,6 +365,18 @@ class App
 	public static function getRouter()
 	{
 		return self::get(self::SERVICE_ROUTER);
+	}
+
+
+
+	/**
+	 * Get the app event dispatcher
+	 *
+	 * @return \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
+	 */
+	public static function getEventDispatcher()
+	{
+		return self::get(self::SERVICE_EVENT_DISPATCHER);
 	}
 
 

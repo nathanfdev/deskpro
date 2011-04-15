@@ -9,34 +9,39 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Tickets\TicketLog\Actions;
+namespace Application\DeskPRO\Tickets\TicketChangeInspector\LogActions;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-class Created implements LogActionInterface
+class Message implements LogActionInterface
 {
-	protected $ticket;
+	protected $message;
 
-	public function __construct($ticket)
+	public function __construct($message)
 	{
-		$this->ticket = $ticket;
+		$this->message = $message;
 	}
 
 	public function getLogName()
 	{
-		return 'ticket_created';
+		return 'message_created';
 	}
 
 	public function getLogDetails()
 	{
 		return array(
-			'ticket_id' => $this->ticket['id']
+			'message_id' => $this->message['id']
 		);
+	}
+
+	public function getMessage()
+	{
+		return $this->message;
 	}
 
 	public function getEventType()
 	{
-		return 'ticket_created';
+		return 'message_created';
 	}
 }

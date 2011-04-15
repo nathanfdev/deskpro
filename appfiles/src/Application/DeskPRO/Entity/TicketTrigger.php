@@ -80,44 +80,14 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * @param Ticket $ticket
 	 * @return bool
 	 */
-	public function checkTicketMatch(Ticket $ticket, array $logs = array())
+	public function isTriggerMatch(Ticket $ticket, \Application\DeskPRO\Tickets\TicketChangeTracker $tracker)
 	{
 		$this->terms = (array)$this->terms;
 
 		$ticket_terms = new \Application\DeskPRO\Tickets\TicketTerms($this->terms);
+		$ticket_terms->setChangeTracker($tracker);
+
 		$match = $ticket_terms->doesTicketMatch($ticket);
-
-		// Check some specific terms only we know about here
-		if ($match) {
-			foreach ($this->terms as $term => $info) {
-				list($op, $choice) = $info;
-
-				switch ($term) {
-					case 'message_type':
-						if (!isset($logs['message_created'])) {
-							return false;
-						}
-						$message = $logs['message_created']->getMessage();
-
-						$is = false;
-						if ($message['is_agent_note'] AND $info['type'] == 'note') {
-							$is = true;
-						} elseif ($message['person']['is_agent'] AND $info['type'] == 'agent_reply') {
-							$is = true;
-						} elseif ($info['type'] == 'user_reply') {
-							$is = true;
-						}
-
-						if (!($op == 'is' AND $is) AND !($op == 'not' AND !$is)) {
-							return false;
-						}
-						break;
-
-				}
-			}
-		}
-
-		return $match;
 	}
 
 
