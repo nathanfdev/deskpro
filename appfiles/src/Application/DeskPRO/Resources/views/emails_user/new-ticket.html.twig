@@ -1,13 +1,23 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
-{% block content %}
-	<!--ACCESS CODE: (#{{access_code_full}})-->
-	View your ticket online at:<br>
+{% block email_teaser_link %}
+	View your ticket online at:<br />
 	<a href="{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}">
 		{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}
 	</a>
-	{% set section_content %}
-		{{new_message.message_text}}
-	{% endset %}
-	{{ layout.email_section('Ticket', section_content) }}
+{% endblock %}
+{% block content %}
+	<!--ACCESS CODE: (#{{access_code_full}})-->
+	{{ layout.section_start() }}
+		Thank you for contacting us. Your ticket has been recieved and our agents will
+		reply to you as soon as they can. You can view your ticket online at any time
+		by visiting
+			<a href="{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}">
+				{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}
+			</a>
+	{{ layout.section_end() }}
+
+	{{ layout.section_start(ticket.subject, 4) }}
+		{{new_message.message|raw}}
+	{{ layout.section_end() }}
 {% endblock %}

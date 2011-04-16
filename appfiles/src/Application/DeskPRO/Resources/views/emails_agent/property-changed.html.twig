@@ -1,7 +1,8 @@
-{% extends 'DeskPRO:emails_agent:layout.html.twig' %}
-{% import 'DeskPRO:emails_agent:layout-macros.html.twig' %}
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
 {% block content %}
-	{% set section_content %}
+	<!--ACCESS CODE: (#{{access_code_full}})-->
+	{{ layout.section_start(ticket.subject) }}
 		{% include 'DeskPRO:emails_agent:ticket-diff.html.twig' %}
-	{% endset %}
+	{{ layout.section_end() }}
 {% endblock %}

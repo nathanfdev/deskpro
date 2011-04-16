@@ -1,13 +1,22 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
-{% block content %}
-	<!--ACCESS CODE: (#{{access_code_full}})-->
-	View your ticket online at:<br>
+{% block email_teaser_link %}
+	View your ticket online at:<br />
 	<a href="{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}">
 		{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}
 	</a>
-	{% set section_content %}
-		{{new_message.message_text}}
-	{% endset %}
-	{{ layout.email_section('Ticket', section_content) }}
+{% endblock %}
+{% block content %}
+	<!--ACCESS CODE: (#{{access_code_full}})-->
+	{{ layout.section_start() }}
+		A new reply was made to your ticket. You can view your ticket online at any time
+		by visiting
+			<a href="{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}">
+				{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}
+			</a>
+	{{ layout.section_end() }}
+
+	{{ layout.section_start() }}
+		{{new_message.message|raw}}
+	{{ layout.section_end() }}
 {% endblock %}
