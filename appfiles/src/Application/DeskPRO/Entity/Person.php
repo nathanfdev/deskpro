@@ -143,7 +143,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * The users organization
 	 *
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @orm:ManyToOne(targetEntity="Organization", fetch="EAGER")
+	 * @orm:ManyToOne(targetEntity="Organization")
 	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization = null;
@@ -355,6 +355,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $task_associations;
 
+	protected $_person_logger = null;
+
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
@@ -408,6 +410,19 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->assigned_tasks      = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->task_comments       = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->task_associations   = new \Doctrine\Common\Collections\ArrayCollection();
+
+		$this->_initTicketLogger();
+		$this->_person_logger->recordExtra('ticket_created', true);
+	}
+
+	/**
+	 * @orm:PostLoad
+	 */
+	public function _initPersonLogger()
+	{
+		$person_logger = new \Application\DeskPRO\People\PersonChangeTracker($this);
+		$this->_person_logger = $person_logger;
+		$this->addPropertyChangedListener($person_logger);
 	}
 
 	public function getOrganizationId()
@@ -1395,5 +1410,23 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_helper_manager;
+	}
+
+	public function getPersonLogger()
+	{
+		return $this->_person_logger;
+	}
+
+	
+
+	/**
+	 * @orm:PostUpdate
+	 * @orm:PostPersist
+	 */
+	public function _savePersonLogs()
+	{
+		if ($this->_person_logger) {
+			$this->_person_logger->done();
+		}
 	}
 }
