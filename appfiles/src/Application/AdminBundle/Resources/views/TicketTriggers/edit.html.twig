@@ -8,7 +8,6 @@ function _page_exec() {
 	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketTriggersEdit({{trigger.id|default(0)}});
 
 	{% if row_html %}
-		DeskPRO_Page.tellParentUpdated();
 		DeskPRO_Page.updateParentListRow({{ row_html|json_encode|raw }});
 	{% endif %}
 
@@ -19,7 +18,7 @@ function _page_exec() {
 			window.DeskPRO_Page.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { rule_type: '{{action.rule_type}}', op: '{{term.op}}',
 				choice: {
 					{% for k,v in action %}
-						{{k}}: '{{v}}',
+						{{k}}: {{v|json_encode|raw}},
 					{% endfor %}
 					'': null
 				}
@@ -33,7 +32,7 @@ function _page_exec() {
 			window.DeskPRO_Page.actionsEditor.addNewRow($('.actions-form .search-terms'), basename, { rule_type: '{{action.rule_type}}',
 				choice: {
 					{% for k,v in action %}
-						{{k}}: '{{v}}',
+						{{k}}: {{v|json_encode|raw}},
 					{% endfor %}
 					'': null
 				}
@@ -532,14 +531,33 @@ function _page_exec() {
 		<div class="type" title="Send new ticket notification" data-rule-type="notification_new_ticket">
 			<div class="choice">
 				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<option value="person">User</option>
-					<option value="people_participants">User participants</option>
-					<option value="default_agents">Agents (default based on preferences)</option>
-					<option value="assigned_agent">Assigned agent</option>
-					<option value="assigned_agent_team">Assigned agent team members</option>
-					<option value="agent_participants">Agent participants</option>
+					<optgroup label="Users">
+						<option value="person">User</option>
+						<option value="people_participants">User participants</option>
+					</optgroup>
+					<optgroup label="Agents">
+						<option value="default_agents">Agents (default based on preferences)</option>
+						<option value="assigned_agent">Assigned agent</option>
+						<option value="assigned_agent_team">Assigned agent team members</option>
+						<option value="agent_participants">Agent participants</option>
+					</optgroup>
+					<optgroup label="Specific Agents">
+						{% for id,label in term_options.agents %}
+							<option value="agent.{{id}}">{{label}}</option>
+						{% endfor %}
+					</optgroup>
+					<optgroup label="Specific Agent Teams">
+						{% for id,label in term_options.agent_teams %}
+							<option value="agent_team.{{id}}">{{label}}</option>
+						{% endfor %}
+					</optgroup>
 				</select>
-				Custom template group (optional): <input type="text" name="custom_template" value="" />
+				From: <select name="from_address[]">
+					<option value="">Default</option>
+					{% for id,title in from_names %}
+						<option value="{{id}}">{{title}}</option>
+					{% endfor %}
+				</select>
 			</div>
 		</div>
 	{% endif %}
@@ -547,14 +565,33 @@ function _page_exec() {
 		<div class="type" title="Send new reply notification" data-rule-type="notification_new_reply">
 			<div class="choice">
 				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<option value="person">User</option>
-					<option value="people_participants">User participants</option>
-					<option value="default_agents">Agents (default based on preferences)</option>
-					<option value="assigned_agent">Assigned agent</option>
-					<option value="assigned_agent_team">Assigned agent team members</option>
-					<option value="agent_participants">Agent participants</option>
+					<optgroup label="Users">
+						<option value="person">User</option>
+						<option value="people_participants">User participants</option>
+					</optgroup>
+					<optgroup label="Agents">
+						<option value="default_agents">Agents (default based on preferences)</option>
+						<option value="assigned_agent">Assigned agent</option>
+						<option value="assigned_agent_team">Assigned agent team members</option>
+						<option value="agent_participants">Agent participants</option>
+					</optgroup>
+					<optgroup label="Specific Agents">
+						{% for id,label in term_options.agents %}
+							<option value="agent.{{id}}">{{label}}</option>
+						{% endfor %}
+					</optgroup>
+					<optgroup label="Specific Agent Teams">
+						{% for id,label in term_options.agent_teams %}
+							<option value="agent_team.{{id}}">{{label}}</option>
+						{% endfor %}
+					</optgroup>
 				</select>
-				Custom template group (optional): <input type="text" name="custom_template" value="" />
+				From: <select name="from_address[]">
+					<option value="">Default</option>
+					{% for id,title in from_names %}
+						<option value="{{id}}">{{title}}</option>
+					{% endfor %}
+				</select>
 			</div>
 		</div>
 	{% endif %}
@@ -562,18 +599,39 @@ function _page_exec() {
 		<div class="type" title="Send notification to agents: Updated" data-rule-type="agent_notification_property_change">
 			<div class="choice">
 				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<option value="default_agents">Agents (default based on preferences)</option>
-					<option value="assigned_agent">Assigned agent</option>
-					<option value="assigned_agent_team">Assigned agent team members</option>
-					<option value="agent_participants">Agent participants</option>
+					<optgroup label="Agents">
+						<option value="default_agents">Agents (default based on preferences)</option>
+						<option value="assigned_agent">Assigned agent</option>
+						<option value="assigned_agent_team">Assigned agent team members</option>
+						<option value="agent_participants">Agent participants</option>
+					</optgroup>
+					<optgroup label="Specific Agents">
+						{% for id,label in term_options.agents %}
+							<option value="agent.{{id}}">{{label}}</option>
+						{% endfor %}
+					</optgroup>
+					<optgroup label="Specific Agent Teams">
+						{% for id,label in term_options.agent_teams %}
+							<option value="agent_team.{{id}}">{{label}}</option>
+						{% endfor %}
+					</optgroup>
 				</select>
-				Template: <input type="text" name="template" value="" />
+				From: <select name="from_address[]">
+					<option value="">Default</option>
+					{% for id,title in from_names %}
+						<option value="{{id}}">{{title}}</option>
+					{% endfor %}
+				</select>
 			</div>
 		</div>
 	{% endif %}
+	<div class="type" title="Disable email notifications set from a previous rule" data-rule-type="notification_disable">
+		<div class="choice">
+			<input type="hidden" name="notification_disable" value="1" />
+		</div>
+	</div>
 </div>
 {% endblock %}
 {% block footer %}
 	<button class="dp-button small save-trigger">Save</button>
-
 {% endblock %}
