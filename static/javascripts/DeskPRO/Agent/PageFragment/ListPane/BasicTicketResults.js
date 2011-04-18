@@ -243,7 +243,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 		this.displayOptionsOverlay = new DeskPRO.UI.Overlay({
 			contentElement: overlay_wrapper,
-			triggerElement: $('.display-options-trigger', this.contentWrapper),
+			triggerElement: $('.display-options-trigger th:not(.no-option-trigger)', this.contentWrapper),
 			onContentSet: function(eventData) {
 				$('ul.sortable-list', eventData.wrapperEl).sortable({
 					'axis': 'y'
