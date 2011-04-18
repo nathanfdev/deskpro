@@ -85,12 +85,14 @@ DeskPRO.Form.RuleBuilder = new Class({
 			this.handleSelectChange(new_row);
 			$('.op:first select', new_row).val(existing.op).addClass('op');
 
-			if (typeof val == 'string' || typeof val == 'number' || typeOf(existing.choice) != 'object') {
+			if (typeof existing.choice == 'string' || typeof existing.choice == 'number' || typeOf(existing.choice) != 'object') {
 				// If its just one item, then we'll just assume its the first field
 				$(':input, textarea, select', new_row).filter(':not(.op, .rule_type)').first().val(existing.choice);
 			} else {
 				// Otherwise we'll assume its a k=>v array
 				Object.each(existing.choice, function(val, name) {
+					if (!name || !name.length) return;
+
 					var name_safe = name.replace(/\[/, '\\[').replace(/\]/, '\\]');
 					if (typeof val == 'string' || typeof val == 'number') {
 						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val);
@@ -99,7 +101,11 @@ DeskPRO.Form.RuleBuilder = new Class({
 							var sub_name = name_safe + "["+subname+"]";
 							var sub_name_safe = name_safe + "\\["+subname+"\\]";
 							var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval);
-							console.log(el);
+						}, this);
+					} else if (typeOf(val) == 'array') {
+						Array.each(val, function(subval) {
+							var el = $('option[value="'+subval+'"]', new_row).first().get(0);
+							el.selected = true;
 						}, this);
 					} else {
 						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val);
