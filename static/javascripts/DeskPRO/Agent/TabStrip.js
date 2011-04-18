@@ -163,7 +163,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var el_click = $(event.target);
 
-		if (el_click.parent().is('li.tab')) {
+		if (el_click.is('li.tab')) {
+			var el = el_click;
+		} else if (el_click.parent().is('li.tab')) {
 			var el = el_click.parent();
 		} else {
 			var el = el_click.parentsUntil('li.tab');
@@ -174,6 +176,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		// If its not a tab, we can just ignore the event
 		if (!el.is('li.tab')) {
+			console.log('not click %o', event.target);
 			return;
 		}
 
