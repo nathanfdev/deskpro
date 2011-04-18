@@ -52,7 +52,7 @@
 		var tag_input = $('.tagit-input', options.inputFieldAppendTo);
 
 		// add existing tags
-		el.children("li").each(function(){
+		el.children("li:not(.tagit-new)").each(function(){
 			if (!$(this).hasClass('tagit-new')) {
 				create_choice($('span', this).eq(0).html());
 				$(this).remove();
@@ -160,7 +160,7 @@
 			} else {
 				$(el).appendTo(tag_ul);
 			}
-			tag_input.val("");
+			tag_input.val(tag_input.data('placeholder'));
 			options.onchange();
 		}
 
