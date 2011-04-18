@@ -16,6 +16,8 @@ use \Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\Tickets\TicketChangeTracker;
 
+use \Orb\Util\Arrays;
+
 class TriggerExecutor
 {
 	/**

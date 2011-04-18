@@ -213,7 +213,7 @@ class TicketChangeTracker implements \Doctrine\Common\PropertyChangedListener
 		$log_inspector = new TicketChangeInspector\Log($this);
 		$log_inspector->run();
 
-		$log_inspector = new TicketChangeInspector\Triggers($this);
+		$log_inspector = new TicketChangeInspector\TriggerExecutor($this);
 		$log_inspector->run();
 	}
 }

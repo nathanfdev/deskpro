@@ -23,15 +23,24 @@ class Log
 	 */
 	protected $tracker;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Ticket
+	 */
+	protected $ticket;
+
 	public function __construct(TicketChangeTracker $tracker)
 	{
 		$this->tracker = $tracker;
+		$this->ticket = $tracker->getTicket();
 	}
 
 	public function run()
 	{
 		foreach ($this->tracker->getAllChangedProperties() as $prop => $info) {
 			$action = null;
+
+			$old_val = $info['old'];
+			$new_val = $info['new'];
 
 			switch ($prop) {
 				case 'agent':
@@ -103,5 +112,7 @@ class Log
 
 			App::getOrm()->persist($ticket_log);
 		}
+
+		App::getOrm()->flush();
 	}
 }
