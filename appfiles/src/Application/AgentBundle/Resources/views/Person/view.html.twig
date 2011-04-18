@@ -126,7 +126,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 						<span class="timeago" title="{{person.date_created|date('c')}}">{{person.date_created|date('Y-m-d')}}</span>
 					</div>
 				</div>
-				<div class="row-table-cotent">
+				<div class="row-table-cotent usergroups-list-wrap" {% if not person.usergroups|length %}style="display:none"{% endif %}>
 					<div class="col-table-content title-col">
 						<span>Groups</span>
 					</div>

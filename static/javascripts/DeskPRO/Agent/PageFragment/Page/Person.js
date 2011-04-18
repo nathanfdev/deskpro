@@ -161,7 +161,15 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 		$('.wrap', this.custom_fields_display).html(data.custom_fields_html);
 
-		$('ul.usergroups-list', this.wrapper).html('<li>' + data.usergroup_names.join('</li><li>') + '</li>');
+		var uglist = $('ul.usergroups-list', this.wrapper).html('<li>' + data.usergroup_names.join('</li><li>') + '</li>');
+
+		// Make sure usergroups list is shown/hidden if there are groups
+		var ugwrapper = $('.usergroups-list-wrap', this.wrapper);
+		if ($('li', uglist).length) {
+			ugwrapper.show();
+		} else {
+			ugwrapper.hide();
+		}
 	},
 
 	//#########################################################################
