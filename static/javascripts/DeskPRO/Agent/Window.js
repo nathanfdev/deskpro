@@ -528,7 +528,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadPage: function(url, routeData, callback) {
 
-		if ($('#pane_tabs li').length >= 5) {
+		if ($('#pane_tabs li').length >= 10) {
 			DeskPRO_Window.showAlert('You have too many tabs open on the right. Close one before trying to open another', 'error');
 			return;
 		}
