@@ -122,7 +122,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @orm:ManyToOne(targetEntity="Organization", fetch="EAGER")
+	 * @orm:ManyToOne(targetEntity="Organization")
 	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
 	 */
 	protected $organization = null;
