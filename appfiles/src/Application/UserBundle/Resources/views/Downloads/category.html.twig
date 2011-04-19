@@ -28,7 +28,7 @@
 					{{ download.blob.filename }} ({{download.blob.readable_filesize}})
 				</td>
 				<td width="120">
-					{{article.created_at|date('Y-m-d')}}
+					{{article.date_created|date('Y-m-d')}}
 				</td>
 			</tr>
 		{% endfor %}
