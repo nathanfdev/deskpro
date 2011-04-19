@@ -15,9 +15,18 @@ use \Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
 use \Orb\Util\Arrays;
+use \Orb\Util\Strings;
 
 class Download extends EntityRepository
 {
+	public function getBySlug($slug)
+	{
+		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
+		if (!$id) return null;
+
+		return $this->find($id);
+	}
+
 	public function getNewest($num = 10, $node = false)
 	{
 		if ($node) {

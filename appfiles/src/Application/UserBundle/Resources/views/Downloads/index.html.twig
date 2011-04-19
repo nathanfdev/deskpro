@@ -10,7 +10,7 @@
 				Newest
 			</h3>
 			{% for download in newest_downloads %}
-				&middot; <a href="{{ path('user_downloads_file', {'download_id': download.id, 'slug': download.slug}) }}">{{ download.title }}</a><br />
+				&middot; <a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a><br />
 			{% endfor %}
 		</td>
 		<td width="33%" valign="top" style="vertical-align:top">
@@ -18,7 +18,7 @@
 				Most Popular
 			</h3>
 			{% for download in popular_downloads %}
-				&middot; <a href="{{ path('user_downloads_file', {'download_id': download.id, 'slug': download.slug}) }}">{{ download.title }}</a><br />
+				&middot; <a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a><br />
 			{% endfor %}
 		</td>
 	</tr>

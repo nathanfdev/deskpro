@@ -47,9 +47,9 @@ class ArticlesController extends AbstractController
 	 * 
 	 * @param  $category_id
 	 */
-	public function categoryAction($category_id)
+	public function categoryAction($slug)
 	{
-		$category = App::getEntityRepository('DeskPRO:ArticleCategory')->find($category_id);
+		$category = App::getEntityRepository('DeskPRO:ArticleCategory')->getBySlug($slug);
 		$category_path = $category->getTreeParents();
 
 		$articles = App::getEntityRepository('DeskPRO:Article')->getInNode($category);
@@ -67,9 +67,9 @@ class ArticlesController extends AbstractController
 	 *
 	 * @param  $article_id
 	 */
-	public function articleAction($article_id, $slug)
+	public function articleAction($slug)
 	{
-		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
+		$article = App::getEntityRepository('DeskPRO:Article')->getBySlug($slug);
 		if (!$article) {
 			die('invalid');
 		}

@@ -3,18 +3,18 @@
 		{% for cat in categories %}
 			{% if loop.index0 is divisibleby(2) %}</tr><tr>{% endif %}
 			<td width="33%" valign="top" style="vertical-align:top">
-				<h3 style="margin: 0; padding: 5px; background-color: #ccc"><a href="{{ path('user_articles_cat', {'category_id': cat.id}) }}">{{ cat.title }}</a></h3>
+				<h3 style="margin: 0; padding: 5px; background-color: #ccc"><a href="{{ path('user_articles_cat', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></h3>
 				{% if cat.children|length %}
 					<div style="font-size:11px; background-color: #eee; border-bottom: 1px solid #ccc; padding: 3px;">
 						{% for subcat in cat.children %}
-						<a href="{{ path('user_articles_cat', {'category_id': subcat.id}) }}">{{ subcat.title }}</a>{% if not loop.last %}, {% endif %}
+						<a href="{{ path('user_articles_cat', {'slug': subcat.url_slug}) }}">{{ subcat.title }}</a>{% if not loop.last %}, {% endif %}
 						{% endfor %}
 					</div>
 				{% endif %}
 				{% if newest_cat_articles[cat.id]|length %}
 					<div>
 					{% for article in newest_articles[cat.id] %}
-						&middot; <a href="{{ path('user_articles_article', {'article_id': article.id, 'slug': article.slug}) }}">{{ article.title }}</a><br />
+						&middot; <a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a><br />
 					{% endfor %}
 					</div>
 				{% endif %}

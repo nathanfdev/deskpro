@@ -10,7 +10,7 @@
 				Newest
 			</h3>
 			{% for article in newest_articles %}
-				&middot; <a href="{{ path('user_articles_article', {'article_id': article.id, 'slug': article.slug}) }}">{{ article.title }}</a><br />
+				&middot; <a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a><br />
 			{% endfor %}
 		</td>
 		<td width="33%" valign="top" style="vertical-align:top">
@@ -18,7 +18,7 @@
 				Top Rated
 			</h3>
 			{% for article in top_rated_articles %}
-				&middot; <a href="{{ path('user_articles_article', {'article_id': article.id, 'slug': article.slug}) }}">{{ article.title }}</a><br />
+				&middot; <a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a><br />
 			{% endfor %}
 		</td>
 	</tr>

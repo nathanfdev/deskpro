@@ -156,4 +156,9 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 		return $this->_label_manager;
 	}
+
+	public function getUrlSlug()
+	{
+		return $this->id . '-' . $this->slug;
+	}
 }

@@ -23,14 +23,14 @@ class NewsController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function indexAction($category_id)
+	public function indexAction($slug)
 	{
 		$categories = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();
 
 		$category = null;
 		$category_path = null;
-		if ($category_id) {
-			$category = App::getEntityRepository('DeskPRO:NewsCategory')->find($category_id);
+		if ($slug) {
+			$category = App::getEntityRepository('DeskPRO:NewsCategory')->getBySlug($slug);
 			if (!$category) die('invalid');
 
 			$category_path = $category->getTreeParents();
@@ -53,9 +53,9 @@ class NewsController extends AbstractController
 	 *
 	 * @param  $post_id
 	 */
-	public function viewAction($post_id)
+	public function viewAction($slug)
 	{
-		$post = App::getEntityRepository('DeskPRO:News')->find($post_id);
+		$post = App::getEntityRepository('DeskPRO:News')->getBySlug($slug);
 		if (!$post) {
 			die('invalid');
 		}

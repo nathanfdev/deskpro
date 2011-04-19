@@ -130,4 +130,9 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 			WHERE idea_id = ?
 		", array($this->id));
 	}
+
+	public function getUrlSlug()
+	{
+		return $this->id . '-' . Strings::slugifyTitle($this->title);
+	}
 }

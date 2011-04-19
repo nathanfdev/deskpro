@@ -64,23 +64,23 @@ user_tickets_view_auth:
 ################################################################################
 
 user_articles:
-  pattern: /articles
+  pattern: /kb
   defaults: { _controller: UserBundle:Articles:index }
 
 user_articles_cat:
-  pattern: /articles/cat/{category_id}
+  pattern: /kb/{slug}
   defaults: { _controller: UserBundle:Articles:category }
 
 user_articles_article:
-  pattern: /articles/view/{article_id}/{slug}
+  pattern: /kb/articles/{slug}
   defaults: { _controller: UserBundle:Articles:article }
 
 user_articles_rate:
-  pattern: /articles/rate/{article_id}
+  pattern: /kb/rate-article/{article_id}
   defaults: { _controller: UserBundle:Articles:rate }
 
 user_articles_newcomment:
-  pattern: /articles/new-comment/{article_id}
+  pattern: /kb/new-comment/{article_id}
   defaults: { _controller: UserBundle:Articles:newComment }
 
 ################################################################################
@@ -91,13 +91,13 @@ user_downloads:
   pattern: /downloads
   defaults: { _controller: UserBundle:Downloads:index }
 
-user_downloads_cat:
-  pattern: /downloads/folder/{category_id}
-  defaults: { _controller: UserBundle:Downloads:category }
-
 user_downloads_file:
-  pattern: /downloads/file/{download_id}/{slug}
+  pattern: /downloads/files/{slug}
   defaults: { _controller: UserBundle:Downloads:file }
+
+user_downloads_cat:
+  pattern: /downloads/{slug}
+  defaults: { _controller: UserBundle:Downloads:category }
 
 ################################################################################
 # News
@@ -105,15 +105,15 @@ user_downloads_file:
 
 user_news:
   pattern: /news
-  defaults: { _controller: UserBundle:News:index, category_id: 0 }
-
-user_news_cat:
-  pattern: /news/category/{category_id}
-  defaults: { _controller: UserBundle:News:index }
+  defaults: { _controller: UserBundle:News:index, slug: 0 }
 
 user_news_view:
-  pattern: /news/view/{post_id}
+  pattern: /news/posts/{slug}
   defaults: { _controller: UserBundle:News:view }
+
+user_news_cat:
+  pattern: /news/{slug}
+  defaults: { _controller: UserBundle:News:index }
 
 user_news_newcomment:
   pattern: /news/new-comment/{post_id}
@@ -124,29 +124,29 @@ user_news_newcomment:
 ################################################################################
 
 user_ideas_view:
-  pattern: /ideas/view/{idea_id}
+  pattern: /feedback/ideas/{slug}
   defaults: { _controller: UserBundle:Ideas:view }
 
 user_ideas_newcomment:
-  pattern: /ideas/new-comment/{idea_id}
+  pattern: /feedback/new-comment/{idea_id}
   defaults: { _controller: UserBundle:Ideas:newComment }
 
 user_ideas_vote:
-  pattern: /ideas/view/{idea_id}/vote
+  pattern: /feedback/vote/{idea_id}
   defaults: { _controller: UserBundle:Ideas:vote }
 
 user_ideas:
-  pattern: /ideas
-  defaults: { _controller: UserBundle:Ideas:index, category_id: 0, status: new }
+  pattern: /feedback
+  defaults: { _controller: UserBundle:Ideas:index, slug: 0, status: new }
 
 user_ideas_status:
-  pattern: /ideas/all/{status}
-  defaults: { _controller: UserBundle:Ideas:index, category_id: 0 }
+  pattern: /feedback/all/{status}
+  defaults: { _controller: UserBundle:Ideas:index, slug: 0 }
 
 user_ideas_cat:
-  pattern: /ideas/{category_id}
+  pattern: /feedback/{slug}
   defaults: { _controller: UserBundle:Ideas:index, status: new }
 
 user_ideas_cat_status:
-  pattern: /ideas/{category_id}/{status}
+  pattern: /feedback/{slug}/{status}
   defaults: { _controller: UserBundle:Ideas:index }

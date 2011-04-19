@@ -14,10 +14,10 @@
 			<a href="{{ path('user_ideas_status', {'status': 'declined'}) }} ">Declined</a> |
 			<a href="{{ path('user_ideas_status', {'status': 'completed'}) }} ">Completed</a>
 		{% else %}
-			<a href="{{ path('user_ideas_cat', {'category_id': category.id}) }} ">New</a> |
-			<a href="{{ path('user_ideas_cat_status', {'category_id': category.id, 'status': 'accepted'}) }} ">Accepted</a> |
-			<a href="{{ path('user_ideas_cat_status', {'category_id': category.id, 'status': 'declined'}) }} ">Declined</a> |
-			<a href="{{ path('user_ideas_cat_status', {'category_id': category.id, 'status': 'completed'}) }} ">Completed</a>
+			<a href="{{ path('user_ideas_cat', {'slug': category.url_slug}) }} ">New</a> |
+			<a href="{{ path('user_ideas_cat_status', {'slug': category.url_slug, 'status': 'accepted'}) }} ">Accepted</a> |
+			<a href="{{ path('user_ideas_cat_status', {'slug': category.url_slug, 'status': 'declined'}) }} ">Declined</a> |
+			<a href="{{ path('user_ideas_cat_status', {'slug': category.url_slug, 'status': 'completed'}) }} ">Completed</a>
 		{% endif %}
 	</div>
 
@@ -28,7 +28,7 @@
 					{{ idea.num_votes }} votes
 				</td>
 				<td>
-					<a href="{{ path('user_ideas_view', {'idea_id': idea.id}) }}">{{idea.title}}</a>
+					<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>
 					{{idea.content_html|raw}}
 				</td>
 			</tr>

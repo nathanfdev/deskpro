@@ -14,6 +14,7 @@ namespace Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
 
 use DoctrineExtensions\NestedSet\Node;
+use Orb\Util\Strings;
 
 /**
  * Basic hierarchicial category entity. Hierarchy is maintained automatically
@@ -116,5 +117,12 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $ids;
+	}
+
+
+
+	public function getUrlSlug()
+	{
+		return $this->id . '-' . Strings::slugifyTitle($this->title);
 	}
 }

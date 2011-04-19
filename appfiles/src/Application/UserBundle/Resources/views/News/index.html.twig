@@ -12,7 +12,7 @@
 				{{post.date_created|date('Y-m-d')}}<br />
 				<img src="{{post.person.getPictureUrl(40)}}" width="40" height="40" />
 			</div>
-			<h4><a href="{{ path('user_news_view', {'post_id': post.id}) }}">{{post.title}}</a></h4>
+			<h4><a href="{{ path('user_news_view', {'slug': post.url_slug}) }}">{{post.title}}</a></h4>
 
 			{{post.intro_html|raw}}
 		</div>

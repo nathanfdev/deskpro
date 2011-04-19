@@ -16,9 +16,9 @@
 		<small>
 		<a href="{{ path('user_ideas') }}">Ideas</a> /
 		{% for cat in category_path %}
-			<a href="{{ path('user_ideas_cat', {'category_id': cat.id}) }}">{{cat.title}}</a> /
+			<a href="{{ path('user_ideas_cat', {'slug': cat.url_slug}) }}">{{cat.title}}</a> /
 		{% endfor %}
-		<a href="{{ path('user_ideas_cat', {'category_id': category.id}) }}">{{category.title}}</a>
+		<a href="{{ path('user_ideas_cat', {'slug': category.url_slug}) }}">{{category.title}}</a>
 		</small>
 		<h4>{{idea.title}}</h4>
 

@@ -20,7 +20,7 @@
 	{% for article in articles %}
 		<tr>
 			<td>
-				<a href="{{ path('user_articles_article', {'article_id': article.id, 'slug': article.slug}) }}">{{ article.title }}</a>
+				<a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a>
 				{% if article.excerpt %}
 					{{article.excerpt_html}}
 				{% endif %}

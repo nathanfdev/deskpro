@@ -4,7 +4,7 @@
 <hr />
 {% for categories in all_categories %}
 	&middot; {% for c in categories %}
-		{{c.title}}{% if not loop.last %} / {% endif %}
+		<a href="{{ path('user_articles_cat', {'slug': c.url_slug}) }}">{{c.title}}</a>{% if not loop.last %} / {% endif %}
 	{% endfor %}
 	<br />
 {% endfor %}

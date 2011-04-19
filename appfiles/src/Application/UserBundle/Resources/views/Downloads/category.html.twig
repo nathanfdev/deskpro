@@ -4,7 +4,7 @@
 <a href="{{ path('user_downloads') }}">Downloads</a> /
 {% for cat in category_path %}
 	{% if not loop.last %}
-		<a href="{{ path('user_downloads_cat', {'category_id': cat.id}) }}">{{cat.title}}</a> /
+		<a href="{{ path('user_downloads_cat', {'slug': cat.url_slug}) }}">{{cat.title}}</a> /
 	{% endif %}
 {% endfor %}
 </small>
@@ -22,7 +22,7 @@
 		{% for download in downloads %}
 			<tr>
 				<td>
-					<a href="{{ path('user_downloads_file', {'download_id': download.id, 'slug': download.slug}) }}">{{ download.title }}</a>
+					<a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a>
 				</td>
 				<td>
 					{{ download.blob.filename }} ({{download.blob.readable_filesize}})

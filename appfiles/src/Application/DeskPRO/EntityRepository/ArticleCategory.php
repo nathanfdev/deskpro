@@ -21,6 +21,7 @@ use Doctrine\ORM\Query,
     Doctrine\ORM\Proxy\Proxy;
 
 use \Orb\Util\Arrays;
+use \Orb\Util\Strings;
 
 class ArticleCategory extends NestedTreeRepository
 {
@@ -39,5 +40,14 @@ class ArticleCategory extends NestedTreeRepository
 		$this->_hierarchy = Arrays::intoHierarchy($this->_hierarchy);
 
 		return $this->_hierarchy;
+	}
+
+
+	public function getBySlug($slug)
+	{
+		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
+		if (!$id) return null;
+
+		return $this->find($id);
 	}
 }

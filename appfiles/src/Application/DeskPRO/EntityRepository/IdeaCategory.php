@@ -21,8 +21,15 @@ use Doctrine\ORM\Query,
     Doctrine\ORM\Proxy\Proxy;
 
 use \Orb\Util\Arrays;
+use \Orb\Util\Strings;
 
 class IdeaCategory extends NestedTreeRepository
 {
+	public function getBySlug($slug)
+	{
+		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
+		if (!$id) return null;
 
+		return $this->find($id);
+	}
 }

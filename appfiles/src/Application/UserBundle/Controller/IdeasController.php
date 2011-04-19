@@ -21,14 +21,14 @@ class IdeasController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function indexAction($category_id, $status, $sort = 'date')
+	public function indexAction($slug, $status, $sort = 'date')
 	{
 		$categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getRootNodes();
 
 		$category = null;
 		$category_path = null;
-		if ($category_id) {
-			$category = App::getEntityRepository('DeskPRO:IdeaCategory')->find($category_id);
+		if ($slug) {
+			$category = App::getEntityRepository('DeskPRO:IdeaCategory')->getBySlug($slug);
 			if (!$category) die('invalid');
 
 			$category_path = $category->getTreeParents();
@@ -57,9 +57,9 @@ class IdeasController extends AbstractController
 	 *
 	 * @param  $idea_id
 	 */
-	public function viewAction($idea_id)
+	public function viewAction($slug)
 	{
-		$idea = App::getEntityRepository('DeskPRO:Idea')->find($idea_id);
+		$idea = App::getEntityRepository('DeskPRO:Idea')->getBySlug($slug);
 		if (!$idea) {
 			die('invalid');
 		}

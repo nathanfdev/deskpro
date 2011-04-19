@@ -15,9 +15,20 @@ use \Application\DeskPRO\App;
 use \Doctrine\ORM\EntityRepository;
 
 use \Orb\Util\Arrays;
+use \Orb\Util\Strings;
 
 class Article extends EntityRepository
 {
+	public function getBySlug($slug)
+	{
+		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
+		if (!$id) return null;
+
+		return $this->find($id);
+	}
+
+
+
 	/**
 	 * Given an array of nodes (usually roots), get the top $num newest articles, and then
 	 * sort them into an array keyed by the node IDs.

@@ -115,4 +115,9 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 
 		return $this->_label_manager;
 	}
+
+	public function getUrlSlug()
+	{
+		return $this->id . '-' . Strings::slugifyTitle($this->title);
+	}
 }

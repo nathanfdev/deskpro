@@ -44,9 +44,9 @@ class DownloadsController extends AbstractController
 	 * 
 	 * @param  $category_id
 	 */
-	public function categoryAction($category_id)
+	public function categoryAction($slug)
 	{
-		$category = App::getEntityRepository('DeskPRO:DownloadCategory')->find($category_id);
+		$category = App::getEntityRepository('DeskPRO:DownloadCategory')->getBySlug($slug);
 		$category_path = $category->getTreeParents();
 
 		$downloads = App::getEntityRepository('DeskPRO:Download')->getInNode($category);
@@ -65,9 +65,9 @@ class DownloadsController extends AbstractController
 	 *
 	 * @param  $article_id
 	 */
-	public function fileAction($download_id, $slug)
+	public function fileAction($slug)
 	{
-		$download = App::getEntityRepository('DeskPRO:Download')->find($download_id);
+		$download = App::getEntityRepository('DeskPRO:Download')->getBySlug($slug);
 		if (!$download) {
 			die('invalid');
 		}
