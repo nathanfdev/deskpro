@@ -26,6 +26,11 @@ use Orb\Util\Arrays;
 class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * The sysname of the everyone group
+	 */
+	const EVERYONE_NAME = 'everyone';
+
+	/**
 	 * The unique ID.
 	 *
 	 * @var int
@@ -59,6 +64,13 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $is_agent_group = false;
 
+	/**
+	 * When non-null, the group is a special system group (hidden from most interfaces).
+	 * 
+	 * @var bool
+	 * @orm:Column(name="sys_name", type="string", length="50", nullable=true)
+	 */
+	protected $sys_name = null;
 
 	/**
 	 * Properties attached to this usergroup

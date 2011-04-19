@@ -36,7 +36,7 @@ class Usergroup extends EntityRepository
 				$this->_usergroup_names = $db->fetchAllKeyValue("
 					SELECT id, title
 					FROM usergroups
-					WHERE is_agent_group = 0
+					WHERE is_agent_group = 0 AND sys_name IS NULL
 					ORDER BY title ASC
 				");
 
@@ -72,7 +72,7 @@ class Usergroup extends EntityRepository
 			$this->_agent_usergroup_names = $db->fetchAllKeyValue("
 				SELECT id, title
 				FROM usergroups
-				WHERE is_agent_group = 0
+				WHERE is_agent_group = 0 AND sys_name IS NULL
 				ORDER BY title ASC
 			");
 

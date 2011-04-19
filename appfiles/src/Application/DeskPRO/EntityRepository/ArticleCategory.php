@@ -24,5 +24,20 @@ use \Orb\Util\Arrays;
 
 class ArticleCategory extends NestedTreeRepository
 {
+	protected $_hierarchy = array();
 
+	public function getFullHierarchy()
+	{
+		if ($this->_hierarchy !== null) return $this->_hierarchy;
+
+		$this->_hierarchy = App::getDb()->fetchAll("
+			SELECT id, parent_id, title
+			FROM article_categories
+			ORDER BY id DESC
+		");
+
+		$this->_hierarchy = Arrays::intoHierarchy($this->_hierarchy);
+
+		return $this->_hierarchy;
+	}
 }

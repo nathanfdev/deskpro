@@ -18,9 +18,9 @@ use Orb\Util\Web;
  * Settings used by the system.
  *
  * @orm:Entity
- * @InheritanceType("SINGLE_TABLE")
- * @DiscriminatorColumn(name="property_type", type="string")
- * @DiscriminatorMap({"permission" = "UsergroupPropertyPermission"})
+ * @orm:InheritanceType("SINGLE_TABLE")
+ * @orm:DiscriminatorColumn(name="property_type", type="string")
+ * @orm:DiscriminatorMap({"permission" = "UsergroupPropertyPermission"})
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="usergroup_properties")
  */

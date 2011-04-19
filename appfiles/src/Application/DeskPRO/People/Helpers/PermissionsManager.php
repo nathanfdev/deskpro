@@ -1,0 +1,242 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Tickets
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\People\Helpers;
+
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity;
+use \Application\DeskPRO\Entity\Person;
+use \Application\DeskPRO\Entity\PermissionCache;
+
+use \Orb\Util\Arrays;
+use \Orb\Util\Util;
+
+/**
+ * The permission manager takes care of loading effective permissions for a user.
+ */
+class PermissionsManager implements \Orb\Helper\ShortCallableInterface
+{
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person;
+
+	/**
+	 * All the users usergroups
+	 * @string array
+	 */
+	protected $usergroup_ids;
+
+	/**
+	 * The usergroups key for all the users groups
+	 * @var string
+	 */
+	protected $usergroups_key;
+
+	/**
+	 * Types that we know we want, but havent been loaded yet
+	 * @param array
+	 */
+	protected $queued_types = array();
+
+	/**
+	 * Initialized loaders
+	 * @var \Application\DeskPRO\People\PermissionLoader[]
+	 */
+	protected $loaders = array();
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 */
+	public function __construct(Person $person)
+	{
+		$this->person = $person;
+
+		$this->usergroup_ids = App::getDb()->fetchAllCol("
+			SELECT usergroup_id
+			FROM person2usergroups
+			WHERE person_id = ?
+		", array($this->person['id']));
+
+		// For 'everyone'
+		$this->usergroup_ids[] = 1;
+
+		sort($this->usergroup_ids, SORT_NUMERIC);
+
+		$this->usergroups_key = PermissionCache::generateUsergroupSetKey($this->usergroup_ids);
+	}
+
+
+	
+	/**
+	 * Get an array of usergroups this user has applied to them
+	 *
+	 * @return array
+	 */
+	public function getUsergroupIds()
+	{
+		return $this->usergroup_ids;
+	}
+
+
+	
+	/**
+	 * Get the usergroups set key
+	 *
+	 * @return string
+	 */
+	public function getUsergroupSetKey()
+	{
+		return $this->usergroups_key;
+	}
+
+
+	
+	/**
+	 * Load permissions of a particular type.
+	 *
+	 * @param $name
+	 */
+	public function loadPermissions($name)
+	{
+		$args = func_get_args();
+
+		foreach ($args as $name) {
+			if (isset($this->loaders[strtolower($name)])) {
+				continue;
+			}
+
+			if (!class_exists($this->getLoaderClass($name))) {
+				throw new \InvalidArgumentException("No loader for permission type `$name`");
+			}
+
+			$this->queued_types[] = $name;
+		}
+	}
+
+
+	
+	/**
+	 * This loads up the queued permission types. The reason they're queued is so we
+	 * can fetch multiple records from the cache at once, which is helpful when
+	 * the cache is a slow-cache such as the db.
+	 * 
+	 * @return void
+	 */
+	public function _loadQueued()
+	{
+		#-------------------------
+		# Fetch from the cache first
+		#-------------------------
+
+		$caches = App::getEntityRepository('DeskPRO:PermissionCache')->loadPermissionTypes($this->usergroups_key, $this->queued_types);
+
+		foreach ($caches as $cache) {
+			$loader = $cache->perms;
+			$name = Util::getBaseClassname($loader);
+
+			$this->loaders[strtolower($name)] = $loader;
+		}
+
+		#-------------------------
+		# Load the rest for the first time
+		#-------------------------
+
+		$do_cache = array();
+
+		foreach ($this->queued_types as $name) {
+
+			if (isset($this->loaders[strtolower($name)])) {
+				continue;
+			}
+
+			$class = $this->getLoaderClass($name);
+			$loader = new $class($this->usergroup_ids);
+
+			$this->loaders[strtolower($name)] = $loader;
+
+			$do_cache[] = PermissionCache::newFromLoader($loader);
+		}
+
+		if ($do_cache) {
+			App::getOrm()->beginTransaction();
+			
+			foreach ($do_cache as $c) {
+				App::getOrm()->persist($c);
+			}
+
+			App::getOrm()->flush();
+			App::getOrm()->commit();
+		}
+	}
+
+	
+
+	/**
+	 * Using property overloading to give direct access to individual loaders.
+	 *
+	 * @param  $name
+	 * @return \Application\DeskPRO\People\PermissionLoader
+	 */
+	public function __get($name)
+	{
+		return $this->get($name);
+	}
+
+
+
+	/**
+	 * Get a loader
+	 *
+	 * @param  $name
+	 * @return \Application\DeskPRO\People\PermissionLoader
+	 */
+	public function get($name)
+	{
+		$namel = strtolower($name);
+		if (!isset($this->loaders[$namel])) {
+			$this->loadPermissions($name);
+			$this->_loadQueued();
+		}
+
+		// This should never actually happen i think, since it'd be caught
+		// by the loadPermissions as an invalid loader
+		//if (!isset($this->loaders)) {
+		//	throw new \RuntimeException('No such permission loader exists');
+		//}
+
+		return $this->loaders[$namel];
+	}
+
+
+	
+	/**
+	 * Get the full name of the loader for a given permission type name.
+	 * 
+	 * @param  $name
+	 * @return string
+	 */
+	public function getLoaderClass($name)
+	{
+		return 'Application\\DeskPRO\\PermissionLoader\\' . $name;
+	}
+
+
+	public function getShortCallableNames()
+	{
+		return array(
+			'getPermissionsManager' => '_getthis',
+			'getPermsLoader'        => 'get',
+		);
+	}
+
+	public function _getthis() { return $this; }
+}

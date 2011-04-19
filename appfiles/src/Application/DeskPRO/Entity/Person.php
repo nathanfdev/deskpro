@@ -283,53 +283,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_picture_check = null;
 
 	/**
-	 * If we have set a password for this user, then the plaintext version will be set here.
-	 *
-	 * @var string
-	 */
-	protected $_set_plain_password = null;
-
-	/**
-	 * An array of effective permissions for this user based on usergroups.
-	 *
-	 * @var array
-	 */
-	protected $_effective_permissions = null;
-
-	/**
-	 * An array of usergroupids this user belongs to
-	 *
-	 * @var array
-	 */
-	protected $_usergroup_ids = null;
-
-	/**
-	 * An array of usergroupids this user belongs to
-	 *
-	 * @var array
-	 */
-	protected $_twitter_account_ids = null;
-
-	/**
-	 * An array of name=>value for loaded preferences. These are not obejcts.
-	 * @var array
-	 */
-	protected $_pref_values = array();
-
-	/**
-	 * AN array of names we've loaded. This is because values can be null if they
-	 * dont exist, but we dont want to keep trying ot laod them every time they're requested.
-	 * @var array
-	 */
-	protected $_pref_loaded = array();
-
-	protected $_label_manager = null;
-
-	protected $_helper_manager = null;
-
-	protected $_is_new_person = false;
-
-	/**
 	 * The tasks created by this user.
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="Task", mappedBy="creator", cascade={"persist", "remove", "merge"})
@@ -355,7 +308,65 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $task_associations;
 
+
+
+	
+	/**
+	 * If we have set a password for this user, then the plaintext version will be set here.
+	 * @var string
+	 */
+	protected $_set_plain_password = null;
+
+	/**
+	 * An array of usergroupids this user belongs to
+	 * @var array
+	 */
+	protected $_twitter_account_ids = null;
+
+	/**
+	 * An array of name=>value for loaded preferences. These are not obejcts.
+	 * @var array
+	 */
+	protected $_pref_values = array();
+
+	/**
+	 * AN array of names we've loaded. This is because values can be null if they
+	 * dont exist, but we dont want to keep trying ot laod them every time they're requested.
+	 * @var array
+	 */
+	protected $_pref_loaded = array();
+
+	/**
+	 * Label manager for adding/removing labels
+	 * @var \Application\DeskPRO\Labels\LabelManager
+	 */
+	protected $_label_manager = null;
+
+	/**
+	 * Helper manager for auto-loading functionality onto this object
+	 * @var \Orb\Helper\HelperManager
+	 */
+	protected $_helper_manager = null;
+
+	/**
+	 * The permissions manager helper once its loaded
+	 * @var \Application\DeskPRO\People\Helpers\PermissionsManager
+	 */
+	protected $_permissions_manager = null;
+
+	/**
+	 * True if this is a new record.
+	 * @var bool
+	 */
+	protected $_is_new_person = false;
+
+	/**
+	 * @var \Application\DeskPRO\People\PersonChangeTracker
+	 */
 	protected $_person_logger = null;
+
+
+
 
 	/**
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
@@ -380,10 +391,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public static function newRegularPerson()
 	{
 		$person = new self();
-
-		$usergroup = App::getEntityRepository('DeskPRO:Usergroup')->find(App::getSetting('core.default_usergroup_id'));
-		$person->addUsergroup($usergroup);
-
+		$person['is_user'] = true;
 		return $person;
 	}
 
@@ -391,28 +399,27 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->_is_new_person = true;
 
-		$this->date_created = new \DateTime();
-		$this->secret_string = Strings::random(40);
-		$this->timezone = 'UTC';
+		$this->date_created     = new \DateTime();
+		$this->secret_string    = Strings::random(40);
+		$this->timezone         = 'UTC';
+		$this->salt             = Strings::random(40);
 
-		$this->salt = Strings::random(40);
-
-		$this->emails              = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->usergroups          = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->usersource_assoc    = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->personscraper_assoc = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->custom_data         = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->preferences         = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->twitter_accounts     = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->twitter_status_notes = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->created_tasks       = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->assigned_tasks      = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->task_comments       = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->task_associations   = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->emails                 = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->usergroups             = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->usersource_assoc       = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->personscraper_assoc    = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->contact_data           = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->custom_data            = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->preferences            = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->twitter_accounts       = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->twitter_status_notes   = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->created_tasks          = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->assigned_tasks         = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->task_comments          = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->task_associations      = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->_initTicketLogger();
-		$this->_person_logger->recordExtra('ticket_created', true);
+		$this->_person_logger->recordExtra('person_created', true);
 	}
 
 	/**
@@ -800,53 +807,18 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Get the value of a permission
+	 * Get the value of a usergroup permission
 	 *
 	 * @param string $name The permission name
 	 * @return mixed
 	 */
 	public function getPermission($name)
 	{
-		$this->_loadEffectivePermissions();
-
-		if (!isset($this->_effective_permissions[$name])) {
-			return null;
-		}
-
-		return $this->_effective_permissions[$name];
-	}
-
-	protected function _loadEffectivePermissions()
-	{
-		if ($this->_effective_permissions !== null) return;
-
-		if (!$this->id) {
-			$this->_effective_permissions = array();
-			return;
-		}
-
-		/** @var $db \Application\DeskPRO\DBAL\Connection */
-		$db = App::getDb();
-		$usergroup_ids = $this->getUsergroupIds();
-
-		if (!$usergroup_ids) {
-			$this->_effective_permissions = array();
-			return;
-		}
-
-		$em = App::getOrm();
-		$properties = $em->createQuery('
-			SELECT DeskPRO:UsergroupProperty p
-			WHERE usergroup_id IN ?1 AND property_type = ?2
-		')->setParameter(1, $usergroup_ids)
-			->setParameter(2, UsergroupPropertyPermission::PROPERTY_TYPE)
-			->getResult();
-
-		$this->_effective_permissions = UsergroupPropertyPermission::coalescePermissionProperties($properties);
+		return $this->getPermissionsManager()->Usergroups->getPermission($name);
 	}
 
 
-
+	
 	/**
 	 * Get an array of usergroup ID's this user belongs to.
 	 *
@@ -854,27 +826,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getUsergroupIds()
 	{
-		if ($this->_usergroup_ids !== null) return $this->_usergroup_ids;
-
-		// If we have the usergroups collection, we can just use that
-		if (ORM_Util::isCollectionInitialized($this->usergroups)) {
-
-			$this->_usergroup_ids = array();
-			foreach ($this->usergroups as $ug) {
-				$this->_usergroup_ids[] = $ug['id'];
-			}
-
-		// Otherwise we'll try and just fetch simple values
-		// with a quick query
-		} else {
-			$this->_usergroup_ids = App::getDb()->fetchAllCol("
-				SELECT usergroup_id
-				FROM user2usergroups
-				WHERE person_id = {$this->id}
-			");
-		}
-
-		return $this->_usergroup_ids;
+		$this->getPermissionsManager()->getUsergroupIds();
 	}
 
 
@@ -1403,6 +1355,22 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+
+	/**
+	 * @return \Application\DeskPRO\People\Helpers\PermissionsManager
+	 */
+	public function getPermissionsManager()
+	{
+		if ($this->_permissions_manager === null) {
+			$this->loadHelper('PermissionsManager');
+			$this->_permissions_manager = $this->getHelper('PermissionsManager');
+		}
+
+		return $this->_permissions_manager;
+	}
+
+
+	
 	public function getHelperManager()
 	{
 		if ($this->_helper_manager === null) {
