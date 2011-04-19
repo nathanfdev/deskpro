@@ -75,6 +75,10 @@ user_articles_article:
   pattern: /articles/view/{article_id}/{slug}
   defaults: { _controller: UserBundle:Articles:article }
 
+user_articles_rate:
+  pattern: /articles/rate/{article_id}
+  defaults: { _controller: UserBundle:Articles:rate }
+
 user_articles_newcomment:
   pattern: /articles/new-comment/{article_id}
   defaults: { _controller: UserBundle:Articles:newComment }

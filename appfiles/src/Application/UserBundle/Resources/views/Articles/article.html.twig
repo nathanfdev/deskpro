@@ -12,6 +12,22 @@
 
 {{article.content_html|raw}}
 
+<div style="background-color: #eee; padding: 10px; margin-top: 8px;">
+	<form action="{{ path('user_articles_rate', {'article_id': article.id}) }}" method="post">
+		{% if rating_this %}
+			{% if rating_this > 1 %}
+				You found this article helpful
+			{% else %}
+				You didn't like this article
+			{% endif %}
+		{% else %}
+			<input type="radio" value="1" name="rating" {% if rating_this == 1 or not rating_this %}checked="checked"{% endif %}/> This article was helpful
+			<input type="radio" value="-1" name="rating" {% if rating_this == -1 %}checked="checked"{% endif %}/> This article was not helpful
+			<input type="submit" value="vote" />
+		{% endif %}
+	</form>
+</div>
+
 <div style="background-color: #eee; padding: 10px; margin-top: 15px;">
 	<form action="{{ path('user_articles_newcomment', {'article_id': article.id}) }}" method="post">
 	Name: <input type="text" name="new_comment[name]" /> (public)<br />

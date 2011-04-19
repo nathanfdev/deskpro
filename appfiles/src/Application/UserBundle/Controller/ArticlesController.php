@@ -15,6 +15,7 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
+use \Orb\Util\Util;
 
 use \Application\UserBundle\Form\RegPersonForm;
 
@@ -88,10 +89,17 @@ class ArticlesController extends AbstractController
 
 		$comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
 
+		$rating_this = App::getDb()->fetchColumn("
+			SELECT rating
+			FROM article_ratings
+			WHERE (person_id = ? OR visitor_id = ?) AND article_id = ?
+		", array(Util::coalesce($this->person['id'], -1), App::getSession()->getVisitor()->getId(), $article['id']));
+
 		return $this->render('UserBundle:Articles:article.html.twig', array(
 			'article' => $article,
 			'all_categories' => $all_categories,
-			'comments' => $comments
+			'comments' => $comments,
+			'rating_this' => $rating_this
 		));
 	}
 
@@ -125,5 +133,41 @@ class ArticlesController extends AbstractController
 			'article_id' => $article['id'],
 			'slug' => $article['slug']
 		));
+	}
+
+
+
+	/**
+	 * Rate an article
+	 *
+	 * @param  $idea_id
+	 */
+	public function rateAction($article_id)
+	{
+		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
+		if (!$article) {
+			die('invalid');
+		}
+
+		if ($this->person['id']) {
+			App::getDb()->delete('article_ratings', array('article_id' => $article['id'], 'person_id' => $this->person['id']));
+		}
+
+		App::getDb()->delete('article_ratings', array('article_id' => $article['id'], 'visitor_id' => App::getSession()->getVisitor()->getId()));
+
+		$rating = new Entity\ArticleRating();
+		$rating['article'] = $article;
+		if ($this->person['id']) {
+			$rating['person'] = $this->person;
+		} else {
+			$rating['visitor'] = App::getSession()->getVisitor();
+		}
+		$rating['rating'] = $this->in->getInt('rating');
+		$rating['date_created'] = new \DateTime();
+
+		App::getOrm()->persist($rating);
+		App::getOrm()->flush();
+
+		return $this->redirectRoute('user_articles_article', array('article_id' => $article['id'], 'slug' => $article['slug']));
 	}
 }
