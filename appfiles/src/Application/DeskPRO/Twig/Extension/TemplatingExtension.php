@@ -39,6 +39,8 @@ class TemplatingExtension extends \Twig_Extension
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
             'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
+			'deskpro_setting' => new \Twig_Function_Method($this, 'getSetting'),
+			'deskpro_debug' => new \Twig_Function_Method($this, 'isDebugMode'),
         );
     }
 
@@ -52,6 +54,16 @@ class TemplatingExtension extends \Twig_Extension
 	public function getPhrase($phrase_name, array $vars = array())
 	{
 		return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
+	}
+
+	public function getSetting($name)
+	{
+		return App::getSetting($name);
+	}
+
+	public function isDebugMode()
+	{
+		return App::isDebug();
 	}
 
 	public function getMd5($string)

@@ -16,6 +16,8 @@ use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
+use \Application\UserBundle\Controller\Helper\Comments;
+
 class IdeasController extends AbstractController
 {
 	/**
@@ -103,7 +105,14 @@ class IdeasController extends AbstractController
 
 		$spend_on_this = min($num_votes_remain+$num_votes_this, 3);
 
-		$comments = App::getEntityRepository('DeskPRO:IdeaComment')->getComments($idea);
+		$comments = null;
+		$comments_widget = null;
+		$comments_helper = Comments::create($idea);
+		if ($comments_helper) {
+			$comments_widget = $comments_helper->getHtml();
+		} else {
+			$comments = App::getEntityRepository('DeskPRO:IdeaComment')->getComments($idea);
+		}
 
 		return $this->render('UserBundle:Ideas:view.html.twig', array(
 			'num_votes' => $num_votes,
@@ -116,7 +125,8 @@ class IdeasController extends AbstractController
 			'category'      => $category,
 			'categories'    => $categories,
 
-			'comments' => $comments
+			'comments' => $comments,
+			'comments_widget' => $comments_widget
 		));
 	}
 

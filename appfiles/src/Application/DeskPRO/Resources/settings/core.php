@@ -7,6 +7,8 @@
 	'core.deskpro_assets_full_url' => 'http://localhost/static/',
 	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
 
+	'core.site_id' => '1',
+
 	'core.default_locale_id' => 1,
 	'core.default_style_id' => 1,
 	'core.everyone_usergroup_id' => 2,
@@ -19,4 +21,8 @@
 	'core.sessions_lifetime' => 3600,
 
 	'core.use_mail_queue'  => 'never',
+	'core.disqus_shortname' => '',
+
+	// false=use deskpro, disqus=use disqus, facebook=use facebook
+	'core.comments_adapter' => false,
 );

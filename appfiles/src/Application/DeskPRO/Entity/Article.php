@@ -161,4 +161,11 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return $this->id . '-' . $this->slug;
 	}
+
+	public function getPermalink()
+	{
+		$url = App::getRouter()->generate('user_articles_article', array('slug' => $this->getUrlSlug()), true);
+
+		return $url;
+	}
 }

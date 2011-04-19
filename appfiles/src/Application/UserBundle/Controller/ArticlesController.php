@@ -17,7 +17,7 @@ use \Application\DeskPRO\Entity;
 use \Orb\Util\Arrays;
 use \Orb\Util\Util;
 
-use \Application\UserBundle\Form\RegPersonForm;
+use \Application\UserBundle\Controller\Helper\Comments;
 
 class ArticlesController extends AbstractController
 {
@@ -87,7 +87,14 @@ class ArticlesController extends AbstractController
 			$all_categories[$cat['id']] = array_reverse($cats);
 		}
 
-		$comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
+		$comments = null;
+		$comments_widget = null;
+		$comments_helper = Comments::create($article);
+		if ($comments_helper) {
+			$comments_widget = $comments_helper->getHtml();
+		} else {
+			$comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
+		}
 
 		$rating_this = App::getDb()->fetchColumn("
 			SELECT rating
@@ -99,6 +106,7 @@ class ArticlesController extends AbstractController
 			'article' => $article,
 			'all_categories' => $all_categories,
 			'comments' => $comments,
+			'comments_widget' => $comments_widget,
 			'rating_this' => $rating_this
 		));
 	}

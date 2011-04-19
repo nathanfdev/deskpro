@@ -16,7 +16,7 @@ use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
-use \Application\UserBundle\Form\RegPersonForm;
+use \Application\UserBundle\Controller\Helper\Comments;
 
 class NewsController extends AbstractController
 {
@@ -64,14 +64,22 @@ class NewsController extends AbstractController
 		$category = $post->category;
 		$category_path = $category->getTreeParents();
 
-		$comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($post);
+		$comments = null;
+		$comments_widget = null;
+		$comments_helper = Comments::create($post);
+		if ($comments_helper) {
+			$comments_widget = $comments_helper->getHtml();
+		} else {
+			$comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($post);
+		}
 
 		return $this->render('UserBundle:News:view.html.twig', array(
 			'post' => $post,
 			'category_path' => $category_path,
 			'category' => $category,
 			'categories' => $categories,
-			'comments' => $comments
+			'comments' => $comments,
+			'comments_widget' => $comments_widget
 		));
 	}
 
