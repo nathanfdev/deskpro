@@ -490,6 +490,17 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return parent::_onNotCallable($name, $arguments);
 	}
 
+	public function __get($name)
+	{
+		if ($this->_helper_manager) {
+			if ($this->_helper_manager->hasHelper($name)) {
+				return $this->_helper_manager->getHelper($name);
+			}
+		}
+
+		return parent::__get($name);
+	}
+
 
 	public function getLocale()
 	{
