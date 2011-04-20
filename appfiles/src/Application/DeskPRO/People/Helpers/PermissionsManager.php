@@ -226,7 +226,7 @@ class PermissionsManager implements \Orb\Helper\ShortCallableInterface
 	 */
 	public function getLoaderClass($name)
 	{
-		return 'Application\\DeskPRO\\PermissionLoader\\' . $name;
+		return 'Application\\DeskPRO\\People\\PermissionLoader\\' . $name;
 	}
 
 

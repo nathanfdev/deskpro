@@ -15,6 +15,7 @@ use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Util;
 
 /**
  * A cache of various permissions for a given set of usergroups. For example,
@@ -65,6 +66,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	public static function newFromLoader(\Application\DeskPRO\People\PermissionLoader\AbstractLoader $loader)
 	{
 		$obj = new self();
+		$obj['name'] = Util::getBaseClassname($loader);
 		$obj['usergroup_ids'] = $loader->getUsergroupIds();
 		$obj->perms = $loader;
 
