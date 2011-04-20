@@ -1,5 +1,8 @@
 <div style="background-color: #eee; padding: 3px;">
 	<ul>
+		<li><a href="{{ path('user_ideas_newidea') }}">Submit new idea</a></li>
+	</ul>
+	<ul>
 		<li style="margin-bottom: 15px;">
 			{% if not status or status == 'new' %}
 				<a href="{{ path('user_ideas') }}">

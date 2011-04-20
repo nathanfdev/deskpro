@@ -119,6 +119,16 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_label_manager;
 	}
 
+	public function getCategoryId()
+	{
+		return $this->category['id'];
+	}
+
+	public function setCategoryId($id)
+	{
+		$this->category = App::getEntityRepository('DeskPRO:IdeaCategory')->find($id);
+	}
+
 
 	public function recountVotes()
 	{

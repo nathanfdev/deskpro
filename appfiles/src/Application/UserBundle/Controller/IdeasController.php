@@ -78,6 +78,10 @@ class IdeasController extends AbstractController
 		$num_votes        = $this->person->IdeaVotes->getVotesRemaining();
 		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
 
+		if (!$num_votes_remain) {
+			die('you must have at least one vote to submit a new idea');
+		}
+
 		$form = new NewIdeaForm('newidea', array(
 			'votes_remain' => $num_votes_remain,
 			'validator' => $this->get('validator')
@@ -92,6 +96,8 @@ class IdeasController extends AbstractController
 
 		if ($form->isValid()) {
 			$idea = $newidea->save();
+
+			return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()));
 		}
 
 		return $this->render('UserBundle:Ideas:new-idea.html.twig', array(
@@ -195,7 +201,7 @@ class IdeasController extends AbstractController
 		App::getOrm()->persist($idea);
 		App::getOrm()->flush();
 
-		return $this->redirectRoute('user_ideas_view', array('idea_id' => $idea['id']));
+		return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()));
 	}
 
 

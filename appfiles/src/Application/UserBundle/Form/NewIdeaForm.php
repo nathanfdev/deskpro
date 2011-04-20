@@ -34,7 +34,7 @@ class NewIdeaForm extends \Symfony\Component\Form\Form
 
 		$num = 3;
 		if ($this->getOption('votes_remain')) {
-			$num = max(3, $this->getOption('votes_remain'));
+			$num = min(3, $this->getOption('votes_remain'));
 		}
 
 		$this->add(new Form\ChoiceField('votes', array(
