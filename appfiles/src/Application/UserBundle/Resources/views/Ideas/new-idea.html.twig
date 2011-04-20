@@ -1,0 +1,26 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block content %}
+
+<form action="{{ path('user_ideas_newidea') }}" method="post">
+{{ form_hidden(form) }}
+<input type="hidden" name="process" value="1" />
+
+	<small><strong>Category:</strong></small><br />
+	{{ form_field(form.category_id) }}
+
+	<br />
+
+	<small><strong>Short Summary:</strong></small><br />
+	{{ form_field(form.title) }}
+
+	<br />
+
+	<small><strong>Description or details:</strong></small><br />
+	{{ form_field(form.content) }}
+
+	<br />
+
+	How many of your {{num_votes_remain}} votes would you like to spend on this idea?<br />
+	{{ form_field(form.votes) }}
+</form>
+{% endblock %}

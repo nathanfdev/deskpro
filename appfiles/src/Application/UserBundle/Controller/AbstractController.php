@@ -6,7 +6,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 {
 	/**
 	 * The currently logged in person.
-	 * @var Application\DeskPRO\Entity\Person
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
 

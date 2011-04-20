@@ -16,11 +16,21 @@ use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
+use \Application\UserBundle\Form\NewIdeaForm;
+
 use \Application\UserBundle\Controller\Helper\Comments;
 use \Application\UserBundle\Controller\Helper\FacebookLike;
 
 class IdeasController extends AbstractController
 {
+	protected function init()
+	{
+		parent::init();
+
+		$this->person->loadHelper('IdeaVotes', array('visitor' => App::getSession()->getVisitor()));
+	}
+
+	
 	/**
 	 * Main index shows initial category listing
 	 */
@@ -56,6 +66,44 @@ class IdeasController extends AbstractController
 
 
 	/**
+	 * New idea
+	 */
+	public function newIdeaAction()
+	{
+		$newidea = new \Application\DeskPRO\Ideas\NewIdea(
+			$this->person,
+			App::getSession()->getVisitor()
+		);
+
+		$num_votes        = $this->person->IdeaVotes->getVotesRemaining();
+		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
+
+		$form = new NewIdeaForm('newidea', array(
+			'votes_remain' => $num_votes_remain,
+			'validator' => $this->get('validator')
+		));
+
+		$form->bind($this->get('request'), $newidea);
+
+		// Initial value from coming from a category
+		if ($this->in->getUint('category_id')) {
+			$form->get('category_id')->setData($this->in->getUint('category_id'));
+		}
+
+		if ($form->isValid()) {
+			$idea = $newidea->save();
+		}
+
+		return $this->render('UserBundle:Ideas:new-idea.html.twig', array(
+			'form' => $form,
+			'num_votes' => $num_votes,
+			'num_votes_remain' => $num_votes_remain,
+		));
+	}
+
+
+
+	/**
 	 * View an idea
 	 *
 	 * @param  $idea_id
@@ -72,37 +120,9 @@ class IdeasController extends AbstractController
 		$category = $idea->category;
 		$category_path = $category->getTreeParents();
 
-		// Get number of votes user has
-		if ($this->person['id']) {
-			$num_votes = App::getDb()->fetchColumn("
-				SELECT SUM(num_votes)
-				FROM idea_votes
-				WHERE person_id = ? AND is_returned = 0
-			", array($this->person['id']));
-
-			$num_votes_this = App::getDb()->fetchColumn("
-				SELECT num_votes
-				FROM idea_votes
-				WHERE person_id = ? AND idea_id = ?
-			", array($this->person['id'], $idea['id']));
-		} else {
-			$num_votes = App::getDb()->fetchColumn("
-				SELECT SUM(num_votes)
-				FROM idea_votes
-				WHERE visitor_id = ? AND is_returned = 0
-			", array(App::getSession()->getVisitor()->getId()));
-
-			$num_votes_this = App::getDb()->fetchColumn("
-				SELECT num_votes
-				FROM idea_votes
-				WHERE visitor_id = ? AND idea_id = ?
-			", array(App::getSession()->getVisitor()->getId(), $idea['id']));
-		}
-
-		if (!$num_votes) $num_votes = 0;
-		if (!$num_votes_this) $num_votes_this = 0;
-
-		$num_votes_remain = 10 - $num_votes;
+		$num_votes        = $this->person->IdeaVotes->getVotesRemaining();
+		$num_votes_this   = $this->person->IdeaVotes->getVotesOnIdea($idea);
+		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
 
 		$spend_on_this = min($num_votes_remain+$num_votes_this, 3);
 
@@ -139,6 +159,7 @@ class IdeasController extends AbstractController
 	}
 
 
+	
 	/**
 	 * View an idea
 	 *

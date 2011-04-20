@@ -127,6 +127,10 @@ user_ideas_view:
   pattern: /feedback/ideas/{slug}
   defaults: { _controller: UserBundle:Ideas:view }
 
+user_ideas_newidea:
+  pattern: /feedback/new-idea
+  defaults: { _controller: UserBundle:Ideas:newIdea }
+
 user_ideas_newcomment:
   pattern: /feedback/new-comment/{idea_id}
   defaults: { _controller: UserBundle:Ideas:newComment }
