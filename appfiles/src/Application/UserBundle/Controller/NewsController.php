@@ -36,6 +36,11 @@ class NewsController extends AbstractController
 				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
 			}
 
+			// Auto-correct URL
+			if ($slug != $category->getUrlSlug()) {
+				return $this->redirectRoute('user_news_cat', array('slug' => $category->getUrlSlug()), 301);
+			}
+
 			$category_path = $category->getTreeParents();
 		}
 
@@ -61,6 +66,11 @@ class NewsController extends AbstractController
 		$post = App::getEntityRepository('DeskPRO:News')->getBySlug($slug);
 		if (!$post) {
 			return $this->renderStandardError('@user_news.error_not_found', '@core.not_found', 404);
+		}
+
+		// Auto-correct URL
+		if ($slug != $post->getUrlSlug()) {
+			return $this->redirectRoute('user_news_view', array('slug' => $post->getUrlSlug()), 301);
 		}
 
 		$categories = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();

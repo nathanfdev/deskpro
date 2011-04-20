@@ -52,6 +52,11 @@ class DownloadsController extends AbstractController
 			return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
 		}
 
+		// Auto-correct URL
+		if ($slug != $category->getUrlSlug()) {
+			return $this->redirectRoute('user_downloads_cat', array('slug' => $category->getUrlSlug()), 301);
+		}
+
 		$category_path = $category->getTreeParents();
 
 		$downloads = App::getEntityRepository('DeskPRO:Download')->getInNode($category);
@@ -75,6 +80,11 @@ class DownloadsController extends AbstractController
 		$download = App::getEntityRepository('DeskPRO:Download')->getBySlug($slug);
 		if (!$download) {
 			return $this->renderStandardError('@user_downloads.not_found', '@core.not_found', 404);
+		}
+
+		// Auto-correct URL
+		if ($slug != $download->getUrlSlug()) {
+			return $this->redirectRoute('user_downloads_file', array('slug' => $download->getUrlSlug()), 301);
 		}
 
 		$category = $download->category;

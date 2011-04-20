@@ -58,6 +58,11 @@ class ArticlesController extends AbstractController
 			return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
 		}
 
+		// Auto-correct URL
+		if ($slug != $category->getUrlSlug()) {
+			return $this->redirectRoute('user_articles_cat', array('slug' => $category->getUrlSlug()), 301);
+		}
+
 		$category_path = $category->getTreeParents();
 
 		$articles = App::getEntityRepository('DeskPRO:Article')->getInNode($category);
@@ -80,6 +85,11 @@ class ArticlesController extends AbstractController
 		$article = App::getEntityRepository('DeskPRO:Article')->getBySlug($slug);
 		if (!$article) {
 			return $this->renderStandardError('@user_articles.error_not_found', '@core.not_found', 404);
+		}
+
+		// Auto-correct URL
+		if ($slug != $article->getUrlSlug()) {
+			return $this->redirectRoute('user_articles_article', array('slug' => $article->getUrlSlug()), 301);
 		}
 
 		$all_categories = array();

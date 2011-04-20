@@ -46,6 +46,11 @@ class IdeasController extends AbstractController
 				return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
 			}
 
+			// Auto-correct URL
+			if ($slug != $category->getUrlSlug()) {
+				return $this->redirectRoute('user_ideas_cat', array('slug' => $category->getUrlSlug()), 301);
+			}
+
 			$category_path = $category->getTreeParents();
 		}
 
@@ -121,6 +126,11 @@ class IdeasController extends AbstractController
 		$idea = App::getEntityRepository('DeskPRO:Idea')->getBySlug($slug);
 		if (!$idea) {
 			return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
+		}
+
+		// Auto-correct URL
+		if ($slug != $idea->getUrlSlug()) {
+			return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()), 301);
 		}
 
 		$categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getRootNodes();
