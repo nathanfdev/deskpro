@@ -17,6 +17,8 @@ use \Application\DeskPRO\Entity;
 use \Orb\Util\Arrays;
 use \Orb\Util\Util;
 
+use \Application\DeskPRO\ContentSearch\RelatedContentFinder;
+
 use \Application\UserBundle\Controller\Helper\Comments;
 use \Application\UserBundle\Controller\Helper\FacebookLike;
 
@@ -108,13 +110,18 @@ class ArticlesController extends AbstractController
 			WHERE (person_id = ? OR visitor_id = ?) AND article_id = ?
 		", array(Util::coalesce($this->person['id'], -1), App::getSession()->getVisitor()->getId(), $article['id']));
 
+		$related_finder = new RelatedContentFinder($this->person, $article);
+		$related_content = $related_finder->getRelatedEntities();
+
 		return $this->render('UserBundle:Articles:article.html.twig', array(
 			'article' => $article,
 			'all_categories' => $all_categories,
 			'comments' => $comments,
 			'comments_widget' => $comments_widget,
 			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
-			'rating_this' => $rating_this
+			'rating_this' => $rating_this,
+
+			'related_content' => $related_content
 		));
 	}
 

@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity\Person;
 use \Doctrine\ORM\EntityRepository;
 
 use \Orb\Util\Arrays;
@@ -25,6 +26,35 @@ class News extends EntityRepository
 		if (!$id) return null;
 
 		return $this->find($id);
+	}
+
+	/**
+	 * Get a collection of posts by ID. If $person_context
+	 * is supplied, only articles that this person is able to view will be returned.
+	 *
+	 * @return array
+	 */
+	public function getByIds(array $ids, Person $person_context = null)
+	{
+		if (!$ids) return array();
+		
+		if ($person_context) {
+			$posts = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:News p INDEX BY p.id
+				WHERE p.id IN (" . implode(',', $ids) . ")
+				ORDER BY p.id DESC
+			")->execute();
+		} else {
+			$posts = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:News p INDEX BY p.id
+				WHERE p.id IN (" . implode(',', $ids) . ")
+				ORDER BY p.id DESC
+			")->execute();
+		}
+
+		return $posts;
 	}
 	
 	public function getNews($node, $num = 20)

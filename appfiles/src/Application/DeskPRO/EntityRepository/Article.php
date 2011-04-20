@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use \Application\DeskPRO\App;
+use \Application\DeskPRO\Entity\Person;
 use \Doctrine\ORM\EntityRepository;
 
 use \Orb\Util\Arrays;
@@ -25,6 +26,45 @@ class Article extends EntityRepository
 		if (!$id) return null;
 
 		return $this->find($id);
+	}
+
+	
+
+	/**
+	 * Get a collection of articles by ID. If $person_context
+	 * is supplied, only articles that this person is able to view will be returned.
+	 *
+	 * @return array
+	 */
+	public function getByIds(array $ids, Person $person_context = null)
+	{
+		if (!$ids) return array();
+		
+		if ($person_context) {
+			//$cat_ids = $person_context->getPermissionsManager()->ArticleCategories->getAllowedCategories();
+			//if (!$cat_ids) return array();
+
+			//WHERE a.id IN (" . implode(',', $ids) . " AND a.is_published = true AND cat.id IN (" . implode(',',$cat_ids) . ")
+
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a INDEX BY a.id
+				LEFT JOIN a.categories cat
+				WHERE a.id IN (" . implode(',', $ids) . ")
+				ORDER BY a.id DESC
+			")->execute();
+
+		} else {
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a INDEX BY a.id
+				LEFT JOIN a.categories cat
+				WHERE a.id IN (" . implode(',', $ids) . ")
+				ORDER BY a.id DESC
+			")->execute();
+		}
+
+		return $articles;
 	}
 
 

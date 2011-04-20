@@ -15,7 +15,10 @@
 {% endfor %}
 <hr />
 
+{% include 'UserBundle:Common:related-content-side.html.twig' %}
 {{article.content_html|raw}}
+
+<br style="clear:both" />
 
 {% if facebook_like %}
 <div style="margin: 10px;">
