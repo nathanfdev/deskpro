@@ -4,7 +4,7 @@
 <a href="{{ path('user_articles') }}">Articles</a> / 
 {% for cat in category_path %}
 	{% if not loop.last %}
-		<a href="{{ path('user_articles_cat', {'category_id': cat.id}) }}">{{cat.title}}</a> /
+		<a href="{{ path('user_articles_cat', {'slug': cat.url_slug}) }}">{{cat.title}}</a> /
 	{% endif %}
 {% endfor %}
 </small>
