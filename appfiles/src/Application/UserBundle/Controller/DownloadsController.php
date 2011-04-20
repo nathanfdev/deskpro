@@ -16,7 +16,7 @@ use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
-use \Application\UserBundle\Form\RegPersonForm;
+use \Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
 class DownloadsController extends AbstractController
 {
@@ -90,9 +90,14 @@ class DownloadsController extends AbstractController
 		$category = $download->category;
 		$category_path = $category->getTreeParents();
 
+		$related_finder = new RelatedContentFinder($this->person, $download);
+		$related_content = $related_finder->getRelatedEntities();
+
 		return $this->render('UserBundle:Downloads:file.html.twig', array(
 			'download' => $download,
 			'category_path' => $category_path,
+
+			'related_content' => $related_content
 		));
 	}
 }

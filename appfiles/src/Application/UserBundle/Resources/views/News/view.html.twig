@@ -15,6 +15,7 @@
 	</div>
 	<h4>{{post.title}}</h4>
 
+	{% include 'UserBundle:Common:related-content-side.html.twig' %}
 	{{post.content_html|raw}}
 </div>
 

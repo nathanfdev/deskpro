@@ -19,6 +19,8 @@ use \Orb\Util\Arrays;
 use \Application\UserBundle\Controller\Helper\Comments;
 use \Application\UserBundle\Controller\Helper\FacebookLike;
 
+use \Application\DeskPRO\ContentSearch\RelatedContentFinder;
+
 class NewsController extends AbstractController
 {
 	/**
@@ -91,6 +93,9 @@ class NewsController extends AbstractController
 			$facebook_like = $like_helper->getHtml();
 		}
 
+		$related_finder = new RelatedContentFinder($this->person, $post);
+		$related_content = $related_finder->getRelatedEntities();
+
 		return $this->render('UserBundle:News:view.html.twig', array(
 			'post' => $post,
 			'category_path' => $category_path,
@@ -100,6 +105,8 @@ class NewsController extends AbstractController
 			'comments_widget' => $comments_widget,
 
 			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
+
+			'related_content' => $related_content
 		));
 	}
 

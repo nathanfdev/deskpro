@@ -21,6 +21,8 @@ use \Application\UserBundle\Form\NewIdeaForm;
 use \Application\UserBundle\Controller\Helper\Comments;
 use \Application\UserBundle\Controller\Helper\FacebookLike;
 
+use \Application\DeskPRO\ContentSearch\RelatedContentFinder;
+
 class IdeasController extends AbstractController
 {
 	protected function init()
@@ -158,6 +160,9 @@ class IdeasController extends AbstractController
 			$facebook_like = $like_helper->getHtml();
 		}
 
+		$related_finder = new RelatedContentFinder($this->person, $idea);
+		$related_content = $related_finder->getRelatedEntities();
+
 		return $this->render('UserBundle:Ideas:view.html.twig', array(
 			'num_votes' => $num_votes,
 			'num_votes_this' => $num_votes_this,
@@ -173,6 +178,8 @@ class IdeasController extends AbstractController
 			'comments_widget' => $comments_widget,
 
 			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
+
+			'related_content' => $related_content
 		));
 	}
 
