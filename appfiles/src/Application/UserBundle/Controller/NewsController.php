@@ -32,7 +32,9 @@ class NewsController extends AbstractController
 		$category_path = null;
 		if ($slug) {
 			$category = App::getEntityRepository('DeskPRO:NewsCategory')->getBySlug($slug);
-			if (!$category) die('invalid');
+			if (!$category) {
+				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
+			}
 
 			$category_path = $category->getTreeParents();
 		}
@@ -58,7 +60,7 @@ class NewsController extends AbstractController
 	{
 		$post = App::getEntityRepository('DeskPRO:News')->getBySlug($slug);
 		if (!$post) {
-			die('invalid');
+			return $this->renderStandardError('@user_news.error_not_found', '@core.not_found', 404);
 		}
 
 		$categories = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();
@@ -102,7 +104,7 @@ class NewsController extends AbstractController
 	{
 		$post = App::getEntityRepository('DeskPRO:News')->find($post_id);
 		if (!$post) {
-			die('invalid');
+			return $this->renderStandardError('@user_news.error_not_found', '@core.not_found', 404);
 		}
 		
 		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));

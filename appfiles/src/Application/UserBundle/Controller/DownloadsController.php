@@ -47,6 +47,11 @@ class DownloadsController extends AbstractController
 	public function categoryAction($slug)
 	{
 		$category = App::getEntityRepository('DeskPRO:DownloadCategory')->getBySlug($slug);
+
+		if (!$category) {
+			return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
+		}
+
 		$category_path = $category->getTreeParents();
 
 		$downloads = App::getEntityRepository('DeskPRO:Download')->getInNode($category);
@@ -69,7 +74,7 @@ class DownloadsController extends AbstractController
 	{
 		$download = App::getEntityRepository('DeskPRO:Download')->getBySlug($slug);
 		if (!$download) {
-			die('invalid');
+			return $this->renderStandardError('@user_downloads.not_found', '@core.not_found', 404);
 		}
 
 		$category = $download->category;

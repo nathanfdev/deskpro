@@ -53,6 +53,11 @@ class ArticlesController extends AbstractController
 	public function categoryAction($slug)
 	{
 		$category = App::getEntityRepository('DeskPRO:ArticleCategory')->getBySlug($slug);
+
+		if (!$category) {
+			return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
+		}
+
 		$category_path = $category->getTreeParents();
 
 		$articles = App::getEntityRepository('DeskPRO:Article')->getInNode($category);
@@ -74,7 +79,7 @@ class ArticlesController extends AbstractController
 	{
 		$article = App::getEntityRepository('DeskPRO:Article')->getBySlug($slug);
 		if (!$article) {
-			die('invalid');
+			return $this->renderStandardError('@user_articles.error_not_found', '@core.not_found', 404);
 		}
 
 		$all_categories = array();
@@ -136,7 +141,7 @@ class ArticlesController extends AbstractController
 	{
 		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
 		if (!$article) {
-			die('invalid');
+			return $this->renderStandardError('@user_articles.error_not_found', '@core.not_found', 404);
 		}
 
 		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));
@@ -168,7 +173,7 @@ class ArticlesController extends AbstractController
 	{
 		$article = App::getEntityRepository('DeskPRO:Article')->find($article_id);
 		if (!$article) {
-			die('invalid');
+			return $this->renderStandardError('@user_articles.error_not_found', '@core.not_found', 404);
 		}
 
 		if ($this->person['id']) {

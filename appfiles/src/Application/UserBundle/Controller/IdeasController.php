@@ -42,7 +42,9 @@ class IdeasController extends AbstractController
 		$category_path = null;
 		if ($slug) {
 			$category = App::getEntityRepository('DeskPRO:IdeaCategory')->getBySlug($slug);
-			if (!$category) die('invalid');
+			if (!$category) {
+				return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
+			}
 
 			$category_path = $category->getTreeParents();
 		}
@@ -118,7 +120,7 @@ class IdeasController extends AbstractController
 	{
 		$idea = App::getEntityRepository('DeskPRO:Idea')->getBySlug($slug);
 		if (!$idea) {
-			die('invalid');
+			return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
 		}
 
 		$categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getRootNodes();
@@ -175,7 +177,7 @@ class IdeasController extends AbstractController
 	{
 		$idea = App::getEntityRepository('DeskPRO:Idea')->find($idea_id);
 		if (!$idea) {
-			die('invalid');
+			return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
 		}
 
 		if ($this->person['id']) {
@@ -215,7 +217,7 @@ class IdeasController extends AbstractController
 	{
 		$idea = App::getEntityRepository('DeskPRO:Idea')->find($idea_id);
 		if (!$idea) {
-			die('invalid');
+			return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
 		}
 
 		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));

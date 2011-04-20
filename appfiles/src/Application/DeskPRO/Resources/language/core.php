@@ -1,5 +1,8 @@
 <?php return array(
 
+	'core.not_found'               => 'Not Found',
+	'core.error_page_not_found'    => 'The page you are looking for could not be found',
+
 	'core.none'                    => 'None',
 	'core.x_is_y'                  => '{{field}} is {{value}}',
 	'core.x_is_not_y'              => '{{field}} is not {{value}}',
