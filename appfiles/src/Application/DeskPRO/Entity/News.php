@@ -123,7 +123,7 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getPermalink()
 	{
-		$url = App::getRouter()->generate('user_news_view', array('slug' => $this->getUrlSlug()), true);
+		$url = App::getRouter()->generate('user_news_view', array('slug' => $this->id), true);
 
 		return $url;
 	}

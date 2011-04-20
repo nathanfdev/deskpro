@@ -1,4 +1,9 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+	<meta property="og:url" content="{{ path('user_news_cat', {'slug': cat.id}) }}" />
+	<meta property="og:title" content="{{post.title}}" />
+	<meta property="og:type" content="blog" />
+{% endblock %}
 {% block content %}
 <div style="float:left; width: 190px;">
 	{% include 'UserBundle:News:category-list.html.twig' %}
@@ -14,6 +19,12 @@
 </div>
 
 <br style="clear:both" />
+
+{% if facebook_like %}
+<div style="margin: 10px;">
+	{{facebook_like|raw}}
+</div>
+{% endif %}
 
 {% if comments_widget %}
 	{{comments_widget|raw}}

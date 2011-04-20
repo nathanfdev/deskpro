@@ -205,6 +205,9 @@ table.table-list > tbody > tr:hover > td {
 		});
 	</script>
 
+	<meta property="og:site_name" content="{{deskpro_setting('core.core.site_name')|default(deskpro_setting('core.core.helpdesk_name'))}}" />
+	{% if deskpro_setting('core.facebook_admins') %}<meta property="fb:admins" content="{{deskpro_setting('core.facebook_admins')}}" />{% endif %}
+
 	{% block head %}{% endblock %}
 </head>
 <body>

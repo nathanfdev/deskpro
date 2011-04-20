@@ -17,6 +17,7 @@ use \Application\DeskPRO\Entity;
 use \Orb\Util\Arrays;
 
 use \Application\UserBundle\Controller\Helper\Comments;
+use \Application\UserBundle\Controller\Helper\FacebookLike;
 
 class IdeasController extends AbstractController
 {
@@ -114,6 +115,11 @@ class IdeasController extends AbstractController
 			$comments = App::getEntityRepository('DeskPRO:IdeaComment')->getComments($idea);
 		}
 
+		if (App::getSetting('core.facebook_like')) {
+			$like_helper = FacebookLike::create($idea);
+			$facebook_like = $like_helper->getHtml();
+		}
+
 		return $this->render('UserBundle:Ideas:view.html.twig', array(
 			'num_votes' => $num_votes,
 			'num_votes_this' => $num_votes_this,
@@ -126,7 +132,9 @@ class IdeasController extends AbstractController
 			'categories'    => $categories,
 
 			'comments' => $comments,
-			'comments_widget' => $comments_widget
+			'comments_widget' => $comments_widget,
+
+			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
 		));
 	}
 

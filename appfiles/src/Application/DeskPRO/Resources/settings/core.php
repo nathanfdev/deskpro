@@ -23,6 +23,11 @@
 	'core.use_mail_queue'  => 'never',
 	'core.disqus_shortname' => '',
 
+	'core.facebook_comments_num_posts' => 10,
+	'core.facebook_admins' => '',
+
+	'core.facebook_like' => false,
+
 	// false=use deskpro, disqus=use disqus, facebook=use facebook
 	'core.comments_adapter' => false,
 );

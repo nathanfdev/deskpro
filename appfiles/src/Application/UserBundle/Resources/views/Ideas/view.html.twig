@@ -1,9 +1,19 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+	<meta property="og:url" content="{{ path('user_ideas_view', {'slug': idea.id}) }}" />
+	<meta property="og:title" content="{{idea.title}}" />
+	<meta property="og:type" content="article" />
+{% endblock %}
 {% block content %}
 <div style="float:left; width: 190px;">
 	{% include 'UserBundle:Ideas:category-list.html.twig' %}
 </div>
 
+{% if facebook_like %}
+<div style="margin: 10px;">
+	{{facebook_like|raw}}
+</div>
+{% endif %}
 <div style="margin-left:200px;">
 	<div style="float:left; width:80px">
 		{{idea.num_votes}} votes

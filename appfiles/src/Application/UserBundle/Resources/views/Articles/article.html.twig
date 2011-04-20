@@ -1,4 +1,9 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+	<meta property="og:url" content="{{ path('user_articles_article', {'slug': article.id}) }}" />
+	<meta property="og:title" content="{{article.title}}" />
+	<meta property="og:type" content="article" />
+{% endblock %}
 {% block content %}
 <h4>{{article.title}}</h4>
 <hr />
@@ -12,6 +17,11 @@
 
 {{article.content_html|raw}}
 
+{% if facebook_like %}
+<div style="margin: 10px;">
+	{{facebook_like|raw}}
+</div>
+{% endif %}
 <div style="background-color: #eee; padding: 10px; margin-top: 8px;">
 	<form action="{{ path('user_articles_rate', {'article_id': article.id}) }}" method="post">
 		{% if rating_this %}

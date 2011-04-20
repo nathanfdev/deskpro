@@ -17,23 +17,23 @@ use \Application\DeskPRO\Entity;
 use \Orb\Util\Arrays;
 use \Orb\Util\Util;
 
-class DisqusComments extends AbstractComments
+class FacebookComments extends AbstractComments
 {
 	/**
 	 * Get the HTML block for disqus templates
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getHtml()
 	{
-		$html = App::get('templating')->render('UserBundle:Common:comments-disqus.html.twig', array(
+		$html = App::get('templating')->render('UserBundle:Common:comments-facebook.html.twig', array(
 			'entity'           => $this->entity,
 			'entity_type'      => get_class($this->entity),
 			'entity_basetype'  => Util::getBaseClassname($this->entity),
 
-			'disqus_shortname' => App::getSetting('core.disqus_shortname'),
-			'page_id'          => $this->page_id,
-			'page_permalink'   => $this->page_url
+			'facebook_num_posts' => App::getSetting('core.facebook_comments_num_posts'),
+			'facebook_admins'    => App::getSetting('core.facebook_comments_admins'),
+			'page_permalink'     => $this->page_url
 		));
 
 		return $html;

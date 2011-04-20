@@ -17,6 +17,7 @@ use \Application\DeskPRO\Entity;
 use \Orb\Util\Arrays;
 
 use \Application\UserBundle\Controller\Helper\Comments;
+use \Application\UserBundle\Controller\Helper\FacebookLike;
 
 class NewsController extends AbstractController
 {
@@ -73,13 +74,20 @@ class NewsController extends AbstractController
 			$comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($post);
 		}
 
+		if (App::getSetting('core.facebook_like')) {
+			$like_helper = FacebookLike::create($post);
+			$facebook_like = $like_helper->getHtml();
+		}
+
 		return $this->render('UserBundle:News:view.html.twig', array(
 			'post' => $post,
 			'category_path' => $category_path,
 			'category' => $category,
 			'categories' => $categories,
 			'comments' => $comments,
-			'comments_widget' => $comments_widget
+			'comments_widget' => $comments_widget,
+
+			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
 		));
 	}
 

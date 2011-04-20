@@ -18,6 +18,7 @@ use \Orb\Util\Arrays;
 use \Orb\Util\Util;
 
 use \Application\UserBundle\Controller\Helper\Comments;
+use \Application\UserBundle\Controller\Helper\FacebookLike;
 
 class ArticlesController extends AbstractController
 {
@@ -96,6 +97,11 @@ class ArticlesController extends AbstractController
 			$comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
 		}
 
+		if (App::getSetting('core.facebook_like')) {
+			$like_helper = FacebookLike::create($article);
+			$facebook_like = $like_helper->getHtml();
+		}
+
 		$rating_this = App::getDb()->fetchColumn("
 			SELECT rating
 			FROM article_ratings
@@ -107,6 +113,7 @@ class ArticlesController extends AbstractController
 			'all_categories' => $all_categories,
 			'comments' => $comments,
 			'comments_widget' => $comments_widget,
+			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
 			'rating_this' => $rating_this
 		));
 	}

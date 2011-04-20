@@ -138,7 +138,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getPermalink()
 	{
-		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->getUrlSlug()), true);
+		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->id), true);
 
 		return $url;
 	}
