@@ -12,7 +12,6 @@
 namespace Application\DeskPRO\EntityRepository;
 
 use \Application\DeskPRO\App;
-use \Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository;
 
 use Doctrine\ORM\Query,
     Gedmo\Tree\Strategy,
@@ -23,7 +22,7 @@ use Doctrine\ORM\Query,
 use \Orb\Util\Arrays;
 use \Orb\Util\Strings;
 
-class IdeaCategory extends NestedTreeRepository
+class IdeaCategory extends AbstractNestedTreeCategoryRepository
 {
 	public function getBySlug($slug)
 	{

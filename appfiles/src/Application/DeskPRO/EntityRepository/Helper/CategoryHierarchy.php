@@ -1,0 +1,197 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Entities
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\EntityRepository\Helper;
+
+use \Application\DeskPRO\App;
+use \Doctrine\ORM\EntityRepository;
+use \Doctrine\ORM\Mapping\ClassMetadata;
+
+use \Orb\Util\Arrays;
+
+class CategoryHierarchy
+{
+	/**
+	 * @var \Doctrine\ORM\EntityRepository
+	 */
+	protected $repos;
+
+	/**
+	 * @var \Doctrine\ORM\Mapping\ClassMetadata
+	 */
+	protected $class;
+
+	/**
+	 * @var string
+	 */
+	protected $table_name;
+
+	/**
+	 * @var string
+	 */
+	protected $cache_tag = null;
+
+	protected $_cat_hierarchy = null;
+	protected $_cat_names = null;
+	protected $_cat_ids = array();
+
+	public function __construct(EntityRepository $repos, ClassMetadata $class, $cache_tag = null)
+	{
+		$this->repos = $repos;
+		$this->class = $class;
+		$this->table_name = $class->getTableName();
+
+		if (!$cache_tag) {
+			$cache_tag = $this->table_name;
+		}
+
+		$this->cache_tag = $cache_tag;
+	}
+
+
+	
+
+	public function getCategoryIds()
+	{
+		$this->getCategoriesInHierarchy();
+
+		return $this->_cat_ids;
+	}
+
+	public function getCategoriesInHierarchy()
+	{
+		if ($this->_cat_hierarchy !== null) return $this->_cat_hierarchy;
+
+		$cat_info = App::getCache('common')->load($this->table_name . '_category_info');
+
+		if ($cat_info) {
+			foreach ($cat_info as $k => $v) {
+				$this->$k = $v;
+			}
+		} else {
+
+			$db = App::getDb();
+			$cats = $db->fetchAllKeyed("
+				SELECT id, parent_id, title
+				FROM {$this->table_name}
+				ORDER BY title ASC
+			");
+
+			$this->_cat_ids = array_keys($cats);
+
+			$this->_cat_names = Arrays::flattenToIndex($cats, 'title');
+
+			$cats = Arrays::intoHierarchy($cats, null);
+			$this->_cats_hierarchy = $cats;
+
+			App::getCache('common')->save(array(
+				'_cats_hierarchy' => $this->_cats_hierarchy,
+				'_cat_names' => $this->_cat_names,
+				'_cat_ids' => $this->_cat_ids,
+			), $this->table_name.'_category_info', array($this->cache_tag));
+		}
+
+		return $this->_cats_hierarchy;
+	}
+
+
+
+	/**
+	 * Gets the names for each cat, indexed by cat ID.
+	 *
+	 * @return array
+	 */
+	public function getCategoryNames($for_ids = null)
+	{
+		$this->getCategoriesInHierarchy();
+		if ($for_ids === null) {
+			return $this->_cat_names;
+		}
+
+		$ret = array();
+		foreach ($for_ids as $id) {
+			if (isset($this->_cat_names[$id])) {
+				$ret[] = $this->_cat_names[$id];
+			}
+		}
+
+		return $ret;
+	}
+
+
+
+	/**
+	 * Gets a flat array of cat names, indexed by cat ID. Children
+	 * names are separated by $sep.
+	 *
+	 * @return array
+	 */
+	public function getFullCategoryNames($sep = ' > ', $include_tops = true)
+	{
+		if ($sep === null) {
+			$sep = ' > ';
+		}
+		return $this->_getFullCategoryNames(array(), $this->getCategoriesInHierarchy(), $sep, $include_tops);
+	}
+
+	protected function _getFullCategoryNames($basenames, $cats, $sep, $include_tops)
+	{
+		$names = array();
+
+		foreach ($cats as $k => $cat) {
+			$name = $basenames;
+			$name[] = $cat['title'];
+
+			if (!$cat['children'] OR $include_tops) {
+				$names[$k] = implode($sep, $name);
+			}
+			if ($cat['children']) {
+				$names = Arrays::mergeAssoc($names, $this->_getFullCategoryNames($name, $cat['children'], $sep, $include_tops));
+			}
+		}
+
+		return $names;
+	}
+
+	
+
+	/**
+	 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
+	 *
+	 * @param int $parent_id
+	 * @return array
+	 */
+	public function getIdsInTree($parent_id, $incude_top = true)
+	{
+		$ids = array();
+		if ($incude_top AND $parent_id) {
+			$ids[] = $parent_id;
+		}
+
+		$cats = $this->getCategoriesInHierarchy();
+		if ($parent_id) {
+			if (empty($cats[$parent_id]) OR empty($cats[$parent_id]['children'])) return array();
+			$cats = $cats[$parent_id]['children'];
+		}
+
+		foreach ($cats as $cat) {
+			$ids[] = $cat['id'];
+
+			if ($cat['children']) {
+				foreach ($cat['children'] as $childcat) {
+					$ids[] = $childcat['id'];
+				}
+			}
+		}
+
+		return $ids;
+	}
+}
