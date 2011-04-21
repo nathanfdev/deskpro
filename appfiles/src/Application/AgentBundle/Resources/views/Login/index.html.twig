@@ -1,0 +1,125 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml" xml:lang="en" lang="en">
+<head>
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8"/>
+	<title>Log In</title>
+	<script type="text/javascript">
+	if (typeof pageMeta !== 'undefined') pageMeta.goToLogin = true;
+	</script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.min.js') }}"></script>
+	<style type="text/css">
+		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { margin:0; padding:0; }
+		fieldset,img { border:0; }
+		address,caption,cite,code,dfn,em,strong,th,var { font-style:normal;	font-weight:normal; }
+		ol,ul { list-style:none; }
+		caption,th { text-align:left; }
+		h1,h2,h3,h4,h5,h6 { font-size:100%; font-weight:normal; }
+		q:before,q:after { content:''; }
+		abbr,acronym { border:0; }
+
+		body {
+			background-color: #ececec;
+			font-size: 75%;
+			line-height: 135%;
+			margin: 0;
+			padding: 25px 0 25px 0;
+		}
+
+		body, div, p, td, th, ul, li {
+			color: #000;
+			font-family: Arial, Helvetica, Verdana, Tahoma, sans-serif;
+		}
+
+		#body_wrap {
+			border: 1px solid #bdbdbd;
+			margin: 0 auto 0 auto;
+			width: 700px;
+		}
+
+		#header {
+			background-color: #cacaca;
+			border-bottom: 1px solid #484C52;
+		}
+
+		#header h1 {
+			font-size: 130%;
+			font-weight: bold;
+			padding: 10px;
+		}
+
+		.content {
+			background-color: #fff;
+			padding: 10px;
+		}
+
+		.login_method_title {
+			background-color: #BCD8F7;
+			padding: 5px;
+			border-bottom: 1px solid #484C52;
+			border-top: 1px solid #484C52;
+			cursor: pointer;
+		}
+	</style>
+	<script type="text/javascript">
+	$(document).ready(function() {
+		$('.login_method_title').click(function() {
+			var c = $('.login_method_content', $(this).parent());
+			if (!c.is(':hidden')) {
+				// Already on, do nothing
+				return;
+			}
+
+			// Roll up the old one
+			$('.login_method_wrap .login_method_content:visible').slideUp('fast', function() {
+				// Roll down the new one
+				c.slideDown('fast');
+			});
+		});
+	});
+	</script>
+</head>
+<body>
+<br /><br /><br /><br /><br />
+<br /><br /><br /><br /><br />
+<div id="body_wrap">
+	<div id="header"><h1>Log In</h1></div>
+	
+	<div class="login_method_wrap">
+		<div class="login_method_title">Username and Password</div>
+		<div class="content login_method_content">
+			<form action="{{ path('agent_login_authenticate_local') }}" class="form login" method="post">
+				{% if return %}
+					<input type="hidden" name="return" value="{{return}}" />
+				{% endif %}
+				{% if invalid_login %}
+					<p>Invalid login. Please try again.</p>
+				{% endif %}
+				<table cellspacing="10" cellpadding="0" border="0">
+					<tr>
+						<td>Email:</td>
+						<td><input type="text" value="" name="email" id="email" size="40" /></td>
+					</tr>
+					<tr>
+						<td>Password:</td>
+						<td><input type="password" value="" name="password" id="password" size="40" /></td>
+					</tr>
+					<tr>
+						<td>&nbsp;</td>
+						<td><input type="submit" value="Log In" /></td>
+					</tr>
+				</table>
+			</form>
+		</div>
+	</div>
+
+	{% for forminfo in usersource_forms %}
+		<div class="login_method_wrap off">
+		<div class="login_method_title">{{forminfo.usersource.title}}</div>
+		<div class="content login_method_content" style="display:none">
+			{{forminfo.html|raw}}
+		</div>
+	</div>
+	{% endfor %}
+</div>
+</body>
+</html>

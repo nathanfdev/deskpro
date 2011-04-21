@@ -1,0 +1,266 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Controller
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Controller\Helper;
+
+use \Application\DeskPRO\App;
+use \Application\DeskPRO\Controller\AbstractController;
+use \Application\DeskPRO\Auth\LoginProcessor;
+
+class LoginHelper
+{
+	/**
+	 * @var \Application\DeskPRO\Controller\AbstractController
+	 */
+	protected $controller;
+
+	/**
+	 * @var string
+	 */
+	protected $tpl_prefix;
+
+	/**
+	 * @var string
+	 */
+	protected $route_prefix;
+
+	public function __construct(AbstractController $controller, $tpl_prefix, $route_prefix)
+	{
+		$this->controller   = $controller;
+		$this->tpl_prefix   = $tpl_prefix;
+		$this->route_prefix = $route_prefix;
+	}
+
+	############################################################################
+	# /login
+	############################################################################
+
+	public function execIndexAction(array $vars = array())
+	{
+		$usersources = App::getOrm()->createQuery('
+			SELECT us
+			FROM DeskPRO:Usersource us
+			INDEX BY us.id
+			WHERE us.is_enabled = ?1
+		')->setParameter(1, true)->getResult(\Doctrine\ORM\Query::HYDRATE_ARRAY);
+
+		$return = $this->controller->in->getStringFromGet('return');
+		if ($return AND $return[0] != '/') {
+			// Always be a path on the current domain,
+			// or else it might be a trick to go to some other domain etc
+			$return = '';
+		}
+
+		$vars = $vars + array(
+			'usersources'      => $usersources,
+			'usersource_forms' => $this->_getUsersourceLoginForms($usersources),
+			'return'           => $return
+		);
+
+		return $this->controller->render($this->tpl_prefix . ':index.html.twig', $vars);
+	}
+
+	protected function _getUsersourceLoginForms($usersources)
+	{
+		$forms = array();
+
+		foreach ($usersources as $usersource) {
+			$parts = explode('\\', $usersource['handler_class']);
+			$tpl_name = $this->tpl_prefix . 'login-form-.html.twig' . strtolower(array_pop($parts));
+
+			$forms[] = array(
+				'usersource' => $usersource,
+				'html' => $this->tpl->render($tpl_name, array('usersource' => $usersource))
+			);
+		}
+
+		return $forms;
+	}
+
+
+	
+	############################################################################
+	# /logout
+	############################################################################
+
+	public function execLogoutAction()
+	{
+		// When an agent actually logs out, we should be clearing the state
+		if ($this->controller->person['is_agent']) {
+			App::getDb()->executeUpdate("
+				DELETE FROM people_prefs
+				WHERE person_id = ? AND name = ?
+			", array($this->person['id'], 'agent.ui.state'));
+		}
+
+		$this->controller->session->setAttributes(array());
+
+		return $this->controller->redirectRoute($this->route_prefix . '_login');
+	}
+
+
+	############################################################################
+	# /login/authenticate
+	############################################################################
+
+	public function execAuthenticateAction($usersource_id)
+	{
+		if ($usersource_id) {
+			return $this->_processUsersourceLogin($usersource_id);
+		} else {
+			return $this->_processLocalLogin();
+		}
+	}
+
+	protected function _processLocalLogin()
+	{
+		$adapter = new \Application\DeskPRO\Auth\Adapter\Local(App::getOrm());
+		$adapter->setCredentials($this->controller->in->getString('email'), $this->controller->in->getString('password'));
+		$result = $adapter->authenticate();
+
+		if (!$result->isValid()) {
+			return $this->_redirectLoginFailed();
+		}
+
+		$identity = $result->getIdentity();
+
+		$person = $identity['person'];
+		$person->setLastLoginAt();
+		App::getOrm()->persist($person);
+		App::getOrm()->flush();
+
+		$this->controller->session->set('auth_person_id', $identity->getIdentity());
+
+		return $this->_redirectLoginSuccess();
+	}
+
+	protected function _processUsersourceLogin($usersource_id)
+	{
+		$return = $this->controller->in->getString('return');
+
+		$usersource = App::getOrm()->find('DeskPRO:Usersource', $usersource_id);
+
+		$adapter = $this->_initUserSourceAdapter($usersource);
+
+		#------------------------------
+		# Callback types require us to redirect
+		#------------------------------
+
+		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
+			$result = $adapter->authenticate();
+
+			// We expect a redirect to be rquired
+			if ($result->isRedirectRequired()) {
+				return $this->controller->redirect($result->getRedirectUrl());
+
+			// Otherwise its an error
+			} else {
+				return $this->_redirectLoginFailed();
+			}
+
+		#------------------------------
+		# Other types should return a result right away
+		#------------------------------
+
+		} else {
+			$result = $adapter->authenticate();
+
+			// Valid
+			if ($result->isValid()) {
+
+				$login_processor = new LoginProcessor($usersource, $result->getIdentity());
+				$person = $login_processor->getPerson();
+
+				$this->controller->session->set('auth_person_id', $person['id']);
+				return $this->_redirectLoginSuccess();
+
+			// Error, go back to login
+			} else {
+				return $this->_redirectLoginFailed();
+			}
+		}
+	}
+
+	protected function _redirectLoginSuccess()
+	{
+		$return = $this->controller->in->getString('return');
+		if ($return) {
+			return $this->controller->redirect($return);
+		} else {
+			return $this->controller->redirectRoute($this->route_prefix);
+		}
+	}
+
+	protected function _redirectLoginFailed()
+	{
+		$return = $this->controller->in->getString('return');
+		return $this->controller->redirectRoute($this->route_prefix . '_login', array('return' => $return));
+	}
+
+	############################################################################
+	# /login/authenticate-callback/:usersource_id
+	############################################################################
+
+	public function execAuthenticateCallbackAction($usersource_id)
+	{
+		$usersource = App::getOrm()->find('DeskPRO:Usersource', $usersource_id);
+
+		$adapter = $this->_initUserSourceAdapter($usersource);
+
+		// It must be a callback type to be here, so if not redirect back to login
+		if (!($adapter instanceof \Orb\Auth\Adapter\CallbackInterface)) {
+			return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix + '_login', array()));
+		}
+
+		$adapter->setCallbackContext($_REQUEST);
+
+		$result = $adapter->authenticate();
+
+		// Valid
+		if ($result->isValid()) {
+
+			$login_processor = new LoginProcessor($usersource, $result->getIdentity());
+			$person = $login_processor->getPerson();
+
+			$this->controller->session->set('auth_person_id', $person['id']);
+			return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix, array()));
+
+		// Error, go back to login
+		} else {
+			return $this->controller->redirect($this->controller->get('router')->generate($this->route_prefix . '_login', array()));
+		}
+	}
+
+
+	############################################################################
+
+	protected function _initUserSourceAdapter($usersource)
+	{
+		$adapter = $usersource->getHandler()->getAuthAdapter();
+
+		if ($adapter instanceof \Orb\Auth\Adapter\FormLoginInterface) {
+			$adapter->setFormData($_POST);
+		}
+
+		if ($adapter instanceof \Orb\Auth\Adapter\CallbackInterface) {
+			$adapter->setCallbackUrl($this->generateUrl($this->route_prefix . '_login_callback', array('usersource_id' => $usersource['id']), true));
+		}
+
+		if ($adapter instanceof \Orb\Auth\Adapter\SessionStateInterface) {
+			$auth_state = new \Orb\Auth\StateHandler\ArrayAccessWrapper($this->session);
+			$auth_state->setClearStateMethod('clear');
+
+			$adapter->setStateHandler($auth_state);
+		}
+
+		return $adapter;
+	}
+}

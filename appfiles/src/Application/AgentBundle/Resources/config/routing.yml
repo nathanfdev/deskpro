@@ -55,6 +55,32 @@ agent_messages_unsubscribe_channels:
   defaults: { _controller: AgentBundle:ClientMessages:unsubscribeChannels }
 
 ################################################################################
+# Login/logout
+################################################################################
+
+agent_login:
+  pattern: /login
+  defaults: { _controller: AgentBundle:Login:index }
+
+agent_logout:
+  pattern: /logout
+  defaults: { _controller: AgentBundle:Login:logout }
+
+agent_login_authenticate_local:
+  pattern: /login/authenticate-password
+  defaults: { _controller: AgentBundle:Login:authenticate, usersource_id: 0 }
+
+agent_login_authenticate:
+  pattern: /login/authenticate/{usersource_id}
+  defaults: { _controller: AgentBundle:Login:authenticate, usersource_id: 0 }
+  requirements: { usersource_id: "\d+" }
+
+agent_login_callback:
+  pattern: /login/authenticate-callback/{usersource_id}
+  defaults: { _controller: AgentBundle:Login:authenticateCallback }
+  requirements: { usersource_id: "\d+" }
+
+################################################################################
 # Settings
 ################################################################################
 

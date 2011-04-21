@@ -11,7 +11,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 * TODO: Rename this to user? Agent?
 	 * @var \Application\DeskPRO\Bundle\DeskPRO\Entity\Person
 	 */
-	protected $person;
+	public $person;
 
 	protected function init()
 	{

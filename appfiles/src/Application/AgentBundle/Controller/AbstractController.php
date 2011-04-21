@@ -11,7 +11,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 * TODO: Rename this to user? Agent?
 	 * @var \Application\DeskPRO\Bundle\DeskPRO\Entity\Person
 	 */
-	protected $person;
+	public $person;
 
 	protected function init()
 	{
@@ -39,11 +39,11 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 
 			if ($this->request->isXmlHttpRequest()) {
-				$redirect_url = $this->get('router')->generate('user_login', array('return' => $this->get('router')->generate('agent')));
+				$redirect_url = $this->get('router')->generate('agent_login', array('return' => $this->get('router')->generate('agent')));
 				return $this->createJsonResponse(array('error' => 'session_expired', 'redirect_login' => $redirect_url), 403);
 			}
 
-			$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
+			$redirect_url = $this->get('router')->generate('agent_login', array('return' => $return));
 			return $this->redirect($redirect_url);
 		}
 

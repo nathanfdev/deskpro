@@ -26,13 +26,13 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	 * The request
 	 * @var Symfony\Component\HttpFoundation\Request
 	 */
-	protected $request;
+	public $request;
 
 	/**
 	 * The response
 	 * @var Symfony\Component\HttpFoundation\Response
 	 */
-	protected $response;
+	public $response;
 
 	/**
 	 * Event dispatcher

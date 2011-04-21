@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\UserBundle\Controller;
+namespace Application\AgentBundle\Controller;
 
 use \Application\DeskPRO\Auth\LoginProcessor;
 use \Application\DeskPRO\Controller\Helper\LoginHelper;
@@ -29,8 +29,8 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 
 		$this->login_helper = new LoginHelper(
 			$this,
-			'UserBundle:Login',
-			'user'
+			'AgentBundle:Login',
+			'agent'
 		);
 	}
 

@@ -26,48 +26,48 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 	 * Entity manager
 	 * @var \Doctrine\ORM\EntityManager
 	 */
-	protected $em;
+	public $em;
 
 	/**
 	 * Plain database connection for raw queries
 	 * @var \Application\DeskPRO\DBAL\Connection
 	 */
-	protected $db;
+	public $db;
 
 	/**
 	 * Input reader
 	 * @var \Orb\Input\Reader\Reader
 	 */
-	protected $in;
+	public $in;
 
 	/**
 	 * A generic value cleaner
 	 * @var \Orb\Input\Cleaner\Cleaner
 	 */
-	protected $cleaner;
+	public $cleaner;
 
 	/**
 	 * Shared template vars
 	 * @var ArrayObject
 	 */
-	protected $tplvars;
+	public $tplvars;
 
 	/**
 	 * @var \Application\DeskPRO\Templating\Engine
 	 */
-	protected $tpl;
+	public $tpl;
 
 	/**
 	 * Fetch settings
 	 * @var \Application\DeskPRO\Settings\Settings
 	 */
-	protected $settings;
+	public $settings;
 
 	/**
 	 * The session
 	 * @var \Application\DeskPRO\HttpFoundation\Session
 	 */
-	protected $session;
+	public $session;
 
 	/**
 	 * An empty callback function

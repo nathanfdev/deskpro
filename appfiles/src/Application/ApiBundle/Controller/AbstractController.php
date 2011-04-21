@@ -21,54 +21,54 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 * 
 	 * @var Application\DeskPRO\Entity\ApiKey
 	 */
-	protected $apikey;
+	public $apikey;
 
 	/**
 	 * The user context (user making the request, or the one the API key says to use)
 	 * @var Application\DeskPRO\Entity\Person
 	 */
-	protected $user;
+	public $user;
 
 	/**
 	 * Entity manager
 	 * @var Doctrine\ORM\EntityManager
 	 */
-	protected $em;
+	public $em;
 
 	/**
 	 * Plain database connection for raw queries
 	 * @var Application\DeskPRO\DBAL\Connection
 	 */
-	protected $db;
+	public $db;
 
 	/**
 	 * Input reader
 	 * @var Orb\Input\Reader\Reader
 	 */
-	protected $in;
+	public $in;
 
 	/**
 	 * A generic value cleaner
 	 * @var Orb\Input\Cleaner\Cleaner
 	 */
-	protected $cleaner;
+	public $cleaner;
 
 	/**
 	 * Shared template vars
 	 * @var ArrayObject
 	 */
-	protected $tplvars;
+	public $tplvars;
 
 	/**
 	 * @var Application\DeskPRO\Templating\Engine
 	 */
-	protected $tpl;
+	public $tpl;
 
 	/**
 	 * Fetch settings
 	 * @var Application\DeskPRO\Settings\Settings
 	 */
-	protected $settings;
+	public $settings;
 
 
 	
