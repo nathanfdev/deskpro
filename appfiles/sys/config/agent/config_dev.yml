@@ -1,18 +1,14 @@
 imports:
-    - { resource: config.yml }
+  - { resource: "config.yml" }
 
 parameters:
-    kernel.debug: true
+  kernel.debug: true
 
 framework:
   router:   { resource: "%kernel.root_dir%/config/routing_dev.yml" }
 
-#webprofiler.config:
-#  toolbar: true
-#  intercept_redirects: false
-
 twig:
-  debug:            %kernel.debug%
+  debug: %kernel.debug%
 
 zend:
   logger:

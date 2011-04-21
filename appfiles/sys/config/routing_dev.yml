@@ -1,10 +1,10 @@
 _main:
-    resource: routing.yml
+  resource: routing.yml
 
 dev:
   prefix: /dev
-  resource: @DevBundle/Resources/config/routing.yml
+  resource: "%DP_ROOT%/src/Application/DevBundle/Resources/config/routing.yml"
 
 _profiler:
-    resource: @WebProfilerBundle/Resources/config/routing/profiler.xml
-    prefix:   /_profiler
+  resource: @WebProfilerBundle/Resources/config/routing/profiler.xml
+  prefix:   /_profiler

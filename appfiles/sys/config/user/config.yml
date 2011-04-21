@@ -1,0 +1,8 @@
+imports:
+ - { resource: "../config.yml" }
+
+parameters:
+  router.options.matcher.cache_class: %kernel.name%%kernel.environment%UrlMatcher
+
+framework:
+  router: { resource: "%kernel.root_dir%/config/routing.yml" }

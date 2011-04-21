@@ -1,7 +1,6 @@
 user:
   pattern:  /
-  defaults: { _controller: UserBundle:Main:index }
-
+  defaults: { _controller: UserBundle:Main:index, _locale: en }
 
 ################################################################################
 # Login/logout
@@ -28,7 +27,6 @@ user_login_callback:
   pattern: /login/authenticate-callback/{usersource_id}
   defaults: { _controller: UserBundle:Login:authenticateCallback }
   requirements: { usersource_id: "\d+" }
-
 
 ################################################################################
 # Register

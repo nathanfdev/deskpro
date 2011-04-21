@@ -37,6 +37,12 @@ $loader->registerPrefixes(array(
 ));
 
 $loader->registerClassNames(array(
+	'DeskPRO\\Kernel\\Boot'              => DP_ROOT.'/sys/Kernel/Boot.php',
+	'DeskPRO\\Kernel\\AbstractKernel'    => DP_ROOT.'/sys/Kernel/AbstractKernel.php',
+	'DeskPRO\\Kernel\\AgentKernel'       => DP_ROOT.'/sys/Kernel/AgentKernel.php',
+	'DeskPRO\\Kernel\\UserKernel'        => DP_ROOT.'/sys/Kernel/UserKernel.php',
+	'DeskPRO\\Kernel\\CliKernel'         => DP_ROOT.'/sys/Kernel/CliKernel.php',
+
 	'LightOpenID'                     => DP_ROOT.'/vendor/lightopenid/openid.php',
 	'Facebook'                        => DP_ROOT.'/vendor/facebook/src/facebook.php',
 	'FacebookApiException'            => DP_ROOT.'/vendor/facebook/src/facebook.php',

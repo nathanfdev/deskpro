@@ -4,6 +4,8 @@ namespace Application\UserBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 
+use Application\DeskPRO\App;
+
 class MainController extends AbstractController
 {
     public function indexAction()

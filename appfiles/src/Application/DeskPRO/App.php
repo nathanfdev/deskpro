@@ -137,7 +137,7 @@ class App
 	 *
 	 * @param \Application\DeskPRO\Kernel\Kernel $kernel
 	 */
-	public static function setKernel(\DeskPRO\Kernel\Kernel $kernel)
+	public static function setKernel(\DeskPRO\Kernel\AbstractKernel $kernel)
 	{
 		if (self::$_kernel !== null) {
 			throw new \BadMethodCallException('The kernel has already been set');
@@ -649,7 +649,7 @@ class App
 
 		if ($is_cli === null) {
 			$is_cli = false;
-			if (self::getKernel() instanceof \Application\DeskPRO\Kernel\KernelCli) {
+			if (self::getKernel() instanceof \DeskPRO\Kernel\CliKernel) {
 				$is_cli = true;
 			}
 		}

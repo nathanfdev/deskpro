@@ -8,7 +8,10 @@ parameters:
   swiftmailer.class: "Application\DeskPRO\Mail\Mailer"
   exception_listener.class: "Application\DeskPRO\Debug\ExceptionListener"
   twig.loader.class: "Application\DeskPRO\Twig\\Loader\HybridLoader"
-
+  file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"
+  routing.file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"
+  router.options.generator_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
+  router.options.generator_base_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
 
 services:
   templating.engine.jsonphp:
@@ -30,7 +33,6 @@ services:
 
 framework:
   charset: UTF-8
-  router: { resource: "%kernel.root_dir%/config/routing.yml" }
 #  profiler: { only_exceptions: false }
   templating:
     engines: ['twig', 'php', 'jsonphp']
