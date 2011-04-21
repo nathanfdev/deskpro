@@ -30,7 +30,7 @@ class NewIdeaForm extends \Symfony\Component\Form\Form
 		$this->addOption('votes_remain');
 
 		$this->add(new Form\TextField('title'));
-		$this->add(new Form\TextAreaField('content'));
+		$this->add(new Form\TextareaField('content'));
 
 		$num = 3;
 		if ($this->getOption('votes_remain')) {
