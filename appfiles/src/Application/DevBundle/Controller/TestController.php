@@ -14,7 +14,8 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		echo "ere";
+		$manager = App::get('deskpro.elastica_manager');
+		echo get_class($manager);
 		exit;
     }
 }

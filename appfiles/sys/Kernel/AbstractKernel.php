@@ -87,8 +87,6 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 			new \Symfony\Bundle\ZendBundle\ZendBundle(),
 
-			new \FOQ\ElasticaBundle\FOQElasticaBundle(),
-
 			new \Application\DeskPRO\DeskPROBundle(),
 
 		);

@@ -62,14 +62,6 @@ doctrine:
 swiftmailer:
   transport: 'dp_delegating'
 
-foq_elastica:
-  clients:
-    default: { host: localhost, port: 9200 }
-  indexes:
-    articles:
-      client: default
-
-
 deskpro_cache:
   common: ~
 
