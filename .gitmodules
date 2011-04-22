@@ -34,3 +34,6 @@
 [submodule "appfiles/vendor/DoctrineExtensions"]
 	path = appfiles/vendor/DoctrineExtensions
 	url = https://github.com/l3pp4rd/DoctrineExtensions.git
+[submodule "appfiles/vendor/Elastica"]
+	path = appfiles/vendor/Elastica
+	url = git://github.com/ruflin/Elastica.git
