@@ -46,7 +46,6 @@ class CoreExtension extends Extension
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
 		$this->loadDoctrineCaches($container);
-		$this->loadElastica($container);
     }
 
 
@@ -172,16 +171,6 @@ class CoreExtension extends Extension
 			$container->setDefinition('doctrine.orm.default_metadata_cache', $definition);
 		}
 	}
-
-	protected function loadElastica(ContainerBuilder $container)
-	{
-		$definition = new Definition('Application\\DeskPRO\\Elastica\\ElasticaManager');
-		$definition->setFactoryService('deskpro.config_service_loader');
-		$definition->setFactoryMethod('loadElasticaManager');
-
-		$container->setDefinition('deskpro.elastica_manager', $definition);
-	}
-
 
 
 	public function getXsdValidationBasePath()

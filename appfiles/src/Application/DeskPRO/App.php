@@ -222,6 +222,7 @@ class App
 	 *
 	 * @param string $service_name    The service to get
 	 * @param string $container_name  The container to get it from.
+	 * @return mixed
 	 */
 	public static function get($service_name, $container_name = self::DEFAULT_NAME)
 	{

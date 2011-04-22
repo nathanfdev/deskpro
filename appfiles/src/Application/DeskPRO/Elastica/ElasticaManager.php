@@ -155,7 +155,7 @@ class ElasticaManager
 		if ($index_name === null) $index = $this->default_index;
 
 		if (isset($this->indexes[$index_name])) {
-			return;
+			return $this->indexes[$index_name];
 		}
 
 		if ($client_name === null) $client_name = $this->default_client;
