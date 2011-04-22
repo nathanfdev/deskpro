@@ -16,17 +16,18 @@ set_include_path(
 $loader = new \Orb\Util\ClassLoader();
 
 $loader->registerNamespaces(array(
-	'Application'                => DP_ROOT.'/src',
-    'Bundle'                     => DP_ROOT.'/src',
-	'Orb'                        => DP_ROOT.'/src',
+	'Application'                  => DP_ROOT.'/src',
+    'Bundle'                       => DP_ROOT.'/src',
+	'Orb'                          => DP_ROOT.'/src',
 
-    'Symfony'                    => DP_ROOT.'/vendor/symfony/src',
-    'Doctrine\\Common'           => DP_ROOT.'/vendor/doctrine-common/lib',
-    'Doctrine\\DBAL\\Migrations' => DP_ROOT.'/vendor/doctrine-migrations/lib',
-    'Doctrine\\DBAL'             => DP_ROOT.'/vendor/doctrine-dbal/lib',
-    'Doctrine'                   => DP_ROOT.'/vendor/doctrine-orm/lib',
-	'Gedmo'                      => DP_ROOT.'/vendor/DoctrineExtensions/lib',
-    'Zend'                       => DP_ROOT.'/vendor/zend/library',
+    'Symfony'                      => DP_ROOT.'/vendor/symfony/src',
+    'Doctrine\\Common'             => DP_ROOT.'/vendor/doctrine-common/lib',
+    'Doctrine\\DBAL\\Migrations'   => DP_ROOT.'/vendor/doctrine-migrations/lib',
+    'Doctrine\\DBAL'               => DP_ROOT.'/vendor/doctrine-dbal/lib',
+    'Doctrine'                     => DP_ROOT.'/vendor/doctrine-orm/lib',
+	'Zend'                         => DP_ROOT.'/vendor/zend/library',
+	'Gedmo'                        => DP_ROOT.'/vendor/DoctrineExtensions/lib',
+	'FOQ'                          => DP_ROOT.'/vendor',
 ));
 
 $loader->registerPrefixes(array(
@@ -34,6 +35,7 @@ $loader->registerPrefixes(array(
     'Twig_'       => DP_ROOT.'/vendor/twig/lib',
 	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes',
 	'Zend_'       => DP_ROOT.'/vendor/zend1/library',
+	'Elastica_'   => DP_ROOT.'/vendor/Elastica/lib'
 ));
 
 $loader->registerClassNames(array(

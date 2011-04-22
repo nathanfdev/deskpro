@@ -23,7 +23,7 @@ use \Orb\Util\Strings;
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Article")
  * @orm:Table(name="articles")
  */
-class Article extends \Application\DeskPRO\Domain\DomainObject
+class Article extends \Application\DeskPRO\Domain\DomainObject implements \Application\DeskPRO\Elastica\Transformer\SearchTransformerInterface
 {
 	/**
 	 * @var int
@@ -167,5 +167,27 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$url = App::getRouter()->generate('user_articles_article', array('slug' => $this->id), true);
 
 		return $url;
+	}
+
+	public function getSearchData()
+	{
+		$data = array();
+		$data['_id'] = $this->id;
+		$data['title'] = $this->title;
+		$data['content'] = $this->content;
+
+		$data['labels'] = array();
+		foreach ($this->labels as $l) {
+			$data['labels'][] = $l['label'];
+		}
+
+		$data['category_ids'] = array();
+		foreach ($this->categories as $cat) {
+			$data['category_ids'][] = $cat['id'];
+		}
+
+		$data['date_created'] = $this->date_created->getTimestamp();
+
+		return $data;
 	}
 }
