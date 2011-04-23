@@ -38,6 +38,17 @@ class ArticleType extends AbstractType
 		return $doc;
 	}
 
+	
+	/**
+	 * Get the document type
+	 *
+	 * @return string
+	 */
+	public function getType()
+	{
+		return 'article';
+	}
+
 
 	/**
 	 * Get a single value from a document

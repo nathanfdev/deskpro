@@ -40,6 +40,17 @@ class DownloadType extends AbstractType
 
 
 	/**
+	 * Get the document type
+	 *
+	 * @return string
+	 */
+	public function getType()
+	{
+		return 'download';
+	}
+
+
+	/**
 	 * Get a single value from a document
 	 *
 	 * @return \Application\DeskPRO\Entity\Download

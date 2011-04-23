@@ -40,6 +40,17 @@ class IdeaType extends AbstractType
 
 
 	/**
+	 * Get the document type
+	 *
+	 * @return string
+	 */
+	public function getType()
+	{
+		return 'idea';
+	}
+
+
+	/**
 	 * Get a single value from a document
 	 *
 	 * @return \Application\DeskPRO\Entity\Idea

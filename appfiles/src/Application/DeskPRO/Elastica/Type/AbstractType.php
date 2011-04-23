@@ -29,6 +29,13 @@ abstract class AbstractType
 	}
 
 
+	/**
+	 * Get the document type
+	 *
+	 * @return string
+	 */
+	abstract public function getType();
+
 
 	/**
 	 * Transform a value into a Document
