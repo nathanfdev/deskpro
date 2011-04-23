@@ -47,17 +47,17 @@ abstract class AbstractType
 	 *
 	 * $value can be a single value, or an array of values
 	 *
-	 * @param \Elastic_Document|Elastic_Document[] $docs
+	 * @param \Elastica_Result|Elastica_Result[] $docs
 	 * @return mixed
 	 */
 	public function transformToType($docs)
 	{
 		if (is_array($docs)) {
 			if (!$docs) return array();
-			return $this->getValuesFromDocs($docs);
+			return $this->getValuesFromResults($docs);
 		} else {
 			if (!$docs) return null;
-			return $this->getValueFromDoc($docs);
+			return $this->getValueFromResult($docs);
 		}
 	}
 
@@ -67,7 +67,7 @@ abstract class AbstractType
 	 *
 	 * @return mixed
 	 */
-	abstract protected function getValueFromDoc(\Elastica_Document $doc);
+	abstract protected function getValueFromResult(\Elastica_Result $doc);
 
 	
 	/**
@@ -75,7 +75,7 @@ abstract class AbstractType
 	 *
 	 * @return array
 	 */
-	protected function getValuesFromDocs(array $docs)
+	protected function getValuesFromResults(array $docs)
 	{
 		$values = array();
 		foreach ($docs as $doc) {

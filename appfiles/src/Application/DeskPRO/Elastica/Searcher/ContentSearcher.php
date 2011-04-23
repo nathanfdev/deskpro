@@ -11,13 +11,13 @@
 
 namespace Application\DeskPRO\Elastica\Searcher;
 
-class ContentSearch extends AbstractSearcher
+class ContentSearcher extends AbstractSearcher
 {
 	public function search($query)
 	{
 		$index = $this->manager->getIndex('content');
 
-		$documents = $index->search($query);
+		$documents = $index->search($query)->getResults();
 		$results = $this->documentsToResults($documents);
 
 		return $results;

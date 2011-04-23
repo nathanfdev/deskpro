@@ -44,7 +44,7 @@ class DownloadType extends AbstractType
 	 *
 	 * @return \Application\DeskPRO\Entity\Download
 	 */
-	protected function getValueFromDoc(\Elastica_Document $doc)
+	protected function getValueFromResult(\Elastica_Result $doc)
 	{
 		return App::getEntityRepository('DeskPRO:Download')->find($doc->getId());
 	}

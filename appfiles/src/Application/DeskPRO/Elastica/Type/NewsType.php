@@ -44,7 +44,7 @@ class NewsType extends AbstractType
 	 *
 	 * @return \Application\DeskPRO\Entity\News
 	 */
-	protected function getValueFromDoc(\Elastica_Document $doc)
+	protected function getValueFromResult(\Elastica_Result $doc)
 	{
 		return App::getEntityRepository('DeskPRO:News')->find($doc->getId());
 	}

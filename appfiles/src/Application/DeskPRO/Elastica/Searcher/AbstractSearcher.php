@@ -55,13 +55,13 @@ abstract class AbstractSearcher
 
 		foreach ($documents as $doc) {
 			$type = Strings::dashToCamelCase($doc->getType());
-			$class  = 'Application\\DeskPRO\\Elastica\\Type\\' . $type;
+			$class  = 'Application\\DeskPRO\\Elastica\\Type\\' . ucfirst($type) . 'Type';
 
 			$type = new $class($this->manager);
 			$object = $type->transformToType($doc);
 
 			if ($object) {
-				$results[$object['id']] = array('entity' => $object, 'document' => $doc);
+				$results[$object['id']] = array('object' => $object, 'document' => $doc);
 			}
 		}
 

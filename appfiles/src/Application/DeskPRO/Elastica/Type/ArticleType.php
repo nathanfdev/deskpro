@@ -44,7 +44,7 @@ class ArticleType extends AbstractType
 	 *
 	 * @return \Application\DeskPRO\Entity\Article
 	 */
-	protected function getValueFromDoc(\Elastica_Document $doc)
+	protected function getValueFromResult(\Elastica_Result $doc)
 	{
 		return App::getEntityRepository('DeskPRO:Article')->find($doc->getId());
 	}

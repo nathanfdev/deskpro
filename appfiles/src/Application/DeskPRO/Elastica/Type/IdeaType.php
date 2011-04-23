@@ -44,7 +44,7 @@ class IdeaType extends AbstractType
 	 *
 	 * @return \Application\DeskPRO\Entity\Idea
 	 */
-	protected function getValueFromDoc(\Elastica_Document $doc)
+	protected function getValueFromResult(\Elastica_Result $doc)
 	{
 		return App::getEntityRepository('DeskPRO:Idea')->find($doc->getId());
 	}

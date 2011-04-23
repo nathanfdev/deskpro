@@ -36,6 +36,13 @@ user_register_finish:
   pattern: /register/finish
   defaults: { _controller: UserBundle:Register:finish }
 
+################################################################################
+# Search
+################################################################################
+
+user_search:
+  pattern: /search
+  defaults: { _controller: UserBundle:Search:search }
 
 ################################################################################
 # Tickets
