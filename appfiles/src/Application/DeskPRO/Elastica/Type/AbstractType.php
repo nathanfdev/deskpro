@@ -67,7 +67,7 @@ abstract class AbstractType
 	 *
 	 * @return mixed
 	 */
-	abstract protected function getValueFromDoc(\Elastic_Document $doc);
+	abstract protected function getValueFromDoc(\Elastica_Document $doc);
 
 	
 	/**

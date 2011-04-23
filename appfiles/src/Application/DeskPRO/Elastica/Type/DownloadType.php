@@ -27,7 +27,7 @@ class DownloadType extends AbstractType
 	 * @param  Download $download
 	 * @return \Elastic_Document
 	 */
-	public function transformToDocument(Download $download)
+	public function transformToDocument($download)
 	{
 		$trans = new DownloadTransformer();
 		$doc = $trans->transform($download);

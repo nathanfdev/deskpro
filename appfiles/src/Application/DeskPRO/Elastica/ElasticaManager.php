@@ -38,6 +38,11 @@ class ElasticaManager
 	 */
 	protected $default_index = 'content';
 
+	/**
+	 * @var \Application\DeskPRO\Elastica\Type\AbstractType[]
+	 */
+	protected $types = array();
+
 	
 	/**
 	 * Get a client connection

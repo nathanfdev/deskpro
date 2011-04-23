@@ -47,16 +47,16 @@ class ContentInitializer extends AbstractInitializer
 		$time_start = microtime(true);
 		$total = 0;
 		try {
-			$total += $this->runForType(App::get('deskpro.elastica.type.article'),  'DeskPRO:Article');
-			$total += $this->runForType(App::get('deskpro.elastica.type.download'), 'DeskPRO:Download');
-			$total += $this->runForType(App::get('deskpro.elastica.type.idae'),     'DeskPRO:Idea');
-			$total += $this->runForType(App::get('deskpro.elastica.type.news'),     'DeskPRO:News');
+			$total += $this->runForType(App::get('deskpro.elastica.types.article'),  'DeskPRO:Article');
+			$total += $this->runForType(App::get('deskpro.elastica.types.download'), 'DeskPRO:Download');
+			$total += $this->runForType(App::get('deskpro.elastica.types.idea'),     'DeskPRO:Idea');
+			$total += $this->runForType(App::get('deskpro.elastica.types.news'),     'DeskPRO:News');
 		} catch (\Exception $e) {
-			$this->logger->log('Exception: ' . $e->getMessage(), Logger:ERR);
+			$this->logger->log('Exception: ' . $e->getMessage(), Logger::ERR);
 			throw $e;
 		}
 
-		$time = sprint("%.5f", microtime(true)-$time_start);
+		$time = sprintf("%.5f", microtime(true)-$time_start);
 		$this->logger->log("Indexed $total items in $time seconds", Logger::INFO);
 
 		return $total;
@@ -67,7 +67,9 @@ class ContentInitializer extends AbstractInitializer
 		$table_name = App::getOrm()->getClassMetadata($entity_name)->getTableName();
 
 		$count = App::getDb()->fetchColumn("SELECT COUNT(*) FROM $table_name");
-		if ($count) return 0;
+		if (!$count) {
+			$this->logger->log("No $entity_name objects", Logger::INFO);
+		}
 
 		$time_start = microtime(true);
 		$this->logger->log("START $entity_name ($count objects)", Logger::INFO);
@@ -83,17 +85,18 @@ class ContentInitializer extends AbstractInitializer
 				SELECT o
 				FROM $entity_name o
 				ORDER BY o.id
-			")->setMaxResults($per_page)->setFirstResult($objects)->execute();
+			")->setMaxResults($per_page)->setFirstResult($offset)->execute();
 
 			foreach ($objects as $object) {
-				$documents[] = $type->transformToDocument($object);
+				$doc = $type->transformToDocument($object);
+				$documents[] = $doc;
 			}
 
 			$this->manager->getClient()->addDocuments($documents);
-			$this->logger->log("Inserted batch $i of $pages ...", Logger::INFO);
+			$this->logger->log("--- Inserted batch $i of $pages", Logger::INFO);
 		}
 
-		$time = sprint("%.5f", microtime(true)-$time_start);
+		$time = sprintf("%.5f", microtime(true)-$time_start);
 		$this->logger->log("END $entity_name (took $time seconds)", Logger::INFO);
 
 		return $count;

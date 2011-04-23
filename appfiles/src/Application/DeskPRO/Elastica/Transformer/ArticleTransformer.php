@@ -15,13 +15,13 @@ use Application\DeskPRO\Entity\Article;
 
 class ArticleTransformer implements TransformerInterface
 {
-	public function transform(Article $article)
+	public function transform($article)
 	{
 		$data = array();
 		$data['title'] = $article['title'];
 		$data['content'] = $article['content'];
 		$data['date_created'] = $article['date_created']->getTimestamp();
-		$data['labels'] = $article->getLabelManager()->getLabelsArray();
+		//$data['labels'] = $article->getLabelManager()->getLabelsArray();
 
 		$data['category_ids'] = array();
 		foreach ($article->categories as $c) {

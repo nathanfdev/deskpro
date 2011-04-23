@@ -15,15 +15,15 @@ use Application\DeskPRO\Entity\Idea;
 
 class IdeaTransformer implements TransformerInterface
 {
-	public function transform(Idea $idea)
+	public function transform($idea)
 	{
 		$data = array();
 		$data['title'] = $idea['title'];
 		$data['content'] = $idea['content'];
 		$data['date_created'] = $idea['date_created']->getTimestamp();
-		$data['labels'] = $idea->getLabelManager()->getLabelsArray();
+		//$data['labels'] = $idea->getLabelManager()->getLabelsArray();
 
-		$data['category_id'] = $idea['category_id'];
+		$data['category_id'] = $idea->category['id'];
 
 		$doc = new \Elastica_Document($idea['id'], $data);
 

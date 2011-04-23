@@ -15,15 +15,15 @@ use Application\DeskPRO\Entity\News;
 
 class NewsTransformer implements TransformerInterface
 {
-	public function transform(News $news)
+	public function transform($news)
 	{
 		$data = array();
 		$data['title'] = $news['title'];
 		$data['content'] = $news['content'];
 		$data['date_created'] = $news['date_created']->getTimestamp();
-		$data['labels'] = $news->getLabelManager()->getLabelsArray();
+		//$data['labels'] = $news->getLabelManager()->getLabelsArray();
 
-		$data['category_id'] = $news['category_id'];
+		$data['category_id'] = $news->category['id'];
 
 		$doc = new \Elastica_Document($news['id'], $data);
 

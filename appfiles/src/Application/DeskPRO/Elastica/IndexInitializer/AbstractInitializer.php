@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\Elastica\IndexInitializer;
 
+use Application\DeskPRO\Elastica\ElasticaManager;
 use \Orb\Log\Logger;
 
 /**

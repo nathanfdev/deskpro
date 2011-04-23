@@ -17,7 +17,7 @@ use Application\DeskPRO\Elastica\Transformer\IdeaTransformer;
 use APplication\DeskPRO\App;
 
 /**
- * Type for the Download entity
+ * Type for the Idea entity
  */
 class IdeaType extends AbstractType
 {
@@ -27,7 +27,7 @@ class IdeaType extends AbstractType
 	 * @param  Idea $idea
 	 * @return \Elastic_Document
 	 */
-	public function transformToDocument(Idea $idea)
+	public function transformToDocument($idea)
 	{
 		$trans = new IdeaTransformer();
 		$doc = $trans->transform($idea);

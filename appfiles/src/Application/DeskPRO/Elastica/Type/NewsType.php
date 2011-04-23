@@ -17,9 +17,9 @@ use Application\DeskPRO\Elastica\Transformer\NewsTransformer;
 use APplication\DeskPRO\App;
 
 /**
- * Type for the Download entity
+ * Type for the News entity
  */
-class IdeaType extends AbstractType
+class NewsType extends AbstractType
 {
 	/**
 	 * Transform a value into a Document
@@ -27,7 +27,7 @@ class IdeaType extends AbstractType
 	 * @param  Idea $news
 	 * @return \Elastic_Document
 	 */
-	public function transformToDocument(News $news)
+	public function transformToDocument($news)
 	{
 		$trans = new NewsTransformer();
 		$doc = $trans->transform($news);

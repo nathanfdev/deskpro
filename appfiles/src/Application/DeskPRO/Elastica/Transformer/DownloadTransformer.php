@@ -15,15 +15,15 @@ use Application\DeskPRO\Entity\Download;
 
 class DownloadTransformer implements TransformerInterface
 {
-	public function transform(Download $download)
+	public function transform($download)
 	{
 		$data = array();
 		$data['title'] = $download['title'];
 		$data['content'] = $download['content'];
 		$data['date_created'] = $download['date_created']->getTimestamp();
-		$data['labels'] = $download->getLabelManager()->getLabelsArray();
+		//$data['labels'] = $download->getLabelManager()->getLabelsArray();
 
-		$data['category_id'] = $download['category_id'];
+		$data['category_id'] = $download->category['id'];
 
 		$doc = new \Elastica_Document($download['id'], $data);
 

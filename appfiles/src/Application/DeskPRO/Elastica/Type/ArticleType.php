@@ -27,7 +27,7 @@ class ArticleType extends AbstractType
 	 * @param  Article $article
 	 * @return \Elastic_Document
 	 */
-	public function transformToDocument(Article $article)
+	public function transformToDocument($article)
 	{
 		$trans = new ArticleTransformer();
 		$doc = $trans->transform($article);
