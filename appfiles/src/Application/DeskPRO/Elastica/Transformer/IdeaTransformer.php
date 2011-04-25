@@ -21,7 +21,7 @@ class IdeaTransformer implements TransformerInterface
 		$data['title'] = $idea['title'];
 		$data['content'] = $idea['content'];
 		$data['date_created'] = $idea['date_created']->getTimestamp();
-		//$data['labels'] = $idea->getLabelManager()->getLabelsArray();
+		$data['labels'] = $idea->getLabelManager()->getLabelsArray();
 
 		$data['category_id'] = $idea->category['id'];
 

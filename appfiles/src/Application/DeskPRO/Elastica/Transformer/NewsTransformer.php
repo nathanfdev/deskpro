@@ -21,7 +21,7 @@ class NewsTransformer implements TransformerInterface
 		$data['title'] = $news['title'];
 		$data['content'] = $news['content'];
 		$data['date_created'] = $news['date_created']->getTimestamp();
-		//$data['labels'] = $news->getLabelManager()->getLabelsArray();
+		$data['labels'] = $news->getLabelManager()->getLabelsArray();
 
 		$data['category_id'] = $news->category['id'];
 

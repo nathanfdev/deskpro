@@ -40,4 +40,23 @@ class SearchController extends AbstractController
 			'query' => $q
 		));
 	}
+
+	public function labelledAction($labels)
+	{
+		$is_search = false;
+		$results = false;
+
+		if ($labels) {
+			$searcher = new ContentSearcher(App::get('deskpro.elastica.manager'), $this->person);
+
+			$is_search = true;
+			$results = $searcher->labelled($labels);
+		}
+
+		return $this->render('UserBundle:Search:labelled.html.twig', array(
+			'is_search' => $is_search,
+			'results'   => $results,
+			'labels' => $labels
+		));
+	}
 }

@@ -21,7 +21,7 @@ class ArticleTransformer implements TransformerInterface
 		$data['title'] = $article['title'];
 		$data['content'] = $article['content'];
 		$data['date_created'] = $article['date_created']->getTimestamp();
-		//$data['labels'] = $article->getLabelManager()->getLabelsArray();
+		$data['labels'] = $article->getLabelManager()->getLabelsArray();
 
 		$data['category_ids'] = array();
 		foreach ($article->categories as $c) {

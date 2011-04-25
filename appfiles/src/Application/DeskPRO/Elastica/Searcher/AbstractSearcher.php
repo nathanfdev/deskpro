@@ -59,9 +59,8 @@ abstract class AbstractSearcher
 
 			$type = new $class($this->manager);
 			$object = $type->transformToType($doc);
-
 			if ($object) {
-				$results[$object['id']] = array('object' => $object, 'document' => $doc);
+				$results[] = array('object' => $object, 'document' => $doc);
 			}
 		}
 

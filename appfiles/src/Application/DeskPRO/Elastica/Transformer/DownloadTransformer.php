@@ -21,7 +21,7 @@ class DownloadTransformer implements TransformerInterface
 		$data['title'] = $download['title'];
 		$data['content'] = $download['content'];
 		$data['date_created'] = $download['date_created']->getTimestamp();
-		//$data['labels'] = $download->getLabelManager()->getLabelsArray();
+		$data['labels'] = $download->getLabelManager()->getLabelsArray();
 
 		$data['category_id'] = $download->category['id'];
 
