@@ -15,10 +15,16 @@
 {% endfor %}
 <hr />
 
-{% include 'UserBundle:Common:related-content-side.html.twig' %}
+{% if related_content %}
+	{% include 'UserBundle:Common:related-content-side.html.twig' %}
+{% endif %}
 {{article.content_html|raw}}
 
 <br style="clear:both" />
+
+{% if article.labels|length %}
+	{% include 'UserBundle:Common:labels-list.html.twig' with {'labels': article.labels} %}
+{% endif %}
 
 {% if facebook_like %}
 <div style="margin: 10px;">

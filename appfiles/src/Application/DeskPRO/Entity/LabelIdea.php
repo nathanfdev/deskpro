@@ -16,7 +16,7 @@ namespace Application\DeskPRO\Entity;
  *
  * @orm:Entity
  * @orm:HasLifecycleCallbacks
- * @orm:Table(name="labels_articles")
+ * @orm:Table(name="labels_ideas")
  */
 class LabelIdea extends LabelAssocAbstract
 {
@@ -25,7 +25,7 @@ class LabelIdea extends LabelAssocAbstract
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
 	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="Idae")
+	 * @orm:ManyToOne(targetEntity="Idea")
 	 * @orm:JoinColumn(name="idea_id", referencedColumnName="id")
 	 */
 	protected $idea;

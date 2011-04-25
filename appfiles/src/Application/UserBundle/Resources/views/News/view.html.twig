@@ -15,11 +15,17 @@
 	</div>
 	<h4>{{post.title}}</h4>
 
-	{% include 'UserBundle:Common:related-content-side.html.twig' %}
+	{% if related_content %}
+		{% include 'UserBundle:Common:related-content-side.html.twig' %}
+	{% endif %}
 	{{post.content_html|raw}}
 </div>
 
 <br style="clear:both" />
+
+{% if post.labels|length %}
+	{% include 'UserBundle:Common:labels-list.html.twig' with {'labels': post.labels} %}
+{% endif %}
 
 {% if facebook_like %}
 <div style="margin: 10px;">

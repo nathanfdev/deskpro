@@ -16,12 +16,19 @@
 </div>
 
 <div style="margin-left: 200px">
-	{% include 'UserBundle:Common:related-content-side.html.twig' %}
+	{% if related_content %}
+		{% include 'UserBundle:Common:related-content-side.html.twig' %}
+	{% endif %}
 
 	{{ download.content_html|raw }}
 	<br /><br />
 
 	<button class="dp-button green">Download</button>
+
+	<br /><br />
+	{% if download.labels|length %}
+		{% include 'UserBundle:Common:labels-list.html.twig' with {'labels': download.labels} %}
+	{% endif %}
 </div>
 
 <br style="clear:left" />

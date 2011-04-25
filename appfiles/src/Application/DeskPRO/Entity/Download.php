@@ -89,6 +89,9 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $labels;
 
+	/**
+	 * @var \Application\DeskPRO\Labels\LabelManager
+	 */
 	protected $_label_manager = null;
 
 	public function __consturct()
@@ -103,17 +106,20 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 		return Markdown::format($this->content);
 	}
 
-	public function getLabelManager()
-	{
-		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelDownload');
-		}
-
-		return $this->_label_manager;
-	}
-
 	public function getUrlSlug()
 	{
 		return $this->id . '-' . $this->slug;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Labels\LabelManager
+	 */
+	public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelArticle');
+		}
+
+		return $this->_label_manager;
 	}
 }

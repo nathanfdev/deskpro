@@ -49,4 +49,10 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 			$this->label
 		));
 	}
+
+
+	public function __toString()
+	{
+		return $this->label;
+	}
 }

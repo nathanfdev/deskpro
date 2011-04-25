@@ -27,10 +27,16 @@
 		</small>
 		<h4>{{idea.title}}</h4>
 
-		{% include 'UserBundle:Common:related-content-side.html.twig' %}
+		{% if related_content %}
+			{% include 'UserBundle:Common:related-content-side.html.twig' %}
+		{% endif %}
 		{{idea.content_html|raw}}
 
 		<br style="clear: right" />
+
+		{% if idea.labels|length %}
+			{% include 'UserBundle:Common:labels-list.html.twig' with {'labels': idea.labels} %}
+		{% endif %}
 
 		<div style="background-color: #eee; padding: 10px; margin-top: 8px;">
 			<form action="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}" method="post">

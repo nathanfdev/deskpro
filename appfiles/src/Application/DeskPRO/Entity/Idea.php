@@ -92,10 +92,13 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	protected $category;
 
 	/**
-	 * @orm:OneToMany(targetEntity="LabelIdea", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @orm:OneToMany(targetEntity="LabelIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
+	/**
+	 * @var \Application\DeskPRO\Labels\LabelManager
+	 */
 	protected $_label_manager = null;
 
 	public function __consturct()
@@ -108,15 +111,6 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	public function getContentHtml()
 	{
 		return Markdown::format($this->content);
-	}
-
-	public function getLabelManager()
-	{
-		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelArticle');
-		}
-
-		return $this->_label_manager;
 	}
 
 	public function getCategoryId()
@@ -151,5 +145,17 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->id), true);
 
 		return $url;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Labels\LabelManager
+	 */
+	public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelIdea');
+		}
+
+		return $this->_label_manager;
 	}
 }

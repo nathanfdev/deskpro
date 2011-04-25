@@ -72,10 +72,13 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	protected $date_created;
 
 	/**
-	 * @orm:OneToMany(targetEntity="LabelNews", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @orm:OneToMany(targetEntity="LabelNews", mappedBy="news", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
+	/**
+	 * @var \Application\DeskPRO\Labels\LabelManager
+	 */
 	protected $_label_manager = null;
 
 	public function __consturct()
@@ -107,15 +110,6 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 		return Markdown::format($content);
 	}
 
-	public function getLabelManager()
-	{
-		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelNews');
-		}
-
-		return $this->_label_manager;
-	}
-
 	public function getUrlSlug()
 	{
 		return $this->id . '-' . Strings::slugifyTitle($this->title);
@@ -126,5 +120,17 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 		$url = App::getRouter()->generate('user_news_view', array('slug' => $this->id), true);
 
 		return $url;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\Labels\LabelManager
+	 */
+	public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelArticle');
+		}
+
+		return $this->_label_manager;
 	}
 }
