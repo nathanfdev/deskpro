@@ -19,17 +19,17 @@ use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
 use \Orb\Util\Arrays;
 
 /**
- * Loads general usergroup permissions likes flags and the like.
+ * Loads news category permissions
  */
-class ArticleCategories extends BasicTreeCategoryPermission
+class NewsCategories extends BasicCategoryPermission
 {
 	protected function getCategoryPermissionEntity()
 	{
-		return 'DeskPRO:ArticleCategoryPermission';
+		return 'DeskPRO:NewsCategoryPermission';
 	}
 
 	protected function getCategoryEntity()
 	{
-		return 'DeskPRO:ArticleCategory';
+		return 'DeskPRO:NewsCategory';
 	}
 }

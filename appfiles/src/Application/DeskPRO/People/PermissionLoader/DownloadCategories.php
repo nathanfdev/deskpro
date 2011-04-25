@@ -19,17 +19,17 @@ use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
 use \Orb\Util\Arrays;
 
 /**
- * Loads general usergroup permissions likes flags and the like.
+ * Loads download category permissions
  */
-class ArticleCategories extends BasicTreeCategoryPermission
+class DownloadCategories extends BasicTreeCategoryPermission
 {
 	protected function getCategoryPermissionEntity()
 	{
-		return 'DeskPRO:ArticleCategoryPermission';
+		return 'DeskPRO:DownloadCategoryPermission';
 	}
 
 	protected function getCategoryEntity()
 	{
-		return 'DeskPRO:ArticleCategory';
+		return 'DeskPRO:DownloadCategory';
 	}
 }

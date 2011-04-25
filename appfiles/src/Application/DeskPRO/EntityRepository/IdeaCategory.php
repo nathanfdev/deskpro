@@ -24,6 +24,26 @@ use \Orb\Util\Strings;
 
 class IdeaCategory extends AbstractNestedTreeCategoryRepository
 {
+	protected $all_cats = null;
+	
+	/**
+	 * Get an array of categories
+	 *
+	 * @return array
+	 */
+	public function getCategoryOptions()
+	{
+		if (!$this->all_cats === null) return $this->all_cats;
+
+		$this->all_cats = App::getDb()->fetchAllKeyed("
+			SELECT id, title
+			FROM idea_categories
+			ORDER BY id DESC
+		", array(), 'id');
+
+		return $this->all_cats;
+	}
+
 	public function getBySlug($slug)
 	{
 		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);

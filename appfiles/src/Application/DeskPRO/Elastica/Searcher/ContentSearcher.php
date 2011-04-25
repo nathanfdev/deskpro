@@ -47,4 +47,9 @@ class ContentSearcher extends AbstractSearcher
 
 		return $results;
 	}
+
+	public function getPermissionTerms()
+	{
+
+	}
 }

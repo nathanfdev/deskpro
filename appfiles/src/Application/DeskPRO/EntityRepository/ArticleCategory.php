@@ -25,21 +25,29 @@ use \Orb\Util\Strings;
 
 class ArticleCategory extends NestedTreeRepository
 {
-	protected $_hierarchy = array();
+	protected $all_cats = null;
+	protected $hierarchy = null;
 
-	public function getFullHierarchy()
+	public function getCategoryOptions()
 	{
-		if ($this->_hierarchy !== null) return $this->_hierarchy;
+		if (!$this->all_cats === null) return $this->all_cats;
 
-		$this->_hierarchy = App::getDb()->fetchAll("
+		$this->all_cats = App::getDb()->fetchAllKeyed("
 			SELECT id, parent_id, title
 			FROM article_categories
 			ORDER BY id DESC
-		");
+		", array(), 'id');
 
-		$this->_hierarchy = Arrays::intoHierarchy($this->_hierarchy);
+		return $this->all_cats;
+	}
 
-		return $this->_hierarchy;
+	public function getFullHierarchy()
+	{
+		if ($this->hierarchy !== null) return $this->hierarchy;
+
+		$this->hierarchy = Arrays::intoHierarchy($this->getCategoryOptions());
+
+		return $this->hierarchy;
 	}
 
 
