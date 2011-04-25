@@ -17,6 +17,15 @@ class ContentSearcher extends AbstractSearcher
 	{
 		$index = $this->manager->getIndex('content');
 
+		$query = new \Elastica_Query_QueryString($query);
+		$query_out = new \Elastica_Query();
+		$query_out->setQuery($query);
+
+		$filter = $this->getPermissionFilter();
+		if ($filter) {
+			$query_out->setFilter($filter);
+		}
+
 		$documents = $index->search($query)->getResults();
 		$results = $this->documentsToResults($documents);
 
@@ -40,6 +49,12 @@ class ContentSearcher extends AbstractSearcher
 		}
 
 		$query_out = \Elastica_Query::create($query);
+
+		$filter = $this->getPermissionFilter();
+		if ($filter) {
+			$query_out->setFilter($filter);
+		}
+
 		$search_result = $index->search($query_out);
 
 		$documents = $search_result->getResults();
@@ -48,8 +63,99 @@ class ContentSearcher extends AbstractSearcher
 		return $results;
 	}
 
-	public function getPermissionTerms()
-	{
 
+	/**
+	 * Gets the terms that apply permissions
+	 * 
+	 * @return \Elastica_Query_Bool
+	 */
+	public function getPermissionFilter()
+	{
+		$filter = new \Elastica_Filter_Bool();
+
+		$no_perm_types = array();
+
+		#------------------------------
+		# Articles
+		#------------------------------
+
+		if (!$this->person->getPermissionsManager()->ArticleCategories->hasRestrictions()) {
+			$no_perm_types[] = 'article';
+		} else {
+			$term = new \Elastica_Filter_Bool();
+
+			$cat_perms = $this->person->getPermissionsManager()->ArticleCategories->getSmallestSet();
+			$type = $cat_perms['type'] == 'allowed' ? 'addMust' : 'addMustNot';
+
+			$term->$type(array('term' => array('category_ids' => $cat_perms['ids'])));
+			$filter->addShould($term);
+		}
+
+		#------------------------------
+		# Downloads
+		#------------------------------
+
+		if (!$this->person->getPermissionsManager()->DownloadCategories->hasRestrictions()) {
+			$no_perm_types[] = 'download';
+		} else {
+			$term = new \Elastica_Filter_Bool();
+
+			$cat_perms = $this->person->getPermissionsManager()->DownloadCategories->getSmallestSet();
+			$type = $cat_perms['type'] == 'allowed' ? 'addMust' : 'addMustNot';
+
+			$term->$type(array('term' => array('category_id' => $cat_perms['ids'])));
+			$filter->addShould($term);
+		}
+
+		#------------------------------
+		# Ideas
+		#------------------------------
+
+		if (!$this->person->getPermissionsManager()->IdeaCategories->hasRestrictions()) {
+			$no_perm_types[] = 'idea';
+		} else {
+			$term = new \Elastica_Filter_Bool();
+
+			$cat_perms = $this->person->getPermissionsManager()->IdeaCategories->getSmallestSet();
+			$type = $cat_perms['type'] == 'allowed' ? 'addMust' : 'addMustNot';
+
+			$term->$type(array('term' => array('category_id' => $cat_perms['ids'])));
+			$filter->addShould($term);
+		}
+
+		#------------------------------
+		# News
+		#------------------------------
+
+		if (!$this->person->getPermissionsManager()->NewsCategories->hasRestrictions()) {
+			$no_perm_types[] = 'idea';
+		} else {
+			$term = new \Elastica_Filter_Bool();
+
+			$cat_perms = $this->person->getPermissionsManager()->NewsCategories->getSmallestSet();
+			$type = $cat_perms['type'] == 'allowed' ? 'addMust' : 'addMustNot';
+
+			$term->$type(array('term' => array('category_id' => $cat_perms['ids'])));
+			$filter->addShould($term);
+		}
+
+		#------------------------------
+		# No perm types
+		#------------------------------
+
+		// If all four have no perms, then we dont need this filter at all
+		if (count($no_perm_types) == 4) {
+			return null;
+		}
+
+		// Otherwise we need another term that just says the content type
+		// is one of the ones there are no permissions for
+		if ($no_perm_types) {
+			$term = new \Elastica_Filter_Terms();
+			$term->addShould(array('type' => $no_perm_types));
+			$filter->addShould($term);
+		}
+
+		return $filter;
 	}
 }

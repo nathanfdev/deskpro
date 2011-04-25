@@ -21,7 +21,7 @@ use \Orb\Util\Arrays;
 /**
  * A generic category loader
  */
-abstract class BasicCategoryPermission extends AbstractLoader implements CategoryPermissionsInterface
+abstract class BasicCategoryPermission extends AbstractLoader
 {
 	/**
 	 * An array of categories allowed for real, that we get by computing
@@ -45,6 +45,20 @@ abstract class BasicCategoryPermission extends AbstractLoader implements Categor
 
 		$all_ids = array_keys(App::getEntityRepository($this->getCategoryEntity())->getCategoryOptions());
 		$this->disallowed_cats = array_diff($all_ids, $this->allowed_cats);
+	}
+	
+
+	/**
+	 * Are there access permissions at all applied to this user?
+	 *
+	 * That is, is this user denied access to any category? If not, then we can forgo applying
+	 * permissions in various places because the user just has access to everything.
+	 *
+	 * @return bool
+	 */
+	public function hasRestrictions()
+	{
+		return !empty($this->disallowed_cats);
 	}
 
 	
@@ -78,6 +92,27 @@ abstract class BasicCategoryPermission extends AbstractLoader implements Categor
 	public function getDisallowedCategories()
 	{
 		return $this->disallowed_cats;
+	}
+
+
+	/**
+	 * Returns the smallet set of ID's that can be used to apply permissions.
+	 *
+	 * For example, if you have access to all categories except one, then it's better
+	 * to just EXCLUDE that one category. Conversely, if you're denied all categories
+	 * except one, it's better to just INCLUDE that one category.
+	 *
+	 * The return value will be array('type' => 'allowed|disallowed', 'ids' => array(1,2,3))
+	 *
+	 * @return array
+	 */
+	public function getSmallestSet()
+	{
+		if (count($this->disallowed_cats) > count($this->allowed_cats)) {
+			return array('type' => 'allowed', 'ids' => $this->allowed_cats);
+		} else {
+			return array('type' => 'disallowed', 'ids' => $this->diallowed_cats);
+		}
 	}
 
 

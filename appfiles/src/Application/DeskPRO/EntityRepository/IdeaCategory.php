@@ -36,12 +36,21 @@ class IdeaCategory extends AbstractNestedTreeCategoryRepository
 		if (!$this->all_cats === null) return $this->all_cats;
 
 		$this->all_cats = App::getDb()->fetchAllKeyed("
-			SELECT id, title
+			SELECT id, parent_id title
 			FROM idea_categories
 			ORDER BY id DESC
 		", array(), 'id');
 
 		return $this->all_cats;
+	}
+
+	public function getFullHierarchy()
+	{
+		if ($this->hierarchy !== null) return $this->hierarchy;
+
+		$this->hierarchy = Arrays::intoHierarchy($this->getCategoryOptions());
+
+		return $this->hierarchy;
 	}
 
 	public function getBySlug($slug)
