@@ -41,6 +41,7 @@ class ConfigServiceLoader
 
 		// Add indexes
 		$manager->createIndexObject('content');
+		$manager->createIndexObject('ticket');
 
 		return $manager;
 	}

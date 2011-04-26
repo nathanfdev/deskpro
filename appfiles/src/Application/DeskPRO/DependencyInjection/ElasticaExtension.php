@@ -58,6 +58,16 @@ class ElasticaExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\Elastica\\Type\\NewsType');
 		$definition->setArguments(array(new Reference('deskpro.elastica.manager')));
 		$container->setDefinition('deskpro.elastica.types.news', $definition);
+
+		// Tickets
+		$definition = new Definition('Application\\DeskPRO\\Elastica\\Type\\TicketType');
+		$definition->setArguments(array(new Reference('deskpro.elastica.manager')));
+		$container->setDefinition('deskpro.elastica.types.ticket', $definition);
+
+		// Ticket Messages
+		$definition = new Definition('Application\\DeskPRO\\Elastica\\Type\\TicketMessageType');
+		$definition->setArguments(array(new Reference('deskpro.elastica.manager')));
+		$container->setDefinition('deskpro.elastica.types.ticket_message', $definition);
 	}
 
 	public function getXsdValidationBasePath()
