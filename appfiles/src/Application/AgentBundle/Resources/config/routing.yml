@@ -361,6 +361,10 @@ agent_ticketsearch_runsearch:
   pattern: /ticket-search/search/run
   defaults: { _controller: AgentBundle:TicketSearch:runSearch }
 
+agent_ticketsearch_runsearchquery:
+  pattern: /ticket-search/search-query
+  defaults: { _controller: AgentBundle:TicketSearch:searchQuery }
+
 agent_ticketsearch_runfilter:
   pattern: /ticket-search/filter/{filter_id}
   defaults: { _controller: AgentBundle:TicketSearch:runfilter }

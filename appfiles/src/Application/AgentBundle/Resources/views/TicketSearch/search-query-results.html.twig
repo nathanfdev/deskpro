@@ -1,0 +1,36 @@
+<script>
+pageMeta.title = 'Search';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
+pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?partial=1&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
+pageMeta.getMacroUrl = '{{ path('agent_ticketsearch_ajax_get_macro') }}?macro_id=$macro_id';
+pageMeta.saveMacroUrl = '{{ path('agent_ticketsearch_ajax_save_macro') }}?macro_id=$macro_id';
+pageMeta.deleteTicketUrl = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}';
+pageMeta.viewTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '$ticket_id'}) }}';
+pageMeta.massReplyUrl = '{{ path('agent_ticketsearch_ajax_mass_reply') }}';
+pageMeta.loadFirst = {% if load_first %}true{% else %}false{% endif %};
+</script>
+<div class="layout-content">
+<div class="content">
+	<div class="pad">
+		<div class="inner-box-tab-content box-list no-pad">
+			<table class="list" cellspacing="0" width="100%">
+				{% include 'AgentBundle:TicketSearch:part-results-list-thead.html.twig' %}
+				{% include 'AgentBundle:TicketSearch:part-results-list.html.twig' %}
+			</table>
+		</div>
+	</div>
+
+	<div class="loading-more">
+		Loading more results ...
+	</div>
+	<div class="no-more-results">
+		There are no more results.
+	</div>
+</div>
+
+</div>
+<div class="layout-footer is-ticket-list">
+{% include 'AgentBundle:TicketSearch:part-action-bar.html.twig' %}
+</div>

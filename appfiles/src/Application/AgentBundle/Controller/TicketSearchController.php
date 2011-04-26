@@ -16,6 +16,9 @@ use \Application\DeskPRO\Entity\TicketFilter;
 use \Application\DeskPRO\Entity\Ticket;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
+
+use \Application\DeskPRO\Elastica\Searcher\TicketSearcher;
+
 use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 
@@ -217,6 +220,31 @@ class TicketSearchController extends AbstractController
 		}
 
 		return $display_fields;
+	}
+
+	############################################################################
+	# search (natural language search)
+	############################################################################
+
+	public function searchQueryAction()
+	{
+		$q = $this->in->getString('q');
+
+		$is_search = false;
+		$results = false;
+
+		if ($q) {
+			$searcher = new TicketSearcher(App::get('deskpro.elastica.manager'), $this->person);
+
+			$is_search = true;
+			$results = $searcher->search($q);
+		}
+
+		return $this->render('AgentBundle:TicketSearch:search-query-results.html.twig', array(
+			'is_search' => $is_search,
+			'results'   => $results,
+			'query' => $q
+		));
 	}
 
 	############################################################################
