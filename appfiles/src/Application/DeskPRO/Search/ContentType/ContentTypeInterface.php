@@ -17,6 +17,9 @@ use \Application\DeskPRO\Search\Indexer\DocumentInterface;
 /**
  * A content type is a type of indexed content, such as an artile or ticket or ticket message.
  * These are basically just transformers.
+ *
+ * Note: These classes are lazy-initialized, and are initialized once. If a transformer requires state for some reason,
+ * make sure it's able to reset or delegate to some worker class instead.
  */
 interface ContentTypeInterface
 {

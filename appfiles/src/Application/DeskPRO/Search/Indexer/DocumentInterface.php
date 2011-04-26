@@ -36,4 +36,11 @@ interface DocumentInterface
 	 * @return array
 	 */
 	public function getData();
+
+	/**
+	 * Get the original object
+	 *
+	 * @return mixed
+	 */
+	public function getObject();
 }
