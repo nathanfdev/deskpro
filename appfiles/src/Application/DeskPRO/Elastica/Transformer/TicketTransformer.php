@@ -19,7 +19,7 @@ class TicketTransformer implements TransformerInterface
 	{
 		$data = array();
 		$data['subject']       = $ticket['subject'];
-		$data['content']       = $ticket['content'];
+		$data['content']       = $ticket->getFirstMessage()->getMessageText();
 		$data['department_id'] = $ticket['department_id'];
 		$data['is_archived']   = $ticket->getIsArchived();
 		$data['date_created']  = $ticket['date_created']->getTimestamp();

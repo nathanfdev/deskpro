@@ -63,6 +63,27 @@ class ContentSearcher extends AbstractSearcher
 		return $results;
 	}
 
+	public function similar($ticket)
+	{
+		$index = $this->manager->getIndex('ticket');
+
+		$text = $ticket['subject'] . "\n" . $ticket->getFirstMessage()->getMessageText();
+
+		$query = new \Application\DeskPRO\Elastica\Query\MoreLikeThis($text);
+		$query_out = new \Elastica_Query();
+		$query_out->setQuery($query);
+
+		$filter = $this->getPermissionFilter();
+		if ($filter) {
+			$query_out->setFilter($filter);
+		}
+
+		$documents = $index->search($query)->getResults();
+		$results = $this->documentsToResults($documents);
+
+		return $results;
+	}
+
 
 	/**
 	 * Gets the terms that apply permissions
