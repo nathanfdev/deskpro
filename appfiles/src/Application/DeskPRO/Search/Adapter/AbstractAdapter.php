@@ -13,8 +13,11 @@ namespace Application\DeskPRO\Search\Adapter;
 
 use Orb\Util\CapabilityInformerInterface;
 
-use \Application\DeskPRO\App;
-use \Symfony\Component\DependencyInjection\ContainerInterface;
+use Application\DeskPRO\App;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Person;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Application\DeskPRO\Search\EntityListener;
 
@@ -24,7 +27,7 @@ use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 /**
  * Search adapter
  */
-abstract class AbstractAdapter implements CapabilityInformerInterface
+abstract class AbstractAdapter implements CapabilityInformerInterface, PersonContextInterface
 {
 	/**#@+
 	 * Capability constants for use with CapabilityInformerInterface
@@ -38,12 +41,12 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 	/**#@+
 	 * Standard ContentType constants
 	 */
-	const TYPE_ARTICLE            = 'Article';
-	const TYPE_DOWNLOAD           = 'Download';
-	const TYPE_IDEA               = 'Idea';
-	const TYPE_NEWS               = 'News';
-	const TYPE_TICKET             = 'Ticket';
-	const TYPE_TICKET_MESSAGE     = 'TicketMessage';
+	const TYPE_ARTICLE            = 'article';
+	const TYPE_DOWNLOAD           = 'download';
+	const TYPE_IDEA               = 'idea';
+	const TYPE_NEWS               = 'news';
+	const TYPE_TICKET             = 'ticket';
+	const TYPE_TICKET_MESSAGE     = 'ticketMessage';
 	/**#@-*/
 
 	/**
@@ -56,6 +59,19 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 	 * @var array
 	 */
 	protected $contenttypes = array();
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person;
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 */
+	public function setPersonContext(Person $person)
+	{
+		$this->person = $person;
+	}
 
 
 	/**
@@ -243,19 +259,57 @@ abstract class AbstractAdapter implements CapabilityInformerInterface
 
 
 	/**
-	 * Update the search index with the specified object
+	 * Update the search index with the specified objects
 	 *
-	 * @param  $object
+	 * @param  $objects
 	 * @return void
 	 */
-	abstract public function updateObjectInIndex($object);
+	public function updateObjectsInIndex(array $objects)
+	{
+		$documents = array();
+
+		foreach ($objects as $object) {
+			$doc = $this->getContentTypeForObject($object)->objectToDocument($object);
+			$documents[] = $doc;
+		}
+
+		$this->updateDocumentsInIndex($documents);
+	}
+
+
+	/**
+	 * Delete the specified docs from the objects
+	 *
+	 * @param  $objects
+	 * @return void
+	 */
+	public function deleteObjectsFromIndex(array $objects)
+	{
+		$documents = array();
+
+		foreach ($objects as $object) {
+			$doc = $this->getContentTypeForObject($object)->objectToDocument($object);
+			$documents[] = $doc;
+		}
+
+		$this->deleteDocumentsFromIndex($documents);
+	}
+
+
+	/**
+	 * Update the search index with the specified docs
+	 *
+	 * @param  $documents
+	 * @return void
+	 */
+	abstract public function updateDocumentsInIndex(array $documents);
 
 	
 	/**
-	 * Delete the specified object from the index
+	 * Delete the specified docs from the index
 	 *
-	 * @param  $object
+	 * @param  $documents
 	 * @return void
 	 */
-	abstract public function deleteObjectFromIndex($object);
+	abstract public function deleteDocumentsFromIndex(array $documents);
 }

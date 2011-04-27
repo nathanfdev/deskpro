@@ -20,19 +20,35 @@ use \Symfony\Component\DependencyInjection\ContainerInterface;
 class ResultSet implements \Countable, \IteratorAggregate
 {
 	/**
+	 * @var int
+	 */
+	protected $total = 0;
+
+	/**
 	 * Array of results
 	 * @var Application\DeskPRO\Search\SearcherResult\ResultInterface[]
 	 */
 	protected $results = array();
 
-	public function __construct(array $results)
+	public function __construct($total, array $results)
 	{
+		$this->total = $total;
 		$this->results = $results;
+	}
+
+	/**
+	 * The total number of matched objects.
+	 *
+	 * @var int
+	 */
+	public function totalCount()
+	{
+		return $this->total;
 	}
 
 	
 	/**
-	 * How many results?
+	 * How many results in this object? Note: NOT the same as total
 	 *
 	 * @return int
 	 */

@@ -24,15 +24,6 @@ use \Symfony\Component\DependencyInjection\ContainerInterface;
 interface ContentSearcherInterface
 {
 	/**
-	 * Sets the person context. This is where permissions should be fetched from.
-	 *
-	 * @param \Application\DeskPRO\Entity\Person $person
-	 * @return void
-	 */
-	public function setPersonContext(Person $person);
-
-	
-	/**
 	 * A natural text query
 	 *
 	 * @param  $query
@@ -40,7 +31,7 @@ interface ContentSearcherInterface
 	 */
 	public function query($query);
 
-	
+
 	/**
 	 * Fetch lablled content
 	 *

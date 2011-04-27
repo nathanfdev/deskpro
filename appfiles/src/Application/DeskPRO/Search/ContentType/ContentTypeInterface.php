@@ -29,7 +29,7 @@ interface ContentTypeInterface
 	 * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface $result
 	 * @return mixed
 	 */
-	public function resultToObject(ResultInterface $document);
+	public function resultToObject(ResultInterface $result);
 
 	
 	/**
@@ -43,7 +43,7 @@ interface ContentTypeInterface
 	 * @param \Application\DeskPRO\Search\SearcherResult\ResultInterface[] $result
 	 * @return array
 	 */
-	public function resultsToObjects(array $documents);
+	public function resultsToObjects(array $results);
 
 	
 	/**
@@ -53,13 +53,4 @@ interface ContentTypeInterface
 	 * @return \Application\DeskPRO\Search\Indexer\DocumentInterface
 	 */
 	public function objectToDocument($object);
-
-	/**
-	 * Get the content ID of an object. This should be like objectToDocument and fetching the ID,
-	 * but this is used in cases where we only need the ID.
-	 * 
-	 * @param  mixed $object
-	 * @return mixed
-	 */
-	public function getObjectId($object);
 }

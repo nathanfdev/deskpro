@@ -22,13 +22,18 @@ use Orb\Util\Arrays;
 class ContentSearch extends CommentAbstract
 {
 	/**
-	 * The combind unique ID. This is concatenation of object_type and object_id,
-	 * for example "article.11" or "idea.22"
-	 *
+	 * @var string
+	 * @orm:Column(name="object_type", type="string", length=100)
 	 * @orm:Id
-	 * @orm:Column(name="id", type="string", length=200)
 	 */
-	protected $id;
+	protected $object_type;
+
+	/**
+	 * @var int
+	 * @orm:Column(name="object_id", type="integer")
+	 * @orm:Id
+	 */
+	protected $object_id = null;
 
 	/**
 	 * @orm:Id

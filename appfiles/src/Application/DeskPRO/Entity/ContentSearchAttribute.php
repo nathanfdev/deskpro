@@ -22,12 +22,18 @@ use Orb\Util\Arrays;
 class ContentSearchAttribute extends CommentAbstract
 {
 	/**
-	 * The search ID like "article.11" or "idea.22"
-	 *
+	 * @var string
+	 * @orm:Column(name="object_type", type="string", length=100)
 	 * @orm:Id
-	 * @orm:Column(name="content_id", type="string", length=200)
 	 */
-	protected $content_id;
+	protected $object_type;
+
+	/**
+	 * @var int
+	 * @orm:Column(name="object_id", type="integer")
+	 * @orm:Id
+	 */
+	protected $object_id = null;
 
 	/**
 	 * The name of the attribute like "somefield"
@@ -41,7 +47,7 @@ class ContentSearchAttribute extends CommentAbstract
 	 * The searchable content of the attribuet
 	 * 
 	 * @orm:Id
-	 * @orm:Column(name="content", type="text")
+	 * @orm:Column(name="content", type="string", length=200)
 	 */
 	protected $content;
 }
