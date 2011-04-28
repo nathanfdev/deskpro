@@ -63,14 +63,10 @@
 			<div class="notes">
 			{% for note in status.notes %}
 				<div class="note" data-note-id="{{ note.id }}">
-					<span class="user">
-						{{ note.person.name }}
-					</span>
+					Note "<span class="text">{{ note.text }}</span>"
+					by <span class="user with-route" data-route="person:{{ path('agent_people_view', {'person_id': note.person.id }) }}">{{ note.person.name }}</span>
 					<span class="timestamp">
 						<span class="timeago" title="{{ note.date_created|date('c') }}">{{ note.date_created|date('r') }}</span>
-					</span>
-					<span class="text">
-						{{ note.text }}
 					</span>
 				</div>
 			{% endfor %}

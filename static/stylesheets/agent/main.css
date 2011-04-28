@@ -3104,3 +3104,18 @@ ul.person-popout-tabs li a{
 	border-left: 1px solid #D2D7E0;
 	padding: 3px 8px;
 }
+
+.twitter .status .note {
+	border-top: 1px solid #D2D7E0;
+	color: #969BA5;
+	padding: 3px 8px;
+}
+
+.twitter .status .note .text,
+.twitter .status .note .user {
+	color: #3C3E3F;
+}
+
+.twitter .status .note .user {
+	font-weight: bold;
+}
