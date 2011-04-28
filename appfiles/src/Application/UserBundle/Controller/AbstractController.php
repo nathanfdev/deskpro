@@ -20,6 +20,22 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		$this->tplvars['person'] = $this->person;
 	}
 
+	public function preAction($action, $arguments = null)
+	{
+		if ($this instanceof RequireUserInterface) {
+			if (!$this->person['id']) {
+				if ($this->isPostRequest()) {
+					$return = $this->get('router')->generate('user');
+				} else {
+					$return = $this->request->getRequestUri();
+				}
+
+				$redirect_url = $this->get('router')->generate('user_login', array('return' => $return));
+				return $this->redirect($redirect_url);
+			}
+		}
+	}
+
 
 
 	/**

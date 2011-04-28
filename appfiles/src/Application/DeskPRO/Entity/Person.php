@@ -1009,20 +1009,38 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Get email addresses that are validated
+	 * 
+	 * @return array
+	 */
+	public function getValidatedEmails()
+	{
+		$ret = array();
+
+		foreach ($this->emails as $email) {
+			if ($email['is_validated']) {
+				$ret[] = $email;
+			}
+		}
+
+		return $ret;
+	}
+
+
+
+	/**
 	 * Add an email address
 	 *
 	 * @param PersonEmail $email
 	 */
 	public function addEmailAddress(PersonEmail $email)
 	{
-		$em = App::getOrm();
-
-		if ($this['emails']->count() < 1) {
-			$this['primary_email'] = $email;
+		if ($this->emails->count() < 1) {
+			$this->primary_email = $email;
 		}
-		$this['emails']->add($email);
+		$this->emails->add($email);
 
-		$email['person'] = $this;
+		$email->person = $this;
 	}
 
 
@@ -1030,9 +1048,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Remove an email address from this user.
 	 *
-	 * Note: This should be run within a transaction if you want to :)
-	 *
 	 * The old PersonEmail will be returned.
+	 *
+	 * If this is the primary email, the next validated email address will be made
+	 * primary. If there's no validated, then the next email address. If there are none,
+	 * then the primary email is made null.
 	 *
 	 * @param int $email_id
 	 * @return PersonEmail
@@ -1046,11 +1066,31 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			if ($email['id'] == $email_id) {
 				$this->emails->remove($index);
 				$em->remove($email);
-				return $email;
+				$the_email = $email;
+				break;
 			}
 		}
 
-		return null;
+		if ($the_email AND $this->primary_email['id'] == $the_email['id']) {
+			$next_email = null;
+			$next_valid_email = null;
+			foreach ($this->emails as $index => $email) {
+				if (!$next_email) $next_email = $email;
+				if (!$next_valid_email AND $email['is_validated']) $next_valid_email = $email;
+
+				if ($next_email AND $next_valid_email) break;
+			}
+
+			if ($next_valid_email) {
+				$this->primary_email = $next_valid_email;
+				$em->persist($this);
+			} else if ($next_email) {
+				$this->primary_email = $next_email;
+				$em->persist($this);
+			}
+		}
+
+		return $the_email;
 	}
 
 
@@ -1061,6 +1101,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 				return $email;
 			}
 		}
+
+		return null;
 	}
 
 

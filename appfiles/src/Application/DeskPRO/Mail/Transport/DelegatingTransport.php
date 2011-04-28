@@ -113,7 +113,7 @@ class DelegatingTransport implements \Swift_Transport
 	public function getTransportForMessage(\Swift_Mime_Message $message)
 	{
 		$from_address_model = $message->getFrom();
-		$from_address = $from_address_model->getAddresses();
+		$from_address = array_keys($from_address_model);
 
 		if (!$from_address) $from_address = '';
 		else $from_address = $from_address[0];

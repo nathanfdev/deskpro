@@ -215,7 +215,7 @@ table.table-list > tbody > tr:hover > td {
 	<div id="topnav">
 		<ul style="float:right; padding-right: 8px;">
 			{% if person.id %}
-				<li>Welcome, {{person.display_name}} &middot; <a href="{{ path('user_logout') }}">Log Out</a></li>
+				<li>Welcome, <a href="{{ path('user_profile') }}">{{person.display_name}}</a> &middot; <a href="{{ path('user_logout') }}">Log Out</a></li>
 			{% else %}
 				<li>Welcome, Guest &middot; <a href="{{ path('user_login') }}">Log In</a></li>
 			{% endif %}
