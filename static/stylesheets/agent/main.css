@@ -3039,6 +3039,7 @@ ul.person-popout-tabs li a{
 	position: absolute;
 }
 
+.twitter .status .avatar:hover,
 .twitter .status .user:hover {
 	cursor: pointer;
 }
