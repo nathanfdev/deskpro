@@ -36,9 +36,9 @@ class ApiController extends AbstractController
 			ORDER BY k.id ASC
 		")->getResult();
 
-		$this->tplvars['all_apikeys'] = $all_apikeys;
-
-		return $this->render('AdminBundle:Api:index.html.twig');
+		return $this->render('AdminBundle:Api:index.html.twig', array(
+			'all_apikeys' => $all_apikeys
+		));
 	}
 
 

@@ -29,11 +29,14 @@ abstract class CustomDefAbstractController extends AbstractController
 	public function init()
 	{
 		parent::init();
-
-		$this->tplvars['route_basename'] = $this->route_basename = 'admin_' . strtolower(str_replace('Controller', '', Util::getBaseClassname($this))) . '_';
-		$this->tplvars['section'] = strtolower(str_replace(array('CustomDef', 'Controller'), '', Util::getBaseClassname($this)));
-		$this->tplvars['sub_section'] = 'fields';
+		$this->setRouteBasename();
 	}
+
+	protected function setRouteBasename()
+	{
+		$this->route_basename = 'admin_' . strtolower(str_replace('Controller', '', Util::getBaseClassname($this))) . '_';
+	}
+
 
 	############################################################################
 	# index
@@ -48,9 +51,9 @@ abstract class CustomDefAbstractController extends AbstractController
 
 		$existing_fields = $this->getApi()->getFields();
 
-		return $this->render($this->getTemplateName('index.html.twig'), array(
+		return $this->render($this->getTemplateName('index.html.twig'), $this->getTemplateVars(array(
 			'fields' => $existing_fields
-		));
+		)));
 	}
 
 
@@ -124,7 +127,7 @@ abstract class CustomDefAbstractController extends AbstractController
 			'row_html' => $row_html
 		));
 
-		return $this->render($this->getTemplateName($tpl_name), $vars);
+		return $this->render($this->getTemplateName($tpl_name), $this->getTemplateVars($vars));
 	}
 
 
@@ -159,6 +162,27 @@ abstract class CustomDefAbstractController extends AbstractController
 		$field = new $classname();
 
 		return $field;
+	}
+
+		
+	/**
+	 * Get template vars used on all pages.
+	 *
+	 * @param array $merge_vars Merge with these variables
+	 * @return array
+	 */
+	public function getTemplateVars(array $merge_vars = null)
+	{
+		$template_vars = array();
+		$template_vars['route_basename'] = $this->route_basename = 'admin_' . strtolower(str_replace('Controller', '', Util::getBaseClassname($this))) . '_';
+		$template_vars['section'] = strtolower(str_replace(array('CustomDef', 'Controller'), '', Util::getBaseClassname($this)));
+		$template_vars['sub_section'] = 'fields';
+
+		if ($merge_vars) {
+			$template_vars = array_merge($template_vars, $merge_vars);
+		}
+
+		return $template_vars;
 	}
 
 
