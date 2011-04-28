@@ -189,6 +189,20 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		}
     }
 
+	public function getSessionSecret($secret = '')
+	{
+		return $this->getEntity()->getSessionSecret($secret);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Session
+	 */
+	public function getEntity()
+	{
+		return $this->storage->getEntity();
+	}
+
 
 
 	public function getIterator()

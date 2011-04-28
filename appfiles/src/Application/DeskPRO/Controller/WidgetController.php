@@ -21,7 +21,7 @@ class WidgetController extends AbstractController
 	{
 		if (!App::isDebug() OR $key != 'DBEUG') {
 			$session = App::getSession();
-			$check_key = md5($session->getId() . App::getAppSecret());
+			$check_key = App::getSession()->getSessionSecret('proxy_key');
 
 			if ($check_key != $key)  {
 				return $this->createResponse('Invalid key', 403);

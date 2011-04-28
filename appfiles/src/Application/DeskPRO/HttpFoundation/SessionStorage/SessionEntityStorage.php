@@ -38,6 +38,11 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 	 */
 	protected $db;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Session
+	 */
+	protected $session;
+
     public function __construct(\Doctrine\ORM\EntityManager $em, $options = null)
     {
         $this->em = $em;
@@ -113,6 +118,8 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 			$this->em->flush();
 
 			session_id($session->getSessionCode());
+
+			$this->session = $session;
 		}
 
 		session_start();
@@ -201,6 +208,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
     {
 		$session = $this->em->getRepository('DeskPRO:Session')->getSessionFromCode($id);
 		if ($session) {
+			$this->session = $session;
 			return $session['data'];
 		}
 
@@ -257,6 +265,15 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		$entity_id = Util::baseDecode($entity_id, 'base36');
 
 		return $entity_id;
+	}
+
+	public function getEntity()
+	{
+		if (!$this->session) {
+			$this->session = App::getEntityRepository('DeskPRO:Session')->find($this->getEntityId());
+		}
+
+		return $this->session;
 	}
 
     /**

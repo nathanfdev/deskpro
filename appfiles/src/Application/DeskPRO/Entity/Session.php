@@ -137,6 +137,22 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		return 0;
 	}
 
+	
+	/**
+	 * A secret hash of this session key with the app secret.
+	 *
+	 * Most notably used as the "proxy key"
+	 *
+	 * @param  string $secret Another component to add to the hash
+	 * @return string
+	 */
+	public function getSessionSecret($secret = '')
+	{
+		return md5($this->id . $this->auth . App::getAppSecret() . $secret);
+	}
+
+	
+
 	public function updateLastTime()
 	{
 		$this->date_last = new \DateTime();
