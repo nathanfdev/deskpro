@@ -176,6 +176,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 		var buttons = $('.controls .note a', this.content);
 
 		buttons.click($.proxy(function(e) {
+			if ($('.form-note', $(e.target).parents('.status')).length) {
+				return false;
+			}
+
 			var status = $(e.target).parents('.status').attr('data-status-id'),
 				note = this.note.clone(),
 				area = $('textarea[name=text]', note);
@@ -285,6 +289,10 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 		var buttons = $('.controls .reply a', this.content);
 
 		buttons.click($.proxy(function(e) {
+			if ($('.form-reply', $(e.target).parents('.status')).length) {
+				return false;
+			}
+
 			var status = $(e.target).parents('.status').attr('data-status-id'),
 				reply = this.reply.clone(),
 				area = $('textarea[name=text]', reply);
