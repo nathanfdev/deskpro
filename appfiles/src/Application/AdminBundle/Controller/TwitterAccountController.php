@@ -226,9 +226,12 @@ class TwitterAccountController extends AbstractController
 					(string) $status->in_reply_to_status_id,
 					array('include_entities' => true)
 				);
-				$reply = $this->processStatus($replyXml);
-				$entity['reply'] = $reply;
-				$em->persist($reply);
+
+				if (!isset($replyXml->error)) {
+					$reply = $this->processStatus($replyXml);
+					$entity['reply'] = $reply;
+					$em->persist($reply);
+				}
 			}
 
 			// mentions
