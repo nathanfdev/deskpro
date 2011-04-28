@@ -202,12 +202,12 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 
 					<div class="new-note-form message admin-message" style="display:none">
 						<div class="message-avatar left">
-							<img src="{{ person.getPictureUrl(35) }}" alt="" width="35" height="35" />
+							<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
 						</div>
 						<div class="message-body">
 							<div class="message-meta">
 								<span class="arrow-left"></span>
-								<h4>{{ person.display_name }}</h4>
+								<h4>{{ app.user.display_name }}</h4>
 							</div>
 							<div class="message-text">
 								<p>

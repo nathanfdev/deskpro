@@ -2,7 +2,7 @@
 {% block content %}
 
 <table cellspacing="0" cellpadding="0" width="100%">
-	{% for email in person.emails %}
+	{% for email in app.user.emails %}
 		<tr>
 			<td>
 				{{email.email}}
@@ -14,7 +14,7 @@
 			</td>
 			<td><a href="{{ path('user_profile_emails_remove', {'email_id': email.id}) }}">remove</a></td>
 			<td>
-				{% if email.id == person.primary_email.id %}
+				{% if email.id == app.user.primary_email.id %}
 					Default email
 				{% else %}
 					<a href="{{ path('user_profile_emails_setdefault', {'email_id': email.id}) }}">Set as default email</a>

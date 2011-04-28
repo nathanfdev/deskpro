@@ -42,7 +42,7 @@
 </ul>
 <ul class="menu agent_id" data-option-name="agent_id" style="display:none">
 	<li data-option-id="0">Unassigned</li>
-	<li data-option-id="{{person.id}}">Assign to me</li>
+	<li data-option-id="{{app.user.id}}">Assign to me</li>
 	<li class="sep">-</li>
 	{% for id,title in ticket_options.agents %}
 		<li data-option-id="{{id}}" style="line-height: 15px">

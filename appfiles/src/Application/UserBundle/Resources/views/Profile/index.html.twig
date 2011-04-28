@@ -2,7 +2,7 @@
 {% block content %}
 
 Email Addresses: (<a href="{{ path('user_profile_emails') }}">add or remove addresses</a>)<br />
-{% for email in person.emails %}
+{% for email in app.user.emails %}
 	&middot; {{ email.email }}<br />
 {% endfor %}
 

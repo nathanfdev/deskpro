@@ -214,8 +214,8 @@ table.table-list > tbody > tr:hover > td {
 <div id="container">
 	<div id="topnav">
 		<ul style="float:right; padding-right: 8px;">
-			{% if person.id %}
-				<li>Welcome, <a href="{{ path('user_profile') }}">{{person.display_name}}</a> &middot; <a href="{{ path('user_logout') }}">Log Out</a></li>
+			{% if app.user.id %}
+				<li>Welcome, <a href="{{ path('user_profile') }}">{{app.user.display_name}}</a> &middot; <a href="{{ path('user_logout') }}">Log Out</a></li>
 			{% else %}
 				<li>Welcome, Guest &middot; <a href="{{ path('user_login') }}">Log In</a></li>
 			{% endif %}
@@ -227,7 +227,7 @@ table.table-list > tbody > tr:hover > td {
 			<li class="btn"><a href="{{ path('user_downloads') }}">Downloads</a></li>
 			<li class="btn"><a href="{{ path('user_news') }}">News</a></li>
 			<li class="btn"><a href="{{ path('user_ideas') }}">Ideas</a></li>
-			{% if person.id %}
+			{% if app.user.id %}
 				<li class="btn"><a href="{{ path('user_tickets') }}">Tickets</a></li>
 			{% endif %}
 		</ul>

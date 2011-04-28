@@ -40,14 +40,14 @@
 					</table>
 				</div>
 				<ul class="reply-agent_id-menu" style="display:none">
-					<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{person.id}}">Me</li>
+					<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{app.user.id}}">Me</li>
 					<li class="sep">-</li>
 					{% for id,title in ticket_options.agents %}
 						<li data-option-id="standard" data-option-name="agent_id" data-option-value="{{id}}">{{title}}</li>
 					{% endfor %}
 				</ul>
 				<ul class="reply-agent_team_id-menu" style="display:none">
-					<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{person.getAgentTeamIds[0]}}">My Team</li>
+					<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{app.user.getAgentTeamIds[0]}}">My Team</li>
 					<li class="sep">-</li>
 					{% for id,title in ticket_options.agent_teams %}
 						<li data-option-id="standard" data-option-name="agent_team_id" data-option-value="{{id}}">{{title}}</li>
