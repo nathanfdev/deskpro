@@ -12,6 +12,7 @@ parameters:
   routing.file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"
   router.options.generator_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
   router.options.generator_base_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
+  templating.globals.class: "Application\DeskPRO\Templating\GlobalVariables"
 
 services:
   templating.engine.jsonphp:

@@ -14,8 +14,6 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		$manager = App::get('deskpro.elastica.manager');
-		echo get_class($manager);
-		exit;
+		return $this->render('DevBundle:Test:test.html.twig');
     }
 }
