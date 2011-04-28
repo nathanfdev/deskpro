@@ -262,12 +262,15 @@ class TwitterStatusController extends AbstractController
 		try {
 			$status = $this->getStatus($this->in->getInt('status_id'));
 			$account = $this->getAccount($this->in->getInt('account_id'));
-
-			// @TODO add private reply
-			// $type = $this->in->getValue('type');
-
 			$twitter = Twitter::getTwitterService($account->getOauthAccessToken());
-			$response = $twitter->status->update($this->in->getValue('text'), $status['id']);
+
+			$type = $this->in->getValue('type');
+			if ('private' == $type) {
+				$response = $twitter->directMessage->new($status['user']['id'], $this->in->getValue('text'));
+			} else {
+				$response = $twitter->status->update($this->in->getValue('text'), $status['id']);
+			}
+
 			if (isset($response->error)) {
 				$error = (string) $response->error;
 			} else {
