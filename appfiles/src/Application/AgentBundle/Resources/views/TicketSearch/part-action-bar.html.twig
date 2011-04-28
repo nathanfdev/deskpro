@@ -1,3 +1,4 @@
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
 <div class="tab-bottom-wrap">
 	<div class="tab-bottom">
 		<div class="check-count">
@@ -156,13 +157,9 @@
 				<div class="type" title="Set Flag" data-rule-type="flag">
 					<div class="choice">
 						<select name="flag">
-							<option value="blue">Blue</option>
-							<option value="green">Green</option>
-							<option value="orange">Orange</option>
-							<option value="pink">Pink</option>
-							<option value="purple">Purple</option>
-							<option value="red">Red</option>
-							<option value="yellow">Yellow</option>
+							{% for color in ['red', 'blue', 'yellow', 'green', 'orange', 'purple'] %}
+								<option value="{{color}}">{{ flagnamer.flag_name(color, person) }}</option>
+							{% endfor %}
 						</select>
 					</div>
 				</div>
