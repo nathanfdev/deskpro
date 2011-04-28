@@ -82,8 +82,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 		$this->session  = $this->get('session');
 
 		$this->tpl = $this->get('templating');
-		$this->tpl->resetTemplateVars();
-		$this->tplvars = $this->tpl->getTemplateVarsObject();
 
 		// Automatically redirect to redirect if we need to
 		// - Must be in debug

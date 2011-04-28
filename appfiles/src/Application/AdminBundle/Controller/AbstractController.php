@@ -18,7 +18,6 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		parent::init();
 
 		$this->person = $this->session->getPerson();
-		$this->tplvars['person'] = $this->person;
 	}
 
 
