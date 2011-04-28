@@ -40,7 +40,7 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 		$conn = parent::createConnection($params, $config, $eventManager);
 
 		$evm = $conn->getEventManager();
-		$evm->addEventSubscriber(new SymfonyEventConnector(App::getEventDispatcher()));
+		//$evm->addEventSubscriber(new SymfonyEventConnector(App::getEventDispatcher()));
 		$evm->addEventSubscriber(new \Gedmo\Tree\TreeListener());
 
 		return $conn;
