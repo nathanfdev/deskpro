@@ -1,27 +1,27 @@
 
 <div class="form-reply">
 	<form>
+		<h5>Add Reply</h5>
 		<div class="type">
 			<ul>
 				<li>
-					<input type="radio" id="twitter-reply-type-private" name="type" value="private" />
-					<label for="twitter-reply-type-private">Private</label>
+					<input type="radio" name="type" value="private" />
+					<label for="private">Private</label>
 				</li>
 				<li>
-					<input type="radio" id="twitter-reply-type-public" name="type" value="public" checked="checked" />
-					<label for="twitter-reply-type-public">Public</label>
+					<input type="radio" name="type" value="public" checked="checked" />
+					<label for="public">Public</label>
 				</li>
 			</ul>
 		</div>
 		<div class="accounts">
-			</ul>
+			<select name="account" id="twitter-reply-account-{{ account.id }}">
 			{% for person_account in person.twitter_accounts %}
-				<li>
-					<input type="radio" id="twitter-reply-account-{{ person_account.id }}" name="account" value="{{ person_account.id }}" {% if person_account.id == account.id %}checked="checked"{% endif %} />
-					<label for="twitter-reply-account-{{ person_account.id }}">{{ person_account.user.screen_name }}</label>
-				</li>
-				{% endfor %}
-			</ul>
+				<option value="{{ person_account.id }}" {% if person_account.id == account.id %}selected="selected"{% endif %}>
+					{{ person_account.user.screen_name }}
+				</option>
+			{% endfor %}
+			</select>
 		</div>
 		<textarea name="text" rows="2" cols="40"></textarea>
 	</form>

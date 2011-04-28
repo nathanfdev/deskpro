@@ -83,7 +83,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 
 	_getDisplayOptions: function() {
 		var options = {
-			sortbydate: $('.display-options select[name=sortbydate] option:selected', this.header).attr('name'),
+			sortbydate: $('.display-options select[name=sortbydate] option:selected', this.header).val(),
 			include: {}
 		};
 
@@ -109,7 +109,6 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 	},
 
 	highlightStatus: function(id) {
-		console.log($('.status-'+id, this.content));
 		$('.status', this.content).removeClass('highlight');
 		$('.status-'+id, this.content).addClass('highlight');
 	},
@@ -184,7 +183,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 				note = this.note.clone(),
 				area = $('textarea[name=text]', note);
 
-			$(e.target).parents('.status').append(note);
+			$(e.target).parents('.body').append(note);
 			this.highlightStatus(status);
 
 			// close on ESCAPE
@@ -297,7 +296,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 				reply = this.reply.clone(),
 				area = $('textarea[name=text]', reply);
 
-			$(e.target).parents('.status').append(reply);
+			$(e.target).parents('.body').append(reply);
 			this.highlightStatus(status);
 
 			// close on ESCAPE
@@ -325,7 +324,7 @@ DeskPRO.Agent.PageFragment.ListPane.TwitterStatus = new Class({
 
 				var text = area.val(),
 					type = $('input[type=radio][name=type]:checked', reply).val(),
-					account_id = $('input[type=radio][name="account"]:checked', reply).val();
+					account_id = $('select[name=account] option:selected', reply).val();
 
 				reply.remove();
 

@@ -3119,3 +3119,32 @@ ul.person-popout-tabs li a{
 .twitter .status .note .user {
 	font-weight: bold;
 }
+
+.twitter .status .form-note,
+.twitter .status .form-reply {
+	background: #EEF1F5;
+	border-top: 1px solid #D2D7E0;
+	padding: 3px 8px;
+}
+
+.twitter .status .form-note textarea,
+.twitter .status .form-reply textarea {
+	width: 99%;
+}
+
+.twitter .status .form-reply textarea {
+	clear: both;
+}
+
+.twitter .status .form-reply .type {
+	float: left;
+}
+
+.twitter .status .form-reply .accounts {
+	float: right;
+}
+
+.twitter .status .form-reply .type li {
+	display: inline;
+	margin-right: 10px;
+}
