@@ -4,5 +4,5 @@
 	<li class="sep">-</li>
 	{% for color in ['red', 'blue', 'yellow', 'green', 'orange', 'purple'] %}
 		<li data-flag="{{color}}"><span class="icon icon-flag-{{colro}}">{{ flagnamer.flag_name(color, person) }}</span></li>
-	{% endif %}
+	{% endfor %}
 </ul>
