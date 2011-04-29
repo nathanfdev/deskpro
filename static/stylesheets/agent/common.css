@@ -887,3 +887,19 @@ ul.item-list > li.sub {
 .tab-box-content > .tab-content.on {
 	display: block;
 }
+
+
+.list-load-more {
+    text-align: center;
+    font-size: 11px;
+    background-color: #E4EBF0;
+
+    padding:  4px;
+    color: #A2B0BA;
+}
+
+.list-load-more:hover {
+    color: #7C878F;
+    background-color: #CFDDE8;
+    cursor: pointer;
+}

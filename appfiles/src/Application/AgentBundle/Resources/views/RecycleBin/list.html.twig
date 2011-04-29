@@ -1,0 +1,31 @@
+<script>
+pageMeta.title = 'Recycle Bin'
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.RecycleBin';
+</script>
+<div class="content">
+	{% if not tickets_html %}
+		<div class="no-more-results" style="display: block;">
+			There are no items in the recycle bin.
+		</div>
+	{% endif %}
+
+	{% if tickets_html %}
+		<div class="type-list tickets-list" data-load-name="tickets">
+			<div class="pad">
+				<div class="inner-box-tab-content box-list no-pad">
+					<table class="list" cellspacing="0" width="100%">
+						<thead class="display-options-trigger dbl-click-trigger nosel">
+							<tr>
+								<th>Tickets</th>
+							</tr>
+						</thead>
+						{{tickets_html|raw}}
+					</table>
+					<div class="list-load-more">
+						Load More
+					</div>
+				</div>
+			</div>
+		</div>
+	{% endif %}
+</div>

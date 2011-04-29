@@ -54,6 +54,16 @@ agent_messages_unsubscribe_channels:
   pattern: /client-messages/unsubscribe-channels
   defaults: { _controller: AgentBundle:ClientMessages:unsubscribeChannels }
 
+
+
+agent_recyclebin:
+  pattern: /recycle-bin
+  defaults: { _controller: AgentBundle:RecycleBin:list }
+
+agent_recyclebin_more:
+  pattern: /recycle-bin/{type}/{paeg}
+  defaults: { _controller: AgentBundle:RecycleBin:listMore }
+
 ################################################################################
 # Login/logout
 ################################################################################

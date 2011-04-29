@@ -136,11 +136,11 @@ class TicketSearch extends SearcherAbstract
 	 * @param int $limit
 	 * @return array
 	 */
-	public function getMatches()
+	public function getMatches(array $pageinfo = null)
 	{
 		$db = App::getDb();
 
-		$ticket_ids = $db->fetchAllCol($this->getSql());
+		$ticket_ids = $db->fetchAllCol($this->getSql($pageinfo));
 
 		return $ticket_ids;
 	}
@@ -151,7 +151,7 @@ class TicketSearch extends SearcherAbstract
 	 * Get the SQL query that'll fetch the results
 	 * @return string
 	 */
-	public function getSql()
+	public function getSql(array $pageinfo = null)
 	{
 		$ticket_parts = $this->getSqlParts();
 		$user_parts = null;
@@ -251,7 +251,11 @@ class TicketSearch extends SearcherAbstract
 		$sql .= " GROUP BY tickets.id ";
 		$sql .= $order_by;
 
-		$sql .= " LIMIT 1000";
+		if ($pageinfo) {
+			$sql .= " LIMIT {$pageinfo['offset']}, {$pageinfo['limit']} ";
+		} else {
+			$sql .= " LIMIT 1000";
+		}
 
 		$this->_last_sql = $sql;
 
