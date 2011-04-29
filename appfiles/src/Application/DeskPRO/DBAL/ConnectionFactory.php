@@ -24,6 +24,14 @@ use \Doctrine\DBAL\Types\Type;
  */
 class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 {
+	protected $container;
+
+    public function __construct(array $typesConfig, $container)
+    {
+		parent::__construct($typesConfig);
+		$this->container = $container;
+    }
+
 	public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null)
 	{
 		$params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
@@ -40,7 +48,7 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 		$conn = parent::createConnection($params, $config, $eventManager);
 
 		$evm = $conn->getEventManager();
-		//$evm->addEventSubscriber(new SymfonyEventConnector(App::getEventDispatcher()));
+		$evm->addEventSubscriber(new SymfonyEventConnector($this->container->get('event_dispatcher')));
 		$evm->addEventSubscriber(new \Gedmo\Tree\TreeListener());
 
 		return $conn;

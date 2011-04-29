@@ -3,7 +3,6 @@ parameters:
   http_kernel.class: "Application\DeskPRO\HttpKernel\HttpKernel"
   controller_resolver.class: "Application\DeskPRO\HttpKernel\Controller\ControllerResolver"
   session.class: "Application\DeskPRO\HttpFoundation\Session"
-  doctrine.dbal.connection_factory_class: "Application\DeskPRO\DBAL\ConnectionFactory"
   swiftmailer.class: "Application\DeskPRO\Mail\Mailer"
   exception_listener.class: "Application\DeskPRO\Debug\ExceptionListener"
   twig.loader.class: "Application\DeskPRO\Twig\\Loader\HybridLoader"
@@ -30,6 +29,9 @@ services:
   swiftmailer.transport.dp_delegating:
     class: Application\DeskPRO\Mail\Transport\DelegatingTransport
     arguments: [@swiftmailer.transport.eventdispatcher]
+  doctrine.dbal.connection_factory:
+    class: Application\DeskPRO\DBAL\ConnectionFactory
+    arguments: [%doctrine.dbal.types%, @service_container]
 
 framework:
   charset: UTF-8
