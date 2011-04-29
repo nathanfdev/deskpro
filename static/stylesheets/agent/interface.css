@@ -1328,8 +1328,9 @@ ul.ticket-reply-tabs li.on {
 	border-radius: 4px;
 }
 
-.new-note-form .trigger.saving { display: none; }
-.new-note-form.saving .trigger.saving { display: block; }
+.new-note-form .trigger.saving, .new-note-form .saving-row { display: none; }
+.new-note-form.saving .trigger.saving, .new-note-form.saving .saving-row { display: block; }
+.new-note-form.saving .trigger-row { display: none; }
 .new-note-form.saving .trigger.save { display: none; }
 .new-note-form.saving .trigger.cancel { display: none; }
 
