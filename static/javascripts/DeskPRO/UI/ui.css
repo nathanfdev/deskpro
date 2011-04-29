@@ -149,31 +149,32 @@
 ***********************************************************************/
 
 .deskpro-menu-outer {
-	border: 1px solid #575757;
+    background-color: rgba(60, 60, 60, 0.85);
+	border: 1px solid #25282b;
 
-	-moz-border-radius: 6px;
-	border-radius: 6px;
+	-moz-border-radius: 4px;
+	border-radius: 4px;
 
-	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
-	-moz-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
-	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
+    -webkit-box-shadow: inset 0 1px 0 #9fa1a5, 0 1px 4px #3d4041;
+    -moz-box-shadow: inset 0 1px 0 #9fa1a5, 0 1px 4px #3d4041;
+    box-shadow: inset 0 1px 0 #9fa1a5, 0 1px 4px #3d4041;
 }
 
 .deskpro-menu-inner {
-	border: 2px solid rgba(250, 250, 250, 0.7);
-	-moz-border-radius: 5px;
-	border-radius: 5px;
+    color: #fff;
+	text-shadow: 0 -1px 0 #323437;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+	border: 3px solid rgba(255,255,255,.07);
+
+    font-family: Arial,Helvetica,sans-serif;
+    font-size: 11px;
 }
 
 .deskpro-menu {
-	border: 1px solid #575757;
-	-moz-border-radius: 3px;
-	border-radius: 4px;
 
-	padding: 1px;
-	background-color: rgba(11, 11, 11, 0.9);
-
-	color: #fff;
 }
 
 .deskpro-menu > ul {
@@ -181,17 +182,27 @@
 }
 
 .deskpro-menu > ul > li {
-	padding: 5px 10px 5px 10px;
+	padding: 4px 4px 4px 8px;;
+	border: 1px solid transparent;
+
+	-webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
 }
+
 
 .deskpro-menu > ul > li:not(.sep):not(.elm):not(.section-title):hover,
 .deskpro-menu > ul > li.hover {
-	background: #606c88;
-	background: -moz-linear-gradient(top, #606c88 0%, #3f4c6b 100%);
-	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#606c88), color-stop(100%,#3f4c6b));
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', endColorstr='#3f4c6b',GradientType=0 );
+    background: #323437;
+	border-top: 1px solid #27292b;
+	border-bottom: 1px solid #696b6f;
 
+    color: #CCC;
 	cursor: pointer;
+
+    -webkit-transition: color 0.2s ease-out;
+    -moz-transition: color 0.2s ease-out;
+    transition: color 0.2s ease-out;
 }
 
 .deskpro-menu > ul > li.sep {
