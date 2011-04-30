@@ -25,17 +25,18 @@ services:
       - { name: twig.extension }
   session.storage:
     class: Application\DeskPRO\HttpFoundation\SessionStorage\SessionEntityStorage
-    arguments: [@doctrine.orm.entity_manager, %session.storage.native.options%]
+    arguments: [@doctrine.orm.entity_manager, %session.storage.options%]
   swiftmailer.transport.dp_delegating:
     class: Application\DeskPRO\Mail\Transport\DelegatingTransport
     arguments: [@swiftmailer.transport.eventdispatcher]
   doctrine.dbal.connection_factory:
     class: Application\DeskPRO\DBAL\ConnectionFactory
-    arguments: [%doctrine.dbal.types%, @service_container]
+    arguments: [[], @service_container]
 
 framework:
   charset: UTF-8
 #  profiler: { only_exceptions: false }
+  secret: mube224etsmhxky1gvwixc4b
   templating:
     engines: ['twig', 'php', 'jsonphp']
     assets_base_urls: "/dp_400/static/" # replace with your real basepath

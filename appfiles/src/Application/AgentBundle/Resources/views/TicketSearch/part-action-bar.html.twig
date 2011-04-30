@@ -167,7 +167,7 @@
 					{% for field in ticket_options.custom_ticket_fields %}
 						<div class="type" title="Set Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
 							<div class="choice">
-								{{ form_field(field.form) }}
+								{{ form_widget(field.formView) }}
 							</div>
 						</div>
 					{% endfor %}
@@ -185,7 +185,7 @@
 					{% for field in ticket_options.custom_people_fields %}
 						<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-type="people_field[{{field.field_def.id}}]">
 							<div class="choice">
-								{{ form_field(field.form) }}
+								{{ form_widget(field.formView) }}
 							</div>
 						</div>
 					{% endfor %}

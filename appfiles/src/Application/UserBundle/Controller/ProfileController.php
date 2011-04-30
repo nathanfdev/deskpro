@@ -12,7 +12,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\UserBundle\Form\ProfileForm;
+use Application\UserBundle\Form\ProfileType;
 use Application\DeskPRO\Entity\PersonEmail;
 use Application\DeskPRO\Entity\TmpData;
 
@@ -27,17 +27,19 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	 */
 	public function indexAction()
 	{
-		$form = new ProfileForm('profile');
-
-		$form->bind($this->get('request'), $this->person);
-
-		if ($form->isSubmitted()) {
-			App::getOrm()->persist($this->person);
-			App::getOrm()->flush();
+		$form = $this->get('form.factory')->create(new ProfileType(), $this->person);
+		
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+			
+			if ($form->isValid()) {
+				App::getOrm()->persist($this->person);
+				App::getOrm()->flush();
+			}
 		}
 
 		return $this->render('UserBundle:Profile:index.html.twig', array(
-			'form' => $form
+			'form' => $form->createView()
 		));
 	}
 

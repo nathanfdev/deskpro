@@ -53,18 +53,17 @@ function _page_exec() {
 {% block content %}
 
 <form action="{{ path('admin_tickettriggers_edit', {'trigger_id': trigger.id|default(0)}) }}" method="post">
-{{ form_hidden(form) }}
 <input type="hidden" name="process" value="1" />
 
 <div class="form-panel">
 	<div class="row">
 		<label>Title</label>
-		{{ form_field(form.title) }}
+		{{ form_widget(form.title) }}
 	</div>
 	{% if form.event_trigger_option %}
 		<div class="row">
 			<label>Minutes until trigger is executed</label>
-			{{ form_field(form.event_trigger_option) }}
+			{{ form_widget(form.event_trigger_option) }}
 		</div>
 	{% endif %}
 	<div class="row">
@@ -83,6 +82,7 @@ function _page_exec() {
 	</div>
 </div>
 
+{{ form_rest(form) }}
 </form>
 
 <div class="criteria-tpl" style="display:none">
@@ -385,7 +385,7 @@ function _page_exec() {
 					</select>
 				</div>
 				<div class="choice">
-					{{ form_field(field.form) }}
+					{{ form_widget(field.form) }}
 				</div>
 			</div>
 		{% endfor %}
@@ -504,7 +504,7 @@ function _page_exec() {
 		{% for field in ticket_options.custom_ticket_fields %}
 			<div class="type" title="Set Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
 				<div class="choice">
-					{{ form_field(field.form) }}
+					{{ form_widget(field.form) }}
 				</div>
 			</div>
 		{% endfor %}
@@ -522,7 +522,7 @@ function _page_exec() {
 		{% for field in ticket_options.custom_people_fields %}
 			<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-type="people_field[{{field.field_def.id}}]">
 				<div class="choice">
-					{{ form_field(field.form) }}
+					{{ form_widget(field.form) }}
 				</div>
 			</div>
 		{% endfor %}

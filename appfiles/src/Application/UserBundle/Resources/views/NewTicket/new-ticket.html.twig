@@ -10,15 +10,14 @@
 {% block content %}
 
 <form action="{{ path('user_tickets_new') }}" method="post">
-{{ form_hidden(form) }}
 <input type="hidden" name="process" value="1" />
 
 <h1>Contact Information</h1>
 <table cellspacing="5" cellpadding="0" border="0" width="100%">
 	<tr>
 		<td>
-			<small>First Name</small> {{ form_field(form.person.first_name) }}<br />
-			<small>Last Name</small> {{ form_field(form.person.last_name) }}<br />
+			<small>First Name</small> {{ form_widget(form.person.first_name) }}<br />
+			<small>Last Name</small> {{ form_widget(form.person.last_name) }}<br />
 		</td>
 	</tr>
 
@@ -26,7 +25,7 @@
 		<tr>
 			<td>
 				<small>Email Address</strong><br />
-				{{ form_field(form.person.email) }}
+				{{ form_widget(form.person.email) }}
 			</td>
 		</tr>
 	{% endif %}
@@ -45,13 +44,13 @@
 	{% if form.ticket.product_id %}
 	<td>
 		<small>{{ phrase('core.product') }}</small><br />
-		{{ form_field(form.ticket.product_id, {'class': 'product_id'}) }}
+		{{ form_widget(form.ticket.product_id, {'class': 'product_id'}) }}
 	</td>
 	{% endif %}
 	{% if form.ticket.priority_id %}
 	<td>
 		<small>{{ phrase('core_tickets.priority') }}</small><br />
-		{{ form_field(form.ticket.priority_id, {'class': 'priority_id'}) }}
+		{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
 	</td>
 	{% endif %}
 </tr></table>
@@ -61,17 +60,20 @@
 		<tr class="ticket-display-element ticket_field-{{f.field_def.id}}" style="display:none">
 			<td>
 				<small>{{ phrase(f.field_def) }}</small><br />
-				{{ form_field(f.form, {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}
+				{{ form_widget(form.custom_fields[f.name], {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}
 			</td>
 		</tr>
 	{% endfor %}
 </table>
 
 <div style="margin: 10px 0 10px 0;">
-	{{ form_field(form.ticket.subject) }}
-	{{ form_field(form.ticket.message) }}
+	{{ form_widget(form.ticket.subject) }}
+	{{ form_widget(form.ticket.message) }}
 </div>
 
 <input type="submit" value="Submit" />
+
+{{ form_rest(form) }}
+</form>
 
 {% endblock %}

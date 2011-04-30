@@ -14,7 +14,7 @@ namespace Application\AdminBundle\Controller;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditTicketWorkflowForm;
+use \Application\AdminBundle\Form\EditTicketWorkflowType;
 
 /**
  * Simple management of workflows
@@ -58,22 +58,25 @@ class TicketWorkflowsController extends AbstractController
 			$workflow = App::getEntityRepository('DeskPRO:TicketWorkflow')->find($workflow_id);
 		}
 
-		$form = EditTicketWorkflowForm::create($this->get('form.context'), 'workflow', array('workflow' => $workflow));
-		$form->bind($this->get('request'), $workflow);
+		$form = $this->get('form.factory')->create(new EditTicketWorkflowType(), $workflow);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($workflow);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:TicketWorkflows:list-row.html.twig', array('workflow' => $workflow));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($workflow);
+				App::getOrm()->flush();
+
+				$row_html = $this->renderView('AdminBundle:TicketWorkflows:list-row.html.twig', array('workflow' => $workflow));
+			}
 		}
 
 		return $this->render('AdminBundle:TicketWorkflows:edit.html.twig', array(
 			'workflow'  => $workflow,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));

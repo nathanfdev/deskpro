@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
 
 /**
  * Handles the choice field
@@ -76,13 +77,14 @@ class Choice extends HandlerAbstract
 		return $field_group;
 		 */
 
-		$field_choice = new \Symfony\Component\Form\ChoiceField($this->getFormFieldName(), array(
+		$setData = null;
+		if ($selected_options) {
+			$setData = $selected_options;
+		}
+		$field_choice = App::getFormFactory()->createNamedBuilder('choice', $this->getFormFieldName(), $setData, array(
 			'choices' => $options,
 			'required' => false,
 		));
-		if ($selected_options) {
-			$field_choice->setData($selected_options);
-		}
 
 		return $field_choice;
 	}

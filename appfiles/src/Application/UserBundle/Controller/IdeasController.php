@@ -16,7 +16,7 @@ use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
-use \Application\UserBundle\Form\NewIdeaForm;
+use \Application\UserBundle\Form\NewIdeaType;
 
 use \Application\UserBundle\Controller\Helper\Comments;
 use \Application\UserBundle\Controller\Helper\FacebookLike;
@@ -84,6 +84,11 @@ class IdeasController extends AbstractController
 			App::getSession()->getVisitor()
 		);
 
+		// Initial value from coming from a category
+		if ($this->in->getUint('category_id')) {
+			$newidea->category_id = $this->in->getUint('category_id');
+		}
+
 		$num_votes        = $this->person->IdeaVotes->getVotesRemaining();
 		$num_votes_remain = $this->person->IdeaVotes->getVotesRemaining();
 
@@ -91,26 +96,20 @@ class IdeasController extends AbstractController
 			die('you must have at least one vote to submit a new idea');
 		}
 
-		$form = new NewIdeaForm('newidea', array(
-			'votes_remain' => $num_votes_remain,
-			'validator' => $this->get('validator')
-		));
+		$form = $this->get('form.factory')->create(new NewIdeaType($num_votes_remain));
 
-		$form->bind($this->get('request'), $newidea);
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
 
-		// Initial value from coming from a category
-		if ($this->in->getUint('category_id')) {
-			$form->get('category_id')->setData($this->in->getUint('category_id'));
-		}
+			if ($form->isValid()) {
+				$idea = $newidea->save();
 
-		if ($form->isValid()) {
-			$idea = $newidea->save();
-
-			return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()));
+				return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()));
+			}
 		}
 
 		return $this->render('UserBundle:Ideas:new-idea.html.twig', array(
-			'form' => $form,
+			'form' => $form->createView(),
 			'num_votes' => $num_votes,
 			'num_votes_remain' => $num_votes_remain,
 		));

@@ -56,9 +56,12 @@ abstract class AbstractFields
 
 			$custom_fields[$f_def['id']] = array(
 				'id' => $f_def['id'],
+				'name' => 'field_' . $f_def['id'],
 				'field_def' => $f_def,
 				'title' => $f_def['title'],
-				'form' => $f,
+				'form' => $f->getForm(),
+				'formView' => $f->getForm()->createView(),
+				//'formView' => $f->getForm->createView(),
 				'rendered' =>  $rendered
 			);
 		}

@@ -90,7 +90,7 @@ abstract class CustomDefAbstractController extends AbstractController
 		}
 
 		$renderer = new \Orb\Form\Renderer\Basic();
-		$form = new \Application\AdminBundle\Form\EditField(array(
+		$form = new \Application\AdminBundle\Form\EditType(array(
 			'name' => 'formfield',
 			'renderer' => $renderer,
 			'event_dispatcher' => $this->get('event_dispatcher'),

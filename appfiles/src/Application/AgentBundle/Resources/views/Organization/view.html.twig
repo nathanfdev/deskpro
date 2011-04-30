@@ -132,7 +132,7 @@ pageMeta.saveFieldsUrl = '{{ path('agent_org_ajaxsavecustomfields', {'organizati
 							<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
 								<div class="label-wrap"><label>{{f.title}}</label></div>
 								<div class="field-input">
-									{{ form_field(f.form, {}, {}, ['AgentBundle:Ticket:custom-field-forms.html.twig']) }}
+									{{ form_widget(f.form, {}, {}, ['AgentBundle:Ticket:custom-field-forms.html.twig']) }}
 								</div>
 							</div>
 						{% endfor %}

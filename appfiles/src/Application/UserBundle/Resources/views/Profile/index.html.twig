@@ -14,20 +14,20 @@ Password: (<a href="{{ path('user_profile_changepassword') }}">edit</a>)<br />
 <br /><br />
 
 <form action="{{ path('user_profile') }}" method="post">
-{{ form_hidden(form) }}
 
 First Name / Last Name:<br />
-{{ form_field(form.first_name) }} {{ form_field(form.last_name) }}
+{{ form_widget(form.first_name) }} {{ form_widget(form.last_name) }}
 
 <br /><br />
 
 Timezone Region:<br />
-{{ form_field(form.timezone) }}
+{{ form_widget(form.timezone) }}
 
 <br /><br />
 
 <input type="submit" value="Save" />
 
+{{ form_rest(form) }}
 </form>
 
 {% endblock %}

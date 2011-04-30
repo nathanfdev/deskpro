@@ -25,12 +25,12 @@ function _page_exec() {
 <div class="form-panel">
 	<div class="row">
 		<label>Title</label>
-		{{ form_field(form.title) }}
+		{{ form_widget(form.title) }}
 	</div>
 	{% if form.parent_id %}
 		<div class="row">
 			<label>Parent Categpru</label>
-			{{ form_field(form.parent_id) }}
+			{{ form_widget(form.parent_id) }}
 		</div>
 	{% endif %}
 </div>

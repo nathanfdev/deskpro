@@ -24,16 +24,16 @@ function _page_exec() {
 <div class="form-panel">
 	<div class="row">
 		<label>Title</label>
-		{{ form_field(form.title) }}
+		{{ form_widget(form.title) }}
 	</div>
 	<div class="row">
 		<label>Note / Description</label>
-		{{ form_field(form.note) }}
+		{{ form_widget(form.note) }}
 	</div>
 	{% if form.parent_id %}
 		<div class="row">
 			<label>Parent Style</label>
-			{{ form_field(form.parent_id) }}
+			{{ form_widget(form.parent_id) }}
 		</div>
 	{% endif %}
 </div>

@@ -3,7 +3,7 @@
 namespace Application\AdminBundle\Controller;
 
 use \Application\DeskPRO\App;
-use \Application\AdminBundle\Form\EditStyleForm;
+use \Application\AdminBundle\Form\EditStyleType;
 use \Orb\Util\Arrays;
 use \Symfony\Component\Form;
 
@@ -63,27 +63,29 @@ class StylesController extends AbstractController
 			$style = new \Application\DeskPRO\Entity\Style();
 		}
 
-		$form = EditStyleForm::create($this->get('form.context'), 'style', array('style' => $style));
-		$form->bind($this->get('request'), $style);
+		$form = $this->get('form.factory')->create(new EditStyleType($style), $style);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($style);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$this->_setHierarchyVar();// reset data in hierarchy
-			$row_html = $this->renderView('AdminBundle:Styles:list-styles-row.html.twig', array('style' => $this->style_hierarchy[$style['id']]));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($style);
+				App::getOrm()->flush();
 
-			// Recreate form because parent_id field cant be changed, so we need to get rid of it
-			$form = EditStyleForm::create($this->get('form.context'), 'style', array('style' => $style));
-			$form->setData($style);
+				$this->_setHierarchyVar();// reset data in hierarchy
+				$row_html = $this->renderView('AdminBundle:Styles:list-styles-row.html.twig', array('style' => $this->style_hierarchy[$style['id']]));
+
+				// Recreate form because parent_id field cant be changed, so we need to get rid of it
+				$form = $this->get('form.factory')->create(new EditStyleType($style), $style);
+			}
 		}
 
 		return $this->render('AdminBundle:Styles:edit-style.html.twig', array(
 			'style' => $style,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));

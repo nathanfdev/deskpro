@@ -18,17 +18,11 @@ class FileLocator extends BaseFileLocator
 {
     private $kernel;
 
-    /**
-     * Constructor.
-     *
-     * @param KernelInterface $kernel A KernelInterface instance
-     * @param string|array    $paths  A path or an array of paths where to look for resources
-     */
-    public function __construct(KernelInterface $kernel, array $paths = array())
+    public function __construct(KernelInterface $kernel, $path = null, array $paths = array())
     {
         $this->kernel = $kernel;
 
-        parent::__construct($paths);
+        parent::__construct($path, $paths);
     }
 
     /**

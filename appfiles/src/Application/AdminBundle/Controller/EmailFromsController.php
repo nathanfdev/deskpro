@@ -4,7 +4,7 @@ namespace Application\AdminBundle\Controller;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
-use \Application\AdminBundle\Form\EditEmailFromForm;
+use \Application\AdminBundle\Form\EditEmailFromType;
 use \Orb\Util\Arrays;
 use \Symfony\Component\Form;
 
@@ -64,21 +64,24 @@ class EmailFromsController extends AbstractController
 
 		$email_from['transport_class'] = 'Application\\DeskPRO\\Entity\\EmailFrom::createTransportInstance';
 
-		$form = EditEmailFromForm::create($this->get('form.context'), 'email_from', array('email_from' => $email_from));
-		$form->bind($this->get('request'), $email_from);
+		$form = $this->get('form.factory')->create(new EditEmailFromType($email_from));
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($email_from);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:EmailFroms:list-row.html.twig', array('email_from' => $email_from));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($email_from);
+				App::getOrm()->flush();
+
+				$row_html = $this->renderView('AdminBundle:EmailFroms:list-row.html.twig', array('email_from' => $email_from));
+			}
 		}
 
 		return $this->render('AdminBundle:EmailFroms:edit.html.twig', array(
-			'form'        => $form,
+			'form'        => $form->createView(),
 			'email_from'  => $email_from,
 			'is_edited'   => $is_edited,
 			'row_html'    => $row_html

@@ -11,7 +11,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
 
 /**
  * Handles the text field
@@ -25,11 +26,11 @@ class Textarea extends Text
 
 	public function getFormField(array $data = null)
 	{
-		$field = new \Symfony\Component\Form\TextareaField($this->getFormFieldName(), array('required' => false));
-
+		$setData = null;
 		if ($data AND !empty($data['value'])) {
-			$field->setData($data['value']);
+			$setData = $data['value'];
 		}
+		$field = App::getFormFactory()->createNamedBuilder('textarea', $this->getFormFieldName(), $setData, array('required' => false));
 
 		return $field;
 	}

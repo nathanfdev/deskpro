@@ -14,7 +14,7 @@ namespace Application\AdminBundle\Controller;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
 
-use \Application\AdminBundle\Form as AdminForm;
+use \Application\AdminBundle\Form\EditAgentType;
 use \Application\AdminBundle\FormModel as AdminFormModel;
 
 use \Orb\Util\Strings;
@@ -116,29 +116,33 @@ class AgentsController extends AbstractController
 		$person->loadHelper('Agent');
 
 		$agent_form_model = new AdminFormModel\EditAgent($person);
-		$form = AdminForm\EditAgentForm::create($this->get('form.context'), 'agent');
-		$form->bind($this->get('request'), $agent_form_model);
+
+		$form = $this->get('form.factory')->create(new EditAgentType(), $agent_form_model);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
+			$form->bindRequest($this->get('request'));
 
-			App::getOrm()->beginTransaction();
-			$agent_form_model->persist();
-			App::getOrm()->flush();
-			App::getOrm()->commit();
+			if ($form->isValid()) {
+				$is_edited = true;
 
-			// reset helper so it has correct ids etc
-			$person->getHelperManager()->removeHelper('Agent');
-			$person->loadHelper('Agent');
+				App::getOrm()->beginTransaction();
+				$agent_form_model->persist();
+				App::getOrm()->flush();
+				App::getOrm()->commit();
 
-			$row_html = $this->renderView('AdminBundle:Agents:list-agents-row.html.twig', array('person' => $person));
+				// reset helper so it has correct ids etc
+				$person->getHelperManager()->removeHelper('Agent');
+				$person->loadHelper('Agent');
+
+				$row_html = $this->renderView('AdminBundle:Agents:list-agents-row.html.twig', array('person' => $person));
+			}
 		}
 
 		return $this->render('AdminBundle:Agents:edit-agent.html.twig', array(
 			'person' => $person,
-			'form' => $form
+			'form' => $form->createView()
 		));
 	}
 

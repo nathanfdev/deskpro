@@ -4,7 +4,7 @@ namespace Application\AdminBundle\Controller;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
-use \Application\AdminBundle\Form\EditLanguageForm;
+use \Application\AdminBundle\Form\EditLanguageType;
 use \Orb\Util\Arrays;
 use \Symfony\Component\Form;
 
@@ -65,27 +65,29 @@ class LanguagesController extends AbstractController
 			$language = new \Application\DeskPRO\Entity\Language();
 		}
 
-		$form = EditLanguageForm::create($this->get('form.context'), 'language', array('language' => $language));
-		$form->bind($this->get('request'), $language);
+		$form = $this->get('form.factory')->create(new EditLanguageType($language), $language);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($language);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$this->_setHierarchyVar();// reset data in hierarchy
-			$row_html = $this->renderView('AdminBundle:Languages:list-languages-row.html.twig', array('language' => $this->language_hierarchy[$language['id']]));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($language);
+				App::getOrm()->flush();
 
-			// Recreate form because parent_id field cant be changed, so we need to get rid of it
-			$form = EditLanguageForm::create($this->get('form.context'), 'language', array('language' => $language));
-			$form->setData($language);
+				$this->_setHierarchyVar();// reset data in hierarchy
+				$row_html = $this->renderView('AdminBundle:Languages:list-languages-row.html.twig', array('language' => $this->language_hierarchy[$language['id']]));
+
+				// Recreate form because parent_id field cant be changed, so we need to get rid of it
+				$form = $this->get('form.factory')->create(new EditLanguageType($language), $language);
+			}
 		}
 
 		return $this->render('AdminBundle:Languages:edit-language.html.twig', array(
 			'language' => $language,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));

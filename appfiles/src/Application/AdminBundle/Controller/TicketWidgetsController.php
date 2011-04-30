@@ -14,7 +14,7 @@ namespace Application\AdminBundle\Controller;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditTicketPriorityForm;
+use \Application\AdminBundle\Form\EditTicketPriorityType;
 
 /**
  * Management of widgets

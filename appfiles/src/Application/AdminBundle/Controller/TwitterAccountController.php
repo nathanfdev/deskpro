@@ -25,7 +25,7 @@ use \Application\DeskPRO\Entity\TwitterUser;
 use \Orb\Service\Twitter\Oauth,
 	\Orb\Service\Twitter\Twitter;
 
-use \Application\AdminBundle\Form\EditTwitterAccountForm;
+use \Application\AdminBundle\Form\EditTwitterAccountType;
 
 /**
  * Handles creating/editing of Twitter Accounts
@@ -299,25 +299,28 @@ class TwitterAccountController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException('Twitter Account "'.$account_id.'" not found.');
 		}
 
-		$form = EditTwitterAccountForm::create($this->get('form.context'), 'account', array('account' => $account));
-		$form->bind($this->get('request'), $account);
+		$form = $this->get('form.factory')->create(new EditTwitterAccountType(), $account);
 
 		$is_edited = false;
 		$row_html = false;
 
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($account);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:TwitterAccount:list-row.html.twig', array(
-				'account' => $account
-			));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($account);
+				App::getOrm()->flush();
+
+				$row_html = $this->renderView('AdminBundle:TwitterAccount:list-row.html.twig', array(
+					'account' => $account
+				));
+			}
 		}
 
 		return $this->render('AdminBundle:TwitterAccount:edit.html.twig', array(
 			'account' => $account,
-			'form' => $form,
+			'form' => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html' => $row_html
 		));

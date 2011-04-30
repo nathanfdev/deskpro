@@ -20,36 +20,35 @@ function _page_exec() {
 {% block content %}
 
 <form action="{{ path('admin_emailfroms_edit', {'email_id': email_from.id|default(0)}) }}" method="post">
-{{ form_hidden(form) }}
 <input type="hidden" name="process" value="1" />
 
 <div class="form-panel">
 	<div class="row">
 		<label>From Name</label>
-		{{ form_field(form.name) }}
+		{{ form_widget(form.name) }}
 	</div>
 	<div class="row">
 		<label>Email Address</label>
-		{{ form_field(form.address) }}
+		{{ form_widget(form.address) }}
 	</div>
 
 	{% if form.transport_options.sendmail_path %}
 		<div class="row">
 			<label>Path to Sendmail <small>(example: /usr/bin/sendmail)</small></label>
-			{{ form_field(form.transport_options.sendmail_path) }}
+			{{ form_widget(form.transport_options.sendmail_path) }}
 		</div>
 	{% elseif form.transport_options.server %}
 		<table cellpadding="0" cellspacing="0" width="100%">
 			<tr>
-				<td>Server<br />{{ form_field(form.transport_options.server) }}</td>
-				<td>Port<br />{{ form_field(form.transport_options.port, {'size':4}) }}</td>
-				<td>{{ form_field(form.transport_options.ssl) }}</td>
+				<td>Server<br />{{ form_widget(form.transport_options.server) }}</td>
+				<td>Port<br />{{ form_widget(form.transport_options.port, {'size':4}) }}</td>
+				<td>{{ form_widget(form.transport_options.ssl) }}</td>
 			</tr>
 		</table>
 		<table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 5px;">
 			<tr>
-				<td width="50%">Username<br />{{ form_field(form.transport_options.username) }}</td>
-				<td>Password<br />{{ form_field(form.transport_options.password) }}</td>
+				<td width="50%">Username<br />{{ form_widget(form.transport_options.username) }}</td>
+				<td>Password<br />{{ form_widget(form.transport_options.password) }}</td>
 			</tr>
 		</table>
 	{% endif %}
@@ -57,6 +56,7 @@ function _page_exec() {
 
 <br /><br />
 
+{{ form_rest(form) }}
 </form>
 {% endblock %}
 {% block footer %}

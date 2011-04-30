@@ -14,7 +14,7 @@ namespace Application\AdminBundle\Controller;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditTicketCategoryForm;
+use \Application\AdminBundle\Form\EditTicketCategoryType;
 
 /**
  * Managing ticket categories
@@ -59,26 +59,28 @@ class TicketCategoriesController extends AbstractController
 			$category = App::getEntityRepository('DeskPRO:TicketCategory')->find($category_id);
 		}
 
-		$form = EditTicketCategoryForm::create($this->get('form.context'), 'category', array('category' => $category));
-		$form->bind($this->get('request'), $category);
-
+		$form = $this->get('form.factory')->create(new EditTicketCategoryType($category), $category);
+		
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($category);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:TicketCategories:list-row.html.twig', array('category' => $category));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($category);
+				App::getOrm()->flush();
 
-			// Recreate form because parent_id field cant be changed, so we need to get rid of it
-			$form = EditTicketCategoryForm::create($this->get('form.context'), 'category', array('category' => $category));
-			$form->setData($category);
+				$row_html = $this->renderView('AdminBundle:TicketCategories:list-row.html.twig', array('category' => $category));
+
+				// Recreate form because parent_id field cant be changed, so we need to get rid of it
+				$form = $this->get('form.factory')->create(new EditTicketCategoryType($category), $category);
+			}
 		}
 
 		return $this->render('AdminBundle:TicketCategories:edit.html.twig', array(
 			'category' => $category,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));

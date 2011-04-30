@@ -2,29 +2,30 @@
 {% block content %}
 
 <form action="{{ path('user_ideas_newidea') }}" method="post">
-{{ form_hidden(form) }}
 <input type="hidden" name="process" value="1" />
 
 	<small><strong>Category:</strong></small><br />
-	{{ form_field(form.category_id) }}
+	{{ form_widget(form.category_id) }}
 
 	<br />
 
 	<small><strong>Short Summary:</strong></small><br />
-	{{ form_field(form.title) }}
+	{{ form_widget(form.title) }}
 
 	<br />
 
 	<small><strong>Description or details:</strong></small><br />
-	{{ form_field(form.content) }}
+	{{ form_widget(form.content) }}
 
 	<br />
 
 	How many of your {{num_votes_remain}} remaining votes would you like to spend on this idea?<br />
-	{{ form_field(form.votes) }}
+	{{ form_widget(form.votes) }}
 
 	<br /><br />
 
 	<input type="submit" value="Submit Idea" />
+
+	{{ form_rest(form) }}
 </form>
 {% endblock %}

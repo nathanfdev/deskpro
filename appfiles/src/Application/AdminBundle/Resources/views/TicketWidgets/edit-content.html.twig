@@ -21,20 +21,20 @@ function _page_exec() {
 {% block content %}
 
 <form action="{{ path('admin_ticketwidgets_edit', {'widget_id': widget.id|default(0)}) }}" method="post">
-{{ form_hidden(form) }}
 <input type="hidden" name="process" value="1" />
 
 <div class="form-panel">
 	<div class="row">
 		<label>Admin name/note</label>
-		{{ form_field(form.note) }}
+		{{ form_widget(form.note) }}
 	</div>
 	<div class="row">
 		<label>HTML Content</label>
-		{{ form_field(form.data.content, {'cols': 80, 'rows': 10}) }}
+		{{ form_widget(form.data.content, {'cols': 80, 'rows': 10}) }}
 	</div>
 </div>
 
+{{ form_rest(form) }}
 </form>
 {% endblock %}
 {% block footer %}

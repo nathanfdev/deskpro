@@ -12,6 +12,8 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+
 
 /**
  * Handles the date field
@@ -25,16 +27,16 @@ class Date extends HandlerAbstract
 
 	public function getFormField(array $data = null)
 	{
-		$field = new \Symfony\Component\Form\DateField($this->getFormFieldName(), array(
-			'widget' => 'input',
-			'type' => 'timestamp',
-			'format' => 'medium',
+		$setData = null;
+		if ($data AND !empty($data['value'])) {
+			$setData = $data['value'];
+		}
+		$field = App::getFormFactory()->createNamedBuilder('date', $this->getFormFieldName(), $setData, array(
+			'widget' => 'text',
+			'input' => 'timestamp',
+			'format' => 3,
 			'required' => false
 		));
-
-		if ($data AND !empty($data['value'])) {
-			$field->setData($data['value']);
-		}
 
 		return $field;
 	}

@@ -24,18 +24,19 @@ function _page_exec() {
 
 {% block content %}
 <form action="{{ path('admin_twitter_accounts_edit', {'account_id': account.id|default(0)}) }}" method="post">
-	{{ form_hidden(form) }}
 	<input type="hidden" name="process" value="1" />
 	<div class="form-panel">
 		<div class="row">
 			<label>OAuth Token</label>
-			{{ form_field(form.oauth_token) }}
+			{{ form_widget(form.oauth_token) }}
 		</div>
 		<div class="row">
 			<label>OAuth Token Secret</label>
-			{{ form_field(form.oauth_token_secret) }}
+			{{ form_widget(form.oauth_token_secret) }}
 		</div>
 	</div>
+
+	{{ form_rest(form) }}
 </form>
 {% endblock %}
 

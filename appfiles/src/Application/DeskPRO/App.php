@@ -41,6 +41,7 @@ class App
 	const SERVICE_MAILER             = 'mailer';
 	const SERVICE_TRANSLATOR         = 'deskpro.core.translate';
 	const SERVICE_EVENT_DISPATCHER   = 'event_dispatcher';
+	const SERVICE_FORM_FACTORY       = 'form.factory';
 	/**#@-*/
 
 	/**
@@ -378,6 +379,18 @@ class App
 	public static function getEventDispatcher()
 	{
 		return self::get(self::SERVICE_EVENT_DISPATCHER);
+	}
+
+
+
+	/**
+	 * Get the form factory
+	 *
+	 * @return \Symfony\Component\Form\FormFactory
+	 */
+	public static function getFormFactory()
+	{
+		return self::get(self::SERVICE_FORM_FACTORY);
 	}
 
 

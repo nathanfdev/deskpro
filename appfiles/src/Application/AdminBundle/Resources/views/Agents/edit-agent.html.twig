@@ -24,35 +24,35 @@ function _page_exec() {
 <div class="form-panel">
 	<div class="row">
 		<label>First and Last Name</label>
-		{{ form_field(form.first_name) }}
-		{{ form_field(form.last_name) }}
+		{{ form_widget(form.first_name) }}
+		{{ form_widget(form.last_name) }}
 	</div>
 	<div class="row">
 		<label>Email Address</label>
-		{{ form_field(form.email) }}
+		{{ form_widget(form.email) }}
 	</div>
 	<div class="row">
 		<label>Password</label>
-		{{ form_field(form.password) }}
+		{{ form_widget(form.password) }}
 	</div>
 	<div class="row">
 		<label>Access Zones</label>
-		<div class="field">{{ form_field(form.access_zones) }}</div>
+		<div class="field">{{ form_widget(form.access_zones) }}</div>
 
 	</div>
 	<div class="row">
 		<label>Teams</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto; padding: 5px;">{{ form_field(form.agent_teams) }}</div>
+		<div class="field checkselect" style="max-height: 100px; overflow: auto; padding: 5px;">{{ form_widget(form.agent_teams) }}</div>
 		<br class="clear" />
 	</div>
 	<div class="row">
 		<label>Department Permissions</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_field(form.allowed_departments) }}</div>
+		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_widget(form.allowed_departments) }}</div>
 		<br class="clear" />
 	</div>
 	<div class="row">
 		<label>Agent Groups</label>
-		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_field(form.usergroups) }}</div>
+		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_widget(form.usergroups) }}</div>
 		<br class="clear" />
 	</div>
 </div>

@@ -9,8 +9,3 @@ framework:
 
 twig:
   debug: %kernel.debug%
-
-zend:
-  logger:
-    priority: debug
-    path:     %kernel.root_dir%/logs/%kernel.environment%.log

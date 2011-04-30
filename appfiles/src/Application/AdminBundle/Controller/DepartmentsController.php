@@ -14,7 +14,7 @@ namespace Application\AdminBundle\Controller;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditDepartmentForm;
+use \Application\AdminBundle\Form\EditDepartmentType;
 
 /**
  * Handles creating/editing of API keys
@@ -61,28 +61,31 @@ class DepartmentsController extends AbstractController
 			$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
 		}
 
-		$form = EditDepartmentForm::create($this->get('form.context'), 'department', array('department' => $department));
-		$form->bind($this->get('request'), $department);
+		$form = $this->get('form.factory')->create(new EditDepartmentType($department), $department);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($department);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:Departments:list-row.html.twig', array('department' => $department));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($department);
+				App::getOrm()->flush();
 
-			// Recreate form because parent_id field cant be changed, so we need to get rid of it
-			$form = EditDepartmentForm::create($this->get('form.context'), 'department', array('department' => $department));
-			$form->setData($department);
+				$row_html = $this->renderView('AdminBundle:Departments:list-row.html.twig', array('department' => $department));
+
+				// Recreate form because parent_id field cant be changed, so we need to get rid of it
+				$form = EditDepartmentType::create($this->get('form.context'), 'department', array('department' => $department));
+				$form->setData($department);
+			}
 		}
 
 
 
 		return $this->render('AdminBundle:Departments:edit.html.twig', array(
 			'department' => $department,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));

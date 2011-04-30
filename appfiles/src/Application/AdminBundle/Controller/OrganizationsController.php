@@ -17,7 +17,7 @@ use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 use \Orb\Util\Util;
 
-use \Application\AdminBundle\Form\EditOrganizationForm;
+use \Application\AdminBundle\Form\EditOrganizationType;
 
 class OrganizationsController extends AbstractController
 {
@@ -44,22 +44,25 @@ class OrganizationsController extends AbstractController
 			$organization = App::getEntityRepository('DeskPRO:Organization')->find($organization_id);
 		}
 
-		$form = EditOrganizationForm::create($this->get('form.context'), 'organization', array('organization' => $organization));
-		$form->bind($this->get('request'), $organization);
+		$form = $this->get('form.factory')->create(new EditOrganizationType(), $organization);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($organization);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:Organizations:list-row.html.twig', array('organization' => $organization));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($organization);
+				App::getOrm()->flush();
+
+				$row_html = $this->renderView('AdminBundle:Organizations:list-row.html.twig', array('organization' => $organization));
+			}
 		}
 
 		return $this->render('AdminBundle:Organizations:edit.html.twig', array(
 			'organization' => $organization,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));

@@ -14,7 +14,7 @@ namespace Application\AdminBundle\Controller;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditLocaleForm;
+use \Application\AdminBundle\Form\EditLocaleType;
 
 /**
  * Managing locales
@@ -61,22 +61,25 @@ class LocalesController extends AbstractController
 			$locale = App::getEntityRepository('DeskPRO:Locale')->find($locale_id);
 		}
 
-		$form = EditLocaleForm::create($this->get('form.context'), 'locale', array('locale' => $locale));
-		$form->bind($this->get('request'), $locale);
+		$form = $this->get('form.factory')->create(new EditLocaleType(), $locale);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($locale);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:Locales:list-row.html.twig', array('locale' => $locale));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($locale);
+				App::getOrm()->flush();
+
+				$row_html = $this->renderView('AdminBundle:Locales:list-row.html.twig', array('locale' => $locale));
+			}
 		}
 
 		return $this->render('AdminBundle:Locales:edit.html.twig', array(
 			'locale' => $locale,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));

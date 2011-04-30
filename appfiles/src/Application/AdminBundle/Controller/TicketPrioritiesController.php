@@ -14,7 +14,7 @@ namespace Application\AdminBundle\Controller;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-use \Application\AdminBundle\Form\EditTicketPriorityForm;
+use \Application\AdminBundle\Form\EditTicketPriorityType;
 
 /**
  * Simple management of priorities
@@ -58,22 +58,25 @@ class TicketPrioritiesController extends AbstractController
 			$priority = App::getEntityRepository('DeskPRO:TicketPriority')->find($priority_id);
 		}
 
-		$form = EditTicketPriorityForm::create($this->get('form.context'), 'priority', array('priority' => $priority));
-		$form->bind($this->get('request'), $priority);
+		$form = $this->get('form.factory')->create(new EditTicketPriorityType(), $priority);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($priority);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:TicketPriorities:list-row.html.twig', array('priority' => $priority));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($priority);
+				App::getOrm()->flush();
+
+				$row_html = $this->renderView('AdminBundle:TicketPriorities:list-row.html.twig', array('priority' => $priority));
+			}
 		}
 
 		return $this->render('AdminBundle:TicketPriorities:edit.html.twig', array(
 			'priority'  => $priority,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));
