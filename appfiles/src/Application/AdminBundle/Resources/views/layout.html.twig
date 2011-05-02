@@ -59,6 +59,7 @@
 
 	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/MainMenuOpener.js') }}"></script>
 	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/BasicMainMenu.js') }}"></script>
+	<script src="{{ asset('javascripts/DeskPRO/Admin/WindowElement/MainMenu/AdminSearchBoxResults.js') }}"></script>
 
 	<script type="text/javascript" charset="utf-8">
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';
@@ -112,67 +113,20 @@
 
 			{# search start #}
 			<div class="left box-header select">
-				<div class="type-select all" id="window_search_type" data-search-type="all" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxType">
-					<span class="icn-dropdown floating"></span>
-					<ul class="wrap-dropdown searchtype">
-						<li data-search-type="all" class="search-all"><span>Search All</span></li>
-						<li data-search-type="tickets" class="search-tickets"><span>Tickets</span></li>
-						<li data-search-type="users" class="search-users"><span>Users</span></li>
-					</ul>
-				</div>
-				<div id="window_search_form" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults">
-					<form id="search-form" action="#" method="post">
-						<input id="window_search_box" type="text" name="search" Value="Search" />
+				<div id="window_search_form" data-menu-handler="DeskPRO.Admin.WindowElement.MainMenu.AdminSearchBoxResults">
+					<form id="search-form" class="no-icon" action="#" method="post">
+						<input id="window_search_box" type="text" name="search" value="Search" />
 					</form>
 
 					<div class="wrap-dropdown search-drop">
-						<div class="top-results">
-							<a href="#" title="">Show All Results</a>
-						</div>
-						<div class="wrap-results">
-
-							<div class="results">
-								<div class="left title-list">
-									<span class="title-list-tickets">52 Tickets</span>
-								</div>
-								<div class="right 	results-list">
-									<ul>
-										<li><a href="">Some Ticket</a></li>
-										<li><a href="">Some Ticket</a></li>
-										<li><a href="">Some Ticket</a></li>
-										<li><a href="">View all Tickets</a></li>
-									</ul>
-								</div>
+						<div class="results" id="window_search_menuitems" style="display:none">
+							<div class="left title-list">
+								<span class="title-list">Menu Items</span>
 							</div>
-
-							<div class="results">
-								<div class="left title-list">
-									<span class="title-list-people"> 3 People</span>
-								</div>
-								<div class="right results-list">
-									<ul>
-										<li><a href="">Some People</a></li>
-										<li><a href="">Some People</a></li>
-										<li><a href="">Some People</a></li>
-										<li><a href="">View all People</a></li>
-									</ul>
-								</div>
+							<div class="right results-list no-last">
+								<ul>
+								</ul>
 							</div>
-
-							<div class="results">
-								<div class="left title-list">
-									<span class="title-list-orga">10 Organizations</span>
-								</div>
-								<div class="right results-list">
-									<ul>
-										<li><a href="">Some Organizations</a></li>
-										<li><a href="">Some Organizations</a></li>
-										<li><a href="">Some Organizations</a></li>
-										<li><a href="">View all Organizations</a></li>
-									</ul>
-								</div>
-							</div>
-
 						</div>
 					</div>
 				</div>
@@ -180,16 +134,15 @@
 			{# search end #}
 
 			{# notifications start #}
-			<div class="left box-header notifications" id="notifications_wrap" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.Notifications">
+			<div class="left box-header notifications" id="notifications_wrap" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.Notifications" style="display:none">
 				<ul class="noti-menu">
-					<li><div class="counter"><span class="counter" id="tickets_counter">1</span></div><span class="icn-bar tickets">Tickets</span></li>
-					<li style="display:none"><div class="counter"><span class="counter">0</span></div><span class="icn-bar chat">Chat</span></li>
+					<li style="display:none"><div class="counter"><span class="counter" id="tickets_counter">0</span></div><span class="icn-bar tickets">Tickets</span></li>
+					<li style="display:none"><div class="counter"><span class="counter" id="chats_counter">0</span></div><span class="icn-bar chat">Chat</span></li>
 				</ul>
 				<span class="white-drop"></span>
 
 				<div class="wrap-dropdown noti-drop">
 					<ul id="notifications_list">
-						<li class="ticket-noti tickets-123" data-type="tickets" data-type-id="123"><em class="timeago">5 minutes ago</em><em class="remove">mark as read</em><span>New “How do I buy DeskPRO?”</span></li>
 					</ul>
 					<div class="bot-noti">
 						<a class="mark-all-read">Mark all as read</a>
@@ -322,7 +275,7 @@
 		<div class="wrapper">
 
 
-			<div class="left box-header-bot nav">
+			<div class="left box-header-bot nav" id="admin_header_menus">
 				<div class="wrapper-top-bar">
 					<ul>
 						<li class="setup-nav">
@@ -330,27 +283,27 @@
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
 									<li class="link-settings">
-										<a href="">Settings</a>
+										<a href="" data-search-keywords="settings options" data-search-name="Settings">Settings</a>
 										<p>Change your helpdesk settings, like your website URL</p>
 									</li>
 									<li class="link-email">
-										<a href="">Email</a>
+										<a href="" data-search-keywords="email gateway smtp mail" data-search-name="Settings &rsaquo; Email">Email</a>
 										<p>Manage email addresses, SMTP settings and gateways.</p>
 									</li>
 									<li class="link-departments">
-										<a href="{{ path('admin_departments') }}">Departments</a>
+										<a href="{{ path('admin_departments') }}" data-search-keywords="departments" data-search-name="Settings &rsaquo; Departments">Departments</a>
 										<p>Manage your departments</p>
 									</li>
 									<li class="link-portal">
-										<a href="">Portal</a>
+										<a href="" data-search-keywords="portal website" data-search-name="Settings &rsaquo; Portal">Portal</a>
 										<p>Change the appearance of your helpdesk homepage.</p>
 									</li>
 									<li class="link-products">
-										<a href="{{ path('admin_products') }}">Products</a>
+										<a href="{{ path('admin_products') }}" data-search-keywords="products" data-search-name="Settings &rsaquo; Products">Products</a>
 										<p>Manage your products</p>
 									</li>
 									<li class="link-languages">
-										<a href="{{ path('admin_locales') }}">Languages</a>
+										<a href="{{ path('admin_locales') }}" data-search-keywords="languages translations locale" data-search-name="Settings &rsaquo; Languages">Languages</a>
 										<p>Manage locales and languages.</p>
 									</li>
 								</ol>
@@ -362,23 +315,23 @@
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
 									<li class="link-scheduled-task">
-										<a href="">Scheduled Tasks</a>
+										<a href="" data-search-keywords="scheduled tasks cron" data-search-name="Server &rsaquo; Scheduled Tasks">Scheduled Tasks</a>
 										<p>View and manage scheduled tasks like email collection and cleanup</p>
 									</li>
 									<li class="link-database-tools">
-										<a href="">Database Tools</a>
+										<a href="" data-search-keywords="database tools" data-search-name="Server &rsaquo; Database Tools">Database Tools</a>
 										<p>View information about your database</p>
 									</li>
 									<li class="link-server-info">
-										<a href="">Server Info</a>
+										<a href="" data-search-keywords="server tools info" data-search-name="Server &rsaquo; Server Info">Server Info</a>
 										<p>View information about your server and its capabilities</p>
 									</li>
 									<li class="link-logs">
-										<a href="{{ path('admin_logs') }}">Logs</a>
+										<a href="{{ path('admin_logs') }}" data-search-keywords="logs errors" data-search-name="Server &rsaquo; Logs">Logs</a>
 										<p>Check error logs and email collection logs</p>
 									</li>
 									<li class="link-tests">
-										<a href="">Tests</a>
+										<a href="" data-search-keywords="tests server" data-search-name="Server &rsaquo; Tests">Tests</a>
 										<p>Tests to ensure proper operations of your server.</p>
 									</li>
 								</ol>
@@ -386,7 +339,7 @@
 						</li>
 
 						<li class="agents-nav no-menu">
-							<a href="{{ path('admin_agents') }}">Agents</a>
+							<a href="{{ path('admin_agents') }}" data-search-keywords="agents techs staff admins administrators" data-search-name="Agents">Agents</a>
 						</li>
 
 						<li class="people-nav">
@@ -394,27 +347,27 @@
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
 									<li class="link-fields">
-										<a href="{{ path('admin_usergroups') }}">User Groups</a>
+										<a href="{{ path('admin_usergroups') }}" data-search-keywords="groups usergroups" data-search-name="Users &rsaquo; User Groups">User Groups</a>
 										<p>Create user groups to easily manage similar users, and to manage permissions on them.</p>
 									</li>
 									<li class="link-fields">
-										<a href="{{ path('admin_customdefpeople') }}">Fields</a>
+										<a href="{{ path('admin_customdefpeople') }}" data-search-keywords="fields users userfields customfields custom" data-search-name="Users &rsaquo; Fields">Fields</a>
 										<p>Create custom fields that can be added to users.</p>
 									</li>
 									<li class="link-labels">
-										<a href="{{ path('admin_labels', {'label_type': 'people'}) }}">Labels</a>
+										<a href="{{ path('admin_labels', {'label_type': 'people'}) }}" data-search-keywords="labels users" data-search-name="Users &rsaquo; Labels">Labels</a>
 										<p>Define labels that can be applied to users.</p>
 									</li>
 									<li class="link-fields">
-										<a href="{{ path('admin_customdeforganizations') }}">Organization Fields</a>
+										<a href="{{ path('admin_customdeforganizations') }}" data-search-keywords="organizations fields orgfields custom" data-search-name="Users &rsaquo; Organization Fields">Organization Fields</a>
 										<p>Create custom fields that can be added to organizations.</p>
 									</li>
 									<li class="link-labels">
-										<a href="{{ path('admin_labels', {'label_type': 'organizations'}) }}">Organization Labels</a>
+										<a href="{{ path('admin_labels', {'label_type': 'organizations'}) }}" data-search-keywords="organizations labels" data-search-name="Users &rsaquo; Organization Labels">Organization Labels</a>
 										<p>Define labels that can be applied to organizations.</p>
 									</li>
 									<li class="link-fields">
-										<a href="{{ path('admin_banning') }}">Banning</a>
+										<a href="{{ path('admin_banning') }}" data-search-keywords="banning" data-search-name="Users &rsaquo; Banning">Banning</a>
 										<p>Ban IP ranges and email addresses</p>
 									</li>
 								</ol>
@@ -426,15 +379,15 @@
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
 									<li class="link-widgets">
-										<a href="">Widgets</a>
+										<a href="" data-search-keywords="widgets" data-search-name="Integrate &rsaquo; Widgets">Widgets</a>
 										<p>Manage widgets that are added to pages.</p>
 									</li>
 									<li class="link-api">
-										<a href="{{ path('admin_api_keylist') }}">API</a>
+										<a href="{{ path('admin_api_keylist') }}" data-search-keywords="api" data-search-name="Integrate &rsaquo; API">API</a>
 										<p>Manage your API keys and usage.</p>
 									</li>
 									<li class="link-plugins">
-										<a href="">Plugins</a>
+										<a href="" data-search-keywords="plugins" data-search-name="Integrate &rsaquo; Plugins">Plugins</a>
 										<p>Manage or install plugins.</p>
 									</li>
 								</ol>
@@ -448,19 +401,19 @@
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
 									<li class="link-fields">
-										<a href="{{ path('admin_tickets_properties') }}">Properties</a>
+										<a href="{{ path('admin_tickets_properties') }}" data-search-keywords="fields properties categories priorities workflows widgets" data-search-name="Tickets &rsaquo; Fields &amp; Properties">Properties</a>
 										<p>Manage ticket properties like categories, priorities, workflows and widgets.</p>
 									</li>
 									<li class="link-ticket-filters">
-										<a href="">Filters</a>
+										<a href="" data-search-keywords="filters" data-search-name="Tickets &rsaquo; Filters">Filters</a>
 										<p>Create filters that will appear in agent interface to help your team find tickets faster.</p>
 									</li>
 									<li class="link-ticket-triggers">
-										<a href="{{ path('admin_tickettriggers') }}">Triggers and Escalations</a>
+										<a href="{{ path('admin_tickettriggers') }}" data-search-keywords="triggers escalations rules notifications" data-search-name="Tickets &rsaquo; Triggers &amp; Escalations">Triggers and Escalations</a>
 										<p>Define triggers to change or escalate tickets, or send notifications, based on certain criteria</p>
 									</li>
 									<li class="link-ticket-macros">
-										<a href="">Macros</a>
+										<a href="" data-search-keywords="macros" data-search-name="Tickets &rsaquo; Macros">Macros</a>
 										<p>Create groups of actions that can be performed on tickets with a single click.</p>
 									</li>
 									<li class="link-fields">
@@ -468,7 +421,7 @@
 										<p>Create custom fields that can be added to tickets, and mapped to specific departments and other criteria.</p>
 									</li>
 									<li class="link-labels">
-										<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}">Labels</a>
+										<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}" data-search-keywords="tickets labels" data-search-name="Tickets &rsaquo; Labels">Labels</a>
 										<p>Define labels that can be applied to tickets to help organize your helpdesk.</p>
 									</li>
 								</ol>
@@ -480,11 +433,11 @@
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
 									<li class="link-fields">
-										<a href="">Fields</a>
+										<a href="" data-search-keywords="fields custom deals" data-search-name="Deals &rsaquo; Fields">Fields</a>
 										<p>Managed deal statuses and custom fields.</p>
 									</li>
 									<li class="link-labels">
-										<a href="">Labels</a>
+										<a href="" data-search-keywords="labels deals" data-search-name="Deals &rsaquo; Labels">Labels</a>
 										<p>Define labels that can be applied to deals.</p>
 									</li>
 								</ol>

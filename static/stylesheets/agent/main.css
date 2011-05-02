@@ -215,6 +215,10 @@ Header
 	background-position: left -54px;
 }
 
+#header #search-form.no-icon input {
+    padding-left: 12px !important;
+}
+
 #header #search-form input {
 	width: 115px;
 	border: 1px solid #636f7d;
@@ -303,7 +307,7 @@ Header
 	margin-left: 20px;
 }
 
-#header .results-list ul li:last-child a {
+#header .results-list:not(.no-last) ul li:last-child a {
 	color:#4486d8;
 	font-weight: bold;
 }
