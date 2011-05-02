@@ -32,7 +32,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			} else {
 				$return = $this->request->getRequestUri();
 			}
-			return $this->redirect($this->get('router')->generate('user_login', array('return' => $return)));
+			return $this->redirect($this->get('router')->generate('agent_login', array('return' => $return)));
 		}
 
 		if (!$this->_userHasPermissions()) {
