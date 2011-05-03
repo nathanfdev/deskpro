@@ -4,9 +4,24 @@ Orb.createNamespace('DeskPRO.User.Page');
  * NewTicket functionality
  */
 DeskPRO.User.Page.NewTicket = new Orb.Class({
+
+	Implements: [Orb.Util.Options],
+
+	initialize: function(options) {
+		this.options = {
+			autoRun: false
+		};
+
+		if (options) this.setOptions(options);
+	},
+
 	initPage: function() {
 		this._initFormPropReferences();
 		this._initChangeListeners();
+
+		if (this.autoRun) {
+			this.updateDisplayedFields();
+		}
 	},
 
 	_initFormPropReferences: function() {

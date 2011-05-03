@@ -1,0 +1,72 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% import "UserBundle:Common:property-fields.html.twig" as property_fields %}
+{% block head %}
+<script type="text/javascript" src="{{ path('data_interface_data', {'types': ['tickets']}) }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/User/Page/NewTicket.js') }}"></script>
+<script type="text/javascript">
+	DeskPRO_Window.setPageHandler(new DeskPRO.User.Page.NewTicket({ autoRun: true }));
+</script>
+{% endblock %}
+{% block content %}
+
+<h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ phrase('core_ticket.modify_ticket') }}</h1>
+
+<table cellspacing="5" cellpadding="0" border="0" width="100%">
+	<tr>
+		<td width="150">
+			Subject
+		</td>
+		<td>
+			{{ form_widget(form.ticket.subject) }}
+		</td>
+	</tr>
+	<tr>
+		<td>
+			Department
+		</td>
+		<td>
+			{{ property_fields.form_department_select('editticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
+		</td>
+	</tr>
+	<tr>
+		<td id="category_select_wrap">
+			{{ phrase('core_tickets.category') }}
+		</td>
+		<td>
+			{{ property_fields.form_category_select('editticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
+		</td>
+	</tr>
+	{% if form.ticket.product_id %}
+		<tr>
+			<td>
+				{{ phrase('core.product') }}
+			</td>
+			<td>
+				{{ form_widget(form.ticket.product_id, {'class': 'product_id'}) }}
+			</td>
+		</tr>
+	{% endif %}
+	{% if form.ticket.priority_id %}
+		<tr>
+			<td>
+				{{ phrase('core_tickets.priority') }}
+			</td>
+			<td>
+				{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
+			</td>
+		</tr>
+	{% endif %}
+</table>
+
+<table cellspacing="5" cellpadding="0" border="0" width="100%">
+	{% for f in custom_fields %}
+		<tr class="ticket-display-element ticket_field-{{f.field_def.id}}" style="display:none">
+			<td>
+				<small>{{ phrase(f.field_def) }}</small><br />
+				{{ form_widget(form.custom_fields[f.name], {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}
+			</td>
+		</tr>
+	{% endfor %}
+</table>
+
+{% endblock %}

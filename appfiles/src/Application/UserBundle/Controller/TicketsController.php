@@ -16,6 +16,7 @@ use \Application\DeskPRO\Entity;
 
 use \Orb\Util\Arrays;
 
+use \Application\UserBundle\Form\EditTicketType;
 
 class TicketsController extends AbstractController
 {
@@ -122,6 +123,48 @@ class TicketsController extends AbstractController
 		return $this->viewAction($ticket_ref);
 	}
 
+	################################################################################
+	# modify
+	################################################################################
+
+	/**
+	 * Modify ticket
+	 */
+	public function modifyAction($ticket_ref)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+
+		$editticket = new \Application\UserBundle\EditTicket\EditTicket(
+			$ticket
+		);
+		
+		$editticket_formtype = new EditTicketType($this->person);
+		$form = $this->get('form.factory')->create($editticket_formtype, $editticket);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				App::getOrm()->transactional(function() use ($ticket) {
+					App::getOrm()->persist($ticket);
+					App::getOrm()->flush();
+				});
+
+				return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
+			}
+		}
+
+		return $this->render('UserBundle:Tickets:modify-ticket.html.twig', array(
+			'ticket_options' => $editticket_formtype->getTicketOptions(),
+			'editticket_formtype' => $editticket_formtype,
+			'custom_fields' => $editticket_formtype->getTicketFields(),
+			'form' => $form->createView(),
+			'ticket' => $ticket
+		));
+	}
+
+
+
 	/**
 	 * @return Application\DeskPRO\Entity\Ticket
 	 */
@@ -133,12 +176,14 @@ class TicketsController extends AbstractController
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
 		}
 
-		$person = App::getEntityRepository('DeskPRO:Person')->find($this->session_allowed[$ticket['id']]['person_id']);
+		if (isset($this->session_allowed[$ticket['id']])) {
+			$person = App::getEntityRepository('DeskPRO:Person')->find($this->session_allowed[$ticket['id']]['person_id']);
 
-		// Set the current person context
-		if ($this->person != $person) {
-			$this->person = $person;
-			App::setCurrentPerson($person);
+			// Set the current person context
+			if ($this->person != $person) {
+				$this->person = $person;
+				App::setCurrentPerson($person);
+			}
 		}
 
 		return $ticket;

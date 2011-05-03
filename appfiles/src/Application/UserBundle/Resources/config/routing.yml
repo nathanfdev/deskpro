@@ -109,6 +109,10 @@ user_tickets_view:
   pattern: /tickets/{ticket_ref}
   defaults: { _controller: UserBundle:Tickets:view }
 
+user_tickets_modify:
+  pattern: /tickets/{ticket_ref}/modify
+  defaults: { _controller: UserBundle:Tickets:modify }
+
 user_tickets_view_auth:
   pattern: /tickets/{ticket_ref}/{ticket_auth}
   defaults: { _controller: UserBundle:Tickets:viewWithAuth }

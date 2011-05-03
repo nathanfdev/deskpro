@@ -22,6 +22,8 @@
 	'core_tickets.category'          => 'Category',
 	'core_tickets.status'            => 'Status',
 	'core_tickets.agent'             => 'Agent',
+	'core_tickets.department'        => 'Department',
+	'core_tickets.product'           => 'Product',
 	'core_tickets.workflow'          => 'Workflow',
 	'core_tickets.priority'          => 'Priority',
 	'core_tickets.organization'      => 'Organization',
@@ -38,4 +40,6 @@
 	'core_tickets.date_first_agent_reply'            => 'Date of First Agent Reply',
 	'core_tickets.date_last_user_reply'              => 'Date of Last User Reply',
 	'core_tickets.date_last_agent_reply'             => 'Date of Last Agent Reply',
+
+	'core_tickets.modify_ticket'    => 'Modify Ticket',
 );
