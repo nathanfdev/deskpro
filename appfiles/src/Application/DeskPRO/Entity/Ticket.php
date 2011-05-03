@@ -996,10 +996,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setHiddenStatus($hstatus)
 	{
+		$old_status = $this->status;
 		$old_hstatus = $this->hidden_status;
 
 		$this->hidden_status = $hstatus;
+		$this->status = 'hidden';
 
+		$this->_onPropertyChanged('status', $old_status, $this->status);
 		$this->_onPropertyChanged('hidden_status', $old_hstatus, $this->hidden_status);
 	}
 
@@ -1148,6 +1151,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * @return \Application\DeskPRO\Labels\LabelManager
+	 */
 	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {

@@ -625,9 +625,17 @@ function _page_exec() {
 			</div>
 		</div>
 	{% endif %}
+	<div class="type" title="Set template suffix" data-rule-type="notification_template">
+		<div class="choice">
+			Set the template suffix to add to default template names. This allows you to use custom templates:
+			<input type="hidden" name="template_suffix" value="" />
+			<br />
+			<small>Example: "my-tpl" means a new ticket notification would look for new-ticket-my-tpl.html.twig template</small>
+		</div>
+	</div>
 	<div class="type" title="Disable email notifications set from a previous rule" data-rule-type="notification_disable">
 		<div class="choice">
-			<input type="hidden" name="notification_disable" value="1" />
+			<input type="hidden" name="disable_notifications" value="1" />
 		</div>
 	</div>
 </div>

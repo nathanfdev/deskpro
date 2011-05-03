@@ -14,6 +14,8 @@ namespace Application\DeskPRO\People\Helpers;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
+use Orb\Util\Arrays;
+
 /**
  * This helps working with agent teams on a person
  */
@@ -45,6 +47,11 @@ class AgentTeam implements \Orb\Helper\ShortCallableInterface
 		");
 
 		return $this->_agent_team_ids;
+	}
+
+	public function getPrimaryTeamId()
+	{
+		return Arrays::getFirstItem($this->getAgentTeamIds());
 	}
 
 	public function addToAgentTeam(Entity\AgentTeam $team)

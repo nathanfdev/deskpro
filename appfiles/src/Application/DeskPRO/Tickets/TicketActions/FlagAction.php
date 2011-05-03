@@ -1,0 +1,76 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage Tickets
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Tickets\TicketActions;
+
+use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
+
+/**
+ * Sets flag
+ */
+class FlagAction implements ActionInterface, PersonContextInterface
+{
+	protected $flag;
+	protected $person_context;
+
+	public function __construct($flag)
+	{
+		$this->flag = $flag;
+	}
+
+	
+	public function setPersonContext(Person $person)
+	{
+		$this->person_context = $person;
+	}
+
+
+	/**
+	 * Apply the property to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function apply(Ticket $ticket)
+	{
+		$flag = $this->flag;
+
+		// Invalid context
+		if (!$this->person_context OR !$this->person_context['is_agent']) {
+			return;
+		}
+
+		$ticket->setFlagForPerson($this->person_context, $flag);
+	}
+
+
+	/**
+	 * Get the flag color
+	 * 
+	 * @return int
+	 */
+	public function getFlag()
+	{
+		return $this->flag;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+	 */
+	public function merge(ActionInterface $other_action)
+	{
+		return $other_action;
+	}
+}

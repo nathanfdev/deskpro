@@ -15,6 +15,7 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
 use \Orb\Util\Arrays;
 
@@ -53,6 +54,10 @@ class TriggerExecutor
 
 	public function run()
 	{
+		if ($this->is_performing) return;
+
+		$this->is_performing = true;
+
 		if ($this->tracker->isExtraSet('ticket_created')) {
 			$this->event_types[] = 'new_ticket';
 		} else {
@@ -73,27 +78,15 @@ class TriggerExecutor
 
 		$action_sets = Arrays::removeFalsey($action_sets);
 
-		$this->is_performing = true;
-		if ($action_sets) {
-			App::getOrm()->beginTransaction();
-
-			$ticket_edit = new \Application\DeskPRO\Tickets\TicketEdit($this->ticket);
-			foreach ($action_sets as $actions) {
-				$ticket_edit->applyActions($actions);
-			}
-			App::getOrm()->persist($this->ticket);
-
-			App::getOrm()->flush();
-			App::getOrm()->commit();
-		}
-
-		// Now loop again to perform external triggers
-		foreach ($all_triggers as $trigger) {
-			if ($trigger->checkTicketMatch($this->ticket, $log_actions)) {
-				$trigger->performExternalActions($this->ticket, $log_actions);
+		$actions_collection = new ActionsCollection();
+		foreach ($action_sets as $set) {
+			foreach ($set as $act) {
+				$actions_collection->add($act);
 			}
 		}
 
+		$actions_collection->apply($this->ticket, App::getCurrentPerson());
+		
 		$this->is_performing = false;
 	}
 }

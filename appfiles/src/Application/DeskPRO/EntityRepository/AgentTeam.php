@@ -55,6 +55,25 @@ class AgentTeam extends EntityRepository
 		return $ret;
 	}
 
+	public function getMemberIds($team_id)
+	{
+		if (!is_array($team_id)) {
+			$agent_ids = App::getDb()->fetchAllCol("
+				SELECT person_id
+				FROM agent_team_members
+				WHERE team_id = ?
+			", array($team_id));
+		} else {
+			$agent_ids = App::getDb()->fetchAllCol("
+				SELECT person_id
+				FROM agent_team_members
+				WHERE team_id IN (" . implode(',', $team_id) . ")
+			");
+		}
+
+		return $agent_ids;
+	}
+
 
 
 	/**

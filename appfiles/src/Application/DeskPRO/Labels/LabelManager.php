@@ -45,6 +45,13 @@ class LabelManager
 		return null;
 	}
 
+	public function removeLabels(array $labels)
+	{
+		foreach ($labels as $label) {
+			$this->removeLabel($label);
+		}
+	}
+
 	public function addLabel($label)
 	{
 		$label = self::normalizeLabel($label);
@@ -60,6 +67,13 @@ class LabelManager
 		$this->entity->addLabel($labelobj);
 
 		return $labelobj;
+	}
+
+	public function addLabels(array $labels)
+	{
+		foreach ($labels as $label) {
+			$this->addLabel($label);
+		}
 	}
 
 	public function getLabelsArray()

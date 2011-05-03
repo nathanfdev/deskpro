@@ -100,8 +100,20 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getEditActions(Ticket $ticket, array $logs = array())
 	{
-		$ticket_actions = new \Application\DeskPRO\Tickets\TicketActions($this->actions);
-		$actions = $ticket_actions->getActionsArray($ticket);
+		$actions = array();
+
+		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
+
+		foreach ($this->actions as $action_info) {
+
+			$term = $action_info['rule_type'];
+			unset($action_info['rule_type']);
+
+			$action = $factory->create($term, $action_info);
+			if ($action) {
+				$actions[] = $action;
+			}
+		}
 
 		return $actions;
 	}
