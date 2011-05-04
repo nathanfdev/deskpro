@@ -40,6 +40,9 @@ ul.attachment-list > li img.preview {
 	</div>
 {% endif %}
 
+<div style="float:right">
+	<a href="{{ path('user_tickets_modify', {'ticket_ref':ticket.ref}) }}">Modify ticket properties</a>
+</div>
 <h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ ticket.subject }}</h1>
 
 <table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
@@ -74,6 +77,14 @@ ul.attachment-list > li img.preview {
 		{{ ticket.agent.display_name|default(phrase('core.unassigned')) }}
 	</td>
 </tr></table>
+
+<table cellspacing="5" cellpadding="0" border="0" width="100%"><tr><td>
+	<strong>Ticket participants</strong><Br />
+	<ul>
+		<li><strong>You</strong> ({{app.user.primary_email_address}})</li>
+		<li><a href="{{ path('user_tickets_participants', {'ticket_ref': ticket.ref}) }}">Add or remove people</a></li>
+	</ul>
+</td></tr></table>
 
 {% for message in ticket.displayable_messages %}
 	<div style="border: 2px solid #ddd; margin-bottom: 15px;">

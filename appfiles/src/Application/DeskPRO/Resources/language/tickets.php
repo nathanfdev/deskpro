@@ -41,5 +41,6 @@
 	'core_tickets.date_last_user_reply'              => 'Date of Last User Reply',
 	'core_tickets.date_last_agent_reply'             => 'Date of Last Agent Reply',
 
-	'core_tickets.modify_ticket'    => 'Modify Ticket',
+	'core_tickets.modify_ticket'          => 'Modify Ticket',
+	'core_tickets.manage_participants'    => 'Manage people on this ticket',
 );

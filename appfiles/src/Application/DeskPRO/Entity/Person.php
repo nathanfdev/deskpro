@@ -1044,6 +1044,24 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Adds an emaila ddress string. This is same as addEmailAddress except
+	 * we take care of creating the PersonEmail object here.
+	 *
+	 * @param string $email
+	 * @return PersonEmail
+	 */
+	public function addEmailAddressString($email)
+	{
+		$email_obj = new PersonEmail();
+		$email_obj['email'] = $email;
+
+		$this->addEmailAddress($email_obj);
+		
+		return $email_obj;
+	}
+
+
 
 	/**
 	 * Remove an email address from this user.

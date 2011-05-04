@@ -18,6 +18,7 @@ use \Orb\Util\Arrays;
 
 use \Application\UserBundle\Form\EditTicketType;
 use \Application\UserBundle\Form\NewTicketReplyType;
+use \Application\UserBundle\Form\NewTicketParticipantType;
 
 class TicketsController extends AbstractController
 {
@@ -208,10 +209,69 @@ class TicketsController extends AbstractController
 		));
 	}
 
+	################################################################################
+	# manage-participants
+	################################################################################
+
+	public function manageParticipantsAction($ticket_ref)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+
+		$newpart_form = $this->get('form.factory')->create(new NewTicketParticipantType());
+
+		return $this->render('UserBundle:Tickets:modify-ticket.html.twig', array(
+			'ticket' => $ticket,
+			'newpart_form' => $newpart_form->createView()
+		));
+	}
+
+	################################################################################
+	# add-participant
+	################################################################################
+
+	public function addParticipantAction($ticket_ref)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+
+		$newpart = new \Application\UserBundle\Tickets\NewParticipant(
+			$ticket
+		);
+
+		$newpart_form = $this->get('form.factory')->create(new NewTicketParticipantType(), $newpart);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$newpart_form->bindRequest($this->get('request'));
+
+			if ($newpart_form->isValid()) {
+				$newpart->save();
+			}
+		}
+
+		return $this->redirectRoute('user_tickets_participants', array('ticket_ref' => $ticket['ref']));
+	}
+
+	################################################################################
+	# remove-participant
+	################################################################################
+
+	public function removeParticipantAction($ticket_ref, $person_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+
+		$ticket->removeParticipant($person_id);
+
+		App::getOrm()->transactional(function() use ($ticket) {
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
+		});
+
+		return $this->redirectRoute('user_tickets_participants', array('ticket_ref' => $ticket['ref']));
+	}
+
 
 
 	/**
-	 * @return Application\DeskPRO\Entity\Ticket
+	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	protected function getTicketOr404($ticket_ref, $authcode = null)
 	{

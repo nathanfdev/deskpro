@@ -117,6 +117,18 @@ user_tickets_modify:
   pattern: /tickets/{ticket_ref}/modify
   defaults: { _controller: UserBundle:Tickets:modify }
 
+user_tickets_participants:
+  pattern: /tickets/{ticket_ref}/people
+  defaults: { _controller: UserBundle:Tickets:manageParticipants }
+
+user_tickets_participants_add:
+  pattern: /tickets/{ticket_ref}/people/add
+  defaults: { _controller: UserBundle:Tickets:addParticipant }
+
+user_tickets_participants_remove:
+  pattern: /tickets/{ticket_ref}/people/remove/{person_id}
+  defaults: { _controller: UserBundle:Tickets:removeParticipant }
+
 user_tickets_view_auth:
   pattern: /tickets/{ticket_ref}/{ticket_auth}
   defaults: { _controller: UserBundle:Tickets:viewWithAuth }

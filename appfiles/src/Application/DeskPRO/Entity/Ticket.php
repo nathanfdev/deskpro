@@ -281,6 +281,13 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $participants;
 
 	/**
+	 * Array cache of user participants
+	 * @var array
+	 * @see getUserParticipants
+	 */
+	protected $_user_participants;
+
+	/**
 	 * Ticket logger
 	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketChangeTracker
 	 */
@@ -321,6 +328,22 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_logger = new \Application\DeskPRO\Tickets\TicketChangeTracker($this);
 		$this->_ticket_logger = $ticket_logger;
 		$this->addPropertyChangedListener($ticket_logger);
+	}
+
+
+	public function getUserParticipants()
+	{
+		if ($this->_user_participants !== null) return $this->_user_participants;
+
+		$this->_user_participants = array();
+
+		foreach ($this->participants as $p) {
+			if (!$p['person']['is_agent']) {
+				$this->_user_participants[] = $p;
+			}
+		}
+
+		return $this->_user_participants;
 	}
 
 
@@ -386,6 +409,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_part['person'] = $person;
 		$ticket_part['ticket'] = $this;
 		$this->participants->add($ticket_part);
+
+		if ($this->_user_participants !== null AND !$person['is_agent']) {
+			$this->_user_participants[] = $ticket_part;
+		}
 
 		return $ticket_part;
 	}

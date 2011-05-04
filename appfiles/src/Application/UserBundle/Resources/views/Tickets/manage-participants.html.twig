@@ -1,0 +1,39 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% import "UserBundle:Common:property-fields.html.twig" as property_fields %}
+{% block head %}
+<script type="text/javascript" src="{{ path('data_interface_data', {'types': ['tickets']}) }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/User/Page/NewTicket.js') }}"></script>
+<script type="text/javascript">
+	DeskPRO_Window.setPageHandler(new DeskPRO.User.Page.NewTicket({ autoRun: true }));
+</script>
+{% endblock %}
+{% block content %}
+
+<h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ phrase('core_ticket.manage_participants') }}</h1>
+
+{% if ticket.user_participants|length %}
+	<ul>
+		{% for part in ticket.user_participants %}
+		<li>
+			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref', ticket.ref, 'person_id': part.person.id}) }}">remove</a>)</small> &nbsp;
+			{% if part.person.display_name != part.person.primary_email_address %}
+				{{ part.person.display_name }} ({{ part.person.primary_email_address }})
+			{% else %}
+				{{ part.person.primary_email_address }}
+			{% endif %}
+		</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+<form action="{{ path('user_tickets_participants_add', {'ticket_ref':ticket.ref}) }}" method="post">
+	Add a new person by entering their name and email:<br />
+	First Name: {{ form_widget(newpart_form.first_name) }} &nbsp;&nbsp;
+	Last Name: {{ form_widget(newpart_form.last_name) }}
+	<br />
+	Email: {{ form_widget(newpart_form.email) }}
+	<input type="submit" value="Add" />
+	{{ form_rest(newpart_form) }}
+</form>
+
+{% endblock %}
