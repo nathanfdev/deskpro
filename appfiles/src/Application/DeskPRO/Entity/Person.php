@@ -11,14 +11,15 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\ORM\Util\Util as ORM_Util;
+use Application\DeskPRO\App;
+use Application\DeskPRO\ORM\Util\Util as ORM_Util;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
-use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\UsergroupPropertyPermission;
+use Application\DeskPRO\Entity;
 
 /**
  * A "person" is a record in the database that stores information about a person.
@@ -97,6 +98,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="is_agent_confirmed", type="boolean")
 	 */
 	protected $is_agent_confirmed = false;
+
+	/**
+	 * The user importance, 1-5
+	 *
+	 * @var int
+	 * @orm:Column(name="importance", type="smallint")
+	 */
+	protected $importance = 1;
 
 	/**
 	 * The users name (best guess from other sources etc)
@@ -307,8 +316,6 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:OneToMany(targetEntity="TaskAssociatedPerson", mappedBy="person")
 	 */
 	protected $task_associations;
-
-
 
 	
 	/**
@@ -664,6 +671,18 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->getDisplayName();
 	}
 
+
+	/**
+	 * Set the importance of this user
+	 *
+	 * @param int $importance
+	 */
+	public function setImportance($importance)
+	{
+		$old = $this->importance;
+		$this->importance = Numbers::bound($importance, 1, 5);
+		$this->_onPropertyChanged('importance', $old, $this->importance);
+	}
 
 
 	/**
@@ -1344,8 +1363,20 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setOrganization(Organization $org, $position = '')
 	{
+		$old_o = $this->organization;
+		$old_op = $this->organization_position;
+
 		$this->organization = $org;
 		$this->organization_position = $position;
+
+		$this->_onPropertyChanged('organization', $old_o, $this->organization);
+		$this->_onPropertyChanged('organization', $old_op, $this->organization_position);
+
+		// Improve importance when adding the user to the org that
+		// has a higher importance
+		if ($this->organization['importance'] > $this->importance) {
+			$this->setImportance($this->organization['importance']);
+		}
 	}
 
 

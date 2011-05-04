@@ -11,14 +11,15 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\ORM\Util\Util as ORM_Util;
+use Application\DeskPRO\App;
+use Application\DeskPRO\ORM\Util\Util as ORM_Util;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
-use \Application\DeskPRO\Entity\UsergroupPropertyPermission;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\UsergroupPropertyPermission;
+use Application\DeskPRO\Entity;
 
 
 /**
@@ -45,6 +46,14 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
+
+	/**
+	 * The org importance
+	 *
+	 * @var int
+	 * @orm:Column(name="importance", type="smallint")
+	 */
+	protected $importance = 1;
 
 	/**
 	 * @orm:OneToMany(targetEntity="CustomDataOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -78,6 +87,19 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels              = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->contact_data        = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->task_associations   = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+
+	/**
+	 * Set the default importance of people in this org
+	 *
+	 * @param int $importance
+	 */
+	public function setImportance($importance)
+	{
+		$old = $this->importance;
+		$this->importance = Numbers::bound($importance, 1, 5);
+		$this->_onPropertyChanged('importance', $old, $this->importance);
 	}
 
 
@@ -235,5 +257,10 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_label_manager;
+	}
+
+	public function __toString()
+	{
+		return $this->name;
 	}
 }
