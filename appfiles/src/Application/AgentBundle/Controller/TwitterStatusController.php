@@ -141,6 +141,7 @@ class TwitterStatusController extends AbstractController
 			'type' => $type,
 			'account' => $account,
 			'statuses' => $statuses,
+            'person' => $this->getPerson(),
 		);
 
 		// check if is partial
