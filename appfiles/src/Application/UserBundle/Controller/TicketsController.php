@@ -66,6 +66,16 @@ class TicketsController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
 
+		$ticket_attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
+		$ticket_message_attachments = array();
+		foreach ($ticket_attachments as $attach) {
+			if (!isset($ticket_message_attachments[$attach['message']['id']])) {
+				$ticket_message_attachments[$attach['message']['id']] = array();
+			}
+
+			$ticket_message_attachments[$attach['message']['id']][] = $attach['id'];
+		}
+
 		// Custom fields
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
@@ -90,7 +100,9 @@ class TicketsController extends AbstractController
 			'ticket' => $ticket,
 			'custom_fields' => $custom_fields,
 			'widgets' => $widgets,
-			'newreply_form' => $newply_form->createView()
+			'newreply_form' => $newply_form->createView(),
+			'ticket_attachments' => $ticket_attachments,
+			'ticket_message_attachments' => $ticket_message_attachments
 		));
 	}
 
