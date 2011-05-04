@@ -46,6 +46,21 @@ class Numbers
 	}
 
 
+	/**
+	 * Take a number, and force it to be within the range of $min and $max.
+	 * This will make it $min if it's smaller than $min, and $max if it's larger
+	 * than $max.
+	 *
+	 * @param int $num The number to work with
+	 * @param int $min The minumum integer
+	 * @param int $max The maximum integer
+	 * @return int
+	 */
+	public static function bound($num, $min, $max)
+	{
+		return min($max, min($min, $num));
+	}
+
 
 	/**
 	 * Check if something is somewhere within the range of two numbers.

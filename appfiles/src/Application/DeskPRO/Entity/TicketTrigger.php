@@ -25,7 +25,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	const EVENT_NEW_TICKET           = 'new_ticket';
 	const EVENT_NEW_REPLY            = 'new_reply';
 	const EVENT_PROPERTY_CHANGE      = 'property_change';
-	const EVENT_TIME_UNRESOLVED      = 'time_unresolved';
+	const EVENT_TIME_OPEN            = 'time_open';
 	const EVENT_TIME_USER_WAITING    = 'time_user_waiting';
 	const EVENT_TIME_AGENT_WAITING   = 'time_agent_waiting';
 
@@ -72,7 +72,61 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $actions = array();
 
+	/**
+	 * When non-null, the group is a special system trigger (hidden from most interfaces).
+	 * Used prefixes: "urgency." for urgency-type triggers.
+	 *
+	 * @var bool
+	 * @orm:Column(name="sys_name", type="string", length="50", nullable=true)
+	 */
+	protected $sys_name = null;
 
+	/**
+	 * If this trigger has any terms or actions with urgency, means they are
+	 * listed on the urgency page.
+	 *
+	 * @var bool
+	 * @orm:Column(name="has_urgency", type="boolean")
+	 */
+	protected $has_urgency = false;
+
+	/**
+	 * Go through the actions on this trigger and find $name, and then
+	 * return its info.
+	 *
+	 * @param string $name
+	 * @return array
+	 */
+	public function getActionInfoOfType($name)
+	{
+		foreach ($this->actions as $info) {
+			if ($info['rule_type'] == $name) {
+				unset($info['rule_type']);
+				return $info;
+			}
+		}
+
+		return null;
+	}
+
+	/**
+	 * Go through the terms on this trigger and find $name, and then
+	 * return its info.
+	 *
+	 * @param string $name
+	 * @return array
+	 */
+	public function getTermInfoOfType($name)
+	{
+		foreach ($this->terms as $info) {
+			if ($info['rule_type'] == $name) {
+				unset($info['rule_type']);
+				return $info;
+			}
+		}
+
+		return null;
+	}
 
 	/**
 	 * Check to see if a ticket matches
