@@ -17,6 +17,7 @@ use \Application\DeskPRO\Entity;
 use \Orb\Util\Arrays;
 
 use \Application\UserBundle\Form\EditTicketType;
+use \Application\UserBundle\Form\NewTicketReplyType;
 
 class TicketsController extends AbstractController
 {
@@ -83,10 +84,13 @@ class TicketsController extends AbstractController
 		$widgets = Arrays::groupItems($widgets, 'section', true);
 		if (!isset($widgets['user.ticket.display'])) $widgets['user.ticket.display'] = array();
 
+		$newply_form = $this->get('form.factory')->create(new NewTicketReplyType());
+
 		return $this->render('UserBundle:Tickets:view.html.twig', array(
 			'ticket' => $ticket,
 			'custom_fields' => $custom_fields,
-			'widgets' => $widgets
+			'widgets' => $widgets,
+			'newreply_form' => $newply_form->createView()
 		));
 	}
 
@@ -124,6 +128,35 @@ class TicketsController extends AbstractController
 	}
 
 	################################################################################
+	# add-reply
+	################################################################################
+
+	/**
+	 * Only posted forms get here. The actual form is on the viewtikcet page.
+	 * 
+	 * @param  $ticket_ref
+	 */
+	public function addReplyAction($ticket_ref)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+
+		$newreply = new \Application\UserBundle\Tickets\NewReply($ticket, $this->person);
+
+		$form = $this->get('form.factory')->create(new NewTicketReplyType(), $newreply);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				$newreply->save();
+				$ticket_message = $newreply->getNewMessage();
+			}
+		}
+
+		return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket_ref));
+	}
+
+	################################################################################
 	# modify
 	################################################################################
 
@@ -134,7 +167,7 @@ class TicketsController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
 
-		$editticket = new \Application\UserBundle\EditTicket\EditTicket(
+		$editticket = new \Application\UserBundle\Tickets\EditTicket\EditTicket(
 			$ticket
 		);
 		
