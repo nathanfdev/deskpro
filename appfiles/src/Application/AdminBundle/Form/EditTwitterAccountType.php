@@ -21,7 +21,7 @@ class EditTwitterAccountType extends AbstractType
 {
 	public function buildForm(FormBuilder $builder, array $options)
 	{
-		$builder->add('oauth_toke', 'text');
+		$builder->add('oauth_token', 'text');
 		$builder->add('oauth_token_secret', 'text');
 	}
 }
