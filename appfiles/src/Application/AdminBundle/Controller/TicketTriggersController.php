@@ -30,19 +30,9 @@ class TicketTriggersController extends AbstractController
 	{
 		$this->rememberLastPage();
 
-		$all_triggers = App::getOrm()->createQuery("
-			SELECT t
-			FROM DeskPRO:TicketTrigger t
-			WHERE t.event_trigger NOT LIKE '%time_%'
-			ORDER BY t.title ASC
-		")->execute();
+		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getEventTriggers(false, false);
 
-		$all_escalations = App::getOrm()->createQuery("
-			SELECT t
-			FROM DeskPRO:TicketTrigger t
-			WHERE t.event_trigger LIKE '%time_%'
-			ORDER BY t.title ASC
-		")->execute();
+		$all_escalations = App::getEntityRepository('DeskPRO:TicketTrigger')->getTimeTriggers(false, false);
 
 		return $this->render('AdminBundle:TicketTriggers:list.html.twig', array(
 			'all_triggers' => $all_triggers,

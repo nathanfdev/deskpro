@@ -1,0 +1,82 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block section 'tickets' %}
+{% block sub_section 'priorities' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_ticket_urgency_saveoptions') }}" method="post" id="urgency_options_form">
+	<div class="table-list-wrap">
+		<h2>Basic Urgency Options</h2>
+		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+			<tbody>
+				<tr>
+					<td width="25%" align="center">
+						Base urgency score:<br />
+						{{ form_widget(urgency_options_form.base_urgency) }}
+					</td>
+					<td width="25%" align="center">
+						When the last user reply was
+						{{ form_widget(urgency_options_form.time_options.user_reply) }}
+						minutes ago,<br />boost urgency by
+						{{ form_widget(urgency_options_form.time_options.user_reply_num) }}
+					</td>
+					<td width="25%" align="center">
+						When the ticket has been open for
+						{{ form_widget(urgency_options_form.time_options.open) }}
+						minutes,<br />boost urgency by
+						{{ form_widget(urgency_options_form.time_options.opne_num) }}
+					</td>
+					<td width="25%" align="center">
+						When the total user waiting time is more than
+						{{ form_widget(urgency_options_form.time_options.user_waiting) }}
+						minutes,<br />boost urgency by
+						{{ form_widget(urgency_options_form.time_options.user_waiting_num) }}
+					</td>
+					<td width="25%" align="center"></td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+
+	<div class="table-list-wrap">
+		<h2>User Importance Boosting</h2>
+		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+			<tbody>
+				<tr>
+					<td width="20%" align="center">
+						1<br />
+						{{ form_widget(urgency_options_form.user_options.1_num) }}
+					</td>
+					<td width="20%" align="center">
+						2<br />
+						{{ form_widget(urgency_options_form.user_options.2_num) }}
+					</td>
+					<td width="20%" align="center">
+						3<br />
+						{{ form_widget(urgency_options_form.user_options.3_num) }}
+					</td>
+					<td width="20%" align="center">
+						4<br />
+						{{ form_widget(urgency_options_form.user_options.4_num) }}
+					</td>
+					<td width="20%" align="center">
+						5<br />
+						{{ form_widget(urgency_options_form.user_options.5_num) }}
+					</td>
+				</tr>
+			</tbody>
+		</table>
+	</div>
+</form>
+
+
+{% endblock %}

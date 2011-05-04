@@ -12,8 +12,8 @@ class Upgrade20110504172125 extends UpgradeAbstract
 		$this->output->writeln('Add importance fields');
 
 		try {
-			App::getDb()->exec("ALTER TABLE  `people` ADD  `importance` TINYINT NOT NULL DEFAULT  '1' AFTER  `is_agent_confirmed`");
-			App::getDb()->exec("ALTER TABLE  `organizations` ADD  `importance` TINYINT NOT NULL DEFAULT  '1'");
+			App::getDb()->exec("ALTER TABLE  `people` ADD  `importance` TINYINT NOT NULL DEFAULT  '0' AFTER  `is_agent_confirmed`");
+			App::getDb()->exec("ALTER TABLE  `organizations` ADD  `importance` TINYINT NOT NULL DEFAULT  '0'");
 		} catch (\Exception $e) {}
 
 		return Upgrader::STEP_DONE;

@@ -53,7 +53,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @orm:Column(name="importance", type="smallint")
 	 */
-	protected $importance = 1;
+	protected $importance = 0;
 
 	/**
 	 * @orm:OneToMany(targetEntity="CustomDataOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -98,7 +98,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	public function setImportance($importance)
 	{
 		$old = $this->importance;
-		$this->importance = Numbers::bound($importance, 1, 5);
+		$this->importance = Numbers::bound($importance, 0, 5);
 		$this->_onPropertyChanged('importance', $old, $this->importance);
 	}
 

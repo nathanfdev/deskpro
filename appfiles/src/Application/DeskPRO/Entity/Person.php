@@ -100,12 +100,12 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_agent_confirmed = false;
 
 	/**
-	 * The user importance, 1-5
+	 * The user importance, 0-5
 	 *
 	 * @var int
 	 * @orm:Column(name="importance", type="smallint")
 	 */
-	protected $importance = 1;
+	protected $importance = 0;
 
 	/**
 	 * The users name (best guess from other sources etc)
@@ -680,7 +680,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	public function setImportance($importance)
 	{
 		$old = $this->importance;
-		$this->importance = Numbers::bound($importance, 1, 5);
+		$this->importance = Numbers::bound($importance, 0, 5);
 		$this->_onPropertyChanged('importance', $old, $this->importance);
 	}
 
