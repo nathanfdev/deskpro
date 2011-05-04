@@ -11,6 +11,8 @@
 
 <h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ phrase('core_ticket.modify_ticket') }}</h1>
 
+<form action="{{ path('user_tickets_modify', {'ticket_ref':ticket.ref}) }}" method="post">
+
 <table cellspacing="5" cellpadding="0" border="0" width="100%">
 	<tr>
 		<td width="150">
@@ -42,7 +44,7 @@
 				{{ phrase('core.product') }}
 			</td>
 			<td>
-				{{ form_widget(form.ticket.product_id, {'class': 'product_id'}) }}
+				{{ form_widget(form.ticket.product_id, {'attr': {'class': 'product_id'}}) }}
 			</td>
 		</tr>
 	{% endif %}
@@ -52,7 +54,7 @@
 				{{ phrase('core_tickets.priority') }}
 			</td>
 			<td>
-				{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
+				{{ form_widget(form.ticket.priority_id, {'attr': {'class': 'priority_id'}}) }}
 			</td>
 		</tr>
 	{% endif %}
@@ -63,10 +65,14 @@
 		<tr class="ticket-display-element ticket_field-{{f.field_def.id}}" style="display:none">
 			<td>
 				<small>{{ phrase(f.field_def) }}</small><br />
-				{{ form_widget(form.custom_fields[f.name], {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}
+				{{ form_widget(form.ticket.custom_fields[f.name], {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}
 			</td>
 		</tr>
 	{% endfor %}
 </table>
+
+<center><input type="submit" value="Save" /></center>
+
+</form>
 
 {% endblock %}

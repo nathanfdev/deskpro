@@ -9,7 +9,7 @@ DeskPRO.User.Page.NewTicket = new Orb.Class({
 
 	initialize: function(options) {
 		this.options = {
-			autoRun: false
+			autoRun: true
 		};
 
 		if (options) this.setOptions(options);
@@ -19,7 +19,7 @@ DeskPRO.User.Page.NewTicket = new Orb.Class({
 		this._initFormPropReferences();
 		this._initChangeListeners();
 
-		if (this.autoRun) {
+		if (this.options.autoRun) {
 			this.updateDisplayedFields();
 		}
 	},
