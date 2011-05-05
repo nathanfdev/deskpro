@@ -1,19 +1,18 @@
-{% extends 'AdminBundle::layout.html.twig' %}
-{% block section 'tickets' %}
-{% block sub_section 'priorities' %}
+{% extends 'AdminBundle::layout_subpage.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketUrgencyList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
-}
+window._page_exec_stack.push(function() {
+	window.DeskPRO_Page_TicketUrgencyList = new DeskPRO.Admin.PageHandler.TicketUrgencyList('#ticket_urgency');
+});
 </script>
 {% endblock %}
+{% block page_id "ticket_urgency" %}
 {% block content %}
 
-<form action="{{ path('admin_ticket_urgency_saveoptions') }}" method="post" id="urgency_options_form">
+<form action="{{ path('admin_ticketurgency_saveoptions') }}" method="post" id="urgency_options_form">
 	<div class="table-list-wrap">
 		<h2>Basic Urgency Options</h2>
 		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
@@ -21,31 +20,32 @@ function _page_exec() {
 				<tr>
 					<td width="25%" align="center">
 						Base urgency score:<br />
-						{{ form_widget(urgency_options_form.base_urgency) }}
+						{{ form_widget(urgency_options_form.base_urgency, {'attr': {'size': 2}}) }}
 					</td>
 					<td width="25%" align="center">
-						When the last user reply was
-						{{ form_widget(urgency_options_form.time_options.user_reply) }}
+						When the last user reply was<br />
+						{{ form_widget(urgency_options_form.time_options.user_reply, {'attr': {'size': 2}}) }}
 						minutes ago,<br />boost urgency by
-						{{ form_widget(urgency_options_form.time_options.user_reply_num) }}
+						{{ form_widget(urgency_options_form.time_options.user_reply_num, {'attr': {'size': 2}}) }}
 					</td>
 					<td width="25%" align="center">
-						When the ticket has been open for
-						{{ form_widget(urgency_options_form.time_options.open) }}
+						When the ticket has been open for<br />
+						{{ form_widget(urgency_options_form.time_options.open, {'attr': {'size': 2}}) }}
 						minutes,<br />boost urgency by
-						{{ form_widget(urgency_options_form.time_options.opne_num) }}
+						{{ form_widget(urgency_options_form.time_options.open_num, {'attr': {'size': 2}}) }}
 					</td>
 					<td width="25%" align="center">
-						When the total user waiting time is more than
-						{{ form_widget(urgency_options_form.time_options.user_waiting) }}
+						When the total user waiting time is more than<br />
+						{{ form_widget(urgency_options_form.time_options.user_waiting, {'attr': {'size': 2}}) }}
 						minutes,<br />boost urgency by
-						{{ form_widget(urgency_options_form.time_options.user_waiting_num) }}
+						{{ form_widget(urgency_options_form.time_options.user_waiting_num, {'attr': {'size': 2}}) }}
 					</td>
-					<td width="25%" align="center"></td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
+
+	<br />
 
 	<div class="table-list-wrap">
 		<h2>User Importance Boosting</h2>
@@ -54,29 +54,32 @@ function _page_exec() {
 				<tr>
 					<td width="20%" align="center">
 						1<br />
-						{{ form_widget(urgency_options_form.user_options.1_num) }}
+						{{ form_widget(urgency_options_form.user_options.importance_num_1, {'attr': {'size': 2}}) }}
 					</td>
 					<td width="20%" align="center">
 						2<br />
-						{{ form_widget(urgency_options_form.user_options.2_num) }}
+						{{ form_widget(urgency_options_form.user_options.importance_num_2, {'attr': {'size': 2}}) }}
 					</td>
 					<td width="20%" align="center">
 						3<br />
-						{{ form_widget(urgency_options_form.user_options.3_num) }}
+						{{ form_widget(urgency_options_form.user_options.importance_num_3, {'attr': {'size': 2}}) }}
 					</td>
 					<td width="20%" align="center">
 						4<br />
-						{{ form_widget(urgency_options_form.user_options.4_num) }}
+						{{ form_widget(urgency_options_form.user_options.importance_num_4, {'attr': {'size': 2}}) }}
 					</td>
 					<td width="20%" align="center">
 						5<br />
-						{{ form_widget(urgency_options_form.user_options.5_num) }}
+						{{ form_widget(urgency_options_form.user_options.importance_num_5, {'attr': {'size': 2}}) }}
 					</td>
 				</tr>
 			</tbody>
 		</table>
 	</div>
-</form>
 
+	<div style="text-align: center; padding-top: 10px;">
+		<button class="dp-button">Save Options</button>
+	</div>
+</form>
 
 {% endblock %}

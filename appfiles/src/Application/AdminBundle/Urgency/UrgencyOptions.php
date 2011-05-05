@@ -40,8 +40,7 @@ class UrgencyOptions
 		);
 
 		foreach (range(1,5) as $imp) {
-			$this->time_options[$imp] = 0;
-			$this->time_options["{$imp}_mod"] = 0;
+			$this->user_options["importance_num_$imp"] = 0;
 		}
 
 		if ($triggers) {
@@ -79,13 +78,8 @@ class UrgencyOptions
 
 		} elseif (strpos($trigger['sys_name'], 'urgency.user_importance_') !== false) {
 			$key = preg_replace('#^urgency\.user_importance_#', '', $trigger['sys_name']);
-			$this->time_options[$key] = $trigger['event_trigger_option'];
-
 			$action_info = $trigger->getActionInfoOfType('urgency');
-			$term_info = $trigger->getTermInfoOfType('user_importance');
-
-			$this->time_options[$key] = $term_info['num'];
-			$this->time_options["{$key}_num"] = $action_info['num'];
+			$this->user_options["importance_num_{$key}"] = $action_info['num'];
 		}
 	}
 
@@ -103,7 +97,7 @@ class UrgencyOptions
 			$tr = new TicketTrigger();
 			$tr['sys_name'] = 'urgency.base';
 			$tr['event_trigger'] = TicketTrigger::EVENT_NEW_TICKET;
-			$triggers->add($tr);
+			$triggers[] = $tr;
 		}
 
 		$tr['actions'] = array(
@@ -122,7 +116,7 @@ class UrgencyOptions
 				$tr = new TicketTrigger();
 				$tr['sys_name'] = $sys_name;
 				$tr['event_trigger'] = 'time_' . $key;
-				$triggers->add($tr);
+				$triggers[] = $tr;
 			}
 
 			$tr['event_trigger_option'] = $this->time_options[$key];
@@ -143,15 +137,15 @@ class UrgencyOptions
 				$tr = new TicketTrigger();
 				$tr['sys_name'] = $sys_name;
 				$tr['event_trigger'] = TicketTrigger::EVENT_NEW_TICKET;
-				$triggers->add($tr);
+				$triggers[] = $tr;
 			}
 
 			$tr['terms'] = array(
-				array('type' => 'user_importance', 'num' => $this->user_options[$key])
+				array('type' => 'user_importance', 'num' => $key)
 			);
 
 			$tr['actions'] = array(
-				array('type' => 'urgency', 'num' => $this->user_options["{$key}_num"])
+				array('type' => 'urgency', 'num' => $this->user_options["importance_num_{$key}"])
 			);
 		}
 
@@ -162,6 +156,7 @@ class UrgencyOptions
 
 		App::getOrm()->transactional(function() use ($triggers) {
 			foreach ($triggers as $tr) {
+				$tr['title'] = $tr['sys_name'];
 				App::getOrm()->persist($tr);
 			}
 			App::getOrm()->flush();

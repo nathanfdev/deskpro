@@ -115,7 +115,7 @@ class TicketTrigger extends EntityRepository
 		$triggers = $this->getEntityManager()->createQuery("
 			SELECT trig
 			FROM DeskPRO:TicketTrigger trig INDEX BY trig.sys_name
-			WHERE trig.sys_name IS LIKE '{$prefix}.%'
+			WHERE trig.sys_name LIKE '{$prefix}.%'
 		")->execute();
 
 		return $triggers;

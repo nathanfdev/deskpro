@@ -33,7 +33,7 @@ class TicketUrgencyController extends AbstractController
 		$urgency_options = UrgencyOptions::newFromSystemTriggers();
 		$urgency_form = $this->get('form.factory')->create(new TicketUrgencyOptionsType(), $urgency_options);
 
-		return $this->render('AdminBundle:TicketTriggers:list.html.twig', array(
+		return $this->render('AdminBundle:TicketUrgency:list.html.twig', array(
 			'urgency_options' => $urgency_options,
 			'urgency_options_form' => $urgency_form->createView(),
 		));
@@ -46,7 +46,7 @@ class TicketUrgencyController extends AbstractController
 	/**
 	 * Called via ajax to save urgency options
 	 */
-	public function saveUrgencyOptionsAction()
+	public function saveOptionsAction()
 	{
 		$urgency_options = UrgencyOptions::newFromSystemTriggers();
 		$urgency_form = $this->get('form.factory')->create(new TicketUrgencyOptionsType(), $urgency_options);

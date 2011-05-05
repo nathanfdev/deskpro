@@ -38,6 +38,7 @@ class TicketPropertiesController extends AbstractController
 			'workflows'     => $this->forward('AdminBundle:TicketWorkflows:list')->getContent(),
 			'widgets'       => $this->forward('AdminBundle:TicketWidgets:list')->getContent(),
 			'custom_def'    => $this->forward('AdminBundle:CustomDefTickets:index')->getContent(),
+			'urgency'       => $this->forward('AdminBundle:TicketUrgency:list')->getContent()
 		);
 		return $this->render('AdminBundle:TicketProperties:list.html.twig', array(
 			'tabs' => $tabs

@@ -303,6 +303,14 @@ admin_tickettriggers_edit:
   requirements: { trigger_id: "\d+" }
 
 ################################################################################
+# Ticket Urgency
+################################################################################
+
+admin_ticketurgency_saveoptions:
+  pattern: /tickets/urgency/save-options
+  defaults: { _controller: AdminBundle:TicketUrgency:saveOptions }
+
+################################################################################
 # Organization Fields
 ################################################################################
 

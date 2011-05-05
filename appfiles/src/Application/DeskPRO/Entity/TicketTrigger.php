@@ -100,8 +100,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	public function getActionInfoOfType($name)
 	{
 		foreach ($this->actions as $info) {
-			if ($info['rule_type'] == $name) {
-				unset($info['rule_type']);
+			if ($info['type'] == $name) {
+				unset($info['type']);
 				return $info;
 			}
 		}
@@ -119,8 +119,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	public function getTermInfoOfType($name)
 	{
 		foreach ($this->terms as $info) {
-			if ($info['rule_type'] == $name) {
-				unset($info['rule_type']);
+			if ($info['type'] == $name) {
+				unset($info['type']);
 				return $info;
 			}
 		}

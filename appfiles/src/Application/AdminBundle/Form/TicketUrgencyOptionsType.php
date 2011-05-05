@@ -25,17 +25,16 @@ class TicketUrgencyOptionsType extends AbstractType
 	{
 		$builder->add('base_urgency', 'text');
 
-		$time_options_builder = $builder->create('time_options');
+		$time_options_builder = $builder->create('time_options', 'form');
 		foreach (array('user_waiting', 'user_reply', 'open') as $key) {
 			$time_options_builder->add($key, 'text');
 			$time_options_builder->add($key.'_num', 'text');
 		}
 		$builder->add($time_options_builder);
 
-		$user_options_builder = $builder->create('user_options');
+		$user_options_builder = $builder->create('user_options', 'form');
 		foreach (range(1,5) as $key) {
-			$user_options_builder->add($key, 'text');
-			$user_options_builder->add($key.'_num', 'text');
+			$user_options_builder->add('importance_num_' . $key, 'text');
 		}
 		$builder->add($user_options_builder);
 	}
