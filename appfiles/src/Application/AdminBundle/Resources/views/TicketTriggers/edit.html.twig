@@ -15,28 +15,14 @@ function _page_exec() {
 		var count = 0;
 		{% for action in trigger.terms %}
 			var basename = 'terms['+count+']';
-			window.DeskPRO_Page.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { rule_type: '{{action.rule_type}}', op: '{{term.op}}',
-				choice: {
-					{% for k,v in action %}
-						{{k}}: {{v|json_encode|raw}},
-					{% endfor %}
-					'': null
-				}
-			});
+			window.DeskPRO_Page.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: '{{action.type}}', op: '{{term.op}}', choice: {{action.options|json_encode|raw}} });
 			count++;
 		{% endfor %}
 
 		var count = 0;
 		{% for action in trigger.actions %}
 			var basename = 'actions['+count+']';
-			window.DeskPRO_Page.actionsEditor.addNewRow($('.actions-form .search-terms'), basename, { rule_type: '{{action.rule_type}}',
-				choice: {
-					{% for k,v in action %}
-						{{k}}: {{v|json_encode|raw}},
-					{% endfor %}
-					'': null
-				}
-			});
+			window.DeskPRO_Page.actionsEditor.addNewRow($('.actions-form .search-terms'), basename, { type: '{{action.type}}', options: {{action.options|json_encode|raw}} });
 			count++;
 		{% endfor %}
 	};

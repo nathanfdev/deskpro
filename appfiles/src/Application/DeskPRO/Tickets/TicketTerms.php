@@ -48,12 +48,11 @@ class TicketTerms
 	{
 		foreach ($this->terms as $info) {
 
-			$term = $info['rule_type'];
+			$term = $info['type'];
 			if (!$term) continue;
 
 			$op = $info['op'];
-			$choice = $info;
-			unset($choice['rule_type'], $choice['op']);
+			$choice = $info['options'];
 
 			if (strpos($op, 'changed') !== false) {
 				if ($tracker) {
@@ -77,12 +76,11 @@ class TicketTerms
 	{
 		foreach ($this->terms as $term => $info) {
 
-			$term = $info['rule_type'];
+			$term = $info['type'];
 			if (!$term) continue;
 
 			$op = $info['op'];
-			$choice = $info;
-			unset($choice['rule_type'], $choice['op']);
+			$choice = $info['options'];
 
 			if ($this->testTerm($ticket, $term, $op, $choice)) {
 				return true;
@@ -238,13 +236,12 @@ class TicketTerms
 
 		foreach ($this->terms as $info) {
 
-			$term = $info['rule_type'];
+			$term = $info['type'];
 
 			if (!$term) continue;
 
 			$op = $info['op'];
-			$choice = $info;
-			unset($choice['rule_type'], $choice['op']);
+			$choice = $info['options'];
 
 			switch ($term) {
 				case TicketSearch::TERM_DEPARTMENT:

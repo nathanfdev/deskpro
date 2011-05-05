@@ -160,8 +160,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 		foreach ($this->actions as $action_info) {
 
-			$term = $action_info['rule_type'];
-			unset($action_info['rule_type']);
+			$term = $action_info['type'];
+			unset($action_info['type']);
 
 			$action = $factory->create($term, $action_info);
 			if ($action) {
@@ -180,7 +180,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	public function performExternalActions(Ticket $ticket, array $logs = array())
 	{
 		foreach ($this->actions as $action) {
-			if ($action['rule_type'] == 'trigger_plugin') {
+			if ($action['type'] == 'trigger_plugin') {
 				$plugin = App::getEntityRepository('DeskPRO:Plugin')->find($action['plugin_id']);
 				$plugin->executePlugin(array(
 					'ticket' => $ticket,
@@ -237,7 +237,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		App::getOrm()->beginTransaction();
 
 		foreach ($this->actions as $action) {
-			if ($action['rule_type'] == 'trigger_plugin') {
+			if ($action['type'] == 'trigger_plugin') {
 				$plugin = App::getEntityRepository('DeskPRO:Plugin')->find($action['plugin_id']);
 				if ($plugin['associated_object'] == "TicketTrigger:{$this->id}") {
 					App::getOrm()->remove($plugin);

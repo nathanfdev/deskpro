@@ -11,16 +11,17 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\Searcher\TicketSearch;
-use \Application\DeskPRO\Entity\TicketFilter;
-use \Application\DeskPRO\Entity\Ticket;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
+use Application\DeskPRO\Searcher\TicketSearch;
+use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
 
-use \Application\DeskPRO\Elastica\Searcher\TicketSearcher;
+use Application\DeskPRO\Elastica\Searcher\TicketSearcher;
+use Application\DeskPRO\UI\RuleBuilder;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * Handles ticket searches
@@ -369,7 +370,9 @@ class TicketSearchController extends AbstractController
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
 		// Used to specify terms in the URL and have then show up automatically
-		$preselect_terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+		$term_rules = RuleBuilder::newTermsBuilder();
+		$preselect_terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
 		$autorun = $this->in->getBool('autorun');
 
 		return $this->render('AgentBundle:TicketSearch:custom-filter-form.html.twig', array(
@@ -394,18 +397,12 @@ class TicketSearchController extends AbstractController
 		#------------------------------
 
 		if (!$result_cache) {
-			$terms = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+			$term_rules = RuleBuilder::newTermsBuilder();
+			$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 			foreach ($terms as $term) {
-				$data = $term;
-				unset($data['rule_type'], $data['op']);
-
-				if (count($data) == 1) {
-					$data = array_pop($data);
-				}
-
-				$searcher->addTerm($term['rule_type'], $term['op'], $data);
+				$searcher->addTerm($term['type'], $term['op'], $term['options']);
 			}
 
 			$order_by = $this->in->getString('filter.order_by');
@@ -508,13 +505,13 @@ class TicketSearchController extends AbstractController
 
 		$mode_crit = '';
 		if ($this->in->getString('mode') == 'agent') {
-			$mode_crit = "terms[0][rule_type]=agent&terms[0][op]=is&terms[0][agent]=-1";
+			$mode_crit = "terms[0][type]=agent&terms[0][op]=is&terms[0][options][agent]=-1";
 		} elseif ($this->in->getString('mode') == 'agent_team') {
-			$mode_crit = "terms[0][rule_type]=agent_team&terms[0][op]=is&terms[0][agent_team]=-1";
+			$mode_crit = "terms[0][type]=agent_team&terms[0][op]=is&terms[0][options][agent_team]=-1";
 		} elseif ($this->in->getString('mode') == 'participant') {
-			$mode_crit = "terms[0][rule_type]=participant&terms[0][op]=is&terms[0][person_id]=".$this->person['id'];
+			$mode_crit = "terms[0][type]=participant&terms[0][op]=is&terms[0][options][person_id]=".$this->person['id'];
 		} elseif ($this->in->getString('mode') == 'unassigned') {
-			$mode_crit = "terms[0][rule_type]=agent&terms[0][op]=is&terms[0][agent]=0";
+			$mode_crit = "terms[0][type]=agent&terms[0][op]=is&terms[0][options][agent]=0";
 		} else {
 			// all, no crit
 		}
@@ -525,10 +522,10 @@ class TicketSearchController extends AbstractController
 
 		// TODO: Need a cleaner way of converting a group into a searchable item
 		$group1_nosuf = preg_replace('#_id$#', '', $group1);
-		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runcustomfilter') . "?page_title=\$page_title&$mode_crit&terms[5][rule_type]=status&terms[5][op]=is&terms[5][status]=open&terms[6][rule_type]=$group1_nosuf&terms[6][op]=is&terms[6][$group1_nosuf]=\$group1_id";
+		$list_url_group1 = $this->generateUrl('agent_ticketsearch_runcustomfilter') . "?page_title=\$page_title&$mode_crit&terms[5][type]=status&terms[5][op]=is&terms[5][options][status]=open&terms[6][type]=$group1_nosuf&terms[6][op]=is&terms[6][options][$group1_nosuf]=\$group1_id";
 
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
-		$list_url_group2 = $list_url_group1 . "&terms[7][rule_type]=$group2_nosuf&terms[7][op]=is&terms[7][$group2_nosuf]=\$group2_id";
+		$list_url_group2 = $list_url_group1 . "&terms[7][type]=$group2_nosuf&terms[7][op]=is&terms[7][options][$group2_nosuf]=\$group2_id";
 
 		return $this->render('AgentBundle:TicketSearch:overview-listing.html.twig', array(
 			'counts' => $display_counts,
@@ -778,7 +775,7 @@ class TicketSearchController extends AbstractController
 		$got_actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
 
 		if ($this->in->getString('message')) {
-			$got_actions[] = array('rule_type' => 'reply', 'new_reply' => $this->in->getString('message'));
+			$got_actions[] = array('type' => 'reply', 'new_reply' => $this->in->getString('message'));
 		}
 
 		$macro['actions'] = $got_actions;
@@ -807,7 +804,7 @@ class TicketSearchController extends AbstractController
 		$got_actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
 
 		if ($this->in->getString('message')) {
-			$got_actions[] = array('rule_type' => 'reply', 'new_reply' => $this->in->getString('message'));
+			$got_actions[] = array('type' => 'reply', 'new_reply' => $this->in->getString('message'));
 		}
 
 		$macro['actions'] = $got_actions;

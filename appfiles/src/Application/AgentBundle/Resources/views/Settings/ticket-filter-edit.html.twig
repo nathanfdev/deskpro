@@ -22,12 +22,9 @@ $(document).ready(function() {
 	{% if filter.terms %}
 		{% for id,term in filter.terms %}
 			editor.addNewRow($('#criteria_list .search-terms'), 'terms[exist_{{id}}]', {
-				rule_type: '{{term.rule_type}}',
+				type: '{{term.rule_type}}',
 				op: '{{term.op}}',
-				choice: {
-					{% for k,v in term %}{{k}}: {{v|json_encode|raw}},{% endfor %}
-					nothing: null
-				}
+				options: {{term.options|json_encode|raw}}
 			});
 		{% endfor %}
 	{% endif %}

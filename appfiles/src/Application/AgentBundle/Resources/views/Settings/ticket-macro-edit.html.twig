@@ -29,14 +29,7 @@ $(document).ready(function() {
 		// Existing actions
 		{% for action in macro.actions %}
 			var basename = 'actions['+count+']';
-			editor.addNewRow(to_el, basename, { rule_type: '{{action.rule_type}}',
-				choice: {
-					{% for k,	v in action %}
-						{{k}}: '{{v}}',
-					{% endfor %}
-					'': null
-				}
-			});
+			editor.addNewRow(to_el, basename, { type: '{{action.type}}', options: {{action.options|json_decode|raw}} });
 			count++;
 
 		{% endfor %}

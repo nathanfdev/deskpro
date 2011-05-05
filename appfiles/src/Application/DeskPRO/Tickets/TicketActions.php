@@ -31,7 +31,7 @@ class TicketActions
 
 		foreach ($this->actions as $action) {
 
-			$term = $action['rule_type'];
+			$term = $action['type'];
 			$term_id = null;
 
 			// $term of ticket_field[12] becomes $term=ticket_field, $term_id=12

@@ -9,14 +9,9 @@ pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_customfilter') }}';
 	pageMeta.preselectTerms = [
 		{% for action in preselect_terms %}
 			{
-				rule_type: '{{action.rule_type}}',
+				type: '{{action.type}}',
 				op: '{{action.op}}',
-				choice: {
-					{% for k, v in action %}
-						{{k}}: '{{v}}',
-					{% endfor %}
-					'':null
-				}
+				options: {{action.options|json_encode|raw}}
 			},
 		{% endfor %}
 	];

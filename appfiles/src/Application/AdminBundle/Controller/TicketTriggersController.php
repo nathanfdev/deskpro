@@ -11,14 +11,14 @@
 
 namespace Application\AdminBundle\Controller;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
-use \Symfony\Component\Form;
-use \Application\AdminBundle\Form\EditTicketTriggerType;
+use Application\AdminBundle\Form\EditTicketTriggerType;
+use Application\DeskPRO\UI\RuleBuilder;
 
 class TicketTriggersController extends AbstractController
 {
@@ -69,11 +69,11 @@ class TicketTriggersController extends AbstractController
 			if ($with_urgency) {
 				if (strpos($this->in->getString('trigger.event_trigger'), 'time_') === 0) {
 					$trigger['actions'] = array(
-						array('rule_type' => 'urgency', 'num' => 1)
+						array('type' => 'urgency', 'options' => array('num' => 1))
 					);
 				} else {
 					$trigger['terms'] = array(
-						array('rule_type' => 'urgency', 'op' => 'gte', 'num' => 1)
+						array('type' => 'urgency', 'op' => 'gte', 'options' => array('num' => 1))
 					);
 				}
 			}
@@ -98,8 +98,11 @@ class TicketTriggersController extends AbstractController
 			if ($form->isValid()) {
 				$is_edited = true;
 
-				$trigger['terms'] = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
-				$trigger['actions'] = $this->in->getCleanValueArray('actions', 'raw' , 'discard');
+				$term_rules = RuleBuilder::newTermsBuilder();
+				$trigger['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+				$action_rules = RuleBuilder::newActionsBuilder();
+				$trigger['actions'] = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw' , 'discard'));
 
 				App::getOrm()->persist($trigger);
 				App::getOrm()->flush();

@@ -4,6 +4,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\UI\RuleBuilder;
 
 class SettingsController extends AbstractController
 {
@@ -136,7 +137,9 @@ class SettingsController extends AbstractController
 		$filter['title']    = $this->in->getString('filter.title');
 		$filter['group_by'] = $this->in->getString('filter.group_by');
 		$filter['order_by'] = $this->in->getString('filter.order_by');
-		$filter['terms']    = $this->in->getCleanValueArray('terms', 'raw' , 'discard');
+
+		$term_rules = RuleBuilder::newTermsBuilder();
+		$filter['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
 		if (!$filter['person_id']) {
 			$filter['person'] = $this->person;
@@ -194,7 +197,9 @@ class SettingsController extends AbstractController
 			$macro['title'] = $this->in->getString('macro.title');
 			$macro['is_global'] = true;
 
-			$actions = $this->in->getCleanValueArray('actions', 'raw', 'str_simple');
+			$action_rules = RuleBuilder::newActionsBuilder();
+			$actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'str_simple'));
+
 			foreach ($actions as $k => &$action) {
 
 				if (strpos($action['rule_type'], 'ticket_field') === 0) {

@@ -5,7 +5,7 @@ Orb.createNamespace('DeskPRO.Form');
  * A rule conists of a rule type (for example, "category"), an op ("is" or "is not" etc),
  * and then a user input or selection (the actual category choice).
  *
- * This builder handles everything except form naming (eg. rule[0][rule_type] etc), and when
+ * This builder handles everything except form naming (eg. rule[0][type] etc), and when
  * to add rows (eg. on a button click). Some other component will figure those parts out.
  *
  * Example:
@@ -49,7 +49,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 	initialize: function(ruleTpl) {
 		this.ruleTpl = ruleTpl;
 
-		this.typeSelectHtml = ['<select name="rule_type" class="rule_type"><option value=""></option>'];
+		this.typeSelectHtml = ['<select name="type" class="type"><option value=""></option>'];
 		$('> .type', this.ruleTpl).each((function(i,el) {
 			this.typeSelectHtml.push('<option value="' + $(el).data('rule-type') + '">' + $(el).attr('title') + '</option>');
 		}).bind(this));
@@ -81,16 +81,16 @@ DeskPRO.Form.RuleBuilder = new Class({
 		}
 
 		if (existing) {
-			select.val(existing.rule_type);
+			select.val(existing.type);
 			this.handleSelectChange(new_row);
 			$('.op:first select', new_row).val(existing.op).addClass('op');
 
-			if (typeof existing.choice == 'string' || typeof existing.choice == 'number' || typeOf(existing.choice) != 'object') {
+			if (typeof existing.options == 'string' || typeof existing.options == 'number' || typeOf(existing.options) != 'object') {
 				// If its just one item, then we'll just assume its the first field
-				$(':input, textarea, select', new_row).filter(':not(.op, .rule_type)').first().val(existing.choice);
+				$(':input, textarea, select', new_row).filter(':not(.op, .type)').first().val(existing.options);
 			} else {
 				// Otherwise we'll assume its a k=>v array
-				Object.each(existing.choice, function(val, name) {
+				Object.each(existing.options, function(val, name) {
 					if (!name || !name.length) return;
 
 					var name_safe = name.replace(/\[/, '\\[').replace(/\]/, '\\]');
@@ -134,30 +134,30 @@ DeskPRO.Form.RuleBuilder = new Class({
 	 * @param {jQuery} row The row that we need to update
 	 */
 	handleSelectChange: function(row) {
-		var rule_type = $('.type:first > select', row).val();
+		var type = $('.type:first > select', row).val();
 
-		var rule_tpl = $('> .type[data-rule-type="'+rule_type+'"]', this.ruleTpl);
+		var rule_tpl = $('> .type[data-rule-type="'+type+'"]', this.ruleTpl);
 		var op = $('> .op:first', rule_tpl).children().clone();
-		var choice = $('> .choice:first', rule_tpl).clone();
+		var choice = $('> .options:first', rule_tpl).clone();
 		choice.css('display', 'inline');
 
 		$('.op:first', row).empty().append(op);
-		$('.choice:first', row).empty().append(choice);
+		$('.options:first', row).empty().append(choice);
 
 		if (row.data('form-base-name')) {
 			this.updateFormName($('.op:first', row), row.data('form-base-name'));
-			this.updateFormName($('.choice:first', row), row.data('form-base-name'));
+			this.updateFormName($('.options:first', row), row.data('form-base-name'));
 		}
 
-		this.fireEvent('selectChange', [row, rule_type]);
+		this.fireEvent('selectChange', [row, type]);
 	},
 
 
 
 	/**
 	 * This updates the form name to prepend a basename, and turns it into an array usable
-	 * by php. For example, if the name was before rule_type and formbaseName is newrule[1],
-	 * the new form name is newrule[1][rule_type].
+	 * by php. For example, if the name was before type and formbaseName is newrule[1],
+	 * the new form name is newrule[1][type].
 	 *
 	 * @param {jQuery} el The element to look within to change ALL names of
 	 * @param {String} formBaseName The base form name to set
