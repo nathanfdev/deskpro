@@ -1137,8 +1137,44 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function findAccessCode($code)
 	{
 		foreach ($this->access_codes as $tac) {
-			if ($tac['code'] = $code) {
+			if ($tac['code'] == $code) {
 				return $tac;
+			}
+		}
+
+		return null;
+	}
+
+
+	/**
+	 * Goes through everyone associated with this ticket (user owner, agent, participants)
+	 * and fetches their preferred email address.
+	 *
+	 * Returns null if the person isn't on the ticket or if they don't have any email
+	 * addresses.
+	 * 
+	 * @param Person $person
+	 * @return PersonEmail|null
+	 */
+	public function findEmailForPerson(Person $person)
+	{
+		if ($this->person == $person) {
+			if ($this->person_email) {
+				return $this->person_email;
+			} else {
+				return $this->person_email->primary_email;
+			}
+		} else if ($this->agent == $person) {
+			return $this->agent->primary_email;
+		} else {
+			foreach ($this->participants as $part) {
+				if ($part->person == $person) {
+					if ($part->person_email) {
+						return $part->person_email;
+					} else {
+						return $part->person->primary_email;
+					}
+				}
 			}
 		}
 

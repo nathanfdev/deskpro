@@ -38,6 +38,13 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\PersonEmail
+	 * @orm:ManyToOne(targetEntity="PersonEmail", fetch="EAGER")
+	 * @orm:JoinColumn(name="person_email_id", referencedColumnName="id")
+	 */
+	protected $person_email = null;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="code", type="string", length=12)
 	 */

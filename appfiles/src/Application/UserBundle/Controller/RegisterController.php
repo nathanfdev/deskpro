@@ -43,6 +43,13 @@ class RegisterController extends AbstractController
 				$vars['ticket'] = $ticket;
 				break;
 
+			case 'ticket_participant':
+				$tpl = 'finish-ticket-participant.html.twig';
+				$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($modeinfo['ticket_id']);
+
+				$vars['ticket'] = $ticket;
+				break;
+
 			default:
 				// invalid :o
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException();

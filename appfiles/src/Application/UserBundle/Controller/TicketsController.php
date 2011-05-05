@@ -22,6 +22,8 @@ use \Application\UserBundle\Form\NewTicketParticipantType;
 
 class TicketsController extends AbstractController
 {
+	protected $limited_person = null;
+	
 	protected $session_allowed = array();
 
 	protected function init()
@@ -97,7 +99,13 @@ class TicketsController extends AbstractController
 
 		$newply_form = $this->get('form.factory')->create(new NewTicketReplyType());
 
-		return $this->render('UserBundle:Tickets:view.html.twig', array(
+		$tpl = 'UserBundle:Tickets:view.html.twig';
+		if ($this->limited_person) {
+			$tpl = 'UserBundle:Tickets:view-limited.html.twig';
+		}
+
+		return $this->render($tpl, array(
+			'limited_person' => $this->limited_person,
 			'ticket' => $ticket,
 			'custom_fields' => $custom_fields,
 			'widgets' => $widgets,
@@ -128,10 +136,20 @@ class TicketsController extends AbstractController
 		// And also mark the user and ticket as validated
 		App::getOrm()->beginTransaction();
 
-		$ticket->person_email['is_validated'] = true;
-		$ticket['status'] = Entity\Ticket::STATUS_OPEN;
+		$person_email = $ticket->findEmailForPerson($tac->person);
+		if ($person_email) {
+			$person_email['is_validated'] = true;
+			App::getOrm()->persist($person_email);
+		}
+		$tac->person['is_confirmed'] = true;
+		App::getOrm()->persist($tac->person);
 
-		App::getOrm()->persist($ticket->person_email);
+		if (!$tac->person['is_user']) {
+			$this->session->set('after_register', $this->generateUrl('user_tickets_view', array('ticket_ref' => $ticket['ref'])));
+			$this->session->set('finish_register_person', $tac->person['id']);
+			$this->session->set('finish_register_mode', array('type' => 'ticket_participant', 'ticket_id' => $ticket['id']));
+		}
+
 		App::getOrm()->persist($ticket);
 		App::getOrm()->flush();
 		App::getOrm()->commit();
@@ -285,9 +303,11 @@ class TicketsController extends AbstractController
 			$person = App::getEntityRepository('DeskPRO:Person')->find($this->session_allowed[$ticket['id']]['person_id']);
 
 			// Set the current person context
-			if ($this->person != $person) {
+			if ($person['is_user'] AND $this->person != $person) {
 				$this->person = $person;
 				App::setCurrentPerson($person);
+			} else {
+				$this->limited_person = $person;
 			}
 		}
 

@@ -1,0 +1,8 @@
+{% extends 'UserBundle:Register:finish.html.twig' %}
+{% block finish_pre %}
+	<div style="background-color: #f8f8f8; border: 2px solid #ccc; padding: 10px; margin-bottom: 15px;">
+		You're a participant on the ticket "{{ticket.subject}}" by {{ticket.person.display_name}}.
+		If you want more control over your profile, like setting a different email address or
+		changing your name, register an account.
+	</div>
+{% endblock %}

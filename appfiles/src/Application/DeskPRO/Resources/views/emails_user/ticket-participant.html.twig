@@ -1,0 +1,16 @@
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% block content %}
+	<!--ACCESS CODE: (#{{access_code_full}})-->
+	{% if is_first %}
+		{{ layout.section_start() }}
+			You've been included in a ticket started by {{ticlet.person.display_name}}.
+		{{ layout.section_end() }}
+	{% endif %}
+
+	{{ layout.section_start() }}
+		{% for message in ticket.messages %}
+			{{message.message|raw}}
+		{% endfor %}
+	{{ layout.section_end() }}
+{% endblock %}
