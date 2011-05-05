@@ -16,6 +16,8 @@ function _page_exec() {
 
 <form action="{{ path('admin_tickettriggers_edit', {'trigger_id': '0'}) }}" class="form" method="post">
 
+{% if with_urgency %}<input type="hidden" name="with-urgency" value="1" />{% endif %}
+
 {% if trigger_type == 'trigger' %}
 <strong>Action Triggers</strong>
 <ul class="item-list">

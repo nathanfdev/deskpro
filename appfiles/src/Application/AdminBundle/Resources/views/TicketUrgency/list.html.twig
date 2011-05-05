@@ -80,6 +80,38 @@ window._page_exec_stack.push(function() {
 	<div style="text-align: center; padding-top: 10px;">
 		<button class="dp-button">Save Options</button>
 	</div>
+
+	<br /><br />
+
+	<table width="100%" cellspacing="0" cellpadding="0" border="0"><tr><td valign="top" width="50%" style="padding-right:5px;">
+
+	<div class="table-list-wrap">
+		<a class="icon tickets create-link popout-trigger" href="{{ path('admin_tickettriggers_new_choosetype', {'with-urgency': 1}) }}">Create Trigger</a>
+		<h2>Urgency Triggers</h2>
+		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+			<tbody id="teams_rows">
+				{% for trigger in all_triggers %}
+					{% include 'AdminBundle:TicketTriggers:list-row.html.twig' %}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	</td><td valign="top" width="50%" style="padding-left:5px;">
+
+	<div class="table-list-wrap">
+		<a class="icon tickets create-link popout-trigger" href="{{ path('admin_ticketescalations_new_choosetype', {'with-urgency': 1}) }}">Create Escalation</a>
+		<h2>Urgency Escalations</h2>
+		<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
+			<tbody id="teams_rows">
+				{% for trigger in all_escalations %}
+					{% include 'AdminBundle:TicketTriggers:list-row.html.twig' %}
+				{% endfor %}
+			</tbody>
+		</table>
+	</div>
+
+	</td></tr></table>
 </form>
 
 {% endblock %}

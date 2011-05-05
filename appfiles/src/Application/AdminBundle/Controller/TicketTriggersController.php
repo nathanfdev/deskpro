@@ -46,9 +46,12 @@ class TicketTriggersController extends AbstractController
 
 	public function newChooseTypeAction($trigger_type)
 	{
+		$with_urgency = $this->in->getBool('with-urgency');
+
 		//$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
 		return $this->render('AdminBundle:TicketTriggers:edit-choosetype.html.twig', array(
-			'trigger_type' => $trigger_type
+			'trigger_type' => $trigger_type,
+			'with_urgency' => $with_urgency
 		));
 	}
 
@@ -58,8 +61,23 @@ class TicketTriggersController extends AbstractController
 
 	public function editAction($trigger_id)
 	{
+		$with_urgency = $this->in->getBool('with-urgency');
+
 		if (!$trigger_id) {
 			$trigger = new Entity\TicketTrigger();
+
+			if ($with_urgency) {
+				if (strpos($this->in->getString('trigger.event_trigger'), 'time_') === 0) {
+					$trigger['actions'] = array(
+						array('rule_type' => 'urgency', 'num' => 1)
+					);
+				} else {
+					$trigger['terms'] = array(
+						array('rule_type' => 'urgency', 'op' => 'gte', 'num' => 1)
+					);
+				}
+			}
+
 		} else {
 			$trigger = App::getEntityRepository('DeskPRO:TicketTrigger')->find($trigger_id);
 			if ($this->in->getString('trigger.event_trigger_option')) {

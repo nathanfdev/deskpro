@@ -323,14 +323,27 @@ function _page_exec() {
 			</div>
 		</div>
 	{% endif %}
+	<div class="type" title="Urgency" data-rule-type="urgency">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+				<option value="lte">&lt;=</option>
+				<option value="gte">&gt;=</option>
+			</select>
+		</div>
+		<div class="choice">
+			<input type="text" size="4" value="" name="num" />
+		</div>
+	</div>
 	{% if term_options.priorities %}
 		<div class="type" title="Priority" data-rule-type="priority">
 			<div class="op">
 				<select name="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
-					<option value="lt">is less than</option>
-					<option value="gt">is greater than</option>
+					<option value="lte">is less than</option>
+					<option value="gte">is greater than</option>
 					{% if trigger.event_trigger == 'property_change' %}
 						<option value="changed">Changed</option>
 						<option value="changed_to">Changed to</option>
@@ -493,6 +506,16 @@ function _page_exec() {
 				<option value="red">Red</option>
 				<option value="yellow">Yellow</option>
 			</select>
+		</div>
+	</div>
+	<div class="type" title="Increase/Decrease Urgency" data-rule-type="urgency">
+		<div class="choice">
+			<input type="text" name="num" /><small>(Enter a negative number to have urgency decreased)</small>
+		</div>
+	</div>
+	<div class="type" title="Set Urgency" data-rule-type="urgency_set">
+		<div class="choice">
+			<input type="text" name="num" />
 		</div>
 	</div>
 	<div class="type" title="Ticket Reply" data-rule-type="reply">

@@ -45,7 +45,7 @@ class TicketTrigger extends EntityRepository
 			FROM DeskPRO:TicketTrigger trig
 			WHERE
 				trig.event_trigger NOT LIKE 'time_%'
-				$incude_sys
+				$include_sys
 				$only_enabeld
 		")->execute();
 
@@ -79,7 +79,7 @@ class TicketTrigger extends EntityRepository
 			FROM DeskPRO:TicketTrigger trig
 			WHERE
 				trig.event_trigger LIKE 'time_%'
-				$incude_sys
+				$include_sys
 				$only_enabeld
 		")->execute();
 

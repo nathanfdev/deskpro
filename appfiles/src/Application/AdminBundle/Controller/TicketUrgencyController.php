@@ -33,9 +33,12 @@ class TicketUrgencyController extends AbstractController
 		$urgency_options = UrgencyOptions::newFromSystemTriggers();
 		$urgency_form = $this->get('form.factory')->create(new TicketUrgencyOptionsType(), $urgency_options);
 
+		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getUrgencyTriggers();
+
 		return $this->render('AdminBundle:TicketUrgency:list.html.twig', array(
 			'urgency_options' => $urgency_options,
 			'urgency_options_form' => $urgency_form->createView(),
+			'all_triggers' => $all_triggers
 		));
 	}
 
