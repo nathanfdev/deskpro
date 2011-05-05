@@ -573,4 +573,39 @@ class Util
 
 		return $parts;
 	}
+
+
+	/**
+	 * Gets a numerically indexed array (suitable for call user func) by using
+	 * named parameters from $func_refl and values from options.
+	 *
+	 * For example: function example($hello, $world);
+	 * With options: array('world' => 1, 'hello' => 2, 'blah' => 'unrelated')
+	 * Thie method returns: array(2, 1)
+	 *
+	 * @param ReflectionFunctionAbstract $func_refl
+	 * @param array $options
+	 * @return array
+	 */
+	public function getFunctionParamsFromArray(\ReflectionFunctionAbstract $func_refl, array $options)
+	{
+		$ret = array();
+
+		$params = $func_refl->getParameters();
+		foreach ($param as $param) {
+			$name = $param->getName();
+			if (isset($options[$name])) {
+				$ret[] = $options[$name];
+			} else {
+				if ($param->isDefaultValueAvailable()) {
+					$ret[] = $param->getDefaultValue();
+				} else {
+					// We have to stop now since we cant go any further
+					break;
+				}
+			}
+		}
+
+		return $ret;
+	}
 }
