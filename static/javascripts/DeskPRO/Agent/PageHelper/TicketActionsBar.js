@@ -132,16 +132,12 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 					countel.data('add-count', count+1);
 
-					if (type == 'reply') {
-						reply_text = info;
+					if (info.type == 'reply') {
+						reply_text = info.options.reply;
 					} else {
-
-						var id = Orb.uuid();
-						var op = info[0];
-						var choice = info[1];
 						this.actionsEditor.addNewRow($('.actions-terms', this.actionsWrap), basename, {
-							rule_type: type,
-							choice: info
+							type: info.type,
+							options: info.options
 						});
 					}
 				}, this);

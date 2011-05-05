@@ -43,13 +43,19 @@ class ActionsFactory
 
 	public function createActionObject($action_class, array $options)
 	{
-		$obj = Util::callUserConstructorArray($action_class, $options);
+		$method_refl = new \ReflectionMethod($action_class, '__construct');
+		$args = Util::getFunctionParamsFromArray($method_refl, $options);
+
+		$obj = Util::callUserConstructorArray($action_class, $args);
 		return $obj;
 	}
 
 	public function createModifierObject($action_class, array $options)
 	{
-		$obj = Util::callUserConstructorArray($action_class, $options);
+		$method_refl = new \ReflectionMethod($action_class, '__construct');
+		$args = Util::getFunctionParamsFromArray($method_refl, $options);
+
+		$obj = Util::callUserConstructorArray($action_class, $args);
 		return $obj;
 	}
 }

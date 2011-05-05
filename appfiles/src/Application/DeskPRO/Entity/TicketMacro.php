@@ -15,6 +15,8 @@ use \Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
+use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
 /**
  * Ticket macros
@@ -102,11 +104,19 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 * $ticket may be null, in which case no conditions are assumed.
 	 *
 	 * @param Entity\Ticket $ticket The context (used ex in replies for replacements)
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionsCollection
 	 */
-	public function getActionsArray(Entity\Ticket $ticket = null)
+	public function getActionsCollection(Entity\Ticket $ticket = null)
 	{
-		$ticket_actions = new \Application\DeskPRO\Tickets\TicketActions($this->actions);
-		return $ticket_actions->getActionsArray($ticket);
+		$factory = new ActionsFactory();
+		$collection = new ActionsCollection();
+
+		foreach ($this->actions as $action_info) {
+			$action = $factory->create($action_info['type'], $action_info['options']);
+			$collection->add($action);
+		}
+
+		return $collection;
 	}
 
 
@@ -115,14 +125,15 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	 * Get actions for a collection of tickets.
 	 *
 	 * @param array $tickets
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionsCollection[]
 	 */
-	public function getActionsArrayForCollection($tickets = null)
+	public function getActionsCollectionsForTickets($tickets = null)
 	{
 		$actions = array();
 
 		if ($tickets) {
 			foreach ($tickets as $ticket) {
-				$actions[$ticket['id']] = $this->getActionsArray($ticket);
+				$actions[$ticket['id']] = $this->getActionsCollection($ticket);
 			}
 		}
 
@@ -131,62 +142,15 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
 
 
-	public function performOnTicket(Ticket $ticket)
+	public function performOnTicket(Ticket $ticket, Entity\Person $person_context = null)
 	{
-		foreach ($this->actions as $action) {
-			switch ($action['rule_type']) {
-				case 'department':
-					$ticket['department_id'] = $action['department'];
-					break;
+		$collection = $this->getActionsCollection($ticket);
 
-				case 'category':
-					$ticket['category_id'] = $action['category'];
-					break;
-
-				case 'agent':
-
-					// -1 means "current user" -- used for generic shared macros
-					if ($action['agent'] == -1) {
-						$agent = App::getCurrentPerson();
-						if ($agent) {
-							$action['agent'] = $agent['id'];
-						} else {
-							return;// todo err?
-						}
-					}
-					$ticket['agent_id'] = $action['agent'];
-					break;
-
-				case 'product':
-					$ticket['product_id'] = $action['product'];
-					break;
-
-				case 'priority':
-					$ticket['priority_id'] = $action['priority'];
-					break;
-
-				case 'reply':
-					$agent = App::getCurrentPerson();
-
-					if (!$agent) {
-						return;
-						//todo err?
-					}
-
-					$message = new Entity\TicketMessage();
-					$message['person']  = $agent;
-					$message['ticket']  = $ticket;
-					$message['message'] = $action['reply'];
-
-					$ticket->addMessage($message);
-
-					App::getOrm()->persist($message);
-
-					break;
-			}
+		if (!$person_context) {
+			$person_context = App::getCurrentPerson();
 		}
 
-		App::getOrm()->persist($ticket);
+		$collection->apply($ticket, $person_context);
 	}
 
 	public function performOnPerson(Entity\Person $person)
@@ -195,7 +159,7 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 
 		foreach ($this->actions as $action) {
 
-			$term = $action['rule_type'];
+			$term = $action['type'];
 			$term_id = null;
 
 			// $term of people_field[12] becomes $term=people_field, $term_id=12

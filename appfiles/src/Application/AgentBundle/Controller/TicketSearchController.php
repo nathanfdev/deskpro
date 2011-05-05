@@ -761,7 +761,7 @@ class TicketSearchController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'macro_id' => $macro['id'],
-			'macro_actions' => $macro->getActionsArrayDesc()
+			'macro_actions' => $macro['actions']
 		));
 	}
 
