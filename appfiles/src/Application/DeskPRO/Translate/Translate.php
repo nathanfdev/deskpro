@@ -133,6 +133,17 @@ class Translate
 
 
 	/**
+	 * Resets the current locale to the default.
+	 *
+	 * This is an alias of setLocale(null)
+	 */
+	public function resetToDefaultLocale()
+	{
+		return $this->setLocale(null);
+	}
+
+
+	/**
 	 * Temporarily resets the locale to $locale and runs $func, and then
 	 * resets the locale after.
 	 *
