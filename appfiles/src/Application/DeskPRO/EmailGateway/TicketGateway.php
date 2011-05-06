@@ -61,6 +61,16 @@ class TicketGateway extends AbstractGateway
 		# otherwise just make a new ticket
 		#-------------------------
 
+		// The detectors above use TAC's, but they might
+		// exist for people who are no longer on tickets
+		// so we need to confirm that user parts are still
+		// participants
+		if ($ticket AND $person AND !$person['is_agent']) {
+			if (!$ticket->hasParticipant($person)) {
+				$person = null;
+			}
+		}
+
 		if ($ticket AND $person) {
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 			if ($person['is_agent']) {
@@ -82,8 +92,6 @@ class TicketGateway extends AbstractGateway
 
 	protected function doNewReply($ticket, $person)
 	{
-		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
-
 		$message = new Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = $person;
@@ -102,13 +110,17 @@ class TicketGateway extends AbstractGateway
 			$message->addAttachment($attach);
 		}
 
-		$ticket_edit->addMessage($message);
-
-		$ticket_edit->save();
+		$ticket->addMessage($messagE);
 
 		if ($this->reader->getCcAddresses()) {
 			$this->handleCc($ticket, $this->reader->getCcAddresses());
 		}
+
+		App::getOrm()->transactional(function($em) use ($ticket, $person) {
+			$em->persist($ticket);
+			$em->persist($person);
+			$em->flush();
+		});
 
 		return $message;
 	}
