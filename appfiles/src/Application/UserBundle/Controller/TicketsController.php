@@ -237,7 +237,7 @@ class TicketsController extends AbstractController
 
 		$newpart_form = $this->get('form.factory')->create(new NewTicketParticipantType());
 
-		return $this->render('UserBundle:Tickets:modify-ticket.html.twig', array(
+		return $this->render('UserBundle:Tickets:manage-participants.html.twig', array(
 			'ticket' => $ticket,
 			'newpart_form' => $newpart_form->createView()
 		));

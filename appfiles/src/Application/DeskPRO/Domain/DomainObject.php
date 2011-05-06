@@ -19,7 +19,7 @@ use Doctrine\Common\PropertyChangedListener;
 /**
  * The basic entitiy class
  */
-abstract class DomainObject implements \ArrayAccess, NotifyPropertyChanged
+abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 {
 	const TOARRAY_NOOP = 1;
 	const TOARRAY_DEEP = 2;

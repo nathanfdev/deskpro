@@ -9,13 +9,13 @@
 {% endblock %}
 {% block content %}
 
-<h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ phrase('core_ticket.manage_participants') }}</h1>
+<h1 style="border-bottom: 2px solid #ddd; margin-bottom: 10px; padding-bottom: 3px;">{{ phrase('core_tickets.manage_participants') }}</h1>
 
 {% if ticket.user_participants|length %}
 	<ul>
 		{% for part in ticket.user_participants %}
 		<li>
-			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref', ticket.ref, 'person_id': part.person.id}) }}">remove</a>)</small> &nbsp;
+			<small>(<a href="{{ path('user_tickets_participants_remove', {'ticket_ref': ticket.ref, 'person_id': part.person.id}) }}">remove</a>)</small> &nbsp;
 			{% if part.person.display_name != part.person.primary_email_address %}
 				{{ part.person.display_name }} ({{ part.person.primary_email_address }})
 			{% else %}

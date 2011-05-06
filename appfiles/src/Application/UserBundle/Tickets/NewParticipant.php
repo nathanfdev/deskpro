@@ -32,24 +32,31 @@ class NewParticipant
 
 	public function save()
 	{
+		$ticket = $this->ticket;
 		$part_person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($this->email);
 
 		if (!$part_person) {
-			$person = Person::newContactPerson();
-			$person->addEmailAddressString($this->email);
-			$person['first_name'] = $this->first_name;
-			$person['last_name'] = $this->last_name;
+			$part_person = new Person();
+			$part_person->addEmailAddressString($this->email);
+			$part_person['first_name'] = $this->first_name;
+			$part_person['last_name'] = $this->last_name;
+		}
+		
+		if (!$part_person['first_name'] AND $this->first_name) {
+			$part_person['first_name'] = $this->first_name;
+		}
+		if (!$part_person['last_name'] AND $this->last_name) {
+			$part_person['last_name'] = $this->last_name;
 		}
 
-		$part = $this->ticket->addParticipant($person);
+		$part_email = $part_person->findEmailAddress($this->email);
 
-		App::getOrm()->beginTransaction();
-		if ($person->isNewPerson()) {
-			App::getOrm()->persist($person);
-		}
-		App::getOrm()->persist($this->ticket);
-		App::getOrm()->persist($part);
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$ticket->addParticipant($part_person);
+
+		App::getOrm()->transactional(function($em) use ($part_person, $part, $ticket) {
+			$em->persist($part_person);
+			$em->persist($ticket);
+			$em->flush();
+		});
 	}
 }
