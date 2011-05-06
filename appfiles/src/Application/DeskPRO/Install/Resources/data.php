@@ -27,14 +27,14 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'agent';
 $q['terms']      = array(array(
-		'rule_type' => 'agent',
+		'type'      => 'agent',
 		'op'        => 'is',
-		'agent'     => '-1',
+		'options'   => array('agent'     => '-1',)
 	),
 	array(
-		'rule_type' => 'status',
+		'type'      => 'status',
 		'op'        => 'is',
-		'status'    => 'open',
+		'options'   => array('status'    => 'open',)
 	)
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
@@ -51,14 +51,14 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'agent_team';
 $q['terms']      = array(array(
-		'rule_type'  => 'agent_team',
-		'op'         => 'is',
-		'agent_team' => '-1',
+		'type'      => 'agent_team',
+		'op'        => 'is',
+		'options'   => array('agent_team' => '-1',)
 	),
 	array(
-		'rule_type' => 'status',
+		'type'      => 'status',
 		'op'        => 'is',
-		'status'    => 'open',
+		'options'   => array('status'    => 'open',)
 	)
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
@@ -75,14 +75,14 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'participant';
 $q['terms']      = array(array(
-		'rule_type' => 'participant',
+		'type'      => 'participant',
 		'op'        => 'is',
-		'agent'     => '-1',
+		'options'   => array('agent'     => '-1',)
 	),
 	array(
-		'rule_type' => 'status',
+		'type'      => 'status',
 		'op'        => 'is',
-		'status'    => 'open',
+		'options'   => array('status'    => 'open',)
 	)
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
@@ -99,14 +99,14 @@ $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'unassigned';
 $q['terms']      = array(array(
-		'rule_type' => 'agent',
+		'type'      => 'agent',
 		'op'        => 'is',
-		'agent'     => '0',
+		'options'   => array('agent'     => '0',)
 	),
 	array(
-		'rule_type' => 'status',
+		'type'      => 'status',
 		'op'        => 'is',
-		'status'    => 'open',
+		'options'   => array('status'    => 'open',)
 	)
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
@@ -124,9 +124,9 @@ $q['is_global']  = true;
 $q['sys_name']   = 'all';
 $q['terms']      = array(
 	array(
-		'rule_type' => 'status',
+		'type'      => 'status',
 		'op'        => 'is',
-		'status'    => 'open',
+		'options'   => array('status'    => 'open',)
 	)
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
