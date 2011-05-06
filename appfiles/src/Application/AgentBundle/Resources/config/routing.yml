@@ -609,4 +609,3 @@ agent_tasks_count_pending:
 agent_tasks_list_pending:
   pattern: /tasks/pending/list
   defaults: { _controller: AgentBundle:Task:listPending }
-

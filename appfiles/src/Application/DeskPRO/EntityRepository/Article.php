@@ -11,12 +11,12 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity\Person;
-use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Doctrine\ORM\EntityRepository;
 
-use \Orb\Util\Arrays;
-use \Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class Article extends EntityRepository
 {
@@ -36,7 +36,7 @@ class Article extends EntityRepository
 	 *
 	 * @return array
 	 */
-	public function getByIds(array $ids, Person $person_context = null)
+	public function getByIds(array $ids, PersonEntity $person_context = null)
 	{
 		if (!$ids) return array();
 		

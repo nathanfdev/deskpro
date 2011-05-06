@@ -31,28 +31,39 @@ class ClientMessagesController extends AbstractController
 		// Not uint because -1 will be used when no messages have ever existed
 		$since = $this->in->getInt('since');
 
-		$data = array();
-		if ($since) {
+		// if $since is 0, the client is new and asking for us to send it the last id
+		if ($since == 0) {
 			$data = array('messages' => array(), 'last_id' => -1);
-
-			$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient($this->session->getEntityId(), $since);
-			foreach ($all_messages as $message) {
-				$handler = $message->getHandler();
-
-				if ($message['created_by_client'] != $this->session->getEntityId()) {
-					$data['messages'][] = array(
-						$message['channel'],
-						$handler->getMessage('ajax')
-					);
-				}
-
-				if ($message['id'] > $data['last_id']) {
-					$data['last_id'] = $message['id'];
-				}
+			$last_id = App::getDb()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
+			if ($last_id) {
+				$data['last_id'] = $last_id;
 			}
+			
+		} else {
 
-			if ($data['last_id'] == -1) {
-				unset($data['last_id']);
+			$data = array();
+			if ($since) {
+				$data = array('messages' => array(), 'last_id' => -1);
+
+				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient($this->session->getEntityId(), $since);
+				foreach ($all_messages as $message) {
+					$handler = $message->getHandler();
+
+					if ($message['created_by_client'] != $this->session->getEntityId()) {
+						$data['messages'][] = array(
+							$message['channel'],
+							$handler->getMessage('ajax')
+						);
+					}
+
+					if ($message['id'] > $data['last_id']) {
+						$data['last_id'] = $message['id'];
+					}
+				}
+
+				if ($data['last_id'] == -1) {
+					unset($data['last_id']);
+				}
 			}
 		}
 
