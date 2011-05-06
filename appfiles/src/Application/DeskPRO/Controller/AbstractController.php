@@ -82,24 +82,6 @@ abstract class AbstractController extends \Application\DeskPRO\HttpKernel\Contro
 		$this->session  = $this->get('session');
 
 		$this->tpl = $this->get('templating');
-
-		// Automatically redirect to redirect if we need to
-		// - Must be in debug
-		// - In an interface script
-		// - Not an AJAX request (they happen so frequently, lets not bog them down with file check each time)
-		if (App::isDebug() && preg_match('#^Application\\\\(Admin|Agent|User)Bundle\\\\#', get_class($this)) && !$this->request->isXmlHttpRequest()) {
-
-			$upgrader = new Upgrader();
-			$version = VersionReader::getVersionId(VersionReader::getCurrentVersion());
-			$source_version = VersionReader::getVersionId($upgrader->getNewestVersion());
-
-			if ($version != $source_version) {
-				$this->event_dispatcher->addListener('DeskPRO_onControllerPreAction', function ($event) {
-					$controller = $event->info['controller'];
-					$event->setResponse($controller->redirectRoute('dev_build'));
-				}, -5);
-			}
-		}
 	}
 
 
