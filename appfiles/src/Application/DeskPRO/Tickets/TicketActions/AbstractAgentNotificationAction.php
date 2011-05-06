@@ -12,18 +12,17 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
-use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
+use Application\DeskPRO\Email\TicketUtil;
 use Application\DeskPRO\Tickets\TicketChangeTracker;
-
 use Application\DeskPRO\App;
 
 /**
  * Sets agent
  */
-abstract class AbstractAgentNotificationAction implements ActionInterface, PersonContextInterface
+abstract class AbstractAgentNotificationAction implements ActionInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
@@ -31,21 +30,13 @@ abstract class AbstractAgentNotificationAction implements ActionInterface, Perso
 	protected $tracker;
 	protected $send_to;
 	protected $real_send_to;
-	protected $from_address;
 	protected $person_context;
 	protected $template_suffix = '';
 
-	public function __construct(TicketChangeTracker $tracker, array $send_to, $from_address, $template_suffix = '')
+	public function __construct(TicketChangeTracker $tracker, array $send_to, $template_suffix = '')
 	{
 		$this->tracker = $tracker;
 		$this->send_to = $send_to;
-		$this->from_address = $from_address;
-	}
-
-
-	public function setPersonContext(Person $person)
-	{
-		$this->person_context = $person;
 	}
 
 	public function setTemplateSuffix($template_suffix)
@@ -97,6 +88,34 @@ abstract class AbstractAgentNotificationAction implements ActionInterface, Perso
 		return $this->from_address;
 	}
 
+	protected function doSend($tpl, $vars, Ticket $ticket, Person $person)
+	{
+		$tac = TicketUtil::getTacForPerson($ticket, $person);
+		$vars['ticket'] = $ticket;
+		$vars['person'] = $person;
+		$vars['access_code'] = $tac['code'];
+		$vars['access_code_full'] = $ticket['ref'] . '-' . $tac['code'];
+
+		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
+			'limit' => 25,
+			'order' => 'DESC',
+			'with_notes' => true
+		));
+		$vars['messages'] = $messages;
+
+		App::getTranslator()->setTemporaryLocale($person->getLocale(), function() use ($tpl, $vars, $ticket, $person) {
+			$email_subject = $vars['subject'];
+			$email_body = App::get('templating')->render($tpl.$this->getTemplateSuffix().'.html.twig', $vars);
+
+			$message = App::getMailer()->createMessage();
+			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
+			$message->setSubject($email_subject);
+			$message->setBody($email_body, 'text/html');
+			$message->enableQueueHint();
+
+			App::getMailer()->send($message);
+		});
+	}
 
 	/**
 	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action

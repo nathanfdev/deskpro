@@ -11,13 +11,14 @@
 
 namespace Application\DeskPRO\Translate;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
-use \Application\DeskPRO\Translate\Loader\LoaderInterface;
+use Application\DeskPRO\Translate\Loader\LoaderInterface;
+use Application\DeskPRO\Entity\Locale as LocaleEntity;
 
 /**
  * This class is responsible for loading phrases from a language stored in the database.
@@ -102,11 +103,11 @@ class Translate
 	 * $load_previous_groups means that all the phrase groups loaded so far are loaded for this
 	 * new locale. Thought being that this group will probably need the same phrases as the other.
 	 *
-	 * @param \Application\DeskPRO\Entity\Locale $locale
+	 * @param LocaleEntity $locale
 	 * @param bool $load_previous_groups
 	 * @return void
 	 */
-	public function setLocale(\Application\DeskPRO\Entity\Locale $locale = null, $load_previous_groups = true)
+	public function setLocale(LocaleEntity $locale = null, $load_previous_groups = true)
 	{
 		// If this is the first locale, we'll consider it the "default"
 		if ($locale AND $this->_locale === null) {
@@ -130,13 +131,39 @@ class Translate
 		}
 	}
 
-	
+
+	/**
+	 * Temporarily resets the locale to $locale and runs $func, and then
+	 * resets the locale after.
+	 *
+	 * This will attempt to catch exceptions so the locale is always reset
+	 * afterwards.
+	 *
+	 * @param LocaleEntity $locale
+	 * @param callback     $func
+	 */
+	public function setTemporaryLocale(LocaleEntity $locale, $func)
+	{
+		$this->setLocale($locale);
+
+		$e = null;
+		try {
+			$func();
+		} catch (\Exception $e) {}
+
+		$this->setLocale();
+
+		if ($e) {
+			throw $e;
+		}
+	}
+
 
 	/**
 	 * Set the default locale. This just makes it easier to switch "back" to it when
 	 * using setLocale(null).
 	 */
-	public function setDefaultLocale(\Application\DeskPRO\Entity\Locale $locale)
+	public function setDefaultLocale(LocaleEntity $locale)
 	{
 		$this->_default_locale = $locale;
 	}
@@ -304,16 +331,39 @@ class Translate
 	 */
 	public function getPhraseObject($object, $property = null, $locale = null)
 	{
-		$phrase_name = $this->getObjectPhraseNamer()->getPhraseName($object, $property);
-		$phrase_text = $this->getPhraseText($phrase_name, $locale);
-		if (!$phrase_text) {
-			$phrase_text = $this->getObjectPhraseNamer()->getPhraseDefault($object, $property);
-			if (!$phrase_text) {
-				return null;
+		#------------------------------
+		# Standard translation interfaces
+		#------------------------------
+
+		if ($object instanceof DelegatePhrase) {
+			return $object->getPhrase($translator, $locale);
+
+		} else if ($object instanceof HasPhraseName) {
+			$phrase_name = $object->getPhraseName($property);
+			if ($phrase_name) {
+				return $this->phrase($phrase_name, $locale);
+			} else {
+				return $object->getPhraseDefault($property);
 			}
 		}
 
-		return $phrase_text;
+		#------------------------------
+		# Phrase namer inspects objects..
+		#------------------------------
+
+		$namer = $this->getObjectPhraseNamer();
+		$phrase_name = $namer->getPhraseName($object, $property);
+		if ($phrase_name) {
+			return $this->phrase($phrase_name, $locale);
+		} else {
+			$phrase_text = $this->getObjectPhraseNamer()->getPhraseDefault($object, $property);
+			if ($phrase_text !== null) {
+				return $phrase_text;
+			}
+		}
+
+		// No phrase
+		return '';
 	}
 
 

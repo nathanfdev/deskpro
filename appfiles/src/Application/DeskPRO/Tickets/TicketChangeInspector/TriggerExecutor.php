@@ -69,19 +69,21 @@ class TriggerExecutor
 		}
 
 		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($this->event_types);
-		$action_sets = array();
-		foreach ($all_triggers as $trigger) {
-			if ($trigger->checkTicketMatch($this->ticket, $log_actions)) {
-				$action_sets[] = $trigger->getEditActions($this->ticket, $this);
-			}
-		}
 
-		$action_sets = Arrays::removeFalsey($action_sets);
+		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
+		$factory->addGlobalOption('tracker', clone $this->tracker);
+		$factory->addGlobalOption('ticket', $this->tracker->getTicket());
 
 		$actions_collection = new ActionsCollection();
-		foreach ($action_sets as $set) {
-			foreach ($set as $act) {
-				$actions_collection->add($act);
+
+		foreach ($all_triggers as $trigger) {
+			if ($trigger->checkTicketMatch($this->ticket, $this->tracker)) {
+				foreach ($trigger['actions'] as $action_info) {
+					$action = $factory->createFromInfo($action_info);
+					if ($action) {
+						$actions_collection->add($action);
+					}
+				}
 			}
 		}
 

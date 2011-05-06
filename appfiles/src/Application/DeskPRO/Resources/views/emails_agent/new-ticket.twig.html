@@ -3,6 +3,11 @@
 {% block content %}
 	<!--ACCESS CODE: (#{{access_code_full}})-->
 	{{ layout.section_start(ticket.subject) }}
-		{{new_message.message|raw}}
+		{% include 'DeskPRO:emails_agent:ticket-info.html.twig' %}
+	{{ layout.section_end() }}
+	{{ layout.section_start() }}
+		{% for message in messages %}
+			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
+		{% endfor %}
 	{{ layout.section_end() }}
 {% endblock %}

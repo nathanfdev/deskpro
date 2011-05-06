@@ -8,11 +8,12 @@
 {% endblock %}
 {% block content %}
 	<!--ACCESS CODE: (#{{access_code_full}})-->
-	{{ layout.section_start() }}
+	{{ layout.section_start(ticket.subject) }}
 		{% include 'DeskPRO:emails_agent:ticket-info.html.twig' %}
-		<br><br >
-		{{new_message.message_text}}
-		<br><br>
-		{% include 'DeskPRO:emails_agent:ticket-diff.html.twig' %}
+	{{ layout.section_end() }}
+	{{ layout.section_start() }}
+		{% for message in messages %}
+			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
+		{% endfor %}
 	{{ layout.section_end() }}
 {% endblock %}

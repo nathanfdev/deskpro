@@ -25,10 +25,24 @@ use Orb\Util\Util;
  */
 class ActionsFactory
 {
+	protected $global_options = array();
+
+	public function addGlobalOption($name, $value)
+	{
+		$this->global_options[$name] = $value;
+	}
+
+	public function createFromInfo(array $action_info)
+	{
+		return $this->create($action_info['type'], $action_info['options']);
+	}
+
 	public function create($name, array $options)
 	{
 		$class = str_replace('_', '-', $name);
 		$class = ucfirst(Strings::dashToCamelCase($class));
+
+		$options = array_merge($this->global_options, $options);
 
 		$action_class = $class . 'Action';
 		$modifier_class = $class . 'Modifier';

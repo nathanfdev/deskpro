@@ -423,6 +423,19 @@ class App
 	}
 
 
+	/**
+	 * Get a repository and find an entity.
+	 *
+	 * Shortcut for App::getEntityRepository($entity)->find($id);
+	 *
+	 * @return mixed
+	 */
+	public static function findEntity($entity, $id)
+	{
+		return self::getEntityRepository($entity)->find($id);
+	}
+
+
 
 	/**
 	 * Get the classname for an entity

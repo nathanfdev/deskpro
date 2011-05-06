@@ -142,34 +142,8 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 		$ticket_terms->setChangeTracker($tracker);
 
 		$match = $ticket_terms->doesTicketMatch($ticket);
-	}
 
-
-
-	/**
-	 * Gets actions we can perform against the ticket with a ticket editor object.
-	 *
-	 * @param Entity\Ticket $ticket
-	 * @return array
-	 */
-	public function getEditActions(Ticket $ticket, array $logs = array())
-	{
-		$actions = array();
-
-		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
-
-		foreach ($this->actions as $action_info) {
-
-			$term = $action_info['type'];
-			unset($action_info['type']);
-
-			$action = $factory->create($term, $action_info);
-			if ($action) {
-				$actions[] = $action;
-			}
-		}
-
-		return $actions;
+		return $match;
 	}
 
 

@@ -17,13 +17,13 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
 use Application\DeskPRO\Tickets\TicketChangeTracker;
-
+use Application\DeskPRO\Translate\DelegatePhrase;
 use Application\DeskPRO\App;
 
 /**
  * Sets agent
  */
-class AgentNotificationPropertyChangeAction extends AbstractAgentNotificationAction
+class AgentNotificationNewTicketAction extends AbstractAgentNotificationAction
 {
 	/**
 	 * Apply the property to the ticket
@@ -40,28 +40,12 @@ class AgentNotificationPropertyChangeAction extends AbstractAgentNotificationAct
 
 		foreach ($agent_ids as $agent_id) {
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
-			$tac = $this->ticket->findAccessCodeForPerson($person);
 
-			$message = $this->tracker->getChangedProperty('messages');
-			$message = array_pop($message);
+			$vars = array(
+				'email_subject' => new DelegatePhrase('tickets_agent_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
+			);
 
-			$email_subject = 'New Ticket: ' . $this->ticket['subject'];
-			$email_body = App::get('templating')->render('DeskPRO:emails_agent:new-ticket'.$this->getTemplateSuffix().'.html.twig', array(
-				'ticket' => $this->ticket,
-				'subject' => $email_subject,
-				'agent' => $person,
-				'message' => $message,
-				'access_code' => $tac['code'],
-				'access_code_full' => $this->ticket['ref'] . '-' . $tac['code']
-			));
-
-			$message = App::getMailer()->createMessage();
-			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
-			$message->setSubject($email_subject);
-			$message->setBody($email_body, 'text/html');
-			$message->enableQueueHint();
-
-			App::getMailer()->send($message);
+			$this->doSend('DeskPRO:emails_agent:new-ticket', $vars, $ticket, $person);
 		}
 	}
 }

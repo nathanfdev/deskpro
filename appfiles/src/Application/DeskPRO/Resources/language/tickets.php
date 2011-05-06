@@ -21,6 +21,7 @@
 	'core_tickets.subject'           => 'Subject',
 	'core_tickets.category'          => 'Category',
 	'core_tickets.status'            => 'Status',
+	'core_tickets.hidden_status'     => 'Hidden Status',
 	'core_tickets.agent'             => 'Agent',
 	'core_tickets.department'        => 'Department',
 	'core_tickets.product'           => 'Product',

@@ -24,10 +24,6 @@ class ObjectPhraseNamer
 {
 	public function getPhraseName($object, $property = null)
 	{
-		if ($object instanceof HasPhraseName) {
-			return $object->getPhraseName($property);
-		}
-
 		if ($object instanceof \ArrayAccess AND isset($object['id'])) {
 			$baseclass = Util::getBaseClassname($object);
 			$prefix = 'obj_' . strtolower($baseclass) . '.';
@@ -38,15 +34,11 @@ class ObjectPhraseNamer
 			return $name;
 		}
 
-		throw new \InvalidArgumentException("The object does not have an ID, and does not implement HasPhraseName: " . get_class($object));
+		return null;
 	}
 
 	public function getPhraseDefault($object, $property = null)
 	{
-		if ($object instanceof HasPhraseName) {
-			return $object->getPhraseDefault($property);
-		}
-
 		if ($object instanceof \ArrayAccess) {
 			if ($property === null) {
 				if (isset($object['full_title'])) {
@@ -61,8 +53,8 @@ class ObjectPhraseNamer
 			if (isset($object[$property])) {
 				return $object[$property];
 			}
-
-			return null;
 		}
+
+		return null;
 	}
 }

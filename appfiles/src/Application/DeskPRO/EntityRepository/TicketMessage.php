@@ -50,15 +50,35 @@ class TicketMessage extends EntityRepository
 	 * @param  $ticket
 	 * @return array
 	 */
-	public function getTicketMessages($ticket)
+	public function getTicketMessages($ticket, array $options = array())
 	{
-		$messages = $this->getEntityManager()->createQuery("
-			SELECT m
-			FROM DeskPRO:TicketMessage m
-			LEFT JOIN m.person p
-			WHERE m.ticket = ?1
-			ORDER BY m.id ASC
-		")->setParameter(1, $ticket)->execute();
+		$options = array_merge(array(
+			'order' => 'ASC',
+			 'limit' => null,
+			 'with_notes' => false
+		), $options);
+
+		$order = strtoupper($options['order']);
+		if (!in_array($order, array('ASC', 'DESC'))) {
+			$order = 'ASC';
+		}
+
+		$q = $this->getEntityManager()->createQueryBuilder();
+		$q->from('DeskPRO:TicketMessage', 'm');
+		$q->select('m');
+		$q->leftJoin('m.person', 'p');
+		$q->where('m.ticket = ?1');
+		$q->addOrderBy('m.id', $order);
+
+		if (!$options['with_notes']) {
+			$q->andWhere('m.is_agent_note = false');
+		}
+
+		if ($options['limit']) {
+			$q->setMaxResults($options['limit']);
+		}
+
+		$messages = $q->getQuery()->execute();
 
 		return $messages;
 	}

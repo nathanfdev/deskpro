@@ -1104,9 +1104,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$tac['ticket'] = $this;
 		$tac['person'] = $person;
 		$this->access_codes->add($tac);
-
-		App::getOrm()->persist($tac);
-		App::getOrm()->flush();
 	}
 
 	
