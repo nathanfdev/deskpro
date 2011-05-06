@@ -30,5 +30,5 @@ interface DelegatePhraseInterface
 	 * @param  $translator
 	 * @return string
 	 */
-	public function getPhraseText(Translate $translator);
+	public function getPhrase(Translate $translator);
 }

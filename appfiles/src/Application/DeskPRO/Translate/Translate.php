@@ -335,7 +335,7 @@ class Translate
 		# Standard translation interfaces
 		#------------------------------
 
-		if ($object instanceof DelegatePhrase) {
+		if ($object instanceof DelegatePhraseInterface) {
 			return $object->getPhrase($translator, $locale);
 
 		} else if ($object instanceof HasPhraseName) {
