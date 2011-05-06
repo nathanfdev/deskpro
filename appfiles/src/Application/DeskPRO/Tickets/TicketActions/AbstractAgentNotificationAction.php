@@ -103,8 +103,8 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 		));
 		$vars['messages'] = $messages;
 
-		App::getTranslator()->setTemporaryLocale($person->getLocale(), function() use ($tpl, $vars, $ticket, $person) {
-			$email_subject = $vars['subject'];
+		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person) {
+			$email_subject = $tr->phrase($vars['subject']);
 			$email_body = App::get('templating')->render($tpl.$this->getTemplateSuffix().'.html.twig', $vars);
 
 			$message = App::getMailer()->createMessage();

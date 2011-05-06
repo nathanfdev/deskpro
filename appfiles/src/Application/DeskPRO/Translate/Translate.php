@@ -148,7 +148,7 @@ class Translate
 
 		$e = null;
 		try {
-			$func();
+			$func($this, $locale);
 		} catch (\Exception $e) {}
 
 		$this->setLocale();
