@@ -289,7 +289,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Ticket logger
-	 * @var \TicketChangeTracker\DeskPRO\Tickets\TicketChangeTracker
+	 * @var \Application\DeskPRO\Tickets\TicketChangeTracker
 	 */
 	protected $_ticket_logger;
 
@@ -300,7 +300,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:OneToMany(targetEntity="TaskAssociatedTicket", mappedBy="ticket")
 	 */
 	protected $task_associations;
-	
 
 	public function __construct()
 	{
@@ -344,6 +343,46 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_user_participants;
+	}
+
+
+	/**
+	 * Modify urgency by $mod, which can be positive or negative.
+	 *
+	 * @param int $mod
+	 * @param bool $reset_on_reply True to reset this urgency after the next reply
+	 */
+	public function modifyUrgency($mod, $reset_on_reply = false)
+	{
+		$old_u = $this->urgency;
+		$new_u = \Orb\Util\Numbers::bound($old_u + $mod, 0, 100);
+
+		if ($old_u != $new_u) {
+			$this->urgency = $new_u;
+
+			$this->_onPropertyChanged('urgency', $old_u, $new_u);
+			if ($reset_on_reply) {
+				$real_diff = $old_u - $new_u;// real mod, taking into account bound()
+				$this->getTicketLogger()->recordExtra('urgency_reset_reply', $real_diff);
+			}
+		}
+	}
+
+
+	/**
+	 * Set the urgency to a specific value
+	 *
+	 * @param int $set
+	 */
+	public function setUrgency($set)
+	{
+		$old_u = $this->urgency;
+		$new_u = \Orb\Util\Numbers::bound($set, 0, 100);
+
+		if ($old_u != $new_u) {
+			$this->urgency = $new_u;
+			$this->_onPropertyChanged('urgency', $old_u, $new_u);
+		}
 	}
 
 
@@ -1195,6 +1234,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * @orm:PreUpdate
+	 * @orm:PrePersist
+	 */
+	public function _presaveTicketLogs()
+	{
+		if ($this->_ticket_logger) {
+			$this->_ticket_logger->preDone();
+		}
+	}
+
+	/**
 	 * @orm:PostUpdate
 	 * @orm:PostPersist
 	 */
@@ -1205,6 +1255,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	/**
+	 * @ret \Application\DeskPRO\Tickets\TicketChangeTracker
+	 */
 	public function getTicketLogger()
 	{
 		return $this->_ticket_logger;

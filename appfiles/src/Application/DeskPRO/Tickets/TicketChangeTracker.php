@@ -29,6 +29,9 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	protected $ticket;
 	protected $is_new_ticket = false;
 
+	protected $log_inspector;
+	protected $exec_inspector;
+
 	public function __construct(Entity\Ticket $ticket)
 	{
 		$this->entity = $ticket;
@@ -72,18 +75,44 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	}
 
 
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketChangeInspector\Log
+	 */
+	public function getLogInspector()
+	{
+		if ($this->log_inspector !== null) return $this->log_inspector;
+		$this->log_inspector = new TicketChangeInspector\Log($this);;
+		return $this->log_inspector;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Tickets\TicketChangeInspector\TriggerExecutor
+	 */
+	public function getTriggerExecutorInspector()
+	{
+		if ($this->exec_inspector !== null) return $this->exec_inspector;
+		$this->exec_inspector = new TicketChangeInspector\TriggerExecutor($this);
+		return $this->exec_inspector;
+	}
+
+
+	/**
+	 * Notify all listeners that changes are about to be committed
+	 */
+	public function preDone()
+	{
+		$this->getLogInspector()->runPre();
+	}
+
+
 
 	/**
 	 * Notify all listeners that changes to the ticket have been committed
-	 *
-	 * @return void
 	 */
 	public function done()
 	{
-		$log_inspector = new TicketChangeInspector\Log($this);
-		$log_inspector->run();
-
-		$log_inspector = new TicketChangeInspector\TriggerExecutor($this);
-		$log_inspector->run();
+		$this->getLogInspector()->run();
+		$this->getTriggerExecutorInspector()->run();
 	}
 }

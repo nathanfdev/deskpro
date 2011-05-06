@@ -34,6 +34,50 @@ class Log
 		$this->ticket = $tracker->getTicket();
 	}
 
+	public function runPre()
+	{
+		// If we've got a new message, then we need to fetch previous
+		// urgency resets since the last reply time.
+		// If any are marked as reset, we'll need to apply that urgency
+		// mod now
+
+		$old_reply_time = $this->tracker->getChangedProperty('date_last_agent_reply');
+
+		// Checking on date_last_user_reply means we can easily check
+		// that there was a reply made just now, AND it was an agent reply
+		if (!$old_reply_time) {
+			return;
+		}
+
+		$old_reply_time = $old_reply_time['old'];
+
+		// There was no old times
+		if (!$old_reply_time) {
+			return;
+		}
+
+		$logs = APp::getOrm()->createQuery("
+			SELECT l
+			FROM DeskPRO:TicketLog l
+			WHERE l.ticket = ?1 AND l.action_type = ?2 AND l.date_created >= ?3
+		")->setParamater(1, $this->ticket)
+		  ->setParamater(2, 'changed_urgency')
+		  ->setParamater(3, $old_reply_time)
+		  ->execute();
+
+		$mod = 0;
+
+		foreach ($logs as $log) {
+			if (isset($log['details']['reset_next_reply'])) {
+				$mod += $log['details']['reset_next_reply'];
+			}
+		}
+
+		if ($mod) {
+			$this->ticket->modifyUrgency($mod);
+		}
+	}
+
 	public function run()
 	{
 		foreach ($this->tracker->getAllChangedProperties() as $prop => $info) {
