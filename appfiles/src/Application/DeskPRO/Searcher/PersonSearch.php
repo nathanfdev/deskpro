@@ -502,21 +502,4 @@ class PersonSearch extends SearcherAbstract
 
 		return true;
 	}
-
-	protected function _testChoiceMatch($value, $op, $choice)
-	{
-		if (is_array($choice)) {
-			if ($op == self::OP_IS) {
-				return in_array($value, $choice);
-			} elseif ($op == self::OP_NOT) {
-				return !in_array($value, $choice);
-			}
-		} else {
-			if ($op == self::OP_IS) {
-				return $value == $choice;
-			} elseif ($op == self::OP_NOT) {
-				return $value != $choice;
-			}
-		}
-	}
 }
