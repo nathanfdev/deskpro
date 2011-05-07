@@ -108,6 +108,12 @@ class NewTicket
 			if (!$ticket_message['message']) {
 				$ticket_message['message'] = '(no message)';
 			}
+
+			if ($id = App::getEntityRepository('TicketMessage')->checkDupeMessage($ticket_message)) {
+				$ticket_message = App::findEntity('DeskPRO:TicketMessage', $id);
+				return $ticket_message->ticket;
+			}
+
 			$ticket->addMessage($ticket_message);
 
 			if ($ticket->person_email['is_validated']) {

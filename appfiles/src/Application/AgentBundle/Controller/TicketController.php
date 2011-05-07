@@ -476,8 +476,12 @@ class TicketController extends AbstractController
 			$message->addAttachment($attach);
 		}
 
-		$ticket_edit->addMessage($message);
-		$ticket_edit->save();
+		if ($id = App::getEntityRepository('TicketMessage')->checkDupeMessage($ticket_message)) {
+			$message = App::findEntity('DeskPRO:TicketMessage', $id);
+		} else {
+			$ticket_edit->addMessage($message);
+			$ticket_edit->save();
+		}
 
 		return $this->render('AgentBundle:Ticket:ticket-message.html.twig', array(
 			'message' => $message

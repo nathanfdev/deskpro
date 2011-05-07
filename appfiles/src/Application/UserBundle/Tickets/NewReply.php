@@ -46,6 +46,10 @@ class NewReply
 		$ticket_message->ticket = $this->ticket;
 		$ticket_message->person = $this->person;
 
+		if ($id = App::getEntityRepository('TicketMessage')->checkDupeMessage($ticket_message)) {
+			return;
+		}
+
 		$attach = false;
 		if ($this->new_upload) {
 			$desc = App::getApi('filestorage')->createRandomPath();

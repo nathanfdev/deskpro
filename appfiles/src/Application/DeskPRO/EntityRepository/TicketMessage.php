@@ -11,11 +11,11 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Doctrine\ORM\EntityRepository;
 
-use \Orb\Util\Numbers;
+use Orb\Util\Numbers;
 
 class TicketMessage extends EntityRepository
 {
@@ -81,5 +81,32 @@ class TicketMessage extends EntityRepository
 		$messages = $q->getQuery()->execute();
 
 		return $messages;
+	}
+
+
+	/**
+	 * Checks the database for a duplicate message.
+	 *
+	 * Returns the message ID if there was one found, or false if none found.
+	 *
+	 * @param \Application\DeskPRO\Entity\TicketMessage $message
+	 * @param int $secs_ago
+	 * @return bool|mixed
+	 */
+	public function checkDupeMessage(Entity\TicketMessage $message, $secs_ago = 10800 /* 3 hours */)
+	{
+		$timesnip = date('Y-m-d H:m:s', time() - $secs_ago);
+
+		$check = App::getDb()->fetchColumn("
+			SELECT id
+			FROM ticket_messages
+			WHERE message_hash = ? AND date_created > ?
+		", array($message['message_hash'], $timesnip));
+
+		if ($check) {
+			return $check;
+		}
+
+		return false;
 	}
 }
