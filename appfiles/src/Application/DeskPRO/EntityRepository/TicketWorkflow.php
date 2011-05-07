@@ -19,6 +19,21 @@ class TicketWorkflow extends EntityRepository
 {
 	protected $_workflow_names = null;
 
+	public function findByTitle($title)
+	{
+		try {
+			$workflow = $this->getEntityManager()->createQuery("
+				SELECT w
+				FROM DeskPRO:TicketWorkflow w
+				WHERE w.title LIKE ?1
+			")->setParameter(1, "%$title%")->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $workflow;
+	}
+
 	protected function _loadWorkflowNames()
 	{
 		if ($this->_workflow_names !== null) return;

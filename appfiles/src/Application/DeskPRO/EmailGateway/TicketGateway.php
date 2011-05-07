@@ -21,6 +21,19 @@ use \Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
 
 class TicketGateway extends AbstractGateway
 {
+	const EVENT_EVENT                = 'DeskPRO_onTicketGatewayInit';
+	const EVENT_BEFORE_RUN_ACTION    = 'DeskPRO_onBeforeTicketGatewayRunAction';
+	const EVENT_RUN_ACTION           = 'DeskPRO_onTicketGatewayRunAction';
+	const EVENT_BEFORE_NEWREPLY      = 'DeskPRO_onBeforeTicketGatewayNewReply';
+	const EVENT_NEWREPLY             = 'DeskPRO_onTicketGatewayNewReply';
+	const EVENT_BEFORE_NEWTICKET     = 'DeskPRO_onBeforeTicketGatewayNewTicket';
+	const EVENT_NEWTICKET            = 'DeskPRO_onTicketGatewayNewTicket';
+
+	protected function init()
+	{
+		
+	}
+
 	public function run()
 	{
 		$person_processor = new PersonFromEmailProcessor();
@@ -71,12 +84,24 @@ class TicketGateway extends AbstractGateway
 			}
 		}
 
+		$ev = $this->createGatewayEvent(array(
+			'ticket' => $ticket,
+			'person' => $person,
+			'cancel' => false
+		));
+		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_RUN_ACTION, $ev);
+
+		if ($ev->cancel) {
+			return null;
+		}
+
+		$ret = null;
 		if ($ticket AND $person) {
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
 			if ($person['is_agent']) {
-				return $this->runNewAgentReply($ticket, $person);
+				$ret = $this->runNewAgentReply($ticket, $person);
 			} else {
-				return $this->runNewUserReply($ticket, $person);
+				$ret = $this->runNewUserReply($ticket, $person);
 			}
 		} else {
 			$person = $person_processor->findPerson($this->reader->getFromAddress());
@@ -86,21 +111,48 @@ class TicketGateway extends AbstractGateway
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
 			}
 
-			return $this->runNewTicket($person);
+			$ret = $this->runNewTicket($person);
 		}
+
+		$ev = $this->createGatewayEvent(array(
+			'ticket' => $ticket,
+			'person' => $person,
+			'return' => $ret
+		));
+		$this->event_dispatcher->dispatch(self::EVENT_RUN_ACTION, $ev);
+
+		return $ret;
 	}
 
 	protected function doNewReply($ticket, $person)
 	{
+		$email_info = array();
+		$email_info['subject'] = $this->reader->getSubject()->subject;
+		if ($this->reader->getBodyText()->getBody()) {
+			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+		} else {
+			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+		}
+
+		$ev = $this->createGatewayEvent(array(
+			'ticket' => $ticket,
+			'person' => $person,
+			'email_info' => $email_info,
+			'cancel' => false,
+		));
+		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_NEWREPLY, $ev);
+
+		if ($ev->cancel) {
+			return null;
+		}
+
+		$email_info = $ev->email_info;
+
 		$message = new Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = $person;
 
-		if ($this->reader->getBodyHtml()->getBody()) {
-			$message['message'] = $this->reader->getBodyHtml()->getBody();
-		} else {
-			$message['message'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
-		}
+		$message['message'] = $email_info['body'];
 
 		foreach ($this->processBlobs() as $blob) {
 			$attach = new Entity\TicketAttachment();
@@ -121,6 +173,13 @@ class TicketGateway extends AbstractGateway
 			$em->persist($person);
 			$em->flush();
 		});
+
+		$ev = $this->createGatewayEvent(array(
+			'ticket' => $ticket,
+			'person' => $person,
+			'message' => $message
+		));
+		$this->event_dispatcher->dispatch(self::EVENT_NEWREPLY, $ev);
 
 		return $message;
 	}
@@ -182,17 +241,34 @@ class TicketGateway extends AbstractGateway
 
 	protected function runNewTicket(Entity\Person $person)
 	{
+		$email_info = array();
+		$email_info['subject'] = $this->reader->getSubject()->subject;
+		if ($this->reader->getBodyText()->getBody()) {
+			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+		} else {
+			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+		}
+
+		$ev = $this->createGatewayEvent(array(
+			'person' => $person,
+			'email_info' => $email_info,
+			'cancel' => false,
+		));
+		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_NEWTICKET, $ev);
+
+		if ($ev->cancel) {
+			return null;
+		}
+
+		$email_info = $ev->email_info;
+
 		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
 			Entity\Ticket::CREATED_GATEWAT_PERSON,
 			$person
 		);
 
-		$newticket->ticket->subject = $this->reader->getSubject()->subject;
-		if ($this->reader->getBodyText()->getBody()) {
-			$newticket->ticket->message = $this->reader->getBodyHtml()->getBody();
-		} else {
-			$newticket->ticket->message = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
-		}
+		$newticket->ticket->subject = $email_info['subject'];
+		$newticket->ticket->message = $email_info['body'];
 
 		$dep_id = App::getDb()->fetchColumn("SELECT id FROM departments WHERE parent_id IS NULL ORDER BY title ASC LIMIT 1");
 		$newticket->ticket->department_id = $dep_id;
@@ -204,6 +280,12 @@ class TicketGateway extends AbstractGateway
 			$this->handleCc($ticket, $this->reader->getCcAddresses());
 		}
 		App::getOrm()->commit();
+
+		$ev = $this->createGatewayEvent(array(
+			'ticket' => $ticket,
+			'person' => $person,
+		));
+		$this->event_dispatcher->dispatch(self::EVENT_NEWTICKET, $ev);
 
 		return $ticket;
 	}

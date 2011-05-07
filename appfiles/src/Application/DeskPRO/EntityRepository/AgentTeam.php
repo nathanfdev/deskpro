@@ -37,6 +37,21 @@ class AgentTeam extends EntityRepository
 		return $this->_team_names;
 	}
 
+	public function findByName($name)
+	{
+		try {
+			$team = $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:AgentTeam t
+				WHERE t.name LIKE ?1
+			")->setParameter(1, "%$name%")->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $team;
+	}
+
 	public function getTeamNames($for_ids = null)
 	{
 		$this->_loadTeamNames();

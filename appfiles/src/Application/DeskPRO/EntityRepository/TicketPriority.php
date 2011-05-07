@@ -19,6 +19,21 @@ class TicketPriority extends EntityRepository
 {
 	protected $priority_names = null;
 
+	public function findByTitle($title)
+	{
+		try {
+			$priority = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:TicketPriority p
+				WHERE p.title LIKE ?1
+			")->setParameter(1, "%$title%")->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $priority;
+	}
+
 	/**
 	 * @return array
 	 */

@@ -33,6 +33,21 @@ class Person extends EntityRepository
 		");
 	}
 
+	public function findAgentByName($name)
+	{
+		try {
+			$priority = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Person p
+				WHERE CONCAT(first_name, ' ', last_name) LIKE ?1
+			")->setParameter(1, "%$name%")->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $priority;
+	}
+
 	public function getAgentNames($for_ids = null)
 	{
 		$this->_loadAgentNames();

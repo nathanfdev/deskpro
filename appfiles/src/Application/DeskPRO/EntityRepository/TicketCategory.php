@@ -18,6 +18,21 @@ use \Orb\Util\Arrays;
 
 class TicketCategory extends AbstractCategoryRepository
 {
+	public function findByTitle($title)
+	{
+		try {
+			$category = $this->getEntityManager()->createQuery("
+				SELECT c
+				FROM DeskPRO:TicketCategory c
+				WHERE c.title LIKE ?1
+			")->setParameter(1, "%$title%")->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $category;
+	}
+
 	/**
 	 * Returns an array indexed by department ID whose value is an array of
 	 * categories enabled for it.

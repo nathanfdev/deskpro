@@ -19,6 +19,21 @@ class Product extends EntityRepository
 {
 	protected $_product_names = null;
 
+	public function findByTitle($title)
+	{
+		try {
+			$product = $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:Product p
+				WHERE p.title LIKE ?1
+			")->setParameter(1, "%$title%")->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $product;
+	}
+
 	protected function _loadProductNames()
 	{
 		if ($this->_product_names !== null) return;

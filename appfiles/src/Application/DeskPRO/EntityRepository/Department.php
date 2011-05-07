@@ -22,6 +22,21 @@ class Department extends EntityRepository
 	protected $_department_names = null;
 	protected $_department_ids = array();
 
+	public function findByTitle($title)
+	{
+		try {
+			$department = $this->getEntityManager()->createQuery("
+				SELECT d
+				FROM DeskPRO:Department d
+				WHERE d.title LIKE ?1
+			")->setParameter(1, "%$title%")->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+
+		return $department;
+	}
+
 	public function getDepartmentIds()
 	{
 		$this->getDepartmentsInHierarchy();
