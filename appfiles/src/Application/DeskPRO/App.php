@@ -42,6 +42,7 @@ class App
 	const SERVICE_TRANSLATOR         = 'deskpro.core.translate';
 	const SERVICE_EVENT_DISPATCHER   = 'event_dispatcher';
 	const SERVICE_FORM_FACTORY       = 'form.factory';
+	const SERVICE_SEARCH_ENGINE      = 'deskpro.search_engine';
 	/**#@-*/
 
 	/**
@@ -391,6 +392,17 @@ class App
 	public static function getFormFactory()
 	{
 		return self::get(self::SERVICE_FORM_FACTORY);
+	}
+
+
+	/**
+	 * Get the searcher
+	 *
+	 * @return \Application\DeskPRO\Search\Adapter\AbstractAdapter
+	 */
+	public static function getSearchEngine()
+	{
+		return self::get(self::SERVICE_SEARCH_ENGINE);
 	}
 
 

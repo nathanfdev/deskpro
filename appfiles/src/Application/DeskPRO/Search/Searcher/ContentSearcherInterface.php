@@ -13,6 +13,7 @@ namespace Application\DeskPRO\Search\Searcher;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity\Person;
+use \Application\DeskPRO\Entity\Ticket;
 
 use \Symfony\Component\DependencyInjection\ContainerInterface;
 
@@ -39,4 +40,12 @@ interface ContentSearcherInterface
 	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
 	 */
 	public function labelled(array $labels);
+
+	/**
+	 * Find articles that are similar to a ticket
+	 * 
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return void
+	 */
+	public function similarArticleToTicket(Ticket $ticket);
 }

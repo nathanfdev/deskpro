@@ -45,7 +45,7 @@ class MysqlAdapter extends AbstractAdapter
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\Ticket', 'ticket');
 		$this->addContentTypeMap('Application\\DeskPRO\\Entity\\TicketMessage', 'ticket_message');
 	}
-	
+
 
 	/**
 	 * Check if this object is capable of a specific thing
@@ -133,7 +133,7 @@ class MysqlAdapter extends AbstractAdapter
 
 		$classname = 'Application\\DeskPRO\\Search\\ContentType\\Mysql\\' . $type_name;
 		$obj = new $classname();
-		
+
 		return $obj;
 	}
 
@@ -163,7 +163,7 @@ class MysqlAdapter extends AbstractAdapter
 	{
 		$searcher = new ContentSearcher();
 		$searcher->setPersonContext($this->person);
-		
+
 		return $searcher;
 	}
 

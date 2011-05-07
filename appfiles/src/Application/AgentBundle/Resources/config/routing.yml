@@ -492,6 +492,11 @@ agent_ticket_ajaxtab_attachments:
   defaults: { _controller: AgentBundle:Ticket:ajaxTabAttachments }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_ajaxtab_releated_content:
+  pattern: /tickets/{ticket_id}/ajax-tab-related-content
+  defaults: { _controller: AgentBundle:Ticket:ajaxTabRelatedContent }
+  requirements: { ticket_id: "\d+" }
+
 agent_ticket_ajax_labels_save:
   pattern: /tickets/{ticket_id}/ajax-save-labels
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveLabels }

@@ -13,6 +13,7 @@ namespace Application\DeskPRO\Search\Searcher\Mysql;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\People\PersonContextInterface;
 
 use Application\DeskPRO\Search\Adapter\MysqlAdapter;
@@ -119,5 +120,16 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		$result_set = new ResultSet($total, $results);
 
 		return $result_set;
+	}
+
+	/**
+	 * Find articles that are similar to a ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @return void
+	 */
+	public function similarArticleToTicket(Ticket $ticket)
+	{
+		throw new \Application\DeskPRO\Search\Searcher\UnsupportedOperation();
 	}
 }

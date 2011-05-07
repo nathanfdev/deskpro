@@ -319,6 +319,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 					self._loadTicketTab_Log();
 				} else if (info.tabEl.is('.ticket-attach')) {
 					self._loadTicketTab_Attach();
+				} else if (info.tabEl.is('.ticket-related-content')) {
+					self._loadTicketTab_RelatedContent();
 				}
 			}
 		});
@@ -346,6 +348,25 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		$.ajax({
 			url: this.getMetaData('tabTicketLogUrl'),
+			type: 'GET',
+			dataType: 'html',
+			success: function(html) {
+				contentEl.html(html);
+				contentEl.removeClass('unloaded');
+			}
+		});
+	},
+
+	_loadTicketTab_RelatedContent: function() {
+		var contentEl = $('.tab-content.ticket-realted-content', this.wrapper);
+
+		if (!contentEl.is('.unloaded')) {
+			// Already loaded
+			return;
+		}
+
+		$.ajax({
+			url: this.getMetaData('tabRelatedContentUrl'),
 			type: 'GET',
 			dataType: 'html',
 			success: function(html) {

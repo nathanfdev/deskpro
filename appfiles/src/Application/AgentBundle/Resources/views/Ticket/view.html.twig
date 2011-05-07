@@ -14,6 +14,7 @@ pageMeta.viewMessageUnformattedUrl    = '{{ path('agent_ticket_message_unformatt
 pageMeta.getMessageQuoteUrl           = '{{ path('agent_ticket_message_ajax_getquote', {'ticket_id': ticket.id, 'message_id': '000'})|replace({'000': '{message_id}'}) }}';
 pageMeta.tabTicketLogUrl              = '{{ path('agent_ticket_ajaxtab_ticketlog', {'ticket_id': ticket.id}) }}';
 pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachments', {'ticket_id': ticket.id}) }}';
+pageMeta.tabRelatedContentUrl         = '{{ path('agent_ticket_ajaxtab_releated_content', {'ticket_id': ticket.id}) }}';
 pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
 pageMeta.getUpdatedCountsUrl          = '{{ path('agent_ticket_ajaxgetupdatedcounts', {'ticket_id': ticket.id}) }}';
@@ -269,6 +270,9 @@ pageMeta.widgets = [
 			<li class="tab-trigger ticket-notes" data-tab-for=".tab-content.ticket-notes"><a>Notes <em class="ticket-notes-count">({{counts.notes}})</em></a></li>
 			<li class="tab-trigger ticket-attach" data-tab-for=".tab-content.ticket-attach"><a>Attachments <em class="ticket-attachments-count">({{counts.attachments}})</em></a></li>
 			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log"><a>Log <em class="ticket-logs-count">({{counts.logs}})</em></a></li>
+			{% if show_related_content %}
+				<li class="tab-trigger ticket-related-content" data-tab-for=".tab-content.related-content"><a>Related Content</a></li>
+			{% endif %}
 			{% for widget in widgets['agent.ticket.tabs'] %}
 				<li class="tab-trigger widget-{{widget.id}}" data-tab-for=".tab-content.widget-{{widget.id}}"><a>{{widget.tab_title|default(widget.note)}}</a></li>
 			{% endfor %}
@@ -335,6 +339,14 @@ pageMeta.widgets = [
 			Loading ticket log ...
 		</div>
 		{# /Tab Log #}
+
+		{# Tab Related Content #}
+		{% if show_related_content %}
+			<div class="full-container-tabbed-contents tab-content ticket-related-content unloaded" data-tab-trigger=".tab-trigger.related-content">
+
+			</div>
+		{% endif %}
+		{# /Tab Related Content #}
 
 		{% for widget in widgets['agent.ticket.tabs'] %}
 			<div class="full-container-tabbed-contents tab-content widget-{{widget.id}}" data-tab-trigger=".tab-trigger.widget-{{widget.id}}">

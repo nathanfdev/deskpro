@@ -11,11 +11,13 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
+
+use Application\DeskPRO\Search\Adapter\AbstractAdapter as AbstractSearchAdapter;
 
 /**
  * Handles ticket searches
@@ -152,9 +154,19 @@ class TicketController extends AbstractController
 			$ticket_deleted = $ticket->getDeletionRecord();
 		}
 
+		// Check if the search adapter
+		$show_related_content = false;
+		if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_TICKETS_SIMILAR)
+			OR App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_CONTENT_TICKET_SIMILAR_ARTICLES)
+		) {
+			$show_related_content = true;
+		}
+
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
+
+			'show_related_content' => $show_related_content,
 
 			'ticket_custom_fields_block' => $ticket_custom_fields_block,
 			'ticket_messages_block' => $ticket_messages_block,
@@ -218,8 +230,6 @@ class TicketController extends AbstractController
 			'message' => $message
 		));
 	}
-
-
 
 	############################################################################
 	# new
@@ -342,6 +352,36 @@ class TicketController extends AbstractController
 
 		return $this->render('AgentBundle:Ticket:tab-attachments.html.twig', array(
 			'ticket' => $ticket
+		));
+	}
+
+	public function ajaxTabRelatedContentAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$search = App::getSearchEngine();
+
+
+		$related_tickets = false;
+		if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_TICKETS_SIMILAR)) {
+			$ticket_searcher = $search->getTicketSearcher();
+			$results = $ticket_searcher->similar($ticket);
+
+			$related_tickets = $search->getResultSetObjects($results);
+		}
+
+		$related_articles = false;
+		if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_CONTENT_TICKET_SIMILAR_ARTICLES)) {
+			$content_searcher = $search->getContentSearcher();
+			$results = $content_searcher->similarArticleToTicket($ticket);
+
+			$related_articles = $search->getResultSetObjects($results);
+		}
+
+		return $this->render('AgentBundle:Ticket:tab-related-content.html.twig', array(
+			'ticket'            => $ticket,
+			'related_tickets'   => $related_tickets,
+			'related_articles'  => $related_articles,
 		));
 	}
 
