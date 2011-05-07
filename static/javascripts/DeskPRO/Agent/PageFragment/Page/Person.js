@@ -87,6 +87,23 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		}
 	},
 
+	updateCounts: function() {
+		var wrap = $('.full-container-tabbed-tabs', this.wrapper);
+
+		$.ajax({
+			url: this.getMetaData('getUpdatedCountsUrl'),
+			type: 'GET',
+			context: this,
+			dataType: 'json',
+			success: function(counts) {
+				Object.each(counts, function(v,k) {
+					var sel = '.person-' + k + '-count';
+					$(sel, wrap).html('(' + v + ')');
+				});
+			}
+		});
+	},
+
 	//#########################################################################
 	//# Custom fields
 	//#########################################################################
@@ -350,6 +367,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 		$('.new-note-form').removeClass('saving');
 		this.closeNoteEditable();
+
+		this.updateCounts();
 	},
 
 	//#########################################################################

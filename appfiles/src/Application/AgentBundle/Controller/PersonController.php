@@ -149,6 +149,8 @@ class PersonController extends AbstractController
 		foreach ($person['usergroups'] as $ug) $ids[] = $ug['id'];
 		$usergroups_form->setData($ids);
 
+		$counts = $this->_fetchCounts($person);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
 			'form' => $form,
@@ -160,8 +162,35 @@ class PersonController extends AbstractController
 			'org_options' => $org_options,
 			'usergroups_names' => $usergroup_names,
 			'usergroups_form' => $usergroups_form,
-			'person_tickets' => $person_tickets
+			'person_tickets' => $person_tickets,
+			'counts' => $counts
 		));
+	}
+
+	protected function _fetchCounts($person)
+	{
+		$counts = array();
+
+		$counts['notes'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM person_notes
+			WHERE person_id = ?
+		", array($person['id']));
+
+		$counts['tickets'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets
+			WHERE person_id = ?
+		", array($person['id']));
+
+		return $counts;
+	}
+
+	public function getUpdatedCountsAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		return $this->createJsonResponse($this->_fetchCounts($person));
 	}
 
 	############################################################################

@@ -6,6 +6,7 @@ pageMeta.pageIdentity = 'person:{{person.id}}';
 pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'people'}) }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_person_ajax_labels_save', {'person_id': person.id}) }}';
 pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_id': person.id }) }}';
+pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'person_id': person.id}) }}';
 </script>
 
 <div class="profile layout-content">
@@ -183,8 +184,8 @@ pageMeta.saveFieldsUrl = '{{ path('agent_person_ajaxsavecustomfields', {'person_
 	{# Tab Triggers #}
 	<div class="full-container-tabbed-tabs">
 		<ul>
-			<li class="tab-trigger person-notes on" data-tab-for=".tab-content.person-notes"><a>Notes</a></li>
-			<li class="tab-trigger person-tickets" data-tab-for=".tab-content.person-tickets"><a>Tickets</a></li>
+			<li class="tab-trigger person-notes on" data-tab-for=".tab-content.person-notes"><a>Notes <em class="person-notes-count">({{counts.notes}})</em></a></li>
+			<li class="tab-trigger person-tickets" data-tab-for=".tab-content.person-tickets"><a>Tickets <em class="person-tickets-count">({{counts.tickets}})</em></a></li>
 		</ul>
 	</div>
 	{# /Tab Triggers #}

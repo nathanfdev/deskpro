@@ -179,6 +179,11 @@ agent_people_ajaxsave_note:
   defaults: { _controller: AgentBundle:Person:ajaxSaveNote }
   requirements: { person_id: "\d+" }
 
+agent_people_ajaxgetupdatedcounts:
+  pattern: /people/{person_id}/ajax-get-updated-counts
+  defaults: { _controller: AgentBundle:Person:getUpdatedCounts }
+  requirements: { person_id: "\d+" }
+
 agent_people_ajaxsave_organization:
   pattern: /people/{person_id}/ajax-save-organization
   defaults: { _controller: AgentBundle:Person:ajaxSaveOrganization }
