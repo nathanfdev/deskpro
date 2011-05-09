@@ -50,7 +50,7 @@ class OrganizationController extends AbstractController
 		$field_defs = App::getApi('custom_fields.organizations')->getEnabledFields();
 		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($org['custom_data'], $field_defs);
 
-		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
 		$custom_fields = App::getApi('custom_fields.organizations')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
 
 		#------------------------------

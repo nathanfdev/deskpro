@@ -48,7 +48,7 @@ class TicketController extends AbstractController
 
 			// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 			// So dont remove it even though it looks like it's not used! :-)
-			$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
+			$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
 			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
 			$ticket_custom_fields_block = $this->renderView('AgentBundle:Ticket:part-custom-fields.html.twig', array(
@@ -156,11 +156,11 @@ class TicketController extends AbstractController
 
 		// Check if the search adapter
 		$show_related_content = false;
-		if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_TICKETS_SIMILAR)
-			OR App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_CONTENT_TICKET_SIMILAR_ARTICLES)
-		) {
-			$show_related_content = true;
-		}
+		//if (App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_TICKETS_SIMILAR)
+		//	OR App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_CONTENT_TICKET_SIMILAR_ARTICLES)
+		//) {
+		//	$show_related_content = true;
+		//}
 
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
@@ -241,7 +241,7 @@ class TicketController extends AbstractController
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$custom_fields = array();

@@ -78,7 +78,10 @@ class TicketMessage extends EntityRepository
 			$q->setMaxResults($options['limit']);
 		}
 
-		$messages = $q->getQuery()->execute();
+		$q = $q->getQuery();
+		$q->setParameter(1, $ticket);
+
+		$messages = $q->execute();
 
 		return $messages;
 	}

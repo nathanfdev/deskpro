@@ -80,7 +80,7 @@ class PersonController extends AbstractController
 		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $field_defs);
 
-		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
 		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
 
 		#------------------------------
@@ -140,14 +140,17 @@ class PersonController extends AbstractController
 		");
 		$org_options = Arrays::implodeTemplate($org_options, "<option value=\"{KEY}\">{VAL}</option>");
 
-		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
-		$usergroups_form = new \Symfony\Component\Form\ChoiceField('usergroups', array(
-			'choices' => $usergroup_names,
-			'multiple' => true
-		));
 		$ids = array();
 		foreach ($person['usergroups'] as $ug) $ids[] = $ug['id'];
-		$usergroups_form->setData($ids);
+
+		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$usergroups_form = false;
+		if ($usergroups_form) {
+			$usergroups_form = $this->get('form.factory')->createNamedBuilder('choice', 'usergroups', $ids, array(
+				'choices' => $usergroup_names,
+				'multiple' => true
+			))->getForm();
+		}
 
 		$counts = $this->_fetchCounts($person);
 
@@ -161,7 +164,7 @@ class PersonController extends AbstractController
 			'note_pages' => $note_pages,
 			'org_options' => $org_options,
 			'usergroups_names' => $usergroup_names,
-			'usergroups_form' => $usergroups_form,
+			'usergroups_form' => $usergroups_form ? $usergroups_form->createView() : null,
 			'person_tickets' => $person_tickets,
 			'counts' => $counts
 		));
@@ -173,7 +176,7 @@ class PersonController extends AbstractController
 
 		$counts['notes'] = App::getDb()->fetchColumn("
 			SELECT COUNT(*)
-			FROM person_notes
+			FROM people_notes
 			WHERE person_id = ?
 		", array($person['id']));
 

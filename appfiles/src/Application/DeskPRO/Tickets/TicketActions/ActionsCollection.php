@@ -25,7 +25,7 @@ class ActionsCollection
 	/**
 	 * @var Application\DeskPRO\Tickets\TicketActions\ActionInterface[]
 	 */
-	protected $actions;
+	protected $actions = array();
 
 	public function add($action_or_modifier)
 	{

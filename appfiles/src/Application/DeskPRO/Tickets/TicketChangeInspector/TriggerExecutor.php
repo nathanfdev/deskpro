@@ -31,6 +31,8 @@ class TriggerExecutor
 	 */
 	protected $event_types = array();
 
+	protected $is_performing = false;
+
 	public function __construct(TicketChangeTracker $tracker)
 	{
 		$this->tracker = $tracker;
@@ -87,7 +89,7 @@ class TriggerExecutor
 			}
 		}
 
-		$actions_collection->apply($this->ticket, App::getCurrentPerson());
+		$actions_collection->apply($this->tracker->getTicket(), App::getCurrentPerson());
 		
 		$this->is_performing = false;
 	}
