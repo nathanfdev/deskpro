@@ -57,13 +57,13 @@ class UsergroupsController extends AbstractController
 			$row_html = $this->renderView('AdminBundle:Usergroups:list-row.html.twig', array('usergroup' => $usergroup));
 		}
 
-		$form = new Form\Form('usergroup');
-		$form->add(new Form\TextField('title', array('data' => $usergroup['title'])));
-		$form->add(new Form\TextareaField('note', array('data' => $usergroup['note'])));
+		$form = $this->get('form.factory')->createNamedBuilder('form', 'usergroup');
+		$form->add('title', 'text', array('data' => $usergroup['title']));
+		$form->add('note', 'textarea', array('data' => $usergroup['note']));
 
 		return $this->render('AdminBundle:Usergroups:edit.html.twig', array(
 			'usergroup' => $usergroup,
-			'form'      => $form,
+			'form'      => $form->getForm()->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));
