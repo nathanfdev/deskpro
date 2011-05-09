@@ -376,6 +376,10 @@ admin_products_del:
   defaults: { _controller: AdminBundle:Products:delete }
   requirements: { product_id: "\d+" }
 
+admin_products_updateorders:
+  pattern: /products/update-orders
+  defaults: { _controller: AdminBundle:Products:updateOrders }
+
 ################################################################################
 # Departments
 ################################################################################
@@ -404,6 +408,10 @@ admin_departments_designer_ajaxfetchwidget:
   defaults: { _controller: AdminBundle:Departments:designerAjaxFetchWidget }
   requirements: { department_id: "\d+", widget_id: "\d+" }
 
+admin_departments_updateorders:
+  pattern: /departments/update-orders
+  defaults: { _controller: AdminBundle:Departments:updateOrders }
+
 ################################################################################
 # Ticket categories
 ################################################################################
@@ -416,6 +424,10 @@ admin_ticketcats_edit:
   pattern: /tickets/categories/{category_id}
   defaults: { _controller: AdminBundle:TicketCategories:edit }
   requirements: { category_id: "\d+" }
+
+admin_ticketcats_updateorders:
+  pattern: /tickets/categories/update-orders
+  defaults: { _controller: AdminBundle:TicketCategories:updateOrders }
 
 ################################################################################
 # Ticket Priorities
@@ -442,6 +454,10 @@ admin_ticketworks_edit:
   pattern: /tickets/workflows/{workflow_id}
   defaults: { _controller: AdminBundle:TicketWorkflows:edit }
   requirements: { workflow_id: "\d+" }
+
+admin_ticketworks_updateorders:
+  pattern: /tickets/workflows/update-orders
+  defaults: { _controller: AdminBundle:TicketWorkflows:updateOrders }
 
 ################################################################################
 # Twitter

@@ -43,7 +43,7 @@ class Product extends EntityRepository
 			$this->_product_names = $db->fetchAllKeyValue("
 				SELECT id, title
 				FROM products
-				ORDER BY title ASC
+				ORDER BY display_order ASC
 			");
 
 			App::getCache('common')->save($this->_product_names, null, array('products'));

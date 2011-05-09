@@ -83,4 +83,14 @@ class ProductsController extends AbstractController
 			'row_html'  => $row_html
 		));
 	}
+
+		############################################################################
+	# update-orders
+	############################################################################
+
+	public function updateOrdersAction()
+	{
+		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
+		return $helper->doUpdate('products');
+	}
 }

@@ -6,7 +6,44 @@ DeskPRO.Admin.PageHandler.DepartmentsList = new Class({
 	initPage: function() {
 		this.initPopoutTriggers();
 		DeskPRO_Window.getMessageBroker().addMessageListener('departments.list.change', this.handleListChange.bind(this));
+
+		var self = this;
+		$('#departments_parentlist').sortable({
+			'opacity': 0.8,
+			'axis': 'y',
+			'handle': '.drag-handle:first',
+			'items': '> ul',
+			update: function() { self.sendOrderUpdate() }
+		});
+
+		$('#departments_parentlist > ul').sortable({
+			'opacity': 0.8,
+			'axis': 'y',
+			'handle': '.drag-handle:first',
+			'items': '> li.sub',
+			'tolerance': 'intersect',
+			stop: function (event, ui) {
+				$('#departments_parentlist > ul > li.sub').attr('style', '');
+			},
+			update: function() { self.sendOrderUpdate() }
+		});
 	},
+
+	sendOrderUpdate: function() {
+		var ids = [];
+
+		$('#departments_parentlist li.department').each(function() {
+			ids.push({name: 'display_order[]', value: $(this).data('department-id')});
+		});
+
+		$.ajax({
+			url: BASE_URL + 'admin/departments/update-orders',
+			dataType: 'json',
+			data: ids,
+			type: 'POST'
+		});
+	},
+
 
 	handleListChange: function(info) {
 		var exist = $('li.'+info.typename+'-'+info.department_id, list);

@@ -38,7 +38,7 @@ class IdeaCategory extends AbstractNestedTreeCategoryRepository
 		$this->all_cats = App::getDb()->fetchAllKeyed("
 			SELECT id, parent_id title
 			FROM idea_categories
-			ORDER BY id DESC
+			ORDER BY display_order DESC
 		", array(), 'id');
 
 		return $this->all_cats;

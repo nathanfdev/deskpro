@@ -6,6 +6,42 @@ DeskPRO.Admin.PageHandler.TicketCategoriesList = new Class({
 	initPage: function() {
 		this.initPopoutTriggers();
 		DeskPRO_Window.getMessageBroker().addMessageListener('category.list.change', this.handleListChange.bind(this));
+
+		var self = this;
+		$('#ticket_category_parentlist').sortable({
+			'opacity': 0.8,
+			'axis': 'y',
+			'handle': '.drag-handle:first',
+			'items': '> ul',
+			update: function() { self.sendOrderUpdate() }
+		});
+
+		$('#ticket_category_parentlist > ul').sortable({
+			'opacity': 0.8,
+			'axis': 'y',
+			'handle': '.drag-handle:first',
+			'items': '> li.sub',
+			'tolerance': 'intersect',
+			stop: function (event, ui) {
+				$('#ticket_category_parentlist > ul > li.sub').attr('style', '');
+			},
+			update: function() { self.sendOrderUpdate() }
+		});
+	},
+
+	sendOrderUpdate: function() {
+		var ids = [];
+
+		$('#ticket_category_parentlist li.category').each(function() {
+			ids.push({name: 'display_order[]', value: $(this).data('category-id')});
+		});
+
+		$.ajax({
+			url: BASE_URL + 'admin/tickets/categories/update-orders',
+			dataType: 'json',
+			data: ids,
+			type: 'POST'
+		});
 	},
 
 	handleListChange: function(info) {

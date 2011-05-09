@@ -288,6 +288,10 @@ input.flat {
  Item list
 ***********************************************************/
 
+.item-list > li {
+    position: relative;
+}
+
 .item-list > li.customized {
 	color: #1C6E13;
 	border-left: 5px solid #D0D2D6;
@@ -355,6 +359,35 @@ input.flat {
 	border-top: 1px solid #C8CACC;
 	margin-top: 8px;
 	margin-bottom: 8px;
+}
+
+.item-list > li .drag-handle {
+    display: none;
+    position: absolute;
+    top: 6px;
+    left: -12px;
+
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    padding:  1px 0 0 1px;
+    border: 1px solid #CCCBB6;
+    
+
+    background: #FFFCCC url(../../images/drag-handle.png) no-repeat 1px 1px;
+    text-indent: -90000px;
+    width: 16px;
+    height: 16px;
+    overflow: none;
+    cursor: move;
+}
+
+.item-list > li.sub .drag-handle {
+    top: 3px !important;
+    left: -0px;
+}
+
+.item-list > li:hover .drag-handle {
+    display: block;
 }
 
 /**********************************************************

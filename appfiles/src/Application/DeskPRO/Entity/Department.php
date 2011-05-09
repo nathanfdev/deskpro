@@ -48,6 +48,12 @@ class Department extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $title;
 
+	/**
+	 * @var int
+	 * @orm:Column(name="display_order", type="integer")
+	 */
+	protected $display_order = 0;
+
 	public function __construct()
 	{
 		$this->children = new \Doctrine\Common\Collections\ArrayCollection();

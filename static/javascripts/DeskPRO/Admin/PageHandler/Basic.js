@@ -7,12 +7,17 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 	meta: {},
 
 	contextEl: null,
-	initialize: function(context) {
+	options: {},
+
+	initialize: function(context, options) {
 		if (context) {
 			this.contextEl = $(context);
 		} else {
 			this.contextEl = $(document.body);
 		}
+
+		options = options || {};
+		this.options = options;
 	},
 
 	initPage: function() {

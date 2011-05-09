@@ -1,4 +1,5 @@
 <li class="department department-{{department.id}} {% if department.parent %}sub{% endif %}" data-department-id="{{department.id}}">
+	<div class="drag-handle">ORDER</div>
 	<div style="float:right">
 		<ul class="controls">
 			<li class="edit edit-trigger"><a href="{{ path('admin_departments_edit', {'department_id': department.id}) }}" class="popout-trigger" data-height="300">edit</a></li>

@@ -99,4 +99,23 @@ public function getPersonData(array $misc_data)
 
 		return $person_data;
 	}
+
+	/**
+	 * @param array $ordered_ids
+	 * @return void
+	 */
+	public static function updateDisplayOrders(array $ordered_ids, $table)
+	{
+		$o = 10;
+
+		App::getDb()->beginTransaction();
+
+		foreach ($ordered_ids as $id) {
+			App::getDb()->update($table, array('display_order' => $o), array('id' => $id));
+
+			$o += 10;
+		}
+
+		App::getDb()->commit();
+	}
 }

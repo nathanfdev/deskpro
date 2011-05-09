@@ -36,7 +36,7 @@ class DepartmentsController extends AbstractController
 			SELECT dep
 			FROM DeskPRO:Department dep
 			WHERE dep.parent IS NULL
-			ORDER BY dep.title ASC
+			ORDER BY dep.display_order ASC
 		")->getResult();
 
 		return $this->render('AdminBundle:Departments:list.html.twig', array(
@@ -217,5 +217,15 @@ class DepartmentsController extends AbstractController
 		$html = $this->renderView('AdminBundle:Departments:designer-widget-choicerow.html.twig', array('widget' => $widget));
 
 		return $this->createJsonResponse(array('html' => $html));
+	}
+
+	############################################################################
+	# update-orders
+	############################################################################
+
+	public function updateOrdersAction()
+	{
+		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
+		return $helper->doUpdate('departments');
 	}
 }

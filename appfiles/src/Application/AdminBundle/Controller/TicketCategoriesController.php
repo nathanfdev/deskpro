@@ -34,7 +34,7 @@ class TicketCategoriesController extends AbstractController
 			SELECT c
 			FROM DeskPRO:TicketCategory c
 			WHERE c.parent IS NULL
-			ORDER BY c.title ASC
+			ORDER BY c.display_order ASC
 		")->getResult();
 
 		return $this->render('AdminBundle:TicketCategories:list.html.twig', array(
@@ -84,5 +84,15 @@ class TicketCategoriesController extends AbstractController
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));
+	}
+
+	############################################################################
+	# update-orders
+	############################################################################
+
+	public function updateOrdersAction()
+	{
+		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
+		return $helper->doUpdate('ticket_categories');
 	}
 }

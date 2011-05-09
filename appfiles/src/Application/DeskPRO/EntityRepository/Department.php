@@ -59,7 +59,7 @@ class Department extends EntityRepository
 			$departments = $db->fetchAllKeyed("
 				SELECT id, parent_id, title
 				FROM departments
-				ORDER BY title ASC
+				ORDER BY display_order ASC
 			");
 
 			$this->_department_ids = array_keys($departments);

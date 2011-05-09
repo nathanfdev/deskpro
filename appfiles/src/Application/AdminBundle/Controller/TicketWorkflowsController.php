@@ -33,7 +33,7 @@ class TicketWorkflowsController extends AbstractController
 		$all_workflows = App::getOrm()->createQuery("
 			SELECT w
 			FROM DeskPRO:TicketWorkflow w
-			ORDER BY w.title ASC
+			ORDER BY w.display_order ASC
 		")->execute();
 
 		return $this->render('AdminBundle:TicketWorkflows:list.html.twig', array(
@@ -80,5 +80,15 @@ class TicketWorkflowsController extends AbstractController
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));
+	}
+
+	############################################################################
+	# update-orders
+	############################################################################
+
+	public function updateOrdersAction()
+	{
+		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
+		return $helper->doUpdate('ticket_workflows');
 	}
 }

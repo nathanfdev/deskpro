@@ -17,7 +17,7 @@ function _page_exec() {
 	<a class="icon tickets popout-trigger" href="{{ path('admin_departments_edit', {'department_id': '0'}) }}">Create New Department</a>
 </div>
 
-<div class="dep-lists">
+<div class="dep-lists" id="departments_parentlist">
 {% for department in all_departments %}
 	<ul class="item-list department-list-{{department.id}}">
 		{% include 'AdminBundle:Departments:list-row.html.twig' %}

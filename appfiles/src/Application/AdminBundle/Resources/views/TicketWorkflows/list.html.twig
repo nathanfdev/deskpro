@@ -1,11 +1,11 @@
 {% extends 'AdminBundle::layout_subpage.html.twig' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralSortableList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 window._page_exec_stack.push(function() {
-	window.DeskPRO_Page_TicketWorkflows = new DeskPRO.Admin.PageHandler.GeneralList('#ticket_workflows');
+	window.DeskPRO_Page_TicketWorkflows = new DeskPRO.Admin.PageHandler.GeneralSortableList('#ticket_workflows', {orderIdAttr: 'workflow-id', orderUpdateUrl: '{{ path('admin_ticketworks_updateorders') }}'});
 });
 </script>
 {% endblock %}

@@ -44,7 +44,7 @@ class TicketWorkflow extends EntityRepository
 			$this->_workflow_names = $db->fetchAllKeyValue("
 				SELECT id, title
 				FROM ticket_workflows
-				ORDER BY title ASC
+				ORDER BY display_order ASC
 			");
 
 			App::getCache('common')->save($this->_workflow_names, null, array('ticket_workflows'));

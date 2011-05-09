@@ -16,14 +16,14 @@ window._page_exec_stack.push(function() {
 	<a class="icon tickets popout-trigger" href="{{ path('admin_ticketcats_edit', {'category_id': '0'}) }}">Create New Category</a>
 </div>
 
-<div class="cat-lists">
+<div class="cat-lists" id="ticket_category_parentlist">
 {% for category in all_categories %}
-	<ul class="item-list categor-list-{{category.id}}">
+	<ul class="item-list categor-list-{{category.id}}" style="margin-top: 10px; margin-bottom: 10px;">
 		{% include 'AdminBundle:TicketCategories:list-row.html.twig' %}
 		{% for sub_cat in category.children %}
 			{% include 'AdminBundle:TicketCategories:list-row.html.twig' with {'category': sub_cat, 'is_sub': true } %}
 		{% endfor %}
-	</ul><br />
+	</ul>
 {% endfor %}
 </div>
 

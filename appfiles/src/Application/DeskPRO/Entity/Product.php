@@ -31,4 +31,10 @@ class Product extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
+
+	/**
+	 * @var int
+	 * @orm:Column(name="display_order", type="integer")
+	 */
+	protected $display_order = 0;
 }

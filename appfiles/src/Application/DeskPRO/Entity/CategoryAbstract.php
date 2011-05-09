@@ -37,6 +37,12 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $title;
 
+	/**
+	 * @var int
+	 * @orm:Column(name="display_order", type="integer")
+	 */
+	protected $display_order = 0;
+
 	// IMPLEMENT IN CHILDREN : Limitation of doctrine mapping, you have to map these with the correct targets
 	///**
 	// * @gedmo:TreeParent

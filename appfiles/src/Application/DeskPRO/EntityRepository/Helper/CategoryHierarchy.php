@@ -82,7 +82,7 @@ class CategoryHierarchy
 			$cats = $db->fetchAllKeyed("
 				SELECT id, parent_id, title
 				FROM {$this->table_name}
-				ORDER BY title ASC
+				ORDER BY display_order ASC
 			");
 
 			$this->_cat_ids = array_keys($cats);
