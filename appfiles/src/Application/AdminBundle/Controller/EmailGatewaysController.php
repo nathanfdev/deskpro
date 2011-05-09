@@ -4,7 +4,7 @@ namespace Application\AdminBundle\Controller;
 
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
-use \Application\AdminBundle\Form\EditGatewayForm;
+use \Application\AdminBundle\Form\EditGatewayType;
 use \Orb\Util\Arrays;
 use \Symfony\Component\Form;
 
@@ -50,22 +50,25 @@ class EmailGatewaysController extends AbstractController
 		$gateway['connection_class'] = 'Application\\DeskPRO\\EmailGateway\\Fetcher\\Pop3';
 		$gateway['processor_class']  = 'Application\\DeskPRO\\EmailGateway\\TicketGateway';
 
-		$form = EditGatewayForm::create($this->get('form.context'), 'gateway', array('gateway' => $gateway));
-		$form->bind($this->get('request'), $gateway);
+		$form = $this->get('form.factory')->create(new EditGatewayType($gateway), $gateway);
 
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
-			$is_edited = true;
-			App::getOrm()->persist($gateway);
-			App::getOrm()->flush();
+			$form->bindRequest($this->get('request'));
 
-			$row_html = $this->renderView('AdminBundle:EmailGateways:list-row.html.twig', array('gateway' => $gateway));
+			if ($form->isValid()) {
+				$is_edited = true;
+				App::getOrm()->persist($gateway);
+				App::getOrm()->flush();
+
+				$row_html = $this->renderView('AdminBundle:EmailGateways:list-row.html.twig', array('gateway' => $gateway));
+			}
 		}
 
 		return $this->render('AdminBundle:EmailGateways:edit.html.twig', array(
 			'gateway' => $gateway,
-			'form'      => $form,
+			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html
 		));
