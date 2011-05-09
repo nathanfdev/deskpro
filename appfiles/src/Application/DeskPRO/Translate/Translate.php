@@ -347,7 +347,7 @@ class Translate
 		#------------------------------
 
 		if ($object instanceof DelegatePhraseInterface) {
-			return $object->getPhrase($translator, $locale);
+			return $object->getPhrase($this, $locale);
 
 		} else if ($object instanceof HasPhraseName) {
 			$phrase_name = $object->getPhraseName($property);

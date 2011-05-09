@@ -22,12 +22,13 @@ use \Application\DeskPRO\App;
  */
 class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 {
-	const EVENT_NEW_TICKET           = 'new_ticket';
-	const EVENT_NEW_REPLY            = 'new_reply';
-	const EVENT_PROPERTY_CHANGE      = 'property_change';
-	const EVENT_TIME_OPEN            = 'time_open';
-	const EVENT_TIME_USER_WAITING    = 'time_user_waiting';
-	const EVENT_TIME_AGENT_WAITING   = 'time_agent_waiting';
+	const EVENT_NEW_TICKET                 = 'new_ticket';
+	const EVENT_NEW_REPLY                  = 'new_reply';
+	const EVENT_PROPERTY_CHANGE            = 'property_change';
+	const EVENT_TIME_OPEN                  = 'time_open';
+	const EVENT_TIME_USER_WAITING          = 'time_user_waiting';
+	const EVENT_TIME_TOTAL_USER_WAITING    = 'time_total_user_waiting';
+	const EVENT_TIME_AGENT_WAITING         = 'time_agent_waiting';
 
 	/**
 	 * @var int

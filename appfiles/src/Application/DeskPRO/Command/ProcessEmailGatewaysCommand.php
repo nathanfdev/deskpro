@@ -31,6 +31,8 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$verbose = $input->getOption('verbose');
+		
 		if ($input->getOption('gateway')) {
 			if (Numbers::isInteger($input->getOption('gateway'))) {
 				$gateway = App::getEntityRepository('DeskPRO:EmailGateway')->find($input->getOption('gateway'));
@@ -50,25 +52,46 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 
 		foreach ($gateways as $gateway) {
 
+			if ($verbose) {
+				$output->writeln("<info>Processing: [{$gateway['id']}] {$gateway['name']} <{$gateway['address']}></info>");
+			}
+
 			/** @var $fetcher \Application\DeskPRO\EmailGateway\Fetcher\AbstractFetcher */
 			$fetcher = $gateway->getNewFetcher();
 
 			while ($source = $fetcher->readNext()) {
+
 				$reader = new EzcReader();
 				$reader->setRawSource($source['raw_source']);
+
+				if ($verbose) {
+					$to = array();
+					foreach ($reader->getToAddresses() as $x) {
+						$to[] = $x->getEmail();
+					}
+					$to = implode(', ', $to);
+
+					$subj = substr($reader->getSubject()->getSubject(), 0, 40);
+
+					$output->writeln("[Message] To: $to :: $subj");
+				}
 
 				App::getOrm()->beginTransaction();
 
 				try {
 					/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGateway */
 					$proc = $gateway->getNewProcessor($reader);
-					$proc->run();
+					$created_obj = $proc->run();
 
 					$source['status'] = 'complete';
 					App::getOrm()->persist($source);
 					App::getOrm()->flush();
 
 					App::getOrm()->commit();
+
+					if ($verbose) {
+						$output->writeln("Created " . get_class($created_obj) . ": " . $created_obj->getId());
+					}
 				} catch (\Exception $e) {
 					App::getOrm()->rollback();
 

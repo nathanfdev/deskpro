@@ -56,13 +56,13 @@ class Log
 			return;
 		}
 
-		$logs = APp::getOrm()->createQuery("
+		$logs = App::getOrm()->createQuery("
 			SELECT l
 			FROM DeskPRO:TicketLog l
 			WHERE l.ticket = ?1 AND l.action_type = ?2 AND l.date_created >= ?3
-		")->setParamater(1, $this->ticket)
-		  ->setParamater(2, 'changed_urgency')
-		  ->setParamater(3, $old_reply_time)
+		")->setParameter(1, $this->ticket)
+		  ->setParameter(2, 'changed_urgency')
+		  ->setParameter(3, $old_reply_time->format('Y-m-d H:m:s'))
 		  ->execute();
 
 		$mod = 0;
@@ -80,11 +80,19 @@ class Log
 
 	public function run()
 	{
+		if ($this->tracker->isExtraSet('ticket_created')) {
+			$action = new LogActions\Created($this->ticket);
+			$this->addLogItem($action);
+		}
+		
 		foreach ($this->tracker->getAllChangedProperties() as $prop => $info) {
 			$action = null;
 
-			$old_val = $info['old'];
-			$new_val = $info['new'];
+			$old_val = null;
+			$new_val = null;
+
+			if (isset($info['old'])) $old_val = $info['old'];
+			if (isset($info['new'])) $new_val = $info['new'];
 
 			switch ($prop) {
 				case 'agent':
@@ -142,21 +150,26 @@ class Log
 				continue;
 			}
 
-			$ticket_log = new Entity\TicketLog();
-			$ticket_log['person'] = App::getCurrentPerson();
-
-			// TODO should always have a person, but need to handle system events (time escalations)
-			if (!$ticket_log['person'] OR !$ticket_log['person']['id']) {
-				$ticket_log['person'] = $this->ticket->person;
-			}
-
-			$ticket_log['ticket'] = $this->ticket;
-			$ticket_log['action_type'] = $action->getLogName();
-			$ticket_log['details'] = $action->getLogDetails();
-
-			App::getOrm()->persist($ticket_log);
+			$this->addLogItem($action);
 		}
 
 		App::getOrm()->flush();
+	}
+
+	protected function addLogItem($action)
+	{
+		$ticket_log = new Entity\TicketLog();
+		$ticket_log['person'] = App::getCurrentPerson();
+
+		// TODO should always have a person, but need to handle system events (time escalations)
+		if (!$ticket_log['person'] OR !$ticket_log['person']['id']) {
+			$ticket_log['person'] = $this->ticket->person;
+		}
+
+		$ticket_log['ticket'] = $this->ticket;
+		$ticket_log['action_type'] = $action->getLogName();
+		$ticket_log['details'] = $action->getLogDetails();
+
+		App::getOrm()->persist($ticket_log);
 	}
 }

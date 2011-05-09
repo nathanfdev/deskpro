@@ -79,7 +79,7 @@ class TriggerExecutor
 		$actions_collection = new ActionsCollection();
 
 		foreach ($all_triggers as $trigger) {
-			if ($trigger->checkTicketMatch($this->ticket, $this->tracker)) {
+			if ($trigger->isTriggerMatch($this->tracker->getTicket(), $this->tracker)) {
 				foreach ($trigger['actions'] as $action_info) {
 					$action = $factory->createFromInfo($action_info);
 					if ($action) {
@@ -89,7 +89,11 @@ class TriggerExecutor
 			}
 		}
 
-		$actions_collection->apply($this->tracker->getTicket(), App::getCurrentPerson());
+		$person = App::getCurrentPerson();
+		if (!$person) {
+			$person = $this->tracker->getTicket()->person;
+		}
+		$actions_collection->apply($this->tracker->getTicket(), $person);
 		
 		$this->is_performing = false;
 	}

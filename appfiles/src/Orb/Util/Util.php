@@ -587,12 +587,12 @@ class Util
 	 * @param array $options
 	 * @return array
 	 */
-	public function getFunctionParamsFromArray(\ReflectionFunctionAbstract $func_refl, array $options)
+	public static function getFunctionParamsFromArray(\ReflectionFunctionAbstract $func_refl, array $options)
 	{
 		$ret = array();
 
 		$params = $func_refl->getParameters();
-		foreach ($param as $param) {
+		foreach ($params as $param) {
 			$name = $param->getName();
 			if (isset($options[$name])) {
 				$ret[] = $options[$name];

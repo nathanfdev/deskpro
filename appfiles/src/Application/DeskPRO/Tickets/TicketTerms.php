@@ -32,9 +32,16 @@ class TicketTerms
 
 	protected $terms = array();
 
+	protected $tracker = null;
+
 	public function __construct(array $terms)
 	{
 		$this->terms = $terms;
+	}
+
+	public function setChangeTracker($tracker)
+	{
+		$this->tracker = $tracker;
 	}
 
 
@@ -44,7 +51,7 @@ class TicketTerms
 	 * @param Ticket $ticket
 	 * @return bool
 	 */
-	public function doesTicketMatch(Entity\Ticket $ticket, TicketChangeTracker $tracker = null)
+	public function doesTicketMatch(Entity\Ticket $ticket)
 	{
 		foreach ($this->terms as $info) {
 
@@ -56,7 +63,7 @@ class TicketTerms
 
 			if (strpos($op, 'changed') !== false) {
 				if ($tracker) {
-					if (!$this->testChangedTerm($ticket, $tracker, $term, $op, $choice)) {
+					if (!$this->testChangedTerm($ticket, $term, $op, $choice)) {
 						return false;
 					}
 				} else {
@@ -90,8 +97,12 @@ class TicketTerms
 		return false;
 	}
 
-	public function testChangedTerm(Entity\Ticket $ticket, TicketChangeTracker $tracker, $term, $op, $choice)
+	public function testChangedTerm(Entity\Ticket $ticket, $term, $op, $choice)
 	{
+		if (!$tracker) return false;
+
+		$tracker = $this->tracker;
+		
 		if (!$tracker->isPropertyChanged($term)) {
 			return false;
 		}

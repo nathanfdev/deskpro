@@ -43,6 +43,18 @@ function _page_exec() {
 
 <div class="form-panel">
 	<div class="row">
+		<label>Event</label>
+		{% if trigger.event_trigger == 'new_ticket' %}New Ticket
+		{% elseif trigger.event_trigger == 'new_reply' %}New Reply
+		{% elseif trigger.event_trigger == 'property_change' %}Ticket Edited
+		{% elseif trigger.event_trigger == 'time_open' %}Ticket is open for {{trigger.event_trigger_option}}
+		{% elseif trigger.event_trigger == 'time_user_waiting' %}User waiting for a reply for {{trigger.event_trigger_option}}
+		{% elseif trigger.event_trigger == 'time_agent_waiting' %}Agent waiting for a reply for {{trigger.event_trigger_option}}
+		{% elseif trigger.event_trigger == 'time_total_user_waiting' %}Total user waiting time exceeds {{trigger.event_trigger_option}}
+		{% else %}{{trigger.event_trigger}}
+		{% endif %}
+	</div>
+	<div class="row">
 		<label>Title</label>
 		{{ form_widget(form.title) }}
 	</div>
@@ -76,7 +88,7 @@ function _page_exec() {
 		<div class="term">
 			<div class="type"></div>
 			<div class="op"></div>
-			<div class="choice"></div>
+			<div class="options"></div>
 			<div class="remove">-</div>
 		</div>
 	</div>
@@ -87,7 +99,7 @@ function _page_exec() {
 				<option value="not">is not</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="creation_system">
 				<option value="web">Web interface</option>
 				<option value="web.person">-- By user</option>
@@ -104,7 +116,7 @@ function _page_exec() {
 				<option value="not">is not</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="receiving_gateway">
 				{% for id,label in term_options.gateway_names %}
 					<option value="{{id}}">{{label}}</option>
@@ -122,7 +134,7 @@ function _page_exec() {
 				<option value="not_contains">does not contain</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<input type="text" name="subject" value="" />
 		</div>
 	</div>
@@ -138,7 +150,7 @@ function _page_exec() {
 				{% endif %}
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<input type="text" name="label" value="" />
 		</div>
 	</div>
@@ -156,7 +168,7 @@ function _page_exec() {
 				{% endif %}
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="agent">
 				<option value="0">Unassigned</option>
 				<option value="-1">Current Agent</option>
@@ -178,7 +190,7 @@ function _page_exec() {
 				{% endif %}
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="agent">
 				<option value="-1">Current Agent</option>
 				{% for id,label in term_options.agents %}
@@ -189,7 +201,7 @@ function _page_exec() {
 	</div>
 	{% if term_options.agent_teams %}
 		<div class="type" title="Agent Team" data-rule-type="agent_team">
-			<div class="choice">
+			<div class="options">
 				<div class="op">
 					<select name="op">
 						<option value="is">is</option>
@@ -227,7 +239,7 @@ function _page_exec() {
 				{% endif %}
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="status">
 				<option value="open">Open</option>
 				<option value="pending">Pending</option>
@@ -252,7 +264,7 @@ function _page_exec() {
 					{% endif %}
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="product">
 					{% for id,label in term_options.products %}
 						<option value="{{id}}">{{label}}</option>
@@ -276,7 +288,7 @@ function _page_exec() {
 					{% endif %}
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="department">
 					{% for id,label in term_options.departments %}
 						<option value="{{id}}">{{label}}</option>
@@ -300,7 +312,7 @@ function _page_exec() {
 					{% endif %}
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="category">
 					{% for id,label in term_options.categories %}
 						<option value="{{id}}">{{label}}</option>
@@ -318,7 +330,7 @@ function _page_exec() {
 				<option value="gte">&gt;=</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<input type="text" size="4" value="" name="num" />
 		</div>
 	</div>
@@ -339,7 +351,7 @@ function _page_exec() {
 					{% endif %}
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="priority">
 					{% for id,label in term_options.priorities %}
 						<option value="{{id}}">{{label}}</option>
@@ -363,7 +375,7 @@ function _page_exec() {
 					{% endif %}
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="workflow">
 					{% for id,label in term_options.ticket_workflows %}
 						<option value="{{id}}">{{label}}</option>
@@ -383,7 +395,7 @@ function _page_exec() {
 						{% endfor %}
 					</select>
 				</div>
-				<div class="choice">
+				<div class="options">
 					{{ form_widget(field.form) }}
 				</div>
 			</div>
@@ -395,12 +407,12 @@ function _page_exec() {
 	<div class="row">
 		<div class="term">
 			<div class="type"></div>
-			<div class="choice"></div>
+			<div class="options"></div>
 			<div class="remove">-</div>
 		</div>
 	</div>
 	<div class="type" title="Status" data-rule-type="status">
-		<div class="choice">
+		<div class="options">
 			<select name="status">
 				<option value="open">Open</option>
 				<option value="pending">Pending</option>
@@ -409,7 +421,7 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Department" data-rule-type="department">
-		<div class="choice">
+		<div class="options">
 			<select name="department">
 				{% for id,title in ticket_options.departments %}
 					<option value="{{id}}">{{title}}</option>
@@ -418,7 +430,7 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Category" data-rule-type="category">
-		<div class="choice">
+		<div class="options">
 			<select name="category">
 				{% for id,title in ticket_options.categories %}
 					<option value="{{id}}">{{title}}</option>
@@ -427,7 +439,7 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Product" data-rule-type="product">
-		<div class="choice">
+		<div class="options">
 			<select name="product">
 				{% for id,title in ticket_options.products %}
 					<option value="{{id}}">{{title}}</option>
@@ -436,7 +448,7 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Priority" data-rule-type="priority">
-		<div class="choice">
+		<div class="options">
 			<select name="priority">
 				{% for id,title in ticket_options.priorities %}
 					<option value="{{id}}">{{title}}</option>
@@ -445,7 +457,7 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Workflow" data-rule-type="workflow">
-		<div class="choice">
+		<div class="options">
 			<select name="workflow">
 				{% for id,title in ticket_options.ticket_workflows %}
 					<option value="{{id}}">{{title}}</option>
@@ -454,7 +466,7 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Agent" data-rule-type="agent">
-		<div class="choice">
+		<div class="options">
 			<select name="agent">
 				{% for id,title in ticket_options.agents %}
 					<option value="{{id}}">{{title}}</option>
@@ -463,7 +475,7 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Agent Team" data-rule-type="agent_team">
-		<div class="choice">
+		<div class="options">
 			<select name="agent_team">
 				{% for id,title in ticket_options.agent_teams %}
 					<option value="{{id}}">{{title}}</option>
@@ -472,17 +484,17 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Add Labels" data-rule-type="add_labels">
-		<div class="choice">
+		<div class="options">
 			<input type="text" name="labels" />
 		</div>
 	</div>
 	<div class="type" title="Remove Labels" data-rule-type="remove_labels">
-		<div class="choice">
+		<div class="options">
 			<input type="text" name="labels" />
 		</div>
 	</div>
 	<div class="type" title="Set Flag" data-rule-type="flag">
-		<div class="choice">
+		<div class="options">
 			<select name="flag">
 				<option value="blue">Blue</option>
 				<option value="green">Green</option>
@@ -495,31 +507,31 @@ function _page_exec() {
 		</div>
 	</div>
 	<div class="type" title="Increase/Decrease Urgency" data-rule-type="urgency">
-		<div class="choice">
+		<div class="options">
 			<input type="text" name="num" /><small>(Enter a negative number to have urgency decreased)</small>
 		</div>
 	</div>
 	<div class="type" title="Set Urgency" data-rule-type="urgency_set">
-		<div class="choice">
+		<div class="options">
 			<input type="text" name="num" />
 		</div>
 	</div>
 	<div class="type" title="Ticket Reply" data-rule-type="reply">
-		<div class="choice" style="display:block">
+		<div class="options" style="display:block">
 			<textarea name="new_reply" cols="80" rows="4"></textarea>
 		</div>
 	</div>
 	{% if ticket_options.custom_ticket_fields %}
 		{% for field in ticket_options.custom_ticket_fields %}
 			<div class="type" title="Set Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
-				<div class="choice">
+				<div class="options">
 					{{ form_widget(field.form) }}
 				</div>
 			</div>
 		{% endfor %}
 	{% endif %}
 	<div class="type" title="Set User Organization" data-rule-type="person_organization_id">
-		<div class="choice">
+		<div class="options">
 			<select name="person_organization_id">
 				{% for id,title in ticket_options.people_organizations %}
 					<option value="{{id}}">{{title}}</option>
@@ -530,36 +542,40 @@ function _page_exec() {
 	{% if ticket_options.custom_people_fields %}
 		{% for field in ticket_options.custom_people_fields %}
 			<div class="type" title="Set User Field: {{field.field_def.title}}" data-rule-type="people_field[{{field.field_def.id}}]">
-				<div class="choice">
+				<div class="options">
 					{{ form_widget(field.form) }}
 				</div>
 			</div>
 		{% endfor %}
 	{% endif %}
 	{% if trigger.event_trigger == 'new_ticket' %}
-		<div class="type" title="Send new ticket notification" data-rule-type="notification_new_ticket">
-			<div class="choice">
+		<div class="type" title="Send new ticket notification to agents" data-rule-type="agent_notification_new_ticket">
+			<div class="options">
 				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<optgroup label="Users">
-						<option value="person">User</option>
-						<option value="people_participants">User participants</option>
-					</optgroup>
 					<optgroup label="Agents">
-						<option value="default_agents">Agents (default based on preferences)</option>
+						<option value="default_agents">Default agents based on their own preferences</option>
 						<option value="assigned_agent">Assigned agent</option>
 						<option value="assigned_agent_team">Assigned agent team members</option>
-						<option value="agent_participants">Agent participants</option>
-					</optgroup>
-					<optgroup label="Specific Agents">
-						{% for id,label in term_options.agents %}
-							<option value="agent.{{id}}">{{label}}</option>
-						{% endfor %}
+						<option value="agent_participants">Agents added as participants</option>
 					</optgroup>
 					<optgroup label="Specific Agent Teams">
 						{% for id,label in term_options.agent_teams %}
 							<option value="agent_team.{{id}}">{{label}}</option>
 						{% endfor %}
 					</optgroup>
+					<optgroup label="Specific Agents">
+						{% for id,label in term_options.agents %}
+							<option value="agent.{{id}}">{{label}}</option>
+						{% endfor %}
+					</optgroup>
+				</select>
+			</div>
+		</div>
+		<div class="type" title="Send new ticket notification to users" data-rule-type="user_notification_new_ticket">
+			<div class="options">
+				Send to: <select name="send_to[]" multiple="multiple" size="5">
+					<option value="person">User who started the ticket (confirmation)</option>
+					<option value="people_participants">Users added as participants</option>
 				</select>
 				From: <select name="from_address[]">
 					<option value="">Default</option>
@@ -571,29 +587,33 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	{% if trigger.event_trigger == 'new_reply' %}
-		<div class="type" title="Send new reply notification" data-rule-type="notification_new_reply">
-			<div class="choice">
+		<div class="type" title="Send new reply notification" data-rule-type="agent_notification_new_reply">
+			<div class="options">
 				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<optgroup label="Users">
-						<option value="person">User</option>
-						<option value="people_participants">User participants</option>
-					</optgroup>
 					<optgroup label="Agents">
-						<option value="default_agents">Agents (default based on preferences)</option>
+						<option value="default_agents">Default agents based on their own preferences</option>
 						<option value="assigned_agent">Assigned agent</option>
 						<option value="assigned_agent_team">Assigned agent team members</option>
-						<option value="agent_participants">Agent participants</option>
-					</optgroup>
-					<optgroup label="Specific Agents">
-						{% for id,label in term_options.agents %}
-							<option value="agent.{{id}}">{{label}}</option>
-						{% endfor %}
+						<option value="agent_participants">Agents added as participants</option>
 					</optgroup>
 					<optgroup label="Specific Agent Teams">
 						{% for id,label in term_options.agent_teams %}
 							<option value="agent_team.{{id}}">{{label}}</option>
 						{% endfor %}
 					</optgroup>
+					<optgroup label="Specific Agents">
+						{% for id,label in term_options.agents %}
+							<option value="agent.{{id}}">{{label}}</option>
+						{% endfor %}
+					</optgroup>
+				</select>
+			</div>
+		</div>
+		<div class="type" title="Send new ticket notification to users" data-rule-type="user_notification_new_reply">
+			<div class="options">
+				Send to: <select name="send_to[]" multiple="multiple" size="5">
+					<option value="person">User who sent the reply (confirmation)</option>
+					<option value="people_participants">Users added as participants</option>
 				</select>
 				From: <select name="from_address[]">
 					<option value="">Default</option>
@@ -606,7 +626,7 @@ function _page_exec() {
 	{% endif %}
 	{% if trigger.event_trigger == 'property_change' %}
 		<div class="type" title="Send notification to agents: Updated" data-rule-type="agent_notification_property_change">
-			<div class="choice">
+			<div class="options">
 				Send to: <select name="send_to[]" multiple="multiple" size="5">
 					<optgroup label="Agents">
 						<option value="default_agents">Agents (default based on preferences)</option>
@@ -635,15 +655,15 @@ function _page_exec() {
 		</div>
 	{% endif %}
 	<div class="type" title="Set template suffix" data-rule-type="notification_template">
-		<div class="choice">
-			Set the template suffix to add to default template names. This allows you to use custom templates:
-			<input type="hidden" name="template_suffix" value="" />
+		<div class="options">
+			Set the template group to use for all notifications sent:
+			<input type="text" name="template_suffix" value="" />
 			<br />
 			<small>Example: "my-tpl" means a new ticket notification would look for new-ticket-my-tpl.html.twig template</small>
 		</div>
 	</div>
 	<div class="type" title="Disable email notifications set from a previous rule" data-rule-type="notification_disable">
-		<div class="choice">
+		<div class="options">
 			<input type="hidden" name="disable_notifications" value="1" />
 		</div>
 	</div>

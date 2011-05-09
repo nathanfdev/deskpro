@@ -43,13 +43,13 @@ class UserNotificationNewTicketAction extends AbstractUserNotificationAction
 					'email_subject' => new DelegatePhrase('tickets_user_email.subject_new_ticket_confirm', array('ticket_subject' => $ticket['subject'])),
 				);
 
-				$this->doSend('DeskPRO:emails_user:new-ticket', $vars, $ticket, $person);
+				$this->doSend('DeskPRO:emails_user:new-ticket', $vars, $ticket, $user);
 			} else {
 				$vars = array(
 					'email_subject' => new DelegatePhrase('tickets_user_email.subject_new_ticket_participant', array('ticket_subject' => $ticket['subject'])),
 				);
 
-				$this->doSend('DeskPRO:emails_user:ticket-participant', $vars, $ticket, $person);
+				$this->doSend('DeskPRO:emails_user:ticket-participant', $vars, $ticket, $user);
 			}
 		}
 	}

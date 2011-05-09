@@ -2,7 +2,7 @@
 	<div class="op">
 		<input type="hidden" name="op" value="is" />
 	</div>
-	<div class="choice">
+	<div class="options">
 		<input type="hidden" name="archive_search" value="1" />
 		<span>Search all tickets, including tickets that are resolved or closed</span>
 	</div>
@@ -16,7 +16,7 @@
 			<option value="not_contains">does not contain</option>
 		</select>
 	</div>
-	<div class="choice">
+	<div class="options">
 		<input type="text" name="subject" value="" />
 	</div>
 </div>
@@ -27,7 +27,7 @@
 			<option value="not">does not include label</option>
 		</select>
 	</div>
-	<div class="choice">
+	<div class="options">
 		<input type="text" name="label" value="" />
 	</div>
 </div>
@@ -38,7 +38,7 @@
 			<option value="not">is not</option>
 		</select>
 	</div>
-	<div class="choice">
+	<div class="options">
 		<select name="agent">
 			<option value="0">Unassigned</option>
 			<option value="-1">Me</option>
@@ -55,7 +55,7 @@
 			<option value="not">does not include</option>
 		</select>
 	</div>
-	<div class="choice">
+	<div class="options">
 		<select name="agent">
 			<option value="-1">Me</option>
 			{% for id,label in term_options.agents %}
@@ -66,7 +66,7 @@
 </div>
 {% if term_options.agent_teams %}
 	<div class="type" title="Agent Team" data-rule-type="agent_team">
-		<div class="choice">
+		<div class="options">
 			<div class="op">
 				<select name="op">
 					<option value="is">is</option>
@@ -90,7 +90,7 @@
 			<option value="not">is not</option>
 		</select>
 	</div>
-	<div class="choice">
+	<div class="options">
 		<select name="status" multiple="multiple" size="6">
 			<option value="open">Open</option>
 			<option value="pending">Pending</option>
@@ -108,7 +108,7 @@
 				<option value="not">is not</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="product">
 				{% for id,label in term_options.products %}
 					<option value="{{id}}">{{label}}</option>
@@ -125,7 +125,7 @@
 				<option value="not">is not</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="department">
 				{% for id,label in term_options.departments %}
 					<option value="{{id}}">{{label}}</option>
@@ -142,7 +142,7 @@
 				<option value="not">is not</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="category">
 				{% for id,label in term_options.categories %}
 					<option value="{{id}}">{{label}}</option>
@@ -161,7 +161,7 @@
 				<option value="gt">is greater than</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="priority">
 				{% for id,label in term_options.priorities %}
 					<option value="{{id}}">{{label}}</option>
@@ -177,7 +177,7 @@
 			<option value="not">is not</option>
 		</select>
 	</div>
-	<div class="choice">
+	<div class="options">
 		<select name="creation_system">
 			<option value="web">Web interface</option>
 			<option value="web.person">-- By user</option>
@@ -194,7 +194,7 @@
 			<option value="not">is not</option>
 		</select>
 	</div>
-	<div class="choice">
+	<div class="options">
 		<select name="receiving_gateway">
 			{% for id,label in term_options.gateway_names %}
 				<option value="{{id}}">{{label}}</option>
@@ -211,7 +211,7 @@
 				<option value="not">is not</option>
 			</select>
 		</div>
-		<div class="choice">
+		<div class="options">
 			<select name="workflow">
 				{% for id,label in term_options.ticket_workflows %}
 					<option value="{{id}}">{{label}}</option>
@@ -231,7 +231,7 @@
 					{% endfor %}
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				{{ form_widget(field.formView) }}
 			</div>
 		</div>

@@ -65,6 +65,10 @@ class TicketTriggersController extends AbstractController
 
 		if (!$trigger_id) {
 			$trigger = new Entity\TicketTrigger();
+			$trigger['event_trigger'] = $this->in->getString('trigger.event_trigger');
+			if ($this->in->getString('trigger.event_trigger_option')) {
+				$trigger['event_trigger_option'] = $this->in->getString('trigger.event_trigger_option');
+			}
 
 			if ($with_urgency) {
 				if (strpos($this->in->getString('trigger.event_trigger'), 'time_') === 0) {

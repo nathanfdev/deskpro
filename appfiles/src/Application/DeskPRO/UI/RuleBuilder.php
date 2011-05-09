@@ -94,8 +94,10 @@ class RuleBuilder
 					$data_item['options'][$k] = $v;
 				}
 			}
+
+			$data[] = $data_item;
 		}
 
-		return $form;
+		return $data;
 	}
 }

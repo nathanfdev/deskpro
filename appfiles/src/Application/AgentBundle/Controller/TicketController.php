@@ -516,7 +516,7 @@ class TicketController extends AbstractController
 			$message->addAttachment($attach);
 		}
 
-		if ($id = App::getEntityRepository('TicketMessage')->checkDupeMessage($ticket_message)) {
+		if ($id = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
 			$message = App::findEntity('DeskPRO:TicketMessage', $id);
 		} else {
 			$ticket_edit->addMessage($message);

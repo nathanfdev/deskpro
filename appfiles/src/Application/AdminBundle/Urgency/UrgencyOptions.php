@@ -101,7 +101,7 @@ class UrgencyOptions
 		}
 
 		$tr['actions'] = array(
-			array('type' => 'urgency_set', 'num' => $this->base_urgency)
+			array('type' => 'urgency_set', 'options' => array('num' => $this->base_urgency))
 		);
 
 		#------------------------------
@@ -121,7 +121,7 @@ class UrgencyOptions
 
 			$tr['event_trigger_option'] = $this->time_options[$key];
 			$tr['actions'] = array(
-				array('type' => 'urgency', 'num' => $this->time_options["{$key}_num"])
+				array('type' => 'urgency', 'options' => array('num' => $this->time_options["{$key}_num"]))
 			);
 		}
 
@@ -145,7 +145,7 @@ class UrgencyOptions
 			);
 
 			$tr['actions'] = array(
-				array('type' => 'urgency', 'num' => $this->user_options["importance_num_{$key}"])
+				array('type' => 'urgency', 'options' => array('num' => $this->user_options["importance_num_{$key}"]))
 			);
 		}
 

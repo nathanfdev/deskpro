@@ -189,7 +189,7 @@ function _page_exec() {
 		<div class="term">
 			<div class="type"></div>
 			<div class="op"></div>
-			<div class="choice"></div>
+			<div class="options"></div>
 			<div class="remove">-</div>
 		</div>
 	</div>
@@ -201,7 +201,7 @@ function _page_exec() {
 					<option value="not">is not</option>
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="product">
 					{% for id,label in term_options.products %}
 						<option value="{{id}}">{{label}}</option>
@@ -218,7 +218,7 @@ function _page_exec() {
 					<option value="not">is not</option>
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="category">
 					{% for id,label in term_options.ticket_categories_full %}
 						<option value="{{id}}">{{label}}</option>
@@ -237,7 +237,7 @@ function _page_exec() {
 					<option value="gt">is greater than</option>
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="priority">
 					{% for id,label in term_options.priorities %}
 						<option value="{{id}}">{{label}}</option>
@@ -254,7 +254,7 @@ function _page_exec() {
 					<option value="not">is not</option>
 				</select>
 			</div>
-			<div class="choice">
+			<div class="options">
 				<select name="workflow">
 					{% for id,label in term_options.ticket_workflows %}
 						<option value="{{id}}">{{label}}</option>

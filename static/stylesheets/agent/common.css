@@ -472,7 +472,7 @@ box-shadow: 0px 0px 2px #a5abb5;
 box-shadow: 0px 0px 2px #737880;
 }
 
-.search-form .term .type, .search-form .term .op, .search-form .term .choice {
+.search-form .term .type, .search-form .term .op, .search-form .term .options {
 	display: inline;
 }
 

@@ -109,7 +109,7 @@ class NewTicket
 				$ticket_message['message'] = '(no message)';
 			}
 
-			if ($id = App::getEntityRepository('TicketMessage')->checkDupeMessage($ticket_message)) {
+			if ($id = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
 				$ticket_message = App::findEntity('DeskPRO:TicketMessage', $id);
 				return $ticket_message->ticket;
 			}

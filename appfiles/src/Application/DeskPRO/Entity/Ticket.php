@@ -1228,8 +1228,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->ref = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
 
 		if ($this->_ticket_logger) {
-			$action = new \Application\DeskPRO\Tickets\TicketLog\Actions\Created($this);
-			$this->_ticket_logger->logAction($action);
+			$this->getTicketLogger()->recordExtra('created', true);
 		}
 	}
 

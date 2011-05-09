@@ -119,7 +119,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	public function setMessage($message)
 	{
 		$this->message = $message;
-		$this->message_hash = sha1($message);
+		$this['message_hash'] = sha1($message);
 	}
 
 	public function addAttachment(TicketAttachment $attach)

@@ -98,11 +98,12 @@ class TicketMessage extends EntityRepository
 	 */
 	public function checkDupeMessage(Entity\TicketMessage $message, $secs_ago = 10800 /* 3 hours */)
 	{
+		return false;
 		$timesnip = date('Y-m-d H:m:s', time() - $secs_ago);
 
 		$check = App::getDb()->fetchColumn("
 			SELECT id
-			FROM ticket_messages
+			FROM tickets_messages
 			WHERE message_hash = ? AND date_created > ?
 		", array($message['message_hash'], $timesnip));
 

@@ -72,7 +72,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		// Add select
 		$('.type:first', new_row).html(this.typeSelectHtml);
-		var select = $('.type:first > select', new_row);
+		var select = $('select.type:first', new_row);
 
 		// Update its name
 		if (formBaseName) {
@@ -80,8 +80,11 @@ DeskPRO.Form.RuleBuilder = new Class({
 			this.updateFormName(new_row, formBaseName);
 		}
 
+		var opt = false;
 		if (existing) {
-			select.val(existing.type);
+			opt = $('option[value="' + existing.type + '"]:first', select);
+			opt.attr('selected', true);
+
 			this.handleSelectChange(new_row);
 			$('.op:first select', new_row).val(existing.op).addClass('op');
 
@@ -120,6 +123,10 @@ DeskPRO.Form.RuleBuilder = new Class({
 		}).bind(this));
 
 		$(addToEl).append(new_row);
+
+		if (opt) {
+			opt.attr('selected', true);
+		}
 
 		this.fireEvent('newRow', [new_row, addToEl, existing]);
 

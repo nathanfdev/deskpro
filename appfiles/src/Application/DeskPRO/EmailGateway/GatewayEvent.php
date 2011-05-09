@@ -13,7 +13,7 @@ namespace Application\DeskPRO\EmailGateway;
 
 use Symfony\Component\EventDispatcher\Event;
 
-class GagtewayEvent extends Event
+class GatewayEvent extends Event
 {
 	/**
 	 * @var \Application\DeskPRO\EmailGateway\AbstractGateway

@@ -43,6 +43,8 @@ class TicketGateway extends AbstractGateway
 		#-------------------------
 
 		$ticket = null;
+		$person = null;
+		
 		if (App::getSetting('core_tickets.gateway_catchall')) {
 			$detector = new ToEmailTicketDetector(App::getSetting('core_tickets.gateway_catchall'));
 			$ticket = $detector->findExistingTicket($this->reader);
@@ -62,7 +64,7 @@ class TicketGateway extends AbstractGateway
 		if (!$ticket) {
 			// Finally try a subject match
 			$detector = new SubjectMatchDetector();
-			$ticket = $detector->findExistingTicket($this->reader);
+			//$ticket = $detector->findExistingTicket($this->reader);
 		}
 
 		if ($ticket) {
@@ -128,7 +130,7 @@ class TicketGateway extends AbstractGateway
 	{
 		$email_info = array();
 		$email_info['subject'] = $this->reader->getSubject()->subject;
-		if ($this->reader->getBodyText()->getBody()) {
+		if ($this->reader->getBodyHtml()->getBody()) {
 			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
 		} else {
 			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
@@ -162,7 +164,7 @@ class TicketGateway extends AbstractGateway
 			$message->addAttachment($attach);
 		}
 
-		$ticket->addMessage($messagE);
+		$ticket->addMessage($message);
 
 		if ($this->reader->getCcAddresses()) {
 			$this->handleCc($ticket, $this->reader->getCcAddresses());

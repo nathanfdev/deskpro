@@ -19,6 +19,8 @@ use Application\DeskPRO\Entity\Ticket;
 use Application\DeskPRO\Entity\Person;
 
 use Orb\Util\Util;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * Creates action objects
@@ -41,14 +43,16 @@ class ActionsFactory
 	{
 		$class = str_replace('_', '-', $name);
 		$class = ucfirst(Strings::dashToCamelCase($class));
+		$class = 'Application\\DeskPRO\\Tickets\\TicketActions\\' . $class;
 
 		$options = array_merge($this->global_options, $options);
 
 		$action_class = $class . 'Action';
 		$modifier_class = $class . 'Modifier';
-		if (is_class($action_class)) {
+
+		if (class_exists($action_class)) {
 			return $this->createActionObject($action_class, $options);
-		} elseif (is_class($modifier_class)) {
+		} elseif (class_exists($modifier_class)) {
 			return $this->createModifierObject($action_class, $options);
 		}
 

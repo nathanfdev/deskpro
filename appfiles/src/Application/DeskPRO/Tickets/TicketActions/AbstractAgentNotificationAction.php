@@ -60,6 +60,8 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 
 		$agent_ids = array();
 
+		$ticket = $this->tracker->getTicket();
+
 		foreach ($this->send_to as $send_to) {
 			if ($send_to == 'assigned_agent') {
 				if ($ticket['agent_id']) $agent_ids[] = $ticket['agent_id'];
@@ -103,9 +105,10 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 		));
 		$vars['messages'] = $messages;
 
-		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person) {
-			$email_subject = $tr->phrase($vars['subject']);
-			$email_body = App::get('templating')->render($tpl.$this->getTemplateSuffix().'.html.twig', $vars);
+		$tpl_suffix = $this->getTemplateSuffix();
+		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person, $tpl_suffix) {
+			$email_subject = $tr->phrase($vars['email_subject']);
+			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
 
 			$message = App::getMailer()->createMessage();
 			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());

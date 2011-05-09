@@ -36,7 +36,7 @@ class InReplyToDetector implements TicketDetectorInterface
 	{
 		$this->_found_person = null;
 		$in_reply_to_objs = $reader->getHeader('In-Reply-To');
-		if (!$in_reply_to_objs OR !$in_reply_to_objs->header_parts) null;
+		if (!$in_reply_to_objs OR !$in_reply_to_objs->header_parts) return null;
 
 		$in_reply_to = array();
 		foreach ($in_reply_to_objs->header_parts as $h) {

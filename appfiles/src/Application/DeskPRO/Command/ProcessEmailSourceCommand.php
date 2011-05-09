@@ -31,6 +31,8 @@ class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 
 	protected function execute(InputInterface $input, OutputInterface $output)
 	{
+		$verbose = $input->getOption('verbose');
+
 		$source = App::getEntityRepository('DeskPRO:EmailSource')->find($input->getOption('source'));
 
 		if (!$source) {
@@ -48,13 +50,17 @@ class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 		try {
 			/** @var $proc \Application\DeskPRO\EmailGateway\AbstractGateway */
 			$proc = $gateway->getNewProcessor($reader);
-			$proc->run();
+			$created_obj = $proc->run();
 
 			$source['status'] = 'complete';
 			App::getOrm()->persist($source);
 			App::getOrm()->flush();
 
 			App::getOrm()->commit();
+
+			if ($verbose) {
+				$output->writeln("Created " . get_class($created_obj) . ": " . $created_obj->getId());
+			}
 		} catch (\Exception $e) {
 			App::getOrm()->rollback();
 

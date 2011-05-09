@@ -46,7 +46,7 @@ class NewReply
 		$ticket_message->ticket = $this->ticket;
 		$ticket_message->person = $this->person;
 
-		if ($id = App::getEntityRepository('TicketMessage')->checkDupeMessage($ticket_message)) {
+		if ($id = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
 			return;
 		}
 

@@ -57,6 +57,7 @@ class SubjectMatchDetector implements TicketDetectorInterface
 			FROM tickets
 			WHERE subject = ? AND date_created > ?
 			ORDER BY id DESC
+			LIMIT 20
 		", array($subject, $this->_time_cutoff));
 
 		if (!$ticket_ids) return null;

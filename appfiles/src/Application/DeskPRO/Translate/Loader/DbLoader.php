@@ -40,11 +40,12 @@ class DbLoader implements LoaderInterface
 
 		$group_in = "'" . implode("','", $groups) . "'";
 
-		$langs = $locale->getAllParentIds();
+		//$langs = $locale->getAllParentIds();
+		$langs = array();
 		$langs[] = $locale['id'];
 
 		// null contains non-language language like cat names and such
-		$langs[] = 'NULL';
+		$langs[] = '0';
 
 		$lang_in = implode(',', $langs);
 
@@ -57,7 +58,7 @@ class DbLoader implements LoaderInterface
 			FROM phrases
 			WHERE language_id IN ($lang_in) AND groupname IN ($group_in)
 			GROUP BY name
-			ORDER language_id DESC
+			ORDER BY language_id DESC
 		");
 
 		$phrases = array();
