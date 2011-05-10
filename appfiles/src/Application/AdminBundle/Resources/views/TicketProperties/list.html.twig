@@ -19,8 +19,6 @@ function _page_exec() {
 			<li class="tab-trigger tab-categories on" data-tab-for=".tab-content.tab-categories"><a>Categories</a></li>
 			<li class="tab-trigger tab-priorities" data-tab-for=".tab-content.tab-priorities"><a>Priorities</a></li>
 			<li class="tab-trigger tab-workflows" data-tab-for=".tab-content.tab-workflows"><a>Workflows</a></li>
-			<li class="tab-trigger tab-urgency" data-tab-for=".tab-content.tab-urgency"><a>Urgency</a></li>
-			<li class="tab-trigger tab-widgets" data-tab-for=".tab-content.tab-widgets"><a>Widgets</a></li>
 			<li class="tab-trigger tab-custom-def" data-tab-for=".tab-content.tab-custom-def"><a>Fields</a></li>
 		</ul>
 	</div>
@@ -33,12 +31,6 @@ function _page_exec() {
 		</div>
 		<div class="tab-content tab-workflows" data-tab-trigger=".tab-trigger.ticket-workflows">
 			{{tabs.workflows|raw}}
-		</div>
-		<div class="tab-content tab-urgency" data-tab-trigger=".tab-trigger.ticket-urgency">
-			{{tabs.urgency|raw}}
-		</div>
-		<div class="tab-content tab-widgets" data-tab-trigger=".tab-trigger.ticket-widgets">
-			{{tabs.widgets|raw}}
 		</div>
 		<div class="tab-content tab-custom-def" data-tab-trigger=".tab-trigger.custom-def">
 			{{tabs.custom_def|raw}}

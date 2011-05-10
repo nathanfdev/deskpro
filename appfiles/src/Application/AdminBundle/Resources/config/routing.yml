@@ -318,6 +318,10 @@ admin_tickettriggers_edit:
 # Ticket Urgency
 ################################################################################
 
+admin_ticketurgency:
+  pattern: /tickets/urgency
+  defaults: { _controller: AdminBundle:TicketUrgency:list }
+
 admin_ticketurgency_saveoptions:
   pattern: /tickets/urgency/save-options
   defaults: { _controller: AdminBundle:TicketUrgency:saveOptions }

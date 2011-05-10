@@ -48,6 +48,12 @@ class TicketTriggersController extends AbstractController
 	{
 		$with_urgency = $this->in->getBool('with-urgency');
 
+		if ($with_urgency) {
+			if ($trigger_type == 'trigger') {
+				return $this->redirectRoute('admin_tickettriggers_edit', array('trigger_id' => '0', 'with-urgency' => 1, 'trigger' => array('event_trigger' => 'property_change')));
+			}
+		}
+
 		//$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
 		return $this->render('AdminBundle:TicketTriggers:edit-choosetype.html.twig', array(
 			'trigger_type' => $trigger_type,

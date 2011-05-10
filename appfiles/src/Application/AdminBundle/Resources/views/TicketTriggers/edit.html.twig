@@ -328,6 +328,23 @@ function _page_exec() {
 				<option value="not">is not</option>
 				<option value="lte">&lt;=</option>
 				<option value="gte">&gt;=</option>
+				{% if trigger.event_trigger == 'property_change' %}
+					<optgroup label="Changed">
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					</optgroup>
+					<optgroup label="Changed (ranged)">
+						<option value="changed_to_gte">Changed to &gt;=</option>
+						<option value="changed_to_lte">Changed to &lt;=</option>
+						<option value="changed_from_gte">Changed from &gt;=</option>
+						<option value="changed_from_lte">Changed from &lt;=</option>
+						<option value="not_changed_to_gte">Not changed to &gt;=</option>
+						<option value="not_changed_from_lte">Not changed from &lt;=</option>
+					</optgroup>
+				{% endif %}
 			</select>
 		</div>
 		<div class="options">

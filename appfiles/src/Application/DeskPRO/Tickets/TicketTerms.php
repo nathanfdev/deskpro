@@ -10,6 +10,7 @@ use \Application\DeskPRO\Tickets\TicketChangeTracker;
 
 use \Orb\Util\Numbers;
 use \Orb\Util\Arrays;
+use \Orb\Util\Strings;
 
 class TicketTerms
 {
@@ -29,6 +30,15 @@ class TicketTerms
 	const OP_CHANGED_FROM       = 'changed_from';
 	const OP_NOT_CHANGED_TO     = 'not_changed_to';
 	const OP_NOT_CHANGED_FROM   = 'not_changed_from';
+
+	const OP_CHANGED_TO_GTE         = 'changed_to_gte';
+	const OP_CHANGED_TO_LTE         = 'changed_to_lte';
+	const OP_CHANGED_FROM_GTE       = 'changed_from_gte';
+	const OP_CHANGED_FROM_LTE       = 'changed_from_lte';
+	const OP_NOT_CHANGED_TO_GTE     = 'not_changed_to_gte';
+	const OP_NOT_CHANGED_TO_LTE     = 'not_changed_to_let';
+	const OP_NOT_CHANGED_FROM_GTE   = 'not_changed_from_gte';
+	const OP_NOT_CHANGED_FROM_LTE   = 'not_changed_from_lte';
 
 	protected $terms = array();
 
@@ -123,10 +133,20 @@ class TicketTerms
 		$ticket2 = clone $ticket;
 		$ticket2[$term] = $val;
 
+		$rangeop = Strings::extractRegexMatch('#_(gte|lte|gt|lt)$#', $op, 1);
+
 		if (strpos($op, 'not_') !== false) {
-			$pass = $this->testTerm($ticket2, $term, 'not', $choice);
+			if ($rangeop) {
+				$pass = !$this->testTerm($ticket2, $term, $rangeop, $choice);
+			} else {
+				$pass = $this->testTerm($ticket2, $term, 'not', $choice);
+			}
 		} else {
-			$pass = $this->testTerm($ticket2, $term, 'is', $choice);
+			if ($rangeop) {
+				$pass = $this->testTerm($ticket2, $term, $rangeop, $choice);
+			} else {
+				$pass = $this->testTerm($ticket2, $term, 'is', $choice);
+			}
 		}
 
 		return $pass;
@@ -158,6 +178,37 @@ class TicketTerms
 				break;
 			case TicketSearch::TERM_AGENT:
 				if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $choice)) return false;
+				break;
+			case TicketSearch::TERM_URGENCY:
+				switch ($op) {
+					case self::OP_BETWEEN:
+						if (!\Orb\Util\Numbers::inRange($ticket['urgency'], $choice['min'], $choice['max'])) return false;
+						break;
+
+					case self::OP_IS:
+						if ($ticket['urgency'] != $choice['num']) return false;
+						break;
+
+					case self::OP_NOT:
+						if ($ticket['urgency'] == $choice['num']) return false;
+						break;
+
+					case self::OP_LT:
+						if (!($ticket['urgency'] < $choice['num'])) return false;
+						break;
+
+					case self::OP_LTE:
+						if (!($ticket['urgency'] <= $choice['num'])) return false;
+						break;
+
+					case self::OP_GT:
+						if (!($ticket['urgency'] < $choice['num'])) return false;
+						break;
+
+					case self::OP_GTE:
+						if (!($ticket['urgency'] <= $choice['num'])) return false;
+						break;
+				}
 				break;
 			case TicketSearch::TERM_PARTICIPANT:
 				if (is_array($choice)) {
