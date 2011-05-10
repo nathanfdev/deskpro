@@ -49,7 +49,7 @@ class TicketDisplayElement extends \Application\DeskPRO\Domain\DomainObject
 	 * Where this display field description applies: user, agent
 	 *
 	 * @var string
-	 * @orm:Column(name="element_type", type="string", length=50)
+	 * @orm:Column(name="display_zone", type="string", length=50)
 	 */
 	protected $display_zone;
 
