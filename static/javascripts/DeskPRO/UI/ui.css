@@ -190,9 +190,13 @@
     border-radius: 3px;
 }
 
+.deskpro-menu > ul > li > a {
+    color: #fff;
+    text-decoration: none;
+}
 
 .deskpro-menu > ul > li:not(.sep):not(.elm):not(.section-title):hover,
-.deskpro-menu > ul > li.hover {
+.deskpro-menu > ul > li.hover, .deskpro-menu > ul > li.hover > a {
     background: #323437;
 	border-top: 1px solid #27292b;
 	border-bottom: 1px solid #696b6f;

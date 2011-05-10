@@ -1,0 +1,319 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block section 'tickets' %}
+{% block sub_section 'editor' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketEditor.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/TicketEditor.js') }}"></script>
+<style type="text/css">
+#ticket_editor_head {
+	border-bottom: 1px solid #ccc;
+	margin: -10px -10px 0 -10px;
+	padding: 0 0 10px 3px;
+}
+
+#ticket_editor_head h1 {
+	font-size: 25px;
+	font-weight: normal;
+}
+
+#ticket_editor_head h1 em {
+	font-style: normal;
+	background-color: #E6EEF7;
+	border: 1px solid #B0BFCF;
+	border-left: 1px solid transparent;
+	border-right: 1px solid transparent;
+	border-top: 1px solid transparent;
+	padding:  1px 1px 0 1px;
+
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+#ticket_editor_head h1 em:hover {
+	cursor: pointer;
+
+	border: 1px solid #B0BFCF;
+
+	background-color: #E6EEF7;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+}
+
+.dep-editor h1 {
+	background-color: #BACADE;
+
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+
+	padding: 4px 0 4px 8px;
+	color: #fff;
+	font-weight: normal;
+}
+
+.dep-editor .head h1 {
+	font-size: 18px;
+}
+
+.dep-editor .head button {
+	float: right;
+	margin: 2px 4px 0 0;
+}
+
+
+
+.display-item {
+	background-color: #E4E7EB;
+	padding: 3px;
+	border: 1px solid #C2C6CC;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+	margin: 4px 8px 4px 8px;
+	list-style-type: none;
+}
+
+.display-item:hover {
+	cursor: move;
+	background-color: #fff;
+}
+
+.display_item_list {
+	margin-top: 10px;
+}
+
+.display_item_list.drop-active {
+
+}
+.display_item_list.drop-active li {
+	background-color: #EDECC2;
+}
+
+.display_item_list.droppable-hover li {
+	background-color: #FFFB8C;
+}
+
+.display_item_list li {
+	background-color: #F0F1F5;
+	font-size: 10px;
+	cursor: move;
+}
+
+.display_item_list li .remove {
+	color: #820D0D;
+	padding-right: 9px;
+	margin-right: 6px;
+	border-right: 1px solid #D0D2D6;
+	cursor: pointer;
+}
+.display_item_list li .edit-rules {
+	cursor: pointer;
+}
+
+.field-list-wrap {
+	background-color: #F2F2F2;
+	padding: 8px;
+}
+
+.field-list {
+
+}
+
+.field-list li {
+	display: block;
+	float: left;
+	background-color: #E0E0D7;
+	border: 1px solid #9E9C88;
+
+	padding:  0 3px 0 3px;
+
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+
+	font-size: 10px;
+	margin-right: 7px;
+	margin-bottom: 2px;
+
+	cursor: move;
+}
+</style>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketEditor();
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<div id="ticket_editor_head">
+	<h1>Editor for <em>{{department.title}}</em></h1>
+</div>
+
+<table cellpadding="0" cellspacing="0" width="100%" style="margin-top: 15px;"><tr><td width="50%" valign="top" style="padding-right: 7px;" class="dep-editor" id="user_dep_editor">
+
+	<div class="head">
+		{#<button class="dp-button x-small" id="add_field_user" data-name="user">Add Field</button>#}
+		<h1>User Ticket Form</h1>
+	</div>
+	<div class="field-list-wrap">
+		<ul class="field-list">
+			{% for field in custom_fields %}
+			<li class="ticket_field_{{field.field_def.id}} field-{{field.field_def.id}} field-item original" data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}">
+				{{field.title}}
+			</li>
+			{% endfor %}
+		</ul>
+		<br class="clear"/>
+	</div>
+	<ul class="item-list display_item_list">
+		<li class="no_elements_message">
+			You have not enabled any fields. To add a field, drag one from above.
+		</li>
+	</ul>
+
+</td><td width="50%" valign="top" style="padding-left: 7px;" class="dep-editor" id="agent_dep_editor">
+
+	<div class="head">
+		{#<button class="dp-button x-small" id="add_field_agent" data-name="agent">Add Field</button>#}
+		<h1>Agent Ticket View</h1>
+	</div>
+	<div class="field-list-wrap">
+		<ul class="field-list">
+			{% for field in custom_fields %}
+			<li class="ticket_field_{{field.field_def.id}} field-{{field.field_def.id}} field-item original" data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}">
+				{{field.title}}
+			</li>
+			{% endfor %}
+		</ul>
+		<br class="clear"/>
+	</div>
+	<ul class="item-list display_item_list">
+		<li class="no_elements_message">
+			You have not enabled any fields. To add a field, drag one from above.
+		</li>
+	</ul>
+
+</td></tr></table>
+
+{# Menus #}
+<ul id="department_switcher_editor" class="menu department_id" style="display:none">
+	{% for dep in departments %}
+		<li><a href="{{ path('admin_tickets_editor_dep', {'department_id': dep.id}) }}">{{dep.title}}</a></li>
+	{% endfor %}
+</ul>
+<ul id="field_menu" class="menu" style="display:none">
+	{% for field in custom_fields %}
+		<li data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}">{{field.title}}</li>
+	{% endfor %}
+</ul>
+
+<script id="display_item" type="text/x-jquery-tmpl">
+	<li id="display_item_${idClass}" data-id-class="${idClass}" data-item-id="${itemId}">
+		<div style="float:right">
+			<span class="remove">Remove this</span>
+			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${idClass}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
+		</div>
+
+		<strong>${name}</strong><br />
+		<input type="hidden" name="display_items[]" value="${itemId}" />
+
+		<div class="rules-wrap" id="rule_builder_${idClass}" data-id-class="${idClass}" style="display:none; min-width: 500px; height: 230px; overflow: auto; margin-bottom: 11px;">
+			Initially <select name="initial_display[${itemId}]"><option value="hidden">hidden</option><option value="visible">visible</option></select>,
+			and then toggle when <span class="ruletype">all</span> of these rules match:
+			<div class="search-form ruletype-all">
+				<div class="rule-list"></div>
+				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+			</div>
+			<br /><br />
+			and when <span class="ruletype">any</span> of these rules match:
+			<div class="search-form ruletype-any">
+				<div class="rule-list"></div>
+				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+			</div>
+		</div>
+	</li>
+</script>
+
+{# Criteria #}
+<div id="criteria_tpl" class="search-builder-tpl" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="type"></div>
+			<div class="op"></div>
+			<div class="options"></div>
+			<div class="remove">-</div>
+		</div>
+	</div>
+	{% if term_options.products %}
+		<div class="type" title="Product" data-rule-type="product">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="product">
+					{% for id,label in term_options.products %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.ticket_categories_full %}
+		<div class="type" title="Category" data-rule-type="category">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="category">
+					{% for id,label in term_options.ticket_categories_full %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.priorities %}
+		<div class="type" title="Priority" data-rule-type="priority">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					<option value="lt">is less than</option>
+					<option value="gt">is greater than</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="priority">
+					{% for id,label in term_options.priorities %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.ticket_workflows %}
+		<div class="type" title="Workflow" data-rule-type="workflow">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="workflow">
+					{% for id,label in term_options.ticket_workflows %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+</div>
+
+{% endblock %}

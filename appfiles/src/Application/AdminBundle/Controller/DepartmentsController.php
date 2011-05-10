@@ -109,7 +109,7 @@ class DepartmentsController extends AbstractController
 
 		// Custom fields
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$custom_fields_form = new \Symfony\Component\Form\CollectionField('custom_fields_dummy');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields_dummy');
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $custom_fields_form);
 
 		// widgets

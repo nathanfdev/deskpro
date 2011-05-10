@@ -402,8 +402,12 @@
 							<div class="wrap-dropdown n-drop setup-drop">
 								<ol class="icon-menu">
 									<li class="link-fields">
-										<a href="{{ path('admin_tickets_properties') }}" data-search-keywords="fields properties categories priorities workflows widgets" data-search-name="Tickets &rsaquo; Fields &amp; Properties">Properties</a>
-										<p>Manage ticket properties like categories, priorities, workflows and widgets.</p>
+										<a href="{{ path('admin_tickets_editor') }}" data-search-keywords="fields properties categories priorities workflows editor" data-search-name="Tickets &rsaquo; Editor">Editor</a>
+										<p>Design the layout of your new ticket forms and agent ticket interface.</p>
+									</li>
+									<li class="link-fields">
+										<a href="{{ path('admin_tickets_fields') }}" data-search-keywords="fields properties categories priorities workflows widgets" data-search-name="Tickets &rsaquo; Fields">Fields</a>
+										<p>Manage ticket fields like categories, priorities, workflows and your own defined fields.</p>
 									</li>
 									<li class="link-ticket-filters">
 										<a href="" data-search-keywords="filters" data-search-name="Tickets &rsaquo; Filters">Filters</a>
@@ -416,10 +420,6 @@
 									<li class="link-ticket-macros">
 										<a href="" data-search-keywords="macros" data-search-name="Tickets &rsaquo; Macros">Macros</a>
 										<p>Create groups of actions that can be performed on tickets with a single click.</p>
-									</li>
-									<li class="link-fields">
-										<a href="{{ path('admin_customdeftickets') }}">Fields</a>
-										<p>Create custom fields that can be added to tickets, and mapped to specific departments and other criteria.</p>
 									</li>
 									<li class="link-labels">
 										<a href="{{ path('admin_labels', {'label_type': 'tickets'}) }}" data-search-keywords="tickets labels" data-search-name="Tickets &rsaquo; Labels">Labels</a>
