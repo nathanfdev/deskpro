@@ -30,7 +30,7 @@ DeskPRO.Admin.PageHandler.TicketEditor = new Class({
 		});
 		this.addEditor(ed);
 
-		var ed = new DeskPRO.Admin.TicketEditor({
+		var ed = new DeskPRO.Admin.TicketEditorAgent({
 			context: '#agent_dep_editor',
 			name: 'agent'
 		});

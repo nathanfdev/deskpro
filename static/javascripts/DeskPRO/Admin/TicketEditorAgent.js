@@ -1,0 +1,165 @@
+Orb.createNamespace('DeskPRO.Admin.PageHandler');
+
+DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
+
+	Implements: [Orb.Util.Options],
+
+	initialize: function(options) {
+
+		$('#display_item').template('display_item');
+		$('#agent_section').template('agent_section');
+
+		this.options = {
+			department_id: 0,
+			url: '',
+			context: null,
+			name: 'name'
+		};
+
+		if (options) {
+			this.setOptions(options);
+		}
+
+		this.department_id = this.options.department_id;
+		this.url = this.options.url;
+		this.context = $(this.options.context);
+
+		var self = this;
+		$('.add-group-btn', this.context).click(function() {
+			self.addGroup();
+		});
+
+		this.initSortables();
+	},
+
+	initSortables: function(destroy) {
+
+		if (destroy) {
+			$('.display_item_list', this.context).sortable('destroy');
+			$('.field-list li', this.context).draggable('destroy');
+		}
+
+		var self = this;
+		$('.display_item_list', this.context).sortable({
+			items: "li:not(#no_elements_message)",
+			axis: 'y',
+			sort: function() {
+				// gets added unintentionally by droppable interacting with sortable
+				// using connectWithSortable fixes this, but doesn't allow you to customize active/hoverClass options
+				$( this ).removeClass("drop-active");
+			},
+			stop: function(event, ui) {
+				$('li.original', this).each(function() {
+					var el = $(this);
+					self.addDisplayItemFromEl(el, $(event.target), true);
+				});
+			}
+		});
+
+		$('.field-list li', this.context).draggable({
+			appendTo: 'body',
+			helper: 'clone',
+			connectToSortable: $('.display_item_list', this.context)
+		});
+	},
+
+	initPage: function() {
+
+	},
+
+	addDisplayItemFromEl: function(el, target, do_replace) {
+
+		$('.no_elements_message', target).hide();
+
+		var itemName = el.data('item-name');
+		var itemId = el.data('item-id');
+		var idClass = itemId.replace(/[^a-zA-Z0-9_]/g, '_');
+		var rendered = false;
+		if ($('div.rendered', parent).length) {
+			rendered = $('div.rendered', el).clone();
+		}
+
+		var data = {name: itemName, itemId: itemId, idClass: idClass };
+
+		var item = $.tmpl('display_item', data);
+		if (rendered) {
+			$('div.rendered', item).replaceWith(rendered);
+			rendered.show();
+		} else {
+			$('div.rendered', item).remove();
+		}
+
+		$('.available-display-items .' + idClass, target).hide();
+
+		if (do_replace) {
+			el.replaceWith(item);
+		} else {
+			$('.display_item_list', target).append(item);
+		}
+
+		this.initDisplayItem(item, itemId);
+
+		return item;
+	},
+
+	initDisplayItem: function(itemEl, itemId) {
+		var editor = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
+		editor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+		var to_el = $('.search-form.ruletype-all .rule-list', itemEl);
+
+		var self = this;
+		$('.remove', itemEl).click(function() { self.removeDisplayItem(itemEl); });
+
+		$('.search-form.ruletype-all .add-term', this.context).data('add-count', 0).click(function() {
+			var count = parseInt(itemEl.data('editor-all-add-count'));
+			var basename = 'terms_all['+itemId+']['+count+']';
+			itemEl.data('editor-all-add-count', count+1);
+			editor.addNewRow(to_el, basename);
+		});
+		itemEl.data('editor-all', editor);
+
+		var editor2 = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
+		editor2.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+		var to_el2 = $('.search-form.ruletype-any .rule-list', itemEl);
+
+		$('.search-form.ruletype-any .add-term', this.context).data('add-count', 0).click(function() {
+			var count = parseInt(itemEl.data('editor-any-add-count'));
+			var basename = 'terms_any['+itemId+']['+count+']';
+			itemEl.data('editor-all-any-count', count+1);
+			editor2.addNewRow(to_el2, basename);
+		});
+		itemEl.data('editor-any', editor2);
+	},
+
+	removeDisplayItem: function(itemEl) {
+		var context = itemEl.parentsUntil('.agent-section').parent();
+		itemEl.remove();
+
+		$('.available-display-items .' + itemEl.data('id-class'), context).show();
+		if ($('.display_item_list > li', context).length == 1) {
+			$('.no_elements_message', context).show();
+		}
+	},
+
+	addGroup: function() {
+		var data = {};
+		var item = $.tmpl('agent_section', data);
+
+		var itemEl = $(item);
+		$('.agent-sections-wrap', this.context).append(itemEl);
+
+		this.initSortables();
+	},
+
+	getName: function() {
+		return this.options.name;
+	}
+});
