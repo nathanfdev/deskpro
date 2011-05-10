@@ -30,4 +30,9 @@
 
 	'core.label_x'       => 'Label: {{label}}',
 
+	'core.field_type_text' => 'Text box',
+	'core.field_type_textarea' => 'Multi-line text area box',
+	'core.field_type_choice' => 'Pre-defined choices',
+	'core.field_type_textemail' => 'Email text box',
+	'core.field_type_texturl' => 'URL text box',
 );

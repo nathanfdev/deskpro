@@ -297,12 +297,28 @@ input.flat {
 	border-left: 5px solid #D0D2D6;
 }
 
+.item-list > li .controls span.count {
+    color: #333EB5;
+    background-color: #fff;
+    padding: 1px;
+    -moz-border-radius: 2px;
+    border-radius: 2px;
+}
+
 .item-list > li .controls {
-	visibility: hidden;
+	display: none;
 }
 
 .item-list > li:hover .controls {
-	visibility: visible;
+	display: block;
+}
+
+.item-list > li .controls.reverse {
+	display: block;
+}
+
+.item-list > li:hover .controls.reverse {
+	display: none;
 }
 
 .item-list ul.controls li {
@@ -814,8 +830,18 @@ ul.item-list {
 }
 
 ul.item-list > li {
+    background-color: #F0F1F5;
 	border-top: 1px solid #D0D2D6;
 	padding: 10px;
+}
+
+ul.item-list.system-list {
+    background-color: #EDF8FF;
+	border-top: 1px solid #ABC6D9;
+}
+ul.item-list > li.system-item {
+    background-color: #EDF8FF;
+	border-top: 1px solid #ABC6D9;
 }
 
 ul.item-list > li:first-of-type {

@@ -32,14 +32,25 @@ class TicketPropertiesController extends AbstractController
 	{
 		$this->rememberLastPage();
 
+		/*
 		$tabs = array(
 			'categories'    => $this->forward('AdminBundle:TicketCategories:list')->getContent(),
 			'priorities'    => $this->forward('AdminBundle:TicketPriorities:list')->getContent(),
 			'workflows'     => $this->forward('AdminBundle:TicketWorkflows:list')->getContent(),
 			'custom_def'    => $this->forward('AdminBundle:CustomDefTickets:index')->getContent(),
 		);
+		*/
+
+		$counts = array();
+		$counts['ticket_category'] = App::getEntityRepository('DeskPRO:TicketCategory')->countAll();
+		$counts['ticket_priority'] = App::getEntityRepository('DeskPRO:TicketPriority')->countAll();
+		$counts['ticket_workflow'] = App::getEntityRepository('DeskPRO:TicketWorkflow')->countAll();
+
+		$fields = App::getApi('custom_fields.tickets')->getFields();
+
 		return $this->render('AdminBundle:TicketProperties:list.html.twig', array(
-			'tabs' => $tabs
+			'counts' => $counts,
+			'fields' => $fields
 		));
 	}
 

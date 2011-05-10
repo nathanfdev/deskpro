@@ -82,6 +82,16 @@ class TicketCategory extends AbstractCategoryRepository
 		return $map;
 	}
 
+	
+	/**
+	 * Count all cats that exist
+	 *
+	 * @return int
+	 */
+	public function countAll()
+	{
+		return App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
+	}
 
 
 	/**

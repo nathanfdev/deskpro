@@ -71,6 +71,17 @@ class TicketWorkflow extends EntityRepository
 
 
 	/**
+	 * Count all workflows that exist
+	 *
+	 * @return int
+	 */
+	public function countAll()
+	{
+		return App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_workflows");
+	}
+
+
+	/**
 	 * Invalidates caches
 	 */
 	public function invalidateCaches()

@@ -1,6 +1,6 @@
 {% extends 'AdminBundle::layout.html.twig' %}
 {% block section 'tickets' %}
-{% block sub_section 'priorities' %}
+{% block sub_section 'properties' %}
 {% block html_head %}
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketProperties.js') }}"></script>
 {% endblock %}
@@ -13,29 +13,64 @@ function _page_exec() {
 {% endblock %}
 {% block content %}
 
-<div class="pane">
-	<div id="ticket_properties_tabs" class="pane-tabs nosel">
-		<ul>
-			<li class="tab-trigger tab-categories on" data-tab-for=".tab-content.tab-categories"><a>Categories</a></li>
-			<li class="tab-trigger tab-priorities" data-tab-for=".tab-content.tab-priorities"><a>Priorities</a></li>
-			<li class="tab-trigger tab-workflows" data-tab-for=".tab-content.tab-workflows"><a>Workflows</a></li>
-			<li class="tab-trigger tab-custom-def" data-tab-for=".tab-content.tab-custom-def"><a>Fields</a></li>
-		</ul>
-	</div>
-	<div class="tab-box-content pane-content">
-		<div class="tab-content tab-categories on" data-tab-trigger=".tab-trigger.ticket-categories">
-			{{tabs.categories|raw}}
+<ul class="item-list system-list">
+	<li class="system-item">
+		<div style="float:right">
+			<ul class="controls">
+				<li class="edit"><a class="popout-trigger" href="">Manage Categories</a></li>
+			</ul>
+			<ul class="controls reverse">
+				<li><span class="count">{{counts.ticket_category}}</span> categories</li>
+			</ul>
 		</div>
-		<div class="tab-content tab-priorities" data-tab-trigger=".tab-trigger.ticket-priorities">
-			{{tabs.priorities|raw}}
+		Ticket Categories
+	</li>
+	<li class="system-item">
+		<div style="float:right">
+			<ul class="controls">
+				<li class="edit"><a class="popout-trigger" href="">Manage Priorities</a></li>
+			</ul>
+			<ul class="controls reverse">
+				<li><span class="count">{{counts.ticket_priority}}</span> priorities</li>
+			</ul>
 		</div>
-		<div class="tab-content tab-workflows" data-tab-trigger=".tab-trigger.ticket-workflows">
-			{{tabs.workflows|raw}}
+		Ticket Priorities
+	</li>
+	<li class="system-item">
+		<div style="float:right">
+			<ul class="controls">
+				<li class="edit"><a class="popout-trigger" href="">Manage Workflows</a></li>
+			</ul>
+			<ul class="controls reverse">
+				<li><span class="count">{{counts.ticket_workflow}}</span> workflows</li>
+			</ul>
 		</div>
-		<div class="tab-content tab-custom-def" data-tab-trigger=".tab-trigger.custom-def">
-			{{tabs.custom_def|raw}}
-		</div>
-	</div>
+		Ticket Workflows
+	</li>
+</ul>
+
+<div style="margin: 19px 0 4px 0;">
+	<a style="float: right" class="dp-button green popout-trigger" href="{{ path('admin_customdeftickets_new_choosetype') }}">Create A New Field</a>
+	<h2 style="font-size: 15px; padding-top: 6px;">Your custom fields</h2>
+	<br class="clear" />
 </div>
+
+<ul class="item-list">
+	{% for field in fields %}
+		<li class="field-{{field.id}}">
+			<div style="float:right">
+				<ul class="controls">
+					<li class="edit"><a class="popout-trigger" href="{{ path('admin_customdeftickets_edit', {'field_id': field.id}) }}">Edit</a></li>
+				</ul>
+			</div>
+			<strong>{{field.title}}</strong>
+			<div style="font-size: 90%">{{ phrase(field.handler_class_phrase) }}</div>
+		</li>
+	{% else %}
+		<li>
+			You have no custom fields defined.
+		</li>
+	{% endfor %}
+</ul>
 
 {% endblock %}

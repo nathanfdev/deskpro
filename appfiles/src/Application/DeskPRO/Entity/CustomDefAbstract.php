@@ -206,6 +206,25 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Get the phrasename for the handler class. This is just
+	 * the key of the phrase when showing this fields type.
+	 * For example, for phrases like "Text box" or "Checkbox" etc listed in the admin interface.
+	 *
+	 * @return string
+	 */
+	public function getHandlerClassPhrase()
+	{
+		$phrase = $this->handler_class;
+		$phrase = str_replace('Application\\DeskPRO\\CustomFields\\Handler\\', '', $phrase);
+		$phrase = str_replace('\\', '_', $phrase);
+		$phrase = "core.field_type_$phrase";
+		$phrase = strtolower($phrase);
+
+		return $phrase;
+	}
+
+
 
 	/**
 	 * Fetch the search capabiltiies supported by the field.
