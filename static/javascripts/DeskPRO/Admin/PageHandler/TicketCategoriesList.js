@@ -5,7 +5,7 @@ DeskPRO.Admin.PageHandler.TicketCategoriesList = new Class({
 
 	initPage: function() {
 		this.initPopoutTriggers();
-		DeskPRO_Window.getMessageBroker().addMessageListener('category.list.change', this.handleListChange.bind(this));
+		//DeskPRO_Window.getMessageBroker().addMessageListener('category.list.change', this.handleListChange.bind(this));
 
 		var self = this;
 		$('#ticket_category_parentlist').sortable({

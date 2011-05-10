@@ -17,7 +17,7 @@ function _page_exec() {
 	<li class="system-item">
 		<div style="float:right">
 			<ul class="controls">
-				<li class="edit"><a class="popout-trigger" href="">Manage Categories</a></li>
+				<li class="edit"><a class="popout-trigger" href="{{ path('admin_ticketcats') }}">Manage Categories</a></li>
 			</ul>
 			<ul class="controls reverse">
 				<li><span class="count">{{counts.ticket_category}}</span> categories</li>
@@ -28,7 +28,7 @@ function _page_exec() {
 	<li class="system-item">
 		<div style="float:right">
 			<ul class="controls">
-				<li class="edit"><a class="popout-trigger" href="">Manage Priorities</a></li>
+				<li class="edit"><a class="popout-trigger" href="{{ path('admin_ticketpris') }}">Manage Priorities</a></li>
 			</ul>
 			<ul class="controls reverse">
 				<li><span class="count">{{counts.ticket_priority}}</span> priorities</li>
@@ -39,7 +39,7 @@ function _page_exec() {
 	<li class="system-item">
 		<div style="float:right">
 			<ul class="controls">
-				<li class="edit"><a class="popout-trigger" href="">Manage Workflows</a></li>
+				<li class="edit"><a class="popout-trigger" href="{{ path('admin_ticketworks') }}">Manage Workflows</a></li>
 			</ul>
 			<ul class="controls reverse">
 				<li><span class="count">{{counts.ticket_workflow}}</span> workflows</li>

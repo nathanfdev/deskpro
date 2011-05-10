@@ -8,8 +8,6 @@ DeskPRO.Admin.PageHandler.TicketProperties = new Class({
 	},
 
 	initPage: function() {
-		this.tabs = new DeskPRO.UI.SimpleTabs({
-			triggerElements: $('#ticket_properties_tabs > ul > li')
-		});
+		this.initPopoutTriggers();
 	}
 });

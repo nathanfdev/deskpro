@@ -58,19 +58,32 @@
 	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/Basic.js') }}"></script>
 
 	<script type="text/javascript" charset="utf-8">
+		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';
 		var BASE_URL = '{{ path('user') }}';
 		var ASSETS_BASE_URL = '{{ asset('') }}';
 		if (!window.DESKPRO_URL_REGISTRY) window.DESKPRO_URL_REGISTRY = {};
 
+		window._page_exec_stack = [];
 		function _win_exec() {
 			window.DeskPRO_Window = new DeskPRO.Admin.PopoutWindow();
-
 			if (window._page_exec) {
-				_page_exec();
+				window._page_exec_stack.push(_page_exec);
+			}
+
+			for (var i = 0; i < window._page_exec_stack.length; i++) {
+				window._page_exec_stack[i]();
 			}
 
 			if (window.DeskPRO_Page) {
 				DeskPRO_Page.initPage();
+			}
+
+			// Init all others too
+			var re = /^DeskPRO_Page_/;
+			for (i in window) {
+				if (re.test(i)) {
+					window[i].initPage();
+				}
 			}
 		}
 
@@ -89,7 +102,8 @@
 
 <div id="content" class="ui-layout-content" style="padding: 10px;">{% block content %}{% endblock %}</div>
 
-<div id="footer">{% block footer %}{% endblock %}</div>
+{% set footer_block %}{% block footer %}{% endblock %}{% endset %}
+{% if footer_block %}<div id="footer">{{footer_block|raw}}</div>{% endif %}
 
 </div>
 </body>

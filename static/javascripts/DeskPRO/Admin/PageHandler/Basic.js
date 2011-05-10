@@ -8,6 +8,7 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 
 	contextEl: null,
 	options: {},
+	messageBroker: null,
 
 	initialize: function(context, options) {
 		if (context) {
@@ -18,6 +19,19 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 
 		options = options || {};
 		this.options = options;
+
+		var parent = this.getOpenerDeskPRO();
+		if (parent) {
+			this.messageBroker = parent.getMessageBroker();
+		} else if (window.DeskPRO_Window) {
+			this.messageBroker = window.DeskPRO_Window.getMessageBroker();
+		} else {
+			this.messageBroker = new DeskPRO.MessageBroker();
+		}
+	},
+
+	getMessageBroker: function() {
+		return this.messageBroker;
 	},
 
 	initPage: function() {
