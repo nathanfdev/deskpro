@@ -64,9 +64,7 @@ abstract class CustomDefAbstractController extends AbstractController
 
 	public function newChooseTypeAction()
 	{
-		return $this->render($this->getTemplateName('edit-choosetype.html.twig'), array(
-
-		));
+		return $this->render($this->getTemplateName('edit-choosetype.html.twig'), $this->getTemplateVars($vars));
 	}
 
 

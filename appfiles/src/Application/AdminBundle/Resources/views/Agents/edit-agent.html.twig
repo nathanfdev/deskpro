@@ -50,11 +50,13 @@ function _page_exec() {
 		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_widget(form.allowed_departments) }}</div>
 		<br class="clear" />
 	</div>
+	{% if form.usergroups %}
 	<div class="row">
 		<label>Agent Groups</label>
 		<div class="field checkselect" style="max-height: 100px; overflow: auto;">{{ form_widget(form.usergroups) }}</div>
 		<br class="clear" />
 	</div>
+	{% endif %}
 </div>
 
 </form>

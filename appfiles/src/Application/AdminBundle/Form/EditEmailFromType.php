@@ -37,7 +37,7 @@ class EditEmailFromType extends AbstractType
 
 		$opt_forms = $builder->create('transport_options', 'form');
 
-		$opt_forms->add('type', 'hidde', array('value' => $email_from['transport_options']['type']));
+		$opt_forms->add('type', 'hidden', array('data' => $email_from['transport_options']['type']));
 
 		switch ($email_from['transport_options']['type']) {
 			case 'smtp':
