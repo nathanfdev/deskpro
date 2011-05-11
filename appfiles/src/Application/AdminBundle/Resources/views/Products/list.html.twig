@@ -2,12 +2,15 @@
 {% block section 'crm' %}
 {% block sub_section 'usergroups' %}
 {% block html_head %}
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralSortableList.js') }}"></script>
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
 function _page_exec() {
-	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralList();
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralSortableList(false, {
+		'orderIdAttr': 'product-id',
+		orderUpdateUrl: '{{ path('admin_products_updateorders') }}'
+	});
 }
 </script>
 {% endblock %}
