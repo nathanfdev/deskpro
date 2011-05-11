@@ -418,6 +418,20 @@ class Util
 	}
 
 
+	/**
+	 * Get the namespace of a class
+	 *
+	 * @return string
+	 */
+	public static function getClassNamespace($obj_or_classname)
+	{
+		$parts = self::getClassnameParts($obj_or_classname);
+		array_pop($parts);
+
+		return implode('\\', $parts);
+	}
+
+
 
 	/**
 	 * Get the base name of a class. That is, the classname itself without the full

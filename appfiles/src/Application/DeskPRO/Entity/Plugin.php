@@ -14,11 +14,7 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * Plugins are callbacks that are fired at specific events or points in the code.
- *
- * Some plugins might be tied to specific objects, in which case their 'event_name'
- * will be null. For example, to run a callback on a ticket trigger we don't
- * have a specific event name for that.
+ * A plugin is a group of event listeners and other resources.
  *
  * @orm:Entity
  * @orm:Table(name="plugins")
@@ -29,48 +25,60 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @orm:Id
+	 * @orm:Column(name="id", type="string", length=255)
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="event_name", type="string", length=255, nullable=true)
+	 * @orm:Column(name="title", type="string", length=255)
 	 */
-	protected $event_name = null;
-
-	/**
-	 * The name of the object this plugin is associated with (if its not associated with a general event).
-	 * Convention should be "EntityName:ID". For example "TicketTrigger:12"
-	 *
-	 * @var string
-	 * @orm:Column(name="associated_object", type="string", length=255, nullable=true)
-	 */
-	protected $associated_object = null;
-
-	/**
-	 * The name/description of the plugin
-	 *
-	 * @var string
-	 * @orm:Column(name="name", type="string", length=255)
-	 */
-	protected $name = '';
+	protected $title;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="plugin_callback", type="string", length=255)
+	 * @orm:Column(name="description", type="text")
 	 */
-	protected $plugin_callback;
+	protected $description;
 
 	/**
-	 * Options we'll pass to the callback
-	 *
-	 * @var array
-	 * @orm:Column(name="callback_options", type="array")
+	 * @var string
+	 * @orm:Column(name="version", type="string", length=100)
 	 */
-	protected $callback_options = array();
+	protected $version;
+	
+	/**
+	 * The name of the class that describes the plugin and knows how to
+	 * install/uninstall etc.
+	 *
+	 * @var string
+	 * @orm:Column(name="package_class", type="string", length=255)
+	 */
+	protected $package_class = null;
+
+	/**
+	 * The file of the package class
+	 *
+	 * @var string
+	 * @orm:Column(name="package_class_file", type="string", length=255)
+	 */
+	protected $package_class_file = null;
+
+	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="PluginListener", mappedBy="plugin", cascade={"persist", "remove", "merge"})
+	 */
+	protected $listeners;
+
+	/**
+	 * An array of namespace=>path that this plugin uses.
+	 * This is just a cache version from PluginPackage
+	 *
+	 * @var string
+	 * @orm:Column(name="autoload_paths", type="array")
+	 */
+	protected $autoload_paths = null;
 
 	/**
 	 * @var \DateTime
@@ -84,21 +92,15 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
-
-	/**
-	 * Calls the plugin callback and returns its value.
-	 *
-	 * @return mixed
-	 */
-	public function executePlugin(array $params = array())
+	public function addPluginListener(PluginListener $plugin_listener)
 	{
-		$options = $this->callback_options;
-		$options['plugin'] = $this;
+		$this->listeners->add($plugin_listener);
+		$plugin_listener->plugin = $this;
+	}
 
-		$options = array_merge($options, $params);
-
-		$ret = call_user_func($this->plugin_callback, $options);
-
-		return $ret;
+	public function getPackageClass()
+	{
+		require_once($this->package_class_file);
+		return $this->package_class;
 	}
 }
