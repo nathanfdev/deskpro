@@ -81,6 +81,10 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 			$('.display_item_list', this.context).append(item);
 		}
 
+		var className = el.data('item-id').replace('.', '_');
+		var orig = $('li.field-item.' + className, this.context);
+		orig.addClass('disabled');
+
 		this.initDisplayItem(item, itemId);
 
 		return item;
@@ -128,6 +132,13 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 		$('.available-display-items .' + itemEl.data('id-class'), this.context).show();
 		if ($('.display_item_list > li', this.context).length == 1) {
 			$('.no_elements_message', this.context).show();
+		}
+
+		var className = itemEl.data('id-class');
+		var els = $('.agent-sections-wrap li.' + className, this.context);
+		if (!els.length) {
+			var orig = $('li.field-item.' + className, this.context);
+			orig.removeClass('disabled');
 		}
 	},
 

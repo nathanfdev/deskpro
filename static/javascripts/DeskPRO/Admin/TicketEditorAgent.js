@@ -26,7 +26,7 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 
 		var self = this;
 		$('.add-group-btn', this.context).click(function() {
-			self.addGroup();
+			self.addGroup(this);
 		});
 
 		this.initSortables();
@@ -99,6 +99,10 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 
 		this.initDisplayItem(item, itemId);
 
+		var className = el.data('item-id').replace('.', '_');
+		var orig = $('li.field-item.' + className, this.context);
+		orig.addClass('disabled');
+
 		return item;
 	},
 
@@ -147,14 +151,34 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 		if ($('.display_item_list > li', context).length == 1) {
 			$('.no_elements_message', context).show();
 		}
+		
+		var className = itemEl.data('id-class');
+		var els = $('.agent-sections-wrap li.' + className, this.context);
+		if (!els.length) {
+			var orig = $('li.field-item.' + className, this.context);
+			orig.removeClass('disabled');
+		}
 	},
 
-	addGroup: function() {
+	removeTab: function(el) {
+		var tab = $(el).parentsUntil('.agent-section').parent();
+		tab.remove();
+	},
+
+	addGroup: function(btn) {
+
+		var context = $(btn).parentsUntil('.agent-section-tab').parent();
+
 		var data = {};
 		var item = $.tmpl('agent_section', data);
 
 		var itemEl = $(item);
-		$('.agent-sections-wrap', this.context).append(itemEl);
+		$('.agent-sections-wrap', context).append(itemEl);
+
+		var self = this;
+		$('.tab-remove', itemEl).click(function() {
+			self.removeTab(this);
+		});
 
 		this.initSortables();
 	},

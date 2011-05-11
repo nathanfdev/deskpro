@@ -144,6 +144,11 @@
 	cursor: move;
 }
 
+.field-item.disabled {
+	background-color: #B3B3B3;
+	color: #595959;
+}
+
 .agent-section {
 	margin-top: 10px;
 }
@@ -166,6 +171,41 @@
 .agent-sections-wrap .agent-section .head h4 {
 	font-size: 14px;
 	font-weight: normal;
+}
+
+.agent-section-tab {
+	background: #E6EEF7;
+	padding:  5px;
+	border: 1px solid #ACC7E6;
+	margin-top: 5px;
+}
+
+.agent-section-tab-title {
+
+}
+
+.agent-section-tab-title h4 {
+	font-size: 15px;
+}
+
+.agent-section-tab-title .add-group-btn {
+	float: right;
+	font-size: 10px;
+	padding: 0 3px 0 3px;
+}
+
+.agent-section .head .remove {
+	display: none;
+	float: right;
+
+	color: #447AB8;
+	cursor: pointer;
+	font-size: 10px;
+	padding:  3px 3px 0 0;
+}
+
+.agent-section .head:hover .remove {
+	display: block;
 }
 </style>
 {% endblock %}
@@ -206,7 +246,6 @@ function _page_exec() {
 </td><td width="50%" valign="top" style="padding-left: 7px;" class="dep-editor" id="agent_dep_editor">
 
 	<div class="head">
-		<button class="dp-button x-small add-group-btn">Add Group</button>
 		<h1>Agent Ticket View</h1>
 	</div>
 	<div class="field-list-wrap">
@@ -232,6 +271,33 @@ function _page_exec() {
 		</div>
 	</div>
 
+	<div class="agent-section-tab">
+		<div class="agent-section-tab-title">
+			<button class="dp-button x-small add-group-btn">Add Tab</button>
+			<h4>Top Tabs</h4>
+		</div>
+		<div class="agent-sections-wrap">
+		</div>
+	</div>
+
+	<div class="agent-section-tab">
+		<div class="agent-section-tab-title">
+			<button class="dp-button x-small add-group-btn">Add Tab</button>
+			<h4>Middle Tabs</h4>
+		</div>
+		<div class="agent-sections-wrap">
+		</div>
+	</div>
+
+	<div class="agent-section-tab">
+		<div class="agent-section-tab-title">
+			<button class="dp-button x-small add-group-btn">Add Tab</button>
+			<h4>Main Tabs</h4>
+		</div>
+		<div class="agent-sections-wrap">
+		</div>
+	</div>
+
 </td></tr></table>
 
 {# Menus #}
@@ -249,12 +315,8 @@ function _page_exec() {
 <script id="agent_section" type="text/x-jquery-tmpl">
 	<div class="agent-section">
 		<div class="head">
-			<select name="area" style="float:right; font-size: 10px">
-				<option value="agent_top_tabs">Top tabs</option>
-				<option value="agent_middle_tabs">Middle tabs</option>
-				<option value="agent_bottom_tabs">Bottom tabs</option>
-			</select>
-			<input type="text" name="title" style="width: 30%; font-size: 10px; padding: 1px;" value="Tab Title" />
+			<span class="tab-remove remove">remove tab</span>
+			<input type="text" name="title" style="width: 100px; font-size: 10px; padding: 1px;" value="Tab Title" />
 		</div>
 		<ul class="item-list display_item_list">
 			<li class="no_elements_message">
@@ -265,7 +327,7 @@ function _page_exec() {
 </script>
 
 <script id="display_item" type="text/x-jquery-tmpl">
-	<li id="display_item_${idClass}" data-id-class="${idClass}" data-item-id="${itemId}">
+	<li id="display_item_${idClass}" class="${idClass}" data-id-class="${idClass}" data-item-id="${itemId}">
 		<div style="float:right">
 			<span class="remove">Remove this</span>
 			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${idClass}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
