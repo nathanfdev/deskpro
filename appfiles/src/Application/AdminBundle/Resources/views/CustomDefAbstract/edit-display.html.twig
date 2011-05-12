@@ -1,0 +1,17 @@
+{% extends 'AdminBundle:CustomDefAbstract:edit.html.twig' %}
+{% block custom_form %}
+<div class="block" id="block-tables">
+	<div class="content">
+		<h2 class="title">Content</h2>
+		<div class="inner">
+			<table class="table">
+				<tr class="even">
+					<td>
+						{{form.fieldtype_form.html.render({'rows': 8, 'cols': 80})|raw}}
+					</td>
+				</tr>
+			</table>
+		</div>
+	</div>
+</div>
+{% endblock %}

@@ -54,7 +54,7 @@ class Display extends HandlerAbstract
 	 */
 	public function renderHtml(array $data)
 	{
-		$ev = $this->makeEventObject(array('data' => $data, 'html' => false));
+		$ev = $this->makeEventObject(array('data' => $data, 'html' => $this->field_def->getOption('html', '')));
 		$this->event_dispatcher->dispatch(self::EVENT_RENDER_HTML, $ev);
 
 		if ($ev->html) {
@@ -65,13 +65,12 @@ class Display extends HandlerAbstract
 	}
 
 
-
 	/**
 	 * Render the field
 	 */
 	public function renderText(array $data)
 	{
-		$ev = $this->makeEventObject(array('data' => $data, 'text' => false));
+		$ev = $this->makeEventObject(array('data' => $data, 'text' => strip_tags($this->field_def->getOption('html', ''))));
 		$this->event_dispatcher->dispatch(self::EVENT_RENDER_TEXT, $ev);
 
 		if ($ev->text) {
@@ -86,7 +85,6 @@ class Display extends HandlerAbstract
 
 		return $txt;
 	}
-
 
 
 	/**
@@ -119,7 +117,6 @@ class Display extends HandlerAbstract
 	}
 
 
-
 	/**
 	 * Get the form field
 	 *
@@ -134,7 +131,6 @@ class Display extends HandlerAbstract
 	}
 
 
-
 	/**
 	 * Get data from a posted form that we'll store in the database.
 	 *
@@ -145,10 +141,10 @@ class Display extends HandlerAbstract
 	 */
 	public function getDataFromForm(array $form_data)
 	{
-		$ev = $this->makeEventObject(array('form_data' => $form_data, 'return_data' => array()));
+		$ev = $this->makeEventObject(array('form_data' => $form_data, 'return_data' => array($this->field_def['id'], 'input', null)));
 		$this->event_dispatcher->dispatch(self::EVENT_READ_FORM, $ev);
 
-		return $ev->field;
+		return $ev->return_data;
 	}
 
 

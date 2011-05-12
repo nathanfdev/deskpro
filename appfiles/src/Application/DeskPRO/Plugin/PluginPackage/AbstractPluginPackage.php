@@ -71,6 +71,21 @@ abstract class AbstractPluginPackage
 		return '1';
 	}
 
+	
+	/**
+	 * Get the path to the Resources directory
+	 *
+	 * @return string
+	 */
+	public static function getResourcesPath()
+	{
+		$path = dirname(__FILE__);
+		$path = str_replace(DP_ROOT.'/plugins', '', $plugin_path);
+		$path .= '/Resources';
+
+		return $path;
+	}
+
 
 	/**
 	 * Get paths to auto-load
@@ -81,6 +96,7 @@ abstract class AbstractPluginPackage
 	{
 		$plugin_namespace = Util::getClassNamespace(get_called_class());
 		$plugin_path = dirname(__FILE__);
+		$plugin_path = str_replace(DP_ROOT.'/plugins', '', $plugin_path);
 
 		return array($plugin_namespace => $plugin_path);
 	}

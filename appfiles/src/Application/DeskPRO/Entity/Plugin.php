@@ -66,6 +66,14 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	protected $package_class_file = null;
 
 	/**
+	 * The path where this plugins Resources directory can be found
+	 *
+	 * @var string
+	 * @orm:Column(name="resources_path", type="string", length=255)
+	 */
+	protected $resources_path = null;
+
+	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:OneToMany(targetEntity="PluginListener", mappedBy="plugin", cascade={"persist", "remove", "merge"})
 	 */

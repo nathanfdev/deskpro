@@ -31,6 +31,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * Is the field associated with a plugin?
+	 * These generally cant be edited.
+	 *
+	 * @var Template
+	 * @orm:OneToOne(targetEntity="Plugin")
+	 * @orm:JoinColumn(name="plugin_id", referencedColumnName="id")
+	 */
+	protected $plugin = null;
+
+	/**
 	 * Field parent
 	 *
 	 * MUST BE IMPLEMENT IN CHILD CLASS
@@ -76,6 +86,15 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="options", type="array")
 	 */
 	protected $options = array();
+
+	/**
+	 * Custom template
+	 *
+	 * @var Template
+	 * @orm:OneToOne(targetEntity="Template")
+	 * @orm:JoinColumn(name="custom_template_id", referencedColumnName="id")
+	 */
+	protected $custom_template = null;
 
 	/**
 	 * @var Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
