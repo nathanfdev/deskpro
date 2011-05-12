@@ -65,7 +65,7 @@ class Settings implements \ArrayAccess
 
 	public function __construct(array $settings_paths, \Application\DeskPRO\DBAL\Connection $db = null)
 	{
-		$this->settings_paths = $settings_paths;
+		$this->settings_paths = new SettingsLocator($settings_paths);
 		$this->db = $db;
 	}
 
