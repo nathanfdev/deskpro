@@ -20,6 +20,31 @@ use \Orb\Util\Util;
 class Setting extends EntityRepository
 {
 	/**
+	 * Update a database setting
+	 * 
+	 * @param  $name
+	 * @param  $value
+	 * @return \Application\DeskPRO\Entity\Setting
+	 */
+	public function updateSetting($name, $value)
+	{
+		$setting = $this->find($name);
+		if (!$setting) {
+			$setting = new Entity\Setting();
+			$setting['name'] = $name;
+		}
+
+		$setting['value'] = $value;
+
+		App::getOrm()->transactional(function ($em) use ($setting) {
+			$em->persist($setting);
+			$em->flush();
+		});
+
+		return $setting;
+	}
+
+	/**
 	 * Invalidates caches
 	 */
 	public function invalidateCaches()

@@ -23,8 +23,20 @@ admin_email_properties:
   defaults: { _controller: AdminBundle:EmailProperties:list }
 
 ################################################################################
-# Labels
+# Settings
 ################################################################################
+
+admin_settings:
+  pattern: /settings
+  defaults: { _controller: AdminBundle:Settings:settings }
+
+admin_settings_adv:
+  pattern: /settings/advanced
+  defaults: { _controller: AdminBundle:Settings:advanced }
+
+admin_settings_adv_set:
+  pattern: /settings/advanced-set/{name}
+  defaults: { _controller: AdminBundle:Settings:advancedSet }
 
 admin_labels:
   pattern: /settings/labels/{label_type}

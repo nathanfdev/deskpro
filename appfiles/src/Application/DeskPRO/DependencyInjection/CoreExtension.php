@@ -140,10 +140,10 @@ class CoreExtension extends Extension
 	{
 		$definition = new Definition('Application\\DeskPRO\\Settings\\Settings', array(
 			array(
-				'core' => DP_ROOT . '/src/Application/DeskPRO/Resources/settings',
-				'tech' => DP_ROOT . '/src/Application/AgentBundle/Resources/settings',
-				'user' => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
-				'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/settings',
+				'core'  => DP_ROOT . '/src/Application/DeskPRO/Resources/settings',
+				'agent' => DP_ROOT . '/src/Application/AgentBundle/Resources/settings',
+				'user'  => DP_ROOT . '/src/Application/UserBundle/Resources/settings',
+				'dev'   => DP_ROOT . '/src/Application/DevBundle/Resources/settings',
 			),
 			new Reference('database_connection')
 		));

@@ -1,5 +1,6 @@
 <?php return array(
 
+	'core.helpdesk_enabled' => true,
 	'core.deskpro_url' => 'http://localhost/',
 	'core.deskpro_name' => 'Helpdesk',
 	'core.site_url' => '',
@@ -7,7 +8,13 @@
 	'core.deskpro_assets_full_url' => 'http://localhost/static/',
 	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
 
+	'core.force_ssl' => false,
+	'core.force_domain' => false,
+
 	'core.site_id' => '1',
+
+	'core.cookie_path' => '/',
+	'core.cookie_domain' => '',
 
 	'core.default_locale_id' => 1,
 	'core.default_style_id' => 1,

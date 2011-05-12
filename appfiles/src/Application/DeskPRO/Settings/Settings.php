@@ -70,6 +70,14 @@ class Settings implements \ArrayAccess
 	}
 
 
+	/**
+	 * @return \Application\DeskPRO\Settings\SettingsLocator
+	 */
+	public function getSettingsLocator()
+	{
+		return $this->settings_paths;
+	}
+
 
 	/**
 	 * Get the value of a setting

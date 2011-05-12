@@ -19,6 +19,71 @@ use \Orb\Util\Util;
 
 class SettingsController extends AbstractController
 {
+	############################################################################
+	# list
+	############################################################################
+
+	public function settingsAction()
+	{
+		if ($this->in->getBool('process')) {
+			$update_settings = array(
+				'core.deskpro_name'     => $_POST['settings']['core.deskpro_name'],
+				'core.deskpro_url'      => $_POST['settings']['core.deskpro_url'],
+				'core.site_name'        => $_POST['settings']['core.site_name'],
+				'core.site_url'         => $_POST['settings']['core.site_url'],
+				'core.helpdesk_enabled' => empty($_POST['settings']['core.helpdesk_enabled']) ? 0 : 1,
+				'core.force_ssl'        => empty($_POST['settings']['core.force_ssl']) ? 0 : 1,
+				'core.force_domain'     => empty($_POST['settings']['core.force_domain']) ? 0 : 1,
+				'core.cookie_path'      => $_POST['settings']['core.cookie_path'],
+				'core.cookie_domain'    => $_POST['settings']['core.cookie_domain'],
+			);
+			array_walk($update_settings, 'trim');
+
+			foreach ($update_settings as $k => $v) {
+				App::getEntityRepository('DeskPRO:Setting')->updateSetting($k, $v);
+			}
+
+			return $this->redirectRoute('admin_settings');
+		}
+
+		return $this->render('AdminBundle:Settings:settings.html.twig', array(
+
+		));
+	}
+
+	
+	############################################################################
+	# advanced
+	############################################################################
+
+	/**
+	 * View a plain list of settings
+	 */
+	public function advancedAction()
+	{
+		$settings_files = new \Application\DeskPRO\ResourceScanner\SettingFiles();
+		$all_settings = $settings_files->getAllSettings();
+
+		return $this->render('AdminBundle:Settings:advanced.html.twig', array(
+			'all_settings' => $all_settings
+		));
+	}
+
+	/**
+	 * Set a specific setting
+	 */
+	public function advancedSetAction($name)
+	{
+		$value = $this->in->getValue('value');
+		$setting = App::getEntityRepository('DeskPRO:Setting')->updateSetting($name, $value);
+
+		return $this->createJsonResponse(array('success' => true));
+	}
+
+	############################################################################
+	# labels
+	############################################################################
+
 	public function labelsAction($label_type)
 	{
 		$this->rememberLastPage();

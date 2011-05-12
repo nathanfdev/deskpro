@@ -94,7 +94,7 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	public function getValue()
 	{
 		if ($this->value === null) {
-			return $this->default_vale;
+			return $this->default_value;
 		}
 
 		return $this->value;

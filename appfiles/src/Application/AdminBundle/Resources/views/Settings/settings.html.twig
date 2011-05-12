@@ -1,0 +1,147 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block html_head %}
+<style>
+.setting_section_head {
+	margin: -10px -10px 0 -10px;
+	padding: 0 0 10px 3px;
+}
+
+.setting_section_head a {
+	font-size: 9px;
+	color: #C7CBD1;
+	text-decoration: none;
+	float: right;
+}
+.setting_section_head a:hover {
+	color: #777A80;
+}
+
+.setting_section_head h1 {
+	font-size: 25px;
+	font-weight: normal;
+}
+
+.setting_field_row {
+	border-top:  1px solid #ccc;
+	padding: 18px 0 0 0;
+	margin: 8px 0 0 0;
+}
+
+.setting_field_row h4 {
+	float: left;
+	font-size: 15px;
+	padding-top: 4px;
+}
+
+.setting_field_row .setting_fields {
+	margin-left: 150px;
+}
+
+.field_row {
+	margin-bottom: 16px;
+}
+
+.field_row label {
+	font-family: Helvetica, sans-serif;
+	font-size: 12px;
+	display: block;
+	margin-bottom: 2px;
+}
+
+.setting_fields input[type="text"] {
+	background-color: #FCFCFC;
+	border:  1px solid #DCE1E8;
+	padding: 1px;
+	-moz-border-radius: 2px;
+	border-radius: 2px;
+}
+</style>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	
+}
+</script>
+{% endblock %}
+{% block content %}
+
+<div class="setting_section_head">
+	<a href="{{ path('admin_settings_adv') }}">Advanced settings view</a>
+	<h1>Settings</h1>
+</div>
+
+<form action="{{ path('admin_settings') }}" method="POST">
+<input type="hidden" name="process" value="1" />
+
+<div class="setting_field_row">
+	<h4>Basics</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<table cellspacing="0" cellpadding="0"><tr>
+				<td style="padding-right: 10px;">
+					<label>Your helpdesk name</label>
+					<input type="text" name="settings[core.deskpro_name]" value="{{app.getSetting('core.deskpro_name')}}" size="40" />
+				</td>
+				<td>
+					<label>Your helpdesk URL</label>
+					<input type="text" name="settings[core.deskpro_url]" value="{{app.getSetting('core.deskpro_url')}}" size="40" />
+				</td>
+			</tr></table>
+		</div>
+		<div class="field_row">
+			<table cellspacing="0" cellpadding="0"><tr>
+				<td style="padding-right: 10px;">
+					<label>Your website name</label>
+					<input type="text" name="settings[core.site_name]" value="{{app.getSetting('core.site_name')}}" size="40" />
+				</td>
+				<td>
+					<label>Your website URL</label>
+					<input type="text" name="settings[core.site_url]" value="{{app.getSetting('core.site_url')}}" size="40" />
+				</td>
+			</tr></table>
+		</div>
+	</div>
+</div>
+<div class="setting_field_row">
+	<h4>Helpdesk</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<label><input type="checkbox" name="settings[core.helpdesk_enabled]" {% if app.getSetting('core.helpdesk_enabled') %}checked="checked"{% endif %} />
+				The helpdesk is currently enabled</label>
+		</div>
+		<div class="field_row">
+			<label><input type="checkbox" name="settings[core.force_ssl]" {% if app.getSetting('core.force_ssl') %}checked="checked"{% endif %} />
+				Force users to use https:// by redirecting non-https requests</label>
+		</div>
+		<div class="field_row">
+			<label><input type="checkbox" name="settings[core.force_domain]" {% if app.getSetting('core.force_domain') %}checked="checked"{% endif %} />
+				Force users to use the domain name set in your "Helpdeks URL." For example, this will forward non-www to www.</label>
+		</div>
+	</div>
+</div>
+<div class="setting_field_row">
+	<h4>Advanced</h4>
+	<div class="setting_fields">
+		<div class="field_row">
+			<table cellspacing="0" cellpadding="0"><tr>
+				<td style="padding-right: 10px;">
+					<label>Cookie Path</label>
+					<input type="text" name="settings[core.cookie_path]" value="{{app.getSetting('core.cookie_path')}}" size="40" />
+				</td>
+				<td>
+					<label>Cookie Domain</label>
+					<input type="text" name="settings[core.cookie_domain]" value="{{app.getSetting('core.cookie_domain')}}" size="40" />
+				</td>
+			</tr></table>
+		</div>
+	</div>
+</div>
+
+<div class="setting_field_row" style="text-align: center">
+	<button class="dp-button">Save Settings</button>
+</div>
+
+</form>
+
+{% endblock %}
