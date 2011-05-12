@@ -14,6 +14,28 @@ function _page_exec() {
 {% block content %}
 
 <ul class="item-list system-list">
+	<li class="system-item dark">
+		<div style="float:right">
+			<ul class="controls">
+				<li class="edit"><a href="{{ path('admin_departments') }}">Manage Departments</a> &rarr;</li>
+			</ul>
+			<ul class="controls reverse">
+				<li><span class="count">{{counts.department}}</span> departments</li>
+			</ul>
+		</div>
+		Departments
+	</li>
+	<li class="system-item dark">
+		<div style="float:right">
+			<ul class="controls">
+				<li class="edit"><a href="{{ path('admin_products') }}">Manage Products</a> &rarr;</li>
+			</ul>
+			<ul class="controls reverse">
+				<li><span class="count">{{counts.product}}</span> products</li>
+			</ul>
+		</div>
+		Products
+	</li>
 	<li class="system-item">
 		<div style="float:right">
 			<ul class="controls">
@@ -51,7 +73,7 @@ function _page_exec() {
 
 <div style="margin: 19px 0 4px 0;">
 	<a style="float: right" class="dp-button green popout-trigger" href="{{ path('admin_customdeftickets_new_choosetype') }}">Create A New Field</a>
-	<h2 style="font-size: 15px; padding-top: 6px;">Your custom fields</h2>
+	<h2 style="font-size: 15px; padding-top: 6px;">Your fields</h2>
 	<br class="clear" />
 </div>
 

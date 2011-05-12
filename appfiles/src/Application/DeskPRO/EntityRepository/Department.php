@@ -172,6 +172,17 @@ class Department extends EntityRepository
 
 		return $ids;
 	}
+
+
+	/**
+	 * Count all cats that exist
+	 *
+	 * @return int
+	 */
+	public function countAll()
+	{
+		return count($this->getDepartmentIds());
+	}
 	
 
 

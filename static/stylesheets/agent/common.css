@@ -844,6 +844,10 @@ ul.item-list > li.system-item {
 	border-top: 1px solid #ABC6D9;
 }
 
+ul.item-list > li.system-item.dark {
+    background-color: #DCE7F7;
+}
+
 ul.item-list > li:first-of-type {
 	border-top: none;
 }

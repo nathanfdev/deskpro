@@ -72,6 +72,16 @@ class Product extends EntityRepository
 	}
 
 
+	/**
+	 * Count all cats that exist
+	 *
+	 * @return int
+	 */
+	public function countAll()
+	{
+		return count($this->getProductNames());
+	}
+
 
 	/**
 	 * Invalidates caches

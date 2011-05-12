@@ -45,6 +45,8 @@ class TicketPropertiesController extends AbstractController
 		$counts['ticket_category'] = App::getEntityRepository('DeskPRO:TicketCategory')->countAll();
 		$counts['ticket_priority'] = App::getEntityRepository('DeskPRO:TicketPriority')->countAll();
 		$counts['ticket_workflow'] = App::getEntityRepository('DeskPRO:TicketWorkflow')->countAll();
+		$counts['department']      = App::getEntityRepository('DeskPRO:Department')->countAll();
+		$counts['product']         = App::getEntityRepository('DeskPRO:Product')->countAll();
 
 		$fields = App::getApi('custom_fields.tickets')->getFields();
 
