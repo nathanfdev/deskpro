@@ -6,8 +6,12 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 
 	initialize: function(options) {
 
-		$('#display_item').template('display_item');
 		$('#agent_section').template('agent_section');
+		$('#display_item_category_tpl').template('display_item_category_tpl');
+		$('#display_item_product_tpl').template('display_item_product_tpl');
+		$('#display_item_workflow_tpl').template('display_item_workflow_tpl');
+		$('#display_item_priority_tpl').template('display_item_priority_tpl');
+		$('#display_item_ticket_field_tpl').template('display_item_ticket_field_tpl');
 
 		this.options = {
 			department_id: 0,
@@ -71,25 +75,15 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 
 		$('.no_elements_message', target).hide();
 
-		var itemName = el.data('item-name');
-		var itemId = el.data('item-id');
-		var idClass = itemId.replace(/[^a-zA-Z0-9_]/g, '_');
-		var rendered = false;
-		if ($('div.rendered', parent).length) {
-			rendered = $('div.rendered', el).clone();
-		}
+		var itemName = el.html();
+		var itemId   = el.data('item-id') || '';
+		var itemType = el.data('item-type') || '';
+		var idClass  = itemType + '_' + (itemId+'').replace(/[^a-zA-Z0-9_]/g, '_');
+		var elId   = Orb.getUniqueId();
 
-		var data = {name: itemName, itemId: itemId, idClass: idClass };
+		var data = {name: itemName, itemId: itemId, idClass: idClass, itemType: itemType, elId: elId };
 
-		var item = $.tmpl('display_item', data);
-		if (rendered) {
-			$('div.rendered', item).replaceWith(rendered);
-			rendered.show();
-		} else {
-			$('div.rendered', item).remove();
-		}
-
-		$('.available-display-items .' + idClass, target).hide();
+		var item = $.tmpl('display_item_' + itemType + '_tpl', data);
 
 		if (do_replace) {
 			el.replaceWith(item);
@@ -97,16 +91,24 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 			$('.display_item_list', target).append(item);
 		}
 
-		this.initDisplayItem(item, itemId);
-
-		var className = el.data('item-id').replace('.', '_');
-		var orig = $('li.field-item.' + className, this.context);
+		var orig = $('li.field-item.' + idClass, target);
 		orig.addClass('disabled');
+
+		data.itemEl = item;
+
+		this.initDisplayItemRuleEditor(data);
+
+		var self = this;
+		$('.remove', item).click(function() { self.removeDisplayItem(item); });
 
 		return item;
 	},
 
-	initDisplayItem: function(itemEl, itemId) {
+	initDisplayItemRuleEditor: function(itemInfo) {
+
+		var itemEl   = itemInfo.itemEl;
+		var itemId = itemInfo.itemId;
+
 		var editor = new DeskPRO.Form.RuleBuilder($('#criteria_tpl'));
 		editor.addEvent('newRow', function(new_row) {
 			$('.remove', new_row).click(function() {
@@ -116,7 +118,6 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 		var to_el = $('.search-form.ruletype-all .rule-list', itemEl);
 
 		var self = this;
-		$('.remove', itemEl).click(function() { self.removeDisplayItem(itemEl); });
 
 		$('.search-form.ruletype-all .add-term', this.context).data('add-count', 0).click(function() {
 			var count = parseInt(itemEl.data('editor-all-add-count'));

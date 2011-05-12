@@ -62,6 +62,7 @@ class Tickets
 
 		$options['products']    = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
 		$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
+		$options['ticket_priorities']  = $options['priorities'];
 
 		return $options;
 	}

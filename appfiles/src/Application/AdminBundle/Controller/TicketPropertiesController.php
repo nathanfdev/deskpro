@@ -81,11 +81,14 @@ class TicketPropertiesController extends AbstractController
 
 		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
 
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
 			'department' => $department,
 			'custom_fields' => $custom_fields,
-			'term_options' => $term_options
+			'term_options' => $term_options,
+			'ticket_options' => $ticket_options
 		));
 	}
 

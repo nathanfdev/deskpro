@@ -108,13 +108,19 @@
 
 .display_item_list li .remove {
 	color: #820D0D;
-	padding-right: 9px;
-	margin-right: 6px;
+	padding-right: 5px;
+	margin-right: 3px;
 	border-right: 1px solid #D0D2D6;
 	cursor: pointer;
 }
 .display_item_list li .edit-rules {
 	cursor: pointer;
+}
+.display_item_list li .edit-options {
+	cursor: pointer;
+	padding-left: 5px;
+	margin-left: 3px;
+	border-left: 1px solid #D0D2D6;
 }
 
 .field-list-wrap {
@@ -144,9 +150,13 @@
 	cursor: move;
 }
 
+.field-item.system-field {
+	background-color: #D8EDED;
+}
+
 .field-item.disabled {
-	background-color: #B3B3B3;
-	color: #595959;
+	background-color: #B3B3B3 !important;
+	color: #595959 !important;
 }
 
 .agent-section {
@@ -229,8 +239,11 @@ function _page_exec() {
 	</div>
 	<div class="field-list-wrap">
 		<ul class="field-list">
+			<li class="original field-item system-field category" data-item-type="category" data-item-id="category">Category</li>
+			<li class="original field-item system-field product" data-item-type="product" data-item-id="product">Product</li>
+			<li class="original field-item system-field priority" data-item-type="priority" data-item-id="priority">Priority</li>
 			{% for field in custom_fields %}
-			<li class="ticket_field_{{field.field_def.id}} field-{{field.field_def.id}} field-item original" data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}">
+			<li class="original ticket_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
 				{{field.title}}
 			</li>
 			{% endfor %}
@@ -250,8 +263,12 @@ function _page_exec() {
 	</div>
 	<div class="field-list-wrap">
 		<ul class="field-list">
+			<li class="original field-item system-field category" data-item-type="category" data-item-id="category">Category</li>
+			<li class="original field-item system-field product" data-item-type="product" data-item-id="product">Product</li>
+			<li class="original field-item system-field workflow" data-item-type="workflow" data-item-id="workflow">Workflow</li>
+			<li class="original field-item system-field priority" data-item-type="priority" data-item-id="priority">Priority</li>
 			{% for field in custom_fields %}
-			<li class="ticket_field_{{field.field_def.id}} field-{{field.field_def.id}} field-item original" data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}">
+			<li class="original ticket_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
 				{{field.title}}
 			</li>
 			{% endfor %}
@@ -326,8 +343,8 @@ function _page_exec() {
 	</div>
 </script>
 
-<script id="display_item" type="text/x-jquery-tmpl">
-	<li id="display_item_${idClass}" class="${idClass}" data-id-class="${idClass}" data-item-id="${itemId}">
+<script id="display_item_ticket_field_tpl" type="text/x-jquery-tmpl">
+	<li id="display_item_${idClass}" class="ticket_field ${idClass}" data-item-type="ticket_field" data-id-class="${idClass}" data-item-id="${itemId}">
 		<div style="float:right">
 			<span class="remove">Remove this</span>
 			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${idClass}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
@@ -336,20 +353,116 @@ function _page_exec() {
 		<strong>${name}</strong><br />
 		<input type="hidden" name="display_items[]" value="${itemId}" />
 
-		<div class="rules-wrap" id="rule_builder_${idClass}" data-id-class="${idClass}" style="display:none; min-width: 500px; height: 230px; overflow: auto; margin-bottom: 11px;">
-			Initially <select name="initial_display[${itemId}]"><option value="hidden">hidden</option><option value="visible">visible</option></select>,
-			and then toggle when <span class="ruletype">all</span> of these rules match:
-			<div class="search-form ruletype-all">
-				<div class="rule-list"></div>
-				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+		{% include 'AdminBundle:TicketProperties:editor-rules-part.html.twig' %}
+	</li>
+</script>
+
+<script id="display_item_category_tpl" type="text/x-jquery-tmpl">
+	<li id="display_item_${idClass}" class="display_item_category ${idClass}" data-item-type="category" data-id-class="${idClass}" data-item-id="${itemId}">
+		<div style="float:right">
+			<span class="remove">Remove this</span>
+			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
+			<span class="edit-options"><span class="tipped" data-tipped="option_selection_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Choose categories</span></span>
+		</div>
+
+		<strong>${name}</strong><br />
+		<input type="hidden" name="display_items[]" value="${itemId}" />
+
+		<div id="option_selection_${elId}" data-id-class="${idClass}" style="display:none; margin-bottom: 11px;">
+			Choose which categories to enable:
+			<div style="width: 300px; height: 100px; overflow: auto;">
+				<ul class="checkbox-list">
+					{% for cat in ticket_options.ticket_categories_hierarchy %}
+						<li><input type="checkbox" name="ticket_categories[]" value="{{cat.id}}" checked="checked" /> {{cat.title}}</li>
+						{% if cat.children %}
+							{% for subcat in cat.children %}
+								<li style="margin-left: 10px;"><input type="checkbox" name="ticket_categories[]" value="{{subcat.id}}" checked="checked" /> {{subcat.title}}</li>
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+				</ul>
 			</div>
-			<br /><br />
-			and when <span class="ruletype">any</span> of these rules match:
-			<div class="search-form ruletype-any">
-				<div class="rule-list"></div>
-				<div class="term"><span class="add-term">+</span> Add a new rule</div>
+
+			{% include 'AdminBundle:TicketProperties:editor-rules-part.html.twig' %}
+		</div>
+	</li>
+</script>
+
+<script id="display_item_product_tpl" type="text/x-jquery-tmpl">
+	<li id="display_item_${idClass}" class="display_item_product ${idClass}" data-item-type="product" data-id-class="${idClass}" data-item-id="${itemId}">
+		<div style="float:right">
+			<span class="remove">Remove this</span>
+			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
+			<span class="edit-options"><span class="tipped" data-tipped="option_selection_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Choose products</span></span>
+		</div>
+
+		<strong>${name}</strong><br />
+		<input type="hidden" name="display_items[]" value="${itemId}" />
+
+		<div id="option_selection_${elId}" data-id-class="${idClass}" style="display:none; margin-bottom: 11px;">
+			Choose which products to enable:
+			<div style="width: 300px; height: 100px; overflow: auto;">
+				<ul class="checkbox-list">
+					{% for id,title in ticket_options.products %}
+						<li><input type="checkbox" name="products[]" value="{{id}}" checked="checked" /> {{title}}</li>
+					{% endfor %}
+				</ul>
 			</div>
 		</div>
+
+		{% include 'AdminBundle:TicketProperties:editor-rules-part.html.twig' %}
+	</li>
+</script>
+
+<script id="display_item_workflow_tpl" type="text/x-jquery-tmpl">
+	<li id="display_item_${idClass}" class="display_item_workflow ${idClass}" data-item-type="workflow" data-id-class="${idClass}" data-item-id="${itemId}">
+		<div style="float:right">
+			<span class="remove">Remove this</span>
+			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
+			<span class="edit-options"><span class="tipped" data-tipped="option_selection_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Choose workflows</span></span>
+		</div>
+
+		<strong>${name}</strong><br />
+		<input type="hidden" name="display_items[]" value="${itemId}" />
+
+		<div id="option_selection_${elId}" data-id-class="${idClass}" style="display:none; margin-bottom: 11px;">
+			Choose which workflows to enable:
+			<div style="width: 300px; height: 100px; overflow: auto;">
+				<ul class="checkbox-list">
+					{% for id,title in ticket_options.ticket_workflows %}
+						<li><input type="checkbox" name="workflows[]" value="{{id}}" checked="checked" /> {{title}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		{% include 'AdminBundle:TicketProperties:editor-rules-part.html.twig' %}
+	</li>
+</script>
+
+<script id="display_item_priority_tpl" type="text/x-jquery-tmpl">
+	<li id="display_item_${idClass}" class="display_item_priority ${idClass}" data-item-type="priority" data-id-class="${idClass}" data-item-id="${itemId}">
+		<div style="float:right">
+			<span class="remove">Remove this</span>
+			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
+			<span class="edit-options"><span class="tipped" data-tipped="option_selection_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Choose priorities</span></span>
+		</div>
+
+		<strong>${name}</strong><br />
+		<input type="hidden" name="display_items[]" value="${itemId}" />
+
+		<div id="option_selection_${elId}" data-id-class="${idClass}" style="display:none; margin-bottom: 11px;">
+			Choose which priorities to enable:
+			<div style="width: 300px; height: 100px; overflow: auto;">
+				<ul class="checkbox-list">
+					{% for id,title in ticket_options.ticket_priorities %}
+						<li><input type="checkbox" name="priorities[]" value="{{id}}" checked="checked" /> {{title}}</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+
+		{% include 'AdminBundle:TicketProperties:editor-rules-part.html.twig' %}
 	</li>
 </script>
 
