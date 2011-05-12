@@ -14,7 +14,7 @@ namespace Application\DeskPRO\Plugin;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Plugin;
 
-use Symfony\Component\Finder;
+use Symfony\Component\Finder\Finder;
 
 /**
  * This finds plugins that exist in the DeskPRO file structure

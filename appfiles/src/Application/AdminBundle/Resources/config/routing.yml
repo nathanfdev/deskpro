@@ -554,3 +554,19 @@ admin_emailfroms_edit:
 admin_emailfroms_new:
   pattern: /email-from-addresses/new
   defaults: { _controller: AdminBundle:EmailFroms:new }
+
+################################################################################
+# Plugins
+################################################################################
+
+admin_plugins:
+  pattern: /plugins
+  defaults: { _controller: AdminBundle:Plugins:list }
+
+admin_plugins_install:
+  pattern: /plugins/{plugin_id}/install
+  defaults: { _controller: AdminBundle:Plugins:install }
+
+admin_plugins_uninstall:
+  pattern: /plugins/{plugin_id}/uninstall
+  defaults: { _controller: AdminBundle:Plugins:uninstall }

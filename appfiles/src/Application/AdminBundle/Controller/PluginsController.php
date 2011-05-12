@@ -15,7 +15,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Plugin\PluginFinder;
 use Application\DeskPRO\Entity\Plugin;
 
-class PluginController extends AbstractController
+class PluginsController extends AbstractController
 {
 	############################################################################
 	# index
@@ -24,7 +24,7 @@ class PluginController extends AbstractController
 	/**
 	 * List installed plugins and available plugin
 	 */
-	public function indexAction()
+	public function listAction()
 	{
 		$this->rememberLastPage();
 

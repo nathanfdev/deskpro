@@ -1,0 +1,51 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralList.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page_TicketWorkflows = new DeskPRO.Admin.PageHandler.GeneralList('#ticket_workflows');
+};
+</script>
+{% endblock %}
+{% block page_id "plugins" %}
+{% block content %}
+
+<h2 style="font-size: 15px; padding-top: 6px;">Installed Plugins</h2>
+<ul class="item-list">
+	{% for plugin in installed_plugins %}
+		<li>
+			<div style="float:right">
+				<ul class="controls">
+					<li class="edit"><a href="{{ path('admin_plugins_install', {'plugin_id': plugin.id}) }}">Uninstall</a></li>
+				</ul>
+			</div>
+			<strong>{{plugin.title}}</strong>
+			<div style="font-size: 90%">{{plugin.description}}</div>
+		</li>
+	{% else %}
+		<li>You have no plugins installed.</li>
+	{% endfor %}
+</ul>
+
+<br />
+
+<h2 style="font-size: 15px; padding-top: 6px;">Available Plugins</h2>
+<ul class="item-list">
+	{% for plugin_info in available_plguins %}
+		<li>
+			<div style="float:right">
+				<ul class="controls">
+					<li class="edit"><a href="{{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }}">Install</a></li>
+				</ul>
+			</div>
+			<strong>{{plugin_info.title}}</strong>
+			<div style="font-size: 90%">{{plugin_info.description}}</div>
+		</li>
+	{% else %}
+		<li>You have no plugins available for installation</li>
+	{% endfor %}
+</ul>
+
+{% endblock %}
