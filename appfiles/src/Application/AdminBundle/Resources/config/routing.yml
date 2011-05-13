@@ -18,6 +18,10 @@ admin_tickets_editor_dep:
   pattern: /tickets/editor/{department_id}
   defaults: { _controller: AdminBundle:TicketProperties:editor }
 
+admin_tickets_editor_dep_save:
+  pattern: /tickets/editor/{department_id}/save
+  defaults: { _controller: AdminBundle:TicketProperties:saveEditor }
+
 admin_email_properties:
   pattern: /email-settings
   defaults: { _controller: AdminBundle:EmailProperties:list }

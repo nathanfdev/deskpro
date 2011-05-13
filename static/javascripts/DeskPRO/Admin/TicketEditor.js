@@ -6,10 +6,10 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 
 	initialize: function(options) {
 
-		$('#display_item_category_tpl').template('display_item_category_tpl');
-		$('#display_item_product_tpl').template('display_item_product_tpl');
-		$('#display_item_workflow_tpl').template('display_item_workflow_tpl');
-		$('#display_item_priority_tpl').template('display_item_priority_tpl');
+		$('#display_item_ticket_category_tpl').template('display_item_ticket_category_tpl');
+		$('#display_item_ticket_product_tpl').template('display_item_ticket_product_tpl');
+		$('#display_item_ticket_workflow_tpl').template('display_item_ticket_workflow_tpl');
+		$('#display_item_ticket_priority_tpl').template('display_item_ticket_priority_tpl');
 		$('#display_item_ticket_field_tpl').template('display_item_ticket_field_tpl');
 
 		this.options = {
@@ -105,7 +105,7 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 
 		$('.search-form.ruletype-all .add-term', this.context).data('add-count', 0).click(function() {
 			var count = parseInt(itemEl.data('editor-all-add-count'));
-			var basename = 'terms_all['+itemId+']['+count+']';
+			var basename = 'terms_all['+count+']';
 			itemEl.data('editor-all-add-count', count+1);
 			editor.addNewRow(to_el, basename);
 		});
@@ -121,7 +121,7 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 
 		$('.search-form.ruletype-any .add-term', this.context).data('add-count', 0).click(function() {
 			var count = parseInt(itemEl.data('editor-any-add-count'));
-			var basename = 'terms_any['+itemId+']['+count+']';
+			var basename = 'terms_any['+count+']';
 			itemEl.data('editor-all-any-count', count+1);
 			editor2.addNewRow(to_el2, basename);
 		});
@@ -129,12 +129,13 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 	},
 
 	removeDisplayItem: function(itemEl) {
+
 		itemEl.remove();
 		$('.available-display-items .' + itemEl.data('id-class'), this.context).show();
 		if ($('.display_item_list > li', this.context).length == 1) {
 			$('.no_elements_message', this.context).show();
 		}
-
+		
 		var className = itemEl.data('id-class');
 		var els = $('.agent-sections-wrap li.' + className, this.context);
 		if (!els.length) {

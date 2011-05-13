@@ -4,6 +4,7 @@ DeskPRO.Admin.PageHandler.TicketEditor = new Class({
 	Extends: DeskPRO.Admin.PageHandler.Basic,
 
 	editors: {},
+	editorSave: null,
 
 	initPage: function() {
 		var self = this;
@@ -35,9 +36,21 @@ DeskPRO.Admin.PageHandler.TicketEditor = new Class({
 			name: 'agent'
 		});
 		this.addEditor(ed);
+
+		//editor_save_btn
+		this.agentEditorSave = new DeskPRO.Admin.EditorSave({
+			saveUrl: this.options.saveUrl,
+			context: $('#agent_dep_editor')
+		});
+
+		$('#editor_save_btn').click(this.doSave.bind(this));
 	},
 
 	addEditor: function(ed) {
 		this.editors[ed.getName()] = ed;
+	},
+
+	doSave: function() {
+		this.agentEditorSave.save();
 	}
 });

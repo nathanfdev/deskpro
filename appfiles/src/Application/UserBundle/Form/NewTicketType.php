@@ -73,7 +73,6 @@ class NewTicketType extends AbstractType
 		if ($this->person) {
 			$person_builder->add('email', 'text');
 		}
-
 		$builder->add($person_builder);
 	}
 

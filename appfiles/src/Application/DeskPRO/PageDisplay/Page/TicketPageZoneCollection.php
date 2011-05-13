@@ -1,0 +1,165 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage PageDisplay
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\PageDisplay\Page;
+
+use Application\DeskPRO\App;
+
+use Application\DeskPRO\People\PersonContextInterface;
+
+use Application\DeskPRO\Entity\PageDisplayAbstract;
+use Application\DeskPRO\Entity\TicketPageDisplay;
+use Application\DeskPRO\Entity\Person;
+use Application\DeskPRO\Entity\Department;
+
+use Orb\Util\Arrays;
+
+class TicketZoneCollection implements PersonContextInterface
+{
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
+	/**
+	 * @var string
+	 */
+	protected $zone;
+
+	/**
+	 * department_pages[dep_id] = array(ticketpagezone)
+	 * @var \Application\DeskPRO\PageDisplay\Page\TicketPageZone
+	 */
+	protected $department_pages;
+
+	/**
+	 * @param string $zone
+	 */
+	public function __construct($zone)
+	{
+		$this->zone = $zone;
+	}
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @return void
+	 */
+	public function setPersonContext(Person $person)
+	{
+		$this->person_context = $person;
+	}
+
+
+	/**
+	 * Read all TIcketPageDisplay records from the database, initialize TicketPageZone's,
+	 * and then add them to this collection.
+	 */
+	public function addPagesFromDb()
+	{
+		$dep_page_displays = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getFromZone($this->zone);
+		$dep_page_displays = Arrays::groupItems($dep_page_displays, 'department_id');
+
+		foreach ($dep_page_displays as $dep_id => $page_displays) {
+			$dep = App::findEntity('DeskPRO:Department', $dep_id);
+			$ticket_page_zone = new TicketPageZone($this->zone, $dep);
+			$ticket_page_zone->addPageDisplays($page_displays);
+
+			$this->addPage($ticket_page_zone);
+		}
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\PageDisplay\Page\TicketPageZone $page
+	 * @return void
+	 */
+	public function addPage(TicketPageZone $page)
+	{
+		if ($page->getZone() != $this->zone) {
+			throw new \InvalidArgumentException('Invalid zone context. Must be: ' . $this->zone);
+		}
+		
+		$dep_id = $page->getDepartment()->getId();
+		$this->department_pages[$dep_id] = $page;
+	}
+
+
+	/**
+	 * Add an array of pages at once
+	 *
+	 * @param \Application\DeskPRO\PageDisplay\Page\TicketPageZone[] $pages
+	 */
+	public function addPages(array $pages)
+	{
+		foreach ($pages as $page) {
+			$this->addPage($page);
+		}
+	}
+
+	
+	/**
+	 * Check if we havea  zone set for a department
+	 * 
+	 * @param int|Department $department
+	 * @return bool
+	 */
+	public function hasPage($department)
+	{
+		if (is_object($department)) $department = $department['id'];
+
+		return isset($this->department_pages[$department]);
+	}
+
+
+	/**
+	 * Get the page for a department
+	 * 
+	 * @param int|Department $department
+	 * @return array|null
+	 */
+	public function getPage($department)
+	{
+		if (is_object($department)) $department = $department['id'];
+
+		if (!isset($this->department_pages[$department])) {
+			return null;
+		}
+
+		return $this->department_pages[$department];
+	}
+
+
+	public function compileJs()
+	{
+		$part = array();
+		$part[] = "(function() { var tmp = {};\n";
+
+		foreach ($this->department_pages as $d) {
+			if (!in_array($d['department_id'], $done_deps)) {
+				$done_deps[] = $d['department_id'];
+				$part[] = "tmp[{$d['department_id']}] = [];";
+			}
+
+			$token = '%%%replacetoken' . mt_rand(1000,9999) . '%%%';
+
+			$line = "tmp[{$d['department_id']}].push(" . json_encode(array(
+				'element_type' => $d['element_type'],
+				'element_id' => $d['element_id'],
+				'initial_state' => $d['initial_state'],
+				'check' => $token
+			)) . ");";
+
+			// Cheap and simple way to insert a function literal while still using json_encode for the other values
+			$line = str_replace('"'.$token.'"', $d->compileToJavascript(), $line);
+			$part[] = $line;
+		}
+	}
+}

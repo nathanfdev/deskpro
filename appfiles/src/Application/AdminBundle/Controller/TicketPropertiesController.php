@@ -92,67 +92,26 @@ class TicketPropertiesController extends AbstractController
 		));
 	}
 
-	protected function _saveDepartmentDesigner(Entity\Department $department)
+	public function saveEditorAction($department_id)
 	{
-		// The items we've added
-		$display_items = $this->in->getCleanValueArray('display_items', 'string', 'discard');
+		$department = App::findEntity('DeskPRO:Department', $department_id);
+		$zone = $this->in->getString('zone');
+		if (!$zone) $zone = 'user';
 
-		// Array of itemid=>initial display, 'visible' or 'hidden'
-		$display_items_initial = $this->in->getCleanValueArray('initial_display', 'string', 'string');
-
-		// Array of itemid=>terms array
-		$display_items_terms_all = $this->in->getCleanValueArray('terms_all', 'array', 'string');
-		$display_items_terms_any = $this->in->getCleanValueArray('terms_any', 'array', 'string');
-
-		$display_items_agentonly = $this->in->getCleanValueArray('terms_any', 'bool', 'string');
-
-		App::getOrm()->beginTransaction();
-
-		// Clear out the previous rules, we'll just reset them all now
-		App::getOrm()->createQuery("
-			DELETE FROM DeskPRO:DepartmentTicketDisplay d
-			WHERE d.department = ?1
-		")->execute(array(1=>$department));
-		App::getOrm()->flush();
-
-		$order_count = 0;
-		foreach ($display_items as $display_item_id) {
-
-			$order_count += 10;
-
-			if (strpos($display_item_id, '.') !== false) {
-				list ($item_type, $item_id) = explode('.', $display_item_id, 2);
-			} else {
-				$item_type = $display_item_id;
-				$item_id = 0;
-			}
-
-			$display = new Entity\DepartmentTicketDisplay();
-			$display->department = $department;
-			$display['element_type'] = $item_type;
-			$display['element_id'] = $item_id;
-			$display['display_order'] = $order_count;
-
-			if (isset($display_items_agentonly[$display_item_id]) AND $display_items_agentonly[$display_item_id]) {
-				$display['is_agent_only'] = true;
-			}
-
-			if (isset($display_items_initial[$display_item_id])) {
-				$display['initial_state'] = ($display_items_initial[$display_item_id] == 'hidden' ? 'hidden' : 'visible');
-			}
-
-			if (isset($display_items_terms_all[$display_item_id]) AND $display_items_terms_all[$display_item_id]) {
-				$display['conds_all'] = $display_items_terms_all[$display_item_id];
-			}
-
-			if (isset($display_items_terms_any[$display_item_id]) AND $display_items_terms_any[$display_item_id]) {
-				$display['conds_any'] = $display_items_terms_any[$display_item_id];
-			}
-
-			App::getOrm()->persist($display);
+		$ticket_page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->findOneBy(array('department_id' => $department_id, 'zone' => $zone));
+		if (!$ticket_page_display) {
+			$ticket_page_display = new Entity\TicketPageDisplay();
+			$ticket_page_display['zone'] = $zone;
+			$ticket_page_display->department = $department;
 		}
 
-		App::getOrm()->flush();
-		App::getOrm()->commit();
+		$ticket_page_display['data'] = $this->in->getArrayValue('items');
+
+		App::getOrm()->transactional(function($em) use ($ticket_page_display) {
+			$em->persist($ticket_page_display);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array('success' => true));
 	}
 }
