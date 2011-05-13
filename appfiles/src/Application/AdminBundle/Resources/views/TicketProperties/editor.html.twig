@@ -151,8 +151,37 @@
 	cursor: move;
 }
 
+.field-item.ui-sortable-placeholder {
+	float: none !important;
+	background-color: #949BA1;
+	height: 3px;
+	overflow: hidden;
+}
+
+.field-item.ui-draggable-dragging {
+	float: none !important;
+	margin: 0;
+	width: 300px;
+	padding: 10px;
+	font-size: 12px;
+}
+
 .field-item.system-field {
 	background-color: #D8EDED;
+}
+
+.field-list .title {
+	display: bloack;
+	float: none;
+	clear: both;
+	font-size: 11px;
+	font-weight: bold;
+	padding-top: 6px;
+	padding-bottom: 6px;
+}
+
+.field-list .title:first-of-type {
+	padding-top: 0;
 }
 
 .field-item.disabled {
@@ -242,11 +271,19 @@ function _page_exec() {
 	</div>
 	<div class="field-list-wrap">
 		<ul class="field-list">
+			<li class="title">Core Fields</li>
 			<li class="original field-item system-field category" data-item-type="ticket_category" data-item-id="ticket_category">Category</li>
 			<li class="original field-item system-field product" data-item-type="ticket_product" data-item-id="ticket_product">Product</li>
 			<li class="original field-item system-field priority" data-item-type="ticket_priority" data-item-id="ticket_priority">Priority</li>
-			{% for field in custom_fields %}
+			<li class="title">Ticket Fields</li>
+			{% for field in custom_ticket_fields %}
 			<li class="original ticket_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
+				{{field.title}}
+			</li>
+			{% endfor %}
+			<li class="title">Person Fields</li>
+			{% for field in custom_people_fields %}
+			<li class="original people_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="people_field">
 				{{field.title}}
 			</li>
 			{% endfor %}
@@ -266,11 +303,12 @@ function _page_exec() {
 	</div>
 	<div class="field-list-wrap">
 		<ul class="field-list">
+			<li class="title">Core Fields</li>
 			<li class="original field-item system-field category" data-item-type="ticket_category" data-item-id="ticket_category">Category</li>
 			<li class="original field-item system-field product" data-item-type="ticket_product" data-item-id="ticket_product">Product</li>
-			<li class="original field-item system-field workflow" data-item-type="ticket_workflow" data-item-id="ticket_workflow">Workflow</li>
 			<li class="original field-item system-field priority" data-item-type="ticket_priority" data-item-id="ticket_priority">Priority</li>
-			{% for field in custom_fields %}
+			<li class="title">Ticket Fields</li>
+			{% for field in custom_ticket_fields %}
 			<li class="original ticket_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
 				{{field.title}}
 			</li>
@@ -331,7 +369,7 @@ function _page_exec() {
 	{% endfor %}
 </ul>
 <ul id="field_menu" class="menu" style="display:none">
-	{% for field in custom_fields %}
+	{% for field in custom_ticket_fields %}
 		<li data-item-name="{{field.title}}" data-item-id="ticket_field.{{field.field_def.id}}">{{field.title}}</li>
 	{% endfor %}
 </ul>

@@ -11,6 +11,7 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 		$('#display_item_ticket_workflow_tpl').template('display_item_ticket_workflow_tpl');
 		$('#display_item_ticket_priority_tpl').template('display_item_ticket_priority_tpl');
 		$('#display_item_ticket_field_tpl').template('display_item_ticket_field_tpl');
+		$('#display_item_people_field_tpl').template('display_item_people_field_tpl');
 
 		this.options = {
 			department_id: 0,

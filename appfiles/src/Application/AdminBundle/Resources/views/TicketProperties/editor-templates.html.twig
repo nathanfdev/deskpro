@@ -1,5 +1,5 @@
 <script id="agent_section" type="text/x-jquery-tmpl">
-	<div class="agent-section">
+	<div class="agent-section display_item display_item_group" data-item-type="group">
 		<div class="head">
 			<span class="tab-remove remove">remove tab</span>
 			<input type="text" name="title" style="width: 100px; font-size: 10px; padding: 1px;" value="Tab Title" />
@@ -25,6 +25,19 @@
 	</li>
 </script>
 
+<script id="display_item_people_field_tpl" type="text/x-jquery-tmpl">
+	<li id="display_item_${idClass}" class="people_field ${idClass} display_item" data-item-type="people_field" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
+		<div style="float:right">
+			<span class="remove">Remove this</span>
+			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
+		</div>
+
+		<strong>${name}</strong><br />
+
+		{% include 'AdminBundle:TicketProperties:editor-rules-part.html.twig' %}
+	</li>
+</script>
+
 <script id="display_item_ticket_category_tpl" type="text/x-jquery-tmpl">
 	<li id="display_item_${idClass}" class="display_item_category ${idClass} display_item" data-item-type="category" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
 		<div style="float:right">
@@ -39,6 +52,7 @@
 			Choose which categories to enable:
 			<div style="width: 300px; height: 100px; overflow: auto;">
 				<ul class="checkbox-list">
+					<li><input type="checkbox" name="ticket_categories[]" value="0" checked="checked" /> None</li>
 					{% for cat in ticket_options.ticket_categories_hierarchy %}
 						<li><input type="checkbox" name="ticket_categories[]" value="{{cat.id}}" checked="checked" /> {{cat.title}}</li>
 						{% if cat.children %}
@@ -69,6 +83,7 @@
 			Choose which products to enable:
 			<div style="width: 300px; height: 100px; overflow: auto;">
 				<ul class="checkbox-list">
+					<li><input type="checkbox" name="products[]" value="0" checked="checked" /> None</li>
 					{% for id,title in ticket_options.products %}
 						<li><input type="checkbox" name="products[]" value="{{id}}" checked="checked" /> {{title}}</li>
 					{% endfor %}
@@ -94,6 +109,7 @@
 			Choose which workflows to enable:
 			<div style="width: 300px; height: 100px; overflow: auto;">
 				<ul class="checkbox-list">
+					<li><input type="checkbox" name="workflows[]" value="0" checked="checked" /> None</li>
 					{% for id,title in ticket_options.ticket_workflows %}
 						<li><input type="checkbox" name="workflows[]" value="{{id}}" checked="checked" /> {{title}}</li>
 					{% endfor %}
@@ -119,6 +135,7 @@
 			Choose which priorities to enable:
 			<div style="width: 300px; height: 100px; overflow: auto;">
 				<ul class="checkbox-list">
+					<li><input type="checkbox" name="priorities[]" value="0" checked="checked" /> None</li>
 					{% for id,title in ticket_options.ticket_priorities %}
 						<li><input type="checkbox" name="priorities[]" value="{{id}}" checked="checked" /> {{title}}</li>
 					{% endfor %}

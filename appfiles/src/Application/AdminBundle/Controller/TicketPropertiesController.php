@@ -77,7 +77,10 @@ class TicketPropertiesController extends AbstractController
 		$department = App::getEntityRepository('DeskPRO:Department')->find($department_id);
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$custom_ticket_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+
+		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$custom_people_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
 		$term_options = App::getApi('tickets.search')->getSearchOptions($this->person);
 
@@ -86,7 +89,8 @@ class TicketPropertiesController extends AbstractController
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
 			'department' => $department,
-			'custom_fields' => $custom_fields,
+			'custom_ticket_fields' => $custom_ticket_fields,
+			'custom_people_fields' => $custom_people_fields,
 			'term_options' => $term_options,
 			'ticket_options' => $ticket_options
 		));
