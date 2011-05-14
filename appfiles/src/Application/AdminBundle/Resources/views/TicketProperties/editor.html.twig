@@ -6,6 +6,7 @@
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/TicketEditor.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/TicketEditorAgent.js') }}"></script>
 <script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/EditorSave.js') }}"></script>
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/EditorRedraw.js') }}"></script>
 <style type="text/css">
 #ticket_editor_head {
 	border-bottom: 1px solid #ccc;
@@ -214,10 +215,17 @@
 }
 
 .agent-section-tab {
-	background: #E6EEF7;
-	padding:  5px;
-	border: 1px solid #ACC7E6;
+	background: #F2F2F2;
+	padding:  6px;
+	border: 1px solid #D0D2D6;
 	margin-top: 5px;
+
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+}
+
+.agent-section-tab ul.item-list, .agent-section-tab ul.item-list > li {
+	background-color: #fff;
 }
 
 .agent-section-tab-title {
@@ -255,6 +263,10 @@ function _page_exec() {
 	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketEditor($(document), {
 		saveUrl: '{{ path('admin_tickets_editor_dep_save', {'department_id': department.id}) }}'
 	});
+
+	{% if current_state %}
+		DeskPRO_Page.redrawData = {{current_state|json_encode|raw}};
+	{% endif %}
 }
 </script>
 {% endblock %}
@@ -272,9 +284,9 @@ function _page_exec() {
 	<div class="field-list-wrap">
 		<ul class="field-list">
 			<li class="title">Core Fields</li>
-			<li class="original field-item system-field category" data-item-type="ticket_category" data-item-id="ticket_category">Category</li>
-			<li class="original field-item system-field product" data-item-type="ticket_product" data-item-id="ticket_product">Product</li>
-			<li class="original field-item system-field priority" data-item-type="ticket_priority" data-item-id="ticket_priority">Priority</li>
+			<li class="original field-item system-field category" data-item-type="ticket_category" >Category</li>
+			<li class="original field-item system-field product" data-item-type="ticket_product" >Product</li>
+			<li class="original field-item system-field priority" data-item-type="ticket_priority" >Priority</li>
 			<li class="title">Ticket Fields</li>
 			{% for field in custom_ticket_fields %}
 			<li class="original ticket_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
@@ -290,11 +302,13 @@ function _page_exec() {
 		</ul>
 		<br class="clear"/>
 	</div>
+	<div id="user_dep_editor_default">
 	<ul class="item-list display_item_list" style="margin-top: 10px;">
 		<li class="no_elements_message">
 			You have not enabled any fields. To add a field, drag one from above.
 		</li>
 	</ul>
+	</div>
 
 </td><td width="50%" valign="top" style="padding-left: 7px;" class="dep-editor" id="agent_dep_editor">
 
@@ -304,9 +318,10 @@ function _page_exec() {
 	<div class="field-list-wrap">
 		<ul class="field-list">
 			<li class="title">Core Fields</li>
-			<li class="original field-item system-field category" data-item-type="ticket_category" data-item-id="ticket_category">Category</li>
-			<li class="original field-item system-field product" data-item-type="ticket_product" data-item-id="ticket_product">Product</li>
-			<li class="original field-item system-field priority" data-item-type="ticket_priority" data-item-id="ticket_priority">Priority</li>
+			<li class="original field-item system-field category" data-item-type="ticket_category" >Category</li>
+			<li class="original field-item system-field product" data-item-type="ticket_product" >Product</li>
+			<li class="original field-item system-field priority" data-item-type="ticket_priority" >Priority</li>
+			<li class="original field-item system-field workflow" data-item-type="ticket_workflow" >Workflow</li>
 			<li class="title">Ticket Fields</li>
 			{% for field in custom_ticket_fields %}
 			<li class="original ticket_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
@@ -316,7 +331,7 @@ function _page_exec() {
 		</ul>
 		<br class="clear"/>
 	</div>
-	<div class="agent-sections-wrap">
+	<div class="agent-sections-wrap" id="agent_dep_editor_default">
 		<div class="agent-section properties-box">
 			<div class="head">
 				<h4>Properties Box</h4>
@@ -329,7 +344,7 @@ function _page_exec() {
 		</div>
 	</div>
 
-	<div class="agent-section-tab">
+	<div class="agent-section-tab" id="agent_dep_editor_toptabs">
 		<div class="agent-section-tab-title">
 			<button class="dp-button x-small add-group-btn">Add Tab</button>
 			<h4>Top Tabs</h4>
@@ -339,7 +354,7 @@ function _page_exec() {
 	</div>
 
 	<div class="agent-section-tab">
-		<div class="agent-section-tab-title">
+		<div class="agent-section-tab-title" id="agent_dep_editor_middletabs">
 			<button class="dp-button x-small add-group-btn">Add Tab</button>
 			<h4>Middle Tabs</h4>
 		</div>
@@ -348,7 +363,7 @@ function _page_exec() {
 	</div>
 
 	<div class="agent-section-tab">
-		<div class="agent-section-tab-title">
+		<div class="agent-section-tab-title" id="agent_dep_editor_bodytabs">
 			<button class="dp-button x-small add-group-btn">Add Tab</button>
 			<h4>Main Tabs</h4>
 		</div>

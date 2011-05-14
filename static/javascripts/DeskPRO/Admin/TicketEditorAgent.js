@@ -169,7 +169,10 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 	addGroup: function(btn) {
 
 		var context = $(btn).parentsUntil('.agent-section-tab').parent();
+		this.doAddGroup(context);
+	},
 
+	doAddGroup: function(context) {
 		var data = {};
 		var item = $.tmpl('agent_section', data);
 
@@ -182,6 +185,8 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 		});
 
 		this.initSortables();
+
+		return itemEl;
 	},
 
 	getName: function() {

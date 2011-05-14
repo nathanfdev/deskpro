@@ -1,4 +1,4 @@
-Orb.createNamespace('DeskPRO.Admin.PageHandler');
+Orb.createNamespace('DeskPRO.Admin');
 
 DeskPRO.Admin.TicketEditor = new Orb.Class({
 

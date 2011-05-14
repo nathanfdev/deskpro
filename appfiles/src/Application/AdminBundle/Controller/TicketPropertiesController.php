@@ -86,33 +86,49 @@ class TicketPropertiesController extends AbstractController
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
+		// Existing options
+		$current_state = array(
+			'user_default'      => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'user', 'default'),
+			'agent_toptabs'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'toptabs'),
+			'agent_middletabs'  => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'middletabs'),
+			'agent_bodytabs'    => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'bodytabs'),
+		);
+
 		return $this->render('AdminBundle:TicketProperties:editor.html.twig', array(
 			'departments' => $departments,
 			'department' => $department,
 			'custom_ticket_fields' => $custom_ticket_fields,
 			'custom_people_fields' => $custom_people_fields,
 			'term_options' => $term_options,
-			'ticket_options' => $ticket_options
+			'ticket_options' => $ticket_options,
+			'current_state' => $current_state
 		));
 	}
 
 	public function saveEditorAction($department_id)
 	{
 		$department = App::findEntity('DeskPRO:Department', $department_id);
-		$zone = $this->in->getString('zone');
-		if (!$zone) $zone = 'user';
 
-		$ticket_page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->findOneBy(array('department_id' => $department_id, 'zone' => $zone));
-		if (!$ticket_page_display) {
-			$ticket_page_display = new Entity\TicketPageDisplay();
-			$ticket_page_display['zone'] = $zone;
-			$ticket_page_display->department = $department;
+		$page_displays = array();
+		$editors = array('user_default', 'agent_default', 'agent_toptabs', 'agent_middletabs', 'agent_bodytabs');
+
+		foreach ($editors as $editor) {
+			$zone = strpos($editor, 'user_') === 0 ? 'user' : 'agent';
+			$section = str_replace("{$zone}_", '', $editor);
+			$page_display = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getOrCreate($department, $zone, $section);
+
+			$page_data = $this->in->getArrayValue($editor, 'post');
+			if (!$page_data) $page_data = array();
+
+			$page_display['data'] = $page_data;
+
+			$page_displays[] = $page_display;
 		}
 
-		$ticket_page_display['data'] = $this->in->getArrayValue('items');
-
-		App::getOrm()->transactional(function($em) use ($ticket_page_display) {
-			$em->persist($ticket_page_display);
+		App::getOrm()->transactional(function($em) use ($page_displays) {
+			foreach ($page_displays as $page_display) {
+				$em->persist($page_display);
+			}
 			$em->flush();
 		});
 

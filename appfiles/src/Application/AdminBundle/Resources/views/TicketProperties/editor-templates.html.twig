@@ -1,6 +1,6 @@
 <script id="agent_section" type="text/x-jquery-tmpl">
 	<div class="agent-section display_item display_item_group" data-item-type="group">
-		<div class="head">
+		<div class="head display_item_group_data">
 			<span class="tab-remove remove">remove tab</span>
 			<input type="text" name="title" style="width: 100px; font-size: 10px; padding: 1px;" value="Tab Title" />
 		</div>
@@ -39,7 +39,7 @@
 </script>
 
 <script id="display_item_ticket_category_tpl" type="text/x-jquery-tmpl">
-	<li id="display_item_${idClass}" class="display_item_category ${idClass} display_item" data-item-type="category" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
+	<li id="display_item_${idClass}" class="display_item_category ${idClass} display_item" data-item-type="ticket_category" data-id-class="${idClass}" data-el-id="${elId}">
 		<div style="float:right">
 			<span class="remove">Remove this</span>
 			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
@@ -70,7 +70,7 @@
 </script>
 
 <script id="display_item_ticket_product_tpl" type="text/x-jquery-tmpl">
-	<li id="display_item_${idClass}" class="display_item_product ${idClass} display_item" data-item-type="product" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
+	<li id="display_item_${idClass}" class="display_item_product ${idClass} display_item" data-item-type="ticket_product" data-id-class="${idClass}" data-el-id="${elId}">
 		<div style="float:right">
 			<span class="remove">Remove this</span>
 			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
@@ -96,7 +96,7 @@
 </script>
 
 <script id="display_item_ticket_workflow_tpl" type="text/x-jquery-tmpl">
-	<li id="display_item_${idClass}" class="display_item_workflow ${idClass} display_item" data-item-type="workflow" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
+	<li id="display_item_${idClass}" class="display_item_workflow ${idClass} display_item" data-item-type="ticket_workflow" data-id-class="${idClass}" data-el-id="${elId}">
 		<div style="float:right">
 			<span class="remove">Remove this</span>
 			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
@@ -122,7 +122,7 @@
 </script>
 
 <script id="display_item_ticket_priority_tpl" type="text/x-jquery-tmpl">
-	<li id="display_item_${idClass}" class="display_item_priority ${idClass} display_item" data-item-type="priority" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
+	<li id="display_item_${idClass}" class="display_item_priority ${idClass} display_item" data-item-type="ticket_priority" data-id-class="${idClass}" data-el-id="${elId}">
 		<div style="float:right">
 			<span class="remove">Remove this</span>
 			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>

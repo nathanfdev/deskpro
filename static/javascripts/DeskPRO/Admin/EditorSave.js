@@ -1,78 +1,91 @@
 Orb.createNamespace('DeskPRO.Admin.PageHandler');
 
+/**
+ * This handles an editor and reads the values into a proper data structure
+ * that we can send to the server for storage.
+ */
 DeskPRO.Admin.EditorSave = new Orb.Class({
 
-	Implements: [Orb.Util.Options],
+	/**
+	 * Get the editor data from a container
+	 *
+	 * Returns an array of {name: x, value: x} suitable for sending via
+	 * ajax with jQuery.
+	 *
+	 * @param {jQuery} groupEl         The container
+	 * @param {String} name_prefix     The prefix to prefix form value names with
+	 * @return {Object}
+	 */
+	getEditorData: function(groupEl, name_prefix) {
+		var items = this.doGetEditorData(groupEl, name_prefix);
+		$('.save-processed', groupEl).removeClass('save-processed');
 
-	initialize: function(options) {
-		this.options = {
-			saveUrl: '',
-			extraData: [],
-			displayItemClass: 'display_item',
-			context: null
-		};
-
-		if (options) {
-			this.setOptions(options);
-		}
+		return items;
 	},
 
-	save: function() {
-		var data = Array.clone(this.options.extraData);
-		data.append(this.getEditorData());
+	doGetEditorData: function(groupEl, name_prefix) {
 
-		$.ajax({
-			url: this.options.saveUrl,
-			data: data,
-			dataType: 'json',
-			type: 'POST'
-		});
-	},
-
-	getItemsInGroup: function(groupEl, name_prefix) {
+		if (!name_prefix) name_prefix = 'items';
 
 		var items = [];
 
 		var index = 0;
-		$('.display_item', groupEl).each((function(i, el) {
+		$('.display_item.display_item_group:not(.save-processed)', groupEl).each((function(i, el) {
 
 			var el = $(el);
+			if (el.is('save-processed')) return;
+
+			el.addClass('save-processed');
 
 			var prefix = name_prefix + '['+index+']';
 
-			if (el.is('display_item_group')) {
-				var item_data = [];
-				item_data.push({name: prefix+'[item_type]', value: 'group'});
-				item_data.push({name: prefix+'[title]', value: $('input.title:first', el).val()});
+			var item_data = [];
+			item_data.push({name: prefix+'[item_type]', value: 'group'});
 
-				item_data.append(this.getItemsInGroup(el, prefix+'[items]'));
-
-			} else {
-
-				var idPart   = $(el).data('el-id');
-				var itemType = $(el).data('item-type');
-				var itemId   = $(el).data('item-id');
-
-				var item_data = [];
-				item_data.push({name: prefix+'[item_type]', value: itemType});
-				if (itemId) {
-					item_data.push({name: prefix+'[item_id]', value: itemId});
-				}
-
-				var formFind = $(el);
-				formFind = formFind.add('#rule_builder_' + idPart + ', #option_selection_' + idPart);
-
-				item_data.append(this.getFormData(prefix))
+			var groupdata = $('.display_item_group_data:first', el);
+			if (el.length) {
+				item_data.append(this.getFormData(groupdata, prefix));
 			}
 
+			item_data.append(this.doGetEditorData(el, prefix+'[items]'));
+
 			items.append(item_data);
+			index++;
+		}).bind(this));
+		
+		$('.display_item:not(.display_item_group, .save-processed)', groupEl).each((function(i, el) {
+
+			var el = $(el);
+			if (el.is('save-processed')) return;
+
+			el.addClass('save-processed');
+
+			var prefix = name_prefix + '['+index+']';
+
+			var idPart   = $(el).data('el-id');
+			var itemType = $(el).data('item-type');
+			var itemId   = $(el).data('item-id');
+
+			var item_data = [];
+			item_data.push({name: prefix+'[item_type]', value: itemType});
+			if (itemId) {
+				item_data.push({name: prefix+'[item_id]', value: itemId});
+			}
+
+			var formFind = $(el);
+			formFind = formFind.add('#rule_builder_' + idPart + ', #option_selection_' + idPart);
+
+			item_data.append(this.getFormData(formFind, prefix));
+
+			items.append(item_data);
+			index++;
 
 		}).bind(this));
 		
 		return items;
 	},
 
-	getFormData: function(prefix, formFind) {
+	getFormData: function(formFind, prefix) {
 
 		var item_data = [];
 
@@ -93,9 +106,5 @@ DeskPRO.Admin.EditorSave = new Orb.Class({
 		}, this);
 
 		return item_data;
-	},
-
-	getEditorData: function() {
-		return this.getItemsInGroup(this.context, 'items');
 	}
 });

@@ -20,12 +20,14 @@ class TestController extends AbstractController
 {
 	public function indexAction()
 	{
-		$cat = App::getEntityRepository('DeskPRO:Department')->find(1);
+		$x = App::getEntityRepository('DeskPRO:TicketPageDisplay')->find(26);
 
-		//$tr = App::get('deskpro.core.translate');
-		//echo $tr->phrase($cat);
+		echo '<pre>';
+		echo print_r($x['data']);
+		echo '<br /><br /><br /><br /><br /><br />';
+		echo json_encode($x['data']);
 
-		//exit;
+		exit;
 		return $this->render('AdminBundle:Test:index.html.twig', array('cat' => $cat));
 	}
 }

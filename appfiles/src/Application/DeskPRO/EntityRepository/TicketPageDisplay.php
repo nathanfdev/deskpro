@@ -11,9 +11,10 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\TicketPageDisplay as TicketPageDisplayEntity;
+use Doctrine\ORM\EntityRepository;
 
 class TicketPageDisplay extends EntityRepository
 {
@@ -24,9 +25,55 @@ class TicketPageDisplay extends EntityRepository
 				$department_context = $department_context['id'];
 			}
 
-			return $this->findBy(array('zone' => $zone, 'department_id' => $department_context))
+			return $this->findBy(array('zone' => $zone, 'department' => $department_context));
 		} else {
 			return $this->findBy(array('zone' => $zone));
 		}
+	}
+
+	public function getSection($department, $zone, $section)
+	{
+		try {
+			$d = $this->findOneBy(array('department' => $department['id'], 'zone' => $zone, 'section' => $section));
+			return $d;
+		} catch (\Exception $e) {
+			return null;
+		}
+	}
+
+	public function getSectionData($department, $zone, $section)
+	{
+		$data = App::getDb()->fetchColumn("
+			SELECT data
+			FROM ticket_page_display
+			WHERE department_id = ? AND zone = ? AND section = ?
+		", array($department['id'], $zone, $section));
+
+		if ($data) {
+			$data = unserialize($data);
+		}
+
+		if (!$data) {
+			return array();
+		}
+
+		return $data;
+	}
+
+	public function getOrCreate($department, $zone, $section)
+	{
+		$d = null;
+		try {
+			$d = $this->findOneBy(array('department' => $department['id'], 'zone' => $zone, 'section' => $section));
+		} catch (\Exception $e) {}
+
+		if (!$d) {
+			$d = new TicketPageDisplayEntity();
+			$d->department = $department;
+			$d['zone'] = $zone;
+			$d['section'] = $section;
+		}
+
+		return $d;
 	}
 }

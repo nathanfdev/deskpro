@@ -5,6 +5,7 @@ DeskPRO.Admin.PageHandler.TicketEditor = new Class({
 
 	editors: {},
 	editorSave: null,
+	redrawData: null,
 
 	initPage: function() {
 		var self = this;
@@ -38,12 +39,65 @@ DeskPRO.Admin.PageHandler.TicketEditor = new Class({
 		this.addEditor(ed);
 
 		//editor_save_btn
-		this.agentEditorSave = new DeskPRO.Admin.EditorSave({
-			saveUrl: this.options.saveUrl,
-			context: $('#agent_dep_editor')
-		});
+		this.editorSaver = new DeskPRO.Admin.EditorSave();
 
 		$('#editor_save_btn').click(this.doSave.bind(this));
+
+		if (this.redrawData) {
+			this.redrawState(this.redrawData);
+			delete this.redrawData;
+			this.redrawData = null;
+		}
+	},
+
+	redrawState: function(all_data) {
+
+		var redrawer = new DeskPRO.Admin.EditorRedraw();
+
+		if (all_data.user_default) {
+			redrawer.setItemsForSection(
+				all_data.user_default,
+				this.editors['user'],
+				$('#user_dep_editor ul.field-list:first'),
+				$('#user_dep_editor_default')
+			);
+		}
+
+		if (all_data.agent_default) {
+			redrawer.setItemsForSection(
+				all_data.agent_default,
+				this.editors['agent'],
+				$('#agent_dep_editor ul.field-list:first'),
+				$('#agent_dep_editor_default')
+			);
+		}
+
+		if (all_data.agent_toptabs) {
+			redrawer.setItemsForSection(
+				all_data.agent_toptabs,
+				this.editors['agent'],
+				$('#agent_dep_editor ul.field-list:first'),
+				$('#agent_dep_editor_toptabs')
+			);
+		}
+
+		if (all_data.agent_middletabs) {
+			redrawer.setItemsForSection(
+				all_data.agent_middletabs,
+				this.editors['agent'],
+				$('#agent_dep_editor ul.field-list:first'),
+				$('#agent_dep_editor_middletabs')
+			);
+		}
+
+		if (all_data.agent_bodytabs) {
+			redrawer.setItemsForSection(
+				all_data.agent_bodytabs,
+				this.editors['agent'],
+				$('#agent_dep_editor ul.field-list:first'),
+				$('#agent_dep_editor_bodytabs')
+			);
+		}
 	},
 
 	addEditor: function(ed) {
@@ -51,6 +105,18 @@ DeskPRO.Admin.PageHandler.TicketEditor = new Class({
 	},
 
 	doSave: function() {
-		this.agentEditorSave.save();
+
+		var data = this.editorSaver.getEditorData($('#agent_dep_editor_default'), 'agent_default');
+		data.append(this.editorSaver.getEditorData($('#agent_dep_editor_toptabs'), 'agent_toptabs'));
+		data.append(this.editorSaver.getEditorData($('#agent_dep_editor_middletabs'), 'agent_middletabs'));
+		data.append(this.editorSaver.getEditorData($('#agent_dep_editor_bodytabs'), 'agent_bodytabs'));
+		data.append(this.editorSaver.getEditorData($('#user_dep_editor'), 'user_default'));
+
+		$.ajax({
+			url: this.options.saveUrl,
+			data: data,
+			dataType: 'json',
+			type: 'POST'
+		});
 	}
 });

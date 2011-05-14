@@ -41,14 +41,6 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
 	protected $section = 'default';
 
 	/**
-	 * The class that this data is read into
-	 *
-	 * @var string
-	 * @orm:Column(name="handler_class", type="string", length=255)
-	 */
-	protected $handler_class;
-
-	/**
 	 * This is a plain data array that is fed into the handler class
 	 * to reconstruct the display strcuture.
 	 *
