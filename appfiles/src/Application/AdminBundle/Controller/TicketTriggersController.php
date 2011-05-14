@@ -34,9 +34,14 @@ class TicketTriggersController extends AbstractController
 
 		$all_escalations = App::getEntityRepository('DeskPRO:TicketTrigger')->getTimeTriggers(false, false);
 
+		$urgency_page = $this->forward('AdminBundle:TicketUrgency:list')->getContent();
+		$autoclose_page = $this->forward('AdminBundle:TicketAutoClose:list')->getContent();
+
 		return $this->render('AdminBundle:TicketTriggers:list.html.twig', array(
 			'all_triggers' => $all_triggers,
 			'all_escalations' => $all_escalations,
+			'urgency_page' => $urgency_page,
+			'autoclose_page' => $autoclose_page,
 		));
 	}
 

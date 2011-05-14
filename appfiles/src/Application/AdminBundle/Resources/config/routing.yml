@@ -314,19 +314,19 @@ admin_ticketwidgets_edit:
 ################################################################################
 
 admin_tickettriggers:
-  pattern: /tickets/triggers-escalations
+  pattern: /tickets/business-rules
   defaults: { _controller: AdminBundle:TicketTriggers:list }
 
 admin_tickettriggers_new_choosetype:
-  pattern: /tickets/triggers/new-choose-type
+  pattern: /tickets/business-rules/new-trigger
   defaults: { _controller: AdminBundle:TicketTriggers:newChooseType, trigger_type: "trigger" }
 
 admin_ticketescalations_new_choosetype:
-  pattern: /tickets/escalations/new-choose-type
+  pattern: /tickets/business-rules/new-escalation
   defaults: { _controller: AdminBundle:TicketTriggers:newChooseType, trigger_type: "escalation" }
 
 admin_tickettriggers_edit:
-  pattern: /tickets/triggers/{trigger_id}/edit
+  pattern: /tickets/business-rules/{trigger_id}/edit
   defaults: { _controller: AdminBundle:TicketTriggers:edit }
   requirements: { trigger_id: "\d+" }
 
@@ -341,6 +341,18 @@ admin_ticketurgency:
 admin_ticketurgency_saveoptions:
   pattern: /tickets/urgency/save-options
   defaults: { _controller: AdminBundle:TicketUrgency:saveOptions }
+
+################################################################################
+# Ticket AutoClose
+################################################################################
+
+admin_ticketautoclose:
+  pattern: /tickets/auto-close
+  defaults: { _controller: AdminBundle:TicketAutoClose:list }
+
+admin_ticketautoclose_saveoptions:
+  pattern: /tickets/auto-close/save-options
+  defaults: { _controller: AdminBundle:TicketAutoClose:saveOptions }
 
 ################################################################################
 # Organization Fields

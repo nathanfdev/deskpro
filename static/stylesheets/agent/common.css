@@ -966,3 +966,25 @@ ul.item-list > li.sub {
     background-color: #CFDDE8;
     cursor: pointer;
 }
+
+
+.admin-section-head {
+
+}
+
+.admin-section-head {
+	border-bottom: 1px solid #ccc;
+	margin: -10px -10px 0 -10px;
+	padding: 0 0 10px 3px;
+}
+
+.admin-section-head.in-page {
+    margin: 25px -10px 8px -10px;
+    padding: 0 0 3px 3px;
+    border-bottom: none;
+}
+
+.admin-section-head h1 {
+	font-size: 25px;
+	font-weight: normal;
+}
