@@ -89,6 +89,7 @@ class TicketPropertiesController extends AbstractController
 		// Existing options
 		$current_state = array(
 			'user_default'      => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'user', 'default'),
+			'agent_default'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'default'),
 			'agent_toptabs'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'toptabs'),
 			'agent_middletabs'  => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'middletabs'),
 			'agent_bodytabs'    => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'bodytabs'),
