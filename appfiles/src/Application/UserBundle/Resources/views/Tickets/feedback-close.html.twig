@@ -1,0 +1,14 @@
+{% extends 'UserBundle::layout-simple-popup.html.twig' %}
+{% block head %}
+<script type="text/javascript">
+window.close();
+$(document).ready(function() {
+	window.close();
+});
+</script>
+{% endblock %}
+{% block content %}
+	<h4>Your ticket has been closed</h4>
+
+	<button class="dp-butotn small" onclick="window.close();" style="margin-top: 10px;">Close this window</button>
+{% endblock %}

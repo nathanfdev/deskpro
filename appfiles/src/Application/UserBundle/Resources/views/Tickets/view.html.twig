@@ -28,7 +28,28 @@ ul.attachment-list > li img.preview {
 	vertical-align: middle;
 	margin-right: 6px;
 }
+
+.feedback-link {
+	font-size: 10px;
+	margin-top: 8px;
+	margin-bottom: -8px;
+	text-align: right;
+}
 </style>
+
+<script type="text/javascript">
+$(document).ready(function() {
+	$('.feedback-link a').click(function(ev) {
+		ev.preventDefault();
+
+		window.open(
+			$(this).attr('href'),
+			'feedback',
+			"status=no,toolbar=no,location=no,menubar=no,resizable=no,scrollbars=yes,height=400,width=500"
+		);
+	});
+});
+</script>
 {% endblock %}
 {% block content %}
 
@@ -110,6 +131,12 @@ ul.attachment-list > li img.preview {
 					{% endfor %}
 				</ul>
 			{%endif%}
+
+			{% if message.person.is_agent %}
+				<div class="feedback-link">
+					Was this message helpful or not helpful? <a href="{{ path('user_tickets_feedback', {'ticket_ref': ticket.ref, 'message_id': message.id}) }}">Let us know.</a>
+				</div>
+			{% endif %}
 		</div>
 	</div>
 {% endfor %}

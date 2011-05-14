@@ -286,6 +286,96 @@ class TicketsController extends AbstractController
 		return $this->redirectRoute('user_tickets_participants', array('ticket_ref' => $ticket['ref']));
 	}
 
+	################################################################################
+	# feedback
+	################################################################################
+
+	public function feedbackAction($ticket_ref, $message_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+		$message = App::findEntity('DeskPRO:TicketMessage', $message_id);
+
+		// Message must be of the correct ticket,
+		// must not be a note,
+		// must be by an agent
+		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
+		}
+
+		$feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
+
+		return $this->render('UserBundle:Tickets:feedback.html.twig', array(
+			'ticket' => $ticket,
+			'message' => $message,
+			'feedback' => $feedback
+		));
+	}
+
+	public function feedbackSaveAction($ticket_ref, $message_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+		$message = App::findEntity('DeskPRO:TicketMessage', $message_id);
+
+		// Message must be of the correct ticket,
+		// must not be a note,
+		// must be by an agent
+		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
+		}
+
+		$feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, true);
+		$feedback['message'] = $this->in->getString('message');
+		if ($this->in->getBool('rate')) {
+			$feedback->rateUp();
+		} else {
+			$feedback->rateDown();
+		}
+
+		App::getOrm()->transactional(function($em) use ($feedback) {
+			$em->persist($feedback);
+			$em->flush();
+		});
+
+		return $this->render('UserBundle:Tickets:feedback-thank.html.twig', array(
+			'ticket' => $ticket,
+			'message' => $message,
+			'feedback' => $feedback,
+		));
+	}
+
+	public function feedbackCloseTicketAction($ticket_ref, $message_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+		$message = App::findEntity('DeskPRO:TicketMessage', $message_id);
+
+		// Message must be of the correct ticket,
+		// must not be a note,
+		// must be by an agent
+		if (!$message OR $message['ticket_id'] != $ticket['id'] OR $message['is_agent_note'] OR !$message['person']['is_agent']) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid message");
+		}
+
+		$feedback = App::getEntityRepository('DeskPRO:TicketFeedback')->getFeedback($message, $this->person, false);
+
+		if (!$feedback) {
+			//throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Invalid feedback");
+		}
+
+		$ticket->setStatus(Entity\Ticket::STATUS_CLOSED);
+
+		App::getOrm()->transactional(function($em) use ($ticket) {
+			$em->persist($ticket);
+			$em->flush();
+		});
+
+		return $this->render('UserBundle:Tickets:feedback-close.html.twig', array(
+			'ticket' => $ticket,
+			'message' => $message,
+			'feedback' => $feedback,
+			'close_window' => $this->in->getBool('close_win')
+		));
+	}
+
 
 
 	/**

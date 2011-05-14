@@ -1,0 +1,16 @@
+{% extends 'UserBundle::layout-simple-popup.html.twig' %}
+{% block content %}
+	<h4>Was this message by {{message.person.display_name}} helpful?</h4>
+
+	Optionally leave a comment:<br />
+
+	<form action="{{ path('user_tickets_feedback_save', {'ticket_ref': ticket.ref, 'message_id': message.id}) }}" method="post">
+	<div style="text-align: center">
+		<textarea name="message" style="width: 90%; height: 60px; margin: 4px auto 10px auto;">{{feedback.message}}</textarea>
+
+		<button class="dp-button large green" name="rate" value="1">The message was helpful</button>
+		<br />
+		<button class="dp-button large red" name="rate" value="0" style="margin-top: 4px;">The message was not helpful</button>
+	</div>
+	</form>
+{% endblock %}

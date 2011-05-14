@@ -244,6 +244,7 @@ input.flat {
 .small.dp-button { font-size: 11px; padding: 4px 6px; }
 .x-small.dp-button { font-size: 11px; padding: 2px 4px; }
 .large.dp-button { font-size: 13px; padding: 7px 13px; }
+.x-large.dp-button { font-size: 18px; padding: 12px 18px; }
 
 .gray.dp-button { background-color: #677078; }
 .green.dp-button { background-color: #749a02; }
