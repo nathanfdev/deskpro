@@ -14,7 +14,7 @@ DeskPRO.Admin.EditorRedraw = new Orb.Class({
 			if (item.item_type == 'group') {
 
 				var itemEl = editor.doAddGroup(target);
-				$('.display_item_group_data input.title', item).val(item.title);
+				$('.display_item_group_data input[name="title"]', itemEl).val(item.title);
 
 				if (item.items) {
 					this.setItemsForSection(item.items, editor, choice_container, itemEl);
