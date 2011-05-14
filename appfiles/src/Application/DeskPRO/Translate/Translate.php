@@ -352,10 +352,16 @@ class Translate
 		} else if ($object instanceof HasPhraseName) {
 			$phrase_name = $object->getPhraseName($property);
 			if ($phrase_name) {
-				return $this->phrase($phrase_name, $locale);
-			} else {
-				return $object->getPhraseDefault($property);
+				$phrase_text = $this->phrase($phrase_name, array(), $locale);
 			}
+
+			if (!$phrase_text) {
+				$phrase_text = $object->getPhraseDefault($property);
+			}
+
+			if ($phrase_text) return $phrase_text;
+			
+			return '';
 		}
 
 		#------------------------------
@@ -365,13 +371,14 @@ class Translate
 		$namer = $this->getObjectPhraseNamer();
 		$phrase_name = $namer->getPhraseName($object, $property);
 		if ($phrase_name) {
-			return $this->phrase($phrase_name, $locale);
-		} else {
-			$phrase_text = $this->getObjectPhraseNamer()->getPhraseDefault($object, $property);
-			if ($phrase_text !== null) {
-				return $phrase_text;
-			}
+			$phrase_text = $this->phrase($phrase_name, array(), $locale);
 		}
+
+		if (!$phrase_text) {
+			$phrase_text = $this->getObjectPhraseNamer()->getPhraseDefault($object, $property);
+		}
+
+		if ($phrase_text) return $phrase_text;
 
 		// No phrase
 		return '';
