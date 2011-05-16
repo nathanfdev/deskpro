@@ -11,12 +11,14 @@
 
 namespace Application\AdminBundle\CustomField\AdminHandler;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+use Symfony\Component\Form\FormBuilder;
 
 /**
  * Handles editing and creating single-select field definitions
@@ -26,30 +28,9 @@ use \Orb\Util\Arrays;
  */
 class Choice extends AbstractAdminHandler
 {
-	/**
-	 * Return an array of fields we need to add to the form.
-	 *
-	 * @return array
-	 */
-	protected function buildRequiredFormFields()
+	public function buildForm(FormBuilder $builder, array $options, $formtype)
 	{
-		$fields = array();
-
-		$f = new \Orb\Form\Field\Textarea(array(
-			'name' => 'choices',
-		));
-
-		// The current choices are those set in the fielddef
-		$val = array();
-		foreach ($this->custom_def['children'] as $child) {
-			if ($child['handler_class']) continue; // would be "other"
-			$val[] = $child['title'];
-		}
-		$f->setData(implode("\n", $val));
-
-		$fields[] = $f;
-
-		return $fields;
+		$builder->add('choices_flat', 'textarea');
 	}
 
 
@@ -58,13 +39,13 @@ class Choice extends AbstractAdminHandler
 	 *
 	 * @param Orb\Form\Field\FieldGroup $form This is the form fragment for this type
 	 */
-	protected function handleSave(\Orb\Form\Field\FieldGroup $formgroup)
+	public function postSave($field_save)
 	{
 		$new = array();
 		$remove = array();
 		$have = array();
 
-		$from_form = explode("\n", Strings::standardEol($formgroup['choices']->getData()));
+		$from_form = explode("\n", Strings::standardEol($field_save->choices_flat));
 		$from_form = Arrays::removeEmptyString($from_form);
 
 		foreach ($this->custom_def['children'] as $child) {

@@ -7,7 +7,7 @@
 			<table class="table">
 				<tr class="even">
 					<td>
-						{{form.fieldtype_form.choices.render({'rows': 8, 'cols': 80})|raw}}
+						{{ form_widget(form.choices_flat) }}
 						<br /><small>One option per line. Currently there is no way to edit the value of an option (i.e., update the text), it'll just delete
 						the old value and then create a new one.</small>
 					</td>

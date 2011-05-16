@@ -82,27 +82,13 @@ abstract class CustomDefAbstractController extends AbstractController
 			$field['handler_class'] = $this->in->getString('formfield.handler_class');
 		}
 
-		// Cant edit a specific child field; the main parent field editor must be used
-		if ($field['parent']) {
-			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("$field_id is not a valid field (it has a parent)");
-		}
+		$field_save = new \Application\AdminBundle\CustomField\FormObject($field);
+		$form = $this->get('form.factory')->create(new \Application\AdminBundle\Form\EditCustomFieldType($field_save), $field_save);
 
-		$renderer = new \Orb\Form\Renderer\Basic();
-		$form = new \Application\AdminBundle\Form\EditType(array(
-			'name' => 'formfield',
-			'renderer' => $renderer,
-			'event_dispatcher' => $this->get('event_dispatcher'),
-			'custom_def' => $field
-		));
-		$form->addField(new \Orb\Form\Field\Hidden(array('name' => 'handler_class', 'data' => $field['handler_class'])));
-
-		$admin_handler = \Application\AdminBundle\CustomField\AdminHandler\Factory::createFromFormField($field);
-		$form->addField($admin_handler->buildFormGroup());
-
-		if ($this->isPostRequest()) {
-			$form->setFormData($_POST);
+		if ($this->in->getBool('process')) {
+			$form->bindRequest($this->get('request'));
 			if ($form->isValid()) {
-				$admin_handler->saveField($form);
+				$field_save->save();
 				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id'], 'saved' => 1));
 			} else {
 				// TODO proper handling
@@ -110,20 +96,21 @@ abstract class CustomDefAbstractController extends AbstractController
 			}
 		}
 
+		$vars = array(
+			'field' => $field,
+			'form' => $form->createView(),
+			'saved' => $this->in->getBool('saved'),
+		);
+
 		$row_html = false;
 		if ($this->in->getBool('saved')) {
-			$row_html = $this->renderView('AdminBundle:CustomDefAbstract:list-row.html.twig', array('field' => $field));
+			$row_html = $this->renderView('AdminBundle:CustomDefAbstract:list-row.html.twig', $this->getTemplateVars($vars));
 		}
+
+		$vars['row_html'] = $row_html;
 
 		$parts = explode('\\', $field['handler_class']);
 		$tpl_name = 'edit-' . strtolower(array_pop($parts)) . '.html.twig';
-
-		$vars = array_merge($admin_handler->getTemplateVars(), array(
-			'field' => $field,
-			'form' => $form,
-			'saved' => $this->in->getBool('saved'),
-			'row_html' => $row_html
-		));
 
 		return $this->render($this->getTemplateName($tpl_name), $this->getTemplateVars($vars));
 	}

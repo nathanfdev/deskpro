@@ -15,35 +15,40 @@ function _page_exec() {
 </script>
 {% endblock %}
 {% block header %}
-	<h1>{% if field.id %}Edit Field{% else %}New Field{% endif %}</h1>
+	<h1>{% if field.id %}Edit Field{% else %}New Field{% endif %}: {{ phrase(field.handler_class_phrase) }}</h1>
 {% endblock %}
 {% block content %}
 
 {% set form_url %}{{ path(route_basename~'edit', {'field_id': field.id|default(0)}) }}{% endset %}
 
-{{form.renderFormTag({'action': form_url, 'method':'POST'})|raw}}
-{{form.renderHiddenTags()|raw}}
+<form action="{{form_url}}" method="post">
+<input type="hidden" name="process" value="1" />
 
 {% block edit_properties %}
 <div class="form-panel">
 	<div class="row">
-		<label>Type</label>
-		{{field.handler_class}}
-	</div>
-
-	<div class="row">
 		<label>Title</label>
-		{{form.field_properties.title.render()|raw()}}
+		{{ form_widget(form.title) }}
 	</div>
 </div>
 {% endblock %}
 
 {% block custom_form %}{% endblock %}
 
+<div class="form-panel">
+	<div class="row">
+		<label>Custom Display Template</label>
+		{{ form_widget(form.custom_display_html) }}
+	</div>
+	<div class="row">
+		<label>Custom Form Template</label>
+		{{ form_widget(form.custom_form_html) }}
+	</div>
+</div>
+
 </form>
 
 {% endblock %}
 {% block footer %}
 	<button class="dp-button small save-trigger">Save</button>
-
 {% endblock %}

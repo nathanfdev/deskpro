@@ -17,12 +17,8 @@ namespace Application\AdminBundle\CustomField\AdminHandler;
  */
 class MultipleChoice extends Choice
 {
-	protected function handleSave(\Orb\Form\Field\FieldGroup $formgroup)
+	public function preSave($field_save)
 	{
-		parent::handleSave($formgroup);
-
-		$options = $this->custom_def['options'];
-		$options['multiple'] = true;
-		$this->custom_def = $options;
+		$this->custom_def->setOption('multiple', true);
 	}
 }

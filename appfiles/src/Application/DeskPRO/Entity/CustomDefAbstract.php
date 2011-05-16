@@ -233,6 +233,18 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Set a value of an option
+	 *
+	 * @param string $name
+	 * @param mixed $value
+	 */
+	public function setOption($name, $value)
+	{
+		$this->options[$name] = $value;
+	}
+
+
+	/**
 	 * Get the phrasename for the handler class. This is just
 	 * the key of the phrase when showing this fields type.
 	 * For example, for phrases like "Text box" or "Checkbox" etc listed in the admin interface.

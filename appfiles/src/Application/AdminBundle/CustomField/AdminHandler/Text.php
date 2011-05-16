@@ -11,43 +11,26 @@
 
 namespace Application\AdminBundle\CustomField\AdminHandler;
 
+use Symfony\Component\Form\FormBuilder;
+
 /**
  * Handles editing and creating text field definitions
  */
 class Text extends AbstractAdminHandler
 {
-	/**
-	 * Return an array of fields we need to add to the form.
-	 *
-	 * @return array
-	 */
-	protected function buildRequiredFormFields()
+	public function buildForm(FormBuilder $builder, array $options, $formtype)
 	{
-		$fields = array();
+		$opt_builder = $builder->create('options');
 
-		$f = new \Orb\Form\Field\Text(array(
-			'name' => 'min_length',
-			'attributes' => array('length' => 4)
-		));
-		$fields[] = $f;
-
-		$f = new \Orb\Form\Field\Text(array(
-			'name' => 'max_length',
-			'attributes' => array('length' => 4)
-		));
-		$fields[] = $f;
-
-		return $fields;
+		$opt_builder->add('min_length', 'text');
+		$opt_builder->add('max_length', 'text');
+		$builder->add($opt_builder);
 	}
 
-
-	/**
-	 * Save options for the current field.
-	 *
-	 * @param Orb\Form\Field\FieldGroup $form This is the form fragment for this type
-	 */
-	protected function handleSave(\Orb\Form\Field\FieldGroup $formgroup)
+	public function preSave($field_save)
 	{
-		$this->custom_def['options'] = $formgroup->getData(); 
+		foreach ($field_save->options as $k => $v) {
+			$this->custom_def->setOption($k, $v);
+		}
 	}
 }
