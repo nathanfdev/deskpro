@@ -157,7 +157,7 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 							<div class="field-wrap custom-field custom-field-{{f.field_def.id}}">
 								<div class="label-wrap"><label>{{f.title}}</label></div>
 								<div class="field-input">
-									{{ form_widget(f.formView) }}
+									{{ render_custom_field_form(f) }}
 								</div>
 							</div>
 						{% endfor %}

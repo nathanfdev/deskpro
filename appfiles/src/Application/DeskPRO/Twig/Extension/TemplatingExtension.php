@@ -41,6 +41,9 @@ class TemplatingExtension extends \Twig_Extension
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
 			'deskpro_setting' => new \Twig_Function_Method($this, 'getSetting'),
 			'deskpro_debug' => new \Twig_Function_Method($this, 'isDebugMode'),
+			'render_custom_field' => new \Twig_Function_Method($this, 'renderCustomField'),
+			'render_custom_field_text' => new \Twig_Function_Method($this, 'renderCustomFieldText'),
+			'render_custom_field_form' => new \Twig_Function_Method($this, 'renderCustomFieldForm'),
         );
     }
 
@@ -50,6 +53,30 @@ class TemplatingExtension extends \Twig_Extension
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
         );
     }
+
+	public function renderCustomField($display_array, array $vars = array())
+	{
+		$handler = $display_array['handler'];
+		$vars = array_merge($display_array, $vars);
+		return $handler->renderHtml($display_array['value'], $vars);
+	}
+
+	public function renderCustomFieldForm($display_array, array $vars = array())
+	{
+		$handler = $display_array['handler'];
+		$formView = $display_array['formView'];
+
+		$vars = array_merge($display_array, $vars);
+		
+		return $handler->renderFormHtml($formView, $vars);
+	}
+
+	public function renderCustomFieldText($display_array, array $vars = array())
+	{
+		$handler = $display_array['handler'];
+		$vars = array_merge($display_array, $vars);
+		return $handler->renderText($display_array['value'], $vars);
+	}
 
 	public function getPhrase($phrase_name, array $vars = array())
 	{

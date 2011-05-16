@@ -1,0 +1,8 @@
+{% set field_input %}
+	{% block field_input %}
+		{{ form_widget(formView) }}
+	{% endblock %}
+{% endset %}
+{% block content %}
+	{{ field_input }}
+{% endblock %}

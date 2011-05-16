@@ -43,6 +43,7 @@ class App
 	const SERVICE_EVENT_DISPATCHER   = 'event_dispatcher';
 	const SERVICE_FORM_FACTORY       = 'form.factory';
 	const SERVICE_SEARCH_ENGINE      = 'deskpro.search_engine';
+	const SERVICE_TEMPLATING         = 'templating';
 	/**#@-*/
 
 	/**
@@ -356,6 +357,18 @@ class App
 	public static function getTranslator()
 	{
 		return self::get(self::SERVICE_TRANSLATOR);
+	}
+
+	
+
+	/**
+	 * Get the templating service
+	 *
+	 * @return \Symfony\Component\Templating\EngineInterface
+	 */
+	public static function getTemplating()
+	{
+		return self::get(self::SERVICE_TEMPLATING);
 	}
 
 

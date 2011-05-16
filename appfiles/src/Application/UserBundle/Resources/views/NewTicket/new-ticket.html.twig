@@ -60,7 +60,7 @@
 		<tr class="ticket-display-element ticket_field-{{f.field_def.id}}" style="display:none">
 			<td>
 				<small>{{ phrase(f.field_def) }}</small><br />
-				{{ form_widget(form.custom_fields[f.name], {}, {}, ['UserBundle:Common:custom-field-forms.html.twig']) }}
+				{{ render_custom_field_form(f) }}
 			</td>
 		</tr>
 	{% endfor %}

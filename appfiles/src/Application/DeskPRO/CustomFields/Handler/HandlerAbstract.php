@@ -11,7 +11,8 @@
 
 namespace Application\DeskPRO\CustomFields\Handler;
 
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
 /**
  * A custom field handler knows how to render an HTML form field as well as
@@ -21,6 +22,11 @@ abstract class HandlerAbstract
 {
 	const CONTEXT_HTML = 'html';
 	const CONTEXT_TEXT = 'text';
+
+	/**
+	 * @var \Symfony\Component\Templating\EngineInterface
+	 */
+	protected $tpl = null;
 
 	/**
 	 * The form field definition
@@ -34,6 +40,31 @@ abstract class HandlerAbstract
 	}
 
 
+	/**
+	 * Get the templating engine
+	 *
+	 * @return \Symfony\Component\Templating\EngineInterface
+	 */
+	public function getTemplateEngine()
+	{
+		if ($this->tpl === null) {
+			$this->tpl = App::getTemplating();
+		}
+
+		return $this->tpl;
+	}
+
+
+	/**
+	 * Set the templating engine to use
+	 *
+	 * @param \Symfony\Component\Templating\EngineInterface $tpl
+	 */
+	public function setTemplateEngine($tpl)
+	{
+		$this->tpl = $tpl;
+	}
+
 
 	/**
 	 * Get the standard name/ID for this element in an HTML form.
@@ -46,13 +77,106 @@ abstract class HandlerAbstract
 	}
 
 
+	/**
+	 * @param  $context
+	 * @return string
+	 */
+	public function getRenderTemplateName($context)
+	{
+		$templating = $this->getTemplateEngine();
+		if ($this->field_def['has_render_template']) {
+			$tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':rendered-field_' . $this->field_def['id'];
+			if (!$templating->exists($tpl)) {
+				$tpl = null;
+			}
+		}
+
+		if (!$tpl) {
+			$tpl = $this->getDefaultRenderTemplateName();
+		}
+
+		if ($context == 'html') {
+			$tpl .= '.html.twig';
+		} else {
+			$tpl .= '.txt.twig';
+		}
+
+		return $tpl;
+	}
+
+	/**
+	 * @param  $context
+	 * @return string
+	 */
+	public function getFormTemplateName()
+	{
+		$templating = $this->getTemplateEngine();
+		if ($this->field_def['has_form_template']) {
+			$tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':form-field_' . $this->field_def['id'];
+			if (!$templating->exists($tpl)) {
+				$tpl = null;
+			}
+		}
+
+		if (!$tpl) {
+			$tpl = $this->getDefaultFormTemplateName();
+		}
+
+		$tpl .= '.html.twig';
+
+		return $tpl;
+	}
+
+
+	/**
+	 * Get the default template name (minus suffix that defines format).
+	 *
+	 * @return string
+	 */
+	public function getDefaultRenderTemplateName()
+	{
+		return 'DeskPRO:custom_fields:rendered-value';
+	}
+
+
+
+	/**
+	 * Get the default template name (minus suffix that defines format).
+	 *
+	 * @return string
+	 */
+	public function getDefaultFormTemplateName()
+	{
+		return 'DeskPRO:custom_fields:form-input';
+	}
+
+
+	/**
+	 * Get additional template vars to set
+	 *
+	 * @var array
+	 */
+	public function getRenderTemplateVars()
+	{
+		return array();
+	}
+
+
 
 	/**
 	 * Render the field to HTML for use in a web page.
 	 */
-	public function renderHtml(array $data)
+	public function renderHtml(array $data, array $template_vars = array())
 	{
-		return htmlspecialchars($this->renderText($data));
+		$templating = $this->getTemplateEngine();
+
+		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
+			'data'          => $data,
+			'field_def'     => $this->field_def,
+			'field_handler' => $this,
+		));
+
+		return $templating->render($this->getRenderTemplateName('html'), $vars);
 	}
 
 
@@ -60,17 +184,37 @@ abstract class HandlerAbstract
 	/**
 	 * Render the field
 	 */
-	public function renderText(array $data)
+	public function renderText(array $data, array $template_vars = array())
 	{
-		// By default, we only know how to render single fields
-		// A multi-value field will have to have its own logic.
-		if (!empty($data['value'])) {
-			$txt = $data['value'];
-		} else {
-			$txt = '';
-		}
+		$templating = $this->getTemplateEngine();
 
-		return $txt;
+		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
+			'data'          => $data,
+			'field_def'     => $this->field_def,
+			'field_handler' => $this,
+		));
+
+		return $templating->render($this->getRenderTemplateName('html'), $vars);
+	}
+
+	/**
+	 * Render the HTML form input
+	 * 
+	 * @param  $formView
+	 * @param array $template_vars
+	 * @return string
+	 */
+	public function renderFormHtml($formView, array $template_vars = array())
+	{
+		$templating = $this->getTemplateEngine();
+
+		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
+			'formView'      => $formView,
+			'field_def'     => $this->field_def,
+			'field_handler' => $this,
+		));
+
+		return $templating->render($this->getFormTemplateName(), $vars);
 	}
 
 

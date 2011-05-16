@@ -34,11 +34,27 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * Is the field associated with a plugin?
 	 * These generally cant be edited.
 	 *
-	 * @var Template
+	 * @var \Application\DeskPRO\Entity\Plugin
 	 * @orm:OneToOne(targetEntity="Plugin")
 	 * @orm:JoinColumn(name="plugin_id", referencedColumnName="id")
 	 */
 	protected $plugin = null;
+
+	/**
+	 * True if this field uses a custom template when rendering the form input
+	 *
+	 * @var string
+	 * @orm:Column(name="has_form_template", type="boolean")
+	 */
+	protected $has_form_template = false;
+
+	/**
+	 * True i this field uses a custom template when rendering the form value for display
+	 *
+	 * @var string
+	 * @orm:Column(name="has_display_template", type="boolean")
+	 */
+	protected $has_display_template = false;
 
 	/**
 	 * Field parent
@@ -86,15 +102,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="options", type="array")
 	 */
 	protected $options = array();
-
-	/**
-	 * Custom template
-	 *
-	 * @var Template
-	 * @orm:OneToOne(targetEntity="Template")
-	 * @orm:JoinColumn(name="custom_template_id", referencedColumnName="id")
-	 */
-	protected $custom_template = null;
 
 	/**
 	 * @var Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
@@ -242,7 +249,6 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 		return $phrase;
 	}
-
 
 
 	/**
