@@ -11,7 +11,9 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Translate\HasPhraseName;
+use Application\DeskPRO\Translate\Translate;
 
 /**
  * Departments
@@ -19,7 +21,7 @@ use \Application\DeskPRO\App;
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Department")
  * @orm:Table(name="departments")
  */
-class Department extends \Application\DeskPRO\Domain\DomainObject
+class Department extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * @var int
@@ -134,5 +136,37 @@ class Department extends \Application\DeskPRO\Domain\DomainObject
 	public function getAllChildren()
 	{
 		return $this->getChildren();
+	}
+
+
+	/**
+	 * Return a unique ID that we can use to look up translations for this object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @return string
+	 */
+	public function getPhraseName($property = null, Translate $translate)
+	{
+		if (!$property) {
+			$property = 'title';
+		}
+		$phrase_name = 'obj_department.' . $this->id . '_' . $property;
+		if ($translate->getPersonContext() AND !$translate->getPersonContext()->getIsAgent()) {
+			$phrase_name .= "_user";
+		}
+
+		return $phrase;
+	}
+
+
+	/**
+	 * Get the default value phrase for the object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @return string
+	 */
+	public function getPhraseDefault($property = null, Translate $translate)
+	{
+		return $this->title;
 	}
 }

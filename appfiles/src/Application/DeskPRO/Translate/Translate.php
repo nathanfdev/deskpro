@@ -19,6 +19,8 @@ use Orb\Util\Numbers;
 
 use Application\DeskPRO\Translate\Loader\LoaderInterface;
 use Application\DeskPRO\Entity\Locale as LocaleEntity;
+use Application\DeskPRO\People\PersonContextInterface;
+use Application\DeskPRO\Entity\Person;
 
 /**
  * This class is responsible for loading phrases from a language stored in the database.
@@ -33,7 +35,7 @@ use Application\DeskPRO\Entity\Locale as LocaleEntity;
  * @see Language
  * @see Phrase
  */
-class Translate
+class Translate implements PersonContextInterface
 {
 	/**
 	 * The phrases loaded so far
@@ -83,6 +85,16 @@ class Translate
 	 */
 	protected $_phrase_object_namer = null;
 
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $_person_context;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $_default_person_context;
+
 
 
 	/**
@@ -93,6 +105,87 @@ class Translate
 	{
 		$this->setLocale(SystemLocale::getInstance(), false);
 		$this->loader = $loader;
+	}
+
+	
+	/**
+	 * Set the current person context. This will also change the locale to their preference.
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	public function setPersonContext(Person $person = null, $load_previous_groups = true)
+	{
+		if (!$person) {
+			$person = $this->_default_person_context;
+		}
+
+		$this->_person_context = $person;
+
+		if (!$this->_default_person_context) {
+			$this->_default_person_context = $person;
+		}
+
+		if ($this->_locale['id'] != $this->_person_context['id']) {
+			$this->setLocale($person->locale, $load_previous_groups);
+		}
+	}
+
+
+	/**
+	 * Temporarily resets the locale to $locale and runs $func, and then
+	 * resets the locale after.
+	 *
+	 * This will attempt to catch exceptions so the locale is always reset
+	 * afterwards.
+	 *
+	 * @param LocaleEntity $locale
+	 * @param callback     $func
+	 */
+	public function setTemporaryPersonContext(Person $person, $func)
+	{
+		$this->setPersonContext($person);
+
+		$e = null;
+		try {
+			$func($this, $locale);
+		} catch (\Exception $e) {}
+
+		$this->setPersonContext();
+
+		if ($e) {
+			throw $e;
+		}
+	}
+
+
+	/**
+	 * Reset to the default person context
+	 */
+	public function resetToDefaultPersonContext()
+	{
+		$this->setPersonContext(null);
+	}
+
+
+	/**
+	 * Sets the default person context
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	public function setDefaultPersonContext(Person $person)
+	{
+		$this->_default_person_context = $person;
+	}
+
+
+	/**
+	 * Get the current person context
+	 *
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getPersonContext()
+	{
+		return $this->_person_context;
 	}
 
 
@@ -350,13 +443,13 @@ class Translate
 			return $object->getPhrase($this, $locale);
 
 		} else if ($object instanceof HasPhraseName) {
-			$phrase_name = $object->getPhraseName($property);
+			$phrase_name = $object->getPhraseName($property, $this);
 			if ($phrase_name) {
 				$phrase_text = $this->phrase($phrase_name, array(), $locale);
 			}
 
 			if (!$phrase_text) {
-				$phrase_text = $object->getPhraseDefault($property);
+				$phrase_text = $object->getPhraseDefault($property, $this);
 			}
 
 			if ($phrase_text) return $phrase_text;
