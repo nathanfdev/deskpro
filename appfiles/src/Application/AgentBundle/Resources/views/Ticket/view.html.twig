@@ -24,6 +24,15 @@ pageMeta.widgets = [
 	{% if not loop.last %},{%endif%}
 {% endfor %}
 ];
+
+pageMeta.fieldHandlers = [
+	{% for f in custom_fields %}
+		{% if f.field_def.js_class %}
+			['{{f.field_def.js_class', '{{f.elId}}_rendered_wrap', '{{f.elId}}_form_wrap'],
+		{% endif %}
+	{% endfor %}
+	false,
+];
 </script>
 <div class="layout-content with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>

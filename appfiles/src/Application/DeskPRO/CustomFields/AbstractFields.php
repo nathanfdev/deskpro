@@ -56,6 +56,7 @@ abstract class AbstractFields
 			if ($rendered) $has_value = true;
 
 			$custom_fields[$f_def['id']] = array(
+				'elId'            => Util::requestUniqueIdString(),
 				'id'              => $f_def['id'],
 				'name'            => 'field_' . $f_def['id'],
 				'handler'         => $f,

@@ -41,6 +41,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $plugin = null;
 
 	/**
+	 * JS class to init
+	 *
+	 * @var string
+	 * @orm:Column(name="js_class", type="string", length=255)
+	 */
+	protected $js_class = '';
+
+	/**
 	 * True if this field uses a custom template when rendering the form input
 	 *
 	 * @var string

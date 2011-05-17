@@ -172,7 +172,6 @@ abstract class HandlerAbstract
 		$templating = $this->getTemplateEngine();
 
 		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
-			'elId'          => Util::requestUniqueIdString(),
 			'data'          => $data,
 			'field_def'     => $this->field_def,
 			'field_handler' => $this,
@@ -215,7 +214,6 @@ abstract class HandlerAbstract
 		$templating = $this->getTemplateEngine();
 
 		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
-			'elId'          => Util::requestUniqueIdString(),
 			'formView'      => $formView,
 			'field_def'     => $this->field_def,
 			'field_handler' => $this,

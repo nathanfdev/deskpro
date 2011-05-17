@@ -12,6 +12,7 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	Implements: [Events, DeskPRO.Agent.Widgetable],
 
 	pageUuid: null,
+	ZONE: 'agent',
 	TYPENAME: 'basic',
 
 	/**
