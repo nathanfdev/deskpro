@@ -4,7 +4,7 @@ parameters:
   controller_resolver.class: "Application\DeskPRO\HttpKernel\Controller\ControllerResolver"
   session.class: "Application\DeskPRO\HttpFoundation\Session"
   swiftmailer.class: "Application\DeskPRO\Mail\Mailer"
-  exception_listener.class: "Application\DeskPRO\Debug\ExceptionListener"
+  #exception_listener.class: "Application\DeskPRO\Debug\ExceptionListener"
   twig.loader.class: "Application\DeskPRO\Twig\\Loader\HybridLoader"
   file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"
   routing.file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"

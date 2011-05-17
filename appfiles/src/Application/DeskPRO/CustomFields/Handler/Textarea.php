@@ -19,11 +19,6 @@ use Application\DeskPRO\App;
  */
 class Textarea extends Text
 {
-	public function renderHtml(array $data)
-	{
-		return nl2br(htmlspecialchars($this->renderText($data)));
-	}
-
 	public function getFormField(array $data = null)
 	{
 		$setData = null;

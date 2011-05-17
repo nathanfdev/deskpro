@@ -46,14 +46,14 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');
 
 		// Lazyload exception listener for the error handler
-		set_error_handler(function($errno, $errstr, $errfile, $errline) {
-			if (!App::has('exception_listener')) {
-				return;
-			}
-
-			$listener = App::get('exception_listener');
-			$listener->handleError($errno, $errstr, $errfile, $errline);
-		}, E_ALL | E_STRICT);
+		//set_error_handler(function($errno, $errstr, $errfile, $errline) {
+		//	if (!App::has('exception_listener')) {
+		//		return;
+		//	}
+//
+		//	$listener = App::get('exception_listener');
+		//	$listener->handleError($errno, $errstr, $errfile, $errline);
+		//}, E_ALL | E_STRICT);
 	}
 
 	protected function getContainerClass()

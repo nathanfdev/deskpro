@@ -19,10 +19,19 @@ use Application\DeskPRO\App;
  */
 class Choice extends HandlerAbstract
 {
-	/**
-	 * Render the field
-	 */
-	public function renderText(array $data)
+	public function renderHtml(array $data, array $template_vars = array())
+	{
+		$data['value'] = $this->_getRenderableString($data);
+		parent::renderText($data, $template_vars);
+	}
+
+	public function renderText(array $data, array $template_vars = array())
+	{
+		$data['value'] = $this->_getRenderableString($data);
+		parent::renderText($data, $template_vars);
+	}
+
+	protected function _getRenderableString($data)
 	{
 		$val = array();
 

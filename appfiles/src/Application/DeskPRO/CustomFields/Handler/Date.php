@@ -20,9 +20,16 @@ use Application\DeskPRO\App;
  */
 class Date extends HandlerAbstract
 {
-	public function renderText(array $data)
+	public function renderHtml(array $data, array $template_vars = array())
 	{
-		return date('M d, Y', $data['value']);
+		$data['value'] = date('M d, Y', $data['value']);
+		parent::renderText($data, $template_vars);
+	}
+
+	public function renderText(array $data, array $template_vars = array())
+	{
+		$data['value'] = date('M d, Y', $data['value']);
+		parent::renderText($data, $template_vars);
 	}
 
 	public function getFormField(array $data = null)
