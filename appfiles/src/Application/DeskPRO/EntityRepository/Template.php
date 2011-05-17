@@ -18,19 +18,28 @@ use \Orb\Util\Numbers;
 
 class Template extends EntityRepository
 {
-	public function getTemplateForStyle($template_name, $style)
+	public function getTemplateForStyle($template_name, $style = null)
 	{
-		$r = $this->getEntityManager()->createQuery("
-			SELECT t
-			FROM DeskPRO:Template t
-			WHERE t.style = ?1 AND t.path = ?2
-		")->execute(array(1=>$style, 2=>$template_name));
+		try {
+			if ($style === null OR $style === 0) {
+				$q = $this->getEntityManager()->createQuery("
+					SELECT t
+					FROM DeskPRO:Template t
+					WHERE t.style IS NULL AND t.path = ?1
+				")->setParameters(array(1=>$template_name));
+			} else {
+				$q = $this->getEntityManager()->createQuery("
+					SELECT t
+					FROM DeskPRO:Template t
+					WHERE t.style = ?1 AND t.path = ?2
+				")->setParameters(array(1=>$style, 2=>$template_name));
+			}
 
-		if (!count($r)) {
+			$r = $q->getSingleResult();
+			return $r;
+		} catch (\Exception $e) {
 			return null;
 		}
-
-		return $r[0];
 	}
 
 	public function getCustomTemplateNamesInStyle($style)

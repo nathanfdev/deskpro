@@ -1,8 +1,8 @@
 {% set field_input %}
 	{% block field_input %}
-		{{ form_widget(formView) }}
+		{{ form_widget(formView, {'attr':{'id': elId}}) }}
 	{% endblock %}
 {% endset %}
 {% block content %}
-	{{ field_input }}
+	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} form" id="{{elId}}_wrap">{{ field_input }}</div>
 {% endblock %}

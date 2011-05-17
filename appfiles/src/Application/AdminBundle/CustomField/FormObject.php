@@ -27,8 +27,8 @@ class FormObject
 	public $custom_display_html = '';
 	public $custom_form_html = '';
 
-	protected $display_tempalte_path;
-	protected $form_tempalte_path;
+	protected $display_template_path;
+	protected $form_template_path;
 
 	protected $field_def;
 	protected $admin_handler;
@@ -40,8 +40,8 @@ class FormObject
 		$this->title = $field_def['title'];
 		$this->options = $field_def['options'];
 
-		$this->display_template_path = 'DeskPRO:' . $this->field_def->getTableName() . ':render-field_' . $this->field_def['id'] . '.html.twig';
-		$this->form_template_path = 'DeskPRO:' . $this->field_def->getTableName() . ':form-field_' . $this->field_def['id'] . '.html.twig';
+		$this->display_template_path = 'DeskPRO:' . $this->field_def->getTableName() . ':rendered-field_' . $this->field_def['id'] . '.html.twig';
+		$this->form_template_path    = 'DeskPRO:' . $this->field_def->getTableName() . ':form-field_' . $this->field_def['id'] . '.html.twig';
 
 		$this->admin_handler = $this->initAdminHandler();
 
@@ -53,6 +53,7 @@ class FormObject
 		}
 		if ($field_def['has_display_template']) {
 			$tpl = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->display_template_path);
+
 			if ($tpl) {
 				$this->custom_display_html = $tpl['template'];
 			}
@@ -102,53 +103,79 @@ class FormObject
 
 		App::getOrm()->beginTransaction();
 
-		$admin_handler = $this->getAdminHandler();
-		if ($admin_handler) $admin_handler->preSave($this);
+		try {
 
-		App::getOrm()->persist($field_def);
-		App::getOrm()->flush();
+			$admin_handler = $this->getAdminHandler();
+			if ($admin_handler) $admin_handler->preSave($this);
 
-		$tpl = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->form_template_path);
-		if ($this->custom_form_html) {
-			if (!$tpl) {
-				$tpl = new \Application\DeskPRO\Entity\Template();
-				$tpl['path'] = $this->form_tempalte_path;
+			App::getOrm()->persist($field_def);
+			App::getOrm()->flush();
+
+			$this->display_template_path = 'DeskPRO:' . $this->field_def->getTableName() . ':rendered-field_' . $this->field_def['id'] . '.html.twig';
+			$this->form_template_path    = 'DeskPRO:' . $this->field_def->getTableName() . ':form-field_' . $this->field_def['id'] . '.html.twig';
+
+			$tpl = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->form_template_path);
+			if ($this->custom_form_html) {
+
+				if (!preg_match('#\{\{\s*field_input\s*\}\}#', $this->custom_form_html)) {
+					$this->custom_form_html .= " {{ field_input }}";
+				}
+				if (!preg_match('#\{%\s*block\s*content\s*%\}#', $this->custom_form_html)) {
+					$this->custom_form_html = "{% extends 'DeskPRO:custom_fields:form-display.html.twig' %}\n{% block content %}\n{$this->custom_form_html}\n{% endblock %}";
+				}
+
+				if (!$tpl) {
+					$tpl = new \Application\DeskPRO\Entity\Template();
+				}
+
+				$tpl['path'] = $this->form_template_path;
 				$tpl['template'] = $this->custom_form_html;
-			}
-			$tpl['template_compiled'] = '';
-			$tpl['style'] = null;
+				$tpl['template_compiled'] = '';
+				$tpl['style'] = null;
 
-			App::getOrm()->persist($tpl);
-			$field_def['has_form_template'] = true;
-		} else {
-			$field_def['has_form_template'] = false;
-			if ($tpl) {
-				App::getOrm()->remove($tpl);
+				App::getOrm()->persist($tpl);
+				$field_def['has_form_template'] = true;
+			} else {
+				$field_def['has_form_template'] = false;
+				if ($tpl) {
+					App::getOrm()->remove($tpl);
+				}
 			}
+
+			$tpl2 = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->display_template_path);
+			if ($this->custom_display_html) {
+				if (!preg_match('#\{\{\s*field_rendered\s*\}\}#', $this->custom_display_html)) {
+					$this->custom_display_html .= " {{ field_rendered }}";
+				}
+				if (!preg_match('#\{%\s*block\s*content\s*%\}#', $this->custom_display_html)) {
+					$this->custom_display_html = "{% extends 'DeskPRO:custom_fields:rendered-display.html.twig' %}\n{% block content %}\n{$this->custom_display_html}\n{% endblock %}";
+				}
+
+				if (!$tpl2) {
+					$tpl2 = new \Application\DeskPRO\Entity\Template();
+				}
+
+				$tpl2['path'] = $this->display_template_path;
+				$tpl2['template'] = $this->custom_display_html;
+				$tpl2['template_compiled'] = '';
+				$tpl2['style'] = null;
+
+				App::getOrm()->persist($tpl2);
+				$field_def['has_display_template'] = true;
+			} else {
+				$field_def['has_display_template'] = false;
+				if ($tpl2) {
+					App::getOrm()->remove($tpl2);
+				}
+			}
+
+			if ($admin_handler) $admin_handler->postSave($this);
+
+			App::getOrm()->flush();
+			App::getOrm()->commit();
+		} catch (\Exception $e) {
+			App::getOrm()->rollback();
+			throw $e;
 		}
-
-		$tpl = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->display_template_path);
-		if ($this->custom_form_html) {
-			if (!$tpl) {
-				$tpl = new \Application\DeskPRO\Entity\Template();
-				$tpl['path'] = $this->display_template_path;
-				$tpl['template'] = $this->custom_display_html;
-			}
-			$tpl['template_compiled'] = '';
-			$tpl['style'] = null;
-
-			App::getOrm()->persist($tpl);
-			$field_def['has_display_template'] = true;
-		} else {
-			$field_def['has_display_template'] = false;
-			if ($tpl) {
-				App::getOrm()->remove($tpl);
-			}
-		}
-
-		if ($admin_handler) $admin_handler->postSave($this);
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
 	}
 }

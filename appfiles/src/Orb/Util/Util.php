@@ -336,6 +336,19 @@ class Util
 	}
 
 
+	/**
+	 * A unique string based on time and a random number, plus the requestUniqueId.
+	 *
+	 * @return string
+	 */
+	public static function requestUniqueIdString($prefix = 'id')
+	{
+		$str = $prefix . '_' . substr(time(), -4) . '_' . self::requestUniqueId();
+
+		return $str;
+	}
+
+
 
 	/**
 	 * Generate a random security token using some secret.

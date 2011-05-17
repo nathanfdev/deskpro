@@ -1,0 +1,8 @@
+{% set field_rendered %}
+	{% block field_rendered %}
+		{{data.value}}
+	{% endblock %}
+{% endset %}
+{% block content %}
+	<div class="{{field_type}}_{{field_def.id}} {{field_handler_name}} rendered" id="{{elId}}_wrap">{{ field_rendered }}</div>
+{% endblock %}

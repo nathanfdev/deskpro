@@ -13,6 +13,7 @@ namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Orb\Util\Util;
 
 /**
  * A custom field handler knows how to render an HTML form field as well as
@@ -171,9 +172,12 @@ abstract class HandlerAbstract
 		$templating = $this->getTemplateEngine();
 
 		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
+			'elId'          => Util::requestUniqueIdString(),
 			'data'          => $data,
 			'field_def'     => $this->field_def,
 			'field_handler' => $this,
+			'field_handler_name' => Util::getBaseClassname($this),
+			'field_type'    => $this->field_def->getTableName()
 		));
 
 		return $templating->render($this->getRenderTemplateName('html'), $vars);
@@ -192,6 +196,8 @@ abstract class HandlerAbstract
 			'data'          => $data,
 			'field_def'     => $this->field_def,
 			'field_handler' => $this,
+			'field_handler_name' => Util::getBaseClassname($this),
+			'field_type'    => $this->field_def->getTableName()
 		));
 
 		return $templating->render($this->getRenderTemplateName('html'), $vars);
@@ -209,9 +215,12 @@ abstract class HandlerAbstract
 		$templating = $this->getTemplateEngine();
 
 		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
+			'elId'          => Util::requestUniqueIdString(),
 			'formView'      => $formView,
 			'field_def'     => $this->field_def,
 			'field_handler' => $this,
+			'field_handler_name' => Util::getBaseClassname($this),
+			'field_type'    => $this->field_def->getTableName()
 		));
 
 		return $templating->render($this->getFormTemplateName(), $vars);
