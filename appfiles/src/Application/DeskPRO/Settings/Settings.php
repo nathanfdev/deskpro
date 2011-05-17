@@ -156,7 +156,7 @@ class Settings implements \ArrayAccess
 
 		foreach ($this->_pending_groups as $group) {
 			if (strpos($group, '_') !== false) {
-				list($key, $name) = explode('_', $group, 2);
+				list($key, $name) = Strings::rexplode('_', $group, 2);
 			} else {
 				$key = $group;
 				$name = $group;

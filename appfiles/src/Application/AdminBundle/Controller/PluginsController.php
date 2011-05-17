@@ -44,7 +44,7 @@ class PluginsController extends AbstractController
 	/**
 	 * Installs a plugin
 	 */
-	public function installAction($plugin_id)
+	public function installAction($plugin_id, $step = 1)
 	{
 		$this->rememberLastPage();
 
@@ -52,27 +52,8 @@ class PluginsController extends AbstractController
 		$plugin_info = $finder->getPluginInfo($plugin_id);
 		$plugin_package_class = $plugin_info['class'];
 
-		App::getOrm()->beginTransaction();
-
-		$plugin = new Plugin();
-		$plugin['id']                 = $plugin_info['name'];
-		$plugin['title']              = $plugin_info['title'];
-		$plugin['description']        = $plugin_info['description'];
-		$plugin['package_class']      = $plugin_info['class'];
-		$plugin['package_class_file'] = $plugin_info['class_file'];
-		$plugin['version']            = $plugin_info['version'];
-		$plugin['autoload_paths']     = $plugin_package_class::getAutoloadPaths();
-
-		foreach ($plugin_package_class::getPluginListeners() as $plugin_listener) {
-			$plugin->addPluginListener($plugin_listener);
-		}
-
-		$plugin_package_class::install($plugin);
-
-		App::getOrm()->flush();
-		App::getOrm()->commit();
-
-		return $this->redirectRoute('admin_plugins');
+		$installer = $plugin_package_class::getInstaller($this);
+		return $installer->runStep($step);
 	}
 
 

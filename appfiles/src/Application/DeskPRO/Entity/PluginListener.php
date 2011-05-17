@@ -44,6 +44,15 @@ class PluginListener extends \Application\DeskPRO\Domain\DomainObject
 	protected $event_name = null;
 
 	/**
+	 * Options for event listener connector. Sometimes an event listener can decide which
+	 * plugins to instantiate. For example, if a plugin needs to plug into a specific
+	 * field.
+	 *
+	 * @orm:Column(name="event_options", type="array")
+	 */
+	protected $event_options = array();
+
+	/**
 	 * The description of what this plugin does
 	 *
 	 * @var string

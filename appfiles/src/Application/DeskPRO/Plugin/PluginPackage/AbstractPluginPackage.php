@@ -17,18 +17,11 @@ use Orb\Util\Util;
 abstract class AbstractPluginPackage
 {
 	/**
-	 * Get an array of PluginListener objects required for this plugin.
-	 *
-	 * @return \Application\DeskPRO\Entity\PluginListener[]
-	 */
-	abstract public static function getPluginListeners();
-
-	/**
 	 * Called the first time the plugin is installed.
 	 *
-	 * @return void
+	 * @return InstallerAbstract
 	 */
-	abstract public static function install(Plugin $plugin);
+	abstract public static function getInstaller($install_controller);
 
 	/**
 	 * Called whent he plugin exists in the database, but the source
@@ -37,28 +30,15 @@ abstract class AbstractPluginPackage
 	 * @param Plugin $plugin The existing plugin (ie use this to get version)
 	 * @return void
 	 */
-	abstract public static function upgrade(Plugin $plugin);
+	abstract public static function getUpgrader($upgrade_controller, Plugin $plugin);
 
 	/**
 	 * Called when the plugin is removed.
 	 *
-	 * @return void
+	 * @param Plugin $plugin The existing plugin (ie use this to get version)
+	 * @return UninstallerAbstract
 	 */
-	abstract public static function uninstall(Plugin $plugin);
-
-	/**
-	 * Called when the plugin is enabled
-	 *
-	 * @return void
-	 */
-	abstract public static function enable(Plugin $plugin);
-
-	/**
-	 * Called whent he plugin is disabled
-	 *
-	 * @return void
-	 */
-	abstract public static function deactivate(Plugin $plugin);
+	abstract public static function getUninstaller($uninstall_controller, Plugin $plugin);
 
 	
 	/**

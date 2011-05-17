@@ -635,4 +635,22 @@ class Util
 
 		return $ret;
 	}
+
+
+	/**
+	 * Get the filename a class is defined in
+	 *
+	 * @param string|\ReflectionClass $classname
+	 * @return string
+	 */
+	public static function getClassFilename($classname)
+	{
+		if ($classname instanceof \ReflectionClass) {
+			$relf = $classname;
+		} else {
+			$refl = new \ReflectionClass($classname);
+		}
+		
+		return $refl->getFileName();
+	}
 }

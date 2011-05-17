@@ -14,6 +14,8 @@ namespace Application\DeskPRO\Plugin;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Plugin;
 
+use Application\DeskPRO\EventDispatcher\FilterPluginInterface;
+
 use Symfony\Component\EventDispatcher\EventDispatcher;
 
 /**
@@ -111,13 +113,19 @@ class EventPluginDelegator
 	 * @param  $event_name
 	 * @return array
 	 */
-	public function getEventRunners($event_name)
+	public function getEventRunners($event_name, $event)
 	{
 		if (empty($this->plugin_listeners[$event_name])) return array();
 
 		$runners = array();
 
-		foreach ($this->plugin_listeners[$event_name] as $plugin_listener) {
+		//FilterPluginInterface
+		$plugin_listeners = $this->plugin_listeners[$event_name];
+		if ($event AND $event instanceof FilterPluginInterface) {
+			$plugin_listeners = array_filter($plugin_listeners, array($event, 'filterPlugins'));
+		}
+
+		foreach ($plugin_listeners as $plugin_listener) {
 			$id = $plugin_listener['id'];
 			if (isset($this->plugin_listener_objs[$id])) {
 				$runner = $this->plugin_listener_objs[$id];
@@ -147,7 +155,8 @@ class EventPluginDelegator
 			throw new \BadMethodCallException("`$method` is an invlaid event name for this listener");
 		}
 
-		$runners = $this->getEventRunners($method);
+		$event = isset($args[0]) ? $args[0] : null;
+		$runners = $this->getEventRunners($method, $event);
 
 		foreach ($runners as $runner) {
 			call_user_func_array(array($runner, $method), $args);

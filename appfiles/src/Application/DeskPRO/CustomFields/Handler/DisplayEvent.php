@@ -12,8 +12,9 @@
 namespace Application\DeskPRO\CustomFields\Handler;
 
 use Application\DeskPRO\EventDispatcher\DataEvent;
+use Application\DeskPRO\EventDispatcher\FilterPluginInterface;
 
-class DisplayEvent extends DataEvent
+class DisplayEvent extends DataEvent implements FilterPluginInterface
 {
 	protected $field_def;
 
@@ -26,5 +27,26 @@ class DisplayEvent extends DataEvent
 	public function getField()
 	{
 		return $this->field_def;
+	}
+
+	/**
+	 * @param Plugin $plugins
+	 * @return bool
+	 */
+	public function filterPlugins($plugin)
+	{
+		if (isset($plugin['event_options']['field_table'])) {
+			if ($plugin['event_options']['field_table'] != $this->field_def->getTableName()) {
+				return false;
+			}
+		}
+
+		if (isset($plugin['event_options']['field_id'])) {
+			if ($plugin['event_options']['field_id'] != $this->field_def['id']) {
+				return false;
+			}
+		}
+
+		return true;
 	}
 }

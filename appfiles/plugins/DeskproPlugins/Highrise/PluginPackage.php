@@ -12,57 +12,20 @@
 namespace DeskproPlugins\Highrise;
 
 use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
+use DeskproPlugins\Highrise\PluginPackage\Installer;
+use DeskproPlugins\Highrise\PluginPackage\Uninstaller;
 
 class PluginPackage extends AbstractPluginPackage
 {
 	/**
-	 * Called whent he plugin is disabled
-	 *
-	 * @return void
-	 */
-	public static function deactivate(Plugin $plugin)
-	{
-
-	}
-
-	/**
-	 * Called when the plugin is enabled
-	 *
-	 * @return void
-	 */
-	public static function enable(Plugin $plugin)
-	{
-
-	}
-
-	/**
-	 * Get an array of PluginListener objects required for this plugin.
-	 *
-	 * @return \Application\DeskPRO\Entity\PluginListener[]
-	 */
-	public static function getPluginListeners()
-	{
-
-	}
-
-	/**
 	 * Called the first time the plugin is installed.
 	 *
-	 * @return void
+	 * @return InstallerAbstract
 	 */
-	public static function install(Plugin $plugin)
+	public static function getInstaller($install_controller)
 	{
-
-	}
-
-	/**
-	 * Called when the plugin is removed.
-	 *
-	 * @return void
-	 */
-	public static function uninstall(Plugin $plugin)
-	{
-
+		$installer = new Installer('DeskproPlugins\\Highrise\\PluginPackage', $install_controller);
+		return $install_controller;
 	}
 
 	/**
@@ -72,9 +35,21 @@ class PluginPackage extends AbstractPluginPackage
 	 * @param Plugin $plugin The existing plugin (ie use this to get version)
 	 * @return void
 	 */
-	public static function upgrade(Plugin $plugin)
+	public static function getUpgrader($upgrade_controller, Plugin $plugin)
 	{
 
+	}
+
+	/**
+	 * Called when the plugin is removed.
+	 *
+	 * @param Plugin $plugin The existing plugin (ie use this to get version)
+	 * @return UninstallerAbstract
+	 */
+	public static function getUninstaller($uninstall_controller, Plugin $plugin)
+	{
+		$installer = new Installer('DeskproPlugins\\Highrise\\PluginPackage', $install_controller);
+		return $install_controller;
 	}
 
 	
