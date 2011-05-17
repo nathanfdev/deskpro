@@ -112,6 +112,15 @@ DeskPRO.Admin.PageHandler.TicketEditor = new Class({
 		data.append(this.editorSaver.getEditorData($('#agent_dep_editor_bodytabs'), 'agent_bodytabs'));
 		data.append(this.editorSaver.getEditorData($('#user_dep_editor'), 'user_default'));
 
+		data.push({
+			name: 'enable_captcha',
+			value: $('#enable_captcha').is(':checked') ? 1 : 0
+		});
+		data.push({
+			name: 'user_dep_name',
+			value: $('#user_dep_name').val()
+		});
+
 		$.ajax({
 			url: this.options.saveUrl,
 			data: data,

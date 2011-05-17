@@ -86,9 +86,11 @@ class TicketPropertiesController extends AbstractController
 
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
+		$user_section = App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSection($department, 'user', 'default');
+
 		// Existing options
 		$current_state = array(
-			'user_default'      => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'user', 'default'),
+			'user_default'      => $user_section['data'],
 			'agent_default'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'default'),
 			'agent_toptabs'     => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'toptabs'),
 			'agent_middletabs'  => App::getEntityRepository('DeskPRO:TicketPageDisplay')->getSectionData($department, 'agent', 'middletabs'),
@@ -102,7 +104,8 @@ class TicketPropertiesController extends AbstractController
 			'custom_people_fields' => $custom_people_fields,
 			'term_options' => $term_options,
 			'ticket_options' => $ticket_options,
-			'current_state' => $current_state
+			'current_state' => $current_state,
+			'user_section' => $user_section
 		));
 	}
 
@@ -123,7 +126,30 @@ class TicketPropertiesController extends AbstractController
 
 			$page_display['data'] = $page_data;
 
-			$page_displays[] = $page_display;
+			$page_displays[$editor] = $page_display;
+		}
+
+		$enable_captcha = $this->in->getBool('enable_captcha');
+		$user_page = $page_displays['user_default'];
+		$user_page->setOption('enable_captcha', $enable_captcha);
+
+		$user_dep_phrase_name = "obj_department.{$department_id}_title_user";
+		$user_dep_phrase = App::getEntityRepository('DeskPRO:Phrase')->getPhraseForLanguage($user_dep_phrase_name);
+		$user_dep_name = $this->in->getString('user_dep_name');
+
+		if (!$user_dep_name OR $user_dep_name == $department['title']) {
+			if ($user_dep_phrase) {
+				App::getOrm()->remove($user_dep_phrase);
+			}
+		} else {
+			if (!$user_dep_phrase) {
+				$user_dep_phrase = new \Application\DeskPRO\Entity\Phrase();
+				$user_dep_phrase['name'] = $user_dep_phrase_name;
+			}
+
+			$user_dep_phrase['phrase'] = $user_dep_name;
+
+			App::getOrm()->persist($user_dep_phrase);
 		}
 
 		App::getOrm()->transactional(function($em) use ($page_displays) {

@@ -47,6 +47,17 @@ class TicketPageDisplay extends PageDisplayAbstract
 	 */
 	protected $department = null;
 
+	/**
+	 * Options/flags you can enable. For example "enable_captcha". These aren't actual
+	 * display elements, but stored here for convenience.
+	 *
+	 * Generally these are saved in the 'default' section.
+	 *
+	 * @var array
+	 * @orm:Column(name="options", type="array")
+	 */
+	protected $options = array();
+
 
 	/**
 	 * Set the department id
@@ -75,5 +86,31 @@ class TicketPageDisplay extends PageDisplayAbstract
 		}
 
 		return $this->department['id'];
+	}
+
+
+	/**
+	 * Get an option
+	 *
+	 * @param  $name
+	 * @param null $default
+	 * @return array|null
+	 */
+	public function getOption($name, $default = null)
+	{
+		return isset($this->options[$name]) ? $this->options[$name] : $default;
+	}
+
+	
+	/**
+	 * Set an option
+	 *
+	 * @param  $name
+	 * @param  $value
+	 * @return void
+	 */
+	public function setOption($name, $value)
+	{
+		$this->options[$name] = $value;
 	}
 }

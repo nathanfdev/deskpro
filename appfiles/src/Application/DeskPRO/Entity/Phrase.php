@@ -16,17 +16,25 @@ use Orb\Util\Arrays;
 /**
  * Templates used in the system
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Phrase")
  * @orm:HasLifecycleCallbacks
  * @orm:Table(name="phrases")
  */
 class Phrase extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * The unique ID.
+	 *
+	 * @var int
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
+	 * @orm:Column(name="id", type="integer")
+	 */
+	protected $id = null;
+	
+	/**
 	 * The language this phrase belongs to
 	 *
-	 * @var Style
-	 * @orm:Id
+	 * @var Language
 	 * @orm:ManyToOne(targetEntity="Language")
 	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
 	 */
@@ -36,7 +44,6 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the phrase
 	 *
 	 * @var string
-	 * @orm:Id
 	 * @orm:Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;

@@ -255,6 +255,40 @@
 .agent-section .head:hover .remove {
 	display: block;
 }
+
+.editor-option-top {
+	background-color: #D0D2D6;
+
+	padding: 3px;
+
+	-moz-border-radius-topleft: 5px;
+	-moz-border-radius-topright: 5px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 0px;
+	border-top-left-radius: 5px;
+	border-top-right-radius: 5px;
+	border-bottom-right-radius: 0px;
+	border-bottom-left-radius: 0px;
+}
+
+.editor-option-bottom {
+	background-color: #E1E7F2;
+	border: 1px solid #D0D2D6;
+	border-top:  none;
+
+	padding: 3px;
+
+	-moz-border-radius-topleft: 0px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomright: 5px;
+	-moz-border-radius-bottomleft: 5px;
+	border-top-left-radius: 0px;
+	border-top-right-radius: 0px;
+	border-bottom-right-radius: 5px;
+	border-bottom-left-radius: 5px;
+
+	font-size: 11px;
+}
 </style>
 {% endblock %}
 {% block page_js_exec %}
@@ -302,12 +336,23 @@ function _page_exec() {
 		</ul>
 		<br class="clear"/>
 	</div>
+
+	<div class="editor-option-top" style="margin-top: 10px;">
+		<input type="text" id="user_dep_name" value="{{ phrase('obj_departments.' ~ department.id ~ '_title_user')|default(department.title) }}" />
+	</div>
+
 	<div id="user_dep_editor_default">
-	<ul class="item-list display_item_list" style="margin-top: 10px;">
+	<ul class="item-list display_item_list">
 		<li class="no_elements_message">
 			You have not enabled any fields. To add a field, drag one from above.
 		</li>
 	</ul>
+	</div>
+
+	<div class="editor-option-bottom">
+		<label>
+			<input type="checkbox" id="enable_captcha" value="1" {% if user_section.options.enable_captcha %}checked="checked"{% endif %} /> Enable CAPTCHA
+		</label>
 	</div>
 
 </td><td width="50%" valign="top" style="padding-left: 7px;" class="dep-editor" id="agent_dep_editor">
