@@ -3,12 +3,19 @@ Orb.createNamespace('DeskPRO.Admin.PageHandler');
 DeskPRO.Admin.PageHandler.TemplateEditorPopup = new Class({
 	Extends: DeskPRO.Admin.PageHandler.Basic,
 
+	TYPE: 'TempalteEditorPopup',
+
 	initialize: function(messenger_id) {
+		this.parent();
+		console.log(this.getOpenerDeskPRO());
 		this.messenger_id = messenger_id;
 	},
 
 	initPage: function() {
 		this.template_contents = $('textarea.template_contents');
+
+		var h = $('#content').height();
+		this.template_contents.height(h);
 
 		var parent_win = this.getOpenerDeskPRO();
 		if (parent_win) {

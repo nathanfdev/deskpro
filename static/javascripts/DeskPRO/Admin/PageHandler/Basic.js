@@ -25,6 +25,8 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 			this.messageBroker = parent.getMessageBroker();
 		} else if (window.DeskPRO_Window) {
 			this.messageBroker = window.DeskPRO_Window.getMessageBroker();
+		} else if (window.DeskPRO_Page) {
+			this.messageBroker = window.DeskPRO_Page.getMessageBroker();
 		} else {
 			this.messageBroker = new DeskPRO.MessageBroker();
 		}
@@ -150,12 +152,17 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 
 		// name of the deskpro window obj
 		var name = 'DeskPRO_Window';
+		var name2 = 'DeskPRO_Page';
 
 		var parent_win = null;
-		if (window.opener && window.opener[name]) {
-			parent_win = window.opener[name];
-		} else if (window.parent && window.parent[name]) {
+		if (window.parent && window.parent[name]) {
 			parent_win = window.parent[name];
+		} else if (window.opener && window.opener[name]) {
+			parent_win = window.opener[name];
+		} else if (window.parent && window.parent[name2]) {
+			parent_win = window.parent[name2];
+		} else if (window.opener && window.opener[name2]) {
+			parent_win = window.opener[name2];
 		}
 
 		return parent_win;

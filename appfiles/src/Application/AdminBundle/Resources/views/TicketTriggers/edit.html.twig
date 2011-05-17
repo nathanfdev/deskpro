@@ -586,10 +586,10 @@ function _page_exec() {
 						{% endfor %}
 					</optgroup>
 				</select>
-				<input type="hidden" name="custom_template" value="" />
-				<input type="hidden" name="custom_template_name" value="" />
-				<input type="hidden" name="custom_template_default" value="" />
-				<a class="use_custom_template">Edit template</a>
+				<input type="hidden" name="custom_template" class="custom_template" value="" />
+				<input type="hidden" name="custom_template_name" class="custom_template_name" value="" />
+				<input type="hidden" name="custom_template_default" class="custom_template_default" value="DeskPRO:emails_agent:new-ticket.html.twig" />
+				<a href="{{ path('admin_styles_editorpopup', {'opener_id': '_opener_id_', 'template': '_template_', 'template_orig': '_template_orig_'}) }}" class="popout-trigger use_custom_template" data-height="400" data-width="725">Change email template</a>
 			</div>
 		</div>
 		<div class="type" title="Send new ticket notification to users" data-rule-type="user_notification_new_ticket">

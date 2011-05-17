@@ -3,6 +3,8 @@ Orb.createNamespace('DeskPRO.Admin.PageHandler');
 DeskPRO.Admin.PageHandler.GeneralList = new Class({
 	Extends: DeskPRO.Admin.PageHandler.Basic,
 
+	TYPE: 'GeneralList',
+
 	initPage: function() {
 		this.initPopoutTriggers(this.contextEl);
 		this.getMessageBroker().addMessageListener(this.contextEl.attr('id') + '.change', this.handleListChange.bind(this));

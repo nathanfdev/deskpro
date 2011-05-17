@@ -162,6 +162,10 @@ admin_styles_reverttemplate:
   defaults: { _controller: AdminBundle:Styles:revertTemplate }
   requirements: { style_id: "\d+" }
 
+admin_styles_editorpopup:
+  pattern: /styles/editor-popup
+  defaults: { _controller: AdminBundle:Styles:editorPopup }
+
 ################################################################################
 # locales
 ################################################################################

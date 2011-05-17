@@ -3,11 +3,13 @@ Orb.createNamespace('DeskPRO.Admin.PageHandler');
 DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 	Extends: DeskPRO.Admin.PageHandler.Basic,
 
+	TYPE: 'TicketTriggersEdit',
 	trigger_id: 0,
 	actionsEditor: null,
 	criteriaEditor: null,
 
 	initialize: function(trigger_id) {
+		this.parent();
 		this.trigger_id = trigger_id;
 	},
 
@@ -43,6 +45,22 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 			$('.remove', new_row).click(function() {
 				new_row.remove();
 			});
+
+			var a = $('.use_custom_template', new_row);
+
+			if (a.length) {
+				var id = Orb.getUniqueId('id');
+				$(new_row).attr('id', id);
+
+				var href = $(a).attr('href');
+				href = href.replace('_opener_id_', id);
+				href = href.replace('_template_', escape($('.custom_template_name', new_row).val() || ''));
+				href = href.replace('_template_orig_', escape($('.custom_template_default', new_row).val() || ''));
+
+				$(a).attr('href', href);
+
+				self.initPopoutTriggers(new_row);
+			}
 		});
 
 		$('.actions-form .add-term').data('add-count', 0).click(function() {
@@ -58,7 +76,6 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 			this.init_options_callback();
 		}
 	},
-
 	updateParentListRow: function(row_html) {
 		var parent_win = this.getOpenerDeskPRO();
 		if (!parent_win) return;

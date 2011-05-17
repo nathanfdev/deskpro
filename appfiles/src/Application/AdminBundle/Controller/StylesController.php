@@ -183,7 +183,7 @@ class StylesController extends AbstractController
 	# editor-popup
 	############################################################################
 
-	public function editorPopup()
+	public function editorPopupAction()
 	{
 		$messenger_id = $this->in->getString('opener_id');
 
