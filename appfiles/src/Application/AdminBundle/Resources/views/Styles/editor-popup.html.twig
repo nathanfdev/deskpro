@@ -1,0 +1,23 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+{#<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TemplateEditorPopup.js') }}"></script>#}
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TemplateEditorPopup({{messenger_id}});
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>Edit {{template_name}}</h1>
+{% endblock %}
+{% block content %}
+
+<textarea class="text_area" name="template_contents" rows="20" cols="80" style="width: 99%; font-family: Monaco, 'Courier New', monospace;">{% if template_code %}{{template_code}}{% elseif template_orig_code %}{{template_orig_code}}{% endif %}</textarea>
+
+</form>
+{% endblock %}
+{% block footer %}
+	<button class="dp-button small save-trigger">Save</button>
+{% endblock %}

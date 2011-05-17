@@ -179,6 +179,34 @@ class StylesController extends AbstractController
 	}
 
 
+	############################################################################
+	# editor-popup
+	############################################################################
+
+	public function editorPopup()
+	{
+		$messenger_id = $this->in->getString('opener_id');
+
+		$template = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->in->getString('template'));
+		$template_orig = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->in->getString('template_orig'));
+
+		$template_code = $template['template'];
+		$template_orig_code = $template_orig['template'];
+
+		if (App::getSetting('core.single_lang_mode')) {
+			$dephrase = new \Application\DeskPRO\Translate\DephrasifyTemplate(App::getTranslator());
+			$template_code = $dephrase->expand($template_code);
+			$template_orig_code = $dephrase->expand($template_orig_code);
+		}
+
+		return $this->render('AdminBundle:Styles:editor-popup.html.twig', array(
+			'messenger_id' => $messenger_id,
+			'template_code' => $template_code,
+			'template_orig_code' => $template_orig_code,
+		));
+	}
+
+
 
 
 

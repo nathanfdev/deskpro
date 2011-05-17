@@ -31,30 +31,102 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 	protected $send_to;
 	protected $real_send_to;
 	protected $person_context;
+	protected $template_name = '';
 	protected $template_suffix = '';
 
-	public function __construct(TicketChangeTracker $tracker, array $send_to, $template_suffix = '')
+	public function __construct(TicketChangeTracker $tracker, array $send_to, $custom_template = null, $template_suffix = '')
 	{
 		$this->tracker = $tracker;
 		$this->send_to = $send_to;
+		$this->template_name = $custom_template;
+		$this->template_suffix = $template_suffix;
 	}
 
+	
+	/**
+	 * When this rule is merged, we need to take into account previously set
+	 * agents and the custom template the other rule might've set
+	 * 
+	 * @param array $real_send_to
+	 * @return void
+	 */
+	public function mergeRealSendTo(array $real_send_to)
+	{
+		$this->getRealSendTo();
+		$this->real_send_to = array_merge($real_send_to, $this->real_send_to);
+	}
+
+
+	/**
+	 * Get the default template name to use
+	 * 
+	 * @return void
+	 */
+	abstract public function getDefaultTemplate();
+
+	
+	/**
+	 * Get the template to use
+	 *
+	 * @return string
+	 */
+	public function getTemplateName()
+	{
+		if (!$this->template_name) {
+			$tpl = $this->getDefaultTemplate();
+			if ($this->template_suffix) {
+				$tpl .= '-' . $this->template_suffix;
+			}
+
+			return $tpl;
+		}
+
+		return $this->template_name;
+	}
+
+
+	/**
+	 * A collection modifier may set a template suffix that'll be used if a custom
+	 * template isnt
+	 *
+	 * @param  $template_suffix
+	 * @return void
+	 */
 	public function setTemplateSuffix($template_suffix)
 	{
 		$this->template_suffix = $template_suffix;
 	}
 
+
+	/**
+	 * Gets thet template suffix
+	 *
+	 * @return string
+	 */
 	public function getTemplateSuffix()
 	{
 		return $this->template_suffix;
 	}
 
+
+	/**
+	 * Get the original send_to for this rule. Note that this is largely useless because
+	 * of the way we merge in realSendTo
+	 *
+	 * @return array
+	 */
 	public function getSendTo()
 	{
 		return $this->send_to;
 	}
 
-	public function getRealSendTo($recalc = false)
+
+	/**
+	 * Calculate an array of "real" agentids we're sending to, and the template they should get
+	 * 
+	 * @return
+	 */
+	public function getRealSendTo()
 	{
 		if ($this->real_send_to !== null) return $this->real_send_to;
 
@@ -80,16 +152,21 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 
 		$agent_ids = array_unique($agent_ids);
 
-		$this->real_send_to = $agent_ids;
+		$this->real_send_to = array();
+		foreach ($agent_ids as $id) {
+			$this->real_send_to[$id] = $this->getTemplateName();
+		}
 
-		return $agent_ids;
+		return $this->real_send_to;
 	}
+
 
 	public function getFromAddress()
 	{
 		return $this->from_address;
 	}
 
+	
 	protected function doSend($tpl, $vars, Ticket $ticket, Person $person)
 	{
 		$tac = TicketUtil::getTacForPerson($ticket, $person);
@@ -126,12 +203,7 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 	 */
 	public function merge(ActionInterface $other_action)
 	{
-		$send_to = array_merge($this->getSendTo(), $other_action->getSendTo());
-		$template_suffix = $other_action->getTemplateSuffix();
-		if (!$template_suffix) {
-			$template_suffix = $this->getTemplateSuffix();
-		}
-
-		return new self($this->tracker, $send_to, $other_action->getFromAddress(), $template_suffix);
+		$other_action->mergeRealSendTo($this->getRealSendTo());
+		return $other_action;
 	}
 }

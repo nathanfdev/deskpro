@@ -11,6 +11,8 @@
 	'core.force_ssl' => false,
 	'core.force_domain' => false,
 
+	'core.single_lang_mode' => true,
+
 	'core.site_id' => '1',
 
 	'core.cookie_path' => '/',

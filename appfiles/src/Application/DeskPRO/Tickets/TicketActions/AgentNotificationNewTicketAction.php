@@ -26,6 +26,16 @@ use Application\DeskPRO\App;
 class AgentNotificationNewTicketAction extends AbstractAgentNotificationAction
 {
 	/**
+	 * Get the default template name to use
+	 *
+	 * @return void
+	 */
+	public function getDefaultTemplate()
+	{
+		return 'DeskPRO:emails_agent:new-ticket';
+	}
+	
+	/**
 	 * Apply the property to the ticket
 	 *
 	 * @param \Application\DeskPRO\Entity\Ticket $ticket
@@ -38,14 +48,14 @@ class AgentNotificationNewTicketAction extends AbstractAgentNotificationAction
 			return;
 		}
 
-		foreach ($agent_ids as $agent_id) {
+		foreach ($agent_ids as $agent_id => $tpl) {
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
 			$vars = array(
 				'email_subject' => new DelegatePhrase('tickets_agent_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
 			);
 
-			$this->doSend('DeskPRO:emails_agent:new-ticket', $vars, $ticket, $person);
+			$this->doSend($tpl, $vars, $ticket, $person);
 		}
 	}
 }
