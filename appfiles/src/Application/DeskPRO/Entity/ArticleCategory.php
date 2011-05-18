@@ -13,8 +13,6 @@ namespace Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
 
-use DoctrineExtensions\NestedSet\Node;
-
 /**
  * Article categories
  *
@@ -23,15 +21,6 @@ use DoctrineExtensions\NestedSet\Node;
  */
 class ArticleCategory extends CategoryAbstract
 {
-	/**
-	 * If this is true, then all the articles and categories under this category
-	 * is treated as a book (aka manual).
-	 *
-	 * @var bool
-	 * @orm:Column(name="is_book", type="boolean")
-	 */
-	protected $is_book = false;
-
 	/**
 	 * @gedmo:TreeParent
 	 * @orm:ManyToOne(targetEntity="ArticleCategory", inversedBy="children")
@@ -43,4 +32,36 @@ class ArticleCategory extends CategoryAbstract
 	 * @orm:OrderBy({"lft" = "ASC"})
 	 */
 	protected $children;
+	
+	/**
+	 * If this is true, then all categories and articles under this one
+	 * are considered agent KB articles and wont be displayed in
+	 * the user interface
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_agent", type="boolean")
+	 */
+	protected $is_agent = false;
+
+	/**
+	 * If this is true, then all the articles and categories under this category
+	 * is treated as a book (aka manual).
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_book", type="boolean")
+	 */
+	protected $is_book = false;
+
+	/**
+	 * The template suffix to use when rendering the category, and articles within
+	 * the category.
+	 *
+	 * Eg UserBundle:Articles:article.html.twig
+	 * With suffix 'download' becomes
+	 * UserBundle:Articles:article-download.html.twig
+	 *
+	 * @var string
+	 * @orm:Column(name="template_suffix", type="string", length=100, nullable=true)
+	 */
+	protected $template_suffix = '';
 }

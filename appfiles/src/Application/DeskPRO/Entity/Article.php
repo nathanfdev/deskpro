@@ -18,18 +18,36 @@ use \Application\DeskPRO\Markdown;
 use \Orb\Util\Strings;
 
 /**
- * Ticket
+ * Article
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Article")
  * @orm:Table(name="articles")
  */
 class Article extends \Application\DeskPRO\Domain\DomainObject
 {
+	const END_ACTION_DELETE = 'delete';
+	const END_ACTION_ARCHIVE = 'archive';
+
+	const STATUS_VISIBLE     = 'visible';
+	const STATUS_ARCHIVED    = 'archived';
+	const STATUS_HIDDEN      = 'hidden';
+
+	const HIDDEN_STATUS_VALIDATING = 'validating';
+	const HIDDEN_STATUS_DELETED    = 'deleted';
+	const HIDDEN_STATUS_DRAFT      = 'draft';
+
 	/**
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
 	protected $id = null;
+
+	/**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @orm:ManyToMany(targetEntity="Product", cascade={"persist", "remove", "merge"})
+     * @orm:JoinTable(name="article_to_product", joinColumns={@orm:JoinColumn(name="article_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="product_id", referencedColumnName="id")})
+	 */
+	protected $products;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -95,12 +113,16 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * Is the article currently listed for users to read?
-	 *
-	 * @var bool
-	 * @orm:Column(name="is_published", type="boolean")
+	 * @var string
+	 * @orm:Column(name="status", type="string", length=15)
 	 */
-	protected $is_published = false;
+	protected $status;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="hidden_status", type="string", length=15, nullable=true)
+	 */
+	protected $hidden_status = null;
 
 	/**
 	 * Display order of this article. This is mostly used in books.
@@ -115,6 +137,18 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
+
+	/**
+	 * @var \DateTime
+	 * @orm:Column(name="date_end",type="datetime", nullable=true)
+	 */
+	protected $date_end;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="end_action", type="string", length=10, nullable=true)
+	 */
+	protected $end_action = null;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
@@ -137,8 +171,12 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->products = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+
+		$this->status = self::STATUS_HIDDEN;
+		$this->hidden_status = self::HIDDEN_STATUS_DRAFT;
 	}
 
 	public function getExcerptHtml()

@@ -61,6 +61,14 @@ class ArticleRating extends \Application\DeskPRO\Domain\DomainObject
 	protected $rating = 1;
 
 	/**
+	 * Comment left by the user (usually in the case of negative)
+	 * 
+	 * @var string
+	 * @orm:Column(name="comment", type="string", length=2500)
+	 */
+	protected $comment = '';
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */

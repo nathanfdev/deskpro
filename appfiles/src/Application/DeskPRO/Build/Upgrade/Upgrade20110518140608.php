@@ -12,6 +12,7 @@ class Upgrade20110518140608 extends UpgradeAbstract
 		$this->output->writeln('Recreate product');
 
 		try {
+			App::getDb()->exec("SET FOREIGN_KEY_CHECKS=0");
 			App::getDb()->exec("DROP TABLE IF EXISTS products");
 			App::getDb()->exec("CREATE TABLE products (id INT AUTO_INCREMENT NOT NULL, title VARCHAR(255) NOT NULL, display_order INT NOT NULL, root INT DEFAULT NULL, depth INT NOT NULL, lft INT NOT NULL, rgt INT NOT NULL, PRIMARY KEY(id)) ENGINE = InnoDB");
 		} catch (\Exception $e) {
