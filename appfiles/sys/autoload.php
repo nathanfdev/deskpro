@@ -57,6 +57,8 @@ $loader->registerClassNames(array(
 
 $loader->register();
 
+$GLOBALS['DP_AUTOLOADER'] = $loader;
+
 // ezC autoloading
 require DP_ROOT.'/vendor/ezcomponents/Base/src/ezc_bootstrap.php';
 spl_autoload_register(array('ezcBase', 'autoload'), true, true);

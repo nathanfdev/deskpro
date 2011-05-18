@@ -9,12 +9,12 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace DeskproPlugins\Highrise;
+namespace DeskproPlugins\Gravatar;
 
 use Application\DeskPRO\Entity\Plugin;
 use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
-use DeskproPlugins\Highrise\PluginPackage\Installer;
-use DeskproPlugins\Highrise\PluginPackage\Uninstaller;
+use DeskproPlugins\Gravatar\PluginPackage\Installer;
+use DeskproPlugins\Gravatar\PluginPackage\Uninstaller;
 
 class PluginPackage extends AbstractPluginPackage
 {
@@ -49,8 +49,7 @@ class PluginPackage extends AbstractPluginPackage
 	 */
 	public static function getUninstaller($uninstall_controller, Plugin $plugin)
 	{
-		$installer = new Installer('DeskproPlugins\\Highrise\\PluginPackage', $install_controller);
-		return $install_controller;
+		
 	}
 
 	
@@ -72,7 +71,7 @@ class PluginPackage extends AbstractPluginPackage
 	 */
 	public static function getName()
 	{
-		return 'dp_highrise';
+		return 'dp_gravatar';
 	}
 
 
@@ -83,7 +82,7 @@ class PluginPackage extends AbstractPluginPackage
 	 */
 	public static function getTitle()
 	{
-		return "Highrise Integration";
+		return "Gravatar Integration";
 	}
 
 
@@ -94,6 +93,6 @@ class PluginPackage extends AbstractPluginPackage
 	 */
 	public static function getDescription()
 	{
-		return "Look up user profile data in <a href=\"http://highrisehq.com/\">highrise</a> and display this information in fields on ticket and profile views.";
+		return "Automatically fetch users default avatar from <a href=\"http://en.gravatar.com/\">Gravatar</a>.";
 	}
 }

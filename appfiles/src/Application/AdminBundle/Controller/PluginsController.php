@@ -31,8 +31,17 @@ class PluginsController extends AbstractController
 		$finder = new PluginFinder();
 		$available_plguins = $finder->findPlugins();
 
+		$installed_plugins_ids = App::getDb()->fetchAllCol("SELECT id FROM plugins");
+		$installed_plugins = array();
+
+		foreach ($installed_plugins_ids as $plugin_id) {
+			$installed_plugins[$plugin_id] = $available_plguins[$plugin_id];
+			unset($available_plguins[$plugin_id]);
+		}
+
 		return $this->render('AdminBundle:Plugins:list.html.twig', array(
-			'available_plguins' => $available_plguins
+			'available_plguins' => $available_plguins,
+			'installed_plugins' => $installed_plugins
 		));
 	}
 
@@ -50,9 +59,30 @@ class PluginsController extends AbstractController
 
 		$finder = new PluginFinder();
 		$plugin_info = $finder->getPluginInfo($plugin_id);
-		$plugin_package_class = $plugin_info['class'];
+		$package_name = $plugin_info['class'];
 
-		$installer = $plugin_package_class::getInstaller($this);
+		$plugin = new \Application\DeskPRO\Entity\Plugin();
+		$plugin['id']                     = $package_name::getName();
+		$plugin['title']                  = $package_name::getTitle();
+		$plugin['description']            = $package_name::getDescription();
+		$plugin['version']                = $package_name::getVersion();
+		$plugin['package_class']          = $package_name;
+		$plugin['package_class_file']     = $plugin_info['class_file'];
+		$plugin['resources_path']         = $package_name::getResourcesPath();
+		$plugin['autoload_paths']         = $package_name::getAutoloadPaths();
+
+		App::get('deskpro.plugin_manager')->addPlugin($plugin);
+
+		$autoload_paths = $package_name::getAutoloadPaths();
+		if ($autoload_paths) {
+			array_walk($autoload_paths, function(&$path) {
+				$path = DP_ROOT . '/plugins' . $path;
+			});
+			App::getClassLoader()->registerNamespaces($autoload_paths);
+		}
+
+		$installer = $package_name::getInstaller($this, $plugin);
+
 		return $installer->runStep($step);
 	}
 

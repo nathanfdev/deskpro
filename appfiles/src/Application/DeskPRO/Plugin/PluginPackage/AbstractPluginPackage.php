@@ -21,7 +21,10 @@ abstract class AbstractPluginPackage
 	 *
 	 * @return InstallerAbstract
 	 */
-	abstract public static function getInstaller($install_controller);
+	public static function getInstaller($install_controller, Plugin $plugin)
+	{
+
+	}
 
 	/**
 	 * Called whent he plugin exists in the database, but the source
@@ -30,7 +33,10 @@ abstract class AbstractPluginPackage
 	 * @param Plugin $plugin The existing plugin (ie use this to get version)
 	 * @return void
 	 */
-	abstract public static function getUpgrader($upgrade_controller, Plugin $plugin);
+	public static function getUpgrader($upgrade_controller, Plugin $plugin)
+	{
+
+	}
 
 	/**
 	 * Called when the plugin is removed.
@@ -38,7 +44,10 @@ abstract class AbstractPluginPackage
 	 * @param Plugin $plugin The existing plugin (ie use this to get version)
 	 * @return UninstallerAbstract
 	 */
-	abstract public static function getUninstaller($uninstall_controller, Plugin $plugin);
+	public static function getUninstaller($uninstall_controller, Plugin $plugin)
+	{
+		
+	}
 
 	
 	/**
@@ -59,9 +68,9 @@ abstract class AbstractPluginPackage
 	 */
 	public static function getResourcesPath()
 	{
-		$path = dirname(__FILE__);
+		$plugin_path = dirname(Util::getClassFilename(get_called_class()));
 		$path = str_replace(DP_ROOT.'/plugins', '', $plugin_path);
-		$path .= '/Resources';
+		$path .= '/Resources/';
 
 		return $path;
 	}
@@ -75,7 +84,7 @@ abstract class AbstractPluginPackage
 	public static function getAutoloadPaths()
 	{
 		$plugin_namespace = Util::getClassNamespace(get_called_class());
-		$plugin_path = dirname(__FILE__);
+		$plugin_path = dirname(dirname(dirname(Util::getClassFilename(get_called_class()))));
 		$plugin_path = str_replace(DP_ROOT.'/plugins', '', $plugin_path);
 
 		return array($plugin_namespace => $plugin_path);

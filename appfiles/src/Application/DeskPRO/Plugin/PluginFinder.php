@@ -22,11 +22,11 @@ use Symfony\Component\Finder\Finder;
 class PluginFinder
 {
 	protected $base_path;
-	protected $max_depth = 2;
+	protected $max_depth = 3;
 
 	protected $found = null;
 
-	public function __construct($base_path = null, $max_depth = 2)
+	public function __construct($base_path = null, $max_depth = 3)
 	{
 		if ($base_path === null) {
 			$base_path = DP_ROOT.'/plugins';

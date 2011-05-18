@@ -173,11 +173,16 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
         list($bundleName, $path) = explode('/', $name, 2);
 		$files = array();
 
+		if (isset($this->bundleMap[$bundleName])) {
+			return false;
+		}
+
 		// Plugin resources come from wherever the plugin says is the path to the resources dir
 		if (strpos($path, '/Resources/') !== null AND $this->container->has('deskpro.plugin_manager')) {
 			$plugin_manager = $this->container->get('deskpro.plugin_manager');
 			if ($plugin_manager->hasPlugin($bundleName)) {
-				$path = str_replace('/Resources/', DP_ROOT . '/plugins/' . $plugin_manager->getResourcesPath($bundleName), $path);
+				$path = str_replace('Resources/', DP_ROOT . '/plugins' . $plugin_manager->getResourcesPath($bundleName), $path);
+
 				if ($first) {
 					return $path;
 				}

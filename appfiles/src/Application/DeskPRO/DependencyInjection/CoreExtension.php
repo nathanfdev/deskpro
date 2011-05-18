@@ -42,6 +42,9 @@ class CoreExtension extends Extension
 		//$definition->addMethodCall('addLogger', array(new Reference('deskpro.dbal.logger.query_logger')));
 		$container->setDefinition('doctrine.dbal.logger', $definition);
 
+		$definition = new Definition('Application\\DeskPRO\\Plugin\\PluginManager', array(new Reference('doctrine.orm.entity_manager')));
+		$container->setDefinition('deskpro.plugin_manager', $definition);
+
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);

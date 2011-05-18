@@ -17,12 +17,10 @@ function _page_exec() {
 	{% for plugin in installed_plugins %}
 		<li>
 			<div style="float:right">
-				<ul class="controls">
-					<li class="edit"><a href="{{ path('admin_plugins_install', {'plugin_id': plugin.id}) }}">Uninstall</a></li>
-				</ul>
+				<a class="dp-button" href="{# {{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }} #}">Uninstall</a>
 			</div>
 			<strong>{{plugin.title}}</strong>
-			<div style="font-size: 90%">{{plugin.description}}</div>
+			<div style="font-size: 90%">{{plugin.description|raw}}</div>
 		</li>
 	{% else %}
 		<li>You have no plugins installed.</li>
@@ -36,12 +34,10 @@ function _page_exec() {
 	{% for plugin_info in available_plguins %}
 		<li>
 			<div style="float:right">
-				<ul class="controls">
-					<li class="edit"><a href="{{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }}">Install</a></li>
-				</ul>
+				<a class="dp-button" href="{{ path('admin_plugins_install', {'plugin_id': plugin_info.name}) }}">Install</a>
 			</div>
 			<strong>{{plugin_info.title}}</strong>
-			<div style="font-size: 90%">{{plugin_info.description}}</div>
+			<div style="font-size: 90%">{{plugin_info.description|raw}}</div>
 		</li>
 	{% else %}
 		<li>You have no plugins available for installation</li>

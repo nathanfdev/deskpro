@@ -27,21 +27,33 @@ class PluginManager
 	public function __construct($em)
 	{
 		$this->em = $em;
+	}
 
-		$this->plugins = $em->createQuery("
+	protected function _initPlugins()
+	{
+		if ($this->plugins !== null) return;
+		
+		$this->plugins = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:Plugin p INDEX BY p.id
-			WHERE p.is_enabled = true
-		");
+		")->execute();
+	}
+
+	public function addPlugin($plugin)
+	{
+		$this->_initPlugins();
+		$this->plugins[$plugin['id']] = $plugin;
 	}
 
 	public function hasPlugin($plugin_id)
 	{
+		$this->_initPlugins();
 		return isset($this->plugins[$plugin_id]);
 	}
 
 	public function getResourcesPath($plugin_id)
 	{
+		$this->_initPlugins();
 		if (!isset($this->plugins[$plugin_id])) {
 			return null;
 		}

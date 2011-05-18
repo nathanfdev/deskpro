@@ -611,6 +611,10 @@ admin_plugins_install:
   pattern: /plugins/{plugin_id}/install
   defaults: { _controller: AdminBundle:Plugins:install }
 
+admin_plugins_install_step:
+  pattern: /plugins/{plugin_id}/install/{step}
+  defaults: { _controller: AdminBundle:Plugins:install }
+
 admin_plugins_uninstall:
   pattern: /plugins/{plugin_id}/uninstall
   defaults: { _controller: AdminBundle:Plugins:uninstall }

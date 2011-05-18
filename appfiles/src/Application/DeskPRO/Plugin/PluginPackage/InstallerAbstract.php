@@ -22,6 +22,11 @@ use Orb\Util\Util;
 abstract class InstallerAbstract
 {
 	/**
+	 * @var Plugin
+	 */
+	protected $plugin;
+	
+	/**
 	 * @var string
 	 */
 	protected $plugin_package_name;
@@ -47,9 +52,10 @@ abstract class InstallerAbstract
 	protected $steps = null;
 
 	
-	public final function __construct($plugin_package_name, $controller)
+	public final function __construct($plugin, $controller)
 	{
-		$this->plugin_package_name = $plugin_package_name;
+		$this->plugin = $plugin;
+		$this->plugin_package_name = $plugin['package_class'];
 		$this->controller = $controller;
 		$this->init();
 	}
@@ -75,7 +81,9 @@ abstract class InstallerAbstract
 	{
 		$session = $this->controller->session;
 
-		$session_key = $this->plugin_package_name::getName() . '_install';
+		$package_name = $this->plugin_package_name;
+		
+		$session_key = $package_name::getName() . '_install';
 		if (isset($session[$session_key])) {
 			$session_data = $session[$session_key];
 			if (!empty($session_data['insert_settings'])) {
@@ -120,15 +128,7 @@ abstract class InstallerAbstract
 			App::getEntityRepository('DeskPRO:Setting')->updateSetting($k, $v);
 		}
 
-		$plugin = \Application\DeskPRO\Entity\Plugin();
-		$plugin['id']                     = $this->plugin_package_name::getName();
-		$plugin['title']                  = $this->plugin_package_name::getTitle();
-		$plugin['description']            = $this->plugin_package_name::getDescription();
-		$plugin['version']                = $this->plugin_package_name::getVersion();
-		$plugin['package_class']          = $this->plugin_package_name;
-		$plugin['package_class_file']     = Util::getClassFilename($this->plugin_package_name);
-		$plugin['resources_path']         = $this->plugin_package_name::getResourcesPath();
-		$plugin['autoload_paths']         = $this->plugin_package_name::getAutoloadPaths();
+		$plugin = $this->plugin;
 
 		App::getOrm()->persist($plugin);
 		App::getOrm()->flush();
@@ -136,16 +136,18 @@ abstract class InstallerAbstract
 		$this->postInstall($plugin);
 
 		$plugin_listeners = $this->getPluginListeners();
-		foreach ($plugin_listeners as $plugin_listener) {
-			if (is_array($plugin_listener)) {
+		foreach ($plugin_listeners as $plugin_listener_info) {
+			if (is_array($plugin_listener_info)) {
 				$plugin_listener = new \Application\DeskPRO\Entity\PluginListener();
-				$plugin_listener->fromArray($plugin_listener);
+				$plugin_listener->fromArray($plugin_listener_info);
 			}
 			$plugin->addPluginListener($plugin_listener);
 		}
 
 		App::getOrm()->persist($plugin);
 		App::getOrm()->flush();
+
+		App::get('deskpro.plugin_manager')->addPlugin($plugin);
 
 		return $plugin;
 	}
@@ -160,8 +162,9 @@ abstract class InstallerAbstract
 	 */
 	public function stepInstall($plugin)
 	{
-		return $this->controller->render('AdminBundle:Plugin:install_done.html.twig', array(
-			'title' => $this->plugin_package_name::getTitle()
+		$package_name = $this->plugin_package_name;
+		return $this->controller->render('AdminBundle:Plugins:install_done.html.twig', array(
+			'title' => $package_name::getTitle()
 		));
 	}
 

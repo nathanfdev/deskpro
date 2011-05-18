@@ -97,6 +97,7 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
+		$this->listeners = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->date_created = new \DateTime();
 	}
 
@@ -108,7 +109,6 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getPackageClass()
 	{
-		require_once($this->package_class_file);
 		return $this->package_class;
 	}
 }

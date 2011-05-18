@@ -169,6 +169,22 @@ class App
 	}
 
 
+	
+	/**
+	 * Get the autoloader
+	 * 
+	 * @var \Orb\Util\ClassLoader
+	 */
+	public static function getClassLoader()
+	{
+		if (isset($GLOBALS['DP_AUTOLOADER'])) {
+			return $GLOBALS['DP_AUTOLOADER'];
+		}
+
+		return null;
+	}
+
+
 
 	/**
 	 * Get a registered container.

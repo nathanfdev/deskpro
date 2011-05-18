@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace DeskproPlugins\Highrise\Installer;
+namespace DeskproPlugins\Highrise\PluginPackage;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Plugin;
@@ -38,25 +38,25 @@ class Installer extends InstallerAbstract
 		if ($this->in->getBool('process')) {
 			$this->insertUserSetting('dp_highrise.api_auth_key', $this->in->getBool('api_auth_key'));
 			$this->insertUserSetting('dp_highrise.highrise_url', $this->in->getBool('highrise_url'));
-			return $this->controller->redirectRoute('admin_plugins_install', array('id' => 'dp_highrise', 'step' => 99));
+			return $this->controller->redirectRoute('admin_plugins_install_step', array('plugin_id' => 'dp_highrise', 'step' => 99));
 		}
 
-		return $this->controller->render('dp_highrise:Resources:install:install_step_1.html.twig');
+		return $this->controller->render('dp_highrise:install:install_step_1.html.twig');
 	}
 
 	public function stepInstall($plugin)
 	{
-		return $this->controller->render('dp_highrise:Resources:install:install_done.html.twig');
+		return $this->controller->render('dp_highrise:install:install_done.html.twig');
 	}
 
-	protected function postInstall($plugin)
+	public function postInstall($plugin)
 	{
 		// This is the special display field we'll use to inject the results into the viewticket form
 		$this->inserted_display_field = new \Application\DeskPRO\Entity\CustomDefTicket();
 		$this->inserted_display_field->fromArray(array(
 			'plugin' => $plugin,
 			'title' => 'Highrise User Information',
-			'handler_class' => 'Application\\DeskPRO\\CUstomFields\\Handler\\Display',
+			'handler_class' => 'Application\\DeskPRO\\CustomFields\\Handler\\Display',
 		));
 
 		App::getOrm()->persist($this->inserted_display_field);
@@ -68,7 +68,7 @@ class Installer extends InstallerAbstract
 	 *
 	 * @var array
 	 */
-	protected function getPluginListeners()
+	public function getPluginListeners()
 	{
 		return array(
 			array(
@@ -77,7 +77,7 @@ class Installer extends InstallerAbstract
 					'field_table' => 'custom_def_tickets',
 					'field_id'    => $this->inserted_display_field['id']
 				),
-				'listener_class' => ''
+				'listener_class' => 'DeskproPlugins\\Highrise\\ListenerHandler\\FetchHighriseData'
 			)
 		);
 	}
