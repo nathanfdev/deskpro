@@ -28,3 +28,7 @@ data_interface_data:
   pattern: /data/interface-data.{_format}
   defaults: { _controller: DeskPRO:Data:interfaceData, _format: js }
   requirements: { _format: js }
+
+favicon:
+  pattern: /favicon.ico
+  defaults: { _controller: DeskPRO:Blob:favicon }

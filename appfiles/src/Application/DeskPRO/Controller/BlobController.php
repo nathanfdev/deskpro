@@ -173,4 +173,36 @@ class BlobController extends AbstractController
 
 		return $response;
 	}
+
+
+	/**
+	 * Favicon
+	 */
+	public function faviconAction()
+	{
+		$favicon_id = App::getSetting('core.favicon_blob_id');
+		$blob = null;
+		if ($favicon_id) {
+			$blob = App::getEntityRepository('DeskPRO:Blob')->find($favicon_id);
+		}
+
+		if ($blob) {
+			$response = $this->getDownloadResponse($blob);
+		} else {
+			$file = file_get_contents(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/favicon.ico');
+
+			$response = $this->container->get('response');
+			$response->headers->set('Content-Length', strlen($file));
+			$response->setContent($file);
+		}
+
+		$response->headers->set('Content-Type', 'image/vnd.microsoft.icon; filename=favicon.ico');
+		$response->headers->set('Content-Disposition', 'inline; filename=favicon.ico');
+		$response->setExpires(date_create("+5 days"));
+		$response->setMaxAge(432000);
+		$response->setSharedMaxAge(432000);
+		$response->setPublic();
+
+		return $response;
+	}
 }

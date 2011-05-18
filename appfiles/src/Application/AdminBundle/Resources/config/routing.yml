@@ -27,6 +27,18 @@ admin_email_properties:
   defaults: { _controller: AdminBundle:EmailProperties:list }
 
 ################################################################################
+# Portal
+################################################################################
+
+admin_portal:
+  pattern: /portal
+  defaults: { _controller: AdminBundle:Portal:index }
+
+admin_portal_uploadfavicon:
+  pattern: /portal/upload-favicon
+  defaults: { _controller: AdminBundle:Portal:uploadFavicon }
+
+################################################################################
 # Settings
 ################################################################################
 

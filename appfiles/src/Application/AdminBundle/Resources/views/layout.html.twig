@@ -1,8 +1,10 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
 <html xmlns="http://www.w3.org/1999/xhtml">
 <head>
-<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
-<title>DeskPRO</title>
+	<link rel="shortcut icon" href="{{ path('favicon', {}, true) }}" />
+
+	<meta http-equiv="Content-Type" content="text/html; charset=utf-8" />
+	<title>DeskPRO</title>
 	<link rel="stylesheet" href="{{ asset('javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css') }}" type="text/css" media="screen"  />
 	<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{{ asset('javascripts/jquery/tipTip/tipTip.css') }}" type="text/css" media="screen"  />
@@ -296,7 +298,7 @@
 										<p>Manage your departments</p>
 									</li>
 									<li class="link-portal">
-										<a href="" data-search-keywords="portal website" data-search-name="Settings &rsaquo; Portal">Portal &amp; Site Integration</a>
+										<a href="{{ path('admin_portal') }}" data-search-keywords="portal website" data-search-name="Settings &rsaquo; Portal">Portal &amp; Site Integration</a>
 										<p>Change the appearance of your helpdesk homepage and integrate it into your website</p>
 									</li>
 									<li class="link-products">
