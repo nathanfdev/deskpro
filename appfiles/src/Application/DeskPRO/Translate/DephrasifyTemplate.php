@@ -148,7 +148,7 @@ class DephrasifyTemplate
 					break;
 				}
 
-				$find_replace[$var[0]] = "{{ " . $val_expr . " }}";
+				$find_replace[$var[0]] = $val_expr;
 			}
 
 			if (!$found_all) {
@@ -186,14 +186,14 @@ class DephrasifyTemplate
 		}
 
 		$value_expr = null;
-		if (!preg_match("#(\'|\")$varname_q(\'|\")\s*:\s*(((\'|\")(?P<quoted>.*?)(\'|\"))|((?P<expr>.*?)(\s|,|\}))#", $hash_string, $value_expr)) {
+		if (!preg_match("#(\'|\")$varname_q(\'|\")\s*:\s*(((\'|\")(?P<quoted>.*?)(\'|\"))|((?P<expr>.*?)(\s|,|\})))#", $hash_string, $value_expr)) {
 			return null;
 		}
 
 		if (isset($value_expr['quoted'])) {
-			return $value_expr[5] . $value_expr['quoted'] . $value_expr[5];
+			return $value_expr['quoted'];
 		} else {
-			return $value_expr['expr'];
+			return "{{ " . $value_expr['expr'] . " }}";
 		}
 	}
 }

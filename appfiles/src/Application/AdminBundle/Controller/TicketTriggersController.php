@@ -113,14 +113,50 @@ class TicketTriggersController extends AbstractController
 			if ($form->isValid()) {
 				$is_edited = true;
 
+				App::getOrm()->beginTransaction();
+
 				$term_rules = RuleBuilder::newTermsBuilder();
 				$trigger['terms'] = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
 
 				$action_rules = RuleBuilder::newActionsBuilder();
 				$trigger['actions'] = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw' , 'discard'));
 
+				$actions = $trigger['actions'];
+				foreach ($actions as &$action) {
+					if (isset($action['options']['custom_template_default'])) {
+						$template_name = $action['options']['custom_template_name'];
+						$template_code = $action['options']['custom_template'];
+
+						if ($template_code) {
+							$tpl = null;
+							if ($template_name) {
+								$tpl = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($template_name);
+							}
+
+							if (!$tpl) {
+								$template_name = 'DeskPRO:triggers:email' . time() . \Orb\Util\Util::requestUniqueId() . '.html.twig';
+								$tpl = new \Application\DeskPRO\Entity\Template();
+								$tpl['path'] = $template_name;
+							}
+
+							$tpl['template'] = $template_code;
+
+							$action['options']['custom_template_name'] = $template_name;
+
+							App::getOrm()->persist($tpl);
+						}
+
+						unset($action['options']['custom_template_default']);
+						unset($action['options']['custom_template']);
+					}
+				}
+				
+				$trigger['actions'] = $actions;
+
 				App::getOrm()->persist($trigger);
 				App::getOrm()->flush();
+
+				App::getOrm()->commit();
 
 				$row_html = $this->renderView('AdminBundle:TicketTriggers:list-row.html.twig', array('trigger' => $trigger));
 			}

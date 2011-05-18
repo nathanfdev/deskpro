@@ -7,7 +7,6 @@ DeskPRO.Admin.PageHandler.TemplateEditorPopup = new Class({
 
 	initialize: function(messenger_id) {
 		this.parent();
-		console.log(this.getOpenerDeskPRO());
 		this.messenger_id = messenger_id;
 	},
 
@@ -15,17 +14,22 @@ DeskPRO.Admin.PageHandler.TemplateEditorPopup = new Class({
 		this.template_contents = $('textarea.template_contents');
 
 		var h = $('#content').height();
-		this.template_contents.height(h);
+		this.template_contents.height(h-8);
 
 		var parent_win = this.getOpenerDeskPRO();
-		if (parent_win) {
-			parent_win.getMessageBroker().sendMessage(this.messenger_id + '.loaded', {
-				template_contents_el: this.template_contents
-			});
+		if (parent_win && parent_win.getTemplateContent) {
+			var code = parent_win.getTemplateContent(this.messenger_id).trim();
+			if (code.length) {
+				this.setTemplateCode(code);
+			}
 		}
 
 		this.save_btn = $('button.save-trigger');
 		this.save_btn.click(this.sendTemplate.bind(this));
+	},
+
+	setTemplateCode: function(code) {
+		this.template_contents.val(code);
 	},
 
 	/**
@@ -34,9 +38,9 @@ DeskPRO.Admin.PageHandler.TemplateEditorPopup = new Class({
 	sendTemplate: function() {
 		var parent_win = this.getOpenerDeskPRO();
 		if (parent_win) {
-			parent_win.getMessageBroker().sendMessage(this.messenger_id + '.saved', {
-				template_contents_el: this.template_contents
-			});
+			parent_win.setTemplateContent(this.messenger_id, this.template_contents.val());
 		}
+
+		this.closeThisPopout();
 	}
 });

@@ -52,10 +52,11 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 				var id = Orb.getUniqueId('id');
 				$(new_row).attr('id', id);
 
-				var href = $(a).attr('href');
+				var href = a.attr('href');
 				href = href.replace('_opener_id_', id);
 				href = href.replace('_template_', escape($('.custom_template_name', new_row).val() || ''));
 				href = href.replace('_template_orig_', escape($('.custom_template_default', new_row).val() || ''));
+				a.data('opener-id', id + '_iframe');
 
 				$(a).attr('href', href);
 
@@ -76,6 +77,19 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 			this.init_options_callback();
 		}
 	},
+
+	getTemplateContent: function(messenger_id) {
+		var row = $('#' + messenger_id);
+		var changed_tpl = $('.custom_template', row);
+		return changed_tpl.val();
+	},
+
+	setTemplateContent: function(messenger_id, code) {
+		var row = $('#' + messenger_id);
+		var changed_tpl = $('.custom_template', row);
+		changed_tpl.val(code);
+	},
+
 	updateParentListRow: function(row_html) {
 		var parent_win = this.getOpenerDeskPRO();
 		if (!parent_win) return;

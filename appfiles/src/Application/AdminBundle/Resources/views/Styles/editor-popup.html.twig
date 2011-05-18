@@ -4,9 +4,9 @@
 {% endblock %}
 {% block page_js_exec %}
 <script type="text/javascript" charset="utf-8">
-function _page_exec() {
-	new DeskPRO.Admin.PageHandler.TemplateEditorPopup('{{messenger_id}}');
-}
+window._page_exec_stack.push(function () {
+	window.DeskPRO_Page_TemplateEditorPopup = new DeskPRO.Admin.PageHandler.TemplateEditorPopup('{{messenger_id}}');
+});
 </script>
 {% endblock %}
 {% block header %}
@@ -14,7 +14,7 @@ function _page_exec() {
 {% endblock %}
 {% block content %}
 
-<textarea class="text_area" name="template_contents" rows="20" cols="80" style="width: 99%; font-family: Monaco, 'Courier New', monospace;">{% if template_code %}{{template_code}}{% elseif template_orig_code %}{{template_orig_code}}{% endif %}</textarea>
+<textarea class="template_contents" name="template_contents" rows="20" cols="80" style="width: 99%; font-family: Monaco, 'Courier New', monospace;">{% if template_code %}{{template_code}}{% elseif template_orig_code %}{{template_orig_code}}{% endif %}</textarea>
 
 </form>
 {% endblock %}

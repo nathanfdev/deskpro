@@ -187,11 +187,31 @@ class StylesController extends AbstractController
 	{
 		$messenger_id = $this->in->getString('opener_id');
 
-		$template = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->in->getString('template'));
-		$template_orig = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->in->getString('template_orig'));
+		$template_code = '';
+		$template_orig_code = '';
 
-		$template_code = $template['template'];
-		$template_orig_code = $template_orig['template'];
+		if ($this->in->getString('template')) {
+			$template = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->in->getString('template'));
+			if ($template) {
+				$template_code = $template['template'];
+			}
+		}
+		if ($this->in->getString('template_orig')) {
+			$template_orig = App::getEntityRepository('DeskPRO:Template')->getTemplateForStyle($this->in->getString('template_orig'));
+			if ($template_orig) {
+				$template_orig_code = $template_orig['template'];
+			}
+		}
+
+		if (!$template_orig_code AND $this->in->getString('template_orig')) {
+			$template_name_parser = $this->get('templating.name_parser');
+			$template_locator = $this->get('templating.locator');
+			try {
+				$template_file_ref = $template_name_parser->parse($this->in->getString('template_orig'));
+				$template_file = $template_locator->locate($template_file_ref);
+				$template_orig_code = file_get_contents($template_file);
+			} catch (\Exception $e) {}
+		}
 
 		if (App::getSetting('core.single_lang_mode')) {
 			$dephrase = new \Application\DeskPRO\Translate\DephrasifyTemplate(App::getTranslator());

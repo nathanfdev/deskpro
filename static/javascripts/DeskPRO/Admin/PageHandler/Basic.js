@@ -20,9 +20,9 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 		options = options || {};
 		this.options = options;
 
-		var parent = this.getOpenerDeskPRO();
-		if (parent) {
-			this.messageBroker = parent.getMessageBroker();
+		var parent_win = this.getOpenerDeskPRO();
+		if (parent_win) {
+			this.messageBroker = parent_win.getMessageBroker();
 		} else if (window.DeskPRO_Window) {
 			this.messageBroker = window.DeskPRO_Window.getMessageBroker();
 		} else if (window.DeskPRO_Page) {
@@ -59,12 +59,15 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 			var maxHeight = 700;
 			var maxWidth = 900;
 
+			var id = false;
 			if (el.data('width')) maxWidth = el.data('width');
 			if (el.data('height')) maxHeight = el.data('height');
+			if (el.data('opener-id')) id = el.data('opener-id');
 
 			var overlay = new DeskPRO.UI.Overlay({
 				contentMethod: 'iframe',
 				iframeUrl: url,
+				iframeId: id,
 				destroyOnClose: true,
 				maxWidth: maxWidth,
 				maxHeight: maxHeight
@@ -151,8 +154,8 @@ DeskPRO.Admin.PageHandler.Basic = new Class({
 		// page_name not yet used, but may be useful later
 
 		// name of the deskpro window obj
-		var name = 'DeskPRO_Window';
-		var name2 = 'DeskPRO_Page';
+		var name = 'DeskPRO_Page';
+		var name2 = 'DeskPRO_Window';
 
 		var parent_win = null;
 		if (window.parent && window.parent[name]) {

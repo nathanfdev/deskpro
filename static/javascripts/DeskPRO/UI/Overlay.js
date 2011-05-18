@@ -22,6 +22,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 				dataType: 'html'
 			},
 			iframeUrl: null,
+			iframeId: false,
 			maxHeight: 700,
 			maxWidth: 900,
 			destroyOnClose: false,
@@ -217,6 +218,9 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 				var name = 'iframe_' + Orb.uuid();
 				var el = $('<iframe name="'+name+'" src="'+this.options.iframeUrl+'"></iframe>');
+				if (this.options.iframeId) {
+					el.attr('id', this.options.iframeId);
+				}
 
 				this._setContent(el);
 				this.hasInit = true;
