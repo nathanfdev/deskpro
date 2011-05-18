@@ -41,12 +41,12 @@ class Installer extends InstallerAbstract
 			return $this->controller->redirectRoute('admin_plugins_install_step', array('plugin_id' => 'dp_highrise', 'step' => 99));
 		}
 
-		return $this->controller->render('dp_highrise:install:install_step_1.html.twig');
+		return $this->controller->render('dp_highrise:Install:install_step_1.html.twig');
 	}
 
 	public function stepInstall($plugin)
 	{
-		return $this->controller->render('dp_highrise:install:install_done.html.twig');
+		return $this->controller->render('dp_highrise:Install:install_done.html.twig');
 	}
 
 	public function postInstall($plugin)
