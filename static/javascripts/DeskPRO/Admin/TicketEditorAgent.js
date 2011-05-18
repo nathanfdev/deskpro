@@ -13,6 +13,10 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 		$('#display_item_ticket_priority_tpl').template('display_item_ticket_priority_tpl');
 		$('#display_item_ticket_field_tpl').template('display_item_ticket_field_tpl');
 
+		$('#field_options_text').template('field_options_text');
+		$('#field_options_select').template('field_options_select');
+		$('#field_options_multiselect').template('field_options_multiselect');
+
 		this.options = {
 			department_id: 0,
 			url: '',
@@ -79,11 +83,28 @@ DeskPRO.Admin.TicketEditorAgent = new Orb.Class({
 		var itemId   = el.data('item-id') || '';
 		var itemType = el.data('item-type') || '';
 		var idClass  = itemType + '_' + (itemId+'').replace(/[^a-zA-Z0-9_]/g, '_');
+		var fieldName = el.data('field-name');
 		var elId   = Orb.getUniqueId();
 
-		var data = {name: itemName, itemId: itemId, idClass: idClass, itemType: itemType, elId: elId };
+		var data = {name: itemName, itemId: itemId, idClass: idClass, itemType: itemType, elId: elId, fieldName: fieldName };
 
 		var item = $.tmpl('display_item_' + itemType + '_tpl', data);
+
+		var fieldType = item.data('field-name');
+		if (fieldType) {
+			var options_el = null;
+			if (fieldType == 'text' || fieldType == 'textarea') {
+				options_el = $.tmpl('field_options_text', data);
+			} else if (fieldType == 'choice') {
+				options_el = $.tmpl('field_options_select', data);
+			}
+
+			if (options_el) {
+				item.append(options_el);
+			} else {
+				$('.field-options', item).remove();
+			}
+		}
 
 		if (do_replace) {
 			el.replaceWith(item);

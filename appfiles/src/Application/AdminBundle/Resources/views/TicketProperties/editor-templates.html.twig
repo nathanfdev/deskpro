@@ -13,10 +13,11 @@
 </script>
 
 <script id="display_item_ticket_field_tpl" type="text/x-jquery-tmpl">
-	<li id="display_item_${idClass}" class="ticket_field ${idClass} display_item" data-item-type="ticket_field" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
+	<li id="display_item_${idClass}" class="ticket_field ${idClass} display_item"  data-field-name="${fieldName}" data-item-type="ticket_field" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
 		<div style="float:right">
 			<span class="remove">Remove this</span>
 			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
+			<span class="field-options"><span class="tipped" data-tipped="field_options_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Field options</span></span>
 		</div>
 
 		<strong>${name}</strong><br />
@@ -26,10 +27,11 @@
 </script>
 
 <script id="display_item_people_field_tpl" type="text/x-jquery-tmpl">
-	<li id="display_item_${idClass}" class="people_field ${idClass} display_item" data-item-type="people_field" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
+	<li id="display_item_${idClass}" class="people_field ${idClass} display_item" data-field-name="${fieldName}" data-item-type="people_field" data-id-class="${idClass}" data-item-id="${itemId}" data-el-id="${elId}">
 		<div style="float:right">
 			<span class="remove">Remove this</span>
 			<span class="edit-rules"><span class="tipped" data-tipped="rule_builder_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Edit display rules</span></span>
+			<span class="field-options"><span class="tipped" data-tipped="field_options_${elId}" data-tipped-options="inline:true, closeButton: true, hideOn: false, showOn: 'click', target: 'self', hook: {target:  'leftmiddle', tooltip: 'righttop' }, maxWidth: 600, hideOnClickOutside: true, onHide: DeskPRO_Page.resetFormItems">Field options</span></span>
 		</div>
 
 		<strong>${name}</strong><br />
@@ -145,6 +147,29 @@
 
 		{% include 'AdminBundle:TicketProperties:editor-rules-part.html.twig' %}
 	</li>
+</script>
+
+<script id="field_options_text" type="text/x-jquery-tmpl">
+	<div id="field_options_${elId}" data-id-class="${idClass}" style="display:none; min-width: 200px; height: 30px; overflow: auto; margin-bottom: 11px;">
+		Minimum length: <input type="text" name="field_options[min_length]" value="" size="5" /> &nbsp;&nbsp;&nbsp;
+		Maximum length: <input type="text" name="field_options[max_length]" value="" size="5" />
+	</div>
+</script>
+
+<script id="field_options_select" type="text/x-jquery-tmpl">
+	<div id="field_options_${elId}" data-id-class="${idClass}" style="display:none; min-width: 200px; height: 30px; overflow: auto; margin-bottom: 11px;">
+		<label>
+			<input type="checkbox" name="field_options[min_selections]" value="1" checked="checked" />
+			Require a selection
+		</label>
+	</div>
+</script>
+
+<script id="field_options_multiselect" type="text/x-jquery-tmpl">
+	<div id="field_options_${elId}" data-id-class="${idClass}" style="display:none; min-width: 200px; height: 30px; overflow: auto; margin-bottom: 11px;">
+		Minimum selections: <input type="text" name="field_options[min_selections]" value="" size="5" /> &nbsp;&nbsp;&nbsp;
+		Maximum selections: <input type="text" name="field_options[max_selections]" value="" size="5" />
+	</div>
 </script>
 
 {# Criteria #}

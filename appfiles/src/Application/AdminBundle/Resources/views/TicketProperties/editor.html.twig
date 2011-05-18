@@ -124,6 +124,12 @@
 	margin-left: 3px;
 	border-left: 1px solid #D0D2D6;
 }
+.display_item_list li .field-options {
+	cursor: pointer;
+	padding-left: 5px;
+	margin-left: 3px;
+	border-left: 1px solid #D0D2D6;
+}
 
 .field-list-wrap {
 	background-color: #F2F2F2;
@@ -323,13 +329,13 @@ function _page_exec() {
 			<li class="original field-item system-field priority" data-item-type="ticket_priority" >Priority</li>
 			<li class="title">Ticket Fields</li>
 			{% for field in custom_ticket_fields %}
-			<li class="original ticket_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
+			<li class="original ticket_field_{{field.field_def.id}} field-item" data-field-name="{{field.field_def.getTypeName()}}" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
 				{{field.title}}
 			</li>
 			{% endfor %}
 			<li class="title">Person Fields</li>
 			{% for field in custom_people_fields %}
-			<li class="original people_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="people_field">
+			<li class="original people_field_{{field.field_def.id}} field-item" data-field-name="{{field.field_def.getTypeName()}}" data-item-id="{{field.field_def.id}}" data-item-type="people_field">
 				{{field.title}}
 			</li>
 			{% endfor %}
@@ -369,7 +375,7 @@ function _page_exec() {
 			<li class="original field-item system-field workflow" data-item-type="ticket_workflow" >Workflow</li>
 			<li class="title">Ticket Fields</li>
 			{% for field in custom_ticket_fields %}
-			<li class="original ticket_field_{{field.field_def.id}} field-item" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
+			<li class="original ticket_field_{{field.field_def.id}} field-item" data-field-name="{{field.field_def.getTypeName()}}" data-item-id="{{field.field_def.id}}" data-item-type="ticket_field">
 				{{field.title}}
 			</li>
 			{% endfor %}

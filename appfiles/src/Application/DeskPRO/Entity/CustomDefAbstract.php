@@ -272,6 +272,22 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * The "short name" for the handler type.
+	 *
+	 * @return string
+	 */
+	public function getTypeName()
+	{
+		$name = $this->handler_class;
+		$name = str_replace('Application\\DeskPRO\\CustomFields\\Handler\\', '', $name);
+		$name = str_replace('\\', '_', $name);
+		$name = strtolower($name);
+
+		return $name;
+	}
+
+
+	/**
 	 * Fetch the search capabiltiies supported by the field.
 	 *
 	 * @return array
