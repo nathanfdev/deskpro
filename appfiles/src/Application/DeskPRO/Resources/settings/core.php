@@ -1,12 +1,19 @@
 <?php return array(
 
 	'core.helpdesk_enabled' => true,
+	'core.emergency_contact' => 'emergency-contact@example.com',
+
 	'core.deskpro_url' => 'http://localhost/',
 	'core.deskpro_name' => 'Helpdesk',
 	'core.site_url' => '',
 	'core.site_name' => '',
 	'core.deskpro_assets_full_url' => 'http://localhost/static/',
 	'core.app_secret' => 'EE31CDD75AFA0ECC46004FD80B376C1180DBB0E7FCFEC925341A68FE6CF8630F',
+
+	'core.deskpro_version' => '4.0',
+	'core.deskpro_version_id' => '',
+
+	'core.install_time' => 0,
 
 	'core.force_ssl' => false,
 	'core.force_domain' => false,
