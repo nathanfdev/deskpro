@@ -31,6 +31,7 @@ class EditCustomFieldType extends AbstractType
 	public function buildForm(FormBuilder $builder, array $options)
 	{
 		$builder->add('title', 'text');
+		$builder->add('handler_class', 'hidden');
 
 		$builder->add('custom_form_html', 'textarea', array('required' => false));
 		$builder->add('custom_display_html', 'textarea', array('required' => false));

@@ -79,7 +79,7 @@ abstract class CustomDefAbstractController extends AbstractController
 			$field = $this->getFieldOr404($field_id);
 		} else {
 			$field = $this->createNewField();
-			$field['handler_class'] = $this->in->getString('formfield.handler_class');
+			$field['handler_class'] = $this->in->getString('editcustomfield.handler_class');
 		}
 
 		$field_save = new \Application\AdminBundle\CustomField\FormObject($field);
@@ -89,10 +89,12 @@ abstract class CustomDefAbstractController extends AbstractController
 			$form->bindRequest($this->get('request'));
 			if ($form->isValid()) {
 				$field_save->save();
+				$this->getTemplateVars(); // to get routebasename
 				return $this->redirectRoute($this->route_basename . 'edit', array('field_id' => $field['id'], 'saved' => 1));
 			} else {
 				// TODO proper handling
 				print_r($form->getErrors());
+				exit;
 			}
 		}
 
