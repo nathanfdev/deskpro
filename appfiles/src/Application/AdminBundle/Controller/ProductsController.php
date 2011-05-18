@@ -17,7 +17,7 @@ use \Application\DeskPRO\Entity;
 use \Application\AdminBundle\Form\EditProductType;
 
 /**
- * Simple management of products
+ * Products
  */
 class ProductsController extends AbstractController
 {
@@ -26,17 +26,16 @@ class ProductsController extends AbstractController
 	############################################################################
 
 	/**
-	 * Shows the main listing of products
+	 * Shows the main listing of departments
 	 */
 	public function listAction()
 	{
-		$this->rememberLastPage();
-
-		$all_products = App::getOrm()->createQuery("
+		$all_products = $this->em->createQuery("
 			SELECT p
 			FROM DeskPRO:Product p
-			ORDER BY p.title ASC
-		")->execute();
+			WHERE p.parent IS NULL
+			ORDER BY p.display_order ASC
+		")->getResult();
 
 		return $this->render('AdminBundle:Products:list.html.twig', array(
 			'all_products' => $all_products
@@ -50,7 +49,7 @@ class ProductsController extends AbstractController
 	############################################################################
 
 	/**
-	 * Edit a product
+	 * Edit a department
 	 */
 	public function editAction($product_id)
 	{
@@ -60,8 +59,8 @@ class ProductsController extends AbstractController
 			$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
 		}
 
-		$form = $this->get('form.factory')->create(new EditProductType(), $product);
-
+		$form = $this->get('form.factory')->create(new EditProductType($product), $product);
+		
 		$is_edited = false;
 		$row_html = false;
 		if ($this->in->getBool('process')) {
@@ -73,11 +72,14 @@ class ProductsController extends AbstractController
 				App::getOrm()->flush();
 
 				$row_html = $this->renderView('AdminBundle:Products:list-row.html.twig', array('product' => $product));
+
+				// Recreate form because parent_id field cant be changed, so we need to get rid of it
+				$form = $this->get('form.factory')->create(new EditProductType($product), $product);
 			}
 		}
 
 		return $this->render('AdminBundle:Products:edit.html.twig', array(
-			'product' => $product,
+			'product'   => $product,
 			'form'      => $form->createView(),
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html

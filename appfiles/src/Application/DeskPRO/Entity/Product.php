@@ -17,24 +17,7 @@ namespace Application\DeskPRO\Entity;
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Product")
  * @orm:Table(name="products")
  */
-class Product extends \Application\DeskPRO\Domain\DomainObject
+class Product extends CategoryAbstract
 {
-	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
-	 */
-	protected $id = null;
 
-	/**
-	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
-	 */
-	protected $title;
-
-	/**
-	 * @var int
-	 * @orm:Column(name="display_order", type="integer")
-	 */
-	protected $display_order = 0;
 }

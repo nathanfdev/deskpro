@@ -6,6 +6,8 @@
 		</ul>
 	</div>
 	<div>
-		{{product.title}}
+		{% if not product.parent %}<strong>{{product.title}}</strong>
+		{% else %}{{product.title}}
+		{% endif %}
 	</div>
 </li>

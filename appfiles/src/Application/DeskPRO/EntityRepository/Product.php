@@ -15,10 +15,8 @@ use \Application\DeskPRO\App;
 
 use \Doctrine\ORM\EntityRepository;
 
-class Product extends EntityRepository
+class Product extends AbstractNestedTreeCategoryRepository
 {
-	protected $_product_names = null;
-
 	public function findByTitle($title)
 	{
 		try {
@@ -34,41 +32,36 @@ class Product extends EntityRepository
 		return $product;
 	}
 
-	protected function _loadProductNames()
-	{
-		if ($this->_product_names !== null) return;
-
-		if (($this->_product_names = App::getCache('common')->load('product_names')) === false) {
-			$db = App::getDb();
-			$this->_product_names = $db->fetchAllKeyValue("
-				SELECT id, title
-				FROM products
-				ORDER BY display_order ASC
-			");
-
-			App::getCache('common')->save($this->_product_names, null, array('products'));
-		}
-	}
-
 	/**
 	 * @return array
 	 */
 	public function getProductNames($for_ids = null)
 	{
-		$this->_loadProductNames();
+		return $this->getCategoryNames($for_ids);
+	}
 
-		if ($for_ids === null) {
-			return $this->_product_names;
-		}
+	/**
+	 * @return array
+	 */
+	public function getFullProductNames($sep = ' > ', $include_tops = true)
+	{
+		return $this->getFullProductNames($sep = ' > ', $include_tops = true);
+	}
 
-		$ret = array();
-		foreach ($for_ids as $id) {
-			if (isset($this->_product_names[$id])) {
-				$ret[] = $this->_product_names[$id];
-			}
-		}
+	/**
+	 * @return array
+	 */
+	public function getProductIds()
+	{
+		return $this->getCategoryIds();
+	}
 
-		return $ret;
+	/**
+	 * @return array
+	 */
+	public function getProductsInHierarchy()
+	{
+		return $this->getCategoriesInHierarchy();
 	}
 
 
