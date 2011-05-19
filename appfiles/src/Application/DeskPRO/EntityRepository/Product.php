@@ -32,6 +32,23 @@ class Product extends AbstractNestedTreeCategoryRepository
 		return $product;
 	}
 
+	public function getProductsById(array $ids)
+	{
+		$ids = Arrays::removeFalsey($ids);
+
+		if (!$ids) return array();
+
+		$ids = implode(',', $ids);
+
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Products p
+			WHERE p.id IN ($ids)
+			ORDER BY p.display_order
+		")->execute();
+	}
+
+
 	/**
 	 * @return array
 	 */

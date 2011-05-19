@@ -20,10 +20,10 @@ use \Orb\Util\Strings;
 /**
  * Tracks an article edit that needs to be validated
  *
- * @orm:Entity
- * @orm:Table(name="article_pending_edits")
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleValidatingEdit")
+ * @orm:Table(name="article_validating_edits")
  */
-class ArticlePendingEdit extends \Application\DeskPRO\Domain\DomainObject
+class ArticleValidatingEdit extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @orm:id

@@ -19,5 +19,15 @@ namespace Application\DeskPRO\Entity;
  */
 class Product extends CategoryAbstract
 {
+	/**
+	 * @gedmo:TreeParent
+	 * @orm:ManyToOne(targetEntity="Product", inversedBy="children")
+	 */
+	protected $parent;
 
+	/**
+	 * @orm:OneToMany(targetEntity="Product", mappedBy="parent")
+	 * @orm:OrderBy({"lft" = "ASC"})
+	 */
+	protected $children;
 }

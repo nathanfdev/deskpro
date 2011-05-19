@@ -28,13 +28,14 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	const END_ACTION_DELETE = 'delete';
 	const END_ACTION_ARCHIVE = 'archive';
 
-	const STATUS_VISIBLE     = 'visible';
+	const STATUS_PUBLISHED   = 'published';
 	const STATUS_ARCHIVED    = 'archived';
 	const STATUS_HIDDEN      = 'hidden';
 
-	const HIDDEN_STATUS_VALIDATING = 'validating';
-	const HIDDEN_STATUS_DELETED    = 'deleted';
-	const HIDDEN_STATUS_DRAFT      = 'draft';
+	const HIDDEN_STATUS_UNPUBLISHED   = 'unpublished';
+	const HIDDEN_STATUS_VALIDATING    = 'validating';
+	const HIDDEN_STATUS_DELETED       = 'deleted';
+	const HIDDEN_STATUS_DRAFT         = 'draft';
 
 	/**
 	 * @var int
@@ -177,6 +178,27 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->status = self::STATUS_HIDDEN;
 		$this->hidden_status = self::HIDDEN_STATUS_DRAFT;
+	}
+
+	public function setStatusCode($status_code)
+	{
+		if (strpos($status_code, 'hidden.') === 0) {
+			$status_code = str_replace('hidden.', '', $status_code);
+			$this['status'] = 'hidden';
+			$this['hidden_status'] = $status_code;
+		} else {
+			$this['status'] = $status_code;
+			$this['hidden_status'] = null;
+		}
+	}
+
+	public function getStatusCode()
+	{
+		if ($this->hidden_status) {
+			return 'hidden.' . $this->hidden_status;
+		} else {
+			return $this->status;
+		}
 	}
 
 	public function getExcerptHtml()

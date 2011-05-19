@@ -20,7 +20,7 @@ use \Orb\Util\Strings;
 /**
  * Articles that need to be created
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticlePendingCreate")
  * @orm:Table(name="article_pending_create")
  */
 class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject

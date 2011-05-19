@@ -1,0 +1,61 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles';
+pageMeta.title = 'Pending Articles';
+</script>
+<div class="content">
+	<div class="add-dlg dp-overlay" style="display: none; width: 400px;">
+		Add a comment about the article that needs to be written:<br />
+		<textarea class="comment" rows="2" cols="50" style="width: 98%;"></textarea><br />
+		<div style="text-align: right">
+			<button class="dp-button x-small save-trigger">Add</button>
+		</div>
+	</div>
+
+	{% if grouped_info %}
+	<div class="inner-box-tab-content top-box">
+		<ul>
+			<li>
+				<label>Pending Articles</label>
+				<span class="counter">{{pending_articles|length}}</span>
+			</li>
+			<li class="total on">
+				<label class="new-pending-article-trigger">Add new pending article</label>
+			</li>
+		</ul>
+	</div>
+	{% endif %}
+
+	<div class="pad">
+		<div class="inner-box-tab-content box-list no-pad">
+			<table class="list" cellspacing="0" width="100%">
+				<thead class="display-options-trigger dbl-click-trigger nosel">
+					<tr>
+						<th>Description</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+
+				{% for art in pending_articles %}
+					<tr>
+						<td>
+							{% if art.ticket %}
+								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
+									{{ art.ticket.subject }}
+								</a>
+							{% endif %}
+							{{ art.comment }}
+						</td>
+						<td>
+							{{ art.date_created|date('Y-m-d') }}
+						</td>
+						<td>
+							<a class="with=route" data-route="kb_article:{{ path('agent_kb_newarticle', {'pending_article_id': art.id}) }}">
+								Create article
+							</a>
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+</div>

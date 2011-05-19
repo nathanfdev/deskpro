@@ -619,3 +619,28 @@ agent_tasks_count_pending:
 agent_tasks_list_pending:
   pattern: /tasks/pending/list
   defaults: { _controller: AgentBundle:Task:listPending }
+
+################################################################################
+# KB
+################################################################################
+
+agent_kb_article:
+  pattern: /kb/article/{article_id}
+  defaults: { _controller: AgentBundle:Kb:edit }
+  requirements: { article_id: "\d+" }
+
+agent_kb_newarticle_save:
+  pattern: /kb/article/new/save
+  defaults: { _controller: AgentBundle:Kb:newSave }
+
+agent_kb_newarticle:
+  pattern: /kb/article/new
+  defaults: { _controller: AgentBundle:Kb:edit, article_id: 0 }
+
+agent_kb_newpending:
+  pattern: /kb/pending-articles/new
+  defaults: { _controller: AgentBundle:Kb:newPendingArticle }
+
+agent_kb_pending_remove:
+  pattern: /kb/pending-articles/{pending_article_id}/remove
+  defaults: { _controller: AgentBundle:Kb:removePendingArticle }

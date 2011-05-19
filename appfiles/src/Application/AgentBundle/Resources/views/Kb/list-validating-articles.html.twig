@@ -1,0 +1,88 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles';
+pageMeta.title = 'Pending Articles';
+</script>
+<div class="content">
+	<div class="inner-box-tab-content top-box">
+		<ul>
+			<li>
+				<label>Articles</label>
+				<span class="counter">{{validating_articles|length}}</span>
+			</li>
+			<li>
+				<label>Edits</label>
+				<span class="counter">{{validating_edits|length}}</span>
+			</li>
+			<li class="total on">
+				<label>Total</label>
+				<span class="counter">{{validating_articles|length + validating_edits|length}}</span>
+			</li>
+		</ul>
+	</div>
+
+	{% if validating_articles|length %}
+	<div class="pad">
+		<div class="inner-box-tab-content box-list no-pad">
+			<h1>Articles awaiting validation</h1>
+			<table class="list" cellspacing="0" width="100%">
+				<thead class="display-options-trigger dbl-click-trigger nosel">
+					<tr>
+						<th>Title</th>
+						<th>Author</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+
+				{% for art in validating_articles %}
+					<tr>
+						<td>
+							<a class="with-route" data-route="kb_article:{{ path('agent_kb_article', {'article_id': art.id}) }}">
+								{{ art.title }}
+							</a>
+						</td>
+						<td>
+							{{ art.person.display_name }}
+						</td>
+						<td>
+							{{ art.date_created|date('Y-m-d') }}
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+	{% endif %}
+
+	{% if validating_edits|length %}
+	<div class="pad">
+		<div class="inner-box-tab-content box-list no-pad">
+			<h1>Edits awaiting validation</h1>
+			<table class="list" cellspacing="0" width="100%">
+				<thead class="display-options-trigger dbl-click-trigger nosel">
+					<tr>
+						<th>Title</th>
+						<th>Author</th>
+						<th>Date</th>
+					</tr>
+				</thead>
+
+				{% for art in validating_articles %}
+					<tr>
+						<td>
+							<a class="with-route" data-route="kb_article:{{ path('agent_kb_article', {'article_id': art.id}) }}">
+								{{ art.title }}
+							</a>
+						</td>
+						<td>
+							{{ art.person.display_name }}
+						</td>
+						<td>
+							{{ art.date_created|date('Y-m-d') }}
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+		</div>
+	</div>
+	{% endif %}
+</div>

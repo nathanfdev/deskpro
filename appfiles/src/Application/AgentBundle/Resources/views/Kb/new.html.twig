@@ -1,0 +1,50 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbNewArticle';
+pageMeta.title = 'New Article';
+pageMeta.article_id = 0;
+</script>
+
+<table cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+		<td width="150">Title:</td>
+		<td><input type="text" name="article[title]" value="{{article.title}}" style="width: 95%" /></td>
+	</tr>
+	<tr>
+		<td width="150">Status:</td>
+		<td>
+			<label><input type="radio" name="article[status_code]" value="published" /> Published</label><br />
+			<label><input type="radio" name="article[status_code]" value="hidden.unpublished" checked="checked" /> Unpublished</label><br />
+			<label><input type="radio" name="article[status_code]" value="hidden.draft" /> Save as draft</label><br />
+		</td>
+	</tr>
+	<tr>
+		<td>Categories:</td>
+		<td>
+			<select name="article[categories]" multiple="multiple" size="4">
+				{% for k,v in category_names %}
+					<option value="{{k}}">{{v}}</option>
+				{% endfor %}
+			</select>
+		</td>
+	</tr>
+	{% if product_names %}
+		<tr>
+			<td>Products:</td>
+			<td>
+				<select name="article[products]" multiple="multiple" size="4">
+					{% for k,v in product_names %}
+						<option value="{{k}}">{{v}}</option>
+					{% endfor %}
+				</select>
+			</td>
+		</tr>
+	{% endif %}
+	<tr>
+		<td>Content:</td>
+		<td><textarea name="article[content]" rows="10" cols="40" style="width: 95%">{{article.content}}</textarea></td>
+	</tr>
+</table>
+
+<div style="float:right">
+	<button class="dp-button save-trigger">Save Article</button>
+</div>

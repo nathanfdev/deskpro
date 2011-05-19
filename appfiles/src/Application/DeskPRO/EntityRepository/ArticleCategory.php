@@ -23,14 +23,30 @@ use Doctrine\ORM\Query,
 use \Orb\Util\Arrays;
 use \Orb\Util\Strings;
 
-class ArticleCategory extends NestedTreeRepository
+class ArticleCategory extends AbstractNestedTreeCategoryRepository
 {
 	protected $all_cats = null;
 	protected $hierarchy = null;
 
+	public function getCategoriesById(array $ids)
+	{
+		$ids = Arrays::removeFalsey($ids);
+
+		if (!$ids) return array();
+
+		$ids = implode(',', $ids);
+
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ArticleCategory c
+			WHERE c.id IN ($ids)
+			ORDER BY c.display_order
+		")->execute();
+	}
+
 	public function getCategoryOptions()
 	{
-		if (!$this->all_cats === null) return $this->all_cats;
+		if ($this->all_cats !== null) return $this->all_cats;
 
 		$this->all_cats = App::getDb()->fetchAllKeyed("
 			SELECT id, parent_id, title
