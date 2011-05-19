@@ -1520,4 +1520,74 @@ class Arrays
 
 		return $array;
 	}
+
+
+	/**
+	 * Sort an array into an alphabetical index.
+	 *
+	 * Returns:
+	 * <code>array('a' => array(...), 'b' => array(...))</code>
+	 *
+	 * The $array passed can be a single-dimentional array, or a multi-dimentional array:
+	 *
+	 * <code>
+	 * $array = array('apple', 'banana', 'zebra');
+	 * $alpha_array = Arrays::sortIntoAlphabeticalIndex($array);
+	 *
+	 * $array = array(44 => array('id' => 44, 'word' => 'apple'), 71 => array('id' => 71, 'word' => 'zebra'));
+	 * $alpha_array = Arrays::sortIntoAlphabeticalIndex($array, 'word', true);
+	 * </code>
+	 *
+	 * @param array $array       The array
+	 * @param mixed $word_index  If items in $array is itself an array, the index that contains the word
+	 * @return array
+	 */
+	public static function sortIntoAlphabeticalIndex($array, $word_index = null, $maintain_keys = false)
+	{
+		$aindex = array();
+
+		foreach ($array as $k => $item) {
+
+			if (is_array($word_index)) {
+				$label = $item[$word_index];
+			} else {
+				$label = $item;
+			}
+
+			$first = Strings::utf8_substr($label, 0, 1);
+			$first = Strings::utf8_accents_to_ascii($first);
+			$first = Strings::utf8_strtoupper($first);
+
+			if (is_numeric($first)) {
+				$first = '#';
+			} elseif (!preg_match('#[A-Z]#', $first)) {
+				$first = '@';
+			}
+
+			if (!isset($index[$first])) {
+				$aindex[$first] = array();
+			}
+
+			if ($maintain_keys) {
+				$aindex[$first][$k] = $item;
+			} else {
+				$aindex[$first][] = $item;
+			}
+		}
+
+		ksort($aindex, SORT_STRING);
+
+		// Put @ before #,
+		if (isset($aindex['@']) AND isset($aindex['#'])) {
+			$a = $aindex['@'];
+			$b = $aindex['#'];
+
+			unset($aindex['@'], $aindex['#']);
+
+			self::unshiftAssoc($aindex, '#', $b);
+			self::unshiftAssoc($aindex, '@', $a);
+		}
+
+		return $aindex;
+	}
 }

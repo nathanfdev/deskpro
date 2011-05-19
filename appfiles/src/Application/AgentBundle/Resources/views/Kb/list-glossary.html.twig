@@ -1,0 +1,53 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbGlossary';
+pageMeta.title = 'Glossary';
+</script>
+<div class="content">
+	<div class="add-dlg dp-overlay" style="display: none; width: 400px;">
+		Add a new glossary item: <input type="text" class="word" value="" style="width: 150px;" /><br />
+		<textarea class="content" rows="2" cols="50" style="width: 98%;"></textarea><br />
+		<div style="text-align: right">
+			<button class="dp-button x-small save-trigger">Add</button>
+		</div>
+	</div>
+
+	<div class="edit-dlg dp-overlay" style="display: none; width: 400px;">
+		<strong class="word"></strong><br />
+		<input type="hidden" class="word_id" value="" />
+		<textarea class="content" rows="2" cols="50" style="width: 98%;"></textarea><br />
+		<div style="text-align: right">
+			<button class="dp-button x-small save-trigger">Save</button>
+		</div>
+	</div>
+
+	<div class="inner-box-tab-content top-box">
+		<ul>
+			<li>
+				<label>Words</label>
+				<span class="counter">{{word_count|default('0')}}</span>
+			</li>
+			<li class="total on">
+				<label class="new-word-trigger">Add word</label>
+			</li>
+		</ul>
+	</div>
+	
+	<div class="pad">
+		<dl>
+			{% for letter,words in words %}
+				<dt>{{letter}}</dt>
+				<dd>
+					<ul class="comma-list">
+						{% for word in words %}
+							<li>
+								<a class="edit-word-trigger" data-word-id="{{word.id}}">
+								{{word.word}}
+								</a>
+							</li>
+						{% endfor %}
+					</ul>
+				</dd>
+			{% endfor %}
+		</dl>
+	</div>
+</div>

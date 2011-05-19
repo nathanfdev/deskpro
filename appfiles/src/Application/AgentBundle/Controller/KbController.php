@@ -14,6 +14,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
+use Application\DeskPRO\Entity\GlossaryWord;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -154,6 +155,52 @@ class KbController extends AbstractController
 		return $this->render('AgentBundle:Kb:list-validating-articles.html.twig', array(
 			'validating_articles' => $validating_articles,
 			'validating_edits'    => $validating_edits,
+		));
+	}
+
+	############################################################################
+	# Glossary
+	############################################################################
+
+	public function glossaryListAction()
+	{
+		$words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
+		$word_count = count($words);
+		$words = Arrays::sortIntoAlphabeticalIndex($words);
+
+		return $this->render('AgentBundle:Kb:list-glossary.html.twig', array(
+			'words'      => $words,
+			'word_count' => $word_count,
+		));
+	}
+
+	public function glossaryNewWordAction()
+	{
+		$word = new GlossaryWord();
+		$word['content'] = $this->in->getString('content');
+
+		App::getOrm()->persist($word);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'id' => $word['id'],
+			'word' => $word['word'],
+			'content' => $word['content']
+		));
+	}
+
+	public function glossaryEditWordAction($word_id)
+	{
+		$word = App::findEntity('DeskPRO:GlossaryWord', $word_id);
+		$word['content'] = $this->in->getString('content');
+
+		App::getOrm()->persist($word);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'id' => $word['id'],
+			'word' => $word['word'],
+			'content' => $word['content']
 		));
 	}
 }
