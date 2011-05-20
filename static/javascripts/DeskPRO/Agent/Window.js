@@ -868,6 +868,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));
 		this.addPageRouteLoader('ticket', this.loadRoute.bind(this));
 		this.addPageRouteLoader('person', this.loadRoute.bind(this));
+		this.addPageRouteLoader('kb_article_view', this.loadRoute.bind(this));
+		this.addPageRouteLoader('kb_article_new', this.loadRoute.bind(this));
+		this.addPageRouteLoader('kb_article_edit', this.loadRoute.bind(this));
 
 		var self = this;
 		$('#header li a[data-route]').click(function(ev) {

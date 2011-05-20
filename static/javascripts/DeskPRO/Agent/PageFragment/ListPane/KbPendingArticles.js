@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
+DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	wrapper: null,
@@ -8,14 +8,14 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
-		this.initRoutesOnCollection(el);
+		this.initRoutesOnCollection($('.with-route', el));
 
 		$('.new-pending-article-trigger', el).click(this.showAddDlg.bind(this));
 	},
 
 	showAddDlg: function() {
 		var addDlg = this.getAddDlg();
-		addDlg.showOverlay();
+		addDlg.openOverlay();
 	},
 
 	getAddDlg: function() {
@@ -26,7 +26,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 			contentElement: el
 		});
 
-		$('.save-trigger', el).click(this.saveNewPendingArticle.bind());
+		$('.save-trigger', el).click(this.saveNewPendingArticle.bind(this));
 
 		return this.addDlg;
 	},
@@ -39,8 +39,9 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent//kb/pending-articles/new',
+			url: BASE_URL + 'agent/kb/pending-articles/new',
 			type: 'POST',
+			data: data,
 			context: this,
 			dataType: 'json',
 			success: function(counts) {

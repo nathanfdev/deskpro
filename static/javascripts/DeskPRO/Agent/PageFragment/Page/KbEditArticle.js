@@ -1,14 +1,18 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-DeskPRO.Agent.PageFragment.Page.KbNewArticle = new Class({
+DeskPRO.Agent.PageFragment.Page.KbEditArticle = new Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'kb_article_new',
+	TYPENAME: 'kb_article',
 
 	wrapper: null,
+	article_id: null,
 
 	initPage: function(el) {
 		this.wrapper = el;
+
+		this.article_id = this.getMetaData('article_id');
+
 		var self = this;
 
 		$('.save-trigger', this.wrapper).click(self.sendSave.bind(this));
@@ -18,14 +22,13 @@ DeskPRO.Agent.PageFragment.Page.KbNewArticle = new Class({
 		var data = $(':input, select, textarea', this.wrapper).serializeArray();
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/article/new/save',
+			url: BASE_URL + 'agent/kb/article/'+this.article_id+'/save',
 			type: 'POST',
 			context: this,
 			dataType: 'json',
 			data: data,
 			success: function(counts) {
-				DeskPRO_Window.runPageRoute('kb_article:' + data.load_url);
-				DeskPRO_Window.removePage(this);
+
 			}
 		});
 	}

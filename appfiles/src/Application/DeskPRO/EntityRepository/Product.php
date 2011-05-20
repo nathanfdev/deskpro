@@ -11,9 +11,8 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-
-use \Doctrine\ORM\EntityRepository;
+use Application\DeskPRO\App;
+use Orb\Util\Arrays;
 
 class Product extends AbstractNestedTreeCategoryRepository
 {
@@ -42,7 +41,7 @@ class Product extends AbstractNestedTreeCategoryRepository
 
 		return $this->getEntityManager()->createQuery("
 			SELECT p
-			FROM DeskPRO:Products p
+			FROM DeskPRO:Product p
 			WHERE p.id IN ($ids)
 			ORDER BY p.display_order
 		")->execute();

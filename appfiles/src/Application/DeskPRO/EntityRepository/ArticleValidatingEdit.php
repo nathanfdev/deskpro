@@ -23,7 +23,6 @@ class ArticleValidatingEdit extends EntityRepository
 			SELECT e, a
 			FROM DeskPRO:ArticleValidatingEdit e
 			LEFT JOIN e.article a
-			ORDER BY e.id DESC
 		")->execute();
 
 		return $validating_edits;

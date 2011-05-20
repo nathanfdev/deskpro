@@ -22,11 +22,11 @@ class GlossaryWord extends EntityRepository
 	 */
 	public function getWords()
 	{
-		$words = App::getDb()->fetchAllCol("
+		$words = App::getDb()->fetchAllKeyValue("
 			SELECT id, word
 			FROM glossary_words
 			ORDER BY word ASC
-		", array(), 'id');
+		");
 
 		return $words;
 	}

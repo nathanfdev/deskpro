@@ -1,6 +1,6 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.ListPane');
 
-DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
+DeskPRO.Agent.PageFragment.ListPane.KbGlossary = new Class({
 	Extends: DeskPRO.Agent.PageFragment.ListPane.Basic,
 
 	wrapper: null,
@@ -12,13 +12,13 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 		$('.new-word-trigger', el).click(this.showAddDlg.bind(this));
 		$('.edit-word-trigger', el).click(function(ev) {
 			ev.preventDefault();
-			this.showEditDlg($(this).data('word-id'));
+			self.showEditDlg($(this).data('word-id'));
 		});
 	},
 
 	showAddDlg: function() {
 		var addDlg = this.getAddDlg();
-		addDlg.showOverlay();
+		addDlg.openOverlay();
 	},
 
 	showEditDlg: function(id) {
@@ -30,7 +30,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 		form.hide();
 		loading.show();
 
-		editDlg.showOverlay();
+		editDlg.openOverlay();
 
 		$.ajax({
 			url: BASE_URL + 'agent/kb/glossary/' + id + '.json',
@@ -39,8 +39,8 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 			dataType: 'json',
 			success: function(info) {
 				$('.word', form).html(info.word);
-				$('input.word_id', form).html(info.id);
-				$('textarea.content', form).html(info.content);
+				$('input.word_id', form).val(info.id);
+				$('textarea.content', form).val(info.content);
 
 				loading.hide();
 				form.show();
@@ -56,7 +56,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 			contentElement: el
 		});
 
-		$('.save-trigger', el).click(this.saveNewWord.bind());
+		$('.save-trigger', el).click(this.saveNewWord.bind(this));
 
 		return this.addDlg;
 	},
@@ -69,9 +69,9 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 			contentElement: el
 		});
 
-		$('.save-trigger', el).click(this.saveEditWord.bind());
+		$('.save-trigger', el).click(this.saveEditWord.bind(this));
 
-		return this.addDlg;
+		return this.editDlg;
 	},
 
 	saveNewWord: function() {
@@ -86,7 +86,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticless = new Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/glossary/new',
+			url: BASE_URL + 'agent/kb/glossary/new-word.json',
 			type: 'POST',
 			data: data,
 			context: this,

@@ -29,43 +29,128 @@ class KbController extends AbstractController
 	# Edit article
 	############################################################################
 
-	public function editAction($article_id)
+	public function viewArticleAction($article_id)
 	{
+		$article_categories = array();
+		$article_products   = array();
+		$pending_article    = null;
+
 		if ($article_id) {
 			$article = App::findEntity('DeskPRO:Article', $article_id);
 			if (!$article) {
 				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
 			}
+
+			$article_categories = App::getDb()->fetchAllCol("
+				SELECT category_id
+				FROM article_to_categories
+				WHERE article_id = ?
+			", array($article['id']));
+
+			$article_products = App::getDb()->fetchAllCol("
+				SELECT product_id
+				FROM article_to_product
+				WHERE article_id = ?
+			", array($article['id']));
+
+			if ($this->in->getBool('do_validate') AND $article['status_code'] == 'hidden.validating') {
+				$article['status_code'] = Article::STATUS_PUBLISHED;
+				App::getOrm()->persist($article);
+				App::getOrm()->flush();
+			}
+
 		} else {
 			$article = new Article();
+
+			if ($this->in->getUint('pending_article_id')) {
+				$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
+			}
 		}
 
 		$category_names = App::getEntityRepository('DeskPRO:ArticleCategory')->getFullCategoryNames();
 		$product_name   = App::getEntityRepository('DeskPRO:Product')->getFullCategoryNames();
 
 		$tpl = 'AgentBundle:Kb:edit.html.twig';
+		//$tpl = 'AgentBundle:Kb:view.html.twig';
+		if ($this->in->getBool('view')) {
+			$tpl = 'AgentBundle:Kb:view.html.twig';
+		}
 		if (!$article['id']) {
 			$tpl = 'AgentBundle:Kb:new.html.twig';
 		}
 
 		return $this->render($tpl, array(
-			'article'        => $article,
-			'category_names' => $category_names,
-			'product_names'  => $product_name
+			'article'              => $article,
+			'category_names'       => $category_names,
+			'product_names'        => $product_name,
+			'article_categories'   => $article_categories,
+			'article_products'     => $article_products,
+			'pending_article'      => $pending_article,
 		));
 	}
 
-	public function newSaveAction()
+	public function newArticleSaveAction()
 	{
 		$article = new Article();
 		$article['title'] = $this->in->getString('article.title');
 		$article['content'] = $this->in->getString('article.content');
 		$article['status_code'] = $this->in->getString('article.status_code');
+		$article->person = $this->person;
+
+		if ($this->in->getString('article.date_published')) {
+			$article['date_published'] = new \DateTime($this->in->getString('article.date_published'));
+		}
+		if ($this->in->getString('article.date_end')) {
+			$article['date_end'] = new \DateTime($this->in->getString('article.date_end'));
+		}
 
 		$cat_ids = $this->in->getCleanValueArray('article.categories', 'uint', 'discard');
 		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoriesById($cat_ids);
 		foreach ($cats as $c) {
-			$article->categories->add($cats);
+			$article->categories->add($c);
+		}
+
+		$product_ids = $this->in->getCleanValueArray('article.products', 'uint', 'discard');
+		$products = App::getEntityRepository('DeskPRO:Product')->getProductsById($product_ids);
+		foreach ($products as $p) {
+			$article->products->add($p);
+		}
+
+		if ($this->in->getUint('pending_article_id')) {
+			$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
+			App::getOrm()->remove($pending_article);
+		}
+
+		App::getOrm()->persist($article);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'load_url'   => $this->generateUrl('agent_kb_article', array('article_id' => $article['id'])),
+			'article_id' => $article['id']
+		));
+	}
+
+	public function editArticleSaveAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$article['title'] = $this->in->getString('article.title');
+		$article['content'] = $this->in->getString('article.content');
+		$article['status_code'] = $this->in->getString('article.status_code');
+
+		if ($this->in->getString('article.date_published')) {
+			$article['date_published'] = new \DateTime($this->in->getString('article.date_published'));
+		}
+		if ($this->in->getString('article.date_end')) {
+			$article['date_end'] = new \DateTime($this->in->getString('article.date_end'));
+		}
+
+		$article->categories->clear();
+		$article->products->clear();
+
+		$cat_ids = $this->in->getCleanValueArray('article.categories', 'uint', 'discard');
+		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoriesById($cat_ids);
+		foreach ($cats as $c) {
+			$article->categories->add($c);
 		}
 
 		$product_ids = $this->in->getCleanValueArray('article.products', 'uint', 'discard');
@@ -78,8 +163,7 @@ class KbController extends AbstractController
 		App::getOrm()->flush();
 
 		return $this->createJsonResponse(array(
-			'load_url'   => $this->generateUrl('agent_kb_article', array('article_id' => $article['id'])),
-			'article_id' => $article['id']
+			'success' => true
 		));
 	}
 
@@ -166,7 +250,7 @@ class KbController extends AbstractController
 	{
 		$words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
 		$word_count = count($words);
-		$words = Arrays::sortIntoAlphabeticalIndex($words);
+		$words = Arrays::sortIntoAlphabeticalIndex($words, null, true);
 
 		return $this->render('AgentBundle:Kb:list-glossary.html.twig', array(
 			'words'      => $words,
@@ -174,9 +258,10 @@ class KbController extends AbstractController
 		));
 	}
 
-	public function glossaryNewWordAction()
+	public function glossaryNewWordJsonAction()
 	{
 		$word = new GlossaryWord();
+		$word['word'] = $this->in->getString('word');
 		$word['content'] = $this->in->getString('content');
 
 		App::getOrm()->persist($word);
@@ -189,13 +274,24 @@ class KbController extends AbstractController
 		));
 	}
 
-	public function glossaryEditWordAction($word_id)
+	public function glossarySaveWordJsonAction($word_id)
 	{
 		$word = App::findEntity('DeskPRO:GlossaryWord', $word_id);
 		$word['content'] = $this->in->getString('content');
 
 		App::getOrm()->persist($word);
 		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'id' => $word['id'],
+			'word' => $word['word'],
+			'content' => $word['content'],
+		));
+	}
+
+	public function glossaryWordJsonAction($word_id)
+	{
+		$word = App::findEntity('DeskPRO:GlossaryWord', $word_id);
 
 		return $this->createJsonResponse(array(
 			'id' => $word['id'],

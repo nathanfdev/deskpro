@@ -1535,7 +1535,7 @@ class Arrays
 	 * $alpha_array = Arrays::sortIntoAlphabeticalIndex($array);
 	 *
 	 * $array = array(44 => array('id' => 44, 'word' => 'apple'), 71 => array('id' => 71, 'word' => 'zebra'));
-	 * $alpha_array = Arrays::sortIntoAlphabeticalIndex($array, 'word', true);
+	 * $alpha_array = Arrays::sortIntoAlphabeticalIndex($array);
 	 * </code>
 	 *
 	 * @param array $array       The array
@@ -1564,7 +1564,7 @@ class Arrays
 				$first = '@';
 			}
 
-			if (!isset($index[$first])) {
+			if (!isset($aindex[$first])) {
 				$aindex[$first] = array();
 			}
 

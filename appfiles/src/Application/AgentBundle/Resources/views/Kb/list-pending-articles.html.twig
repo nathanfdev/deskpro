@@ -18,7 +18,7 @@ pageMeta.title = 'Pending Articles';
 				<span class="counter">{{pending_articles|length}}</span>
 			</li>
 			<li class="total on">
-				<label class="new-pending-article-trigger">Add new pending article</label>
+				<label class="new-pending-article-trigger" style="cursor: pointer;">Add new pending article</label>
 			</li>
 		</ul>
 	</div>
@@ -29,25 +29,23 @@ pageMeta.title = 'Pending Articles';
 				<thead class="display-options-trigger dbl-click-trigger nosel">
 					<tr>
 						<th>Description</th>
-						<th>Date</th>
+						<th width="80">Create</th>
 					</tr>
 				</thead>
 
 				{% for art in pending_articles %}
-					<tr>
+					<tr class="line-1">
 						<td>
+							<div style="float:right">{{ art.date_created|date('Y-m-d') }}</div>
 							{% if art.ticket %}
-								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
+								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': art.ticket.id}) }}">
 									{{ art.ticket.subject }}
-								</a>
+								</a><br />
 							{% endif %}
 							{{ art.comment }}
 						</td>
 						<td>
-							{{ art.date_created|date('Y-m-d') }}
-						</td>
-						<td>
-							<a class="with=route" data-route="kb_article:{{ path('agent_kb_newarticle', {'pending_article_id': art.id}) }}">
+							<a class="with-route" data-route="kb_article_new:{{ path('agent_kb_newarticle', {'pending_article_id': art.id}) }}">
 								Create article
 							</a>
 						</td>

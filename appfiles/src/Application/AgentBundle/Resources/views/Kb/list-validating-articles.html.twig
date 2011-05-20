@@ -22,8 +22,8 @@ pageMeta.title = 'Pending Articles';
 
 	{% if validating_articles|length %}
 	<div class="pad">
+		<h1>Articles awaiting validation</h1>
 		<div class="inner-box-tab-content box-list no-pad">
-			<h1>Articles awaiting validation</h1>
 			<table class="list" cellspacing="0" width="100%">
 				<thead class="display-options-trigger dbl-click-trigger nosel">
 					<tr>
@@ -34,9 +34,9 @@ pageMeta.title = 'Pending Articles';
 				</thead>
 
 				{% for art in validating_articles %}
-					<tr>
+					<tr class="line-1">
 						<td>
-							<a class="with-route" data-route="kb_article:{{ path('agent_kb_article', {'article_id': art.id}) }}">
+							<a class="with-route" data-route="kb_article_view:{{ path('agent_kb_article', {'article_id': art.id, 'view': 1}) }}">
 								{{ art.title }}
 							</a>
 						</td>

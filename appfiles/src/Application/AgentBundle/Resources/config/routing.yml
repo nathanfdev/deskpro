@@ -624,18 +624,23 @@ agent_tasks_list_pending:
 # KB
 ################################################################################
 
-agent_kb_article:
-  pattern: /kb/article/{article_id}
-  defaults: { _controller: AgentBundle:Kb:edit }
-  requirements: { article_id: "\d+" }
-
 agent_kb_newarticle_save:
   pattern: /kb/article/new/save
-  defaults: { _controller: AgentBundle:Kb:newSave }
+  defaults: { _controller: AgentBundle:Kb:newArticleSave }
 
 agent_kb_newarticle:
   pattern: /kb/article/new
-  defaults: { _controller: AgentBundle:Kb:edit, article_id: 0 }
+  defaults: { _controller: AgentBundle:Kb:viewArticle, article_id: 0 }
+
+agent_kb_article:
+  pattern: /kb/article/{article_id}
+  defaults: { _controller: AgentBundle:Kb:viewArticle }
+  requirements: { article_id: "\d+" }
+
+agent_kb_article_edit:
+  pattern: /kb/article/{article_id}/save
+  defaults: { _controller: AgentBundle:Kb:editArticleSave }
+  requirements: { article_id: "\d+" }
 
 agent_kb_newpending:
   pattern: /kb/pending-articles/new
@@ -644,3 +649,28 @@ agent_kb_newpending:
 agent_kb_pending_remove:
   pattern: /kb/pending-articles/{pending_article_id}/remove
   defaults: { _controller: AgentBundle:Kb:removePendingArticle }
+
+agent_kb_pending:
+  pattern: /kb/pending-articles
+  defaults: { _controller: AgentBundle:Kb:listPendingArticles }
+
+
+agent_kb_validating:
+  pattern: /kb/validating-articles
+  defaults: { _controller: AgentBundle:Kb:validatingList }
+
+agent_kb_glossary:
+  pattern: /kb/glossary
+  defaults: { _controller: AgentBundle:Kb:glossaryList }
+
+agent_kb_glossary_newword_json:
+  pattern: /kb/glossary/new-word.json
+  defaults: { _controller: AgentBundle:Kb:glossaryNewWordJson }
+
+agent_kb_glossary_word_json:
+  pattern: /kb/glossary/{word_id}.json
+  defaults: { _controller: AgentBundle:Kb:glossaryWordJson }
+
+agent_kb_glossary_saveword_json:
+  pattern: /kb/glossary/{word_id}/edit.json
+  defaults: { _controller: AgentBundle:Kb:glossarySaveWordJson }
