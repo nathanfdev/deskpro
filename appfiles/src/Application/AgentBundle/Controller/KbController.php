@@ -14,6 +14,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
+use Application\DeskPRO\Entity\ArticleValidatingEdit;
 use Application\DeskPRO\Entity\GlossaryWord;
 
 use Orb\Util\Strings;
@@ -34,6 +35,7 @@ class KbController extends AbstractController
 		$article_categories = array();
 		$article_products   = array();
 		$pending_article    = null;
+		$validating_edit    = null;
 
 		if ($article_id) {
 			$article = App::findEntity('DeskPRO:Article', $article_id);
@@ -59,6 +61,9 @@ class KbController extends AbstractController
 				App::getOrm()->flush();
 			}
 
+			// Check if this user has an edit for this article
+			$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article, $this->person);
+
 		} else {
 			$article = new Article();
 
@@ -71,7 +76,6 @@ class KbController extends AbstractController
 		$product_name   = App::getEntityRepository('DeskPRO:Product')->getFullCategoryNames();
 
 		$tpl = 'AgentBundle:Kb:edit.html.twig';
-		//$tpl = 'AgentBundle:Kb:view.html.twig';
 		if ($this->in->getBool('view')) {
 			$tpl = 'AgentBundle:Kb:view.html.twig';
 		}
@@ -86,6 +90,7 @@ class KbController extends AbstractController
 			'article_categories'   => $article_categories,
 			'article_products'     => $article_products,
 			'pending_article'      => $pending_article,
+			'validating_edit'      => $validating_edit,
 		));
 	}
 
@@ -133,34 +138,58 @@ class KbController extends AbstractController
 	public function editArticleSaveAction($article_id)
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
-		$article['title'] = $this->in->getString('article.title');
-		$article['content'] = $this->in->getString('article.content');
-		$article['status_code'] = $this->in->getString('article.status_code');
-
-		if ($this->in->getString('article.date_published')) {
-			$article['date_published'] = new \DateTime($this->in->getString('article.date_published'));
-		}
-		if ($this->in->getString('article.date_end')) {
-			$article['date_end'] = new \DateTime($this->in->getString('article.date_end'));
+		
+		$require_validating = $this->in->getBool('use_validating_edit');
+		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article, $this->person);
+		if ($validating_edit) {
+			// If the user already has an edit, then we're just updating that
+			$require_validating = true;
 		}
 
-		$article->categories->clear();
-		$article->products->clear();
+		if ($edit_validating) {
 
-		$cat_ids = $this->in->getCleanValueArray('article.categories', 'uint', 'discard');
-		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoriesById($cat_ids);
-		foreach ($cats as $c) {
-			$article->categories->add($c);
+			if (!$validating_edit) {
+				$validating_edit = new ArticleValidatingEdit();
+				$validating_edit->person = $this->person;
+				$validating_edit->article = $article;
+			}
+
+			$validating_edit['title'] = $this->in->getString('article.title');
+			$validating_edit['content'] = $this->in->getString('article.content');
+
+			App::getOrm()->persist($validating_edit);
+			App::getOrm()->flush();
+
+		} else {
+			$article['title'] = $this->in->getString('article.title');
+			$article['content'] = $this->in->getString('article.content');
+			$article['status_code'] = $this->in->getString('article.status_code');
+
+			if ($this->in->getString('article.date_published')) {
+				$article['date_published'] = new \DateTime($this->in->getString('article.date_published'));
+			}
+			if ($this->in->getString('article.date_end')) {
+				$article['date_end'] = new \DateTime($this->in->getString('article.date_end'));
+			}
+
+			$article->categories->clear();
+			$article->products->clear();
+
+			$cat_ids = $this->in->getCleanValueArray('article.categories', 'uint', 'discard');
+			$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoriesById($cat_ids);
+			foreach ($cats as $c) {
+				$article->categories->add($c);
+			}
+
+			$product_ids = $this->in->getCleanValueArray('article.products', 'uint', 'discard');
+			$products = App::getEntityRepository('DeskPRO:Product')->getProductsById($product_ids);
+			foreach ($products as $p) {
+				$article->products->add($p);
+			}
+
+			App::getOrm()->persist($article);
+			App::getOrm()->flush();
 		}
-
-		$product_ids = $this->in->getCleanValueArray('article.products', 'uint', 'discard');
-		$products = App::getEntityRepository('DeskPRO:Product')->getProductsById($product_ids);
-		foreach ($products as $p) {
-			$article->products->add($p);
-		}
-
-		App::getOrm()->persist($article);
-		App::getOrm()->flush();
 
 		return $this->createJsonResponse(array(
 			'success' => true

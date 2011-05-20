@@ -11,11 +11,13 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Markdown;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Markdown;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
+
+use FineDiff;
 
 /**
  * Tracks an article edit that needs to be validated
@@ -56,4 +58,26 @@ class ArticleValidatingEdit extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="content", type="text")
 	 */
 	protected $content;
+
+	/**
+	 * Render a diff
+	 * 
+	 * @return string
+	 */
+	public function renderDiff()
+	{
+		$from_string = $this->article['content'];
+		$to_string   = $this->content;
+
+		$diff = new FineDiff(
+			$from_string,
+			$to_string,
+			FineDiff::$wordGranularity
+		);
+
+		$edits = $diff->getOps();
+		$rendered_diff = $diff->renderDiffToHTML();
+
+		return $rendered_diff;
+	}
 }

@@ -989,3 +989,19 @@ ul.item-list > li.sub {
 	font-size: 25px;
 	font-weight: normal;
 }
+
+.diff-box {
+    color: #808080;
+}
+
+.diff-box ins {
+    color:green;
+    background:#dfd;
+    text-decoration:none;
+}
+
+.diff-box del {
+    color:red;
+    background:#fdd;
+    text-decoration:none;
+}

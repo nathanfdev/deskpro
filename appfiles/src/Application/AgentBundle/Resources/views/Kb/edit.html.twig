@@ -59,8 +59,21 @@ pageMeta.article_id = {{article.id}};
 	{% endif %}
 	<tr>
 		<td>Content:</td>
-		<td><textarea name="article[content]" rows="10" cols="40" style="width: 95%">{{article.content}}</textarea></td>
+		<td>
+			<textarea name="article[content]" rows="10" cols="40" style="width: 95%">{% if validating_edit %}{{ validating_edit.content }}{% else %}{{article.content}}{% endif %}</textarea>
+			{% if article.id and not validating_edit %}
+				<br /><input type="checkbox" name="use_validating_edit" value="1" /> Put edit into validation (testing until we get permissions in admin)
+			{% endif %}
+		</td>
 	</tr>
+	{% if validating_edit %}
+		<tr>
+			<td>Highlighted Differences:</td>
+			<td>
+				<div class="diff-box" style="width: 95%; height: 200px; overflow: auto;">{{ validating_edit.renderDiff() }}</div>
+			</td>
+		</tr>
+	{% endif %}
 </table>
 
 <div style="float:right">
