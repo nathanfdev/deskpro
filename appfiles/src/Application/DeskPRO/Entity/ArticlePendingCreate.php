@@ -57,7 +57,7 @@ class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
-	public function __consturct()
+	public function __construct()
 	{
 		$this->date_created = new \DateTime();
 	}

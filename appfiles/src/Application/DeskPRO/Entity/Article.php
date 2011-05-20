@@ -141,6 +141,12 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \DateTime
+	 * @orm:Column(name="date_published",type="datetime", nullable=true)
+	 */
+	protected $date_published;
+
+	/**
+	 * @var \DateTime
 	 * @orm:Column(name="date_end",type="datetime", nullable=true)
 	 */
 	protected $date_end;
@@ -168,7 +174,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_label_manager = null;
 
-	public function __consturct()
+	public function __construct()
 	{
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
@@ -180,15 +186,27 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$this->hidden_status = self::HIDDEN_STATUS_DRAFT;
 	}
 
+	public function setTitle($title)
+	{
+		$this->title = $title;
+		$this->slug  = Strings::slugifyTitle($title);
+	}
+
 	public function setStatusCode($status_code)
 	{
 		if (strpos($status_code, 'hidden.') === 0) {
 			$status_code = str_replace('hidden.', '', $status_code);
 			$this['status'] = 'hidden';
 			$this['hidden_status'] = $status_code;
+
+			$this->date_published = null;
 		} else {
 			$this['status'] = $status_code;
 			$this['hidden_status'] = null;
+
+			if (!$this->date_published) {
+				$this->date_published = new \DateTime();
+			}
 		}
 	}
 

@@ -21,7 +21,7 @@ use \Orb\Util\Strings;
  * Glossary
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\GlossaryWord")
- * @orm:Table(name="glossary_word")
+ * @orm:Table(name="glossary_words")
  */
 class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 {

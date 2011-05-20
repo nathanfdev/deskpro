@@ -27,7 +27,7 @@ class ArticleValidatingEdit extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @orm:id
-	 * @orm:ManyToOne(targetEntity="Article", inversedBy="comment")
+	 * @orm:ManyToOne(targetEntity="Article")
 	 * @orm:JoinColumn(name="article_id", referencedColumnName="id")
 	 */
 	protected $article;
