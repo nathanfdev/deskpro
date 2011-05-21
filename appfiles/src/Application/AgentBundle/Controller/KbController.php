@@ -76,7 +76,14 @@ class KbController extends AbstractController
 			}
 		}
 
-		$category_names = App::getEntityRepository('DeskPRO:ArticleCategory')->getFullCategoryNames();
+		/** @var $agent_cat_helper \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy */
+		$agent_cat_helper = App::getEntityRepository('DeskPRO:ArticleCategory')->getAgentCategoryHelper();
+		$agent_category_names = $agent_cat_helper->getFullCategoryNames();
+
+		/** @var $user_cat_helper \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy */
+		$user_cat_helper = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper();
+		$user_category_names = $user_cat_helper->getFullCategoryNames();
+
 		$product_name   = App::getEntityRepository('DeskPRO:Product')->getFullCategoryNames();
 
 		$tpl = 'AgentBundle:Kb:edit.html.twig';
@@ -89,7 +96,8 @@ class KbController extends AbstractController
 
 		return $this->render($tpl, array(
 			'article'              => $article,
-			'category_names'       => $category_names,
+			'user_category_names'  => $user_category_names,
+			'agent_category_names' => $agent_category_names,
 			'product_names'        => $product_name,
 			'article_categories'   => $article_categories,
 			'article_products'     => $article_products,

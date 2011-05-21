@@ -50,10 +50,17 @@ pageMeta.article_id = 0;
 	<tr>
 		<td>Categories:</td>
 		<td>
-			<select name="article[categories][]" multiple="multiple" size="4">
-				{% for k,v in category_names %}
-					<option value="{{k}}" {% if k in article_categories %}selected="selected"{% endif %}>{{v}}</option>
-				{% endfor %}
+			<select name="article[categories][]" multiple="multiple" size="8" style="width: 75%">
+				<optgroup label="User Knowledgebase">
+					{% for k,v in user_category_names %}
+						<option value="{{k}}" {% if k in article_categories %}selected="selected"{% endif %}>{{v}}</option>
+					{% endfor %}
+				</optgroup>
+				<optgroup label="Agent Knowledgebase">
+					{% for k,v in agent_category_names %}
+						<option value="{{k}}" {% if k in article_categories %}selected="selected"{% endif %}>{{v}}</option>
+					{% endfor %}
+				</optgroup>
 			</select>
 		</td>
 	</tr>
@@ -61,7 +68,7 @@ pageMeta.article_id = 0;
 		<tr>
 			<td>Products:</td>
 			<td>
-				<select name="article[products][]" multiple="multiple" size="4">
+				<select name="article[products][]" multiple="multiple" size="8" style="width: 75%">
 					{% for k,v in product_names %}
 						<option value="{{k}}">{{v}}</option>
 					{% endfor %}
