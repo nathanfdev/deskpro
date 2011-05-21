@@ -27,7 +27,7 @@ pageMeta.title = 'Glossary';
 		<ul>
 			<li>
 				<label>Words</label>
-				<span class="counter">{{word_count|default('0')}}</span>
+				<span class="counter counter-words">{{word_count|default('0')}}</span>
 			</li>
 			<li class="total on">
 				<label class="new-word-trigger" style="cursor: pointer">Add word</label>
@@ -38,8 +38,8 @@ pageMeta.title = 'Glossary';
 	<div class="pad">
 		<dl>
 			{% for letter,words in words %}
-				<dt data-letter="{{leter}}">{{letter}}</dt>
-				<dd>
+				<dt data-letter="{{letter}}" {% if not words|length %}style="display:none"{% endif %}>{{letter}}</dt>
+				<dd data-letter="{{letter}}" {% if not words|length %}style="display:none"{% endif %}>
 					<ul class="comma-list">
 						{% for id,word in words %}
 							<li>

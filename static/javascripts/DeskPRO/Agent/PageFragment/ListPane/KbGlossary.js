@@ -91,8 +91,31 @@ DeskPRO.Agent.PageFragment.ListPane.KbGlossary = new Class({
 			data: data,
 			context: this,
 			dataType: 'json',
-			success: function(counts) {
+			success: function(data) {
+				// Update count
+				var counter = $('.counter-words', this.wrapper);
+				var cnt = parseInt(counter.html());
+				counter.html(cnt+1);
 
+				// Add the new word to the list
+				var letter = data.letter;
+				var word = data.word;
+				var word_id = data.word_id;
+
+				var li = $('<li><a class="edit-word-trigger" data-word-id="'+word_id+'">'+word+'</a></li>');
+
+				var dt = $('dt[data-letter="' + letter + '"]:first', this.wrapper);
+				var dd = $('dd[data-letter="' + letter + '"]:first', this.wrapper);
+
+				dt.show();
+				dd.show();
+				$('ul', dd).prepend(li);
+
+				// Reset add form
+				$('input.word', this.addDlg.elements.wrapperOuter).val('');
+				$('textarea.content', this.addDlg.elements.wrapperOuter).val('');
+
+				this.addDlg.closeOverlay();
 			}
 		});
 	},

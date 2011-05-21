@@ -362,7 +362,7 @@ class KbController extends AbstractController
 	{
 		$words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
 		$word_count = count($words);
-		$words = Arrays::sortIntoAlphabeticalIndex($words, null, true);
+		$words = Arrays::sortIntoAlphabeticalIndex($words, null, true, true);
 
 		return $this->render('AgentBundle:Kb:list-glossary.html.twig', array(
 			'words'      => $words,
@@ -379,10 +379,21 @@ class KbController extends AbstractController
 		App::getOrm()->persist($word);
 		App::getOrm()->flush();
 
+		$first = Strings::utf8_substr($word['word'], 0, 1);
+		$first = Strings::utf8_accents_to_ascii($first);
+		$first = Strings::utf8_strtoupper($first);
+
+		if (is_numeric($first)) {
+			$first = '#';
+		} elseif (!preg_match('#[A-Z]#', $first)) {
+			$first = '@';
+		}
+
 		return $this->createJsonResponse(array(
 			'id' => $word['id'],
 			'word' => $word['word'],
-			'content' => $word['content']
+			'content' => $word['content'],
+			'letter' => $first
 		));
 	}
 

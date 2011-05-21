@@ -9,9 +9,6 @@
 		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%">
 
 			<div class="inner-container">
-				<div class="inner-container-title filters">
-					<h3>Tasks</h3>
-				</div>
 				<div class="inner-container-content">
 					<ol>
 						<li data-route="listpane:{{ path('agent_kb_validating') }}">
@@ -25,6 +22,9 @@
 						<li data-route="listpane:{{ path('agent_kb_pending') }}">
 							<span class="list-counter">{{kb_counts.pending}}</span>
 							<a>Articles to be created</a>
+						</li>
+						<li data-route="listpane:{{ path('agent_kb_glossary') }}">
+							<a>Manage Glossary</a>
 						</li>
 					</ol>
 				</div>
