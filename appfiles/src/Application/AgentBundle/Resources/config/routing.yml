@@ -630,7 +630,7 @@ agent_kb_newarticle_save:
 
 agent_kb_newarticle:
   pattern: /kb/article/new
-  defaults: { _controller: AgentBundle:Kb:viewArticle, article_id: 0 }
+  defaults: { _controller: AgentBundle:Kb:viewArticle, article_id: '0' }
 
 agent_kb_article:
   pattern: /kb/article/{article_id}
@@ -654,6 +654,13 @@ agent_kb_pending:
   pattern: /kb/pending-articles
   defaults: { _controller: AgentBundle:Kb:listPendingArticles }
 
+agent_kb_drafts:
+  pattern: /kb/drafts
+  defaults: { _controller: AgentBundle:Kb:draftList }
+
+agent_kb_cat:
+  pattern: /kb/category/{category_id}
+  defaults: { _controller: AgentBundle:Kb:categoryList }
 
 agent_kb_validating:
   pattern: /kb/validating-articles

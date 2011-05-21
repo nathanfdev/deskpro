@@ -70,6 +70,10 @@ class KbController extends AbstractController
 			if ($this->in->getUint('pending_article_id')) {
 				$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
 			}
+
+			if ($this->in->getUint('in_category')) {
+				$article_categories[] = $this->in->getUint('in_category');
+			}
 		}
 
 		$category_names = App::getEntityRepository('DeskPRO:ArticleCategory')->getFullCategoryNames();
@@ -397,6 +401,56 @@ class KbController extends AbstractController
 			'id' => $word['id'],
 			'word' => $word['word'],
 			'content' => $word['content']
+		));
+	}
+
+	############################################################################
+	# Listings
+	############################################################################
+
+	public function draftListAction()
+	{
+		$all_articles = App::getEntityRepository('DeskPRO:Article')->getDraftArticles();
+
+		$your_articles = array();
+		$others_articles = array();
+
+		foreach ($all_articles as $article) {
+			if ($article->person['id'] == $this->person['id']) {
+				$your_articles[] = $article;
+			} else {
+				$others_articles[] = $article;
+			}
+		}
+
+		return $this->render('AgentBundle:Kb:list-drafts.html.twig', array(
+			'your_articles' => $your_articles,
+			'others_articles' => $others_articles,
+		));
+	}
+
+	public function categoryListAction($category_id)
+	{
+		$category = App::findEntity('DeskPRO:ArticleCategory', $category_id);
+
+		$is_agent = $category['is_agent'];
+
+		$all_cat_ids = $category->getTreeIds();
+
+		$articles = App::getOrm()->createQuery("
+			SELECT a
+			FROM DeskPRO:Article a INDEX BY a.id
+			LEFT JOIN a.categories cat
+			LEFT JOIN a.person p
+			WHERE cat.id IN (" . implode(',', $all_cat_ids) . ")
+				AND ((a.status = 'published' OR a.status = 'archived') OR (a.hidden_status = 'unpublished'))
+			ORDER BY a.id DESC
+		")->execute();
+
+		return $this->render('AgentBundle:Kb:list.html.twig', array(
+			'category' => $category,
+			'articles' => $articles,
+			'is_agent' => $is_agent
 		));
 	}
 }

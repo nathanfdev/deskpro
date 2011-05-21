@@ -52,7 +52,7 @@ pageMeta.article_id = 0;
 		<td>
 			<select name="article[categories][]" multiple="multiple" size="4">
 				{% for k,v in category_names %}
-					<option value="{{k}}">{{v}}</option>
+					<option value="{{k}}" {% if k in article_categories %}selected="selected"{% endif %}>{{v}}</option>
 				{% endfor %}
 			</select>
 		</td>

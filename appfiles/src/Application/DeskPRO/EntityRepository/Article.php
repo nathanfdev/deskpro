@@ -46,6 +46,36 @@ class Article extends EntityRepository
 		return $articles;
 	}
 
+
+	/**
+	 * Get drafts, optionally for a specific person
+	 *
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @return array
+	 */
+	public function getDraftArticles(OersonEntity $person = null)
+	{
+		if ($person) {
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a
+				WHERE a.hidden_status = ?1 AND a.person = ?2
+				ORDER BY a.id DESC
+			")->setParameter(1, 'draft')
+			  ->setParameter(2, $person)
+			  ->execute();
+		} else {
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT a
+				FROM DeskPRO:Article a
+				WHERE a.hidden_status = ?1
+				ORDER BY a.id DESC
+			")->setParameter(1, 'draft')->execute();
+		}
+		
+		return $articles;
+	}
+
 	
 
 	/**
