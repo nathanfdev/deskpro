@@ -1538,13 +1538,21 @@ class Arrays
 	 * $alpha_array = Arrays::sortIntoAlphabeticalIndex($array);
 	 * </code>
 	 *
-	 * @param array $array       The array
-	 * @param mixed $word_index  If items in $array is itself an array, the index that contains the word
+	 * @param array $array          The array
+	 * @param mixed $word_index     If items in $array is itself an array, the index that contains the word
+	 * @param bool  $empty_letters  True to include empty letters in the array (the letters will themselves be emtpy arrays)
 	 * @return array
 	 */
-	public static function sortIntoAlphabeticalIndex($array, $word_index = null, $maintain_keys = false)
+	public static function sortIntoAlphabeticalIndex($array, $word_index = null, $maintain_keys = false, $empty_letters = false)
 	{
 		$aindex = array();
+
+		if ($empty_letters) {
+			$aindex = array('@' => array(), '#' => array());
+			foreach (range('A','Z') as $l) {
+				$aindex[$l] = array();
+			}
+		}
 
 		foreach ($array as $k => $item) {
 
