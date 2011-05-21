@@ -70,7 +70,7 @@ pageMeta.article_id = {{article.id}};
 		<tr>
 			<td>Highlighted Differences:</td>
 			<td>
-				<div class="diff-box" style="width: 95%; height: 200px; overflow: auto;">{{ validating_edit.renderDiff() }}</div>
+				<div class="diff-box" style="width: 95%; height: 200px; overflow: auto;">{{ validating_edit.renderDiff()|raw }}</div>
 			</td>
 		</tr>
 	{% endif %}
