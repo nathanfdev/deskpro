@@ -121,8 +121,10 @@ class KbController extends AbstractController
 			$article->products->add($p);
 		}
 
+		$pending_article_id = false;
 		if ($this->in->getUint('pending_article_id')) {
 			$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
+			$pending_article_id = $pending_article['id'];
 			App::getOrm()->remove($pending_article);
 		}
 
@@ -131,6 +133,7 @@ class KbController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'load_url'   => $this->generateUrl('agent_kb_article', array('article_id' => $article['id'])),
+			'pending_article_id' => $pending_article_id,
 			'article_id' => $article['id']
 		));
 	}
@@ -234,7 +237,10 @@ class KbController extends AbstractController
 		App::getOrm()->persist($pending_article);
 		App::getOrm()->flush();
 
+		$row_html = $this->renderView('AgentBundle:Kb:list-pending-row.html.twig', array('pending_article' => $pending_article));
+
 		return $this->createJsonResponse(array(
+			'row_html' => $row_html,
 			'pending_article_id' => $pending_article['id']
 		));
 	}

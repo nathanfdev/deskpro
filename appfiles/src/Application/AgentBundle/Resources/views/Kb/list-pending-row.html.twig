@@ -1,0 +1,15 @@
+<tr class="pending_article-{{pending_article.id}} pending_article line-1">
+	<td>
+		{% if pending_article.ticket %}
+			Ticket reference: <a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': pending_article.ticket.id}) }}">
+				{{ pending_article.ticket.subject }}
+			</a><br />
+		{% endif %}
+		{{ pending_article.comment }}
+	</td>
+	<td>
+		<a class="with-route" data-route="kb_article_new:{{ path('agent_kb_newarticle', {'pending_article_id': pending_article.id}) }}">
+			Create article
+		</a>
+	</td>
+</tr>

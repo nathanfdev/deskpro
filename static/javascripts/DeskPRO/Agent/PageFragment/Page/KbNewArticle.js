@@ -23,8 +23,11 @@ DeskPRO.Agent.PageFragment.Page.KbNewArticle = new Class({
 			context: this,
 			dataType: 'json',
 			data: data,
-			success: function(counts) {
-				DeskPRO_Window.runPageRoute('kb_article:' + data.load_url);
+			success: function(data) {
+				if (data.pending_article_id) {
+					DeskPRO_Window.getMessageBroker().sendMessage('kb.pending_article_removed', {pending_article_id: data.pending_article_id});
+				}
+				DeskPRO_Window.runPageRoute('kb_article_edit:' + data.load_url);
 				DeskPRO_Window.removePage(this);
 			}
 		});

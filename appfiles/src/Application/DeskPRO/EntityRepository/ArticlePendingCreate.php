@@ -24,24 +24,9 @@ class ArticlePendingCreate extends EntityRepository
 			FROM DeskPRO:ArticlePendingCreate a
 			LEFT JOIN a.ticket t
 			LEFT JOIN a.person p
-			ORDER BY a.date_created
+			ORDER BY a.date_created DESC
 		")->execute();
 
 		return $pending_articles;
-	}
-
-
-	/**
-	 * Get a list of emails suitable for display
-	 */
-	public function getList()
-	{
-		$list = App::getDb()->fetchAllCol("
-			SELECT banned_email
-			FROM ban_emails
-			ORDER BY banned_email ASC
-		");
-
-		return $list;
 	}
 }

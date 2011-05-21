@@ -4,7 +4,7 @@ pageMeta.title = 'Pending Articles';
 </script>
 <div class="content">
 	<div class="add-dlg dp-overlay" style="display: none; width: 400px;">
-		Add a comment about the article that needs to be written:<br />
+		Add a description about the article that needs to be written:<br />
 		<textarea class="comment" rows="2" cols="50" style="width: 98%;"></textarea><br />
 		<div style="text-align: right">
 			<button class="dp-button x-small save-trigger">Add</button>
@@ -15,7 +15,7 @@ pageMeta.title = 'Pending Articles';
 		<ul>
 			<li>
 				<label>Pending Articles</label>
-				<span class="counter">{{pending_articles|length}}</span>
+				<span class="counter counter-pending">{{pending_articles|length}}</span>
 			</li>
 			<li class="total on">
 				<label class="new-pending-article-trigger" style="cursor: pointer;">Add new pending article</label>
@@ -23,7 +23,7 @@ pageMeta.title = 'Pending Articles';
 		</ul>
 	</div>
 
-	<div class="pad">
+	<div class="pad pending-articles-wrap">
 		<div class="inner-box-tab-content box-list no-pad">
 			<table class="list" cellspacing="0" width="100%">
 				<thead class="display-options-trigger dbl-click-trigger nosel">
@@ -33,24 +33,11 @@ pageMeta.title = 'Pending Articles';
 					</tr>
 				</thead>
 
-				{% for art in pending_articles %}
-					<tr class="line-1">
-						<td>
-							<div style="float:right">{{ art.date_created|date('Y-m-d') }}</div>
-							{% if art.ticket %}
-								<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': art.ticket.id}) }}">
-									{{ art.ticket.subject }}
-								</a><br />
-							{% endif %}
-							{{ art.comment }}
-						</td>
-						<td>
-							<a class="with-route" data-route="kb_article_new:{{ path('agent_kb_newarticle', {'pending_article_id': art.id}) }}">
-								Create article
-							</a>
-						</td>
-					</tr>
-				{% endfor %}
+				<tbody class="pending-articles-list">
+					{% for pending_article in pending_articles %}
+						{% include 'AgentBundle:Kb:list-pending-row.html.twig' %}
+					{% endfor %}
+				</tbody>
 			</table>
 		</div>
 	</div>

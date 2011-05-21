@@ -11,6 +11,11 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 		this.initRoutesOnCollection($('.with-route', el));
 
 		$('.new-pending-article-trigger', el).click(this.showAddDlg.bind(this));
+		
+		var self = this;
+		DeskPRO_Window.getMessageBroker().addMessageListener('kb.pending_article_removed', function(data) {
+			self.removeFromList(data.pending_article_id)
+		});
 	},
 
 	showAddDlg: function() {
@@ -26,7 +31,11 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 			contentElement: el
 		});
 
-		$('.save-trigger', el).click(this.saveNewPendingArticle.bind(this));
+		var self = this;
+		$('.save-trigger', el).click(function() {
+			self.addDlg.closeOverlay();
+			self.saveNewPendingArticle();
+		});
 
 		return this.addDlg;
 	},
@@ -44,9 +53,29 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 			data: data,
 			context: this,
 			dataType: 'json',
-			success: function(counts) {
+			success: function(info) {
+				var counter = $('.counter-pending', this.wrapper);
+				var count = parseInt(counter.html());
+				counter.html(count+1);
 
+				$('.pending-articles-wrap', this.wrapper).show();
+
+				var addEl = $(info.row_html);
+				this.initRoutesOnCollection($('.with-route', addEl));
+				$('tbody.pending-articles-list', this.wrapper).prepend(addEl);
 			}
 		});
+	},
+
+	removeFromList: function(id) {
+		var counter = $('.counter-pending', this.wrapper);
+		var count = parseInt(counter.html());
+		counter.html(count-1);
+
+		var wrap = $('.pending-articles-wrap', this.wrapper);
+		$('tr.pending_article-' + id, wrap).remove();
+		if (!$('tr.pending_article', wrap).length) {
+			wrap.hide();
+		}
 	}
 });
