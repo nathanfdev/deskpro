@@ -39,7 +39,13 @@ class CategoryHierarchy
 	 */
 	protected $cache_tag = null;
 
+	/**
+	 * @var string
+	 */
+	protected $where_cond = null;
+
 	protected $_cat_hierarchy = null;
+	protected $_cat_hierarchy_flat = null;
 	protected $_cat_names = null;
 	protected $_cat_ids = array();
 
@@ -54,6 +60,18 @@ class CategoryHierarchy
 		}
 
 		$this->cache_tag = $cache_tag;
+	}
+
+	
+	/**
+	 * Set the where condition when fetching categories
+	 * 
+	 * @param  $where_cond
+	 * @return string
+	 */
+	public function setWhereCond($where_cond)
+	{
+		$this->where_cond = $where_cond;
 	}
 
 
@@ -82,6 +100,7 @@ class CategoryHierarchy
 			$cats = $db->fetchAllKeyed("
 				SELECT id, parent_id, title
 				FROM {$this->table_name}
+				" . ($this->where_cond ? "WHERE {$this->where_cond}" : '') . "
 				ORDER BY display_order ASC
 			");
 
@@ -91,9 +110,11 @@ class CategoryHierarchy
 
 			$cats = Arrays::intoHierarchy($cats, null);
 			$this->_cats_hierarchy = $cats;
+			$this->_cat_hierarchy_flat = Arrays::flattenHierarchy($cats);
 
 			App::getCache('common')->save(array(
 				'_cats_hierarchy' => $this->_cats_hierarchy,
+				'_cat_hierarchy_flat' => $this->_cat_hierarchy_flat,
 				'_cat_names' => $this->_cat_names,
 				'_cat_ids' => $this->_cat_ids,
 			), $this->table_name.'_category_info', array($this->cache_tag));
@@ -159,6 +180,18 @@ class CategoryHierarchy
 		}
 
 		return $names;
+	}
+
+
+	/**
+	 * Get a flat hierarchy, where children are in the main array but have an increasing 'depth'
+	 *
+	 * @return array
+	 */
+	public function getFlatHierarchy()
+	{
+		$this->getCategoriesInHierarchy();
+		return $this->_cat_hierarchy_flat;
 	}
 
 	

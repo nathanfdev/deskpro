@@ -19,17 +19,30 @@ use Doctrine\ORM\EntityRepository;
 
 class ArticleValidatingEdit extends EntityRepository
 {
-	public function getEditForArticle(ArticleEntity $article, PersonEntity $person)
+	public function getEditForArticle(ArticleEntity $article, PersonEntity $person = null)
 	{
-		$edit = $this->getEntityManager()->createQuery("
-			SELECT e
-			FROM DeskPRO:ArticleValidatingEdit e
-			WHERE e.article = ?1 AND e.person = ?2
-		")->setParameter(1, $article)
-		  ->setParameter(2, $person)
-		  ->execute();
+		try {
+			if ($person) {
+				$edit = $this->getEntityManager()->createQuery("
+					SELECT e
+					FROM DeskPRO:ArticleValidatingEdit e
+					WHERE e.article = ?1 AND e.person = ?2
+				")->setParameter(1, $article)
+				  ->setParameter(2, $person)
+				  ->getSingleResult();
+			} else {
+				$edit = $this->getEntityManager()->createQuery("
+					SELECT e
+					FROM DeskPRO:ArticleValidatingEdit e
+					WHERE e.article = ?1
+				")->setParameter(1, $article)
+				  ->getSingleResult();
+			}
 
-		return $edit;
+			return $edit;
+		} catch (\Exception $e) {
+			return null;
+		}
 	}
 
 	public function getValidatingEdit()

@@ -1,0 +1,67 @@
+<li class="publish-nav" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.Kb">
+	<span class="nav-counter" style="display:none">0</span>
+	<a>Knowledgebase</a>
+	<ul class="wrap-dropdown-tabs">
+		<li data-route="page:{{ path('agent_kb_newarticle') }}"><div class="new-ticket"><div>Create Article</div></div></li>
+	</ul>
+	<div class="wrap-dropdown n-drop kb-drop has-tabs" style="width: 450px;">
+
+		<table cellspacing="0" cellpadding="0" width="100%"><tr><td valign="top" width="50%">
+
+			<div class="inner-container">
+				<div class="inner-container-title filters">
+					<h3>Tasks</h3>
+				</div>
+				<div class="inner-container-content">
+					<ol>
+						<li data-route="listpane:{{ path('agent_kb_validating') }}">
+							<span class="list-counter">{{kb_counts.awaiting_validation}}</span>
+							<a>Articles awaiting validation</a>
+						</li>
+						<li data-route="listpane:{{ path('agent_kb_validating') }}">
+							<span class="list-counter">{{kb_counts.drafts}}</span>
+							<a>Draft articles</a>
+						</li>
+						<li data-route="listpane:{{ path('agent_kb_pending') }}">
+							<span class="list-counter">{{kb_counts.pending}}</span>
+							<a>Articles to be created</a>
+						</li>
+					</ol>
+				</div>
+			</div>
+
+			<div class="inner-container">
+				<div class="inner-container-title filters">
+					<h3>Categories</h3>
+				</div>
+				<div class="inner-container-content">
+					<ol>
+						{% for cat in kb_user_cats %}
+							<li data-route="listpane:{{ path('agent_kb_pending') }}">
+								<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
+							</li>
+						{% endfor %}
+					</ol>
+				</div>
+			</div>
+
+		</td><td valign="top" width="50%">
+
+			<div class="inner-container">
+				<div class="inner-container-title filters">
+					<h3>Agent Knowledgebase</h3>
+				</div>
+				<div class="inner-container-content">
+					<ol>
+						{% for cat in kb_agent_cats %}
+							<li data-route="listpane:{{ path('agent_kb_pending') }}">
+								<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
+							</li>
+						{% endfor %}
+					</ol>
+				</div>
+			</div>
+
+		</td></tr></table>
+	</div>
+</li>

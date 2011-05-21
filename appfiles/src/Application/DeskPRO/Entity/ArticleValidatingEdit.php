@@ -78,6 +78,8 @@ class ArticleValidatingEdit extends \Application\DeskPRO\Domain\DomainObject
 		$edits = $diff->getOps();
 		$rendered_diff = $diff->renderDiffToHTML();
 
+		$rendered_diff = nl2br($rendered_diff);
+
 		return $rendered_diff;
 	}
 }

@@ -229,6 +229,14 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		return Markdown::format($this->content);
 	}
 
+	public function getContentPlainHtml()
+	{
+		$content = htmlspecialchars($this->content);
+		$content = nl2br($content);
+
+		return $content;
+	}
+
 	public function getUrlSlug()
 	{
 		return $this->id . '-' . $this->slug;

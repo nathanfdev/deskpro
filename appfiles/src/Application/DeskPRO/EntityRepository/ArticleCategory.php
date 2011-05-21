@@ -11,23 +11,46 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository;
+use Application\DeskPRO\App;
+use Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository;
+use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 
-use Doctrine\ORM\Query,
-    Gedmo\Tree\Strategy,
-    Gedmo\Tree\Strategy\ORM\Nested,
-    Gedmo\Exception\InvalidArgumentException,
-    Doctrine\ORM\Proxy\Proxy;
-
-use \Orb\Util\Arrays;
-use \Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class ArticleCategory extends AbstractNestedTreeCategoryRepository
 {
-	protected $all_cats = null;
-	protected $hierarchy = null;
+	protected $_agent_cat_helper;
+	protected $_user_cat_helper;
 
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy
+	 */
+	public function getAgentCategoryHelper()
+	{
+		if ($this->_agent_cat_helper !== null) return $this->_agent_cat_helper;
+
+		$this->_agent_cat_helper = new CategoryHierarchy($this, $this->getClassMetadata());
+		$this->_agent_cat_helper->setWhereCond("is_agent = 1");
+
+		return $this->_agent_cat_helper;
+	}
+
+	/**
+	 * @return \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy
+	 */
+	public function getUserCategoryHelper()
+	{
+		if ($this->_user_cat_helper !== null) return $this->_agent_cat_helper;
+
+		$this->_user_cat_helper = new CategoryHierarchy($this, $this->getClassMetadata());
+		$this->_user_cat_helper->setWhereCond("is_agent = 0");
+
+		return $this->_user_cat_helper;
+	}
+
+
+	
 	public function getCategoriesById(array $ids)
 	{
 		$ids = Arrays::removeFalsey($ids);

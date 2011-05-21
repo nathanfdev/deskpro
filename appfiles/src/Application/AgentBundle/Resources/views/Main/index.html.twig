@@ -193,19 +193,7 @@
 							<a href="index.html">Calendar</a>
 						</li>
 						{% include 'AgentBundle:Main:part-tasks-menu.html.twig' %}
-						<li class="publish-nav">
-							<span class="nav-counter" style="display:none">0</span>
-							<a href="index.html">Publish</a>
-							{# publish menu start #}
-							<div class="wrap-dropdown n-drop global publish-drop">
-								<ol class="icon-menu single-line">
-									<li class="link-knowledgebase"><a href="">KB</a></li>
-									<li class="link-troubleshooters"><a href="">Troubles</a></li>
-									<li class="link-files"><a href="">Files</a></li>
-								</ol>
-							</div>
-							{# publish menu end #}
-						</li>
+						{% include 'AgentBundle:Main:part-kb-menu.html.twig' %}
 						<li class="ideas-nav">
 							<span class="nav-counter" style="display:none">0</span>
 							<a href="index.html">Ideas</a>

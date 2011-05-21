@@ -146,7 +146,7 @@ class KbController extends AbstractController
 			$require_validating = true;
 		}
 
-		if ($edit_validating) {
+		if ($require_validating) {
 
 			if (!$validating_edit) {
 				$validating_edit = new ArticleValidatingEdit();
@@ -268,6 +268,71 @@ class KbController extends AbstractController
 		return $this->render('AgentBundle:Kb:list-validating-articles.html.twig', array(
 			'validating_articles' => $validating_articles,
 			'validating_edits'    => $validating_edits,
+		));
+	}
+
+	public function previewArticleAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+
+		return $this->render('AgentBundle:Kb:preview-validating-article.html.twig', array(
+			'article' => $article,
+		));
+	}
+
+	public function previewEditAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article);
+		
+		return $this->render('AgentBundle:Kb:preview-validating-edit.html.twig', array(
+			'article' => $article,
+			'edit' => $validating_edit,
+		));
+	}
+
+	public function validateArticleJsonAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article);
+
+		// Edit existsmeans we're validating that
+		if ($validating_edit) {
+			$article['title'] = $validating_edit['title'];
+			$article['content'] = $validating_edit['content'];
+			$type = 'edit';
+		} else {
+			$article['status_code'] = 'published';
+			$type = 'article';
+		}
+
+		App::getOrm()->persist($article);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'article_id' => $article['id'],
+			'type' => $type,
+		));
+	}
+
+	public function disapproveValidateArticleJsonAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article);
+
+		if ($validating_edit) {
+			App::getOrm()->remove($validating_edit);
+			$type = 'edit';
+		} else {
+			App::getOrm()->remove($article);
+			$type = 'article';
+		}
+
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'article_id' => $article['id'],
+			'type' => $type,
 		));
 	}
 

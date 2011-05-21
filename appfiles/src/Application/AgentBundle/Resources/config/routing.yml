@@ -659,6 +659,22 @@ agent_kb_validating:
   pattern: /kb/validating-articles
   defaults: { _controller: AgentBundle:Kb:validatingList }
 
+agent_kb_validating_preview_article:
+  pattern: /kb/validating-articles/preview-article/{article_id}
+  defaults: { _controller: AgentBundle:Kb:previewArticle }
+
+agent_kb_validating_preview_edit:
+  pattern: /kb/validating-articles/preview-edit/{article_id}
+  defaults: { _controller: AgentBundle:Kb:previewEdit }
+
+agent_kb_validating_val_article_json:
+  pattern: /kb/validating-articles/validate/{article_id}.json
+  defaults: { _controller: AgentBundle:Kb:validateArticleJson }
+
+agent_kb_validating_dis_article_json:
+  pattern: /kb/validating-articles/disapprove/{article_id}.json
+  defaults: { _controller: AgentBundle:Kb:disapproveValidateArticleJson }
+
 agent_kb_glossary:
   pattern: /kb/glossary
   defaults: { _controller: AgentBundle:Kb:glossaryList }
