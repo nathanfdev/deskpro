@@ -212,6 +212,20 @@ class KbController extends AbstractController
 		));
 	}
 
+	public function ajaxSaveLabelsAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$article->getLabelManager()->setLabelsArray($labels);
+
+		App::getOrm()->persist($article);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
+
 
 	############################################################################
 	# Pending articles
