@@ -15,7 +15,7 @@ pageMeta.article_id = {{article.id}};
 		<div class="kb-author-names">
 			By <cite>{{ article.person.display_name }}</cite>
 		</div>
-		<h3 class="name editable hover-edit" data-editable-for=".inline-editable .name">
+		<h3 class="title editable hover-edit" data-editable-for=".inline-editable .title">
 			{{ article.title }}
 		</h3>
 	</div>
@@ -160,4 +160,21 @@ pageMeta.article_id = {{article.id}};
 	{# /Tab Contents $}
 </div>
 {# /Main Tabs #}
+
+<ul class="menu status" data-option-name="status" style="display:none">
+	<li data-option-value="published">Published</li>
+	<li data-option-value="archived">Archived</li>
+	<li data-option-value="hidden.unpublished">Hidden: Unpublished</li>
+	<li data-option-value="hidden.deleted">Hidden: Deleted</li>
+	<li data-option-value="hidden.deleted">Hidden: Draft</li>
+</ul>
+
+
+<div class="inline-editable" style="display:none">
+	<div class="title">
+		<input type="text" name="title" value="{{ article.title }}"/>
+		<input type="hidden" name="action" value="title" />
+	</div>
+</div>
+
 </div>
