@@ -237,10 +237,10 @@ class TicketSearch extends SearcherAbstract
 		# Add wheres
 		#------------------------------
 
-		if ($ticket_parts['wheres']) {
+		if (!empty($ticket_parts['wheres'])) {
 			$where .= implode(" AND ", $ticket_parts['wheres']);
 		}
-		if ($user_parts) {
+		if (!empty($user_parts['wheres'])) {
 			$where .= " AND " . implode(" AND ", $user_parts['wheres']);
 		}
 
@@ -376,6 +376,8 @@ class TicketSearch extends SearcherAbstract
 		// If we dont set a status, we will automatically
 		// exclude 'hidden' tickets
 		$set_status = false;
+
+		print_r($this->terms);exit;
 
 		foreach ($this->terms as $term => $info) {
 			$join_id = Util::requestUniqueId();
@@ -513,7 +515,7 @@ class TicketSearch extends SearcherAbstract
 						$wheres[] = "$tickets_table.agent_id != " . App::getCurrentPerson()->getId();
 					} else {
 						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent'), $op, $choice, function($choice) {
-							$titles = App::getEntityRepository('DeskPRO:People')->getAgentNames((array)$choice);
+							$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
 							return $titles;
 						});
 

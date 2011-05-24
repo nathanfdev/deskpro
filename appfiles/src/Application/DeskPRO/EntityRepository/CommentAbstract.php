@@ -28,4 +28,15 @@ class CommentAbstract extends EntityRepository
 			ORDER BY c.id DESC
 		")->setParameter(1, 'visible')->setParameter(2, $object)->execute();
 	}
+
+	public function getValidatingComments()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM " . $this->_entityName ." c
+			LEFT JOIN c.person p
+			WHERE c.status = ?1
+			ORDER BY c.id DESC
+		")->setParameter(1, 'validating')->execute();
+	}
 }

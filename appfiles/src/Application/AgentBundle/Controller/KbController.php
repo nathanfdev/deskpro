@@ -473,4 +473,43 @@ class KbController extends AbstractController
 			'is_agent' => $is_agent
 		));
 	}
+
+	############################################################################
+	# Validating comments
+	############################################################################
+
+	public function validatingCommentsListAction()
+	{
+		$comments = App::getEntityRepository('DeskPRO:ArticleComment')->getValidatingComments();
+
+		return $this->render('AgentBundle:Kb:validating-comments-list.html.twig', array(
+			'comments' => $comments
+		));
+	}
+
+	public function validateCommentJsonAction($comment_id)
+	{
+		$comment = App::findEntity('DeskPRO:ArticleComment', $comment_id);
+		$comment['status'] = 'visible';
+
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'comment_id' => $comment['id'],
+		));
+	}
+
+	public function disapproveValidateCommentJsonAction($comment_id)
+	{
+		$comment = App::findEntity('DeskPRO:ArticleComment', $comment_id);
+		$comment['status'] = 'deleted';
+
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'comment_id' => $comment['id'],
+		));
+	}
 }

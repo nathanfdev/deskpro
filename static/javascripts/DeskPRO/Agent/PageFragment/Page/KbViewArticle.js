@@ -21,6 +21,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	},
 
 
+	//#################################################################
+	//# Basic
+	//#################################################################
+
 	_initBasic: function() {
 		var self = this;
 		$('.edit-trigger', this.wrapper).click(function() {
@@ -48,6 +52,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		});
 	},
 
+	
 	//#################################################################
 	//# Menus
 	//#################################################################
@@ -108,5 +113,5 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 
 	_handleSaveLabelsSuccess: function(data) {
 
-	},
+	}
 });

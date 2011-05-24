@@ -24,7 +24,7 @@ use Orb\Util\Arrays;
  */
 class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
-	const STATUS_OPEN       = 'visible';
+	const STATUS_VISIBLE    = 'visible';
 	const STATUS_VALIDATING = 'validating';
 	const STATUS_DELETED    = 'deleted';
 
