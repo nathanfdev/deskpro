@@ -90,6 +90,7 @@ class KbController extends AbstractController
 		if ($this->in->getBool('view')) {
 			$tpl = 'AgentBundle:Kb:view.html.twig';
 		}
+		$tpl = 'AgentBundle:Kb:view.html.twig';
 		if (!$article['id']) {
 			$tpl = 'AgentBundle:Kb:new.html.twig';
 		}

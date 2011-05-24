@@ -3,49 +3,161 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbViewArticle';
 pageMeta.title = {{article.title|json_encode|raw}};
 pageMeta.article_id = {{article.id}};
 </script>
-{% if not is_preview %}
-<div class="ticket-lock-bar" style="padding: 4px; text-align: right;">
-	{% if article.status_code == "hidden.validating" %}
-		<button class="dp-button x-small validate-trigger">Validate Article</button>
-	{% endif %}
-	<button class="dp-button x-small edit-trigger">Edit Article</button>
+<div class="layout-content kb-page">
+
+<div class="inner-box-tab-content-2 ticket-element">
+	<div class="ticket-status ticket-{{article.status}}">
+		<span class="ticket-{{article.status}} prop-val menu-trigger status">
+			{{article.status}} {% if article.hidden_status %}({{ article.hidden_status }}){% endif %}
+		</span>
+	</div>
+	<div class="kb-info-top">
+		<div class="kb-author-names">
+			By <cite>{{ article.person.display_name }}</cite>
+		</div>
+		<h3 class="name editable hover-edit" data-editable-for=".inline-editable .name">
+			{{ article.title }}
+		</h3>
+	</div>
 </div>
-{% endif %}
-		
-<div style="float:right">
-	{% if article.status_code == "published" %}Published
-	{% elseif article.status_code == "archived" %}Archived
-	{% elseif article.status_code == "hidden.unpublished" %}Unpublished
-	{% elseif article.status_code == "hidden.draft" %}Draft
-	{% elseif article.status_code == "hidden.validating" %}Validating
-	{% elseif article.status_code == "hidden.deleted" %}Deleted
-	{% endif %}
+
+{# Info Wrap #}
+<div class="ticket-info-wrapper">
+
+	{# Top Left #}
+	<div class="ticket-info left">
+		<div class="tags-wrap kb-tags">
+			<span class="tag-icon"></span>
+			<ul>
+				{% for label in article.labels %}
+					<li><span>{{label.label}}</span></li>
+				{% endfor %}
+			</ul>
+		</div>
+
+		{# Top Tabs #}
+		<div class="container-tabbed-wrap ticket-participants">
+
+			<div class="container-tabbed-tabs">
+				<ul>
+					<li class="container-tabbed-tabs-active"><a>Properties</a></li>
+				</ul>
+			</div>
+
+			<div class="container-tabbed">
+				<div class="container-tabbed-contents">
+
+					{# Tab: Properties #}
+					<div class="container-tabbed-content-tab">
+
+						<div class="row-table-cotent article-category-prop">
+							<div class="col-table-content title-col">
+								<span>Category</span>
+							</div>
+							<div class="col-table-content prop-val">
+								<ul>
+									{% for id in article_categories %}
+										<li>{{ category_names[id] }}</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+
+						<div class="row-table-cotent article-product-prop">
+							<div class="col-table-content title-col">
+								<span>Product</span>
+							</div>
+							<div class="col-table-content prop-val">
+								<ul>
+									{% for id in article_products %}
+										<li>{{ product_names[id] }}</li>
+									{% endfor %}
+								</ul>
+							</div>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Top Tabs #}
+		<br class="clear" />
+	</div>
+	{# /Top Left #}
+
+	{# Top Right #}
+	<div class="ticket-properties right">
+
+		{# Box Times #}
+		<div class="table-container">
+			<div class="table-title">
+				<h4>Dates</h4>
+			</div>
+			<div class="table-content">
+
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Created</span>
+					</div>
+					<div class="col-table-content">
+						<span class="timeago" title="{{article.date_created|date('c')}}">{{ article.date_created|date('Y-m-d') }}</span>
+					</div>
+				</div>
+
+				<div class="row-table-cotent article-date_published-prop">
+					<div class="col-table-content title-col">
+						<span>Publish</span>
+					</div>
+					<div class="col-table-content prop-val">
+						{% if article.date_published %}
+							{{ article.date_published|date('Y-m-d') }}
+						{% else %}
+							<em>(Unpublished and no future date set)</em>
+						{% endif %}
+					</div>
+				</div>
+
+				<div class="row-table-cotent article-date_end-prop">
+					<div class="col-table-content title-col">
+						<span>End</span>
+					</div>
+					<div class="col-table-content prop-val">
+						{% if article.date_end %}
+							{{ article.date_end|date('Y-m-d') }} ({{ article.end_action }})
+						{% else %}
+							<em>(No end date set)</em>
+						{% endif %}
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Box Times #}
+	</div>
+	{# /Top Right #}
 </div>
-<h1>{{article.title}}</h1>
-Author {{article.person.display_name}}<br /><br />
+{# /Info Wrap #}
 
-Date created: {{article.date_created|date('Y-m-d')}}<br />
-{% if article.date_published %}Date published: {{article.date_published|date('Y-m-d')}}<br />{% endif %}
-{% if article.date_end %}Date ends: {{article.date_end|date('Y-m-d')}} ({{ article.end_action }})<br />{% endif %}
+{# Main Tabs #}
+<div class="full-container-tabbed messages-container">
+	{# Tab Triggers #}
+	<div class="full-container-tabbed-tabs">
+		<ul>
+			<li class="tab-trigger kb-content on" data-tab-for=".tab-content.kb-content"><a>Article</a></li>
+			<li class="tab-trigger kb-related-content" data-tab-for=".tab-content.kb-related-content"><a>Related Content</a></li>
+			<li class="tab-trigger kb-comments" data-tab-for=".tab-content.kb-comments"><a>Comments</a></li>
+			<li class="tab-trigger kb-search-stats" data-tab-for=".tab-content.kb-search-stats"><a>Search Statistics</a></li>
+		</ul>
+	</div>
+	{# /Tab Triggers #}
 
-{% if article_categories %}
-<strong>Category:</strong>
-<ul>
-	{% for id in article_categories %}
-		<li>{{ category_names[id] }}</li>
-	{% endfor %}
-</ul>
-
-<br />
-{% endif %}
-
-{% if article_products %}
-<strong>Product:</strong>
-<ul>
-	{% for id in article_products %}
-		<li>{{ category_names[id] }}</li>
-	{% endfor %}
-</ul>
-{% endif %}
-<hr />
-{{ article.content_html|raw }}
+	{# Tab Contents #}
+	<div class="full-container-tabbed-contents-wrap">
+		{# Tab: Content #}
+		<div class="full-container-tabbed-contents tab-content kb-content" data-tab-trigger=".tab-trigger.kb-content" style="display: block">
+			<div class="kb-conten-wrap">{{ article.content_html|raw }}</div>
+		</div>
+		{# /Tab: Content #}
+	</div>
+	{# /Tab Contents $}
+</div>
+{# /Main Tabs #}
+</div>

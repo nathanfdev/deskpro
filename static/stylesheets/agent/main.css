@@ -3152,3 +3152,50 @@ ul.person-popout-tabs li a{
 	display: inline;
 	margin-right: 10px;
 }
+
+
+
+
+
+
+
+
+
+
+.kb-info-top {
+    float: left;
+    margin-left: 8px;
+}
+
+.kb-info-top h3 {
+    font-size: 14px;
+    background-image: none;
+    padding-left: 0;
+    margin-left: 0;
+}
+
+.kb-info-top .kb-author-names {
+    color: #9395A3;
+    font-size: 11px;
+}
+
+.kb-info-top .kb-author-names cite {
+    font-style: normal;
+}
+
+.kb-page .container-tabbed-wrap {
+    float: none !important;
+    margint-top: 8px;
+}
+
+.kb-page .container-tabbed-wrap .col-table-content.title-col {
+    width: 64px;
+}
+
+.kb-page .container-tabbed-wrap .col-table-content.prop-val {
+    width: auto !important;
+}
+
+.kb-conten-wrap {
+    padding: 8px;
+}
