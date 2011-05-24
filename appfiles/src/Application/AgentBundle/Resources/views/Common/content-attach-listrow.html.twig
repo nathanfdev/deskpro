@@ -1,0 +1,53 @@
+<li class="blob-{{ blob.id }}" data-blob-id="{{ blob.id }}">
+	{% if blob.isImage() %}
+		<img src="{{ path('serve_blob', {'blob_auth_id': blob.auth_id, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" />
+	{% endif %}
+	<a href="{{ blob.download_url }}" target="_blank">{{ blob.display_title }}</a>
+	<span class="size">({{ blob.readable_filesize }})</span>
+	{% if insert_controls %}
+		<div class="insert-controls">
+			<label>
+				<input type="blob_append[]" value="{{ blob.id }}" checked="checked" />
+				List as an attachment to the article
+			</label>
+			and/or <a href="" class="insert-link" data-blob-id="{{ blob.id }}">link to the file from within the article</a>
+			<div class="insert-controls-overlay">
+				<div class="overlay-title" style="padding:  6px;">
+					Insert {{ blob.display_title }}
+				</div>
+				<div class="overlay-content" style="padding-bottom: 15px; max-height: 500px overflow: auto;">
+
+					<strong>URL</strong><br />
+					<input type="hidden" class="insert-url-code" value="![attach:{{ blob.id }} url]" />
+					<button class="dp-button">Insert URL</button><br />
+					This will insert a plain-text URL to the file.
+
+					<hr />
+
+					<strong>Link</strong><br />
+					<input type="hidden" class="insert-link-code" value="![attach:{{ blob.id }} link:{{ '{{label}}' }}]" />
+					Label: <input type="text" class="link-label" value="{{ blob.display_title }}" /> <button class="dp-button">Insert Link</button><br />
+					This will insert a link to the file with the label as the clickable link text.
+
+					{% if blob.isImage() %}
+						<hr />
+
+						<strong>Full Image</strong>
+						<input type="hidden" class="insert-image-code" value="![attach:{{ blob.id }} image]" />
+						<button class="dp-button">Insert Image</button><br />
+						This will insert the full-sized image.
+
+						<hr />
+
+						<strong>Linked Thumbnail</strong>
+						<input type="hidden" class="insert-thumb-code" value="![attach:{{ blob.id }} thumb:{{ '{{width}},{{height}}' }}]" />
+						Width: <input type="text" class="thumb-width" value="50" />
+						Height: <input type="text" class="thumb-height" value="50" />
+						<button class="dp-button">Insert Thumbnail</button><br />
+						This will insert a thumbnail image that links to the full-sized image.
+					{% endif %}
+				</div>
+			</div>
+		</div>
+	{% endif %}
+</li>

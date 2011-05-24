@@ -25,6 +25,7 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	stylesheets: [],
 	html: '',
 	meta: {},
+	urls: {},
 
 	featureSelectors: {
 		routes: [],
@@ -175,6 +176,32 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		}
 
 		return this.meta[name];
+	},
+
+
+	/**
+	 * Get a URL pattern
+	 */
+	getUrl: function(name, vars) {
+
+		if (!this.meta.urls) {
+			console.error('Unknown url name %s (no urls set)', name);
+			return null;
+		}
+
+		if (!this.meta.urls[name]) {
+			console.error('Unknown url name %s', name);
+			return null;
+		}
+
+		var url = this.meta.urls[name];
+		if (vars) {
+			Object.each(vars, function(v,k) {
+				url = url.replace('{'+k+'}', v);
+			});
+		}
+
+		return url;
 	},
 
 

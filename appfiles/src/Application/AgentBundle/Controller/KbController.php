@@ -226,6 +226,14 @@ class KbController extends AbstractController
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
+	public function getArticleEditorAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+
+		return $this->render('AgentBundle:Kb:view-editor-markdown.html.twig', array(
+			'article' => $article
+		));
+	}
 
 	############################################################################
 	# Pending articles

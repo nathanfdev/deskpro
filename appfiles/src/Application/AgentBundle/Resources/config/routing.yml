@@ -642,6 +642,11 @@ agent_kb_article_edit:
   defaults: { _controller: AgentBundle:Kb:editArticleSave }
   requirements: { article_id: "\d+" }
 
+agent_kb_article_edit_geteditor:
+  pattern: /kb/article/{article_id}/get-editor
+  defaults: { _controller: AgentBundle:Kb:getArticleEditor }
+  requirements: { article_id: "\d+" }
+
 agent_kb_newpending:
   pattern: /kb/pending-articles/new
   defaults: { _controller: AgentBundle:Kb:newPendingArticle }

@@ -3196,6 +3196,54 @@ ul.person-popout-tabs li a{
     width: auto !important;
 }
 
-.kb-conten-wrap {
+.tab-content.kb-content {
+    position: relative;
+}
+
+span.kb-editor-edit {
+    float: right;
+    margin-top: 13px;
+    margin-right: 5px;
+}
+span.kb-editor-edit a {
+    /* small edit icon */
+    background: url("../../images/icn-sprite.png") left -1007px no-repeat;
+
+    padding-left: 11px;
+	color: #5d676e;
+	font-weight: bold;
+	margin-left: 2px;
+	line-height: 6px;
+	overflow: hidden;
+	height: 10px;
+	cursor: pointer;
+	display: inline-block;
+}
+
+.kb-content-wrap {
     padding: 8px;
+}
+
+.kb-editor-wrap {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+}
+
+.editor-on .kb-content-wrap {
+    opacity: 0.6;
+}
+
+.editor-on .kb-editor-wrap {
+    display: blocks;
+}
+
+.kb-editor.markdown {
+    padding: 6px;
+}
+
+.kb-editor.markdown textarea {
+    width: 99%;
+    height: 200px;
 }

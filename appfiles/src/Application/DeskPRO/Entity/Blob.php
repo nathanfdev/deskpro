@@ -68,6 +68,19 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $authcode;
 
 	/**
+	 * Is this a media upload (appears in the media browser etc)
+	 * @orm:Column(name="is_media_upload", type="boolean")
+	 */
+	protected $is_media_upload = false;
+
+	/**
+	 * The title of this file used in interfaces if its a media upload
+	 *
+	 * @orm:Column(name="title", type="string", length=255)
+	 */
+	protected $title = '';
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
@@ -149,5 +162,18 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	public function getDownloadUrl($absolute = false)
 	{
 		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId()), $absolute);
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public function getDisplayTitle()
+	{
+		if ($this->title) {
+			return $this->title;
+		}
+
+		return $this->filename;
 	}
 }

@@ -25,7 +25,7 @@ use \Orb\Util\Strings;
  */
 class Article extends \Application\DeskPRO\Domain\DomainObject
 {
-	const END_ACTION_DELETE = 'delete';
+	const END_ACTION_DELETE  = 'delete';
 	const END_ACTION_ARCHIVE = 'archive';
 
 	const STATUS_PUBLISHED   = 'published';

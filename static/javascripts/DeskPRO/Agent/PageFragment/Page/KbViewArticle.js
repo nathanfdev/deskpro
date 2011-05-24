@@ -10,7 +10,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 
 	initPage: function(el) {
 
-		this.parent(el);
 		this.wrapper = el;
 
 		this.article_id = this.getMetaData('article_id');
@@ -18,6 +17,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		this._initBasic();
 		this._initMenus();
 		this._initLabels();
+		this._initEditorEnable();
 
 		if (this.meta.has_validating) {
 			this._initValidating();
@@ -43,13 +43,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 
 
 		// Name is editable
-		var name = $('h3.title.editable:first', el);
+		var name = $('h3.title.editable:first', this.wrapper);
 		if (!name.attr('id')) {
 			name.attr('id', Orb.getUniqueId());
 		}
 
 		var editable = new DeskPRO.Form.InlineEdit({
-			baseElement: el,
+			baseElement: this.wrapper,
 			ajax: {
 				url: BASE_URL + 'agent/kb/' + this.meta.article_id + '/ajax-save'
 			}
@@ -145,7 +145,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		});
 	},
 
-	disapproveEdit: function(article_id) {
+	disapproveEdit: function() {
 		$.ajax({
 			url: BASE_URL + 'agent/kb/validating-articles/disapprove/'+this.meta.article_id+'.json',
 			type: 'POST',
@@ -161,7 +161,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		});
 	},
 
-	skipValidateEdit: function(article_id) {
+	skipValidateEdit: function() {
 		$.ajax({
 			url: BASE_URL + 'agent/kb/validating-articles/get-next/'+this.meta.article_id+'.json',
 			type: 'POST',
@@ -173,6 +173,40 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 					DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + next_id);
 				}
 				DeskPRO_Window.removePage(this);
+			}
+		});
+	},
+
+
+	//#################################################################
+	//# Editor
+	//#################################################################
+
+	_initEditorEnable: function() {
+		var btn = $('.kb-editor-edit', this.wrapper);
+		btn.click(this.showEditor.bind(this));
+	},
+
+	showEditor: function() {
+		if (!this.editor_has_init) {
+			this._initEditor();
+			return;//this func will be recalled when editor has been init
+		}
+
+		$('.kb-content.tab-content', this.wrapper).addClass('editor-on');
+	},
+
+	_initEditor: function() {
+		this.editor_has_init = true;
+
+		$.ajax({
+			url: this.getUrl('agent_kb_article_edit_geteditor'),
+			type: 'GET',
+			context: this,
+			dataType: 'html',
+			success: function(html) {
+				$('.kb-editor-wrap', this.wrapper).html(html);
+				this.showEditor();
 			}
 		});
 	}

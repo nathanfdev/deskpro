@@ -2,6 +2,9 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbViewArticle';
 pageMeta.title = {{article.title|json_encode|raw}};
 pageMeta.article_id = {{article.id}};
+pageMeta.urls = {
+	'agent_kb_article_edit_geteditor': '{{ path('agent_kb_article_edit_geteditor', {'article_id': article.id}) }}'
+};
 </script>
 <div class="layout-content kb-page">
 
@@ -16,7 +19,11 @@ pageMeta.article_id = {{article.id}};
 <div class="inner-box-tab-content-2 ticket-element">
 	<div class="ticket-status ticket-{{article.status}}">
 		<span class="ticket-{{article.status}} prop-val menu-trigger status">
-			{{article.status}} {% if article.hidden_status %}({{ article.hidden_status }}){% endif %}
+			{% if article.hidden_status %}
+				{{ phrase('core_kb.hidden_status_' ~ article.hidden_status) }}
+			{% else %}
+				{{ phrase('core_kb.status_' ~ article.status) }}
+			{% endif %}
 		</span>
 	</div>
 	<div class="kb-info-top">
@@ -148,6 +155,7 @@ pageMeta.article_id = {{article.id}};
 <div class="full-container-tabbed messages-container">
 	{# Tab Triggers #}
 	<div class="full-container-tabbed-tabs">
+		<span class="kb-editor-edit"><a>edit</a></span>
 		<ul>
 			<li class="tab-trigger kb-content on" data-tab-for=".tab-content.kb-content"><a>Article</a></li>
 			<li class="tab-trigger kb-related-content" data-tab-for=".tab-content.kb-related-content"><a>Related Content</a></li>
@@ -161,7 +169,10 @@ pageMeta.article_id = {{article.id}};
 	<div class="full-container-tabbed-contents-wrap">
 		{# Tab: Content #}
 		<div class="full-container-tabbed-contents tab-content kb-content" data-tab-trigger=".tab-trigger.kb-content" style="display: block">
-			<div class="kb-conten-wrap">{{ article.content_html|raw }}</div>
+			<div class="kb-content-wrap">
+				{{ article.content_html|raw }}
+			</div>
+			<div class="kb-editor-wrap"></div>
 		</div>
 		{# /Tab: Content #}
 	</div>
@@ -170,11 +181,12 @@ pageMeta.article_id = {{article.id}};
 {# /Main Tabs #}
 
 <ul class="menu status" data-option-name="status" style="display:none">
-	<li data-option-value="published">Published</li>
-	<li data-option-value="archived">Archived</li>
-	<li data-option-value="hidden.unpublished">Hidden: Unpublished</li>
-	<li data-option-value="hidden.deleted">Hidden: Deleted</li>
-	<li data-option-value="hidden.deleted">Hidden: Draft</li>
+	<li data-option-value="published">{{ phrase('core_kb.status_published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('core_kb.hidden_status_unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('core_kb.status_archived') }}</li>
+	<li data-option-value="hidden.draft">{{ phrase('core_kb.hidden_status_draft') }}</li>
+	<li class="sep">-</li>
+	<li data-option-value="hidden.deleted">{{ phrase('core_kb.hidden_status_deleted') }}</li>
 </ul>
 
 
