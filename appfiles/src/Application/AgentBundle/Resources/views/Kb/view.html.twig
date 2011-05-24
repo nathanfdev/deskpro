@@ -5,6 +5,14 @@ pageMeta.article_id = {{article.id}};
 </script>
 <div class="layout-content kb-page">
 
+{% if article.status_code == "hidden.validating" %}
+<div class="ticket-lock-bar" style="padding: 4px; text-align: right;">
+	<button class="dp-button x-small disapprove-trigger">Delete</button>
+	<button class="dp-button x-small skip-trigger">Skip</button>
+	<button class="dp-button x-small approve-trigger">Approve</button>
+</div>
+{% endif %}
+
 <div class="inner-box-tab-content-2 ticket-element">
 	<div class="ticket-status ticket-{{article.status}}">
 		<span class="ticket-{{article.status}} prop-val menu-trigger status">

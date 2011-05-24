@@ -328,8 +328,11 @@ class KbController extends AbstractController
 		App::getOrm()->persist($article);
 		App::getOrm()->flush();
 
+
+
 		return $this->createJsonResponse(array(
 			'article_id' => $article['id'],
+			'next_article_id' => $this->_getNextValidateArticle(),
 			'type' => $type,
 		));
 	}
@@ -351,8 +354,43 @@ class KbController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'article_id' => $article['id'],
+			'next_article_id' => $this->_getNextValidateArticle(),
 			'type' => $type,
 		));
+	}
+
+	public function getNextValidatingArticleJsonAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article);
+
+		$next_id = App::getDb()->fetchColumn("
+			SELECT id
+			FROM articles
+			WHERE hidden_status = 'validating' AND article_id != ?
+			ORDER BY id DESC
+		", array($article['id']));
+
+		if (!$next_id) {
+			App::getDb()->fetchColumn("
+				SELECT article_id
+				FROM article_validating_edits
+				WHERE article_id != ?
+				ORDER BY id DESC
+			", arrya($article['id']));
+		}
+
+		return $this->createJsonResponse(array('next_article_id' => $next_id));
+	}
+
+	protected function _getNextValidateArticle()
+	{
+		$next_id = App::getDb()->fetchColumn("SELECT id FROM articles WHERE hidden_status = 'validating' ORDER BY id DESC");
+		if (!$next_id) {
+			App::getDb()->fetchColumn("SELECT article_id FROM article_validating_edits ORDER BY id DESC");
+		}
+		
+		return $next_id;
 	}
 
 	############################################################################
