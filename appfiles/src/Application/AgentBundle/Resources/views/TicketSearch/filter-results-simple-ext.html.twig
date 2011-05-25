@@ -28,8 +28,8 @@ pageMeta.loadFirst = {% if load_first %}true{% else %}false{% endif %};
 	<header class="section-header">
 		<nav class="mode-buttons">
 			<ul>
-				<li class="on"><a>Basic</a></li>
-				<li data-view-type="simple-ext"><a>List</a></li>
+				<li data-view-type="simple"><a>Basic</a></li>
+				<li class="on"><a>List</a></li>
 				<li data-view-type="detail"><a>Detail</a></li>
 			</ul>
 		</nav>
@@ -42,8 +42,8 @@ pageMeta.loadFirst = {% if load_first %}true{% else %}false{% endif %};
 		</h1>
 	</header>
 
-	<section class="ticket-simple-list deskpro-results-list">
-		{% include 'AgentBundle:TicketSearch:part-results-simple.html.twig' %}
+	<section class="ticket-simple-ext-list deskpro-results-list">
+		{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
 	</section>
 
 	<div class="loading-more">

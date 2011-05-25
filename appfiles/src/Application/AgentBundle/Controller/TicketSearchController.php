@@ -155,8 +155,8 @@ class TicketSearchController extends AbstractController
 	protected function _getResponseForTickets($type, $type_id, $results_helper, array $vars = array())
 	{
 		$view_type = $this->in->getString('view_type');
-		if (!$view_type OR !in_array($view_type, array('list', 'simple'))) {
-			$view_type = 'simple';
+		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'simple-ext'))) {
+			$view_type = 'simple-ext';
 		}
 
 		$is_partial = false;
@@ -212,7 +212,7 @@ class TicketSearchController extends AbstractController
 			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
 			$ticket_options['custom_ticket_fields'] = $custom_fields;
 
-			// People studd
+			// People stuff
 			$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
 			$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 			$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);

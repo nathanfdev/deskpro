@@ -131,7 +131,7 @@ section.deskpro-results-list article > div.preview {
 }
 
 section.deskpro-results-list article > div.preview > a {
-    color: #535557;
+    color: #38393B;
     text-decoration: none;
 
     text-shadow: 1px 1px 0px #ffffff;
@@ -147,4 +147,49 @@ section.deskpro-results-list article > time {
     font-size: 10px;
     color: #A5A9B0;
     padding: 3px 0 5px 5px;
+}
+
+section.deskpro-results-list article > .bottom {
+    clear: left;
+    padding: 3px 5px 3px 5px;
+    font-size: 10px;
+    line-height: 15px;
+    position: relative;
+}
+
+section.deskpro-results-list article > .bottom .agent {
+    float: right;
+    line-height: 15px;
+}
+
+section.deskpro-results-list article > .bottom,
+section.deskpro-results-list article > .bottom a {
+    color: #808487;
+}
+
+section.deskpro-results-list article > .bottom .agent > span {
+    margin-right: 18px;
+}
+
+section.deskpro-results-list article > .bottom .agent > img {
+    width: 15px;
+    height: 15px;
+    position: absolute;
+    right: 5px;
+    top: 3px;
+}
+
+section.deskpro-results-list article > div.info {
+    padding-top: 4px;
+    font-size: 11px;
+    color: #808487;
+}
+
+section.deskpro-results-list article > div.info > ul {
+    list-style-type: square;
+    margin-left: 20px;
+}
+section.deskpro-results-list article > div.info > ul > li {
+    width:49%;
+    float: left;
 }

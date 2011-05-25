@@ -238,6 +238,17 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	displayOptionsList: null,
 	_initDisplayOptions: function() {
 
+		// View type switcher
+		if (this.meta.viewTypeUrl) {
+			var switcher = $('nav.mode-buttons:first', this.contentWrapper);
+			var self = this;
+			$('li:not(.on)', switcher).click(function(ev) {
+				ev.preventDefault();
+				var view_type = $(this).data('view-type');
+				self.switchViewType(view_type);
+			});
+		}
+
 		this.displayOptionsList = $('.display-options:first ul.sortable-list', this.contentWrapper);
 		var overlay_wrapper = this.displayOptionsWrapper = $('.display-options:first', this.contentWrapper);
 
@@ -259,6 +270,18 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		var self = this;
 		$('.list thead th', this.contentWrapper).each(function() {
 			$('li[data-field="'+$(this).data('field')+'"] input[type="checkbox"]', self.displayOptionsList).attr('checked', true);
+		});
+	},
+
+	switchViewType: function(view_type) {
+		if (view_type == 'detail') {
+			//
+			return;
+		}
+
+		var new_url = this.meta.viewTypeUrl.replace('$view_type', view_type);
+		DeskPRO_Window.loadListPane(new_url, null, function() {
+			DeskPRO_Window.removePage(self);
 		});
 	},
 

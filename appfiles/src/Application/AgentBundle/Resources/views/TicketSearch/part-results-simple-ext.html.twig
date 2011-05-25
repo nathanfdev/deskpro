@@ -1,0 +1,123 @@
+<section class="search-reuslts page-set" data-page="{{page}}">
+	{% for ticket in tickets %}
+		<article class="ticket ticket-{{ticket.id}}">
+			<div class="userinfo">
+				<address>
+					{{ ticket.person.primary_email_address }}
+				</address>
+				<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
+					{{ ticket.person.display_name }}
+				</a>
+			</div>
+			<div class="preview">
+				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ ticket.getSummaryLine(200) }}</a>
+			</div>
+			<div class="info">
+				<ul>
+					{% for field in display_fields %}
+						{% if field == 'deleted_reason' %}
+							<li class="{{field}}">
+								{% if deleted_tickets[ticket.id] %}
+									Deleted by {{ deleted_tickets[ticket.id].by_person.display_name }}
+									{% if deleted_tickets[ticket.id].reason %}
+										because: {{ deleted_tickets[ticket.id].reason }}
+									{% endif %}
+								{% endif %}
+							</li>
+						{% elseif field == 'person' %}
+							<li class="{{field}}">
+								{{ticket.person.display_name}}
+							</li>
+						{% elseif field == 'department' %}
+							<li class="{{field}}">
+								<span class="prop-val department_id" data-prop-value="{{ticket.department.id}}">
+									{{ticket.department.title}}
+								</span>
+							</li>
+						{% elseif field == 'category' %}
+							<li class="{{field}}">
+								<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
+								{% if ticket.category %}
+									{{ticket.category.title}}
+								{% else %}
+									None
+								{% endif %}
+								</span>
+							</div>
+						{% elseif field == 'product' %}
+							<li class="{{field}}">
+								<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
+								{% if ticket.product %}
+									{{ticket.product.title}}
+								{% else %}
+									None
+								{% endif %}
+								</span>
+							</li>
+						{% elseif field == 'organization' %}
+							<li class="{{field}}">
+								<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
+								{% if ticket.organization %}
+									<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
+								{% else %}
+									None
+								{% endif %}
+								</span>
+							</li>
+						{% elseif field == 'agent' %}
+							<li class="{{field}}">
+								<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
+								{% if ticket.agent %}
+									{{ticket.agent.display_name}}
+								{% else %}
+									Unassigned
+								{% endif %}
+								</span>
+							</li>
+						{% elseif field == 'agent_team' %}
+							<li class="{{field}}">
+								<span class="prop-val agent_team_id" data-prop-value="{{ticket.agent_team.name}}">
+								{% if ticket.agent %}
+									{{ticket.agent_team.name}}
+								{% else %}
+									Unassigned
+								{% endif %}
+								</span>
+							</li>
+						{% else %}
+							{% for f in ticket_field_defs %}
+								{% if field == 'ticket_fields['~f.id~']' %}
+									<li class="ticket-field">
+										<div class="prop-val ticket_fields_{{f.id}}">
+											{{ticket.renderCustomField(f.id)}}
+										</div>
+									</li>
+								{% endif %}
+							{% endfor %}
+							{% for f in person_field_defs %}
+								{% if field == 'person_fields['~f.id~']' %}
+									<li class="person-field">
+										<div class="prop-val person_fields_{{f.id}}">
+											{{ticket.person.renderCustomField(f.id)}}
+										</div>
+									</li>
+								{% endif %}
+							{% endfor %}
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+			<div class="bottom">
+				<div class="agent">
+					{% if ticket.agent %}
+						<span>{{ ticket.agent.display_name }}</span>
+						<img src="{{ticket.agent.getPictureUrl(35)}}" width="15" height="15" />
+					{% else %}
+						Unassigned
+					{% endif %}
+				</div>
+				<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">ticket.date_created|date('M d')</time>
+			</div>
+		</article>
+	{% endfor %}
+</section>
