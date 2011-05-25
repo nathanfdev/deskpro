@@ -21,10 +21,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.messageChanneler = null;
 		this.poller = null;
 
-		this.pageTabStrip = null;
-		this.listTabStrip = null;
+		this.sections = {};
+		this.openSection = null;
 
-		this.layout = null;
+		this.listPage = null;
+		this.pageTabStrip = null;
+
 		this.innerLayout = null;
 
 		this.notifier = null;
@@ -48,6 +50,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.interfaceEffects.initPage();
 
 		this._initBasic();
+		this._initSections();
 		this._initRoutes();
 		this._initWindowInterface();
 		this._initLayout();
@@ -55,6 +58,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	windowStateUpdated: function(type) {
 
+		return;
 		if (this.DEBUG.disableSaveState) return;
 
 		this.winStateQueue.include(type);
@@ -332,7 +336,27 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//#################################################################
 
 	addListPage: function(page) {
-		this.listTabStrip.addTab(page);
+		console.warn('Invalid call to addListPage for %o', page);
+		this.setListPage(page);
+	},
+
+	setListPage: function(page) {
+		if (this.listPage) {
+			this.listPage.fireEvent('destroy');
+		}
+
+		this.listPage = page;
+
+		var container = $('<div id="'+ Orb.getUniqueId() + '"></div>');
+		container.html(page.html);
+
+		$('#deskpro_list').empty().append(container);
+		page.fireEvent('render', [container]);
+		page.fireEvent('activate');
+	},
+
+	getListPage: function() {
+		return this.listPage;
 	},
 
 	addPageTab: function(page) {
@@ -490,32 +514,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadListPane: function(url, routeData, callback) {
 
-		if ($('#pane_list_tabs li').length >= 5) {
-			DeskPRO_Window.showAlert('You have too many tabs open on the left. Close one before trying to open another', 'error');
-			return;
-		}
-
-		if (routeData && !routeData.ignoreExist) {
-			var existTab = this.listTabStrip.getTabByRouteUrl(url);
-			if (existTab && !(existTab.page && existTab.page.allowDupe)) {
-				this.listTabStrip.activateTabById(existTab.id);
-				return;
-			}
-		}
-
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
-				this.stopLoadingIndicator();
-				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
+			this.stopLoadingIndicator();
+			var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 
-				page.setMetaData('routeUrl', url);
-				if (routeData) {
-					page.setMetaData('routeData', routeData);
-				}
+			page.setMetaData('routeUrl', url);
+			if (routeData) {
+				page.setMetaData('routeData', routeData);
+			}
 
-				this.addListPage(page);
+			this.setListPage(page);
 
-				if (callback) callback(page);
-			}).bind(this)
+			if (callback) callback(page);
+		}).bind(this)
 		);
 	},
 
@@ -912,25 +923,68 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Global AJAX handler for errors if no error handler is attached
 		$(document).ajaxError(this._globalHandleAjaxError.bind(this));
 	},
+
+	_initSections: function() {
+
+		var self = this;
+		$('#deskpro_sections li[data-section-handler]').each(function() {
+			var el = $(this);
+			if (!el.attr('id')) {
+				el.attr('id', Orb.getUniqueId('section_'));
+			}
+
+			var handlerClass = Orb.getNamespacedObject(el.data('section-handler'));
+			var handler = new handlerClass();
+
+			self.sections[el.attr('id')] = handler;
+
+			el.click(function() { self.switchToSection(el.attr('id')) });
+		});
+	},
+
+	switchToSection: function(section_id) {
+		var handler = this.sections[section_id];
+		var btn = $('#' + section_id);
+
+		// Already on
+		if (btn.is('.on')) {
+			return;
+		}
+
+		if (this.openSection) {
+			this.openSection.fireEvent('hide');
+		}
+
+		$('#deskpro_sections li.on').removeClass('on');
+		btn.addClass('on');
+
+		$('#deskpro_outline > section.on').removeClass('on');
+		if (this.openSection) {
+			this.openSection.fireEvent('afterhide');
+		}
+
+		handler.fireEvent('show');
+		var sectionEl = handler.getSectionElement();
+		if (sectionEl) {
+			sectionEl.addClass('on');
+		}
+		handler.fireEvent('aftershow');
+
+		this.openSection = handler;
+	},
+
+	getOpenSection: function() {
+		return this.openSection;
+	},
 	
 	_initLayout: function() {
-		
-		this.layout = new DeskPRO.Agent.Layout.WindowLayout();
-	
+
 		this.pageTabStrip = new DeskPRO.Agent.TabStrip(
-			$('#pane_tabs'),
-			new DeskPRO.Agent.TabManager('#page')
+			$('#deskpro_tabstrip > ul:first'),
+			new DeskPRO.Agent.TabManager('#deskpro_viewport')
 		);
 
 		this.pageTabStrip.tabManager.addEvent('addTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
 		this.pageTabStrip.tabManager.addEvent('removeTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
-
-		this.listTabStrip = new DeskPRO.Agent.TabStrip(
-			$('#pane_list_tabs'),
-			new DeskPRO.Agent.TabManager('#pane_list')
-		);
-
-		this.listTabStrip.tabManager.addEvent('addTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
-		this.listTabStrip.tabManager.addEvent('removeTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
 	}
 });

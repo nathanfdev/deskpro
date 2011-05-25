@@ -11,9 +11,6 @@ class TestController extends AbstractController
 {
     public function indexAction()
     {
-		$v = App::getCache('common')->load('department_info');
-		print_r($v);
-
-		exit;
-    }
+		return $this->render('AgentBundle:Test:layout.html.twig');
+	}
 }

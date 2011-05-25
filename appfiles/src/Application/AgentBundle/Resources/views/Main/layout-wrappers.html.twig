@@ -1,27 +1,72 @@
-<table id="window_panes" cellspacing="0" cellpadding="0" style="display:none">
-	<tbody>
-		<tr>
-			<td>
-				<div id="pane_list_content" class="window-pane pane">
-					<div id="pane_list_tabbar" class="pane-tabs nosel">
-						<div id="pane_list_tabs_scroll_left" class="tabs_scroll_left"></div>
-						<div id="pane_list_tabs_scroll_right" class="tabs_scroll_right"></div>
-						<ul id="pane_list_tabs"></ul>
-					</div>
-					<div id="pane_list" class="pane-content"></div>
-				</div>
-			</td>
-			<td>
-				<div id="pane_content" class="window-pane pane">
-					<div id="pane_tabbar" class="pane-tabs nosel">
-						<div id="pane_tabs_scroll_left" class="tabs_scroll_left"></div>
-						<div id="pane_tabs_scroll_right" class="tabs_scroll_right"></div>
-						<ul id="pane_tabs"></ul>
-					</div>
-					<div id="page" class="pane-content"></div>
-				</div>
-			</td>
-		</tr>
-	</tbody>
-</table>
-<div id="pane_resizer" class="pane-resizer"></div>
+<section id="deskpro_layout">
+
+	{##############################
+	 # Section Nav (column 1)
+	 ##############################}
+	<nav id="deskpro_sections" class="deskpro-pane">
+		<ul>
+			<li class="tickets" id="tickets_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.Tickets">
+				<span class="nav-counter" style="display:none">0</span>
+				<a>Tickets</a>
+			</li>
+			<li class="chats">
+				<span class="nav-counter" style="display:none">0</span>
+				<a>Chats</a>
+			</li>
+			<li class="twitter">
+				<span class="nav-counter" style="display:none">0</span>
+				<a>Twitter</a>
+			</li>
+			<li class="people">
+				<a>People</a>
+			</li>
+			<li class="deals">
+				<span class="nav-counter" style="display:none">0</span>
+				<a>Deals</a>
+			</li>
+			<li class="calendar">
+				<span class="nav-counter" style="display:none">0</span>
+				<a>Calendar</a>
+			</li>
+			<li class="tasks">
+			  <span class="nav-counter" style="display:none">0</span>
+			  <a>Tasks</a>
+			</li>
+			<li class="publish">
+				<span class="nav-counter" style="display:none">0</span>
+				<a>KB</a>
+			</li>
+			<li class="ideas">
+				<span class="nav-counter" style="display:none">0</span>
+				<a>Ideas</a>
+			</li>
+		</ul>
+	</nav>
+
+	{##############################
+	 # Outline pane (column 2)
+	 ##############################}
+	<section id="deskpro_outline" class="deskpro-pane">
+
+	</section>
+
+	{##############################
+	 # List pane (column 3)
+	 ##############################}
+	<section id="deskpro_list" class="deskpro-pane">
+
+	</section>
+
+	{##############################
+	 # Content pane (column 4)
+	 ##############################}
+	<section id="deskpro_content" class="deskpro-pane">
+		<nav id="deskpro_tabstrip">
+			<ul>
+			</ul>
+		</nav>
+		<section id="deskpro_viewport">
+		</section>
+	</section>
+
+</section>
