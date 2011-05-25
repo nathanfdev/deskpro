@@ -33,14 +33,18 @@ class TicketMessage extends EntityRepository
 			$ticket = App::getEntityRepository('DeskPRO:Ticket')->find($ticket);
 		}
 
-		$message = $this->getEntityManager()->createQuery("
-			SELECT m
-			FROM DeskPRO:TicketMessage m
-			WHERE m.ticket = ?1
-			ORDER BY m.id ASC
-		")->setParameter(1, $ticket)->setMaxResults(1)->getSingleResult();
+		try {
+			$message = $this->getEntityManager()->createQuery("
+				SELECT m
+				FROM DeskPRO:TicketMessage m
+				WHERE m.ticket = ?1
+				ORDER BY m.id ASC
+			")->setParameter(1, $ticket)->setMaxResults(1)->getSingleResult();
 
-		return $message;
+			return $message;
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			return null;
+		}
 	}
 
 

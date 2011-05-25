@@ -11,10 +11,10 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 /**
  * Ticket
@@ -383,6 +383,38 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$this->urgency = $new_u;
 			$this->_onPropertyChanged('urgency', $old_u, $new_u);
 		}
+	}
+
+
+	/**
+	 * Get a summary line. This is the ticket subject, and if $max_len allows,
+	 * the first characters of the first message.
+	 *
+	 * This is usually used in templates where a line or two are displayed in a list
+	 *
+	 * @return string
+	 */
+	public function getSummaryLine($max_len = 200)
+	{
+		$summary = $this->subject;
+		if (strlen($summary) < $max_len) {
+			$summary .= '. ';
+
+			// TODO
+			// THis is used in the result listings, so this needs
+			// to be made more efficient than running a query per message
+
+			$first_message = App::getEntityRepository('DeskPRO:TicketMessage')->getFirstTicketMessage($this);
+			if ($first_message) {
+				$summary .= Strings::removeLineBreaks($first_message->getMessageText());
+			}
+		}
+
+		if (strlen($summary) > $max_len) {
+			$summary = substr($summary, 0, $max_len);
+		}
+
+		return $summary;
 	}
 
 

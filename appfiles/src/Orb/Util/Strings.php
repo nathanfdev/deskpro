@@ -181,6 +181,17 @@ class Strings
 	}
 
 
+	/**
+	 * Replaces all linebreaks with a space character, making it a single line of text
+	 *
+	 * @param  sstring $string The string to work on
+	 * @return string
+	 */
+	public static function removeLineBreaks($string)
+	{
+		return preg_replace('#\n|\r\n|\r#', ' ', $string);
+	}
+
 
 	/**
 	 * Return the first line of a string.

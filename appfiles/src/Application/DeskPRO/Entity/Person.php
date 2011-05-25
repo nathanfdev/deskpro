@@ -560,8 +560,21 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			return $this['name'];
 		} elseif ($this['last_name']) {
 			return $this['last_name'];
+		} elseif ($this['first_name']) {
+			return $this['first_name'];
 		} elseif ($this['primary_email']) {
-			return $this['primary_email']['email'];
+
+			// try to get a nice name from the email address
+			$email = $this['primary_email']['email'];
+			list ($name,) = explode('@', $email, 2);
+
+			$name = str_replace('_', ' ', $name);
+			$name = str_replace('.', ' ', $name);
+			$name = preg_replace('#[ ]{2,}#', ' ', $name); //consec spaces to single space
+
+			$name = ucfirst($name);
+
+			return $name;
 		} else {
 			return 'ID-' . $this['id'];
 		}
