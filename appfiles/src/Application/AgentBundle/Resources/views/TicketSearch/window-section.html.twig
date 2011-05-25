@@ -1,0 +1,74 @@
+{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
+<header class="section-header">
+	<h1>Tickets</h1>
+</header>
+<section class="inbox">
+	<h2>Inbox</h2>
+	<ul id="tickets_outline_inbox_list" class="nav-list">
+		{% for filter in sys_filters %}
+			<li class="filter-{{filter.id}}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">-</span>
+				<a>{{filter.title}}</a>
+			</li>
+		{% endfor %}
+	</ul>
+</section>
+
+{% if custom_filters %}
+	<section class="inbox">
+	<h2>Filters</h2>
+	<ul id="tickets_outline_filters_list" class="nav-list">
+		{% for filter in sus_filters %}
+			<li class="filter-{{filter.id}}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">-</span>
+				<a>{{filter.title}}</a>
+			</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+<nav id="tickets_outline_tabstrip" class="deskpro-tabstrip">
+	<ul>
+		<li class="grouped" data-tab-for="#tickets_outline_grouped"><a>Grouped</a></li>
+		<li class="labels"  data-tab-for="#tickets_outline_labels"><a>Labels</a></li>
+		<li class="flagged" data-tab-for="#tickets_outline_flagged"><a>Flagged</a></li>
+		<li class="archive" data-tab-for="#tickets_outline_archive"><a>Archive</a></li>
+	</ul>
+</nav>
+<section id="tickets_outline_grouped" class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.grouped">
+	{% include 'AgentBundle:TicketSearch:window-section-grouped.html.twig' %}
+</section>
+<section id="tickets_outline_labels"  class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.labels">
+	Loading ...
+</section>
+<section id="tickets_outline_flagged" class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.flagged">
+	{% set flags = ['blue','green','orange','pink','purple','red','yellow'] %}
+	<ul id="tickets_outline_flags_list" class="nav-list">
+		{% for color in flags %}
+			<li class="flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
+				<span id="ticket_flag_{{color}}_count" class="list-counter">-</span>
+				<a>{{ flagnamer.flag_name(color, person) }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+</section>
+<section id="tickets_outline_archive" class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.archive">
+	<ul id="tickets_outline_filters_list" class="nav-list">
+		<li>
+			<span class="list-counter">3556</span>
+			<a>Spam</a>
+		</li>
+		<li>
+			<span class="list-counter">123</span>
+			<a>Pending</a>
+		</li>
+		<li>
+			<span class="list-counter">847</span>
+			<a>Resolved</a>
+		</li>
+		<li>
+			<span class="list-counter">4332</span>
+			<a>Closed</a>
+		</li>
+	</ul>
+</section>

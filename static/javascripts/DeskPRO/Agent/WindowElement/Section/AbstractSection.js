@@ -50,6 +50,11 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 			this.sectionEl.remove();
 		}
 
+		if (!el) {
+			el = $('<section></section>');
+			el.attr('id', Orb.getUniqueId('outline_'));
+		}
+
 		this.sectionEl = el;
 		if (!el.parent().is('#deskpro_outline')) {
 			this.sectionEl.detach().appendTo('#deskpro_outline');

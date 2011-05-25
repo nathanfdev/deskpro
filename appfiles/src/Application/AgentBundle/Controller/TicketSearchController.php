@@ -41,29 +41,43 @@ class TicketSearchController extends AbstractController
 		# Filters
 		#------------------------------
 		
-		$filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
+		$all_filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
 
 		$order = $this->person->getPref('agent.ui.ticket-filters-order');
 		if ($order) {
-			$filters_unordered = $filters;
-			$filters = array();
+			$filters_unordered = $all_filters;
+			$all_filters = array();
 
 			foreach ($order as $id) {
 				if (isset($filters_unordered[$id])) {
-					$filters[$id] = $filters_unordered[$id];
+					$all_filters[$id] = $filters_unordered[$id];
 					unset($filters_unordered[$id]);
 				}
 			}
 
 			if (count($filters_unordered)) {
 				foreach ($filters_unordered as $id => $q) {
-					$filters[$id] = $q;
+					$all_filters[$id] = $q;
 				}
 			}
 		}
 
-		$data['filters'] = $this->renderView('AgentBundle:TicketSearch:section-filters-part.html.twig', array(
-			'filters' => $filters
+		// Order them into sys/other
+
+		$sys_filters = array();
+		$custom_filters = array();
+
+		foreach ($all_filters as $id => $filter) {
+			if ($filter) {
+				$sys_filters[$id] = $filter;
+			} else {
+				$custom_filters[$id] = $filter;
+			}
+		}
+
+		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
+			'sys_filters' => $sys_filters,
+			'custom_filters' => $custom_filters,
 		));
 
 		return $this->createJsonResponse($data);

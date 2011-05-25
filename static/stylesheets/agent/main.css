@@ -3309,3 +3309,8 @@ span.kb-editor-edit a {
     -moz-box-shadow: inset 0 1px 0 #c8ced3, 0 1px 0 #fff;
     box-shadow:  inset 0 1px 0 #c8ced3, 0 1px 0 #fff;
 }
+
+#deskpro_outline ul.nav-list > li.sub-list {
+    font-size: 10px;
+    padding-left: 18px;
+}

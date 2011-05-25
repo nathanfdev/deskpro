@@ -1,0 +1,27 @@
+<nav id="ticket_grouping_options">
+	<span class="mode-menu-trigger mode menu" data-mode="agent">Your tickets</span>
+	grouped by
+	<span class="grouping-menu-trigger menu grouping1" data-groupby="department_id">Department</span>
+	<span class="no-subgroup">(add <span class="grouping-menu-trigger menu">subgroup</span>)</span>
+	<span class="with-subgroup" style="display:none">and <span class="grouping-menu-trigger menu grouping2" data-groupby=""></span></span>
+</nav>
+<section id="ticket_grouping_list">
+	<ul class="nav-list"></ul>
+</section>
+
+<ul id="overview_mode_menu" class="mode-menu" style="display:none">
+	<li data-mode="agent">Your tickets</li>
+	<li data-mode="participant">Participated tickets</li>
+	<li data-mode="agent_team">Your teams tickets</li>
+	<li data-mode="unassigned">Unassigned tickets</li>
+	<li data-mode="all">All tickets</li>
+</ul>
+<ul id="overview_grouping_menu" class="grouping-menu" style="display:none">
+	<li data-groupby="none">{{ phrase('core.none') }}</li>
+	<li data-groupby="department_id">{{ phrase('core.department') }}</li>
+	<li data-groupby="category_id">{{ phrase('core_tickets.category') }}</li>
+	<li data-groupby="priority_id">{{ phrase('core_tickets.priority') }}</li>
+	<li data-groupby="product_id">{{ phrase('core.product') }}</li>
+	<li data-groupby="agent_id">{{ phrase('core_tickets.agent') }}</li>
+	<li data-groupby="workflow_id">{{ phrase('core_tickets.workflow') }}</li>
+</ul>

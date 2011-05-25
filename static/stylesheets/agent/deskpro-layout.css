@@ -190,6 +190,16 @@ So only the 'on' one is visible at a time */
 }
 
 
+#deskpro_outline h2 {
+    font-size: 14px;
+    color: #9EA6B5;
+    font-weight: bold;
+    padding:  3px 0 3px 5px;
+
+    text-shadow: 1px 1px 0px #fff;
+    filter: dropshadow(color=#fff, offx=1, offy=1);
+}
+
 /********************************
 * #deskpro_list
 *********************************/
@@ -296,4 +306,35 @@ So only the 'on' one is visible at a time */
 #deskpro_tabstrip > ul > li.on > a {
     line-height: 33px;
     font-weight: bold;
+}
+
+
+
+
+
+
+/********************************
+* Ticket Section
+*********************************/
+
+#tickets_outline_tabstrip {
+    margin-top: 15px;
+}
+
+#ticket_grouping_options {
+    font-size: 10px;
+    background-color: #fff;
+    padding: 2px;
+    margin:  5px 3px 2px 3px;
+
+    border:  1px solid #eee;
+
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+#ticket_grouping_options .grouping-menu-trigger,
+#ticket_grouping_options .mode-menu-trigger {
+    color: #7A8699;
+    cursor: pointer;
 }
