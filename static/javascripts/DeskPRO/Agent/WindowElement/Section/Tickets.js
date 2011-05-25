@@ -4,9 +4,21 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
-		this.button = $('#tickets_section_btn');
+		this.button = $('#tickets_section');
 
-		var sectionEl = $('<section id="tickets_section">ddsdsd</section>');
+		var sectionEl = $('#tickets_outline');
 		this.setSectionElement(sectionEl);
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/get-section-data.json',
+			context: this,
+			success: function(data) {
+				this._initData(data);
+			}
+		});
+	},
+
+	_initData: function(data) {
+		$('#tickets_outline_filters_list').html(data.filters);
 	}
 });

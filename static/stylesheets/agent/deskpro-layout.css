@@ -2,7 +2,7 @@
 * common
 *********************************/
 
-.deskpro-pane > header:first-child {
+.deskpro-pane header.section-header {
 
     height: 38px;
 
@@ -23,7 +23,7 @@
     margin-bottom: 5px;
 }
 
-.deskpro-pane > header:first-child > h1 {
+.deskpro-pane header.section-header > h1 {
     font-family: Arial, Helvetica, sans-serif;
     font-size: 14px;
     font-weight: normal;

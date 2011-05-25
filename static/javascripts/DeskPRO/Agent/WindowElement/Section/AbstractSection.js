@@ -51,7 +51,9 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		this.sectionEl = el;
-		this.sectionEl.detach().appendTo('#deskpro_outline');
+		if (!el.parent().is('#deskpro_outline')) {
+			this.sectionEl.detach().appendTo('#deskpro_outline');
+		}
 	},
 
 	onShow: function() { },

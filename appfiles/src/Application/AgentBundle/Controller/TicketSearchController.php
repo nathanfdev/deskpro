@@ -33,6 +33,42 @@ class TicketSearchController extends AbstractController
 		return $this->render('AgentBundle:TicketSearch:list-blank.html.twig');
 	}
 
+	public function getSectionDataAction()
+	{
+		$data = array();
+
+		#------------------------------
+		# Filters
+		#------------------------------
+		
+		$filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);
+
+		$order = $this->person->getPref('agent.ui.ticket-filters-order');
+		if ($order) {
+			$filters_unordered = $filters;
+			$filters = array();
+
+			foreach ($order as $id) {
+				if (isset($filters_unordered[$id])) {
+					$filters[$id] = $filters_unordered[$id];
+					unset($filters_unordered[$id]);
+				}
+			}
+
+			if (count($filters_unordered)) {
+				foreach ($filters_unordered as $id => $q) {
+					$filters[$id] = $q;
+				}
+			}
+		}
+
+		$data['filters'] = $this->renderView('AgentBundle:TicketSearch:section-filters-part.html.twig', array(
+			'filters' => $filters
+		));
+
+		return $this->createJsonResponse($data);
+	}
+
 	public function filtersPaneAction()
 	{
 		$filters = App::getApi('tickets.filters')->getFiltersForPerson($this->person);

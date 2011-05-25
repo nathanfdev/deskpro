@@ -168,6 +168,7 @@ class TicketSearch extends SearcherAbstract
 		} else {
 			$table = 'tickets_search_active';
 		}
+		$table = 'tickets';
 
 		$sql = "SELECT tickets.id FROM $table AS tickets ";
 
@@ -376,8 +377,6 @@ class TicketSearch extends SearcherAbstract
 		// If we dont set a status, we will automatically
 		// exclude 'hidden' tickets
 		$set_status = false;
-
-		print_r($this->terms);exit;
 
 		foreach ($this->terms as $term => $info) {
 			$join_id = Util::requestUniqueId();

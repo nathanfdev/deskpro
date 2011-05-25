@@ -320,6 +320,10 @@ agent_ticketsearch:
   pattern: /ticket-search
   defaults: { _controller: AgentBundle:TicketSearch:index }
 
+agent_ticketsearch_getsectiondata:
+  pattern: /tickets/get-section-data.json
+  defaults: { _controller: AgentBundle:TicketSearch:getSectionData }
+
 agent_ticketsearch_overviewpane:
   pattern: /ticket-search/overview-pane
   defaults: { _controller: AgentBundle:TicketSearch:overviewPane }
