@@ -21,6 +21,40 @@ use \Application\DeskPRO\Entity\TwitterStatusNote;
  */
 class TwitterController extends AbstractController
 {
+	public function getSectionDataAction()
+	{
+		$data = array();
+
+		#------------------------------
+		# Statuses
+		#------------------------------
+
+		// fetch persons' accounts
+		$accounts = $this->person->getTwitterAccounts();
+
+		// statuses counters
+		$statuses = array(
+			'starred' => 0,
+			'account' => 0,
+			'team'    => 0
+		);
+
+		// iterate accounts, count statuses
+		foreach ($accounts as $account) {
+			$statuses['starred'] += $account->countStarredStatuses();
+			$statuses['account'] += $account->countAssignedStatusesToAgent();
+			$statuses['team'] += $account->countAssignedStatusesToTeam();
+		}
+
+		$data['section_html'] = $this->renderView('AgentBundle:Twitter:window-section.html.twig', array(
+			'statuses' => $statuses,
+			'accounts' => $this->person->getTwitterAccounts()
+		));
+
+		return $this->createJsonResponse($data);
+	}
+
+	
 	/**
 	 * Display accounts for Super Menu.
 	 *
