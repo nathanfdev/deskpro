@@ -993,6 +993,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 	
 	_initLayout: function() {
 
+		this.layout = new DeskPRO.Agent.Layout.DeskproWindow();
+		this.layout.doResize();
+
 		this.pageTabStrip = new DeskPRO.Agent.TabStrip(
 			$('#deskpro_tabstrip > ul:first'),
 			new DeskPRO.Agent.TabManager('#deskpro_viewport')
