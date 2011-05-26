@@ -362,12 +362,19 @@ So only the 'on' one is visible at a time */
     border-bottom-left-radius: 0px;
 }
 
-#deskpro_tabstrip > ul > li > a {
+#deskpro_tabstrip > ul > li > a.link {
     line-height: 29px;
     color: #757575;
+    max-width: 80px;
+	overflow: hidden;
+	white-space:nowrap;
+    line-height: 33px;
+    font-weight: bold;
+    display: block;
+    float: left;
 }
 
-#deskpro_tabstrip > ul > li.on {
+#deskpro_tabstrip > ul > li.active-tab {
     margin-top: 6px;
     height: 33px;
     background-color: #fff;
@@ -376,11 +383,21 @@ So only the 'on' one is visible at a time */
     border-bottom: none;
 }
 
-#deskpro_tabstrip > ul > li.on > a {
-    line-height: 33px;
-    font-weight: bold;
+#deskpro_tabstrip > ul > li.icon a.link {
+    padding-left: 15px;
 }
 
+#deskpro_tabstrip > ul > li > a.close-tab {
+	opacity: .5;
+    float: right;
+	display: block;
+	margin: 7px 0px 0px 6px;
+	text-indent: -9999px;
+	width: 12px;
+	height: 13px;
+    overflow: hidden;
+	background: url("../../images/icn-sprite.png") left -862px;
+}
 
 
 
