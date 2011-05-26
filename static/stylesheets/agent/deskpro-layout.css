@@ -127,7 +127,8 @@
     bottom: 0;
     overflow: hidden;
 
-    width: 79px;
+    width: 55px;
+    font-size: 10px;
 
     background-color: #383B40;
     border-right: 2px solid #1E2225;
@@ -165,8 +166,11 @@
 	text-align: center;
 
     text-decoration: none;
-    font-size: 11px;
     font-weight: bold;
+
+    text-shadow: 1px 1px 0px #000;
+    filter: dropshadow(color=#000000, offx=1, offy=1);
+    
 }
 
 #deskpro_sections > ul > li.tickets > a {
@@ -241,7 +245,7 @@
 #deskpro_outline {
     position: absolute;
     top: 0;
-    left: 81px/*#deskpro_sections width*/;
+    left: 56px/*#deskpro_sections width*/;
     bottom: 0;
     overflow: hidden;
 
@@ -280,11 +284,11 @@ So only the 'on' one is visible at a time */
 #deskpro_list {
     position: absolute;
     top: 0;
-    left: 280px/*#deskpro_sections width + #deskpro_outline width*/;
+    left: 255px/*#deskpro_sections width + #deskpro_outline width*/;
     bottom: 0;
     overflow: hidden;
 
-    width: 274px;
+    width: 299px;
 
     background-color: #F9FAFC;
     border-right: 1px solid #95999A;
