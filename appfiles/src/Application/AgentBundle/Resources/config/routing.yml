@@ -241,6 +241,9 @@ agent_peoplesearch_save_resultprefs:
   defaults: { _controller: AgentBundle:PeopleSearch:ajaxSaveResultPrefs }
   requirements: { cache_id: "\d+" }
 
+agent_peoplesearch_getsectiondata:
+  pattern: /people/get-section-data.json
+  defaults: { _controller: AgentBundle:PeopleSearch:getSectionData }
 
 ################################################################################
 # Org

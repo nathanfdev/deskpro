@@ -1561,11 +1561,11 @@ padding: 7px 7px 0 7px;
 	padding-top: 1px;
 }
 
-dl#ticket_labels_list {
+dl.labels-list {
 	margin: 10px 5px 10px 5px;
 }
 
-dl#ticket_labels_list dt {
+dl.labels-list dt {
 	float: left;
 	clear: left;
 	font-size: 9pt;
@@ -1575,13 +1575,13 @@ dl#ticket_labels_list dt {
 	text-align: center;
 }
 
-dl#ticket_labels_list dd {
+dl.labels-list dd {
 	margin-left: 33px;
 	padding-top: 2px;
 	padding-bottom: 10px;
 	color: #333 !important;
 }
-dl#ticket_labels_list dd a{
+dl.labels-list dd a{
 	color: #333 !important;
 }
 

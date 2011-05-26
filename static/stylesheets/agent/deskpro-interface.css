@@ -1,3 +1,7 @@
+/**************************************
+* nav.deskpro-tabstrip
+**************************************/
+
 nav.deskpro-tabstrip {
     height: 20px;
 
@@ -75,7 +79,77 @@ section.deskpro-tab-item.on {
     display: block;
 }
 
+/**************************************
+* nav.deskpro-tabstrip
+* A tabstrip within the main <header> el
+**************************************/
 
+header.section-header.with-tabs {
+    height: 50px;
+}
+
+header.section-header.with-tabs h1 {
+    line-height: 30px;
+}
+
+header.section-header.with-tabs nav.mode-buttons {
+    margin-top: 5px;
+}
+
+nav.deskpro-inner-tabstrip {
+    height: 20px;
+    margin-bottom: 1px;
+}
+
+nav.deskpro-inner-tabstrip > ul > li {
+    display: block;
+    float: left;
+
+    background-color: #FAFAFA;
+    height: 17px;
+    overflow: hidden;
+    margin-top: 2px;
+    margin-left: 2px;
+
+    padding: 0 3px 0 3px;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    color: #757575;
+
+    border: 1px solid #E5EAED;
+    border-bottom: none;
+
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+nav.deskpro-inner-tabstrip > ul > li > a {
+    line-height: 18px;
+    color: #757575;
+}
+
+nav.deskpro-inner-tabstrip > ul > li.on {
+    height: 21px;
+    background-color: #EBEEF3;
+
+    border: 1px solid #CBCFD8;
+    border-bottom: none;
+}
+
+nav.deskpro-inner-tabstrip > ul > li.on > a {
+    line-height: 20px;
+    font-weight: bold;
+
+    text-shadow: 1px 1px 0px #fff;
+    filter: dropshadow(color=#fff, offx=1, offy=1);
+}
 
 
 /********************************

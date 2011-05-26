@@ -24,6 +24,42 @@ use \Orb\Util\Arrays;
  */
 class PeopleSearchController extends AbstractController
 {
+	public function getSectionDataAction()
+	{
+		$data = array();
+
+		#------------------------------
+		# People labels
+		#------------------------------
+
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$people_tag_cloud = $cloud_gen->getCloud();
+
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('people');
+		$people_tag_index = $label_lister->getIndexList();
+
+		#------------------------------
+		# Org labels
+		#------------------------------
+
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$org_tag_cloud = $cloud_gen->getCloud();
+
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('organizations');
+		$org_tag_index = $label_lister->getIndexList();
+
+		$data['section_html'] = $this->renderView('AgentBundle:PeopleSearch:window-section.html.twig', array(
+			'people_tag_cloud' => $people_tag_cloud,
+			'people_tag_index' => $people_tag_index,
+			'org_tag_cloud'    => $org_tag_cloud,
+			'org_tag_index'    => $org_tag_index
+		));
+
+		return $this->createJsonResponse($data);
+	}
+
 	protected function _getResponseForPeople($type, $type_id, $results_helper, array $vars = array())
 	{
 		$is_partial = false;

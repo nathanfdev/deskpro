@@ -1,0 +1,81 @@
+<header class="section-header with-tabs">
+	<nav class="mode-buttons">
+		<ul>
+			<li class="with-route" data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}">List</li>
+		</ul>
+	</nav>
+	<h1>People</h1>
+	<nav id="people_outline_tabstrip" class="deskpro-inner-tabstrip">
+		<ul>
+			<li class="tag-cloud" data-tab-for="#people_outline_tagcloud"><a>Tag Cloud</a></li>
+			<li class="tag-list" data-tab-for="#people_outline_taglist"><a>Tag List</a></li>
+		</ul>
+	</nav>
+</header>
+<section id="people_outline_tagcloud" class="deskpro-tab-item" data-tab-trigger="#people_outline_tabstrip li.tag-cloud" style="padding: 8px;">
+	<ol class="tags tag-cloud">
+		{% for label,css_class in people_tag_cloud %}
+			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+		{% else %}
+			<li>View a person to add labels to their profile. The most popular labels will show here.</li>
+		{% endfor %}
+	</ol>
+</section>
+<section id="people_outline_taglist" class="deskpro-tab-item" data-tab-trigger="#people_outline_tabstrip li.tag-list">
+	<dl class="labels-list">
+		{% for letter,labels in people_tag_index %}
+			<dt>{{letter}}</dt>
+			<dd>
+				<ul class="comma-list">
+					{% for label in labels %}
+						<li><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+					{% endfor %}
+				</ul>
+			</dd>
+		{% else %}
+			<dt></dt>
+			<dd>You haven't labeled any people! View a person to add labels to their profile.</dd>
+		{% endfor %}
+	</dl>
+</section>
+
+<header class="section-header with-tabs" style="margin-top: 26px;">
+	<nav class="mode-buttons">
+		<ul>
+			<li class="with-route" data-route="listpane:{{ path('agent_orgsearch_customfilter') }}">List</li>
+		</ul>
+	</nav>
+	<h1>Organizations</h1>
+	<nav id="people_outline_org_tabstrip" class="deskpro-inner-tabstrip">
+		<ul>
+			<li class="org-tag-cloud" data-tab-for="#people_outline_org_tagcloud"><a>Tag Cloud</a></li>
+			<li class="org-tag-list" data-tab-for="#people_outline_org_taglist"><a>Tag List</a></li>
+		</ul>
+	</nav>
+</header>
+<section id="people_outline_org_tagcloud" class="deskpro-tab-item" data-tab-trigger="#people_outline_org_tabstrip li.tag-cloud" style="padding: 8px;">
+	<ol class="tags tag-cloud">
+		{% for label,css_class in org_tag_cloud %}
+			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+		{% else %}
+			<li>View an organization to add labels to its profile. The most popular labels will show here.</li>
+		{% endfor %}
+	</ol>
+</section>
+<section id="people_outline_org_taglist" class="deskpro-tab-item" data-tab-trigger="#people_outline_org_tabstrip li.tag-list">
+	<dl class="labels-list">
+		{% for letter,labels in org_tag_index %}
+			<dt>{{letter}}</dt>
+			<dd>
+				<ul class="comma-list">
+					{% for label in labels %}
+						<li><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+					{% endfor %}
+				</ul>
+			</dd>
+		{% else %}
+			<dt></dt>
+			<dd>View an organization to add labels to its profile.</dd>
+		{% endfor %}
+	</dl>
+</section>
