@@ -40,17 +40,6 @@ class MainController extends AbstractController
 			$restore_state = $state_pref['value'];
 		}
 
-		// KB stuff
-		$kb_counts = array();
-		$kb_counts['awaiting_validation_articles'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM articles WHERE hidden_status = ?", array('validating'));
-		$kb_counts['awaiting_validation_edits']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_validating_edits");
-		$kb_counts['awaiting_validation']          = $kb_counts['awaiting_validation_articles'] + $kb_counts['awaiting_validation_edits'];
-		$kb_counts['drafts']                       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM articles WHERE hidden_status = ?", array('draft'));
-		$kb_counts['pending']                      = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
-
-		$kb_user_cats   = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
-		$kb_agent_cats  = App::getEntityRepository('DeskPRO:ArticleCategory')->getAgentCategoryHelper()->getFlatHierarchy();
-
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'is_demo' => $this->in->checkIsset('show-demo-bar'),
@@ -61,9 +50,6 @@ class MainController extends AbstractController
 			'org_fields' => $org_fields,
 			'ticket_options' => $ticket_options,
 			'restore_state' => $restore_state,
-			'kb_counts' => $kb_counts,
-			'kb_user_cats' => $kb_user_cats,
-			'kb_agent_cats' => $kb_agent_cats,
 		));
     }
 }
