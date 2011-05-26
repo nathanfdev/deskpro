@@ -18,6 +18,8 @@ pageMeta.tabRelatedContentUrl         = '{{ path('agent_ticket_ajaxtab_releated_
 pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
 pageMeta.getUpdatedCountsUrl          = '{{ path('agent_ticket_ajaxgetupdatedcounts', {'ticket_id': ticket.id}) }}';
+
+{#
 pageMeta.widgets = [
 {% for widget in widgets['agent.ticket.tabs']|merge(widgets['agent.ticket.display']) %}
 	{{ widget.getJsInitObject('div.tab-content.widget-' ~ widget.id)|json_encode|raw }}
@@ -33,6 +35,7 @@ pageMeta.fieldHandlers = [
 	{% endfor %}
 	false,
 ];
+#}
 </script>
 <div class="layout-content with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>

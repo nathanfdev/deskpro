@@ -44,6 +44,7 @@ class TicketController extends AbstractController
 		if (($ticket_custom_fields_block = App::getEntityRepository('DeskPRO:Cache')->load("ticket_custom_fields.{$ticket['id']}.agent_block")) === false) {
 			// Custom fields
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+			$ticket_field_defs = array();
 			$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
 
 			// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
