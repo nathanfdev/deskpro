@@ -25,14 +25,17 @@ pageMeta.loadFirst = {% if load_first %}true{% else %}false{% endif %};
 <div class="layout-content">
 <div class="content">
 
+	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
+
 	<header class="section-header">
 		<nav class="mode-buttons">
 			<ul>
 				<li data-view-type="simple"><a>Basic</a></li>
 				<li class="on"><a>List</a></li>
-				<li data-view-type="detail"><a>Detail</a></li>
+				<li data-view-type="list"><a>Detail</a></li>
 			</ul>
 		</nav>
+		<span class="display-options-trigger">Display Options</span>
 		<h1>
 			{% if filter.sys_name %}
 				{{ phrase('agent.filter_' ~ filter.sys_name) }}

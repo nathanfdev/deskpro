@@ -35,7 +35,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			addClose: true
 		};
 
-		this.isDestroyed = false;
+		this.isThisDestroyed = false;
 		this.hasInit = false;
 		this.hasSentAjax = false;
 		this.elements = {};
@@ -116,8 +116,12 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			var pageW = $(document).width();
 			var leftForCenter = (pageW / 2) - (w / 2);
 
+			var h = this.elements.wrapperOuter.outerHeight();
+			var pageH = $(document).height();
+			var topForCenter = (pageH / 2) - (h / 2);
+
 			this.elements.wrapperOuter.css({
-				'top': 60,
+				'top': topForCenter,
 				'left': leftForCenter
 			});
 		}
@@ -329,13 +333,13 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		if (this.elements.modal) {
 			this.elements.modal.remove();
 		}
-		this.isDestroyed = true;
+		this.isThisDestroyed = true;
 
 		this.fireEvent('destroyed', [this]);
 	},
 
 
 	isDestroyed: function() {
-		return this.isDestroyed;
+		return this.isThisDestroyed;
 	}
 });

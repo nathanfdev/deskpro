@@ -254,7 +254,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 		this.displayOptionsOverlay = new DeskPRO.UI.Overlay({
 			contentElement: overlay_wrapper,
-			triggerElement: $('.display-options-trigger th:not(.no-option-trigger)', this.contentWrapper),
+			triggerElement: $('.display-options-trigger th:not(.no-option-trigger), header .display-options-trigger', this.contentWrapper),
 			onContentSet: function(eventData) {
 				$('ul.sortable-list', eventData.wrapperEl).sortable({
 					'axis': 'y'
@@ -274,12 +274,48 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	},
 
 	switchViewType: function(view_type) {
-		if (view_type == 'detail') {
-			//
+
+		var new_url = this.meta.viewTypeUrl.replace('$view_type', view_type);
+
+		if (view_type == 'list') {
+
+			var w = $(window).width() - 100;
+			var h = $(window).height() - 100;
+
+			var contentEl = $('<div>Loading...</div>');
+			contentEl.width(w);
+			contentEl.height(h);
+			contentEl.css('overflow', 'auto');
+
+			var  overlay = new DeskPRO.UI.Overlay({
+				contentElement: contentEl,
+				destroyOnClose: true,
+				customClassname: 'no-padding',
+				maxWidth: w,
+				maxHeight: h
+			});
+			overlay.openOverlay();
+			$.ajax({
+				timeout: 20000,
+				type: 'GET',
+				url: new_url,
+				dataType: 'html',
+				success: function(html) {
+					if (overlay.isDestroyed()) {
+						return;
+					}
+
+					var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
+					page.setMetaData('routeUrl', new_url);
+
+					contentEl.html(page.html);
+					page.fireEvent('render', [contentEl]);
+					page.fireEvent('activate');
+				}
+			});
 			return;
 		}
 
-		var new_url = this.meta.viewTypeUrl.replace('$view_type', view_type);
 		DeskPRO_Window.loadListPane(new_url, null, function() {
 			DeskPRO_Window.removePage(self);
 		});

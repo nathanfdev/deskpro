@@ -3293,9 +3293,20 @@ span.kb-editor-edit a {
 }
 
 #deskpro_outline ul.nav-list > li > .list-counter {
-	background: #e8ebed;
+	background: #a4a8ab;
+    background: -moz-linear-gradient(top, #a4a8ab 0%, #707477 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a4a8ab), color-stop(100%,#707477));
+    background: -webkit-linear-gradient(top, #a4a8ab 0%,#707477 100%);
+    background: -o-linear-gradient(top, #a4a8ab 0%,#707477 100%);
+    background: -ms-linear-gradient(top, #a4a8ab 0%,#707477 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#A4A8AB', endColorstr='#707477',GradientType=0 );
+    background: linear-gradient(top, #a4a8ab 0%,#707477 100%);
+
+    text-shadow: 1px 1px 0px #545454;
+    filter: dropshadow(color=#545454, offx=1, offy=0);
+
 	padding: 0px 4px;
-	color: #5b606d;
+	color: #fff;
 	font-size: 10px;
 	float: right;
 	line-height: 14px;
