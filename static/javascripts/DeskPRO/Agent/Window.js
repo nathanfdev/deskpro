@@ -778,7 +778,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initBasic: function() {
 
-		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
+		//this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
+		this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
 		this.messageChanneler.subscribeChannel('tickets.new-tickets');
 		this.messageChanneler.subscribeChannel('tickets.new-messages');
 		this.messageChanneler.subscribeChannel('tickets.updated');
@@ -786,7 +787,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// todo check if we still need this
 		this.poller = new DeskPRO.AjaxPoller.MessagePoller(this.messageBroker, {
 			ajaxUrl: BASE_URL + 'agent/poller',
-			interval: 3600000
+			interval: 5000
 		});
 
 		var self = this;

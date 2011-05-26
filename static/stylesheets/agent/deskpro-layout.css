@@ -141,6 +141,7 @@
 
     border-top: 1px solid transparent;
     border-bottom: 1px solid transparent;
+    position: relative;
 }
 
 #deskpro_sections > ul > li:hover, #deskpro_sections > ul > li.on {
@@ -151,6 +152,39 @@
 
 #deskpro_sections > ul > li:hover a, #deskpro_sections > ul > li.on a {
     color: #D7DAE1;
+}
+
+#deskpro_sections > ul > li > div.nav-counter {
+    display: block;
+    position: absolute;
+    top: -2px;
+    left: 0;
+    right: 0;
+    text-align: right;
+    padding-right: 4px;
+}
+
+#deskpro_sections > ul > li > div.nav-counter span {
+	padding: 2px 4px 2px 4px;
+	background: #A83B3B;
+	line-height: 14px;
+	font-size: 10px;
+	font-weight: bold;
+	color: #fff;
+	text-shadow: 0 1px 1px #8f1313;
+	border: 2px solid #fff;
+	background-clip: padding-box;
+
+	font-family: Helvetica, 'Helvetica Neue', Arial, sans-serif;
+
+	-webkit-border-radius: 10px;
+    -moz-border-radius: 10px;
+
+	-webkit-box-shadow:  0 0px 2px #766B6B;
+    -moz-box-shadow: inset 0 1px 0 #e55858, 0  0px 2px #766B6B;
+    box-shadow: 0 0px 2px #766B6B;
+
+	z-index: 500;
 }
 
 #deskpro_sections > ul  > li > a {
