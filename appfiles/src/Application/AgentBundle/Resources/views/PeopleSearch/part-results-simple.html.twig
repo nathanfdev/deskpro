@@ -1,0 +1,17 @@
+<section class="search-reuslts page-set" data-page="{{page}}">
+	{% for person in people %}
+		<article class="person person-{{person.id}}">
+			<h4 class="user-name">
+				<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': person.id|default('0')}) }}">
+					{{ person.display_name }}
+				</a>
+			</h4>
+			<div class="info">
+				<ul>
+					<li>{{ person.primary_email_address }}</li>
+				</ul>
+				<br style="clear" />
+			</div>
+		</article>
+	{% endfor %}
+</section>

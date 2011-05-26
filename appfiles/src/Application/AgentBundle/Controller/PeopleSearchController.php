@@ -62,11 +62,16 @@ class PeopleSearchController extends AbstractController
 
 	protected function _getResponseForPeople($type, $type_id, $results_helper, array $vars = array())
 	{
+		$view_type = $this->in->getString('view_type');
+		if (!$view_type OR !in_array($view_type, array('list', 'simple'))) {
+			$view_type = 'simple';
+		}
+
 		$is_partial = false;
-		$tpl = 'AgentBundle:PeopleSearch:'.$type.'-results.html.twig';
+		$tpl = 'AgentBundle:PeopleSearch:'.$type.'-results-'.$view_type.'.html.twig';
 		if ($this->in->getBool('partial')) {
 			$is_partial = true;
-			$tpl = 'AgentBundle:PeopleSearch:part-results-list.html.twig';
+			$tpl = 'AgentBundle:PeopleSearch:part-results-'.$view_type.'.html.twig';
 		}
 
 		#------------------------------

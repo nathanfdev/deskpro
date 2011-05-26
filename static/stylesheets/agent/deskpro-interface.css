@@ -173,6 +173,15 @@ section.deskpro-results-list article {
     border-bottom: 1px solid #C3CBCE;
 }
 
+section.deskpro-results-list article.person {
+    padding:  8px 5px 8px 5px;
+}
+
+section.deskpro-results-list article h4.user-name {
+    color: #2D76B1;
+    font-size: 13px;
+}
+
 section.deskpro-results-list article > div.userinfo {
     height: 28px;
     position: relative;

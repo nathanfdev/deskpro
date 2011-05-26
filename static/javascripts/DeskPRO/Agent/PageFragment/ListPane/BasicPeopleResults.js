@@ -22,8 +22,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 		this._initTermsOverlay();
 
 		this.initFeaturesOnCollection(el, {
-			routes: ['tr .with-route'],
-			times: ['tr abbr.timeago']
+			routes: ['.with-route'],
+			times: ['abbr.timeago']
 		});
 
 		if (this.getMetaData('noResults')) {

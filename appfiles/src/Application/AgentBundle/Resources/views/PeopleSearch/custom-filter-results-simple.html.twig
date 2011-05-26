@@ -1,0 +1,42 @@
+<script>
+{% if not page_title %}
+	{% set page_title = 'Search' %}
+	pageMeta.tabTip = '.tip-filter-terms';
+{% endif %}
+pageMeta.title = {{ page_title|json_encode|raw }};
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleCustomFilter';
+pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}';
+pageMeta.saveListPrefsUrl = '{{ path('agent_peoplesearch_save_resultprefs', {'cache_id': cache_id}) }}';
+{% if cache_id %}
+	pageMeta.cache_id = {{cache_id}};
+{% endif %}
+{% if not people %}
+	pageMeta.noResults = true;
+{% endif %}
+pageMeta.preselectTerms = {{preselect_terms|json_encode|raw}};
+</script>
+<div class="tip-filter-terms" style="display:none">
+	{% include 'AgentBundle:Common:filter-tip-summary.html.twig' with {'title': page_title, 'terms_summary': terms_summary} %}
+</div>
+<div class="content">
+	{% include 'AgentBundle:PeopleSearch:part-display-options-overlay.html.twig' %}
+	{% include 'AgentBundle:PeopleSearch:part-terms-overlay.html.twig' %}
+
+	<header class="section-header">
+		<h1>
+			People
+		</h1>
+	</header>
+
+	<section class="ticket-simple-list deskpro-results-list">
+		{% include 'AgentBundle:PeopleSearch:part-results-simple.html.twig' %}
+	</section>
+
+	<div class="loading-more">
+		Loading more results ...
+	</div>
+	<div class="no-more-results">
+		There are no more results.
+	</div>
+</div>
