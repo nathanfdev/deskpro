@@ -55,6 +55,14 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		this.fireEvent('firstshow');
 	},
 
+	setButtonElement: function(el) {
+		this.buttonEl = el;
+	},
+
+	getButtonElement: function() {
+		return this.buttonEl;
+	},
+
 	getSectionElement: function() {
 		if (this.sectionEl) {
 			return this.sectionEl;
@@ -85,5 +93,22 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 	onShow: function() { },
 	onFirstShow: function() { },
-	onHide: function() { }
+	onHide: function() { },
+
+	updateBadge: function(count) {
+		var el = $('.nav-counter', this.buttonEl);
+		var elCount = $('span', el);
+
+		var count = parseInt(count);
+		if (count) {
+			if (count >= 1000) {
+				count = '1000+';
+			}
+			elCount.html(count);
+			el.show();
+		} else {
+			elCount.html('0');
+			el.hide();
+		}
+	}
 });

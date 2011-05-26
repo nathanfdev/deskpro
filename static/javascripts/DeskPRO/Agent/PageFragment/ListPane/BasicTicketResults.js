@@ -295,24 +295,30 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				maxHeight: h
 			});
 			overlay.openOverlay();
-			$.ajax({
-				timeout: 20000,
-				type: 'GET',
-				url: new_url,
-				dataType: 'html',
-				success: function(html) {
-					if (overlay.isDestroyed()) {
-						return;
+
+			var pageReloader = function(new_url) {
+				$.ajax({
+					timeout: 20000,
+					type: 'GET',
+					url: new_url,
+					dataType: 'html',
+					success: function(html) {
+						if (overlay.isDestroyed()) {
+							return;
+						}
+
+						var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
+						page.setMetaData('routeUrl', new_url);
+						page.setMetaData('pageReloader', pageReloader);
+
+						contentEl.html(page.html);
+						page.fireEvent('render', [contentEl]);
+						page.fireEvent('activate');
 					}
+				});
+			}
 
-					var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
-					page.setMetaData('routeUrl', new_url);
-
-					contentEl.html(page.html);
-					page.fireEvent('render', [contentEl]);
-					page.fireEvent('activate');
-				}
-			});
+			pageReloader(new_url);
 			return;
 		}
 
@@ -356,11 +362,18 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			type: 'POST',
 			url: this.getMetaData('saveListPrefsUrl'),
 			data: data,
+			context: this,
 			success: function() {
 
-				DeskPRO_Window.loadListPane(url, null, function() {
-					DeskPRO_Window.removePage(self);
-				});
+				if (this.meta.pageReloader) {
+					this.displayOptionsOverlay.closeOverlay();
+					this.fireEvent('destroy');
+					this.meta.pageReloader(url);
+				} else {
+					DeskPRO_Window.loadListPane(url, null, function() {
+						DeskPRO_Window.removePage(self);
+					});
+				}
 
 			}
 		});

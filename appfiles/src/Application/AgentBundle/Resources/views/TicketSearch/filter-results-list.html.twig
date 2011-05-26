@@ -5,8 +5,8 @@
 	pageMeta.title = {{ filter.title|json_encode|raw }};
 {% endif %}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
-pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?partial=1&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?';
+pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&partial=1&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&';
 pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.getMacroUrl = '{{ path('agent_ticketsearch_ajax_get_macro') }}?macro_id=$macro_id';
 pageMeta.saveMacroUrl = '{{ path('agent_ticketsearch_ajax_save_macro') }}?macro_id=$macro_id';

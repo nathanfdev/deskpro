@@ -77,23 +77,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.updateBadge(badgeCount);
 	},
 
-	updateBadge: function(count) {
-		var el = $('.nav-counter', this.buttonEl);
-		var elCount = $('span', el);
-
-		var count = parseInt(count);
-		if (count) {
-			if (count >= 1000) {
-				count = '1000+';
-			}
-			elCount.html(count);
-			el.show();
-		} else {
-			elCount.html('0');
-			el.hide();
-		}
-	},
-
 	//#########################################################################
 	// Grouping
 	//#########################################################################
