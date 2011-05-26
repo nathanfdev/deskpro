@@ -21,14 +21,32 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 	initialize: function() {
 		this.addEvent('show', this.onShow);
+		this.addEvent('show', this._onShowLoadList);
 		this.addEvent('show', this._onFirstShowFire);
+		this.addEvent('show', this._onShowSetVisible);
 		this.addEvent('firstshow', this.onFirstShow);
 		this.addEvent('hide', this.onHide);
+		this.addEvent('hide', this._onHideSetVisible);
+
+		this._isVisible = false;
 
 		this.init();
 	},
 
 	init: function() {},
+
+	_onShowSetVisible: function() { this._isVisible = true },
+	_onHideSetVisible: function() { this._isVisible = false },
+
+	_onShowLoadList: function() {
+
+		var el = $('.auto-load-route', this.sectionEl);
+		if (!el.length || !el.data('route')) {
+			return;
+		}
+
+		DeskPRO_Window.runPageRoute(el.data('route'));
+	},
 
 	_onFirstShowFire: function() {
 		if (this.has_shown) return;
@@ -59,6 +77,10 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		if (!el.parent().is('#deskpro_outline')) {
 			this.sectionEl.detach().appendTo('#deskpro_outline');
 		}
+	},
+
+	isVisible: function() {
+		return this._isVisible;
 	},
 
 	onShow: function() { },

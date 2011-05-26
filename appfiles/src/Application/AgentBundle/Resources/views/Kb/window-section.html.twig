@@ -3,7 +3,7 @@
 </header>
 <section class="inbox">
 	<ul class="nav-list">
-		<li class="with-route" data-route="listpane:{{ path('agent_kb_validating') }}">
+		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_kb_validating') }}">
 			<span class="list-counter" id="kb_validating_count">{{ kb_counts.awaiting_validation|default(0) }}</span>
 			<a>Articles Validating</a>
 		</li>

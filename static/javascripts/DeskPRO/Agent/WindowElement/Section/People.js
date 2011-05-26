@@ -36,5 +36,9 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 			}
 		});
+
+		if (this.isVisible()) {
+			this._onShowLoadList();
+		}
 	}
 });

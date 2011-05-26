@@ -28,5 +28,9 @@ DeskPRO.Agent.WindowElement.Section.Kb = new Orb.Class({
 
 			}
 		});
+
+		if (this.isVisible()) {
+			this._onShowLoadList();
+		}
 	}
 });

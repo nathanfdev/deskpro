@@ -19,5 +19,9 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 
 	_initSection: function(data) {
 		this.sectionEl.html(data.section_html);
+
+		if (this.isVisible()) {
+			this._onShowLoadList();
+		}
 	}
 });

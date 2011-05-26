@@ -6,7 +6,7 @@
 	<h2>Inbox</h2>
 	<ul id="tickets_outline_inbox_list" class="nav-list">
 		{% for filter in sys_filters %}
-			<li class="filter-{{filter.id}}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+			<li class="filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
 				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">-</span>
 				<a>{{filter.title}}</a>
 			</li>

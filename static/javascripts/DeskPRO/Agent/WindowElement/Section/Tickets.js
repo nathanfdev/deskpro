@@ -34,6 +34,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this._initFilters();
 		this._initOverview();
 		this._initFlagged();
+
+		if (this.isVisible()) {
+			this._onShowLoadList();
+		}
 	},
 
 	//#########################################################################
