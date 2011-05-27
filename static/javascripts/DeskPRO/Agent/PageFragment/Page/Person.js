@@ -17,8 +17,16 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	initPage: function(el) {
 
 		this.wrapper = el;
+		this.contentWrapper = $('div.layout-content:first', el);
 
 		var self = this;
+
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+			// When size changes within the pane, need to re-size the scroll
+			cw.update();
+		});
 
 		this.initRoutesOnCollection($('.with-route', this.wrapper));
 
