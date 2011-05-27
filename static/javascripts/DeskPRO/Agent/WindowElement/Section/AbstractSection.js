@@ -40,6 +40,10 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 	_onShowLoadList: function() {
 
+		if (DeskPRO_Window.getDebug('noAutoLoadList')) {
+			return;
+		}
+
 		var el = $('.auto-load-route', this.sectionEl);
 		if (!el.length || !el.data('route')) {
 			return;
@@ -71,7 +75,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		return null;
 	},
 
-	setSectionElement: function(el) {
+	setSectionElement: function(el, contentEl) {
 		if (this.sectionEl) {
 			this.sectionEl.remove();
 		}
@@ -85,6 +89,12 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		if (!el.parent().is('#deskpro_outline')) {
 			this.sectionEl.detach().appendTo('#deskpro_outline');
 		}
+
+		if (!contentEl) {
+			contentEl = $('<section class="content"></section>');
+		}
+		this.sectionEl.append(contentEl);
+		this.contentEl = contentEl;
 	},
 
 	isVisible: function() {

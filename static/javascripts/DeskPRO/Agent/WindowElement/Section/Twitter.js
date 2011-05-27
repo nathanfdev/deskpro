@@ -18,10 +18,19 @@ DeskPRO.Agent.WindowElement.Section.Twitter = new Orb.Class({
 	},
 
 	_initSection: function(data) {
-		this.sectionEl.html(data.section_html);
+		this.contentEl.html(data.section_html);
 
 		if (this.isVisible()) {
 			this._onShowLoadList();
 		}
+
+		this.contentEl.addClass('scroll-content').tinyscrollbar();
+
+		//this.contentEl.addClass('scroll-content');
+		//this.contentEl.wrap('<div class="scroll-viewport" />');
+		//$('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>').insertBefore(this.contentEl);
+//
+		//this.sectionEl.addClass('with-scrollbar');
+		//this.sectionEl.tinyscrollbar();
 	}
 });

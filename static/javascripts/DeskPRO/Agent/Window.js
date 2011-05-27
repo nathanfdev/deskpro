@@ -935,11 +935,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 				el.attr('id', Orb.getUniqueId('section_'));
 			}
 
+			var handlerClassName = el.data('section-handler');
+
+			if (DeskPRO_Window.DEBUG.disableSectionHandlers) {
+				if (!DeskPRO_Window.DEBUG.enableSectionHandlers || DeskPRO_Window.DEBUG.enableSectionHandlers.indexOf(handlerClassName) === -1) {
+					return;
+				}
+			}
+
 			if (!first) {
 				first = el;
 			}
 
-			var handlerClass = Orb.getNamespacedObject(el.data('section-handler'));
+			var handlerClass = Orb.getNamespacedObject(handlerClassName);
 			var handler = new handlerClass();
 
 			self.sections[el.attr('id')] = handler;

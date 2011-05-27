@@ -1,25 +1,31 @@
 .with-scrollbar .thumb .end,
 .with-scrollbar .thumb { background-color: #003D5D; }
-.with-scrollbar .viewport { height: 200px; overflow: hidden; position: relative; }
-.with-scrollbar .overview { position: absolute; left: 0; top: 0; right: 0; }
-.with-scrollbar .scrollbar { position: relative; float: right; width: 6px; }
+.with-scrollbar .scroll-viewport { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+.with-scrollbar .scroll-content { position: absolute; left: 0; top: 0; right: 0; }
+.with-scrollbar .scrollbar { position: relative; float: right; width: 6px; z-index: 1000;}
 .with-scrollbar .track {
-	background-color: #BEC4CF; height: 100%; width:6px; position: relative; padding: 0;
-	-moz-border-radius: 4px;
-	border-radius: 4px;
-	background: #BEC4CF; /* old browsers */
-	background: -moz-linear-gradient(left, #BEC4CF 21%, #E5E5E5 50%, #BEC4CF 81%); /* firefox */
-	background: -webkit-gradient(linear, left top, right top, color-stop(21%,#BEC4CF), color-stop(50%,#E5E5E5), color-stop(81%,#BEC4CF)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#BEC4CF', endColorstr='#BEC4CF',GradientType=1 ); /* ie */
+
 }
+
+.with-scrollbar .scrollbar:hover .thumb, .with-scrollbar .scrollbar.is-scrolling .thumb {
+    -webkit-transition: background 500ms ease;
+    -moz-transition: background 500ms ease;
+    transition: background 500ms ease;
+
+    background-color: #686D75;
+}
+
 .with-scrollbar .thumb {
-	height: 20px; width: 6px; cursor: pointer; overflow: hidden; position: absolute; top: 0;
+	height: 20px; width: 5px; cursor: pointer; overflow: hidden; position: absolute; top: 0;
 	-moz-border-radius: 4px;
 	border-radius: 4px;
-	background: #606c88; /* old browsers */
-	background: -moz-linear-gradient(left, #606c88 0%, #3f4c6b 100%); /* firefox */
-	background: -webkit-gradient(linear, left top, right top, color-stop(0%,#606c88), color-stop(100%,#3f4c6b)); /* webkit */
-	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#606c88', endColorstr='#3f4c6b',GradientType=1 ); /* ie */
+    background-color: transparent;
+
+    opacity: 0.5;
+
+    -webkit-transition: background 600ms ease;
+    -moz-transition: background 600ms ease;
+    transition: background 600ms ease;
 }
 .with-scrollbar .thumb .end {
 	display:none;
