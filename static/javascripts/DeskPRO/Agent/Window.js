@@ -929,7 +929,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var self = this;
 		var first = null;
-		$('#deskpro_sections li[data-section-handler]').each(function() {
+		$('#deskpro_sections [data-section-handler]').each(function() {
 			var el = $(this);
 			if (!el.attr('id')) {
 				el.attr('id', Orb.getUniqueId('section_'));
@@ -952,7 +952,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			self.sections[el.attr('id')] = handler;
 
-			el.click(function() { self.switchToSection(el.attr('id')) });
+			if (!el.is('.no-click-switch')) {
+				el.click(function() { self.switchToSection(el.attr('id')) });
+			}
 		});
 
 		$('#deskpro_outline').delegate('[data-route]', 'click', function(ev) {
