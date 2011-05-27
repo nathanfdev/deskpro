@@ -7,6 +7,8 @@
 
 }
 
+#deskpro_viewport .scroll-viewport { position: relative !important; }
+
 .with-scrollbar .scrollbar:hover .thumb, .with-scrollbar .scrollbar.is-scrolling .thumb {
     -webkit-transition: background 500ms ease;
     -moz-transition: background 500ms ease;

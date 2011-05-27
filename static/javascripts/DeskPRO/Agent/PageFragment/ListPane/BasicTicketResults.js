@@ -131,6 +131,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
 			this._handleResize()
 		}).bind(this));
+
+		this.contentWrapper.addClass('scroll-content').tinyscrollbar();
 	},
 
 	_handleResize: function() {

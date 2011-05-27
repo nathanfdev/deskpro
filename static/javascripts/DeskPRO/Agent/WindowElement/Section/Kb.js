@@ -18,7 +18,7 @@ DeskPRO.Agent.WindowElement.Section.Kb = new Orb.Class({
 	},
 
 	_initSection: function(data) {
-		this.sectionEl.html(data.section_html);
+		this.contentEl.html(data.section_html);
 
 		var self = this;
 		this.catTabs = new DeskPRO.UI.SimpleTabs({
@@ -28,6 +28,8 @@ DeskPRO.Agent.WindowElement.Section.Kb = new Orb.Class({
 
 			}
 		});
+
+		this.contentEl.addClass('scroll-content').tinyscrollbar();
 
 		if (this.isVisible()) {
 			this._onShowLoadList();

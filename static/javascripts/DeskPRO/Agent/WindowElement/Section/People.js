@@ -18,7 +18,7 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 	},
 
 	_initSection: function(data) {
-		this.sectionEl.html(data.section_html);
+		this.contentEl.html(data.section_html);
 
 		var self = this;
 		this.peopleTabs = new DeskPRO.UI.SimpleTabs({
@@ -36,6 +36,8 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 
 			}
 		});
+
+		this.contentEl.addClass('scroll-content').tinyscrollbar();
 
 		if (this.isVisible()) {
 			this._onShowLoadList();
