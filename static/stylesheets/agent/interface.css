@@ -1,13 +1,12 @@
 .with-scrollbar .thumb .end,
 .with-scrollbar .thumb { background-color: #003D5D; }
-.with-scrollbar .scroll-viewport { position: absolute; top: 0; bottom: 0; left: 0; right: 0; }
+.with-scrollbar .scroll-viewport { position: absolute; top: 0; bottom: 0; left: 0; right: 0; overflow: hidden; }
 .with-scrollbar .scroll-content { position: absolute; left: 0; top: 0; right: 0; }
 .with-scrollbar .scrollbar { position: relative; float: right; width: 6px; z-index: 1000;}
 .with-scrollbar .track {
 
 }
 
-#deskpro_viewport .scroll-viewport { position: relative !important; }
 
 .with-scrollbar .scrollbar:hover .thumb, .with-scrollbar .scrollbar.is-scrolling .thumb {
     -webkit-transition: background 500ms ease;

@@ -9,7 +9,7 @@ DeskPRO.Agent.Layout.FooterLayout = Orb.Class({
 		this.wrapper.addClass('has-layout').data('layout', this);
 
 		this.content  = $('div.layout-content:first', this.wrapper);
-		this.viewPort = $('> div.viewport:first', this.content);
+		this.viewPort = $('> div.scroll-viewport:first', this.content);
 		if (!this.viewPort.length) {
 			this.viewPort = null;
 		}
