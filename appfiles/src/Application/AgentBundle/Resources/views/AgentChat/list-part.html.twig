@@ -1,0 +1,16 @@
+<section class="search-reuslts page-set" data-page="{{page}}">
+	{% for convo in chat_conversations %}
+		<article class="chat_convo chat_convo-{{convo.id}}">
+			<div class="chat-participants">
+				<ul>
+					{% for p in convo.participants %}
+					<address>
+						{{ p.display_name }}
+					</address>
+					{% endfor %}
+				</ul>
+			</div>
+			<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">ticket.date_created|date('M d')</time>
+		</article>
+	{% endfor %}
+</section>
