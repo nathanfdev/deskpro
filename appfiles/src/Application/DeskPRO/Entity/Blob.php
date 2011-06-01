@@ -68,7 +68,9 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $authcode;
 
 	/**
-	 * Is this a media upload (appears in the media browser etc)
+	 * Is this a media upload (appears in the media browser etc). These are files that were
+	 * uploaded and are attached to things.
+	 * 
 	 * @orm:Column(name="is_media_upload", type="boolean")
 	 */
 	protected $is_media_upload = false;
@@ -81,15 +83,37 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $title = '';
 
 	/**
+	 * If this type of file has dimentions, the width
+	 *
+	 * @var int
+	 * @orm:Column(name="dim_w", type="integer")
+	 */
+	protected $dim_w = 0;
+
+	/**
+	 * If this type of file has dimentions, the height
+	 *
+	 * @var int
+	 * @orm:Column(name="dim_h", type="integer")
+	 */
+	protected $dim_h = 0;
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
+	/**
+	 * @orm:OneToMany(targetEntity="LabelBlob", mappedBy="blob", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 */
+	protected $labels;
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
 		$this->authcode = Strings::random(20, Strings::CHARS_KEY);
+		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 
@@ -175,5 +199,18 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->filename;
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Labels\LabelManager
+	 */
+	public function getLabelManager()
+	{
+		if ($this->_label_manager === null) {
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelBlob');
+		}
+
+		return $this->_label_manager;
 	}
 }

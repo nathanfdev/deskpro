@@ -1,0 +1,7 @@
+{% if blobs|length %}
+	{% for blob in blobs %}
+		{% include 'AgentBundle:MediaBrowser:file-row.html.twig' with {'blob': blob} %}
+	{% endfor %}
+{% else %}
+	You have no selected any files to attach.
+{% endif %}
