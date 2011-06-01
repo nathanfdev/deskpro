@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbViewArticle';
 pageMeta.title = {{article.title|json_encode|raw}};
 pageMeta.article_id = {{article.id}};
+pageMeta.markup_mode = '{{article.markup_mode}}';
 pageMeta.urls = {
 	'agent_kb_article_edit_geteditor': '{{ path('agent_kb_article_edit_geteditor', {'article_id': article.id}) }}'
 };

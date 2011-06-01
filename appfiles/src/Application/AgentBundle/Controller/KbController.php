@@ -254,7 +254,12 @@ class KbController extends AbstractController
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
 
-		return $this->render('AgentBundle:Kb:view-editor-markdown.html.twig', array(
+		$tpl = 'view-editor-markdown.html.twig';
+		if ($article['markup_mode'] == Article::MARKUP_MODE_HTML) {
+			$tpl = 'view-editor-html.html.twig';
+		}
+
+		return $this->render("AgentBundle:Kb:$tpl", array(
 			'article' => $article
 		));
 	}

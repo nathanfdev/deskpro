@@ -202,8 +202,16 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 
 		if (!this.editor_has_init) {
 			this.editor_has_init = true;
-			var textarea = $('.kb-editor.markdown > textarea', this.wrapper);
-			textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
+			var textarea = $('.kb-editor > textarea', this.wrapper);
+
+			if (this.getMetaData('markup_mode') == 'html') {
+				textarea.tinyMce({
+					script_url: TINYMCE_URL,
+					theme: 'basic'
+				});
+			} else {
+				textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
+			}
 		}
 
 		$('.kb-content.tab-content', this.wrapper).addClass('editor-on');

@@ -25,6 +25,9 @@ use \Orb\Util\Strings;
  */
 class Article extends \Application\DeskPRO\Domain\DomainObject
 {
+	const MARKUP_MODE_MARKDOWN = 'markdown';
+	const MARKUP_MODE_HTML = 'html';
+
 	const END_ACTION_DELETE  = 'delete';
 	const END_ACTION_ARCHIVE = 'archive';
 
@@ -63,6 +66,12 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
 	 */
 	protected $language = null;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="markup_mode", type="string", length=15)
+	 */
+	protected $markup_mode = 'markdown';
 
 	/**
 	 * @var string
@@ -221,12 +230,20 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getExcerptHtml()
 	{
-		return Markdown::format($this->excerpt);
+		if ($this->markup_mode == self::MARKUP_MODE_HTML) {
+			return $this->excerpt;
+		} else {
+			return Markdown::format($this->excerpt);
+		}
 	}
 
 	public function getContentHtml()
 	{
-		return Markdown::format($this->content);
+		if ($this->markup_mode == self::MARKUP_MODE_HTML) {
+			$this->content
+		} else {
+			return Markdown::format($this->content);
+		}
 	}
 
 	public function getContentPlainHtml()
@@ -247,6 +264,18 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$url = App::getRouter()->generate('user_articles_article', array('slug' => $this->id), true);
 
 		return $url;
+	}
+
+	public function setHtmlContent($content)
+	{
+		$this->content = $content;
+		$this->markup_mode = self::MARKUP_MODE_HTML;
+	}
+
+	public function setMarkdownContent($content)
+	{
+		$this->content = $content;
+		$this->markup_mode = self::MARKUP_MODE_MARKDOWN;
 	}
 
 	/**
