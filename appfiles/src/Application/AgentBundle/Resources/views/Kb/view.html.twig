@@ -6,7 +6,9 @@ pageMeta.urls = {
 	'agent_kb_article_edit_geteditor': '{{ path('agent_kb_article_edit_geteditor', {'article_id': article.id}) }}'
 };
 </script>
-<div class="layout-content kb-page">
+<div class="layout-content full-page kb-page with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
 
 {% if article.status_code == "hidden.validating" %}
 <div class="ticket-lock-bar" style="padding: 4px; text-align: right;">
@@ -198,3 +200,8 @@ pageMeta.urls = {
 </div>
 
 </div>
+
+
+</div></div> {# scrollbar divs #}
+
+</div> {# main layout div #}

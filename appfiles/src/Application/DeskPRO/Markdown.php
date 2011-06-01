@@ -49,10 +49,12 @@ class Markdown extends \Markdown_Parser
 		$text = parent::transform($text);
 
 		if ($this->attach_tokens) {
-			$this->processAttachTokens($text, $this->attach_tokens);
+			$text = $this->processAttachTokens($text, $this->attach_tokens);
 		}
 
 		$this->attach_tokens = array();
+
+		return $text;
 	}
 
 	public function processAttachTokens($text, array $attach_tokens)

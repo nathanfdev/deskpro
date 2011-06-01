@@ -485,6 +485,24 @@ So only the 'on' one is visible at a time */
     overflow: hidden;
 }
 
+#deskpro_viewport > div {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
+#deskpro_viewport > div > .layout-content.full-page {
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    overflow: hidden;
+}
+
 #deskpro_tabstrip {
     height: 38px;
 

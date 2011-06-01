@@ -3224,19 +3224,16 @@ span.kb-editor-edit a {
     padding: 8px;
 }
 
-.kb-editor-wrap {
-    position: absolute;
-    top: 0;
-    left: 0;
-    right: 0;
+.editor-on .kb-content-wrap {
+    display: none;
 }
 
-.editor-on .kb-content-wrap {
-    opacity: 0.6;
+.kb-editor-wrap {
+    display:none;
 }
 
 .editor-on .kb-editor-wrap {
-    display: blocks;
+    display: block;
 }
 
 .kb-editor.markdown {
@@ -3244,12 +3241,14 @@ span.kb-editor-edit a {
 }
 
 .kb-editor.markdown textarea {
-    width: 99%;
+    width: 98% !important;
     height: 200px;
 }
 
 
-
+.markItUp {
+    width: auto !important;
+}
 
 
 

@@ -22,6 +22,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		if (this.meta.has_validating) {
 			this._initValidating();
 		}
+
+		var cw = this.wrapper;
+		cw.tinyscrollbar();
+		$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).resize(function() {
+			// When size changes within the pane, need to re-size the scroll
+			cw.tinyscrollbar_update();
+		});
 	},
 
 
@@ -188,16 +195,22 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	},
 
 	showEditor: function() {
-		if (!this.editor_has_init) {
+		if (!this.editor_has_loaded) {
 			this._initEditor();
 			return;//this func will be recalled when editor has been init
+		}
+
+		if (!this.editor_has_init) {
+			this.editor_has_init = true;
+			var textarea = $('.kb-editor.markdown > textarea', this.wrapper);
+			textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
 		}
 
 		$('.kb-content.tab-content', this.wrapper).addClass('editor-on');
 	},
 
 	_initEditor: function() {
-		this.editor_has_init = true;
+		this.editor_has_loaded = true;
 
 		$.ajax({
 			url: this.getUrl('agent_kb_article_edit_geteditor'),
