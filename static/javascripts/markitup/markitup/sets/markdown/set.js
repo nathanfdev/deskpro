@@ -35,7 +35,7 @@ MARKITUP_MARKDOWN_SETTINGS = {
 		{name:'Quotes', openWith:'> '},
 		{name:'Code Block / Code', openWith:'(!(\t|!|`)!)', closeWith:'(!(`)!)'},
 		{separator:'---------------'},
-		{name:'Preview', call:'preview', className:"preview"}
+		{name:'Media', key:'M', className:'dp-media-trigger'},
 	]
 }
 

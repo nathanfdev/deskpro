@@ -3324,3 +3324,96 @@ span.kb-editor-edit a {
     font-size: 10px;
     padding-left: 18px;
 }
+
+
+
+
+
+div.media-browser {
+    width: 800px;
+    height: 500px;
+}
+
+div.media-browser .overlay-title nav {
+    height: 20px;
+}
+
+div.media-browser .overlay-title nav ul li {
+    float: left;
+    background-color: #CFD6E3;
+
+    -webkit-border-top-left-radius: 4px;
+    -webkit-border-top-right-radius: 4px;
+    -webkit-border-bottom-right-radius: px;
+    -webkit-border-bottom-left-radius: 0px;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -moz-border-radius-bottomright: px;
+    -moz-border-radius-bottomleft: 0px;
+    border-top-left-radius: 4px;
+    border-top-right-radius: 4px;
+    border-bottom-right-radius: px;
+    border-bottom-left-radius: 0px;
+
+    padding: 5px 8px 4px 8px;
+    margin-left: 10px;
+
+    font-size: 11px;
+
+    border: 1px solid #D3D9E0;
+    border-bottom:  none;
+}
+
+div.media-browser .overlay-title nav ul li a {
+    color: #000;
+}
+
+div.media-browser .overlay-title nav ul li.on {
+    background-color: #fff;
+}
+
+
+.file-drag-over {
+    background-color: #FCFFC7;
+}
+
+
+
+.blob-row {
+    background-color: #EDEDED;
+    border: 1px solid #C9C9C9;
+    margin: 3px 0 3px 0;
+
+    font-size: 11px;
+}
+
+.blob-row .title {
+    background-color: #fff;
+    padding: 3px;
+    margin: 3px;
+}
+
+.blob-row .title span {
+    float: right;
+}
+
+.blob-row .title label input {
+    background-color: #fff;
+    border: none;
+    cursor: pointer;
+
+    border-radius: 0;
+    -moz-border-radius: 0;
+    -webkit-border-radius: 0;
+
+    width: 80%;
+}
+
+.blob-row .info {
+    padding: 5px;
+    line-height: 110%;
+}
+
+.blob-row .blob-tags {
+    float: right;
+}

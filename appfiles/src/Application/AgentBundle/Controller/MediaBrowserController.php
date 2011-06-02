@@ -19,6 +19,38 @@ use Application\DeskPRO\App;
 class MediaBrowserController extends AbstractController
 {
 	############################################################################
+	# accept-upload
+	############################################################################
+
+	public function acceptUploadAction()
+	{
+		$files = $this->request->files->get('files');
+
+		$data = array();
+
+		foreach ($files as $file) {
+			/** @var $file \Symfony\Component\HttpFoundation\File\UploadedFile */
+
+			$desc = App::getApi('filestorage')->createRandomPath();
+
+			$desc->write(file_get_contents($file->getPath()), array(
+				'content_type' => $file->getMimeType(),
+				'filename' => $file->getOriginalName()
+			));
+
+			$blob_id = $desc->getPath();
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$data[] = array(
+				'blob_id' => $blob_id,
+				'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob))
+			);
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
+	############################################################################
 	# get-current
 	############################################################################
 	

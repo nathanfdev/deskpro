@@ -1,11 +1,6 @@
 <div class="blob-row blob-{{blob.id}}" data-blob-id="{{ blob.id }}">
 	<div class="title">
-		<span>{{ blob.filename }}</span>
-		<label>
-			Title:
-			<input type="text" class="title" value="{{ blob.title|default(blob.filename) }}" />
-		</label>
-		<div class="tags">
+		<div class="tags-wrap blob-tags">
 			<span class="tag-icon"></span>
 			<ul>
 				{% for blob in blob.labels %}
@@ -13,11 +8,16 @@
 				{% endfor %}
 			</ul>
 		</div>
+		<label>
+			Title:
+			<input type="text" name="title" class="file-title" value="{{ blob.title|default(blob.filename) }}" />
+		</label>
 	</div>
 	<div class="info">
 		<ul>
 			<li><a href="{{ blob.download_url }}">Download file</a></li>
-			<li>File zie: {{ blob.readable_filesize }}</li>
+			<li>File name: {{ blob.filename }}</li>
+			<li>File size: {{ blob.readable_filesize }}</li>
 			{% if blob.dim_w %}
 				<li>Dimentions: {{ blob.dim_w }}x{{ blob.dim_h }}</li>
 			{% endif %}

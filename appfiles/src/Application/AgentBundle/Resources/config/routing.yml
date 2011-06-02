@@ -717,3 +717,16 @@ agent_kb_glossary_saveword_json:
 agent_kb_getsectiondata:
   pattern: /kb/get-section-data.json
   defaults: { _controller: AgentBundle:Kb:getSectionData }
+
+
+################################################################################
+# Media browser
+################################################################################
+
+agent_mediabrowser_acceptupload:
+  pattern: /media-browser/accept-upload
+  defaults: { _controller: AgentBundle:MediaBrowser:acceptUpload }
+
+agent_mediabrowser_updateblob:
+  pattern: /media-browser/update-blob/{blob_id}
+  defaults: { _controller: AgentBundle:MediaBrowser:updateBlob }

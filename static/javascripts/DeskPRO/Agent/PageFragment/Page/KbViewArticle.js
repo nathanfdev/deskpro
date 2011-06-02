@@ -200,20 +200,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			return;//this func will be recalled when editor has been init
 		}
 
-		if (!this.editor_has_init) {
-			this.editor_has_init = true;
-			var textarea = $('.kb-editor > textarea', this.wrapper);
-
-			if (this.getMetaData('markup_mode') == 'html') {
-				textarea.tinyMce({
-					script_url: TINYMCE_URL,
-					theme: 'basic'
-				});
-			} else {
-				textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
-			}
-		}
-
 		$('.kb-content.tab-content', this.wrapper).addClass('editor-on');
 	},
 
@@ -227,8 +213,49 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			dataType: 'html',
 			success: function(html) {
 				$('.kb-editor-wrap', this.wrapper).html(html);
+
+				if (this.getMetaData('markup_mode') == 'html') {
+					this._initHtmlEditor();
+				} else {
+					this._initMarkdownEditor();
+				}
 				this.showEditor();
 			}
 		});
+	},
+
+	_initMarkdownEditor: function() {
+		var editorWrap = $('.kb-editor', this.wrapper);
+		var textarea = $('> textarea', editorWrap);
+		textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
+
+		$('.dp-media-trigger', editorWrap).click(this.showMediaBrowser.bind(this));
+	},
+
+	_initHtmlEditor: function() {
+		var textarea = $('.kb-editor > textarea', this.wrapper);
+		textarea.tinyMce({
+			script_url: TINYMCE_URL,
+			theme: 'basic'
+		});
+	},
+
+	_initMediaBrowser: function() {
+		if (this.mediabrowser_has_init) return;
+		this.mediabrowser_has_init = true;
+
+		this.mediaBrowserEl = $('.media-browser', this.wrapper);
+		this.mediaBrowserOverlay = new DeskPRO.UI.Overlay({
+			contentElement: this.mediaBrowserEl
+		});
+
+		this.mediaBrowser = new DeskPRO.Agent.MediaBrowser({
+			wrapper: this.mediaBrowserEl
+		});
+	},
+
+	showMediaBrowser: function() {
+		this._initMediaBrowser();
+		this.mediaBrowserOverlay.openOverlay();
 	}
 });

@@ -11,9 +11,11 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
-use \Orb\Util\Strings;
-use \Orb\Util\Numbers;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Numbers;
+
+use Application\DeskPRO\Entity\LabelBlob;
 
 /**
  * A blob is just a pointer to data.
@@ -109,6 +111,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $labels;
 
+	protected $_label_manager = null;
+
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
@@ -199,6 +203,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->filename;
+	}
+
+	public function addLabel(LabelBlob $label)
+	{
+		$label['blob'] = $this;
+		$this->labels->add($label);
 	}
 
 

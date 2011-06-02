@@ -240,7 +240,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	public function getContentHtml()
 	{
 		if ($this->markup_mode == self::MARKUP_MODE_HTML) {
-			$this->content
+			$this->content;
 		} else {
 			return Markdown::format($this->content);
 		}

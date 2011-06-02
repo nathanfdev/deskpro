@@ -52,3 +52,7 @@
 .markItUp .preview a {
 	background-image:url(images/preview.png);
 }
+
+.markItUp .dp-media-trigger a {
+	background-image:url(images/dp-media.png);
+}

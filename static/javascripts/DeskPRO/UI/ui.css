@@ -112,6 +112,12 @@
 	min-width: 300px;
 }
 
+.overlay-content.no-footer {
+    -webkit-box-shadow: none;
+    -moz-box-shadow: none;
+    box-shadow: none;
+}
+
 .overlay-actions {
 	padding: 11px;
 	text-align: center;
