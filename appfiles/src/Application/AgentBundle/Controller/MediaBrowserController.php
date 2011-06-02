@@ -51,6 +51,45 @@ class MediaBrowserController extends AbstractController
 	}
 
 	############################################################################
+	# image-editor
+	############################################################################
+
+	public function imageEditorAction($blob_id)
+	{
+		/** @var $blob \Application\DeskPRO\Entity\Blob */
+		$blob = App::findEntity('DeskPRO:Blob', $blob_id);
+		return $this->render('AgentBundle:MediaBrowser:image-editor.html.twig', array('blob' => $blob));
+	}
+
+	public function saveImageEditorAction($blob_id)
+	{
+		/** @var $blob \Application\DeskPRO\Entity\Blob */
+		$blob = App::findEntity('DeskPRO:Blob', $blob_id);
+
+		$desc_orig = App::getApi('filestorage')->getFileDescriptor($blob['id']);
+		$file = $desc_orig->get();
+
+		$im = new \Imagick();
+		$im->readImageBlob($file, $blob['filename']);
+		$im->cropimage($this->in->getInt('w'),$this->in->getInt('h'),$this->in->getInt('x'),$this->in->getInt('y'));
+
+		$desc = App::getApi('filestorage')->createRandomPath();
+		$desc->write($im->getImageBlob(), array(
+			'content_type' => $blob['content_type'],
+			'filename' => $blob['filename']
+		));
+
+		$new_blob_id = $desc->getPath();
+		$new_blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($new_blob_id);
+		$new_blob['original_blob'] = $blob;
+
+		App::getOrm()->persist($new_blob);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('blob_id' => $new_blob_id));
+	}
+
+	############################################################################
 	# get-current
 	############################################################################
 	

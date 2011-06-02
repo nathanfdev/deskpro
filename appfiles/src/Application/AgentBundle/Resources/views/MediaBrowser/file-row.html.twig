@@ -28,7 +28,8 @@
 
 		<button class="dp-button x-small link-trigger" data-code="[attach:{{ blob.id }} label:{{ blob.display_title }}]">Insert link to file</button>
 		{% if blob.isImage() %}
-			<button class="dp-button x-small image-trigger">Insert image</button>
+			<button class="dp-button x-small image-trigger" data-code="[attach:{{ blob.id }} image]">Insert image</button>
+			<button class="dp-button x-small image-edit-trigger">Insert edited image</button>
 		{% endif %}
 	</div>
 </div>

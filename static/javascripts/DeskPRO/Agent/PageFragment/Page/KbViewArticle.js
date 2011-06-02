@@ -238,6 +238,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
 			self.mediaBrowserOverlay.closeOverlay();
 		});
+		this.mediaBrowser.addEvent('addImageCode', function(code, fileRow) {
+			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
+			self.mediaBrowserOverlay.closeOverlay();
+		});
+		this.mediaBrowser.addEvent('addImageEditedCode', function(code, fileRow) {
+			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
+			self.mediaBrowserOverlay.closeOverlay();
+		});
 	},
 
 	_initHtmlEditor: function() {

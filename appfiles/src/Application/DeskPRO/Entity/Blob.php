@@ -32,6 +32,17 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * Sometimes we might have multiple versions of a file. For example, if a file has been
+	 * cropped then the cropped file is saved as its own blob, but the original
+	 * is linked here.
+	 *
+	 * @var \Application\DeskPRO\Entity\Blob
+	 * @orm:ManyToOne(targetEntity="Blob", fetch="EAGER")
+	 * @orm:JoinColumn(name="original_blob_id", referencedColumnName="id")
+	 */
+	protected $original_blob;
+
+	/**
 	 * The path to the file if it's not stored in the database.
 	 *
 	 * @var string

@@ -730,3 +730,11 @@ agent_mediabrowser_acceptupload:
 agent_mediabrowser_updateblob:
   pattern: /media-browser/update-blob/{blob_id}
   defaults: { _controller: AgentBundle:MediaBrowser:updateBlob }
+
+agent_mediabrowser_imageeditor:
+  pattern: /media-browser/image-editor/{blob_id}
+  defaults: { _controller: AgentBundle:MediaBrowser:imageEditor }
+
+agent_mediabrowser_imageeditor:
+  pattern: /media-browser/save-image-editor/{blob_id}
+  defaults: { _controller: AgentBundle:MediaBrowser:saveImageEditor }
