@@ -62,6 +62,14 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 			$('input.file-title').change(function() {
 				self.saveFileChanges(el)
 			});
+
+			$('.remove-trigger', el).click(function() {
+				el.remove();
+			});
+
+			$('.link-trigger', el).click(function() {
+				self.fireEvent('addLinkCode', [$(this).data('code'), el]);
+			});
 		});
 
 		return els;

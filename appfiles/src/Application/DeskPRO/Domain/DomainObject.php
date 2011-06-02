@@ -214,7 +214,7 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 		$name = preg_replace('#([A-Z])#', '_$1', $name);
 
 		$match = null;
-		if (!preg_match('#^(get|set)_([a-zA-Z0-9_]+)$#', $name, $match)) {
+		if (!preg_match('#^(get|set|is)_([a-zA-Z0-9_]+)$#', $name, $match)) {
 			return $this->_onNotCallable($name, $arguments);
 		}
 
@@ -222,7 +222,9 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 		$prop = strtolower($prop);
 
 		// getX
-		if ($type == 'get') {
+		if ($type == 'is') {
+			return $this["is_$prop"];
+		} elseif ($type == 'get') {
 			return $this[$prop];
 
 		// setX
@@ -283,7 +285,11 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 
 	public function offsetExists($offset)
 	{
-		$func = "get" . str_replace('_', '', $offset);
+		if (strpos($offset, 'is_') !== false) {
+			$func = $offset;
+		} else {
+			$func = "get" . str_replace('_', '', $offset);
+		}
 		if (method_exists($this, $func)) {
 			return true;
 		} elseif (property_exists($this, $offset) AND $offset[0] != '_') {
@@ -321,7 +327,11 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 
 	public function offsetGet($offset)
 	{
-		$func = "get" . str_replace('_', '', $offset);
+		if (strpos($offset, 'is_') !== false) {
+			$func = $offset;
+		} else {
+			$func = "get" . str_replace('_', '', $offset);
+		}
 		if (method_exists($this, $func)) {
 			return $this->$func();
 		} elseif (property_exists($this, $offset) AND $offset[0] != '_') {

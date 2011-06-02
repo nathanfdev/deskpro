@@ -192,6 +192,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	_initEditorEnable: function() {
 		var btn = $('.kb-editor-edit', this.wrapper);
 		btn.click(this.showEditor.bind(this));
+
+		this._initMediaBrowser();
 	},
 
 	showEditor: function() {
@@ -230,6 +232,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
 
 		$('.dp-media-trigger', editorWrap).click(this.showMediaBrowser.bind(this));
+
+		var self = this;
+		this.mediaBrowser.addEvent('addLinkCode', function(code, fileRow) {
+			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
+			self.mediaBrowserOverlay.closeOverlay();
+		});
 	},
 
 	_initHtmlEditor: function() {

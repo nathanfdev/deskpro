@@ -3417,3 +3417,8 @@ div.media-browser .overlay-title nav ul li.on {
 .blob-row .blob-tags {
     float: right;
 }
+
+.blob-row .footer {
+    background-color: #C9C9C9;
+    padding: 3px;
+}
