@@ -5,7 +5,8 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 
 	initialize: function(options) {
 		this.options = {
-			wrapper: null
+			wrapper: null,
+			additionalDropZone: null
 		};
 
 		if (options) {
@@ -17,6 +18,12 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 			context: this.wrapper
 		});
 
+		var dropZone = $();
+		dropZone = dropZone.add(this.wrapper);
+		if (this.options.additionalDropZone) {
+			dropZone = dropZone.add(this.options.additionalDropZone);
+		}
+
 		this.uploadForm = $('form.upload-form', this.wrapper);
 		var self = this;
 		this.uploadForm.fileUploadUI({
@@ -24,18 +31,23 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 			cancelSelector: 'button.cancel-trigger',
 			uploadTable: $('.files-list', this.wrapper),
 			downloadTable: $('.files-list', this.wrapper),
-			dropZone: this.wrapper,
+			dropZone: dropZone,
 			buildUploadRow: function(files, index, handler) {
 				return $('<div class="uploading">' + files[index].name + ' <button class="dp-button x-small cancel-trigger">Cancel</button></div>');
 			},
 			buildDownloadRow: function (files, handler) {
 				var html = [];
 				Array.each(files, function(file) {
+
 					html.push(file.row_html);
 				});
 
 				html = html.join('');
-				return self.createDownloadRows(html);
+				var els = self.createDownloadRows(html);
+
+				self.fireEvent('filesUploaded', [els]);
+
+				return els;
 			}
 		}).bind('fileuploaddragover', function(e) {
 			console.log(e);

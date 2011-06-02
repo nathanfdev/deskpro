@@ -192,8 +192,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	_initEditorEnable: function() {
 		var btn = $('.kb-editor-edit', this.wrapper);
 		btn.click(this.showEditor.bind(this));
-
-		this._initMediaBrowser();
 	},
 
 	showEditor: function() {
@@ -215,6 +213,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			dataType: 'html',
 			success: function(html) {
 				$('.kb-editor-wrap', this.wrapper).html(html);
+
+				this._initMediaBrowser();
 
 				if (this.getMetaData('markup_mode') == 'html') {
 					this._initHtmlEditor();
@@ -246,6 +246,24 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
 			self.mediaBrowserOverlay.closeOverlay();
 		});
+
+		// If a file was uploaded via drag+drop onto the editor,
+		// and the overlay isnt open, then just insert the default
+		// codes for it
+		this.mediaBrowser.addEvent('filesUploaded', function(els) {
+			if (self.mediaBrowserOverlay.isOverlayOpen()) {
+				return;
+			}
+
+			els.each(function() {
+				var el = $(this);
+				if (el.is('.is-image')) {
+					$('.image-trigger', el).click();
+				} else {
+					$('.link-trigger', el).click();
+				}
+			});
+		});
 	},
 
 	_initHtmlEditor: function() {
@@ -266,7 +284,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		});
 
 		this.mediaBrowser = new DeskPRO.Agent.MediaBrowser({
-			wrapper: this.mediaBrowserEl
+			wrapper: this.mediaBrowserEl,
+			additionalDropZone: $('.kb-editor > textarea', this.wrapper)
 		});
 	},
 

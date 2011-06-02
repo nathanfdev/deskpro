@@ -43,6 +43,7 @@ class MediaBrowserController extends AbstractController
 
 			$data[] = array(
 				'blob_id' => $blob_id,
+				'is_image' => $blob->isImage(),
 				'row_html' => $this->renderView('AgentBundle:MediaBrowser:file-row.html.twig', array('blob' => $blob))
 			);
 		}

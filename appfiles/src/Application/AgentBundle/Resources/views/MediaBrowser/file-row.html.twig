@@ -1,4 +1,4 @@
-<div class="blob-row blob-{{blob.id}}" data-blob-id="{{ blob.id }}">
+<div class="blob-row blob-{{blob.id}} {% if blob.isImage() %}is-image{% endif %}" data-blob-id="{{ blob.id }}">
 	<div class="title">
 		<label>
 			Title:
