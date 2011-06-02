@@ -735,6 +735,6 @@ agent_mediabrowser_imageeditor:
   pattern: /media-browser/image-editor/{blob_id}
   defaults: { _controller: AgentBundle:MediaBrowser:imageEditor }
 
-agent_mediabrowser_imageeditor:
+agent_mediabrowser_imageeditor_save:
   pattern: /media-browser/save-image-editor/{blob_id}
   defaults: { _controller: AgentBundle:MediaBrowser:saveImageEditor }

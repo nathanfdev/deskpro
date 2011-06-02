@@ -76,7 +76,7 @@ DeskPRO.Agent.MediaBrowser = new Orb.Class({
 			});
 
 			$('.remove-trigger', el).click(function() {
-				el.remove();
+				$(el).remove();
 			});
 
 			$('.link-trigger', el).click(function() {
