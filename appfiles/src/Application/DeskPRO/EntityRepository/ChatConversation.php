@@ -84,7 +84,7 @@ class ChatConversation extends EntityRepository
 			FROM chat_conversations c
 			LEFT JOIN chat_conversation_to_person p ON (p.conversation_id = c.id)
 			WHERE
-				" . ($date_limit ? "c.created_at > $date_limit AND" : '') . "
+				" . ($date_limit ? "c.date_created > '$date_limit' AND" : '') . "
 				p.person_id IN (" . implode(',', $participant_ids) . ")
 			GROUP BY c.id
 			HAVING COUNT(*) = $count

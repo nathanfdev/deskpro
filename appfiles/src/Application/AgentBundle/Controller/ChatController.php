@@ -39,7 +39,7 @@ class ChatController extends AbstractController
 
 		$chat_message = $conversation->createMessage(
 			$this->in->getString('content'),
-			$this->person['id']
+			$this->person
 		);
 
 		$client_messages = array();
@@ -54,10 +54,10 @@ class ChatController extends AbstractController
 				'data' => array(
 					'conversation_id' => $conversation_id,
 					'message_id'      => $chat_message['id'],
-					'author_id'       => $chat_message->person['id'],
-					'author_name'     => $chat_message->person['display_name'],
+					'author_id'       => $chat_message->author['id'],
+					'author_name'     => $chat_message->author['display_name'],
 					'message'         => $chat_message['content'],
-					'created_at'      => $chat_message['created_at']->getTimestamp()
+					'date_created'    => $chat_message['date_created']->getTimestamp()
 				),
 				'created_by_client' => App::getSession()->getEntityId(),
 				'for_person' => $part
@@ -117,7 +117,6 @@ class ChatController extends AbstractController
 	public function getOnlineAgentsAction()
 	{
 		$cutoff = time() - App::getSetting('core.sessions_lifetime');
-		$cutoff = new \DateTime('@' . $cutoff);
 
 		$online_agents = array();
 

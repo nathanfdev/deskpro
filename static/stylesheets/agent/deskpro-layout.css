@@ -350,6 +350,7 @@ section.agent-chat nav a {
     text-shadow: 1px 0px 0px #ffffff;
     filter: dropshadow(color=#ffffff, offx=1, offy=0);
     color: #000;
+    white-space: nowrap;
 }
 
 section.agent-chat nav .close-trigger {
@@ -383,6 +384,11 @@ section.agent-chat.new-message nav {
     background: linear-gradient(top, #bdd3ed 0%,#7aa7c9 100%);
 }
 
+section.agent-chat .messages-container {
+    height: 300px;
+    overflow: auto;
+}
+
 section.agent-chat .messages-box {
     display: none;
 }
@@ -393,7 +399,6 @@ section.agent-chat.open .messages-box {
 
 section.agent-chat .messages-box {
     width: 300px;
-    max-height: 300px;
     position: absolute;
     bottom: 20px;
 

@@ -27,7 +27,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @orm:Id
-	 * @orm:Column(name="id", type="string", length=100)
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
 	protected $id = null;
 

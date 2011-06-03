@@ -18,7 +18,7 @@ use Orb\Util\Strings;
 /**
  * A conversation between one or more people
  *
- * @orm:Entity
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ChatConversation")
  * @orm:Table(name="chat_conversations")
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
@@ -26,7 +26,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @orm:Id
-	 * @orm:Column(name="id", type="string", length=100)
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -38,7 +38,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"})
+	 * @orm:ManyToMany(targetEntity="Person", cascade={"all"})
      * @orm:JoinTable(name="chat_conversation_to_person", joinColumns={@orm:JoinColumn(name="conversation_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")})
 	 */
 	protected $participants;
@@ -56,6 +56,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
+
+	protected $_user_participants = null;
 
 	public function __construct()
 	{
@@ -103,7 +105,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$ids = array();
 		foreach ($this->participants as $p) {
-			$ids[] = $p['person']['id'];
+			$ids[] = $p['id'];
 		}
 
 		return $ids;
@@ -125,7 +127,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		foreach ($this->participants as $p) {
-			if ($p['person']['id'] == $person_id) {
+			if ($p['id'] == $person_id) {
 				return $p;
 			}
 		}
@@ -177,7 +179,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		foreach ($this->participants as $k => $p) {
-			if ($p['person']['id'] == $person['id']) {
+			if ($p['id'] == $person['id']) {
 				$this->participants->remove($k);
 				return $p;
 			}

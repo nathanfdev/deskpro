@@ -14,8 +14,6 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		this._initMessageHandlers();
 		this._initInterface();
-
-		this.addChatBox('Jane', '123');
 	},
 
 	_initMessageHandlers: function() {
@@ -179,15 +177,15 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			message: data.message
 		});
 
-		$('.messages-container:first', container).append(newMessage);
+		$('.messages-container:first', container).append(newMessage).scrollTop(100000);
 	},
 
 	showMyMessage: function(to_agent_id, msg) {
-		var container = getChatContainer(to_agent_id);
+		var container = this.getChatContainer(to_agent_id);
 
 		var newMessage = $.tmpl('agent_chat_message_me', { message: msg });
 
-		$('.messages-container:first', container).append(newMessage);
+		$('.messages-container:first', container).append(newMessage).scrollTop(100000);
 	},
 
 	sendMessage: function(to_agent_id, message) {

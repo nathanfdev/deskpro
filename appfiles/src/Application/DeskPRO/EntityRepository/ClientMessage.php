@@ -41,11 +41,11 @@ class ClientMessage extends EntityRepository
 		$qb->where('m.channel IN (' . $names . ') OR ('. $names_like . ')');
 
 		if ($person_id) {
-			$qb->andWhere('(m.for_client IS NULL OR m.for_client = :for_client OR m.for_person = :for_person)');
+			$qb->andWhere('m.for_client = :for_client OR m.for_person = :for_person OR (m.for_client IS NULL AND m.for_person IS NULL)');
 			$params['for_client'] = $session_id;
 			$params['for_person'] = $person_id;
 		} else {
-			$qb->andWhere('(m.for_client IS NULL OR m.for_client = :for_client)');
+			$qb->andWhere('m.for_client = :for_client OR (m.for_client IS NULL AND m.for_person IS NULL)');
 			$params['for_client'] = $session_id;
 		}
 
