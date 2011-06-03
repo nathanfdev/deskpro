@@ -17,7 +17,7 @@ use Doctrine\ORM\EntityRepository;
 
 class ClientMessage extends EntityRepository
 {
-	public function getMessagesForClient($session_id, $since_id = null)
+	public function getMessagesForClient($session_id, $person_id = null, $since_id = null)
 	{
 		$channels = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($session_id);
 		$names = array();
@@ -40,8 +40,14 @@ class ClientMessage extends EntityRepository
 		$qb->select('m');
 		$qb->where('m.channel IN (' . $names . ') OR ('. $names_like . ')');
 
-		$qb->andWhere('m.for_client = \'\' OR m.for_client = :for_client');
-		$params['for_client'] = $session_id;
+		if ($person_id) {
+			$qb->andWhere('(m.for_client IS NULL OR m.for_client = :for_client OR m.for_person = :for_person)');
+			$params['for_client'] = $session_id;
+			$params['for_person'] = $person_id;
+		} else {
+			$qb->andWhere('(m.for_client IS NULL OR m.for_client = :for_client)');
+			$params['for_client'] = $session_id;
+		}
 
 		if ($since_id) {
 			$qb->andWhere('m.id > :since_id');

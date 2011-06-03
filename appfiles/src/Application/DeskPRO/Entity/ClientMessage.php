@@ -88,9 +88,18 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * The client ID (usully sessionid) that this message is for
 	 * specifically.
 	 *
-	 * @orm:Column(name="for_client", type="string", length=255)
+	 * @orm:Column(name="for_client", type="string", length=255, nullable=true)
 	 */
-	protected $for_client = '';
+	protected $for_client;
+
+	/**
+	 * Who this message is for specifically
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @orm:JoinColumn(name="for_person_id", referencedColumnName="id")
+	 */
+	protected $for_person;
 
 	/**
 	 * @var \DateTime

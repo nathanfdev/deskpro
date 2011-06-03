@@ -9,22 +9,79 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.setSectionElement($('<section id="chat_outline"></section>'));
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent_chat.new-message');
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.new-agent-online');
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent_chat.new-message', this.showNewMessage.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.new-agent-online', this.addOnlineAgent.bind(this));
+
+		this.panelEl = $('#agent_chat_panel');
+		this.onlineListEl = $('#agent_online_list');
+		this.onlineCountEl = $('#chat_online_count');
+
+		$('#chat_section').click((function(ev) {
+			ev.stopPropagation();
+			this.panelEl.toggleClass('open');
+		}).bind(this));
+		$('body').click((function() {
+			this.panelEl.removeClass('open');
+		}).bind(this));
 
 		$('#agent_chat_conversation').template('agent_chat_conversation');
-		this.initNewChat({
-			conversation_id: 'test'
+		this.addChatBox('Jane', '123');
+
+		$.ajax({
+			url: BASE_URL + 'agent/chat/get-online-agents.json',
+			data: data,
+			context: this,
+			success: function(data) {
+				if (data.online_agents) {
+					Array.each(data.online_agents, function(info) {
+						this.addOnlineAgent(info);
+					}, this);
+				}
+			}
 		});
+	},
+
+	addOnlineAgent: function(data) {
+
+		// Ignore ourselves
+		if (DESKPRO_PERSON_ID && data.agent_id == DESKPRO_PERSON_ID) {
+			return;
+		}
+
+		var html = '<li class="agent-' + data.agent_id + '" data-agent-id="' + data.agent_id + '">' + data.agent_name + '</li>';
+		this.onlineListEl.append(html);
+
+		var countInt = parseInt(this.onlineCountEl.html());
+		countInt++;
+		this.onlineCountEl.html(countInt);
+
+		$('li.no-agents', this.onlineListEl).hide();
+	},
+
+	removeOnlineAgent: function(data) {
+		$('.agent-' + data.agent_id, this.onlineListEl).remove();
+
+		var countInt = parseInt(this.onlineCountEl.html());
+		countInt--;
+		this.onlineCountEl.html(countInt);
+
+		if (countInt < 1) {
+			$('li.no-agents', this.onlineListEl).show();
+		}
 	},
 
 	countChats: function() {
 		return $('> section.agent-chat', this.chatsWrapper).length;
 	},
 
-	initNewChat: function(data) {
-		console.log('New chat: %o', data);
+	addChatBox: function(name, person_id) {
 
-		var newContainer = $.tmpl('agent_chat_conversation', data);
+		var newContainer = $.tmpl('agent_chat_conversation', {
+			author_name: name,
+			author_id: person_id
+		});
 
 		// Modify position of button if there are others
 		var lastChat = $('> section.agent-chat:last', this.chatsWrapper);

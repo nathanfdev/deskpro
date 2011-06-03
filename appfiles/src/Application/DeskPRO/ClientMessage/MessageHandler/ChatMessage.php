@@ -27,13 +27,6 @@ class ChatMessage extends AbstractMessageHandler
 	 */
 	function getMessage($context)
 	{
-		$data = array();
-		$data['conversation_id'] = $this->message['data']['chat_conversation_id'];
-		$data['conversation_id'] = $this->message['data']['chat_conversation_id'];
-		$data['author_id']       = $this->message['data']['author_id'];
-		$data['author_name']     = $this->message['data']['author_name'];
-		$data['message']         = $this->message['data']['message'];
-
-		return $data;
+		return $this->message['data'];
 	}
 }

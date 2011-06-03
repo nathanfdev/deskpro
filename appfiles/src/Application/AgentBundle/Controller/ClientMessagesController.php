@@ -45,7 +45,7 @@ class ClientMessagesController extends AbstractController
 			if ($since) {
 				$data = array('messages' => array(), 'last_id' => -1);
 
-				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient($this->session->getEntityId(), $since);
+				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient($this->session->getEntityId(), $this->person['id'], $since);
 				foreach ($all_messages as $message) {
 					$handler = $message->getHandler();
 

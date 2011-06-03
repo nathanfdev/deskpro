@@ -738,3 +738,11 @@ agent_mediabrowser_imageeditor:
 agent_mediabrowser_imageeditor_save:
   pattern: /media-browser/save-image-editor/{blob_id}
   defaults: { _controller: AgentBundle:MediaBrowser:saveImageEditor }
+
+################################################################################
+# Chat
+################################################################################
+
+agent_chat_getonlineagents:
+  pattern: /chat/get-online-agents.json
+  defaults: { _controller: AgentBundle:Chat:getOnlineAgents }

@@ -434,6 +434,53 @@ section.agent-chat .messages-box div.input-message textarea:focus {
     outline: none;
 }
 
+section#agent_chat_panel {
+    position: absolute;
+    left: 8px;
+    bottom: 0;
+    width: 200px;
+    display: none;
+
+    background-color: #E4E4E4;
+    border: 1px solid #7F7F80;
+    border-bottom: none;
+
+    -webkit-border-top-left-radius: 5px;
+    -webkit-border-top-right-radius: 5px;
+    -moz-border-radius-topleft: 5px;
+    -moz-border-radius-topright: 5px;
+    border-top-left-radius: 5px;
+    border-top-right-radius: 5px;
+
+    font-size: 10px;
+}
+
+section#agent_chat_panel.open {
+    display: block;
+}
+
+section#agent_chat_panel ul#agent_online_list {
+    background-color: #fff;
+    margin:  3px;
+
+    border: 1px solid #D4D4D4;
+}
+
+section#agent_chat_panel ul#agent_online_list li {
+    padding: 0 8px 0 8px;
+    line-height: 19px;
+    cursor: pointer;
+    border-top: 1px solid #D4D4D4;
+}
+
+section#agent_chat_panel ul#agent_online_list li:hover {
+    background-color: #D1E7FF;
+}
+
+section#agent_chat_panel ul#agent_online_list li:first-child {
+    border-top: none;
+}
+
 /********************************
 * #deskpro_outline
 *********************************/

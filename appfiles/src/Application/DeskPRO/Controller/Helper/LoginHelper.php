@@ -139,6 +139,19 @@ class LoginHelper
 
 		$this->controller->session->set('auth_person_id', $identity->getIdentity());
 
+		// Announce if its an agent
+		if ($person['is_agent']) {
+			$cm = new \Application\DeskPRO\Entity\ClientMessage();
+			$cm->fromArray(array(
+				'channel' => 'agent.new-agent-online',
+				'data' => array('agent_id' => $person['id'], 'agent_name' => $person['display_name']),
+				'created_by_client' => $this->controller->session->getEntityId(),
+			));
+
+			App::getOrm()->persist($cm);
+			App::getOrm()->flush();
+		}
+
 		return $this->_redirectLoginSuccess();
 	}
 

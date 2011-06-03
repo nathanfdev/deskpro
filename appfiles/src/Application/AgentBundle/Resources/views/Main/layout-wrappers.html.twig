@@ -35,7 +35,7 @@
 			</li>
 		</ul>
 		<div id="chat_section" class="no-click-switch" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat">
-			<div id="chat_online_count">3</div>
+			<div id="chat_online_count">0</div>
 		</div>
 	</nav>
 
@@ -67,3 +67,8 @@
 </section>
 {% include 'AgentBundle:Main:agent-chat-templates.html.twig' %}
 <section id="agent_chats_wrapper"></section>
+<section id="agent_chat_panel">
+	<ul id="agent_online_list">
+		<li class="no-agents">No other agents are online</li>
+	</ul>
+</section>
