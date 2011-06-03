@@ -15,9 +15,6 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.initNewChat({
 			conversation_id: 'test'
 		});
-		this.initNewChat({
-			conversation_id: 'test2'
-		});
 	},
 
 	countChats: function() {
