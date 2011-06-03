@@ -19,7 +19,7 @@ use Orb\Util\Strings;
  * A conversation between one or more people
  *
  * @orm:Entity
- * @orm:Table(name="chat_conversation")
+ * @orm:Table(name="chat_conversations")
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {

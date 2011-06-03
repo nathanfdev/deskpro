@@ -746,3 +746,11 @@ agent_mediabrowser_imageeditor_save:
 agent_chat_getonlineagents:
   pattern: /chat/get-online-agents.json
   defaults: { _controller: AgentBundle:Chat:getOnlineAgents }
+
+agent_chat_send_message:
+  pattern: /chat/send-message/{conversation_id}
+  defaults: { _controller: AgentBundle:Chat:sendMessage }
+
+agent_chat_send_agent_message:
+  pattern: /chat/send-agent-message/{agent_id}
+  defaults: { _controller: AgentBundle:Chat:sendAgentMessage }

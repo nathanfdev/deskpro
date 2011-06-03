@@ -8,12 +8,25 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.chatsWrapper = $('#agent_chats_wrapper');
 		this.setSectionElement($('<section id="chat_outline"></section>'));
 
+		$('#agent_chat_conversation').template('agent_chat_conversation');
+		$('#agent_chat_message').template('agent_chat_message');
+		$('#agent_chat_message_me').template('agent_chat_message_me');
+
+		this._initMessageHandlers();
+		this._initInterface();
+
+		this.addChatBox('Jane', '123');
+	},
+
+	_initMessageHandlers: function() {
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent_chat.new-message');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.new-agent-online');
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent_chat.new-message', this.showNewMessage.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent.new-agent-online', this.addOnlineAgent.bind(this));
+	},
 
+	_initInterface: function() {
 		this.panelEl = $('#agent_chat_panel');
 		this.onlineListEl = $('#agent_online_list');
 		this.onlineCountEl = $('#chat_online_count');
@@ -26,12 +39,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			this.panelEl.removeClass('open');
 		}).bind(this));
 
-		$('#agent_chat_conversation').template('agent_chat_conversation');
-		this.addChatBox('Jane', '123');
-
 		$.ajax({
 			url: BASE_URL + 'agent/chat/get-online-agents.json',
-			data: data,
 			context: this,
 			success: function(data) {
 				if (data.online_agents) {
@@ -41,7 +50,19 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 				}
 			}
 		});
+
+		var self = this;
+		this.onlineListEl.delegate('li', 'click', function (ev) {
+			var agent_id = $(this).data('agent-id');
+			var agent_name = $(this).html();
+
+			self.addChatBox(agent_name, agent_id);
+		});
 	},
+
+	//#########################################################################
+	//# Online agent handling
+	//#########################################################################
 
 	addOnlineAgent: function(data) {
 
@@ -72,15 +93,16 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		}
 	},
 
-	countChats: function() {
-		return $('> section.agent-chat', this.chatsWrapper).length;
-	},
+
+	//#########################################################################
+	//# Chatbox handling
+	//#########################################################################
 
 	addChatBox: function(name, person_id) {
 
 		var newContainer = $.tmpl('agent_chat_conversation', {
-			author_name: name,
-			author_id: person_id
+			to_agent_name: name,
+			to_agent_id: person_id
 		});
 
 		// Modify position of button if there are others
@@ -98,55 +120,89 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		$('textarea', newContainer).keypress(function(ev) {
 			// Enter, but not when meta key (alt, ctrl etc) are pressed
 			if (ev.keyCode == 13 && !ev.metaKey) {
-				self.sendMessage(data.conversation_id, $(this).val().trim())
+				var msg = $(this).val().trim();
+				$(this).val('');
+
+				self.sendMessage(person_id, msg);
+				self.showMyMessage(person_id, msg);
 			}
 		});
 
-		$('> nav', newContainer).click(function() {
+		var nav = $('> nav', newContainer);
+		nav.click(function() {
 			newContainer.toggleClass('open');
 			if (newContainer.is('.open')) {
 				newContainer.removeClass('new-message');
 			}
 		});
+
+		$('.close-trigger', nav).click(function(ev) {
+			ev.stopPropagation();
+			newContainer.remove();
+		});
 	},
 
-	getChatContainer: function(data) {
-		var container = $('#agent_chat_conversation_' + data.conversation_id);
+	getChatContainerForMessage: function(data) {
+		var container = $('#agent_chat_conversation_' + data.author_id);
 
 		if (!container.length) {
-			this.initNewChat(data);
+			this.addChatBox(data.author_name, data.author_id);
 		}
 
-		container = $('#agent_chat_conversation_' + data.conversation_id);
+		container = $('#agent_chat_conversation_' + data.author_id);
+
 		return container;
 	},
 
-	showNewMessage: function(data) {
+	getChatContainer: function(to_agent_id) {
+		var container = $('#agent_chat_conversation_' + to_agent_id);
 
-		console.log('New message: %o', data);
+		if (!container.length) {
+			console.warn("No chat box for %i", to_agent_id);
+			return null;
+		}
 
-		var container = this.getChatContainer();
-		var newMessage = $.tmpl('agent_chat_message', data);
-
-		$('.messages', container).append(newMessage);
+		return container;
 	},
 
-	sendMessage: function(conversation_id, message) {
-		message = message.trim();
-		
+	
+	//#########################################################################
+	//# Chat message handling
+	//#########################################################################
+
+	showNewMessage: function(data) {
+
+		var container = this.getChatContainerForMessage(data);
+		var newMessage = $.tmpl('agent_chat_message', {
+			author_id: data.author_id,
+			author_name: data.author_name,
+			message: data.message
+		});
+
+		$('.messages-container:first', container).append(newMessage);
+	},
+
+	showMyMessage: function(to_agent_id, msg) {
+		var container = getChatContainer(to_agent_id);
+
+		var newMessage = $.tmpl('agent_chat_message_me', { message: msg });
+
+		$('.messages-container:first', container).append(newMessage);
+	},
+
+	sendMessage: function(to_agent_id, message) {
+
 		var data = [];
 		data.push({
-			name: 'message',
+			name: 'content',
 			value: message
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/chat/' + conversation_id + '/send-message.json',
+			url: BASE_URL + 'agent/chat/send-agent-message/' + to_agent_id,
 			data: data,
 			context: this,
-			success: function(data) {
-				
-			}
+			contentType: 'json'
 		});
 	}
 });

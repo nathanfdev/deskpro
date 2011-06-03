@@ -12,10 +12,9 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity\Article;
-use Application\DeskPRO\Entity\ArticlePendingCreate;
-use Application\DeskPRO\Entity\ArticleValidatingEdit;
-use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\Entity\ChatConversation;
+use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\Entity\ClientMessage;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -31,9 +30,15 @@ class ChatController extends AbstractController
 	 */
 	public function sendMessageAction($conversation_id)
 	{
-		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		if ($conversation_id instanceof ChatConversation) {
+			// sendAgentMessageAction calls this with the convo already
+			$conversation = $conversation_id;
+		} else {
+			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		}
+
 		$chat_message = $conversation->createMessage(
-			$this->in->getString('message'),
+			$this->in->getString('content'),
 			$this->person['id']
 		);
 
@@ -51,7 +56,7 @@ class ChatController extends AbstractController
 					'message_id'      => $chat_message['id'],
 					'author_id'       => $chat_message->person['id'],
 					'author_name'     => $chat_message->person['display_name'],
-					'message'         => $chat_message['message'],
+					'message'         => $chat_message['content'],
 					'created_at'      => $chat_message['created_at']->getTimestamp()
 				),
 				'created_by_client' => App::getSession()->getEntityId(),
@@ -79,6 +84,36 @@ class ChatController extends AbstractController
 		));
 	}
 
+	
+	/**
+	 * Sending an agent message is less formal in that we automatically
+	 * create conversations based on time, instead of having
+	 * chats created first.
+	 *
+	 * @param  $agent_id
+	 */
+	public function sendAgentMessageAction($agent_id)
+	{
+		$date_cut = new \DateTime('-5 hours');
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople(array($agent_id, $this->person['id']), $date_cut);
+
+		if (!$conversation) {
+			$conversation = new ChatConversation();
+			$conversation['is_agent'] = true;
+			$conversation->addParticipant($agent_id);
+			$conversation->addParticipant($this->person);
+		}
+
+		App::getOrm()->beginTransaction();
+		App::getOrm()->persist($conversation);
+		App::getOrm()->flush();
+		$res = $this->sendMessageAction($conversation);
+		App::getOrm()->commit();
+
+		return $res;
+	}
+
+	
 	public function getOnlineAgentsAction()
 	{
 		$cutoff = time() - App::getSetting('core.sessions_lifetime');

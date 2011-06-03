@@ -1,8 +1,24 @@
 <script type="text/x-jquery-tmpl" id="agent_chat_conversation">
-	<section class="agent-chat" id="agent_chat_conversation_${author_id}">
-		<nav>${author_name}</nav>
+	<section class="agent-chat" id="agent_chat_conversation_${to_agent_id}" data-to-agent-id="${to_agent_id}">
+		<nav>
+			<span class="close-trigger">x</span>
+			<a>${to_agent_name}</a>
+		</nav>
 		<div class="messages-box">
+			<div class="messages-container"></div>
 			<div class="input-message"><textarea></textarea></div>
 		</div>
 	</section>
+</script>
+
+<script type="text/x-jquery-tmpl" id="agent_chat_message">
+	<article>
+		<span>${author_name}:</span> ${message}
+	</article>
+</script>
+
+<script type="text/x-jquery-tmpl" id="agent_chat_message_me">
+	<article>
+		<span>Me:</span> ${message}
+	</article>
 </script>

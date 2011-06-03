@@ -335,19 +335,37 @@ section.agent-chat nav {
     position: absolute;
     bottom: 0;
 
-    padding: 0 10px 0 10px;
+    padding: 0 15px 0 10px;
 
+    border: 1px solid #7F7F80;
+    border-bottom: none;
+
+    cursor: pointer;
+}
+section.agent-chat nav a {
     font-size: 10px;
     line-height: 13px;
     text-align: center;
     font-weight: bold;
     text-shadow: 1px 0px 0px #ffffff;
     filter: dropshadow(color=#ffffff, offx=1, offy=0);
+    color: #000;
+}
 
-    border: 1px solid #7F7F80;
-    border-bottom: none;
+section.agent-chat nav .close-trigger {
 
+    position: absolute;
+    right: 3px;
+    top: 2px;
+
+    display: block;
+    background-color: #AAB3BD;
+    padding: 0 2px 2px 2px;
     cursor: pointer;
+    line-height: 100%;
+    border:  none;
+    font-size: 8px;
+    margin-left: 4px;
 }
 
 section.agent-chat.open nav {

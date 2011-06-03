@@ -21,7 +21,6 @@ use Orb\Util\Strings;
  *
  * @orm:Entity
  * @orm:Table(name="chat_messages")
- * @orm:HasLifecycleCallbacks
  */
 class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -35,7 +34,7 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * The conversation the message belongs to
 	 * @var \Application\DeskPRO\Entity\Conversation
-	 * @orm:ManyToOne(targetEntity="Conversation", fetch="EAGER")
+	 * @orm:ManyToOne(targetEntity="ChatConversation", fetch="EAGER")
 	 * @orm:JoinColumn(name="conversation_id", referencedColumnName="id")
 	 */
 	protected $conversation = null;
