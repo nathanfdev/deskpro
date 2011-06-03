@@ -11,9 +11,9 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Doctrine\ORM\EntityRepository;
+use Doctrine\ORM\EntityRepository;
 
 class ClientMessage extends EntityRepository
 {
@@ -39,6 +39,9 @@ class ClientMessage extends EntityRepository
 		$qb = $this->createQueryBuilder('m');
 		$qb->select('m');
 		$qb->where('m.channel IN (' . $names . ') OR ('. $names_like . ')');
+
+		$qb->andWhere('m.for_client = \'\' OR m.for_client = :for_client');
+		$params['for_client'] = $session_id;
 
 		if ($since_id) {
 			$qb->andWhere('m.id > :since_id');

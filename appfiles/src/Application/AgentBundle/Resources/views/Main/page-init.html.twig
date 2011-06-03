@@ -2,6 +2,7 @@
 	var BASE_URL = '{{ path('user') }}';
 	var ASSETS_BASE_URL = '{{ asset('') }}';
 	var DESKPRO_PERSON_ID = {{ app.user.id }};
+	var DESKPRO_SESSION_ID = {{ app.session.getEntityId() }};
 	var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
 
 	$(document).ready(function() {

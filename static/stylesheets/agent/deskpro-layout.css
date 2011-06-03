@@ -309,7 +309,19 @@
     filter: dropshadow(color=#ffffff, offx=1, offy=0);
 }
 
-.chat-message-bar {
+section#agent_chats_wrapper {
+    position: absolute;
+    bottom: 0;
+    left: 65px;
+}
+
+section.agent-chat {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+}
+
+section.agent-chat nav {
 
     background: #eeeeee;
     background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
@@ -322,12 +334,11 @@
 
     position: absolute;
     bottom: 0;
-    left: 80px;
 
-    padding: 4px 8px 3px 8px;
+    padding: 0 10px 0 10px;
 
     font-size: 10px;
-    line-height: 18px;
+    line-height: 13px;
     text-align: center;
     font-weight: bold;
     text-shadow: 1px 0px 0px #ffffff;
@@ -335,13 +346,38 @@
 
     border: 1px solid #7F7F80;
     border-bottom: none;
+
+    cursor: pointer;
 }
 
-.chat-message-box {
+section.agent-chat.open nav {
+    line-height: 20px;
+}
+
+section.agent-chat.new-message nav {
+    background: #bdd3ed;
+    background: -moz-linear-gradient(top, #bdd3ed 0%, #7aa7c9 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#bdd3ed), color-stop(100%,#7aa7c9));
+    background: -webkit-linear-gradient(top, #bdd3ed 0%,#7aa7c9 100%);
+    background: -o-linear-gradient(top, #bdd3ed 0%,#7aa7c9 100%);
+    background: -ms-linear-gradient(top, #bdd3ed 0%,#7aa7c9 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#bdd3ed', endColorstr='#7aa7c9',GradientType=0 );
+    background: linear-gradient(top, #bdd3ed 0%,#7aa7c9 100%);
+}
+
+section.agent-chat .messages-box {
+    display: none;
+}
+
+section.agent-chat.open .messages-box {
+    display: block;
+}
+
+section.agent-chat .messages-box {
     width: 300px;
+    max-height: 300px;
     position: absolute;
     bottom: 20px;
-    left: 80px;
 
     background-color: #E4E4E4;
     border: 1px solid #7F7F80;
@@ -355,9 +391,9 @@
     border-top-right-radius: 5px;
 }
 
-.chat-message-box article {
+section.agent-chat .messages-box article {
     background-color: #F0F0F0;
-    margin: 8px;
+    margin: 4px;
     border: 1px solid #C5C5C5;
     border-bottom: 1px solid #9E9E9E;
     padding: 5px;
@@ -366,15 +402,15 @@
     filter: dropshadow(color=#ffffff, offx=1, offy=0);
 }
 
-.chat-message-box article span {
+section.agent-chat .messages-box article span {
     color: #2569B8;
 }
 
-.chat-message-box article span.me {
+section.agent-chat .messages-box article span.me {
     color: #5C5C5C;
 }
 
-.chat-message-box div.input-message {
+section.agent-chat .messages-box div.input-message {
     background-color: #EDEDED;
     border-top: 1px solid #BEBEBE;
 
@@ -382,7 +418,7 @@
     border-bottom: 2px solid #BEBEBE;
 }
 
-.chat-message-box div.input-message textarea {
+section.agent-chat .messages-box div.input-message textarea {
 
     width: 100%;
 
@@ -394,7 +430,7 @@
     outline: none;
 }
 
-.chat-message-box div.input-message textarea:focus {
+section.agent-chat .messages-box div.input-message textarea:focus {
     outline: none;
 }
 

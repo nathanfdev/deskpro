@@ -34,7 +34,7 @@
 				<a>Ideas</a>
 			</li>
 		</ul>
-		<div id="chat_section" class="no-click-switch" data-section-handler="DeskPRO.Agent.WindowElement.Section.Chat">
+		<div id="chat_section" class="no-click-switch" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat">
 			<div id="chat_online_count">3</div>
 		</div>
 	</nav>
@@ -65,20 +65,5 @@
 	</section>
 
 </section>
-{#
-<div class="chat-message-bar">
-	Jane
-</div>
-<div class="chat-message-box">
-	<article>
-		<span class="author me">John:</span> Lorem ipsum dolor sit amet
-	</article>
-	<article>
-		<span class="author">Jane:</span> consectetuer adipiscing elit
-	</article>
-	<article>
-		<span class="author me">Jane:</span> Nam mollis ipsum sed erat facilisis pellentesque
-	</article>
-	<div class="input-message"><textarea></textarea></div>
-</div>
-#}
+{% include 'AgentBundle:Main:agent-chat-templates.html.twig' %}
+<section id="agent_chats_wrapper"></section>

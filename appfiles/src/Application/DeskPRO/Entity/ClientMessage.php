@@ -85,6 +85,14 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $created_by_client = '';
 
 	/**
+	 * The client ID (usully sessionid) that this message is for
+	 * specifically.
+	 *
+	 * @orm:Column(name="for_client", type="string", length=255)
+	 */
+	protected $for_client = '';
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */

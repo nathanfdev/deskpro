@@ -653,6 +653,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		return page;
 	},
+	
+
+	/**
+	 * Get the message channeler
+	 */
+	getMessageChanneler: function() {
+		return this.messageChanneler;
+	},
 
 
 
@@ -778,8 +786,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_initBasic: function() {
 
-		//this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
-		this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
+		this.messageChanneler = new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker, this.options.messageChanneler);
+		//this.messageChanneler = new DeskPRO.MessageChanneler.AbstractChanneler(this.messageBroker, this.options.messageChanneler);
 		this.messageChanneler.subscribeChannel('tickets.new-tickets');
 		this.messageChanneler.subscribeChannel('tickets.new-messages');
 		this.messageChanneler.subscribeChannel('tickets.updated');
