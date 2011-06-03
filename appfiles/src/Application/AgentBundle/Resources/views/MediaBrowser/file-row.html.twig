@@ -1,5 +1,8 @@
 <div class="blob-row blob-{{blob.id}} {% if blob.isImage() %}is-image{% endif %}" data-blob-id="{{ blob.id }}">
 	<div class="title">
+		{% if blob.isImage() %}
+			<img class="thumbnail" src="{{ blob.thumbnail_url }}" />
+		{% endif %}
 		<label>
 			Title:
 			<input type="text" name="title" class="file-title" value="{{ blob.title|default(blob.filename) }}" />

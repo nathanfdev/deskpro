@@ -205,6 +205,22 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Get a thumbnail for this blob (if its an image)
+	 *
+	 * @param int $size
+	 * @param bool $absolute
+	 * @return string
+	 */
+	public function getThumbnailUrl($size = 50, $absolute = false)
+	{
+		if (!$this->isImage()) {
+			throw new \InvalidArgumentException("You can't get a thumbnail for a non-image");
+		}
+		return App::get('router')->generate('serve_blob', array('blob_auth_id' => $this->getAuthId(), 's' => $size), $absolute);
+	}
+
+
+	/**
 	 * @return string
 	 */
 	public function getDisplayTitle()
