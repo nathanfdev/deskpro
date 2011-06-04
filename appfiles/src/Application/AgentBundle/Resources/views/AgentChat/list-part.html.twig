@@ -3,11 +3,11 @@
 		<article class="chat_convo chat_convo-{{convo.id}}">
 			<div class="chat-participants">
 				<ul>
-					{% for p in convo.participants %}
+					{% for p in convo.participants %}{% if p.id == app.user.id %}
 					<address>
 						{{ p.display_name }}
 					</address>
-					{% endfor %}
+					{% endif %}{% endfor %}
 				</ul>
 			</div>
 			<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">ticket.date_created|date('M d')</time>

@@ -23,6 +23,7 @@ class ChatConversation extends EntityRepository
 	{
 		$qb = $this->createQueryBuilder('c');
 		$qb->select('c')
+		   ->leftJoin('c.participants', 'p')
 		   ->where('c.is_agent = true AND p.person_id = ?')
 		   ->setFirstResult(0)
 		   ->setMaxResults(25)

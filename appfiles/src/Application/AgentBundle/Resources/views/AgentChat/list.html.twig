@@ -1,8 +1,20 @@
+<script>
+pageMeta.title = 'Chat History';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory';
+pageMeta.pageUrl = '{{ path('agent_chat_history') }}?partial=1&page=$page';
+{% if not agent_chats %}
+	pageMeta.noResults = true;
+{% endif %}
+</script>
 <div class="content">
 
 	<header class="section-header">
 		Chat History
 	</header>
+
+	<section class="chat-list deskpro-results-list">
+		{% include 'AgentBundle:AgentChat:list-part.html.twig' %}
+	</section>
 
 	<div class="loading-more">
 		Loading more results ...

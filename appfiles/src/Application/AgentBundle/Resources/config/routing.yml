@@ -754,3 +754,7 @@ agent_chat_send_message:
 agent_chat_send_agent_message:
   pattern: /chat/send-agent-message/{agent_id}
   defaults: { _controller: AgentBundle:Chat:sendAgentMessage }
+
+agent_chat_history:
+  pattern: /chat/agent-history
+  defaults: { _controller: AgentBundle:Chat:agentHistory }

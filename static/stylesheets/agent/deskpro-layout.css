@@ -482,6 +482,16 @@ section#agent_chat_panel.open {
     display: block;
 }
 
+section#agent_chat_panel nav {
+    border-bottom: 1px solid #ccc;
+}
+
+section#agent_chat_panel nav a {
+    color: #000;
+    cursor: pointer;
+    padding:  3px 8px 3px 8px;
+}
+
 section#agent_chat_panel ul#agent_online_list {
     background-color: #fff;
     margin:  3px;

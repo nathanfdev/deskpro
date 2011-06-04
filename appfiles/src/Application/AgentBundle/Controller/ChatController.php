@@ -125,6 +125,8 @@ class ChatController extends AbstractController
 			FROM DeskPRO:Session s
 			LEFT JOIN s.person p
 			WHERE p.is_agent = true AND s.date_last > ?1
+			GROUP BY p.id
+			ORDER BY s.id DESC
 		")->setParameter(1, $cutoff)->execute();
 
 		foreach ($sessions as $sess) {
@@ -144,11 +146,18 @@ class ChatController extends AbstractController
 	/**
 	 * List the articles
 	 */
-	public function listChatsAction()
+	public function agentHistoryAction()
 	{
 		$agent_chats = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentList();
 
-		return $this->render('AgentBundle:AgentChat:list.html.twig', array(
+		$is_partial = false;
+		$tpl = 'AgentBundle:AgentChat:list.html.twig';
+		if ($this->in->getBool('partial')) {
+			$is_partial = true;
+			$tpl = 'AgentBundle:AgentChat:list-part.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'agent_chats' => $agent_chats,
 		));
 	}
