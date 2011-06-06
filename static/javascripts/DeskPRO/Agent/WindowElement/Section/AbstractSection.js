@@ -24,16 +24,194 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		this.addEvent('show', this._onShowLoadList);
 		this.addEvent('show', this._onFirstShowFire);
 		this.addEvent('show', this._onShowSetVisible);
+		this.addEvent('show', this._onShowActivateList);
 		this.addEvent('firstshow', this.onFirstShow);
 		this.addEvent('hide', this.onHide);
 		this.addEvent('hide', this._onHideSetVisible);
+		this.addEvent('hide', this._onHideDeactiveList);
 
 		this._isVisible = false;
 
 		this.init();
 	},
 
+	/**
+	 * Override init method
+	 */
 	init: function() {},
+
+	onShow: function() { },
+	onFirstShow: function() { },
+	onHide: function() { },
+
+
+	/**
+	 * Sets the standard button element, and then you can use this.buttonEl thereafter.
+	 *
+	 * @param {jQuery}
+	 */
+	setButtonElement: function(el) {
+		this.buttonEl = el;
+	},
+
+
+	/**
+	 * Get the button element (or use this.buttonEl)
+	 *
+	 * @return {jQuery}
+	 */
+	getButtonElement: function() {
+		return this.buttonEl;
+	},
+
+
+	/**
+	 * Get the section element (this.sectionEl).
+	 *
+	 * @return {jQuery}
+	 */
+	getSectionElement: function() {
+		if (this.sectionEl) {
+			return this.sectionEl;
+		}
+
+		return null;
+	},
+
+
+	/**
+	 * Get the list element (this.listEl).
+	 *
+	 * @return {jQuery}
+	 */
+	getListElement: function() {
+		if (this.listEl) {
+			return this.listEl;
+		}
+
+		return null;
+	},
+
+
+	/**
+	 * Sets the section element (this.sectionEl), and it's inner content element (this.contentEl).
+	 * The content element is where you should actually render content to. Generally a scrollbar
+	 * is attached, and the section element is fixed and the content element overflows.
+	 *
+	 * @param {jQuery} el
+	 * @param {jQuery} contentEl
+	 */
+	setSectionElement: function(el, contentEl) {
+		if (this.sectionEl) {
+			this.sectionEl.remove();
+		}
+
+		if (!el) {
+			el = $('<section></section>');
+			el.attr('id', Orb.getUniqueId('outline_'));
+		}
+
+		this.sectionEl = el;
+		if (!el.parent().is('#deskpro_outline')) {
+			this.sectionEl.detach().appendTo('#deskpro_outline');
+		}
+
+		if (!contentEl) {
+			contentEl = $('<section class="content"></section>');
+		}
+		this.sectionEl.append(contentEl);
+		this.contentEl = contentEl;
+	},
+
+
+	/**
+	 * Sets the list element (this.listEl) and the inner list content (this.listContentEl). Same idea
+	 * as section element, except its the list column.
+	 *
+	 * This is a wrapper for 'pages'.
+	 *
+	 * @param {jQuery} el
+	 * @param {jQuery} contentEl
+	 */
+	setListElement: function(el, contentEl) {
+		if (this.listEl) {
+			this.listEl.remove();
+		}
+
+		if (!el) {
+			el = $('<section></section>');
+			el.attr('id', Orb.getUniqueId('list_'));
+		}
+
+		this.listEl = el;
+		if (!el.parent().is('#deskpro_list')) {
+			this.listEl.detach().appendTo('#deskpro_list');
+		}
+
+		if (!contentEl) {
+			contentEl = $('<section class="content"></section>');
+		}
+		this.listEl.append(contentEl);
+		this.listContentEl = contentEl;
+	},
+
+
+	/**
+	 * Set the Page on the list column
+	 *
+	 * @param {DeskPRO.Agent.PageFragment.ListPane.Basic} page
+	 */
+	setListPageFragment: function(page) {
+		if (this.listPage) {
+			this.listPage.fireEvent('destroy');
+			this.listPage = null;
+		}
+
+		this.listPage = page;
+		var contentEl = $('> section.content', this.getListElement());
+		contentEl.empty();
+		contentEl.html(page.html);
+
+		page.fireEvent('render', [container]);
+		page.fireEvent('activate');
+	},
+
+
+	/**
+	 * Check if this section is currently enabled
+	 *
+	 * @return {Boolean}
+	 */
+	isVisible: function() {
+		return this._isVisible;
+	},
+
+	
+	/**
+	 * Update the badge number on the icon
+	 * 
+	 * @param {Integer} count
+	 */
+	updateBadge: function(count) {
+		var el = $('.nav-counter', this.buttonEl);
+		var elCount = $('span', el);
+
+		var count = parseInt(count);
+		if (count) {
+			if (count >= 1000) {
+				count = '1000+';
+			}
+			elCount.html(count);
+			el.show();
+		} else {
+			elCount.html('0');
+			el.hide();
+		}
+	},
+	
+
+
+
 
 	_onShowSetVisible: function() { this._isVisible = true },
 	_onHideSetVisible: function() { this._isVisible = false },
@@ -59,66 +237,15 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		this.fireEvent('firstshow');
 	},
 
-	setButtonElement: function(el) {
-		this.buttonEl = el;
+	_onShowActivateList: function() {
+		if (this.listPage) {
+			this.listPage.fireEvent('activate');
+		}
 	},
 
-	getButtonElement: function() {
-		return this.buttonEl;
-	},
-
-	getSectionElement: function() {
-		if (this.sectionEl) {
-			return this.sectionEl;
-		}
-
-		return null;
-	},
-
-	setSectionElement: function(el, contentEl) {
-		if (this.sectionEl) {
-			this.sectionEl.remove();
-		}
-
-		if (!el) {
-			el = $('<section></section>');
-			el.attr('id', Orb.getUniqueId('outline_'));
-		}
-
-		this.sectionEl = el;
-		if (!el.parent().is('#deskpro_outline')) {
-			this.sectionEl.detach().appendTo('#deskpro_outline');
-		}
-
-		if (!contentEl) {
-			contentEl = $('<section class="content"></section>');
-		}
-		this.sectionEl.append(contentEl);
-		this.contentEl = contentEl;
-	},
-
-	isVisible: function() {
-		return this._isVisible;
-	},
-
-	onShow: function() { },
-	onFirstShow: function() { },
-	onHide: function() { },
-
-	updateBadge: function(count) {
-		var el = $('.nav-counter', this.buttonEl);
-		var elCount = $('span', el);
-
-		var count = parseInt(count);
-		if (count) {
-			if (count >= 1000) {
-				count = '1000+';
-			}
-			elCount.html(count);
-			el.show();
-		} else {
-			elCount.html('0');
-			el.hide();
+	_onHideDeactivateList: function() {
+		if (this.listPage) {
+			this.listPage.fireEvent('deactivate');
 		}
 	}
 });

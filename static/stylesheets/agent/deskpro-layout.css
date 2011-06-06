@@ -576,6 +576,22 @@ So only the 'on' one is visible at a time */
     border-right: 1px solid #95999A;
 }
 
+/* Multiple sections exist within the outline as cached
+versions for fast-switching.
+So only the 'on' one is visible at a time */
+#deskpro_list > section {
+    display: none;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    overflow: hidden;
+}
+
+#deskpro_list > section.on {
+    display: block;
+}
 
 /********************************
 * #deskpro_content

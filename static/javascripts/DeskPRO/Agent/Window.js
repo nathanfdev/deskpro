@@ -991,6 +991,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		btn.addClass('on');
 
 		$('#deskpro_outline > section.on').removeClass('on');
+		$('#deskpro_list > section.on').removeClass('on');
 		if (this.openSection) {
 			this.openSection.fireEvent('afterhide');
 		}
@@ -999,6 +1000,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var sectionEl = handler.getSectionElement();
 		if (sectionEl) {
 			sectionEl.addClass('on');
+		}
+		var listEl = handler.getListElement();
+		if (listEl) {
+			listEl.addClass('on');
 		}
 		handler.fireEvent('aftershow');
 
