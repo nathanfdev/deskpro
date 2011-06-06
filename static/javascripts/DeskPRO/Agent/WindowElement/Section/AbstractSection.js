@@ -21,14 +21,13 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 	initialize: function() {
 		this.addEvent('show', this.onShow);
-		this.addEvent('show', this._onShowLoadList);
 		this.addEvent('show', this._onFirstShowFire);
 		this.addEvent('show', this._onShowSetVisible);
 		this.addEvent('show', this._onShowActivateList);
 		this.addEvent('firstshow', this.onFirstShow);
 		this.addEvent('hide', this.onHide);
 		this.addEvent('hide', this._onHideSetVisible);
-		this.addEvent('hide', this._onHideDeactiveList);
+		this.addEvent('hide', this._onHideDeactivateList);
 
 		this._isVisible = false;
 
@@ -80,16 +79,16 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 
 	/**
-	 * Get the list element (this.listEl).
+	 * Get the list element (this.listEl). If it doesn't exist, it'll be created automatically.
 	 *
 	 * @return {jQuery}
 	 */
 	getListElement: function() {
-		if (this.listEl) {
-			return this.listEl;
+		if (!this.listEl) {
+			this.setListElement();
 		}
 
-		return null;
+		return this.listEl;
 	},
 
 
@@ -162,6 +161,9 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 * @param {DeskPRO.Agent.PageFragment.ListPane.Basic} page
 	 */
 	setListPageFragment: function(page) {
+
+		console.log('Setting page');
+
 		if (this.listPage) {
 			this.listPage.fireEvent('destroy');
 			this.listPage = null;
@@ -172,7 +174,9 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		contentEl.empty();
 		contentEl.html(page.html);
 
-		page.fireEvent('render', [container]);
+		this.getListElement().addClass('on');
+
+		page.fireEvent('render', [contentEl]);
 		page.fireEvent('activate');
 	},
 
@@ -216,8 +220,16 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	_onShowSetVisible: function() { this._isVisible = true },
 	_onHideSetVisible: function() { this._isVisible = false },
 
-	_onShowLoadList: function() {
+	_onFirstShowFire: function() {
+		if (this.has_shown) return;
+		this.has_shown = true;
 
+		this.fireEvent('firstshow');
+
+		this._loadAutoLoadRoutes();
+	},
+
+	_loadAutoLoadRoutes: function() {
 		if (DeskPRO_Window.getDebug('noAutoLoadList')) {
 			return;
 		}
@@ -228,13 +240,6 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		}
 
 		DeskPRO_Window.runPageRoute(el.data('route'));
-	},
-
-	_onFirstShowFire: function() {
-		if (this.has_shown) return;
-		this.has_shown = true;
-
-		this.fireEvent('firstshow');
 	},
 
 	_onShowActivateList: function() {

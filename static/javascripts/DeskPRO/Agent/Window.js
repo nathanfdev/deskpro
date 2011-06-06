@@ -341,18 +341,28 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	setListPage: function(page) {
-		if (this.listPage) {
-			this.listPage.fireEvent('destroy');
+
+		// Route a list page fragment into the proper
+		// section
+
+		var testcl = function(x) {
+			return page.getMetaData('fragmentClass', '').indexOf(x) != -1;
+		};
+		var handler = null;
+		if (testcl('.Kb')) {
+			handler = this.sections['kb_section'];
+		} else if (testcl('.Ticket')) {
+			handler = this.sections['tickets_section'];
+		} else if (testcl('.People') || testcl('.Org')) {
+			handler = this.sections['people_section'];
 		}
 
-		this.listPage = page;
+		if (!handler) {
+			console.error('List page fragment has no section: %o', page);
+			return;
+		}
 
-		var container = $('<div id="'+ Orb.getUniqueId() + '"></div>');
-		container.html(page.html);
-
-		$('#deskpro_list').empty().append(container);
-		page.fireEvent('render', [container]);
-		page.fireEvent('activate');
+		handler.setListPageFragment(page);
 	},
 
 	getListPage: function() {
