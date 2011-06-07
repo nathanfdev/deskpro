@@ -9,10 +9,10 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\AgentBundle\Controller;
+namespace Application\DeskPRO\Controller;
 
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
 
@@ -21,6 +21,12 @@ use Application\DeskPRO\App;
  */
 class ClientMessagesController extends AbstractController
 {
+	public function init()
+	{
+		parent::init();
+		$this->person = $this->session->getPerson();
+	}
+	
 	public function getNewMessagesAction()
 	{
 		// Automatically ping

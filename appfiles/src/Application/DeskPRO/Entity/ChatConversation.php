@@ -37,6 +37,31 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $subject = '';
 
 	/**
+	 * If this is a user conversation, this is the agent assigned.
+	 * 
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
+	 */
+	protected $agent = null;
+
+	/**
+	 * If this is a user conversation, this is the user who started the chat
+	 *
+	 * @var \Application\DeskPRO\Entity\Person
+	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 */
+	protected $person = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Visitor
+	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
+	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id")
+	 */
+	protected $visitor = null;
+
+	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="Person", cascade={"all"})
      * @orm:JoinTable(name="chat_conversation_to_person", joinColumns={@orm:JoinColumn(name="conversation_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")})
@@ -56,6 +81,19 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
+
+	/**
+	 * @var \DateTime
+	 * @orm:Column(name="date_assigned",type="datetime",nullable=true)
+	 */
+	protected $date_assigned;
+
+	/**
+	 * @var \DateTime
+	 * @orm:Column(name="date_ended",type="datetime",nullable=true)
+	 */
+	protected $date_ended;
+
 
 	protected $_user_participants = null;
 
