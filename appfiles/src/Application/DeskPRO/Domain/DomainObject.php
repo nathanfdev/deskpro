@@ -286,7 +286,7 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 	public function offsetExists($offset)
 	{
 		if (strpos($offset, 'is_') !== false) {
-			$func = $offset;
+			$func = str_replace('_', '', $offset);
 		} else {
 			$func = "get" . str_replace('_', '', $offset);
 		}
@@ -328,7 +328,7 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 	public function offsetGet($offset)
 	{
 		if (strpos($offset, 'is_') !== false) {
-			$func = $offset;
+			$func = str_replace('_', '', $offset);
 		} else {
 			$func = "get" . str_replace('_', '', $offset);
 		}
