@@ -1,0 +1,15 @@
+<!-- DeskPRO Chat Loader -->
+<script type="text/javascript">
+var DpChat_Options = DpChat_Options || {};
+DpChat_Options.staticUrl = '{{ asset('') }}';
+DpChat_Options.deskproUrl = '{{ path('user', true) }}';
+DpChat_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
+
+(function() {
+	var scr = document.createElement('script');
+	scr.src = '{{ asset('javascripts/DeskPRO/User/Chat/DpChat.js') }}';
+	scr.setAttribute('async', 'true');
+	document.documentElement.firstChild.appendChild(scr);
+})();
+</script>
+<!-- /DeskPRO Chat Loader -->
