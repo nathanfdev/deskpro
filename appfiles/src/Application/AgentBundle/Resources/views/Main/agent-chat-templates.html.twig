@@ -1,6 +1,11 @@
+{% raw %}
 <script type="text/x-jquery-tmpl" id="agent_chat_conversation">
 	<section class="agent-chat" id="agent_chat_conversation_${to_agent_id}" data-to-agent-id="${to_agent_id}">
+		{{if to_agent_picture}}
+		<nav class="with-picture" style="background-image: url('${to_agent_picture}');">
+		{{else}}
 		<nav>
+		{{/if}}
 			<span class="close-trigger">x</span>
 			<a>${to_agent_name}</a>
 		</nav>
@@ -22,3 +27,4 @@
 		<span>Me:</span> ${message}
 	</article>
 </script>
+{% endraw %}

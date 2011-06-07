@@ -621,13 +621,16 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			array('fn', 'li', '(e)'),
 			array('n', '(e)'),
 			array('fn', 'ln'),
-			array('fi', 'ln'),
 			array('fn', 'li'),
+			array('fi', 'ln'),
 			array('fi', 'li', '(e)'),
 			array('fi', 'li'),
 			array('e'),
 			array('n')
 		);
+
+		$shortest = null;
+		$shortest_len = null;
 
 		foreach ($try as $k => $elements) {
 
@@ -673,15 +676,25 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 			}
 
 			$display = implode(' ', $display);
+			$len = strlen($display);
 
-			if (strlen($display) <= $max_len) {
+			if ($len <= $max_len) {
 				return $display;
+			}
+
+			if ($shortest === null OR $len < $shortest_len) {
+				$shortest = $display;
+				$shortest_len = $len;
 			}
 		}
 
 		// If we got down here, we have no choice but to show
 		// whatever we have
-		return $this->getDisplayName();
+		if ($shortest !== null) {
+			return $shortest;
+		} else {
+			return $this->getDisplayName();
+		}
 	}
 
 

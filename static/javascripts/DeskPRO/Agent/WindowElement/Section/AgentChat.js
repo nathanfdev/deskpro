@@ -35,6 +35,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		}).bind(this));
 		$('body').click((function() {
 			this.panelEl.removeClass('open');
+			$('> section', this.chatsWrapper).removeClass('open');
 		}).bind(this));
 
 		$.ajax({
@@ -49,12 +50,25 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			}
 		});
 
+		// stop propagation for clicks on the chat wrapper
+		// so it dorsnt bubble up and close the open chat window
+		this.chatsWrapper.click(function(ev) {
+			ev.stopPropagation();
+		});
+
 		var self = this;
 		this.onlineListEl.delegate('li', 'click', function (ev) {
-			var agent_id = $(this).data('agent-id');
-			var agent_name = $(this).html();
+			ev.stopPropagation();
 
-			self.addChatBox(agent_name, agent_id);
+			var agent_id     = $(this).data('agent-id');
+			var agent_name   = $(this).data('agent-short-name');
+			var picture_url  = $(this).data('picture-url');
+
+			self.addChatBox(agent_name, agent_id, picture_url);
+			self.openChatBox(agent_id);
+
+			// And close the online list
+			self.panelEl.removeClass('open');
 		});
 	},
 
@@ -69,7 +83,16 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			return;
 		}
 
-		var html = '<li class="agent-' + data.agent_id + '" data-agent-id="' + data.agent_id + '">' + data.agent_name + '</li>';
+		// Make sure they aren't already there (ie logged out/logged in before we could see theyre gone)
+		if ($('agent-' + data.agent_id, this.onlineListEl).length) {
+			return;
+		}
+
+		var html = '<li class="agent-' + data.agent_id + '" data-agent-id="' + data.agent_id + '" data-agent-short-name="'+ data.agent_short_name + '" data-picture-url="' + data.picture_url + '">';
+		if (data.picture_url) {
+			html += '<img src="' + data.picture_url + '" />';
+		}
+		html +=  data.agent_name + '</li>';
 		this.onlineListEl.append(html);
 
 		var countInt = parseInt(this.onlineCountEl.html());
@@ -80,8 +103,14 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	removeOnlineAgent: function(data) {
-		$('.agent-' + data.agent_id, this.onlineListEl).remove();
+		var el = $('.agent-' + data.agent_id, this.onlineListEl);
 
+		if (!el.length) {
+			return;
+		}
+
+		el.remove();
+		
 		var countInt = parseInt(this.onlineCountEl.html());
 		countInt--;
 		this.onlineCountEl.html(countInt);
@@ -96,11 +125,18 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	//# Chatbox handling
 	//#########################################################################
 
-	addChatBox: function(name, person_id) {
+	addChatBox: function(name, person_id, picture_url) {
+
+		// Make sure it doesnt already exist
+		var exist = $('#agent_chat_conversation_' + person_id);
+		if (exist.length) {
+			return;
+		}
 
 		var newContainer = $.tmpl('agent_chat_conversation', {
 			to_agent_name: name,
-			to_agent_id: person_id
+			to_agent_id: person_id,
+			to_agent_picture: picture_url
 		});
 
 		// Modify position of button if there are others
@@ -127,10 +163,12 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		});
 
 		var nav = $('> nav', newContainer);
-		nav.click(function() {
-			newContainer.toggleClass('open');
+		nav.click(function(ev) {
+			ev.stopPropagation();
 			if (newContainer.is('.open')) {
-				newContainer.removeClass('new-message');
+				newContainer.removeClass('open');
+			} else {
+				self.openChatBox(person_id);
 			}
 		});
 
@@ -140,11 +178,32 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		});
 	},
 
+	getChatBox: function(person_id) {
+		var el = $('#agent_chat_conversation_' + person_id);
+		return el;
+	},
+
+	openChatBox: function(person_id) {
+		var el = this.getChatBox(person_id);
+
+		// Already open
+		if (el.is('.open')) {
+			return;
+		}
+
+		// Close others
+		$('> section', this.chatsWrapper).removeClass('open');
+
+		el.addClass('open');
+		el.removeClass('new-message');
+		$('textarea', el).focus();
+	},
+
 	getChatContainerForMessage: function(data) {
 		var container = $('#agent_chat_conversation_' + data.author_id);
 
 		if (!container.length) {
-			this.addChatBox(data.author_name, data.author_id);
+			this.addChatBox(data.author_short_name, data.author_id, data.author_picture);
 		}
 
 		container = $('#agent_chat_conversation_' + data.author_id);
@@ -174,6 +233,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var newMessage = $.tmpl('agent_chat_message', {
 			author_id: data.author_id,
 			author_name: data.author_name,
+			author_picture: data.author_picture,
 			message: data.message
 		});
 

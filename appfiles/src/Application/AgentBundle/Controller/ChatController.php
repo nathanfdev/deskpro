@@ -56,6 +56,8 @@ class ChatController extends AbstractController
 					'message_id'      => $chat_message['id'],
 					'author_id'       => $chat_message->author['id'],
 					'author_name'     => $chat_message->author['display_name'],
+					'author_short_name' => $chat_message->author->getDisplayContactShort(5),
+					'author_picture'  => $chat_message->author->getPictureUrl(10),
 					'message'         => $chat_message['content'],
 					'date_created'    => $chat_message['date_created']->getTimestamp()
 				),
@@ -133,6 +135,8 @@ class ChatController extends AbstractController
 			$online_agents[] = array(
 				'agent_id'   => $sess->person['id'],
 				'agent_name' => $sess->person['display_name'],
+				'agent_short_name' => $sess->person->getDisplayContactShort(4),
+				'picture_url' => $sess->person->getPictureUrl(10)
 			);
 		}
 
