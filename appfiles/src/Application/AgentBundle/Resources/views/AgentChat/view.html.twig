@@ -1,0 +1,24 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.AgentChatTranscript';
+pageMeta.title         = 'Chat Transcript';
+pageMeta.conversation_id = {{convo.id}};
+</script>
+<div class="layout-content with-scrollbar">
+
+	<strong>Participants:</strong><br />
+	<div class="chat-participants">
+		<ul>
+			{% for p in convo.participants %}
+			<address>
+				{{ p.display_name }}
+			</address>
+			{% endfor %}
+		</ul>
+	</div>
+
+	<textarea style="width: 95%; height: 250px; margin: 10px auto 10px auto;">
+{% for message in convo_messages %}&lt;{{message.author.display_name}}&gt;: {{message.content}}
+
+{% endfor %}
+	</textarea>
+</div>

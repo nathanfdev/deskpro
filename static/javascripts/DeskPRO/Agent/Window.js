@@ -355,6 +355,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['tickets_section'];
 		} else if (testcl('.People') || testcl('.Org')) {
 			handler = this.sections['people_section'];
+		} else if (testcl('.AgentChat')) {
+			handler = this.sections['agent_chat_section'];
 		}
 
 		if (!handler) {
@@ -985,6 +987,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	switchToSection: function(section_id) {
+
+		console.log('Switching to %s', section_id);
+
 		var handler = this.sections[section_id];
 		var btn = $('#' + section_id);
 

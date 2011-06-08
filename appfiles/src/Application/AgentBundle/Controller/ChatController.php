@@ -150,9 +150,27 @@ class ChatController extends AbstractController
 	/**
 	 * List the articles
 	 */
-	public function agentHistoryAction()
+	public function getSectionDataAction()
 	{
-		$agent_chats = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentList();
+		$agent_chatted = App::getEntityRepository('DeskPRO:ChatConversation')->getAgentList($this->person);
+
+		$html = $this->renderView('AgentBundle:AgentChat:window-section.html.twig', array(
+			'agent_chatted' => $agent_chatted,
+		));
+
+		return $this->createJsonResponse(array('section_html' => $html));
+	}
+
+	/**
+	 * List the articles
+	 */
+	public function agentHistoryAction($agent_id)
+	{
+		$agent = App::findEntity('DeskPRO:Person', $agent_id);
+		$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getChatsForPeople(array(
+			$this->person['id'],
+			$agent['id']
+		));
 
 		$is_partial = false;
 		$tpl = 'AgentBundle:AgentChat:list.html.twig';
@@ -162,7 +180,26 @@ class ChatController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
-			'agent_chats' => $agent_chats,
+			'agent' => $agent,
+			'conversations' => $conversations,
+		));
+	}
+
+
+	public function agentChatTranscriptAction($conversation_id)
+	{
+		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		$convo_messages = App::getOrm()->createQuery("
+			SELECT m
+			FROM DeskPRO:ChatMessage m
+			WHERE m.conversation = ?1
+			ORDER BY m.id DESC
+		")->setParameter(1, $conversation)->execute();
+
+		return $this->render('AgentBundle:AgentChat:view.html.twig', array(
+			'convo_messages' => $convo_messages,
+			'convo' => $conversation,
 		));
 	}
 }

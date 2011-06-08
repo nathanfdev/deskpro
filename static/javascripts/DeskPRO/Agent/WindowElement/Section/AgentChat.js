@@ -4,7 +4,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.Section.AbstractSection,
 
 	init: function() {
-		this.buttonEl = $('#chat_section');
+		this.buttonEl = $('#agent_chat_section');
 		this.chatsWrapper = $('#agent_chats_wrapper');
 		this.setSectionElement($('<section id="chat_outline"></section>'));
 
@@ -14,6 +14,17 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		this._initMessageHandlers();
 		this._initInterface();
+	},
+
+	onShow: function() {
+		console.log("ere");
+		$.ajax({
+			url: BASE_URL + 'agent/chat/get-section-data.json',
+			context: this,
+			success: function(data) {
+				this.contentEl.html(data.section_html);
+			}
+		});
 	},
 
 	_initMessageHandlers: function() {
@@ -29,7 +40,11 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.onlineListEl = $('#agent_online_list');
 		this.onlineCountEl = $('#chat_online_count');
 
-		$('#chat_section').click((function(ev) {
+		$('.show-section', this.panelEl).click(function() {
+			DeskPRO_Window.switchToSection('agent_chat_section');
+		});
+
+		$('#agent_chat_section').click((function(ev) {
 			ev.stopPropagation();
 			this.panelEl.toggleClass('open');
 		}).bind(this));

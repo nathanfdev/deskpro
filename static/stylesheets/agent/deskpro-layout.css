@@ -263,7 +263,7 @@
 #deskpro_sections > ul  > li.integrations >  a { background: url("../../images/nav-icons/Integrations.png") no-repeat center top; }
 
 
-#deskpro_sections #chat_section {
+#deskpro_sections #agent_chat_section {
     position: absolute;
     bottom: 0;
     left: 8px;
@@ -292,7 +292,7 @@
     border-bottom: none;
 }
 
-#deskpro_sections #chat_section:hover {
+#deskpro_sections #agent_chat_section:hover {
     webkit-box-shadow: 0px 0px 4px #ffffff;
     -moz-box-shadow: 0px 0px 4px #ffffff;
     box-shadow: 0px 0px 4px #ffffff;

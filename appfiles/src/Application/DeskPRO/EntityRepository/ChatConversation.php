@@ -19,35 +19,49 @@ use Doctrine\ORM\EntityRepository;
 
 class ChatConversation extends EntityRepository
 {
-	public function getAgentList($agent, $query_partial = null)
+	public function getAgentList($agent)
 	{
-		$qb = $this->createQueryBuilder('c');
-		$qb->select('c')
-		   ->leftJoin('c.participants', 'p')
-		   ->where('c.is_agent = true AND p.person_id = ?')
-		   ->setFirstResult(0)
-		   ->setMaxResults(25)
-		   ->orderBy('c.id', 'DESC');
-
-		if ($query_partial) {
-			$query_partial->applyToQueryBuilder($qb);
-		}
-
-		return $qb->getQuery()->execute(array($agent['id']));
-	}
-
-	/**
-	 * Get a list of IPs suitable for display
-	 */
-	public function getList()
-	{
-		$list = App::getDb()->fetchAllCol("
-			SELECT banned_ip
-			FROM ban_ips
-			ORDER BY ip_start ASC
+		$agent_ids = App::getDb()->fetchAllCol("
+			SELECT people.id
+			FROM chat_conversation_to_person convo
+			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			LEFT JOIN people ON (people.id = convo2.person_id)
+			WHERE convo.person_id = {$agent['id']} AND people.is_agent = 1 AND people.id != {$agent['id']}
 		");
 
-		return $list;
+		return App::getEntityRepository('DeskPRO:Person')->getPeopleFromIds($agent_ids);
+	}
+
+	public function getChatsForPeople(array $participant_ids)
+	{
+		$participant_ids = Arrays::removeFalsey($participant_ids);
+		$count = count($participant_ids);
+
+		$person1 = $participant_ids[0];
+		$person2 = $participant_ids[1];
+
+		$sql = "
+			SELECT convo.conversation_id
+			FROM chat_conversation_to_person convo
+			LEFT JOIN chat_conversation_to_person AS convo2 ON (convo2.conversation_id = convo.conversation_id)
+			LEFT JOIN people ON (people.id = convo2.person_id)
+			WHERE convo.person_id = $person1 AND convo2.person_id = $person2
+		";
+
+		$conversation_ids = App::getDb()->fetchAllCol($sql);
+
+		if (!$conversation_ids) {
+			return null;
+		}
+
+		$conversations = $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:ChatConversation c
+			WHERE c.id IN(" . implode(',', $conversation_ids) . ")
+			ORDER BY c.id ASC
+		")->execute();
+
+		return $conversations;
 	}
 
 

@@ -739,5 +739,13 @@ agent_chat_send_agent_message:
   defaults: { _controller: AgentBundle:Chat:sendAgentMessage }
 
 agent_chat_history:
-  pattern: /chat/agent-history
+  pattern: /chat/agent-history/{agent_id}
   defaults: { _controller: AgentBundle:Chat:agentHistory }
+
+agent_chat_view:
+  pattern: /chat/agent-transcript/{conversation_id}
+  defaults: { _controller: AgentBundle:Chat:agentChatTranscript }
+
+agent_chat_getsectiondata:
+  pattern: /chat/get-section-data.json
+  defaults: { _controller: AgentBundle:Chat:getSectionData }
