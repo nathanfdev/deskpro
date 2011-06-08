@@ -23,85 +23,166 @@ use Orb\Util\Util;
 /**
  * Handles ticket searches
  */
-class ChatController extends AbstractController
+class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controller
 {
 	/**
-	 * Sending an agent message is less formal in that we automatically
-	 * create conversations based on time, instead of having
-	 * chats created first.
-	 *
-	 * @param  $agent_id
+	 * Input reader
+	 * @var \Orb\Input\Reader\Reader
 	 */
-	public function sendMessageAction($agent_id)
+	public $in;
+	
+	public function init()
 	{
-		$date_cut = new \DateTime('-5 hours');
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForVisitor(
-			$this->person,
-			$this->session->getVisitor()
-		);
+		$this->in = $this->get('deskpro.core.input_reader');
+	}
+
+
+	/**
+	 * This is like DeskPRO:ClientMessages except that it's exclusively for chat, and the client code
+	 * is the visitor id, and the channels are hard-coded for chat. The chat client
+	 * doesnt need to maintain a list of subscriptions.
+	 * 
+	 * @param  $visitor_code
+	 */
+	public function pollAction($visitor_code)
+	{
+		$visitor = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($visitor_code);
+		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromVisitor($visitor);
+
+		$person_id = ($session AND $session->person ? $session->person['id'] ? null);
+
+		// Not uint because -1 will be used when no messages have ever existed
+		$since = $this->in->getInt('since');
+
+		// if $since is 0, the client is new and asking for us to send it the last id
+		if ($since == 0) {
+			$data = array('messages' => array(), 'last_id' => -1);
+			$last_id = App::getDb()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
+			if ($last_id) {
+				$data['last_id'] = $last_id;
+			}
+
+		} else {
+
+			$channels = array(
+				'chat.message',
+				'chat.proactive'
+			);
+
+			$data = array();
+			if ($since) {
+				$data = array('messages' => array(), 'last_id' => -1);
+
+				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient("vis_" . $visitor, $person_id, $channels, $since);
+				foreach ($all_messages as $message) {
+					$handler = $message->getHandler();
+
+					if ($message['created_by_client'] != $this->session->getEntityId()) {
+						$data['messages'][] = array(
+							$message['channel'],
+							$handler->getMessage('ajax')
+						);
+					}
+
+					if ($message['id'] > $data['last_id']) {
+						$data['last_id'] = $message['id'];
+					}
+				}
+
+				if ($data['last_id'] == -1) {
+					unset($data['last_id']);
+				}
+			}
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
+
+	/**
+	 * Handles a user sending a new message
+	 * 
+	 * @param  $visitor_code
+	 */
+	public function sendMessageAction($visitor_code)
+	{
+		$visitor = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($visitor_code);
+		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromVisitor($visitor);
+
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForVisitor($visitor);
 
 		if (!$conversation) {
 			$conversation = new ChatConversation();
-			if ($this->person['id']) {
-				$conversation->person = $this->person;
+			if ($session AND $session->person['id']) {
+				$conversation->person = $session->person;
 			}
-			$conversation->visitor = $this->session->getVisitor();
+			$conversation->visitor = $visitor;
 		}
 
 		App::getOrm()->beginTransaction();
 		App::getOrm()->persist($conversation);
 		App::getOrm()->flush();
 		$res = $this->sendMessageAction($conversation);
-		App::getOrm()->commit();
 
 		$chat_message = $conversation->createMessage(
 			$this->in->getString('content'),
 			$this->person
 		);
 
+		App::getOrm()->persist($chat_message);
+
 		$client_messages = array();
 		$channel = 'chat.message';
-		if ($conversation['is_agent']) {
-			$channel = 'agent_chat.new-message';
+		$parts = $conversation->participants->toArray();
+		if ($conversation->agent) {
+			$parts[] = $conversation->agent;
 		}
-		foreach ($conversation->participants as $part) {
+		foreach ($parts as $part) {
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => $channel,
 				'data' => array(
-					'conversation_id' => $conversation_id,
-					'message_id'      => $chat_message['id'],
-					'author_id'       => $chat_message->author['id'],
-					'author_name'     => $chat_message->author['display_name'],
+					'conversation_id'   => $conversation_id,
+					'message_id'        => $chat_message['id'],
+					'author_id'         => $chat_message->author['id'],
+					'author_name'       => $chat_message->author['display_name'],
 					'author_short_name' => $chat_message->author->getDisplayContactShort(5),
-					'author_picture'  => $chat_message->author->getPictureUrl(10),
-					'message'         => $chat_message['content'],
-					'date_created'    => $chat_message['date_created']->getTimestamp()
+					'author_picture'    => $chat_message->author->getPictureUrl(10),
+					'message'           => $chat_message['content'],
+					'date_created'      => $chat_message['date_created']->getTimestamp()
 				),
-				'created_by_client' => App::getSession()->getEntityId(),
+				'created_by_client' => "vis_" . $visitor['id'],
 				'for_person' => $part
 			));
 
-			$client_messages[] = $cm;
+			App::getOrm()->persist($cm);
 		}
 
-		App::getOrm()->transactional(function ($em) use ($chat_message, $client_messages) {
-			$em->persist($chat_message);
+		App::getOrm()->flush();
+		App::getOrm()->commit();
 
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					$em->persist($cm);
-				}
-			}
-
-			$em->flush();
-		});
-
-		return $this->createJsonResponse(array(
+		return $this->createJsonpResponse(array(
 			'conversation_id' => $conversation_id,
 			'new_message_id'  => $chat_message['id']
 		));
+	}
 
-		return $res;
+
+	/**
+	 * This inits a session, which itself inits a visitor and sets the various
+	 * cookies. Then
+	 */
+	public function chatVisitorAction()
+	{
+		// Inits the session which isn't usually created on this controller
+		// Then the session creates a new sess and visitor, and sets those
+		// cookies
+		$session = $this->get('session');
+
+		$visitor = $session->getVisitor();
+
+		return $this->render('UserBundle:Chat:chat-visitor.js.php', array(
+			'visitor' => $visitor
+		));
 	}
 }

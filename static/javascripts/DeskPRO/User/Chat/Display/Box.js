@@ -1,16 +1,19 @@
-Orb.createNamespace('DeskPRO.User.Chat.Display');
-
 /**
  * User chat handler
  */
-DeskPRO.User.Chat.Display.Box = new Orb.Class({
-	Extends: DeskPRO.User.Chat.Display.AbstractDisplay,
+DpChat_Display = (function() {
 
-	initElement: function() {
+	var chatBox = null;
+	var chatBoxBtn = null;
+	var messageWrapper = null;
 
-		if (this.chatBox) {
-			this.chatBox.remove();
-			this.chatBoxBtn.remove();
+	var self = this;
+
+	this.initDisplay = function() {
+
+		if (chatBox) {
+			chatBox.remove();
+			chatBoxBtn.remove();
 		}
 
 		//--------------------
@@ -22,11 +25,11 @@ DeskPRO.User.Chat.Display.Box = new Orb.Class({
 
 		var el = $(html.join(''));
 		el.appendTo('body');
-		this.chatBoxBtn = el;
+		chatBoxBtn = el;
 
-		this.chatBoxBtn.click((function() {
-			this.chatBox.addClass('open');
-		}).bind(this));
+		chatBoxBtn.click(function() {
+			chatBox.addClass('open');
+		});
 
 		//--------------------
 		// The chat box
@@ -42,24 +45,25 @@ DeskPRO.User.Chat.Display.Box = new Orb.Class({
 		var el = $(html.join(''));
 		el.appendTo('body');
 
-		this.chatBox = el;
+		chatBox = el;
 
-		this.messageWrapper = $('.messages', this.chatBox);
+		messageWrapper = $('.messages', chatBox);
 
-		$('.close-trigger', this.chatBox).click((function() {
-			this.chatBox.removeClass('open');
-		}).bind(this));
+		$('.close-trigger', chatBox).click(function() {
+			chatBox.removeClass('open');
+		});
 
-		var messageTextarea = $('.message-box > textarea');
-		messageTextarea.keypress((function(ev) {
+		var messageTextarea = $('.message-box > textarea', chatBox);
+		messageTextarea.keypress(function(ev) {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				var msg = messageTextarea.val().trim();
 				messageTextarea.val('');
 
-				this.sendMessage(msg);
+				DpChat.sendMessage(msg);
+				self.addMessageRow('Me', msg, 'user');
 			}
-		}).bind(this));
-	},
+		});
+	};
 
 
 	/**
@@ -69,7 +73,7 @@ DeskPRO.User.Chat.Display.Box = new Orb.Class({
 	 * @param message
 	 * @param type
 	 */
-	addMessageRow: function(name, message, type) {
+	this.addMessageRow = function(name, message, type) {
 
 		type = type || 'user';
 
@@ -81,27 +85,9 @@ DeskPRO.User.Chat.Display.Box = new Orb.Class({
 
 		var el = $(html.join(''));
 
-		el.appendTo(this.messageWrapper);
+		el.appendTo(messageWrapper);
 
 		return el;
-	},
-
-
-	/**
-	 * Send a user message to the server
-	 * 
-	 * @param message
-	 */
-	sendMessage: function(message) {
-		this.addMessageRow('Me', message, 'user');
-
-		$.ajax({
-			url: BASE_URL + 'chat/send-message/' + this.chat.id,
-			data: {
-				message: message
-			},
-			context: this,
-			contentType: 'json'
-		});
-	}
-});
+	};
+})();
+DpChat.setDisplay(DpChat_Display);

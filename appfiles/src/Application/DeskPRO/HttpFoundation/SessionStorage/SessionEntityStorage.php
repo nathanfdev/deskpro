@@ -238,6 +238,7 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		$sess_rec['date_last'] = date('Y-m-d H:i:s', time());
 		$sess_rec['is_person'] = 0;
 		$sess_rec['person_id'] = null;
+		$sess_rec['visitor_id'] = (isset($_SESSION['_symfony2']['dpvid']) ? $_SESSION['_symfony2']['dpvid'] : null);
 
 		if (!empty($_SESSION['_symfony2']['auth_person_id'])) {
 			$sess_rec['is_person'] = 1;

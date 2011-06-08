@@ -1,0 +1,1 @@
+DpChat.setVisitorCode('<?php echo $visitor['visitor_code'] ?>');

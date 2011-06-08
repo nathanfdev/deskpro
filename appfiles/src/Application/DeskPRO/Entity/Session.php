@@ -51,6 +51,13 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Visitor
+	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
+	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id")
+	 */
+	protected $visitor = null;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="data", type="text")
 	 */

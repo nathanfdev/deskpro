@@ -9,8 +9,7 @@ var DpChat = (function() {
 		protocol: null,
 		staticUrl: null,
 		deskproUrl: null,
-		displayType: 'Box',
-		visitorId: null
+		displayType: 'Box'
 	};
 
 	var self = this;
@@ -27,10 +26,10 @@ var DpChat = (function() {
 	var display = null;
 
 	/**
-	 * The visitor ID of this user
+	 * The visitor code of this user
 	 * @var {Integer}
 	 */
-	var visitorId = null;
+	var visitorCode = null;
 
 	/**
 	 * Any previous messages that'll be pushed into the chat window upon load
@@ -83,7 +82,7 @@ var DpChat = (function() {
 		$('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"').appendTo('body');
 
 		// DeskPRO script that sets/gets visitor and initial messages
-		$('<script type="text/javascript" async="true" src="' + options.deskproUrl + 'chat/chat-visitor?visitor_id=' + options.visitorId + '"').appendTo('body');
+		$('<script type="text/javascript" async="true" src="' + options.deskproUrl + 'chat/chat-visitor"').appendTo('body');
 
 		// Box.css
 		$('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css"').appendTo('body');
@@ -92,7 +91,7 @@ var DpChat = (function() {
 
 	/**
 	 * When the display source file is loaded by the client, it calls DpChat.setDisplay() to set itself.
-	 * If the visitorId is already fetched, then the main chat app can finally be fully set up.
+	 * If the visitorCode is already fetched, then the main chat app can finally be fully set up.
 	 * 
 	 * @param display
 	 */
@@ -102,13 +101,13 @@ var DpChat = (function() {
 
 
 	/**
-	 * When the visitor source file is loaded by the client, it calls this DpChat.setVisitorId() to set itself.
+	 * When the visitor source file is loaded by the client, it calls this DpChat.setvisitorCode() to set itself.
 	 * Just like setDisplay, it checks if all values are set and if they are, main() is called to fully run the chat.
 	 * 
-	 * @param visitorId
+	 * @param visitorCode
 	 */
-	this.setVisitorId = function(setVisitorId) {
-		visitorId = setVisitorId;
+	this.setvisitorCode = function(setvisitorCode) {
+		visitorCode = setvisitorCode;
 	};
 
 	/**
@@ -159,7 +158,7 @@ var DpChat = (function() {
 
 	var ajaxPoller = this.ajaxPoller = {
 		options: {
-			interval: 5000,
+			interval: 10000, /* start off at 10000, when chat starts it'll reduce to 2 */
 			alwaysRequest: false
 		},
 		filterdData: [],
@@ -247,11 +246,11 @@ var DpChat = (function() {
 
 			$.ajax({
 				cache: false,
-				type: 'POST',
-				url: DpChat.options.deskproUrl + 'chat/poll',
+				url: DpChat.options.deskproUrl + 'chat/poll/' + visitorCode,
 				context: this,
+				crossDomain: true,
 				data: send_data,
-				dataType: 'json',
+				dataType: 'jsonp',
 				success: function (data) {
 					this._handleAjaxSuccess(data, sent_info);
 				}
@@ -304,6 +303,24 @@ var DpChat = (function() {
 		}
 	};
 
+
+	/**
+	 * Sends a new chat message. The server decides if the chat should be new or not
+	 * 
+	 * @param message
+	 */
+	this.sendMessage = function(message) {
+		ajaxPoller.options.interval = 2000;
+
+		$.ajax({
+			cache: false,
+			url: DpChat.options.deskproUrl + 'chat/sendMessage/' + visitorCode,
+			context: this,
+			crossDomain: true,
+			data: {'content': message},
+			dataType: 'jsonp'
+		});
+	};
 	
 	//#################################################################
 	//# Util
@@ -321,12 +338,21 @@ var DpChat = (function() {
 	var main = function() {
 
 		ajaxPoller.init();
-
 		display.initDisplay();
 
 		if (initialMessages) {
-			display.addInitialMessages(initialMessages);
+			for (var i = 0; i < initialMessages.length; i++) {
+				display.addMessageRow(
+					initialMessages[i][0],
+					initialMessages[i][1],
+					initialMessages[i][2]
+				);
+			}
+
+			ajaxPoller.options.interval = 2000;
 		}
 	};
+
+	return this;
 })();
 DpChat.init();

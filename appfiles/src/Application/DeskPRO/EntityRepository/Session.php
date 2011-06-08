@@ -36,4 +36,23 @@ class Session extends EntityRepository
 
 		return $session;
 	}
+
+
+	/**
+	 * Find an active session that is tied to a visitor.
+	 * 
+	 * @param  $visitor
+	 * @return Session
+	 */
+	public function getSessionFromVisitor($visitor)
+	{
+		$session = $this->getEntityManager()->createQuery("
+			SELECT s
+			FROM DeskPRO:Session s
+			WHERE s.visitor = ?1
+			ORDER BY s.id DESC
+		")->setParameter(1, $visitor)->getSingleResult();
+
+		return $session;
+	}
 }
