@@ -52,7 +52,7 @@ var DpChat = (function() {
 
 			var script_tag = document.createElement('script');
 			script_tag.setAttribute("type","text/javascript");
-			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.5.1/jquery.min.js");
+			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
 			script_tag.setAttribute("async", 'true');
 			script_tag.onload = function() { initJquery(); };
 			script_tag.onreadystatechange = function () { // Same thing but for IE

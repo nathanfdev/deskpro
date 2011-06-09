@@ -39,6 +39,7 @@ class TemplatingExtension extends \Twig_Extension
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
             'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
+			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
 			'deskpro_setting' => new \Twig_Function_Method($this, 'getSetting'),
 			'deskpro_debug' => new \Twig_Function_Method($this, 'isDebugMode'),
 			'render_custom_field' => new \Twig_Function_Method($this, 'renderCustomField'),

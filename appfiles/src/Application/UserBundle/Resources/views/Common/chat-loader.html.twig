@@ -1,8 +1,8 @@
 <!-- DeskPRO Chat Loader -->
 <script type="text/javascript">
 var DpChat_Options = DpChat_Options || {};
-DpChat_Options.staticUrl = '{{ asset('') }}';
-DpChat_Options.deskproUrl = '{{ path('user', true) }}';
+DpChat_Options.staticUrl = '{{ asset_url('') }}';
+DpChat_Options.deskproUrl = '{{ url('user') }}';
 DpChat_Options.protocol = ('https:' == document.location.protocol ? 'https' : 'http');
 
 (function() {
