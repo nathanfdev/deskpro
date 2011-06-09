@@ -3422,3 +3422,77 @@ div.media-browser .overlay-title nav ul li.on {
     background-color: #C9C9C9;
     padding: 3px;
 }
+
+
+
+
+
+
+
+
+
+
+
+
+section.new-user-chat-alert {
+    position: absolute;
+    top: 45px;
+    left: 65px;
+
+    width: 280px;
+
+    background-color: rgba(49, 56, 71, 0.8);
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+    -webkit-box-shadow: 0px 1px 4px #454545;
+    -moz-box-shadow: 0px 1px 4px #454545;
+    box-shadow: 0px 1px 4px #454545;
+}
+
+section.new-user-chat-alert header {
+    background-color: rgba(26, 28, 38, 0.5);
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    margin: 1px;
+
+    padding: 5px 0 5px 8px;
+
+    color: #fff;
+
+    text-shadow: 1px 0px 0px #000;
+    filter: dropshadow(color=#000000, offx=1, offy=0);
+}
+
+section.new-user-chat-alert div.messages {
+    background-color: rgba(255, 255, 255, 0.9);
+    height: 75px;
+    margin: 4px;
+    overflow: auto;
+
+    font-size: 11px;
+}
+
+section.new-user-chat-alert div.messages article {
+    padding: 5px;
+}
+
+section.new-user-chat-alert div.messages .author {
+    display: inline;
+    padding-right: 5px;
+}
+
+section.new-user-chat-alert div.messages .message {
+    display: inline;
+}
+
+section.new-user-chat-alert footer {
+    margin-top: 8px;
+    padding: 5px;
+    text-align: center;
+}

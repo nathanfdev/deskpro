@@ -6,7 +6,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	init: function() {
 		this.buttonEl = $('#agent_chat_section');
 		this.chatsWrapper = $('#agent_chats_wrapper');
-		this.setSectionElement($('<section id="chat_outline"></section>'));
+		this.setSectionElement($('<section id="agent_chat_outline"></section>'));
 
 		$('#agent_chat_conversation').template('agent_chat_conversation');
 		$('#agent_chat_message').template('agent_chat_message');

@@ -112,7 +112,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForVisitor($visitor);
 
 		$is_new_convo = false;
-		if (!$conversation) {
+		if (!$conversation or true) {
 			$conversation = new ChatConversation();
 			if ($session AND $session->person['id']) {
 				$conversation->person = $session->person;
@@ -139,8 +139,8 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				'data' => array(
 					'conversation_id'   => $conversation['id'],
 					'message_id'        => $chat_message['id'],
-					'author_id'         => $chat_message->author['id'],
-					'author_name'       => $chat_message->author['display_name'],
+					'author_id'         => $chat_message['author_id'],
+					'author_name'       => $chat_message['author_name'],
 					'message'           => $chat_message['content'],
 					'date_created'      => $chat_message['date_created']->getTimestamp()
 				),
@@ -163,8 +163,8 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				'data' => array(
 					'conversation_id'   => $conversation['id'],
 					'message_id'        => $chat_message['id'],
-					'author_id'         => $chat_message->author['id'],
-					'author_name'       => $chat_message->author['display_name'],
+					'author_id'         => $chat_message['author_id'],
+					'author_name'       => $chat_message['author_name'],
 					'author_short_name' => $chat_message->author->getDisplayContactShort(5),
 					'author_picture'    => $chat_message->author->getPictureUrl(10),
 					'message'           => $chat_message['content'],

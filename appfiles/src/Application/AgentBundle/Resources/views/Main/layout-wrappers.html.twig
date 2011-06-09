@@ -37,6 +37,11 @@
 				<div class="nav-counter" style="display:none"><span>0</span></div>
 				<a>Ideas</a>
 			</li>
+
+			<li class="chat" id="chat_section" data-section-handler="DeskPRO.Agent.WindowElement.Section.UserChat">
+				<div class="nav-counter" style="display:none"><span>0</span></div>
+				<a>Chat</a>
+			</li>
 		</ul>
 		<div id="agent_chat_section" class="no-click-switch" data-section-handler="DeskPRO.Agent.WindowElement.Section.AgentChat">
 			<div id="chat_online_count">0</div>
@@ -69,7 +74,7 @@
 	</section>
 
 </section>
-{% include 'AgentBundle:Main:agent-chat-templates.html.twig' %}
+
 <section id="agent_chats_wrapper"></section>
 <section id="agent_chat_panel">
 	<nav><a class="show-section">View History</a></nav>
@@ -77,3 +82,7 @@
 		<li class="no-agents">No other agents are online</li>
 	</ul>
 </section>
+
+{% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
+{% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}
+
