@@ -3,6 +3,6 @@
 </header>
 <ul class="nav-list">
 	{% for agent in agent_chatted %}
-		<li class="with-route" data-route="listpane:{{ path('agent_chat_history', {'agent_id': agent.id}) }}">{{ agent.display_name }}</li>
+		<li class="with-route" data-route="listpane:{{ path('agent_agentchat_history', {'agent_id': agent.id}) }}">{{ agent.display_name }}</li>
 	{% endfor %}
 </ul>

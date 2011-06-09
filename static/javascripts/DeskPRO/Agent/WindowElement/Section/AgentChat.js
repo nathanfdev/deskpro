@@ -17,9 +17,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	onShow: function() {
-		console.log("ere");
 		$.ajax({
-			url: BASE_URL + 'agent/chat/get-section-data.json',
+			url: BASE_URL + 'agent/agent-chat/get-section-data.json',
 			context: this,
 			success: function(data) {
 				this.contentEl.html(data.section_html);
@@ -54,7 +53,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		}).bind(this));
 
 		$.ajax({
-			url: BASE_URL + 'agent/chat/get-online-agents.json',
+			url: BASE_URL + 'agent/agent-chat/get-online-agents.json',
 			context: this,
 			success: function(data) {
 				if (data.online_agents) {
@@ -272,7 +271,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/chat/send-agent-message/' + to_agent_id,
+			url: BASE_URL + 'agent/agent-chat/send-agent-message/' + to_agent_id,
 			data: data,
 			context: this,
 			contentType: 'json'

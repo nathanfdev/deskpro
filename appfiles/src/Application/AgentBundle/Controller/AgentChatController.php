@@ -23,7 +23,7 @@ use Orb\Util\Util;
 /**
  * Handles ticket searches
  */
-class ChatController extends AbstractController
+class AgentChatController extends AbstractController
 {
 	/**
 	 * Accepts a POST of a new message to a conversation

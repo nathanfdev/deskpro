@@ -1,6 +1,6 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 	{% for convo in conversations %}
-		<article class="chat_convo chat_convo-{{convo.id}} with-route" data-route="page:{{ path('agent_chat_view', {'conversation_id': convo.id}) }}">
+		<article class="chat_convo chat_convo-{{convo.id}} with-route" data-route="page:{{ path('agent_agentchat_view', {'conversation_id': convo.id}) }}">
 			<div class="chat-participants">
 				<ul>
 					{% for p in convo.participants %}{% if p.id != app.user.id %}

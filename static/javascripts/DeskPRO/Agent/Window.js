@@ -988,7 +988,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	switchToSection: function(section_id) {
 
-		console.log('Switching to %s', section_id);
+		console.debug('Switching to %s', section_id);
 
 		var handler = this.sections[section_id];
 		var btn = $('#' + section_id);

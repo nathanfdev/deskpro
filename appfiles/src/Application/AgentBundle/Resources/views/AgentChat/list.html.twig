@@ -1,7 +1,7 @@
 <script>
 pageMeta.title = 'History: {{agent.display_name}}';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory';
-pageMeta.pageUrl = '{{ path('agent_chat_history', {'agent_id': agent.id}) }}?partial=1&page=$page';
+pageMeta.pageUrl = '{{ path('agent_agentchat_history', {'agent_id': agent.id}) }}?partial=1&page=$page';
 {% if not agent_chats %}
 	pageMeta.noResults = true;
 {% endif %}

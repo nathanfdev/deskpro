@@ -726,26 +726,26 @@ agent_mediabrowser_imageeditor_save:
 # Chat
 ################################################################################
 
-agent_chat_getonlineagents:
-  pattern: /chat/get-online-agents.json
-  defaults: { _controller: AgentBundle:Chat:getOnlineAgents }
+agent_agentchat_getonlineagents:
+  pattern: /agent-chat/get-online-agents.json
+  defaults: { _controller: AgentBundle:AgentChat:getOnlineAgents }
 
-agent_chat_send_message:
-  pattern: /chat/send-message/{conversation_id}
-  defaults: { _controller: AgentBundle:Chat:sendMessage }
+agent_agentchat_send_message:
+  pattern: /agent-chat/send-message/{conversation_id}
+  defaults: { _controller: AgentBundle:AgentChat:sendMessage }
 
-agent_chat_send_agent_message:
-  pattern: /chat/send-agent-message/{agent_id}
-  defaults: { _controller: AgentBundle:Chat:sendAgentMessage }
+agent_agentchat_send_agent_message:
+  pattern: /agent-chat/send-agent-message/{agent_id}
+  defaults: { _controller: AgentBundle:AgentChat:sendAgentMessage }
 
-agent_chat_history:
-  pattern: /chat/agent-history/{agent_id}
-  defaults: { _controller: AgentBundle:Chat:agentHistory }
+agent_agentchat_history:
+  pattern: /agent-chat/agent-history/{agent_id}
+  defaults: { _controller: AgentBundle:AgentChat:agentHistory }
 
-agent_chat_view:
-  pattern: /chat/agent-transcript/{conversation_id}
-  defaults: { _controller: AgentBundle:Chat:agentChatTranscript }
+agent_agentchat_view:
+  pattern: /agent-chat/agent-transcript/{conversation_id}
+  defaults: { _controller: AgentBundle:AgentChat:agentChatTranscript }
 
-agent_chat_getsectiondata:
-  pattern: /chat/get-section-data.json
-  defaults: { _controller: AgentBundle:Chat:getSectionData }
+agent_agentchat_getsectiondata:
+  pattern: /agent-chat/get-section-data.json
+  defaults: { _controller: AgentBundle:AgentChat:getSectionData }
