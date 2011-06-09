@@ -240,3 +240,19 @@ user_ideas_cat:
 user_ideas_cat_status:
   pattern: /feedback/{slug}/{status}
   defaults: { _controller: UserBundle:Ideas:index }
+
+################################################################################
+# Chat
+################################################################################
+
+user_chat_initvisitor:
+  pattern: /chat/chat-visitor
+  defaults: { _controller: UserBundle:Chat:chatVisitor }
+
+user_chat_poll:
+  pattern: /chat/poll/{visitor_code}
+  defaults: { _controller: UserBundle:Chat:poll }
+
+user_chat_sendmessage:
+  pattern: /chat/send-message/{visitor_code}
+  defaults: { _controller: UserBundle:Chat:sendMessage }

@@ -51,8 +51,12 @@ class Session extends EntityRepository
 			FROM DeskPRO:Session s
 			WHERE s.visitor = ?1
 			ORDER BY s.id DESC
-		")->setParameter(1, $visitor)->getSingleResult();
+		")->setParameter(1, $visitor)->setMaxResults(1)->execute();
 
-		return $session;
+		if (!count($session)) {
+			return null;
+		}
+
+		return $session[0];
 	}
 }

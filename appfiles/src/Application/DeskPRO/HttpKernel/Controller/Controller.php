@@ -185,12 +185,14 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 	public function createJsonpResponse($content, $status_code = 200, $callback_name = null)
 	{
 		if (!$callback_name) {
-			$callback_name = preg_replace('#[^a-zA-Z0-9_]#', '', @$_GET['jsonp']);
+			$callback_name = preg_replace('#[^a-zA-Z0-9_]#', '', @$_GET['callback']);
 		}
-		$callback_name = 'jsonp_callback';
+		if (!$callback_name) {
+			$callback_name = 'jsonp_callback';
+		}
 		
 		$response = $this->container->get('response');
-		$response->headers->set('Content-Type', 'application/json');
+		$response->headers->set('Content-Type', 'text/javascript');
 		$response->setStatusCode($status_code);
 
 		if (is_array($content)) {

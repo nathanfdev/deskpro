@@ -1,3 +1,12 @@
+if (DpChat_EnableDebug) {
+	var DpChatConsole = window.console;
+} else {
+	var DpChatConsole = {};
+	['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
+		DpChatConsole[v] = function() { };
+	});
+}
+
 /**
  * The main user chat handler. Loaded onto a page using a async loader (UserBundle:Common:chat-loader.html.twig).
  *
@@ -43,9 +52,15 @@ var DpChat = (function() {
 	 * our actual chat init.
 	 */
 	this.init = function() {
-		if (window.jQuery === undefined || window.jQuery.fn.jquery.indexOf('1.5.') === -1) {
+
+		DpChatConsole.log('DpChat.init');
+
+		if (window.jQuery === undefined || window.jQuery.fn.jquery.indexOf('1.6.') === -1) {
+
+			DpChatConsole.log('DpChat.init: loading jquery');
 
 			var initJquery = function() {
+				DpChatConsole.log('DpChat.init: jquery loaded');
 				$ = window.jQuery.noConflict(true);
 				initScript();
 			};
@@ -63,6 +78,9 @@ var DpChat = (function() {
 
 			(document.getElementsByTagName("head")[0] || document.documentElement).appendChild(script_tag);
 		} else {
+
+			DpChatConsole.log('DpChat.init: already have jquery');
+
 			$ = window.jQuery;
 			initScript();
 		}
@@ -74,18 +92,24 @@ var DpChat = (function() {
 	 * also fetches the users visitor ID and existing chat data, if there is any from previous pages.
 	 */
 	var initScript = function() {
+
+		DpChatConsole.log('DpChat.initScript');
+
 		if (window.DpChat_Options) {
 			$.extend(options, DpChat_Options);
 		}
 
 		// Box.js
-		$('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"').appendTo('body');
+		var el = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"></script>').appendTo('body');
+		DpChatConsole.info('Added display %o', el);
 
 		// DeskPRO script that sets/gets visitor and initial messages
-		$('<script type="text/javascript" async="true" src="' + options.deskproUrl + 'chat/chat-visitor"').appendTo('body');
+		el = $('<script type="text/javascript" async="true" src="' + options.deskproUrl + 'chat/chat-visitor"></script>').appendTo('body');
+		DpChatConsole.info('Added visitor init %o', el);
 
 		// Box.css
-		$('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css"').appendTo('body');
+		el = $('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
+		DpChatConsole.info('Added display css %o', el);
 	};
 
 
@@ -95,8 +119,11 @@ var DpChat = (function() {
 	 * 
 	 * @param display
 	 */
-	this.setDisplay = function(setDisplay) {
-		display = setDisplay;
+	this.setDisplay = function(_display) {
+		DpChatConsole.log('DpChat.setDisplay(%o)', _display);
+		display = _display;
+
+		mainRunner();
 	};
 
 
@@ -106,16 +133,20 @@ var DpChat = (function() {
 	 * 
 	 * @param visitorCode
 	 */
-	this.setvisitorCode = function(setvisitorCode) {
-		visitorCode = setvisitorCode;
+	this.setVisitorCode = function(_visitorCode) {
+		DpChatConsole.log('DpChat.setVisitorCode(%o)', _visitorCode);
+		visitorCode = _visitorCode;
+
+		mainRunner();
 	};
 
 	/**
 	 * Ghe visitor source can call DpChat.setInitialMessages() to load messages that were exchanged on a previous
 	 * page.
 	 */
-	this.setInitialMessages = function(setInitialMessages) {
-		initialMessages = setInitialMessages;
+	this.setInitialMessages = function(_initialMessages) {
+		DpChatConsole.log('DpChat.setInitialMessages(%o)', _initialMessages);
+		initialMessages = _initialMessages;
 	};
 
 	
@@ -163,10 +194,13 @@ var DpChat = (function() {
 		},
 		filterdData: [],
 		disable: false,
+		maxDelayTimers: [],
 
 		init: function() {
 			this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
 		},
+
+
 		
 		addData: function(data, name, options) {
 			name = name || 'default';
@@ -189,7 +223,7 @@ var DpChat = (function() {
 
 			this._clearDelays();
 
-			if (!this.options.alwaysRequest && !this.filterdData.length) {
+			if (this.disable || (!this.options.alwaysRequest && !this.filterdData.length)) {
 				this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
 				return;
 			}
@@ -310,14 +344,17 @@ var DpChat = (function() {
 	 * @param message
 	 */
 	this.sendMessage = function(message) {
+
+		DpChatConsole.log('DpChat.sendMessage: %s', message);
+
 		ajaxPoller.options.interval = 2000;
 
 		$.ajax({
 			cache: false,
-			url: DpChat.options.deskproUrl + 'chat/sendMessage/' + visitorCode,
+			url: options.deskproUrl + 'chat/send-message/' + visitorCode,
 			context: this,
 			crossDomain: true,
-			data: {'content': message},
+			data: {content: message},
 			dataType: 'jsonp'
 		});
 	};
@@ -335,7 +372,18 @@ var DpChat = (function() {
 	//# Main
 	//#################################################################
 
+	/**
+	 * Called in the setX methods to run main once all data has been collected
+	 */
+	var mainRunner = function() {
+		if (display && visitorCode) {
+			main();
+		}
+	};
+
 	var main = function() {
+
+		DpChatConsole.log('DpChat.main');
 
 		ajaxPoller.init();
 		display.initDisplay();
@@ -343,12 +391,13 @@ var DpChat = (function() {
 		if (initialMessages) {
 			for (var i = 0; i < initialMessages.length; i++) {
 				display.addMessageRow(
-					initialMessages[i][0],
-					initialMessages[i][1],
-					initialMessages[i][2]
+					initialMessages[i].name,
+					initialMessages[i].message,
+					initialMessages[i].type
 				);
 			}
 
+			display.showChatPanel();
 			ajaxPoller.options.interval = 2000;
 		}
 	};

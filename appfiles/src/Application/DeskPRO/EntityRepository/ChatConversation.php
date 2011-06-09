@@ -13,6 +13,8 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Visitor as VisitorEntity;
+use Application\DeskPRO\Entity\ChatConversation as ChatConversationEntity;
 
 use Orb\Util\Arrays;
 use Doctrine\ORM\EntityRepository;
@@ -113,5 +115,22 @@ class ChatConversation extends EntityRepository
 		}
 
 		return $this->find($conversation_id);
+	}
+
+
+	public function getActiveChatForVisitor($visitor)
+	{
+		try {
+			$conversation = $this->getEntityManager()->createQuery("
+				SELECT c
+				FROM DeskPRO:ChatConversation c
+				WHERE c.visitor = ?1
+				ORDER BY c.id ASC
+			")->setParameter(1, $visitor)->setMaxResults(1)->getSingleResult();
+		} catch (\Exception $e) {
+			$conversation = null;
+		}
+
+		return $conversation;
 	}
 }

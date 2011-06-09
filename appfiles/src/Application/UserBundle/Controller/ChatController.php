@@ -49,7 +49,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$visitor = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($visitor_code);
 		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromVisitor($visitor);
 
-		$person_id = ($session AND $session->person ? $session->person['id'] ? null);
+		$person_id = ($session AND $session->person ? $session->person['id'] : null);
 
 		// Not uint because -1 will be used when no messages have ever existed
 		$since = $this->in->getInt('since');
@@ -111,25 +111,44 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForVisitor($visitor);
 
+		$is_new_convo = false;
 		if (!$conversation) {
 			$conversation = new ChatConversation();
 			if ($session AND $session->person['id']) {
 				$conversation->person = $session->person;
 			}
 			$conversation->visitor = $visitor;
+			$is_new_convo = true;
 		}
 
 		App::getOrm()->beginTransaction();
 		App::getOrm()->persist($conversation);
 		App::getOrm()->flush();
-		$res = $this->sendMessageAction($conversation);
 
 		$chat_message = $conversation->createMessage(
 			$this->in->getString('content'),
-			$this->person
+			null
 		);
 
 		App::getOrm()->persist($chat_message);
+
+		if ($is_new_convo) {
+			$new_chat_cm = new ClientMessage();
+			$new_chat_cm->fromArray(array(
+				'channel' => 'chat.new-chat',
+				'data' => array(
+					'conversation_id'   => $conversation['id'],
+					'message_id'        => $chat_message['id'],
+					'author_id'         => $chat_message->author['id'],
+					'author_name'       => $chat_message->author['display_name'],
+					'message'           => $chat_message['content'],
+					'date_created'      => $chat_message['date_created']->getTimestamp()
+				),
+				'created_by_client' => "vis_" . $visitor['id']
+			));
+
+			App::getOrm()->persist($new_chat_cm);
+		}
 
 		$client_messages = array();
 		$channel = 'chat.message';
@@ -142,7 +161,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			$cm->fromArray(array(
 				'channel' => $channel,
 				'data' => array(
-					'conversation_id'   => $conversation_id,
+					'conversation_id'   => $conversation['id'],
 					'message_id'        => $chat_message['id'],
 					'author_id'         => $chat_message->author['id'],
 					'author_name'       => $chat_message->author['display_name'],
@@ -162,7 +181,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		App::getOrm()->commit();
 
 		return $this->createJsonpResponse(array(
-			'conversation_id' => $conversation_id,
+			'conversation_id' => $conversation['id'],
 			'new_message_id'  => $chat_message['id']
 		));
 	}
@@ -181,8 +200,20 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 		$visitor = $session->getVisitor();
 
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForVisitor($visitor);
+		$convo_messages = false;
+		if ($conversation) {
+			$convo_messages = App::getOrm()->createQuery("
+				SELECT m
+				FROM DeskPRO:ChatMessage m
+				WHERE m.conversation = ?1
+				ORDER BY m.id DESC
+			")->setParameter(1, $conversation)->execute();
+		}
+
 		return $this->render('UserBundle:Chat:chat-visitor.js.php', array(
-			'visitor' => $visitor
+			'visitor' => $visitor,
+			'convo_messages' => $convo_messages,
 		));
 	}
 }
