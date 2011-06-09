@@ -15,13 +15,14 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	_initMessageHandlers: function() {
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new-chat');
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.message');
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-message', this.handleNewMessage.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.message', this.handleNewMessage.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-chat', this.handleNewChat.bind(this));
 	},
 
 	handleNewMessage: function(data) {
-
+		DeskPRO_Window.getMessageBroker().sendMessage('chat.new-message-' + data.conversation_id, data);
 	},
 
 	handleNewChat: function(data) {
@@ -39,8 +40,9 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			alertEl.remove();
 		});
 		$('.accept-trigger', alertEl).click(function() {
-			
-		});
+			DeskPRO_Window.runPageRouteFromElement(this);
+			alertEl.remove();
+		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
 
 		if (initial_message) {
 			var messageEl = $.tmpl('new_user_chat_alert_message', initial_message);

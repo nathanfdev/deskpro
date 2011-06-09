@@ -1,0 +1,33 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
+pageMeta.title         = 'Chat';
+pageMeta.conversation_id = {{convo.id}};
+</script>
+<div class="layout-content with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+
+<div class="chat-messages">
+	<table cellspacing="0" cellpadding="0" width="100%">
+		{% for message in convo_messages %}
+		<tr>
+			<td class="author" width="125">
+				{{ message.author_name }}
+			</td>
+			<td class="message	">
+				{{ message.content }}
+			</td>
+		</tr>
+		{% endfor %}
+	</table>
+</div>
+
+</div></div>
+</div>
+<div class="layout-footer chat">
+	<div class="tab-bottom-wrap">
+		<div class="tab-bottom">
+			<input type="text" class="new-message" />
+		</div>
+	</div>
+</div>

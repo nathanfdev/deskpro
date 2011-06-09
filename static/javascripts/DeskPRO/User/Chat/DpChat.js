@@ -223,10 +223,12 @@ var DpChat = (function() {
 
 			this._clearDelays();
 
-			if (this.disable || (!this.options.alwaysRequest && !this.filterdData.length)) {
+			if (!this.options.alwaysRequest && !this.filterdData.length) {
 				this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
 				return;
 			}
+
+			console.log('Sending poll');
 
 			//------------------------------
 			// Build data to send
@@ -348,6 +350,7 @@ var DpChat = (function() {
 		DpChatConsole.log('DpChat.sendMessage: %s', message);
 
 		ajaxPoller.options.interval = 2000;
+		ajaxPoller.disable = false;
 
 		$.ajax({
 			cache: false,
@@ -399,6 +402,8 @@ var DpChat = (function() {
 
 			display.showChatPanel();
 			ajaxPoller.options.interval = 2000;
+			ajaxPoller.disable = false;
+			ajaxPoller.send();
 		}
 	};
 
