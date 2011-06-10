@@ -17,6 +17,7 @@ use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
 
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
+use Application\DeskPRO\Chat\StatusCheck as ChatStatusCheck;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -63,6 +64,14 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			}
 
 		} else {
+
+			if (mt_rand(1,10) <= 5) {
+				$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
+				if ($conversation) {
+					$status_check = new ChatStatusCheck($conversation, $session);
+					$status_check->runChecks();
+				}
+			}
 
 			$channels = array(
 				'chat.message',
