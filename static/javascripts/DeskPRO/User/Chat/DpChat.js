@@ -47,6 +47,12 @@ var DpChat = (function() {
 	var initialMessages = null;
 
 	/**
+	 * HTML for a select box if department selector is enabled
+	 * @var {String}
+	 */
+	var departmentSelect = null;
+
+	/**
 	 * This is a pre-init that is called automatically when the client has downloaded
 	 * this source file. It ensures jQuery first, and then runs initScript that starts
 	 * our actual chat init.
@@ -147,6 +153,14 @@ var DpChat = (function() {
 	this.setInitialMessages = function(_initialMessages) {
 		DpChatConsole.log('DpChat.setInitialMessages(%o)', _initialMessages);
 		initialMessages = _initialMessages;
+	};
+
+	/**
+	 * The session source can tell DpChat to set the select box options
+	 */
+	this.setDepartmentSelect = function(_departmentSelect) {
+		DpChatConsole.log('DpChat.setDepartmentSelect(%o)', _departmentSelect);
+		departmentSelect = _departmentSelect;
 	};
 
 	
@@ -356,19 +370,25 @@ var DpChat = (function() {
 	 * 
 	 * @param message
 	 */
-	this.sendMessage = function(message) {
+	this.sendMessage = function(message, data) {
 
 		DpChatConsole.log('DpChat.sendMessage: %s', message);
 
 		ajaxPoller.options.interval = 2000;
 		ajaxPoller.disable = false;
 
+		data = data || [];
+		data.push({
+			name: 'content',
+			value: message
+		});
+
 		$.ajax({
 			cache: false,
 			url: options.deskproUrl + 'chat/send-message/' + sessionCode,
 			context: this,
 			crossDomain: true,
-			data: {content: message},
+			data: data,
 			dataType: 'jsonp'
 		});
 	};
@@ -400,7 +420,9 @@ var DpChat = (function() {
 		DpChatConsole.log('DpChat.main');
 
 		ajaxPoller.init();
-		display.initDisplay();
+		display.initDisplay({
+			departmentSelect: departmentSelect
+		});
 
 		if (initialMessages) {
 			for (var i = 0; i < initialMessages.length; i++) {

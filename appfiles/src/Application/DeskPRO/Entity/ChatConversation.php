@@ -31,6 +31,13 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Department
+	 * @orm:ManyToOne(targetEntity="Department", fetch="EAGER")
+	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
+	 */
+	protected $department = null;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="subject", type="string", length=255)
 	 */

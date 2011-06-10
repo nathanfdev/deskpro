@@ -55,6 +55,22 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	protected $content;
 
 	/**
+	 * Is this a system message? (ended, joined, etc)
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_sys", type="boolean")
+	 */
+	protected $is_sys = false;
+
+	/**
+	 * Is the message hidden from the user?
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_user_hidden", type="boolean")
+	 */
+	protected $is_user_hidden = false;
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */

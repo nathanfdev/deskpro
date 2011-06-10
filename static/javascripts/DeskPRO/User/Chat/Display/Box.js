@@ -9,7 +9,7 @@ var DpChat_Display = (function() {
 
 	var self = this;
 
-	this.initDisplay = function() {
+	this.initDisplay = function(options) {
 
 		DpChatConsole.log('DpChat_Display.initDisplay');
 
@@ -42,7 +42,11 @@ var DpChat_Display = (function() {
 		var html = [];
 		html.push('<div id="dpchat_panel">');
 			html.push('<div id="dpchat_titlebar"><h3>Chat</h3><span id="dpchat_closepanel">Close</span></div>');
-			html.push('<div id="dpchat_messages"><div class="dpchat-info dpchat-instruction">Type in your question to get started</div></div>');
+			if (options.departmentSelect) {
+				html.push('<div id="dpchat_messages"><div class="dpchat-info dpchat-instruction alt-form">Choose a department and select a department to get started: ' + options.departmentSelect + '</div></div>');
+			} else {
+				html.push('<div id="dpchat_messages"><div class="dpchat-info dpchat-instruction">Type in your question to get started</div></div>');
+			}
 			html.push('<div id="dpchat_input"><textarea></textarea></div>')
 		html.push('</div>');
 
@@ -70,12 +74,15 @@ var DpChat_Display = (function() {
 					return;
 				}
 
-				DpChat.sendMessage(msg);
+				DpChat.sendMessage(msg, getAltFormData());
 				self.addMessageRow('You', msg, 'user');
 			}
 		});
 	};
 
+	var getAltFormData = function() {
+		return $('.alt-form :input', chatBox).serializeArray();
+	};
 
 	this.showChatPanel = function() {
 		chatBox.addClass('dpchat-panel-open');

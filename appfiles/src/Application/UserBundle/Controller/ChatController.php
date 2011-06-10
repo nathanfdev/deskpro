@@ -114,6 +114,13 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$is_new_convo = false;
 		if (!$conversation) {
 			$conversation = ChatConversation::newForUserSession($session);
+
+			$dep_id = $this->in->getUint('department_id');
+			if ($dep_id) {
+				$dep = App::findEntity('DeskPRO:Department', $dep_id);
+				$conversation->department = $dep;
+			}
+
 			App::getOrm()->persist($conversation);
 			$is_new_convo = true;
 		}
@@ -177,9 +184,21 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			")->setParameter(1, $conversation)->execute();
 		}
 
+		$department_sel = null;
+		if (App::getSetting('core_chat.require_department')) {
+			$department_options = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames(null, false);
+			$department_sel = array('<select name="department_id">');
+			foreach ($department_options as $k => $v) {
+				$department_sel[] = '<option value="'.$k.'">'.htmlspecialchars($v).'</option>';
+			}
+			$department_sel[] = '</select>';
+			$department_sel = implode('', $department_sel);
+		}
+
 		return $this->render('UserBundle:Chat:chat-session.js.php', array(
 			'session' => $session,
 			'convo_messages' => $convo_messages,
+			'department_sel' => $department_sel,
 		));
 	}
 }
