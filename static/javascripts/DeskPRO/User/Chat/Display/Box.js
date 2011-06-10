@@ -7,6 +7,8 @@ var DpChat_Display = (function() {
 	var chatBoxBtn = null;
 	var messageWrapper = null;
 
+	var typingFuncTime = null;
+
 	var self = this;
 
 	this.initDisplay = function(options) {
@@ -64,6 +66,8 @@ var DpChat_Display = (function() {
 
 		var messageTextarea = $('#dpchat_input > textarea');
 		messageTextarea.keypress(function(ev) {
+			DpChat.userTypingIndicator(messageTextarea.val());
+			
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				
@@ -72,6 +76,10 @@ var DpChat_Display = (function() {
 
 				if (!msg.length) {
 					return;
+				}
+
+				if (typingFuncTime) {
+					window.clearTimeout(typingFuncTime);
 				}
 
 				DpChat.sendMessage(msg, getAltFormData());

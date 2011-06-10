@@ -256,3 +256,7 @@ user_chat_poll:
 user_chat_sendmessage:
   pattern: /chat/send-message/{session_code}
   defaults: { _controller: UserBundle:Chat:sendMessage }
+
+user_chat_sendusertyping:
+  pattern: /chat/user-typing/{session_code}
+  defaults: { _controller: UserBundle:Chat:userTyping }

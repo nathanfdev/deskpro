@@ -23,6 +23,8 @@ var DpChat = (function() {
 
 	var self = this;
 
+	var hasStarted = false;
+
 	/**
 	 * Scoped reference to jQuery
 	 * @var {jQuery}
@@ -374,6 +376,9 @@ var DpChat = (function() {
 
 		DpChatConsole.log('DpChat.sendMessage: %s', message);
 
+		hasStarted = true;
+		if (typingIndicatorTime) window.clearTimeout(typingIndicatorTime);
+
 		ajaxPoller.options.interval = 2000;
 		ajaxPoller.disable = false;
 
@@ -392,6 +397,30 @@ var DpChat = (function() {
 			dataType: 'jsonp'
 		});
 	};
+
+	var typingIndicatorTime = null;
+	var typingIndicatorMsg = null;
+	this.userTypingIndicator = function(message) {
+		if (!hasStarted) return;
+		if (typingIndicatorTime) return;
+
+		typingIndicatorTime = Function_Delay(sendTypingIndicator, 1000, self);
+	};
+
+	var sendTypingIndicator = function() {
+		if (typingIndicatorTime) window.clearTimeout(typingIndicatorTime);
+		typingIndicatorMsg = typingIndicatorMsg.trim();
+		if (!typingIndicatorMsg.length) return;
+
+		$.ajax({
+			cache: false,
+			url: options.deskproUrl + 'chat/user-typing/' + sessionCode,
+			context: this,
+			crossDomain: true,
+			data: {'partial_message': typingIndicatorMsg},
+			dataType: 'jsonp'
+		});
+	};
 	
 	//#################################################################
 	//# Util
@@ -399,6 +428,10 @@ var DpChat = (function() {
 
 	var Function_Delay = function(fn, delay, bind, args) {
 		return setTimeout(fn.pass((args == null ? [] : args), bind), delay);
+	};
+
+	this.util = {
+		Function_Delay: Function_Delay
 	};
 
 
@@ -425,6 +458,9 @@ var DpChat = (function() {
 		});
 
 		if (initialMessages) {
+			
+			hasStarted = true;
+
 			for (var i = 0; i < initialMessages.length; i++) {
 				display.addMessageRow(
 					initialMessages[i].name,

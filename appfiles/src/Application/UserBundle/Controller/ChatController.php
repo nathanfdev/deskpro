@@ -162,6 +162,29 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 
 	/**
+	 * Sends client messages to show typing indicator
+	 *
+	 * @param  $session_code
+	 */
+	public function userTypingAction($session_code)
+	{
+		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
+
+		if (!$conversation) {
+			return $this->createJsonpResponse();
+		}
+
+		$client_messages = ChatClientMessageGenerator::createUserTypingMessages($conversation, $this->in->getString('partial_message'));
+		foreach ($client_messages as $cm) {
+			App::getOrm()->persist($cm);
+		}
+
+		return $this->createJsonpResponse();
+	}
+
+
+	/**
 	 * This inits a session, and sets the various cookies. Then
 	 * calls the dpchat (from the view) to set it on the client.
 	 */

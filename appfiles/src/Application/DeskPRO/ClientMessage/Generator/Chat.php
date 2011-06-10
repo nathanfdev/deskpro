@@ -112,4 +112,44 @@ class Chat
 
 		return $cms;
 	}
+
+	public static function createUserTypingMessages($by_client_id, ChatConversation $conversation, $partial_message)
+	{
+		$cm_data = array(
+			'conversation_id'   => $conversation['id'],
+			'partial_message' => $partial_message
+		);
+
+		$channel = 'chat.user-typing';
+
+		$cms = array();
+
+		// Assigned agent
+		if ($conversation->agent) {
+			$cm = new ClientMessage();
+			$cm->fromArray(array(
+				'channel' => $channel,
+				'data' => $cm_data,
+				'created_by_client' => $by_client_id,
+				'for_person' => $conversation->agent
+			));
+
+			$cms[] = $cm;
+		}
+
+		// Participants first
+		foreach ($conversation->participants as $part) {
+			$cm = new ClientMessage();
+			$cm->fromArray(array(
+				'channel' => $channel,
+				'data' => $cm_data,
+				'created_by_client' => $by_client_id,
+				'for_person' => $part
+			));
+
+			$cms[] = $cm;
+		}
+
+		return $cms;
+	}
 }
