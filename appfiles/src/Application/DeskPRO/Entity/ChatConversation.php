@@ -121,8 +121,24 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_ended;
 
-
 	protected $_user_participants = null;
+
+	/**
+	 * @static
+	 * @param \Application\DeskPRO\Entity\Session $session
+	 * @return \Application\DeskPRO\Entity\ChatConversation
+	 */
+	public static function newForUserSession($session)
+	{
+		$convo = new self();
+		if ($session->person) {
+			$convo->person = $session;
+		}
+		$convo->session = $session;
+		$convo->visitor = $session->visitor;
+
+		return $convo;
+	}
 
 	public function __construct()
 	{
@@ -130,6 +146,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
+
+	/**
+	 * Create a new message
+	 *
+	 * @return \Application\DeskPRO\Entity\ChatMessage
+	 */
 	public function createMessage($message, $author)
 	{
 		$chat_message = new ChatMessage();
@@ -139,6 +161,27 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 		return $chat_message;
 	}
+
+
+	/**
+	 * Create a new message for a user based on their session
+	 *
+	 * @return \Application\DeskPRO\Entity\ChatMessage
+	 */
+	public function createMessageForSession($message, $session)
+	{
+		$chat_message = new ChatMessage();
+		$chat_message->conversation = $this;
+
+		if ($session->person) {
+			$chat_message->author = $session->person;
+		}
+
+		$chat_message['content'] = $message;
+
+		return $chat_message;
+	}
+
 
 	/**
 	 * Get an array of only user participants

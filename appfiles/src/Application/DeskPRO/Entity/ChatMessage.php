@@ -78,6 +78,8 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->author) {
 			return $this->author['display_name'];
+		} else if ($this->conversation['person_name']) {
+			return $this->conversation['person_name'];
 		}
 
 		return 'User';
