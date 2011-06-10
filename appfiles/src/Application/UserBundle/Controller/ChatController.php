@@ -38,17 +38,15 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 
 	/**
-	 * This is like DeskPRO:ClientMessages except that it's exclusively for chat, and the client code
-	 * is the visitor id, and the channels are hard-coded for chat. The chat client
+	 * This is like DeskPRO:ClientMessages except that it's exclusively for chat,
+	 * and the channels are hard-coded for chat. The chat client
 	 * doesnt need to maintain a list of subscriptions.
 	 * 
-	 * @param  $visitor_code
+	 * @param  $session_code
 	 */
-	public function pollAction($visitor_code)
+	public function pollAction($session_code)
 	{
-		$visitor = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($visitor_code);
-		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromVisitor($visitor);
-
+		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
 		$person_id = ($session AND $session->person ? $session->person['id'] : null);
 
 		// Not uint because -1 will be used when no messages have ever existed
@@ -73,7 +71,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			if ($since) {
 				$data = array('messages' => array(), 'last_id' => -1);
 
-				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient("vis_" . $visitor, $person_id, $channels, $since);
+				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient($session['id'], $person_id, $channels, $since);
 				foreach ($all_messages as $message) {
 					$handler = $message->getHandler();
 
@@ -102,14 +100,12 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	/**
 	 * Handles a user sending a new message
 	 * 
-	 * @param  $visitor_code
+	 * @param  $session_code
 	 */
-	public function sendMessageAction($visitor_code)
+	public function sendMessageAction($session_code)
 	{
-		$visitor = App::getEntityRepository('DeskPRO:Visitor')->getVisitorFromCode($visitor_code);
-		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromVisitor($visitor);
-
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForVisitor($visitor);
+		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
 
 		$is_new_convo = false;
 		if (!$conversation) {
@@ -117,7 +113,6 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			if ($session AND $session->person['id']) {
 				$conversation->person = $session->person;
 			}
-			$conversation->visitor = $visitor;
 			$is_new_convo = true;
 		}
 
@@ -144,7 +139,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 					'message'           => $chat_message['content'],
 					'date_created'      => $chat_message['date_created']->getTimestamp()
 				),
-				'created_by_client' => "vis_" . $visitor['id']
+				'created_by_client' => $session['id']
 			));
 
 			App::getOrm()->persist($new_chat_cm);
@@ -168,7 +163,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 					'message'           => $chat_message['content'],
 					'date_created'      => $chat_message['date_created']->getTimestamp()
 				),
-				'created_by_client' => "vis_" . $visitor['id'],
+				'created_by_client' => $session['id'],
 				'for_person' => $part
 			));
 
@@ -186,19 +181,18 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 
 	/**
-	 * This inits a session, which itself inits a visitor and sets the various
-	 * cookies. Then
+	 * This inits a session, and sets the various cookies. Then
+	 * calls the dpchat (from the view) to set it on the client.
 	 */
-	public function chatVisitorAction()
+	public function chatSessionAction()
 	{
 		// Inits the session which isn't usually created on this controller
 		// Then the session creates a new sess and visitor, and sets those
 		// cookies
-		$session = $this->get('session');
+		$sessionObj = $this->get('session');
+		$session = $sessionObj->getEntity();
 
-		$visitor = $session->getVisitor();
-
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForVisitor($visitor);
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
 		$convo_messages = false;
 		if ($conversation) {
 			$convo_messages = App::getOrm()->createQuery("
@@ -209,8 +203,8 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			")->setParameter(1, $conversation)->execute();
 		}
 
-		return $this->render('UserBundle:Chat:chat-visitor.js.php', array(
-			'visitor' => $visitor,
+		return $this->render('UserBundle:Chat:chat-session.js.php', array(
+			'session' => $session,
 			'convo_messages' => $convo_messages,
 		));
 	}

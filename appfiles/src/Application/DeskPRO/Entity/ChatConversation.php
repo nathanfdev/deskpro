@@ -55,6 +55,33 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
+	 * If this is a user convo, this is the users session
+	 *
+	 * @var \Application\DeskPRO\Entity\Session
+	 * @orm:ManyToOne(targetEntity="Session", fetch="EAGER")
+	 * @orm:JoinColumn(name="session_id", referencedColumnName="id")
+	 */
+	protected $session = null;
+
+	/**
+	 * User chat: The users name, if they arent a person
+	 * 
+	 * @var string
+	 * @orm:Column(name="person_name", type="string", length=255)
+	 */
+	protected $person_name = '';
+
+	/**
+	 * User chat: The users email, if they arent a person
+	 *
+	 * @var string
+	 * @orm:Column(name="person_email", type="string", length=255)
+	 */
+	protected $person_email = '';
+
+	/**
+	 * ...and this is the users visitor
+	 *
 	 * @var \Application\DeskPRO\Entity\Visitor
 	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
 	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id")

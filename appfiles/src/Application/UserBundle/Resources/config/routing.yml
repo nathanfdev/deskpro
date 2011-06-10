@@ -245,14 +245,14 @@ user_ideas_cat_status:
 # Chat
 ################################################################################
 
-user_chat_initvisitor:
-  pattern: /chat/chat-visitor
-  defaults: { _controller: UserBundle:Chat:chatVisitor }
+user_chat_initsession:
+  pattern: /chat/chat-session
+  defaults: { _controller: UserBundle:Chat:chatSession }
 
 user_chat_poll:
-  pattern: /chat/poll/{visitor_code}
+  pattern: /chat/poll/{session_code}
   defaults: { _controller: UserBundle:Chat:poll }
 
 user_chat_sendmessage:
-  pattern: /chat/send-message/{visitor_code}
+  pattern: /chat/send-message/{session_code}
   defaults: { _controller: UserBundle:Chat:sendMessage }

@@ -18,4 +18,4 @@
 ?>
 DpChat.setInitialMessages(<?php echo json_encode($messages) ?>);
 <?php endif ?>
-DpChat.setVisitorCode('<?php echo $visitor['visitor_code'] ?>');
+DpChat.setSessionCode('<?php echo $session['session_code'] ?>');

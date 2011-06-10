@@ -35,10 +35,10 @@ var DpChat = (function() {
 	var display = null;
 
 	/**
-	 * The visitor code of this user
+	 * The session code of this users session
 	 * @var {Integer}
 	 */
-	var visitorCode = null;
+	var sessionCode = null;
 
 	/**
 	 * Any previous messages that'll be pushed into the chat window upon load
@@ -89,7 +89,7 @@ var DpChat = (function() {
 	
 	/**
 	 * initScript() is called from init() and loads the resources for the theme, and
-	 * also fetches the users visitor ID and existing chat data, if there is any from previous pages.
+	 * also fetches the users session code and existing chat data, if there is any from previous pages.
 	 */
 	var initScript = function() {
 
@@ -103,9 +103,9 @@ var DpChat = (function() {
 		var el = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"></script>').appendTo('body');
 		DpChatConsole.info('Added display %o', el);
 
-		// DeskPRO script that sets/gets visitor and initial messages
-		el = $('<script type="text/javascript" async="true" src="' + options.deskproUrl + 'chat/chat-visitor"></script>').appendTo('body');
-		DpChatConsole.info('Added visitor init %o', el);
+		// DeskPRO script that sets/gets session and initial messages
+		el = $('<script type="text/javascript" async="true" src="' + options.deskproUrl + 'chat/chat-session"></script>').appendTo('body');
+		DpChatConsole.info('Added session init %o', el);
 
 		// Box.css
 		el = $('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
@@ -115,7 +115,7 @@ var DpChat = (function() {
 
 	/**
 	 * When the display source file is loaded by the client, it calls DpChat.setDisplay() to set itself.
-	 * If the visitorCode is already fetched, then the main chat app can finally be fully set up.
+	 * If the sessionCode is already fetched, then the main chat app can finally be fully set up.
 	 * 
 	 * @param display
 	 */
@@ -128,20 +128,20 @@ var DpChat = (function() {
 
 
 	/**
-	 * When the visitor source file is loaded by the client, it calls this DpChat.setvisitorCode() to set itself.
+	 * When the session source file is loaded by the client, it calls this DpChat.setSessionCode() to set itself.
 	 * Just like setDisplay, it checks if all values are set and if they are, main() is called to fully run the chat.
 	 * 
-	 * @param visitorCode
+	 * @param sessionCode
 	 */
-	this.setVisitorCode = function(_visitorCode) {
-		DpChatConsole.log('DpChat.setVisitorCode(%o)', _visitorCode);
-		visitorCode = _visitorCode;
+	this.setSessionCode = function(_sessionCode) {
+		DpChatConsole.log('DpChat.setSessionCode(%o)', _sessionCode);
+		sessionCode = _sessionCode;
 
 		mainRunner();
 	};
 
 	/**
-	 * Ghe visitor source can call DpChat.setInitialMessages() to load messages that were exchanged on a previous
+	 * The session source can call DpChat.setInitialMessages() to load messages that were exchanged on a previous
 	 * page.
 	 */
 	this.setInitialMessages = function(_initialMessages) {
@@ -282,7 +282,7 @@ var DpChat = (function() {
 
 			$.ajax({
 				cache: false,
-				url: DpChat.options.deskproUrl + 'chat/poll/' + visitorCode,
+				url: DpChat.options.deskproUrl + 'chat/poll/' + sessionCode,
 				context: this,
 				crossDomain: true,
 				data: send_data,
@@ -354,7 +354,7 @@ var DpChat = (function() {
 
 		$.ajax({
 			cache: false,
-			url: options.deskproUrl + 'chat/send-message/' + visitorCode,
+			url: options.deskproUrl + 'chat/send-message/' + sessionCode,
 			context: this,
 			crossDomain: true,
 			data: {content: message},
@@ -379,7 +379,7 @@ var DpChat = (function() {
 	 * Called in the setX methods to run main once all data has been collected
 	 */
 	var mainRunner = function() {
-		if (display && visitorCode) {
+		if (display && sessionCode) {
 			main();
 		}
 	};

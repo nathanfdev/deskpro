@@ -133,4 +133,20 @@ class ChatConversation extends EntityRepository
 
 		return $conversation;
 	}
+
+	public function getActiveChatForSession($session)
+	{
+		try {
+			$conversation = $this->getEntityManager()->createQuery("
+				SELECT c
+				FROM DeskPRO:ChatConversation c
+				WHERE c.session = ?1
+				ORDER BY c.id ASC
+			")->setParameter(1, $session)->setMaxResults(1)->getSingleResult();
+		} catch (\Exception $e) {
+			$conversation = null;
+		}
+
+		return $conversation;
+	}
 }
