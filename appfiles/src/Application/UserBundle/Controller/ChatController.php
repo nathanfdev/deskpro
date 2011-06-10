@@ -16,6 +16,8 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
 
+use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -107,66 +109,38 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
 		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
 
+		App::getOrm()->beginTransaction();
+
 		$is_new_convo = false;
 		if (!$conversation) {
-			$conversation = new ChatConversation();
-			if ($session AND $session->person['id']) {
-				$conversation->person = $session->person;
-			}
+			$conversation = ChatConversation::newForUserSession($session);
+			App::getOrm()->persist($conversation);
 			$is_new_convo = true;
 		}
 
-		App::getOrm()->beginTransaction();
-		App::getOrm()->persist($conversation);
-		App::getOrm()->flush();
-
-		$chat_message = $conversation->createMessage(
+		$chat_message = $conversation->createMessageForSession(
 			$this->in->getString('content'),
-			null
+			$session
 		);
 
 		App::getOrm()->persist($chat_message);
-
-		if ($is_new_convo) {
-			$new_chat_cm = new ClientMessage();
-			$new_chat_cm->fromArray(array(
-				'channel' => 'chat.new-chat',
-				'data' => array(
-					'conversation_id'   => $conversation['id'],
-					'message_id'        => $chat_message['id'],
-					'author_id'         => $chat_message['author_id'],
-					'author_name'       => $chat_message['author_name'],
-					'message'           => $chat_message['content'],
-					'date_created'      => $chat_message['date_created']->getTimestamp()
-				),
-				'created_by_client' => $session['id']
-			));
-
-			App::getOrm()->persist($new_chat_cm);
-		}
+		App::getOrm()->flush();
 
 		$client_messages = array();
-		$channel = 'chat.message';
-		$parts = $conversation->participants->toArray();
-		if ($conversation->agent) {
-			$parts[] = $conversation->agent;
-		}
-		foreach ($parts as $part) {
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => $channel,
-				'data' => array(
-					'conversation_id'   => $conversation['id'],
-					'message_id'        => $chat_message['id'],
-					'author_id'         => $chat_message['author_id'],
-					'author_name'       => $chat_message['author_name'],
-					'message'           => $chat_message['content'],
-					'date_created'      => $chat_message['date_created']->getTimestamp()
-				),
-				'created_by_client' => $session['id'],
-				'for_person' => $part
-			));
 
+		if ($is_new_convo) {
+			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
+				$session['id'],
+				$conversation,
+				$chat_message
+			));
+		}
+		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(
+			$session['id'],
+			$chat_message
+		));
+
+		foreach ($client_messages as $cm) {
 			App::getOrm()->persist($cm);
 		}
 
