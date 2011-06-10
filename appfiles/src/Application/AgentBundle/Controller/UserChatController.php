@@ -16,6 +16,8 @@ use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
 use Application\DeskPRO\Entity\ClientMessage;
 
+use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -60,47 +62,10 @@ class UserChatController extends AbstractController
 			$this->person
 		);
 
-		$client_messages = array();
-		$channel = 'chat.message';
-		foreach ($conversation->participants as $part) {
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => $channel,
-				'data' => array(
-					'conversation_id' => $conversation_id,
-					'message_id'      => $chat_message['id'],
-					'author_id'       => $chat_message->author['id'],
-					'author_name'     => $chat_message->author['display_name'],
-					'author_short_name' => $chat_message->author->getDisplayContactShort(5),
-					'author_picture'  => $chat_message->author->getPictureUrl(10),
-					'message'         => $chat_message['content'],
-					'date_created'    => $chat_message['date_created']->getTimestamp()
-				),
-				'created_by_client' => App::getSession()->getEntityId(),
-				'for_person' => $part
-			));
-
-			$client_messages[] = $cm;
-		}
-
-		// For the user
-		$cm = new ClientMessage();
-		$cm->fromArray(array(
-			'channel' => $channel,
-			'data' => array(
-				'conversation_id' => $conversation_id,
-				'message_id'      => $chat_message['id'],
-				'author_id'       => $chat_message->author['id'],
-				'author_name'     => $chat_message->author['display_name'],
-				'author_short_name' => $chat_message->author->getDisplayContactShort(5),
-				'author_picture'  => $chat_message->author->getPictureUrl(10),
-				'message'         => $chat_message['content'],
-				'date_created'    => $chat_message['date_created']->getTimestamp()
-			),
-			'created_by_client' => App::getSession()->getEntityId(),
-			'for_client' => 'vis_' . $conversation['visitor']['id']
-		));
-		$client_messages[] = $cm;
+		$client_messages = ChatClientMessageGenerator::createNewMessageMessages(
+			App::getSession()->getEntityId(),
+			$chat_message
+		);
 
 		App::getOrm()->transactional(function ($em) use ($chat_message, $client_messages) {
 			$em->persist($chat_message);

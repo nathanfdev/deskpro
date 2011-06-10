@@ -31,8 +31,8 @@ class ClientMessage extends EntityRepository
 		$names = array();
 		$names_like = array();
 		foreach ($channels as $ch) {
-			$names[] = "'{$ch['channel']}'";
-			$names_like[] = "m.channel LIKE '{$ch['channel']}.%'";
+			$names[] = "'{$ch}'";
+			$names_like[] = "m.channel LIKE '{$ch}.%'";
 		}
 
 		if (!$names) {
@@ -80,7 +80,12 @@ class ClientMessage extends EntityRepository
 	 */
 	public function getMessagesForClient($client_id, $person_id = null, $since_id = null)
 	{
-		$channels = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($client_id);
+		$channels_obj = App::getEntityRepository('DeskPRO:ClientChannelSubscription')->getSubscriptionsForClient($client_id);
+		$channels = array();
+		foreach ($channels_obj as $ch) {
+			$channels[] = $ch['channel'];
+		}
+
 		return self::getMessagesForClientInChannels($client_id, $person_id, $channels, $since_id);
 	}
 }

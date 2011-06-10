@@ -58,7 +58,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a user convo, this is the users session
 	 *
 	 * @var \Application\DeskPRO\Entity\Session
-	 * @orm:ManyToOne(targetEntity="Session", fetch="EAGER")
+	 * @orm:ManyToOne(targetEntity="Session")
 	 * @orm:JoinColumn(name="session_id", referencedColumnName="id")
 	 */
 	protected $session = null;
@@ -83,7 +83,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * ...and this is the users visitor
 	 *
 	 * @var \Application\DeskPRO\Entity\Visitor
-	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
+	 * @orm:ManyToOne(targetEntity="Visitor")
 	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id")
 	 */
 	protected $visitor = null;
@@ -101,7 +101,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @var bool
 	 * @orm:Column(name="is_agent", type="boolean")
 	 */
-	protected $is_agent = true;
+	protected $is_agent = false;
 
 	/**
 	 * @var \DateTime

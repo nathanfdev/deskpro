@@ -73,11 +73,11 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			if ($since) {
 				$data = array('messages' => array(), 'last_id' => -1);
 
-				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient($session['id'], $person_id, $channels, $since);
+				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClientInChannels($session['id'], $person_id, $channels, $since);
 				foreach ($all_messages as $message) {
 					$handler = $message->getHandler();
 
-					if ($message['created_by_client'] != $this->session->getEntityId()) {
+					if ($message['created_by_client'] != $session['id']) {
 						$data['messages'][] = array(
 							$message['channel'],
 							$handler->getMessage('ajax')
@@ -95,7 +95,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			}
 		}
 
-		return $this->createJsonResponse($data);
+		return $this->createJsonpResponse($data);
 	}
 
 

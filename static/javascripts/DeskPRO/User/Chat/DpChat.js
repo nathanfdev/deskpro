@@ -190,14 +190,23 @@ var DpChat = (function() {
 	var ajaxPoller = this.ajaxPoller = {
 		options: {
 			interval: 10000, /* start off at 10000, when chat starts it'll reduce to 2 */
-			alwaysRequest: false
+			alwaysRequest: true,
+			initialDelay: 1500
 		},
 		filterdData: [],
 		disable: false,
 		maxDelayTimers: [],
+		lastMessageId: null,
 
 		init: function() {
-			this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
+
+			var self = this;
+			this.addData(function () {
+				if (!self.lastMessageId) return null;
+				return { 'since': self.lastMessageId };
+			}, 'since', { recurring: true });
+
+			this.autoSendTimeout = Function_Delay(this.send, this.options.initialDelay, this);
 		},
 
 
@@ -223,12 +232,10 @@ var DpChat = (function() {
 
 			this._clearDelays();
 
-			if (!this.options.alwaysRequest && !this.filterdData.length) {
+			if (this.disable || (!this.options.alwaysRequest && !this.filterdData.length)) {
 				this.autoSendTimeout = Function_Delay(this.send, this.options.interval, this);
 				return;
 			}
-
-			console.log('Sending poll');
 
 			//------------------------------
 			// Build data to send
@@ -282,7 +289,7 @@ var DpChat = (function() {
 
 			$.ajax({
 				cache: false,
-				url: DpChat.options.deskproUrl + 'chat/poll/' + sessionCode,
+				url: options.deskproUrl + 'chat/poll/' + sessionCode,
 				context: this,
 				crossDomain: true,
 				data: send_data,
@@ -321,6 +328,10 @@ var DpChat = (function() {
 			var message = null;
 			while (message = data.messages.shift()) {
 				messageBroker.sendMessage(message[0], message[1]);
+			}
+
+			if (data.last_id) {
+				this.lastMessageId = data.last_id;
 			}
 
 			// Start auto timer
@@ -402,9 +413,14 @@ var DpChat = (function() {
 
 			display.showChatPanel();
 			ajaxPoller.options.interval = 2000;
-			ajaxPoller.disable = false;
 			ajaxPoller.send();
 		}
+
+		messageBroker.addMessageListener('chat.message', addIncomingMessage);
+	};
+
+	var addIncomingMessage = function(data) {
+		display.addMessageRow(data.author_name, data.message, 'agent');
 	};
 
 	return this;
