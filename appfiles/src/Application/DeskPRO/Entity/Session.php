@@ -137,9 +137,6 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		if ($person_id) {
 			$this->is_person = true;
 			$this->person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
-			if ($this->person['is_agent'] AND !$this['active_status']) {
-				$this['active_status'] = 'available';
-			}
 		} else {
 			$this->is_person = false;
 			$this->person = null;

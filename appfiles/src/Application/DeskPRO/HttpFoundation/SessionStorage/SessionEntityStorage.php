@@ -243,6 +243,10 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		if (!empty($_SESSION['_symfony2']['auth_person_id'])) {
 			$sess_rec['is_person'] = 1;
 			$sess_rec['person_id'] = $_SESSION['_symfony2']['auth_person_id'];
+
+			if (!empty($_SESSION['_symfony2']['dp_active_status'])) {
+				$sess_rec['active_status'] = $_SESSION['_symfony2']['dp_active_status'];
+			}
 		}
 
 		$this->db->update('sessions', $sess_rec, array('id' => $id));

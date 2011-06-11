@@ -139,8 +139,12 @@ class LoginHelper
 
 		$this->controller->session->set('auth_person_id', $identity->getIdentity());
 
-		// Announce if its an agent
 		if ($person['is_agent']) {
+
+			// Set their status to available by default
+			$this->controller->session->set('dp_active_status', 'available');
+
+			// Announce if its an agent
 			$cm = new \Application\DeskPRO\Entity\ClientMessage();
 			$cm->fromArray(array(
 				'channel' => 'agent.new-agent-online',

@@ -4,7 +4,7 @@
 	 * round_robin: Techs are assigned chats in round robin, least number of chats
 	 * everyone: Everyone sees the notification at the same time
 	 */
-	'core_chat.assign_mode' => 'round_robin', // round_robin, everyone
+	'core_chat.assign_mode' => 'everyone', // round_robin, everyone
 
 	/**
 	 * Number of seconds after an auto-assignment that the agent
