@@ -20,6 +20,26 @@ use \Orb\Util\Util;
 class Session extends EntityRepository
 {
 	/**
+	 * Checks for active sessions (with standard chat timeout) for agents
+	 * that have their status to available
+	 */
+	public function hasAvailableAgents()
+	{
+		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core_chat.agent_timeout'));
+
+		$check = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM sessions
+			WHERE date_last >= ? AND active_status = ?
+			LIMIT 1
+		", array($datecut, 'available'));
+
+		return $check;
+	}
+
+
+
+	/**
 	 * @return Session
 	 */
 	public function getSessionFromCode($sess_code)

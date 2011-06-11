@@ -70,6 +70,13 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_person = false;
 
 	/**
+	 * For agents, if they are available for chat or away
+	 * @var string
+	 * @orm:Column(name="active_status", type="string", length=15)
+	 */
+	protected $active_status = '';
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
@@ -130,6 +137,9 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 		if ($person_id) {
 			$this->is_person = true;
 			$this->person = App::getEntityRepository('DeskPRO:Person')->find($person_id);
+			if ($this->person['is_agent'] AND !$this['active_status']) {
+				$this['active_status'] = 'available';
+			}
 		} else {
 			$this->is_person = false;
 			$this->person = null;

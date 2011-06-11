@@ -198,6 +198,13 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	 */
 	public function chatSessionAction()
 	{
+		// First lets see if anyone is even available for chatting
+		if (!App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
+			return $this->render('UserBundle:Chat:chat-session-unavailable.js.php', array(
+
+			));
+		}
+
 		// Inits the session which isn't usually created on this controller
 		// Then the session creates a new sess and visitor, and sets those
 		// cookies

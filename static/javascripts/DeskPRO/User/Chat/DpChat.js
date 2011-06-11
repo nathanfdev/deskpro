@@ -55,6 +55,12 @@ var DpChat = (function() {
 	var departmentSelect = null;
 
 	/**
+	 * If no one is available for chat
+	 * @var {Boolean}
+	 */
+	var notAvailable = null;
+
+	/**
 	 * This is a pre-init that is called automatically when the client has downloaded
 	 * this source file. It ensures jQuery first, and then runs initScript that starts
 	 * our actual chat init.
@@ -109,15 +115,12 @@ var DpChat = (function() {
 
 		// Box.js
 		var el = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"></script>').appendTo('body');
-		DpChatConsole.info('Added display %o', el);
 
 		// DeskPRO script that sets/gets session and initial messages
 		el = $('<script type="text/javascript" async="true" src="' + options.deskproUrl + 'chat/chat-session"></script>').appendTo('body');
-		DpChatConsole.info('Added session init %o', el);
 
 		// Box.css
 		el = $('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
-		DpChatConsole.info('Added display css %o', el);
 	};
 
 
@@ -163,6 +166,14 @@ var DpChat = (function() {
 	this.setDepartmentSelect = function(_departmentSelect) {
 		DpChatConsole.log('DpChat.setDepartmentSelect(%o)', _departmentSelect);
 		departmentSelect = _departmentSelect;
+	};
+
+	/**
+	 * Called from the session source to say no one is available for chat
+	 */
+	this.setNotAvailable = function() {
+		DpChatConsole.log('DpChat.setNotAvailable');
+		notAvailable = true;
 	};
 
 	
