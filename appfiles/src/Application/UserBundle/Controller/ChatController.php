@@ -144,11 +144,25 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$client_messages = array();
 
 		if ($is_new_convo) {
-			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
-				$session['id'],
-				$conversation,
-				$chat_message
-			));
+
+			if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
+
+				$assign_agent = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
+				$conversation->agent = $assign_agent;
+
+				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatRoundRobinMessages(
+					$session['id'],
+					$conversation,
+					$chat_message
+				));
+			} else {
+
+				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
+					$session['id'],
+					$conversation,
+					$chat_message
+				));
+			}
 		}
 		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(
 			$session['id'],

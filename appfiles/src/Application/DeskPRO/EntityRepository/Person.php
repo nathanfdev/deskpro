@@ -115,4 +115,53 @@ class Person extends EntityRepository
 
 		return $people;
 	}
+
+
+	/**
+	 * @return void
+	 */
+	public function getChatAgentRoundRobin()
+	{
+		$active_agents_ids = App::getEntityRepository('DeskPRO:Session')->getAvailableAgentIds();
+
+		// Count chats for each
+		$chat_counts = App::getDb()->fetchAllKeyValue("
+			SELECT agent_id, COUNT(*) as cnt
+			FROM chat_conversations
+			WHERE agent_id IS NOT NULL AND status = ?
+			GROUP BY agent_id
+			ORDER BY cnt DESC
+		", array('open'));
+
+		foreach ($active_agents_ids as $id) {
+			if (!isset($chat_counts[$id])) {
+				$chat_counts[$id] = 0;
+			}
+		}
+
+		$grouped = array();
+		foreach ($chat_counts as $id => $cnt) {
+			if (!isset($grouped[$cnt])) $grouped[$cnt] = array();
+			$grouped[$cnt][] = $id;
+		}
+
+		asort($chat_counts, SORT_NUMERIC);
+		$bottom_group = array_shift($chat_counts);
+
+		// Only one person
+		if (count($bottom_group) == 1) {
+			return App::findEntity('DeskPRO:Person', $bottom_group[0]);
+		}
+
+		// Otherwise, we'll fetch the person who hasnt had a chat in a while
+		$id = App::getDb()->fetchColumn("
+			SELECT agent_id
+			FROM chat_conversations
+			WHERE agent_id IN (" . implode(',', $bottom_group) . ") AND status = ?
+			ORDER BY date_ended DESC
+			LIMIT 1
+		", array('ended'));
+
+		return App::findEntity('DeskPRO:Person', $id);
+	}
 }

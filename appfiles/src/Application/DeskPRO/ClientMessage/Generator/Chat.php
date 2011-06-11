@@ -11,6 +11,7 @@
 
 namespace Application\DeskPRO\ClientMessage\Generator;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
@@ -24,7 +25,7 @@ class Chat
 		} else {
 			$channel = 'chat.new-chat';
 		}
-
+		
 		$new_chat_cm = new ClientMessage();
 		$new_chat_cm->fromArray(array(
 			'channel' => $channel,
@@ -37,6 +38,26 @@ class Chat
 				'date_created'      => $chat_message['date_created']->getTimestamp()
 			),
 			'created_by_client' => $by_client_id
+		));
+
+		return array($new_chat_cm);
+	}
+
+	public static function createNewChatRoundRobinMessages($by_client_id, ChatConversation $conversation, ChatMessage $chat_message)
+	{
+		$new_chat_cm = new ClientMessage();
+		$new_chat_cm->fromArray(array(
+			'channel' => 'chat.new-chat-assigned',
+			'data' => array(
+				'conversation_id'   => $conversation['id'],
+				'message_id'        => $chat_message['id'],
+				'author_id'         => $chat_message['author_id'],
+				'author_name'       => $chat_message['author_name'],
+				'message'           => $chat_message['content'],
+				'date_created'      => $chat_message['date_created']->getTimestamp()
+			),
+			'created_by_client' => $by_client_id,
+			'for_person' => $conversation['agent']
 		));
 
 		return array($new_chat_cm);

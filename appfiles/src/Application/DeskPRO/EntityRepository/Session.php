@@ -38,6 +38,24 @@ class Session extends EntityRepository
 	}
 
 
+	/**
+	 * Get an array of agent IDs
+	 *
+	 * @return array
+	 */
+	public function getAvailableAgentIds()
+	{
+		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core_chat.agent_timeout'));
+
+		$ids = App::getDb()->fetchAllCol("
+			SELECT person_id
+			FROM sessions
+			WHERE date_last >= ? AND active_status = ?
+		", array($datecut, 'available'));
+
+		return $ids;
+	}
+
 
 	/**
 	 * @return Session
