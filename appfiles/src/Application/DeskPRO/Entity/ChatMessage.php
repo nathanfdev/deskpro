@@ -20,6 +20,7 @@ use Orb\Util\Strings;
  * by a Doctrine NestedSet implementation
  *
  * @orm:Entity
+ * @orm:HasLifecycleCallbacks
  * @orm:Table(name="chat_messages")
  */
 class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
@@ -46,6 +47,14 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:JoinColumn(name="author_id", referencedColumnName="id")
 	 */
 	protected $author = null;
+
+	/**
+	 * The authors name at the point of this message
+	 *
+	 * @var string
+	 * @orm:Column(name="person_name", type="string", length=255)
+	 */
+	protected $person_name = '';
 
 	/**
 	 * The message
@@ -81,6 +90,14 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
+	public function setAuthor($author)
+	{
+		$this->author = $author;
+		if ($author) {
+			$this->person_name = $author->getDisplayName();
+		}
+	}
+
 	public function getAuthorId()
 	{
 		if ($this->author) {
@@ -99,5 +116,17 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return 'User';
+	}
+
+	/**
+	 * @orm:PrePersist
+	 */
+	public function _setUserName()
+	{
+		// If we have no name, then assume the message is
+		// by the user who started the chat
+		if (!$this->person_name) {
+			$this->person_name = $this->conversation['person_name'];
+		}
 	}
 }

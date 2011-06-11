@@ -130,16 +130,15 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				$conversation->department = $dep;
 			}
 
-			App::getOrm()->persist($conversation);
 			$is_new_convo = true;
 		}
 
-		$chat_message = $conversation->createMessageForSession(
+		$chat_message = $conversation->addNewMessageForSession(
 			$this->in->getString('content'),
 			$session
 		);
 
-		App::getOrm()->persist($chat_message);
+		App::getOrm()->persist($conversation);
 		App::getOrm()->flush();
 
 		$client_messages = array();

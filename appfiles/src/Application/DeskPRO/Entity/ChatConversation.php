@@ -23,6 +23,9 @@ use Orb\Util\Strings;
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {
+	const STATUS_OPEN  = 'open';
+	const STATUS_ENDED = 'ended';
+
 	/**
 	 * @var int
 	 * @orm:Id
@@ -42,6 +45,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="subject", type="string", length=255)
 	 */
 	protected $subject = '';
+
+	/**
+	 * @var string
+	 * @orm:Column(name="status", type="string", length=15)
+	 */
+	protected $status = 'open';
 
 	/**
 	 * If this is a user conversation, this is the agent assigned.
@@ -103,6 +112,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $participants;
 
 	/**
+	 * @orm:OneToMany(targetEntity="ChatMessage", mappedBy="conversation", cascade={"persist", "remove", "merge"})
+	 */
+	protected $messages;
+
+	/**
 	 * Is this an agent chat
 	 *
 	 * @var bool
@@ -121,6 +135,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="date_assigned",type="datetime",nullable=true)
 	 */
 	protected $date_assigned;
+
+	/**
+	 * @var \DateTime
+	 * @orm:Column(name="date_first_agent_message",type="datetime")
+	 */
+	protected $date_first_agent_message;
 
 	/**
 	 * @var \DateTime
@@ -151,23 +171,24 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->date_created = new \DateTime();
+
+		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 
 	/**
-	 * Create a new message
-	 *
-	 * @return \Application\DeskPRO\Entity\ChatMessage
+	 * Create a new message and then add it to this convo
 	 */
-	public function createMessage($message, $author)
+	public function addNewMessage($content, $author)
 	{
 		$chat_message = new ChatMessage();
 		$chat_message->conversation = $this;
 		$chat_message->author = $author;
-		$chat_message['content'] = $message;
+		$chat_message['content'] = $content;
 
-		return $chat_message;
+		return $this->addMessage($chat_message);
 	}
+	
 
 
 	/**
@@ -175,7 +196,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return \Application\DeskPRO\Entity\ChatMessage
 	 */
-	public function createMessageForSession($message, $session)
+	public function addNewMessageForSession($content, $session)
 	{
 		$chat_message = new ChatMessage();
 		$chat_message->conversation = $this;
@@ -184,9 +205,37 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			$chat_message->author = $session->person;
 		}
 
-		$chat_message['content'] = $message;
+		$chat_message['content'] = $content;
 
-		return $chat_message;
+		return $this->addMessage($chat_message);
+	}
+
+	
+	/**
+	 * Add a message to this convo
+	 *
+	 * @param 
+	 */
+	public function addMessage($message)
+	{
+		if (!$this->date_first_agent_message AND $message->author AND $message->author['is_agent']) {
+			$this['date_first_agent_message'] = new \DateTime();
+		}
+
+		if (!$this->subject) {
+			if ($message->author AND $message->author['is_agent']) {
+				if ($this->is_agent) {
+					$this->subject = substr($message['content'], 0, 45);
+				}
+			} else {
+				$this->subject = substr($message['content'], 0, 45);
+			}
+		}
+		
+		$message->conversation = $this;
+		$this->messages->add($message);
+
+		return $message;
 	}
 
 
@@ -301,5 +350,45 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Set the status (open or ended).
+	 * 
+	 * @param  $status
+	 * @return void
+	 */
+	public function setStatus($status)
+	{
+		$this->_onPropertyChanged('status', $this->status, $status);
+		$this->status = $status;
+		
+		if ($status == self::STATUS_ENDED) {
+			if (!$this->date_ended) {
+				$this['date_ended'] = new \DateTime();
+			}
+		} else {
+			if ($this->date_ended) {
+				$this['date_ended'] = null;
+			}
+		}
+	}
+
+
+	/**
+	 * Set the agent
+	 * 
+	 * @param  $agent
+	 * @return void
+	 */
+	public function setAgent($agent)
+	{
+		$this->_onPropertyChanged('agent', $this->agent, $agent);
+		
+		$this->agent = $agent;
+		if (!$this->date_assigned) {
+			$this['date_assigned'] = new \DateTime();
+		}
 	}
 }

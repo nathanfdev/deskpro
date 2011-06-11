@@ -25,5 +25,5 @@
 	/**
 	 * When enabled, the user has to chose a department to start a chat
 	 */
-	'core_chat.require_department' => false,
+	'core_chat.require_department' => 1,
 );
