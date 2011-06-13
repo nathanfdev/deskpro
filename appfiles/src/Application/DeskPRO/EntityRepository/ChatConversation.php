@@ -134,7 +134,7 @@ class ChatConversation extends EntityRepository
 		return $conversation;
 	}
 
-	public function getActiveChatForSession($session)
+	public function getLatestChatForSession($session, $active = true)
 	{
 		try {
 			$conversation = $this->getEntityManager()->createQuery("
@@ -144,6 +144,10 @@ class ChatConversation extends EntityRepository
 				ORDER BY c.id ASC
 			")->setParameter(1, $session)->setMaxResults(1)->getSingleResult();
 		} catch (\Exception $e) {
+			$conversation = null;
+		}
+
+		if ($conversation AND ($active AND $conversation['status'] != ChatConversationEntity::STATUS_OPEN)) {
 			$conversation = null;
 		}
 

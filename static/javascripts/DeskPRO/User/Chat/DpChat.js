@@ -465,8 +465,11 @@ var DpChat = (function() {
 
 		ajaxPoller.init();
 		display.initDisplay({
+			jQuery: $,
 			departmentSelect: departmentSelect
 		});
+
+		display.openIframeOverlay(options.deskproUrl + 'chat/chat-finished/' + sessionCode);
 
 		if (initialMessages) {
 			

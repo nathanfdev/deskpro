@@ -43,6 +43,23 @@ class Chat
 		return array($new_chat_cm);
 	}
 
+	public static function createChatEndedMessages($by_client_id, ChatConversation $conversation)
+	{
+		$channel = 'chat.chat-ended';
+
+		$chat_cm = new ClientMessage();
+		$chat_cm->fromArray(array(
+			'channel' => $channel,
+			'data' => array(
+				'conversation_id'   => $conversation['id'],
+				'date_created'      => time()
+			),
+			'created_by_client' => $by_client_id
+		));
+
+		return array($chat_cm);
+	}
+
 	public static function createChatAssignedMessages($by_client_id, ChatConversation $conversation)
 	{
 		$chat_cm = new ClientMessage();

@@ -260,3 +260,7 @@ user_chat_sendmessage:
 user_chat_sendusertyping:
   pattern: /chat/user-typing/{session_code}
   defaults: { _controller: UserBundle:Chat:userTyping }
+
+user_chat_chatended:
+  pattern: /chat/chat-finished/{session_code}
+  defaults: { _controller: UserBundle:Chat:chatEnded }

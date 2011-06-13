@@ -66,7 +66,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		} else {
 
 			if (mt_rand(1,10) <= 5) {
-				$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
+				$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
 				if ($conversation) {
 					$status_check = new ChatStatusCheck($conversation, $session);
 					$status_check->runChecks();
@@ -116,7 +116,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	public function sendMessageAction($session_code)
 	{
 		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
 
 		App::getOrm()->beginTransaction();
 
@@ -191,7 +191,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	public function userTypingAction($session_code)
 	{
 		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
 
 		if (!$conversation) {
 			return $this->createJsonpResponse();
@@ -225,7 +225,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$sessionObj = $this->get('session');
 		$session = $sessionObj->getEntity();
 
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getActiveChatForSession($session);
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
 		$convo_messages = false;
 		if ($conversation) {
 			$convo_messages = App::getOrm()->createQuery("
@@ -251,6 +251,40 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			'session' => $session,
 			'convo_messages' => $convo_messages,
 			'department_sel' => $department_sel,
+		));
+	}
+
+	/**
+	 * When a chat ends, or the user ends the chat, they get to enter their name/email
+	 * for a transcript.
+	 */
+	public function chatEndedAction($session_code)
+	{
+		$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session, false);
+
+		if ($conversation['status'] != ChatConversation::STATUS_ENDED) {
+			$conversation['status'] = ChatConversation::STATUS_ENDED;
+
+			$client_messages = ChatClientMessageGenerator::createChatEndedMessages(
+				$session['id'],
+				$conversation
+			);
+
+			App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+				$em->persist($conversation);
+
+				foreach ($client_messages as $cm) {
+					$em->persist($cm);
+				}
+
+				$em->flush();
+			});
+		}
+
+		return $this->render('UserBundle:Chat:chat-ended.html.twig', array(
+			'session'  => $session,
+			'convo'    => $conversation,
 		));
 	}
 }

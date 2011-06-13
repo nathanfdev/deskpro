@@ -11,7 +11,11 @@ var DpChat_Display = (function() {
 
 	var self = this;
 
+	var $ = null;
+
 	this.initDisplay = function(options) {
+
+		$ = options.jQuery;
 
 		DpChatConsole.log('DpChat_Display.initDisplay');
 
@@ -98,6 +102,36 @@ var DpChat_Display = (function() {
 
 	this.hideChatPanel = function() {
 		chatBox.removeClass('dpchat-panel-open');
+	};
+
+	var overlay = null;
+	this.openIframeOverlay = function(url) {
+		var html = [];
+		html.push('<div class="dpchat-overlay-outer"');
+			html.push('<div class="dpchat-overlay-inner">');
+				html.push('<div class="dpchat-overlay-content">');
+					html.push('<a class="close-overlay close-trigger">X</a>');
+					html.push('<iframe src="'+url+'" style="width: 600px; height: 400px;" marginheight="0" marginwidth="0" frameborder="0"></iframe>');
+				html.push('</div>');
+			html.push('</div>');
+		html.push('</div>');
+		
+		overlay = $(html.join(''));
+		$('.close-trigger', overlay).click(function() {
+			overlay.remove();
+		});
+
+		var x = ($(window).width() - 600) / 2;
+		var y = ($(window).height() - 400) / 2;
+
+		overlay.css({
+			'zIndex': 1000000,
+			'display': 'block',
+			'top': y,
+			'right': x
+		});
+
+		overlay.appendTo('body');
 	};
 
 

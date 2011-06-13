@@ -134,3 +134,72 @@
 #dpchat_messages .dpchat-user .dpchat-msg {
     display: inline;
 }
+
+
+
+
+
+
+
+
+.dpchat-overlay-outer {
+	position: absolute;
+	z-index: 100001;
+	background: url("../../../../../images/bg-overlay-padding.png") repeat;
+	border: 1px solid #3c434d;
+	padding: 8px ;
+
+	-webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+	-webkit-box-shadow:   inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
+    -moz-box-shadow: inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
+    box-shadow: inset 0 1px #777b7d, 0 0 5px rgba(0,0,0,.4);
+}
+
+.dpchat-overlay-outer .close-overlay {
+	display: block;
+	width: 29px;
+	height: 29px;
+	text-indent: -99999px;
+	background: url("../../../../../images/icn-sprite.png") left -1200px no-repeat;
+	position: absolute;
+	right: -15px;
+	top: -15px;
+
+	-webkit-border-radius: 20px;
+    -moz-border-radius: 20px;
+    border-radius: 20xpx;
+
+	-webkit-box-shadow:0 1px 5px rgba(0,0,0,.4);
+    -moz-box-shadow: 0 1px 5px rgba(0,0,0,.4);
+    box-shadow: 0 1px 5px rgba(0,0,0,.4);
+}
+
+.dpchat-overlay-outer .close-overlay:hover {
+	opacity: 1;
+
+	-webkit-box-shadow:0 0 5px red;
+    -moz-box-shadow: 0 0 5px red;
+    box-shadow: 0 0 5px red;
+}
+
+/* The inner wrapper */
+.dpchat-overlay-inner {
+	position: relative;
+	background: #fff;
+
+	-webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.dpchat-overlay-content {
+	padding: 0;
+}
+
+.dpchat-overlay-content iframe {
+    margin: 0;
+    padding: 0;
+}
