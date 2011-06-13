@@ -757,3 +757,7 @@ agent_userchat_view:
 agent_userchat_send_messageview:
   pattern: /chat/send-message/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:sendMessage }
+
+agent_userchat_getqr:
+  pattern: /chat/get-qr/{conversation_id}/{quick_reply_id}
+  defaults: { _controller: AgentBundle:UserChat:getQuickReply }

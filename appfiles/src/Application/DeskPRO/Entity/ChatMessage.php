@@ -109,7 +109,9 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getAuthorName()
 	{
-		if ($this->author) {
+		if ($this->is_sys) {
+			return '*';
+		} elseif ($this->author) {
 			return $this->author['display_name'];
 		} else if ($this->conversation['person_name']) {
 			return $this->conversation['person_name'];

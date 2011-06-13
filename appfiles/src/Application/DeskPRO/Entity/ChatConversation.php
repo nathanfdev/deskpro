@@ -138,7 +138,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_first_agent_message",type="datetime")
+	 * @orm:Column(name="date_first_agent_message",type="datetime",nullable=true)
 	 */
 	protected $date_first_agent_message;
 
@@ -422,11 +422,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		if ($old_agent) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name '=> $agent['agent_name'])));
+			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name '=> $agent['display_name'])));
 		}
 
 		if ($agent) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_assigned_agent', array('agent_name '=> $agent['agent_name'])));
+			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_assigned_agent', array('agent_name '=> $agent['display_name'])));
 		}
 	}
 }

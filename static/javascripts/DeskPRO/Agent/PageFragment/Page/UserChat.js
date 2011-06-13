@@ -30,6 +30,36 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 				self.addMessageRow('You', msg);
 			}
 		});
+
+		this._initMenus();
+	},
+
+	_initLayout: function() {
+		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
+	},
+
+	_initMenus: function() {
+		var self = this;
+		this.qrMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('li.macros:first', this.barWrapper),
+			menuElement: $('ul.quick-replies:first', this.wrapper),
+			onItemClicked: function(info) {
+				var qr_id = $(info.itemEl).data('qr-id');
+				self.loadQuickReply(qr_id);
+			}
+		});
+	},
+
+	loadQuickReply: function(qr_id) {
+		$.ajax({
+			url: BASE_URL + 'agent/chat/get-qr/' + this.meta.conversation_id + '/' + qr_id,
+			context: this,
+			contentType: 'json',
+			success: function(data) {
+				var textarea = $('.new-message', this.barWrapper);
+				textarea.val(textarea.val() + data.reply).focus();
+			}
+		});
 	},
 
 	handleNewMessage: function(data) {
@@ -59,9 +89,5 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			context: this,
 			contentType: 'json'
 		});
-	},
-
-	_initLayout: function() {
-		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
 	}
 });

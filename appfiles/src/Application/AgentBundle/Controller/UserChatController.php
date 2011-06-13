@@ -39,9 +39,32 @@ class UserChatController extends AbstractController
 			ORDER BY m.id DESC
 		")->setParameter(1, $conversation)->execute();
 
+		$quick_replies = App::getEntityRepository('DeskPRO:ChatQuickReply')->getRepliesForPerson($this->person);
+
 		return $this->render('AgentBundle:UserChat:view.html.twig', array(
 			'convo_messages' => $convo_messages,
+			'quick_replies' => $quick_replies,
 			'convo' => $conversation,
+		));
+	}
+
+	
+	/**
+	 * [JSON] Get a QR
+	 *
+	 * @param  $conversation_id
+	 * @param  $quick_reply_id
+	 */
+	public function getQuickReplyAction($conversation_id, $quick_reply_id)
+	{
+		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+		$qr = App::findEntity('DeskPRO:ChatQuickReply', $quick_reply_id);
+
+		$reply = $qr->getReplyForConversation($conversation);
+
+		return $this->createJsonResponse(array(
+			'qr_id' => $qr['id'],
+			'reply' => $reply,
 		));
 	}
 
@@ -57,7 +80,7 @@ class UserChatController extends AbstractController
 			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 		}
 
-		$chat_message = $conversation->createMessage(
+		$chat_message = $conversation->addNewMessage(
 			$this->in->getString('content'),
 			$this->person
 		);
@@ -67,8 +90,8 @@ class UserChatController extends AbstractController
 			$chat_message
 		);
 
-		App::getOrm()->transactional(function ($em) use ($chat_message, $client_messages) {
-			$em->persist($chat_message);
+		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+			$em->persist($conversation);
 
 			if ($client_messages) {
 				foreach ($client_messages as $cm) {

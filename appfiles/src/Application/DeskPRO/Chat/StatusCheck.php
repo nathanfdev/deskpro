@@ -50,9 +50,9 @@ class StatusCheck
 	public function runChecks()
 	{
 		if ($this->is_agent) {
-			$this->runAgentCheck();
+			$this->runChecksByAgents();
 		} else {
-			$this->runUserCheck();
+			$this->runChecksByUser();
 		}
 	}
 
@@ -74,7 +74,7 @@ class StatusCheck
 			$last = 0;
 		}
 
-		if ($last < $cat) {
+		if ($last < $cut) {
 			$msg = $this->conversation->addSystemMessage(
 				App::getTranslator()->phrase('core_chat.msg_user_timeout'),
 				true
@@ -105,7 +105,7 @@ class StatusCheck
 		$cut = time() - App::getSetting('core_chat.agent_timeout');
 		$last = $user_sess['date_last']->getTimestamp();
 
-		if ($last < $cat) {
+		if ($last < $cut) {
 			$msg = $this->conversation->addSystemMessage(
 				App::getTranslator()->phrase('core_chat.msg_agent_timeout'),
 				true

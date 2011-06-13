@@ -28,6 +28,21 @@ pageMeta.conversation_id = {{convo.id}};
 	<div class="tab-bottom-wrap">
 		<div class="tab-bottom">
 			<input type="text" class="new-message" />
+			{% if quick_replies|length %}
+			<div class="bar-actions">
+				<ul>
+					<li class="macros"><a>Quick Replies</a></li>
+				</ul>
+			</div>
+			{% endif %}
 		</div>
 	</div>
 </div>
+
+{% if quick_replies|length %}
+<ul class="menu quick-replies" style="display:none">
+	{% for qr in quick_replies %}
+	<li data-qr-id="{{ qr.id }}">{{ qr.title }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
