@@ -111,7 +111,7 @@ class Chat
 		}
 
 		// And the user
-		if (!$conversation['is_agent']) {
+		if (!$conversation['is_agent'] AND !$chat_message['is_user_hidden']) {
 
 			$session = $conversation->session;
 			$person = null;

@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
+use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 
 /**
  * Since we dont have an actual chat server that can keep track of clients timing out etc,
@@ -24,6 +25,9 @@ use Application\DeskPRO\Entity\ChatMessage;
  */
 class StatusCheck
 {
+	/**
+	 * @var \Application\DeskPRO\Entity\ChatConversation
+	 */
 	protected $conversation;
 	protected $session;
 	protected $person;
@@ -52,26 +56,48 @@ class StatusCheck
 		}
 	}
 
-	public function runAgentCheck()
+	/**
+	 * These checks are done by the agent:
+	 * - Check if user has timedout
+	 *
+	 * @return void
+	 */
+	public function runChecksByAgents()
 	{
 		// Get the users session
 		$user_sess = $this->conversation->session;
 
 		$cut = time() - App::getSetting('core_chat.user_timeout');
-		$last = $user_sess['date_last']->getTimestamp();
+		if ($user_sess) {
+			$last = $user_sess['date_last']->getTimestamp();
+		} else {
+			$last = 0;
+		}
 
 		if ($last < $cat) {
-			$msg = new ChatMessage();
-			$msg['content'] = 'user_timeout';
-			$msg['is_sys'] = true;
-			$msg['is_user_hidden'] = true;
+			$msg = $this->conversation->addSystemMessage(
+				App::getTranslator()->phrase('core_chat.msg_user_timeout'),
+				true
+			);
 
-			App::getOrm()->persist($msg);
+			$client_messages = ChatClientMessageGenerator::createNewMessageMessages($this->session['id'], $msg);
+			foreach ($client_messages as $cm) {
+				App::getOrm()->persist($cm);
+			}
+
+			App::getOrm()->persist($this->conversation);
 			App::getOrm()->flush();
 		}
 	}
+	
 
-	public function runUserCheck()
+	/**
+	 * The checks run by the user:
+	 * - Check if agent has tiemdout
+	 * 
+	 * @return void
+	 */
+	public function runChecksByUser()
 	{
 		// Get the users session
 		$user_sess = $this->conversation->session;
@@ -80,16 +106,37 @@ class StatusCheck
 		$last = $user_sess['date_last']->getTimestamp();
 
 		if ($last < $cat) {
-			$msg = new ChatMessage();
-			$msg['content'] = 'agent_timeout';
-			$msg['is_sys'] = true;
-			$msg['is_user_hidden'] = true;
+			$msg = $this->conversation->addSystemMessage(
+				App::getTranslator()->phrase('core_chat.msg_agent_timeout'),
+				true
+			);
 
-			$this->conversation['agent'] = null;
+			$client_messages = ChatClientMessageGenerator::createNewMessageMessages($this->session['id'], $msg);
 
-			// TODO handle reassign popups dispatch to other agents
+			// And need to insert a "new chat" event for agents
+			if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
 
-			App::getOrm()->persist($msg);
+				$assign_agent = App::getEntityRepository('DeskPRO:Person')->getChatAgentRoundRobin();
+				$conversation->agent = $assign_agent;
+
+				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatRoundRobinMessages(
+					$this->session['id'],
+					$this->conversation,
+					$msg
+				));
+			} else {
+
+				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
+					$this->session['id'],
+					$this->conversation,
+					$msg
+				));
+			}
+
+			foreach ($client_messages as $cm) {
+				App::getOrm()->persist($cm);
+			}
+
 			App::getOrm()->persist($this->conversation);
 			App::getOrm()->flush();
 		}

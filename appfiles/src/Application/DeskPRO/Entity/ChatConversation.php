@@ -210,6 +210,24 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		return $this->addMessage($chat_message);
 	}
 
+
+	/**
+	 * Add a system message
+	 *
+	 * @return \Application\DeskPRO\Entity\ChatMessage
+	 */
+	public function addSystemMessage($content, $is_user_hidden = false)
+	{
+		$chat_message = new ChatMessage();
+		$chat_message->conversation = $this;
+		$chat_message['is_sys'] = true;
+		$chat_message['is_user_hidden'] = $is_user_hidden;
+
+		$chat_message['content'] = $content;
+
+		return $this->addMessage($chat_message);
+	}
+
 	
 	/**
 	 * Add a message to this convo
@@ -361,6 +379,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setStatus($status)
 	{
+		if ($this->status == $status) {
+			return;
+		}
+		
 		$this->_onPropertyChanged('status', $this->status, $status);
 		$this->status = $status;
 		
@@ -368,6 +390,9 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			if (!$this->date_ended) {
 				$this['date_ended'] = new \DateTime();
 			}
+
+			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_ended'));
+
 		} else {
 			if ($this->date_ended) {
 				$this['date_ended'] = null;
@@ -384,11 +409,24 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setAgent($agent)
 	{
+		$old_agent = $this->agent;
+		if ($this->agent == $agent) {
+			return;
+		}
+		
 		$this->_onPropertyChanged('agent', $this->agent, $agent);
 		
 		$this->agent = $agent;
 		if (!$this->date_assigned) {
 			$this['date_assigned'] = new \DateTime();
+		}
+
+		if ($old_agent) {
+			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name '=> $agent['agent_name'])));
+		}
+
+		if ($agent) {
+			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_assigned_agent', array('agent_name '=> $agent['agent_name'])));
 		}
 	}
 }
