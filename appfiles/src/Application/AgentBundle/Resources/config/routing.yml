@@ -765,3 +765,7 @@ agent_userchat_getqr:
 agent_userchat_assign:
   pattern: /chat/assign/{conversation_id}/{agent_id}
   defaults: { _controller: AgentBundle:UserChat:assignChat }
+
+agent_userchat_getsectiondata:
+  pattern: /chat/get-section-data.json
+  defaults: { _controller: AgentBundle:UserChat:getSectionData }

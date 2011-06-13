@@ -13,6 +13,16 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		this._initMessageHandlers();
 	},
 
+	onShow: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/chat/get-section-data.json',
+			context: this,
+			success: function(data) {
+				this.contentEl.html(data.section_html);
+			}
+		});
+	},
+
 	_initMessageHandlers: function() {
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new-chat');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.message');

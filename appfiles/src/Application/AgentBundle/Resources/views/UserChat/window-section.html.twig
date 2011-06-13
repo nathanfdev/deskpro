@@ -1,0 +1,15 @@
+<header class="section-header">
+	<h1>Chats</h1>
+</header>
+<ul class="nav-list">
+	<li id="userchat_navitem_0">
+		<span class="list-counter">0</span>
+		Unassigned
+	</li>
+	{% for id,name in agent_names %}
+		<li id="userchat_navitem_{{id}}" {#class="with-route"#} data-route="">
+			<span class="list-counter">0</span>
+			{{ name }}
+		</li>
+	{% endfor %}
+</ul>

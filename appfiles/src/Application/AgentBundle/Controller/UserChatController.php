@@ -152,4 +152,19 @@ class UserChatController extends AbstractController
 			'new_message_id'  => $chat_message['id']
 		));
 	}
+
+
+	/**
+	 * List the articles
+	 */
+	public function getSectionDataAction()
+	{
+		$agent_names = App::getEntityRepository('DeskPRO:Person')->getAgentNames();
+
+		$html = $this->renderView('AgentBundle:UserChat:window-section.html.twig', array(
+			'agent_names' => $agent_names,
+		));
+
+		return $this->createJsonResponse(array('section_html' => $html));
+	}
 }
