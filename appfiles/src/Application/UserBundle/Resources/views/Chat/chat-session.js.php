@@ -16,7 +16,7 @@
 		}
 	}
 ?>
-DpChat.setInitialMessages(<?php echo json_encode($messages) ?>);
+DpChat.setInitialMessages(<?php echo json_encode(array_reverse($messages)) ?>);
 <?php endif ?>
 <?php if ($department_sel): ?>
 DpChat.setDepartmentSelect(<?php echo json_encode($department_sel) ?>);

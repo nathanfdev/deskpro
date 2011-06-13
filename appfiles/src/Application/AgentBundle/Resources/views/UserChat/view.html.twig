@@ -27,7 +27,7 @@ pageMeta.conversation_id = {{convo.id}};
 
 <div class="chat-messages">
 	<table cellspacing="0" cellpadding="0" width="100%">
-		{% for message in convo_messages %}
+		{% for message in convo_messages|reverse %}
 		<tr>
 			<td class="author" width="125">
 				{{ message.author_name }}
