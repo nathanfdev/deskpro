@@ -48,6 +48,17 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 				self.loadQuickReply(qr_id);
 			}
 		});
+
+		this.assignMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('div.agent_id.menu-trigger:first', this.wrapper),
+			menuElement: $('ul.agent_id.menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var agent_id = $(info.itemEl).data('option-id');
+				self.reassignConvo(agent_id);
+
+				$('span.agent_id.val', this.wrapper).html(DeskPRO_Window.getDisplayName('agent', agent_id));
+			}
+		});
 	},
 
 	loadQuickReply: function(qr_id) {
@@ -59,6 +70,14 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 				var textarea = $('.new-message', this.barWrapper);
 				textarea.val(textarea.val() + data.reply).focus();
 			}
+		});
+	},
+
+	reassignConvo: function(agent_id) {
+		$.ajax({
+			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id,
+			context: this,
+			contentType: 'json'
 		});
 	},
 

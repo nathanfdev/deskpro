@@ -41,10 +41,15 @@ class UserChatController extends AbstractController
 
 		$quick_replies = App::getEntityRepository('DeskPRO:ChatQuickReply')->getRepliesForPerson($this->person);
 
+		// Needed for agent assign menu
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+		$agent_names = $ticket_options['agents'];
+
 		return $this->render('AgentBundle:UserChat:view.html.twig', array(
 			'convo_messages' => $convo_messages,
 			'quick_replies' => $quick_replies,
 			'convo' => $conversation,
+			'agent_names' => $agent_names
 		));
 	}
 
@@ -67,6 +72,46 @@ class UserChatController extends AbstractController
 			'reply' => $reply,
 		));
 	}
+
+
+	/**
+	 * Reassign a chat
+	 *
+	 * @param  $conversation_id
+	 * @param  $quick_reply_id
+	 */
+	public function assignChatAction($conversation_id, $agent_id)
+	{
+		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		$agent = App::findEntity('DeskPRO:Person', $agent_id);
+		if (!$agent) {
+			$agent = null;
+		}
+		$conversation->setAgent($agent);
+
+		$client_messages = ChatClientMessageGenerator::createChatAssignedMessages(
+			App::getSession()->getEntityId(),
+			$conversation
+		);
+
+		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+			$em->persist($conversation);
+
+			if ($client_messages) {
+				foreach ($client_messages as $cm) {
+					$em->persist($cm);
+				}
+			}
+
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			
+		));
+	}
+
 
 	/**
 	 * Accepts a POST of a new message to a conversation

@@ -7,6 +7,24 @@ pageMeta.conversation_id = {{convo.id}};
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
+<div class="inner-box-tab-content-2 ticket-element">
+	<div style="float:right" class="menu-trigger agent_id">
+		Assigned Agent:
+		<span class="agent_id val">
+			{% if convo.agent %}
+				{{convo.agent.display_name}}
+			{% else %}
+				Unassigned
+			{% endif %}
+		</span>
+	</div>
+	{% if convo.person %}
+		Chat with {{convo.person.display_name}}
+	{% else %}
+		Chat with guest
+	{% endif %}
+</div>
+
 <div class="chat-messages">
 	<table cellspacing="0" cellpadding="0" width="100%">
 		{% for message in convo_messages %}
@@ -46,3 +64,17 @@ pageMeta.conversation_id = {{convo.id}};
 	{% endfor %}
 </ul>
 {% endif %}
+
+<ul class="menu agent_id" style="display:none">
+	<li data-option-id="0">Unassigned</li>
+	<li data-option-id="{{app.user.id}}">Assign to me</li>
+	<li class="sep">-</li>
+	{% for id,title in agent_names %}
+		<li data-option-id="{{id}}" style="line-height: 15px">
+			<div style="margin-right: 5px; float: left">
+				<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 15}) }}" alt="" width="15" height="15" />
+			</div>
+			{{title}}
+		</li>
+	{% endfor %}
+</ul>

@@ -409,6 +409,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setAgent($agent)
 	{
+		if (!$agent) $agent = null;
+		
 		$old_agent = $this->agent;
 		if ($this->agent == $agent) {
 			return;
@@ -417,7 +419,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('agent', $this->agent, $agent);
 		
 		$this->agent = $agent;
-		if (!$this->date_assigned) {
+		if ($agent AND !$this->date_assigned) {
 			$this['date_assigned'] = new \DateTime();
 		}
 

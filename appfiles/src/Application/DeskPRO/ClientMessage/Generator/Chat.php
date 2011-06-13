@@ -43,6 +43,48 @@ class Chat
 		return array($new_chat_cm);
 	}
 
+	public static function createChatAssignedMessages($by_client_id, ChatConversation $conversation)
+	{
+		$chat_cm = new ClientMessage();
+
+		$chat_message = $conversation->messages->get(0);
+
+		// We only need to notify the one guy
+		if ($conversation['agent']) {
+			$chat_cm->fromArray(array(
+				'channel' => 'chat.new-chat-assigned',
+				'data' => array(
+					'conversation_id'   => $conversation['id'],
+					'message_id'        => $chat_message['id'],
+					'author_id'         => $chat_message['author_id'],
+					'author_name'       => $chat_message['author_name'],
+					'message'           => $chat_message['content'],
+					'date_created'      => $chat_message['date_created']->getTimestamp()
+				),
+				'created_by_client' => $by_client_id,
+				'for_person' => $conversation['agent']
+			));
+
+		// Dispatch a 'new chat' type popup for everyone
+		} else {
+			$chat_cm = new ClientMessage();
+			$chat_cm->fromArray(array(
+				'channel' => 'chat.new-chat',
+				'data' => array(
+					'conversation_id'   => $conversation['id'],
+					'message_id'        => $chat_message['id'],
+					'author_id'         => $chat_message['author_id'],
+					'author_name'       => $chat_message['author_name'],
+					'message'           => $chat_message['content'],
+					'date_created'      => $chat_message['date_created']->getTimestamp()
+				),
+				'created_by_client' => $by_client_id
+			));
+		}
+
+		return array($chat_cm);
+	}
+
 	public static function createNewChatRoundRobinMessages($by_client_id, ChatConversation $conversation, ChatMessage $chat_message)
 	{
 		$new_chat_cm = new ClientMessage();
