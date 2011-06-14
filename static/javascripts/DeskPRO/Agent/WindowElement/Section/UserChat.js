@@ -11,6 +11,13 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		$('#new_user_chat_alert_message').template('new_user_chat_alert_message');
 
 		this._initMessageHandlers();
+
+		this.poller = new DeskPRO.AjaxPoller.Poller({
+			ajaxUrl: BASE_URL + 'agent/chat/get-section-counts.json',
+			interval: 5000,
+			alwaysRequest: true
+		});
+		this.poller.addEvent('ajaxSuccess', this.handleUpdateCounts.bind(this));
 	},
 
 	onShow: function() {
@@ -21,6 +28,27 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 				this.contentEl.html(data.section_html);
 			}
 		});
+	},
+
+	handleUpdateCounts: function(data) {
+		$('#chat_outline .agent-chat-count').hide();
+
+		$('#userchat_navitem_0 .list-counter').html('0');
+
+		if (!data.counts) {
+			return;
+		}
+
+		var unassigned = 0;
+		Object.each(data.counts, function (count, agent_id) {
+			if (agent_id == '0') {
+				unassigned = count;
+			}
+			$('#userchat_navitem_'+agent_id+' .list-counter').html(count);
+			$('#userchat_navitem_'+agent_id).show();
+		});
+
+		this.updateBadge(unassigned);
 	},
 
 	_initMessageHandlers: function() {

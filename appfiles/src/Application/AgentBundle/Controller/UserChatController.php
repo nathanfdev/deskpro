@@ -28,7 +28,12 @@ class UserChatController extends AbstractController
 	{
 		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
-		$conversation['agent'] = $this->person;
+		if (!$conversation['agent']) {
+			$conversation['agent'] = $this->person;
+		} else {
+			$conversation->addParticipant($this->person);
+		}
+
 		App::getOrm()->persist($conversation);
 		App::getOrm()->flush();
 
@@ -199,5 +204,29 @@ class UserChatController extends AbstractController
 		));
 
 		return $this->createJsonResponse(array('section_html' => $html));
+	}
+
+
+
+	public function updateListNumbersAction()
+	{
+		$counts = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenChatsForAgents();
+
+		return $this->createJsonResponse(array('counts' => $counts));
+	}
+
+
+	public function listChatsAction($agent_id)
+	{
+		$agent = null;
+		if ($agent_id) {
+			$agent = App::findEntity('DeskPRO:Person', $agent_id);
+		}
+		$conversations = App::getEntityRepository('DeskPRO:ChatConversation')->getConversationsForAgent($agent);
+
+		return $this->render('AgentBundle:UserChat:open-list.html.twig', array(
+			'agent' => $agent,
+			'convos' => $conversations
+		));
 	}
 }

@@ -754,6 +754,10 @@ agent_userchat_view:
   pattern: /chat/view/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:view }
 
+agent_userchat_listopen:
+  pattern: /chat/list-open/{agent_id}
+  defaults: { _controller: AgentBundle:UserChat:listChats }
+
 agent_userchat_send_messageview:
   pattern: /chat/send-message/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:sendMessage }
@@ -773,3 +777,7 @@ agent_userchat_end:
 agent_userchat_getsectiondata:
   pattern: /chat/get-section-data.json
   defaults: { _controller: AgentBundle:UserChat:getSectionData }
+
+agent_userchat_getsectioncounts:
+  pattern: /chat/get-section-counts.json
+  defaults: { _controller: AgentBundle:UserChat:updateListNumbers }

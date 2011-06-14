@@ -21,6 +21,45 @@ use Doctrine\ORM\EntityRepository;
 
 class ChatConversation extends EntityRepository
 {
+	/**
+	 * Gets an array of agent_id=>num that counts how many chats they have open.
+	 * 
+	 * @return array
+	 */
+	public function getOpenChatsForAgents()
+	{
+		$counts = App::getDb()->fetchAllKeyValue("
+			SELECT agent_id, COUNT(*) AS cnt
+			FROM chat_conversations
+			WHERE status = ?
+			GROUP BY agent_id
+		", array('open'));
+
+		return $counts;
+	}
+
+	public function getConversationsForAgent($agent)
+	{
+		if ($agent == null) {
+			$convos = $this->getEntityManager()->createQuery("
+				SELECT c
+				FROM DeskPRO:ChatConversation c
+				WHERE c.status = ?1 AND c.agent IS NULL
+				ORDER BY c.id DESC
+			")->setParameter(1, 'open')->execute();
+		} else {
+			$convos = $this->getEntityManager()->createQuery("
+				SELECT c
+				FROM DeskPRO:ChatConversation c
+				WHERE c.status = ?1 AND c.agent = ?2
+				ORDER BY c.id DESC
+			")->setParameter(1, 'open')->setParameter(2, $agent)->execute();
+		}
+
+		return $convos;
+	}
+
+
 	public function getAgentList($agent)
 	{
 		$agent_ids = App::getDb()->fetchAllCol("

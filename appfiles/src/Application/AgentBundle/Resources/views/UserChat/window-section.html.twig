@@ -2,12 +2,12 @@
 	<h1>Chats</h1>
 </header>
 <ul class="nav-list">
-	<li id="userchat_navitem_0">
+	<li id="userchat_navitem_0" class="with-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': '0'}) }}">
 		<span class="list-counter">0</span>
 		Unassigned
 	</li>
 	{% for id,name in agent_names %}
-		<li id="userchat_navitem_{{id}}" {#class="with-route"#} data-route="">
+		<li id="userchat_navitem_{{id}}" class="agent-chat-count with-route" data-route="listpane:{{ path('agent_userchat_listopen', {'agent_id': id}) }}" style="display:none">
 			<span class="list-counter">0</span>
 			{{ name }}
 		</li>
