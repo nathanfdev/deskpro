@@ -11,6 +11,7 @@
 
 	<h3>Request a chat transcript</h3>
 	<form action="{{ path('user_chat_chatended', {'session_code': session.session_code}) }}" method="post">
+	<input type="hidden" name="process" value="1" />
 	<table cellspacing="0" cellpadding="8" border="0">
 		<tr>
 			<td>Your name: </td>

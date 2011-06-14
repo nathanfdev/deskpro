@@ -285,9 +285,41 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			});
 		}
 
-		return $this->render('UserBundle:Chat:chat-ended.html.twig', array(
-			'session'  => $session,
-			'convo'    => $conversation,
-		));
+		if ($this->in->getBool('process')) {
+
+			$convo_messages = App::getOrm()->createQuery("
+				SELECT m
+				FROM DeskPRO:ChatMessage m
+				WHERE m.conversation = ?1
+				ORDER BY m.id DESC
+			")->setParameter(1, $conversation)->execute();
+
+			$vars = array(
+				'convo' => $conversation,
+				'convo_messages' => $convo_messages
+			);
+
+			$email_subject = 'Chat Transcript';
+			$email_body = App::get('templating')->render('DeskPRO:emails_user:chat-transcript.html.twig', $vars);
+
+			$message = App::getMailer()->createMessage();
+			$message->setTo($this->in->getString('email'), $this->in->getString('name'));
+			$message->setSubject($email_subject);
+			$message->setBody($email_body, 'text/html');
+			$message->enableQueueHint();
+
+			App::getMailer()->send($message);
+
+			return $this->render('UserBundle:Chat:chat-ended-thanks.html.twig', array(
+				'session'  => $session,
+				'convo'    => $conversation,
+			));
+
+		} else {
+			return $this->render('UserBundle:Chat:chat-ended.html.twig', array(
+				'session'  => $session,
+				'convo'    => $conversation,
+			));
+		}
 	}
 }

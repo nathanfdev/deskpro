@@ -1,0 +1,16 @@
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% block content %}
+	{{ layout.section_start() }}
+		Thank you for chatting with us. Here is your chat transcript.
+	{{ layout.section_end() }}
+
+	{{ layout.section_start() }}
+		{% for message in convo_messages|reverse %}
+			<div class="message {% if message.is_sys %}sys{% elseif message.author.is_agent %}agent{% else %}user{% endif%}">
+				<span class="author">{% if message.is_sys %}*{% else %}&lt;{{message.author_name}}&gt;{% endif %}</span>
+				<span class="message">{{message.content}}</span>
+			</div>
+		{% endfor %}
+	{{ layout.section_end() }}
+{% endblock %}
