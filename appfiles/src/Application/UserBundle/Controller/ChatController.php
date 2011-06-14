@@ -212,6 +212,8 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 	 */
 	public function chatSessionAction()
 	{
+		\Application\DeskPRO\HttpFoundation\Session::$track_from_input = true;
+
 		// First lets see if anyone is even available for chatting
 		if (!App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
 			return $this->render('UserBundle:Chat:chat-session-unavailable.js.php', array(

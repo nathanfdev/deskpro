@@ -13,16 +13,7 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		$message = new ClientMessage();
-		$message->fromArray(array(
-			'for_client' => 171,
-			'channel' => 'agent_chat.new-message',
-			'data' => array('conversation_id' => 123),
-			'created_by_client' => 122,
-		));
-
-		App::getOrm()->persist($message);
-		App::getOrm()->flush();
+		echo App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name'=> 'test'));
 
 		exit;
 		return $this->render('DevBundle:Test:test.html.twig');

@@ -2,6 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
 pageMeta.title         = 'Chat';
 pageMeta.conversation_id = {{convo.id}};
+pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};
 </script>
 <div class="layout-content with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
@@ -25,20 +26,85 @@ pageMeta.conversation_id = {{convo.id}};
 	{% endif %}
 </div>
 
-<div class="chat-messages">
-	<table cellspacing="0" cellpadding="0" width="100%">
-		{% for message in convo_messages|reverse %}
-		<tr>
-			<td class="author" width="125">
-				{{ message.author_name }}
-			</td>
-			<td class="message	">
-				{{ message.content }}
-			</td>
-		</tr>
-		{% endfor %}
-	</table>
+{# Main Tabs #}
+<div class="full-container-tabbed messages-container">
+	{# Tab Triggers #}
+	<div class="full-container-tabbed-tabs">
+		<ul>
+			<li class="tab-trigger chat-messages on" data-tab-for=".tab-content.chat-messages"><a>Messages</a></li>
+			<li class="tab-trigger user-info" data-tab-for=".tab-content.user-info"><a>User Info</a></li>
+		</ul>
+	</div>
+	{# /Tab Triggers #}
+
+	{# Tab Contents #}
+	<div class="full-container-tabbed-contents-wrap">
+
+		{# Chat Messages #}
+		<div class="full-container-tabbed-contents tab-content chat-messages" data-tab-trigger=".tab-trigger.chat-messages">
+			<div class="messages-wrapper">
+				{% for message in convo_messages|reverse %}
+					<div class="message {% if message.is_sys %}sys{% elseif message.author.is_agent %}agent{% else %}user{% endif%}">
+						<span class="author">{% if message.is_sys %}*{% else %}&lt;{{message.author_name}}&gt;{% endif %}</span>
+						<span class="message">{{message.content}}</span>
+					</div>
+				{% endfor %}
+			</div>
+		</div>
+		{# /Chat Messages #}
+
+		{# User Info #}
+		<div class="full-container-tabbed-contents tab-content user-info" data-tab-trigger=".tab-trigger.user-info">
+			{% if convo.person %}
+				<strong>User:</strong> {{ convo.person.display_name }} &lt;{{ convo.person.primary_email_address }}&gt;
+			{% endif %}
+
+			<table class="list" cellspacing="0" width="100%">
+				<tr class="white line-1">
+					<td width="120">Landing Page</td>
+					<td><input type="text" style="width: 90%" value="{{ convo.visitor.landing_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Current Page</td>
+					<td><input type="text" style="width: 90%" value="{{ convo.visitor.last_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Referrer</td>
+					<td><input type="text" style="width: 90%" value="{{ convo.visitor.ref_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Initial Visit</td>
+					<td>{{ convo.visitor.date_created|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Session Started</td>
+					<td>{{ convo.session.date_created|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Last Activity</td>
+					<td>{{ convo.visitor.date_last|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>IP Address</td>
+					<td>
+						{% if convo.visitor.ip_address %}
+							<img src="http://api.hostip.info/flag.php?ip=12.215.42.19" border="0" width="53" height="27" align="left" style="padding-right: 8px;" />
+						{% endif %}
+						{{ convo.visitor.ip_address }}
+					</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Browser Agent</td>
+					<td>{{ convo.visitor.user_agent }}</td>
+				</tr>
+			</table>
+		</div>
+		{# /User Info #}
+		
+	</div>
+	{# /Tab Contents #}
 </div>
+{# /Main Tabs #}
 
 </div></div>
 </div>

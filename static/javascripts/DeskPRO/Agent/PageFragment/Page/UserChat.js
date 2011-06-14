@@ -13,6 +13,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 		this._initLayout();
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
+			this._handleResize()
+		}).bind(this));
+
 		var self = this;
 		var messageTextarea = $('.new-message', this.barWrapper);
 		messageTextarea.keypress(function(ev) {
@@ -27,7 +31,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 				}
 
 				self.sendMessage(msg);
-				self.addMessageRow('You', msg);
+				self.addMessageRow(self.meta.youName, msg);
 			}
 		});
 
@@ -35,7 +39,29 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 	},
 
 	_initLayout: function() {
+
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+			// When size changes within the pane, need to re-size the scroll
+			cw.tinyscrollbar_update();
+		});
+		
 		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
+
+		var self = this;
+		var simpleTabs = new DeskPRO.UI.SimpleTabs({
+			context: this.contentWrapper,
+			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper),
+			onTabSwitch: function(info) {
+
+			}
+		});
+	},
+
+	_handleResize: function() {
+		if (!this.layout) return;
+		this.layout.resizeAll();
 	},
 
 	_initMenus: function() {
@@ -79,24 +105,28 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			context: this,
 			contentType: 'json'
 		});
+
+		this.addMessageRow('*', 'Chat assigned to ' + DeskPRO_Window.getDisplayName('agent', agent_id), 'sys');
 	},
 
 	handleNewMessage: function(data) {
-		var html = ['<tr>'];
-		html.push('<td class="author">' + data.author_name + '</td>');
-		html.push('<td class="message">' + data.message + '</td>');
-		html.push('</tr>');
-
-		$(html.join('')).appendTo($('.chat-messages table', this.wrapper));
+		this.addMessageRow(data.author_name, data.message, data.author_type);
 	},
 
-	addMessageRow: function(name, msg) {
-		var html = ['<tr>'];
-		html.push('<td class="author">' + name + '</td>');
-		html.push('<td class="message">' + msg + '</td>');
-		html.push('</tr>');
+	addMessageRow: function(name, msg, type) {
 
-		$(html.join('')).appendTo($('.chat-messages table', this.wrapper));
+		if (type == 'system') {
+			name = '*';
+		} else {
+			name = '&lt;' + name + '&gt;';
+		}
+
+		var html = ['<div class="message '+type+'">'];
+			html.push('<span class="author">' + name + '</span>');
+			html.push('<span class="message">' + msg + '</span>');
+		html.push('</div>');
+
+		$(html.join('')).appendTo($('.chat-messages .messages-wrapper', this.wrapper));
 
 		$('.scroll-viewport', this.wrapper).scrollTop(10000);
 	},

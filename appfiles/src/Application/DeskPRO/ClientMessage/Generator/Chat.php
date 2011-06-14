@@ -132,11 +132,19 @@ class Chat
 			$channel = 'chat.message';
 		}
 
+		$author_type = 'user';
+		if ($chat_message['is_sys']) {
+			$author_type = 'sys';
+		} elseif ($chat_message['author'] AND $chat_message['author']['is_agent']) {
+			$author_type = 'agent';
+		}
+
 		$cm_data = array(
 			'conversation_id'   => $conversation['id'],
 			'message_id'        => $chat_message['id'],
 			'author_id'         => $chat_message['author_id'],
 			'author_name'       => $chat_message['author_name'],
+			'author_type'       => $author_type,
 			'message'           => $chat_message['content'],
 			'date_created'      => $chat_message['date_created']->getTimestamp()
 		);

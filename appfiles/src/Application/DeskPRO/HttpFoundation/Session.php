@@ -22,6 +22,8 @@ use \Application\DeskPRO\Entity;
  */
 class Session extends \Symfony\Component\HttpFoundation\Session implements \ArrayAccess, \IteratorAggregate
 {
+	public static $track_from_input = false;
+	
 	/**
 	 * The person this session belongs to
 	 * @var \Application\DeskPRO\Entity\Person
@@ -64,12 +66,27 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			);
 		}
 
+		$current_page = App::getRequest()->getUri();
+		$ref_page = empty($_SERVER['HTTP_REFERER']) ? '' : $_SERVER['HTTP_REFERER'];
+
+		if (self::$track_from_input) {
+			if (!empty($_GET['_1'])) {
+				$current_page = $_GET['_1'];
+			}
+			if (!empty($_GET['_2'])) {
+				$ref_page = $_GET['_2'];
+			}
+		}
+
 		if (!$vis) {
 			$vis = new Entity\Visitor();
 			$vis['ip_address'] = App::getRequest()->getClientIp();
 			$vis['user_agent'] = empty($_SERVER['HTTP_USER_AGENT']) ? '' : $_SERVER['HTTP_USER_AGENT'];
+			$vis['landing_page'] = $current_page;
+			$vis['ref_page'] = $ref_page;
 		}
 
+		$vis['last_page'] = $current_page;
 		$vis['person_id'] = empty($_SESSION['_symfony2']['auth_person_id']) ? null : $_SESSION['_symfony2']['auth_person_id'];
 		$vis['date_last'] = new \DateTime();
 

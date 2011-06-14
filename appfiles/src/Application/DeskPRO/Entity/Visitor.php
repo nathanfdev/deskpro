@@ -75,6 +75,30 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	protected $user_agent = '';
 
 	/**
+	 * The page the user came from
+	 *
+	 * @var string
+	 * @orm:Column(name="ref_page", type="string", length=255)
+	 */
+	protected $ref_page = '';
+
+	/**
+	 * The page the user came from
+	 *
+	 * @var string
+	 * @orm:Column(name="landing_page", type="string", length=255)
+	 */
+	protected $landing_page = '';
+
+	/**
+	 * The last page the user was on
+	 *
+	 * @var string
+	 * @orm:Column(name="last_page", type="string", length=255)
+	 */
+	protected $last_page = '';
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
@@ -86,11 +110,19 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_last;
 
+	protected $is_new = false;
+
 	public function __construct()
 	{
+		$this->is_new = true;
 		$this->auth = Strings::random(15, Strings::CHARS_KEY);
 		$this->date_created = new \DateTime();
 		$this->date_last = new \DateTime();
+	}
+
+	public function isNew()
+	{
+		return $this->is_new;
 	}
 
 

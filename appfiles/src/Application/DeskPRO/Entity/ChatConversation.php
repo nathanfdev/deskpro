@@ -423,12 +423,10 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			$this['date_assigned'] = new \DateTime();
 		}
 
-		if ($old_agent) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name '=> $agent['display_name'])));
-		}
-
 		if ($agent) {
-			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_assigned_agent', array('agent_name '=> $agent['display_name'])));
+			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_assigned_agent', array('agent_name' => $agent['display_name'])));
+		} elseif ($old_agent) {
+			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name' => $old_agent['display_name'])));
 		}
 	}
 }

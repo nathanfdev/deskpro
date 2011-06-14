@@ -117,7 +117,11 @@ var DpChat = (function() {
 		var el = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"></script>').appendTo('body');
 
 		// DeskPRO script that sets/gets session and initial messages
-		el = $('<script type="text/javascript" async="true" src="' + options.deskproUrl + 'chat/chat-session"></script>').appendTo('body');
+		var url = options.deskproUrl + 'chat/chat-session?_1=';
+		url += encodeURIComponent(document.location.href);
+		url += '&amp;_2=' + encodeURIComponent(document.referrer);
+
+		el = $('<script type="text/javascript" async="true" src="' + url +'"></script>').appendTo('body');
 
 		// Box.css
 		el = $('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
@@ -469,8 +473,6 @@ var DpChat = (function() {
 			departmentSelect: departmentSelect
 		});
 
-		display.openIframeOverlay(options.deskproUrl + 'chat/chat-finished/' + sessionCode);
-
 		if (initialMessages) {
 			
 			hasStarted = true;
@@ -489,10 +491,15 @@ var DpChat = (function() {
 		}
 
 		messageBroker.addMessageListener('chat.message', addIncomingMessage);
+		messageBroker.addMessageListener('chat.chat-ended', endChat);
 	};
 
 	var addIncomingMessage = function(data) {
 		display.addMessageRow(data.author_name, data.message, 'agent');
+	};
+
+	var endChat = function() {
+		display.openIframeOverlay(options.deskproUrl + 'chat/chat-finished/' + sessionCode);
 	};
 
 	return this;
