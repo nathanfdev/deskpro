@@ -29,7 +29,8 @@ var DpChat = (function() {
 	 * Scoped reference to jQuery
 	 * @var {jQuery}
 	 */
-	var $ = function() {};
+	var $ = function() {
+	};
 
 	/**
 	 * The display handler that defines the theme etc
@@ -60,6 +61,11 @@ var DpChat = (function() {
 	 */
 	var notAvailable = null;
 
+	var scriptDisplay = null;
+	var scriptSession = null;
+
+	var hasEnded = false;
+
 	/**
 	 * This is a pre-init that is called automatically when the client has downloaded
 	 * this source file. It ensures jQuery first, and then runs initScript that starts
@@ -80,10 +86,12 @@ var DpChat = (function() {
 			};
 
 			var script_tag = document.createElement('script');
-			script_tag.setAttribute("type","text/javascript");
+			script_tag.setAttribute("type", "text/javascript");
 			script_tag.setAttribute("src", ('https:' == document.location.protocol ? 'https' : 'http') + "://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js");
 			script_tag.setAttribute("async", 'true');
-			script_tag.onload = function() { initJquery(); };
+			script_tag.onload = function() {
+				initJquery();
+			};
 			script_tag.onreadystatechange = function () { // Same thing but for IE
 				if (this.readyState == 'complete' || this.readyState == 'loaded') {
 					initJquery();
@@ -100,7 +108,7 @@ var DpChat = (function() {
 		}
 	};
 
-	
+
 	/**
 	 * initScript() is called from init() and loads the resources for the theme, and
 	 * also fetches the users session code and existing chat data, if there is any from previous pages.
@@ -114,24 +122,24 @@ var DpChat = (function() {
 		}
 
 		// Box.js
-		var el = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"></script>').appendTo('body');
+		scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"></script>').appendTo('body');
 
 		// DeskPRO script that sets/gets session and initial messages
 		var url = options.deskproUrl + 'chat/chat-session?_1=';
 		url += encodeURIComponent(document.location.href);
 		url += '&amp;_2=' + encodeURIComponent(document.referrer);
 
-		el = $('<script type="text/javascript" async="true" src="' + url +'"></script>').appendTo('body');
+		scriptSession = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
 
 		// Box.css
-		el = $('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
+		$('<link rel="stylesheet" type="text/css" href="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.css" />').appendTo('body');
 	};
 
 
 	/**
 	 * When the display source file is loaded by the client, it calls DpChat.setDisplay() to set itself.
 	 * If the sessionCode is already fetched, then the main chat app can finally be fully set up.
-	 * 
+	 *
 	 * @param display
 	 */
 	this.setDisplay = function(_display) {
@@ -145,7 +153,7 @@ var DpChat = (function() {
 	/**
 	 * When the session source file is loaded by the client, it calls this DpChat.setSessionCode() to set itself.
 	 * Just like setDisplay, it checks if all values are set and if they are, main() is called to fully run the chat.
-	 * 
+	 *
 	 * @param sessionCode
 	 */
 	this.setSessionCode = function(_sessionCode) {
@@ -180,7 +188,7 @@ var DpChat = (function() {
 		notAvailable = true;
 	};
 
-	
+
 	//#################################################################
 	//# Simple implementations of message broker and poller
 	//#################################################################
@@ -233,15 +241,15 @@ var DpChat = (function() {
 
 			var self = this;
 			this.addData(function () {
-				if (!self.lastMessageId) return null;
-				return { 'since': self.lastMessageId };
-			}, 'since', { recurring: true });
+						if (!self.lastMessageId) return null;
+						return { 'since': self.lastMessageId };
+					}, 'since', { recurring: true });
 
 			this.autoSendTimeout = Function_Delay(this.send, this.options.initialDelay, this);
 		},
 
 
-		
+
 		addData: function(data, name, options) {
 			name = name || 'default';
 			options = options || {};
@@ -370,7 +378,7 @@ var DpChat = (function() {
 		},
 
 		_clearDelays: function() {
-	
+
 			this.autoSendTimeout = window.clearTimeout(this.autoSendTimeout);
 			this.autoSendTimeout = null;
 
@@ -384,7 +392,7 @@ var DpChat = (function() {
 
 	/**
 	 * Sends a new chat message. The server decides if the chat should be new or not
-	 * 
+	 *
 	 * @param message
 	 */
 	this.sendMessage = function(message, data) {
@@ -422,9 +430,10 @@ var DpChat = (function() {
 		typingIndicatorTime = Function_Delay(sendTypingIndicator, 1000, self);
 	};
 
-	var sendTypingIndicator = function() {
+	var sendTypingIndicator;
+	sendTypingIndicator = function() {
 		if (typingIndicatorTime) window.clearTimeout(typingIndicatorTime);
-		typingIndicatorMsg = typingIndicatorMsg.trim();
+		typingIndicatorMsg = $.trim(typingIndicatorMsg);
 		if (!typingIndicatorMsg.length) return;
 
 		$.ajax({
@@ -436,7 +445,7 @@ var DpChat = (function() {
 			dataType: 'jsonp'
 		});
 	};
-	
+
 	//#################################################################
 	//# Util
 	//#################################################################
@@ -474,14 +483,14 @@ var DpChat = (function() {
 		});
 
 		if (initialMessages) {
-			
+
 			hasStarted = true;
 
 			for (var i = 0; i < initialMessages.length; i++) {
 				display.addMessageRow(
-					initialMessages[i].name,
-					initialMessages[i].message,
-					initialMessages[i].type
+						initialMessages[i].name,
+						initialMessages[i].message,
+						initialMessages[i].type
 				);
 			}
 
@@ -495,11 +504,18 @@ var DpChat = (function() {
 	};
 
 	var addIncomingMessage = function(data) {
-		display.addMessageRow(data.author_name, data.message, 'agent');
+		display.addMessageRow(data.author_name, data.message, data.author_type);
 	};
 
-	var endChat = function() {
+	var endChat = this.endChat = function() {
+
+		if (hasEnded) return; //already ended
+		hasEnded = true;
+
 		display.openIframeOverlay(options.deskproUrl + 'chat/chat-finished/' + sessionCode);
+		display.destroy();
+		ajaxPoller.disable = true;
+		ajaxPoller._clearDelays();
 	};
 
 	return this;

@@ -82,9 +82,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 				var agent_id = $(info.itemEl).data('option-id');
 				self.reassignConvo(agent_id);
 
-				$('span.agent_id.val', this.wrapper).html(DeskPRO_Window.getDisplayName('agent', agent_id));
+				$('span.agent_id.val', this.wrapper).html(DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned');
 			}
 		});
+
+		var endMenuEl = $('ul.end-menu', this.wrapper);
+		if (endMenuEl.length) {
+			this.endMenu = new DeskPRO.UI.Menu({
+				triggerElement: $('div.chat-status:first', this.wrapper),
+				menuElement: endMenuEl,
+				onItemClicked: function(info) {
+					self.endChat();
+				}
+			});
+		}
 	},
 
 	loadQuickReply: function(qr_id) {
@@ -99,6 +110,20 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		});
 	},
 
+	endChat: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/chat/end-chat/' + this.meta.conversation_id,
+			context: this,
+			contentType: 'json'
+		});
+
+		var el = $('.chat-status:first', this.wrapper);
+		$('.open', el).hide();
+		$('.ended', el).show();
+
+		this.addMessageRow('*', 'Chat ended', 'sys');
+	},
+
 	reassignConvo: function(agent_id) {
 		$.ajax({
 			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id,
@@ -106,7 +131,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			contentType: 'json'
 		});
 
-		this.addMessageRow('*', 'Chat assigned to ' + DeskPRO_Window.getDisplayName('agent', agent_id), 'sys');
+		this.addMessageRow('*', 'Chat assigned to ' + DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned', 'sys');
 	},
 
 	handleNewMessage: function(data) {
@@ -115,10 +140,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 	addMessageRow: function(name, msg, type) {
 
-		if (type == 'system') {
-			name = '*';
+		if (type == 'sys') {
+			name = '* ';
 		} else {
-			name = '&lt;' + name + '&gt;';
+			name = '&lt;' + name + '&gt; ';
 		}
 
 		var html = ['<div class="message '+type+'">'];

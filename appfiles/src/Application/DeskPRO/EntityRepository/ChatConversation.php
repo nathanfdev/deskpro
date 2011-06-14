@@ -141,7 +141,7 @@ class ChatConversation extends EntityRepository
 				SELECT c
 				FROM DeskPRO:ChatConversation c
 				WHERE c.session = ?1
-				ORDER BY c.id ASC
+				ORDER BY c.id DESC
 			")->setParameter(1, $session)->setMaxResults(1)->getSingleResult();
 		} catch (\Exception $e) {
 			$conversation = null;

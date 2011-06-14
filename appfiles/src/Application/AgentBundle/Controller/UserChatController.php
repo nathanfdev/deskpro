@@ -114,6 +114,39 @@ class UserChatController extends AbstractController
 
 
 	/**
+	 * End a chat
+	 *
+	 * @param  $conversation_id
+	 */
+	public function endChatAction($conversation_id)
+	{
+		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		$conversation['status'] = 'ended';
+		$client_messages = ChatClientMessageGenerator::createChatEndedMessages(
+			App::getSession()->getEntityId(),
+			$conversation
+		);
+
+		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+			$em->persist($conversation);
+
+			if ($client_messages) {
+				foreach ($client_messages as $cm) {
+					$em->persist($cm);
+				}
+			}
+
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+
+		));
+	}
+
+
+	/**
 	 * Accepts a POST of a new message to a conversation
 	 */
 	public function sendMessageAction($conversation_id)

@@ -8,7 +8,7 @@ pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
-<div class="inner-box-tab-content-2 ticket-element">
+<div class="inner-box-tab-content-2 chat">
 	<div style="float:right" class="menu-trigger agent_id">
 		Assigned Agent:
 		<span class="agent_id val">
@@ -23,6 +23,13 @@ pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};
 		Chat with {{convo.person.display_name}}
 	{% else %}
 		Chat with guest
+	{% endif %}
+</div>
+<div class="chat-status">
+	{% if convo.status == 'open' %}
+		Chat is <span class="open">open</span><span class="ended" style="display:none">ended</span>
+	{% else %}
+		Chat is <span class="ended">ended</span>
 	{% endif %}
 </div>
 
@@ -144,3 +151,9 @@ pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};
 		</li>
 	{% endfor %}
 </ul>
+
+{% if convo.status == 'open' %}
+<ul class="end-menu menu" style="display:none">
+	<li>End chat (close chat to new replies)</li>
+</ul>
+{% endif %}

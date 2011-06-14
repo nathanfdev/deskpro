@@ -75,7 +75,8 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 			$channels = array(
 				'chat.message',
-				'chat.proactive'
+				'chat.chat-ended',
+				'chat.proactive',
 			);
 
 			$data = array();

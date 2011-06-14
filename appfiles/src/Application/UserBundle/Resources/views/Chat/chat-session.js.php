@@ -7,6 +7,12 @@
 				'message' => $msg['content'],
 				'type' => 'agent'
 			);
+		} elseif ($msg['is_sys']) {
+			$messages[] = array(
+				'name' => '*',
+				'message' => $msg['content'],
+				'type' => 'sys'
+			);
 		} else {
 			$messages[] = array(
 				'name' => 'You',

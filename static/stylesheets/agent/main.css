@@ -3528,3 +3528,28 @@ section.new-user-chat-alert footer {
 .chat-messages .message.sys .author {
     color: #35383D;
 }
+
+
+
+
+.inner-box-tab-content-2.chat {
+    padding: 6px;
+}
+
+
+.chat-status {
+    margin-top: -2px;
+    text-align: right;
+    padding-right: 8px;
+}
+
+.chat-status .open {
+    font-weight: bold;
+    color: #1261FF;
+    cursor: pointer;
+}
+
+.chat-status .ended {
+    font-weight: bold;
+    color: #D12A2A;
+}

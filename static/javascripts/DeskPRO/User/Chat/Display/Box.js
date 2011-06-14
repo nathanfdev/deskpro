@@ -29,7 +29,7 @@ var DpChat_Display = (function() {
 		//--------------------
 
 		var html = [];
-		html.push('<div id="dpchat_btn"><div id="dpchat_btn_label">Click here to chat with us</div></div>');
+		html.push('<div id="dpchat_btn"><div id="dpchat_btn_label"><span class="start-chat">Click here to chat with us</span><span class="open-chat">Open your chat</span></div></div>');
 
 		var el = $(html.join(''));
 		el.appendTo('body');
@@ -47,7 +47,7 @@ var DpChat_Display = (function() {
 
 		var html = [];
 		html.push('<div id="dpchat_panel">');
-			html.push('<div id="dpchat_titlebar"><h3>Chat</h3><span id="dpchat_closepanel">Close</span></div>');
+			html.push('<div id="dpchat_titlebar"><h3>Chat</h3><span id="dpchat_closepanel">Minimize</span><span id="dpchat_endchat">End Chat</span></div>');
 			if (options.departmentSelect) {
 				html.push('<div id="dpchat_messages"><div class="dpchat-info dpchat-instruction alt-form">Choose a department and type in your question to get started: ' + options.departmentSelect + '</div></div>');
 			} else {
@@ -68,6 +68,12 @@ var DpChat_Display = (function() {
 			chatBox.removeClass('dpchat-panel-open');
 		});
 
+		$('#dpchat_endchat').click(function() {
+			if (confirm('Are you sure you want to end this chat?')) {
+				DpChat.endChat();
+			}
+		});
+
 		var messageTextarea = $('#dpchat_input > textarea');
 		messageTextarea.keypress(function(ev) {
 			DpChat.userTypingIndicator(messageTextarea.val());
@@ -75,7 +81,7 @@ var DpChat_Display = (function() {
 			if (ev.keyCode == 13 && !ev.metaKey) {
 				ev.preventDefault();
 				
-				var msg = messageTextarea.val().trim();
+				var msg = $.trim(messageTextarea.val());
 				messageTextarea.val('');
 
 				if (!msg.length) {
@@ -144,13 +150,20 @@ var DpChat_Display = (function() {
 	 */
 	this.addMessageRow = function(name, message, type) {
 
+		chatBoxBtn.addClass('has-chat');
+		chatBox.addClass('has-chat');
 		$('.dpchat-instruction', messageWrapper).hide();
 
 		type = type || 'user';
+		if (type == 'sys') {
+			name = '* ';
+		} else {
+			name = name + ': ';
+		}
 
 		var html = [];
 		html.push('<div class="dpchat-message dpchat-'+type+'">');
-			html.push('<div class="dpchat-author">' + name + ':</div>');
+			html.push('<div class="dpchat-author">' + name + '</div>');
 			html.push('<div class="dpchat-msg">' + message + '</div>');
 		html.push('</div>');
 
@@ -161,6 +174,11 @@ var DpChat_Display = (function() {
 		messageWrapper.scrollTop(100000);
 
 		return el;
+	};
+
+	this.destroy = function() {
+		chatBox.remove();
+		chatBoxBtn.remove();
 	};
 
 	return this;
