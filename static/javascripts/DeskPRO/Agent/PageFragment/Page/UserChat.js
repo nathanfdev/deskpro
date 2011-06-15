@@ -79,6 +79,21 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		this.assignMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('div.agent_id.menu-trigger:first', this.wrapper),
 			menuElement: $('ul.agent_id.menu:first', this.wrapper),
+			onBeforeMenuOpened: function(info) {
+
+				var allow_unassign = true;
+
+				var list = info.menu.elements.list;
+				$('li[data-option-id]', list).each(function() {
+					var id = $(this).data('option-id');
+					var onlineEl = $('#agent_online_list > li.agent-' + id);
+					if (onlineEl.length || id == DESKPRO_PERSON_ID || (allow_unassign && id == '0')) {
+						$(this).show();
+					} else {
+						$(this).hide();
+					}
+				});
+			},
 			onItemClicked: function(info) {
 				var agent_id = $(info.itemEl).data('option-id');
 				self.reassignConvo(agent_id);
