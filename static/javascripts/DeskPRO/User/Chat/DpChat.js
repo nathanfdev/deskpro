@@ -211,6 +211,15 @@ var DpChat = (function() {
 		return win;
 	};
 
+	/**
+	 * Called when a user hides a proactive. We insert a script request so it
+	 * sets the cookie on the correct domain
+	 */
+	this.proactiveHidden = function() {
+		var url = options.deskproUrl + 'chat/ignore-proactive';
+		var el = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
+	};
+
 	//#################################################################
 	//# Simple implementations of message broker and poller
 	//#################################################################

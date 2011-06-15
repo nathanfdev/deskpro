@@ -268,3 +268,7 @@ user_chat_chatended:
 user_chat_chatwin:
   pattern: /chat/chat-window/{session_code}
   defaults: { _controller: UserBundle:Chat:chatWindow }
+
+user_chat_ignoreproactive:
+  pattern: /chat/ignore-proactive
+  defaults: { _controller: UserBundle:Chat:proactiveIgnore }

@@ -298,3 +298,12 @@
 
     cursor: pointer;
 }
+
+#dpchat_proactive_close {
+    position: absolute;
+    top: 0;
+    right: 0;
+    height: 15px;
+    width: 100px;
+    cursor: pointer;
+}

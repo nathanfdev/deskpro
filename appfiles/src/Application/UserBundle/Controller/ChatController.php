@@ -11,6 +11,8 @@
 
 namespace Application\UserBundle\Controller;
 
+use Application\DeskPRO\HttpFoundation\Cookie;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\ChatConversation;
 use Application\DeskPRO\Entity\ChatMessage;
@@ -83,7 +85,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			if ($since) {
 				$data = array('messages' => array(), 'last_id' => -1);
 
-				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClientInChannels($session['id'], $person_id, $channels, $since);
+				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClientInChannels($session['id'], 0, $channels, $since);
 				foreach ($all_messages as $message) {
 					$handler = $message->getHandler();
 
@@ -280,7 +282,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				$proactive = true;
 			}
 		}
-		$proactive = true;
+
 
 		$response = $this->render('UserBundle:Chat:chat-session.js.php', array(
 			'session' => $session,
@@ -395,5 +397,19 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		return $this->render('UserBundle:Chat:window.html.twig', array(
 			'session'  => $session,
 		));
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\HttpKernel\Controller\Response
+	 */
+	public function proactiveIgnoreAction()
+	{
+		$cookie = Cookie::makeCookie('dpchat_no_proactive', time(), '+2 days');
+
+		$response = $this->createJsonpResponse('');
+		$response->headers->setCookie($cookie);
+
+		return $response;
 	}
 }

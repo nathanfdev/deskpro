@@ -105,12 +105,19 @@ var DpChat_Display = (function() {
 	this.showProactive = function() {
 		var html = [];
 		html.push('<div id="dpchat_proactive_wrapper">');
+			html.push('<div id="dpchat_proactive_close"></div>');
 		html.push('</div>');
 
 		var el = $(html.join('')).appendTo('body');
 		el.click(function() {
 			el.remove();
 			DpChat.popChat();
+		});
+		$('#dpchat_proactive_close').click(function(ev) {
+			ev.stopPropagation();
+			el.remove();
+
+			DpChat.proactiveHidden();
 		});
 	};
 
