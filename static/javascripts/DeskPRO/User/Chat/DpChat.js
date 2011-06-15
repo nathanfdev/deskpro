@@ -133,6 +133,10 @@ var DpChat = (function() {
 		url += '&amp;_2=' + encodeURIComponent(document.referrer);
 		url += '&amp;___='+(new Date().getTime());
 
+		if (options.displayType == 'DpWindow') {
+			url += '&amp;is_window=1';
+		}
+
 		scriptSession = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
 
 		// Box.css

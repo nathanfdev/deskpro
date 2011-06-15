@@ -25,13 +25,12 @@ class Session extends EntityRepository
 	 */
 	public function hasAvailableAgents()
 	{
-
 		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core_chat.agent_timeout'));
 
 		$check = App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM sessions
-			WHERE date_last >= ? AND active_status = ?
+			WHERE date_last >= ? AND active_status = ? AND is_person = 1
 			LIMIT 1
 		", array($datecut, 'available'));
 

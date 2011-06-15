@@ -180,10 +180,13 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 
-		return $this->createJsonpResponse(array(
+		$response = $this->createJsonpResponse(array(
 			'conversation_id' => $conversation['id'],
 			'new_message_id'  => $chat_message['id']
 		));
+		$response->setLastModified(date_create('-1 day'));
+		$response->setExpires(date_create("-1 day"));
+		return $response;
 	}
 
 
@@ -220,9 +223,10 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 
 		// First lets see if anyone is even available for chatting
 		if (!App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
-			return $this->render('UserBundle:Chat:chat-session-unavailable.js.php', array(
-
-			));
+			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php', array());
+			$response->setLastModified(date_create('-1 day'));
+			$response->setExpires(date_create("-1 day"));
+			return $response;
 		}
 
 		// Inits the session which isn't usually created on this controller
@@ -234,9 +238,9 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
 
 		// If there exists a convo going already, but the user has popped it into
-		// a separate window, then other pages will just act like chat is
+		// a separate window, then other pages with the widget on it will just act like chat is
 		// unavailable
-		if ($conversation AND $conversation['is_window']) {
+		if (!$this->in->getBool('is_window') AND $conversation AND $conversation['is_window']) {
 			return $this->render('UserBundle:Chat:chat-session-unavailable.js.php', array(
 				'conversation' => $conversation
 			));
@@ -278,13 +282,17 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		}
 		$proactive = true;
 
-		return $this->render('UserBundle:Chat:chat-session.js.php', array(
+		$response = $this->render('UserBundle:Chat:chat-session.js.php', array(
 			'session' => $session,
 			'convo_messages' => $convo_messages,
 			'conversation' => $conversation,
 			'department_sel' => $department_sel,
 			'proactive' => $proactive
 		));
+
+		$response->setLastModified(date_create('-1 day'));
+		$response->setExpires(date_create("-1 day"));
+		return $response;
 	}
 
 	/**
