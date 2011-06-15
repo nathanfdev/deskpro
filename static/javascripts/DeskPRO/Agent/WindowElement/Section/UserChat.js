@@ -10,6 +10,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		$('#new_user_chat_alert').template('new_user_chat_alert');
 		$('#new_user_chat_alert_message').template('new_user_chat_alert_message');
 		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
+		$('#added_part_user_chat_alert').template('added_part_user_chat_alert');
 
 		this._initMessageHandlers();
 
@@ -57,6 +58,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.message');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.chat-ended');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_user_agent.chat-assigned');
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_user_agent.added-as-part');
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.message', this.handleNewMessage.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended', this.handleChatEnded.bind(this));
@@ -91,6 +93,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	},
 
 	handleAddedAsPart: function(data) {
+
+		console.log(data);
 
 		// Make suer we arent already viewing it
 		var checkEl = $('#deskpro_tabstrip li.user_chat_tab_' + data.conversation_id);
