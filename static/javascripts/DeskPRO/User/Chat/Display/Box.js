@@ -47,7 +47,7 @@ var DpChat_Display = (function() {
 
 		var html = [];
 		html.push('<div id="dpchat_panel">');
-			html.push('<div id="dpchat_titlebar"><h3>Chat</h3><span id="dpchat_closepanel">Minimize</span><span id="dpchat_endchat">End Chat</span></div>');
+			html.push('<div id="dpchat_titlebar"><h3>Chat</h3><span id="dpchat_closepanel">Minimize</span><span id="dpchat_endchat">End Chat</span><span id="dpchat_popchat">Open in new window</span></div>');
 			if (options.departmentSelect) {
 				html.push('<div id="dpchat_messages"><div class="dpchat-info dpchat-instruction alt-form">Choose a department and type in your question to get started: ' + options.departmentSelect + '</div></div>');
 			} else {
@@ -72,6 +72,10 @@ var DpChat_Display = (function() {
 			if (confirm('Are you sure you want to end this chat?')) {
 				DpChat.endChat();
 			}
+		});
+
+		$('#dpchat_popchat').click(function() {
+			DpChat.popChat();
 		});
 
 		var messageTextarea = $('#dpchat_input > textarea');

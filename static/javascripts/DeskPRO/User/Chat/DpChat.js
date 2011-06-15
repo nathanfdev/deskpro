@@ -190,6 +190,19 @@ var DpChat = (function() {
 		notAvailable = true;
 	};
 
+	/**
+	 * Pop the chat out into a new window
+	 */
+	this.popChat = function() {
+		hasEnded = true;
+		display.destroy();
+		ajaxPoller.disable = true;
+		ajaxPoller._clearDelays();
+
+		var url = options.deskproUrl + 'chat/chat-window/' + sessionCode;
+		var win = window.open(url,'dpchat','width=650,height=500,location=0,menubar=0,scrollbars=0,status=0,toolbar=0,resizable=1');
+		return win;
+	};
 
 	//#################################################################
 	//# Simple implementations of message broker and poller

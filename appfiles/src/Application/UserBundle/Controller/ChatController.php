@@ -131,6 +131,9 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				$conversation->department = $dep;
 			}
 
+			if ($this->in->getBool('is_window')) {
+				$conversation['is_window'] = true;
+			}
 			$is_new_convo = true;
 		}
 
@@ -229,6 +232,16 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		$session = $sessionObj->getEntity();
 
 		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session);
+
+		// If there exists a convo going already, but the user has popped it into
+		// a separate window, then other pages will just act like chat is
+		// unavailable
+		if ($conversation AND $conversation['is_window']) {
+			return $this->render('UserBundle:Chat:chat-session-unavailable.js.php', array(
+				'conversation' => $conversation
+			));
+		}
+
 		$convo_messages = false;
 		if ($conversation) {
 			$convo_messages = App::getOrm()->createQuery("
@@ -343,6 +356,15 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		if (!$session) {
 			$sessionObj = $this->get('session');
 			$session = $sessionObj->getEntity();
+		}
+
+		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getLatestChatForSession($session, false);
+		if ($conversation) {
+			$conversation['is_window'] = true;
+			App::getOrm()->transactional(function ($em) use ($conversation) {
+				$em->persist($conversation);
+				$em->flush();
+			});
 		}
 
 		return $this->render('UserBundle:Chat:window.html.twig', array(

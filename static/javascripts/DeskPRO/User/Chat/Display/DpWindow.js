@@ -21,11 +21,14 @@ var DpChat_Display = (function() {
 		});
 
 		var html = [];
+		html.push('<div id="dpchat_intro" class="dpchat-instruction alt-form">');
+		html.push('<input type="hidden" name="is_window" value="1" />');
 		if (options.departmentSelect) {
-			html.push('<div id="dpchat_intro" class="dpchat-instruction alt-form">Choose a department and type your question into the message box to get started: ' + options.departmentSelect + '</div>');
+			html.push('Choose a department and type your question into the message box to get started: ' + options.departmentSelect + '');
 		} else {
-			html.push('<div id="dpchat_intro" class="dpchat-instruction">Type your question into the message box to get started</div>');
+			html.push('Type your question into the message box to get started');
 		}
+		html.push('</div>');
 		var el = $(html.join(''));
 		el.appendTo('body');
 

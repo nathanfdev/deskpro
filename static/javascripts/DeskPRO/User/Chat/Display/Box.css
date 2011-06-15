@@ -127,6 +127,30 @@
     display: block;
 }
 
+#dpchat_popchat {
+    display: none;
+    position: absolute;
+    font-size: 11px;
+    left: 4px;
+    top: 4px;
+
+    line-height: 100%;
+    cursor: pointer;
+    color: #363940;
+
+    background-color: #B8C0D1;
+    border: 1px solid #777E8C;
+    padding: 1px;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.has-chat #dpchat_popchat {
+    display: block;
+}
+
 #dpchat_titlebar h3 {
     font-size: 12px;
     padding: 3px 0 5px 3px;
