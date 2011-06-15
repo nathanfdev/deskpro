@@ -256,6 +256,11 @@
 	background-image: url("../../images/nav-icons/Knowledgebase.png");
 }
 
+#deskpro_sections > ul > li.user-chat >  a {
+    background-position: 60% 0;
+	background-image: url("../../images/nav-icons/UserChat.png");
+}
+
 #deskpro_sections > ul  > li.setup >  a { background: url("../../images/nav-icons/Settings.png") no-repeat center top; }
 #deskpro_sections > ul  > li.server >  a { background: url("../../images/nav-icons/Server.png") no-repeat center top; }
 #deskpro_sections > ul  > li.agents >  a { background: url("../../images/nav-icons/Agents.png") no-repeat center top; }
