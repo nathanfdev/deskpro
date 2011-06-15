@@ -32,7 +32,7 @@ class UserChatController extends AbstractController
 		if (!$conversation['agent']) {
 			$conversation['agent'] = $this->person;
 			$is_assigned = true;
-		} elseif ($conversation['agent']['id'] != $this->person) {
+		} elseif ($conversation['agent']['id'] != $this->person['id']) {
 			$conversation->addParticipant($this->person);
 		}
 

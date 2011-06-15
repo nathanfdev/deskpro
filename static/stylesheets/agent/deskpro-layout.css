@@ -702,6 +702,16 @@ So only the 'on' one is visible at a time */
     float: left;
 }
 
+#deskpro_tabstrip > ul > li.alert-highlight {
+    background-color: #FCFF96 !important;
+    -webkit-transition: background 150ms ease;
+    -moz-transition: background 150ms ease;
+    -o-transition: background 150ms ease;
+    transition: background 150ms ease;
+
+    border-color: #949494;
+}
+
 #deskpro_tabstrip > ul > li.active-tab {
     margin-top: 6px;
     height: 33px;

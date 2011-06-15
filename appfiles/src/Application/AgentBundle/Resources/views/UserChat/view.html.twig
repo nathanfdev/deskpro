@@ -3,6 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.UserChat';
 pageMeta.title         = 'Chat';
 pageMeta.conversation_id = {{convo.id}};
 pageMeta.youName         = {{ app.user.display_name|json_encode|raw }};
+pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 </script>
 <div class="layout-content with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>

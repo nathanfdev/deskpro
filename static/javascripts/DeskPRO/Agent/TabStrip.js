@@ -57,6 +57,18 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		});
 	},
 
+	alertTab: function(tabIdClass) {
+		var el = $('li.' + tabIdClass, this.tabStrip);
+		if (!el.length || el.is('.active-tab') || el.is('.is-alerting')) return;
+
+		el.addClass('is-alerting');
+		var timeout = this._alertTabDoHighlight.periodical(1500, this, [el]);
+		el.data('alerting-timeout', timeout);
+	},
+
+	_alertTabDoHighlight: function(el) {
+		el.toggleClass('alert-highlight');
+	},
 
 	getTabs: function() {
 		return this.tabManager.getTabs();
@@ -209,7 +221,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	_onTabAdd: function(tabData) {
 		tabData.btnId = Orb.getUniqueId('tab_');
 
-		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab tipped';
+		var tabIdClass = tabData.page.getMetaData('tabIdClass', '');
+		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab tipped ' + tabIdClass;
 			if (tabData.page.TYPENAME != 'basic') {
 				html += ' icon icon-' + tabData.page.TYPENAME;
 			}
@@ -253,8 +266,16 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 	_onTabActivate: function(tabData) {
 		$('li', this.tabStrip).removeClass('active-tab');
-		$('#' + tabData.btnId, this.tabStrip).addClass('active-tab');
+		var tabEl = $('#' + tabData.btnId, this.tabStrip).addClass('active-tab');
 
+		if (tabEl.is('.is-alerting')) {
+			tabEl.removeClass('alert-highlight').removeClass('is-alerting');
+			var alertingTimeout = tabEl.data('alerting-timeout');
+			if (alertingTimeout) {
+				window.clearTimeout(alertingTimeout);
+				tabEl.data('alerting-timeout', false);
+			}
+		}
 		// Now that the tab has been rendered, we'll have access to
 		// the tip element, so we should give it the appropriate ID
 		// so Tipped can find it

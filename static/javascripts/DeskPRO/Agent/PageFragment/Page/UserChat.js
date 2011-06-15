@@ -135,6 +135,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 	},
 
 	handleNewMessage: function(data) {
+		DeskPRO_Window.pageTabStrip.alertTab(this.meta.tabIdClass);
 		this.addMessageRow(data.author_name, data.message, data.author_type);
 	},
 
