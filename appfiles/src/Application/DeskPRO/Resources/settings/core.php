@@ -30,6 +30,9 @@
 	'core.everyone_usergroup_id' => 2,
 	'core.default_timezone' => 'UTC',
 
+	'core.use_addthis' => false,
+	'core.addthis_username' => '',
+
 	'core.use_gravatar' => 1,
 	'core.use_default_gravatar' => 1,
 
