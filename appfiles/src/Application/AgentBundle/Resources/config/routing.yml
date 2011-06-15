@@ -641,6 +641,10 @@ agent_kb_article_edit_geteditor:
   defaults: { _controller: AgentBundle:Kb:getArticleEditor }
   requirements: { article_id: "\d+" }
 
+agent_kb_comparerevs:
+  pattern: /kb/compare-revs/{rev_old_id}/{rev_new_id}
+  defaults: { _controller: AgentBundle:Kb:compareRevisions }
+
 agent_kb_newpending:
   pattern: /kb/pending-articles/new
   defaults: { _controller: AgentBundle:Kb:newPendingArticle }

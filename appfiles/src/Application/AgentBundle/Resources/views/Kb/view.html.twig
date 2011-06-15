@@ -31,7 +31,7 @@ pageMeta.urls = {
 	</div>
 	<div class="kb-info-top">
 		<div class="kb-author-names">
-			By <cite>{{ article.person.display_name }}</cite>
+			By {% for author in article.authors %}<cite>{{ author.person.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
 		</div>
 		<h3 class="title editable hover-edit" data-editable-for=".inline-editable .title">
 			{{ article.title }}
@@ -161,6 +161,7 @@ pageMeta.urls = {
 		<span class="kb-editor-edit"><a>edit</a></span>
 		<ul>
 			<li class="tab-trigger kb-content on" data-tab-for=".tab-content.kb-content"><a>Article</a></li>
+			<li class="tab-trigger kb-revs" data-tab-for=".tab-content.kb-revs"><a>Revisions</a></li>
 			<li class="tab-trigger kb-related-content" data-tab-for=".tab-content.kb-related-content"><a>Related Content</a></li>
 			<li class="tab-trigger kb-comments" data-tab-for=".tab-content.kb-comments"><a>Comments</a></li>
 			<li class="tab-trigger kb-search-stats" data-tab-for=".tab-content.kb-search-stats"><a>Search Statistics</a></li>
@@ -178,6 +179,31 @@ pageMeta.urls = {
 			<div class="kb-editor-wrap"></div>
 		</div>
 		{# /Tab: Content #}
+
+		{# Tab: Revisions #}
+		<div class="full-container-tabbed-contents tab-content kb-revs" data-tab-trigger=".tab-trigger.kb-revs" style="display: block">
+			<table class="list" width="100%">
+				{% for rev in article.revisions %}
+					<tr>
+						<td width="30">{{ loop.index }}</td>
+						<td>
+							<span style="float:right">
+								{{ rev.date_created|date('Y-m-d') }}
+							</span>
+							By {{ rev.author.display_name }}
+						</td>
+						<td width="150">
+							<input type="radio" class="old" value="{{rev.id}}" /> |
+							<input type="radio" class="new" value="{{rev.id}}" />
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+			<div style="text-align: right">
+				<button class="dp-button compare-trigger">Compare Selected</button>
+			</div>
+		</div>
+		{# /Tab: Revisions #}
 	</div>
 	{# /Tab Contents $}
 </div>

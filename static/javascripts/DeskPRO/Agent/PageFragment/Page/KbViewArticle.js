@@ -18,6 +18,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		this._initMenus();
 		this._initLabels();
 		this._initEditorEnable();
+		this._initCompareRevs();
 
 		if (this.meta.has_validating) {
 			this._initValidating();
@@ -292,5 +293,25 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	showMediaBrowser: function() {
 		this._initMediaBrowser();
 		this.mediaBrowserOverlay.openOverlay();
+	},
+
+	//#################################################################
+	//# Compare revisions
+	//#################################################################
+
+	_initCompareRevs: function() {
+		var old_id = $('.tab-content.kb-revs radio.old:selected', this.wrapper).val();
+		var new_id = $('.tab-content.kb-revs radio.new:selected', this.wrapper).val();
+
+		var overlay = new DeskPRO.UI.Overlay({
+			triggerElement: $('button.compare-trigger', this.wrapper),
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/kb/compare-revs/' + old_id + '/' + new_id
+			},
+			destroyOnClose: true
+		});
+
+		overlay.openOverlay();
 	}
 });

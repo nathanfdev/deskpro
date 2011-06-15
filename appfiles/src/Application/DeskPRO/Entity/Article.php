@@ -54,6 +54,12 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	protected $products;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @orm:OneToMany(targetEntity="ArticleRevision", mappedBy="article", cascade={"persist", "remove", "merge"})
+	 */
+	protected $revisions;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
@@ -179,6 +185,11 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	protected $labels;
 
 	/**
+	 * An array of authors,
+	 */
+	protected $_author_names;
+
+	/**
 	 * @var \Application\DeskPRO\Labels\LabelManager
 	 */
 	protected $_label_manager = null;
@@ -288,5 +299,27 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_label_manager;
+	}
+
+	/**
+	 * Get an array of authors
+	 * 
+	 * @return array
+	 */
+	public function getAuthors()
+	{
+		if ($this->_author_names) {
+			return $this->_author_names;
+		}
+
+		$this->_author_names = App::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:ArticleRevision r
+			LEFT JOIN r.person
+			WHERE r.article = ?1
+			ORDER BY r.id DESC
+		")->setParameter(1, $this)->execute();
+
+		return $this->_author_names;
 	}
 }

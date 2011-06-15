@@ -21,6 +21,8 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 
+use FineDiff;
+
 /**
  * Handles ticket searches
  */
@@ -599,6 +601,33 @@ class KbController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'comment_id' => $comment['id'],
+		));
+	}
+
+	############################################################################
+	# Compare revisions
+	############################################################################
+
+	public function compareRevisionsActions($rev_old_id, $rev_new_id)
+	{
+		$rev_old = App::findEntity('DeskPRO:ArticleRevision', $rev_old_id);
+		$rev_new = App::findEntity('DeskPRO:ArticleRevision', $rev_new_id);
+
+		$diff = new FineDiff(
+			$rev_old['content'],
+			$rev_new['content'],
+			FineDiff::$wordGranularity
+		);
+
+		$edits = $diff->getOps();
+		$rendered_diff = $diff->renderDiffToHTML();
+
+		$rendered_diff = nl2br($rendered_diff);
+
+		return $this->render('AgentBundle:Kb:compare-revs.html.twig', array(
+			'rev_old' => $rev_old,
+			'rev_new' => $rev_new,
+			'rendered_diff' => $rendered_diff
 		));
 	}
 }
