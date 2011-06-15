@@ -9,6 +9,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		$('#new_user_chat_alert').template('new_user_chat_alert');
 		$('#new_user_chat_alert_message').template('new_user_chat_alert_message');
+		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
 
 		this._initMessageHandlers();
 

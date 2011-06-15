@@ -137,6 +137,11 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 	handleNewMessage: function(data) {
 		DeskPRO_Window.pageTabStrip.alertTab(this.meta.tabIdClass);
 		this.addMessageRow(data.author_name, data.message, data.author_type);
+
+		// Add 'pop' sound
+		var alertEl = $.tmpl('user_chat_newmsg_sound');
+		console.log('alert %o', alertEl);
+		alertEl.appendTo(this.wrapper);
 	},
 
 	addMessageRow: function(name, msg, type) {
