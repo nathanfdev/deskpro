@@ -103,6 +103,20 @@ class Chat
 
 		$client_messages[] = $chat_cm;
 
+		// Dispatch a general message, so the interfaces that are beeping can
+		// can hide the beep
+		$chat_cm = new ClientMessage();
+		$chat_cm->fromArray(array(
+			'channel' => 'chat_user_agent.chat-assigned',
+			'data' => array(
+				'conversation_id'   => $conversation['id'],
+				'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0
+			),
+			'created_by_client' => $by_client_id,
+		));
+
+		$client_messages[] = $chat_cm;
+
 		// User should be notiifed too
 		if (!$conversation['is_agent'] AND $conversation->session) {
 			$chat_cm_user = new ClientMessage();

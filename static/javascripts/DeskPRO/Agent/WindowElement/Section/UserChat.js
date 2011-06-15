@@ -54,9 +54,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	_initMessageHandlers: function() {
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new-chat');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.message');
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_user_agent.chat-assigned');
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.message', this.handleNewMessage.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-chat', this.handleNewChat.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-assigned', this.handleChatAssigned.bind(this));
 	},
 
 	handleNewMessage: function(data) {
@@ -68,6 +70,11 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 			name: data.author_name,
 			message: data.message
 		});
+	},
+
+	handleChatAssigned: function(data) {
+		var el = $('#new_user_chat_alert_' + data.conversation_id);
+		el.remove();
 	},
 
 	showNewChatAlert: function(conversation_id, initial_message) {
