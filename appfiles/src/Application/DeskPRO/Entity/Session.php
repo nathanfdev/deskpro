@@ -77,6 +77,12 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	protected $active_status = '';
 
 	/**
+	 * @var int
+	 * @orm:Column(name="page_count", type="integer")
+	 */
+	protected $page_count = 0;
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */

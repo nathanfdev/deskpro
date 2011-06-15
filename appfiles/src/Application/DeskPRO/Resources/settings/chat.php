@@ -26,4 +26,14 @@
 	 * When enabled, the user has to chose a department to start a chat
 	 */
 	'core_chat.require_department' => 1,
+
+	/**
+	 * Pageloads until proactive popup
+	 */
+	'core_chat.proactive_pages' => 0,
+
+	/**
+	 * Time until proactive popup
+	 */
+	'core_chat.proactive_time' => 0,
 );

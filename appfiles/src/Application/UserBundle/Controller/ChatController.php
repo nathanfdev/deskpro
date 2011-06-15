@@ -263,10 +263,27 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			$department_sel = implode('', $department_sel);
 		}
 
+		$proactive_ignore_time = empty($_COOKIE['dpchat_no_proactive']) ? 0 : $_COOKIE['dpchat_no_proactive'];
+		$proactive = false;
+		if (!$conversation AND $proactive_ignore_time < time() - 64800) {
+			if (App::getSetting('core_chat.proactive_time')) {
+				$timecut = time() - App::getSetting('core_chat.proactive_time');
+				if ($session['date_created']->getTimestamp() > $timecut) {
+					$proactive = true;
+				}
+			}
+			if (App::getSetting('core_chat.proactive_pages') AND $session['page_count'] > App::getSetting('core_chat.proactive_pages')) {
+				$proactive = true;
+			}
+		}
+		$proactive = true;
+
 		return $this->render('UserBundle:Chat:chat-session.js.php', array(
 			'session' => $session,
 			'convo_messages' => $convo_messages,
+			'conversation' => $conversation,
 			'department_sel' => $department_sel,
+			'proactive' => $proactive
 		));
 	}
 

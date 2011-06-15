@@ -102,6 +102,18 @@ var DpChat_Display = (function() {
 		});
 	};
 
+	this.showProactive = function() {
+		var html = [];
+		html.push('<div id="dpchat_proactive_wrapper">');
+		html.push('</div>');
+
+		var el = $(html.join('')).appendTo('body');
+		el.click(function() {
+			el.remove();
+			DpChat.popChat();
+		});
+	};
+
 	var getAltFormData = function() {
 		return $('.alt-form :input', chatBox).serializeArray();
 	};

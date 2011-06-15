@@ -25,6 +25,7 @@ class Session extends EntityRepository
 	 */
 	public function hasAvailableAgents()
 	{
+
 		$datecut = date('Y-m-d H:m:s', time() - App::getSetting('core_chat.agent_timeout'));
 
 		$check = App::getDb()->fetchColumn("

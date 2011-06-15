@@ -67,6 +67,8 @@ var DpChat = (function() {
 
 	var hasEnded = false;
 
+	var showProactiveChat = false;
+
 	/**
 	 * This is a pre-init that is called automatically when the client has downloaded
 	 * this source file. It ensures jQuery first, and then runs initScript that starts
@@ -158,9 +160,10 @@ var DpChat = (function() {
 	 *
 	 * @param sessionCode
 	 */
-	this.setSessionCode = function(_sessionCode) {
+	this.setSessionCode = function(_sessionCode, _showProactive) {
 		DpChatConsole.log('DpChat.setSessionCode(%o)', _sessionCode);
 		sessionCode = _sessionCode;
+		showProactiveChat = _showProactive;
 
 		mainRunner();
 	};
@@ -508,6 +511,10 @@ var DpChat = (function() {
 
 		messageBroker.addMessageListener('chat.message', addIncomingMessage);
 		messageBroker.addMessageListener('chat.chat-ended', endChat);
+
+		if (showProactiveChat) {
+			display.showProactive();
+		}
 	};
 
 	var addIncomingMessage = function(data) {
