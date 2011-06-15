@@ -62,6 +62,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended', this.handleChatEnded.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-chat', this.handleNewChat.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-assigned', this.handleChatAssigned.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated', this.handlePartsUpdated.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.added-as-part', this.handleAddedAsPart.bind(this));
 	},
 
 	handleNewMessage: function(data) {
@@ -70,6 +72,10 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 	handleChatEnded: function(data) {
 		DeskPRO_Window.getMessageBroker().sendMessage('chat.chat-ended-' + data.conversation_id, data);
+	},
+
+	handlePartsUpdated: function(data) {
+		DeskPRO_Window.getMessageBroker().sendMessage('chat_user_agent.chat-parts-updated-' + data.conversation_id, data);
 	},
 
 	handleNewChat: function(data) {
@@ -82,6 +88,37 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	handleChatAssigned: function(data) {
 		var el = $('#new_user_chat_alert_' + data.conversation_id);
 		el.remove();
+	},
+
+	handleAddedAsPart: function(data) {
+
+		// Make suer we arent already viewing it
+		var checkEl = $('#deskpro_tabstrip li.user_chat_tab_' + data.conversation_id);
+		if (checkEl.length) {
+			return;
+		}
+
+		var conversation_id = data.conversation_id;
+		var initial_message = {
+			name: data.author_name,
+			message: data.message
+		};
+
+		var alertEl = $.tmpl('added_part_user_chat_alert');
+		alertEl.appendTo('body');
+
+		$('.dismiss-trigger', alertEl).click(function() {
+			alertEl.remove();
+		});
+		$('.accept-trigger', alertEl).click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+			alertEl.remove();
+		}).data('route', 'page:' + BASE_URL + 'agent/chat/view/' + conversation_id);
+
+		if (initial_message) {
+			var messageEl = $.tmpl('new_user_chat_alert_message', initial_message);
+			$('div.messages', alertEl).append(messageEl).scrollTop(10000);
+		}
 	},
 
 	showNewChatAlert: function(conversation_id, initial_message) {

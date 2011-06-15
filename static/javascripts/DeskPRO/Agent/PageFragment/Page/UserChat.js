@@ -11,6 +11,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-message-' + this.meta.conversation_id, this.handleNewMessage.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended-' + this.meta.conversation_id, this.chatHasEnded.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-parts-updated-' + this.meta.conversation_id, this.handleUpdateParts.bind(this));
 
 		this._initLayout();
 
@@ -60,6 +61,27 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		});
 	},
 
+	handleUpdateParts: function(data) {
+		this.updateActiveAgentList(data.agent_id, data.participant_ids);
+	},
+
+	updateActiveAgentList: function(assigned, parts) {
+		var assigned_name = DeskPRO_Window.getDisplayName('agent', agent_id) || 'Unassigned';
+		$('span.agent_id.val', this.wrapper).html(assigned_name);
+
+		var ul = $('.convo_participants ul', this.wrapper);
+		ul.empty();
+
+		if (!parts.lenght) {
+			ul.append('<li class="agent-0">None</li>');
+		} else {
+			Array.each(parts, function(agent_id) {
+				var name = DeskPRO_Window.getDisplayName('agent', agent_id);
+				ul.append('<li class="agent-'+agent_id+'">'+name+'</li>');
+			});
+		}
+	},
+
 	_handleResize: function() {
 		if (!this.layout) return;
 		this.layout.resizeAll();
@@ -77,28 +99,71 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		});
 
 		this.assignMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('div.agent_id.menu-trigger:first', this.wrapper),
+			triggerElement: $('div.agent_id.menu-trigger:first, .convo_participants', this.wrapper),
 			menuElement: $('ul.agent_id.menu:first', this.wrapper),
 			onBeforeMenuOpened: function(info) {
-
-				var allow_unassign = true;
-
 				var list = info.menu.elements.list;
+				$('li.sep', list).show();
+				$('li.assign-to-me', list).show();
+
 				$('li[data-option-id]', list).each(function() {
 					var id = $(this).data('option-id');
 					var onlineEl = $('#agent_online_list > li.agent-' + id);
-					if (onlineEl.length || id == DESKPRO_PERSON_ID || (allow_unassign && id == '0')) {
+					if (onlineEl.length || id == DESKPRO_PERSON_ID || id == '0') {
 						$(this).show();
 					} else {
 						$(this).hide();
 					}
 				});
+
+				var trigger = $(info.menu.getOpenTriggerElement());
+
+				var part = false;
+				if (trigger.is('.convo_participants')) {
+					part = true;
+				} else {
+					var parents = trigger.parentsUntil('.convo_participants');
+					if (parents.eq(0).parent().is('.convo_participants')) {
+						part = true;
+					}
+				}
+
+				if (part) {
+					$('li.agent-0', list).hide();
+					$('li.agent-' + DESKPRO_PERSON_ID, list).hide();
+					$('li.assign-to-me', list).hide();
+					$('li.sep', list).hide();
+				}
 			},
 			onItemClicked: function(info) {
 				var agent_id = $(info.itemEl).data('option-id');
-				self.reassignConvo(agent_id);
 
-				$('span.agent_id.val', this.wrapper).html(DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned');
+				var trigger = $(info.menu.getOpenTriggerElement());
+				var part = false;
+				if (trigger.is('.convo_participants')) {
+					part = true;
+				} else {
+					var parents = trigger.parentsUntil('.convo_participants');
+					if (parents.eq(0).parent().is('.convo_participants')) {
+						part = true;
+					}
+				}
+
+				console.log('part %i', part);
+
+				if (part) {
+					var wrap = $('.convo_participants', this.wrapper);
+					var checkEl = $('li.agent-' + agent_id, wrap);
+					if (!checkEl.length) {
+						$('li.agent-0', wrap).remove();
+						$('<li class="agent-'+agent_id+'">'+DeskPRO_Window.getDisplayName('agent', agent_id)+'</li>').appendTo($('ul', wrap));
+
+						self.addPart(agent_id);
+					}
+				} else {
+					self.reassignConvo(agent_id);
+					$('span.agent_id.val', this.wrapper).html(DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned');
+				}
 			}
 		});
 
@@ -148,6 +213,16 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		this.barWrapper.hide();
 	},
 
+	addPart: function(agent_id) {
+		$.ajax({
+			url: BASE_URL + 'agent/chat/add-part/' + this.meta.conversation_id + '/' + agent_id,
+			context: this,
+			contentType: 'json'
+		});
+
+		this.addMessageRow('*', (DeskPRO_Window.getDisplayName('agent', agent_id)) + ' joined', 'sys');
+	},
+
 	reassignConvo: function(agent_id) {
 		$.ajax({
 			url: BASE_URL + 'agent/chat/assign/' + this.meta.conversation_id + '/' + agent_id,
@@ -155,7 +230,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			contentType: 'json'
 		});
 
-		this.addMessageRow('*', 'Chat assigned to ' + DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned', 'sys');
+		this.addMessageRow('*', 'Chat assigned to ' + (DeskPRO_Window.getDisplayName('agent', agent_id)||'Unassigned'), 'sys');
 	},
 
 	handleNewMessage: function(data) {

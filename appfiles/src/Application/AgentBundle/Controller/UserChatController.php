@@ -29,11 +29,13 @@ class UserChatController extends AbstractController
 		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
 		$is_assigned = false;
+		$is_part = false;
 		if (!$conversation['agent']) {
 			$conversation['agent'] = $this->person;
 			$is_assigned = true;
-		} elseif ($conversation['agent']['id'] != $this->person['id']) {
+		} elseif ($conversation['agent']['id'] != $this->person['id'] AND !$conversation->hasParticipant($this->person)) {
 			$conversation->addParticipant($this->person);
+			$is_part = true;
 		}
 
 		App::getOrm()->persist($conversation);
@@ -50,6 +52,18 @@ class UserChatController extends AbstractController
 
 		if ($is_assigned) {
 			$client_messages = ChatClientMessageGenerator::createChatAssignedMessages(
+				App::getSession()->getEntityId(),
+				$conversation
+			);
+			if ($client_messages) {
+				foreach ($client_messages as $cm) {
+					App::getOrm()->persist($cm);
+				}
+			}
+		}
+
+		if ($is_assigned OR $is_part) {
+			$client_messages = ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
 				App::getSession()->getEntityId(),
 				$conversation
 			);
@@ -114,6 +128,8 @@ class UserChatController extends AbstractController
 	{
 		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
+		$old_assigned = $conversation->agent;
+
 		$agent = App::findEntity('DeskPRO:Person', $agent_id);
 		if (!$agent) {
 			$agent = null;
@@ -126,6 +142,11 @@ class UserChatController extends AbstractController
 		}
 
 		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createChatAssignedMessages(
+			App::getSession()->getEntityId(),
+			$conversation
+		));
+
+		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
 			App::getSession()->getEntityId(),
 			$conversation
 		));
@@ -145,6 +166,54 @@ class UserChatController extends AbstractController
 		return $this->createJsonResponse(array(
 			
 		));
+	}
+
+	/**
+	 * Add a participant
+	 *
+	 * @param  $conversation_id
+	 * @param  $quick_reply_id
+	 */
+	public function addPartAction($conversation_id, $agent_id)
+	{
+		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
+
+		$agent = App::findEntity('DeskPRO:Person', $agent_id);
+		if (!$agent OR $conversation->hasParticipant($agent)) {
+			return $this->createJsonResponse(array());
+		}
+
+		$conversation->addParticipant($agent);
+
+		$client_messages = array();
+		foreach ($conversation->getCreatedMessages() as $msg) {
+			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg));
+		}
+
+		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewAddedPartMessage(
+			App::getSession()->getEntityId(),
+			$conversation,
+			$agent
+		));
+		
+		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
+			App::getSession()->getEntityId(),
+			$conversation
+		));
+
+		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+			$em->persist($conversation);
+
+			if ($client_messages) {
+				foreach ($client_messages as $cm) {
+					$em->persist($cm);
+				}
+			}
+
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array());
 	}
 
 

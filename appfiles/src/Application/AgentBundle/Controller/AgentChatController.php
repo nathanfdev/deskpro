@@ -118,7 +118,7 @@ class AgentChatController extends AbstractController
 	
 	public function getOnlineAgentsAction()
 	{
-		$cutoff = time() - App::getSetting('core.sessions_lifetime');
+		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
 
 		$online_agents = array();
 

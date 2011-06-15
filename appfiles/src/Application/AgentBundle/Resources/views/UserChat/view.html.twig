@@ -10,15 +10,25 @@ pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 <div class="scroll-viewport"><div class="scroll-content">
 
 <div class="inner-box-tab-content-2 chat">
-	<div style="float:right" class="menu-trigger agent_id">
-		Assigned Agent:
-		<span class="agent_id val">
-			{% if convo.agent %}
-				{{convo.agent.display_name}}
+	<div style="float:right">
+		<div class="menu-trigger agent_id">
+			Assigned Agent:
+			<span class="agent_id val">
+				{% if convo.agent %}
+					{{convo.agent.display_name}}
+				{% else %}
+					Unassigned
+				{% endif %}
+			</span>
+		</div>
+		<div class="menu-trigger convo_participants">
+			Other Participants: <ul class="comma-list" style="display: inline">{% for agent in convo.participants %}
+				<li class="agent-{{agent.id}}">{{agent.display_name}}</li>
 			{% else %}
-				Unassigned
-			{% endif %}
-		</span>
+				<li class="agent-0">None</li>
+			{% endfor %}
+			</ul>
+		</div>
 	</div>
 	{% if convo.person %}
 		Chat with {{convo.person.display_name}}
@@ -140,11 +150,11 @@ pageMeta.tabIdClass      = 'user_chat_tab_{{convo.id}}';
 {% endif %}
 
 <ul class="menu agent_id" style="display:none">
-	<li data-option-id="0">Unassigned</li>
-	<li data-option-id="{{app.user.id}}">Assign to me</li>
+	<li class="agent-0" data-option-id="0">Unassigned</li>
+	<li class="agent-{{app.user.id}} assign-to-me" data-option-id="{{app.user.id}}">Assign to me</li>
 	<li class="sep">-</li>
 	{% for id,title in agent_names %}
-		<li data-option-id="{{id}}" style="line-height: 15px">
+		<li class="agent-{{id}}" data-option-id="{{id}}" style="line-height: 15px">
 			<div style="margin-right: 5px; float: left">
 				<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 15}) }}" alt="" width="15" height="15" />
 			</div>

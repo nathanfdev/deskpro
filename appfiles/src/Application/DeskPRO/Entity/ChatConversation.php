@@ -340,7 +340,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @param $person_or_id
 	 * @return Person
 	 */
-	public function addParticipant($person_or_id)
+	public function addParticipant($person_or_id, $suppress_sys_msg = false)
 	{
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
@@ -357,6 +357,11 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			$this->_user_participants[] = $person;
 		}
 
+		// Insert left message if they arent a part and arent assigned
+		if (!$suppress_sys_msg and $person['id'] != $this->agent['id']) {
+			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_part_joined', array('person_name' => $person['display_name'])));
+		}
+
 		return $person;
 	}
 
@@ -368,7 +373,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * @param  $person_or_id
 	 * @return Person
 	 */
-	public function removeParticipant($person_or_id)
+	public function removeParticipant($person_or_id, $suppress_sys_msg = false)
 	{
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
@@ -378,6 +383,12 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($this->participants as $k => $p) {
 			if ($p['id'] == $person['id']) {
 				$this->participants->remove($k);
+
+				// Insert left message if they arent a part and arent assigned
+				if (!$suppress_sys_msg and $p['id'] != $this->agent['id']) {
+					$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_part_left', array('person_name' => $p['display_name'])));
+				}
+
 				return $p;
 			}
 		}
@@ -442,6 +453,16 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_assigned_agent', array('agent_name' => $agent['display_name'])));
 		} elseif ($old_agent) {
 			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name' => $old_agent['display_name'])));
+		}
+
+		// Make sure the user isnt both assigned and a part
+		if ($agent) {
+			$this->removeParticipant($agent, true);
+		}
+
+		// Automatically add old assigned guy as part
+		if ($old_agent) {
+			$this->addParticipant($old_agent, true);
 		}
 	}
 

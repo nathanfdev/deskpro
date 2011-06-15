@@ -774,6 +774,10 @@ agent_userchat_assign:
   pattern: /chat/assign/{conversation_id}/{agent_id}
   defaults: { _controller: AgentBundle:UserChat:assignChat }
 
+agent_userchat_addpart:
+  pattern: /chat/add-part/{conversation_id}/{agent_id}
+  defaults: { _controller: AgentBundle:UserChat:addPart }
+
 agent_userchat_end:
   pattern: /chat/end-chat/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:endChat }

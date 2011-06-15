@@ -16,6 +16,23 @@
 	</section>
 </script>
 
+<script type="text/x-jquery-tmpl" id="added_part_user_chat_alert">
+	<section class="new-user-chat-alert" data-conversation-id="${conversation_id}" id="added_part_user_chat_alert_${conversation_id}">
+		<header><h3>Added as a participant</h3></header>
+		<div class="messages"></div>
+		<footer>
+			<button class="dp-button x-small dismiss-trigger">Dismiss</button>
+			<button class="dp-button x-small accept-trigger">Open Chat</button>
+		</footer>
+		<audio autoplay="autoplay">
+			{% endraw %}
+			<source src="{{ asset('sounds/new-chat.mp3') }}" />
+			<source src="{{ asset('sounds/new-chat.ogg') }}" />
+			{% raw %}
+		</audio>
+	</section>
+</script>
+
 <script type="text/x-jquery-tmpl" id="new_user_chat_alert_message">
 	<article>
 		<div class="author">${name}:</div>

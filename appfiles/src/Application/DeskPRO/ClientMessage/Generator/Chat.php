@@ -43,6 +43,30 @@ class Chat
 		return array($new_chat_cm);
 	}
 
+	public static function createNewAddedPartMessage($by_client_id, ChatConversation $conversation, $agent)
+	{
+		$channel = 'chat_user_agent.added-as-part';
+
+		$chat_message = $conversation->messages->get(0);
+		
+		$new_chat_cm = new ClientMessage();
+		$new_chat_cm->fromArray(array(
+			'channel' => $channel,
+			'data' => array(
+				'conversation_id'   => $conversation['id'],
+				'message_id'        => $chat_message['id'],
+				'author_id'         => $chat_message['author_id'],
+				'author_name'       => $chat_message['author_name'],
+				'message'           => $chat_message['content'],
+				'date_created'      => $chat_message['date_created']->getTimestamp()
+			),
+			'created_by_client' => $by_client_id,
+			'for_person'        => $agent
+		));
+
+		return array($new_chat_cm);
+	}
+
 	public static function createChatEndedMessages($by_client_id, ChatConversation $conversation)
 	{
 		$channel = 'chat.chat-ended';
@@ -134,6 +158,51 @@ class Chat
 		}
 
 		return $client_messages;
+	}
+
+	public static function createPartisipatedUpdatedMessages($by_client_id, ChatConversation $conversation)
+	{
+		$cm_data = array(
+			'conversation_id' => $conversation,
+			'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0,
+			'participant_ids' => array()
+		);
+
+		foreach ($conversation->participants as $part) {
+			$cm_data['participant_ids'][] = $part['id'];
+		}
+
+		$channel = 'chat_user_agent.chat-parts-updated';
+
+		$cms = array();
+
+		// Assigned agent
+		if ($conversation->agent) {
+			$cm = new ClientMessage();
+			$cm->fromArray(array(
+				'channel' => $channel,
+				'data' => $cm_data,
+				'created_by_client' => $by_client_id,
+				'for_person' => $conversation->agent
+			));
+
+			$cms[] = $cm;
+		}
+
+		// Participants first
+		foreach ($conversation->participants as $part) {
+			$cm = new ClientMessage();
+			$cm->fromArray(array(
+				'channel' => $channel,
+				'data' => $cm_data,
+				'created_by_client' => $by_client_id,
+				'for_person' => $part
+			));
+
+			$cms[] = $cm;
+		}
+
+		return $cms;
 	}
 
 	public static function createNewChatRoundRobinMessages($by_client_id, ChatConversation $conversation, ChatMessage $chat_message)
