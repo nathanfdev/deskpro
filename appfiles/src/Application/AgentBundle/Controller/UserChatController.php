@@ -28,9 +28,11 @@ class UserChatController extends AbstractController
 	{
 		$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 
+		$is_assigned = false;
 		if (!$conversation['agent']) {
 			$conversation['agent'] = $this->person;
-		} else {
+			$is_assigned = true;
+		} elseif ($conversation['agent']['id'] != $this->person) {
 			$conversation->addParticipant($this->person);
 		}
 
@@ -39,6 +41,18 @@ class UserChatController extends AbstractController
 		$client_messages = array();
 		foreach ($conversation->getCreatedMessages() as $msg) {
 			$client_messages = ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg);
+			if ($client_messages) {
+				foreach ($client_messages as $cm) {
+					App::getOrm()->persist($cm);
+				}
+			}
+		}
+
+		if ($is_assigned) {
+			$client_messages = ChatClientMessageGenerator::createChatAssignedMessages(
+				App::getSession()->getEntityId(),
+				$conversation
+			);
 			if ($client_messages) {
 				foreach ($client_messages as $cm) {
 					App::getOrm()->persist($cm);
@@ -106,14 +120,15 @@ class UserChatController extends AbstractController
 		}
 		$conversation->setAgent($agent);
 
-		$client_messages = ChatClientMessageGenerator::createChatAssignedMessages(
-			App::getSession()->getEntityId(),
-			$conversation
-		);
-
+		$client_messages = array();
 		foreach ($conversation->getCreatedMessages() as $msg) {
 			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg));
 		}
+
+		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createChatAssignedMessages(
+			App::getSession()->getEntityId(),
+			$conversation
+		));
 
 		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
 			$em->persist($conversation);

@@ -6,6 +6,7 @@ var DpChat_Display = (function() {
 	var chatBox = null;
 	var chatBoxBtn = null;
 	var messageWrapper = null;
+	var findingAgentEl = null;
 
 	var typingFuncTime = null;
 
@@ -48,11 +49,14 @@ var DpChat_Display = (function() {
 		var html = [];
 		html.push('<div id="dpchat_panel">');
 			html.push('<div id="dpchat_titlebar"><h3>Chat</h3><span id="dpchat_closepanel">Minimize</span><span id="dpchat_endchat">End Chat</span><span id="dpchat_popchat">Open in new window</span></div>');
+			html.push('<div id="dpchat_messages">');
 			if (options.departmentSelect) {
-				html.push('<div id="dpchat_messages"><div class="dpchat-info dpchat-instruction alt-form">Choose a department and type in your question to get started: ' + options.departmentSelect + '</div></div>');
+				html.push('<div class="dpchat-info dpchat-instruction alt-form">Choose a department and type in your question to get started: ' + options.departmentSelect + '</div>');
 			} else {
-				html.push('<div id="dpchat_messages"><div class="dpchat-info dpchat-instruction">Type in your question to get started</div></div>');
+				html.push('<div class="dpchat-info dpchat-instruction">Type in your question to get started</div>');
 			}
+			html.push('<div class="dpchat-finding-agent">Please wait while we find an agent to take your chat</div>');
+			html.push('</div>');
 			html.push('<div id="dpchat_input"><textarea></textarea></div>')
 		html.push('</div>');
 
@@ -63,6 +67,7 @@ var DpChat_Display = (function() {
 		DpChatConsole.log('DpChat_Display.initDisplay: chatBox %o', chatBox);
 
 		messageWrapper = $('#dpchat_messages');
+		findingAgentEl = $('.dpchat-finding-agent', messageWrapper);
 
 		$('#dpchat_closepanel').click(function() {
 			chatBox.removeClass('dpchat-panel-open');
@@ -100,6 +105,14 @@ var DpChat_Display = (function() {
 				self.addMessageRow('You', msg, 'user');
 			}
 		});
+	};
+
+	this.showAssignedStatus = function(isAssigned) {
+		if (!isAssigned) {
+			findingAgentEl.detach().appendTo(messageWrapper).show();
+		} else {
+			findingAgentEl.hide();
+		}
 	};
 
 	this.showProactive = function() {

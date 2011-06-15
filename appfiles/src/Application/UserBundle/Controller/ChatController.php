@@ -79,6 +79,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				'chat.message',
 				'chat.chat-ended',
 				'chat.proactive',
+				'chat_user.chat-assigned',
 			);
 
 			$data = array();
@@ -224,7 +225,7 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 		\Application\DeskPRO\HttpFoundation\Session::$track_from_input = true;
 
 		// First lets see if anyone is even available for chatting
-		if (!App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
+		if (false and !App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
 			$response = $this->render('UserBundle:Chat:chat-session-unavailable.js.php', array());
 			$response->setLastModified(date_create('-1 day'));
 			$response->setExpires(date_create("-1 day"));

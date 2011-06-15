@@ -4,6 +4,7 @@
 var DpChat_Display = (function() {
 
 	var $ = null;
+	var findingAgentEl = null;
 
 	this.initDisplay = function(options) {
 
@@ -19,6 +20,8 @@ var DpChat_Display = (function() {
 				DpChat.endChat();
 			}
 		});
+
+		findingAgentEl = $('.dpchat-finding-agent');
 
 		var html = [];
 		html.push('<div id="dpchat_intro" class="dpchat-instruction alt-form">');
@@ -78,6 +81,7 @@ var DpChat_Display = (function() {
 	 */
 	this.addMessageRow = function(name, message, type) {
 
+		$('body').addClass('has-chat');
 		$('#dpchat_intro').hide();
 
 		var tpl = 'chat_message_tpl';
@@ -96,6 +100,14 @@ var DpChat_Display = (function() {
 		$('#dpchat_messages').scrollTop(100000);
 
 		return el;
+	};
+
+	this.showAssignedStatus = function(isAssigned) {
+		if (!isAssigned) {
+			findingAgentEl.detach().appendTo('#dpchat_messages').show();
+		} else {
+			findingAgentEl.hide();
+		}
 	};
 
 	this.destroy = function() {

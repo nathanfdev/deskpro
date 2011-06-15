@@ -386,13 +386,17 @@ var DpChat = (function() {
 				return;
 			}
 
-			var message = null;
-			while (message = data.messages.shift()) {
-				messageBroker.sendMessage(message[0], message[1]);
-			}
-
 			if (data.last_id) {
 				this.lastMessageId = data.last_id;
+			}
+
+			if (data.messages.length) {
+				console.log('Messages: %o', data.messages);
+
+				var message = null;
+				while (message = data.messages.shift()) {
+					messageBroker.sendMessage(message[0], message[1]);
+				}
 			}
 
 			// Start auto timer
@@ -520,14 +524,28 @@ var DpChat = (function() {
 			display.showChatPanel();
 			ajaxPoller.options.interval = 2000;
 			ajaxPoller.send();
+
+			chatAssigned({agent_id:1});
 		}
 
 		messageBroker.addMessageListener('chat.message', addIncomingMessage);
 		messageBroker.addMessageListener('chat.chat-ended', endChat);
+		messageBroker.addMessageListener('chat_user.chat-assigned', chatAssigned);
 
 		if (showProactiveChat) {
 			display.showProactive();
 		}
+	};
+
+	var chatAssigned = function(data) {
+		if (!display.showAssignedStatus) {
+			return;
+		}
+		var isAssigned = true;
+		if (data.agent_id == 0) {
+			isAssigned = false;
+		}
+		display.showAssignedStatus(isAssigned);
 	};
 
 	var addIncomingMessage = function(data) {

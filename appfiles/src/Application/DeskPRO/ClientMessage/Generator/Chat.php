@@ -62,6 +62,8 @@ class Chat
 
 	public static function createChatAssignedMessages($by_client_id, ChatConversation $conversation)
 	{
+		$client_messages = array();
+
 		$chat_cm = new ClientMessage();
 
 		$chat_message = $conversation->messages->get(0);
@@ -99,7 +101,25 @@ class Chat
 			));
 		}
 
-		return array($chat_cm);
+		$client_messages[] = $chat_cm;
+
+		// User should be notiifed too
+		if (!$conversation['is_agent'] AND $conversation->session) {
+			$chat_cm_user = new ClientMessage();
+			$chat_cm_user->fromArray(array(
+				'channel' => 'chat_user.chat-assigned',
+				'data' => array(
+					'conversation_id'   => $conversation['id'],
+					'agent_id' => $conversation['agent'] ? $conversation['agent']['id'] : 0
+				),
+				'created_by_client' => $by_client_id,
+				'for_client' => $conversation->session['id']
+			));
+
+			$client_messages[] = $chat_cm_user;
+		}
+
+		return $client_messages;
 	}
 
 	public static function createNewChatRoundRobinMessages($by_client_id, ChatConversation $conversation, ChatMessage $chat_message)

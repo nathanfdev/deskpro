@@ -307,3 +307,16 @@
     width: 100px;
     cursor: pointer;
 }
+
+
+.dpchat-finding-agent {
+    padding: 4px;
+    font-size: 11px;
+    color: #1E66E3;
+
+    display: none;
+}
+
+.has-chat .dpchat-finding-agent {
+    display: block;
+}
