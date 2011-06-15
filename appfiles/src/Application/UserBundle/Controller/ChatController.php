@@ -315,6 +315,10 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 				$conversation
 			);
 
+			foreach ($conversation->getCreatedMessages() as $msg) {
+				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages($session['id'], $msg));
+			}
+
 			App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
 				$em->persist($conversation);
 

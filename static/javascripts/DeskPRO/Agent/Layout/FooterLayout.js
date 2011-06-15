@@ -28,29 +28,33 @@ DeskPRO.Agent.Layout.FooterLayout = Orb.Class({
 		var w = this.paneWrapper.width();
 		var h = this.paneWrapper.height();
 
-		if (this.footer.is('.no-expander')) {
-			var foot_height = 166;
-		} else if (this.footer.is('.is-ticket-list')) {
-			if (this.isFooterOpen) {
-				var foot_height = 175;
-			} else {
-				var foot_height = 33;
-			}
-		} else {
-
-			var foot_height = 26;
-			if ($('.tab-bottom', this.footer).length) {
-				foot_height = 33;
+		if (this.footer.is(':visible')) {
+			if (this.footer.is('.no-expander')) {
+				var foot_height = 166;
+			} else if (this.footer.is('.is-ticket-list')) {
 				if (this.isFooterOpen) {
-					foot_height = 198;
+					var foot_height = 175;
+				} else {
+					var foot_height = 33;
+				}
+			} else {
+
+				var foot_height = 26;
+				if ($('.tab-bottom', this.footer).length) {
+					foot_height = 33;
+					if (this.isFooterOpen) {
+						foot_height = 198;
+					}
 				}
 			}
+			this.footer.css({
+				height: foot_height,
+				width: w,
+				overflow: 'hidden'
+			});
+		} else {
+			var foot_height = 0;
 		}
-		this.footer.css({
-			height: foot_height,
-			width: w,
-			overflow: 'hidden'
-		});
 
 		this.content.css({
 			height: h-foot_height,

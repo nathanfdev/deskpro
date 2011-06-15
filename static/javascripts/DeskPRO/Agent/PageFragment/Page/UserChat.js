@@ -199,6 +199,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		});
 
 		this.addMessageRow('*', 'Chat ended', 'sys');
+		this.chatHasEnded();
 	},
 
 	chatHasEnded: function() {
@@ -211,6 +212,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		$('.ended', el).show();
 
 		this.barWrapper.hide();
+		this._handleResize();
 	},
 
 	addPart: function(agent_id) {
