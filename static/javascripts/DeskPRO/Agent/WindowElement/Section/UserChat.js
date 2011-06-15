@@ -55,15 +55,21 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	_initMessageHandlers: function() {
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.new-chat');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.message');
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat.chat-ended');
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('chat_user_agent.chat-assigned');
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.message', this.handleNewMessage.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended', this.handleChatEnded.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-chat', this.handleNewChat.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat_user_agent.chat-assigned', this.handleChatAssigned.bind(this));
 	},
 
 	handleNewMessage: function(data) {
 		DeskPRO_Window.getMessageBroker().sendMessage('chat.new-message-' + data.conversation_id, data);
+	},
+
+	handleChatEnded: function(data) {
+		DeskPRO_Window.getMessageBroker().sendMessage('chat.chat-ended-' + data.conversation_id, data);
 	},
 
 	handleNewChat: function(data) {

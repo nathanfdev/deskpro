@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		this.barWrapper = this.wrapper.children('.layout-footer').attr('id', Orb.getUniqueId());
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('chat.new-message-' + this.meta.conversation_id, this.handleNewMessage.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('chat.chat-ended-' + this.meta.conversation_id, this.chatHasEnded.bind(this));
 
 		this._initLayout();
 
@@ -117,11 +118,19 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			contentType: 'json'
 		});
 
+		this.addMessageRow('*', 'Chat ended', 'sys');
+	},
+
+	chatHasEnded: function() {
+
+		if (this.hasEnded) return;
+		this.hasEnded = true;
+
 		var el = $('.chat-status:first', this.wrapper);
 		$('.open', el).hide();
 		$('.ended', el).show();
 
-		this.addMessageRow('*', 'Chat ended', 'sys');
+		this.barWrapper.hide();
 	},
 
 	reassignConvo: function(agent_id) {
