@@ -35,6 +35,17 @@ class UserChatController extends AbstractController
 		}
 
 		App::getOrm()->persist($conversation);
+
+		$client_messages = array();
+		foreach ($conversation->getCreatedMessages() as $msg) {
+			$client_messages = ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg);
+			if ($client_messages) {
+				foreach ($client_messages as $cm) {
+					App::getOrm()->persist($cm);
+				}
+			}
+		}
+
 		App::getOrm()->flush();
 
 		$convo_messages = App::getOrm()->createQuery("
@@ -100,6 +111,10 @@ class UserChatController extends AbstractController
 			$conversation
 		);
 
+		foreach ($conversation->getCreatedMessages() as $msg) {
+			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg));
+		}
+
 		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
 			$em->persist($conversation);
 
@@ -132,6 +147,10 @@ class UserChatController extends AbstractController
 			App::getSession()->getEntityId(),
 			$conversation
 		);
+
+		foreach ($conversation->getCreatedMessages() as $msg) {
+			$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages(App::getSession()->getEntityId(), $msg));
+		}
 
 		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
 			$em->persist($conversation);

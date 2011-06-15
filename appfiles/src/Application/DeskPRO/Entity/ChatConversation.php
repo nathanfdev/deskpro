@@ -11,7 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
+use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 
 use Orb\Util\Strings;
 
@@ -20,6 +21,7 @@ use Orb\Util\Strings;
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ChatConversation")
  * @orm:Table(name="chat_conversations")
+ * @orm:HasLifecycleCallbacks
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -157,6 +159,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_ended;
 
+	protected $_created_messages = array();
+
 	protected $_user_participants = null;
 
 	/**
@@ -261,6 +265,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		
 		$message->conversation = $this;
 		$this->messages->add($message);
+
+		$this->_created_messages[] = $message;
 
 		return $message;
 	}
@@ -437,5 +443,15 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 		} elseif ($old_agent) {
 			$this->addSystemMessage(App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name' => $old_agent['display_name'])));
 		}
+	}
+
+	public function getCreatedMessages()
+	{
+		return $this->_created_messages;
+	}
+
+	public function _clearCreatedMessages()
+	{
+		$this->_created_messages = array();
 	}
 }

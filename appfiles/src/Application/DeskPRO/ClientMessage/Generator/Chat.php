@@ -191,7 +191,6 @@ class Chat
 				'channel' => $channel,
 				'data' => $cm_data,
 				'created_by_client' => $by_client_id,
-				'for_person' => $person,
 				'for_client' => $session['id']
 			));
 
