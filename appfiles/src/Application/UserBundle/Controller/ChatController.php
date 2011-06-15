@@ -322,4 +322,31 @@ class ChatController extends \Application\DeskPRO\HttpKernel\Controller\Controll
 			));
 		}
 	}
+
+
+	/**
+	 * This inits a session, and sets the various cookies. Then
+	 * calls the dpchat (from the view) to set it on the client.
+	 */
+	public function chatWindowAction($session_code)
+	{
+		// First lets see if anyone is even available for chatting
+		if (!App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents()) {
+			//return $this->createResponse('');
+		}
+
+		$session = null;
+		if ($session_code) {
+			$session = App::getEntityRepository('DeskPRO:Session')->getSessionFromCode($session_code);
+		}
+
+		if (!$session) {
+			$sessionObj = $this->get('session');
+			$session = $sessionObj->getEntity();
+		}
+
+		return $this->render('UserBundle:Chat:window.html.twig', array(
+			'session'  => $session,
+		));
+	}
 }

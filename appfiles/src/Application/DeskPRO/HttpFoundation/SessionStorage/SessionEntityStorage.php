@@ -125,10 +125,6 @@ class SessionEntityStorage implements \Symfony\Component\HttpFoundation\SessionS
 		session_start();
 
 		self::$sessionStarted = true;
-
-		// We set this here to force saving of sessions
-		// every time, so the date_last is updated
-		$_SESSION['.'] = mt_rand(1, 999999);
 	}
 
 

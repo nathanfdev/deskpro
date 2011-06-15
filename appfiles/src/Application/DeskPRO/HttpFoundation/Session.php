@@ -98,6 +98,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 		setcookie('dpvid', $vis['visitor_code'], time()+15778463);
 
 		$this->set('dpvid', $vis['id']);
+		$this->set('dplast', time());
 	}
 
 

@@ -13,7 +13,7 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		echo App::getTranslator()->phrase('core_chat.msg_unassigned_agent', array('agent_name'=> 'test'));
+		echo App::getEntityRepository('DeskPRO:Session')->hasAvailableAgents();
 
 		exit;
 		return $this->render('DevBundle:Test:test.html.twig');

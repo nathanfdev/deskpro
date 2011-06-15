@@ -2,9 +2,11 @@ if (DpChat_EnableDebug) {
 	var DpChatConsole = window.console;
 } else {
 	var DpChatConsole = {};
-	['error', 'log', 'warn', 'info', 'debug'].each(function(v) {
-		DpChatConsole[v] = function() { };
-	});
+	DpChatConsole['error'] = function(){};
+	DpChatConsole['log'] = function(){};
+	DpChatConsole['warn'] = function(){};
+	DpChatConsole['info'] = function(){};
+	DpChatConsole['debug'] = function(){};
 }
 
 /**
@@ -29,8 +31,7 @@ var DpChat = (function() {
 	 * Scoped reference to jQuery
 	 * @var {jQuery}
 	 */
-	var $ = function() {
-	};
+	var $ = null;
 
 	/**
 	 * The display handler that defines the theme etc
@@ -118,16 +119,17 @@ var DpChat = (function() {
 		DpChatConsole.log('DpChat.initScript');
 
 		if (window.DpChat_Options) {
-			$.extend(options, DpChat_Options);
+			options = $.extend({}, options, window.DpChat_Options);
 		}
 
 		// Box.js
-		scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js"></script>').appendTo('body');
+		scriptDisplay = $('<script type="text/javascript" async="true" src="' + options.staticUrl + 'javascripts/DeskPRO/User/Chat/Display/' + options.displayType + '.js?___='+(new Date().getTime())+'"></script>').appendTo('body');
 
 		// DeskPRO script that sets/gets session and initial messages
 		var url = options.deskproUrl + 'chat/chat-session?_1=';
 		url += encodeURIComponent(document.location.href);
 		url += '&amp;_2=' + encodeURIComponent(document.referrer);
+		url += '&amp;___='+(new Date().getTime());
 
 		scriptSession = $('<script type="text/javascript" async="true" src="' + url + '"></script>').appendTo('body');
 
@@ -199,9 +201,9 @@ var DpChat = (function() {
 		sendMessage: function (name, data) {
 
 			if (this.messageListeners[name] !== undefined) {
-				this.messageListeners[name].each(function(callback) {
-					callback(data, name);
-				});
+				for (var x = 0; x < this.messageListeners[name].length; x++) {
+					this.messageListeners[name][x](data, name);
+				}
 			}
 
 			var nameparts = name.split('.');
@@ -210,9 +212,9 @@ var DpChat = (function() {
 			while (nameparts.pop()) {
 				cur_name = nameparts.join('.') + '.*';
 				if (this.messageListeners[cur_name] !== undefined) {
-					this.messageListeners[cur_name].each(function(callback) {
-						callback(data, name);
-					});
+					for (var x = 0; x < this.messageListeners[cur_name].length; x++) {
+						this.messageListeners[cur_name][x](data, name);
+					}
 				}
 			}
 		},
@@ -239,11 +241,11 @@ var DpChat = (function() {
 
 		init: function() {
 
-			var self = this;
+			var selfPoller = this;
 			this.addData(function () {
-						if (!self.lastMessageId) return null;
-						return { 'since': self.lastMessageId };
-					}, 'since', { recurring: true });
+				if (!selfPoller.lastMessageId) return null;
+				return { 'name': 'since', 'value': selfPoller.lastMessageId};
+			}, 'since', { recurring: true });
 
 			this.autoSendTimeout = Function_Delay(this.send, this.options.initialDelay, this);
 		},
@@ -302,17 +304,8 @@ var DpChat = (function() {
 					}
 				}
 
-				if (typeOf(item_data) == 'function') {
-					item_data = item_data(item_name, {}, item_opts);
-				}
-
-				if (typeOf(item_data) == 'array') {
-					send_data.append(item_data);
-				} else {
-					Object.each(item_data, function(v, k) {
-						send_data.push({ name: k, value: v });
-					});
-				}
+				item_data = item_data(item_name, {}, item_opts);
+				send_data.push(item_data);
 
 				sent_info.push([item_orig_data, item_name, item_opts]);
 			}
@@ -360,7 +353,7 @@ var DpChat = (function() {
 				}
 			}
 
-			if (data.messages === undefined || typeOf(data.messages) != 'array') {
+			if (data.messages === undefined) {
 				return;
 			}
 
@@ -451,13 +444,14 @@ var DpChat = (function() {
 	//#################################################################
 
 	var Function_Delay = function(fn, delay, bind, args) {
-		return setTimeout(fn.pass((args == null ? [] : args), bind), delay);
-	};
+		args = args || [];
+		bind = bind || fn;
 
-	this.util = {
-		Function_Delay: Function_Delay
+		var timeout = window.setTimeout(function() {
+			fn.apply(bind, args);
+		}, delay);
+		return timeout;
 	};
-
 
 	//#################################################################
 	//# Main

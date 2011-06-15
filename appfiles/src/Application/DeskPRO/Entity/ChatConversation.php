@@ -125,6 +125,15 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	protected $is_agent = false;
 
 	/**
+	 * If the chat is popped out into a window.
+	 * This is used to make sure the JS widget on pages doesn't load again.
+	 *
+	 * @var bool
+	 * @orm:Column(name="is_window", type="boolean")
+	 */
+	protected $is_window = false;
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */

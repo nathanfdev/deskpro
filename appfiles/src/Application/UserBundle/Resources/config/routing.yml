@@ -264,3 +264,7 @@ user_chat_sendusertyping:
 user_chat_chatended:
   pattern: /chat/chat-finished/{session_code}
   defaults: { _controller: UserBundle:Chat:chatEnded }
+
+user_chat_chatwin:
+  pattern: /chat/chat-window/{session_code}
+  defaults: { _controller: UserBundle:Chat:chatWindow }
