@@ -1,0 +1,85 @@
+<header class="section-header">
+	<h1>Ideas</h1>
+</header>
+<section class="inbox">
+	<ul class="nav-list">
+		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_ideas_validating') }}">
+			<span class="list-counter" id="kb_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
+			<a>Ideas Validating</a>
+		</li>
+		<li class="with-route auto-load-route" data-route="listpane:">
+			<span class="list-counter" id="kb_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
+			<a>Comments Validating</a>
+		</li>
+		<li class="with-route" data-route="listpane:">
+			<span class="list-counter" id="kb_pending_count">{{ counts.popular_ideas|default(0) }}</span>
+			<a>Popular Ideas</a>
+		</li>
+	</ul>
+</section>
+
+<nav id="ideas_outline_tabstrip" class="deskpro-tabstrip">
+	<ul>
+		<li class="status" data-tab-for="#ideas_outline_status"><a>Status</a></li>
+		<li class="categroies"  data-tab-for="#ideas_outline_category"><a>Category</a></li>
+		<li class="labels" data-tab-for="#ideas_outline_labels"><a>Labels</a></li>
+	</ul>
+</nav>
+<section id="ideas_outline_status" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.status">
+	<ul class="nav-list">
+		<li>
+			<a>New</a>
+		</li>
+		<li>
+			<a>Active</a>
+		</li>
+		{% for cat in active_status_cats %}
+			<li class="sub-list" data-route="listpane:">
+				<a>{{ cat.title }}</a>
+			</li>
+		{% endfor %}
+		<li>
+			<a>Closed</a>
+		</li>
+		{% for cat in closed_status_cats %}
+			<li class="sub-list" data-route="listpane:">
+				<a>{{ cat.title }}</a>
+			</li>
+		{% endfor %}
+		<li>
+			<a>Hidden</a>
+		</li>
+			<li class="sub-list" data-route="listpane:">
+				<a>Deleted</a>
+			</li>
+			<li class="sub-list" data-route="listpane:">
+				<a>Spam</a>
+			</li>
+	</ul>
+</section>
+<section id="ideas_outline_category" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.categroies">
+	<ul class="nav-list">
+		{% for cat in idea_cats %}
+			<li data-route="listpane:{{ path('agent_ideas_cat', {'category_id':cat.id}) }}">
+				<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
+			</li>
+		{% endfor %}
+	</ul>
+</section>
+<section id="ideas_outline_labels" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.labels">
+	<dl class="labels-list">
+		{% for letter,labels in ideas_tag_index %}
+			<dt>{{letter}}</dt>
+			<dd>
+				<ul class="comma-list">
+					{% for label in labels %}
+						<li><a data-route="listpane:">{{label}}</a></li>
+					{% endfor %}
+				</ul>
+			</dd>
+		{% else %}
+			<dt></dt>
+			<dd>View an idea to add labels to it.</dd>
+		{% endfor %}
+	</dl>
+</section>

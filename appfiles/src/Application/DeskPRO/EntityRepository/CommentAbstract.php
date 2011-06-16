@@ -29,6 +29,16 @@ class CommentAbstract extends EntityRepository
 		")->setParameter(1, 'visible')->setParameter(2, $object)->execute();
 	}
 
+	public function countAwaitingValidation()
+	{
+		$table = $this->getClassMetadata()->getTableName();
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM $table
+			WHERE status = ?
+		", array('validating'));
+	}
+
 	public function getValidatingComments()
 	{
 		return $this->getEntityManager()->createQuery("

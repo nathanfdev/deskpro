@@ -20,6 +20,20 @@ use Orb\Util\Strings;
 
 class Idea extends EntityRepository
 {
+	public function countAwaitingValidation()
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM ideas
+			WHERE hidden_status = ?
+		", array('validating'));
+	}
+
+	public function countPopular()
+	{
+		return 0;
+	}
+
 	public function getBySlug($slug)
 	{
 		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);

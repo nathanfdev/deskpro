@@ -28,7 +28,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 {
 	const STATUS_NEW      = 'new';
 	const STATUS_ACCEPTED = 'accepted';
-	const STATUS_DECLINED = 'declined';
+	const STATUS_CLOSED   = 'closed';
 	const STATUS_HIDDEN   = 'hidden';
 
 	const HIDDEN_STATUS_VALIDATING = 'validating';
@@ -61,11 +61,11 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	protected $status;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\IdeaStatus
-	 * @orm:ManyToOne(targetEntity="IdeaStatus", fetch="EAGER")
-	 * @orm:JoinColumn(name="sub_status_id", referencedColumnName="id")
+	 * @var \Application\DeskPRO\Entity\IdeaStatusCategory
+	 * @orm:ManyToOne(targetEntity="IdeaStatusCategory", fetch="EAGER")
+	 * @orm:JoinColumn(name="status_category", referencedColumnName="id")
 	 */
-	protected $sub_status = null;
+	protected $status_category = null;
 
 	/**
 	 * @var string
