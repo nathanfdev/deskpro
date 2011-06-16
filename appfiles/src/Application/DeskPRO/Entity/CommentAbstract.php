@@ -44,6 +44,19 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Visitor
+	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
+	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id")
+	 */
+	protected $visitor = null;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="ip_address", type="string", length=30)
+	 */
+	protected $ip_address;
+
+	/**
 	 * @var string
 	 * @orm:Column(name="email", type="string", length=255, nullable=true)
 	 */
@@ -77,6 +90,23 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->status = 'visible';
 		$this->date_created = new \DateTime();
+	}
+
+	public function setVisitor(Visitor $visitor = null)
+	{
+		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
+		$this->visitor = $visitor;
+
+		if ($visitor === null) return;
+
+		$this['ip_address'] = $visitor['ip_address'];
+
+		if (!$this->name AND $visitor['name']) {
+			$this['name'] = $visitor['name'];
+		}
+		if (!$this->email AND $visitor['email']) {
+			$this['email'] = $visitor['email'];
+		}
 	}
 
 	public function getContentHtml()

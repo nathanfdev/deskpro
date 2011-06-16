@@ -14,7 +14,8 @@ namespace Application\DeskPRO\Entity;
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
+use Orb\Util\Numbers;
 
 /**
  * Votes on ideas
@@ -52,6 +53,24 @@ class IdeaVote extends \Application\DeskPRO\Domain\DomainObject
 	protected $visitor = null;
 
 	/**
+	 * @var string
+	 * @orm:Column(name="ip_address", type="string", length=30)
+	 */
+	protected $ip_address;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="email", type="string", length=255, nullable=true)
+	 */
+	protected $email = null;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="name", type="string", length=255, nullable=true)
+	 */
+	protected $name = null;
+	
+	/**
 	 * @var int
 	 * @orm:Column(name="num_votes", type="integer")
 	 */
@@ -74,5 +93,30 @@ class IdeaVote extends \Application\DeskPRO\Domain\DomainObject
 	public function __consturct()
 	{
 		$this->date_created = new \DateTime();
+	}
+
+	public function setNumVotes($votes)
+	{
+		$votes = Numbers::bound($votes, 1, App::getSetting('core_ideas.max_votes_ideas'));
+		$this->_onPropertyChanged('num_votes', $this->num_votes, $votes);
+
+		$this->num_votes = $votes;
+	}
+
+	public function setVisitor(Visitor $visitor = null)
+	{
+		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
+		$this->visitor = $visitor;
+
+		if ($visitor === null) return;
+
+		$this['ip_address'] = $visitor['ip_address'];
+
+		if (!$this->name AND $visitor['name']) {
+			$this['name'] = $visitor['name'];
+		}
+		if (!$this->email AND $visitor['email']) {
+			$this['email'] = $visitor['email'];
+		}
 	}
 }

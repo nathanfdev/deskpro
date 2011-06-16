@@ -27,7 +27,6 @@ use \Orb\Util\Strings;
 class Idea extends \Application\DeskPRO\Domain\DomainObject
 {
 	const STATUS_NEW      = 'new';
-	const STATUS_REVIEW   = 'review';
 	const STATUS_ACCEPTED = 'accepted';
 	const STATUS_DECLINED = 'declined';
 	const STATUS_HIDDEN   = 'hidden';
@@ -57,15 +56,16 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Column(name="content", type="text")
-	 */
-	protected $content;
-
-	/**
-	 * @var string
 	 * @orm:Column(name="status", type="string", length=15)
 	 */
 	protected $status;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\IdeaStatus
+	 * @orm:ManyToOne(targetEntity="IdeaStatus", fetch="EAGER")
+	 * @orm:JoinColumn(name="sub_status_id", referencedColumnName="id")
+	 */
+	protected $sub_status = null;
 
 	/**
 	 * @var string
@@ -92,6 +92,20 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	protected $category;
 
 	/**
+	 * The primary email address used by this account
+	 *
+	 * @var \Application\DeskPRO\Entity\IdeaComment
+	 * @orm:OneToOne(targetEntity="IdeaComment", fetch="EAGER")
+	 * @orm:JoinColumn(name="first_comment_id", referencedColumnName="id")
+	 */
+	protected $first_comment;
+
+	/**
+	 * @orm:OneToMany(targetEntity="IdeaComment", mappedBy="idea", cascade={"persist", "remove", "merge"})
+	 */
+	protected $comments;
+
+	/**
 	 * @orm:OneToMany(targetEntity="LabelIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
@@ -108,9 +122,12 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
-	public function getContentHtml()
+	public function addComment($comment)
 	{
-		return Markdown::format($this->content);
+		$comment->idea = $this;
+		$this->comments->add($comment);
+
+		return $comment;
 	}
 
 	public function getCategoryId()

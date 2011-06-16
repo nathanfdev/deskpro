@@ -99,6 +99,23 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	protected $last_page = '';
 
 	/**
+	 * The users name. Sometimes we might ask the users name, so we can
+	 * save it in the visitor record for future reference
+	 *
+	 * @var string
+	 * @orm:Column(name="name", type="string", length=255)
+	 */
+	protected $name = '';
+
+	/**
+	 * The users email, like the name above
+	 *
+	 * @var string
+	 * @orm:Column(name="email", type="string", length=255)
+	 */
+	protected $email = '';
+
+	/**
 	 * @var \DateTime
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
