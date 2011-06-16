@@ -5,6 +5,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 	initPage: function(el) {
 
+		this.destroyEls = [];
+
 		this.wrapper = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.barWrapper = this.wrapper.children('.layout-footer').attr('id', Orb.getUniqueId());
@@ -38,6 +40,10 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 		});
 
 		this._initMenus();
+
+		if (this.meta.viewPersonUrl) {
+			this._initPopout();
+		}
 	},
 
 	_initLayout: function() {
@@ -253,11 +259,16 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			name = '&lt;' + name + '&gt; ';
 		}
 
+		var popoutclass = '';
+		if (type == 'user') {
+			popoutclass = " person-overview";
+		}
+
 		msg = Orb.escapeHtml(msg);
 		msg = Orb.linkUrls(msg);
 
 		var html = ['<div class="message '+type+'">'];
-			html.push('<span class="author">' + name + '</span>');
+			html.push('<span class="author' + popoutclass + '">' + name + '</span>');
 			html.push('<span class="message">' + msg + '</span>');
 		html.push('</div>');
 
@@ -273,5 +284,161 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			context: this,
 			contentType: 'json'
 		});
+	},
+
+	//#################################################################
+	//# Popout
+	//#################################################################
+
+	personPopoutHtml: null,
+	personPopoutWaiting: false,
+	_initPopout: function() {
+		var self = this;
+		var el = this.wrapper;
+
+		// AJAX load the fragment now
+		var url = this.getMetaData('viewPersonUrl');
+		$.ajax({
+			dataType: 'text',
+			url: url,
+			type: 'GET',
+			success: function(html) {
+				self.personPopoutHtml = html;
+				if (self.personPopoutWaiting) {
+					self.personPopoutWaiting = false;
+					self._initPopoutPageFragment();
+				}
+			}
+		});
+
+		$('.person-overview', el).css({'cursor': 'pointer'}).click(function(event) {
+			self.isMouseOverPopout = true;
+			self.openPopOut(event);
+		});
+	},
+
+	_initPopoutEls_done: false,
+	_initPopoutEls: function() {
+
+		if (this._initPopoutEls_done) return;
+		this._initPopoutEls_done = true;
+
+		var el = this.contentWrapper;
+		var self = this;
+
+		this.popout = $('.person-popout:first', el);
+		this.popout.click(function(event) {
+			// Any clicks that bubble here should stop now
+			event.stopPropagation();
+		});
+		this.popout.detach().appendTo('body');
+		this.destroyEls.push(this.popout);
+
+		this.popoutOuter = $('.person-popout-outer:first', el);
+		this.popoutOuter.detach().appendTo('body');
+		this.destroyEls.push(this.popoutOuter);
+
+		this.popoutTabs = $('.person-popout-tabs:first', el);
+		this.popoutTabs.detach().appendTo('body');
+		this.destroyEls.push(this.popoutTabs);
+
+		var self = this;
+		$('.close:first', this.popoutTabs).click(function() {
+			self.closePopout();
+		});
+
+		$('.move-to-tab:first', this.popoutTabs).click(function() {
+			DeskPRO_Window.runPageRouteFromElement($('.person-overview', self.wrapper));
+			self.closePopout();
+		});
+	},
+
+	openPopOut: function(event) {
+
+		this._initPopoutEls();
+
+		// Already open
+		if (this.popout.is(':visible')) {
+			return;
+		}
+
+		var orig = $('.person-overview:first', this.wrapper);
+		var pos = orig.offset();
+		var wrapper_pos = this.wrapper.offset();
+
+		// can use the left position of the element to roughly
+		// determine how wide the columns are
+		// so we want it to stretch as far as we can, minus some wriggle room
+		var width = pos.left - 35;
+
+		// ... but not too big
+		if (width > 780) {
+			width = 780;
+		}
+
+		var show_popout = true;
+		if (width < 400) {
+			show_popout = false;
+		}
+
+		if (show_popout) {
+			this.popout.css({
+				'position': 'absolute',
+				'display': 'block',
+				'z-index': 999998,
+				'width': width,
+				'overflow': 'auto'
+			});
+
+			// Separate on purpose, we need the outerWidth which
+			// wont be correct until the above rules are applied
+			this.popout.css({
+				'top': (wrapper_pos.top - 8),
+				'left': (pos.left - this.popout.outerWidth() - 20),
+				'bottom': 30
+			});
+
+			var poppos = this.popout.offset();
+			this.popoutOuter.css({
+				'position': 'absolute',
+				'display': 'block',
+				'z-index': 999997,
+				'width': width+2+6, //2px for thi sborder, 6px for the popout border
+				'overflow': 'auto',
+				'top': poppos.top-1,
+				'left': poppos.left-1,
+				'bottom': 29 //popout bottom (30) -1 for the white border
+			});
+
+			this.popoutTabs.css({
+				'z-index': 999996,
+				'display': 'block',
+				'top': (wrapper_pos.top - 30),
+				'left': (pos.left - 260)
+			});
+		}
+
+		if (!this.hasInitPopout && show_popout) {
+			if (this.personPopoutHtml) {
+				this._initPopoutPageFragment();
+			} else {
+				this.personPopoutWaiting = true;
+			}
+		}
+	},
+
+	closePopout: function() {
+		this.popout.hide();
+		this.popoutOuter.hide();
+		this.popoutTabs.hide();
+	},
+
+	_initPopoutPageFragment: function() {
+
+		this.popoutPage = DeskPRO_Window.createPageFragment(this.personPopoutHtml);
+		this.popout.html(this.personPopoutHtml);
+		this.personPopoutHtml = null;
+		this.popoutPage.initPage(this.popout);
+		this.hasInitPopout = true;
 	}
 });

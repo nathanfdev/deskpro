@@ -138,6 +138,11 @@ agent_people_view:
   defaults: { _controller: AgentBundle:Person:view }
   requirements: { person_id: "\d+" }
 
+agent_people_viewsession:
+  pattern: /people/session/{session_id}
+  defaults: { _controller: AgentBundle:Person:viewSession }
+  requirements: { session_id: "\d+" }
+
 agent_people_new:
   pattern: /people/new-person
   defaults: { _controller: AgentBundle:Person:new }

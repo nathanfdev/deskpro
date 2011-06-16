@@ -189,6 +189,9 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 		<ul>
 			<li class="tab-trigger person-notes on" data-tab-for=".tab-content.person-notes"><a>Notes <em class="person-notes-count">({{counts.notes}})</em></a></li>
 			<li class="tab-trigger person-tickets" data-tab-for=".tab-content.person-tickets"><a>Tickets <em class="person-tickets-count">({{counts.tickets}})</em></a></li>
+			{% if session %}
+				<li class="tab-trigger session" data-tab-for=".tab-content.session"><a>Session</a></li>
+			{% endif %}
 		</ul>
 	</div>
 	{# /Tab Triggers #}
@@ -294,6 +297,51 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 				</div>
 			</div>
 		{# /Tab: Tickets #}
+
+		{# Tab: Session #}
+		{% if session %}
+		<div class="full-container-tabbed-contents tab-content person-session" data-tab-trigger=".tab-trigger.person-session" style="display:none">
+			<table class="list" cellspacing="0" width="100%">
+				<tr class="white line-1">
+					<td width="120">Landing Page</td>
+					<td><input type="text" style="width: 90%" value="{{ session.visitor.landing_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Current Page</td>
+					<td><input type="text" style="width: 90%" value="{{ session.visitor.last_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Referrer</td>
+					<td><input type="text" style="width: 90%" value="{{ session.visitor.ref_page }}" /></td>
+				</tr>
+				<tr class="white line-1">
+					<td>Initial Visit</td>
+					<td>{{ session.visitor.date_created|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Session Started</td>
+					<td>{{ session.date_created|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Last Activity</td>
+					<td>{{ session.visitor.date_last|date('Y-m-d H:m:s') }}</td>
+				</tr>
+				<tr class="white line-1">
+					<td>IP Address</td>
+					<td>
+						{% if session.visitor.ip_address %}
+							<img src="http://api.hostip.info/flag.php?ip=12.215.42.19" border="0" width="53" height="27" align="left" style="padding-right: 8px;" />
+						{% endif %}
+						{{ session.visitor.ip_address }}
+					</td>
+				</tr>
+				<tr class="white line-1">
+					<td>Browser Agent</td>
+					<td>{{ session.visitor.user_agent }}</td>
+				</tr>
+			</table>
+		</div>
+		{% endif %}
 	</div>
 	{# /Tab Contents #}
 </div>

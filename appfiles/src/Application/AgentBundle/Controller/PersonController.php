@@ -129,6 +129,21 @@ class PersonController extends AbstractController
 		$person_tickets = App::getEntityRepository('DeskPRO:Ticket')->getPersonTickets($person);
 
 		#------------------------------
+		# User online, get their sess
+		#------------------------------
+
+		try {
+			$session = App::getOrm()->createQuery("
+				SELECT s
+				FROM DeskPRO:Session s
+				WHERE s.person = ?1
+				ORDER BY s.id DESC
+			")->setParameter(1, $person)->setMaxResults(1)->getSingleResult();
+		} catch (\Exception $e) {
+			$session = null;
+		}
+
+		#------------------------------
 		# Misc info needed
 		#------------------------------
 
@@ -167,7 +182,8 @@ class PersonController extends AbstractController
 			'usergroups_names' => $usergroup_names,
 			'usergroups_form' => $usergroups_form ? $usergroups_form->createView() : null,
 			'person_tickets' => $person_tickets,
-			'counts' => $counts
+			'counts' => $counts,
+			'session' => $session
 		));
 	}
 
@@ -195,6 +211,19 @@ class PersonController extends AbstractController
 		$person = $this->getPersonOr404($person_id);
 
 		return $this->createJsonResponse($this->_fetchCounts($person));
+	}
+
+	############################################################################
+	# viewSession
+	############################################################################
+
+	public function viewSessionAction($session_id)
+	{
+		$session = App::findEntity('DeskPRO:Session', $session_id);
+
+		return $this->render('AgentBundle:Person:session-info.html.twig', array(
+			'session' => $session
+		));
 	}
 
 	############################################################################

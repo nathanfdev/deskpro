@@ -172,7 +172,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$convo = new self();
 		if ($session->person) {
-			$convo->person = $session;
+			$convo->person = $session->person;
 		}
 		$convo->session = $session;
 		$convo->visitor = $session->visitor;
