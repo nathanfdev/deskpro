@@ -4,15 +4,15 @@
 <section class="inbox">
 	<ul class="nav-list">
 		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_ideas_validating') }}">
-			<span class="list-counter" id="kb_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
+			<span class="list-counter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
 			<a>Ideas Validating</a>
 		</li>
 		<li class="with-route auto-load-route" data-route="listpane:">
-			<span class="list-counter" id="kb_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
+			<span class="list-counter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
 			<a>Comments Validating</a>
 		</li>
 		<li class="with-route" data-route="listpane:">
-			<span class="list-counter" id="kb_pending_count">{{ counts.popular_ideas|default(0) }}</span>
+			<span class="list-counter" id="ideas_popular_count">{{ counts.popular_ideas|default(0) }}</span>
 			<a>Popular Ideas</a>
 		</li>
 	</ul>
@@ -28,31 +28,39 @@
 <section id="ideas_outline_status" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.status">
 	<ul class="nav-list">
 		<li>
+			<span class="list-counter" id="ideas_status_new_count">{{ status_counts.new|default(0) }}</span>
 			<a>New</a>
 		</li>
 		<li>
+			<span class="list-counter" id="ideas_status_active_0_count">{{ status_counts.active[0]|default(0) }}</span>
 			<a>Active</a>
 		</li>
 		{% for cat in active_status_cats %}
 			<li class="sub-list" data-route="listpane:">
+				<span class="list-counter" id="ideas_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</span>
 				<a>{{ cat.title }}</a>
 			</li>
 		{% endfor %}
 		<li>
+			<span class="list-counter" id="ideas_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
 			<a>Closed</a>
 		</li>
 		{% for cat in closed_status_cats %}
 			<li class="sub-list" data-route="listpane:">
+				<span class="list-counter" id="ideas_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</span>
 				<a>{{ cat.title }}</a>
 			</li>
 		{% endfor %}
 		<li>
+			<span class="list-counter" id="ideas_status_hidden_hidden_count">{{ status_counts.hidden|default(0) }}</span>
 			<a>Hidden</a>
 		</li>
 			<li class="sub-list" data-route="listpane:">
+				<span class="list-counter" id="ideas_status_hidden_deleted_count">{{ status_counts.deleted|default(0) }}</span>
 				<a>Deleted</a>
 			</li>
 			<li class="sub-list" data-route="listpane:">
+				<span class="list-counter" id="ideas_status_hidden_spam_count">{{ status_counts.spam|default(0) }}</span>
 				<a>Spam</a>
 			</li>
 	</ul>
@@ -61,6 +69,7 @@
 	<ul class="nav-list">
 		{% for cat in idea_cats %}
 			<li data-route="listpane:{{ path('agent_ideas_cat', {'category_id':cat.id}) }}">
+				<span class="list-counter" id="ideas_cat_{{cat.id}}_count">{{ category_counts[cat.id]|default(0) }}</span>
 				<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
 			</li>
 		{% endfor %}

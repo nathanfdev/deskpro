@@ -199,6 +199,9 @@ class CategoryHierarchy
 	/**
 	 * Get an array of all children IDs for a specific parent. 0 means all ids in all cats
 	 *
+	 * Note this goes down all levels. For example, if the parent has children 3 levels deep,
+	 * this will fetch ids from all levels.
+	 *
 	 * @param int $parent_id
 	 * @return array
 	 */
@@ -214,6 +217,9 @@ class CategoryHierarchy
 			if (empty($cats[$parent_id]) OR empty($cats[$parent_id]['children'])) return array();
 			$cats = $cats[$parent_id]['children'];
 		}
+
+		// TODO this needs to handle unlimited depth,
+		// and probably want to cache all this info
 
 		foreach ($cats as $cat) {
 			$ids[] = $cat['id'];

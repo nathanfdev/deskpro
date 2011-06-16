@@ -20,6 +20,15 @@ use Orb\Util\Strings;
 
 class Idea extends EntityRepository
 {
+	############################################################################
+	# Counters
+	############################################################################
+
+	/**
+	 * Count the number of ideas that are awaiting validation
+	 *
+	 * @return int
+	 */
 	public function countAwaitingValidation()
 	{
 		return App::getDb()->fetchColumn("
@@ -29,10 +38,129 @@ class Idea extends EntityRepository
 		", array('validating'));
 	}
 
+
+	/**
+	 * Count the number of ideas that are 'active', grouped by status category as key.
+	 * The key 0 will be used as the total.
+	 *
+	 * @return array
+	 */
+	public function countActiveGrouped()
+	{
+		return App::getDb()->fetchAllKeyValue("
+			SELECT IFNULL(status_category_id, 0), COUNT(*) as count
+			FROM ideas
+			WHERE status = ?
+			GROUP BY status_category_id WITH ROLLUP
+		", array('active'));
+	}
+
+	/**
+	 * Count the number of ideas that are 'active', grouped by status category as key.
+	 * The key 0 will be used as the total.
+	 *
+	 * @return array
+	 */
+	public function countClosedGrouped()
+	{
+		return App::getDb()->fetchAllKeyValue("
+			SELECT IFNULL(status_category_id, 0), COUNT(*) as count
+			FROM ideas
+			WHERE status = ?
+			GROUP BY status_category_id WITH ROLLUP
+		", array('closed'));
+	}
+
+
+	/**
+	 * Count the number of hidden ideas, groupbed by hidden_status as key.
+	 * The key 'hidden' will be used as the total.
+	 *
+	 * @return array
+	 */
+	public function countHiddenGrouped()
+	{
+		return App::getDb()->fetchAllKeyValue("
+			SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
+			FROM ideas
+			WHERE status = ?
+			GROUP BY hidden_status WITH ROLLUP
+		", array('hidden'));
+	}
+
+
+	/**
+	 * Count the number of ideas that are new
+	 *
+	 * @return int
+	 */
+	public function countNew()
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM ideas
+			WHERE hidden_status = ?
+		", array('new'));
+	}
+
+
+	/**
+	 * Count the number of "popular" ideas
+	 *
+	 * @return int
+	 */
 	public function countPopular()
 	{
-		return 0;
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM ideas
+			WHERE num_votes >= ?
+		", array(App::getSetting('core_ideas.popular_votes')));
 	}
+
+
+	/**
+	 * Count the number of non-hidden ideas in all categories, grouped by category ID key.
+	 * Each parent category has the sum of all children.
+	 * 
+	 * @return array
+	 */
+	public function countAllCategoriesGrouped()
+	{
+		/*
+		 * Note that the order by category_id ASC is important here.
+		 * The tally loop after modifies the array as we go. We cant
+		 * have a parents tally using a childs tally that was already incremented,
+		 * that'd result in incorrect tallies.
+		 * (Could just make a 2nd new array using 1st as a lookup, but this solution is easy enough)
+		 */
+
+		$counts = App::getDb()->fetchAllKeyValue("
+			SELECT category_id, COUNT(*)
+			FROM ideas
+			WHERE status != ?
+			GROUP BY category_id
+			ORDER BY category_id ASC
+		", array('hidden'));
+
+		foreach ($counts as $cat_id => &$count) {
+			$cat_childs = App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($cat_id);
+			if ($cat_childs) {
+				foreach ($cat_childs as $child_cat_id) {
+					if (isset($counts[$child_cat_id])) {
+						$count += $counts[$child_cat_id];
+					}
+				}
+			}
+		}
+
+		return $counts;
+	}
+	
+
+	############################################################################
+	# Fetchers
+	############################################################################
 
 	public function getBySlug($slug)
 	{

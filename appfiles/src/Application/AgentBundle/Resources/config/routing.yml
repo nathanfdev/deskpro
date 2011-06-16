@@ -632,17 +632,17 @@ agent_kb_newarticle:
   defaults: { _controller: AgentBundle:Kb:viewArticle, article_id: '0' }
 
 agent_kb_article:
-  pattern: /kb/article/{idea_id}
+  pattern: /kb/article/{article_id}
   defaults: { _controller: AgentBundle:Kb:viewArticle }
   requirements: { article_id: "\d+" }
 
 agent_kb_article_edit:
-  pattern: /kb/article/{idea_id}/save
+  pattern: /kb/article/{article_id}/save
   defaults: { _controller: AgentBundle:Kb:editArticleSave }
   requirements: { article_id: "\d+" }
 
 agent_kb_article_edit_geteditor:
-  pattern: /kb/article/{idea_id}/get-editor
+  pattern: /kb/article/{article_id}/get-editor
   defaults: { _controller: AgentBundle:Kb:getArticleEditor }
   requirements: { article_id: "\d+" }
 
@@ -675,19 +675,19 @@ agent_kb_validating:
   defaults: { _controller: AgentBundle:Kb:validatingList }
 
 agent_kb_validating_preview_article:
-  pattern: /kb/validating-articles/preview-article/{idea_id}
+  pattern: /kb/validating-articles/preview-article/{article_id}
   defaults: { _controller: AgentBundle:Kb:previewArticle }
 
 agent_kb_validating_preview_edit:
-  pattern: /kb/validating-articles/preview-edit/{idea_id}
+  pattern: /kb/validating-articles/preview-edit/{article_id}
   defaults: { _controller: AgentBundle:Kb:previewEdit }
 
 agent_kb_validating_val_article_json:
-  pattern: /kb/validating-articles/validate/{idea_id}.json
+  pattern: /kb/validating-articles/validate/{article_id}.json
   defaults: { _controller: AgentBundle:Kb:validateArticleJson }
 
 agent_kb_validating_dis_article_json:
-  pattern: /kb/validating-articles/disapprove/{idea_id}.json
+  pattern: /kb/validating-articles/disapprove/{article_id}.json
   defaults: { _controller: AgentBundle:Kb:disapproveValidateArticleJson }
 
 agent_kb_glossary:

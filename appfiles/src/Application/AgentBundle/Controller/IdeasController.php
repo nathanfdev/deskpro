@@ -37,6 +37,14 @@ class IdeasController extends AbstractController
 		$counts['popular_ideas']                = App::getEntityRepository('DeskPRO:Idea')->countPopular();
 		$counts['comments_awaiting_validation'] = App::getEntityRepository('DeskPRO:IdeaComment')->countAwaitingValidation();
 
+		$status_counts = array();
+		$status_counts['new']    = App::getEntityRepository('DeskPRO:Idea')->countNew();
+		$status_counts['active'] = App::getEntityRepository('DeskPRO:Idea')->countActiveGrouped();
+		$status_counts['closed'] = App::getEntityRepository('DeskPRO:Idea')->countClosedGrouped();
+		$status_counts['hidden'] = App::getEntityRepository('DeskPRO:Idea')->countHiddenGrouped();
+
+		$category_counts = App::getEntityRepository('DeskPRO:Idea')->countAllCategoriesGrouped();
+
 		$idea_cats          = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
 		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
@@ -46,6 +54,8 @@ class IdeasController extends AbstractController
 
 		$data['section_html'] = $this->renderView('AgentBundle:Ideas:window-section.html.twig', array(
 			'counts'             => $counts,
+			'status_counts'      => $status_counts,
+			'category_counts'    => $category_counts,
 			'idea_cats'          => $idea_cats,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,

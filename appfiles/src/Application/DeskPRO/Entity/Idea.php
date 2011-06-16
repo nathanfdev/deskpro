@@ -27,7 +27,7 @@ use \Orb\Util\Strings;
 class Idea extends \Application\DeskPRO\Domain\DomainObject
 {
 	const STATUS_NEW      = 'new';
-	const STATUS_ACCEPTED = 'accepted';
+	const STATUS_ACTIVE   = 'active';
 	const STATUS_CLOSED   = 'closed';
 	const STATUS_HIDDEN   = 'hidden';
 
@@ -63,7 +63,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\IdeaStatusCategory
 	 * @orm:ManyToOne(targetEntity="IdeaStatusCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="status_category", referencedColumnName="id")
+	 * @orm:JoinColumn(name="status_category_id", referencedColumnName="id")
 	 */
 	protected $status_category = null;
 

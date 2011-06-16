@@ -26,4 +26,8 @@
 	 */
 	'core_ideas.require_validation' => false,
 
+	/**
+	 * How many votes until an idea is 'popular'?
+	 */
+	'core_ideas.popular_votes' => 10,
 );
