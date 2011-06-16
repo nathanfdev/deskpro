@@ -253,6 +253,9 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 			name = '&lt;' + name + '&gt; ';
 		}
 
+		msg = Orb.escapeHtml(msg);
+		msg = Orb.linkUrls(msg);
+
 		var html = ['<div class="message '+type+'">'];
 			html.push('<span class="author">' + name + '</span>');
 			html.push('<span class="message">' + msg + '</span>');

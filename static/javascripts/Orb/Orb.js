@@ -176,6 +176,16 @@ Orb.escapeHtml = function(string) {
 };
 
 
+/**
+ * Link URLs in texts
+ *
+ * @param string
+ */
+Orb.linkUrls = function(string) {
+	return string
+		.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1">$1</a>');
+};
+
 
 /**
  * Simple way to load Javascript and CSS files on-demand.

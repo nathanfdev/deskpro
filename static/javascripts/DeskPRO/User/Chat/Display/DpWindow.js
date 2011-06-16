@@ -89,6 +89,9 @@ var DpChat_Display = (function() {
 			tpl = 'chat_sys_message_tpl';
 		}
 
+		message = Orb.escapeHtml(message);
+		message = Orb.linkUrls(message);
+
 		var el = $.tmpl(tpl, {
 			author: name,
 			message: message,

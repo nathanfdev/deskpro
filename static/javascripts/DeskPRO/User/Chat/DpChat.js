@@ -486,6 +486,24 @@ var DpChat = (function() {
 		return timeout;
 	};
 
+	var escapeHtml = function(string) {
+		return string.replace(/&/g, "&amp;")
+			.replace(/>/g, "&gt;")
+			.replace(/</g, "&lt;")
+			.replace(/"/g, "&quot;");
+	};
+
+	var linkUrls = function(string) {
+		return string
+			.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1">$1</a>');
+	};
+
+	this.util = {
+		escapeHtml: escapeHtml,
+		linkUrls: linkUrls,
+		Function_Delay: Function_Delay
+	};
+
 	//#################################################################
 	//# Main
 	//#################################################################

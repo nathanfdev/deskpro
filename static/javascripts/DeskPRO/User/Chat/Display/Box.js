@@ -197,6 +197,9 @@ var DpChat_Display = (function() {
 			name = name + ': ';
 		}
 
+		message = DpChat.util.escapeHtml(message);
+		message = DpChat.util.linkUrls(message);
+
 		var html = [];
 		html.push('<div class="dpchat-message dpchat-'+type+'">');
 			html.push('<div class="dpchat-author">' + name + '</div>');
