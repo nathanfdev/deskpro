@@ -84,7 +84,7 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 	_handleResize: function() {
 		if (!this.layout) return;
-		this.layout.resizeAll();
+		this.layout.doLayout();
 	},
 
 	_initMenus: function() {
