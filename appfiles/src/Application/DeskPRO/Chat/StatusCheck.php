@@ -67,20 +67,29 @@ class StatusCheck
 		// Get the users session
 		$user_sess = $this->conversation->session;
 
-		$cut = time() - App::getSetting('core_chat.user_timeout');
+		$cut_close = time() - App::getSetting('core_chat.user_timeout');
 		if ($user_sess) {
 			$last = $user_sess['date_last']->getTimestamp();
 		} else {
 			$last = 0;
 		}
 
-		if ($last < $cut) {
+		if ($last < $cut_close) {
+
 			$msg = $this->conversation->addSystemMessage(
 				App::getTranslator()->phrase('core_chat.msg_user_timeout'),
 				true
 			);
 
-			$client_messages = ChatClientMessageGenerator::createNewMessageMessages($this->session['id'], $msg);
+			$this->conversation->setStatus('ended');
+			$client_messages = ChatClientMessageGenerator::createChatEndedMessages(
+				'sys',
+				$this->conversation
+			);
+			foreach ($this->conversation->getCreatedMessages() as $msg) {
+				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewMessageMessages('sys', $msg));
+			}
+
 			foreach ($client_messages as $cm) {
 				App::getOrm()->persist($cm);
 			}
@@ -111,7 +120,7 @@ class StatusCheck
 				true
 			);
 
-			$client_messages = ChatClientMessageGenerator::createNewMessageMessages($this->session['id'], $msg);
+			$client_messages = ChatClientMessageGenerator::createNewMessageMessages('sys', $msg);
 
 			// And need to insert a "new chat" event for agents
 			if (App::getSetting('core_chat.assign_mode') == 'round_robin') {
@@ -120,14 +129,14 @@ class StatusCheck
 				$conversation->agent = $assign_agent;
 
 				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatRoundRobinMessages(
-					$this->session['id'],
+					'sys',
 					$this->conversation,
 					$msg
 				));
 			} else {
 
 				$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createNewChatMessages(
-					$this->session['id'],
+					'sys',
 					$this->conversation,
 					$msg
 				));

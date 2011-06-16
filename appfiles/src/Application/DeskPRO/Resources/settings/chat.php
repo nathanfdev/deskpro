@@ -13,14 +13,14 @@
 	'core_chat.assign_ack_timeout' => 20,
 
 	/**
-	 * Number of seconds until the agent times out
+	 * Number of seconds until the agent times out and the chat is unassigned
 	 */
-	'core_chat.agent_timeout' => 30,
+	'core_chat.agent_timeout' => 15,
 
 	/**
 	 * Number of seconds until the user times out
 	 */
-	'core_chat.user_timeout' => 30,
+	'core_chat.user_timeout' => 15,
 
 	/**
 	 * When enabled, the user has to chose a department to start a chat
