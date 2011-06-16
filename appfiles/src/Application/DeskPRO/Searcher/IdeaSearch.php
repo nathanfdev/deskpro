@@ -12,8 +12,8 @@ class IdeaSearch extends SearcherAbstract
 {
 	const TERM_ID              = 'id';
 	const TERM_STATUS          = 'status';
+	const TERM_CATEGORY        = 'category';
 	const TERM_HIDDEN_STATUS   = 'hidden_status';
-	const TERM_STATUS_CATEGORY = 'status_category';
 	const TERM_VOTES           = 'num_votes';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_POPULAR         = 'popular';
@@ -145,11 +145,30 @@ class IdeaSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_STATUS:
-					$wheres[] = $this->_stringMatch('ideas.status', $op, $choice);
+					$choice = array_pop($choice);
+
+					// A sub-status which are customizable (Active > Considering for example)
+					if (ctype_digit($choice)) {
+						$wheres[] = $this->_choiceMatch('ideas.status_category_id', $op, $choice);
+						
+					// A top level status (active, closed etc)
+					} else {
+						$wheres[] = $this->_stringMatch('ideas.status', $op, $choice);
+					}
+
 					break;
 
-				case self::TERM_STATUS_CATEGORY:
-					$wheres[] = $this->_choiceMatch('ideas.status_category_id', $op, $choice);
+				case self::TERM_CATEGORY:
+					$base_ids = is_array($choice['category']) ? $choice['category'] : array($choice['category']);
+					$ids = array();
+
+					foreach ($base_ids as $id) {
+						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($id));
+					}
+
+					$ids = array_unique($ids);
+
+					$wheres[] = $this->_choiceMatch('ideas.status_category_id', $op, $ids);
 					break;
 
 				case self::TERM_VOTES:
