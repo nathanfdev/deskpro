@@ -171,7 +171,7 @@ class IdeaSearch extends SearcherAbstract
 					}
 
 					$part_where = "(" . implode(' OR ', $part_where) . ")";
-					$where[] = $part_where;
+					$wheres[] = $part_where;
 
 					break;
 
