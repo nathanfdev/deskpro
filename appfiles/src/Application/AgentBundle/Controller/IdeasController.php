@@ -97,7 +97,9 @@ class IdeasController extends AbstractController
 		$result_helper = IdeaResults::newFromRequest($this);
 
 		return $this->renderList(
-			$result_helper
+			$result_helper,
+			null,
+			array('list_type' => 'filter')
 		);
 	}
 
@@ -117,8 +119,11 @@ class IdeasController extends AbstractController
 			)
 		));
 
+		$cat = App::findEntity('DeskPRO:IdeaCategory', $category_id);
+
 		return $this->renderList(
-			$result_helper
+			$result_helper,
+			array('list_type' => 'category', 'page_title' => $cat->getFullTitle())
 		);
 	}
 
@@ -139,7 +144,9 @@ class IdeasController extends AbstractController
 		));
 
 		return $this->renderList(
-			$result_helper
+			$result_helper,
+			null,
+			array('list_type' => 'label', 'page_title' => $label)
 		);
 	}
 
@@ -161,8 +168,17 @@ class IdeasController extends AbstractController
 			)
 		));
 
+		if (ctype_digit($status)) {
+			$status_cat = App::findEntity('DeskPRO:IdeaStatusCategory', $status);
+			$status_name = $status_cat['title'];
+		} else {
+			$status_name = App::getTranslator()->phrase('core_ideas.status_' . $status);
+		}
+
 		return $this->renderList(
-			$result_helper
+			$result_helper,
+			null,
+			array('list_type' => 'status', 'page_title' => $status_name)
 		);
 	}
 
@@ -175,8 +191,12 @@ class IdeasController extends AbstractController
 	 * @param array $template_vars
 	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
 	 */
-	public function renderList($result_helper, $template = 'AgentBundle:Ideas:filter-list.html.twig', $template_vars = array())
+	public function renderList($result_helper, $template = null, array $template_vars = array())
 	{
+		if (!$template) {
+			$template = 'AgentBundle:Ideas:filter-list.html.twig';
+		}
+
 		$result_cache = $result_helper->getResultCache();
 
 		$page = $this->in->getUint('p');
@@ -191,7 +211,7 @@ class IdeasController extends AbstractController
 		return $this->render($template, array_merge(array(
 			'cache'        => $result_cache,
 			'cache_id'     => $result_cache['id'],
-			'ideas'        => $ideas
+			'ideas'        => $ideas,
 		), $template_vars));
 	}
 }

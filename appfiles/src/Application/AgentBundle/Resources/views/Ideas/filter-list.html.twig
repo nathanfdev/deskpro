@@ -10,6 +10,15 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ideas_filter') }}';
 	pageMeta.noResults = true;
 {% endif %}
 </script>
+<header class="section-header">
+	<h1>
+		{% if page_title %}
+			{{ page_title }}
+		{% else %}
+			Ideas
+		{% endif %}
+	</h1>
+</header>
 <div class="layout-content">
 <div class="content">
 	<section class="ideas-simple-list deskpro-results-list">

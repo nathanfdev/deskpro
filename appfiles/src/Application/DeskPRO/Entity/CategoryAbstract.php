@@ -87,6 +87,36 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $_structure = array();
 
 
+	/**
+	 * Get an array of titles from parents down to this.
+	 *
+	 * @return array
+	 */
+	public function getTitleParts()
+	{
+		$titles = array();
+		foreach ($this->getTreeParents() as $p) {
+			$titles[] = $p['title'];
+		}
+
+		$titles[] = $this->title;
+
+		return $titles;
+	}
+
+
+	/**
+	 * Get the full display title for the category with all parents parts, separated
+	 * by $sep. Example: Category > Subcategory
+	 *
+	 * @param string $sep
+	 * @return string
+	 */
+	public function getFullTitle($sep = ' > ')
+	{
+		return implode(' > ', $this->getTitleParts());
+	}
+
 	
 	/**
 	 * Gets all parents in the tree, in order (left to right, aka, top to bottom)
