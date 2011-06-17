@@ -27,40 +27,40 @@
 </nav>
 <section id="ideas_outline_status" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.status">
 	<ul class="nav-list">
-		<li>
+		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'new'}) }}">
 			<span class="list-counter" id="ideas_status_new_count">{{ status_counts.new|default(0) }}</span>
 			<a>New</a>
 		</li>
-		<li>
+		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'active'}) }}">
 			<span class="list-counter" id="ideas_status_active_0_count">{{ status_counts.active[0]|default(0) }}</span>
 			<a>Active</a>
 		</li>
 		{% for cat in active_status_cats %}
-			<li class="sub-list" data-route="listpane:">
+			<li class="sub-list with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': cat.id}) }}">
 				<span class="list-counter" id="ideas_status_active_{{cat.id}}_count">{{ status_counts.active[cat.id]|default(0) }}</span>
 				<a>{{ cat.title }}</a>
 			</li>
 		{% endfor %}
-		<li>
+		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'closed'}) }}">
 			<span class="list-counter" id="ideas_status_closed_0_count">{{ status_counts.closed[0]|default(0) }}</span>
 			<a>Closed</a>
 		</li>
 		{% for cat in closed_status_cats %}
-			<li class="sub-list" data-route="listpane:">
+			<li class="sub-list with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': cat.id}) }}">
 				<span class="list-counter" id="ideas_status_closed_{{cat.id}}_count">{{ status_counts.closed[cat.id]|default(0) }}</span>
 				<a>{{ cat.title }}</a>
 			</li>
 		{% endfor %}
-		<li>
-			<span class="list-counter" id="ideas_status_hidden_hidden_count">{{ status_counts.hidden|default(0) }}</span>
+		<li class="with-route" data-route="listpane:{{ path('agent_ideas_status', {'status': 'hidden'}) }}">
+			<span class="list-counter" id="ideas_status_hidden_hidden_count">{{ status_counts.hidden.hidden|default(0) }}</span>
 			<a>Hidden</a>
 		</li>
 			<li class="sub-list" data-route="listpane:">
-				<span class="list-counter" id="ideas_status_hidden_deleted_count">{{ status_counts.deleted|default(0) }}</span>
+				<span class="list-counter" id="ideas_status_hidden_deleted_count">{{ status_counts.hidden.deleted|default(0) }}</span>
 				<a>Deleted</a>
 			</li>
 			<li class="sub-list" data-route="listpane:">
-				<span class="list-counter" id="ideas_status_hidden_spam_count">{{ status_counts.spam|default(0) }}</span>
+				<span class="list-counter" id="ideas_status_hidden_spam_count">{{ status_counts.hidden.spam|default(0) }}</span>
 				<a>Spam</a>
 			</li>
 	</ul>
@@ -68,7 +68,7 @@
 <section id="ideas_outline_category" class="deskpro-tab-item" data-tab-trigger="#ideas_outline_tabstrip li.categroies">
 	<ul class="nav-list">
 		{% for cat in idea_cats %}
-			<li data-route="listpane:{{ path('agent_ideas_cat', {'category_id':cat.id}) }}">
+			<li data-route="listpane:{{ path('agent_ideas_category', {'category_id':cat.id}) }}">
 				<span class="list-counter" id="ideas_cat_{{cat.id}}_count">{{ category_counts[cat.id]|default(0) }}</span>
 				<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
 			</li>
@@ -82,7 +82,7 @@
 			<dd>
 				<ul class="comma-list">
 					{% for label in labels %}
-						<li><a data-route="listpane:">{{label}}</a></li>
+						<li><a data-route="listpane:{{ path('agent_ideas_label', {'label': label}) }}">{{label}}</a></li>
 					{% endfor %}
 				</ul>
 			</dd>

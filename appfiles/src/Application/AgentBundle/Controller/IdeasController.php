@@ -14,7 +14,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Idea;
 
-use Application\DeskPRO\Searcher\IdaSearch;
+use Application\DeskPRO\Searcher\IdeaSearch;
 use Application\AgentBundle\Controller\Helper\IdeaResults;
 use Application\DeskPRO\UI\RuleBuilder;
 
@@ -76,8 +76,8 @@ class IdeasController extends AbstractController
 	{
 		$result_helper = IdeaResults::newFromRequest($this, array(
 			// Validating always has this term, the template doesnt let you change it
-			'specific_options' => array(
-				array('type' => 'hidden_status', 'op' => 'is', 'options' => array('status' => 'validating'))
+			'specific_terms' => array(
+				array('type' => 'hidden_status', 'op' => 'is', 'status' => 'validating')
 			)
 		));
 
@@ -111,8 +111,30 @@ class IdeasController extends AbstractController
 	public function categoryListAction($category_id)
 	{
 		$result_helper = IdeaResults::newFromRequest($this, array(
-			'specific_options' => array(
-				array('term' => 'category', 'op' => 'is', 'options' => array('category' => $category_id))
+			'specific_terms' => array(
+				array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+				array('type' => 'status', 'op' => 'not', 'status' => 'hidden')
+			)
+		));
+
+		return $this->renderList(
+			$result_helper
+		);
+	}
+
+
+	/**
+	 * A shortcut to run a filter on a label
+	 *
+	 * @param  $category_id
+	 * @return
+	 */
+	public function labelListAction($label)
+	{
+		$result_helper = IdeaResults::newFromRequest($this, array(
+			'specific_terms' => array(
+				array('type' => 'label', 'op' => 'is', 'label' => $label),
+				array('type' => 'status', 'op' => 'not', 'status' => 'hidden')
 			)
 		));
 
@@ -134,8 +156,8 @@ class IdeasController extends AbstractController
 		// or an integer which will be treated as a status category (Active > Planned for example)
 
 		$result_helper = IdeaResults::newFromRequest($this, array(
-			'specific_options' => array(
-				array('term' => 'status', 'op' => 'is', 'options' => array('status' => $status))
+			'specific_terms' => array(
+				array('type' => 'status', 'op' => 'is', 'status' => $status)
 			)
 		));
 

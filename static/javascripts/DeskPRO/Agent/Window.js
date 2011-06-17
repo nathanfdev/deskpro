@@ -359,10 +359,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			handler = this.sections['agent_chat_section'];
 		} else if (testcl('.OpenChats')) {
 			handler = this.sections['chat_section'];
+		} else if (testcl('.Idea')) {
+			handler = this.sections['ideas_section'];
 		}
 
 		if (!handler) {
-			console.error('List page fragment has no section: %o', page);
+			console.error('List page fragment has no section: %s: %o', page.getMetaData('fragmentClass', ''), page);
 			return;
 		}
 

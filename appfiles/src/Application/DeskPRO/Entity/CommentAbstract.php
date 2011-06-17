@@ -54,7 +54,7 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="ip_address", type="string", length=30)
 	 */
-	protected $ip_address;
+	protected $ip_address = '';
 
 	/**
 	 * @var string
@@ -78,7 +78,7 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="status", type="string", length=30)
 	 */
-	protected $status;
+	protected $status = 'visible';
 
 	/**
 	 * @var \DateTime
@@ -88,7 +88,6 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function __construct()
 	{
-		$this->status = 'visible';
 		$this->date_created = new \DateTime();
 	}
 

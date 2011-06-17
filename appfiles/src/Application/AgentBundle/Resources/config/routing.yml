@@ -735,13 +735,25 @@ agent_mediabrowser_imageeditor_save:
 # Ideas
 ################################################################################
 
-agent_ideas_cat:
-  pattern: /ideas/category/{category_id}
-  defaults: { _controller: AgentBundle:Ideas:categoryList }
-
 agent_ideas_validating:
   pattern: /ideas/awaiting-validation
   defaults: { _controller: AgentBundle:Ideas:validatingList }
+
+agent_ideas_category:
+  pattern: /ideas/category/{category_id}
+  defaults: { _controller: AgentBundle:Ideas:categoryList }
+
+agent_ideas_status:
+  pattern: /ideas/status/{status}
+  defaults: { _controller: AgentBundle:Ideas:statusList }
+
+agent_ideas_label:
+  pattern: /ideas/label/{label}
+  defaults: { _controller: AgentBundle:Ideas:labelList }
+
+agent_ideas_filter:
+  pattern: /ideas/filter
+  defaults: { _controller: AgentBundle:Ideas:filterList }
 
 agent_ideas_getsectiondata:
   pattern: /ideas/get-section-data.json

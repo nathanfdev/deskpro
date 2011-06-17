@@ -245,7 +245,7 @@ abstract class SearcherAbstract
 		$db = App::getDb();
 		if (!$force_like AND ($op == self::OP_IS OR $op == self::OP_NOT)) {
 			$choices_in = (array)$choice;
-			array_walk($choices_in, function($v, $k) use ($db) {
+			array_walk($choices_in, function(&$v, $k) use ($db) {
 				$v = $db->quote($v);
 			});
 

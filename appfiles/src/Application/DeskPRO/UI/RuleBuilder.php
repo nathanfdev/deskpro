@@ -53,7 +53,7 @@ class RuleBuilder
 	 */
 	public static function newTermsBuilder()
 	{
-		return new self(array('type'));
+		return new self(array('type', 'op'));
 	}
 
 

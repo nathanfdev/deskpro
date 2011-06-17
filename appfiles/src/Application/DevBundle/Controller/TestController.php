@@ -13,6 +13,129 @@ class TestController extends Controller
 {
     public function indexAction()
     {
+		$person = App::findEntity('DeskPRO:Person', 20001);
+
+		$cat1 = App::findEntity('DeskPRO:IdeaCategory', 1);
+		$cat2 = App::findEntity('DeskPRO:IdeaCategory', 2);
+		$cat3 = App::findEntity('DeskPRO:IdeaCategory', 3);
+		$cat4 = App::findEntity('DeskPRO:IdeaCategory', 4);
+		$cat5 = App::findEntity('DeskPRO:IdeaCategory', 5);
+
+		$active_status1 = App::findEntity('DeskPRO:IdeaStatusCategory', 1);
+		$active_status2 = App::findEntity('DeskPRO:IdeaStatusCategory', 2);
+
+		$closed_status1 = App::findEntity('DeskPRO:IdeaStatusCategory', 4);
+		$closed_status2 = App::findEntity('DeskPRO:IdeaStatusCategory', 5);
+
+		// Idea
+		$comment = new \Application\DeskPRO\Entity\IdeaComment();
+		$comment['person'] = $person;
+		$comment['content'] = 'This is my idea 1';
+		$idea = new \Application\DeskPRO\Entity\Idea();
+		$idea->fromArray(array('title' => 'Idea 1',
+			'person' => $person,
+			'category' => $cat1,
+			'status' => 'active',
+			'status_category' => $active_status1,
+			'first_comment' => $comment
+		));
+		App::getOrm()->persist($idea);
+		App::getOrm()->persist($comment);
+
+		// Idea
+		$comment = new \Application\DeskPRO\Entity\IdeaComment();
+		$comment['person'] = $person;
+		$comment['content'] = 'This is my idea 2';
+		$idea = new \Application\DeskPRO\Entity\Idea();
+		$idea->fromArray(array('title' => 'Idea 2',
+			'person' => $person,
+			'category' => $cat1,
+			'status' => 'active',
+			'status_category' => $active_status2,
+			'first_comment' => $comment
+		));
+		App::getOrm()->persist($idea);
+		App::getOrm()->persist($comment);
+
+		// Idea
+		$comment = new \Application\DeskPRO\Entity\IdeaComment();
+		$comment['person'] = $person;
+		$comment['content'] = 'This is my idea 3';
+		$idea = new \Application\DeskPRO\Entity\Idea();
+		$idea->fromArray(array('title' => 'Idea 3',
+			'person' => $person,
+			'category' => $cat3,
+			'status' => 'closed',
+			'status_category' => $closed_status1,
+			'first_comment' => $comment
+		));
+		App::getOrm()->persist($idea);
+		App::getOrm()->persist($comment);
+
+		// Idea
+		$comment = new \Application\DeskPRO\Entity\IdeaComment();
+		$comment['person'] = $person;
+		$comment['content'] = 'This is my idea 4';
+		$idea = new \Application\DeskPRO\Entity\Idea();
+		$idea->fromArray(array('title' => 'Idea 4',
+			'person' => $person,
+			'category' => $cat4,
+			'status' => 'closed',
+			'status_category' => $closed_status2,
+			'first_comment' => $comment
+		));
+		App::getOrm()->persist($idea);
+		App::getOrm()->persist($comment);
+
+		// Idea
+		$comment = new \Application\DeskPRO\Entity\IdeaComment();
+		$comment['person'] = $person;
+		$comment['content'] = 'This is my idea 5';
+		$idea = new \Application\DeskPRO\Entity\Idea();
+		$idea->fromArray(array('title' => 'Idea 5',
+			'person' => $person,
+			'category' => $cat4,
+			'status' => 'hidden',
+			'status' => 'spam',
+			'first_comment' => $comment
+		));
+		App::getOrm()->persist($idea);
+		App::getOrm()->persist($comment);
+
+		// Idea
+		$comment = new \Application\DeskPRO\Entity\IdeaComment();
+		$comment['person'] = $person;
+		$comment['content'] = 'This is my idea 6';
+		$idea = new \Application\DeskPRO\Entity\Idea();
+		$idea->fromArray(array('title' => 'Idea 6',
+			'person' => $person,
+			'category' => $cat4,
+			'status' => 'hidden',
+			'status' => 'deleted',
+			'first_comment' => $comment
+		));
+		App::getOrm()->persist($idea);
+		App::getOrm()->persist($comment);
+
+		// Idea
+		$comment = new \Application\DeskPRO\Entity\IdeaComment();
+		$comment['person'] = $person;
+		$comment['content'] = 'This is my idea 7';
+		$idea = new \Application\DeskPRO\Entity\Idea();
+		$idea->fromArray(array('title' => 'Idea 7',
+			'person' => $person,
+			'category' => $cat4,
+			'status' => 'hidden',
+			'status_hidden' => 'validating',
+			'first_comment' => $comment
+		));
+		App::getOrm()->persist($idea);
+		App::getOrm()->persist($comment);
+
+		App::getOrm()->flush();
+
+
+		exit;
 		$active = array(
 			'Considering',
 			'Planning',

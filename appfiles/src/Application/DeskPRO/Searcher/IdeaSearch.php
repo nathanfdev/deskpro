@@ -17,6 +17,7 @@ class IdeaSearch extends SearcherAbstract
 	const TERM_VOTES           = 'num_votes';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_POPULAR         = 'popular';
+	const TERM_LABEL           = 'label';
 
 	const ORDER_DATE  = 'id';
 	const ORDER_VOTES = 'num_votes';
@@ -55,7 +56,11 @@ class IdeaSearch extends SearcherAbstract
 		#------------------------------
 
 		foreach ($parts['joins'] as $j) {
-			$sql .= "LEFT JOIN $j ON $j.person_id = people.id ";
+			if (is_array($j)) {
+				$sql .= $j[1] . " ";
+			} else {
+				$sql .= "LEFT JOIN $j ON $j.idea_id = ideas.id ";
+			}
 		}
 
 		if (is_array($order_by)) {
@@ -145,16 +150,28 @@ class IdeaSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_STATUS:
-					$choice = array_pop($choice);
 
-					// A sub-status which are customizable (Active > Considering for example)
-					if (ctype_digit($choice)) {
-						$wheres[] = $this->_choiceMatch('ideas.status_category_id', $op, $choice);
-						
-					// A top level status (active, closed etc)
-					} else {
-						$wheres[] = $this->_stringMatch('ideas.status', $op, $choice);
+					$cats = array();
+					$types = array();
+
+					foreach ( (array)$choice as$c) {
+						if (ctype_digit($c)) {
+							$cats[] = $c;
+						} else {
+							$types[] = $c;
+						}
 					}
+
+					$part_where = array();
+					if ($cats) {
+						$part_where[] = $this->_choiceMatch('ideas.status_category_id', $op, $cats);
+					}
+					if ($types) {
+						$part_where[] = $this->_stringMatch('ideas.status', $op, $types);
+					}
+
+					$part_where = "(" . implode(' OR ', $part_where) . ")";
+					$where[] = $part_where;
 
 					break;
 
@@ -163,12 +180,12 @@ class IdeaSearch extends SearcherAbstract
 					$ids = array();
 
 					foreach ($base_ids as $id) {
-						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($id));
+						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($id, true));
 					}
 
 					$ids = array_unique($ids);
 
-					$wheres[] = $this->_choiceMatch('ideas.status_category_id', $op, $ids);
+					$wheres[] = $this->_choiceMatch('ideas.category_id', $op, $ids);
 					break;
 
 				case self::TERM_VOTES:
@@ -182,6 +199,50 @@ class IdeaSearch extends SearcherAbstract
 				case self::TERM_DATE_CREATED:
 					$wheres[] = $this->_dateMatch('idaes.date_created', $op, $choice);
 					break;
+
+				case self::TERM_LABEL:
+					$this->_normalizeOpAndChoice($op, $choice);
+
+					$choices_in = array();
+					if (is_array($choice)) {
+						foreach ((array)$choice as $c) {
+							$choices_in[] = $db->quote($c);
+						}
+						$choices_in = implode(',', $choices_in);
+					}
+
+					switch ($op) {
+						case self::OP_IS:
+							$joins[] = array(
+								'labels_ideas',
+								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id)"
+							);
+							$wheres[] = "$join_name.label = " . $db->quote($choice);
+							break;
+						case self::OP_NOT:
+							$joins[] = array(
+								'labels_ideas',
+								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id AND $join_name.label = '.$db->quote($choice).')"
+							);
+							$wheres[] = "$join_name.person_id IS NULL";
+							break;
+						case self::OP_CONTAINS:
+							$joins[] = array(
+								'labels_ideas',
+								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id)"
+							);
+							$wheres[] = "$join_name.label IN ($choices_in)";
+							break;
+
+						case self::OP_NOTCONTAINS:
+							$joins[] = array(
+								'labels_ideas',
+								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id AND $join_name.label IN ($choices_in)"
+							);
+							$wheres[] = "$join_name.person_id IS NULL";
+							break;
+					}
+					break;// end labels
 			}
 		}
 

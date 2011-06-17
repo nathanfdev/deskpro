@@ -80,12 +80,15 @@ class Idea extends EntityRepository
 	 */
 	public function countHiddenGrouped()
 	{
+		// We dont count validating with this number because
+		// in the UI we generally show validating separately
+
 		return App::getDb()->fetchAllKeyValue("
 			SELECT IFNULL(hidden_status, 'hidden'), COUNT(*) as count
 			FROM ideas
-			WHERE status = ?
+			WHERE status = ? AND hidden_status != ?
 			GROUP BY hidden_status WITH ROLLUP
-		", array('hidden'));
+		", array('hidden', 'validating'));
 	}
 
 
@@ -144,7 +147,7 @@ class Idea extends EntityRepository
 		", array('hidden'));
 
 		foreach ($counts as $cat_id => &$count) {
-			$cat_childs = App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($cat_id);
+			$cat_childs = App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($cat_id, false);
 			if ($cat_childs) {
 				foreach ($cat_childs as $child_cat_id) {
 					if (isset($counts[$child_cat_id])) {

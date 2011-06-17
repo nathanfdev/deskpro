@@ -214,7 +214,15 @@ class CategoryHierarchy
 
 		$cats = $this->getCategoriesInHierarchy();
 		if ($parent_id) {
-			if (empty($cats[$parent_id]) OR empty($cats[$parent_id]['children'])) return array();
+			// Bad cat ID
+			if (empty($cats[$parent_id])) {
+				return array();
+			}
+			// No children, so either return nothing, or if $include_top it will just be this
+			if (empty($cats[$parent_id]['children'])) {
+				return $ids;
+			}
+			
 			$cats = $cats[$parent_id]['children'];
 		}
 

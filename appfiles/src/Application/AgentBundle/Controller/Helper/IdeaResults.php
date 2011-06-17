@@ -78,9 +78,9 @@ class IdeaResults
 			if (!empty($options['specific_terms'])) {
 				$form_terms = array_merge($form_terms, $options['specific_terms']);
 			}
-			
-			$terms = $term_rules->readForm($form_terms);
 
+			$terms = $term_rules->readForm($form_terms);
+			
 			$searcher = new IdeaSearch();
 			foreach ($terms as $term) {
 				$searcher->addTerm($term['type'], $term['op'], $term['options']);
@@ -96,7 +96,7 @@ class IdeaResults
 
 			$results = $searcher->getMatches();
 
-			$result_cache = new Entity\ResultCache();
+			$result_cache = new ResultCache();
 			$result_cache['person'] = $controller->person;
 			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
 			$result_cache['results'] = $results;
@@ -165,7 +165,7 @@ class IdeaResults
 	protected function _getPageFromIdeaIds(array $idea_ids, $page, $per_page)
 	{
 		$page_idea_ids = Arrays::getPageChunk($idea_ids, $page, $per_page);
-		$ideas_raw = App::getEntityRepository('DeskPRO:Ticket')->getByIds($page_idea_ids);
+		$ideas_raw = App::getEntityRepository('DeskPRO:Idea')->getByIds($page_idea_ids);
 
 		// - We'll get a page of results, but that actual page isn't going to be
 		// sorted the way we want, because MySQL was just sent a list of ID's.

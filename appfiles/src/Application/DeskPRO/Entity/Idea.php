@@ -95,7 +95,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	 * The primary email address used by this account
 	 *
 	 * @var \Application\DeskPRO\Entity\IdeaComment
-	 * @orm:OneToOne(targetEntity="IdeaComment", fetch="EAGER")
+	 * @orm:OneToOne(targetEntity="IdeaComment", fetch="EAGER", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 * @orm:JoinColumn(name="first_comment_id", referencedColumnName="id")
 	 */
 	protected $first_comment;
@@ -115,11 +115,21 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_label_manager = null;
 
-	public function __consturct()
+	public function __construct()
 	{
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function setFirstComment($comment)
+	{
+		$comment->idea = $this;
+		$this->first_comment = $comment;
+
+		$this->comments->add($comment);
+
+		return $comment;
 	}
 
 	public function addComment($comment)
@@ -162,6 +172,26 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->id), true);
 
 		return $url;
+	}
+
+	/**
+	 * Get a summary line.
+	 *
+	 * @return string
+	 */
+	public function getSummaryLine($max_len = 200)
+	{
+		$summary = $this->title;
+		if (strlen($summary) < $max_len) {
+			$summary .= '. ';
+			$summary .= Strings::removeLineBreaks($this->first_comment['content']);
+		}
+
+		if (strlen($summary) > $max_len) {
+			$summary = substr($summary, 0, $max_len);
+		}
+
+		return $summary;
 	}
 
 	/**
