@@ -1,5 +1,49 @@
-<section class="list-search-area">
+<section class="list-top-area">
 	<form class="idea-filter-form">
+		<div style="float:right">
+			<select name="order_by">
+				<optgroup label="{{ phrase('core.order_by')}}">
+					<option {% if filter_form.order_by == 'date.desc' %}selected="selected"{% endif %} value="date.desc">Newest on top</option>
+					<option {% if filter_form.order_by == 'date.asc' %}selected="selected"{% endif %} value="date.asc">Oldest on top</option>
+					<option {% if filter_form.order_by == 'votes.desc' %}selected="selected"{% endif %} value="votes.desc">Top voted on top</option>
+					<option {% if filter_form.order_by == 'votes.asc' %}selected="selected"{% endif %} value="votes.asc">Least voted on top</option>
+				</optgroup>
+			</select>
+		</div>
 
+		<input type="hidden" name="terms[status][type]" value="status" />
+		<input type="hidden" name="terms[status][op]" value="is" />
+		<select name="terms[status][status]">
+			<option value="visible">Any Status</option>
+			<option {% if filter_form.status.status == 'new' %}selected="selected"{% endif %} value="new">{{ phrase('core_ideas.status_new') }}</option>
+			<option {% if filter_form.status.status == 'active' %}selected="selected"{% endif %} value="active">{{ phrase('core_ideas.status_active') }}</option>
+			{% for cat in active_status_cats %}
+				<option {% if filter_form.status.status == cat.id %}selected="selected"{% endif %} value="{{cat.id}}">-- {{cat.title}}</option>
+			{% endfor %}
+			<option {% if filter_form.status.status == 'closed' %}selected="selected"{% endif %} value="closed">{{ phrase('core_ideas.status_closed') }}</option>
+			{% for cat in closed_status_cats %}
+				<option {% if filter_form.status.status == cat.id %}selected="selected"{% endif %} value="{{cat.id}}">-- {{cat.title}}</option>
+			{% endfor %}
+			<option value="visible"></option>
+			<optgroup label="Other Statuses">
+				<option {% if filter_form.status.status == 'hidden' %}selected="selected"{% endif %} value="hidden">{{ phrase('core_ideas.status_hidden') }}</option>
+				<option {% if filter_form.status.status == 'hidden.deleted' %}selected="selected"{% endif %} value="hidden.deleted">-- {{ phrase('core_ideas.status_deleted') }}</option>
+				<option {% if filter_form.status.status == 'hidden.spam' %}selected="selected"{% endif %} value="hidden.spam">-- {{ phrase('core_ideas.status_spam') }}</option>
+				<option {% if filter_form.status.status == 'hidden.validating' %}selected="selected"{% endif %} value="hidden.validating">{{ phrase('core_ideas.status_validating') }}</option>
+			</optgroup>
+		</select>
+
+		<input type="hidden" name="terms[category][type]" value="category" />
+		<input type="hidden" name="terms[category][op]" value="is" />
+		<select name="terms[category][category]">
+			<option value="DP_DISCARD_TERM">Any Category</option>
+			{% for cat in idea_cats %}
+				<option {% if filter_form.category.category == cat.id %}selected="selected"{% endif %} value="{{cat.id}}">{% if cat.depth %}{% for x in 1..cat.depth%}--{% endfor %} {% endif %}{{ cat.title }}</option>
+			{% endfor %}
+		</select>
+
+		<div class="submit-row" style="display:none">
+			<button class="submit-trigger dp-button x-small">Update Filter</button>
+		</div>
 	</form>
 </section>

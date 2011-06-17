@@ -10,6 +10,8 @@
 	'core.x_is_greater_than_y'     => '{{field}} is great than {{value}}',
 	'core.x_is_less_than_y'        => '{{field}} is less than {{value}}',
 
+	'core.order_by' => 'Order By',
+
 	'core.agent_is_me'             => 'Agent is me',
 	'core.agent_is_not_me'         => 'Agent is not me',
 	'core.my_agent_team'           => 'My team',

@@ -2,7 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaFilter';
 pageMeta.pageUrl = '{{ path('agent_ideas_validating') }}?partial=1&cache_id={{cache_id}}&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_ideas_validating') }}?cache_id={{cache_id}}';
-pageMeta.saveListPrefsUrl = '{{ path('agent_ideas_validating') }}';
+pageMeta.submitFilterUrl = '{{ path('agent_ideas_validating') }}';
 {% if cache_id %}
 	pageMeta.cache_id = {{cache_id}};
 {% endif %}
@@ -10,6 +10,11 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ideas_validating') }}';
 	pageMeta.noResults = true;
 {% endif %}
 </script>
+<header class="section-header">
+	<h1>
+		{{ phrase('core_ideas.articles_awaiting_validation') }}
+	</h1>
+</header>
 <div class="layout-content">
 <div class="content">
 	<section class="ideas-simple-list deskpro-results-list">

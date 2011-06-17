@@ -99,8 +99,6 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
 			$titles[] = $p['title'];
 		}
 
-		$titles[] = $this->title;
-
 		return $titles;
 	}
 

@@ -100,6 +100,32 @@
 }
 
 
+
+.deskpro-pane section.list-top-area {
+
+     -moz-box-shadow: inset 0px 0px 2px #5e5e5e;
+    box-shadow: inset 0px 0px 2px #5e5e5e;
+
+    margin-top: -5px;
+    background-color: #D1DBE8;
+
+    padding:  5px;
+}
+
+.deskpro-pane section.list-top-area.open {
+    background-color: #D1DBE8;
+}
+
+.deskpro-pane section.list-top-area .submit-row {
+    text-align: center;
+    margin-top: 4px;
+}
+
+.deskpro-pane section.list-top-area select, input {
+    font-size: 9px;
+}
+
+
 #deskpro_layout {
     position: absolute;
     top: 36px;

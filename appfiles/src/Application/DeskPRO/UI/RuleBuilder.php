@@ -88,6 +88,13 @@ class RuleBuilder
 			$data_item['options'] = array();
 
 			foreach ($item as $k => $v) {
+				// Special value means not to add the term
+				// Used for things like "any" where the term shouldnt
+				// be applied.
+				if ($v == 'DP_DISCARD_TERM') {
+					continue 2;
+				}
+				
 				if (in_array($k, $this->special_keys)) {
 					$data_item[$k] = $v;
 				} else {

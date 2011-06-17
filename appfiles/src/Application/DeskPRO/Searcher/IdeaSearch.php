@@ -109,6 +109,7 @@ class IdeaSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'id':
+			case 'date':
 				$order_by = "ORDER BY ideas.id $dir";
 				break;
 
@@ -154,12 +155,19 @@ class IdeaSearch extends SearcherAbstract
 					$cats = array();
 					$types = array();
 
-					foreach ( (array)$choice as$c) {
+					foreach ((array)$choice as $c) {
 						if (ctype_digit($c)) {
 							$cats[] = $c;
 						} else {
 							$types[] = $c;
 						}
+					}
+
+					// Visible is a special type name
+					if (($k = array_search('visible', $types)) !== null) {
+						unset($types[$k]);
+						$types = array_merge($types, array('new', 'active', 'closed'));
+						$types = array_unique($types);
 					}
 
 					$part_where = array();

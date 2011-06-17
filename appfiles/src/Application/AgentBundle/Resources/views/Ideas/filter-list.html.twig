@@ -2,7 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaFilter';
 pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_id}}&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_ideas_filter') }}?cache_id={{cache_id}}';
-pageMeta.saveListPrefsUrl = '{{ path('agent_ideas_filter') }}';
+pageMeta.submitFilterUrl = '{{ path('agent_ideas_filter') }}';
 {% if cache_id %}
 	pageMeta.cache_id = {{cache_id}};
 {% endif %}
@@ -21,6 +21,11 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ideas_filter') }}';
 </header>
 <div class="layout-content">
 <div class="content">
+
+	{% if not no_filter_form %}
+		{% include 'AgentBundle:Ideas:filter-search-form.html.twig' %}
+	{% endif %}
+
 	<section class="ideas-simple-list deskpro-results-list">
 		{% include 'AgentBundle:Ideas:filter-list-part.html.twig' %}
 	</section>

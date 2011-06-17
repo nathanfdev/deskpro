@@ -114,8 +114,8 @@ class IdeasController extends AbstractController
 	{
 		$result_helper = IdeaResults::newFromRequest($this, array(
 			'specific_terms' => array(
-				array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-				array('type' => 'status', 'op' => 'not', 'status' => 'hidden')
+				'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+				'status' => array('type' => 'status', 'op' => 'is', 'status' => 'visible')
 			)
 		));
 
@@ -123,6 +123,7 @@ class IdeasController extends AbstractController
 
 		return $this->renderList(
 			$result_helper,
+			null,
 			array('list_type' => 'category', 'page_title' => $cat->getFullTitle())
 		);
 	}
@@ -146,7 +147,7 @@ class IdeasController extends AbstractController
 		return $this->renderList(
 			$result_helper,
 			null,
-			array('list_type' => 'label', 'page_title' => $label)
+			array('list_type' => 'label', 'page_title' => $label, 'no_filter_form' => true)
 		);
 	}
 
@@ -164,7 +165,7 @@ class IdeasController extends AbstractController
 
 		$result_helper = IdeaResults::newFromRequest($this, array(
 			'specific_terms' => array(
-				array('type' => 'status', 'op' => 'is', 'status' => $status)
+				'status' => array('type' => 'status', 'op' => 'is', 'status' => $status)
 			)
 		));
 
@@ -208,10 +209,23 @@ class IdeasController extends AbstractController
 			$template = str_replace('.html.twig', '-part.html.twig', $template);
 		}
 
+		// Options for the filter form
+		$idea_cats          = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
+		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+
+		$filter_form_values = !empty($result_cache['extra']['form']) ? $result_cache['extra']['form'] : array();
+
 		return $this->render($template, array_merge(array(
 			'cache'        => $result_cache,
 			'cache_id'     => $result_cache['id'],
 			'ideas'        => $ideas,
+			 
+			'filter_form' => $filter_form_values,
+
+			 'idea_cats'          => $idea_cats,
+			 'active_status_cats' => $active_status_cats,
+			 'closed_status_cats' => $closed_status_cats,
 		), $template_vars));
 	}
 }

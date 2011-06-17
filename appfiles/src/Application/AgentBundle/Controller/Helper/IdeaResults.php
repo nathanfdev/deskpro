@@ -68,7 +68,7 @@ class IdeaResults
 		if (!$result_cache) {
 			$term_rules = RuleBuilder::newTermsBuilder();
 
-			$form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'discard');
+			$form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
 			$form_terms = Arrays::removeFalsey($form_terms);
 
 			if (!$form_terms AND !empty($options['default_terms'])) {
@@ -101,6 +101,20 @@ class IdeaResults
 			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
+
+			/*
+			 * Usually search forms terms are keyed arbitrarily (usually numerically).
+			 * The keys are discarded when read in by the RuleBuilder class above.
+			 * But in the IdeasController and template, we set specific keys
+			 * for terms so the values can be easily plugged back into the form.
+			 * 
+			 * (See IdeasController setting 'specific_terms', and the 'filter-searhc-form' template)
+			 *
+			 * Usually search forms are made with the RuleBuilder JS widget, which
+			 * adds terms dynamically. But when we want a static form and just want
+			 * to plug values back in, we do it this way.
+			 */
+			$result_cache['extra'] = array('form' => array_merge(array('order_by' => $order_by), $form_terms));
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();

@@ -6,4 +6,6 @@
 	'core_ideas.status_deleted'    => 'Deleted',
 	'core_ideas.status_spam'       => 'Spam',
 	'core_ideas.status_validating' => 'Validating',
+
+	'core_ideas.articles_awaiting_validation' => 'Articles Awaiting Validation',
 );
