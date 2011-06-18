@@ -1,0 +1,27 @@
+{% extends 'DeskPRO:emails_user:layout.html.twig' %}
+{% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
+{% block email_teaser_link %}
+	View your idea online at:<br />
+	<a href="{{ url('user_ideas_view', {'slug': idea.url_slug}) }}">
+		{{ url('user_ideas_view', {'slug': idea.url_slug}) }}
+	</a>
+{% endblock %}
+{% block content %}
+	{{ layout.section_start() }}
+		{% if show == 'validated' %}
+			Your submitted idea "{{ idea.title }}" has been validated and will now appear on our website.
+		{% elseif show == 'closed' %}
+        	Your submitted idea "{{ idea.title }}" was closed: {{ idea.status_category.title }}
+        {% elseif show == 'closed' %}
+        	Your submitted idea "{{ idea.title }}" has been updated. It is now
+        	filed under the new status "{{ idea.status_category.title }}"
+        {% endif %}
+	{{ layout.section_end() }}
+
+	{{ layout.section_start() }}
+		Your idea currently has <strong>{{ idea.votes }}</strong> votes. View your idea online at:<br />
+		<a href="{{ url('user_ideas_view', {'slug': idea.url_slug}) }}">
+			{{ url('user_ideas_view', {'slug': idea.url_slug}) }}
+		</a>
+	{{ layout.section_end() }}
+{% endblock %}

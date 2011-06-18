@@ -128,6 +128,28 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getUserEmail()
+	{
+		if ($this->person) {
+			return $this->person->getPrimaryEmailAddress();
+		} elseif ($this->first_comment['user_email']) {
+			return $this->first_comment['user_email'];
+		} else {
+			return '';
+		}
+	}
+
+	public function getUserName()
+	{
+		if ($this->person) {
+			return $this->person->getDisplayName();
+		} elseif ($this->first_comment['user_name']) {
+			return $this->first_comment['user_name'];
+		} else {
+			return '';
+		}
+	}
+
 	public function setFirstComment(IdeaComment $comment)
 	{
 		$this->_onPropertyChanged('first_comment', $this->first_comment, $comment);
