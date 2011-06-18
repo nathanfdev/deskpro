@@ -759,6 +759,19 @@ agent_ideas_getsectiondata:
   pattern: /ideas/get-section-data.json
   defaults: { _controller: AgentBundle:Ideas:getSectionData }
 
+
+agent_ideas_ajaxsaveeditables:
+  pattern: /ideas/view/{idea_id}/ajax-save-editables
+  defaults: { _controller: AgentBundle:Ideas:ajaxSaveEditables }
+
+agent_ideas_ajaxupdatecat:
+  pattern: /ideas/view/{idea_id}/ajax-update-category/{category_id}
+  defaults: { _controller: AgentBundle:Ideas:ajaxUpdateCategory }
+
+agent_ideas_ajaxupdatestatus:
+  pattern: /ideas/view/{idea_id}/ajax-update-status/{status_code}
+  defaults: { _controller: AgentBundle:Ideas:ajaxUpdateStatus }
+
 ################################################################################
 # Chat
 ################################################################################

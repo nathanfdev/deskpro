@@ -3553,3 +3553,29 @@ section.new-user-chat-alert footer {
     font-weight: bold;
     color: #D12A2A;
 }
+
+
+
+
+
+
+
+
+.idea-status {
+	float: left;
+	background: #e8f8da;
+	border-right: 1px solid #bad0a6;
+
+	-webkit-border-radius: 3px 0 0 3px;
+    -moz-border-radius: 3px 0 0 3px;
+    border-radius: 3px 0 0 3px;
+}
+
+.idea-status span{
+	padding: 12px 8px 12px 8px;
+	display: block;
+}
+
+.idea-status.status-new { background: #D0E1F2; }
+.idea-status.status-closed { background: #F2EDD8; }
+.idea-status.status-hidden { background: #EBEBEB; }

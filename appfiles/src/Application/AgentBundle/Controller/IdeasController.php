@@ -29,6 +29,91 @@ use FineDiff;
  */
 class IdeasController extends AbstractController
 {
+	############################################################################
+	# view
+	############################################################################
+
+	public function viewAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+
+		$idea_cats          = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
+		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+
+		return $this->render('AgentBundle:Ideas:view.html.twig', array(
+			'idea' => $idea,
+
+			'idea_cats'          => $idea_cats,
+			'active_status_cats' => $active_status_cats,
+			'closed_status_cats' => $closed_status_cats,
+		));
+	}
+
+	public function ajaxSaveEditablesAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+
+		$ret = '';
+
+		switch ($this->in->getString('action')) {
+			case 'title':
+				$value = $this->in->getString('title');
+				$idea['title'] = $value;
+				$ret = array('html' => htmlspecialchars($idea['title']));
+				break;
+		}
+
+		App::getOrm()->transactional(function ($em) use ($idea) {
+			$em->persist($idea);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'idea_id' => $idea['id'],
+			'html' => $ret
+		));
+	}
+
+	public function ajaxUpdateCategoryAction($idea_id, $category_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+		$cat  = App::findEntity('DeskPRO:IdeaCategory', $category_id);
+
+		$idea->category = $cat;
+
+		App::getOrm()->transactional(function ($em) use ($idea) {
+			$em->persist($idea);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'idea_id' => $idea['id'],
+		));
+	}
+
+	public function ajaxUpdateStatusAction($idea_id, $status_code)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+		$idea['status_code'] = $status_code;
+
+		App::getOrm()->transactional(function ($em) use ($idea) {
+			$em->persist($idea);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'idea_id' => $idea['id'],
+		));
+	}
+	
+	############################################################################
+	# get-section-data
+	############################################################################
+
 	public function getSectionDataAction()
 	{
 		$data = array();

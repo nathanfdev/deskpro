@@ -1,0 +1,42 @@
+<ul class="menu status {{add_classname}}" data-option-name="status" style="display:none">
+	<li
+		class="status-new"
+		data-status-type="new"
+		data-option-value="new"
+	>New</li>
+	<li
+		class="section-title status-active"
+		data-status-type="active"
+		data-option-value="active"
+	>Active</li>
+	{% for cat in active_cats %}
+		<li
+			class="status-{{cat.id}}"
+			data-status-type="active"
+			data-option-value="{{cat.id}}"
+		>{{cat.title}}</li>
+	{% endfor %}
+	<li
+		class="section-title status-closed"
+		data-status-type="new"
+		data-option-value="closed"
+	>Closed</li>
+	{% for cat in closed_cats %}
+		<li
+			class="status-{{cat.id}}"
+			data-status-type="closed"
+			data-option-value="{{cat.id}}"
+		>{{cat.title}}</li>
+	{% endfor %}
+	<li class="sep">-</li>
+	<li
+		class="status-spam"
+		data-status-type="hidden"
+		data-option-value="spam"
+	>Spam</li>
+	<li
+		class="status-deleted"
+		data-status-type="hidden"
+		data-option-value="deleted"
+	>Delete</li>
+</ul>

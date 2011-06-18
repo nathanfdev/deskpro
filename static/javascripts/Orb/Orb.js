@@ -169,6 +169,7 @@ Orb.findHighestZindex = function(els) {
  * @param string
  */
 Orb.escapeHtml = function(string) {
+	string = string||'';
 	return string.replace(/&/g, "&amp;")
 		.replace(/>/g, "&gt;")
 		.replace(/</g, "&lt;")
@@ -182,6 +183,7 @@ Orb.escapeHtml = function(string) {
  * @param string
  */
 Orb.linkUrls = function(string) {
+	string = string||'';
 	return string
 		.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1">$1</a>');
 };

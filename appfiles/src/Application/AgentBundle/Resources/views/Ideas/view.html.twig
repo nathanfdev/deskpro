@@ -1,0 +1,38 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.IdeaView';
+pageMeta.title = {{idea.title|json_encode|raw}};
+pageMeta.idea_id = {{idea.id}};
+pageMeta.urls = {
+
+};
+</script>
+<div class="layout-content with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+
+<div class="inner-box-tab-content-2 ticket-element">
+	<div class="idea-status idea-{{idea.status}}">
+		<span class="prop-val menu-trigger status">{{ phrase('core_ideas.status_' ~ idea.status) }}</span>
+	</div>
+	<div class="ticket-info-top">
+	<span class="ticket-source prop-val menu-trigger category_id" data-no-value="Choose Category">
+		{{idea.category.full_title|default('Choose Category')}}
+	</span>
+	<h3 class="prop title editable hover-edit" data-editable-for=".inline-editable .title">
+		{{idea.title}}
+	</h3>
+	</div>
+</div>
+
+{% include 'AgentBundle:Ideas:view-menus.html.twig' %}
+
+<div class="inline-editable" style="display:none">
+	<span class="title">
+		<input type="hidden" name="action" value="title" />
+		<input type="text" name="title" value="{{idea.title}}" />
+	</span>
+</div>
+
+{# Scrollbar elements #}
+</div></div>
+</div>

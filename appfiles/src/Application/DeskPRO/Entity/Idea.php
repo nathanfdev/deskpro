@@ -194,6 +194,45 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		return $summary;
 	}
 
+	public function setStatusCode($status_code)
+	{
+		if (strpos($status_code, '.') !== false) {
+			list ($status, $sub_status) = explode('.', $status_code, 2);
+		} else {
+			$status = $status_code;
+			$sub_status = null;
+		}
+
+		switch ($status) {
+			case self::STATUS_NEW:
+				$this['status'] = $status;
+				break;
+
+			case self::STATUS_ACTIVE:
+			case self::STATUS_CLOSED:
+				$this['status'] = $status;
+				$status_cat = App::findEntity('DeskPRO:IdaeStatusCategory', $sub_status);
+				$this->status_category = $sub_status;
+				break;
+
+			case self::STATUS_HIDDEN:
+				$this['status'] = $status;
+				$this['hidden_status'] = $sub_status;
+				break;
+		}
+	}
+
+	public function getStatusCode()
+	{
+		if ($this->status == self::STATUS_ACTIVE OR $this->status == self::STATUS_CLOSED) {
+			return $this->status . '.' . $this->status_category;
+		} elseif ($this->status == self::STATUS_HIDDEN) {
+			return $this->status . '.' . $this->hidden_status;
+		} else {
+			return $this->status;
+		}
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
