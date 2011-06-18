@@ -28,6 +28,37 @@ pageMeta.urls = {
 	</div>
 </div>
 
+<div class="messages-wrap">
+	{% for comment in idea_comments %}
+		{% include 'AgentBundle:Ideas:view-comment.html.twig' %}
+	{% endfor %}
+
+	<div class="message admin-message new-comment">
+		<div class="message-avatar left">
+			<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+		</div>
+		<div class="message-body">
+			<div class="message-meta">
+				<span class="arrow-left"></span>
+				<h4>{{ app.user.display_name }}</h4>
+			</div>
+			<div class="message-text">
+				<p>
+					<textarea style="width:98%; height: 80px;"></textarea>
+					<div style="text-align:center; margin-top: 9px;">
+						<div class="loading-off">
+							<button class="dp-button x-small">Add Comment</button>
+						</div>
+						<div class="loading-on" style="display:none">
+							Saving ...
+						</div>
+					</div>
+				</p>
+			</div>
+		</div>
+	</div>
+</div>
+
 {% include 'AgentBundle:Ideas:view-menus.html.twig' %}
 
 <div class="inline-editable" style="display:none">

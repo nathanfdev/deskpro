@@ -13,6 +13,8 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Idea;
+use Application\DeskPRO\Entity\IdeaVote;
+use Application\DeskPRO\Entity\IdeaComment;
 
 use Application\DeskPRO\Searcher\IdeaSearch;
 use Application\AgentBundle\Controller\Helper\IdeaResults;
@@ -37,12 +39,15 @@ class IdeasController extends AbstractController
 	{
 		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
 
+		$idea_comments = $idea->comments;
+
 		$idea_cats          = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
 		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
 		return $this->render('AgentBundle:Ideas:view.html.twig', array(
 			'idea' => $idea,
+			'idea_comments' => $idea_comments,
 
 			'idea_cats'          => $idea_cats,
 			'active_status_cats' => $active_status_cats,
@@ -125,6 +130,24 @@ class IdeasController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'idea_id' => $idea['id'],
+		));
+	}
+
+	public function ajaxSaveCommentAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+
+		$comment = IdeaComment::newForPerson($this->person, true);
+		$comment['content'] = $this->in->getString('content');
+		$idea->addComment($comment);
+
+		App::getOrm()->transactional(function ($em) use ($idea) {
+			$em->persist($idea);
+			$em->flush();
+		});
+
+		return $this->render('AgentBundle:Ideas:view-comment.html.twig', array(
+			'comment' => $comment
 		));
 	}
 	

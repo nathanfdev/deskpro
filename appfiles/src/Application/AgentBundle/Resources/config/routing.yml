@@ -768,6 +768,10 @@ agent_ideas_who_voted:
   pattern: /ideas/view/{idea_id}/who-voted
   defaults: { _controller: AgentBundle:Ideas:whoVoted }
 
+agent_ideas_ajaxsavecomment:
+  pattern: /ideas/view/{idea_id}/ajax-save-comment
+  defaults: { _controller: AgentBundle:Ideas:ajaxSaveComment }
+
 agent_ideas_ajaxsaveeditables:
   pattern: /ideas/view/{idea_id}/ajax-save-editables
   defaults: { _controller: AgentBundle:Ideas:ajaxSaveEditables }

@@ -27,7 +27,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 
 		this._initEditables();
 		this._initMenus();
-
+		this._initComments();
 		$('button.who-voted-trigger', this.wrapper).click(this.showWhoVoted.bind(this));
 	},
 
@@ -182,5 +182,47 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 				$('table.who-voted', el).removeClass('do-show-guests');
 			}
 		})
-	}
+	},
+
+	//#################################################################
+	//# Comments
+	//#################################################################
+
+	_initComments: function() {
+		this.commentWrapper = $('.messages-wrap', this.wrapper);
+		this.newCommentWrapper = $('.new-comment:first', this.wrapper);
+		$('button', this.newCommentWrapper).click(this.submitNewComment.bind(this));
+	},
+
+	submitNewComment: function() {
+
+		var loadingOn = $('.loading-on', this.newCommentWrapper).show();
+		var loadingOff = $('.loading-off', this.newCommentWrapper).hide();
+
+		var data = [];
+		data.push({
+			name: 'content',
+			value: $('textarea', this.newCommentWrapper).val()
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/ajax-save-comment',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'html',
+			success: function(html) {
+				loadingOn.hide();
+				loadingOff.show();
+
+				$('textarea', this.newCommentWrapper).val('');
+				var el = $(html);
+				this.newCommentWrapper.before(el);
+				this._initMessage(el);
+
+				this._handleSendReplySuccess(html);
+			}
+		});
+	},
+
 });

@@ -13,6 +13,8 @@ namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Markdown;
 
+use Application\DeskPRO\App;
+
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -85,6 +87,24 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
+
+	/**
+	 * @static
+	 * @param Person $person
+	 * @param bool $use_request Use the current request to set visitor (and thus ip etc)
+	 * @return \Application\DeskPRO\Entity\CommentAbstract
+	 */
+	public static function newForPerson(Person $person, $use_request = true)
+	{
+		$comment = new static();
+		$comment->person = $person;
+
+		if ($use_request) {
+			$comment->visitor = App::getSession()->getVisitor();
+		}
+
+		return $comment;
+	}
 
 	public function __construct()
 	{

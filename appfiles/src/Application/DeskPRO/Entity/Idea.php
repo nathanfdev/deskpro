@@ -128,8 +128,10 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
-	public function setFirstComment($comment)
+	public function setFirstComment(IdeaComment $comment)
 	{
+		$this->_onPropertyChanged('first_comment', $this->first_comment, $comment);
+		
 		$comment->idea = $this;
 		$this->first_comment = $comment;
 
@@ -138,7 +140,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		return $comment;
 	}
 
-	public function addComment($comment)
+	public function addComment(IdeaComment $comment)
 	{
 		$comment->idea = $this;
 		$this->comments->add($comment);
