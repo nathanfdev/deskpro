@@ -10,7 +10,7 @@
 				</a>
 			</div>
 			<div class="preview">
-				<a class="with-route" data-route="page:">{{ idea.summary_line }}</a>
+				<a class="with-route" data-route="page:{{ path('agent_ideas_view', {'idea_id': idea.id, 'from_listing_result_id': cache_id}) }}">{{ idea.summary_line }}</a>
 			</div>
 			<time class="timeago" datetime="{{ idea.date_created|date('c') }}">{{ idea.date_created|date('M d') }}</time>
 		</article>
