@@ -7,7 +7,7 @@
 			<span class="list-counter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
 			<a>Ideas Validating</a>
 		</li>
-		<li class="with-route auto-load-route" data-route="listpane:">
+		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_ideas_validating_comments') }}">
 			<span class="list-counter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
 			<a>Comments Validating</a>
 		</li>

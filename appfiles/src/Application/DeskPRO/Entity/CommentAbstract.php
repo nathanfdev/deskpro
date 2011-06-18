@@ -111,6 +111,28 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
+	public function getUserEmail()
+	{
+		if ($this->person) {
+			return $this->person->getPrimaryEmailAddress();
+		} elseif ($this->email) {
+			return $this->email;
+		} else {
+			return '';
+		}
+	}
+
+	public function getUserName()
+	{
+		if ($this->person) {
+			return $this->person->getDisplayName();
+		} elseif ($this->name) {
+			return $this->name;
+		} else {
+			return '';
+		}
+	}
+
 	public function setVisitor(Visitor $visitor = null)
 	{
 		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);

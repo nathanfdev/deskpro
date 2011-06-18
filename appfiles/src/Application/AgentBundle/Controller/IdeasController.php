@@ -269,6 +269,53 @@ class IdeasController extends AbstractController
 	}
 
 
+	public function validatingCommentsListAction()
+	{
+		$comments = App::getOrm()->createQuery("
+			SELECT c
+			FROM DeskPRO:IdeaComment c
+			LEFT JOIN c.person p
+			LEFT JOIN c.idea i
+			WHERE c.status = ?1
+			ORDER BY c.id DESC
+		")->setParameter(1, 'validating')->execute();
+
+		return $this->render('AgentBundle:Ideas:validating-comments-list.html.twig', array(
+			'comments' => $comments
+		));
+	}
+
+	public function approveCommentAction($comment_id)
+	{
+		$comment = App::findEntity('DeskPRO:IdeaComment', $comment_id);
+
+		if ($comment['status'] == 'validating') {
+			$comment['status'] = 'visible';
+			App::getOrm()->transactional(function ($em) use ($comment) {
+				$em->persist($comment);
+				$em->flush();
+			});
+		}
+
+		return $this->createJsonResponse(array('success' => true, 'comment_id' => $comment['id']));
+	}
+
+	public function disapproveCommentAction($comment_id)
+	{
+		$comment = App::findEntity('DeskPRO:IdeaComment', $comment_id);
+
+		if ($comment['status'] == 'validating') {
+			$comment['status'] = 'deleted';
+			App::getOrm()->transactional(function ($em) use ($comment) {
+				$em->persist($comment);
+				$em->flush();
+			});
+		}
+
+		return $this->createJsonResponse(array('success' => true, 'comment_id' => $comment['id']));
+	}
+
+
 	/**
 	 * List of ideas waiting to be validated
 	 * 

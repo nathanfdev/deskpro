@@ -1,0 +1,28 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaCommentsValidating';
+pageMeta.pageUrl = '{{ path('agent_ideas_validating_comments') }}?partial=1&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_ideas_validating_comments') }}';
+pageMeta.isValidating = true;
+{% if not ideas %}
+	pageMeta.noResults = true;
+{% endif %}
+</script>
+<header class="section-header">
+	<h1>
+		Comments Awaiting Validation
+	</h1>
+</header>
+<div class="layout-content">
+<div class="content">
+	<section class="ideas-simple-list deskpro-results-list">
+		{% include 'AgentBundle:Ideas:validating-comments-list-part.html.twig' %}
+	</section>
+
+	<div class="loading-more">
+		Loading more results ...
+	</div>
+	<div class="no-more-results">
+		There are no more results.
+	</div>
+</div>
+</div>

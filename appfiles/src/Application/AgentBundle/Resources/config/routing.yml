@@ -764,6 +764,21 @@ agent_ideas_getsectiondata:
   defaults: { _controller: AgentBundle:Ideas:getSectionData }
 
 
+
+agent_ideas_validating_comments:
+  pattern: /ideas/comments-awaiting-validation
+  defaults: { _controller: AgentBundle:Ideas:validatingCommentsList }
+
+agent_ideas_approve_comment:
+  pattern: /ideas/approve-comment/{comment_id}
+  defaults: { _controller: AgentBundle:Ideas:approveComment }
+
+agent_ideas_disapprove_comment:
+  pattern: /ideas/disapprove-comment/{comment_id}
+  defaults: { _controller: AgentBundle:Ideas:disapproveComment }
+
+
+
 agent_ideas_view:
   pattern: /ideas/view/{idea_id}
   defaults: { _controller: AgentBundle:Ideas:view }
