@@ -45,9 +45,13 @@ class IdeasController extends AbstractController
 		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
+		$from_listing_result_id = $this->in->getUint('from_listing_result_id');
+
 		return $this->render('AgentBundle:Ideas:view.html.twig', array(
 			'idea' => $idea,
 			'idea_comments' => $idea_comments,
+
+			'from_listing_result_id' => $from_listing_result_id,
 
 			'idea_cats'          => $idea_cats,
 			'active_status_cats' => $active_status_cats,
@@ -150,7 +154,79 @@ class IdeasController extends AbstractController
 			'comment' => $comment
 		));
 	}
-	
+
+	public function validateAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+		$idea['status'] = Idea::STATUS_NEW;
+
+		App::getOrm()->transactional(function ($em) use ($idea) {
+			$em->persist($idea);
+			$em->flush();
+		});
+
+		$next = $this->_getNextInResult($idea_id);
+		if (!$next) {
+			$next = $this->generateUrl('agent_ideas_view', array('idea_id' => $idea['id']));
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'next_url' => $next
+		));
+	}
+
+	public function validateDeleteAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+		$idea['status_code'] = 'hidden.deleted';
+
+		App::getOrm()->transactional(function ($em) use ($idea) {
+			$em->persist($idea);
+			$em->flush();
+		});
+
+		$next = $this->_getNextInResult($idea_id);
+		if (!$next) {
+			$next = $this->generateUrl('agent_ideas_view', array('idea_id' => $idea['id']));
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'next_url' => $next
+		));
+	}
+
+	public function validateSkipAction($idea_id)
+	{
+		$next = $this->_getNextInResult($idea_id);
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'next_url' => $next
+		));
+	}
+
+	protected function _getNextInResult($idea_id)
+	{
+		$next = false;
+
+		// Or if we came froma  result list,
+		// load the next one in the list
+		if ($this->in->getUint('from_result_id')) {
+			$result_cache = App::findEntity('DeskPRO:ResultCache', $this->in->getUint('from_result_id'));
+			$results = $result_cache['results'];
+			if (($k = array_search($idea_id, $results)) !== false) {
+				$k++;
+				if (isset($results[$k])) {
+					$next = $this->generateUrl('agent_ideas_view', array('idea_id' => $results[$k]));
+				}
+			}
+		}
+
+		return $next;
+	}
+
 	############################################################################
 	# get-section-data
 	############################################################################

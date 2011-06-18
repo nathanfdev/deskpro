@@ -764,6 +764,18 @@ agent_ideas_view:
   pattern: /ideas/view/{idea_id}
   defaults: { _controller: AgentBundle:Ideas:view }
 
+agent_ideas_validate:
+  pattern: /ideas/view/{idea_id}/validate
+  defaults: { _controller: AgentBundle:Ideas:validate }
+
+agent_ideas_validate_delete:
+  pattern: /ideas/view/{idea_id}/validate-delete
+  defaults: { _controller: AgentBundle:Ideas:validateDelete }
+
+agent_ideas_validate_skip:
+  pattern: /ideas/view/{idea_id}/validate-skip
+  defaults: { _controller: AgentBundle:Ideas:validateSkip }
+
 agent_ideas_who_voted:
   pattern: /ideas/view/{idea_id}/who-voted
   defaults: { _controller: AgentBundle:Ideas:whoVoted }

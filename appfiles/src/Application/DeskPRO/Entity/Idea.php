@@ -202,6 +202,28 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		return $summary;
 	}
 
+	public function setStatus($status)
+	{
+		$this->_onPropertyChanged('status', $this->status, $status);
+		$this->status = $status;
+		
+		switch ($status) {
+			case self::STATUS_NEW:
+				$this['hidden_status'] = null;
+				$this['status_category'] = null;
+				break;
+
+			case self::STATUS_ACTIVE:
+			case self::STATUS_CLOSED:
+				$this['hidden_status'] = null;
+				break;
+
+			case self::STATUS_HIDDEN:
+				$this['status_category'] = null;
+				break;
+		}
+	}
+
 	public function setStatusCode($status_code)
 	{
 		if (strpos($status_code, '.') !== false) {
@@ -220,7 +242,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 			case self::STATUS_CLOSED:
 				$this['status'] = $status;
 				$status_cat = App::findEntity('DeskPRO:IdaeStatusCategory', $sub_status);
-				$this->status_category = $sub_status;
+				$this->status_category = $status_cat['id'];
 				break;
 
 			case self::STATUS_HIDDEN:
@@ -239,6 +261,11 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			return $this->status;
 		}
+	}
+
+	public function isValidating()
+	{
+		return ($this->hidden_status == self::HIDDEN_STATUS_VALIDATING);
 	}
 
 	/**

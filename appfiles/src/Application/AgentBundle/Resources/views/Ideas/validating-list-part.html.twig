@@ -2,15 +2,20 @@
 	{% for idea in ideas %}
 		<article class="idea idea-{{idea.id}}">
 			<div class="userinfo">
-				<address>
+				<address style="right: 20px;">
 					{{ idea.person.primary_email_address }}
 				</address>
+				{#
+				<div style="float: right; padding: 3px 5px 0 0;">
+					<input type="checkbox" name="idea[]" value="{{idea.id}}" style="width:12px;" />
+				</div>
+				#}
 				<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': idea.person.id|default('0')}) }}">
 					{{ idea.person.display_name }}
 				</a>
 			</div>
 			<div class="preview">
-				<a class="with-route" data-route="page:">{{ idea.summary_line }}</a>
+				<a class="with-route" data-route="page:{{ path('agent_ideas_view', {'idea_id': idea.id, 'from_listing_result_id': cache_id}) }}">{{ idea.summary_line }}</a>
 			</div>
 			<time class="timeago" datetime="{{ idea.date_created|date('c') }}">{{ idea.date_created|date('M d') }}</time>
 		</article>

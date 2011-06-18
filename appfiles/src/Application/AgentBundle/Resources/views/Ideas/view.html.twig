@@ -2,17 +2,33 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.IdeaView';
 pageMeta.title = {{idea.title|json_encode|raw}};
 pageMeta.idea_id = {{idea.id}};
-pageMeta.urls = {
-
-};
+pageMeta.is_validating = {% if idea.is_validating %}true{% else %}false{% endif %};
+{% if from_listing_result_id %}
+pageMeta.from_listing_result = {{from_listing_result_id}};
+{% endif %}
 </script>
 <div class="layout-content with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
+{% if idea.is_validating %}
+<div class="ticket-lock-bar" style="padding: 4px; text-align: right;">
+	<div style="float:left">
+		This idea is awaiting validation
+	</div>
+	<button class="dp-button x-small disapprove-trigger">Delete</button>
+	<button class="dp-button x-small skip-trigger">Skip</button>
+	<button class="dp-button x-small approve-trigger">Approve</button>
+</div>
+{% endif %}
+
 <div class="inner-box-tab-content-2 idea">
-	<div class="idea-status idea-{{idea.status}}">
-		<span class="prop-val menu-trigger status">{{ phrase('core_ideas.status_' ~ idea.status) }}</span>
+	<div class="idea-status status-{{idea.status}}">
+		{% if idea.hidden_status %}
+			<span class="prop-val {% if not idea.is_validating %}menu-trigger{% endif %} status">{{ phrase('core_ideas.status_' ~ idea.hidden_status) }}</span>
+		{% else %}
+			<span class="prop-val menu-trigger status">{{ phrase('core_ideas.status_' ~ idea.status) }}</span>
+		{% endif %}
 	</div>
 	<div class="idea-votes">
 		{{idea.num_votes}}<br />
@@ -33,6 +49,7 @@ pageMeta.urls = {
 		{% include 'AgentBundle:Ideas:view-comment.html.twig' %}
 	{% endfor %}
 
+	{% if not idea.is_validating %}
 	<div class="message admin-message new-comment">
 		<div class="message-avatar left">
 			<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
@@ -57,6 +74,7 @@ pageMeta.urls = {
 			</div>
 		</div>
 	</div>
+	{% endif %}
 </div>
 
 {% include 'AgentBundle:Ideas:view-menus.html.twig' %}
