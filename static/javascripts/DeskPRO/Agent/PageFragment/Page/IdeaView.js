@@ -43,18 +43,21 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 	//#################################################################
 
 	_initValidating: function() {
-		$('button.approve-trigger', this.wrapper).click(this.approveEdit.bind(this));
-		$('button.disapprove-trigger', this.wrapper).click(this.disapproveEdit.bind(this));
-		$('button.skip-trigger', this.wrapper).click(this.skipValidateEdit.bind(this));
+		$('button.approve-trigger', this.wrapper).click(this.approveIdea.bind(this));
+		$('button.disapprove-trigger', this.wrapper).click(this.disapproveIdea.bind(this));
+		$('button.skip-trigger', this.wrapper).click(this.skipValidateIdea.bind(this));
 	},
 
-	approveEdit: function() {
+	approveIdea: function() {
 		$.ajax({
 			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/validate?from_result_id=' + this.meta.from_listing_result,
 			type: 'POST',
 			context: this,
 			dataType: 'json',
 			success: function(info) {
+
+				DeskPRO_Window.getMessageBroker().sendMessage('validating-ideas.approved', {idea_id: this.meta.idea_id});
+
 				var load_url = info.next_url;
 				if (info.next_url) {
 					DeskPRO_Window.runPageRoute('page:' + info.next_url);
@@ -64,13 +67,16 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 		});
 	},
 
-	disapproveEdit: function() {
+	disapproveIdea: function() {
 		$.ajax({
 			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/validate-delete?from_result_id=' + this.meta.from_listing_result,
 			type: 'POST',
 			context: this,
 			dataType: 'json',
 			success: function(info) {
+
+				DeskPRO_Window.getMessageBroker().sendMessage('validating-ideas.deleted', {idea_id: this.meta.idea_id});
+
 				var load_url = info.next_url;
 				if (info.next_url) {
 					DeskPRO_Window.runPageRoute('page:' + info.next_url);
@@ -80,13 +86,14 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 		});
 	},
 
-	skipValidateEdit: function() {
+	skipValidateIdea: function() {
 		$.ajax({
 			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/validate-skip?from_result_id=' + this.meta.from_listing_result,
 			type: 'POST',
 			context: this,
 			dataType: 'json',
 			success: function(info) {
+
 				var load_url = info.next_url;
 				if (info.next_url) {
 					DeskPRO_Window.runPageRoute('page:' + info.next_url);

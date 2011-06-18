@@ -3,6 +3,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaFilter';
 pageMeta.pageUrl = '{{ path('agent_ideas_validating') }}?partial=1&cache_id={{cache_id}}&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_ideas_validating') }}?cache_id={{cache_id}}';
 pageMeta.submitFilterUrl = '{{ path('agent_ideas_validating') }}';
+pageMeta.isValidating = true;
 {% if cache_id %}
 	pageMeta.cache_id = {{cache_id}};
 {% endif %}

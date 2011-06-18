@@ -17,6 +17,16 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Class({
 		} else {
 			this.filterSearchForm = null;
 		}
+
+		// When we get these messages we can remove them from the list
+		if (this.meta.isValidating)	{
+			DeskPRO_Window.getMessageBroker().addMessageListener('validating-ideas.deleted', this.handleRemoveIdea.bind(this));
+			DeskPRO_Window.getMessageBroker().addMessageListener('validating-ideas.approved', this.handleRemoveIdea.bind(this));
+		}
+	},
+
+	handleRemoveIdea: function(info) {
+		$('.idea-' + info.idea_id, this.wrapper).fadeOut();
 	},
 
 	_initFilterSearch: function() {
