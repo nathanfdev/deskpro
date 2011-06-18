@@ -27,6 +27,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 
 		this._initEditables();
 		this._initMenus();
+
+		$('button.who-voted-trigger', this.wrapper).click(this.showWhoVoted.bind(this));
 	},
 
 	//#################################################################
@@ -113,5 +115,72 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 
 			}
 		});
+	},
+
+	//#################################################################
+	//# Who Voted
+	//#################################################################
+
+	showWhoVoted: function() {
+
+		var displayEl = $('<div style="width: 650px; height: 400px;"></div>"');
+		var spinner = new Spinner(displayEl, {
+			radii: [15,9],
+			padding: 15
+		}).play();
+
+		var overlay = new DeskPRO.UI.Overlay({
+			contentElement: displayEl,
+			maxWidth: 650,
+			destroyOnClose: true
+		});
+		overlay.openOverlay();
+
+		$.ajax({
+			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/who-voted',
+			context: this,
+			dataType: 'html',
+			success: function(html) {
+				var el = $('<div style="width: 650px; height: 500px;">' + html + '</div>');
+				overlay.setContent(el);
+
+				spinner.remove();
+				displayEl.remove();
+				
+				this._initWhoVotedEl(overlay.elements.wrapper);
+			}
+		});
+	},
+
+	_initWhoVotedEl: function(el) {
+		var controls = $('.who-voted-controls', el);
+
+		var self = this;
+		$('.show-people, .show-guests', controls).click(function() {
+
+			var show_people = $('.show-people', controls).is(':checked');
+			var show_guests = $('.show-guests', controls).is(':checked');
+
+			// Always at least one checked
+			if (!show_people && !show_guests) {
+				if ($(this).is('.show-people')) {
+					$('.show-guests', controls).attr('checked', true);
+				} else {
+					$('.show-people', controls).attr('checked', true);
+				}
+			}
+
+			if (show_people) {
+				$('table.who-voted', el).addClass('do-show-people');
+			} else {
+				$('table.who-voted', el).removeClass('do-show-people');
+			}
+
+			if (show_guests) {
+				$('table.who-voted', el).addClass('do-show-guests');
+			} else {
+				$('table.who-voted', el).removeClass('do-show-guests');
+			}
+		})
 	}
 });

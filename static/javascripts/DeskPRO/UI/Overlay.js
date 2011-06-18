@@ -268,6 +268,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	 * Handle setting the content of the overlay.
 	 */
 	_setContent: function (el) {
+		this.elements.wrapper.empty();
 		el.detach().appendTo(this.elements.wrapper);
 
 		// Often pages will hide content by default in the initial page,
@@ -290,11 +291,19 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			this.closeOverlay();
 		}).bind(this));
 
+		if (!$('.overlay-footer:first', el).length) {
+			$('div.overlay-content:first', el).addClass('no-footer');
+		}
+
 		this.fireEvent('contentSet', {
 			overlay: this,
 			contentEl: el,
 			wrapperEl: this.elements.wrapper
 		});
+	},
+
+	setContent: function(el) {
+		this._setContent(el);
 	},
 
 

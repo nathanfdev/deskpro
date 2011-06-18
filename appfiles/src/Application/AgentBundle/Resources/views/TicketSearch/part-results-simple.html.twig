@@ -12,7 +12,7 @@
 			<div class="preview">
 				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ ticket.getSummaryLine(200) }}</a>
 			</div>
-			<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">ticket.date_created|date('M d')</time>
+			<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M d') }}</time>
 		</article>
 	{% endfor %}
 </section>

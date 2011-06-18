@@ -50,6 +50,24 @@ class IdeasController extends AbstractController
 		));
 	}
 
+	public function whoVotedAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+
+		$idea_votes = $idea->votes->toArray();
+
+		// Sort by votes, top votes on top
+		usort($idea_votes, function($a, $b) {
+			if ($a['num_votes'] == $b['num_votes']) return 0;
+			return ($a['num_votes'] > $b['num_votes']) ? -1 : 1;
+		});
+
+		return $this->render('AgentBundle:Ideas:view-who-voted.html.twig', array(
+			'idea' => $idea,
+			'idea_votes' => $idea_votes,
+		));
+	}
+
 	public function ajaxSaveEditablesAction($idea_id)
 	{
 		$idea = App::findEntity('DeskPRO:Idea', $idea_id);

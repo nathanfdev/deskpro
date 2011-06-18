@@ -10,9 +10,13 @@ pageMeta.urls = {
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
-<div class="inner-box-tab-content-2 ticket-element">
+<div class="inner-box-tab-content-2 idea">
 	<div class="idea-status idea-{{idea.status}}">
 		<span class="prop-val menu-trigger status">{{ phrase('core_ideas.status_' ~ idea.status) }}</span>
+	</div>
+	<div class="idea-votes">
+		{{idea.num_votes}}<br />
+		<button class="who-voted-trigger">Who Voted</button>
 	</div>
 	<div class="ticket-info-top">
 	<span class="ticket-source prop-val menu-trigger category_id" data-no-value="Choose Category">

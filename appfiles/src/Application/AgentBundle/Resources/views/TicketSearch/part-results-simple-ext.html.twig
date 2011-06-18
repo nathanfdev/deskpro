@@ -116,7 +116,7 @@
 						Unassigned
 					{% endif %}
 				</div>
-				<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">ticket.date_created|date('M d')</time>
+				<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M d') }}</time>
 			</div>
 		</article>
 	{% endfor %}

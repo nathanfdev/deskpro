@@ -760,6 +760,14 @@ agent_ideas_getsectiondata:
   defaults: { _controller: AgentBundle:Ideas:getSectionData }
 
 
+agent_ideas_view:
+  pattern: /ideas/view/{idea_id}
+  defaults: { _controller: AgentBundle:Ideas:view }
+
+agent_ideas_who_voted:
+  pattern: /ideas/view/{idea_id}/who-voted
+  defaults: { _controller: AgentBundle:Ideas:whoVoted }
+
 agent_ideas_ajaxsaveeditables:
   pattern: /ideas/view/{idea_id}/ajax-save-editables
   defaults: { _controller: AgentBundle:Ideas:ajaxSaveEditables }

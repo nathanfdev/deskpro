@@ -1924,6 +1924,13 @@ border-left: none;
 	background: #fff;
 }
 
+.list.general > tbody > tr > td {
+    padding: 5px;
+    border-top: 1px solid #E4E9F0;
+}
+.list.general > tbody > tr:first-child > td {
+    border-top: none;
+}
 
 .filter-summary-tip {
 	min-width: 250px;
@@ -3579,3 +3586,76 @@ section.new-user-chat-alert footer {
 .idea-status.status-new { background: #D0E1F2; }
 .idea-status.status-closed { background: #F2EDD8; }
 .idea-status.status-hidden { background: #EBEBEB; }
+
+
+.inner-box-tab-content-2.idea {
+    position: relative;
+}
+
+.idea-votes {
+    position: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+
+    border-left: 1px solid #bad0a6;
+
+    display: block;
+    width: 76px;
+    text-align: center;
+
+    background-color: #FFEFA6;
+
+    -webkit-border-radius: 3px 0 0 3px;
+    -moz-border-radius: 3px 0 0 3px;
+    border-radius: 3px 0 0 3px;
+
+    font-size: 14px;
+    font-weight: bold;
+
+    text-shadow: 1px 0px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=1, offy=0);
+}
+
+.idea-votes button {
+    margin-top: 3px;
+    background-color: #F5F2E4;
+    font-size: 9px;
+    padding: 1px 0 1px 0;
+    border: 1px solid #C4C0AF;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    cursor: pointer;
+
+    text-shadow: 1px 0px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=1, offy=0);
+}
+
+.idea-votes button:hover {
+    background-color: #EDE9D5;
+}
+
+.who-voted-controls {
+    text-align: right;
+    font-size: 11px;
+
+    margin-bottom: 4px;
+}
+
+.who-voted-controls input {
+    width: 10px;
+}
+
+table.who-voted > tbody > tr {
+    display: none;
+}
+
+table.who-voted.do-show-people > tbody > tr.type-person {
+    display: table-row;
+}
+table.who-voted.do-show-guests > tbody > tr.type-guest {
+    display: table-row;
+}

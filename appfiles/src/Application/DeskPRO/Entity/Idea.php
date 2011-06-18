@@ -106,6 +106,11 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	protected $comments;
 
 	/**
+	 * @orm:OneToMany(targetEntity="IdeaVote", mappedBy="idea", cascade={"persist", "remove", "merge"})
+	 */
+	protected $votes;
+
+	/**
 	 * @orm:OneToMany(targetEntity="LabelIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
@@ -119,6 +124,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->votes = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
