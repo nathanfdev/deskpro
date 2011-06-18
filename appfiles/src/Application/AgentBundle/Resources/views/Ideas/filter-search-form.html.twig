@@ -42,6 +42,15 @@
 			{% endfor %}
 		</select>
 
+		<div style="font-size: 10px;">
+			<input type="hidden" name="terms[popular][type]" value="popular" />
+			<input type="hidden" name="terms[popular][op]" value="is" />
+			<label>
+				<input type="checkbox" name="terms[popular][popular]" value="1" {% if filter_form.popular.popular %}checked="checked"{% endif %} style="width: 10px" />
+				Popular ideas only
+			</label>
+		</div>
+
 		<div class="submit-row" style="display:none">
 			<button class="submit-trigger dp-button x-small">Update Filter</button>
 		</div>

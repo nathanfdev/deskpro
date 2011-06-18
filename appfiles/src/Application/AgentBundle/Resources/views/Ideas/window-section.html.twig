@@ -11,7 +11,7 @@
 			<span class="list-counter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
 			<a>Comments Validating</a>
 		</li>
-		<li class="with-route" data-route="listpane:">
+		<li class="with-route" data-route="listpane:{{ path('agent_ideas_popular') }}">
 			<span class="list-counter" id="ideas_popular_count">{{ counts.popular_ideas|default(0) }}</span>
 			<a>Popular Ideas</a>
 		</li>

@@ -332,6 +332,28 @@ class IdeasController extends AbstractController
 
 
 	/**
+	 * A shortcut to run a filter on a category
+	 *
+	 * @param  $category_id
+	 * @return
+	 */
+	public function popularListAction()
+	{
+		$result_helper = IdeaResults::newFromRequest($this, array(
+			'specific_terms' => array(
+				'popular' => array('type' => 'popular', 'op' => 'is', 'popular' => 1),
+			)
+		));
+
+		return $this->renderList(
+			$result_helper,
+			null,
+			array('list_type' => 'category', 'page_title' => 'Popular')
+		);
+	}
+
+
+	/**
 	 * A shortcut to run a filter on a label
 	 *
 	 * @param  $category_id

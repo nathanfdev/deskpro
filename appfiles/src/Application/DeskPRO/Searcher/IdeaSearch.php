@@ -201,7 +201,12 @@ class IdeaSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_POPULAR:
-					$wheres[] = $this->_rangeMatch('ideas.num_votes', $op, App::getSetting('core_ideas.popular_votes'));
+					$choice = array_pop($choice);
+					// must be 1
+					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
+					if ($choice) {
+						$wheres[] = $this->_rangeMatch('ideas.num_votes', 'gte', App::getSetting('core_ideas.popular_votes'));
+					}
 					break;
 
 				case self::TERM_DATE_CREATED:
