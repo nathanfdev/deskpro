@@ -392,7 +392,7 @@ $.fn.single_double_click = function(single_click_callback, double_click_callback
 		},
 
 		teardown: function() {
-			if (this.setTimeout) { return false; }
+			if (!this.setTimeout) { return false; }
 
 			var elem = $(this);
 			elems = elems.not(elem);
@@ -402,6 +402,7 @@ $.fn.single_double_click = function(single_click_callback, double_click_callback
 			// If this is the last element removed, stop the polling loop.
 			if (!elems.length) {
 				clearTimeout(timeout_id);
+				elems = $([]);
 			}
 		},
 
@@ -444,6 +445,7 @@ $.fn.single_double_click = function(single_click_callback, double_click_callback
 				width = elem.width(),
 				height = elem.height(),
 				data = $.data( this, 'resize-special-event' );
+				if (!data) return;
 
 				// If element size has changed since the last time, update the element
 				// data store and trigger the 'resize' event.
