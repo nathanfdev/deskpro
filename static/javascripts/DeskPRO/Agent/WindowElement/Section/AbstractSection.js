@@ -220,20 +220,28 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 		var count = parseInt(count);
 		if (count) {
-			if (count >= 1000) {
-				count = '1000+';
+			if (countStr >= 1000) {
+				countStr = '1000+';
 			}
-			elCount.html(count);
+			elCount.html(countStr);
 			el.show();
 		} else {
+			count = 0;
 			elCount.html('0');
 			el.hide();
 		}
+
+		this.badgeCount = count;
+		DeskPRO_Window.getMessageBroker().sendMessage('agent.ui.badge_updated', {
+			section: this,
+			sectionId: this.buttonEl.attr('id'),
+			count: count
+		});
 	},
-	
 
-
-
+	getBadgeCount: function() {
+		return this.badgeCount || 0;
+	},
 
 	_onShowSetVisible: function() { this._isVisible = true },
 	_onHideSetVisible: function() { this._isVisible = false },

@@ -931,6 +931,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// Global AJAX handler for errors if no error handler is attached
 		$(document).ajaxError(this._globalHandleAjaxError.bind(this));
+
+		// The favicon count
+		this.faviconBadge = new DeskPRO.FaviconBadge({
+			favicon: '#favicon'
+		});
+		this.getMessageBroker().addMessageListener('agent.ui.badge_updated', function(data) {
+			var count = 0;
+			Object.each(self.sections, function(section) {
+				count += section.getBadgeCount();
+			});
+
+			self.faviconBadge.updateBadge(count);
+		});
 	},
 
 	_initSections: function() {
