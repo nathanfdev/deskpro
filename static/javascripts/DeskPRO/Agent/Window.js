@@ -497,19 +497,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		routeData.openInSection = routeData.master;
 
-		// Rewrote listpane's to normal pages if listpane
-		// is current collapnsed
-		if (routeData.openInSection == 'listpane' && false /* layout west is closed todo */) {
-			routeData.openInSection = 'page';
-
-			// If it's an alt page, they're used to link views
-			// But we don't want to open a new tab automatically
-			// if we're using tabbed mode
-			if (routeData.masterTag == 'alt') {
-				return;
-			}
-		}
-
 		switch (routeData.openInSection) {
 			case 'listpane':
 				this.loadListPane(routeData.url, routeData);
@@ -567,6 +554,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				return;
 			}
 		}
+
+		// Add a temporary tab to the tabstrip
+		routeData.tabPlaceholderId = this.pageTabStrip.addTabPlaceholder(url, routeData);
+
 		
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				this.stopLoadingIndicator();
@@ -575,6 +566,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				page.setMetaData('routeUrl', url);
 				if (routeData) {
 					page.setMetaData('routeData', routeData);
+					if (routeData.tabPlaceholderId) {
+						page.setMetaData('tabPlaceholderId', routeData.tabPlaceholderId);
+					}
 				}
 
 				this.addPageTab(page);

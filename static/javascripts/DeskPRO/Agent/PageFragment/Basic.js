@@ -40,8 +40,6 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			this.html = html;
 		}
 
-		this.init();
-
 		this.addEvent('activate', (function() {
 			DeskPRO_Window.getMessageBroker().sendMessage('page-fragment.activated', { page: this });
 		}).bind(this));
@@ -81,6 +79,8 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		this.addEvent('deactivate', this.deactivate);
 		this.addEvent('render', this.initPage);
 		this.addEvent('destroy', this.destroyPage);
+
+		this.init();
 	},
 
 	/**

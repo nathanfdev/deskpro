@@ -86,3 +86,15 @@
 {% include 'AgentBundle:AgentChat:chat-layout-templates.html.twig' %}
 {% include 'AgentBundle:UserChat:chat-layout-templates.html.twig' %}
 
+{#
+	This isnt a jQuery template. Its used in TabStrip.js because
+	it needs an html string, and jQuery creates real HTML elements.
+#}
+<script type="text/x-deskpro-tmpl" id="tab_loading_template">
+	<script>
+	pageMeta.title = '{{ phrase('agent.tab_loading_title') }}';
+	%endScript%
+	<div class="tab-loading">
+		{{ phrase('agent.tab_loading') }}
+	</div>
+</script>

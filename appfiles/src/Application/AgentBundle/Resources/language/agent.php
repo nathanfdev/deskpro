@@ -20,4 +20,6 @@
 	'agent.flag_red'    => 'Red',
 	'agent.flag_yellow' => 'Yellow',
 
+	'agent.tab_loading_title' => 'Loading',
+	'agent.tab_loading' => 'Loading...',
 );

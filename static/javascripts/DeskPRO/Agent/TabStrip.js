@@ -118,7 +118,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	},
 
 	addTab: function(page) {
-		this.tabManager.addTab(Orb.uuid(), {
+		console.log(page);
+		var id = Orb.uuid();
+		this.tabManager.addTab(id, {
 			html: page.getHtml(),
 			page: page,
 			title: page.getMetaData('title', 'Untitled'),
@@ -138,9 +140,22 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		});
 
 		this.resizeTabListWidth();
+
+		return id;
 	},
 
+	addTabPlaceholder: function(url, routeData) {
+		var html = $('#tab_loading_template').get(0).innerHTML;
+		html = html.replace('%endScript%', '</scr' + 'ipt>');
 
+		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
+		page.meta.loadingUrl = url;
+		page.meta.loadingRouteData = routeData;
+		
+		var id = this.addTab(page);
+
+		return id;
+	},
 
 	resizeTabListWidth: function() {
 		var w = 0;
@@ -251,8 +266,17 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var li = $(html);
 
-		li.appendTo(this.tabStrip);
-		this.resizeTabListWidth();
+		if (tabData.page && tabData.page.meta.tabPlaceholderId) {
+			var otherTab = this.getTabById(tabData.page.meta.tabPlaceholderId);
+			var btnId = otherTab.btnId;
+
+			this.removeTabById(tabData.page.meta.tabPlaceholderId);
+
+			$('#' + btnId).replaceWith(li);
+		} else {
+			li.appendTo(this.tabStrip);
+			this.resizeTabListWidth();
+		}
 
 		// Add tooltip
 		//$(li).tipTip({defaultPosition: 'bottom'});
@@ -289,9 +313,15 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	},
 
 	_onTabRemove: function(tabData) {
-		$('#' + tabData.btnId).remove();
-
 		$('#tiptip_holder').clearQueue().hide();
+
+		if (tabData.page && tabData.page.TYPENAME && tabData.page.TYPENAME == 'loading') {
+			// For Loading pages, the tab element in the strip is replaced
+			// with the real tab, so we dont want to remove it now
+			return;
+		}
+
+		$('#' + tabData.btnId).remove();
 
 		this.resizeTabListWidth();
 	}
