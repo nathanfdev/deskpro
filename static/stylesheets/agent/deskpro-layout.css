@@ -722,7 +722,6 @@ So only the 'on' one is visible at a time */
     max-width: 80px;
 	overflow: hidden;
 	white-space:nowrap;
-    line-height: 33px;
     font-weight: bold;
     display: block;
     float: left;
@@ -740,7 +739,6 @@ So only the 'on' one is visible at a time */
 
 #deskpro_tabstrip > ul > li.active-tab {
     margin-top: 6px;
-    height: 33px;
     background-color: #fff;
 
     border: 1px solid #CBCFD8;
@@ -749,6 +747,7 @@ So only the 'on' one is visible at a time */
 
 #deskpro_tabstrip > ul > li.icon a.link {
     padding-left: 15px;
+    line-height: 29px;
 }
 
 #deskpro_tabstrip > ul > li > a.close-tab {
@@ -763,9 +762,27 @@ So only the 'on' one is visible at a time */
 	background: url("../../images/icn-sprite.png") left -862px;
 }
 
+#deskpro_tabstrip > ul > li.icon-ticket a.link,
+#deskpro_tabstrip > ul > li.icon-ticket-custom-filter a.link,
+#deskpro_tabstrip > ul > li.icon-ticket-filter a.link,
+#deskpro_tabstrip > ul > li.icon-ticket-flagged a.link,
+#deskpro_tabstrip > ul > li.icon-people-custom-filter a.link,
+#deskpro_tabstrip > ul > li.icon-organization-custom-filter a.link,
+#deskpro_tabstrip > ul > li.icon-newticket a.link,
+#deskpro_tabstrip > ul > li.icon-person a.link {
+	padding-left: 17px;
+	background: url("../../images/icn-sprite.png") -7px -583px no-repeat;
+}
 
+#deskpro_tabstrip > ul > li.icon-loading a.link {
+    padding-left: 19px;
+	background: url("../../images/tab-loading.gif") 0 50% no-repeat;
+}
 
-
+#deskpro_viewport .tab-loading {
+    text-align: center;
+    padding: 50px;
+}
 
 /********************************
 * Ticket Section

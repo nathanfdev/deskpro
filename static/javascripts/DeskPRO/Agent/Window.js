@@ -560,7 +560,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
-				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data);
 
 				page.setMetaData('routeUrl', url);
@@ -587,7 +586,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		this.startLoadingIndicator();
+		// If we have a placeholder tab, it itself is a loading indicator,
+		// so dont use the window one
+		if (!routeData || !routeData.tabPlaceholderId) {
+			this.startLoadingIndicator();
+		}
 
 		if (routeData && routeData.postData) {
 			$.ajax({

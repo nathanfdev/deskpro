@@ -11,7 +11,7 @@ class TestController extends AbstractController
 {
     public function indexAction()
     {
-		sleep(30);
+		sleep(1600);
 		return $this->render('AgentBundle:Test:test.html.twig');
 	}
 }
