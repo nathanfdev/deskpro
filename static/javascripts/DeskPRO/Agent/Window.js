@@ -917,29 +917,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var menuOpener = new DeskPRO.Agent.WindowElement.MainMenuOpener();
 
+		this.settingsHandler = new DeskPRO.Agent.Settings();
+
 		// Settings is a window
 		$('#user_settings_link').click(function() {
+			var overlay = new DeskPRO.UI.Overlay({
+				contentMethod: 'iframe',
+				iframeUrl: BASE_URL + 'agent/settings'
+			});
 
-			if (screen.width > 1000) var width = 1000;
-			else if (screen.width > 800) var width = 800;
-			else var width = 600;
-
-			var height = 600;
-
-			var pos_left = (screen.width - width - 30) / 2;
-			var pos_top = (screen.height - height - 100) / 2;
-
-
-			var win = window.open(
-				BASE_URL + 'agent/settings',
-				"settings_win",
-				"width="+width+",height="+height+",left="+pos_left+",top="+pos_top+",toolbar=false,locationbar=false,directories=false,status=false,menubar=false,scrollbars=true,resizable=true,copyhistory=false"
-			);
-
-			// incase it was ignored
-			win.resizeTo(width, height);
-			win.moveTo(pos_left, pos_top);
-			win.focus();
+			overlay.openOverlay();
 		});
 
 		// Global AJAX handler for errors if no error handler is attached

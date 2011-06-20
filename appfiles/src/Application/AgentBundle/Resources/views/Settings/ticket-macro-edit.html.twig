@@ -1,7 +1,5 @@
 {% extends 'AgentBundle:Settings:settings-layout.html.twig' %}
-{% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
-{% block current_page "ticket-macros" %}
-{% block page_head %}
+{% block head %}
 <script type="text/javascript" charset="utf-8">
 $(document).ready(function() {
 	// Set up search builder
@@ -39,7 +37,7 @@ $(document).ready(function() {
 });
 </script>
 {% endblock %}
-{% block content %}
+{% block body %}
 
 <form action="{{ path('agent_settings_ticketmacros_edit', { 'macro_id': macro.id|default(0) }) }}" method="post" accept-charset="utf-8">
 
