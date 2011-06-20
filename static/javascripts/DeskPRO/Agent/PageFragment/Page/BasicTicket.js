@@ -658,5 +658,10 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// Make sure reply tab is selected again
 		this.replySimpleTabs.activateTab($('.reply-reply.tab-trigger', this.ticketReplyTabs));
+
+		// If we have a signature, then set it
+		if (this.meta.agentSignature) {
+			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n", this.meta.agentSignature);
+		}
 	}
 });

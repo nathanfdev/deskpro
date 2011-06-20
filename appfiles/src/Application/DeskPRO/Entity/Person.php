@@ -782,6 +782,30 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Set the value of a preference. Will update if it exists, or create a new one
+	 * if it doesnt.
+	 * 
+	 * @param  $pref
+	 * @param  $value
+	 * @return PersonPref
+	 */
+	public function setPreference($pref_name, $value)
+	{
+		$pref = $this->getPref($pref_name);
+		if (!$pref) {
+			$pref = new PersonPref();
+			$pref['name'] = $pref_name;
+			$this->addPreference($pref);
+
+			$this->_pref_values[$pref_name] = $pref;
+		}
+
+		$pref['value'] = $value;
+
+		return $pref;
+	}
+
 
 	/**
 	 * Get the value of a preference as it's currently stored.

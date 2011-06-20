@@ -34,6 +34,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initLabels();
 		this._initTicketNotes();
 
+		// Need this to set the initial agent signature
+		this.resetReply();
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 

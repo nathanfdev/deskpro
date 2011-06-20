@@ -6,14 +6,9 @@
 
 	<ul class="item-list">
 		<li>
-			<strong>Show List Pane</strong><br />
-			<select name="show_listpane">
-				<option value="auto" {% if show_listpane == 'auto' %}selected="selected"{% endif %}>Auto: Show list pane unless my resolution is small, then automatically hide it</option>
-				<option value="always" {% if show_listpane == 'always' %}selected="selected"{% endif %}>Always: Always show the list pane</option>
-				<option value="never" {% if show_listpane == 'never' %}selected="selected"{% endif %}>Never: Never show the list pane</option>
-			</select>
-			<br />
-			<span style="font-size: 10px;">Control when or if you want to see the middle list pane in the interface</span>
+			<strong>Ticket Signature</strong><br />
+			<textarea name="ticket_signature" style="width: 80%; height: 80px;">{{ ticket_signature }}</textarea>
+			<br /><span style="font-size: 10px;">The signature that appears at the bottom of your replies automatically</span>
 		</li>
 	</ul>
 
