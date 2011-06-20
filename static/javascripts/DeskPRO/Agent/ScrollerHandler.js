@@ -14,8 +14,8 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 
 		this.setOptions(options);
 
-		console.log(element);
 		element.tinyscrollbar();
+		this.initUpdateTimer();
 
 		// If pageObject supports Events, then we'll attach
 		// activate/deactivate on timers. Just assume pageObject
@@ -35,7 +35,8 @@ DeskPRO.Agent.ScrollerHandler = new Orb.Class({
 		var element = this.element;
 		if (element.data('resize-special-event')) return;
 
-		$('div.scroll-content:first', element).resize(function() {
+		var viewport = $('div.scroll-viewport:first', element);
+		viewport.resize(function() {
 			// When size changes within the pane, need to re-size the scroll
 			element.tinyscrollbar_update();
 		});

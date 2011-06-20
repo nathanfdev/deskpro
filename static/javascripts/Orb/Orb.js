@@ -545,8 +545,6 @@ $.fn.single_double_click = function(single_click_callback, double_click_callback
           height = elem.height(),
           data = $.data( this, str_data );
 
-		  console.log('check %o', elem);
-
         // If element size has changed since the last time, update the element
         // data store and trigger the 'resize' event.
         if ( width !== data.w || height !== data.h ) {
