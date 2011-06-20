@@ -1,6 +1,6 @@
 {% extends 'AgentBundle:Common:iframe-layout.html.twig' %}
 {% block header %}
-	<nav class="tabs">
+	<nav class="deskpro-tabstrip">
 		<ul>
 			<li {% if current_page == 'settings' %}class="on"{% endif %}><a href="{{ path('agent_settings') }}">Settings</a></li>
 			<li {% if current_page == 'picture' %}class="on"{% endif %}><a href="{{ path('agent_settings_picture') }}">Picture</a></li>

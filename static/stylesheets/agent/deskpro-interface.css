@@ -54,6 +54,7 @@ nav.deskpro-tabstrip > ul > li {
 nav.deskpro-tabstrip > ul > li > a {
     line-height: 18px;
     color: #757575;
+    text-decoration: none;
 }
 
 nav.deskpro-tabstrip > ul > li.on {
@@ -77,6 +78,20 @@ section.deskpro-tab-item {
 }
 section.deskpro-tab-item.on {
     display: block;
+}
+
+
+.overlay-title nav.deskpro-tabstrip {
+    height: 27px;
+    padding-top: 4px;
+    padding-leftt: 8px;
+}
+.overlay-title nav.deskpro-tabstrip > ul > li {
+    font-size: 15px;
+    height: 24px;
+    line-height: 24px;
+    padding: 0 8px 0 8px;
+    margin-left: 8px;
 }
 
 /**************************************
