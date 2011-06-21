@@ -159,6 +159,16 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 	_initSearchOptions: function() {
 		var editBtn = $('.summary .edit', this.topSection);
 		editBtn.click(this.showSearchForm.bind(this));
+
+		var form = $('form.ticket-search-form', this.topSection);
+		form.submit(function(ev) {
+			ev.preventDefault();
+
+			var url = form.attr('action');
+			var data = form.serializeArray();
+
+			DeskPRO_Window.loadListPane(url, { postData: data });
+		});
 	},
 
 	showSearchForm: function() {
