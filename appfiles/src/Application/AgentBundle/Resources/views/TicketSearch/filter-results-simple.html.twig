@@ -42,6 +42,8 @@ pageMeta.loadFirst = {% if load_first %}true{% else %}false{% endif %};
 		</h1>
 	</header>
 
+	{% include 'AgentBundle:TicketSearch:filter-search-form.html.twig' %}
+
 	{% include 'AgentBundle:TicketSearch:part-results-terms.html.twig' %}
 
 	<section class="ticket-simple-list deskpro-results-list">

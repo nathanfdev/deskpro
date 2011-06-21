@@ -1,0 +1,30 @@
+<section class="list-top-area ticket">
+	<div class="summary">
+		<span class="edit" title="Edit search terms">Edit</span>
+		{% for line in terms_summary %}
+			{{line}}{% if not loop.last %},{% endif %}
+		{% else %}
+			No criteria, all tickets match
+		{% endfor %}
+	</div>
+	<div class="form-panel" style="display: none">
+		<div class="row">
+			<label>Criteria</label>
+			<div class="search-form" id="criteria_list">
+				<div class="search-terms"></div>
+				<div class="term"><span class="add-term">+</span> Add a new term</div>
+			</div>
+			<div class="search-builder-tpl" style="display:none">
+				<div class="row">
+					<div class="term">
+						<div class="type"></div>
+						<div class="op"></div>
+						<div class="options"></div>
+						<div class="remove">-</div>
+					</div>
+				</div>
+				{% include 'AgentBundle:TicketSearch:termbuilder-html.html.twig' with {'term_options': term_options} %}
+			</div>
+		</div>
+	</div>
+</section>

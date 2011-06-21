@@ -3660,3 +3660,18 @@ table.who-voted.do-show-people > tbody > tr.type-person {
 table.who-voted.do-show-guests > tbody > tr.type-guest {
     display: table-row;
 }
+
+
+
+
+.list-top-area.ticket .summary .edit {
+    cursor: pointer;
+    float: right;
+    display: block;
+    background: url(../../images/icons/pencil.png) top right no-repeat;
+    width: 16px;
+    height: 16px;
+    margin-right: 5px;
+    overflow: hidden;
+    text-indent: -1000px;
+}

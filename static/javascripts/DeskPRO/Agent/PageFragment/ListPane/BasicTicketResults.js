@@ -32,6 +32,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		}
 
 		this.wrapper = $(el);
+		this.topSection = $('.list-top-area', this.wrapper);
 		this.barWrapper = $('div.layout-footer:first', this.wrapper);
 
 		if (!this.barWrapper.length) {
@@ -79,6 +80,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this._initInfiniteScroll();
 		this._initFlagMenu();
 		this._initGroupingOptions();
+		this._initSearchOptions();
 
 		if (mock_bottom) {
 			this.actionsBarHelper = {
@@ -148,6 +150,38 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		if (this.displayOptionsOverlay) {
 			this.displayOptionsOverlay.destroy();
 		}
+	},
+
+	//#########################################################################
+	//# Edit Search buttons
+	//#########################################################################
+
+	_initSearchOptions: function() {
+		var editBtn = $('.summary .edit', this.topSection);
+		editBtn.click(this.showSearchForm.bind(this));
+	},
+
+	showSearchForm: function() {
+		var criteriaList  = $('.search-form', this.topSection);
+		var criteriaTerms = $('.search-builder-tpl', this.topSection);
+
+		var editor = new DeskPRO.Form.RuleBuilder(criteriaTerms);
+		editor.addEvent('newRow', function(new_row) {
+			$('.remove', new_row).click(function() {
+				new_row.remove();
+			});
+		});
+		$('.add-term', criteriaList).data('add-count', 0).click(function() {
+			var count = parseInt($(this).data('add-count'));
+			var basename = 'terms['+count+']';
+
+			$(this).data('add-count', count+1);
+
+			editor.addNewRow($('.search-terms', criteriaList), basename);
+		});
+
+		$('.summary', this.topSection).slideUp();
+		$('.form-panel', this.topSection).slideDown();
 	},
 
 	//#########################################################################
