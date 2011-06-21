@@ -49,6 +49,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 
 		$this->person->loadHelper('AgentTeam');
 		$this->person->loadHelper('AgentPermissions');
+		$this->person->loadHelper('HelpMessages');
 	}
 
 	protected function _userHasPermissions()

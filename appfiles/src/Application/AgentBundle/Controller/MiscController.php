@@ -196,4 +196,15 @@ class MiscController extends AbstractController
 			'filesize_readable' => $blob->getReadableFilesize()
 		));
 	}
+
+	/**
+	 * @param  $id
+	 * @return void
+	 */
+	public function dismissHelpMessageAction($id)
+	{
+		$this->person->HelpMessages->dismiss($id);
+
+		$this->createJsonResponse(array('success' => true));
+	}
 }
