@@ -30,6 +30,11 @@ DeskPRO.FaviconBadge = new Orb.Class({
 			num = 99;
 		}
 
+		// Same number, dont need to redraw
+		if (self.badgeEl && self.badgeEl.data('num') == num) {
+			return;
+		}
+
 		img.onload = function() {
 			canvasContext.drawImage(this, 0, 0);
 			canvasContext.font = '11px "helvetica", sans-serif';
@@ -44,9 +49,8 @@ DeskPRO.FaviconBadge = new Orb.Class({
 				self.badgeEl.remove();
 			}
 
-			console.log(canvas);
-
 			self.badgeEl = self.faviconEl.clone();
+			self.badgeEl.data('num', num);
 			self.badgeEl.get(0).href = canvas.toDataURL('image/png');
 			$('body').append(self.badgeEl);
 		};
