@@ -54,6 +54,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initRoutes();
 		this._initWindowInterface();
 		this._initLayout();
+
+		$('#page_loading').remove();
+		$('#loading_css').remove();
 	},
 
 	windowStateUpdated: function(type) {

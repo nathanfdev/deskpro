@@ -12,8 +12,42 @@
 		overflow: hidden;
 	}
 	</style>
+
+	<style type="text/css" id="loading_css_header">
+		#header {
+			display: none;
+		}
+	</style>
+	<style type="text/css" id="loading_css">
+	body {
+		background: #fff !important;
+	}
+	#deskpro_layout, #agent_chats_wrapper, #agent_chat_panel {
+		display: none;
+	}
+
+	#page_loading {
+		position: absolute;
+		top: 50px;
+		left: 0;
+		right: 0;
+
+		padding-top: 28px;
+		background: url({{ asset('images/tab-loading-inner.gif') }}) top center no-repeat;
+
+		text-align: center;
+
+		font-family: Arial, Verdana, Helvetica, sans-serif;
+		font-size: 14px;
+		font-weight: bold;
+		color: #000;
+	}
+	</style>
 </head>
 <body class="{% if is_demo %}is-demo{% endif %}">
+<div id="page_loading">
+	Loading interface for {{ app.user.display_name }} ...
+</div>
 
 <div id="header">
 	<div id="header-top">

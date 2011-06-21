@@ -8,6 +8,7 @@
 <link rel="stylesheet" href="{{ asset('javascripts/markitup/markitup/skins/simple/style.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('javascripts/markitup/markitup/sets/markdown/style.css') }}" type="text/css" media="screen" />
 
+<link rel="stylesheet" href="{{ asset('stylesheets/agent/main.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/common.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/ui-layout.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/window-elements.css') }}" type="text/css" media="screen" />
@@ -16,17 +17,22 @@
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/interface-ie.css') }}" type="text/css" media="screen" />
 <![endif]-->
 
-<link rel="stylesheet" href="{{ asset('stylesheets/agent/main.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/deskpro-layout.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/deskpro-interface.css') }}" type="text/css" media="screen" />
 
-<script src="{{ asset('javascripts/modernizr.min.js') }}"></script>
-<script src="{{ asset('javascripts/Orb/modernizr-ext.js') }}"></script>
 {% if constant('DP_DEBUG') %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js"></script>
 {% else %}
 	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
 {% endif %}
+<script>
+// At this point we should have css in the header so it display properly,
+// showing it now gives some visual feedback and illusion of speed
+$('#loading_css_header').remove();
+</script>
+
+<script src="{{ asset('javascripts/modernizr.min.js') }}"></script>
+<script src="{{ asset('javascripts/Orb/modernizr-ext.js') }}"></script>
 <script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
 <script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
 <script src="{{ asset('javascripts/jquery/jquery.cookie.js') }}"></script>
