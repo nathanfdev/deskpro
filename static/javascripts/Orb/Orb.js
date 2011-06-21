@@ -396,6 +396,8 @@ Orb.DesktopNotify = (function() {
 
 		return notif;
 	};
+
+	return this;
 })();
 
 
