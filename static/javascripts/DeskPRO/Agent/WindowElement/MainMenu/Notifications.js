@@ -5,6 +5,8 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 
 	init: function() {
 
+		Orb.DesktopNotify.askPermission();
+
 		var self = this;
 		$('#notifications_list').delegate('em.remove', 'click', function() {
 			self.removeElement($(this).parent());
@@ -56,6 +58,14 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 		$('#notifications_list').prepend(li);
 
 		this.updateCount(type, 'add', 1);
+
+		Orb.DesktopNotify.show({
+			title: title,
+			content: 'Click to open',
+			click: function() {
+				DeskPRO_Window.runPageRouteFromElement(li);
+			}
+		});
 	},
 
 
