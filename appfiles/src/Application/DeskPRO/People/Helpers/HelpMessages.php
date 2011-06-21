@@ -19,6 +19,8 @@ use \Application\DeskPRO\Entity;
  */
 class HelpMessages implements \Orb\Helper\ShortCallableInterface
 {
+	const ALL = '__ALL__';
+	
 	protected $person;
 	protected $pref;
 	protected $pref_name;
@@ -72,13 +74,13 @@ class HelpMessages implements \Orb\Helper\ShortCallableInterface
 	public function shouldShowMessage($id)
 	{
 		$this->_initPref();
-		return !in_array($id, $this->pref['value']);
+		return !$this->isDismissed($id);
 	}
 
 	public function isDismissed($id)
 	{
 		$this->_initPref();
-		return !$this->shouldShowMessage($id);
+		return (in_array(self::ALL, $this->pref['value']) OR in_array($id, $this->pref['value']));
 	}
 
 	public function dismiss($id)
