@@ -219,6 +219,7 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 		var elCount = $('span', el);
 
 		var count = parseInt(count);
+		var countStr = count;
 		if (count) {
 			if (countStr >= 1000) {
 				countStr = '1000+';
