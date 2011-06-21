@@ -48,6 +48,13 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
 		});
 	},
 
+	getMenuHandler: function(menuEl) {
+		menuEl = $(menuEl);
+		var menuHandler = menuEl.data('menuHandler');
+
+		return menuHandler;
+	},
+
 	getMenuHandlerClass: function(li) {
 		var handler = li.data('menu-handler');
 		if (handler) {
