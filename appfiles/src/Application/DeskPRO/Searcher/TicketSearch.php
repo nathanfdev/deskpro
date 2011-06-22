@@ -393,6 +393,12 @@ class TicketSearch extends SearcherAbstract
 				$term_id = $m[2];
 			}
 
+			// The term handlers below that only accept single values
+			// will use $choice as a single value for brevity
+			if (is_array($choice) AND count($choice) == 1) {
+				$choice = Arrays::getFirstItem($choice);
+			}
+
 			switch ($term) {
 				case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("$tickets_table.id", $op, $choice, true);
@@ -501,7 +507,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_AGENT:
 					if ($choice == 0) {
-						$this->summary[] = $tr->phrase('core.unassigned');
+						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent'), $op, $tr->phrase('core.unassigned'));
 						$wheres[] = "$tickets_table.agent_id IS NULL";
 					} elseif ($choice == -1) {
 						$this->summary[] = $tr->phrase('core.agent_is_me');
@@ -528,6 +534,8 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_AGENT_TEAM:
 					if ($choice == 0) {
 						$wheres[] = "$tickets_table.agent_team_id IS NULL";
+
+						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent_team'), $op, $tr->phrase('core.unassigned'));
 					} elseif ($choice == -1) {
 						$person = App::getCurrentPerson();
 						$person->loadHelper('AgentTeam');
@@ -537,7 +545,7 @@ class TicketSearch extends SearcherAbstract
 							$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $team_ids, true);
 						}
 					} else {
-						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent'), $op, $choice, function($choice) {
+						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent_team'), $op, $choice, function($choice) {
 							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
 							return $titles;
 						});
