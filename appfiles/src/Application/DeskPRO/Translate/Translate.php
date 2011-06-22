@@ -22,6 +22,10 @@ use Application\DeskPRO\Entity\Locale as LocaleEntity;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Person;
 
+use Application\DeskPRO\EventDispatcher\DataEvent;
+
+use Symfony\Component\EventDispatcher\EventDispatcher;
+
 /**
  * This class is responsible for loading phrases from a language stored in the database.
  *
@@ -37,6 +41,8 @@ use Application\DeskPRO\Entity\Person;
  */
 class Translate implements PersonContextInterface
 {
+	const EVENT_NO_PHRASE = 'DeskPRO_onTranslateNoPhrase';
+
 	/**
 	 * The phrases loaded so far
 	 * @var array
@@ -95,16 +101,23 @@ class Translate implements PersonContextInterface
 	 */
 	protected $_default_person_context;
 
+	/**
+	 * @var \Symfony\Component\EventDispatcher\EventDispatcher
+	 */
+	protected $_event_dispatcher = null;
+
 
 
 	/**
 	 * @param string $locale The default locale to use
 	 * @param LoaderInterface $loader A loader that'll load phrases from somehwere
 	 */
-	public function __construct(LoaderInterface $loader)
+	public function __construct(LoaderInterface $loader, EventDispatcher $event_dispatcher = null)
 	{
 		$this->setLocale(SystemLocale::getInstance(), false);
 		$this->loader = $loader;
+
+		$this->_event_dispatcher = $event_dispatcher;
 	}
 
 	
@@ -385,12 +398,38 @@ class Translate implements PersonContextInterface
 				return $this->getPhraseText($phrase_name, $locale_id);
 			}
 
-			return null;
+			return $this->_noPhrase($phrase_name, $locale);
 		}
 
 		return $this->_phrases[$locale_id][$phrase_name];
 	}
 
+
+	/**
+	 * Called when there is no such phrase name. By default this simply
+	 * returns null. But an event might change this.
+	 *
+	 * @param string $phrase_name
+	 * @param Locale $locale
+	 * @return string
+	 */
+	protected function _noPhrase($phrase_name, $locale)
+	{
+		$phrase = null;
+
+		if ($this->_event_dispatcher) {
+			$evdata = new DataEvent(array(
+				'phrase_name' => $phrase_name,
+				'locale' => $locale,
+				'return' => $phrase,
+			));
+			$this->_event_dispatcher->dispatch(self::EVENT_NO_PHRASE, $evdata);
+
+			$phrase = $evdata->return;
+		}
+
+		return $phrase;
+	}
 
 
 	/**
@@ -402,7 +441,7 @@ class Translate implements PersonContextInterface
 	 * @param  Locale|int $locale The Locale entity to use, or its id
 	 * @return string
 	 */
-	public function getPhraseTextCount($phrase_name, $count, $locale)
+	public function getPhraseTextCount($phrase_name, $count, $locale = null)
 	{
 		$phrase_text = $this->getPhraseText($phrase_name, $count, $locale);
 		if (!$phrase_text) {
@@ -412,10 +451,8 @@ class Translate implements PersonContextInterface
 		if ($locale === null) {
 			$locale = $this->_locale;
 		} elseif (Numbers::isInteger($locale)) {
-			$local = $this->_loaded_locales[$locale];
+			$locale = $this->_loaded_locales[$locale];
 		}
-
-		$locale_code = $locale['locale'];
 
 		return $this->getCountPhraseSelector()->choose($phrase_text, $count, $locale);
 	}

@@ -26,6 +26,6 @@ class CallbackListener
 
 	public function __call($name, $args)
 	{
-		call_user_func_array($this->callback, $args);
+		return call_user_func_array($this->callback, $args);
 	}
 }

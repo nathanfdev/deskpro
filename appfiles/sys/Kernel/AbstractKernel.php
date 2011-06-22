@@ -41,6 +41,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 
 		parent::boot();
 		App::setContainer($this->container, 'default');
+		$this->container->get('deskpro.sys_events_loader');
 
 		// Set phputf8 strings
 		\Orb\Util\Strings::setPhpUtf8Dir(DP_ROOT.'/vendor/php-utf8');

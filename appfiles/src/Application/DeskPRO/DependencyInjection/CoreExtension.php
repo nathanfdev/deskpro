@@ -24,6 +24,10 @@ class CoreExtension extends Extension
 {
 	public function load(array $config, ContainerBuilder $container)
     {
+		$definition = new Definition('Application\\DeskPRO\\StaticLoader\\SystemEvents');
+		$definition->addArgument(new Reference('event_dispatcher'));
+		$container->setDefinition('deskpro.sys_events_loader', $definition);
+
 		$definition = new Definition('Application\\DeskPRO\\ConfigServiceLoader');
 		$container->setDefinition('deskpro.config_service_loader', $definition);
 
@@ -79,26 +83,33 @@ class CoreExtension extends Extension
 			'user' => DP_ROOT . '/src/Application/UserBundle/Resources/language',
 			'dev'  => DP_ROOT . '/src/Application/DevBundle/Resources/language',
 		)));
-		$container->setDefinition('deskpro.core.translate_loder_bundle', $definition);
+		$container->setDefinition('deskpro.core.translate_loader_bundle', $definition);
 
 		// DbLoader
-		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', array(new Reference('database_connection')));
-		$container->setDefinition('deskpro.core.translate_loder_db', $definition);
+		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\DbLoader', array(
+			new Reference('database_connection')
+		));
+		$container->setDefinition('deskpro.core.translate_loader_db', $definition);
 
 		// CombinationLoader
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Loader\\CombinationLoader');
-		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loder_bundle')));
-		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loder_db')));
-		$container->setDefinition('deskpro.core.translate_loder', $definition);
+		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_bundle')));
+		$definition->addMethodCall('addLoader', array(new Reference('deskpro.core.translate_loader_db')));
+		$container->setDefinition('deskpro.core.translate_loader', $definition);
 
 		// Add the cacher to the CombinationLoader if we want
 		$definition->addMethodCall('setCache', array(new Reference('deskpro.cache.phrases', ContainerBuilder::IGNORE_ON_INVALID_REFERENCE)));
 
 		// Now create the translate object
 		$definition = new Definition('Application\\DeskPRO\\Translate\\Translate', array(
-			new Reference('deskpro.core.translate_loder'),
+			new Reference('deskpro.core.translate_loader'),
+			new Reference('event_dispatcher')
 		));
 		$container->setDefinition('deskpro.core.translate', $definition);
+
+		// Attach listener for no phrase
+		$definition = $container->getDefinition('deskpro.sys_events_loader');
+		$definition->addMethodCall('addNoPhraseEventListener');
 	}
 
 
