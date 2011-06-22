@@ -49,16 +49,7 @@ pageMeta.formSubmitUrl = '{{ path('agent_ticketsearch_customfilter') }}';
 				<button class="dp-button run-filter-trigger">Run Filter</button>
 			</center>
 
-			<div class="search-tpl" style="display:none">
-				<div class="row">
-					<div class="term">
-						<div class="type"></div>
-						<div class="options"></div>
-						<div class="remove">-</div>
-					</div>
-				</div>
-				{% include 'AgentBundle:TicketSearch:termbuilder-html.html.twig' with {'term_options': ticket_options} %}
-			</div>
+			{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-tpl', 'term_options': ticket_options } %}
 		</div>
 	</div>
 </div>

@@ -67,17 +67,7 @@ $(document).ready(function() {
 			<div class="search-terms"></div>
 			<div class="term"><span class="add-term">+</span> Add a new term</div>
 		</div>
-		<div id="criteria_tpl" class="search-builder-tpl" style="display:none">
-			<div class="row">
-				<div class="term">
-					<div class="type"></div>
-					<div class="op"></div>
-					<div class="options"></div>
-					<div class="remove">-</div>
-				</div>
-			</div>
-			{% include 'AgentBundle:TicketSearch:termbuilder-html.html.twig' with {'term_options': term_options} %}
-		</div>
+		{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': 'criteria_tpl', 'term_options': term_options } %}
 	</div>
 </div>
 

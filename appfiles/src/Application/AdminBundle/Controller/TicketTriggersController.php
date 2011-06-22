@@ -168,7 +168,6 @@ class TicketTriggersController extends AbstractController
 			'is_edited' => $is_edited,
 			'row_html'  => $row_html,
 			'term_options' => $term_options,
-			'from_names' => App::getEntityRepository('DeskPRO:EmailFrom')->getFromNames()
 		));
 	}
 }
