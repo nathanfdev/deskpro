@@ -132,6 +132,12 @@ class TicketSearchController extends AbstractController
 
 		$vars['filter'] = $filter;
 
+		$search_form = array(
+			'terms' => $filter['terms'],
+			'order_by' => $filter['order_by'],
+		);
+		$vars['search_form'] = $search_form;
+
 		return $this->_getResponseForTickets('filter', $filter['id'], $results_helper, $vars);
 	}
 

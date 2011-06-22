@@ -190,6 +190,29 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			editor.addNewRow($('.search-terms', criteriaList), basename);
 		});
 
+		var searchDataEl = $('.search-form-data:first', this.topSection);
+		if (searchDataEl.length) {
+			var searchData = searchDataEl.get(0).innerHTML;
+			searchData = $.parseJSON(searchData);
+
+			if (searchData.terms) {
+				Array.each(searchData.terms, function(info, x) {
+					var basename = 'terms[initial_' + x + ']';
+					editor.addNewRow($('.search-terms', criteriaList), basename, {
+						type: info.type,
+						op: info.op,
+						options: info.options
+					});
+				});
+			}
+
+			if (searchData.order_by) {
+				$('[name="order_by"]', this.topSection).val(searchData.order_by);
+			}
+
+			searchDataEl.remove();
+		}
+
 		$('.summary', this.topSection).slideUp();
 		$('.form-panel', this.topSection).slideDown();
 	},
