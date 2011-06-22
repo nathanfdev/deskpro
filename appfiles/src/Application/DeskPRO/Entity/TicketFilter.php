@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Entity;
 
 use \Application\DeskPRO\App;
+use Application\DeskPRO\UI\RuleBuilder;
 
 /**
  * Ticket queues
@@ -123,35 +124,24 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	public function getSearcher()
 	{
 		$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
-
 		foreach ($this->terms as $term) {
-
-			if (!$term OR empty($term['rule_type']) OR !isset($term['op'])) {
-				continue;
-			}
-
-			$data = $term;
-			unset($data['rule_type'], $data['op']);
-
-			if (count($data) == 1) {
-				$data = array_pop($data);
-			}
-
-			$searcher->addTerm($term['rule_type'], $term['op'], $data);
+			$searcher->addTerm($term['type'], $term['op'], $term['options']);
 		}
 
 		return $searcher;
 	}
 
 
-	public function getResults()
+	public function getResults(Person $person = null)
 	{
 		if ($this->_results !== null) return $this->_results;
 
 		$searcher = $this->getSearcher();
 
 		// TODO make person be passed in directly to this method
-		$person = App::getCurrentPerson();
+		if (!$person) {
+			$person = App::getCurrentPerson();
+		}
 		$searcher->setPerson(App::getCurrentPerson());
 
 		$order_by = $person->getPref('agent.ui.ticket-filter-order-by.' . $this->id);

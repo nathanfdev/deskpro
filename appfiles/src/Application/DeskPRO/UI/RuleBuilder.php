@@ -13,7 +13,25 @@ namespace Application\DeskPRO\UI;
 use Orb\Util\Arrays;
 
 /**
- * Handling around the JS "rule builder" widget
+ * Handling around the JS "rule builder" widget.
+ *
+ * So a rule array (or a terms array, they are similar) is a simple structure. Each rule/term in the array
+ * is an array that has special recognized keys, and then any number of options. Options are simply
+ * array keys that were supplied that aren't "special"
+ *
+ * We only have two kinds of special keys:
+ * - type: This is used with both rules and terms array, it's just a type identifier. For example, a term type
+ * might be 'id' (types are usually defined in Searcher classes as contants).
+ * - op: This is used with terms arrays, it specifies the type of comparison to make. For example, with numbers
+ * we have gt, lt, gte, lte etc.
+ *
+ * This RuleBuilder just makes it easier to read these arrays into a standard format. From the form, we get:
+ * array(..all data..)
+ *
+ * But a more standardized array is:
+ * array('type' => 'xxx', 'op' => 'xxx', 'options' => array(..formdata..))
+ *
+ * Where 'options' is just any other field read in that wasn't type/op.
  */
 class RuleBuilder
 {

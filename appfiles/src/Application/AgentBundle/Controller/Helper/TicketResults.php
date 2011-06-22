@@ -62,7 +62,7 @@ class TicketResults
 	public static function newFromFilter($controller, TicketFilter $filter)
 	{
 		$helper = new self($controller);
-		$helper->setTicketIds($filter->getResults());
+		$helper->setTicketIds($filter->getResults($controller->getPerson()));
 
 		$helper->setGroupOrderBy($filter->getSearcher()->getOrderBy());
 

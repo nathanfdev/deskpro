@@ -419,7 +419,7 @@ abstract class SearcherAbstract
 		if (is_array($choice)) {
 
 			$choices_in = $choice;
-			array_walk($choices_in, function($v, $k) use ($db) {
+			array_walk($choices_in, function(&$v, $k) use ($db) {
 				$v = $db->quote($v);
 			});
 
