@@ -12,16 +12,33 @@ class SettingsController extends AbstractController
     {
 		if ($this->isPostRequest()) {
 			$person = $this->person;
-			$person->setPreference('agent.ticket_signature', $this->in->getString('ticket_signature'));
+			$prefs = array();
 
-			App::getOrm()->transactional(function ($em) use ($person) {
+			$prefs[] = $person->setPreference('agent.ticket_signature', $this->in->getString('ticket_signature'));
+
+			if ($this->in->getBool('favicon_count_toggle')) {
+				$prefs[] = $person->setPreference('agent.ui.favicon_count', $this->in->getString('favicon_count'));
+			} else {
+				$prefs[] = $person->setPreference('agent.ui.favicon_count', false);
+			}
+
+			$prefs[] = $person->setPreference('agent.ui.desktop_notifications', $this->in->getBool('desktop_notifications'));
+
+			App::getOrm()->transactional(function ($em) use ($person, $prefs) {
 				$em->persist($person);
+
+				foreach ($prefs as $pref) {
+					$em->persist($pref);
+				}
+
 				$em->flush();
 			});
 		}
 
         return $this->render('AgentBundle:Settings:index.html.twig', array(
-			'ticket_signature' => $this->person->getPref('agent.ticket_signature')
+			'ticket_signature' => $this->person->getPref('agent.ticket_signature'),
+			'favicon_count' => $this->person->getPref('agent.ui.favicon_count'),
+			'desktop_notifications' => $this->person->getPref('agent.ui.desktop_notifications'),
 		));
     }
 

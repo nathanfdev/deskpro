@@ -8,6 +8,8 @@ class MainController extends AbstractController
 {
     public function indexAction()
     {
+		$this->person->loadPrefGroup('agent.ui');
+
 		$last_message_id = App::getDb()->fetchColumn("
 			SELECT id
 			FROM client_messages

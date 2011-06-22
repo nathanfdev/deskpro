@@ -10,18 +10,5 @@
 	</nav>
 {% endblock %}
 {% block head %}
-<script type="text/javascript">
-if (opener && opener.DeskPRO_Window) {
-	var DeskPRO_Window = opener.DeskPRO_Window;
-} else if (opener && parent.DeskPRO_Window) {
-	var DeskPRO_Window = parent.DeskPRO_Window;
-} else {
-	var DeskPRO_Window = null;
-}
 
-var Settings = new DeskPRO.Agent.Settings();
-$(document).ready(function() {
-	Settings.initPage();
-});
-</script>
 {% endblock %}

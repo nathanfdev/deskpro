@@ -57,6 +57,18 @@ class PersonPref extends EntityRepository
 		return $ret_prefs;
 	}
 
+	public function getForPerson($pref_name, $person)
+	{
+		try {
+			return $this->getEntityManager()->createQuery("
+				SELECT p
+				FROM DeskPRO:PersonPref p
+				WHERE p.name = ?1 AND p.person = ?2
+			")->setParameter(1, $pref_name)->setParameter(2, $person)->getSingleResult();
+		} catch (\Exception $e) {
+			return null;
+		}
+	}
 
 
 	/**

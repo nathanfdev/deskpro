@@ -15,7 +15,9 @@
 				ajaxSubscribeUrl: '{{ path('client_messages_subscribe_channels') }}',
 				ajaxUnsubscribeUrl: '{{ path('client_messages_unsubscribe_channels') }}',
 				lastMessageId: {{last_message_id}}
-			}
+			},
+			faviconCount: {% if app.user.getPref('agent.ui.favicon_count') %}'{{ app.user.getPref('agent.ui.favicon_count') }}'{% else %}false{% endif %},
+			desktopNotifications: {% if app.user.getPref('agent.ui.desktop_notifications') %}'{{ app.user.getPref('agent.ui.desktop_notifications') }}'{% else %}false{% endif %}
 		});
 
 		{% if constant('DP_DEBUG') %}

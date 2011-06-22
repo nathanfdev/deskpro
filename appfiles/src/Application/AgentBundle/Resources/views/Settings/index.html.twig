@@ -1,5 +1,20 @@
 {% extends 'AgentBundle:Settings:settings-layout.html.twig' %}
 {% set current_page = 'settings' %}
+{% block head %}
+<script type="text/javascript">
+function toggle_favicon_options() {
+	if ($('#favicon_count_toggle').is(':checked')) {
+		$('#favicon_count_options').slideDown();
+	} else {
+		$('#favicon_count_options').slideUp();
+	}
+}
+
+$(document).ready(function() {
+	$('#favicon_count_toggle').click(toggle_favicon_options);
+});
+</script>
+{% endblock %}
 {% block body %}
 	<form action="{{ path('agent_settings') }}" method="post">
 
@@ -8,6 +23,20 @@
 				<strong>Ticket Signature</strong><br />
 				<textarea name="ticket_signature" style="width: 80%; height: 80px;">{{ ticket_signature }}</textarea>
 				<br /><span style="font-size: 10px;">The signature that appears at the bottom of your replies automatically</span>
+			</li>
+
+			<li>
+				<strong>Number in Favicon</strong><br />
+				<label><input type="checkbox" id="favicon_count_toggle" name="favicon_count_toggle" value="1" {% if favicon_count %}checked="checked"{% endif %} /> Update the icon in your browser tab with the number of new items</label>
+				<div id="favicon_count_options" style="margin-left: 17px; {% if not favicon_count %}display: none{% endif %}">
+					<label><input type="radio" name="favicon_count" value="tickets" {% if not favicon_count or favicon_count == 'tickets' %}checked="checked"{% endif %} /> Count just new tickets</label><br />
+					<label><input type="radio" name="favicon_count" value="all" {% if favicon_count == 'all' %}checked="checked"{% endif %} /> Count everything</label><br />
+				</div>
+			</li>
+
+			<li>
+				<strong>Show desktop notifications</strong><br />
+				<label><input type="checkbox" name="√" value="1" {% if desktop_notifications %}checked="checked"{% endif %} /> Show desktop notficiation alerts for things like new tickets</label>
 			</li>
 		</ul>
 

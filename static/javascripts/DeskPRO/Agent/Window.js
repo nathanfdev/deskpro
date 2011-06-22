@@ -985,14 +985,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.faviconBadge = new DeskPRO.FaviconBadge({
 			favicon: '#favicon'
 		});
-		this.getMessageBroker().addMessageListener('agent.ui.badge_updated', function(data) {
-			var count = 0;
-			Object.each(self.sections, function(section) {
-				count += section.getBadgeCount();
-			});
 
-			self.faviconBadge.updateBadge(count);
-		});
+		if (this.options.faviconCount) {
+			this.getMessageBroker().addMessageListener('agent.ui.badge_updated', function(data) {
+
+				if (self.optionsfaviconCount == 'tickets') {
+					if (data.sectionId != 'tickets') return;
+					var count = data.count;
+				} else {
+					var count = 0;
+					Object.each(self.sections, function(section) {
+						count += section.getBadgeCount();
+					});
+				}
+
+				self.faviconBadge.updateBadge(count);
+			});
+		}
 	},
 
 	_initSections: function() {

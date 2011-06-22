@@ -792,16 +792,15 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function setPreference($pref_name, $value)
 	{
-		$pref = $this->getPref($pref_name);
+		$pref = App::getEntityRepository('DeskPRO:PersonPref')->getForPerson($pref_name, $this);
 		if (!$pref) {
 			$pref = new PersonPref();
 			$pref['name'] = $pref_name;
 			$this->addPreference($pref);
-
-			$this->_pref_values[$pref_name] = $pref;
 		}
 
 		$pref['value'] = $value;
+		$this->_pref_values[$pref_name] = $value;
 
 		return $pref;
 	}

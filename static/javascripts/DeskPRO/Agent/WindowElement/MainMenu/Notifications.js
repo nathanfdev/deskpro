@@ -59,13 +59,15 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 
 		this.updateCount(type, 'add', 1);
 
-		Orb.DesktopNotify.show({
-			title: title,
-			content: 'Click to open',
-			click: function() {
-				DeskPRO_Window.runPageRouteFromElement(li);
-			}
-		});
+		if (DeskPRO_Window.options.desktopNotifications) {
+			Orb.DesktopNotify.show({
+				title: title,
+				content: 'Click to open',
+				click: function() {
+					DeskPRO_Window.runPageRouteFromElement(li);
+				}
+			});
+		}
 	},
 
 
