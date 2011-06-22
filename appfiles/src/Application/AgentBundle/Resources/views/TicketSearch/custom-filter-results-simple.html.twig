@@ -1,0 +1,49 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
+pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?cache_id={{cache_id}}&view_type=$view_type';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
+pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
+pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?cache_id={{cache_id}}';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ticketsearch_save_resultprefs', {'cache_id': cache_id}) }}';
+{% if cache_id %}
+	pageMeta.cache_id = {{cache_id}};
+{% endif %}
+{% if not tickets %}
+	pageMeta.noResults = true;
+{% endif %}
+</script>
+<div class="layout-content">
+<div class="content">
+
+	<header class="section-header">
+		<nav class="mode-buttons">
+			<ul>
+				<li class="on"><a>Basic</a></li>
+				<li data-view-type="simple-ext"><a>List</a></li>
+				<li data-view-type="list"><a>Detail</a></li>
+			</ul>
+		</nav>
+		<h1>
+			Filter
+		</h1>
+	</header>
+
+	{% include 'AgentBundle:TicketSearch:filter-search-form.html.twig' %}
+
+	{% include 'AgentBundle:TicketSearch:part-results-terms.html.twig' %}
+
+	<section class="ticket-simple-list deskpro-results-list">
+		{% include 'AgentBundle:TicketSearch:part-results-simple.html.twig' %}
+	</section>
+
+	<div class="loading-more">
+		Loading more results ...
+	</div>
+	<div class="no-more-results">
+		There are no more results.
+	</div>
+
+	{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
+</div>
+
+</div>
