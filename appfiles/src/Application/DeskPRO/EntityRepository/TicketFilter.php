@@ -30,7 +30,7 @@ class TicketFilter extends EntityRepository
 		$filters = $this->getEntityManager()->createQuery("
 			SELECT q
 			FROM DeskPRO:TicketFilter q INDEX BY q.id
-			WHERE q.is_global = true
+			WHERE q.is_global = true AND q.sys_name IS NULL
 			ORDER BY q.title ASC
 		")->execute();
 

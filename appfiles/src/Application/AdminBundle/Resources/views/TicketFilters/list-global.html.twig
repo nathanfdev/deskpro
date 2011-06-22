@@ -1,9 +1,10 @@
+{% if filters|length %}
 <ul class="item-list">
 	{% for filter in filters%}
 	<li class="ticket-fitler ticket-filter-{{filter.id}}" data-filter-id="{{filter.id}}">
 		<div style="float:right">
 			<ul class="controls">
-				<li class="edit edit-trigger"><a href="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id}) }}" class="popout-trigger" data-height="350" data-width="400">edit</a></li>
+				<li class="edit edit-trigger"><a href="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id}) }}" class="popout-trigger">edit</a></li>
 			</ul>
 		</div>
 		<strong>{{filter.title}}</strong><br />
@@ -11,3 +12,6 @@
 	</li>
 	{% endfor %}
 </ul>
+{% else %}
+	There are no global filters.
+{% endif %}
