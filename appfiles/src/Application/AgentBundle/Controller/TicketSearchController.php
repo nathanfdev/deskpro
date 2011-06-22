@@ -528,6 +528,12 @@ class TicketSearchController extends AbstractController
 			'terms_summary' => $result_cache->getExtraData('terms_summary')
 		);
 
+		$search_form = array(
+			'terms' => $result_cache['criteria'],
+			'order_by' => !empty($result_cache['extra']['order_by']) ? $result_cache['extra']['order_by'] : ''
+		);
+		$vars['search_form'] = $search_form;
+
 		if (!empty($result_cache['extra']['display_fields'])) {
 			$vars['display_fields'] =$result_cache['extra']['display_fields'];
 		}
