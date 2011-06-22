@@ -238,8 +238,9 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var tabIdClass = tabData.page.getMetaData('tabIdClass', '');
 		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab tipped ' + tabIdClass;
+
 			if (tabData.page.TYPENAME != 'basic') {
-				html += ' icon icon-' + tabData.page.TYPENAME;
+				html += ' ' + tabData.page.TYPENAME;
 			}
 
 			if (tabData.page.getMetaData('tabTip')) {
