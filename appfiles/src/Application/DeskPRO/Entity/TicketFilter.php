@@ -32,11 +32,29 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
+	 * Always who created the filter. Or if its not a team or global,
+	 * also means the person it belongs to.
+	 * 
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
+
+	/**
+	 * If this is a team filter, the team it belongs to.
+	 *
+	 * @var \Application\DeskPRO\Entity\AgentTeam
+	 * @orm:ManyToOne(targetEntity="AgentTeam")
+	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id")
+	 */
+	protected $agent_team = null;
+
+	/**
+	 * @var bool
+	 * @orm:Column(name="is_global", type="boolean")
+	 */
+	protected $is_global = false;
 
 	/**
 	 * @var string
@@ -49,12 +67,6 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
-
-	/**
-	 * @var bool
-	 * @orm:Column(name="is_global", type="boolean")
-	 */
-	protected $is_global = false;
 
 	/**
 	 * @var bool
@@ -104,6 +116,24 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getAgentTeamId()
+	{
+		if (!$this->agent_team) {
+			return 0;
+		}
+		return $this->agent_team['id'];
+	}
+
+	public function setAgentTeamId($id)
+	{
+		if ($id) {
+			$agent_team = App::getOrm()->getRepository('DeskPRO:AgentTeam')->find($id);
+			$this['agent_team'] = $agent_team;
+		} else {
+			$this['agent_team'] = null;
+		}
+	}
+
 
 
 	/**
@@ -129,6 +159,28 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $searcher;
+	}
+
+
+	/**
+	 * Get an array of criteria phrases.
+	 *
+	 * @return array
+	 */
+	public function getSummaryParts()
+	{
+		return $this->getSearcher()->getSummary();
+	}
+
+
+	/**
+	 * Explain criteria in the filter. Ex: Agent is Unassigned, Category is None
+	 *
+	 * @return string
+	 */
+	public function getSummaryPhrase()
+	{
+		return implode(', ', $this->getSummaryParts());
 	}
 
 

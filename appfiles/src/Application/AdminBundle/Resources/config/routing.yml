@@ -626,3 +626,32 @@ admin_plugins_install_step:
 admin_plugins_uninstall:
   pattern: /plugins/{plugin_id}/uninstall
   defaults: { _controller: AdminBundle:Plugins:uninstall }
+
+################################################################################
+# Filters
+################################################################################
+
+admin_tickets_filters:
+  pattern: /tickets/filters
+  defaults: { _controller: AdminBundle:TicketFilters:index }
+
+admin_tickets_filters_getgloballist:
+  pattern: /tickets/filters/get-global-list
+  defaults: { _controller: AdminBundle:TicketFilters:getGlobalList }
+
+admin_tickets_filters_getteamlist:
+  pattern: /tickets/filters/get-team-list
+  defaults: { _controller: AdminBundle:TicketFilters:getTeamList }
+
+admin_tickets_filters_getagentlist:
+  pattern: /tickets/filters/get-agent-list
+  defaults: { _controller: AdminBundle:TicketFilters:getAgentList }
+
+admin_tickets_filters_edit:
+  pattern: /tickets/filters/{filter_id}
+  defaults: { _controller: AdminBundle:TicketFilters:edit }
+  requirements: { filter_id: "\d+" }
+
+admin_tickets_filters_new:
+  pattern: /tickets/filters/new
+  defaults: { _controller: AdminBundle:TicketFilters:newChooseType }

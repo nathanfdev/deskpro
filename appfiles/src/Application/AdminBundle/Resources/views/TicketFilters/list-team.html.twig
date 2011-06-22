@@ -1,0 +1,18 @@
+{% for group in filters_grouped %}
+	<h2>{{ group.team.name }}</h4>
+	<ul class="item-list">
+		{% for filter in group.filters %}
+		<li class="ticket-fitler ticket-filter-{{filter.id}}" data-filter-id="{{filter.id}}">
+			<div style="float:right">
+				<ul class="controls">
+					<li class="edit edit-trigger"><a href="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id}) }}" class="popout-trigger" data-height="350" data-width="400">edit</a></li>
+				</ul>
+			</div>
+			<strong>{{filter.title}}</strong><br />
+			{{ filter.summary_phrase }}
+		</li>
+		{% endfor %}
+	</ul>
+{% else %}
+	There are no team filters.
+{% endfor %}

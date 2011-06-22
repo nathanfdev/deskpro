@@ -46,7 +46,7 @@ class Tickets
 		$options = array();
 
 		if ($person['is_agent']) {
-			$options['agents'] = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
+			$options['agents']      = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
 			$options['agent_teams'] = App::getOrm()->getRepository('DeskPRO:AgentTeam')->getTeamNames();
 		}
 

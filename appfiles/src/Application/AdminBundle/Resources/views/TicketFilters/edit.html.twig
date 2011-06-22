@@ -1,0 +1,393 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketFilterEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.TicketFilterEdit({{filter.id|default(0)}});
+
+	window.DeskPRO_Page.init_options_callback = function() {
+		var count = 0;
+		{% for action in filter.terms %}
+			var basename = 'terms['+count+']';
+			window.DeskPRO_Page.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: '{{action.type}}', op: '{{term.op}}', choice: {{action.options|json_encode|raw}} });
+			count++;
+		{% endfor %}
+	};
+}
+</script>
+{% endblock %}
+{% block page_id "ticket_filters" %}
+{% block header %}
+	<h1>{% if filter.id %}Edit Filter{% else %}New Filter{% endif %}</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_tickets_filters_edit', {'filter_id': filter.id|default(0)}) }}" method="post">
+<input type="hidden" name="process" value="1" />
+
+<div class="form-panel">
+	<div class="row">
+		<label>Title</label>
+		<input type="text" name="filter[title]" value="{{filter.title}}" />
+
+		{% if not filter.id %}
+		<input type="hidden" name="filter[person_id]" value="{{filter.person.id|default(0)}}" />
+		<input type="hidden" name="filter[agent_team_id]" value="{{filter.agent_team.id|default(0)}}" />
+		<input type="hidden" name="filter[is_global]" value="{{ filter.is_global + 0 }}" />
+		{% endif %}
+	</div>
+	<div class="row">
+		<label>Criteria</label>
+		<div class="criteria-form search-form">
+			<div class="search-terms"></div>
+			<div class="term"><span class="add-term">+</span> Add a new criteria</div>
+		</div>
+	</div>
+</div>
+
+</form>
+
+
+<div class="criteria-tpl" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="type"></div>
+			<div class="op"></div>
+			<div class="options"></div>
+			<div class="remove">-</div>
+		</div>
+	</div>
+	<div class="type" title="Originated interface" data-rule-type="creation_system">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+			</select>
+		</div>
+		<div class="options">
+			<select name="creation_system">
+				<option value="web">Web interface</option>
+				<option value="web.person">-- By user</option>
+				<option value="web.agent">-- By agent on behalf of user</option>
+				<option value="gateway">Email</option>
+			</select>
+		</div>
+	</div>
+	{% if term_options.gateway_names %}
+	<div class="type" title="Receiving gateway account" data-rule-type="receiving_gateway">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+			</select>
+		</div>
+		<div class="options">
+			<select name="receiving_gateway">
+				{% for id,label in term_options.gateway_names %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% endif %}
+	<div class="type" title="Subject" data-rule-type="subject">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+				<option value="contains">contains</option>
+				<option value="not_contains">does not contain</option>
+			</select>
+		</div>
+		<div class="options">
+			<input type="text" name="subject" value="" />
+		</div>
+	</div>
+	<div class="type" title="Labels" data-rule-type="label">
+		<div class="op">
+			<select name="op">
+				<option value="is">includes label</option>
+				<option value="not">does not include label</option>
+				{% if trigger.event_trigger == 'property_change' %}
+					<option value="changed">Changed</option>
+					<option value="changed_to">Changed to include</option>
+					<option value="changed_from">Changed to remove</option>
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			<input type="text" name="label" value="" />
+		</div>
+	</div>
+	<div class="type" title="Assigned Agent" data-rule-type="agent">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+				{% if trigger.event_trigger == 'property_change' %}
+					<option value="changed">Changed</option>
+					<option value="changed_to">Changed to</option>
+					<option value="changed_from">Changed from</option>
+					<option value="not_changed_to">Not changed to</option>
+					<option value="not_changed_from">Not changed from</option>
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			<select name="agent">
+				<option value="0">Unassigned</option>
+				<option value="-1">Current Agent</option>
+				{% for id,label in term_options.agents %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	<div class="type" title="Participants" data-rule-type="participant">
+		<div class="op">
+			<select name="op">
+				<option value="is">include</option>
+				<option value="not">does not include</option>
+				{% if trigger.event_trigger == 'property_change' %}
+					<option value="changed">Changed</option>
+					<option value="changed_to">Changed to include</option>
+					<option value="changed_from">Changed to remove</option>
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			<select name="agent">
+				<option value="-1">Current Agent</option>
+				{% for id,label in term_options.agents %}
+					<option value="{{id}}">{{label}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</div>
+	{% if term_options.agent_teams %}
+		<div class="type" title="Agent Team" data-rule-type="agent_team">
+			<div class="options">
+				<div class="op">
+					<select name="op">
+						<option value="is">is</option>
+						<option value="not">is not</option>
+						{% if trigger.event_trigger == 'property_change' %}
+							<option value="changed">Changed</option>
+							<option value="changed_to">Changed to</option>
+							<option value="changed_from">Changed from</option>
+							<option value="not_changed_to">Not changed to</option>
+							<option value="not_changed_from">Not changed from</option>
+						{% endif %}
+					</select>
+				</div>
+				<select name="agent_team">
+					<option value="0">No team</option>
+					<option value="-1">Any of current agents teams</option>
+					{% for id,title in term_options.agent_teams %}
+						<option value="{{id}}">{{title}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	<div class="type" title="Status" data-rule-type="status">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+				{% if trigger.event_trigger == 'property_change' %}
+					<option value="changed">Changed</option>
+					<option value="changed_to">Changed to</option>
+					<option value="changed_from">Changed from</option>
+					<option value="not_changed_to">Not changed to</option>
+					<option value="not_changed_from">Not changed from</option>
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			<select name="status">
+				<option value="open">Open</option>
+				<option value="pending">Pending</option>
+				<option value="resolved">Resolved</option>
+				<option value="closed">Closed</option>
+				<option value="hidden">Hidden (awaiting validating, spam)</option>
+			</select>
+		</div>
+	</div>
+	{% if term_options.products %}
+		<div class="type" title="Product" data-rule-type="product">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					{% if trigger.event_trigger == 'property_change' %}
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					{% endif %}
+				</select>
+			</div>
+			<div class="options">
+				<select name="product">
+					{% for id,label in term_options.products %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.departments %}
+		<div class="type" title="Department" data-rule-type="department">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					{% if trigger.event_trigger == 'property_change' %}
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					{% endif %}
+				</select>
+			</div>
+			<div class="options">
+				<select name="department">
+					{% for id,label in term_options.departments %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.categories %}
+		<div class="type" title="Category" data-rule-type="category">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					{% if trigger.event_trigger == 'property_change' %}
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					{% endif %}
+				</select>
+			</div>
+			<div class="options">
+				<select name="category">
+					{% for id,label in term_options.categories %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	<div class="type" title="Urgency" data-rule-type="urgency">
+		<div class="op">
+			<select name="op">
+				<option value="is">is</option>
+				<option value="not">is not</option>
+				<option value="lte">&lt;=</option>
+				<option value="gte">&gt;=</option>
+				{% if trigger.event_trigger == 'property_change' %}
+					<optgroup label="Changed">
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					</optgroup>
+					<optgroup label="Changed (ranged)">
+						<option value="changed_to_gte">Changed to &gt;=</option>
+						<option value="changed_to_lte">Changed to &lt;=</option>
+						<option value="changed_from_gte">Changed from &gt;=</option>
+						<option value="changed_from_lte">Changed from &lt;=</option>
+						<option value="not_changed_to_gte">Not changed to &gt;=</option>
+						<option value="not_changed_from_lte">Not changed from &lt;=</option>
+					</optgroup>
+				{% endif %}
+			</select>
+		</div>
+		<div class="options">
+			<input type="text" size="4" value="" name="num" />
+		</div>
+	</div>
+	{% if term_options.priorities %}
+		<div class="type" title="Priority" data-rule-type="priority">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					<option value="lte">is less than</option>
+					<option value="gte">is greater than</option>
+					{% if trigger.event_trigger == 'property_change' %}
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					{% endif %}
+				</select>
+			</div>
+			<div class="options">
+				<select name="priority">
+					{% for id,label in term_options.priorities %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.ticket_workflows %}
+		<div class="type" title="Workflow" data-rule-type="workflow">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					{% if trigger.event_trigger == 'property_change' %}
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					{% endif %}
+				</select>
+			</div>
+			<div class="options">
+				<select name="workflow">
+					{% for id,label in term_options.ticket_workflows %}
+						<option value="{{id}}">{{label}}</option>
+					{% endfor %}
+				</select>
+			</div>
+		</div>
+	{% endif %}
+	{% if term_options.custom_ticket_fields %}
+		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
+		{% for field in term_options.custom_ticket_fields %}
+			<div class="type" title="Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+				<div class="op">
+					<select name="op">
+						{% for op in field.field_def.search_capabilities %}
+							<option value="{{op}}">{{op_lang[op]}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				<div class="options">
+					{{ form_widget(field.form) }}
+				</div>
+			</div>
+		{% endfor %}
+	{% endif %}
+</div>
+{% endblock %}
+{% block footer %}
+	<button class="dp-button small save-trigger">Save</button>
+
+{% endblock %}

@@ -1,0 +1,65 @@
+{% extends 'AdminBundle::layout_popout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/GeneralEdit.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page = new DeskPRO.Admin.PageHandler.GeneralEdit('', 0);
+}
+</script>
+{% endblock %}
+{% block header %}
+	<h1>Choose field type</h1>
+{% endblock %}
+{% block content %}
+
+<form action="{{ path('admin_tickets_filters_edit', {'filter_id': 0}) }}" class="form">
+<input type="hidden" name="is_new" value="1" />
+
+<ul class="item-list">
+	<li>
+		<div style="float:left">
+			<input type="radio" name="filter_visibility" value="filter_global" checked="checked" />
+		</div>
+		<div style="margin-left: 50px;">
+			<strong>Global Filter</strong><br />
+			Global filters are visible to all agents.
+		</div>
+	</li>
+	{% if agent_team_names|length %}
+	<li>
+		<div style="float:left">
+			<input type="radio" name="filter_visibility" value="filter_agent_team" />
+		</div>
+		<div style="margin-left: 50px;">
+			<strong>Agent Team Filter</strong><br />
+			The filter will only visible to a specific team: <select name="filter[agent_team_id]">
+				{% for k,v in agent_team_names %}
+					<option value="{{k}}">{{v}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</li>
+	{% endif %}
+	<li>
+		<div style="float:left">
+			<input type="radio" name="filter_visibility" value="filter_agent" />
+		</div>
+		<div style="margin-left: 50px;">
+			<strong>Agent Filter</strong><br />
+			The filter will only visible to a one agent: <select name="filter[person_id]">
+				{% for k,v in agent_names %}
+					<option value="{{k}}">{{v}}</option>
+				{% endfor %}
+			</select>
+		</div>
+	</li>
+</ul>
+
+</form>
+
+{% endblock %}
+{% block footer %}
+	<button class="dp-button green save-trigger">Continue</button>
+{% endblock %}

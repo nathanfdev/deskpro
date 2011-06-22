@@ -1,0 +1,40 @@
+{% extends 'AdminBundle::layout.html.twig' %}
+{% block html_head %}
+<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/TicketFiltersList.js') }}"></script>
+{% endblock %}
+{% block page_js_exec %}
+<script type="text/javascript" charset="utf-8">
+function _page_exec() {
+	window.DeskPRO_Page_TicketFilters = new DeskPRO.Admin.PageHandler.TicketFiltersList('#ticket_filters');
+};
+</script>
+{% endblock %}
+{% block page_id "ticket_filters" %}
+{% block content %}
+
+<div style="text-align:right; padding-bottom: 10px;">
+	<a class="icon tickets popout-trigger" href="{{ path('admin_tickets_filters_new') }}">Create New Filter</a>
+</div>
+
+<div class="pane">
+	<div id="ticket_filter_types_tabs" class="pane-tabs nosel">
+		<ul>
+			<li class="tab-trigger filters-global on" data-tab-for=".tab-content.filters-global"><a>Global Filters</a></li>
+			<li class="tab-trigger filters-team" data-tab-for=".tab-content.filters-team"><a>Team Filters</a></li>
+			<li class="tab-trigger filters-agent" data-tab-for=".tab-content.filters-agent"><a>Agent Filters</a></li>
+		</ul>
+	</div>
+	<div class="tab-box-content pane-content">
+		<div class="tab-content filters-global" data-tab-trigger=".tab-trigger.filters-global">
+			{{sections.global|raw}}
+		</div>
+		<div class="tab-content filters-team" data-tab-trigger=".tab-trigger.filters-team">
+			{{sections.team|raw}}
+		</div>
+		<div class="tab-content filters-agent" data-tab-trigger=".tab-trigger.filters-agent">
+			{{sections.agent|raw}}
+		</div>
+	</div>
+</div>
+
+{% endblock %}
