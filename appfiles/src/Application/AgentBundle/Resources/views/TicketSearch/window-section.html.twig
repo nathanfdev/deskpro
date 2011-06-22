@@ -15,12 +15,11 @@
 </section>
 
 {% if custom_filters %}
-	<section class="inbox">
+	<section class="filters" style="margin-top: 10px;">
 	<h2>Filters</h2>
 	<ul id="tickets_outline_filters_list" class="nav-list">
-		{% for filter in sus_filters %}
+		{% for filter in custom_filters %}
 			<li class="filter-{{filter.id}}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
-				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">-</span>
 				<a>{{filter.title}}</a>
 			</li>
 		{% endfor %}

@@ -68,7 +68,7 @@ class TicketSearchController extends AbstractController
 		$custom_filters = array();
 
 		foreach ($all_filters as $id => $filter) {
-			if ($filter) {
+			if ($filter['sys_name']) {
 				$sys_filters[$id] = $filter;
 			} else {
 				$custom_filters[$id] = $filter;

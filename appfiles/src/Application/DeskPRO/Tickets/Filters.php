@@ -59,9 +59,12 @@ class Filters
 	 * @param mixed $person Person or person ID
 	 * @return array
 	 */
-	public function getAllCountsForPersonFilters($person)
+	public function getAllCountsSystemFilters($person)
 	{
-		$coll = $this->getFiltersForPerson($person);
+		$coll = App::getOrm()
+			->getRepository('DeskPRO:TicketFilter')
+			->getSystemFilters($person);
+
 		return $this->getAllCountsForFiltersCollection($coll);
 	}
 
