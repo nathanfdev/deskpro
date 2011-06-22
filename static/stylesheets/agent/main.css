@@ -558,11 +558,12 @@ background-color: #edeff3;
 #header .actions ul.act-list li {
 	float: left;
 	margin-right: 7px;
-	height: 40px;
+	height: 35px;
+    position: relative;
 }
 
 #header .actions ul.act-list li:last-child {
-		margin-right: 0;
+	margin-right: 0;
 }
 
 #header .actions ul.act-list li.active a {
@@ -577,12 +578,34 @@ background-color: #edeff3;
 	margin-top: 8px;
 }
 
+.network-status-green {
+    background: url("../../images/network-status-green.png") 0 50% no-repeat;
+    line-height: 19px;
+    padding-left: 20px;
+}
+
+.network-status-red {
+    background: url("../../images/network-status-red.png") 0 50% no-repeat;
+    line-height: 19px;
+    padding-left: 20px;
+}
+
 #header .actions ul.act-list li.network a {
 	background-position: left -287px;
 }
 
+#header .actions ul.act-list li.network span {
+    position: absolute;
+    bottom: 0;
+    right: 0;
+    font-size: 9px;
+}
+
 #header .actions ul.act-list li.network.active a {
 	background-position: -29px -287px;
+}
+#header .actions ul.act-list li.network.active span {
+    display: none;
 }
 
 #header .actions ul.act-list li.keyboard a {

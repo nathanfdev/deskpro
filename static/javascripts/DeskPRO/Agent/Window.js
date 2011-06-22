@@ -46,9 +46,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	initPage: function() {
-		this.interfaceEffects = new DeskPRO.Agent.InterfaceEffects();
-		this.interfaceEffects.initPage();
-
 		this._initBasic();
 		this._initSections();
 		this._initRoutes();
@@ -742,6 +739,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 	},
 
+	_globalHandleAjaxComplete: function(event, xhr, ajaxOptions) {
+		if (xhr.status && xhr.status == 200) {
+			$('#network_status_indicator').addClass('active');
+			$('#network_status_indicator span').html('0');
+		} else {
+			$('#network_status_indicator').removeClass('active');
+			var spanEl = $('#network_status_indicator span');
+			var num = parseInt(spanEl.html()) || 0;
+			num++;
+
+			spanEl.html(num);
+		}
+	},
+
 	_globalHandleAjaxError: function(event, XMLHttpRequest, ajaxOptions, errorThrown) {
 
 		this.stopLoadingIndicator(1000);
@@ -959,6 +970,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// Global AJAX handler for errors if no error handler is attached
 		$(document).ajaxError(this._globalHandleAjaxError.bind(this));
+		$(document).ajaxComplete(this._globalHandleAjaxComplete.bind(this));
 
 		// The favicon count
 		this.faviconBadge = new DeskPRO.FaviconBadge({
