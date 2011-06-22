@@ -740,7 +740,15 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	_globalHandleAjaxComplete: function(event, xhr, ajaxOptions) {
+
+		var is_success = false;
 		if (xhr.status && xhr.status == 200) {
+			is_success = true;
+		} else if (xhr.status == '0' || (xhr.statusText && xhr.statusText == 'abort')) {
+			is_success = true;
+		}
+
+		if (is_success) {
 			$('#network_status_indicator').addClass('active');
 			$('#network_status_indicator span').html('0');
 		} else {
@@ -753,23 +761,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 	},
 
-	_globalHandleAjaxError: function(event, XMLHttpRequest, ajaxOptions, errorThrown) {
-
+	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown) {
+		
 		this.stopLoadingIndicator(1000);
 
 		// We dont care about aborts
-		if (XMLHttpRequest.statusText && XMLHttpRequest.statusText == 'abort') {
+		// This is caused when the user navigates away from a page, any running
+		// ajax requests are aborted by the browser. Without this the user
+		// would see the error popup briefly before the page went away
+		if (xhr.status == '0' || (xhr.statusText && xhr.statusText == 'abort')) {
 			return;
 		}
 
-		var data = XMLHttpRequest.responseText;
+		var data = xhr.responseText;
 		try {
 			data = $.parseJSON(data);
 		} catch (e) {
 			data = null;
 		}
 
-		if (XMLHttpRequest && XMLHttpRequest.status && XMLHttpRequest.status == '403') {
+		if (xhr && xhr.status && xhr.status == '403') {
 
 			if (data && data.error && data.error == 'session_expired') {
 				window.location = data.redirect_login;
@@ -794,7 +805,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (data && data.sn) {
 			sn = data.sn;
 		} else {
-			var match = /\[\[SN:(.*?)\]\]/.exec(XMLHttpRequest.responseText);
+			var match = /\[\[SN:(.*?)\]\]/.exec(xhr.responseText);
 			if (match) {
 				sn = match[1];
 			}
@@ -955,9 +966,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var self = this;
 
 		var menuOpener = new DeskPRO.Agent.WindowElement.MainMenuOpener();
-
-		this.settingsHandler = new DeskPRO.Agent.Settings();
-
+		
 		// Settings is a window
 		$('#user_settings_link').click(function() {
 			var overlay = new DeskPRO.UI.Overlay({

@@ -85,6 +85,12 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
 
 	openMenu: function(li, event) {
 
+		// If its a link with a href, then
+		// dont fuss around with anything here
+		if ($(event.target).is('a[href]')) {
+			return;
+		}
+
 		// If we're already open, clicking should toggle to closed
 		var doopen = true;
 		if (li.is('.on')) {
