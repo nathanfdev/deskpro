@@ -661,7 +661,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// If we have a signature, then set it
 		if (this.meta.agentSignature) {
-			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n", this.meta.agentSignature);
+			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n" + this.meta.agentSignature);
 		}
 	}
 });

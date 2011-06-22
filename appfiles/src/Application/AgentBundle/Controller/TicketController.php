@@ -178,7 +178,9 @@ class TicketController extends AbstractController
 			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
 			'macros' => $macros,
 			'widgets' => $widgets,
-			'counts' => $counts
+			'counts' => $counts,
+
+			'agent_signature' => $this->person->getPref('agent.ticket_signature')
 		));
 	}
 
