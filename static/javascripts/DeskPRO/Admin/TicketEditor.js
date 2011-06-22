@@ -71,9 +71,14 @@ DeskPRO.Admin.TicketEditor = new Orb.Class({
 		var fieldName = el.data('field-name');
 		var elId   = Orb.getUniqueId();
 
-		var data = {name: itemName, itemId: itemId, idClass: idClass, itemType: itemType, elId: elId, fieldName: fieldName };
+		var rendered = $('#custom_field_rendered > .' + idClass).clone();
+
+		var data = {name: itemName, itemId: itemId, idClass: idClass, itemType: itemType, elId: elId, fieldName: fieldName, rendered: rendered };
 
 		var item = $.tmpl('display_item_' + itemType + '_tpl', data);
+		if (rendered.length) {
+			$('.rendered', item).append(rendered);
+		}
 
 		var fieldType = item.data('field-name');
 		if (fieldType) {
