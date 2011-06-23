@@ -1,0 +1,429 @@
+Orb.createNamespace('DeskPRO.Agent.PageHelper');
+
+/**
+ * Fields on the ticket display page are completely customizable. Here are two general rules:
+ *
+ * 1) Changing a department can completely change the design of a page.
+ * 
+ * 2) Changes to other fields within a department dont change the design, but they can
+ * show or hide other fields.
+ *
+ * = Templates =
+ * The ticket template (AgentBundle:Ticket:view.html.twig) defines three basic things:
+ *
+ * 1) Field templates/holders: These are title/content holders that we move into the proper
+ * "section" as defiend by the layout. So we output them all into a hidden div, and then
+ * using JS we move them into their proper wrappers.
+ *
+ * 2) For custom fields, we also have the overlay holders for editing the field. These are opened
+ * on-click similar to the standard category/priority etc
+ *
+ * 3) Wrapper templates: Each section (properties box, or in a bottom tab etc) will have different
+ * layout for how the title and content from (1) is supposed to be. So each section also
+ * has a wrapper template. The wrapper template is rendered, added to the section, then the
+ * title/content from (1) is injected into placeholders. This lets us re-use a single template
+ * in (1) for multiple sections, and simplifies things greatly.
+ *
+ * = Operation =
+ * When the ticket is first loaded, or when a department changes, the setDepartment() is called.
+ * This will initiate all of the sections, for example by creating a new tab, and move all fields
+ * from their holds (in 1) into it.
+ *
+ * After, or when a field is updated, runRules() is executed which shows/hides fields based on whatever
+ * display rules are set.
+ *
+ * So if a department has a field activated, it'll be in a section. It'll be visible/invisible based on
+ * rules. If a department doesn't have a field activated, then it stays put in the holder where the user
+ * never sees it.
+ *
+ * When a department is changed, everything is reset. All sections are emptied (or removed in case of tabs),
+ * and the server responds to the department change with a fresh holder template. (This is just for convience,
+ * because it'd be a pain to move fields from their places back into their holders, so easier to just reset
+ * the whole holder container.)
+ *
+ * = Display Data Structure =
+ * DESKPRO_TICKET_DISPLAY = {
+ *     department_id: [
+ *         { section: 'default',     item_type: 'ticket_field',     initial_display: 'hidden',  check: function(t){...},  item_id: 4 },
+ *         { section: 'default',     item_type: 'ticket_category',  initial_display: 'visible', check: function(t){...}, ticket_categories: [ids to show] },
+ *         { section: 'bottomtabs',  item_type: 'group',            title: 'Some Title', items: [...] }
+ *     ]
+ * }
+ *
+ * All items in bottomtabs or middletabs are of type 'group' which are actual tabs. These will always have an 'items' property,
+ * which are the real items to be added to that section.
+ *
+ * = Notes =
+ * This is very highly coupled to the view template obviously, and also to the ticket page and change manager.
+ */
+DeskPRO.Agent.PageHelper.TicketDisplay = new Class({
+	Implements: [Orb.Util.Options. Orb.Util.Events],
+
+	initialize: function(options) {
+		this.options = {
+			wrapper: null,
+			holders: '.page-display-holders:first',
+			sectionProperties: '.field-section-properties:first',
+			sectionBottomTabs: '.field-section-bottomtabs-tabs:first',
+			sectionBottomTabContents: '.field-section-bottomtabs-tab-contents:first',
+			fieldWrapSelector: '.display-item',
+			fieldTabSelector: 'li.field-tab',
+			fieldTabContentSelector: '.field-tab-content',
+
+			sectionPropertiesWrapTpl: '.fields-wrap-properties',
+			sectionBottomTabsWrapTpl: '.fields-wrap-bottomtabs',
+			sectionBottomTabsTabTpl: '.fields-new-bottomtab-tab',
+			sectionBottomTabsTabContentTpl: '.fields-new-bottomtab-content'
+		};
+
+		this.wrapper = $(this.options.wrapper);
+		this.holders = $(this.options.holders, this.wrapper);
+		this.sectionProperties = $(this.options.sectionProperties, this.wrapper);
+		this.sectionBottomTabs = $(this.options.sectionBottomTabs, this.wrapper);
+		this.sectionBottomTabContents = $(this.options.sectionBottomTabs, this.wrapper);
+
+		this.sectionPropertiesWrapTpl       = $(this.options.sectionPropertiesWrapTpl, this.wrapper).get(0).innerHTML;
+		this.sectionBottomTabsWrapTpl       = $(this.options.sectionBottomTabsWrapTpl, this.wrapper).get(0).innerHTML;
+		this.sectionBottomTabsTabTpl        = $(this.options.sectionBottomTabsTabTpl, this.wrapper).get(0).innerHTML;
+		this.sectionBottomTabsTabContentTpl = $(this.options.sectionBottomTabsTabContentTpl, this.wrapper).get(0).innerHTML;
+
+		this.departmentId = null;
+	},
+
+	/**
+	 * Replaces the holder templates with a pristine copy.
+	 * 
+	 * @param {String} html
+	 */
+	replaceHolders: function(html) {
+		this.holders.remove();
+		this.holders = $(html).hide();
+
+		this.wrapper.append(this.holders);
+
+		return this.holders;
+	},
+
+
+	/**
+	 * Clears all sections of their display fields. This is usually called
+	 * after a department change from initSections().
+	 */
+	clearAll: function() {
+		$(this.options.fieldTabSelector, this.sectionBottomTabs).remove();
+		$(this.options.fieldTabContentSelector, this.sectionBottomTabContents).remove();
+		$(this.options.fieldWrapSelector, this.sectionProperties).remove();
+		this.sectionProperties.hide();
+	},
+
+
+	/**
+	 * Inits all section elements for the department. This assumes a pristine copy of the holder element,
+	 * so either the first time this is called or it was reset with replaceHolders().
+	 */
+	setDepartment: function(department_id) {
+		this.clearAll();
+
+		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id];
+		if (!depItems) {
+			// The department is empty of fields
+			// (Rare, because we'll at least have category and such usually)
+			return;
+		}
+
+		//------------------------------
+		// Add items to their right places
+		//------------------------------
+		
+		Array.each(items, function(item) {
+			switch (item.section) {
+				case 'default':
+					var itemEls = this.getItemHolderEls(item);
+					if (!itemEls) {
+						return;
+					}
+
+					var displayWrap = $(this.sectionPropertiesWrapTpl);
+
+					itemEls.itemTitle.detach().appendTo($('> .display-title', displayWrap));
+					itemEls.itemContent.detach().appendTo($('> .display-content', displayWrap));
+
+					displayWrap.appendTo(this.sectionProperties);
+					item.sectionEl = this.sectionProperties;
+
+					itemEls.itemHolder.remove();
+					break;
+
+				case 'bottomtabs':
+
+					if (!item.items || !item.items.length) {
+						item.items = [];
+					}
+
+					// Init the tab itself
+					var id = 'bottomfieldtab_' + $(this.options.fieldTabSelector, this.sectionBottomTabs).length + 1;
+					var newTab = $(this.sectionBottomTabsTabTpl.replace('${title}', item.title||'More').replace('${id}', id));
+					var newTabContent = $(this.sectionBottomTabsTabContentTpl.replace('${id}', id));
+
+					newTab.appendTo(this.sectionBottomTabs);
+					newTabContent.appendTo(this.sectionBottomTabContents);
+
+					Array.each(item.items, function(tab_item) {
+
+						// Set this so its easier to lookup sections later,
+						// even though we can know through the structure,
+						// its easier with this value set
+						tab_item.section = 'bottomtabs';
+
+						var itemEls = this.getItemHolderEls(tab_item);
+						if (!itemEls) {
+							return;
+						}
+						var displayWrap = $(this.sectionBottomTabsWrapTpl);
+
+						itemEls.itemTitle.detach().appendTo($('> .display-title', displayWrap));
+						itemEls.itemContent.detach().appendTo($('> .display-content', displayWrap));
+
+						displayWrap.appendTo(newTabContent);
+						tab_item.sectionEl = newTabContent;
+
+						itemEls.itemHolder.remove();
+					});
+
+					break;
+			}
+
+		}, this);
+
+		//------------------------------
+		// Run the rules to set initial state
+		//------------------------------
+
+		this.runRules();
+	},
+	
+
+	/**
+	 * Run through all the rules and show/hide all display items and
+	 * sections based on it.
+	 */
+	runRules: function() {
+		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id];
+		if (!depItems) {
+			return;
+		}
+
+		//------------------------------
+		// The reader object takes care of fetching current values
+		//------------------------------
+
+		var ticketReader = {
+			getCategoryId: function() {
+				if (this.categoryId) return this.categoryId;
+				this.categoryId = $('input.category_id', this.wrapper).val();
+				return this.categoryId;
+			},
+			getProductId: function() {
+				if (this.productId) return this.productId;
+				this.productId = $('input.product_id', this.wrapper).val();
+				return this.productId;
+			},
+			getPriorityId: function() {
+				if (this.priorityId) return this.priorityId;
+				this.priorityId = $('input.priority_id', this.wrapper).val();
+				return this.priorityId;
+			},
+			getWorkflowId: function() {
+				if (this.workflowId) return this.workflowId;
+				this.workflowId = $('input.workflow_id', this.wrapper).val();
+				return this.workflowId;
+			}
+		};
+
+		//------------------------------
+		// Run all the rules to fetch on/off of each item in display
+		//------------------------------
+		
+		var itemStates = [];
+
+		Array.each(items, function(item) {
+			switch (item.section) {
+				case 'default':
+					var state = this.runCheckForItem(item);
+					if (state) {
+						itemStates.push(state);
+					}
+					break;
+
+				case 'bottomtabs':
+					Array.each(item.items, function(tab_item) {
+						var state = this.runCheckForItem(tab_item);
+						if (state) {
+							itemStates.push(state);
+						}
+					}, this);
+
+					break;
+			}
+
+		}, this);
+
+		// And actually enforce the changes now
+		Array.each(itemStates, function(state) {
+			if (state[2] == 'visible') {
+				state[1].show();
+			} else {
+				state[1].hide();
+			}
+		});
+
+		//------------------------------
+		// Go through each section to see if we should show or hide the section
+		//------------------------------
+
+		if ($(this.options.fieldWrapSelector + ':first', this.sectionProperties).length) {
+			this.sectionProperties.show();
+		} else {
+			this.sectionProperties.hide();
+		}
+
+		var sectionBottomTabContents = this.sectionBottomTabContents;
+		var fieldWrapSelector = this.options.fieldWrapSelector + ':first';
+
+		$('li.field-tab', this.sectionBottomTabs).each(function() {
+			var id = $(this).data('field-tab-id');
+			var tabContents = $('> .' + id, sectionBottomTabContents);
+
+			if ($(fieldWrapSelector, tabContents).length) {
+				$(this).show();
+			} else {
+				$(this).hide();
+			}
+		});
+	},
+
+
+	/**
+	 * Runs the check function for an item to get its visibility.
+	 *
+	 * Returns array of:
+	 * 0: The item ID
+	 * 1: The items wrapper element
+	 * 2: The items visibility
+	 *
+	 * @param item
+	 */
+	runCheckForItem: function(item) {
+		var itemId = this.getItemId(item);
+		if (item.initial_display == 'visible') {
+			var visible = true;
+		} else {
+			var visible = false;
+		}
+
+		// If the check function passes, then inverse visibility
+		if (item.check && item.check(ticketReader)) {
+			visible = !visible;
+		}
+
+		return [itemId, $('> .' + itemId, item.sectionEl), visible];
+	},
+	
+	/**
+	 * Get the holder elements for an item
+	 *
+	 * @param {Object} item
+	 */
+	getItemHolderEls: function(item) {
+		var itemId = this.getItemId(item);
+
+		var itemHolder  = $('> .' + itemId + ':first', this.holders);
+		var itemTitle   = $('> .title:first', itemHolder);
+		var itemContent = $('> .content:first', itemHolder);
+
+		// Reduce options in the selections to what was defined
+		switch (item.item_type) {
+			case 'ticket_category':
+				var show_ids = item.ticket_categories;
+				if (!show_ids || !show_ids.length) {
+					break;
+				}
+
+				$('.opt', itemContent).each(function() {
+					var id = $(this).data('category-id');
+					if (!id || show_ids.indexOf(id) == -1) {
+						$(this).remove();
+					}
+				});
+
+				break;
+
+			case 'ticket_workflow':
+				var show_ids = item.ticket_workflows;
+				if (!show_ids || !show_ids.length) {
+					break;
+				}
+
+				$('.opt', itemContent).each(function() {
+					var id = $(this).data('workflow-id');
+					if (!id || show_ids.indexOf(id) == -1) {
+						$(this).remove();
+					}
+				});
+
+				break;
+
+			case 'ticket_priority':
+				var show_ids = item.ticket_priorities;
+				if (!show_ids || !show_ids.length) {
+					break;
+				}
+
+				$('.opt', itemContent).each(function() {
+					var id = $(this).data('priority-id');
+					if (!id || show_ids.indexOf(id) == -1) {
+						$(this).remove();
+					}
+				});
+
+				break;
+
+			case 'ticket_product':
+				var show_ids = item.ticket_products;
+				if (!show_ids || !show_ids.length) {
+					break;
+				}
+
+				$('.opt', itemContent).each(function() {
+					var id = $(this).data('product-id');
+					if (!id || show_ids.indexOf(id) == -1) {
+						$(this).remove();
+					}
+				});
+
+				break;
+		}
+
+		return {
+			itemHolder:  itemHolder,
+			itemTitle:   itemTitle,
+			itemContent: itemContent
+		};
+	},
+
+
+	/**
+	 * Get the item ID from the type/id in an item array.
+	 * This isnt an actual page ID, but a special classname.
+	 * 
+	 * @param {Object} item
+	 */
+	getItemId: function(item) {
+		var itemId = item.item_type;
+		if (item.item_id) {
+			itemId += '_' + item.item_Id;
+		}
+
+		return itemId;
+	}
+});
