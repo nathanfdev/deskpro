@@ -74,6 +74,10 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		return this.tabManager.getTabs();
 	},
 
+	getActiveTab: function() {
+		return this.tabManager.getActiveTab();
+	},
+
 	activateTabById: function(tabId) {
 		this.tabManager.activateTab(tabId);
 	},

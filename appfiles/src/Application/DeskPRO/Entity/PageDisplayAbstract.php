@@ -48,16 +48,4 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * @orm:Column(name="data", type="array")
 	 */
 	protected $data;
-	
-
-	/**
-	 * Get a new handler
-	 */
-	public function createHandler()
-	{
-		$class = $this->handler_class;
-		$obj = new $class($this);
-
-		return $obj;
-	}
 }

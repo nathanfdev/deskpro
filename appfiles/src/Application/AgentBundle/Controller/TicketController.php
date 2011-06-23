@@ -18,6 +18,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Util;
 
 use Application\DeskPRO\Search\Adapter\AbstractAdapter as AbstractSearchAdapter;
+use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
 
 /**
  * Handles ticket searches
@@ -51,6 +52,10 @@ class TicketController extends AbstractController
 			// So dont remove it even though it looks like it's not used! :-)
 			$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
 			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
+
+			// Sort the fields into their positions on this page
+			$ticket_page = new TicketPageZoneCollection('agent');
+			$ticket_page->addPagesFromDb();
 
 			$ticket_custom_fields_block = $this->renderView('AgentBundle:Ticket:part-custom-fields.html.twig', array(
 				'ticket' => $ticket,

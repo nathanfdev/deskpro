@@ -19,6 +19,7 @@ class Cache extends EntityRepository
 {
 	public function load($id)
 	{
+		return false;
 		$data = App::getDb()->fetchColumn("SELECT data FROM cache WHERE id = ?", array($id));
 
 		if (!$data) {

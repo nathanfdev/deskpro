@@ -189,47 +189,11 @@ pageMeta.fieldHandlers = [
 	<div class="ticket-properties right">
 
 		{# Box Properties #}
-		<div class="table-container">
+		<div class="table-container field-section-properties" style="display: none">
 			<div class="table-title">
-				<span class="ticket-custom-fields-edit-btn">edit fields</span>
 				<h4>Ticket Properties</h4>
 			</div>
 			<div class="table-content">
-
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Category</span>
-					</div>
-					<div class="col-table-content prop-val">
-						<span class="prop-val menu-trigger category_id {% if not ticket.category %}no-value{% endif %}">{{ticket.category.full_title|default('None')}}</span>
-					</div>
-				</div>
-
-				<div class="row-table-cotent dark product_id">
-					<div class="col-table-content title-col">
-						<span>Product</span>
-					</div>
-					<div class="col-table-content">
-						<span class="prop-val menu-trigger product_id {% if not ticket.category %}no-value{% endif %}">{{ticket.product.title|default('None')}}</span>
-					</div>
-				</div>
-				<div class="row-table-cotent">
-					<div class="col-table-content title-col">
-						<span>Priority</span>
-					</div>
-					<div class="col-table-content">
-						<span class="prop-val menu-trigger priority_id {% if not ticket.category %}no-value{% endif %}">{{ticket.priority.title|default('None')}}</span>
-					</div>
-				</div>
-				<div class="row-table-cotent dark workflow_id">
-					<div class="col-table-content title-col">
-						<span>Workflow</span>
-					</div>
-					<div class="col-table-content">
-						<span class="prop-val menu-trigger workflow_id {% if not ticket.workflow %}no-value{% endif %}">{{ticket.workflow.title|default('None')}}</span>
-					</div>
-				</div>
-				{{ ticket_custom_fields_block|raw }}
 			</div>
 		</div>
 		{# /Box Properties #}
@@ -382,6 +346,43 @@ pageMeta.fieldHandlers = [
 	</div>
 </div>
 {# /Main Tabs #}
+
+{# Wrapper around fields in the properties box #}
+<script type="text/x-jquery-tmpl" class="fields-wrap-properties">
+	<div class="row-table-cotent display-item">
+		<div class="col-table-content title-col title-wrap">
+			${title}
+		</div>
+		<div class="col-table-content content-wrap">
+			${content}
+		</div>
+	</div>
+</script>
+
+{# Wrapper around fields in bottom tabs #}
+<script type="text/x-jquery-tmpl" class="fields-wrap-bottomtabs">
+	<div class="row-table-cotent display-item">
+		<div class="col-table-content title-col title-wrap">
+			${title}
+		</div>
+		<div class="col-table-content content-wrap">
+			${content}
+		</div>
+	</div>
+</script>
+
+{# New tab code for bottom tabs (for addition to tabstrip) #}
+<script type="text/x-jquery-tmpl" class="fields-new-bottomtab-tab">
+	<li class="tab-trigger fieldtab_${id} field-tab on" data-tab-for=".tab-content.fieldtab_${id}">
+		<a>${title}</a>
+	</li>
+</script>
+<script type="text/x-jquery-tmpl" class="fields-new-bottomtab-content">
+	<div class="full-container-tabbed-contents tab-content fieldtab_${id}" data-tab-trigger=".tab-trigger.fieldtab_${id}">
+		${content}
+	</div>
+</script>
+
 
 </div></div>
 </div>

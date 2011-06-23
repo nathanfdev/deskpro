@@ -1,0 +1,49 @@
+<div class="page-display-holders" style="display:none">
+	{# Standard fields #}
+	<div class="ticket_category standard-field item" data-item-type="ticket_category">
+		<div class="title">
+			Category
+		</div>
+		<div class="content">
+			<span class="prop-val menu-trigger category_id {% if not ticket.category %}no-value{% endif %}">{{ticket.category.full_title|default('None')}}</span>
+		</div>
+	</div>
+	<div class="ticket_product standard-field item" data-item-type="ticket_product">
+		<div class="title">
+			Product
+		</div>
+		<div class="content">
+			<span class="prop-val menu-trigger product_id {% if not ticket.category %}no-value{% endif %}">{{ticket.product.title|default('None')}}</span>
+		</div>
+	</div>
+	<div class="ticket_priority standard-field item" data-item-type="ticket_priority">
+		<div class="title">
+			Priority
+		</div>
+		<div class="content">
+			<span class="prop-val menu-trigger priority_id {% if not ticket.category %}no-value{% endif %}">{{ticket.priority.title|default('None')}}</span>
+		</div>
+	</div>
+	<div class="ticket_workflow standard-field item" data-item-type="ticket_workflow">
+		<div class="title">
+			Workflow
+		</div>
+		<div class="content">
+			<span class="prop-val menu-trigger workflow_id {% if not ticket.workflow %}no-value{% endif %}">{{ticket.workflow.title|default('None')}}</span>
+		</div>
+	</div>
+
+	{# Custom fields#}
+	{% for f in custom_fields %}
+		{% if f.rendered %}
+			<div class="ticket_field_{{f.id}} custom-field item" data-field-type="ticket_field" data-item-id="{{f.id}}">
+				<div class="title">
+					<span class="custom-field menu-trigger ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{f.title}}</span>
+				</div>
+				<div class="content">
+					<div class="custom-field content ticket_field_{{f.id}}" data-item-id="{{f.id}}">{{ render_custom_field(f) }}</div>
+				</div>
+			</div>
+		{% endif %}
+	{% endfor %}
+</div>

@@ -25,9 +25,17 @@ class TicketPageDisplay extends EntityRepository
 				$department_context = $department_context['id'];
 			}
 
-			return $this->findBy(array('zone' => $zone, 'department' => $department_context));
+			return $this->getEntityManager()->createQuery("
+				SELECT d
+				FROM DeskPRO:TicketPageDisplay d INDEX BY d.section
+				WHERE d.zone = :zone AND d.department = :department
+			")->setParameters(array('zone' => $zone, 'department' => $department_context))->execute();
 		} else {
-			return $this->findBy(array('zone' => $zone));
+			return $this->getEntityManager()->createQuery("
+				SELECT d
+				FROM DeskPRO:TicketPageDisplay d INDEX BY d.section
+				WHERE d.zone = :zone AND d.department = :department
+			")->setParameters(array('zone' => $zone, 'department' => $department_context))->execute();
 		}
 	}
 

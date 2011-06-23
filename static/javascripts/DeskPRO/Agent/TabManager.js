@@ -38,7 +38,14 @@ DeskPRO.Agent.TabManager = new Orb.Class({
 		return this.currentTabId;
 	},
 
-
+	/**
+	 * Get the currently selected tab object.
+	 *
+	 * @return {Object}
+	 */
+	getActiveTab: function() {
+		return this.getTab(this.getActiveTabId());
+	},
 
 	/**
 	 * Get the data for a tab.

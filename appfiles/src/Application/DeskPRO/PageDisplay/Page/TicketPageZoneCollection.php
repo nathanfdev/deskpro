@@ -22,7 +22,7 @@ use Application\DeskPRO\Entity\Department;
 
 use Orb\Util\Arrays;
 
-class TicketZoneCollection implements PersonContextInterface
+class TicketPageZoneCollection implements PersonContextInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person

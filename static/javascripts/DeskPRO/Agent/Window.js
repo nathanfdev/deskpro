@@ -666,6 +666,24 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		return page;
 	},
+
+
+	/**
+	 * Reloads the currently selected tab if it has the proper rotueData metadata.
+	 * This is usually only used for dev, reloading a tab rather than the full page,
+	 * or re-clicking a link.
+	 */
+	reloadSelectedTab: function() {
+		var tab = this.pageTabStrip.getActiveTab();
+		if (!tab) return;
+
+		var route = tab.page.meta.routeData.route;
+
+		// Delete current page so its not just deteceted as already loaded
+		this.pageTabStrip.removeTabById(tab.id);
+
+		this.runPageRoute(route);
+	},
 	
 
 	/**
