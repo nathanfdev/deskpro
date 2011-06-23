@@ -4,12 +4,12 @@ DeskPRO.Admin.WindowElement.MainMenuOpener = new Orb.Class({
 	Extends: DeskPRO.Agent.WindowElement.MainMenuOpener,
 
 	getMenuHandlerClass: function(li) {
-		var class = this.parent(li);
+		var classname = this.parent(li);
 
-		if (!class) {
-			class = DeskPRO.Admin.WindowElement.BasicMainMenu;
+		if (!classname) {
+			classname = DeskPRO.Admin.WindowElement.BasicMainMenu;
 		}
 
-		return class;
+		return classname;
 	}
 });

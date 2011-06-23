@@ -32,9 +32,9 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
 		// Click opens the submenu
 		this.allMenus.filter(':not(.no-menu)').each(function() {
 			var li = $(this);
-			var class = self.getMenuHandlerClass(li);
-			if (class) {
-				var handler = new class(li, {'mainMenuOpener': self});
+			var classname = self.getMenuHandlerClass(li);
+			if (classname) {
+				var handler = new classname(li, {'mainMenuOpener': self});
 				li.data('menuHandler', handler);
 			}
 

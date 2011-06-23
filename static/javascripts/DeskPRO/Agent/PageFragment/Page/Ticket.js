@@ -52,7 +52,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		Array.each(this.getMetaData('fieldHandlers', []), function(h) {
 			if (!h) return;
 
-			var handler_class = h.class;
+			var handler_class = h.classname;
 			var field_wrap_id = h.wrap_id;
 
 			var h = new h($('#' + field_wrap_id), this);
