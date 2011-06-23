@@ -53,7 +53,6 @@ class MiscController extends AbstractController
 
 		// Data
 		$js[] = 'window.DESKPRO_DATA_REGISTRY = {}';
-		$js[] = 'window.DESKPRO_DATA_REGISTRY.ticketDepToCatMap = ' . json_encode(App::getEntityRepository('DeskPRO:TicketCategory')->departmentToCategoryMap()) . ';';
 
 		$system_filters = App::getDb()->fetchAllKeyValue("SELECT id, sys_name FROM ticket_filters WHERE is_global=1 AND sys_name IS NOT NULL");
 		$system_filters = Arrays::castToType($system_filters, 'string', 'int');

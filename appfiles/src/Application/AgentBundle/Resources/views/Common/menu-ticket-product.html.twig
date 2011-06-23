@@ -1,5 +1,4 @@
 <ul class="menu product_id {{add_classname}}" data-option-name="product_id" style="display:none">
-	<li data-option-value="0" class="no-prods" style="display:none"><em>There are no prodegories for the selected department</em></li>
 	{% for prod in products %}
 		{% if last_with_child %}
 			<li data-option-value="{{prod.id}}" class="sep prod-{{prod.id}}">-</li>

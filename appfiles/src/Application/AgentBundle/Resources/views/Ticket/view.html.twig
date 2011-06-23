@@ -369,12 +369,12 @@ pageMeta.fieldHandlers = [
 
 {# New tab code for bottom tabs (for addition to tabstrip) #}
 <script type="text/x-deskpro-plain" class="fields-new-bodytabs-tab">
-	<li class="tab-trigger fieldtab_{id} field-tab" data-tab-for=".fieldtab_content_{id}" data-field-tab-id="{id}">
-		<a>${title}</a>
+	<li class="tab-trigger {id} field-tab" data-tab-for=".{id}" data-field-tab-id="{id}">
+		<a>{title}</a>
 	</li>
 </script>
 <script type="text/x-deskpro-plain" class="fields-new-bodytabs-content">
-	<div class="full-container-tabbed-contents tab-content field-tab-content fieldtab_content_{id}" data-tab-trigger=".fieldtab_{id}" data-field-tab-id="{id}">
+	<div class="full-container-tabbed-contents tab-content field-tab-content {id}" data-tab-trigger=".{id}" data-field-tab-id="{id}">
 	</div>
 </script>
 

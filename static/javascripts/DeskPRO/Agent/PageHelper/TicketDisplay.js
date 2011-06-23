@@ -398,69 +398,50 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		var itemTitle   = $('> .title:first', itemHolder);
 		var itemContent = $('> .content:first', itemHolder);
 
+		/**
+		 * This goes into the menus to show/hide specific options
+		 * as defined by the display
+		 */
+		function handleCatMenu(show_ids, menu_id, class_prefix) {
+			var menuEl = $('.'+menu_id+'.menu:first', this.wrapper);
+			var lis = $('li', menuEl).show().removeClass('off');
+
+			if (!show_ids || !show_ids.length) {
+				return;
+			}
+
+			$('li', menuEl).each(function() {
+				var id = $(this).data('option-value');
+				if (show_ids.indexOf(id+"") == -1 && show_ids.indexOf(id) == -1) {
+					$('li.'+class_prefix+'-' + id, menuEl).hide().addClass('off'); // hides separators, children as well as self
+				}
+			});
+
+			var vis = $('li:not(.off)', menuEl);
+			var first = vis.first();
+			if (first.is('.sep')) first.hide().addClass('off');
+
+			var last = vis.last();
+			if (last.is('.sep')) last.hide().addClass('off');
+		};
+
 		// Reduce options in the selections to what was defined
-		if (false) {
 		switch (item.item_type) {
 			case 'ticket_category':
-				var show_ids = item.ticket_categories;
-				if (!show_ids || !show_ids.length) {
-					break;
-				}
-
-				$('.opt', itemContent).each(function() {
-					var id = $(this).data('category-id');
-					if (!id || show_ids.indexOf(id) == -1) {
-						$(this).remove();
-					}
-				});
-
+				handleCatMenu(item.ticket_categories, 'category_id', 'cat');
 				break;
 
 			case 'ticket_workflow':
-				var show_ids = item.ticket_workflows;
-				if (!show_ids || !show_ids.length) {
-					break;
-				}
-
-				$('.opt', itemContent).each(function() {
-					var id = $(this).data('workflow-id');
-					if (!id || show_ids.indexOf(id) == -1) {
-						$(this).remove();
-					}
-				});
-
+				handleCatMenu(item.ticket_workflows, 'workflow_id', 'work');
 				break;
 
 			case 'ticket_priority':
-				var show_ids = item.ticket_priorities;
-				if (!show_ids || !show_ids.length) {
-					break;
-				}
-
-				$('.opt', itemContent).each(function() {
-					var id = $(this).data('priority-id');
-					if (!id || show_ids.indexOf(id) == -1) {
-						$(this).remove();
-					}
-				});
-
+				handleCatMenu(item.ticket_priorities, 'priority_id', 'pri');
 				break;
 
 			case 'ticket_product':
-				var show_ids = item.ticket_products;
-				if (!show_ids || !show_ids.length) {
-					break;
-				}
-
-				$('.opt', itemContent).each(function() {
-					var id = $(this).data('product-id');
-					if (!id || show_ids.indexOf(id) == -1) {
-						$(this).remove();
-					}
-				});
-
+				handleCatMenu(item.ticket_products, 'product_id', 'prod');
 				break;
-		}
 		}
 
 		return {

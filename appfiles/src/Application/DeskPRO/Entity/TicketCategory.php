@@ -43,13 +43,6 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject
 	protected $children = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Department
-	 * @orm:ManyToOne(targetEntity="Department")
-	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
-	 */
-	protected $department = null;
-
-	/**
 	 * @var string
 	 * @orm:Column(name="title", type="string", length=255)
 	 */
