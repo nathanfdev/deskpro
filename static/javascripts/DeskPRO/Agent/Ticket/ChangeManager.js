@@ -137,7 +137,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				context: this,
 				success: function(data) {
 					this.ticketPage.unloadTicketTab('ticket-log');
-					console.log(data);
+					this.fireEvent('updateResult', [data]);
 				}
 			});
 		}
@@ -176,12 +176,14 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 					this.changes = {};
 					this.oldValues = {};
 
-					if (data && typeOf(data) == 'object') {
+					if (data && data.properties) {
 						Object.each(data, function (returnValue, type) {
 							var property = this.ticketPage.getPropertyManager(type);
 							property.setIncomingValue(returnValue);
 						}, this);
 					}
+
+					this.fireEvent('updateResult', [data]);
 				}
 			});
 		}

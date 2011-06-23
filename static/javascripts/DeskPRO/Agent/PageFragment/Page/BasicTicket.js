@@ -30,7 +30,9 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
-		this.changeManager.addEvent('changesApplied', this.handleTicketChanges.bind(this));
+		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
+			wrapper: el
+		});
 
 		window.TICKET = this;
 
@@ -44,7 +46,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this._handleResize()
 		}).bind(this));
 
-		this.handleTicketChanges();
+		this.ticketDisplay.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
 
 		var self = this;
 		$('div.ticket-messages > ul > li').each(function() {
@@ -229,74 +231,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		var prop = this.getPropertyManager(opt);
 		this.changeManager.setInstantChange(prop, itemId);
-	},
-
-	handleTicketChanges: function() {
-		// When department is updated, we have to update display
-		// options for category
-
-		var map = DeskPRO_Window.getData('ticketDepToCatMap');
-
-		var depProperty = this.getPropertyManager('department_id');
-		var depId = depProperty.getValue();
-
-		var catProperty = this.getPropertyManager('category_id');
-		var catId = catProperty.getValue();
-
-		var validCatIds = [];
-		if (map[depId]) {
-			validCatIds = map[depId];
-		}
-
-		if (!validCatIds.contains(catId)) {
-			catProperty.setValue(0);
-		}
-
-		// Update the UI menu with correct
-		var catMenuList = this.ticketOptionsMenuEls['category_id'];
-
-		$('li', catMenuList).hide();
-		var did_show = false;
-		Array.each(validCatIds, function(id) {
-			did_show = true;
-			$('.cat-'+id, catMenuList).show();
-		});
-
-		if (!did_show) {
-			$('li.no-cats', catMenuList).show();
-		}
-
-		// We have to run rules to check custom fields now
-		var ticketInfo = {
-			department_id: depId,
-			category_id: catId,
-			product_id: this.getPropertyManager('product_id').getValue(),
-			priority_id: this.getPropertyManager('priority_id').getValue(),
-			workflow_id: this.getPropertyManager('workflow_id').getValue()
-		};
-
-		var display_elements = [];
-		if (window.DESKPRO_TICKET_DISPLAY && window.DESKPRO_TICKET_DISPLAY[depId]) {
-			display_elements = window.DESKPRO_TICKET_DISPLAY[depId];
-		}
-
-		var show = [];
-		Array.each(display_elements, function(info) {
-
-			var pass = info.check(ticketInfo);
-			var state = info.initial_state;
-			if (pass) {
-				if (state == 'hidden') state = 'visible';
-				else state = 'hidden';
-			}
-
-			if (state == 'visible') {
-				show.push('.' + info.element_type + '-' + info.element_id);
-			}
-		});
-
-		var displayElements = $('.display-element', this.contentWrapper).hide();
-		displayElements.filter(show.join(', ')).show();
 	},
 
 	//#################################################################
@@ -661,7 +595,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// If we have a signature, then set it
 		if (this.meta.agentSignature) {
-			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n" + this.meta.agentSignature);
+			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n", this.meta.agentSignature);
 		}
 	}
 });

@@ -60,37 +60,12 @@ class MiscController extends AbstractController
 		$js[] = 'window.DESKPRO_DATA_REGISTRY.systemFilters = ' . json_encode($system_filters) . ';';
 
 		// Ticket display elements
-		$js[] = "window.DESKPRO_TICKET_DISPLAY = {};";
-		$display_elements = App::getOrm()->createQuery("
-			SELECT d
-			FROM DeskPRO:DepartmentTicketDisplay d
-			ORDER BY d.display_order ASC
-		")->execute();
-		$done_deps = array();
-		foreach ($display_elements as $d) {
-			if (!in_array($d['department_id'], $done_deps)) {
-				$done_deps[] = $d['department_id'];
-				$js[] = "window.DESKPRO_TICKET_DISPLAY[{$d['department_id']}] = [];";
-			}
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('agent');
+		$ticket_display->addPagesFromDb();
+		$js[] = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
 
-			$token = '%%%replacetoken' . mt_rand(1000,9999) . '%%%';
-
-			$line = "window.DESKPRO_TICKET_DISPLAY[{$d['department_id']}].push(" . json_encode(array(
-				'element_type' => $d['element_type'],
-				'element_id' => $d['element_id'],
-				'initial_state' => $d['initial_state'],
-				'check' => $token
-			)) . ");";
-
-			// Cheap and simple way to insert a function literal while still using json_encode for the other values
-			$line = str_replace('"'.$token.'"', $d->compileToJavascript(), $line);
-			$js[] = $line;
-		}
-
-		// Custom field rules
-		$js[] = "window.DESKPRO_CUSTOM_TICKET_DEF_RULES = [];";
 		$js = implode("\n", $js);
-
+		
 		$response = $this->response;
 		$response->headers->set('Content-Type', 'application/javascript');
 		$response->setContent($js);

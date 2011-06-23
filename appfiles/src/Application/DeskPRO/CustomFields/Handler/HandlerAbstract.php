@@ -85,7 +85,8 @@ abstract class HandlerAbstract
 	public function getRenderTemplateName($context)
 	{
 		$templating = $this->getTemplateEngine();
-		if ($this->field_def['has_render_template']) {
+		$tpl = null;
+		if (false and $this->field_def['has_display_template']) {
 			$tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':rendered-field_' . $this->field_def['id'];
 			if (!$templating->exists($tpl)) {
 				$tpl = null;

@@ -122,22 +122,29 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 	{
 		$part = array();
 
+		$function_tokens = array();
+		
 		foreach ($this->page_displays as $ticket_page) {
 			/** @var $ticket_page \Application\DeskPRO\Entity\TicketPageDisplay */
-			$page_part = $this->compileTicketPage($ticket_page);
+			$page_part = $this->compileTicketPage($ticket_page, $function_tokens);
 
 			if ($page_part) {
-				$part[] = $page_part;
+				$part = array_merge($part,$page_part);
 			}
 		}
 
-		return implode(",\n", $part);
+		$parts = json_encode($part);
+
+		foreach ($function_tokens as $token => $function) {
+			$parts = str_replace("\"$token\"", $function, $parts);
+		}
+
+		return $parts;
 	}
 
-	public function compileTicketPage($ticket_page)
+	public function compileTicketPage($ticket_page, array &$function_tokens)
 	{
 		$parts = array();
-		$function_tokens = array();
 
 		foreach ($ticket_page['data'] as $item) {
 			if ($item['item_type'] == 'group') {
@@ -158,12 +165,6 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 
 		if (!$parts) {
 			return false;
-		}
-
-		$parts = json_encode($parts);
-
-		foreach ($function_tokens as $token => $function) {
-			$parts = str_replace("\"$token\"", $function, $parts);
 		}
 		
 		return $parts;
@@ -201,6 +202,7 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 
 			$part['check'] = $token;
 		}
+		$part['check'] = false;
 
 		return $part;
 	}
@@ -227,7 +229,7 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 		}
 
 		$function[] = "if (all && any) return true;";
-		$function[] = "else (all && any) return false;";
+		$function[] = "else return false;";
 
 		$function[] = '}';
 

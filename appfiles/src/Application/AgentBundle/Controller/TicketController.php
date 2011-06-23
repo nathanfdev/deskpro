@@ -42,6 +42,15 @@ class TicketController extends AbstractController
 		# Custom fields
 		#------------------------------
 
+		// Custom fields
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
+
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
+
 		if (($ticket_custom_fields_block = App::getEntityRepository('DeskPRO:Cache')->load("ticket_custom_fields.{$ticket['id']}.agent_block")) === false) {
 			// Custom fields
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -52,10 +61,6 @@ class TicketController extends AbstractController
 			// So dont remove it even though it looks like it's not used! :-)
 			$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
 			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
-
-			// Sort the fields into their positions on this page
-			$ticket_page = new TicketPageZoneCollection('agent');
-			$ticket_page->addPagesFromDb();
 
 			$ticket_custom_fields_block = $this->renderView('AgentBundle:Ticket:part-custom-fields.html.twig', array(
 				'ticket' => $ticket,
@@ -168,9 +173,13 @@ class TicketController extends AbstractController
 		//	$show_related_content = true;
 		//}
 
+		$custom_fields = App::getApi('custom_fields.tickets')->getFields();
+
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
+
+			'custom_fields' => $custom_fields,
 
 			'show_related_content' => $show_related_content,
 
