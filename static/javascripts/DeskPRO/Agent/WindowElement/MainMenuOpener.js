@@ -87,7 +87,7 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
 
 		// If its a link with a href, then
 		// dont fuss around with anything here
-		if ($(event.target).is('a[href]')) {
+		if (event && $(event.target).is('a[href]')) {
 			return;
 		}
 
