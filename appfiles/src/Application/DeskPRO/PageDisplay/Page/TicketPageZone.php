@@ -144,6 +144,10 @@ class TicketPageZone extends BasicPage implements PersonContextInterface
 
 	public function compileTicketPage($ticket_page, array &$function_tokens)
 	{
+		if (!$ticket_page['data']) {
+			return false;
+		}
+		
 		$parts = array();
 
 		foreach ($ticket_page['data'] as $item) {
