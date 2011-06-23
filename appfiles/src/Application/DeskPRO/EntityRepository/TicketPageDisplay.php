@@ -34,8 +34,8 @@ class TicketPageDisplay extends EntityRepository
 			return $this->getEntityManager()->createQuery("
 				SELECT d
 				FROM DeskPRO:TicketPageDisplay d INDEX BY d.section
-				WHERE d.zone = :zone AND d.department = :department
-			")->setParameters(array('zone' => $zone, 'department' => $department_context))->execute();
+				WHERE d.zone = :zone
+			")->setParameters(array('zone' => $zone))->execute();
 		}
 	}
 

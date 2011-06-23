@@ -244,7 +244,7 @@ pageMeta.fieldHandlers = [
 {# Main Tabs #}
 <div class="full-container-tabbed messages-container field-section-bottomtabs">
 	{# Tab Triggers #}
-	<div class="full-container-tabbed-tabs field-section-bottomtabs-tabs">
+	<div class="full-container-tabbed-tabs field-section-bodytabs-tabs">
 		<ul>
 			<li class="tab-trigger ticket-messages on" data-tab-for=".tab-content.ticket-messages"><a>Messages <em class="ticket-messages-count">({{counts.messages}})</em></a></li>
 			<li class="tab-trigger ticket-notes" data-tab-for=".tab-content.ticket-notes"><a>Notes <em class="ticket-notes-count">({{counts.notes}})</em></a></li>
@@ -261,7 +261,7 @@ pageMeta.fieldHandlers = [
 	{# /Tab Triggers #}
 
 	{# Tab Contents #}
-	<div class="full-container-tabbed-contents-wrap field-section-bottomtabs-tab-contents">
+	<div class="full-container-tabbed-contents-wrap field-section-bodytab-tab-contents">
 		{# Tab: Messages #}
 		<div class="full-container-tabbed-contents tab-content ticket-messages" data-tab-trigger=".tab-trigger.ticket-messages">
 			<div class="full-tab-content">
@@ -358,7 +358,7 @@ pageMeta.fieldHandlers = [
 </script>
 
 {# Wrapper around fields in bottom tabs #}
-<script type="text/x-deskpro-plain" class="fields-wrap-bottomtabs">
+<script type="text/x-deskpro-plain" class="fields-wrap-bodytabtabs">
 	<div class="row-table-cotent display-item">
 		<div class="col-table-content title-col display-title">
 		</div>
@@ -368,12 +368,12 @@ pageMeta.fieldHandlers = [
 </script>
 
 {# New tab code for bottom tabs (for addition to tabstrip) #}
-<script type="text/x-deskpro-plain" class="fields-new-bottomtab-tab">
+<script type="text/x-deskpro-plain" class="fields-new-bodytabtab-tab">
 	<li class="tab-trigger fieldtab_${id} field-tab on" data-tab-for=".fieldtab_content_${id}" data-field-tab-id="${id}">
 		${title}
 	</li>
 </script>
-<script type="text/x-deskpro-plain" class="fields-new-bottomtab-content">
+<script type="text/x-deskpro-plain" class="fields-new-bodytabtab-content">
 	<div class="full-container-tabbed-contents tab-content field-tab-content fieldtab_content_${id}" data-tab-trigger=".fieldtab_${id}" data-field-tab-id="${id}">
 	</div>
 </script>

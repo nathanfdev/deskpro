@@ -38,7 +38,7 @@ class TicketPageZoneCollection implements PersonContextInterface
 	 * department_pages[dep_id] = array(ticketpagezone)
 	 * @var \Application\DeskPRO\PageDisplay\Page\TicketPageZone
 	 */
-	protected $department_pages;
+	protected $department_pages = array();
 
 	/**
 	 * @param string $zone
@@ -140,26 +140,15 @@ class TicketPageZoneCollection implements PersonContextInterface
 	public function compileJs()
 	{
 		$part = array();
-		$part[] = "(function() { var tmp = {};\n";
+		$part[] = "{";
 
-		foreach ($this->department_pages as $d) {
-			if (!in_array($d['department_id'], $done_deps)) {
-				$done_deps[] = $d['department_id'];
-				$part[] = "tmp[{$d['department_id']}] = [];";
-			}
-
-			$token = '%%%replacetoken' . mt_rand(1000,9999) . '%%%';
-
-			$line = "tmp[{$d['department_id']}].push(" . json_encode(array(
-				'element_type' => $d['element_type'],
-				'element_id' => $d['element_id'],
-				'initial_state' => $d['initial_state'],
-				'check' => $token
-			)) . ");";
-
-			// Cheap and simple way to insert a function literal while still using json_encode for the other values
-			$line = str_replace('"'.$token.'"', $d->compileToJavascript(), $line);
-			$part[] = $line;
+		foreach ($this->department_pages as $dep_id => $page_zone) {
+			$part[] = "$dep_id: " . $page_zone->compileJs() . ",";
 		}
+
+		$part[] = "0: []";
+		$part[] = "}";
+
+		return implode("\n", $part);
 	}
 }

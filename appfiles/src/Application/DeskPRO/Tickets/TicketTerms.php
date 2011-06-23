@@ -296,7 +296,10 @@ class TicketTerms
 			$test_bottom = 'return false;';
 		}
 
-		foreach ($this->terms as $info) {
+		$rb = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
+		$terms = $rb->readForm($this->terms);
+
+		foreach ($terms as $info) {
 
 			$term = $info['type'];
 
@@ -305,48 +308,45 @@ class TicketTerms
 			$op = $info['op'];
 			$choice = $info['options'];
 
+			if (count($choice) == 1) {
+				$choice = array_pop($choice);
+			}
+
 			switch ($term) {
 				case TicketSearch::TERM_DEPARTMENT:
 					$ids = array();
-					foreach ($cond_ids as $cond) {
+					foreach ((array)$choice as $cond) {
 						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:Department')->getIdsInTree($cond, true));
 					}
 					$ids = Arrays::castToType($ids, 'int');
 					if (count($ids) == 1) $ids = $ids[0];
 
-					$js[] = "if (typeof ticket.department_id === 'function') ticket.department_id = ticket.department_id();";
-					$js[] = $this->_compileJsChoiceTermCondition("parseInt(ticket.department_id)", $op, $ids) . " { $test_pass } else { $test_fail } ";
+					$js[] = $this->_compileJsChoiceTermCondition("ticket.getDepartmentId()", $op, $ids) . " { $test_pass } else { $test_fail } ";
 					break;
 				case TicketSearch::TERM_CATEGORY:
 					$ids = array();
-					foreach ($cond_ids as $cond) {
+					foreach ((array)$choice as $cond) {
 						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:TicketCategory')->getIdsInTree($cond, true));
 					}
 					$ids = Arrays::castToType($ids, 'int');
 					if (count($ids) == 1) $ids = $ids[0];
 
-					$js[] = "if (typeof ticket.category_id === 'function') ticket.category_id = ticket.category_id();";
-					$js[] = $this->_compileJsChoiceTermCondition("parseInt(ticket.category_id)", $op, $ids) . " { $test_pass } else { $test_fail } ";
+					$js[] = $this->_compileJsChoiceTermCondition("ticket.getCategoryId()", $op, $ids) . " { $test_pass } else { $test_fail } ";
 					break;
 				case TicketSearch::TERM_PRODUCT:
-					$js[] = "if (typeof ticket.product_id === 'function') ticket.product_id = ticket.product_id();";
-					$js[] = $this->_compileJsChoiceTermCondition("parseInt(ticket.product_id)", $op, $choice) . " { $test_pass } else { $test_fail } ";
+					$js[] = $this->_compileJsChoiceTermCondition("ticket.getProductId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
 					break;
 				case TicketSearch::TERM_PRIORITY:
-					$js[] = "if (typeof ticket.priority_id === 'function') ticket.priority_id = ticket.priority_id();";
-					$js[] = $this->_compileJsChoiceTermCondition("parseInt(ticket.priority_id)", $op, $choice) . " { $test_pass } else { $test_fail } ";
+					$js[] = $this->_compileJsChoiceTermCondition("ticket.getPriorityId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
 					break;
 				case TicketSearch::TERM_ORGANIZATION:
-					$js[] = "if (typeof ticket.organization_id === 'function') ticket.organization_id = ticket.organization_id();";
-					$js[] = $this->_compileJsChoiceTermCondition("parseInt(ticket.organization_id)", $op, $choice) . " { $test_pass } else { $test_fail } ";
+					$js[] = $this->_compileJsChoiceTermCondition("ticket.getOrganizationId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
 					break;
 				case TicketSearch::TERM_LANGUAGE:
-					$js[] = "if (typeof ticket.language_id === 'function') ticket.language_id = ticket.language_id();";
-					$js[] = $this->_compileJsChoiceTermCondition("parseInt(ticket.language_id)", $op, $choice) . " { $test_pass } else { $test_fail } ";
+					$js[] = $this->_compileJsChoiceTermCondition("ticket.getLanguageId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
 					break;
 				case TicketSearch::TERM_AGENT:
-					$js[] = "if (typeof ticket.agent_id === 'function') ticket.agent_id = ticket.agent_id();";
-					$js[] = $this->_compileJsChoiceTermCondition("parseInt(ticket.agent_id)", $op, $choice) . " { $test_pass } else { $test_fail } ";
+					$js[] = $this->_compileJsChoiceTermCondition("ticket.getAgentId()", $op, $choice) . " { $test_pass } else { $test_fail } ";
 					break;
 			}
 		}
@@ -360,7 +360,7 @@ class TicketTerms
 
 	protected function _compileJsChoiceTermCondition($value, $op, $choice)
 	{
-		if (count($choice) == 1) {
+		if (is_array($choice) AND count($choice) == 1) {
 			$choice = array_pop($choice);
 		}
 
