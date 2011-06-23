@@ -95,6 +95,10 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.page = ticketPage;
 		this.page.changeManager.addEvent('updateResult', this.handleChangeUpdateResult.bind(this));
+
+		this._initHolders();
+
+		this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
 	},
 
 	handleChangeUpdateResult: function(data) {
@@ -115,7 +119,27 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.wrapper.append(this.holders);
 
+		this._initHolders();
+
 		return this.holders;
+	},
+
+
+	/**
+	 * Init events etc on holders. These are generally the click-to-edit ones.
+	 */
+	_initHolders: function() {
+		//------------------------------
+		// Property menu triggers
+		//------------------------------
+		
+		var options = ['category_id', 'product_id', 'priority_id', 'workflow_id'];
+		for (var i = 0; i < options.length; i++) {
+			var prop = options[i];
+			var btnEl = $('> .' + prop + ' .menu-trigger', this.holders);
+
+			this.page.initTicketOptionsMenuForProp(prop, btnEl);
+		}
 	},
 
 
@@ -169,8 +193,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 						return;
 					}
 
-					console.log(itemEls);
-
 					var displayWrap = $(this.sectionPropertiesWrapTpl);
 
 					itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
@@ -201,24 +223,17 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 						// even though we can know through the structure,
 						// its easier with this value set
 						tab_item.section = 'bodytabs';
-						console.log('here1');
 						var itemEls = this.getItemHolderEls(tab_item);
-						console.log('here2');
 						if (!itemEls) {
 							return;
 						}
 						var displayWrap = $(this.sectionBodyTabsWrapTpl);
-						console.log('here3');
 
 						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
 						itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
 
-						console.log('here4');
-
 						displayWrap.appendTo(newTabContent);
 						tab_item.sectionEl = newTabContent;
-
-						console.log('here5');
 
 						itemEls.itemHolder.remove();
 					}, this);
@@ -468,7 +483,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		if (item.item_id) {
 			itemId += '_' + item.item_id;
 		}
-		console.log('item_id: %o',itemId);
 
 		return itemId;
 	}

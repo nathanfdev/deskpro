@@ -60,7 +60,10 @@ class Tickets
 
 		$options['ticket_workflows'] = App::getOrm()->getRepository('DeskPRO:TicketWorkflow')->getWorkflowNames();
 
-		$options['products']    = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
+		$options['products']            = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
+		//$options['products_full']       = App::getOrm()->getRepository('DeskPRO:Product')->getFullProductNames(null, false);
+		$options['products_hierarchy']  = App::getOrm()->getRepository('DeskPRO:Product')->getProductsInHierarchy();
+
 		$options['priorities']  = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
 		$options['ticket_priorities']  = $options['priorities'];
 

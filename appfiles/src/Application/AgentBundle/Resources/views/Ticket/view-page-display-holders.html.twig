@@ -1,6 +1,6 @@
 <div class="page-display-holders" style="display:none">
 	{# Standard fields #}
-	<div class="ticket_category standard-field item" data-item-type="ticket_category">
+	<div class="ticket_category category_id standard-field item" data-item-type="ticket_category">
 		<div class="title">
 			Category
 		</div>
@@ -8,7 +8,7 @@
 			<span class="prop-val menu-trigger category_id {% if not ticket.category %}no-value{% endif %}">{{ticket.category.full_title|default('None')}}</span>
 		</div>
 	</div>
-	<div class="ticket_product standard-field item" data-item-type="ticket_product">
+	<div class="ticket_product product_id standard-field item" data-item-type="ticket_product">
 		<div class="title">
 			Product
 		</div>
@@ -16,7 +16,7 @@
 			<span class="prop-val menu-trigger product_id {% if not ticket.category %}no-value{% endif %}">{{ticket.product.title|default('None')}}</span>
 		</div>
 	</div>
-	<div class="ticket_priority standard-field item" data-item-type="ticket_priority">
+	<div class="ticket_priority priority_id standard-field item" data-item-type="ticket_priority">
 		<div class="title">
 			Priority
 		</div>
@@ -24,7 +24,7 @@
 			<span class="prop-val menu-trigger priority_id {% if not ticket.category %}no-value{% endif %}">{{ticket.priority.title|default('None')}}</span>
 		</div>
 	</div>
-	<div class="ticket_workflow standard-field item" data-item-type="ticket_workflow">
+	<div class="ticket_workflow workflow_id standard-field item" data-item-type="ticket_workflow">
 		<div class="title">
 			Workflow
 		</div>

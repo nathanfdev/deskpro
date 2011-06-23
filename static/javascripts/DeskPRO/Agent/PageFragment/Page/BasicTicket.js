@@ -30,9 +30,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
-		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
-			wrapper: el
-		});
 
 		window.TICKET = this;
 
@@ -46,8 +43,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this._handleResize()
 		}).bind(this));
 
-		this.ticketDisplay.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
-
 		var self = this;
 		$('div.ticket-messages > ul > li').each(function() {
 			self._initMessage($(this));
@@ -55,6 +50,10 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// Custom field widgets
 		$('input.date-field', this.contentWrapper).datepicker({ 'dateFormat': 'M d, yy'});
+
+		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
+			wrapper: el
+		});
 
 		this.initFeaturesOnCollection(this.wrapper, {
 			routes: [],
@@ -201,12 +200,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var options = ['department_id', 'category_id', 'product_id', 'priority_id', 'workflow_id', 'status', 'agent_id', 'agent_team_id'];
 		var self = this;
 
+		// We're setting up the menus here right now as they're always on,
+		// then the TicketDisplay inits triggers when it sets the holder els
 		for (var i = 0; i < options.length; i++) {
 			var opt = options[i];
 			var menuEl = $('.menu.'+opt+':first', this.wrapper);
-			var btnEl = $('.menu-trigger.' + opt + ':first', this.wrapper);
 			var menu = new DeskPRO.UI.Menu({
-				triggerElement: btnEl,
 				menuElement: menuEl,
 				onItemClicked: function(info) {
 					self._handleTicketOptionClick(info);
@@ -216,6 +215,23 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this.ticketOptionsMenuEls[opt] = menuEl;
 			this.destroyMenus.push(menu);
 		}
+	},
+
+	/**
+	 * @TicketDisplay
+	 * 
+	 * @param property
+	 * @param trigger
+	 */
+	initTicketOptionsMenuForProp: function(property, trigger) {
+		console.log(trigger);
+		var menu = this.ticketOptionsMenus[property];
+		if (!menu) {
+			console.log('No menu for %s', property);
+			return;
+		}
+
+		menu.setupTriggerElement(trigger);
 	},
 
 	_handleTicketOptionClick: function(info) {

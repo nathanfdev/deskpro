@@ -28,13 +28,9 @@
 
 {% include 'AgentBundle:Common:menu-department.html.twig' with {'departments': ticket_options.departments_hierarchy} %}
 {% include 'AgentBundle:Common:menu-ticket-category.html.twig' with {'categories': ticket_options.ticket_categories_hierarchy} %}
+{% include 'AgentBundle:Common:menu-ticket-product.html.twig' with {'products': ticket_options.products_hierarchy} %}
 {% include 'AgentBundle:Common:menu-ticket-workflow.html.twig' with {'workflows': ticket_options.ticket_workflows } %}
 
-<ul class="menu product_id" data-option-name="product_id" style="display:none">
-	{% for id,title in ticket_options.products %}
-		<li data-option-id="{{id}}">{{title}}</li>
-	{% endfor %}
-</ul>
 <ul class="menu priority_id" data-option-name="priority_id" style="display:none">
 	{% for id,title in ticket_options.priorities %}
 		<li data-option-id="{{id}}">{{title}}</li>
