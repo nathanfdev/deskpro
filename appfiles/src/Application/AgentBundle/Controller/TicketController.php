@@ -19,6 +19,7 @@ use Orb\Util\Util;
 
 use Application\DeskPRO\Search\Adapter\AbstractAdapter as AbstractSearchAdapter;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
+use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 
 /**
  * Handles ticket searches
@@ -574,6 +575,16 @@ class TicketController extends AbstractController
 		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 		$result = $ticket_edit->applyActions($this->in->getCleanValueArray('actions', 'raw', 'raw'));
 
+		// If department is changed,
+		// then we re-output the holder template
+		$is_dep_changed = false;
+		$event_listener = new PropertyChangedCallback(function ($sender, $propertyName, $oldValue, $newValue) use (&$is_dep_changed) {
+			if ($propertyName == 'department') {
+				$is_dep_changed = true;
+			}
+		});
+		$ticket->addPropertyChangedListener($event_listener);
+
 		App::getOrm()->beginTransaction();
 
 		$macro_id = $this->in->getUint('macro_id');
@@ -604,10 +615,18 @@ class TicketController extends AbstractController
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 
-		$data = array();
+		$data = array('data' => array());
 		if (isset($result['new_reply'])) {
-			$data['new_reply'] = $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
+			$data['data']['new_reply'] = $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array(
 				'message' => $result['new_reply']
+			));
+		}
+
+		if ($is_dep_changed OR $this->in->checkIsset('actions.department_id')) {
+			$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+			$data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
+				'ticket' => $ticket,
+				'ticket_options' => $ticket_options
 			));
 		}
 

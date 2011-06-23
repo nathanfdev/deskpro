@@ -677,11 +677,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setDepartment(Department $dep)
 	{
+		$old_dep = $this->department;
 		$this->department = $dep;
-
-		if (!$this->verifyDepartmentCategory()) {
-			$this->category = null;
-		}
+		$this->_onPropertyChanged('department', $old_dep, $dep);
 	}
 
 	public function verifyDepartmentCategory()

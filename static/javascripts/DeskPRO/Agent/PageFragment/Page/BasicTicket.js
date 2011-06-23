@@ -215,6 +215,15 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this.ticketOptionsMenuEls[opt] = menuEl;
 			this.destroyMenus.push(menu);
 		}
+
+		// And these arent handled by TickerDisplay, so set up the triggers now
+		var btnOptions = ['department_id', 'status', 'agent_id', 'agent_team_id'];
+		for (var i = 0; i < options.length; i++) {
+			var opt = options[i];
+			var btnEl = $('.menu-trigger.' + opt + ':first', this.wrapper);
+
+			this.initTicketOptionsMenuForProp(opt, btnEl);
+		}
 	},
 
 	/**

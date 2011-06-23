@@ -168,6 +168,10 @@ class Reader
 	{
 		$source = $this->getSource($source_name);
 
+		if ($this->array_name_sep !== null AND is_string($name) AND Strings::isIn($this->array_name_sep, $name)) {
+			$name = explode($this->array_name_sep, $name);
+		}
+
 		return $source->checkIsset($name);
 	}
 
