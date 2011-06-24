@@ -100,7 +100,7 @@ class TemplatingExtension extends \Twig_Extension
 		return App::getSetting('core.deskpro_assets_full_url') . ltrim($location, '/');
 	}
 
-	public function htmlJsPackRaw($name, $async = false)
+	public function htmlJsPackRaw($name)
 	{
 		$pack = App::getConfig($name, null, 'js-sources');
 		if (!$pack) {
@@ -115,18 +115,18 @@ class TemplatingExtension extends \Twig_Extension
 		$html = array();
 		foreach ($pack['files'] as $file) {
 			$url = $this->container->get('templating.helper.assets')->getUrl($file);
-			$html[] = '<script src="' . $url . '"' . ($async ? ' async="async"' : '') . '></script>';
+			$html[] = '<script src="' . $url . '"></script>';
 		}
 
 		return implode("\n", $html);
 	}
 
-	public function htmlJsPack($name, $async = false, $force_raw = false)
+	public function htmlJsPack($name, $force_raw = false)
 	{
 		$raw_packs = App::getConfig('debug.raw_js_packs', array());
 
 		if ($force_raw OR in_array($name, $raw_packs)) {
-			return $this->htmlJsPackRaw($name, $async);
+			return $this->htmlJsPackRaw($name);
 		}
 
 		$pack = App::getConfig($name, null, 'js-sources');
@@ -140,11 +140,7 @@ class TemplatingExtension extends \Twig_Extension
 		}
 
 		$file =	$this->container->get('templating.helper.assets')->getUrl('build/' . $pack['out']);
-		$html = '<script src="'.$file.'"';
-		if ($async) {
-			$html .= ' async="async"';
-		}
-		$html .= '></script>';
+		$html = '<script src="'.$file.'"></script>';
 		
 		return $html;
 	}

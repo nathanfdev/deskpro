@@ -24,7 +24,7 @@ var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}'
     Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
 </script>
 
-{{ html_js_pack('agent.vendors', false) }}
+{{ html_js_pack('agent.vendors') }}
 
 <script>
 // At this point we should have css in the header so it display properly,
@@ -32,12 +32,12 @@ var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}'
 $('#loading_css_header').remove();
 </script>
 
-{{ html_js_pack('agent.common', true) }}
-{{ html_js_pack('agent.deskpro-ui', true) }}
-{{ html_js_pack('agent.misc', true) }}
-{{ html_js_pack('agent.agent-ui', true) }}
-{{ html_js_pack('agent.window-sections', true) }}
-{{ html_js_pack('agent.pages', true) }}
-{{ html_js_pack('agent.pages-lists', true) }}
+{{ html_js_pack('agent.common') }}
+{{ html_js_pack('agent.deskpro-ui') }}
+{{ html_js_pack('agent.misc') }}
+{{ html_js_pack('agent.agent-ui') }}
+{{ html_js_pack('agent.window-sections') }}
+{{ html_js_pack('agent.pages') }}
+{{ html_js_pack('agent.pages-lists') }}
 
 <script async="async" src="{{ path('agent_interface_data_js') }}"></script>
