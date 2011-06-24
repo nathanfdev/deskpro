@@ -10,7 +10,7 @@ DeskPRO.Agent.Widgetable = new Class({
 
 			if (!info || typeOf(info) != 'object') return;
 
-			var widget_class = Orb.getNamespacedObject(info.class);
+			var widget_class = Orb.getNamespacedObject(info.classname);
 			var options = Object.merge(commonOptions, { __wrapperSelector: info.wrapperSelector }, info.options||{});
 
 			var widget = new widget_class(options);

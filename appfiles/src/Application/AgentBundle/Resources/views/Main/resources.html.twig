@@ -19,6 +19,10 @@
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/deskpro-layout.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/deskpro-interface.css') }}" type="text/css" media="screen" />
 
+<script type="text/javascript">
+var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
+    Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
+</script>
 <script src="{{ asset('build/agent-vendors.js') }}"></script>
 <script>
 // At this point we should have css in the header so it display properly,
@@ -26,125 +30,12 @@
 $('#loading_css_header').remove();
 </script>
 
-<script src="{{ asset('javascripts/Orb/modernizr-ext.js') }}"></script>
-<script src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
-<script src="{{ asset('javascripts/Orb/Class.js') }}"></script>
-<script src="{{ asset('javascripts/Orb/Util/Options.js') }}"></script>
-<script src="{{ asset('javascripts/Orb/Util/Events.js') }}"></script>
-<script src="{{ asset('javascripts/Orb/Compat.js') }}"></script>
+<script async="async" src="{{ asset('build/agent-common.js') }}"></script>
+<script async="async" src="{{ asset('build/agent-deskpro-ui.js') }}"></script>
+<script async="async" src="{{ asset('build/agent-misc.js') }}"></script>
+<script async="async" src="{{ asset('build/agent-ui.js') }}"></script>
+<script async="async" src="{{ asset('build/agent-window-sections.js') }}"></script>
+<script async="async" src="{{ asset('build/agent-pages.js') }}"></script>
+<script async="async" src="{{ asset('build/agent-pages-lists.js') }}"></script>
 
-<script src="{{ asset('javascripts/DeskPRO/UI/Overlay.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/UI/Menu.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/UI/SimpleTabs.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Form/InlineEdit.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Form/RuleBuilder.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/FaviconBadge.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/BasicWindow.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/MessageBroker.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/AjaxPoller/Poller.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/AjaxPoller/MessagePoller.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/MessageChanneler/AbstractChanneler.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/MessageChanneler/AjaxChanneler.js') }}"></script>
-
-<script src="{{ path('agent_interface_data_js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/Notifier/Notifier.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Notifier/Types/Abstract.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Notifier/Types/Ticket.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/MediaBrowser.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Widgetable.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Widget/Widget.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Widget/CampfireAnnounce.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/InterfaceEffects.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenuSlider.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxType.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxResults.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenu/Notifications.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/Section/Tickets.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/Section/People.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/Section/Kb.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/Section/Ideas.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/Window.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Layout/DeskproWindow.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Layout/WindowLayout.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Layout/FooterLayout.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Layout/FooterActionbarLayout.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TabManager.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TabStrip.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/ScrollerHandler.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Basic.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Loading.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageHelper/NewUserOverlay.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageHelper/ListColDrag.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageHelper/ListColResize.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageHelper/TicketDisplay.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicOrganizationResults.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicPeopleResults.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/OrganizationCustomFilter.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleCustomFilter.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFlagged.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketDeletedList.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilter.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilterForm.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/RecycleBin.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/KbGlossary.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingArticles.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/KbList.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentChatHistory.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaFilter.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/BasicTicket.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/Person.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/KbArticle.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/KbNewArticle.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/KbViewArticle.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/KbEditArticle.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/AgentChatTranscript.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/UserChat.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/PageFragment/Page/IdeaView.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/Ticket/ChangeManager.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Ticket/Property/StandardOption.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Ticket/Property/Status.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Ticket/Property/NewReply.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Ticket/Property/TicketField.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Ticket/Property/Flag.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/Ticket/Property/Labels.js') }}"></script>
-
-<script src="{{ asset('javascripts/DeskPRO/Agent/TicketList/ChangeManager.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TicketList/Property/Abstract.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TicketList/Property/StandardOption.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TicketList/Property/NewReply.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TicketList/Property/Flag.js') }}"></script>
-<script src="{{ asset('javascripts/DeskPRO/Agent/TicketList/Property/Labels.js') }}"></script>
+<script async="async" src="{{ path('agent_interface_data_js') }}"></script>
