@@ -43,6 +43,10 @@ agent_dismiss_help_message:
   pattern: /misc/dismiss-help-message/{id}
   defaults: { _controller: AgentBundle:Misc:dismissHelpMessage }
 
+agent_set_agent_status:
+  pattern: /misc/set-agent-status/{status}
+  defaults: { _controller: AgentBundle:Misc:setAgentStatus }
+
 agent_recyclebin:
   pattern: /recycle-bin
   defaults: { _controller: AgentBundle:RecycleBin:list }

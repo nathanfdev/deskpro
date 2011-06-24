@@ -590,6 +590,32 @@ background-color: #edeff3;
     padding-left: 20px;
 }
 
+#header .actions ul.act-list li.agent-status a {
+    background: url(../../images/agent-status-on.png) 0 50% no-repeat;
+    width: 18px;
+    height: 18px;
+    overflow: hidden;
+    text-indent: -1000px;
+}
+
+#agent_status_away_overlay {
+    position: absolute;
+    top: 36px;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(59,59,59,0.6);
+}
+
+#header .actions ul.act-list li.agent-status.off a {
+    background-image: url(../../images/agent-status-off.png);
+
+    text-indent: inherit;
+    width: auto;
+    padding-left: 18px;
+    color: #fff;
+}
+
 #header .actions ul.act-list li.network a {
 	background-position: left -287px;
 }

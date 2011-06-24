@@ -181,4 +181,27 @@ class MiscController extends AbstractController
 
 		$this->createJsonResponse(array('success' => true));
 	}
+
+	/**
+	 * Set away status
+	 * @param  $status
+	 */
+	public function setAgentStatusAction($status)
+	{
+		if (!$status OR $status == 'away') {
+			$status = 'away';
+		} else {
+			$status = 'available';
+		}
+
+		$sessionEnt = $this->session->getEntity();
+		$sessionEnt['active_status'] = $status;
+
+		App::getOrm()->transactional(function($em) use ($sessionEnt) {
+			$em->persist($sessionEnt);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array('success' =>true, 'status' => $status));
+	}
 }

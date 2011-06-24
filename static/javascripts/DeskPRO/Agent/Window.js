@@ -1020,6 +1020,42 @@ DeskPRO.Agent.Window = new Orb.Class({
 				self.faviconBadge.updateBadge(count);
 			});
 		}
+
+		// Online/offline
+		$('#agent_status').click(function(ev) {
+			ev.preventDefault();
+			self.toggleAgentStatus();
+		});
+	},
+
+	toggleAgentStatus: function(force_back) {
+		var statusEl = $('#agent_status');
+
+		force_back = force_back || false;
+
+		if (force_back || statusEl.is('.off')) {
+			$('#agent_status_away_overlay').remove();
+			statusEl.removeClass('off');
+
+			$.ajax({
+				url: BASE_URL + 'agent/misc/set-agent-status/available',
+				type: 'GET'
+			});
+
+		} else {
+			var overlayEl = $('<div id="agent_status_away_overlay" />').appendTo('body');
+			overlayEl.click(function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+			});
+
+			statusEl.addClass('off');
+
+			$.ajax({
+				url: BASE_URL + 'agent/misc/set-agent-status/away',
+				type: 'GET'
+			});
+		}
 	},
 
 	_initSections: function() {
