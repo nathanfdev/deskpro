@@ -1,0 +1,204 @@
+<?php
+
+$CONFIG = array();
+$CONFIG['agent'] = array();
+
+$CONFIG['agent']['window-sections'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-window-sections.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Tickets.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/People.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Kb.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Ideas.js',
+	)
+);
+
+$CONFIG['agent']['pages-list'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-pages-lists.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/Basic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicTicketResults.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicOrganizationResults.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/BasicPeopleResults.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/OrganizationCustomFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PeopleCustomFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketFlagged.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketDeletedList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TicketCustomFilterForm.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/TwitterStatus.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/RecycleBin.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbGlossary.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbPendingArticles.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbValidatingArticles.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/KbList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentChatHistory.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaFilter.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
+	)
+);
+
+$CONFIG['agent']['pages'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-pages.js',
+	'files' => array(
+		'javascripts/DeskPRO/Agent/PageHelper/TicketActionsBar.js',
+		'javascripts/DeskPRO/Agent/PageHelper/NewUserOverlay.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ListColDrag.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ListColResize.js',
+		'javascripts/DeskPRO/Agent/PageHelper/TicketDisplay.js',
+		
+		'javascripts/DeskPRO/Agent/PageFragment/Page/BasicTicket.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/TwitterUser.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/KbNewArticle.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/KbViewArticle.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/KbEditArticle.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/AgentChatTranscript.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/UserChat.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/IdeaView.js',
+	)
+);
+
+$CONFIG['agent']['common'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-common.js',
+	'files' => array(
+		'javascripts/Orb/modernizr-ext.js',
+		'javascripts/Orb/Orb.js',
+		'javascripts/Orb/Class.js',
+		'javascripts/Orb/Util/Options.js',
+		'javascripts/Orb/Util/Events.js',
+		'javascripts/Orb/Compat.js',
+		'javascripts/DeskPRO/MessageBroker.js',
+		'javascripts/DeskPRO/AjaxPoller/Poller.js',
+		'javascripts/DeskPRO/AjaxPoller/MessagePoller.js',
+		'javascripts/DeskPRO/MessageChanneler/AbstractChanneler.js',
+		'javascripts/DeskPRO/MessageChanneler/AjaxChanneler.js',
+	)
+);
+
+$CONFIG['agent']['agent-ui'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-ui.js',
+	'files' => array(
+		'javascripts/DeskPRO/BasicWindow.js',
+		'javascripts/DeskPRO/Agent/Window.js',
+		'javascripts/DeskPRO/Agent/Layout/DeskproWindow.js',
+		'javascripts/DeskPRO/Agent/Layout/WindowLayout.js',
+		'javascripts/DeskPRO/Agent/Layout/FooterLayout.js',
+		'javascripts/DeskPRO/Agent/Layout/FooterActionbarLayout.js',
+		'javascripts/DeskPRO/Agent/TabManager.js',
+		'javascripts/DeskPRO/Agent/TabStrip.js',
+		'javascripts/DeskPRO/Agent/ScrollerHandler.js',
+
+		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
+
+		'javascripts/DeskPRO/Agent/Notifier/Notifier.js',
+		'javascripts/DeskPRO/Agent/Notifier/Types/Abstract.js',
+		'javascripts/DeskPRO/Agent/Notifier/Types/Ticket.js',
+		
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Notifications.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxResults.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxType.js',
+	)
+);
+
+$CONFIG['agent']['deskpro-ui'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-deskpro-ui.js',
+	'files' => array(
+		'javascripts/DeskPRO/UI/Overlay.js',
+		'javascripts/DeskPRO/UI/Menu.js',
+		'javascripts/DeskPRO/UI/SimpleTabs.js',
+	)
+);
+
+$CONFIG['agent']['misc'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-misc.js',
+	'files' => array(
+		'javascripts/DeskPRO/Form/InlineEdit.js',
+		'javascripts/DeskPRO/Form/RuleBuilder.js',
+		'javascripts/DeskPRO/FaviconBadge.js',
+		'javascripts/DeskPRO/Agent/MediaBrowser.js',
+		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
+		'javascripts/DeskPRO/Agent/Widgetable.js',
+
+		'javascripts/DeskPRO/Agent/Ticket/ChangeManager.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/StandardOption.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Status.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/NewReply.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/TicketField.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Flag.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Labels.js',
+
+		'javascripts/DeskPRO/Agent/TicketList/ChangeManager.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/Abstract.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/StandardOption.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/NewReply.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/TicketField.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/Flag.js',
+		'javascripts/DeskPRO/Agent/TicketList/Property/Labels.js',
+	)
+);
+
+/**
+ * Vendor files for agent interface
+ */
+$CONFIG['agent']['vendors'] = array(
+	'mode' => 'yui',
+	'out' => 'agent-vendors.js',
+	'files' => array(
+		'vendor/jquery/jquery.min.js',
+		'vendor/jquery/jquery-ui/jquery-ui.min.js',
+		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
+
+		'vendor/jquery/jquery.cookie.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery.form.js',
+		'vendor/jquery/jquery.layout.min.js',
+		'vendor/jquery/jquery.localscroll.js',
+		'vendor/jquery/jquery.mousewheel.js',
+		'vendor/jquery/jquery.scrollTo.js',
+		'vendor/jquery/jquery.sizes.min.js',
+		'vendor/jquery/jquery.timeago.js',
+		'vendor/jquery/jquery.tinyscrollbar.js',
+		'vendor/jquery/mwheelIntent.js',
+
+		'vendor/jquery/colorbox/jquery.colorbox-min.js',
+
+		'vendor/jquery/fileupload/jquery.fileupload.js',
+		'vendor/jquery/fileupload/jquery.fileupload-ui.js',
+
+		'vendor/jquery/jcrop/js/jquery.Jcrop.min.js',
+
+		'vendor/jquery/tag-it/tag-it.js',
+
+		'vendor/jquery/tipped/js/bridge/bridge.js',
+		'vendor/jquery/tipped/js/bridge/adapters/shared.js',
+		'vendor/jquery/tipped/js/bridge/adapters/jquery.js',
+		'vendor/jquery/tipped/js/excanvas/excanvas.js',
+		'vendor/jquery/tipped/js/spinners/spinners.js',
+		'vendor/jquery/tipped/js/tipped/tipped.js',
+
+		'vendor/mootools/mootools-core.min.js',
+		'vendor/modernizr.min.js',
+	)
+);
