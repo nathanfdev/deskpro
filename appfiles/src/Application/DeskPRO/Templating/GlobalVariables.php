@@ -31,9 +31,4 @@ class GlobalVariables extends BaseGlobalVariables
 	{
 		return App::getSession()->getVisitor();
 	}
-
-	public function getSetting($name)
-	{
-		return App::getSetting($name);
-	}
 }

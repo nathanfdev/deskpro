@@ -40,6 +40,8 @@ class TemplatingExtension extends \Twig_Extension
             'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
 			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
+			'html_js_pack_raw' => new \Twig_Function_Method($this, 'htmlJsPackRaw', array('is_safe' => array('html'))),
+			'html_js_pack' => new \Twig_Function_Method($this, 'htmlJsPack', array('is_safe' => array('html'))),
 			'deskpro_debug' => new \Twig_Function_Method($this, 'isDebugMode'),
 			'render_custom_field' => new \Twig_Function_Method($this, 'renderCustomField', array('is_safe' => array('html'))),
 			'render_custom_field_text' => new \Twig_Function_Method($this, 'renderCustomFieldText'),
@@ -96,6 +98,55 @@ class TemplatingExtension extends \Twig_Extension
 	public function assetFull($location)
 	{
 		return App::getSetting('core.deskpro_assets_full_url') . ltrim($location, '/');
+	}
+
+	public function htmlJsPackRaw($name, $async = false)
+	{
+		$pack = App::getConfig($name, null, 'js-sources');
+		if (!$pack) {
+			$html = '<!-- UNKNOWN JS PACK: ' . $name . ' -->';
+			if (App::isDebug()) {
+				$html .= '<script>console.error("Tried loading invalid pack: %s", "'.$name.'");</script>';
+			}
+
+			return $html;
+		}
+
+		$html = array();
+		foreach ($pack['files'] as $file) {
+			$url = $this->container->get('templating.helper.assets')->getUrl($file);
+			$html[] = '<script src="' . $url . '"' . ($async ? ' async="async"' : '') . '></script>';
+		}
+
+		return implode("\n", $html);
+	}
+
+	public function htmlJsPack($name, $async = false, $force_raw = false)
+	{
+		$raw_packs = App::getConfig('debug.raw_js_packs', array());
+
+		if ($force_raw OR in_array($name, $raw_packs)) {
+			return $this->htmlJsPackRaw($name, $async);
+		}
+
+		$pack = App::getConfig($name, null, 'js-sources');
+		if (!$pack) {
+			$html = '<!-- UNKNOWN JS PACK: ' . $name . ' -->';
+			if (App::isDebug()) {
+				$html .= '<script>console.error("Tried loading invalid pack: %s", "'.$name.'");</script>';
+			}
+
+			return $html;
+		}
+
+		$file =	$this->container->get('templating.helper.assets')->getUrl('build/' . $pack['out']);
+		$html = '<script src="'.$file.'"';
+		if ($async) {
+			$html .= ' async="async"';
+		}
+		$html .= '></script>';
+		
+		return $html;
 	}
 
 	public function rawUrlEncode($str)

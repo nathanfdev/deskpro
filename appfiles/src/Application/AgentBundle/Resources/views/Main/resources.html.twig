@@ -23,19 +23,21 @@
 var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
     Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
 </script>
-<script src="{{ asset('build/agent-vendors.js') }}"></script>
+
+{{ html_js_pack('agent.vendors', false) }}
+
 <script>
 // At this point we should have css in the header so it display properly,
 // showing it now gives some visual feedback and illusion of speed
 $('#loading_css_header').remove();
 </script>
 
-<script async="async" src="{{ asset('build/agent-common.js') }}"></script>
-<script async="async" src="{{ asset('build/agent-deskpro-ui.js') }}"></script>
-<script async="async" src="{{ asset('build/agent-misc.js') }}"></script>
-<script async="async" src="{{ asset('build/agent-ui.js') }}"></script>
-<script async="async" src="{{ asset('build/agent-window-sections.js') }}"></script>
-<script async="async" src="{{ asset('build/agent-pages.js') }}"></script>
-<script async="async" src="{{ asset('build/agent-pages-lists.js') }}"></script>
+{{ html_js_pack('agent.common', true) }}
+{{ html_js_pack('agent.deskpro-ui', true) }}
+{{ html_js_pack('agent.misc', true) }}
+{{ html_js_pack('agent.agent-ui', true) }}
+{{ html_js_pack('agent.window-sections', true) }}
+{{ html_js_pack('agent.pages', true) }}
+{{ html_js_pack('agent.pages-lists', true) }}
 
 <script async="async" src="{{ path('agent_interface_data_js') }}"></script>

@@ -18,7 +18,7 @@ $CONFIG['agent']['window-sections'] = array(
 	)
 );
 
-$CONFIG['agent']['pages-list'] = array(
+$CONFIG['agent']['pages-lists'] = array(
 	'mode' => 'yui',
 	'out' => 'agent-pages-lists.js',
 	'files' => array(

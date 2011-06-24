@@ -45,6 +45,13 @@ $CONFIG['debug']['mail'] = array();
  */
 $CONFIG['debug']['yui_compressor_cmd'] = 'java -jar /usr/local/bin/yuicompressor.jar';
 
+/**
+ * Packs listed will be served in their raw form, not their compiled build form.
+ * Useful for debugging since you dont need to re-compile the files each time.
+ * Possible values are in config.js-sources.php
+ */
+$CONFIG['debug']['raw_js_packs'] = array();
+
 $CONFIG['debug']['templates'] = array();
 
 /**
@@ -56,6 +63,7 @@ $CONFIG['debug']['templates'] = array();
  * These options are passed to JS handlers to enable various debug options.
  */
 $CONFIG['debug']['js'] = array(
+
 	// Disables menu handlers in the agent interface
 	//'disableMenuHandlers' => true,
 
