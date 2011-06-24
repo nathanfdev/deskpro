@@ -94,6 +94,14 @@
 					window[i].initPage();
 				}
 			}
+
+			$('.admin-footer .licensed-to').click(function() {
+				$('#license_info').fadeIn();
+			});
+
+			$('#license_info .close').click(function() {
+				$('#license_info').fadeOut();
+			});
 		}
 
 		{% block html_headjs_load %}{% endblock %}
@@ -461,8 +469,35 @@
 </div>
 
 <div class="admin-footer">
-	Powered by <a href="http://www.deskpro.com/">DeskPRO</a>
+	<div class="powered-by">
+		Powered by <a href="http://www.deskpro.com/">DeskPRO</a>
+	</div>
+	<div class="licensed-to">
+		Licensed to <span>ACME Inc</span>
+	</div>
+	<div class="times">
+		Time is now {{ "now"|date('h:i a') }}
+	</div>
 </div>
+<div id="license_info"><div id="license_info_content">
+	<span class="close"></span>
+	<div class="row">
+		<label>Licensed To</label>
+		<div>ACME Inc</div>
+	</div>
+	<div class="row">
+		<label>License Contact</label>
+		<div>Christopher (example@example.com)</div>
+	</div>
+	<div class="row">
+		<label>Licensed Number</label>
+		<div>65487451</div>
+	</div>
+	<div class="row">
+		<label>Agents</label>
+		<div>10</div>
+	</div>
+</div></div>
 
 </div> {# /adminwrap #}
 </body>
