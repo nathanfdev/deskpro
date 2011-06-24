@@ -98,7 +98,7 @@
 				<div class="wrap-dropdown user-drop">
 					<ul>
 						<li class="ticket-noti"><a id="user_settings_link">Settings</a></li>
-						<li class="ticket-noti"><a>Set status: away</a></li>
+						<li class="ticket-noti"><a>Change Language</a></li>
 						<li class="ticket-noti"><a href="{{ path('agent_logout') }}">Log Out</a></li>
 					</ul>
 				</div>
@@ -110,18 +110,6 @@
 					<ul class="act-list">
 						<li class="help">
 							<a href="" class="tipped" data-tipped="View help" data-tipped-options="hook: 'bottommiddle', showDelay: 0, skin: 'light'">Help</a>
-						</li>
-						<li class="multi with-menu">
-							<a href="" class="tipped" data-tipped="Change language" data-tipped-options="hook: 'bottommiddle', showDelay: 0, skin: 'light'">Multilingual</a>
-
-							<div class="wrap-dropdown lang-drop">
-								<ul>
-									<li class="lang-en"><a href="">English</a></li>
-									<li class="lang-es"><a href="">Español</a></li>
-									<li class="lang-pr"><a href="">Portugues</a></li>
-								</ul>
-							</div>
-
 						</li>
 						{% include 'AgentBundle:Main:part-shortcuts-menu.html.twig' %}
 						<li class="network active" id="network_status_indicator">
