@@ -6,10 +6,8 @@
 	<meta http-equiv="X-UA-Compatible" content="IE=100" />
 	<title>DeskPRO</title>
 
-	<link rel="stylesheet" href="{{ asset('javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css') }}" type="text/css" media="screen"  />
-	<link rel="stylesheet" href="{{ asset('javascripts/plupload/css/plupload.queue.css') }}" type="text/css" media="screen"  />
+	<link rel="stylesheet" href="{{ asset('vendor/jquery/jquery-ui/css/smoothness/jquery-ui.css') }}" type="text/css" media="screen"  />
 	<link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen" />
-	<link rel="stylesheet" href="{{ asset('javascripts/jquery/tipTip/tipTip.css') }}" type="text/css" media="screen"  />
 
 	<link rel="stylesheet" href="{{ asset('stylesheets/agent/common.css') }}" type="text/css" media="screen" />
 	<link rel="stylesheet" href="{{ asset('stylesheets/agent/ui-layout.css') }}" type="text/css" media="screen" />
@@ -23,15 +21,7 @@
 
 	{% block css_files %}{% endblock %}
 
-	<script src="http://code.jquery.com/jquery-1.5.min.js" type="text/javascript" charset="utf-8"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery-ui/jquery-ui.min.js') }}"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.cookie.js') }}"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.layout.min.js') }}"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/tipTip/jquery.tipTip.min.js') }}"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/tag-it/tag-it.js') }}"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.sizes.min.js') }}"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.mousewheel.js') }}"></script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
+	<script src="{{ asset('build/agent-vendors.js') }}"></script>
 
 	<script src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
 <script src="{{ asset('javascripts/Orb/Class.js') }}"></script>

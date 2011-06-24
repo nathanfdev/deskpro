@@ -1,12 +1,11 @@
-<link rel="stylesheet" href="{{ asset('javascripts/jquery/jquery-ui/css/ui-lightness/jquery-ui.css') }}" type="text/css" media="screen"  />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/jquery-ui/css/smoothness/jquery-ui.css') }}" type="text/css" media="screen"  />
 <link rel="stylesheet" href="{{ asset('javascripts/DeskPRO/UI/ui.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('javascripts/jquery/tipTip/tipTip.css') }}" type="text/css" media="screen"  />
-<link rel="stylesheet" href="{{ asset('javascripts/jquery/tipped/css/tipped.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('javascripts/jquery/colorbox/colorbox.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('javascripts/jquery/jcrop/css/jquery.Jcrop.css.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/tipped/css/tipped.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/colorbox/colorbox.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/jcrop/css/jquery.Jcrop.css') }}" type="text/css" media="screen" />
 
-<link rel="stylesheet" href="{{ asset('javascripts/markitup/markitup/skins/simple/style.css') }}" type="text/css" media="screen" />
-<link rel="stylesheet" href="{{ asset('javascripts/markitup/markitup/sets/markdown/style.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/skins/simple/style.css') }}" type="text/css" media="screen" />
+<link rel="stylesheet" href="{{ asset('vendor/jquery/markitup/markitup/sets/markdown/style.css') }}" type="text/css" media="screen" />
 
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/main.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/common.css') }}" type="text/css" media="screen" />
@@ -20,54 +19,14 @@
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/deskpro-layout.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/deskpro-interface.css') }}" type="text/css" media="screen" />
 
-{% if constant('DP_DEBUG') %}
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.js"></script>
-{% else %}
-	<script src="https://ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js"></script>
-{% endif %}
+<script src="{{ asset('build/agent-vendors.js') }}"></script>
 <script>
 // At this point we should have css in the header so it display properly,
 // showing it now gives some visual feedback and illusion of speed
 $('#loading_css_header').remove();
 </script>
 
-<script src="{{ asset('javascripts/modernizr.min.js') }}"></script>
 <script src="{{ asset('javascripts/Orb/modernizr-ext.js') }}"></script>
-<script src="http://ajax.microsoft.com/ajax/jquery.templates/beta1/jquery.tmpl.min.js"></script>
-<script src="https://ajax.googleapis.com/ajax/libs/jqueryui/1.8.13/jquery-ui.min.js"></script>
-<script src="{{ asset('javascripts/jquery/jquery.cookie.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.layout.min.js') }}"></script>
-
-<script src="{{ asset('javascripts/jquery/tipTip/jquery.tipTip.min.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jcrop/js/jquery.Jcrop.min.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/colorbox/jquery.colorbox.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/tag-it/tag-it.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.sizes.min.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.mousewheel.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/mwheelIntent.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.timeago.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/jquery.tinyscrollbar.min.js') }}"></script>
-<script src="{{ asset('javascripts/markitup/markitup/jquery.markitup.js') }}"></script>
-<script src="{{ asset('javascripts/markitup/markitup/sets/markdown/set.js') }}"></script>
-<script src="{{ asset('javascripts/tiny_mce/tiny_mce.src.js') }}"></script>
-<script src="{{ asset('javascripts/tiny_mce/jquery.tinymce.js') }}"></script>
-
-
-
-<script type="text/javascript" src="{{ asset('javascripts/jquery/tipped/js/bridge/bridge.js') }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/jquery/tipped/js/bridge/adapters/jquery.js') }}"></script>
-<!--[if lt IE 9]><script type="text/javascript" src="{{ asset('javascripts/jquery/tipped/js/excanvas/excanvas.js') }}"></script><![endif]-->
-<script type="text/javascript" src="{{ asset('javascripts/jquery/tipped/js/spinners/spinners.js') }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/jquery/tipped/js/tipped/tipped.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/fileupload/jquery.fileupload.js') }}"></script>
-<script src="{{ asset('javascripts/jquery/fileupload/jquery.fileupload-ui.js') }}"></script>
-
-{% if constant('DP_DEBUG') %}
-	<script src="{{ asset('javascripts/mootools/mootools-core.js') }}"></script>
-{% else %}
-	<script src="{{ asset('javascripts/mootools/mootools-core.min.js') }}"></script>
-{% endif %}
-
 <script src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
 <script src="{{ asset('javascripts/Orb/Class.js') }}"></script>
 <script src="{{ asset('javascripts/Orb/Util/Options.js') }}"></script>
@@ -101,7 +60,7 @@ $('#loading_css_header').remove();
 <script src="{{ asset('javascripts/DeskPRO/Widget/Widget.js') }}"></script>
 <script src="{{ asset('javascripts/DeskPRO/Widget/CampfireAnnounce.js') }}"></script>
 
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Agent/InterfaceEffects.js') }}"></script>
+<script src="{{ asset('javascripts/DeskPRO/Agent/InterfaceEffects.js') }}"></script>
 
 <script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js') }}"></script>
 <script src="{{ asset('javascripts/DeskPRO/Agent/WindowElement/MainMenuSlider.js') }}"></script>

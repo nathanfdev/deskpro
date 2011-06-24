@@ -7,9 +7,6 @@ DeskPRO.Agent.InterfaceEffects = new Orb.Class({
 	},
 
 	initPage: function() {
-		// tiptip in header
-		$('#header-top .right.box-header.actions .wrapper-top-bar a').tipTip({
-			delay: 50
-		});
+		
 	}
 });

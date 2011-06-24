@@ -40,6 +40,11 @@ $CONFIG['debug']['mail'] = array();
 # Templates
 ################################################################################
 
+/**
+ * Command prefix to run YUI compressor with dpdev:js-compile
+ */
+$CONFIG['debug']['yui_compressor_cmd'] = 'java -jar /usr/local/bin/yuicompressor.jar';
+
 $CONFIG['debug']['templates'] = array();
 
 /**
