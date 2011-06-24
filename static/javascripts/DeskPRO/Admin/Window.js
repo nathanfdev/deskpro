@@ -32,6 +32,11 @@ DeskPRO.Admin.Window = new Orb.Class({
 		if (typeof window.DeskPRO_Window_Init == 'function') {
 			window.DeskPRO_Window_Init();
 		}
+
+		$('.admin-help-header .close-trigger').click(function() {
+			$('.admin-help-header').slideUp();
+			DeskPRO_Window.dismissHelpMessage(this);
+		});
 	},
 
 	_initBasic: function() {
@@ -100,5 +105,32 @@ DeskPRO.Admin.Window = new Orb.Class({
 		}
 
 		return url;
+	},
+
+
+	/**
+	 * Dismiss a help message. This removes the help element, and sends an ajax
+	 * request to the server to record the dismiss so it doesnt show again.
+	 *
+	 * The element must have a data-message-id attribute.
+	 *
+	 * @param el
+	 */
+	dismissHelpMessage: function(el) {
+		el = $(el);
+
+		var messageId = el.data('message-id');
+
+		el.remove();
+
+		if (!messageId) {
+			return;
+		}
+
+		$.ajax({
+			dataType: 'json',
+			url: BASE_URL + 'agent/misc/dismiss-help-message/' + escape(messageId),
+			type: 'GET'
+		});
 	}
 });

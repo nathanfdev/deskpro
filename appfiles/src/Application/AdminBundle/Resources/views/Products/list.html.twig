@@ -1,4 +1,5 @@
 {% extends 'AdminBundle::layout.html.twig' %}
+{% import 'AdminBundle:Common:admin-macros.html.twig' as admin %}
 {% block section 'crm' %}
 {% block sub_section 'usergroups' %}
 {% block html_head %}
@@ -13,6 +14,15 @@ function _page_exec() {
 	});
 }
 </script>
+{% endblock %}
+{% block before_content %}
+	{{ admin.help_header_start('admin.help.products') }}
+		<h3>What are products?</h3>
+		
+		Products are a type of categorization that you can use across the entire helpdesk. Create a product, which
+		is usually a real product or service your company offers, and use it categorize all kinds of content
+		like tickets, ideas and articles.
+	{{ admin.help_header_end() }}
 {% endblock %}
 {% block content %}
 

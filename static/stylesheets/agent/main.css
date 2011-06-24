@@ -3856,3 +3856,60 @@ html.admin, body.admin {
     background: url(../../images/tab-close.png) no-repeat;
     cursor: pointer;
 }
+
+
+
+
+
+
+
+
+
+.admin-help-header {
+    padding: 10px;
+    margin: 10px;
+
+    border: 3px solid rgba(77,85,107,0.3);
+
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(246,246,246,1) 47%, rgba(237,237,237,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(47%,rgba(246,246,246,1)), color-stop(100%,rgba(237,237,237,1)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#ededed',GradientType=0 );
+    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(246,246,246,1) 47%,rgba(237,237,237,1) 100%);
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+    line-height: 125%;
+
+    text-shadow: 0px 1px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=0, offy=1);
+
+    position: relative;
+}
+
+.admin-help-header h3 {
+    font-size: 15px;
+    font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+    margin-bottom: 5px;
+}
+
+.admin-help-header .close-trigger {
+    position: absolute;
+    display: block;
+    top: -10px;
+    right: -15px;
+
+    width: 29px;
+    height: 29px;
+    overflow: hidden;
+
+    margin-right: 8px;
+
+    background: url("../../images/icn-sprite.png") left -1200px no-repeat;
+    cursor: pointer;
+}
