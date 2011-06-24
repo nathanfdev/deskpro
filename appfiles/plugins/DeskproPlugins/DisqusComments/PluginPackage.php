@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace DeskproPlugins\FacebookWidgets;
+namespace DeskproPlugins\DisqusComments;
 
 use Application\DeskPRO\Entity\Plugin;
 use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;

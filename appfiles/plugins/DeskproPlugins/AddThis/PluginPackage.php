@@ -9,12 +9,12 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace DeskproPlugins\FacebookWidgets;
+namespace DeskproPlugins\AddThis;
 
 use Application\DeskPRO\Entity\Plugin;
 use Application\DeskPRO\Plugin\PluginPackage\AbstractPluginPackage;
-use DeskproPlugins\DisqusComments\PluginPackage\Installer;
-use DeskproPlugins\DisqusComments\PluginPackage\Uninstaller;
+use DeskproPlugins\AddThis\PluginPackage\Installer;
+use DeskproPlugins\AddThis\PluginPackage\Uninstaller;
 
 class PluginPackage extends AbstractPluginPackage
 {
