@@ -1,4 +1,8 @@
 <tr>
-	<td>{{ip}}</td>
-	<td width="50"><a class="delete-trigger" href="{{ path('admin_banning_delip', {'ip': ip}) }}">remove</a></td>
+	<td>
+		<a class="delete-trigger" href="{{ path('admin_banning_delip', {'ip': ip}) }}" style="float:right;" title="Remove this ban">
+			<img src="{{ asset('images/icons/cross.png') }}" />
+		</a>
+		{{ip}}
+	</td>
 </tr>
