@@ -64,18 +64,26 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			wrapper: null,
 			holders: '.page-display-holders:first',
 			inputHolders: '.page-display-input:first',
+			
 			sectionProperties: '.field-section-properties:first',
 			sectionPropertiesContent: '.field-section-properties-content:first',
+			sectionPropertiesWrapTpl: '.fields-wrap-properties',
+			
 			sectionBodyTabs: '.field-section-bodytabs-tabs:first',
 			sectionBodyTabContents: '.field-section-bodytabs-tab-contents:first',
-			fieldWrapSelector: '.display-item',
-			fieldTabSelector: 'li.field-tab',
-			fieldTabContentSelector: '.field-tab-content',
-
-			sectionPropertiesWrapTpl: '.fields-wrap-properties',
 			sectionBodyTabsWrapTpl: '.fields-wrap-bodytabs',
 			sectionBodyTabsTabTpl: '.fields-new-bodytabs-tab',
-			sectionBodyTabsTabContentTpl: '.fields-new-bodytabs-content'
+			sectionBodyTabsTabContentTpl: '.fields-new-bodytabs-content',
+			
+			sectionMiddleTabs: '.field-section-middletabs-tabs:first',
+			sectionMiddleTabContents: '.field-section-middletabs-tab-contents:first',
+			sectionMiddleTabsWrapTpl: '.fields-wrap-middletabs',
+			sectionMiddleTabsTabTpl: '.fields-new-middletabs-tab',
+			sectionMiddleTabsTabContentTpl: '.fields-new-middletabs-content',
+			
+			fieldWrapSelector: '.display-item',
+			fieldTabSelector: 'li.field-tab',
+			fieldTabContentSelector: '.field-tab-content'
 		};
 
 		this.setOptions(options);
@@ -84,15 +92,21 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		this.holders      = $(this.options.holders, this.wrapper);
 		this.inputHolders = $(this.options.inputHolders, this.wrapper);
 
-		this.sectionProperties         = $(this.options.sectionProperties, this.wrapper);
-		this.sectionPropertiesContent  = $(this.options.sectionPropertiesContent, this.wrapper);
-		this.sectionBodyTabs           = $(this.options.sectionBodyTabs, this.wrapper);
-		this.sectionBodyTabContents    = $(this.options.sectionBodyTabContents, this.wrapper);
+		this.sectionProperties          = $(this.options.sectionProperties, this.wrapper);
+		this.sectionPropertiesContent   = $(this.options.sectionPropertiesContent, this.wrapper);
+		this.sectionPropertiesWrapTpl   = $(this.options.sectionPropertiesWrapTpl, this.wrapper).get(0).innerHTML;
 
-		this.sectionPropertiesWrapTpl      = $(this.options.sectionPropertiesWrapTpl, this.wrapper).get(0).innerHTML;
+		this.sectionBodyTabs               = $(this.options.sectionBodyTabs, this.wrapper);
+		this.sectionBodyTabContents        = $(this.options.sectionBodyTabContents, this.wrapper);
 		this.sectionBodyTabsWrapTpl        = $(this.options.sectionBodyTabsWrapTpl, this.wrapper).get(0).innerHTML;
 		this.sectionBodyTabsTabTpl         = $(this.options.sectionBodyTabsTabTpl, this.wrapper).get(0).innerHTML;
 		this.sectionBodyTabsTabContentTpl  = $(this.options.sectionBodyTabsTabContentTpl, this.wrapper).get(0).innerHTML;
+
+		this.sectionMiddleTabs           = $(this.options.sectionMiddleTabs, this.wrapper);
+		this.sectionMiddleTabContents    = $(this.options.sectionMiddleTabContents, this.wrapper);
+		this.sectionMiddleTabsWrapTpl        = $(this.options.sectionMiddleTabsWrapTpl, this.wrapper).get(0).innerHTML;
+		this.sectionMiddleTabsTabTpl         = $(this.options.sectionMiddleTabsTabTpl, this.wrapper).get(0).innerHTML;
+		this.sectionMiddleTabsTabContentTpl  = $(this.options.sectionMiddleTabsTabContentTpl, this.wrapper).get(0).innerHTML;
 
 		this.departmentId = null;
 
@@ -242,6 +256,50 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 						}
 
 						var displayWrap = $(this.sectionBodyTabsWrapTpl);
+
+						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
+						itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
+
+						displayWrap.appendTo(newTabContent);
+						tab_item.sectionEl = newTabContent;
+
+						this._initWrapper(tab_item, displayWrap);
+
+						itemEls.itemHolder.remove();
+					}, this);
+
+					break;
+				
+				// TODO rewrite this and body to share code
+				case 'middletabs':
+					if (!item.items || !item.items.length) {
+						item.items = [];
+					}
+
+					// Init the tab itself
+					var id = 'middletabfieldtab_' + $(this.options.fieldTabSelector, this.sectionMiddleTabs).length + 1;
+					var newTab = $(this.sectionMiddleTabsTabTpl.replace(/\{title\}/g, item.title).replace(/\{id\}/g, id));
+					var newTabContent = $(this.sectionMiddleTabsTabContentTpl.replace(/\{id\}/g, id));
+
+					newTab.appendTo(this.sectionMiddleTabs);
+					newTabContent.appendTo(this.sectionMiddleTabContents);
+
+					Array.each(item.items, function(tab_item) {
+
+						// Set this so its easier to lookup sections later,
+						// even though we can know through the structure,
+						// its easier with this value set
+						tab_item.section = 'middletabs';
+						var itemEls = this.getItemHolderEls(tab_item);
+						if (!itemEls) {
+							return;
+						}
+
+						if (itemEls.itemHolder.data('custom-field-handler')) {
+							item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
+						}
+
+						var displayWrap = $(this.sectionMiddleTabsWrapTpl);
 
 						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
 						itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));

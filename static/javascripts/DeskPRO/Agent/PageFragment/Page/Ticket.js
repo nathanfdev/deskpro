@@ -58,6 +58,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			var h = new h($('#' + field_wrap_id), this);
 			h.initPage();
 		}, this);
+
+		// Sit min length on middletabs so switch doesnt go much smaller
+		var el = $('.container-tabbed-wrap.ticket-participants:first', this.wrapper);
+		el.css('min-width', el.width());
 	},
 
 	_initLayout: function() {
@@ -323,8 +327,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	_initTicketTabs: function() {
 
 		var self = this;
-		var simpleTabs = new DeskPRO.UI.SimpleTabs({
-			context: this.contentWrapper,
+
+		// Top tabs
+		var topTabs = new DeskPRO.UI.SimpleTabs({
+			context: $('.container-tabbed-wrap.ticket-participants', this.contentWrapper),
+			triggerElements: $('.container-tabbed-tabs li', this.contentWrapper),
+			activeClassname: 'container-tabbed-tabs-active'
+		});
+
+		// Body tabs
+		var bodyTabs = new DeskPRO.UI.SimpleTabs({
+			context: $('.full-container-tabbed.messages-container', this.contentWrapper),
 			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper),
 			onTabSwitch: function(info) {
 				if (info.tabEl.is('.ticket-log')) {
@@ -336,7 +349,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				}
 			}
 		});
-
 	},
 
 	/**

@@ -115,16 +115,16 @@ pageMeta.fieldHandlers = [
 		<div class="container-tabbed-wrap ticket-participants">
 
 			<div class="container-tabbed-tabs">
-				<ul>
-					<li class="container-tabbed-tabs-active"><a href="#">Participants</a></li>
+				<ul class="field-section-middletabs-tabs">
+					<li class="container-tabbed-tabs-active tab-parts" data-tab-for=".tab-parts-content"><a>Participants</a></li>
 				</ul>
 			</div>
 
-			<div class="container-tabbed">
+			<div class="container-tabbed field-section-middletabs-tab-contents">
 				<div class="container-tabbed-contents">
 
 					{# Tab: Participants #}
-					<div class="container-tabbed-content-tab">
+					<div class="container-tabbed-content-tab tab-parts-content" data-tab-trigger=".tab-parts">
 						<table cellspacing="0" cellpadding="0" border="0" class="participants-table">
 							<tr>
 								<td class="col-inner name-image agent menu-trigger agent_id agent">
@@ -357,8 +357,17 @@ pageMeta.fieldHandlers = [
 	</div>
 </script>
 
-{# Wrapper around fields in bottom tabs #}
-<script type="text/x-deskpro-plain" class="fields-wrap-bodytabs">
+{# New tab code for middle tabs #}
+<script type="text/x-deskpro-plain" class="fields-new-middletabs-tab">
+	<li class="tab-trigger {id} field-tab" data-tab-for=".field-tab-content.{id}" data-field-tab-id="{id}">
+		<a>{title}</a>
+	</li>
+</script>
+<script type="text/x-deskpro-plain" class="fields-new-middletabs-content">
+	<div class="container-tabbed-contents field-tab-content {id}" data-tab-trigger=".field-tab.{id}" data-field-tab-id="{id}" style="display:none;">
+	</div>
+</script>
+<script type="text/x-deskpro-plain" class="fields-wrap-middletabs">
 	<div class="row-table-cotent display-item">
 		<div class="col-table-content title-col display-title">
 		</div>
@@ -375,6 +384,14 @@ pageMeta.fieldHandlers = [
 </script>
 <script type="text/x-deskpro-plain" class="fields-new-bodytabs-content">
 	<div class="full-container-tabbed-contents tab-content field-tab-content {id}" data-tab-trigger=".{id}" data-field-tab-id="{id}">
+	</div>
+</script>
+<script type="text/x-deskpro-plain" class="fields-wrap-bodytabs">
+	<div class="row-table-cotent display-item">
+		<div class="col-table-content title-col display-title">
+		</div>
+		<div class="col-table-content display-content">
+		</div>
 	</div>
 </script>
 
