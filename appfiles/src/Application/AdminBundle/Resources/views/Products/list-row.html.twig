@@ -3,6 +3,7 @@
 	<div style="float:right">
 		<ul class="controls">
 			<li class="edit edit-trigger"><a href="{{ path('admin_products_edit', {'product_id': product.id}) }}" class="popout-trigger" data-height="200" data-width="400">edit</a></li>
+			<li class="delete delete-trigger" data-product-id="{{product.id}}">delete</li>
 		</ul>
 	</div>
 	<div>

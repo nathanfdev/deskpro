@@ -26,6 +26,22 @@ DeskPRO.Admin.PageHandler.ProductsList = new Class({
 			},
 			update: function() { self.sendOrderUpdate() }
 		});
+
+		$('.delete-trigger').click(function() {
+			var id = $(this).data('product-id');
+			$.ajax({
+				url: BASE_URL + 'admin/products/' + id + '/delete',
+				dataType: 'json',
+				type: 'POST',
+				success: function(data) {
+					if (data.deleted_ids) {
+						Array.each(data.deleted_ids, function(id) {
+							$('li.product-' + id).fadeOut();
+						});
+					}
+				}
+			});
+		});
 	},
 
 	sendOrderUpdate: function() {

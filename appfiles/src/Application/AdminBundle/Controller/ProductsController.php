@@ -95,4 +95,37 @@ class ProductsController extends AbstractController
 		$helper = new \Application\AdminBundle\Controller\Helper\DisplayOrderUpdate($this);
 		return $helper->doUpdate('products');
 	}
+
+	############################################################################
+	# delete
+	############################################################################
+
+	public function deleteAction($product_id)
+	{
+		$product = App::getEntityRepository('DeskPRO:Product')->find($product_id);
+
+		$ids = array();
+
+		App::getOrm()->beginTransaction();
+		$this->_deleteProduct($product, $ids);
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		$this->createJsonResponse(array(
+			'success' => true,
+			'deleted_ids' => $ids
+		));
+	}
+
+	protected function _deleteProduct($product, array &$ids)
+	{
+		if ($product->children) {
+			foreach ($product->children as $child) {
+				$this->_deleteProduct($child, $ids);
+			}
+		}
+
+		App::getOrm()->remove($product);
+		$ids[] = $product['id'];
+	}
 }
