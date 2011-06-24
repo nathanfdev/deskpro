@@ -27,6 +27,14 @@ a {
 	padding: 5px;
 }
 
+.no-select {
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
+}
+
 /**************************************
 Header
 ***************************************/
@@ -613,6 +621,12 @@ background-color: #edeff3;
     right: 0;
     bottom: 0;
     background-color: rgba(59,59,59,0.6);
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 #header .actions ul.act-list li.agent-status.off a {
@@ -3956,6 +3970,12 @@ html.admin, body.admin {
     left: 0;
 
     z-index: 100000000;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }
 
 #volume_controls {
