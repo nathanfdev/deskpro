@@ -233,7 +233,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	 * @param trigger
 	 */
 	initTicketOptionsMenuForProp: function(property, trigger) {
-		console.log(trigger);
 		var menu = this.ticketOptionsMenus[property];
 		if (!menu) {
 			console.log('No menu for %s', property);

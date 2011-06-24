@@ -63,6 +63,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		this.options = {
 			wrapper: null,
 			holders: '.page-display-holders:first',
+			inputHolders: '.page-display-input:first',
 			sectionProperties: '.field-section-properties:first',
 			sectionPropertiesContent: '.field-section-properties-content:first',
 			sectionBodyTabs: '.field-section-bodytabs-tabs:first',
@@ -79,17 +80,19 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.setOptions(options);
 
-		this.wrapper = $(this.options.wrapper);
-		this.holders = $(this.options.holders, this.wrapper);
-		this.sectionProperties = $(this.options.sectionProperties, this.wrapper);
-		this.sectionPropertiesContent = $(this.options.sectionPropertiesContent, this.wrapper);
-		this.sectionBodyTabs = $(this.options.sectionBodyTabs, this.wrapper);
-		this.sectionBodyTabContents = $(this.options.sectionBodyTabContents, this.wrapper);
+		this.wrapper      = $(this.options.wrapper);
+		this.holders      = $(this.options.holders, this.wrapper);
+		this.inputHolders = $(this.options.inputHolders, this.wrapper);
 
-		this.sectionPropertiesWrapTpl     = $(this.options.sectionPropertiesWrapTpl, this.wrapper).get(0).innerHTML;
-		this.sectionBodyTabsWrapTpl       = $(this.options.sectionBodyTabsWrapTpl, this.wrapper).get(0).innerHTML;
-		this.sectionBodyTabsTabTpl        = $(this.options.sectionBodyTabsTabTpl, this.wrapper).get(0).innerHTML;
-		this.sectionBodyTabsTabContentTpl = $(this.options.sectionBodyTabsTabContentTpl, this.wrapper).get(0).innerHTML;
+		this.sectionProperties         = $(this.options.sectionProperties, this.wrapper);
+		this.sectionPropertiesContent  = $(this.options.sectionPropertiesContent, this.wrapper);
+		this.sectionBodyTabs           = $(this.options.sectionBodyTabs, this.wrapper);
+		this.sectionBodyTabContents    = $(this.options.sectionBodyTabContents, this.wrapper);
+
+		this.sectionPropertiesWrapTpl      = $(this.options.sectionPropertiesWrapTpl, this.wrapper).get(0).innerHTML;
+		this.sectionBodyTabsWrapTpl        = $(this.options.sectionBodyTabsWrapTpl, this.wrapper).get(0).innerHTML;
+		this.sectionBodyTabsTabTpl         = $(this.options.sectionBodyTabsTabTpl, this.wrapper).get(0).innerHTML;
+		this.sectionBodyTabsTabContentTpl  = $(this.options.sectionBodyTabsTabContentTpl, this.wrapper).get(0).innerHTML;
 
 		this.departmentId = null;
 
@@ -193,6 +196,10 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 						return;
 					}
 
+					if (itemEls.itemHolder.data('custom-field-handler')) {
+						item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
+					}
+
 					var displayWrap = $(this.sectionPropertiesWrapTpl);
 
 					itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
@@ -200,6 +207,8 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 					displayWrap.appendTo(this.sectionPropertiesContent);
 					item.sectionEl = this.sectionPropertiesContent;
+
+					this._initWrapper(item, displayWrap);
 
 					itemEls.itemHolder.remove();
 					break;
@@ -227,6 +236,11 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 						if (!itemEls) {
 							return;
 						}
+
+						if (itemEls.itemHolder.data('custom-field-handler')) {
+							item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
+						}
+
 						var displayWrap = $(this.sectionBodyTabsWrapTpl);
 
 						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
@@ -234,6 +248,8 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 						displayWrap.appendTo(newTabContent);
 						tab_item.sectionEl = newTabContent;
+
+						this._initWrapper(tab_item, displayWrap);
 
 						itemEls.itemHolder.remove();
 					}, this);
@@ -249,6 +265,116 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		///this.runRules();
 		this.updateSectionDisplay();
+	},
+
+	_initWrapper: function(item, displayWrap) {
+
+		if (item.item_type != 'ticket_field') {
+			return;
+		}
+
+		var edit = $('.edit-trigger', displayWrap);
+		if (!edit.length) {
+			return;
+		}
+
+		var inputHolders = this.inputHolders;
+		var itemId = this.getItemId(item);
+		var itemInputHolder = $('> .' + itemId, inputHolders);
+		var contentEl = $('.content:first', displayWrap);
+		var tplEl = $('.fields-edit-overlay:first', this.wrapper);
+		var ticketPage = this.page;
+
+		var showEditField = function() {
+
+			var overlayEl = null;
+			var inputEl = null;
+
+			if (displayWrap.is('.edit-open')) {
+				return;
+			}
+			displayWrap.addClass('edit-open');
+
+			console.log('showEditField: %s', itemId);
+
+			var overlayEl = $(tplEl.get(0).innerHTML.replace('{id}', itemId));
+			overlayEl.appendTo('body');
+
+			var inputEl = $('> .field-input', itemInputHolder);
+			inputEl.detach().appendTo($('.content', overlayEl));
+
+			var closeOverlay = function() {
+				displayWrap.removeClass('edit-open');
+				overlayEl.slideUp(function() {
+					inputEl.detach().appendTo(itemInputHolder);
+					overlayEl.remove();
+				});
+			};
+
+			var saveField = function() {
+
+				contentEl.empty();
+				var spinner = new Spinner(contentEl, {
+					radii: [4,8],
+					padding: 0
+				}).play();
+
+				closeOverlay();
+
+				var data = $(':input, select, textarea', overlayEl).serializeArray();
+
+				$.ajax({
+					url: BASE_URL + 'agent/tickets/' + ticketPage.getMetaData('ticket_id') + '/ajax-save-custom-fields',
+					type: 'POST',
+					context: this,
+					data: data,
+					dataType: 'html',
+					success: function(html) {
+						// We only want the one rendered field
+						var tmpEl = $('<div>' + html + '</div>');
+
+						var tmpItemHolder  = $('div.page-display-holders > .' + itemId + ':first', tmpEl);
+						var tmpItemContent = $('> .content:first', tmpItemHolder);
+
+						contentEl.empty().append(tmpItemContent);
+					}
+				});
+			};
+
+			$('.close-trigger', overlayEl).click(closeOverlay);
+			$('.save-trigger', overlayEl).click(saveField);
+
+			var positionOf = displayWrap;
+			var positionMy = 'left top';
+			var positionAt = 'left top';
+
+			var width = displayWrap.width() - 8;
+			if (width < 150) {
+				width = 150;
+			} else if (width > 300) {
+				width = 250;
+				positionOf = $('.title:first', displayWrap);
+				positionMy = 'left top';
+				positionAt = 'right top';
+			}
+
+			overlayEl.css({
+				position: 'absolute',
+				width: width,
+				'z-index': 10000
+			});
+
+			overlayEl.position({
+				my: positionMy,
+				at: positionAt,
+				of: positionOf,
+				collision: 'fit'
+			});
+
+			overlayEl.slideDown();
+		}
+
+		displayWrap.dblclick(showEditField);
 	},
 	
 

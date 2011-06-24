@@ -40,11 +40,10 @@ class TemplatingExtension extends \Twig_Extension
             'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
 			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
-			'deskpro_setting' => new \Twig_Function_Method($this, 'getSetting'),
 			'deskpro_debug' => new \Twig_Function_Method($this, 'isDebugMode'),
-			'render_custom_field' => new \Twig_Function_Method($this, 'renderCustomField'),
+			'render_custom_field' => new \Twig_Function_Method($this, 'renderCustomField', array('is_safe' => array('html'))),
 			'render_custom_field_text' => new \Twig_Function_Method($this, 'renderCustomFieldText'),
-			'render_custom_field_form' => new \Twig_Function_Method($this, 'renderCustomFieldForm'),
+			'render_custom_field_form' => new \Twig_Function_Method($this, 'renderCustomFieldForm', array('is_safe' => array('html'))),
         );
     }
 
@@ -82,11 +81,6 @@ class TemplatingExtension extends \Twig_Extension
 	public function getPhrase($phrase_name, array $vars = array())
 	{
 		return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
-	}
-
-	public function getSetting($name)
-	{
-		return App::getSetting($name);
 	}
 
 	public function isDebugMode()

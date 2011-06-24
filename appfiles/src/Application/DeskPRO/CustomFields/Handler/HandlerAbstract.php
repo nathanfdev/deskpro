@@ -82,12 +82,18 @@ abstract class HandlerAbstract
 	 * @param  $context
 	 * @return string
 	 */
-	public function getRenderTemplateName($context)
+	public function getRenderTemplateName($context = 'html')
 	{
 		$templating = $this->getTemplateEngine();
 		$tpl = null;
-		if (false and $this->field_def['has_display_template']) {
+		if ($this->field_def['has_display_template']) {
 			$tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':rendered-field_' . $this->field_def['id'];
+			if ($context == 'html') {
+				$tpl .= '.html.twig';
+			} else {
+				$tpl .= '.txt.twig';
+			}
+
 			if (!$templating->exists($tpl)) {
 				$tpl = null;
 			}
@@ -95,12 +101,6 @@ abstract class HandlerAbstract
 
 		if (!$tpl) {
 			$tpl = $this->getDefaultRenderTemplateName();
-		}
-
-		if ($context == 'html') {
-			$tpl .= '.html.twig';
-		} else {
-			$tpl .= '.txt.twig';
 		}
 
 		return $tpl;
@@ -113,8 +113,9 @@ abstract class HandlerAbstract
 	public function getFormTemplateName()
 	{
 		$templating = $this->getTemplateEngine();
+		$tpl = null;
 		if ($this->field_def['has_form_template']) {
-			$tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':form-field_' . $this->field_def['id'];
+			$tpl = 'DeskPRO:' . $this->field_def->getTableName() . ':form-field_' . $this->field_def['id'] . '.html.twig';
 			if (!$templating->exists($tpl)) {
 				$tpl = null;
 			}
@@ -123,8 +124,6 @@ abstract class HandlerAbstract
 		if (!$tpl) {
 			$tpl = $this->getDefaultFormTemplateName();
 		}
-
-		$tpl .= '.html.twig';
 
 		return $tpl;
 	}
@@ -135,9 +134,16 @@ abstract class HandlerAbstract
 	 *
 	 * @return string
 	 */
-	public function getDefaultRenderTemplateName()
+	public function getDefaultRenderTemplateName($context = 'html')
 	{
-		return 'DeskPRO:custom_fields:rendered-value';
+		$tpl = 'DeskPRO:custom_fields:rendered-value';
+		if ($context == 'html') {
+			$tpl .= '.html.twig';
+		} else {
+			$tpl .= '.txt.twig';
+		}
+
+		return $tpl;
 	}
 
 
@@ -149,7 +155,7 @@ abstract class HandlerAbstract
 	 */
 	public function getDefaultFormTemplateName()
 	{
-		return 'DeskPRO:custom_fields:form-input';
+		return 'DeskPRO:custom_fields:form-input.html.twig';
 	}
 
 

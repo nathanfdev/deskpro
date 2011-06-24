@@ -52,6 +52,8 @@ class TicketController extends AbstractController
 		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
+		// TODO this all needs to be updated to cache new custom fields structure / designer stuff
+		/*
 		if (($ticket_custom_fields_block = App::getEntityRepository('DeskPRO:Cache')->load("ticket_custom_fields.{$ticket['id']}.agent_block")) === false) {
 			// Custom fields
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
@@ -72,6 +74,7 @@ class TicketController extends AbstractController
 
 			App::getEntityRepository('DeskPRO:Cache')->save("ticket_custom_fields.{$ticket['id']}.agent_block", $ticket_custom_fields_block, 259200);
 		}
+		*/
 
 		#------------------------------
 		# Messages
@@ -174,8 +177,6 @@ class TicketController extends AbstractController
 		//	$show_related_content = true;
 		//}
 
-		$custom_fields = App::getApi('custom_fields.tickets')->getFields();
-
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
@@ -184,7 +185,6 @@ class TicketController extends AbstractController
 
 			'show_related_content' => $show_related_content,
 
-			'ticket_custom_fields_block' => $ticket_custom_fields_block,
 			'ticket_messages_block' => $ticket_messages_block,
 			'ticket_notes_block' => $ticket_notes_block,
 
@@ -426,30 +426,33 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id);
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		foreach ($ticket_field_defs as $field_def) {
-			foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
-				$ticket->setCustomData($info[0], $info[1], $info[2]);
+		
+		if (!empty($_POST['custom_fields'])) {
+			foreach ($ticket_field_defs as $field_def) {
+				foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
+					$ticket->setCustomData($info[0], $info[1], $info[2]);
+				}
 			}
+
+			App::getOrm()->persist($ticket);
+			App::getOrm()->flush();
 		}
 
-		App::getOrm()->persist($ticket);
-		App::getOrm()->flush();
-
+		// Custom fields
 		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
-		$custom_fields = array();
-		foreach ($ticket_field_defs as $f_def) {
-			$f = $f_def->getHandler()->getFormField();
 
-			$custom_fields[] = array(
-				'field_def' => $f_def,
-				'title' => $f_def['title'],
-				'rendered' => $ticket_data_structured[$f_def['id']] ? $f_def->getHandler()->renderHtml($ticket_data_structured[$f_def['id']]) : false
-			);
-		}
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
-		return $this->render('AgentBundle:Ticket:custom-fields-rendered.html.twig', array(
-																						 'custom_fields' => $custom_fields,
-																					));
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		return $this->render('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
+			'ticket' => $ticket,
+			'ticket_options' => $ticket_options,
+			'custom_fields' => $custom_fields,
+		));
 	}
 
 

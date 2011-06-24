@@ -45,6 +45,7 @@ DeskPRO.Form.InlineEdit = new Class({
 	
 	
 	initialize: function (options) {
+
 		this.setOptions(options);
 
 		var sel = '.' + this.options['editableClass'];

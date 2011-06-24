@@ -3682,3 +3682,7 @@ table.who-voted.do-show-people > tbody > tr.type-person {
 table.who-voted.do-show-guests > tbody > tr.type-guest {
     display: table-row;
 }
+
+.edit-fields-overlay select { min-width: 97%; }
+.edit-fields-overlay input[type="text"] { width: 97%; }
+.edit-fields-overlay textarea { width: 97%; height: 100px; }

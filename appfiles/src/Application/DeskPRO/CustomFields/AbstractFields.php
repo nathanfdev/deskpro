@@ -48,8 +48,16 @@ abstract class AbstractFields
 
 			$f = $f_def->getHandler()->getFormField($value);
 
+			$name = 'field_' . $f_def['id'];
+
 			if ($field_group) {
 				$field_group->add($f);
+				$form = $field_group->getForm();
+				$formView = $form->createView();
+				$formView = $formView[$name];
+			} else {
+				$form = $f->getForm();
+				$formView = $form->createView();
 			}
 
 			$rendered = $value ? $f_def->getHandler()->renderHtml($value) : null;
@@ -59,12 +67,13 @@ abstract class AbstractFields
 				'elId'            => Util::requestUniqueIdString(),
 				'id'              => $f_def['id'],
 				'name'            => 'field_' . $f_def['id'],
-				'handler'         => $f,
+				'handler'         => $f_def->getHandler(),
 				'field_def'       => $f_def,
 				'title'           => $f_def['title'],
-				'form'            => $f->getForm(),
-				'formView'        => $f->getForm()->createView(),
+				'form'            => $form,
+				'formView'        => $formView,
 				'value'           => $value,
+				'field_handler'   => strtolower(Util::getBaseClassname($f_def->getHandler())),
 			);
 		}
 
