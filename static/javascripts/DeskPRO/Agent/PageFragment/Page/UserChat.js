@@ -247,8 +247,8 @@ DeskPRO.Agent.PageFragment.Page.UserChat = new Class({
 
 		// Add 'pop' sound
 		var alertEl = $.tmpl('user_chat_newmsg_sound');
-		console.log('alert %o', alertEl);
 		alertEl.appendTo(this.wrapper);
+		DeskPRO_Window.handleSoundElements(alertEl);
 	},
 
 	addMessageRow: function(name, msg, type) {

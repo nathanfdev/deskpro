@@ -720,6 +720,95 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 	},
 
+
+	/**
+	 * Plays a sound through HTML5 audio element.
+	 *
+	 * @param files A file or array of file sources (MP3 and OGG for best cross-browser)
+	 * @param options
+	 * @return jQuery
+	 */
+	playSound: function(files, setOptions) {
+
+		setOptions = setOptions || {};
+
+		options = $.extend({}, {
+			'autoplay': true,
+			'volume': false,
+			'loop': false,
+			'destroyAfter': true
+		}, setOptions);
+
+		if (this.volume == 0) {
+			return null;
+		}
+
+		if (typeof files == 'string') {
+			files = [files];
+		}
+
+		var volume = this.volume;
+		if (options.volume) {
+			volume = options.volume;
+		}
+
+		var html = [];
+		html.push('<audio ');
+		if (volume != 1) {
+			html.push(' volume="' + volume + '" ');
+		}
+		if (options.autoplay) {
+			html.push(' autoplay="autoplay" ');
+		}
+		if (options.loop) {
+			html.push(' loop="loop" ');
+		}
+		html.push('>');
+
+		Array.each(files, function(f) {
+			html.push('<source src="' + f + '" />');
+		});
+
+		html.push('</audio>');
+		html = html.join('');
+
+		var el = $(html);
+
+		if (options.destroyAfter) {
+			el.bind('ended', function() {
+				$(this).remove();
+			});
+		}
+
+		el.appendTo('body');
+
+		return el;
+	},
+
+
+	/**
+	 * Plays a standard sound from the static dir. This assumes an MP3
+	 * and OGG version of the file exists.
+	 * 
+	 * @param name
+	 * @param options
+	 */
+	playLibrarySound: function(name, options) {
+		var files = [
+			ASSETS_BASE_URL + 'sounds/' + name + '.mp3',
+			ASSETS_BASE_URL + 'sounds/' + name + '.ogg'
+		];
+
+		this.playSound(files, options);
+	},
+
+	handleSoundElements: function(els) {
+		var self = this;
+		$('[data-play-sound]', els).each(function() {
+			self.playLibrarySound($(this).data('play-sound'));
+		});
+	},
+
 	//#################################################################
 	//# AJAX and loading
 	//#################################################################
@@ -1025,6 +1114,56 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#agent_status').click(function(ev) {
 			ev.preventDefault();
 			self.toggleAgentStatus();
+		});
+
+		this.volume = 0.8;
+
+		// Volume slider
+		$('#volume_controls .slider').slider({
+			orientation: "vertical",
+			range: "min",
+			min: 0,
+			max: 100,
+			value: 80,
+			slide: function(event, ui) {
+				self.volume = parseInt(ui.value) / 100;
+
+				if (self.volume == 0 || self.volume == 0.0) {
+					self.volume = 0;
+					$('#sound_icon').addClass('off');
+				} else {
+					$('#sound_icon').removeClass('off');
+				}
+			}
+		});
+
+		var closeSoundMenu = function() {
+			$('#volume_controls_back').hide();
+			$('#volume_controls').fadeOut();
+		};
+
+		// Use of a backdrop here ensures we can handle the click and not
+		// fire anything else by accident on bubbling
+		// Also the document click is unreliable since there may be other
+		// elements that also stop bubbling.
+		$('#volume_controls_back').click(function(ev) {
+			ev.stopPropagation();
+			closeSoundMenu();
+		});
+
+		var showSoundMenu = function() {
+			$('#volume_controls_back').show();
+			$('#volume_controls').position({
+				my: 'center top',
+				at: 'center bottom',
+				of: $('#sound_icon')
+			});
+			$('#volume_controls').fadeIn();
+		};
+
+		$('#sound_icon a').click(function(ev) {
+			ev.preventDefault();
+			showSoundMenu();
 		});
 	},
 

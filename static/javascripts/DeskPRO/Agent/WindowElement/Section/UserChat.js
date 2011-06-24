@@ -9,8 +9,8 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		$('#new_user_chat_alert').template('new_user_chat_alert');
 		$('#new_user_chat_alert_message').template('new_user_chat_alert_message');
-		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
 		$('#added_part_user_chat_alert').template('added_part_user_chat_alert');
+		$('#user_chat_newmsg_sound').template('user_chat_newmsg_sound');
 
 		this._initMessageHandlers();
 
@@ -110,6 +110,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 
 		var alertEl = $.tmpl('added_part_user_chat_alert');
 		alertEl.appendTo('body');
+		DeskPRO_Window.handleSoundElements(alertEl);
 
 		$('.dismiss-trigger', alertEl).click(function() {
 			alertEl.remove();
@@ -128,6 +129,7 @@ DeskPRO.Agent.WindowElement.Section.UserChat = new Orb.Class({
 	showNewChatAlert: function(conversation_id, initial_message) {
 		var alertEl = $.tmpl('new_user_chat_alert');
 		alertEl.appendTo('body');
+		DeskPRO_Window.handleSoundElements(alertEl);
 
 		$('.dismiss-trigger', alertEl).click(function() {
 			alertEl.remove();
