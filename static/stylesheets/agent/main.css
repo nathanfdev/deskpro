@@ -3687,3 +3687,56 @@ table.who-voted.do-show-guests > tbody > tr.type-guest {
 .edit-fields-overlay select { min-width: 97%; }
 .edit-fields-overlay input[type="text"] { width: 97%; }
 .edit-fields-overlay textarea { width: 97%; height: 100px; }
+
+
+
+
+
+
+
+
+
+html.admin, body.admin {
+    height: 100%;
+}
+
+.admin-wrap {
+    min-height:100%;
+    position:relative;
+}
+
+.admin-content-wrap {
+    padding-bottom: 50px;
+}
+
+.admin-footer {
+    position:absolute;
+    bottom:0;
+    left: 0;
+    right: 0;
+
+    height:30px;   /* Height of the footer */
+
+    border-top: 1px solid #A1A7B5;
+
+    background: #cbced6;
+    background: -moz-linear-gradient(top, #cbced6 0%, #e2e6ef 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#cbced6), color-stop(100%,#e2e6ef));
+    background: -webkit-linear-gradient(top, #cbced6 0%,#e2e6ef 100%);
+    background: -o-linear-gradient(top, #cbced6 0%,#e2e6ef 100%);
+    background: -ms-linear-gradient(top, #cbced6 0%,#e2e6ef 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#cbced6', endColorstr='#e2e6ef',GradientType=0 );
+    background: linear-gradient(top, #cbced6 0%,#e2e6ef 100%);
+
+    text-align: center;
+    line-height: 30px;
+    font-size: 11px;
+
+    text-shadow: 0px 1px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=0, offy=1);
+}
+
+.admin-footer a {
+    color: #000;
+    text-decoration: underline;
+}

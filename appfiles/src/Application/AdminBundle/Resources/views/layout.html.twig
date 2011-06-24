@@ -1,5 +1,5 @@
 <!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
-<html xmlns="http://www.w3.org/1999/xhtml">
+<html xmlns="http://www.w3.org/1999/xhtml" class="admin">
 <head>
 	<link rel="shortcut icon" href="{{ path('favicon', {}, true) }}" />
 
@@ -105,7 +105,8 @@
 	{% block html_head %}{% endblock %}
 	{% block page_js_exec %}{% endblock %}
 </head>
-<body id="{% block page_id %}{% endblock %}" class="{% block body_class %}{% endblock %}">
+<body id="{% block page_id %}{% endblock %}" class="admin {% block body_class %}{% endblock %}">
+<div class="admin-wrap">
 
 <div id="header">
 	<div id="header-top">
@@ -470,9 +471,16 @@
 	</div>
 </div>
 
-<div class="admin-single-content">
-	{% block content %}{% endblock %}
+<div class="admin-content-wrap">
+	<div class="admin-single-content">
+		{% block content %}{% endblock %}
+	</div>
 </div>
 
+<div class="admin-footer">
+	Powered by <a href="http://www.deskpro.com/">DeskPRO</a>
+</div>
+
+</div> {# /adminwrap #}
 </body>
 </html>
