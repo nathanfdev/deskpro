@@ -1,12 +1,15 @@
+<div class="bar-wrapper">
 <div class="tab-bottom-wrap">
-	<div class="tab-bottom-open" style="display:none;">
+	<div class="tab-bottom-open">
 		<div class="tab-bottom-tabs">
 			<ul>
 				<li class="tab-trigger reply-reply on" data-tab-for=".tab-content.reply-reply"><a>Message</a></li>
 				<li class="tab-trigger reply-cc" data-tab-for=".tab-content.reply-cc"><a>CC</a></li>
 				<li class="tab-trigger reply-attach" data-tab-for=".tab-content.reply-attach"><a>Attachment</a></li>
 			</ul>
-			<span class="close-tab-open close-trigger">Close</span>
+			<span class="bottom-tabs-button macros">Macros</span>
+			<span class="bottom-tabs-button macros-apply" style="display: none;">Apply</span>
+			<span class="bottom-tabs-button macros-cancel" style="display: none;">Cancel</span>
 		</div>
 
 		<div class="tab-bottom-contents" style="height:134px;">
@@ -74,6 +77,7 @@
 		</div>
 	</div>
 
+	{#
 	<div class="tab-bottom">
 		<input type="text" class="placeholder" value="Start typing a reply..." />
 		<div class="bar-actions">
@@ -86,4 +90,6 @@
 			</ul>
 		</div>
 	</div>
+	#}
+</div>
 </div>
