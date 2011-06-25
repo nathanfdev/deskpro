@@ -2,11 +2,12 @@
 
 namespace Application\AgentBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\AgentBundle\HashRouter;
 
-use \Orb\Util\Util;
-use \Orb\Util\Arrays;
+use Orb\Util\Util;
+use Orb\Util\Arrays;
 
 class MiscController extends AbstractController
 {
@@ -62,6 +63,9 @@ class MiscController extends AbstractController
 		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('agent');
 		$ticket_display->addPagesFromDb();
 		$js[] = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
+
+		$hash_router = new HashRouter($this->get('router')->getGenerator());
+		$js[] = $hash_router->compile();
 
 		$js = implode("\n", $js);
 		

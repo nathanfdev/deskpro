@@ -171,6 +171,7 @@ $CONFIG['agent']['vendors'] = array(
 		'vendor/jquery/jquery-tmpl/jquery.tmpl.min.js',
 
 		'vendor/jquery/jquery.cookie.js',
+		'vendor/jquery/jquery.history.js',
 		'vendor/jquery/jquery.form.js',
 		'vendor/jquery/jquery.form.js',
 		'vendor/jquery/jquery.layout.min.js',

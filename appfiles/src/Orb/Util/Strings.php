@@ -972,6 +972,24 @@ class Strings
 	}
 
 
+	/**
+	 * Inject a string into another string at a certain position
+	 *
+	 * @return string
+	 */
+	public static function inject($add_string, $to_string, $at_pos)
+	{
+		if ($at_pos >= strlen($to_string)) {
+			return $to_string . $add_string;
+		}
+
+		$str1 = substr($to_string, 0, $at_pos);
+		$str2 = substr($to_string, $at_pos);
+
+		return $str1 . $add_string . $str2;
+	}
+
+
 
 	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable

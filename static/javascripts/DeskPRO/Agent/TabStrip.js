@@ -8,6 +8,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		this.tabManager = tabManager;
 		this.cancelClickActivate = false;
 
+		this.uniqueCounter = 0;
+
 		var self = this;
 
 		/* TODO: This is causing weird errors when closing, presume because close click being
@@ -98,6 +100,26 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		return tabId;
 	},
 
+	findTabByAnchor: function(anchor) {
+		var tabId = false;
+
+		Object.each(this.tabManager.getTabs(), function(tab) {
+			if (tab.page.getMetaData('anchor') == anchor) {
+				tabId = tab.id;
+				return false;
+			}
+		});
+
+		return tabId;
+	},
+
+	getTabByAnchor: function(anchor) {
+		var tabId = this.findTabByAnchor(anchor);
+		if (!tabId) return null;
+
+		return this.getTabById(tabId);
+	},
+
 	findTabByRouteUrl: function(routeUrl) {
 		var tabId = false;
 		Object.each(this.tabManager.getTabs(), function(tab) {
@@ -123,7 +145,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 	addTab: function(page) {
 		console.log(page);
-		var id = Orb.uuid();
+		var id = 'tab' + this.uniqueCounter++;
 		this.tabManager.addTab(id, {
 			html: page.getHtml(),
 			page: page,
@@ -238,7 +260,11 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	},
 
 	_onTabAdd: function(tabData) {
-		tabData.btnId = Orb.getUniqueId('tab_');
+		tabData.btnId = tabData.id;
+
+		if (!tabData.page.getMetaData('anchor') && tabData.page.TYPENAME != 'loading') {
+			tabData.page.setMetaData('anchor', tabData.id);
+		}
 
 		var tabIdClass = tabData.page.getMetaData('tabIdClass', '');
 		var html = '<li id="'+tabData.btnId+'" data-tab-id="'+tabData.id+'" class="tab tipped ' + tabIdClass;
@@ -314,6 +340,10 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			if (!document.getElementById(tipId)) {
 				$('#' + tabData.wrapperId + ' ' + tabData.page.getMetaData('tabTip')).attr('id', tipId);
 			}
+		}
+
+		if (tabData.page.getMetaData('anchor')) {
+			jQuery.history.load(tabData.page.getMetaData('anchor'));
 		}
 	},
 

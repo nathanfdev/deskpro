@@ -19,6 +19,8 @@
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/deskpro-layout.css') }}" type="text/css" media="screen" />
 <link rel="stylesheet" href="{{ asset('stylesheets/agent/deskpro-interface.css') }}" type="text/css" media="screen" />
 
+{# Bridge tries to auto-load these, but with the compiled scripts
+the detected path is incorrect so we have to hard-code them #}
 <script type="text/javascript">
 var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
     Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
@@ -40,4 +42,4 @@ $('#loading_css_header').remove();
 {{ html_js_pack('agent.pages') }}
 {{ html_js_pack('agent.pages-lists') }}
 
-<script async="async" src="{{ path('agent_interface_data_js') }}"></script>
+<script src="{{ path('agent_interface_data_js') }}"></script>

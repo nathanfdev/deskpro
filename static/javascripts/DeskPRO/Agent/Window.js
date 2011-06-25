@@ -54,6 +54,55 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$('#page_loading').remove();
 		$('#loading_css').remove();
+
+		this.hashRouter = window.DeskPRO_HashRouter;
+		this.hashRouter.setBaseUrl(BASE_URL);
+
+		var self = this;
+		console.log('ere');
+		$.history.init(function(hash){
+			self.loadHashPath(hash);
+		},
+		{ unescape: ",/:" });
+	},
+
+	loadHashPath: function(hash) {
+		// Hashes are #keyword:tabid:arg1,arg2
+		// tabid part is for non-unique pages (ie newticket) and
+		// a user is clicking between tabs. It is optional,
+		// and ignored if the tabid doesn't exist.
+
+		var tabId = this.pageTabStrip.findTabByAnchor(hash);
+		if (tabId) {
+			this.pageTabStrip.activateTabById(tabId);
+			return;
+		}
+
+		var parts = hash.split(':');
+		if (parts.length != 2 && parts.length != 3) {
+			// Invaid
+			return;
+		}
+
+		if (parts.length == 2) {
+			var anchorName  = parts[0];
+			var tabId       = null;
+			var args        = parts[1];
+		} else {
+			var anchorName  = parts[0];
+			var tabId       = parts[1];
+			var args        = parts[2];
+		}
+
+		args = args.split(':');
+
+		if (!this.hashRouter.hasAnchor(anchorName)) {
+			return;
+		}
+
+		var url = this.hashRouter.getUrl(anchorName, args);
+
+		this.loadPage(url, { anchor: hash });
 	},
 
 	windowStateUpdated: function(type) {
@@ -568,6 +617,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 					if (routeData.tabPlaceholderId) {
 						page.setMetaData('tabPlaceholderId', routeData.tabPlaceholderId);
 					}
+				}
+				if (routeData.anchor) {
+					page.setMetaData('anchor', routeData.anchor);
 				}
 
 				this.addPageTab(page);

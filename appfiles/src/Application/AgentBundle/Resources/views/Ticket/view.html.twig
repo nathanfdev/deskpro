@@ -2,7 +2,7 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.Ticket';
 pageMeta.title         = {{ticket.subject|json_encode|raw}};
 pageMeta.ticket_id     = {{ticket.id}};
-pageMeta.pageIdentity  = 'ticket:{{ticket.id}}';
+pageMeta.anchor        = 'ticket:{{ticket.id}}';
 
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'tickets'}) }}';
 pageMeta.labelsSaveUrl                = '{{ path('agent_ticket_ajax_labels_save', {'ticket_id': ticket.id}) }}';

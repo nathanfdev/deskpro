@@ -145,6 +145,7 @@ agent_people_view:
   pattern: /people/{person_id}
   defaults: { _controller: AgentBundle:Person:view }
   requirements: { person_id: "\d+" }
+  options: { anchor_name: 'person' }
 
 agent_people_viewsession:
   pattern: /people/session/{session_id}
@@ -445,6 +446,7 @@ agent_ticketsearch_ajax_release_locks:
 agent_ticket_new:
   pattern: /tickets/new
   defaults: { _controller: AgentBundle:Ticket:new }
+  options: { anchor_name: 'newticket' }
 
 agent_people_new_ajaxsave:
   pattern: /tickets/new-ajax-save
@@ -454,6 +456,7 @@ agent_ticket_view:
   pattern: /tickets/{ticket_id}
   defaults: { _controller: AgentBundle:Ticket:view }
   requirements: { ticket_id: "\d+" }
+  options: { anchor_name: 'ticket' }
 
 agent_ticket_viewtip:
   pattern: /tickets/{ticket_id}/tip
@@ -643,6 +646,7 @@ agent_kb_article:
   pattern: /kb/article/{article_id}
   defaults: { _controller: AgentBundle:Kb:viewArticle }
   requirements: { article_id: "\d+" }
+  options: { anchor_name: 'article' }
 
 agent_kb_article_edit:
   pattern: /kb/article/{article_id}/save
@@ -790,6 +794,7 @@ agent_ideas_disapprove_comment:
 agent_ideas_view:
   pattern: /ideas/view/{idea_id}
   defaults: { _controller: AgentBundle:Ideas:view }
+  options: { anchor_name: 'idea' }
 
 agent_ideas_validate:
   pattern: /ideas/view/{idea_id}/validate
@@ -854,6 +859,7 @@ agent_agentchat_getsectiondata:
 agent_userchat_view:
   pattern: /chat/view/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:view }
+  options: { anchor_name: 'chat' }
 
 agent_userchat_listopen:
   pattern: /chat/list-open/{agent_id}

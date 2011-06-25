@@ -11,6 +11,7 @@ parameters:
   router.options.generator_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
   router.options.generator_base_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
   templating.globals.class: "Application\DeskPRO\Templating\GlobalVariables"
+  router.options.generator_dumper_class: "Application\DeskPRO\Routing\Generator\Dumper\\PhpGeneratorDumper"
 
 services:
   templating.engine.jsonphp:
