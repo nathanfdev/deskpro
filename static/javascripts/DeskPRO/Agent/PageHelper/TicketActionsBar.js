@@ -39,7 +39,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			self.saveActions();
 		});
 
-		$('li.macros-cancel').click(function() {
+		$('.macros-cancel').click(function() {
 			self._removeTicketIdsToCurrentAction(self.getSelectedTicketIds());
 			self.toggleMacroApplyBtn('off');
 		});
@@ -437,25 +437,24 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 
 	toggleMacroApplyBtn: function(force, title) {
 
-		var ul = $('.bar-actions', this.ticketBar);
+		var ul = $('.tab-bottom-tabs', this.ticketBar);
 
 		if (!force) {
-			if ($('li.macros', ul).is(':visible')) {
+			if ($('.macros', ul).is(':visible')) {
 				force = 'on';
 			} else {
 				force = 'off';
 			}
 		}
 
-		var otherBtns = $('li:not(.macro-on, .send-reply)', ul);
-		var applyBtns = $('li.macro-on', ul);
-
-		if (force == 'on') {
-			otherBtns.hide();
-			applyBtns.show();
+		if (force == 'off') {
+			$('.macros', ul).show();
+			$('.macros-apply', ul).hide();
+			$('.macros-cancel', ul).hide();
 		} else {
-			otherBtns.show();
-			applyBtns.hide();
+			$('.macros', ul).hide();
+			$('.macros-apply', ul).show();
+			$('.macros-cancel', ul).show();
 		}
 	},
 

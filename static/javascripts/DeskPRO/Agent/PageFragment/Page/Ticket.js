@@ -64,10 +64,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		el.css('min-width', el.width());
 	},
 
-	_initLayout: function() {
-		this.layout = new DeskPRO.Agent.Layout.FooterLayout(this.wrapper);
-	},
-
 	destroyPage: function() {
 
 		this.parent();

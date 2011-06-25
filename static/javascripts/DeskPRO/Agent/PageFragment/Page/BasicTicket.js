@@ -24,9 +24,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		this.wrapper = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
-		this.barWrapper = this.wrapper.children('.layout-footer').attr('id', Orb.getUniqueId());
-
-		this._initLayout();
+		this.barWrapper = $('.bar-wrapper', this.wrapper);
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
@@ -61,11 +59,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		});
 	},
 
-	_initLayout: function() { },
-
 	_handleResize: function() {
-		if (!this.layout) return;
-		this.layout.resizeAll();
 	},
 
 	destroyPage: function() {
@@ -325,19 +319,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	ticketMacrosMenu: null,
 
 	_initReplyBar: function() {
-		this.ticketBar = $('div.tab-bottom:first', this.barWrapper);
+		this.ticketBar = $('.tab-bottom-open:first', this.barWrapper);
 		this.ticketReply = $('div.tab-bottom-open:first', this.barWrapper);
 
 		this.ticketReplyTabs = $('.tab-bottom-tabs', this.barWrapper);
 
 		var self = this;
-		$('input.placeholder', this.ticketBar).click(function() {
-			self.toggleReplyBar();
-		});
-
-		$('.close-trigger', this.ticketReplyTabs).click(function() {
-			self.toggleReplyBar();
-		});
 
 		// Send reply
 		$('li.send-reply', this.barWrapper).click(function(ev) {
@@ -361,14 +348,14 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// Macros menu
 		this.ticketMacrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.bar-actions li.macros', this.ticketBar),
+			triggerElement: $('.tab-bottom-tabs .macros', this.ticketBar),
 			menuElement: $('ul.ticket-macros-menu:first', this.contentWrapper),
 			onItemClicked: this._handleMacroClick.bind(this)
 		});
 		this.destroyMenus.push(this.ticketMacrosMenu);
 
 		// Macro apply/cancel
-		$('.bar-actions li.macros-apply', this.ticketBar).click((function() {
+		$('.tab-bottom-tabs .macros-apply', this.ticketBar).click((function() {
 			var data = [];
 			if (this._currentMacroId) {
 				data.push({ name: 'macro_id', value: this._currentMacroId });
@@ -379,7 +366,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this._currentMacroId = null;
 		}).bind(this));
 
-		$('.bar-actions li.macros-cancel', this.ticketBar).click((function() {
+		$('.tab-bottom-tabs .macros-cancel', this.ticketBar).click((function() {
 			this.changeManager.revertChanges();
 			this.toggleMacroApplyBtn('off');
 
@@ -515,51 +502,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		}
 	},
 
-	toggleReplyBar: function(force) {
-
-		if (!force) {
-			if (this.ticketReply.is(':visible')) {
-				force = 'off';
-			} else {
-				force = 'on';
-			}
-		}
-
-		if (force == 'on') {
-
-			$('.bar-actions li:not(.send-reply)', this.barWrapper).hide();
-			$('.bar-actions li.send-reply', this.barWrapper).show();
-
-			this.ticketReply.show();
-			this.barWrapper.addClass('expanded');
-			this.layout.expandFooter();
-
-			var msg = $('.tab-content.reply-reply', this.ticketReply);
-
-			$('input.placeholder', this.ticketBar).hide();
-			$('li.submit-reply.trigger:first', this.barWrapper).show();
-
-			// When we open we should scroll down by the new height,
-			// so the same position is visible in the center pane
-			//var h = this.barWrapper.outerHeight() + this.ticketReplyTabs.outerHeight() - 26; /* -26 for original size */
-			//this.contentWrapper.scrollTop(this.contentWrapper.scrollTop() + h);
-
-			// Focus textarea
-			$('textarea', this.ticketReply).focus();
-		} else {
-
-			$('.bar-actions li.send-reply', this.barWrapper).hide();
-			$('.bar-actions li:not(.send-reply, .macro-on)', this.barWrapper).show();
-
-			this.layout.collapseFooter();
-			this.ticketReply.hide();
-			this.barWrapper.removeClass('expanded');
-
-			$('input.placeholder', this.ticketBar).show();
-			$('li.submit-reply.trigger:first', this.barWrapper).hide();
-		}
-	},
-
 	isSendingReply: false,
 	_sendReply: function() {
 		this._handleSendReply($(':input, textarea, select', $('.reply-form-fields',this.ticketReply)));
@@ -574,7 +516,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var spinnerContainer = $('.send-reply .spinner', this.ticketBar).hide().empty();
 		spinnerContainer.parent().removeClass('is-loading');
 
-		this.toggleReplyBar('off');
 		this.displayNewMessage(html);
 		this.afterNewReply();
 	},
