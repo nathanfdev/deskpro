@@ -1,9 +1,11 @@
 <div {% if id %}id="{{ id }}"{% endif %} class="{{ classname|default('actions-tpl') }}" style="display:none">
 	<div class="row">
 		<div class="term">
-			<div class="type"></div>
-			<div class="options"></div>
 			<div class="remove">-</div>
+			<div class="controls">
+				<div class="type"></div>
+				<div class="options"></div>
+			</div>
 		</div>
 	</div>
 	<div class="type" title="Status" data-rule-type="status">

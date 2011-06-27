@@ -98,12 +98,15 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 			if (!this.options.triggerElement) {
 				var text = selected_text;
-				if (!text.length) text = 'Choose';
+				if (!text.length) text = 'Choose...';
 				var spanEl = this.options.triggerElement = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(origMenuElement);
 
 				this.addEvent('itemClicked', function(ev) {
 					var itemEl = $(ev.itemEl);
-					spanEl.text(itemEl.text());
+					var text = itemEl.text().trim();
+					if (!text.length) text = 'Choose...';
+					
+					spanEl.text(text);
 				});
 			}
 

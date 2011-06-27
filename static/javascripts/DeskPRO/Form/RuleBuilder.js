@@ -79,6 +79,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var menu = new DeskPRO.UI.Menu({
 			menuElement: select
 		});
+		console.log(menu);
 
 		// Update its name
 		if (formBaseName) {
@@ -162,6 +163,13 @@ DeskPRO.Form.RuleBuilder = new Class({
 		if (op.is('select')) {
 			var opMenu = new DeskPRO.UI.Menu({
 				menuElement: op
+			});
+		}
+
+		var choiceSel = $('select', choice);
+		if (choiceSel.length) {
+			var choiceMenu = new DeskPRO.UI.Menu({
+				menuElement: choiceSel
 			});
 		}
 
