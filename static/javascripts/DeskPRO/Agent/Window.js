@@ -124,8 +124,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			var type = this.fragmentRouter.getFragmentType(fragmentName);
 
 			if (type == 'list') {
+				this.loadingListFragment = hash;
 				this.loadListPane(url, { url_fragment: hash });
 			} else {
+				this.loadingPageFragment = hash;
 				this.loadPage(url, { url_fragment: hash });
 			}
 		}, this);

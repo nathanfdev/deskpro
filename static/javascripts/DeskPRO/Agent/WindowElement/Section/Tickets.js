@@ -35,7 +35,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this._initOverview();
 		this._initFlagged();
 
-		if (this.isVisible()) {
+		if (this.isVisible() && !DeskPRO_Window.loadingListFragment) {
 			this._loadAutoLoadRoutes();
 		}
 	},
