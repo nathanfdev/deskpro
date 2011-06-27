@@ -86,11 +86,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// anyway by the fragment_type in routing.yml
 
 		var segments = browserHash.split(',');
+		var activateTabId = null;
+
 		Array.each(segments, function (hash, i) {
 
 			var tabId = this.pageTabStrip.findTabByFragment(hash);
 			if (tabId) {
-				this.pageTabStrip.activateTabById(tabId);
+				// The first tab in the hash is considered the 'active' tab,
+				// so set it to be selected after
+				if (!activateTabId) {
+					activateTabId = tabId;
+				}
 				return;
 			}
 
@@ -131,6 +137,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 				this.loadPage(url, { url_fragment: hash });
 			}
 		}, this);
+
+		if (activateTabId) {
+			this.pageTabStrip.activateTabById(tabId);
+		}
 	},
 
 	updateWindowUrlFragment: function() {
@@ -144,10 +154,24 @@ DeskPRO.Agent.Window = new Orb.Class({
 			segments.push(listPage.getMetaData('url_fragment'));
 		}
 
-		var tabPage = this.getCurrentTabPage();
-		if (tabPage && tabPage.getMetaData('url_fragment')) {
-			segments.push(tabPage.getMetaData('url_fragment'));
+		// Currently selected tab always goes first
+		var currentTab = this.pageTabStrip.getActiveTab();
+		if (currentTab && currentTab.page.getMetaData('url_fragment')) {
+			segments.push(currentTab.page.getMetaData('url_fragment'));
 		}
+
+		// And all other tabs go after
+		var tabs = this.pageTabStrip.getTabs();
+		Object.each(tabs, function(tab, id) {
+			var tabPage = tab.page;
+			if (tab.id == currentTab.id) {
+				return;
+			}
+
+			if (tabPage.getMetaData('url_fragment')) {
+				segments.push(tabPage.getMetaData('url_fragment'));
+			}
+		});
 
 		var browserHash = '';
 		browserHash = segments.join(',');

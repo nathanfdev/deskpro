@@ -8,16 +8,18 @@ this.innerLayout=null;this.notifier=null;this._alertOverlay=null;this._confirmOv
 this.ajaxErrorOverlay=null;this.openTicketIds=[];this.releaseTicketLocks_timeout=null;this.releaseTicketLocks=[];this.winStateQueue=[]
 },initPage:function(){this._initBasic();this._initSections();this._initRoutes();this._initWindowInterface();this._initLayout();
 $("#page_loading").remove();$("#loading_css").remove();this.fragmentRouter=window.DeskPRO_FragmentRouter;this.fragmentRouter.setBaseUrl(BASE_URL);
-var a=this;$.history.init(function(b){a.loadHashPath(b)},{unescape:",/:"})},loadHashPath:function(b){if(this.cancelHashLaod){this.cancelHashLaod=false;
-return}var a=b.split(",");Array.each(a,function(g,h){var e=this.pageTabStrip.findTabByFragment(g);if(e){this.pageTabStrip.activateTabById(e);
-return}var l=this.getCurrentListPage();if(l&&l.getMetaData("url_fragment")==g){return}var f=g.match(/^(.*?)(\.(.*?))?:(.*?)$/);
-if(!f){return}var e=null;if(f[3]){var e=f[3]}var d=f[1];var j=f[4];j=j.split(":");if(!this.fragmentRouter.hasFragment(d)){return
-}var c=this.fragmentRouter.getUrl(d,j);var k=this.fragmentRouter.getFragmentType(d);if(k=="list"){this.loadingListFragment=g;
-this.loadListPane(c,{url_fragment:g})}else{this.loadingPageFragment=g;this.loadPage(c,{url_fragment:g})}},this)},updateWindowUrlFragment:function(){this.cancelHashLaod=true;
-var c=[];var d=this.getCurrentListPage();if(d&&d.getMetaData("url_fragment")){c.push(d.getMetaData("url_fragment"))}var a=this.getCurrentTabPage();
-if(a&&a.getMetaData("url_fragment")){c.push(a.getMetaData("url_fragment"))}var b="";b=c.join(",");jQuery.history.load(b)},windowStateUpdated:function(a){return;
-if(this.DEBUG.disableSaveState){return}this.winStateQueue.include(a);if(this.saveWindowState_timeout){window.clearTimeout(this.saveWindowState_timeout)
-}this.saveWindowState_timeout=this.saveWindowState.delay(4500,this)},saveWindowState:function(){var a=[];if(this.winStateQueue.contains("tabs")){Object.each(this.pageTabStrip.getTabs(),function(b){if(b.page&&b.page.getMetaData("routeUrl")&&!b.page.noRestoreTab){a.push({name:"tabs[]",value:"page:"+b.page.getMetaData("routeUrl")})
+var a=this;$.history.init(function(b){a.loadHashPath(b)},{unescape:",/:"})},loadHashPath:function(c){if(this.cancelHashLaod){this.cancelHashLaod=false;
+return}var b=c.split(",");var a=null;Array.each(b,function(h,j){var f=this.pageTabStrip.findTabByFragment(h);if(f){if(!a){a=f
+}return}var m=this.getCurrentListPage();if(m&&m.getMetaData("url_fragment")==h){return}var g=h.match(/^(.*?)(\.(.*?))?:(.*?)$/);
+if(!g){return}var f=null;if(g[3]){var f=g[3]}var e=g[1];var k=g[4];k=k.split(":");if(!this.fragmentRouter.hasFragment(e)){return
+}var d=this.fragmentRouter.getUrl(e,k);var l=this.fragmentRouter.getFragmentType(e);if(l=="list"){this.loadingListFragment=h;
+this.loadListPane(d,{url_fragment:h})}else{this.loadingPageFragment=h;this.loadPage(d,{url_fragment:h})}},this);if(a){this.pageTabStrip.activateTabById(tabId)
+}},updateWindowUrlFragment:function(){this.cancelHashLaod=true;var b=[];var d=this.getCurrentListPage();if(d&&d.getMetaData("url_fragment")){b.push(d.getMetaData("url_fragment"))
+}var e=this.pageTabStrip.getActiveTab();if(e&&e.page.getMetaData("url_fragment")){b.push(e.page.getMetaData("url_fragment"))
+}var c=this.pageTabStrip.getTabs();Object.each(c,function(g,h){var f=g.page;if(g.id==e.id){return}if(f.getMetaData("url_fragment")){b.push(f.getMetaData("url_fragment"))
+}});var a="";a=b.join(",");jQuery.history.load(a)},windowStateUpdated:function(a){return;if(this.DEBUG.disableSaveState){return
+}this.winStateQueue.include(a);if(this.saveWindowState_timeout){window.clearTimeout(this.saveWindowState_timeout)}this.saveWindowState_timeout=this.saveWindowState.delay(4500,this)
+},saveWindowState:function(){var a=[];if(this.winStateQueue.contains("tabs")){Object.each(this.pageTabStrip.getTabs(),function(b){if(b.page&&b.page.getMetaData("routeUrl")&&!b.page.noRestoreTab){a.push({name:"tabs[]",value:"page:"+b.page.getMetaData("routeUrl")})
 }});Object.each(this.listTabStrip.getTabs(),function(b){if(b.page&&b.page.getMetaData("routeUrl")&&!b.page.noRestoreTab){a.push({name:"tabs[]",value:"listpane:"+b.page.getMetaData("routeUrl")})
 }})}this.winStateQueue=[];if(!a.length){return}$.ajax({dataType:"json",url:BASE_URL+"agent/misc/ajax-save-state",type:"POST",data:a,success:function(){},error:function(){}})
 },getNotifier:function(){return this.notifier},getPoller:function(){return this.poller},getDisplayName:function(a,b){if(!window.DESKPRO_NAME_REGISTRY[a]||!window.DESKPRO_NAME_REGISTRY[a][b]){if(!window.DESKPRO_NAME_REGISTRY[a]){console.warn("Unknown name type %s",a)
