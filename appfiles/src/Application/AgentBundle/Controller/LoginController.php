@@ -57,4 +57,9 @@ class LoginController extends \Application\DeskPRO\Controller\AbstractController
 	{
 		return $this->login_helper->execAuthenticateCallbackAction($usersource_id);
 	}
+
+	public function preloadSourcesAction()
+	{
+		return $this->render('AgentBundle:Login:js-preload.html.twig');
+	}
 }

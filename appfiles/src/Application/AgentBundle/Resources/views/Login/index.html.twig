@@ -6,7 +6,7 @@
 	<script type="text/javascript">
 	if (typeof pageMeta !== 'undefined') pageMeta.goToLogin = true;
 	</script>
-	<script type="text/javascript" charset="utf-8" src="{{ asset('javascripts/jquery/jquery.min.js') }}"></script>
+	<script type="text/javascript" charset="utf-8" src="{{ asset('vendor/jquery/jquery.min.js') }}"></script>
 	<style type="text/css">
 		body,div,dl,dt,dd,ul,ol,li,h1,h2,h3,h4,h5,h6,pre,form,fieldset,input,textarea,p,blockquote,th,td { margin:0; padding:0; }
 		fieldset,img { border:0; }
@@ -59,6 +59,15 @@
 			border-top: 1px solid #484C52;
 			cursor: pointer;
 		}
+
+		#preload_iframe {
+			position: absolute;
+			bottom: 0;
+			left: 0;
+			width: 1px;
+			height: 1px;
+			border: none;
+		}
 	</style>
 	<script type="text/javascript">
 	$(document).ready(function() {
@@ -75,6 +84,8 @@
 				c.slideDown('fast');
 			});
 		});
+
+		$('<iframe id="preload_iframe" src="{{ path('agent_login_preload_sources') }}" frameborder="0"></iframe>').appendTo('body');
 	});
 	</script>
 </head>

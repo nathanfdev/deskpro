@@ -63,6 +63,10 @@ agent_login:
   pattern: /login
   defaults: { _controller: AgentBundle:Login:index }
 
+agent_login_preload_sources:
+  pattern: /login/preload-sources
+  defaults: { _controller: AgentBundle:Login:preloadSources }
+
 agent_logout:
   pattern: /logout
   defaults: { _controller: AgentBundle:Login:logout }

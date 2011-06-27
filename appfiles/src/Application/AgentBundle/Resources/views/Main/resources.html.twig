@@ -42,4 +42,6 @@ $('#loading_css_header').remove();
 {{ html_js_pack('agent.pages') }}
 {{ html_js_pack('agent.pages-lists') }}
 
+{% if not no_interface_date %}
 <script src="{{ path('agent_interface_data_js') }}"></script>
+{% endif %}
