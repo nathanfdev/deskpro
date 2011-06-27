@@ -55,54 +55,102 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#page_loading').remove();
 		$('#loading_css').remove();
 
-		this.hashRouter = window.DeskPRO_HashRouter;
-		this.hashRouter.setBaseUrl(BASE_URL);
+		this.fragmentRouter = window.DeskPRO_FragmentRouter;
+		this.fragmentRouter.setBaseUrl(BASE_URL);
 
 		var self = this;
-		console.log('ere');
+
 		$.history.init(function(hash){
 			self.loadHashPath(hash);
 		},
 		{ unescape: ",/:" });
 	},
 
-	loadHashPath: function(hash) {
-		// Hashes are #keyword:tabid:arg1,arg2
+	loadHashPath: function(browserHash) {
+
+		// This is sometimes set to prevent any of the below loading
+		// to happen when the hash is updated to reflect an already-set
+		// URL state
+		if (this.cancelHashLaod) {
+			this.cancelHashLaod = false;
+			return;
+		}
+
+		// Hashes are #keyword.tabid:arg1:arg2
 		// tabid part is for non-unique pages (ie newticket) and
 		// a user is clicking between tabs. It is optional,
 		// and ignored if the tabid doesn't exist.
 
-		var tabId = this.pageTabStrip.findTabByAnchor(hash);
-		if (tabId) {
-			this.pageTabStrip.activateTabById(tabId);
-			return;
+		// Hash segments are separated by commas. Each segment is a different
+		// page. The first segment should be the list pane, but this is enforced
+		// anyway by the fragment_type in routing.yml
+
+		var segments = browserHash.split(',');
+		Array.each(segments, function (hash, i) {
+
+			var tabId = this.pageTabStrip.findTabByFragment(hash);
+			if (tabId) {
+				this.pageTabStrip.activateTabById(tabId);
+				return;
+			}
+
+			var listPage = this.getCurrentListPage();
+			if (listPage && listPage.getMetaData('url_fragment') == hash) {
+				return;
+			}
+
+			var parts = hash.match(/^(.*?)(\.(.*?))?:(.*?)$/);
+
+			if (!parts) {
+				// Invalid
+				return;
+			}
+
+			var tabId = null;
+			if (parts[3]) {
+				var tabId = parts[3];
+			}
+
+			var fragmentName = parts[1];
+			var args = parts[4];
+
+			args = args.split(':');
+
+			if (!this.fragmentRouter.hasFragment(fragmentName)) {
+				return;
+			}
+
+			var url = this.fragmentRouter.getUrl(fragmentName, args);
+			var type = this.fragmentRouter.getFragmentType(fragmentName);
+
+			if (type == 'list') {
+				this.loadListPane(url, { url_fragment: hash });
+			} else {
+				this.loadPage(url, { url_fragment: hash });
+			}
+		}, this);
+	},
+
+	updateWindowUrlFragment: function() {
+
+		this.cancelHashLaod = true;
+
+		var segments = [];
+
+		var listPage = this.getCurrentListPage();
+		if (listPage && listPage.getMetaData('url_fragment')) {
+			segments.push(listPage.getMetaData('url_fragment'));
 		}
 
-		var parts = hash.split(':');
-		if (parts.length != 2 && parts.length != 3) {
-			// Invaid
-			return;
+		var tabPage = this.getCurrentTabPage();
+		if (tabPage && tabPage.getMetaData('url_fragment')) {
+			segments.push(tabPage.getMetaData('url_fragment'));
 		}
 
-		if (parts.length == 2) {
-			var anchorName  = parts[0];
-			var tabId       = null;
-			var args        = parts[1];
-		} else {
-			var anchorName  = parts[0];
-			var tabId       = parts[1];
-			var args        = parts[2];
-		}
+		var browserHash = '';
+		browserHash = segments.join(',');
 
-		args = args.split(':');
-
-		if (!this.hashRouter.hasAnchor(anchorName)) {
-			return;
-		}
-
-		var url = this.hashRouter.getUrl(anchorName, args);
-
-		this.loadPage(url, { anchor: hash });
+		jQuery.history.load(browserHash);
 	},
 
 	windowStateUpdated: function(type) {
@@ -417,7 +465,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		handler.setListPageFragment(page);
+		handler.setListPageFragment(page)
+		this.listPage = page;
+
+		this.updateWindowUrlFragment();
 	},
 
 	getListPage: function() {
@@ -618,8 +669,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 						page.setMetaData('tabPlaceholderId', routeData.tabPlaceholderId);
 					}
 				}
-				if (routeData.anchor) {
-					page.setMetaData('anchor', routeData.anchor);
+				if (routeData.fragment) {
+					page.setMetaData('fragment', routeData.fragment);
 				}
 
 				this.addPageTab(page);
@@ -717,6 +768,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 		page.setMetaData(pageMeta);
 
 		return page;
+	},
+
+
+	getCurrentListPage: function() {
+		return this.listPage;
+	},
+
+	getCurrentTabPage: function() {
+		var tab = this.pageTabStrip.getActiveTab();
+		if (!tab) return null;
+
+		return tab.page;
 	},
 
 

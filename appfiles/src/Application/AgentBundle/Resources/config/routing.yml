@@ -145,7 +145,7 @@ agent_people_view:
   pattern: /people/{person_id}
   defaults: { _controller: AgentBundle:Person:view }
   requirements: { person_id: "\d+" }
-  options: { anchor_name: 'person' }
+  options: { fragment_name: 'p' }
 
 agent_people_viewsession:
   pattern: /people/session/{session_id}
@@ -388,6 +388,7 @@ agent_ticketsearch_runfilter:
   pattern: /ticket-search/filter/{filter_id}
   defaults: { _controller: AgentBundle:TicketSearch:runfilter }
   requirements: { filter_id: "\d+" }
+  options: { fragment_name: 'filter', fragment_type: 'list' }
 
 agent_ticketsearch_filter_getsummary:
   pattern: /ticket-search/filter/{filter_id}/get-summary
@@ -397,6 +398,7 @@ agent_ticketsearch_filter_getsummary:
 agent_ticketsearch_runnamedfilter:
   pattern: /ticket-search/filter/{filter_name}
   defaults: { _controller: AgentBundle:TicketSearch:runNamedFilter }
+  options: { fragment_name: 'inbox', fragment_type: 'list' }
 
 agent_ticketsearch_runflag:
   pattern: /ticket-search/flag/{flag}
@@ -446,7 +448,7 @@ agent_ticketsearch_ajax_release_locks:
 agent_ticket_new:
   pattern: /tickets/new
   defaults: { _controller: AgentBundle:Ticket:new }
-  options: { anchor_name: 'newticket' }
+  options: { fragment_name: 'nt' }
 
 agent_people_new_ajaxsave:
   pattern: /tickets/new-ajax-save
@@ -456,7 +458,7 @@ agent_ticket_view:
   pattern: /tickets/{ticket_id}
   defaults: { _controller: AgentBundle:Ticket:view }
   requirements: { ticket_id: "\d+" }
-  options: { anchor_name: 'ticket' }
+  options: { fragment_name: 't' }
 
 agent_ticket_viewtip:
   pattern: /tickets/{ticket_id}/tip
@@ -646,7 +648,7 @@ agent_kb_article:
   pattern: /kb/article/{article_id}
   defaults: { _controller: AgentBundle:Kb:viewArticle }
   requirements: { article_id: "\d+" }
-  options: { anchor_name: 'article' }
+  options: { fragment_name: 'a' }
 
 agent_kb_article_edit:
   pattern: /kb/article/{article_id}/save
@@ -794,7 +796,7 @@ agent_ideas_disapprove_comment:
 agent_ideas_view:
   pattern: /ideas/view/{idea_id}
   defaults: { _controller: AgentBundle:Ideas:view }
-  options: { anchor_name: 'idea' }
+  options: { fragment_name: 'i' }
 
 agent_ideas_validate:
   pattern: /ideas/view/{idea_id}/validate
@@ -859,7 +861,7 @@ agent_agentchat_getsectiondata:
 agent_userchat_view:
   pattern: /chat/view/{conversation_id}
   defaults: { _controller: AgentBundle:UserChat:view }
-  options: { anchor_name: 'chat' }
+  options: { fragment_name: 'c' }
 
 agent_userchat_listopen:
   pattern: /chat/list-open/{agent_id}

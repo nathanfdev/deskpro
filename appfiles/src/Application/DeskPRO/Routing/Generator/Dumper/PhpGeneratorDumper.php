@@ -18,9 +18,6 @@ use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 
-/**
- * This URL generator sets a default _locale part with the current Translator locale.
- */
 class PhpGeneratorDumper extends BasePhpGeneratorDumper
 {
     public function dump(array $options = array())
@@ -42,22 +39,29 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 
 	protected function getClassCode()
 	{
-		$route_patterns = array();
-		$anchor_names   = array();
+		$route_patterns   = array();
+		$route_fragments  = array();
+		$fragment_names   = array();
+		$fragment_types   = array();
 
 		foreach ($this->getRoutes()->all() as $name => $route) {
 
 			$route_patterns[$name] = $route->getPattern();
 
-			$a_name = $route->getOption('anchor_name');
+			$a_name = $route->getOption('fragment_name');
+			$a_type = $route->getOption('fragment_type');
 			if ($a_name) {
-				$anchor_names[$a_name] = $name;
+				$fragment_names[$a_name]  = $name;
+				$fragment_types[$a_name]  = $a_type ? $a_type : 'page';
+				$route_fragments[$name] = $a_name;
 			}
 		}
 
 		$var_code = array();
 		$var_code['routePatterns'] = 'static private $routePatterns = ' . var_export($route_patterns, true) . ';';
-		$var_code['anchorNames']   = 'static private $anchorNames = ' . var_export($anchor_names, true) . ';';
+		$var_code['routeFragments'] = 'static private $routeFragments = ' . var_export($route_fragments, true) . ';';
+		$var_code['fragmentNames']   = 'static private $fragmentNames = ' . var_export($fragment_names, true) . ';';
+		$var_code['fragmentTypes']   = 'static private $fragmentTypes = ' . var_export($fragment_types, true) . ';';
 		$var_code = implode("\n", $var_code);
 
 		$method_code = <<<EOF
@@ -71,32 +75,71 @@ class PhpGeneratorDumper extends BasePhpGeneratorDumper
 		return self::\$routePatterns;
 	}
 
-	public function getAnchorNames()
+	public function getFragmentNames()
 	{
-		return array_keys(self::\$anchorNames);
+		return array_keys(self::\$fragmentNames);
 	}
 
-	public function getRouteForAnchor(\$anchor_name)
+	public function getTypeForFragment(\$fragment_name)
 	{
-		return isset(self::\$anchorNames[\$anchor_name]) ? self::\$anchorNames[\$anchor_name] : null;
+		return isset(self::\$fragmentTypes[\$fragment_name]) ? self::\$fragmentTypes[\$fragment_name] : null;
 	}
 
-	public function getPatternForAnchor(\$anchor_name)
+	public function getRouteForFragment(\$fragment_name)
 	{
-		\$route_name = \$this->getRouteForAnchor(\$anchor_name);
+		return isset(self::\$fragmentNames[\$fragment_name]) ? self::\$fragmentNames[\$fragment_name] : null;
+	}
+
+	public function getPatternForFragment(\$fragment_name)
+	{
+		\$route_name = \$this->getRouteForFragment(\$fragment_name);
 		if (!\$route_name) return null;
 
 		return \$this->getRoutePattern(\$route_name);
 	}
 
-	public function getAnchorPatternMap()
+	public function getFragmentPatternMap()
 	{
 		\$map = array();
-		foreach (\$this->getAnchorNames() as \$anchor_name) {
-			\$map[\$anchor_name] = \$this->getPatternForAnchor(\$anchor_name);
+		foreach (\$this->getFragmentNames() as \$fragment_name) {
+			\$map[\$fragment_name] = \$this->getPatternForFragment(\$fragment_name);
 		}
 
 		return \$map;
+	}
+
+	public function getFragmentInforArray()
+	{
+		\$map = array();
+		foreach (\$this->getFragmentNames() as \$fragment_name) {
+			\$map[\$fragment_name] = array(
+				'pattern' => \$this->getPatternForFragment(\$fragment_name),
+				'type'    => \$this->getTypeForFragment(\$fragment_name),
+			);
+		}
+
+		return \$map;
+	}
+
+	public function getFragmentForRoute(\$route_name)
+	{
+		return isset(self::\$routeFragments[\$route_name]) ? self::\$routeFragments[\$route_name] : null;
+	}
+
+	public function generateFragment(\$route_name, \$parameters = array())
+	{
+		\$fragment_name = \$this->getFragmentForRoute(\$route_name);
+		if (\$fragment_name === null) {
+			throw new \InvalidArgumentException(sprintf('Fragment "%s" does not exist.', \$route_name));
+		}
+
+		if (\$parameters) {
+			\$fragment = \$fragment_name . ':' . implode(':', \$parameters);
+		} else {
+			\$fragment = \$fragment_name;
+		}
+
+		return \$fragment;
 	}
 EOF;
 

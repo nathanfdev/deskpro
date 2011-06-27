@@ -100,11 +100,11 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		return tabId;
 	},
 
-	findTabByAnchor: function(anchor) {
+	findTabByFragment: function(fragment) {
 		var tabId = false;
 
 		Object.each(this.tabManager.getTabs(), function(tab) {
-			if (tab.page.getMetaData('anchor') == anchor) {
+			if (tab.page.getMetaData('url_fragment') == fragment) {
 				tabId = tab.id;
 				return false;
 			}
@@ -113,8 +113,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		return tabId;
 	},
 
-	getTabByAnchor: function(anchor) {
-		var tabId = this.findTabByAnchor(anchor);
+	getTabByFragment: function(fragment) {
+		var tabId = this.findTabByFragment(fragment);
 		if (!tabId) return null;
 
 		return this.getTabById(tabId);
@@ -262,8 +262,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	_onTabAdd: function(tabData) {
 		tabData.btnId = tabData.id;
 
-		if (!tabData.page.getMetaData('anchor') && tabData.page.TYPENAME != 'loading') {
-			tabData.page.setMetaData('anchor', tabData.id);
+		if (!tabData.page.getMetaData('url_fragment') && tabData.page.TYPENAME != 'loading') {
+			//tabData.page.setMetaData('fragment', tabData.id);
 		}
 
 		var tabIdClass = tabData.page.getMetaData('tabIdClass', '');
@@ -342,9 +342,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			}
 		}
 
-		if (tabData.page.getMetaData('anchor')) {
-			jQuery.history.load(tabData.page.getMetaData('anchor'));
-		}
+		DeskPRO_Window.updateWindowUrlFragment();
 	},
 
 	_onTabRemove: function(tabData) {

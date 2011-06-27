@@ -1,8 +1,10 @@
 <script>
 {% if filter.sys_name %}
 	pageMeta.title = {{ phrase('agent.filter_' ~ filter.sys_name)|json_encode|raw }};
+	pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runnamedfilter', {'filter_name': filter.sys_name}) }}';
 {% else %}
 	pageMeta.title = {{ filter.title|json_encode|raw }};
+	pageMeta.url_fragment = '{{ url_fragment('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}';
 {% endif %}
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
 pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=list&partial=1&page=$page';

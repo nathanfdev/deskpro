@@ -4,7 +4,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
-use Application\AgentBundle\HashRouter;
+use Application\AgentBundle\FragmentRouter;
 
 use Orb\Util\Util;
 use Orb\Util\Arrays;
@@ -64,8 +64,8 @@ class MiscController extends AbstractController
 		$ticket_display->addPagesFromDb();
 		$js[] = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
 
-		$hash_router = new HashRouter($this->get('router')->getGenerator());
-		$js[] = $hash_router->compile();
+		$fragment_router = new FragmentRouter($this->get('router')->getGenerator());
+		$js[] = $fragment_router->compile();
 
 		$js = implode("\n", $js);
 		

@@ -17,7 +17,7 @@ use Symfony\Component\Routing\RouterInterface;
 /**
  * This generates JS hash router
  */
-class HashRouter
+class FragmentRouter
 {
 	protected $paths = array();
 	protected $non_unique = array();
@@ -32,34 +32,42 @@ class HashRouter
 	public function compile($js_classname = null)
 	{
 		if (!$js_classname) {
-			$js_classname = 'window.DeskPRO_HashRouter';
+			$js_classname = 'window.DeskPRO_FragmentRouter';
 		}
 
 		$js = array();
 		$js[] = "$js_classname = {\n\n";
 
 		$js[] = "\tbaseUrl: '',\n\n";
-		$js[] = "\tanchors: " . json_encode($this->generator->getAnchorPatternMap()) . ",\n\n";
+		$js[] = "\tfragments: " . json_encode($this->generator->getFragmentInforArray()) . ",\n\n";
 
 		$js[] = <<<EOF
 	setBaseUrl: function(baseUrl) {
 		this.baseUrl = baseUrl.replace(/\/$/, '');
 	},
 
-	hasAnchor: function(anchor_name) {
-		if (this.anchors[anchor_name] !== undefined) {
+	hasFragment: function(fragment_name) {
+		if (this.fragments[fragment_name] !== undefined) {
 			return true;
 		}
 
 		return false;
 	},
 
-	getAnchorPattern: function(anchor_name) {
-		return this.anchors[anchor_name] || '';
+	getFragmentPattern: function(fragment_name) {
+		if (!this.hasFragment(fragment_name)) return '';
+
+		return this.fragments[fragment_name]['pattern'] || '';
 	},
 
-	getUrl: function(anchor_name, args) {
-		var pattern = this.getAnchorPattern(anchor_name);
+	getFragmentType: function(fragment_name) {
+		if (!this.hasFragment(fragment_name)) return '';
+
+		return this.fragments[fragment_name]['type'] || '';
+	},
+
+	getUrl: function(fragment_name, args) {
+		var pattern = this.getFragmentPattern(fragment_name);
 
 		var matches = pattern.match(/\{(.*?)\}/g);
 		var m = null;
@@ -67,7 +75,7 @@ class HashRouter
 		for (var i = 0; i < matches.length; i++) {
 			m = matches[i];
 			if (args[i] === undefined) {
-				console.warn('Anchor %s was not provided with enough args: %o', anchor_name, args);
+				console.warn('Fragment %s was not provided with enough args: %o', fragment_name, args);
 				break;
 			}
 
@@ -82,8 +90,8 @@ class HashRouter
 		return this.baseUrl + pattern;
 	},
 
-	getUrlNamedArgs: function(anchor_name, args) {
-		var pattern = this.getAnchorPattern(anchor_name);
+	getUrlNamedArgs: function(fragment_name, args) {
+		var pattern = this.getFragmentPattern(fragment_name);
 
 		Object.each(args, function(v,k) {
 			if (typeof v == 'function') {

@@ -37,6 +37,7 @@ class TemplatingExtension extends \Twig_Extension
     {
         return array(
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
+			'url_fragment' => new \Twig_Function_Method($this, 'urlFragment'),
             'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
 			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
@@ -55,6 +56,11 @@ class TemplatingExtension extends \Twig_Extension
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
         );
     }
+
+	public function urlFragment($name, array $parameters = array())
+	{
+		return $this->container->get('router')->getGenerator()->generateFragment($name, $parameters, false);
+	}
 
 	public function renderCustomField($display_array, array $vars = array())
 	{
