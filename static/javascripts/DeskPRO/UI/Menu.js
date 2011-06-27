@@ -57,7 +57,24 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = this;
 
+		this._setupMenuElement();
+
+		if (this.options.triggerElement) {
+			this.setupTriggerElement($(this.options.triggerElement));
+		}
+
+		if (this.options.initMenuNow) {
+			this._initMenu();
+		}
+	},
+
+	_setupMenuElement: function() {
 		var origMenuElement = $(this.options.menuElement);
+
+		//------------------------------
+		// Set up a bound select box
+		//------------------------------
+
 		if (origMenuElement.is('select')) {
 			var html = [];
 			html.push('<ul class="menu" style="display:none">');
@@ -105,7 +122,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 					var itemEl = $(ev.itemEl);
 					var text = itemEl.text().trim();
 					if (!text.length) text = 'Choose...';
-					
+
 					spanEl.text(text);
 				});
 			}
@@ -117,14 +134,6 @@ DeskPRO.UI.Menu = new Orb.Class({
 				origMenuElement.val(value);
 				origMenuElement.change();
 			});
-		}
-
-		if (this.options.triggerElement) {
-			this.setupTriggerElement($(this.options.triggerElement));
-		}
-
-		if (this.options.initMenuNow) {
-			this._initMenu();
 		}
 	},
 

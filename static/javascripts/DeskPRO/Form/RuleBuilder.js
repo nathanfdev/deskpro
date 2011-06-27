@@ -79,7 +79,6 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var menu = new DeskPRO.UI.Menu({
 			menuElement: select
 		});
-		console.log(menu);
 
 		// Update its name
 		if (formBaseName) {
@@ -166,11 +165,58 @@ DeskPRO.Form.RuleBuilder = new Class({
 			});
 		}
 
-		var choiceSel = $('select', choice);
-		if (choiceSel.length) {
-			var choiceMenu = new DeskPRO.UI.Menu({
-				menuElement: choiceSel
-			});
+		var numChilds = choice.children().length;
+
+		if (numChilds == 1) {
+			var choiceSel = $('select', choice);
+			if (choiceSel.length) {
+				var choiceMenu = new DeskPRO.UI.Menu({
+					menuElement: choiceSel
+				});
+			}
+
+			var inputEl = $('input[type="text"], textarea', choice);
+			if (inputEl.length) {
+
+				var spanEl = $('<span class="menu-trigger">(click to set value)</span>');
+				spanEl.appendTo(choice);
+				spanEl.click(function() {
+					var enterCloseFn = function(ev) {
+						if (ev.keyCode == 13 && !ev.metaKey) {
+							inputEl.blur();
+							closeFn();
+						}
+					}
+					var closeFn = function() {
+						backdrop.remove();
+						inputEl.detach().unbind('keypress', enterCloseFn).css('display', 'none').appendTo(choice);
+						wrapper.remove();
+					};
+
+					var backdrop = $('<div class="backdrop"></div>');
+					backdrop.appendTo('body');
+					backdrop.click(closeFn);
+
+					var wrapper = $('<div class="field-overlay"><div class="close-trigger"></div></div>');
+					inputEl.detach().css('display', 'block').appendTo(wrapper);
+					wrapper.css({
+						left: spanEl.offset().left,
+						top: spanEl.offset().top
+					});
+					wrapper.appendTo('body').show();
+					inputEl.keypress(enterCloseFn).focus();
+
+					$('.close-trigger', wrapper).click(closeFn);
+				});
+
+				inputEl.css('display', 'none');
+				inputEl.change(function() {
+					var text = inputEl.val().trim();
+					if (!text) text = '(click to set value)';
+					
+					spanEl.text(text);
+				});
+			}
 		}
 
 		if (row.data('form-base-name')) {

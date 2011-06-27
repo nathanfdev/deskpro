@@ -120,20 +120,20 @@
 	</div>
 	{% if term_options.agent_teams %}
 		<div class="type" title="Agent Team" data-rule-type="agent_team">
+			<div class="op">
+				<select name="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+					{% if trigger.event_trigger == 'property_change' %}
+						<option value="changed">Changed</option>
+						<option value="changed_to">Changed to</option>
+						<option value="changed_from">Changed from</option>
+						<option value="not_changed_to">Not changed to</option>
+						<option value="not_changed_from">Not changed from</option>
+					{% endif %}
+				</select>
+			</div>
 			<div class="options">
-				<div class="op">
-					<select name="op">
-						<option value="is">is</option>
-						<option value="not">is not</option>
-						{% if trigger.event_trigger == 'property_change' %}
-							<option value="changed">Changed</option>
-							<option value="changed_to">Changed to</option>
-							<option value="changed_from">Changed from</option>
-							<option value="not_changed_to">Not changed to</option>
-							<option value="not_changed_from">Not changed from</option>
-						{% endif %}
-					</select>
-				</div>
 				<select name="agent_team">
 					<option value="0">No team</option>
 					<option value="-1">Any of current agents teams</option>

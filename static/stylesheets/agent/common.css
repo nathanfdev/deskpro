@@ -1030,3 +1030,43 @@ ul.item-list > li.sub {
     background:#fdd;
     text-decoration:none;
 }
+
+
+
+.backdrop {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: transparent;
+    z-index: 1000000;
+}
+
+.field-overlay {
+    border: 3px solid rgba(11, 11, 11, 0.5);
+	-webkit-box-shadow: 4px 4px 20px rgba(0, 0, 0, 0.5);
+	-moz-box-shadow: 1px 1px 10px rgba(0, 0, 0, 0.5);
+	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
+	background-color: #fff;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+    padding: 4px;
+
+    position: absolute;
+
+    z-index: 1000001;
+}
+
+.field-overlay .close-trigger {
+    position: absolute;
+    right: -8px;
+    top: -8px;
+
+    width: 13px;
+    height: 13px;
+    background: url(../../images/close-small.png) no-repeat 0 0;
+
+    text-indent: -1000px;
+    overflow: hidden;
+}
