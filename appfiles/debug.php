@@ -70,6 +70,9 @@ $CONFIG['debug']['js'] = array(
 	// When the above option is true, still enable these
 	//'enableMenuHandlers' => array('DeskPRO.Agent.WindowElement.MainMenu.People'),
 
+	// Disables use of URL fragments
+	//'disableUrlFragments' => true,
+
 	// Do not automatically load a filter when first entering agent UI
 	//'noAutoLoadFilter' => true,
 

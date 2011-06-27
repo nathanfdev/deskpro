@@ -68,6 +68,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	loadHashPath: function(browserHash) {
 
+		if (this.DEBUG.disableUrlFragments) return;
+
 		// This is sometimes set to prevent any of the below loading
 		// to happen when the hash is updated to reflect an already-set
 		// URL state
@@ -144,6 +146,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	updateWindowUrlFragment: function() {
+
+		if (this.DEBUG.disableUrlFragments) return;
 
 		this.cancelHashLaod = true;
 
@@ -1294,16 +1298,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		var showSoundMenu = function() {
 			$('#volume_controls_back').show();
-			$('#volume_controls').position({
-				my: 'center top',
-				at: 'center bottom',
-				of: $('#sound_icon')
+			$('#volume_controls').css({
+				'top': 30,
+				'left': $('#sound_icon').offset().left - 7
 			});
+
 			$('#volume_controls').fadeIn();
 		};
 
 		$('#sound_icon a').click(function(ev) {
 			ev.preventDefault();
+			ev.stopPropagation();
+
 			showSoundMenu();
 		});
 	},
