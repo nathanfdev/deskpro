@@ -49,12 +49,14 @@ DeskPRO.Form.RuleBuilder = new Class({
 	initialize: function(ruleTpl) {
 		this.ruleTpl = ruleTpl;
 
-		this.typeSelectHtml = ['<select name="type" class="type"><option value=""></option>'];
+		this.typeSelectHtml = ['<select name="type" class="type">'];
 		$('> .type', this.ruleTpl).each((function(i,el) {
 			this.typeSelectHtml.push('<option value="' + $(el).data('rule-type') + '">' + $(el).attr('title') + '</option>');
 		}).bind(this));
 		this.typeSelectHtml.push('</select>');
 		this.typeSelectHtml = this.typeSelectHtml.join('');
+
+		
 	},
 
 
@@ -62,9 +64,9 @@ DeskPRO.Form.RuleBuilder = new Class({
 	/**
 	 * Add a new rule row
 	 *
-	 * @param {jQuery} addToEl The element to append the new rule to
-	 * @param {String} formBaseName The base name for the form. For example, newrule[0], and after you might use newrule[1] etc.
-	 * @param {Object} existing Existing data to set
+	 * @param  {jQuery} addToEl The element to append the new rule to
+	 * @param  {String} formBaseName The base name for the form. For example, newrule[0], and after you might use newrule[1] etc.
+	 * @param  {Object} existing Existing data to set
 	 * @return {jQuery} The newly added row
 	 */
 	addNewRow: function(addToEl, formBaseName, existing) {
@@ -73,6 +75,10 @@ DeskPRO.Form.RuleBuilder = new Class({
 		// Add select
 		$('.type:first', new_row).html(this.typeSelectHtml);
 		var select = $('select.type:first', new_row);
+
+		var menu = new DeskPRO.UI.Menu({
+			menuElement: select
+		});
 
 		// Update its name
 		if (formBaseName) {
@@ -144,12 +150,20 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var type = $('.type:first > select', row).val();
 
 		var rule_tpl = $('> .type[data-rule-type="'+type+'"]', this.ruleTpl);
+
 		var op = $('> .op:first', rule_tpl).children().clone();
+
 		var choice = $('> .options:first', rule_tpl).clone();
 		choice.css('display', 'inline');
 
 		$('.op:first', row).empty().append(op);
 		$('.options:first', row).empty().append(choice);
+
+		if (op.is('select')) {
+			var opMenu = new DeskPRO.UI.Menu({
+				menuElement: op
+			});
+		}
 
 		if (row.data('form-base-name')) {
 			this.updateFormName($('.op:first', row), row.data('form-base-name'));

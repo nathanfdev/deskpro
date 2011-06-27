@@ -57,6 +57,65 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 		DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId] = this;
 
+		var origMenuElement = $(this.options.menuElement);
+		if (origMenuElement.is('select')) {
+			var html = [];
+			html.push('<ul class="menu" style="display:none">');
+
+			var selected_text = null;
+			var options = $('option', origMenuElement);
+			var is_sub = false;
+			options.each(function(index, el) {
+				el = $(el);
+				var has_child = (el.next().text().indexOf('--') !== -1);
+				var is_child = (el.text().indexOf('--') !== -1);
+
+				if (!selected_text || el.is(':selected')) {
+					selected_text = el.text();
+				}
+
+				if (index && !is_child && (has_child || is_sub)) {
+					html.push('<li class="sep">');
+				}
+
+				if (has_child) {
+					is_sub = true;
+					html.push('<li class="section-title">' + Orb.escapeHtml(el.text()) + '</li>');
+				} else {
+					if (!is_child) is_sub = false;
+					html.push('<li data-value="' + el.val() + '">' + Orb.escapeHtml(el.text()) + '</li>');
+				}
+			});
+
+			html.push('</ul>');
+
+			var menuElement = $(html.join('')).appendTo('body');
+			this.options.menuElement = menuElement;
+
+			origMenuElement.css({
+				'display': 'none'
+			});
+
+			if (!this.options.triggerElement) {
+				var text = selected_text;
+				if (!text.length) text = 'Choose';
+				var spanEl = this.options.triggerElement = $('<span class="menu-trigger">' + Orb.escapeHtml(text) + '</span>').insertAfter(origMenuElement);
+
+				this.addEvent('itemClicked', function(ev) {
+					var itemEl = $(ev.itemEl);
+					spanEl.text(itemEl.text());
+				});
+			}
+
+			this.addEvent('itemClicked', function(ev) {
+				var itemEl = $(ev.itemEl);
+				var value = itemEl.data('value');
+
+				origMenuElement.val(value);
+				origMenuElement.change();
+			});
+		}
+
 		if (this.options.triggerElement) {
 			this.setupTriggerElement($(this.options.triggerElement));
 		}

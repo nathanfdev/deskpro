@@ -125,6 +125,16 @@
     font-size: 9px;
 }
 
+.deskpro-pane section.list-top-area .edit {
+    float: right;
+    background: url(../../images/icons/pencil.png) no-repeat 50% 50%;
+    display: block;
+    width: 16px;
+    height: 16px;
+    cursor: pointer;
+    text-indent: -1000px;
+    overflow: hidden;
+}
 
 #deskpro_layout {
     position: absolute;
