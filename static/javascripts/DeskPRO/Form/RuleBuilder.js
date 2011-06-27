@@ -76,10 +76,6 @@ DeskPRO.Form.RuleBuilder = new Class({
 		$('.type:first', new_row).html(this.typeSelectHtml);
 		var select = $('select.type:first', new_row);
 
-		var menu = new DeskPRO.UI.Menu({
-			menuElement: select
-		});
-
 		// Update its name
 		if (formBaseName) {
 			new_row.data('form-base-name', formBaseName);
@@ -122,6 +118,10 @@ DeskPRO.Form.RuleBuilder = new Class({
 				}, this);
 			}
 		}
+
+		var menu = new DeskPRO.UI.Menu({
+			menuElement: select
+		});
 
 		// Handle when its type is changed
 		select.change((function() {
