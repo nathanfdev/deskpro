@@ -131,7 +131,7 @@ class TemplatingExtension extends \Twig_Extension
 	{
 		$raw_packs = App::getConfig('debug.raw_js_packs', array());
 
-		if ($force_raw OR in_array($name, $raw_packs)) {
+		if ($force_raw OR in_array($name, $raw_packs) OR in_array('all', $raw_packs)) {
 			return $this->htmlJsPackRaw($name);
 		}
 
