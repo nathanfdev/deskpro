@@ -321,40 +321,10 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 	initNoteFormEditable: function() {
 		this.notesSection = $('.notes-wrap:first', this.wrapper);
-
-		$('.trigger.new-note', this.notesSection).click((function() {
-			this.openNoteEdtiable();
-		}).bind(this));
-
-		$('.new-note-form .trigger.cancel', this.notesSection).click((function(ev) {
-			ev.preventDefault();
-			this.closeNoteEditable();
-		}).bind(this));
-
+		
 		$('.new-note-form .trigger.save', this.notesSection).click((function() {
 			this.saveNote();
 		}).bind(this));
-	},
-
-	openNoteEdtiable: function() {
-		$('.trigger.new-note', this.notesSection).hide();
-
-		var form = $('.new-note-form', this.notesSection);
-		if (form.is(':hidden')) {
-			$('.new-note-form textarea', this.notesSection).val('');
-			form.slideDown();
-		}
-	},
-
-	closeNoteEditable: function() {
-
-		$('.new-note-form textarea').val('');
-		var form = $('.new-note-form', this.notesSection);
-		if (form.is(':visible')) {
-			form.slideUp();
-		}
-
-		$('.trigger.new-note', this.notesSection).show();
 	},
 
 	saveNote: function() {
@@ -377,7 +347,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		list.prepend(data.note_li_html);
 
 		$('.new-note-form').removeClass('saving');
-		this.closeNoteEditable();
 
 		this.updateCounts();
 	},
