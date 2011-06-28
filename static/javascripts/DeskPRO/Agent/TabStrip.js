@@ -305,6 +305,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			var otherTab = this.getTabById(tabData.page.meta.tabPlaceholderId);
 			var btnId = otherTab.btnId;
 
+			tabData.isReplacing = true;
 			this.removeTabById(tabData.page.meta.tabPlaceholderId);
 
 			$('#' + btnId).replaceWith(li);
@@ -352,7 +353,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	_onTabRemove: function(tabData) {
 		$('#tiptip_holder').clearQueue().hide();
 
-		if (!tabData.isCloseClick && tabData.page && tabData.page.TYPENAME && tabData.page.TYPENAME == 'loading') {
+		if (tabData.isReplacing) {
 			// For Loading pages, the tab element in the strip is replaced
 			// with the real tab, so we dont want to remove it now
 			return;

@@ -724,6 +724,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.startLoadingIndicator();
 		}
 
+		var self = this;
+		if (routeData.tabPlaceholderId) {
+			var errorFn = function() { self.pageTabStrip.removeTabById(routeData.tabPlaceholderId); };
+		} else {
+			var errorFn = function() {};
+		}
+
 		if (routeData && routeData.postData) {
 			var xhr = $.ajax({
 				dataType: 'text',
@@ -733,7 +740,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				success: (function(data) {
 					this.stopLoadingIndicator();
 					successFn(data);
-				}).bind(this)
+				}).bind(this),
+				error: errorFn,
+				noErrorOverride: true
 			});
 
 			routeData.xhr = xhr;
@@ -745,7 +754,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 				success: (function(data) {
 					this.stopLoadingIndicator();
 					successFn(data);
-				}).bind(this)
+				}).bind(this),
+				error: errorFn,
+				noErrorOverride: true
 			});
 
 			routeData.xhr = xhr;
@@ -1057,7 +1068,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		// We dont use this handler if there was an error handler used
-		if (ajaxOptions && ajaxOptions.error) return;
+		if (ajaxOptions && ajaxOptions.error && !ajaxOptions.noErrorOverride) return;
 
 		var sn = null;
 		if (data && data.sn) {
