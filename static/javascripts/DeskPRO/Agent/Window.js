@@ -651,6 +651,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#deskpro_list_loading').addClass('on');
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
+
+			$('#deskpro_list_loading').removeClass('on');
+
 			var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 
 			page.setMetaData('routeUrl', url);
