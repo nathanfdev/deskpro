@@ -773,6 +773,10 @@ So only the 'on' one is visible at a time */
 	background: url("../../images/icn-sprite.png") left -862px;
 }
 
+#deskpro_tabstrip > ul > li > a.close-tab:hover {
+    background: url("../../images/icn-sprite.png") left -879px;
+}
+
 #deskpro_tabstrip > ul > li.ticket a.link {
 	padding-left: 20px;
 	background: url("../../images/icons/mail.png") 0 50% no-repeat;
