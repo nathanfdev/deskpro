@@ -26,21 +26,26 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 	 */
 	public function preAction($action, $arguments = null)
 	{
-		if (!$this->person['id']) {
-			if ($this->isPostRequest()) {
-				$return = $this->get('router')->generate('agent');
-			} else {
-				$return = $this->request->getRequestUri();
-			}
-
-
+		if (!$this->person['id'] OR !$this->_userHasPermissions()) {
 			if ($this->request->isXmlHttpRequest()) {
-				$redirect_url = $this->get('router')->generate('agent_login', array('return' => $this->get('router')->generate('agent')));
-				return $this->createJsonResponse(array('error' => 'session_expired', 'redirect_login' => $redirect_url), 403);
-			}
+				$data = array(
+					'error' => 'session_expired',
+					'redirect_login' => $this->generateUrl('agent_login')
+				);
 
-			$redirect_url = $this->get('router')->generate('agent_login', array('return' => $return));
-			return $this->redirect($redirect_url);
+				return $this->createJsonResponse($data, 403);
+				
+			} else {
+				if ($this->isPostRequest()) {
+					$return = $this->get('router')->generate('agent');
+				} else {
+					$return = $this->request->getRequestUri();
+				}
+
+
+				$redirect_url = $this->get('router')->generate('agent_login', array('return' => $return));
+				return $this->redirect($redirect_url);
+			}
 		}
 
 		if (!$this->_userHasPermissions()) {

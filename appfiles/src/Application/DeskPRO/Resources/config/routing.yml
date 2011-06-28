@@ -32,18 +32,3 @@ data_interface_data:
 favicon:
   pattern: /favicon.ico
   defaults: { _controller: DeskPRO:Blob:favicon }
-
-
-
-client_messages_getnew:
-  pattern: /client-messages/get-new-messages
-  defaults: { _controller: DeskPRO:ClientMessages:getNewMessages, since: "0" }
-  requirements: { since: "\d+" }
-
-client_messages_subscribe_channels:
-  pattern: /client-messages/subscribe-channels
-  defaults: { _controller: DeskPRO:ClientMessages:subscribeChannels }
-
-client_messages_unsubscribe_channels:
-  pattern: /client-messages/unsubscribe-channels
-  defaults: { _controller: DeskPRO:ClientMessages:unsubscribeChannels }

@@ -1035,7 +1035,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (xhr && xhr.status && xhr.status == '403') {
 
 			if (data && data.error && data.error == 'session_expired') {
-				window.location = data.redirect_login;
+				var url = data.redirect_login;
+				url += '?return=' + encodeURIComponent(window.location.href);
+
+				window.location = url;
 				ajaxOptions.error = null;
 				ajaxOptions.complete = null;
 

@@ -55,6 +55,22 @@ agent_recyclebin_more:
   pattern: /recycle-bin/{type}/{paeg}
   defaults: { _controller: AgentBundle:RecycleBin:listMore }
 
+
+
+
+agent_client_messages_getnew:
+  pattern: /client-messages/get-new-messages
+  defaults: { _controller: AgentBundle:ClientMessages:getNewMessages, since: "0" }
+  requirements: { since: "\d+" }
+
+agent_client_messages_subscribe_channels:
+  pattern: /client-messages/subscribe-channels
+  defaults: { _controller: AgentBundle:ClientMessages:subscribeChannels }
+
+agent_client_messages_unsubscribe_channels:
+  pattern: /client-messages/unsubscribe-channels
+  defaults: { _controller: AgentBundle:ClientMessages:unsubscribeChannels }
+
 ################################################################################
 # Login/logout
 ################################################################################
