@@ -72,7 +72,6 @@ class RecycleBinController extends AbstractController
 		$searcher->addTerm('deleted', 'is', 1);
 
 		$results = $searcher->getMatches($pageinfo);
-		$results = array();
 
 		if (!$results) {
 			return array('no_more_results' => true);

@@ -280,7 +280,7 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		m.addClass('icon-flag-'+flag);
 		m.data('flag', flag);
 
-		DeskPRO_Window.startLoadingIndicator();
+		console.debug('todo: loading element with flag click');
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + ticketId + '/ajax-save-flagged',
@@ -289,13 +289,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			data: { color: flag },
 			dataType: 'json',
 			success: function(data) {
-				this._handleFlagMenuClickSuccess(old_flag, flag);
+
 			}
 		});
-	},
-
-	_handleFlagMenuClickSuccess: function(el, old_flag, new_flag) {
-		DeskPRO_Window.stopLoadingIndicator();
 	},
 
 	//#########################################################################

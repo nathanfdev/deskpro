@@ -724,12 +724,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		// If we have a placeholder tab, it itself is a loading indicator,
-		// so dont use the window one
-		if ((routeData && !routeData.tabPlaceholderId) && (routeData && routeData.openInSection != 'listpane')) {
-			this.startLoadingIndicator();
-		}
-
 		var self = this;
 		if (routeData.tabPlaceholderId) {
 			var errorFn = function() { self.pageTabStrip.removeTabById(routeData.tabPlaceholderId); };
@@ -744,7 +738,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				type: 'POST',
 				data: routeData.postData,
 				success: (function(data) {
-					this.stopLoadingIndicator();
 					successFn(data);
 				}).bind(this),
 				error: errorFn,
@@ -758,7 +751,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 				url: url,
 				type: 'GET',
 				success: (function(data) {
-					this.stopLoadingIndicator();
 					successFn(data);
 				}).bind(this),
 				error: errorFn,
@@ -978,39 +970,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//# AJAX and loading
 	//#################################################################
 
-	startLoadingIndicator: function(n) {
-		if (!n) n = 1;
-		this.loadingIndicatorCount += n;
-		this._showHideLoadingIndicator();
-	},
-	stopLoadingIndicator: function(n) {
-		if (!n) n = 1;
-		this.loadingIndicatorCount -= n;
-		if (this.loadingIndicatorCount < 0) this.loadingIndicatorCount = 0;
-		this._showHideLoadingIndicator();
-	},
-	_showHideLoadingIndicator: function() {
-		if (this.loadingIndicatorCount > 0) {
-			if (!this.loadingIndicatorEl) {
-				this.loadingIndicatorEl = $('<div class="window-loading-indicator" style="display:none" />');
-				this.loadingIndicatorEl.appendTo('body');
-			}
-
-			this.loadingIndicatorEl.css({
-				'position': 'absolute',
-				'top': 0,
-				'left': ($(document).width()/2) - this.loadingIndicatorEl.outerWidth(),
-				'z-index': 100000
-			});
-
-			this.loadingIndicatorEl.slideDown(250);
-		} else {
-			if (this.loadingIndicatorEl) {
-				this.loadingIndicatorEl.stop().slideUp(150);
-			}
-		}
-	},
-
 	_globalHandleAjaxComplete: function(event, xhr, ajaxOptions) {
 
 		var is_success = false;
@@ -1035,8 +994,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown) {
 		
-		this.stopLoadingIndicator(1000);
-
 		// We dont care about aborts
 		// This is caused when the user navigates away from a page, any running
 		// ajax requests are aborted by the browser. Without this the user

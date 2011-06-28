@@ -231,7 +231,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	},
 
 	_overviewGroupListLoaded: function(html) {
-		DeskPRO_Window.stopLoadingIndicator();
 		var list = $('#ticket_grouping_list > ul').html(html);
 	},
 

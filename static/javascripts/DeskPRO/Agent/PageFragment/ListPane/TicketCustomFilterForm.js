@@ -71,8 +71,6 @@ DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm = new Class({
 
 	submitForm: function() {
 
-		DeskPRO_Window.startLoadingIndicator();
-
 		var data = $('form.search-form-data', this.wrapper).serializeArray();
 
 		$.ajax({
@@ -83,7 +81,6 @@ DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilterForm = new Class({
 			context: this,
 			dataType: 'html',
 			success: function (data) {
-				DeskPRO_Window.stopLoadingIndicator();
 				$(' .criteria', this.wrapper).hide();
 				$('.summary', this.wrapper).show();
 				this._handleAjaxResults(data);

@@ -56,9 +56,7 @@ DeskPRO.Agent.PageHelper.NewUserOverlay = new Class({
 		
 		this.fireEvent('beforeSave', eventData);
 		if (eventData.cancel) return;
-		
-		DeskPRO_Window.startLoadingIndicator();
-		
+				
 		$.ajax({
 			url: this.options.saveUrl,
 			data: data,
@@ -69,8 +67,7 @@ DeskPRO.Agent.PageHelper.NewUserOverlay = new Class({
 	},
 	
 	_handleSaveSuccess: function(data) {
-		
-		DeskPRO_Window.stopLoadingIndicator();
+	
 		
 		var eventData = {
 			contentEl: this.contentEl,

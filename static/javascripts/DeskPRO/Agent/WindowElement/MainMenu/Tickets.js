@@ -448,8 +448,6 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	 */
 	overviewLoadList: function() {
 
-		DeskPRO_Window.startLoadingIndicator();
-
 		var grouping1 = this.overviewGroupEl1.data('groupby');
 		var grouping2 = this.overviewGroupEl2.data('groupby') || '';
 		var mode = this.overviewModeEl.data('mode');
@@ -474,8 +472,6 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	},
 
 	_overviewGroupListLoaded: function(html) {
-
-		DeskPRO_Window.stopLoadingIndicator();
 
 		var list = $('#overview_list').html(html);
 

@@ -263,7 +263,6 @@ DeskPRO.Agent.AgentBar = new Orb.Class({
 		}
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
-				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 
 				page.setMetaData('routeUrl', url);
@@ -301,7 +300,6 @@ DeskPRO.Agent.AgentBar = new Orb.Class({
 		}
 
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
-				this.stopLoadingIndicator();
 				var page = this.createPageFragment(data);
 
 				page.setMetaData('routeUrl', url);

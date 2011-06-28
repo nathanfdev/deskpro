@@ -226,35 +226,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 
 	//#################################################################
-	//# Ticket options menus
-	//#################################################################
-
-	/**
-	 * Handle saving of a ticket option like department etc
-	 *
-	 * @see DeskPRO.Agent.PageFragment.Page.BasicTicket._handleTicketOptionClick()
-	 */
-	_handleTicketOptionSave: function(option, optionId) {
-		// Update the value in teh DB
-		DeskPRO_Window.startLoadingIndicator();
-
-		var data = {};
-		data[option] = optionId;
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-options',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'json',
-			success: function(data) {
-				this._handleTicketOptionSaveSuccess(data);
-			}
-		});
-	},
-
-
-	//#################################################################
 	//# Custom Fields popout
 	//#################################################################
 
@@ -313,7 +284,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 
 	_handleFlagMenuClickSuccess: function(old_flag, new_flag) {
-		DeskPRO_Window.stopLoadingIndicator();
 
 		DeskPRO_Window.getMessageBroker().sendMessage('filter-flagged.flag-changed', {
 			old_flag: old_flag,
@@ -545,14 +515,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				break;
 
 			case 'quote':
-				DeskPRO_Window.startLoadingIndicator();
+				console.debug('todo loading indicator when loading _doMessageAction quote');
 				$.ajax({
 					url: this.getMetaData('getMessageQuoteUrl').replace('{message_id}', messageId),
 					type: 'GET',
 					context: this,
 					dataType: 'json',
 					success: function(data) {
-						DeskPRO_Window.stopLoadingIndicator();
 						this.toggleReplyBar('on');
 						$('div.reply-form-fields:first textarea[name="message"]:first', this.ticketReply).val(data.message_quote + "\n\n");
 					}

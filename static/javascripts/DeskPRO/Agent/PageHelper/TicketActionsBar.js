@@ -324,8 +324,8 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 	},
 
 	_loadActions: function(ticket_ids) {
-		
-		DeskPRO_Window.startLoadingIndicator();
+
+		console.debug('loading indicator TicketActionsBar._loadActions');
 
 		var loadingOff = $('.loading-off').hide();
 		var loadingOn = $('.loading-on').show().empty();
@@ -352,7 +352,6 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			context: this,
 			dataType: 'json',
 			success: function (data) {
-				DeskPRO_Window.stopLoadingIndicator();
 				
 				this.actionsOverlay.closeOverlay();
 				spinner.remove();
@@ -472,7 +471,7 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		});
 
 		this.page.changeManager.commitChanges();
-		DeskPRO_Window.startLoadingIndicator();
+		console.debug('loading indicator TicketActionsBar.saveActions');
 
 		$.ajax({
 			cache: false,
@@ -482,7 +481,6 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 			context: this,
 			dataType: 'json',
 			success: function () {
-				DeskPRO_Window.stopLoadingIndicator();
 				DeskPRO_Window.showStatusMessage('Actions were applied successfully');
 			}
 		});
