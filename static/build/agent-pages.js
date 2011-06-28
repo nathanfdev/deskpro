@@ -243,7 +243,7 @@ var c=new DeskPRO.UI.SimpleTabs({context:$(".full-container-tabbed.messages-cont
 }else{if(d.tabEl.is(".ticket-attach")){b._loadTicketTab_Attach()}else{if(d.tabEl.is(".ticket-related-content")){b._loadTicketTab_RelatedContent()
 }}}}})},unloadTicketTab:function(b){var a=$(".tab-content."+b,this.wrapper);a.html("").addClass("unloaded")},_loadTicketTab_Log:function(){var a=$(".tab-content.ticket-log",this.wrapper);
 if(!a.is(".unloaded")){return}$.ajax({url:this.getMetaData("tabTicketLogUrl"),type:"GET",dataType:"html",success:function(b){a.html(b);
-a.removeClass("unloaded")}})},_loadTicketTab_RelatedContent:function(){var a=$(".tab-content.ticket-realted-content",this.wrapper);
+a.removeClass("unloaded");$("time.timeago",a).timeago()}})},_loadTicketTab_RelatedContent:function(){var a=$(".tab-content.ticket-realted-content",this.wrapper);
 if(!a.is(".unloaded")){return}$.ajax({url:this.getMetaData("tabRelatedContentUrl"),type:"GET",dataType:"html",success:function(b){a.html(b);
 a.removeClass("unloaded")}})},_loadTicketTab_Attach:function(){var a=$(".tab-content.ticket-attach",this.wrapper);if(!a.is(".unloaded")){return
 }$.ajax({url:this.getMetaData("tabAttachmentsUrl"),type:"GET",dataType:"html",success:function(b){a.html(b);a.removeClass("unloaded")
@@ -339,8 +339,9 @@ d.show();d.position({my:"right top",at:"right top",of:a});$(".close",d).click(fu
 })},saveContact:function(b){var a=$(":input, select, textarea",b).serializeArray();b.addClass("saving");$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/organizations/"+this.meta.organization_id+"/ajax-save-contact",data:a,success:(function(c){this.handleSaveSuccess(c,b)
 }).bind(this)})},handleSaveSuccess:function(b,a){$(".contact-info-list-wrap:first",this.wrapper).html(b.contact_html);a.remove()
 }});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.Person=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"person",wrapper:null,hasSetupEmailDlg:false,email_display:null,email_dlg:null,contactSection:null,notesSection:null,initPage:function(e){this.wrapper=e;
-this.contentWrapper=$("div.layout-content:first",e);var b=this;var a=this.contentWrapper;a.tinyscrollbar();$("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).resize(function(){a.tinyscrollbar_update()
-});this.initRoutesOnCollection($(".with-route",this.wrapper));$("input[placeholder]",this.wrapper).each(function(){Orb.Compat.WebForms.placeholder(this)
+this.contentWrapper=$("div.layout-content:first",e);this.zIndex=999999;var b=this;var a=this.contentWrapper;a.tinyscrollbar();
+$("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).resize(function(){a.tinyscrollbar_update()});
+this.initRoutesOnCollection($(".with-route",this.wrapper));this.initTimesOnCollection($("time.timeago",this.wrapper));$("input[placeholder]",this.wrapper).each(function(){Orb.Compat.WebForms.placeholder(this)
 });var c=$("h3.name.editable:first",e);if(!c.attr("id")){c.attr("id",Orb.getUniqueId())}var d=new DeskPRO.Form.InlineEdit({baseElement:e,ajax:{url:BASE_URL+"agent/people/"+this.meta.person_id+"/ajax-save"}});
 $(this.wrapper).click(function(g){d.handleDocumentClick(g)});this.initEmailDlg();this.email_display=$(".main .header .email:first",e);
 this.editContactInfoMenu=new DeskPRO.UI.Menu({triggerElement:$(".edit-contact-info:first",this.wrapper),menuElement:$(".contact-info-edit-menu:first",this.wrapper),onItemClicked:function(h){var g=$(h.itemEl).data("edit-type");
@@ -352,7 +353,7 @@ $(e,a).html("("+d+")")})}})},custom_fields_display:null,custom_fields_edit:null,
 }).bind(this));this.custom_fields_display=$(".person-custom-fields:not(.edit)",this.wrapper);this.custom_fields_edit=$(".person-custom-fields.edit",this.wrapper).detach().appendTo($("body"));
 $(".close-trigger",this.custom_fields_edit).click((function(){this.closeCustomFieldEditor()}).bind(this));var a=this;$(".save-trigger",this.custom_fields_edit).click((function(){var b=$(":input",a.custom_fields_edit);
 this._saveCustomFields(b)}).bind(this))},showCustomFieldEditor:function(){var a=this.custom_fields_display.width();if(a<350){a=350
-}this.custom_fields_edit.css({position:"absolute",width:a,"z-index":10000});this.custom_fields_edit.position({my:"right top",at:"right top",of:$(".properties-info-list-wrap",this.wrapper)});
+}this.custom_fields_edit.css({position:"absolute",width:a,"z-index":this.zIndex});this.custom_fields_edit.position({my:"right top",at:"right top",of:$(".properties-info-list-wrap",this.wrapper)});
 this.custom_fields_edit.slideDown()},closeCustomFieldEditor:function(){this.custom_fields_edit.slideUp()},_saveCustomFields:function(a){$(".buttons .loading-off",this.custom_fields_edit).hide();
 $(".buttons .loading-on",this.custom_fields_edit).show();var b=a.serializeArray();$.ajax({url:this.getMetaData("saveFieldsUrl"),type:"POST",context:this,data:b,dataType:"json",success:function(c){this._handleSaveCustomFieldsSuccess(c)
 }})},_handleSaveCustomFieldsSuccess:function(c){$(".buttons .loading-on",this.custom_fields_edit).hide();$(".buttons .loading-off",this.custom_fields_edit).show();
@@ -363,7 +364,7 @@ var a=$(".usergroups-list-wrap",this.wrapper);if($("li",b).length){a.show()}else
 }})},_handleSaveLabelsSuccess:function(a){},initOrgEditable:function(){this.org_dlg=$(".org-edit-dlg",this.wrapper).detach().appendTo($("body"));
 $(".close-trigger",this.org_dlg).click((function(){this.closeOrgEditor()}).bind(this));var a=this;$(".save-trigger",this.org_dlg).click((function(){var b=$(":input",a.org_dlg);
 this.saveOrg()}).bind(this));$(".organization.hover-edit:first",this.wrapper).dblclick((function(){this.showOrgEditor()}).bind(this))
-},showOrgEditor:function(){var a=this.org_dlg.width();if(a<350){a=350}this.org_dlg.css({position:"absolute",width:a,"z-index":10000});
+},showOrgEditor:function(){var a=this.org_dlg.width();if(a<350){a=350}this.org_dlg.css({position:"absolute",width:a,"z-index":this.zIndex});
 this.org_dlg.position({my:"left top",at:"left top",of:$(".organization.hover-edit:first",this.wrapper)});this.org_dlg.slideDown()
 },closeOrgEditor:function(){this.org_dlg.slideUp()},saveOrg:function(){var c=$('select[name="organization_id"]',this.org_dlg);
 var a=$("option:selected",c);var b={organization_id:a.val(),organization_position:$('input[name="organization_position"]',this.org_dlg).val()};
@@ -381,7 +382,7 @@ this.closeNoteEditable();this.updateCounts()},initNotePagination:function(){var 
 }var b=this;$("li",a).click(function(){b.loadNotePage($(this).data("page"))})},loadNotePage:function(a){$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/people/"+this.meta.person_id+"/ajax-get-notes",data:{pp:$(".note-list",this.notesSection).data("limit"),p:a},success:this.handleGetNotes.bind(this)})
 },handleGetNotes:function(b){var a=$(".note-list",this.notesSection);a.html(b.notes_html);$("ul.pages il",this.notesSection).removeClass("active");
 $("ul.pages il.page-"+b.page,this.notesSection).addClass("active")},startContactAdd:function(c){var d=$(".contact-add-tpl.new."+c,this.wrapper).clone();
-this.wrapper.append(d);var a=$(".contact-info-list-wrap:first",this.wrapper);var e=a.position();d.css({position:"absolute",top:10,left:10});
+this.wrapper.append(d);var a=$(".contact-info-list-wrap:first",this.wrapper);var e=a.position();d.css({position:"absolute",top:10,left:10,"z-index":this.zIndex});
 d.show();d.position({my:"right top",at:"right top",of:a});$(".close",d).click(function(){d.remove()});var b=this;$(".save",d).click(function(){b.saveContact(d)
 })},saveContact:function(b){var a=$(":input, select, textarea",b).serializeArray();b.addClass("saving");$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/people/"+this.meta.person_id+"/ajax-save-contact",data:a,success:(function(c){this.handleSaveSuccess(c,b)
 }).bind(this)})},handleSaveSuccess:function(b,a){$(".contact-info-list-wrap:first",this.wrapper).html(b.contact_html);a.remove()
@@ -392,7 +393,7 @@ d.show();d.position({my:"right top",at:"right top",of:a});$(".close",d).click(fu
 }else{if(b.is(".set-primary")){$("ul.emails-list li.primary",this.email_dlg).removeClass("primary");d.addClass("primary")
 }}}});$(".new-email-btn",this.email_dlg).click((function(){var c=$(".new-email-input",this.email_dlg).val().trim();var b=$(".emails-list li.tpl",this.email_dlg).clone();
 b.removeClass("tpl");b.attr("data-new-email",c);$(".email-address",b).html(c);$(".emails-list",this.email_dlg).append(b)}).bind(this))
-},showEmailEditor:function(){var a=this.email_dlg.width();if(a<350){a=350}this.email_dlg.css({position:"absolute",width:a,"z-index":10000});
+},showEmailEditor:function(){var a=this.email_dlg.width();if(a<350){a=350}this.email_dlg.css({position:"absolute",width:a,"z-index":this.zIndex});
 this.email_dlg.position({my:"left top",at:"left top",of:$(".contact-info-list-wrap:first",this.wrapper)});this.email_dlg.slideDown()
 },closeEmailEditor:function(){this.email_dlg.slideUp()},saveEmails:function(){var a=[];var b=[];var d=0;$("ul.emails-list li",this.email_dlg).each((function(f,g){var g=$(g);
 if(g.is(".tpl")){return}if(g.is(".exists")){if(g.is(".delete")){a.push(g.data("email-id"))}if(g.is(".primary")){d=g.data("email-id")

@@ -8,14 +8,14 @@ this.innerLayout=null;this.notifier=null;this._alertOverlay=null;this._confirmOv
 this.ajaxErrorOverlay=null;this.openTicketIds=[];this.releaseTicketLocks_timeout=null;this.releaseTicketLocks=[];this.winStateQueue=[]
 },initPage:function(){this._initBasic();this._initSections();this._initRoutes();this._initWindowInterface();this._initLayout();
 $("#page_loading").remove();$("#loading_css").remove();this.fragmentRouter=window.DeskPRO_FragmentRouter;this.fragmentRouter.setBaseUrl(BASE_URL);
-var a=this;$.history.init(function(b){a.loadHashPath(b)},{unescape:",/:"})},loadHashPath:function(c){if(this.cancelHashLaod){this.cancelHashLaod=false;
-return}var b=c.split(",");var a=null;Array.each(b,function(h,j){var f=this.pageTabStrip.findTabByFragment(h);if(f){if(!a){a=f
-}return}var m=this.getCurrentListPage();if(m&&m.getMetaData("url_fragment")==h){return}var g=h.match(/^(.*?)(\.(.*?))?:(.*?)$/);
+var a=this;$.history.init(function(b){a.loadHashPath(b)},{unescape:",/:"})},loadHashPath:function(c){if(this.DEBUG.disableUrlFragments){return
+}if(this.cancelHashLaod){this.cancelHashLaod=false;return}var b=c.split(",");var a=null;Array.each(b,function(h,j){var f=this.pageTabStrip.findTabByFragment(h);
+if(f){if(!a){a=f}return}var m=this.getCurrentListPage();if(m&&m.getMetaData("url_fragment")==h){return}var g=h.match(/^(.*?)(\.(.*?))?:(.*?)$/);
 if(!g){return}var f=null;if(g[3]){var f=g[3]}var e=g[1];var k=g[4];k=k.split(":");if(!this.fragmentRouter.hasFragment(e)){return
 }var d=this.fragmentRouter.getUrl(e,k);var l=this.fragmentRouter.getFragmentType(e);if(l=="list"){this.loadingListFragment=h;
 this.loadListPane(d,{url_fragment:h})}else{this.loadingPageFragment=h;this.loadPage(d,{url_fragment:h})}},this);if(a){this.pageTabStrip.activateTabById(tabId)
-}},updateWindowUrlFragment:function(){this.cancelHashLaod=true;var b=[];var d=this.getCurrentListPage();if(d&&d.getMetaData("url_fragment")){b.push(d.getMetaData("url_fragment"))
-}var e=this.pageTabStrip.getActiveTab();if(e&&e.page.getMetaData("url_fragment")){b.push(e.page.getMetaData("url_fragment"))
+}},updateWindowUrlFragment:function(){if(this.DEBUG.disableUrlFragments){return}this.cancelHashLaod=true;var b=[];var d=this.getCurrentListPage();
+if(d&&d.getMetaData("url_fragment")){b.push(d.getMetaData("url_fragment"))}var e=this.pageTabStrip.getActiveTab();if(e&&e.page.getMetaData("url_fragment")){b.push(e.page.getMetaData("url_fragment"))
 }var c=this.pageTabStrip.getTabs();Object.each(c,function(g,h){var f=g.page;if(g.id==e.id){return}if(f.getMetaData("url_fragment")){b.push(f.getMetaData("url_fragment"))
 }});var a="";a=b.join(",");jQuery.history.load(a)},windowStateUpdated:function(a){return;if(this.DEBUG.disableSaveState){return
 }this.winStateQueue.include(a);if(this.saveWindowState_timeout){window.clearTimeout(this.saveWindowState_timeout)}this.saveWindowState_timeout=this.saveWindowState.delay(4500,this)
@@ -52,16 +52,17 @@ d=c.shift();g=c.pop()}var b=h.pop();var e={route:a,master:d,masterTag:g,sections
 Object.each(this.routePrefixes,function(i,j){if(a.indexOf(j)==0){Array.each(i,function(k){k(e);f=true});if(e.stopListeners){return true
 }}},this);if(!f){console.warn("Unknown route: %s",a)}},runPageRouteFromElement:function(a){a=$(a);if(!a.data("route")){console.warn("Element has no route: %o",a)
 }this.runPageRoute(a.data("route"));if(a.data("route-alt")){this.runPageRoute(a.data("route-alt"))}},loadRoute:function(a){a.openInSection=a.master;
-switch(a.openInSection){case"listpane":this.loadListPane(a.url,a);break;default:this.loadPage(a.url,a);break}},loadListPane:function(a,b,c){this._doAjaxLoadRoute(a,b,(function(e){this.stopLoadingIndicator();
-var d=this.createPageFragment(e,"DeskPRO.Agent.PageFragment.ListPane.Basic");d.setMetaData("routeUrl",a);if(b){d.setMetaData("routeData",b)
-}this.setListPage(d);if(c){c(d)}}).bind(this))},loadPage:function(b,c,d){if($("#pane_tabs li").length>=10){DeskPRO_Window.showAlert("You have too many tabs open on the right. Close one before trying to open another","error");
-return}if(c&&!c.ignoreExist){var a=this.pageTabStrip.getTabByRouteUrl(b);if(a&&!(a.page&&a.page.allowDupe)){this.pageTabStrip.activateTabById(a.id);
+switch(a.openInSection){case"listpane":this.loadListPane(a.url,a);break;default:this.loadPage(a.url,a);break}},loadListPane:function(a,b,c){$("#deskpro_list > section").removeClass("on");
+$("#deskpro_list_loading").addClass("on");this._doAjaxLoadRoute(a,b,(function(e){var d=this.createPageFragment(e,"DeskPRO.Agent.PageFragment.ListPane.Basic");
+d.setMetaData("routeUrl",a);if(b){d.setMetaData("routeData",b)}this.setListPage(d);if(c){c(d)}}).bind(this))},loadPage:function(b,c,d){if($("#pane_tabs li").length>=10){DeskPRO_Window.showAlert("You have too many tabs open on the right. Close one before trying to open another","error");
+return}if(!c||(!c.ignoreExist)){var a=this.pageTabStrip.getTabByRouteUrl(b);if(a&&!(a.page.allowDupe&&a.page.TYPENAME!="loading")){this.pageTabStrip.activateTabById(a.id);
 return}}c.tabPlaceholderId=this.pageTabStrip.addTabPlaceholder(b,c);this._doAjaxLoadRoute(b,c,(function(f){var e=this.createPageFragment(f);
 e.setMetaData("routeUrl",b);if(c){e.setMetaData("routeData",c);if(c.tabPlaceholderId){e.setMetaData("tabPlaceholderId",c.tabPlaceholderId)
-}}if(c.fragment){e.setMetaData("fragment",c.fragment)}this.addPageTab(e);if(d){d(e)}}).bind(this))},_doAjaxLoadRoute:function(b,c,a){if(!b){console.error("No URL provided! routeData: %o",c);
-return}if(!c||!c.tabPlaceholderId){this.startLoadingIndicator()}if(c&&c.postData){$.ajax({dataType:"text",url:b,type:"POST",data:c.postData,success:(function(d){this.stopLoadingIndicator();
-a(d)}).bind(this)})}else{$.ajax({dataType:"text",url:b,type:"GET",success:(function(d){this.stopLoadingIndicator();a(d)}).bind(this)})
-}},createPageFragment:function(html,classname){pageMeta={title:false,fragmentClass:classname||"DeskPRO.Agent.PageFragment.Basic"};
+}}if(c.fragment){e.setMetaData("fragment",c.fragment)}this.addPageTab(e);if(d){d(e)}}).bind(this))},_doAjaxLoadRoute:function(c,d,a){if(!c){console.error("No URL provided! routeData: %o",d);
+return}if((d&&!d.tabPlaceholderId)&&(d&&d.openInSection!="listpane")){this.startLoadingIndicator()}var b=this;if(d.tabPlaceholderId){var f=function(){b.pageTabStrip.removeTabById(d.tabPlaceholderId)
+}}else{var f=function(){}}if(d&&d.postData){var e=$.ajax({dataType:"text",url:c,type:"POST",data:d.postData,success:(function(g){this.stopLoadingIndicator();
+a(g)}).bind(this),error:f,noErrorOverride:true});d.xhr=e}else{var e=$.ajax({dataType:"text",url:c,type:"GET",success:(function(g){this.stopLoadingIndicator();
+a(g)}).bind(this),error:f,noErrorOverride:true});d.xhr=e}},createPageFragment:function(html,classname){pageMeta={title:false,fragmentClass:classname||"DeskPRO.Agent.PageFragment.Basic"};
 var regex=/<script>([\s\S]*?)<\/script>/im;var matches=regex.exec(html);if(!matches||!matches.length){var regex=/<script\s*type="text\/javascript">([\s\S]*?)<\/script>/im;
 var matches=regex.exec(html)}if(matches&&matches.length){try{eval(matches[1])}catch(err){console.error("Page fragment JS eval error: %o",err)
 }}if(pageMeta&&pageMeta.goToLogin){window.location=BASE_URL+"agent/";var page=new DeskPRO.Agent.PageFragment.Basic("");return page
@@ -83,11 +84,12 @@ this.loadingIndicatorEl.appendTo("body")}this.loadingIndicatorEl.css({position:"
 this.loadingIndicatorEl.slideDown(250)}else{if(this.loadingIndicatorEl){this.loadingIndicatorEl.stop().slideUp(150)}}},_globalHandleAjaxComplete:function(e,f,c){var b=false;
 if(f.status&&f.status==200){b=true}else{if(f.status=="0"||(f.statusText&&f.statusText=="abort")){b=true}}if(b){$("#network_status_indicator").addClass("active");
 $("#network_status_indicator span").html("0")}else{$("#network_status_indicator").removeClass("active");var a=$("#network_status_indicator span");
-var d=parseInt(a.html())||0;d++;a.html(d)}},_globalHandleAjaxError:function(c,i,a,g){this.stopLoadingIndicator(1000);if(i.status=="0"||(i.statusText&&i.statusText=="abort")){return
-}var d=i.responseText;try{d=$.parseJSON(d)}catch(f){d=null}if(i&&i.status&&i.status=="403"){if(d&&d.error&&d.error=="session_expired"){window.location=d.redirect_login;
-a.error=null;a.complete=null;this.showStatusMessage("Your session has timed out, you must log in");return}if(d&&d.error&&d.error=="not_allowed"){this.showStatusMessage("The action you attempted to execute is not allowed:<br />"+d.errorMessage);
-return}}if(a&&a.error){return}var h=null;if(d&&d.sn){h=d.sn}else{var b=/\[\[SN:(.*?)\]\]/.exec(i.responseText);if(b){h=b[1]
-}}console.log(h);if(h){this._showAjaxError("If the error persists, give your administrator this code: SN"+h)}else{this._showAjaxError()
+var d=parseInt(a.html())||0;d++;a.html(d)}},_globalHandleAjaxError:function(a,j,d,h){this.stopLoadingIndicator(1000);if(j.status=="0"||(j.statusText&&j.statusText=="abort")){return
+}var f=j.responseText;try{f=$.parseJSON(f)}catch(i){f=null}if(j&&j.status&&j.status=="403"){if(f&&f.error&&f.error=="session_expired"){var b=f.redirect_login;
+b+="?return="+encodeURIComponent(window.location.href);window.location=b;d.error=null;d.complete=null;this.showStatusMessage("Your session has timed out, you must log in");
+return}if(f&&f.error&&f.error=="not_allowed"){this.showStatusMessage("The action you attempted to execute is not allowed:<br />"+f.errorMessage);
+return}}if(d&&d.error&&!d.noErrorOverride){return}var c=null;if(f&&f.sn){c=f.sn}else{var g=/\[\[SN:(.*?)\]\]/.exec(j.responseText);
+if(g){c=g[1]}}console.log(c);if(c){this._showAjaxError("If the error persists, give your administrator this code: SN"+c)}else{this._showAjaxError()
 }},_showAjaxError:function(a){$("#global_ajax_error_info").empty();if(a){$("#global_ajax_error_info").html(a)}if(!this.ajaxErrorOverlay){this.ajaxErrorOverlay=new DeskPRO.UI.Overlay({contentElement:$("#global_ajax_error"),zIndex:10000000})
 }this.ajaxErrorOverlay.initOverlay();this.ajaxErrorOverlay.elements.wrapperOuter.addClass("error");this.ajaxErrorOverlay.openOverlay()
 },_initBasic:function(){this.messageChanneler=new DeskPRO.MessageChanneler.AjaxChanneler(this.messageBroker,this.options.messageChanneler);
@@ -115,21 +117,20 @@ this.faviconBadge=new DeskPRO.FaviconBadge({favicon:"#favicon"});if(this.options
 c.toggleAgentStatus()});this.volume=0.8;$("#volume_controls .slider").slider({orientation:"vertical",range:"min",min:0,max:100,value:80,slide:function(e,f){c.volume=parseInt(f.value)/100;
 if(c.volume==0||c.volume==0){c.volume=0;$("#sound_icon").addClass("off")}else{$("#sound_icon").removeClass("off")}}});var b=function(){$("#volume_controls_back").hide();
 $("#volume_controls").fadeOut()};$("#volume_controls_back").click(function(e){e.stopPropagation();b()});var a=function(){$("#volume_controls_back").show();
-$("#volume_controls").position({my:"center top",at:"center bottom",of:$("#sound_icon")});$("#volume_controls").fadeIn()};
-$("#sound_icon a").click(function(e){e.preventDefault();a()})},toggleAgentStatus:function(a){var b=$("#agent_status");a=a||false;
-if(a||b.is(".off")){$("#agent_status_away_overlay").remove();b.removeClass("off");$.ajax({url:BASE_URL+"agent/misc/set-agent-status/available",type:"GET"})
-}else{var c=$('<div id="agent_status_away_overlay" />').appendTo("body");c.click(function(d){d.preventDefault();d.stopPropagation()
-});b.addClass("off");$.ajax({url:BASE_URL+"agent/misc/set-agent-status/away",type:"GET"})}},_initSections:function(){var a=this;
-var b=null;$("#deskpro_sections [data-section-handler]").each(function(){var e=$(this);if(!e.attr("id")){e.attr("id",Orb.getUniqueId("section_"))
-}var f=e.data("section-handler");if(DeskPRO_Window.DEBUG.disableSectionHandlers){if(!DeskPRO_Window.DEBUG.enableSectionHandlers||DeskPRO_Window.DEBUG.enableSectionHandlers.indexOf(f)===-1){return
+$("#volume_controls").css({top:30,left:$("#sound_icon").offset().left-7});$("#volume_controls").fadeIn()};$("#sound_icon a").click(function(e){e.preventDefault();
+e.stopPropagation();a()})},toggleAgentStatus:function(a){var b=$("#agent_status");a=a||false;if(a||b.is(".off")){$("#agent_status_away_overlay").remove();
+b.removeClass("off");$.ajax({url:BASE_URL+"agent/misc/set-agent-status/available",type:"GET"})}else{var c=$('<div id="agent_status_away_overlay" />').appendTo("body");
+c.click(function(d){d.preventDefault();d.stopPropagation()});b.addClass("off");$.ajax({url:BASE_URL+"agent/misc/set-agent-status/away",type:"GET"})
+}},_initSections:function(){var a=this;var b=null;$("#deskpro_sections [data-section-handler]").each(function(){var e=$(this);
+if(!e.attr("id")){e.attr("id",Orb.getUniqueId("section_"))}var f=e.data("section-handler");if(DeskPRO_Window.DEBUG.disableSectionHandlers){if(!DeskPRO_Window.DEBUG.enableSectionHandlers||DeskPRO_Window.DEBUG.enableSectionHandlers.indexOf(f)===-1){return
 }}if(!b){b=e}var d=Orb.getNamespacedObject(f);var c=new d();a.sections[e.attr("id")]=c;if(!e.is(".no-click-switch")){e.click(function(){a.switchToSection(e.attr("id"))
 })}});$("#deskpro_outline").delegate("[data-route]","click",function(c){DeskPRO_Window.runPageRouteFromElement(this)});if(b){this.switchToSection(b.attr("id"))
 }},switchToSection:function(b){console.debug("Switching to %s",b);var d=this.sections[b];var c=$("#"+b);if(c.is(".on")){return
 }if(this.openSection){this.openSection.fireEvent("hide")}$("#deskpro_sections li.on").removeClass("on");c.addClass("on");
-$("#deskpro_outline > section.on").removeClass("on");$("#deskpro_list > section.on").removeClass("on");if(this.openSection){this.openSection.fireEvent("afterhide")
-}d.fireEvent("show");var a=d.getSectionElement();if(a){a.addClass("on")}var e=d.getListElement();if(e){e.addClass("on")}d.fireEvent("aftershow");
-this.openSection=d},getOpenSection:function(){return this.openSection},_initLayout:function(){this.layout=new DeskPRO.Agent.Layout.DeskproWindow();
-this.layout.doResize();this.pageTabStrip=new DeskPRO.Agent.TabStrip($("#deskpro_tabstrip > ul:first"),new DeskPRO.Agent.TabManager("#deskpro_viewport"));
+$("#deskpro_outline > section.on").removeClass("on");$("#deskpro_list > section.on").removeClass("on");$("#deskpro_list_loading, #deskpro_outline_loading").addClass("on");
+if(this.openSection){this.openSection.fireEvent("afterhide")}d.fireEvent("show");var a=d.getSectionElement();if(a){a.addClass("on")
+}var e=d.getListElement();if(e){e.addClass("on")}d.fireEvent("aftershow");this.openSection=d},getOpenSection:function(){return this.openSection
+},_initLayout:function(){this.layout=new DeskPRO.Agent.Layout.DeskproWindow();this.layout.doResize();this.pageTabStrip=new DeskPRO.Agent.TabStrip($("#deskpro_tabstrip > ul:first"),new DeskPRO.Agent.TabManager("#deskpro_viewport"));
 this.pageTabStrip.tabManager.addEvent("addTab",function(){DeskPRO_Window.windowStateUpdated("tabs")});this.pageTabStrip.tabManager.addEvent("removeTab",function(){DeskPRO_Window.windowStateUpdated("tabs")
 })}});Orb.createNamespace("DeskPRO.Agent.Layout");DeskPRO.Agent.Layout.DeskproWindow=Orb.Class({Implements:[Orb.Util.Events],initialize:function(){var a=this;
 this.LEFT_START=255;$(window).resize(function(){if(a._resizeTimeout){window.clearTimeout(a._resizeTimeout)}a._resizeTimeout=a.doResize.delay(400,a)
@@ -203,31 +204,32 @@ return false}});return a},findTabByFragment:function(b){var a=false;Object.each(
 return false}});return a},getTabByFragment:function(b){var a=this.findTabByFragment(b);if(!a){return null}return this.getTabById(a)
 },findTabByRouteUrl:function(b){var a=false;Object.each(this.tabManager.getTabs(),function(c){if(c.page.getMetaData("routeUrl")==b){a=c.id;
 return false}});return a},getTabByRouteUrl:function(b){var a=this.findTabByRouteUrl(b);if(!a){return null}return this.getTabById(a)
-},getTabById:function(a){return this.tabManager.getTab(a)},addTab:function(a){console.log(a);var b="tab"+this.uniqueCounter++;
-this.tabManager.addTab(b,{html:a.getHtml(),page:a,title:a.getMetaData("title","Untitled"),callback_render:function(e,c,d){c=$(c);
+},getTabById:function(a){return this.tabManager.getTab(a)},addTab:function(a){var b="tab"+this.uniqueCounter++;this.tabManager.addTab(b,{html:a.getHtml(),page:a,title:a.getMetaData("title","Untitled"),callback_render:function(e,c,d){c=$(c);
 a.fireEvent("render",[c])},callback_remove_content:function(e,c,d){a.fireEvent("destroy")},callback_activate:function(){a.fireEvent("activate")
 },callback_deactivate:function(){a.fireEvent("deactivate")}});this.resizeTabListWidth();return b},addTabPlaceholder:function(a,c){var b=$("#tab_loading_template").get(0).innerHTML;
 b=b.replace("%endScript%","<\/script>");var d=DeskPRO_Window.createPageFragment(b,"DeskPRO.Agent.PageFragment.Page.Loading");
-d.meta.loadingUrl=a;d.meta.loadingRouteData=c;var e=this.addTab(d);return e},resizeTabListWidth:function(){var a=0;$("> li",this.tabStrip).each(function(){a+=$(this).outerWidth()
+d.meta.routeUrl=a;d.meta.routeData=c;var e=this.addTab(d);return e},resizeTabListWidth:function(){var a=0;$("> li",this.tabStrip).each(function(){a+=$(this).outerWidth()
 });if(a<this.tabStrip.parent().width()){a=this.tabStrip.parent().width()}this.tabStrip.css({width:a});if(this.tabStrip.width()>this.tabStrip.parent().width()){this.tabStrip.parent().addClass("with-scroller");
 a+=30;this.tabStrip.css({width:a})}else{this.tabStrip.parent().removeClass("with-scroller")}},_tabStripClick:function(e){if(this.cancelClickActivate){this.cancelClickActivate=false;
 return}this.cancelClickActivate=true;var b=$(e.target);if(b.is("li.tab")){var d=b}else{if(b.parent().is("li.tab")){var d=b.parent()
 }else{var d=b.parentsUntil("li.tab");if(d.length){d=d.parent()}}}if(!d.is("li.tab")){console.log("not click %o",e.target);
 return}e.preventDefault();e.stopPropagation();var a=d.data("tab-id");if(b.is(".close-tab")||e.which==2||e.isDbl){var c=this.getTabById(a);
 if(c.page&&c.page.fireEvent){e.deskpro={cancelClose:false};c.page.fireEvent("closeTab",[e,c]);if(e.deskpro.cancelClose){return
-}}this.tabManager.removeTab(a);return}this.tabManager.activateTab(a);this.cancelClickActivate=false},_onTabAdd:function(b){b.btnId=b.id;
-if(!b.page.getMetaData("url_fragment")&&b.page.TYPENAME!="loading"){}var c=b.page.getMetaData("tabIdClass","");var d='<li id="'+b.btnId+'" data-tab-id="'+b.id+'" class="tab tipped '+c;
-if(b.page.TYPENAME!="basic"){d+=" "+b.page.TYPENAME}if(b.page.getMetaData("tabTip")){if(b.page.getMetaData("tabTip").indexOf(".")===0){b.page.setMetaData("fetchTabTip",true);
+}}c.isCloseClick=true;this.tabManager.removeTab(a);c.isCloseClick=false;this.cancelClickActivate=false;return}this.tabManager.activateTab(a);
+this.cancelClickActivate=false},_onTabAdd:function(b){b.btnId=b.id;if(!b.page.getMetaData("url_fragment")&&b.page.TYPENAME!="loading"){}var c=b.page.getMetaData("tabIdClass","");
+var d='<li id="'+b.btnId+'" data-tab-id="'+b.id+'" class="tab tipped '+c;if(b.page.TYPENAME!="basic"){d+=" "+b.page.TYPENAME
+}if(b.page.getMetaData("tabTip")){if(b.page.getMetaData("tabTip").indexOf(".")===0){b.page.setMetaData("fetchTabTip",true);
 d+='" data-tipped="'+b.btnId+"_tip\" data-tipped-options=\"inline: true, skin: 'light', showDelay: 1, hook: 'topmiddle'\">"
 }else{d+='" data-tipped="'+b.tabTip+"\" data-tipped-options=\"skin: 'light', showDelay: 1, hook: 'topmiddle'\">"}}else{d+='" data-tipped="'+b.title+"\" data-tipped-options=\"skin: 'light', showDelay: 1, hook: 'topmiddle'\">"
 }d+='<a class="link">'+b.title+"</a>";d+='<a class="close-tab">Close</a>';d+="</li>";var a=$(d);if(b.page&&b.page.meta.tabPlaceholderId){var e=this.getTabById(b.page.meta.tabPlaceholderId);
-var f=e.btnId;this.removeTabById(b.page.meta.tabPlaceholderId);$("#"+f).replaceWith(a)}else{a.appendTo(this.tabStrip);this.resizeTabListWidth()
-}},_onTabDeactivate:function(a,b,c){$("#tiptip_holder").clearQueue().hide()},_onTabActivate:function(b){$("li",this.tabStrip).removeClass("active-tab");
-var d=$("#"+b.btnId,this.tabStrip).addClass("active-tab");if(d.is(".is-alerting")){d.removeClass("alert-highlight").removeClass("is-alerting");
-var c=d.data("alerting-timeout");if(c){window.clearTimeout(c);d.data("alerting-timeout",false)}}if(b.page.getMetaData("fetchTabTip")){b.page.setMetaData("fetchTabTip",null);
-var a=b.btnId+"_tip";if(!document.getElementById(a)){$("#"+b.wrapperId+" "+b.page.getMetaData("tabTip")).attr("id",a)}}DeskPRO_Window.updateWindowUrlFragment()
-},_onTabRemove:function(a){$("#tiptip_holder").clearQueue().hide();if(a.page&&a.page.TYPENAME&&a.page.TYPENAME=="loading"){return
-}$("#"+a.btnId).remove();this.resizeTabListWidth()}});Orb.createNamespace("DeskPRO.Agent");DeskPRO.Agent.ScrollerHandler=new Orb.Class({Implements:[Orb.Util.Options],initialize:function(d,c,b){this.pageObject=d;
+var f=e.btnId;loadingTabData=this.getTabById(b.page.meta.tabPlaceholderId);loadingTabData.isReplacing=true;this.removeTabById(b.page.meta.tabPlaceholderId);
+$("#"+f).replaceWith(a)}else{a.appendTo(this.tabStrip);this.resizeTabListWidth()}},_onTabDeactivate:function(a,b,c){$("#tiptip_holder").clearQueue().hide()
+},_onTabActivate:function(b){$("li",this.tabStrip).removeClass("active-tab");var d=$("#"+b.btnId,this.tabStrip).addClass("active-tab");
+if(d.is(".is-alerting")){d.removeClass("alert-highlight").removeClass("is-alerting");var c=d.data("alerting-timeout");if(c){window.clearTimeout(c);
+d.data("alerting-timeout",false)}}if(b.page.getMetaData("fetchTabTip")){b.page.setMetaData("fetchTabTip",null);var a=b.btnId+"_tip";
+if(!document.getElementById(a)){$("#"+b.wrapperId+" "+b.page.getMetaData("tabTip")).attr("id",a)}}DeskPRO_Window.updateWindowUrlFragment()
+},_onTabRemove:function(a){$("#tiptip_holder").clearQueue().hide();if(a.isReplacing){return}$("#"+a.btnId).remove();if(a.page.meta.routeData&&a.page.meta.routeData.xhr){a.page.meta.routeData.xhr.abort()
+}this.resizeTabListWidth()}});Orb.createNamespace("DeskPRO.Agent");DeskPRO.Agent.ScrollerHandler=new Orb.Class({Implements:[Orb.Util.Options],initialize:function(d,c,b){this.pageObject=d;
 this.element=c=$(c);this.options={showEvent:"activate",hideEvent:"deactivate"};this.setOptions(b);c.tinyscrollbar();this.initUpdateTimer();
 if(d.addEvent){var a=this;d.addEvent(this.options.showEvent,function(){a.initUpdateTimer()});d.addEvent(this.options.hideEvent,function(){a.removeResizeTimer()
 })}},initUpdateTimer:function(){var b=this.element;if(b.data("resize-special-event")){return}var a=$("div.scroll-viewport:first",b);

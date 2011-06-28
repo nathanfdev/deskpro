@@ -19,28 +19,41 @@ var a=e.split("_");do{var b=a.join("_");if(c[b]!=undefined){return c[b]}}while(a
 while(a=this.activeEdits.pop()){this.closeEditinfo(a)}},closeEditinfo:function(d){var c=d.editable;var a=d.rendered_els;var b=d.form_elements;
 var e=d.form_elements_container;b.fadeOut("fast",function(){b.removeClass("editable-fields-on").appendTo(e);if(a.parent().get(0)!=c.get(0)){a.hide().appendTo(c).fadeIn("fast")
 }})}});Orb.createNamespace("DeskPRO.Form");DeskPRO.Form.RuleBuilder=new Class({Implements:Events,ruleTpl:null,typeSelectHtml:null,initialize:function(a){this.ruleTpl=a;
-this.typeSelectHtml=['<select name="type" class="type"><option value=""></option>'];$("> .type",this.ruleTpl).each((function(b,c){this.typeSelectHtml.push('<option value="'+$(c).data("rule-type")+'">'+$(c).attr("title")+"</option>")
-}).bind(this));this.typeSelectHtml.push("</select>");this.typeSelectHtml=this.typeSelectHtml.join("")},addNewRow:function(f,c,e){var b=$("> .row",this.ruleTpl).children().clone();
+this.typeSelectHtml=['<select name="type" class="type">'];$("> .type",this.ruleTpl).each((function(b,c){this.typeSelectHtml.push('<option value="'+$(c).data("rule-type")+'">'+$(c).attr("title")+"</option>")
+}).bind(this));this.typeSelectHtml.push("</select>");this.typeSelectHtml=this.typeSelectHtml.join("")},addNewRow:function(g,c,e){var b=$("> .row",this.ruleTpl).children().clone();
 $(".type:first",b).html(this.typeSelectHtml);var a=$("select.type:first",b);if(c){b.data("form-base-name",c);this.updateFormName(b,c)
 }var d=false;if(e){d=$('option[value="'+e.type+'"]:first',a);d.attr("selected",true);this.handleSelectChange(b);$(".op:first select",b).val(e.op).addClass("op");
 if(typeof e.options=="string"||typeof e.options=="number"||typeOf(e.options)!="object"){$(":input, textarea, select",b).filter(":not(.op, .type)").first().val(e.options)
-}else{Object.each(e.options,function(j,h){if(!h||!h.length){return}var g=h.replace(/\[/,"\\[").replace(/\]/,"\\]");if(typeof j=="string"||typeof j=="number"){var i=$('[name="'+g+'"], [name$="'+this.makeArrayName(h,true)+'"]',b).first().val(j)
-}else{if(typeOf(j)=="object"){Object.each(j,function(n,o){var m=g+"["+o+"]";var k=g+"\\["+o+"\\]";var l=$('[name="'+k+'"], [name$="'+this.makeArrayName(m,true)+'"]',b).first().val(n)
-},this)}else{if(typeOf(j)=="array"){Array.each(j,function(l){var k=$('option[value="'+l+'"]',b).first().get(0);k.selected=true
-},this)}else{var i=$('[name="'+g+'"], [name$="'+this.makeArrayName(h,true)+'"]',b).first().val(j)}}}},this)}}a.change((function(){this.handleSelectChange(b)
-}).bind(this));$(f).append(b);if(d){d.attr("selected",true)}this.fireEvent("newRow",[b,f,e]);return b},handleSelectChange:function(d){var c=$(".type:first > select",d).val();
-var a=$('> .type[data-rule-type="'+c+'"]',this.ruleTpl);var e=$("> .op:first",a).children().clone();var b=$("> .options:first",a).clone();
-b.css("display","inline");$(".op:first",d).empty().append(e);$(".options:first",d).empty().append(b);if(d.data("form-base-name")){this.updateFormName($(".op:first",d),d.data("form-base-name"));
-this.updateFormName($(".options:first",d),d.data("form-base-name"))}this.fireEvent("selectChange",[d,c])},updateFormName:function(b,a){$("[name]",b).each(function(){var c=$(this).attr("name");
+}else{Object.each(e.options,function(k,i){if(!i||!i.length){return}var h=i.replace(/\[/,"\\[").replace(/\]/,"\\]");if(typeof k=="string"||typeof k=="number"){var j=$('[name="'+h+'"], [name$="'+this.makeArrayName(i,true)+'"]',b).first().val(k)
+}else{if(typeOf(k)=="object"){Object.each(k,function(o,p){var n=h+"["+p+"]";var l=h+"\\["+p+"\\]";var m=$('[name="'+l+'"], [name$="'+this.makeArrayName(n,true)+'"]',b).first().val(o)
+},this)}else{if(typeOf(k)=="array"){Array.each(k,function(m){var l=$('option[value="'+m+'"]',b).first().get(0);l.selected=true
+},this)}else{var j=$('[name="'+h+'"], [name$="'+this.makeArrayName(i,true)+'"]',b).first().val(k)}}}},this)}}var f=new DeskPRO.UI.Menu({menuElement:a});
+a.change((function(){this.handleSelectChange(b)}).bind(this));$(g).append(b);if(d){d.attr("selected",true)}this.fireEvent("newRow",[b,g,e]);
+return b},handleSelectChange:function(k){var f=$(".type:first > select",k).val();var a=$('> .type[data-rule-type="'+f+'"]',this.ruleTpl);
+var d=$("> .op:first",a).children().clone();var b=$("> .options:first",a).clone();b.css("display","inline");$(".op:first",k).empty().append(d);
+$(".options:first",k).empty().append(b);if(d.is("select")){var g=new DeskPRO.UI.Menu({menuElement:d})}var e=b.children().length;
+if(e==1){var j=$("select",b);if(j.length){var i=new DeskPRO.UI.Menu({menuElement:j})}var h=$('input[type="text"], textarea',b);
+if(h.length){var c=$('<span class="menu-trigger">(click to set value)</span>');c.appendTo(b);c.click(function(){var m=function(p){if(p.keyCode==13&&!p.metaKey){h.blur();
+o()}};var o=function(){l.remove();h.detach().unbind("keypress",m).css("display","none").appendTo(b);n.remove()};var l=$('<div class="backdrop"></div>');
+l.appendTo("body");l.click(o);var n=$('<div class="field-overlay"><div class="close-trigger"></div></div>');h.detach().css("display","block").appendTo(n);
+n.css({left:c.offset().left,top:c.offset().top});n.appendTo("body").show();h.keypress(m).focus();$(".close-trigger",n).click(o)
+});h.css("display","none");h.change(function(){var l=h.val().trim();if(!l){l="(click to set value)"}c.text(l)})}}if(k.data("form-base-name")){this.updateFormName($(".op:first",k),k.data("form-base-name"));
+this.updateFormName($(".options:first",k),k.data("form-base-name"))}this.fireEvent("selectChange",[k,f])},updateFormName:function(b,a){$("[name]",b).each(function(){var c=$(this).attr("name");
 c=c.replace(/^([\w\d]*)/,"[$1]");c=a+c;$(this).attr("name",c)})},makeArrayName:function(a,b){if(a.indexOf("[")===-1){a="["+a+"]"
 }else{a=a.replace(/^([\w\d]+)\[(.*?)$/,"[$1][$2")}if(b){a=a.replace(/\[/g,"\\[").replace(/\]/g,"\\]")}return a}});Orb.createNamespace("DeskPRO");
 DeskPRO.FaviconBadge=new Orb.Class({Implements:[Orb.Util.Options],initialize:function(a){this.supported=false;if(typeof HTMLCanvasElement!=undefined){this.supported=true
-}this.faviconEl=$(a.favicon);this.badgeEl=null},updateBadge:function(e){if(!this.supported){return}var d=document.createElement("canvas");
-var c=document.createElement("img");d.height=d.width=16;var a=d.getContext("2d");var b=this;if(e>99){e=99}if(b.badgeEl&&b.badgeEl.data("num")==e){return
-}c.onload=function(){a.drawImage(this,0,0);a.font='11px "helvetica", sans-serif';a.fillStyle="rgba(255, 255, 255, 0.75)";
-a.fillRect(3,6,12,10);a.fillStyle="#000";a.fillText(e,4,16);if(b.badgeEl){b.badgeEl.remove()}b.badgeEl=b.faviconEl.clone();
-b.badgeEl.data("num",e);b.badgeEl.get(0).href=d.toDataURL("image/png");$("body").append(b.badgeEl)};c.src=this.faviconEl.attr("href")
-}});Orb.createNamespace("DeskPRO.Agent");DeskPRO.Agent.MediaBrowser=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(b){this.options={wrapper:null,additionalDropZone:null};
+}this.faviconEl=$(a.favicon);this.badgeEl=null},updateBadge:function(c,d){if(!this.supported){return}var b=document.createElement("img");
+var a=this;if(c>99){c=99}if(a.badgeEl&&a.badgeEl.data("num")==c){return}if(a.currentCancel){a.currentCancel()}if(c==0){d=false;
+a.badgeEl.remove()}b.src=this.faviconEl.attr("href");b.onload=function(){function g(){if(a.badgeEl){a.badgeEl.remove()}var k=a.drawCanvus(b,c);
+a.badgeEl=a.faviconEl.clone();a.badgeEl.data("num",c);a.badgeEl.get(0).href=k.toDataURL("image/png");$("body").append(a.badgeEl)
+}function f(){if(a.badgeEl){a.badgeEl.remove()}var k=a.drawCanvus(b,c,true);a.badgeEl=a.faviconEl.clone();a.badgeEl.data("num",c).addClass("alt");
+a.badgeEl.get(0).href=k.toDataURL("image/png");$("body").append(a.badgeEl)}function j(){if(i++>10){e();return}if(!a.badgeEl){g()
+}else{if(a.badgeEl.is(".alt")){g()}else{f()}}h=window.setTimeout(function(){j()},1000)}function e(){if(h){window.clearTimeout(h)
+}g();$(window).unbind("focus",e);$(window).unbind("mousemove",e);a.currentCancel=null}a.currentCancel=e;if(d){var h=null;
+var i=0;j();$(window).bind("focus",e);$(window).bind("mousemove",e)}else{g()}}},drawCanvus:function(b,d,e){var c=document.createElement("canvas");
+c.height=c.width=16;var a=c.getContext("2d");a.drawImage(b,0,0);a.font='11px "helvetica", sans-serif';if(e){a.fillStyle="rgba(255, 255, 255, 1)"
+}else{a.fillStyle="rgba(255, 255, 255, 0.75)"}a.fillRect(3,6,12,10);a.fillStyle="#000";a.fillText(d,4,16);return c}});Orb.createNamespace("DeskPRO.Agent");
+DeskPRO.Agent.MediaBrowser=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(b){this.options={wrapper:null,additionalDropZone:null};
 if(b){this.setOptions(b)}var d=this.wrapper=this.options.wrapper;this.tabs=new DeskPRO.UI.SimpleTabs({context:this.wrapper});
 var c=$();c=c.add(this.wrapper);if(this.options.additionalDropZone){c=c.add(this.options.additionalDropZone)}this.uploadForm=$("form.upload-form",this.wrapper);
 var a=this;this.uploadForm.fileUploadUI({singleFileUploads:false,cancelSelector:"button.cancel-trigger",uploadTable:$(".files-list",this.wrapper),downloadTable:$(".files-list",this.wrapper),dropZone:c,buildUploadRow:function(g,e,f){return $('<div class="uploading">'+g[e].name+' <button class="dp-button x-small cancel-trigger">Cancel</button></div>')

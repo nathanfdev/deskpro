@@ -1,10 +1,11 @@
 Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.AbstractSection=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(){this.addEvent("show",this.onShow);
 this.addEvent("show",this._onFirstShowFire);this.addEvent("show",this._onShowSetVisible);this.addEvent("show",this._onShowActivateList);
 this.addEvent("firstshow",this.onFirstShow);this.addEvent("hide",this.onHide);this.addEvent("hide",this._onHideSetVisible);
-this.addEvent("hide",this._onHideDeactivateList);this._isVisible=false;this.init()},init:function(){},onShow:function(){},onFirstShow:function(){},onHide:function(){},setButtonElement:function(a){this.buttonEl=a
-},getButtonElement:function(){return this.buttonEl},getSectionElement:function(){if(this.sectionEl){return this.sectionEl
-}return null},getListElement:function(){if(!this.listEl){this.setListElement()}return this.listEl},setSectionElement:function(c,b){if(this.sectionEl){this.sectionEl.remove()
-}if(!c){c=$("<section></section>");c.attr("id",Orb.getUniqueId("outline_"))}this.sectionEl=c;if(!c.parent().is("#deskpro_outline")){this.sectionEl.detach().appendTo("#deskpro_outline")
+this.addEvent("hide",this._onHideDeactivateList);this._isVisible=false;this.init()},init:function(){},onShow:function(){},onFirstShow:function(){},onHide:function(){},setHasInitialLoaded:function(){this.hasLoaded=true;
+$("#deskpro_outline_loading").removeClass("on")},setButtonElement:function(a){this.buttonEl=a},getButtonElement:function(){return this.buttonEl
+},getSectionElement:function(){if(this.sectionEl){return this.sectionEl}return null},getListElement:function(){if(!this.listEl){this.setListElement()
+}return this.listEl},setSectionElement:function(c,b){if(this.sectionEl){this.sectionEl.remove()}if(!c){c=$("<section></section>");
+c.attr("id",Orb.getUniqueId("outline_"))}this.sectionEl=c;if(!c.parent().is("#deskpro_outline")){this.sectionEl.detach().appendTo("#deskpro_outline")
 }if(!b){b=$("section.content",c);if(!b.length){var a=[];a.push('<div class="with-scrollbar '+this.sectionEl.attr("id")+'">');
 a.push('<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>');a.push('<div class="scroll-viewport"><div class="scroll-content">');
 a=a.join("");c=$(a);this.sectionEl.append(c);b=$("div.scroll-content:first",c)}}this.contentEl=b;var d=$(".with-scrollbar:first",this.sectionEl);
@@ -19,10 +20,10 @@ a.empty();a.html(b.html);this.getListElement().addClass("on");b.fireEvent("rende
 },_onFirstShowFire:function(){if(this.has_shown){return}this.has_shown=true;this.fireEvent("firstshow");this._loadAutoLoadRoutes()
 },_loadAutoLoadRoutes:function(){if(DeskPRO_Window.getDebug("noAutoLoadList")){return}var a=$(".auto-load-route",this.sectionEl);
 if(!a.length||!a.data("route")){return}DeskPRO_Window.runPageRoute(a.data("route"))},_onShowActivateList:function(){if(this.listPage){this.listPage.fireEvent("activate")
-}},_onHideDeactivateList:function(){if(this.listPage){this.listPage.fireEvent("deactivate")}}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
-DeskPRO.Agent.WindowElement.Section.Tickets=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#tickets_section");
+}if(this.hasLoaded){$("#deskpro_outline_loading").hide()}},_onHideDeactivateList:function(){if(this.listPage){this.listPage.fireEvent("deactivate")
+}}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.Tickets=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#tickets_section");
 this.setSectionElement($('<section id="tickets_outline"></section>'));$.ajax({url:BASE_URL+"agent/tickets/get-section-data.json",context:this,success:function(a){this._initSection(a)
-}})},_initSection:function(b){this.sectionEl.html(b.section_html);var a=this;this.tabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#tickets_outline_tabstrip li"),onTabSwitch:function(c){if(c.tabEl.is(".labels")){a.showLabelsList()
+}})},_initSection:function(b){this.setHasInitialLoaded();this.sectionEl.html(b.section_html);var a=this;this.tabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#tickets_outline_tabstrip li"),onTabSwitch:function(c){if(c.tabEl.is(".labels")){a.showLabelsList()
 }}});this._initFilters();this._initOverview();this._initFlagged();if(this.isVisible()&&!DeskPRO_Window.loadingListFragment){this._loadAutoLoadRoutes()
 }},_initFilters:function(){DeskPRO_Window.getPoller().addData([{name:"do[]",value:"get-filter-counts"}],"filters.counts",{recurring:true,minDelay:15000,minDelayAfterOne:true});
 DeskPRO_Window.getMessageBroker().addMessageListener("filters.counts",this.updateFilterCounts.bind(this))},updateFilterCounts:function(b){var a=0;
@@ -56,26 +57,27 @@ this.updateFlagCountFor(c.old_flag,b-1);this.updateFlagCountFor(c.new_flag,a+1)}
 }this.hasLoadedLabels=true;$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/ticket-search/labels-index-pane",dataType:"html",context:this,success:function(a){$("#tickets_outline_labels").html(a)
 }})}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.People=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#tickets_section");
 this.setSectionElement($('<section id="people_outline"></section>'));$.ajax({url:BASE_URL+"agent/people/get-section-data.json",context:this,success:function(a){this._initSection(a)
-}})},_initSection:function(b){this.contentEl.html(b.section_html);var a=this;this.peopleTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#people_outline_tabstrip li"),onTabSwitch:function(c){}});
+}})},_initSection:function(b){this.setHasInitialLoaded();this.contentEl.html(b.section_html);var a=this;this.peopleTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#people_outline_tabstrip li"),onTabSwitch:function(c){}});
 this.orgTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#people_outline_org_tabstrip li"),onTabSwitch:function(c){}});
 this.contentEl.addClass("scroll-content").tinyscrollbar();if(this.isVisible()){this._onShowLoadList()}}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
 DeskPRO.Agent.WindowElement.Section.Kb=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#kb_section");
 this.setSectionElement($('<section id="kb_outline"></section>'));$.ajax({url:BASE_URL+"agent/kb/get-section-data.json",context:this,success:function(a){this._initSection(a)
-}})},_initSection:function(b){this.contentEl.html(b.section_html);var a=this;this.catTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#kb_outline_tabstrip li"),onTabSwitch:function(c){}});
+}})},_initSection:function(b){this.setHasInitialLoaded();this.contentEl.html(b.section_html);var a=this;this.catTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#kb_outline_tabstrip li"),onTabSwitch:function(c){}});
 this.contentEl.addClass("scroll-content").tinyscrollbar();if(this.isVisible()){this._onShowLoadList()}}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
 DeskPRO.Agent.WindowElement.Section.Twitter=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#twitter_section");
 this.setSectionElement($('<section id="twitter_outline"></section>'));$.ajax({url:BASE_URL+"agent/twitter/get-section-data.json",context:this,success:function(a){this._initSection(a)
-}})},_initSection:function(a){this.contentEl.html(a.section_html);if(this.isVisible()){this._onShowLoadList()}this.contentEl.addClass("scroll-content").tinyscrollbar()
-}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.AgentChat=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#agent_chat_section");
+}})},_initSection:function(a){this.setHasInitialLoaded();this.contentEl.html(a.section_html);if(this.isVisible()){this._onShowLoadList()
+}this.contentEl.addClass("scroll-content").tinyscrollbar()}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
+DeskPRO.Agent.WindowElement.Section.AgentChat=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#agent_chat_section");
 this.chatsWrapper=$("#agent_chats_wrapper");this.setSectionElement($('<section id="agent_chat_outline"></section>'));$("#agent_chat_conversation").template("agent_chat_conversation");
 $("#agent_chat_message").template("agent_chat_message");$("#agent_chat_message_me").template("agent_chat_message_me");this._initMessageHandlers();
-this._initInterface()},onShow:function(){$.ajax({url:BASE_URL+"agent/agent-chat/get-section-data.json",context:this,success:function(a){this.contentEl.html(a.section_html)
-}})},_initMessageHandlers:function(){DeskPRO_Window.getMessageChanneler().subscribeChannel("agent_chat.new-message");DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.new-agent-online");
-DeskPRO_Window.getMessageBroker().addMessageListener("agent_chat.new-message",this.showNewMessage.bind(this));DeskPRO_Window.getMessageBroker().addMessageListener("agent.new-agent-online",this.addOnlineAgent.bind(this))
-},_initInterface:function(){this.panelEl=$("#agent_chat_panel");this.onlineListEl=$("#agent_online_list");this.onlineCountEl=$("#chat_online_count");
-$(".show-section",this.panelEl).click(function(){DeskPRO_Window.switchToSection("agent_chat_section")});$("#agent_chat_section").click((function(b){b.stopPropagation();
-this.panelEl.toggleClass("open")}).bind(this));$("body").click((function(){this.panelEl.removeClass("open");$("> section",this.chatsWrapper).removeClass("open")
-}).bind(this));$.ajax({url:BASE_URL+"agent/agent-chat/get-online-agents.json",context:this,success:function(b){if(b.online_agents){Array.each(b.online_agents,function(c){this.addOnlineAgent(c)
+this._initInterface()},onShow:function(){$.ajax({url:BASE_URL+"agent/agent-chat/get-section-data.json",context:this,success:function(a){this.setHasInitialLoaded();
+this.contentEl.html(a.section_html)}})},_initMessageHandlers:function(){DeskPRO_Window.getMessageChanneler().subscribeChannel("agent_chat.new-message");
+DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.new-agent-online");DeskPRO_Window.getMessageBroker().addMessageListener("agent_chat.new-message",this.showNewMessage.bind(this));
+DeskPRO_Window.getMessageBroker().addMessageListener("agent.new-agent-online",this.addOnlineAgent.bind(this))},_initInterface:function(){this.panelEl=$("#agent_chat_panel");
+this.onlineListEl=$("#agent_online_list");this.onlineCountEl=$("#chat_online_count");$(".show-section",this.panelEl).click(function(){DeskPRO_Window.switchToSection("agent_chat_section")
+});$("#agent_chat_section").click((function(b){b.stopPropagation();this.panelEl.toggleClass("open")}).bind(this));$("body").click((function(){this.panelEl.removeClass("open");
+$("> section",this.chatsWrapper).removeClass("open")}).bind(this));$.ajax({url:BASE_URL+"agent/agent-chat/get-online-agents.json",context:this,success:function(b){if(b.online_agents){Array.each(b.online_agents,function(c){this.addOnlineAgent(c)
 },this)}}});this.chatsWrapper.click(function(b){b.stopPropagation()});var a=this;this.onlineListEl.delegate("li","click",function(c){c.stopPropagation();
 var d=$(this).data("agent-id");var b=$(this).data("agent-short-name");var e=$(this).data("picture-url");a.addChatBox(b,d,e);
 a.openChatBox(d);a.panelEl.removeClass("open")})},addOnlineAgent:function(b){if(DESKPRO_PERSON_ID&&b.agent_id==DESKPRO_PERSON_ID){return
@@ -100,7 +102,7 @@ c.push({name:"content",value:b});$.ajax({url:BASE_URL+"agent/agent-chat/send-age
 this.setSectionElement($('<section id="chat_outline"></section>'));$("#new_user_chat_alert").template("new_user_chat_alert");
 $("#new_user_chat_alert_message").template("new_user_chat_alert_message");$("#added_part_user_chat_alert").template("added_part_user_chat_alert");
 $("#user_chat_newmsg_sound").template("user_chat_newmsg_sound");this._initMessageHandlers();this.poller=new DeskPRO.AjaxPoller.Poller({ajaxUrl:BASE_URL+"agent/chat/get-section-counts.json",interval:5000,alwaysRequest:true});
-this.poller.addEvent("ajaxSuccess",this.handleUpdateCounts.bind(this))},onShow:function(){$.ajax({url:BASE_URL+"agent/chat/get-section-data.json",context:this,success:function(a){this.contentEl.html(a.section_html)
+this.poller.addEvent("ajaxSuccess",this.handleUpdateCounts.bind(this))},onShow:function(){this.setHasInitialLoaded();$.ajax({url:BASE_URL+"agent/chat/get-section-data.json",context:this,success:function(a){this.contentEl.html(a.section_html)
 }})},handleUpdateCounts:function(b){$("#chat_outline .agent-chat-count").hide();$("#userchat_navitem_0 .list-counter").html("0");
 if(!b.counts){return}var a=0;Object.each(b.counts,function(c,d){if(d=="0"){a=c}$("#userchat_navitem_"+d+" .list-counter").html(c);
 $("#userchat_navitem_"+d).show()});this.updateBadge(a)},_initMessageHandlers:function(){DeskPRO_Window.getMessageChanneler().subscribeChannel("chat.new-chat");
@@ -121,5 +123,5 @@ $(".dismiss-trigger",c).click(function(){c.remove()});$(".accept-trigger",c).cli
 c.remove()}).data("route","page:"+BASE_URL+"agent/chat/view/"+b);if(a){var d=$.tmpl("new_user_chat_alert_message",a);$("div.messages",c).append(d).scrollTop(10000)
 }}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.Ideas=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#ideas_section");
 this.setSectionElement($('<section id="ideas_outline"></section>'));$.ajax({url:BASE_URL+"agent/ideas/get-section-data.json",context:this,success:function(a){this._initSection(a)
-}})},_initSection:function(b){this.contentEl.html(b.section_html);var a=this;this.catTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#ideas_outline_tabstrip li"),onTabSwitch:function(c){}});
+}})},_initSection:function(b){this.setHasInitialLoaded();this.contentEl.html(b.section_html);var a=this;this.catTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#ideas_outline_tabstrip li"),onTabSwitch:function(c){}});
 this.contentEl.addClass("scroll-content").tinyscrollbar()}});
