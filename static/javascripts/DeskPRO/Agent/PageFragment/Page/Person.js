@@ -329,8 +329,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 	saveNote: function() {
 
-		$('.new-note-form').addClass('saving');
-		var note = $('.new-note-form textarea').val();
+		$('.new-note-form', this.notesSection).addClass('saving');
+		var note = $('.new-note-form textarea', this.notesSection).val();
 
 		$.ajax({
 			timeout: 20000,
@@ -343,10 +343,12 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 	handleNoteSave: function(data) {
 
-		var list = $('.note-list', this.notesSection);
-		list.prepend(data.note_li_html);
+		$('.new-note-form textarea', this.notesSection).val('');
 
-		$('.new-note-form').removeClass('saving');
+		var list = $('.note-list', this.notesSection);
+		list.append(data.note_li_html);
+
+		$('.new-note-form', this.notesSection).removeClass('saving');
 
 		this.updateCounts();
 	},
