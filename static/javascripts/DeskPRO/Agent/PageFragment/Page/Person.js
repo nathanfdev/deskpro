@@ -19,6 +19,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
 
+		this.zIndex = 999999;
+
 		var self = this;
 
 		var cw = this.contentWrapper;
@@ -145,7 +147,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		this.custom_fields_edit.css({
 			position: 'absolute',
 			width: width,
-			'z-index': 10000
+			'z-index': this.zIndex
 		});
 
 		this.custom_fields_edit.position({
@@ -271,7 +273,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		this.org_dlg.css({
 			position: 'absolute',
 			width: width,
-			'z-index': 10000
+			'z-index': this.zIndex
 		});
 
 		this.org_dlg.position({
@@ -429,7 +431,8 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		edit_el.css({
 			position: 'absolute',
 			top: 10,
-			left: 10
+			left: 10,
+			'z-index': this.zIndex
 		});
 		edit_el.show();
 
@@ -536,7 +539,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		this.email_dlg.css({
 			position: 'absolute',
 			width: width,
-			'z-index': 10000
+			'z-index': this.zIndex
 		});
 
 		this.email_dlg.position({
