@@ -31,6 +31,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 		});
 
 		this.initRoutesOnCollection($('.with-route', this.wrapper));
+		this.initTimesOnCollection($('time.timeago', this.wrapper));
 
 		$('input[placeholder]', this.wrapper).each(function() {
 			Orb.Compat.WebForms.placeholder(this);

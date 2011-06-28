@@ -202,12 +202,13 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 		<div class="full-container-tabbed-contents tab-content person-notes on" data-tab-trigger=".tab-trigger.person-notes">
 			<div class="full-tab-content">
 				<div class="messages-wrap notes-wrap">
-
-					<div class="new-note-placeholder trigger new-note">
-						<span>Add a new note</span>
+					<div class="note-list">
+						{% for note in notes|reverse %}
+							{% include 'AgentBundle:Person:note-li.html.twig' with {'note': note} %}
+						{% endfor %}
 					</div>
 
-					<div class="new-note-form message admin-message" style="display:none">
+					<div class="new-note-form message admin-message">
 						<div class="message-avatar left">
 							<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
 						</div>
@@ -223,7 +224,6 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 								<div style="text-align:center; margin-top: 9px;">
 									<div class="trigger-row">
 										<button class="dp-button x-small trigger save">Add Note</button>
-										or <a class="trigger cancel">cancel</a>
 									</div>
 									<div class="saving-row">
 										Saving ...
@@ -231,12 +231,6 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 								</div>
 							</div>
 						</div>
-					</div>
-
-					<div class="note-list">
-						{% for note in notes %}
-							{% include 'AgentBundle:Person:note-li.html.twig' with {'note': note} %}
-						{% endfor %}
 					</div>
 				</div>
 			</div>
