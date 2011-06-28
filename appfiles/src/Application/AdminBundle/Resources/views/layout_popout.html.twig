@@ -31,25 +31,12 @@
 		}
 	</style>
 
-	<script src="{{ asset('build/agent-vendors.js') }}"></script>
+	{{ html_js_pack('agent.vendors') }}
 
-	<script src="{{ asset('javascripts/Orb/Orb.js') }}"></script>
-	<script src="{{ asset('javascripts/Orb/Class.js') }}"></script>
-	<script src="{{ asset('javascripts/Orb/Util/Options.js') }}"></script>
-	<script src="{{ asset('javascripts/Orb/Util/Events.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('javascripts/Orb/Compat.js') }}"></script>
-
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/UI/Overlay.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/UI/Menu.js') }}"></script>
-
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Form/InlineEdit.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Form/RuleBuilder.js') }}"></script>
-
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/MessageBroker.js') }}"></script>
-
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/Window.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PopoutWindow.js') }}"></script>
-	<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/Admin/PageHandler/Basic.js') }}"></script>
+	{{ html_js_pack('agent.common') }}
+	{{ html_js_pack('agent.deskpro-ui') }}
+	{{ html_js_pack('agent.misc') }}
+	{{ html_js_pack('admin.admin-ui') }}
 
 	<script type="text/javascript" charset="utf-8">
 		var DP_TINYMCE_URL = '{{ asset('javascripts/tiny_mce/tiny_mce.js') }}';

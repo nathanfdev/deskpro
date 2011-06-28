@@ -203,3 +203,33 @@ $CONFIG['agent']['vendors'] = array(
 		'vendor/modernizr.min.js',
 	)
 );
+
+/**
+ * Admin UI specific
+ */
+$CONFIG['admin']['admin-ui'] = array(
+	'mode' => 'yui',
+	'out' => 'admin-ui.js',
+	'files' => array(
+		'javascripts/DeskPRO/Admin/Window.js',
+		'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
+		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
+
+		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
+
+		'javascripts/DeskPRO/Agent/Notifier/Notifier.js',
+		'javascripts/DeskPRO/Agent/Notifier/Types/Abstract.js',
+		'javascripts/DeskPRO/Agent/Notifier/Types/Ticket.js',
+
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Notifications.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxResults.js',
+		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/SearchBoxType.js',
+
+		'javascripts/DeskPRO/Admin/WindowElement/MainMenuOpener.js',
+		'javascripts/DeskPRO/Admin/WindowElement/BasicMainMenu.js',
+		'javascripts/DeskPRO/Admin/WindowElement/MainMenu/AdminSearchBoxResults.js',
+	)
+);
