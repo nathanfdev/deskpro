@@ -983,6 +983,22 @@ ul.ticket-reply-tabs li.on {
 }
 
 
+
+.page-ticket.saving-department_id .department_id {
+    background: url(../../images/loading-xsmall.gif) no-repeat 100% 50%;
+    padding-right: 14px;
+}
+
+.page-ticket.saving-category_id .category_id.label,
+.page-ticket.saving-priority_id .priority_id.label,
+.page-ticket.saving-product_id .product_id.label,
+.page-ticket.saving-workflow_id .workflow_id.label,
+.page-ticket.saving-priority_id .priority_id.label {
+    background: url(../../images/loading-xsmall.gif) no-repeat 0 50%;
+    padding-left: 14px;
+}
+
+
 /**********************************************************
  List Pane
 ***********************************************************/

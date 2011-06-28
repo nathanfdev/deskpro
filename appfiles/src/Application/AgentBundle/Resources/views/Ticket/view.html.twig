@@ -41,7 +41,7 @@ pageMeta.fieldHandlers = [
 ];
 #}
 </script>
-<div class="layout-content with-scrollbar">
+<div class="layout-content with-scrollbar page-ticket">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
@@ -88,7 +88,7 @@ pageMeta.fieldHandlers = [
 		<span class="ticket-{{ticket.status}} prop-val menu-trigger status">{{ phrase('core_tickets.status_' ~ ticket.status) }}</span>
 	</div>
 	<div class="ticket-info-top">
-	<span class="ticket-source prop-val menu-trigger department_id" data-no-value="Choose Department">
+	<span class="ticket-source prop-val menu-trigger department_id saving" data-no-value="Choose Department">
 		{{ticket.department.full_title|default('Choose Department')}}
 	</span>
 	<h3>

@@ -128,6 +128,13 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		this.fireEvent('changesApplied', { changes: [property, newValue] });
 
+		var classname = 'saving-' + property.getName().replace('.', '_');
+		this.ticketPage.contentWrapper.addClass(classname);
+
+		(function() {
+			this.ticketPage.contentWrapper.removeClass(classname);
+		}).delay(650, this);
+
 		if (this.updateUrl) {
 			$.ajax({
 				type: 'POST',
@@ -136,6 +143,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				dataType: 'json',
 				context: this,
 				success: function(data) {
+
 					this.ticketPage.unloadTicketTab('ticket-log');
 					this.fireEvent('updateResult', [data]);
 				}
@@ -150,9 +158,15 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	saveChanges: function(data) {
 		data = data || [];
 
+		var saving_classes = [];
+
 		Object.each(this.changes, function (change) {
 			var property = change[0];
 			var name = property.getName();
+
+			var classname = 'saving-' + name.replace('.', '_');
+			saving_classes.push(classname);
+			this.ticketPage.contentWrapper.addClass(classname);
 
 			if (!property.isDisplayOnly()) {
 				this._addPropertyValueToData(data, property.getName(), property.getValue());
@@ -162,6 +176,13 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		}, this);
 
 		this.mode = 'single';
+
+		(function() {
+			var classname = '';
+			while (classname = saving_classes.pop()) {
+				this.ticketPage.contentWrapper.removeClass(classname);
+			}
+		}).delay(650, this);
 
 		if (this.updateUrl) {
 			$.ajax({
