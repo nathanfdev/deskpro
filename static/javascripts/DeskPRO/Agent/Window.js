@@ -677,9 +677,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return;
 		}
 
-		if (routeData && !routeData.ignoreExist) {
+		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
-			if (existTab && !(existTab.page && existTab.page.allowDupe)) {
+			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
 				this.pageTabStrip.activateTabById(existTab.id);
 				return;
 			}

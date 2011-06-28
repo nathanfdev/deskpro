@@ -175,7 +175,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		html = html.replace('%endScript%', '</scr' + 'ipt>');
 
 		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
-		page.meta.loadingUrl = url;
+		page.meta.routeUrl = url;
 		page.meta.routeData = routeData;
 		
 		var id = this.addTab(page);
@@ -305,7 +305,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			var otherTab = this.getTabById(tabData.page.meta.tabPlaceholderId);
 			var btnId = otherTab.btnId;
 
-			tabData.isReplacing = true;
+			loadingTabData = this.getTabById(tabData.page.meta.tabPlaceholderId);
+			loadingTabData.isReplacing = true;
 			this.removeTabById(tabData.page.meta.tabPlaceholderId);
 
 			$('#' + btnId).replaceWith(li);
