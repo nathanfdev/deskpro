@@ -26,12 +26,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		this.initRoutesOnCollection($('.with-route', this.wrapper));
 
-		this._initTicketActionsMenu();
+		if (!this.meta.isDeleted) {
+			this._initTicketActionsMenu();
+			this._initMessageActionsMenu();
+			this._initFlagMenu();
+			this._initLabels();
+		} else {
+			$('button.undelete-trigger', this.wrapper).click(this.doTicketUndelete.bind(this));
+		}
+
 		this._initPopout();
-		this._initMessageActionsMenu();
 		this._initTicketTabs();
-		this._initFlagMenu();
-		this._initLabels();
 		this._initTicketNotes();
 
 		// Need this to set the initial agent signature
@@ -424,8 +429,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	ticketActionsMenu: null,
 	_initTicketActionsMenu: function() {
-
-		$('button.undelete-trigger', this.wrapper).click(this.doTicketUndelete.bind(this));
 
 		var self = this;
 		this.ticketActionsMenu = new DeskPRO.UI.Menu({

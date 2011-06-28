@@ -27,6 +27,10 @@ DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Class({
 		$('.type-list', el).each(function() {
 			self.initTypeList($(this));
 		});
+
+		$('time.timeago', this.wrapper).timeago();
+		this.initRoutesOnCollection($('.with-route', this.wrapper));
+
 	},
 
 	initTypeList: function(listWrap) {
@@ -52,10 +56,17 @@ DeskPRO.Agent.PageFragment.ListPane.RecycleBin = new Class({
 			success: function(data) {
 				if (data.no_more_results) {
 					loadBtn.hide();
+				}
+
+				if (data.count < 1) {
 					return;
 				}
 
-				table.append(data.html);
+				var rows = $(data.htmls);
+				$('time.timeago', rows).timeago();
+				this.initRoutesOnCollection($('.with-route', rows));
+
+				table.append(rows);
 			}
 		});
 	}

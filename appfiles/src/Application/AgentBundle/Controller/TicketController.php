@@ -16,6 +16,7 @@ use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
+use Orb\Util\Dates;
 
 use Application\DeskPRO\Search\Adapter\AbstractAdapter as AbstractSearchAdapter;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
@@ -165,8 +166,21 @@ class TicketController extends AbstractController
 		if (!isset($widgets['agent.ticket.display'])) $widgets['agent.ticket.display'] = array();
 
 		$ticket_deleted = null;
+		$hard_delete_time = null;
 		if ($ticket['hidden_status'] == 'deleted') {
 			$ticket_deleted = $ticket->getDeletionRecord();
+
+			$date_deleted = $ticket['date_created'];
+			if ($ticket_deleted['created_date']) {
+				$date_deleted = $ticket_deleted['created_date'];
+			}
+
+			$hard_delete_time = $date_deleted->getTimestamp() + App::getSetting('core_tickets.hard_delete_time');
+			$hard_delete_time = min(0, $hard_delete_time - time());
+
+			if ($hard_delete_time) {
+				$hard_delete_time = Dates::secsToReadable($hard_delete_time);
+			}
 		}
 
 		// Check if the search adapter
@@ -175,7 +189,7 @@ class TicketController extends AbstractController
 		//	OR App::getSearchEngine()->isCapable(AbstractSearchAdapter::CAP_CONTENT_TICKET_SIMILAR_ARTICLES)
 		//) {
 		//	$show_related_content = true;
-		//}
+		//})
 
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
@@ -189,6 +203,7 @@ class TicketController extends AbstractController
 			'ticket_notes_block' => $ticket_notes_block,
 
 			'ticket_deleted' => $ticket_deleted,
+			'hard_delete_time' => $hard_delete_time,
 			'ticket_options' => $ticket_options,
 			'ticket_flagged_color' => $ticket_flagged ? $ticket_flagged['color'] : 'none',
 			'macros' => $macros,

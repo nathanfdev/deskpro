@@ -19,6 +19,7 @@ pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages'
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
 pageMeta.getUpdatedCountsUrl          = '{{ path('agent_ticket_ajaxgetupdatedcounts', {'ticket_id': ticket.id}) }}';
 
+pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};
 {% if agent_signature %}
 pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
@@ -75,6 +76,9 @@ pageMeta.fieldHandlers = [
 			<div style="padding: 5px">
 				<button class="dp-button x-small undelete-trigger">Undelete Ticket</button>
 			</div>
+			{% if hard_delete_time %}
+				This ticket will be permanantly purged from the system in {{hard_delete_time}}
+			{% endif %}
 		{% else %}
 			This ticket is currently hidden because: <span>{{ phrase('core_tickets.hidden_status_' ~ ticket.hidden_status) }}</span><br />
 			This means it won't show up in most search results and it will not generate agent notifications.
@@ -409,7 +413,9 @@ pageMeta.fieldHandlers = [
 
 {% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 
-{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
+{% if ticket.hidden_status != 'deleted' %}
+	{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
+{% endif %}
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

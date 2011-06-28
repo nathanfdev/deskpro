@@ -50,9 +50,10 @@ agent_set_agent_status:
 agent_recyclebin:
   pattern: /recycle-bin
   defaults: { _controller: AgentBundle:RecycleBin:list }
+  options: { fragment_name: 'recycle-bin', fragment_type: 'list' }
 
 agent_recyclebin_more:
-  pattern: /recycle-bin/{type}/{paeg}
+  pattern: /recycle-bin/{type}/{page}
   defaults: { _controller: AgentBundle:RecycleBin:listMore }
 
 

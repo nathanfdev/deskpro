@@ -36,7 +36,8 @@ class RecycleBinController extends AbstractController
 		}
 
 		return $this->render('AgentBundle:RecycleBin:list.html.twig', array(
-			'tickets_html' => $ticket_html
+			'tickets_html' => $ticket_html,
+			'tickets_no_more_results' => $tickets['no_more_results'],
 		));
 	}
 
@@ -44,6 +45,12 @@ class RecycleBinController extends AbstractController
 	{
 		$method = '_get' . ucfirst($type);
 		$res = $this->$method($page);
+
+		$return_res = array(
+			'html' => $res['html'],
+			'count' => $res['count'],
+			'no_more_results' => $res['no_more_results']
+		);
 
 		return $this->createJsonResponse($res);
 	}
@@ -65,10 +72,15 @@ class RecycleBinController extends AbstractController
 		$searcher->addTerm('deleted', 'is', 1);
 
 		$results = $searcher->getMatches($pageinfo);
-		$results = array(1,2,3);
+		$results = array();
 
 		if (!$results) {
 			return array('no_more_results' => true);
+		}
+
+		$no_more = false;
+		if (count($results < $per_page)) {
+			$no_more = true;
 		}
 
 		$deleted_tickets = App::getOrm()->createQuery("
@@ -79,10 +91,17 @@ class RecycleBinController extends AbstractController
 		");
 		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($results);
 
-		return array('html' => $this->renderView('AgentBundle:RecycleBin:list-tickets.html.twig', array(
+
+		$vars = array(
 			'tickets' => $tickets,
+			'count' => count($tickets),
 			'deleted_tickets' => $deleted_tickets,
-			'page' => $page
-		)));
+			'page' => $page,
+			'no_more_results' => $no_more
+		);
+
+		$vars['html'] = $this->renderView('AgentBundle:RecycleBin:list-tickets.html.twig', $vars);
+
+		return $vars;
 	}
 }

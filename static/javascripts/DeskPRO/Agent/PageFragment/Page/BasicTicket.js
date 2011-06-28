@@ -31,11 +31,13 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		window.TICKET = this;
 
-		this._initTicketOptionsMenus();
-		this._initCustomFieldsEditor();
+		if (!this.meta.isDeleted) {
+			this._initTicketOptionsMenus();
+			this._initCustomFieldsEditor();
 
-		this._initReplyBar();
-		this._initAttachments();
+			this._initReplyBar();
+			this._initAttachments();
+		}
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
 			this._handleResize()

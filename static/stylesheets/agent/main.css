@@ -3376,6 +3376,23 @@ span.kb-editor-edit a {
 	white-space: nowrap;
 }
 
+#deskpro_outline ul.nav-list > li.sep {
+	border-top: 1px solid #BDC1C7;
+    border-bottom: none;
+    height: 1px;
+    overflow: hidden;
+    text-indent: -1000px;
+
+    padding: 0 0 0 0;
+    margin: 2px 0 0 0;
+}
+
+#deskpro_outline ul.nav-list > li.sep:hover {
+    background: transparent;
+    cursor: pointer;
+    border-bottom: none;
+}
+
 #deskpro_outline ul.nav-list > li > .list-counter {
 	background: #a4a8ab;
     background: -moz-linear-gradient(top, #a4a8ab 0%, #707477 100%);
