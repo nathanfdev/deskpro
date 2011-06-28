@@ -207,8 +207,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	 */
 	overviewLoadList: function() {
 
-		DeskPRO_Window.startLoadingIndicator();
-
 		var grouping1 = this.overviewGroupEl1.data('groupby');
 		var grouping2 = this.overviewGroupEl2.data('groupby') || '';
 		var mode = this.overviewModeEl.data('mode');
