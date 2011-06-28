@@ -4015,3 +4015,44 @@ html.admin, body.admin {
     height: 100px;
 }
 
+.list.ticketlog td .changed_department {
+    background: url(../../images/icons/application_view_tile.png) no-repeat 0 0;
+    padding-left: 22px;
+}
+
+.list.ticketlog td .changed_category {
+    background: url(../../images/icons/folder.png) no-repeat 0 0;
+    padding-left: 22px;
+}
+
+.list.ticketlog td .changed_priority {
+    background: url(../../images/icons/lightning.png) no-repeat 0 0;
+    padding-left: 22px;
+}
+
+.list.ticketlog td .changed_agent {
+    background: url(../../images/icons/user_gray.png) no-repeat 0 0;
+    padding-left: 22px;
+}
+
+.list.ticketlog td .type {
+    color: #616161;
+}
+
+.list.ticketlog td .old-val, .list.ticketlog td .new-val {
+    border: 1px solid #E3E3E3;
+    padding: 1px 3px 1px 3px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.list.ticketlog td .old-val {
+    background-color: #F5F5F5;
+    color: #3C4B54;
+}
+
+.list.ticketlog td .new-val {
+    background-color: #F5F5F5;
+    color: #17911F;
+}

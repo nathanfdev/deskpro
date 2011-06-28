@@ -1,36 +1,54 @@
-<table class="list" cellspacing="0" width="100%">
+<div class="pad"><div class="inner-box-tab-content box-list no-pad">
+
+<table class="list general ticketlog" cellspacing="0" width="100%">
 	<thead>
 		<tr>
 			<th>Summary</th>
 			<th>Who</th>
-			<th width="100">Date</th>
+			<th>Date</th>
 		</tr>
 	</thead>
 	<tbody>
 		{% for log in ticket_logs %}
 			<tr>
 				<td>
+					<div class="{{ log.action_type }}">
 					{% if log.action_type == 'changed_agent' %}
-						Assigned agent changed from {{log.details.old_agent_name}} to {{log.details.new_agent_name}}
+						<span class="type">Assigned agent</span> changed from
+						<span class="old-val">{{log.details.old_agent_name}}</span> to <span class="new-val">{{log.details.new_agent_name}}</span>
 					{% elseif log.action_type == 'ticket_created' %}
-						Ticket created {{log.details.ticket_id}}
+						Ticket <span class="new-val">#{{log.details.ticket_id}}</span> created
 					{% elseif log.action_type == 'changed_category' %}
-						Category changed from {{log.details.old_category_title}} to {{log.details.new_category_title}}
+						<span class="type">Category</span> changed from
+						<span class="old-val">{{log.details.old_category_title|default('None')}}</span> to <span class="new-val">{{log.details.new_category_title}}</span>
 					{% elseif log.action_type == 'changed_department' %}
-						Department changed from {{log.details.old_department_title}} to {{log.details.new_department_title}}
+						<span class="type">Department</span> changed from
+						<span class="old-val">{{log.details.old_department_title}}</span> to <span class="new-val">{{log.details.new_department_title}}</span>
 					{% elseif log.action_type == 'message_created' %}
-						New reply {{log.details.message_id}}
+						<span class="type">New reply</span> <span class="new-val">#{{log.details.message_id}}</span>
 					{% elseif log.action_type == 'changed_priority' %}
-						Priority changed from {{log.details.old_priority_title}} to {{log.details.new_priority_title}}
+						<span class="type">Priority</span> changed from
+						<span class="old-val">{{log.details.old_priority_title}}</span> to <span class="new-val">{{log.details.new_priority_title}}</span>
 					{% elseif log.action_type == 'changed_product' %}
-						Product changed from {{log.details.old_product_title}} to {{log.details.new_product_title}}
+						<span class="type">Product</span> changed from
+						<span class="old-val">{{log.details.old_product_title}}</span> to <span class="new-val">{{log.details.new_product_title}}</span>
 					{% elseif log.action_type == 'changed_status' %}
-						Status changed from {{log.details.old_status}} to {{log.details.new_status}}
+						<span class="type">Status</span> changed from
+						<span class="old-val">{{log.details.old_status}}</span> to <span class="new-val">{{log.details.new_status}}</span>
 					{% endif %}
+					</div>
 				</td>
-				<td>{{log.person.display_name}}</td>
-				<td>{{log.date_created|date('Y-m-d')}}</td>
+				<td>
+					<a class="with-route" data-route="person:{{ path('agent_people_view', {'person_id': log.person.id}) }}">
+					{{log.person.display_name}}
+					</a>
+				</td>
+				<td style="white-space:nowrap;"><time class="timeago" title="{{log.date_created|date('c')}}">
+					{{log.date_created|date('Y-m-d H:m')}}
+				</time></td>
 			</tr>
 		{% endfor %}
 	</tbody>
 </table>
+
+</div></div>

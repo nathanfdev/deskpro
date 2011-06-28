@@ -373,6 +373,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			success: function(html) {
 				contentEl.html(html);
 				contentEl.removeClass('unloaded');
+
+				$('time.timeago', contentEl).timeago();
 			}
 		});
 	},
