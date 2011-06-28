@@ -43,6 +43,11 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	onFirstShow: function() { },
 	onHide: function() { },
 
+	setHasInitialLoaded: function() {
+		this.hasLoaded = true;
+		$('#deskpro_outline_loading').removeClass('on');
+	},
+
 
 	/**
 	 * Sets the standard button element, and then you can use this.buttonEl thereafter.
@@ -272,6 +277,10 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	_onShowActivateList: function() {
 		if (this.listPage) {
 			this.listPage.fireEvent('activate');
+		}
+
+		if (this.hasLoaded) {
+			$('#deskpro_outline_loading').hide();
 		}
 	},
 

@@ -603,6 +603,13 @@ So only the 'on' one is visible at a time */
     filter: dropshadow(color=#fff, offx=1, offy=1);
 }
 
+#deskpro_outline_loading {
+    background: url(../../images/loading-big-circle.gif) no-repeat 50% 0;
+    padding-top: 50px;
+    text-align: center;
+    margin-top: 15px;
+}
+
 /********************************
 * #deskpro_list
 *********************************/
@@ -635,6 +642,13 @@ So only the 'on' one is visible at a time */
 
 #deskpro_list > section.on {
     display: block;
+}
+
+#deskpro_list_loading {
+    background: url(../../images/loading-big-circle.gif) no-repeat 50% 0;
+    padding-top: 50px;
+    text-align: center;
+    margin-top: 15px;
 }
 
 /********************************

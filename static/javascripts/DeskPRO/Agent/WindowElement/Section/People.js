@@ -18,6 +18,9 @@ DeskPRO.Agent.WindowElement.Section.People = new Orb.Class({
 	},
 
 	_initSection: function(data) {
+		
+		this.setHasInitialLoaded();
+		
 		this.contentEl.html(data.section_html);
 
 		var self = this;

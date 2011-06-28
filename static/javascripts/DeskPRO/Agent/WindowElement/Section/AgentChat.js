@@ -21,6 +21,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			url: BASE_URL + 'agent/agent-chat/get-section-data.json',
 			context: this,
 			success: function(data) {
+				this.setHasInitialLoaded();
 				this.contentEl.html(data.section_html);
 			}
 		});

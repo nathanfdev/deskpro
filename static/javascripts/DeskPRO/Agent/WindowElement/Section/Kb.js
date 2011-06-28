@@ -18,6 +18,10 @@ DeskPRO.Agent.WindowElement.Section.Kb = new Orb.Class({
 	},
 
 	_initSection: function(data) {
+
+		this.setHasInitialLoaded();
+
+		
 		this.contentEl.html(data.section_html);
 
 		var self = this;

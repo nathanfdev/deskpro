@@ -647,8 +647,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 */
 	loadListPane: function(url, routeData, callback) {
 
+		$('#deskpro_list > section').removeClass('on');
+		$('#deskpro_list_loading').addClass('on');
+
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
-			this.stopLoadingIndicator();
 			var page = this.createPageFragment(data, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
 
 			page.setMetaData('routeUrl', url);
@@ -659,8 +661,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.setListPage(page);
 
 			if (callback) callback(page);
-		}).bind(this)
-		);
+		}).bind(this));
 	},
 
 
@@ -720,7 +721,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// If we have a placeholder tab, it itself is a loading indicator,
 		// so dont use the window one
-		if (!routeData || !routeData.tabPlaceholderId) {
+		if ((routeData && !routeData.tabPlaceholderId) && (routeData && routeData.openInSection != 'listpane')) {
 			this.startLoadingIndicator();
 		}
 
@@ -1423,6 +1424,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		$('#deskpro_outline > section.on').removeClass('on');
 		$('#deskpro_list > section.on').removeClass('on');
+
+		$('#deskpro_list_loading, #deskpro_outline_loading').addClass('on');
+		
 		if (this.openSection) {
 			this.openSection.fireEvent('afterhide');
 		}
