@@ -86,14 +86,16 @@ this.ticketId=a.getMetaData("ticket_id");this.updateUrl=a.getMetaData("saveActio
 }},applyChanges:function(){Object.each(this.changes,function(c){var a=c[0];var b=c[1];this.applyChangeForProperty(a,b)},this);
 this.fireEvent("changesApplied",{changes:this.changes})},revertChanges:function(){Object.each(this.changes,function(c){var b=c[0];
 var a=b.getName();if(this.oldValues[a]!==undefined){b.setValue(this.oldValues[a]);b.unhighlightInterfaceElement()}b.changeReverted()
-},this);this.oldValues={};this.mode="single"},setInstantChange:function(b,c){if(this.mode=="multi"){this.addChange(b,c,true);
-return}b.setValue(c);b.changePersisted();var a=[];this._addPropertyValueToData(a,b.getName(),b.getValue());this.fireEvent("changesApplied",{changes:[b,c]});
-if(this.updateUrl){$.ajax({type:"POST",url:this.updateUrl,data:a,dataType:"json",context:this,success:function(d){this.ticketPage.unloadTicketTab("ticket-log");
-this.fireEvent("updateResult",[d])}})}},saveChanges:function(a){a=a||[];Object.each(this.changes,function(d){var c=d[0];var b=c.getName();
-if(!c.isDisplayOnly()){this._addPropertyValueToData(a,c.getName(),c.getValue())}c.unhighlightInterfaceElement();c.changePersisted()
-},this);this.mode="single";if(this.updateUrl){$.ajax({type:"POST",url:this.updateUrl,data:a,dataType:"json",context:this,success:function(b){this.ticketPage.unloadTicketTab("ticket-log");
-this.changes={};this.oldValues={};if(b&&b.properties){Object.each(b,function(d,c){var e=this.ticketPage.getPropertyManager(c);
-e.setIncomingValue(d)},this)}this.fireEvent("updateResult",[b])}})}},_addPropertyValueToData:function(d,c,b){if(typeOf(b)=="array"){for(var a=0;
+},this);this.oldValues={};this.mode="single"},setInstantChange:function(b,d){if(this.mode=="multi"){this.addChange(b,d,true);
+return}b.setValue(d);b.changePersisted();var a=[];this._addPropertyValueToData(a,b.getName(),b.getValue());this.fireEvent("changesApplied",{changes:[b,d]});
+var c="saving-"+b.getName().replace(".","_");this.ticketPage.contentWrapper.addClass(c);(function(){this.ticketPage.contentWrapper.removeClass(c)
+}).delay(650,this);if(this.updateUrl){$.ajax({type:"POST",url:this.updateUrl,data:a,dataType:"json",context:this,success:function(e){this.ticketPage.unloadTicketTab("ticket-log");
+this.fireEvent("updateResult",[e])}})}},saveChanges:function(b){b=b||[];var a=[];Object.each(this.changes,function(f){var d=f[0];
+var c=d.getName();var e="saving-"+c.replace(".","_");a.push(e);this.ticketPage.contentWrapper.addClass(e);if(!d.isDisplayOnly()){this._addPropertyValueToData(b,d.getName(),d.getValue())
+}d.unhighlightInterfaceElement();d.changePersisted()},this);this.mode="single";(function(){var c="";while(c=a.pop()){this.ticketPage.contentWrapper.removeClass(c)
+}}).delay(650,this);if(this.updateUrl){$.ajax({type:"POST",url:this.updateUrl,data:b,dataType:"json",context:this,success:function(c){this.ticketPage.unloadTicketTab("ticket-log");
+this.changes={};this.oldValues={};if(c&&c.properties){Object.each(c,function(e,d){var f=this.ticketPage.getPropertyManager(d);
+f.setIncomingValue(e)},this)}this.fireEvent("updateResult",[c])}})}},_addPropertyValueToData:function(d,c,b){if(typeOf(b)=="array"){for(var a=0;
 a<b.length;a++){var e=b[a];if(typeOf(e)=="object"&&e.full_name!==undefined){d.push({name:e.full_name,value:e.value})}else{if(typeOf(e)=="object"&&e.name!==undefined){d.push({name:"actions["+c+"]["+e.name+"]",value:e.value})
 }else{d.push({name:"actions["+c+"][]",value:e})}}}}else{if(typeOf(b)=="object"){Object.each(b,function(g,f){d.push({name:"actions["+c+"]["+f+"]",value:g})
 },this)}else{d.push({name:"actions["+c+"]",value:b})}}},setPropertyUpdated:function(a,b){if(typeOf(a)=="string"){a=this.ticketPage.getPropertyManager(a)

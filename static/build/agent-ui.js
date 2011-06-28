@@ -43,26 +43,27 @@ a.btnCallback(f,a)})}else{$("#status_dismiss_button").one("click",function(f){e(
 },addListPage:function(a){console.warn("Invalid call to addListPage for %o",a);this.setListPage(a)},setListPage:function(c){var a=function(d){return c.getMetaData("fragmentClass","").indexOf(d)!=-1
 };var b=null;if(a(".Kb")){b=this.sections.kb_section}else{if(a(".Ticket")){b=this.sections.tickets_section}else{if(a(".People")||a(".Org")){b=this.sections.people_section
 }else{if(a(".AgentChat")){b=this.sections.agent_chat_section}else{if(a(".OpenChats")){b=this.sections.chat_section}else{if(a(".Idea")){b=this.sections.ideas_section
-}}}}}}if(!b){console.error("List page fragment has no section: %s: %o",c.getMetaData("fragmentClass",""),c);return}b.setListPageFragment(c);
-this.listPage=c;this.updateWindowUrlFragment()},getListPage:function(){return this.listPage},addPageTab:function(a){this.pageTabStrip.addTab(a)
-},removePage:function(b){var a=this.pageTabStrip.findTabByPage(b);if(a){this.pageTabStrip.removeTabById(a)}a=false;a=this.listTabStrip.findTabByPage(b);
-if(a){this.listTabStrip.removeTabById(a)}},addPageRouteLoader:function(a,b){if(this.routePrefixes[a]==undefined){this.routePrefixes[a]=[]
+}else{if(a(".RecycleBin")){b=this.sections.tickets_section}}}}}}}if(!b){console.error("List page fragment has no section: %s: %o",c.getMetaData("fragmentClass",""),c);
+return}b.setListPageFragment(c);this.listPage=c;this.updateWindowUrlFragment()},getListPage:function(){return this.listPage
+},addPageTab:function(a){this.pageTabStrip.addTab(a)},removePage:function(b){var a=this.pageTabStrip.findTabByPage(b);if(a){this.pageTabStrip.removeTabById(a)
+}a=false;a=this.listTabStrip.findTabByPage(b);if(a){this.listTabStrip.removeTabById(a)}},addPageRouteLoader:function(a,b){if(this.routePrefixes[a]==undefined){this.routePrefixes[a]=[]
 }this.routePrefixes[a].push(b)},runPageRoute:function(a){var h=a.split(":");var d=h.shift();var g=null;if(d.indexOf(".")!=-1){var c=d.split(".");
 d=c.shift();g=c.pop()}var b=h.pop();var e={route:a,master:d,masterTag:g,sections:h,url:b,stopListeners:false};var f=false;
 Object.each(this.routePrefixes,function(i,j){if(a.indexOf(j)==0){Array.each(i,function(k){k(e);f=true});if(e.stopListeners){return true
 }}},this);if(!f){console.warn("Unknown route: %s",a)}},runPageRouteFromElement:function(a){a=$(a);if(!a.data("route")){console.warn("Element has no route: %o",a)
 }this.runPageRoute(a.data("route"));if(a.data("route-alt")){this.runPageRoute(a.data("route-alt"))}},loadRoute:function(a){a.openInSection=a.master;
 switch(a.openInSection){case"listpane":this.loadListPane(a.url,a);break;default:this.loadPage(a.url,a);break}},loadListPane:function(a,b,c){$("#deskpro_list > section").removeClass("on");
-$("#deskpro_list_loading").addClass("on");this._doAjaxLoadRoute(a,b,(function(e){var d=this.createPageFragment(e,"DeskPRO.Agent.PageFragment.ListPane.Basic");
-d.setMetaData("routeUrl",a);if(b){d.setMetaData("routeData",b)}this.setListPage(d);if(c){c(d)}}).bind(this))},loadPage:function(b,c,d){if($("#pane_tabs li").length>=10){DeskPRO_Window.showAlert("You have too many tabs open on the right. Close one before trying to open another","error");
+$("#deskpro_list_loading").addClass("on");this._doAjaxLoadRoute(a,b,(function(e){$("#deskpro_list_loading").removeClass("on");
+var d=this.createPageFragment(e,"DeskPRO.Agent.PageFragment.ListPane.Basic");d.setMetaData("routeUrl",a);if(b){d.setMetaData("routeData",b)
+}this.setListPage(d);if(c){c(d)}}).bind(this))},loadPage:function(b,c,d){if($("#pane_tabs li").length>=10){DeskPRO_Window.showAlert("You have too many tabs open on the right. Close one before trying to open another","error");
 return}if(!c||(!c.ignoreExist)){var a=this.pageTabStrip.getTabByRouteUrl(b);if(a&&!(a.page.allowDupe&&a.page.TYPENAME!="loading")){this.pageTabStrip.activateTabById(a.id);
 return}}c.tabPlaceholderId=this.pageTabStrip.addTabPlaceholder(b,c);this._doAjaxLoadRoute(b,c,(function(f){var e=this.createPageFragment(f);
 e.setMetaData("routeUrl",b);if(c){e.setMetaData("routeData",c);if(c.tabPlaceholderId){e.setMetaData("tabPlaceholderId",c.tabPlaceholderId)
 }}if(c.fragment){e.setMetaData("fragment",c.fragment)}this.addPageTab(e);if(d){d(e)}}).bind(this))},_doAjaxLoadRoute:function(c,d,a){if(!c){console.error("No URL provided! routeData: %o",d);
-return}if((d&&!d.tabPlaceholderId)&&(d&&d.openInSection!="listpane")){this.startLoadingIndicator()}var b=this;if(d.tabPlaceholderId){var f=function(){b.pageTabStrip.removeTabById(d.tabPlaceholderId)
-}}else{var f=function(){}}if(d&&d.postData){var e=$.ajax({dataType:"text",url:c,type:"POST",data:d.postData,success:(function(g){this.stopLoadingIndicator();
-a(g)}).bind(this),error:f,noErrorOverride:true});d.xhr=e}else{var e=$.ajax({dataType:"text",url:c,type:"GET",success:(function(g){this.stopLoadingIndicator();
-a(g)}).bind(this),error:f,noErrorOverride:true});d.xhr=e}},createPageFragment:function(html,classname){pageMeta={title:false,fragmentClass:classname||"DeskPRO.Agent.PageFragment.Basic"};
+return}var b=this;if(d.tabPlaceholderId){var f=function(){b.pageTabStrip.removeTabById(d.tabPlaceholderId)}}else{var f=function(){}
+}if(d&&d.postData){var e=$.ajax({dataType:"text",url:c,type:"POST",data:d.postData,success:(function(g){a(g)}).bind(this),error:f,noErrorOverride:true});
+d.xhr=e}else{var e=$.ajax({dataType:"text",url:c,type:"GET",success:(function(g){a(g)}).bind(this),error:f,noErrorOverride:true});
+d.xhr=e}},createPageFragment:function(html,classname){pageMeta={title:false,fragmentClass:classname||"DeskPRO.Agent.PageFragment.Basic"};
 var regex=/<script>([\s\S]*?)<\/script>/im;var matches=regex.exec(html);if(!matches||!matches.length){var regex=/<script\s*type="text\/javascript">([\s\S]*?)<\/script>/im;
 var matches=regex.exec(html)}if(matches&&matches.length){try{eval(matches[1])}catch(err){console.error("Page fragment JS eval error: %o",err)
 }}if(pageMeta&&pageMeta.goToLogin){window.location=BASE_URL+"agent/";var page=new DeskPRO.Agent.PageFragment.Basic("");return page
@@ -77,14 +78,9 @@ var a=b.data("message-id");b.remove();if(!a){return}$.ajax({dataType:"json",url:
 });b.push("</audio>");b=b.join("");var c=$(b);if(options.destroyAfter){c.bind("ended",function(){$(this).remove()})}c.appendTo("body");
 return c},playLibrarySound:function(b,a){var c=[ASSETS_BASE_URL+"sounds/"+b+".mp3",ASSETS_BASE_URL+"sounds/"+b+".ogg"];this.playSound(c,a)
 },handleSoundElements:function(b){var a=this;$("[data-play-sound]",b).each(function(){a.playLibrarySound($(this).data("play-sound"))
-})},startLoadingIndicator:function(a){if(!a){a=1}this.loadingIndicatorCount+=a;this._showHideLoadingIndicator()},stopLoadingIndicator:function(a){if(!a){a=1
-}this.loadingIndicatorCount-=a;if(this.loadingIndicatorCount<0){this.loadingIndicatorCount=0}this._showHideLoadingIndicator()
-},_showHideLoadingIndicator:function(){if(this.loadingIndicatorCount>0){if(!this.loadingIndicatorEl){this.loadingIndicatorEl=$('<div class="window-loading-indicator" style="display:none" />');
-this.loadingIndicatorEl.appendTo("body")}this.loadingIndicatorEl.css({position:"absolute",top:0,left:($(document).width()/2)-this.loadingIndicatorEl.outerWidth(),"z-index":100000});
-this.loadingIndicatorEl.slideDown(250)}else{if(this.loadingIndicatorEl){this.loadingIndicatorEl.stop().slideUp(150)}}},_globalHandleAjaxComplete:function(e,f,c){var b=false;
-if(f.status&&f.status==200){b=true}else{if(f.status=="0"||(f.statusText&&f.statusText=="abort")){b=true}}if(b){$("#network_status_indicator").addClass("active");
-$("#network_status_indicator span").html("0")}else{$("#network_status_indicator").removeClass("active");var a=$("#network_status_indicator span");
-var d=parseInt(a.html())||0;d++;a.html(d)}},_globalHandleAjaxError:function(a,j,d,h){this.stopLoadingIndicator(1000);if(j.status=="0"||(j.statusText&&j.statusText=="abort")){return
+})},_globalHandleAjaxComplete:function(e,f,c){var b=false;if(f.status&&f.status==200){b=true}else{if(f.status=="0"||(f.statusText&&f.statusText=="abort")){b=true
+}}if(b){$("#network_status_indicator").addClass("active");$("#network_status_indicator span").html("0")}else{$("#network_status_indicator").removeClass("active");
+var a=$("#network_status_indicator span");var d=parseInt(a.html())||0;d++;a.html(d)}},_globalHandleAjaxError:function(a,j,d,h){if(j.status=="0"||(j.statusText&&j.statusText=="abort")){return
 }var f=j.responseText;try{f=$.parseJSON(f)}catch(i){f=null}if(j&&j.status&&j.status=="403"){if(f&&f.error&&f.error=="session_expired"){var b=f.redirect_login;
 b+="?return="+encodeURIComponent(window.location.href);window.location=b;d.error=null;d.complete=null;this.showStatusMessage("Your session has timed out, you must log in");
 return}if(f&&f.error&&f.error=="not_allowed"){this.showStatusMessage("The action you attempted to execute is not allowed:<br />"+f.errorMessage);

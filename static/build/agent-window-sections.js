@@ -45,10 +45,9 @@ var e=f.menu.getOpenTriggerEvent();var c=$(e.target);var a=$(f.itemEl);if(c.is("
 },overviewUpdateGrouping:function(c,b){var d=$('[data-groupby="'+c+'"]',this.overviewGroupMenuEl);if(b&&b.length){var a=$('[data-groupby="'+b+'"]',this.overviewGroupMenuEl)
 }else{b=false;var a=$()}this.overviewGroupEl1.html(d.html()).data("groupby",c);if(b){this.overviewGroupEl2.html(a.html()).data("groupby",b);
 this.overviewGroupEl2_no.hide();this.overviewGroupEl2_yes.show()}else{this.overviewGroupEl2.html("").data("groupby","");this.overviewGroupEl2_no.show();
-this.overviewGroupEl2_yes.hide()}},overviewLoadList:function(){DeskPRO_Window.startLoadingIndicator();var b=this.overviewGroupEl1.data("groupby");
-var a=this.overviewGroupEl2.data("groupby")||"";var d=this.overviewModeEl.data("mode");var c={group1:b,group2:a,mode:d};$.ajax({url:BASE_URL+"agent/ticket-search/overview-nav",type:"GET",data:c,context:this,dataType:"html",success:function(e){this._overviewGroupListLoaded(e)
-}})},_overviewGroupListLoaded:function(a){DeskPRO_Window.stopLoadingIndicator();var b=$("#ticket_grouping_list > ul").html(a)
-},_initFlagged:function(){DeskPRO_Window.getPoller().addData([{name:"do[]",value:"get-flagged-counts"}],"filter-flagged.counts",{recurring:true,minDelay:60000,minDelayAfterOne:true});
+this.overviewGroupEl2_yes.hide()}},overviewLoadList:function(){var b=this.overviewGroupEl1.data("groupby");var a=this.overviewGroupEl2.data("groupby")||"";
+var d=this.overviewModeEl.data("mode");var c={group1:b,group2:a,mode:d};$.ajax({url:BASE_URL+"agent/ticket-search/overview-nav",type:"GET",data:c,context:this,dataType:"html",success:function(e){this._overviewGroupListLoaded(e)
+}})},_overviewGroupListLoaded:function(a){var b=$("#ticket_grouping_list > ul").html(a)},_initFlagged:function(){DeskPRO_Window.getPoller().addData([{name:"do[]",value:"get-flagged-counts"}],"filter-flagged.counts",{recurring:true,minDelay:60000,minDelayAfterOne:true});
 DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.counts",this.updateFlagCounts.bind(this));DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.flag-changed",this.changeFlagCountsForSwitch.bind(this))
 },updateFlagCounts:function(a){$("ol#ticket_flagged_list span.list-counter").html("0");Object.each(a,(function(c,b){this.updateFlagCountFor(b,c)
 }).bind(this))},updateFlagCountFor:function(a,d){var c=d;if(d>=1000){c="1000+"}else{if(d<0){d=0;c="0"}}var b=$("#ticket_flag_"+a+"_count").html(c)
