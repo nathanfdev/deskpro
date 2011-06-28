@@ -144,7 +144,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	},
 
 	addTab: function(page) {
-		console.log(page);
+
 		var id = 'tab' + this.uniqueCounter++;
 		this.tabManager.addTab(id, {
 			html: page.getHtml(),
@@ -176,7 +176,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.Page.Loading');
 		page.meta.loadingUrl = url;
-		page.meta.loadingRouteData = routeData;
+		page.meta.routeData = routeData;
 		
 		var id = this.addTab(page);
 
@@ -249,7 +249,11 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 					return;
 				}
 			}
+
+			tab.isCloseClick = true;
 			this.tabManager.removeTab(tabId);
+			tab.isCloseClick = false;
+
 			return;
 		}
 
@@ -348,13 +352,17 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 	_onTabRemove: function(tabData) {
 		$('#tiptip_holder').clearQueue().hide();
 
-		if (tabData.page && tabData.page.TYPENAME && tabData.page.TYPENAME == 'loading') {
+		if (!tabData.isCloseClick && tabData.page && tabData.page.TYPENAME && tabData.page.TYPENAME == 'loading') {
 			// For Loading pages, the tab element in the strip is replaced
 			// with the real tab, so we dont want to remove it now
 			return;
 		}
 
 		$('#' + tabData.btnId).remove();
+
+		if (tabData.page.meta.routeData && tabData.page.meta.routeData.xhr) {
+			tabData.page.meta.routeData.xhr.abort();
+		}
 
 		this.resizeTabListWidth();
 	}

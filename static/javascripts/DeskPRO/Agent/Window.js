@@ -688,7 +688,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// Add a temporary tab to the tabstrip
 		routeData.tabPlaceholderId = this.pageTabStrip.addTabPlaceholder(url, routeData);
 
-		
 		this._doAjaxLoadRoute(url, routeData, (function(data) {
 				var page = this.createPageFragment(data);
 
@@ -726,7 +725,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}
 
 		if (routeData && routeData.postData) {
-			$.ajax({
+			var xhr = $.ajax({
 				dataType: 'text',
 				url: url,
 				type: 'POST',
@@ -736,8 +735,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this)
 			});
+
+			routeData.xhr = xhr;
 		} else {
-			$.ajax({
+			var xhr = $.ajax({
 				dataType: 'text',
 				url: url,
 				type: 'GET',
@@ -746,6 +747,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 					successFn(data);
 				}).bind(this)
 			});
+
+			routeData.xhr = xhr;
 		}
 	},
 
