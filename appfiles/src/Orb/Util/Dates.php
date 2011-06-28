@@ -1,0 +1,237 @@
+<?php
+/**
+ * Orb
+ *
+ * @package Orb
+ * @category Util
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Orb\Util;
+
+use \Orb\Util\Numbers;
+
+/**
+ * Utility functions that work with dates and times.
+ *
+ * @static
+ */
+class Dates
+{
+	/**@#+
+	 * How many seconds are in various units of time.
+	 * @var int
+	 */
+	const SECS_MIN = 60;
+	const SECS_HOUR = 3600;
+	const SECS_DAY = 86400;
+	const SECS_WEEK = 604800;
+	const SECS_MONTH = 2419200;
+	const SECS_YEAR = 29030400;
+	/**#@-**/
+
+	/**
+	 * Check if a year is a leap year
+	 * 
+	 * @param $year
+	 * @return bool
+	 */
+	public static function checkLeapYear($year)
+	{
+		if (strlen($year) == 2) {
+			if ($year == '00' OR $year < 20) {
+				$year = '20' . $year;
+			} else {
+				$year = '19' . $year;
+			}
+		}
+
+		$year = (int)$year;
+
+		if ( $year % 400 == 0 OR ($year % 100 != 0 && $year % 4 == 0)) {
+			return true;
+		}
+
+		return false;
+	}
+
+	/**
+     * Get how many days are in a month.
+     *
+     * $year is required for checking of leap-years where Feb has 29 days. It can
+     * be an integer like 2009, or an Orb_Date, or an array of date parts with an 'year' item.
+     *
+     * @param  int    $month  The month to check
+     * @param  mixed  $year   The year to check in, defaults to this year.
+     * @return int
+     */
+    public static function daysInMonth($month, $year = null)
+    {
+    	static $map = array(
+    		1 => 31,
+    		2 => 28,
+    		3 => 31,
+    		4 => 30,
+    		5 => 31,
+    		6 => 30,
+    		7 => 31,
+    		8 => 31,
+    		9 => 30,
+    		10 => 31,
+    		11 => 30,
+    		12 => 31,
+    	);
+
+    	// Special case for leap years when Feb has 29 days
+    	if ($month == 2) {
+    		if (!$year) $year = date('Y');
+
+    		if (self::checkLeapYear($year)) {
+    			return 29;
+    		}
+    	}
+
+    	if (!Numbers::inRange($month, 1, 12)) {
+    		throw new \OutOfBoundsException("Invalid month `$month`. Must be 1-12.");
+    	}
+
+    	return $map[$month];
+    }
+
+
+    /**
+     * Get a date object for the last day in a month. It will be the last second of the month,
+     * useful for "end of month" boundries.
+     *
+     * @param  int  $month  The month to get, or null for current month
+     * @param  int  $year   The year to get, or null for current year
+     * @return Orb_Date
+     */
+    public static function lastDayInMonth($month = null, $year = null)
+    {
+    	if ($month === null) $month = date('n');
+    	if ($year === null) $year = date('Y');
+
+    	return new \DateTime('@' . mktime(23, 59, 59, $month+1, 0, $year));
+    }
+
+
+    /**
+     * Get a date object for the first day in a month. It will be the first second of the month,
+     * useful for "start of month" boundaries.
+     *
+     * @param  int  $month  The month to get, or null for current month
+     * @param  int  $year   The year to get, or null for current year
+     * @return Orb_Date
+     */
+    public static function firstDayInMonth($month = null, $year = null)
+    {
+    	if ($month === null) $month = date('n');
+    	if ($year === null) $year = date('Y');
+
+    	return new \DateTime('@' . mktime(0, 0, 0, $month, 1, $year));
+    }
+
+
+	/**
+	 * Takes a number of seconds and returns an array of details
+	 * of how many years, minutes, hours, days and years it is.
+	 *
+	 * @param int $seconds
+	 * @return array
+	 */
+	public static function secsToPartsArray($seconds)
+	{
+		$years = intval($seconds / self::SECS_YEAR);
+		$seconds -= $years * self::SECS_YEAR;
+
+		$days = intval($seconds / self::SECS_DAY);
+		$seconds -= $days * self::SECS_DAY;
+
+		$hours = intval($seconds / self::SECS_HOUR);
+		$seconds -= $hours * self::SECS_HOUR;
+
+		$minutes = intval($seconds / self::SECS_MIN);
+
+		$seconds = intval($seconds - ($minutes * self::SECS_MIN));
+
+		return array('years' => $years, 'days' => $days, 'hours' => $hours, 'minutes' => $minutes, 'seconds' => $seconds);
+	}
+
+
+	/**
+	 * Take some secondsand show readable form of seconds/minutes/hours/days/years.s
+	 *
+	 * @param  int    $seconds  The seconds
+	 * @param  int    $detail   How much detail to go into, 1-5
+	 * @param  array  $lang     Phrases to use for each unit
+	 * @return string
+	 */
+	public static function secsToReadable($seconds, $detail = 2, $lang = null)
+	{
+		static $lang_en = array(
+			'seconds' => '%d seconds',
+			'minutes' => '%d minutes',
+			'hours' => '%d hours',
+			'days' => '%d days',
+			'years' => '%d years',
+			'sep' => ' ',
+		);
+
+		static $lang_en_short = array(
+			'seconds' => '%ds',
+			'minutes' => '%dm',
+			'hours' => '%dh',
+			'days' => '%dd',
+			'years' => '%dy',
+			'sep' => ' ',
+		);
+
+		if (!$lang OR $lang == 'long') {
+			$lang = $lang_en;
+		} elseif ($lang == 'short') {
+			$lang = $lang_en_short;
+		} elseif (!is_array($lang)) {
+			throw new Exception('Language must be long, short or an array of phrases');
+		}
+
+		$parts = self::secsToPartsArray($seconds);
+		$limit = 0;
+		$str_parts = array();
+
+		if ($parts['years']) {
+			$str_parts[] = sprintf($lang['years'], $parts['years']);
+			++$limit;
+		}
+
+		if ($limit < $detail) {
+			++$limit;
+			if ($parts['days']) {
+				$str_parts[] = sprintf($lang['days'], $parts['days']);
+			}
+		}
+
+		if ($limit < $detail) {
+			++$limit;
+			if ($parts['hours']) {
+				$str_parts[] = sprintf($lang['hours'], $parts['hours']);
+			}
+		}
+
+		if ($limit < $detail) {
+			++$limit;
+			if ($parts['minutes']) {
+				$str_parts[] = sprintf($lang['minutes'], $parts['minutes']);
+			}
+		}
+
+		if ($limit < $detail) {
+			++$limit;
+			if ($parts['seconds']) {
+				$str_parts[] = sprintf($lang['seconds'], $parts['seconds']);
+			}
+		}
+
+		return implode($lang['sep'], $str_parts);
+	}
+}
