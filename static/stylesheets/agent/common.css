@@ -118,7 +118,7 @@ input.flat {
 
 .menu-trigger { cursor: pointer; }
 
-span.menu-trigger {
+.term span.menu-trigger {
     border-bottom: 1px dotted #555;
 }
 
