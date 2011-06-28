@@ -232,7 +232,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			console.log('not click %o', event.target);
 			return;
 		}
-
+		
 		event.preventDefault();
 		event.stopPropagation();
 		
@@ -253,6 +253,8 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			tab.isCloseClick = true;
 			this.tabManager.removeTab(tabId);
 			tab.isCloseClick = false;
+
+			this.cancelClickActivate = false;
 
 			return;
 		}
