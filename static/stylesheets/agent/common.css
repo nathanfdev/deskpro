@@ -1070,3 +1070,30 @@ ul.item-list > li.sub {
     text-indent: -1000px;
     overflow: hidden;
 }
+
+
+
+.date-wrap {
+    width: 250px;
+}
+
+.date-wrap.two {
+    width: 515px;
+}
+
+.date-wrap .date1 {
+    float:left;
+}
+
+.date-wrap .date2 {
+    display: none;
+}
+
+.date-wrap.two .date2 {
+    float: right;
+    display: block;
+}
+
+.date-wrap .widget {
+    margin-top: 5px;
+}

@@ -7,6 +7,7 @@ this.interfaceEffects.initPage();this._initBasic();this._initWindowInterface();i
 },set:function(b,a){this.registry[b]=a},getUrl:function(b,c){if(!window.DESKPRO_URL_REGISTRY[b]){console.warn("Unknown url name %s",b);
 return null}var a=window.DESKPRO_URL_REGISTRY[b];if(c){Object.each(c,function(e,d){a=a.replace("{"+d+"}",e)})}return a},dismissHelpMessage:function(b){b=$(b);
 var a=b.data("message-id");b.remove();if(!a){return}$.ajax({dataType:"json",url:BASE_URL+"agent/misc/dismiss-help-message/"+escape(a),type:"GET"})
+}});Orb.createNamespace("DeskPRO.Admin");DeskPRO.Admin.PopoutWindow=new Class({Extends:DeskPRO.Admin.Window,initialize:function(){$("body").layout({applyDefaultStyles:false})
 }});Orb.createNamespace("DeskPRO.Admin.PageHandler");DeskPRO.Admin.PageHandler.Basic=new Class({Implements:[Events],meta:{},contextEl:null,options:{},messageBroker:null,initialize:function(b,a){if(b){this.contextEl=$(b)
 }else{this.contextEl=$(document.body)}a=a||{};this.options=a;var c=this.getOpenerDeskPRO();if(c){this.messageBroker=c.getMessageBroker()
 }else{if(window.DeskPRO_Window){this.messageBroker=window.DeskPRO_Window.getMessageBroker()}else{if(window.DeskPRO_Page){this.messageBroker=window.DeskPRO_Page.getMessageBroker()

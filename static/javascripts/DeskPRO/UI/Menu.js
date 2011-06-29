@@ -131,9 +131,21 @@ DeskPRO.UI.Menu = new Orb.Class({
 				var itemEl = $(ev.itemEl);
 				var value = itemEl.data('value');
 
-				origMenuElement.val(value);
-				origMenuElement.change();
+				if (value != origMenuElement.val()) {
+					origMenuElement.val(value);
+					origMenuElement.change();
+				}
 			});
+
+			if (spanEl) {
+				origMenuElement.change(function() {
+					var opt = $('option:selected', this);
+					var text = opt.text().trim();
+					if (!text.length) text = 'Choose...';
+
+					spanEl.text(text);
+				});
+			}
 		}
 	},
 

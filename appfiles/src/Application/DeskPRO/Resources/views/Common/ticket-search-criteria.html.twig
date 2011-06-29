@@ -13,7 +13,7 @@
 	</div>
 	<div class="type" title="Originated interface" data-rule-type="creation_system">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="is">is</option>
 				<option value="not">is not</option>
 			</select>
@@ -30,7 +30,7 @@
 	{% if term_options.gateway_names %}
 	<div class="type" title="Receiving gateway account" data-rule-type="receiving_gateway">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="is">is</option>
 				<option value="not">is not</option>
 			</select>
@@ -46,7 +46,7 @@
 	{% endif %}
 	<div class="type" title="Subject" data-rule-type="subject">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="is">is</option>
 				<option value="not">is not</option>
 				<option value="contains">contains</option>
@@ -59,7 +59,7 @@
 	</div>
 	<div class="type" title="Labels" data-rule-type="label">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="is">include</option>
 				<option value="not">does not include</option>
 				{% if trigger.event_trigger == 'property_change' %}
@@ -75,7 +75,7 @@
 	</div>
 	<div class="type" title="Assigned Agent" data-rule-type="agent">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="is">is</option>
 				<option value="not">is not</option>
 				{% if trigger.event_trigger == 'property_change' %}
@@ -99,7 +99,7 @@
 	</div>
 	<div class="type" title="Participants" data-rule-type="participant">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="is">include</option>
 				<option value="not">does not include</option>
 				{% if trigger.event_trigger == 'property_change' %}
@@ -121,7 +121,7 @@
 	{% if term_options.agent_teams %}
 		<div class="type" title="Agent Team" data-rule-type="agent_team">
 			<div class="op">
-				<select name="op">
+				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if trigger.event_trigger == 'property_change' %}
@@ -146,7 +146,7 @@
 	{% endif %}
 	<div class="type" title="Status" data-rule-type="status">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="is">is</option>
 				<option value="not">is not</option>
 				{% if trigger.event_trigger == 'property_change' %}
@@ -168,24 +168,34 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="Agent.RuleBuilder.Date">
+	<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="lte">before</option>
 				<option value="gte">after</option>
 				<option value="between">between</option>
 			</select>
 		</div>
 		<div class="options">
-			<span class="current-value"></span>
-			<input type="hidden" name="date1" value="" />
-			<input type="hidden" name="date2" value="" />
+			<span class="status-value menu-trigger"></span>
+			<input type="hidden" class="date1-input" name="date1" value="" />
+			<input type="hidden" class="date2-input" name="date2" value="" />
+			<div class="date-wrap two" style="display: none">
+				<div class="date date1">
+					<input type="text" class="date1-display" />
+					<div class="widget"></div>
+				</div>
+				<div class="date date2">
+					<input type="text" class="date2-display" />
+					<div class="widget"></div>
+				</div>
+			</div>
 		</div>
 	</div>
 	{% if term_options.products %}
 		<div class="type" title="Product" data-rule-type="product">
 			<div class="op">
-				<select name="op">
+				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if trigger.event_trigger == 'property_change' %}
@@ -209,7 +219,7 @@
 	{% if term_options.departments %}
 		<div class="type" title="Department" data-rule-type="department">
 			<div class="op">
-				<select name="op">
+				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if trigger.event_trigger == 'property_change' %}
@@ -233,7 +243,7 @@
 	{% if term_options.categories %}
 		<div class="type" title="Category" data-rule-type="category">
 			<div class="op">
-				<select name="op">
+				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if trigger.event_trigger == 'property_change' %}
@@ -256,7 +266,7 @@
 	{% endif %}
 	<div class="type" title="Urgency" data-rule-type="urgency">
 		<div class="op">
-			<select name="op">
+			<select name="op" class="op">
 				<option value="is">is</option>
 				<option value="not">is not</option>
 				<option value="lte">&lt;=</option>
@@ -287,7 +297,7 @@
 	{% if term_options.priorities %}
 		<div class="type" title="Priority" data-rule-type="priority">
 			<div class="op">
-				<select name="op">
+				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					<option value="lte">is less than</option>
@@ -313,7 +323,7 @@
 	{% if term_options.ticket_workflows %}
 		<div class="type" title="Workflow" data-rule-type="workflow">
 			<div class="op">
-				<select name="op">
+				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
 					{% if trigger.event_trigger == 'property_change' %}
@@ -339,7 +349,7 @@
 		{% for field in term_options.custom_ticket_fields %}
 			<div class="type" title="Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
 				<div class="op">
-					<select name="op">
+					<select name="op" class="op">
 						{% for op in field.field_def.search_capabilities %}
 							<option value="{{op}}">{{op_lang[op]}}</option>
 						{% endfor %}

@@ -140,6 +140,9 @@ $CONFIG['agent']['misc'] = array(
 		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
 		'javascripts/DeskPRO/Agent/Widgetable.js',
 
+		'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
+		'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
+
 		'javascripts/DeskPRO/Agent/Ticket/ChangeManager.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/StandardOption.js',
@@ -212,6 +215,7 @@ $CONFIG['admin']['admin-ui'] = array(
 	'out' => 'admin-ui.js',
 	'files' => array(
 		'javascripts/DeskPRO/Admin/Window.js',
+		'javascripts/DeskPRO/Admin/PopoutWindow.js',
 		'javascripts/DeskPRO/Admin/PageHandler/Basic.js',
 		'javascripts/DeskPRO/Agent/InterfaceEffects.js',
 

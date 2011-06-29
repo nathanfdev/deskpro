@@ -9,11 +9,17 @@ function _page_exec() {
 
 	window.DeskPRO_Page.init_options_callback = function() {
 		var count = 0;
-		{% for action in filter.terms %}
-			var basename = 'terms['+count+']';
-			window.DeskPRO_Page.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, { type: '{{action.type}}', op: '{{term.op}}', choice: {{action.options|json_encode|raw}} });
-			count++;
-		{% endfor %}
+		var terms = {{filter.terms|json_encode|raw}};
+		if (terms) {
+			Array.each(terms, function(info, x) {
+				var basename = 'terms[initial_' + x + ']';
+				window.DeskPRO_Page.criteriaEditor.addNewRow($('.criteria-form .search-terms'), basename, {
+					type: info.type,
+					op: info.op,
+					options: info.options
+				});
+			});
+		}
 	};
 }
 </script>

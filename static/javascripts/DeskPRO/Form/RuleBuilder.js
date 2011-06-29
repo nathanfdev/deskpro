@@ -72,8 +72,6 @@ DeskPRO.Form.RuleBuilder = new Class({
 				var trigger = $(info.menu.getOpenTriggerElement());
 				var type = $(info.itemEl).data('value');
 
-				console.log(info);
-
 				var typeInput = $('input', trigger.parent());
 				typeInput.val(type);
 				typeInput.change();
@@ -133,13 +131,13 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		var opt = false;
 		if (existing) {
-			select.val(existing.type);
+			select.val(existing.type).change();
 
 			var label = $('.type:first .current-value', new_row);
 			label.text(this.types[existing.type]);
 
 			this.handleSelectChange(new_row);
-			$('.op:first select', new_row).val(existing.op).addClass('op');
+			$('.op:first select', new_row).val(existing.op).addClass('op').change();
 
 			if (typeof existing.options == 'string' || typeof existing.options == 'number' || typeOf(existing.options) != 'object') {
 				// If its just one item, then we'll just assume its the first field
@@ -151,12 +149,12 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 					var name_safe = name.replace(/\[/, '\\[').replace(/\]/, '\\]');
 					if (typeof val == 'string' || typeof val == 'number') {
-						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val);
+						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val).change();
 					} else if (typeOf(val) == 'object') {
 						Object.each(val, function(subval, subname) {
 							var sub_name = name_safe + "["+subname+"]";
 							var sub_name_safe = name_safe + "\\["+subname+"\\]";
-							var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval);
+							var el = $('[name="'+sub_name_safe+'"], [name$="'+this.makeArrayName(sub_name,true)+'"]', new_row).first().val(subval).change();
 						}, this);
 					} else if (typeOf(val) == 'array') {
 						Array.each(val, function(subval) {
@@ -164,9 +162,14 @@ DeskPRO.Form.RuleBuilder = new Class({
 							el.selected = true;
 						}, this);
 					} else {
-						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val);
+						var el = $('[name="'+name_safe+'"], [name$="'+this.makeArrayName(name,true)+'"]', new_row).first().val(val).change();
 					}
 				}, this);
+			}
+
+			var ruleHandler = new_row.data('rule-handler-inst');
+			if (ruleHandler) {
+				ruleHandler.initValues();
 			}
 		}
 
@@ -220,10 +223,10 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var ruleHandlerName = rule_tpl.data('rule-handler');
 		var ruleHandler = null;
 		if (ruleHandlerName) {
-			ruleHandlerObj = Orb.getNamespacedObject(ruleHandler);
-			ruleHandler = new ruleHandler({
+			ruleHandlerObj = Orb.getNamespacedObject(ruleHandlerName);
+			ruleHandler = new ruleHandlerObj({
 				ruleBuilder: this,
-				row: row,
+				rowEl: row,
 				rowId: rowId,
 				opMenu: opMenu
 			});
@@ -293,6 +296,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		if (ruleHandler) {
 			ruleHandler.initRow();
+			row.data('rule-handler-inst', ruleHandler);
 		}
 
 		if (rowDestroy.length) {
