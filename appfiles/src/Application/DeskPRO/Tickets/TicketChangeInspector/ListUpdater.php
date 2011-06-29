@@ -11,12 +11,14 @@
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity\Ticket;
-use \Application\DeskPRO\Entity\TicketFilter;
-use \Application\DeskPRO\Entity\ClientMessage;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketFilter;
+use Application\DeskPRO\Entity\ClientMessage;
 
-use \Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
+
+use Orb\Log\Logger;
 
 class ListUpdater
 {
@@ -64,11 +66,41 @@ class ListUpdater
 	 */
 	protected $mode;
 
+	/**
+	 * @var \Orb\Log\Logger
+	 */
+	protected $logger;
+
+	/**
+	 * Keeps track of how many interations are done in the scope checks
+	 * @var int
+	 */
+	protected $scope_checks = 0;
+
 	
 	public function __construct(TicketChangeTracker $tracker, $mode = self::MODE_SHALLOW)
 	{
 		$this->tracker = $tracker;
 		$this->mode = $mode;
+	}
+
+
+	/**
+	 * Sets a debug logger
+	 * 
+	 * @param $logger
+	 * @return void
+	 */
+	public function setDebugLogger($logger)
+	{
+		$this->logger = $logger;
+	}
+
+	protected function logMessage($message)
+	{
+		if (!$this->logger) return;
+
+		$this->logger->log($message, Logger::DEBUG);
 	}
 	
 
@@ -102,7 +134,8 @@ class ListUpdater
 	 */
 	public function getUpdateMessages(TicketFilter $filter)
 	{
-		echo "\n------Filter {$filter['id']}\n";
+		$this->logMessage("getUpdateMessages({$filter['id']})");
+
 		#------------------------------
 		# Filters have to be run from the scope
 		# of a particular agent, so figure out
@@ -132,7 +165,7 @@ class ListUpdater
 			$scopes = array($filter->person);
 		}
 
-		echo "Affect agents: " . count($scopes) . "\n";
+		$this->logMessage("-- Affect agents: " . count($scopes));
 
 		if (!$scopes) return array();
 
@@ -143,6 +176,9 @@ class ListUpdater
 		$client_messages = array();
 
 		foreach ($scopes as $agent) {
+
+			$this->scope_checks++;
+
 			$searcher = $filter->getSearcher();
 			$searcher->setPerson($agent);
 
@@ -150,39 +186,44 @@ class ListUpdater
 			$new_match  = $searcher->doesTicketMatch($this->tracker->getTicket());
 
 			if (!$orig_match AND !$new_match) {
-				echo "Nothing changed (1)\n";
 				// Nothing changed
+				$this->logMessage("-- Nothing changed (both no-match)");
+				
 			} else if ($orig_match AND $new_match) {
-				echo "Nothing changed (2)\n";
 				// Nothing changed again
+				$this->logMessage("-- Nothing changed (both match)");
+
 			} else if ($orig_match AND !$new_match) {
-				echo "Removed from list\n";
-				// Remove from lists
+				$this->logMessage("-- Removed from list");
+
 				$cm = new ClientMessage();
 				$cm->fromArray(array(
 					'channel' => 'agent.filter-update',
 					'data' => array(
 						'ticket_id'  => $this->tracker->getTicket()->getId(),
 						'filter_id'  => $filter['id'],
-						'for_person' => $agent,
 						'op' => 'del'
 					),
+					'for_person' => $agent,
 					'created_by_client' => 'sys'
 				));
 				$client_messages[] = $cm;
+
 			} else if (!$orig_match AND $new_match) {
-				echo "Added to list\n";
+				$this->logMessage("-- Added to list");
+
 				$cm = new ClientMessage();
 				$cm->fromArray(array(
 					'channel' => 'agent.filter-update',
 					'data' => array(
 						'ticket_id'  => $this->tracker->getTicket()->getId(),
 						'filter_id'  => $filter['id'],
-						'for_person' => $agent,
 						'op' => 'add'
 					),
+					'for_person' => $agent,
 					'created_by_client' => 'sys'
 				));
+				$client_messages[] = $cm;
 			}
 		}
 
@@ -196,6 +237,8 @@ class ListUpdater
 	 */
 	public function initVars()
 	{
+		$this->logMessage("TICKET {$this->tracker->getTicket()->getId()}");
+
 		$changed_fields = array();
 
 		foreach ($this->tracker->getAllChangedProperties() as $prop => $info) {
@@ -231,6 +274,7 @@ class ListUpdater
 		}
 
 		$this->changed_fields = $changed_fields;
+		$this->logMessage("Changed fields: " . implode(', ', $changed_fields));
 
 		// Dont need to do anythign else if no fields changed
 		if (!$changed_fields) {
@@ -238,6 +282,9 @@ class ListUpdater
 		}
 
 		$this->active_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents();
+
+		$this->logMessage("Online agents: " . count($this->active_agents));
+
 		$this->agent_to_teams   = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamIdsForAgents($this->active_agents);
 		$this->teams_to_agents  = array();
 
@@ -272,6 +319,8 @@ class ListUpdater
 		$filters = App::getEntityRepository('DeskPRO:TicketFilter')->getAllForAgents($this->active_agents);
 		$filters_apply = array();
 
+		$this->logMessage("Filters to check: " . count($filters));
+
 		foreach ($filters as $filter) {
 			if ($this->checkTerms($filter)) {
 				$filters_apply[] = $filter;
@@ -280,11 +329,16 @@ class ListUpdater
 
 		unset($filters);
 
+		$this->logMessage("Possible filter matches: " . count($filters_apply));
+
 		if (!$filters_apply) return;
 
 		// If we're in shallow mode, can just tell clients to update
 		// these found filters now
 		if ($this->mode == self::MODE_SHALLOW) {
+
+			$this->logMessage("Shallow mode, broadcasting greedy refresh");
+
 			$client_messages = array();
 			foreach ($filters_apply as $filter) {
 				$cm = new ClientMessage();
@@ -316,6 +370,8 @@ class ListUpdater
 		# Now run through each
 		#------------------------------
 
+		$this->logMessage("Check mode, checking all filters in all scopes");
+
 		// Check mode we'll actually run the PHP-based logic checks
 		// to see which filters have the ticket and need it to be
 		// added/removed
@@ -335,5 +391,8 @@ class ListUpdater
 				$em->flush();
 			});
 		}
+
+		$this->logMessage("Client messages inserted: " . count($client_messages));
+		$this->logMessage("Full check done in iterations: " . $this->scope_checks);
 	}
 }
