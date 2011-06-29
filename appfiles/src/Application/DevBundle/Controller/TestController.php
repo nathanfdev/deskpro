@@ -15,14 +15,9 @@ class TestController extends Controller
     {
 		echo '<pre>';
 
-		$ticket_page = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('agent');
-		$ticket_page->addPagesFromDb();
-		echo $ticket_page->compileJs();
-		exit;
+		$filters = App::getEntityRepository('DeskPRO:TicketFilter')->getAllForActiveAgents();
 
-		//$ticket_display = App::findEntity('DeskPRO:TicketPageDisplay', 40);
-		$ticket_display = App::findEntity('DeskPRO:TicketPageDisplay', 42);
-		print_r($ticket_display['data']);
+		echo count($filters);
 
 		exit;
 		return $this->render('DevBundle:Test:test.html.twig');

@@ -27,6 +27,7 @@ use \Orb\Util\Arrays;
 class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 {
 	protected $ticket;
+	protected $original_ticket;
 	protected $is_new_ticket = false;
 
 	protected $log_inspector;
@@ -37,6 +38,8 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 		$this->entity = $ticket;
 		$this->ticket = $ticket;
 
+		$this->original_ticket = clone $ticket;
+
 		if (!$ticket['id']) {
 			$this->is_new_ticket = true;
 		}
@@ -45,12 +48,24 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 	/**
 	 * Get the ticket
+	 *
+	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	public function getTicket()
 	{
 		return $this->ticket;
 	}
 
+	
+	/**
+	 * Get the original ticket before changes
+	 * 
+	 * @return \Application\DeskPRO\Entity\Ticket
+	 */
+	public  function getOriginalTicket()
+	{
+		return $this->original_ticket;
+	}
 
 
 	/**

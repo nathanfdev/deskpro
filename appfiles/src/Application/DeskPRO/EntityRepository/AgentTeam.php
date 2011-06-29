@@ -90,6 +90,70 @@ class AgentTeam extends EntityRepository
 	}
 
 
+	/**
+	 * Get an array of all team IDs that the agents passed
+	 * belong to. This is an all inclusive list and unsorted.
+	 * 
+	 * @param $agents
+	 * @return array
+	 */
+	public function getAllTeamIdsForAgents($agents)
+	{
+		$agent_ids = array();
+		foreach ($agents as $a) {
+			if (is_object($a)) {
+				$agent_ids[] = $a['id'];
+			} else {
+				$agent_ids[] = $a;
+			}
+		}
+
+		if (!$agent_ids) return array();
+		$agent_ids = implode(',', $agent_ids);
+
+
+		$team_ids = App::getDb()->fetchAllCol("
+			SELECT team_id
+			FROM agent_team_members
+			WHERE person_id IN ($agent_ids)
+			GROUP BY team_id
+		");
+
+		return $team_ids;
+	}
+
+
+	/**
+	 * Gets an array of team ID's for each agent. Keyed
+	 * by agent_id. Like getAllTeamIdsForAgents() except this
+	 * is sorted into agents
+	 * 
+	 * @param $agents
+	 * @return array
+	 */
+	public function getTeamIdsForAgents($agents)
+	{
+		$agent_ids = array();
+		foreach ($agents as $a) {
+			if (is_object($a)) {
+				$agent_ids[] = $a['id'];
+			} else {
+				$agent_ids[] = $a;
+			}
+		}
+
+		if (!$agent_ids) return array();
+		$agent_ids = implode(',', $agent_ids);
+
+		$agent_teams = App::getDb()->fetchAllGrouped("
+			SELECT perosn_id, team_id
+			FROM agent_team_members
+			WHERE person_id IN ($agent_ids)
+		", null, 'person_id', null, 'team_id');
+
+		return $agent_teams;
+	}
+
 
 	/**
 	 * Invalidates caches associated with agent teams

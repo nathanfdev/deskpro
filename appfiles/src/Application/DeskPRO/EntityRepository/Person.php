@@ -67,6 +67,45 @@ class Person extends EntityRepository
 	}
 
 
+	/**
+	 * Get all online and active (not away) agents.
+	 * 
+	 * @param bool $ids_only
+	 * @return array
+	 */
+	public function getActiveAgents($ids_only = false)
+	{
+		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
+
+		$sessions_q = App::getOrm()->createQuery("
+			SELECT s,p
+			FROM DeskPRO:Session s
+			LEFT JOIN s.person p
+			WHERE p.is_agent = true AND s.date_last > ?1
+			GROUP BY p.id
+			ORDER BY s.id DESC
+		");
+
+		$sessions = $sessions_q->setParameter(1, $cutoff)->execute();
+
+
+		$online_agents = array();
+		foreach ($sessions as $s) {
+			if ($ids_only) {
+				$online_agents[$s->person['id']] = $s->person['id'];
+			} else {
+				$online_agents[$s->person['id']] = $s->person;
+			}
+		}
+
+		if ($ids_only) {
+			$sessions_q->free();
+		}
+
+		return $online_agents;
+	}
+
+
 
 	/**
 	 * Find a person by their email address.

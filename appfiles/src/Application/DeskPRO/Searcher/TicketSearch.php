@@ -64,6 +64,14 @@ class TicketSearch extends SearcherAbstract
 	protected $summary = null;
 
 	/**
+	 * An array of fields these search terms are affected by.
+	 * Used in ListUpdater to determine if a filter needs changing on the client.
+	 * 
+	 * @var array
+	 */
+	protected $affected_fields = array();
+
+	/**
 	 * An array of search terms that are specific, as in only allow a single
 	 * value (so not ranges or IN() types). For example, a single department or organization
 	 *
@@ -133,6 +141,15 @@ class TicketSearch extends SearcherAbstract
 	{
 		$this->getSqlParts();
 		return $this->specific_fields;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getAffectedFields()
+	{
+		return array_unique($this->affected_fields);
 	}
 
 
@@ -419,6 +436,7 @@ class TicketSearch extends SearcherAbstract
 					}
 					break;
 				case self::TERM_DEPARTMENT:
+					$this->affected_fields[] = 'ticket.department_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('core.department'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Department')->getDepartmentNames((array)$choice);
 						return $titles;
@@ -431,8 +449,12 @@ class TicketSearch extends SearcherAbstract
 					}
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.department_id", $op, $choice, true);
+
 					break;
 				case self::TERM_DELETED:
+					$this->affected_fields[] = 'ticket.status';
+					$this->affected_fields[] = 'ticket.hidden_status';
+
 					$set_status = true;
 					$this->summary[] = $tr->phrase('core_tickets.ticket_is_deleted');
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", self::OP_IS, 'hidden');
@@ -442,6 +464,7 @@ class TicketSearch extends SearcherAbstract
 
 					break;
 				case self::TERM_CATEGORY:
+					$this->affected_fields[] = 'ticket.category_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('core_tickets.category'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryNames((array)$choice);
 						return $titles;
@@ -454,6 +477,7 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.category_id", $op, $choice, true);
 					break;
 				case self::TERM_PRODUCT:
+					$this->affected_fields[] = 'ticket.product_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('core.product'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:Product')->getProductNames((array)$choice);
 						return $titles;
@@ -466,6 +490,7 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.product_id", $op, $choice, true);
 					break;
 				case self::TERM_PRIORITY:
+					$this->affected_fields[] = 'ticket.priority_id';
 
 					if (count($choice) == 1) {
 						$this->specific_fields[] = self::TERM_PRIORITY;
@@ -474,6 +499,7 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.priority_id", $op, $choice, true);
 					break;
 				case self::TERM_URGENCY:
+					$this->affected_fields[] = 'ticket.urgency';
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.urgency'), $op, $choice);
 					$wheres[] = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
 					break;
@@ -482,24 +508,29 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
 					break;
 				case self::TERM_DATE_RESOLVED:
+					$this->affected_fields[] = 'ticket.date_resolved';
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_resolved'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved'));
 					break;
 				case self::TERM_DATE_CLOSED:
+					$this->affected_fields[] = 'ticket.date_closed';
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_closed'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_closed", $op, $choice);
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('closed'));
 					break;
 				case self::TERM_DATE_LAST_USER_REPLY:
+					$this->affected_fields[] = 'ticket.date_last_user_reply';
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_last_user_reply'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_last_user_reply", $op, $choice);
 					break;
 				case self::TERM_DATE_LAST_AGENT_REPLY:
+					$this->affected_fields[] = 'ticket.date_last_agent_reply';
 					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_last_agent_reply'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_last_agent_reply", $op, $choice);
 					break;
 				case self::TERM_WORKFLOW:
+					$this->affected_fields[] = 'ticket.workflow_id';
 					$this->summary[] = $this->_choiceSummary($tr->phrase('core_tickets.workflow'), $op, $choice, function($choice) {
 						$titles = App::getEntityRepository('DeskPRO:TicketWorkflow')->getWorkflowNames((array)$choice);
 						return $titles;
@@ -512,7 +543,7 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.workflow_id", $op, $choice. true);
 					break;
 				case self::TERM_LANGUAGE:
-
+					$this->affected_fields[] = 'ticket.language_id';
 					if (count($choice) == 1) {
 						$this->specific_fields[] = self::TERM_LANGUAGE;
 					}
@@ -520,6 +551,7 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.language_id", $op, $choice, true);
 					break;
 				case self::TERM_AGENT:
+					$this->affected_fields[] = 'ticket.agent_id';
 					if ($choice == 0) {
 						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent'), $op, $tr->phrase('core.unassigned'));
 						$wheres[] = "$tickets_table.agent_id IS NULL";
@@ -546,6 +578,7 @@ class TicketSearch extends SearcherAbstract
 					}
 					break;
 				case self::TERM_AGENT_TEAM:
+					$this->affected_fields[] = 'ticket.agent_team_id';
 					if ($choice == 0) {
 						$wheres[] = "$tickets_table.agent_team_id IS NULL";
 
@@ -572,6 +605,7 @@ class TicketSearch extends SearcherAbstract
 					}
 					break;
 				case self::TERM_STATUS:
+					$this->affected_fields[] = 'ticket.status';
 					$set_status = true;
 					$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $tr->phrase('core_tickets.status'), 'value' => $tr->phrase('core_tickets.status_' . $choice)));
 
@@ -599,6 +633,7 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch("$tickets_table.organization", $op, $choice, true);
 					break;
 				case self::TERM_PARTICIPANT:
+					$this->affected_fields[] = 'ticket.participants';
 					$joins[] = 'tickets_participants';
 					$field = 'tickets_participants.person_id';
 
@@ -610,6 +645,7 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_choiceMatch($field, $op, $choice);
 					break;
 				case self::TERM_SUBJECT:
+					$this->affected_fields[] = 'ticket.subject';
 					$field = 'tickets.subject';
 					if (!$this->is_archive) {
 						$joins[] = 'tickets_search_subjects';
@@ -625,7 +661,7 @@ class TicketSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_LABEL:
-
+					$this->affected_fields[] = 'ticket.labels';
 					$this->_normalizeOpAndChoice($op, $choice);
 
 					$choices_in = array();
@@ -672,9 +708,10 @@ class TicketSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_TICKET_FIELD:
-
 					$field = App::getEntityRepository('DeskPRO:CustomDefTicket')->find($term_id);
 					if (!$field) break;
+
+					$this->affected_fields[] = 'ticket.custom_data_ticket_' . $field['id'];
 
 					$search_type = $field->getHandler()->getSearchType();
 
@@ -735,11 +772,13 @@ class TicketSearch extends SearcherAbstract
 					break; // end break TERM_TICKET_FIELD
 
 				case self::TERM_USER_WAITING:
+					$this->affected_fields[] = 'ticket.date_user_waiting';
 					$wheres[] = $this->_dateMatch("$tickets_table.date_user_waiting", $op, $choice);
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('open'));
 					break;
 
 				case self::TERM_AGENT_WAITING:
+					$this->affected_fields[] = 'ticket.date_agent_waiting';
 					$wheres[] = $this->_dateMatch("$tickets_table.date_agent_waiting", $op, $choice);
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('pending'));
 					break;

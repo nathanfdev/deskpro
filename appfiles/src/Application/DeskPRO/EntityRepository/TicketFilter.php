@@ -18,6 +18,43 @@ use \Application\DeskPRO\Entity;
 
 class TicketFilter extends EntityRepository
 {
+	public function getAllForActiveAgents()
+	{
+		$online_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents(true);
+		if (!$online_agents) return array();
+
+		return $this->getAllForAgents($online_agents);
+	}
+
+	public function getAllForAgents($agents)
+	{
+		$agent_ids = array();
+		foreach ($agents as $a) {
+			if (is_object($a)) {
+				$agent_ids[] = $a['id'];
+			} else {
+				$agent_ids[] = $a;
+			}
+		}
+
+		$teams = App::getEntityRepository('DeskPRO:AgentTeam')->getAllTeamIdsForAgents($online_agents);
+		$teams[] = 0;
+
+		$agent_ids = implode(',', $agent_ids);
+		$teams = implode(',', $teams);
+
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q INDEX BY q.id
+			WHERE
+				q.is_global = true
+				OR q.person IN ($agent_ids)
+				OR q.agent_team IN ($teams)
+		")->execute();
+
+		return $filters;
+	}
+
 	/**
 	 * Gets an array of all global filters.
 	 *
