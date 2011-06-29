@@ -22,7 +22,13 @@ class TestController extends Controller
 		App::getOrm()->flush();
 
 		/** @var $logger \Application\DeskPRO\Tickets\TicketChangeTracker */
-		$logger = $ticket->getTicketLogger();
+		$ticket_logger = $ticket->getTicketLogger();
+
+		$logger = new \Orb\Log\Logger();
+		$writer = new \Orb\Log\Writer\Output(true);
+		$logger->addWriter($writer);
+
+		$ticket_logger->getListUpdater()->setDebugLogger($logger);
 
 		$ticket['agent_id'] = 20001;
 		App::getOrm()->persist($ticket);

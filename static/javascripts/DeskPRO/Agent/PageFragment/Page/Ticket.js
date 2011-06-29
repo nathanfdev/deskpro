@@ -85,10 +85,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		var new_message = $(html).hide();
 
 		var self = this;
-		new_message.appendTo($('.ticket-messages .messages-wrap', this.contentWrapper)).slideDown(200, function() {
-			// Scroll to it
-			self.layout.content.scrollTop(10000000);
-		});
+		new_message.appendTo($('.ticket-messages .messages-wrap', this.contentWrapper)).slideDown();
 
 		this._initMessage(new_message);
 	},
@@ -535,6 +532,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			return;
 		}
 
+		$('.send-reply button', this.ticketBar).hide();
 		var spinnerContainer = $('.send-reply .spinner', this.ticketBar).show().empty();
 		spinnerContainer.parent().addClass('is-loading');
 		var spinner = new Spinner(spinnerContainer, {
@@ -553,7 +551,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			data: data,
 			dataType: 'html',
 			success: function(html) {
-				$('button.submit-trigger', this.ticketReply).removeClass('gray');
 				this.isSendingReply = false;
 				this._handleSendReplySuccess(html);
 			}

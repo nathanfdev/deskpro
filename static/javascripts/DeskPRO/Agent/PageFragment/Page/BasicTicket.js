@@ -329,7 +329,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var self = this;
 
 		// Send reply
-		$('li.send-reply', this.barWrapper).click(function(ev) {
+		$('.send-reply button', this.barWrapper).click(function(ev) {
 			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
 			self._sendReply();
 		});
@@ -518,6 +518,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		var spinnerContainer = $('.send-reply .spinner', this.ticketBar).hide().empty();
 		spinnerContainer.parent().removeClass('is-loading');
 
+		$('.send-reply button', this.ticketBar).show();
+
 		this.displayNewMessage(html);
 		this.afterNewReply();
 	},
@@ -562,7 +564,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 		// If we have a signature, then set it
 		if (this.meta.agentSignature) {
-			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n", this.meta.agentSignature);
+			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n" + this.meta.agentSignature);
 		}
 	}
 });
