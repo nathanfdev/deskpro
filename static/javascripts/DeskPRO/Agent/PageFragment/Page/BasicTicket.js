@@ -513,18 +513,32 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		console.warn('This method should be overriden in a subclass!');
 	},
 
-	_handleSendReplySuccess: function(html) {
+	_handleSendReplySuccess: function(data) {
 
 		var spinnerContainer = $('.send-reply .spinner', this.ticketBar).hide().empty();
 		spinnerContainer.parent().removeClass('is-loading');
 
 		$('.send-reply button', this.ticketBar).show();
 
-		this.displayNewMessage(html);
+		this.displayNewMessage(data.message_html);
+		this.newReplyNewProps(data);
 		this.afterNewReply();
 	},
 
-	afterNewReply: function() {
+	newReplyNewProps: function(data) {
+		var prop = null;
+
+		prop = this.getPropertyManager('agent_id');
+		prop.setValue(data.agent_id);
+
+		prop = this.getPropertyManager('agent_team_id');
+		prop.setValue(data.agent_team_id);
+
+		prop = this.getPropertyManager('status');
+		prop.setValue(data.status);
+	},
+
+	afterNewReply: function(data) {
 		// If there are new attachments, that tab is now stale
 		if ($('.attachments-area ul.file-list li', this.ticketReply).length) {
 			this.unloadTicketTab('attachments');

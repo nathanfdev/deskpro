@@ -549,10 +549,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			type: 'POST',
 			context: this,
 			data: data,
-			dataType: 'html',
-			success: function(html) {
+			dataType: 'json',
+			success: function(data) {
 				this.isSendingReply = false;
-				this._handleSendReplySuccess(html);
+				this._handleSendReplySuccess(data);
 			}
 		});
 	},

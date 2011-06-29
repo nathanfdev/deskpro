@@ -756,11 +756,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function setAgent(Person $agent = null)
-	{
-		$this->agent = $agent;
-	}
-
 	public function getAgentId()
 	{
 		if (!$this->agent) {
@@ -782,10 +777,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		} else {
 			$this['agent'] = null;
 		}
-	}
-	public function setAgentTeam(AgentTeam $agent_team = null)
-	{
-		$this['agent_team'] = $agent_team;
 	}
 
 	public function getAgentTeamId()
@@ -1053,8 +1044,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->_onPropertyChanged('status', $old_status, $this->status);
 
-		if ($status != 'hidden') {
-			$this->setHiddenStatus(null);
+		if ($status != 'hidden' AND $this->hidden_status) {
+			$this->hidden_status = null;
+			$this->_onPropertyChanged('hidden_status', $old_hstatus, $this->hidden_status);
 		}
 	}
 
@@ -1065,7 +1057,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->hidden_status = $hstatus;
 		$this->status = 'hidden';
-
 		$this->_onPropertyChanged('status', $old_status, $this->status);
 		$this->_onPropertyChanged('hidden_status', $old_hstatus, $this->hidden_status);
 	}

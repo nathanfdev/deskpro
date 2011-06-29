@@ -534,7 +534,6 @@ class TicketController extends AbstractController
 	public function ajaxSaveReplyAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
-		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
 		$message = new Entity\TicketMessage();
 		$message['ticket'] = $ticket;
@@ -555,12 +554,28 @@ class TicketController extends AbstractController
 		if ($id = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($message)) {
 			$message = App::findEntity('DeskPRO:TicketMessage', $id);
 		} else {
-			$ticket_edit->addMessage($message);
-			$ticket_edit->save();
+			$ticket->addMessage($message);
 		}
 
-		return $this->render('AgentBundle:Ticket:ticket-message.html.twig', array(
-			'message' => $message
+		if ($this->in->getBool('options.do_assign')) {
+			$ticket['agent_id'] = $this->in->getUint('options.agent_id');
+			$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
+		}
+
+		if ($this->in->getBool('options.do_status')) {
+			$ticket['status'] = $this->in->getString('options.status');
+		}
+
+		$this->em->beginTransaction();
+		$this->em->persist($ticket);
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array('message' => $message)),
+			'agent_id' => $ticket['agent_id'],
+			'agent_team_id' => $ticket['agent_team_id'],
+			'status' => $ticket['status']
 		));
 	}
 

@@ -17,8 +17,8 @@
 			<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
 				<div class="reply-form-fields">
 					<textarea name="message"></textarea>
-					<input type="hidden" name="options[agent_id]" value="{{person.id}}" />
-					<input type="hidden" name="options[agent_team_id]" value="{{person.getAgentTeamIds[0]}}" />
+					<input type="hidden" name="options[agent_id]" value="{{app.user.id}}" />
+					<input type="hidden" name="options[agent_team_id]" value="{{app.user.getAgentTeamIds[0]}}" />
 					<input type="hidden" name="options[status]" value="pending" />
 
 					<div class="send-reply" style="float:right; margin-right: 4px;">
