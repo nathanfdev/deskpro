@@ -24,11 +24,6 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 
 		// Criteria builder
 		this.criteriaEditor = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
-		this.criteriaEditor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
-				new_row.remove();
-			});
-		});
 
 		$('.criteria-form .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
@@ -42,10 +37,6 @@ DeskPRO.Admin.PageHandler.TicketTriggersEdit = new Class({
 		// Actions builder
 		this.actionsEditor = new DeskPRO.Form.RuleBuilder($('.actions-tpl'));
 		this.actionsEditor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
-				new_row.remove();
-			});
-
 			var a = $('.use_custom_template', new_row);
 
 			if (a.length) {

@@ -584,6 +584,10 @@ DeskPRO.UI.Menu = new Orb.Class({
 			this.elements.wrapperOuter.remove();
 		}
 
+		if (this.options.menuEl) {
+			this.options.menuEl.remove();
+		}
+
 		delete DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId];
 
 		Array.each(this.subMenus, function(menuInfo) {

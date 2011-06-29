@@ -21,11 +21,6 @@ DeskPRO.Admin.PageHandler.TicketFilterEdit = new Class({
 
 		// Criteria builder
 		this.criteriaEditor = new DeskPRO.Form.RuleBuilder($('.criteria-tpl'));
-		this.criteriaEditor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
-				new_row.remove();
-			});
-		});
 
 		$('.criteria-form .add-term').data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));

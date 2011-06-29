@@ -42,24 +42,61 @@ DeskPRO.Form.RuleBuilder = new Class({
 	 */
 	typeSelectHtml: null,
 
+	types: {},
+
+	rowDestroy: {},
 
 	/**
 	 * @param {jQuery} ruleTpl This is the wrapper element that contains the templates used for each rule type
 	 */
 	initialize: function(ruleTpl) {
 		this.ruleTpl = ruleTpl;
+		var self = this;
 
-		this.typeSelectHtml = ['<select name="type" class="type">'];
-		$('> .type', this.ruleTpl).each((function(i,el) {
-			this.typeSelectHtml.push('<option value="' + $(el).data('rule-type') + '">' + $(el).attr('title') + '</option>');
-		}).bind(this));
-		this.typeSelectHtml.push('</select>');
-		this.typeSelectHtml = this.typeSelectHtml.join('');
+		var html = ['<ul class="menu" style="display:none">'];
+		$('> .type', this.ruleTpl).each(function(i,el) {
+			var type = $(el).data('rule-type');
+			var title = $(el).attr('title');
 
-		
+			self.types[type] = title;
+
+			html.push('<li data-value="' + type + '">' + title + '</li>');
+		});
+		html.push('</ul>');
+		html = html.join('');
+
+		var menuEl = $(html);
+		this.menu = new DeskPRO.UI.Menu({
+			menuElement: menuEl,
+			onItemClicked: function(info) {
+				var trigger = $(info.menu.getOpenTriggerElement());
+				var type = $(info.itemEl).data('value');
+
+				console.log(info);
+
+				var typeInput = $('input', trigger.parent());
+				typeInput.val(type);
+				typeInput.change();
+
+				var label = $('.current-value', trigger.parent());
+				label.text(self.types[type]);
+			}
+		});
 	},
 
+	destroy: function() {
+		Object.each(this.rowDestroy, function (rowDestroy) {
+			Array.each(rowDesotry, function (item) {
+				if (item.destroy) {
+					item.destroy();
+				} else if (item.remove) {
+					item.remove();
+				}
+			});
+		});
 
+		this.menu.destroy();
+	},
 
 	/**
 	 * Add a new rule row
@@ -70,11 +107,23 @@ DeskPRO.Form.RuleBuilder = new Class({
 	 * @return {jQuery} The newly added row
 	 */
 	addNewRow: function(addToEl, formBaseName, existing) {
+		var rowId = Orb.uuid();
+
 		var new_row = $('> .row', this.ruleTpl).children().clone();
+		new_row.data('row-id', rowId);
 
 		// Add select
-		$('.type:first', new_row).html(this.typeSelectHtml);
-		var select = $('select.type:first', new_row);
+		$('.type:first', new_row).html('<span class="current-value menu-trigger">Choose criteria...</span><input type="hidden" class="type" name="type" value="" />');
+		var select = $('input.type:first', new_row);
+
+		var self = this;
+		var typeTrigger = $('.type .current-value', new_row).click(function(ev) {
+			self.menu.openMenu(ev);
+		});
+
+		$('.remove', new_row).click(function() {
+			self.removeRow(new_row);
+		});
 
 		// Update its name
 		if (formBaseName) {
@@ -84,8 +133,10 @@ DeskPRO.Form.RuleBuilder = new Class({
 
 		var opt = false;
 		if (existing) {
-			opt = $('option[value="' + existing.type + '"]:first', select);
-			opt.attr('selected', true);
+			select.val(existing.type);
+
+			var label = $('.type:first .current-value', new_row);
+			label.text(this.types[existing.type]);
 
 			this.handleSelectChange(new_row);
 			$('.op:first select', new_row).val(existing.op).addClass('op');
@@ -119,20 +170,12 @@ DeskPRO.Form.RuleBuilder = new Class({
 			}
 		}
 
-		var menu = new DeskPRO.UI.Menu({
-			menuElement: select
-		});
-
 		// Handle when its type is changed
 		select.change((function() {
 			this.handleSelectChange(new_row);
 		}).bind(this));
 
 		$(addToEl).append(new_row);
-
-		if (opt) {
-			opt.attr('selected', true);
-		}
 
 		this.fireEvent('newRow', [new_row, addToEl, existing]);
 
@@ -147,7 +190,14 @@ DeskPRO.Form.RuleBuilder = new Class({
 	 * @param {jQuery} row The row that we need to update
 	 */
 	handleSelectChange: function(row) {
-		var type = $('.type:first > select', row).val();
+
+		// Destroy previous
+		this.destroyRow(row);
+
+		var rowId = row.data('row-id');
+		var rowDestroy = [];
+
+		var type = $('.type:first > input.type', row).val();
 
 		var rule_tpl = $('> .type[data-rule-type="'+type+'"]', this.ruleTpl);
 
@@ -159,23 +209,40 @@ DeskPRO.Form.RuleBuilder = new Class({
 		$('.op:first', row).empty().append(op);
 		$('.options:first', row).empty().append(choice);
 
+		var opMenu = null;
 		if (op.is('select')) {
 			var opMenu = new DeskPRO.UI.Menu({
 				menuElement: op
 			});
+			rowDestroy.push(opMenu);
+		}
+
+		var ruleHandlerName = rule_tpl.data('rule-handler');
+		var ruleHandler = null;
+		if (ruleHandlerName) {
+			ruleHandlerObj = Orb.getNamespacedObject(ruleHandler);
+			ruleHandler = new ruleHandler({
+				ruleBuilder: this,
+				row: row,
+				rowId: rowId,
+				opMenu: opMenu
+			});
+
+			rowDestroy.push(ruleHandler);
 		}
 
 		var numChilds = choice.children().length;
 
 		if (numChilds == 1) {
-			var choiceSel = $('select', choice);
+			var choiceSel = $('select:not(.no-auto)', choice);
 			if (choiceSel.length) {
 				var choiceMenu = new DeskPRO.UI.Menu({
 					menuElement: choiceSel
 				});
+				rowDestroy.push(choiceMenu);
 			}
 
-			var inputEl = $('input[type="text"], textarea', choice);
+			var inputEl = $('input[type="text"]:not(.no-auto), textarea:not(.no-auto)', choice);
 			if (inputEl.length) {
 
 				var spanEl = $('<span class="menu-trigger">(click to set value)</span>');
@@ -224,7 +291,34 @@ DeskPRO.Form.RuleBuilder = new Class({
 			this.updateFormName($('.options:first', row), row.data('form-base-name'));
 		}
 
+		if (ruleHandler) {
+			ruleHandler.initRow();
+		}
+
+		if (rowDestroy.length) {
+			this.rowDestroy[rowId] = rowDestroy;
+		}
+
 		this.fireEvent('selectChange', [row, type]);
+	},
+
+	destroyRow: function(row) {
+		var rowId = row.data('row-id');
+		if (this.rowDestroy[rowId]) {
+			Array.each(this.rowDestroy[rowId], function(item) {
+				if (item.destroy) {
+					item.destroy();
+				} else if (item.remove) {
+					item.remove();
+				}
+			});
+			delete this.rowDestroy[rowId];
+		}
+	},
+
+	removeRow: function(row) {
+		this.destroyRow(row);
+		row.remove();
 	},
 
 

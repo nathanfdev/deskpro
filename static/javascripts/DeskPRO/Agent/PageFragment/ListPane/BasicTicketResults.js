@@ -176,11 +176,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		var criteriaTerms = $('.search-builder-tpl', this.topSection);
 
 		var editor = new DeskPRO.Form.RuleBuilder(criteriaTerms);
-		editor.addEvent('newRow', function(new_row) {
-			$('.remove', new_row).click(function() {
-				new_row.remove();
-			});
-		});
 		$('.add-term', criteriaList).data('add-count', 0).click(function() {
 			var count = parseInt($(this).data('add-count'));
 			var basename = 'terms['+count+']';
