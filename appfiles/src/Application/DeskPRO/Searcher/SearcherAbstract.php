@@ -184,14 +184,26 @@ abstract class SearcherAbstract
 		$where = '';
 
 		$choice = (array)$choice;
-		$date1 = !empty($choice[0]) ? $choice[0] : null;
-		$date2 = !empty($choice[1]) ? $choice[1] : null;
+
+		$date1 = null;
+		if (isset($choice['date1'])) {
+			$date1 = $choice['date1'];
+		} else if (isset($choice[0])) {
+			$date1 = $choice[0];
+		}
+
+		$date2 = null;
+		if (isset($choice['date2'])) {
+			$date2 = $choice['date2'];
+		} else if (isset($choice[1])) {
+			$date2 = $choice[1];
+		}
 
 		if ($date1 AND !($date1 instanceof \DateTime)) {
-			$date1 = new \DateTime("-{$date1} seconds");
+			$date1 = new \DateTime("@{$date1}");
 		}
 		if ($date2 AND !($date2 instanceof \DateTime)) {
-			$date2 = new \DateTime("-{$date2} seconds");
+			$date2 = new \DateTime("@{$date2}");
 		}
 
 		// There should always be at least one date
@@ -222,6 +234,8 @@ abstract class SearcherAbstract
 			$date = Util::coalesce($date1, $date2);
 			$where = "$field <= '" . $date1->format('Y-m-d H:m:s') . "'";
 		}
+
+		return $where;
 	}
 
 
@@ -292,6 +306,8 @@ abstract class SearcherAbstract
 		$summary = '';
 
 		$choice = (array)$choice;
+		$choice = array_values($choice);
+		
 		$range1 = !empty($choice[0]) ? $choice[0] : null;
 		$range2 = !empty($choice[1]) ? $choice[1] : null;
 
@@ -319,14 +335,88 @@ abstract class SearcherAbstract
 				'value2' => $range2
 			));
 		} elseif ($op == self::OP_GTE) {
-			$summary = App::getTranslator()->phrase('core.x_is_greater_than_z', array(
+			$summary = App::getTranslator()->phrase('core.x_is_greater_than_y', array(
 				'field' => $field,
 				'value' => $range1,
 			));
 		} else {
-			$summary = App::getTranslator()->phrase('core.x_is_less_than_z', array(
+			$summary = App::getTranslator()->phrase('core.x_is_less_than_y', array(
 				'field' => $field,
 				'value' => $range1,
+			));
+		}
+
+		return $summary;
+	}
+
+
+	/**
+	 * Get summary of the range summary
+	 * 
+	 * @param $field
+	 * @param $op
+	 * @param $choice
+	 * @return string
+	 */
+	public function _dateRangeSummary($field, $op, $choice)
+	{
+		$summary = '';
+
+		$choice = (array)$choice;
+		
+		$date1 = null;
+		if (isset($choice['date1'])) {
+			$date1 = $choice['date1'];
+		} else if (isset($choice[0])) {
+			$date1 = $choice[0];
+		}
+
+		$date2 = null;
+		if (isset($choice['date2'])) {
+			$date2 = $choice['date2'];
+		} else if (isset($choice[1])) {
+			$date2 = $choice[1];
+		}
+
+		if ($date1 AND !($date1 instanceof \DateTime)) {
+			$date1 = new \DateTime("@{$date1}");
+		}
+		if ($date2 AND !($date2 instanceof \DateTime)) {
+			$date2 = new \DateTime("@{$date2}");
+		}
+
+		// There should always be at least one date
+		if ($date1 === null AND $date2 === null) {
+			return '';
+		}
+
+		// Normalize operations
+		if ($op == self::OP_LT) $op = self::OP_LTE;
+		if ($op == self::OP_GT) $op = self::OP_GTE;
+
+		if ($op == self::OP_BETWEEN && ($date1 === null or $date2 === null)) {
+			if ($date1) {
+				$op = self::OP_GTE;
+			} else {
+				$op = self::OP_LTE;
+			}
+		}
+
+		if ($op == self::OP_BETWEEN) {
+			$summary = App::getTranslator()->phrase('core.x_is_between_y_and_z', array(
+				'field' => $field,
+				'value1' => $date1->format('M j, Y'),
+				'value2' => $date2->format('M j, Y')
+			));
+		} elseif ($op == self::OP_GTE) {
+			$summary = App::getTranslator()->phrase('core.x_after_y', array(
+				'field' => $field,
+				'value' => $date1->format('M j, Y'),
+			));
+		} else {
+			$summary = App::getTranslator()->phrase('core.x_before_y', array(
+				'field' => $field,
+				'value' => $date1->format('M j, Y'),
 			));
 		}
 
@@ -521,8 +611,20 @@ abstract class SearcherAbstract
 	protected function _testDateMatch($value, $op, $choice)
 	{
 		$choice = (array)$choice;
-		$date1 = !empty($choice[0]) ? $choice[0] : null;
-		$date2 = !empty($choice[1]) ? $choice[1] : null;
+		
+		$date1 = null;
+		if (isset($choice['date1'])) {
+			$date1 = $choice['date1'];
+		} else if (isset($choice[0])) {
+			$date1 = $choice[0];
+		}
+
+		$date2 = null;
+		if (isset($choice['date2'])) {
+			$date2 = $choice['date2'];
+		} else if (isset($choice[1])) {
+			$date2 = $choice[1];
+		}
 
 		if ($date1 AND !($date1 instanceof \DateTime)) {
 			$date1 = new \DateTime("-{$date1} seconds");

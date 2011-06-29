@@ -84,7 +84,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 			var ul = $('ul.' + info.id, menuEl);
 			var lis = [];
 			Array.each(info.types, function(type) {
-				lis.push('<li data-value="' + type[0] + '">' + type[1] + '</li>');
+				lis.push('<li data-prefix="' + group + ': " data-value="' + type[0] + '">' + type[1] + '</li>');
 			});
 
 			var lis = $(lis.join(''));

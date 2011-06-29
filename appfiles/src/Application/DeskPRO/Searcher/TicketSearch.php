@@ -114,7 +114,13 @@ class TicketSearch extends SearcherAbstract
 	public function getSummary()
 	{
 		$this->getSqlParts();
-		return $this->summary;
+
+		$summary = $this->summary;
+		if ($this->person_search) {
+			$summary = array_merge($summary, $this->person_search->getSummary());
+		}
+
+		return $summary;
 	}
 
 
@@ -217,8 +223,11 @@ class TicketSearch extends SearcherAbstract
 			}
 		}
 
+		if ($user_parts) {
+			$sql .= "LEFT JOIN people ON (people.id = tickets.person_id) ";
+		}
+
 		if ($user_parts AND $user_parts['joins']) {
-			$sql .= "INNER JOIN people ON (people.id = tickets.person_id) ";
 
 			foreach ($user_parts['joins'] as $j) {
 				if (is_array($j)) {
@@ -260,7 +269,6 @@ class TicketSearch extends SearcherAbstract
 		}
 
 		$this->_last_sql = $sql;
-
 		return $sql;
 	}
 
@@ -470,25 +478,25 @@ class TicketSearch extends SearcherAbstract
 					$wheres[] = $this->_rangeMatch("$tickets_table.urgency", $op, $choice);
 					break;
 				case self::TERM_DATE_CREATED:
-					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.date_created'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_created'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
 					break;
 				case self::TERM_DATE_RESOLVED:
-					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.date_resolved'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_resolved'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved'));
 					break;
 				case self::TERM_DATE_CLOSED:
-					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.date_closed'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_closed'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_closed", $op, $choice);
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('closed'));
 					break;
 				case self::TERM_DATE_LAST_USER_REPLY:
-					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.date_last_user_reply'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_last_user_reply'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_last_user_reply", $op, $choice);
 					break;
 				case self::TERM_DATE_LAST_AGENT_REPLY:
-					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.date_last_agent_reply'), $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary($tr->phrase('core_tickets.date_last_agent_reply'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_last_agent_reply", $op, $choice);
 					break;
 				case self::TERM_WORKFLOW:

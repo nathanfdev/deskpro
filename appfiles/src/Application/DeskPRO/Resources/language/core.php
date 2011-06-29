@@ -9,6 +9,8 @@
 	'core.x_is_between_y_and_z'    => '{{field}} is between {{value1}} and {{value2}}',
 	'core.x_is_greater_than_y'     => '{{field}} is great than {{value}}',
 	'core.x_is_less_than_y'        => '{{field}} is less than {{value}}',
+	'core.x_after_y'               => '{{field}} after {{value}}',
+	'core.x_before_y'              => '{{field}} before {{value}}',
 
 	'core.order_by' => 'Order By',
 

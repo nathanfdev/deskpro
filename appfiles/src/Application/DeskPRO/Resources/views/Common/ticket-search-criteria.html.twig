@@ -383,7 +383,7 @@
 	{% if term_options.custom_ticket_fields %}
 		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
 		{% for field in term_options.custom_ticket_fields %}
-			<div class="type" title="Ticket Field: {{field.field_def.title}}" data-rule-type="ticket_field[{{field.field_def.id}}]">
+			<div class="type" title="{{field.field_def.title}}" data-rule-group="Ticket Fields" data-rule-type="ticket_field[{{field.field_def.id}}]">
 				<div class="op">
 					<select name="op" class="op">
 						{% for op in field.field_def.search_capabilities %}
@@ -397,7 +397,8 @@
 			</div>
 		{% endfor %}
 	{% endif %}
-	<div class="type" title="Organization" data-rule-group="Person" data-rule-type="person_organization">
+		{% if person_term_options.organizations %}
+		<div class="type" title="Organization" data-rule-group="Person" data-rule-type="person_organization">
 		<div class="op">
 			<select name="op">
 				<option value="is">is</option>
@@ -406,12 +407,13 @@
 		</div>
 		<div class="options">
 			<select name="organization">
-				{% for id,title in titles.organizations %}
+				{% for id,title in person_term_options.organizations %}
 					<option value="{{id}}">{{title}}</option>
 				{% endfor %}
 			</select>
 		</div>
 		</div>
+		{% endif %}
 		{% if person_term_options.usergroups %}
 			<div class="type" title="Usergroup" data-rule-group="Person" data-rule-type="person_usergroup">
 			<div class="op">
@@ -446,7 +448,19 @@
 		</div>
 		</div>
 		{% endif %}
-		
+
+		<div class="type" title="Date created" data-rule-group="Person" data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+		<div class="op">
+			<select name="op" class="op">
+				<option value="lte">before</option>
+				<option value="gte">after</option>
+				<option value="between">between</option>
+			</select>
+		</div>
+		<div class="options">
+			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+		</div>
+		</div>
 		<div class="type" title="Email Domain" data-rule-group="Person" data-rule-type="person_email_domain">
 		<div class="op">
 			<select name="op">
@@ -516,7 +530,7 @@
 	{% if people_fields %}
 		{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
 		{% for field in people_fields %}
-			<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person" data-rule-type="person_person_field[{{field.field_def.id}}]">
+			<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person Fields" data-rule-type="person_person_field[{{field.field_def.id}}]">
 				<div class="op">
 					<select name="op">
 						{% for op in field.field_def.search_capabilities %}

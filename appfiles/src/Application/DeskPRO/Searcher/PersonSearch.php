@@ -266,7 +266,8 @@ class PersonSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_DATE_CREATED:
-					$wheres[] = $this->_dateMatch("$tickets_table.date_created", $op, $choice);
+					$wheres[] = $this->_dateMatch("$people_table.date_created", $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary('User created', $op, $choice);
 					break;
 
 				case self::TERM_NAME:
@@ -279,6 +280,8 @@ class PersonSearch extends SearcherAbstract
 					$w .= ')';
 
 					$wheres[] = $w;
+
+					$this->summary[] = "Name is " . array_pop($choice);
 
 					break;
 

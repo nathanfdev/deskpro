@@ -122,6 +122,10 @@ DeskPRO.UI.Menu = new Orb.Class({
 					var itemEl = $(ev.itemEl);
 					var text = itemEl.text().trim();
 					if (!text.length) text = 'Choose...';
+					else {
+						var prefix = $(ev.itemEl).data('prefix');
+						if (prefix) text = prefix + text;
+					}
 
 					spanEl.text(text);
 				});
@@ -142,6 +146,10 @@ DeskPRO.UI.Menu = new Orb.Class({
 					var opt = $('option:selected', this);
 					var text = opt.text().trim();
 					if (!text.length) text = 'Choose...';
+					else {
+						var prefix = $(this).data('prefix');
+						if (prefix) text = prefix + text;
+					}
 
 					spanEl.text(text);
 				});
