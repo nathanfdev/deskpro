@@ -146,10 +146,10 @@ class AgentTeam extends EntityRepository
 		$agent_ids = implode(',', $agent_ids);
 
 		$agent_teams = App::getDb()->fetchAllGrouped("
-			SELECT perosn_id, team_id
+			SELECT person_id, team_id
 			FROM agent_team_members
 			WHERE person_id IN ($agent_ids)
-		", null, 'person_id', null, 'team_id');
+		", array(), 'person_id', null, 'team_id');
 
 		return $agent_teams;
 	}

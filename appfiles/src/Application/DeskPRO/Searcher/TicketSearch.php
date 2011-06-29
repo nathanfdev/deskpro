@@ -9,6 +9,7 @@ use \Orb\Util\Strings;
 use \Orb\Util\Arrays;
 
 use \Application\DeskPRO\Entity;
+use \Application\DeskPRO\Entity\Ticket;
 
 class TicketSearch extends SearcherAbstract
 {
@@ -149,7 +150,8 @@ class TicketSearch extends SearcherAbstract
 	 */
 	public function getAffectedFields()
 	{
-		return array_unique($this->affected_fields);
+		$this->getSqlParts();
+		return array_unique($this->affected_fields, SORT_STRING);
 	}
 
 
@@ -552,56 +554,69 @@ class TicketSearch extends SearcherAbstract
 					break;
 				case self::TERM_AGENT:
 					$this->affected_fields[] = 'ticket.agent_id';
-					if ($choice == 0) {
+
+					$info = $this->_normalizeAgentChoice($choice);
+					$unassigned = $info['unassigned'];
+					$agent_ids = $info['agent_ids'];
+					$not_id = $info['not_id'];
+
+					if ($unassigned) {
 						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent'), $op, $tr->phrase('core.unassigned'));
 						$wheres[] = "$tickets_table.agent_id IS NULL";
-					} elseif ($choice == -1) {
-						$this->summary[] = $tr->phrase('core.agent_is_me');
-						$wheres[] = "$tickets_table.agent_id = " . App::getCurrentPerson()->getId();
-
-						$this->specific_fields[] = self::TERM_AGENT;
-
-					} elseif ($choice == -2) {
-						$this->summary[] = $tr->phrase('core.agent_is_not_me');
-						$wheres[] = "$tickets_table.agent_id != " . App::getCurrentPerson()->getId();
 					} else {
-						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent'), $op, $choice, function($choice) {
-							$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
-							return $titles;
-						});
+						if ($agent_ids) {
+							$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent'), $op, $agent_ids, function($choice) {
+								$titles = App::getEntityRepository('DeskPRO:Person')->getAgentNames((array)$choice);
+								return $titles;
+							});
 
-						if (count($choice) == 1) {
-							$this->specific_fields[] = self::TERM_AGENT;
+							if (count($agent_ids) == 1) {
+								$this->specific_fields[] = self::TERM_AGENT;
+							}
+
+							$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $agent_ids, true);
 						}
 
-						$wheres[] = $this->_choiceMatch("$tickets_table.agent_id", $op, $choice, true);
+						if ($not_id) {
+							$this->summary[] = $tr->phrase('core.agent_is_not_me');
+							$wheres[] = "$tickets_table.agent_id != " . $not_id;
+						}
 					}
 					break;
 				case self::TERM_AGENT_TEAM:
 					$this->affected_fields[] = 'ticket.agent_team_id';
-					if ($choice == 0) {
-						$wheres[] = "$tickets_table.agent_team_id IS NULL";
 
+					$info = $this->_normalizeAgentTeamChoice($choice);
+					$team_ids = $info['team_ids'];
+					$not_ids = $info['not_ids'];
+					$no_team = $info['no_team'];
+
+					if ($no_team) {
+						$wheres[] = "$tickets_table.agent_team_id IS NULL";
 						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent_team'), $op, $tr->phrase('core.unassigned'));
-					} elseif ($choice == -1) {
-						$person = App::getCurrentPerson();
-						$person->loadHelper('AgentTeam');
-						$team_ids = $person->getAgentTeamIds();
+						
+					} else {
 						if ($team_ids) {
-							$this->summary[] = $tr->phrase('core.my_agent_team');
+							$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent_team'), $op, $team_ids, function($choice) {
+								$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
+								return $titles;
+							});
+
+							if (count($choice) == 1) {
+								$this->specific_fields[] = self::TERM_AGENT_TEAM;
+							}
+
 							$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $team_ids, true);
 						}
-					} else {
-						$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent_team'), $op, $choice, function($choice) {
-							$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
-							return $titles;
-						});
 
-						if (count($choice) == 1) {
-							$this->specific_fields[] = self::TERM_AGENT_TEAM;
+						if ($not_ids) {
+							$this->summary[] = $this->_choiceSummary($tr->phrase('core.agent_team'), 'not', $not_ids, function($choice) {
+								$titles = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamNames((array)$choice);
+								return $titles;
+							});
+
+							$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", 'not', $team_ids, true);
 						}
-
-						$wheres[] = $this->_choiceMatch("$tickets_table.agent_team_id", $op, $choice, true);
 					}
 					break;
 				case self::TERM_STATUS:
@@ -818,6 +833,66 @@ class TicketSearch extends SearcherAbstract
 		return $this->sql_parts;
 	}
 
+	protected function _normalizeAgentChoice($choice)
+	{
+		$choice = (array)$choice;
+
+		$agent_ids = array();
+		$not_id = null;
+		$unassigned = false;
+
+		foreach ($choice as $c) {
+			$c = (int)$c;
+			if ($c === 0) {
+				$unassigned = true;
+				break;
+			} elseif ($c == -1) {
+				$agent_ids[] = $this->getPersonContext()->getId();
+			} elseif ($c == -2) {
+				$not_id = $this->getPersonContext()->getId();
+			} else {
+				$agent_ids = $c;
+			}
+		}
+
+		return array(
+			'agent_ids' => $agent_ids,
+			'not_id' => $not_id,
+			'unassigned' => $unassigned
+		);
+	}
+
+	protected function _normalizeAgentTeamChoice($choice)
+	{
+		$choice = (array)$choice;
+
+		$team_ids = array();
+		$not_ids = null;
+		$no_team = false;
+
+		$agent = $this->getPersonContext();
+		$agent->loadHelper('AgentTeam');
+
+		foreach ($choice as $c) {
+			$c = (int)$c;
+			if ($c === 0) {
+				$no_team = true;
+				break;
+			} elseif ($c == -1) {
+				$team_ids[] = $this->getPersonContext()->getAgentTeamIds();
+			} elseif ($c == -2) {
+				$not_ids = $this->getPersonContext()->getAgentTeamIds();
+			} else {
+				$team_ids = $c;
+			}
+		}
+
+		return array(
+			'team_ids' => $team_ids,
+			'not_ids' => $not_ids,
+			'no_team' => $no_team
+		);
+	}
 
 
 	/**
@@ -854,8 +929,46 @@ class TicketSearch extends SearcherAbstract
 					if (!$this->_testChoiceMatch($ticket['language_id'], $op, $choice)) return false;
 					break;
 				case self::TERM_AGENT:
-					if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $choice)) return false;
+
+					$info = $this->_normalizeAgentChoice($choice);
+					$unassigned = $info['unassigned'];
+					$agent_ids = $info['agent_ids'];
+					$not_id = $info['not_id'];
+
+					if ($unassigned) {
+						if ($ticket['agent_id']) return false;
+					} else {
+						if ($agent_ids) {
+							if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $agent_ids)) return false;
+						}
+
+						if ($not_id) {
+							if ($ticket['agent_id'] == $not_id) return false;
+						}
+					}
+
 					break;
+
+				case self::TERM_AGENT_TEAM:
+					$info = $this->_normalizeAgentTeamChoice($choice);
+					$no_team = $info['no_team'];
+					$team_ids = $info['team_ids'];
+					$not_ids = $info['not_ids'];
+
+					if ($no_team) {
+						if ($ticket['agent_team_id']) return false;
+					} else {
+						if ($team_ids) {
+							if (!$this->_testChoiceMatch($ticket['agent_team_id'], $op, $team_ids)) return false;
+						}
+
+						if ($not_ids) {
+							if (!$this->_testChoiceMatch($ticket['agent_team_id'], 'not', $not_ids)) return false;
+						}
+					}
+
+					break;
+
 				case self::TERM_PARTICIPANT:
 					if (is_array($choice)) {
 						$participant_ids = $ticket->getParticipantIds();
@@ -882,6 +995,7 @@ class TicketSearch extends SearcherAbstract
 						}
 					}
 					break;
+				
 				case self::TERM_SUBJECT:
 					switch ($op) {
 						case self::OP_IS:
@@ -905,6 +1019,26 @@ class TicketSearch extends SearcherAbstract
 				
 				case self::TERM_RECEIVING_GATEWAY:
 					if (!$this->_testChoiceMatch($ticket['email_gateway_id'], $op, $choice. true)) return false;
+					break;
+
+				case self::TERM_DATE_CLOSED:
+					if ($ticket['status'] != Ticket::STATUS_CLOSED) return false;
+					if (!$this->_testDateMatch($ticket['date_closed'], $op, $choice)) return false;
+					break;
+
+				case self::TERM_DATE_RESOLVED:
+					if (!$ticket['date_resolved']) return false;
+					if (!$this->_testDateMatch($ticket['date_resolved'], $op, $choice)) return false;
+					break;
+
+				case self::TERM_DATE_LAST_AGENT_REPLY:
+					if (!$ticket['date_last_agent_reply']) return false;
+					if (!$this->_testDateMatch($ticket['date_last_agent_reply'], $op, $choice)) return false;
+					break;
+
+				case self::TERM_DATE_LAST_USER_REPLY:
+					if (!$ticket['date_last_user_reply']) return false;
+					if (!$this->_testDateMatch($ticket['date_last_user_reply'], $op, $choice)) return false;
 					break;
 			}
 		}

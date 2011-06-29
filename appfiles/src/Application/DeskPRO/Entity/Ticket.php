@@ -1241,6 +1241,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function resetTicketLogger()
+	{
+		$this->_initTicketLogger();
+	}
+
 	/**
 	 * @orm:PostUpdate
 	 * @orm:PostPersist
@@ -1249,6 +1254,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_ticket_logger) {
 			$this->_ticket_logger->done();
+			$this->resetTicketLogger();
 		}
 	}
 

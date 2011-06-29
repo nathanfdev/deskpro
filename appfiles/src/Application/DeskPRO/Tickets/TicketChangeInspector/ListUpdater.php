@@ -42,37 +42,163 @@ class ListUpdater
 	/**
 	 * @var array
 	 */
-	protected $changed_fields;
+	protected $changed_fields = array();
 
 	/**
 	 * @var array
 	 */
 	protected $active_agents = array();
 
+	/**
+	 * @var array
+	 */
+	protected $agent_to_teams = array();
+
+	/**
+	 * @var array
+	 */
+	protected $teams_to_agents = array();
+
+	/**
+	 * @var string
+	 */
 	protected $mode;
 
+	
 	public function __construct(TicketChangeTracker $tracker, $mode = self::MODE_SHALLOW)
 	{
 		$this->tracker = $tracker;
 		$this->mode = $mode;
+	}
+	
 
-		$this->active_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents();
-		$this->agent_to_teams   = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamIdsForAgents();
-		$this->teams_to_agents  = array();
-
-		foreach ($this->agent_to_teams as $agent_id => $team_ids) {
-			foreach ($team_ids as $team_id) {
-				if (!isset($this->teams_to_agents[$team_id])) {
-					$this->teams_to_agents[$team_id] = array();
-				}
-
-				$this->teams_to_agents[$team_id][] = $agent_id;
+	/**
+	 * Check terms in a filter to see if this change could have affected it
+	 * 
+	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
+	 * @return bool
+	 */
+	public function checkTerms(TicketFilter $filter)
+	{
+		$searcher = $filter->getSearcher();
+		$affected_fields = $searcher->getAffectedFields();
+		
+		foreach ($this->changed_fields as $f) {
+			if (in_array($f, $affected_fields)) {
+				return true;
 			}
 		}
 
+		return false;
+	}
+
+
+	/**
+	 * Runs through a filter and gets client messages to send to clients
+	 * about any updates that affect it.
+	 * 
+	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
+	 * @return array
+	 */
+	public function getUpdateMessages(TicketFilter $filter)
+	{
+		echo "\n------Filter {$filter['id']}\n";
+		#------------------------------
+		# Filters have to be run from the scope
+		# of a particular agent, so figure out
+		# which agents the filter affects
+		#------------------------------
+
+		$scopes = null;
+
+		if ($filter['is_global']) {
+			$scopes = $this->active_agents;
+		} else if ($filter->agent_team) {
+			$team_id = $filter->agent_team['id'];
+			if (!isset($this->teams_to_agents[$team_id])) {
+				return array();
+			}
+
+			$scopes = array();
+			foreach ($this->teams_to_agents[$team_id] as $agent_id) {
+				$scopes[] = $this->active_agents[$agent_id];
+			}
+		} else if ($filter->person) {
+			$person_id = $filter->person['id'];
+			if (!isset($this->active_agents[$person_id])) {
+				return array();
+			}
+
+			$scopes = array($filter->person);
+		}
+
+		echo "Affect agents: " . count($scopes) . "\n";
+
+		if (!$scopes) return array();
+
+		#------------------------------
+		# Run the PHP-based check for each scope
+		#------------------------------
+
+		$client_messages = array();
+
+		foreach ($scopes as $agent) {
+			$searcher = $filter->getSearcher();
+			$searcher->setPerson($agent);
+
+			$orig_match = $searcher->doesTicketMatch($this->tracker->getOriginalTicket());
+			$new_match  = $searcher->doesTicketMatch($this->tracker->getTicket());
+
+			if (!$orig_match AND !$new_match) {
+				echo "Nothing changed (1)\n";
+				// Nothing changed
+			} else if ($orig_match AND $new_match) {
+				echo "Nothing changed (2)\n";
+				// Nothing changed again
+			} else if ($orig_match AND !$new_match) {
+				echo "Removed from list\n";
+				// Remove from lists
+				$cm = new ClientMessage();
+				$cm->fromArray(array(
+					'channel' => 'agent.filter-update',
+					'data' => array(
+						'ticket_id'  => $this->tracker->getTicket()->getId(),
+						'filter_id'  => $filter['id'],
+						'for_person' => $agent,
+						'op' => 'del'
+					),
+					'created_by_client' => 'sys'
+				));
+				$client_messages[] = $cm;
+			} else if (!$orig_match AND $new_match) {
+				echo "Added to list\n";
+				$cm = new ClientMessage();
+				$cm->fromArray(array(
+					'channel' => 'agent.filter-update',
+					'data' => array(
+						'ticket_id'  => $this->tracker->getTicket()->getId(),
+						'filter_id'  => $filter['id'],
+						'for_person' => $agent,
+						'op' => 'add'
+					),
+					'created_by_client' => 'sys'
+				));
+			}
+		}
+
+		return $client_messages;
+	}
+
+
+	/**
+	 * Inits various variables needed before running filter checks.
+	 * This is only done on run(), not in constructor.
+	 */
+	public function initVars()
+	{
 		$changed_fields = array();
 
-		foreach ($tracker->getAllChangedProperties() as $prop => $info) {
+		foreach ($this->tracker->getAllChangedProperties() as $prop => $info) {
 			switch ($prop) {
 				case 'agent':
 					$changed_fields[] = 'ticket.agent_id';
@@ -105,112 +231,40 @@ class ListUpdater
 		}
 
 		$this->changed_fields = $changed_fields;
+
+		// Dont need to do anythign else if no fields changed
+		if (!$changed_fields) {
+			return;
+		}
+
+		$this->active_agents = App::getEntityRepository('DeskPRO:Person')->getActiveAgents();
+		$this->agent_to_teams   = App::getEntityRepository('DeskPRO:AgentTeam')->getTeamIdsForAgents($this->active_agents);
+		$this->teams_to_agents  = array();
+
+		foreach ($this->agent_to_teams as $agent_id => $team_ids) {
+			foreach ($team_ids as $team_id) {
+				if (!isset($this->teams_to_agents[$team_id])) {
+					$this->teams_to_agents[$team_id] = array();
+				}
+
+				$this->teams_to_agents[$team_id][] = $agent_id;
+			}
+		}
 	}
 
+	
 	/**
-	 * Check terms in a filter to see if this change could have affected it
-	 * 
-	 * @param \Application\DeskPRO\Entity\TicketFilter $filter
-	 * @return bool
+	 * Runs the checks, inserts the client messages if there are any.
 	 */
-	public function checkTerms(TicketFilter $filter)
+	public function run()
 	{
-		$searcher = $filter->getSearcher();
-		$affected_fields = $searcher->getAffectedFields();
+		$this->initVars();
+
+		// No fields changed that affect filters
+		if (!$this->changed_fields) {
+			return;
+		}
 		
-		foreach ($this->changed_fields as $f) {
-			if (in_array($f, $affected_fields)) {
-				return true;
-			}
-		}
-
-		return false;
-	}
-
-	public function getUpdateMessages(TicketFilter $filter)
-	{
-		#------------------------------
-		# Filters have to be run from the scope
-		# of a particular agent, so figure out
-		# which agents the filter affects
-		#------------------------------
-
-		$scopes = null;
-
-		if ($filter['is_global']) {
-			$scopes = $this->active_agents;
-		} else if ($filter->agent_team) {
-			$team_id = $filter->agent_team['id'];
-			if (!isset($this->teams_to_agents[$team_id])) {
-				return array();
-			}
-
-			$scopes = array();
-			foreach ($this->teams_to_agents[$team_id] as $agent_id) {
-				$scopes[] = $this->active_agents[$agent_id];
-			}
-		} else if ($filter->person) {
-			$person_id = $filter->person['id'];
-			if (!isset($this->active_agents[$person_id])) {
-				return array();
-			}
-
-			$scopes = array($filter->person);
-		}
-
-		if (!$scopes) return array();
-
-		#------------------------------
-		# Run the PHP-based check for each scope
-		#------------------------------
-
-		$client_messages = array();
-
-		foreach ($scopes as $agent) {
-			$searcher = $filter->getSearcher();
-			$searcher->setPerson($agent);
-
-			$orig_match = $searcher->doesTicketMatch($this->tracker->getOriginalTicket());
-			$new_match  = $searcher->doesTicketMatch($this->tracker->getTicket());
-
-			if (!$orig_match AND !$new_match) {
-				// Nothing changed
-			} else if ($orig_match AND $new_match) {
-				// Nothing changed again
-			} else if ($orig_match AND !$new_match) {
-				// Remove from lists
-				$cm = new ClientMessage();
-				$cm->fromArray(array(
-					'channel' => 'agent.filter-update',
-					'data' => array(
-						'ticket_id'  => $this->tracker->getTicket()->getId(),
-						'filter_id'  => $filter['id'],
-						'for_person' => $agent,
-						'op' => 'del'
-					),
-					'created_by_client' => 'sys'
-				));
-				$client_messages[] = $cm;
-			} else if (!$orig_match AND $new_match) {
-				$cm = new ClientMessage();
-				$cm->fromArray(array(
-					'channel' => 'agent.filter-update',
-					'data' => array(
-						'ticket_id'  => $this->tracker->getTicket()->getId(),
-						'filter_id'  => $filter['id'],
-						'for_person' => $agent,
-						'op' => 'add'
-					),
-					'created_by_client' => 'sys'
-				));
-			}
-		}
-
-		return $client_messages;
-	}
-
-	public function done()
-	{
 		#------------------------------
 		# Run through filters to see which apply to the change
 		#------------------------------
@@ -243,6 +297,8 @@ class ListUpdater
 					),
 					'created_by_client' => 'sys'
 				));
+
+				$client_messages[] = $cm;
 			}
 
 			App::getOrm()->transactional(function ($em) use ($client_messages) {

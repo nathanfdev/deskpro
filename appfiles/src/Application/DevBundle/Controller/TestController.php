@@ -15,9 +15,20 @@ class TestController extends Controller
     {
 		echo '<pre>';
 
-		$filters = App::getEntityRepository('DeskPRO:TicketFilter')->getAllForActiveAgents();
+		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
+		$ticket = App::findEntity('DeskPRO:Ticket', 12029);
+		$ticket['agent'] = null;
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
 
-		echo count($filters);
+		/** @var $logger \Application\DeskPRO\Tickets\TicketChangeTracker */
+		$logger = $ticket->getTicketLogger();
+
+		$ticket['agent_id'] = 20001;
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
+
+		//print_r($logger->getListUpdater()->changed_fields);
 
 		exit;
 		return $this->render('DevBundle:Test:test.html.twig');

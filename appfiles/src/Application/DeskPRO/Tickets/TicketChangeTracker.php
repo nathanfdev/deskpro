@@ -32,6 +32,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 	protected $log_inspector;
 	protected $exec_inspector;
+	protected $list_updater;
 
 	public function __construct(Entity\Ticket $ticket)
 	{
@@ -113,6 +114,18 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 
 	/**
+	 * @return \Application\DeskPRO\Tickets\TicketChangeInspector\ListUpdater
+	 */
+	public  function getListUpdater()
+	{
+		if ($this->list_updater !== null) return $this->list_updater;
+
+		$this->list_updater = new TicketChangeInspector\ListUpdater($this, 'check');
+		return $this->list_updater;
+	}
+
+
+	/**
 	 * Notify all listeners that changes are about to be committed
 	 */
 	public function preDone()
@@ -127,6 +140,7 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	 */
 	public function done()
 	{
+		$this->getListUpdater()->run();
 		$this->getLogInspector()->run();
 		$this->getTriggerExecutorInspector()->run();
 	}

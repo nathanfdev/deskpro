@@ -2,14 +2,17 @@
 
 namespace Application\DeskPRO\Searcher;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 
-use \Orb\Util\Util;
-use \Orb\Util\Strings;
-use \Orb\Util\Arrays;
+use Application\DeskPRO\People\PersonContextInterface;
 
-abstract class SearcherAbstract
+use Orb\Util\Util;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+abstract class SearcherAbstract implements PersonContextInterface
 {
 	const OP_IS          = 'is';
 	const OP_NOT         = 'not';
@@ -46,17 +49,37 @@ abstract class SearcherAbstract
 	protected $order_by = array();
 
 
-
 	/**
-	 * Set the person context to fetch permissions etc form
-	 *
-	 * @param Entity\Person $person
+	 * Set the person context to fetch permissions etc for
+	 * 
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @return void
 	 */
-	public function setPerson(Entity\Person $person)
+	public function setPersonContext(Person $person)
 	{
 		$this->person = $person;
 	}
 
+	/**
+	 * @depreciated Use setPersonContext
+	 */
+	public function setPerson($person)
+	{
+		$this->setPersonContext($person);
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\Person|Entity\Person
+	 */
+	public function getPersonContext()
+	{
+		if ($this->person) {
+			return $this->person;
+		} else {
+			return App::getCurrentPerson();
+		}
+	}
 
 
 	/**
