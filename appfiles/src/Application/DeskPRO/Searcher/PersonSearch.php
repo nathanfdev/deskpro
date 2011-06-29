@@ -12,20 +12,20 @@ use \Application\DeskPRO\Entity;
 
 class PersonSearch extends SearcherAbstract
 {
-	const TERM_ID             = 'id';
-	const TERM_ORGANIZATION   = 'organization';
-	const TERM_USERGROUP      = 'usergroup';
-	const TERM_LOCALE         = 'locale';
-	const TERM_EMAIL          = 'email';
-	const TERM_EMAIL_DOMAIN   = 'email_domain';
-	const TERM_NAME           = 'name';
-	const TERM_PERSON_FIELD   = 'person_field';
-	const TERM_LABEL          = 'label';
-	const TERM_DATE_CREATED   = 'date_created';
-	const TERM_DIRECTORY_NAME = 'directory_name';
-	const TERM_CONTACT_PHONE    = 'contact_phone';
-	const TERM_CONTACT_ADDRESS  = 'contact_address';
-	const TERM_CONTACT_IM       = 'contact_im';
+	const TERM_ID               = 'person_id';
+	const TERM_ORGANIZATION     = 'person_organization';
+	const TERM_USERGROUP        = 'person_usergroup';
+	const TERM_LOCALE           = 'person_locale';
+	const TERM_EMAIL            = 'person_email';
+	const TERM_EMAIL_DOMAIN     = 'person_email_domain';
+	const TERM_NAME             = 'person_name';
+	const TERM_PERSON_FIELD     = 'person_person_field';
+	const TERM_LABEL            = 'person_label';
+	const TERM_DATE_CREATED     = 'person_date_created';
+	const TERM_DIRECTORY_NAME   = 'person_directory_name';
+	const TERM_CONTACT_PHONE    = 'person_contact_phone';
+	const TERM_CONTACT_ADDRESS  = 'person_contact_address';
+	const TERM_CONTACT_IM       = 'person_contact_im';
 
 	/**
 	 * Summary of terms in phrases

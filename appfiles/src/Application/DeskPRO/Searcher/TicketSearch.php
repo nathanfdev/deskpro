@@ -29,6 +29,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_TICKET_FIELD              = 'ticket_field';
 	const TERM_DATE_CREATED              = 'date_created';
 	const TERM_DATE_RESOLVED             = 'date_resolved';
+	const TERM_DATE_CLOSED               = 'date_closed';
 	const TERM_DATE_LAST_USER_REPLY      = 'date_last_user_reply';
 	const TERM_DATE_LAST_AGENT_REPLY     = 'date_last_agent_reply';
 	const TERM_URGENCY                   = 'urgency';
@@ -475,7 +476,12 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_DATE_RESOLVED:
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.date_resolved'), $op, $choice);
 					$wheres[] = $this->_dateMatch("$tickets_table.date_resolved", $op, $choice);
-					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved', 'closed'));
+					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('resolved'));
+					break;
+				case self::TERM_DATE_CLOSED:
+					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.date_closed'), $op, $choice);
+					$wheres[] = $this->_dateMatch("$tickets_table.date_closed", $op, $choice);
+					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, array('closed'));
 					break;
 				case self::TERM_DATE_LAST_USER_REPLY:
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core_tickets.date_last_user_reply'), $op, $choice);

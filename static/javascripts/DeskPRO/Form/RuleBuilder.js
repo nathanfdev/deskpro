@@ -53,19 +53,44 @@ DeskPRO.Form.RuleBuilder = new Class({
 		this.ruleTpl = ruleTpl;
 		var self = this;
 
+		var groups = {};
+
 		var html = ['<ul class="menu" style="display:none">'];
 		$('> .type', this.ruleTpl).each(function(i,el) {
 			var type = $(el).data('rule-type');
 			var title = $(el).attr('title');
+			var subgroup = $(el).data('rule-group');
 
 			self.types[type] = title;
 
-			html.push('<li data-value="' + type + '">' + title + '</li>');
+			if (subgroup) {
+				var id = Orb.uuid();
+				if (!groups[subgroup]) {
+					groups[subgroup] = {'id': id, types: []};
+					html.push('<li>' + subgroup + '<ul class="submenu '+id+'"></ul></li>');
+				}
+
+				groups[subgroup]['types'].push([type, title]);
+			} else {
+				html.push('<li data-value="' + type + '">' + title + '</li>');
+			}
 		});
 		html.push('</ul>');
 		html = html.join('');
 
 		var menuEl = $(html);
+
+		Object.each(groups, function(info, group) {
+			var ul = $('ul.' + info.id, menuEl);
+			var lis = [];
+			Array.each(info.types, function(type) {
+				lis.push('<li data-value="' + type[0] + '">' + type[1] + '</li>');
+			});
+
+			var lis = $(lis.join(''));
+			ul.append(lis);
+		});
+
 		this.menu = new DeskPRO.UI.Menu({
 			menuElement: menuEl,
 			onItemClicked: function(info) {
