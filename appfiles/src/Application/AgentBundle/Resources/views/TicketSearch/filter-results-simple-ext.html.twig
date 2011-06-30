@@ -10,7 +10,6 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
 pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?view_type=$view_type';
 pageMeta.pageUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?partial=1&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_ticketsearch_runfilter', {'filter_id': filter_id}) }}?';
-pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type';
 pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 pageMeta.getMacroUrl = '{{ path('agent_ticketsearch_ajax_get_macro') }}?macro_id=$macro_id';
 pageMeta.saveMacroUrl = '{{ path('agent_ticketsearch_ajax_save_macro') }}?macro_id=$macro_id';
@@ -18,6 +17,7 @@ pageMeta.deleteTicketUrl = '{{ path('agent_ticketsearch_ajax_delete_tickets') }}
 pageMeta.viewTicketUrl = '{{ path('agent_ticket_view', {'ticket_id': '0000'})|replace({'0000': '$ticket_id'}) }}';
 pageMeta.massReplyUrl = '{{ path('agent_ticketsearch_ajax_mass_reply') }}';
 pageMeta.loadFirst = {% if load_first %}true{% else %}false{% endif %};
+pageMeta.loadSingleUrl = '{{ path('agent_ticketsearch_singleticketrow', {'filter_id': filter_id}) }}?ticket_id=$ticket_id&view_type=$view_type';
 pageMeta.viewType = 'simple-ext';
 {% if filter_id %}
 	pageMeta.filter_id = {{filter_id}};
