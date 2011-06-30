@@ -907,6 +907,10 @@ class TicketSearch extends SearcherAbstract
 			list($op, $choice) = $info;
 
 			switch ($term) {
+				case self::TERM_STATUS:
+					if (!$this->_testChoiceMatch($ticket['status'], $op, $choice)) return false;
+					break;
+
 				case self::TERM_DEPARTMENT:
 					$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
 					if (count($choice) == 1) $choice = $choice[0];
@@ -929,8 +933,8 @@ class TicketSearch extends SearcherAbstract
 					if (!$this->_testChoiceMatch($ticket['language_id'], $op, $choice)) return false;
 					break;
 				case self::TERM_AGENT:
-
 					$info = $this->_normalizeAgentChoice($choice);
+
 					$unassigned = $info['unassigned'];
 					$agent_ids = $info['agent_ids'];
 					$not_id = $info['not_id'];
@@ -939,7 +943,10 @@ class TicketSearch extends SearcherAbstract
 						if ($ticket['agent_id']) return false;
 					} else {
 						if ($agent_ids) {
-							if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $agent_ids)) return false;
+
+							if (!$this->_testChoiceMatch($ticket['agent_id'], $op, $agent_ids)) {
+								return false;
+							}
 						}
 
 						if ($not_id) {

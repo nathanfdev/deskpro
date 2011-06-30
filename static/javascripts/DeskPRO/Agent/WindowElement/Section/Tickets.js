@@ -8,6 +8,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated.bind(this));
+
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/get-section-data.json',
 			context: this,
@@ -51,33 +53,67 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-filter-counts'}],
 			'filters.counts',
-			{recurring: true, minDelay: 15000, minDelayAfterOne: true}
+			{recurring: true, minDelay: 60000, minDelayAfterOne: true}
 		);
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
 	},
 
-	updateFilterCounts: function(counts) {
-		var badgeCount = 0;
+	getFilterCount: function(filter_id) {
+		return parseInt($('#ticket_filter_' + filter_id + '_count').data('count') || 0);
+	},
 
-		Object.each(counts, function (count, filter_id) {
-			var count_str = count;
-			filter_id = parseInt(filter_id);
-			if (count >= 1000) count_str = '1000+';
+	setFilterCount: function(filter_id, count) {
 
-			var system_name = DeskPRO_Window.getData('systemFilters')[filter_id];
-			if (system_name) {
+		var count_str = count;
+		filter_id = parseInt(filter_id);
 
-				if (system_name == 'all') {
-					badgeCount = count;
-				}
+		if (count > 1000) count_str = '1000+';
 
-				var el = $('#ticket_filter_' + filter_id + '_count').html(count_str);
-			} else {
-				var el = $('#ticket_filter_' + filter_id + '_count').html(count_str);
+		var system_name = DeskPRO_Window.getData('systemFilters')[filter_id];
+		if (system_name) {
+
+			if (system_name == 'all') {
+				this.updateBadge(count);
 			}
-		});
 
-		this.updateBadge(badgeCount);
+			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
+		} else {
+			var el = $('#ticket_filter_' + filter_id + '_count').html(count_str).data('count', count);
+		}
+	},
+
+	updateFilterCounts: function(counts) {
+		Object.each(counts, function (count, filter_id) {
+			this.setFilterCount(filter_id, count);
+		}, this);
+	},
+
+	filterUpdated: function(data) {
+		var count = this.getFilterCount(data.filter_id);
+
+		var page = null;
+		if (this.listPage && this.listPage.meta.filter_id == data.filter_id) {
+			page = this.listPage;
+		}
+
+		if (data.op == 'add') {
+			count++;
+			this.setFilterCount(data.filter_id, count);
+
+			if (page && data.ticket_id) {
+				page.addTicket(data.ticket_id);
+			}
+
+		} else if (data.op == 'del') {
+			count--;
+			if (count < 1) count = 0;
+
+			this.setFilterCount(data.filter_id, count);
+
+			if (page && data.ticket_id) {
+				page.delTicket(data.ticket_id);
+			}
+		}
 	},
 
 	//#########################################################################

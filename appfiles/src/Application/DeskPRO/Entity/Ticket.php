@@ -301,7 +301,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $task_associations;
 
-	public function __construct()
+	public function __construct($tracker = true)
 	{
 		$this->participants = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->messages = new \Doctrine\Common\Collections\ArrayCollection();
@@ -315,8 +315,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->code = Strings::random(12, Strings::CHARS_KEY);
 		$this->ref = Strings::random(12, Strings::CHARS_KEY);
 
-		$this->_initTicketLogger();
-		$this->_ticket_logger->recordExtra('ticket_created', true);
+		if ($tracker) {
+			$this->_initTicketLogger();
+			$this->_ticket_logger->recordExtra('ticket_created', true);
+		}
 	}
 
 	/**
@@ -1237,6 +1239,11 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_initTicketLogger();
 	}
 
+	public function unsetTicketLogger()
+	{
+		unset($this->_ticket_logger);
+	}
+
 	/**
 	 * @orm:PostUpdate
 	 * @orm:PostPersist
@@ -1268,5 +1275,17 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_label_manager;
+	}
+
+	public function copy()
+	{
+		$alt_ticket = new Ticket();
+
+		$load = array('agent', 'agent_team', 'person', 'department', 'category', 'product', 'workflow', 'organization');
+		foreach ($load as $k) {
+			$alt_ticket[$k] = $this[$k];
+		}
+
+		return $alt_ticket;
 	}
 }

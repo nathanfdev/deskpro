@@ -16,10 +16,16 @@ class TestController extends Controller
 		echo '<pre>';
 
 		/** @var $ticket \Application\DeskPRO\Entity\Ticket */
-		$ticket = App::findEntity('DeskPRO:Ticket', 12029);
-		$ticket['agent'] = null;
-		App::getOrm()->persist($ticket);
-		App::getOrm()->flush();
+		$ticket = App::findEntity('DeskPRO:Ticket', 14614);
+		//$ticket2 = clone $ticket;
+		//echo $ticket2['agent_id'];
+		//exit;
+
+		//$ticket['agent'] = null;
+		//$ticket['agent_id'] = 20001;
+		//$ticket['status'] = 'open';
+		//App::getOrm()->persist($ticket);
+		//App::getOrm()->flush();
 
 		/** @var $logger \Application\DeskPRO\Tickets\TicketChangeTracker */
 		$ticket_logger = $ticket->getTicketLogger();
@@ -30,9 +36,14 @@ class TestController extends Controller
 
 		$ticket_logger->getListUpdater()->setDebugLogger($logger);
 
-		$ticket['agent_id'] = 20001;
+		echo "Before: {$ticket['status']}\n";
+
+		//$ticket['agent_id'] = 0;
+		$ticket['status'] = 'pending';
 		App::getOrm()->persist($ticket);
 		App::getOrm()->flush();
+
+		echo "\nDone";
 
 		//print_r($logger->getListUpdater()->changed_fields);
 

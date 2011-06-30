@@ -257,6 +257,38 @@ class TicketSearchController extends AbstractController
 		}
 	}
 
+	public function getSingleTicketRowAction($filter_id)
+	{
+		$filter = App::getEntityRepository('DeskPRO:TicketFilter')->find($filter_id);
+		
+		$ticket_id = $this->in->getUint('ticket_id');
+		$ticket = App::findEntity('DeskPRO:Ticket', $ticket_id);
+
+		$vars = array(
+			'page' => -1,
+			'tickets' => array($ticket),
+			'filter' => $filter,
+		);
+
+		$view_type = $this->in->getString('view_type');
+		if (!$view_type OR !in_array($view_type, array('list', 'simple', 'simple-ext'))) {
+			$view_type = 'simple-ext';
+		}
+
+		$pref_display_fields = $this->person->getPref('agent.ui.ticket-filter-display-fields.' . $filter['id']);
+		if ($pref_display_fields) {
+			$vars['display_fields'] = $pref_display_fields;
+		} else {
+			// Default display fields based on the filter
+			$vars['display_fields'] = $this->_suggestedDisplayFields($filter->getSearcher());
+		}
+
+		$is_partial = true;
+		$tpl = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
+
+		return $this->render($tpl, $vars);
+	}
+
 	protected function _suggestedDisplayFields(TicketSearch $searcher)
 	{
 		$display_fields = array();

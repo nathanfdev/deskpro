@@ -21,7 +21,7 @@ DeskPRO.MessageChanneler.AbstractChanneler = new Orb.Class({
 
 	_init: function() { /* Child class hook method */ },
 
-	subscribeChannel: function(channel) {
+	subscribeChannel: function(channel, callback) {
 		// Override
 	},
 

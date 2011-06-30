@@ -54,6 +54,8 @@ DeskPRO.MessageChanneler.PusherappChanneler = new Class({
 		}
 
 		this._add_subs_timeout = this._sendSubscribeChannels.delay(200, this);
+
+		this.messageBroker.addMessageListener(channel, callback);
 	},
 
 	_sendSubscribeChannels: function() {

@@ -175,15 +175,18 @@ class ListUpdater
 
 		$client_messages = array();
 
+		$orig_ticket = $this->tracker->getOriginalTicket();
+		$new_ticket = $this->tracker->getTicket();
+
 		foreach ($scopes as $agent) {
 
 			$this->scope_checks++;
 
 			$searcher = $filter->getSearcher();
 			$searcher->setPerson($agent);
-
-			$orig_match = $searcher->doesTicketMatch($this->tracker->getOriginalTicket());
-			$new_match  = $searcher->doesTicketMatch($this->tracker->getTicket());
+			
+			$orig_match = $searcher->doesTicketMatch($orig_ticket);
+			$new_match  = $searcher->doesTicketMatch($new_ticket);
 
 			if (!$orig_match AND !$new_match) {
 				// Nothing changed
@@ -311,7 +314,7 @@ class ListUpdater
 		if (!$this->changed_fields) {
 			return;
 		}
-		
+
 		#------------------------------
 		# Run through filters to see which apply to the change
 		#------------------------------

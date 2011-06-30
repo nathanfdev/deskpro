@@ -49,7 +49,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 	//# Handle subcriptions
 	//#########################################################################
 
-	subscribeChannel: function(channel) {
+	subscribeChannel: function(channel, callback) {
 		this._add_subs.include(channel);
 
 		if (this._add_subs_timeout) {
@@ -57,6 +57,8 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 		}
 
 		this._add_subs_timeout = this._sendSubscribeChannels.delay(300, this);
+
+		this.messageBroker.addMessageListener(channel, callback);
 	},
 
 	_sendSubscribeChannels: function() {

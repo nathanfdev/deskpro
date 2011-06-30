@@ -21,6 +21,8 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 	initPage: function(el) {
 
+		window.TICKET_LIST = this;
+
 		this.loadFirst = this.getMetaData('loadFirst');
 		if (this.loadFirst) {
 			this.loadFirst = false;
@@ -150,6 +152,35 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		if (this.displayOptionsOverlay) {
 			this.displayOptionsOverlay.destroy();
 		}
+	},
+
+	addTicket: function(ticket_id) {
+		if (!this.meta.loadSingleUrl) {
+			return;
+		}
+
+		var url = this.meta.loadSingleUrl.replace('$ticket_id', ticket_id).replace('$view_type', this.meta.viewType);
+
+		$.ajax({
+			url: url,
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				var el = $(html);
+				el.hide();
+
+				$('.deskpro-results-list', this.wrapper).prepend(el);
+				el.slideDown();
+			}
+		});
+	},
+
+	delTicket: function(ticket_id) {
+		var el = $('.ticket-' + ticket_id, this.contentWrapper);
+
+		el.animate({ height: 'toggle', opacity: 'toggle' }, 'slow', function() {
+			el.remove();
+		});
 	},
 
 	//#########################################################################

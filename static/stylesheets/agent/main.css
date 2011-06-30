@@ -3985,6 +3985,9 @@ html.admin, body.admin {
 }
 
 #volume_controls_back {
+
+    display:none;
+
     position: absolute;
     top: 0;
     bottom: 0;

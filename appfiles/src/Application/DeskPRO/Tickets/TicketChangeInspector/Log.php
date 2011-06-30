@@ -78,13 +78,10 @@ class Log
 		}
 	}
 
-	public function run()
+	public function getLogActions()
 	{
-		if ($this->tracker->isExtraSet('ticket_created')) {
-			$action = new LogActions\Created($this->ticket);
-			$this->addLogItem($action);
-		}
-		
+		$actions = array();
+
 		foreach ($this->tracker->getAllChangedProperties() as $prop => $info) {
 			$action = null;
 
@@ -146,10 +143,23 @@ class Log
 					break;
 			}
 
-			if (!$action) {
-				continue;
+			if ($action) {
+				$actions[] = $action;
 			}
+		}
 
+		return $actions;
+	}
+
+	public function run()
+	{
+		if ($this->tracker->isExtraSet('ticket_created')) {
+			$action = new LogActions\Created($this->ticket);
+			$this->addLogItem($action);
+		}
+
+		$log_actions = $this->getLogActions();
+		foreach ($log_actions as $action) {
 			$this->addLogItem($action);
 		}
 

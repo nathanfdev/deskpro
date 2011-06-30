@@ -27,7 +27,7 @@ use \Orb\Util\Arrays;
 class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 {
 	protected $ticket;
-	protected $original_ticket;
+	protected $original_ticket = null;
 	protected $is_new_ticket = false;
 
 	protected $log_inspector;
@@ -38,8 +38,6 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	{
 		$this->entity = $ticket;
 		$this->ticket = $ticket;
-
-		$this->original_ticket = clone $ticket;
 
 		if (!$ticket['id']) {
 			$this->is_new_ticket = true;
@@ -59,12 +57,62 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 
 	
 	/**
-	 * Get the original ticket before changes
+	 * Get the original ticket before changes, used for comparisons usually
 	 * 
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	public  function getOriginalTicket()
 	{
+		/*
+		 * Manually reconstructing the original ticket based off of the changelog.
+		 * Easier would have been to clone the ticket in __construct, but because
+		 * this tracker is created in Doctrine's PostLoad event, object references
+		 * are set up yet and we'd end up with all these relationships being 0.
+		 * (Which was what happened the first time I wrote the functionality!)
+		 */
+
+		if ($this->original_ticket !== null) return $this->original_ticket;
+
+		$this->original_ticket = clone $this->ticket;
+
+		foreach ($this->getAllChangedProperties() as $prop => $info) {
+			$action = null;
+
+			$old_val = null;
+
+			if (isset($info['old'])) $old_val = $info['old'];
+
+			switch ($prop) {
+				case 'agent':
+					$this->original_ticket['agent'] = $old_val;
+					break;
+
+				case 'category':
+					$this->original_ticket['category'] = $old_val;
+					break;
+
+				case 'department':
+					$this->original_ticket['department'] = $old_val;
+					break;
+
+				case 'priority':
+					$this->original_ticket['priority'] = $old_val;
+					break;
+
+				case 'product':
+					$this->original_ticket['product'] = $old_val;
+					break;
+
+				case 'status':
+					$this->original_ticket['status'] = $old_val;
+					break;
+
+				case 'hidden_status':
+					$this->original_ticket['hidden_status'] = $old_val;
+					break;
+			}
+		}
+
 		return $this->original_ticket;
 	}
 
