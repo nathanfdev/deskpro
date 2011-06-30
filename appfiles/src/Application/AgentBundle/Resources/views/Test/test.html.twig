@@ -1,1 +1,36 @@
-Testin 123
+<!DOCTYPE HTML>
+<html lang="en">
+<head>
+	<meta charset="utf-8" />
+	<meta name="robots" content="NOINDEX" />
+	<meta http-equiv="X-UA-Compatible" content="IE=100" />
+	<link rel="shortcut icon" id="favicon" href="{{ path('favicon', {}, true) }}" />
+
+	<title>DeskPRO</title>
+
+	{% include 'AgentBundle:Main:resources.html.twig' %}
+
+	<script>
+		var BASE_URL = '{{ path('user') }}';
+		var ASSETS_BASE_URL = '{{ asset('') }}';
+		var DESKPRO_PERSON_ID = {{ app.user.id }};
+		var DESKPRO_SESSION_ID = {{ app.session.getEntityId() }};
+		var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
+
+		$(document).ready(function() {
+
+			var findPerson = new DeskPRO.Agent.Widget.FindPerson();
+			window.FIND_PERSON = findPerson;
+
+			$('#my_button').click(function() {
+				findPerson.open();
+			});
+		});
+	</script>
+</head>
+<body>
+
+<button id="my_button" class="dp-button">Quick Find</button>
+
+</body>
+</html>
