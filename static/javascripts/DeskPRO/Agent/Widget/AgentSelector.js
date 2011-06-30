@@ -8,10 +8,10 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		this.options = {
 			agentList: null,
 			multipleChoice: false,
-			zIndex: 10000
+			zIndex: 1000001
 		};
 
-		this.setOptions(options);
+		if (options) this.setOptions(options);
 
 		this.previousSelection = '';
 	},
@@ -19,23 +19,40 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 	_initWrapper: function() {
 		if (this.wrapper) return;
 
-		this.backdrop = $('<div class="backdrop"></div>');
+		var agentListItems = $('li', this.options.agentList);
+
+		this.backdrop = $('<div class="backdrop"></div>').appendTo('body');
 		this.backdrop.click(this.close.bind(this));
 		
 		this.wrapper = $('<div class="field-overlay agent-selector" style="display:none;"><div class="close-trigger"></div></div>');
+		$('.close-trigger', this.wrapper).click(this.close.bind(this));
+		
+		var listWrapper = $(
+			'<div class="with-scrollbar">' +
+			'<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>' +
+			'<div class="scroll-viewport"><div class="scroll-content">' +
+			'</div></div></div>'
+		);
 
-		this.filter = $('<div class="filter"><input type="text" style="width:100%; value="" /></div>').appendTo(this.wrapper);
+		if (agentListItems.length >= 10) {
+			this.filter = $('<div class="filter"><div class="input-wrap"><input type="text" value="" placeholder="Find an agent" /></div></div>').appendTo(this.wrapper);
+
+			$('input', this.filter).keyup(this.updateFilter.bind(this));
+		} else {
+			this.filter = null;
+		}
 
 		var isMulti = this.options.multipleChoice;
 
 		var agentList = $('<ul />');
-		$('li', this.options.agentList).each(function() {
+		agentListItems.each(function() {
 			var li = $(this);
+
 			var agentId = li.data('agent-id');
 			var agentName = $('a:first', li).text();
 			var image = $('img:first', li);
 
-			var newLi = $('<li class="agent-"' + agentId + '" data-agent-id="' + agentId + '" />');
+			var newLi = $('<li class="agent-' + agentId + '" data-agent-id="' + agentId + '" />');
 
 			if (image.length) {
 				var imgContainer = $('<div class="avatar" />');
@@ -44,43 +61,58 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 			}
 
 			var nameContainer = $('<div class="name" />');
-			nameContainer.text(agentName);
+			nameContainer.append('<a>' + Orb.escapeHtml(agentName) + '</a>');
 			nameContainer.appendTo(newLi);
 
 			var choiceContainer = $('<div class="choice" />');
 			if (isMulti) {
-				var choice = $('<input type="checkbox" name="agents[]" value="'+agentId+'" class="agent-choice-' + agentId + '" />"');
+				var choice = $('<input type="checkbox" name="agents[]" value="'+agentId+'" class="agent-choice-' + agentId + '" />');
 			} else {
-				var choice = $('<input type="radio name="agents[]" value="'+agentId+'" class="agent-choice-' + agentId + '" />"');
+				var choice = $('<input type="radio" name="agents[]" value="'+agentId+'" class="agent-choice-' + agentId + '" />');
 			}
 			choice.appendTo(choiceContainer);
 			choiceContainer.appendTo(newLi);
 
+			newLi.append($('<br style="clear:left;height: 1px;overflow: hidden;"/>'));
+
 			newLi.appendTo(agentList);
+
+			newLi.click(function(ev) {
+				ev.stopPropagation();
+				if (!$(ev.target).is('input')) {
+					choice.click();
+				}
+			});
 		});
+
+		delete agentListItems;
 
 		this.agentList = agentList;
 
 		var self = this;
-		$('input[type="checkbox"], input[type="radio"]').click(function() {
+		$('input[type="checkbox"], input[type="radio"]').click(function(ev) {
+
+			ev.stopPropagation();
+
 			var agentId = $(this).val();
 			var checked = $(this).is(':checked');
 
 			var eventData = {
 				agentSelector: self,
 				agentId: agentId,
-				checked: checked
+				checked: checked,
+				event: event
 			};
 
 			self.fireEvent('selectionClick', [eventData]);
 		});
 
-		agentList.appendTo(this.wrapper);
+		agentList.appendTo($('div.scroll-content', listWrapper));
+		listWrapper.appendTo(this.wrapper);
+
+		this.listWrapper = listWrapper;
 
 		this.wrapper.appendTo('body');
-
-		this.wrapperWidth = this.wrapper.outerWidth();
-		this.wrapperHeight = this.wrapper.outerHeight();
 
 		var eventData = {
 			agentSelector: this,
@@ -90,32 +122,53 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		this.fireEvent('initWrapper', [eventData]);
 	},
 
+	updateFilter: function() {
+		var input = $('input', this.filter);
+		var filter = input.val().trim().toLowerCase();
+
+		var lis = $('> li', this.agentList);
+
+		if (!filter) {
+			lis.show();
+			return;
+		}
+
+		lis.each(function() {
+			var name = $('a:first', this).text().toLowerCase();
+			if (name.indexOf(filter) !== -1) {
+				$(this).show();
+			} else {
+				$(this).hide();
+			}
+		});
+	},
+
 	open: function(event) {
 
 		this._initWrapper();
 
 		var target = $(event.target);
 
-		var width = this.wrapperWidth;
-		var height = this.wrapperHeight;
+		var width = this.wrapper.outerWidth();
+		var height = this.wrapper.outerHeight();
 
 		var pageWidth = $(document).width();
 		var pageHeight = $(document).height();
 
-		var pageX = target.offset().top;
-		var pageY = target.offset().left;
+		var pageX = target.offset().left;
+		var pageY = target.offset().top;
 
 		// Determine which way to open the menu,
 		// We do this so the menu doesn't go off-screen if
 		// its near the edge
 		if (pageX+width < pageWidth) {
-			var left = pageX+4;
+			var left = pageX+6;
 		} else {
 			var left = pageX - width - 4;
 		}
 
 		if (pageY+height < pageHeight) {
-			var top = pageY;
+			var top = pageY - 6;
 		} else {
 			var top = pageY - height + 4;
 		}
@@ -134,6 +187,8 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 			'display': 'block'
 		});
 
+		this.listWrapper.tinyscrollbar();
+
 		var eventData = {
 			agentSelector: this,
 			event: event
@@ -148,7 +203,6 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 
 		var eventData = {
 			agentSelector: this,
-			event: event,
 			cancelClose: false
 		};
 

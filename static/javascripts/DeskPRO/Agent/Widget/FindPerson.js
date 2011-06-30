@@ -6,12 +6,10 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 
 	initialize: function(options) {
 		this.options = {
-			destroyOnClose: false
+
 		};
 
 		this.setOptions(options);
-
-		this.overlay = null;
 	},
 
 	_initOverlay: function() {
@@ -182,5 +180,15 @@ DeskPRO.Agent.Widget.FindPerson = new Orb.Class({
 				self.close();
 			}
 		});
+	},
+
+	destroy: function() {
+		if (this.overlay) {
+			this.overlay.destroy();
+		}
+
+		if (this.ruleBuilder) {
+			this.ruleBuilder.destroy();
+		}
 	}
 });

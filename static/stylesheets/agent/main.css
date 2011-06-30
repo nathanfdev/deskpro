@@ -4097,7 +4097,6 @@ div.person-quick-find section.search-area {
      -moz-box-shadow: inset 0px 0px 2px #5e5e5e;
     box-shadow: inset 0px 0px 2px #5e5e5e;
 
-    margin-top: -5px;
     background-color: #D1DBE8;
 
     padding:  5px;
@@ -4115,10 +4114,93 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 
 
 
-.field-overlay .agent-selector {
-    width: 300px;
+.field-overlay.agent-selector {
+    padding: 0;
+    width: 280px;
 }
 
-.field-overlay .agent-selector ul {
+.field-overlay.agent-selector .with-scrollbar {
+    position: relative;
     height: 150px;
+}
+
+.field-overlay.agent-selector .with-scrollbar .scroll-viewport {
+
+}
+
+.field-overlay.agent-selector ul {
+
+}
+
+.field-overlay.agent-selector ul li {
+    padding-top: 3px;
+    padding-bottom: 2px;
+}
+
+.field-overlay.agent-selector ul li.on, .field-overlay.agent-selector ul li:hover {
+    background-color: #DFE7F2;
+    cursor: pointer;
+}
+
+.field-overlay.agent-selector ul li .avatar {
+    float: left;
+    margin-right: 5px;
+    padding-left: 10px;
+}
+
+.field-overlay.agent-selector ul li .name {
+    float: left;
+    line-height: 30px;
+    font-size: 10px;
+    font-weight: bold;
+}
+
+.field-overlay.agent-selector ul li .name a {
+    color: #000;
+    text-decoration: none;
+}
+
+.field-overlay.agent-selector ul li .choice {
+    margin-left: 3px;
+    float: right;
+    text-align: right;
+    padding-right: 10px;
+    line-height: 30px;
+}
+
+
+.field-overlay.agent-selector .filter {
+     -moz-box-shadow: inset 0px 0px 2px #5e5e5e;
+    box-shadow: inset 0px 0px 2px #5e5e5e;
+
+    background-color: #D1DBE8;
+
+    font-size: 9px;
+
+    position: relative;
+}
+
+.field-overlay.agent-selector .filter .input-wrap {
+    width: 95%;
+}
+
+.field-overlay.agent-selector .filter .input-wrap input {
+    font-size: 10px;
+    
+    padding: 5px;
+    margin: 0;
+    border: 0;
+    outline: none;
+
+    background-color: transparent;
+
+    width: 100%;
+
+    text-shadow: 0px 1px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=0, offy=1);
+}
+
+.field-overlay.agent-selector .filter .input-wrap input:focus {
+    outline: none;
+    box-shadow: none;
 }
