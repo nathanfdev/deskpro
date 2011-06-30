@@ -141,6 +141,7 @@ $CONFIG['agent']['misc'] = array(
 		'javascripts/DeskPRO/Agent/Widgetable.js',
 
 		'javascripts/DeskPRO/Agent/Widget/FindPerson.js',
+		'javascripts/DeskPRO/Agent/Widget/AgentSelector.js',
 
 		'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
 		'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',

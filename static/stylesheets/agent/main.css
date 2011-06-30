@@ -4111,3 +4111,14 @@ div.person-quick-find section.search-area .submit-row {
 div.person-quick-find section.search-area select, div.person-quick-find section.search-area input {
     font-size: 9px;
 }
+
+
+
+
+.field-overlay .agent-selector {
+    width: 300px;
+}
+
+.field-overlay .agent-selector ul {
+    height: 150px;
+}
