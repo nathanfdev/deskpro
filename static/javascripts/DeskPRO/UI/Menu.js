@@ -158,6 +158,13 @@ DeskPRO.UI.Menu = new Orb.Class({
 	},
 
 
+	/**
+	 * Alias for isMenuOpen.
+	 */
+	isOpen: function() {
+		return this.isMenuOpen();
+	},
+
 
 	/**
 	 * Check to see if the overlay is currently open.
@@ -186,6 +193,15 @@ DeskPRO.UI.Menu = new Orb.Class({
 		return this.openTriggerEvent.target;
 	},
 
+
+	/**
+	 * Standard naming for UI elements. Alias for openMenu.
+	 *
+	 * @param event
+	 */
+	open: function(event) {
+		return this.openMenu(event);
+	},
 
 
 	/**
@@ -329,6 +345,15 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}
 	},
 
+
+	/**
+	 * Standard naming for UI elements. Alias for closeMenu.
+	 *
+	 * @param event
+	 */
+	close: function() {
+		return this.closeMenu(event);
+	},
 
 
 	/**
@@ -589,6 +614,15 @@ DeskPRO.UI.Menu = new Orb.Class({
 		}).bind(this));
 	},
 
+
+	/**
+	 * Get the wrapper element for the menu
+	 *
+	 * @return {jQuery}
+	 */
+	getWrapper: function() {
+		return $(this.elements.wrapperOuter);
+	},
 
 
 	/**

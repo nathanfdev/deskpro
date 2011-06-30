@@ -4076,3 +4076,38 @@ html.admin, body.admin {
     background-color: #F5F5F5;
     color: #17911F;
 }
+
+
+
+
+
+
+div.person-quick-find {
+    width: 750px;
+}
+
+div.person-quick-find .overlay-content {
+    padding: 0 !important;
+
+    height: 480px;
+    overflow: auto;
+}
+
+div.person-quick-find section.search-area {
+     -moz-box-shadow: inset 0px 0px 2px #5e5e5e;
+    box-shadow: inset 0px 0px 2px #5e5e5e;
+
+    margin-top: -5px;
+    background-color: #D1DBE8;
+
+    padding:  5px;
+}
+
+div.person-quick-find section.search-area .submit-row {
+    text-align: center;
+    margin-top: 4px;
+}
+
+div.person-quick-find section.search-area select, div.person-quick-find section.search-area input {
+    font-size: 9px;
+}

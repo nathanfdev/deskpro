@@ -105,6 +105,7 @@ class RuleBuilder
 			}
 			$data_item['options'] = array();
 
+			$is_blank = true;
 			foreach ($item as $k => $v) {
 				// Special value means not to add the term
 				// Used for things like "any" where the term shouldnt
@@ -112,12 +113,22 @@ class RuleBuilder
 				if ($v == 'DP_DISCARD_TERM') {
 					continue 2;
 				}
+
+				if ($v == 'DP_ALLOW_BLANK') {
+					$is_blank = false;
+					continue;
+				}
 				
 				if (in_array($k, $this->special_keys)) {
 					$data_item[$k] = $v;
 				} else {
+					if (trim($v) !== '') $is_blank = false;
 					$data_item['options'][$k] = $v;
 				}
+			}
+
+			if ($is_blank) {
+				continue;
 			}
 
 			$data[] = $data_item;

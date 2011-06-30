@@ -259,6 +259,48 @@ class PeopleSearchController extends AbstractController
 	}
 
 	############################################################################
+	# quick-find
+	############################################################################
+
+	public function quickFindAction()
+	{
+		return $this->render('AgentBundle:PeopleSearch:quick-find.html.twig');
+	}
+
+	public function quickFindSearchAction()
+	{
+		$term_rules = \Application\DeskPRO\UI\RuleBuilder::newTermsBuilder();
+		$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+		$searcher = new \Application\DeskPRO\Searcher\PersonSearch();
+		foreach ($terms as $term) {
+			$searcher->addTerm($term['type'], $term['op'], $term['options']);
+		}
+
+		$results = $searcher->getMatches();
+
+		$data = array();
+
+		if (!$results) {
+			$data['no_results'] = true;
+		} else {
+			$data['num_results'] = count($results);
+
+			$helper = new Helper\PeopleResults($this);
+			$helper->setPeopleIds($results);
+
+			$people = $helper->getPeopleForPage(1, 100);
+
+			$data['html'] = $this->renderView('AgentBundle:PeopleSearch:quick-find-results.html.twig', array(
+				'people' => $people,
+				'page' => 1
+			));
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
+	############################################################################
 	# /agent/people-search/quick-search            agent_peoplesearch_performquick
 	############################################################################
 

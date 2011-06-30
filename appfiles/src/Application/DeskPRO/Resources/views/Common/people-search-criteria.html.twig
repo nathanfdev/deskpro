@@ -1,0 +1,179 @@
+{% if id or classname %}
+	{# if given an id or classname then we want a wrapper #}
+	<div {% if id %}id="{{ id }}"{% endif %} class="{{ classname }}" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="remove">-</div>
+			<div class="controls">
+				<div class="type"></div>
+				<div class="op"></div>
+				<div class="options"></div>
+			</div>
+		</div>
+	</div>
+	<div class="type" title="Choose criteria..." data-rule-type="">
+	</div>
+{% endif %}
+
+{% if term_options.organizations %}
+<div class="type" title="Organization" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_organization">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<select name="organization">
+			{% for id,title in term_options.organizations %}
+			<option value="{{id}}">{{title}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+{% endif %}
+{% if term_options.usergroups %}
+<div class="type" title="Usergroup" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_usergroup">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<select name="usergroup">
+			{% for id,title in term_options.usergroups %}
+			<option value="{{id}}">{{title}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+{% endif %}
+{% if term_options.locales %}
+<div class="type" title="Locale" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_locale">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<select name="locale">
+			{% for id,title in term_options.locales %}
+			<option value="{{id}}">{{title}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+{% endif %}
+
+<div class="type" title="Date created" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	<div class="op">
+		<select name="op" class="op">
+			<option value="lte">before</option>
+			<option value="gte">after</option>
+			<option value="between">between</option>
+		</select>
+	</div>
+	<div class="options">
+		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+	</div>
+</div>
+<div class="type" title="Email Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="email" value="" />
+	</div>
+</div>
+<div class="type" title="Email Domain" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email_domain">
+	<div class="op">
+		<select name="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="email_domain" value="" />
+	</div>
+</div>
+<div class="type" title="Labels" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_label">
+	<div class="op">
+		<select name="op">
+			<option value="is">includes label</option>
+			<option value="not">does not include label</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="label" value="" />
+	</div>
+</div>
+<div class="type" title="Name" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_name">
+	<div class="op">
+		<select name="op">
+			<option value="contains">is</option>
+			<option value="notcontains">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="name" value="" />
+	</div>
+</div>
+<div class="type" title="Contact Phone" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_phone">
+	<div class="op">
+		<select name="op">
+			<option value="contains">is</option>
+			<option value="notcontains">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="phone" value="" />
+	</div>
+</div>
+<div class="type" title="Contact Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_address">
+	<div class="op">
+		<select name="op">
+			<option value="contains">is</option>
+			<option value="notcontains">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="address" value="" />
+	</div>
+</div>
+<div class="type" title="Contact Instant Messaging" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_contact_im">
+	<div class="op">
+		<select name="op">
+			<option value="contains">is</option>
+			<option value="notcontains">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="im" value="" />
+	</div>
+</div>
+{% if people_fields %}
+	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% for field in people_fields %}
+	<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person Fields" data-rule-type="person_person_field[{{field.field_def.id}}]">
+		<div class="op">
+			<select name="op">
+				{% for op in field.field_def.search_capabilities %}
+				<option value="{{op}}">{{op_lang[op]}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<div class="options">
+			{{ form_widget(field.formView) }}
+		</div>
+	</div>
+	{% endfor %}
+{% endif %}
+
+{% if id or classname %}
+	</div>
+{% endif %}

@@ -259,6 +259,14 @@ agent_peoplesearch_save_resultprefs:
   defaults: { _controller: AgentBundle:PeopleSearch:ajaxSaveResultPrefs }
   requirements: { cache_id: "\d+" }
 
+agent_peoplesearch_quickfind:
+  pattern: /people-search/quick-find
+  defaults: { _controller: AgentBundle:PeopleSearch:quickFind }
+
+agent_peoplesearch_quickfind_search:
+  pattern: /people-search/quick-find-search.json
+  defaults: { _controller: AgentBundle:PeopleSearch:quickFindSearch }
+
 agent_peoplesearch_getsectiondata:
   pattern: /people/get-section-data.json
   defaults: { _controller: AgentBundle:PeopleSearch:getSectionData }

@@ -28,7 +28,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			destroyOnClose: false,
 			customClassname: '',
 			isModal: true,
-			zIndex: 1000000,
+			zIndex: 100000,
 			escapeClose: true,
 			modalClickClose: true,
 			objectGroup: 'default',
@@ -56,6 +56,15 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	},
 
 
+	/**
+	 * Alias for isOverlayOpen.
+	 *
+	 * @return {Boolean}
+	 */
+	isOpen: function() {
+		return this.isOverlayOpen();
+	},
+
 
 	/**
 	 * Check to see if the overlay is currently open.
@@ -66,7 +75,14 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	},
 
 
+	/**
+	 * Standard naming for UI elements. Alias for openOverlay.
+	 */
+	open: function() {
+		return this.openOverlay();
+	},
 
+	
 	/**
 	 * Display the overlay
 	 */
@@ -136,6 +152,13 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		}).bind(this));
 	},
 
+
+	/**
+	 * Standard naming for UI elements. Alias for closeOverlay.
+	 */
+	close: function() {
+		return this.closeOverlay();
+	},
 
 
 	/**
@@ -248,16 +271,29 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	 */
 	_handleAjaxSuccess: function(data) {
 
+		var dataEl = $(data);
+
+		// We always want a top-level elements.
+		// So if AJAX supplied multiple roots,
+		// we'll just wrap in a single container div
+
+		if (dataEl.length != 1) {
+			var el = $('<div />');
+			el.append(dataEl);
+		} else {
+			var el = dataEl;
+		}
+
+		el.show();
+		this._setContent(el);
+
+		this.hasInit = true;
+
 		var eventData = {
 			overlay: this,
 			ajaxData: data
 		};
 		this.fireEvent('ajaxDone', eventData);
-
-		var el = $('<div>' + eventData.ajaxData + '</div>');
-		this._setContent(el);
-
-		this.hasInit = true;
 
 		this.openOverlay();
 	},
@@ -326,6 +362,16 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		} else {
 			el.click(fn);
 		}
+	},
+
+
+	/**
+	 * Get the wrapper element for the overlay
+	 *
+	 * @return {jQuery}
+	 */
+	getWrapper: function() {
+		return $(this.elements.wrapperOuter);
 	},
 
 

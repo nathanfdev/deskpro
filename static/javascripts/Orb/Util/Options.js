@@ -17,5 +17,13 @@ Orb.Util.Options = {
 		this.options = options;
 
 		return this;
+	},
+
+	getOption: function(option, default_value) {
+		if (typeof this.options[option] === undefined) {
+			return default_value;
+		}
+
+		return this.options[option];
 	}
 };
