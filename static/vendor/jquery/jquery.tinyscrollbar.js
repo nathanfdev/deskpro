@@ -102,6 +102,9 @@
 		};
 		function wheel(oEvent){
 			if(!(oContent.ratio >= 1)){
+
+				var origScroll = parseInt(oContent.obj.css(sDirection));
+
 				oEvent = $.event.fix(oEvent || window.event);
 				var iDelta = oEvent.wheelDelta ? oEvent.wheelDelta/120 : -oEvent.detail/3;
 				iScroll -= iDelta * options.wheel;
@@ -110,6 +113,12 @@
 				oContent.obj.css(sDirection, -iScroll);
 				oEvent.preventDefault();
 				//oScrollbar.obj.addClass('is-scrolling');
+
+				// For inner scrollable areas. Dont want scroll
+				// to bubble to containing scrollable area too
+				if (!oScrollbar.obj.is('.disable') /*&& origScroll > 0 && origScroll < oViewport[options.axis]*/) {
+					oEvent.stopPropagation();
+				}
 
 				if (wheelStopTimeout) {
 					window.clearTimeout(wheelStopTimeout);

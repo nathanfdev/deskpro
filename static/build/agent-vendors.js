@@ -2204,10 +2204,10 @@ u.obj.css(F,u[e.axis])}function x(){u.obj.bind("mousedown",g);p.obj.bind("mouseu
 y[0].addEventListener("mousewheel",C,false)}else{if(e.scroll){y[0].onmousewheel=C}}j.obj.mouseover(function(F){b.obj.addClass("is-scrolling");
 F.stopPropagation()});j.obj.mouseout(function(F){b.obj.removeClass("is-scrolling");F.stopPropagation()})}function g(G){r.start=k?G.pageX:G.pageY;
 var F=parseInt(u.obj.css(q));E.start=F=="auto"?0:F;a(document).bind("mousemove",z);a(document).bind("mouseup",d);u.obj.bind("mouseup",d);
-b.obj.addClass("is-scrolling");return false}function C(G){if(!(f.ratio>=1)){G=a.event.fix(G||window.event);var F=G.wheelDelta?G.wheelDelta/120:-G.detail/3;
-v-=F*e.wheel;v=Math.min((f[e.axis]-j[e.axis]),Math.max(0,v));u.obj.css(q,v/b.ratio);f.obj.css(q,-v);G.preventDefault();if(c){window.clearTimeout(c)
-}}}function d(F){a(document).unbind("mousemove",z);a(document).unbind("mouseup",d);u.obj.unbind("mouseup",d);b.obj.removeClass("is-scrolling");
-return false}function z(F){if(!(f.ratio>=1)){E.now=Math.min((p[e.axis]-u[e.axis]),Math.max(0,(E.start+((k?F.pageX:F.pageY)-r.start))));
+b.obj.addClass("is-scrolling");return false}function C(G){if(!(f.ratio>=1)){var H=parseInt(f.obj.css(q));G=a.event.fix(G||window.event);
+var F=G.wheelDelta?G.wheelDelta/120:-G.detail/3;v-=F*e.wheel;v=Math.min((f[e.axis]-j[e.axis]),Math.max(0,v));u.obj.css(q,v/b.ratio);
+f.obj.css(q,-v);G.preventDefault();if(!b.obj.is(".disable")){G.stopPropagation()}if(c){window.clearTimeout(c)}}}function d(F){a(document).unbind("mousemove",z);
+a(document).unbind("mouseup",d);u.obj.unbind("mouseup",d);b.obj.removeClass("is-scrolling");return false}function z(F){if(!(f.ratio>=1)){E.now=Math.min((p[e.axis]-u[e.axis]),Math.max(0,(E.start+((k?F.pageX:F.pageY)-r.start))));
 v=E.now*b.ratio;f.obj.css(q,-v);u.obj.css(q,E.now)}return false}return this.initialize()}})(jQuery);(function(c){var b={pos:[-260,-260]},d=3,j=document,g=j.documentElement,e=j.body,a,k;
 function f(){if(this===b.elem){b.pos=[-260,-260];b.elem=false;d=3}}c.event.special.mwheelIntent={setup:function(){var l=c(this).bind("mousewheel",c.event.special.mwheelIntent.handler);
 if(this!==j&&this!==g&&this!==e){l.bind("mouseleave",f)}l=null;return true},teardown:function(){c(this).unbind("mousewheel",c.event.special.mwheelIntent.handler).unbind("mouseleave",f);
