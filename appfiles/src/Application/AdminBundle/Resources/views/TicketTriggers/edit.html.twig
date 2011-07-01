@@ -83,7 +83,7 @@ function _page_exec() {
 {{ form_rest(form) }}
 </form>
 
-{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'criteria-tpl', 'term_options': term_options } %}
+{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'criteria-tpl', 'term_options': term_options, 'with_change_terms': true } %}
 {% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with { 'classname': 'actions-tpl', 'term_options': term_options } %}
 
 {% endblock %}

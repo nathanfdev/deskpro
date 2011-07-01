@@ -122,7 +122,20 @@ class RuleBuilder
 				if (in_array($k, $this->special_keys)) {
 					$data_item[$k] = $v;
 				} else {
-					if (trim($v) !== '') $is_blank = false;
+					if ($is_blank) {
+						if (is_array($v)) {
+							$v = Arrays::removeEmptyString($v);
+							if ($v) {
+								$is_blank = false;
+							}
+						} else {
+							$v = trim($v);
+							if ($v !== '') {
+								$is_blank = false;
+							}
+						}
+					}
+					elseif (trim($v) !== '') $is_blank = false;
 					$data_item['options'][$k] = $v;
 				}
 			}

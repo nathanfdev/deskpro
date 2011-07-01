@@ -65,7 +65,7 @@
 			<select name="op" class="op">
 				<option value="is">include</option>
 				<option value="not">does not include</option>
-				{% if trigger.event_trigger == 'property_change' %}
+				{% if with_change_terms %}
 					<option value="changed">Changed</option>
 					<option value="changed_to">Changed to include</option>
 					<option value="changed_from">Changed to remove</option>
@@ -81,7 +81,7 @@
 			<select name="op" class="op">
 				<option value="is">is</option>
 				<option value="not">is not</option>
-				{% if trigger.event_trigger == 'property_change' %}
+				{% if with_change_terms %}
 					<option value="changed">Changed</option>
 					<option value="changed_to">Changed to</option>
 					<option value="changed_from">Changed from</option>
@@ -105,7 +105,7 @@
 			<select name="op" class="op">
 				<option value="is">include</option>
 				<option value="not">does not include</option>
-				{% if trigger.event_trigger == 'property_change' %}
+				{% if with_change_terms %}
 					<option value="changed">Changed</option>
 					<option value="changed_to">Changed to include</option>
 					<option value="changed_from">Changed to remove</option>
@@ -127,7 +127,7 @@
 				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
-					{% if trigger.event_trigger == 'property_change' %}
+					{% if with_change_terms %}
 						<option value="changed">Changed</option>
 						<option value="changed_to">Changed to</option>
 						<option value="changed_from">Changed from</option>
@@ -152,7 +152,7 @@
 			<select name="op" class="op">
 				<option value="is">is</option>
 				<option value="not">is not</option>
-				{% if trigger.event_trigger == 'property_change' %}
+				{% if with_change_terms %}
 					<option value="changed">Changed</option>
 					<option value="changed_to">Changed to</option>
 					<option value="changed_from">Changed from</option>
@@ -237,7 +237,7 @@
 				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
-					{% if trigger.event_trigger == 'property_change' %}
+					{% if with_change_terms %}
 						<option value="changed">Changed</option>
 						<option value="changed_to">Changed to</option>
 						<option value="changed_from">Changed from</option>
@@ -261,7 +261,7 @@
 				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
-					{% if trigger.event_trigger == 'property_change' %}
+					{% if with_change_terms %}
 						<option value="changed">Changed</option>
 						<option value="changed_to">Changed to</option>
 						<option value="changed_from">Changed from</option>
@@ -285,7 +285,7 @@
 				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
-					{% if trigger.event_trigger == 'property_change' %}
+					{% if with_change_terms %}
 						<option value="changed">Changed</option>
 						<option value="changed_to">Changed to</option>
 						<option value="changed_from">Changed from</option>
@@ -310,7 +310,7 @@
 				<option value="not">is not</option>
 				<option value="lte">&lt;=</option>
 				<option value="gte">&gt;=</option>
-				{% if trigger.event_trigger == 'property_change' %}
+				{% if with_change_terms %}
 					<optgroup label="Changed">
 						<option value="changed">Changed</option>
 						<option value="changed_to">Changed to</option>
@@ -341,7 +341,7 @@
 					<option value="not">is not</option>
 					<option value="lte">is less than</option>
 					<option value="gte">is greater than</option>
-					{% if trigger.event_trigger == 'property_change' %}
+					{% if with_change_terms %}
 						<option value="changed">Changed</option>
 						<option value="changed_to">Changed to</option>
 						<option value="changed_from">Changed from</option>
@@ -365,7 +365,7 @@
 				<select name="op" class="op">
 					<option value="is">is</option>
 					<option value="not">is not</option>
-					{% if trigger.event_trigger == 'property_change' %}
+					{% if with_change_terms %}
 						<option value="changed">Changed</option>
 						<option value="changed_to">Changed to</option>
 						<option value="changed_from">Changed from</option>
@@ -400,7 +400,7 @@
 			</div>
 		{% endfor %}
 	{% endif %}
-	{% include 'DeskPRO:Common:people-search-criteria.html.twig' with {'with_rule_group': true, 'term_options': people_term_options } %}
+	{% include 'DeskPRO:Common:people-search-criteria.html.twig' with {'with_rule_group': true, 'term_options': people_term_options, 'id': false, 'classname': false} %}
 
 {% if id or classname %}
 </div>

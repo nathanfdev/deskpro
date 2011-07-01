@@ -153,7 +153,7 @@
 						<option value="default_agents">Default agents based on their own preferences</option>
 						<option value="assigned_agent">Assigned agent</option>
 						<option value="assigned_agent_team">Assigned agent team members</option>
-						<option value="agent_participants">Agents added as participants</option>
+						<option value="agent_participants">Agent subscribers</option>
 					</optgroup>
 					<optgroup label="Specific Agent Teams">
 						{% for id,label in term_options.agent_teams %}
@@ -174,12 +174,8 @@
 		</div>
 		<div class="type" title="Send new ticket notification to users" data-rule-type="user_notification_new_ticket">
 			<div class="options">
-				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<option value="person">User who started the ticket (confirmation)</option>
-					<option value="people_participants">Users added as participants</option>
-				</select>
-				From: <select name="from_address[]">
-					<option value="">Default</option>
+				from <select name="from_address">
+					<option value="default">default account</option>
 					{% for id,title in from_names %}
 						<option value="{{id}}">{{title}}</option>
 					{% endfor %}

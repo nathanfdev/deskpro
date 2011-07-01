@@ -70,7 +70,7 @@ $q['terms']      = array(array(
 $q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
-$q['title']      = 'You\'re a Participant';
+$q['title']      = 'Subscribed Tickets';
 $q['is_enabled'] = true;
 $q['is_global']  = true;
 $q['sys_name']   = 'participant';
@@ -130,6 +130,57 @@ $q['terms']      = array(
 	)
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:create_ticket_trigger.newticket_notify_agents##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$t = new \Application\DeskPRO\Entity\TicketTrigger();
+$t['title'] = 'New Ticket: Send notification to agents';
+$t['event_trigger'] = 'new_ticket';
+$t['is_enabled'] = true;
+$t['terms'] = array();
+$t['actions'] = array(
+	array(
+		'type' => 'agent_notification_new_ticket',
+		'options' => array('send_to' => array('default_agents'), 'custom_template_name' => '')
+	)
+);
+\Application\DeskPRO\App::getOrm()->persist($t);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:create_ticket_trigger.newticket_notify_user##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$t = new \Application\DeskPRO\Entity\TicketTrigger();
+$t['title'] = 'New Ticket: Send confirmation to user';
+$t['event_trigger'] = 'new_ticket';
+$t['is_enabled'] = true;
+$t['terms'] = array();
+$t['actions'] = array(
+	array(
+		'type' => 'user_notification_new_ticket',
+		'options' => array('from_address' => 'default')
+	)
+);
+\Application\DeskPRO\App::getOrm()->persist($t);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
+##BEGIN:create_ticket_trigger.newreply_notify_agents##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$t = new \Application\DeskPRO\Entity\TicketTrigger();
+$t['title'] = 'New Reply: Send notification to agents';
+$t['event_trigger'] = 'new_reply';
+$t['is_enabled'] = true;
+$t['terms'] = array();
+$t['actions'] = array(
+	array(
+		'type' => 'agent_notification_new_reply',
+		'options' => array('send_to' => array('default_agents'))
+	)
+);
+\Application\DeskPRO\App::getOrm()->persist($t);
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
 
