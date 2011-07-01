@@ -534,7 +534,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$got_agent_ids = array();
 		$remove_ks = array();
 
-		foreach ($this->participants as $k => $part) {
+		/*
+		 * Bug in Doctrine: $this->participants only ever has 1 record,
+		 * so we're fetching them manually
+		 */
+
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			WHERE p.ticket = ?1
+		")->setParameter(1, $this)->execute();
+
+		foreach ($participants as $k => $part) {
 			if (!$part->person['is_agent']) {
 				continue;
 			}
@@ -547,7 +558,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		foreach ($remove_ks as $k) {
-			$this->participants->remove($k);
+			App::getOrm()->remove($participants[$k]);
 		}
 
 		$new_agent_ids = array_diff($set_agent_ids, $got_agent_ids);
@@ -587,11 +598,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$set_user_ids = array_values($set_user_ids_info);
 
-		foreach ($this->participants as $k => $part) {
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			WHERE p.ticket = ?1
+		")->setParameter(1, $this)->execute();
+
+		foreach ($participants as $k => $part) {
 			if ($part->person['is_agent']) continue;
 
 			if (!isset($set_user_ids_info[$part->person['id']])) {
-				$this->participants->remove($k);
+				//$this->participants->remove($k);
+				App::getOrm()->remove($participants[$k]);
 			} else {
 				$got_user_ids[] = $part->person['id'];
 

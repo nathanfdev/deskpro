@@ -191,9 +191,19 @@ class TicketController extends AbstractController
 		//	$show_related_content = true;
 		//})
 
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			LEFT JOIN p.person person
+			LEFT JOIN p.person_email person_email
+			WHERE p.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
+
+			'participants' => $participants,
 
 			'custom_fields' => $custom_fields,
 
@@ -752,9 +762,6 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 
-		echo count($ticket->participants);
-		exit;
-
 		$set_agent_ids = $this->in->getCleanValueArray('person_ids', 'uint', 'discard');
 		$ticket->setParticipantAgentIds($set_agent_ids);
 
@@ -763,8 +770,17 @@ class TicketController extends AbstractController
 			$em->flush();
 		});
 
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			LEFT JOIN p.person person
+			LEFT JOIN p.person_email person_email
+			WHERE p.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
 		return $this->render('AgentBundle:Ticket:view-participants-agents.html.twig', array(
-			'ticket' => $ticket
+			'ticket' => $ticket,
+			'participants' => $participants
 		));
 	}
 

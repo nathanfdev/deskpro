@@ -154,7 +154,7 @@ pageMeta.fieldHandlers = [
 								<td class="col-inner partis">
 									<span class="agent-participants-edit">Participants<a>edit</a></span>
 									<ul class="agent-participants-list">
-										{% include 'AgentBundle:Ticket:view-participants-agents.html.twig' %}
+										{% include 'AgentBundle:Ticket:view-participants-agents.html.twig' with {'participants': participants} %}
 									</ul>
 								</td>
 							</tr>
@@ -174,7 +174,7 @@ pageMeta.fieldHandlers = [
 								<td class="col-inner partis">
 									<span class="user-participants-edit">Participants<a>edit</a></span>
 									<ul class="user-participants-list">
-										{% include 'AgentBundle:Ticket:view-participants-users.html.twig' %}
+										{% include 'AgentBundle:Ticket:view-participants-users.html.twig' with {'participants': participants} %}
 									</ul>
 								</td>
 							</tr>
