@@ -14,11 +14,14 @@ namespace Application\DeskPRO\Entity;
 use Orb\Util\Util;
 use Orb\Util\Strings;
 
+use Application\DeskPRO\App;
+
 /**
- * For each participant on a ticket, they get an access code.
- * The access code lets the user access this specific ticket without
- * logging in. It's used in links to the ticket, as well as in emails
- * when the 'code' scheme is being used.
+ * For each participant on a ticket, they get an access code. Normally user
+ * participants dont use the TAC because they all share the public TAC that is set
+ * on the ticket itself via CC'ing. But agents always use a TAC.
+ *
+ * So there's TAC's (this) and PTAC's (public ticket access code) that is attached to the ticket.
  *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAccessCode")
  * @orm:Table(name="ticket_access_codes")
@@ -47,13 +50,14 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="auth", type="string", length=5)
+	 * @orm:Column(name="auth", type="string", length=20)
 	 */
 	protected $auth;
 
 	public function __construct()
 	{
-		$this->auth = Strings::random(5, Strings::CHARS_ALPHA_IU);
+		$len = App::getSetting('core_tickets.tac_auth_code_len');
+		$this->auth = Strings::random($len, Strings::CHARS_ALPHA_IU);
 	}
 
 
@@ -82,9 +86,11 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public static function decodeAccessCode($access_code)
 	{
-		if (strlen($access_code) < 6) return false;
+		$len = App::getSetting('core_tickets.tac_auth_code_len');
 
-		$matches = Strings::extractRegexMatch('#^(.+)(.{5})$#', $access_code, -1);
+		if (strlen($access_code) < ($len+1)) return false;
+
+		$matches = Strings::extractRegexMatch('#^(.+)(.{'.$len.'})$#', $access_code, -1);
 		if (!$matches) return false;
 
 		list (, $access_code_id, $auth) = $matches;

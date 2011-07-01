@@ -52,10 +52,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $ref = null;
 
 	/**
-	 * @var string
-	 * @orm:Column(name="code", type="string", length=12)
+	 * @var int
+	 * @orm:Column(name="auth", type="string", length=20)
 	 */
-	protected $code = null;
+	protected $auth;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
@@ -312,7 +312,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$this->date_created = new \DateTime();
 
-		$this->code = Strings::random(12, Strings::CHARS_KEY);
+		$len = App::getSetting('core_tickets.ptac_auth_code_len');
+		$this->auth = Strings::random($len, Strings::CHARS_KEY);
+		
 		$this->ref = Strings::random(12, Strings::CHARS_KEY);
 
 		if ($tracker) {
@@ -1339,6 +1341,45 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Gets the access code which is an encoded ticket ID and authcode into one string.
+	 *
+	 * @return string
+	 */
+	public function getAccessCode()
+	{
+		$str = Util::baseEncode($this->id, 'letters');
+		$str .= $this->auth;
+
+		return $str;
+	}
+
+
+	/**
+	 * Decodes an access code into a ticket id and the standalone auth.
+	 *
+	 * @param  $access_code
+	 * @return array
+	 */
+	public static function decodeAccessCode($access_code)
+	{
+		$len = App::getSetting('core_tickets.ptac_auth_code_len');
+		if (strlen($access_code) < ($len+1)) return false;
+
+		$matches = Strings::extractRegexMatch('#^(.+)(.{'.$len.'})$#', $access_code, -1);
+		if (!$matches) return false;
+
+		list (, $ticket_id, $auth) = $matches;
+
+		$ticket_id = Util::baseDecode($ticket_id, 'letters');
+
+		return array(
+			'ticket_id' => $ticket_id,
+			'auth'      => $auth
+		);
 	}
 
 	
