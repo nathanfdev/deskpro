@@ -82,8 +82,9 @@
 <div class="type" title="Email Address" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_email">
 	<div class="op">
 		<select name="op">
-			<option value="is">is</option>
-			<option value="not">is not</option>
+			<option value="contains">contains</option>
+			<option value="notcontains">does not contain</option>
+			<option value="is">is exactly</option>
 		</select>
 	</div>
 	<div class="options">
@@ -115,8 +116,9 @@
 <div class="type" title="Name" {% if with_rule_group %}data-rule-group="Person"{% endif %} data-rule-type="person_name">
 	<div class="op">
 		<select name="op">
-			<option value="contains">is</option>
-			<option value="notcontains">is not</option>
+			<option value="is">is</option>
+			<option value="contains">contains</option>
+			<option value="notcontains">does not contain</option>
 		</select>
 	</div>
 	<div class="options">
