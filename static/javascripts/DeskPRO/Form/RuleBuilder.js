@@ -262,7 +262,7 @@ DeskPRO.Form.RuleBuilder = new Class({
 		var numChilds = choice.children().length;
 
 		if (numChilds == 1) {
-			var choiceSel = $('select:not(.no-auto)', choice);
+			var choiceSel = $('select:not(.no-auto):not([multiple])', choice);
 			if (choiceSel.length) {
 				var choiceMenu = new DeskPRO.UI.Menu({
 					menuElement: choiceSel
