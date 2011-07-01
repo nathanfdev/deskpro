@@ -194,10 +194,12 @@ class TicketGateway extends AbstractGateway
 			$person_processor = new PersonFromEmailProcessor();
 
 			$cc_person = $person_processor->findPerson($cc);
-			if ($cc_person) {
-				$person_processor->passPerson($cc, $cc_person);
-			} else {
+			if (!$cc_person) {
 				$cc_person = $person_processor->createPerson($cc);
+			}
+
+			if (!$cc_person) {
+				continue;
 			}
 
 			App::getOrm()->persist($cc_person);

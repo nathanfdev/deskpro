@@ -17,7 +17,8 @@ use \Application\DeskPRO\Entity\Ticket;
 /**
  * Detects a ticket based off of codes in the subject or body.
  *
- * We look for (#ref-AAAAA) in either the subject or body.
+ * We look for (#AAAAA) in either the subject or body.
+ * These are access codes that we can use to find a corresponding ticket and user.
  *
  * @see \Application\DeskPRO\Entity\TicketAccessCode
  */
@@ -42,19 +43,18 @@ class CodeTicketDetector implements TicketDetectorInterface
 		$search_text = implode(' ', $search_text);
 
 		$matches = null;
-		if (!preg_match_all('/\(#([A-Za-z0-9\-]+)\-([A-Z]{5})\)/', $search_text, $matches, PREG_SET_ORDER)) {
+		if (!preg_match_all('/\(#([A-Z]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			return null;
 		}
 
 		foreach ($matches as $m) {
-			$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($m[1]);
-			if (!$ticket) continue;
-
-			$tac = $ticket->findAccessCode($m[2]);
+			$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
 			if (!$tac) continue;
 
+			$ticket = $tac->ticket;
+
 			$this->_found_tac = $tac;
-			return $tac['ticket'];
+			return $ticket;
 		}
 
 		return null;
@@ -66,7 +66,7 @@ class CodeTicketDetector implements TicketDetectorInterface
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		if ($this->_found_tac) {
-			return $this->_found_tac['person'];
+			return $this->_found_tac->person;
 		}
 
 		return null;

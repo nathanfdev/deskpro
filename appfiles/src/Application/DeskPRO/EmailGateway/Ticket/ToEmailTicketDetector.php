@@ -10,9 +10,11 @@
 
 namespace Application\DeskPRO\EmailGateway\Ticket;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use \Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\App;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\Entity\Ticket;
+
+use Orb\Util\Strings;
 
 /**
  * Detects a ticket based off of the code in the TO address that
@@ -42,7 +44,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	 *
 	 * For example:
 	 * <code>
-	 * $detector = new ToEmailTicketDetector('ticket-TICKET_CODE@example.com');
+	 * $detector = new ToEmailTicketDetector('ticket-TAC@example.com');
 	 * </code>
 	 *
 	 * @param string The pattern with the special token TICKET_CODE in it.
@@ -50,7 +52,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	public function __construct($account_pattern)
 	{
 		$account_pattern = preg_quote($account_pattern, '#');
-		$account_pattern = str_replace('TICKET_CODE', '(?P<code>[A-Z]{5,})', $account_pattern);
+		$account_pattern = str_replace('TAC', '(?P<auth>[A-Z]{6,11})', $account_pattern);
 
 		$this->account_pattern = '#^' . $account_pattern . '#$';
 	}
@@ -69,7 +71,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		// Easier to run regex on all at once
 		$search_addr = ' ' . implode(' ', $search_addr) . ' ';
 
-		$access_code = \Orb\Util\Strings::extractRegexMatch($this->account_pattern, $search_addr, 'code');
+		$access_code = Strings::extractRegexMatch($this->account_pattern, $search_addr, 'auth');
 		if (!$access_code) {
 			return null;
 		}
@@ -77,7 +79,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($access_code);
 		if ($tac) {
 			$this->_found_tac = $tac;
-			return $tac['ticket'];
+			return $tac->ticket;
 		}
 
 		return null;
@@ -89,7 +91,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader)
 	{
 		if ($this->_found_tac) {
-			return $this->_found_tac['person'];
+			return $this->_found_tac->person;
 		}
 
 		return null;
