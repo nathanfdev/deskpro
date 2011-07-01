@@ -12,6 +12,7 @@
 namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -545,6 +546,10 @@ class TicketController extends AbstractController
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 
+		#------------------------------
+		# Handle new message
+		#------------------------------
+
 		$message = new Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = $this->person;
@@ -567,6 +572,10 @@ class TicketController extends AbstractController
 			$ticket->addMessage($message);
 		}
 
+		#------------------------------
+		# Handle actions
+		#------------------------------
+
 		if ($this->in->getBool('options.do_assign')) {
 			$ticket['agent_id'] = $this->in->getUint('options.agent_id');
 			$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
@@ -574,6 +583,35 @@ class TicketController extends AbstractController
 
 		if ($this->in->getBool('options.do_status')) {
 			$ticket['status'] = $this->in->getString('options.status');
+		}
+
+		#------------------------------
+		# Handle CC'ing/parts
+		#------------------------------
+
+		$cc_person_ids = $this->in->getCleanValueArray('cc_person_ids', 'uint', 'discard');
+		$new_parts = $this->in->getCleanValueArray('new_parts', 'string', 'discard');
+
+		foreach ($new_parts as $email) {
+			$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
+			if (!$person) {
+				$person = Person::newContactPerson(array('email' => $email));
+				$this->em->persist($person);
+			}
+
+			$ticket->addParticipantPerson($person);
+
+			$cc_person_ids[] = $person['id'];
+		}
+
+		// For each participant, if its not in the selected ones to
+		// CC then we disable the flag. CC is sticky anyway, and the
+		// flag is simply used when sending notifications too
+		foreach ($ticket->getParticipants() as $part) {
+			if (!in_array($part->person['id'], $cc_person_ids)) {
+				$part['default_on'] = false;
+				$em->persist($part);
+			}
 		}
 
 		$this->em->beginTransaction();

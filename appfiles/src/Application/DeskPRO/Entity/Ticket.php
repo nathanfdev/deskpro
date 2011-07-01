@@ -428,11 +428,23 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function getParticipantPeopleIds()
 	{
 		$ids = array();
-		foreach ($this->participants as $p) {
+		foreach ($this->getParticipants() as $p) {
 			$ids[] = $p['person']['id'];
 		}
 
 		return $ids;
+	}
+
+	public function getParticipants()
+	{
+		/* Temp workaround for Doctrine bug not filling $this->participants */
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			WHERE p.ticket = ?1
+		")->setParameter(1, $this)->execute();
+
+		return $participants;
 	}
 
 
@@ -450,7 +462,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$person_id = $person_or_id['id'];
 		}
 
-		foreach ($this->participants as $p) {
+		foreach ($this->getParticipants() as $p) {
 			if ($p['person']['id'] == $person_id) {
 				return $p;
 			}
@@ -474,7 +486,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$person = App::getEntityRepository('DeskPRO:Person')->find($person);
 		}
 
-		if ($ticket_part = $this->hasParticipant($person)) {
+		if ($ticket_part = $this->hasParticipantPerson($person)) {
 			return $ticket_part;
 		}
 
@@ -539,7 +551,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		 * so we're fetching them manually
 		 */
 
-		$participants = APp::getOrm()->createQuery("
+		$participants = App::getOrm()->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			WHERE p.ticket = ?1

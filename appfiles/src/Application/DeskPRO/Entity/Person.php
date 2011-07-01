@@ -379,12 +379,19 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * A "contact person" is simply a person record. They have no login credentials, they are not
 	 * a full user.
 	 *
+	 * (This is really just the same as calling the constructor yourself, but we may need to
+	 * change this functionality in the future so its a method).
+	 *
 	 * @static
 	 * @return Person
 	 */
-	public static function newContactPerson()
+	public static function newContactPerson(array $info = null)
 	{
 		$person = new self();
+
+		if ($info) {
+			$person->fromArray($info);
+		}
 
 		return $person;
 	}
@@ -1072,6 +1079,27 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->primary_email['id'];
+	}
+
+
+	/**
+	 * Sets the primray email address on the account
+	 *
+	 * @param $email_address
+	 * @return void
+	 */
+	public function setEmail($email_address, $validated = false)
+	{
+		$email = new PersonEmail();
+		$email['email'] = $email_address;
+
+		if ($validated) {
+			$email['is_validated'] = true;
+		}
+
+		$this->addEmailAddress($email);
+
+		$this->primary_email = $email;
 	}
 
 

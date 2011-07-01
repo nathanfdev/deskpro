@@ -11,20 +11,28 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Orb\Util\Util;
+use Orb\Util\Strings;
+
 /**
  * For each participant on a ticket, they get an access code.
  * The access code lets the user access this specific ticket without
  * logging in. It's used in links to the ticket, as well as in emails
  * when the 'code' scheme is being used.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAcccessCode")
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAccessCode")
  * @orm:Table(name="ticket_access_codes")
  */
 class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
+	 * @var int
+	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 */
+	protected $id = null;
+
+	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Ticket")
 	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
 	 */
@@ -32,7 +40,6 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
 	 */
@@ -40,26 +47,26 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Column(name="code", type="string", length=5)
+	 * @orm:Column(name="auth", type="string", length=5)
 	 */
-	protected $code;
+	protected $auth;
 
 	public function __construct()
 	{
-		$this->code = \Orb\Util\Strings::random(5, \Orb\Util\Strings::CHARS_ALPHA_IU);
+		$this->auth = Strings::random(5, Strings::CHARS_ALPHA_IU);
 	}
 
 
 
 	/**
-	 * Encodes the ticket ID and the code into a single string.
+	 * Encodes the ticket ID and the auth into a single string.
 	 *
 	 * @return string
 	 */
 	public function getAccessCode()
 	{
-		$str = \Orb\Util\Util::baseEncode($this->ticket['id'], 'letters');
-		$str .= $this->code;
+		$str .= Util::baseEncode($this->id, 'letters');
+		$str .= $this->auth;
 
 		return $str;
 	}
@@ -75,13 +82,18 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public static function decodeAccessCode($access_code)
 	{
-		if (strlen($access_code) < 5) return false;
+		if (strlen($access_code) < 6) return false;
 
-		list (, $ticket_id, $code) = \Orb\Util\Strings::extractRegexMatch('#^(.)(.{5})$#', $access_code, -1);
+		$matches = Strings::extractRegexMatch('#^(.+)(.{5})$#', $access_code, -1);
+		if (!$matches) return false;
+
+		list (, $access_code_id, $auth) = $matches;
+
+		$access_code_id = Util::baseDecode($access_code_id, 'letters');
 
 		return array(
-			'ticket_id' => $ticket_id,
-			'code' => $code
+			'access_code_id' => $access_code_id,
+			'auth'           => $auth
 		);
 	}
 }
