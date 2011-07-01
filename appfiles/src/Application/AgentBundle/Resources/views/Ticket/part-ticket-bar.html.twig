@@ -77,7 +77,7 @@
 				<ul class="file-list"></ul>
 			</div>
 			<div class="content-tab-bottom cc-area reply-cc tab-content" data-tab-trigger=".tab-trigger.reply-cc">
-				<input type="text" value="" /> <button class="dp-button x-small">Add Email Address</button>
+				{% include 'AgentBundle:Ticket:view-reply-cctab.html.twig' with {'participants': participants} %}
 			</div>
 		</div>
 	</div>

@@ -4204,3 +4204,58 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
     outline: none;
     box-shadow: none;
 }
+
+
+
+
+
+.cc-area {
+    position: relative;
+}
+
+.cc-section {
+    float: left;
+    width: 200px;
+}
+
+.cc-section .with-scrollbar {
+    position: relative !important;
+    height: 105px;
+    width: 200px;
+}
+
+
+.cc-section ul li {
+    padding-top: 1px;
+    padding-bottom: 0px;
+}
+
+.cc-section ul li.on, .cc-section ul li:hover {
+    background-color: #787F8C;
+    cursor: pointer;
+}
+
+.cc-section ul li .avatar {
+    float: left;
+    margin-right: 3px;
+    padding-left: 3px;
+}
+
+.cc-section ul li .name {
+    float: left;
+    line-height: 15px;
+    font-size: 10px;
+}
+
+.cc-section ul li .name a {
+    color: #fff !important;
+    text-decoration: none;
+}
+
+.cc-section ul li .choice {
+    margin-left: 3px;
+    float: right;
+    text-align: right;
+    padding-right: 10px;
+    line-height: 15px;
+}

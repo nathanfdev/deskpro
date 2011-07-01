@@ -584,6 +584,11 @@ agent_ticket_saveuserparts:
   defaults: { _controller: AgentBundle:Ticket:saveUserParts }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_ccreplytab:
+  pattern: /ticket/{ticket_id}/cc-reply-tab
+  defaults: { _controller: AgentBundle:Ticket:ccReplyTab }
+  requirements: { ticket_id: "\d+" }
+
 agent_ticket_delete:
   pattern: /tickets/{ticket_id}/delete
   defaults: { _controller: AgentBundle:Ticket:delete }

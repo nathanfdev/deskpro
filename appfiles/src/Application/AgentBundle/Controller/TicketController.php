@@ -810,6 +810,24 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function ccReplyTabAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+		
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			LEFT JOIN p.person person
+			LEFT JOIN p.person_email person_email
+			WHERE p.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
+		return $this->render('AgentBundle:Ticket:view-reply-cctab.html.twig', array(
+			'ticket' => $ticket,
+			'participants' => $participants
+		));
+	}
+
 	############################################################################
 	# delete
 	############################################################################

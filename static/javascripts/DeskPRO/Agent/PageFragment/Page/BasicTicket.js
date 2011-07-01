@@ -152,6 +152,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	_initParticipants: function() {
 		$('.agent-participants-edit', this.wrapper).click(this.showAgentParticipants.bind(this));
 		$('.user-participants-edit', this.wrapper).click(this.showUserParticipants.bind(this));
+		this._initCcArea();
 	},
 
 	showAgentParticipants: function(ev) {
@@ -193,8 +194,10 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			data: data,
 			dataType: 'html',
 			type: 'POST',
+			context: this,
 			success: function(html) {
 				$('ul.agent-participants-list', this.wrapper).empty().html(html);
+				this.reloadCcReplyTab();
 			}
 		});
 	},
@@ -233,9 +236,53 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			data: data,
 			dataType: 'html',
 			type: 'POST',
+			context: this,
 			success: function(html) {
 				$('ul.user-participants-list', this.wrapper).empty().html(html);
+				this.reloadCcReplyTab();
 			}
+		});
+	},
+
+	reloadCcReplyTab: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/cc-reply-tab',
+			dataType: 'html',
+			type: 'GET',
+			context: this,
+			success: function(html) {
+				$('.cc-area', this.wrapper).empty().html(html);
+				this._initCcArea();
+			}
+		});
+	},
+
+	_initCcArea: function() {
+		var area = $('.cc-area', this.wrapper);
+		var newparts = $('.cc-new-parts', area);
+
+		$('li', area).click(function(ev) {
+			if (!$(ev.target).is('input')) {
+				$('input', this).click();
+			}
+		});
+
+		var txt = $('.new-part input', newparts);
+		var btn = $('.new-part button', newparts);
+
+		$('section.cc-section .with-scrollbar', area).tinyscrollbar();
+		var newSectionScroll = $('section.cc-new-parts .with-scrollbar', area);
+
+		btn.click(function() {
+			var val = txt.val();
+			var el = $('<li>' + val + '<input type="hidden" name="new_parts[]" value="'+val+'" />&nbsp;&nbsp;<span class="remove-trigger" style="cursor: pointer;">x</span></li>');
+
+			$('.remove-trigger', el).click(function() {
+				el.remove();
+			});
+			$('ul', newparts).append(el);
+
+			newSectionScroll.tinyscrollbar();
 		});
 	},
 
