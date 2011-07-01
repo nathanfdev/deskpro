@@ -596,9 +596,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			}
 		}
 
-		$set_user_ids = array_values($set_user_ids_info);
+		$set_user_ids = array_keys($set_user_ids_info);
 
-		$participants = APp::getOrm()->createQuery("
+		$participants = App::getOrm()->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketParticipant p
 			WHERE p.ticket = ?1

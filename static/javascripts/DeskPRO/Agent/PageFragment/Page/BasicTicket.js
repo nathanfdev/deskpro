@@ -151,6 +151,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 	_initParticipants: function() {
 		$('.agent-participants-edit', this.wrapper).click(this.showAgentParticipants.bind(this));
+		$('.user-participants-edit', this.wrapper).click(this.showUserParticipants.bind(this));
 	},
 
 	showAgentParticipants: function(ev) {
@@ -194,6 +195,46 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			type: 'POST',
 			success: function(html) {
 				$('ul.agent-participants-list', this.wrapper).empty().html(html);
+			}
+		});
+	},
+
+	showUserParticipants: function(ev) {
+		if (!this.userFind) {
+
+			var self = this;
+
+			this.userFind = new DeskPRO.Agent.Widget.FindPerson({
+				onChoosePerson: function(ev) {
+					self.addUserPart(ev.personId);
+				}
+			});
+		}
+
+		this.userFind.open(ev);
+	},
+
+	addUserPart: function(personId) {
+		var personIds = [personId];
+		$('ul.user-participants-list > li', this.wrapper).each(function() {
+			personIds.push($(this).data('person-id'));
+		});
+
+		var data = [];
+		Array.each(personIds, function(id) {
+			data.push({
+				name: 'person_ids[]',
+				value: id
+			});
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/save-user-parts',
+			data: data,
+			dataType: 'html',
+			type: 'POST',
+			success: function(html) {
+				$('ul.user-participants-list', this.wrapper).empty().html(html);
 			}
 		});
 	},

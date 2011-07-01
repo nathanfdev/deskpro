@@ -755,7 +755,7 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
-	# save-agent-parts
+	# save-agent-parts, save-user-parts
 	############################################################################
 
 	public function saveAgentPartsAction($ticket_id)
@@ -779,6 +779,32 @@ class TicketController extends AbstractController
 		")->setParameter(1, $ticket)->execute();
 
 		return $this->render('AgentBundle:Ticket:view-participants-agents.html.twig', array(
+			'ticket' => $ticket,
+			'participants' => $participants
+		));
+	}
+
+	public function saveUserPartsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		$set_user_ids = $this->in->getCleanValueArray('person_ids', 'uint', 'discard');
+		$ticket->setParticipantUserIds($set_user_ids);
+
+		App::getOrm()->transactional(function($em) use ($ticket) {
+			$em->persist($ticket);
+			$em->flush();
+		});
+
+		$participants = APp::getOrm()->createQuery("
+			SELECT p
+			FROM DeskPRO:TicketParticipant p
+			LEFT JOIN p.person person
+			LEFT JOIN p.person_email person_email
+			WHERE p.ticket = ?1
+		")->setParameter(1, $ticket)->execute();
+
+		return $this->render('AgentBundle:Ticket:view-participants-users.html.twig', array(
 			'ticket' => $ticket,
 			'participants' => $participants
 		));
