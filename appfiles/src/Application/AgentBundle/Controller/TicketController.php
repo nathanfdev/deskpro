@@ -592,6 +592,10 @@ class TicketController extends AbstractController
 		$cc_person_ids = $this->in->getCleanValueArray('cc_person_ids', 'uint', 'discard');
 		$new_parts = $this->in->getCleanValueArray('new_parts', 'string', 'discard');
 
+		$this->em->beginTransaction();
+
+		$new_parts_to_people = array();
+
 		foreach ($new_parts as $email) {
 			$person = App::getEntityRepository('DeskPRO:Person')->findOneByEmail($email);
 			if (!$person) {
@@ -599,8 +603,12 @@ class TicketController extends AbstractController
 				$this->em->persist($person);
 			}
 
-			$ticket->addParticipantPerson($person);
+			$new_parts_to_people[] = $person;
+		}
+		$this->em->flush();
 
+		foreach ($new_parts_to_people as $person) {
+			$ticket->addParticipantPerson($person);
 			$cc_person_ids[] = $person['id'];
 		}
 
@@ -610,11 +618,10 @@ class TicketController extends AbstractController
 		foreach ($ticket->getParticipants() as $part) {
 			if (!in_array($part->person['id'], $cc_person_ids)) {
 				$part['default_on'] = false;
-				$em->persist($part);
+				$this->em->persist($part);
 			}
 		}
 
-		$this->em->beginTransaction();
 		$this->em->persist($ticket);
 		$this->em->flush();
 		$this->em->commit();

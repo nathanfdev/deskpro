@@ -649,7 +649,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 	isSendingReply: false,
 	_sendReply: function() {
-		this._handleSendReply($(':input, textarea, select', $('.reply-form-fields',this.ticketReply)));
+		this._handleSendReply($(':input, textarea, select', this.ticketReply));
 	},
 
 	_handleSendReply: function(els) {
@@ -657,12 +657,6 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	},
 
 	_handleSendReplySuccess: function(data) {
-
-		var spinnerContainer = $('.send-reply .spinner', this.ticketBar).hide().empty();
-		spinnerContainer.parent().removeClass('is-loading');
-
-		$('.send-reply button', this.ticketBar).show();
-
 		this.displayNewMessage(data.message_html);
 		this.newReplyNewProps(data);
 		this.afterNewReply();

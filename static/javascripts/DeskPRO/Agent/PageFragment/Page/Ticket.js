@@ -553,6 +553,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			success: function(data) {
 				this.isSendingReply = false;
 				this._handleSendReplySuccess(data);
+			},
+			complete: function() {
+				var spinnerContainer = $('.send-reply .spinner', this.ticketBar).hide().empty();
+				spinnerContainer.parent().removeClass('is-loading');
+
+				$('.send-reply button', this.ticketBar).show();
 			}
 		});
 	},
