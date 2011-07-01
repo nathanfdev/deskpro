@@ -44,6 +44,7 @@ class MainController extends AbstractController
 
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
+			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
 			'is_demo' => $this->in->checkIsset('show-demo-bar'),
 			'last_message_id' => $last_message_id,
 			'js_debug' => App::getConfig('debug.js', array()),

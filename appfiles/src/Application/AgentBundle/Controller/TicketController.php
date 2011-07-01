@@ -745,6 +745,30 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
+	# save-agent-parts
+	############################################################################
+
+	public function saveAgentPartsAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		echo count($ticket->participants);
+		exit;
+
+		$set_agent_ids = $this->in->getCleanValueArray('person_ids', 'uint', 'discard');
+		$ticket->setParticipantAgentIds($set_agent_ids);
+
+		App::getOrm()->transactional(function($em) use ($ticket) {
+			$em->persist($ticket);
+			$em->flush();
+		});
+
+		return $this->render('AgentBundle:Ticket:view-participants-agents.html.twig', array(
+			'ticket' => $ticket
+		));
+	}
+
+	############################################################################
 	# delete
 	############################################################################
 

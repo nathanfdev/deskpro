@@ -425,7 +425,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return array
 	 */
-	public function getParticipantIds()
+	public function getParticipantPeopleIds()
 	{
 		$ids = array();
 		foreach ($this->participants as $p) {
@@ -443,7 +443,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @param  $person_or_id
 	 * @return bool
 	 */
-	public function hasParticipant($person_or_id)
+	public function hasParticipantPerson($person_or_id)
 	{
 		$person_id = $person_or_id;
 		if ($person_or_id instanceof Person) {
@@ -467,7 +467,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @param $person_or_id
 	 * @return TicketParticipant
 	 */
-	public function addParticipant($person_or_id)
+	public function addParticipantPerson($person_or_id)
 	{
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
@@ -498,7 +498,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * @param  $person_or_id
 	 * @return null
 	 */
-	public function removeParticipant($person_or_id)
+	public function removeParticipantPerson($person_or_id)
 	{
 		$person = $person_or_id;
 		if (!($person instanceof Person)) {
@@ -515,6 +515,109 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return null;
 	}
 
+	public function addParticipant(TicketParticipant $part)
+	{
+		$part->ticket = $this;
+		$this->participants->add($part);
+	}
+
+
+	/**
+	 * Set agent participants. Agents are added/removed so that
+	 * all participants on the ticket are in the array.
+	 * 
+	 * @param array $set_agent_ids
+	 * @return void
+	 */
+	public function setParticipantAgentIds(array $set_agent_ids)
+	{
+		$got_agent_ids = array();
+		$remove_ks = array();
+
+		foreach ($this->participants as $k => $part) {
+			if (!$part->person['is_agent']) {
+				continue;
+			}
+
+			if (!in_array($part->person['id'], $set_agent_ids)) {
+				$remove_ks[] = $k;
+			} else {
+				$got_agent_ids[] = $part->person['id'];
+			}
+		}
+
+		foreach ($remove_ks as $k) {
+			$this->participants->remove($k);
+		}
+
+		$new_agent_ids = array_diff($set_agent_ids, $got_agent_ids);
+
+		if ($new_agent_ids) {
+			foreach ($new_agent_ids as $agent_id) {
+				$part = new \Application\DeskPRO\Entity\TicketParticipant();
+				$part['person_id'] = $agent_id;
+
+				$this->addParticipant($part);
+			}
+		}
+	}
+
+
+	/**
+	 * Set user participants.
+	 *
+	 * If item in $set_user_ids is an array, its expected to be
+	 * array(person_id, person_email_id)
+	 *
+	 * @param array $set_agent_ids
+	 * @return void
+	 */
+	public function setParticipantUserIds(array $set_user_ids)
+	{
+		$got_user_ids = array();
+
+		$set_user_ids_info = array();
+		foreach ($set_user_ids as $id) {
+			if (is_array($id)) {
+				$set_user_ids_info[$id[0]] = array($id[0], $id[1]);
+			} else {
+				$set_user_ids_info[$id] = array($id, null);
+			}
+		}
+
+		$set_user_ids = array_values($set_user_ids_info);
+
+		foreach ($this->participants as $k => $part) {
+			if ($part->person['is_agent']) continue;
+
+			if (!isset($set_user_ids_info[$part->person['id']])) {
+				$this->participants->remove($k);
+			} else {
+				$got_user_ids[] = $part->person['id'];
+
+				$info = $set_user_ids_info[$part->person['id']];
+				if ($info[1] AND $info[1] != $part->person_email['id']) {
+					$part->setPersonEmailId($info[1]);
+				}
+			}
+		}
+
+		$new_user_ids = array_diff($set_user_ids, $got_user_ids);
+
+		if ($new_user_ids) {
+			foreach ($new_user_ids as $person_id) {
+				$part = new \Application\DeskPRO\Entity\TicketParticipant();
+				$part['person_id'] = $person_id;
+
+				$info = $set_user_ids_info[$part->person['id']];
+				if ($info[1]) {
+					$part->setPersonEmailId($info[1]);
+				}
+
+				$this->addParticipant($part);
+			}
+		}
+	}
 
 
 	/**

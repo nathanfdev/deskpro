@@ -59,7 +59,7 @@ class Person extends EntityRepository
 		$ret = array();
 		foreach ($for_ids as $id) {
 			if (isset($this->_agent_names[$id])) {
-				$ret[] = $this->_agent_names[$id];
+				$ret[$id] = $this->_agent_names[$id];
 			}
 		}
 

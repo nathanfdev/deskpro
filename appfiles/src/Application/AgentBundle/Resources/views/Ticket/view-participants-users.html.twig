@@ -1,0 +1,7 @@
+{% for part in ticket.participants %}
+	{% if not part.person.is_agent %}
+		<li class="person-{{part.person.id}}">
+			<img src="{{ part.person.getPictureUrl(15) }}" width="15" height="15" /> {{ part.person.email_address }}
+		<li>
+	{% endif %}
+{% endfor %}

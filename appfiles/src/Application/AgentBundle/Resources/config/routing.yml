@@ -574,6 +574,11 @@ agent_ticket_ajax_getmessages:
   defaults: { _controller: AgentBundle:Ticket:ajaxGetMessages }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_saveagentparts:
+  pattern: /ticket/{ticket_id}/save-agent-parts
+  defaults: { _controller: AgentBundle:Ticket:saveAgentParts }
+  requirements: { ticket_id: "\d+" }
+
 agent_ticket_delete:
   pattern: /tickets/{ticket_id}/delete
   defaults: { _controller: AgentBundle:Ticket:delete }
