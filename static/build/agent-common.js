@@ -55,12 +55,13 @@ delete k.Extends;if(k.Implements){for(var g=0,e=k.Implements.length;g!=e;++g){va
 this.SUPER=m;return this};if(b){for(c in b){if(!b.prototype||b.prototype.hasOwnProperty(c)){j[c]=b[c]}}}j.prototype=h;j.constructor=j;
 return j};Orb.createNamespace("Orb.Util");Orb.Util.Options={setOptions:function(b){var a=$.extend(true,{},this.options||{},b);
 if(this.addEvent){for(var c in a){if(typeof a[c]!="function"||!(/^on[A-Z]/).test(c)){continue}this.addEvent(c,a[c]);delete a[c]
-}}this.options=a;return this}};Orb.createNamespace("Orb.Util");Orb.Util.Events={__initEventsObj:function(){if(!this.__events){this.__events={}
-}},normalizeEventName:function(a){return a.toLowerCase().replace(/^on/,"")},addEvent:function(c,b,a){c=this.normalizeEventName(c);
-this.__initEventsObj();this.__events[c]=(this.__events[c]||[]).include(b);if(a){b.internal=true}return this},addEvents:function(a){for(var b in a){this.addEvent(b,a[b])
-}return this},fireEvent:function(d,b,a){d=this.normalizeEventName(d);this.__initEventsObj();var c=this.__events[d];if(!c){return this
-}b=Array.from(b);c.each(function(e){if(a){e.delay(a,this,b)}else{e.apply(this,b)}},this);return this},removeEvent:function(d,c){d=this.normalizeEventName(d);
-this.__initEventsObj();var b=this.__events[d];if(b&&!c.internal){var a=b.indexOf(c);if(a!=-1){delete b[a]}}return this},removeEvents:function(c){var d;
+}}this.options=a;return this},getOption:function(b,a){if(typeof this.options[b]===undefined){return a}return this.options[b]
+}};Orb.createNamespace("Orb.Util");Orb.Util.Events={__initEventsObj:function(){if(!this.__events){this.__events={}}},normalizeEventName:function(a){return a.toLowerCase().replace(/^on/,"")
+},addEvent:function(c,b,a){c=this.normalizeEventName(c);this.__initEventsObj();this.__events[c]=(this.__events[c]||[]).include(b);
+if(a){b.internal=true}return this},addEvents:function(a){for(var b in a){this.addEvent(b,a[b])}return this},fireEvent:function(d,b,a){d=this.normalizeEventName(d);
+this.__initEventsObj();var c=this.__events[d];if(!c){return this}b=Array.from(b);c.each(function(e){if(a){e.delay(a,this,b)
+}else{e.apply(this,b)}},this);return this},removeEvent:function(d,c){d=this.normalizeEventName(d);this.__initEventsObj();
+var b=this.__events[d];if(b&&!c.internal){var a=b.indexOf(c);if(a!=-1){delete b[a]}}return this},removeEvents:function(c){var d;
 if(typeOf(c)=="object"){for(d in c){this.removeEvent(d,c[d])}return this}this.__initEventsObj();for(d in this.__events){if(c&&c!=d){continue
 }var b=this.__events[d];for(var a=b.length;a--;){if(a in b){this.removeEvent(d,b[a])}}}return this}};Orb.createNamespace("Orb.Compat.WebForms");
 Orb.Compat.WebForms.isPlaceholderSupported=function(){this.isSupported=null;if(this.isSupported===null){this.isSupported=("placeholder" in document.createElement(input.tagName))
@@ -100,7 +101,7 @@ DeskPRO.AjaxPoller.MessagePoller=new Orb.Class({Extends:DeskPRO.AjaxPoller.Polle
 this.messageBroker=b;this.addEvent("ajaxSuccess",this._sendMessages.bind(this),true)},getMessageBroker:function(){return this.messageBroker
 },_sendMessages:function(b){if(b.messages===undefined||typeOf(b.messages)!="array"){return}var a=null;while(a=b.messages.shift()){this.messageBroker.sendMessage(a[0],a[1])
 }}});Orb.createNamespace("DeskPRO.MessageChanneler");DeskPRO.MessageChanneler.AbstractChanneler=new Orb.Class({Implements:[Orb.Util.Options],initialize:function(b,a){this.channels=[];
-this.options={};this.messageBroker=b;if(a){this.setOptions(a)}this._init()},_init:function(){},subscribeChannel:function(a){},_doneSubscribeChannels:function(a){Array.each(a,function(b){this.channels.include(b)
+this.options={};this.messageBroker=b;if(a){this.setOptions(a)}this._init()},_init:function(){},subscribeChannel:function(a,b){},_doneSubscribeChannels:function(a){Array.each(a,function(b){this.channels.include(b)
 },this)},unsubscribeChannel:function(a){},_doneSubscribeChannels:function(a){Array.each(a,function(b){this.channels.erase(b)
 },this)},sendMessage:function(b,a){if(DeskPRO_Window&&DeskPRO_Window.getDebug("logClientMessages")){console.log("channel(%s): %o",b,a)
 }this.messageBroker.sendMessage(b,a)}});Orb.createNamespace("DeskPRO.MessageChanneler");DeskPRO.MessageChanneler.AjaxChanneler=new Class({Extends:DeskPRO.MessageChanneler.AbstractChanneler,_init:function(){this._add_subs=[];
@@ -108,9 +109,9 @@ this._add_subs_timeout=null;this._del_subs=[];this._del_subs_timeout=null;this.l
 this.poller.addData((function(){if(!this.lastMessageId){return null}return{since:this.lastMessageId}}).bind(this),"since",{recurring:true});
 this.poller.addEvent("ajaxSuccess",this.handleMessageAjax.bind(this));if(this.options.lastMessageId){this.lastMessageId=this.options.lastMessageId
 }},handleMessageAjax:function(a){if(a.last_id){this.lastMessageId=a.last_id}if(a.messages){Array.each(a.messages,function(b){this.sendMessage(b[0],b[1])
-},this)}},subscribeChannel:function(a){this._add_subs.include(a);if(this._add_subs_timeout){window.clearTimeout(this._add_subs_timeout)
-}this._add_subs_timeout=this._sendSubscribeChannels.delay(300,this)},_sendSubscribeChannels:function(){var a=[];Array.each(this._add_subs,function(b){a.push({name:"channels[]",value:b})
-});this._add_subs=[];$.ajax({url:this.options.ajaxSubscribeUrl,type:"POST",data:a,dataType:"json",context:this,success:function(b){this._doneSubscribeChannels(b.subscribed_channels)
+},this)}},subscribeChannel:function(a,b){this._add_subs.include(a);if(this._add_subs_timeout){window.clearTimeout(this._add_subs_timeout)
+}this._add_subs_timeout=this._sendSubscribeChannels.delay(300,this);this.messageBroker.addMessageListener(a,b)},_sendSubscribeChannels:function(){var a=[];
+Array.each(this._add_subs,function(b){a.push({name:"channels[]",value:b})});this._add_subs=[];$.ajax({url:this.options.ajaxSubscribeUrl,type:"POST",data:a,dataType:"json",context:this,success:function(b){this._doneSubscribeChannels(b.subscribed_channels)
 }})},unsubscribeChannel:function(a){this._del_subs.include(a);if(this._del_subs_timeout){window.clearTimeout(this._del_subs_timeout)
 }this._del_subs_timeout=this._sendUnsubscribeChannels.delay(300,this)},_sendUnsubscribeChannels:function(){var a=[];Array.each(this._add_subs,function(b){a.push({name:"channels[]",value:b})
 });this._add_subs=[];$.ajax({url:this.options.ajaxUnsubscribeUrl,type:"POST",data:a,dataType:"json",context:this,success:function(b){this._doneUnsubscribeChannels(b.unsubscribed_channels)

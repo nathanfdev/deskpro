@@ -1,8 +1,9 @@
 Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.Basic=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,initPage:function(a){$("li",a).click(function(){DeskPRO_Window.runPageRouteFromElement(this)
-})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,contentWrapper:null,barWrapper:null,layout:null,overlay:null,appendUrl:null,actionsBarHelper:null,resultTypeName:"basic",resultTypeId:"general",changeManager:null,loadFirst:false,initPage:function(d){this.loadFirst=this.getMetaData("loadFirst");
-if(this.loadFirst){this.loadFirst=false;var b=$("td.subject:first a.with-route:first",d);if(b.length){DeskPRO_Window.runPageRouteFromElement(b)
-}}this.wrapper=$(d);this.topSection=$(".list-top-area",this.wrapper);this.barWrapper=$("div.layout-footer:first",this.wrapper);
-if(!this.barWrapper.length){var f=true}else{var f=false}this.contentWrapper=$(".content:first",this.wrapper);this.listColDrag=new DeskPRO.Agent.PageHelper.ListColDrag({table:$("table:first",this.contentWrapper).get(0),onlyRowSel:".line-2",onlyRowColOffset:2});
+})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,contentWrapper:null,barWrapper:null,layout:null,overlay:null,appendUrl:null,actionsBarHelper:null,resultTypeName:"basic",resultTypeId:"general",changeManager:null,loadFirst:false,initPage:function(d){window.TICKET_LIST=this;
+this.loadFirst=this.getMetaData("loadFirst");if(this.loadFirst){this.loadFirst=false;var b=$("td.subject:first a.with-route:first",d);
+if(b.length){DeskPRO_Window.runPageRouteFromElement(b)}}this.wrapper=$(d);this.topSection=$(".list-top-area",this.wrapper);
+this.barWrapper=$("div.layout-footer:first",this.wrapper);if(!this.barWrapper.length){var f=true}else{var f=false}this.contentWrapper=$(".content:first",this.wrapper);
+this.listColDrag=new DeskPRO.Agent.PageHelper.ListColDrag({table:$("table:first",this.contentWrapper).get(0),onlyRowSel:".line-2",onlyRowColOffset:2});
 this.listColResize=new DeskPRO.Agent.PageHelper.ListColResize({table:$("table:first",this.contentWrapper).get(0)});var e=Orb.getUniqueId("listpane_");
 var c=Orb.getUniqueId("listpane_");this.contentWrapper.attr("id",e);this.barWrapper.attr("id",c);if(f){this.layout={wrapper:this.wrapper,paneWrapper:this.wrapper.parent(),content:this.contentWrapper,footer:$(),isFooterOpen:false,doLayout:function(){},expandFooter:function(){},collapseFooter:function(){}}
 }else{this.layout=new DeskPRO.Agent.Layout.FooterActionbarLayout(this.wrapper)}this.changeManager=new DeskPRO.Agent.TicketList.ChangeManager(this);
@@ -15,15 +16,17 @@ Array.each(g,function(h){a.push("tr.ticket-"+h)});a=a.join(", ");$(a,this.conten
 })}).bind(this));DeskPRO_Window.getMessageBroker().addMessageListener("window.innerLayout.resize",(function(){this._handleResize()
 }).bind(this));this.contentWrapper.addClass("scroll-content").tinyscrollbar()},_handleResize:function(){if(!this.layout){return
 }this.layout.resizeAll()},destroyPage:function(){if(this.flagMenu){this.flagMenu.destroy()}if(this.displayOptionsOverlay){this.displayOptionsOverlay.destroy()
-}},_initSearchOptions:function(){var b=$(".summary .edit",this.topSection);b.click(this.showSearchForm.bind(this));var a=$("form.ticket-search-form",this.topSection);
+}},addTicket:function(b){if(!this.meta.loadSingleUrl){return}var a=this.meta.loadSingleUrl.replace("$ticket_id",b).replace("$view_type",this.meta.viewType);
+$.ajax({url:a,dataType:"html",context:this,success:function(c){var d=$(c);d.hide();$(".deskpro-results-list",this.wrapper).prepend(d);
+d.slideDown()}})},delTicket:function(b){var a=$(".ticket-"+b,this.contentWrapper);a.animate({height:"toggle",opacity:"toggle"},"slow",function(){a.remove()
+})},_initSearchOptions:function(){var b=$(".summary .edit",this.topSection);b.click(this.showSearchForm.bind(this));var a=$("form.ticket-search-form",this.topSection);
 a.submit(function(d){d.preventDefault();var c=a.attr("action");var e=a.serializeArray();DeskPRO_Window.loadListPane(c,{postData:e})
 })},showSearchForm:function(){var d=$(".search-form",this.topSection);var e=$(".search-builder-tpl",this.topSection);var b=new DeskPRO.Form.RuleBuilder(e);
-b.addEvent("newRow",function(f){$(".remove",f).click(function(){f.remove()})});$(".add-term",d).data("add-count",0).click(function(){var f=parseInt($(this).data("add-count"));
-var g="terms["+f+"]";$(this).data("add-count",f+1);b.addNewRow($(".search-terms",d),g)});var c=$(".search-form-data:first",this.topSection);
-if(c.length){var a=c.get(0).innerHTML;a=$.parseJSON(a);if(a.terms){Array.each(a.terms,function(h,f){var g="terms[initial_"+f+"]";
-b.addNewRow($(".search-terms",d),g,{type:h.type,op:h.op,options:h.options})})}if(a.order_by){$('[name="order_by"]',this.topSection).val(a.order_by)
-}c.remove()}$(".summary",this.topSection).slideUp();$(".form-panel",this.topSection).slideDown()},_initGroupingOptions:function(){var a=this;
-$("div.search-top ul.grouping-info > li[data-group-id]",this.contentWrapper).click(function(){a.switchToSubgroup($(this).data("group-id"),$(this))
+$(".add-term",d).data("add-count",0).click(function(){var f=parseInt($(this).data("add-count"));var g="terms["+f+"]";$(this).data("add-count",f+1);
+b.addNewRow($(".search-terms",d),g)});var c=$(".search-form-data:first",this.topSection);if(c.length){var a=c.get(0).innerHTML;
+a=$.parseJSON(a);if(a.terms){Array.each(a.terms,function(h,f){var g="terms[initial_"+f+"]";b.addNewRow($(".search-terms",d),g,{type:h.type,op:h.op,options:h.options})
+})}if(a.order_by){$('[name="order_by"]',this.topSection).val(a.order_by)}c.remove()}$(".summary",this.topSection).slideUp();
+$(".form-panel",this.topSection).slideDown()},_initGroupingOptions:function(){var a=this;$("div.search-top ul.grouping-info > li[data-group-id]",this.contentWrapper).click(function(){a.switchToSubgroup($(this).data("group-id"),$(this))
 })},switchToSubgroup:function(b,a){if(b=="NONE"){this.appendUrl=null}else{this.appendUrl="&group_field_id="+b}$("table.list tbody",this.contentWrapper).remove();
 this.loadResultPage(1);$("div.search-top ul.grouping-info > li",this.contentWrapper).removeClass("on");if(a){a.addClass("on")
 }},flagMenu:null,_initFlagMenu:function(){var a=this;this.flagMenu=new DeskPRO.UI.Menu({menuElement:$("> ul.ticket-flag-menu:first",this.contentWrapper),onItemClicked:function(b){a._handleFlagMenuClick(b)
