@@ -37,6 +37,3 @@
 [submodule "appfiles/vendor/Elastica"]
 	path = appfiles/vendor/Elastica
 	url = git://github.com/ruflin/Elastica.git
-[submodule "appfiles/vendor/FOQ/ElasticaBundle"]
-	path = appfiles/vendor/FOQ/ElasticaBundle
-	url = git://github.com/Exercise/ElasticaBundle.git
