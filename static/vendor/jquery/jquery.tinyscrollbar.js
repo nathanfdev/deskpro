@@ -34,11 +34,11 @@
 			return parentWrapper.tinyscrollbar(options);
 		}
 
-		var oViewport = { obj: $('.scroll-viewport', this) };
-		var oContent = { obj: $('.scroll-content', this) };
-		var oScrollbar = { obj: $('.scrollbar', this) };
-		var oTrack = { obj: $('.track', oScrollbar.obj) };
-		var oThumb = { obj: $('.thumb', oScrollbar.obj) };
+		var oViewport = { obj: $('.scroll-viewport:first', this) };
+		var oContent = { obj: $('.scroll-content:first', this) };
+		var oScrollbar = { obj: $('.scrollbar:first', this) };
+		var oTrack = { obj: $('.track:first', oScrollbar.obj) };
+		var oThumb = { obj: $('.thumb:first', oScrollbar.obj) };
 		var sAxis = options.axis == 'x', sDirection = sAxis ? 'left' : 'top', sSize = sAxis ? 'Width' : 'Height';
 		var iScroll, iPosition = { start: 0, now: 0 }, iMouse = {};
 		var wheelStopTimeout = null;
