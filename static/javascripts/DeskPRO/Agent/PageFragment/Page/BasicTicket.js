@@ -37,6 +37,8 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 			this._initReplyBar();
 			this._initAttachments();
+
+			this._initParticipants();
 		}
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
@@ -141,6 +143,59 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		this.propertyManagers[type] = manager;
 
 		return manager;
+	},
+
+	//#################################################################
+	//# Ticket Participants
+	//#################################################################
+
+	_initParticipants: function() {
+		$('.agent-participants-edit', this.wrapper).click(this.showAgentParticipants.bind(this));
+	},
+
+	showAgentParticipants: function(ev) {
+		if (!this.agentPartsSelector) {
+
+			var self = this;
+
+			var startWith = [];
+			$('ul.agent-participants-list > li', this.wrapper).each(function() {
+				startWith.push($(this).data('person-id'));
+			});
+
+			this.agentPartsSelector = new DeskPRO.Agent.Widget.AgentSelector({
+				agentList: $('#agent_selector_list'),
+				multipleChoice: true,
+				startWith: startWith,
+				onSelectionChanged: function() {
+					self.updateAgentParticipants();
+				}
+			});
+		}
+
+		this.agentPartsSelector.open(ev);
+	},
+
+	updateAgentParticipants: function() {
+		var agentIds = this.agentPartsSelector.getSelection();
+
+		var data = [];
+		Array.each(agentIds, function(id) {
+			data.push({
+				name: 'person_ids[]',
+				value: id
+			});
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/save-agent-parts',
+			data: data,
+			dataType: 'html',
+			type: 'POST',
+			success: function(html) {
+				$('ul.agent-participants-list', this.wrapper).empty().html(html);
+			}
+		});
 	},
 
 	//#################################################################

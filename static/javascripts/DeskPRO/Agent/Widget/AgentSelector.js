@@ -8,7 +8,8 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		this.options = {
 			agentList: null,
 			multipleChoice: false,
-			zIndex: 1000001
+			zIndex: 1000001,
+			startWith: []
 		};
 
 		if (options) this.setOptions(options);
@@ -44,6 +45,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 
 		var isMulti = this.options.multipleChoice;
 
+		var startWith = this.options.startWith;
 		var agentList = $('<ul />');
 		agentListItems.each(function() {
 			var li = $(this);
@@ -64,11 +66,16 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 			nameContainer.append('<a>' + Orb.escapeHtml(agentName) + '</a>');
 			nameContainer.appendTo(newLi);
 
+			var checked = '';
+			if (startWith.indexOf(agentId+'') !== -1 || startWith.indexOf(parseInt(agentId)) !== -1) {
+				checked = 'checked="checked"';
+			}
+
 			var choiceContainer = $('<div class="choice" />');
 			if (isMulti) {
-				var choice = $('<input type="checkbox" name="agents[]" value="'+agentId+'" class="agent-choice-' + agentId + '" />');
+				var choice = $('<input type="checkbox" name="agents[]" '+checked+' value="'+agentId+'" class="agent-choice-' + agentId + '" />');
 			} else {
-				var choice = $('<input type="radio" name="agents[]" value="'+agentId+'" class="agent-choice-' + agentId + '" />');
+				var choice = $('<input type="radio" name="agents[]" '+checked+' value="'+agentId+'" class="agent-choice-' + agentId + '" />');
 			}
 			choice.appendTo(choiceContainer);
 			choiceContainer.appendTo(newLi);
@@ -113,6 +120,12 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		this.listWrapper = listWrapper;
 
 		this.wrapper.appendTo('body');
+
+		var selectionString = this.getSelection();
+		if (this.options.multipleChoice) {
+			selectionString = selectionString.join(',');
+		}
+		this.previousSelection = selectionString;
 
 		var eventData = {
 			agentSelector: this,
