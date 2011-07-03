@@ -41,6 +41,8 @@ class TemplatingExtension extends \Twig_Extension
             'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
 			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
+			'url_full' => new \Twig_Function_Method($this, 'urlFull'),
+			'url_display' => new \Twig_Function_Method($this, 'urlDisplay'),
 			'html_js_pack_raw' => new \Twig_Function_Method($this, 'htmlJsPackRaw', array('is_safe' => array('html'))),
 			'html_js_pack' => new \Twig_Function_Method($this, 'htmlJsPack', array('is_safe' => array('html'))),
 			'deskpro_debug' => new \Twig_Function_Method($this, 'isDebugMode'),
@@ -56,6 +58,32 @@ class TemplatingExtension extends \Twig_Extension
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
         );
     }
+
+	/**
+	 * Just gets a full helpdesk URL minus the http:// and www bits.
+	 * Makes it prettier when displaying links in emails.
+	 * 
+	 * @param $name
+	 * @param array $parameters
+	 * @return mixed|string
+	 */
+	public function urlDisplay($name, array $parameters = array())
+	{
+		$url = $this->urlFull($name, $parameters);
+		$url = preg_replace('#^https?://(www\.)?#i', '', $url);
+
+		return $url;
+	}
+
+	public function urlFull($name, array $parameters = array())
+	{
+		// The last param of generate when true gives a full URL.
+		// But this is based off of 1) The current URL and 2) doesnt work in console
+		// So we use this for when we need to generate a helpdesk URL based on the setting
+
+		$url = $this->container->get('router')->getGenerator()->generate($name, $parameters, false);
+		return App::getSetting('core.deskpro_url') . ltrim($url, '/');
+	}
 
 	public function urlFragment($name, array $parameters = array())
 	{

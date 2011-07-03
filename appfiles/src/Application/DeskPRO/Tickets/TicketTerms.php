@@ -155,6 +155,27 @@ class TicketTerms
 	public function testTerm(Entity\Ticket $ticket, $term, $op, $choice)
 	{
 		switch ($term) {
+			case 'action_performer':
+				$is_agent = App::getCurrentPerson()->isAgent();
+
+				$choice = (array)$choice;
+				$choice = array_pop($choice);
+
+				if ($choice == 'agent') {
+					if ($is_agent) {
+						if ($op != 'is') return false;
+					} else {
+						if ($op != 'not') return false;
+					}
+				} else {
+					if ($is_agent) {
+						if ($op	!= 'not') return false;
+					} else {
+						if ($op != 'is') return false;
+					}
+				}
+				break;
+
 			case TicketSearch::TERM_DEPARTMENT:
 				$choice = App::getEntityRepository('DeskPRO:Department')->getIdsInTree($choice, true);
 				if (count($choice) == 1) $choice = $choice[0];

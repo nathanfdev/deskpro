@@ -184,7 +184,7 @@
 		</div>
 	{% endif %}
 	{% if trigger.event_trigger == 'new_reply' %}
-		<div class="type" title="Send new reply notification" data-rule-type="agent_notification_new_reply">
+		<div class="type" title="Send new reply notification to agents" data-rule-type="agent_notification_new_reply">
 			<div class="options">
 				Send to: <select name="send_to[]" multiple="multiple" size="5">
 					<optgroup label="Agents">
@@ -206,18 +206,9 @@
 				</select>
 			</div>
 		</div>
-		<div class="type" title="Send new ticket notification to users" data-rule-type="user_notification_new_reply">
+		<div class="type" title="Send new reply notification to users" data-rule-type="user_notification_new_reply">
 			<div class="options">
-				Send to: <select name="send_to[]" multiple="multiple" size="5">
-					<option value="person">User who sent the reply (confirmation)</option>
-					<option value="people_participants">Users added as participants</option>
-				</select>
-				From: <select name="from_address[]">
-					<option value="">Default</option>
-					{% for id,title in from_names %}
-						<option value="{{id}}">{{title}}</option>
-					{% endfor %}
-				</select>
+				<input type="hidden" name="user_notification_new_reply" value="1" />
 			</div>
 		</div>
 	{% endif %}

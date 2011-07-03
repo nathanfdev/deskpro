@@ -184,6 +184,29 @@ $t['actions'] = array(
 \Application\DeskPRO\App::getOrm()->flush();
 \Application\DeskPRO\App::getOrm()->commit();
 
+##BEGIN:create_ticket_trigger.newreply_notify_users##
+\Application\DeskPRO\App::getOrm()->beginTransaction();
+$t = new \Application\DeskPRO\Entity\TicketTrigger();
+$t['title'] = 'New Agent Reply: Send notification to users';
+$t['event_trigger'] = 'new_reply';
+$t['is_enabled'] = true;
+$t['terms'] = array(
+	array(
+		'type' => 'action_performer',
+		'op' => 'is',
+		'options' => array('action_performer' => 'agent')
+	)
+);
+$t['actions'] = array(
+	array(
+		'type' => 'user_notification_new_reply',
+		'options' => array('user_notification_new_reply' => 1)
+	)
+);
+\Application\DeskPRO\App::getOrm()->persist($t);
+\Application\DeskPRO\App::getOrm()->flush();
+\Application\DeskPRO\App::getOrm()->commit();
+
 ##BEGIN:create_style.master##
 \Application\DeskPRO\App::getOrm()->beginTransaction();
 $s = new \Application\DeskPRO\Entity\Style();

@@ -14,6 +14,22 @@
 	<div class="type" title="Choose criteria..." data-rule-type="">
 	</div>
 {% endif %}
+	{% if with_change_terms %}
+		<div class="type" title="Performer" data-rule-type="action_performer">
+			<div class="op">
+				<select name="op" class="op">
+					<option value="is">is</option>
+					<option value="not">is not</option>
+				</select>
+			</div>
+			<div class="options">
+				<select name="action_performer">
+					<option value="agent">Agent</option>
+					<option value="user">User</option>
+				</select>
+			</div>
+		</div>
+	{% endif %}
 	<div class="type" title="Originated interface" data-rule-type="creation_system">
 		<div class="op">
 			<select name="op" class="op">

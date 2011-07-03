@@ -29,28 +29,10 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
-		$user_ids = $this->getRealSendTo();
+		$vars = array(
+			'email_subject' => new DelegatePhrase('tickets_user_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
+		);
 
-		if (!$user_ids) {
-			return;
-		}
-
-		foreach ($user_ids as $user_id) {
-			$user = App::getEntityRepository('DeskPRO:Person')->find($user_id);
-
-			if ($user == $ticket->person) {
-				$vars = array(
-					'email_subject' => new DelegatePhrase('tickets_user_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
-				);
-
-				$this->doSend('DeskPRO:emails_user:ticket-reply', $vars, $ticket, $person);
-			} else {
-				$vars = array(
-					'email_subject' => new DelegatePhrase('tickets_user_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
-				);
-
-				$this->doSend('DeskPRO:emails_user:ticket-reply-participant', $vars, $ticket, $person);
-			}
-		}
+		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket);
 	}
 }
