@@ -1,0 +1,21 @@
+parameters:
+  kernel.include_core_classes: false
+  file_locator.class: "Application\DeskPRO\HttpKernel\Config\FileLocator"
+  templating.helper.assets.class: "Application\DeskPRO\\Templating\Helper\AssetsHelper"
+
+framework:
+  charset: UTF-8
+#  profiler: { only_exceptions: false }
+  secret: mube224etsmhxky1gvwixc4b
+  templating:
+    engines: ['php', 'twig']
+    assets_base_urls: "BASE_PATH/static/"
+  validation:
+    enabled: false
+  router:   { resource: "%kernel.root_dir%/config/routing_sys.yml" }
+  validation:
+    enabled: true
+  session:
+    default_locale: en
+    lifetime: 3600
+    auto_start: true

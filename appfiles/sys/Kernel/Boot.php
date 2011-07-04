@@ -28,6 +28,8 @@ class Boot
 
 		if (preg_match('#^/(agent|admin|api|dev)/#', $request->getPathInfo())) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
+		} elseif (preg_match('#^/_sys/?#', $request->getPathInfo())) {
+			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
 		}
 
 		$kernel = new $kernel_class($env, $debug);

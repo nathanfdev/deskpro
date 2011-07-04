@@ -14,8 +14,8 @@
 		});
 	</script>
 
-	<meta property="og:site_name" content="{{deskpro_setting('core.core.site_name')|default(deskpro_setting('core.core.helpdesk_name'))}}" />
-	{% if deskpro_setting('core.facebook_admins') %}<meta property="fb:admins" content="{{deskpro_setting('core.facebook_admins')}}" />{% endif %}
+	<meta property="og:site_name" content="{{ app.getSetting('core.core.site_name')|default(app.getSetting('core.core.helpdesk_name'))}}" />
+	{% if app.getSetting('core.facebook_admins') %}<meta property="fb:admins" content="{{app.getSetting('core.facebook_admins')}}" />{% endif %}
 
 	{% block head %}{% endblock %}
 </head>

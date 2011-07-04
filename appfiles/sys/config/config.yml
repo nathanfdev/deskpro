@@ -11,6 +11,7 @@ parameters:
   router.options.generator_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
   router.options.generator_base_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
   templating.globals.class: "Application\DeskPRO\Templating\GlobalVariables"
+  templating.helper.assets.class: "Application\DeskPRO\\Templating\Helper\AssetsHelper"
   router.options.generator_dumper_class: "Application\DeskPRO\Routing\Generator\Dumper\\PhpGeneratorDumper"
 
 services:
@@ -40,7 +41,7 @@ framework:
   secret: mube224etsmhxky1gvwixc4b
   templating:
     engines: ['twig', 'php', 'jsonphp']
-    assets_base_urls: "/dp_400/static/" # replace with your real basepath
+    assets_base_urls: "BASE_PATH/static/"
   validation:
     enabled: true
   session:

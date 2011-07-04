@@ -1,0 +1,7 @@
+sys:
+  pattern: /
+  defaults: { _controller: SysBundle:Main:index }
+
+sys_test:
+  pattern: /test
+  defaults: { _controller: SysBundle:Test:test }

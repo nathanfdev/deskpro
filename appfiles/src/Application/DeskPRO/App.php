@@ -140,7 +140,7 @@ class App
 	 *
 	 * @param \Application\DeskPRO\Kernel\Kernel $kernel
 	 */
-	public static function setKernel(\DeskPRO\Kernel\AbstractKernel $kernel)
+	public static function setKernel(\Symfony\Component\HttpKernel\Kernel $kernel)
 	{
 		if (self::$_kernel !== null) {
 			throw new \BadMethodCallException('The kernel has already been set');
