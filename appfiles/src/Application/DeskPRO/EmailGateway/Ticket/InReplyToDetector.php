@@ -35,35 +35,41 @@ class InReplyToDetector implements TicketDetectorInterface
 	public function findExistingTicket(AbstractReader $reader)
 	{
 		$this->_found_person = null;
+
+		#------------------------------
+		# Fetch PTAC from in-reply-to header
+		#------------------------------
+
 		$in_reply_to_objs = $reader->getHeader('In-Reply-To');
 		if (!$in_reply_to_objs OR !$in_reply_to_objs->header_parts) return null;
 
+		// If theres more than one, we'll just combine them into one string and
+		// use whichever one first matches.
+		
 		$in_reply_to = array();
 		foreach ($in_reply_to_objs->header_parts as $h) {
 			$in_reply_to[] = $h;
 		}
 
 		$in_reply_to = implode(' ', $in_reply_to);
-		
-		$match_ref = Strings::extractRegexMatch('#ticket\-(.*?)@#', $in_reply_to, 1);
-		if (!$match_ref) return null;
 
-		$ticket = null;
-		try {
-			$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($match_ref);
-		} catch (\Exception $e) {}
+		$match_ptac = Strings::extractRegexMatch('#t([A-Z]{6,11})@#', $in_reply_to, 1);
+		if (!$match_ptac) return null;
 
-		if (!$ticket) return null;
+		#------------------------------
+		# Try to find the ticket and user now
+		#------------------------------
 
-		$person = $ticket->person;
+		$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($match_ptac);
 
-		if (!$person->findEmailAddress($reader->getFromAddress()->email)) {
-			return null;
+		if ($ticket) {
+
+			$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+
+			return $ticket;
 		}
 
-		$this->_found_person = $person;
-
-		return $ticket;
+		return null;
 	}
 
 	/**
@@ -76,5 +82,17 @@ class InReplyToDetector implements TicketDetectorInterface
 		}
 
 		return null;
+	}
+
+
+	/**
+	 * Add unknown users, the reply code in the address is the PTAC
+	 * so basically a passowrd
+	 *
+	 * @return void
+	 */
+	public function canAddUnknownPerson()
+	{
+		return true;
 	}
 }

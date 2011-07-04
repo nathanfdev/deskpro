@@ -49,6 +49,9 @@ class CoreExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\Plugin\\PluginManager', array(new Reference('doctrine.orm.entity_manager')));
 		$container->setDefinition('deskpro.plugin_manager', $definition);
 
+		$definition = new Definition('Application\\DeskPRO\\RefGenerator\\RandomRef', array(new Reference('doctrine.orm.entity_manager')));
+		$container->setDefinition('deskpro.ref_generator', $definition);
+
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);

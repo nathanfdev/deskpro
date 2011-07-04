@@ -30,17 +30,27 @@ class CodeTicketDetector implements TicketDetectorInterface
 	protected $_found_tac = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $_found_person = null;
+
+	/**
 	 * @return \Application\DeskPRO\Entity\Ticket
 	 */
 	public function findExistingTicket(AbstractReader $reader)
 	{
 		$this->_found_tac = null;
+		$this->_found_person = null;
 
 		$search_text = array();
 		$search_text[] = $reader->getSubject()->subject;
 		$search_text[] = $reader->getBodyText()->getBody();
 		$search_text[] = strip_tags($reader->getBodyHtml()->getBody());
 		$search_text = implode(' ', $search_text);
+
+		#------------------------------
+		# TAC
+		#------------------------------
 
 		$matches = null;
 		if (!preg_match_all('/\(#([A-Z]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
@@ -57,6 +67,26 @@ class CodeTicketDetector implements TicketDetectorInterface
 			return $ticket;
 		}
 
+		#------------------------------
+		# PTAC
+		#------------------------------
+
+		$matches = null;
+		if (!preg_match_all('/\(#([A-Z]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
+			return null;
+		}
+
+		foreach ($matches as $m) {
+			$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
+
+			if ($ticket) {
+
+				$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+
+				return $ticket;
+			}
+		}
+
 		return null;
 	}
 
@@ -68,7 +98,20 @@ class CodeTicketDetector implements TicketDetectorInterface
 		if ($this->_found_tac) {
 			return $this->_found_tac->person;
 		}
+		if ($this->_found_person) {
+			return $this->_found_person;
+		}
 
 		return null;
+	}
+
+	/**
+	 * Unknow people are added as CC's. If you know the P/TAC then it's as good as a passowrd.
+	 * 
+	 * @return bool
+	 */
+	public function canAddUnknownPerson()
+	{
+		return true;
 	}
 }

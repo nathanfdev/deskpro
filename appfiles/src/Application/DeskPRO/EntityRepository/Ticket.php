@@ -19,6 +19,26 @@ use \Orb\Util\Numbers;
 
 class Ticket extends EntityRepository
 {
+	public function getByAccessCode($access_code)
+	{
+		$info = Entity\Ticket::decodeAccessCode($access_code);
+		if (!$info) {
+			return null;
+		}
+
+		try {
+			$rec = $this->getEntityManager()->createQuery("
+				SELECT t
+				FROM DeskPRO:Ticket t
+				WHERE t.id = :ticket_id AND t.auth = :auth
+			")->setParameters($info)->setMaxResults(1)->getSingleResult();
+
+			return $rec;
+		} catch (\Doctrine\ORM\NoResultException $e) {
+			return null;
+		}
+	}
+	
 	public function getTicketsFromIds(array $ids)
 	{
 		// Only valid ID's please :)

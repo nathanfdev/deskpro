@@ -34,9 +34,9 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	protected $account_pattern;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketAccessCode
+	 * @var \Application\DeskPRO\Entity\Person
 	 */
-	protected $_found_tac = null;
+	protected $_found_person = null;
 
 	/**
 	 * $account_pattern needs to be an email address with the special token TICKET_CODE
@@ -67,19 +67,27 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		foreach ($reader->getToAddresses() as $addr) {
 			$search_addr[] = $addr->email;
 		}
+		foreach ($reader->getCcAddresses() as $addr) {
+			$search_addr[] = $addr->email;
+		}
 
 		// Easier to run regex on all at once
 		$search_addr = ' ' . implode(' ', $search_addr) . ' ';
 
-		$access_code = Strings::extractRegexMatch($this->account_pattern, $search_addr, 'auth');
-		if (!$access_code) {
-			return null;
-		}
+		$match_ptac = Strings::extractRegexMatch($this->account_pattern, $search_addr, 'auth');
+		if (!$match_ptac) return null;
 
-		$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($access_code);
-		if ($tac) {
-			$this->_found_tac = $tac;
-			return $tac->ticket;
+		#------------------------------
+		# Try to find the ticket and user now
+		#------------------------------
+
+		$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($match_ptac);
+
+		if ($ticket) {
+
+			$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+
+			return $ticket;
 		}
 
 		return null;
@@ -95,5 +103,10 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 		}
 
 		return null;
+	}
+
+	public function canAddUnknownPerson()
+	{
+		return true;
 	}
 }

@@ -18,6 +18,7 @@ use \Application\DeskPRO\EmailGateway\Ticket\CodeTicketDetector;
 use \Application\DeskPRO\EmailGateway\Ticket\ToEmailTicketDetector;
 use \Application\DeskPRO\EmailGateway\Ticket\InReplyToDetector;
 use \Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
+use \Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
 
 class TicketGateway extends AbstractGateway
 {
@@ -62,9 +63,15 @@ class TicketGateway extends AbstractGateway
 		}
 
 		if (!$ticket) {
-			// Finally try a subject match
+			// Try ref match
+			$detector = new SubjectRefMatchDetector();
+			$ticket = $detector->findExistingTicket($this->reader);
+		}
+
+		if (!$ticket) {
+			// Finally try subject string match
 			$detector = new SubjectMatchDetector();
-			//$ticket = $detector->findExistingTicket($this->reader);
+			$ticket = $detector->findExistingTicket($this->reader);
 		}
 
 		if ($ticket) {
@@ -84,6 +91,11 @@ class TicketGateway extends AbstractGateway
 			if (!$ticket->hasParticipant($person)) {
 				$person = null;
 			}
+		}
+
+		if ($ticket AND !$person AND $detector->canAddUnknownPerson()) {
+			$person = Entity\Person::newContactPerson(array('email' => $this->reader->getFromAddress()));
+			$ticket->addParticipantPerson($person);
 		}
 
 		$ev = $this->createGatewayEvent(array(
@@ -205,8 +217,8 @@ class TicketGateway extends AbstractGateway
 			App::getOrm()->persist($cc_person);
 			App::getOrm()->flush();
 
-			if (!$ticket->hasParticipant($cc_person)) {
-				$ticket->addParticipant($cc_person);
+			if (!$ticket->hasParticipantPerson($cc_person)) {
+				$ticket->addParticipantPersons($cc_person);
 			}
 
 			App::getOrm()->persist($ticket);

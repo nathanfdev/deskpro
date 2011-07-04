@@ -315,7 +315,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$len = App::getSetting('core_tickets.ptac_auth_code_len');
 		$this->auth = Strings::random($len, Strings::CHARS_KEY);
 		
-		$this->ref = Strings::random(12, Strings::CHARS_KEY);
+		$this->ref = App::get('deskpro.ref_generator')->generateReference('DeskPRO:Ticket');
 
 		if ($tracker) {
 			$this->_initTicketLogger();
@@ -347,6 +347,31 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_user_participants;
+	}
+
+
+	/**
+	 * Try to find a user that is a part of this tikcet based on
+	 * their email address.
+	 * @param $email_address
+	 * @return Person
+	 */
+	public function findUserByEmail($email_address)
+	{
+		// The author
+		if ($this->person->findEmailAddress($email_address)) {
+			return $this->person;
+
+		// Any of the participants
+		} else {
+			foreach ($this->getUserParticipants() as $part) {
+				if ($part->person->findEmailAddress($email_address)) {
+					return $part->person;
+				}
+			}
+		}
+
+		return null;
 	}
 
 

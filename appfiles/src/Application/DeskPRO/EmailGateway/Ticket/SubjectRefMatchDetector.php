@@ -17,12 +17,9 @@ use \Application\DeskPRO\Entity\Ticket;
 use Orb\Util\Strings;
 
 /**
- * Detects a ticket based off of a common subject and From email address.
- * For example "RE: Something"
- *
- * @see \Application\DeskPRO\Entity\TicketAccessCode
+ * Detects a ticket based off of REF codes in the subject
  */
-class SubjectMatchDetector implements TicketDetectorInterface
+class SubjectRefMatchDetector implements TicketDetectorInterface
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -48,25 +45,16 @@ class SubjectMatchDetector implements TicketDetectorInterface
 
 		$subject = trim($reader->getSubject()->subject);
 
-		// Strip off Re: prefix (and alternatives in some other langs)
-		$subject = preg_replace('#^(RE|VS|AW|SV):#i', '', $subject);
-		$subject = trim($subject);
+		$ticket_refs = App::get('deskpro.ref_generator')->extractRefs($subject);
+		if (!$ticket_refs) return nulk;
 
-		// Now lets try to find it...
-		$ticket_ids = App::getDb()->fetchAllCol("
-			SELECT id
-			FROM tickets
-			WHERE subject = ? AND date_created > ?
-			ORDER BY id DESC
-			LIMIT 20
-		", array($subject, $this->_time_cutoff));
+		foreach ($ticket_refs as $ref) {
+			try {
+				$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ref);
+			} catch (\Exception $e) {
+				continue;
+			}
 
-		if (!$ticket_ids) return null;
-
-		$tickets = App::getEntityRepository('DeskPRO:Ticket')->getTicketsFromIds($ticket_ids);
-		$from = $reader->getFromAddress()->email;
-
-		foreach ($tickets as $ticket) {
 			if ($p = $ticket->findUserByEmail($from)) {
 				$this->_found_person = $p;
 				return $ticket;

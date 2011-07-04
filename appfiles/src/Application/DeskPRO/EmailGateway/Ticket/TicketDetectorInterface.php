@@ -41,4 +41,12 @@ interface TicketDetectorInterface
 	 * @return \Application\DeskPRO\Entity\Person
 	 */
 	public function findExistingPerson(Ticket $ticket, AbstractReader $reader);
+
+	/**
+	 * If a ticket is found but a person isn't, should we add the new email address
+	 * as a new CC or should we deny the message?
+	 * 
+	 * @return void
+	 */
+	public function canAddUnknownPerson();
 }
