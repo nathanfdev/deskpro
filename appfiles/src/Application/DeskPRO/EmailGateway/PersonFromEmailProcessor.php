@@ -60,11 +60,13 @@ class PersonFromEmailProcessor
 	/**
 	 * Creates a person based on the From email address.
 	 *
+	 * @param $from
+	 * @param bool $do_validated True to validate user, false to use whatever is default
 	 * @return \Application\DeskPRO\Entity\Person
 	 */
-	public function createPerson(EmailAddress $from)
+	public function createPerson(EmailAddress $from, $do_validated = false)
 	{
-		$person = Entity\Person::newRegularPerson();
+		$person = Entity\Person::newContactPerson();
 		$person['name'] = $from->getName();
 
 		App::getOrm()->persist($person);
@@ -73,6 +75,12 @@ class PersonFromEmailProcessor
 		$email = new Entity\PersonEmail();
 		$email['email'] = $from->getEmail();
 		$person->addEmailAddress($email);
+
+		if ($do_validated) {
+			$email['is_validated'] = true;
+			$person['is_confirmed'] = true;
+			$person['is_agent_confirmed'] = true;
+		}
 
 		App::getOrm()->persist($email);
 		APp::getOrm()->flush();

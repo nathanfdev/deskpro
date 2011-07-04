@@ -10,30 +10,38 @@
 
 namespace Application\DeskPRO\EmailGateway;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\EmailGateway\AbstractGateway;
-use \Application\DeskPRO\EmailGateway\Reader\AbstractReader;
-use \Application\DeskPRO\EmailGateway\Ticket\CodeTicketDetector;
-use \Application\DeskPRO\EmailGateway\Ticket\ToEmailTicketDetector;
-use \Application\DeskPRO\EmailGateway\Ticket\InReplyToDetector;
-use \Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
-use \Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
-use \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\EmailGateway\AbstractGateway;
+use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
+use Application\DeskPRO\EmailGateway\Ticket\CodeTicketDetector;
+use Application\DeskPRO\EmailGateway\Ticket\ToEmailTicketDetector;
+use Application\DeskPRO\EmailGateway\Ticket\InReplyToDetector;
+use Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
+use Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
+use Application\DeskPRO\EmailGateway\Cutter\CutterDefFactory;
+use Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
 
 class TicketGateway extends AbstractGateway
 {
-	const EVENT_EVENT                = 'DeskPRO_onTicketGatewayInit';
-	const EVENT_BEFORE_RUN_ACTION    = 'DeskPRO_onBeforeTicketGatewayRunAction';
-	const EVENT_RUN_ACTION           = 'DeskPRO_onTicketGatewayRunAction';
-	const EVENT_BEFORE_NEWREPLY      = 'DeskPRO_onBeforeTicketGatewayNewReply';
-	const EVENT_NEWREPLY             = 'DeskPRO_onTicketGatewayNewReply';
-	const EVENT_BEFORE_NEWTICKET     = 'DeskPRO_onBeforeTicketGatewayNewTicket';
-	const EVENT_NEWTICKET            = 'DeskPRO_onTicketGatewayNewTicket';
+	const EVENT_EVENT                    = 'DeskPRO_onTicketGatewayInit';
+	const EVENT_BEFORE_RUN_ACTION        = 'DeskPRO_onBeforeTicketGatewayRunAction';
+	const EVENT_RUN_ACTION               = 'DeskPRO_onTicketGatewayRunAction';
+	const EVENT_BEFORE_NEWREPLY          = 'DeskPRO_onBeforeTicketGatewayNewReply';
+	const EVENT_NEWREPLY                 = 'DeskPRO_onTicketGatewayNewReply';
+	const EVENT_BEFORE_NEWTICKET         = 'DeskPRO_onBeforeTicketGatewayNewTicket';
+	const EVENT_NEWTICKET                = 'DeskPRO_onTicketGatewayNewTicket';
+	const EVENT_BEFORE_FWD_NEWTICKET     = 'DeskPRO_onBeforeTicketGatewayNewFwdTicket';
+	const EVENT_FWD_NEWTICKET            = 'DeskPRO_onTicketGatewayNewFwdTicket';
+
+	/**
+	 * @var \Application\DeskPRO\EmailGateway\Cutter\Def\Generic
+	 */
+	protected $cutterDef;
 
 	protected function init()
 	{
-		
+		$this->cutterDef = CutterDefFactory::getDef($this->reader);
 	}
 
 	public function run()
@@ -307,6 +315,90 @@ class TicketGateway extends AbstractGateway
 			'person' => $person,
 		));
 		$this->event_dispatcher->dispatch(self::EVENT_NEWTICKET, $ev);
+
+		return $ticket;
+	}
+
+
+	############################################################################
+	# New Ticket: Agent forwarded message
+	############################################################################
+
+	protected function runNewForwardedTicket(Entity\Person $agent)
+	{
+		#------------------------------
+		# Read in email props and create cutter
+		#------------------------------
+
+		$email_info = array();
+		$email_info['subject'] = $this->reader->getSubject()->subject;
+		if ($this->reader->getBodyText()->getBody()) {
+			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+			$email_info['body_is_html'] = true;
+		} else {
+			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+			$email_info['body_is_html'] = false;
+		}
+
+		$fwd_cutter = new ForwardCutter($email_info['body'], $email_info['body_is_html'], $this->cutterDef);
+
+		$ev = $this->createGatewayEvent(array(
+			'email_info' => $email_info,
+			'fwd_cutter' => $fwd_cutter,
+			'cancel' => false,
+		));
+		
+		$this->event_dispatcher->dispatch(self::EVENT_BEFORE_FWD_NEWTICKET, $ev);
+
+		if ($ev->cancel OR !$fwd_cutter->isValid()) {
+			return null;
+		}
+
+		$email_info['subject'] = ForwardCutter::cutSubjectForwardPrefix($email_info['subject']);
+
+		#------------------------------
+		# Find person
+		#------------------------------
+
+		$person_processor = new PersonFromEmailProcessor();
+		$person_email_item = $fwd_cutter->getUserEmailItem();
+
+		$person = $person_processor->findPerson($person_email_item);
+		if ($person) {
+			$person_processor->passPerson($person_email_item, $person);
+		} else {
+			$person = $person_processor->createPerson($person_email_item, true);
+		}
+
+		#------------------------------
+		# Create ticket
+		#------------------------------
+
+		$newticket = new \Application\DeskPRO\Tickets\NewTicket\NewTicket(
+			Entity\Ticket::CREATED_GATEWAT_PERSON,
+			$person
+		);
+		$newticket->ticket->subject = $email_info['subject'];
+		$newticket->ticket->message = $email_info['body'];
+
+		App::getOrm()->beginTransaction();
+		$ticket = $newticket->save();
+		App::getOrm()->commit();
+
+		// Add agent reply if there was one
+		$agent_reply = $fwd_cutter->getReply();
+		if ($agent_reply) {
+
+			App::getOrm()->beginTransaction();
+			$agent_message = new \Application\DeskPRO\Entity\TicketMessage();
+			$agent_message->person = $agent;
+			$agent_message['message'] = $agent_reply;
+
+			$ticket->addMessage($agent_message);
+
+			App::getOrm()->persist($ticket);
+			App::getOrm()->commit();
+		}
 
 		return $ticket;
 	}

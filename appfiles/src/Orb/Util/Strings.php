@@ -990,6 +990,21 @@ class Strings
 	}
 
 
+	/**
+	 * Trims whitespace and whitespace-like HTML from beginning/end of a string
+	 *
+	 * @param string $string
+	 * @return string
+	 */
+	public static function trimHtml($string)
+	{
+		$string = preg_replace('#^(\s|<br>|<br />|<br/>|<p>\s*</p>)*#im', '', $string);
+		$string = preg_replace('#(\s|<br>|<br />|<br/>|<p>\s*</p>)*$#im', '', $string);
+
+		return $string;
+	}
+
+
 
 	/**
 	 * Set the path to the php-utf8 library functions, and thereby enable

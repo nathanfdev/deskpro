@@ -10,6 +10,8 @@
 
 namespace Application\DeskPRO\EmailGateway\Cutter\Def;
 
+use Orb\Util\Strings;
+
 class Generic implements ForwardDef, QuoteDef
 {
 	/**
@@ -26,20 +28,7 @@ class Generic implements ForwardDef, QuoteDef
 
 		$info_block = $parts[0];
 
-		if ($is_html) {
-			$info_block = strip_tags($info_block);
-		}
-
-		$info = array();
-
-		$m = null;
-		if (preg_match_all('#^\s*(.*?):(.*?)\s*$#', $info_block, $m)) {
-			foreach ($m as $match) {
-				$info[strtolower($match[1])] = $match[2];
-			}
-		}
-
-		return $info;
+		return self::parseForwardHeaders($info_block, $is_html);
 	}
 
 	protected function _splitForwardedBlock($body, $is_html)
@@ -75,7 +64,13 @@ class Generic implements ForwardDef, QuoteDef
 			return null;
 		}
 
-		return $parts[0];
+		$new_body = trim($parts[0]);
+
+		if ($is_html) {
+			$new_body = Strings::trimHtml($new_body);
+		}
+
+		return $new_body;
 	}
 
 	/**
@@ -107,7 +102,62 @@ class Generic implements ForwardDef, QuoteDef
 		$parts = $this->_splitForwardedBlock($body, $is_html);
 		if (!$parts) return null;
 
-		return $parts[1];
+		$msg = trim($parts[1]);
+		
+		if ($is_html) {
+			$msg = Strings::trimHtml($msg);
+		}
+
+		return $msg;
+	}
+
+	/**
+	 * Get an array of info based off of text found in quoted/forwarded block. Things like
+	 * From: and To: address.
+	 *
+	 * @param $info_block
+	 * @param $is_html
+	 * @return array
+	 */
+	public static function parseForwardHeaders($info_block, $is_html)
+	{
+		if ($is_html) {
+			$info_block = str_repeat(array('<br>', '<br/>', '<br />', '<p>', '</p>'), "\n", $info_block);
+			$info_block = strip_tags($info_block);
+		}
+
+		$info = array();
+
+		$m = null;
+		if (preg_match_all('#^\s*(.*?):(.*?)\s*$#', $info_block, $m)) {
+			foreach ($m as $match) {
+				$info[strtolower($match[1])] = $match[2];
+			}
+		}
+
+		if (isset($info['from'])) {
+			$from_addr = imap_rfc822_parse_adrlist($info['from'], 'null');
+			if ($from_addr && count($from_addr)) {
+				$from_addr = array_pop($from_addr);
+				$info['from_email'] = $from_addr->mailbox .'@'. $from_addr->host;
+				if (!empty($from_addr->name)) {
+					$info['from_name'] = $from_addr->name;
+				}
+			}
+		}
+
+		if (isset($info['to'])) {
+			$to_addr = imap_rfc822_parse_adrlist($info['to'], 'null');
+			if ($to_addr && count($to_addr)) {
+				$to_addr = array_pop($to_addr);
+				$info['to_email'] = $to_addr->mailbox .'@'. $to_addr->host;
+				if (!empty($to_addr->name)) {
+					$info['to_name'] = $to_addr->name;
+				}
+			}
+		}
+
+		return $info;
 	}
 
 	/**
