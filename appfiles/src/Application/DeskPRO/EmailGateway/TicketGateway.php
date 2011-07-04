@@ -19,6 +19,7 @@ use \Application\DeskPRO\EmailGateway\Ticket\ToEmailTicketDetector;
 use \Application\DeskPRO\EmailGateway\Ticket\InReplyToDetector;
 use \Application\DeskPRO\EmailGateway\Ticket\SubjectMatchDetector;
 use \Application\DeskPRO\EmailGateway\Ticket\SubjectRefMatchDetector;
+use \Application\DeskPRO\EmailGateway\Cutter\ForwardCutter;
 
 class TicketGateway extends AbstractGateway
 {
@@ -125,7 +126,11 @@ class TicketGateway extends AbstractGateway
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
 			}
 
-			$ret = $this->runNewTicket($person);
+			if ($person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject())) {
+				$ret = $this->runNewForwardedTicket($person);
+			} else {
+				$ret = $this->runNewTicket($person);
+			}
 		}
 
 		$ev = $this->createGatewayEvent(array(
