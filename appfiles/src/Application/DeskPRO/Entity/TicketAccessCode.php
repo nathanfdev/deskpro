@@ -57,7 +57,7 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$len = App::getSetting('core_tickets.tac_auth_code_len');
-		$this->auth = Strings::random($len, Strings::CHARS_ALPHA_IU);
+		$this->auth = Strings::random($len, Strings::CHARS_KEY);
 	}
 
 
