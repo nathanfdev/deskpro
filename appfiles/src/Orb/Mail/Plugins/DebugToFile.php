@@ -27,7 +27,7 @@ class DebugToFile implements \Swift_Events_SendListener
 	public function sendPerformed(\Swift_Events_SendEvent $evt)
 	{
 		$message = $evt->getMessage();
-		$name = time() . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', $message->getSubject()) . '.dat';
+		$name = time() . '_' . preg_replace('#[^a-zA-Z0-9]#', '-', $message->getSubject()) . '.txt';
 		$name = preg_replace('#-{,2}#', '-', $name);
 
 		$path = $this->filepath . DIRECTORY_SEPARATOR . $name;
