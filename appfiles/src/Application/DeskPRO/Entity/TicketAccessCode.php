@@ -61,7 +61,6 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-
 	/**
 	 * Encodes the ticket ID and the auth into a single string.
 	 *
@@ -75,6 +74,21 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 		return $str;
 	}
 
+
+	/**
+	 * Get the Message-ID field for an email regarding this ticket, witht he
+	 * embedded TAC code.
+	 *
+	 * @return string
+	 */
+	public function getUniqueEmailMessageId()
+	{
+		$uid = 'TAC-' . $this->getAccessCode() . '.';
+		$uid .= uniqid('', true) . '-' . App::getSetting('core.site_id');
+		$uid .= '@' . md5(App::getSetting('core.site_url', 'deskpro'));
+
+		return $uid;
+	}
 
 
 	/**

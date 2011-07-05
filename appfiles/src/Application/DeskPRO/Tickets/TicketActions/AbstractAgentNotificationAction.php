@@ -194,7 +194,7 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
-			$message->getHeaders()->addTextHeader('In-Reply-To', $ticket->getAccessCode());
+			$message->getHeaders()->get('Message-ID')->setId($tac->getUniqueEmailMessageId());
 			$message->enableQueueHint();
 
 			App::getMailer()->send($message);

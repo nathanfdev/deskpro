@@ -37,36 +37,66 @@ class InReplyToDetector implements TicketDetectorInterface
 		$this->_found_person = null;
 
 		#------------------------------
-		# Fetch PTAC from in-reply-to header
+		# Fetch message Ids from headers
 		#------------------------------
 
-		$in_reply_to_objs = $reader->getHeader('In-Reply-To');
-		if (!$in_reply_to_objs OR !$in_reply_to_objs->header_parts) return null;
+		$search_text = array();
 
-		// If theres more than one, we'll just combine them into one string and
-		// use whichever one first matches.
-		
-		$in_reply_to = array();
-		foreach ($in_reply_to_objs->header_parts as $h) {
-			$in_reply_to[] = $h;
+		// In-Reply-To should have the direct message
+		// being replied to
+		$in_reply_to = $reader->getHeader('In-Reply-To');
+		if ($in_reply_to) {
+			foreach ($in_reply_to->getAllParts() as $part) {
+				$search_text[] = $part;
+			}
 		}
 
-		$in_reply_to = implode(' ', $in_reply_to);
+		// References may have other messages in a thread,
+		// so also a good place to look for the TAC
+		$references = $reader->getHeader('References');
+		if ($references) {
+			foreach ($references->getAllParts() as $part) {
+				$search_text[] = $part;
+			}
+		}
 
-		$match_ptac = Strings::extractRegexMatch('#t([A-Z0-9]{6,11})@#', $in_reply_to, 1);
-		if (!$match_ptac) return null;
+		$search_text = implode(' ', $search_string);
 
 		#------------------------------
-		# Try to find the ticket and user now
+		# Try to find TAC
 		#------------------------------
 
-		$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($match_ptac);
+		$matches = null;
+		if (preg_match_all('#(?<!P)TAC\-([A-Z0-9]{6,11})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
 
-		if ($ticket) {
+			foreach ($matches as $m) {
+				$tac = App::getEntityRepository('DeskPRO:TicketAccessCode')->findByAccessCode($m[1]);
+				if (!$tac) continue;
 
-			$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+				$ticket = $tac->ticket;
 
-			return $ticket;
+				$this->_found_person = $tac->person;
+				return $ticket;
+			}
+		}
+
+		#------------------------------
+		# Try to find PTAC
+		#------------------------------
+
+		$matches = null;
+		if (preg_match_all('#PTAC\-([A-Z0-9]{6,11})\.#i', $search_text, $matches, PREG_SET_ORDER)) {
+
+			foreach ($matches as $m) {
+				$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($m[1]);
+	
+				if ($ticket) {
+
+					$this->_found_person = $ticket->findUserByEmail($reader->getFromAddress()->email);
+
+					return $ticket;
+				}
+			}
 		}
 
 		return null;

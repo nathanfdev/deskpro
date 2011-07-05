@@ -1386,6 +1386,22 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Get the Message-ID field for an email regarding this ticket, witht he
+	 * embedded PTAC code.
+	 * 
+	 * @return string
+	 */
+	public function getUniqueEmailMessageId()
+	{
+		$uid = 'PTAC-' . $this->getAccessCode() . '.';
+		$uid .= uniqid('', true) . '-' . App::getSetting('core.site_id');
+		$uid .= '@' . md5(App::getSetting('core.site_url', 'deskpro'));
+
+		return $uid;
+	}
+
+
+	/**
 	 * Decodes an access code into a ticket id and the standalone auth.
 	 *
 	 * @param  $access_code
