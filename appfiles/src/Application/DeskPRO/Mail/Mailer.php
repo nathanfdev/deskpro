@@ -32,9 +32,7 @@ class Mailer extends \Swift_Mailer
 		if (App::getConfig('debug.mail.force_to')) {
 			$this->registerPlugin(new \Orb\Mail\Plugins\ForceToAddress(App::getConfig('debug.mail.force_to')));
 		}
-		if (App::getConfig('debug.mail.disable_send')) {
-			$this->registerPlugin(new \Orb\Mail\Plugins\CancelSend());
-		}
+
 		if (App::getConfig('debug.mail.save_to_file')) {
 			$filepath = App::getConfig('debug.mail.save_to_file');
 			if ($filepath === true) {
@@ -46,7 +44,14 @@ class Mailer extends \Swift_Mailer
 				@mkdir($filepath, 0777);
 			}
 
-			$this->registerPlugin(new \Orb\Mail\Plugins\DebugToFile($filepath));
+			$this->registerPlugin(new \Orb\Mail\Plugins\DebugToFile($filepath, App::getConfig('debug.mail.disable_send', false)));
+
+		} else if (App::getConfig('debug.mail.disable_send')) {
+			// As an elseif becaue the DebugToFile can also disable send
+			// If CancelSend is registered first, then the DebugToFile wont fire either
+			// and we'll just have nothing
+
+			$this->registerPlugin(new \Orb\Mail\Plugins\CancelSend());
 		}
 
 		$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress(App::getConfig('mail.default_from')));

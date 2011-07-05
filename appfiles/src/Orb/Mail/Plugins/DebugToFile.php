@@ -18,10 +18,12 @@ use Orb\Util\Util;
 class DebugToFile implements \Swift_Events_SendListener
 {
 	protected $filepath;
+	protected $cancel_send = false;
 
-	public function __construct($filepath)
+	public function __construct($filepath, $cancel_send = false)
 	{
 		$this->filepath = rtrim($filepath, "/\\");
+		$this->cancel_send = $cancel_send;
 	}
 
 	public function sendPerformed(\Swift_Events_SendEvent $evt)
@@ -37,6 +39,8 @@ class DebugToFile implements \Swift_Events_SendListener
 
 	public function beforeSendPerformed(\Swift_Events_SendEvent $evt)
 	{
-
+		if ($this->cancel_send) {
+			$evt->cancelBubble();
+		}
 	}
 }
