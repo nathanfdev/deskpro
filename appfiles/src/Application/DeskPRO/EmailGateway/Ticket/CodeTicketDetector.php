@@ -53,7 +53,7 @@ class CodeTicketDetector implements TicketDetectorInterface
 		#------------------------------
 
 		$matches = null;
-		if (!preg_match_all('/\(#([A-Z]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
+		if (!preg_match_all('/\(#([A-Z0-9]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			return null;
 		}
 
@@ -72,7 +72,7 @@ class CodeTicketDetector implements TicketDetectorInterface
 		#------------------------------
 
 		$matches = null;
-		if (!preg_match_all('/\(#([A-Z]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
+		if (!preg_match_all('/\(#([A-Z0-9]{6,11})\)/', $search_text, $matches, PREG_SET_ORDER)) {
 			return null;
 		}
 

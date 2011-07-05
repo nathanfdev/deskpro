@@ -53,7 +53,7 @@ class InReplyToDetector implements TicketDetectorInterface
 
 		$in_reply_to = implode(' ', $in_reply_to);
 
-		$match_ptac = Strings::extractRegexMatch('#t([A-Z]{6,11})@#', $in_reply_to, 1);
+		$match_ptac = Strings::extractRegexMatch('#t([A-Z0-9]{6,11})@#', $in_reply_to, 1);
 		if (!$match_ptac) return null;
 
 		#------------------------------

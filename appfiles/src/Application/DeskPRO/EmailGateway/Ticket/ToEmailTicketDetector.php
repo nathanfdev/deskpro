@@ -52,7 +52,7 @@ class ToEmailTicketDetector implements TicketDetectorInterface
 	public function __construct($account_pattern)
 	{
 		$account_pattern = preg_quote($account_pattern, '#');
-		$account_pattern = str_replace('TAC', '(?P<auth>[A-Z]{6,11})', $account_pattern);
+		$account_pattern = str_replace('TAC', '(?P<auth>[A-Z0-9]{6,11})', $account_pattern);
 
 		$this->account_pattern = '#^' . $account_pattern . '#$';
 	}
