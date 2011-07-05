@@ -82,69 +82,82 @@ class Log
 	{
 		$actions = array();
 
-		foreach ($this->tracker->getAllChangedProperties() as $prop => $info) {
-			$action = null;
+		foreach ($this->tracker->getAllChangedProperties() as $prop => $all_info) {
 
-			$old_val = null;
-			$new_val = null;
+			if ($prop == 'messages') {
+				// Messages is a multi item already,
+				// dont need an array wrapper
+			} else {
+				$all_info = array($all_info);
 
-			if (isset($info['old'])) $old_val = $info['old'];
-			if (isset($info['new'])) $new_val = $info['new'];
-
-			switch ($prop) {
-				case 'agent':
-					if (!$this->tracker->isNewTicket()) {
-						$action = new LogActions\Agent($old_val, $new_val);
-					}
-					break;
-
-				case 'category':
-					if (!$this->tracker->isNewTicket()) {
-						$action = new LogActions\Category($old_val, $new_val);
-					}
-					break;
-
-				case 'department':
-					if (!$this->tracker->isNewTicket()) {
-						$action = new LogActions\Department($old_val, $new_val);
-					}
-					break;
-
-				case 'messages':
-					if ($new_val) {
-						$action = new LogActions\Message($new_val);
-					} else {
-						// $old_val means removed
-					}
-					break;
-
-				case 'priority':
-					if (!$this->tracker->isNewTicket()) {
-						$action = new LogActions\Priority($old_val, $new_val);
-					}
-					break;
-
-				case 'product':
-					if (!$this->tracker->isNewTicket()) {
-						$action = new LogActions\Product($old_val, $new_val);
-					}
-					break;
-
-				case 'status':
-					if (!$this->tracker->isNewTicket()) {
-						$action = new LogActions\Status($old_val, $new_val);
-					}
-					break;
-
-				case 'hidden_status':
-					if (!$this->tracker->isNewTicket()) {
-						$action = new LogActions\HiddenStatus($old_val, $new_val);
-					}
-					break;
+				// All others are single changes,
+				// we wrap in an array for the foreach to work below
 			}
+			
+			foreach ($all_info as $info) {
+				$action = null;
 
-			if ($action) {
-				$actions[] = $action;
+				$old_val = null;
+				$new_val = null;
+
+				if (isset($info['old'])) $old_val = $info['old'];
+				if (isset($info['new'])) $new_val = $info['new'];
+
+				switch ($prop) {
+					case 'agent':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Agent($old_val, $new_val);
+						}
+						break;
+
+					case 'category':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Category($old_val, $new_val);
+						}
+						break;
+
+					case 'department':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Department($old_val, $new_val);
+						}
+						break;
+
+					case 'messages':
+						if ($new_val) {
+							$action = new LogActions\Message($new_val);
+						} else {
+							// $old_val means removed
+						}
+						break;
+
+					case 'priority':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Priority($old_val, $new_val);
+						}
+						break;
+
+					case 'product':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Product($old_val, $new_val);
+						}
+						break;
+
+					case 'status':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\Status($old_val, $new_val);
+						}
+						break;
+
+					case 'hidden_status':
+						if (!$this->tracker->isNewTicket()) {
+							$action = new LogActions\HiddenStatus($old_val, $new_val);
+						}
+						break;
+				}
+
+				if ($action) {
+					$actions[] = $action;
+				}
 			}
 		}
 
