@@ -155,7 +155,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 			$phrase_name .= "_user";
 		}
 
-		return $phrase;
+		return $phrase_name;
 	}
 
 

@@ -570,13 +570,7 @@ class App
 	 */
 	public static function getRefGenerator()
 	{
-		static $refer;
-
-		if (!$refer) {
-			$refer = new \Application\DeskPRO\RefGenerator\RandomRef();
-		}
-
-		return $refer;
+		return self::get('deskpro.ref_generator');
 	}
 
 

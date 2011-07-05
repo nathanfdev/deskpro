@@ -27,7 +27,7 @@ class RandomRef implements RefGeneratorInterface
 	 */
 	protected $db;
 
-	public function __construct(\Application\DeskPRO\ORM\EntityManager $em)
+	public function __construct(\Doctrine\ORM\EntityManager $em)
 	{
 		$this->em = $em;
 		$this->db = $em->getConnection();

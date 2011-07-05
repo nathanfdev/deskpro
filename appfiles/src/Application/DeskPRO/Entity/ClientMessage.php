@@ -125,13 +125,6 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 		if (App::has('event_dispatcher')) {
 			$this->event_dispatcher = App::get('event_dispatcher');
 		}
-
-		if (App::has('session')) {
-			$session = App::get('session');
-			try {
-				$this->created_by_client = $session->getEntityId();
-			} catch (\Exception $e) {}
-		}
 	}
 
 

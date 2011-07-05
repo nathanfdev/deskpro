@@ -107,7 +107,7 @@ class PersonController extends AbstractController
 		$notes = $em->createQuery("
 			SELECT n
 			FROM DeskPRO:PersonNote n
-			WHERE n.person_id = ?1
+			WHERE n.person = ?1
 			ORDER BY n.id DESC
 		")->setParameter(1, $person['id'])->setMaxResults(5)->execute();
 

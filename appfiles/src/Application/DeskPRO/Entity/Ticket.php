@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Orb\Util\Strings;
+use Orb\Util\Util;
 
 /**
  * Ticket
@@ -314,8 +315,6 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 		$len = App::getSetting('core_tickets.ptac_auth_code_len');
 		$this->auth = Strings::random($len, Strings::CHARS_KEY);
-		
-		$this->ref = App::get('deskpro.ref_generator')->generateReference('DeskPRO:Ticket');
 
 		if ($tracker) {
 			$this->_initTicketLogger();
@@ -837,7 +836,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function setDepartment(Department $dep)
+	public function setDepartment(Department $dep = null)
 	{
 		$old_dep = $this->department;
 		$this->department = $dep;
@@ -1415,7 +1414,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function _preInsert()
 	{
 		// Get the new ref
-		$this->ref = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
+		if (!$this->ref) {
+			$this->ref = App::getRefGenerator()->generateReference('DeskPRO:Ticket');
+		}
 
 		if ($this->_ticket_logger) {
 			$this->getTicketLogger()->recordExtra('created', true);

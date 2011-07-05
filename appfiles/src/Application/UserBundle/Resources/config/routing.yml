@@ -106,43 +106,39 @@ user_tickets_new_thanks:
   defaults: { _controller: UserBundle:NewTicket:thanks }
 
 user_tickets_view:
-  pattern: /tickets/{ticket_ref}
-  defaults: { _controller: UserBundle:Tickets:view }
+  pattern: /ticket/{ticket_id}
+  defaults: { _controller: UserBundle:TicketView:load }
 
 user_tickets_addreply:
-  pattern: /tickets/{ticket_ref}/add-reply
+  pattern: /ticket-edit/{ticket_ref}/add-reply
   defaults: { _controller: UserBundle:Tickets:addReply }
 
 user_tickets_modify:
-  pattern: /tickets/{ticket_ref}/modify
+  pattern: /ticket-edit/{ticket_ref}/modify
   defaults: { _controller: UserBundle:Tickets:modify }
 
 user_tickets_participants:
-  pattern: /tickets/{ticket_ref}/people
+  pattern: /ticket-edit/{ticket_ref}/people
   defaults: { _controller: UserBundle:Tickets:manageParticipants }
 
 user_tickets_participants_add:
-  pattern: /tickets/{ticket_ref}/people/add
+  pattern: /ticket-edit/{ticket_ref}/people/add
   defaults: { _controller: UserBundle:Tickets:addParticipant }
 
 user_tickets_participants_remove:
-  pattern: /tickets/{ticket_ref}/people/remove/{person_id}
+  pattern: /ticket-edit/{ticket_ref}/people/remove/{person_id}
   defaults: { _controller: UserBundle:Tickets:removeParticipant }
 
-user_tickets_view_auth:
-  pattern: /tickets/{ticket_ref}/{ticket_auth}
-  defaults: { _controller: UserBundle:Tickets:viewWithAuth }
-
 user_tickets_feedback:
-  pattern: /tickets/{ticket_ref}/feedback/{message_id}
+  pattern: /ticket-edit/{ticket_ref}/feedback/{message_id}
   defaults: { _controller: UserBundle:Tickets:feedback }
 
 user_tickets_feedback_save:
-  pattern: /tickets/{ticket_ref}/feedback/{message_id}/save
+  pattern: /ticket-edit/{ticket_ref}/feedback/{message_id}/save
   defaults: { _controller: UserBundle:Tickets:feedbackSave }
 
 user_tickets_feedback_closeticket:
-  pattern: /tickets/{ticket_ref}/feedback/{message_id}/close-ticket
+  pattern: /ticket-edit/{ticket_ref}/feedback/{message_id}/close-ticket
   defaults: { _controller: UserBundle:Tickets:feedbackCloseTicket }
 
 ################################################################################

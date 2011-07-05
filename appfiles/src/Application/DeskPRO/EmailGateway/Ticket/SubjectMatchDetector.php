@@ -49,7 +49,7 @@ class SubjectMatchDetector implements TicketDetectorInterface
 		$subject = trim($reader->getSubject()->subject);
 
 		// Strip off Re: prefix (and alternatives in some other langs)
-		$subject = preg_replace('#^(RE|VS|AW|SV):#i', '', $subject);
+		$subject = preg_replace('#^(RE|VS|AW|SV):\s*#i', '', $subject);
 		$subject = trim($subject);
 
 		// Now lets try to find it...

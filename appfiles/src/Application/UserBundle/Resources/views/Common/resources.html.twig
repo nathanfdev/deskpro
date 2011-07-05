@@ -49,9 +49,9 @@
 	$(document).ready(function() {
 		var agentBar = new DeskPRO.Agent.AgentBar({
 			messageChanneler: {
-				ajaxMessagesUrl: '{{ path('client_messages_getnew') }}',
-				ajaxSubscribeUrl: '{{ path('client_messages_subscribe_channels') }}',
-				ajaxUnsubscribeUrl: '{{ path('client_messages_unsubscribe_channels') }}',
+				ajaxMessagesUrl: '{{ path('agent_client_messages_getnew') }}',
+				ajaxSubscribeUrl: '{{ path('agent_client_messages_subscribe_channels') }}',
+				ajaxUnsubscribeUrl: '{{ path('agent_client_messages_unsubscribe_channels') }}',
 				lastMessageId: {{last_message_id|default(0)}}
 			}
 		});

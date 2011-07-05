@@ -68,24 +68,26 @@ ul.attachment-list > li img.preview {
 </tr></table>
 
 <table cellspacing="5" cellpadding="0" border="0" width="100%"><tr><td>
-	<strong>Ticket participants</strong><Br />
+	<strong>Ticket Starter</strong>: {{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;
+
+	{% if user_participants|length %}
+	<br /><br />
+	<strong>Ticket participants</strong><br />
 	<ul>
-		<li>
-			{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;
-		</li>
 		{% for part in user_participants %}
 			<li>
 				{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
 			</li>
 		{% endfor %}
 	</ul>
+	{% endif %}
 </td></tr></table>
 
-{% for message in messages|reverse %}
+{% for message in messages %}
 	<div style="border: 2px solid #ddd; margin-bottom: 15px;">
 		<div style="background-color: #ddd;">
 			<img src="{{ message.person.getPictureUrl(50) }}" alt="" style="float:left; margin-right: 6px; "/>
-			{{ message.person.display_name }}
+			{{ message.person.display_name }}{% if not message.person.is_agent %} &lt;{{ message.person.email_address }}&gt;{% endif %}
 			<br style="clear:left" />
 		</div>
 		<div style="padding: 10px">
@@ -108,3 +110,5 @@ ul.attachment-list > li img.preview {
 		</div>
 	</div>
 {% endfor %}
+
+{% endblock %}

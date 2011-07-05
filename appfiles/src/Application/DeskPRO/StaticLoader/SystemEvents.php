@@ -27,7 +27,9 @@ class SystemEvents
 	public function addNoPhraseEventListener()
 	{
 		$listener = new CallbackListener(function ($ev) {
-			$ev->return = "[{$ev->phrase_name}]";
+			if (strpos($ev->phrase_name, 'obj_') !== 0) {
+				$ev->return = "[{$ev->phrase_name}]";
+			}
 		});
 
 		$this->event_dispatcher->addListener('DeskPRO_onTranslateNoPhrase', $listener);

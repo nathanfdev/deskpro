@@ -481,7 +481,8 @@ class Translate implements PersonContextInterface
 
 		} else if ($object instanceof HasPhraseName) {
 			$phrase_name = $object->getPhraseName($property, $this);
-			if ($phrase_name) {
+			$phrase_text = false;
+			if ($phrase_name && $this->hasPhrase($phrase_name, $locale)) {
 				$phrase_text = $this->phrase($phrase_name, array(), $locale);
 			}
 
@@ -500,7 +501,9 @@ class Translate implements PersonContextInterface
 
 		$namer = $this->getObjectPhraseNamer();
 		$phrase_name = $namer->getPhraseName($object, $property);
-		if ($phrase_name) {
+		$phrase_text = false;
+
+		if ($phrase_name && $this->hasPhrase($phrase_name, $locale)) {
 			$phrase_text = $this->phrase($phrase_name, array(), $locale);
 		}
 
@@ -578,6 +581,22 @@ class Translate implements PersonContextInterface
 		}
 
 		return $phrase_text;
+	}
+
+
+	/**
+	 * Check to see if a phrase exists
+	 * 
+	 * @param string $phrase_name
+	 * @return bool
+	 */
+	public function hasPhrase($phrase_name, $locale = null)
+	{
+		if ($this->getPhraseText($phrase_name, $locale)) {
+			return true;
+		}
+
+		return false;
 	}
 
 

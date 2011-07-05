@@ -38,7 +38,7 @@ class Numbers
 			return false;
 		}
 
-		if (is_int($value) OR (int)$value == $value) {
+		if (is_int($value) OR ((string)((int)$value)) == (string)$value) {
 			return true;
 		}
 

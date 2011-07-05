@@ -15,7 +15,7 @@ class TicketDisplay implements PersonContextInterface
 	protected $person_type = 'user';
 
 	protected $user_participants;
-	protected $agnet_participants;
+	protected $agent_participants;
 
 	protected $notes;
 	protected $messages;
@@ -106,7 +106,7 @@ class TicketDisplay implements PersonContextInterface
 	{
 		if ($this->attachments !== null) return $this->attachments;
 
-		$this->attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($ticket);
+		$this->attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getTicketAttachments($this->ticket);
 
 		return $this->attachments;
 	}

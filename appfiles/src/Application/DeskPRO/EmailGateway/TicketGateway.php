@@ -97,7 +97,7 @@ class TicketGateway extends AbstractGateway
 		// so we need to confirm that user parts are still
 		// participants
 		if ($ticket AND $person AND !$person['is_agent']) {
-			if (!$ticket->hasParticipant($person)) {
+			if ($ticket->person['id'] != $person['id'] AND !$ticket->hasParticipantPerson($person)) {
 				$person = null;
 			}
 		}
@@ -121,6 +121,9 @@ class TicketGateway extends AbstractGateway
 		$ret = null;
 		if ($ticket AND $person) {
 			$person_processor->passPerson($this->reader->getFromAddress(), $person);
+
+			App::setCurrentPerson($person);
+
 			if ($person['is_agent']) {
 				$ret = $this->runNewAgentReply($ticket, $person);
 			} else {
@@ -133,6 +136,8 @@ class TicketGateway extends AbstractGateway
 			} else {
 				$person = $person_processor->createPerson($this->reader->getFromAddress());
 			}
+
+			App::setCurrentPerson($person);
 
 			if ($person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject())) {
 				$ret = $this->runNewForwardedTicket($person);
@@ -195,6 +200,12 @@ class TicketGateway extends AbstractGateway
 			$this->handleCc($ticket, $this->reader->getCcAddresses());
 		}
 
+		if ($person['is_agent']) {
+			$ticket['status'] = Entity\Ticket::STATUS_PENDING;
+		} else {
+			$ticket['status'] = Entity\Ticket::STATUS_OPEN;
+		}
+
 		App::getOrm()->transactional(function($em) use ($ticket, $person) {
 			$em->persist($ticket);
 			$em->persist($person);
@@ -231,7 +242,7 @@ class TicketGateway extends AbstractGateway
 			App::getOrm()->flush();
 
 			if (!$ticket->hasParticipantPerson($cc_person)) {
-				$ticket->addParticipantPersons($cc_person);
+				$ticket->addParticipantPerson($cc_person);
 			}
 
 			App::getOrm()->persist($ticket);

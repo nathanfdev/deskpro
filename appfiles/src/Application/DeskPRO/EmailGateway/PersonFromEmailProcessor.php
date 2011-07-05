@@ -29,7 +29,6 @@ class PersonFromEmailProcessor
 	public function passPerson(EmailAddress $from, Entity\Person $person)
 	{
 		if (!$person['first_name'] AND !$person['last_name']) {
-			$from = $this->reader->getFromAddress();
 			if ($from->getName()) {
 				$person['name'] = $from->getName();
 				App::getOrm()->persist($person);

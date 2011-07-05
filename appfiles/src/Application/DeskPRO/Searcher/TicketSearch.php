@@ -847,9 +847,17 @@ class TicketSearch extends SearcherAbstract
 				$unassigned = true;
 				break;
 			} elseif ($c == -1) {
-				$agent_ids[] = $this->getPersonContext()->getId();
+				if ($this->getPersonContext()) {
+					$agent_ids[] = $this->getPersonContext()->getId();
+				} else {
+					$agnet_ids[] = -1;
+				}
 			} elseif ($c == -2) {
-				$not_id = $this->getPersonContext()->getId();
+				if ($this->getPersonContext()) {
+					$not_id = $this->getPersonContext()->getId();
+				} else {
+					$not_id = -1;
+				}
 			} else {
 				$agent_ids = $c;
 			}
@@ -870,8 +878,12 @@ class TicketSearch extends SearcherAbstract
 		$not_ids = null;
 		$no_team = false;
 
-		$agent = $this->getPersonContext();
-		$agent->loadHelper('AgentTeam');
+		if ($this->getPersonContext()) {
+			$agent = $this->getPersonContext();
+			$agent->loadHelper('AgentTeam');
+		} else {
+			$agent = null;
+		}
 
 		foreach ($choice as $c) {
 			$c = (int)$c;
@@ -879,10 +891,18 @@ class TicketSearch extends SearcherAbstract
 				$no_team = true;
 				break;
 			} elseif ($c == -1) {
-				$team_ids = Arrays::removeFalsey($this->getPersonContext()->getAgentTeamIds());
+				if ($agent) {
+					$team_ids = Arrays::removeFalsey($agent->getAgentTeamIds());
+				} else {
+					$team_ids = array();
+				}
 				$team_ids[] = -1;
 			} elseif ($c == -2) {
-				$not_ids = Arrays::removeFalsey($this->getPersonContext()->getAgentTeamIds());
+				if ($agent) {
+					$not_ids = Arrays::removeFalsey($agent->getAgentTeamIds());
+				} else {
+					$not_ids = array();
+				}
 				$not_ids[] = -1;
 			} else {
 				$team_ids = $c;
@@ -980,7 +1000,7 @@ class TicketSearch extends SearcherAbstract
 
 				case self::TERM_PARTICIPANT:
 					if (is_array($choice)) {
-						$participant_ids = $ticket->getParticipantIds();
+						$participant_ids = $ticket->getParticipantPeopleIds();
 						$any = false;
 						foreach ($choice as $person_id) {
 							$is_in = in_array($person_id, $participant_ids);

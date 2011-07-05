@@ -11,11 +11,13 @@
 
 namespace Application\DeskPRO\Mail;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Orb\Mail\Message;
-use \Orb\Util\Strings;
-use \Orb\Util\Util;
+use Orb\Mail\Message;
+use Orb\Util\Strings;
+use Orb\Util\Util;
+
+require_once(DP_ROOT . '/vendor/swiftmailer/lib/swift_required.php');
 
 /**
  * This transport takes care of initializing any other transports based on settings
@@ -48,6 +50,11 @@ class Mailer extends \Swift_Mailer
 		}
 
 		$this->registerPlugin(new \Orb\Mail\Plugins\DefaultFromAddress(App::getConfig('mail.default_from')));
+	}
+
+	public static function newInstance(\Swift_Transport $transport)
+	{
+		return new self($transport);
 	}
 
 	/**

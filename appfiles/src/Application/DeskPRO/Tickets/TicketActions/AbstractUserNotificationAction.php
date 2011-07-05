@@ -60,7 +60,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		// It's not strictly used here, but can be used as confirmation code for registration,
 		// removing themselves from the ticket, etc
 		foreach ($parts as $p) {
-			TicketUtil::getTacForPerson($ticket, $p);
+			TicketUtil::getTacForPerson($ticket, $p->person);
 		}
 		
 		$vars['ticket'] = $ticket;
@@ -76,7 +76,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		$vars['messages'] = $messages;
 
 		$tpl_suffix = $this->getTemplateSuffix();
-		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $parts, $tpl_suffix) {
+		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person, $parts, $tpl_suffix) {
 			$email_subject = $tr->phrase($vars['email_subject']);
 			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
 

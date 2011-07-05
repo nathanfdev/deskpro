@@ -46,7 +46,7 @@ class SubjectRefMatchDetector implements TicketDetectorInterface
 		$subject = trim($reader->getSubject()->subject);
 
 		$ticket_refs = App::get('deskpro.ref_generator')->extractRefs($subject);
-		if (!$ticket_refs) return nulk;
+		if (!$ticket_refs) return null;
 
 		foreach ($ticket_refs as $ref) {
 			try {
