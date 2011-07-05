@@ -54,7 +54,7 @@ class AgentNotificationPropertyChangeAction extends AbstractAgentNotificationAct
 
 			$vars = array(
 				'ticket_changes' => new TicketChangeSummary($this->tracker),
-				'email_subject' => new DelegatePhrase('tickets_agent_email.subject_ticket_updated', array('ticket_subject' => $ticket['subject'])),
+				'email_subject' => new DelegatePhrase('core_tickets_agent_email.subject_ticket_updated', array('ticket_subject' => $ticket['subject'])),
 			);
 
 			$this->doSend($tpl, $vars, $ticket, $person);

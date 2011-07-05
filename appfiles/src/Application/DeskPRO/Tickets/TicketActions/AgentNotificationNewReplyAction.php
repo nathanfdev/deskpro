@@ -52,7 +52,7 @@ class AgentNotificationNewReplyAction extends AbstractAgentNotificationAction
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
 			$vars = array(
-				'email_subject' => new DelegatePhrase('tickets_agent_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
+				'email_subject' => new DelegatePhrase('core_tickets_agent_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
 			);
 
 			$this->doSend($tpl, $vars, $ticket, $person);

@@ -39,7 +39,7 @@ class UserNotificationParticipantAction extends AbstractUserNotificationAction
 			$user = App::getEntityRepository('DeskPRO:Person')->find($user_id);
 
 			$vars = array(
-				'email_subject' => new DelegatePhrase('tickets_user_email.subject_new_ticket_participant', array('ticket_subject' => $ticket['subject'])),
+				'email_subject' => new DelegatePhrase('core_tickets_user_email.subject_new_ticket_participant', array('ticket_subject' => $ticket['subject'])),
 			);
 
 			$this->doSend('DeskPRO:emails_user:ticket-participant', $vars, $ticket, $person);
