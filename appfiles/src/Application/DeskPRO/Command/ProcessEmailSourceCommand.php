@@ -59,7 +59,11 @@ class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 			App::getOrm()->commit();
 
 			if ($verbose) {
-				$output->writeln("Created " . get_class($created_obj) . ": " . $created_obj->getId());
+				if ($created_obj) {
+					$output->writeln("Created " . get_class($created_obj) . ": " . $created_obj->getId());
+				} else {
+					$output->writeln("No object created");
+				}
 			}
 		} catch (\Exception $e) {
 			App::getOrm()->rollback();

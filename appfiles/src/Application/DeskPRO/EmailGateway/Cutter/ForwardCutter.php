@@ -61,7 +61,7 @@ class ForwardCutter
 		$this->is_html = $is_html;
 		$this->cutter = $cutter;
 
-		if ($this->cutter instanceof Def\ForwardCutter) {
+		if ($this->cutter instanceof Def\ForwardDef) {
 			$this->_process();
 		}
 	}

@@ -139,7 +139,7 @@ class TicketGateway extends AbstractGateway
 
 			App::setCurrentPerson($person);
 
-			if ($person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject())) {
+			if ($person['is_agent'] AND ForwardCutter::subjectIsForward($this->reader->getSubject()->subject)) {
 				$ret = $this->runNewForwardedTicket($person);
 			} else {
 				$ret = $this->runNewTicket($person);
@@ -390,10 +390,17 @@ class TicketGateway extends AbstractGateway
 			$person
 		);
 		$newticket->ticket->subject = $email_info['subject'];
-		$newticket->ticket->message = $email_info['body'];
+		$newticket->ticket->message = strip_tags($fwd_cutter->getForwardedMessage());
+
+		// TODO using strip tags until we have HTML tidy, the cutter
+		// will most likely cut in the middle of a div etc that we need to clean
 
 		App::getOrm()->beginTransaction();
 		$ticket = $newticket->save();
+		
+		$ticket['agent'] = $agent;
+		App::getOrm()->persist($ticket);
+		
 		App::getOrm()->commit();
 
 		// Add agent reply if there was one
@@ -403,7 +410,7 @@ class TicketGateway extends AbstractGateway
 			App::getOrm()->beginTransaction();
 			$agent_message = new \Application\DeskPRO\Entity\TicketMessage();
 			$agent_message->person = $agent;
-			$agent_message['message'] = $agent_reply;
+			$agent_message['message'] = strip_tags($agent_reply);
 
 			$ticket->addMessage($agent_message);
 

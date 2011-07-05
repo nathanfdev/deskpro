@@ -122,37 +122,61 @@ class Generic implements ForwardDef, QuoteDef
 	public static function parseForwardHeaders($info_block, $is_html)
 	{
 		if ($is_html) {
-			$info_block = str_repeat(array('<br>', '<br/>', '<br />', '<p>', '</p>'), "\n", $info_block);
+			$info_block = str_replace(array('<br>', '<br/>', '<br />', '<p>', '</p>'), "\n", $info_block);
 			$info_block = strip_tags($info_block);
+
+			$info_block = html_entity_decode($info_block);
 		}
 
 		$info = array();
 
 		$m = null;
-		if (preg_match_all('#^\s*(.*?):(.*?)\s*$#', $info_block, $m)) {
+		if (preg_match_all('#^(.*?):(.*?)$#m', $info_block, $m, PREG_SET_ORDER)) {
 			foreach ($m as $match) {
-				$info[strtolower($match[1])] = $match[2];
+				$info[strtolower(trim($match[1]))] = trim($match[2]);
 			}
 		}
 
 		if (isset($info['from'])) {
-			$from_addr = imap_rfc822_parse_adrlist($info['from'], 'null');
-			if ($from_addr && count($from_addr)) {
-				$from_addr = array_pop($from_addr);
-				$info['from_email'] = $from_addr->mailbox .'@'. $from_addr->host;
-				if (!empty($from_addr->name)) {
-					$info['from_name'] = $from_addr->name;
+			$info['from_email'] = '';
+			$info['from_name'] = '';
+
+			if (function_exists('imap_rfc822_parse_adrlist')) {
+				$from_addr = imap_rfc822_parse_adrlist($info['from'], 'null');
+				if ($from_addr && count($from_addr)) {
+					$from_addr = array_pop($from_addr);
+					$info['from_email'] = $from_addr->mailbox .'@'. $from_addr->host;
+					if (!empty($from_addr->name)) {
+						$info['from_name'] = $from_addr->name;
+					}
+				}
+			} else {
+				if (strpos($info['from'], '<') !== false) {
+					$info['from_email'] = Strings::extractRegexMatch('#<(.*?)>#', $info['from'], 1);
+				} else {
+					$info['from_email'] = $info['from'];
 				}
 			}
 		}
 
 		if (isset($info['to'])) {
-			$to_addr = imap_rfc822_parse_adrlist($info['to'], 'null');
-			if ($to_addr && count($to_addr)) {
-				$to_addr = array_pop($to_addr);
-				$info['to_email'] = $to_addr->mailbox .'@'. $to_addr->host;
-				if (!empty($to_addr->name)) {
-					$info['to_name'] = $to_addr->name;
+			$info['to_email'] = '';
+			$info['to_name'] = '';
+
+			if (function_exists('imap_rfc822_parse_adrlist')) {
+				$to_addr = imap_rfc822_parse_adrlist($info['to'], 'null');
+				if ($to_addr && count($to_addr)) {
+					$to_addr = array_pop($to_addr);
+					$info['to_email'] = $to_addr->mailbox .'@'. $to_addr->host;
+					if (!empty($to_addr->name)) {
+						$info['to_name'] = $to_addr->name;
+					}
+				}
+			} else {
+				if (strpos($info['to'], '<') !== false) {
+					$info['to_email'] = Strings::extractRegexMatch('#<(.*?)>#', $info['to'], 1);
+				} else {
+					$info['to_email'] = $info['to'];
 				}
 			}
 		}
