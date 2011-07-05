@@ -9,9 +9,7 @@
 			<span class="timestamp"><span class="ticket-message-edit-btn" data-message-id="{{message.id}}">submitted online</span> (from 76.167.170.198), <span class="timeago" title="{{message.date_created|date('c')}}">{{message.date_created|date('Y-m-d')}}</span></span>
 		</div>
 		<div class="message-text">
-			<p>
-				{{message.message_html|raw}}
-			</p>
+			{{message.message_html|raw}}
 			{% if ticket_message_attachments[message.id] %}
 				<ul class="attachment-list">
 					{% for attach_id in ticket_message_attachments[message.id] %}

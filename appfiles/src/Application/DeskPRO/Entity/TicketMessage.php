@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Application\DeskPRO\App;
+use Application\DeskPRO\Markdown;
 
 /**
  * Ticket messages
@@ -114,6 +115,16 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	public function getMessagePlainHtml()
 	{
 		return nl2br($this->getMessageText());
+	}
+
+	public function setMessageHtml($message)
+	{
+		$this->setMessage($message);
+	}
+
+	public function setMessageText($message)
+	{
+		$this->setMessage(Markdown::format($message));
 	}
 
 	public function setMessage($message)

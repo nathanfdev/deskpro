@@ -162,8 +162,10 @@ class TicketGateway extends AbstractGateway
 		$email_info['subject'] = $this->reader->getSubject()->subject;
 		if ($this->reader->getBodyHtml()->getBody()) {
 			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+			$email_info['body_is_html'] = true;
 		} else {
 			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+			$email_info['body_is_html'] = false;
 		}
 
 		$ev = $this->createGatewayEvent(array(
@@ -283,10 +285,12 @@ class TicketGateway extends AbstractGateway
 	{
 		$email_info = array();
 		$email_info['subject'] = $this->reader->getSubject()->subject;
-		if ($this->reader->getBodyText()->getBody()) {
+		if ($this->reader->getBodyHtml()->getBody()) {
 			$email_info['body'] = $this->reader->getBodyHtml()->getBody();
+			$email_info['body_is_html'] = true;
 		} else {
 			$email_info['body'] = nl2br(htmlspecialchars($this->reader->getBodyText()->getBody(), ENT_QUOTES, 'UTF-8'));
+			$email_info['body_is_html'] = false;
 		}
 
 		$ev = $this->createGatewayEvent(array(
