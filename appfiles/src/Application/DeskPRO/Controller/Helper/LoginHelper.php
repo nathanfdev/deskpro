@@ -143,12 +143,19 @@ class LoginHelper
 
 			// Set their status to available by default
 			$this->controller->session->set('dp_active_status', 'available');
+			
+			$data = array(
+				'agent_id'   => $person['id'],
+				'agent_name' => $person['display_name'],
+				'agent_short_name' => $person->getDisplayContactShort(4),
+				'picture_url' => $person->getPictureUrl(10)
+			);
 
 			// Announce if its an agent
 			$cm = new \Application\DeskPRO\Entity\ClientMessage();
 			$cm->fromArray(array(
 				'channel' => 'agent.new-agent-online',
-				'data' => array('agent_id' => $person['id'], 'agent_name' => $person['display_name']),
+				'data' => $data,
 				'created_by_client' => $this->controller->session->getEntityId(),
 			));
 

@@ -37,7 +37,7 @@ class AgentChatController extends AbstractController
 			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
 		}
 
-		$chat_message = $conversation->createMessage(
+		$chat_message = $conversation->addNewMessage(
 			$this->in->getString('content'),
 			$this->person
 		);
@@ -68,8 +68,8 @@ class AgentChatController extends AbstractController
 			$client_messages[] = $cm;
 		}
 
-		App::getOrm()->transactional(function ($em) use ($chat_message, $client_messages) {
-			$em->persist($chat_message);
+		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
+			$em->persist($conversation);
 
 			if ($client_messages) {
 				foreach ($client_messages as $cm) {
