@@ -31,7 +31,7 @@ class ChatConversation extends EntityRepository
 		$counts = App::getDb()->fetchAllKeyValue("
 			SELECT agent_id, COUNT(*) AS cnt
 			FROM chat_conversations
-			WHERE status = ? AND is_agent = false
+			WHERE status = ? AND is_agent = 0
 			GROUP BY agent_id
 		", array('open'));
 
@@ -44,7 +44,7 @@ class ChatConversation extends EntityRepository
 			$convos = $this->getEntityManager()->createQuery("
 				SELECT c
 				FROM DeskPRO:ChatConversation c
-				WHERE c.status = ?1 AND c.agent IS NULL AND is_agent = false
+				WHERE c.status = ?1 AND c.agent IS NULL AND c.is_agent = false
 				ORDER BY c.id DESC
 			")->setParameter(1, 'open')->execute();
 		} else {

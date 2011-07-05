@@ -937,7 +937,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 			});
 		}
 
-		el.appendTo('body');
+		if (options.appendTo) {
+			$(options.appendTo).append(el);
+		} else {
+			el.appendTo('body');
+		}
 
 		return el;
 	},
@@ -959,11 +963,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.playSound(files, options);
 	},
 
-	handleSoundElements: function(els) {
+	handleSoundElements: function(el) {
 		var self = this;
-		$('[data-play-sound]', els).each(function() {
-			self.playLibrarySound($(this).data('play-sound'));
+		$('[data-play-sound]', el).each(function() {
+			self.playLibrarySound($(this).data('play-sound'), {appendTo: el});
 		});
+		if ($(el).is('[data-play-sound]')) {
+			self.playLibrarySound($(el).data('play-sound'), {appendTo: el});
+		}
 	},
 
 	//#################################################################

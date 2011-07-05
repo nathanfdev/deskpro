@@ -72,7 +72,7 @@ class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->_transport !== null) return $this->_transport;
 
 		if (strpos($this->transport_class, '::')) {
-			$this->_transport = call_user_func_array($this->transport_class, $this->transport_options);
+			$this->_transport = call_user_func($this->transport_class, $this->transport_options);
 		} else {
 			$this->_transport = new $this->transport_class($this->transport_options);
 		}
@@ -92,10 +92,11 @@ class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
 	public static function createTransportInstance($options)
 	{
 		$tr = null;
-
+		$options['type'] = 'mail';
 		switch ($options['type']) {
 			case 'smtp':
 				if (!$options['ssl']) $options['ssl'] = null;
+				else $options['ssl'] = 'ssl';
 
 				$tr = \Swift_SmtpTransport::newInstance($options['server'], $options['port'], $options['ssl']);
 

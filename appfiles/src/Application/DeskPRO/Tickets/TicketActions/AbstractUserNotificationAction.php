@@ -88,6 +88,7 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
 			$message->enableQueueHint();
+			$message->getHeaders()->addTextHeader('In-Reply-To', $ticket->getAccessCode());
 
 			App::getMailer()->send($message);
 		});

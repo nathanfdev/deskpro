@@ -123,7 +123,7 @@ class DelegatingTransport implements \Swift_Transport
 			$tr = $from_account->getTransport();
 		} else {
 			try {
-				App::logErrorMessage('mail_send', 'WARN', "No account found to send from {$from_account}", array('raw_message' => $message->toString()));
+				App::logErrorMessage('mail_send', 'WARN', "No account found to send from {$from_address}", array('raw_message' => $message->toString()));
 			} catch (\Exception $e) {}
 
 			$tr = new \Swift_MailTransport();
