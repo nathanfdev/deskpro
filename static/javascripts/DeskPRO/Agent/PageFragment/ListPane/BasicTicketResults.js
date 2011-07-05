@@ -169,6 +169,12 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 				var el = $(html);
 				el.hide();
 
+				$('.with-route', el).click(function() {
+					DeskPRO_Window.runPageRouteFromElement(this);
+				});
+
+				$('.timeago', el).timeago();
+				
 				$('.deskpro-results-list', this.wrapper).prepend(el);
 				el.slideDown();
 			}
