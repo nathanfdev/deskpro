@@ -77,9 +77,9 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 	public function setSessionId($session_id)
 	{
 		if ($session_id) {
-			$this->session = App::getEntityRepository('DeskPRO:Session')->find($session_id);
+			$this['session'] = App::getEntityRepository('DeskPRO:Session')->find($session_id);
 		} else {
-			$this->session = null;
+			$this['session'] = null;
 		}
 	}
 

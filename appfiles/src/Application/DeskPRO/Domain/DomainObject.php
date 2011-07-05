@@ -302,7 +302,7 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 
 	public function offsetSet($offset, $value)
 	{
-		$old_value = $this[$offset];
+		$old_value = isset($this[$offset]) ? $this[$offset] : null;
 		
 		// No change
 		if ($old_value == $value) {
