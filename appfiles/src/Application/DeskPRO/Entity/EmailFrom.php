@@ -71,7 +71,7 @@ class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
 	{
 		if ($this->_transport !== null) return $this->_transport;
 
-		if (strpos('::', $this->transport_class)) {
+		if (strpos($this->transport_class, '::')) {
 			$this->_transport = call_user_func_array($this->transport_class, $this->transport_options);
 		} else {
 			$this->_transport = new $this->transport_class($this->transport_options);
