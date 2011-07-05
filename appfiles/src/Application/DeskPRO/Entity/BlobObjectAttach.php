@@ -40,7 +40,7 @@ class BlobObjectAttach extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
 	 * @orm:ManyToOne(targetEntity="Blob", fetch="EAGER")
-	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob;
 

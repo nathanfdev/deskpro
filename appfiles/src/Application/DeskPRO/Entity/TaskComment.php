@@ -46,7 +46,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	 * 	inversedBy="comments",
 	 * 	cascade={"persist", "remove", "merge"}
 	 * )
-	 * @orm:JoinColumn(name="task_id", referencedColumnName="id", nullable=false)
+	 * @orm:JoinColumn(name="task_id", referencedColumnName="id", nullable=false, onDelete="cascade")
 	 */
 	protected $task;
  	
@@ -57,7 +57,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	 * 	inversedBy="task_comments",
 	 * 	cascade={"persist", "remove", "merge"}
 	 * )
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", nullable=false)
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person;
  	

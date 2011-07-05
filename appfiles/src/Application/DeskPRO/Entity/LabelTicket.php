@@ -26,7 +26,7 @@ class LabelTicket extends LabelAssocAbstract
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Ticket")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket;
 }

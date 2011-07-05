@@ -27,15 +27,9 @@ class PersonStream extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:OneToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 

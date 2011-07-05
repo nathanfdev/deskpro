@@ -39,7 +39,7 @@ class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="by_person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="by_person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $by_person;
 

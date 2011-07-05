@@ -34,14 +34,14 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketCategory
 	 * @orm:ManyToOne(targetEntity="DownloadCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="category_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $category;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 

@@ -28,14 +28,14 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Ticket", inversedBy="participants")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 * @orm:Id
 	 */
 	protected $person = null;
@@ -50,7 +50,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\PersonEmail
 	 * @orm:ManyToOne(targetEntity="PersonEmail", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_email_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person_email = null;
 

@@ -22,7 +22,7 @@ class TaskAssociatedTicket extends TaskAssociation
   /**
    * @var Application\DeskPRO\Entity\Ticket
    * @orm:ManyToOne(targetEntity="Ticket", inversedBy="task_associations")
-   * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
+   * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
    */
   protected $ticket;
   

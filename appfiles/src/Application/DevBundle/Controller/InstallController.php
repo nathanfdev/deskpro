@@ -115,7 +115,6 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		try {
 			$this->em->beginTransaction();
 			$this->_createMiscData($output);
-			$this->_createUsergroups($output);
 			$this->_createNewUser($output);
 			$this->em->commit();
 		} catch (Exception $e) {
@@ -148,15 +147,6 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 
 		$dep_info = $ent = new \Application\DeskPRO\Entity\Department();
 		$ent['title'] = 'Information';
-		$this->em->persist($ent);
-
-		// Product
-		$ent = new \Application\DeskPRO\Entity\Product();
-		$ent['title'] = 'DeskPRO';
-		$this->em->persist($ent);
-
-		$ent = new \Application\DeskPRO\Entity\Product();
-		$ent['title'] = 'DeskPRO Live';
 		$this->em->persist($ent);
 
 		// Priority
@@ -222,57 +212,8 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		}
 	}
 
-	protected function _createUsergroups($output)
-	{
-		// Guests
-		$group = new \Application\DeskPRO\Entity\Usergroup();
-		$group->fromArray(array(
-			'title' => 'Guests',
-			'permissions' => array()
-		));
-		$this->em->persist($group);
-		$this->em->flush();
-
-		$output->write("Created Guests usergroup #{$group['id']}");
-
-		// Users
-		$group = new \Application\DeskPRO\Entity\Usergroup();
-		$group['title'] = 'Users';
-		$this->em->persist($group);
-		$this->em->flush();
-
-		$output->write("Created Users usergroup #{$group['id']}");
-
-		// Techs
-		$group = new \Application\DeskPRO\Entity\Usergroup();
-		$group->fromArray(array(
-			'title' => 'Technicians',
-			'permissions' => array()
-		));
-		$this->em->persist($group);
-		$this->em->flush();
-
-		$output->write("Created Technicians usergroup #{$group['id']}");
-
-		// Admins
-		$this->admin_group = $group = new \Application\DeskPRO\Entity\Usergroup();
-		$group->fromArray(array(
-			'title' => 'Administrators',
-			'permissions' => array()
-		));
-		$this->em->persist($group);
-		$this->em->flush();
-
-		$output->write("Created Aministrators usergroup #{$group['id']}");
-	}
-
 	protected function _createNewUser($output)
 	{
-		// Organization
-		$org = new \Application\DeskPRO\Entity\Organization();
-		$org['name'] = 'ACME Corp';
-		$this->em->persist($org);
-
 		// Profile
 		$person = new \Application\DeskPRO\Entity\Person();
 		$person['password'] = 'pass';
@@ -283,14 +224,10 @@ class InstallController extends \Application\DeskPRO\HttpKernel\Controller\Contr
 		$person['is_user'] = true;
 		$person['is_agent'] = true;
 
-		$person->setOrganization($org, 'Marketing Manager');
-
 		$email = new \Application\DeskPRO\Entity\PersonEmail();
 		$email['email'] = 'admin@example.com';
 		$email['is_validated'] = true;
 		$person->addEmailAddress($email);
-
-		$person->addUsergroup($this->admin_group);
 
 		$this->em->persist($person);
 		$this->em->flush();

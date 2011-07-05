@@ -31,7 +31,7 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var TicketCategory
 	 * @orm:ManyToOne(targetEntity="TicketCategory")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 

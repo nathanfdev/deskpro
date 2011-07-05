@@ -26,7 +26,7 @@ class CustomDataPerson extends CustomDataAbstract
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 * @orm:Id
 	 */
 	protected $person;
@@ -34,7 +34,7 @@ class CustomDataPerson extends CustomDataAbstract
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefPerson
 	 * @orm:ManyToOne(targetEntity="CustomDefTicket", fetch="EAGER")
-	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
 	 * @orm:Id
 	 */
 	protected $field = null;

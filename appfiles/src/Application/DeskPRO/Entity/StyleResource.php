@@ -42,7 +42,7 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var Style
 	 * @orm:OneToOne(targetEntity="Style")
-	 * @orm:JoinColumn(name="style_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="style_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $style;
 

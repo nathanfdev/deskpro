@@ -48,7 +48,7 @@ class TicketPageDisplay extends PageDisplayAbstract
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
 	 * @orm:ManyToOne(targetEntity="Department")
-	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="department_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $department = null;
 

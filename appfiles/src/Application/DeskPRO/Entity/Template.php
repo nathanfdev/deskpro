@@ -37,7 +37,7 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var Style
 	 * @orm:ManyToOne(targetEntity="Style")
-	 * @orm:JoinColumn(name="style_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="style_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $style;
 

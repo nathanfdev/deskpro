@@ -42,7 +42,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var Style
 	 * @orm:ManyToOne(targetEntity="Language")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 

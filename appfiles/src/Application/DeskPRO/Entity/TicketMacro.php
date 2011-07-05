@@ -34,15 +34,9 @@ class TicketMacro extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 

@@ -39,7 +39,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 

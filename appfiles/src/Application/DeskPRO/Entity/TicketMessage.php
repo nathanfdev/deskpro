@@ -32,14 +32,14 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:ManyToOne(targetEntity="Ticket")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 

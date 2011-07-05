@@ -33,7 +33,7 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	/**
 	 * @var Department
 	 * @orm:ManyToOne(targetEntity="Department")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 

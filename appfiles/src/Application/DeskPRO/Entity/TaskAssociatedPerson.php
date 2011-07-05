@@ -22,7 +22,7 @@ class TaskAssociatedPerson extends TaskAssociation
 	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="task_associations")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 	

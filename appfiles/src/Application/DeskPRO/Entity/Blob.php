@@ -38,7 +38,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Blob
 	 * @orm:ManyToOne(targetEntity="Blob", fetch="EAGER")
-	 * @orm:JoinColumn(name="original_blob_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="original_blob_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $original_blob;
 

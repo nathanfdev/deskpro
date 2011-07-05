@@ -25,7 +25,7 @@ class CustomDefPerson extends CustomDefAbstract
 	/**
 	 * @var CustomDefPeople
 	 * @orm:ManyToOne(targetEntity="CustomDefPerson", inversedBy="children", fetch="EAGER")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 

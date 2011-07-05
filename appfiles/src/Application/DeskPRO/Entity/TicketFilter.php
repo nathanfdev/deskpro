@@ -37,7 +37,7 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
@@ -46,7 +46,7 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\AgentTeam
 	 * @orm:ManyToOne(targetEntity="AgentTeam")
-	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $agent_team = null;
 

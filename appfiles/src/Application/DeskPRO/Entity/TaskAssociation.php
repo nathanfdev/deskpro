@@ -41,7 +41,7 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var Application\DeskPRO\Entity\Task
 	 * @orm:ManyToOne(targetEntity="Task", inversedBy="task_associations")
-	 * @orm:JoinColumn(name="task_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $task;
 	

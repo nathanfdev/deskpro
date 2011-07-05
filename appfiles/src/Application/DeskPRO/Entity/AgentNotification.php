@@ -35,7 +35,7 @@ class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Application\DeskPRO\Entity\TicketFilter
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="TicketFilter")
-	 * @orm:JoinColumn(name="filter_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="filter_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $filter = null;
 
@@ -43,7 +43,7 @@ class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 

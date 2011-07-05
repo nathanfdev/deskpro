@@ -60,70 +60,70 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
 	 * @orm:ManyToOne(targetEntity="Department", fetch="EAGER")
-	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="department_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $department = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketCategory
 	 * @orm:ManyToOne(targetEntity="TicketCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="category_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $category = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketPriority
 	 * @orm:ManyToOne(targetEntity="TicketPriority", fetch="EAGER")
-	 * @orm:JoinColumn(name="priority_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="priority_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $priority = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketWorkflow
 	 * @orm:ManyToOne(targetEntity="TicketWorkflow", fetch="EAGER")
-	 * @orm:JoinColumn(name="workflow_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="workflow_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $workflow = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Product
 	 * @orm:ManyToOne(targetEntity="Product", fetch="EAGER")
-	 * @orm:JoinColumn(name="product_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="product_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $product = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\PersonEmail
 	 * @orm:ManyToOne(targetEntity="PersonEmail", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_email_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person_email = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\AgentTeam
 	 * @orm:ManyToOne(targetEntity="AgentTeam", fetch="EAGER")
-	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent_team = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
 	 * @orm:ManyToOne(targetEntity="Organization", fetch="EAGER")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $organization = null;
 
@@ -157,7 +157,7 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 * 
 	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 * @orm:ManyToOne(targetEntity="EmailGateway")
-	 * @orm:JoinColumn(name="email_gateway_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="email_gateway_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $email_gateway = null;
 

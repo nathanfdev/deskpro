@@ -27,7 +27,6 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
 	 */
 	protected $id = null;
@@ -36,15 +35,15 @@ class ChatMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * The conversation the message belongs to
 	 * @var \Application\DeskPRO\Entity\Conversation
 	 * @orm:ManyToOne(targetEntity="ChatConversation", fetch="EAGER")
-	 * @orm:JoinColumn(name="conversation_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="conversation_id", referencedColumnName="id", onDelete="cascade")
 	 */
-	protected $conversation = null;
+	protected $conversation;
 
 	/**
 	 * Person who created the message
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="author_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="author_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $author = null;
 

@@ -32,7 +32,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * 
 	 * @var \Application\DeskPRO\Entity\Organization
 	 * @orm:ManyToOne(targetEntity="Organization")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
 
@@ -41,7 +41,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent;
 

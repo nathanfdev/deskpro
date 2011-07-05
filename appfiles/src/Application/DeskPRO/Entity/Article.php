@@ -49,7 +49,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="Product", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="article_to_product", joinColumns={@orm:JoinColumn(name="article_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="product_id", referencedColumnName="id")})
+     * @orm:JoinTable(name="article_to_product", joinColumns={@orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="product_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $products;
 
@@ -62,14 +62,14 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var Language
 	 * @orm:ManyToOne(targetEntity="Language")
-	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="language_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $language = null;
 
@@ -175,7 +175,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="ArticleCategory", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="article_to_categories", joinColumns={@orm:JoinColumn(name="article_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="category_id", referencedColumnName="id")})
+     * @orm:JoinTable(name="article_to_categories", joinColumns={@orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $categories;
 

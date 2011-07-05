@@ -20,15 +20,9 @@ namespace Application\DeskPRO\Entity;
 class PersonContactData extends ContactDataAbstract
 {
 	/**
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 }

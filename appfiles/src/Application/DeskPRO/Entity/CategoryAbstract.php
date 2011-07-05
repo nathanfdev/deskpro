@@ -60,7 +60,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * @gedmo:TreeRoot
 	 * @orm:Column(name="root", type="integer", nullable=true)
 	 */
-	protected $root = 0;
+	protected $root;
 
 	/**
 	 * @gedmo:TreeLevel

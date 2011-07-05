@@ -37,23 +37,16 @@ class PersonScraperAssoc
 	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
-
-	/**
-	 * The usersource ID
-	 * @var int
-	 * @orm:Column(name="usersource_id", type="integer")
-	 */
-	protected $person_id = null;
 
 	/**
 	 * The scraper the person is connected to
 	 *
 	 * @var Usersource
 	 * @orm:OneToOne(targetEntity="Usersource")
-	 * @orm:JoinColumn(name="person_scraper_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_scraper_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $scraper;
 

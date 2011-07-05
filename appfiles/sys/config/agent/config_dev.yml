@@ -5,7 +5,7 @@ parameters:
   kernel.debug: true
 
 framework:
-  router:   { resource: "%kernel.root_dir%/config/routing_sys.yml" }
+  router:   { resource: "%kernel.root_dir%/config/routing_dev.yml" }
 
 twig:
   debug: %kernel.debug%

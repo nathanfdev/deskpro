@@ -45,7 +45,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Blob
 	 * @orm:OneToOne(targetEntity="Blob", fetch="EAGER")
-	 * @orm:JoinColumn(name="picture_blob_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="picture_blob_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $picture_blob = null;
 
@@ -144,7 +144,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Locale
 	 * @orm:ManyToOne(targetEntity="Locale", fetch="EAGER")
-	 * @orm:JoinColumn(name="locale_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="locale_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $locale = null;
 
@@ -153,7 +153,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Organization
 	 * @orm:ManyToOne(targetEntity="Organization")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $organization = null;
 
@@ -195,7 +195,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\PersonEmail
 	 * @orm:OneToOne(targetEntity="PersonEmail", fetch="EAGER")
-	 * @orm:JoinColumn(name="primary_email_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="primary_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $primary_email;
 
@@ -227,8 +227,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="Usergroup")
 	 * @orm:JoinTable(name="person2usergroups",
-	 *     joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")},
-     *     inverseJoinColumns={@orm:JoinColumn(name="usergroup_id", referencedColumnName="id")}
+	 *     joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")},
+     *     inverseJoinColumns={@orm:JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}
      * )
 	 */
 	protected $usergroups;

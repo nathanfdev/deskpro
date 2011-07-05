@@ -25,7 +25,7 @@ class CustomDefTicket extends CustomDefAbstract
 	/**
 	 * @var CustomDefPeople
 	 * @orm:ManyToOne(targetEntity="CustomDefTicket", inversedBy="children", fetch="EAGER")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 

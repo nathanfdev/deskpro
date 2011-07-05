@@ -30,32 +30,20 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id;
-
-	/**
 	 * The person the note is attached to.
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
-
-	/**
-	 * @var int
-	 * @orm:Column(name="agent_id", type="integer")
-	 */
-	protected $agent_id;
 
 	/**
 	 * The agent that added the note
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent;
 

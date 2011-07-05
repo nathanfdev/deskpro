@@ -25,7 +25,7 @@ class CustomDataTicket extends CustomDataAbstract
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:ManyToOne(targetEntity="Ticket")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 * @orm:Id
 	 */
 	protected $ticket;
@@ -33,7 +33,7 @@ class CustomDataTicket extends CustomDataAbstract
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefTicket
 	 * @orm:ManyToOne(targetEntity="CustomDefTicket", fetch="EAGER")
-	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
 	 * @orm:Id
 	 */
 	protected $field = null;

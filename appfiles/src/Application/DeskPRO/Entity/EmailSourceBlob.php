@@ -29,7 +29,7 @@ class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailSource
 	 * @orm:ManyToOne(targetEntity="EmailSource")
-	 * @orm:JoinColumn(name="source_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="source_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $source = null;
 

@@ -28,16 +28,9 @@ class PersonScraper extends Scraper
 	 *
 	 * @var Usersource
 	 * @orm:OneToOne(targetEntity="Usersource")
-	 * @orm:JoinColumn(name="usersource_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="usersource_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usersource;
-
-	/**
-	 * The usersource ID
-	 * @var int
-	 * @orm:Column(name="usersource_id", type="integer", nullable=true)
-	 */
-	protected $usersource_id = null;
 
 	/**
 	 * How often to automatically check the remote resource for updates. Null

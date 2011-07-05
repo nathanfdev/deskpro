@@ -25,7 +25,7 @@ class IdeaCategoryPermission extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Usergroup
 	 * @orm:ManyToOne(targetEntity="Usergroup", fetch="EAGER")
-	 * @orm:JoinColumn(name="usergroup_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
 	 * @orm:Id
 	 */
 	protected $usergroup = null;
@@ -33,7 +33,7 @@ class IdeaCategoryPermission extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\IdeaCategory
 	 * @orm:ManyToOne(targetEntity="IdeaCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="category_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")
 	 * @orm:Id
 	 */
 	protected $category = null;

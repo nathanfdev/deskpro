@@ -26,7 +26,7 @@ class LabelDownload extends LabelAssocAbstract
 	 * @var \Application\DeskPRO\Entity\Article
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Download")
-	 * @orm:JoinColumn(name="download_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download;
 }

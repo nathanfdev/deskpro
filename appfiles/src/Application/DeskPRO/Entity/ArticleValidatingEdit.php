@@ -30,14 +30,14 @@ class ArticleValidatingEdit extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @orm:id
 	 * @orm:ManyToOne(targetEntity="Article")
-	 * @orm:JoinColumn(name="article_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 

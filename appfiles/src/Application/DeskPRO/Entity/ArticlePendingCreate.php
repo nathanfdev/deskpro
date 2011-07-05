@@ -34,14 +34,14 @@ class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:ManyToOne(targetEntity="Ticket", fetch="EAGER")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 

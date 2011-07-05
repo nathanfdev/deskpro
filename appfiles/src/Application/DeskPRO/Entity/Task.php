@@ -96,49 +96,25 @@ class Task extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="date_completed",type="datetime", nullable=true)
 	 */
 	protected $date_completed;
-	
-	/**
-	 * The task creator's id.
-	 * 
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer", nullable=false)
-	 */
-	protected $person_id;
-	
+
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", inversedBy="created_tasks")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", nullable=false)
+	 * @orm:ManyToOne(targetEntity="Person")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person;
-	
-	/**
-	 * The assigned agent's id.
-	 * 
-	 * @var int
-	 * @orm:Column(name="assigned_agent_id", type="integer", nullable=false)
-	 */
-	protected $assigned_agent_id;
-	
+
 	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="assigned_tasks")
-	 * @orm:JoinColumn(name="assigned_agent_id", referencedColumnName="id", nullable=true)
+	 * @orm:JoinColumn(name="assigned_agent_id", referencedColumnName="id", nullable=true, onDelete="set null")
 	 */
 	protected $assigned_agent;
-	
-	/**
-	 * The assigned agent team's id.
-	 * 
-	 * @var int
-	 * @orm:Column(name="assigned_agent_team_id", type="integer", nullable=false)
-	 */
-	protected $assigned_agent_team_id;
-	
+
 	/**
 	 * @var Application\DeskPRO\Entity\AgentTeam
 	 * @orm:ManyToOne(targetEntity="AgentTeam", inversedBy="assigned_tasks")
-	 * @orm:JoinColumn(name="assigned_agent_team_id", referencedColumnName="id", nullable=true)
+	 * @orm:JoinColumn(name="assigned_agent_team_id", referencedColumnName="id", nullable=true, onDelete="cascade")
 	 */
 	protected $assigned_agent_team;
 

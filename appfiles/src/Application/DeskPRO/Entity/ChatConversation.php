@@ -38,7 +38,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
 	 * @orm:ManyToOne(targetEntity="Department", fetch="EAGER")
-	 * @orm:JoinColumn(name="department_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="department_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $department = null;
 
@@ -59,7 +59,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent = null;
 
@@ -68,7 +68,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
@@ -77,7 +77,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Session
 	 * @orm:ManyToOne(targetEntity="Session")
-	 * @orm:JoinColumn(name="session_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="session_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $session = null;
 
@@ -102,14 +102,14 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Visitor
 	 * @orm:ManyToOne(targetEntity="Visitor")
-	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $visitor = null;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="Person", cascade={"all"})
-     * @orm:JoinTable(name="chat_conversation_to_person", joinColumns={@orm:JoinColumn(name="conversation_id", referencedColumnName="id")}, inverseJoinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id")})
+     * @orm:JoinTable(name="chat_conversation_to_person", joinColumns={@orm:JoinColumn(name="conversation_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $participants;
 

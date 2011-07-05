@@ -26,7 +26,7 @@ class LabelNews extends LabelAssocAbstract
 	 * @var \Application\DeskPRO\Entity\News
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="News")
-	 * @orm:JoinColumn(name="news_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="news_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $news;
 }

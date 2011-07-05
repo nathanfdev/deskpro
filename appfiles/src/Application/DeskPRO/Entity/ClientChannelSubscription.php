@@ -40,7 +40,7 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var Application\DeskPRO\Entity\Session
 	 * @orm:ManyToOne(targetEntity="Session")
-	 * @orm:JoinColumn(name="session_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="session_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $session;
 

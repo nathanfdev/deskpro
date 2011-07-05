@@ -1,24 +1,24 @@
 <?php
 ##BEGIN:locale.language##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $l = new \Application\DeskPRO\Entity\Language();
 $l['title'] = 'Default Engligh';
 \Application\DeskPRO\App::getOrm()->persist($l);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:locale.locale##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $l = new \Application\DeskPRO\Entity\Locale();
 $l['title'] = 'English (US)';
 $l['language_id'] = 1;
 $l['locale'] = 'en_US';
 \Application\DeskPRO\App::getOrm()->persist($l);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_filter.agent##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
@@ -39,10 +39,10 @@ $q['terms']      = array(array(
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_filter.agent_team##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
@@ -63,10 +63,10 @@ $q['terms']      = array(array(
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_filter.participant##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
@@ -87,10 +87,10 @@ $q['terms']      = array(array(
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_filter.unassigned##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
@@ -111,10 +111,10 @@ $q['terms']      = array(array(
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_filter.all##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $q = new \Application\DeskPRO\Entity\TicketFilter();
 $q['order_by']   = 'ticket.urgency:desc';
 $q['person']     = null;
@@ -131,10 +131,10 @@ $q['terms']      = array(
 );
 \Application\DeskPRO\App::getOrm()->persist($q);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_ticket_trigger.newticket_notify_agents##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $t = new \Application\DeskPRO\Entity\TicketTrigger();
 $t['title'] = 'New Ticket: Send notification to agents';
 $t['event_trigger'] = 'new_ticket';
@@ -148,10 +148,10 @@ $t['actions'] = array(
 );
 \Application\DeskPRO\App::getOrm()->persist($t);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_ticket_trigger.newticket_notify_user##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $t = new \Application\DeskPRO\Entity\TicketTrigger();
 $t['title'] = 'New Ticket: Send confirmation to user';
 $t['event_trigger'] = 'new_ticket';
@@ -165,10 +165,10 @@ $t['actions'] = array(
 );
 \Application\DeskPRO\App::getOrm()->persist($t);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_ticket_trigger.newreply_notify_agents##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $t = new \Application\DeskPRO\Entity\TicketTrigger();
 $t['title'] = 'New Reply: Send notification to agents';
 $t['event_trigger'] = 'new_reply';
@@ -182,10 +182,10 @@ $t['actions'] = array(
 );
 \Application\DeskPRO\App::getOrm()->persist($t);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_ticket_trigger.newreply_notify_users##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $t = new \Application\DeskPRO\Entity\TicketTrigger();
 $t['title'] = 'New Agent Reply: Send notification to users';
 $t['event_trigger'] = 'new_reply';
@@ -205,19 +205,19 @@ $t['actions'] = array(
 );
 \Application\DeskPRO\App::getOrm()->persist($t);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_style.master##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $s = new \Application\DeskPRO\Entity\Style();
 $s['title'] = 'Default';
 $s['note'] = 'Default style';
 \Application\DeskPRO\App::getOrm()->persist($s);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_jobs.cleanup_client_messages##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'cleanup_client_messages';
 $j['worker_group'] = 'cleanup';
@@ -227,10 +227,10 @@ $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupClientMessag
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupClientMessages::DEFAULT_INTERVAL;
 \Application\DeskPRO\App::getOrm()->persist($j);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_jobs.cleanup_sessions##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'cleanup_sessions';
 $j['worker_group'] = 'cleanup';
@@ -240,10 +240,10 @@ $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\CleanupSessions';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\CleanupSessions::DEFAULT_INTERVAL;
 \Application\DeskPRO\App::getOrm()->persist($j);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_jobs.ensure_search_tables##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'ensure_search_tables';
 $j['worker_group'] = 'ensure_search_tables';
@@ -253,10 +253,10 @@ $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\EnsureSearchTables'
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\EnsureSearchTables::DEFAULT_INTERVAL;
 \Application\DeskPRO\App::getOrm()->persist($j);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_jobs.sendmail_queue##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'sendmail_queue';
 $j['worker_group'] = 'sendmail_queue';
@@ -266,10 +266,10 @@ $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\SendmailQueue';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\SendmailQueue::DEFAULT_INTERVAL;
 \Application\DeskPRO\App::getOrm()->persist($j);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();
+
 
 ##BEGIN:create_jobs.hard_delete_tickets##
-\Application\DeskPRO\App::getOrm()->beginTransaction();
+
 $j = new \Application\DeskPRO\Entity\WorkerJob();
 $j['id'] = 'hard_delete_tickets';
 $j['worker_group'] = 'hard_delete_tickets';
@@ -279,4 +279,3 @@ $j['job_class'] = 'Application\\DeskPRO\\WorkerProcess\\Job\\HardDeleteTickets';
 $j['interval'] = \Application\DeskPRO\WorkerProcess\Job\HardDeleteTickets::DEFAULT_INTERVAL;
 \Application\DeskPRO\App::getOrm()->persist($j);
 \Application\DeskPRO\App::getOrm()->flush();
-\Application\DeskPRO\App::getOrm()->commit();

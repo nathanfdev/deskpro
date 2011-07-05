@@ -36,21 +36,21 @@ class ArticleRating extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Article
 	 * @orm:ManyToOne(targetEntity="Article", fetch="EAGER")
-	 * @orm:JoinColumn(name="article_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Visitor
 	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
-	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $visitor = null;
 

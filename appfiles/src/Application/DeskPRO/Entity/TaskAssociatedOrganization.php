@@ -22,7 +22,7 @@ class TaskAssociatedOrganization extends TaskAssociation
 	/**
 	 * @var Application\DeskPRO\Entity\Organization
 	 * @orm:ManyToOne(targetEntity="Organization", inversedBy="task_associations")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
 	

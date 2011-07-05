@@ -25,7 +25,7 @@ class LabelPerson extends LabelAssocAbstract
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 }

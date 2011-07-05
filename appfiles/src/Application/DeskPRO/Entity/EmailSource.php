@@ -33,7 +33,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailGateway
 	 * @orm:ManyToOne(targetEntity="EmailGateway")
-	 * @orm:JoinColumn(name="gateway_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="gateway_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $gateway = null;
 

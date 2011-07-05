@@ -25,37 +25,22 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
 	 */
 	protected $id;
 
 	/**
-	 * The usersource ID
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id;
-
-	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
-
-	/**
-	 * The usersource ID
-	 * @var int
-	 * @orm:Column(name="usersource_id", type="integer")
-	 */
-	protected $usersource_id;
 
 	/**
 	 * The usersource that this scraper is attached to
 	 *
 	 * @var Usersource
 	 * @orm:OneToOne(targetEntity="Usersource")
-	 * @orm:JoinColumn(name="usersource_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="usersource_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usersource;
 

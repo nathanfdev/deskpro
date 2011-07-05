@@ -24,7 +24,7 @@ class RatingArticle extends RatingAbstract
 	/**
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Article", inversedBy="comment")
-	 * @orm:JoinColumn(name="article_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article;
 }

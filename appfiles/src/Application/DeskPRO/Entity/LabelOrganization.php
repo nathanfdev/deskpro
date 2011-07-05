@@ -26,7 +26,7 @@ class LabelOrganization extends LabelAssocAbstract
 	 * @var \Application\DeskPRO\Entity\Organization
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Organization")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
 }

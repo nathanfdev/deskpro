@@ -26,7 +26,7 @@ class LabelIdea extends LabelAssocAbstract
 	 * @var \Application\DeskPRO\Entity\Idea
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Idea")
-	 * @orm:JoinColumn(name="idea_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $idea;
 }

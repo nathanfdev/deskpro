@@ -28,7 +28,7 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @orm:ManyToOne(targetEntity="Ticket")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket;
 
@@ -37,14 +37,14 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
 	 * @orm:ManyToOne(targetEntity="Blob", fetch="EAGER")
-	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob;
 

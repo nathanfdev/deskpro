@@ -25,19 +25,12 @@ use Orb\Util\Arrays;
  */
 class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 {
-	/**
-	 * The person ID
-	 *
-	 * @var int
-	 * @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Person", inversedBy="preferences")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 

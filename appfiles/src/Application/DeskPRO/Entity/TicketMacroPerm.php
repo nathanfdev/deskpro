@@ -33,15 +33,9 @@ class TicketMacroPerm extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="macro_id", type="integer", nullable=true)
-	 */
-	protected $macro_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\TicketMacro
 	 * @orm:OneToOne(targetEntity="TicketMacro")
-	 * @orm:JoinColumn(name="macro_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="macro_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $macro = null;
 

@@ -50,7 +50,7 @@ abstract class UsergroupProperty extends \Application\DeskPRO\Domain\DomainObjec
 	 *
 	 * @var Application\DeskPRO\Entity\Usergroup
 	 * @orm:OneToOne(targetEntity="Usergroup", mappedBy="properties")
-	 * @orm:JoinColumn(name="usergroup_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usergroup;
 

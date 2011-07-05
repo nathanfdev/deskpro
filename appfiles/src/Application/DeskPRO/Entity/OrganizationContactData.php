@@ -20,15 +20,9 @@ namespace Application\DeskPRO\Entity;
 class OrganizationContactData extends ContactDataAbstract
 {
 	/**
-	 * @var int
-	 * @orm:Column(name="organization_id", type="integer")
-	 */
-	protected $organization_id;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Organization
 	 * @orm:ManyToOne(targetEntity="Organization")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
 }

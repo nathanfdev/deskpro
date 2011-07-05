@@ -34,6 +34,31 @@ class ModelsController extends \Application\DeskPRO\HttpKernel\Controller\Contro
 			$metadata = $em->getMetadataFactory()->getMetadataFor($model);
 			$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
 			$all_sql = $tool->getCreateSchemaSql(array($metadata));
+		} else {
+			$em = $this->container->get('doctrine.orm.entity_manager');
+			$metadata = $em->getMetadataFactory()->getAllMetadata();
+			$tool = new \Doctrine\ORM\Tools\SchemaTool($em);
+			$all_sql = $tool->getCreateSchemaSql($metadata);
+
+			//$data_reader = new \Application\DeskPRO\Install\InstallData('other_tables.sql');
+			//foreach ($data_reader as $sql) {
+			//	$all_sql[] = $sql;
+			//}
+
+			//$data_reader = new \Application\DeskPRO\Install\InstallData('triggers.sql');
+			//foreach ($data_reader as $sql) {
+			//	$all_sql[] = $sql;
+			//}
+		}
+
+		if (!empty($_GET['get_php'])) {
+			foreach ($all_sql as &$s) {
+				$s = "\$queries[] = \"" . addslashes($s) . "\";";
+			}
+		} else {
+			foreach ($all_sql as &$s) {
+				$s = $s . ';';
+			}
 		}
 
 		return $this->render('DevBundle:Models:get-sql.html.php', array(

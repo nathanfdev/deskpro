@@ -26,7 +26,7 @@ class LabelBlob extends LabelAssocAbstract
 	 * @var \Application\DeskPRO\Entity\Blob
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Blob")
-	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob;
 }

@@ -44,7 +44,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
@@ -63,7 +63,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\IdeaStatusCategory
 	 * @orm:ManyToOne(targetEntity="IdeaStatusCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="status_category_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="status_category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $status_category = null;
 
@@ -96,7 +96,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\IdeaComment
 	 * @orm:OneToOne(targetEntity="IdeaComment", fetch="EAGER", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
-	 * @orm:JoinColumn(name="first_comment_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="first_comment_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $first_comment;
 

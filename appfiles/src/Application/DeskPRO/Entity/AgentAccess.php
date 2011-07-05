@@ -30,14 +30,14 @@ class AgentAccess extends \Application\DeskPRO\Domain\DomainObject
 	 * @var int
 	 * @orm:Id
 	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", onDelete="cascade", referencedColumnName="id")
 	 */
 	protected $person;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @orm:ManyToMany(targetEntity="Department", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="agent_department_members", joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="person_id")}, inverseJoinColumns={@orm:JoinColumn(name="department_id", referencedColumnName="id")})
+     * @orm:JoinTable(name="agent_department_members", joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="person_id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="department_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $departments = null;
 

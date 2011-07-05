@@ -97,7 +97,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="for_person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="for_person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $for_person;
 

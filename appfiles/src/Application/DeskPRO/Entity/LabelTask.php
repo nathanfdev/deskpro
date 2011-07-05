@@ -30,7 +30,7 @@ class LabelTask extends \Application\DeskPRO\Domain\DomainObject
    * @var \Application\DeskPRO\Entity\Task
    * @orm:Id
    * @orm:ManyToOne(targetEntity="Task")
-   * @orm:JoinColumn(name="task_id", referencedColumnName="id")
+   * @orm:JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
    */
   protected $task;
   

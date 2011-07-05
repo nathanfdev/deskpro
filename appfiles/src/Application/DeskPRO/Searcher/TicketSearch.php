@@ -879,9 +879,11 @@ class TicketSearch extends SearcherAbstract
 				$no_team = true;
 				break;
 			} elseif ($c == -1) {
-				$team_ids[] = $this->getPersonContext()->getAgentTeamIds();
+				$team_ids = Arrays::removeFalsey($this->getPersonContext()->getAgentTeamIds());
+				$team_ids[] = -1;
 			} elseif ($c == -2) {
-				$not_ids = $this->getPersonContext()->getAgentTeamIds();
+				$not_ids = Arrays::removeFalsey($this->getPersonContext()->getAgentTeamIds());
+				$not_ids[] = -1;
 			} else {
 				$team_ids = $c;
 			}

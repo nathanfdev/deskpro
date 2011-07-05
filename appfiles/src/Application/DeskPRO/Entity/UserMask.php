@@ -20,17 +20,12 @@ namespace Application\DeskPRO\Entity;
 class UserMask extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="person_id", type="integer")
-	 */
-	protected $person_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:OneToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @orm:Id
 	 */
-	protected $person = null;
+	protected $person;
 
 	/**
 	 * @var string

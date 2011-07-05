@@ -6,9 +6,19 @@
 </form>
 
 <?php if ($model): ?>
-	<hr />
+
+<hr />
 
 	<h3><?php echo $model ?></h3>
 
 	<textarea style="width: 95%; height: 200px; font-family: 'Monaco', 'Courier New', monospace;"><?php echo $view->escape(implode("\n\n", $all_sql)) ?></textarea>
+
+<?php elseif ($all_sql): ?>
+
+	<hr />
+
+	<h3>Database</h3>
+
+	<textarea style="width: 95%; height: 200px; font-family: 'Monaco', 'Courier New', monospace;"><?php echo $view->escape(implode("\n\n", $all_sql)) ?></textarea>
+
 <?php endif ?>

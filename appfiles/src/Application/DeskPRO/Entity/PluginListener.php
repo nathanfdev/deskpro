@@ -33,7 +33,7 @@ class PluginListener extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var \Application\DeskPRO\Entity\Plugin
 	 * @orm:ManyToOne(targetEntity="Plugin", inversedBy="plugins")
-	 * @orm:JoinColumn(name="plugin_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="plugin_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $plugin;
 

@@ -33,15 +33,9 @@ class TicketFilterPerm extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var int
-	 * @orm:Column(name="filter_id", type="integer", nullable=true)
-	 */
-	protected $filter_id = null;
-
-	/**
 	 * @var \Application\DeskPRO\Entity\TicketFilter
 	 * @orm:OneToOne(targetEntity="TicketFilter")
-	 * @orm:JoinColumn(name="filter_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="filter_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $filter = null;
 

@@ -36,7 +36,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var \Application\DeskPRO\Entity\Plugin
 	 * @orm:OneToOne(targetEntity="Plugin")
-	 * @orm:JoinColumn(name="plugin_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="plugin_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $plugin = null;
 
@@ -71,7 +71,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var XXX
 	 * @orm:OneToOne(targetEntity="XXX")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	//protected $parent = null;
 

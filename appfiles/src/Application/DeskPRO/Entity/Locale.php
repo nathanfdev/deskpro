@@ -41,7 +41,7 @@ class Locale extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var Language
 	 * @orm:ManyToOne(targetEntity="Language")
-	 * @orm:JoinColumn(name="language_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $language = null;
 

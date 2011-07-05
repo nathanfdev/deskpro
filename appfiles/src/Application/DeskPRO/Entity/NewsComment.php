@@ -23,7 +23,7 @@ class NewsComment extends CommentAbstract
 {
 	/**
 	 * @orm:ManyToOne(targetEntity="News", inversedBy="comment")
-	 * @orm:JoinColumn(name="news_id", referencedColumnName="id")
+	 * @orm:JoinColumn(name="news_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $news;
 }

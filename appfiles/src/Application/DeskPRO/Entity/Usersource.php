@@ -82,16 +82,9 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var Application\DeskPRO\Entity\PersonScraper
 	 * @orm:ManyToOne(targetEntity="PersonScraper")
-	 * @orm:JoinColumn(name="person_scraper_id", referencedColumnName="id", nullable=true)
+	 * @orm:JoinColumn(name="person_scraper_id", referencedColumnName="id", nullable=true, onDelete="cascade")
 	 */
 	protected $person_scraper = null;
-
-	/**
-	 * The person scraper ID
-	 * @var int
-	 * @orm:Column(name="person_scraper_id", type="integer", nullable=true)
-	 */
-	protected $person_scraper_id = null;
 
 	/**
 	 * The handler classname. A handler is created from this usersource, and is responsible for

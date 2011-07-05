@@ -36,7 +36,6 @@ class ContentSearch extends CommentAbstract
 	protected $object_id = null;
 
 	/**
-	 * @orm:Id
 	 * @orm:Column(name="content", type="text")
 	 */
 	protected $content;
