@@ -48,6 +48,7 @@ abstract class ChangeTracker implements \Doctrine\Common\PropertyChangedListener
 
 	public function propertyChanged($sender, $prop, $old_val, $new_val)
 	{
+
 		$this->recordPropertyChanged($prop, $old_val, $new_val);
 	}
 

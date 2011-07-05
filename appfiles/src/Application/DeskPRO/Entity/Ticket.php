@@ -327,6 +327,9 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function _initTicketLogger()
 	{
+		if ($this->_ticket_logger) {
+			$this->removePropertyChangedListener($this->_ticket_logger);
+		}
 		$ticket_logger = new \Application\DeskPRO\Tickets\TicketChangeTracker($this);
 		$this->_ticket_logger = $ticket_logger;
 		$this->addPropertyChangedListener($ticket_logger);
@@ -1404,6 +1407,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			'ticket_id' => $ticket_id,
 			'auth'      => $auth
 		);
+	}
+
+	public function __clone()
+	{
+		parent::__clone();
+		$this->_ticket_logger = null;
 	}
 
 	

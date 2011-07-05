@@ -15,7 +15,8 @@
 					<div class="{{ log.action_type }}">
 					{% if log.action_type == 'changed_agent' %}
 						<span class="type">Assigned agent</span> changed from
-						<span class="old-val">{{log.details.old_agent_name}}</span> to <span class="new-val">{{log.details.new_agent_name}}</span>
+						<span class="old-val">{{log.details.old_agent_name|default(phrase('core.unassigned'))}}</span>
+						to <span class="new-val">{{log.details.new_agent_name|default(phrase('core.unassigned'))}}</span>
 					{% elseif log.action_type == 'ticket_created' %}
 						Ticket <span class="new-val">#{{log.details.ticket_id}}</span> created
 					{% elseif log.action_type == 'changed_category' %}
@@ -44,7 +45,7 @@
 					</a>
 				</td>
 				<td style="white-space:nowrap;"><time class="timeago" title="{{log.date_created|date('c')}}">
-					{{log.date_created|date('Y-m-d H:m')}}
+					{{log.date_created|date('Y-m-d H:i')}}
 				</time></td>
 			</tr>
 		{% endfor %}

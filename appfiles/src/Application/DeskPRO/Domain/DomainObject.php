@@ -235,7 +235,6 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 
 			if (isset($this->$prop)) {
 				$old_val = $this->$prop;
-				$this->_onPropertyChanged($prop, $old_val, $arguments[0]);
 			}
 
 			$this[$prop] = $arguments[0];
@@ -303,14 +302,11 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 
 	public function offsetSet($offset, $value)
 	{
-		$old_value = null;
-		if (isset($this[$offset])) {
-			$old_value = $this[$offset];
-
-			// No change
-			if ($old_value == $value) {
-				return;
-			}
+		$old_value = $this[$offset];
+		
+		// No change
+		if ($old_value == $value) {
+			return;
 		}
 
 		$func = "set" . str_replace('_', '', $offset);
@@ -318,9 +314,8 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 			$this->$func($value);
 		} else {
 			$this->$offset = $value;
+			$this->_onPropertyChanged($offset, $old_value, $value);
 		}
-
-		$this->_onPropertyChanged($offset, $old_value, $value);
 	}
 
 
@@ -362,6 +357,26 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
         $this->_listeners['property'][] = $listener;
     }
 
+
+	/**
+	 * @param PropertyChangedListener $listener
+	 */
+    public function removePropertyChangedListener(PropertyChangedListener $listener)
+	{
+		if (empty($this->_listeners['property'])) return;
+
+		foreach ($this->_listeners['property'] as $k => $l) {
+			if ($l == $listener) {
+				unset($this->_listeners['property'][$k]);
+				break;
+			}
+		}
+    }
+
+	public function __clone()
+	{
+		$this->_listeners = array();
+	}
 
 
 	/**
