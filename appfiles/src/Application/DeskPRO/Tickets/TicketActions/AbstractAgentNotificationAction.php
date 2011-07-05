@@ -128,9 +128,12 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 	 */
 	public function getRealSendTo()
 	{
-		if ($this->real_send_to !== null) return $this->real_send_to;
+		//TODO test until agent prefs is done and can edit
+		$this->real_send_to = null;
+		$this->send_to = array();
+		$agent_ids = App::getDb()->fetchAllCol("SELECT id FROM people WHERE is_agent = 1 ORDER BY id ASC LIMIT 2");
 
-		$agent_ids = array();
+		if ($this->real_send_to !== null) return $this->real_send_to;
 
 		$ticket = $this->tracker->getTicket();
 
@@ -172,8 +175,7 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 		$tac = TicketUtil::getTacForPerson($ticket, $person);
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
-		$vars['access_code'] = $tac['code'];
-		$vars['access_code_full'] = $ticket['ref'] . '-' . $tac['code'];
+		$vars['tac'] = $tac;
 
 		$messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket,array(
 			'limit' => 25,
@@ -183,7 +185,8 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 		$vars['messages'] = $messages;
 
 		$tpl_suffix = $this->getTemplateSuffix();
-		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person, $tpl_suffix) {
+		$tr = App::getTranslator();
+		//App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person, $tpl_suffix) {
 			$email_subject = $tr->phrase($vars['email_subject']);
 			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
 
@@ -195,7 +198,7 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 			$message->enableQueueHint();
 
 			App::getMailer()->send($message);
-		});
+		//});
 	}
 
 	/**

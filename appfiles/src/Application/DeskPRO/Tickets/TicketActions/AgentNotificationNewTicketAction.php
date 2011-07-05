@@ -55,7 +55,7 @@ class AgentNotificationNewTicketAction extends AbstractAgentNotificationAction
 				'email_subject' => new DelegatePhrase('core_tickets_agent_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
 			);
 
-			$this->doSend($tpl, $vars, $ticket, $person);
+			$this->doSend($tpl, $vars, $ticket, $agent);
 		}
 	}
 }

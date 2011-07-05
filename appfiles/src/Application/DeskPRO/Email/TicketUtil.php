@@ -11,8 +11,10 @@
 
 namespace Application\DeskPRO\Email;
 
+use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\TicketAccessCode;
 
 class TicketUtil
 {
@@ -28,13 +30,25 @@ class TicketUtil
 	 */
 	public static function getTacForPerson(Ticket $ticket, Person $person)
 	{
-		$tac = $ticket->findAccessCodeForPerson($person);
-		if (!$tac) {
-			$tac = $ticket->addAccessCodeForPerson($person);
+		try {
+			$tac = App::getOrm()->createQuery("
+				SELECT t
+				FROM DeskPRO:TicketAccessCode t
+				WHERE t.ticket = ?1 AND t.person = ?2
+			")->setParameters(array(1 => $ticket, 2 => $person))->getSingleResult();
+
+			return $tac;
+		} catch (\Exception $e) {
+
+			$tac = new TicketAccessCode();
+			$tac['ticket'] = $ticket;
+			$tac['person'] = $person;
+			$ticket->access_codes->add($tac);
+
 			App::getOrm()->persist($tac);
 			App::getOrm()->flush();
-		}
 
-		return $tac;
+			return $tac;
+		}
 	}
 }

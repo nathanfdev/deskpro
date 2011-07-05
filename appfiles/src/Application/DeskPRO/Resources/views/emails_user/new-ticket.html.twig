@@ -7,7 +7,6 @@
 	</a>
 {% endblock %}
 {% block content %}
-	<!--ACCESS CODE: (#{{ticket.access_code}})-->
 	{{ layout.section_start() }}
 		Your ticket has been recieved and our agents will
 		reply to you as soon as they can. You can view your ticket online at any time
@@ -22,4 +21,7 @@
 			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
 		{% endfor %}
 	{{ layout.section_end() }}
+
+	<br/><br/>
+	(#{{ticket.access_code}})
 {% endblock %}

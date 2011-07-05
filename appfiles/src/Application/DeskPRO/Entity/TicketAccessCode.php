@@ -69,7 +69,7 @@ class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getAccessCode()
 	{
-		$str .= Util::baseEncode($this->id, 'letters');
+		$str = Util::baseEncode($this->id, 'letters');
 		$str .= $this->auth;
 
 		return $str;

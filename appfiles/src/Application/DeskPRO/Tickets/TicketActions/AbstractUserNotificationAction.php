@@ -56,13 +56,6 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		$person = $ticket->person;
 		$parts  = $ticket->getUserParticipants();
 
-		// Make sure everyone has their own TAC
-		// It's not strictly used here, but can be used as confirmation code for registration,
-		// removing themselves from the ticket, etc
-		foreach ($parts as $p) {
-			TicketUtil::getTacForPerson($ticket, $p->person);
-		}
-		
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
 		$vars['participants'] = $parts;

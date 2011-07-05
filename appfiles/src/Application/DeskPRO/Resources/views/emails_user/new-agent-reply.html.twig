@@ -7,7 +7,6 @@
 	</a>
 {% endblock %}
 {% block content %}
-	<!--ACCESS CODE: (#{{ticket.access_code}})-->
 	{{ layout.section_start() }}
 		An agent has replied to your ticket.
 	{{ layout.section_end() }}
@@ -17,4 +16,7 @@
 			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
 		{% endfor %}
 	{{ layout.section_end() }}
+
+	<br/><br/>
+	(#{{ticket.access_code}})
 {% endblock %}

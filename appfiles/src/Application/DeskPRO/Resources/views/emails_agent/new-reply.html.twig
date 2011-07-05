@@ -1,13 +1,6 @@
 {% extends 'DeskPRO:emails_user:layout.html.twig' %}
 {% import 'DeskPRO:emails_user:layout-macros.html.twig' as layout %}
-{% block email_teaser_link %}
-	View your ticket online at:<br />
-	<a href="{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}">
-		{{ url('user_tickets_view_auth', {'ticket_ref': ticket.ref, 'ticket_auth': access_code}) }}
-	</a>
-{% endblock %}
 {% block content %}
-	<!--ACCESS CODE: (#{{access_code_full}})-->
 	{{ layout.section_start(ticket.subject) }}
 		{% include 'DeskPRO:emails_agent:ticket-info.html.twig' %}
 	{{ layout.section_end() }}
@@ -16,4 +9,7 @@
 			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
 		{% endfor %}
 	{{ layout.section_end() }}
+
+	<br/><br/>
+	(#{{tac.access_code}})
 {% endblock %}

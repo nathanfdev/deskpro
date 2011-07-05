@@ -7,7 +7,6 @@
 	</a>
 {% endblock %}
 {% block content %}
-	<!--ACCESS CODE: (#{{access_code_full}})-->
 	{{ layout.section_start() }}
 		A new reply was made to your ticket. You can view your ticket online at any time
 		by visiting
@@ -21,4 +20,7 @@
 			{% include 'DeskPRO:emails_common:ticket-message.html.twig' with {'message': message} %}
 		{% endfor %}
 	{{ layout.section_end() }}
+
+	<br/><br/>
+	(#{{ticket.access_code}})
 {% endblock %}
