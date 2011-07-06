@@ -193,6 +193,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			dataType: 'html',
 			success: function(html) {
 				$('#tickets_outline_searches_list').empty().html(html);
+				this.highlightNav(); //the list was replaced, so have to re-highlight it
 			}
 		});
 	},
