@@ -109,6 +109,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$message = $this->message;
 		$message = strip_tags($message);
+
+		// Decode entities in the HTML back to characters,
+		// This is needed so when outputting, they arent double-encoded by twig
+		// (And its just proper!)
+		$message = html_entity_decode($message);
+		
 		return $message;
 	}
 
