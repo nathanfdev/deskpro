@@ -191,7 +191,7 @@ class TicketGateway extends AbstractGateway
 		foreach ($this->processBlobs() as $blob) {
 			$attach = new Entity\TicketAttachment();
 			$attach['blob'] = $blob;
-			$attach['person'] = $this->person;
+			$attach['person'] = $person;
 
 			$message->addAttachment($attach);
 		}
@@ -208,8 +208,9 @@ class TicketGateway extends AbstractGateway
 			$ticket['status'] = Entity\Ticket::STATUS_OPEN;
 		}
 
-		App::getOrm()->transactional(function($em) use ($ticket, $person) {
+		App::getOrm()->transactional(function($em) use ($ticket, $message, $person) {
 			$em->persist($ticket);
+			$em->persist($message);
 			$em->persist($person);
 			$em->flush();
 		});
@@ -320,9 +321,23 @@ class TicketGateway extends AbstractGateway
 		App::getOrm()->beginTransaction();
 		$ticket = $newticket->save();
 
+		$message = $newticket->new_message;
+		foreach ($this->processBlobs() as $blob) {
+			$attach = new Entity\TicketAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $person;
+
+			$message->addAttachment($attach);
+		}
+
 		if ($this->reader->getCcAddresses()) {
 			$this->handleCc($ticket, $this->reader->getCcAddresses());
 		}
+
+		App::getOrm()->persist($ticket);
+		App::getOrm()->persist($message);
+		App::getOrm()->persist($person);
+
 		App::getOrm()->commit();
 
 		$ev = $this->createGatewayEvent(array(

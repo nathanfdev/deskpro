@@ -84,14 +84,14 @@ abstract class AbstractGateway
 
 			$desc = App::getApi('filestorage')->createRandomPath();
 			$desc->write($attach->getFileContents(), array(
-				'content_type' => $file->getMimeType(),
-				'filename' => $file->getFileName()
+				'content_type' => $attach->getMimeType(),
+				'filename' => $attach->getFileName()
 			));
 
 			$blob_id = $desc->getPath();
 			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
-			$this->processed_blobs[] = $blobs;
+			$this->processed_blobs[] = $blob;
 		}
 
 		$ev = $this->createGatewayEvent(array('processed_blobs' => $this->processed_blobs));

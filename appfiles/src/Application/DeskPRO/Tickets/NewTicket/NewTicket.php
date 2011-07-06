@@ -29,6 +29,8 @@ class NewTicket
 	 */
 	public $ticket;
 
+	public $new_message;
+
 	public $creation_system;
 
 	public function __construct($creation_system, Entity\Person $person = null)
@@ -108,6 +110,8 @@ class NewTicket
 			if (!$ticket_message['message']) {
 				$ticket_message['message'] = '(no message)';
 			}
+
+			$this->new_message = $ticket_message;
 
 			if ($id = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
 				$ticket_message = App::findEntity('DeskPRO:TicketMessage', $id);
