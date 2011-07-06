@@ -603,6 +603,10 @@ class TicketController extends AbstractController
 				$this->em->persist($person);
 			}
 
+			if ($person['is_agent']) {
+				continue;
+			}
+
 			$new_parts_to_people[] = $person;
 		}
 		$this->em->flush();
@@ -612,16 +616,9 @@ class TicketController extends AbstractController
 			$cc_person_ids[] = $person['id'];
 		}
 
-		// For each participant, if its not in the selected ones to
-		// CC then we disable the flag. CC is sticky anyway, and the
-		// flag is simply used when sending notifications too
-		foreach ($ticket->getParticipants() as $part) {
-			if (!in_array($part->person['id'], $cc_person_ids)) {
-				$part['default_on'] = false;
-				$this->em->persist($part);
-			}
-		}
-
+		$tracker = $ticket->getTicketLogger();
+		$tracker->recordExtra('enabled_cc', $cc_person_ids);
+		
 		$this->em->persist($ticket);
 		$this->em->flush();
 		$this->em->commit();

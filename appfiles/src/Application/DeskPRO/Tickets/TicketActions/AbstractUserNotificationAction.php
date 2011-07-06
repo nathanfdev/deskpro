@@ -56,6 +56,10 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		$person = $ticket->person;
 		$parts  = $ticket->getUserParticipants();
 
+		// Is null if not provided,
+		// or an array of people ID's if provided (from agent reply)
+		$only_cc_ids = $this->tracker->getExtra('enabled_cc');
+
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;
 		$vars['participants'] = $parts;
@@ -69,14 +73,16 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		$vars['messages'] = $messages;
 
 		$tpl_suffix = $this->getTemplateSuffix();
-		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person, $parts, $tpl_suffix) {
+		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
 			$email_subject = $tr->phrase($vars['email_subject']);
 			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
 
 			$message = App::getMailer()->createMessage();
 			$message->setTo($person->getPrimaryEmailAddress(), $person->getDisplayName());
 			foreach ($parts as $part) {
-				$message->addCc($part['email_address'], $part->person->getDisplayName());
+				if ($only_cc_ids === null OR in_array($part->person['id'], $only_cc_ids)) {
+					$message->addCc($part['email_address'], $part->person->getDisplayName());
+				}
 			}
 			$message->setSubject($email_subject);
 			$message->setBody($email_body, 'text/html');
