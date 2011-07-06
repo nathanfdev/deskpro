@@ -55,7 +55,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getPoller().addData(
 			[{name: 'do[]', value: 'get-filter-counts'}],
 			'filters.counts',
-			{recurring: true, minDelay: 60000, minDelayAfterOne: true}
+			{recurring: true, minDelay: 60000 }
 		);
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
 

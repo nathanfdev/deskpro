@@ -114,8 +114,12 @@ class TicketSearchController extends AbstractController
 		}
 		$flags = array_values($flags);
 
+		// Counts for filters
+		$sys_filter_counts = App::getApi('tickets.filters')->getAllCountsSystemFilters($this->person);
+
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
+			'sys_filter_counts' => $sys_filter_counts,
 			'custom_filters' => $custom_filters,
 			'flags' => $flags
 		));
