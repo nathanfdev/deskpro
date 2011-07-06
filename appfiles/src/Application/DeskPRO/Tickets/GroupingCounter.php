@@ -119,9 +119,9 @@ class GroupingCounter
 	{
 		$group_by = 'GROUP BY field1';
 
-		$select_fields[] = 'tickets.' . $this->grouping1 . ' AS field1';
+		$select_fields[] = "COALESCE(tickets.{$this->grouping1}, 0) AS field1";
 		if ($this->grouping2) {
-			$select_fields[] = 'tickets.' . $this->grouping2 . ' AS field2';
+			$select_fields[] = "COALESCE(tickets.{$this->grouping2}, 0) AS field2";
 			$group_by .= ', field2';
 		}
 		$select_fields[] = 'COUNT(*) AS total';
@@ -287,26 +287,32 @@ class GroupingCounter
 		switch ($field) {
 			case 'department_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			case 'product_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:Product')->getProductNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			case 'category_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getFullCategoryNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			case 'agent_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:Person')->getAgentNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.unassigned'));
 				break;
 
 			case 'workflow_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:Workflow')->getWorkflowNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			case 'priority_id':
 				$titles = App::getOrm()->getRepository('DeskPRO:TicketPriority')->getPriorityNames();
+				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
 			default:
