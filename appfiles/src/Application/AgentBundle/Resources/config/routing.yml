@@ -10,6 +10,10 @@ agent_test:
   pattern: /test
   defaults: { _controller: AgentBundle:Test:index }
 
+agent_test_tab:
+  pattern: /test-tab
+  defaults: { _controller: AgentBundle:Test:tab }
+
 agent_interface_poller:
   pattern: /poller
   defaults: { _controller: AgentBundle:Poller:handler }

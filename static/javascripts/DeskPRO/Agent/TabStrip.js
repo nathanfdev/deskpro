@@ -312,6 +312,10 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 			this.removeTabById(tabData.page.meta.tabPlaceholderId);
 
 			$('#' + btnId).replaceWith(li);
+
+			if (!$('li.active-tab', this.tabStrip).length) {
+				li.addClass('active-tab');
+			}
 		} else {
 			li.appendTo(this.tabStrip);
 			this.resizeTabListWidth();
@@ -329,7 +333,7 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 	_onTabActivate: function(tabData) {
 		$('li', this.tabStrip).removeClass('active-tab');
-		var tabEl = $('#' + tabData.btnId, this.tabStrip).addClass('active-tab');
+		var tabEl = $('#' + tabData.btnId).addClass('active-tab');
 
 		if (tabEl.is('.is-alerting')) {
 			tabEl.removeClass('alert-highlight').removeClass('is-alerting');
