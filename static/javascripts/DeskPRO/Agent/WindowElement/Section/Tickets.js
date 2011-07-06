@@ -32,6 +32,8 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			onTabSwitch: function(info) {
 				if (info.tabEl.is('.labels')) {
 					self.showLabelsList();
+				} else if (info.tabEl.is('.flagged')) {
+					self.loadFlagCounts();
 				}
 			}
 		});
@@ -56,6 +58,28 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			{recurring: true, minDelay: 60000, minDelayAfterOne: true}
 		);
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
+
+		$('ul#tickets_outline_filters_list').sortable({
+			'axis': 'y',
+			'distance': 8,
+			'update': function() {
+				var data = [];
+
+				$('ul#tickets_outline_filters_list > li').each(function() {
+					var id = $(this).data('filter-id');
+					if (id) {
+						data.push({ name: 'prefs[agent.ui.ticket-filters-order][]', value: id });
+					}
+				});
+
+				$.ajax({
+					timeout: 20000,
+					type: 'POST',
+					url: BASE_URL + 'agent/misc/ajax-save-prefs',
+					data: data
+				});
+			}
+		});
 	},
 
 	getFilterCount: function(filter_id) {
@@ -275,14 +299,99 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	//#########################################################################
 
 	_initFlagged: function() {
-		DeskPRO_Window.getPoller().addData(
-			[{name: 'do[]', value: 'get-flagged-counts'}],
-			'filter-flagged.counts',
-			{recurring: true, minDelay: 60000, minDelayAfterOne: true}
-		);
-
 		DeskPRO_Window.getMessageBroker().addMessageListener('filter-flagged.counts', this.updateFlagCounts.bind(this));
 		DeskPRO_Window.getMessageBroker().addMessageListener('filter-flagged.flag-changed', this.changeFlagCountsForSwitch.bind(this));
+
+		//------------------------------
+		// Reorder flags
+		//------------------------------
+
+		var self = this;
+		$('#tickets_outline_flagged ul').sortable({
+			'axis': 'y',
+			'distance': 8,
+			'update': function() {
+				var data = [];
+
+				$('#tickets_outline_flagged ul > li').each(function() {
+					var flag = $(this).data('flag');
+					if (flag) {
+						data.push({ name: 'prefs[agent.ui.ticket-flag-order][]', value: flag });
+					}
+				});
+
+				$.ajax({
+					timeout: 20000,
+					type: 'POST',
+					url: BASE_URL + 'agent/misc/ajax-save-prefs',
+					data: data
+				});
+			}
+		});
+
+		//------------------------------
+		// Renaming flags
+		//------------------------------
+
+		$('#tickets_outline_flagged li').dblclick(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			var li = $(this);
+
+			var inputEl = $('<input type="text" />');
+			inputEl.val($('a', li).text().trim());
+
+			var enterCloseFn = function(ev) {
+				if (ev.keyCode == 13 && !ev.metaKey) {
+					closeFn();
+				}
+			}
+			var closeFn = function() {
+
+				var newTitle = inputEl.val().trim();
+				if (newTitle.length) {
+					$.ajax({
+						type: 'POST',
+						url: BASE_URL + 'agent/misc/ajax-save-prefs',
+						data: [{
+							name: 'prefs[agent.ui.flag.' + li.data('flag') + ']',
+							value: newTitle
+						}]
+					});
+
+					$('a', li).text(newTitle);
+				}
+
+				backdrop.remove();
+				wrapper.remove();
+			};
+			
+			var backdrop = $('<div class="backdrop"></div>');
+			backdrop.appendTo('body');
+			backdrop.click(closeFn);
+
+			var wrapper = $('<div class="field-overlay"><div class="close-trigger"></div></div>');
+			inputEl.appendTo(wrapper);
+			wrapper.css({
+				left: li.offset().left,
+				top: li.offset().top
+			});
+			wrapper.appendTo('body').show();
+			inputEl.keypress(enterCloseFn).focus();
+
+			$('.close-trigger', wrapper).click(closeFn);
+		});
+	},
+
+	loadFlagCounts: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/get-flagged-section-data.json',
+			context: this,
+			success: function(data) {
+				this.updateFlagCounts(data.flag_counts);
+			}
+		});
 	},
 
 	updateFlagCounts: function(counts) {

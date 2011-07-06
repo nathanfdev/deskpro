@@ -614,6 +614,21 @@ So only the 'on' one is visible at a time */
     margin-top: 15px;
 }
 
+
+#tickets_outline_flags_list li a {
+    padding-left: 19px;
+    background-position: 0 50%;
+    background-repeat: no-repeat;
+}
+
+#tickets_outline_flags_list li.flag-blue a { background-image: url(../../images/icons/flag_blue.png); }
+#tickets_outline_flags_list li.flag-green a { background-image: url(../../images/icons/flag_green.png); }
+#tickets_outline_flags_list li.flag-orange a { background-image: url(../../images/icons/flag_orange.png); }
+#tickets_outline_flags_list li.flag-pink a { background-image: url(../../images/icons/flag_pink.png); }
+#tickets_outline_flags_list li.flag-purple a { background-image: url(../../images/icons/flag_purple.png); }
+#tickets_outline_flags_list li.flag-red a { background-image: url(../../images/icons/flag_red.png); }
+#tickets_outline_flags_list li.flag-yellow a { background-image: url(../../images/icons/flag_yellow.png); }
+
 /********************************
 * #deskpro_list
 *********************************/

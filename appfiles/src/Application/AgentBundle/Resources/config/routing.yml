@@ -353,6 +353,10 @@ agent_ticketsearch_getsectiondata:
   pattern: /tickets/get-section-data.json
   defaults: { _controller: AgentBundle:TicketSearch:getSectionData }
 
+agent_ticketsearch_getflaggedsectiondata:
+  pattern: /tickets/get-flagged-section-data.json
+  defaults: { _controller: AgentBundle:TicketSearch:getFlaggedSectionData }
+
 agent_ticketsearch_overviewpane:
   pattern: /ticket-search/overview-pane
   defaults: { _controller: AgentBundle:TicketSearch:overviewPane }

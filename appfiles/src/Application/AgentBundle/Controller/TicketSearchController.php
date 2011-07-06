@@ -63,22 +63,70 @@ class TicketSearchController extends AbstractController
 		}
 
 		// Order them into sys/other
-
 		$sys_filters = array();
 		$custom_filters = array();
 
 		foreach ($all_filters as $id => $filter) {
 			if ($filter['sys_name']) {
-				$sys_filters[$id] = $filter;
+				$sys_filters[$filter['sys_name']] = $filter;
 			} else {
 				$custom_filters[$id] = $filter;
 			}
 		}
 
+		// Force order of sys
+		$sys_filters_unordered = $sys_filters;
+		$sys_filters = array();
+		foreach (array('agent', 'participant', 'agent_team', 'unassigned', 'all') as $id) {
+			if (isset($sys_filters_unordered[$id])) {
+				$sys_filters[$id] = $sys_filters_unordered[$id];
+				unset($sys_filters_unordered[$id]);
+			}
+		}
+
+		if (count($sys_filters_unordered)) {
+			foreach ($sys_filters_unordered as $id => $q) {
+				$sys_filters[$id] = $q;
+			}
+		}
+
+		// Flags
+		$flags = array('blue','green','orange','pink','purple','red','yellow');
+		$flags = array_combine($flags, $flags);
+
+		$order = $this->person->getPref('agent.ui.ticket-flag-order');
+		if ($order) {
+			$flags_unordered = $flags;
+			$flags = array();
+
+			foreach ($order as $id) {
+				if (isset($flags_unordered[$id])) {
+					$flags[] = $flags_unordered[$id];
+					unset($flags_unordered[$id]);
+				}
+			}
+
+			if (count($flags_unordered)) {
+				foreach ($flags_unordered as $id) {
+					$flags[] = $id;
+				}
+			}
+		}
+		$flags = array_values($flags);
+
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
 			'custom_filters' => $custom_filters,
+			'flags' => $flags
 		));
+
+		return $this->createJsonResponse($data);
+	}
+
+	public function getFlaggedSectionDataAction()
+	{
+		$data = array();
+		$data['flag_counts'] = App::getEntityRepository('DeskPRO:TicketFlagged')->getCountsForPerson($this->person);
 
 		return $this->createJsonResponse($data);
 	}

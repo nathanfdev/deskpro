@@ -80,7 +80,7 @@ class MiscController extends AbstractController
 	{
 		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value)
 		{
-			$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => $pref_name));
+			$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => $pref_name));
 			if (!$pref) {
 				$pref = new Entity\PersonPref();
 				$pref['name'] = $pref_name;
@@ -103,7 +103,7 @@ class MiscController extends AbstractController
 		$value = array();
 		$value['tabs'] = $this->in->getCleanValueArray('tabs', 'raw', 'discard');
 
-		$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person_id' => $this->person['id'], 'name' => 'agent.ui.state'));
+		$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => 'agent.ui.state'));
 		if (!$pref) {
 			$pref = new Entity\PersonPref();
 			$pref['name'] = 'agent.ui.state';

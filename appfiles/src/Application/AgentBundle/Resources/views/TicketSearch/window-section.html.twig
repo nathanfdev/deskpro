@@ -3,7 +3,7 @@
 	<h1>Tickets</h1>
 </header>
 <section class="inbox">
-	<h2>Inbox</h2>
+	<h2>Pending Tickets</h2>
 	<ul id="tickets_outline_inbox_list" class="nav-list">
 		{% for filter in sys_filters %}
 			<li class="filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
@@ -41,11 +41,10 @@
 	Loading ...
 </section>
 <section id="tickets_outline_flagged" class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.flagged">
-	{% set flags = ['blue','green','orange','pink','purple','red','yellow'] %}
 	<ul id="tickets_outline_flags_list" class="nav-list">
 		{% for color in flags %}
 			<li class="flag-{{color}}" data-flag="{{color}}" data-route="listpane:{{ path('agent_ticketsearch_runflag', {'flag': color}) }}">
-				<span id="ticket_flag_{{color}}_count" class="list-counter">-</span>
+				<span id="ticket_flag_{{color}}_count" class="list-counter">0</span>
 				<a>{{ flagnamer.flag_name(color, person) }}</a>
 			</li>
 		{% endfor %}

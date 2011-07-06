@@ -32,4 +32,14 @@ class TicketFlagged extends EntityRepository
 			WHERE ticket_id IN(" . implode(',', $ids) . ") AND person_id = ?
 		", array($person['id']));
 	}
+
+	public function getCountsForPerson(Entity\Person $person)
+	{
+		return App::getDb()->fetchAllKeyValue("
+			SELECT color, COUNT(*)
+			FROM tickets_flagged
+			WHERE person_id = ?
+			GROUP BY color
+		", array($person['id']));
+	}
 }
