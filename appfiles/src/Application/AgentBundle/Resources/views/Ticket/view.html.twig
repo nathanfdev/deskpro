@@ -87,6 +87,9 @@ pageMeta.fieldHandlers = [
 {% endif %}
 
 <div class="inner-box-tab-content-2 ticket-element">
+	<div class="ticket-id" title="Ticket ID">
+		<span>{{ ticket.id }}</span>
+	</div>
 	<div class="ticket-actions-trigger">Actions</div>
 	<div class="ticket-status ticket-{{ticket.status}}">
 		<span class="ticket-{{ticket.status}} prop-val menu-trigger status">{{ phrase('core_tickets.status_' ~ ticket.status) }}</span>
