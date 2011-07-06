@@ -9,6 +9,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.setSectionElement($('<section id="tickets_outline"></section>'));
 
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated.bind(this));
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.new-recent-search', this.refreshRecentSearches.bind(this));
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/get-section-data.json',
@@ -138,6 +139,18 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 				page.delTicket(data.ticket_id);
 			}
 		}
+	},
+
+	refreshRecentSearches: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/ticket-search/get-recent-search-list',
+			type: 'GET',
+			context: this,
+			dataType: 'html',
+			success: function(html) {
+				$('#tickets_outline_searches_list').empty().html(html);
+			}
+		});
 	},
 
 	//#########################################################################

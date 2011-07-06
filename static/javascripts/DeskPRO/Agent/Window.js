@@ -478,7 +478,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		var handler = null;
 		if (testcl('.Kb')) {
 			handler = this.sections['kb_section'];
-		} else if (testcl('.Ticket')) {
+		} else if (testcl('.Ticket') || testcl('.NewCustomFilter')) {
 			handler = this.sections['tickets_section'];
 		} else if (testcl('.People') || testcl('.Org')) {
 			handler = this.sections['people_section'];

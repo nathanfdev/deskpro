@@ -43,6 +43,7 @@ $CONFIG['agent']['pages-lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaFilter.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',
 	)
 );
 

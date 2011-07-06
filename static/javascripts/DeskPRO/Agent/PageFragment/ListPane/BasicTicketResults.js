@@ -137,6 +137,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		}).bind(this));
 
 		this.contentWrapper.addClass('scroll-content').tinyscrollbar();
+
+		if (this.getMetaData('isNewRecentSearch')) {
+			DeskPRO_Window.getMessageBroker().sendMessage('agent.new-recent-search');
+		}
 	},
 
 	_handleResize: function() {

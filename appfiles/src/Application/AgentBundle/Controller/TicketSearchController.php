@@ -117,11 +117,14 @@ class TicketSearchController extends AbstractController
 		// Counts for filters
 		$sys_filter_counts = App::getApi('tickets.filters')->getAllCountsSystemFilters($this->person);
 
+		$recent_searches = $this->person->getPref('agent.recent-searches');
+
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
 			'sys_filter_counts' => $sys_filter_counts,
 			'custom_filters' => $custom_filters,
-			'flags' => $flags
+			'flags' => $flags,
+			'recent_searches' => $recent_searches,
 		));
 
 		return $this->createJsonResponse($data);
@@ -503,27 +506,21 @@ class TicketSearchController extends AbstractController
 	# find-pane
 	############################################################################
 
-	public function findPaneAction()
-	{
-		return $this->render('AgentBundle:TicketSearch:pane-find.html.twig', array(
-
-		));
-	}
-
-	public function customFilterAction()
+	public function newCustomFilterAction()
 	{
 		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
 
-		// Used to specify terms in the URL and have then show up automatically
-		$term_rules = RuleBuilder::newTermsBuilder();
-		$preselect_terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
+		$ticket_options['custom_ticket_fields'] = $custom_fields;
 
-		$autorun = $this->in->getBool('autorun');
+		// People stuff
+		$ticket_options['people_organizations'] = App::getEntityRepository('DeskPRO:Organization')->getOrganizationNames();
+		$people_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$ticket_options['custom_people_fields'] = $custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($people_field_defs);
 
-		return $this->render('AgentBundle:TicketSearch:custom-filter-form.html.twig', array(
+		return $this->render('AgentBundle:TicketSearch:custom-filter-newsearch.html.twig', array(
 			'ticket_options' => $ticket_options,
-			'preselect_terms' => $preselect_terms,
-			'autorun' => $autorun
 		));
 	}
 
@@ -541,9 +538,31 @@ class TicketSearchController extends AbstractController
 		# If there's no result set, we're running it for the first time
 		#------------------------------
 
+		$is_new_recentsearch = false;
+		
 		if (!$result_cache) {
+
+			$recent_searches = $this->person->getPref('agent.recent-searches');
+
 			$term_rules = RuleBuilder::newTermsBuilder();
-			$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+
+			$order_by = null;
+			$terms = null;
+			if ($recent_search_id = $this->in->getString('recent_search_id')) {
+				if (isset($recent_searches[$recent_search_id])) {
+					$terms = $recent_searches[$recent_search_id]['terms'];
+					$order_by = $recent_searches[$recent_search_id]['order_by'];
+				} else {
+					$recent_search_id = null;
+				}
+			} else {
+				$recent_search_id = null;
+			}
+
+			if (!$terms) {
+				$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+			}
 
 			$searcher = new \Application\DeskPRO\Searcher\TicketSearch();
 
@@ -563,8 +582,11 @@ class TicketSearchController extends AbstractController
 				$searcher->setPersonSearch($user_searcher);
 			}
 
-			$order_by = $this->in->getString('filter.order_by');
-			$group_by = $this->in->getString('filter.group_by');
+			if (!$order_by) {
+				$order_by = $this->in->getString('filter.order_by');
+			}
+			//$group_by = $this->in->getString('filter.group_by');
+			$group_by = '';
 
 			if ($order_by) {
 				$searcher->setOrderByCode($order_by);
@@ -574,13 +596,34 @@ class TicketSearchController extends AbstractController
 
 			$result_cache = new Entity\ResultCache();
 			$result_cache['person'] = $this->person;
-			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by, 'group_by' => $group_by);
+			$result_cache['criteria'] = array('terms' => $terms, 'order_by' => $order_by, 'group_by' => $group_by);
 			$result_cache['results'] = $results;
 			$result_cache['num_results'] = count($results);
 			$result_cache->setExtraData('terms_summary', $searcher->getSummary());
 
 			// Default display fields based on our search
 			$result_cache->setExtraData('display_fields', $this->_suggestedDisplayFields($searcher));
+
+			// If this isnt already a recent search, add it to recent searches now
+			if (!$recent_search_id) {
+				if (!$recent_searches) {
+					$recent_searches = array();
+				}
+				if (count($recent_searches) >= 5) {
+					$recent_searches = array_slice($recent_searches, 0, 4, true);
+				}
+
+				$recent_search_id = uniqid('search_').mt_rand(1000,9999);
+				Arrays::unshiftAssoc($recent_searches, $recent_search_id, array(
+					'id' => $recent_search_id,
+					'terms' => $terms,
+					'order_by' => $order_by,
+					'summary' => $searcher->getSummary()
+				));
+
+				$this->person->setPreference('agent.recent-searches', $recent_searches);
+				$is_new_recentsearch = true;
+			}
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();
@@ -622,7 +665,8 @@ class TicketSearchController extends AbstractController
 		$vars = array(
 			'cache' => $result_cache,
 			'cache_id' => $result_cache['id'],
-			'terms_summary' => $result_cache->getExtraData('terms_summary')
+			'terms_summary' => $result_cache->getExtraData('terms_summary'),
+			'is_new_recentsearch' => $is_new_recentsearch, // this triggers recent search list update
 		);
 
 		$search_form = array(
@@ -645,6 +689,15 @@ class TicketSearchController extends AbstractController
 		}
 
 		return $this->_getResponseForTickets('custom-filter', $result_cache['id'], $results_helper, $vars);
+	}
+
+	public function getRecentSearchesListAction()
+	{
+		$recent_searches = $this->person->getPref('agent.recent-searches');
+
+		return $this->render('AgentBundle:TicketSearch:window-recentsearch-list.html.twig', array(
+			'recent_searches' => $recent_searches
+		));
 	}
 
 	############################################################################

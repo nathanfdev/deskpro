@@ -12,7 +12,10 @@
 namespace Application\DeskPRO\Twig\Extension;
 
 use Symfony\Component\DependencyInjection\ContainerInterface;
+
 use Application\DeskPRO\App;
+
+use Orb\Util\Util;
 	
 class TemplatingExtension extends \Twig_Extension
 {
@@ -49,6 +52,7 @@ class TemplatingExtension extends \Twig_Extension
 			'render_custom_field' => new \Twig_Function_Method($this, 'renderCustomField', array('is_safe' => array('html'))),
 			'render_custom_field_text' => new \Twig_Function_Method($this, 'renderCustomFieldText'),
 			'render_custom_field_form' => new \Twig_Function_Method($this, 'renderCustomFieldForm', array('is_safe' => array('html'))),
+			'el_uid' => new \Twig_Function_Method($this, 'elUid', array('is_safe' => array('html'))),
         );
     }
 
@@ -58,6 +62,21 @@ class TemplatingExtension extends \Twig_Extension
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
         );
     }
+
+	/**
+	 * A unique ID generator usually used to generate unique element ID's. Unique
+	 * ID's are generally needed only in the agent interface where things share the same dom.
+	 *
+	 * @param string $prefix
+	 * @return string
+	 */
+	public function elUid($prefix = 'dp_')
+	{
+		return $prefix
+			   . Util::baseEncode(time() - strtotime('-15 days'), 'base36') // 4 digits. 15 days to save a few digits
+			   . Util::baseEncode(mt_rand(36, 1295), 'base36') // 2 digits
+			   . Util::baseEncode(Util::requestUniqueId(), 'base36'); // 1-2 digits
+	}
 
 	/**
 	 * Just gets a full helpdesk URL minus the http:// and www bits.

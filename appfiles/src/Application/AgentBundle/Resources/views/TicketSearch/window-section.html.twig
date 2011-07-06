@@ -26,7 +26,16 @@
 			</li>
 		{% endfor %}
 	</ul>
+	</section>
 {% endif %}
+
+<section class="custom-searches" style="margin-top: 10px">
+	<button class="heading-button with-route" data-route="listpane:{{ path('agent_ticketsearch_customfilter') }}">New Search</button>
+	<h2>Searches</h2>
+	<ul id="tickets_outline_searches_list" class="nav-list">
+		{% include 'AgentBundle:TicketSearch:window-recentsearch-list.html.twig' %}
+	</ul>
+</section>
 
 <nav id="tickets_outline_tabstrip" class="deskpro-tabstrip">
 	<ul>

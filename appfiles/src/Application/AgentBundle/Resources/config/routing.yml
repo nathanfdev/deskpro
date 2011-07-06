@@ -361,6 +361,10 @@ agent_ticketsearch_getflaggedsectiondata:
   pattern: /tickets/get-flagged-section-data.json
   defaults: { _controller: AgentBundle:TicketSearch:getFlaggedSectionData }
 
+agent_ticketsearch_getrecentsearchlist:
+  pattern: /ticket-search/get-recent-search-list
+  defaults: { _controller: AgentBundle:TicketSearch:getRecentSearchesList }
+
 agent_ticketsearch_overviewpane:
   pattern: /ticket-search/overview-pane
   defaults: { _controller: AgentBundle:TicketSearch:overviewPane }
@@ -398,8 +402,8 @@ agent_ticketsearch_findpane:
   defaults: { _controller: AgentBundle:TicketSearch:findPane }
 
 agent_ticketsearch_customfilter:
-  pattern: /ticket-search/custom-filter
-  defaults: { _controller: AgentBundle:TicketSearch:customFilter }
+  pattern: /ticket-search/custom-filter/new-search
+  defaults: { _controller: AgentBundle:TicketSearch:newCustomFilter }
 
 agent_ticketsearch_runcustomfilter:
   pattern: /ticket-search/custom-filter/run

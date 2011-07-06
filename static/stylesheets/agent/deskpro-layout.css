@@ -148,6 +148,37 @@ nav.mode-buttons > ul > li.on {
     left: 0;
 }
 
+.deskpro-pane section button.heading-button {
+    font-size: 8px;
+
+    background: #eeeeee;
+    background: -moz-linear-gradient(top, #eeeeee 0%, #cccccc 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#eeeeee), color-stop(100%,#cccccc));
+    background: -webkit-linear-gradient(top, #eeeeee 0%,#cccccc 100%);
+    background: -o-linear-gradient(top, #eeeeee 0%,#cccccc 100%);
+    background: -ms-linear-gradient(top, #eeeeee 0%,#cccccc 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#eeeeee', endColorstr='#cccccc',GradientType=0 );
+    background: linear-gradient(top, #eeeeee 0%,#cccccc 100%);
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+
+    padding: 0px 1px 0px 1px;
+    margin-right: 3px;
+    margin-top: 3px;
+
+    border: 1px solid #9CA1A6;
+    float: right;
+
+    opacity: 0.6;
+    cursor: pointer;
+}
+
+.deskpro-pane section button.heading-button:hover {
+    opacity: 1;
+}
+
 /********************************
 * #deskpro_sections
 *********************************/

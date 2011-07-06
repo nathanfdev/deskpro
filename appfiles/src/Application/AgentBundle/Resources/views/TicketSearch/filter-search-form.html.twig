@@ -1,4 +1,5 @@
 <section class="list-top-area ticket">
+	{% if not hide_terms_summary %}
 	<div class="summary">
 		<span class="edit" title="Edit search terms">Edit</span>
 		{% for line in terms_summary %}
@@ -7,7 +8,8 @@
 			No criteria, all tickets match
 		{% endfor %}
 	</div>
-	<div class="form-panel" style="display: none">
+	{% endif %}
+	<div class="form-panel" {% if not show_search_form %}style="display: none"{% endif %}>
 		<form action="{{ path('agent_ticketsearch_runcustomfilter') }}" method="post" class="ticket-search-form">
 			<div class="row" style="margin-top: 0;">
 				<div class="search-form" id="criteria_list">

@@ -25,9 +25,22 @@ pageMeta.viewType = 'simple-ext';
 {% if not tickets %}
 	pageMeta.noResults = true;
 {% endif %}
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content">
 <div class="content">
+
+	<div id="{{baseId}}_termstip" style="display: none; width: 200px;">
+		<ul>
+			{% for line in terms_summary %}
+				<li>{{line}}</li>
+			{% else %}
+				<li>No criteria, all tickets match</li>
+			{% endfor %}
+		</ul>
+	</div>
 
 	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
 
@@ -41,15 +54,15 @@ pageMeta.viewType = 'simple-ext';
 		</nav>
 		<span class="display-options-trigger">Display Options</span>
 		<h1>
+			<span class="tipped" data-tipped="{{baseId}}_termstip" data-tipped-options="inline: true, showDelay: 1, hook: 'topmiddle'">
 			{% if filter.sys_name %}
 				{{ phrase('agent.filter_' ~ filter.sys_name) }}
 			{% else %}
 				{{ filter.title }}
 			{% endif %}
+			</span>
 		</h1>
 	</header>
-
-	{% include 'AgentBundle:TicketSearch:filter-search-form.html.twig' %}
 
 	<section class="ticket-simple-ext-list deskpro-results-list">
 		{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
