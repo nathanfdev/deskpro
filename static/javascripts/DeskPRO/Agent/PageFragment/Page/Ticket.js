@@ -43,6 +43,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.resetReply();
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
+		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'tickets', id: this.getMetaData('ticket_id') });
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
 			if (ticket_ids.indexOf(this.getMetaData('ticket_id')) !== -1) {

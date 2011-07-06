@@ -60,7 +60,7 @@ class InReplyToDetector implements TicketDetectorInterface
 			}
 		}
 
-		$search_text = implode(' ', $search_string);
+		$search_text = implode(' ', $search_text);
 
 		#------------------------------
 		# Try to find TAC

@@ -23,15 +23,19 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 		// Listen to new ticket events
 		//------------------------------
 
-		// New tickets coming in
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-tickets', function(data) {
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.new-ticket', function(data) {
 			var url = 'ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id;
 			self.addItem('tickets', data.ticket_id, data.subject, url);
 		});
 
-		// When a ticket is opened, we can go ahead and remove the event as "read"
-		DeskPRO_Window.getMessageBroker().addMessageListener('ui.ticket.opened', function (data) {
-			self.removeItem('tickets', data.ticketId);
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.new-idea', function(data) {
+			var url = 'page:' + BASE_URL + 'agent/ideas/view/' + data.idea_id;
+			self.addItem('ideas', data.idea_id, data.title, url);
+		});
+
+		// When something is opened, mark it read in the list
+		DeskPRO_Window.getMessageBroker().addMessageListener('ui.tab.opened', function (data) {
+			self.removeItem(data.type, data.id);
 		});
 	},
 

@@ -310,6 +310,27 @@ class ListUpdater
 	{
 		$this->initVars();
 
+		if ($this->tracker->isExtraSet('ticket_created')) {
+
+			$ticket = $this->tracker->getTicket();
+
+			$client_message = new ClientMessage();
+			$client_message->fromArray(array(
+				'channel' => 'agent-notification.new-ticket',
+				'data' => array(
+					'ticket_id'   => $ticket['id'],
+					'subject'     => $ticket['subject'],
+					'author_id'   => $ticket->person['id'],
+					'author_name' => $ticket->person['display_name']
+				),
+				'created_by_client' => 'sys'
+			));
+			App::getOrm()->transactional(function ($em) use ($client_message) {
+				$em->persist($client_message);
+				$em->flush();
+			});
+		}
+
 		// No fields changed that affect filters
 		if (!$this->changed_fields) {
 			return;

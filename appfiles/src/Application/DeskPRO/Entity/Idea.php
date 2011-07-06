@@ -21,6 +21,7 @@ use \Orb\Util\Strings;
 /**
  * Ideas (feedback)
  *
+ * @orm:HasLifecycleCallbacks
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Idea")
  * @orm:Table(name="ideas")
  */
@@ -120,8 +121,12 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_label_manager = null;
 
+	protected $_is_new = false;
+
 	public function __construct()
 	{
+		$this->_is_new = true;
+		
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->votes = new \Doctrine\Common\Collections\ArrayCollection();
@@ -300,5 +305,30 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_label_manager;
+	}
+
+	/**
+	 * @orm:PostPersist
+	 */
+	public function _notifyNewIdea()
+	{
+		if ($this->_is_new) {
+			$client_message = new ClientMessage();
+			$client_message->fromArray(array(
+				'channel' => 'agent-notification.new-idea',
+				'data' => array(
+					'idea_id'     => $this->id,
+					'subject'     => $this->title,
+					'author_id'   => $this->person ? $this->person['id'] : 0,
+					'author_name' => $this->getUserName(),
+				),
+				'created_by_client' => 'sys'
+			));
+
+			App::getOrm()->transactional(function ($em) use ($client_message) {
+				$em->persist($client_message);
+				$em->flush();
+			});
+		}
 	}
 }

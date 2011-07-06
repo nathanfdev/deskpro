@@ -25,6 +25,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 			cw.tinyscrollbar_update();
 		});
 
+		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'ideas', id: this.getMetaData('idea_id') });
+
 		this._initEditables();
 		this._initMenus();
 		this._initComments();
