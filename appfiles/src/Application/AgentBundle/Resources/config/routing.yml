@@ -534,7 +534,7 @@ agent_ticket_ajaxsaveflagged:
   requirements: { ticket_id: "\d+" }
 
 agent_ticket_ajaxtab_ticketlog:
-  pattern: /tickets/{ticket_id}/ajax-tab-ticket-Log
+  pattern: /tickets/{ticket_id}/ajax-tab-ticket-log
   defaults: { _controller: AgentBundle:Ticket:ajaxTabTicketLog }
   requirements: { ticket_id: "\d+" }
 

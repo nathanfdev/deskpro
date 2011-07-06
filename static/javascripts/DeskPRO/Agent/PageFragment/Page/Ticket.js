@@ -343,6 +343,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			url: this.getMetaData('tabTicketLogUrl'),
 			type: 'GET',
 			dataType: 'html',
+			context: this,
 			success: function(html) {
 				contentEl.html(html);
 				contentEl.removeClass('unloaded');
