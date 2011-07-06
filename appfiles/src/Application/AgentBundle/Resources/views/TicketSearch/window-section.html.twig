@@ -53,20 +53,19 @@
 </section>
 <section id="tickets_outline_archive" class="deskpro-tab-item" data-tab-trigger="#tickets_outline_tabstrip li.archive">
 	<ul id="tickets_outline_filters_list" class="nav-list">
-		<li>
-			<span class="list-counter">3556</span>
+		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=spam">
 			<a>Spam</a>
 		</li>
-		<li>
-			<span class="list-counter">123</span>
+		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=hidden_status&amp;terms[0][op]=is&amp;terms[0][options][hidden_status]=validating">
+			<a>Validating</a>
+		</li>
+		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=pending">
 			<a>Pending</a>
 		</li>
-		<li>
-			<span class="list-counter">847</span>
+		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=resolved">
 			<a>Resolved</a>
 		</li>
-		<li>
-			<span class="list-counter">4332</span>
+		<li class="with-route" data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][type]=status&amp;terms[0][op]=is&amp;terms[0][options][status]=closed">
 			<a>Closed</a>
 		</li>
 		<li class="sep">-</li>

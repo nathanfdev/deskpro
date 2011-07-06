@@ -20,6 +20,7 @@ class TicketSearch extends SearcherAbstract
 	const TERM_AGENT                     = 'agent';
 	const TERM_AGENT_TEAM                = 'agent_team';
 	const TERM_STATUS                    = 'status';
+	const TERM_HIDDEN_STATUS             = 'hidden_status';
 	const TERM_WORKFLOW                  = 'workflow';
 	const TERM_PRIORITY                  = 'priority';
 	const TERM_SUBJECT                   = 'subject';
@@ -622,7 +623,14 @@ class TicketSearch extends SearcherAbstract
 				case self::TERM_STATUS:
 					$this->affected_fields[] = 'ticket.status';
 					$set_status = true;
-					$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $tr->phrase('core_tickets.status'), 'value' => $tr->phrase('core_tickets.status_' . $choice)));
+
+					$choice_str = array();
+					foreach ((array)$choice as $c) {
+						$choice_str[] = $tr->phrase('core_tickets.status_' . $c);
+					}
+					$choice_str = implode(', ', $choice_str);
+
+					$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $tr->phrase('core_tickets.status'), 'value' => $choice_str));
 
 					$archive_statuses = array_filter((array)$choice, function($val) {
 						if ($val != 'open' AND $val != 'pending') {
@@ -637,6 +645,20 @@ class TicketSearch extends SearcherAbstract
 					}
 
 					$wheres[] = $this->_choiceMatch("$tickets_table.status", $op, $choice);
+					break;
+				case self::TERM_HIDDEN_STATUS:
+					$this->affected_fields[] = 'ticket.hidden_status';
+
+					$choice_str = array();
+					foreach ((array)$choice as $c) {
+						$choice_str[] = $tr->phrase('core_tickets.hidden_status_' . $c);
+					}
+					$choice_str = implode(', ', $choice_str);
+
+					$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $tr->phrase('core_tickets.status'), 'value' => $choice_str));
+
+					$wheres[] = $this->_choiceMatch("$tickets_table.hidden_status", $op, $choice);
+
 					break;
 				case self::TERM_ORGANIZATION:
 					$this->summary[] = $this->_choiceSummary($tr->phrase('core_tickets.organization'), $op, $choice);
