@@ -289,12 +289,12 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 					// when the element is rendered.
 
 					tabData.page.setMetaData('fetchTabTip', true);
-					html += '" data-tipped="' + tabData.btnId + '_tip' + '" data-tipped-options="inline: true, skin: \'light\', showDelay: 1, hook: \'topmiddle\'">';
+					html += '" data-tipped="' + tabData.btnId + '_tip' + '" data-tipped-options="inline: true, hook: \'topmiddle\'">';
 				} else {
-					html += '" data-tipped="' + tabData.tabTip + '" data-tipped-options="skin: \'light\', showDelay: 1, hook: \'topmiddle\'">';
+					html += '" data-tipped="' + tabData.tabTip + '" data-tipped-options="hook: \'topmiddle\'">';
 				}
 			} else {
-				html += '" data-tipped="' + tabData.title + '" data-tipped-options="skin: \'light\', showDelay: 1, hook: \'topmiddle\'">';
+				html += '" data-tipped="' + tabData.title + '" data-tipped-options="hook: \'topmiddle\'">';
 			}
 
 			html += '<a class="link">'+tabData.title+'</a>';

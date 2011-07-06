@@ -2,11 +2,31 @@
 <header class="section-header">
 	<h1>Tickets</h1>
 </header>
+
+{# Tip holders #}
+<div style="display: none">
+	{% for id,summary in filters_summary %}
+		<div id="filter_{{id}}_tip">
+			<ul>
+				{% for line in summary %}
+					<li>{{line}}</li>
+				{% else %}
+					<li>No criteria</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% endfor %}
+</div>
+
 <section class="inbox">
 	<h2>Pending Tickets</h2>
 	<ul id="tickets_outline_inbox_list" class="nav-list">
 		{% for filter in sys_filters %}
-			<li class="filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+			<li
+				class="filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %}"
+				data-filter-id="{{filter.id}}"
+				data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+			>
 				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
 					{{ sys_filter_counts[filter.id]|default(0) }}
 				</span>
@@ -21,7 +41,13 @@
 	<h2>Filters</h2>
 	<ul id="tickets_outline_filters_list" class="nav-list">
 		{% for filter in custom_filters %}
-			<li class="filter-{{filter.id}}" data-filter-id="{{filter.id}}" data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}">
+			<li
+				class="filter-{{filter.id}} tipped"
+				data-filter-id="{{filter.id}}"
+				data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+				data-tipped="filter_{{filter.id}}_tip"
+				data-tipped-options="inline:true, hook: 'rightmiddle'"
+			>
 				<a>{{filter.title}}</a>
 			</li>
 		{% endfor %}

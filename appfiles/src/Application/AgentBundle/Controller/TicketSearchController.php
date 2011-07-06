@@ -90,7 +90,20 @@ class TicketSearchController extends AbstractController
 			}
 		}
 
-		// Flags
+		// Counts for filters
+		$sys_filter_counts = App::getApi('tickets.filters')->getAllCountsSystemFilters($this->person);
+
+		// Summary of terms for all filters
+		$filters_summary = array();
+		foreach ($all_filters as $filter) {
+			$searcher = $filter->getSearcher();
+			$filters_summary[$filter['id']] = $searcher->getSummary();
+		}
+
+		#------------------------------
+		# Flags / flag order
+		#------------------------------
+
 		$flags = array('blue','green','orange','pink','purple','red','yellow');
 		$flags = array_combine($flags, $flags);
 
@@ -114,14 +127,18 @@ class TicketSearchController extends AbstractController
 		}
 		$flags = array_values($flags);
 
-		// Counts for filters
-		$sys_filter_counts = App::getApi('tickets.filters')->getAllCountsSystemFilters($this->person);
+		#------------------------------
+		# Misc
+		#------------------------------
 
 		$recent_searches = $this->person->getPref('agent.recent-searches');
 
+
+		
 		$data['section_html'] = $this->renderView('AgentBundle:TicketSearch:window-section.html.twig', array(
 			'sys_filters' => $sys_filters,
 			'sys_filter_counts' => $sys_filter_counts,
+			'filters_summary' => $filters_summary,
 			'custom_filters' => $custom_filters,
 			'flags' => $flags,
 			'recent_searches' => $recent_searches,
