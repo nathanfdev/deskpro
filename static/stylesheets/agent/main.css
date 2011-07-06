@@ -3414,7 +3414,7 @@ span.kb-editor-edit a {
     border-bottom: 1px solid transparent;
 }
 
-#deskpro_outline ul.nav-list > li:hover {
+#deskpro_outline ul.nav-list > li:hover, #deskpro_outline ul.nav-list > li.active-nav {
     background: #e1e9f3;
     background: -moz-linear-gradient(top, #e1e9f3 0%, #d1dfea 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e1e9f3), color-stop(100%,#d1dfea));

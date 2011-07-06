@@ -556,6 +556,7 @@ class TicketSearchController extends AbstractController
 		#------------------------------
 
 		$is_new_recentsearch = false;
+		$recent_search_id = 0;
 		
 		if (!$result_cache) {
 
@@ -680,10 +681,11 @@ class TicketSearchController extends AbstractController
 		$results_helper = Helper\TicketResults::newFromResultCache($this, $result_cache);
 
 		$vars = array(
-			'cache' => $result_cache,
-			'cache_id' => $result_cache['id'],
-			'terms_summary' => $result_cache->getExtraData('terms_summary'),
+			'cache'               => $result_cache,
+			'cache_id'            => $result_cache['id'],
+			'terms_summary'       => $result_cache->getExtraData('terms_summary'),
 			'is_new_recentsearch' => $is_new_recentsearch, // this triggers recent search list update
+			'recent_search_id'    => $recent_search_id
 		);
 
 		$search_form = array(

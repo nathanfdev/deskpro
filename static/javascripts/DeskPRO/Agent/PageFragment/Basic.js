@@ -74,6 +74,8 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			}
 		});
 
+		var self = this;
+
 		// Standard hook methods
 		this.addEvent('activate', this.activate);
 		this.addEvent('deactivate', this.deactivate);

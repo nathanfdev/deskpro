@@ -1,5 +1,5 @@
 <script>
-pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketFilter';
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
 pageMeta.viewTypeUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?cache_id={{cache_id}}&view_type=$view_type';
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.TicketCustomFilter';
 pageMeta.pageUrl = '{{ path('agent_ticketsearch_runcustomfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
@@ -13,6 +13,9 @@ pageMeta.saveListPrefsUrl = '{{ path('agent_ticketsearch_save_resultprefs', {'ca
 {% endif %}
 {% if is_new_recentsearch %}
 pageMeta.isNewRecentSearch = true;
+{% endif %}
+{% if recent_search_id %}
+pageMeta.recent_search_id = '{{ recent_search_id }}';
 {% endif %}
 </script>
 <div class="layout-content">

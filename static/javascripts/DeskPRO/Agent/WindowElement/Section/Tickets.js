@@ -11,6 +11,14 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.filter-update', this.filterUpdated.bind(this));
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.new-recent-search', this.refreshRecentSearches.bind(this));
 
+		DeskPRO_Window.getMessageChanneler().subscribeChannel('list-page-fragment.activated', this.highlightActiveSection.bind(this));
+
+		// Simulate instant switching when clicking nav items
+		var self = this;
+		this.getSectionElement().delegate('li[data-route]', 'click', function() {
+			self.highlightNavItem($(this));
+		});
+
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/get-section-data.json',
 			context: this,
@@ -46,6 +54,42 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		if (this.isVisible() && !DeskPRO_Window.loadingListFragment) {
 			this._loadAutoLoadRoutes();
 		}
+
+		this.activeNavClass = null;
+	},
+
+	onShow: function() {
+		this.activeNavClass = null;
+	},
+
+	highlightActiveSection: function(info) {
+
+		if (!this.isVisible()) return;
+
+		var page = info.page;
+
+		if (page.TYPENAME == 'ticket-filter') {
+			this.activeNavClass = '.nav-filter-' + page.getMetaData('filter_id');
+		} else if (page.TYPENAME == 'ticket-custom-filter') {
+			if (page.getMetaData('recent_search_id')) {
+				this.activeNavClass = '.nav-recent-search-' + page.getMetaData('recent_search_id')
+			}
+		}
+
+		this.highlightNav();
+	},
+
+	highlightNav: function() {
+
+		$('.active-nav', this.getSectionElement()).removeClass('active-nav');
+		if (this.activeNavClass) {
+			$(this.activeNavClass, this.getSectionElement()).addClass('active-nav');
+		}
+	},
+
+	highlightNavItem: function(el) {
+		$('.active-nav', this.getSectionElement()).removeClass('active-nav');
+		el.addClass('active-nav');
 	},
 
 	//#########################################################################

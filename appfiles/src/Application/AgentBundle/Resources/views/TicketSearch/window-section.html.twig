@@ -23,7 +23,7 @@
 	<ul id="tickets_outline_inbox_list" class="nav-list">
 		{% for filter in sys_filters %}
 			<li
-				class="filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %}"
+				class="filter-{{filter.id}} nav-filter-{{filter.id}} {% if loop.first %}auto-load-route{% endif %}"
 				data-filter-id="{{filter.id}}"
 				data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
 			>
