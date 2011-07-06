@@ -32,16 +32,6 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="layout-content">
 <div class="content">
 
-	<div id="{{baseId}}_termstip" style="display: none; width: 200px;">
-		<ul>
-			{% for line in terms_summary %}
-				<li>{{line}}</li>
-			{% else %}
-				<li>No criteria, all tickets match</li>
-			{% endfor %}
-		</ul>
-	</div>
-
 	<header class="section-header">
 		<nav class="mode-buttons">
 			<ul>
@@ -51,13 +41,11 @@ pageMeta.baseId = '{{ baseId }}';
 			</ul>
 		</nav>
 		<h1>
-			<span class="tipped" data-tipped="{{baseId}}_termstip" data-tipped-options="inline: true, showDelay: 1, hook: 'topmiddle'">
 			{% if filter.sys_name %}
 				{{ phrase('agent.filter_' ~ filter.sys_name) }}
 			{% else %}
 				{{ filter.title }}
 			{% endif %}
-			</span>
 		</h1>
 	</header>
 
