@@ -141,7 +141,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		}, this);
 
 		if (activateTabId) {
-			this.pageTabStrip.activateTabById(tabId);
+			this.pageTabStrip.activateTabById(activateTabId);
 		}
 	},
 
