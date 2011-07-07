@@ -1,6 +1,11 @@
 <?php
 
 $CONFIG = array();
+
+###############################################################################
+# Agent
+###############################################################################
+
 $CONFIG['agent'] = array();
 
 $CONFIG['agent']['window-sections'] = array(
@@ -213,6 +218,11 @@ $CONFIG['agent']['vendors'] = array(
 	)
 );
 
+
+###############################################################################
+# Admin
+###############################################################################
+
 /**
  * Admin UI specific
  */
@@ -241,5 +251,51 @@ $CONFIG['admin']['admin-ui'] = array(
 		'javascripts/DeskPRO/Admin/WindowElement/MainMenuOpener.js',
 		'javascripts/DeskPRO/Admin/WindowElement/BasicMainMenu.js',
 		'javascripts/DeskPRO/Admin/WindowElement/MainMenu/AdminSearchBoxResults.js',
+	)
+);
+
+
+###############################################################################
+# User
+###############################################################################
+
+$CONFIG['user'] = array();
+
+$CONFIG['user']['common'] = array(
+	'mode' => 'yui',
+	'out' => 'user-common.js',
+	'files' => array(
+		'javascripts/Orb/modernizr-ext.js',
+		'javascripts/Orb/Orb.js',
+		'javascripts/Orb/Class.js',
+		'javascripts/Orb/Util/Options.js',
+		'javascripts/Orb/Util/Events.js',
+		'javascripts/Orb/Compat.js',
+		'javascripts/DeskPRO/MessageBroker.js',
+		'javascripts/DeskPRO/BasicWindow.js',
+		'javascripts/DeskPRO/User/Window.js',
+		'javascripts/DeskPRO/User/Page/Abstract.js',
+
+	)
+);
+
+$CONFIG['user']['vendors'] = array(
+	'mode' => 'yui',
+	'out' => 'user-vendors.js',
+	'files' => array(
+		'vendor/jquery/jquery.min.js',
+		'vendor/jquery/jquery.cookie.js',
+		'vendor/jquery/jquery.history.js',
+		'vendor/jquery/jquery.form.js',
+
+		'vendor/jquery/tipped/js/bridge/bridge.js',
+		'vendor/jquery/tipped/js/bridge/adapters/shared.js',
+		'vendor/jquery/tipped/js/bridge/adapters/jquery.js',
+		'vendor/jquery/tipped/js/excanvas/excanvas.js',
+		'vendor/jquery/tipped/js/spinners/spinners.js',
+		'vendor/jquery/tipped/js/tipped/tipped.js',
+
+		'vendor/mootools/mootools-core.min.js',
+		'vendor/modernizr.min.js',
 	)
 );
