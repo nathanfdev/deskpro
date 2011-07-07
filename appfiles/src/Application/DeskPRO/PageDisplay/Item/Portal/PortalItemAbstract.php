@@ -1,0 +1,124 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage PageDisplay
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\PageDisplay\Item\Portal;
+
+use Application\DeskPRO\Entity\Person;
+
+use Application\DeskPRO\PageDisplay\Item\ItemAbstract;
+use Application\DeskPRO\Controller\AbstractController;
+use Application\DeskPRO\People\PersonContextInterface;
+
+abstract class PortalItemAbstract extends ItemAbstract implements PersonContextInterface
+{
+	/**
+	 * The section context. Many items can live either in the content column
+	 * or the sidebar column, and they behave differently depending on where.
+	 * 
+	 * @var string
+	 */
+	protected $section;
+
+	/**
+	 * The controller requesting the portal item
+	 * 
+	 * @var \Application\DeskPRO\Controller\AbstractController
+	 */
+	protected $controller;
+
+	/**
+	 * The user who is viewing the item
+	 * 
+	 * @var \Application\DeskPRO\Entity\Person
+	 */
+	protected $person_context;
+
+	/**
+	 * @var array
+	 */
+	protected $options = array();
+
+	public function __construct($section, array $options, AbstractController $controller, Person $person_context)
+	{
+		$this->section = $section;
+		$this->controller = $controller;
+		$this->person_context = $person_context;
+
+		$this->options = $options;
+
+		$this->init();
+	}
+
+	/**
+	 * Hook method called from constructor
+	 * 
+	 * @return void
+	 */
+	protected function init()
+	{
+
+	}
+	
+	/**
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @return void
+	 */
+	public function setPersonContext(Person $person)
+	{
+		$this->person_context = $person;
+	}
+
+	
+	/**
+	 * Get the HTML for this item that'll be outputted into the page
+	 * 
+	 * @return string
+	 */
+	abstract public function getHtml();
+
+
+	/**
+	 * Get an array of CSS assets that this item requires
+	 * 
+	 * @return array
+	 */
+	public function getCssAssets()
+	{
+		return array();
+	}
+
+
+	/**
+	 * Get an array of JS assets that this item requires
+	 *
+	 * @return array
+	 */
+	public function getJsAssets()
+	{
+		return array();
+	}
+
+	
+	public function getOption($name, $default = null)
+	{
+		return isset($this->options[$name]) ? $this->options[$name] : $default;
+	}
+
+	public function setOption($name, $value)
+	{
+		$this->options[$name] = $value;
+	}
+
+	public function hasOption($name)
+	{
+		return isset($this->options[$name]);
+	}
+}

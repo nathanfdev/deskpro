@@ -4,6 +4,9 @@ Orb.createNamespace('DeskPRO.User.Page');
  * Basic page handler
  */
 DeskPRO.User.Page.Abstract = new Orb.Class({
+
+	Implements: [Orb.Util.Options],
+
 	initialize: function(options) {
 		this.options = this.getDefaultOptions();
 		

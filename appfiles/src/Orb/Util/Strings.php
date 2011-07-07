@@ -604,6 +604,18 @@ class Strings
 	}
 
 
+	/**
+	 * Converts an underscored string into a camelCase string.
+	 * Example: this_underscore_string becomes thisUnderscoreString
+	 *
+	 * @param string $str
+	 * @return string
+	 */
+	public static function underscoreToCamelCase($str)
+	{
+		return self::dashToCamelCase(str_replace('_', '-', $str));
+	}
+
 
 	/**
 	 * Converts a camelCase string to a dashed-string. Example:

@@ -17,6 +17,22 @@ use Application\DeskPRO\Entity\PageDisplayAbstract;
  * A Page wraps up handling of sections and their items.
  *
  * Descriptions for these pages are stored in `PageDisplay` tables. For example, `TicketPageDisplay`.
+ *
+ * = Terminology =
+ *
+ * A Page (this class) is a group of PageDisplay's. This just collects all PageDisplay's together into a
+ * collection object.
+ *
+ * A PageDisplay is a part of a page. The part is denoted by it's `section`. For example, a PortalPage
+ * has sections for header, footer, content and sidebar.
+ *
+ * Then a PageDisplay has a `data` field which is a PHP array composed of _items_ which describe the
+ * actual things in a section (for example, a widget). The `data` field is free-form and can be proprietary
+ * between different Page's, but generally the data structure below is observed.
+ *
+ * Usually `data` items map to Item classes to do certain work. But again, that is an implementation detail
+ * up to the Page. The PortalPage for example maps items to classes that actual generate the HTML used on
+ * the page.
  * 
  * = Data Structure =
  *

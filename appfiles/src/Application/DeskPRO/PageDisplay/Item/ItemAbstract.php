@@ -53,6 +53,11 @@ abstract class ItemAbstract implements ItemInterface
 		$this->data[$k] = $v;
 	}
 
+	public function getType()
+	{
+		return get_class($this);
+	}
+
 	/**
 	 * Returns item data
 	 *
