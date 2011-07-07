@@ -22,6 +22,11 @@ class GlobalVariables extends BaseGlobalVariables
 		return App::getCurrentPerson();
 	}
 
+	public function getSetting($name)
+	{
+		return App::getSetting($name);
+	}
+
 	public function getSession()
 	{
 		return App::getSession();
