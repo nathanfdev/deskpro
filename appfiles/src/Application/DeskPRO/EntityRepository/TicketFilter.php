@@ -186,7 +186,7 @@ class TicketFilter extends EntityRepository
 	}
 
 	/**
-	 * Find all ticket filters that a person can see.
+	 * Find all ticket filters (system and custom) that a person can see.
 	 *
 	 * @param mixed $person_id
 	 * @return array
@@ -201,6 +201,26 @@ class TicketFilter extends EntityRepository
 			SELECT q
 			FROM DeskPRO:TicketFilter q INDEX BY q.id
 			WHERE q.person = ?1 OR q.is_global = true
+			ORDER BY q.title ASC
+		")->setParameter(1, $person_id)->execute();
+
+		return $filters;
+	}
+
+	/**
+	 * @param $person_id
+	 * @return
+	 */
+	public function getCustomFiltersForPerson($person_id)
+	{
+		if ($person_id instanceof Person) {
+			$person_id = $perosn_id['id'];
+		}
+
+		$filters = $this->getEntityManager()->createQuery("
+			SELECT q
+			FROM DeskPRO:TicketFilter q INDEX BY q.id
+			WHERE q.sys_name IS NULL AND (q.person = ?1 OR q.is_global = true)
 			ORDER BY q.title ASC
 		")->setParameter(1, $person_id)->execute();
 

@@ -106,11 +106,18 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 	//#########################################################################
 
 	_initFilters: function() {
+
 		DeskPRO_Window.getPoller().addData(
-			[{name: 'do[]', value: 'get-filter-counts'}],
+			[{name: 'do[]', value: 'get-sys-filter-counts'}],
 			'filters.counts',
-			{recurring: true, minDelay: 60000 }
+			{recurring: true, minDelay: 120000/*2minutes*/ }
 		);
+		DeskPRO_Window.getPoller().addData(
+			[{name: 'do[]', value: 'get-custom-filter-counts'}],
+			'filters.counts',
+			{recurring: true, minDelay: 600000/*10 mintues*/, minDelayAfterOne:true }
+		);
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('filters.counts', this.updateFilterCounts.bind(this));
 
 		$('ul#tickets_outline_filters_list').sortable({

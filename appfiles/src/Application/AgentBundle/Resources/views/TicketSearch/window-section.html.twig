@@ -49,6 +49,9 @@
 				data-tipped="filter_{{filter.id}}_tip"
 				data-tipped-options="inline:true, hook: 'rightmiddle'"
 			>
+				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
+					-
+				</span>
 				<a>{{filter.title}}</a>
 			</li>
 		{% endfor %}

@@ -23,7 +23,6 @@ class Filters
 	}
 
 
-
 	/**
 	 * Get a ticket filter from an ID
 	 * @param int $ticket_filter_id
@@ -35,7 +34,6 @@ class Filters
 			->getRepository('DeskPRO:TicketFilter')
 			->find($ticket_filter_id);
 	}
-
 
 
 	/**
@@ -50,7 +48,6 @@ class Filters
 
 		return $ticket_filter->getResultsCount();
 	}
-
 
 
 	/**
@@ -69,6 +66,21 @@ class Filters
 	}
 
 
+	/**
+	 * Get the counts for each custom filter a person can see.
+	 *
+	 * @param mixed $person Person or person ID
+	 * @return array
+	 */
+	public function getAllCountsCustomFilters($person)
+	{
+		$coll = App::getOrm()
+			->getRepository('DeskPRO:TicketFilter')
+			->getCustomFiltersForPerson($person);
+
+		return $this->getAllCountsForFiltersCollection($coll);
+	}
+
 
 	/**
 	 * Get counts for each filter in a collection.
@@ -86,7 +98,6 @@ class Filters
 
 		return $counts;
 	}
-
 
 
 	/**
@@ -122,7 +133,6 @@ class Filters
 			->getRepository('DeskPRO:Ticket')
 			->getTicketsFromIds($page_ids);
 	}
-
 
 
 	/**
@@ -161,7 +171,6 @@ class Filters
 			->getRepository('DeskPRO:Ticket')
 			->getTicketsFromIds($page_ids);
 	}
-
 
 
 	/**

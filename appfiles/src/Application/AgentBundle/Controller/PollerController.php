@@ -55,9 +55,16 @@ class PollerController extends AbstractController
 	# getFilterCounts
 	############################################################################
 
-	public function getFilterCountsMessage()
+	public function getSysFilterCountsMessage()
 	{
-		$all_counts = $filters = App::getApi('tickets.filters')->getAllCountsSystemFilters($this->person);
+		$all_counts = App::getApi('tickets.filters')->getAllCountsSystemFilters($this->person);
+
+		return array(array('filters.counts', $all_counts));
+	}
+
+	public function getCustomFilterCountsMessage()
+	{
+		$all_counts = App::getApi('tickets.filters')->getAllCountsCustomFilters($this->person);
 
 		return array(array('filters.counts', $all_counts));
 	}
