@@ -68,6 +68,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		// Sit min length on middletabs so switch doesnt go much smaller
 		var el = $('.container-tabbed-wrap.ticket-participants:first', this.wrapper);
 		el.css('min-width', el.width());
+
+		this.addEvent('shortcutFocusReply', (function() {
+
+			// Scroll down
+			$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).scrollTop(100000);
+
+			// Focus reply
+			$('textarea[name="message"]', this.ticketReply).focus();
+		}).bind(this));
 	},
 
 	destroyPage: function() {

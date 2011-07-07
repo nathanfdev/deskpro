@@ -1213,6 +1213,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initWindowInterface: function() {
 		var self = this;
 
+		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
+
 		var menuOpener = new DeskPRO.Agent.WindowElement.MainMenuOpener();
 		
 		// Settings is a window
