@@ -209,31 +209,10 @@ class SettingsController extends AbstractController
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 
 			$macro['title'] = $this->in->getString('macro.title');
-			$macro['is_global'] = true;
+			$macro['is_global'] = false;
 
 			$action_rules = RuleBuilder::newActionsBuilder();
 			$actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'str_simple'));
-
-			foreach ($actions as $k => &$action) {
-
-				if (strpos($action['rule_type'], 'ticket_field') === 0) {
-					$field_id = preg_replace('#^ticket_field\[(.*?)\]$#', '$1', $action['rule_type']);
-					$action['renderable_value'] = App::getApi('custom_fields.util')->getRenderableDataArrayFromForm(
-						$_POST['actions'][$k],
-						$field_id,
-						'DeskPRO:CustomDefTicket',
-						'DeskPRO:CustomDataTicket'
-					);
-				} elseif (strpos($action['rule_type'], 'user_field') === 0) {
-					$field_id = preg_replace('#^user_field\[(.*?)\]$#', '$1', $action['rule_type']);
-					$action['renderable_value'] = App::getApi('custom_fields.util')->getRenderableDataArrayFromForm(
-						$_POST['actions'][$k],
-						$field_id,
-						'DeskPRO:CustomDefPerson',
-						'DeskPRO:CustomDataPerson'
-					);
-				}
-			}
 
 			$macro['actions'] = $actions;
 

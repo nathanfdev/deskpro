@@ -16,6 +16,8 @@
 <ul class="ticket-macros-menu" style="display:none">
 	{% for macro in macros %}
 		<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
+	{% else %}
+		<li data-no-macro="1">Create a macro</li>
 	{% endfor %}
 </ul>
 <ul class="menu status" data-option-name="status" style="display:none">

@@ -585,6 +585,17 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 
 	_currentMacroId: null,
 	_handleMacroClick: function(info) {
+
+		if ($(info.itemEl).data('no-macro')) {
+			var overlay = new DeskPRO.UI.Overlay({
+				contentMethod: 'iframe',
+				iframeUrl: BASE_URL + 'agent/settings/ticket-macros/new'
+			});
+
+			overlay.openOverlay();
+			return;
+		}
+
 		this._currentMacroId = $(info.itemEl).data('macro-id');
 		$.ajax({
 			url: this.getMetaData('getMacroUrl').replace('$macro_id', this._currentMacroId),
