@@ -172,12 +172,12 @@ class TicketController extends AbstractController
 			$ticket_deleted = $ticket->getDeletionRecord();
 
 			$date_deleted = $ticket['date_created'];
-			if ($ticket_deleted['created_date']) {
-				$date_deleted = $ticket_deleted['created_date'];
+			if ($ticket_deleted['date_created']) {
+				$date_deleted = $ticket_deleted['date_created'];
 			}
 
 			$hard_delete_time = $date_deleted->getTimestamp() + App::getSetting('core_tickets.hard_delete_time');
-			$hard_delete_time = min(0, $hard_delete_time - time());
+			$hard_delete_time = max(0, $hard_delete_time - time());
 
 			if ($hard_delete_time) {
 				$hard_delete_time = Dates::secsToReadable($hard_delete_time);

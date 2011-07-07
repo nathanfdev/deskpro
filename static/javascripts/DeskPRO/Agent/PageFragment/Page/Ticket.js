@@ -471,10 +471,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			dataType: 'json',
 			success: function(data) {
 
+				self.deleteOverlay.closeOverlay();
+				DeskPRO_Window.removePage(self);
+
 				// Reload the ticket page
 				DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + self.getMetaData('ticket_id'), {ignoreExist:true}, function(page) {
-					DeskPRO_Window.removePage(self);
-
 					var ticket_title = self.getMetaData('title');
 					if (ticket_title.length > 20) {
 						ticket_title = ticket_title.substr(0, 20) + ' ...';
