@@ -553,6 +553,14 @@ var DpChat = (function() {
 		if (showProactiveChat) {
 			display.showProactive();
 		}
+
+		// Attach click event to any chat triggers to open new chat window
+		$('.dp-chat-trigger').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			DpChat.popChat();
+		});
 	};
 
 	var chatAssigned = function(data) {
