@@ -40,6 +40,8 @@
 	</div>
 </div>
 
-{% include 'UserBundle:Common:chat-loader.html.twig' %}
+{% if not app.getSetting('user.disable_chat_element') %}
+	{% include 'UserBundle:Common:chat-loader.html.twig' %}
+{% endif %}
 </body>
 </html>
