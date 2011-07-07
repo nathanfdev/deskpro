@@ -234,6 +234,23 @@ DeskPRO.Agent.Window = new Orb.Class({
 	//#################################################################
 
 	/**
+	 * Get the ID of the last client message.
+	 */
+	getLastClientMessageId: function() {
+		if (this.messageChanneler.lastMessageId) {
+			return this.messageChanneler.lastMessageId;
+		}
+
+		return 0;
+	},
+
+	forwardClientMessageData: function(data) {
+		if (this.messageChanneler.handleMessageAjax) {
+			this.messageChanneler.handleMessageAjax(data);
+		}
+	},
+
+	/**
 	 * Get the notifier
 	 */
 	 getNotifier: function() {
@@ -520,12 +537,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (tabId) {
 			this.pageTabStrip.removeTabById(tabId);
 		}
-		tabId = false;
-
-		tabId = this.listTabStrip.findTabByPage(page);
-		if (tabId) {
-			this.listTabStrip.removeTabById(tabId);
-		}
 	},
 
 	/**
@@ -686,7 +697,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		if (!routeData || (!routeData.ignoreExist)) {
 			var existTab = this.pageTabStrip.getTabByRouteUrl(url);
 			if (existTab && !(existTab.page.allowDupe && existTab.page.TYPENAME != 'loading')) {
-				this.pageTabStrip.activateTabById(existTab.id);
+				this.pageTabStrip.removeTabById(existTab.id);
 				return;
 			}
 		}

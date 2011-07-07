@@ -623,11 +623,24 @@ class TicketController extends AbstractController
 		$this->em->flush();
 		$this->em->commit();
 
+		$client_messages = false;
+		if ($this->in->getUint('client_messages_since')) {
+			$client_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessageData(
+				$this->person,
+				$this->session,
+				$this->in->getUint('client_messages_since')
+			);
+		}
+
+		$close_tab = $this->in->getBool('options.close_tab');
+
 		return $this->createJsonResponse(array(
 			'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array('message' => $message)),
 			'agent_id' => $ticket['agent_id'],
 			'agent_team_id' => $ticket['agent_team_id'],
-			'status' => $ticket['status']
+			'status' => $ticket['status'],
+			'close_tab' => $close_tab,
+			'client_messages' => $client_messages,
 		));
 	}
 

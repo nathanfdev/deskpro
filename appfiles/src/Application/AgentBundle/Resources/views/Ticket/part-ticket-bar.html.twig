@@ -12,7 +12,7 @@
 			<span class="bottom-tabs-button macros-cancel" style="display: none;">Cancel</span>
 		</div>
 
-		<div class="tab-bottom-contents" style="height:134px;">
+		<div class="tab-bottom-contents" style="height:154px;">
 			{# Reply area #}
 			<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
 				<div class="reply-form-fields">
@@ -21,8 +21,8 @@
 					<input type="hidden" name="options[agent_team_id]" value="{{app.user.getAgentTeamIds[0]}}" />
 					<input type="hidden" name="options[status]" value="pending" />
 
-					<div class="send-reply" style="float:right; margin-right: 4px;">
-						<button class="dp-button x-small">Add Reply</button>
+					<div class="send-reply" style="float:right; margin-right: 8px; margin-top: 4px;">
+						<button class="dp-button">Add Reply</button>
 						<div class="spinner"></div>
 					</div>
 
@@ -43,6 +43,20 @@
 							<td valign="middle" style="vertical-align:middle">
 								<label for="foot_status_check_{{ticket.id}}">Change status to</label>
 								<span class="prop-val status trigger">Pending</span>
+							</td>
+						</tr>
+						<tr>
+							<td width="5" valign="middle" style="vertical-align:middle; padding-right: 5px;">
+								<input id="foot_close_tab_{{ticket.id}}" class="small" type="checkbox" name="options[close_tab]" value="1" checked="checked" />
+							</td>
+							<td style="padding-right: 15px; vertical-align:middle;" valign="middle">
+								<label for="foot_close_tab_{{ticket.id}}">Close tab after reply</label>
+							</td>
+							<td width="5" valign="middle" style="vertical-align:middle; padding-right:5px;">
+								<input id="foot_kb_pending_{{ticket.id}}" class="small" type="checkbox" name="options[kb_pending]" />
+							</td>
+							<td valign="middle" style="vertical-align:middle">
+								<label for="foot_kb_pending_{{ticket.id}}">Mark as pending KB article</label>
 							</td>
 						</tr>
 					</table>

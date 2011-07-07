@@ -180,6 +180,9 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			dataType: 'json',
 			success: function (data) {
 				this._handleAjaxSuccess(data, sent_info);
+			},
+			error: function(xhr, textStatus, errorThrown) {
+				this._handleAjaxError(sent_info, xhr, textStatus, errorThrown);
 			}
 		});
 	},
@@ -197,6 +200,15 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 	 */
 	_handleAjaxSuccess: function (data, sent_info) {
 
+		this.resetSentItems(sent_info);
+
+		this.fireEvent('ajaxSuccess', data);
+
+		// Start auto timer
+		this.autoSendTimeout = this.send.delay(this.options.interval, this);
+	},
+
+	resetSentItems: function(sent_info) {
 		var item = null;
 		while (item = sent_info.shift()) {
 			var item_name = item[0];
@@ -215,8 +227,14 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 				this.addData(item_name, item_data, item_opts);
 			}
 		}
+	},
 
-		this.fireEvent('ajaxSuccess', data);
+	_handleAjaxError: function (sent_info, xhr, textStatus, errorThrown) {
+		this.resetSentItems(sent_info);
+
+		console.error("Polling Error %s for %o", textStatus, xhr);
+
+		this.fireEvent('ajaxError', [xhr, textStatus, errorThrown]);
 
 		// Start auto timer
 		this.autoSendTimeout = this.send.delay(this.options.interval, this);

@@ -82,11 +82,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		DeskPRO_Window.getMessageBroker().removeTaggedListeners(this.pageUid);
 	},
 
-	displayNewMessage: function(html) {
+	displayNewMessage: function(html, slideCallback) {
 		var new_message = $(html).hide();
 
 		var self = this;
-		new_message.appendTo($('.ticket-messages .messages-wrap', this.contentWrapper)).slideDown();
+		slideCallback = slideCallback || function(){};
+		new_message.appendTo($('.ticket-messages .messages-wrap', this.contentWrapper)).slideDown('fast', slideCallback);
 
 		this._initMessage(new_message);
 	},
@@ -146,7 +147,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				this.newnoteWrapper.before(el);
 				this._initMessage(el);
 
-				this._handleSendReplySuccess(html);
+				this.displayNewMessage(html);
 			}
 		});
 	},
@@ -548,6 +549,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.isSendingReply = true;
 
 		var data = els.serializeArray();
+		data.push({
+			name: 'client_messages_since',
+			value: DeskPRO_Window.getLastClientMessageId()
+		});
 
 		$.ajax({
 			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
@@ -557,11 +562,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			dataType: 'json',
 			success: function(data) {
 				this.isSendingReply = false;
+
+				if (data.client_messages) {
+					DeskPRO_Window.forwardClientMessageData(data.client_messages);
+				}
+
 				this._handleSendReplySuccess(data);
 			},
 			complete: function() {
 				var spinnerContainer = $('.send-reply .spinner', this.ticketBar).hide().empty();
 				spinnerContainer.parent().removeClass('is-loading');
+
+				this.afterNewReply();
 
 				$('.send-reply button', this.ticketBar).show();
 			}

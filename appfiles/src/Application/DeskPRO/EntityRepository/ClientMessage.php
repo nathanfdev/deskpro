@@ -13,10 +13,68 @@ namespace Application\DeskPRO\EntityRepository;
 
 use Application\DeskPRO\App;
 
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\HttpFoundation\Session as HttpSession;
+
 use Doctrine\ORM\EntityRepository;
 
 class ClientMessage extends EntityRepository
 {
+	/**
+	 * Get message data suitable to return
+	 * 
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @param \Application\DeskPRO\HttpFoundation\Session $session
+	 * @param int $since
+	 * @return array
+	 */
+	public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0)
+	{
+		// Automatically ping
+		// AJAX clients dont send ping manually, it's just part of this call
+		$person->loadHelper('ClientChannelSubscriptions', array('session' => $session));
+		$person->getClientChannelSubs()->pingSubscriptions();
+
+		// if $since is 0, the client is new and asking for us to send it the last id
+		if (!$since) {
+			$data = array('messages' => array(), 'last_id' => -1);
+			$last_id = App::getDb()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
+			if ($last_id) {
+				$data['last_id'] = $last_id;
+			}
+			
+		} else {
+
+			$data = array();
+			if ($since) {
+				$data = array('messages' => array(), 'last_id' => -1);
+
+				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient($session->getEntityId(), $person['id'], $since);
+				foreach ($all_messages as $message) {
+					$handler = $message->getHandler();
+
+					if ($message['created_by_client'] != $session->getEntityId()) {
+						$data['messages'][] = array(
+							$message['id'],
+							$message['channel'],
+							$handler->getMessage('ajax')
+						);
+					}
+
+					if ($message['id'] > $data['last_id']) {
+						$data['last_id'] = $message['id'];
+					}
+				}
+
+				if ($data['last_id'] == -1) {
+					unset($data['last_id']);
+				}
+			}
+		}
+
+		return $data;
+	}
+
 	/**
 	 * Get messages for a client for specific channels
 	 * 

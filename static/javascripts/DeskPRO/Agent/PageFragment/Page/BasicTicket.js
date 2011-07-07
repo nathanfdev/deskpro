@@ -657,7 +657,16 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	},
 
 	_handleSendReplySuccess: function(data) {
-		this.displayNewMessage(data.message_html);
+
+		var slideCallback = null;
+		if (data.close_tab) {
+			var self = this;
+			slideCallback = function() {
+				DeskPRO_Window.removePage(self);
+			};
+		}
+
+		this.displayNewMessage(data.message_html, slideCallback);
 		this.newReplyNewProps(data);
 		this.afterNewReply();
 	},

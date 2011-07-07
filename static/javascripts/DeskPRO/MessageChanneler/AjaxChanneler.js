@@ -13,7 +13,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 		this._del_subs = [];
 		this._del_subs_timeout = null;
 		
-		this.lastMessageId = null;
+		this.lastMessageId = -1;
 		this.poller = new DeskPRO.AjaxPoller.Poller({
 			ajaxUrl: this.options.ajaxMessagesUrl,
 			interval: 5000,
@@ -33,14 +33,19 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 	},
 
 	handleMessageAjax: function(data) {
-		if (data.last_id) {
-			this.lastMessageId = data.last_id;
-		}
-
 		if (data.messages) {
 			Array.each(data.messages, function(d) {
-				this.sendMessage(d[0], d[1]);
+				if (d[0] <= this.lastMessageId) {
+					return;
+				}
+				
+				this.lastMessageId = d[0];
+				this.sendMessage(d[1], d[2]);
 			}, this);
+		}
+
+		if (data.last_id && data.last_id > this.lastMessageId) {
+			this.lastMessageId = data.last_id;
 		}
 	},
 
