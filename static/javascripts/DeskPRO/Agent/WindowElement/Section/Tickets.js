@@ -51,6 +51,15 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this._initOverview();
 		this._initFlagged();
 
+		$('#user_settings_filters_link').click(function() {
+			var overlay = new DeskPRO.UI.Overlay({
+				contentMethod: 'iframe',
+				iframeUrl: BASE_URL + 'agent/settings/ticket-filters'
+			});
+
+			overlay.openOverlay();
+		});
+
 		if (this.isVisible() && !DeskPRO_Window.loadingListFragment) {
 			this._loadAutoLoadRoutes();
 		}

@@ -132,23 +132,24 @@ class SettingsController extends AbstractController
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs);
 		$term_options['custom_ticket_fields'] = $custom_fields;
 
+		$is_saved = false;
 		if ($this->isPostRequest()) {
 			$errors = $this->_processEditFilter($filter);
 			if (!$errors) {
-				echo "Saved!";
+				$is_saved = true;
 			}
 		}
 
 		return $this->render('AgentBundle:Settings:ticket-filter-edit.html.twig', array(
 			'term_options' => $term_options,
-			'filter' => $filter
+			'filter' => $filter,
+			'is_saved' => $is_saved,
 		));
 	}
 
 	public function _processEditFilter(Entity\TicketFilter $filter)
 	{
 		$filter['title']    = $this->in->getString('filter.title');
-		$filter['group_by'] = $this->in->getString('filter.group_by');
 		$filter['order_by'] = $this->in->getString('filter.order_by');
 
 		$term_rules = RuleBuilder::newTermsBuilder();

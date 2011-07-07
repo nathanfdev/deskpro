@@ -21,6 +21,10 @@ function _page_exec() {
 			});
 		}
 	};
+
+	{% if is_saved %}
+	DeskPRO_Window.getMessageBroker().sendMessage('agent.ticket-filters-updated');
+	{% endif %}
 }
 </script>
 {% endblock %}
