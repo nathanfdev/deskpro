@@ -1,8 +1,14 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
 
-<ul>
-	<li><a href="{{ path('user_tickets_new') }}">new ticket</a></li>
-</ul>
+{% include 'UserBundle:Portal:omni-box-content.html.twig' %}
+
+{% endblock %}
+{% block sidebar %}
+
+{% include 'UserBundle:Portal:userinfo-sidebar.html.twig' %}
+{% include 'UserBundle:Portal:contact-sidebar.html.twig' %}
+{% include 'UserBundle:Portal:kb-sidebar.html.twig' %}
+{% include 'UserBundle:Portal:nav-sidebar.html.twig' %}
 
 {% endblock %}

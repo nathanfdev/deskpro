@@ -1,0 +1,11 @@
+<div class="sidebar-item" id="portal_userinfo">
+	{% if app.user.id %}
+		Welcome, {{ app.user.first_name|default(app.user.display_name) }}<br />
+		&middot; <a href="{{ path('user_logout') }}">Your Tickets</a>
+		&middot; <a href="{{ path('user_profile') }}">Your Profile</a>
+		&middot; <a href="{{ path('user_logout') }}">Log Out</a>
+	{% else %}
+		Welcome, Guest<br />
+		&middot; <a href="{{ path('user_login') }}">Log In</a>
+	{% endif %}
+</div>

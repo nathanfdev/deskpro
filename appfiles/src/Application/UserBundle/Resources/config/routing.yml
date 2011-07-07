@@ -2,6 +2,10 @@ user:
   pattern:  /
   defaults: { _controller: UserBundle:Main:index, _locale: en }
 
+user_test:
+  pattern:  /test
+  defaults: { _controller: UserBundle:Test:index }
+
 ################################################################################
 # Login/logout
 ################################################################################

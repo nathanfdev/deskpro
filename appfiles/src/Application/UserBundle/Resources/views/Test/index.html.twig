@@ -20,26 +20,32 @@
 					<a href="{{ path('user') }}">{{ app.getSetting('core.deskpro_name') }}</a>
 				</h1>
 			</div>
+			<div class="nav">
+				<ul>
+					<li><a href="{{ path('user') }}">Home</a></li>
+					<li><a href="{{ path('user_search') }}">Search</a></li>
+					<li><a href="{{ path('user_articles') }}">Articles</a></li>
+					<li><a href="{{ path('user_downloads') }}">Downloads</a></li>
+					<li><a href="{{ path('user_news') }}">News</a></li>
+					<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+					{% if app.user.id %}
+						<li><a href="{{ path('user_tickets') }}">Tickets</a></li>
+					{% endif %}
+				</ul>
+			</div>
 		</div>
+	</div>
+
+	<hr class="space">
+
+	<div class="span-16">
+		{% block content %}{% endblock %}
+	</div>
+
+	<div class="span-4 colborder last">
+		{% block sidebar %}{% endblock %}
 	</div>
 </div>
 
-<hr class="space">
-
-<div class="container" id="content_container">
-	<div class="span-17">
-		<div id="content">
-			{% block content %}{% endblock %}
-		</div>
-	</div>
-
-	<div class="span-7 last">
-		<div id="sidebar">
-			{% block sidebar %}{% endblock %}
-		</div>
-	</div>
-</div>
-
-{% include 'UserBundle:Common:chat-loader.html.twig' %}
 </body>
 </html>
