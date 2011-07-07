@@ -92,11 +92,17 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		Array.each(segments, function (hash, i) {
 
+			// Active tab has .o on it, like ticket.o:1234
+			// So detect that, and then remove the .o
+			var isOpen = false;
+			if (hash.match(/\.o:/)) {
+				isOpen = true;
+				hash = hash.replace(/\.o:/, ':');
+			}
+
 			var tabId = this.pageTabStrip.findTabByFragment(hash);
 			if (tabId) {
-				// The first tab in the hash is considered the 'active' tab,
-				// so set it to be selected after
-				if (!activateTabId) {
+				if (!activateTabId || isOpen) {
 					activateTabId = tabId;
 				}
 				return;
@@ -158,22 +164,25 @@ DeskPRO.Agent.Window = new Orb.Class({
 			segments.push(listPage.getMetaData('url_fragment'));
 		}
 
-		// Currently selected tab always goes first
 		var currentTab = this.pageTabStrip.getActiveTab();
-		if (currentTab && currentTab.page.getMetaData('url_fragment')) {
-			segments.push(currentTab.page.getMetaData('url_fragment'));
-		}
 
-		// And all other tabs go after
 		var tabs = this.pageTabStrip.getTabs();
 		Object.each(tabs, function(tab, id) {
 			var tabPage = tab.page;
-			if (tab.id == currentTab.id) {
-				return;
-			}
+			var hash = tabPage.getMetaData('url_fragment');
 
-			if (tabPage.getMetaData('url_fragment')) {
-				segments.push(tabPage.getMetaData('url_fragment'));
+			if (hash) {
+				if (tab.id == currentTab.id) {
+					if (hash.indexOf(':') !== -1) {
+						// ticket:123 to ticket.o:123
+						hash = hash.replace(/:/, '.o:');
+					} else {
+						// somename to somename.o
+						hash = hash + '.o';
+					}
+				}
+
+				segments.push(hash);
 			}
 		});
 
