@@ -57,6 +57,25 @@ class TmpData extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_expire;
 
+	/**
+	 * @param string $type
+	 * @param array $data
+	 * @return \Application\DeskPRO\Entity\TmpData
+	 */
+	public static function create($type, array $data = array(), $expire = '+1 week')
+	{
+		$tmpdata = new self();
+		$tmpdata->setType($type);
+
+		foreach ($data as $k => $v) {
+			$tmpdata->setData($k, $v);
+		}
+
+		$tmpdata['date_expire'] = new \DateTime($expire);
+
+		return $tmpdata;
+	}
+
 	public function __construct()
 	{
 		$this->auth         = Strings::random(15, Strings::CHARS_KEY);

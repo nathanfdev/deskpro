@@ -28,6 +28,23 @@ user_login_callback:
   defaults: { _controller: UserBundle:Login:authenticateCallback }
   requirements: { usersource_id: "\d+" }
 
+user_login_resetpass:
+  pattern: /login/reset-password
+  defaults: { _controller: UserBundle:Login:resetPassword }
+
+user_login_resetpass_send:
+  pattern: /login/reset-password/send
+  defaults: { _controller: UserBundle:Login:sendResetPassword }
+
+user_login_resetpass_newpass:
+  pattern: /login/reset-password/{code}
+  defaults: { _controller: UserBundle:Login:resetPasswordNewPass }
+  requirements: { code: "[A-Za-z0-9\-]{17,}" }
+
+user_login_resetpass_newpass_querycode:
+  pattern: /login/reset-password/query-code
+  defaults: { _controller: UserBundle:Login:resetPasswordNewPassQueryCode }
+
 ################################################################################
 # Register
 ################################################################################
