@@ -297,6 +297,16 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return $this->getHandler()->getSearchCapabilities();
 	}
 
+	/**
+	 * Get filter capabilties supported by the field.
+	 * 
+	 * @return array
+	 */
+	public function getFilterCapabilities()
+	{
+		return $this->getHandler()->getFilterCapabilities();
+	}
+
 	public function getParentId()
 	{
 		return $this->parent['id'];

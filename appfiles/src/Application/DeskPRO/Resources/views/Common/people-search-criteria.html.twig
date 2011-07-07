@@ -159,14 +159,20 @@
 	</div>
 </div>
 {% if people_fields %}
-	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'has', 'notcontains': 'does not have', 'gt': 'is greater than', 'lt': 'is less than'} %}
+	{% set op_lang = {'is': 'is', 'not': 'is not', 'contains': 'contains', 'notcontains': 'does not contain', 'gt': 'is greater than', 'lt': 'is less than'} %}
 	{% for field in people_fields %}
 	<div class="type" title="Field: {{field.field_def.title}}" data-rule-group="Person Fields" data-rule-type="person_person_field[{{field.field_def.id}}]">
 		<div class="op">
 			<select name="op">
-				{% for op in field.field_def.search_capabilities %}
-				<option value="{{op}}">{{op_lang[op]}}</option>
-				{% endfor %}
+				{% if search_context == 'filter' %}
+					{% for op in field.field_def.getFilterCapabilities(search_context) %}
+						<option value="{{op}}">{{op_lang[op]}}</option>
+					{% endfor %}
+				{% else %}
+					{% for op in field.field_def.getSearchCapabilities(search_context) %}
+						<option value="{{op}}">{{op_lang[op]}}</option>
+					{% endfor %}
+				{% endif %}
 			</select>
 		</div>
 		<div class="options">

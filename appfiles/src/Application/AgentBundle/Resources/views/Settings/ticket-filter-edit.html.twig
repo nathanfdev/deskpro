@@ -61,7 +61,7 @@ $(document).ready(function() {
 			<div class="search-terms"></div>
 			<div class="term"><span class="add-term">+</span> Add a new term</div>
 		</div>
-		{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': 'criteria_tpl', 'term_options': term_options } %}
+		{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'classname': 'search-builder-tpl', 'id': 'criteria_tpl', 'term_options': term_options, 'search_context': 'filter' } %}
 	</div>
 </div>
 

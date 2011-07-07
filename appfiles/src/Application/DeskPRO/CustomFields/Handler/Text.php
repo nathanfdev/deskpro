@@ -49,6 +49,11 @@ class Text extends HandlerAbstract
 		return array('is', 'not', 'contains', 'notcontains');
 	}
 
+	public function getFilterCapabilities()
+	{
+		return array('is', 'not');
+	}
+
 	public function getSearchType()
 	{
 		return 'input';

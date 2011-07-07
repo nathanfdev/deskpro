@@ -297,6 +297,12 @@ abstract class HandlerAbstract
 	}
 
 
+	public function getFilterCapabilities()
+	{
+		return $this->getSearchCapabilities();
+	}
+
+
 	/**
 	 * Get the type of search this field sholud be on.
 	 *
