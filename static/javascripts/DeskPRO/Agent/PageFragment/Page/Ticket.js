@@ -99,6 +99,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		new_message.appendTo($('.ticket-messages .messages-wrap', this.contentWrapper)).slideDown('fast', slideCallback);
 
 		this._initMessage(new_message);
+		this.incCount('ticket-messages');
 	},
 
 	activate: function() {
@@ -155,6 +156,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				var el = $(html);
 				this.newnoteWrapper.before(el);
 				this._initMessage(el);
+
+				// Inc note count
+				this.incCount('ticket-notes');
 
 				this.displayNewMessage(html);
 			}

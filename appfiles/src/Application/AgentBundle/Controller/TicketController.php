@@ -99,11 +99,7 @@ class TicketController extends AbstractController
 			}
 
 			foreach ($ticket_messages as $m) {
-				if ($m['is_agent_note']) {
-					$note_count++;
-				} else {
-					$message_count++;
-				}
+				$message_count++;
 			}
 
 			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-block.html.twig', array(
@@ -131,7 +127,6 @@ class TicketController extends AbstractController
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
 		$ticket_notes_block = $ticket_messages_blockcache['ticket_notes_block'];
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
-		$counts['notes'] = $ticket_messages_blockcache['note_count'];
 
 		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
 			'ticket_id' => $ticket_id,
@@ -239,6 +234,18 @@ class TicketController extends AbstractController
 			SELECT COUNT(*)
 			FROM tickets_logs
 			WHERE ticket_id = ?
+		", array($ticket['id']));
+
+		$counts['messages'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets_messages
+			WHERE ticket_id = ?
+		", array($ticket['id']));
+
+		$counts['notes'] = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets_messages
+			WHERE ticket_id = ? AND is_agent_note = 1
 		", array($ticket['id']));
 
 		return $counts;

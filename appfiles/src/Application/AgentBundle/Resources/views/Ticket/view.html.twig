@@ -255,8 +255,8 @@ pageMeta.fieldHandlers = [
 	{# Tab Triggers #}
 	<div class="full-container-tabbed-tabs">
 		<ul class="field-section-bodytabs-tabs">
-			<li class="tab-trigger ticket-messages on" data-tab-for=".tab-content.ticket-messages"><a>Messages <em class="ticket-messages-count">({{counts.messages}})</em></a></li>
-			<li class="tab-trigger ticket-notes" data-tab-for=".tab-content.ticket-notes"><a>Notes <em class="ticket-notes-count">({{counts.notes}})</em></a></li>
+			<li class="tab-trigger ticket-messages on" data-tab-for=".tab-content.ticket-messages"><a>Messages <em class="ticket-messages-count" data-count="{{counts.messages}}">({{counts.messages}})</em></a></li>
+			<li class="tab-trigger ticket-notes" data-tab-for=".tab-content.ticket-notes"><a>Notes <em class="ticket-notes-count" data-count="{{counts.notes}}">({{counts.notes}})</em></a></li>
 			<li class="tab-trigger ticket-attach" data-tab-for=".tab-content.ticket-attach"><a>Attachments <em class="ticket-attachments-count">({{counts.attachments}})</em></a></li>
 			<li class="tab-trigger ticket-log" data-tab-for=".tab-content.ticket-log"><a>Log <em class="ticket-logs-count">({{counts.logs}})</em></a></li>
 			{% if show_related_content %}

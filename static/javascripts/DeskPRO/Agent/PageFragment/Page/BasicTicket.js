@@ -97,6 +97,17 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 		});
 	},
 
+	incCount: function(id) {
+		var countEl = $('.'+id+'-count', this.wrapper);
+		var count = countEl.data('count') + 1;
+		countEl.data('count', count).html('(' + count + ')');
+	},
+
+	setCount: function(id, count) {
+		var countEl = $('.'+id+'-count', this.wrapper);
+		countEl.data('count', count).html('(' + count + ')');
+	},
+
 	//#################################################################
 	//# Property managers
 	//#################################################################
