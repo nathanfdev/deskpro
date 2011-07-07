@@ -104,6 +104,7 @@ $CONFIG['agent']['agent-ui'] = array(
 		'javascripts/DeskPRO/Agent/TabManager.js',
 		'javascripts/DeskPRO/Agent/TabStrip.js',
 		'javascripts/DeskPRO/Agent/ScrollerHandler.js',
+		'javascripts/DeskPRO/Agent/KeyboardShortcuts.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Basic.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Loading.js',
@@ -188,6 +189,7 @@ $CONFIG['agent']['vendors'] = array(
 		'vendor/jquery/jquery.sizes.min.js',
 		'vendor/jquery/jquery.timeago.js',
 		'vendor/jquery/jquery.tinyscrollbar.js',
+		'vendor/jquery/jquery.hotkeys.js',
 		'vendor/jquery/mwheelIntent.js',
 
 		'vendor/jquery/colorbox/jquery.colorbox-min.js',

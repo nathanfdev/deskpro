@@ -2208,8 +2208,14 @@ b.obj.addClass("is-scrolling");return false}function C(G){if(!(f.ratio>=1)){var 
 var F=G.wheelDelta?G.wheelDelta/120:-G.detail/3;v-=F*e.wheel;v=Math.min((f[e.axis]-j[e.axis]),Math.max(0,v));u.obj.css(q,v/b.ratio);
 f.obj.css(q,-v);G.preventDefault();if(!b.obj.is(".disable")){G.stopPropagation()}if(c){window.clearTimeout(c)}}}function d(F){a(document).unbind("mousemove",z);
 a(document).unbind("mouseup",d);u.obj.unbind("mouseup",d);b.obj.removeClass("is-scrolling");return false}function z(F){if(!(f.ratio>=1)){E.now=Math.min((p[e.axis]-u[e.axis]),Math.max(0,(E.start+((k?F.pageX:F.pageY)-r.start))));
-v=E.now*b.ratio;f.obj.css(q,-v);u.obj.css(q,E.now)}return false}return this.initialize()}})(jQuery);(function(c){var b={pos:[-260,-260]},d=3,j=document,g=j.documentElement,e=j.body,a,k;
-function f(){if(this===b.elem){b.pos=[-260,-260];b.elem=false;d=3}}c.event.special.mwheelIntent={setup:function(){var l=c(this).bind("mousewheel",c.event.special.mwheelIntent.handler);
+v=E.now*b.ratio;f.obj.css(q,-v);u.obj.css(q,E.now)}return false}return this.initialize()}})(jQuery);(function(b){b.hotkeys={version:"0.8",specialKeys:{8:"backspace",9:"tab",13:"return",16:"shift",17:"ctrl",18:"alt",19:"pause",20:"capslock",27:"esc",32:"space",33:"pageup",34:"pagedown",35:"end",36:"home",37:"left",38:"up",39:"right",40:"down",45:"insert",46:"del",96:"0",97:"1",98:"2",99:"3",100:"4",101:"5",102:"6",103:"7",104:"8",105:"9",106:"*",107:"+",109:"-",110:".",111:"/",112:"f1",113:"f2",114:"f3",115:"f4",116:"f5",117:"f6",118:"f7",119:"f8",120:"f9",121:"f10",122:"f11",123:"f12",144:"numlock",145:"scroll",191:"/",224:"meta"},shiftNums:{"`":"~","1":"!","2":"@","3":"#","4":"$","5":"%","6":"^","7":"&","8":"*","9":"(","0":")","-":"_","=":"+",";":": ","'":'"',",":"<",".":">","/":"?","\\":"|"}};
+function a(d){if(typeof d.data!=="string"){return}var c=d.handler,e=d.data.toLowerCase().split(" ");d.handler=function(q){if(this!==q.target&&(/textarea|select/i.test(q.target.nodeName)||q.target.type==="text")){return
+}var j=q.type!=="keypress"&&b.hotkeys.specialKeys[q.which],r=String.fromCharCode(q.which).toLowerCase(),m,p="",g={};if(q.altKey&&j!=="alt"){p+="alt+"
+}if(q.ctrlKey&&j!=="ctrl"){p+="ctrl+"}if(q.metaKey&&!q.ctrlKey&&j!=="meta"){p+="meta+"}if(q.shiftKey&&j!=="shift"){p+="shift+"
+}if(j){g[p+j]=true}else{g[p+r]=true;g[p+b.hotkeys.shiftNums[r]]=true;if(p==="shift+"){g[b.hotkeys.shiftNums[r]]=true}}for(var k=0,f=e.length;
+k<f;k++){if(g[e[k]]){return c.apply(this,arguments)}}}}b.each(["keydown","keyup","keypress"],function(){b.event.special[this]={add:a}
+})})(jQuery);(function(c){var b={pos:[-260,-260]},d=3,j=document,g=j.documentElement,e=j.body,a,k;function f(){if(this===b.elem){b.pos=[-260,-260];
+b.elem=false;d=3}}c.event.special.mwheelIntent={setup:function(){var l=c(this).bind("mousewheel",c.event.special.mwheelIntent.handler);
 if(this!==j&&this!==g&&this!==e){l.bind("mouseleave",f)}l=null;return true},teardown:function(){c(this).unbind("mousewheel",c.event.special.mwheelIntent.handler).unbind("mouseleave",f);
 return true},handler:function(l,m){var p=[l.clientX,l.clientY];if(this===b.elem||Math.abs(b.pos[0]-p[0])>d||Math.abs(b.pos[1]-p[1])>d){b.elem=this;
 b.pos=p;d=250;clearTimeout(k);k=setTimeout(function(){d=10},200);clearTimeout(a);a=setTimeout(function(){d=3},1500);l=c.extend({},l,{type:"mwheelIntent"});
