@@ -49,7 +49,7 @@ class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @orm:Column(name="comment", type="string", length=1000)
 	 */
-	protected $comment;
+	protected $comment = '';
 
 	/**
 	 * @var \DateTime
