@@ -630,7 +630,11 @@ class TicketSearch extends SearcherAbstract
 					}
 					$choice_str = implode(', ', $choice_str);
 
-					$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $tr->phrase('core_tickets.status'), 'value' => $choice_str));
+					$phrase = 'core.x_is_y';
+					if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
+						$phrase = 'core.x_is_not_y';
+					}
+					$this->summary[] = $tr->phrase($phrase, array('field' => $tr->phrase('core_tickets.status'), 'value' => $choice_str));
 
 					$archive_statuses = array_filter((array)$choice, function($val) {
 						if ($val != 'open' AND $val != 'pending') {
