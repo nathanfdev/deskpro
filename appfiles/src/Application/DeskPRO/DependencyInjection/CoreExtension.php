@@ -52,6 +52,10 @@ class CoreExtension extends Extension
 		$definition = new Definition('Application\\DeskPRO\\RefGenerator\\RandomRef', array(new Reference('doctrine.orm.entity_manager')));
 		$container->setDefinition('deskpro.ref_generator', $definition);
 
+		$definition = new Definition('Application\\DeskPRO\\Entity\\Person');
+		$definition->setFactoryService('session')->setFactoryMethod('getPerson');
+		$container->setDefinition('deskpro.session_person', $definition);
+
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);

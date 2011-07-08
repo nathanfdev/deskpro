@@ -22,7 +22,7 @@ class Template extends PortalItemAbstract
 {
 	public function getHtml()
 	{
-		$html = $this->controller->renderView($this->getOption('tpl'), array(
+		$html = $this->renderView($this->getOption('tpl'), array(
 			'section' => $this->section,
 			'options' => $this->options
 		));

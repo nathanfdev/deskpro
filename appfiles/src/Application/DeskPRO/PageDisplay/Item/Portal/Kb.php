@@ -44,16 +44,15 @@ class Kb extends PortalItemAbstract
 
 	public function getContentHtml()
 	{
-		$response = $this->controller->forward(
+		$html = $this->renderForward(
 			'UserBundle:Articles:quickBrowser',
 			array('category_id' => $this->getOption('category_id', 0), 'num' => $this->getValueOption('num_articles', 10)),
 			array('_partial' => true)
 		);
-		$html = $response->getContent();
 
 		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
 
-		$html = $this->controller->renderView('UserBundle:Portal:kb-content.html.twig', array(
+		$html = $this->renderView('UserBundle:Portal:kb-content.html.twig', array(
 			'html' => $html,
 			'cats' => $cats,
 			'block_title' => $this->getOption('block_title'),
@@ -75,7 +74,7 @@ class Kb extends PortalItemAbstract
 			$category
 		);
 
-		$html = $this->controller->renderView('UserBundle:Portal:kb-sidebar.html.twig', array(
+		$html = $this->renderView('UserBundle:Portal:kb-sidebar.html.twig', array(
 			'articles' => $articles,
 			'block_title' => $this->getOption('block_title'),
 		));

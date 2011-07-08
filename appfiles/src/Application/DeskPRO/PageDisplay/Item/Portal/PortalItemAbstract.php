@@ -14,7 +14,7 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
 use Application\DeskPRO\Entity\Person;
 
 use Application\DeskPRO\PageDisplay\Item\ItemAbstract;
-use Application\DeskPRO\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 
 abstract class PortalItemAbstract extends ItemAbstract implements PersonContextInterface
@@ -30,9 +30,9 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 	/**
 	 * The controller requesting the portal item
 	 * 
-	 * @var \Application\DeskPRO\Controller\AbstractController
+	 * @var \Symfony\Component\DependencyInjection\ContainerInterface
 	 */
-	protected $controller;
+	protected $container;
 
 	/**
 	 * The user who is viewing the item
@@ -46,10 +46,10 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 	 */
 	protected $options = array();
 
-	public function __construct($section, array $options, AbstractController $controller, Person $person_context)
+	public function __construct($section, array $options, ContainerInterface $container, Person $person_context)
 	{
 		$this->section = $section;
-		$this->controller = $controller;
+		$this->container = $container;
 		$this->person_context = $person_context;
 
 		$this->options = $options;
@@ -104,6 +104,36 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 	public function getJsAssets()
 	{
 		return array();
+	}
+
+
+	/**
+	 * Render a view to string
+	 *
+	 * @param string $view
+	 * @param array $parameters
+	 * @return string
+	 */
+	public function renderView($view, array $parameters = array())
+	{
+		return $this->container->get('templating')->render($view, $parameters);
+	}
+	
+
+	/**
+	 * Execute a sub-request and then get the string result.
+	 * 
+	 * @param string $controller
+	 * @param array $path
+	 * @param array $query
+	 * @param null $response If provided, the Response object will be put into this
+	 * @return string
+	 */
+	public function renderForward($controller, array $path = array(), array $query = array(), &$response = null)
+	{
+		$response = $this->container->get('http_kernel')->forward($controller, $path, $query);
+
+		return $response->getContent();
 	}
 
 	

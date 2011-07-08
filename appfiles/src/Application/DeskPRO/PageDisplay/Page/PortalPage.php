@@ -14,7 +14,7 @@ namespace Application\DeskPRO\PageDisplay\Page;
 use Application\DeskPRO\Entity\PageDisplayAbstract;
 use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Entity\Person;
-use Application\DeskPRO\Controller\AbstractController;
+use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract;
 
@@ -30,9 +30,9 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	/**
 	 * The controller requesting the portal item
 	 *
-	 * @var \Application\DeskPRO\Controller\AbstractController
+	 * @var Symfony\Component\DependencyInjection\ContainerInterface
 	 */
-	protected $controller;
+	protected $container;
 
 	/**
 	 * The user who is viewing the item
@@ -41,10 +41,79 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	 */
 	protected $person_context;
 
-	public function __construct(AbstractController $controller, Person $person_context)
+	/**
+	 * If provided, this will lazy-load a PortalPageDisplay for a section if it doesnt exist
+	 * yet in this object.
+	 * @var callback
+	 */
+	protected $lazy_loader = null;
+
+	public function __construct(ContainerInterface $container, Person $person_context)
 	{
-		$this->controller = $controller;
+		$this->container = $container;
 		$this->person_context = $person_context;
+
+		// TODO: Hard-coded until we get editor working
+		$content_pagedisplay = new PortalPageDisplay();
+		$content_pagedisplay['section'] = PortalPageDisplay::SECTION_CONTENT;
+		$content_pagedisplay['data'] = array(
+			array(
+				'type' => 'omni_search',
+			),
+			array(
+				'type' => 'kb'
+			),
+			array(
+				'type' => 'ideas'
+			),
+		);
+
+		$sidebar_pagedisplay = new PortalPageDisplay();
+		$sidebar_pagedisplay['section'] = PortalPageDisplay::SECTION_SIDEBAR;
+		$sidebar_pagedisplay['data'] = array(
+			array(
+				'type' => 'userinfo',
+			),
+			array(
+				'type' => 'contact',
+			),
+			array(
+				'type' => 'nav',
+			),
+			array(
+				'type' => 'kb'
+			),
+			array(
+				'type' => 'ideas',
+				'status' => 'active',
+				'block_title' => 'Recent Accepted Feedback'
+			)
+		);
+
+
+		$this->addPageDisplay($content_pagedisplay);
+		$this->addPageDisplay($sidebar_pagedisplay);
+	}
+	
+
+	/**
+	 * @param callback $lazy_loader
+	 * @return void
+	 */
+	public function setLazyLoader($lazy_loader)
+	{
+		$this->lazy_loader = $lazy_loader;
+	}
+
+
+	protected function _loadSection($section)
+	{
+		if ($this->lazy_loader AND !isset($this->page_displays[$section])) {
+			$page_display = $this->lazy_loader($section, $this);
+			if ($page_display) {
+				$this->addPageDisplay($page_display);
+			}
+		}
 	}
 
 
@@ -107,7 +176,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			$type_class = $type;
 		}
 
-		$obj = new $type_class($section, $item_info, $this->controller, $this->person_context);
+		$obj = new $type_class($section, $item_info, $this->container, $this->person_context);
 
 		return $obj;
 	}
@@ -118,13 +187,22 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	 *
 	 * @return array
 	 */
-	public function getCssAssets()
+	public function getCssAssets($sections)
 	{
+		if ($sections == 'all') {
+			$sections = array_keys($this->page_displays);
+		} else {
+			$sections = (array)$sections;
+		}
+
 		$assets = array();
-		
-		foreach ($this->page_display_items as $section_items) {
-			foreach ($section_items as $item) {
-				$assets = array_merge($assets, $item->getCssAssets());
+
+		foreach ($sections as $section) {
+			$this->_loadSection($section);
+			if (isset($this->page_display_items[$section])) {
+				foreach ($this->page_display_items[$section] as $item) {
+					$assets = array_merge($assets, $item->getCssAssets());
+				}
 			}
 		}
 
@@ -137,13 +215,22 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	 *
 	 * @return array
 	 */
-	public function getJsAssets()
+	public function getJsAssets($sections)
 	{
+		if ($sections == 'all') {
+			$sections = array_keys($this->page_displays);
+		} else {
+			$sections = (array)$sections;
+		}
+
 		$assets = array();
 
-		foreach ($this->page_display_items as $section_items) {
-			foreach ($section_items as $item) {
-				$assets = array_merge($assets, $item->getJsAssets());
+		foreach ($sections as $section) {
+			$this->_loadSection($section);
+			if (isset($this->page_display_items[$section])) {
+				foreach ($this->page_display_items[$section] as $item) {
+					$assets = array_merge($assets, $item->getJsAssets());
+				}
 			}
 		}
 
@@ -159,6 +246,8 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	 */
 	public function getSectionHtml($section)
 	{
+		$this->_loadSection($section);
+		
 		if (!isset($this->page_display_items[$section])) {
 			return '';
 		}
@@ -169,22 +258,5 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		}
 
 		return implode("\n\n", $html);
-	}
-
-
-	public function __get($section)
-	{
-		if ($section == 'js_assets') {
-			return $this->getJsAssets();
-		} elseif ($section == 'css_assets') {
-			return $this->getCssAssets();
-		} else {
-			return $this->getSectionHtml($section);
-		}
-	}
-
-	public function __isset($section)
-	{
-		return (isset($this->page_display_items[$section]) OR $section == 'js_assets' OR $section == 'css_assets');
 	}
 }

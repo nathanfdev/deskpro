@@ -45,18 +45,17 @@ class Ideas extends PortalItemAbstract
 
 	public function getContentHtml()
 	{
-		$response = $this->controller->forward(
+		$html = $this->renderForward(
 			'UserBundle:Ideas:quickBrowser',
 			array('status' => $this->getOption('status', 'new'), 'category_id' => $this->getOption('category_id', 0), 'num' => $this->getValueOption('num_articles', 10)),
 			array('_partial' => true)
 		);
-		$html = $response->getContent();
 
 		$cats = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
 		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
-		$html = $this->controller->renderView('UserBundle:Portal:ideas-content.html.twig', array(
+		$html = $this->renderView('UserBundle:Portal:ideas-content.html.twig', array(
 			'html' => $html,
 			'cats' => $cats,
 			'block_title' => $this->getOption('block_title'),
@@ -81,7 +80,7 @@ class Ideas extends PortalItemAbstract
 			$category
 		);
 
-		$html = $this->controller->renderView('UserBundle:Portal:ideas-sidebar.html.twig', array(
+		$html = $this->renderView('UserBundle:Portal:ideas-sidebar.html.twig', array(
 			'ideas' => $ideas,
 			'block_title' => $this->getOption('block_title'),
 		));

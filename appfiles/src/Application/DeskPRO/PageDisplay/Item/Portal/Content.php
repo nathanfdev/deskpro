@@ -32,7 +32,7 @@ class Content extends PortalItemAbstract
 				$tpl = 'UserBundle:Portal:content-' . $this->section . '.html.twig';
 			}
 
-			$html = $this->controller->renderView($tpl, array(
+			$html = $this->renderView($tpl, array(
 				'html' => $html,
 				'section' => $this->section,
 				'options' => $this->options

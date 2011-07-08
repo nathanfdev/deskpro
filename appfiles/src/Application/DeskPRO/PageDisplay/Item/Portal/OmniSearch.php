@@ -22,7 +22,7 @@ class OmniSearch extends PortalItemAbstract
 {
 	public function getHtml()
 	{
-		$html = $this->controller->renderView('UserBundle:Portal:omnisearch-content.html.twig', array(
+		$html = $this->renderView('UserBundle:Portal:omnisearch-content.html.twig', array(
 			'section' => $this->section,
 			'options' => $this->options
 		));

@@ -2,6 +2,8 @@
 
 namespace Application\UserBundle;
 
+use Symfony\Component\DependencyInjection\ContainerBuilder;
+
 class UserBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
 {
 	public function getNamespace()

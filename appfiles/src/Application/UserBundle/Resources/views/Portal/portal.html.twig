@@ -4,16 +4,9 @@
 	DeskPRO_Window.PAGE = new DeskPRO.User.Page.Portal();
 	</script>
 
-	{% for path in portal_page.css_assets %}
-		<link rel="stylesheet" href="{{ asset(path) }}" type="text/css" />
-	{% endfor %}
-	{% for path in portal_page.js_assets %}
-		<script src="{{ asset(path) }}" type="text/javascript"></script>
-	{% endfor %}
+	{{ portal_css('content') }}
+	{{ portal_js('content') }}
 {% endblock %}
 {% block content %}
-	{{ portal_page.content|raw }}
-{% endblock %}
-{% block sidebar %}
-	{{ portal_page.sidebar|raw }}
+	{{ portal_section('content') }}
 {% endblock %}

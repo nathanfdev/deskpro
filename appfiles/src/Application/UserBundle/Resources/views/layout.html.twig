@@ -8,6 +8,9 @@
 	{% include 'UserBundle:Common:resources.html.twig' %}
 	{% include 'UserBundle:Common:page-init.html.twig' %}
 
+	{{ portal_css('sidebar') }}
+	{{ portal_js('sidebar') }}
+
 	{% block head %}{% endblock %}
 </head>
 <body>
@@ -35,7 +38,9 @@
 
 	<div class="span-7 last">
 		<div id="sidebar">
-			{% block sidebar %}{% endblock %}
+			{% block sidebar %}
+				{{ portal_section('sidebar') }}
+			{% endblock %}
 		</div>
 	</div>
 </div>

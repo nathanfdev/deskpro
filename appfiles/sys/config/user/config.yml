@@ -4,5 +4,14 @@ imports:
 parameters:
   router.options.matcher.cache_class: %kernel.name%%kernel.environment%UrlMatcher
 
+services:
+  twig.helpers.deskpro_user_templating:
+    class: Application\UserBundle\Twig\Extension\UserTemplatingExtension
+    arguments: [@service_container]
+    tags:
+      - { name: twig.extension }
+
+user: ~
+
 framework:
   router: { resource: "%kernel.root_dir%/config/routing.yml" }
