@@ -1,14 +1,7 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
-
-{% include 'UserBundle:Portal:omnisearch-content.html.twig' %}
-
+	{{ portal_page.content|raw }}
 {% endblock %}
 {% block sidebar %}
-
-{% include 'UserBundle:Portal:userinfo-sidebar.html.twig' %}
-{% include 'UserBundle:Portal:contact-sidebar.html.twig' %}
-{% include 'UserBundle:Portal:kb-sidebar.html.twig' %}
-{% include 'UserBundle:Portal:nav-sidebar.html.twig' %}
-
+	{{ portal_page.content|raw }}
 {% endblock %}

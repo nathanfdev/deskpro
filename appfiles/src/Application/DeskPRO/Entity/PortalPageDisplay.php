@@ -37,6 +37,8 @@ use Orb\Util\Arrays;
  * will be prepended (Application\DeskPRO\PageDisplay\Item\Portal\XXX). You may also use underscore
  * format which will be converted into camel case (some_type to SomeType).
  *
+ * Keys in the data array are insignificant. They may be used to keep track of things in the designer.
+ *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\PortalPageDisplay")
  * @orm:Table(name="portal_page_display")
  */

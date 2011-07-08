@@ -13,7 +13,7 @@ namespace DeskPRO\Kernel;
 
 require(DP_ROOT . '/sys/autoload.php');
 
-use Symfony\Component\HttpFoundation\Request;
+use Application\DeskPRO\HttpFoundation\Request;
 use Symfony\Bundle\FrameworkBundle\Console\Application;
 
 class Boot
@@ -24,12 +24,12 @@ class Boot
 			$request = Request::createfromGlobals();
 		}
 
-		$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
-
 		if (preg_match('#^/(agent|admin|api|dev)/#', $request->getPathInfo())) {
 			$kernel_class = 'DeskPRO\\Kernel\\AgentKernel';
 		} elseif (preg_match('#^/_sys/?#', $request->getPathInfo())) {
 			$kernel_class = 'DeskPRO\\Kernel\\SysKernel';
+		} else {
+			$kernel_class = 'DeskPRO\\Kernel\\UserKernel';
 		}
 
 		$kernel = new $kernel_class($env, $debug);

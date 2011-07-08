@@ -207,4 +207,26 @@ class ArticlesController extends AbstractController
 
 		return $this->redirectRoute('user_articles_article', array('article_id' => $article['id'], 'slug' => $article['slug']));
 	}
+
+
+	public function quickBrowserAction($category_id = 0, $num = 10)
+	{
+		$category = null;
+		if ($category_id) {
+			$category = App::findEntity('DeskPRO:ArticleCategory', $category_id);
+		}
+
+		$articles = App::getEntityRepository('DeskPRO:Article')->getNewest($num, $category);
+
+		$vars = array(
+			'category' => $category,
+			'articles' => $articles
+		);
+
+		if ($this->request->isPartialRequest()) {
+			return $this->render('UserBundle:Articles:quick-browser-list.html.twig', $vars);
+		} else {
+			return $this->render('UserBundle:Articles:quick-browser.html.twig', $vars);
+		}
+	}
 }

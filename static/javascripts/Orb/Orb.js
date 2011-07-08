@@ -43,6 +43,7 @@ Orb.getNamespacedObject = function(fullname) {
 	while (part = fullname_parts.shift()) {
 		if (obj[part] === undefined) {
 			console.warn('Orb.getNamespacedObject(%s) is an invalid name', fullname);
+			return null;
 		}
 
 		obj = obj[part];

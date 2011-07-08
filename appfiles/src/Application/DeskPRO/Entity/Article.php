@@ -289,6 +289,16 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$this->markup_mode = self::MARKUP_MODE_MARKDOWN;
 	}
 
+	public function getCategoryNames($sep = ', ')
+	{
+		$cats = array();
+		foreach ($this->categories as $cat) {
+			$cats[] = $cat->getFullTitle();
+		}
+
+		return implode($sep, $cats);
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */

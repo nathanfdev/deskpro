@@ -53,6 +53,8 @@ class TemplatingExtension extends \Twig_Extension
 			'render_custom_field_text' => new \Twig_Function_Method($this, 'renderCustomFieldText'),
 			'render_custom_field_form' => new \Twig_Function_Method($this, 'renderCustomFieldForm', array('is_safe' => array('html'))),
 			'el_uid' => new \Twig_Function_Method($this, 'elUid', array('is_safe' => array('html'))),
+			'is_partial_request' => new \Twig_Function_Method($this, 'isPartialRequest'),
+			'str_repeat' => new \Twig_Function_Method($this, 'strRepeat'),
         );
     }
 
@@ -60,8 +62,24 @@ class TemplatingExtension extends \Twig_Extension
     {
         return array(
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
+			'repeat' => new \Twig_Filter_Method($this, 'strRepeat'),
         );
     }
+
+	/**
+	 * Checks the special _partial flag in incoming requests to see if the user wants a partial
+	 * 
+	 * @return bool
+	 */
+	public function isPartialRequest()
+	{
+		return $this->container->get('request')->isPartialRequest();
+	}
+
+	public function strRepeat($str, $count = 1)
+	{
+		return str_repeat($str, $count);
+	}
 
 	/**
 	 * A unique ID generator usually used to generate unique element ID's. Unique

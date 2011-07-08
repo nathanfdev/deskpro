@@ -148,7 +148,7 @@ class Article extends EntityRepository
 				WHERE
 					cat.id IN (".implode(',',$cat_ids).")
 					AND a.id NOT IN (".implode(',',$done_articles).")
-					AND a.is_published = true
+					AND a.status = 'published'
 				GROUP BY a.id
 				ORDER BY a.id DESC
 			")->setMaxResults($num)
@@ -173,14 +173,14 @@ class Article extends EntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.is_published = true AND cat.id IN (" . implode(',',$cat_ids) . ")
+				WHERE a.status = 'published' AND cat.id IN (" . implode(',',$cat_ids) . ")
 				ORDER BY a.id DESC
 			")->setMaxResults($num)->execute();
 		} else {
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
-				WHERE a.is_published = true
+				WHERE a.status = 'published'
 				ORDER BY a.id DESC
 			")->setMaxResults($num)->execute();
 		}
@@ -197,14 +197,14 @@ class Article extends EntityRepository
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
 				LEFT JOIN a.categories cat
-				WHERE a.is_published = true AND cat.id IN (" . implode(',',$cat_ids) . ")
+				WHERE a.status = 'published' AND cat.id IN (" . implode(',',$cat_ids) . ")
 				ORDER BY a.total_rating DESC
 			")->setMaxResults($num)->execute();
 		} else {
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT a
 				FROM DeskPRO:Article a INDEX BY a.id
-				WHERE a.is_published = true
+				WHERE a.status = 'published'
 				ORDER BY a.total_rating DESC
 			")->setMaxResults($num)->execute();
 		}

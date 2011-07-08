@@ -1,6 +1,6 @@
 user:
   pattern:  /
-  defaults: { _controller: UserBundle:Main:index, _locale: en }
+  defaults: { _controller: UserBundle:Portal:portal, _locale: en }
 
 user_test:
   pattern:  /test
@@ -169,6 +169,14 @@ user_tickets_feedback_closeticket:
 user_articles:
   pattern: /kb
   defaults: { _controller: UserBundle:Articles:index }
+
+user_articles_quickbrowser:
+  pattern: /kb/quick-browser
+  defaults: { _controller: UserBundle:Articles:quickBrowser }
+
+user_articles_quickbrowser_cat:
+  pattern: /kb/quick-browser/{category_id}
+  defaults: { _controller: UserBundle:Articles:quickBrowser }
 
 user_articles_cat:
   pattern: /kb/{slug}

@@ -1,0 +1,23 @@
+<div class="content-item portal_kb" data-portal-handler="DeskPRO.User.PortalHandler.Kb">
+	<div class="heading">
+		{% if show_cat_switcher %}
+		<div style="float:right">
+			<select class="kb-cat-choose">
+				<option value="0">All</option>
+				{% for cat in cats %}
+					<option value="{{cat.id}}">{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		{% endif %}
+		<h2>{{ title|default('Knowledgebase') }}</h2>
+	</div>
+	<div class="content-list">
+		<ul>
+			{{ html|raw }}
+		</ul>
+	</div>
+	<div class="more-link">
+		<a href="{{ path('user_articles') }}">more</a>
+	</div>
+</div>

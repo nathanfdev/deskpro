@@ -15,7 +15,35 @@ use Symfony\Component\HttpFoundation\File\UploadedFile;
 
 class Request extends \Symfony\Component\HttpFoundation\Request
 {
+	const PARTIAL_REQUEST_KEY = '_partial';
+	
 	protected $url_locale = null;
+
+	/**
+	 * When a client sends _partial in POST/GET data, they're requesting a partial result
+	 *
+	 * For example: more search results, or a page being put into an existing page etc. The actual
+	 * meaning of what "partial" is depends on the page.
+	 *
+	 * Returns either true, or a string value of the _partial (which might be used to denote different
+	 * types of partial templates).
+	 *
+	 * @return bool|string
+	 */
+	public function isPartialRequest()
+	{
+		$val = false;
+		
+		if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
+			$val = $this->query->get(self::PARTIAL_REQUEST_KEY);
+			if (!$val) $val = true;
+		} elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
+			$val = $this->request->get(self::PARTIAL_REQUEST_KEY);
+			if (!$val) $val = true;
+		}
+
+		return $val;
+	}
 
 	/**
 	 * Detect the locale in the URL. This is the first /en/ or /en_US/ part of the URL.

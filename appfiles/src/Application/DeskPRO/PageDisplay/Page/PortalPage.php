@@ -13,9 +13,12 @@ namespace Application\DeskPRO\PageDisplay\Page;
 
 use Application\DeskPRO\Entity\PageDisplayAbstract;
 use Application\DeskPRO\Entity\PortalPageDisplay;
+use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Controller\AbstractController;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract;
+
+use Orb\Util\Strings;
 
 class PortalPage extends BasicPage implements PersonContextInterface
 {
@@ -75,7 +78,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	protected function _initItems(PortalPageDisplay $page_display)
 	{
 		$section = $page_display['section'];
-		if (!$this->page_display_items[$section]) {
+		if (!isset($this->page_display_items[$section])) {
 			$this->page_display_items[$section] = array();
 		}
 
@@ -98,7 +101,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	{
 		$type = $item_info['type'];
 		if (strpos($type, '\\') === false) {
-			$type_class = Strings::underscoreToCamelCase($type);
+			$type_class = ucfirst(Strings::underscoreToCamelCase($type));
 			$type_class = "Application\\DeskPRO\\PageDisplay\\Item\\Portal\\$type_class";
 		} else {
 			$type_class = $type;
@@ -119,7 +122,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	{
 		$assets = array();
 		
-		foreach ($this->page_display_items as $section => $section_items) {
+		foreach ($this->page_display_items as $section_items) {
 			foreach ($section_items as $item) {
 				$assets = array_merge($assets, $item->getCssAssets());
 			}
@@ -138,12 +141,50 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	{
 		$assets = array();
 
-		foreach ($this->page_display_items as $section => $section_items) {
+		foreach ($this->page_display_items as $section_items) {
 			foreach ($section_items as $item) {
 				$assets = array_merge($assets, $item->getJsAssets());
 			}
 		}
 
 		return $assets;
+	}
+
+
+	/**
+	 * Get the renderable HTML for a section.
+	 *
+	 * @param $section
+	 * @return string
+	 */
+	public function getSectionHtml($section)
+	{
+		if (!isset($this->page_display_items[$section])) {
+			return '';
+		}
+
+		$html = array();
+		foreach ($this->page_display_items[$section] as $item) {
+			$html[] = $item->getHtml();
+		}
+
+		return implode("\n\n", $html);
+	}
+
+
+	public function __get($section)
+	{
+		if ($section == 'js_assets') {
+			return $this->getJsAssets();
+		} elseif ($section == 'css_assets') {
+			return $this->getCssAssets();
+		} else {
+			return $this->getSectionHtml($section);
+		}
+	}
+
+	public function __isset($section)
+	{
+		return (isset($this->page_display_items[$section]) OR $section == 'js_assets' OR $section == 'css_assets');
 	}
 }

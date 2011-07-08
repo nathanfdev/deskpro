@@ -112,6 +112,18 @@ abstract class PortalItemAbstract extends ItemAbstract implements PersonContextI
 		return isset($this->options[$name]) ? $this->options[$name] : $default;
 	}
 
+	/**
+	 * Gets an option but makes sure its not empty ('', 0, false etc), otherwise returns default.
+	 * 
+	 * @param $name
+	 * @param mixed $default
+	 * @return mixed
+	 */
+	public function getValueOption($name, $default = null)
+	{
+		return !empty($this->options[$name]) ? $this->options[$name] : $default;
+	}
+
 	public function setOption($name, $value)
 	{
 		$this->options[$name] = $value;

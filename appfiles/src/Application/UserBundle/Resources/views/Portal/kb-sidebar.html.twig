@@ -1,24 +1,17 @@
 <div class="sidebar-item portal_kb">
 	<div class="heading">
-		<h4>{{ title|default('Recent Articles') }}</h4>
+		<h2>{{ title|default('Recent Articles') }}</h>
 	</div>
 
 	<div class="content-list">
-		<div class="item">
-			<a href="">Some Title</a>
-		</div>
-		<div class="item">
-			<a href="">Some Title</a>
-		</div>
-		<div class="item">
-			<a href="">Some Title</a>
-		</div>
-		<div class="item">
-			<a href="">Some Title</a>
-		</div>
+		{% for article in articles %}
+			<div class="item">
+				<a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a>
+			</div>
+		{% endfor %}
 	</div>
 
 	<div class="more-link">
-		<a href="">more...</a>
+		<a href="{{ path('user_articles') }}">more...</a>
 	</div>
 </div>

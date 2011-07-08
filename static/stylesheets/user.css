@@ -72,6 +72,9 @@ a {
     text-decoration: none;
 }
 
+.container {
+    max-width: 1280px;
+}
 
 #content_container {
     background-color: #fff;
@@ -87,6 +90,49 @@ a {
 #sidebar {
     margin: 0;
     padding: 8px;
+}
+
+.content-list {
+    background-color: #fff;
+    border: 1px solid #E3E3E3;
+}
+
+.content-list > ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.content-list .item:first-child, .content-list > ul > li:first-child {
+    border-top: none;
+}
+
+.content-list .item, .content-list > ul > li {
+    border-top: 1px solid #E3E3E3;
+    padding: 3px;
+}
+
+.content-list.icon .item, .content-list.icon > ul > li {
+    padding-left: 24px;
+    background: url(../images/icons/bullet_blue.png) no-repeat 5px 50%;
+}
+
+.content-list .item h4, .content-list > ul > li > h4 {
+    margin: 0;
+    padding: 0;
+}
+
+.content-list .info-line ul {
+    margin: 0;
+    padding: 0;
+}
+
+.content-list .info-line ul li {
+    display: inline;
+    margin: 0;
+    padding: 0 10px 0 0;
+    font-size: 9px;
+    color: #808080;
 }
 
 /*****************************************************************
@@ -109,26 +155,11 @@ a {
 
 }
 
-.sidebar-item .heading h4 {
+.sidebar-item .heading h2 {
     font-size: 13px;
     font-weight: bold;
     margin: 0 0 5px 0;
     padding: 0;
-}
-
-.sidebar-item .content-list {
-    background-color: #fff;
-    border: 1px solid #E3E3E3;
-}
-
-.sidebar-item .content-list .item:first-child {
-    border-top: none;
-}
-
-.sidebar-item .content-list .item {
-    border-top: 1px solid #E3E3E3;
-    padding: 3px 3px 3px 24px;
-    background: url(../images/icons/bullet_blue.png) no-repeat 5px 50%;
 }
 
 .sidebar-item .more-link {
@@ -152,6 +183,8 @@ a {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
+
+    margin-bottom: 10px;
 }
 
 #omni_search input#omni_search_txt {
@@ -183,4 +216,40 @@ a {
 #omni_search .example {
     font-size: 10px;
     color: #949494;
+}
+
+.content-item {
+    background-color: #F4F4F4;
+    padding: 6px;
+    font-size: 12px;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    margin-bottom: 10px;
+}
+
+.content-item .heading input, .content-item .heading select {
+    margin: 0;
+}
+
+.content-item .heading h2 {
+    font-size: 16px;
+    font-weight: bold;
+    margin: 0 0 5px 0;
+    padding: 0;
+
+    text-shadow: 1px 1px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=1, offy=1);
+}
+
+.content-item .more-link {
+    text-align: right;
+    font-style: italic;
+    font-size: 10px;
+}
+
+.content-item .content-list .item, .content-item .content-list > ul > li {
+    padding: 6px;
 }
