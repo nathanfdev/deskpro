@@ -35,7 +35,7 @@ class Kb extends PortalItemAbstract
 	
 	public function getHtml()
 	{
-		if ($this->section == 'content') {
+		if ($this->section == 'portal') {
 			return $this->getContentHtml();
 		} else {
 			return $this->getSidebarHtml();
@@ -84,8 +84,8 @@ class Kb extends PortalItemAbstract
 
 	public function getJsAssets()
 	{
-		if ($this->section == 'content') {
-			return array('javascripts/DeskPRO/User/PortalHandler/Kb.js');
+		if ($this->section == 'portal') {
+			return array('javascripts/DeskPRO/User/ElementHandler/Kb.js');
 		}
 
 		return array();

@@ -275,8 +275,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/User/Window.js',
 		'javascripts/DeskPRO/User/Page/Abstract.js',
-		'javascripts/DeskPRO/User/Page/Portal.js',
-		'javascripts/DeskPRO/User/PortalHandler/PortalHandlerAbstract.js',
+		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
 
 	)
 );

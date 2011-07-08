@@ -33,7 +33,7 @@ class OmniSearch extends PortalItemAbstract
 	public function getJsAssets()
 	{
 		return array(
-			'javascripts/DeskPRO/User/PortalHandler/OmniSearch.js'
+			'javascripts/DeskPRO/User/ElementHandler/OmniSearch.js'
 		);
 	}
 }

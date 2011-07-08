@@ -1,6 +1,12 @@
-Orb.createNamespace('DeskPRO.User.PortalHandler');
+Orb.createNamespace('DeskPRO.User.ElementHandler');
 
-DeskPRO.User.PortalHandler.PortalHandlerAbstract = new Orb.Class({
+/**
+ * Element handlers are detected in the source and instantiated automatically with the
+ * element being passed in.
+ *
+ * Element handlers are always instantiated when the document is ready.
+ */
+DeskPRO.User.ElementHandler.ElementHandlerAbstract = new Orb.Class({
 
 	Implements: [Orb.Util.Options],
 

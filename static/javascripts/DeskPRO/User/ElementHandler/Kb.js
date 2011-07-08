@@ -1,8 +1,8 @@
-Orb.createNamespace('DeskPRO.User.PortalHandler');
+Orb.createNamespace('DeskPRO.User.ElementHandler');
 
-DeskPRO.User.PortalHandler.Kb = new Orb.Class({
+DeskPRO.User.ElementHandler.Kb = new Orb.Class({
 
-	Extends: DeskPRO.User.PortalHandler.PortalHandlerAbstract,
+	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
 		this.contentList = $('.content-list:first > ul', this.el);
