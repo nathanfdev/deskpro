@@ -55,6 +55,10 @@ class TemplatingExtension extends \Twig_Extension
 			'el_uid' => new \Twig_Function_Method($this, 'elUid', array('is_safe' => array('html'))),
 			'is_partial_request' => new \Twig_Function_Method($this, 'isPartialRequest'),
 			'str_repeat' => new \Twig_Function_Method($this, 'strRepeat'),
+			'is_user_guest' => new \Twig_Function_Method($this, 'isUserGuest'),
+			'is_user_loggedin' => new \Twig_Function_Method($this, 'isUserUser'),
+			'is_user_agent' => new \Twig_Function_Method($this, 'isUserAgent'),
+			'is_user_admin' => new \Twig_Function_Method($this, 'isUserAdmin'),
         );
     }
 
@@ -63,8 +67,61 @@ class TemplatingExtension extends \Twig_Extension
         return array(
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
 			'repeat' => new \Twig_Filter_Method($this, 'strRepeat'),
+			'trim' => new \Twig_Filter_Method($this, 'strTrim'),
         );
     }
+
+	public function isUserGuest($person = null)
+	{
+		if (!$person) {
+			$person = $this->container->get('deskpro.session_person');
+		}
+
+		if (!$person['id']) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function isUserUser($person = null)
+	{
+		if (!$person) {
+			$person = $this->container->get('deskpro.session_person');
+		}
+
+		if ($person['id']) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function isUserAgent($person)
+	{
+		if (!$person) {
+			$person = $this->container->get('deskpro.session_person');
+		}
+
+		if ($person['is_agent']) {
+			return true;
+		}
+
+		return false;
+	}
+
+	public function isUserAdmin($person)
+	{
+		if (!$person) {
+			$person = $this->container->get('deskpro.session_person');
+		}
+
+		if ($person['is_admin']) {
+			return true;
+		}
+
+		return false;
+	}
 
 	/**
 	 * Checks the special _partial flag in incoming requests to see if the user wants a partial
@@ -79,6 +136,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function strRepeat($str, $count = 1)
 	{
 		return str_repeat($str, $count);
+	}
+
+	public function strTrim($str)
+	{
+		return trim($str);
 	}
 
 	/**
