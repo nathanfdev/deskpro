@@ -8,8 +8,8 @@
 	{% include 'UserBundle:Common:resources.html.twig' %}
 	{% include 'UserBundle:Common:page-init.html.twig' %}
 
-	{{ portal_css('sidebar') }}
-	{{ portal_js('sidebar') }}
+	{{ portal_css(['sidebar', 'pagetop']) }}
+	{{ portal_js(['sidebar', 'pagetop']) }}
 
 	{% block head %}{% endblock %}
 </head>
@@ -30,6 +30,12 @@
 <hr class="space">
 
 <div class="container" id="content_container">
+	<div class="span-24">
+		<div id="pagetop">
+			{{ portal_section('pagetop') }}
+		</div>
+	</div>
+	
 	<div class="span-17">
 		<div id="content">
 			{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}

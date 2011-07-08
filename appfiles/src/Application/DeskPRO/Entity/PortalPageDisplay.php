@@ -45,9 +45,14 @@ use Orb\Util\Arrays;
 class PortalPageDisplay extends PageDisplayAbstract
 {
 	/**
-	 * Content (aka default) section is the main wide column
+	 * Portal (main page)
 	 */
-	const SECTION_CONTENT = 'content';
+	const SECTION_PORTAL = 'portal';
+
+	/**
+	 * Across the top (not columned)
+	 */
+	const SECTION_PAGETOP = 'pagetop';
 
 	/**
 	 * The sidebar.

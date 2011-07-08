@@ -54,12 +54,17 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		$this->person_context = $person_context;
 
 		// TODO: Hard-coded until we get editor working
-		$content_pagedisplay = new PortalPageDisplay();
-		$content_pagedisplay['section'] = PortalPageDisplay::SECTION_CONTENT;
-		$content_pagedisplay['data'] = array(
+		$pagetop_pagedisplay = new PortalPageDisplay();
+		$pagetop_pagedisplay['section'] = PortalPageDisplay::SECTION_PAGETOP;
+		$pagetop_pagedisplay['data'] = array(
 			array(
 				'type' => 'omni_search',
 			),
+		);
+
+		$content_pagedisplay = new PortalPageDisplay();
+		$content_pagedisplay['section'] = PortalPageDisplay::SECTION_PORTAL;
+		$content_pagedisplay['data'] = array(
 			array(
 				'type' => 'kb'
 			),
@@ -91,6 +96,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		);
 
 
+		$this->addPageDisplay($pagetop_pagedisplay);
 		$this->addPageDisplay($content_pagedisplay);
 		$this->addPageDisplay($sidebar_pagedisplay);
 	}
@@ -109,7 +115,8 @@ class PortalPage extends BasicPage implements PersonContextInterface
 	protected function _loadSection($section)
 	{
 		if ($this->lazy_loader AND !isset($this->page_displays[$section])) {
-			$page_display = $this->lazy_loader($section, $this);
+			$lazy_loader = $this->lazy_loader;
+			$page_display = $lazy_loader($section, $this);
 			if ($page_display) {
 				$this->addPageDisplay($page_display);
 			}

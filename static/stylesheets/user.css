@@ -92,6 +92,10 @@ a {
     padding: 8px;
 }
 
+#pagetop {
+    margin: 8px;
+    margin-bottom: 0;
+}
 
 .breadcrumb {
     background-color: #EDEFF2;
