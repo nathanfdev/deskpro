@@ -17,6 +17,7 @@ use Doctrine\ORM\EntityRepository;
 
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
+use Orb\Util\Numbers;
 
 class Idea extends EntityRepository
 {
@@ -223,6 +224,50 @@ class Idea extends EntityRepository
 				WHERE i.status = ?1
 				ORDER BY i.$sort DESC
 			")->setParameter(1, $status)->setMaxResults($num)->execute();
+		}
+
+		return $ideas;
+	}
+
+
+	public function getNewest($status, $num = 10, $node = false)
+	{
+		// TODO this can be shortened by using a builder
+
+		if (Numbers::isInteger($status)) {
+			if ($node) {
+				$cat_ids = $node->getTreeIds(true);
+				$ideas = $this->getEntityManager()->createQuery("
+					SELECT i
+					FROM DeskPRO:Idea i INDEX BY i.id
+					WHERE i.status_category = ?1 AND i.category IN (" . implode(',',$cat_ids) . ")
+					ORDER BY i.id DESC
+				")->setParameter(1, $status)->setMaxResults($num)->execute();
+			} else {
+				$ideas = $this->getEntityManager()->createQuery("
+					SELECT i
+					FROM DeskPRO:Idea i INDEX BY i.id
+					WHERE i.status_category = ?1
+					ORDER BY i.id DESC
+				")->setParameter(1, $status)->setMaxResults($num)->execute();
+			}
+		} else {
+			if ($node) {
+				$cat_ids = $node->getTreeIds(true);
+				$ideas = $this->getEntityManager()->createQuery("
+					SELECT i
+					FROM DeskPRO:Idea i INDEX BY i.id
+					WHERE i.status = ?1 AND i.category IN (" . implode(',',$cat_ids) . ")
+					ORDER BY i.id DESC
+				")->setParameter(1, $status)->setMaxResults($num)->execute();
+			} else {
+				$ideas = $this->getEntityManager()->createQuery("
+					SELECT i
+					FROM DeskPRO:Idea i INDEX BY i.id
+					WHERE i.status = ?1
+					ORDER BY i.id DESC
+				")->setParameter(1, $status)->setMaxResults($num)->execute();
+			}
 		}
 
 		return $ideas;

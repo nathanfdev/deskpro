@@ -29,7 +29,10 @@ class PortalController extends AbstractController
 			),
 			array(
 				'type' => 'kb'
-			)
+			),
+			array(
+				'type' => 'ideas'
+			),
 		);
 
 		$sidebar_pagedisplay = new PortalPageDisplay();
@@ -46,6 +49,11 @@ class PortalController extends AbstractController
 			),
 			array(
 				'type' => 'kb'
+			),
+			array(
+				'type' => 'ideas',
+				'status' => 'active',
+				'block_title' => 'Recent Accepted Feedback'
 			)
 		);
 

@@ -238,6 +238,14 @@ user_ideas_view:
   pattern: /feedback/ideas/{slug}
   defaults: { _controller: UserBundle:Ideas:view }
 
+user_ideas_quickbrowser:
+  pattern: /feedback/quick-browser/{status}
+  defaults: { _controller: UserBundle:Ideas:quickBrowser }
+
+user_ideas_quickbrowser_cat:
+  pattern: /feedback/quick-browser/{status}/{category_id}
+  defaults: { _controller: UserBundle:Ideas:quickBrowser }
+
 user_ideas_newidea:
   pattern: /feedback/new-idea
   defaults: { _controller: UserBundle:Ideas:newIdea }

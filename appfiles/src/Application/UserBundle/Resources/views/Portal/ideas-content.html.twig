@@ -1,0 +1,34 @@
+<div class="content-item portal_ideas" data-portal-handler="DeskPRO.User.PortalHandler.Ideas">
+	<div class="heading">
+		{% if show_cat_switcher %}
+		<div style="float:right">
+			<select class="ideas-status-choose">
+				<option value="new">New</option>
+				<option value="active">Active</option>
+				{% for cat in active_status_cats %}
+					<option value="{{cat.id}}">-- {{cat.title}}</option>
+				{% endfor %}
+				<option value="closed">Closed</option>
+				{% for cat in closed_status_cats %}
+					<option value="{{cat.id}}">-- {{cat.title}}</option>
+				{% endfor %}
+			</select>
+			<select class="ideas-cat-choose">
+				<option value="0">All</option>
+				{% for cat in cats %}
+					<option value="{{cat.id}}">{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+				{% endfor %}
+			</select>
+		</div>
+		{% endif %}
+		<h2>{{ title|default('Latest Feedback') }}</h2>
+	</div>
+	<div class="content-list">
+		<ul>
+			{{ html|raw }}
+		</ul>
+	</div>
+	<div class="more-link">
+		<a href="{{ path('user_ideas') }}">more</a>
+	</div>
+</div>

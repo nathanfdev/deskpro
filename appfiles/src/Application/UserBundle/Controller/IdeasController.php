@@ -252,4 +252,26 @@ class IdeasController extends AbstractController
 			'idea_id' => $idea['id'],
 		));
 	}
+
+
+	public function quickBrowserAction($status, $category_id = 0, $num = 10)
+	{
+		$category = null;
+		if ($category_id) {
+			$category = App::findEntity('DeskPRO:IdeaCategory', $category_id);
+		}
+
+		$ideas = App::getEntityRepository('DeskPRO:Idea')->getNewest($status, $num, $category);
+
+		$vars = array(
+			'category' => $category,
+			'ideas' => $ideas
+		);
+
+		if ($this->request->isPartialRequest()) {
+			return $this->render('UserBundle:Ideas:quick-browser-list.html.twig', $vars);
+		} else {
+			return $this->render('UserBundle:Ideas:quick-browser.html.twig', $vars);
+		}
+	}
 }

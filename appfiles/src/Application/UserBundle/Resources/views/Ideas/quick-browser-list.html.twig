@@ -1,0 +1,13 @@
+{% for idea in ideas %}
+	<li>
+		<h4><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h4>
+		<div class="info-line">
+			<ul>
+				<li>{{ idea.date_created|date('M j') }}</li>
+				<li>{{ idea.category_name }}</li>
+			</ul>
+		</div>
+	</li>
+{% else %}
+	<li>There are no ideas in this category.</li>
+{% endfor %}

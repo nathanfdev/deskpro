@@ -1,0 +1,17 @@
+<div class="sidebar-item portal_kb">
+	<div class="heading">
+		<h2>{{ title|default('Recent Feedback') }}</h>
+	</div>
+
+	<div class="content-list">
+		{% for idea in ideas %}
+			<div class="item">
+				<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="more-link">
+		<a href="{{ path('user_ideas') }}">more...</a>
+	</div>
+</div>

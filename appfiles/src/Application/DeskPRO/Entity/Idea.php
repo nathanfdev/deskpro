@@ -133,6 +133,16 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getContent()
+	{
+		return $this->first_comment['content'];
+	}
+
+	public function getContentHtml()
+	{
+		return $this->first_comment->getContentHtml();
+	}
+
 	public function getUserEmail()
 	{
 		if ($this->person) {
@@ -227,6 +237,11 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $summary;
+	}
+
+	public function getCategoryName()
+	{
+		return $this->category->getFullTitle();
 	}
 
 	public function setStatus($status)
