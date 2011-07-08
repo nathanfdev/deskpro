@@ -4,6 +4,12 @@
 	<meta property="og:title" content="{{idea.title}}" />
 	<meta property="og:type" content="article" />
 {% endblock %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+	{% for cat in category_path %}
+		<li><a href="{{ path('user_ideas_cat', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+	{% endfor %}
+{% endblock %}
 {% block content %}
 <div style="float:left; width: 190px;">
 	{% include 'UserBundle:Ideas:category-list.html.twig' %}
@@ -18,13 +24,6 @@
 			{{idea.date_created|date('Y-m-d')}}
 		</div>
 
-		<small>
-		<a href="{{ path('user_ideas') }}">Ideas</a> /
-		{% for cat in category_path %}
-			<a href="{{ path('user_ideas_cat', {'slug': cat.url_slug}) }}">{{cat.title}}</a> /
-		{% endfor %}
-		<a href="{{ path('user_ideas_cat', {'slug': category.url_slug}) }}">{{category.title}}</a>
-		</small>
 		<h4>{{idea.title}}</h4>
 
 		{% if related_content %}

@@ -7,6 +7,14 @@
 	DeskPRO_Window.setPageHandler(new DeskPRO.User.Page.NewTicket());
 </script>
 {% endblock %}
+{% block breadcrumb %}
+	{% if is_user_loggedin() %}
+		<li><a href="{{ path('user_tickets') }}">Your Tickets</a></li>
+		<li><a href="{{ path('user_tickets_new') }}">New Ticket</a></li>
+	{% else %}
+		<li><a href="{{ path('user_tickets_new') }}">New Ticket</a></li>
+	{% endif %}
+{% endblock %}
 {% block content %}
 
 <form action="{{ path('user_tickets_new') }}" method="post">

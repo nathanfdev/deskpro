@@ -4,17 +4,30 @@
 	<meta property="og:title" content="{{article.title}}" />
 	<meta property="og:type" content="article" />
 {% endblock %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_articles') }}">Knowledgebase</a></li>
+	{% for categories in all_categories %}
+		{% if loop.index0 == 0 %}
+			{% for c in categories %}
+				<li><a href="{{ path('user_articles_cat', {'slug': c.url_slug}) }}">{{c.title}}</a></li>
+			{% endfor %}
+		{% endif %}
+	{% endfor %}
+	<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{article.title}}</a></li>
+{% endblock %}
 {% block content %}
 <h4>{{article.title}}</h4>
-<hr />
-{% for categories in all_categories %}
-	&middot; {% for c in categories %}
-		<a href="{{ path('user_articles_cat', {'slug': c.url_slug}) }}">{{c.title}}</a>{% if not loop.last %} / {% endif %}
+{% if all_categories|length > 1 %}
+	<hr />
+	<strong>Cross-posted:</strong><br />
+	{% for categories in all_categories %}
+		&middot; {% for c in categories %}
+			<a href="{{ path('user_articles_cat', {'slug': c.url_slug}) }}">{{c.title}}</a>{% if not loop.last %} / {% endif %}
+		{% endfor %}
+		<br />
 	{% endfor %}
-	<br />
-{% endfor %}
-<hr />
-
+	<hr />
+{% endif %}
 {% if related_content %}
 	{% include 'UserBundle:Common:related-content-side.html.twig' %}
 {% endif %}

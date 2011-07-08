@@ -32,6 +32,15 @@
 <div class="container" id="content_container">
 	<div class="span-17">
 		<div id="content">
+			{% set breadcrumb %}{% block breadcrumb %}{% endblock %}{% endset %}
+			{% if breadcrumb|trim|length %}
+				<div class="breadcrumb">
+					<ul>
+						<li><a href="{{ path('user') }}">Home</a></li>
+						{{ breadcrumb }}
+					</ul>
+				</div>
+			{% endif %}
 			{% block content %}{% endblock %}
 		</div>
 	</div>
