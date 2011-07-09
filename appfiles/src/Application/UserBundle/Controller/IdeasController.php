@@ -11,17 +11,18 @@
 
 namespace Application\UserBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
-use \Application\UserBundle\Form\NewIdeaType;
+use Application\UserBundle\Form\NewIdeaType;
+use Application\DeskPRO\Comments\NewCommentFormType;
 
-use \Application\UserBundle\Controller\Helper\Comments;
-use \Application\UserBundle\Controller\Helper\FacebookLike;
+use Application\UserBundle\Controller\Helper\Comments;
+use Application\UserBundle\Controller\Helper\FacebookLike;
 
-use \Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
 class IdeasController extends AbstractController
 {
@@ -236,20 +237,24 @@ class IdeasController extends AbstractController
 			return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
 		}
 
-		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(
 			'Application\\DeskPRO\\Entity\\IdeaComment',
+			$this->person,
 			array('idea' => $idea)
 		);
 
-		$form->bind($this->get('request'), $new_comment);
+		$newcomment_formtype = new NewCommentFormType($this->person);
+		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
 
-		if ($form->isValid()) {
-			$comment = $new_comment->save();
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				$comment = $new_comment->save();
+			}
 		}
-
 		return $this->redirectRoute('user_ideas_view', array(
-			'idea_id' => $idea['id'],
+			'slug' => $idea->getUrlSlug(),
 		));
 	}
 

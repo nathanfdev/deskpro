@@ -22,22 +22,31 @@ class NewComment
 {
 	protected $class;
 	protected $assignments;
+	protected $person;
 
 	public $name = '';
 	public $email = '';
 	public $content = '';
 
-	public function __construct($class, array $assignments)
+	public function __construct($class, $person, array $assignments)
 	{
 		$this->class = $class;
+		$this->person = $person;
 		$this->assignments = $assignments;
 	}
 
 	public function save()
 	{
-		$obj                  = new $this->class();
-		$obj['name']          = $this->name;
-		$obj['email']         = $this->email;
+		$obj = new $this->class();
+
+		if ($this->person['id']) {
+			$obj->person = $this->person;
+		} else {
+			$obj['name']  = $this->name;
+			$obj['email'] = $this->email;
+		}
+		$obj->visitor = App::getSession()->getVisitor();
+		
 		$obj['content']       = $this->content;
 		$obj['status']        = 'visible';
 		$obj['date_created']  = new \DateTime();

@@ -9,16 +9,103 @@
 	{% for cat in category_path %}
 		<li><a href="{{ path('user_ideas_cat', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
+	<li><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></li>
 {% endblock %}
 {% block content %}
-<div style="float:left; width: 190px;">
-	{% include 'UserBundle:Ideas:category-list.html.twig' %}
+<div class="idea">
+	<div class="votes">
+		<div class="count">{{idea.num_votes}}</div>
+		<span>votes</span>
+	</div>
+	<div class="description">
+		<div class="cal-date" title="{{ idea.date_created|date('M d Y @ H:i:s') }}">
+			<div class="month">{{ idea.date_created|date('M')|upper }}</div>
+			<div class="day">{{ idea.date_created|date('d') }}</div>
+		</div>
+		<div class="page-title">
+			<h1>{{ idea.title }}</h1>
+			<div class="info-line">
+				By {{ idea.user_name|default('Anonymous') }}
+			</div>
+		</div>
+
+		<div class="post">
+			{{idea.content_html|raw}}
+		</div>
+
+		<div class="user-vote">
+			<form action="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}" method="post">
+				You have {{num_votes_remain}} votes remaining.
+				<br />
+				{% if num_votes_this %}
+					You've used {{num_votes_this}} votes on this idea. Change your vote:
+				{% else %}
+					Vote on this idea:
+				{% endif %}
+				<input type="radio" value="1" name="vote" {% if num_votes_this == 1 or not num_votes_this %}checked="checked"{% endif %}/>1
+				<input type="radio" value="2" name="vote" {% if num_votes_this == 2 %}checked="checked"{% endif %}/>2
+				<input type="radio" value="3" name="vote" {% if num_votes_this == 3 %}checked="checked"{% endif %}/>3
+				<input type="submit" value="vote" />
+			</form>
+		</div>
+	</div>
+
+	{% if comments_widget %}
+		{{comments_widget|raw}}
+	{% else %}
+		<div class="content-item">
+			<div class="heading"><h2>Comments</h2></div>
+			<div class="content-list">
+				<ul>
+					<li class="new-comment">
+						<form action="{{ path('user_ideas_newcomment', {'idea_id': idea.id}) }}" method="post">
+							<table cellspacing="0" cellpadding="0">
+								{% if is_user_guest() %}
+									<tr>
+										<td>Name:</td>
+										<td><input type="text" name="new_comment[name]" /> (public)</td>
+									</tr>
+									<tr>
+										<td>Email:</td>
+										<td><input type="text" name="new_comment[email]" /> (private, never revealed)</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td>Name:</td>
+										<td>{{ app.user.display_name }} (public)</td>
+									</tr>
+								{% endif %}
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<textarea name="new_comment[content]" cols="80" rows="5"></textarea><br/>
+										<div style="text-align: right">
+											<input type="submit" value="comment" />
+										</div>
+									</td>
+								</tr>
+							</table>
+						</form>
+					</li>
+
+					{% for comment in comments %}
+						{% if comment.id != idea.first_comment.id %}{# < because comment 1 is actually the post #}
+						<li>
+							<em>{{ comment.name|default('Anonymous') }}</em>:<br />
+							{{ comment.content_html|raw }}
+						</li>
+						{% endif %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	{% endif %}
 </div>
 
+{#
+
 <div style="margin-left:200px;">
-	<div style="float:left; width:80px">
-		{{idea.num_votes}} votes
-	</div>
+
 	<div style="margin-left:90px">
 		<div style="float:right">
 			{{idea.date_created|date('Y-m-d')}}
@@ -83,5 +170,7 @@
 		{% endfor %}
 	</div>
 {% endif %}
+
+#}
 
 {% endblock %}

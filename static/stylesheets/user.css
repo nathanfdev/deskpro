@@ -98,6 +98,7 @@ a {
 }
 
 #footer ul.links li {
+    display: inline-block;
     padding: 5px 8px 6px 8px;
     margin: 0;
 }
@@ -236,6 +237,22 @@ a {
 
     text-shadow: 1px px 0px #bdbdbd;
     filter: dropshadow(color=#bdbdbd, offx=1, offy=);
+    margin: 0;
+    padding: 0;
+}
+
+.page-title .info-line {
+    color: #7F7F80;
+    font-size: 10px;
+}
+
+.post {
+    border: 1px solid #ccc;
+    padding: 8px;
+
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
 }
 
 /*****************************************************************
@@ -448,4 +465,120 @@ a {
 
 .content-item .content-list .item, .content-item .content-list > ul > li {
     padding: 6px;
+}
+
+
+
+/*****************************************************************
+* idea
+******************************************************************/
+
+.cal-date {
+    width: 46px;
+    float: right;
+}
+
+.cal-date .month {
+    background-color: #253F66;
+    font-size: 9px;
+    font-weight: bold;
+    color: #fff;
+    text-align: center;
+    border: 1px solid #253F66;
+
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 4px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-radius: 4px 4px 0px 0px;
+    border-radius: 4px 4px 0px 0px;
+}
+
+.cal-date .day {
+    background-color: #F8F8F8;
+    border: 2px solid #DEDEDE;
+    border-top: none;
+    text-align: center;
+    color: #888;
+    font-family: 'Myriad Pro','Myriad',helvetica,arial,sans-serif;
+    font-size: 13px;
+    padding-top: 2px;
+
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-topright: 0px;
+    -moz-border-radius-bottomright: 4px;
+    -moz-border-radius-bottomleft: 4px;
+    -webkit-border-radius: 0px 0px 4px 4px;
+    border-radius: 0px 0px 4px 4px;
+}
+
+.idea .page-title {
+    margin-bottom: 0;
+}
+
+.idea .post {
+    margin-top: 9px;
+    clear: right;
+}
+
+.idea .votes {
+    float: left;
+    background-color: #edeff2;
+    padding: 3px;
+
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+}
+
+.idea .votes .count {
+    background-color: #fff;
+    font-size: 13px;
+    font-weight: bold;
+    text-align: center;
+
+    width: 50px;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.idea .votes span {
+    display: block;
+    font-size: 10px;
+    text-align: center;
+    padding-top: 3px;
+    padding-bottom: 3px;
+}
+
+.idea .description {
+    margin-left: 65px;
+}
+
+
+.idea .user-vote {
+    background-color: #F4F4F4;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+
+    margin-top: 8px;
+    margin-bottom: 8px;
+
+    padding: 6px;
+}
+
+li.new-comment table {
+    width: 400px;
+}
+
+li.new-comment table td {
+    padding-top: 0px;
+    padding-bottom: 0px;
+}
+
+li.new-comment textarea {
+    width: 100%;
+    height: 50px;
 }
