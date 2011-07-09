@@ -560,7 +560,7 @@ a {
 }
 
 
-.idea .user-vote {
+.idea .user-vote, .article .user-vote {
     background-color: #F4F4F4;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -584,4 +584,9 @@ li.new-comment table td {
 li.new-comment textarea {
     width: 100%;
     height: 50px;
+}
+
+
+.article .page-title {
+    margin-bottom: 8px;
 }

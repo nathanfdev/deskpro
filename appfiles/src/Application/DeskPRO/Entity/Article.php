@@ -187,7 +187,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * An array of authors,
 	 */
-	protected $_author_names;
+	protected $_authors = null;
 
 	/**
 	 * @var \Application\DeskPRO\Labels\LabelManager
@@ -318,18 +318,35 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public function getAuthors()
 	{
-		if ($this->_author_names) {
-			return $this->_author_names;
+		if ($this->_authors !== null) {
+			return $this->_authors;
 		}
 
-		$this->_author_names = App::getOrm()->createQuery("
-			SELECT p
+		$this->_authors = array();
+		$this->_authors[$this->person['id']] = $this->person;
+
+		$revs = App::getOrm()->createQuery("
+			SELECT r, p
 			FROM DeskPRO:ArticleRevision r
-			LEFT JOIN r.person
+			LEFT JOIN r.person p
 			WHERE r.article = ?1
-			ORDER BY r.id DESC
+			ORDER BY r.date_created DESC
 		")->setParameter(1, $this)->execute();
 
-		return $this->_author_names;
+		foreach ($revs as $r) {
+			$this->_authors[$r['id']] = $r->person;
+		}
+
+		return $this->_authors;
+	}
+
+	public function getByLine($sep = ', ')
+	{
+		$names = array();
+		foreach ($this->getAuthors() as $a) {
+			$names[] = $a->getDisplayName();
+		}
+
+		return implode($sep, $names);
 	}
 }

@@ -11,16 +11,17 @@
 
 namespace Application\UserBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
-use \Orb\Util\Util;
+use Orb\Util\Arrays;
+use Orb\Util\Util;
 
-use \Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Comments\NewCommentFormType;
 
-use \Application\UserBundle\Controller\Helper\Comments;
-use \Application\UserBundle\Controller\Helper\FacebookLike;
+use Application\UserBundle\Controller\Helper\Comments;
+use Application\UserBundle\Controller\Helper\FacebookLike;
 
 class ArticlesController extends AbstractController
 {
@@ -154,21 +155,25 @@ class ArticlesController extends AbstractController
 			return $this->renderStandardError('@user_articles.error_not_found', '@core.not_found', 404);
 		}
 
-		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(
 			'Application\\DeskPRO\\Entity\\ArticleComment',
+			$this->person,
 			array('article' => $article)
 		);
 
-		$form->bind($this->get('request'), $new_comment);
+		$newcomment_formtype = new NewCommentFormType($this->person);
+		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
 
-		if ($form->isValid()) {
-			$comment = $new_comment->save();
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				$comment = $new_comment->save();
+			}
 		}
 
 		return $this->redirectRoute('user_articles_article', array(
-			'article_id' => $article['id'],
-			'slug' => $article['slug']
+			'slug' => $article->getUrlSlug()
 		));
 	}
 

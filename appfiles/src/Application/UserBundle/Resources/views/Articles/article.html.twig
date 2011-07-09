@@ -16,69 +16,94 @@
 	<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{article.title}}</a></li>
 {% endblock %}
 {% block content %}
-<h4>{{article.title}}</h4>
-{% if all_categories|length > 1 %}
-	<hr />
-	<strong>Cross-posted:</strong><br />
-	{% for categories in all_categories %}
-		&middot; {% for c in categories %}
-			<a href="{{ path('user_articles_cat', {'slug': c.url_slug}) }}">{{c.title}}</a>{% if not loop.last %} / {% endif %}
-		{% endfor %}
-		<br />
-	{% endfor %}
-	<hr />
-{% endif %}
-{% if related_content %}
-	{% include 'UserBundle:Common:related-content-side.html.twig' %}
-{% endif %}
-{{article.content_html|raw}}
+<div class="article">
 
-<br style="clear:both" />
-
-{% if article.labels|length %}
-	{% include 'UserBundle:Common:labels-list.html.twig' with {'labels': article.labels} %}
-{% endif %}
-
-{% if facebook_like %}
-<div style="margin: 10px;">
-	{{facebook_like|raw}}
-</div>
-{% endif %}
-<div style="background-color: #eee; padding: 10px; margin-top: 8px;">
-	<form action="{{ path('user_articles_rate', {'article_id': article.id}) }}" method="post">
-		{% if rating_this %}
-			{% if rating_this > 1 %}
-				You found this article helpful
-			{% else %}
-				You didn't like this article
-			{% endif %}
-		{% else %}
-			<input type="radio" value="1" name="rating" {% if rating_this == 1 or not rating_this %}checked="checked"{% endif %}/> This article was helpful
-			<input type="radio" value="-1" name="rating" {% if rating_this == -1 %}checked="checked"{% endif %}/> This article was not helpful
-			<input type="submit" value="vote" />
-		{% endif %}
-	</form>
-</div>
-
-{% if comments_widget %}
-	{{comments_widget|raw}}
-{% else %}
-	<div style="background-color: #eee; padding: 10px; margin-top: 15px;">
-		<form action="{{ path('user_articles_newcomment', {'article_id': article.id}) }}" method="post">
-		Name: <input type="text" name="new_comment[name]" /> (public)<br />
-		Email: <input type="text" name="new_comment[email]" /> (private, never revealed)<br />
-		<textarea name="new_comment[content]" cols="80" rows="5"></textarea>
-		<input type="submit" value="Submit" />
-		</form>
-		<hr />
-
-		{% for comment in comments %}
-			<div style="background-color: #fff; padding: 6px; margin: 10px;">
-				<em>{{comment.name}}</em>:<br />
-				{{comment.content_html|raw}}
-			</div>
-		{% endfor %}
+	<div class="cal-date" title="{{ article.date_created|date('M d Y @ H:i:s') }}">
+		<div class="month">{{ article.date_created|date('M')|upper }}</div>
+		<div class="day">{{ article.date_created|date('d') }}</div>
 	</div>
-{% endif %}
+	<div class="page-title"> 
+		<h1>{{ article.title }}</h1>
+		<div class="info-line">
+			By {{ article.by_line }}
+			{% if all_categories|length > 1 %}
+				<br /><strong>Cross-posted into:</strong>
+				{% for categories in all_categories -%}
+					{% for c in categories -%}
+						<a href="{{ path('user_articles_cat', {'slug': c.url_slug}) }}">{{c.title}}</a>{% if not loop.last %} / {% endif %}
+					{% endfor %}{%- if not loop.last %}, {% endif %}
+				{% endfor %}
+			{% endif %}
+		</div>
+	</div>
+
+	<div class="post">{{ article.content_html|raw }}</div>
+
+	<div class="user-vote">
+		<form action="{{ path('user_articles_rate', {'article_id': article.id}) }}" method="post">
+			{% if rating_this %}
+				{% if rating_this > 1 %}
+					You found this article helpful
+				{% else %}
+					You didn't like this article
+				{% endif %}
+			{% else %}
+				<input type="radio" value="1" name="rating" {% if rating_this == 1 or not rating_this %}checked="checked"{% endif %}/> This article was helpful
+				<input type="radio" value="-1" name="rating" {% if rating_this == -1 %}checked="checked"{% endif %}/> This article was not helpful
+				<input type="submit" value="vote" />
+			{% endif %}
+		</form>
+	</div>
+
+
+	{% if comments_widget %}
+			{{comments_widget|raw}}
+	{% else %}
+		<div class="content-item">
+			<div class="heading"><h2>Comments</h2></div>
+			<div class="content-list">
+				<ul>
+					<li class="new-comment">
+						<form action="{{ path('user_articles_newcomment', {'article_id': article.id}) }}" method="post">
+							<table cellspacing="0" cellpadding="0">
+								{% if is_user_guest() %}
+									<tr>
+										<td>Name:</td>
+										<td><input type="text" name="new_comment[name]" /> (public)</td>
+									</tr>
+									<tr>
+										<td>Email:</td>
+										<td><input type="text" name="new_comment[email]" /> (private, never revealed)</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td>Name:</td>
+										<td>{{ app.user.display_name }} (public)</td>
+									</tr>
+								{% endif %}
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<textarea name="new_comment[content]" cols="80" rows="5"></textarea><br/>
+										<div style="text-align: right">
+											<input type="submit" value="comment" />
+										</div>
+									</td>
+								</tr>
+							</table>
+						</form>
+					</li>
+
+					{% for comment in comments %}
+						<li>
+							<em>{{ comment.name|default('Anonymous') }}</em>:<br />
+							{{ comment.content_html|raw }}
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	{% endif %}
+</div>
 
 {% endblock %}
