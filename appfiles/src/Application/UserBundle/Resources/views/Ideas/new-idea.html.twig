@@ -1,31 +1,54 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_ideas') }}">Feedback</a></li>
+	<li><a href="{{ path('user_ideas_newidea') }}">Submit Feedback</a></li>
+{% endblock %}
 {% block content %}
+
+<div class="new-idea">
+
+<div class="page-title">
+	<h1>Submit Feedback</h1>
+</div>
 
 <form action="{{ path('user_ideas_newidea') }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-	<small><strong>Category:</strong></small><br />
-	{{ form_widget(form.category_id) }}
+<div class="input-form">
+<table cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+		<td width="160">Category</td>
+		<td>{{ form_widget(form.category_id) }}</td>
+	</tr>
 
-	<br />
+	<tr>
+		<td>Title</td>
+		<td>{{ form_widget(form.title) }}</td>
+	</tr>
 
-	<small><strong>Short Summary:</strong></small><br />
-	{{ form_widget(form.title) }}
+	<tr>
+		<td>Description</td>
+		<td>{{ form_widget(form.content) }}</td>
+	</tr>
 
-	<br />
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			How many of your {{num_votes_remain}} remaining votes would you like to spend on this idea?<br />
+			{{ form_widget(form.votes) }}
+		</td>
+	</tr>
 
-	<small><strong>Description or details:</strong></small><br />
-	{{ form_widget(form.content) }}
-
-	<br />
-
-	How many of your {{num_votes_remain}} remaining votes would you like to spend on this idea?<br />
-	{{ form_widget(form.votes) }}
-
-	<br /><br />
-
-	<input type="submit" value="Submit Idea" />
+	<tr class="foot">
+		<td colspan="2">
+			<button class="dp-button">Submit</button>
+		</td>
+	</tr>
+</table>
+</div>
 
 	{{ form_rest(form) }}
 </form>
+
+</div>
 {% endblock %}
