@@ -137,12 +137,15 @@ a {
 #content {
     padding: 8px;
     padding-top: 0;
+    padding-right: 0;
+    margin-right: 1px;
 }
 
 #sidebar {
     margin: 0;
     padding: 8px;
     padding-top: 0;
+    padding-left: 0;
 }
 
 #pagetop {
