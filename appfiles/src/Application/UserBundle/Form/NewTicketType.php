@@ -70,7 +70,7 @@ class NewTicketType extends AbstractType
 			->add('first_name', 'text', array('required' => false))
 			->add('last_name', 'text', array('required' => false));
 
-		if ($this->person) {
+		if (!$this->person) {
 			$person_builder->add('email', 'text');
 		}
 		$builder->add($person_builder);

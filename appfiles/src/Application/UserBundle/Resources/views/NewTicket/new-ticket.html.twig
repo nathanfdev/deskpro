@@ -2,10 +2,7 @@
 {% import "UserBundle:Common:property-fields.html.twig" as property_fields %}
 {% block head %}
 <script type="text/javascript" src="{{ path('data_interface_data', {'types': ['tickets']}) }}"></script>
-<script type="text/javascript" src="{{ asset('javascripts/DeskPRO/User/Page/NewTicket.js') }}"></script>
-<script type="text/javascript">
-	DeskPRO_Window.setPageHandler(new DeskPRO.User.Page.NewTicket());
-</script>
+<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewTicket.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
 	{% if is_user_loggedin() %}
@@ -16,72 +13,89 @@
 	{% endif %}
 {% endblock %}
 {% block content %}
+<div class="new-ticket with-handler" data-element-handler="DeskPRO.User.ElementHandler.NewTicket">
+
+<div class="page-title">
+	<h1>Submit a ticket</h1>
+</div>
 
 <form action="{{ path('user_tickets_new') }}" method="post">
 <input type="hidden" name="process" value="1" />
 
-<h1>Contact Information</h1>
-<table cellspacing="5" cellpadding="0" border="0" width="100%">
+<div class="input-form">
+<table cellspacing="0" cellpadding="0" width="100%">
 	<tr>
+		<td width="160">First Name</td>
 		<td>
-			<small>First Name</small> {{ form_widget(form.person.first_name) }}<br />
-			<small>Last Name</small> {{ form_widget(form.person.last_name) }}<br />
+			{{ form_widget(form.person.first_name) }}
+		</td>
+	</tr>
+
+	<tr>
+		<td>Last Name</td>
+		<td>
+			{{ form_widget(form.person.last_name) }}
 		</td>
 	</tr>
 
 	{% if form.person.email %}
 		<tr>
+			<td>Email Address</td>
 			<td>
-				<small>Email Address</strong><br />
 				{{ form_widget(form.person.email) }}
 			</td>
 		</tr>
 	{% endif %}
-</tr></table>
 
-<h1>Ticket</h1>
-<table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
-	<td>
-		<small>Department</small><br />
-		{{ property_fields.form_department_select('newticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
-	</td>
-	<td id="category_select_wrap">
-		<small>{{ phrase('core_tickets.category') }}</small><br />
-		{{ property_fields.form_category_select('newticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
-	</td>
+	<tr>
+		<td>Department</td>
+		<td>
+			{{ property_fields.form_department_select('newticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
+		</td>
+	</tr>
+	<tr>
+		<td>{{ phrase('core_tickets.category') }}</td>
+		<td id="category_select_wrap">
+			{{ property_fields.form_category_select('newticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
+		</td>
+	</tr>
 	{% if form.ticket.product_id %}
-	<td>
-		<small>{{ phrase('core.product') }}</small><br />
-		{{ form_widget(form.ticket.product_id, {'class': 'product_id'}) }}
-	</td>
+	<tr>
+		<td>{{ phrase('core.product') }}</td>
+		<td>
+			{{ form_widget(form.ticket.product_id, {'class': 'product_id'}) }}
+		</td>
+	</tr>
 	{% endif %}
 	{% if form.ticket.priority_id %}
-	<td>
-		<small>{{ phrase('core_tickets.priority') }}</small><br />
-		{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
-	</td>
+	<tr>
+		<td>{{ phrase('core_tickets.priority') }}</td>
+		<td>
+			{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
+		</td>
+	</tr>
 	{% endif %}
-</tr></table>
 
-<table cellspacing="5" cellpadding="0" border="0" width="100%">
-	{% for f in custom_fields %}
-		<tr class="ticket-display-element ticket_field-{{f.field_def.id}}" style="display:none">
-			<td>
-				<small>{{ phrase(f.field_def) }}</small><br />
-				{{ render_custom_field_form(f) }}
-			</td>
-		</tr>
-	{% endfor %}
+	<tr>
+		<td>&nbsp;</td>
+		<td>
+			<small>Subject:</small><br />
+			{{ form_widget(form.ticket.subject) }}<br />
+			<small>Message:</small><br />
+			{{ form_widget(form.ticket.message) }}
+		</td>
+	</tr>
+
+	<tr class="foot">
+		<td colspan="2">
+			<button class="dp-button">Submit</button>
+		</td>
+	</tr>
 </table>
-
-<div style="margin: 10px 0 10px 0;">
-	{{ form_widget(form.ticket.subject) }}
-	{{ form_widget(form.ticket.message) }}
 </div>
-
-<input type="submit" value="Submit" />
 
 {{ form_rest(form) }}
 </form>
 
+</div>
 {% endblock %}
