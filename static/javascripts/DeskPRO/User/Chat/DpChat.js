@@ -212,6 +212,13 @@ var DpChat = (function() {
 	};
 
 	/**
+	 * Opens the chat panel
+	 */
+	this.openChatPanel = function() {
+		display.showChatPanel();
+	};
+
+	/**
 	 * Called when a user hides a proactive. We insert a script request so it
 	 * sets the cookie on the correct domain
 	 */
@@ -556,6 +563,12 @@ var DpChat = (function() {
 
 		// Attach click event to any chat triggers to open new chat window
 		$('.dp-chat-trigger').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			DpChat.showChatPanel();
+		});
+		$('.dp-chat-window-trigger').click(function(ev) {
 			ev.preventDefault();
 			ev.stopPropagation();
 

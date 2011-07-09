@@ -10,14 +10,11 @@
 			</select>
 		</div>
 		{% endif %}
-		<h2>{{ title|default('Knowledgebase') }}</h2>
+		<h2><a href="{{ path('user_articles') }}">{{ title|default('Knowledgebase') }}</a></h2>
 	</div>
 	<div class="content-list">
 		<ul>
 			{{ html|raw }}
 		</ul>
-	</div>
-	<div class="more-link">
-		<a href="{{ path('user_articles') }}">more</a>
 	</div>
 </div>

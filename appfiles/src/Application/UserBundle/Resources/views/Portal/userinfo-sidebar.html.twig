@@ -1,9 +1,11 @@
 <div class="sidebar-item" id="portal_userinfo">
 	{% if app.user.id %}
 		Welcome, {{ app.user.first_name|default(app.user.display_name) }}<br />
-		&middot; <a href="{{ path('user_logout') }}">Your Tickets</a>
-		&middot; <a href="{{ path('user_profile') }}">Your Profile</a>
-		&middot; <a href="{{ path('user_logout') }}">Log Out</a>
+		<ul class="sidebar-nav">
+			<li class="profile"><a href="{{ path('user_profile') }}"><span>Your Profile</span></a></li>
+			<li class="ticket"><div class="count">3</div><a href="{{ path('user_logout') }}"><span>Your Tickets</span></a></li>
+			<li class="logout"><a href="{{ path('user_logout') }}"><span>Log Out</span></a></li>
+		</ul>
 	{% else %}
 		Welcome, Guest<br />
 		&middot; <a href="{{ path('user_login') }}">Log In</a>

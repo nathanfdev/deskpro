@@ -21,14 +21,11 @@
 			</select>
 		</div>
 		{% endif %}
-		<h2>{{ title|default('Latest Feedback') }}</h2>
+		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Feedback') }}</a></h2>
 	</div>
 	<div class="content-list">
 		<ul>
 			{{ html|raw }}
 		</ul>
-	</div>
-	<div class="more-link">
-		<a href="{{ path('user_ideas') }}">more</a>
 	</div>
 </div>

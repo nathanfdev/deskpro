@@ -1,11 +1,11 @@
 <div class="sidebar-item portal_kb">
 	<div class="heading">
-		<h2>{{ title|default('Recent Articles') }}</h>
+		<h2>{{ title|default('News') }}</h2>
 	</div>
 
 	<div class="content-list">
 		{% for article in articles %}
-			<div class="item">
+			<div class="item icon-news">
 				<a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a>
 			</div>
 		{% endfor %}

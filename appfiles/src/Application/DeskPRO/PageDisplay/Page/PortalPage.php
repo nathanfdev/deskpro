@@ -83,18 +83,21 @@ class PortalPage extends BasicPage implements PersonContextInterface
 				'type' => 'contact',
 			),
 			array(
-				'type' => 'nav',
-			),
-			array(
 				'type' => 'kb'
 			),
 			array(
-				'type' => 'ideas',
-				'status' => 'active',
-				'block_title' => 'Recent Accepted Feedback'
-			)
+				'type' => 'template',
+				'tpl' => 'UserBundle:Portal:downloads-sidebar.html.twig'
+			),
+			array(
+				'type' => 'template',
+				'tpl' => 'UserBundle:Portal:staff-sidebar.html.twig'
+			),
+			array(
+				'type' => 'template',
+				'tpl' => 'UserBundle:Portal:twitter-sidebar.html.twig'
+			),
 		);
-
 
 		$this->addPageDisplay($pagetop_pagedisplay);
 		$this->addPageDisplay($content_pagedisplay);
