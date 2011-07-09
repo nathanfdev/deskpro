@@ -1,20 +1,70 @@
 <div class="content-item portal_kb with-handler" data-element-handler="DeskPRO.User.ElementHandler.Kb">
 	<div class="heading">
-		{% if show_cat_switcher %}
-		<div style="float:right">
-			<select class="kb-cat-choose">
-				<option value="0">All</option>
-				{% for cat in cats %}
-					<option value="{{cat.id}}">{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
-				{% endfor %}
-			</select>
+		<div class="heading-tabs">
+			<ul>
+				<li class="on browser">Browse</li>
+				<li>Recent</li>
+				<li>Popular</li>
+			</ul>
 		</div>
-		{% endif %}
 		<h2><a href="{{ path('user_articles') }}">{{ title|default('Knowledgebase') }}</a></h2>
+	</div>
+	<div class="content-filters">
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td>Category:</td>
+				<td>Search:</td>
+				<td>Product:</td>
+				<td>Sort:</td>
+				<td rowspan="2"><button>Search</button></td>
+			</tr>
+			<tr>
+				<td>
+					<select class="kb-cat-choose">
+						<option value="0">All</option>
+						{% for cat in cats %}
+							<option value="{{cat.id}}">{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+						{% endfor %}
+					</select>
+				</td>
+				<td>
+					<input type="text" placeholder="Enter a search term" />
+				</td>
+				<td>
+					<select>
+						<option value="">All</option>
+						<option value="">DeskPRO</option>
+						<option value="">DeskPRO Live</option>
+					</select>
+				</td>
+				<td>
+					<select>
+						<option>Date</option>
+						<option>Popularity</option>
+					</select>
+				</td>
+			</tr>
+		</table>
 	</div>
 	<div class="content-list">
 		<ul>
 			{{ html|raw }}
+			<li><h4><a href="">Aliquam eget metus</a></h4></li>
+			<li><h4><a href="">tempus nibh fermentum</a></h4></li>
+			<li><h4><a href="">Nullam ac massa</a></h4></li>
+			<li><h4><a href="">Donec vitae urna</a></h4></li>
+			<li><h4><a href="">massa placerat pellentesque</a></h4></li>
+			<li><h4><a href="">Vestibulum tellus neque</a></h4></li>
+			<li><h4><a href="">Morbi vel urna</a></h4></li>
 		</ul>
+	</div>
+	<div class="content-pages">
+		<div class="num-info">1-10 of 230 results</div>
+		<div class="pager">
+			Page
+			<select><option>1</option><option>2</option><option>3</option></select>
+			of 3
+			<button>Next</button>
+		</div>
 	</div>
 </div>

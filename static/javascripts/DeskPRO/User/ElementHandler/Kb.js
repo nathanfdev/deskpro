@@ -8,8 +8,25 @@ DeskPRO.User.ElementHandler.Kb = new Orb.Class({
 		this.contentList = $('.content-list:first > ul', this.el);
 		this.catSwitcher = $('select.kb-cat-choose:first', this.el);
 
+		var el = this.el;
+		$('.heading-tabs li', this.el).click(function() {
+			$('.heading-tabs li', this.el).removeClass('on');
+			$(this).addClass('on');
+
+			if ($(this).is('.browser')) {
+				$('.content-filters', el).slideDown();
+			} else {
+				$('.content-filters', el).slideUp();
+			}
+
+			var list = $('.content-list', el);
+			list.slideUp('fast', function() {
+				list.slideDown('fast');
+			});
+		});
+
 		if (this.catSwitcher.length) {
-			this._initCatSwitcher();
+			//this._initCatSwitcher();
 		}
 	},
 

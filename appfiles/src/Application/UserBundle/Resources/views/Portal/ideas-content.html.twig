@@ -1,31 +1,104 @@
 <div class="content-item portal_ideas with-handler" data-element-handler="DeskPRO.User.ElementHandler.Ideas">
 	<div class="heading">
-		{% if show_cat_switcher %}
-		<div style="float:right">
-			<select class="ideas-status-choose">
-				<option value="new">New</option>
-				<option value="active">Active</option>
-				{% for cat in active_status_cats %}
-					<option value="{{cat.id}}">-- {{cat.title}}</option>
-				{% endfor %}
-				<option value="closed">Closed</option>
-				{% for cat in closed_status_cats %}
-					<option value="{{cat.id}}">-- {{cat.title}}</option>
-				{% endfor %}
-			</select>
-			<select class="ideas-cat-choose">
-				<option value="0">All</option>
-				{% for cat in cats %}
-					<option value="{{cat.id}}">{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
-				{% endfor %}
-			</select>
+		<div class="heading-tabs">
+			<ul>
+				<li class="on browser">Browse</li>
+				<li>Recent</li>
+				<li>Popular</li>
+			</ul>
 		</div>
-		{% endif %}
 		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Feedback') }}</a></h2>
 	</div>
-	<div class="content-list">
-		<ul>
-			{{ html|raw }}
-		</ul>
+	<div class="content-list overview-table">
+		<table cellspacing="0" cellpadding="0" width="100%">
+			<tr>
+				<td width="50%">
+					<h3><a>Sales <span>(16)</span></a></h3>
+					<ul>
+						<li><a>Can I change the License URL?</a></li>
+						<li><a>I've ordered, but I haven't received my license</a></li>
+						<li><a>License Upgrades</a></li>
+						<li><a>What is Encoding?</a></li>
+						<li><a>How much is DeskPRO?</a></li>
+					</ul>
+				</td>
+				<td width="50%">
+					<h3><a>Troubleshooting <span>(10)</span></a></h3>
+					<ul>
+						<li><a>Blank or White Pages</a></li>
+						<li><a>Can I update tech alerts from the admin control panel?</a></li>
+						<li><a>Email Gateways in v3.3.x</a></li>
+						<li><a>I enabled Force SSL and now I can't load my site</a></li>
+						<li><a>The knowledgebase is not displayed</a></li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td width="50%">
+					<h3><a>Sales <span>(16)</span></a></h3>
+					<ul>
+						<li><a>Can I change the License URL?</a></li>
+						<li><a>I've ordered, but I haven't received my license</a></li>
+						<li><a>License Upgrades</a></li>
+						<li><a>What is Encoding?</a></li>
+						<li><a>How much is DeskPRO?</a></li>
+					</ul>
+				</td>
+				<td width="50%">
+					<h3><a>Troubleshooting <span>(10)</span></a></h3>
+					<ul>
+						<li><a>Blank or White Pages</a></li>
+						<li><a>Can I update tech alerts from the admin control panel?</a></li>
+						<li><a>Email Gateways in v3.3.x</a></li>
+						<li><a>I enabled Force SSL and now I can't load my site</a></li>
+						<li><a>The knowledgebase is not displayed</a></li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td width="50%">
+					<h3><a>Sales <span>(16)</span></a></h3>
+					<ul>
+						<li><a>Can I change the License URL?</a></li>
+						<li><a>I've ordered, but I haven't received my license</a></li>
+						<li><a>License Upgrades</a></li>
+						<li><a>What is Encoding?</a></li>
+						<li><a>How much is DeskPRO?</a></li>
+					</ul>
+				</td>
+				<td width="50%">
+					<h3><a>Troubleshooting <span>(10)</span></a></h3>
+					<ul>
+						<li><a>Blank or White Pages</a></li>
+						<li><a>Can I update tech alerts from the admin control panel?</a></li>
+						<li><a>Email Gateways in v3.3.x</a></li>
+						<li><a>I enabled Force SSL and now I can't load my site</a></li>
+						<li><a>The knowledgebase is not displayed</a></li>
+					</ul>
+				</td>
+			</tr>
+			<tr>
+				<td width="50%">
+					<h3><a>Sales <span>(16)</span></a></h3>
+					<ul>
+						<li><a>Can I change the License URL?</a></li>
+						<li><a>I've ordered, but I haven't received my license</a></li>
+						<li><a>License Upgrades</a></li>
+						<li><a>What is Encoding?</a></li>
+						<li><a>How much is DeskPRO?</a></li>
+					</ul>
+				</td>
+				<td width="50%">
+					<h3><a>Troubleshooting <span>(10)</span></a></h3>
+					<ul>
+						<li><a>Blank or White Pages</a></li>
+						<li><a>Can I update tech alerts from the admin control panel?</a></li>
+						<li><a>Email Gateways in v3.3.x</a></li>
+						<li><a>I enabled Force SSL and now I can't load my site</a></li>
+						<li><a>The knowledgebase is not displayed</a></li>
+					</ul>
+				</td>
+			</tr>
+		</table>
 	</div>
 </div>
