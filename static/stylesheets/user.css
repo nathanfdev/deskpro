@@ -422,7 +422,8 @@ a {
 }
 
 #omni_search input#omni_search_txt:focus {
-    outline: 1px solid #688CD9;
+    outline: none;
+    border: 1px solid #4AA4FF;
 }
 
 #omni_search button {
@@ -851,6 +852,139 @@ li.new-comment textarea {
 /*****************************************************************
 * portal types
 ******************************************************************/
+
+/*********
+* portal_omni_search
+**********/
+
+#omni_search_menu_wrap {
+    position: absolute;
+    margin-top: 1px;
+}
+
+.omni_search_menu {
+    background-color: #F4F4F4;
+
+    -webkit-box-shadow: 2px 2px 10px 0px rgba(0,0,0, 0.6);
+    -moz-box-shadow: 2px 2px 10px 0px rgba(0,0,0, 0.6);
+    box-shadow: 2px 2px 10px 0px rgba(0,0,0, 0.6);
+
+    border: 1px solid #A5A6A9;
+    border-top: none;
+    -moz-border-radius:0px 0px 5px 5px;
+    -webkit-border-radius:0px 0px 5px 5px;
+    border-radius:0px 0px 5px 5px;
+}
+
+.omni_search_menu .results {
+    padding:  6px;
+}
+.omni_search_menu .results ul {
+    background-color: #fff;
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.omni_search_menu .results li:hover a, .omni_search_menu .results li.on a {
+    background-color: #D9ECFF;
+}
+
+.omni_search_menu .results a {
+    border: 1px solid #CAD1DB;
+    border-top: none;
+
+    padding: 3px;
+    display: block;
+}
+
+.omni_search_menu .results li:first-child a {
+    border-top: 1px solid #CAD1DB;
+    border-top: 1px solid #CAD1DB;
+}
+
+.omni_search_menu .results li a span {
+    padding-left: 22px;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+
+    padding: 2px 0 2px 20px;
+}
+
+.omni_search_menu .results li.article a span { background-image: url(../images/icons/page_white_text.png); }
+.omni_search_menu .results li.news a span { background-image: url(../images/icons/newspaper.png); }
+.omni_search_menu .results li.idea a span { background-image: url(../images/icons/bulb.png); }
+.omni_search_menu .results li.more a span { background-image: url(../images/icons/magnifier.png); }
+
+.omni_search_menu .results button.more {
+    background: #E0E2E6 url(../images/icons/magnifier.png) no-repeat 5px 50%;
+    border: 1px solid #BDC0C3;
+
+    padding: 2px 6px 2px 25px;
+    margin-top: 3px;
+    float:right;
+    
+    -webkit-border-radius: 5px;
+    -moz-border-radius: 5px;
+    border-radius: 5px;
+
+    cursor: pointer;
+}   
+
+.omni_search_menu .create {
+    clear: right;
+    margin-top: 10px;
+    margin-bottom: 15px;
+}
+
+.omni_search_menu .create p {
+    margin-left: 15px;
+    font-size: 11px;
+}
+
+.omni_search_menu .create ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    margin: 0 auto 0 auto;
+    width: 480px;
+
+}
+
+.omni_search_menu .create ul li {
+    float: left;
+    width: 150px;
+    margin: 0 5px 0 5px;
+}
+
+.omni_search_menu .create ul li a {
+    display: block;
+    border: 1px solid transparent;
+}
+
+.omni_search_menu .create ul li:hover a {
+    background-color: #fff;
+    border: 1px solid #CAD1DB;
+}
+
+.omni_search_menu .create ul li a span {
+    display: block;
+    padding-left: 35px;
+    line-height: 35px;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+}
+.omni_search_menu .create ul li.ticket a span { background-image: url(../images/icons/ticket-large.png); }
+.omni_search_menu .create ul li.idea a span { background-image: url(../images/icons/ideas-large.png); }
+.omni_search_menu .create ul li.chat a span { background-image: url(../images/icons/chat-large.png); }
+
+.portal_omni_search a.example-query {
+    text-decoration: none;
+}
+
+/*********
+* portal_staff
+**********/
 
 .portal_staff .content-list .item {
     padding-top: 0;
