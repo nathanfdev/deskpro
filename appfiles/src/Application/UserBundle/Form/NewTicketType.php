@@ -67,8 +67,7 @@ class NewTicketType extends AbstractType
 		}
 
 		$person_builder = $builder->create('person', 'form')
-			->add('first_name', 'text', array('required' => false))
-			->add('last_name', 'text', array('required' => false));
+			->add('name', 'text', array('required' => false));
 
 		if (!$this->person) {
 			$person_builder->add('email', 'text');

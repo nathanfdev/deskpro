@@ -1481,6 +1481,37 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $keys;
 	}
 
+	
+	/**
+	 * This will sync the names fields as best as we can. For example, if first/last
+	 * is set but not name, automatically set name
+	 *
+	 * If name is set but not first and last, try to smart-set first/last by splitting up
+	 * the name.
+	 *
+	 * @orm:prePersist
+	 * @orm:preUpdate
+	 * @return void
+	 */
+	public function smartSetName()
+	{
+		if ($this->name) {
+			if (!$this->first_name AND !$this->last_name) {
+				$m = null;
+				if (preg_match('#^(?P<first_name>[A-Za-z]{3,})\s+(?P<last_name>[A-Za-z]{3,})$#', $this->name, $m)) {
+					$this->first_name = $m['first_name'];
+					$this->last_name = $m['last_ame'];
+				}
+			}
+		} else {
+			if ($this->first_name AND $this->last_name) {
+				$old_name = $this->name;
+				$this->name = $this->first_name . ' ' . $this->last_name;
+				$this->_onPropertyChanged('name', $old_name, $this->name);
+			}
+		}
+	}
+
 
 
 	/**

@@ -26,8 +26,7 @@ class PersonProps
 	 */
 	public $person_obj;
 
-	public $first_name = '';
-	public $last_name = '';
+	public $name = '';
 	public $email = '';
 
 	public function __construct(Entity\Person $person = null)
@@ -37,6 +36,14 @@ class PersonProps
 		if ($person) {
 			$this->first_name = $person['first_name'];
 			$this->last_name  = $person['last_name'];
+			if ($person['first_name'] && $person['last_name']) {
+				$this->name = $this->first_name . ' ' . $this->last_name;
+			} elseif ($person['name']) {
+				$this->name = $person['name'];
+			} else {
+				$this->name = '';
+			}
+			
 			$this->email      = $person->getPrimaryEmailAddress();
 
 			//todo prefill fields

@@ -71,8 +71,7 @@ class NewTicket
 				}
 			}
 
-			$person['first_name'] = $this->person->first_name;
-			$person['last_name'] = $this->person->last_name;
+			$person['name'] = $this->person->name;
 
 			// Note that dupe emails shouldnt happen here
 			// The person should already be a person who

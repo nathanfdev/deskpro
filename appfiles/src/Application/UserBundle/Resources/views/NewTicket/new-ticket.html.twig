@@ -25,16 +25,9 @@
 <div class="input-form">
 <table cellspacing="0" cellpadding="0" width="100%">
 	<tr>
-		<td width="160">First Name</td>
+		<td>Name</td>
 		<td>
-			{{ form_widget(form.person.first_name) }}
-		</td>
-	</tr>
-
-	<tr>
-		<td>Last Name</td>
-		<td>
-			{{ form_widget(form.person.last_name) }}
+			{{ form_widget(form.person.name) }}
 		</td>
 	</tr>
 
@@ -46,6 +39,13 @@
 			</td>
 		</tr>
 	{% endif %}
+
+	<tr>
+		<td width="160">Subject</td>
+		<td>
+			{{ form_widget(form.ticket.subject) }}
+		</td>
+	</tr>
 
 	<tr>
 		<td>Department</td>
@@ -77,11 +77,8 @@
 	{% endif %}
 
 	<tr>
-		<td>&nbsp;</td>
+		<td style="vertical-align: top; padding-top: 8px;">Message</td>
 		<td>
-			<small>Subject:</small><br />
-			{{ form_widget(form.ticket.subject) }}<br />
-			<small>Message:</small><br />
 			{{ form_widget(form.ticket.message) }}
 		</td>
 	</tr>
