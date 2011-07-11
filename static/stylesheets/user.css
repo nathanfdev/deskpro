@@ -845,3 +845,21 @@ li.new-comment textarea {
 .article .page-title {
     margin-bottom: 8px;
 }
+
+
+
+/*****************************************************************
+* portal types
+******************************************************************/
+
+.portal_staff .content-list .item {
+    padding-top: 0;
+    padding-bottom: 0;
+    line-height: 44px;
+}
+
+.portal_staff .content-list .item div {
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+    padding-left: 46px;
+}
