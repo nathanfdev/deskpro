@@ -44,6 +44,11 @@ class PersonGuest extends Person
 		return $this->usergroups;
 	}
 
+	public function isGuest()
+	{
+		return true;
+	}
+
 	/** @orm:PrePersist */
 	public function noPersist()
 	{

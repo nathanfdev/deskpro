@@ -436,6 +436,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$this->_person_logger->recordExtra('person_created', true);
 	}
 
+	public function isGuest()
+	{
+		return false;
+	}
+
 	/**
 	 * @orm:PostLoad
 	 */

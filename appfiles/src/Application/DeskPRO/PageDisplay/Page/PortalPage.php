@@ -60,6 +60,9 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			array(
 				'type' => 'omni_search',
 			),
+			array(
+				'type' => 'notifications',
+			),
 		);
 
 		$content_pagedisplay = new PortalPageDisplay();

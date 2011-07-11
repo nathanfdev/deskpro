@@ -983,6 +983,61 @@ li.new-comment textarea {
 }
 
 /*********
+* portal_notifications
+**********/
+
+.portal_nortifications {
+    background-color: #F0F3F7;
+    background: #F0F3F7 url(../images/icons/info-large.png) no-repeat 6px 6px;
+    padding: 8px 8px 8px 58px;
+
+    min-height: 60px;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    margin-bottom: 10px;
+}
+
+.portal_nortifications ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+.portal_nortifications ul li {
+    background-color: #fff;
+    border: 1px solid #E3E3E3;
+    border-top: none;
+    padding:  6px;
+}
+
+.portal_nortifications ul li:first-child {
+    border-top: 1px solid #E3E3E3;
+}
+
+.portal_nortifications ul li .name {
+    color: #7A7A7A;
+}
+
+.portal_nortifications ul li .dismiss {
+    display: block;
+    width: 13px;
+    height: 13px;
+    text-indent: -100px;
+    overflow: hidden;
+    background: url(../images/close-small.png) no-repeat 0 0;
+    float: right;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
+.portal_nortifications .dismiss-all {
+    float: right;
+    margin-top: 3px;
+}
+
+/*********
 * portal_staff
 **********/
 
