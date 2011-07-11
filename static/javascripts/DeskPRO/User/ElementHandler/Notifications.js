@@ -5,12 +5,19 @@ DeskPRO.User.ElementHandler.Notifications = new Orb.Class({
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
-		$('.dismiss', this.el).click(function() {
+		var self = this;
+		$('.dismiss', this.el).click(function(ev) {
 			var li = $(this).parent();
-			li.fadeOut();
+
+			if ($('li', self.el).length > 1) {
+				li.fadeOut('fast', function() { li.remove(); });
+			} else {
+				$('#user_notifs').fadeOut();
+			}
 		});
 
-		$('.dismiss-all', this.el).click(function() {
+		$('.dismiss-all', this.el).click(function(ev) {
+			ev.preventDefault();
 			$('#user_notifs').slideUp();
 		});
 	}
