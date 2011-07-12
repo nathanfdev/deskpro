@@ -40,6 +40,9 @@
 	<div class="post">{{ article.content_html|raw }}</div>
 
 	<div class="user-vote">
+		<div style="float:left; margin-top: 2px;">
+			<em>{{ rand(0, 100) }}</em> people found this article helpful
+		</div>
 		<form action="{{ path('user_articles_rate', {'article_id': article.id}) }}" method="post">
 			{% if rating_this %}
 				{% if rating_this > 1 %}
@@ -48,9 +51,8 @@
 					You didn't like this article
 				{% endif %}
 			{% else %}
-				<input type="radio" value="1" name="rating" {% if rating_this == 1 or not rating_this %}checked="checked"{% endif %}/> This article was helpful
-				<input type="radio" value="-1" name="rating" {% if rating_this == -1 %}checked="checked"{% endif %}/> This article was not helpful
-				<input type="submit" value="vote" />
+				<button class="good" value="1" name="rating"><span>This article was helpful</span></button>
+				<button class="bad" value="-1" name="rating"><span>This article was not helpful</span></button>
 			{% endif %}
 		</form>
 	</div>
@@ -62,7 +64,7 @@
 		<div class="content-item">
 			<div class="heading"><h2>Comments</h2></div>
 			<div class="content-list">
-				<ul>
+				<ul class="comments">
 					<li class="new-comment">
 						<form action="{{ path('user_articles_newcomment', {'article_id': article.id}) }}" method="post">
 							<table cellspacing="0" cellpadding="0">

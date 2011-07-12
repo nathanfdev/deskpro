@@ -929,6 +929,52 @@ ul.sidebar-nav li.profile span {
     padding: 6px;
 }
 
+.article .user-vote {
+    text-align: right;
+}
+
+.article .user-vote button {
+    -moz-border-radius: 5px 5px 7px 7px;
+    -webkit-border-radius: 5px 5px 7px 7px;
+    border-radius: 5px 5px 7px 7px;
+
+    border: 1px solid #AFB1B1;
+
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 );
+    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+
+    font-weight: bold;
+    color: #4B5157;
+    padding:  3px;
+    min-width: 150px;
+    cursor: pointer;
+}
+
+.article .user-vote button span {
+    background-position: 3px 50%;
+    background-repeat: no-repeat;
+    padding-left: 22px;
+}
+
+.article .user-vote button.good span {
+    background-image: url(../images/icons/tick.png);
+}
+.article .user-vote button.bad span {
+    background-image: url(../images/icons/cross.png);
+}
+
+.article .user-vote button:hover {
+    -webkit-box-shadow: inset 0px 0px 3px 2px #d6d6d6;
+    -moz-box-shadow: inset 0px 0px 3px 2px #d6d6d6;
+    box-shadow: inset 0px 0px 3px 2px #d6d6d6;
+}
+
 li.new-comment table {
     width: 400px;
 }
