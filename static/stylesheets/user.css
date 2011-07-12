@@ -672,6 +672,11 @@ a {
     padding-left: 20px;
 }
 
+.portal_ideas .content-list.overview-table ul li {
+    background: url(../images/icons/bulb.png) no-repeat 0 49%;
+    padding-left: 20px;
+}
+
 .content-list .icon-zip {
     background: url(../images/icons/page_white_zip.png) no-repeat 6px 50%;
     padding-left: 27px;
@@ -717,9 +722,42 @@ a {
     background: url(../images/icons/star.png) no-repeat 0 50%;
 }
 
+#content .portal_ideas li .ideas-votes {
+    float: left;
+    width: 16px;
+    height: 22px;
+    background: url(../images/icons/bulb.png) no-repeat 50% 0;
+    position: relative;
+    margin-right: 6px;
+}
+
+#content .portal_ideas ul.popular li .ideas-votes {
+    background: url(../images/icons/star.png) no-repeat 50% 0;
+}
+
+#content .portal_ideas li .ideas-votes div.votes {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    font-size: 9px;
+    text-align: center;
+    line-height: 100%;
+}
+
+#content .portal_ideas li .ideas-votes div.votes span {
+    background-color: #000;
+    color: #fff;
+    padding: 0 1px 0 1px;
+    
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
 #content .portal_ideas li h4 {
-    background: url(../images/icons/bulb.png) no-repeat 0 50%;
-    padding-left: 20px;
+    line-height: 23px;
 }
 
 

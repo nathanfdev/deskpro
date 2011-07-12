@@ -1,12 +1,15 @@
 {% for idea in ideas %}
 	<li>
-		<h4><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h4>
-		<div class="info-line">
+		<div class="info-line" style="float: right">
 			<ul>
-				<li>{{ idea.date_created|date('M j') }}</li>
-				<li>{{ idea.category_name }}</li>
+				<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+				<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
 			</ul>
 		</div>
+		<div class="ideas-votes" title="Votes in favor of this idea">
+			<div class="votes"><span>{{ rand(1,80) }}</span></div>
+		</div>
+		<h4><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h4>
 	</li>
 {% else %}
 	<li>There are no ideas in this category.</li>

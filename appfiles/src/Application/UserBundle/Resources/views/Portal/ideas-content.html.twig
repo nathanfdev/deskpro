@@ -2,103 +2,169 @@
 	<div class="heading">
 		<div class="heading-tabs">
 			<ul>
-				<li class="on browser">Browse</li>
-				<li>Recent</li>
-				<li>Popular</li>
+				<li data-tab-for=".browse">Browse</li>
+				<li class="on" data-tab-for=".find">Find</li>
+				<li data-tab-for=".recent">Recent</li>
+				<li data-tab-for=".popular">Popular</li>
 			</ul>
 		</div>
 		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Feedback') }}</a></h2>
 	</div>
-	<div class="content-list overview-table">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				<td width="50%">
-					<h3><a>Sales <span>(16)</span></a></h3>
-					<ul>
-						<li><a>Can I change the License URL?</a></li>
-						<li><a>I've ordered, but I haven't received my license</a></li>
-						<li><a>License Upgrades</a></li>
-						<li><a>What is Encoding?</a></li>
-						<li><a>How much is DeskPRO?</a></li>
-					</ul>
-				</td>
-				<td width="50%">
-					<h3><a>Troubleshooting <span>(10)</span></a></h3>
-					<ul>
-						<li><a>Blank or White Pages</a></li>
-						<li><a>Can I update tech alerts from the admin control panel?</a></li>
-						<li><a>Email Gateways in v3.3.x</a></li>
-						<li><a>I enabled Force SSL and now I can't load my site</a></li>
-						<li><a>The knowledgebase is not displayed</a></li>
-					</ul>
-				</td>
-			</tr>
-			<tr>
-				<td width="50%">
-					<h3><a>Sales <span>(16)</span></a></h3>
-					<ul>
-						<li><a>Can I change the License URL?</a></li>
-						<li><a>I've ordered, but I haven't received my license</a></li>
-						<li><a>License Upgrades</a></li>
-						<li><a>What is Encoding?</a></li>
-						<li><a>How much is DeskPRO?</a></li>
-					</ul>
-				</td>
-				<td width="50%">
-					<h3><a>Troubleshooting <span>(10)</span></a></h3>
-					<ul>
-						<li><a>Blank or White Pages</a></li>
-						<li><a>Can I update tech alerts from the admin control panel?</a></li>
-						<li><a>Email Gateways in v3.3.x</a></li>
-						<li><a>I enabled Force SSL and now I can't load my site</a></li>
-						<li><a>The knowledgebase is not displayed</a></li>
-					</ul>
-				</td>
-			</tr>
-			<tr>
-				<td width="50%">
-					<h3><a>Sales <span>(16)</span></a></h3>
-					<ul>
-						<li><a>Can I change the License URL?</a></li>
-						<li><a>I've ordered, but I haven't received my license</a></li>
-						<li><a>License Upgrades</a></li>
-						<li><a>What is Encoding?</a></li>
-						<li><a>How much is DeskPRO?</a></li>
-					</ul>
-				</td>
-				<td width="50%">
-					<h3><a>Troubleshooting <span>(10)</span></a></h3>
-					<ul>
-						<li><a>Blank or White Pages</a></li>
-						<li><a>Can I update tech alerts from the admin control panel?</a></li>
-						<li><a>Email Gateways in v3.3.x</a></li>
-						<li><a>I enabled Force SSL and now I can't load my site</a></li>
-						<li><a>The knowledgebase is not displayed</a></li>
-					</ul>
-				</td>
-			</tr>
-			<tr>
-				<td width="50%">
-					<h3><a>Sales <span>(16)</span></a></h3>
-					<ul>
-						<li><a>Can I change the License URL?</a></li>
-						<li><a>I've ordered, but I haven't received my license</a></li>
-						<li><a>License Upgrades</a></li>
-						<li><a>What is Encoding?</a></li>
-						<li><a>How much is DeskPRO?</a></li>
-					</ul>
-				</td>
-				<td width="50%">
-					<h3><a>Troubleshooting <span>(10)</span></a></h3>
-					<ul>
-						<li><a>Blank or White Pages</a></li>
-						<li><a>Can I update tech alerts from the admin control panel?</a></li>
-						<li><a>Email Gateways in v3.3.x</a></li>
-						<li><a>I enabled Force SSL and now I can't load my site</a></li>
-						<li><a>The knowledgebase is not displayed</a></li>
-					</ul>
-				</td>
-			</tr>
-		</table>
+
+	{# Browse #}
+	<div class="tab-contents">
+		<div class="browse tab-content">
+			<div class="content-list overview-table">
+				<table cellspacing="0" cellpadding="0" width="100%">
+					<tr>
+						<td width="50%">
+							<h3><a>General <span>(16)</span></a></h3>
+							<ul>
+								<li><a>Reporting expansion</a></li>
+								<li><a>Multiple Helpdesks Integration</a></li>
+								<li><a>Deskpro Plugins Module</a></li>
+								<li><a>Allow feedback from anonymous users</a></li>
+								<li><a>type ahead search feature</a></li>
+							</ul>
+						</td>
+						<td width="50%">
+							<h3><a>Tickets <span>(10)</span></a></h3>
+							<ul>
+								<li><a>Ticket Details in User replies emails</a></li>
+								<li><a>Category Specific Workflows</a></li>
+								<li><a>Email Gateways in v3.3.x</a></li>
+								<li><a>Last replier in ticket listing in user area</a></li>
+								<li><a>Super Users</a></li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							<h3><a>Gateways <span>(4)</span></a></h3>
+							<ul>
+								<li><a>Approve @domain.com email addresses automatically.</a></li>
+								<li><a>Expanded Rule criteria & actions</a></li>
+								<li><a>ability to override gateway rules per user</a></li>
+								<li><a>Auto-add users as participants to other tickets</a></li>
+							</ul>
+						</td>
+						<td width="50%">
+							<h3><a>Users <span>(3)</span></a></h3>
+							<ul>
+								<li><a>Turn on/off auto responder in user area</a></li>
+								<li><a>Secure File Distribution To Users</a></li>
+								<li><a>Link user accounts to custom fields</a></li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							<h3><a>Knowledgebase <span>(1)</span></a></h3>
+							<ul>
+								<li><a>Copy Article</a></li>
+							</ul>
+						</td>
+						<td width="50%">
+							<h3><a>Plugins <span>(3)</span></a></h3>
+							<ul>
+								<li><a>Manage orders manually</a></li>
+								<li><a>Https support for the desktop notifier</a></li>
+								<li><a>Disable buying subscriptions from user interface</a></li>
+							</ul>
+						</td>
+					</tr>
+				</table>
+			</div>
+		</div>
+		{# /Browse #}
+
+		{# Find #}
+		<div class="find tab-content">
+			<div class="content-filters">
+				<table cellspacing="0" cellpadding="0" width="100%">
+					<tr>
+						<td>Category:</td>
+						<td>Search:</td>
+						<td>Sort:</td>
+						<td rowspan="2"><button>Search</button></td>
+					</tr>
+					<tr>
+						<td>
+							<select class="kb-cat-choose">
+								<option value="0">All</option>
+								{% for cat in cats %}
+									<option value="{{cat.id}}">{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+								{% endfor %}
+							</select>
+						</td>
+						<td>
+							<input type="text" placeholder="Enter a search term" />
+						</td>
+						<td>
+							<select>
+								<option value="">All</option>
+								<option value="">DeskPRO</option>
+								<option value="">DeskPRO Live</option>
+							</select>
+						</td>
+						<td>
+							<select>
+								<option>Date</option>
+								<option>Votes</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="content-list">
+				<ul>
+					{{ html|raw }}
+					{{ html|raw }}
+					{{ html|raw }}
+				</ul>
+			</div>
+			<div class="content-pages">
+				<div class="num-info">1-10 of 230 results</div>
+				<div class="pager">
+					Page
+					<select><option>1</option><option>2</option><option>3</option></select>
+					of 3
+					<button>Next</button>
+				</div>
+			</div>
+		</div>
+		{# /Find #}
+
+		{# Recent #}
+		<div class="recent tab-content">
+			<div class="content-list">
+				<ul>
+					{{ html|raw }}
+					{{ html|raw }}
+					{{ html|raw }}
+					{{ html|raw }}
+				</ul>
+			</div>
+			<div class="content-more">
+				<button>More</button>
+			</div>
+		</div>
+		{# /Recent #}
+
+		{# Popular #}
+		<div class="popular tab-content">
+			<div class="content-list">
+				<ul class="popular">
+					{{ html|raw }}
+					{{ html|raw }}
+					{{ html|raw }}
+					{{ html|raw }}
+				</ul>
+			</div>
+			<div class="content-more">
+				<button>More</button>
+			</div>
+		</div>
+		{# /Popular #}
 	</div>
 </div>
