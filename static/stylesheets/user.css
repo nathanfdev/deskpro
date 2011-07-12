@@ -1206,3 +1206,23 @@ ul.comments li .message {
     background-position: 0 50%;
     padding-left: 46px;
 }
+
+/*********
+* portal_news
+**********/
+
+.portal_news .content-list > ul > li {
+    padding: 10px !important;
+}
+
+.portal_news .content-list li h4 {
+    margin-bottom: 12px;
+}
+
+.portal_news .content-list li .message {
+    line-height: 180%;
+}
+
+.portal_news .more-link {
+    margin-top: 10px;
+}

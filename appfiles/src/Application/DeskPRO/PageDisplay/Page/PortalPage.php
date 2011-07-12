@@ -74,6 +74,9 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			array(
 				'type' => 'ideas'
 			),
+			array(
+				'type' => 'news'
+			),
 		);
 
 		$sidebar_pagedisplay = new PortalPageDisplay();
