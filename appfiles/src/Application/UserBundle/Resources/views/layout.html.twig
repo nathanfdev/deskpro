@@ -58,6 +58,13 @@
 			{% endblock %}
 		</div>
 	</div>
+
+	<div class="span-24">
+		<div id="copy_footer">
+			<a class="up" href="#" onclick="$(document).scrollTop(0); return false;">Top</a>
+			<a href="http://www.deskpro.com/">Helpdesk software by <em>DeskPRO</em></a>
+		</div>
+	</div>
 </div>
 
 <hr class="space" />
@@ -65,20 +72,9 @@
 <div class="container">
 	<div class="span-24">
 		<div id="footer">
-			<ul class="links" style="float: right">
-				<li><a href="#" onclick="$(document).scrollTop(0); return false;">Top</a></li>
-			</ul>
 			<ul class="links">
 				<li><a href="{{ app.getSetting('core.site_url') }}">{{ app.getSetting('core.site_name') }}</a></li>
 			</ul>
-		</div>
-	</div>
-</div>
-
-<div class="container">
-	<div class="span-24">
-		<div id="copy_footer">
-			<a href="http://www.deskpro.com/">Helpdesk software by <em>DeskPRO</em></a>
 		</div>
 	</div>
 </div>
