@@ -900,8 +900,38 @@ ul.sidebar-nav li.profile span {
     clear: right;
 }
 
-.idea .votes {
+.idea .votes-wrap {
     float: left;
+    width: 50px;
+}
+
+.idea .votes-wrap button {
+    -moz-border-radius: 5px 5px 7px 7px;
+    -webkit-border-radius: 5px 5px 7px 7px;
+    border-radius: 5px 5px 7px 7px;
+
+    display: block;
+
+    border: 1px solid #AFB1B1;
+
+    background: rgb(255,255,255);
+    background: -moz-linear-gradient(top, rgba(255,255,255,1) 0%, rgba(229,229,229,1) 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,rgba(255,255,255,1)), color-stop(100%,rgba(229,229,229,1)));
+    background: -webkit-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+    background: -o-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+    background: -ms-linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#ffffff', endColorstr='#e5e5e5',GradientType=0 );
+    background: linear-gradient(top, rgba(255,255,255,1) 0%,rgba(229,229,229,1) 100%);
+
+    color: #4B5157;
+    padding: 1px 0 1px 0;
+    cursor: pointer;
+    font-size: 10px;
+    margin-top: 2px;
+    width: 50px;
+}
+
+.idea .votes {
     background-color: #edeff2;
     padding: 3px;
 
@@ -915,8 +945,6 @@ ul.sidebar-nav li.profile span {
     font-size: 13px;
     font-weight: bold;
     text-align: center;
-
-    width: 50px;
 
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
@@ -933,6 +961,7 @@ ul.sidebar-nav li.profile span {
 
 .idea .description {
     margin-left: 65px;
+    margin-bottom: 15px;
 }
 
 
@@ -946,6 +975,51 @@ ul.sidebar-nav li.profile span {
     margin-bottom: 8px;
 
     padding: 6px;
+}
+
+#idea_vote_menu_wrap {
+    position: absolute;
+}
+
+#idea_vote_menu {
+    background-color: #EDEFF2;
+
+    -webkit-box-shadow: 2px 2px 10px 0px rgba(0,0,0, 0.6);
+    -moz-box-shadow: 2px 2px 10px 0px rgba(0,0,0, 0.6);
+    box-shadow: 2px 2px 10px 0px rgba(0,0,0, 0.6);
+
+    border: 1px solid #A5A6A9;
+    border-top: none;
+    -moz-border-radius: 5px;
+    -webkit-border-radius:5px;
+    border-radius: 5px;
+
+    padding: 8px;
+
+    font-size: 11px;
+}
+
+#idea_vote_menu ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+#idea_vote_menu ul li {
+    background-color: #fff;
+    border: 1px solid #AEB0B2;
+    margin-right: 6px;
+    cursor: pointer;
+    display: block;
+    float: left;
+    min-width: 15px;
+    height: 15px;
+    text-align: center;
+    line-height: 15px;
+}
+
+#idea_vote_menu ul li.on {
+    border: 1px solid #000;
 }
 
 .article .user-vote {

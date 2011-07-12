@@ -278,6 +278,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/Window.js',
 		'javascripts/DeskPRO/User/Page/Abstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
+		'javascripts/DeskPRO/User/ElementHandler/IdeaView.js',
 
 	)
 );

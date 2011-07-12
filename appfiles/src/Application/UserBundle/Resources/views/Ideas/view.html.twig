@@ -12,10 +12,13 @@
 	<li><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></li>
 {% endblock %}
 {% block content %}
-<div class="idea">
-	<div class="votes">
-		<div class="count">{{idea.num_votes}}</div>
-		<span>votes</span>
+<div class="idea with-handler" data-element-handler="DeskPRO.User.ElementHandler.IdeaView">
+	<div class="votes-wrap">
+		<div class="votes">
+			<div class="count">{{idea.num_votes}}</div>
+			<span>votes</span>
+		</div>
+		<button id="submit_vote_trigger">vote</button>
 	</div>
 	<div class="description">
 		<div class="cal-date" title="{{ idea.date_created|date('M d Y @ H:i:s') }}">
@@ -33,20 +36,20 @@
 			{{idea.content_html|raw}}
 		</div>
 
-		<div class="user-vote">
-			<form action="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}" method="post">
-				You have {{num_votes_remain}} votes remaining.
-				<br />
-				{% if num_votes_this %}
-					You've used {{num_votes_this}} votes on this idea. Change your vote:
-				{% else %}
-					Vote on this idea:
-				{% endif %}
-				<input type="radio" value="1" name="vote" {% if num_votes_this == 1 or not num_votes_this %}checked="checked"{% endif %}/>1
-				<input type="radio" value="2" name="vote" {% if num_votes_this == 2 %}checked="checked"{% endif %}/>2
-				<input type="radio" value="3" name="vote" {% if num_votes_this == 3 %}checked="checked"{% endif %}/>3
-				<input type="submit" value="vote" />
-			</form>
+		<div id="idea_vote_menu_wrap" style="display: none">
+			<div id="idea_vote_menu">
+				<form action="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}" method="post">
+					You have {{num_votes_remain}} votes remaining. How many do you want to use?
+					<br />
+					<ul>
+						<li class="on">&nbsp;None&nbsp;</li>
+						<li>1</li>
+						<li>2</li>
+						<li>3</li>
+					</ul>
+					<br class="clear" />
+				</form>
+			</div>
 		</div>
 	</div>
 
