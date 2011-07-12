@@ -129,11 +129,11 @@ DeskPRO.UI.Overlay = new Orb.Class({
 
 		} else {
 			var w = this.elements.wrapperOuter.outerWidth();
-			var pageW = $(document).width();
+			var pageW = $(window).width();
 			var leftForCenter = (pageW / 2) - (w / 2);
 
 			var h = this.elements.wrapperOuter.outerHeight();
-			var pageH = $(document).height();
+			var pageH = $(window).height();
 			var topForCenter = (pageH / 2) - (h / 2);
 
 			this.elements.wrapperOuter.css({

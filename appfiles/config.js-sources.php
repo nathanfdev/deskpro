@@ -274,6 +274,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/BasicWindow.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
+		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/User/Window.js',
 		'javascripts/DeskPRO/User/Page/Abstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',

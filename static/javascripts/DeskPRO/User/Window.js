@@ -36,6 +36,28 @@ DeskPRO.User.Window = new Orb.Class({
 		});
 
 		this.elementHandlers = elementHandlers;
+
+		$('a.in-overlay').click(function(ev) {
+			ev.preventDefault();
+			
+			var el = $(this);
+			var url = el.attr('href');
+			if (url.indexOf('?') !== -1) {
+				url += '&_partial';
+			} else {
+				url += '?_partial';
+			}
+
+			var overlay = new DeskPRO.UI.Overlay({
+				contentMethod: 'ajax',
+				contentAjax: {
+					url: url
+				},
+				destroyOnClose: true
+			});
+
+			overlay.open();
+		});
 	},
 
 	getHandler: function(id) {
