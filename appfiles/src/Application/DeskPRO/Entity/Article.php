@@ -289,6 +289,11 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$this->markup_mode = self::MARKUP_MODE_MARKDOWN;
 	}
 
+	public function addToCategory(ArticleCategory $cat)
+	{
+		$this->categories->add($cat);
+	}
+
 	public function getCategoryNames($sep = ', ')
 	{
 		$cats = array();

@@ -165,6 +165,15 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function setFirstCommentText($text)
+	{
+		$comment = new IdeaComment();
+		$comment->person = $this->person;
+		$comment->content = $text;
+
+		$this->setFirstComment($comment);
+	}
+
 	public function setFirstComment(IdeaComment $comment)
 	{
 		$this->_onPropertyChanged('first_comment', $this->first_comment, $comment);

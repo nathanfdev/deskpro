@@ -8,46 +8,44 @@ use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
-class IdeaSearch extends SearcherAbstract
+class ArticleSearch extends SearcherAbstract
 {
 	const TERM_ID              = 'id';
 	const TERM_STATUS          = 'status';
-	const TERM_CATEGORY        = 'category';
 	const TERM_HIDDEN_STATUS   = 'hidden_status';
-	const TERM_VOTES           = 'num_votes';
+	const TERM_CATEGORY        = 'category';
 	const TERM_DATE_CREATED    = 'date_created';
-	const TERM_POPULAR         = 'popular';
+	const TERM_VIEW_COUNT      = 'view_count';
 	const TERM_LABEL           = 'label';
 
 	const ORDER_ID    = 'id';
 	const ORDER_DATE  = 'id';
-	const ORDER_VOTES = 'num_votes';
+	const ORDER_VIEWS = 'view_count';
 
-	
 	/**
 	 * Run the search and return an array of matching ID's.
 	 *
-	 * @param int $limit
+	 * @param array $limit
 	 * @return array
 	 */
 	public function getMatches(array $limit = null)
 	{
 		$db = App::getDb();
 
-		$idea_ids = $db->fetchAllCol($this->getSql($limit));
+		$article_ids = $db->fetchAllCol($this->getSql($limit));
 
-		return $idea_ids;
+		return $article_ids;
 	}
-	
+
 
 	/**
 	 * Get the total number of matches
-	 * 
+	 *
 	 * @return int
 	 */
 	public function getCount()
 	{
-		$sql = "SELECT COUNT(*) FROM ideas ";
+		$sql = "SELECT COUNT(*) FROM articles ";
 		$parts = $this->getSqlParts();
 
 		#------------------------------
@@ -58,7 +56,7 @@ class IdeaSearch extends SearcherAbstract
 			if (is_array($j)) {
 				$sql .= $j[1] . " ";
 			} else {
-				$sql .= "LEFT JOIN $j ON $j.idea_id = ideas.id ";
+				$sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
 			}
 		}
 
@@ -77,7 +75,7 @@ class IdeaSearch extends SearcherAbstract
 			$sql .= implode(" AND ", $parts['wheres']);
 		}
 
-		$sql .= " GROUP BY ideas.id ";
+		$sql .= " GROUP BY articles.id ";
 
 		$count = App::getDb()->fetchColumn($sql);
 
@@ -87,12 +85,12 @@ class IdeaSearch extends SearcherAbstract
 
 	/**
 	 * Get the SQL query that'll fetch the results
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getSql(array $limit = null)
 	{
-		$sql = "SELECT ideas.id FROM ideas ";
+		$sql = "SELECT articles.id FROM articles ";
 
 		$parts = $this->getSqlParts();
 		$order_by = $this->getOrderByPart();
@@ -106,7 +104,7 @@ class IdeaSearch extends SearcherAbstract
 			if (is_array($j)) {
 				$sql .= $j[1] . " ";
 			} else {
-				$sql .= "LEFT JOIN $j ON $j.idea_id = ideas.id ";
+				$sql .= "LEFT JOIN $j ON $j.article_id = articles.id ";
 			}
 		}
 
@@ -125,7 +123,7 @@ class IdeaSearch extends SearcherAbstract
 			$sql .= implode(" AND ", $parts['wheres']);
 		}
 
-		$sql .= " GROUP BY ideas.id ";
+		$sql .= " GROUP BY articles.id ";
 		$sql .= $order_by;
 
 		if ($limit) {
@@ -162,17 +160,17 @@ class IdeaSearch extends SearcherAbstract
 		switch ($type) {
 			case 'id':
 			case 'date':
-				$order_by = "ORDER BY ideas.id $dir";
+				$order_by = "ORDER BY articles.id $dir";
 				break;
 
-			case 'num_votes':
-				$order_by = "ORDER BY ideas.num_votes $dir";
+			case 'view_count':
+				$order_by = "ORDER BY articles.view_count $dir";
 				break;
 		}
 
 		return $order_by;
 	}
-
+	
 
 	/**
 	 * Get the SQL parts we need in the query.
@@ -195,44 +193,15 @@ class IdeaSearch extends SearcherAbstract
 
 			switch ($term) {
                 case self::TERM_ID:
-					$wheres[] = $this->_rangeMatch("ideas.id", $op, $choice, true);
+					$wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
 					break;
 
 				case self::TERM_HIDDEN_STATUS:
-					$wheres[] = $this->_stringMatch('ideas.hidden_status', $op, $choice);
+					$wheres[] = $this->_stringMatch('articles.hidden_status', $op, $choice);
 					break;
 
 				case self::TERM_STATUS:
-
-					$cats = array();
-					$types = array();
-
-					foreach ((array)$choice as $c) {
-						if (ctype_digit($c)) {
-							$cats[] = $c;
-						} else {
-							$types[] = $c;
-						}
-					}
-
-					// Visible is a special type name
-					if (($k = array_search('visible', $types)) !== null) {
-						unset($types[$k]);
-						$types = array_merge($types, array('new', 'active', 'closed'));
-						$types = array_unique($types);
-					}
-
-					$part_where = array();
-					if ($cats) {
-						$part_where[] = $this->_choiceMatch('ideas.status_category_id', $op, $cats);
-					}
-					if ($types) {
-						$part_where[] = $this->_stringMatch('ideas.status', $op, $types);
-					}
-
-					$part_where = "(" . implode(' OR ', $part_where) . ")";
-					$wheres[] = $part_where;
-
+					$wheres[] = $this->_stringMatch('articles.status', $op, $choice);
 					break;
 
 				case self::TERM_CATEGORY:
@@ -240,29 +209,20 @@ class IdeaSearch extends SearcherAbstract
 					$ids = array();
 
 					foreach ($base_ids as $id) {
-						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($id, true));
+						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:ArticleCategory')->getIdsInTree($id, true));
 					}
 
 					$ids = array_unique($ids);
 
-					$wheres[] = $this->_choiceMatch('ideas.category_id', $op, $ids);
+					$wheres[] = $this->_choiceMatch('articles.category_id', $op, $ids);
 					break;
 
-				case self::TERM_VOTES:
-					$wheres[] = $this->_rangeMatch('ideas.num_votes', $op, $choice);
-					break;
-
-				case self::TERM_POPULAR:
-					$choice = array_pop($choice);
-					// must be 1
-					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
-					if ($choice) {
-						$wheres[] = $this->_rangeMatch('ideas.num_votes', 'gte', App::getSetting('core_ideas.popular_votes'));
-					}
+				case self::TERM_VIEW_COUNT:
+					$wheres[] = $this->_rangeMatch('articles.view_count', $op, $choice);
 					break;
 
 				case self::TERM_DATE_CREATED:
-					$wheres[] = $this->_dateMatch('idaes.date_created', $op, $choice);
+					$wheres[] = $this->_dateMatch('articles.date_created', $op, $choice);
 					break;
 
 				case self::TERM_LABEL:
@@ -279,30 +239,30 @@ class IdeaSearch extends SearcherAbstract
 					switch ($op) {
 						case self::OP_IS:
 							$joins[] = array(
-								'labels_ideas',
-								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id)"
+								'labels_articles',
+								"LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)"
 							);
 							$wheres[] = "$join_name.label = " . $db->quote($choice);
 							break;
 						case self::OP_NOT:
 							$joins[] = array(
-								'labels_ideas',
-								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id AND $join_name.label = '.$db->quote($choice).')"
+								'labels_articles',
+								"LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label = '.$db->quote($choice).')"
 							);
 							$wheres[] = "$join_name.person_id IS NULL";
 							break;
 						case self::OP_CONTAINS:
 							$joins[] = array(
-								'labels_ideas',
-								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id)"
+								'labels_articles',
+								"LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id)"
 							);
 							$wheres[] = "$join_name.label IN ($choices_in)";
 							break;
 
 						case self::OP_NOTCONTAINS:
 							$joins[] = array(
-								'labels_ideas',
-								"LEFT JOIN labels_ideas AS $join_name ON ($join_name.idea_id = ideas.id AND $join_name.label IN ($choices_in)"
+								'labels_articles',
+								"LEFT JOIN labels_articles AS $join_name ON ($join_name.article_id = articles.id AND $join_name.label IN ($choices_in)"
 							);
 							$wheres[] = "$join_name.person_id IS NULL";
 							break;
