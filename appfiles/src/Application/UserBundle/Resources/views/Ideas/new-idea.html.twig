@@ -17,17 +17,17 @@
 <div class="input-form">
 <table cellspacing="0" cellpadding="0" width="100%">
 	<tr>
-		<td width="160">Category</td>
-		<td>{{ form_widget(form.category_id) }}</td>
-	</tr>
-
-	<tr>
-		<td>Title</td>
+		<td width="180">What is your idea?</td>
 		<td>{{ form_widget(form.title) }}</td>
 	</tr>
 
 	<tr>
-		<td>Description</td>
+		<td>Category</td>
+		<td>{{ form_widget(form.category_id) }}</td>
+	</tr>
+
+	<tr>
+		<td style="vertical-align: top; padding-top: 8px;">More details to explain your idea</td>
 		<td>{{ form_widget(form.content) }}</td>
 	</tr>
 

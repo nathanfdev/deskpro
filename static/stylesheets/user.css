@@ -340,7 +340,7 @@ a {
     width: 250px;
 }
 
-.input-form #newticket_ticket_message {
+.input-form #newticket_ticket_message, .input-form #idea_content {
     width: 400px;
     height: 160px;
 }
