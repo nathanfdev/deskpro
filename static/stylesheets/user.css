@@ -948,7 +948,60 @@ li.new-comment textarea {
     margin-bottom: 8px;
 }
 
+ul.comments li.agent .author-line {
+    background-color: #F2EFCE;
+}
 
+ul.comments li.agent .author-line h4 span {
+    background: url(../images/icons/star.png) no-repeat 100% 50%;
+    padding-right: 22px;
+}
+
+ul.comments li .author-line {
+    background-color: #EBF1FF;
+}
+
+ul.comments li .author-line h4 {
+    font-weight: bold;
+    font-size: 14px;
+    padding: 5px;
+    padding-bottom: 2px;
+    margin: 0;
+}
+
+ul.comments li .author-line div.date {
+    font-size: 10px;
+    color: #616878;
+    line-height: 100%;
+    padding-left: 5px;
+    padding-bottom: 5px;
+}
+
+ul.comments li .author-line .avatar {
+    float: left;
+    width: 30px;
+    height: 30px;
+    overflow: hidden;
+    margin: 5px 5px 0 5px;
+    background-repeat: no-repeat;
+    background-position: 0 0;
+}
+
+ul.comments li .comment-num {
+    float: right;
+    padding:  5px;
+}
+
+ul.comments li .comment-num a {
+    font-size: 14px;
+    color: #A8ABC1;
+    font-style: italic;
+    cursor: pointer;
+}
+
+ul.comments li .message {
+    padding: 5px;
+}
 
 /*****************************************************************
 * portal types

@@ -1,0 +1,20 @@
+<li {% if loop.index == 2 %}class="agent"{% endif %}>
+	<div class="author-line">
+		{% if loop.index %}
+			<div class="comment-num">
+				<a name="comment-{{comment.id|encode_number}}"></a>
+				<a href="#comment-{{comment.id|encode_number}}">{{ loop.index }}</a>
+			</div>
+		{% endif %}
+		{% if comment.person %}
+			<div class="avatar" style="background-image: url('{{ comment.person.getPictureUrl(30) }}');"></div>
+		{% else %}
+			<div class="avatar" style="background-image: url('{{ path('serve_default_picture', {'s': 30}) }}');"></div>
+		{% endif %}
+		<h4><span {% if loop.index == 2 %}title="This person is a helpdesk agent"{% endif %}>{{ comment.name|default('Anonymous') }}</span></h4>
+		<div class="date">{{ comment.date_created|date('M j, Y') }}</div>
+	</div>
+	<div class="message">
+		{{ comment.content_html|raw }}
+	</div>
+</li>

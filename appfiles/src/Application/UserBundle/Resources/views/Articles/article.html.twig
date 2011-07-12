@@ -95,10 +95,7 @@
 					</li>
 
 					{% for comment in comments %}
-						<li>
-							<em>{{ comment.name|default('Anonymous') }}</em>:<br />
-							{{ comment.content_html|raw }}
-						</li>
+						{% include 'UserBundle:Common:comment.html.twig' %}
 					{% endfor %}
 				</ul>
 			</div>

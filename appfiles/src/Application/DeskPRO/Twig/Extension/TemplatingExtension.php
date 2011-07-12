@@ -69,8 +69,20 @@ class TemplatingExtension extends \Twig_Extension
             'raw_url_encode' => new \Twig_Filter_Method($this, 'rawUrlEncode', array('is_safe' => array('html'))),
 			'repeat' => new \Twig_Filter_Method($this, 'strRepeat'),
 			'trim' => new \Twig_Filter_Method($this, 'strTrim'),
+			'encode_number' => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
+			'decode_number' => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
         );
     }
+
+	public function encNum($num)
+	{
+		return Util::baseEncode((int)$num, Util::LETTERS_ALPHABET);
+	}
+
+	public function decNum($num)
+	{
+		return Util::baseDecode((int)$num, Util::LETTERS_ALPHABET);
+	}
 
 	public function rand($min = 1, $max = 10)
 	{

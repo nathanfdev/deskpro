@@ -56,7 +56,7 @@
 		<div class="content-item">
 			<div class="heading"><h2>Comments</h2></div>
 			<div class="content-list">
-				<ul>
+				<ul class="comments">
 					<li class="new-comment">
 						<form action="{{ path('user_ideas_newcomment', {'idea_id': idea.id}) }}" method="post">
 							<table cellspacing="0" cellpadding="0">
@@ -90,10 +90,7 @@
 
 					{% for comment in comments %}
 						{% if comment.id != idea.first_comment.id %}{# < because comment 1 is actually the post #}
-						<li>
-							<em>{{ comment.name|default('Anonymous') }}</em>:<br />
-							{{ comment.content_html|raw }}
-						</li>
+							{% include 'UserBundle:Common:comment.html.twig' %}
 						{% endif %}
 					{% endfor %}
 				</ul>
@@ -101,76 +98,5 @@
 		</div>
 	{% endif %}
 </div>
-
-{#
-
-<div style="margin-left:200px;">
-
-	<div style="margin-left:90px">
-		<div style="float:right">
-			{{idea.date_created|date('Y-m-d')}}
-		</div>
-
-		<h4>{{idea.title}}</h4>
-
-		{% if related_content %}
-			{% include 'UserBundle:Common:related-content-side.html.twig' %}
-		{% endif %}
-		{{idea.content_html|raw}}
-
-		<br style="clear: right" />
-
-		{% if idea.labels|length %}
-			{% include 'UserBundle:Common:labels-list.html.twig' with {'labels': idea.labels} %}
-		{% endif %}
-
-		<div style="background-color: #eee; padding: 10px; margin-top: 8px;">
-			<form action="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}" method="post">
-				You have {{num_votes_remain}} votes remaining.
-				<br />
-				{% if num_votes_this %}
-					You've used {{num_votes_this}} votes on this idea. Change your vote:
-				{% else %}
-					Vote on this idea:
-				{% endif %}
-				<input type="radio" value="1" name="vote" {% if num_votes_this == 1 or not num_votes_this %}checked="checked"{% endif %}/>1
-				<input type="radio" value="2" name="vote" {% if num_votes_this == 2 %}checked="checked"{% endif %}/>2
-				<input type="radio" value="3" name="vote" {% if num_votes_this == 3 %}checked="checked"{% endif %}/>3
-				<input type="submit" value="vote" />
-			</form>
-		</div>
-	</div>
-</div>
-
-<br style="clear:both" />
-
-{% if facebook_like %}
-<div style="margin: 10px;">
-	{{facebook_like|raw}}
-</div>
-{% endif %}
-
-{% if comments_widget %}
-	{{comments_widget|raw}}
-{% else %}
-	<div style="background-color: #eee; padding: 10px; margin-top: 15px;">
-		<form action="{{ path('user_ideas_newcomment', {'idea_id': idea.id}) }}" method="post">
-		Name: <input type="text" name="new_comment[name]" /> (public)<br />
-		Email: <input type="text" name="new_comment[email]" /> (private, never revealed)<br />
-		<textarea name="new_comment[content]" cols="80" rows="5"></textarea>
-		<input type="submit" value="Submit" />
-		</form>
-		<hr />
-
-		{% for comment in comments %}
-			<div style="background-color: #fff; padding: 6px; margin: 10px;">
-				<em>{{comment.name}}</em>:<br />
-				{{comment.content_html|raw}}
-			</div>
-		{% endfor %}
-	</div>
-{% endif %}
-
-#}
 
 {% endblock %}
