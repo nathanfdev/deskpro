@@ -83,12 +83,27 @@
 			<div class="content-filters">
 				<table cellspacing="0" cellpadding="0" width="100%">
 					<tr>
+						<td>Status:</td>
 						<td>Category:</td>
 						<td>Search:</td>
 						<td>Sort:</td>
 						<td rowspan="2"><button>Search</button></td>
 					</tr>
 					<tr>
+						<td>
+							<select class="ideas-status-choose">
+								<option value="">All</option>
+								<option value="new" selected="selected">New</option>
+								<option value="active">Active</option>
+								{% for cat in active_status_cats %}
+									<option value="{{cat.id}}">-- {{cat.title}}</option>
+								{% endfor %}
+								<option value="closed">Closed</option>
+								{% for cat in closed_status_cats %}
+									<option value="{{cat.id}}">-- {{cat.title}}</option>
+								{% endfor %}
+							</select>
+						</td>
 						<td>
 							<select class="kb-cat-choose">
 								<option value="0">All</option>
@@ -99,13 +114,6 @@
 						</td>
 						<td>
 							<input type="text" placeholder="Enter a search term" />
-						</td>
-						<td>
-							<select>
-								<option value="">All</option>
-								<option value="">DeskPRO</option>
-								<option value="">DeskPRO Live</option>
-							</select>
 						</td>
 						<td>
 							<select>
