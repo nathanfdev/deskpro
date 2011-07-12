@@ -273,6 +273,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/Orb/Compat.js',
 		'javascripts/DeskPRO/MessageBroker.js',
 		'javascripts/DeskPRO/BasicWindow.js',
+		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/User/Window.js',
 		'javascripts/DeskPRO/User/Page/Abstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',

@@ -2,69 +2,381 @@
 	<div class="heading">
 		<div class="heading-tabs">
 			<ul>
-				<li class="on browser">Browse</li>
-				<li>Recent</li>
-				<li>Popular</li>
+				<li data-tab-for=".browse">Browse</li>
+				<li class="on" data-tab-for=".find">Find</li>
+				<li data-tab-for=".recent">Recent</li>
+				<li data-tab-for=".popular">Popular</li>
 			</ul>
 		</div>
 		<h2><a href="{{ path('user_articles') }}">{{ title|default('Knowledgebase') }}</a></h2>
 	</div>
-	<div class="content-filters">
-		<table cellspacing="0" cellpadding="0" width="100%">
-			<tr>
-				<td>Category:</td>
-				<td>Search:</td>
-				<td>Product:</td>
-				<td>Sort:</td>
-				<td rowspan="2"><button>Search</button></td>
-			</tr>
-			<tr>
-				<td>
-					<select class="kb-cat-choose">
-						<option value="0">All</option>
-						{% for cat in cats %}
-							<option value="{{cat.id}}">{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
-						{% endfor %}
-					</select>
-				</td>
-				<td>
-					<input type="text" placeholder="Enter a search term" />
-				</td>
-				<td>
-					<select>
-						<option value="">All</option>
-						<option value="">DeskPRO</option>
-						<option value="">DeskPRO Live</option>
-					</select>
-				</td>
-				<td>
-					<select>
-						<option>Date</option>
-						<option>Popularity</option>
-					</select>
-				</td>
-			</tr>
-		</table>
-	</div>
-	<div class="content-list">
-		<ul>
-			{{ html|raw }}
-			<li><h4><a href="">Aliquam eget metus</a></h4></li>
-			<li><h4><a href="">tempus nibh fermentum</a></h4></li>
-			<li><h4><a href="">Nullam ac massa</a></h4></li>
-			<li><h4><a href="">Donec vitae urna</a></h4></li>
-			<li><h4><a href="">massa placerat pellentesque</a></h4></li>
-			<li><h4><a href="">Vestibulum tellus neque</a></h4></li>
-			<li><h4><a href="">Morbi vel urna</a></h4></li>
-		</ul>
-	</div>
-	<div class="content-pages">
-		<div class="num-info">1-10 of 230 results</div>
-		<div class="pager">
-			Page
-			<select><option>1</option><option>2</option><option>3</option></select>
-			of 3
-			<button>Next</button>
+
+	{# Browse #}
+	<div class="tab-contents">
+		<div class="browse tab-content">
+			<div class="content-list overview-table">
+				<table cellspacing="0" cellpadding="0" width="100%">
+					<tr>
+						<td width="50%">
+							<h3><a>Sales <span>(16)</span></a></h3>
+							<ul>
+								<li><a>Can I change the License URL?</a></li>
+								<li><a>I've ordered, but I haven't received my license</a></li>
+								<li><a>License Upgrades</a></li>
+								<li><a>What is Encoding?</a></li>
+								<li><a>How much is DeskPRO?</a></li>
+							</ul>
+						</td>
+						<td width="50%">
+							<h3><a>Troubleshooting <span>(10)</span></a></h3>
+							<ul>
+								<li><a>Blank or White Pages</a></li>
+								<li><a>Can I update tech alerts from the admin control panel?</a></li>
+								<li><a>Email Gateways in v3.3.x</a></li>
+								<li><a>I enabled Force SSL and now I can't load my site</a></li>
+								<li><a>The knowledgebase is not displayed</a></li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							<h3><a>Sales <span>(16)</span></a></h3>
+							<ul>
+								<li><a>Can I change the License URL?</a></li>
+								<li><a>I've ordered, but I haven't received my license</a></li>
+								<li><a>License Upgrades</a></li>
+								<li><a>What is Encoding?</a></li>
+								<li><a>How much is DeskPRO?</a></li>
+							</ul>
+						</td>
+						<td width="50%">
+							<h3><a>Troubleshooting <span>(10)</span></a></h3>
+							<ul>
+								<li><a>Blank or White Pages</a></li>
+								<li><a>Can I update tech alerts from the admin control panel?</a></li>
+								<li><a>Email Gateways in v3.3.x</a></li>
+								<li><a>I enabled Force SSL and now I can't load my site</a></li>
+								<li><a>The knowledgebase is not displayed</a></li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							<h3><a>Sales <span>(16)</span></a></h3>
+							<ul>
+								<li><a>Can I change the License URL?</a></li>
+								<li><a>I've ordered, but I haven't received my license</a></li>
+								<li><a>License Upgrades</a></li>
+								<li><a>What is Encoding?</a></li>
+								<li><a>How much is DeskPRO?</a></li>
+							</ul>
+						</td>
+						<td width="50%">
+							<h3><a>Troubleshooting <span>(10)</span></a></h3>
+							<ul>
+								<li><a>Blank or White Pages</a></li>
+								<li><a>Can I update tech alerts from the admin control panel?</a></li>
+								<li><a>Email Gateways in v3.3.x</a></li>
+								<li><a>I enabled Force SSL and now I can't load my site</a></li>
+								<li><a>The knowledgebase is not displayed</a></li>
+							</ul>
+						</td>
+					</tr>
+					<tr>
+						<td width="50%">
+							<h3><a>Sales <span>(16)</span></a></h3>
+							<ul>
+								<li><a>Can I change the License URL?</a></li>
+								<li><a>I've ordered, but I haven't received my license</a></li>
+								<li><a>License Upgrades</a></li>
+								<li><a>What is Encoding?</a></li>
+								<li><a>How much is DeskPRO?</a></li>
+							</ul>
+						</td>
+						<td width="50%">
+							<h3><a>Troubleshooting <span>(10)</span></a></h3>
+							<ul>
+								<li><a>Blank or White Pages</a></li>
+								<li><a>Can I update tech alerts from the admin control panel?</a></li>
+								<li><a>Email Gateways in v3.3.x</a></li>
+								<li><a>I enabled Force SSL and now I can't load my site</a></li>
+								<li><a>The knowledgebase is not displayed</a></li>
+							</ul>
+						</td>
+					</tr>
+				</table>
+			</div>
 		</div>
+		{# /Browse #}
+
+		{# Find #}
+		<div class="find tab-content">
+			<div class="content-filters">
+				<table cellspacing="0" cellpadding="0" width="100%">
+					<tr>
+						<td>Category:</td>
+						<td>Search:</td>
+						<td>Product:</td>
+						<td>Sort:</td>
+						<td rowspan="2"><button>Search</button></td>
+					</tr>
+					<tr>
+						<td>
+							<select class="kb-cat-choose">
+								<option value="0">All</option>
+								{% for cat in cats %}
+									<option value="{{cat.id}}">{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+								{% endfor %}
+							</select>
+						</td>
+						<td>
+							<input type="text" placeholder="Enter a search term" />
+						</td>
+						<td>
+							<select>
+								<option value="">All</option>
+								<option value="">DeskPRO</option>
+								<option value="">DeskPRO Live</option>
+							</select>
+						</td>
+						<td>
+							<select>
+								<option>Date</option>
+								<option>Popularity</option>
+							</select>
+						</td>
+					</tr>
+				</table>
+			</div>
+			<div class="content-list">
+				<ul>
+					{{ html|raw }}
+					<li>
+						<h4><a href="">Aliquam eget metus</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">tempus nibh fermentum</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">Nullam ac massa</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">Donec vitae urna</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">massa placerat pellentesque</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">Vestibulum tellus neque</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">Morbi vel urna</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="content-pages">
+				<div class="num-info">1-10 of 230 results</div>
+				<div class="pager">
+					Page
+					<select><option>1</option><option>2</option><option>3</option></select>
+					of 3
+					<button>Next</button>
+				</div>
+			</div>
+		</div>
+		{# /Find #}
+
+		{# Recent #}
+		<div class="recent tab-content">
+			<div class="content-list">
+				<ul>
+					{{ html|raw }}
+					<li>
+						<h4><a href="">Aliquam eget metus</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">tempus nibh fermentum</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">Nullam ac massa</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">Donec vitae urna</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">massa placerat pellentesque</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">Vestibulum tellus neque</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li>
+						<h4><a href="">Morbi vel urna</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="content-more">
+				<button>More</button>
+			</div>
+		</div>
+		{# /Recent #}
+
+		{# Popular #}
+		<div class="popular tab-content">
+			<div class="content-list">
+				<ul>
+					<li class="popular">
+						<h4><a href="">Aliquam eget metus</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li class="popular">
+						<h4><a href="">tempus nibh fermentum</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li class="popular">
+						<h4><a href="">Nullam ac massa</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li class="popular">
+						<h4><a href="">Donec vitae urna</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li class="popular">
+						<h4><a href="">massa placerat pellentesque</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li class="popular">
+						<h4><a href="">Vestibulum tellus neque</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+					<li class="popular">
+						<h4><a href="">Morbi vel urna</a></h4>
+						<div class="info-line">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ rand(1, 50) }}</span></li>
+								<li class="views" title="Views"><span>{{ rand(100, 2000) }}</span></li>
+							</ul>
+						</div>
+					</li>
+				</ul>
+			</div>
+			<div class="content-more">
+				<button>More</button>
+			</div>
+		</div>
+		{# /Popular #}
 	</div>
 </div>

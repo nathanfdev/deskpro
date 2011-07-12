@@ -1,3 +1,8 @@
+<script type="text/javascript">
+var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
+    Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
+</script>
+
 {{ html_js_pack('user.vendors') }}
 {{ html_js_pack('user.common') }}
 

@@ -53,6 +53,7 @@ class TemplatingExtension extends \Twig_Extension
 			'render_custom_field_text' => new \Twig_Function_Method($this, 'renderCustomFieldText'),
 			'render_custom_field_form' => new \Twig_Function_Method($this, 'renderCustomFieldForm', array('is_safe' => array('html'))),
 			'el_uid' => new \Twig_Function_Method($this, 'elUid', array('is_safe' => array('html'))),
+			'rand' => new \Twig_Function_Method($this, 'rand', array('is_safe' => array('html'))),
 			'is_partial_request' => new \Twig_Function_Method($this, 'isPartialRequest'),
 			'str_repeat' => new \Twig_Function_Method($this, 'strRepeat'),
 			'is_user_guest' => new \Twig_Function_Method($this, 'isUserGuest'),
@@ -70,6 +71,11 @@ class TemplatingExtension extends \Twig_Extension
 			'trim' => new \Twig_Filter_Method($this, 'strTrim'),
         );
     }
+
+	public function rand($min = 1, $max = 10)
+	{
+		return mt_rand((int)$min, (int)$max);
+	}
 
 	public function isUserGuest($person = null)
 	{

@@ -5,6 +5,16 @@ Orb.createNamespace('DeskPRO.UI');
  * separate, and are linked by attribuets in the source. This tab system simply
  * toggles an 'on' CSS class on elements, so it's up to you to style the elements. For example,
  * content elements without 'on' sholud be display:none etc.
+ *
+ * There are two elements: tab triggers and tab content. Tab triggers are attached a click event
+ * that stitches the 'on' state of all the tab contents. So the tab clicked becoems "on" (and your
+ * CSS makes it visible, and the rest invisible).
+ *
+ * <code>
+ *     <li data-tab-for=".some-tab">Some Tab</li>
+ *     ...
+ *     <div class="some-tab"></div>
+ * </code>
  */
 DeskPRO.UI.SimpleTabs = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
@@ -34,11 +44,9 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			self._handleTabClick(this, ev);
 		});
 
-		// If none are active, then go and activate the first
-		if (this.triggerEls.is(this.options.activeClassname)) {
-			var firstTab = $(this.options.activeClassname + ':first', this.triggerEls);
-		} else {
-			var firstTab = this.triggerEls.first();
+		var firstTab = this.triggerEls.filter('.on:first');
+		if (!firstTab.length) {
+			firstTab = this.triggerEls.first();
 		}
 
 		this.activateTab(firstTab);
