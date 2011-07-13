@@ -1,0 +1,17 @@
+<div class="content-list overview-table">
+	<table cellspacing="0" cellpadding="0" width="100%">
+		<tr>
+		{% for cat in categories %}
+			{% if loop.index0 is divisibleby(2) %}</tr><tr>{% endif %}
+				<td width="50%">
+					<h3><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">{{ cat.title }}</a></h3>
+					<ul>
+						{% for article in category_articles[cat.id] %}
+							<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></li>
+						{% endfor %}
+					</ul>
+				</td>
+		{% endfor %}
+		</tr>
+	</table>
+</div>

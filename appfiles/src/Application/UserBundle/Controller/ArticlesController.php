@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity;
 
 use Orb\Util\Arrays;
 use Orb\Util\Util;
+use Orb\Util\Numbers;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Comments\NewCommentFormType;
@@ -28,50 +29,164 @@ class ArticlesController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function indexAction()
+	public function browseAction($slug = '', $page = '')
 	{
-		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getRootNodes();
+		if ($slug) {
+			$category = App::getEntityRepository('DeskPRO:ArticleCategory')->getBySlug($slug);
+	
+			if (!$category) {
+				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
+			}
 
-		$newest_cat_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($cats);
-		$newest_articles     = App::getEntityRepository('DeskPRO:Article')->getNewest();
-		$top_rated_articles  = App::getEntityRepository('DeskPRO:Article')->getTopRated();
+			// Auto-correct URL
+			if ($slug != $category->getUrlSlug()) {
+				return $this->redirectRoute('user_articles', array('slug' => $category->getUrlSlug()), 301);
+			}
 
-		return $this->render('UserBundle:Articles:index.html.twig', array(
-			'categories'          => $cats,
-			'newest_cat_articles' => $newest_cat_articles,
-			'newest_articles'     => $newest_articles,
-			'top_rated_articles'  => $top_rated_articles
+			$category_path = $category->getTreeParents();
+			$category_children = $category->children;
+
+			$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+			$searcher->addTerm('category', 'is', $category['id']);
+			$searcher->addTerm('status', 'is', 'published');
+			$searcher->setOrderBy('id', 'desc');
+
+			$total = $searcher->getCount();
+			$pageinfo = Numbers::getPaginationPages($total, $page, 20, 3);
+			$limit = array(
+				'offset' => ($pageinfo['curpage']-1) * 20,
+				'max' => 20
+			);
+
+			$article_ids = $searcher->getMatches($limit);
+
+			$articles = App::getEntityRepository('DeskPRO:Article')->getByResultIds($article_ids);
+
+		} else {
+			$category = null;
+			$category_children = App::getEntityRepository('DeskPRO:ArticleCategory')->getRootNodes();
+			$category_path = array();
+			$articles = array();
+		}
+
+		$category_children_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($category_children, 5);
+
+		return $this->render('UserBundle:Articles:browse.html.twig', array(
+			'category' => $category,
+			'category_path' => $category_path,
+			'category_children' => $category_children,
+			'category_children_articles' => $category_children_articles,
+			'articles' => $articles,
 		));
 	}
 
-	
+
+	public function filterAction($page = 1)
+	{
+		$kb_cats  = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
+		$products = App::getEntityRepository('DeskPRO:Product')->getCategoryHelper()->getFlatHierarchy();
+
+		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+		$searcher->addTerm('status', 'is', 'published');
+
+		$search_options = array();
+		if ($this->in->getString('order_by')) {
+			$searcher->setOrderByCode($this->in->getString('order_by'));
+			$search_options['order_by'] = $this->in->getString('order_by');
+		}
+		if ($this->in->getUint('category_id')) {
+			$searcher->addTerm('category', 'is', $this->in->getUint('category_id'));
+			$search_options['category_id'] = $this->in->getUint('category_id');
+		}
+		if ($this->in->getUint('product_id')) {
+			$searcher->addTerm('product', 'is', $this->in->getUint('product_id'));
+			$search_options['product_id'] = $this->in->getUint('product_id');
+		}
+
+		$total = $searcher->getCount();
+		$article_ids = $searcher->getMatches(array(
+			'offset' => ($page-1) * 20,
+			'max' => 20
+		));
+
+		if ($article_ids) {
+			$articles = App::getEntityRepository('DeskPRO:Article')->getByResultIds($article_ids);
+		} else {
+			$articles = array();
+		}
+
+		$pageinfo = Numbers::getPaginationPages($total, $page, 20, 3);
+
+		return $this->render('UserBundle:Articles:find.html.twig', array(
+			'kb_cats' => $kb_cats,
+			'products' => $products,
+			'pageinfo' => $pageinfo,
+			'search_options' => $search_options,
+			'search_options_url' => http_build_query($search_options, null, '&amp;'),
+			'articles' => $articles,
+			'num_results' => $total,
+		));
+	}
+
 
 	/**
-	 * View a category listing
-	 * 
-	 * @param  $category_id
+	 * @param int $page
 	 */
-	public function categoryAction($slug)
+	public function recentAction($page = 1)
 	{
-		$category = App::getEntityRepository('DeskPRO:ArticleCategory')->getBySlug($slug);
+		$page = max(1, $page);
+		
+		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+		$searcher->addTerm('status', 'is', 'published');
+		$searcher->setOrderBy('id', 'desc');
 
-		if (!$category) {
-			return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
+		$article_ids = $searcher->getMatches(array(
+			'offset' => ($page-1) * 20,
+			'max' => 20
+		));
+
+		if ($article_ids) {
+			$articles = App::getEntityRepository('DeskPRO:Article')->getByResultIds($article_ids);
+		} else {
+			$articles = array();
 		}
 
-		// Auto-correct URL
-		if ($slug != $category->getUrlSlug()) {
-			return $this->redirectRoute('user_articles_cat', array('slug' => $category->getUrlSlug()), 301);
+		$show_more = (count($article_ids) == 20);
+
+		return $this->render('UserBundle:Articles:recent.html.twig', array(
+			'articles' => $articles,
+			'show_more' => $show_more,
+		));
+	}
+
+
+	/**
+	 * @param int $page
+	 */
+	public function popularAction($page = 1)
+	{
+		$page = max(1, $page);
+
+		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+		$searcher->addTerm('status', 'is', 'published');
+		$searcher->setOrderBy('view_count', 'desc');
+
+		$article_ids = $searcher->getMatches(array(
+			'offset' => ($page-1) * 20,
+			'max' => 20
+		));
+
+		if ($article_ids) {
+			$articles = App::getEntityRepository('DeskPRO:Article')->getByResultIds($article_ids);
+		} else {
+			$articles = array();
 		}
 
-		$category_path = $category->getTreeParents();
+		$show_more = (count($article_ids) == 20);
 
-		$articles = App::getEntityRepository('DeskPRO:Article')->getInNode($category);
-
-		return $this->render('UserBundle:Articles:category.html.twig', array(
-			'category' => $category,
-			'category_path' => $category_path,
-			'articles' => $articles
+		return $this->render('UserBundle:Articles:popular.html.twig', array(
+			'articles' => $articles,
+			'show_more' => $show_more,
 		));
 	}
 
@@ -141,7 +256,6 @@ class ArticlesController extends AbstractController
 		));
 	}
 
-	
 
 	/**
 	 * Submit a new comment
@@ -178,7 +292,6 @@ class ArticlesController extends AbstractController
 	}
 
 
-
 	/**
 	 * Rate an article
 	 *
@@ -211,27 +324,5 @@ class ArticlesController extends AbstractController
 		App::getOrm()->flush();
 
 		return $this->redirectRoute('user_articles_article', array('article_id' => $article['id'], 'slug' => $article['slug']));
-	}
-
-
-	public function quickBrowserAction($category_id = 0, $num = 10)
-	{
-		$category = null;
-		if ($category_id) {
-			$category = App::findEntity('DeskPRO:ArticleCategory', $category_id);
-		}
-
-		$articles = App::getEntityRepository('DeskPRO:Article')->getNewest($num, $category);
-
-		$vars = array(
-			'category' => $category,
-			'articles' => $articles
-		);
-
-		if ($this->request->isPartialRequest()) {
-			return $this->render('UserBundle:Articles:quick-browser-list.html.twig', $vars);
-		} else {
-			return $this->render('UserBundle:Articles:quick-browser.html.twig', $vars);
-		}
 	}
 }

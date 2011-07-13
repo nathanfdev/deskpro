@@ -251,7 +251,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	public function getContentHtml()
 	{
 		if ($this->markup_mode == self::MARKUP_MODE_HTML) {
-			$this->content;
+			return $this->content;
 		} else {
 			return Markdown::format($this->content);
 		}
@@ -302,6 +302,18 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return implode($sep, $cats);
+	}
+
+	public function getRatingPercent()
+	{
+		if (!$this->total_rating) {
+			return 0;
+		}
+
+		$neg_ratings = $this->num_ratings - $this->total_rating;
+		$rating = ceil(($neg_ratings / $this->total_rating) * 100);
+
+		return $rating;
 	}
 
 	/**

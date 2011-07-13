@@ -116,6 +116,27 @@ class Article extends EntityRepository
 	}
 
 
+	public function getByResultIds(array $ids)
+	{
+		$unsorted_articles = $this->getEntityManager()->createQuery("
+			SELECT a
+			FROM DeskPRO:Article a INDEX BY a.id
+			WHERE a.id IN (" . implode(',', $ids) . ")
+			ORDER BY a.id DESC
+		")->execute();
+
+		$articles = array();
+
+		foreach ($ids as $id) {
+			if (isset($unsorted_articles[$id])) {
+				$articles[$id] = $unsorted_articles[$id];
+			}
+		}
+		
+		return $articles;
+	}
+
+
 
 	/**
 	 * Given an array of nodes (usually roots), get the top $num newest articles, and then
@@ -124,7 +145,7 @@ class Article extends EntityRepository
 	 * @param  $nodes
 	 * @return void
 	 */
-	public function getNewestInNodes($nodes, $num = 2)
+	public function getNewestInNodes($nodes, $num = 5)
 	{
 		// This needs to be cached since it's quite costly
 		// to get the top results in each category with mysql. And

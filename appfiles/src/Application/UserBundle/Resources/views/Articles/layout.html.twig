@@ -1,0 +1,26 @@
+{% extends is_partial_request() ? 'UserBundle::layout-partial.html.twig' : 'UserBundle::layout.html.twig' %}
+{% block head %}
+<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/Kb.js') }}"></script>
+{% endblock %}
+{% block content %}
+<div class="content-item portal_kb with-handler" data-element-handler="DeskPRO.User.ElementHandler.Kb">
+	<div class="heading">
+		<div class="heading-tabs">
+			<ul>
+				<li {% if block('kb_browse')|trim|length %}class="on"{% endif %} data-tab-for=".browse"><a href="{{ path('user_articles') }}">Browse</a></li>
+				<li {% if block('kb_find')|trim|length %}class="on"{% endif %} data-tab-for=".find"><a href="{{ path('user_articles_filter') }}">Find</a></li>
+				<li {% if block('kb_recent')|trim|length %}class="on"{% endif %} data-tab-for=".recent"><a href="{{ path('user_articles_recent') }}">Recent</a></li>
+				<li {% if block('kb_popular')|trim|length %}class="on"{% endif %} data-tab-for=".popular"><a href="{{ path('user_articles_popular') }}">Popular</a></li>
+			</ul>
+		</div>
+		<h2><a href="{{ path('user_articles') }}">{{ title|default('Knowledgebase') }}</a></h2>
+	</div>
+
+	<div class="tab-contents">
+		<div class="browse tab-content">{% block kb_browse %}{% endblock %}</div>
+		<div class="find tab-content">{% block kb_find %}{% endblock %}</div>
+		<div class="recent tab-content">{% block kb_recent %}{% endblock %}</div>
+		<div class="popular tab-content">{% block kb_popular %}{% endblock %}</div>
+	</div>
+</div>
+{% endblock %}

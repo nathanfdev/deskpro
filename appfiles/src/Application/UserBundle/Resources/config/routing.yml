@@ -167,20 +167,24 @@ user_tickets_feedback_closeticket:
 ################################################################################
 
 user_articles:
-  pattern: /kb
-  defaults: { _controller: UserBundle:Articles:index }
+  pattern: /kb/{slug}/{page}
+  defaults: { _controller: UserBundle:Articles:browse, page: 1, slug: '' }
+  requirements: { slug: "(\d+(\-.*?)?)?", page: "\d+" }
 
-user_articles_quickbrowser:
-  pattern: /kb/quick-browser
-  defaults: { _controller: UserBundle:Articles:quickBrowser }
+user_articles_recent:
+  pattern: /kb/recent/{page}
+  defaults: { _controller: UserBundle:Articles:recent, page: 1 }
+  requirements: { page: "\d+" }
 
-user_articles_quickbrowser_cat:
-  pattern: /kb/quick-browser/{category_id}
-  defaults: { _controller: UserBundle:Articles:quickBrowser }
+user_articles_popular:
+  pattern: /kb/popular/{page}
+  defaults: { _controller: UserBundle:Articles:popular, page: 1 }
+  requirements: { page: "\d+" }
 
-user_articles_cat:
-  pattern: /kb/{slug}
-  defaults: { _controller: UserBundle:Articles:category }
+user_articles_filter:
+  pattern: /kb/filter/{page}
+  defaults: { _controller: UserBundle:Articles:filter, page: 1 }
+  requirements: { page: "\d+" }
 
 user_articles_article:
   pattern: /kb/articles/{slug}

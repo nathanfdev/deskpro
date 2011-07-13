@@ -241,4 +241,17 @@ class CategoryHierarchy
 
 		return $ids;
 	}
+
+
+	public function getTopCategories()
+	{
+		$cats = $this->repos->getEntityManager()->createQuery("
+			SELECT c
+			FROM {$this->class} c
+			WHERE c.parent IS NULL
+			ORDER BY c.display_order ASC
+		")->execute();
+
+		return $cats;
+	}
 }

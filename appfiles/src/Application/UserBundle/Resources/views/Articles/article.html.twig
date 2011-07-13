@@ -9,7 +9,7 @@
 	{% for categories in all_categories %}
 		{% if loop.index0 == 0 %}
 			{% for c in categories %}
-				<li><a href="{{ path('user_articles_cat', {'slug': c.url_slug}) }}">{{c.title}}</a></li>
+				<li><a href="{{ path('user_articles', {'slug': c.url_slug}) }}">{{c.title}}</a></li>
 			{% endfor %}
 		{% endif %}
 	{% endfor %}
@@ -40,9 +40,11 @@
 	<div class="post">{{ article.content_html|raw }}</div>
 
 	<div class="user-vote">
-		<div style="float:left; margin-top: 2px;">
-			<em>{{ rand(0, 100) }}</em> people found this article helpful
-		</div>
+		{% if article.rating_percent %}
+			<div style="float:left; margin-top: 2px;">
+				<em>{{ article.rating_percent }}</em>% of people found this article helpful
+			</div>
+		{% endif %}
 		<form action="{{ path('user_articles_rate', {'article_id': article.id}) }}" method="post">
 			{% if rating_this %}
 				{% if rating_this > 1 %}

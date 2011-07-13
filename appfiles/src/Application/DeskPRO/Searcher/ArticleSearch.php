@@ -47,6 +47,7 @@ class ArticleSearch extends SearcherAbstract
 	{
 		$sql = "SELECT COUNT(*) FROM articles ";
 		$parts = $this->getSqlParts();
+		$order_by = $this->getOrderByPart();
 
 		#------------------------------
 		# Add joins
@@ -74,8 +75,6 @@ class ArticleSearch extends SearcherAbstract
 			$sql .= "WHERE ";
 			$sql .= implode(" AND ", $parts['wheres']);
 		}
-
-		$sql .= " GROUP BY articles.id ";
 
 		$count = App::getDb()->fetchColumn($sql);
 
@@ -127,7 +126,7 @@ class ArticleSearch extends SearcherAbstract
 		$sql .= $order_by;
 
 		if ($limit) {
-			$sql .= " {$limit['offset']},{$limit['max']}";
+			$sql .= " LIMIT {$limit['offset']},{$limit['max']}";
 		} else {
 			$sql .= " LIMIT 1000";
 		}
@@ -205,7 +204,7 @@ class ArticleSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_CATEGORY:
-					$base_ids = is_array($choice['category']) ? $choice['category'] : array($choice['category']);
+					$base_ids = is_array($choice['category']) ? $choice['category'] : array($choice);
 					$ids = array();
 
 					foreach ($base_ids as $id) {
@@ -214,7 +213,12 @@ class ArticleSearch extends SearcherAbstract
 
 					$ids = array_unique($ids);
 
-					$wheres[] = $this->_choiceMatch('articles.category_id', $op, $ids);
+					$joins[] = array(
+						'article_to_categories',
+						"LEFT JOIN article_to_categories AS $join_name ON ($join_name.article_id = articles.id)"
+					);
+
+					$wheres[] = $this->_choiceMatch("$join_name.category_id", $op, $ids);
 					break;
 
 				case self::TERM_VIEW_COUNT:
