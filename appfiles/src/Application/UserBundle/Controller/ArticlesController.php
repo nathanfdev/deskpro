@@ -153,9 +153,15 @@ class ArticlesController extends AbstractController
 
 		$show_more = (count($article_ids) == 20);
 
-		return $this->render('UserBundle:Articles:recent.html.twig', array(
+		$tpl = 'UserBundle:Articles:recent.html.twig';
+		if ($this->request->isPartialRequest() == 'more') {
+			$tpl = 'UserBundle:Articles:recent-items.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'articles' => $articles,
 			'show_more' => $show_more,
+			'page' => $page,
 		));
 	}
 
@@ -169,6 +175,7 @@ class ArticlesController extends AbstractController
 
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
 		$searcher->addTerm('status', 'is', 'published');
+		$searcher->addTerm('popular', 'is', '1');
 		$searcher->setOrderBy('view_count', 'desc');
 
 		$article_ids = $searcher->getMatches(array(
@@ -184,9 +191,15 @@ class ArticlesController extends AbstractController
 
 		$show_more = (count($article_ids) == 20);
 
-		return $this->render('UserBundle:Articles:popular.html.twig', array(
+		$tpl = 'UserBundle:Articles:popular.html.twig';
+		if ($this->request->isPartialRequest() == 'more') {
+			$tpl = 'UserBundle:Articles:popular-items.html.twig';
+		}
+
+		return $this->render($tpl, array(
 			'articles' => $articles,
 			'show_more' => $show_more,
+			'page' => $page,
 		));
 	}
 

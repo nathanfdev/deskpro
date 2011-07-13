@@ -182,7 +182,7 @@ user_articles_popular:
   requirements: { page: "\d+" }
 
 user_articles_filter:
-  pattern: /kb/filter/{page}
+  pattern: /kb/find/{page}
   defaults: { _controller: UserBundle:Articles:filter, page: 1 }
   requirements: { page: "\d+" }
 

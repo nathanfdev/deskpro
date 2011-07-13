@@ -16,6 +16,7 @@ class ArticleSearch extends SearcherAbstract
 	const TERM_CATEGORY        = 'category';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_VIEW_COUNT      = 'view_count';
+	const TERM_POPULAR         = 'popular';
 	const TERM_LABEL           = 'label';
 
 	const ORDER_ID    = 'id';
@@ -223,6 +224,15 @@ class ArticleSearch extends SearcherAbstract
 
 				case self::TERM_VIEW_COUNT:
 					$wheres[] = $this->_rangeMatch('articles.view_count', $op, $choice);
+					break;
+
+				case self::TERM_POPULAR:
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+					if ($choice) {
+						$wheres[] = $this->_rangeMatch('articles.view_count', 'gte', App::getSetting('core_kb.popular_views'));
+					}
 					break;
 
 				case self::TERM_DATE_CREATED:

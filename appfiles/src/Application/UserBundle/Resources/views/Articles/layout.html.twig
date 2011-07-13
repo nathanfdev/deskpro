@@ -1,9 +1,23 @@
-{% extends is_partial_request() ? 'UserBundle::layout-partial.html.twig' : 'UserBundle::layout.html.twig' %}
+{% if is_partial_request() == 'portal' %}
+	{# This whole wrapper template #}
+	{% set extend_tpl = 'UserBundle::layout-partial.html.twig' %}
+	{% set do_portal = true %}
+{% elseif is_partial_request() %}
+	{# A partial page with only content (tab-contents) #}
+	{% set extend_tpl = 'UserBundle:Articles:layout-partial.html.twig' %}
+{% else %}
+	{# A normal page load #}
+	{% set extend_tpl = 'UserBundle::layout.html.twig' %}
+{% endif %}
+{% extends extend_tpl %}
+
 {% block head %}
-<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/Kb.js') }}"></script>
+{% if do_portal %}
+	<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/Kb.js') }}"></script>
+{% endif %}
 {% endblock %}
 {% block content %}
-<div class="content-item portal_kb with-handler" data-element-handler="DeskPRO.User.ElementHandler.Kb">
+<div class="content-item portal_kb with-handler" {% if do_portal %}data-element-handler="DeskPRO.User.ElementHandler.Kb"{% endif %}>
 	<div class="heading">
 		<div class="heading-tabs">
 			<ul>
@@ -17,10 +31,10 @@
 	</div>
 
 	<div class="tab-contents">
-		<div class="browse tab-content">{% block kb_browse %}{% endblock %}</div>
-		<div class="find tab-content">{% block kb_find %}{% endblock %}</div>
-		<div class="recent tab-content">{% block kb_recent %}{% endblock %}</div>
-		<div class="popular tab-content">{% block kb_popular %}{% endblock %}</div>
+		<div class="{% if block('kb_browse')|trim|length %}class="on"{% endif %} browse tab-content">{% block kb_browse %}{% endblock %}</div>
+		<div class="{% if block('kb_find')|trim|length %}class="on"{% endif %} find tab-content">{% block kb_find %}{% endblock %}</div>
+		<div class="{% if block('kb_recent')|trim|length %}class="on"{% endif %} recent tab-content">{% block kb_recent %}{% endblock %}</div>
+		<div class="{% if block('kb_popular')|trim|length %}class="on"{% endif %} popular tab-content">{% block kb_popular %}{% endblock %}</div>
 	</div>
 </div>
 {% endblock %}

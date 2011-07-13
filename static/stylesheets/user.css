@@ -10,6 +10,11 @@ a {
     text-decoration: none;
 }
 
+.is-loading { display: none; }
+
+.loading .is-loading { display: block; }
+.loading .is-not-loading { display: none; }
+
 #header {
     margin: 0;
 }
@@ -270,7 +275,7 @@ a {
     text-align: center;
 }
 
-.content-more button {
+.content-more button, .content-more a.button {
     -moz-border-radius: 5px 5px 7px 7px;
     -webkit-border-radius: 5px 5px 7px 7px;
     border-radius: 5px 5px 7px 7px;
@@ -293,7 +298,7 @@ a {
     cursor: pointer;
 }
 
-.content-more button:hover {
+.content-more button:hover, .content-more a.button:hover {
     -webkit-box-shadow: inset 0px 0px 3px 2px #d6d6d6;
     -moz-box-shadow: inset 0px 0px 3px 2px #d6d6d6;
     box-shadow: inset 0px 0px 3px 2px #d6d6d6;
@@ -640,9 +645,12 @@ a {
     float:left;
     font-size: 10px;
 }
-.content-item .content-pages .pager {
+.content-item .content-pages .num-info select {
     font-size: 10px;
-    margin-top: 3px;
+    margin: 0;
+}
+.content-item .content-pages .pager {
+    font-size: 11px;
 }
 .content-item .content-pages .pager button, .content-item .content-pages .pager select {
     font-size: 10px;
@@ -657,6 +665,7 @@ a {
 .content-list.overview-table table td {
     padding: 8px;
     padding-bottom: 12px;
+    vertical-align: top;
 }
 
 .content-list.overview-table h3 {
@@ -689,6 +698,11 @@ a {
 .content-list.overview-table ul li {
     background: url(../images/icons/page_white_width.png) no-repeat 0 49%;
     padding-left: 20px;
+}
+
+.content-list.overview-table ul li.more {
+    background: transparent;
+    font-style: italic;
 }
 
 .portal_ideas .content-list.overview-table ul li {

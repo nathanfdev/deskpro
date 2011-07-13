@@ -9,6 +9,9 @@
 						{% for article in category_articles[cat.id] %}
 							<li><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></li>
 						{% endfor %}
+						{% if category_articles[cat.id]|length >= 5 %}
+							<li class="more"><a href="{{ path('user_articles', {'slug': cat.url_slug}) }}">more...</a></li>
+						{% endif %}
 					</ul>
 				</td>
 		{% endfor %}
