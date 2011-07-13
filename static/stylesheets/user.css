@@ -1167,6 +1167,7 @@ ul.comments li .message {
 #omni_search_menu_wrap {
     position: absolute;
     margin-top: 1px;
+    display: none;
 }
 
 .omni_search_menu {
