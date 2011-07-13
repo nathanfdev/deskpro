@@ -202,6 +202,28 @@ class Idea extends EntityRepository
 
 		return $ideas;
 	}
+
+	public function getByResultIds(array $ids)
+	{
+		if (!$ids) return array();
+		
+		$unsorted_ideas = $this->getEntityManager()->createQuery("
+			SELECT i
+			FROM DeskPRO:Idea i INDEX BY i.id
+			WHERE i.id IN (" . implode(',', $ids) . ")
+			ORDER BY i.id DESC
+		")->execute();
+
+		$ideas = array();
+
+		foreach ($ids as $id) {
+			if (isset($unsorted_ideas[$id])) {
+				$ideas[$id] = $unsorted_ideas[$id];
+			}
+		}
+
+		return $ideas;
+	}
 	
 	public function getIdeas($status, $node = false, $sort = 'id', $num = 10)
 	{

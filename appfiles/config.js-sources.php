@@ -279,6 +279,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/Page/Abstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/ElementHandlerAbstract.js',
 		'javascripts/DeskPRO/User/ElementHandler/IdeaView.js',
+		'javascripts/DeskPRO/User/ElementHandler/Ideas.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
 
 	)

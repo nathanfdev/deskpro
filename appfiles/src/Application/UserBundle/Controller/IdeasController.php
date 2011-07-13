@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 use Application\UserBundle\Form\NewIdeaType;
 use Application\DeskPRO\Comments\NewCommentFormType;
@@ -37,39 +38,81 @@ class IdeasController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function indexAction($slug, $status, $sort = 'date')
+	public function filterAction($status = 'popular', $slug = 'all', $page = 1)
 	{
-		$categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getRootNodes();
+		if (!$status) {
+			$status = 'new';
+		}
 
-		$category = null;
-		$category_path = null;
+		if ($slug == 'all') {
+			$slug = '';
+		}
+		
 		if ($slug) {
 			$category = App::getEntityRepository('DeskPRO:IdeaCategory')->getBySlug($slug);
+
 			if (!$category) {
-				return $this->renderStandardError('@user_ideas.error_not_found', '@core.not_found', 404);
+				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
 			}
 
 			// Auto-correct URL
 			if ($slug != $category->getUrlSlug()) {
-				return $this->redirectRoute('user_ideas_cat', array('slug' => $category->getUrlSlug()), 301);
+				return $this->redirectRoute('user_ideas', array('slug' => $category->getUrlSlug()), 301);
 			}
 
 			$category_path = $category->getTreeParents();
+
+		} else {
+			$category = null;
+			$category_path = array();
 		}
 
-		$ideas = App::getEntityRepository('DeskPRO:Idea')->getIdeas(
-			$status,
-			$category,
-			$sort,
-			100
+		$ideas = array();
+		$idea_cats  = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
+		$idea_cat_objs = App::getEntityRepository('DeskPRO:IdeaCategory')->getAll();
+
+		$searcher = new \Application\DeskPRO\Searcher\IdeaSearch();
+
+		if ($status == 'popular') {
+			$searcher->addTerm('popular', 'is', 1);
+		} else {
+			$searcher->addTerm('status', 'is', $status);
+		}
+
+		if ($category) {
+			$searcher->addTerm('category', 'is', $category['id']);
+		}
+
+		$search_options_url = '';
+		$search_options = array();
+		if ($this->in->getString('order_by')) {
+			$searcher->setOrderByCode($this->in->getString('order_by'));
+			$search_options_url = 'order_by=' . $this->in->getString('order_by');
+			$search_options['order_by'] = $this->in->getString('order_by');
+		}
+
+		$total = $searcher->getCount();
+		$pageinfo = Numbers::getPaginationPages($total, $page, 20, 3);
+		$limit = array(
+			'offset' => ($pageinfo['curpage']-1) * 20,
+			'max' => 20
 		);
 
-		return $this->render('UserBundle:Ideas:index.html.twig', array(
-			'categories'      => $categories,
+		$idea_ids = $searcher->getMatches($limit);
+
+		$ideas = App::getEntityRepository('DeskPRO:Idea')->getByResultIds($idea_ids);
+
+		return $this->render('UserBundle:Ideas:filter.html.twig', array(
+			'idea_cats'       => $idea_cats,
+			'idea_cat_objs'   => $idea_cat_objs,
 			'category'        => $category,
 			'category_path'   => $category_path,
 			'status'          => $status,
-			'ideas'           => $ideas
+			'ideas'           => $ideas,
+			'pageinfo'        => $pageinfo,
+			'num_results'     => $total,
+			'search_options' => $search_options,
+			'search_options_url' => $search_options_url,
 		));
 	}
 

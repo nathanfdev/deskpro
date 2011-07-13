@@ -1379,3 +1379,64 @@ ul.comments li .message {
 .portal_news .more-link {
     margin-top: 10px;
 }
+
+
+
+
+.idea-status-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    float: right;
+}
+
+.idea-status-nav li {
+    float: left;
+}
+
+.idea-status-nav li a {
+    cursor: pointer;
+    padding: 0 5px 0 5px;
+}
+
+.idea-status-nav ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.idea-status-nav ul li {
+    background-color: #fff;
+    font-size: 10px;
+    padding: 2px 4px 2px 4px;
+    float: left;
+    border: 1px solid #BDBEBE;
+    border-left: none;
+    cursor: pointer;
+}
+
+.idea-status-nav ul li.on {
+    background-color: #efefef;
+}
+
+.idea-status-nav ul li:first-child {
+    border-left: 1px solid #BDBEBE;
+    -moz-border-radius-topleft: 4px;
+    -moz-border-radius-topright: 0px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 4px;
+    -webkit-border-radius: 4px 0px 0px 4px;
+    border-radius: 4px 0px 0px 4px;
+}
+.idea-status-nav ul li:last-child {
+    -moz-border-radius-topleft: 0px;
+    -moz-border-radius-topright: 4px;
+    -moz-border-radius-bottomright: 4px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-radius: 0px 4px 4px 0px;
+    border-radius: 0px 4px 4px 0px;
+}

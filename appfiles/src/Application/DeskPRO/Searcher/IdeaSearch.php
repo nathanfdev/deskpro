@@ -49,6 +49,7 @@ class IdeaSearch extends SearcherAbstract
 	{
 		$sql = "SELECT COUNT(*) FROM ideas ";
 		$parts = $this->getSqlParts();
+		$order_by = $this->getOrderByPart();
 
 		#------------------------------
 		# Add joins
@@ -76,8 +77,6 @@ class IdeaSearch extends SearcherAbstract
 			$sql .= "WHERE ";
 			$sql .= implode(" AND ", $parts['wheres']);
 		}
-
-		$sql .= " GROUP BY ideas.id ";
 
 		$count = App::getDb()->fetchColumn($sql);
 
@@ -129,7 +128,7 @@ class IdeaSearch extends SearcherAbstract
 		$sql .= $order_by;
 
 		if ($limit) {
-			$sql .= " {$limit['offset']},{$limit['max']}";
+			$sql .= " LIMIT {$limit['offset']},{$limit['max']}";
 		} else {
 			$sql .= " LIMIT 1000";
 		}
@@ -236,7 +235,7 @@ class IdeaSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_CATEGORY:
-					$base_ids = is_array($choice['category']) ? $choice['category'] : array($choice['category']);
+					$base_ids = is_array($choice['category']) ? $choice['category'] : array($choice);
 					$ids = array();
 
 					foreach ($base_ids as $id) {
@@ -253,7 +252,9 @@ class IdeaSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_POPULAR:
-					$choice = array_pop($choice);
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
 					// must be 1
 					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
 					if ($choice) {

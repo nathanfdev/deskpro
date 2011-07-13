@@ -60,4 +60,13 @@ class IdeaCategory extends AbstractNestedTreeCategoryRepository
 
 		return $this->find($id);
 	}
+
+	public function getAll()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:IdeaCategory c INDEX BY c.id
+			ORDER BY c.id DESC
+		")->execute();;
+	}
 }

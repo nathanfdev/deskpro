@@ -46,23 +46,10 @@ class Ideas extends PortalItemAbstract
 	public function getContentHtml()
 	{
 		$html = $this->renderForward(
-			'UserBundle:Ideas:quickBrowser',
-			array('status' => $this->getOption('status', 'new'), 'category_id' => $this->getOption('category_id', 0), 'num' => $this->getValueOption('num_articles', 10)),
-			array('_partial' => true)
+			'UserBundle:Ideas:filter',
+			array('status' => $this->getOption('status', 'new'), 'slug' => ''),
+			array('_partial' => 'portal')
 		);
-
-		$cats = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
-		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
-		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
-
-		$html = $this->renderView('UserBundle:Portal:ideas-content.html.twig', array(
-			'html' => $html,
-			'cats' => $cats,
-			'block_title' => $this->getOption('block_title'),
-			'show_cat_switcher' => $this->getOption('show_cat_switcher'),
-			'active_status_cats' => $active_status_cats,
-			'closed_status_cats' => $closed_status_cats,
-		));
 
 		return $html;
 	}

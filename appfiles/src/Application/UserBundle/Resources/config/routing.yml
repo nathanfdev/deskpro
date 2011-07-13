@@ -238,17 +238,14 @@ user_news_newcomment:
 # Ideas
 ################################################################################
 
+user_ideas:
+  pattern: /feedback/{status}/{slug}/{page}
+  defaults: { _controller: UserBundle:Ideas:filter, status: 'new', page: 1, slug: '' }
+  requirements: { slug: "((\d+(\-.*?)?)?)|all", page: "\d+" }
+
 user_ideas_view:
   pattern: /feedback/ideas/{slug}
   defaults: { _controller: UserBundle:Ideas:view }
-
-user_ideas_quickbrowser:
-  pattern: /feedback/quick-browser/{status}
-  defaults: { _controller: UserBundle:Ideas:quickBrowser }
-
-user_ideas_quickbrowser_cat:
-  pattern: /feedback/quick-browser/{status}/{category_id}
-  defaults: { _controller: UserBundle:Ideas:quickBrowser }
 
 user_ideas_newidea:
   pattern: /feedback/new-idea
@@ -260,11 +257,7 @@ user_ideas_newcomment:
 
 user_ideas_vote:
   pattern: /feedback/vote/{idea_id}
-  defaults: { _controller: UserBundle:Ideas:vote }
-
-user_ideas:
-  pattern: /feedback
-  defaults: { _controller: UserBundle:Ideas:index, slug: 0, status: new }
+  defaults: { _controller: UserBundle:Ideas:vote }=
 
 user_ideas_status:
   pattern: /feedback/all/{status}

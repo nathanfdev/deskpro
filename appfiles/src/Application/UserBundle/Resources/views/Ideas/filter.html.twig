@@ -1,0 +1,100 @@
+{% extends 'UserBundle::layout-partial-aware.html.twig' %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_ideas') }}">Feedback</a></li>
+{% endblock %}
+{% block content %}
+{% if is_partial_request() and is_partial_request() != 'partial' %}
+<div class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.Ideas" {% if is_partial_request() == 'portal' %}data-ajax-update="1"{% endif %}>
+{% endif %}
+<div class="content-item portal_ideas">
+	<div class="heading">
+		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Feedback') }}</a></h2>
+	</div>
+
+	<div class="content-wrapper">
+		<div class="content-filters">
+			<table cellspacing="0" cellpadding="0" width="100%">
+				<tr>
+					<td>Category:</td>
+					<td rowspan="2">
+						<div class="idea-status-nav">
+							<ul>
+								{% if category %}
+									<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug|default('all')}) }}?{{ search_options_url }}">Hot</a></li>
+									<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug|default('all')}) }}?{{ search_options_url }}">New</a></li>
+									<li {% if status == 'active' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug|default('all')}) }}?{{ search_options_url }}">Active</a></li>
+									<li {% if status == 'closed' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug|default('all')}) }}?{{ search_options_url }}">Closed</a></li>
+								{% else %}
+									<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular'}) }}?{{ search_options_url }}">Hot</a></li>
+									<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new'}) }}?{{ search_options_url }}">New</a></li>
+									<li {% if status == 'active' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'active'}) }}?{{ search_options_url }}">Active</a></li>
+									<li {% if status == 'closed' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'closed'}) }}?{{ search_options_url }}">Closed</a></li>
+								{% endif %}
+							</ul>
+						</div>
+					</td>
+				</tr>
+				<tr>
+					<td>
+						<select name="category_id" class="category_id">
+							<option value="0">All</option>
+							{% for cat in idea_cats %}
+								<option value="{{ path('user_ideas', {'status': status, 'slug': idea_cat_objs[cat.id].url_slug}) }}?{{ search_options_url }}" {% if category.id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+							{% endfor %}
+						</select>
+					</td>
+				</tr>
+			</table>
+		</div>
+		<div class="content-list">
+			<ul>
+				{% for idea in ideas %}
+					<li class="idea-item">
+						<div class="info-line" style="float:right">
+							<ul>
+								<li class="comments" title="Comments"><span>{{ 0 }}</span></li>
+								<li class="views" title="Views"><span>{{ 0 }}</span></li>
+							</ul>
+						</div>
+						<div class="ideas-votes" title="Votes in favor of this idea">
+							<div class="votes"><span>{{ rand(1,80) }}</span></div>
+						</div>
+						<h4><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h4>
+					</li>
+				{% else %}
+					<li>There are no ideas with those specificiations.</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="content-pages">
+			<div class="num-info">
+				{{ num_results }} results sorted by
+				<select name="order_by" class="order_by">
+					<option value="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all')}) }}?order_by=id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>Date</option>
+					<option value="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all')}) }}?order_by=num_votes.desc" {% if search_options.order_by == 'num_votes.desc' %}selected="selected"{% endif %}>Popularity</option>
+				</select>
+			</div>
+			<div class="pager">
+				{% if pageinfo.prev %}
+					<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all'), 'page': pageinfo.prev}) }}?{{ search_options_url }}">Prev</a>
+				{% endif %}
+				{% for page in pageinfo.pages %}
+					{% if page == pageinfo.curpage %}
+						[{{ page }}]
+					{% else %}
+						<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all'), 'page': page}) }}?{{ search_options_url }}">{{ page }}</a>
+					{% endif %}
+				{% endfor %}
+				{% if pageinfo.next %}
+					<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all'), 'page': pageinfo.next}) }}?{{ search_options_url }}">Next</a>
+				{% endif %}
+			</div>
+		</div>
+	</div>
+
+	<div class="loading-tpl" style="display: none">
+		<div class="loading" style="text-align: center; padding: 15px;"><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></div>
+	</div>
+</div>
+{% if is_partial_request() and is_partial_request() != 'partial' %}</div>{% endif %}
+{% endblock %}
