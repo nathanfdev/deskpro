@@ -25,7 +25,7 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 	 * For example: more search results, or a page being put into an existing page etc. The actual
 	 * meaning of what "partial" is depends on the page.
 	 *
-	 * Returns either true, or a string value of the _partial (which might be used to denote different
+	 * Returns either 'partial', or a string value of the _partial (which might be used to denote different
 	 * types of partial templates).
 	 *
 	 * @return bool|string
@@ -36,10 +36,10 @@ class Request extends \Symfony\Component\HttpFoundation\Request
 		
 		if ($this->query->has(self::PARTIAL_REQUEST_KEY)) {
 			$val = $this->query->get(self::PARTIAL_REQUEST_KEY);
-			if (!$val) $val = true;
+			if (!$val) $val = 'partial';
 		} elseif ($this->request->has(self::PARTIAL_REQUEST_KEY)) {
 			$val = $this->request->get(self::PARTIAL_REQUEST_KEY);
-			if (!$val) $val = true;
+			if (!$val) $val = 'partial';
 		}
 
 		return $val;

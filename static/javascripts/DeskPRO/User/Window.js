@@ -16,8 +16,14 @@ DeskPRO.User.Window = new Orb.Class({
 			this.PAGE.initPage();
 		}
 
-		var elementHandlers = {};
-		$('.with-handler[data-element-handler]').each(function() {
+		this.elementHandlers = {};
+		this.initFeatures(document);
+	},
+
+	initFeatures: function(contextEl) {
+		var self = this;
+		
+		$('.with-handler[data-element-handler]', contextEl).each(function() {
 			var el = $(this);
 			var className = el.data('element-handler');
 			var classObj = Orb.getNamespacedObject(className);
@@ -32,14 +38,13 @@ DeskPRO.User.Window = new Orb.Class({
 			}
 
 			var obj = new classObj({ el: el });
-			elementHandlers[el.attr('id')] = obj;
+			self.elementHandlers[el.attr('id')] = obj;
 		});
 
-		this.elementHandlers = elementHandlers;
 
 		$('a.in-overlay').click(function(ev) {
 			ev.preventDefault();
-			
+
 			var el = $(this);
 			var url = el.attr('href');
 			if (url.indexOf('?') !== -1) {

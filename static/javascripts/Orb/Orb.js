@@ -189,6 +189,29 @@ Orb.linkUrls = function(string) {
 		.replace(/(https?:\/\/[^\s]+)/gi, '<a href="$1">$1</a>');
 };
 
+/**
+ * Appends query data to a URL which might already have query data. So this
+ * appends an ? or an & depending.
+ * 
+ * @param url
+ * @param k
+ * @param v
+ */
+Orb.appendQueryData = function(url, k, v) {
+	var kev = k;
+	if (v !== undefined) {
+		kev += '=' + v;
+	}
+
+	if (url.indexOf('?') === -1) {
+		url += '?' + kev;
+	} else {
+		url += '&' + kev;
+	}
+
+	return url;
+};
+
 
 /**
  * Simple way to load Javascript and CSS files on-demand.

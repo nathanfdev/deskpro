@@ -45,19 +45,10 @@ class Kb extends PortalItemAbstract
 	public function getContentHtml()
 	{
 		$html = $this->renderForward(
-			'UserBundle:Articles:quickBrowser',
-			array('category_id' => $this->getOption('category_id', 0), 'num' => $this->getValueOption('num_articles', 10)),
-			array('_partial' => true)
+			'UserBundle:Articles:browse',
+			array(),
+			array('_partial' => 'portal')
 		);
-
-		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
-
-		$html = $this->renderView('UserBundle:Portal:kb-content.html.twig', array(
-			'html' => $html,
-			'cats' => $cats,
-			'block_title' => $this->getOption('block_title'),
-			'show_cat_switcher' => $this->getOption('show_cat_switcher')
-		));
 
 		return $html;
 	}
@@ -85,7 +76,7 @@ class Kb extends PortalItemAbstract
 	public function getJsAssets()
 	{
 		if ($this->section == 'portal') {
-			return array('javascripts/DeskPRO/User/ElementHandler/Kb.js');
+			return array('javascripts/DeskPRO/User/ElementHandler/PortalKb.js');
 		}
 
 		return array();
