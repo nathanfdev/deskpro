@@ -32,6 +32,24 @@ class ContentSearcher extends AbstractSearcher
 		return $results;
 	}
 
+	public function omnisearch($query_text)
+	{
+		$index = $this->manager->getIndex('content');
+
+		$query = new \Elastica_Query();
+		$query->setParam('query', array(
+			'fuzzy_like_this' => array(
+				'like_text' => $query_text,
+				'prefix_length' => 3,
+			)
+		));
+
+		$documents = $index->search($query)->getResults();
+		$results = $this->documentsToResults($documents);
+
+		return $results;
+	}
+
 	public function labelled($labels)
 	{
 		// Explode into an array of labels if not already

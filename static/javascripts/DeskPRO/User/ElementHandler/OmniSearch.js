@@ -13,16 +13,22 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 		this.searchEl = $('#omni_search_txt');
 		this.searchEl.keypress(this.searchQueryUpdated.bind(this));
 		this.searchEl.focus(function() {
-			self.openMenu();
+			self.openMenu(true);
 		});
 		$(document).click(function() {
 			self.closeMenu();
+		});
+
+		this.searchEl.keypress(function() {
+			self.updateSearch();
 		});
 
 		// When clicking the menu el itself, cancel bubble
 		// so it doesnt get to document click and close
 		this.menuEl.click(function(ev) { ev.stopPropagation(); });
 		this.searchEl.click(function(ev) { ev.stopPropagation(); });
+
+		this.resultsWrapper = $('.results', this.menuEl);
 
 		// Make example terms clickable
 		$('.example-query', this.el).click(function(ev) {
@@ -34,7 +40,47 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 			self.setSearchQuery(text);
 
 			self.searchEl.focus();
-			self.openMenu();
+			self.doUpdateSearch();
+		});
+	},
+
+
+	updateSearch: function() {
+
+		var terms = this.searchEl.val().trim();
+
+		if (!terms.length) {
+			this.resultsWrapper.empty();
+			this.closeMenu();
+
+			if (this.updateTimer) {
+				window.clearTimeout(this.updateTimer);
+			}
+		}
+
+		if (this.updateTimer) {
+			return;
+		}
+
+		this.updateTimer = this.doUpdateSearch.delay(250, this);
+	},
+
+	doUpdateSearch: function() {
+		this.updateTimer = false;
+		var terms = this.searchEl.val().trim();
+
+		if (!terms) return;
+
+		$.ajax({
+			url: BASE_URL + 'search/omnisearch/' + encodeURI(terms),
+			dataType: 'html',
+			context: this,
+			success: function(html) {
+				var ul = $(html);
+
+				this.resultsWrapper.empty().append(ul);
+				this.openMenu(true);
+			}
 		});
 	},
 
@@ -42,7 +88,15 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 	/**
 	 * Opens the results menu.
 	 */
-	openMenu: function() {
+	openMenu: function(only_with_results) {
+
+		if (only_with_results) {
+			if (!$('> ul', this.resultsWrapper).length) {
+				this.closeMenu();
+				return false;
+			}
+		}
+
 		this.updateMenuDims();
 
 		this.menuEl.fadeIn('fast');

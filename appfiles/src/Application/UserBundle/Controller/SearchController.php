@@ -59,4 +59,14 @@ class SearchController extends AbstractController
 			'labels' => $labels
 		));
 	}
+
+	public function omnisearchAction($query)
+	{
+		$searcher = new ContentSearcher(App::get('deskpro.elastica.manager'), $this->person);
+		$results = $searcher->omnisearch($query);
+
+		return $this->render('UserBundle:Search:omnisearch.html.twig', array(
+			'results'   => $results,
+		));
+	}
 }
