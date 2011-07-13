@@ -7,7 +7,7 @@
 {% block breadcrumb %}
 	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
 	{% for cat in category_path %}
-		<li><a href="{{ path('user_ideas_cat', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+		<li><a href="{{ path('user_ideas', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
 	{% endfor %}
 	<li><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></li>
 {% endblock %}

@@ -241,7 +241,7 @@ user_news_newcomment:
 user_ideas:
   pattern: /feedback/{status}/{slug}/{page}
   defaults: { _controller: UserBundle:Ideas:filter, status: 'new', page: 1, slug: '' }
-  requirements: { slug: "((\d+(\-.*?)?)?)|all", page: "\d+" }
+  requirements: { slug: "((\d+(\-.*?)?)?)|all", page: "\d+", status: "(popular|new|active|closed)" }
 
 user_ideas_view:
   pattern: /feedback/ideas/{slug}
