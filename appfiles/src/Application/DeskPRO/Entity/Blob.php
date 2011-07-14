@@ -132,6 +132,22 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	public function setFilename($filename)
+	{
+		$old = $this->filename;
+		$this->filename = $filename;
+		$this->_onPropertyChanged('filename', $old, $this->filename);
+
+		// Try to guess content typ based off of filename exts
+		if (!$this->content_type) {
+			$ct = \Orb\Data\ContentTypes::getContentTypeFromFilename($this->filename);
+			if ($ct) {
+				$this['content_type'] = $ct;
+			}
+		}
+	}
+
+
 
 	/**
 	 * Get the file extension

@@ -13,137 +13,96 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		$pdo = new \PDO('mysql:dbname=dphelpreal;host=localhost', 'root', 'mysquirrel');
-		$dp_db = \Doctrine\DBAL\DriverManager::getConnection(array('pdo' => $pdo, 'wrapperClass' => 'Application\\DeskPRO\\DBAL\\Connection'));
-		
 		$db = App::getDb();
-		$em = APp::getOrm();
+		$em = App::getOrm();
 
-		// Delete old KB and idea stuff
-		$db->exec("TRUNCATE TABLE articles");
-		$db->exec("TRUNCATE TABLE article_categories");
-		$db->exec("TRUNCATE TABLE article_to_categories");
-		$db->exec("TRUNCATE TABLE ideas");
-		$db->exec("TRUNCATE TABLE idea_categories");
+		$db->exec("TRUNCATE TABLE downloads");
+		$db->exec("TRUNCATE TABLE download_categories");
+		$db->exec("TRUNCATE TABLE download_category_permissions");
 
-		#------------------------------
-		# KB categories
-		#------------------------------
+		$dlinfo = array(
+			array(
+				'title' => 'Patches',
+				'children' => array(
+					array(
+						'title' => 'DeskPRO v3.4',
+						'files' => array(
+							array('title' => 'Patch 1 for 3.4.2', 'filename' => 'v3_4_2_P1.zip')
+						)
+					),
+					array(
+						'title' => 'DeskPRO v3.3',
+						'files' => array(
+							array('title' => 'Patch 1 for 3.3.1', 'filename' => 'v3_3_1_P1.zip'),
+							array('title' => 'Patch 2 for 3.3.1', 'filename' => 'v3_3_1_P2.zip'),
+						)
+					)
+				)
+			),
+			array(
+				'title' => 'Documentation',
+				'files' => array(
+					array('title' => 'Installation Guide', 'filename' => 'DeskPRO-Install-Guide.pdf'),
+					array('title' => 'Administration Guide', 'filename' => 'DeskPRO-Admin-Guide.pdf'),
+					array('title' => 'Usage Guide', 'filename' => 'DeskPRO-User-Guide.pdf'),
+					array('title' => 'Style Guide', 'filename' => 'DeskPRO-Style-Guide.pdf'),
+				)
+			),
+			array(
+				'title' => 'Tools',
+				'files' => array(
+					array('title' => 'Reset Admin Password', 'filename' => 'tool-reset-admin-pass.zip'),
+					array('title' => 'Regenerate All Passwords', 'filename' => 'tool-regenerate-passwords.zip'),
+					array('title' => 'Schema Checker', 'filename' => 'tool-schema-cheker.zip'),
+					array('title' => 'Usage Logger', 'filename' => 'usage-logger.zip'),
+				)
+			),
+		);
 
-		$dp_cats = $dp_db->fetchAll("SELECT id, name FROM faq_cats ORDER BY id ASC");
-
-		$kb_cat_map = array();
-		$kb_cats = array();
+		$agent = $em->find('DeskPRO:Person', 20001);
 
 		$em->beginTransaction();
-		foreach ($dp_cats as $dp_cat) {
-			$cat = new \Application\DeskPRO\Entity\ArticleCategory();
-			$cat['title'] = $dp_cat['name'];
 
-			$em->persist($cat);
-			$em->flush();
+		$proc = function ($dlinfo, $parent = null) use ($em, &$proc) {
+			foreach ($dlinfo as $info) {
+				$cat = new \Application\DeskPRO\Entity\DownloadCategory();
+				$cat['title'] = $info['title'];
+				if ($parent) {
+					$cat['parent'] = $parent;
+				}
 
-			$kb_cat_map[$dp_cat['id']] = $cat['id'];
-			$kb_cats[$cat['id']] = $cat;
-		}
+				$em->persist($cat);
 
-		unset($dp_cats);
+				if (!empty($info['files'])) {
+					foreach ($info['files'] as $fileinfo) {
+						$file = new \Application\DeskPRO\Entity\Download();
 
-		$em->commit();
+						$blob = new \Application\DeskPRO\Entity\Blob();
+						$blob->fromArray(array(
+							'filename' => $fileinfo['filename'],
+							'filesize' => mt_rand(1000, 10000),
+						));
 
-		#------------------------------
-		# idea categories
-		#------------------------------
+						$file->fromArray(array(
+							'blob' => $blob,
+							'category' => $cat,
+							'title' => $fileinfo['title'],
+							'content' => 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Nunc faucibus suscipit sem, sit amet ullamcorper libero ultrices eu. Quisque quis mauris dui, at sagittis mauris. Vestibulum sed libero erat, ut pellentesque lorem. Nullam eu risus mi, eget laoreet erat. Morbi cursus commodo mi, placerat tempus lectus imperdiet non. Nulla facilisi. Vivamus dignissim eros sed mauris placerat viverra. Pellentesque blandit mollis tortor, et feugiat massa suscipit non. Vivamus libero tellus, euismod semper porttitor sit amet, egestas et ligula. Mauris vulputate, felis adipiscing auctor lacinia, est leo ornare ante, ac facilisis leo nulla et nisl. Suspendisse potenti. Cras ac elit sapien. Proin semper dui non diam fringilla scelerisque',
+							'num_downloads' => mt_rand(0,100),
+						));
 
-		$dp_cats = $dp_db->fetchAll("SELECT id, title, parent_id FROM user_idea_categories ORDER BY parent_id ASC, display_order ASC");
+						$em->persist($blob);
+						$em->persist($file);
+					}
+				}
 
-		$idea_cat_map = array();
-		$idea_cats = array();
-
-		$em->beginTransaction();
-		foreach ($dp_cats as $dp_cat) {
-			$cat = new \Application\DeskPRO\Entity\IdeaCategory();
-			$cat['title'] = $dp_cat['title'];
-
-			if ($dp_cat['parent_id']) {
-				$p_cat = $idea_cats[$dp_cat['parent_id']];
-				$cat['parent'] = $p_cat;
+				if (!empty($info['children'])) {
+					$proc($info['children'], $cat);
+				}
 			}
+		};
 
-			$em->persist($cat);
-			$em->flush();
-
-			$idea_cat_map[$dp_cat['id']] = $cat['id'];
-			$idea_cats[$cat['id']] = $cat;
-		}
-
-		unset($dp_cats);
-
-		$em->commit();
-
-		#------------------------------
-		# Articles
-		#------------------------------
-
-		$agent = App::findEntity('DeskPRO:Person', 20001);
-		$dp_articles = $dp_db->fetchAll("SELECT title, answer, category FROM faq_articles ORDER BY id ASC");
-
-		$em->beginTransaction();
-		foreach ($dp_articles as $dp_article) {
-			$art = new \Application\DeskPRO\Entity\Article();
-			$art->person = $agent;
-			$art->addToCategory($kb_cats[$kb_cat_map[$dp_article['category']]]);
-			$art->title = $dp_article['title'];
-			$art->content = $dp_article['answer'];
-			$art->markup_mode = 'html';
-			$art->status = 'published';
-
-			$em->persist($art);
-		}
-
-		unset($dp_articles);
-
-		$em->flush();
-		$em->commit();
-
-		#------------------------------
-		# Ideas
-		#------------------------------
-
-		$accepted = App::findEntity('DeskPRO:IdeaStatusCategory', 2);
-		$declined = App::findEntity('DeskPRO:IdeaStatusCategory', 6);
-		$completed = App::findEntity('DeskPRO:IdeaStatusCategory', 4);
-
-		$agent = App::findEntity('DeskPRO:Person', 20001);
-		$dp_ideas = $dp_db->fetchAll("SELECT category_id, title, message, status FROM user_ideas ORDER BY id ASC");
-
-		$em->beginTransaction();
-		foreach ($dp_ideas as $dp_idea) {
-			$idea = new \Application\DeskPRO\Entity\Idea();
-			$idea->person = $agent;
-			$idea->title = $dp_idea['title'];
-			$idea->setFirstCommentText($dp_idea['message']);
-			$idea->category = $idea_cats[$idea_cat_map[$dp_idea['category_id']]];
-
-			if ($dp_idea['status'] == 'new') {
-				$idea['status'] = 'new';
-			} elseif ($dp_idea['status'] == 'accepted') {
-				$idea['status'] = 'active';
-				$idea['status_category'] = $accepted;
-			} elseif ($dp_idea['status'] == 'declined') {
-				$idea['status'] = 'closed';
-				$idea['status_category'] = $declined;
-			} elseif ($dp_idea['status'] == 'completed') {
-				$idea['status'] = 'closed';
-				$idea['status_category'] = $completed;
-			} else {
-				$idea['status'] = 'new';
-			}
-
-			$em->persist($idea);
-		}
-
-		unset($dp_ideas);
+		$proc($dlinfo);
 
 		$em->flush();
 		$em->commit();

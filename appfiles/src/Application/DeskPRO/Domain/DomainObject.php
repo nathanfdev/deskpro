@@ -346,6 +346,22 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 	}
 
 
+	/**
+	 * Sets the value of a field, and calls the property changed tracker
+	 * 
+	 * @param $field
+	 * @param $value
+	 * @return void
+	 */
+	protected function setModelField($field, $value)
+	{
+		$old = $this->$field;
+		$this->$field = $value;
+
+		$this->_onPropertyChanged($field, $old, $value);
+	}
+
+
 
 	/**
 	 * @param PropertyChangedListener $listener

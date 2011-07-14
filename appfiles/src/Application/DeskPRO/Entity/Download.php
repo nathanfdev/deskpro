@@ -94,11 +94,20 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_label_manager = null;
 
-	public function __consturct()
+	public function __construct()
 	{
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+	}
+
+	public function setTitle($title)
+	{
+		$this->setModelField('title', $title);
+		
+		if (!$this->slug) {
+			$this['slug']  = Strings::slugifyTitle($title);
+		}
 	}
 
 	public function getContentHtml()

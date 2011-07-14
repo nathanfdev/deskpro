@@ -209,7 +209,10 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	public function setTitle($title)
 	{
 		$this->title = $title;
-		$this->slug  = Strings::slugifyTitle($title);
+
+		if (!$this->slug) {
+			$this['slug']  = Strings::slugifyTitle($title);
+		}
 	}
 
 	public function setStatusCode($status_code)
