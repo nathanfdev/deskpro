@@ -38,17 +38,25 @@ class IdeasController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function filterAction($status = 'popular', $slug = 'all', $page = 1)
+	public function filterAction($status = 'popular', $slug = 'all')
 	{
+		$page = $this->in->getUint('page');
+		$page = max(1, $page);
+		$per_page = 20;
+		
 		if (!$status) {
 			$status = 'new';
 		}
 
-		if ($slug == 'all') {
-			$slug = '';
+		if (!$slug) {
+			$slug = 'all';
 		}
+
+		$search_options = array(
+			'order_by' => '',
+		);
 		
-		if ($slug) {
+		if ($slug && $slug != 'all') {
 			$category = App::getEntityRepository('DeskPRO:IdeaCategory')->getBySlug($slug);
 
 			if (!$category) {
@@ -67,11 +75,15 @@ class IdeasController extends AbstractController
 			$category_path = array();
 		}
 
-		$ideas = array();
 		$idea_cats  = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
 		$idea_cat_objs = App::getEntityRepository('DeskPRO:IdeaCategory')->getAll();
 
 		$searcher = new \Application\DeskPRO\Searcher\IdeaSearch();
+
+		if ($this->in->getString('order_by')) {
+			$searcher->setOrderByCode($this->in->getString('order_by'));
+			$search_options['order_by'] = $this->in->getString('order_by');
+		}
 
 		if ($status == 'popular') {
 			$searcher->addTerm('popular', 'is', 1);
@@ -82,20 +94,11 @@ class IdeasController extends AbstractController
 		if ($category) {
 			$searcher->addTerm('category', 'is', $category['id']);
 		}
-
-		$search_options_url = '';
-		$search_options = array();
-		if ($this->in->getString('order_by')) {
-			$searcher->setOrderByCode($this->in->getString('order_by'));
-			$search_options_url = 'order_by=' . $this->in->getString('order_by');
-			$search_options['order_by'] = $this->in->getString('order_by');
-		}
-
 		$total = $searcher->getCount();
-		$pageinfo = Numbers::getPaginationPages($total, $page, 20, 3);
+		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
 		$limit = array(
-			'offset' => ($pageinfo['curpage']-1) * 20,
-			'max' => 20
+			'offset' => ($pageinfo['curpage']-1) * $per_page,
+			'max' => $per_page
 		);
 
 		$idea_ids = $searcher->getMatches($limit);
@@ -112,7 +115,6 @@ class IdeasController extends AbstractController
 			'pageinfo'        => $pageinfo,
 			'num_results'     => $total,
 			'search_options' => $search_options,
-			'search_options_url' => $search_options_url,
 		));
 	}
 

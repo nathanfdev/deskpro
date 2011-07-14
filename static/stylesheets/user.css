@@ -220,6 +220,20 @@ a {
     text-align: right;
 }
 
+.content-list ul li.pagenav .controls {
+    float: right;
+}
+
+.content-list ul li.pagenav .sort-controls {
+    float: left;
+    margin-right: 18px;
+    margin-top: 2px;
+}
+
+.content-list ul li.pagenav .page-controls {
+    float: right;
+}
+
 .content-list ul li.pagenav .count {
     float: left;
 }
@@ -227,6 +241,29 @@ a {
 .content-list ul li.pagenav select, .content-list ul li.pagenav button {
     font-size: 9px;
     margin: 0;
+}
+
+.content-list ul li.pagenav a.page-left, .content-list ul li.pagenav a.page-right {
+    width: 14px;
+    height: 14px;
+    text-indent: 1000px;
+    overflow: hidden;
+    cursor: pointer;
+    display: block;
+
+    margin-top: 3px;
+
+    padding: 0 5px 0 5px;
+}
+
+.content-list ul li.pagenav a.page-left {
+    background: url(../images/icons/page-left.png) no-repeat 50% 50%;
+    float: left;
+}
+
+.content-list ul li.pagenav a.page-right {
+    background: url(../images/icons/page-right.png) no-repeat 50% 50%;
+    float: right;
 }
 
 .content-list.inner {

@@ -171,24 +171,21 @@ user_tickets_feedback_closeticket:
 ################################################################################
 
 user_articles:
-  pattern: /kb/{slug}/{page}
-  defaults: { _controller: UserBundle:Articles:browse, page: 1, slug: '' }
-  requirements: { slug: "(\d+(\-.*?)?)?", page: "\d+" }
+  pattern: /kb/{slug}
+  defaults: { _controller: UserBundle:Articles:browse, slug: '' }
+  requirements: { slug: "(\d+(\-.*?)?)?" }
 
 user_articles_recent:
-  pattern: /kb/recent/{page}
-  defaults: { _controller: UserBundle:Articles:recent, page: 1 }
-  requirements: { page: "\d+" }
+  pattern: /kb/recent
+  defaults: { _controller: UserBundle:Articles:recent }
 
 user_articles_popular:
-  pattern: /kb/popular/{page}
-  defaults: { _controller: UserBundle:Articles:popular, page: 1 }
-  requirements: { page: "\d+" }
+  pattern: /kb/popular
+  defaults: { _controller: UserBundle:Articles:popular }
 
 user_articles_filter:
-  pattern: /kb/find/{page}
-  defaults: { _controller: UserBundle:Articles:filter, page: 1 }
-  requirements: { page: "\d+" }
+  pattern: /kb/find
+  defaults: { _controller: UserBundle:Articles:filter }
 
 user_articles_article:
   pattern: /kb/articles/{slug}
@@ -252,9 +249,9 @@ user_news_newcomment:
 ################################################################################
 
 user_ideas:
-  pattern: /feedback/{status}/{slug}/{page}
-  defaults: { _controller: UserBundle:Ideas:filter, status: 'new', page: 1, slug: '' }
-  requirements: { slug: "((\d+(\-.*?)?)?)|all", page: "\d+", status: "(popular|new|active|closed)" }
+  pattern: /feedback/{status}/{slug}
+  defaults: { _controller: UserBundle:Ideas:filter, status: 'new', slug: 'all' }
+  requirements: { slug: "((\d+(\-.*?)?)?)|all", status: "(popular|new|active|closed)" }
 
 user_ideas_view:
   pattern: /feedback/ideas/{slug}

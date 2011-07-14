@@ -3,9 +3,7 @@
 	<li><a href="{{ path('user_ideas') }}">Feedback</a></li>
 {% endblock %}
 {% block content %}
-{% if is_partial_request() and is_partial_request() != 'partial' %}
 <div class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.Ideas" {% if is_partial_request() == 'portal' %}data-ajax-update="1"{% endif %}>
-{% endif %}
 <div class="content-item portal_ideas">
 	<div class="heading">
 		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Feedback') }}</a></h2>
@@ -19,17 +17,10 @@
 					<td rowspan="2">
 						<div class="idea-status-nav">
 							<ul>
-								{% if category %}
-									<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug|default('all')}) }}?{{ search_options_url }}">Hot</a></li>
-									<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug|default('all')}) }}?{{ search_options_url }}">New</a></li>
-									<li {% if status == 'active' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug|default('all')}) }}?{{ search_options_url }}">Active</a></li>
-									<li {% if status == 'closed' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug|default('all')}) }}?{{ search_options_url }}">Closed</a></li>
-								{% else %}
-									<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular'}) }}?{{ search_options_url }}">Hot</a></li>
-									<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new'}) }}?{{ search_options_url }}">New</a></li>
-									<li {% if status == 'active' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'active'}) }}?{{ search_options_url }}">Active</a></li>
-									<li {% if status == 'closed' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'closed'}) }}?{{ search_options_url }}">Closed</a></li>
-								{% endif %}
+								<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug|default('all')}) }}">Hot</a></li>
+								<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug|default('all')}) }}">New</a></li>
+								<li {% if status == 'active' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug|default('all')}) }}">Active</a></li>
+								<li {% if status == 'closed' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug|default('all')}) }}">Closed</a></li>
 							</ul>
 						</div>
 					</td>
@@ -39,7 +30,7 @@
 						<select name="category_id" class="category_id">
 							<option value="0">All</option>
 							{% for cat in idea_cats %}
-								<option value="{{ path('user_ideas', {'status': status, 'slug': idea_cat_objs[cat.id].url_slug}) }}?{{ search_options_url }}" {% if category.id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+								<option value="{{ path('user_ideas', {'status': status, 'slug': idea_cat_objs[cat.id].url_slug}) }}" {% if category.id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
 							{% endfor %}
 						</select>
 					</td>
@@ -64,31 +55,38 @@
 				{% else %}
 					<li>There are no ideas with those specificiations.</li>
 				{% endfor %}
+				{% if ideas|length %}
+					<li class="pagenav">
+						<div class="count">{{ num_results }} ideas</div>
+						<form action="{{ path('user_ideas', {'status': status, 'slug': category.url_slug}) }}" method="get" id="idea_find_form_btm">
+						<div class="controls">
+							<div class="sort-controls">
+								Sorted by
+								<select name="order_by" onchange="$('#idea_find_form_btm select.page').val(1); $('#idea_find_form_btm').submit();">
+									<option value="id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>Date</option>
+									<option value="num_votes.desc" {% if search_options.order_by == 'num_votes.desc' %}selected="selected"{% endif %}>Popularity</option>
+								</select>
+							</div>
+							<div class="page-controls">
+								{% if pageinfo.prev %}
+									<a href="{{ path('user_ideas', search_options|merge({'status': status, 'slug': category.url_slug, 'page': pageinfo.prev})) }}" class="page-link page-left">Previous</a>
+								{% endif %}
+								Page <select class="page" name="page" onchange="$('#idea_find_form_btm').submit();">
+									{% for i in 1..pageinfo.last %}
+										<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}</option>
+									{% endfor %}
+								</select>
+								of {{ pageinfo.last }} <button class="dp-button x-small">Go</button>
+								{% if pageinfo.next %}
+									<a href="{{ path('user_ideas', search_options|merge({'status': status, 'slug': category.url_slug, 'page': pageinfo.next})) }}" class="page-link page-right">Next</a>
+								{% endif %}
+							</div>
+						</div>
+						</form>
+						<br class="clear" />
+					</li>
+				{% endif %}
 			</ul>
-		</div>
-		<div class="content-pages">
-			<div class="num-info">
-				{{ num_results }} results sorted by
-				<select name="order_by" class="order_by">
-					<option value="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all')}) }}?order_by=id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>Date</option>
-					<option value="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all')}) }}?order_by=num_votes.desc" {% if search_options.order_by == 'num_votes.desc' %}selected="selected"{% endif %}>Popularity</option>
-				</select>
-			</div>
-			<div class="pager">
-				{% if pageinfo.prev %}
-					<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all'), 'page': pageinfo.prev}) }}?{{ search_options_url }}">Prev</a>
-				{% endif %}
-				{% for page in pageinfo.pages %}
-					{% if page == pageinfo.curpage %}
-						[{{ page }}]
-					{% else %}
-						<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all'), 'page': page}) }}?{{ search_options_url }}">{{ page }}</a>
-					{% endif %}
-				{% endfor %}
-				{% if pageinfo.next %}
-					<a href="{{ path('user_ideas', {'status': status, 'slug': category.url_slug|default('all'), 'page': pageinfo.next}) }}?{{ search_options_url }}">Next</a>
-				{% endif %}
-			</div>
 		</div>
 	</div>
 
@@ -96,5 +94,5 @@
 		<div class="loading" style="text-align: center; padding: 15px;"><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></div>
 	</div>
 </div>
-{% if is_partial_request() and is_partial_request() != 'partial' %}</div>{% endif %}
+</div>
 {% endblock %}

@@ -29,8 +29,11 @@ class ArticlesController extends AbstractController
 	/**
 	 * Main index shows initial category listing
 	 */
-	public function browseAction($slug = '', $page = '')
+	public function browseAction($slug = '')
 	{
+		$page = $this->in->getUint('page');
+		$page = max(1, $page);
+		
 		if ($slug) {
 			$category = App::getEntityRepository('DeskPRO:ArticleCategory')->getBySlug($slug);
 	
@@ -52,10 +55,10 @@ class ArticlesController extends AbstractController
 			$searcher->setOrderBy('id', 'desc');
 
 			$total = $searcher->getCount();
-			$pageinfo = Numbers::getPaginationPages($total, $page, 20, 3);
+			$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
 			$limit = array(
-				'offset' => ($pageinfo['curpage']-1) * 20,
-				'max' => 20
+				'offset' => ($pageinfo['curpage']-1) * $per_page,
+				'max' => $per_page
 			);
 
 			$article_ids = $searcher->getMatches($limit);
@@ -81,8 +84,13 @@ class ArticlesController extends AbstractController
 	}
 
 
-	public function filterAction($page = 1)
+	public function filterAction()
 	{
+		$page = $this->in->getUint('page');
+		$page = max(1, $page);
+
+		$per_page = 20;
+
 		$kb_cats  = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
 		$products = App::getEntityRepository('DeskPRO:Product')->getCategoryHelper()->getFlatHierarchy();
 
@@ -90,6 +98,10 @@ class ArticlesController extends AbstractController
 		$searcher->addTerm('status', 'is', 'published');
 
 		$search_options = array();
+		$search_options['order_by'] = '';
+		$search_options['product_id'] = '';
+		$search_options['category_id'] = '';
+		
 		if ($this->in->getString('order_by')) {
 			$searcher->setOrderByCode($this->in->getString('order_by'));
 			$search_options['order_by'] = $this->in->getString('order_by');
@@ -105,8 +117,8 @@ class ArticlesController extends AbstractController
 
 		$total = $searcher->getCount();
 		$article_ids = $searcher->getMatches(array(
-			'offset' => ($page-1) * 20,
-			'max' => 20
+			'offset' => ($page-1) * $per_page,
+			'max' => $per_page
 		));
 
 		if ($article_ids) {
@@ -115,7 +127,7 @@ class ArticlesController extends AbstractController
 			$articles = array();
 		}
 
-		$pageinfo = Numbers::getPaginationPages($total, $page, 20, 3);
+		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
 
 		return $this->render('UserBundle:Articles:find.html.twig', array(
 			'kb_cats' => $kb_cats,
@@ -132,17 +144,20 @@ class ArticlesController extends AbstractController
 	/**
 	 * @param int $page
 	 */
-	public function recentAction($page = 1)
+	public function recentAction()
 	{
+		$page = $this->in->getUint('page');
 		$page = max(1, $page);
-		
+
+		$per_page = 20;
+
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
 		$searcher->addTerm('status', 'is', 'published');
 		$searcher->setOrderBy('id', 'desc');
 
 		$article_ids = $searcher->getMatches(array(
-			'offset' => ($page-1) * 20,
-			'max' => 20
+			'offset' => ($page-1) * $per_page,
+			'max' => $per_page
 		));
 
 		if ($article_ids) {
@@ -151,7 +166,7 @@ class ArticlesController extends AbstractController
 			$articles = array();
 		}
 
-		$show_more = (count($article_ids) == 20);
+		$show_more = (count($article_ids) == $per_page);
 
 		$tpl = 'UserBundle:Articles:recent.html.twig';
 		if ($this->request->isPartialRequest() == 'more') {
@@ -171,7 +186,10 @@ class ArticlesController extends AbstractController
 	 */
 	public function popularAction($page = 1)
 	{
+		$page = $this->in->getUint('page');
 		$page = max(1, $page);
+
+		$per_page = 20;
 
 		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
 		$searcher->addTerm('status', 'is', 'published');
@@ -179,8 +197,8 @@ class ArticlesController extends AbstractController
 		$searcher->setOrderBy('view_count', 'desc');
 
 		$article_ids = $searcher->getMatches(array(
-			'offset' => ($page-1) * 20,
-			'max' => 20
+			'offset' => ($page-1) * $per_page,
+			'max' => $per_page
 		));
 
 		if ($article_ids) {
@@ -189,7 +207,7 @@ class ArticlesController extends AbstractController
 			$articles = array();
 		}
 
-		$show_more = (count($article_ids) == 20);
+		$show_more = (count($article_ids) == $per_page);
 
 		$tpl = 'UserBundle:Articles:popular.html.twig';
 		if ($this->request->isPartialRequest() == 'more') {

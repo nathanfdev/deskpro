@@ -6,8 +6,8 @@
 {% block kb_find %}
 	<div class="with-handler">
 		<div class="content-filters">
-			<form action="{{ path('user_articles_filter') }}" method="post" id="kb_filter_form">
-			<input type="hidden" name="order_by" value="{{ search_options.order_by }}" id="kb_filter_order_by" />
+			<form action="{{ path('user_articles_filter') }}" method="get" id="kb_find_form">
+			<input type="hidden" name="order_by" value="{{ search_options.order_by }}" />
 			<table cellspacing="0" cellpadding="0" width="100%">
 				<tr>
 					<td>Category:</td>
@@ -48,31 +48,38 @@
 					<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
 				</li>
 				{% endfor %}
+				<li class="pagenav">
+					<div class="count">{{ num_results }} articles</div>
+					<form action="{{ path('user_articles_filter') }}" method="get" id="kb_find_form_btm">
+					<input type="hidden" name="category_id" value="{{ search_options.category_id }}" />
+					<input type="hidden" name="product_id" value="{{ search_options.product_id }}" />
+					<div class="controls">
+						<div class="sort-controls">
+							Sorted by
+							<select name="order_by" onchange="$('#kb_find_form_btm select.page').val(1); $('#kb_find_form_btm').submit();">
+								<option value="id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>Date</option>
+								<option value="view_count.desc" {% if search_options.order_by == 'view_count.desc' %}selected="selected"{% endif %}>Popularity</option>
+							</select>
+						</div>
+						<div class="page-controls">
+							{% if pageinfo.prev %}
+								<a href="{{ path('user_articles_filter', search_options|merge({'page': pageinfo.prev})) }}" class="page-link page-left">Previous</a>
+							{% endif %}
+							Page <select class="page" name="page" onchange="$('#kb_find_form_btm').submit();">
+								{% for i in 1..pageinfo.last %}
+									<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}</option>
+								{% endfor %}
+							</select>
+							of {{ pageinfo.last }} <button class="dp-button x-small">Go</button>
+							{% if pageinfo.next %}
+								<a href="{{ path('user_articles_filter', search_options|merge({'page': pageinfo.next})) }}" class="page-link page-right">Next</a>
+							{% endif %}
+						</div>
+					</div>
+					</form>
+					<br class="clear" />
+				</li>
 			</ul>
-		</div>
-		<div class="content-pages">
-			<div class="num-info">
-				{{ num_results }} results sorted by
-				<select name="order_by" onchange="$('#kb_filter_order_by').val($(this).val()); $('#kb_filter_form').submit();">
-					<option value="id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>Date</option>
-					<option value="view_count.desc" {% if search_options.order_by == 'view_count.desc' %}selected="selected"{% endif %}>Popularity</option>
-				</select>
-			</div>
-			<div class="pager">
-				{% if pageinfo.prev %}
-					<a href="{{ path('user_articles_filter', {'page': pageinfo.prev}) }}?{{ search_options_url }}">Prev</a>
-				{% endif %}
-				{% for page in pageinfo.pages %}
-					{% if page == pageinfo.curpage %}
-						[{{ page }}]
-					{% else %}
-						<a href="{{ path('user_articles_filter', {'page': page}) }}?{{ search_options_url }}">{{ page }}</a>
-					{% endif %}
-				{% endfor %}
-				{% if pageinfo.next %}
-					<a href="{{ path('user_articles_filter', {'page': pageinfo.next}) }}?{{ search_options_url }}">Next</a>
-				{% endif %}
-			</div>
 		</div>
 	</div>
 {% endblock %}

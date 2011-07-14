@@ -54,9 +54,8 @@ DeskPRO.User.ElementHandler.PortalKb = new Orb.Class({
 
 		$('.heading-tabs li.on', this.el).addClass('loaded');
 
-		if ($('#kb_filter_form').length) {
-			this.initFilterForm();
-		}
+		// In case initial tab was find
+		this.initFilterForm();
 	},
 
 	injectLoadingEl: function(toEl) {
@@ -144,27 +143,32 @@ DeskPRO.User.ElementHandler.PortalKb = new Orb.Class({
 
 		var self = this;
 
-		this.filterForm = $('#kb_filter_form');
+		this.filterForm = $('#kb_find_form, #kb_find_form_btm');
+		if (!this.filterForm.length) return;
+		
 		this.filterForm.submit(function(ev) {
 			ev.preventDefault();
-			self.submitFilterForm();
+			self.submitFilterForm($(this));
 		});
 
 		var content = $('.tab-contents:first .find.tab-content:first', this.el);
-		$('.pager:first a').click(function(ev) {
+		$('.page-link', content).click(function(ev) {
 			ev.preventDefault();
 			self.clickFilterPagenav($(this));
 		});
 	},
 
-	submitFilterForm: function() {
+	submitFilterForm: function(form) {
 		var content = $('.tab-contents:first .find.tab-content:first', this.el);
 		this.injectLoadingEl(content);
 
-		var formData = this.filterForm.serializeArray();
+		var formData = form.serializeArray();
+		
+		var formUrl = form.attr('action');
+		formUrl = Orb.appendQueryData(formUrl, '_partial');
 
 		$.ajax({
-			url: BASE_URL + 'kb/find?_partial',
+			url: formUrl,
 			data: formData,
 			dataType: 'html',
 			type: 'POST',

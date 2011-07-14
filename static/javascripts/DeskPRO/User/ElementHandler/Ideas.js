@@ -5,8 +5,8 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
-		this.initFilterForm();
 		this.useAjax = this.el.data('ajax-update');
+		this.initFilterForm();
 
 		this.loadingTpl = $('.loading-tpl:first', this.el).detach();
 		this.content = $('.portal_ideas:first', this.el);
@@ -18,19 +18,17 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 			self.updateView($(this).val());
 		});
 
-		$('select.order_by', this.el).change(function(ev) {
-			self.updateView($(this).val(), 'order');
-		});
+		if (this.useAjax) {
+			$('#idea_find_form_btm').submit(function(ev) {
+				ev.preventDefault();
+				self.submitForm($(this));
+			});
 
-		$('.pager a', this.el).click(function(ev) {
-			ev.preventDefault();
-			self.updateView($(this).attr('href'), 'page');
-		});
-
-		$('.idea-status-nav a', this.el).click(function(ev) {
-			ev.preventDefault();
-			self.updateView($(this).attr('href'));
-		});
+			$('a.page-link', this.el).click(function(ev) {
+				ev.preventDefault();
+				self.updateView($(this).attr('href'));
+			});
+		}
 	},
 
 	injectLoadingEl: function(toEl) {
@@ -38,6 +36,28 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 		loadingEl.show();
 
 		toEl.empty().append(loadingEl);
+	},
+
+	submitForm: function(form) {
+		this.injectLoadingEl(this.content);
+
+		var formData = form.serializeArray();
+
+		var formUrl = form.attr('action');
+		formUrl = Orb.appendQueryData(formUrl, '_partial');
+
+		$.ajax({
+			url: formUrl,
+			data: formData,
+			dataType: 'html',
+			type: 'POST',
+			context: this,
+			success: function(html) {
+				this.content.empty().html(html);
+				DeskPRO_Window.initFeatures(content);
+				this.initFilterForm();
+			}
+		});
 	},
 
 	updateView: function(url, type) {
