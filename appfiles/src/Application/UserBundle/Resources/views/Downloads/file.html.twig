@@ -1,36 +1,22 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_downloads') }}">Downloads</a></li>
+	{% for cat in category_path %}
+		<li><a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+	{% endfor %}
+	<li><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a></li>
+{% endblock %}
 {% block content %}
-<small>
-<a href="{{ path('user_downloads') }}">Downloads</a> /
-{% for cat in category_path %}
-	<a href="{{ path('user_downloads_cat', {'slug': cat.url_slug}) }}">{{cat.title}}</a> /
-{% endfor %}
-</small>
-<h3 style="margin:0;">{{download.title}}</h3>
-<hr />
+<div class="file">
+	<div class="cal-date" title="Uploaded: {{ download.date_created|date('M d Y @ H:i:s') }}">
+		<div class="month">{{ download.date_created|date('M')|upper }}</div>
+		<div class="day">{{ download.date_created|date('d') }}</div>
+	</div>
+	<div class="page-title">
+		<h1>{{ download.title }}</h1>
+		<button class="dp-button green">Download: {{ download.filename }} <small>({{ download.readable_filesize }})</small></button>
+	</div>
 
-<div style="float: left; width: 190px">
-	<strong>{{download.blob.filename}}</strong> ({{download.blob.readable_filesize}})
-	<br />
-	<small>Uploaded on {{download.date_created|date('Y-m-d')}}</small>
+	<div class="post">{{ download.content_html|raw }}</div>
 </div>
-
-<div style="margin-left: 200px">
-	{% if related_content %}
-		{% include 'UserBundle:Common:related-content-side.html.twig' %}
-	{% endif %}
-
-	{{ download.content_html|raw }}
-	<br /><br />
-
-	<button class="dp-button green">Download</button>
-
-	<br /><br />
-	{% if download.labels|length %}
-		{% include 'UserBundle:Common:labels-list.html.twig' with {'labels': download.labels} %}
-	{% endif %}
-</div>
-
-<br style="clear:left" />
-
 {% endblock %}
