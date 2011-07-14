@@ -69,6 +69,9 @@ class PortalPage extends BasicPage implements PersonContextInterface
 		$content_pagedisplay['section'] = PortalPageDisplay::SECTION_PORTAL;
 		$content_pagedisplay['data'] = array(
 			array(
+				'type' => 'downloads'
+			),
+			array(
 				'type' => 'kb'
 			),
 			array(
