@@ -229,17 +229,19 @@ user_downloads_file:
 # News
 ################################################################################
 
+user_news_list:
+  pattern: /news/list/{slug}/{page}
+  defaults: { _controller: UserBundle:News:browse, slug: '', page: 1, list_type: 'list' }
+  requirements: { slug: "(\d+(\-.*?)?)?", page: "\d+" }
+
 user_news:
-  pattern: /news
-  defaults: { _controller: UserBundle:News:index, slug: 0 }
+  pattern: /news/{slug}/{page}
+  defaults: { _controller: UserBundle:News:browse, slug: '', page: 1 }
+  requirements: { slug: "(\d+(\-.*?)?)?", page: "\d+" }
 
 user_news_view:
   pattern: /news/posts/{slug}
   defaults: { _controller: UserBundle:News:view }
-
-user_news_cat:
-  pattern: /news/{slug}
-  defaults: { _controller: UserBundle:News:index }
 
 user_news_newcomment:
   pattern: /news/new-comment/{post_id}

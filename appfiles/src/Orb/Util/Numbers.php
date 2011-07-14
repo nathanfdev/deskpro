@@ -58,7 +58,9 @@ class Numbers
 	 */
 	public static function bound($num, $min, $max)
 	{
-		return min($max, min($min, $num));
+		if ($num < $min) $num = $min;
+		if ($num > $max) $num = $max;
+		return $num;
 	}
 
 

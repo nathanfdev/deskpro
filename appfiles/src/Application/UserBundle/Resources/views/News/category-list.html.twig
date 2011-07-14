@@ -1,9 +1,0 @@
-<div style="background-color: #eee; padding: 3px;">
-	<ul>
-	{% for cat in categories %}
-		<li>
-			<a href="{{ path('user_news_cat', {'slug': cat.url_slug}) }}">{{ cat.title }}</a>
-		</li>
-	{% endfor %}
-	</ul>
-</div>

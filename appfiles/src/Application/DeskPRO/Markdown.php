@@ -38,6 +38,9 @@ class Markdown extends \Markdown_Parser
 	{
 		$this->attach_tokens = array();
 
+		// Get rid of more tokens, they'd've been handled elsewhere
+		$text = str_replace('![more]', '', $text);
+
 		$m = null;
 		if (preg_match_all('#!\[attach(.*?)\]#', $text, $m)) {
 			foreach ($m[0] as $match) {

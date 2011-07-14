@@ -92,7 +92,7 @@ class PortalPage extends BasicPage implements PersonContextInterface
 				'type' => 'contact',
 			),
 			array(
-				'type' => 'kb'
+				'type' => 'news'
 			),
 			array(
 				'type' => 'template',

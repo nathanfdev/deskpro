@@ -1,0 +1,23 @@
+{% extends is_partial_request() ? 'UserBundle::layout-partial.html.twig' : 'UserBundle::layout.html.twig' %}
+{% block content %}
+<div class="content-item portal_news with-handler" {% if is_partial_request() == 'portal' %}data-element-handler="DeskPRO.User.ElementHandler.PortalNews"{% endif %}>
+	<div class="heading">
+		<div class="heading-tabs">
+			<ul>
+				<li {% if block('news_posts')|trim|length %}class="on"{% endif %} data-tab-for=".posts"><a href="{{ path('user_news') }}">Posts</a></li>
+				<li {% if block('news_list')|trim|length %}class="on"{% endif %} data-tab-for=".list"><a href="{{ path('user_news_list') }}">List</a></li>
+			</ul>
+		</div>
+		<h2><a href="{{ path('user_news') }}">{{ title|default('News') }}</a></h2>
+	</div>
+
+	<div class="tab-contents">
+		<div class="{% if block('news_posts')|trim|length %}on{% endif %} posts tab-content">{% block news_posts %}{% endblock %}</div>
+		<div class="{% if block('news_list')|trim|length %}on{% endif %} list tab-content">{% block news_list %}{% endblock %}</div>
+	</div>
+
+	<div class="loading-tpl" style="display: none">
+		<div class="loading" style="text-align: center; padding: 15px;"><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></div>
+	</div>
+</div>
+{% endblock %}

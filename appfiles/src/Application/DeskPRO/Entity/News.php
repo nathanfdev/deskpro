@@ -32,8 +32,8 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	protected $id = null;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\TicketCategory
-	 * @orm:ManyToOne(targetEntity="DownloadCategory", fetch="EAGER")
+	 * @var \Application\DeskPRO\Entity\NewsCategory
+	 * @orm:ManyToOne(targetEntity="NewsCategory", fetch="EAGER")
 	 * @orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $category;
@@ -81,23 +81,11 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $_label_manager = null;
 
-	public function __consturct()
+	public function __construct()
 	{
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
-	}
-
-	public function getIntroHtml()
-	{
-		$content = $this->content;
-
-		// The intro part is whatever text is before a line of three dashes
-		$parts = preg_split("#[\r\n]+\-{3,}[\r\n]+#", $content, 2);
-
-		$content = trim($parts[0]);
-
-		return Markdown::format($content);
 	}
 
 	public function getContentHtml()
@@ -108,6 +96,30 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 		$content = preg_replace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
 
 		return Markdown::format($content);
+	}
+
+	public function getExcerptHtml()
+	{
+		$content = Strings::standardEol($this->content);
+		if ($pos = strpos($content, '![more]')) {
+			$excerpt = substr($content, $pos);
+		} elseif ($pos = strpos($content, "\n\n")) {
+			$excerpt = substr($content, 0, $pos);
+		} else {
+			$excerpt = $content;
+		}
+
+		return Markdown::format($excerpt);
+	}
+
+	public function getCountWordsAfterExcerpt()
+	{
+		$content = strip_tags($this->getContentHtml());
+		$exceprt = strip_tags($this->getExcerptHtml());
+
+		$diff = str_word_count($content) - str_word_count($exceprt);
+
+		return $diff;
 	}
 
 	public function getUrlSlug()

@@ -23,7 +23,7 @@ use Doctrine\ORM\Query,
 use \Orb\Util\Arrays;
 use \Orb\Util\Strings;
 
-class NewsCategory extends NestedTreeRepository
+class NewsCategory extends AbstractNestedTreeCategoryRepository
 {
 	protected $all_cats = null;
 	
@@ -51,5 +51,14 @@ class NewsCategory extends NestedTreeRepository
 		if (!$id) return null;
 
 		return $this->find($id);
+	}
+
+	public function getAll()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT c
+			FROM DeskPRO:NewsCategory c INDEX BY c.id
+			ORDER BY c.id DESC
+		")->execute();
 	}
 }

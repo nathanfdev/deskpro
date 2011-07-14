@@ -56,6 +56,28 @@ class News extends EntityRepository
 
 		return $posts;
 	}
+
+	public function getByResultIds(array $ids)
+	{
+		if (!$ids) return array();
+
+		$unsorted_news = $this->getEntityManager()->createQuery("
+			SELECT n
+			FROM DeskPRO:News n INDEX BY n.id
+			WHERE n.id IN (" . implode(',', $ids) . ")
+			ORDER BY n.id DESC
+		")->execute();
+
+		$news = array();
+
+		foreach ($ids as $id) {
+			if (isset($unsorted_news[$id])) {
+				$news[$id] = $unsorted_news[$id];
+			}
+		}
+
+		return $news;
+	}
 	
 	public function getNews($node, $num = 20)
 	{
@@ -75,5 +97,28 @@ class News extends EntityRepository
 		}
 
 		return $news;
+	}
+
+
+	public function getNewest($num = 10, $node = false)
+	{
+		if ($node) {
+			$cat_ids = $node->getTreeIds(true);
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT n
+				FROM DeskPRO:News n INDEX BY n.id
+				WHERE n.is_published = 1 AND n.category IN (" . implode(',',$cat_ids) . ")
+				ORDER BY n.id DESC
+			")->setMaxResults($num)->execute();
+		} else {
+			$articles = $this->getEntityManager()->createQuery("
+				SELECT n
+				FROM DeskPRO:News n INDEX BY n.id
+				WHERE n.is_published = 1
+				ORDER BY n.id DESC
+			")->setMaxResults($num)->execute();
+		}
+
+		return $articles;
 	}
 }

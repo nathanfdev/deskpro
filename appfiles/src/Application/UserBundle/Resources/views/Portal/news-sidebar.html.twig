@@ -1,0 +1,17 @@
+<div class="sidebar-item portal_kb">
+	<div class="heading">
+		<h2>{{ title|default('News') }}</h2>
+	</div>
+
+	<div class="content-list">
+		{% for news in news_entries %}
+			<div class="item icon-news">
+				<a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a>
+			</div>
+		{% endfor %}
+	</div>
+
+	<div class="more-link">
+		<a href="{{ path('user_news') }}">more...</a>
+	</div>
+</div>

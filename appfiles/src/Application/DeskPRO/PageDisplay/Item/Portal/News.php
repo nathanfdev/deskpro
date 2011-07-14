@@ -13,10 +13,56 @@ namespace Application\DeskPRO\PageDisplay\Item\Portal;
 
 use Application\DeskPRO\Entity\PortalPageDisplay;
 
-class News extends Template
+use Application\DeskPRO\App;
+
+class News extends PortalItemAbstract
 {
-	protected function init()
+	public function getHtml()
 	{
-		$this->setOption('tpl', 'UserBundle:Portal:news-' . $this->section . '.html.twig');
+		if ($this->section == 'portal') {
+			return $this->getContentHtml();
+		} else {
+			return $this->getSidebarHtml();
+		}
+	}
+
+	public function getContentHtml()
+	{
+		$html = $this->renderForward(
+			'UserBundle:News:browse',
+			array(),
+			array('_partial' => 'portal', 'per_page' => $this->getOption('per_page', 2))
+		);
+
+		return $html;
+	}
+
+	public function getSidebarHtml()
+	{
+		$category = null;
+		if ($this->getOption('category_id')) {
+			$category = App::findEntity('DeskPRO:NewsCategory', $this->getOption('category_id'));
+		}
+
+		$news_entries = App::getEntityRepository('DeskPRO:News')->getNewest(
+			$this->getValueOption('num_articles', 10),
+			$category
+		);
+
+		$html = $this->renderView('UserBundle:Portal:news-sidebar.html.twig', array(
+			'news_entries' => $news_entries,
+			'block_title' => $this->getOption('block_title'),
+		));
+
+		return $html;
+	}
+
+	public function getJsAssets()
+	{
+		if (0 and $this->section == 'portal') {
+			return array('javascripts/DeskPRO/User/ElementHandler/PortalNews.js');
+		}
+
+		return array();
 	}
 }

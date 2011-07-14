@@ -11,52 +11,95 @@
 
 namespace Application\UserBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
-use \Application\UserBundle\Controller\Helper\Comments;
-use \Application\UserBundle\Controller\Helper\FacebookLike;
+use Application\UserBundle\Controller\Helper\Comments;
+use Application\UserBundle\Controller\Helper\FacebookLike;
 
-use \Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
 class NewsController extends AbstractController
 {
-	/**
-	 * Main index shows initial category listing
-	 */
-	public function indexAction($slug)
+	public function browseAction($slug = '', $page = 1, $list_type = 'posts')
 	{
-		$categories = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();
+		if ($this->in->getUint('page')) {
+			$page = $this->in->getUint('page');
+		}
+		if (!$page || $page < 1) $page = 1;
 
-		$category = null;
-		$category_path = null;
+		$search_options = array();
+		$search_options['order_by'] = $this->in->getString('order_by');
+
 		if ($slug) {
 			$category = App::getEntityRepository('DeskPRO:NewsCategory')->getBySlug($slug);
+
 			if (!$category) {
 				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
 			}
 
 			// Auto-correct URL
 			if ($slug != $category->getUrlSlug()) {
-				return $this->redirectRoute('user_news_cat', array('slug' => $category->getUrlSlug()), 301);
+				return $this->redirectRoute('user_news', array('slug' => $category->getUrlSlug()), 301);
 			}
 
 			$category_path = $category->getTreeParents();
+
+			$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
+			$searcher->addTerm('category', 'is', $category['id']);
+
+		} else {
+			$category = null;
+			$category_path = null;
+
+			$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
 		}
 
-		$posts = App::getEntityRepository('DeskPRO:News')->getNews($category);
+		$news_cats = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
+		$news_cat_objs = App::getEntityRepository('DeskPRO:NewsCategory')->getAll();
 
-		return $this->render('UserBundle:News:index.html.twig', array(
-			'categories'      => $categories,
-			'category'        => $category,
-			'category_path'   => $category_path,
-			'posts'           => $posts
+		if ($search_options['order_by']) {
+			$searcher->setOrderByCode($search_options['order_by']);
+		} else {
+			$searcher->setOrderBy('id', 'desc');
+		}
+
+		$per_page = $this->in->getUint('per_page');
+		if ($list_type == 'list') {
+			if (!$per_page) $per_page = 10;
+			$per_page = Numbers::bound($per_page, 1, 50);
+			$tpl = 'UserBundle:News:browse-list.html.twig';
+		} else {
+			if (!$per_page) $per_page = 2;
+			$per_page = Numbers::bound($per_page, 1, 15);
+			$tpl = 'UserBundle:News:browse-posts.html.twig';
+		}
+
+		$total = $searcher->getCount();
+		$pageinfo = Numbers::getPaginationPages($total, $page, $per_page, 3);
+		$limit = array(
+			'offset' => ($pageinfo['curpage']-1) * $per_page,
+			'max' => $per_page
+		);
+
+		$news_ids = $searcher->getMatches($limit);
+
+		$news = App::getEntityRepository('DeskPRO:News')->getByResultIds($news_ids);
+
+		return $this->render($tpl, array(
+			'news_cats' => $news_cats,
+			'news_cat_objs' => $news_cat_objs,
+			'category' => $category,
+			'category_path' => $category_path,
+			'news_entries' => $news,
+			'num_results' => $total,
+			'pageinfo' => $pageinfo,
+			'list_type' => $list_type,
 		));
 	}
-
-	
 
 	/**
 	 * View a post
