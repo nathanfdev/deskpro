@@ -11,63 +11,149 @@
 
 namespace Application\UserBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
-use \Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 
 class DownloadsController extends AbstractController
 {
-	/**
-	 * Main index shows initial category listing
-	 */
-	public function indexAction()
+	public function browseAction($slug = '')
 	{
-		$cats = App::getEntityRepository('DeskPRO:DownloadCategory')->getRootNodes();
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
 
-		$newest_downloads   = App::getEntityRepository('DeskPRO:Download')->getNewest();
-		$popular_downloads  = App::getEntityRepository('DeskPRO:Download')->getPopular();
+		$search_options = array();
+		$search_options['order_by'] = $this->in->getString('order_by');
 
-		return $this->render('UserBundle:Downloads:index.html.twig', array(
-			'categories'        => $cats,
-			'newest_downloads'  => $newest_downloads,
-			'popular_downloads' => $popular_downloads
+		if ($slug) {
+			$category = App::getEntityRepository('DeskPRO:DownloadCategory')->getBySlug($slug);
+
+			if (!$category) {
+				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
+			}
+
+			// Auto-correct URL
+			if ($slug != $category->getUrlSlug()) {
+				return $this->redirectRoute('user_downloads', array('slug' => $category->getUrlSlug()), 301);
+			}
+
+			$category_path = $category->getTreeParents();
+
+			$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+			$searcher->addTerm('category', 'is', $category['id']);
+
+		} else {
+			$category = null;
+			$category_path = null;
+
+			$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+		}
+
+		$categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getRootNodes();
+
+		if ($search_options['order_by']) {
+			$searcher->setOrderByCode($search_options['order_by']);
+		} else {
+			$searcher->setOrderBy('id', 'desc');
+		}
+
+		$total = $searcher->getCount();
+		$pageinfo = Numbers::getPaginationPages($total, $page, 20, 3);
+		$limit = array(
+			'offset' => ($pageinfo['curpage']-1) * 20,
+			'max' => 20
+		);
+
+		$download_ids = $searcher->getMatches($limit);
+
+		$downloads = App::getEntityRepository('DeskPRO:Download')->getByResultIds($download_ids);
+
+		return $this->render('UserBundle:Downloads:browse.html.twig', array(
+			'categories'        => $categories,
+			'category' => $category,
+			'category_path' => $category_path,
+			'downloads' => $downloads,
+			'num_results' => $total,
+			'pageinfo' => $pageinfo
 		));
 	}
-
 	
 
 	/**
-	 * View a category listing
-	 * 
-	 * @param  $category_id
+	 * @param int $page
 	 */
-	public function categoryAction($slug)
+	public function recentAction($page = 1)
 	{
-		$category = App::getEntityRepository('DeskPRO:DownloadCategory')->getBySlug($slug);
+		$page = max(1, $page);
 
-		if (!$category) {
-			return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
+		$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+		$searcher->setOrderBy('id', 'desc');
+
+		$download_ids = $searcher->getMatches(array(
+			'offset' => ($page-1) * 20,
+			'max' => 20
+		));
+
+		if ($download_ids) {
+			$downloads = App::getEntityRepository('DeskPRO:Download')->getByResultIds($download_ids);
+		} else {
+			$downloads = array();
 		}
 
-		// Auto-correct URL
-		if ($slug != $category->getUrlSlug()) {
-			return $this->redirectRoute('user_downloads_cat', array('slug' => $category->getUrlSlug()), 301);
+		$show_more = (count($download_ids) == 20);
+
+		$tpl = 'UserBundle:Downloads:recent.html.twig';
+		if ($this->request->isPartialRequest() == 'more') {
+			$tpl = 'UserBundle:Downloads:recent-items.html.twig';
 		}
 
-		$category_path = $category->getTreeParents();
-
-		$downloads = App::getEntityRepository('DeskPRO:Download')->getInNode($category);
-
-		return $this->render('UserBundle:Downloads:category.html.twig', array(
-			'category' => $category,
-			'category_path' => $category_path,
-			'downloads' => $downloads
+		return $this->render($tpl, array(
+			'downloads' => $downloads,
+			'show_more' => $show_more,
+			'page' => $page,
 		));
 	}
 
+
+	/**
+	 * @param int $page
+	 */
+	public function popularAction($page = 1)
+	{
+		$page = max(1, $page);
+
+		$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+		$searcher->addTerm('popular', 'is', '1');
+		$searcher->setOrderBy('num_downloads', 'desc');
+
+		$download_ids = $searcher->getMatches(array(
+			'offset' => ($page-1) * 20,
+			'max' => 20
+		));
+
+		if ($download_ids) {
+			$downloads = App::getEntityRepository('DeskPRO:Download')->getByResultIds($download_ids);
+		} else {
+			$downloads = array();
+		}
+
+		$show_more = (count($download_ids) == 20);
+
+		$tpl = 'UserBundle:Downloads:popular.html.twig';
+		if ($this->request->isPartialRequest() == 'more') {
+			$tpl = 'UserBundle:Downloads:popular-items.html.twig';
+		}
+
+		return $this->render($tpl, array(
+			'downloads' => $downloads,
+			'show_more' => $show_more,
+			'page' => $page,
+		));
+	}
 
 	
 	/**

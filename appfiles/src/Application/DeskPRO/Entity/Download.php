@@ -101,6 +101,21 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
+	public function getFileName()
+	{
+		return $this->blob['filename'];
+	}
+
+	public function getFileSize()
+	{
+		return $this->blob['filesize'];
+	}
+
+	public function getReadableFileSize()
+	{
+		return $this->blob->getReadableFilesize();
+	}
+
 	public function setTitle($title)
 	{
 		$this->setModelField('title', $title);

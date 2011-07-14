@@ -1,0 +1,10 @@
+{% for cat in categories %}
+	<li {% if cat.id == category.id %}class="on"{% endif %}>
+		<a class="{% if cat.children|length %}with-children{% endif %}" href="{{ path('user_downloads', {'slug': cat.url_slug}) }}"><span>{{ cat.title }}</span></a>
+		{% if cat.children|length %}
+			<ul class="sub">
+				{% include 'UserBundle:Downloads:browse-cat-list.html.twig' with {'categories': cat.children } %}
+			</ul>
+		{% endif %}
+	</li>
+{% endfor %}

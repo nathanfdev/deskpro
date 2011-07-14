@@ -216,7 +216,7 @@ class CategoryHierarchy
 		if ($parent_id) {
 			// Bad cat ID
 			if (empty($cats[$parent_id])) {
-				return array();
+				return $ids;
 			}
 			// No children, so either return nothing, or if $include_top it will just be this
 			if (empty($cats[$parent_id]['children'])) {

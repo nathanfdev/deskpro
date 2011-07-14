@@ -207,16 +207,23 @@ user_articles_newcomment:
 ################################################################################
 
 user_downloads:
-  pattern: /downloads
-  defaults: { _controller: UserBundle:Downloads:index }
+  pattern: /downloads/{slug}
+  defaults: { _controller: UserBundle:Downloads:browse, slug: '' }
+  requirements: { slug: "(\d+(\-.*?)?)?" }
+
+user_downloads_recent:
+  pattern: /downloads/recent/{page}
+  defaults: { _controller: UserBundle:Downloads:recent, page: 1 }
+  requirements: { page: "\d+" }
+
+user_downloads_popular:
+  pattern: /downloads/popular/{page}
+  defaults: { _controller: UserBundle:Downloads:popular, page: 1 }
+  requirements: { page: "\d+" }
 
 user_downloads_file:
   pattern: /downloads/files/{slug}
   defaults: { _controller: UserBundle:Downloads:file }
-
-user_downloads_cat:
-  pattern: /downloads/{slug}
-  defaults: { _controller: UserBundle:Downloads:category }
 
 ################################################################################
 # News

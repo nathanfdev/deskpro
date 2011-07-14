@@ -23,7 +23,7 @@ use Doctrine\ORM\Query,
 use \Orb\Util\Arrays;
 use \Orb\Util\Strings;
 
-class DownloadCategory extends NestedTreeRepository
+class DownloadCategory extends AbstractNestedTreeCategoryRepository
 {
 	protected $all_cats = null;
 

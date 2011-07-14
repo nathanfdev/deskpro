@@ -215,7 +215,25 @@ a {
     border: 1px solid #E3E3E3;
 }
 
-.content-list > ul {
+.content-list ul li.pagenav {
+    font-size: 10px;
+    text-align: right;
+}
+
+.content-list ul li.pagenav .count {
+    float: left;
+}
+
+.content-list ul li.pagenav select, .content-list ul li.pagenav button {
+    font-size: 9px;
+    margin: 0;
+}
+
+.content-list.inner {
+    border: none;
+}
+
+.content-list > ul, .content-list ul.item-list {
     margin: 0;
     padding: 0;
     list-style-type: none;
@@ -241,7 +259,8 @@ a {
 }
 
 .content-list .info-line {
-    margin-left: 22px;
+   font-size: 9px;
+   color: #808080;
 }
 
 .content-list .info-line, .content-list .info-line li {
@@ -347,7 +366,7 @@ a {
 
 .input-form {
     border: 1px solid #CCCCCC;
-    
+
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
     border-radius: 6px;
@@ -710,6 +729,11 @@ a {
     padding-left: 20px;
 }
 
+.icon-file {
+    background: url(../images/icons/page_white.png) no-repeat 6px 50%;
+    padding-left: 27px;
+}
+
 .content-list .icon-zip {
     background: url(../images/icons/page_white_zip.png) no-repeat 6px 50%;
     padding-left: 27px;
@@ -783,7 +807,7 @@ a {
     background-color: #000;
     color: #fff;
     padding: 0 1px 0 1px;
-    
+
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
@@ -1231,13 +1255,13 @@ ul.comments li .message {
     padding: 2px 6px 2px 25px;
     margin-top: 3px;
     float:right;
-    
+
     -webkit-border-radius: 5px;
     -moz-border-radius: 5px;
     border-radius: 5px;
 
     cursor: pointer;
-}   
+}
 
 .omni_search_menu .create {
     clear: right;
@@ -1440,4 +1464,70 @@ ul.comments li .message {
     -moz-border-radius-bottomleft: 0px;
     -webkit-border-radius: 0px 4px 4px 0px;
     border-radius: 0px 4px 4px 0px;
+}
+
+/*********
+* portal_downloads
+**********/
+
+.downloads-browser table td {
+    padding: 0;
+    vertical-align: top;
+}
+
+.downloads-browser table td.cats {
+    padding-right: 8px;
+    width: 25%;
+    min-width: 180px;
+    max-width: 250px;
+
+    padding: 8px;
+}
+
+.downloads-browser .cat-list {
+    background-color: #F1F3F7;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.downloads-browser .cat-list ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.downloads-browser .cat-list a {
+    display: block;
+    padding:  2px 4px 2px 4px;
+}
+
+.downloads-browser .cat-list a span {
+    background: url(../images/icons/folder.png) no-repeat 0 50%;
+    padding-left: 19px;
+}
+
+.downloads-browser .cat-list li.on {
+    background-color: #DCDEE1;
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+}
+
+.downloads-browser .cat-list li.on a span {
+    background-image: url(../images/icons/folder_go.png);
+}
+
+.downloads-browser .cat-list li.all a span {
+    background-image: url(../images/icons/folder_explore.png) !important;
+}
+
+.downloads-browser .cat-list ul.sub li {
+    padding-left: 15px;
+}
+
+.downloads-browser .cat-list ul.sub li {
+    background-image: url(../images/icons/elbow-end.gif);
+    background-repeat: no-repeat;
+    backgorund-position: 0 50%;
 }

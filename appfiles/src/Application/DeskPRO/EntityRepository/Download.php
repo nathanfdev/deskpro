@@ -55,6 +55,28 @@ class Download extends EntityRepository
 		return $downloads;
 	}
 
+	public function getByResultIds(array $ids)
+	{
+		if (!$ids) return array();
+		
+		$unsorted_downloads = $this->getEntityManager()->createQuery("
+			SELECT d
+			FROM DeskPRO:Download d INDEX BY d.id
+			WHERE d.id IN (" . implode(',', $ids) . ")
+			ORDER BY d.id DESC
+		")->execute();
+
+		$downloads = array();
+
+		foreach ($ids as $id) {
+			if (isset($unsorted_downloads[$id])) {
+				$downloads[$id] = $unsorted_downloads[$id];
+			}
+		}
+
+		return $downloads;
+	}
+
 	public function getNewest($num = 10, $node = false)
 	{
 		if ($node) {

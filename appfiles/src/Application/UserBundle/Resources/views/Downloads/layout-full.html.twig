@@ -1,0 +1,25 @@
+{% extends is_partial_request() ? 'UserBundle::layout-partial.html.twig' : 'UserBundle::layout.html.twig' %}
+{% block content %}
+<div class="content-item portal_downloads with-handler" {% if is_partial_request() == 'portal' %}data-element-handler="DeskPRO.User.ElementHandler.PortalDownload"{% endif %}>
+	<div class="heading">
+		<div class="heading-tabs">
+			<ul>
+				<li {% if block('downloads_browse')|trim|length %}class="on"{% endif %} data-tab-for=".browse"><a href="{{ path('user_downloads') }}">Browse</a></li>
+				<li {% if block('downloads_recent')|trim|length %}class="on"{% endif %} data-tab-for=".recent"><a href="{{ path('user_downloads_recent') }}">Recent</a></li>
+				<li {% if block('downloads_popular')|trim|length %}class="on"{% endif %} data-tab-for=".popular"><a href="{{ path('user_downloads_popular') }}">Popular</a></li>
+			</ul>
+		</div>
+		<h2><a href="{{ path('user_articles') }}">{{ title|default('Downloads') }}</a></h2>
+	</div>
+
+	<div class="tab-contents">
+		<div class="{% if block('downloads_browse')|trim|length %}on{% endif %} browse tab-content">{% block downloads_browse %}{% endblock %}</div>
+		<div class="{% if block('downloads_recent')|trim|length %}on{% endif %} recent tab-content">{% block downloads_recent %}{% endblock %}</div>
+		<div class="{% if block('downloads_popular')|trim|length %}on{% endif %} popular tab-content">{% block downloads_popular %}{% endblock %}</div>
+	</div>
+
+	<div class="loading-tpl" style="display: none">
+		<div class="loading" style="text-align: center; padding: 15px;"><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></div>
+	</div>
+</div>
+{% endblock %}
