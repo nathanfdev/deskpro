@@ -490,6 +490,18 @@ a {
 .red.dp-button { background-color: #e33100; }
 .red.dp-button:hover { background-color: #872300; }
 
+.icon-remove {
+    display: block;
+    width: 13px;
+    height: 13px;
+    text-indent: -100px;
+    overflow: hidden;
+    background: url(../images/close-small.png) no-repeat 0 0;
+    float: right;
+    margin-top: 3px;
+    cursor: pointer;
+}
+
 /*****************************************************************
 * General sidebar styles
 ******************************************************************/

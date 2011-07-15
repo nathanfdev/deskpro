@@ -60,6 +60,7 @@ class TemplatingExtension extends \Twig_Extension
 			'is_user_loggedin' => new \Twig_Function_Method($this, 'isUserUser'),
 			'is_user_agent' => new \Twig_Function_Method($this, 'isUserAgent'),
 			'is_user_admin' => new \Twig_Function_Method($this, 'isUserAdmin'),
+			'flash_message' => new \Twig_Function_Method($this, 'flashMessage'),
         );
     }
 
@@ -73,6 +74,12 @@ class TemplatingExtension extends \Twig_Extension
 			'decode_number' => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
         );
     }
+
+	public function flashMessage($name)
+	{
+		$session = $this->get('session');
+		return $session->getFlash($name, null);
+	}
 
 	public function encNum($num)
 	{

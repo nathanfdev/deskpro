@@ -72,26 +72,14 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			}
 		}
 
-		return $this->render('UserBundle:Profile:change-password.html.twig', array(
-			'invalid_current_password' => $invalid_current_password,
-			'invalid_repeat_password' => $invalid_repeat_password
-		));
-	}
+		if ($invalid_current_password OR $invalid_repeat_password) {
+			$this->session->setFlash('invalid_current_password', $invalid_current_password);
+			$this->session->setFlash('invalid_repeat_password', $invalid_repeat_password);
+			return $this->redirectRoute('user_profile');
+		}
 
-
-	############################################################################
-	# emails
-	############################################################################
-
-	/**
-	 * Displays current emails, form to add a new one, and links to delete or make
-	 * default.
-	 */
-	public function emailsAction()
-	{
-		return $this->render('UserBundle:Profile:emails.html.twig', array(
-			
-		));
+		$this->session->setFlash('password_set', true);
+		return $this->redirectRoute('user_profile');
 	}
 	
 
@@ -121,7 +109,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			$em->persist($person);
 		});
 
-		return $this->redirectRoute('user_profile_emails');
+		return $this->redirectRoute('user_profile');
 	}
 
 	
@@ -167,7 +155,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 		App::getOrm()->flush();
 		App::getOrm()->commit();
 
-		return $this->redirectRoute('user_profile_emails');
+		return $this->redirectRoute('user_profile');
 	}
 
 	
@@ -192,7 +180,7 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			$em->persist($email);
 		});
 
-		return $this->redirectRoute('user_profile_emails');
+		return $this->redirectRoute('user_profile');
 	}
 
 	
