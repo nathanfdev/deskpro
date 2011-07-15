@@ -95,8 +95,10 @@ class PortalPage extends BasicPage implements PersonContextInterface
 				'type' => 'news'
 			),
 			array(
-				'type' => 'template',
-				'tpl' => 'UserBundle:Portal:downloads-sidebar.html.twig'
+				'type' => 'downloads'
+			),
+			array(
+				'type' => 'ideas'
 			),
 			array(
 				'type' => 'template',

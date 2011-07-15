@@ -9,7 +9,7 @@
 				<li {% if block('downloads_popular')|trim|length %}class="on"{% endif %} data-tab-for=".popular"><a href="{{ path('user_downloads_popular') }}">Popular</a></li>
 			</ul>
 		</div>
-		<h2><a href="{{ path('user_articles') }}">{{ title|default('Downloads') }}</a></h2>
+		<h2><a href="{{ path('user_downloads') }}">{{ title|default('Downloads') }}</a></h2>
 	</div>
 
 	<div class="tab-contents">

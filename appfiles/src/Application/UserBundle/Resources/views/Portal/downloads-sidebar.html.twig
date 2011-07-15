@@ -1,21 +1,20 @@
 <div class="sidebar-item portal_downloads">
 	<div class="heading">
-		<h2>{{ title|default('Downloads') }}</h2>
+		<h2><a href="{{ path('user_downloads') }}">{{ title|default('Downloads') }}</a></h2>
 	</div>
 
 	<div class="content-list">
-		<div class="item icon-zip">
-			<a href="">Lorem ipsum dolor</a>
-		</div>
-		<div class="item icon-pdf">
-			<a href="">sit amet</a>
-		</div>
-		<div class="item icon-doc">
-			<a href="">consectetuer adipiscing elit</a>
-		</div>
+		{% for download in downloads %}
+			<div class="item icon-{{ download.blob.extension }}">
+				<a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}">{{ download.title }}</a>
+				<div class="info-line">
+					{{ download.filename }}, {{ download.readable_filesize }}
+				</div>
+			</div>
+		{% endfor %}
 	</div>
 
 	<div class="more-link">
-		<a href="{{ path('user_articles') }}">more...</a>
+		<a href="{{ path('user_downloads') }}">more...</a>
 	</div>
 </div>

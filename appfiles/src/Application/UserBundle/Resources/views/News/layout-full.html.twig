@@ -1,6 +1,6 @@
 {% extends is_partial_request() ? 'UserBundle::layout-partial.html.twig' : 'UserBundle::layout.html.twig' %}
 {% block content %}
-<div class="content-item portal_news with-handler" {% if is_partial_request() == 'portal' %}data-element-handler="DeskPRO.User.ElementHandler.PortalNews"{% endif %}>
+<div class="content-item portal_news with-handler">
 	<div class="heading">
 		<div class="heading-tabs">
 			<ul>

@@ -300,6 +300,11 @@ a {
    color: #808080;
 }
 
+.content-list .info-line a {
+    color: #3E3F3F;
+    text-decoration: none;
+}
+
 .content-list .info-line, .content-list .info-line li {
     line-height: 100%;
 }
@@ -527,6 +532,14 @@ a {
     font-weight: bold;
     margin: 0 0 5px 0;
     padding: 0;
+}
+
+.sidebar-item .heading h2 a {
+    color: #000;
+}
+
+.sidebar-item .heading h2 a:hover {
+    text-decoration: underline;
 }
 
 .sidebar-item .more-link {
@@ -828,7 +841,7 @@ a {
     background: url(../images/icons/star.png) no-repeat 0 50%;
 }
 
-#content .portal_ideas li .ideas-votes {
+.ideas-votes {
     float: left;
     width: 16px;
     height: 22px;
@@ -837,11 +850,11 @@ a {
     margin-right: 6px;
 }
 
-#content .portal_ideas ul.popular li .ideas-votes {
+.popular .ideas-votes {
     background: url(../images/icons/star.png) no-repeat 50% 0;
 }
 
-#content .portal_ideas li .ideas-votes div.votes {
+.ideas-votes div.votes {
     position: absolute;
     bottom: 0;
     left: 0;
@@ -852,7 +865,7 @@ a {
     line-height: 100%;
 }
 
-#content .portal_ideas li .ideas-votes div.votes span {
+.ideas-votes div.votes span {
     background-color: #000;
     color: #fff;
     padding: 0 1px 0 1px;
@@ -860,6 +873,10 @@ a {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
+}
+
+.ideas-votes.small {
+    height: 14px;
 }
 
 #content .portal_ideas li h4 {
@@ -976,6 +993,24 @@ ul.sidebar-nav li.profile span {
     -moz-border-radius-bottomleft: 4px;
     -webkit-border-radius: 0px 0px 4px 4px;
     border-radius: 0px 0px 4px 4px;
+}
+
+.cal-date.small {
+    width: 32px;
+    margin: 0;
+}
+
+.cal-date.small .month {
+    font-size: 9px;
+    line-height: 100%;
+}
+
+.cal-date.small .day {
+    font-size: 10px;
+    border-width: 1px;
+    padding-top: 1px;
+    line-height: 100%;
+    color: #555;
 }
 
 .idea .page-title {
@@ -1579,4 +1614,100 @@ ul.comments li .message {
     background-image: url(../images/icons/elbow-end.gif);
     background-repeat: no-repeat;
     backgorund-position: 0 50%;
+}
+
+
+
+/*********
+* portal_contactbox
+**********/
+
+#sidebar .content-item {
+    padding:  0;
+}
+
+.portal_contactbox h3 {
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.portal_contactbox .create .button {
+    width: 150px;
+    margin: 8px auto 8px auto;
+}
+
+.portal_contactbox .create .button a {
+    background-color: #F4F4F4;
+    display: block;
+    border: 1px solid #D8DBDB;
+    color: #000;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    -webkit-transition: background 300ms ease;
+    -moz-transition: background 300ms ease;
+    -o-transition: background 300ms ease;
+    transition: background 300ms ease;
+}
+
+.portal_contactbox .create .button:hover a {
+    background-color: #fff;
+    
+    -webkit-transition: background 300ms ease;
+    -moz-transition: background 300ms ease;
+    -o-transition: background 300ms ease;
+    transition: background 300ms ease;
+}
+
+.portal_contactbox .create .button a span {
+    display: block;
+    padding-left: 35px;
+    line-height: 35px;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+}
+.portal_contactbox .create .button.ticket a span { background-image: url(../images/icons/ticket-large.png); }
+.portal_contactbox .create .button.idea a span { background-image: url(../images/icons/ideas-large.png); }
+.portal_contactbox .create .button.chat a span { background-image: url(../images/icons/chat-large.png); }
+
+
+.phone-numbers {
+    background-color: #F4F4F4;
+    border: 1px solid #D8DBDB;
+    color: #000;
+
+    -webkit-border-radius: 4px;
+    -moz-border-radius: 4px;
+    border-radius: 4px;
+
+    font-size: 11px;
+
+    width: 190px;
+    margin: 0 auto 0 auto;
+}
+
+.phone-numbers .phone-row:first-child {
+    border-top: none;
+}
+
+.phone-numbers .phone-row {
+    border-top: 1px solid #D8DBDB;
+    padding: 5px;
+}
+
+.phone-numbers .phone-row .num {
+    background-position: 0 50%;
+    background-repeat: no-repeat;
+    padding-left: 19px;
+    font-weight: bold;
+}
+
+.phone-numbers .phone-row.us .num {
+    background-image: url(../images/flags/us.png);
+}
+
+.phone-numbers .phone-row.gb .num {
+    background-image: url(../images/flags/gb.png);
 }

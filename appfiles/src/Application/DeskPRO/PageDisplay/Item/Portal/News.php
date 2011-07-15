@@ -45,7 +45,7 @@ class News extends PortalItemAbstract
 		}
 
 		$news_entries = App::getEntityRepository('DeskPRO:News')->getNewest(
-			$this->getValueOption('num_articles', 10),
+			$this->getValueOption('num_articles', 5),
 			$category
 		);
 

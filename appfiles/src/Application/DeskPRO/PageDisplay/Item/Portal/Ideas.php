@@ -63,7 +63,7 @@ class Ideas extends PortalItemAbstract
 
 		$ideas = App::getEntityRepository('DeskPRO:Idea')->getNewest(
 			$this->getOption('status', 'new'),
-			$this->getValueOption('num_articles', 10),
+			$this->getValueOption('num_articles', 5),
 			$category
 		);
 

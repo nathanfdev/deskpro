@@ -1,11 +1,48 @@
 <div class="sidebar-item portal_contactbox">
-	<div class="heading">
-		<h2>{{ title|default('Contact Us') }}</h2>
+	<div class="content-item">
+		<div class="content-list">
+			<div class="item">
+				<h3>Contact Us</h3>
+				<a href="{{ path('user_tickets_new') }}">Submit a ticket</a> or email us directly
+				at <a href="mailto:support@deskpro.com">support@deskpro.com</a>. The average response
+				time for the last 10 tickets is <em>12 minutes</em>.
+
+				<div class="create">
+					<div class="button ticket"><a href="{{ path('user_tickets_new') }}"><span>Submit Ticket</span></a></div>
+				</div>
+			</div>
+		</div>
+	</div>
+	
+	<div class="content-item">
+		<div class="content-list">
+			<div class="item">
+				<h3>Live Chat</h3>
+				Our agents are currently online to chat with you live.
+
+				<div class="create">
+					<div class="button chat"><a href="#" class="dp-chat-trigger"><span>Start Chatting</span></a></div>
+				</div>
+			</div>
+		</div>
 	</div>
 
-	<ul class="sidebar-nav">
-		<li class="ticket"><a href="{{ path('user_tickets_new') }}"><span>Submit Ticket</span></a></li>
-		<li class="idea"><a href="{{ path('user_ideas_newidea') }}" class="in-overlay"><span>Submit Feedback</span></a></li>
-		<li class="chat"><a href="#" class="dp-chat-trigger"><span>Chat with us</span></a></li>
-	</ul>
+	<div class="content-item">
+		<div class="content-list">
+			<div class="item">
+				<h3>Phone Support</h3>
+				Speak with one of our agents by calling our support line.
+				<div class="phone-numbers">
+					<div class="phone-row us">
+						<div class="desc">Toll-free US and Canada</div>
+						<div class="num">+1 (800) 416-5588</div>
+					</div>
+					<div class="phone-row gb">
+						<div class="desc">From within the UK</div>
+						<div class="num">+44 29 8859 7232</div>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
 </div>

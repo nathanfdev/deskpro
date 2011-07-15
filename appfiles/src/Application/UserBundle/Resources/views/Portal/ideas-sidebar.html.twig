@@ -1,12 +1,18 @@
 <div class="sidebar-item portal_kb">
 	<div class="heading">
-		<h2>{{ title|default('Recent Feedback') }}</h>
+		<h2><a href="{{ path('user_ideas', {'status': 'new'}) }}">{{ title|default('Recent Feedback') }}</a></h2>
 	</div>
 
 	<div class="content-list">
 		{% for idea in ideas %}
 			<div class="item">
+				<div class="ideas-votes" title="Votes in favor of this idea">
+					<div class="votes"><span>{{ rand(1,80) }}</span></div>
+				</div>
 				<a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a>
+				<div class="info-line">
+					In <a href="{{ path('user_ideas', {'slug': idea.category.url_slug}) }}">{{ idea.category.title }}</a>
+				</div>
 			</div>
 		{% endfor %}
 	</div>

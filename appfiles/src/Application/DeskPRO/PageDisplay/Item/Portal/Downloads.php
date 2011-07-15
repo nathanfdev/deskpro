@@ -43,17 +43,17 @@ class Downloads extends PortalItemAbstract
 	{
 		$category = null;
 		if ($this->getOption('category_id')) {
-			$category = App::findEntity('DeskPRO:ArticleCategory', $this->getOption('category_id'));
+			$category = App::findEntity('DeskPRO:DownloadCategory', $this->getOption('category_id'));
 		}
 
-		$articles = App::getEntityRepository('DeskPRO:Article')->getNewest(
-			$this->getValueOption('num_articles', 10),
+		$downloads = App::getEntityRepository('DeskPRO:Download')->getNewest(
+			$this->getValueOption('num_downloads', 5),
 			$category
 		);
 
-		$html = $this->renderView('UserBundle:Portal:kb-sidebar.html.twig', array(
-			'articles' => $articles,
-			'block_title' => $this->getOption('block_title'),
+		$html = $this->renderView('UserBundle:Portal:downloads-sidebar.html.twig', array(
+			'downloads' => $downloads,
+			'title' => $this->getOption('block_title'),
 		));
 
 		return $html;
