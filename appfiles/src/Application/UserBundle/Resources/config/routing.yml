@@ -109,17 +109,13 @@ user_search:
   pattern: /search
   defaults: { _controller: UserBundle:Search:search }
 
-user_search_label:
-  pattern: /search/labels/{label}
-  defaults: { _controller: UserBundle:Search:labels }
+user_search_labels:
+  pattern: /search/labels/{label}/{type}
+  defaults: { _controller: UserBundle:Search:labelSearch, label: '', type: 'all' }
 
 user_search_omnisearch:
   pattern: /search/omnisearch/{query}
   defaults: { _controller: UserBundle:Search:omnisearch }
-
-user_search_labels:
-  pattern: /tagged/{labels}
-  defaults: { _controller: UserBundle:Search:labelled }
 
 ################################################################################
 # Tickets

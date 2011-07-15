@@ -38,6 +38,22 @@ class DownloadSearch extends SearcherAbstract
 
 
 	/**
+	 * Get actual model objects for matches
+	 *
+	 * @param array $limit
+	 * @return array
+	 */
+	public function getMatchingObjects(array $limit = null)
+	{
+		$ids = $this->getMatches($limit);
+
+		if (!$ids) return array();
+
+		return App::getEntityRepository('DeskPRO:Download')->getByResultIds($ids);
+	}
+
+
+	/**
 	 * Get the total number of matches
 	 *
 	 * @return int

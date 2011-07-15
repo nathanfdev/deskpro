@@ -1,0 +1,68 @@
+{# Articles #}
+{% if typename == 'articles' %}
+{% for article in results %}
+	<li class="article {% if show_more and loop.last %}has-more{% endif %}">
+		<div class="info-line" style="float:right">
+			<ul>
+				<li class="comments" title="Comments"><span>{{ 0 }}</span></li>
+				<li class="views" title="Views"><span>{{ article.view_count }}</span></li>
+			</ul>
+		</div>
+		<h4><a href="{{ path('user_articles_article', {'slug': article.url_slug}) }}">{{ article.title }}</a></h4>
+	</li>
+{% endfor %}
+
+{# News #}
+{% elseif typename == 'news' %}
+{% for news in results %}
+	<li class="news-item  {% if show_more and loop.last %}has-more{% endif %}">
+		<div style="float:right">
+			<div class="info-line">
+				<ul>
+					<li class="comments" title="Comments" style="width: 46px; text-align: center; display: block; padding: 0;"><span>{{ rand(1, 50) }}</span></li>
+				</ul>
+			</div>
+		</div>
+		<h4 style="margin-bottom: 0"><a href="{{ path('user_news_view', {'slug': news.url_slug}) }}">{{ news.title }}</a></h4>
+		<div class="info-line">
+			<ul>
+				<li>{{ news.date_created|date('M d') }}</li>
+			</ul>
+		</div>
+	</li>
+{% endfor %}
+
+{# Ideas #}
+{% elseif typename == 'ideas' %}
+{% for idea in results %}
+	<li class="idea-item {% if show_more and loop.last %}has-more{% endif %}">
+		<div class="info-line" style="float:right">
+			<ul>
+				<li class="comments" title="Comments"><span>{{ 0 }}</span></li>
+				<li class="views" title="Views"><span>{{ 0 }}</span></li>
+			</ul>
+		</div>
+		<div class="ideas-votes" title="Votes in favor of this idea">
+			<div class="votes"><span>{{ rand(1,80) }}</span></div>
+		</div>
+		<h4><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h4>
+	</li>
+{% endfor %}
+
+{# Downloads #}
+{% elseif typename == 'downloads' %}
+{% for download in results %}
+	<li class="file popular {% if show_more and loop.last %}has-more{% endif %}">
+		<div class="info-line" style="float:right">
+			<ul>
+				<li class="comments" title="Comments"><span>{{ 0 }}</span></li>
+				<li class="views" title="Downloads"><span>{{ download.num_downloads }}</span></li>
+			</ul>
+		</div>
+		<h4><a href="{{ path('user_downloads_file', {'slug': download.url_slug}) }}"><span class="icon-file icon-{{ download.blob.extension }}">{{ download.title }}</span></a></h4>
+		<div class="info-line">
+			{{ download.filename }}, {{ download.readable_filesize }}
+		</div>
+	</li>
+{% endfor %}
+{% endif %}

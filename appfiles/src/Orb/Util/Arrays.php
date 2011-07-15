@@ -1523,6 +1523,38 @@ class Arrays
 
 
 	/**
+	 * Splices an assoc array and maintains keys.
+	 * 
+	 * @param $array
+	 * @param $start
+	 * @param null $length
+	 * @return array
+	 */
+	public static function spliceAssoc($array, $start, $length = null)
+	{
+		$new_array = array();
+
+		foreach ($array as $k => $v) {
+			if ($start) {
+				$start--;
+				continue;
+			}
+
+			$new_array[$k] = $v;
+
+			if ($length !== null) {
+				$length--;
+				if ($length == 0) {
+					break;
+				}
+			}
+		}
+
+		return $new_array;
+	}
+
+
+	/**
 	 * Sort an array into an alphabetical index.
 	 *
 	 * Returns:

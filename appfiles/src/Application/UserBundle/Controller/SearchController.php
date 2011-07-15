@@ -11,12 +11,13 @@
 
 namespace Application\UserBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\Elastica\Searcher\ContentSearcher;
+use Application\DeskPRO\Elastica\Searcher\ContentSearcher;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 class SearchController extends AbstractController
 {
@@ -38,6 +39,122 @@ class SearchController extends AbstractController
 			'is_search' => $is_search,
 			'results'   => $results,
 			'query' => $q
+		));
+	}
+
+	public function labelSearchAction($label = '', $type = 'all')
+	{
+		if (!$label) {
+			$label = $this->in->getString('label');
+			if ($label) {
+				// Redirect label in query string (ie from form) to proper URL
+				return $this->redirectRoute('user_search_labels', array('label' => $label));
+			}
+		}
+
+		if (!$type OR !in_array($type, array('all', 'articles', 'ideas', 'downloads', 'news'))) {
+			$type = 'all';
+		}
+
+		$page = $this->in->getUint('page');
+		if (!$page) $page = 1;
+		$page = max(1, $page);
+
+		#------------------------------
+		# Find content with label
+		#------------------------------
+
+		if ($label) {
+			$type_searchers = array(
+				'articles' => new \Application\DeskPRO\Searcher\ArticleSearch(),
+				'ideas' => new \Application\DeskPRO\Searcher\IdeaSearch(),
+				'downloads' => new \Application\DeskPRO\Searcher\DownloadSearch(),
+				'news' => new \Application\DeskPRO\Searcher\NewsSearch(),
+			);
+
+			$results = array(
+				'articles' => array(),
+				'ideas' => array(),
+				'downloads' => array(),
+				'news' => array()
+			);
+			$is_single_type = false;
+
+			if ($type == 'all') {
+				foreach ($type_searchers as $typename => $searcher) {
+					$searcher->addTerm('label', 'is', $label);
+					$res = $searcher->getMatchingObjects(array('offset' => 0, 'max' => 5));
+					$results[$typename] = array('results' => $res, 'show_more' => (count($res) >= 5));
+				}
+
+			} else {
+
+				$per_page = 20;
+
+				if ($page == 2 AND $this->request->isPartialRequest() == 'more') {
+					// We're "moreing" after the original 5 results
+					$offset = 5;
+				} else {
+					$offset = ($page - 1) * $per_page;
+					if ($this->request->isPartialRequest() == 'more') {
+						$offset += 5;
+					}
+				}
+
+				$searcher = $type_searchers[$type];
+				$searcher->addTerm('label', 'is', $label);
+
+				$res = $searcher->getMatchingObjects(array('offset' => $offset, 'max' => $per_page));
+				$results[$type] = array('results' => $res, 'show_more' => (count($res) >= $per_page));
+
+				$is_single_type = true;
+
+				if ($this->request->isPartialRequest() == 'more') {
+					return $this->render('UserBundle:Search:label-search-items.html.twig', array(
+						'typename' => $type,
+						'results' => $results[$type]['results'],
+						'show_more' => $results[$type]['show_more'],
+					));
+				}
+			}
+		}
+
+		
+
+		#------------------------------
+		# Make combined search cloud
+		#------------------------------
+
+		$counts = array(
+			'articles'     => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('articles', 25),
+			'ideas'        => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ideas', 25),
+			'downloads'    => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('downloads', 25),
+			'news'         => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('news', 25),
+		);
+
+		$label_counts = array();
+		foreach ($counts as $type_counts) {
+			foreach ($type_counts as $label => $count) {
+				if (!isset($label_counts[$label])) $label_counts[$label] = 0;
+				$label_counts[$label] += $count;
+			}
+		}
+
+		asort($label_counts, SORT_NUMERIC);
+		if (count($label_counts) > 25) {
+			$label_counts = Arrays::spliceAssoc($label_counts, 0, 25);
+		}
+
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$cloud = $cloud_gen->getCloud();
+		
+		return $this->render('UserBundle:Search:label-search.html.twig', array(
+			'cloud' => $cloud,
+			'label' => $label,
+			'results' => $results,
+			'type' => $type,
+			'is_single_type' => $is_single_type,
+			'page' => $page,
 		));
 	}
 

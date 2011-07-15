@@ -59,6 +59,46 @@ class LabelDef extends EntityRepository
 				");
 				break;
 
+			case 'articles':
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+					SELECT label, COUNT(*) AS count
+					FROM labels_articles
+					GROUP BY label
+					ORDER BY count DESC
+					" . ($limit ? "LIMIT $limit" : '') . "
+				");
+				break;
+
+			case 'ideas':
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+					SELECT label, COUNT(*) AS count
+					FROM labels_ideas
+					GROUP BY label
+					ORDER BY count DESC
+					" . ($limit ? "LIMIT $limit" : '') . "
+				");
+				break;
+
+			case 'downloads':
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+					SELECT label, COUNT(*) AS count
+					FROM labels_downloads
+					GROUP BY label
+					ORDER BY count DESC
+					" . ($limit ? "LIMIT $limit" : '') . "
+				");
+				break;
+
+			case 'news':
+				return $this->getEntityManager()->getConnection()->fetchAllKeyValue("
+					SELECT label, COUNT(*) AS count
+					FROM labels_news
+					GROUP BY label
+					ORDER BY count DESC
+					" . ($limit ? "LIMIT $limit" : '') . "
+				");
+				break;
+
 			default:
 				throw new \InvalidArgumentException("`$type` is an invlaid label type");
 				break;
@@ -86,6 +126,22 @@ class LabelDef extends EntityRepository
 			case 'tickets':
 				return 'DeskPRO:LabelTicket';
 				break;
+
+			case 'articles':
+				return 'DeskPRO:LabelArticle';
+				break;
+
+			case 'ideas':
+				return 'DeskPRO:LabelIdea';
+				break;
+
+			case 'downloads':
+				return 'DeskPRO:LabelDownload';
+				break;
+
+			case 'news':
+				return 'DeskPRO:LabelNews';
+				break;
 		}
 
 		return null;
@@ -103,6 +159,10 @@ class LabelDef extends EntityRepository
 			'labels_organizations' => 'DeskPRO:LabelOrganization',
 			'labels_people'        => 'DeskPRO:LabelPerson',
 			'labels_tickets'       => 'DeskPRO:LabelTicket',
+			'labels_articles'      => 'DeskPRO:LabelArticle',
+			'labels_ideas'         => 'DeskPRO:LabelIdea',
+			'labels_downloads'     => 'DeskPRO:LabelDownload',
+			'labels_news'          => 'DeskPRO:LabelNews',
 		);
 	}
 }

@@ -43,20 +43,23 @@ DeskPRO.User.ElementHandler.MoreLoader = new Orb.Class({
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				this.insertNewItems(html);
+				this.insertNewItems(html.trim());
 			}
 		});
 	},
 
 	insertNewItems: function(html) {
-		var els = $(html);
+		if (html.length) {
+			var els = $(html);
+		} else {
+			var els = null;
+		}
 
 		this.currentPage++;
 
-		if (!els.length || !els.last().is('.has-more')) {
+		this.moreWrap.removeClass('loading');
+		if (!els || !els.length || !els.last().is('.has-more')) {
 			this.moreWrap.remove();
-		} else {
-			this.moreWrap.removeClass('loading');
 		}
 
 		this.listEl.append(els);

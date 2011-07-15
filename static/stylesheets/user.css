@@ -436,6 +436,31 @@ a {
     border: 1px solid #D5D7D7;
 }
 
+
+.tag-cloud ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+}
+
+.tag-cloud li {
+	display: inline;
+    padding-left: 3px;
+    padding-right: 3px;
+}
+
+.tag-cloud li.tag-size1  { font-size:1.0em; }
+.tag-cloud li.tag-size2  { font-size:1.3em; }
+.tag-cloud li.tag-size3  { font-size:1.5em; }
+.tag-cloud li.tag-size4  { font-size:1.7em; }
+.tag-cloud li.tag-size5  { font-size:1.9em; }
+.tag-cloud li.tag-size6  { font-size:2.1em; }
+.tag-cloud li.tag-size7  { font-size:2.3em; }
+.tag-cloud li.tag-size8  { font-size:2.5em; }
+.tag-cloud li.tag-size9  { font-size:2.7em; }
+.tag-cloud li.tag-size10 { font-size:2.9em; }
+
+
 /*****************************************************************
 * input form
 ******************************************************************/
@@ -1771,4 +1796,41 @@ ul.comments li .message {
 
 .portal_userinfo .register {
     font-size: 10px;
+}
+
+
+/*********
+* portal_staff
+**********/
+
+.label-search table.header {
+    margin: 0;
+    border-spacing: 8px;
+}
+
+.label-search table.header td {
+    background-color: #F0F3F7;
+    vertical-align: top;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+}
+
+
+.label-search .search-box {
+    
+}
+
+.label-search h3 {
+    font-size: 15px;
+    margin: 0 0 12px 0;
+}
+
+.label-search .search-box input {
+    margin: 0;
+    padding: 2px;
+}
+
+.label-search .tag-cloud {
+    line-height: 125%;
 }
