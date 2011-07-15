@@ -1,34 +1,67 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_tickets') }}">Tickets</a></li>
+{% endblock %}
 {% block content %}
 
-<div style="text-align:right">
-	<a href="{{ path('user_tickets_new') }}">Create Ticket</a>
-</div>
-
-<div class="table-list-wrap">
-	<h2>{{ phrase('user_tickets.your_tickets') }}</h2>
-	<table class="table-list" cellspacing="0" cellpadding="0" width="100%">
-		<thead>
-			<tr>
-				<th>{{ phrase('core_tickets.subject') }}</th>
-				<th>{{ phrase('core.department') }}</th>
-				<th>{{ phrase('core_tickets.category') }}</th>
-				<th>{{ phrase('core_tickets.agent') }}</th>
-				<th>{{ phrase('core_tickets.status') }}</th>
-			</tr>
-		</thead>
-		<tbody>
-			{% for ticket in tickets %}
-				<tr>
-					<td><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.ref }) }}">{{ ticket.subject }}</a></td>
-					<td>{{ phrase(ticket.department) }}</td>
-					<td>{{ phrase(ticket.category)|default(phrase('core.none')) }}</td>
-					<td>{{ phrase('core_tickets.status_' ~ ticket.status) }}</td>
-					<td>{{ ticket.agent.display_name|default(phrase('core.unassigned')) }}</td>
-				</tr>
+{% if active_tickets %}
+<div class="content-item portal_ideas">
+	<div class="heading">
+		<h2>Your Open Tickets</h2>
+	</div>
+	<div class="content-list">
+		<ul>
+			{% for ticket in active_tickets %}
+			<li>
+				<div class="info-line" style="float:right">
+					<ul>
+						<li>{{ ticket.date_created|date('M d') }}</li>
+					</ul>
+				</div>
+				<h4><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id }) }}">{{ ticket.subject }}</a></h4>
+				<div class="info-line">
+					<ul>
+						<li><span>Department: {{ phrase(ticket.department) }}</span></li>
+						{% if ticket.category %}
+							<li><span>Category: {{ phrase(ticket.category) }}</span></li>
+						{% endif %}
+					</ul>
+				</div>
+			</li>
 			{% endfor %}
-		</tbody>
-	</table>
+		</ul>
+	</div>
 </div>
+{% endif %}
+
+{% if resolved_tickets %}
+<div class="content-item portal_ideas">
+	<div class="heading">
+		<h2>Your Closed Tickets</h2>
+	</div>
+	<div class="content-list">
+		<ul>
+			{% for ticket in resolved_tickets %}
+			<li>
+				<div class="info-line" style="float:right">
+					<ul>
+						<li>{{ ticket.date_created|date('M d') }}</li>
+					</ul>
+				</div>
+				<h4><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.ref }) }}">{{ ticket.subject }}</a></h4>
+				<div class="info-line">
+					<ul>
+						<li title="Department"><span>{{ phrase(ticket.department) }}</span></li>
+						{% if ticket.category %}
+							<li title="Category"><span>{{ phrase(ticket.category) }}</span></li>
+						{% endif %}
+					</ul>
+				</div>
+			</li>
+			{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endif %}
 
 {% endblock %}

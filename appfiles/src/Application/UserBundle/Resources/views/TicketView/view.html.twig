@@ -1,0 +1,125 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block head %}
+<style type="text/css">
+ul.attachment-list {
+	margin-top: 10px;
+	padding-top: 5px;
+	border-top: 1px solid #C5CDD4;
+	padding-left: 8px;
+
+	background: #FFFFFF; /* old browsers */
+	background: -moz-linear-gradient(top, #FFFFFF 0%, #F7F8F9 100%); /* firefox */
+	background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#FFFFFF), color-stop(100%,#F7F8F9)); /* webkit */
+	filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFFFFF', endColorstr='#F7F8F9',GradientType=0 ); /* ie */
+}
+
+ul.attachment-list > li {
+	line-height: 18px;
+	padding-top: 2px;
+	padding-bottom: 2px;
+}
+ul.attachment-list > li span.size {
+	font-size: 7pt;
+	color: #5E5E5E;
+}
+
+ul.attachment-list > li img.preview {
+	text-align: right;
+	vertical-align: middle;
+	margin-right: 6px;
+}
+</style>
+{% endblock %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_tickets') }}">Tickets</a></li>
+	<li><a href="{{ path('user_tickets_view', {'ticket_ref': ticket.public_id}) }}">{{ ticket.subject }}</a></li>
+{% endblock %}
+{% block content %}
+<div class="content-item">
+	<div class="heading">
+		<h2>{{ ticket.subject }}</h2>
+	</div>
+	<div class="content-list" style="margin-bottom: 8px;">
+		<div class="item">
+			<table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
+				<td>
+					<small>{{ phrase('core_tickets.department') }}</small><br />
+					{{ phrase(ticket.department) }}
+				</td>
+				{% if ticket.category %}
+				<td>
+					<small>{{ phrase('core_tickets.category') }}</small><br />
+					{{ phrase(ticket.category) }}
+				</td>
+				{% endif %}
+				{% if ticket.product %}
+				<td>
+					<small>{{ phrase('core_tickets.product') }}</small><br />
+					{{ phrase(ticket.product) }}
+				</td>
+				{% endif %}
+				{% if ticket.priority %}
+				<td>
+					<small>{{ phrase('core_tickets.priority') }}</small><br />
+					{{ phrase(ticket.priority) }}
+				</td>
+				{% endif %}
+				<td>
+					<small>{{ phrase('core_tickets.status') }}</small><br />
+					{{ phrase('core_tickets.status_' ~ ticket.status) }}
+				</td>
+				<td>
+					<small>{{ phrase('core_tickets.agent') }}</small><br />
+					{{ ticket.agent.display_name|default(phrase('core.unassigned')) }}
+				</td>
+			</tr></table>
+		</div>
+		<div class="item">
+			<strong>Ticket Starter</strong>: {{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;
+
+			{% if user_participants|length %}
+			<br /><br />
+			<strong>Ticket participants</strong><br />
+			<ul>
+				{% for part in user_participants %}
+					<li>
+						{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
+					</li>
+				{% endfor %}
+			</ul>
+			{% endif %}
+		</div>
+	</div>
+	<div class="content-list">
+		<ul class="comments">
+		{% for message in messages %}
+			<li {% if message.person.is_agent == 2 %}class="agent"{% endif %}>
+				<div class="author-line">
+					<div class="avatar" style="background-image: url('{{ message.person.getPictureUrl(30) }}');"></div>
+					<h4><span {% if loop.index == 2 %}title="This person is a helpdesk agent"{% endif %}>{{ message.person.display_name|default('Anonymous') }} {% if not message.person.is_agent %} &lt;{{ message.person.email_address }}&gt;{% endif %}</span></h4>
+					<div class="date">{{ message.date_created|date('M j, Y') }}</div>
+				</div>
+				<div class="message">
+					{{ message.message_html|raw }}
+
+					{% if message_to_attach[message.id] %}
+						<ul class="attachment-list">
+							{% for attach_id in message_to_attach[message.id] %}
+								{% set ticket_attach = ticket_attachments[attach_id] %}
+								<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
+									{% if ticket_attach.blob.isImage() %}
+										<img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" />
+									{% endif %}
+									<a href="{{ ticket_attach.blob.download_url }}" target="_blank">{{ticket_attach.blob.filename}}</a>
+									<span class="size">({{ ticket_attach.blob.readable_filesize }})</span>
+								</li>
+							{% endfor %}
+						</ul>
+					{%endif%}
+				</div>
+			</li>
+		{% endfor %}
+		</ul>
+	</div>
+</div>
+{% endblock %}

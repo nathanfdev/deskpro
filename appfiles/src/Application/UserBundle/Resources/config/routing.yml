@@ -135,7 +135,7 @@ user_tickets_new_thanks:
   defaults: { _controller: UserBundle:NewTicket:thanks }
 
 user_tickets_view:
-  pattern: /ticket/{ticket_id}
+  pattern: /ticket/{ticket_ref}
   defaults: { _controller: UserBundle:TicketView:load }
 
 user_tickets_addreply:

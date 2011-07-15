@@ -1402,6 +1402,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
+	 * Get the ID used in the interface for links etc.
+	 * 
+	 * @return int
+	 */
+	public function getPublicId()
+	{
+		// TODO controller by setting
+		return $this->id;
+	}
+
+
+	/**
 	 * Decodes an access code into a ticket id and the standalone auth.
 	 *
 	 * @param  $access_code

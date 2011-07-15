@@ -33,7 +33,7 @@ class TicketViewController extends AbstractController
 	 *
 	 * @param string|int $ticket_id
 	 */
-	public function loadAction($ticket_id)
+	public function loadAction($ticket_ref)
 	{
 		if ($this->person['id']) {
 			$try_order = array('id', 'ref', 'ptac');
@@ -46,16 +46,16 @@ class TicketViewController extends AbstractController
 		foreach ($try_order as $lookup_type) {
 			switch ($lookup_type) {
 				case 'id':
-					if (Numbers::isInteger($ticket_id)) {
-						$ticket = App::findEntity('DeskPRO:Ticket', $ticket_id);
+					if (Numbers::isInteger($ticket_ref)) {
+						$ticket = App::findEntity('DeskPRO:Ticket', $ticket_ref);
 						return $this->viewTicket($ticket);
 					}
 					break;
 
 				case 'ref':
 					$ref_gen = $this->get('deskpro.ref_generator');
-					if ($ref_gen->isRefMatch($ticket_id)) {
-						$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_id);
+					if ($ref_gen->isRefMatch($ticket_ref)) {
+						$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
 						if ($ticket) {
 							return $this->viewTicket($ticket);
 						}
@@ -63,7 +63,7 @@ class TicketViewController extends AbstractController
 					break;
 
 				case 'ptac':
-					$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($ticket_id);
+					$ticket = App::getEntityRepository('DeskPRO:Ticket')->getByAccessCode($ticket_ref);
 					if ($ticket) {
 						return $this->viewGuestTicket($ticket);
 					}
@@ -72,6 +72,23 @@ class TicketViewController extends AbstractController
 		}
 
 		return $this->createNotFoundException();
+	}
+
+	###########################################################################
+	# viewTicket
+	###########################################################################
+
+	/**
+	 * View a ticket without a user session
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function viewTicket(Ticket $ticket)
+	{
+		$ticket_display = new TicketDisplay($ticket, $this->person);
+		$vars = $ticket_display->getDisplayArray();
+
+		return $this->render('UserBundle:TicketView:view.html.twig', $vars);
 	}
 
 

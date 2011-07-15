@@ -51,8 +51,20 @@ class TicketsController extends AbstractController
 			ORDER BY ticket.id DESC
 		")->execute(array('person' => $this->person));
 
+		$active_tickets = array();
+		$resolved_tickets = array();
+
+		foreach ($tickets as $t) {
+			if ($t['status'] == 'open' OR $t['status'] == 'pending') {
+				$active_tickets[] = $t;
+			} else {
+				$resolved_tickets[] = $t;
+			}
+		}
+
         return $this->render('UserBundle:Tickets:list.html.twig', array(
-			'tickets' => $tickets
+			'active_tickets' => $active_tickets,
+			'resolved_tickets' => $resolved_tickets,
 		));
     }
 
@@ -383,7 +395,11 @@ class TicketsController extends AbstractController
 	 */
 	protected function getTicketOr404($ticket_ref, $authcode = null)
 	{
-		$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+		if (ctype_digit($ticket_ref)) {
+			$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneById($ticket_ref);
+		} else {
+			$ticket = App::getEntityRepository('DeskPRO:Ticket')->findOneByRef($ticket_ref);
+		}
 
 		if (!$ticket OR ($ticket['person_id'] != $this->person['id'] AND !isset($this->session_allowed[$ticket['id']]))) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("There is no ticket with ID $ticket_ref");
