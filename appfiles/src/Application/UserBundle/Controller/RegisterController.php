@@ -11,15 +11,25 @@
 
 namespace Application\UserBundle\Controller;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Orb\Util\Arrays;
+use Orb\Util\Arrays;
 
-use \Application\UserBundle\Form\RegPersonForm;
+use Application\UserBundle\Form\RegisterType;
 
 class RegisterController extends AbstractController
 {
+	public function registerAction()
+	{
+		$reg_formtype = new RegisterType();
+		$form = $this->get('form.factory')->create($reg_formtype);
+
+		return $this->render('UserBundle:Register:register.html.twig', array(
+			'form' => $form->createView(),
+		));
+	}
+	
 	public function finishAction()
 	{
 		$person = App::getEntityRepository('DeskPRO:Person')->find($this->session->get('finish_register_person', 0));

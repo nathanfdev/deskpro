@@ -1,0 +1,58 @@
+{% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_register') }}">Register</a></li>
+{% endblock %}
+{% block content %}
+<div class="register">
+
+<div class="page-title">
+	<h1>Register</h1>
+</div>
+
+<form action="" method="post">
+<input type="hidden" name="process" value="1" />
+<div class="input-form">
+	<table cellspacing="0" cellpadding="0" width="100%">
+		<tr>
+			<td width="160">Name</td>
+			<td>
+				{{ form_widget(form.person.name) }}
+			</td>
+		</tr>
+		<tr>
+			<td width="160">Email Address</td>
+			<td>
+				{{ form_widget(form.person.email) }}
+			</td>
+		</tr>
+		<tr>
+			<td width="160">Password</td>
+			<td>
+				{{ form_widget(form.person.password) }}
+			</td>
+		</tr>
+		<tr>
+			<td width="160">Repeat Password</td>
+			<td>
+				{{ form_widget(form.person.password2) }}
+			</td>
+		</tr>
+
+		<tr>
+			<td width="160">Confirmation Code</td>
+			<td>
+				{% include 'UserBundle:Common:recaptcha.html.twig' %}
+			</td>
+		</tr>
+
+		<tr class="foot">
+			<td colspan="2">
+				<button class="dp-button">Register</button>
+			</td>
+		</tr>
+	</table>
+</div>
+</form>
+
+</div>
+{% endblock %}
