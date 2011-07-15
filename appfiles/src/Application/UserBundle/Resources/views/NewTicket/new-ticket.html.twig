@@ -1,7 +1,9 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% import "UserBundle:Common:property-fields.html.twig" as property_fields %}
 {% block head %}
-<script type="text/javascript" src="{{ path('data_interface_data', {'types': ['tickets']}) }}"></script>
+<script type="text/javascript">
+{{ ticket_display_js|raw }}
+</script>
 <script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewTicket.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
@@ -53,14 +55,15 @@
 			{{ property_fields.form_department_select('newticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
 		</td>
 	</tr>
-	<tr>
+
+	<tr class="ticket_category standard-field ticket-display-field" style="display: none">
 		<td>{{ phrase('core_tickets.category') }}</td>
 		<td id="category_select_wrap">
 			{{ property_fields.form_category_select('newticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
 		</td>
 	</tr>
 	{% if form.ticket.product_id %}
-	<tr>
+	<tr class="ticket_product standard-field ticket-display-field" style="display: none">
 		<td>{{ phrase('core.product') }}</td>
 		<td>
 			{{ form_widget(form.ticket.product_id, {'class': 'product_id'}) }}
@@ -68,13 +71,19 @@
 	</tr>
 	{% endif %}
 	{% if form.ticket.priority_id %}
-	<tr>
+	<tr class="ticket_priority standard-field ticket-display-field" style="display: none">
 		<td>{{ phrase('core_tickets.priority') }}</td>
 		<td>
 			{{ form_widget(form.ticket.priority_id, {'class': 'priority_id'}) }}
 		</td>
 	</tr>
 	{% endif %}
+	{% for f in custom_fields %}
+		<tr class="custom-field ticket_field_{{f.id}} ticket-display-field" style="display: none">
+			<td>{{f.title}}</td>
+			<td>{{ render_custom_field_form(f) }}</td>
+		</tr>
+	{% endfor %}
 
 	<tr>
 		<td style="vertical-align: top; padding-top: 8px;">Message</td>

@@ -80,11 +80,26 @@ class NewTicketController extends AbstractController
 			}
 		}
 
+		// Custom fields
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array(), $ticket_field_defs);
+
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
+
+		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('user');
+		$ticket_display->addPagesFromDb();
+		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
+
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(
 			'ticket_options' => $newticket_formtype->getTicketOptions(),
 			'newticket_formtype' => $newticket_formtype,
 			'custom_fields' => $newticket_formtype->getTicketFields(),
 			'form' => $form->createView(),
+			'custom_fields' => $custom_fields,
+			'ticket_display_js' => $ticket_display_js,
 		));
     }
 
