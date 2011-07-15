@@ -109,6 +109,10 @@ user_search:
   pattern: /search
   defaults: { _controller: UserBundle:Search:search }
 
+user_search_label:
+  pattern: /search/labels/{label}
+  defaults: { _controller: UserBundle:Search:labels }
+
 user_search_omnisearch:
   pattern: /search/omnisearch/{query}
   defaults: { _controller: UserBundle:Search:omnisearch }

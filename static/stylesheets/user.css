@@ -402,6 +402,40 @@ a {
     display: block;
 }
 
+
+.labels {
+    background: #F4F4F4 url(../images/icons/tag_blue.png) no-repeat 8px 50%;
+    -webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+    margin-top: 8px;
+    margin-bottom: 8px;
+    padding: 6px;
+    padding-left: 21px;
+}
+
+.labels ul {
+    margin: 0;
+    padding: 0;
+    list-style-type: none;
+    float: left;
+}
+
+.labels li {
+    float: left;
+    margin: 0 0 0 10px;
+    padding: 0;
+}
+
+.labels li a {
+    display: block;
+    background-color: #fff;
+    padding: 1px 4px 1px 4px;
+    font-size: 11px;
+    color: #000;
+    border: 1px solid #D5D7D7;
+}
+
 /*****************************************************************
 * input form
 ******************************************************************/

@@ -53,6 +53,8 @@
 		</div>
 	</div>
 
+	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': idea.labels} %}
+
 	{% if comments_widget %}
 		{{comments_widget|raw}}
 	{% else %}

@@ -1,0 +1,8 @@
+<div class="labels">
+	<ul>
+		{% for label in labels %}
+			<li><a href="{{ path('user_search_label', {'label': label.label}) }}">{{ label.label }}</a></li>
+		{% endfor %}
+	</ul>
+	<br class="clear" />
+</div>

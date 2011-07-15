@@ -39,6 +39,8 @@
 
 	<div class="post">{{ article.content_html|raw }}</div>
 
+	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': article.labels} %}
+
 	<div class="user-vote">
 		{% if article.rating_percent %}
 			<div style="float:left; margin-top: 2px;">
