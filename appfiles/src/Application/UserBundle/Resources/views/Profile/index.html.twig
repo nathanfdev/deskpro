@@ -1,6 +1,8 @@
 {% extends 'UserBundle::layout.html.twig' %}
+{% block breadcrumb %}
+	<li><a href="{{ path('user_profile') }}">Profile</a></li>
+{% endblock %}
 {% block content %}
-
 <div class="content-item">
 	<div class="heading">
 		<h2>Profile</h2>

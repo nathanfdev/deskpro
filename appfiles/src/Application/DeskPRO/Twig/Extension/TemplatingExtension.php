@@ -77,7 +77,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function flashMessage($name)
 	{
-		$session = $this->get('session');
+		$session = $this->container->get('session');
 		return $session->getFlash($name, null);
 	}
 

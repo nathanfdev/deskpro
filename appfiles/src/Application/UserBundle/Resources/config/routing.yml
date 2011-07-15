@@ -53,6 +53,10 @@ user_login_resetpass_newpass_querycode:
 # Register
 ################################################################################
 
+user_register:
+  pattern: /register
+  defaults: { _controller: UserBundle:Register:register }
+
 user_register_finish:
   pattern: /register/finish
   defaults: { _controller: UserBundle:Register:finish }
