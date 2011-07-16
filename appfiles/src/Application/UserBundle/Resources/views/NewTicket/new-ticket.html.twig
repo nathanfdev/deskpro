@@ -52,21 +52,72 @@
 	<tr>
 		<td>Department</td>
 		<td>
-			{{ property_fields.form_department_select('newticket[ticket][department_id]', ticket_options.departments_hierarchy, ticket.department_id, 'department_id') }}
+			<select name="newticket[ticket][department_id]" class="department_id">
+				<option value=""></option>
+				{% for id,info in ticket_options.departments_hierarchy %}
+					<option value="{{id}}">{{info.title}}</option>
+				{% endfor %}
+			</select>
+			{% for parent_id, parent_info in ticket_options.departments_hierarchy %}
+				{% if parent_info.children|length %}
+				<div class="sub-options sub-options-department_id sub-options-{{parent_id}}" style="display: none">
+					<select name="newticket[ticket][department_id]" class="sub_department_id">
+						<option value=""></option>
+						{% for id,info in parent_info.children %}
+							<option value="{{id}}">{{info.title}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				{% endif %}
+			{% endfor %}
 		</td>
 	</tr>
 
 	<tr class="ticket_category standard-field ticket-display-field" style="display: none">
 		<td>{{ phrase('core_tickets.category') }}</td>
-		<td id="category_select_wrap">
-			{{ property_fields.form_category_select('newticket[ticket][category_id]', ticket_options.ticket_categories_hierarchy, ticket.category_id, 'category_id') }}
+		<td id="category_select_wrap" class="with-sub-options">
+			<select name="newticket[ticket][category_id]" class="parent-option category_id">
+				<option value=""></option>
+				{% for id,info in ticket_options.ticket_categories_hierarchy %}
+					<option value="{{id}}">{{info.title}}</option>
+				{% endfor %}
+			</select>
+			{% for parent_id, parent_info in ticket_options.ticket_categories_hierarchy %}
+				{% if parent_info.children|length %}
+				<div class="sub-options sub-options-category_id sub-options-{{parent_id}}" style="display: none">
+					<select name="newticket[ticket][category_id]" class="sub_category_id">
+						<option value=""></option>
+						{% for id,info in parent_info.children %}
+							<option value="{{id}}">{{info.title}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				{% endif %}
+			{% endfor %}
 		</td>
 	</tr>
 	{% if form.ticket.product_id %}
 	<tr class="ticket_product standard-field ticket-display-field" style="display: none">
 		<td>{{ phrase('core.product') }}</td>
-		<td>
-			{{ form_widget(form.ticket.product_id, {'class': 'product_id'}) }}
+		<td class="with-sub-options">
+			<select name="newticket[ticket][product_id]" class="parent-option product_id">
+				<option value=""></option>
+				{% for id,info in ticket_options.products_hierarchy %}
+					<option value="{{id}}">{{info.title}}</option>
+				{% endfor %}
+			</select>
+			{% for parent_id, parent_info in ticket_options.products_hierarchy %}
+				{% if parent_info.children|length %}
+				<div class="sub-options sub-options-product_id sub-options-{{parent_id}}" style="display: none">
+					<select name="newticket[ticket][product_id]" class="sub_product_id">
+						<option value=""></option>
+						{% for id,info in parent_info.children %}
+							<option value="{{id}}">{{info.title}}</option>
+						{% endfor %}
+					</select>
+				</div>
+				{% endif %}
+			{% endfor %}
 		</td>
 	</tr>
 	{% endif %}

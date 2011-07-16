@@ -93,7 +93,13 @@ class NewTicketController extends AbstractController
 		$ticket_display->addPagesFromDb();
 		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
 
+		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
+		$ticket_categories = App::getEntityRepository('DeskPRO:TicketCategory')->findAll();
+
 		return $this->render('UserBundle:NewTicket:new-ticket.html.twig', array(
+			'departments' => $departments,
+			'ticket_categories' => $ticket_categories,
+
 			'ticket_options' => $newticket_formtype->getTicketOptions(),
 			'newticket_formtype' => $newticket_formtype,
 			'custom_fields' => $newticket_formtype->getTicketFields(),

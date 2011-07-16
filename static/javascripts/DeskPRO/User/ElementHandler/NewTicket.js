@@ -10,8 +10,42 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		var self = this;
 		this.depSelect.change(function() {
+			self.handleDepChange();
+		});
+
+		$('select.sub_department_id', this.el).change(function(){
 			self.setDepartment($(this).val());
 		});
+
+		$('.with-sub-options', this.el).each(function() {
+			var parentSel = $('.parent-option', this);
+			var wrapper = this;
+
+			parentSel.change(function() {
+				var val = $(this).val();
+				var sub = $('.sub-options-' + val);
+
+				$('.sub-options', wrapper).hide();
+				sub.show();
+			});
+		});
+	},
+
+	handleDepChange: function() {
+		$('.sub-department', this.el).hide();
+
+		var depId = this.depSelect.val();
+		var sub = $('.sub-options-' + depId, this.el);
+
+		if (!sub.length) {
+			this.setDepartment(depId);
+			return;
+		}
+
+		sub.show();
+		var subDepId = $('select.department_id', sub);
+
+		this.setDepartment(subDepId);
 	},
 
 	setDepartment: function(department_id) {
