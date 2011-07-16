@@ -11,11 +11,12 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-use \Application\DeskPRO\Markdown;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
+use Application\DeskPRO\Markdown;
 
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
 
 /**
  * News
@@ -107,6 +108,14 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 			$excerpt = substr($content, 0, $pos);
 		} else {
 			$excerpt = $content;
+		}
+
+		if (str_word_count($excerpt) > 50) {
+			$words = str_word_count($excerpt, 2);
+			$pos = Arrays::getNthKey($words, 50);
+			$excerpt = substr($excerpt, 0, $pos);
+			$excerpt = preg_replace('#[^a-zA-Z0-9]$#', '', $excerpt);
+			$excerpt .= '...';
 		}
 
 		return Markdown::format($excerpt);
