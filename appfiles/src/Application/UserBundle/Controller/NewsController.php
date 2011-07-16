@@ -67,15 +67,21 @@ class NewsController extends AbstractController
 			$searcher->setOrderBy('id', 'desc');
 		}
 
-		$per_page = $this->in->getUint('per_page');
+		$per_page = (int)$this->request->query->get('per_page');
 		if ($list_type == 'list') {
-			if (!$per_page) $per_page = 10;
+			if (!$per_page) $per_page = 25;
 			$per_page = Numbers::bound($per_page, 1, 50);
 			$tpl = 'UserBundle:News:browse-list.html.twig';
+			if ($this->request->isPartialRequest() == 'more') {
+				$tpl = 'UserBundle:News:browse-news-list.html.twig';
+			}
 		} else {
-			if (!$per_page) $per_page = 2;
-			$per_page = Numbers::bound($per_page, 1, 15);
+			if (!$per_page) $per_page = 10;
+			$per_page = Numbers::bound($per_page, 1, 25);
 			$tpl = 'UserBundle:News:browse-posts.html.twig';
+			if ($this->request->isPartialRequest() == 'more') {
+				$tpl = 'UserBundle:News:browse-news-posts.html.twig';
+			}
 		}
 
 		$total = $searcher->getCount();
@@ -89,18 +95,25 @@ class NewsController extends AbstractController
 
 		$news = App::getEntityRepository('DeskPRO:News')->getByResultIds($news_ids);
 
-		$category_counts = App::getEntityRepository('DeskPRO:NewsCategory')->getAllCounts($this->person);
+		$show_more = false;
+		if ($page < $pageinfo['last']) {
+			$show_more = true;
+		}
 
+		$category_counts = App::getEntityRepository('DeskPRO:NewsCategory')->getAllCounts($this->person);
+		
 		return $this->render($tpl, array(
 			'news_cats' => $news_cats,
 			'news_cat_objs' => $news_cat_objs,
 			'category' => $category,
+			'category_counts' => $category_counts,
 			'category_path' => $category_path,
 			'news_entries' => $news,
 			'num_results' => $total,
 			'pageinfo' => $pageinfo,
 			'list_type' => $list_type,
-			'category_counts' => $category_counts,
+			'per_page' => $per_page,
+			'show_more' => $show_more
 		));
 	}
 

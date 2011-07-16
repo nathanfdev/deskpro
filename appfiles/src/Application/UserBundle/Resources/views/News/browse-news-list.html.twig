@@ -1,5 +1,5 @@
 {% for news in news_entries %}
-	<li>
+	<li class="{% if show_more and loop.last %}has-more{% endif %}">
 		<div style="float:right">
 			<div class="info-line">
 				<ul>
