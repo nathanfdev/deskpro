@@ -83,6 +83,7 @@ class ArticlesController extends AbstractController
 			'category_children_articles' => $category_children_articles,
 			'category_counts' => $category_counts,
 			'articles' => $articles,
+			'section_counts' => App::getEntityRepository('DeskPRO:Article')->getSectionCounts()
 		));
 	}
 
@@ -140,6 +141,7 @@ class ArticlesController extends AbstractController
 			'search_options_url' => http_build_query($search_options, null, '&amp;'),
 			'articles' => $articles,
 			'num_results' => $total,
+			'section_counts' => App::getEntityRepository('DeskPRO:Article')->getSectionCounts($this->person),
 		));
 	}
 
@@ -180,6 +182,7 @@ class ArticlesController extends AbstractController
 			'articles' => $articles,
 			'show_more' => $show_more,
 			'page' => $page,
+			'section_counts' => App::getEntityRepository('DeskPRO:Article')->getSectionCounts($this->person),
 		));
 	}
 
@@ -221,6 +224,7 @@ class ArticlesController extends AbstractController
 			'articles' => $articles,
 			'show_more' => $show_more,
 			'page' => $page,
+			'section_counts' => App::getEntityRepository('DeskPRO:Article')->getSectionCounts($this->person),
 		));
 	}
 

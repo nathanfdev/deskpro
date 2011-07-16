@@ -129,4 +129,28 @@ class Download extends EntityRepository
 			ORDER BY d.title DESC
 		")->setParameter(1, $node)->execute();
 	}
+
+
+	public function getSectionCounts(PersonEntity $person_context = null)
+	{
+		$counts = array();
+
+		$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+		if ($person_context) {
+			$searcher->setPersonContext($person_context);
+		}
+		$searcher->addTerm('status', 'is', 'published');
+		$searcher->addTerm('popular', 'is', '1');
+		$counts['popular'] = $searcher->getCount();
+
+		$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
+		if ($person_context) {
+			$searcher->setPersonContext($person_context);
+		}
+		$searcher->addTerm('status', 'is', 'published');
+		$searcher->addTerm('new', 'is', '1');
+		$counts['new'] = $searcher->getCount();
+
+		return $counts;
+	}
 }

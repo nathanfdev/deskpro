@@ -245,4 +245,28 @@ class Article extends EntityRepository
 			ORDER BY a.id DESC
 		")->setParameter(1, $node)->execute();
 	}
+
+
+	public function getSectionCounts(PersonEntity $person_context = null)
+	{
+		$counts = array();
+
+		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+		if ($person_context) {
+			$searcher->setPersonContext($person_context);
+		}
+		$searcher->addTerm('status', 'is', 'published');
+		$searcher->addTerm('popular', 'is', '1');
+		$counts['popular'] = $searcher->getCount();
+
+		$searcher = new \Application\DeskPRO\Searcher\ArticleSearch();
+		if ($person_context) {
+			$searcher->setPersonContext($person_context);
+		}
+		$searcher->addTerm('status', 'is', 'published');
+		$searcher->addTerm('new', 'is', '1');
+		$counts['new'] = $searcher->getCount();
+
+		return $counts;
+	}
 }

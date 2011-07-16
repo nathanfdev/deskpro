@@ -727,6 +727,12 @@ a {
     cursor: pointer;
 }
 
+.content-item .heading-tabs ul li em {
+    color: #555;
+    font-style: normal;
+    font-size: 9px;
+}
+
 .content-item .heading-tabs ul li.on {
     background-color: #E3E3E3;
 }

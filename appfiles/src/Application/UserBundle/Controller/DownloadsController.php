@@ -81,7 +81,8 @@ class DownloadsController extends AbstractController
 			'category_path' => $category_path,
 			'downloads' => $downloads,
 			'num_results' => $total,
-			'pageinfo' => $pageinfo
+			'pageinfo' => $pageinfo,
+			'section_counts' => App::getEntityRepository('DeskPRO:Download')->getSectionCounts($this->person),
 		));
 	}
 	
@@ -118,6 +119,7 @@ class DownloadsController extends AbstractController
 			'downloads' => $downloads,
 			'show_more' => $show_more,
 			'page' => $page,
+			'section_counts' => App::getEntityRepository('DeskPRO:Download')->getSectionCounts($this->person),
 		));
 	}
 
@@ -155,6 +157,7 @@ class DownloadsController extends AbstractController
 			'downloads' => $downloads,
 			'show_more' => $show_more,
 			'page' => $page,
+			'section_counts' => App::getEntityRepository('DeskPRO:Download')->getSectionCounts($this->person),
 		));
 	}
 

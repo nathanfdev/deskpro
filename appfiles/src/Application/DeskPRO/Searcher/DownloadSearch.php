@@ -15,6 +15,7 @@ class DownloadSearch extends SearcherAbstract
 	const TERM_DOWNLOADS       = 'num_downloads';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_POPULAR         = 'popular';
+	const TERM_NEW             = 'new';
 	const TERM_LABEL           = 'label';
 
 	const ORDER_ID       = 'id';
@@ -235,6 +236,18 @@ class DownloadSearch extends SearcherAbstract
 					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
 					if ($choice) {
 						$wheres[] = $this->_rangeMatch('downloads.num_downloads', 'gte', App::getSetting('core_downloads.popular_downloads'));
+					}
+					break;
+
+				case self::TERM_NEW:
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+					// must be 1
+					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
+					if ($choice) {
+						$date = new \DateTime(App::getSetting('core_downloads.new_time'));
+						$wheres[] = $this->_dateMatch('downloads.date_created', 'gte', array('date1' => $date));
 					}
 					break;
 

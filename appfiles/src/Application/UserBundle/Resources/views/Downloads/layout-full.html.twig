@@ -5,8 +5,12 @@
 		<div class="heading-tabs">
 			<ul>
 				<li {% if block('downloads_browse')|trim|length %}class="on"{% endif %} data-tab-for=".browse"><a href="{{ path('user_downloads') }}">Browse</a></li>
-				<li {% if block('downloads_recent')|trim|length %}class="on"{% endif %} data-tab-for=".recent"><a href="{{ path('user_downloads_recent') }}">Recent</a></li>
-				<li {% if block('downloads_popular')|trim|length %}class="on"{% endif %} data-tab-for=".popular"><a href="{{ path('user_downloads_popular') }}">Popular</a></li>
+				{% if section_counts.new %}
+					<li {% if block('downloads_recent')|trim|length %}class="on"{% endif %} data-tab-for=".recent"><a href="{{ path('user_downloads_recent') }}">New <em>({{ section_counts.new}})</em></a></li>
+				{% endif %}
+				{% if section_counts.popular %}
+					<li {% if block('downloads_popular')|trim|length %}class="on"{% endif %} data-tab-for=".popular"><a href="{{ path('user_downloads_popular') }}">Popular <em>({{ section_counts.popular}})</em></a></li>
+				{% endif %}
 			</ul>
 		</div>
 		<h2><a href="{{ path('user_downloads') }}">{{ title|default('Downloads') }}</a></h2>
