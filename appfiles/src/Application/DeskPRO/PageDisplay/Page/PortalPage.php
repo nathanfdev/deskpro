@@ -109,8 +109,8 @@ class PortalPage extends BasicPage implements PersonContextInterface
 				'tpl' => 'UserBundle:Portal:staff-sidebar.html.twig'
 			),
 			array(
-				'type' => 'template',
-				'tpl' => 'UserBundle:Portal:twitter-sidebar.html.twig'
+				'type' => 'twitter',
+				'twitter_name' => 'deskpro',
 			),
 		);
 

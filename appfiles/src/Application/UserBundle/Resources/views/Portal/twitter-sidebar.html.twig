@@ -1,21 +1,17 @@
 <div class="sidebar-item portal_twitter">
 	<div class="heading">
-		<h2>@deskpro twitter</h2>
+		<h2>@<a href="http://twitter.com/{{ twitter_name }}">{{ twitter_name }}</a></h2>
 	</div>
 
 	<div class="content-list">
-		<div class="item icon-twitter">
-			RT @williamsonj: Improved @deskpro's handling of required 'additional fields' when replying to tickets .. sort of . still needs polishing :)
-		</div>
-		<div class="item icon-twitter">
-			Congrats to @klout team: http://tcrn.ch/g6Xc8U - we will be including klout scores in DeskPRO and allow for dynamic prioritisation.
-		</div>
-		<div class="item icon-twitter">
-			We are gearing up for first private alpha demo of some of DeskPRO v4 functionality tomorrow.
-		</div>
+		{% for item in feed_items %}
+			<div class="item icon-twitter">
+				{{ item.description|raw }}
+			</div>
+		{% endfor %}
 	</div>
 
 	<div class="more-link">
-		see more <a href="{{ path('user_articles') }}">@deskpro on twitter</a>
+		see more @<a href="http://twitter.com/{{ twitter_name }}">{{ twitter_name }} on twitter</a>
 	</div>
 </div>
