@@ -11,17 +11,13 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository;
+use Application\DeskPRO\App;
 
-use Doctrine\ORM\Query,
-    Gedmo\Tree\Strategy,
-    Gedmo\Tree\Strategy\ORM\Nested,
-    Gedmo\Exception\InvalidArgumentException,
-    Doctrine\ORM\Proxy\Proxy;
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Searcher\DownloadSearch;
 
-use \Orb\Util\Arrays;
-use \Orb\Util\Strings;
+use Orb\Util\Arrays;
+use Orb\Util\Strings;
 
 class DownloadCategory extends AbstractNestedTreeCategoryRepository
 {
@@ -60,5 +56,31 @@ class DownloadCategory extends AbstractNestedTreeCategoryRepository
 		if (!$id) return null;
 
 		return $this->find($id);
+	}
+
+	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
+	{
+		$cache = App::getCache($cache_name);
+		$cache_id = "counts_downloads";
+
+		if (($counts = $cache->load($cache_id)) === false) {
+			$counts = array(0 => 0);
+			foreach ($this->children() as $c) {
+				$searcher = new DownloadSearch();
+				$searcher->setPersonContext($person_context);
+				$searcher->addTerm(DownloadSearch::TERM_CATEGORY, 'is', $c['id']);
+
+				$counts[$c['id']] = $searcher->getCount();
+
+				// 0 is sum of all root nodes
+				if (!$c['depth']) {
+					$counts[0] += $counts[$c['id']];
+				}
+			}
+
+			$cache->save($counts, $cache_id);
+		}
+
+		return $counts;
 	}
 }

@@ -103,10 +103,6 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	public static function generateUsergroupSetKey(array $usergroup_ids)
 	{
-		sort($usergroup_ids, \SORT_NUMERIC);
-
-		$usergroup_ids = implode(',', $usergroup_ids);
-
-		return md5($usergroup_ids);
+		return Usergroup::generateUsergroupSetKey($usergroup_ids);
 	}
 }

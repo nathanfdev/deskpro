@@ -11,12 +11,16 @@
 
 namespace Application\DeskPRO\PageDisplay\Page;
 
+use Application\DeskPRO\App;
+
 use Application\DeskPRO\Entity\PageDisplayAbstract;
 use Application\DeskPRO\Entity\PortalPageDisplay;
 use Application\DeskPRO\Entity\Person;
-use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract;
+use Application\DeskPRO\PageDisplay\Item\Portal\CacheableItem;
+
+use Symfony\Component\DependencyInjection\ContainerInterface;
 
 use Orb\Util\Strings;
 
@@ -273,9 +277,45 @@ class PortalPage extends BasicPage implements PersonContextInterface
 			return '';
 		}
 
+		$cache = App::getCache('portal');
+
 		$html = array();
 		foreach ($this->page_display_items[$section] as $item) {
-			$html[] = $item->getHtml();
+			$block_html = null;
+			$cache_info = false;
+
+			if ($item instanceof CacheableItem) {
+				$cache_info = $item->getCacheOptions();
+			}
+
+			if ($cache_info) {
+
+				if (!is_array($cache_info)) {
+					$cache_info = array();
+				}
+
+				if (empty($cache_info['lifetime'])) $cache_info['lifetime'] = false;
+				if (empty($cache_info['tags'])) $cache_info['tags'] = array();
+
+				$cache_id = "portal_{$section}_" . str_replace('\\', '', get_class($item));
+				$cache_lifetime = null;
+
+				if (!isset($cache_info['user_indifferent']) OR !$cache_info['user_indifferent']) {
+					$cache_id .= '_' . $this->person_context->getUsergroupSetKey();
+				}
+
+				if (($block_html = $cache->load($cache_id)) === false) {
+					$block_html = $item->getHtml();
+					$cache->save($block_html, $cache_id, $cache_info['tags'], $cache_info['lifetime']);
+				}
+				
+			} else {
+				$block_html = $item->getHtml();
+			}
+
+			if ($block_html) {
+				$html[] = $block_html;
+			}
 		}
 
 		return implode("\n\n", $html);

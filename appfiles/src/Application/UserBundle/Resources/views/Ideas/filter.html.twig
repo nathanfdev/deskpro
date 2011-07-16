@@ -17,10 +17,10 @@
 					<td rowspan="2">
 						<div class="idea-status-nav">
 							<ul>
-								<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug|default('all')}) }}">Hot</a></li>
-								<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug|default('all')}) }}">New</a></li>
-								<li {% if status == 'active' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug|default('all')}) }}">Active</a></li>
-								<li {% if status == 'closed' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug|default('all')}) }}">Closed</a></li>
+								<li {% if status == 'popular' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'popular', 'slug': category.url_slug|default('all')}) }}">Hot ({{ category_counts[cat_id].popular }})</a></li>
+								<li {% if status == 'new' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'new', 'slug': category.url_slug|default('all')}) }}">New ({{ category_counts[cat_id].new }})</a></li>
+								<li {% if status == 'active' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'active', 'slug': category.url_slug|default('all')}) }}">Active ({{ category_counts[cat_id].active }})</a></li>
+								<li {% if status == 'closed' %}class="on"{% endif %}><a href="{{ path('user_ideas', {'status': 'closed', 'slug': category.url_slug|default('all')}) }}">Closed ({{ category_counts[cat_id].closed }})</a></li>
 							</ul>
 						</div>
 					</td>
@@ -28,9 +28,9 @@
 				<tr>
 					<td>
 						<select name="category_id" class="category_id">
-							<option value="0">All</option>
+							<option value="0">All ({{ category_counts[0].all }})</option>
 							{% for cat in idea_cats %}
-								<option value="{{ path('user_ideas', {'status': status, 'slug': idea_cat_objs[cat.id].url_slug}) }}" {% if category.id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+								<option value="{{ path('user_ideas', {'status': status, 'slug': idea_cat_objs[cat.id].url_slug}) }}" {% if category.id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }} ({{ category_counts[cat.id].all }})</option>
 							{% endfor %}
 						</select>
 					</td>

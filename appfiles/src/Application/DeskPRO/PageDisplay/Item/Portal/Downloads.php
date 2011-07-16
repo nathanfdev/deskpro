@@ -17,8 +17,13 @@ use Application\DeskPRO\Entity\PortalPageDisplay;
 /**
  * Renders the downloads browser
  */
-class Downloads extends PortalItemAbstract
+class Downloads extends PortalItemAbstract implements CacheableItem
 {
+	public function getCacheOptions()
+	{
+		return array('tags' => array('downloads'));
+	}
+
 	public function getHtml()
 	{
 		if ($this->section == 'portal') {

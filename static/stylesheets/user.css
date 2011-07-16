@@ -1651,6 +1651,13 @@ ul.comments li .message {
     padding-left: 19px;
 }
 
+
+.downloads-browser .cat-list em {
+    font-style: normal;
+    font-size: 10px;
+    color: #777;
+    padding-left: 4px;
+}
 .downloads-browser .cat-list li.on {
     background-color: #DCDEE1;
     -webkit-border-radius: 4px;

@@ -72,6 +72,8 @@ class ArticlesController extends AbstractController
 			$articles = array();
 		}
 
+		$category_counts = App::getEntityRepository('DeskPRO:ArticleCategory')->getAllCounts($this->person);
+
 		$category_children_articles = App::getEntityRepository('DeskPRO:Article')->getNewestInNodes($category_children, 5);
 
 		return $this->render('UserBundle:Articles:browse.html.twig', array(
@@ -79,6 +81,7 @@ class ArticlesController extends AbstractController
 			'category_path' => $category_path,
 			'category_children' => $category_children,
 			'category_children_articles' => $category_children_articles,
+			'category_counts' => $category_counts,
 			'articles' => $articles,
 		));
 	}

@@ -28,7 +28,7 @@ class Cache
 {
 	static function getCache($name, $options, $cache_dir)
 	{
-		$key = 'cache_' . $name;
+		$key = 'cache.' . $name;
 		$user_options = \Application\DeskPRO\App::getConfig($key);
 
 		if ($user_options) {

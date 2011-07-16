@@ -107,4 +107,34 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 
 		parent::fromArray($values);
 	}
+
+
+	/**
+	 * Generate a key for a set of usergroups. These same usergroups
+	 * will always generate the same key.
+	 *
+	 * @static
+	 * @param array $usergroups Array of usergroup IDs or usergroup objects
+	 * @return string
+	 */
+	public static function generateUsergroupSetKey(array $usergroups)
+	{
+		$usergroup_ids = array();
+		foreach ($usergroups as $ug) {
+			if (is_object($ug)) {
+				$usergroup_ids[] = $ug['id'];
+			} else {
+				$usergroup_ids[] = (int)$ug;
+			}
+		}
+
+		if ($usergroup_ids) {
+			$usergroup_ids = array_unique($usergroup_ids, \SORT_NUMERIC);
+			sort($usergroup_ids, \SORT_NUMERIC);
+		} else {
+			$usergroup_ids = array(0);
+		}
+
+		return md5(implode(',', $usergroup_ids));
+	}
 }

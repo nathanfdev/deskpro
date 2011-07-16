@@ -11,7 +11,9 @@ services:
     tags:
       - { name: twig.extension }
 
-user: ~
+deskpro_cache:
+  common: ~
+  portal: ~
 
 framework:
   router: { resource: "%kernel.root_dir%/config/routing.yml" }

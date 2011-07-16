@@ -209,7 +209,7 @@ class NewsSearch extends SearcherAbstract
 						$choice = array_pop($choice);
 					}
 					if ($choice) {
-						$wheres[] = $this->_rangeMatch('articles.is_published', $op, 1);
+						$wheres[] = $this->_rangeMatch('news.is_published', $op, 1);
 					}
 					break;
 

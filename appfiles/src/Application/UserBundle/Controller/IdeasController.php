@@ -63,6 +63,8 @@ class IdeasController extends AbstractController
 				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
 			}
 
+			$cat_id = $category['id'];
+
 			// Auto-correct URL
 			if ($slug != $category->getUrlSlug()) {
 				return $this->redirectRoute('user_ideas', array('slug' => $category->getUrlSlug()), 301);
@@ -72,6 +74,7 @@ class IdeasController extends AbstractController
 
 		} else {
 			$category = null;
+			$cat_id = 0;
 			$category_path = array();
 		}
 
@@ -105,11 +108,15 @@ class IdeasController extends AbstractController
 
 		$ideas = App::getEntityRepository('DeskPRO:Idea')->getByResultIds($idea_ids);
 
+		$category_counts = App::getEntityRepository('DeskPRO:IdeaCategory')->getAllCounts($this->person);
+
 		return $this->render('UserBundle:Ideas:filter.html.twig', array(
 			'idea_cats'       => $idea_cats,
 			'idea_cat_objs'   => $idea_cat_objs,
 			'category'        => $category,
+			'cat_id'          => 0,
 			'category_path'   => $category_path,
+			'category_counts' => $category_counts,
 			'status'          => $status,
 			'ideas'           => $ideas,
 			'pageinfo'        => $pageinfo,

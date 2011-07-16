@@ -26,22 +26,14 @@ class PersonGuest extends Person
 	public function __construct()
 	{
 		$this->id = 0;
-		$this->_usergroup_ids = array(App::getSetting('core.guest_usergroup_id'));
+		$this->_usergroup_ids = array();
+		$this->usergroups = array();
 		$this->timezone = App::getSetting('core.default_timezone');
 	}
 
 	public function getUsergroups()
 	{
-		if ($this->usergroups->count()) return $this->usergroups;
-
-		$em = App::getOrm();
-
-		$this->usergroups = $em->createQuery('
-			SELECT DeskPRO:Usergroup u
-			WHERE usergroup_id = ?1
-		')->setParameter(1, $this->_usergroup_ids[0])->getResult();
-
-		return $this->usergroups;
+		return array();
 	}
 
 	public function isGuest()

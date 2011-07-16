@@ -25,8 +25,13 @@ use Application\DeskPRO\Entity\PortalPageDisplay;
  * @option string   status              The initial status in the browser, or the single status to fetch in the sidebar
  * @option bool     show_cat_switcher   When using content section, show cat/status switcher?
  */
-class Ideas extends PortalItemAbstract
+class Ideas extends PortalItemAbstract implements CacheableItem
 {
+	public function getCacheOptions()
+	{
+		return array('tags' => array('ideas'));
+	}
+
 	public function init()
 	{
 		if (!$this->hasOption('show_cat_switcher')) {

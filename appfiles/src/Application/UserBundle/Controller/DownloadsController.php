@@ -53,6 +53,8 @@ class DownloadsController extends AbstractController
 			$searcher = new \Application\DeskPRO\Searcher\DownloadSearch();
 		}
 
+		$category_counts = App::getEntityRepository('DeskPRO:DownloadCategory')->getAllCounts($this->person);
+
 		$categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getRootNodes();
 
 		if ($search_options['order_by']) {
@@ -73,8 +75,9 @@ class DownloadsController extends AbstractController
 		$downloads = App::getEntityRepository('DeskPRO:Download')->getByResultIds($download_ids);
 
 		return $this->render('UserBundle:Downloads:browse.html.twig', array(
-			'categories'        => $categories,
+			'categories' => $categories,
 			'category' => $category,
+			'category_counts' => $category_counts,
 			'category_path' => $category_path,
 			'downloads' => $downloads,
 			'num_results' => $total,

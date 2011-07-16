@@ -9,9 +9,9 @@
 <div class="content-filters">
 	Category:
 	<select name="category_id" class="category_id" onchange="window.location = $(this).val();">
-		<option value="{{ path('user_news') }}">All</option>
+		<option value="{{ path('user_news') }}">All ({{ category_counts[0] }})</option>
 		{% for cat in news_cats %}
-			<option value="{{ path('user_news', {'slug': news_cat_objs[cat.id].url_slug}) }}" {% if category.id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }}</option>
+			<option value="{{ path('user_news', {'slug': news_cat_objs[cat.id].url_slug}) }}" {% if category.id == cat.id %}selected="selected"{% endif %}>{{ '--'|repeat(cat.depth) }}{{ cat.title }} ({{ category_counts[cat.id] }})</option>
 		{% endfor %}
 	</select>
 </div>

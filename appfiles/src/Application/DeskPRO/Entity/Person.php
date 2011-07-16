@@ -225,7 +225,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="Usergroup")
+	 * @orm:ManyToMany(targetEntity="Usergroup", fetch="EAGER")
 	 * @orm:JoinTable(name="person2usergroups",
 	 *     joinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")},
      *     inverseJoinColumns={@orm:JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}
@@ -1309,6 +1309,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->getContactDataOfType('phone');
 	}
 
+	public function getUsergroupSetKey()
+	{
+		return Usergroup::generateUsergroupSetKey($this->usergroups);
+	}
 
 
 	/**

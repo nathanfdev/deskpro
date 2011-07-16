@@ -15,6 +15,9 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\EntityRepository\NestedTreeRepository;
 use Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy;
 
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Searcher\ArticleSearch;
+
 use Orb\Util\Arrays;
 use Orb\Util\Strings;
 
@@ -96,5 +99,31 @@ class ArticleCategory extends AbstractNestedTreeCategoryRepository
 		if (!$id) return null;
 
 		return $this->find($id);
+	}
+
+	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
+	{
+		$cache = App::getCache($cache_name);
+		$cache_id = "counts_articles";
+
+		if (($counts = $cache->load($cache_id)) === false) {
+			$counts = array(0 => 0);
+			foreach ($this->children() as $c) {
+				$searcher = new ArticleSearch();
+				$searcher->setPersonContext($person_context);
+				$searcher->addTerm(ArticleSearch::TERM_CATEGORY, 'is', $c['id']);
+
+				$counts[$c['id']] = $searcher->getCount();
+
+				// 0 is sum of all root nodes
+				if (!$c['depth']) {
+					$counts[0] += $counts[$c['id']];
+				}
+			}
+
+			$cache->save($counts, $cache_id);
+		}
+
+		return $counts;
 	}
 }

@@ -24,8 +24,13 @@ use Application\DeskPRO\Entity\PortalPageDisplay;
  *                                  from in the sidebar (0 for all).
  * @option bool show_cat_switcher   When using content section, show cat switcher?
  */
-class Kb extends PortalItemAbstract
+class Kb extends PortalItemAbstract implements CacheableItem
 {
+	public function getCacheOptions()
+	{
+		return array('tags' => array('articles'));
+	}
+	
 	public function init()
 	{
 		if (!$this->hasOption('show_cat_switcher')) {

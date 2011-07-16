@@ -20,6 +20,10 @@ use Doctrine\ORM\Query,
     Gedmo\Exception\InvalidArgumentException,
     Doctrine\ORM\Proxy\Proxy;
 
+use Application\DeskPRO\Entity\Person as PersonEntity;
+use Application\DeskPRO\Entity\Idea as NewsEntity;
+use Application\DeskPRO\Searcher\NewsSearch;
+
 use \Orb\Util\Arrays;
 use \Orb\Util\Strings;
 
@@ -60,5 +64,32 @@ class NewsCategory extends AbstractNestedTreeCategoryRepository
 			FROM DeskPRO:NewsCategory c INDEX BY c.id
 			ORDER BY c.id DESC
 		")->execute();
+	}
+
+	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
+	{
+		$cache = App::getCache($cache_name);
+		$cache_id = "counts_news";
+
+		if (($counts = $cache->load($cache_id)) === false) {
+			$counts = array(0 => 0);
+			foreach ($this->children() as $c) {
+				$searcher = new NewsSearch();
+				$searcher->setPersonContext($person_context);
+				$searcher->addTerm(NewsSearch::TERM_CATEGORY, 'is', $c['id']);
+				$searcher->addTerm(NewsSearch::TERM_PUBLISHED, 'is', 1);
+
+				$counts[$c['id']] = $searcher->getCount();
+
+				// 0 is sum of all root nodes
+				if (!$c['depth']) {
+					$counts[0] += $counts[$c['id']];
+				}
+			}
+
+			$cache->save($counts, $cache_id);
+		}
+
+		return $counts;
 	}
 }

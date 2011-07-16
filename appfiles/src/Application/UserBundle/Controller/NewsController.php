@@ -89,6 +89,8 @@ class NewsController extends AbstractController
 
 		$news = App::getEntityRepository('DeskPRO:News')->getByResultIds($news_ids);
 
+		$category_counts = App::getEntityRepository('DeskPRO:NewsCategory')->getAllCounts($this->person);
+
 		return $this->render($tpl, array(
 			'news_cats' => $news_cats,
 			'news_cat_objs' => $news_cat_objs,
@@ -98,6 +100,7 @@ class NewsController extends AbstractController
 			'num_results' => $total,
 			'pageinfo' => $pageinfo,
 			'list_type' => $list_type,
+			'category_counts' => $category_counts,
 		));
 	}
 
