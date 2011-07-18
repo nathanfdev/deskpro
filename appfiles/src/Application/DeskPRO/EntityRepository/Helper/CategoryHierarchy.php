@@ -48,6 +48,7 @@ class CategoryHierarchy
 	protected $_cat_hierarchy_flat = null;
 	protected $_cat_names = null;
 	protected $_cat_ids = array();
+	protected $_cat_parent_map = array();
 
 	public function __construct(EntityRepository $repos, ClassMetadata $class, $cache_tag = null)
 	{
@@ -104,6 +105,10 @@ class CategoryHierarchy
 				ORDER BY display_order ASC
 			");
 
+			foreach ($cats as $c) {
+				$this->_cat_parent_map[$c['id']] = $c['parent_id'] ? $c['parent_id'] : 0;
+			}
+
 			$this->_cat_ids = array_keys($cats);
 
 			$this->_cat_names = Arrays::flattenToIndex($cats, 'title');
@@ -117,12 +122,23 @@ class CategoryHierarchy
 				'_cat_hierarchy_flat' => $this->_cat_hierarchy_flat,
 				'_cat_names' => $this->_cat_names,
 				'_cat_ids' => $this->_cat_ids,
+				'_cat_parent_map' => $this->_cat_parent_map
 			), $this->table_name.'_category_info', array($this->cache_tag));
 		}
 
 		return $this->_cats_hierarchy;
 	}
 
+
+	/**
+	 * Get an array of child=>parent for all categories.
+	 * 
+	 * @return array
+	 */
+	public function getParentMap()
+	{
+		return $this->_cat_parent_map;
+	}
 
 
 	/**

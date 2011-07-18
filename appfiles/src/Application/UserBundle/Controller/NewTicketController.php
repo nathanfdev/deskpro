@@ -93,6 +93,9 @@ class NewTicketController extends AbstractController
 		$ticket_display->addPagesFromDb();
 		$ticket_display_js = "window.DESKPRO_TICKET_DISPLAY = " . $ticket_display->compileJs() . ";";
 
+		$cat_parents = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoryHelper()->getParentMap();
+		$ticket_display_js .= 'window.DESKPRO_TICKET_CAT_PARENTS = ' . json_encode($cat_parents) . ';';
+
 		$departments = App::getEntityRepository('DeskPRO:Department')->findAll();
 		$ticket_categories = App::getEntityRepository('DeskPRO:TicketCategory')->findAll();
 

@@ -43,7 +43,6 @@ class TicketCategory extends AbstractCategoryRepository
 		return App::getDb()->fetchColumn("SELECT COUNT(*) FROM ticket_categories");
 	}
 
-
 	/**
 	 * Invalidates caches
 	 */

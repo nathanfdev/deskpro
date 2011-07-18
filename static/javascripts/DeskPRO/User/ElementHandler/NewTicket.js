@@ -32,7 +32,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	},
 
 	handleDepChange: function() {
-		$('.sub-department', this.el).hide();
+		$('.sub-options', this.el).hide();
 
 		var depId = this.depSelect.val();
 		var sub = $('.sub-options-' + depId, this.el);
@@ -57,11 +57,30 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 		this.departmentId = department_id;
 
-		if (!window.DESKPRO_TICKET_DISPLAY || !window.DESKPRO_TICKET_DISPLAY[department_id]) {
+		if (!window.DESKPRO_TICKET_DISPLAY) {
 			return;
 		}
 
-		var depItems = window.DESKPRO_TICKET_DISPLAY[department_id];
+		var activeDepId = this.departmentId;
+
+		if (!window.DESKPRO_TICKET_DISPLAY[activeDepId]) {
+			if (!window.DESKPRO_TICKET_CAT_PARENTS) {
+				return;
+			}
+
+			while (true) {
+				var activeDepId = window.DESKPRO_TICKET_CAT_PARENTS[activeDepId];
+				if (!activeDepId) {
+					return;
+				}
+
+				if (window.DESKPRO_TICKET_DISPLAY[activeDepId]) {
+					return;
+				}
+			}
+		}
+
+		var depItems = window.DESKPRO_TICKET_DISPLAY[activeDepId];
 		console.log('depItems %o', depItems);
 		
 		Array.each(depItems, function(item) {
