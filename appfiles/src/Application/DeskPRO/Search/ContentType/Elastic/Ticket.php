@@ -12,24 +12,24 @@
 namespace Application\DeskPRO\Search\ContentType\Mysql;
 
 use Application\DeskPRO\Search\ContentType\AbstractContentType;
-use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 use Application\DeskPRO\Search\Indexer\Document;
 
-class News extends AbstractContentType
+class Ticket extends AbstractContentType
 {
-	const ENTITY_NAME = 'DeskPRO:News';
+	const ENTITY_NAME = 'DeskPRO:Ticket';
 	
-	public function objectToDocument($news)
+	public function objectToDocument($ticket)
 	{
 		$data = array();
-		$data['id'] = $news['id'];
-		$data['content_type'] = 'news';
-		$data['content'] = $news['title'] . "\n" . $news['content'] . "\n";
+		$data['id'] = $ticket['id'];
+		$data['content_type'] = 'ticket';
+		$data['title'] = $ticket['title'];
+		$data['content'] = $ticket['content'];
+		$data['labels'] = array();
 
-		foreach ($news->getLabelManager()->getLabelsArray() as $label) {
-			$label = MysqlAdapter::encodeLabel($label);
-			$data['content'] .= " $label ";
+		foreach ($ticket->getLabelManager()->getLabelsArray() as $label) {
+			$data['labels'][] = $label;
 		}
 
 		$doc = Document::newFromArray($data);

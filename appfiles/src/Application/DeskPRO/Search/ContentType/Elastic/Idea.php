@@ -16,20 +16,22 @@ use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 use Application\DeskPRO\Search\Indexer\Document;
 
-class News extends AbstractContentType
+class Idea extends AbstractContentType
 {
-	const ENTITY_NAME = 'DeskPRO:News';
+	const ENTITY_NAME = 'DeskPRO:Idea';
 	
-	public function objectToDocument($news)
+	public function objectToDocument($idea)
 	{
 		$data = array();
-		$data['id'] = $news['id'];
-		$data['content_type'] = 'news';
-		$data['content'] = $news['title'] . "\n" . $news['content'] . "\n";
+		$data['id'] = $idea['id'];
+		$data['content_type'] = 'idea';
+		$data['title'] = $idea['title'];
+		$data['content'] = $idea['content'];
+		$data['category_id'] = $idea->category['id'];
+		$data['labels'] = array();
 
-		foreach ($news->getLabelManager()->getLabelsArray() as $label) {
-			$label = MysqlAdapter::encodeLabel($label);
-			$data['content'] .= " $label ";
+		foreach ($idea->getLabelManager()->getLabelsArray() as $label) {
+			$data['labels'][] = $label;
 		}
 
 		$doc = Document::newFromArray($data);

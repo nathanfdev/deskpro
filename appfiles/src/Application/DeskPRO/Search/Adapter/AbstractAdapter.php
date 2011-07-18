@@ -29,6 +29,8 @@ use Application\DeskPRO\Search\SearcherResult\ResultInterface;
  */
 abstract class AbstractAdapter implements CapabilityInformerInterface, PersonContextInterface
 {
+	public static $capabilities = array();
+	
 	/**#@+
 	 * Capability constants for use with CapabilityInformerInterface
 	 */
@@ -65,6 +67,30 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	 * @var \Application\DeskPRO\Entity\Person
 	 */
 	protected $person;
+
+
+	/**
+	 * Check if this object is capable of a specific thing
+	 *
+	 * @param  mixed $capability
+	 * @return bool
+	 */
+	public function isCapable($capability)
+	{
+		return in_array($capability, static::$capabilities);
+	}
+
+
+	/**
+	 * Returns an array of all capabilities
+	 *
+	 * @return array
+	 */
+	public function getCapabilities()
+	{
+		return static::$capabilities;
+	}
+
 
 	/**
 	 * @param \Application\DeskPRO\Entity\Person $person

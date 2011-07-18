@@ -9,10 +9,9 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Search\ContentType\Mysql;
+namespace Application\DeskPRO\Search\ContentType\Elastic;
 
 use Application\DeskPRO\Search\ContentType\AbstractContentType;
-use Application\DeskPRO\Search\Adapter\MysqlAdapter;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;
 use Application\DeskPRO\Search\Indexer\Document;
 
@@ -25,11 +24,17 @@ class Article extends AbstractContentType
 		$data = array();
 		$data['id'] = $article['id'];
 		$data['content_type'] = 'article';
-		$data['content'] = $article['title'] . "\n" . $article['content'] . "\n";
+		$data['title'] = $article['title'];
+		$data['content'] = $article['content'];
+		$data['labels'] = array();
+
+		$data['category_ids'] = array();
+		foreach ($article->categories as $c) {
+			$data['category_ids'][] = $c['id'];
+		}
 
 		foreach ($article->getLabelManager()->getLabelsArray() as $label) {
-			$label = MysqlAdapter::encodeLabel($label);
-			$data['content'] .= " $label ";
+			$data['labels'][] = $label;
 		}
 
 		$doc = Document::newFromArray($data);

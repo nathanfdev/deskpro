@@ -48,29 +48,6 @@ class MysqlAdapter extends AbstractAdapter
 
 
 	/**
-	 * Check if this object is capable of a specific thing
-	 *
-	 * @param  mixed $capability
-	 * @return bool
-	 */
-	public function isCapable($capability)
-	{
-		return in_array($capability, self::$capabilities);
-	}
-
-
-	/**
-	 * Returns an array of all capabilities
-	 *
-	 * @return array
-	 */
-	public function getCapabilities()
-	{
-		return self::$capabilities;
-	}
-
-
-	/**
 	 * Delete the specified docs from the index
 	 *
 	 * @param  $documents

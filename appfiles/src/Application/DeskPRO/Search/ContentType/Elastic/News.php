@@ -25,11 +25,13 @@ class News extends AbstractContentType
 		$data = array();
 		$data['id'] = $news['id'];
 		$data['content_type'] = 'news';
-		$data['content'] = $news['title'] . "\n" . $news['content'] . "\n";
+		$data['title'] = $news['title'];
+		$data['content'] = $news['content'];
+		$data['category_id'] = $news->category['id'];
+		$data['labels'] = array();
 
 		foreach ($news->getLabelManager()->getLabelsArray() as $label) {
-			$label = MysqlAdapter::encodeLabel($label);
-			$data['content'] .= " $label ";
+			$data['labels'][] = $label;
 		}
 
 		$doc = Document::newFromArray($data);

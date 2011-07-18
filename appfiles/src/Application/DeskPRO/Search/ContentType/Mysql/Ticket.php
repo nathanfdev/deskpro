@@ -9,10 +9,11 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Search\ContentType;
+namespace Application\DeskPRO\Search\ContentType\Mysql;
 
-use \Application\DeskPRO\Search\SearcherResult\ResultInterface;
-use \Application\DeskPRO\Search\Indexer\Document;
+use Application\DeskPRO\Search\ContentType\AbstractContentType;
+use Application\DeskPRO\Search\SearcherResult\ResultInterface;
+use Application\DeskPRO\Search\Indexer\Document;
 
 class Ticket extends AbstractContentType
 {
