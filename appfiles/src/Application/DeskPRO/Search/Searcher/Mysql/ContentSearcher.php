@@ -123,12 +123,13 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	}
 
 	/**
-	 * Find articles that are similar to a ticket
+	 * Find content similar to $content.
 	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return void
+	 * @param string $content
+	 * @param array $in_types Types you want to search in, or null for all
+	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
 	 */
-	public function similarArticleToTicket(Ticket $ticket)
+	public function similarContent($content, array $in_types = array())
 	{
 		throw new \Application\DeskPRO\Search\Searcher\UnsupportedOperation();
 	}

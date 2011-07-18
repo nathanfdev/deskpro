@@ -32,7 +32,7 @@ use Orb\Util\Strings;
 class ElasticAdapter extends AbstractAdapter
 {
 	public static $capabilities = array(
-		'searcher_content', 'searcher_content_labels',
+		'searcher_content', 'searcher_content_labels', 'searcher_content_similar',
 		'searcher_tickets',
 	);
 

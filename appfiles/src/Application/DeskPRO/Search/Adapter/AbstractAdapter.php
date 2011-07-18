@@ -36,7 +36,7 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	 */
 	const CAP_CONTENT                             = 'searcher_content';
 	const CAP_CONTENT_LABELS                      = 'searcher_content_labels';
-	const CAP_CONTENT_TICKET_SIMILAR_ARTICLES     = 'searcher_content_ticket_similar_articles';
+	const CAP_CONTENT_SIMILAR_ARTICLES            = 'searcher_content_similar';
 	const CAP_TICKETS                             = 'searcher_tickets';
 	const CAP_TICKETS_SIMILAR                     = 'searcher_tickets_similar';
 	/**#@-*/

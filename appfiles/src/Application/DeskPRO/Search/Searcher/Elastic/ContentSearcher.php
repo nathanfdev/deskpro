@@ -92,21 +92,31 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		return $result_set;
 	}
 
+
 	/**
-	 * Find articles that are similar to a ticket
+	 * Find content similar to $content.
 	 *
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return void
+	 * @param string $content
+	 * @param array $in_types Types you want to search in, or null for all
+	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
 	 */
-	public function similarArticleToTicket(Ticket $ticket)
+	public function similarContent($content, array $in_types = null)
 	{
 		$index = $this->adapter->getIndex('content');
 
-		$text = $ticket['subject'] . "\n" . $ticket->getFirstMessage()->getMessageText();
+		$query_out = new \Elastica_Query_Terms();
 
-		$query = new \Application\DeskPRO\Elastica\Query\MoreLikeThis($text);
-		$query_out = new \Elastica_Query();
-		$query_out->setQuery($query);
+		$query = new \Application\DeskPRO\Elastica\Query\MoreLikeThis($content);
+		$query_out->addTerm($query);
+
+		if ($in_types) {
+			$query_types = new \Elastica_Query_Bool();
+			foreach ($in_types as $t) {
+				$query_types->addShould(array('term' => array('_type' => $t)));
+			}
+
+			$query_out->addTerm($query_types);
+		}
 
 		$filter = $this->getPermissionFilter();
 		if ($filter) {

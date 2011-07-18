@@ -42,10 +42,11 @@ interface ContentSearcherInterface
 	public function labelled(array $labels);
 
 	/**
-	 * Find articles that are similar to a ticket
-	 * 
-	 * @param \Application\DeskPRO\Entity\Ticket $ticket
-	 * @return void
+	 * Find content similar to $content.
+	 *
+	 * @param string $content
+	 * @param array $in_types Types you want to search in, or null for all
+	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
 	 */
-	public function similarArticleToTicket(Ticket $ticket);
+	public function similarContent($content, array $in_types = null);
 }
