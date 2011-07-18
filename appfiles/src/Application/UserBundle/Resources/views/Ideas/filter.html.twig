@@ -67,6 +67,7 @@
 									<option value="num_votes.desc" {% if search_options.order_by == 'num_votes.desc' %}selected="selected"{% endif %}>Popularity</option>
 								</select>
 							</div>
+							{% if pageinfo.last != 1 %}
 							<div class="page-controls">
 								{% if pageinfo.prev %}
 									<a href="{{ path('user_ideas', search_options|merge({'status': status, 'slug': category.url_slug, 'page': pageinfo.prev})) }}" class="page-link page-left">Previous</a>
@@ -81,6 +82,7 @@
 									<a href="{{ path('user_ideas', search_options|merge({'status': status, 'slug': category.url_slug, 'page': pageinfo.next})) }}" class="page-link page-right">Next</a>
 								{% endif %}
 							</div>
+							{% endif %}
 						</div>
 						</form>
 						<br class="clear" />

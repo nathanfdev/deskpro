@@ -42,19 +42,21 @@
 									<select name="order_by" onchange="$('#dl_nav_form').submit();">
 										<option value="id.desc" {% if search_options.order_by == 'id.desc' %}selected="selected"{% endif %}>Date</option>
 										<option value="num_downloads.desc" {% if search_options.order_by == 'num_downloads.desc' %}selected="selected"{% endif %}>Popularity</option>
-									</select>,
-
-									Page <select name="page" onchange="$('#dl_nav_form').submit();">
-										{% for i in 1..pageinfo.last %}
-											<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}
-										{% endfor %}
 									</select>
-									of {{ pageinfo.last }}
-									{% if pageinfo.prev %}
-										<button name="page" value="{{pageinfo.prev}}">Prev</button>
-									{% endif %}
-									{% if pageinfo.next %}
-										<button name="page" value="{{pageinfo.next}}">Next</button>
+
+									{% if pageinfo.last != 1 %},
+										Page <select name="page" onchange="$('#dl_nav_form').submit();">
+											{% for i in 1..pageinfo.last %}
+												<option value="{{i}}" {% if i == pageinfo.curpage %}selected="selected"{% endif %}>{{i}}
+											{% endfor %}
+										</select>
+										of {{ pageinfo.last }}
+										{% if pageinfo.prev %}
+											<button name="page" value="{{pageinfo.prev}}">Prev</button>
+										{% endif %}
+										{% if pageinfo.next %}
+											<button name="page" value="{{pageinfo.next}}">Next</button>
+										{% endif %}
 									{% endif %}
 								</form>
 							</div>
