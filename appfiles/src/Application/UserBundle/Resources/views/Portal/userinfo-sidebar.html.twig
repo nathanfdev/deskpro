@@ -5,7 +5,7 @@
 		</div>
 		<ul class="sidebar-nav">
 			<li class="profile"><a href="{{ path('user_profile') }}"><span>Your Profile</span></a></li>
-			<li class="ticket"><div class="count">{{ ticket_count|default(0) }}</div><a href="{{ path('user_tickets') }}"><span>Your Tickets</span></a></li>
+			<li class="ticket">{% if ticket_count %}<div class="count">{{ ticket_count }}</div>{% endif %}<a href="{{ path('user_tickets') }}"><span>Your Tickets</span></a></li>
 			<li class="logout"><a href="{{ path('user_logout') }}"><span>Log Out</span></a></li>
 		</ul>
 	{% else %}
