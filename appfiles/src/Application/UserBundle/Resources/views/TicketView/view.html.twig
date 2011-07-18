@@ -44,18 +44,18 @@ ul.attachment-list > li img.preview {
 			<table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
 				<td>
 					<small>{{ phrase('core_tickets.department') }}</small><br />
-					{{ phrase(ticket.department) }}
+					{{ phrase_object(ticket.department, 'full') }}
 				</td>
 				{% if ticket.category %}
 				<td>
 					<small>{{ phrase('core_tickets.category') }}</small><br />
-					{{ phrase(ticket.category) }}
+					{{ phrase_object(ticket.category, 'full') }}
 				</td>
 				{% endif %}
 				{% if ticket.product %}
 				<td>
 					<small>{{ phrase('core_tickets.product') }}</small><br />
-					{{ phrase(ticket.product) }}
+					{{ phrase_object(ticket.product, 'full') }}
 				</td>
 				{% endif %}
 				{% if ticket.priority %}

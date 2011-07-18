@@ -11,10 +11,13 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Translate\HasPhraseName;
+use Application\DeskPRO\Translate\Translate;
 
 use DoctrineExtensions\NestedSet\Node;
 use Orb\Util\Strings;
+use Orb\Util\Util;
 
 /**
  * Basic hierarchicial category entity. Hierarchy is maintained automatically
@@ -23,7 +26,7 @@ use Orb\Util\Strings;
  * @gedmo:Tree(type="nested")
  * @orm:MappedSuperclass
  */
-class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
+class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * @var int
@@ -158,5 +161,38 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function getUrlSlug()
 	{
 		return $this->id . '-' . Strings::slugifyTitle($this->title);
+	}
+
+
+	/**
+	 * Return a unique ID that we can use to look up translations for this object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @return string
+	 */
+	public function getPhraseName($property = null, Translate $translate)
+	{
+		if (!$property) {
+			$property = 'title';
+		}
+		$name = strtolower(Util::getBaseClassname($this));
+		$phrase_name = 'obj_'.$name.'.' . $this->id . '_' . $property;
+
+		return $phrase_name;
+	}
+
+
+	/**
+	 * Get the default value phrase for the object
+	 *
+	 * @param string $property If supplied, the property on the object we want to translate.
+	 * @return string
+	 */
+	public function getPhraseDefault($property = null, Translate $translate)
+	{
+		if ($property == 'full') {
+			return $this->getFullTitle();
+		}
+		return $this->title;
 	}
 }

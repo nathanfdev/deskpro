@@ -40,6 +40,7 @@ class TemplatingExtension extends \Twig_Extension
     {
         return array(
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
+            'phrase_object'   => new \Twig_Function_Method($this, 'getPhraseObject'),
 			'url_fragment' => new \Twig_Function_Method($this, 'urlFragment'),
             'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
@@ -241,6 +242,11 @@ class TemplatingExtension extends \Twig_Extension
 	public function getPhrase($phrase_name, array $vars = array())
 	{
 		return $this->container->get('deskpro.core.translate')->phrase($phrase_name, $vars);
+	}
+
+	public function getPhraseObject($phrase_name, $property = null)
+	{
+		return $this->container->get('deskpro.core.translate')->getPhraseObject($phrase_name, $property);
 	}
 
 	public function isDebugMode()

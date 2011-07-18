@@ -17,7 +17,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 			self.setDepartment($(this).val());
 		});
 
-		$('.with-sub-options', this.el).each(function() {
+		$('.with-sub-options:not(.department_id_wrapper)', this.el).each(function() {
 			var parentSel = $('.parent-option', this);
 			var wrapper = this;
 
@@ -27,6 +27,21 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 				$('.sub-options', wrapper).hide();
 				sub.show();
+			});
+		});
+
+		$('form', this.el).submit(function(ev) {
+
+			$('.sub-options:hidden', this.el).remove();
+
+			// Just zero out the name of the parent, so
+			// the child is always used
+			$('.with-sub-options', this.el).each(function() {
+				var sub = $('.sub-options', this);
+				if (sub) {
+					var parent = $('.parent-option');
+					parent.attr('name', '');
+				}
 			});
 		});
 	},

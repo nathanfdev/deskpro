@@ -29,6 +29,8 @@ class NewTicket
 	 */
 	public $ticket;
 
+	public $custom_ticket_fields = array();
+
 	public $new_message;
 
 	public $creation_system;
@@ -41,6 +43,10 @@ class NewTicket
 
 		$this->person = new PersonProps($person);
 		$this->ticket = new TicketProps();
+
+		for ($i = 0; $i < 100; $i++) {
+			$this->custom_ticket_fields["field_$i"] = null;
+		}
 
 		$this->creation_system = $creation_system;
 	}
@@ -86,7 +92,6 @@ class NewTicket
 				$person->addEmailAddress($email);
 			}
 			App::getOrm()->persist($person);
-			App::getOrm()->flush();
 
 			#------------------------------
 			# Now ticket
@@ -97,6 +102,7 @@ class NewTicket
 			$ticket['person']  = $person;
 			$ticket['subject'] = $this->ticket->subject;
 			$ticket['person_email'] = $email;
+			$ticket['status'] = 'open';
 
 			foreach (array('department_id', 'category_id', 'product_id', 'priority_id') as $prop) {
 				$ticket[$prop] = $this->ticket->$prop;

@@ -167,6 +167,9 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 	 */
 	public function getPhraseDefault($property = null, Translate $translate)
 	{
+		if ($property == 'full') {
+			return $this->getFullTitle();
+		}
 		return $this->title;
 	}
 }

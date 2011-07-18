@@ -51,8 +51,8 @@
 
 	<tr>
 		<td>Department</td>
-		<td class="department_id_wrapper">
-			<select name="newticket[ticket][department_id]" class="department_id">
+		<td class="department_id_wrapper with-sub-options">
+			<select name="newticket[ticket][department_id]" class="department_id parent-option">
 				<option value=""></option>
 				{% for id,info in ticket_options.departments_hierarchy %}
 					<option value="{{id}}">{{info.title}}</option>

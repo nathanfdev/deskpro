@@ -35,7 +35,7 @@ class NewTicketController extends AbstractController
 		);
 
 		$newticket_formtype = new NewTicketType($this->person);
-		$form = $this->get('form.factory')->create($newticket_formtype);
+		$form = $this->get('form.factory')->create($newticket_formtype, $newticket);
 
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
@@ -72,7 +72,7 @@ class NewTicketController extends AbstractController
 				// - They'll get an email with a link to the web interface though, so at that point we know they're true
 				if (!$person['is_user']) {
 					$this->session->set('submitted_ticket', $ticket['ref']);
-					return $this->redirectRoute('user_tickets_new_thanks', array('ticket_ref' => $ticket['ref']));
+					return $this->redirectRoute('user_tickets_new_thanks', array('ticket_ref' => $ticket['public_id']));
 				}
 
 				// We get here if the user is a real user and they're logged in
@@ -86,7 +86,7 @@ class NewTicketController extends AbstractController
 
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_ticket_fields');
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
 		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('user');

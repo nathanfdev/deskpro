@@ -172,6 +172,10 @@ abstract class AbstractAgentNotificationAction implements ActionInterface
 	
 	protected function doSend($tpl, $vars, Ticket $ticket, Person $person)
 	{
+		if (!$person->getPrimaryEmailAddress()) {
+			return;
+		}
+
 		$tac = TicketUtil::getTacForPerson($ticket, $person);
 		$vars['ticket'] = $ticket;
 		$vars['person'] = $person;

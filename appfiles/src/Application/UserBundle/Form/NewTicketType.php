@@ -67,7 +67,7 @@ class NewTicketType extends AbstractType
 		}
 
 		$person_builder = $builder->create('person', 'form')
-			->add('name', 'text', array('required' => false));
+			->add('name', 'text', array('data' => $this->mock_person['name']));
 
 		if (!$this->person) {
 			$person_builder->add('email', 'text');
@@ -96,29 +96,7 @@ class NewTicketType extends AbstractType
 
 		if (!empty($ticket_options['departments_hierarchy'])) {
 			$ticket_builder->add('department_id', 'choice', array(
-				'choices' => Arrays::selectArrayFromHierarchy($ticket_options['departments_hierarchy'], 'id', 'title'),
-				'required' => false
-			));
-		}
-
-		if (!empty($ticket_options['ticket_categories_hierarchy'])) {
-			$ticket_builder->add('category_id', 'choice', array(
-				'choices' => Arrays::selectArrayFromHierarchy($ticket_options['ticket_categories_hierarchy'], 'id', 'title'),
-				'required' => false
-			));
-		}
-
-		if (!empty($ticket_options['priorities'])) {
-			$ticket_builder->add('priority_id', 'choice', array(
-				'choices' => Arrays::unshiftAssocReturn($ticket_options['priorities'], '', ''),
-				'required' => false
-			));
-		}
-
-		if (!empty($ticket_options['products'])) {
-			$ticket_builder->add('product_id', 'choice', array(
-				'choices' => Arrays::unshiftAssocReturn($ticket_options['products'], '', ''),
-				'required' => false
+				'choices' => Arrays::selectArrayFromHierarchy($ticket_options['departments_hierarchy'], 'id', 'title')
 			));
 		}
 
@@ -128,7 +106,7 @@ class NewTicketType extends AbstractType
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 
-		$ticket_fields_builder = $ticket_builder->create('custom_fields', 'form');
+		$ticket_fields_builder = $ticket_builder->create('custom_ticket_fields', 'form');
 
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, array(), $ticket_fields_builder);
 		$this->ticket_fields = $custom_fields;
