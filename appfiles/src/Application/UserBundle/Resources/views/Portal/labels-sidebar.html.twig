@@ -1,0 +1,11 @@
+<div class="sidebar-item portal_labels">
+	<div class="content-list">
+		<div class="tag-cloud">
+			<ul>
+				{% for c_label,css_class in cloud %}
+					<li class="{{css_class}}"><a href="{{ path('user_search_labels', {'label': c_label}) }}">{{ c_label }}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+</div>

@@ -1339,6 +1339,13 @@ ul.comments li .message {
 * portal types
 ******************************************************************/
 
+.portal_labels .content-list {
+    padding:  4px;
+}
+.portal_labels {
+    line-height: 120%;
+}
+
 /*********
 * portal_omni_search
 **********/

@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 
 use Application\DeskPRO\Elastica\Searcher\ContentSearcher;
+use Application\DeskPRO\Labels\ContentLabelCloud;
 
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -125,28 +126,8 @@ class SearchController extends AbstractController
 		# Make combined search cloud
 		#------------------------------
 
-		$counts = array(
-			'articles'     => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('articles', 25),
-			'ideas'        => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ideas', 25),
-			'downloads'    => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('downloads', 25),
-			'news'         => App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('news', 25),
-		);
-
-		$label_counts = array();
-		foreach ($counts as $type_counts) {
-			foreach ($type_counts as $label => $count) {
-				if (!isset($label_counts[$label])) $label_counts[$label] = 0;
-				$label_counts[$label] += $count;
-			}
-		}
-
-		asort($label_counts, SORT_NUMERIC);
-		if (count($label_counts) > 25) {
-			$label_counts = Arrays::spliceAssoc($label_counts, 0, 25);
-		}
-
-		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
-		$cloud = $cloud_gen->getCloud();
+		$content_cloud = new ContentLabelCloud();
+		$cloud = $content_cloud->getCloud();
 		
 		return $this->render('UserBundle:Search:label-search.html.twig', array(
 			'cloud' => $cloud,
