@@ -23,7 +23,7 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 
 			parentSel.change(function() {
 				var val = $(this).val();
-				var sub = $('.sub-options-' + val);
+				var sub = $('.sub-options-' + val, wrapper);
 
 				$('.sub-options', wrapper).hide();
 				sub.show();
@@ -32,10 +32,11 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	},
 
 	handleDepChange: function() {
-		$('.sub-options', this.el).hide();
+		var wrapper = $('.department_id_wrapper', this.el);
+		$('.sub-options', wrapper).hide();
 
 		var depId = this.depSelect.val();
-		var sub = $('.sub-options-' + depId, this.el);
+		var sub = $('.sub-options-' + depId, wrapper);
 
 		if (!sub.length) {
 			this.setDepartment(depId);
