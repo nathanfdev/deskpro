@@ -22,11 +22,20 @@ class Template extends PortalItemAbstract
 {
 	public function getHtml()
 	{
-		$html = $this->renderView($this->getOption('tpl'), array(
+		$vars = $this->getVars();
+		$vars = array_merge($vars, array(
 			'section' => $this->section,
 			'options' => $this->options
 		));
+		
+		$html = $this->renderView($this->getOption('tpl'), $vars);
 
 		return $html;
+	}
+
+
+	public function getVars()
+	{
+		return array();
 	}
 }

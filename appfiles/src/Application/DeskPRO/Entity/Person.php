@@ -1311,6 +1311,10 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getUsergroupSetKey()
 	{
+		if ($this->usergroups instanceof \Doctrine\Common\Collections\Collection) {
+			$this->usergroups = $this->usergroups->toArray();
+		}
+
 		return Usergroup::generateUsergroupSetKey($this->usergroups);
 	}
 

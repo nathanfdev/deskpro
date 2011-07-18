@@ -85,6 +85,26 @@ class Ticket extends EntityRepository
 	}
 
 
+	public function countTicketsForPerson(Entity\Person $person, $status = null)
+	{
+		if ($status) {
+			$status = (array)$status;
+			foreach ($status as &$s) {
+				$s = "'$s'";
+			}
+			$status = implode(',', $status);
+		}
+		
+		$count = App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM tickets
+			WHERE person_id = ? " . ($status ? " AND status IN ($status) " : '') . "
+		", array($person['id']));
+
+		return $count;
+	}
+
+
 
 	/**
 	 * Executes a query to re-fill the ticket_search_active table
