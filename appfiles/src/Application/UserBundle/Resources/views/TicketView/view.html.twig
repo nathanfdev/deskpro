@@ -119,6 +119,18 @@ ul.attachment-list > li img.preview {
 				</div>
 			</li>
 		{% endfor %}
+
+			<li class="new-comment">
+				<form action="{{ path('user_tickets_addreply', {'ticket_ref': ticket.ref}) }}" method="post" enctype="multipart/form-data">
+				<div>
+						{{ form_widget(newreply_form.message, {'attr': {'style': 'width: 90%; height: 100px;'}}) }}
+						<br />
+						Attach a file: {{ form_widget(newreply_form.new_upload) }}
+						<input type="submit" value="Add Reply" />
+				</div>
+				{{ form_rest(newreply_form) }}
+				</form>
+			</li>
 		</ul>
 	</div>
 </div>

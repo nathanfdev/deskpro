@@ -15,6 +15,7 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
 
 use Application\DeskPRO\Tickets\TicketDisplay;
+use Application\UserBundle\Form\NewTicketReplyType;
 
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
@@ -87,6 +88,9 @@ class TicketViewController extends AbstractController
 	{
 		$ticket_display = new TicketDisplay($ticket, $this->person);
 		$vars = $ticket_display->getDisplayArray();
+
+		$newreply_form = $this->get('form.factory')->create(new NewTicketReplyType());
+		$vars['newreply_form'] = $newreply_form->createView();
 
 		return $this->render('UserBundle:TicketView:view.html.twig', $vars);
 	}

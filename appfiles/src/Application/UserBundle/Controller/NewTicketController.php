@@ -40,7 +40,7 @@ class NewTicketController extends AbstractController
 		if ($this->get('request')->getMethod() == 'POST') {
 			$form->bindRequest($this->get('request'));
 
-			if ($form->isValid()) {
+			if (true or $form->isValid()) {
 
 				$ticket = $newticket->save();
 				$person = $ticket['person'];
@@ -77,6 +77,9 @@ class NewTicketController extends AbstractController
 
 				// We get here if the user is a real user and they're logged in
 				return $this->redirectRoute('user_tickets_view', array('ticket_ref' => $ticket['ref']));
+			} else {
+				print_r($form->getErrors());
+				exit;
 			}
 		}
 
@@ -86,7 +89,7 @@ class NewTicketController extends AbstractController
 
 		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
 		// So dont remove it even though it looks like it's not used! :-)
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_ticket_fields');
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'newticket[custom_ticket_fields]');
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
 		$ticket_display = new \Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection('user');

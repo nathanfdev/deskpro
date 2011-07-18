@@ -36,7 +36,7 @@ class NewTicketReplyType extends AbstractType
 	{
 		$builder->add('message', 'textarea');
 
-		$builder->add('new_upload', 'file', array('type' => 'file')); // type=file so we get UploadedFile object
+		$builder->add('new_upload', 'file', array('type' => 'file', 'required' => false)); // type=file so we get UploadedFile object
 
 		if (!empty($options['tmp_files'])) {
 			$builder->add('tmp_files', 'choice', array(
@@ -45,6 +45,8 @@ class NewTicketReplyType extends AbstractType
 				// These make them checkboxes
 				'multiple' => true,
 				'expanded' => true,
+
+				'required' => false,
 			));
 		}
 	}
