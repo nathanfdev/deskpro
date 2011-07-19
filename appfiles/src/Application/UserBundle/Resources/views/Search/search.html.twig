@@ -1,34 +1,58 @@
 {% extends 'UserBundle::layout.html.twig' %}
 {% block content %}
-
-<div style="margin: 10px; padding:  10px; background-color: #F7F8FA; border: 1px solid #BCC2CF; text-align: center;">
-	<form action="{{ path('user_search') }}" method="GET">
-		<input type="text" value="{{query}}" name="q" style="width: 60%; font-size: 14pt;" />
-		<input type="submit" value="Search" style="font-size: 14pt;" />
-	</form>
-</div>
-
 {% if is_search %}
-	{% if not results %}
-		<strong>No results, try using different terms.</strong>
-	{% else %}
-		{% for result in results %}
-			<div style="background-color: #FAFAFA; border-top: 2px solid #DBDBDB; padding: 8px 3px 8px 3px;">
-				{% if result.document.type == 'article' %}
-					<strong><a href="{{ path('user_articles_article', {'slug': result.object.url_slug}) }}">{{ result.object.title }}</a></strong><br />
-					{{result.object.excerpt_html|raw}}
-				{% elseif result.document.type == 'download' %}
-					<strong><a href="{{ path('user_downloads_file', {'slug': result.object.url_slug}) }}">{{ result.object.title }}</a></strong><br />
-				{% elseif result.document.type == 'idea' %}
-					<strong><a href="{{ path('user_ideas_view', {'slug': result.object.url_slug}) }}">{{ result.object.title }}</a></strong><br />
-					{{result.object.content_html|raw}}
-				{% elseif result.document.type == 'news' %}
-					<strong><a href="{{ path('user_ideas_view', {'slug': result.object.url_slug}) }}">{{ result.object.title }}</a></strong><br />
-					{{result.object.intro_html|raw}}
-				{% endif %}
-			</div>
-		{% endfor %}
-	{% endif %}
+<div class="content-list">
+	<ul>
+		{% if not results %}
+			<li><h4>No results, try using different terms.</strong></li>
+		{% else %}
+			{% for res in results %}
+				<li>
+					{% if res.type == 'article' %}
+						<div class="breadcrumb-line">
+							<ul>
+								<li><a href="{{ path('user_articles') }}">Knowledgebase</a></li>
+								{% for c in res.object.category_path %}
+									<li><a href="{{ path('user_articles', {'slug': c.url_slug}) }}">{{c.title}}</a></li>
+								{% endfor %}
+							</ul>
+						</div>
+						<h4><a href="{{ path('user_articles_article', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a></h4>
+					{% elseif res.type == 'download' %}
+						<div class="breadcrumb-line">
+							<ul>
+								<li><a href="{{ path('user_downloads') }}">Downloads</a></li>
+								{% for cat in res.object.category_path %}
+									<li><a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+								{% endfor %}
+							</ul>
+						</div>
+						<h4><a href="{{ path('user_downloads_file', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a></h4>
+					{% elseif res.type == 'idea' %}
+						<div class="breadcrumb-line">
+							<ul>
+								<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+								{% for cat in res.object.category_path %}
+									<li><a href="{{ path('user_ideas', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+								{% endfor %}
+							</ul>
+						</div>
+						<h4><a href="{{ path('user_ideas_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a></h4>
+					{% elseif res.type == 'news' %}
+						<div class="breadcrumb-line">
+							<ul>
+								<li><a href="{{ path('user_news') }}">News</a></li>
+								{% for cat in res.object.category_path %}
+									<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+								{% endfor %}
+							</ul>
+						</div>
+						<h4><a href="{{ path('user_news_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a></h4>
+					{% endif %}
+				</li>
+			{% endfor %}
+		{% endif %}
+	</ul>
+</div>
 {% endif %}
-
 {% endblock %}

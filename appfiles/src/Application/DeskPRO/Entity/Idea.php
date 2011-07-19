@@ -319,6 +319,20 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		return ($this->hidden_status == self::HIDDEN_STATUS_VALIDATING);
 	}
 
+	public function getCategoryPath()
+	{
+		$path = array();
+
+		$cat = $this->category;
+		$path[] = $cat;
+		while ($cat['parent']) {
+			$cat = $cat['parent'];
+			$path[] = $cat;
+		}
+
+		return $path;
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */

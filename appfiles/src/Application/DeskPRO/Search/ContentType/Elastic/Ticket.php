@@ -9,7 +9,7 @@
  * @author Christopher Nadeau <chris.nadeau@deskpro.com>
  */
 
-namespace Application\DeskPRO\Search\ContentType\Mysql;
+namespace Application\DeskPRO\Search\ContentType\Elastic;
 
 use Application\DeskPRO\Search\ContentType\AbstractContentType;
 use Application\DeskPRO\Search\SearcherResult\ResultInterface;

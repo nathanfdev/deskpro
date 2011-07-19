@@ -143,6 +143,20 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 		return $url;
 	}
 
+	public function getCategoryPath()
+	{
+		$path = array();
+
+		$cat = $this->category;
+		$path[] = $cat;
+		while ($cat['parent']) {
+			$cat = $cat['parent'];
+			$path[] = $cat;
+		}
+
+		return $path;
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */

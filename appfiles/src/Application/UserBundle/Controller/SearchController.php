@@ -24,16 +24,17 @@ class SearchController extends AbstractController
 {
 	public function searchAction()
 	{
-		$q = $this->in->getString('q');
+		$q = $this->in->getString('query');
 
 		$is_search = false;
 		$results = false;
 		
 		if ($q) {
-			$searcher = new ContentSearcher(App::get('deskpro.elastica.manager'), $this->person);
+			$search = App::getSearchAdapter();
+			$result_set = $search->getContentSearcher()->query($q);
+			$results = $search->getResultSetObjects($result_set, true);
 
 			$is_search = true;
-			$results = $searcher->search($q);
 		}
 
 		return $this->render('UserBundle:Search:search.html.twig', array(
@@ -139,25 +140,6 @@ class SearchController extends AbstractController
 		));
 	}
 
-	public function labelledAction($labels)
-	{
-		$is_search = false;
-		$results = false;
-
-		if ($labels) {
-			$searcher = new ContentSearcher(App::get('deskpro.elastica.manager'), $this->person);
-
-			$is_search = true;
-			$results = $searcher->labelled($labels);
-		}
-
-		return $this->render('UserBundle:Search:labelled.html.twig', array(
-			'is_search' => $is_search,
-			'results'   => $results,
-			'labels' => $labels
-		));
-	}
-
 	public function omnisearchAction($query)
 	{
 		$search = App::getSearchAdapter();
@@ -165,7 +147,8 @@ class SearchController extends AbstractController
 		$results = $search->getResultSetObjects($result_set, true);
 
 		return $this->render('UserBundle:Search:omnisearch.html.twig', array(
-			'results'   => $results,
+			'results' => $results,
+			'query'   => $query,
 		));
 	}
 }

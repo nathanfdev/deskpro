@@ -369,4 +369,18 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 		return implode($sep, $names);
 	}
+
+	public function getCategoryPath($index = 0)
+	{
+		$path = array();
+
+		$cat = $this->categories[$index];
+		$path[] = $cat;
+		while ($cat['parent']) {
+			$cat = $cat['parent'];
+			$path[] = $cat;
+		}
+
+		return $path;
+	}
 }

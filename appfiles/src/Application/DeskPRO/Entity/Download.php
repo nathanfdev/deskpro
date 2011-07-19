@@ -135,6 +135,20 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id . '-' . $this->slug;
 	}
 
+	public function getCategoryPath()
+	{
+		$path = array();
+
+		$cat = $this->category;
+		$path[] = $cat;
+		while ($cat['parent']) {
+			$cat = $cat['parent'];
+			$path[] = $cat;
+		}
+
+		return $path;
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
