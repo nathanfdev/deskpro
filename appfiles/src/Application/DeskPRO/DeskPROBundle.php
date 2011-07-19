@@ -21,7 +21,7 @@ class DeskPROBundle extends \Symfony\Component\HttpKernel\Bundle\Bundle
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CoreExtension());
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\CacheExtension());
         $container->registerExtension(new \Application\DeskPRO\DependencyInjection\SwiftmailerExtension());
-        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\ElasticaExtension());
+        $container->registerExtension(new \Application\DeskPRO\DependencyInjection\SearchExtension());
     }
 
 	public function getNamespace()

@@ -35,6 +35,29 @@ $CONFIG['db']['dbname'] = 'deskpro';
 $CONFIG['db']['driver'] = 'pdo_mysql';
 
 
+################################################################################
+# Search Engine Optione
+################################################################################
+
+$CONFIG['search'] = array();
+
+/**
+ * MySQL search allows basic fulltext searching, but is slow for larger
+ * databases and does not offer similarity search.
+ */
+$CONFIG['search']['adapter'] = 'mysql';
+
+/**
+ * Elastic search is fast and scalable, and offers all the search capabiltiies
+ * supported by DeskPRO.
+ */
+/*
+$CONFIG['search']['adapter'] = 'elastic';
+$CONFIG['search']['options'] = array(
+	'host' => 'localhost',
+	'port' => 9200
+);
+*/
 
 ################################################################################
 # Cache Options

@@ -11,12 +11,9 @@
 
 namespace Application\DeskPRO\Search;
 
-use Orb\Util\CapabilityInformerInterface;
-
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Search\Adapter\AbstractAdapter;
-use \Symfony\Component\EventDispatcher\EventDispatcher;
-use \Application\DeskPRO\DBAL\DoctrineEvent;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Search\Adapter\AbstractAdapter;
+use Application\DeskPRO\DBAL\DoctrineEvent;
 
 /**
  * The entity listener hooks into the postX events in Doctrine and fires off
@@ -30,24 +27,16 @@ class EntityListener
 	protected $adapter;
 
 	/**
-	 * @var \Symfony\Bundle\FrameworkBundle\ContainerAwareEventDispatcher
-	 */
-	protected $event_dispatcher;
-
-	/**
 	 * Classes we care about
 	 */
 	protected $indexable_classes = array();
 
 	/**
 	 * @param \Application\DeskPRO\Search\Adapter\AbstractAdapter $adapter
-	 * @param \Symfony\Component\EventDispatcher\EventDispatcher $event_dispatcher
 	 */
-	public function __construct(AbstractAdapter $adapter, EventDispatcher $event_dispatcher)
+	public function __construct(AbstractAdapter $adapter)
 	{
 		$this->adapter = $adapter;
-		$this->event_dispatcher = $event_dispatcher;
-
 		$this->indexable_classes = array_keys($adapter->getContentTypeMap());
 	}
 

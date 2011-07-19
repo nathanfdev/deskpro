@@ -87,7 +87,6 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
-
 		);
 
 		$bundles = array_merge($bundles, $this->registerAdditionalBundles());
