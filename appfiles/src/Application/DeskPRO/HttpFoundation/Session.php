@@ -137,9 +137,7 @@ class Session extends \Symfony\Component\HttpFoundation\Session implements \Arra
 			$person = new \Application\DeskPRO\Entity\PersonGuest();
 		}
 
-		if ($person['id']) {
-			App::setCurrentPerson($person);
-		}
+		App::setCurrentPerson($person);
 
 		$this->person = $person;
 

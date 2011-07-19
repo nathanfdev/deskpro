@@ -102,6 +102,21 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 
 
 	/**
+	 * Get person context
+	 * 
+	 * @return \Application\DeskPRO\Entity\Person
+	 */
+	public function getPersonContext()
+	{
+		if (!$this->person) {
+			return App::getCurrentPerson();
+		}
+
+		return $this->person;
+	}
+
+
+	/**
 	 * Get the map of classes to contenttypes
 	 *
 	 * @return array
@@ -228,9 +243,10 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 	 * This is a shortcut for converting all results into objects.
 	 *
 	 * @param \Application\DeskPRO\Search\SearcherResult\ResultSet $result_set
+	 * @param bool $full_info True to return a final array of full info: array('object' => object, 'type' => 'contenttype', 'result' => result)
 	 * @return array
 	 */
-	public function getResultSetObjects(ResultSet $result_set)
+	public function getResultSetObjects(ResultSet $result_set, $full_info = false)
 	{
 		#------------------------------
 		# Sort results into types
@@ -246,8 +262,10 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 			$type_name = $result->getContentTypeName();
 
 			if (!isset($result_set_typed[$type_name])) {
-				$result_set_typed[$type_name][$result->getId()] = $result;
+				$result_set_typed[$type_name] = array();
 			}
+			
+			$result_set_typed[$type_name][$result->getId()] = $result;
 		}
 
 		#------------------------------
@@ -255,13 +273,13 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 		#------------------------------
 
 		$objects_typed = array();
-		foreach ($result_set_typed as $type => $results) {
+		foreach ($result_set_typed as $type_name => $results) {
 
 			$type = $this->getContentType($type_name);
 			$objects = $type->resultsToObjects($results);
 
 			if ($objects) {
-				$objects_typed[$type] = $objects;
+				$objects_typed[$type_name] = $objects;
 			}
 		}
 
@@ -278,7 +296,15 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 			if (!isset($objects_typed[$type_name])) continue;
 			if (!isset($objects_typed[$type_name][$obj_id])) continue;
 
-			$objects[] = $objects_typed[$type_name][$obj_id];
+			if ($full_info) {
+				$objects[] = array(
+					'object' => $objects_typed[$type_name][$obj_id],
+					'type'   => $type_name,
+					'result' => $result
+				);
+			} else {
+				$objects[] = $objects_typed[$type_name][$obj_id];
+			}
 		}
 
 		return $objects;

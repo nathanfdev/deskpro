@@ -124,7 +124,7 @@ class MysqlAdapter extends AbstractAdapter
 	public function getTicketSearcher()
 	{
 		$searcher = new ContentSearcher();
-		$searcher->setPersonContext($this->person);
+		$searcher->setPersonContext($this->getPersonContext());
 
 		return $searcher;
 	}
@@ -139,7 +139,7 @@ class MysqlAdapter extends AbstractAdapter
 	public function getContentSearcher()
 	{
 		$searcher = new ContentSearcher();
-		$searcher->setPersonContext($this->person);
+		$searcher->setPersonContext($this->getPersonContext());
 
 		return $searcher;
 	}

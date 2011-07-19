@@ -27,7 +27,7 @@ abstract class AbstractContentType implements ContentTypeInterface
 	 */
 	public function resultToObject(ResultInterface $result)
 	{
-		return App::getEntityRepository(self::ENTITY_NAME)->find($result->getId());
+		return App::getEntityRepository(static::ENTITY_NAME)->find($result->getId());
 	}
 
 	/**

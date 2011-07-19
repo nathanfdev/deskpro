@@ -60,7 +60,7 @@ class ElasticAdapter extends AbstractAdapter
 		return new self($client);
 	}
 
-	public function __construct(\Elastic_Client $client)
+	public function __construct(\Elastica_Client $client)
 	{
 		$this->client = $client;
 
@@ -162,7 +162,7 @@ class ElasticAdapter extends AbstractAdapter
 	public function getTicketSearcher()
 	{
 		$searcher = new ContentSearcher($this);
-		$searcher->setPersonContext($this->person);
+		$searcher->setPersonContext($this->getPersonContext());
 
 		return $searcher;
 	}
@@ -177,7 +177,7 @@ class ElasticAdapter extends AbstractAdapter
 	public function getContentSearcher()
 	{
 		$searcher = new ContentSearcher($this);
-		$searcher->setPersonContext($this->person);
+		$searcher->setPersonContext($this->getPersonContext());
 
 		return $searcher;
 	}

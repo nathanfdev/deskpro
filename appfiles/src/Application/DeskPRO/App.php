@@ -44,6 +44,7 @@ class App
 	const SERVICE_FORM_FACTORY       = 'form.factory';
 	const SERVICE_SEARCH_ENGINE      = 'deskpro.search_engine';
 	const SERVICE_TEMPLATING         = 'templating';
+	const SERVICE_SEARCH             = 'deskpro.search_adapter';
 	/**#@-*/
 
 	/**
@@ -109,7 +110,6 @@ class App
 	protected static $_standard_loggers = null;
 
 
-
 	/**
 	 * Set the person who is making the request, or the person who is authorizing
 	 * the request.
@@ -122,7 +122,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the person who is making the curent request.
 	 *
@@ -132,7 +131,6 @@ class App
 	{
 		return self::$_current_person;
 	}
-
 
 
 	/**
@@ -152,7 +150,6 @@ class App
 	}
 
 
-
 	/**
 	 * Set a container we'll use in the App to fetch various services
 	 *
@@ -169,7 +166,6 @@ class App
 	}
 
 
-	
 	/**
 	 * Get the autoloader
 	 * 
@@ -183,7 +179,6 @@ class App
 
 		return null;
 	}
-
 
 
 	/**
@@ -205,7 +200,6 @@ class App
 	}
 
 
-
 	/**
 	 * Set the default container to use when using DEFAULT_NAME, or when no service-to-container
 	 * map has been specified.
@@ -216,7 +210,6 @@ class App
 	{
 		self::$_default_contaner_name = $name;
 	}
-
 
 
 	/**
@@ -230,7 +223,6 @@ class App
 	{
 		self::$_service_to_container[$service_name] = $container_name;
 	}
-
 
 
 	/**
@@ -264,7 +256,6 @@ class App
 	}
 
 
-
 	/**
 	 * Check if a service exists..
 	 *
@@ -292,6 +283,16 @@ class App
 	}
 
 
+	/**
+	 * Get the search adapter.
+	 * 
+	 * @return \Application\DeskPRO\Search\Adapter\AbstractAdapter
+	 */
+	public static function getSearchAdapter()
+	{
+		return self::get(self::SERVICE_SEARCH);
+	}
+
 
 	/**
 	 * Get the DB abstraction object.
@@ -302,7 +303,6 @@ class App
 	{
 		return self::get(self::SERVICE_DB, self::DEFAULT_NAME);
 	}
-
 
 
 	/**
@@ -316,7 +316,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the request
 	 *
@@ -326,7 +325,6 @@ class App
 	{
 		return self::get(self::SERVICE_REQUEST);
 	}
-
 
 
 	/**
@@ -340,7 +338,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the session
 	 *
@@ -350,7 +347,6 @@ class App
 	{
 		return self::get(self::SERVICE_SESSION);
 	}
-
 
 
 	/**
@@ -364,7 +360,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the translator
 	 *
@@ -375,7 +370,6 @@ class App
 		return self::get(self::SERVICE_TRANSLATOR);
 	}
 
-	
 
 	/**
 	 * Get the templating service
@@ -386,7 +380,6 @@ class App
 	{
 		return self::get(self::SERVICE_TEMPLATING);
 	}
-
 
 
 	/**
@@ -400,7 +393,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the app event dispatcher
 	 *
@@ -410,7 +402,6 @@ class App
 	{
 		return self::get(self::SERVICE_EVENT_DISPATCHER);
 	}
-
 
 
 	/**
@@ -435,7 +426,6 @@ class App
 	}
 
 
-
 	/**
 	 * True if this is an http request. We should have a request and response object if so.
 	 *
@@ -449,7 +439,6 @@ class App
 
 		return false;
 	}
-
 
 
 	/**
@@ -477,7 +466,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the classname for an entity
 	 *
@@ -491,7 +479,6 @@ class App
 
 		return $class;
 	}
-
 
 
 	/**
@@ -529,7 +516,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the kernel
 	 *
@@ -543,7 +529,6 @@ class App
 
 		return self::$_kernel;
 	}
-
 
 
 	/**
@@ -562,7 +547,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the reference generator
 	 *
@@ -572,7 +556,6 @@ class App
 	{
 		return self::get('deskpro.ref_generator');
 	}
-
 
 
 	/**
@@ -634,7 +617,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the filesystem directory where we want to store cache files.
 	 *
@@ -658,7 +640,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the filesystem directory where log files are stored.
 	 *
@@ -675,7 +656,6 @@ class App
 	}
 
 
-
 	/**
 	 * Get the current env
 	 *
@@ -687,7 +667,6 @@ class App
 	}
 
 
-
 	/**
 	 * Is debug mode enabled?
 	 *
@@ -697,7 +676,6 @@ class App
 	{
 		return self::$_debug;
 	}
-
 
 
 	/**
@@ -718,7 +696,6 @@ class App
 
 		return $is_cli;
 	}
-
 
 
 	/**
@@ -748,7 +725,6 @@ class App
 
 		self::$_fileconfig[$name] = $CONFIG;
 	}
-
 
 
 	/**
@@ -797,7 +773,6 @@ class App
 
 		return $logger;
 	}
-
 	
 
 	/**
@@ -813,7 +788,6 @@ class App
 		$logger = self::createNewLogger('error_log.'.$type, null);
 		$logger->log($message, $priority, $data);
 	}
-
 
 
 	/**

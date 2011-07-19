@@ -160,8 +160,9 @@ class SearchController extends AbstractController
 
 	public function omnisearchAction($query)
 	{
-		$searcher = new ContentSearcher(App::get('deskpro.elastica.manager'), $this->person);
-		$results = $searcher->omnisearch($query);
+		$search = App::getSearchAdapter();
+		$result_set = $search->getContentSearcher()->omnisearch($query);
+		$results = $search->getResultSetObjects($result_set, true);
 
 		return $this->render('UserBundle:Search:omnisearch.html.twig', array(
 			'results'   => $results,

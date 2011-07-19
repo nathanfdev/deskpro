@@ -30,8 +30,7 @@ interface ContentSearcherInterface
 	 * @param  $query
 	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
 	 */
-	public function query($query);
-
+	public function query($query_text);
 
 	/**
 	 * Fetch lablled content
@@ -49,4 +48,12 @@ interface ContentSearcherInterface
 	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
 	 */
 	public function similarContent($content, array $in_types = null);
+
+	/**
+	 * Results for the "omnisearch" search box
+	 *
+	 * @param string $content
+	 * @return \Application\DeskPRO\Search\SearcherResult\ResultSet
+	 */
+	public function omnisearch($query_text);
 }

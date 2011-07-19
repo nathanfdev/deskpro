@@ -51,11 +51,11 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	}
 
 	
-	public function query($query)
+	public function query($query_text)
 	{
 		$index = $this->adapter->getIndex('content');
 
-		$query = new \Elastica_Query_QueryString($query);
+		$query = new \Elastica_Query_QueryString($query_text);
 		$query_out = new \Elastica_Query();
 		$query_out->setQuery($query);
 
@@ -129,6 +129,24 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 		return $result_set;
 	}
 
+	public function omnisearch($query_text)
+	{
+		$index = $this->adapter->getIndex('content');
+
+		$query = new \Elastica_Query();
+		$query->setParam('query', array(
+			'fuzzy_like_this' => array(
+				'like_text' => $query_text,
+				'prefix_length' => 3,
+			)
+		));
+
+		$e_result_set = $index->search($query);
+		$result_set = ResultSet::newFromElasticResultSet($e_result_set);
+
+		return $result_set;
+	}
+
 
 	/**
 	 * Gets the filter that applies permissions to results
@@ -137,6 +155,7 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	 */
 	public function getPermissionFilter()
 	{
+		return null;
 		if (!$this->person OR $this->person['is_agent']) {
 			return null;
 		}

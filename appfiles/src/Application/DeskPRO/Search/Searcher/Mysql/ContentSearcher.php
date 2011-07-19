@@ -133,4 +133,10 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	{
 		throw new \Application\DeskPRO\Search\Searcher\UnsupportedOperation();
 	}
+
+
+	public function omnisearch($query_text)
+	{
+		return $this->query($query_text);
+	}
 }
