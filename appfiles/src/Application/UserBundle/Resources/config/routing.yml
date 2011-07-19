@@ -117,6 +117,10 @@ user_search_omnisearch:
   pattern: /search/omnisearch/{query}
   defaults: { _controller: UserBundle:Search:omnisearch }
 
+user_search_similarto:
+  pattern: /search/similar-to/{content_type}
+  defaults: { _controller: UserBundle:Search:similarTo }
+
 ################################################################################
 # Tickets
 ################################################################################

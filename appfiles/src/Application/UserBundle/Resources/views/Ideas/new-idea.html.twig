@@ -1,11 +1,14 @@
 {% extends 'UserBundle::layout-partial-aware.html.twig' %}
+{% block head %}
+<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewIdea.js') }}"></script>
+{% endblock %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_ideas') }}">Feedback</a></li>
 	<li><a href="{{ path('user_ideas_newidea') }}">Submit Feedback</a></li>
 {% endblock %}
 {% block content %}
 
-<div class="new-idea">
+<div class="new-idea with-handler" data-element-handler="DeskPRO.User.ElementHandler.NewIdea" data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'idea'}) }}">
 
 <div class="page-title">
 	<h1>Submit Feedback</h1>
@@ -18,7 +21,13 @@
 <table cellspacing="0" cellpadding="0" width="100%">
 	<tr>
 		<td width="180">What is your idea?</td>
-		<td>{{ form_widget(form.title) }}</td>
+		<td>
+			{{ form_widget(form.title) }}
+			<div class="suggestions-box" style="display: none">
+				Have you tried looking at these other ideas?
+				<div class="results"></div>
+			</div>
+		</td>
 	</tr>
 
 	<tr>

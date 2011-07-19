@@ -151,4 +151,17 @@ class SearchController extends AbstractController
 			'query'   => $query,
 		));
 	}
+
+	public function similarToAction($content_type)
+	{
+		$content = $this->request->query->get('content', '');
+		
+		$search = App::getSearchAdapter();
+		$result_set = $search->getContentSearcher()->similarContent($content, array($content_type));
+		$results = $search->getResultSetObjects($result_set, true);
+
+		return $this->render('UserBundle:Search:similar-to.html.twig', array(
+			'results' => $results,
+		));
+	}
 }

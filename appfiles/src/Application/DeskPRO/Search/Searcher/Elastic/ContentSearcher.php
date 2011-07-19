@@ -104,26 +104,30 @@ class ContentSearcher implements ContentSearcherInterface, PersonContextInterfac
 	{
 		$index = $this->adapter->getIndex('content');
 
-		$query_out = new \Elastica_Query_Terms();
-
-		$query = new \Application\DeskPRO\Elastica\Query\MoreLikeThis($content);
-		$query_out->addTerm($query);
-
 		if ($in_types) {
-			$query_types = new \Elastica_Query_Bool();
-			foreach ($in_types as $t) {
-				$query_types->addShould(array('term' => array('_type' => $t)));
-			}
-
-			$query_out->addTerm($query_types);
+			$query = new \Elastica_Query();
+			$query->setParam('query', array(
+				'fuzzy_like_this' => array(
+					'like_text' => $content,
+					'prefix_length' => 3,
+				),
+			));
+		} else {
+			$query = new \Elastica_Query();
+			$query->setParam('query', array(
+				'fuzzy_like_this' => array(
+					'like_text' => $content,
+					'prefix_length' => 3,
+				)
+			));
 		}
 
 		$filter = $this->getPermissionFilter();
 		if ($filter) {
-			$query_out->setFilter($filter);
+			$query->setFilter($filter);
 		}
 
-		$e_result_set = $index->search($query_out);
+		$e_result_set = $index->search($query);
 		$result_set = ResultSet::newFromElasticResultSet($e_result_set);
 
 		return $result_set;
