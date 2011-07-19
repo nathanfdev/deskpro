@@ -2,6 +2,12 @@
 var Bridge = { options: { path: '{{ asset('vendor/jquery/tipped/js/bridge/') }}' } },
     Tipped = { options: { path: '{{ asset('vendor/jquery/tipped/js/tipped/') }}' } };
 </script>
+<script type="text/javascript">
+var IdeaVotesRemaining  = parseInt('{{ app.user.getHelper('IdeaVotes').getVotesRemaining()|default(0) }}');
+var IdeaVotesUsed       = parseInt('{{ app.user.getHelper('IdeaVotes').getVotesUsed()|default(0) }}');
+var IdeaVotesMaxPerIdea = parseInt('{{ app.getSetting('core_ideas.max_votes_ideas') }}');
+var IdeaVotesAllowed    = parseInt('{{ app.getSetting('core_ideas.votes_per_person') }}');
+</script>
 
 {{ html_js_pack('user.vendors') }}
 {{ html_js_pack('user.common') }}

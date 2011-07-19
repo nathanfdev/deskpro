@@ -275,7 +275,7 @@ user_ideas_newcomment:
 
 user_ideas_vote:
   pattern: /feedback/vote/{idea_id}
-  defaults: { _controller: UserBundle:Ideas:vote }=
+  defaults: { _controller: UserBundle:Ideas:vote }
 
 user_ideas_status:
   pattern: /feedback/all/{status}

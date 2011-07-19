@@ -3,6 +3,8 @@
 	<meta property="og:url" content="{{ path('user_ideas_view', {'slug': idea.id}) }}" />
 	<meta property="og:title" content="{{idea.title}}" />
 	<meta property="og:type" content="article" />
+
+	<script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/IdeaView.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
 	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
@@ -12,7 +14,11 @@
 	<li><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></li>
 {% endblock %}
 {% block content %}
-<div class="idea with-handler" data-element-handler="DeskPRO.User.ElementHandler.IdeaView">
+<div class="idea with-handler"
+	data-element-handler="DeskPRO.User.ElementHandler.IdeaView"
+	data-votes-used="{{ app.user.getHelper('IdeaVotes').getVotesOnIdea(idea)|default(0) }}"
+	data-vote-url="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}"
+>
 	<div class="votes-wrap">
 		<div class="votes">
 			<div class="count">{{idea.num_votes}}</div>
@@ -38,14 +44,15 @@
 
 		<div id="idea_vote_menu_wrap" style="display: none">
 			<div id="idea_vote_menu">
+				<span class="close-trigger">x</span>
 				<form action="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}" method="post">
-					You have {{num_votes_remain}} votes remaining. How many do you want to use?
+					You have up to <span class="votes-allowed"></span> votes to cast on this idea. How many do you want to use?
 					<br />
 					<ul>
 						<li class="on">&nbsp;None&nbsp;</li>
-						<li>1</li>
-						<li>2</li>
-						<li>3</li>
+						{% for i in 1..app.getSetting('core_ideas.max_votes_ideas') %}
+							<li class="num-{{ i }} num" data-num="{{ i }}">{{ i }}</li>
+						{% endfor %}
 					</ul>
 					<br class="clear" />
 				</form>

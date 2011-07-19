@@ -17,6 +17,9 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 		parent::init();
 
 		$this->person = $this->session->getPerson();
+		$this->person->loadHelper('IdeaVotes', array(
+			'visitor' => $this->session->getVisitor()
+		));
 	}
 
 	public function preAction($action, $arguments = null)

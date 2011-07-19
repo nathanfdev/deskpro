@@ -6,6 +6,9 @@
 <div class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.Ideas" {% if is_partial_request() == 'portal' %}data-ajax-update="1"{% endif %}>
 <div class="content-item portal_ideas">
 	<div class="heading">
+		<div style="float: right">
+			<a class="dp-button x-small" href="{{ path('user_ideas_newidea') }}">Submit Idea</a>
+		</div>
 		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Feedback') }}</a></h2>
 	</div>
 

@@ -272,6 +272,10 @@ class IdeasController extends AbstractController
 		App::getOrm()->persist($idea);
 		App::getOrm()->flush();
 
+		if ($this->request->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array('success' => true));
+		}
+
 		return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()));
 	}
 
