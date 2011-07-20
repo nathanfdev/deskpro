@@ -1,0 +1,18 @@
+<section id="publish_outline_glossary" class="deskpro-tab-item">
+	<dl>
+		{% for letter,words in glossary_words %}
+			<dt data-letter="{{letter}}" {% if not words|length %}style="display:none"{% endif %}>{{letter}}</dt>
+			<dd data-letter="{{letter}}" {% if not words|length %}style="display:none"{% endif %}>
+				<ul class="comma-list">
+					{% for id,word in words %}
+						<li>
+							<a class="edit-word-trigger" data-word-id="{{id}}">
+							{{word}}
+							</a>
+						</li>
+					{% endfor %}
+				</ul>
+			</dd>
+		{% endfor %}
+	</dl>
+</section>

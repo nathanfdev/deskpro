@@ -15,7 +15,7 @@ $CONFIG['agent']['window-sections'] = array(
 		'javascripts/DeskPRO/Agent/WindowElement/Section/AbstractSection.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Tickets.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/People.js',
-		'javascripts/DeskPRO/Agent/WindowElement/Section/Kb.js',
+		'javascripts/DeskPRO/Agent/WindowElement/Section/Publish.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/Twitter.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/AgentChat.js',
 		'javascripts/DeskPRO/Agent/WindowElement/Section/UserChat.js',

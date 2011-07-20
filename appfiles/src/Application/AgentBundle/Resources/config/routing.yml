@@ -694,6 +694,14 @@ agent_tasks_list_pending:
   defaults: { _controller: AgentBundle:Task:listPending }
 
 ################################################################################
+# Portal
+################################################################################
+
+agent_portal_getsectiondata:
+  pattern: /publish/get-section-data.json
+  defaults: { _controller: AgentBundle:Publish:getSectionData }
+
+################################################################################
 # KB
 ################################################################################
 
@@ -765,25 +773,21 @@ agent_kb_validating_dis_article_json:
   pattern: /kb/validating-articles/disapprove/{article_id}.json
   defaults: { _controller: AgentBundle:Kb:disapproveValidateArticleJson }
 
-agent_glossary:
-  pattern: /kb/glossary
-  defaults: { _controller: AgentBundle:Kb:glossaryList }
+################################################################################
+# Glossary
+################################################################################
 
 agent_glossary_newword_json:
-  pattern: /kb/glossary/new-word.json
+  pattern: /glossary/glossary/new-word.json
   defaults: { _controller: AgentBundle:Glossary:glossaryNewWordJson }
 
 agent_glossary_word_json:
-  pattern: /kb/glossary/{word_id}.json
+  pattern: /glossary/glossary/{word_id}.json
   defaults: { _controller: AgentBundle:Glossary:glossaryWordJson }
 
 agent_glossary_saveword_json:
-  pattern: /kb/glossary/{word_id}/edit.json
+  pattern: /glossary/glossary/{word_id}/edit.json
   defaults: { _controller: AgentBundle:Glossary:glossarySaveWordJson }
-
-agent_kb_getsectiondata:
-  pattern: /kb/get-section-data.json
-  defaults: { _controller: AgentBundle:Glossary:getSectionData }
 
 
 ################################################################################

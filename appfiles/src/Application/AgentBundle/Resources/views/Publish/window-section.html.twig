@@ -1,0 +1,40 @@
+<header class="section-header">
+	<h1>Publish</h1>
+</header>
+<section class="inbox">
+	<ul class="nav-list">
+		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_kb_validating') }}">
+			<span class="list-counter" id="kb_validating_count">{{ kb_counts.awaiting_validation|default(0) }}</span>
+			<a>Articles Validating</a>
+		</li>
+		<li class="with-route" data-route="listpane:{{ path('agent_kb_pending') }}">
+			<span class="list-counter" id="kb_pending_count">{{ kb_counts.pending|default(0) }}</span>
+			<a>Pending Articles</a>
+		</li>
+		<li class="with-route" data-route="listpane:{{ path('agent_kb_drafts') }}">
+			<span class="list-counter" id="kb_drafts_count">{{ kb_counts.drafts|default(0) }}</span>
+			<a>Draft Articles</a>
+		</li>
+		<li class="with-route" data-route="listpane:{{ path('agent_kb_drafts') }}">
+			<span class="list-counter" id="kb_pending_count">0</span>
+			<a>Comments Validating</a>
+		</li>
+	</ul>
+</section>
+
+<header class="section-header with-tabs" style="margin-top: 28px;">
+	<h1>Content</h1>
+	<nav id="portal_outline_tabstrip" class="deskpro-inner-tabstrip">
+		<ul>
+			<li data-tab-for="#publish_outline_kb"><a>KB</a></li>
+			<li data-tab-for="#publish_outline_news"><a>News</a></li>
+			<li data-tab-for="#publish_outline_downloads"><a>Downloads</a></li>
+			<li data-tab-for="#publish_outline_glossary"><a>Glossary</a></li>
+		</ul>
+	</nav>
+</header>
+
+{% include 'AgentBundle:Publish:kb-tab.html.twig' %}
+{% include 'AgentBundle:Publish:news-tab.html.twig' %}
+{% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
+{% include 'AgentBundle:Publish:glossary-tab.html.twig' %}

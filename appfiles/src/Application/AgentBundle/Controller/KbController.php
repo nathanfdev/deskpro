@@ -27,30 +27,6 @@ use FineDiff;
  */
 class KbController extends AbstractController
 {
-	public function getSectionDataAction()
-	{
-		$data = array();
-
-		// KB stuff
-		$kb_counts = array();
-		$kb_counts['awaiting_validation_articles'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM articles WHERE hidden_status = ?", array('validating'));
-		$kb_counts['awaiting_validation_edits']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_validating_edits");
-		$kb_counts['awaiting_validation']          = $kb_counts['awaiting_validation_articles'] + $kb_counts['awaiting_validation_edits'];
-		$kb_counts['drafts']                       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM articles WHERE hidden_status = ?", array('draft'));
-		$kb_counts['pending']                      = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
-
-		$kb_user_cats   = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
-		$kb_agent_cats  = App::getEntityRepository('DeskPRO:ArticleCategory')->getAgentCategoryHelper()->getFlatHierarchy();
-
-		$data['section_html'] = $this->renderView('AgentBundle:Kb:window-section.html.twig', array(
-			'kb_counts' => $kb_counts,
-			'kb_user_cats' => $kb_user_cats,
-			'kb_agent_cats' => $kb_agent_cats,
-		));
-
-		return $this->createJsonResponse($data);
-	}
-
 	############################################################################
 	# Edit article
 	############################################################################
