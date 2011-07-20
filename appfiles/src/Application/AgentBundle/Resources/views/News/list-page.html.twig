@@ -1,0 +1,16 @@
+<section class="search-reuslts page-set" data-page="{{ page }}">
+	{% for news in results %}
+		<article class="news news-{{news.id}}">
+			<div class="title">
+				<a class="with-route" data-route="page:{{ path('agent_news_view', {'news_id': news.id}) }}">{{ news.title }}</a>
+			</div>
+			<div class="info">
+				<ul>
+					<li>{{ news.category.full_title }}</li>
+					<li>{{ news.person.display_name }}</li>
+				</ul>
+			</div>
+			<time class="timeago" datetime="{{ news.date_created|date('c') }}">{{ news.date_created|date('M d') }}</time>
+		</article>
+	{% endfor %}
+</section>

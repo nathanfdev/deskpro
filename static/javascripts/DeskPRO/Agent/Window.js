@@ -502,8 +502,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			return page.getMetaData('fragmentClass', '').indexOf(x) != -1;
 		};
 		var handler = null;
-		if (testcl('.Kb')) {
-			handler = this.sections['kb_section'];
+		if (testcl('.Kb') || testcl('.News') || testcl('.Download')) {
+			handler = this.sections['publish_section'];
 		} else if (testcl('.Ticket') || testcl('.NewCustomFilter')) {
 			handler = this.sections['tickets_section'];
 		} else if (testcl('.People') || testcl('.Org')) {

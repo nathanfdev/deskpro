@@ -1,6 +1,6 @@
 <section id="publish_outline_kb" class="deskpro-tab-item">
 	<ul class="nav-list">
-		{% for cat in download_cats %}
+		{% for cat in kb_cats %}
 			<li data-route="listpane:{{ path('agent_kb_cat', {'category_id':cat.id}) }}">
 				<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
 			</li>

@@ -778,17 +778,42 @@ agent_kb_validating_dis_article_json:
 ################################################################################
 
 agent_glossary_newword_json:
-  pattern: /glossary/glossary/new-word.json
+  pattern: /glossary/new-word.json
   defaults: { _controller: AgentBundle:Glossary:glossaryNewWordJson }
 
 agent_glossary_word_json:
-  pattern: /glossary/glossary/{word_id}.json
+  pattern: /glossary/{word_id}.json
   defaults: { _controller: AgentBundle:Glossary:glossaryWordJson }
 
 agent_glossary_saveword_json:
-  pattern: /glossary/glossary/{word_id}/edit.json
+  pattern: /glossary/{word_id}/edit.json
   defaults: { _controller: AgentBundle:Glossary:glossarySaveWordJson }
 
+################################################################################
+# News
+################################################################################
+
+agent_news_list:
+  pattern: /news/list/{category_id}
+  defaults: { _controller: AgentBundle:News:list, list: '0' }
+
+agent_news_view:
+  pattern: /news/post/{news_id}
+  defaults: { _controller: AgentBundle:News:view }
+  requirements: { news_id: "\d+" }
+
+################################################################################
+# Downloads
+################################################################################
+
+agent_downloads_list:
+  pattern: /downloads/list/{category_id}
+  defaults: { _controller: AgentBundle:Downloads:list, list: '0' }
+
+agent_downloads_view:
+  pattern: /downloads/post/{download_id}
+  defaults: { _controller: AgentBundle:Downloads:view }
+  requirements: { download_id: "\d+" }
 
 ################################################################################
 # Media browser

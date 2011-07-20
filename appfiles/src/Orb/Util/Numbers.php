@@ -223,12 +223,15 @@ class Numbers
 		$range_start = max(1, $page - $pad);
 		$range_end = min($num_pages, $range_start + 5);
 
+		$info['per_page'] = $per_page;
 		$info['pages'] = range($range_start, $range_end);
 		$info['prev'] = ($page != 1) ? $page-1 : false;
 		$info['next'] = ($page < $num_pages) ? $page+1 : false;
 		$info['first'] = 1;
 		$info['last'] = $num_pages;
 		$info['curpage'] = $page;
+		
+		$info['curpage'] = self::bound($info['curpage'], 1, $info['last']);
 
 		return $info;
 	}

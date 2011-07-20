@@ -1,0 +1,120 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewsView';
+pageMeta.title = {{news.title|json_encode|raw}};
+pageMeta.news_id = {{news.id}};
+pageMeta.urls = {
+
+};
+</script>
+<div class="layout-content full-page news-page with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+
+<div class="inner-box-tab-content-2 ticket-element">
+	<div class="ticket-status ticket-{% if news.is_published %}open{% else %}hidden{% endif %}">
+		<span class="prop-val menu-trigger status open">Published</span>
+		<span class="prop-val menu-trigger status unpublished" style="display: none">Unpublished</span>
+	</div>
+	<div class="kb-info-top">
+		<div class="kb-author-names">
+			By {{ news.person.display_name }}
+		</div>
+		<h3 class="title editable hover-edit" data-editable-for=".inline-editable .title">
+			{{ news.title }}
+		</h3>
+	</div>
+</div>
+
+{# Info Wrap #}
+<div class="ticket-info-wrapper">
+	{# Top Left #}
+	<div class="ticket-info left">
+		<div class="tags-wrap news-tags">
+			<span class="tag-icon"></span>
+			<ul>
+				{% for label in news.labels %}
+					<li><span>{{label.label}}</span></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	{# /Top Left #}
+
+	{# Top Right #}
+	<div class="ticket-properties right">
+		{# Box Times #}
+		<div class="table-container">
+			<div class="table-title">
+				<h4>Dates and Times</h4>
+			</div>
+			<div class="table-content">
+
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Created</span>
+					</div>
+					<div class="col-table-content">
+						<span class="timeago" title="{{news.date_created|date('c')}}">{{news.date_created|date('Y-m-d')}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Box Times #}
+	</div>
+	{# /Top Right #}
+</div>
+
+{# Main Tabs #}
+<div class="full-container-tabbed messages-container field-section-bottomtabs">
+	{# Tab Triggers #}
+	<div class="full-container-tabbed-tabs">
+		<span class="kb-editor-edit"><a>edit</a></span>
+		<ul class="field-section-bodytabs-tabs">
+			<li class="tab-trigger news-content on" data-tab-for=".tab-content.news-content"><a>Post</a></li>
+			<li class="tab-trigger news-comments" data-tab-for=".tab-content.news-comments"><a>Comments <em class="news-comments-count" data-count="{{counts.comments|default(0)}}">({{counts.comments|default(0)}})</em></a></li>
+		</ul>
+	</div>
+	{# /Tab Triggers #}
+
+	{# Tab Contents #}
+	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
+		{# Tab: Messages #}
+		<div class="full-container-tabbed-contents tab-content news-content">
+			<div class="full-tab-content">
+				<div class="news-content-wrap">
+					{{ news.content_html|raw }}
+				</div>
+				<div class="news-editor-wrap" style="display: none">
+					<div class="news-editor markdown">
+						<textarea name="news[content]" rows="5" cols="50">{{ news.content }}</textarea>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Tab Messages #}
+
+		{# Tab: Comments #}
+		<div class="full-container-tabbed-contents tab-content news-comments">
+			<div class="full-tab-content">
+				<div class="messages-wrap">
+					{% for comment in news_comments %}
+						{% include 'AgentBundle:News:view-comment.html.twig' %}
+					{% endfor %}
+				</div>
+			</div>
+		</div>
+		{# /Tab Comments #}
+	</div>
+	{# /Tab Contents #}
+</div>
+{# /Main Tabs #}
+
+<div class="inline-editable" style="display:none">
+	<div class="title">
+		<input type="text" name="title" value="{{ news.title }}"/>
+		<input type="hidden" name="action" value="title" />
+	</div>
+</div>
+
+</div></div> {# scrollbar divs #}
+</div> {# main layout div #}
