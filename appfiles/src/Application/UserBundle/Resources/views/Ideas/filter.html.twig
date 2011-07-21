@@ -50,8 +50,8 @@
 								<li class="views" title="Views"><span>{{ 0 }}</span></li>
 							</ul>
 						</div>
-						<div class="ideas-votes" title="Votes in favor of this idea">
-							<div class="votes"><span>{{ rand(1,80) }}</span></div>
+						<div class="ideas-votes idea-btn" title="Votes in favor of this idea" data-votes-used="{{ num_votes_this|default(0) }}" data-vote-url="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}">
+							<div class="votes"><span class="votes-count">{{ rand(1,80) }}</span></div>
 						</div>
 						<h4><a href="{{ path('user_ideas_view', {'slug': idea.url_slug}) }}">{{idea.title}}</a></h4>
 					</li>
@@ -99,5 +99,7 @@
 		<div class="loading" style="text-align: center; padding: 15px;"><img src="{{ asset('images/loading-big-circle.gif') }}" alt="" /></div>
 	</div>
 </div>
+
+{% include 'UserBundle:Ideas:vote-widget.html.twig' %}
 </div>
 {% endblock %}

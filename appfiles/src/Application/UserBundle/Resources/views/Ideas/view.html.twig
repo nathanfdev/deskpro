@@ -24,7 +24,7 @@
 			<div class="count">{{idea.num_votes}}</div>
 			<span>votes</span>
 		</div>
-		<button id="submit_vote_trigger">vote</button>
+		<button class="idea-btn" id="submit_vote_trigger" data-votes-used="{{ num_votes_this|default(0) }}" data-vote-url="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}">vote</button>
 	</div>
 	<div class="description">
 		<div class="cal-date" title="{{ idea.date_created|date('M d Y @ H:i:s') }}">
@@ -42,22 +42,7 @@
 			{{idea.content_html|raw}}
 		</div>
 
-		<div id="idea_vote_menu_wrap" style="display: none">
-			<div id="idea_vote_menu">
-				<span class="close-trigger">x</span>
-				<form action="{{ path('user_ideas_vote', {'idea_id': idea.id}) }}" method="post">
-					You have up to <span class="votes-allowed"></span> votes to cast on this idea. How many do you want to use?
-					<br />
-					<ul>
-						<li class="on">&nbsp;None&nbsp;</li>
-						{% for i in 1..app.getSetting('core_ideas.max_votes_ideas') %}
-							<li class="num-{{ i }} num" data-num="{{ i }}">{{ i }}</li>
-						{% endfor %}
-					</ul>
-					<br class="clear" />
-				</form>
-			</div>
-		</div>
+		{% include 'UserBundle:Ideas:vote-widget.html.twig' %}
 	</div>
 
 	{% include 'UserBundle:Common:content-subscribe.html.twig' with {'page_type': 'idea', 'page_id': idea.id} %}

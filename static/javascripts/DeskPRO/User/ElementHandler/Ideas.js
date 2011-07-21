@@ -10,6 +10,13 @@ DeskPRO.User.ElementHandler.Ideas = new Orb.Class({
 
 		this.loadingTpl = $('.loading-tpl:first', this.el).detach();
 		this.content = $('.portal_ideas:first', this.el);
+
+		var voteHelper = new DeskPRO.User.ElementHandler.Helper.IdeaVote();
+		$('.idea-btn', this.el).click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			voteHelper.openMenu($(this));
+		});
 	},
 
 	initFilterForm: function() {

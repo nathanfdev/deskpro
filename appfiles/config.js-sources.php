@@ -284,7 +284,7 @@ $CONFIG['user']['common'] = array(
 		'javascripts/DeskPRO/User/ElementHandler/IdeaView.js',
 		'javascripts/DeskPRO/User/ElementHandler/Ideas.js',
 		'javascripts/DeskPRO/User/ElementHandler/MoreLoader.js',
-
+		'javascripts/DeskPRO/User/ElementHandler/Helper/IdeaVote.js',
 	)
 );
 

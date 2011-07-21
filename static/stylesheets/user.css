@@ -1245,11 +1245,11 @@ ul.sidebar-nav li.profile span {
     padding: 6px;
 }
 
-#idea_vote_menu_wrap {
+.idea_vote_menu_wrap {
     position: absolute;
 }
 
-#idea_vote_menu {
+.idea_vote_menu {
     background-color: #EDEFF2;
 
     -webkit-box-shadow: 2px 2px 10px 0px rgba(0,0,0, 0.6);
@@ -1267,7 +1267,7 @@ ul.sidebar-nav li.profile span {
     font-size: 11px;
 }
 
-#idea_vote_menu .close-trigger {
+.idea_vote_menu .close-trigger {
     display: block;
     position: absolute;
     width: 13px;
@@ -1283,13 +1283,13 @@ ul.sidebar-nav li.profile span {
     right: 0;
 }
 
-#idea_vote_menu ul {
+.idea_vote_menu ul {
     margin: 0;
     padding: 0;
     list-style-type: none;
 }
 
-#idea_vote_menu ul li {
+.idea_vote_menu ul li {
     background-color: #fff;
     border: 1px solid #AEB0B2;
     margin-right: 6px;
@@ -1302,7 +1302,7 @@ ul.sidebar-nav li.profile span {
     line-height: 15px;
 }
 
-#idea_vote_menu ul li.on {
+.idea_vote_menu ul li.on {
     border: 1px solid #000;
     background-color: #FAFDDF;
 }
@@ -1580,8 +1580,8 @@ ul.comments li .message {
 
 .portal_nortifications {
     background-color: #F0F3F7;
-    background: #F0F3F7 url(../images/icons/info-large.png) no-repeat 6px 6px;
-    padding: 8px 8px 8px 58px;
+    background: #F0F3F7 url(../images/icons/info-small.png) no-repeat 6px 6px;
+    padding: 4px 4px 4px 35px;
 
     min-height: 60px;
 
@@ -1601,7 +1601,8 @@ ul.comments li .message {
     background-color: #fff;
     border: 1px solid #E3E3E3;
     border-top: none;
-    padding:  6px;
+    padding: 2px 3px 2px 3px;
+    font-size: 11px;
 }
 
 .portal_nortifications ul li:first-child {
@@ -1620,7 +1621,7 @@ ul.comments li .message {
     overflow: hidden;
     background: url(../images/close-small.png) no-repeat 0 0;
     float: right;
-    margin-top: 3px;
+    margin-top: 2px;
     cursor: pointer;
 }
 
