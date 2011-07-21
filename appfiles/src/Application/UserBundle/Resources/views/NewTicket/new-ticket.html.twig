@@ -21,7 +21,7 @@
 	<h1>Submit a ticket</h1>
 </div>
 
-<form action="{{ path('user_tickets_new') }}" method="post">
+<form action="{{ path('user_tickets_new') }}" method="post" enctype="multipart/form-data">
 <input type="hidden" name="process" value="1" />
 
 <div class="input-form">
@@ -140,6 +140,13 @@
 		<td style="vertical-align: top; padding-top: 8px;">Message</td>
 		<td>
 			{{ form_widget(form.ticket.message) }}
+		</td>
+	</tr>
+
+	<tr>
+		<td>Attachment</td>
+		<td>
+			{{ form_widget(form.ticket.new_upload) }}
 		</td>
 	</tr>
 

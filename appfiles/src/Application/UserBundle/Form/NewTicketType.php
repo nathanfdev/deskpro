@@ -93,6 +93,7 @@ class NewTicketType extends AbstractType
 
 		$ticket_builder->add('subject', 'text');
 		$ticket_builder->add('message', 'textarea');
+		$ticket_builder->add('new_upload', 'file', array('type' => 'file', 'required' => false)); // type=file so we get UploadedFile object
 
 		if (!empty($ticket_options['departments_hierarchy'])) {
 			$ticket_builder->add('department_id', 'choice', array(

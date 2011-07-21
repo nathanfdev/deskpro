@@ -116,6 +116,25 @@ class NewTicket
 				$ticket_message['message'] = '(no message)';
 			}
 
+			$attach = false;
+			if ($this->ticket->new_upload) {
+				$desc = App::getApi('filestorage')->createRandomPath();
+
+				$desc->write(file_get_contents($this->ticket->new_upload->getPath()), array(
+					'content_type' => $this->ticket->new_upload->getMimeType(),
+					'filename' => $this->ticket->new_upload->getOriginalName()
+				));
+
+				$blob_id = $desc->getPath();
+				$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+				$attach = new \Application\DeskPRO\Entity\TicketAttachment();
+				$attach['blob'] = $blob;
+				$attach['person'] = $person;
+
+				$ticket_message->addAttachment($attach);
+			}
+
 			$this->new_message = $ticket_message;
 
 			if ($id = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {

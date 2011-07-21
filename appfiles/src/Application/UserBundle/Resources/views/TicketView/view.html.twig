@@ -105,7 +105,7 @@ ul.attachment-list > li img.preview {
 					{% if message_to_attach[message.id] %}
 						<ul class="attachment-list">
 							{% for attach_id in message_to_attach[message.id] %}
-								{% set ticket_attach = ticket_attachments[attach_id] %}
+								{% set ticket_attach = attachments[attach_id] %}
 								<li class="{% if ticket_attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{ticket_attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
 									{% if ticket_attach.blob.isImage() %}
 										<img src="{{ path('serve_blob', {'blob_auth_id': ticket_attach.blob.auth_id, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" />

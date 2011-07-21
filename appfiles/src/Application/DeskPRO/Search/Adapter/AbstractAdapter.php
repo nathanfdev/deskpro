@@ -312,9 +312,21 @@ abstract class AbstractAdapter implements CapabilityInformerInterface, PersonCon
 
 
 	/**
+	 * Update the search index with the specified object
+	 *
+	 * @param  $object
+	 * @return void
+	 */
+	public function updateObjectInIndex($object)
+	{
+		$this->updateDocumentsInIndex(array($object));
+	}
+
+
+	/**
 	 * Update the search index with the specified objects
 	 *
-	 * @param  $objects
+	 * @param stdClass[] $objects
 	 * @return void
 	 */
 	public function updateObjectsInIndex(array $objects)

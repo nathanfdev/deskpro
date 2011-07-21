@@ -37,6 +37,10 @@ class TicketFilter extends EntityRepository
 			}
 		}
 
+		if (!$agent_ids) {
+			return array();
+		}
+
 		$teams = App::getEntityRepository('DeskPRO:AgentTeam')->getAllTeamIdsForAgents($agents);
 		if (!$teams) $teams = array(0);
 

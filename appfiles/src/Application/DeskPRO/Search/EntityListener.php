@@ -49,7 +49,7 @@ class EntityListener
 			return;
 		}
 
-		$this->adapter->updateObjectInIndex($entity);
+		//$this->adapter->updateObjectInIndex($entity);
 	}
 
 	public function Doctrine_onPostUpdate(DoctrineEvent $event)

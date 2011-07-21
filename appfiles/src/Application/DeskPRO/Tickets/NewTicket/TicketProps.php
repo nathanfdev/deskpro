@@ -20,6 +20,11 @@ class TicketProps
 {
 	public $subject = '';
 	public $message = '';
+
+	/**
+	 * @var \Symfony\Component\HttpFoundation\File\UploadedFile
+	 */
+	public $new_upload = null;
 	
 	public $department_id = 0;
 	public $category_id   = 0;
