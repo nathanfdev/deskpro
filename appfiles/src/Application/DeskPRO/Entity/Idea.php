@@ -221,6 +221,13 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id . '-' . Strings::slugifyTitle($this->title);
 	}
 
+	public function getLink()
+	{
+		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->getUrlSlug()), true);
+
+		return $url;
+	}
+
 	public function getPermalink()
 	{
 		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->id), true);

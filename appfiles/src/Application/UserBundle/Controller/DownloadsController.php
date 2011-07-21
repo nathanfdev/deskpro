@@ -179,6 +179,16 @@ class DownloadsController extends AbstractController
 			return $this->redirectRoute('user_downloads_file', array('slug' => $download->getUrlSlug()), 301);
 		}
 
+		// Get the user subscription
+		if (!$this->person->isGuest()) {
+			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($download, $this->person);
+			if ($subscription) {
+				$subscription->touch();
+				$this->em->persist($subscription);
+				$this->em->flush();
+			}
+		}
+
 		$category = $download->category;
 		$category_path = $category->getTreeParents();
 
@@ -186,6 +196,8 @@ class DownloadsController extends AbstractController
 		$related_content = $related_finder->getRelatedEntities();
 
 		return $this->render('UserBundle:Downloads:file.html.twig', array(
+			'subscription' => $subscription,
+
 			'download' => $download,
 			'category_path' => $category_path,
 

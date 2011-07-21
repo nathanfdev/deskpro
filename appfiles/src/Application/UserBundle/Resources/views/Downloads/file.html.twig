@@ -21,6 +21,8 @@
 
 	<div class="post">{{ download.content_html|raw }}</div>
 
+	{% include 'UserBundle:Common:content-subscribe.html.twig' with {'page_type': 'download', 'page_id': download.id} %}
+
 	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': download.labels} %}
 </div>
 {% endblock %}

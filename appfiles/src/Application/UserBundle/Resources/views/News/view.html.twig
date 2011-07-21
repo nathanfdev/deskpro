@@ -26,6 +26,8 @@
 
 	<div class="post">{{ post.content_html|raw }}</div>
 
+	{% include 'UserBundle:Common:content-subscribe.html.twig' with {'page_type': 'news', 'page_id': post.id} %}
+
 	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': post.labels} %}
 
 	{% if comments_widget %}

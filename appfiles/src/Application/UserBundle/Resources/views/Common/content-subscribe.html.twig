@@ -1,0 +1,8 @@
+<div class="subscribe-box">
+	{% if subscription %}
+		You are subscribed to this page. <a href="{{ path('user_profile_subdel', {'type': page_type, 'id': page_id}) }}">Unsubscribe</a>
+		or <a href="{{ path('user_profile_subs') }}">manage all your subscriptions</a>.
+	{% else %}
+		<a href="{{ path('user_profile_subadd', {'type': page_type, 'id': page_id}) }}">Subscribe</a> to changes made to this page.
+	{% endif %}
+</div>

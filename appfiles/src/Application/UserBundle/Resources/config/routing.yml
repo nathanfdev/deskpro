@@ -101,6 +101,18 @@ user_profile_emails_setdefault:
   pattern: /profile/emails/{email_id}/set-default
   defaults: { _controller: UserBundle:Profile:setDefaultEmail }
 
+user_profile_subs:
+  pattern: /profile/subscriptions
+  defaults: { _controller: UserBundle:Profile:subscriptions }
+
+user_profile_subadd:
+  pattern: /profile/subscriptions/add/{type}/{id}
+  defaults: { _controller: UserBundle:Profile:addSubscription }
+
+user_profile_subdel:
+  pattern: /profile/subscriptions/remove/{type}/{id}
+  defaults: { _controller: UserBundle:Profile:delSubscription }
+
 ################################################################################
 # Search
 ################################################################################

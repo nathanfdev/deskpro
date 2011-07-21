@@ -270,4 +270,61 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 			'email' => $email
 		));
 	}
+
+	############################################################################
+	# add subscription
+	############################################################################
+
+	public function addSubscriptionAction($type, $id)
+	{
+		$ent = 'DeskPRO:' . ucfirst($type);
+		$ent_class = 'Application\\DeskPRO\\Entity\\' . ucfirst($type);
+		if (!class_exists($ent_class)) {
+			return $this->createNotFoundException();
+		}
+
+		$object = App::findEntity($ent, $id);
+		if (!$object) {
+			return $this->createNotFoundException();
+		}
+
+		$sub = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($object, $this->person);
+		if (!$sub) {
+			$sub = \Application\DeskPRO\Entity\ContentSubscription::create($object, $this->person);
+			$this->em->persist($sub);
+			$this->em->flush($sub);
+		}
+
+		if ($this->request->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array('success' => true));
+		}
+
+		return $this->redirect($object->getLink());
+	}
+
+	public function delSubscriptionAction($type, $id)
+	{
+		$ent = 'DeskPRO:' . ucfirst($type);
+		$ent_class = 'Application\\DeskPRO\\Entity\\' . ucfirst($type);
+		if (!class_exists($ent_class)) {
+			return $this->createNotFoundException();
+		}
+
+		$object = App::findEntity($ent, $id);
+		if (!$object) {
+			return $this->createNotFoundException();
+		}
+
+		$sub = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($object, $this->person);
+		if ($sub) {
+			$this->em->remove($sub);
+			$this->em->flush($sub);
+		}
+
+		if ($this->request->isXmlHttpRequest()) {
+			return $this->createJsonResponse(array('success' => true));
+		}
+
+		return $this->redirect($object->getLink());
+	}
 }

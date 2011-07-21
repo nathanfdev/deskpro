@@ -135,6 +135,20 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 		return $this->id . '-' . $this->slug;
 	}
 
+	public function getLink()
+	{
+		$url = App::getRouter()->generate('user_downloads_file', array('slug' => $this->getUrlSlug()), true);
+
+		return $url;
+	}
+
+	public function getPermalink()
+	{
+		$url = App::getRouter()->generate('user_downloads_file', array('slug' => $this->id), true);
+
+		return $url;
+	}
+
 	public function getCategoryPath()
 	{
 		$path = array();

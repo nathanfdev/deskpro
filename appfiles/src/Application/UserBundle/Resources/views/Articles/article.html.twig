@@ -39,6 +39,8 @@
 
 	<div class="post">{{ article.content_html|raw }}</div>
 
+	{% include 'UserBundle:Common:content-subscribe.html.twig' with {'page_type': 'article', 'page_id': article.id} %}
+
 	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': article.labels} %}
 
 	<div class="user-vote">

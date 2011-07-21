@@ -33,6 +33,8 @@ class ArticlesController extends AbstractController
 	{
 		$page = $this->in->getUint('page');
 		$page = max(1, $page);
+
+		$per_page = 25;
 		
 		if ($slug) {
 			$category = App::getEntityRepository('DeskPRO:ArticleCategory')->getBySlug($slug);
@@ -246,6 +248,16 @@ class ArticlesController extends AbstractController
 			return $this->redirectRoute('user_articles_article', array('slug' => $article->getUrlSlug()), 301);
 		}
 
+		// Get the user subscription
+		if (!$this->person->isGuest()) {
+			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($article, $this->person);
+			if ($subscription) {
+				$subscription->touch();
+				$this->em->persist($subscription);
+				$this->em->flush();
+			}
+		}
+
 		$all_categories = array();
 		foreach ($article['categories'] as $cat) {
 			$cats = array();
@@ -283,6 +295,8 @@ class ArticlesController extends AbstractController
 		$related_content = $related_finder->getRelatedEntities();
 
 		return $this->render('UserBundle:Articles:article.html.twig', array(
+			'subscription' => $subscription,
+
 			'article' => $article,
 			'all_categories' => $all_categories,
 			'comments' => $comments,

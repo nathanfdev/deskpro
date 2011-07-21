@@ -134,6 +134,16 @@ class NewsController extends AbstractController
 			return $this->redirectRoute('user_news_view', array('slug' => $post->getUrlSlug()), 301);
 		}
 
+		// Get the user subscription
+		if (!$this->person->isGuest()) {
+			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($post, $this->person);
+			if ($subscription) {
+				$subscription->touch();
+				$this->em->persist($subscription);
+				$this->em->flush();
+			}
+		}
+
 		$categories = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();
 		$category = $post->category;
 		$category_path = $category->getTreeParents();
@@ -156,6 +166,7 @@ class NewsController extends AbstractController
 		$related_content = $related_finder->getRelatedEntities();
 
 		return $this->render('UserBundle:News:view.html.twig', array(
+			'subscription' => $subscription,
 			'post' => $post,
 			'category_path' => $category_path,
 			'category' => $category,

@@ -187,6 +187,16 @@ class IdeasController extends AbstractController
 			return $this->redirectRoute('user_ideas_view', array('slug' => $idea->getUrlSlug()), 301);
 		}
 
+		// Get the user subscription
+		if (!$this->person->isGuest()) {
+			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($idea, $this->person);
+			if ($subscription) {
+				$subscription->touch();
+				$this->em->persist($subscription);
+				$this->em->flush();
+			}
+		}
+
 		$categories = App::getEntityRepository('DeskPRO:IdeaCategory')->getRootNodes();
 
 		$category = $idea->category;
@@ -216,6 +226,8 @@ class IdeasController extends AbstractController
 		$related_content = $related_finder->getRelatedEntities();
 
 		return $this->render('UserBundle:Ideas:view.html.twig', array(
+			'subscription' => $subscription,
+
 			'num_votes' => $num_votes,
 			'num_votes_this' => $num_votes_this,
 			'num_votes_remain' => $num_votes_remain,
