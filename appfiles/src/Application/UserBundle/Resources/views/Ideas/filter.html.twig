@@ -1,6 +1,6 @@
 {% extends 'UserBundle::layout-partial-aware.html.twig' %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_ideas') }}">Feedback</a></li>
+	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
 {% endblock %}
 {% block content %}
 <div class="with-handler" data-element-handler="DeskPRO.User.ElementHandler.Ideas" {% if is_partial_request() == 'portal' %}data-ajax-update="1"{% endif %}>
@@ -9,7 +9,7 @@
 		<div style="float: right">
 			<a class="dp-button x-small" href="{{ path('user_ideas_newidea') }}">Submit Idea</a>
 		</div>
-		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Feedback') }}</a></h2>
+		<h2><a href="{{ path('user_ideas') }}">{{ title|default('Ideas') }}</a></h2>
 	</div>
 
 	<div class="content-wrapper">

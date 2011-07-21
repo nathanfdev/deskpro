@@ -3,15 +3,15 @@
 <script src="{{ asset('javascripts/DeskPRO/User/ElementHandler/NewIdea.js') }}"></script>
 {% endblock %}
 {% block breadcrumb %}
-	<li><a href="{{ path('user_ideas') }}">Feedback</a></li>
-	<li><a href="{{ path('user_ideas_newidea') }}">Submit Feedback</a></li>
+	<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+	<li><a href="{{ path('user_ideas_newidea') }}">Submit Idea</a></li>
 {% endblock %}
 {% block content %}
 
 <div class="new-idea with-handler" data-element-handler="DeskPRO.User.ElementHandler.NewIdea" data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'idea'}) }}">
 
 <div class="page-title">
-	<h1>Submit Feedback</h1>
+	<h1>Submit Idea</h1>
 </div>
 
 <form action="{{ path('user_ideas_newidea') }}" method="post">

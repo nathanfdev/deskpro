@@ -163,15 +163,15 @@ user_tickets_participants_remove:
   defaults: { _controller: UserBundle:Tickets:removeParticipant }
 
 user_tickets_feedback:
-  pattern: /ticket-edit/{ticket_ref}/feedback/{message_id}
+  pattern: /ticket-edit/{ticket_ref}/ideas/{message_id}
   defaults: { _controller: UserBundle:Tickets:feedback }
 
 user_tickets_feedback_save:
-  pattern: /ticket-edit/{ticket_ref}/feedback/{message_id}/save
+  pattern: /ticket-edit/{ticket_ref}/ideas/{message_id}/save
   defaults: { _controller: UserBundle:Tickets:feedbackSave }
 
 user_tickets_feedback_closeticket:
-  pattern: /ticket-edit/{ticket_ref}/feedback/{message_id}/close-ticket
+  pattern: /ticket-edit/{ticket_ref}/ideas/{message_id}/close-ticket
   defaults: { _controller: UserBundle:Tickets:feedbackCloseTicket }
 
 ################################################################################
@@ -257,36 +257,36 @@ user_news_newcomment:
 ################################################################################
 
 user_ideas:
-  pattern: /feedback/{status}/{slug}
+  pattern: /ideas/{status}/{slug}
   defaults: { _controller: UserBundle:Ideas:filter, status: 'new', slug: 'all' }
   requirements: { slug: "((\d+(\-.*?)?)?)|all", status: "(popular|new|active|closed)" }
 
 user_ideas_view:
-  pattern: /feedback/ideas/{slug}
+  pattern: /ideas/ideas/{slug}
   defaults: { _controller: UserBundle:Ideas:view }
 
 user_ideas_newidea:
-  pattern: /feedback/new-idea
+  pattern: /ideas/new-idea
   defaults: { _controller: UserBundle:Ideas:newIdea }
 
 user_ideas_newcomment:
-  pattern: /feedback/new-comment/{idea_id}
+  pattern: /ideas/new-comment/{idea_id}
   defaults: { _controller: UserBundle:Ideas:newComment }
 
 user_ideas_vote:
-  pattern: /feedback/vote/{idea_id}
+  pattern: /ideas/vote/{idea_id}
   defaults: { _controller: UserBundle:Ideas:vote }
 
 user_ideas_status:
-  pattern: /feedback/all/{status}
+  pattern: /ideas/all/{status}
   defaults: { _controller: UserBundle:Ideas:index, slug: 0 }
 
 user_ideas_cat:
-  pattern: /feedback/{slug}
+  pattern: /ideas/{slug}
   defaults: { _controller: UserBundle:Ideas:index, status: new }
 
 user_ideas_cat_status:
-  pattern: /feedback/{slug}/{status}
+  pattern: /ideas/{slug}/{status}
   defaults: { _controller: UserBundle:Ideas:index }
 
 ################################################################################
