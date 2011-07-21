@@ -180,6 +180,7 @@ class DownloadsController extends AbstractController
 		}
 
 		// Get the user subscription
+		$subscription = false;
 		if (!$this->person->isGuest()) {
 			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($download, $this->person);
 			if ($subscription) {

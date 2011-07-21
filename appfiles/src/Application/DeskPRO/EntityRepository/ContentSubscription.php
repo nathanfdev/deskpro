@@ -56,4 +56,13 @@ class ContentSubscription extends EntityRepository
 			return null;
 		}
 	}
+
+	public function getSubscriptionsForPerson(PersonEntity $person)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT s
+			FROM DeskPRO:ContentSubscription s
+			WHERE s.person = ?1
+		")->execute(array(1 => $person));
+	}
 }

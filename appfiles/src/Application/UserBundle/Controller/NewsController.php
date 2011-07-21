@@ -135,6 +135,7 @@ class NewsController extends AbstractController
 		}
 
 		// Get the user subscription
+		$subscription = false;
 		if (!$this->person->isGuest()) {
 			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($post, $this->person);
 			if ($subscription) {

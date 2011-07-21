@@ -249,6 +249,7 @@ class ArticlesController extends AbstractController
 		}
 
 		// Get the user subscription
+		$subscription = false;
 		if (!$this->person->isGuest()) {
 			$subscription = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscription($article, $this->person);
 			if ($subscription) {

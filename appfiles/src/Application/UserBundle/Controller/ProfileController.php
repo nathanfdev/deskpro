@@ -272,8 +272,36 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 	}
 
 	############################################################################
-	# add subscription
+	# subscriptions
 	############################################################################
+
+	public function subscriptionsAction()
+	{
+		$unsorted_subscriptions = App::getEntityRepository('DeskPRO:ContentSubscription')->getSubscriptionsForPerson($this->person);
+
+		$subscriptions = array(
+			'article' => array(),
+			'download' => array(),
+			'idea' => array(),
+			'news' => array(),
+		);
+
+		foreach ($unsorted_subscriptions as $s) {
+			if ($s->article) {
+				$subscriptions['article'][] = $s;
+			} elseif ($s->download) {
+				$subscriptions['download'][] = $s;
+			} elseif ($s->idea) {
+				$subscriptions['idea'][] = $s;
+			} elseif ($s->news) {
+				$subscriptions['news'][] = $s;
+			}
+		}
+		
+		return $this->render('UserBundle:Profile:subscriptions.html.twig', array(
+			'subscriptions' => $subscriptions
+		));
+	}
 
 	public function addSubscriptionAction($type, $id)
 	{
@@ -323,6 +351,10 @@ class ProfileController extends AbstractController implements RequireUserInterfa
 
 		if ($this->request->isXmlHttpRequest()) {
 			return $this->createJsonResponse(array('success' => true));
+		}
+
+		if ($this->in->getBool('return_sub')) {
+			return $this->redirectRoute('user_profile_subs');
 		}
 
 		return $this->redirect($object->getLink());
