@@ -5,6 +5,8 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
+		this._initLoginBox();
+		
 		this.menuEl = $('#omni_search_menu_wrap');
 		this.menuEl.detach().appendTo('body');
 
@@ -44,6 +46,56 @@ DeskPRO.User.ElementHandler.OmniSearch = new Orb.Class({
 		});
 	},
 
+	_initLoginBox: function() {
+		var self = this;
+		$('#omni_login_button').click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+			self.toggleLoginBox();
+		});
+
+		this.omni_login_button = $('#omni_login_button');
+		this.omni_login_box = $('#omni_login_box');
+		this.omni_login_box.detach().appendTo('body');
+
+		this.omni_login_box.click(function(ev) {
+			ev.stopPropagation();
+		});
+
+		$(document).click(function() {
+			self.closeLoginBox();
+		});
+	},
+
+	toggleLoginBox: function() {
+		if (this.omni_login_box.is('.on')) {
+			this.closeLoginBox();
+		} else {
+			this.openLoginBox();
+		}
+	},
+
+	openLoginBox: function() {
+		this.omni_login_box.addClass('on');
+		this.omni_login_button.addClass('on');
+
+		var pos = this.omni_login_button.offset();
+
+		var top = pos.top + this.omni_login_button.outerHeight();
+		var left = (pos.left + this.omni_login_button.outerWidth()) - this.omni_login_box.outerWidth();
+
+		this.omni_login_box.css({
+			top: top,
+			left: left
+		});
+		this.omni_login_box.slideDown();
+	},
+
+	closeLoginBox: function() {
+		this.omni_login_box.removeClass('on');
+		this.omni_login_button.removeClass('on');
+		this.omni_login_box.slideUp('fast');
+	},
 
 	updateSearch: function() {
 
