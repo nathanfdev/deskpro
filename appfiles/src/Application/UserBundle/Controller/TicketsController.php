@@ -302,6 +302,21 @@ class TicketsController extends AbstractController
 	# feedback
 	################################################################################
 
+	public function closeAction($ticket_ref)
+	{
+		$ticket = $this->getTicketOr404($ticket_ref);
+		$ticket->setStatus(Entity\Ticket::STATUS_CLOSED);
+
+		App::getOrm()->transactional(function($em) use ($ticket) {
+			$em->persist($ticket);
+			$em->flush();
+		});
+
+		return $this->redirectRoute('user_tickets_view', array(
+			'ticket_ref' => $ticket['public_id']
+		));
+	}
+
 	public function feedbackAction($ticket_ref, $message_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_ref);
