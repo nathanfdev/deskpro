@@ -5,6 +5,96 @@ DeskPRO.User.ElementHandler.NewTicket = new Orb.Class({
 	Extends: DeskPRO.User.ElementHandler.ElementHandlerAbstract,
 
 	init: function() {
+		this.titleTxt = $('#newticket_ticket_subject');
+		this.messageTxt = $('#newticket_ticket_message');
+
+		this._initSuggestionsBox();
+		this._initFields();
+	},
+
+	//#########################################################################
+	//# Suggestions
+	//#########################################################################
+
+	_initSuggestionsBox: function() {
+		this.suggestionsBox = $('.suggestions-box:first', this.el);
+		this.resultsEl = $('.results:first', this.suggestionsBox);
+
+		this.suggestionsUrl = this.el.data('suggestions-url');
+
+		this.sugTitleTimer = null;
+		this.sugMessageTimer = null;
+
+		this.titleTxt.keypress((function() {
+			if (this.sugTitleTimer) return;
+			this.sugTitleTimer = this.updateSuggestions.delay(400, this);
+		}).bind(this));
+
+		this.messageTxt.keypress((function() {
+			if (this.sugMessageTimer) return;
+			this.sugMessageTimer = this.updateSuggestions.delay(1200, this);
+		}).bind(this));
+	},
+
+	updateSuggestions: function() {
+
+		if (this.sugTitleTimer) {
+			window.clearTimeout(this.sugTitleTimer);
+			this.sugTitleTimer = null;
+		}
+		if (this.sugMessageTimer) {
+			window.clearTimeout(this.sugMessageTimer);
+			this.sugMessageTimer = null;
+		}
+
+		var content = (this.titleTxt.val().trim() + ' ' + this.messageTxt.val().trim()).trim();
+
+		if (!content.length) {
+			this.suggestionsBox.hide();
+			return;
+		}
+
+		// Already set to repeat
+		if (this.doSuggestResend) {
+			return;
+		}
+
+		if (this.isSuggestActive) {
+			this.doSuggestResend = true;
+			return;
+		}
+
+		this.isSuggestActive = true;
+
+		$.ajax({
+			url: this.suggestionsUrl,
+			dataType: 'html',
+			data: {'content': content},
+			context: this,
+			success: function(html) {
+				this.isSuggestActive = false;
+
+				if (this.doSuggestResend) {
+					this.doSuggestResend = false;
+					this.updateSuggestions();
+				}
+				
+				this.resultsEl.html(html);
+
+				if (!$('li:first', this.resultsEl).length) {
+					this.suggestionsBox.hide();
+				} else {
+					this.suggestionsBox.show();
+				}
+			}
+		});
+	},
+
+	//#########################################################################
+	//# Department and field stuff
+	//#########################################################################
+
+	_initFields: function() {
 		this.depSelect = $('select.department_id', this.el);
 		this.departmentId = 0;
 

@@ -15,7 +15,7 @@
 	{% endif %}
 {% endblock %}
 {% block content %}
-<div class="new-ticket with-handler" data-element-handler="DeskPRO.User.ElementHandler.NewTicket">
+<div class="new-ticket with-handler" data-element-handler="DeskPRO.User.ElementHandler.NewTicket" data-suggestions-url="{{ path('user_search_similarto', {'content_type': 'article'}) }}">
 
 <div class="page-title">
 	<h1>Submit a ticket</h1>
@@ -140,6 +140,10 @@
 		<td style="vertical-align: top; padding-top: 8px;">Message</td>
 		<td>
 			{{ form_widget(form.ticket.message) }}
+			<div class="suggestions-box" style="display: none">
+				Have you tried looking at these knowledgebase articles?
+				<div class="results"></div>
+			</div>
 		</td>
 	</tr>
 
