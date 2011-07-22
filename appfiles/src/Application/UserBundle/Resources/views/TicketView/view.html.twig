@@ -40,54 +40,48 @@ ul.attachment-list > li img.preview {
 		<h2>{{ ticket.subject }}</h2>
 	</div>
 	<div class="content-list" style="margin-bottom: 8px;">
-		<div class="item">
-			<table cellspacing="5" cellpadding="0" border="0" width="100%"><tr>
-				<td>
-					<small>{{ phrase('core_tickets.department') }}</small><br />
-					{{ phrase_object(ticket.department, 'full') }}
-				</td>
-				{% if ticket.category %}
-				<td>
-					<small>{{ phrase('core_tickets.category') }}</small><br />
-					{{ phrase_object(ticket.category, 'full') }}
-				</td>
-				{% endif %}
-				{% if ticket.product %}
-				<td>
-					<small>{{ phrase('core_tickets.product') }}</small><br />
-					{{ phrase_object(ticket.product, 'full') }}
-				</td>
-				{% endif %}
-				{% if ticket.priority %}
-				<td>
-					<small>{{ phrase('core_tickets.priority') }}</small><br />
-					{{ phrase(ticket.priority) }}
-				</td>
-				{% endif %}
-				<td>
-					<small>{{ phrase('core_tickets.status') }}</small><br />
-					{{ phrase('core_tickets.status_' ~ ticket.status) }}
-				</td>
-				<td>
-					<small>{{ phrase('core_tickets.agent') }}</small><br />
-					{{ ticket.agent.display_name|default(phrase('core.unassigned')) }}
-				</td>
-			</tr></table>
-		</div>
-		<div class="item">
-			<strong>Ticket Starter</strong>: {{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;
+		<div class="item def-list">
+			<dl>
+				<dt>{{ phrase('core_tickets.department') }}</dt>
+				<dd>{{ phrase_object(ticket.department, 'full') }}</dd>
 
-			{% if user_participants|length %}
-			<br /><br />
-			<strong>Ticket participants</strong><br />
-			<ul>
-				{% for part in user_participants %}
-					<li>
-						{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
-					</li>
-				{% endfor %}
-			</ul>
+			{% if ticket.category %}
+				<dt>{{ phrase('core_tickets.category') }}</dt>
+				<dd>{{ phrase_object(ticket.category, 'full') }}</dd>
 			{% endif %}
+
+			{% if ticket.product %}
+				<dt>{{ phrase('core_tickets.product') }}</dt>
+				<dd>{{ phrase_object(ticket.product, 'full') }}</dd>
+			{% endif %}
+
+			{% if ticket.priority %}
+				<dt>{{ phrase('core_tickets.priority') }}</dt>
+				<dd>{{ phrase_object(ticket.priority) }}</dd>
+			{% endif %}
+
+				<dt>{{ phrase('core_tickets.status') }}</dt>
+				<dd>{{ phrase('core_tickets.status_' ~ ticket.status) }}</dd>
+
+				<dt>{{ phrase('core_tickets.agent') }}</dt>
+				<dd>{{ ticket.agent.display_name|default(phrase('core.unassigned')) }}</dd>
+
+				<dt>Ticket Starter</dt>
+				<dd>{{ ticket.person.display_name }} &lt;{{ ticket.person.email_address }}&gt;</dd>
+
+				{% if user_participants|length %}
+					<dt>CCed</dt>
+					<dd>
+						<ul>
+							{% for part in user_participants %}
+								<li>
+									{{ part.person.display_name }} &lt;{{ part.person.email_address }}&gt;
+								</li>
+							{% endfor %}
+						</ul>
+					</dd>
+				{% endif %}
+			</dl>
 		</div>
 	</div>
 

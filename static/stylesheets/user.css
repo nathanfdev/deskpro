@@ -940,6 +940,43 @@ button.cupid-green {
     margin-bottom: 10px;
 }
 
+.content-item .def-list {
+    padding: 0 !important;
+}
+
+.content-item .item dl {
+  letter-spacing:-0.31em;
+  word-spacing:-0.43em;
+    margin:  0;
+}
+
+.content-item .item dt {
+    width: 15%;
+    border-right: 1px solid #F4F4F4;
+    background-color: #FAFBFB;
+}
+
+.content-item .item dd {
+    width: 77%;
+}
+
+.content-item .item dt, .content-item .item dd {
+  display:inline-block;
+  zoom:1;
+  letter-spacing:normal;
+  word-spacing:normal;
+  vertical-align:top;
+  padding:3px 2% 4px;
+  margin:0;
+  border-top:1px solid #F4F4F4;
+}
+
+.content-item .item dt:first-of-type, .content-item .item dd:first-of-type { border-top: none; }
+
+.content-item .item dt {
+  margin-right:-1px;
+}
+
 .content-item .heading input, .content-item .heading select {
     margin: 0;
 }
