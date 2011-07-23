@@ -14,6 +14,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Download;
 use Application\DeskPRO\Searcher\DownloadSearch;
+use Application\DeskPRO\UI\RuleBuilder;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -60,6 +61,20 @@ class DownloadsController extends AbstractController
 			$searcher->addTerm(DownloadSearch::TERM_CATEGORY, 'is', $category['id']);
 		}
 
+		$terms = null;
+		if ($category) {
+			$searcher->addTerm(DownloadSearch::TERM_CATEGORY, 'is', $category['id']);
+		} else {
+			if ($this->in->getCleanValueArray('terms', 'raw' , 'discard')) {
+				$term_rules = RuleBuilder::newTermsBuilder();
+				$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+				foreach ($terms as $term) {
+					$searcher->addTerm($term['type'], $term['op'], $term['options']);
+				}
+			}
+		}
+
 		$total = $searcher->getCount();
 		$per_page = 20;
 		$pageinfo = Numbers::getPaginationPages($total, $this->in->getUint('page'), $per_page);
@@ -78,11 +93,17 @@ class DownloadsController extends AbstractController
 			$tpl = 'AgentBundle:Downloads:list-page.html.twig';
 		}
 
+		$download_options = array();
+		$download_options['categories'] = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
+
 		return $this->render($tpl, array(
-			'results'   => $results,
-			'category'  => $category,
-			'pageinfo'  => $pageinfo,
-			'page'      => $pageinfo['curpage']
+			'results'            => $results,
+			'download_options'   => $download_options,
+			'search_form'        => array('terms' => $searcher->getTerms()),
+			'terms_summary'      => $searcher->getSummary(),
+			'category'           => $category,
+			'pageinfo'           => $pageinfo,
+			'page'               => $pageinfo['curpage']
 		));
 	}
 }

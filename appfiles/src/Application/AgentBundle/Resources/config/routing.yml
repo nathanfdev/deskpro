@@ -751,7 +751,7 @@ agent_kb_drafts:
 
 agent_kb_cat:
   pattern: /kb/category/{category_id}
-  defaults: { _controller: AgentBundle:Kb:categoryList }
+  defaults: { _controller: AgentBundle:Kb:categoryList, category_id: '0' }
 
 agent_kb_validating:
   pattern: /kb/validating-articles
@@ -808,7 +808,7 @@ agent_news_view:
 
 agent_downloads_list:
   pattern: /downloads/list/{category_id}
-  defaults: { _controller: AgentBundle:Downloads:list, list: '0' }
+  defaults: { _controller: AgentBundle:Downloads:list, category_id: '0' }
 
 agent_downloads_view:
   pattern: /downloads/post/{download_id}

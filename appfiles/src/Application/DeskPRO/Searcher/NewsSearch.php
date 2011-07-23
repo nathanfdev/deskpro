@@ -26,6 +26,12 @@ class NewsSearch extends SearcherAbstract
 	protected $sql_parts = null;
 
 	/**
+	 * Summary of terms in phrases
+	 * @var array
+	 */
+	protected $summary = array();
+
+	/**
 	 * Run the search and return an array of matching ID's.
 	 *
 	 * @param int $limit

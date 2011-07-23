@@ -1,5 +1,8 @@
 <section id="publish_outline_news" class="deskpro-tab-item">
 	<ul class="nav-list">
+		<li data-route="listpane:{{ path('agent_news_list') }}">
+			<a>All</a>
+		</li>
 		{% for cat in news_cats %}
 			<li data-route="listpane:{{ path('agent_news_list', {'category_id':cat.id}) }}">
 				<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>

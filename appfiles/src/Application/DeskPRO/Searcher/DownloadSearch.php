@@ -23,6 +23,18 @@ class DownloadSearch extends SearcherAbstract
 	const ORDER_DOWNLOAD = 'num_downloads';
 
 	/**
+	 * From getSqlParts()
+	 * @var array
+	 */
+	protected $sql_parts = null;
+
+	/**
+	 * Summary of terms in phrases
+	 * @var array
+	 */
+	protected $summary = array();
+
+	/**
 	 * Run the search and return an array of matching ID's.
 	 *
 	 * @param int $limit
@@ -95,6 +107,21 @@ class DownloadSearch extends SearcherAbstract
 		$count = App::getDb()->fetchColumn($sql);
 
 		return $count;
+	}
+
+
+	/**
+	 * Get the summary of crtiera
+	 *
+	 * @return array
+	 */
+	public function getSummary()
+	{
+		$this->getSqlParts();
+
+		$summary = $this->summary;
+
+		return $summary;
 	}
 
 
@@ -194,6 +221,8 @@ class DownloadSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
+		if ($this->sql_parts !== null) return $this->sql_parts;
+		
 		$db = App::getDb();
 
 		$wheres = array();
@@ -209,6 +238,7 @@ class DownloadSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("downloads.id", $op, $choice, true);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
 
 				case self::TERM_CATEGORY:
@@ -222,10 +252,19 @@ class DownloadSearch extends SearcherAbstract
 					$ids = array_unique($ids);
 
 					$wheres[] = $this->_choiceMatch('downloads.category_id', $op, $ids);
+
+					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryNames((array)$choice);
+						return $titles;
+					});
 					break;
 
 				case self::TERM_DOWNLOADS:
+					$choice = (array)$choice;
+					$choice = array_values($choice);
+						
 					$wheres[] = $this->_rangeMatch('downloads.num_downloads', $op, $choice);
+					$this->summary[] = $this->_rangeSummary('Downloads', $op, $choice);
 					break;
 
 				case self::TERM_POPULAR:
@@ -236,6 +275,7 @@ class DownloadSearch extends SearcherAbstract
 					// this check needed because usually the option is a checkbox, and the type/op fields would still get picekd up
 					if ($choice) {
 						$wheres[] = $this->_rangeMatch('downloads.num_downloads', 'gte', App::getSetting('core_downloads.popular_downloads'));
+						$this->summary[] = 'Popular';
 					}
 					break;
 
@@ -253,6 +293,7 @@ class DownloadSearch extends SearcherAbstract
 
 				case self::TERM_DATE_CREATED:
 					$wheres[] = $this->_dateMatch('downloads.date_created', $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
 					break;
 
 				case self::TERM_LABEL:
@@ -265,6 +306,8 @@ class DownloadSearch extends SearcherAbstract
 						}
 						$choices_in = implode(',', $choices_in);
 					}
+
+					$this->summary[] = $this->_choiceSummary($tr->phrase('core.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:
@@ -303,9 +346,13 @@ class DownloadSearch extends SearcherAbstract
 
 		$joins = array_unique($joins);
 
-		return array(
+		$wheres = Arrays::removeEmptyString($wheres);
+
+		$this->sql_parts = array(
 			'joins' => $joins,
 			'wheres' => $wheres
 		);
+
+		return $this->sql_parts;
 	}
 }
