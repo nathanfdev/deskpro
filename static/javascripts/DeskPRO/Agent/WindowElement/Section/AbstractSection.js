@@ -185,15 +185,13 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 	 */
 	setListPageFragment: function(page) {
 
-		console.log('Setting page');
-
 		if (this.listPage) {
 			this.listPage.fireEvent('destroy');
 			this.listPage = null;
 		}
 
 		this.listPage = page;
-		var contentEl = $('> section.content', this.getListElement());
+		var contentEl = $('section.content:first', this.getListElement());
 		contentEl.empty();
 		contentEl.html(page.html);
 

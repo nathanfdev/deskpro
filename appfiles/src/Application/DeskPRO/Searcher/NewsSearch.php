@@ -20,6 +20,12 @@ class NewsSearch extends SearcherAbstract
 	const ORDER_DATE     = 'id';
 
 	/**
+	 * From getSqlParts()
+	 * @var array
+	 */
+	protected $sql_parts = null;
+
+	/**
 	 * Run the search and return an array of matching ID's.
 	 *
 	 * @param int $limit
@@ -179,6 +185,21 @@ class NewsSearch extends SearcherAbstract
 		return $order_by;
 	}
 
+	
+	/**
+	 * Get the summary of crtiera
+	 *
+	 * @return array
+	 */
+	public function getSummary()
+	{
+		$this->getSqlParts();
+
+		$summary = $this->summary;
+
+		return $summary;
+	}
+
 
 	/**
 	 * Get the SQL parts we need in the query.
@@ -187,7 +208,10 @@ class NewsSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
+		if ($this->sql_parts !== null) return $this->sql_parts;
+		
 		$db = App::getDb();
+		$tr = App::getTranslator();
 
 		$wheres = array();
 		$joins = array();
@@ -202,6 +226,7 @@ class NewsSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("news.id", $op, $choice, true);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
 
 				case self::TERM_PUBLISHED:
@@ -209,12 +234,37 @@ class NewsSearch extends SearcherAbstract
 						$choice = array_pop($choice);
 					}
 					if ($choice) {
-						$wheres[] = $this->_rangeMatch('news.is_published', $op, 1);
+						$wheres[] = $this->_rangeMatch('news.is_published', $op, $choice);
+						if ($choice) {
+							$this->summary[] = "Published";
+						} else {
+							$this->summary[] = "Not published";
+						}
+					}
+					break;
+
+				case 'is_published':
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+					if ($choice) {
+						$wheres[] = $this->_rangeMatch('news.is_published', 'is', 1);
+						$this->summary[] = "Published";
+					}
+					break;
+
+				case 'is_not_published':
+					if (is_array($choice)) {
+						$choice = array_pop($choice);
+					}
+					if ($choice) {
+						$wheres[] = $this->_rangeMatch('news.is_published', 'is', 0);
+						$this->summary[] = "Not published";
 					}
 					break;
 
 				case self::TERM_CATEGORY:
-					$base_ids = is_array($choice['category']) ? $choice['category'] : array($choice);
+					$base_ids = is_array($choice) ? $choice : array($choice);
 					$ids = array();
 
 					foreach ($base_ids as $id) {
@@ -224,10 +274,16 @@ class NewsSearch extends SearcherAbstract
 					$ids = array_unique($ids);
 
 					$wheres[] = $this->_choiceMatch('news.category_id', $op, $ids);
+
+					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryNames((array)$choice);
+						return $titles;
+					});
 					break;
 
 				case self::TERM_DATE_CREATED:
 					$wheres[] = $this->_dateMatch('news.date_created', $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
 					break;
 
 				case self::TERM_LABEL:
@@ -240,6 +296,8 @@ class NewsSearch extends SearcherAbstract
 						}
 						$choices_in = implode(',', $choices_in);
 					}
+
+					$this->summary[] = $this->_choiceSummary($tr->phrase('core.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:
@@ -278,9 +336,11 @@ class NewsSearch extends SearcherAbstract
 
 		$joins = array_unique($joins);
 
-		return array(
+		$this->sql_parts = array(
 			'joins' => $joins,
 			'wheres' => $wheres
 		);
+
+		return $this->sql_parts;
 	}
 }

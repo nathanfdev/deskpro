@@ -795,7 +795,7 @@ agent_glossary_saveword_json:
 
 agent_news_list:
   pattern: /news/list/{category_id}
-  defaults: { _controller: AgentBundle:News:list, list: '0' }
+  defaults: { _controller: AgentBundle:News:list, category_id: '0' }
 
 agent_news_view:
   pattern: /news/post/{news_id}

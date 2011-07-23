@@ -14,6 +14,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\News;
 use Application\DeskPRO\Searcher\NewsSearch;
+use Application\DeskPRO\UI\RuleBuilder;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -61,8 +62,21 @@ class NewsController extends AbstractController
 		$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
 		$searcher->setPersonContext($this->person);
 
+		$terms = null;
 		if ($category) {
 			$searcher->addTerm(NewsSearch::TERM_CATEGORY, 'is', $category['id']);
+			$searcher->addTerm('is_published', 'is', 1);
+		} else {
+			if ($this->in->getCleanValueArray('terms', 'raw' , 'discard')) {
+				$term_rules = RuleBuilder::newTermsBuilder();
+				$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+				foreach ($terms as $term) {
+					$searcher->addTerm($term['type'], $term['op'], $term['options']);
+				}
+			} else {
+				$searcher->addTerm('is_published', 'is', 1);
+			}
 		}
 
 		$total = $searcher->getCount();
@@ -83,11 +97,17 @@ class NewsController extends AbstractController
 			$tpl = 'AgentBundle:News:list-page.html.twig';
 		}
 
+		$news_options = array();
+		$news_options['categories'] = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
+
 		return $this->render($tpl, array(
-			'results'   => $results,
-			'category'  => $category,
-			'pageinfo'  => $pageinfo,
-			'page'      => $pageinfo['curpage']
+			'results'        => $results,
+			'news_options'   => $news_options,
+			'search_form'    => array('terms' => $searcher->getTerms()),
+			'terms_summary'  => $searcher->getSummary(),
+			'category'       => $category,
+			'pageinfo'       => $pageinfo,
+			'page'           => $pageinfo['curpage']
 		));
 	}
 }
