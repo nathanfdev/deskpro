@@ -304,11 +304,15 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$this->categories->add($cat);
 	}
 
-	public function getCategoryNames($sep = ', ')
+	public function getCategoryNames($sep = ', ', $full = true)
 	{
 		$cats = array();
 		foreach ($this->categories as $cat) {
-			$cats[] = $cat->getFullTitle();
+			if ($full) {
+				$cats[] = $cat->getFullTitle();
+			} else {
+				$cats[] = $cat['title'];
+			}
 		}
 
 		return implode($sep, $cats);

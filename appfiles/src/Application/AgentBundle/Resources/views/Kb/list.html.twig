@@ -1,45 +1,20 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbList';
-pageMeta.title = 'Articles';
 </script>
+<div class="layout-content">
 <div class="content">
-	<div class="inner-box-tab-content top-box">
-		<ul>
-			<li>
-				<label>Articles</label>
-				<span class="counter counter-your">{{articles|length}}</span>
-			</li>
-			<li class="total on">
-				<label class="with-route" data-route="kb_article_edit:{{ path('agent_kb_newarticle', {'in_category': category.id}) }}" style="cursor: pointer;">Add Article</label>
-			</li>
-		</ul>
-	</div>
 
-	<div class="pad wrap-article">
-		<div class="inner-box-tab-content box-list no-pad">
-			<table class="list" cellspacing="0" width="100%">
-				<thead class="display-options-trigger dbl-click-trigger nosel">
-					<tr>
-						<th>Title</th>
-						<th>Author</th>
-					</tr>
-				</thead>
+	<header class="section-header">
+		<h1>
+			Articles
+		</h1>
+	</header>
 
-				{% for article in articles %}
-					<tr class="line-1 article article-{{art.id}}">
-						<td>
-							{% if is_agent %}
-								<a class="with-route" data-route="kb_article_edit:{{ path('agent_kb_article', {'article_id': article.id, 'view':1}) }}">
-							{% else %}
-								<a class="with-route" data-route="kb_article_edit:{{ path('agent_kb_article', {'article_id': article.id}) }}">
-							{% endif %}
-								{{ article.title }}
-							</a>
-						</td>
-						<td>{{ article.person.display_name }}</td>
-					</tr>
-				{% endfor %}
-			</table>
-		</div>
-	</div>
+	{% include 'AgentBundle:Kb:search-form.html.twig' %}
+
+	<section class="kb-simple-list deskpro-results-list">
+		{% include 'AgentBundle:Kb:list-page.html.twig' %}
+	</section>
+
+</div>
 </div>

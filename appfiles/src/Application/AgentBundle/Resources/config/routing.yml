@@ -749,9 +749,13 @@ agent_kb_drafts:
   pattern: /kb/drafts
   defaults: { _controller: AgentBundle:Kb:draftList }
 
+agent_kb_list:
+  pattern: /kb/list/{category_id}
+  defaults: { _controller: AgentBundle:Kb:list, category_id: '0' }
+
 agent_kb_cat:
   pattern: /kb/category/{category_id}
-  defaults: { _controller: AgentBundle:Kb:categoryList, category_id: '0' }
+  defaults: { _controller: AgentBundle:Kb:list }
 
 agent_kb_validating:
   pattern: /kb/validating-articles

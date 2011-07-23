@@ -25,6 +25,18 @@ class ArticleSearch extends SearcherAbstract
 	const ORDER_VIEWS = 'view_count';
 
 	/**
+	 * From getSqlParts()
+	 * @var array
+	 */
+	protected $sql_parts = null;
+
+	/**
+	 * Summary of terms in phrases
+	 * @var array
+	 */
+	protected $summary = array();
+
+	/**
 	 * Run the search and return an array of matching ID's.
 	 *
 	 * @param array $limit
@@ -99,6 +111,21 @@ class ArticleSearch extends SearcherAbstract
 		return $count;
 	}
 
+
+	/**
+	 * Get the summary of crtiera
+	 *
+	 * @return array
+	 */
+	public function getSummary()
+	{
+		$this->getSqlParts();
+
+		$summary = $this->summary;
+
+		return $summary;
+	}
+	
 
 	/**
 	 * Get the SQL query that'll fetch the results
@@ -196,7 +223,10 @@ class ArticleSearch extends SearcherAbstract
 	 */
 	public function getSqlParts()
 	{
+		if ($this->sql_parts !== null) return $this->sql_parts;
+		
 		$db = App::getDb();
+		$tr = App::getTranslator();
 
 		$wheres = array();
 		$joins = array();
@@ -211,6 +241,7 @@ class ArticleSearch extends SearcherAbstract
 			switch ($term) {
                 case self::TERM_ID:
 					$wheres[] = $this->_rangeMatch("articles.id", $op, $choice, true);
+					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
 
 				case self::TERM_HIDDEN_STATUS:
@@ -218,7 +249,31 @@ class ArticleSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_STATUS:
-					$wheres[] = $this->_stringMatch('articles.status', $op, $choice);
+
+					$choice = (array)$choice;
+					$choice = array_pop($choice);
+
+					// Normal vis status
+					if (strpos($choice, '.') === false){
+						$status = $choice;
+						$hidden_status = '';
+
+					// Formatted: hidden.hidden_status
+					} else {
+						list ($status, $hidden_status) = explode('.', $choice, 2);
+					}
+
+					if ($hidden_status) {
+						$wheres[] = $this->_stringMatch('articles.hidden_status', $op, $hidden_status);
+					} else {
+						$wheres[] = $this->_stringMatch('articles.status', $op, $status);
+					}
+
+					$phrase = 'core.x_is_y';
+					if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
+						$phrase = 'core.x_is_not_y';
+					}
+					$this->summary[] = $tr->phrase($phrase, array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status)));
 					break;
 
 				case self::TERM_CATEGORY:
@@ -237,6 +292,12 @@ class ArticleSearch extends SearcherAbstract
 					);
 
 					$wheres[] = $this->_choiceMatch("$join_name.category_id", $op, $ids);
+
+					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryNames((array)$choice);
+						return $titles;
+					});
+
 					break;
 
 				case self::TERM_VIEW_COUNT:
@@ -264,6 +325,7 @@ class ArticleSearch extends SearcherAbstract
 
 				case self::TERM_DATE_CREATED:
 					$wheres[] = $this->_dateMatch('articles.date_created', $op, $choice);
+					$this->summary[] = $this->_dateRangeSummary('Date created', $op, $choice);
 					break;
 
 				case self::TERM_LABEL:
@@ -276,6 +338,8 @@ class ArticleSearch extends SearcherAbstract
 						}
 						$choices_in = implode(',', $choices_in);
 					}
+
+					$this->summary[] = $this->_choiceSummary($tr->phrase('core.label'), $op, $choice);
 
 					switch ($op) {
 						case self::OP_IS:
@@ -314,9 +378,13 @@ class ArticleSearch extends SearcherAbstract
 
 		$joins = array_unique($joins);
 
-		return array(
+		$wheres = Arrays::removeEmptyString($wheres);
+
+		$this->sql_parts = array(
 			'joins' => $joins,
 			'wheres' => $wheres
 		);
+
+		return $this->sql_parts;
 	}
 }

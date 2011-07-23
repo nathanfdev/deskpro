@@ -1,0 +1,16 @@
+<section class="search-reuslts page-set" data-page="{{ page }}">
+	{% for article in results %}
+		<article class="article article-{{article.id}}">
+			<div class="title">
+				<a class="with-route" data-route="page:{{ path('agent_kb_article', {'article_id': article.id}) }}">{{ article.title }}</a>
+			</div>
+			<div class="info">
+				<ul>
+					<li>{{ article.getCategoryNames(', ', false) }}</li>
+					<li>{{ article.by_line }}</li>
+				</ul>
+			</div>
+			<time class="timeago" datetime="{{ article.date_created|date('c') }}">{{ article.date_created|date('M d') }}</time>
+		</article>
+	{% endfor %}
+</section>

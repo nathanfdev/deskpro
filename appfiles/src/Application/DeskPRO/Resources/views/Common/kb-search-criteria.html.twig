@@ -1,0 +1,75 @@
+{% if id or classname %}
+	{# if given an id or classname then we want a wrapper #}
+	<div {% if id %}id="{{ id }}"{% endif %} class="{{ classname }}" style="display:none">
+	<div class="row">
+		<div class="term">
+			<div class="remove">-</div>
+			<div class="controls">
+				<div class="type"></div>
+				<div class="op"></div>
+				<div class="options"></div>
+			</div>
+		</div>
+	</div>
+	<div class="type" title="Choose criteria..." data-rule-type="">
+	</div>
+{% endif %}
+<div class="type" title="Category" data-rule-type="category">
+	<div class="op">
+		<select name="op" class="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<select name="category">
+			{% for cat in term_options.categories %}
+				<option value="{{cat.id}}">{% if cat.depth %}{{ '--'|repeat(cat.depth) }} {%endif %}{{cat.title}}</option>
+			{% endfor %}
+		</select>
+	</div>
+</div>
+<div class="type" title="Status" data-rule-type="status">
+	<div class="op">
+		<select name="op" class="op">
+			<option value="is">is</option>
+			<option value="not">is not</option>
+		</select>
+	</div>
+	<div class="options">
+		<select name="status">
+			<option value="published">Published</option>
+			<option value="archived">Archived</option>
+			<option value="hidden">Hidden</option>
+			<option value="hidden.unpublished">Hidden: Unpublished</option>
+			<option value="hidden.validating">Hidden: Validating</option>
+			<option value="hidden.deleted">Hidden: Deleted</option>
+		</select>
+	</div>
+</div>
+<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	<div class="op">
+		<select name="op" class="op">
+			<option value="lte">before</option>
+			<option value="gte">after</option>
+			<option value="between">between</option>
+		</select>
+	</div>
+	<div class="options">
+		{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
+	</div>
+</div>
+<div class="type" title="Labels" data-rule-type="label">
+	<div class="op">
+		<select name="op" class="op">
+			<option value="is">include</option>
+			<option value="not">does not include</option>
+		</select>
+	</div>
+	<div class="options">
+		<input type="text" name="label" value="" />
+	</div>
+</div>
+{% if id or classname %}
+</div>
+{% endif %}

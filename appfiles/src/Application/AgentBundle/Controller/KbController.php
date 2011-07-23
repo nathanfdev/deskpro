@@ -15,9 +15,12 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleValidatingEdit;
+use Application\DeskPRO\Searcher\ArticleSearch;
+use Application\DeskPRO\UI\RuleBuilder;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 use Orb\Util\Util;
 
 use FineDiff;
@@ -443,6 +446,66 @@ class KbController extends AbstractController
 		return $this->render('AgentBundle:Kb:list-drafts.html.twig', array(
 			'your_articles' => $your_articles,
 			'others_articles' => $others_articles,
+		));
+	}
+
+	public function listAction($category_id = 0)
+	{
+		$category = null;
+		if ($category_id) {
+			$category = App::findEntity('DeskPRO:ArticleCategory', $category_id);
+		}
+
+		$searcher = new ArticleSearch();
+		$searcher->setPersonContext($this->person);
+
+		if ($category) {
+			$searcher->addTerm(ArticleSearch::TERM_CATEGORY, 'is', $category['id']);
+			$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
+		} else {
+			if ($this->in->getCleanValueArray('terms', 'raw' , 'discard')) {
+				$term_rules = RuleBuilder::newTermsBuilder();
+				$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
+
+				foreach ($terms as $term) {
+					$searcher->addTerm($term['type'], $term['op'], $term['options']);
+				}
+
+			// Viewing "All" link, default to published
+			} else {
+				$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
+			}
+		}
+
+		$total = $searcher->getCount();
+		$per_page = 20;
+		$pageinfo = Numbers::getPaginationPages($total, $this->in->getUint('page'), $per_page);
+
+		$limit = array(
+			'offset' => ($pageinfo['curpage'] - 1) * $per_page,
+			'max' => $per_page
+		);
+
+		$result_ids = $searcher->getMatches($limit);
+
+		$results = App::getEntityRepository('DeskPRO:Article')->getByResultIds($result_ids);
+
+		$tpl = 'AgentBundle:Kb:list.html.twig';
+		if ($this->request->isPartialRequest()) {
+			$tpl = 'AgentBundle:Kb:list-page.html.twig';
+		}
+
+		$article_options = array();
+		$article_options['categories'] = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
+
+		return $this->render($tpl, array(
+			'results'            => $results,
+			'article_options'    => $article_options,
+			'search_form'        => array('terms' => $searcher->getTerms()),
+			'terms_summary'      => $searcher->getSummary(),
+			'category'           => $category,
+			'pageinfo'           => $pageinfo,
+			'page'               => $pageinfo['curpage']
 		));
 	}
 

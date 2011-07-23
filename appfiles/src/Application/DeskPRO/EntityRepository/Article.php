@@ -118,6 +118,8 @@ class Article extends EntityRepository
 
 	public function getByResultIds(array $ids)
 	{
+		if (!$ids) return array();
+		
 		$unsorted_articles = $this->getEntityManager()->createQuery("
 			SELECT a
 			FROM DeskPRO:Article a INDEX BY a.id
