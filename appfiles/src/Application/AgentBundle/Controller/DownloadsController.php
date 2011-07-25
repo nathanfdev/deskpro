@@ -13,6 +13,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 
@@ -29,15 +30,75 @@ class DownloadsController extends AbstractController
 	# view
 	############################################################################
 
-	public function viewAction($news_id)
+	public function viewAction($download_id)
 	{
-		$download = App::findEntity('DeskPRO:Download', $news_id);
+		$download = App::findEntity('DeskPRO:Download', $download_id);
 		$download_cats = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
+		$download_comments = App::getEntityRepository('DeskPRO:DownloadComment')->getComments($download);
 
-		return $this->render('AgentBundle:News:view.html.twig', array(
+		return $this->render('AgentBundle:Downloads:view.html.twig', array(
 			'download'           => $download,
+			'download_comments'  => $download_comments,
 			'download_cats'      => $download_cats,
 		));
+	}
+
+	public function ajaxSaveLabelsAction($download_id)
+	{
+		$download = App::findEntity('DeskPRO:Download', $download_id);
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$download->getLabelManager()->setLabelsArray($labels);
+
+		App::getOrm()->persist($download);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
+
+	public function ajaxSaveCommentAction($download_id)
+	{
+		$download = App::findEntity('DeskPRO:Download', $download_id);
+
+		$comment = new DownloadComment();
+		$comment->download = $download;
+		$comment->person = $this->person;
+		$comment['content'] = $this->in->getString('content');
+		$comment['status'] = 'visible';
+		$comment['date_created']  = new \DateTime();
+
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
+
+		return $this->render('AgentBundle:Downloads:view-comment.html.twig', array(
+			'comment' => $comment
+		));
+	}
+
+	public function ajaxSaveAction($download_id)
+	{
+		$download = App::findEntity('DeskPRO:Download', $download_id);
+
+		$action = $this->in->getString('action');
+
+		$data = array('success' => 1);
+
+		switch ($action) {
+			case 'title':
+				$download['title'] = $this->in->getString('title');
+				break;
+
+			case 'content':
+				$download['content'] = $this->in->getString('content');
+				$data['content_html'] = $download->getContentHtml();
+				break;
+		}
+
+		App::getOrm()->persist($download);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse($data);
 	}
 
 	############################################################################

@@ -80,6 +80,7 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/UserChat.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/IdeaView.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewsView.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/DownloadsView.js',
 	)
 );
 

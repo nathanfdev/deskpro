@@ -694,7 +694,7 @@ agent_tasks_list_pending:
   defaults: { _controller: AgentBundle:Task:listPending }
 
 ################################################################################
-# Portal
+# Publish
 ################################################################################
 
 agent_publish_getsectiondata:
@@ -842,8 +842,23 @@ agent_downloads_list:
   defaults: { _controller: AgentBundle:Downloads:list, category_id: '0' }
 
 agent_downloads_view:
-  pattern: /downloads/post/{download_id}
+  pattern: /downloads/file/{download_id}
   defaults: { _controller: AgentBundle:Downloads:view }
+  requirements: { download_id: "\d+" }
+
+agent_downloads_save:
+  pattern: /downloads/file/{download_id}/ajax-save
+  defaults: { _controller: AgentBundle:Downloads:ajaxSave }
+  requirements: { download_id: "\d+" }
+
+agent_downloads_ajax_labels_save:
+  pattern: /downloads/file/{download_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Downloads:ajaxSaveLabels }
+  requirements: { download_id: "\d+" }
+
+agent_downloads_ajax_save_comment:
+  pattern: /downloads/file/{download_id}/ajax-save-comment
+  defaults: { _controller: AgentBundle:Downloads:ajaxSaveComment }
   requirements: { download_id: "\d+" }
 
 ################################################################################

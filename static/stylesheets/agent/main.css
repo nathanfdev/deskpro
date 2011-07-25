@@ -4323,7 +4323,7 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 
 
 
-.news-editor-wrap textarea {
+.news-editor-wrap textarea, .download-editor-wrap textarea {
     width: 95%;
     height: 150px;
 }

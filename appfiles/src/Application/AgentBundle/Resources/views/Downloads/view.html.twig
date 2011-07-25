@@ -1,0 +1,171 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.DownloadsView';
+pageMeta.title = {{download.title|json_encode|raw}};
+pageMeta.download_id = {{download.id}};
+pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'people'}) }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_downloads_ajax_labels_save', {'download_id': download.id}) }}';
+</script>
+<div class="layout-content full-page download-page with-scrollbar">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+
+<div class="inner-box-tab-content-2 ticket-element">
+	<div class="kb-info-top">
+		<div class="kb-author-names">
+			By {{ download.person.display_name }}
+		</div>
+		<h3 class="title editable hover-edit" data-editable-for=".inline-editable .title">
+			{{ download.title }}
+		</h3>
+	</div>
+</div>
+
+{# Info Wrap #}
+<div class="ticket-info-wrapper">
+	{# Top Left #}
+	<div class="ticket-info left">
+		<div class="tags-wrap download-tags">
+			<span class="tag-icon"></span>
+			<ul>
+				{% for label in download.labels %}
+					<li><span>{{label.label}}</span></li>
+				{% endfor %}
+			</ul>
+		</div>
+	</div>
+	{# /Top Left #}
+
+	{# Top Right #}
+	<div class="ticket-properties right">
+		<div class="table-container">
+			<div class="table-title">
+				<h4>File Information</h4>
+			</div>
+			<div class="table-content">
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>File</span>
+					</div>
+					<div class="col-table-content">
+						{{ download.blob.filename }}
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Size</span>
+					</div>
+					<div class="col-table-content">
+						{{ download.blob.readable_filesize }}
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Type</span>
+					</div>
+					<div class="col-table-content">
+						{{ download.blob.content_type }}
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Download</span>
+					</div>
+					<div class="col-table-content">
+						<a class="dp-button x-small" href="{{ download.blob.download_url }}">Download</a>
+					</div>
+				</div>
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Created</span>
+					</div>
+					<div class="col-table-content">
+						<span class="timeago" title="{{download.date_created|date('c')}}">{{download.date_created|date('Y-m-d')}}</span>
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+	{# /Top Right #}
+</div>
+
+{# Main Tabs #}
+<div class="full-container-tabbed messages-container field-section-bottomtabs">
+	{# Tab Triggers #}
+	<div class="full-container-tabbed-tabs">
+		<span class="kb-editor-edit"><a>edit</a></span>
+		<ul class="field-section-bodytabs-tabs">
+			<li class="tab-trigger download-content on" data-tab-for=".tab-content.download-content"><a>Post</a></li>
+			<li class="tab-trigger download-comments" data-tab-for=".tab-content.download-comments"><a>Comments <em class="download-comments-count" data-count="{{download_comments|length|default(0)}}">({{download_comments|length|default(0)}})</em></a></li>
+		</ul>
+	</div>
+	{# /Tab Triggers #}
+
+	{# Tab Contents #}
+	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
+		{# Tab: Messages #}
+		<div class="full-container-tabbed-contents tab-content download-content">
+			<div class="full-tab-content">
+				<div class="download-content-wrap">
+					{{ download.content_html|raw }}
+				</div>
+				<div class="download-editor-wrap" style="display: none">
+					<div class="download-editor markdown">
+						<textarea name="download[content]" rows="5" cols="50">{{ download.content }}</textarea>
+						<br />
+						<button class="dp-button editor-save-trigger">Save</button>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Tab Messages #}
+
+		{# Tab: Comments #}
+		<div class="full-container-tabbed-contents tab-content download-comments">
+			<div class="full-tab-content">
+				<div class="messages-wrap">
+					{% for comment in download_comments %}
+						{% include 'AgentBundle:Downloads:view-comment.html.twig' %}
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="message admin-message new-note">
+				<div class="message-avatar left">
+					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+				</div>
+				<div class="message-body">
+					<div class="message-meta">
+						<span class="arrow-left"></span>
+						<h4>{{ app.user.display_name }}</h4>
+					</div>
+					<div class="message-text">
+						<p>
+							<textarea style="width:98%; height: 80px;"></textarea>
+							<div style="text-align:center; margin-top: 9px;">
+								<div class="loading-off">
+									<button class="dp-button x-small">Add Comment</button>
+								</div>
+								<div class="loading-on" style="display:none">
+									Saving ...
+								</div>
+							</div>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Tab Comments #}
+	</div>
+	{# /Tab Contents #}
+</div>
+{# /Main Tabs #}
+
+<div class="inline-editable" style="display:none">
+	<div class="title">
+		<input type="text" name="title" value="{{ download.title }}"/>
+		<input type="hidden" name="action" value="title" />
+	</div>
+</div>
+
+</div></div> {# scrollbar divs #}
+</div> {# main layout div #}
