@@ -38,3 +38,23 @@
 {% include 'AgentBundle:Publish:news-tab.html.twig' %}
 {% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
 {% include 'AgentBundle:Publish:glossary-tab.html.twig' %}
+
+<div class="add-dlg dp-overlay" style="display: none; width: 400px;">
+	Add a new glossary word: <input type="text" class="word" value="" style="width: 150px;" /><br />
+	<textarea class="content" rows="2" cols="50" style="width: 98%;"></textarea><br />
+	<div style="text-align: right">
+		<button class="dp-button x-small save-trigger">Add</button>
+	</div>
+</div>
+
+<div class="edit-dlg dp-overlay" style="display: none; width: 400px;">
+	<div class="form">
+		<strong class="word"></strong><br />
+		<input type="hidden" class="word_id" value="" />
+		<textarea class="content" rows="2" cols="50" style="width: 98%;"></textarea><br />
+		<div style="text-align: right">
+			<button class="dp-button x-small save-trigger">Save</button>
+		</div>
+	</div>
+	<div class="loading">Loading ...</div>
+</div>
