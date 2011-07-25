@@ -24,5 +24,51 @@
 	{% include 'UserBundle:Common:content-subscribe.html.twig' with {'page_type': 'download', 'page_id': download.id} %}
 
 	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': download.labels} %}
+
+	{% if comments_widget %}
+		{{comments_widget|raw}}
+	{% else %}
+		<div class="content-item">
+			<div class="heading"><h2>Comments</h2></div>
+			<div class="content-list">
+				<ul class="comments">
+					<li class="new-comment">
+						<form action="{{ path('user_downloads_newcomment', {'download_id': download.id}) }}" method="post">
+							<table cellspacing="0" cellpadding="0">
+								{% if is_user_guest() %}
+									<tr>
+										<td>Name:</td>
+										<td><input type="text" name="new_comment[name]" /> (public)</td>
+									</tr>
+									<tr>
+										<td>Email:</td>
+										<td><input type="text" name="new_comment[email]" /> (private, never revealed)</td>
+									</tr>
+								{% else %}
+									<tr>
+										<td>Name:</td>
+										<td>{{ app.user.display_name }} (public)</td>
+									</tr>
+								{% endif %}
+								<tr>
+									<td>&nbsp;</td>
+									<td>
+										<textarea name="new_comment[content]" cols="80" rows="5"></textarea><br/>
+										<div style="text-align: right">
+											<input type="submit" value="comment" />
+										</div>
+									</td>
+								</tr>
+							</table>
+						</form>
+					</li>
+
+					{% for comment in comments %}
+						{% include 'UserBundle:Common:comment.html.twig' %}
+					{% endfor %}
+				</ul>
+			</div>
+		</div>
+	{% endif %}
 </div>
 {% endblock %}

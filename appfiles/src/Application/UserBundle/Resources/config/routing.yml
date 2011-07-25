@@ -246,6 +246,10 @@ user_downloads_file:
   pattern: /downloads/files/{slug}
   defaults: { _controller: UserBundle:Downloads:file }
 
+user_downloads_newcomment:
+  pattern: /downloads/new-comment/{download_id}
+  defaults: { _controller: UserBundle:Downloads:newComment }
+
 ################################################################################
 # News
 ################################################################################

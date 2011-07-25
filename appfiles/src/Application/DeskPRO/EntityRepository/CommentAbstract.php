@@ -37,9 +37,10 @@ class CommentAbstract extends EntityRepository
 		}
 
 		$types = array(
-			'article_comments' => array('entity' => 'DeskPRO:ArticleComment', 'id_field' => 'article_id'),
-			'idea_comments'    => array('entity' => 'DeskPRO:IdeaComment', 'id_field' => 'idea_id'),
-			'news_comments'    => array('entity' => 'DeskPRO:NewsComment', 'id_field' => 'news_id'),
+			'article_comments'  => array('entity' => 'DeskPRO:ArticleComment', 'id_field' => 'article_id'),
+			'download_comments' => array('entity' => 'DeskPRO:DownloadComment', 'id_field' => 'download_id'),
+			'idea_comments'     => array('entity' => 'DeskPRO:IdeaComment', 'id_field' => 'idea_id'),
+			'news_comments'     => array('entity' => 'DeskPRO:NewsComment', 'id_field' => 'news_id'),
 		);
 
 		#------------------------------
@@ -103,6 +104,7 @@ class CommentAbstract extends EntityRepository
 	{
 		$types = array(
 			'article_comments',
+			'download_comments',
 			'idea_comments',
 			'news_comments'
 		);

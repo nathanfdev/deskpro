@@ -13,11 +13,14 @@ namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
+use Application\DeskPRO\Comments\NewCommentFormType;
 
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\UserBundle\Controller\Helper\Comments;
+use Application\UserBundle\Controller\Helper\FacebookLike;
 
 class DownloadsController extends AbstractController
 {
@@ -196,13 +199,59 @@ class DownloadsController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $download);
 		$related_content = $related_finder->getRelatedEntities();
 
+		$comments = null;
+		$comments_widget = null;
+		$comments_helper = Comments::create($download);
+		if ($comments_helper) {
+			$comments_widget = $comments_helper->getHtml();
+		} else {
+			$comments = App::getEntityRepository('DeskPRO:DownloadComment')->getComments($download);
+		}
+
 		return $this->render('UserBundle:Downloads:file.html.twig', array(
 			'subscription' => $subscription,
+
+			'comments_widget' => $comments_widget,
+			'comments' => $comments,
 
 			'download' => $download,
 			'category_path' => $category_path,
 
 			'related_content' => $related_content
+		));
+	}
+
+
+	/**
+	 * Submit a new comment
+	 *
+	 * @param  $download_id
+	 */
+	public function newCommentAction($download_id)
+	{
+		$download = App::getEntityRepository('DeskPRO:Download')->find($download_id);
+		if (!$download) {
+			return $this->renderStandardError('@user_downloads.error_not_found', '@core.not_found', 404);
+		}
+
+		$new_comment = new \Application\DeskPRO\Comments\NewComment(
+			'Application\\DeskPRO\\Entity\\DownloadComment',
+			$this->person,
+			array('download' => $download)
+		);
+
+		$newcomment_formtype = new NewCommentFormType($this->person);
+		$form = $this->get('form.factory')->create($newcomment_formtype, $new_comment);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+
+			if ($form->isValid()) {
+				$comment = $new_comment->save();
+			}
+		}
+		return $this->redirectRoute('user_downloads_file', array(
+			'slug' => $download->getUrlSlug(),
 		));
 	}
 }
