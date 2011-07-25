@@ -11,8 +11,8 @@
 			<span class="list-counter" id="kb_pending_count">{{ kb_counts.pending|default(0) }}</span>
 			<a>Pending Articles</a>
 		</li>
-		<li class="with-route" data-route="listpane:{{ path('agent_kb_drafts') }}">
-			<span class="list-counter" id="kb_pending_count">0</span>
+		<li class="with-route" data-route="listpane:{{ path('agent_portal_validatingcomments') }}">
+			<span class="list-counter" id="publish_validating_count">{{ counts.validating_comments|default(0) }}</span>
 			<a>Comments Validating</a>
 		</li>
 		<li class="with-route" data-route="listpane:{{ path('agent_kb_drafts') }}">

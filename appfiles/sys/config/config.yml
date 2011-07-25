@@ -13,6 +13,8 @@ parameters:
   templating.globals.class: "Application\DeskPRO\Templating\GlobalVariables"
   templating.helper.assets.class: "Application\DeskPRO\\Templating\Helper\AssetsHelper"
   router.options.generator_dumper_class: "Application\DeskPRO\Routing\Generator\Dumper\\PhpGeneratorDumper"
+  router.options.generator_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
+  router.options.generator_base_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
 
 services:
   templating.engine.jsonphp:

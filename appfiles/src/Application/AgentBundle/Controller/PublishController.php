@@ -13,8 +13,10 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\GlossaryWord;
+use Application\DeskPRO\EntityRepository\CommentAbstract as CommentAbstractRepos;
 
 use Orb\Util\Strings;
+use Orb\Util\Numbers;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
 
@@ -56,8 +58,12 @@ class PublishController extends AbstractController
 		$glossary_words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
 		$glossary_words = Arrays::sortIntoAlphabeticalIndex($glossary_words, null, true, true);
 
+		$counts = array();
+		$counts['validating_comments'] = CommentAbstractRepos::getCombinedValidatingCount();
+
 
 		$data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', array(
+			'counts' => $counts,
 			'kb_counts' => $kb_counts,
 			'kb_cats' => $kb_cats,
 			'news_cats' => $news_cats,
@@ -66,5 +72,43 @@ class PublishController extends AbstractController
 		));
 
 		return $this->createJsonResponse($data);
+	}
+
+
+	############################################################################
+	# list-validating-comments
+	############################################################################
+	
+	public function listValidatingCommentsAction()
+	{
+		$per_page = 25;
+		
+		$curpage = $this->in->getUint('page');
+		if (!$curpage) $curpage = 1;
+
+		$limit = array(
+			'max' => $per_page,
+			'offset' => ($curpage - 1) * $per_page
+		);
+
+		$pageinfo = null;
+		$total = null;
+		if (!$this->request->isPartialRequest()) {
+			$total = App::getEntityRepository('DeskPRO:CommentAbstract')->getCombinedValidatingCount();
+			$pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
+		}
+
+		$comments = CommentAbstractRepos::getCombinedValidating($limit);
+
+		$tpl = 'AgentBundle:Publish:comments-validating.html.twig';
+		if ($this->request->isPartialRequest()) {
+			$tpl = 'AgentBundle:Publish:comments-validating-page.html.twig';
+		}
+
+		return $this->render($tpl, array(
+			'comments' => $comments,
+			'total'    => $total,
+			'pageinfo' => $pageinfo
+		));
 	}
 }

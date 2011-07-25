@@ -19,7 +19,7 @@ use Orb\Util\Arrays;
  * @orm:Entity
  * @orm:Table(name="content_search_attribute")
  */
-class ContentSearchAttribute extends CommentAbstract
+class ContentSearchAttribute extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string

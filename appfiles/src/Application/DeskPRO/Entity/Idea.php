@@ -340,6 +340,11 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		return $path;
 	}
 
+	public function getObject()
+	{
+		return $this->article;
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */

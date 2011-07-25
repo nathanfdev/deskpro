@@ -697,9 +697,13 @@ agent_tasks_list_pending:
 # Portal
 ################################################################################
 
-agent_portal_getsectiondata:
+agent_publish_getsectiondata:
   pattern: /publish/get-section-data.json
   defaults: { _controller: AgentBundle:Publish:getSectionData }
+
+agent_publish_validatingcomments:
+  pattern: /publish/comments/validating
+  defaults: { _controller: AgentBundle:Publish:listValidatingComments }
 
 ################################################################################
 # KB

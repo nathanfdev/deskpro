@@ -26,4 +26,9 @@ class NewsComment extends CommentAbstract
 	 * @orm:JoinColumn(name="news_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $news;
+
+	public function getObject()
+	{
+		return $this->news;
+	}
 }

@@ -24,7 +24,7 @@ use Orb\Util\Arrays;
  *
  * @orm:MappedSuperclass
  */
-class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
+abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
 	const STATUS_VISIBLE    = 'visible';
 	const STATUS_VALIDATING = 'validating';
@@ -153,5 +153,24 @@ class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function getContentHtml()
 	{
 		return Markdown::format($this->content);
+	}
+
+	public function getContentHtmlPlain()
+	{
+		return nl2br(htmlspecialchars($this->content));
+	}
+
+	/**
+	 * Get the entity this comment is attached to. This is a standardized way to fetch the
+	 * entity when you might not know the $comment->XXX to use.
+	 *
+	 * @return mixed
+	 */
+	abstract function getObject();
+
+
+	public function getObjectType()
+	{
+		return Util::getBaseClassname($this->getObject());
 	}
 }

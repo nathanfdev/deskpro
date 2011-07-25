@@ -13,6 +13,7 @@ namespace Application\DeskPRO\Routing\Generator;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
+use Application\DeskPRO\ObjectUrlGenerator;
 
 use Application\DeskPRO\App;
 
@@ -21,6 +22,22 @@ use Application\DeskPRO\App;
  */
 class UrlGenerator extends BaseUrlGenerator
 {
+	protected $object_url_generator = null;
+
+	public function getObjectUrlGenerator()
+	{
+		if ($this->object_url_generator !== null) return $this->object_url_generator;
+
+		$this->object_url_generator = new ObjectUrlGenerator($this);
+		return $this->object_url_generator;
+	}
+
+	public function generateObjectUrl($object, array $params = array(), $context = null)
+	{
+		return $this->getObjectUrlGenerator()->generateObjectUrl($object, $params, $context);
+	}
+
+	/*
     protected function doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute)
     {
 		if (isset($variables['_locale']) && empty($defaults['_locale'])) {
@@ -34,4 +51,5 @@ class UrlGenerator extends BaseUrlGenerator
 
 		return parent::doGenerate($variables, $defaults, $requirements, $tokens, $parameters, $name, $absolute);
     }
+	*/
 }

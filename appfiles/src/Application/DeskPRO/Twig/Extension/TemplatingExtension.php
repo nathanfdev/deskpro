@@ -62,6 +62,9 @@ class TemplatingExtension extends \Twig_Extension
 			'is_user_agent' => new \Twig_Function_Method($this, 'isUserAgent'),
 			'is_user_admin' => new \Twig_Function_Method($this, 'isUserAdmin'),
 			'flash_message' => new \Twig_Function_Method($this, 'flashMessage'),
+			'compare_type'  => new \Twig_Function_Method($this, 'compareType'),
+			'object_path'  => new \Twig_Function_Method($this, 'getObjectPath'),
+			'object_path_agent'  => new \Twig_Function_Method($this, 'getObjectPathAgent'),
         );
     }
 
@@ -75,6 +78,33 @@ class TemplatingExtension extends \Twig_Extension
 			'decode_number' => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
         );
     }
+
+	public function getObjectPath($object, array $params = array(), $context = 'user')
+	{
+		$generator = $this->get('router.real')->getGenerator();
+		return $generator->generateObjectUrl($object, $params, $context);
+	}
+
+	public function getObjectPathAgent($object, array $params = array())
+	{
+		return $this->getObjectPath($object, $params, 'agent');
+	}
+
+	public function compareType($var, $type)
+	{
+		// Primitive types
+		if (!is_object($var)) {
+			$var_type = gettype($var);
+			return strpos($var_type, $type) !== false;
+
+		// Classes
+		} else {
+			$var_type = get_class($var);
+
+			// Passes Some\MyClass as well as just MyClass, but not SomeOther\MyClass against Some\MyClass
+			return (strpos($var_type, $type) !== false AND Util::getBaseClassname($var_type) == Util::getBaseClassname($type));
+		}
+	}
 
 	public function flashMessage($name)
 	{

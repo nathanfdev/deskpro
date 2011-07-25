@@ -13,17 +13,17 @@ namespace Application\DeskPRO\ORM;
 
 class QueryPartial
 {
-	protected $order_by;
+	protected $order_by = null;
 	protected $order_dir = 'ASC';
-	protected $first_result;
-	protected $max_results;
+	protected $first_result = null;
+	protected $max_results = null;
 
 	public function __construct() {}
 
 	public function setOrderBy($order_by, $order_dir)
 	{
 		$this->order_by = $order_by;
-		$this->order_dir = $order_dir
+		$this->order_dir = $order_dir;
 		return $this;
 	}
 

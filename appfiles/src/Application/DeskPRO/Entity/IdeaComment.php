@@ -26,4 +26,9 @@ class IdeaComment extends CommentAbstract
 	 * @orm:JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $idea;
+
+	public function getObject()
+	{
+		return $this->idea;
+	}
 }
