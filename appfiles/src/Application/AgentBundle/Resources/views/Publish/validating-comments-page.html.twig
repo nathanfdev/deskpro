@@ -5,7 +5,7 @@
 				{{ comment.content_html_plain }}
 			</div>
 			<div class="info">
-				<ul>
+				<ul class="single-col">
 					<li>
 						By
 						{% if comment.person %}<a class="with-route" data-route="page:{{ object_path_agent(comment.person) }}">{% endif %}
@@ -15,7 +15,15 @@
 					<li>On <a class="with-route" data-route="page:{{ object_path_agent(comment.object) }}">{{ comment.object.title }}</a></li>
 				</ul>
 			</div>
-			<time class="timeago" datetime="{{ news.date_created|date('c') }}">{{ news.date_created|date('M d') }}</time>
+			<div class="foot" style="padding-bottom: 3px; padding-left: 4px; padding-right: 4px;">
+				<time class="timeago" datetime="{{ news.date_created|date('c') }}">{{ news.date_created|date('M d') }}</time>
+				<div style="float:right;">
+					<button class="dp-button x-small delete-trigger" data-url="{{ path('agent_publish_disapprove_comment', {'comment_id': comment.id, 'typename': get_type(comment, false) }) }}">Delete</button>
+					<button class="dp-button x-small ignore-trigger">Ignore</button>
+					<button class="dp-button x-small approve-trigger" data-url="{{ path('agent_publish_approve_comment', {'comment_id': comment.id, 'typename': get_type(comment, false) }) }}">Approve</button>
+				</div>
+				<br style="clear: both; height: 1px; overflow: hidden; "/>
+			</div>
 		</article>
 	{% endfor %}
 </section>

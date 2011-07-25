@@ -65,6 +65,7 @@ class TemplatingExtension extends \Twig_Extension
 			'compare_type'  => new \Twig_Function_Method($this, 'compareType'),
 			'object_path'  => new \Twig_Function_Method($this, 'getObjectPath'),
 			'object_path_agent'  => new \Twig_Function_Method($this, 'getObjectPathAgent'),
+			'get_type'  => new \Twig_Function_Method($this, 'getType'),
         );
     }
 
@@ -79,9 +80,26 @@ class TemplatingExtension extends \Twig_Extension
         );
     }
 
+	public function getType($var, $basename = true)
+	{
+		// Primitive types
+		if (!is_object($var)) {
+			$var_type = gettype($var);
+		// Classes
+		} else {
+			$var_type = get_class($var);
+
+			if ($basename) {
+				$var_type = Util::getBaseClassname($var_type);
+			}
+		}
+
+		return $var_type;
+	}
+
 	public function getObjectPath($object, array $params = array(), $context = 'user')
 	{
-		$generator = $this->get('router.real')->getGenerator();
+		$generator = $this->container->get('router.real')->getGenerator();
 		return $generator->generateObjectUrl($object, $params, $context);
 	}
 

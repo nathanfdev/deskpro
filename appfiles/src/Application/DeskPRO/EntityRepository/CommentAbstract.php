@@ -25,7 +25,7 @@ class CommentAbstract extends EntityRepository
 	 *
 	 * @return array
 	 */
-	public static function getCombinedValidating($limit = 25, $order_dir = 'DESC')
+	public static function getCombinedValidating($limit = 25, $order_dir = 'ASC')
 	{
 		$sql_parts = array();
 
@@ -49,14 +49,14 @@ class CommentAbstract extends EntityRepository
 
 		foreach ($types as $t => $t_info) {
 			$sql_parts[] = "(
-				SELECT id as comment_id, '$t' as content_type
+				SELECT id as comment_id, '$t' as content_type, date_created
 				FROM $t
 				WHERE status = 'validating'
 			)";
 		}
 
 		$sql = implode(' UNION ', $sql_parts);
-		$sql .= "ORDER BY id $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+		$sql .= "ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
 
 		$db = App::getDb();
 		$results = $db->fetchAll($sql);
@@ -70,11 +70,11 @@ class CommentAbstract extends EntityRepository
 		$result_ids_typed = array();
 
 		foreach ($results as $r) {
-			if (!isset($result_typed[$r['content_type']])) {
-				$result_typed[$r['content_type']] = array();
+			if (!isset($result_ids_typed[$r['content_type']])) {
+				$result_ids_typed[$r['content_type']] = array();
 			}
 
-			$result_typed[$r['content_type']][] = $r['comment_id'];
+			$result_ids_typed[$r['content_type']][] = $r['comment_id'];
 		}
 
 		$results_typed = array();
@@ -114,13 +114,13 @@ class CommentAbstract extends EntityRepository
 				SELECT COUNT(*)
 				FROM $t
 				WHERE status = 'validating'
-			)";
+			) AS count_$t";
 		}
 
-		$sql = implode(' UNION ', $sql_parts);
+		$sql =  "SELECT " . implode(', ', $sql_parts);
 
 		$db = App::getDb();
-		$results = $db->fetchAllCol($sql);
+		$results = $db->fetchAssoc($sql);
 
 		return array_sum($results);
 	}
@@ -135,7 +135,7 @@ class CommentAbstract extends EntityRepository
 			SELECT c
 			FROM " . $this->_entityName ." c INDEX BY c.id
 			WHERE c.id IN ($ids)
-		");
+		")->execute();
 	}
 
 	public function getComments($object)

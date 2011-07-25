@@ -705,6 +705,14 @@ agent_publish_validatingcomments:
   pattern: /publish/comments/validating
   defaults: { _controller: AgentBundle:Publish:listValidatingComments }
 
+agent_publish_approve_comment:
+  pattern: /publish/comments/approve/{typename}/{comment_id}
+  defaults: { _controller: AgentBundle:Publish:approveComment }
+
+agent_publish_disapprove_comment:
+  pattern: /publish/comments/disapprove/{typename}/{comment_id}
+  defaults: { _controller: AgentBundle:Publish:disapproveComment }
+
 ################################################################################
 # KB
 ################################################################################

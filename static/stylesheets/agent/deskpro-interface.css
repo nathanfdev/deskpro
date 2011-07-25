@@ -311,3 +311,8 @@ section.deskpro-results-list article > div.info > ul > li {
     width:49%;
     float: left;
 }
+
+section.deskpro-results-list article > div.info > ul.single-col > li {
+    float: none;
+    width: auto;
+}

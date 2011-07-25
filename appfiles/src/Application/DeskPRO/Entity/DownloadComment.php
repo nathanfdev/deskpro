@@ -29,6 +29,6 @@ class DownloadComment extends CommentAbstract
 
 	public function getObject()
 	{
-		return $this->article;
+		return $this->download;
 	}
 }

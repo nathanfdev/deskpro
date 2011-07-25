@@ -48,7 +48,19 @@ class NewComment
 		$obj->visitor = App::getSession()->getVisitor();
 		
 		$obj['content']       = $this->content;
-		$obj['status']        = 'visible';
+
+		if ($this->person->isGuest()) {
+			$require_validation = App::getSetting('core_comments.enable_validation_guest');
+		} else {
+			$require_validation = App::getSetting('core_comments.enable_validation_user');
+		}
+
+		if ($require_validation) {
+			$obj['status'] = 'validating';
+		} else {
+			$obj['status'] = 'visible';
+		}
+		
 		$obj['date_created']  = new \DateTime();
 
 		foreach ($this->assignments as $k => $v) {

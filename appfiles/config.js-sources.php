@@ -51,6 +51,7 @@ $CONFIG['agent']['pages-lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewsList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/DownloadList.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingComments.js',
 	)
 );
 

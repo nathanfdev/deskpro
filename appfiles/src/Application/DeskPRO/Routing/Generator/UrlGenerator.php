@@ -13,7 +13,7 @@ namespace Application\DeskPRO\Routing\Generator;
 use Symfony\Component\Routing\Route;
 use Symfony\Component\Routing\RouteCollection;
 use Symfony\Component\Routing\Generator\UrlGenerator as BaseUrlGenerator;
-use Application\DeskPRO\ObjectUrlGenerator;
+use Application\DeskPRO\Routing\Generator\ObjectUrlGenerator;
 
 use Application\DeskPRO\App;
 

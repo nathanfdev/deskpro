@@ -76,7 +76,7 @@ class PublishController extends AbstractController
 
 
 	############################################################################
-	# list-validating-comments
+	# comments
 	############################################################################
 	
 	public function listValidatingCommentsAction()
@@ -94,15 +94,15 @@ class PublishController extends AbstractController
 		$pageinfo = null;
 		$total = null;
 		if (!$this->request->isPartialRequest()) {
-			$total = App::getEntityRepository('DeskPRO:CommentAbstract')->getCombinedValidatingCount();
+			$total = CommentAbstractRepos::getCombinedValidatingCount();
 			$pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
 		}
 
 		$comments = CommentAbstractRepos::getCombinedValidating($limit);
 
-		$tpl = 'AgentBundle:Publish:comments-validating.html.twig';
+		$tpl = 'AgentBundle:Publish:validating-comments.html.twig';
 		if ($this->request->isPartialRequest()) {
-			$tpl = 'AgentBundle:Publish:comments-validating-page.html.twig';
+			$tpl = 'AgentBundle:Publish:validating-comments-page.html.twig';
 		}
 
 		return $this->render($tpl, array(
@@ -110,5 +110,52 @@ class PublishController extends AbstractController
 			'total'    => $total,
 			'pageinfo' => $pageinfo
 		));
+	}
+
+	public function approveCommentAction($typename, $comment_id)
+	{
+		$entity = $this->_getCommentEntityName($typename);
+		
+		$comment = App::findEntity($entity, $comment_id);
+		$comment['status'] = 'visible';
+
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'comment_id' => $comment['id'],
+			'typename'   => $typename
+		));
+	}
+
+	public function disapproveCommentAction($typename, $comment_id)
+	{
+		$entity = $this->_getCommentEntityName($typename);
+		
+		$comment = App::findEntity($entity, $comment_id);
+		$comment['status'] = 'deleted';
+
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'comment_id' => $comment['id'],
+			'typename'   => $typename
+		));
+	}
+
+	protected function _getCommentEntityName($classname)
+	{
+		if ($classname instanceof \Application\DeskPRO\Entity\ArticleComment) {
+			return 'DeskPRO:ArticleComment';
+		} elseif ($classname instanceof \Application\DeskPRO\Entity\DownloadComment) {
+			return 'DeskPRO:DownloadComment';
+		} elseif ($classname instanceof \Application\DeskPRO\Entity\IdeaComment) {
+			return 'DeskPRO:IdeaComment';
+		} elseif ($classname instanceof \Application\DeskPRO\Entity\NewsComment) {
+			return 'DeskPRO:NewsComment';
+		}
+
+		return $classname;
 	}
 }
