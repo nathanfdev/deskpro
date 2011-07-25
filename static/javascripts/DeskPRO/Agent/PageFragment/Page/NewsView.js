@@ -18,6 +18,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		this._initMenus();
 		this._initLabels();
 		this._initEditorEnable();
+		this._initCommentForm();
 
 		var cw = this.wrapper;
 		cw.tinyscrollbar();
@@ -27,6 +28,16 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		});
 	},
 
+	incCount: function(id) {
+		var countEl = $('.'+id+'-count', this.wrapper);
+		var count = countEl.data('count') + 1;
+		countEl.data('count', count).html('(' + count + ')');
+	},
+
+	setCount: function(id, count) {
+		var countEl = $('.'+id+'-count', this.wrapper);
+		countEl.data('count', count).html('(' + count + ')');
+	},
 
 	//#################################################################
 	//# Basic
@@ -44,7 +55,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
 			ajax: {
-				url: BASE_URL + 'agent/news/' + this.meta.article_id + '/ajax-save'
+				url: BASE_URL + 'agent/news/' + this.meta.news_id + '/ajax-save'
 			}
 		});
 
@@ -113,12 +124,74 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 	},
 
 	//#################################################################
+	//# Comments
+	//#################################################################
+
+	_initCommentForm: function() {
+		this.newCommentWrapper = $('.new-note:first', this.wrapper);
+		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
+	},
+
+	saveNewComment: function() {
+
+		var loadingOn = $('.loading-on', this.newCommentWrapper).show();
+		var loadingOff = $('.loading-off', this.newCommentWrapper).hide();
+
+		var data = [];
+		data.push({
+			name: 'content',
+			value: $('textarea', this.newCommentWrapper).val()
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/news/post/' + this.getMetaData('news_id') + '/ajax-save-comment',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'html',
+			success: function(html) {
+				loadingOn.hide();
+				loadingOff.show();
+
+				$('textarea', this.newCommentWrapper).val('');
+				var el = $(html);
+				this.newCommentWrapper.before(el);
+
+				// Inc note count
+				this.incCount('news-comments');
+			}
+		});
+	},
+
+	//#################################################################
 	//# Editor
 	//#################################################################
 
 	_initEditorEnable: function() {
 		var btn = $('.kb-editor-edit', this.wrapper);
 		btn.click(this.showEditor.bind(this));
+
+		$('.editor-save-trigger', this.wrapper).click((function(ev) {
+			ev.preventDefault();
+
+			var data = {
+				action: 'content',
+				content: $('.news-editor-wrap textarea:first', this.wrapper).val()
+			};
+
+			$.ajax({
+				url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/ajax-save',
+				type: 'POST',
+				context: this,
+				data: data,
+				dataType: 'json',
+				success: function(data) {
+					$('.news-content-wrap').html(data.content_html);
+					this.hideEditor();
+				}
+			});
+			
+		}).bind(this));
 	},
 
 	showEditor: function() {
@@ -128,8 +201,13 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		$('.news-content.tab-content', this.wrapper).addClass('editor-on');
 	},
 
+	hideEditor: function() {
+		$('.news-editor-wrap', this.wrapper).hide();
+		$('.news-content-wrap', this.wrapper).show();
+	},
+
 	_initMarkdownEditor: function() {
-		var editorWrap = $('.news-editor', this.wrapper).show();
+		var editorWrap = $('.news-editor-wrap', this.wrapper).show();
 		var textarea = $('> textarea', editorWrap);
 		//textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
 

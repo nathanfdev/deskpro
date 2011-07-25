@@ -2,9 +2,8 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewsView';
 pageMeta.title = {{news.title|json_encode|raw}};
 pageMeta.news_id = {{news.id}};
-pageMeta.urls = {
-
-};
+pageMeta.labelsAutocompleteUrl = '{{ path('agent_ajax_labels_autocomplete', { 'label_type': 'people'}) }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_news_ajax_labels_save', {'news_id': news.id}) }}';
 </script>
 <div class="layout-content full-page news-page with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
@@ -71,7 +70,7 @@ pageMeta.urls = {
 		<span class="kb-editor-edit"><a>edit</a></span>
 		<ul class="field-section-bodytabs-tabs">
 			<li class="tab-trigger news-content on" data-tab-for=".tab-content.news-content"><a>Post</a></li>
-			<li class="tab-trigger news-comments" data-tab-for=".tab-content.news-comments"><a>Comments <em class="news-comments-count" data-count="{{counts.comments|default(0)}}">({{counts.comments|default(0)}})</em></a></li>
+			<li class="tab-trigger news-comments" data-tab-for=".tab-content.news-comments"><a>Comments <em class="news-comments-count" data-count="{{news_comments|length|default(0)}}">({{news_comments|length|default(0)}})</em></a></li>
 		</ul>
 	</div>
 	{# /Tab Triggers #}
@@ -87,6 +86,8 @@ pageMeta.urls = {
 				<div class="news-editor-wrap" style="display: none">
 					<div class="news-editor markdown">
 						<textarea name="news[content]" rows="5" cols="50">{{ news.content }}</textarea>
+						<br />
+						<button class="dp-button editor-save-trigger">Save</button>
 					</div>
 				</div>
 			</div>
@@ -100,6 +101,31 @@ pageMeta.urls = {
 					{% for comment in news_comments %}
 						{% include 'AgentBundle:News:view-comment.html.twig' %}
 					{% endfor %}
+				</div>
+			</div>
+
+			<div class="message admin-message new-note">
+				<div class="message-avatar left">
+					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+				</div>
+				<div class="message-body">
+					<div class="message-meta">
+						<span class="arrow-left"></span>
+						<h4>{{ app.user.display_name }}</h4>
+					</div>
+					<div class="message-text">
+						<p>
+							<textarea style="width:98%; height: 80px;"></textarea>
+							<div style="text-align:center; margin-top: 9px;">
+								<div class="loading-off">
+									<button class="dp-button x-small">Add Comment</button>
+								</div>
+								<div class="loading-on" style="display:none">
+									Saving ...
+								</div>
+							</div>
+						</p>
+					</div>
 				</div>
 			</div>
 		</div>

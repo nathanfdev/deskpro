@@ -13,6 +13,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\News;
+use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 
@@ -43,6 +44,64 @@ class NewsController extends AbstractController
 			'news_comments'  => $news_comments,
 			'news_cats'      => $news_cats,
 		));
+	}
+
+	public function ajaxSaveLabelsAction($news_id)
+	{
+		$news = App::findEntity('DeskPRO:News', $news_id);
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$news->getLabelManager()->setLabelsArray($labels);
+
+		App::getOrm()->persist($news);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
+
+	public function ajaxSaveCommentAction($news_id)
+	{
+		$news = App::findEntity('DeskPRO:News', $news_id);
+		
+		$comment = new NewsComment();
+		$comment->news = $news;
+		$comment->person = $this->person;
+		$comment['content'] = $this->in->getString('content');
+		$comment['status'] = 'visible';
+		$comment['date_created']  = new \DateTime();
+
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
+
+		return $this->render('AgentBundle:News:view-comment.html.twig', array(
+			'comment' => $comment
+		));
+	}
+
+	public function ajaxSaveAction($news_id)
+	{
+		$news = App::findEntity('DeskPRO:News', $news_id);
+
+		$action = $this->in->getString('action');
+
+		$data = array('success' => 1);
+
+		switch ($action) {
+			case 'title':
+				$news['title'] = $this->in->getString('title');
+				break;
+
+			case 'content':
+				$news['content'] = $this->in->getString('content');
+				$data['content_html'] = $news->getContentHtml();
+				break;
+		}
+
+		App::getOrm()->persist($news);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse($data);
 	}
 
 	############################################################################

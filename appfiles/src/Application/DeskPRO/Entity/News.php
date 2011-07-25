@@ -164,13 +164,19 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 		return $path;
 	}
 
+	public function addLabel(LabelNews $label)
+	{
+		$label['news'] = $this;
+		$this->labels->add($label);
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
 	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelArticle');
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelNews');
 		}
 
 		return $this->_label_manager;

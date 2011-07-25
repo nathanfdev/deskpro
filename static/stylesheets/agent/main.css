@@ -4319,3 +4319,11 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
     padding-right: 10px;
     line-height: 15px;
 }
+
+
+
+
+.news-editor-wrap textarea {
+    width: 95%;
+    height: 150px;
+}

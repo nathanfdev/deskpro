@@ -818,6 +818,21 @@ agent_news_view:
   defaults: { _controller: AgentBundle:News:view }
   requirements: { news_id: "\d+" }
 
+agent_news_save:
+  pattern: /news/post/{news_id}/ajax-save
+  defaults: { _controller: AgentBundle:News:ajaxSave }
+  requirements: { news_id: "\d+" }
+
+agent_news_ajax_labels_save:
+  pattern: /news/{news_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:News:ajaxSaveLabels }
+  requirements: { news_id: "\d+" }
+
+agent_news_ajax_save_comment:
+  pattern: /news/{news_id}/ajax-save-comment
+  defaults: { _controller: AgentBundle:News:ajaxSaveComment }
+  requirements: { news_id: "\d+" }
+
 ################################################################################
 # Downloads
 ################################################################################
