@@ -7,8 +7,8 @@ if(!this.options.zIndex){this.options.zIndex=Orb.findHighestZindex()+1}this.elem
 this.elements.modal.fadeIn(200);if(this.options.contentMethod=="iframe"){var b=$(window).width()-250;var e=$(window).height()-150;
 if(b>this.options.maxWidth){b=this.options.maxWidth}if(e>this.options.maxHeight){e=this.options.maxHeight}$("iframe:first",this.elements.wrapper).css({width:b,height:e});
 var a=($(window).width()-this.elements.wrapperOuter.outerWidth())/2;var i=($(window).height()-this.elements.wrapperOuter.outerHeight())/2;
-this.elements.wrapperOuter.css({left:a,top:i})}else{var b=this.elements.wrapperOuter.outerWidth();var f=$(document).width();
-var c=(f/2)-(b/2);var e=this.elements.wrapperOuter.outerHeight();var g=$(document).height();var d=(g/2)-(e/2);this.elements.wrapperOuter.css({top:d,left:c})
+this.elements.wrapperOuter.css({left:a,top:i})}else{var b=this.elements.wrapperOuter.outerWidth();var f=$(window).width();
+var c=(f/2)-(b/2);var e=this.elements.wrapperOuter.outerHeight();var g=$(window).height();var d=(g/2)-(e/2);this.elements.wrapperOuter.css({top:d,left:c})
 }this.elements.wrapperOuter.css({"z-index":this.options.zIndex+1,position:"absolute",left:c});this.elements.wrapperOuter.fadeIn(450,(function(){this.fireEvent("overlayOpened",{overlay:this})
 }).bind(this))},close:function(){return this.closeOverlay()},closeOverlay:function(){if(!this.isOverlayOpen()){return}var a={overlay:this,cancelClose:false};
 this.fireEvent("beforeOverlayClosed",a);if(a.cancelClose){return}this.elements.modal.fadeOut(450);this.elements.wrapperOuter.fadeOut(200);
@@ -90,8 +90,8 @@ this.elements.wrapper.appendTo(this.elements.wrapperInner)},getListElement:funct
 }delete DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId];Array.each(this.subMenus,function(a){a.menu.destroy()
 });this.subMenus=[]}});Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.SimpleTabs=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(b){this.options={triggerElements:".tab-trigger",activeClassname:"on",context:document};
 this.lastActiveTab=null;this.triggerEls=null;if(b){this.setOptions(b)}this.triggerEls=this.options.triggerElements;if(typeOf(this.triggerEls)=="string"){this.triggerEls=$(this.triggerEls,this.options.context)
-}var a=this;this.triggerEls.click(function(d){a._handleTabClick(this,d)});if(this.triggerEls.is(this.options.activeClassname)){var c=$(this.options.activeClassname+":first",this.triggerEls)
-}else{var c=this.triggerEls.first()}this.activateTab(c)},_handleTabClick:function(b,c){var a=$(b);this.activateTab(a,c)},activateTab:function(c,b){var a={event:b||null,tabEl:c,lastTabEl:this.lastActiveTab,manager:this,cancel:false};
+}var a=this;this.triggerEls.click(function(d){a._handleTabClick(this,d)});var c=this.triggerEls.filter(".on:first");if(!c.length){c=this.triggerEls.first()
+}this.activateTab(c)},_handleTabClick:function(b,c){var a=$(b);this.activateTab(a,c)},activateTab:function(c,b){var a={event:b||null,tabEl:c,lastTabEl:this.lastActiveTab,manager:this,cancel:false};
 this.fireEvent("beforeTabSwitch",a);if(a.cancel){return}delete a.cancel;if(this.lastActiveTab){this.lastActiveTab.removeClass(this.options.activeClassname);
 this.getContentElFromTab(this.lastActiveTab).removeClass(this.options.activeClassname).hide();this.lastActiveTab=null}this.lastActiveTab=c;
 this.lastActiveTab.addClass(this.options.activeClassname);this.getContentElFromTab(this.lastActiveTab).addClass(this.options.activeClassname).show();

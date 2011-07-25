@@ -23,13 +23,13 @@ var d="DeskPRO_Window";var c=null;if(window.parent&&window.parent[a]){c=window.p
 }else{if(window.parent&&window.parent[d]){c=window.parent[d]}else{if(window.opener&&window.opener[d]){c=window.opener[d]}}}}return c
 },closeThisPopout:function(){if(this.getThisOverlay()){this.getThisOverlay().closeOverlay()}},getThisOverlay:function(){if(window.parent&&window.parent.DeskPRO_Page&&window.parent.DeskPRO_Page._openedOverlay){return window.parent.DeskPRO_Page._openedOverlay
 }return null}});Orb.createNamespace("DeskPRO.Agent");DeskPRO.Agent.InterfaceEffects=new Orb.Class({Implements:[Orb.Util.Events],initialize:function(){},initPage:function(){}});
-Orb.createNamespace("DeskPRO.Agent.PageFragment");DeskPRO.Agent.PageFragment.Basic=new Class({Implements:[Events,DeskPRO.Agent.Widgetable],pageUuid:null,ZONE:"agent",TYPENAME:"basic",allowDupe:false,scripts:[],stylesheets:[],html:"",meta:{},urls:{},featureSelectors:{routes:[],times:[]},initialize:function(c){this.pageUid=Orb.uuid();
-if(c){this.html=c}this.addEvent("activate",(function(){DeskPRO_Window.getMessageBroker().sendMessage("page-fragment.activated",{page:this})
+Orb.createNamespace("DeskPRO.Agent.PageFragment");DeskPRO.Agent.PageFragment.Basic=new Class({Implements:[Events,DeskPRO.Agent.Widgetable],pageUuid:null,ZONE:"agent",TYPENAME:"basic",allowDupe:false,scripts:[],stylesheets:[],html:"",meta:{},urls:{},featureSelectors:{routes:[],times:[]},initialize:function(d){this.pageUid=Orb.uuid();
+if(d){this.html=d}this.addEvent("activate",(function(){DeskPRO_Window.getMessageBroker().sendMessage("page-fragment.activated",{page:this})
 }).bind(this));this.addEvent("deactivate",(function(){DeskPRO_Window.getMessageBroker().sendMessage("page-fragment.deactivated",{page:this})
-}).bind(this));this.addEvent("render",(function(d){this.initFeaturesOnCollection(d)}).bind(this));if(this.getMetaData("initRoutesOn")){var b=this.getMetaData("initRoutesOn");
-if(typeOf(b)=="string"){b=[b]}for(var a=0;a<b.length;a++){this.featureSelectors.routes.push(b[a])}}this.addEvent("render",function(d){if(this.getMetaData("widgets")){this.initWidgets(this.getMetaData("widgets"),{personId:DESKPRO_PERSON_ID,deskproPath:BASE_URL,proxyKey:DESKPRO_PROXY_KEY});
-this.initWidgetsDom(d)}});this.addEvent("activate",this.activate);this.addEvent("deactivate",this.deactivate);this.addEvent("render",this.initPage);
-this.addEvent("destroy",this.destroyPage);this.init()},init:function(){},activate:function(){},deactivate:function(){},initFeaturesOnCollection:function(b,a){a=a||this.featureSelectors;
+}).bind(this));this.addEvent("render",(function(e){this.initFeaturesOnCollection(e)}).bind(this));if(this.getMetaData("initRoutesOn")){var c=this.getMetaData("initRoutesOn");
+if(typeOf(c)=="string"){c=[c]}for(var b=0;b<c.length;b++){this.featureSelectors.routes.push(c[b])}}this.addEvent("render",function(e){if(this.getMetaData("widgets")){this.initWidgets(this.getMetaData("widgets"),{personId:DESKPRO_PERSON_ID,deskproPath:BASE_URL,proxyKey:DESKPRO_PROXY_KEY});
+this.initWidgetsDom(e)}});var a=this;this.addEvent("activate",this.activate);this.addEvent("deactivate",this.deactivate);
+this.addEvent("render",this.initPage);this.addEvent("destroy",this.destroyPage);this.init()},init:function(){},activate:function(){},deactivate:function(){},initFeaturesOnCollection:function(b,a){a=a||this.featureSelectors;
 if(a.routes&&a.routes.length){this.initRoutesOnCollection($(a.routes.join(", "),b))}if(a.times&&a.times.length){this.initTimesOnCollection($(a.times.join(", "),b))
 }},initRoutesOnCollection:function(a){a.click(function(){DeskPRO_Window.runPageRouteFromElement(this)})},initTimesOnCollection:function(a){a.timeago()
 },setMetaData:function(a,b){if(b===undefined&&typeOf(a)=="object"){this.meta=Object.merge(this.meta,a)}else{this.meta[a]=b
@@ -79,8 +79,9 @@ if(e.preventDefault){d.preventDefault()}if(e.cancelClose){return}DeskPRO_Window.
 return}var b=this.badgeEl;b.fadeOut(300,function(){b.html(a).fadeIn(300)})},closeMenu:function(){if(this.options.mainMenuOpener){this.options.mainMenuOpener.closeMenus()
 }}});Orb.createNamespace("DeskPRO.Agent.WindowElement");DeskPRO.Agent.WindowElement.MainMenu.Notifications=new Class({Extends:DeskPRO.Agent.WindowElement.MainMenu.Abstract,init:function(){Orb.DesktopNotify.askPermission();
 var a=this;$("#notifications_list").delegate("em.remove","click",function(){a.removeElement($(this).parent())});$("a.mark-all-read").click(function(b){b.preventDefault();
-b.stopPropagation();a.readAll()});DeskPRO_Window.getMessageBroker().addMessageListener("tickets.new-tickets",function(c){var b="ticket:"+BASE_URL+"agent/tickets/"+c.ticket_id;
-a.addItem("tickets",c.ticket_id,c.subject,b)});DeskPRO_Window.getMessageBroker().addMessageListener("ui.ticket.opened",function(b){a.removeItem("tickets",b.ticketId)
+b.stopPropagation();a.readAll()});DeskPRO_Window.getMessageBroker().addMessageListener("agent-notification.new-ticket",function(c){var b="ticket:"+BASE_URL+"agent/tickets/"+c.ticket_id;
+a.addItem("tickets",c.ticket_id,c.subject,b)});DeskPRO_Window.getMessageBroker().addMessageListener("agent-notification.new-idea",function(c){var b="page:"+BASE_URL+"agent/ideas/view/"+c.idea_id;
+a.addItem("ideas",c.idea_id,c.title,b)});DeskPRO_Window.getMessageBroker().addMessageListener("ui.tab.opened",function(b){a.removeItem(b.type,b.id)
 })},addItem:function(d,f,e,c){var b=(new Date()).toUTCString();var a=$('<li class="'+d+" "+d+"-"+f+'" data-type="'+d+'" data-type-id="'+f+'"><em class="remove">mark as read</em><em class="timeago">'+b+'</em><span data-route="'+c+'">'+e+"</span></li>");
 $(".timeago",a).timeago();$("span",a).click(function(){DeskPRO_Window.runPageRouteFromElement(this)});$("#notifications_list").prepend(a);
 this.updateCount(d,"add",1);if(DeskPRO_Window.options.desktopNotifications){Orb.DesktopNotify.show({title:e,content:"Click to open",click:function(){DeskPRO_Window.runPageRouteFromElement(a)

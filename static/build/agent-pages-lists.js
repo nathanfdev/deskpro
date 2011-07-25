@@ -1,5 +1,7 @@
-Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.Basic=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,initPage:function(a){$("li",a).click(function(){DeskPRO_Window.runPageRouteFromElement(this)
-})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,contentWrapper:null,barWrapper:null,layout:null,overlay:null,appendUrl:null,actionsBarHelper:null,resultTypeName:"basic",resultTypeId:"general",changeManager:null,loadFirst:false,initPage:function(d){window.TICKET_LIST=this;
+Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.Basic=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,initialize:function(a){this.parent(a);
+this.addEvent("activate",(function(){DeskPRO_Window.getMessageBroker().sendMessage("list-page-fragment.activated",{page:this})
+}).bind(this))},initPage:function(a){$("li",a).click(function(){DeskPRO_Window.runPageRouteFromElement(this)})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");
+DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,contentWrapper:null,barWrapper:null,layout:null,overlay:null,appendUrl:null,actionsBarHelper:null,resultTypeName:"basic",resultTypeId:"general",changeManager:null,loadFirst:false,initPage:function(d){window.TICKET_LIST=this;
 this.loadFirst=this.getMetaData("loadFirst");if(this.loadFirst){this.loadFirst=false;var b=$("td.subject:first a.with-route:first",d);
 if(b.length){DeskPRO_Window.runPageRouteFromElement(b)}}this.wrapper=$(d);this.topSection=$(".list-top-area",this.wrapper);
 this.barWrapper=$("div.layout-footer:first",this.wrapper);if(!this.barWrapper.length){var f=true}else{var f=false}this.contentWrapper=$(".content:first",this.wrapper);
@@ -14,10 +16,11 @@ if(f){this.actionsBarHelper={page:null,wrapper:null,contentWrapper:null,tableEl:
 if(this.getMetaData("noResults")){this.noMoreResults=true;$(".no-more-results",this.contentWrapper).show()}DeskPRO_Window.getMessageBroker().addMessageListener("tickets.deleted",(function(g){var a=[];
 Array.each(g,function(h){a.push("tr.ticket-"+h)});a=a.join(", ");$(a,this.contentWrapper).fadeOut(400,function(){$(this).remove()
 })}).bind(this));DeskPRO_Window.getMessageBroker().addMessageListener("window.innerLayout.resize",(function(){this._handleResize()
-}).bind(this));this.contentWrapper.addClass("scroll-content").tinyscrollbar()},_handleResize:function(){if(!this.layout){return
-}this.layout.resizeAll()},destroyPage:function(){if(this.flagMenu){this.flagMenu.destroy()}if(this.displayOptionsOverlay){this.displayOptionsOverlay.destroy()
-}},addTicket:function(b){if(!this.meta.loadSingleUrl){return}var a=this.meta.loadSingleUrl.replace("$ticket_id",b).replace("$view_type",this.meta.viewType);
-$.ajax({url:a,dataType:"html",context:this,success:function(c){var d=$(c);d.hide();$(".deskpro-results-list",this.wrapper).prepend(d);
+}).bind(this));this.contentWrapper.addClass("scroll-content").tinyscrollbar();if(this.getMetaData("isNewRecentSearch")){DeskPRO_Window.getMessageBroker().sendMessage("agent.new-recent-search")
+}},_handleResize:function(){if(!this.layout){return}this.layout.resizeAll()},destroyPage:function(){if(this.flagMenu){this.flagMenu.destroy()
+}if(this.displayOptionsOverlay){this.displayOptionsOverlay.destroy()}},addTicket:function(b){if(!this.meta.loadSingleUrl){return
+}var a=this.meta.loadSingleUrl.replace("$ticket_id",b).replace("$view_type",this.meta.viewType);$.ajax({url:a,dataType:"html",context:this,success:function(c){var d=$(c);
+d.hide();$(".with-route",d).click(function(){DeskPRO_Window.runPageRouteFromElement(this)});$(".timeago",d).timeago();$(".deskpro-results-list",this.wrapper).prepend(d);
 d.slideDown()}})},delTicket:function(b){var a=$(".ticket-"+b,this.contentWrapper);a.animate({height:"toggle",opacity:"toggle"},"slow",function(){a.remove()
 })},_initSearchOptions:function(){var b=$(".summary .edit",this.topSection);b.click(this.showSearchForm.bind(this));var a=$("form.ticket-search-form",this.topSection);
 a.submit(function(d){d.preventDefault();var c=a.attr("action");var e=a.serializeArray();DeskPRO_Window.loadListPane(c,{postData:e})
@@ -209,7 +212,9 @@ if(!$("tr.article",g).length){g.remove()}},loadPreviewArticle:function(c){var a=
 var d=f.overlay;$("button.approve-trigger",e).click(function(g){g.preventDefault();a.approveEdit($("input.article_id",e).val());
 d.closeOverlay()});$("button.disapprove-trigger",e).click(function(g){g.preventDefault();a.disapproveEdit($("input.article_id",e).val());
 d.closeOverlay()})}});b.openOverlay()}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.KbList=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,initPage:function(a){this.wrapper=a;
-this.initRoutesOnCollection($(".with-route",a))}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,contentWrapper:null,initPage:function(a){this.wrapper=$(a);
+this.initRoutesOnCollection($(".with-route",a));this.listSearchForm=new DeskPRO.Agent.PageHelper.ListSearchForm(this,{form:$("form.kb-search-form",this.topSection),context:this.topSection,searchData:$(".search-form-data:first",this.topSection)});
+this.listSearchForm.addEvent("searchSubmit",function(b,c){DeskPRO_Window.loadListPane(b,{postData:c})})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");
+DeskPRO.Agent.PageFragment.ListPane.AgentChatHistory=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,contentWrapper:null,initPage:function(a){this.wrapper=$(a);
 this.contentWrapper=$("div.content:first",this.wrapper);this.initFeaturesOnCollection(a,{routes:[".with-route"],times:["abbr.timeago"]});
 if(this.getMetaData("noResults")){this.noMoreResults=true;$(".no-more-results",this.contentWrapper).show()}this.contentWrapper.addClass("scroll-content").tinyscrollbar()
 },activate:function(){this.attachInfiniteScroll()},deactivate:function(){this.deattachInfiniteScroll()},attachInfiniteScroll:function(){this._handleOnScroll_bound=this._handleOnScroll.bind(this);
@@ -236,4 +241,17 @@ this.initRoutesOnCollection($(".with-route",a));this.initCommentRows(this.wrappe
 $("button.delete-trigger",b).click(function(){a.handleDisapprove($(this).data("comment-id"))});$("button.approve-trigger",b).click(function(){a.handleApprove($(this).data("comment-id"))
 })},handleApprove:function(a){$("article.comment-"+a,this.wrapper).fadeOut();$.ajax({url:BASE_URL+"agent/ideas/approve-comment/"+a,type:"POST",dataType:"json"})
 },handleDisapprove:function(a){$("article.comment-"+a,this.wrapper).fadeOut();$.ajax({url:BASE_URL+"agent/ideas/disapprove-comment/"+a,type:"POST",dataType:"json"})
-}});
+}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");DeskPRO.Agent.PageFragment.ListPane.NewCustomFilter=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,filterSearchForm:null,initPage:function(c){this.wrapper=c;
+this.topSection=$(".list-top-area",this.wrapper);var f=$(".search-form",this.topSection);var g=$(".search-builder-tpl",this.topSection);
+var b=new DeskPRO.Form.RuleBuilder(g);$(".add-term",f).data("add-count",0).click(function(){var h=parseInt($(this).data("add-count"));
+var i="terms["+h+"]";$(this).data("add-count",h+1);b.addNewRow($(".search-terms",f),i)});var e=$(".search-form-data:first",this.topSection);
+if(e.length){var a=e.get(0).innerHTML;a=$.parseJSON(a);if(a.terms){Array.each(a.terms,function(j,h){var i="terms[initial_"+h+"]";
+b.addNewRow($(".search-terms",f),i,{type:j.type,op:j.op,options:j.options})})}if(a.order_by){$('[name="order_by"]',this.topSection).val(a.order_by)
+}e.remove()}var d=$("form.ticket-search-form",this.topSection);d.submit(function(i){i.preventDefault();var h=d.attr("action");
+var j=d.serializeArray();DeskPRO_Window.loadListPane(h,{postData:j})})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");
+DeskPRO.Agent.PageFragment.ListPane.NewsList=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,initPage:function(a){this.wrapper=a;
+this.topSection=$(".list-top-area:first",this.wrapper);this.initRoutesOnCollection($(".with-route",a));this.listSearchForm=new DeskPRO.Agent.PageHelper.ListSearchForm(this,{form:$("form.news-search-form",this.topSection),context:this.topSection,searchData:$(".search-form-data:first",this.topSection)});
+this.listSearchForm.addEvent("searchSubmit",function(b,c){DeskPRO_Window.loadListPane(b,{postData:c})})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");
+DeskPRO.Agent.PageFragment.ListPane.DownloadList=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,initPage:function(a){this.wrapper=a;
+this.initRoutesOnCollection($(".with-route",a));this.topSection=$(".list-top-area:first",this.wrapper);this.listSearchForm=new DeskPRO.Agent.PageHelper.ListSearchForm(this,{form:$("form.download-search-form",this.topSection),context:this.topSection,searchData:$(".search-form-data:first",this.topSection)});
+this.listSearchForm.addEvent("searchSubmit",function(b,c){DeskPRO_Window.loadListPane(b,{postData:c})})}});

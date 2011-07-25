@@ -11,11 +11,11 @@ a.push('<div class="scrollbar"><div class="track"><div class="thumb"><div class=
 a=a.join("");c=$(a);this.sectionEl.append(c);b=$("div.scroll-content:first",c)}}this.contentEl=b;var d=$(".with-scrollbar:first",this.sectionEl);
 if(d.length){this.scrollerHandler=new DeskPRO.Agent.ScrollerHandler(this,d,{showEvent:"show",hideEvent:"hide"})}},setListElement:function(b,a){if(this.listEl){this.listEl.remove()
 }if(!b){b=$("<section></section>");b.attr("id",Orb.getUniqueId("list_"))}this.listEl=b;if(!b.parent().is("#deskpro_list")){this.listEl.detach().appendTo("#deskpro_list")
-}if(!a){a=$('<section class="content"></section>')}this.listEl.append(a);this.listContentEl=a},setListPageFragment:function(b){console.log("Setting page");
-if(this.listPage){this.listPage.fireEvent("destroy");this.listPage=null}this.listPage=b;var a=$("> section.content",this.getListElement());
-a.empty();a.html(b.html);this.getListElement().addClass("on");b.fireEvent("render",[a]);b.fireEvent("activate")},isVisible:function(){return this._isVisible
-},updateBadge:function(d){var c=$(".nav-counter",this.buttonEl);var b=$("span",c);var d=parseInt(d);var a=d;if(d){if(a>=1000){a="1000+"
-}b.html(a);c.show()}else{d=0;b.html("0");c.hide()}this.badgeCount=d;DeskPRO_Window.getMessageBroker().sendMessage("agent.ui.badge_updated",{section:this,sectionId:this.buttonEl.attr("id"),count:d})
+}if(!a){a=$('<section class="content"></section>')}this.listEl.append(a);this.listContentEl=a},setListPageFragment:function(b){if(this.listPage){this.listPage.fireEvent("destroy");
+this.listPage=null}this.listPage=b;var a=$("section.content:first",this.getListElement());a.empty();a.html(b.html);this.getListElement().addClass("on");
+b.fireEvent("render",[a]);b.fireEvent("activate")},isVisible:function(){return this._isVisible},updateBadge:function(d){var c=$(".nav-counter",this.buttonEl);
+var b=$("span",c);var d=parseInt(d);var a=d;if(d){if(a>=1000){a="1000+"}b.html(a);c.show()}else{d=0;b.html("0");c.hide()}this.badgeCount=d;
+DeskPRO_Window.getMessageBroker().sendMessage("agent.ui.badge_updated",{section:this,sectionId:this.buttonEl.attr("id"),count:d})
 },getBadgeCount:function(){return this.badgeCount||0},_onShowSetVisible:function(){this._isVisible=true},_onHideSetVisible:function(){this._isVisible=false
 },_onFirstShowFire:function(){if(this.has_shown){return}this.has_shown=true;this.fireEvent("firstshow");this._loadAutoLoadRoutes()
 },_loadAutoLoadRoutes:function(){if(DeskPRO_Window.getDebug("noAutoLoadList")){return}var a=$(".auto-load-route",this.sectionEl);
@@ -23,21 +23,32 @@ if(!a.length||!a.data("route")){return}DeskPRO_Window.runPageRoute(a.data("route
 }if(this.hasLoaded){$("#deskpro_outline_loading").hide()}},_onHideDeactivateList:function(){if(this.listPage){this.listPage.fireEvent("deactivate")
 }}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.Tickets=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#tickets_section");
 this.setSectionElement($('<section id="tickets_outline"></section>'));DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.filter-update",this.filterUpdated.bind(this));
-$.ajax({url:BASE_URL+"agent/tickets/get-section-data.json",context:this,success:function(a){this._initSection(a)}})},_initSection:function(b){this.setHasInitialLoaded();
-this.sectionEl.html(b.section_html);var a=this;this.tabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#tickets_outline_tabstrip li"),onTabSwitch:function(c){if(c.tabEl.is(".labels")){a.showLabelsList()
-}}});this._initFilters();this._initOverview();this._initFlagged();if(this.isVisible()&&!DeskPRO_Window.loadingListFragment){this._loadAutoLoadRoutes()
-}},_initFilters:function(){DeskPRO_Window.getPoller().addData([{name:"do[]",value:"get-filter-counts"}],"filters.counts",{recurring:true,minDelay:60000,minDelayAfterOne:true});
-DeskPRO_Window.getMessageBroker().addMessageListener("filters.counts",this.updateFilterCounts.bind(this))},getFilterCount:function(a){return parseInt($("#ticket_filter_"+a+"_count").data("count")||0)
+DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.new-recent-search",this.refreshRecentSearches.bind(this));DeskPRO_Window.getMessageChanneler().subscribeChannel("list-page-fragment.activated",this.highlightActiveSection.bind(this));
+var a=this;this.getSectionElement().delegate("li[data-route]","click",function(){a.highlightNavItem($(this))});$.ajax({url:BASE_URL+"agent/tickets/get-section-data.json",context:this,success:function(b){this._initSection(b)
+}})},_initSection:function(b){this.setHasInitialLoaded();this.sectionEl.html(b.section_html);var a=this;this.tabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#tickets_outline_tabstrip li"),onTabSwitch:function(c){if(c.tabEl.is(".labels")){a.showLabelsList()
+}else{if(c.tabEl.is(".flagged")){a.loadFlagCounts()}}}});this._initFilters();this._initOverview();this._initFlagged();$("#user_settings_filters_link").click(function(){var c=new DeskPRO.UI.Overlay({contentMethod:"iframe",iframeUrl:BASE_URL+"agent/settings/ticket-filters"});
+c.openOverlay()});if(this.isVisible()&&!DeskPRO_Window.loadingListFragment){this._loadAutoLoadRoutes()}this.activeNavClass=null
+},onShow:function(){this.activeNavClass=null},highlightActiveSection:function(b){if(!this.isVisible()){return}var a=b.page;
+if(a.TYPENAME=="ticket-filter"){this.activeNavClass=".nav-filter-"+a.getMetaData("filter_id")}else{if(a.TYPENAME=="ticket-custom-filter"){if(a.getMetaData("recent_search_id")){this.activeNavClass=".nav-recent-search-"+a.getMetaData("recent_search_id")
+}}}this.highlightNav()},highlightNav:function(){$(".active-nav",this.getSectionElement()).removeClass("active-nav");if(this.activeNavClass){$(this.activeNavClass,this.getSectionElement()).addClass("active-nav")
+}},highlightNavItem:function(a){$(".active-nav",this.getSectionElement()).removeClass("active-nav");a.addClass("active-nav")
+},_initFilters:function(){DeskPRO_Window.getPoller().addData([{name:"do[]",value:"get-sys-filter-counts"}],"filters.counts",{recurring:true,minDelay:120000});
+DeskPRO_Window.getPoller().addData([{name:"do[]",value:"get-custom-filter-counts"}],"filters.counts",{recurring:true,minDelay:600000,minDelayAfterOne:true});
+DeskPRO_Window.getMessageBroker().addMessageListener("filters.counts",this.updateFilterCounts.bind(this));$("ul#tickets_outline_filters_list").sortable({axis:"y",distance:8,update:function(){var a=[];
+$("ul#tickets_outline_filters_list > li").each(function(){var b=$(this).data("filter-id");if(b){a.push({name:"prefs[agent.ui.ticket-filters-order][]",value:b})
+}});$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/misc/ajax-save-prefs",data:a})}})},getFilterCount:function(a){return parseInt($("#ticket_filter_"+a+"_count").data("count")||0)
 },setFilterCount:function(e,d){var c=d;e=parseInt(e);if(d>1000){c="1000+"}var a=DeskPRO_Window.getData("systemFilters")[e];
 if(a){if(a=="all"){this.updateBadge(d)}var b=$("#ticket_filter_"+e+"_count").html(c).data("count",d)}else{var b=$("#ticket_filter_"+e+"_count").html(c).data("count",d)
 }},updateFilterCounts:function(a){Object.each(a,function(b,c){this.setFilterCount(c,b)},this)},filterUpdated:function(c){var a=this.getFilterCount(c.filter_id);
 var b=null;if(this.listPage&&this.listPage.meta.filter_id==c.filter_id){b=this.listPage}if(c.op=="add"){a++;this.setFilterCount(c.filter_id,a);
 if(b&&c.ticket_id){b.addTicket(c.ticket_id)}}else{if(c.op=="del"){a--;if(a<1){a=0}this.setFilterCount(c.filter_id,a);if(b&&c.ticket_id){b.delTicket(c.ticket_id)
-}}}},_initOverview:function(){this.overviewGroupMenuEl=null;this.overviewGroupEl1=null;this.overviewGroupEl2=null;this.overviewGroupEl2_yes=null;
-this.overviewGroupingMenu=null;this.overviewModeMenu=null;this._initoverviewGroupingMenu();this.overviewLoadList()},_initoverviewGroupingMenu:function(){this.overviewGroupMenuEl=$("#overview_grouping_menu");
-this.overviewModeMenuEl=$("#overview_mode_menu");this.overviewModeEl=$("#ticket_grouping_options .mode");this.overviewGroupEl1=$("#ticket_grouping_options .grouping1");
-this.overviewGroupEl2=$("#ticket_grouping_options .grouping2");this.overviewGroupEl2_no=$("#ticket_grouping_options .no-subgroup");
-this.overviewGroupEl2_yes=$("#ticket_grouping_options .with-subgroup");var a=this;this.overviewGroupingMenu=new DeskPRO.UI.Menu({triggerElement:$("#ticket_grouping_options .grouping-menu-trigger"),menuElement:this.overviewGroupMenuEl,onItemClicked:function(b){b.event.stopPropagation();
+}}}},refreshRecentSearches:function(){$.ajax({url:BASE_URL+"agent/ticket-search/get-recent-search-list",type:"GET",context:this,dataType:"html",success:function(a){$("#tickets_outline_searches_list").empty().html(a);
+this.highlightNav()}})},_initOverview:function(){this.overviewGroupMenuEl=null;this.overviewGroupEl1=null;this.overviewGroupEl2=null;
+this.overviewGroupEl2_yes=null;this.overviewGroupingMenu=null;this.overviewModeMenu=null;this._initoverviewGroupingMenu();
+this.overviewLoadList()},_initoverviewGroupingMenu:function(){this.overviewGroupMenuEl=$("#overview_grouping_menu");this.overviewModeMenuEl=$("#overview_mode_menu");
+this.overviewModeEl=$("#ticket_grouping_options .mode");this.overviewGroupEl1=$("#ticket_grouping_options .grouping1");this.overviewGroupEl2=$("#ticket_grouping_options .grouping2");
+this.overviewGroupEl2_no=$("#ticket_grouping_options .no-subgroup");this.overviewGroupEl2_yes=$("#ticket_grouping_options .with-subgroup");
+var a=this;this.overviewGroupingMenu=new DeskPRO.UI.Menu({triggerElement:$("#ticket_grouping_options .grouping-menu-trigger"),menuElement:this.overviewGroupMenuEl,onItemClicked:function(b){b.event.stopPropagation();
 a._handleGroupingChanged(b)},onBeforeMenuOpened:function(e){$("li[data-groupby]",a.overviewGroupMenuEl).show();var d=e.menu.getOpenTriggerEvent();
 var c=$(d.target);if(c.is(".grouping1")){$('li[data-groupby="none"]',a.overviewGroupMenuEl).hide()}else{var b=a.overviewGroupEl1.data("groupby");
 $('li[data-groupby="'+b+'"]',a.overviewGroupMenuEl).hide()}}});this.overviewModeMenu=new DeskPRO.UI.Menu({triggerElement:$("#ticket_grouping_options .mode-menu-trigger"),menuElement:this.overviewModeMenuEl,onItemClicked:function(b){a._handleModeChanged(b)
@@ -50,9 +61,17 @@ var e=f.menu.getOpenTriggerEvent();var c=$(e.target);var a=$(f.itemEl);if(c.is("
 this.overviewGroupEl2_no.hide();this.overviewGroupEl2_yes.show()}else{this.overviewGroupEl2.html("").data("groupby","");this.overviewGroupEl2_no.show();
 this.overviewGroupEl2_yes.hide()}},overviewLoadList:function(){var b=this.overviewGroupEl1.data("groupby");var a=this.overviewGroupEl2.data("groupby")||"";
 var d=this.overviewModeEl.data("mode");var c={group1:b,group2:a,mode:d};$.ajax({url:BASE_URL+"agent/ticket-search/overview-nav",type:"GET",data:c,context:this,dataType:"html",success:function(e){this._overviewGroupListLoaded(e)
-}})},_overviewGroupListLoaded:function(a){var b=$("#ticket_grouping_list > ul").html(a)},_initFlagged:function(){DeskPRO_Window.getPoller().addData([{name:"do[]",value:"get-flagged-counts"}],"filter-flagged.counts",{recurring:true,minDelay:60000,minDelayAfterOne:true});
-DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.counts",this.updateFlagCounts.bind(this));DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.flag-changed",this.changeFlagCountsForSwitch.bind(this))
-},updateFlagCounts:function(a){$("ol#ticket_flagged_list span.list-counter").html("0");Object.each(a,(function(c,b){this.updateFlagCountFor(b,c)
+}})},_overviewGroupListLoaded:function(a){var b=$("#ticket_grouping_list > ul").html(a)},_initFlagged:function(){DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.counts",this.updateFlagCounts.bind(this));
+DeskPRO_Window.getMessageBroker().addMessageListener("filter-flagged.flag-changed",this.changeFlagCountsForSwitch.bind(this));
+var a=this;$("#tickets_outline_flagged ul").sortable({axis:"y",distance:8,update:function(){var b=[];$("#tickets_outline_flagged ul > li").each(function(){var c=$(this).data("flag");
+if(c){b.push({name:"prefs[agent.ui.ticket-flag-order][]",value:c})}});$.ajax({timeout:20000,type:"POST",url:BASE_URL+"agent/misc/ajax-save-prefs",data:b})
+}});$("#tickets_outline_flagged li").dblclick(function(e){e.preventDefault();e.stopPropagation();var b=$(this);var f=$('<input type="text" />');
+f.val($("a",b).text().trim());var d=function(i){if(i.keyCode==13&&!i.metaKey){h()}};var h=function(){var i=f.val().trim();
+if(i.length){$.ajax({type:"POST",url:BASE_URL+"agent/misc/ajax-save-prefs",data:[{name:"prefs[agent.ui.flag."+b.data("flag")+"]",value:i}]});
+$("a",b).text(i)}c.remove();g.remove()};var c=$('<div class="backdrop"></div>');c.appendTo("body");c.click(h);var g=$('<div class="field-overlay"><div class="close-trigger"></div></div>');
+f.appendTo(g);g.css({left:b.offset().left,top:b.offset().top});g.appendTo("body").show();f.keypress(d).focus();$(".close-trigger",g).click(h)
+})},loadFlagCounts:function(){$.ajax({url:BASE_URL+"agent/tickets/get-flagged-section-data.json",context:this,success:function(a){this.updateFlagCounts(a.flag_counts)
+}})},updateFlagCounts:function(a){$("ol#ticket_flagged_list span.list-counter").html("0");Object.each(a,(function(c,b){this.updateFlagCountFor(b,c)
 }).bind(this))},updateFlagCountFor:function(a,d){var c=d;if(d>=1000){c="1000+"}else{if(d<0){d=0;c="0"}}var b=$("#ticket_flag_"+a+"_count").html(c)
 },changeFlagCountsForSwitch:function(c){var b=parseInt($("#ticket_flag_"+c.old_flag+"_count").html());var a=parseInt($("#ticket_flag_"+c.new_flag+"_count").html());
 this.updateFlagCountFor(c.old_flag,b-1);this.updateFlagCountFor(c.new_flag,a+1)},showLabelsList:function(){if(this.hasLoadedLabels){return
@@ -62,11 +81,10 @@ this.setSectionElement($('<section id="people_outline"></section>'));$.ajax({url
 }})},_initSection:function(b){this.setHasInitialLoaded();this.contentEl.html(b.section_html);var a=this;this.peopleTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#people_outline_tabstrip li"),onTabSwitch:function(c){}});
 this.orgTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#people_outline_org_tabstrip li"),onTabSwitch:function(c){}});
 this.contentEl.addClass("scroll-content").tinyscrollbar();if(this.isVisible()){this._onShowLoadList()}}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
-DeskPRO.Agent.WindowElement.Section.Kb=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#kb_section");
-this.setSectionElement($('<section id="kb_outline"></section>'));$.ajax({url:BASE_URL+"agent/kb/get-section-data.json",context:this,success:function(a){this._initSection(a)
-}})},_initSection:function(b){this.setHasInitialLoaded();this.contentEl.html(b.section_html);var a=this;this.catTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#kb_outline_tabstrip li"),onTabSwitch:function(c){}});
-this.contentEl.addClass("scroll-content").tinyscrollbar();if(this.isVisible()){this._onShowLoadList()}}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
-DeskPRO.Agent.WindowElement.Section.Twitter=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#twitter_section");
+DeskPRO.Agent.WindowElement.Section.Publish=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#publish_section");
+this.setSectionElement($('<section id="publish_outline"></section>'));$.ajax({url:BASE_URL+"agent/publish/get-section-data.json",context:this,success:function(a){this._initSection(a)
+}})},_initSection:function(b){this.setHasInitialLoaded();this.contentEl.html(b.section_html);var a=this;this.typeTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#portal_outline_tabstrip li")})
+}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.Twitter=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#twitter_section");
 this.setSectionElement($('<section id="twitter_outline"></section>'));$.ajax({url:BASE_URL+"agent/twitter/get-section-data.json",context:this,success:function(a){this._initSection(a)
 }})},_initSection:function(a){this.setHasInitialLoaded();this.contentEl.html(a.section_html);if(this.isVisible()){this._onShowLoadList()
 }this.contentEl.addClass("scroll-content").tinyscrollbar()}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
