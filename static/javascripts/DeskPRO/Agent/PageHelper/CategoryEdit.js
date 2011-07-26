@@ -164,7 +164,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 
 		var ul, depth = 0;
 		if (parentId && parentId != '0') {
-			var parent_li = $('li.category-' + parentId, this.addDlg);
+			var parent_li = $('li.cat-' + parentId, this.addDlg);
 			depth = parseInt($('> .title', parent_li).data('depth')) + 1;
 			
 			ul = $('> ul', parent_li);
@@ -184,7 +184,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 		}
 
 		var tmp_id = 'new_' + Orb.uuid();
-		var li = '<li class="category-'+tmp_id+'"><div class="title new" data-cat-id="' + tmp_id + '" data-depth="'+depth+'">' + Orb.escapeHtml(title) + '</div></li>';
+		var li = '<li class="cat-'+tmp_id+'"><div class="title new" data-cat-id="' + tmp_id + '" data-depth="'+depth+'">' + Orb.escapeHtml(title) + '</div></li>';
 
 		ul.append(li);
 

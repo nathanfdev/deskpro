@@ -1,4 +1,4 @@
-<section id="publish_outline_news" class="deskpro-tab-item">
+<section id="publish_outline_news" class="deskpro-tab-item" data-editor-class="news-cat-editor">
 	<ul class="nav-list">
 		<li data-route="listpane:{{ path('agent_news_list') }}">
 			<a>All</a>
@@ -9,4 +9,6 @@
 			</li>
 		{% endfor %}
 	</ul>
+
+	{% include 'AgentBundle:Publish:category-editor.html.twig' with { 'categories': news_cats_full, 'classname': 'news-cat-editor', 'title': 'News Categories' } %}
 </section>

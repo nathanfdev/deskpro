@@ -38,18 +38,21 @@ class PublishController extends AbstractController
 		$kb_counts['pending']                      = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
 
 		$kb_cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
+		$kb_cats_full = App::getEntityRepository('DeskPRO:ArticleCategory')->getRootNodes();
 
 		#------------------------------
 		# News
 		#------------------------------
 
 		$news_cats = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
+		$news_cats_full = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();
 
 		#------------------------------
 		# Downloads
 		#------------------------------
 
 		$download_cats = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
+		$download_cats_full = App::getEntityRepository('DeskPRO:DownloadCategory')->getRootNodes();
 
 		#------------------------------
 		# Glossary
@@ -66,8 +69,11 @@ class PublishController extends AbstractController
 			'counts' => $counts,
 			'kb_counts' => $kb_counts,
 			'kb_cats' => $kb_cats,
+			'kb_cats_full' => $kb_cats_full,
 			'news_cats' => $news_cats,
+			'news_cats_full' => $news_cats_full,
 			'download_cats' => $download_cats,
+			'download_cats_full' => $download_cats_full,
 			'glossary_words' => $glossary_words,
 		));
 

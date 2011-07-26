@@ -27,7 +27,19 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		var self = this;
 		this.typeTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
-			triggerElements: $('#publish_outline_tabstrip li')
+			triggerElements: $('#publish_outline_tabstrip li'),
+			onTabSwitch: function(info) {
+				var catEditorClass = info.tabContent.data('editor-class');
+				if (catEditorClass) {
+					$('#publish_outline_edit_cats').data('editor-class', catEditorClass).show();
+				} else {
+					$('#publish_outline_edit_cats').hide();
+				}
+			}
+		});
+
+		$('#publish_outline_edit_cats').click(function() {
+			self.openCatEditor($(this).data('editor-class'));
 		});
 
 		this._initGlossary();
@@ -178,6 +190,38 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			success: function(counts) {
 
 			}
+		});
+	},
+
+
+	//#########################################################################
+	//# Cat Editor
+	//#########################################################################
+
+	openCatEditor: function(editorClassname) {
+		if (!this.catEditors) this.catEditors = {};
+
+		this._initCatEditor(editorClassname);
+		if (!this.catEditors[editorClassname]) {
+			console.error('No category editor for %s', editorClassname);
+			return;
+		}
+		
+		var editor = this.catEditors[editorClassname];
+		editor.open();
+	},
+
+	_initCatEditor: function(editorClassname) {
+		if (this.catEditors[editorClassname]) return;
+
+		var editor = new DeskPRO.Agent.PageHelper.CategoryEdit({
+			wrapper: $('.' + editorClassname, this.contentEl)
+		});
+
+		this.catEditors[editorClassname] = editor;
+
+		editor.addEvent('save', function(editor) {
+			
 		});
 	}
 });

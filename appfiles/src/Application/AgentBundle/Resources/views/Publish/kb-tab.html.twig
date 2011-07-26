@@ -1,4 +1,4 @@
-<section id="publish_outline_kb" class="deskpro-tab-item">
+<section id="publish_outline_kb" class="deskpro-tab-item" data-editor-class="kb-cat-editor">
 	<ul class="nav-list">
 		<li data-route="listpane:{{ path('agent_kb_list') }}">
 			<a>All</a>
@@ -9,4 +9,6 @@
 			</li>
 		{% endfor %}
 	</ul>
+
+	{% include 'AgentBundle:Publish:category-editor.html.twig' with { 'categories': kb_cats_full, 'classname': 'kb-cat-editor', 'title': 'KB Categories' } %}
 </section>

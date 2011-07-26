@@ -1,0 +1,10 @@
+{% for cat in categories %}
+	<li class="cat-{{cat.id}}">
+		<div class="title" data-cat-id="{{cat.id}}" data-depth="{{depth}}">{{cat.title}}</div>
+		{% if cat.children %}
+			<ul>
+				{% include 'AgentBundle:Publish:category-editor-set.html.twig' with {'categories': cat.children, 'depth': depth+1} %}
+			</ul>
+		{% endif %}
+	</li>
+{% endfor %}
