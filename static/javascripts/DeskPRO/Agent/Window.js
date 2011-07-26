@@ -1319,6 +1319,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 			showSoundMenu();
 		});
+
+		// Create menu
+		this.createMenu = new DeskPRO.UI.Menu({
+			triggerElement: '#create_content_trigger',
+			menuElement: '#create_content_menu'
+		});
 	},
 
 	toggleAgentStatus: function(force_back) {

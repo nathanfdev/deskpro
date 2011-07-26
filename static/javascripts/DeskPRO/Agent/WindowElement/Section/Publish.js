@@ -15,8 +15,6 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				this._initSection(data);
 			}
 		});
-
-		this._initGlossary();
 	},
 
 	_initSection: function(data) {
@@ -31,6 +29,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			context: this.sectionEl,
 			triggerElements: $('#portal_outline_tabstrip li')
 		});
+
+		this._initGlossary();
 	},
 
 	//#########################################################################
@@ -38,21 +38,24 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 	//#########################################################################
 
 	_initGlossary: function() {
+
+		this.glossaryWrapper = $('#publish_outline_glossary');
+
 		var self = this;
-		$('.new-word-trigger', this.contentEl).click(this.showAddDlg.bind(this));
-		$('.edit-word-trigger', this.contentEl).click(function(ev) {
+		$('.glossary-new-trigger', this.glossaryWrapper).click(this.showGlossaryAddDlg.bind(this));
+		$('.glossary-word-trigger', this.glossaryWrapper).click(function(ev) {
 			ev.preventDefault();
-			self.showEditDlg($(this).data('word-id'));
+			self.showGlossaryEditDlg($(this).data('word-id'));
 		});
 	},
 
-	showAddDlg: function() {
-		var addDlg = this.getAddDlg();
+	showGlossaryAddDlg: function() {
+		var addDlg = this.getGlossaryAddDlg();
 		addDlg.openOverlay();
 	},
 
-	showEditDlg: function(id) {
-		var editDlg = this.getEditDlg();
+	showGlossaryEditDlg: function(id) {
+		var editDlg = this.getGlossaryEditDlg();
 
 		var form = $('.form', editDlg.elements.wrapper);
 		var loading = $('.loading', editDlg.elements.wrapper);
@@ -63,7 +66,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		editDlg.openOverlay();
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/glossary/' + id + '.json',
+			url: BASE_URL + 'agent/glossary/' + id + '.json',
 			type: 'GET',
 			context: this,
 			dataType: 'json',
@@ -78,10 +81,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 	},
 
-	getAddDlg: function() {
+	getGlossaryAddDlg: function() {
 		if (this.addDlg) return this.addDlg;
 
-		var el = $('.add-dlg:first', this.contentEl);
+		var el = $('.glossary-add-dlg:first', this.glossaryWrapper);
 		this.addDlg = new DeskPRO.UI.Overlay({
 			contentElement: el
 		});
@@ -91,10 +94,10 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		return this.addDlg;
 	},
 
-	getEditDlg: function() {
+	getGlossaryEditDlg: function() {
 		if (this.editDlg) return this.editDlg;
 
-		var el = $('.edit-dlg:first', this.contentEl);
+		var el = $('.glossary-edit-dlg:first', this.glossaryWrapper);
 		this.editDlg = new DeskPRO.UI.Overlay({
 			contentElement: el
 		});
@@ -116,14 +119,14 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/glossary/new-word.json',
+			url: BASE_URL + 'agent/glossary/new-word.json',
 			type: 'POST',
 			data: data,
 			context: this,
 			dataType: 'json',
 			success: function(data) {
 				// Update count
-				var counter = $('.counter-words', this.contentEl);
+				var counter = $('.counter-words', this.glossaryWrapper);
 				var cnt = parseInt(counter.html());
 				counter.html(cnt+1);
 
@@ -134,8 +137,8 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 				var li = $('<li><a class="edit-word-trigger" data-word-id="'+word_id+'">'+word+'</a></li>');
 
-				var dt = $('dt[data-letter="' + letter + '"]:first', this.contentEl);
-				var dd = $('dd[data-letter="' + letter + '"]:first', this.contentEl);
+				var dt = $('dt[data-letter="' + letter + '"]:first', this.glossaryWrapper);
+				var dd = $('dd[data-letter="' + letter + '"]:first', this.glossaryWrapper);
 
 				dt.show();
 				dd.show();
@@ -165,7 +168,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/kb/glossary/' + word_id + '/edit.json',
+			url: BASE_URL + 'agent/glossary/' + word_id + '/edit.json',
 			type: 'POST',
 			data: data,
 			context: this,

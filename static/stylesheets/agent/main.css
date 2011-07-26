@@ -748,11 +748,13 @@ background-color: #edeff3;
 
 #header .admin-actions ul li.agent a {
 	background: transparent url("../../images/nav-icons/small-agent.png") no-repeat center left;
-	padding-left: 19
+	padding-left: 19px
+}
 
 
-
-	px;
+#header .admin-actions ul li.new-content a {
+	background: transparent url("../../images/icons/page_white_star.png") no-repeat center left;
+	padding-left: 20px;
 }
 
 #header .admin-actions ul li.billing a {
@@ -4326,4 +4328,20 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 .news-editor-wrap textarea, .download-editor-wrap textarea {
     width: 95%;
     height: 150px;
+}
+
+
+
+#publish_outline_glossary {
+    padding: 4px;
+    font-size: 11px;
+}
+
+#publish_outline_glossary dl dt {
+    margin-top: 15px;
+    font-weight: bold;
+}
+
+#publish_outline_glossary dl dd {
+    margin-left: 6px;
 }
