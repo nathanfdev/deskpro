@@ -164,7 +164,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 
 		var ul, depth = 0, parent_li = false;
 		if (parentId && parentId != '0') {
-			parent_li = $('li.cat-' + parentId, this.newDlg);
+			parent_li = $('li.cat-' + parentId, this.wrapper);
 		}
 
 		if (parent_li && parent_li.length) {
@@ -183,7 +183,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 			}
 			ul = $('> ul', parent_li);
 		} else {
-			ul = $('ul.top:first', this.newDlg);
+			ul = $('ul.top:first', this.wrapper);
 		}
 
 		var tmp_id = 'new_' + Orb.uuid();
