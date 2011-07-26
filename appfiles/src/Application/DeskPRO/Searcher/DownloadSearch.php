@@ -224,6 +224,7 @@ class DownloadSearch extends SearcherAbstract
 		if ($this->sql_parts !== null) return $this->sql_parts;
 		
 		$db = App::getDb();
+		$tr = App::getTranslator();
 
 		$wheres = array();
 		$joins = array();
