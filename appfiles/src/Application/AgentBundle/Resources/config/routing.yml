@@ -713,6 +713,10 @@ agent_publish_disapprove_comment:
   pattern: /publish/comments/disapprove/{typename}/{comment_id}
   defaults: { _controller: AgentBundle:Publish:disapproveComment }
 
+agent_publish_savecats:
+  pattern: /publish/save-categories/{type}
+  defaults: { _controller: AgentBundle:Publish:saveCategories }
+
 ################################################################################
 # KB
 ################################################################################

@@ -164,4 +164,57 @@ class PublishController extends AbstractController
 
 		return $classname;
 	}
+
+	############################################################################
+	# saving categories
+	############################################################################
+
+	public function saveCategoriesAction($type)
+	{
+		$entity_name = null;
+		switch ($type) {
+			case 'article':   $entity_name = 'DeskPRO:ArticleCategory';   break;
+			case 'download':  $entity_name = 'DeskPRO:DownloadCategory';  break;
+			case 'news':      $entity_name = 'DeskPRO:NewsCategory';      break;
+		}
+
+		if (!$entity_name) {
+			return $this->createJsonResponse(array('Invalid type'));
+		}
+
+		$class = App::getEntityClass($entity_name);
+
+		$categories = $this->in->getCleanValueArray('cats');
+
+		$new_cats = array();
+
+		$this->em->beginTransaction();
+
+		foreach ($categories as $cat_info) {
+			if ($cat_info['isNew']) {
+				$cat = new $class();
+				if ($cat_info['parentId']) {
+					if (isset($new_cats[$cat_info['parentId']])) {
+						$cat['parent'] = $new_cats[$cat_info['parentId']];
+					} else {
+						$cat['parent'] = App::getEntityRepository($entity_name)->find($cat_info['parentId']);
+					}
+				}
+			} else {
+				$cat = App::getEntityRepository($entity_name)->find($cat_info['id']);
+			}
+
+			$cat['title'] = $cat_info['title'];
+			$cat['display_order'] = $cat_info['displayOrder'];
+
+			$this->em->persist($cat);
+		}
+
+		$this->em->transactional(function($em) {
+			$em->flush();
+			$em->commit();
+		});
+
+		return $this->createJsonResponse(array('success' => true));
+	}
 }

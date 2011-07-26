@@ -206,7 +206,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			console.error('No category editor for %s', editorClassname);
 			return;
 		}
-		
+
 		var editor = this.catEditors[editorClassname];
 		editor.open();
 	},
@@ -220,8 +220,16 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 		this.catEditors[editorClassname] = editor;
 
+		var type = editor.wrapper.data('type');
+
 		editor.addEvent('save', function(editor) {
-			
+			var data = editor.encodeForm();
+			$.ajax({
+				url: BASE_URL + 'agent/publish/save-categories/' + type,
+				data: data,
+				type: 'GET',
+				dataType: 'json'
+			});
 		});
 	}
 });

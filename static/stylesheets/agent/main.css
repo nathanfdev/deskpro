@@ -4445,8 +4445,6 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 
     text-shadow: 1px 1px 0px #ffffff;
     filter: dropshadow(color=#ffffff, offx=1, offy=1);
-
-    font-weight: bold;
 }
 
 .category-editor ul {

@@ -162,9 +162,12 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 
 		this.newTitle.val('');
 
-		var ul, depth = 0;
+		var ul, depth = 0, parent_li = false;
 		if (parentId && parentId != '0') {
-			var parent_li = $('li.cat-' + parentId, this.addDlg);
+			parent_li = $('li.cat-' + parentId, this.newDlg);
+		}
+
+		if (parent_li && parent_li.length) {
 			depth = parseInt($('> .title', parent_li).data('depth')) + 1;
 			
 			ul = $('> ul', parent_li);
@@ -180,7 +183,7 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 			}
 			ul = $('> ul', parent_li);
 		} else {
-			ul = $('ul.top:first', this.addDlg);
+			ul = $('ul.top:first', this.newDlg);
 		}
 
 		var tmp_id = 'new_' + Orb.uuid();
@@ -274,6 +277,10 @@ DeskPRO.Agent.PageHelper.CategoryEdit = new Orb.Class({
 		Array.each(rawData, function(item) {
 
 			Object.each(item, function(v,k) {
+				if (k == 'isNew') {
+					if (v) v = 1;
+					else v = 0;
+				}
 				data.push({
 					name: name + '['+count+']['+k+']',
 					value: v
