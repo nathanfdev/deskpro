@@ -214,6 +214,23 @@ Orb.appendQueryData = function(url, k, v) {
 
 
 /**
+ * Repeat a string `str` `count` times
+ * 
+ * @param str
+ * @param count
+ * @return string
+ */
+Orb.strRepeat = function(str, count) {
+	var finalStr = [];
+	while (count-- > 0) {
+		finalStr.push(str);
+	}
+
+	return finalStr.join('');
+};
+
+
+/**
  * Simple way to load Javascript and CSS files on-demand.
  *
  * Usage:

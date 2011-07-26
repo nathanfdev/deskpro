@@ -27,10 +27,12 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		var self = this;
 		this.typeTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,
-			triggerElements: $('#portal_outline_tabstrip li')
+			triggerElements: $('#publish_outline_tabstrip li')
 		});
 
 		this._initGlossary();
+
+		//publish_outline_edit_cats
 	},
 
 	//#########################################################################

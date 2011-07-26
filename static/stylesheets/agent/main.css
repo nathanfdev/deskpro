@@ -4345,3 +4345,133 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 #publish_outline_glossary dl dd {
     margin-left: 6px;
 }
+
+#publish_outline_tabstrip {
+    position: relative;
+}
+
+#publish_outline_edit_cats {
+    display: block;
+    position: absolute;
+    top: 0;
+    right: 0;
+    width: 12px;
+    height: 12px;
+    overflow: hidden;
+    text-indent: -1000px;
+    cursor: pointer;
+
+    background: url(../../images/icons/folder_wrench-small.png) no-repeat 50% 50%;
+
+    margin: 4px 3px 0 0;
+}
+
+
+
+
+
+
+.category-editor {
+    width: 500px;
+    padding: 0 !important;
+}
+
+.category-editor .close-trigger {
+    display: block;
+    width: 13px;
+    height: 13px;
+    text-indent: -100px;
+    overflow: hidden;
+    background: url(../images/close-small.png) no-repeat 0 0;
+    float: right;
+    margin-top: 0;
+    cursor: pointer;
+}
+
+.category-editor .backdrop {
+    display: absolute;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    background-color: rgba(0,0,0, 0.15);
+}
+
+.category-editor footer {
+    background-color: #EDF2F7;
+    text-align: center;
+    padding: 6px;
+}
+
+.category-editor .new-close-trigger {
+    display: block;
+    width: 13px;
+    height: 13px;
+    text-indent: -100px;
+    overflow: hidden;
+    background: url(../../images/close-small.png) no-repeat 0 0;
+    float: right;
+    margin-top: -10px;
+    margin-right: -10px;
+    cursor: pointer;
+}
+
+.category-editor .new-dlg {
+    width: 350px;
+}
+
+.category-editor header {
+    background-color: #EDF2F7;
+}
+
+.category-editor header h4 {
+    font-size: 14px;
+    padding: 8px;
+}
+
+.category-editor header .new {
+    padding: 4px 4px 4px 4px;
+    float:right;
+}
+
+.category-editor > section {
+    max-height: 400px;
+    overflow: auto;
+}
+
+.category-editor .title {
+    padding: 4px 3px 4px 6px;
+    font-size: 14px;
+
+    text-shadow: 1px 1px 0px #ffffff;
+    filter: dropshadow(color=#ffffff, offx=1, offy=1);
+
+    font-weight: bold;
+}
+
+.category-editor ul {
+    background-color: #fff;
+}
+
+.category-editor ul > li > .title {
+    border-top: 1px solid #C6C8CA;
+}
+
+.category-editor ul > li > .title:first-child {
+    border-top: none;
+}
+
+.category-editor .title:hover {
+    background-color: #F0F2F5;
+    cursor: move;
+}
+
+.category-editor ul ul .title {
+    font-size: 95%;
+    font-weight: normal;
+}
+
+.category-editor ul ul .title { padding-left: 18px; }
+.category-editor ul ul ul .title { padding-left: 30px; }
+.category-editor ul ul ul ul .title { padding-left: 40px; }
+.category-editor ul ul ul ul ul .title { padding-left: 50px; }

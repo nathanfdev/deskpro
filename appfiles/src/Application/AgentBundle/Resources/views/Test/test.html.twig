@@ -18,38 +18,78 @@
 		var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
 
 		$(document).ready(function() {
-
-			var findPerson = new DeskPRO.Agent.Widget.FindPerson();
-			window.FIND_PERSON = findPerson;
-
-			$('#person_find').click(function() {
-				findPerson.open();
+			var ce = new DeskPRO.Agent.PageHelper.CategoryEdit({
+				wrapper: $('.category-editor:first')
 			});
 
-			var agentSelector = new DeskPRO.Agent.Widget.AgentSelector({
-				agentList: $('#agents_list'),
-				multipleChoice: true
-			});
+			ce.open();
 
-			$('#agent_selector').click(function(ev) {
-				agentSelector.open(ev);
+			$('#btn_trigger').click(function() {
+				ce.open();
 			});
 		});
 	</script>
 </head>
 <body>
 
-<button id="person_find" class="dp-button">Quick Find</button>
-<button id="agent_selector" class="dp-button">Agent Selector</button>
+<button class="dp-button" id="btn_trigger">Open</button>
 
-<ul id="agents_list" style="display: none">
-	{% for id,title in agent_names %}
-		<li data-agent-id="{{id}}">
-			<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 30}) }}" alt="" width="30" height="30" />
-			<a>{{title}}</a>
-		</li>
-	{% endfor %}
-</ul>
+<div class="category-editor field-overlay" style="display: none">
+	<span class="close-trigger">x</span>
+	<div class="backdrop" style="display: none"></div>
+	<div class="new-dlg field-overlay" style="display:none">
+		<span class="new-close-trigger">x</span>
+		Parent: <select>
+			<option value="0" class="none">&lt;none&gt;</option>
+		</select>
+		<br />
+		Title: <input type="text" value="" />
+		<br />
+		<button class="dp-button x-small add-save-trigger">Add</button>
+	</div>
+	<header>
+		<div class="new">
+			<button class="dp-button x-small add-trigger">Add Category</button>
+		</div>
+		<h4>KB Categories</h4>
+	</header>
+	<section>
+		<ul class="top">
+			<li>
+				<div class="title" data-cat-id="1" data-depth="0">Category</div>
+				<ul>
+					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
+					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
+					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
+				</ul>
+			</li>
+			<li class="category-1">
+				<div class="title" data-cat-id="1" data-depth="0">Category X</div>
+			</li>
+			<li>
+				<div class="title" data-cat-id="1" data-depth="0">Category</div>
+			</li>
+			<li>
+				<div class="title" data-cat-id="1" data-depth="0">Category</div>
+				<ul>
+					<li>
+						<div class="title" data-cat-id="1" data-depth="1">Category</div>
+						<ul>
+							<li><div class="title" data-cat-id="1" data-depth="2">Category</div></li>
+							<li><div class="title" data-cat-id="1" data-depth="2">Category</div></li>
+							<li><div class="title" data-cat-id="1" data-depth="2">Category</div></li>
+						</ul>
+					</li>
+					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
+					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
+				</ul>
+			</li>
+		</ul>
+	</section>
+	<footer>
+		<button class="dp-button x-small save-all-trigger">Save Changes</button>
+	</footer>
+</div>
 
 </body>
 </html>
