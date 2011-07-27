@@ -274,6 +274,15 @@ nav.mode-buttons > ul > li.on {
 	background-image: url("../../images/nav-icons/Tickets.png");
 }
 
+#deskpro_sections > ul > li.urgent > a {
+	background-image: url("../../images/nav-icons/urgent.png");
+    color: #D7DAE1;
+}
+
+#deskpro_sections > ul > li.urgent > div.nav-counter span {
+    background-color: #65A954;
+    text-shadow: 0 1px 1px #2D5225;
+}
 
 #deskpro_sections > ul > li.chats > a {
 	background-image: url("../../images/nav-icons/Chat.png");
