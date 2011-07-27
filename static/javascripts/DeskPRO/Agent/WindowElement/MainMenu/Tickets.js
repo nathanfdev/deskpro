@@ -335,7 +335,6 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 	overviewGroupMenuEl: null,
 	overviewGroupEl1: null,
 	overviewGroupEl2: null,
-	overviewGroupEl2_yes: null,
 
 	overviewGroupingMenu: null,
 	overviewModeMenu: null,
@@ -432,12 +431,8 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 
 		if (grouping2) {
 			this.overviewGroupEl2.html(grouping2_menuItemEl.html()).data('groupby', grouping2);
-			this.overviewGroupEl2_no.hide();
-			this.overviewGroupEl2_yes.show();
 		} else {
 			this.overviewGroupEl2.html('').data('groupby', '');
-			this.overviewGroupEl2_no.show();
-			this.overviewGroupEl2_yes.hide();
 		}
 	},
 

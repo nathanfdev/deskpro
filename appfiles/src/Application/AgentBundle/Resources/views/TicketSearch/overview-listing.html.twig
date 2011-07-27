@@ -9,12 +9,24 @@
 
 	{% for structure_info in structure %}
 		{% if items[structure_info.id] %}
-			<li data-route="listpane:{{ url|replace({ '$group1_id': items[structure_info.id].id }) }}">
+			<li data-route="listpane:{{ url|replace({ '$group1_id': items[structure_info.id].id }) }}" {% if depth == 2%}class="sub-list"{% endif %}>
 				<span class="list-counter">{{items[structure_info.id].total}}</span>
+				{% if structure_info.children %}
+					{# nasty looping to make sure we actually have counts to show in the subscture #}
+					{% set has_data = false %}
+					{% for s in structure_info.children %}
+						{% if items[s.id] %}
+							{% set has_data = true %}
+						{% endif %}
+					{% endfor %}
+					{% if has_data %}
+						<span class="sub-toggle">expand</span>
+					{% endif %}
+				{% endif %}
 				<a>{{items[structure_info.id].title}}</a>
 
 				{% if structure_info.children %}
-					<ul class="sub-structure">
+					<ul class="sub-structure" style="display: none;">
 						{{ _self.show_group(items, structure_info.children, structure2, list1_url, list2_url, depth) }}
 					</ul>
 				{% endif %}

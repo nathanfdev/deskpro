@@ -265,6 +265,20 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
+		$('#ticket_grouping_list').delegate('.sub-toggle', 'click', function(ev) {
+			ev.stopPropagation();
+			var li = $(this).parent();
+			var sub = $('ul.sub-structure', li);
+
+			if (sub.is(':visible')) {
+				sub.slideUp();
+				$(this).removeClass('open');
+			} else {
+				sub.slideDown();
+				$(this).addClass('open');
+			}
+		});
+
 		this.overviewModeMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('#ticket_grouping_options .mode-menu-trigger'),
 			menuElement: this.overviewModeMenuEl,
