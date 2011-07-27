@@ -546,11 +546,15 @@ section#agent_chat_panel {
     border-bottom: none;
     font-size: 10px;
 
-    min-height: 300px;
-
     -webkit-box-shadow: 1px 1px 3px 0px #4d4d4d;
     -moz-box-shadow: 1px 1px 3px 0px #4d4d4d;
     box-shadow: 1px 1px 3px 0px #4d4d4d;
+}
+
+#agent_chat_panel .wrap {
+    min-height: 300px;
+    max-height: 500px;
+    overflow:  auto;
 }
 
 section#agent_chat_panel nav .close-trigger {
@@ -625,11 +629,14 @@ section#agent_chat_panel ul.list {
 section#agent_chat_panel ul.list li {
     padding: 0 8px 0 8px;
     display: block;
-    line-height: 18px;
+    line-height: 36px;
     cursor: pointer;
-    border-top: 1px solid #D4D4D4;
-    height: 19px;
+    border-top: 1px solid #B6B7B7;
     overflow:  hidden;
+
+    background-repeat: no-repeat;
+    background-position: 3px 50%;
+    padding-left: 38px;
 }
 
 section#agent_chat_panel ul.list li img {

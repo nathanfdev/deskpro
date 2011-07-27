@@ -89,29 +89,30 @@
 			<label>(<input type="checkbox" class="show-offline-opt" /> show offline)</label>
 		</div>
 	</nav>
-	<div class="online-list">
-		<h6>Online</h6>
-		<ul id="agent_online_list" class="list">
-			<li class="no-agents">No other agents are online</li>
-		</ul>
-	</div>
-	<div class="offline-list">
-		<h6>Offline</h6>
-		<ul id="agent_offline_list" class="list">
-			{% for agent in agents %}
-				<li
-					class="agent-{{ agent.id }}"
-					{% if agent.id == app.user.id %}style="display: none"{% endif %}
-					data-agent-id="{{ agent.id }}"
-					data-agent-name="{{ agent.display_name }}"
-					data-agent-short-name="{{ agent.getDisplayContactShort(4) }}"
-					data-picture-url="{{ agent.getPictureUrl(10) }}"
-				>
-					<img src="{{ agent.getPictureUrl(10) }}" />
-					{{ agent.display_name }}
-				</li>
-			{% endfor %}
-		</ul>
+	<div class="wrap">
+		<div class="online-list">
+			<h6>Online</h6>
+			<ul id="agent_online_list" class="list">
+				<li class="no-agents">No other agents are online</li>
+			</ul>
+		</div>
+		<div class="offline-list">
+			<h6>Offline</h6>
+			<ul id="agent_offline_list" class="list">
+				{% for agent in agents %}
+					<li
+						class="agent-{{ agent.id }}"
+						style="background-image: url({{ agent.getPictureUrl(30) }}); {% if agent.id == app.user.id %}display: none;{% endif %}"
+						data-agent-id="{{ agent.id }}"
+						data-agent-name="{{ agent.display_name }}"
+						data-agent-short-name="{{ agent.getDisplayContactShort(4) }}"
+						data-picture-url="{{ agent.getPictureUrl(30) }}"
+					>
+						{{ agent.display_name }}
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
 	</div>
 </section>
 
