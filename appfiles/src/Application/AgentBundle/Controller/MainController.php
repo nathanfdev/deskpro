@@ -42,6 +42,10 @@ class MainController extends AbstractController
 			$restore_state = $state_pref['value'];
 		}
 
+		// Agent info
+		$agent_info = array();
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
@@ -53,6 +57,7 @@ class MainController extends AbstractController
 			'org_fields' => $org_fields,
 			'ticket_options' => $ticket_options,
 			'restore_state' => $restore_state,
+			'agents' => $agents,
 		));
     }
 }

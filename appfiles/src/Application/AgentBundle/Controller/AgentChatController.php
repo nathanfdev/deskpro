@@ -120,8 +120,24 @@ class AgentChatController extends AbstractController
 	{
 		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));
 
+		$agent_info = array();
 		$online_agents = array();
 
+		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
+
+		foreach ($agents as $agent) {
+			$agent_info[$agent['id']] = array(
+				'agent_id'   => $agent['id'],
+				'agent_name' => $agent['display_name'],
+				'agent_short_name' => $agent->getDisplayContactShort(4),
+				'picture_url' => $agent->getPictureUrl(10)
+			);
+		}
+
+		// TODO [UI demo]
+		// - Revert real session sniffing for online agents instaed of random
+
+		/*
 		$sessions = App::getOrm()->createQuery("
 			SELECT s,p
 			FROM DeskPRO:Session s
@@ -139,8 +155,18 @@ class AgentChatController extends AbstractController
 				'picture_url' => $sess->person->getPictureUrl(10)
 			);
 		}
+		*/
 
-		return $this->createJsonResponse(array('online_agents' => $online_agents));
+		// get random online agent id for demo
+		$rand = array_rand($agent_info);
+		if ($rand == $this->person['id']) $rand = array_rand($agent_info);
+
+		$online_agents[] = $rand;
+
+		return $this->createJsonResponse(array(
+			'agent_info'    => $agent_info,
+			'online_agents' => $online_agents
+		));
 	}
 
 	############################################################################

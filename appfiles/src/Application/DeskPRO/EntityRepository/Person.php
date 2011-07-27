@@ -68,6 +68,22 @@ class Person extends EntityRepository
 
 
 	/**
+	 * Get all agents
+	 *
+	 * @return array
+	 */
+	public function getAgents()
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT p
+			FROM DeskPRO:Person p
+			WHERE p.is_agent = true
+			ORDER BY p.name ASC
+		")->execute();
+	}
+
+
+	/**
 	 * Get all online and active (not away) agents.
 	 * 
 	 * @param bool $ids_only

@@ -529,21 +529,36 @@ section#agent_chat_panel {
     position: absolute;
     left: 8px;
     bottom: 0;
-    width: 200px;
+    width: 265px;
     display: none;
 
-    background-color: #E4E4E4;
-    border: 1px solid #7F7F80;
+    background-color: #F9FAFC;
+    border: 1px solid #95999A;
     border-bottom: none;
-
-    -webkit-border-top-left-radius: 5px;
-    -webkit-border-top-right-radius: 5px;
-    -moz-border-radius-topleft: 5px;
-    -moz-border-radius-topright: 5px;
-    border-top-left-radius: 5px;
-    border-top-right-radius: 5px;
-
     font-size: 10px;
+
+    min-height: 300px;
+
+    -webkit-box-shadow: 1px 1px 3px 0px #4d4d4d;
+    -moz-box-shadow: 1px 1px 3px 0px #4d4d4d;
+    box-shadow: 1px 1px 3px 0px #4d4d4d;
+}
+
+section#agent_chat_panel nav .close-trigger {
+    display: block;
+    width: 13px;
+    height: 13px;
+    text-indent: -100px;
+    overflow: hidden;
+    background: url(../../images/close-small.png) no-repeat 0 0;
+    cursor: pointer;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    margin-top: -5px;
+    margin-right: -8px;
 }
 
 section#agent_chat_panel.open {
@@ -551,23 +566,54 @@ section#agent_chat_panel.open {
 }
 
 section#agent_chat_panel nav {
+    background-color: #798595;
     border-bottom: 1px solid #ccc;
+
+    position: relative;
+    color: #fff;
+
+    font-size: 10px;
+    padding: 4px 6px 4px 6px;
 }
 
-section#agent_chat_panel nav a {
-    color: #000;
+section#agent_chat_panel nav div.title {
+    
+}
+
+section#agent_chat_panel nav div.title input {
+    height: 11px;
+}
+
+section#agent_chat_panel nav div.title label {
+    font-size: 9px;
+}
+
+section#agent_chat_panel nav a.show-section {
+    color: #fff;
     cursor: pointer;
-    padding:  3px 8px 3px 8px;
+    float: right;
+    font-size: 9px;
 }
 
-section#agent_chat_panel ul#agent_online_list {
+#agent_chat_panel h6 { display: none; }
+#agent_chat_panel .offline-list { display: none; }
+
+#agent_chat_panel.show-offline h6 { display: block; }
+#agent_chat_panel.show-offline .offline-list { display: block; }
+
+section#agent_chat_panel h6 {
+    font-size: 12px;
+    padding:  8px 0 3px 5px;
+}
+
+section#agent_chat_panel ul.list {
     background-color: #fff;
     margin:  3px;
 
     border: 1px solid #D4D4D4;
 }
 
-section#agent_chat_panel ul#agent_online_list li {
+section#agent_chat_panel ul.list li {
     padding: 0 8px 0 8px;
     display: block;
     line-height: 18px;
@@ -577,7 +623,7 @@ section#agent_chat_panel ul#agent_online_list li {
     overflow:  hidden;
 }
 
-section#agent_chat_panel ul#agent_online_list li img {
+section#agent_chat_panel ul.list li img {
     display: block;
     position: relative;
     top: 4px;
@@ -585,11 +631,11 @@ section#agent_chat_panel ul#agent_online_list li img {
     float:left;
 }
 
-section#agent_chat_panel ul#agent_online_list li:hover {
+section#agent_chat_panel ul.list li:hover {
     background-color: #D1E7FF;
 }
 
-section#agent_chat_panel ul#agent_online_list li:first-child {
+section#agent_chat_panel ul.list li:first-child {
     border-top: none;
 }
 

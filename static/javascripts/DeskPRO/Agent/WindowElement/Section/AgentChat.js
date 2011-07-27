@@ -32,13 +32,30 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		DeskPRO_Window.getMessageChanneler().subscribeChannel('agent.new-agent-online');
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('agent_chat.new-message', this.showNewMessage.bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('agent.new-agent-online', this.addOnlineAgent.bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent.new-agent-online', (function(info) {
+			var agent_id = info.agent_id;
+			this.addOnlineAgent.bind(agent_id);
+		}).bind(this));
 	},
 
 	_initInterface: function() {
 		this.panelEl = $('#agent_chat_panel');
 		this.onlineListEl = $('#agent_online_list');
+		this.offlineListEl = $('#agent_offline_list');
 		this.onlineCountEl = $('#chat_online_count');
+
+		$('.show-offline-opt', this.panelEl).click(function() {
+			if ($(this).is(':checked')) {
+				$('#agent_chat_panel').addClass('show-offline');
+			} else {
+				$('#agent_chat_panel').removeClass('show-offline');
+			}
+		});
+
+		this.panelEl.click(function(ev) {
+			// dont bubble to doc which will close the panel again
+			ev.stopPropagation();
+		});
 
 		$('.show-section', this.panelEl).click(function() {
 			DeskPRO_Window.switchToSection('agent_chat_section');
@@ -48,7 +65,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			ev.stopPropagation();
 			this.panelEl.toggleClass('open');
 		}).bind(this));
-		$('body').click((function() {
+		$('body, #agent_chat_panel .close-trigger').click((function() {
 			this.panelEl.removeClass('open');
 			$('> section', this.chatsWrapper).removeClass('open');
 		}).bind(this));
@@ -62,6 +79,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 						this.addOnlineAgent(info);
 					}, this);
 				}
+
+				this._initDemo();
 			}
 		});
 
@@ -87,28 +106,74 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		});
 	},
 
+	_initDemo: function() {
+		// TODO [UI demo]
+		// Show example chat window for the one online agent
+		var onlineAgentLi = $('li:not(.no-agents):first', this.onlineListEl);
+		console.log(onlineAgentLi);
+		
+		var chatData = {
+			author_id: onlineAgentLi.data('agent-id'),
+			author_name: onlineAgentLi.data('agent-name'),
+			author_short_name: onlineAgentLi.data('agent-short-name'),
+			author_picture: onlineAgentLi.data('agent-picture-url')
+		};
+
+		console.log(chatData);
+
+		var messages = [
+			'Lorem ipsum dolor sit amet, consectetur adipiscing elit',
+			'Proin venenatis, dui vitae congue pretium, enim tellus pharetra ante, vel laoreet purus felis sed orci',
+			'Ut bibendum ipsum sed arcu gravida at tristique risus congue',
+			'Sed in auctor arcu. Sed nec felis massa, id pulvinar augue',
+			'Ut vel nulla sit amet ante pharetra dictum id at nunc',
+			'Fusce est est, vestibulum ac ultrices vel, pharetra eget purus',
+			'Aliquam mattis ullamcorper laoreet. Fusce facilisis rhoncus rhoncus',
+			'Maecenas pellentesque sollicitudin lectus, sed venenatis augue adipiscing ut.',
+			'Etiam eget odio dui. Mauris urna odio, gravida tincidunt aliquam nec, aliquet vitae ipsum',
+			'In tortor sapien, accumsan vel aliquet eget, egestas quis dui',
+			'In id ante eget nisi posuere varius',
+			'Fusce gravida, enim sit amet faucibus semper, dui nisl scelerisque mauris, non ultricies sem justo nec magna'
+		];
+
+		Array.each(messages, function(msg, i) {
+			if (i % 2 == 0) {
+				chatData.message = msg;
+				this.showNewMessage(chatData);
+			} else {
+				this.showMyMessage(onlineAgentLi.data('agent-id'), msg);
+			}
+		}, this);
+	},
+
 	//#########################################################################
 	//# Online agent handling
 	//#########################################################################
 
-	addOnlineAgent: function(data) {
+	addOnlineAgent: function(agent_id) {
 
 		// Ignore ourselves
-		if (DESKPRO_PERSON_ID && data.agent_id == DESKPRO_PERSON_ID) {
+		if (DESKPRO_PERSON_ID && agent_id == DESKPRO_PERSON_ID) {
+			return;
+		}
+
+		var origLi = $('.agent-' + agent_id, this.offlineListEl);
+
+		if (!origLi.length) {
+			console.warn('No agent element for %i', agent_id);
 			return;
 		}
 
 		// Make sure they aren't already there (ie logged out/logged in before we could see theyre gone)
-		if ($('agent-' + data.agent_id, this.onlineListEl).length) {
+		if ($('.agent-' + agent_id, this.onlineListEl).length) {
 			return;
 		}
 
-		var html = '<li class="agent-' + data.agent_id + '" data-agent-id="' + data.agent_id + '" data-agent-short-name="'+ data.agent_short_name + '" data-picture-url="' + data.picture_url + '">';
-		if (data.picture_url) {
-			html += '<img src="' + data.picture_url + '" />';
-		}
-		html +=  data.agent_name + '</li>';
-		this.onlineListEl.append(html);
+		var li = origLi.clone();
+		this.onlineListEl.append(li);
+
+		// Offline one is hidden now
+		origLi.hide();
 
 		var countInt = parseInt(this.onlineCountEl.html());
 		countInt++;
@@ -117,14 +182,18 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		$('li.no-agents', this.onlineListEl).hide();
 	},
 
-	removeOnlineAgent: function(data) {
-		var el = $('.agent-' + data.agent_id, this.onlineListEl);
+	removeOnlineAgent: function(agent_id) {
+		var li = $('.agent-' + agent_id, this.onlineListEl);
+		var offlineLi = $('.agent-' + agent_id, this.offlineListEl);
 
-		if (!el.length) {
+		if (!li.length) {
 			return;
 		}
 
-		el.remove();
+		li.remove();
+
+		// Show them in offline again
+		offlineLi.show();
 		
 		var countInt = parseInt(this.onlineCountEl.html());
 		countInt--;
