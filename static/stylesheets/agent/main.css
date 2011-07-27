@@ -4473,3 +4473,30 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 .category-editor ul ul ul .title { padding-left: 30px; }
 .category-editor ul ul ul ul .title { padding-left: 40px; }
 .category-editor ul ul ul ul ul .title { padding-left: 50px; }
+
+
+
+.manage-filters-btn, .new-search-btn {
+    display: block;
+    float: right;
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    text-indent: -1000px;
+    cursor: pointer;
+    margin-right: 4px;
+
+    opacity: 0.6;
+}
+
+.manage-filters-btn:hover, .new-search-btn:hover {
+    opacity: 1;
+}
+
+.manage-filters-btn {
+    background: url(../../images/icons/edit-gear.png) no-repeat 50% 50%;
+}
+
+.new-search-btn {
+    background: url(../../images/icons/magnifier.png) no-repeat 50% 50%;
+}

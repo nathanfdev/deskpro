@@ -34,29 +34,29 @@
 
 {% if custom_filters %}
 	<section class="filters" style="margin-top: 10px;">
-	<button class="heading-button" id="user_settings_filters_link">Manage</button>
-	<h2>Filters</h2>
-	<ul id="tickets_outline_filters_list" class="nav-list">
-		{% for filter in custom_filters %}
-			<li
-				class="filter-{{filter.id}} tipped"
-				data-filter-id="{{filter.id}}"
-				data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
-				data-tipped="filter_{{filter.id}}_tip"
-				data-tipped-options="inline:true, hook: 'rightmiddle'"
-			>
-				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
-					-
-				</span>
-				<a>{{filter.title}}</a>
-			</li>
-		{% endfor %}
-	</ul>
+		<span class="manage-filters-btn tipped" id="user_settings_filters_link" title="Manage Filters" data-tipped-options="hook: 'rightmiddle'">Manage Filters</span>
+		<h2>Filters</h2>
+		<ul id="tickets_outline_filters_list" class="nav-list">
+			{% for filter in custom_filters %}
+				<li
+					class="filter-{{filter.id}} tipped"
+					data-filter-id="{{filter.id}}"
+					data-route="listpane:{{ path('agent_ticketsearch_runfilter', {'filter_id': filter.id}) }}"
+					data-tipped="filter_{{filter.id}}_tip"
+					data-tipped-options="inline:true, hook: 'rightmiddle'"
+				>
+					<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
+						-
+					</span>
+					<a>{{filter.title}}</a>
+				</li>
+			{% endfor %}
+		</ul>
 	</section>
 {% endif %}
 
 <section class="custom-searches" style="margin-top: 10px">
-	<button class="heading-button with-route" data-route="listpane:{{ path('agent_ticketsearch_customfilter') }}">New Search</button>
+	<span class="new-search-btn with-route tipped" data-route="listpane:{{ path('agent_ticketsearch_customfilter') }}" title="New Search" data-tipped-options="hook: 'rightmiddle'">New Search</span>
 	<h2>Searches</h2>
 	<ul id="tickets_outline_searches_list" class="nav-list">
 		{% include 'AgentBundle:TicketSearch:window-recentsearch-list.html.twig' %}
