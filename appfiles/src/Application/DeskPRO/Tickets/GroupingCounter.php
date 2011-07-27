@@ -39,6 +39,10 @@ class GroupingCounter
 	 */
 	public function getDisplayArray()
 	{
+		#------------------------------
+		# Connect counts to titles
+		#------------------------------
+
 		$display_elements = $this->getDisplayElementsArray();
 		$titles1 = $display_elements['titles1'];
 		$titles2 = $display_elements['titles2'];
@@ -49,13 +53,18 @@ class GroupingCounter
 			Arrays::unshiftAssoc($titles2, -1, 'TOTAL');
 		}
 
-		$return = array();
+		$items = array();
+
+		$group1_has = array();
+		$group2_has = array();
 
 		foreach ($titles1 as $field1_id => $field1_title) {
 
 			if (!isset($counts[$field1_id])) continue;
 
 			$countinfo = $counts[$field1_id];
+
+			$group1_has[] = $field1_id;
 
 			$row = array();
 			$row['id'] = $field1_id;
@@ -70,23 +79,78 @@ class GroupingCounter
 					if (!isset($countinfo['sub'][$field2_id])) continue;
 					$countinfo2 = $countinfo['sub'][$field2_id];
 
+					$group2_has[] = $field2_id;
+
 					$row2 = array();
 					$row2['id'] = $field2_id;
 					$row2['title'] = $field2_title;
 					$row2['total'] = $countinfo2['total'];
 
-					$row['sub'][] = $row2;
+					$row['sub'][$field2_id] = $row2;
 				}
 			}
 
-			$return[] = $row;
+			$items[$field1_id] = $row;
 		}
 
-		return $return;
+		$group1_has = array_unique($group1_has);
+		$group2_has = array_unique($group2_has);
+
+		#------------------------------
+		# Now fetch hierarchy which might be used
+		#------------------------------
+
+		$group1_structure = array();
+		$group2_structure = array();
+
+		switch ($this->grouping1) {
+			case 'department_id':
+				$group1_structure = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+				break;
+
+			case 'category_id':
+				$group1_structure = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
+				break;
+
+			case 'product_id':
+				$group1_structure = App::getEntityRepository('DeskPRO:Product')->getCategoriesInHierarchy();
+				break;
+
+			default:
+				foreach ($titles1 as $id => $t) {
+					$group1_structure[$id] = array('title' => $t);
+				}
+				break;
+		}
+
+		if ($this->grouping2) {
+			switch ($this->grouping2) {
+				case 'department_id':
+					$group2_structure = App::getEntityRepository('DeskPRO:Department')->getDepartmentsInHierarchy();
+					break;
+
+				case 'category_id':
+					$group2_structure = App::getEntityRepository('DeskPRO:TicketCategory')->getCategoriesInHierarchy();
+					break;
+
+				case 'product_id':
+					$group2_structure = App::getEntityRepository('DeskPRO:Product')->getCategoriesInHierarchy();
+					break;
+
+				default:
+					foreach ($titles2 as $id => $t) {
+						$group2_structure[$id] = array('title' => $t);
+					}
+					break;
+			}
+		}
+
+		return array(
+			'items' => $items,
+			'group1_structure' => $group1_structure,
+			'group2_structure' => $group2_structure,
+		);
 	}
-
-
-
 
 	/**
 	 * Sort a display array so that the biggest counts are first
@@ -286,7 +350,7 @@ class GroupingCounter
 		$titles = null;
 		switch ($field) {
 			case 'department_id':
-				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getFullDepartmentNames();
+				$titles = App::getOrm()->getRepository('DeskPRO:Department')->getDepartmentNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
@@ -296,7 +360,7 @@ class GroupingCounter
 				break;
 
 			case 'category_id':
-				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getFullCategoryNames();
+				$titles = App::getOrm()->getRepository('DeskPRO:TicketCategory')->getCategoryNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 

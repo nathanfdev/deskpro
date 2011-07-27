@@ -1,4 +1,41 @@
-{% for group1 in counts %}
+{% macro show_group(items, structure1, structure2, list1_url, list2_url, depth) %}
+	{% if depth == 1 %}
+		{% set url = list1_url %}
+		{% set structure = structure1 %}
+	{% else %}
+		{% set url = list2_url %}
+		{% set structure = structure1 %}
+	{% endif %}
+
+	{% for structure_info in structure %}
+		{% if items[structure_info.id] %}
+			<li data-route="listpane:{{ url|replace({ '$group1_id': items[structure_info.id].id }) }}">
+				<span class="list-counter">{{items[structure_info.id].total}}</span>
+				<a>{{items[structure_info.id].title}}</a>
+
+				{% if structure_info.children %}
+					<ul class="sub-structure">
+						{{ _self.show_group(items, structure_info.children, structure2, list1_url, list2_url, depth) }}
+					</ul>
+				{% endif %}
+				{% if items[structure_info.id].sub %}
+					<ul class="sub-group">
+						{{ _self.show_group(items[structure_info.id].sub, structure1, structure2, list1_url, list2_url|replace({ '$group1_id': items[structure_info.id].id }), depth+1) }}
+					</ul>
+				{% endif %}
+			</li>
+		{% endif %}
+	{% endfor %}
+{% endmacro %}
+
+{% if results.items|length %}
+	{{ _self.show_group(results.items, results.group1_structure, results.group2_structure, list_url_group1, list_url_group2, 1) }}
+{% else %}
+	<li>No tickets match.</li>
+{% endif %}
+
+{#
+{% for group1 in results.items %}
 	<li data-route="listpane:{{ list_url_group1|replace({ '$group1_id': group1.id, '$page_title': phrase('agent.title_grouped_by_x', {'fieldname': group1.title})|raw_url_encode }) }}">
 		<span class="list-counter">{{group1.total}}</span>
 		<a>{{group1.title}}</a>
@@ -14,3 +51,4 @@
 {% else %}
 	<li>No tickets match.</li>
 {% endfor %}
+#}

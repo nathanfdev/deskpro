@@ -752,9 +752,9 @@ class TicketSearchController extends AbstractController
 			// all, no crit
 		}
 
-		$display_counts = $grouper->getDisplayArray();
+		$results = $grouper->getDisplayArray();
 
-		unset($display_counts[0]);// TODO 0 is the 'total', we'll use that later in the UI
+		unset($results['items'][-1]);// TODO 0 is the 'total', we'll use that later in the UI
 
 		// TODO: Need a cleaner way of converting a group into a searchable item
 		$group1_nosuf = preg_replace('#_id$#', '', $group1);
@@ -763,8 +763,10 @@ class TicketSearchController extends AbstractController
 		$group2_nosuf = preg_replace('#_id$#', '', $group2);
 		$list_url_group2 = $list_url_group1 . "&terms[7][type]=$group2_nosuf&terms[7][op]=is&terms[7][options][$group2_nosuf]=\$group2_id";
 
+		//print_r($results['group1_structure']);
+
 		return $this->render('AgentBundle:TicketSearch:overview-listing.html.twig', array(
-			'counts' => $display_counts,
+			'results' => $results,
 			'list_url_group1' => $list_url_group1,
 			'list_url_group2' => $list_url_group2,
 		));

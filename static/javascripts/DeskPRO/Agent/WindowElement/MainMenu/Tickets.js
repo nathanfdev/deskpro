@@ -346,8 +346,6 @@ DeskPRO.Agent.WindowElement.MainMenu.Tickets = new Class({
 		this.overviewModeEl        = $('#grouping_options .mode');
 		this.overviewGroupEl1      = $('#grouping_options .grouping1');
 		this.overviewGroupEl2      = $('#grouping_options .grouping2');
-		this.overviewGroupEl2_no   = $('#grouping_options .no-subgroup');
-		this.overviewGroupEl2_yes  = $('#grouping_options .with-subgroup');
 
 		var self = this;
 		this.overviewGroupingMenu = new DeskPRO.UI.Menu({
