@@ -11,6 +11,7 @@
  *  http://projects.nickstakenburg.com/tipped/documentation/#skins
  *
 **/
+window.Tipped || (Tipped = {});
 
 Bridge.Object.extend(Tipped.Skins || (Tipped.Skins = {}), {
   // base skin

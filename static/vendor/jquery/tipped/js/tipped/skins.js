@@ -11,6 +11,7 @@
  *  http://projects.nickstakenburg.com/tipped/documentation/#skins
  *
 **/
+window.Tipped || (Tipped = {});
 
 // Leave untouched for inheritance to work
 Bridge.Object.extend(Tipped.Skins || (Tipped.Skins = {}), {
