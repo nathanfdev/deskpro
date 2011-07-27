@@ -254,4 +254,13 @@ this.topSection=$(".list-top-area:first",this.wrapper);this.initRoutesOnCollecti
 this.listSearchForm.addEvent("searchSubmit",function(b,c){DeskPRO_Window.loadListPane(b,{postData:c})})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");
 DeskPRO.Agent.PageFragment.ListPane.DownloadList=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,initPage:function(a){this.wrapper=a;
 this.initRoutesOnCollection($(".with-route",a));this.topSection=$(".list-top-area:first",this.wrapper);this.listSearchForm=new DeskPRO.Agent.PageHelper.ListSearchForm(this,{form:$("form.download-search-form",this.topSection),context:this.topSection,searchData:$(".search-form-data:first",this.topSection)});
-this.listSearchForm.addEvent("searchSubmit",function(b,c){DeskPRO_Window.loadListPane(b,{postData:c})})}});
+this.listSearchForm.addEvent("searchSubmit",function(b,c){DeskPRO_Window.loadListPane(b,{postData:c})})}});Orb.createNamespace("DeskPRO.Agent.PageFragment.ListPane");
+DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments=new Class({Extends:DeskPRO.Agent.PageFragment.ListPane.Basic,wrapper:null,initPage:function(b){this.wrapper=b;
+this.initRoutesOnCollection($(".with-route",b));var a=this;$("button.ignore-trigger",this.wrapper).click(function(c){c.preventDefault();
+a.ignoreComment($(this).parent().parent().parent().parent())});$("button.approve-trigger",this.wrapper).click(function(c){c.preventDefault();
+a.approveComment($(this).data("url"),$(this).parent().parent().parent().parent())});$("button.delete-trigger",this.wrapper).click(function(c){c.preventDefault();
+a.deleteComment($(this).data("url"),$(this).parent().parent().parent().parent())})},ignoreComment:function(a){a.fadeOut()
+},deleteComment:function(a,b){b.fadeOut();this.updateCount("sub");$.ajax({url:a,type:"POST",context:this,dataType:"json",error:function(){this.updateCount("add");
+b.fadeIn()},success:function(c){b.remove()}})},approveComment:function(a,b){b.fadeOut();this.updateCount("sub");$.ajax({url:a,type:"POST",context:this,dataType:"json",error:function(){this.updateCount("add");
+b.fadeIn()},success:function(c){b.remove()}})},updateCount:function(b){var c=$("#publish_validating_comments_count");var a=parseInt(c.text());
+if(b=="add"){a++}else{a--}var c=$("#publish_validating_comments_count").text(a)}});

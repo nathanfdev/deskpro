@@ -144,7 +144,32 @@ var b=this.form;var a=this;b.submit(function(e){e.preventDefault();var d=b.attr(
 $(".add-term",d).data("add-count",0).click(function(){var f=parseInt($(this).data("add-count"));var g="terms["+f+"]";$(this).data("add-count",f+1);
 b.addNewRow($(".search-terms",d),g)});var c=this.searchData;if(c&&c.length){var a=c.get(0).innerHTML;a=$.parseJSON(a);if(a.terms){Array.each(a.terms,function(h,f){var g="terms[initial_"+f+"]";
 b.addNewRow($(".search-terms",d),g,{type:h.type,op:h.op,options:h.options})})}c.remove()}$(".summary",this.topSection).slideUp();
-$(".form-panel",this.topSection).slideDown()}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.BasicTicket=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"basicticket",wrapper:null,destroyEls:[],destroyMenus:[],destroyOverlays:[],changeManager:null,valueForm:null,layout:null,initPage:function(b){this.wrapper=b;
+$(".form-panel",this.topSection).slideDown()}});Orb.createNamespace("DeskPRO.Agent.PageHelper");DeskPRO.Agent.PageHelper.CategoryEdit=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.options={wrapper:null};
+this.setOptions(a||{});this.wrapper=$(this.options.wrapper)},_init:function(){if(this.hasInit){return}this.hasInit=true;this.wrapper.detach().appendTo("body");
+this.wrapper.click(function(b){b.stopPropagation()});$(".close-trigger",this.wrapper).click((function(b){this.close()}).bind(this));
+$(".new-close-trigger",this.wrapper).click((function(b){this.closeNewDlg()}).bind(this));$("ul",this.wrapper).sortable({axis:"y",items:"> li"});
+this.backdrop=$(".backdrop:first",this.wrapper);this.newDlg=$(".new-dlg:first",this.wrapper);this.newParent=$("select:first",this.newDlg);
+this.newTitle=$("input:first",this.newDlg);$(".add-save-trigger",this.newDlg).click((function(){this.addNewToList()}).bind(this));
+$(".add-trigger:first",this.wrapper).click((function(){this.openNewDlg()}).bind(this));$(".save-all-trigger",this.wrapper).click((function(){this.fireEvent("save",[this]);
+this.close()}).bind(this));var a=this;this.wrapper.delegate(".title","dblclick",function(){a.enableEditTitle($(this))})},open:function(){this._init();
+if(this.wrapper.is(".open")){return}this.wrapper.css({position:"absolute",left:40,top:150});this.wrapper.addClass("open").fadeIn()
+},close:function(){this.closeNewDlg();this.wrapper.removeClass("open").fadeOut()},openNewDlg:function(){var a=[];$("li > .title",this.wrapper).each(function(){var f=$(this);
+var h=parseInt(f.data("depth"));var e=f.data("cat-id");var g=f.text().trim();if(h){g=Orb.strRepeat("--",h)+" "+g}a.push('<option value="'+e+'">'+Orb.escapeHtml(g)+"</option>")
+});a=a.join("");$("option:not(.none)",this.newParent).remove();$("option.none",this.newParent).after($(a));var c=50;var b=65;
+var d=this.newDlg;d.css({display:"absolute",top:c,left:b});this.backdrop.fadeIn("fast");d.fadeIn()},closeNewDlg:function(){var a=this.newDlg;
+a.fadeOut("fast");this.backdrop.fadeOut("fast")},addNewToList:function(){var h=this.newParent.val();var f=this.newTitle.val().trim();
+if(!f.length){return}this.newTitle.val("");var b,e=0,d=false;if(h&&h!="0"){d=$("li.cat-"+h,this.wrapper)}if(d&&d.length){e=parseInt($("> .title",d).data("depth"))+1;
+b=$("> ul",d);if(!b.length){var c=$("<ul></ul>");d.append(c);c.sortable({axis:"y",items:"> li"})}b=$("> ul",d)}else{b=$("ul.top:first",this.wrapper)
+}var g="new_"+Orb.uuid();var a='<li class="cat-'+g+'"><div class="title new" data-cat-id="'+g+'" data-depth="'+e+'">'+Orb.escapeHtml(f)+"</div></li>";
+b.append(a);this.closeNewDlg()},enableEditTitle:function(c){var b=$("<input />");b.val(c.text().trim());c.empty().append(b);
+var d=$('<button class="dp-button x-small">Apply</button>');c.append(d);var a=this;b.keypress(function(e){if(e.keyCode==13){e.preventDefault();
+a._applyEditTitle(c,b)}});d.click(function(){a._applyEditTitle(c,b)})},_applyEditTitle:function(b,a){b.empty().text(a.val())
+},encode:function(){var a=[];this._encodeSet(a,$("ul.top",this.wrapper),0);return a},_encodeSet:function(c,b,d){var a=this;
+$("li",b).each(function(){var f=$(this);var j=$("> .title",f);var h=j.data("cat-id");var i=c.length+1;var e=j.is(".new");
+c.push({id:h,parentId:d,isNew:e,displayOrder:i,title:j.text().trim()});var g=$("> ul",f);if(g.length){a._encodeSet(c,g,h)
+}})},encodeForm:function(a){if(!a){a="cats"}var d=this.encode();var c=[];var b=0;Array.each(d,function(e){Object.each(e,function(g,f){if(f=="isNew"){if(g){g=1
+}else{g=0}}c.push({name:a+"["+b+"]["+f+"]",value:g})});b++});return c},destroy:function(){if(this.hasInit){this.wrapper.remove()
+}}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.BasicTicket=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"basicticket",wrapper:null,destroyEls:[],destroyMenus:[],destroyOverlays:[],changeManager:null,valueForm:null,layout:null,initPage:function(b){this.wrapper=b;
 this.contentWrapper=this.wrapper.children(".layout-content").attr("id",Orb.getUniqueId());this.barWrapper=$(".bar-wrapper",this.wrapper);
 this.valueForm=$("form.value-form:first",this.contentWrapper);this.changeManager=new DeskPRO.Agent.Ticket.ChangeManager(this);
 window.TICKET=this;if(!this.meta.isDeleted){this._initTicketOptionsMenus();this._initCustomFieldsEditor();this._initReplyBar();
@@ -549,17 +574,47 @@ var c=[];c.push({name:"content",value:$("textarea",this.newCommentWrapper).val()
 a.show();$("textarea",this.newCommentWrapper).val("");var e=$(d);this.newCommentWrapper.before(e);this._initMessage(e);this._handleSendReplySuccess(d)
 }})},});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");DeskPRO.Agent.PageFragment.Page.NewsView=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"news_view",wrapper:null,article_id:null,initPage:function(b){this.wrapper=b;
 this.news_id=this.getMetaData("news_id");this._initBasic();this._initMenus();this._initLabels();this._initEditorEnable();
-var a=this.wrapper;a.tinyscrollbar();$("div.scroll-content:first, div.scroll-viewport:first",this.wrapper).resize(function(){a.tinyscrollbar_update()
-})},_initBasic:function(){var a=this;var c=$("h3.title.editable:first",this.wrapper);if(!c.attr("id")){c.attr("id",Orb.getUniqueId())
-}var d=new DeskPRO.Form.InlineEdit({baseElement:this.wrapper,ajax:{url:BASE_URL+"agent/news/"+this.meta.article_id+"/ajax-save"}});
+this._initCommentForm();var a=this.wrapper;a.tinyscrollbar();$("div.scroll-content:first, div.scroll-viewport:first",this.wrapper).resize(function(){a.tinyscrollbar_update()
+})},incCount:function(c){var b=$("."+c+"-count",this.wrapper);var a=b.data("count")+1;b.data("count",a).html("("+a+")")},setCount:function(c,a){var b=$("."+c+"-count",this.wrapper);
+b.data("count",a).html("("+a+")")},_initBasic:function(){var a=this;var c=$("h3.title.editable:first",this.wrapper);if(!c.attr("id")){c.attr("id",Orb.getUniqueId())
+}var d=new DeskPRO.Form.InlineEdit({baseElement:this.wrapper,ajax:{url:BASE_URL+"agent/news/"+this.meta.news_id+"/ajax-save"}});
 var b=new DeskPRO.UI.SimpleTabs({context:$(".full-container-tabbed.messages-container",this.contentWrapper),triggerElements:$(".full-container-tabbed-tabs li",this.contentWrapper)})
 },_initMenus:function(){this.statusMenu=new DeskPRO.UI.Menu({triggerElement:$(".menu-trigger.status:first",this.wrapper),menuElement:$(".menu.status:first",this.wrapper)})
 },labelsList:null,_initLabels:function(){this.labelsList=$(".news-tags ul",this.contentWrapper);this.labelsTagit=this.labelsList.tagit({availableTags:this.getMetaData("labelsAutocompleteUrl"),enableBackspace:false,fieldName:"labels",onchange:this.saveLabels.bind(this)})
 },_saveLabelsTimeout:null,saveLabels:function(){if(this._saveLabelsTimeout){window.clearTimeout(this._saveLabelsTimeout)}this._saveLabelsTimeout=this._doSaveLabels.delay(2000,this)
 },_doSaveLabels:function(){var a=$(":input",this.labelsList).serializeArray();$.ajax({url:this.getMetaData("labelsSaveUrl"),type:"POST",context:this,data:a,dataType:"json",success:function(b){this._handleSaveLabelsSuccess(b)
-}})},_handleSaveLabelsSuccess:function(a){},_initEditorEnable:function(){var a=$(".kb-editor-edit",this.wrapper);a.click(this.showEditor.bind(this))
-},showEditor:function(){$(".news-content-wrap",this.wrapper).hide();this._initMarkdownEditor();$(".news-content.tab-content",this.wrapper).addClass("editor-on")
-},_initMarkdownEditor:function(){var a=$(".news-editor",this.wrapper).show();var b=$("> textarea",a)},_initMediaBrowser:function(){if(this.mediabrowser_has_init){return
-}this.mediabrowser_has_init=true;this.mediaBrowserEl=$(".media-browser",this.wrapper);this.mediaBrowserOverlay=new DeskPRO.UI.Overlay({contentElement:this.mediaBrowserEl});
+}})},_handleSaveLabelsSuccess:function(a){},_initCommentForm:function(){this.newCommentWrapper=$(".new-note:first",this.wrapper);
+$("button",this.newCommentWrapper).click(this.saveNewComment.bind(this))},saveNewComment:function(){var b=$(".loading-on",this.newCommentWrapper).show();
+var a=$(".loading-off",this.newCommentWrapper).hide();var c=[];c.push({name:"content",value:$("textarea",this.newCommentWrapper).val()});
+$.ajax({url:BASE_URL+"agent/news/post/"+this.getMetaData("news_id")+"/ajax-save-comment",type:"POST",context:this,data:c,dataType:"html",success:function(d){b.hide();
+a.show();$("textarea",this.newCommentWrapper).val("");var e=$(d);this.newCommentWrapper.before(e);this.incCount("news-comments")
+}})},_initEditorEnable:function(){var a=$(".kb-editor-edit",this.wrapper);a.click(this.showEditor.bind(this));$(".editor-save-trigger",this.wrapper).click((function(b){b.preventDefault();
+var c={action:"content",content:$(".news-editor-wrap textarea:first",this.wrapper).val()};$.ajax({url:BASE_URL+"agent/news/post/"+this.meta.news_id+"/ajax-save",type:"POST",context:this,data:c,dataType:"json",success:function(d){$(".news-content-wrap").html(d.content_html);
+this.hideEditor()}})}).bind(this))},showEditor:function(){$(".news-content-wrap",this.wrapper).hide();this._initMarkdownEditor();
+$(".news-content.tab-content",this.wrapper).addClass("editor-on")},hideEditor:function(){$(".news-editor-wrap",this.wrapper).hide();
+$(".news-content-wrap",this.wrapper).show()},_initMarkdownEditor:function(){var a=$(".news-editor-wrap",this.wrapper).show();
+var b=$("> textarea",a)},_initMediaBrowser:function(){if(this.mediabrowser_has_init){return}this.mediabrowser_has_init=true;
+this.mediaBrowserEl=$(".media-browser",this.wrapper);this.mediaBrowserOverlay=new DeskPRO.UI.Overlay({contentElement:this.mediaBrowserEl});
 this.mediaBrowser=new DeskPRO.Agent.MediaBrowser({wrapper:this.mediaBrowserEl,additionalDropZone:$(".kb-editor > textarea",this.wrapper)})
-},showMediaBrowser:function(){this._initMediaBrowser();this.mediaBrowserOverlay.openOverlay()}});
+},showMediaBrowser:function(){this._initMediaBrowser();this.mediaBrowserOverlay.openOverlay()}});Orb.createNamespace("DeskPRO.Agent.PageFragment.Page");
+DeskPRO.Agent.PageFragment.Page.DownloadsView=new Class({Extends:DeskPRO.Agent.PageFragment.Basic,TYPENAME:"download_view",wrapper:null,article_id:null,initPage:function(b){this.wrapper=b;
+this.download_id=this.getMetaData("download_id");this._initBasic();this._initLabels();this._initEditorEnable();this._initCommentForm();
+var a=this.wrapper;a.tinyscrollbar();$("div.scroll-content:first, div.scroll-viewport:first",this.wrapper).resize(function(){a.tinyscrollbar_update()
+})},incCount:function(c){var b=$("."+c+"-count",this.wrapper);var a=b.data("count")+1;b.data("count",a).html("("+a+")")},setCount:function(c,a){var b=$("."+c+"-count",this.wrapper);
+b.data("count",a).html("("+a+")")},_initBasic:function(){var a=this;var c=$("h3.title.editable:first",this.wrapper);if(!c.attr("id")){c.attr("id",Orb.getUniqueId())
+}var d=new DeskPRO.Form.InlineEdit({baseElement:this.wrapper,ajax:{url:BASE_URL+"agent/downloads/file/"+this.meta.download_id+"/ajax-save"}});
+var b=new DeskPRO.UI.SimpleTabs({context:$(".full-container-tabbed.messages-container",this.contentWrapper),triggerElements:$(".full-container-tabbed-tabs li",this.contentWrapper)})
+},labelsList:null,_initLabels:function(){this.labelsList=$(".download-tags ul",this.contentWrapper);this.labelsTagit=this.labelsList.tagit({availableTags:this.getMetaData("labelsAutocompleteUrl"),enableBackspace:false,fieldName:"labels",onchange:this.saveLabels.bind(this)})
+},_saveLabelsTimeout:null,saveLabels:function(){if(this._saveLabelsTimeout){window.clearTimeout(this._saveLabelsTimeout)}this._saveLabelsTimeout=this._doSaveLabels.delay(2000,this)
+},_doSaveLabels:function(){var a=$(":input",this.labelsList).serializeArray();$.ajax({url:this.getMetaData("labelsSaveUrl"),type:"POST",context:this,data:a,dataType:"json",success:function(b){this._handleSaveLabelsSuccess(b)
+}})},_handleSaveLabelsSuccess:function(a){},_initCommentForm:function(){this.newCommentWrapper=$(".new-note:first",this.wrapper);
+$("button",this.newCommentWrapper).click(this.saveNewComment.bind(this))},saveNewComment:function(){var b=$(".loading-on",this.newCommentWrapper).show();
+var a=$(".loading-off",this.newCommentWrapper).hide();var c=[];c.push({name:"content",value:$("textarea",this.newCommentWrapper).val()});
+$.ajax({url:BASE_URL+"agent/downloads/file/"+this.getMetaData("download_id")+"/ajax-save-comment",type:"POST",context:this,data:c,dataType:"html",success:function(d){b.hide();
+a.show();$("textarea",this.newCommentWrapper).val("");var e=$(d);this.newCommentWrapper.before(e);this.incCount("download-comments")
+}})},_initEditorEnable:function(){var a=$(".kb-editor-edit",this.wrapper);a.click(this.showEditor.bind(this));$(".editor-save-trigger",this.wrapper).click((function(b){b.preventDefault();
+var c={action:"content",content:$(".download-editor-wrap textarea:first",this.wrapper).val()};$.ajax({url:BASE_URL+"agent/downloads/file/"+this.meta.download_id+"/ajax-save",type:"POST",context:this,data:c,dataType:"json",success:function(d){$(".download-content-wrap").html(d.content_html);
+this.hideEditor()}})}).bind(this))},showEditor:function(){$(".download-content-wrap",this.wrapper).hide();this._initMarkdownEditor();
+$(".download-content.tab-content",this.wrapper).addClass("editor-on")},hideEditor:function(){$(".download-editor-wrap",this.wrapper).hide();
+$(".download-content-wrap",this.wrapper).show()},_initMarkdownEditor:function(){var a=$(".download-editor-wrap",this.wrapper).show();
+var b=$("> textarea",a)}});

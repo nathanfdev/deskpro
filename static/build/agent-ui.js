@@ -44,7 +44,7 @@ var e=function(){b.fadeOut(250);if(d){window.clearTimeout(d)}};if(a.autoClose){d
 $("#status_dismiss_button em").html(a.btnText);if(a.btnCallback){$("#status_dismiss_button").one("click",function(f){e();
 a.btnCallback(f,a)})}else{$("#status_dismiss_button").one("click",function(f){e()})}b.fadeIn(300)},showUndoMessage:function(a,b){this.showStatusMessage(a,{btnCallback:b,btnText:"Undo",extraClasses:"undo"})
 },addListPage:function(a){console.warn("Invalid call to addListPage for %o",a);this.setListPage(a)},setListPage:function(c){var a=function(d){return c.getMetaData("fragmentClass","").indexOf(d)!=-1
-};var b=null;if(a(".Kb")||a(".News")||a(".Download")){b=this.sections.publish_section}else{if(a(".Ticket")||a(".NewCustomFilter")){b=this.sections.tickets_section
+};var b=null;if(a(".Kb")||a(".News")||a(".Download")||a(".Publish")){b=this.sections.publish_section}else{if(a(".Ticket")||a(".NewCustomFilter")){b=this.sections.tickets_section
 }else{if(a(".People")||a(".Org")){b=this.sections.people_section}else{if(a(".AgentChat")){b=this.sections.agent_chat_section
 }else{if(a(".OpenChats")){b=this.sections.chat_section}else{if(a(".Idea")){b=this.sections.ideas_section}else{if(a(".RecycleBin")){b=this.sections.tickets_section
 }}}}}}}if(!b){console.error("List page fragment has no section: %s: %o",c.getMetaData("fragmentClass",""),c);return}b.setListPageFragment(c);
@@ -117,7 +117,8 @@ c.toggleAgentStatus()});this.volume=0.8;$("#volume_controls .slider").slider({or
 if(c.volume==0||c.volume==0){c.volume=0;$("#sound_icon").addClass("off")}else{$("#sound_icon").removeClass("off")}}});var b=function(){$("#volume_controls_back").hide();
 $("#volume_controls").fadeOut()};$("#volume_controls_back").click(function(e){e.stopPropagation();b()});var a=function(){$("#volume_controls_back").show();
 $("#volume_controls").css({top:30,left:$("#sound_icon").offset().left-7});$("#volume_controls").fadeIn()};$("#sound_icon a").click(function(e){e.preventDefault();
-e.stopPropagation();a()})},toggleAgentStatus:function(a){var b=$("#agent_status");a=a||false;if(a||b.is(".off")){$("#agent_status_away_overlay").remove();
+e.stopPropagation();a()});this.createMenu=new DeskPRO.UI.Menu({triggerElement:"#create_content_trigger",menuElement:"#create_content_menu"})
+},toggleAgentStatus:function(a){var b=$("#agent_status");a=a||false;if(a||b.is(".off")){$("#agent_status_away_overlay").remove();
 b.removeClass("off");$.ajax({url:BASE_URL+"agent/misc/set-agent-status/available",type:"GET"})}else{var c=$('<div id="agent_status_away_overlay" />').appendTo("body");
 c.click(function(d){d.preventDefault();d.stopPropagation()});b.addClass("off");$.ajax({url:BASE_URL+"agent/misc/set-agent-status/away",type:"GET"})
 }},_initSections:function(){var a=this;var b=null;$("#deskpro_sections [data-section-handler]").each(function(){var e=$(this);

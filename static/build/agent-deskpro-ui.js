@@ -94,7 +94,7 @@ this.lastActiveTab=null;this.triggerEls=null;if(b){this.setOptions(b)}this.trigg
 }this.activateTab(c)},_handleTabClick:function(b,c){var a=$(b);this.activateTab(a,c)},activateTab:function(c,b){var a={event:b||null,tabEl:c,lastTabEl:this.lastActiveTab,manager:this,cancel:false};
 this.fireEvent("beforeTabSwitch",a);if(a.cancel){return}delete a.cancel;if(this.lastActiveTab){this.lastActiveTab.removeClass(this.options.activeClassname);
 this.getContentElFromTab(this.lastActiveTab).removeClass(this.options.activeClassname).hide();this.lastActiveTab=null}this.lastActiveTab=c;
-this.lastActiveTab.addClass(this.options.activeClassname);this.getContentElFromTab(this.lastActiveTab).addClass(this.options.activeClassname).show();
+this.lastActiveTab.addClass(this.options.activeClassname);a.tabContent=this.getContentElFromTab(this.lastActiveTab).addClass(this.options.activeClassname).show();
 this.fireEvent("tabSwitch",a)},getContentElFromTab:function(b){if(!b.data("tab-for")){console.warn("tab has no tab-for: %o",b);
 return $()}var a=$(b.data("tab-for"),this.options.context);if(a.length<1){console.warn("no tab content exists for tab: %o",b)
 }return a}});
