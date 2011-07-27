@@ -931,6 +931,19 @@ So only the 'on' one is visible at a time */
     border-radius: 3px;
 }
 
+#ticket_grouping_options ul li:nth-child(2) {
+    background: url(../../images/elbow-end.gif) no-repeat -5px 50%;
+    padding-left: 12px;
+    margin-top: 2px;
+}
+
+#ticket_grouping_options ul li:nth-child(3) {
+    background: url(../../images/elbow-end.gif) no-repeat -5px 50%;
+    padding-left: 12px;
+    margin-top: 2px;
+    margin-left: 12px;
+}
+
 #ticket_grouping_options .grouping-menu-trigger,
 #ticket_grouping_options .mode-menu-trigger {
     color: #7A8699;

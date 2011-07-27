@@ -239,8 +239,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		this.overviewModeEl        = $('#ticket_grouping_options .mode');
 		this.overviewGroupEl1      = $('#ticket_grouping_options .grouping1');
 		this.overviewGroupEl2      = $('#ticket_grouping_options .grouping2');
-		this.overviewGroupEl2_no   = $('#ticket_grouping_options .no-subgroup');
-		this.overviewGroupEl2_yes  = $('#ticket_grouping_options .with-subgroup');
 
 		var self = this;
 		this.overviewGroupingMenu = new DeskPRO.UI.Menu({
@@ -327,12 +325,9 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 
 		if (grouping2) {
 			this.overviewGroupEl2.html(grouping2_menuItemEl.html()).data('groupby', grouping2);
-			this.overviewGroupEl2_no.hide();
-			this.overviewGroupEl2_yes.show();
+
 		} else {
-			this.overviewGroupEl2.html('').data('groupby', '');
-			this.overviewGroupEl2_no.show();
-			this.overviewGroupEl2_yes.hide();
+			this.overviewGroupEl2.html('none').data('groupby', '');
 		}
 	},
 
