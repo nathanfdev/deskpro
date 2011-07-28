@@ -304,6 +304,7 @@ class TicketSearchController extends AbstractController
 			'type'               => $type,
 			'type_id'            => $type_id,
 			'tickets'            => $tickets,
+			'count'              => $results_helper->getCount(),
 			'flagged_tickets'    => $flagged_tickets,
 			'ticket_options'     => $ticket_options,
 			'page'               => $page,

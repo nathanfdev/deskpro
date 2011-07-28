@@ -133,6 +133,17 @@ class TicketResults
 	}
 
 
+	/**
+	 * Get total number of matches
+	 * 
+	 * @return int
+	 */
+	public function getCount()
+	{
+		return count($this->getTicketIds());
+	}
+
+
 
 	/**
 	 * Get ticket IDs that match the current group

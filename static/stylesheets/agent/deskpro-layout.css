@@ -976,7 +976,13 @@ So only the 'on' one is visible at a time */
 }
 
 
-header.section-header .display-options-trigger {
+header.control-bar {
+    background-color: #DFE9F4;
+    padding: 2px 5px 2px 5px;
+    border-bottom: 1px solid #A7A8A8;
+}
+
+header.control-bar .display-options-trigger {
     float: right;
     display: block;
     width: 16px;
@@ -987,5 +993,91 @@ header.section-header .display-options-trigger {
 
     background: transparent url(../../images/icons/edit-gear.png) no-repeat top right;
 
-    margin: 11px 5px 0 0;
+    margin: 2px 2px 0 2px;
+}
+
+header.control-bar .detail-view-trigger {
+    float: right;
+    display: block;
+    width: 16px;
+    height: 16px;
+    text-indent: -1000px;
+    overflow: hidden;
+    cursor: pointer;
+
+    background: transparent url(../../images/icons/monitor_go.png) no-repeat top right;
+
+    margin: 2px 2px 0 2px;
+}
+
+
+
+header.grouping-bar {
+    background: #fefefe;
+    background: -moz-linear-gradient(top, #fefefe 0%, #ecf1f5 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#fefefe), color-stop(100%,#ecf1f5));
+    background: -webkit-linear-gradient(top, #fefefe 0%,#ecf1f5 100%);
+    background: -o-linear-gradient(top, #fefefe 0%,#ecf1f5 100%);
+    background: -ms-linear-gradient(top, #fefefe 0%,#ecf1f5 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FEFEFE', endColorstr='#ECF1F5',GradientType=0 );
+    background: linear-gradient(top, #fefefe 0%,#ecf1f5 100%);
+
+    border-bottom: 1px solid #C3CBCE;
+
+    height: 20px;
+}
+
+header.grouping-bar ul li {
+    float: left;
+    cursor: pointer;
+    padding: 0 8px 0 8px;
+    font-size: 10px;
+    line-height: 20px;
+
+    border-right: 1px solid #C3CBCE;
+}
+
+header.grouping-bar ul li.on, header.grouping-bar ul li:hover {
+    background-color: #E6EAEF;
+
+    -webkit-transition: background 550ms ease;
+    -moz-transition: background 550ms ease;
+    -o-transition: background 550ms ease;
+    transition: background 550ms ease;
+}
+
+header.grouping-bar ul li.all {
+    float: right;
+    border-right: none;
+    border-left: 1px solid #C3CBCE;
+}
+
+header.grouping-bar ul li .count {
+    margin-left: 3px;
+    background-color: #C6CFD9;
+    font-size: 9px;
+    padding: 1px 3px 1px 3px;;
+
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+
+
+header.selection-bar {
+    background: #E6EAEF;
+    border-bottom: 1px solid #C3CBCE;
+
+    padding: 3px 8px 3px 8px;
+}
+
+header.selection-bar button.clean-gray {
+    float: right;
+    padding-right: 0 !important;
+}
+
+header.selection-bar button span {
+    background: url(../../images/icons/bullet_arrow_down.png) no-repeat 100% 50%;
+    padding-right: 16px;
 }

@@ -10,6 +10,7 @@
 				</a>
 			</div>
 			<div class="preview">
+				<input type="checkbox" class="ticket-select" />
 				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">{{ ticket.getSummaryLine(200) }}</a>
 			</div>
 			<div class="info">

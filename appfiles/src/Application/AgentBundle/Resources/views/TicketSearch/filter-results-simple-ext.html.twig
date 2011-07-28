@@ -34,22 +34,27 @@ pageMeta.baseId = '{{ baseId }}';
 
 	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
 
-	<header class="section-header">
-		<nav class="mode-buttons">
-			<ul>
-				<li data-view-type="simple"><a>Basic</a></li>
-				<li class="on"><a>List</a></li>
-				<li data-view-type="list"><a>Detail</a></li>
-			</ul>
-		</nav>
-		<span class="display-options-trigger">Display Options</span>
-		<h1>
-			{% if filter.sys_name %}
-				{{ phrase('agent.filter_' ~ filter.sys_name) }}
-			{% else %}
-				{{ filter.title }}
-			{% endif %}
-		</h1>
+	<header class="control-bar">
+		<span class="detail-view-trigger tipped" title="View full-screen detailed list">Detail</span>
+		<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
+
+		{{ count }} tickets ordered by <span class="menu-trigger" style="border-bottom: 1px dotted #888;">urgency</span>
+		and grouped by <span class="menu-trigger" style="border-bottom: 1px dotted #888;">status</span>
+	</header>
+	<header class="grouping-bar">
+		<ul>
+			<li class="all on">All <span class="count">{{ count }}</span></li>
+			<li>Open <span class="count">{{ count-2 }}</span></li>
+			<li>Pending <span class="count">{{ count-3 }}</span></li>
+			<li>Resolved <span class="count">{{ count-1 }}</span></li>
+		</ul>
+	</header>
+
+	<header class="selection-bar" style="display: none">
+		<span class="selected-count">0</span> selected
+		<button class="clean-gray xx-small">
+			<span>Perform Action</span>
+		</button>
 	</header>
 
 	<section class="ticket-simple-ext-list deskpro-results-list">

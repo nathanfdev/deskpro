@@ -4595,3 +4595,9 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
     -moz-border-radius: 3px;
     border-radius: 3px;
 }
+
+
+
+.ticket-select {
+    height: 11px;
+}
