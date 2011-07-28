@@ -38,21 +38,14 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="detail-view-trigger tipped" title="View full-screen detailed list">Detail</span>
 		<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
 
-		{{ count }} tickets ordered by <span class="menu-trigger" style="border-bottom: 1px dotted #888;">urgency</span>
-		and grouped by <span class="menu-trigger" style="border-bottom: 1px dotted #888;">status</span>
-	</header>
-	<header class="grouping-bar">
-		<ul>
-			<li class="all on">All <span class="count">{{ count }}</span></li>
-			<li>Open <span class="count">{{ count-2 }}</span></li>
-			<li>Pending <span class="count">{{ count-3 }}</span></li>
-			<li>Resolved <span class="count">{{ count-1 }}</span></li>
-		</ul>
+		<input type="checkbox" class="selection-control" />
+
+		Tickets ordered by <span class="menu-trigger" style="border-bottom: 1px dotted #888;">urgency</span>
 	</header>
 
-	<header class="selection-bar" style="display: none">
+	<header class="selection-bar" style="display: none;">
 		<span class="selected-count">0</span> selected
-		<button class="clean-gray xx-small">
+		<button class="clean-gray xx-small perform-actions-trigger">
 			<span>Perform Action</span>
 		</button>
 	</header>
@@ -69,6 +62,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
+	{% include 'AgentBundle:TicketSearch:massactions-overlay.html.twig' %}
 </div>
 
 </div>

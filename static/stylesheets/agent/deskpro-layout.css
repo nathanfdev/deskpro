@@ -980,6 +980,13 @@ header.control-bar {
     background-color: #DFE9F4;
     padding: 2px 5px 2px 5px;
     border-bottom: 1px solid #A7A8A8;
+    text-align: center;
+}
+
+header.control-bar .selection-control {
+    float: left;
+    height: 12px;
+    margin-top: 3px;
 }
 
 header.control-bar .display-options-trigger {
@@ -1008,6 +1015,10 @@ header.control-bar .detail-view-trigger {
     background: transparent url(../../images/icons/monitor_go.png) no-repeat top right;
 
     margin: 2px 2px 0 2px;
+}
+
+.mass-actions.overlay {
+    min-width: 500px;
 }
 
 

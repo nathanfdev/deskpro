@@ -154,6 +154,35 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			} else {
 				self.selectionBar.slideUp();
 			}
+
+			if (!$(this).is(':checked')) {
+				$('.selection-control', this.wrapper).attr('checked', false);
+			}
+		});
+
+		$('.selection-control', this.wrapper).click(function() {
+
+			if ($(this).is(':checked')) {
+			 	$('input.ticket-select', self.wrapper).attr('checked', true);
+
+				var count = $('input.ticket-select:checked', self.wrapper).length;
+				self.selectedCount.html(count);
+
+				self.selectionBar.slideDown();
+			} else {
+				$('input.ticket-select', self.wrapper).attr('checked', false);
+				self.selectionBar.slideUp();
+			}
+		});
+
+		self.actionsWrap = $('.mass-actions.overlay', this.wrapper);
+		this.actionsOverlay = new DeskPRO.UI.Overlay({
+			contentElement: this.actionsWrap,
+			triggerElement: $('.perform-actions-trigger', this.wrapper),
+			onBeforeOverlayOpened: function() {
+				var countEl = self.selectedCount;
+				$('.check-count-overlay', self.actionsWrap).html(countEl.html());
+			}
 		});
 	},
 
