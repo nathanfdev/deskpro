@@ -73,6 +73,72 @@ nav.deskpro-tabstrip > ul > li.on > a {
     filter: dropshadow(color=#fff, offx=1, offy=1);
 }
 
+
+
+
+nav.deskpro-sub-tabstrip {
+    height: 15px;
+    border-bottom: 1px solid #9FA7AA;
+    margin-bottom: 1px;
+}
+
+nav.deskpro-sub-tabstrip > ul > li {
+    display: block;
+    float: left;
+
+    background-color: #FAFAFA;
+    height: 12px;
+    overflow: hidden;
+    margin-top: 2px;
+    margin-left: 2px;
+
+    padding: 0 3px 0 3px;
+
+    font-family: Arial, Helvetica, sans-serif;
+    font-size: 10px;
+    color: #757575;
+
+    border: 1px solid #E5EAED;
+    border-bottom: none;
+    
+    -moz-border-radius-topleft: 3px;
+    -moz-border-radius-topright: 3px;
+    -moz-border-radius-bottomright: 0px;
+    -moz-border-radius-bottomleft: 0px;
+    border-top-left-radius: 3px;
+    border-top-right-radius: 3px;
+    border-bottom-right-radius: 0px;
+    border-bottom-left-radius: 0px;
+}
+
+nav.deskpro-sub-tabstrip > ul > li > a {
+    line-height: 18px;
+    color: #757575;
+    text-decoration: none;
+}
+
+nav.deskpro-sub-tabstrip > ul > li.on {
+    height: 13px;
+    background-color: #EBEEF3;
+
+    border: 1px solid #CBCFD8;
+    border-bottom: none;
+}
+
+nav.deskpro-sub-tabstrip > ul > li.on > a {
+    line-height: 20px;
+    font-weight: bold;
+
+    text-shadow: 1px 1px 0px #fff;
+    filter: dropshadow(color=#fff, offx=1, offy=1);
+}
+
+
+
+
+
+
+
 section.deskpro-tab-item {
     display: none;
 }

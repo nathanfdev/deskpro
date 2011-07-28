@@ -792,8 +792,13 @@ class TicketSearchController extends AbstractController
 		$label_lister = new \Application\DeskPRO\Labels\LabelLister('tickets');
 		$index = $label_lister->getIndexList();
 
+		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('ticket', 25);
+		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
+		$cloud = $cloud_gen->getCloud();
+
 		return $this->render('AgentBundle:TicketSearch:pane-labels-index.html.twig', array(
-			'labels_index' => $index
+			'labels_index' => $index,
+			'labels_cloud' => $cloud,
 		));
 	}
 

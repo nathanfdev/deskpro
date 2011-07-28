@@ -1,15 +1,28 @@
+<nav class="deskpro-sub-tabstrip">
+	<ul>
+		<li data-tab-for="#ticket_labels_list">List</li>
+		<li data-tab-for="#ticket_labels_cloud">Cloud</li>
+	</ul>
+</nav>
 <dl id="ticket_labels_list">
 	{% for letter,labels in labels_index %}
 		<dt>{{letter}}</dt>
 		<dd>
 			<ul class="comma-list">
 				{% for label in labels %}
-					<li><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?page_title={{ phrase('core.label_x', {'label': label})|raw_url_encode }}&terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+					<li><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
 				{% endfor %}
 			</ul>
 		</dd>
 	{% else %}
 		<dt></dt>
-		<dd>You haven't labeled any tickets! Load a ticket to label it.</dd>
+		<dd>You haven't labeled any tickets. Load a ticket to label it.</dd>
 	{% endfor %}
 </dl>
+<ol id="ticket_labels_cloud" class="tags tag-cloud" style="display: none;">
+	{% for label,css_class in labels_cloud %}
+		<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_ticketsearch_runcustomfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+	{% else %}
+		<dd>You haven't labeled any tickets. Load a ticket to label it.</dd>
+	{% endfor %}
+</ol>

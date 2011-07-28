@@ -524,8 +524,17 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			dataType: 'html',
 			context: this,
 			success: function(html) {
-				$('#tickets_outline_labels').html(html)
+				this._setLabelsList(html);
 			}
+		});
+	},
+
+	_setLabelsList: function(html) {
+		$('#tickets_outline_labels').html(html);
+
+		this.labelsTabs = new DeskPRO.UI.SimpleTabs({
+			context: $('#tickets_outline_labels'),
+			triggerElements: $('#tickets_outline_labels .deskpro-sub-tabstrip li')
 		});
 	}
 });
