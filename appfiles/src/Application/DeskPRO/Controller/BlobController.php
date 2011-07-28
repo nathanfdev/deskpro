@@ -162,7 +162,12 @@ class BlobController extends AbstractController
 		$response->setPublic();
 
 		$im = new \Imagick();
-		$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default.jpeg');
+		if ($this->in->getBool('face')) {
+			// TODO [demo UI]
+			$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/avatar-man-face.png');
+		} else {
+			$im->readImage(DP_ROOT . '/src/Application/DeskPRO/Resources/assets/picture-default.jpeg');
+		}
 		$im->resizeImage($size, $size, \Imagick::FILTER_LANCZOS, true);
 
 		$file = $im->getImageBlob();

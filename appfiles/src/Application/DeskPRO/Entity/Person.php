@@ -1385,14 +1385,18 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->is_agent && !$this->picture_blob && $gravatars) {
 			if (!isset($this->_demo_gravatar_url)) {
 
-				if ($gravatars[0] == 'face') {
-					$key = 0;
-					$gravatars[0] = App::getSetting('core.deskpro_assets_full_url') . 'images/avatar-man-face.png';
+				if (isset($gravatars[0]) AND $gravatars[0] == 'face') {
+					$url = App::get('router')->generate('serve_default_picture', array(
+						's' => $size,
+						'face' => 1,
+					), true);
+					$this->_demo_gravatar_url = $url;
+					unset($gravatars[0]);
 				} else {
 					$key = array_rand($gravatars);
+					$this->_demo_gravatar_url = $gravatars[$key];
+					unset($gravatars[$key]);
 				}
-				$this->_demo_gravatar_url = $gravatars[$key];
-				unset($gravatars[$key]);
 			}
 		}
 
