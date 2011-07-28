@@ -172,6 +172,11 @@ agent_people_view:
   requirements: { person_id: "\d+" }
   options: { fragment_name: 'p' }
 
+agent_people_viewtip:
+  pattern: /person/{person_id}/tip
+  defaults: { _controller: AgentBundle:Person:viewTip }
+  requirements: { person_id: "\d+" }
+
 agent_people_viewsession:
   pattern: /people/session/{session_id}
   defaults: { _controller: AgentBundle:Person:viewSession }

@@ -6,7 +6,7 @@
 					{{ ticket.person.primary_email_address }}
 				</address>
 				<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
-					{{ ticket.person.display_name }}
+					<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
 				</a>
 			</div>
 			<div class="preview">

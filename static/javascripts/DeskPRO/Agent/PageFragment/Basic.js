@@ -114,6 +114,10 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		if (featureSelectors.times && featureSelectors.times.length) {
 			this.initTimesOnCollection($(featureSelectors.times.join(', '), wrapper));
 		}
+
+		if (this.wrapper) {
+			this.initTipsOnCollection($('.person-tip', this.wrapper));
+		}
 	},
 
 	/**
@@ -130,6 +134,24 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 */
 	initTimesOnCollection: function(els) {
 		els.timeago();
+	},
+
+
+	initTipsOnCollection: function(els) {
+		$(els).each(function() {
+			var el = $(this);
+
+			if (el.is('.person-tip')) {
+				var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
+				el.addClass('tipped');
+				el.attr('data-tipped', tipUrl);
+				el.attr('data-tipped-options', 'ajax:true');
+
+				el.mouseover(function() {
+					Tipped.show(this);
+				});
+			}
+		});
 	},
 
 
