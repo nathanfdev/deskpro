@@ -26,7 +26,33 @@
 				<span class="list-counter" id="ticket_filter_{{filter.id}}_count">
 					{{ sys_filter_counts[filter.id]|default(0) }}
 				</span>
+				<span class="sub-toggle">expand</span>
 				<a>{{filter.title}}</a>
+				<ul class="sub-group" style="display: none;">
+					<li class="grouping-options">
+						Grouped by <span class="menu-trigger">Department</span> and <span class="menu-trigger">none</span>
+					</li>
+					<li>
+						<span class="list-counter">5</span>
+						<a>Department 1</a>
+					</li>
+					<li>
+						<span class="list-counter">9</span>
+						<a>Department 2</a>
+					</li>
+					<li class="sub-list">
+						<span class="list-counter">3</span>
+						<a>Child</a>
+					</li>
+					<li>
+						<span class="list-counter">3</span>
+						<a>Department 3</a>
+					</li>
+					<li>
+						<span class="list-counter">5</span>
+						<a>Department 4</a>
+					</li>
+				</ul>
 			</li>
 		{% endfor %}
 	</ul>
@@ -65,7 +91,6 @@
 
 <nav id="tickets_outline_tabstrip" class="deskpro-tabstrip">
 	<ul>
-		<li class="grouped" data-tab-for="#tickets_outline_grouped"><a>Grouped</a></li>
 		<li class="labels"  data-tab-for="#tickets_outline_labels"><a>Labels</a></li>
 		<li class="flagged" data-tab-for="#tickets_outline_flagged"><a>Flagged</a></li>
 		<li class="archive" data-tab-for="#tickets_outline_archive"><a>Archive</a></li>

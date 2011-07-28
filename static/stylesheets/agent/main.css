@@ -3542,11 +3542,43 @@ span.kb-editor-edit a {
 
 #deskpro_outline ul.nav-list li.sub-list {
     font-size: 10px;
-    padding-left: 18px;
+    padding-left: 14px;
     border: none;
 }
 
+#deskpro_outline ul.nav-list ul.sub-group li {
+    padding-left: 6px;
+    border: 0;
+}
 
+#deskpro_outline ul.nav-list ul.sub-group li.sub-list {
+    padding-left: 29px;
+}
+
+#deskpro_outline ul.nav-list ul.sub-group li.grouping-options {
+    font-size: 9px;
+    border: none;
+    padding-left: 14px;
+    padding-bottom: 6px;
+    color: #62676D;
+}
+
+#deskpro_outline ul.nav-list ul.sub-group li.grouping-options .menu-trigger {
+    border: 1px solid transparent;
+    border-bottom: 1px dotted #C4CEDD;
+    padding: 0 1px 0 1px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+#deskpro_outline ul.nav-list ul.sub-group li.grouping-options .menu-trigger:hover {
+    border: 1px solid #A9B1BE;
+}
+
+#deskpro_outline ul.nav-list li.grouping-options:hover {
+    background: transparent !important;
+}
 
 
 

@@ -722,7 +722,7 @@ So only the 'on' one is visible at a time */
 #tickets_outline_flags_list li.flag-red a { background-image: url(../../images/icons/flag_red.png); }
 #tickets_outline_flags_list li.flag-yellow a { background-image: url(../../images/icons/flag_yellow.png); }
 
-#ticket_grouping_list .sub-toggle {
+#tickets_outline_inbox_list .sub-toggle {
     float: left;
     display: block;
     background: url(../../images/icons/bullet_toggle_plus.png) no-repeat 50% 50%;
@@ -736,7 +736,7 @@ So only the 'on' one is visible at a time */
     overflow: hidden;
 }
 
-#ticket_grouping_list .sub-toggle.open {
+#tickets_outline_inbox_list .sub-toggle.open {
     background-image: url(../../images/icons/bullet_toggle_minus.png);
 }
 

@@ -48,7 +48,7 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 		});
 
 		this._initFilters();
-		this._initOverview();
+		//this._initOverview();
 		this._initFlagged();
 
 		$('#user_settings_filters_link').click(function() {
@@ -139,6 +139,20 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					url: BASE_URL + 'agent/misc/ajax-save-prefs',
 					data: data
 				});
+			}
+		});
+
+		$('#tickets_outline_inbox_list .sub-toggle').click(function(ev) {
+			ev.stopPropagation();
+			var li = $(this).parent();
+			var sub = $('ul.sub-group', li);
+
+			if (sub.is(':visible')) {
+				sub.slideUp();
+				$(this).removeClass('open');
+			} else {
+				sub.slideDown();
+				$(this).addClass('open');
 			}
 		});
 	},
@@ -262,20 +276,6 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 					// Hide primary grouping form sub-grouping menu
 					$('li[data-groupby="'+grouping1+'"]', self.overviewGroupMenuEl).hide();
 				}
-			}
-		});
-
-		$('#ticket_grouping_list').delegate('.sub-toggle', 'click', function(ev) {
-			ev.stopPropagation();
-			var li = $(this).parent();
-			var sub = $('ul.sub-structure', li);
-
-			if (sub.is(':visible')) {
-				sub.slideUp();
-				$(this).removeClass('open');
-			} else {
-				sub.slideDown();
-				$(this).addClass('open');
 			}
 		});
 
