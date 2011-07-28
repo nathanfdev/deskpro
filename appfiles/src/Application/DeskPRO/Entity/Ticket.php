@@ -425,11 +425,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @return string
 	 */
-	public function getSummaryLine($max_len = 200)
+	public function getSummaryLine($max_len = 200, $include_subject = false)
 	{
-		$summary = $this->subject;
+		if ($include_subject) {
+			$summary = $this->subject;
+		} else {
+			$summary = '';
+		}
+
 		if (strlen($summary) < $max_len) {
-			$summary .= '. ';
+			if ($include_subject) {
+				$summary .= '. ';
+			}
 
 			// TODO
 			// THis is used in the result listings, so this needs

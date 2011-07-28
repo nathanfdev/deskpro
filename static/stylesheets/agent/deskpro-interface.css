@@ -382,3 +382,129 @@ section.deskpro-results-list article > div.info > ul.single-col > li {
     float: none;
     width: auto;
 }
+
+
+
+
+
+
+
+
+
+section.deskpro-results-list article.ticket .toprow {
+    margin-bottom: 2px;
+    position: relative;
+    height: 25px;
+}
+
+section.deskpro-results-list article.ticket .toprow .userinfo {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 3px 0 0 4px;
+}
+
+section.deskpro-results-list article.ticket .toprow .userinfo .email {
+    font-size: 95%;
+    color: #959DAB;
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo {
+    position: absolute;
+    top: 0;
+    right: 0;
+    padding: 3px 4px 0 0;
+    padding-left: 25px;
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo .inner {
+    background-color: #FBFBFC;
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo .bound-faded {
+    position: absolute;
+    top: 0;
+    left: 0;
+    bottom: 0;
+    width: 25px;
+
+background: -moz-linear-gradient(left, rgba(251,251,252,0) 0%, rgba(251,251,252,1) 87%, rgba(251,251,252,1) 100%);
+background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(251,251,252,0)), color-stop(87%,rgba(251,251,252,1)), color-stop(100%,rgba(251,251,252,1)));
+background: -webkit-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+background: -o-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+background: -ms-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fbfbfc', endColorstr='#fbfbfc',GradientType=1 );
+background: linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo time {
+    color: #959DAB;
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo .agent {
+    display: block;
+    height: 20px;
+    float: left;
+    margin-right: 6px;
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo .agent span {
+    padding-left: 22px;
+    display: block;
+    height: 20px;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo .status {
+    display: block;
+    float: left;
+    width: 16px;
+    height: 20px;
+    text-indent: -100px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    opacity: 0.6;
+    margin: 0 3px 0 3px;
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-open {
+    background-image: url(../../images/ticket-status-open.png);
+}
+section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-pending {
+    background-image: url(../../images/ticket-status-pending.png);
+}
+section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-resolved,
+section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-closed
+{
+    background-image: url(../../images/ticket-status-closed.png);
+}
+section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-hidden {
+    background-image: url(../../images/ticket-status-hidden.png);
+}
+
+section.deskpro-results-list article.ticket .toprow .ticketinfo .agent-team {
+    display: block;
+    float: left;
+    width: 16px;
+    height: 20px;
+    text-indent: -100px;
+    overflow: hidden;
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+    background-image: url(../../images/icons/coins.png);
+    margin: 0 3px 0 3px;
+}
+
+section.deskpro-results-list article.ticket .preview {
+    
+}
+
+section.deskpro-results-list article.ticket .preview .subject {
+
+}
+
+section.deskpro-results-list article.ticket .preview .department {
+    color: #666C77;
+}

@@ -90,6 +90,14 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
+	public function getEmailDomain()
+	{
+		if ($this->email_domain) {
+			return $this->email_domain;
+		}
+
+		return Strings::extractRegexMatch('#@(.*?)$#', $this->email, 1);
+	}
 
 
 	/**

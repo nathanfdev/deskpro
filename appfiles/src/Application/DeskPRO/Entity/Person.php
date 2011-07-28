@@ -628,14 +628,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		 * ln = last name
 		 */
 		$try = array(
-			array('fn', 'ln', '(e)'),
-			array('fi', 'ln', '(e)'),
-			array('fn', 'li', '(e)'),
-			array('n', '(e)'),
-			array('fn', 'ln'),
-			array('fn', 'li'),
+			array('fn', ' ', 'ln', ' ', '(e)'),
+			array('fi', ' ', 'ln', ' ', '(e)'),
+			array('fn', ' ', 'li', ' ', '(e)'),
+			array('n', ' ', '(e)'),
+			array('fn', ' ', 'ln'),
+			array('fn', ' ', 'li'),
 			array('fi', 'ln'),
-			array('fi', 'li', '(e)'),
+			array('fi', 'li', ' ', '(e)'),
 			array('fi', 'li'),
 			array('e'),
 			array('n')
@@ -647,6 +647,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		foreach ($try as $k => $elements) {
 
 			$display = array();
+
 			foreach ($elements as $el) {
 				switch ($el) {
 					case 'n':
@@ -684,10 +685,14 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 							$display[] = $this->getPrimaryEmailAddress();
 						}
 						break;
+
+					default:
+						$display[] = $el;
+						break;
 				}
 			}
 
-			$display = implode(' ', $display);
+			$display = implode('', $display);
 			$len = strlen($display);
 
 			if ($len <= $max_len) {
