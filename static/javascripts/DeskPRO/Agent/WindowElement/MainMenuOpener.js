@@ -14,7 +14,7 @@ DeskPRO.Agent.WindowElement.MainMenuOpener = new Orb.Class({
 
 		this.options.menuSelectors.push('#header .nav > .wrapper-top-bar > ul > li');
 		this.options.menuSelectors.push('#header .box-header.notifications');
-		this.options.menuSelectors.push('#header .box-header.current-user');
+		this.options.menuSelectors.push('#header .box-header.zone-switcher');
 		this.options.menuSelectors.push('#header .box-header.actions > .wrapper-top-bar > ul > li.with-menu');
 		this.options.menuSelectors.push('#window_search_type');
 		this.options.menuSelectors.push('#window_search_form');

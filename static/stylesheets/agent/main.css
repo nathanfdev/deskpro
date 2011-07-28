@@ -544,6 +544,19 @@ background-color: #edeff3;
 	background-position: left -83px;
 }
 
+#header .current-user .logout {
+    float: left;
+    display: block;
+    width: 16px;
+    height: 16px;
+    text-indent: -100px;
+    overflow: hidden;
+    background: url(../../images/icons/shutdown.png) no-repeat 50% 50%;
+
+    margin-top: 4px;
+    margin-left: 6px;
+}
+
 #header .current-user-avatar {
 	float: left;
 	margin-bottom: 2px;
@@ -554,8 +567,7 @@ background-color: #edeff3;
 }
 
 #header .current-user-avatar img {
-	width: 16px;
-	margin-top: 5px;
+	width: 28px;
 }
 
 #header .current-user-name {
@@ -724,10 +736,19 @@ background-color: #edeff3;
     box-shadow:  inset -1px 0 0 #848f9d;
 }
 
-#header .admin-actions ul li {
+#header .admin-actions > .wrapper-top-bar > ul > li {
 	float: left;
 	margin-right: 6px;
 	font-family: 'Lucida Sans', 'Lucida Grande', 'Lucida Sans Unicode', sans-serif;
+}
+
+#header .admin-actions .wrap-dropdown li {
+    padding: 3px 6px 3px 6px;
+}
+
+#header .admin-actions .white-drop {
+    margin-top: 6px;
+    margin-left:0;
 }
 
 #header .admin-actions ul li a {
@@ -754,6 +775,11 @@ background-color: #edeff3;
 
 #header .admin-actions ul li.new-content a {
 	background: transparent url("../../images/icons/page_white_star.png") no-repeat center left;
+	padding-left: 20px;
+}
+
+#header .admin-actions ul li.settings a {
+	background: transparent url("../../images/icons/cog.png") no-repeat center left;
 	padding-left: 20px;
 }
 
