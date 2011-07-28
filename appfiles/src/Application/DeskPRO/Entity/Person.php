@@ -1355,6 +1355,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		// TODO [demo UI]
 		// Sample avatars for agents
 		static $gravatars = array(
+			'face',
 			'http://www.gravatar.com/avatar/5b131a252b91dc91442d8b9772dc6045?',
 			'http://www.gravatar.com/avatar/1a33e7a69df4f675fcd799edca088ac2?',
 			'http://www.gravatar.com/avatar/c5c64af9b7505777b53e05857616d39f?',
@@ -1383,7 +1384,13 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		);
 		if ($this->is_agent && !$this->picture_blob && $gravatars) {
 			if (!isset($this->_demo_gravatar_url)) {
-				$key = array_rand($gravatars);
+
+				if ($gravatars[0] == 'face') {
+					$key = 0;
+					$gravatars[0] = App::getSetting('core.deskpro_assets_full_url') . 'images/avatar-man-face.png';
+				} else {
+					$key = array_rand($gravatars);
+				}
 				$this->_demo_gravatar_url = $gravatars[$key];
 				unset($gravatars[$key]);
 			}
