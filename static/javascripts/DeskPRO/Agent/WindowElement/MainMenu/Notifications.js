@@ -37,6 +37,17 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 		DeskPRO_Window.getMessageBroker().addMessageListener('ui.tab.opened', function (data) {
 			self.removeItem(data.type, data.id);
 		});
+
+		// TODO [demo UI]
+		this.addItem('tickets', 1, 'Custom style', '');
+		this.addItem('tickets', 2, 'Survey module', '');
+		this.addItem('tickets', 3, 'New user from gateway', '');
+		this.addItem('tickets', 4, 'Invoices', '');
+		this.addItem('tickets', 5, 'Company CC emails log', '');
+		this.addItem('tickets', 6, 'Email to user ticket participants', '');
+
+		this.addItem('chats', 1, 'New chat', '');
+		this.addItem('chats', 2, 'New chat 2', '');
 	},
 
 

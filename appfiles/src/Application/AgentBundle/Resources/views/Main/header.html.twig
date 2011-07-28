@@ -83,6 +83,15 @@
 			</div>
 			{# notifications end #}
 
+			<div class="right box-header admin-actions create">
+				<div class="wrapper-top-bar">
+					<ul>
+						<li class="new-content" id="create_content_trigger"><a>Create</a></li>
+						<li class="border">&nbsp;</li>
+					</ul>
+				</div>
+			</div>
+
 			<div class="right box-header current-user">
 				<div class="wrapper-top-bar">
 					<div class="current-user-avatar">
@@ -119,17 +128,17 @@
 			<div class="right box-header zone-switcher admin-actions">
 				<div class="wrapper-top-bar">
 					<ul style="float: left;">
-						<li class="admin"><a>Agent</a></li>
+						<li class="admin"><a>Agent Interface</a></li>
 					</ul>
 					<span class="white-drop"></span>
 				</div>
 
 				<div class="wrap-dropdown switcher-drop">
 					<ul>
-						<li class="admin"><a href="{{ path('admin') }}">Admin</a></li>
-						<li class="billing"><a href="">Billing</a></li>
-						<li class="reports"><a href="">Reports</a></li>
-						<li class="portal"><a href="{{ path('user') }}">User</a></li>
+						<li class="admin"><a href="{{ path('admin') }}">Admin Interface</a></li>
+						<li class="billing"><a href="">Billing Interface</a></li>
+						<li class="reports"><a href="">Reports Interface</a></li>
+						<li class="portal"><a href="{{ path('user') }}">User Interface</a></li>
 					</ul>
 				</div>
 			</div>
@@ -137,15 +146,8 @@
 			<div class="right box-header admin-actions">
 				<div class="wrapper-top-bar">
 					<ul>
+						<li class="border">&nbsp;</li>
 						<li class="settings" id="user_settings_link"><a>Settings</a></li>
-					</ul>
-				</div>
-			</div>
-
-			<div class="right box-header admin-actions">
-				<div class="wrapper-top-bar">
-					<ul>
-						<li class="new-content" id="create_content_trigger"><a>Create</a></li>
 					</ul>
 				</div>
 			</div>

@@ -736,6 +736,15 @@ background-color: #edeff3;
     box-shadow:  inset -1px 0 0 #848f9d;
 }
 
+#header .admin-actions.create {
+    float: left;
+    border-right: 0;
+    border-left: 1px solid #55606f;
+    -webkit-box-shadow:  inset 1px 0 0 #848f9d;
+    -moz-box-shadow: inset 1px 0 0 #848f9d;
+    box-shadow:  inset 1px 0 0 #848f9d;
+}
+
 #header .admin-actions > .wrapper-top-bar > ul > li {
 	float: left;
 	margin-right: 6px;
