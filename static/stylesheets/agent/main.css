@@ -4531,3 +4531,41 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 .new-search-btn {
     background: url(../../images/icons/magnifier.png) no-repeat 50% 50%;
 }
+
+
+
+#keyboard_shortcuts_tip {
+    width: 500px;
+}
+
+#keyboard_shortcuts_tip table {
+    border-top: 1px solid #B4B6B6;
+    margin-top: 8px;
+}
+#keyboard_shortcuts_tip table td {
+    padding-top: 8px;
+}
+
+#keyboard_shortcuts_tip table:first-child {
+    border-top: none;
+    margin-top: 8px;
+}
+
+#keyboard_shortcuts_tip table:first-child td {
+    padding-top: 0;
+}
+
+#keyboard_shortcuts_tip table td {
+    padding-left: 5px;
+    padding-right: 5px;
+}
+
+#keyboard_shortcuts_tip kbd {
+    background-color: #282929;
+    border: 1px solid #747777;
+    padding: 1px;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
