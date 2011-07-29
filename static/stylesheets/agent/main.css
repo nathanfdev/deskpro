@@ -4679,3 +4679,30 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 .person-tip dl dd {
     margin-left: 90px;
 }
+
+
+
+
+.pagination {
+	margin-top: 10px;
+	padding-bottom: 10px;
+	text-align: center;
+}
+.pagination ul li {
+	display: inline;
+	font-size: 95%;
+	padding: 0 3px 0 3px;
+}
+
+.pagination ul li a, .pagination ul li a:visited {
+	background-color: #EEEEEE;
+	border: 1px solid #A8A8A8;
+	color: #000;
+	padding: 4px 6px 4px 6px;
+	text-decoration: none;
+}
+
+.pagination ul li a:hover, .pagination ul li a:active, .pagination ul li a:focus, .pagination ul li.cur_page a {
+	background-color: #BDBDBD;
+}
+

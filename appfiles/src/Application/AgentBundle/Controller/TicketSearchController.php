@@ -22,6 +22,7 @@ use Application\DeskPRO\UI\RuleBuilder;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
+use Orb\Util\Numbers;
 
 /**
  * Handles ticket searches
@@ -244,6 +245,11 @@ class TicketSearchController extends AbstractController
 			$tpl = 'AgentBundle:TicketSearch:part-results-'.$view_type.'.html.twig';
 		}
 
+		$per_page = 50;
+		if ($view_type == 'list') {
+			$per_page = 10;
+		}
+
 		#------------------------------
 		# Get the tickets to show
 		#------------------------------
@@ -259,11 +265,11 @@ class TicketSearchController extends AbstractController
 		if (!$this->in->checkIsset('group_field_id')) {
 			// User looking at all results
 			$is_grouping = false;
-			$tickets = $results_helper->getTicketsForPage($page);
+			$tickets = $results_helper->getTicketsForPage($page, $per_page);
 		} else {
 			// User looking at just a group of results
 			$is_grouping = true;
-			$tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('group_field_id'), $page);
+			$tickets = $results_helper->getGroupedTicketsForPage($this->in->getString('group_field_id'), $page, $per_page);
 		}
 
 		#------------------------------
@@ -300,6 +306,12 @@ class TicketSearchController extends AbstractController
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
+		$vars['display_fields'][] = 'department';
+		$vars['display_fields'][] = 'person';
+		$vars['display_fields'][] = 'agent';
+
+		$pageinfo = Numbers::getPaginationPages($results_helper->getCount(), $page, $per_page);
+
 		$vars = array_merge($vars, array(
 			'type'               => $type,
 			'type_id'            => $type_id,
@@ -308,6 +320,7 @@ class TicketSearchController extends AbstractController
 			'flagged_tickets'    => $flagged_tickets,
 			'ticket_options'     => $ticket_options,
 			'page'               => $page,
+			'pageinfo'           => $pageinfo,
 			'macros'             => $macros,
 			'show_flag'          => true,
 			'grouped_info'       => $grouped_info,
