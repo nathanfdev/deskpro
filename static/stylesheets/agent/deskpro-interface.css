@@ -508,3 +508,22 @@ section.deskpro-results-list article.ticket .preview .subject {
 section.deskpro-results-list article.ticket .preview .department {
     color: #666C77;
 }
+
+section.deskpro-results-list article.ticket .extra-info {
+    padding: 5px 3px 3px 3px;
+}
+
+section.deskpro-results-list article.ticket .extra-info li {
+    display: inline;
+    background-color: #E8ECF0;
+    border: 1px solid #D8DCE0;
+    margin-right: 5px;
+    -webkit-box-shadow: inset 0px 1px 0px px #ffffff;
+    -moz-box-shadow: inset 0px 1px 0px px #ffffff;
+    box-shadow: inset 0px 1px 0px px #ffffff;
+    padding: 1px 2px 1px 2px;
+}
+
+section.deskpro-results-list article.ticket .extra-info li .prop-title {
+    color: #666C77;
+}

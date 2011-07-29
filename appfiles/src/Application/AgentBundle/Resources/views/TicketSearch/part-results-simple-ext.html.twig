@@ -34,7 +34,8 @@
 					<span class="summary">{{ ticket.getSummaryLine(200) }}</span>
 				</a>
 			</div>
-			<div class="info">
+			{% if display_fields|length %}
+			<div class="extra-info">
 				<ul>
 					{% for field in display_fields %}
 						{% if field == 'deleted_reason' %}
@@ -46,12 +47,9 @@
 									{% endif %}
 								{% endif %}
 							</li>
-						{% elseif field == 'person' %}
-							<li class="{{field}}">
-								{{ticket.person.display_name}}
-							</li>
 						{% elseif field == 'category' %}
 							<li class="{{field}}">
+								<span class="prop-title">Category:</span>
 								<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
 								{% if ticket.category %}
 									{{ticket.category.title}}
@@ -62,6 +60,7 @@
 							</li>
 						{% elseif field == 'product' %}
 							<li class="{{field}}">
+								<span class="prop-title">Product:</span>
 								<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
 								{% if ticket.product %}
 									{{ticket.product.title}}
@@ -72,6 +71,7 @@
 							</li>
 						{% elseif field == 'organization' %}
 							<li class="{{field}}">
+								<span class="prop-title">Organization:</span>
 								<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
 								{% if ticket.organization %}
 									<a class="with-route" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.organization.id}) }}">{{ticket.organization.name}}</a>
@@ -93,6 +93,7 @@
 							{% for f in person_field_defs %}
 								{% if field == 'person_fields['~f.id~']' %}
 									<li class="person-field">
+										<span class="prop-title">{{ f.title }}:</span>
 										<div class="prop-val person_fields_{{f.id}}">
 											{{ticket.person.renderCustomField(f.id)}}
 										</div>
@@ -103,6 +104,7 @@
 					{% endfor %}
 				</ul>
 			</div>
+			{% endif %}
 		</article>
 	{% endfor %}
 </section>

@@ -368,12 +368,6 @@ class TicketSearchController extends AbstractController
 
 		$specific_fields = $searcher->getSpecificFields();
 
-		if (!in_array('department', $specific_fields)) {
-			$display_fields[] = 'department';
-		}
-
-		$display_fields[] = 'date_created';
-
 		$max = 3;
 		foreach ($searcher->getTermFields() as $term) {
 			if (!in_array($term, $specific_fields)) {
