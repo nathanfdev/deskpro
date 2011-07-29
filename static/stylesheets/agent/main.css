@@ -65,15 +65,10 @@ a {
 
 #tickets_outline_searches_list li {
     position: relative;
-    height: 11px;
 }
 
 #tickets_outline_searches_list li .recent-search {
-    position: absolute;
-    top: 0;
-    left: 0;
-    bottom: 0;
-    right: 0;
+    position: relative;
 
     padding: 5px 8px;
 }

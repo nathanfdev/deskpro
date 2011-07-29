@@ -23,19 +23,22 @@ pageMeta.recent_search_id = '{{ recent_search_id }}';
 
 	{% include 'AgentBundle:TicketSearch:part-display-options-overlay.html.twig' %}
 
-	<header class="section-header">
-		<nav class="mode-buttons">
-			<ul>
-				<li data-view-type="simple"><a>Basic</a></li>
-				<li class="on"><a>List</a></li>
-				<li data-view-type="list"><a>Detail</a></li>
-			</ul>
-		</nav>
-		<span class="display-options-trigger">Display Options</span>
-		<h1>
-			Search
-		</h1>
+	<header class="control-bar">
+		<span class="detail-view-trigger tipped" title="View full-screen detailed list">Detail</span>
+		<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
+
+		<input type="checkbox" class="selection-control" />
+
+		Tickets ordered by <span class="menu-trigger" style="border-bottom: 1px dotted #888;">urgency</span>
 	</header>
+
+	<header class="selection-bar" style="display: none;">
+		<span class="selected-count">0</span> selected
+		<button class="clean-gray xx-small perform-actions-trigger">
+			<span>Perform Action</span>
+		</button>
+	</header>
+	
 	{% include 'AgentBundle:TicketSearch:filter-search-form.html.twig' %}
 
 	<section class="ticket-simple-ext-list deskpro-results-list">
