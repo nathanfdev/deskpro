@@ -389,7 +389,11 @@ section.deskpro-results-list article > div.info > ul.single-col > li {
 
 
 
-
+section.deskpro-results-list article.ticket.open {
+    -webkit-box-shadow: inset 0px 0px 2px 0px #475269;
+    -moz-box-shadow: inset 0px 0px 2px 0px #475269;
+    box-shadow: inset 0px 0px 2px 0px #475269;
+}
 
 section.deskpro-results-list article.ticket .toprow {
     margin-bottom: 2px;
@@ -423,18 +427,18 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo .inner {
 
 section.deskpro-results-list article.ticket .toprow .ticketinfo .bound-faded {
     position: absolute;
-    top: 0;
+    top: 3px;
     left: 0;
     bottom: 0;
     width: 25px;
 
-background: -moz-linear-gradient(left, rgba(251,251,252,0) 0%, rgba(251,251,252,1) 87%, rgba(251,251,252,1) 100%);
-background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(251,251,252,0)), color-stop(87%,rgba(251,251,252,1)), color-stop(100%,rgba(251,251,252,1)));
-background: -webkit-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
-background: -o-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
-background: -ms-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
-filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fbfbfc', endColorstr='#fbfbfc',GradientType=1 );
-background: linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+    background: -moz-linear-gradient(left, rgba(251,251,252,0) 0%, rgba(251,251,252,1) 87%, rgba(251,251,252,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(251,251,252,0)), color-stop(87%,rgba(251,251,252,1)), color-stop(100%,rgba(251,251,252,1)));
+    background: -webkit-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+    background: -o-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+    background: -ms-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fbfbfc', endColorstr='#fbfbfc',GradientType=1 );
+    background: linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
 }
 
 section.deskpro-results-list article.ticket .toprow .ticketinfo time {

@@ -180,6 +180,10 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 		
 		var id = this.addTab(page);
 
+		if (routeData.tabLoad) {
+			routeData.tabLoad();
+		}
+
 		return id;
 	},
 
@@ -370,6 +374,10 @@ DeskPRO.Agent.TabStrip = new Orb.Class({
 
 		if (tabData.page.meta.routeData && tabData.page.meta.routeData.xhr) {
 			tabData.page.meta.routeData.xhr.abort();
+		}
+
+		if (tabData.page.meta.routeData && tabData.page.meta.routeData.tabUnload) {
+			tabData.page.meta.routeData.tabUnload();
 		}
 
 		this.resizeTabListWidth();

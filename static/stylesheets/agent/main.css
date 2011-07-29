@@ -2063,6 +2063,17 @@ border-left: none;
 	line-height: 14px;
 }
 
+.list > tbody tr.open {
+    background-color: #E3E9F3 !important;
+}
+
+.list > tbody tr.line-2.open td {
+	background-color: #E3E9F3 !important;
+}
+.list > tbody tr.line-1.open td {
+	background-color: #E3E9F3 !important;
+}
+
 .list > tbody tr.line-2:last-child td{
 	border-bottom: none;
 }

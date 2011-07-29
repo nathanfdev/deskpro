@@ -119,6 +119,17 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			$('.no-more-results', this.contentWrapper).show();
 		}
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('ui.ticket.opened', (function(info) {
+			var ticketId = info.ticketId;
+			var row = $('.ticket-' + ticketId, this.wrapper);
+			row.addClass('open');
+		}).bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('ui.ticket.closed', (function(info) {
+			var ticketId = info.ticketId;
+			var row = $('.ticket-' + ticketId, this.wrapper);
+			row.removeClass('open');
+		}).bind(this));
+
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
 			var sels = [];
 			Array.each(ticket_ids, function(val) {

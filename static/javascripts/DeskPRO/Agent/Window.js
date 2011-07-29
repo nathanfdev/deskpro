@@ -1206,7 +1206,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('listpane', this.loadRoute.bind(this));
 		this.addPageRouteLoader('page', this.loadRoute.bind(this));
-		this.addPageRouteLoader('ticket', this.loadRoute.bind(this));
+		this.addPageRouteLoader('ticket', (function(routeData) {
+			var m = routeData.url.match(/tickets\/([0-9]+)/);
+			var ticketId = m[1];
+
+			routeData.tabLoad = function() {
+				DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: ticketId });
+			};
+			routeData.tabUnload = function() {
+				DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: ticketId });
+			};
+			this.loadRoute(routeData);
+		}).bind(this));
 		this.addPageRouteLoader('person', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_view', this.loadRoute.bind(this));
 		this.addPageRouteLoader('kb_article_new', this.loadRoute.bind(this));
