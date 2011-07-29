@@ -175,14 +175,10 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			}
 		});
 
-		self.actionsWrap = $('.mass-actions.overlay', this.wrapper);
-		this.actionsOverlay = new DeskPRO.UI.Overlay({
-			contentElement: this.actionsWrap,
-			triggerElement: $('.perform-actions-trigger', this.wrapper),
-			onBeforeOverlayOpened: function() {
-				var countEl = self.selectedCount;
-				$('.check-count-overlay', self.actionsWrap).html(countEl.html());
-			}
+		this.massActions = new DeskPRO.Agent.PageHelper.TicketMassActions({
+			ticketsWrapper: $('.ticket-simple-ext-list', this.wrapper),
+			selectionBar: $('.selection-bar', this.wrapper),
+			changeManager: this.changeManager
 		});
 	},
 

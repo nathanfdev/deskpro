@@ -43,12 +43,7 @@ pageMeta.baseId = '{{ baseId }}';
 		Tickets ordered by <span class="menu-trigger" style="border-bottom: 1px dotted #888;">urgency</span>
 	</header>
 
-	<header class="selection-bar" style="display: none;">
-		<span class="selected-count">0</span> selected
-		<button class="clean-gray xx-small perform-actions-trigger">
-			<span>Perform Action</span>
-		</button>
-	</header>
+	{% include 'AgentBundle:TicketSearch:massactions-bar.html.twig' %}
 
 	<section class="ticket-simple-ext-list deskpro-results-list">
 		{% include 'AgentBundle:TicketSearch:part-results-simple-ext.html.twig' %}
@@ -62,7 +57,6 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	{% include 'AgentBundle:Ticket:part-flag-menu.html.twig' %}
-	{% include 'AgentBundle:TicketSearch:massactions-overlay.html.twig' %}
 </div>
 
 </div>

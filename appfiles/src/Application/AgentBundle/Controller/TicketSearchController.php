@@ -1023,23 +1023,26 @@ class TicketSearchController extends AbstractController
 
 		// Use a dummy TicketMacro so we can get an actions array easily
 		$macro = new Entity\TicketMacro();
-		$got_actions = $this->in->getCleanValueArray('actions', 'raw', 'string');
+
+		$action_rules = RuleBuilder::newActionsBuilder();
+		$got_actions = $action_rules->readForm($this->in->getCleanValueArray('actions', 'raw', 'string'));
 
 		if ($this->in->getString('message')) {
-			$got_actions[] = array('type' => 'reply', 'new_reply' => $this->in->getString('message'));
+			$got_actions[] = array('type' => 'reply', array('options' => array('new_reply' => $this->in->getString('message'))));
 		}
 
 		$macro['actions'] = $got_actions;
 
-		$actions = $macro->getActionsArrayForCollection($tickets);
+		$actions = $macro->getActionsCollectionsForTickets($tickets);
 
 		$data = array();
 		$data['raw_actions'] = array();
 		$data['ticket_actions'] = $actions;
 
-		$raw_actions = $macro->getActionsArray();
-		if (!empty($raw_actions['new_reply'])) {
-			$data['raw_actions']['new_reply'] = $raw_actions['new_reply'];
+		$raw_actions = $macro->getActionsCollection();
+
+		if ($raw_actions->hasActionType('new_reply')) {
+			$data['raw_actions']['new_reply'] = $raw_actions->getActionType('new_reply');
 		}
 
 		return $this->createJsonResponse($data);
