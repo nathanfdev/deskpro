@@ -4756,3 +4756,15 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 	background-color: #BDBDBD;
 }
 
+
+.reply-attach button {
+    width: auto;
+}
+
+.reply-attach button span.ui-icon {
+    display: none;
+}
+
+.reply-attach button span.ui-button-text {
+    text-indent: 0;
+}

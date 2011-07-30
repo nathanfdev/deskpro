@@ -315,28 +315,12 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			}
 		});
 
-		$('form.reply-form', this.barWrapper).fileUploadUI({
+		this.barWrapper.fileupload({
 			url: this.getMetaData('uploadAttachUrl'),
-			dropZone: $('div.reply', this.barWrapper),
-			dropZoneEnlarge: function() {
-				self.replySimpleTabs.activateTab($('.attachments.tab-trigger', self.ticketReplyTabs));
-				self.barWrapper.addClass('upload-drop-over')
-			},
-			dropZoneReduce: function() {
-				self.barWrapper.removeClass('upload-drop-over')
-			},
-			formData: function() { return []; },
-			cancelSelector: '.cancel-trigger',
-			uploadTable: $('.file-list', this.barWrapper),
-			downloadTable: $('.file-list', this.barWrapper),
-			initProgressBar: function () { return null; },
-			buildUploadRow: function (files, index) {
-				var file = files[index];
-				return $('<li class="uploading">' + file.name + ' <span class="cancel-trigger">Cancel</span></li>');
-			},
-			buildDownloadRow: function (file) {
-				return $('<li class="uploaded"><input type="checkbox" checked="checked" name="attach[]" value="'+ file.blob_id + '" /> <a href="'+ file.download_url + '" target="_blank">' + file.filename + '</a> <span class="size">('+file.filesize_readable+')</span></li>');
-			}
+			dropZone: this.barWrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', this.barWrapper),
+			downloadTemplate: $('.template-download', this.barWrapper)
 		});
 	},
 

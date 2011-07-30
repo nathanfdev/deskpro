@@ -156,7 +156,7 @@ class MiscController extends AbstractController
 
     public function acceptTempUploadAction()
     {
-		$file = $this->request->files->get('file');
+		$file = $this->request->files->get('file-upload');
 		$desc = App::getApi('filestorage')->createRandomPath();
 
 		$desc->write(file_get_contents($file->getPath()), array(
@@ -167,12 +167,12 @@ class MiscController extends AbstractController
 		$blob_id = $desc->getPath();
 		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
-		return $this->createJsonResponse(array(
+		return $this->createJsonResponse(array(array(
 			'blob_id' => $blob['id'],
 			'download_url' => $blob->getDownloadUrl(true),
 			'filename' => $blob['filename'],
 			'filesize_readable' => $blob->getReadableFilesize()
-		));
+		)));
 	}
 
 	/**
