@@ -4768,3 +4768,10 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 .reply-attach button span.ui-button-text {
     text-indent: 0;
 }
+
+
+ul.attachment-list {
+    border-top: 1px solid #CFD1D1;
+    margin-top: 5px;
+    padding-top: 8px;
+}

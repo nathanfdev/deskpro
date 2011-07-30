@@ -106,7 +106,8 @@ class TicketController extends AbstractController
 			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-block.html.twig', array(
 				'ticket' => $ticket,
 				'ticket_messages' => $ticket_messages,
-				'ticket_message_attachments' => $ticket_attachments
+				'ticket_message_attachments' => $ticket_message_attachments,
+				'ticket_attachments' => $ticket_attachments
 			));
 
 			$ticket_notes_block = $this->renderView('AgentBundle:Ticket:ticket-notes-block.html.twig', array(
