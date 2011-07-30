@@ -5,8 +5,18 @@
 	<div class="message-body">
 		<div class="message-meta">
 			<span class="arrow-left"></span>
-			<h4 {% if not message.person.is_agent %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"{% endif %}>{{message.person.name}}</h4>
-			<span class="timestamp"><span class="ticket-message-edit-btn" data-message-id="{{message.id}}">submitted online</span> (from 76.167.170.198), <span class="timeago" title="{{message.date_created|date('c')}}">{{message.date_created|date('Y-m-d')}}</span></span>
+			<h4
+				{% if not message.person.is_agent %}
+					class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"
+				{% endif %}
+			>{{message.person.name}}</h4>
+			<span class="timestamp">
+				submitted online (76.167.170.198),
+				<span class="timeago" title="{{message.date_created|date('c')}}">{{message.date_created|date('Y-m-d')}}</span>
+			</span>
+			<span class="ticket-message-edit-btn count tipped" title="Click for tools" data-message-id="{{message.id}}">
+				#{{ loop.index }}
+			</span>
 		</div>
 		<div class="message-text">
 			{{message.message_html|raw}}

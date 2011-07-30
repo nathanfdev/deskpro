@@ -2665,8 +2665,11 @@ table.participants-table .partis ul li{
 }
 
 .message-meta span.timestamp {
-	float: right;
 	color: #969ba5;
+}
+
+.message-meta span.count {
+    float: right;
 }
 
 .message-text {
