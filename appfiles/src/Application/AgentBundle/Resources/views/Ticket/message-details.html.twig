@@ -29,12 +29,10 @@
 	</tr>
 	{% endif %}
 
-	{% if message.ip_address %}
-		<tr>
-			<td>IP Address</td>
-			<td>{{ message.ip-address }}</td>
-		</tr>
-	{% endif %}
+	<tr>
+		<td>IP Address</td>
+		<td>{{ message.ip_address }}</td>
+	</tr>
 
 	{% if message.visitor %}
 		<tr>
@@ -49,12 +47,12 @@
 
 		<tr>
 			<td>First Visit Time</td>
-			<td>{{ message.visitor.date_created|date('c') }}</td>
+			<td>{{ message.visitor.date_created|date('M j, Y H:ia') }}</td>
 		</tr>
 
 		<tr>
 			<td>Last Activity Time</td>
-			<td>{{ message.visitor.date_last|date('c') }}</td>
+			<td>{{ message.visitor.date_last|date('M j, Y H:ia') }}</td>
 		</tr>
 
 		<tr>

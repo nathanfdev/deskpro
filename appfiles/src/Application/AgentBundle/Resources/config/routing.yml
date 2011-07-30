@@ -581,6 +581,11 @@ agent_ticket_message_details:
   defaults: { _controller: AgentBundle:Ticket:viewMessageDetails }
   requirements: { ticket_id: "\d+", message_id: "\d+" }
 
+agent_ticket_message_emailsource:
+  pattern: /tickets/{ticket_id}/message-details/{message_id}/email-source
+  defaults: { _controller: AgentBundle:Ticket:viewEmailSource }
+  requirements: { ticket_id: "\d+", message_id: "\d+" }
+
 agent_ticket_message_unformatted:
   pattern: /tickets/{ticket_id}/message-details/{message_id}/unformatted
   defaults: { _controller: AgentBundle:Ticket:viewUnformattedMessage }
