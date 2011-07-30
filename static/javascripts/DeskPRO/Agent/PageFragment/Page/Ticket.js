@@ -539,8 +539,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 					context: this,
 					dataType: 'json',
 					success: function(data) {
-						this.toggleReplyBar('on');
-						$('div.reply-form-fields:first textarea[name="message"]:first', this.ticketReply).val(data.message_quote + "\n\n");
+						var reply = $('.reply-form-fields:first textarea:first', this.ticketBar);
+						console.log(reply);
+						reply.val(data.message_quote + "\n\n" + reply.val());
+						reply.focus();
 					}
 				});
 				break;
