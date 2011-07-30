@@ -63,6 +63,7 @@ class ProcessEmailGatewaysCommand extends \Symfony\Bundle\FrameworkBundle\Comman
 
 				$reader = new EzcReader();
 				$reader->setRawSource($source['raw_source']);
+				$reader->setProperty('email_source', $source);
 
 				if ($verbose) {
 					$to = array();

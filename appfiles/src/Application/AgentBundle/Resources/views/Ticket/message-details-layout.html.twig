@@ -1,5 +1,6 @@
 {% extends 'AgentBundle::layout-popup.html.twig' %}
 {% block current_page "view-unformatted" %}
 {% block tabs %}
+	<li {% if current_page == 'details' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_details', {'ticket_id': ticket.id, 'message_id': message.id}) }}">Details</a></li>
 	<li {% if current_page == 'view-unformatted' %}class="on"{% endif %}><a href="{{ path('agent_ticket_message_unformatted', {'ticket_id': ticket.id, 'message_id': message.id}) }}">View Unformatted</a></li>
 {% endblock %}

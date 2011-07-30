@@ -44,6 +44,7 @@ class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\
 
 		$reader = new EzcReader();
 		$reader->setRawSource($source['raw_source']);
+		$reader->setProperty('email_source', $source);
 
 		App::getOrm()->beginTransaction();
 

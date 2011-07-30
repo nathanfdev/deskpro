@@ -1,0 +1,66 @@
+{% extends 'AgentBundle:Ticket:message-details-layout.html.twig' %}
+{% block current_page "unformatted" %}
+{% block content %}
+<table cellspacing="0" cellpadding="0" width="100%">
+	<tr>
+		<td>Message ID</td>
+		<td>{{ message.id }}</td>
+	</tr>
+
+	<tr>
+		<td>Ticket ID</td>
+		<td>{{ ticket.id }}</td>
+	</tr>
+
+	<tr>
+		<td>Ticket Ref</td>
+		<td>{{ ticket.ref }}</td>
+	</tr>
+
+	<tr>
+		<td>Creation System</td>
+		<td>{{ message.creation_system }}</td>
+	</tr>
+
+	{% if message.email_source %}
+	<tr>
+		<td>Gateway Source ID</td>
+		<td>{{ message.email_source.id }}</td>
+	</tr>
+	{% endif %}
+
+	{% if message.ip_address %}
+		<tr>
+			<td>IP Address</td>
+			<td>{{ message.ip-address }}</td>
+		</tr>
+	{% endif %}
+
+	{% if message.visitor %}
+		<tr>
+			<td>Visitor ID</td>
+			<td>{{ message.visitor.id }}</td>
+		</tr>
+
+		<tr>
+			<td>User Agent</td>
+			<td>{{ message.visitor.user_agent }}</td>
+		</tr>
+
+		<tr>
+			<td>First Visit Time</td>
+			<td>{{ message.visitor.date_created|date('c') }}</td>
+		</tr>
+
+		<tr>
+			<td>Last Activity Time</td>
+			<td>{{ message.visitor.date_last|date('c') }}</td>
+		</tr>
+
+		<tr>
+			<td>Landing Page</td>
+			<td>{{ message.visitor.landing_page }}</td>
+		</tr>
+	{% endif %}
+</table>
+{% endblock %}

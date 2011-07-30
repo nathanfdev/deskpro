@@ -183,6 +183,10 @@ class TicketGateway extends AbstractGateway
 		$email_info = $ev->email_info;
 
 		$message = new Entity\TicketMessage();
+		if ($this->reader->hasProperty('email_source')) {
+			$message['email_source'] = $this->reader->getProperty('email_source');
+		}
+
 		$message['ticket'] = $ticket;
 		$message['person'] = $person;
 
@@ -332,6 +336,10 @@ class TicketGateway extends AbstractGateway
 
 		if ($this->reader->getCcAddresses()) {
 			$this->handleCc($ticket, $this->reader->getCcAddresses());
+		}
+
+		if ($this->reader->hasProperty('email_source')) {
+			$message['email_source'] = $this->reader->getProperty('email_source');
 		}
 
 		App::getOrm()->persist($ticket);

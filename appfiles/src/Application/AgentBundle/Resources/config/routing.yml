@@ -576,6 +576,11 @@ agent_ticket_ajax_save_actions:
   defaults: { _controller: AgentBundle:Ticket:ajaxSaveActions }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_message_details:
+  pattern: /tickets/{ticket_id}/message-details/{message_id}
+  defaults: { _controller: AgentBundle:Ticket:viewMessageDetails }
+  requirements: { ticket_id: "\d+", message_id: "\d+" }
+
 agent_ticket_message_unformatted:
   pattern: /tickets/{ticket_id}/message-details/{message_id}/unformatted
   defaults: { _controller: AgentBundle:Ticket:viewUnformattedMessage }

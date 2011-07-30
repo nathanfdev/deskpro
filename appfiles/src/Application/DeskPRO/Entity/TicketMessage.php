@@ -23,6 +23,9 @@ use Application\DeskPRO\Markdown;
  */
 class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 {
+	const CREATED_WEB = 'web';
+	const CREATED_GATEWAY = 'gateway';
+
 	/**
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
@@ -43,6 +46,20 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
+	
+	/**
+	 * @var \Application\DeskPRO\Entity\EmailSource
+	 * @orm:OneToOne(targetEntity="EmailSource")
+	 * @orm:JoinColumn(name="email_source_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $email_source = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\Visitor
+	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
+	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
+	 */
+	protected $visitor = null;
 
 	/**
 	 * @orm:OneToMany(targetEntity="TicketAttachment", mappedBy="message", cascade={"persist", "remove", "merge"})
@@ -60,6 +77,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="is_agent_note", type="boolean")
 	 */
 	protected $is_agent_note = false;
+
+	/**
+	 * @var string
+	 * @orm:Column(name="creation_system", type="string", length=20)
+	 */
+	protected $creation_system = 'web';
+
+	/**
+	 * @var string
+	 * @orm:Column(name="ip_address", type="string", length=30)
+	 */
+	protected $ip_address = '';
 
 	/**
 	 * @var string
@@ -144,6 +173,18 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		$this->attachments->add($attach);
 		$attach['ticket'] = $this->ticket;
 		$attach['message'] = $this;
+	}
+
+	public function setVisitor(Visitor $visitor = null)
+	{
+		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
+		$this->visitor = $visitor;
+
+		if ($visitor === null) return;
+
+		if (!$this->ip_address) {
+			$this['ip_address'] = $visitor['ip_address'];
+		}
 	}
 
 	/**

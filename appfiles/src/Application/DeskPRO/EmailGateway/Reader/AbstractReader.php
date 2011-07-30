@@ -17,6 +17,23 @@ use Orb\Util\Arrays;
 
 abstract class AbstractReader
 {
+	protected $properties = array();
+
+	public function setProperty($name, $value)
+	{
+		$this->properties;
+	}
+
+	public function getProperty($name, $default = null)
+	{
+		return isset($this->properties[$name]) ? $this->properties[$name] : $default;
+	}
+
+	public function hasProperty($name)
+	{
+		return isset($this->properties[$name]);
+	}
+
 	public function setRawSource($source)
 	{
 		$this->_setRawSource($source);
