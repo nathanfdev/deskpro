@@ -107,7 +107,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<div class="assignments">
 		<div class="user">
 			<div class="desc">
-				Ticket owned by <a class="user-link" style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');">{{ ticket.person.display_name }} &lt;{{ ticket.person.primary_email_address }}&gt;</a>
+				Ticket owned by <a class="user-link person-overview" style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }} &lt;{{ ticket.person.primary_email_address }}&gt;</a>
 			</div>
 			<div class="more">
 				3 users CC'ed
@@ -139,7 +139,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</nav>
 
 	<div class="times">
-		Ticket created <time>2 hours ago</time> by {{ ticket.person.display_name }} at <time>{{ticket.date_created|date('H:ia M j Y')}}</time>.<br/>
+		Ticket created <time>2 hours ago</time> by <span class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }}</span> at <time>{{ticket.date_created|date('H:ia M j Y')}}</time>.<br/>
 		User has been waiting <time>23 minutes</time> for a reply, and a total of <time>8 hours</time> since the ticket started.
 	</div>
 </section>
@@ -257,6 +257,15 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 </div>
 {# /Tab Messages #}
+
+<ul class="person-popout-tabs" style="display:none">
+	<li class="move-to-tab"><a>Move into tab</a></li>
+	<li class="close"><a>Close</a></li>
+</ul>
+<div class="person-popout-outer" style="display:none"></div>
+<div class="person-popout" style="display:none">
+	Loading ...
+</div>
 
 {# Wrapper around fields in the properties box #}
 <script type="text/x-deskpro-plain" class="fields-wrap-properties">
