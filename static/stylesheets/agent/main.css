@@ -4781,58 +4781,85 @@ Tickets
 ***************************************/
 
 section.ticket-header {
-    background-color: #EDF1F5;
+    background-color: #fff;
+    border: 1px solid #CAD0D7;
+
+    margin: 10px;
 }
 
-section.ticket-header .department-status {
+section.ticket-header .the-status {
     background-color: #DADEE2;
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
     
     padding: 4px;
+    padding-left: 8px;
+    padding-right: 0px;
     float: left;
     margin: 5px;
+    padding-bottom: 5px;
 
     line-height: 100%;
 }
 
-section.ticket-header .department-status .sub-department {
-    padding-left: 18px;
-}
-
-section.ticket-header .department-status .ticket-status {
+section.ticket-header .the-status .ticket-status {
     padding-right: 5px;
 }
 
-section.ticket-header .department-status .ticket-department {
+section.ticket-header .the-department {
+    padding: 4px;
+    float: left;
+    margin: 5px;
+    margin-left:0;
+
+    line-height: 100%;
+
+    font-size: 12px;
+}
+
+section.ticket-header .the-department .sub-department {
+    padding-left: 13px;
+    padding-top: 5px;
+    background: url(../../images/elbow-end.gif) no-repeat -6px 2px;
+}
+
+section.ticket-header .the-department .ticket-department {
     float: left;
 }
 
 section.ticket-header .ticket-id {
-    margin: 11px 0 0 0;
+    display: block;
     float: left;
-    line-height: 20px;
-    font-size: 11px;
+    font-size: 13px;
+    margin-top: 5px;
+    margin-left: 5px;
 }
 
 section.ticket-header .ticket-id span {
     display: block;
     background-color: #E1E5E9;
-    -webkit-border-radius: 10px;
-    -moz-border-radius: 10px;
-    border-radius: 10px;
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
 
+    line-height: 34px;
+
+    height: 34px;
     width: 15px;
     text-align: center;
+    padding: 0 5px 0 5px;
 }
 
 section.ticket-header .ticket-subject {
     float: left;
     margin: 5px;
+    margin-left: -3px;
     float: left;
     line-height: 30px;
     font-size: 15px;
+    background: url(../../images/icons/arrow_right.png) no-repeat 0 50%;
+    padding-left: 20px;
 }
 
 section.ticket-header .ticket-urgency {
@@ -4848,23 +4875,17 @@ section.ticket-header .ticket-urgency span {
     -webkit-border-radius: 10px;
     -moz-border-radius: 10px;
     border-radius: 10px;
-
-    width: 20px;
     text-align: center;
+
+    padding: 0 4px 0 4px;
 
     border: 1px solid #BB6C66;
 }
 
 
 section.ticket-header .assignments {
-    background-color: #F8F9FD;
-    border: 1px solid #C9CACF;
-
-    -webkit-border-radius: 5px;
-    -moz-border-radius: 5px;
-    border-radius: 5px;
-
-    margin: 4px 10px 4px 10px;
+    margin: 5px;
+    margin-bottom: 7px;
 
     font-size: 11px;
     color:  #6B6C6F;
@@ -4877,7 +4898,11 @@ section.ticket-header .assignments .user, section.ticket-header .assignments .ag
 }
 
 section.ticket-header .assignments .agent {
-    border-top: 1px solid #C9CACF;
+    
+}
+
+section.ticket-header .assignments .desc {
+    float: left;
 }
 
 section.ticket-header .assignments a {
@@ -4885,15 +4910,16 @@ section.ticket-header .assignments a {
     text-decoration: none;
     background-repeat: no-repeat;
     background-position: 0 50%;
-    padding-left: 22px;
+    padding-left: 19px;
     padding-top: 3px;
     padding-bottom: 3px;
 }
 
 section.ticket-header .assignments .more {
-    float: right;
+    float: left;
     background: url(../../images/icons/bullet_toggle_plus.png) no-repeat 0 50%;
     padding-left: 15px;
+    margin-left: 8px;
     color: #6B6C6F;
     cursor: pointer;
     font-size: 10px;
@@ -4907,30 +4933,21 @@ section.ticket-header .times {
     margin: 3px 10px 3px 0;
 }
 
-section.ticket-header nav.actions {
-    background-color: #D1D7E7;
-    height: 21px;
-    border-bottom: 1px solid #A0A6B2;
-    border-top: 1px solid #A0A6B2;
+section.ticket-header .times time {
+    font-weight: bold;
 }
 
-section.ticket-header nav.actions ul li.more {
-    float: right;
-    border-left: 1px solid #B6BDCB;
-    border-right: none;
+section.ticket-header nav.actions {
+    height: 25px;
 }
 
 section.ticket-header nav.actions ul li {
     float: left;
-    padding: 1px 5px 1px 5px;
-    font-size: 10px;
-
-    border-right: 1px solid #B6BDCB;
+    margin-left: 6px;
 }
 
-section.ticket-header nav.actions ul li:hover {
-    background-color: #B6BDCB;
-    cursor: pointer;
+section.ticket-header nav.actions ul li.more {
+    margin-left: 15px;
 }
 
 .main-tabs {

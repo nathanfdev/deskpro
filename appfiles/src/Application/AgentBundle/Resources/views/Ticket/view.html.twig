@@ -71,10 +71,16 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
 
 <section class="ticket-header">
-	<div class="department-status">
+	<div class="ticket-id">
+		<span>#{{ ticket.id }}</span>
+	</div>
+	<div class="the-status">
 		<div class="ticket-status ticket-{{ticket.status}}">
 			<span class="ticket-{{ticket.status}} prop-val menu-trigger status"></span>
 		</div>
+	</div>
+
+	<div class="the-department">
 		<div class="ticket-department">
 			{% if ticket.department.parent %}
 				<div class="ticket-source prop-val menu-trigger department_id saving" data-no-value="Choose Department">
@@ -90,49 +96,52 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			{% endif %}
 		</div>
 	</div>
-	<div class="ticket-id">
-		<span>#{{ ticket.id }}</span>
-	</div>
 	<div class="ticket-subject">
 		{{ ticket.subject }}
 	</div>
 	<div class="ticket-urgency tipped" title="Urgency: 8<br />&middot; User waiting for response for 1 hour (+1)<br />&middot; Users first ticket (+1)<br />&middot; Priority high (+6)">
-		<span>8</span>
+		<span>Urgency: 8</span>
 	</div>
 	<br style="clear:both;height: 1px;overflow: hidden;" />
 
 	<div class="assignments">
 		<div class="user">
+			<div class="desc">
+				Ticket owned by <a class="user-link" style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');">{{ ticket.person.display_name }} &lt;{{ ticket.person.primary_email_address }}&gt;</a>
+			</div>
 			<div class="more">
 				3 users CC'ed
 			</div>
-			Ticket owned by <a class="user-link" style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');">{{ ticket.person.display_name }}</a>
+			<br style="clear:both;height: 1px;overflow: hidden;" />
 		</div>
 		<div class="agent">
+			<div class="desc">
+				Ticket assigned to <a class="agent-link" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
+				and team <a class="team-link" style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');">{{ ticket.agent_team.name }}</a>
+			</div>
 			<div class="more">
 				6 agents subscribed
 			</div>
-			Ticket assigned to <a class="agent-link" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
-			and team <a class="team-link">{{ ticket.agent_team.name }}</a>
+			<br style="clear:both;height: 1px;overflow: hidden;" />
 		</div>
-	</div>
-
-	<div class="times">
-		Ticket created <time class="timeago" title="{{ticket.date_created|date('c')}}">{{ticket.date_created|date('Y-m-d')}}</time>.
-		User has been waiting <time>23 minutes</time> for a reply, and a total of <time>8 hours</time> since the ticket started.
 	</div>
 
 	<nav class="actions">
 		<ul>
-			<li class="more">More</li>
-			<li class="assign-me">Assign To Me</li>
-			<li class="assign-to">Assign To</li>
-			<li class="assign-to-team">Assign To Team</li>
-			<li class="set-resolved">Set Resolved</li>
-			<li class="close">Close</li>
-			<li class="mark-spam">Mark As Spam</li>
+			<li class="assign-me"><button class="clean-gray xx-small">Assign To Me</button></li>
+			<li class="assign-to"><button class="clean-gray xx-small">Assign To</button></li>
+			<li class="assign-to-team"><button class="clean-gray xx-small">Assign To Team</button></li>
+			<li class="set-resolved"><button class="clean-gray xx-small">Set Resolved</button></li>
+			<li class="close"><button class="clean-gray xx-small">Close</button></li>
+			<li class="mark-spam"><button class="clean-gray xx-small">Mark As Spam</button></li>
+			<li class="more"><button class="clean-gray xx-small">More</button></li>
 		</ul>
 	</nav>
+
+	<div class="times">
+		Ticket created <time>2 hours ago</time> by {{ ticket.person.display_name }} at <time>{{ticket.date_created|date('H:ia M j Y')}}</time>.<br/>
+		User has been waiting <time>23 minutes</time> for a reply, and a total of <time>8 hours</time> since the ticket started.
+	</div>
 </section>
 
 {# Main Tabs #}
