@@ -90,14 +90,16 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 	getContentElFromTab: function(tabEl) {
 		if (!tabEl.data('tab-for')) {
-			console.warn('tab has no tab-for: %o', tabEl);
+			console.error('tab has no tab-for: %o', tabEl);
+			console.trace();
 			return $();
 		}
 
 		var el = $(tabEl.data('tab-for'), this.options.context);
 
 		if (el.length < 1) {
-			console.warn('no tab content exists for tab: %o', tabEl);
+			console.error('no tab content exists for tab: %o', tabEl);
+			console.trace();
 		}
 
 		return el;

@@ -77,6 +77,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			// Focus reply
 			$('textarea[name="message"]', this.ticketReply).focus();
 		}).bind(this));
+
+		$('.ticket-urgency', this.contentWrapper).mouseover(function() {
+			Tipped.show(this);
+		});
 	},
 
 	destroyPage: function() {
@@ -311,13 +315,30 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		var self = this;
 
+		var bodyTabs = new DeskPRO.UI.SimpleTabs({
+			context: $('.full-container-tabbed-contents-wrap', this.contentWrapper),
+			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper),
+			onTabSwitch: function(info) {
+				if (info.tabEl.is('.ticket-log')) {
+					self._loadTicketTab_Log();
+				} else if (info.tabEl.is('.ticket-attach')) {
+					self._loadTicketTab_Attach();
+				} else if (info.tabEl.is('.ticket-related-content')) {
+					self._loadTicketTab_RelatedContent();
+				}
+			}
+		});
+
 		// Top tabs
+		/*
 		var topTabs = new DeskPRO.UI.SimpleTabs({
 			context: $('.container-tabbed-wrap.ticket-participants', this.contentWrapper),
 			triggerElements: $('.container-tabbed-tabs li', this.contentWrapper),
 			activeClassname: 'container-tabbed-tabs-active'
 		});
+		*/
 
+		/*
 		// Body tabs
 		var bodyTabs = new DeskPRO.UI.SimpleTabs({
 			context: $('.full-container-tabbed.messages-container', this.contentWrapper),
@@ -332,6 +353,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				}
 			}
 		});
+		*/
 	},
 
 	/**
