@@ -2668,12 +2668,12 @@ table.participants-table .partis ul li{
     float: right;
     display: block;
     padding-left: 19px;
+    background: url(../../images/icons/cog.png) no-repeat 0 50%;
 }
 
 .ticket-message-edit-btn:hover {
 	text-decoration: underline;
 	cursor: pointer;
-    background: url(../../images/icons/cog.png) no-repeat 0 50%;
 }
 
 .message-text {
@@ -4846,7 +4846,7 @@ section.ticket-header .ticket-id span {
     line-height: 34px;
 
     height: 34px;
-    width: 15px;
+    min-width: 15px;
     text-align: center;
     padding: 0 5px 0 5px;
 }
@@ -4999,4 +4999,30 @@ section.ticket-header nav.actions ul li.more {
 
 .page-ticket .tab-bottom-wrap.inner {
     margin: 15px;
+}
+
+
+
+.message-controls {
+    text-align: right;
+    margin: 0 0 5px 0;
+}
+
+.message-controls ul li {
+    display: inline;
+    padding-left: 10px;
+}
+
+.message-controls input {
+    height: 12px;
+    margin-right: 3px;
+}
+
+
+.log-row {
+    background-color: #F9F9F9;
+    border: 1px solid #C9CBCB;
+    margin: 10px;
+    margin-left: 60px;
+    padding: 5px;
 }

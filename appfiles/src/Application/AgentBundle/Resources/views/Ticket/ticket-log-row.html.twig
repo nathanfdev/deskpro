@@ -1,0 +1,34 @@
+<div class="log-row log-{{log.id}}" style="display: none;">
+	<div class="{{ log.action_type }}">
+	{% if log.action_type == 'changed_agent' %}
+		<span class="type">Assigned agent</span> changed from
+		<span class="old-val">{{log.details.old_agent_name|default(phrase('core.unassigned'))}}</span>
+		to <span class="new-val">{{log.details.new_agent_name|default(phrase('core.unassigned'))}}</span>
+	{% elseif log.action_type == 'ticket_created' %}
+		Ticket <span class="new-val">#{{log.details.ticket_id}}</span> created
+	{% elseif log.action_type == 'changed_category' %}
+		<span class="type">Category</span> changed from
+		<span class="old-val">{{log.details.old_category_title|default('None')}}</span> to <span class="new-val">{{log.details.new_category_title}}</span>
+	{% elseif log.action_type == 'changed_department' %}
+		<span class="type">Department</span> changed from
+		<span class="old-val">{{log.details.old_department_title}}</span> to <span class="new-val">{{log.details.new_department_title}}</span>
+	{% elseif log.action_type == 'message_created' %}
+		<span class="type">New reply</span> <span class="new-val">#{{log.details.message_id}}</span>
+	{% elseif log.action_type == 'changed_priority' %}
+		<span class="type">Priority</span> changed from
+		<span class="old-val">{{log.details.old_priority_title}}</span> to <span class="new-val">{{log.details.new_priority_title}}</span>
+	{% elseif log.action_type == 'changed_product' %}
+		<span class="type">Product</span> changed from
+		<span class="old-val">{{log.details.old_product_title}}</span> to <span class="new-val">{{log.details.new_product_title}}</span>
+	{% elseif log.action_type == 'changed_status' %}
+		<span class="type">Status</span> changed from
+		<span class="old-val">{{log.details.old_status}}</span> to <span class="new-val">{{log.details.new_status}}</span>
+	{% endif %}
+	</div>
+	<div class="info">
+		By <a class="with-route" data-route="person:{{ path('agent_people_view', {'person_id': log.person.id}) }}">
+		{{log.person.display_name}}
+		</a>
+		at <time>{{log.date_created|date('Y-m-d H:i')}}</time>
+	</div>
+</div>

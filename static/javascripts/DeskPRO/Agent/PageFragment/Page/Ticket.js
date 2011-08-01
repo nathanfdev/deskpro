@@ -81,6 +81,42 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.ticket-urgency', this.contentWrapper).mouseover(function() {
 			Tipped.show(this);
 		});
+
+		var showMessages = $('input.show-messages', this.wrapper);
+		var showNotes = $('input.show-notes', this.wrapper);
+		var showLogs = $('input.show-logs', this.wrapper);
+		var msgWrap = $('.messages-wrap', this.wrapper);
+
+		function updateMessageTypes() {
+			var messages = showMessages.is(':checked');
+			var notes = showNotes.is(':checked');
+			var logs = showLogs.is(':checked');
+
+			if (!messages && !notes && !logs) {
+				messages = true;
+				showMessages.attr('checked', true);
+			}
+
+			if (messages) {
+				$('div.message:not(.note-message)', msgWrap).show();
+			} else {
+				$('div.message:not(.note-message)', msgWrap).hide();
+			}
+			if (notes) {
+				$('div.note-message', msgWrap).show();
+			} else {
+				$('div.note-message', msgWrap).hide();
+			}
+			if (logs) {
+				$('div.log-row', msgWrap).show();
+			} else {
+				$('div.log-row', msgWrap).hide();
+			}
+		};
+
+		$('.message-controls input', this.wrapper).click(function() {
+			updateMessageTypes();
+		});
 	},
 
 	destroyPage: function() {

@@ -22,7 +22,7 @@ class TicketLog extends EntityRepository
 	{
 		$query = $this->_em->createQuery("
 			SELECT log
-			FROM DeskPRO:TicketLog log
+			FROM DeskPRO:TicketLog log INDEX BY log.id
 			WHERE log.ticket = ?1
 			ORDER BY log.id ASC
 		")->setParameter(1, $ticket);

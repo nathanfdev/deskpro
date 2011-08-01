@@ -103,11 +103,29 @@ class TicketController extends AbstractController
 				$message_count++;
 			}
 
+			$ticket_logs = App::getEntityRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
+			$ticket_message_logs = array();
+
+			foreach ($ticket_messages as $m) {
+				foreach ($ticket_logs as $l) {
+					if ($l['date_created'] <= $m['date_created']) {
+						if (!isset($ticket_message_logs[$m['id']])) {
+							$ticket_message_logs[$m['id']] = array();
+						}
+						$ticket_message_logs[$m['id']][] = $l['id'];
+					} else {
+						break;
+					}
+				}
+			}
+
 			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-block.html.twig', array(
 				'ticket' => $ticket,
 				'ticket_messages' => $ticket_messages,
 				'ticket_message_attachments' => $ticket_message_attachments,
-				'ticket_attachments' => $ticket_attachments
+				'ticket_attachments' => $ticket_attachments,
+				'ticket_message_logs' => $ticket_message_logs,
+				'ticket_logs' => $ticket_logs,
 			));
 
 			$ticket_notes_block = $this->renderView('AgentBundle:Ticket:ticket-notes-block.html.twig', array(
