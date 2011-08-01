@@ -24,9 +24,9 @@ class AgentAction implements ActionInterface, PersonContextInterface
 	protected $agent_id;
 	protected $person_context;
 
-	public function __construct($agent_id)
+	public function __construct($agent)
 	{
-		$this->agent_id = $agent_id;
+		$this->agent_id = $agent;
 	}
 
 	
@@ -55,6 +55,34 @@ class AgentAction implements ActionInterface, PersonContextInterface
 		}
 
 		$ticket['agent_id'] = $this->agent_id;
+	}
+
+
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		$agent_id = $this->agent_id;
+		
+		if ($agent_id == -1) {
+			// Invalid context
+			if (!$this->person_context OR !$this->person_context['is_agent']) {
+				return array();
+			}
+
+			$agent_id = $this->person_context['id'];
+		}
+
+		if ($ticket['agent_id'] == $agent_id) {
+			return array();
+		}
+
+		return array(
+			array('action' => 'agent', 'agent_id' => $agent_id)
+		);
 	}
 
 

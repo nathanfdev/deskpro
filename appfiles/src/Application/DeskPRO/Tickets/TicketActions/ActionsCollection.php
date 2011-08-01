@@ -165,4 +165,26 @@ class ActionsCollection
 			$action->apply($ticket);
 		}
 	}
+
+
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 * @param \Application\DeskPRO\Entity\Person $person_context
+	 */
+	public function getApplyActions(Ticket $ticket, Person $person_context)
+	{
+		$actions = array();
+
+		foreach ($this->actions as $action) {
+			if ($action instanceof PersonContextInterface) {
+				$action->setPersonContext($person_context);
+			}
+
+			$actions = array_merge($actions, $action->getApplyActions($ticket));
+		}
+
+		return $actions;
+	}
 }

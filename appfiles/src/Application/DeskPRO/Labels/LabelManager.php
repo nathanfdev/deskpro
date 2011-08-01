@@ -86,6 +86,19 @@ class LabelManager
 		return $labels;
 	}
 
+	public function hasLabel($label)
+	{
+		$label = self::normalizeLabel($label);
+
+		foreach ($this->entity[$this->labels_property] as $label) {
+			if ($label['label'] == $label) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
 	public function setLabelsArray(array $labels)
 	{
 		$labels_raw = $labels;

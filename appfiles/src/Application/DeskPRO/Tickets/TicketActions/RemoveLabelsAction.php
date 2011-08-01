@@ -55,6 +55,23 @@ class RemoveLabelsAction implements ActionInterface
 
 
 	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		if (!$ticket->getLabelManager()->hasLabel($this->add_labels)) {
+			return array();
+		}
+
+		return array(
+			array('action' => 'remove_labels', 'label' => $this->add_labels)
+		);
+	}
+
+
+	/**
 	 * Get labels
 	 * 
 	 * @return array

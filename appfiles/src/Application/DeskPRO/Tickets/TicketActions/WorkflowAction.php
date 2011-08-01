@@ -12,15 +12,65 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 
-/**
- * Basic action for properties
- */
-class WorkflowAction extends AbstractPropertyAction
+class WorkflowAction implements ActionInterface
 {
-	public function getPropertyName()
+	protected $workflow_id;
+
+	public function __construct($workflow)
 	{
-		return 'category_id';
+		$this->workflow_id = $workflow;
+	}
+
+
+	/**
+	 * Apply the property to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function apply(Ticket $ticket)
+	{
+		$ticket['workflow_id'] = $this->workflow_id;
+	}
+
+	
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		if ($ticket['workflow_id'] == $this->workflow_id) {
+			return array();
+		}
+
+		return array(
+			array('action' => 'workflow', 'workflow_id' => $this->workflow_id)
+		);
+	}
+
+	
+	/**
+	 * Get the workflow id
+	 *
+	 * @return int
+	 */
+	public function getWorkflowId()
+	{
+		return $this->workflow_id;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+	 */
+	public function merge(ActionInterface $other_action)
+	{
+		return $other_action;
 	}
 }

@@ -12,15 +12,65 @@
 namespace Application\DeskPRO\Tickets\TicketActions;
 
 use Application\DeskPRO\Tickets\TicketActions\ActionInterface;
+use Application\DeskPRO\People\PersonContextInterface;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\Person;
 
-/**
- * Basic action for properties
- */
-class PriorityAction extends AbstractPropertyAction
+class PriorityAction implements ActionInterface
 {
-	public function getPropertyName()
+	protected $priority_id;
+
+	public function __construct($priority)
 	{
-		return 'priority_id';
+		$this->priority_id = $priority;
+	}
+
+
+	/**
+	 * Apply the property to the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function apply(Ticket $ticket)
+	{
+		$ticket['priority_id'] = $this->priority_id;
+	}
+
+	
+	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		if ($ticket['priority_id'] == $this->priority_id) {
+			return array();
+		}
+
+		return array(
+			array('action' => 'priority', 'priority_id' => $this->priority_id)
+		);
+	}
+	
+	
+	/**
+	 * Get the priority id
+	 *
+	 * @return int
+	 */
+	public function getPriorityId()
+	{
+		return $this->priority_id;
+	}
+
+
+	/**
+	 * @param \Application\DeskPRO\Tickets\TicketActions\ActionInterface $other_action
+	 * @return \Application\DeskPRO\Tickets\TicketActions\ActionInterface
+	 */
+	public function merge(ActionInterface $other_action)
+	{
+		return $other_action;
 	}
 }

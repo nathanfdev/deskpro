@@ -49,6 +49,23 @@ class StatusAction implements ActionInterface
 
 
 	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		if ($ticket->getStatusCode() == $this->status) {
+			return array();
+		}
+
+		return array(
+			array('action' => 'status', 'status' => $this->status)
+		);
+	}
+
+
+	/**
 	 * Get the full status (stauts.hidden_status)
 	 *
 	 * @return string

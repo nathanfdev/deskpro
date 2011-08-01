@@ -1232,6 +1232,10 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_onPropertyChanged('hidden_status', $old_hstatus, $this->hidden_status);
 	}
 
+	public function getStatusCode()
+	{
+		return $this->status . ($this->hidden_status ? ".{$this->hidden_status}" : '');
+	}
 
 
 	/**

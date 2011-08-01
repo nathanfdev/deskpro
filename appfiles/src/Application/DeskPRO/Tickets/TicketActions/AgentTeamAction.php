@@ -65,6 +65,40 @@ class AgentTeamAction implements ActionInterface, PersonContextInterface
 
 
 	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		$agent_team_id = $this->agent_team_id;
+
+		if ($agent_team_id == -1) {
+			// Invalid context
+			if (!$this->person_context OR !$this->person_context['is_agent']) {
+				return array();
+			}
+
+			$this->person_context->loadHelper('AgentTeam');
+			$agent_team_id = $this->person_context->getHelper('AgentTeam')->getPrimaryTeamId();
+
+			// Invalid agent team (eg. agent has no teams)
+			if (!$agent_team_id) {
+				return array();
+			}
+		}
+		
+		if ($ticket['agent_team_id'] == $agent_team_id) {
+			return array();
+		}
+
+		return array(
+			array('action' => 'agent_team', 'agent_id' => $agent_team_id)
+		);
+	}
+
+
+	/**
 	 * Get the agent team id
 	 *
 	 * @return int

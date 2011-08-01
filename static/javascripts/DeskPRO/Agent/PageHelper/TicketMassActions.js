@@ -134,7 +134,7 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 	getSelectedTicketIds: function() {
 		var ticket_ids = [];
 
-		$('input.ticket-selected:checked', this.ticketsWrapper).each(function() {
+		$('input.ticket-select:checked', this.ticketsWrapper).each(function() {
 			ticket_ids.push(parseInt($(this).val()));
 		});
 
@@ -248,14 +248,14 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 		var obj = null;
 		var opt = null;
 		switch (propName) {
-			case 'department_id':
-		 	case 'category_id':
-			case 'product_id':
-			case 'priority_id':
-			case 'workflow_id':
+			case 'department':
+		 	case 'category':
+			case 'product':
+			case 'priority':
+			case 'workflow':
 			case 'status':
-			case 'agent_id':
-			case 'agent_team_id':
+			case 'agent':
+			case 'agent_team':
 				obj = DeskPRO.Agent.TicketList.Property.StandardOption;
 				opt = {'optionName': propName };
 				break;

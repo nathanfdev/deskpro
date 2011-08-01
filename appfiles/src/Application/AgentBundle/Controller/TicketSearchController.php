@@ -1033,7 +1033,12 @@ class TicketSearchController extends AbstractController
 
 		$macro['actions'] = $got_actions;
 
-		$actions = $macro->getActionsCollectionsForTickets($tickets);
+		$action_collections = $macro->getActionsCollectionsForTickets($tickets);
+
+		$actions = array();
+		foreach ($action_collections as $ticket_id => $collection) {
+			$actions[$ticket_id] = $collection->getApplyActions($tickets[$ticket_id], $this->person);
+		}
 
 		$data = array();
 		$data['raw_actions'] = array();

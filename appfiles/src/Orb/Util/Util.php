@@ -280,6 +280,8 @@ class Util
 	 */
 	public static function callUserConstructorArray($classname, array $args)
 	{
+		$args = array_values($args);
+		
 		switch (count($args)) {
 			// Most constructors wont take any more than a handful arguments
 			case 0:  $obj = new $classname();

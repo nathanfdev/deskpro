@@ -42,6 +42,23 @@ class UrgencySetAction implements ActionInterface
 
 
 	/**
+	 * Get an array of actions that would be performed on the ticket
+	 *
+	 * @param \Application\DeskPRO\Entity\Ticket $ticket
+	 */
+	public function getApplyActions(Ticket $ticket)
+	{
+		if ($ticket['urgency'] == $this->num) {
+			return array();
+		}
+
+		return array(
+			array('action' => 'urgency', 'urgency' => $this->num)
+		);
+	}
+
+
+	/**
 	 * Get the number modifier
 	 *
 	 * @return int
