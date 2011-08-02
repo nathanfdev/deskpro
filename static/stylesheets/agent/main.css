@@ -5022,7 +5022,58 @@ section.ticket-header nav.actions ul li.more {
 .log-row {
     background-color: #F9F9F9;
     border: 1px solid #C9CBCB;
-    margin: 10px;
-    margin-left: 60px;
+    margin: 8px;
     padding: 5px;
+    font-size: 10px;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+}
+
+.log-row .changed_department {
+    background: url(../../images/icons/application_view_tile.png) no-repeat 0 0;
+    padding-left: 22px;
+}
+
+.log-row .changed_category {
+    background: url(../../images/icons/folder.png) no-repeat 0 0;
+    padding-left: 22px;
+}
+
+.log-row .changed_priority {
+    background: url(../../images/icons/lightning.png) no-repeat 0 0;
+    padding-left: 22px;
+}
+
+.log-row .changed_agent {
+    background: url(../../images/icons/user_gray.png) no-repeat 0 0;
+    padding-left: 22px;
+}
+
+.log-row .type {
+    color: #616161;
+}
+
+.log-row .old-val, .log-row .new-val {
+    border: 1px solid #E3E3E3;
+    padding: 1px 3px 1px 3px;
+    -webkit-border-radius: 8px;
+    -moz-border-radius: 8px;
+    border-radius: 8px;
+}
+
+.log-row .old-val {
+    background-color: #F5F5F5;
+    color: #3C4B54;
+}
+
+.log-row .new-val {
+    background-color: #F5F5F5;
+    color: #17911F;
+}
+
+.log-row .info {
+    float: right;
+    font-size: 9px;
 }
