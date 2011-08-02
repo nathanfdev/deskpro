@@ -11,10 +11,8 @@
 					{% endif %}
 				</div>
 				<div class="ticketinfo">
-					<div class="bound-faded"></div>
-					<div class="inner">
-						<span class="status status-{{ ticket.status }}" title="{{ ticket.status }}">{{ ticket.status }}</span>
-					</div>
+					<span class="urgency"><span>{{ rand(1,10) }}</span></span>
+					<span class="status status-{{ ticket.status }}" title="{{ ticket.status }}">{{ ticket.status }}</span>
 				</div>
 			</div>
 			<input type="checkbox" class="ticket-select" value="{{ ticket.id }}"/>
