@@ -14,20 +14,11 @@
 					<div class="bound-faded"></div>
 					<div class="inner">
 						<span class="status status-{{ ticket.status }}" title="{{ ticket.status }}">{{ ticket.status }}</span>
-						{% if ticket.agent_team %}
-							<span class="agent-team agent-team-{{ ticket.agent_team.id }}" title="{{ ticket.agent_team.name }}">{{ ticket.agent_team.name }}</span>
-						{% endif %}
-						{% if ticket.agent %}
-							<span class="agent tipped" title="{{ ticket.agent.display_name }} ({{ ticket.agent.primary_email_address }})">
-								<span style="background-image: url('{{ticket.agent.getPictureUrl(20)}}');">{{ ticket.agent.getDisplayContactShort(4) }}</span>
-							</span>
-						{% endif %}
-						<time class="timeago" datetime="{{ ticket.date_created|date('c') }}">{{ ticket.date_created|date('M d') }}</time>
 					</div>
 				</div>
 			</div>
+			<input type="checkbox" class="ticket-select" value="{{ ticket.id }}"/>
 			<div class="preview">
-				<input type="checkbox" class="ticket-select" value="{{ ticket.id }}"/>
 				<span class="department">{{ ticket.department.title }}: </span>
 				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
 					<span class="subject">{{ ticket.subject }}</span>.
@@ -58,6 +49,28 @@
 								{% endif %}
 								</span>
 							</li>
+						{% elseif field == 'agent' %}
+							<li class="{{field}}">
+								<span class="prop-title">Agent:</span>
+								<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
+								{% if ticket.agent %}
+									<span style="background-image: url('{{ticket.agent.getPictureUrl(15)}}');">{{ ticket.agent.display_name }}</span>
+								{% else %}
+									Unassigned
+								{% endif %}
+								</span>
+							</li>
+						{% elseif field == 'agent_team' %}
+							<li class="{{field}}">
+								<span class="prop-title">Agent Team:</span>
+								<span class="prop-val agent_team_id" data-prop-value="{{ticket.agent_team.id}}">
+								{% if ticket.category %}
+									<span class="agent-team agent-team-{{ ticket.agent_team.id }}" title="{{ ticket.agent_team.name }}">{{ ticket.agent_team.name }}</span>
+								{% else %}
+									No Team
+								{% endif %}
+								</span>
+							</li>
 						{% elseif field == 'product' %}
 							<li class="{{field}}">
 								<span class="prop-title">Product:</span>
@@ -67,6 +80,13 @@
 								{% else %}
 									None
 								{% endif %}
+								</span>
+							</li>
+						{% elseif field == 'date_user_waiting' %}
+							<li class="{{field}}">
+								<span class="prop-title">User Waiting:</span>
+								<span class="prop-val">
+									4 hours
 								</span>
 							</li>
 						{% elseif field == 'organization' %}
@@ -103,6 +123,7 @@
 						{% endif %}
 					{% endfor %}
 				</ul>
+				<br style="height: 1px;overflow: hidden; clear: left;" />
 			</div>
 			{% endif %}
 		</article>

@@ -307,11 +307,18 @@ section.deskpro-results-list article > div.title > a:hover {
     text-decoration: underline;
 }
 
+section.deskpro-results-list article .ticket-select {
+    float: left;
+    margin-left: 3px;
+}
+
 section.deskpro-results-list article > div.preview {
-    max-height: 26px;
+    max-height: 15px;
     overflow: hidden;
     padding: 0 3px 0 5px;
     line-height: 125%;
+    margin-left: 19px;
+    padding-left: 0;
 }
 
 section.deskpro-results-list article > div.preview > a {
@@ -320,6 +327,18 @@ section.deskpro-results-list article > div.preview > a {
 
     text-shadow: 1px 1px 0px #ffffff;
     filter: dropshadow(color=#ffffff, offx=1, offy=1);
+}
+
+section.deskpro-results-list article > div.preview > a > .subject {
+    color: #000;
+}
+
+section.deskpro-results-list article > div.preview > a > .summary {
+    color: #707073;
+}
+
+section.deskpro-results-list article > div.preview > a:hover > .summary {
+    color: #707073;
 }
 
 section.deskpro-results-list article > div.preview > a:hover {
@@ -390,9 +409,9 @@ section.deskpro-results-list article > div.info > ul.single-col > li {
 
 
 section.deskpro-results-list article.ticket.open {
-    -webkit-box-shadow: inset 0px 0px 2px 0px #475269;
-    -moz-box-shadow: inset 0px 0px 2px 0px #475269;
-    box-shadow: inset 0px 0px 2px 0px #475269;
+    -webkit-box-shadow: inset 0px 0px 3px 1px #8F5434;
+    -moz-box-shadow: inset 0px 0px 3px 1px #8F5434;
+    box-shadow: inset 0px 0px 3px 1px #8F5434;
 }
 
 section.deskpro-results-list article.ticket .toprow {
@@ -452,14 +471,6 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo .agent {
     margin-right: 6px;
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo .agent span {
-    padding-left: 22px;
-    display: block;
-    height: 20px;
-    background-repeat: no-repeat;
-    background-position: 0 50%;
-}
-
 section.deskpro-results-list article.ticket .toprow .ticketinfo .status {
     display: block;
     float: left;
@@ -514,20 +525,33 @@ section.deskpro-results-list article.ticket .preview .department {
 }
 
 section.deskpro-results-list article.ticket .extra-info {
-    padding: 5px 3px 3px 3px;
+    padding: 5px 3px 0 19px;
 }
 
 section.deskpro-results-list article.ticket .extra-info li {
-    display: inline;
+    float: left;
+    display: block;
     background-color: #E8ECF0;
     border: 1px solid #D8DCE0;
     margin-right: 5px;
+    margin-bottom: 3px;;
     -webkit-box-shadow: inset 0px 1px 0px px #ffffff;
     -moz-box-shadow: inset 0px 1px 0px px #ffffff;
     box-shadow: inset 0px 1px 0px px #ffffff;
     padding: 1px 2px 1px 2px;
+    line-height: 15px;;
 }
 
 section.deskpro-results-list article.ticket .extra-info li .prop-title {
     color: #666C77;
+}
+
+section.deskpro-results-list article.ticket .extra-info li.agent span.prop-val span {
+    float:right;
+    display: block;
+    padding-left: 17px;
+    background-repeat: no-repeat;
+    background-position: 0 50%;
+    line-height: 15px;
+    maring-left: 3px;
 }

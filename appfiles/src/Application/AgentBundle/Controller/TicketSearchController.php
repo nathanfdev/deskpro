@@ -377,11 +377,11 @@ class TicketSearchController extends AbstractController
 
 	protected function _suggestedDisplayFields(TicketSearch $searcher)
 	{
-		$display_fields = array();
+		$display_fields = array('agent', 'agent_team');
 
 		$specific_fields = $searcher->getSpecificFields();
 
-		$max = 3;
+		$max = 5;
 		foreach ($searcher->getTermFields() as $term) {
 			if (!in_array($term, $specific_fields)) {
 				$display_fields[] = $term;

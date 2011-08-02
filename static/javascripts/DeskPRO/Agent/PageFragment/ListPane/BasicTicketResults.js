@@ -160,12 +160,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			var count = $('input.ticket-select:checked', self.wrapper).length;
 			self.selectedCount.html(count);
 
-			if (count > 0) {
-				self.selectionBar.slideDown();
-			} else {
-				self.selectionBar.slideUp();
-			}
-
 			if (!$(this).is(':checked')) {
 				$('.selection-control', this.wrapper).attr('checked', false);
 			}
