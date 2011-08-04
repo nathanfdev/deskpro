@@ -409,9 +409,9 @@ section.deskpro-results-list article > div.info > ul.single-col > li {
 
 
 section.deskpro-results-list article.ticket.open {
-    -webkit-box-shadow: inset 0px 0px 3px 1px #8F5434;
-    -moz-box-shadow: inset 0px 0px 3px 1px #8F5434;
-    box-shadow: inset 0px 0px 3px 1px #8F5434;
+    -webkit-box-shadow: inset 0px 0px 2px 1px #931004;
+    -moz-box-shadow: inset 0px 0px 2px 1px #931004;
+    box-shadow: inset 0px 0px 2px 1px #931004;
 }
 
 section.deskpro-results-list article.ticket .toprow {
