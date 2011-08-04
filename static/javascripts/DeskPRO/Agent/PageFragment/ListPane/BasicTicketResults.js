@@ -185,6 +185,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			selectionBar: $('.selection-bar', this.wrapper),
 			changeManager: this.changeManager
 		});
+
+		new DeskPRO.UI.Menu({
+			triggerElement: $('button.sub-group-trigger:first', this.contentWrapper),
+			menuElement: $('ul.sub-group-menu:first', this.contentWrapper)
+		});
 	},
 
 	_handleResize: function() {

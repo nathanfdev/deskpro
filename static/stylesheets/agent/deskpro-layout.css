@@ -1019,6 +1019,16 @@ header.control-bar .detail-view-trigger {
 }
 
 
+header.grouping-bar button {
+    float: left;
+    margin-top: 4px !important;
+    margin-left: 4px !important;
+}
+
+header.grouping-bar button span {
+    background: url(../../images/icons/bullet_arrow_down.png) no-repeat 100% 50%;
+    padding-right: 16px;
+}
 
 header.grouping-bar {
     background: #fefefe;
@@ -1032,37 +1042,39 @@ header.grouping-bar {
 
     border-bottom: 1px solid #C3CBCE;
 
-    height: 20px;
+    padding: 3px 2px 2px 3px;
 }
 
 header.grouping-bar ul li {
     float: left;
+    display: block;
+    background-color: #E8ECF0;
+    border: 1px solid #D8DCE0;
+    margin-right: 5px;
+    margin-bottom: 3px;;
+    -webkit-box-shadow: inset 0px 1px 0px px #ffffff;
+    -moz-box-shadow: inset 0px 1px 0px px #ffffff;
+    box-shadow: inset 0px 1px 0px px #ffffff;
+    padding: 1px 2px 1px 2px;
+    line-height: 15px;
     cursor: pointer;
-    padding: 0 8px 0 8px;
-    font-size: 10px;
-    line-height: 20px;
-
-    border-right: 1px solid #C3CBCE;
 }
 
 header.grouping-bar ul li.on, header.grouping-bar ul li:hover {
-    background-color: #E6EAEF;
+    background-color: #D9E8F9;
 
     -webkit-transition: background 550ms ease;
     -moz-transition: background 550ms ease;
     -o-transition: background 550ms ease;
     transition: background 550ms ease;
-}
 
-header.grouping-bar ul li.all {
-    float: right;
-    border-right: none;
-    border-left: 1px solid #C3CBCE;
+    border-color: #6A9BB3;
+    
 }
 
 header.grouping-bar ul li .count {
     margin-left: 3px;
-    background-color: #C6CFD9;
+    background-color: #fff;
     font-size: 9px;
     padding: 1px 3px 1px 3px;;
 
@@ -1086,6 +1098,10 @@ header.selection-bar button.clean-gray {
 }
 
 header.selection-bar button span {
+    background: url(../../images/icons/bullet_arrow_down.png) no-repeat 100% 50%;
+    padding-right: 16px;
+}
+header.control-bar button span {
     background: url(../../images/icons/bullet_arrow_down.png) no-repeat 100% 50%;
     padding-right: 16px;
 }

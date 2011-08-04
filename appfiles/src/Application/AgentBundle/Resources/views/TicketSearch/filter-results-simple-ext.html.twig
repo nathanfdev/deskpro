@@ -39,7 +39,54 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
 
 		Tickets ordered by <span class="menu-trigger" style="border-bottom: 1px dotted #888;">urgency</span>
-	</header>
+		, grouped by
+		<button class="clean-gray xxx-small sub-group-trigger">
+			<span>Department</span>
+		</button>
+ 	</header>
+
+	<ul class="menu sub-group-menu" style="display: none">
+	<li>
+		None
+	</li>
+	<li class="sep">-</li>
+	<li class="on">
+		Department
+	</li>
+	<li>
+		Category
+	</li>
+	<li>
+		Agent
+	</li>
+	<li>
+		Agent Team
+	</li>
+	<li>
+		Product
+	</li>
+	<li>
+		Workflow
+	</li>
+	<li>
+		Priority
+	</li>
+	<li>
+		Urgency
+	</li>
+	<li class="sep">-</li>
+	<li>
+		Creation Date
+	</li>
+	<li>
+		Waiting Time
+	</li>
+	<li>
+		Last Reply
+	</li>
+</ul>
+
+	{% include 'AgentBundle:TicketSearch:grouping-bar.html.twig' %}
 
 	{% include 'AgentBundle:TicketSearch:massactions-bar.html.twig' %}
 

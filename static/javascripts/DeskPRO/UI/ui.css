@@ -198,6 +198,7 @@
 	-webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
+    position: relative;
 }
 
 .deskpro-menu > ul > li > a {
@@ -207,6 +208,19 @@
 
 .deskpro-menu > ul > li:not(.sep):not(.elm):not(.section-title):hover,
 .deskpro-menu > ul > li.hover, .deskpro-menu > ul > li.hover > a {
+    background: #323437;
+	border-top: 1px solid #27292b;
+	border-bottom: 1px solid #696b6f;
+
+    color: #CCC;
+	cursor: pointer;
+
+    -webkit-transition: color 0.2s ease-out;
+    -moz-transition: color 0.2s ease-out;
+    transition: color 0.2s ease-out;
+}
+
+.deskpro-menu > ul > li.on {
     background: #323437;
 	border-top: 1px solid #27292b;
 	border-bottom: 1px solid #696b6f;
@@ -243,6 +257,38 @@
 	padding-bottom: 3px;
 }
 
+.deskpro-menu li .count {
+	background: #a4a8ab;
+    background: -moz-linear-gradient(top, #a4a8ab 0%, #707477 100%);
+    background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#a4a8ab), color-stop(100%,#707477));
+    background: -webkit-linear-gradient(top, #a4a8ab 0%,#707477 100%);
+    background: -o-linear-gradient(top, #a4a8ab 0%,#707477 100%);
+    background: -ms-linear-gradient(top, #a4a8ab 0%,#707477 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#A4A8AB', endColorstr='#707477',GradientType=0 );
+    background: linear-gradient(top, #a4a8ab 0%,#707477 100%);
+
+    text-shadow: 1px 1px 0px #545454;
+    filter: dropshadow(color=#545454, offx=1, offy=0);
+
+	padding: 0px 4px;
+	color: #fff;
+	font-size: 10px;
+	line-height: 14px;
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    margin-right: 5px;
+    margin-top: 1px;
+
+	-webkit-border-radius: 6px;
+    -moz-border-radius: 6px;
+    border-radius: 6px;
+
+	-webkit-box-shadow:  inset 0 1px 0 #c8ced3, 0 1px 0 #fff;
+    -moz-box-shadow: inset 0 1px 0 #c8ced3, 0 1px 0 #fff;
+    box-shadow:  inset 0 1px 0 #c8ced3, 0 1px 0 #fff;
+}
 /**********************************************************************
 * Simple Tabs
 ***********************************************************************/
