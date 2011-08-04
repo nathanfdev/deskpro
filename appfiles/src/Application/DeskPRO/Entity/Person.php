@@ -1046,6 +1046,8 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Render a custom field
+	 *
+	 * @depreciated
 	 */
 	public function renderCustomField($field_id, $context = 'html')
 	{
@@ -1060,6 +1062,50 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
+	/**
+	 * Check if this ticket has a custom field.
+	 *
+	 * @param $field_id
+	 * @return bool
+	 */
+	public function hasCustomField($field_id)
+	{
+		foreach ($this->custom_data as $data) {
+			if ($data->field['id'] == $field_id) {
+				return true;
+			}
+		}
+
+		return false;
+	}
+
+
+	/**
+	 * Gets a display array for a specific field
+	 * @param $field_id
+	 * @return array|mixed|null
+	 */
+	public function getCustomFieldDisplayArray($field_id)
+	{
+		$data = $this->getCustomDataForField($field_id);
+		if (!$data) {
+			return null;
+		}
+
+		$ticket_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy(array($data), $ticket_field_defs);
+
+		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray(
+			$ticket_field_defs,
+			$ticket_data_structured
+		);
+
+		$custom_fields = array_pop($custom_fields);
+
+		return $custom_fields;
+	}
+
+	
 	/**
 	 * Get the primary email address, or null if this person has none.
 	 *

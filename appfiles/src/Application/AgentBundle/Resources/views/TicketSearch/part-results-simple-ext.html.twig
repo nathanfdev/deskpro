@@ -100,20 +100,20 @@
 							</li>
 						{% else %}
 							{% for f in ticket_field_defs %}
-								{% if field == 'ticket_fields['~f.id~']' %}
+								{% if field == 'ticket_fields['~f.id~']' and ticket.hasCustomField(f.id) %}
 									<li class="ticket-field">
 										<div class="prop-val ticket_fields_{{f.id}}">
-											{{ticket.renderCustomField(f.id)}}
+											{{ render_custom_field(ticket.getCustomFieldDisplayArray(f.id)) }}
 										</div>
 									</li>
 								{% endif %}
 							{% endfor %}
 							{% for f in person_field_defs %}
-								{% if field == 'person_fields['~f.id~']' %}
+								{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
 									<li class="person-field">
 										<span class="prop-title">{{ f.title }}:</span>
 										<div class="prop-val person_fields_{{f.id}}">
-											{{ticket.person.renderCustomField(f.id)}}
+											{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
 										</div>
 									</li>
 								{% endif %}
