@@ -1015,7 +1015,30 @@ header.control-bar .detail-view-trigger {
 }
 
 .mass-actions.overlay {
-    min-width: 650px;
+    min-width: 800px;
+}
+
+.mass-actions dl {
+    padding-bottom: 10px;
+}
+
+.mass-actions dt {
+    clear: both;
+    float: left;
+    width: 160px;
+    margin-top: 10px;
+}
+
+.mass-actions dd {
+    margin-left: 167px;
+    margin-top: 10px;
+}
+
+
+.mass-actions .reply-area textarea {
+    width: 80%;
+    height: 100px;
+    margin-bottom: 5px;
 }
 
 

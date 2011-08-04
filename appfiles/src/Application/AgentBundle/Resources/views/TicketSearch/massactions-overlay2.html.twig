@@ -1,0 +1,63 @@
+<div class="mass-actions overlay">
+	<div class="overlay-title">
+		<div class="macro-selector">
+			<div class="spinner"></div>
+			<select class="apply-macro-select">
+				<option value="0">Apply a macro</option>
+				<option value="0"></option>
+				{% for macro in macros %}
+					<option value="{{macro.id}}">{{macro.title}}</option>
+				{% endfor %}
+			</select>
+		</div>
+		<h4>Apply actions to <span class="check-count-overlay"></span> tickets</h4>
+	</div>
+
+	<div class="overlay-content" style="padding-bottom: 15px;">
+		<div class="row">
+			<div class="actions-form search-form">
+				<div class="actions-terms search-terms"></div>
+				<div class="term"><span class="add-term">+</span> Add a new action</div>
+			</div>
+		</div>
+
+		<div class="tab-bottom-wrap inner ticket-reply" style="padding-top: 15px;">
+			<div class="tab-bottom-open">
+				<div class="tab-bottom-tabs">
+					<ul>
+						<li class="tab-trigger reply-reply on" data-tab-for=".tab-content.reply-reply"><a>Message</a></li>
+						<li class="tab-trigger reply-attach" data-tab-for=".tab-content.reply-attach"><a>Attachment</a></li>
+					</ul>
+				</div>
+
+				<div class="tab-bottom-contents" style="height:113px;">
+					{# Reply area #}
+					<div class="content-tab-bottom reply-reply tab-content on" data-tab-trigger=".tab-trigger.reply-reply">
+						<div class="reply-form-fields">
+							<textarea name="message"></textarea>
+						</div>
+					</div>
+					{# /Reply Area #}
+
+					<div class="content-tab-bottom content-tab-bottom reply-attach tab-content" data-tab-trigger=".tab-trigger.reply-attach">
+						<div class="file-input">
+							<button class="dp-button x-small">Upload new file</button> or drag and drop files onto this area
+							<input type="file" name="file" multiple="multiple" />
+						</div>
+						<ul class="file-list"></ul>
+					</div>
+				</div>
+			</div>
+		</div>
+
+		{% include 'DeskPRO:Common:ticket-trigger-actions.html.twig' with {'term_options': ticket_options} %}
+	</div>
+	<div class="overlay-actions">
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">View Changes</button>
+		</div>
+		<div class="loading-on" style="display:none">
+
+		</div>
+	</div>
+</div>

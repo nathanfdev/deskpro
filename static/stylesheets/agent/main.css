@@ -3122,15 +3122,18 @@ ul.person-popout-tabs li a{
 
 
 .mass-actions.overlay .macro-selector {
-	float: right;
-	padding: 8px 25px 0 0;
+	padding: 0 0 5px 0;
+    margin-left: 170px;
+    background: url(../../images/curly.png) no-repeat 0 100%;
+    height: 62px;
 }
 .mass-actions.overlay .macro-selector select {
 	font-size: 11px;
+    margin-left: 130px;
 }
 
 .mass-actions.overlay .macro-selector .spinner {
-	float: left;
+	float: right;
 	padding-right: 6px;
 }
 

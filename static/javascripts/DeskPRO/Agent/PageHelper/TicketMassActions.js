@@ -44,6 +44,7 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 			}
 		});
 
+		/*
 		// Set default checked values based on table
 		this.actionsEditor = new DeskPRO.Form.RuleBuilder($('.actions-tpl', this.actionsWrap));
 		this.actionsEditor.addEvent('newRow', function(new_row) {
@@ -76,6 +77,31 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 		$('.save-trigger', this.actionsWrap).click((function() {
 			this._loadActions(this.getSelectedTicketIds());
 		}).bind(this));
+		*/
+
+		var self = this;
+		$('.radio-option', this.actionsWrap).click(function() {
+			var el = $(this);
+
+			if (el.is('.radio-on')) {
+				el.removeClass('radio-on');
+			} else {
+				var group = el.data('radio-group');
+				if (group) {
+					$('.' + group + '.radio-option', this.actionsWrap).removeClass('radio-on');
+				}
+
+				el.addClass('radio-on');
+			}
+		});
+
+		$('.reply-check', this.actionsWrap).click(function() {
+			if ($(this).is(':checked')) {
+				$('.reply-area', self.actionsWrap).slideDown();
+			} else {
+				$('.reply-area', self.actionsWrap).slideUp();
+			}
+		});
 	},
 
 	loadMacroActions: function() {
