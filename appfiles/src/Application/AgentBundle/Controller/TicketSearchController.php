@@ -306,9 +306,7 @@ class TicketSearchController extends AbstractController
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
 		$person_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
 
-		$vars['display_fields'][] = 'department';
-		$vars['display_fields'][] = 'person';
-		$vars['display_fields'][] = 'agent';
+		$vars['display_fields'] = array_unique($vars['display_fields']);
 
 		$pageinfo = Numbers::getPaginationPages($results_helper->getCount(), $page, $per_page);
 

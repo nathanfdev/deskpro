@@ -36,7 +36,7 @@
 									{% endif %}
 								{% endif %}
 							</li>
-						{% elseif field == 'category' %}
+						{% elseif field == 'category' and ticket.category %}
 							<li class="{{field}}">
 								<span class="prop-title">Category:</span>
 								<span class="prop-val category_id" data-prop-value="{{ticket.category.id}}">
@@ -47,7 +47,7 @@
 								{% endif %}
 								</span>
 							</li>
-						{% elseif field == 'agent' %}
+						{% elseif field == 'agent' and ticket.agent %}
 							<li class="{{field}}">
 								<span class="prop-title">Agent:</span>
 								<span class="prop-val agent_id" data-prop-value="{{ticket.agent.id}}">
@@ -58,18 +58,18 @@
 								{% endif %}
 								</span>
 							</li>
-						{% elseif field == 'agent_team' %}
+						{% elseif field == 'agent_team' and ticket.agent_team %}
 							<li class="{{field}}">
 								<span class="prop-title">Agent Team:</span>
 								<span class="prop-val agent_team_id" data-prop-value="{{ticket.agent_team.id}}">
-								{% if ticket.category %}
+								{% if ticket.agent_team %}
 									<span class="agent-team agent-team-{{ ticket.agent_team.id }}" title="{{ ticket.agent_team.name }}">{{ ticket.agent_team.name }}</span>
 								{% else %}
 									No Team
 								{% endif %}
 								</span>
 							</li>
-						{% elseif field == 'product' %}
+						{% elseif field == 'product' and ticket.product %}
 							<li class="{{field}}">
 								<span class="prop-title">Product:</span>
 								<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
@@ -87,7 +87,7 @@
 									4 hours
 								</span>
 							</li>
-						{% elseif field == 'organization' %}
+						{% elseif field == 'organization' and ticket.organization %}
 							<li class="{{field}}">
 								<span class="prop-title">Organization:</span>
 								<span class="prop-val organization_id" data-prop-value="{{ticket.organization.id}}">
