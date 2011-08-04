@@ -310,6 +310,7 @@ section.deskpro-results-list article > div.title > a:hover {
 section.deskpro-results-list article .ticket-select {
     float: left;
     margin-left: 3px;
+    margin-top: 6px;
 }
 
 section.deskpro-results-list article > div.preview {
@@ -416,6 +417,7 @@ section.deskpro-results-list article.ticket.open {
 
 section.deskpro-results-list article.ticket .toprow {
     margin-bottom: 2px;
+    margin-left: 19px;
     position: relative;
     height: 25px;
 }

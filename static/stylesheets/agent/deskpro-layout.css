@@ -1089,7 +1089,7 @@ header.selection-bar {
     background: #E6EAEF;
     border-bottom: 1px solid #C3CBCE;
 
-    padding: 3px 8px 3px 8px;
+    padding: 3px;
 }
 
 header.selection-bar button.clean-gray {

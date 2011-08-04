@@ -1,6 +1,7 @@
 <section class="search-reuslts page-set" data-page="{{page}}">
 	{% for ticket in tickets %}
 		<article class="ticket ticket-{{ticket.id}}">
+			<input type="checkbox" class="ticket-select" value="{{ ticket.id }}"/>
 			<div class="toprow">
 				<div class="userinfo">
 					<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
@@ -15,7 +16,6 @@
 					<span class="status status-{{ ticket.status }}" title="{{ ticket.status }}">{{ ticket.status }}</span>
 				</div>
 			</div>
-			<input type="checkbox" class="ticket-select" value="{{ ticket.id }}"/>
 			<div class="preview">
 				<span class="department">{{ ticket.department.title }}: </span>
 				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">

@@ -172,11 +172,9 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 				var count = $('input.ticket-select:checked', self.wrapper).length;
 				self.selectedCount.html(count);
-
-				self.selectionBar.slideDown();
 			} else {
 				$('input.ticket-select', self.wrapper).attr('checked', false);
-				self.selectionBar.slideUp();
+				self.selectedCount.html('0');
 			}
 		});
 
