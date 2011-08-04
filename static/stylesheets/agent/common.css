@@ -347,6 +347,11 @@ button.clean-gray.xxx-small {
     line-height: 100%;
 }
 
+button.clean-gray.disabled {
+    opacity: 0.8;
+    cursor: default;
+    color: #777879;
+}
 
 
 /**********************************************************

@@ -95,7 +95,11 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			return;
 		}
 
-		this.fireEvent('beforeOverlayOpened', { overlay: this });
+		var evData = { overlay: this, cancel: false };
+		this.fireEvent('beforeOverlayOpened', evData);
+		if (evData.cancel) {
+			return;
+		}
 
 		if (!this.options.zIndex) {
 			this.options.zIndex = Orb.findHighestZindex()+1;

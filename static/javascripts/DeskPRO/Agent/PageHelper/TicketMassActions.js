@@ -29,10 +29,16 @@ DeskPRO.Agent.PageHelper.TicketMassActions = new Orb.Class({
 
 		var self = this;
 
+		var trigger = this.triggerBtn = $('.perform-actions-trigger', this.selectionBar);
+
 		this.actionsOverlay = new DeskPRO.UI.Overlay({
 			contentElement: this.actionsWrap,
-			triggerElement: $('.perform-actions-trigger', this.selectionBar),
-			onBeforeOverlayOpened: function() {
+			triggerElement: trigger,
+			onBeforeOverlayOpened: function(evData) {
+				if (trigger.is('.disabled')) {
+					evData.cancel = true;
+					return;
+				}
 				var count = $('input.ticket-select:checked', self.ticketsWrapper).length;
 				$('.check-count-overlay', self.actionsWrap).html(count);
 			}

@@ -156,12 +156,21 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		var self = this;
 		this.selectedCount = $('.selected-count', this.wrapper);
 		this.selectionBar = $('.selection-bar', this.wrapper);
+		this.performActionsBtn = $('.perform-actions-trigger', this.wrapper);
+		console.log(this.performActionsBtn);
+
 		$('input.ticket-select', this.wrapper).click(function() {
 			var count = $('input.ticket-select:checked', self.wrapper).length;
 			self.selectedCount.html(count);
 
 			if (!$(this).is(':checked')) {
 				$('.selection-control', this.wrapper).attr('checked', false);
+			}
+
+			if (count > 0) {
+				self.performActionsBtn.removeClass('disabled');
+			} else {
+				self.performActionsBtn.addClass('disabled');
 			}
 		});
 
@@ -172,9 +181,11 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 				var count = $('input.ticket-select:checked', self.wrapper).length;
 				self.selectedCount.html(count);
+				self.performActionsBtn.removeClass('disabled');
 			} else {
 				$('input.ticket-select', self.wrapper).attr('checked', false);
 				self.selectedCount.html('0');
+				self.performActionsBtn.addClass('disabled');
 			}
 		});
 
