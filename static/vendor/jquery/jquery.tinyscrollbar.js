@@ -63,6 +63,9 @@
 			oScrollbar.ratio = options.sizethumb == 'auto' ? (oContent[options.axis] / oTrack[options.axis]) : (oContent[options.axis] - oViewport[options.axis]) / (oTrack[options.axis] - oThumb[options.axis]);
 			setSize();
 		};
+		this.tinyscrollbar_scrolltop = function(x) {
+			scrollTop(x);
+		}
 		function setSize(){
 			//if(!sAxis)oContent.obj.removeAttr('style');
 			oThumb.obj.removeAttr('style');
@@ -126,6 +129,15 @@
 				//wheelStopTimeout = (function() { oScrollbar.obj.removeClass('is-scrolling'); }).delay(500);
 			};
 		};
+
+		function scrollTop(x) {
+			if (x < 0) x = 0;
+			if (x > iScroll) x = iScroll;
+
+			oThumb.obj.css('top', iScroll / oScrollbar.ratio);
+			oContent.obj.css('top', -iScroll);
+		};
+
 		function end(oEvent){
 			$(document).unbind('mousemove', drag);
 			$(document).unbind('mouseup', end);

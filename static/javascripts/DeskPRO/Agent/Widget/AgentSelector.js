@@ -97,18 +97,16 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		this.agentList = agentList;
 
 		var self = this;
-		$('input[type="checkbox"], input[type="radio"]').click(function(ev) {
-
-			ev.stopPropagation();
-
+		$('input[type="checkbox"], input[type="radio"]', agentList).click(function(ev) {
 			var agentId = $(this).val();
 			var checked = $(this).is(':checked');
 
 			var eventData = {
 				agentSelector: self,
+				element: $(this),
 				agentId: agentId,
 				checked: checked,
-				event: event
+				event: ev
 			};
 
 			self.fireEvent('selectionClick', [eventData]);

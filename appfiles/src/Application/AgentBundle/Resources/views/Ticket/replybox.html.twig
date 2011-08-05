@@ -68,15 +68,33 @@
 	<div class="options-area reply-hide" style="display: none;">
 		<ul>
 			<li>
-				<input id="{{baseId}}_assign_opt" class="small" type="checkbox" name="options[do_assign]" value="1" checked="checked" />
-				<label for="{{baseId}}_assign_opt">Assign to</label>
-				<span class="prop-val trigger agent_id">Me</span>
-
-				and
-				<input id="{{baseId}}_assign_team_opt" class="small" type="checkbox" name="options[do_assign_team]" value="1" checked="checked" />
-				<span class="prop-val trigger agent_id">My team</span>
+				<input id="{{baseId}}_assign_opt" class="small" type="checkbox" name="options[do_assign]" value="1" />
+				<span class="assign_opt_withval" style="display: none;">
+					<label for="{{baseId}}_assign_opt">Assign to</label>
+				</span>
+				<span class="assign_opt_withoutval">
+					<label for="{{baseId}}_assign_opt">Assign to...</label>
+				</span>
+				<span class="prop-val trigger agent_id"></span>
+			</li>
+			<li>
+				<input id="{{baseId}}_assign_team_opt" class="small" type="checkbox" name="options[do_assign_team]" value="1" />
+				<span class="assign_team_opt_withval" style="display: none;">
+					<label for="{{baseId}}_assign_team_opt">Assign to team</label>
+				</span>
+				<span class="assign_team_opt_withoutval">
+					<label for="{{baseId}}_assign_team_opt">Assign team...</label>
+				</span>
+				<span class="prop-val trigger agent_id"></span>
 			</li>
 		</ul>
+		<div class="followers">
+			<h6>Follwers</h6>
+			<button class="clean-gray xx-small add-followers-trigger">Add Followers</button>
+
+			<ul class="followers-list" id="{{baseId}}_newnote_followerslist">
+			</ul>
+		</div>
 		<br style="clear: both; height: 0; overflow: hidden;" />
 	</div>
 

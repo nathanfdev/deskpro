@@ -145,6 +145,34 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			$('.reply-hide', replyBox).show();
 			$('.note-hide', replyBox).hide();
 		});
+
+		// Goto reply
+		$('button.goto-reply', this.wrapper).click(function() {
+			console.log('click');
+			cw.tinyscrollbar_scrolltop(1000000);
+		});
+
+		var followersList = this.getEl('newnote_followerslist');
+		this.replyboxAddFollowers = new DeskPRO.Agent.Widget.AgentSelector({
+			agentList: $('#agent_selector_list'),
+			multipleChoice: true,
+			onSelectionClick: function(info) {
+				if (info.checked) {
+					$('.agent-' + info.agentId, followersList).remove();
+				} else {
+					var agentInfo = DeskPRO_Window.getAgentInfo(info.agentId);
+					if (!agentInfo) return;
+
+					var html = '<li class="agent-'+agentInfo.id+'"><span style="background: url(\'' + agentInfo.pictureUrlSizable.replace('{SIZE}', 30) + '\')">' + Orb.escapeHtml(agentInfo.name) + '</li>';
+					var li = $(html);
+
+					li.appendTo(followersList);
+				}
+			}
+		});
+		$('.add-followers-trigger', replyBox).click(function(ev) {
+			self.replyboxAddFollowers.open(ev);
+		});
 	},
 
 	showTextSnippets: function() {

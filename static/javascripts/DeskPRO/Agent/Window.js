@@ -294,6 +294,31 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 
 	/**
+	 * Get information about an agent like their name, initials, picture URL.
+	 *
+	 * @param {Integer} agent_id
+	 * @return {Object{
+	 */
+	getAgentInfo: function(agent_id) {
+		// offline list always has all agents and their info
+		var agentEl = $('#agent_offline_list .agent-' + agent_id);
+
+		if (!agentEl.length) {
+			console.error('Unknow agent %i', agent_id);
+			return null;
+		}
+
+		return {
+			id: agent_id,
+			name: agentEl.data('agent-name'),
+			shortName: agentEl.data('agent-short-name'),
+			pictureUrl: agentEl.data('picture-url'),
+			pictureUrlSizable: agentEl.data('picture-url-sizable')
+		};
+	},
+
+
+	/**
 	 * Get a URL pattern
 	 */
 	getUrl: function(name, vars) {

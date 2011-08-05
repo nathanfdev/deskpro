@@ -5122,6 +5122,11 @@ article.ticket .urgency span {
 
 
 
+.page-ticket .goto-reply {
+    float: left;
+}
+
+
 
 
 
@@ -5234,6 +5239,33 @@ article.ticket .urgency span {
     width: 47%;
     margin-right: 8px;
 }
+
+.page-ticket .reply-box .options-area .followers h6 {
+    display: inline;
+    margin: 0;
+    padding: 0;
+}
+
+.page-ticket .reply-box .options-area .followers .add-followers-trigger {
+    
+}
+
+.page-ticket .reply-box .options-area .followers {
+    clear: both;
+    padding-top: 10px;
+}
+
+.page-ticket .reply-box .options-area .followers .followers-list {
+    margin-top: 3px;
+}
+
+.page-ticket .reply-box .options-area .followers .followers-list span {
+    display: block;
+    background-repeat: no-repeat !important;
+    background-position: 0 50%;
+    padding: 6px 0 6px 34px;
+}
+
 
 .page-ticket .reply-box .controls-area {
     clear: both;
