@@ -188,7 +188,7 @@ nav.mode-buttons > ul > li.on {
     bottom: 0;
     overflow: hidden;
 
-    width: 55px;
+    width: 45px;
     font-size: 10px;
 
     background-color: #383B40;
@@ -660,7 +660,7 @@ section#agent_chat_panel ul.list li:first-child {
 #deskpro_outline {
     position: absolute;
     top: 0;
-    left: 56px/*#deskpro_sections width*/;
+    left: 45px/*#deskpro_sections width*/;
     bottom: 0;
     overflow: hidden;
 
@@ -745,7 +745,7 @@ So only the 'on' one is visible at a time */
 #deskpro_list {
     position: absolute;
     top: 0;
-    left: 255px/*#deskpro_sections width + #deskpro_outline width*/;
+    left: 244px/*#deskpro_sections width + #deskpro_outline width*/;
     bottom: 0;
     overflow: hidden;
 
@@ -786,7 +786,7 @@ So only the 'on' one is visible at a time */
 #deskpro_content {
     position: absolute;
     top: 0;
-    left: 555px/*#deskpro_sections width + #deskpro_outline width + #deskpro_list width*/;
+    left: 542px/*#deskpro_sections width + #deskpro_outline width + #deskpro_list width*/;
     right: 0;
     bottom: 0;
     overflow: hidden;

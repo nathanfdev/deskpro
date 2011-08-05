@@ -7,7 +7,9 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 
 		var self = this;
 
-		this.LEFT_START = 255;
+		// This is the width of nav pane + overview pane,
+		// aka where the listpane starts
+		this.LEFT_START = 244;
 
 		// Handle window resizes
 		$(window).resize(function() {
@@ -15,7 +17,7 @@ DeskPRO.Agent.Layout.DeskproWindow = Orb.Class({
 				window.clearTimeout(self._resizeTimeout);
 			}
 
-			self._resizeTimeout = self.doResize.delay(400, self);
+			self._resizeTimeout = self.doResize.delay(300, self);
 		});
 	},
 
