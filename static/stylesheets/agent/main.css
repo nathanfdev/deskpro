@@ -270,6 +270,7 @@ Header
     padding: 0;
     background: transparent;
     width: 150px;
+    margin-left: 23px;
 }
 
 #header #search-form input:focus {
@@ -317,25 +318,17 @@ Header
     filter: dropshadow(color=#ffffff, offx=1, offy=);
 
     cursor: pointer;
-    margin-right: 25px;
 }
 
 #header #search-form .wrap .btn {
     position: absolute;
     top: 0;
     bottom: 0;
-    right: 0;
-    width: 25px;
-    background: #C0D5EE url(../../images/icons/magnifier.png) no-repeat 50% 50%;
+    left: 0;
+    width: 21px;
+    background: url(../../images/agent/mag.png) no-repeat 50% 50%;
     overflow: hidden;
     text-indent: -100px;
-
-    -moz-border-radius-topleft: 0px;
--moz-border-radius-topright: 3px;
--moz-border-radius-bottomright: 3px;
--moz-border-radius-bottomleft: 0px;
--webkit-border-radius: 0px 3px 3px 0px;
-border-radius: 0px 3px 3px 0px;
 }
 
 #header .search-drop {
