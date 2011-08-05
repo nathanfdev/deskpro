@@ -47,6 +47,10 @@ DeskPRO.Agent.WindowElement.Section.Tickets = new Orb.Class({
 			}
 		});
 
+		this.inboxViewTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('#tickets_outline_viewtypetabs li')
+		});
+
 		this._initFilters();
 		//this._initOverview();
 		this._initFlagged();
