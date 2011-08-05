@@ -19,6 +19,9 @@ pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages'
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
 pageMeta.getUpdatedCountsUrl          = '{{ path('agent_ticket_ajaxgetupdatedcounts', {'ticket_id': ticket.id}) }}';
 
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+
 pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};
 {% if agent_signature %}
 pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
@@ -151,57 +154,56 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<ul class="field-section-bodytabs-tabs">
 			<li class="tab-trigger tab-details on" data-tab-for=".tab-details"><a>Ticket Details</a></li>
 			<li class="tab-trigger tab-attachments" data-tab-for=".tab-attach"><a>Attachments</a></li>
-			<li class="tab-trigger tab-notes" data-tab-for=".tab-notes"><a>Notes <em class="ticket-notes-count" data-count="{{counts.notes}}">({{counts.notes}})</em></a></li>
 		</ul>
 	</div>
 
 	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
 		{# Tab: Details #}
 		<div class="full-container-tabbed-contents tab-content tab-details">
-				<div class="table-content">
-					<div class="row-table-cotent">
-						<div class="col-table-content title-col">
-							<span>Labels</span>
-						</div>
-						<div class="col-table-content">
-							<div class="ticket-tags">
-								<span class="tag-icon"></span>
-								<ul>
-									{% for label in ticket.labels %}
-										<li><span>{{label.label}}</span></li>
-									{% endfor %}
-								</ul>
-							</div>
-						</div>
-					</div>
-				</div>
+			<div class="table-content">
 				<div class="row-table-cotent">
 					<div class="col-table-content title-col">
-						<span>Properties</span>
+						<span>Labels</span>
 					</div>
 					<div class="col-table-content">
-						<div class="extra-info">
+						<div class="ticket-tags">
+							<span class="tag-icon"></span>
 							<ul>
-								<li>
-									<span class="prop-title">Category:</span>
-									<span class="prop-val">{{ ticket.category.title|default('None') }}</span>
-								</li>
-								<li>
-									<span class="prop-title">Product:</span>
-									<span class="prop-val">{{ ticket.product.title|default('None') }}</span>
-								</li>
-								<li>
-									<span class="prop-title">Priority:</span>
-									<span class="prop-val">{{ ticket.priority.title|default('None') }}</span>
-								</li>
-								<li>
-									<span class="prop-title">Workflow:</span>
-									<span class="prop-val">{{ ticket.workflow.title|default('None') }}</span>
-								</li>
+								{% for label in ticket.labels %}
+									<li><span>{{label.label}}</span></li>
+								{% endfor %}
 							</ul>
 						</div>
 					</div>
 				</div>
+			</div>
+			<div class="row-table-cotent">
+				<div class="col-table-content title-col">
+					<span>Properties</span>
+				</div>
+				<div class="col-table-content">
+					<div class="extra-info">
+						<ul>
+							<li>
+								<span class="prop-title">Category:</span>
+								<span class="prop-val">{{ ticket.category.title|default('None') }}</span>
+							</li>
+							<li>
+								<span class="prop-title">Product:</span>
+								<span class="prop-val">{{ ticket.product.title|default('None') }}</span>
+							</li>
+							<li>
+								<span class="prop-title">Priority:</span>
+								<span class="prop-val">{{ ticket.priority.title|default('None') }}</span>
+							</li>
+							<li>
+								<span class="prop-title">Workflow:</span>
+								<span class="prop-val">{{ ticket.workflow.title|default('None') }}</span>
+							</li>
+						</ul>
+					</div>
+				</div>
+			</div>
 		</div>
 		{# /Tab: Details #}
 
@@ -210,42 +212,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			{% include 'AgentBundle:Ticket:tab-attachments.html.twig' with {'message': message} %}
 		</div>
 		{# /Tab: Attachments #}
-
-		{# Tab: Notes #}
-		<div class="full-container-tabbed-contents tab-content ticket-notes tab-notes">
-			<div class="full-tab-content">
-				<div class="messages-wrap">
-					{{ ticket_notes_block|raw }}
-
-					<div class="message admin-message new-note">
-						<div class="message-avatar left">
-							<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-						</div>
-						<div class="message-body">
-							<div class="message-meta">
-								<span class="arrow-left"></span>
-								<h4>{{ app.user.display_name }}</h4>
-							</div>
-							<div class="message-text">
-								<p>
-									<textarea style="width:98%; height: 80px;"></textarea>
-									<div style="text-align:center; margin-top: 9px;">
-										<div class="loading-off">
-											<button class="dp-button x-small">Add Note</button>
-										</div>
-										<div class="loading-on" style="display:none">
-											Saving ...
-										</div>
-									</div>
-								</p>
-							</div>
-						</div>
-					</div>
-
-				</div>
-			</div>
-		</div>
-		{# /Tab Notes #}
 	</div>
 </div>
 {# /Top Tabs #}
@@ -291,7 +257,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</li>
 </script>
 <script type="text/x-deskpro-plain" class="fields-new-middletabs-content">
-	<div class="container-tabbed-contents field-tab-content {id}" data-tab-trigger=".field-tab.{id}" data-field-tab-id="{id}" style="display:none;">
+	<div class="container-tabbed-contents field-tab-content {id}" data-tab-trigger=".field-tab.{id}" data-field-tab-id="{id}" style="display: none">
 	</div>
 </script>
 <script type="text/x-deskpro-plain" class="fields-wrap-middletabs">
@@ -337,8 +303,14 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 
 {% if ticket.hidden_status != 'deleted' %}
+	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
+{% endif %}
+
+{#
+{% if ticket.hidden_status != 'deleted' %}
 	{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
 {% endif %}
+#}
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

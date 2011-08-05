@@ -117,6 +117,44 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.message-controls input', this.wrapper).click(function() {
 			updateMessageTypes();
 		});
+
+		var textSnippetsBtn = this.getEl('text_snippets_btn');
+		var self= this;
+		textSnippetsBtn.click(function() {
+			self.showTextSnippets();
+		});
+
+		// Switching between reply/note
+		var replyBox = this.getEl('replybox');
+		console.log(replyBox);
+		var tabReply = this.getEl('replybox_replytab_btn');
+		var tabNote = this.getEl('replybox_notetab_btn');
+
+		tabReply.click(function() {
+			tabNote.removeClass('on');
+			tabReply.addClass('on');
+
+			$('.reply-hide', replyBox).hide();
+			$('.note-hide', replyBox).show();
+		});
+		tabNote.click(function() {
+			tabNote.addClass('on');
+			tabReply.removeClass('on');
+			console.log('eref: %o', $('.hide-reply', replyBox));
+
+			$('.reply-hide', replyBox).show();
+			$('.note-hide', replyBox).hide();
+		});
+	},
+
+	showTextSnippets: function() {
+		if (!this.textsnippetsOverlay) {
+			this.textsnippetsOverlay = new DeskPRO.UI.Overlay({
+				contentElement: this.getEl('text_snippets_overlay')
+			});
+		}
+
+		this.textsnippetsOverlay.open();
 	},
 
 	destroyPage: function() {

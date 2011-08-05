@@ -281,5 +281,24 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 	 */
 	destroyPage: function() {
 
+	},
+
+
+	/**
+	 * Get an element within this page by ID, using the baseId set in metadata if avail
+	 *
+	 * @param id
+	 */
+	getEl: function(id) {
+		if (this.getMetaData('baseId')) {
+			id = this.getMetaData('baseId') + '_' + id;
+		}
+
+		var context = null;
+		if (this.wrapper) {
+			context = this.wrapper;
+		}
+
+		return $('#' + id, context);
 	}
 });

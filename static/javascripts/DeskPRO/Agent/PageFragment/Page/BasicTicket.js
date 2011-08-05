@@ -35,10 +35,10 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 			this._initTicketOptionsMenus();
 			this._initCustomFieldsEditor();
 
-			this._initReplyBar();
-			this._initAttachments();
+			//this._initReplyBar();
+			//this._initAttachments();
 
-			this._initParticipants();
+			//this._initParticipants();
 		}
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
@@ -724,10 +724,7 @@ DeskPRO.Agent.PageFragment.Page.BasicTicket = new Class({
 	resetReply: function() {
 		$('textarea[name="message"]', this.ticketReply).val('');
 		$('.attachments-area ul.file-list', this.ticketReply).html('');
-
-		// Make sure reply tab is selected again
-		this.replySimpleTabs.activateTab($('.reply-reply.tab-trigger', this.ticketReplyTabs));
-
+		
 		// If we have a signature, then set it
 		if (this.meta.agentSignature) {
 			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n" + this.meta.agentSignature);
