@@ -18,13 +18,19 @@
 
 <script type="text/x-jquery-tmpl" id="agent_chat_message">
 	<article>
-		<span>${author_name}:</span> ${message}
+		{{if author_picture}}
+			<img src="${author_picture}" />
+		{{/if}}
+		<cite>${author_name}:</cite> ${message}
 	</article>
 </script>
 
 <script type="text/x-jquery-tmpl" id="agent_chat_message_me">
 	<article>
-		<span>Me:</span> ${message}
+		{% endraw %}
+		<img src="{{ app.user.getPictureUrl(20) }}" />
+		{% raw %}
+		<cite>Me:</cite> ${message}
 	</article>
 </script>
 {% endraw %}

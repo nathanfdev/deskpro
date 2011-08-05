@@ -130,7 +130,8 @@ class AgentChatController extends AbstractController
 				'agent_id'   => $agent['id'],
 				'agent_name' => $agent['display_name'],
 				'agent_short_name' => $agent->getDisplayContactShort(4),
-				'picture_url' => $agent->getPictureUrl(10)
+				'picture_url' => $agent->getPictureUrl(10),
+				'picture_url_sizable' => $agent->getPictureUrl('{SIZE}'),
 			);
 		}
 

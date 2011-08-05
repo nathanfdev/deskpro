@@ -116,7 +116,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			author_id: onlineAgentLi.data('agent-id'),
 			author_name: onlineAgentLi.data('agent-name'),
 			author_short_name: onlineAgentLi.data('agent-short-name'),
-			author_picture: onlineAgentLi.data('agent-picture-url')
+			author_picture: onlineAgentLi.data('picture-url'),
+			author_picture_sizable: onlineAgentLi.data('picture-url-sizable')
 		};
 
 		console.log(chatData);
@@ -287,6 +288,10 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		var container = $('#agent_chat_conversation_' + data.author_id);
 
 		if (!container.length) {
+			var agentLi = $('.agent-' + data.author_id, this.offlineListEl);
+			if (agentLi.length) {
+				data.author_picture = agentLi.data('picture-url-sizable').replace('{SIZE}', 20);
+			}
 			this.addChatBox(data.author_short_name, data.author_id, data.author_picture);
 		}
 
