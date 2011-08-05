@@ -248,15 +248,15 @@ return sel},getSublineElement:function(){var b=$("tr.ticket-"+this.ticketId+".li
 b.addClass("with-line-3");var d=$("tr.ticket-"+this.ticketId+".line-3",this.ticketPage.actionsBarHelper.tableEl);d.show();
 var c=$("ul",d);var a=$('<li class="generated prop-value '+this.getName()+'"></li>');c.append(a);return a},pulseInterfaceElement:function(){this.getInterfaceElement().effect("highlight",1200)
 },highlightInterfaceElement:function(){this.getInterfaceElement().addClass("change-on")},unhighlightInterfaceElement:function(){this.getInterfaceElement().removeClass("change-on")
-}});Orb.createNamespace("DeskPRO.Agent.TicketList.Property");DeskPRO.Agent.TicketList.Property.StandardOption=new Class({Extends:DeskPRO.Agent.TicketList.Property.Abstract,optionName:null,init:function(){var a=["department_id","category_id","product_id","priority_id","workflow_id","status","agent_id","agent_team_id"];
+}});Orb.createNamespace("DeskPRO.Agent.TicketList.Property");DeskPRO.Agent.TicketList.Property.StandardOption=new Class({Extends:DeskPRO.Agent.TicketList.Property.Abstract,optionName:null,init:function(){var a=["department","category","product","priority","workflow","status","agent","agent_team"];
 if(a.indexOf(this.options.optionName)==-1){throw"invalidOptionName:"+this.options.optionName}this.optionName=this.options.optionName;
-switch(this.optionName){case"department_id":this.displayNameType="department_full";this.displayCaption="Department";break;
-case"category_id":this.displayNameType="ticket_category_full";this.displayCaption="Category";break;case"product_id":this.displayNameType="product";
-this.displayCaption="Product";break;case"priority_id":this.displayNameType="ticket_priority";this.displayCaption="Priority";
-break;case"workflow_id":this.displayNameType="ticket_workflow";this.displayCaption="Workflow";break;case"status":this.displayNameType="status";
-this.displayCaption="Status";break;case"agent_id":this.displayNameType="agent";this.displayCaption="Agent";break;case"agent_team_id":this.displayNameType="agent_team";
-this.displayCaption="Agent Team";break}},getValue:function(){return this.getInterfaceElement().data("prop-value")},getName:function(){return this.optionName
-},setValue:function(b){if(b=="0"){b=0}this.getInterfaceElement().data("prop-value",b);if(b){var a=b;if(this.displayNameType){a=DeskPRO_Window.getDisplayName(this.displayNameType,b);
+switch(this.optionName){case"department":this.displayNameType="department_full";this.displayCaption="Department";break;case"category":this.displayNameType="ticket_category_full";
+this.displayCaption="Category";break;case"product":this.displayNameType="product";this.displayCaption="Product";break;case"priority":this.displayNameType="ticket_priority";
+this.displayCaption="Priority";break;case"workflow":this.displayNameType="ticket_workflow";this.displayCaption="Workflow";
+break;case"status":this.displayNameType="status";this.displayCaption="Status";break;case"agent":this.displayNameType="agent";
+this.displayCaption="Agent";break;case"agent_team":this.displayNameType="agent_team";this.displayCaption="Agent Team";break
+}},getValue:function(){return this.getInterfaceElement().data("prop-value")},getName:function(){return this.optionName},setValue:function(b){if(b=="0"){b=0
+}this.getInterfaceElement().data("prop-value",b);if(b){var a=b;if(this.displayNameType){a=DeskPRO_Window.getDisplayName(this.displayNameType,b);
 if(!a){a=b}}var c=a;if(this.getInterfaceElement().is(".generated")){var c=this.displayCaption+": "+a}this.getInterfaceElement().removeClass("no-value").text(c)
 }else{this.getInterfaceElement().addClass("no-value").text("none")}},_getInterfaceElement:function(){var a=$(this._buildSelector(".prop-val."+this.optionName+":first"),this.ticketPage.actionsBarHelper.tableEl);
 if(!a.length){a=this.getSublineElement()}return a}});Orb.createNamespace("DeskPRO.Agent.TicketList.Property");DeskPRO.Agent.TicketList.Property.NewReply=new Class({Extends:DeskPRO.Agent.TicketList.Property.Abstract,displayCaption:"Reply",getName:function(){return"new_reply"
