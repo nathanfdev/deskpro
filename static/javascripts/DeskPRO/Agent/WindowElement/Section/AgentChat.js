@@ -104,6 +104,12 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			// And close the online list
 			self.panelEl.removeClass('open');
 		});
+
+		// Agents/teams tabs
+		this.listTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('#agent_chat_panel_listviews > li'),
+			context: $('#agent_chat_panel div.wrap:first')
+		});
 	},
 
 	_initDemo: function() {

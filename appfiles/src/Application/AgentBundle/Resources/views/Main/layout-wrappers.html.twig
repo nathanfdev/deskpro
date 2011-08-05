@@ -84,32 +84,53 @@
 	<nav>
 		<span class="close-trigger">x</span>
 		<a class="show-section">View History</a>
-		<div class="title">
-			Agents
-			<label>(<input type="checkbox" class="show-offline-opt" /> show offline)</label>
-		</div>
+		<ul class="tabs" id="agent_chat_panel_listviews">
+			<li data-tab-for=".agents-list">Agents</li>
+			<li data-tab-for=".teams-list">Teams</li>
+		</ul>
 	</nav>
 	<div class="wrap">
-		<div class="online-list">
-			<h6>Online</h6>
-			<ul id="agent_online_list" class="list">
-				<li class="no-agents">No other agents are online</li>
-			</ul>
+		<div class="agents-list">
+			<div style="text-align: right;">
+				<label><input type="checkbox" class="show-offline-opt" /> show offline</label>
+			</div>
+			<div class="online-list">
+				<h6>Online</h6>
+				<ul id="agent_online_list" class="list">
+					<li class="no-agents">No other agents are online</li>
+				</ul>
+			</div>
+			<div class="offline-list">
+				<h6>Offline</h6>
+				<ul id="agent_offline_list" class="list">
+					{% for agent in agents %}
+						<li
+							class="agent-{{ agent.id }}"
+							style="background-image: url({{ agent.getPictureUrl(30) }}); {% if agent.id == app.user.id %}display: none;{% endif %}"
+							data-agent-id="{{ agent.id }}"
+							data-agent-name="{{ agent.display_name }}"
+							data-agent-short-name="{{ agent.getDisplayContactShort(4) }}"
+							data-picture-url="{{ agent.getPictureUrl(30) }}"
+							data-picture-url-sizable="{{ agent.getPictureUrl('{SIZE}') }}"
+						>
+							{{ agent.display_name }}
+						</li>
+					{% endfor %}
+				</ul>
+			</div>
 		</div>
-		<div class="offline-list">
-			<h6>Offline</h6>
-			<ul id="agent_offline_list" class="list">
-				{% for agent in agents %}
+		<div class="teams-list" style="display: none;">
+			<ul class="list">
+				{% for team in agent_teams %}
 					<li
-						class="agent-{{ agent.id }}"
-						style="background-image: url({{ agent.getPictureUrl(30) }}); {% if agent.id == app.user.id %}display: none;{% endif %}"
-						data-agent-id="{{ agent.id }}"
-						data-agent-name="{{ agent.display_name }}"
-						data-agent-short-name="{{ agent.getDisplayContactShort(4) }}"
-						data-picture-url="{{ agent.getPictureUrl(30) }}"
-						data-picture-url-sizable="{{ agent.getPictureUrl('{SIZE}') }}"
+						class="team-{{ team.id }}"
+						style="background-image: url({{ asset('images/icons.png') }});"
+						data-team-id="{{ team.id }}"
+						data-team-name="{{ team.name }}"
+						data-picture-url=""
+						data-picture-url-sizable=""
 					>
-						{{ agent.display_name }}
+						{{ team.name }}
 					</li>
 				{% endfor %}
 			</ul>
