@@ -10,8 +10,8 @@
 		<article class="{{ group|md5_hash }}" style="display:none;">
 			<ul>
 				{% for snippet in snippets %}
-					<li class="snippet" data-snippet-id="{{ snippet.id }}">
-						<label class="snippet-trigger">{{ snippet.title }}</label>
+					<li class="snippet snippet-{{ snippet.id }}" data-snippet-id="{{ snippet.id }}">
+						<label class="snippet-trigger" data-snippet-id="{{ snippet.id }}">{{ snippet.title }}</label>
 						{% if no_formatting %}
 							<div class="content raw">{{ snippet.snippet }}</div>
 							<textarea class="value raw" style="display: none;">{{ snippet.snippet }}</textarea>

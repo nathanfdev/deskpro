@@ -78,6 +78,8 @@ class MiscController extends AbstractController
 
 	public function ajaxSavePrefsAction()
 	{
+		$prefs_expire = $this->in->getCleanValueArray('prefs_expire', 'raw', 'string');
+
 		foreach ($this->in->getCleanValueArray('prefs', 'raw', 'string') as $pref_name => $value)
 		{
 			$pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => $pref_name));
@@ -85,6 +87,11 @@ class MiscController extends AbstractController
 				$pref = new Entity\PersonPref();
 				$pref['name'] = $pref_name;
 				$this->person->addPreference($pref);
+			}
+
+			if (isset($prefs_expire[$pref_name])) {
+				$date = new \DateTime($prefs_expire[$pref_name]);
+				$pref['date_expire'] = $date;
 			}
 
 			$pref['value'] = $value;

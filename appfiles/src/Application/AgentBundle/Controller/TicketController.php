@@ -215,9 +215,17 @@ class TicketController extends AbstractController
 			WHERE p.ticket = ?1
 		")->setParameter(1, $ticket)->execute();
 
+		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
+		$draft_text = '';
+		if ($draft_pref) {
+			$draft_text = $draft_pref->getValue();
+		}
+
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
+
+			'draft_text' => $draft_text,
 
 			'participants' => $participants,
 
@@ -683,6 +691,12 @@ class TicketController extends AbstractController
 
 		if ($kb_pending) {
 			$this->em->persist($kb_pending);
+		}
+
+		// Delete any possible ticket draft
+		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
+		if ($draft_pref) {
+			App::getOrm()->remove($draft_pref);
 		}
 
 		$this->em->persist($ticket);
