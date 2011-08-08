@@ -26,8 +26,10 @@ Object.each(c,function(g,i){var f=g.page;var h=f.getMetaData("url_fragment");if(
 },getLastClientMessageId:function(){if(this.messageChanneler.lastMessageId){return this.messageChanneler.lastMessageId}return 0
 },forwardClientMessageData:function(a){if(this.messageChanneler.handleMessageAjax){this.messageChanneler.handleMessageAjax(a)
 }},getNotifier:function(){return this.notifier},getPoller:function(){return this.poller},getDisplayName:function(a,b){if(!window.DESKPRO_NAME_REGISTRY[a]||!window.DESKPRO_NAME_REGISTRY[a][b]){if(!window.DESKPRO_NAME_REGISTRY[a]){console.warn("Unknown name type %s",a)
-}return null}return window.DESKPRO_NAME_REGISTRY[a][b]},getUrl:function(b,c){if(!window.DESKPRO_URL_REGISTRY[b]){console.warn("Unknown url name %s",b);
-return null}var a=window.DESKPRO_URL_REGISTRY[b];if(c){Object.each(c,function(e,d){a=a.replace("{"+d+"}",e)})}return a},getData:function(a){if(!window.DESKPRO_DATA_REGISTRY[a]){console.warn("Unknown data name %s",a);
+}return null}return window.DESKPRO_NAME_REGISTRY[a][b]},getAgentInfo:function(b){var a=$("#agent_offline_list .agent-"+b);
+if(!a.length){console.error("Unknow agent %i",b);return null}return{id:b,name:a.data("agent-name"),shortName:a.data("agent-short-name"),pictureUrl:a.data("picture-url"),pictureUrlSizable:a.data("picture-url-sizable")}
+},getUrl:function(b,c){if(!window.DESKPRO_URL_REGISTRY[b]){console.warn("Unknown url name %s",b);return null}var a=window.DESKPRO_URL_REGISTRY[b];
+if(c){Object.each(c,function(e,d){a=a.replace("{"+d+"}",e)})}return a},getData:function(a){if(!window.DESKPRO_DATA_REGISTRY[a]){console.warn("Unknown data name %s",a);
 return null}return window.DESKPRO_DATA_REGISTRY[a]},showAlert:function(c,b){this._initAlertOverlay();$("#alert_overlay_msg").html(c);
 var d=this._alertOverlay.elements.wrapperOuter;var a=this._alertOverlay.elements.modal;if(d.data("added-class")){d.removeClass(d.data("added-class"));
 a.removeClass(d.data("added-class"));d.data("added-class",null)}if(b){d.addClass(b);a.addClass(b);d.data("added-class",b)

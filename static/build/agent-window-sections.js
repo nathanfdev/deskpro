@@ -26,7 +26,8 @@ this.setSectionElement($('<section id="tickets_outline"></section>'));DeskPRO_Wi
 DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.new-recent-search",this.refreshRecentSearches.bind(this));DeskPRO_Window.getMessageChanneler().subscribeChannel("list-page-fragment.activated",this.highlightActiveSection.bind(this));
 var a=this;this.getSectionElement().delegate("li[data-route]","click",function(){a.highlightNavItem($(this))});$.ajax({url:BASE_URL+"agent/tickets/get-section-data.json",context:this,success:function(b){this._initSection(b)
 }})},_initSection:function(b){this.setHasInitialLoaded();this.sectionEl.html(b.section_html);var a=this;this.tabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#tickets_outline_tabstrip li"),onTabSwitch:function(c){if(c.tabEl.is(".labels")){a.showLabelsList()
-}else{if(c.tabEl.is(".flagged")){a.loadFlagCounts()}}}});this._initFilters();this._initFlagged();$("#user_settings_filters_link").click(function(){var c=new DeskPRO.UI.Overlay({contentMethod:"iframe",iframeUrl:BASE_URL+"agent/settings/ticket-filters"});
+}else{if(c.tabEl.is(".flagged")){a.loadFlagCounts()}}}});this.inboxViewTabs=new DeskPRO.UI.SimpleTabs({triggerElements:$("#tickets_outline_viewtypetabs li")});
+this._initFilters();this._initFlagged();$("#user_settings_filters_link").click(function(){var c=new DeskPRO.UI.Overlay({contentMethod:"iframe",iframeUrl:BASE_URL+"agent/settings/ticket-filters"});
 c.openOverlay()});if(this.isVisible()&&!DeskPRO_Window.loadingListFragment){this._loadAutoLoadRoutes()}this.activeNavClass=null
 },onShow:function(){this.activeNavClass=null},highlightActiveSection:function(b){if(!this.isVisible()){return}var a=b.page;
 if(a.TYPENAME=="ticket-filter"){this.activeNavClass=".nav-filter-"+a.getMetaData("filter_id")}else{if(a.TYPENAME=="ticket-custom-filter"){if(a.getMetaData("recent_search_id")){this.activeNavClass=".nav-recent-search-"+a.getMetaData("recent_search_id")

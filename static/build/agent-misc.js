@@ -124,8 +124,8 @@ i.appendTo(q)}var r=$('<div class="name" />');r.append("<a>"+Orb.escapeHtml(n)+"
 }var k=$('<div class="choice" />');if(h){var m=$('<input type="checkbox" name="agents[]" '+o+' value="'+j+'" class="agent-choice-'+j+'" />')
 }else{var m=$('<input type="radio" name="agents[]" '+o+' value="'+j+'" class="agent-choice-'+j+'" />')}m.appendTo(k);k.appendTo(q);
 q.append($('<br style="clear:left;height: 1px;overflow: hidden;"/>'));q.appendTo(d);q.click(function(s){s.stopPropagation();
-if(!$(s.target).is("input")){m.click()}})});delete b;this.agentList=d;var c=this;$('input[type="checkbox"], input[type="radio"]').click(function(k){k.stopPropagation();
-var l=$(this).val();var j=$(this).is(":checked");var i={agentSelector:c,agentId:l,checked:j,event:event};c.fireEvent("selectionClick",[i])
+if(!$(s.target).is("input")){m.click()}})});delete b;this.agentList=d;var c=this;$('input[type="checkbox"], input[type="radio"]',d).click(function(k){var l=$(this).val();
+var j=$(this).is(":checked");var i={agentSelector:c,element:$(this),agentId:l,checked:j,event:k};c.fireEvent("selectionClick",[i])
 });d.appendTo($("div.scroll-content",a));a.appendTo(this.wrapper);this.listWrapper=a;this.wrapper.appendTo("body");var f=this.getSelection();
 if(this.options.multipleChoice){f=f.join(",")}this.previousSelection=f;var e={agentSelector:this,wrapper:this.wrapper};this.fireEvent("initWrapper",[e])
 },updateFilter:function(){var a=$("input",this.filter);var c=a.val().trim().toLowerCase();var b=$("> li",this.agentList);

@@ -65,7 +65,25 @@ this.__initEventsObj();var c=this.__events[d];if(!c){return this}b=Array.from(b)
 }else{e.apply(this,b)}},this);return this},removeEvent:function(d,c){d=this.normalizeEventName(d);this.__initEventsObj();
 var b=this.__events[d];if(b&&!c.internal){var a=b.indexOf(c);if(a!=-1){delete b[a]}}return this},removeEvents:function(c){var d;
 if(typeOf(c)=="object"){for(d in c){this.removeEvent(d,c[d])}return this}this.__initEventsObj();for(d in this.__events){if(c&&c!=d){continue
-}var b=this.__events[d];for(var a=b.length;a--;){if(a in b){this.removeEvent(d,b[a])}}}return this}};Orb.createNamespace("Orb.Compat.WebForms");
+}var b=this.__events[d];for(var a=b.length;a--;){if(a in b){this.removeEvent(d,b[a])}}}return this}};Orb.createNamespace("Orb.Util");
+Orb.Util.TimeAgo={_watchEls:[],_watchTimer:null,refreshPeriod:60000,phrases:{sec_less:"less than a second",sec:"1 second",secs:"{0} seconds",min:"1 minute",mins:"{0} minutes",hour:"1 hour",hours:"{0} hours",day:"1 day",days:"{0} days",week:"1 week",weeks:"{0} weeks",month:"1 month",months:"{0} months",year:"1 year",years:"{0} years"},get:function(a){return this.getForMs(this.getDateDiff(a))
+},applyToElements:function(b){var a=this;b.each(function(c){a._refreshElements([c]);a._watchEls.push(c)});if(this._watchTimer===null){window.setInterval(this._refreshElements.bind(this),this.refreshPeriod)
+}},applyToJquery:function(a){this.applyToElements(a.toArray())},_refreshElements:function(b){if(!b){b=this._watchEls}var a=this;
+b.each(function(e){if(!e.parentNode){return}e=$(e);if(!e.data("timeago")){var h=e.get(0).tagName.toLowerCase()=="time";var d=h?e.attr("datetime"):e.attr("title");
+if(!d){return}var c=d.replace(/\.\d\d\d+/,"");c=c.replace(/-/,"/").replace(/-/,"/");c=c.replace(/T/," ").replace(/Z/," UTC");
+c=c.replace(/([\+-]\d\d)\:?(\d\d)/," $1$2");e.data("timeago",{datetime:new Date(c)});var g=$.trim(e.text());if(g.length>0){e.attr("title",g)
+}}var f=e.data("timeago");if(!isNaN(f.datetime)){e.text(a.get(f.datetime))}})},getRelativeInfo:function(b){var d=0,e=0,a=0,f=0,c=0;
+d=parseInt(b/1000);c=parseInt(d/29030400);d-=c*29030400;f=parseInt(d/86400);d-=f*86400;a=parseInt(d/3600);d-=a*3600;e=parseInt(d/60);
+d-=e*60;return{secs:d,mins:e,hours:a,days:f,years:c}},getForMs:function(b){var c=this.getRelativeInfo(b);var g=parseInt(b/1000);
+if(g<=120){return this.getPhraseFor("sec",c.secs).replace("{0}",c.secs)}else{if(g<=1200){return this.getPhraseFor("min",c.mins).replace("{0}",c.mins)
+}else{if(g<=86400){var i;if(c.mins<=15){i=""}else{if(c.mins<=30){i="1/4"}else{if(c.mins<=45){i="1/2"}else{if(c.mins<=60){i="3/4"
+}}}}var e=c.hours;var h=c.hours+"";if(i!==""){e+=1;h+=" "+i}return this.getPhraseFor("hour",e).replace("{0}",h)}else{if(g<=259200){var d=this.getPhraseFor("day",c.days).replace("{0}",c.days);
+if(c.hours>0){d+=" "+this.getPhraseFor("hour",c.hours).replace("{0}",c.hours)}return d}else{if(g<=2419200){return this.getPhraseFor("day",c.days).replace("{0}",c.days)
+}else{if(g<=7257600){var a=parseInt(c.days/7);return this.getPhraseFor("week",a).replace("{0}",a)}else{if(g<=29030400){return this.getPhraseFor("month",c.months).replace("{0}",c.months)
+}else{if(g<=145152000){var f=this.getPhraseFor("year",c.years).replace("{0}",c.years);if(c.months>0){f+=" "+this.getPhraseFor("month",c.months).replace("{0}",c.months)
+}return f}else{return this.getPhraseFor("year",c.years).replace("{0}",c.years)}}}}}}}}},getDateDiff:function(a,b){var c=(new Date().getTime()-a.getTime());
+if(b){c/=1000}return c},getPhraseFor:function(c,b){if(c=="sec"&&b<=0){return this.phrases.sec_less}var a=c;if(b!=1){a+="s"
+}return this.phrases[a]}};if(jQuery){jQuery.fn.timeago=function(){Orb.Util.TimeAgo.applyToJquery(this);return this}}Orb.createNamespace("Orb.Compat.WebForms");
 Orb.Compat.WebForms.isPlaceholderSupported=function(){this.isSupported=null;if(this.isSupported===null){this.isSupported=("placeholder" in document.createElement(input.tagName))
 }return this.isSupported};Orb.Compat.WebForms.placeholder=function(a){if(!a){return null}input_col=$(a);if(!input_col.length){return null
 }input_col.each(function(){var b=$(this);if(b.placeholder&&this.isPlaceholderSupported()){return}var c=b.attr("placeholder");

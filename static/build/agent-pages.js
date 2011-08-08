@@ -286,21 +286,24 @@ var f=this.contentWrapper;f.tinyscrollbar();$("div.scroll-content:first, div.scr
 });this.initRoutesOnCollection($(".with-route",this.wrapper));if(!this.meta.isDeleted){this._initTicketActionsMenu();this._initMessageActionsMenu();
 this._initFlagMenu();this._initLabels()}else{$("button.undelete-trigger",this.wrapper).click(this.doTicketUndelete.bind(this))
 }this._initPopout();this._initTicketTabs();this._initTicketNotes();this.resetReply();DeskPRO_Window.getMessageBroker().sendMessage("ui.ticket.opened",{ticketId:this.getMetaData("ticket_id")});
-DeskPRO_Window.getMessageBroker().sendMessage("ui.tab.opened",{type:"tickets",id:this.getMetaData("ticket_id")});DeskPRO_Window.getMessageBroker().addMessageListener("tickets.deleted",(function(m){if(m.indexOf(this.getMetaData("ticket_id"))!==-1){DeskPRO_Window.removePage(this)
+DeskPRO_Window.getMessageBroker().sendMessage("ui.tab.opened",{type:"tickets",id:this.getMetaData("ticket_id")});DeskPRO_Window.getMessageBroker().addMessageListener("tickets.deleted",(function(n){if(n.indexOf(this.getMetaData("ticket_id"))!==-1){DeskPRO_Window.removePage(this)
 }}).bind(this),this.pageUid);DeskPRO_Window.getMessageBroker().addMessageListener("tickets.check."+this.getMetaData("ticket_id"),this.handleTicketCheck.bind(this),this.pageUid);
 DeskPRO_Window.getMessageBroker().addMessageListener("tickets.new-messages."+this.getMetaData("ticket_id"),this.getNewTicketMessages.bind(this),this.pageUid);
-Array.each(this.getMetaData("fieldHandlers",[]),function(m){if(!m){return}var n=m.classname;var o=m.wrap_id;var m=new m($("#"+o),this);
-m.initPage()},this);var b=$(".container-tabbed-wrap.ticket-participants:first",this.wrapper);b.css("min-width",b.width());
+Array.each(this.getMetaData("fieldHandlers",[]),function(n){if(!n){return}var o=n.classname;var p=n.wrap_id;var n=new n($("#"+p),this);
+n.initPage()},this);var b=$(".container-tabbed-wrap.ticket-participants:first",this.wrapper);b.css("min-width",b.width());
 this.addEvent("shortcutFocusReply",(function(){$("div.scroll-content:first, div.scroll-viewport:first",this.contentWrapper).scrollTop(100000);
 $('textarea[name="message"]',this.ticketReply).focus()}).bind(this));$(".ticket-urgency",this.contentWrapper).mouseover(function(){Tipped.show(this)
-});var j=$("input.show-messages",this.wrapper);var d=$("input.show-notes",this.wrapper);var i=$("input.show-logs",this.wrapper);
-var k=$(".messages-wrap",this.wrapper);function e(){var o=j.is(":checked");var n=d.is(":checked");var m=i.is(":checked");
-if(!o&&!n&&!m){o=true;j.attr("checked",true)}if(o){$("div.message:not(.note-message)",k).show()}else{$("div.message:not(.note-message)",k).hide()
-}if(n){$("div.note-message",k).show()}else{$("div.note-message",k).hide()}if(m){$("div.log-row",k).show()}else{$("div.log-row",k).hide()
-}}$(".message-controls input",this.wrapper).click(function(){e()});var g=this.getEl("text_snippets_btn");var l=this;g.click(function(){l.showTextSnippets()
-});var a=this.getEl("replybox");console.log(a);var h=this.getEl("replybox_replytab_btn");var c=this.getEl("replybox_notetab_btn");
-h.click(function(){c.removeClass("on");h.addClass("on");$(".reply-hide",a).hide();$(".note-hide",a).show()});c.click(function(){c.addClass("on");
-h.removeClass("on");console.log("eref: %o",$(".hide-reply",a));$(".reply-hide",a).show();$(".note-hide",a).hide()})},showTextSnippets:function(){if(!this.textsnippetsOverlay){this.textsnippetsOverlay=new DeskPRO.UI.Overlay({contentElement:this.getEl("text_snippets_overlay")})
+});var k=$("input.show-messages",this.wrapper);var d=$("input.show-notes",this.wrapper);var j=$("input.show-logs",this.wrapper);
+var l=$(".messages-wrap",this.wrapper);function e(){var p=k.is(":checked");var o=d.is(":checked");var n=j.is(":checked");
+if(!p&&!o&&!n){p=true;k.attr("checked",true)}if(p){$("div.message:not(.note-message)",l).show()}else{$("div.message:not(.note-message)",l).hide()
+}if(o){$("div.note-message",l).show()}else{$("div.note-message",l).hide()}if(n){$("div.log-row",l).show()}else{$("div.log-row",l).hide()
+}}$(".message-controls input",this.wrapper).click(function(){e()});var g=this.getEl("text_snippets_btn");var m=this;g.click(function(){m.showTextSnippets()
+});var a=this.getEl("replybox");console.log(a);var i=this.getEl("replybox_replytab_btn");var c=this.getEl("replybox_notetab_btn");
+i.click(function(){c.removeClass("on");i.addClass("on");$(".reply-hide",a).hide();$(".note-hide",a).show()});c.click(function(){c.addClass("on");
+i.removeClass("on");console.log("eref: %o",$(".hide-reply",a));$(".reply-hide",a).show();$(".note-hide",a).hide()});$("button.goto-reply",this.wrapper).click(function(){console.log("click");
+f.tinyscrollbar_scrolltop(1000000)});var h=this.getEl("newnote_followerslist");this.replyboxAddFollowers=new DeskPRO.Agent.Widget.AgentSelector({agentList:$("#agent_selector_list"),multipleChoice:true,onSelectionClick:function(q){if(q.checked){$(".agent-"+q.agentId,h).remove()
+}else{var p=DeskPRO_Window.getAgentInfo(q.agentId);if(!p){return}var o='<li class="agent-'+p.id+'"><span style="background: url(\''+p.pictureUrlSizable.replace("{SIZE}",30)+"')\">"+Orb.escapeHtml(p.name)+"</li>";
+var n=$(o);n.appendTo(h)}}});$(".add-followers-trigger",a).click(function(n){m.replyboxAddFollowers.open(n)})},showTextSnippets:function(){if(!this.textsnippetsOverlay){this.textsnippetsOverlay=new DeskPRO.UI.Overlay({contentElement:this.getEl("text_snippets_overlay")})
 }this.textsnippetsOverlay.open()},destroyPage:function(){this.parent();if(this.popoutPage){this.popoutPage.destroyPage()}DeskPRO_Window.getMessageBroker().sendMessage("ui.ticket.closed",{ticketId:this.getMetaData("ticket_id")});
 DeskPRO_Window.getMessageBroker().removeTaggedListeners(this.pageUid)},displayNewMessage:function(b,d){var c=$(b).hide();
 var a=this;d=d||function(){};c.appendTo($(".ticket-messages .messages-wrap",this.contentWrapper)).slideDown("fast",d);this._initMessage(c);
