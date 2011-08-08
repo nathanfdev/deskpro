@@ -59,6 +59,12 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $value_array = null;
 
+	/**
+	 * @var \DateTime
+	 * @orm:Column(name="date_expire",type="datetime", nullable=true)
+	 */
+	protected $date_expire = null;
+
 
 	
 	public function getValue()
