@@ -303,6 +303,29 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
+	# snippets-viewer
+	############################################################################
+
+	public function snippetsViewerAction($ticket_id = 0)
+	{
+		if ($ticket_id) {
+			$ticket = $this->getTicketOr404($ticket_id);
+			$person = $ticket->person;
+		} else {
+			$ticket = null;
+			$person = null;
+		}
+
+		$ticket_snippets = App::getEntityRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
+
+		return $this->render('AgentBundle:Ticket:ticket-snippets.html.twig', array(
+			'ticket' => $ticket,
+			'person' => $person,
+			'ticket_snippets' => $ticket_snippets,
+		));
+	}
+
+	############################################################################
 	# new
 	############################################################################
 

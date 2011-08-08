@@ -12,7 +12,7 @@
 			</ul>
 		</nav>
 		<div class="top-area note-hide">
-			<button class="clean-gray xx-small text-snippets" id="{{baseId}}_text_snippets_btn">Text Snippets</button>
+			<button class="clean-gray xx-small ticket-snippets-trigger">Text Snippets</button>
 			<ul class="related-content">
 				<li class="similar-tickets"><a>Similar Tickets</a></li>
 				<li class="suggested-articles"><a>Suggested Knowledgebase Articles</a></li>
@@ -20,7 +20,7 @@
 			<br style="clear: both; height: 0; overflow: hidden;" />
 		</div>
 		<div class="reply-area">
-			<textarea class="reply" name="message"></textarea>
+			<textarea class="reply" name="message" id="{{baseId}}_replybox_txt"></textarea>
 			<div class="attachments">
 				<script class="template-upload" type="text/x-jquery-tmpl">
 					<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
@@ -119,54 +119,3 @@
 		</div>
 	</form>
 </section>
-
-<div class="snippets-overlay overlay" id="{{baseId}}_text_snippets_overlay">
-	<nav>
-		<ul>
-			<li>Products</li>
-			<li class="on">Sales</li>
-			<li>Ordering</li>
-			<li>Returns</li>
-			<li>Complaints</li>
-			<li>Refunds</li>
-			<li>Strategy</li>
-		</ul>
-	</nav>
-	<article>
-		<ul>
-			<li>
-				<label>Buying a product</label>
-				<div class="content">How do I go about buying blah blah this is a dull yet</div>
-			</li>
-			<li>
-				<label>Buying a product</label>
-				<div class="content">How do I go about buying blah blah this is a dull yet</div>
-			</li>
-			<li>
-				<label>Buying a product</label>
-				<div class="content">How do I go about buying blah blah this is a dull yet</div>
-			</li>
-			<li>
-				<label>Buying a product</label>
-				<div class="content">How do I go about buying blah blah this is a dull yet</div>
-			</li>
-			<li>
-				<label>Buying a product</label>
-				<div class="content">How do I go about buying blah blah this is a dull yet</div>
-			</li>
-			<li>
-				<label>Buying a product</label>
-				<div class="content">How do I go about buying blah blah this is a dull yet</div>
-			</li>
-			<li>
-				<label>Buying a product</label>
-				<div class="content">How do I go about buying blah blah this is a dull yet</div>
-			</li>
-			<li>
-				<label>Buying a product</label>
-				<div class="content">How do I go about buying blah blah this is a dull yet</div>
-			</li>
-		</ul>
-	</article>
-</form>
-</div>

@@ -39,9 +39,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			this._initTicketOptionsMenus();
 			this._initCustomFieldsEditor();
 
-			//this._initReplyBar();
-			//this._initAttachments();
-
 			//this._initParticipants();
 		}
 

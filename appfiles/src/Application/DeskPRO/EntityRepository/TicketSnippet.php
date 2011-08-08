@@ -26,13 +26,13 @@ class TicketSnippet extends \Doctrine\ORM\EntityRepository
 
 		$dql = "
 			SELECT s
-			FROM DeskPRO:TicketSnippet
+			FROM DeskPRO:TicketSnippet s
 			WHERE
 				s.person = ?1
 				OR s.is_global = true
 		";
 
-		$coll = $this->getEntityManager()->createQuery($sql)
+		$coll = $this->getEntityManager()->createQuery($dql)
 			->setParameter(1, $agent)
 			->execute();
 

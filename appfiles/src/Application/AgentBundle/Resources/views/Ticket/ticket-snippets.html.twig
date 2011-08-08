@@ -1,0 +1,29 @@
+<div class="ticket-snippets-overlay snippets-overlay">
+	<nav>
+		<ul>
+			{% for group,snippets in ticket_snippets %}
+				<li data-tab-for="article.{{ group|md5_hash }}">{{ group }}</li>
+			{% endfor %}
+		</ul>
+	</nav>
+	{% for group,snippets in ticket_snippets %}
+		<article class="{{ group|md5_hash }}" style="display:none;">
+			<ul>
+				{% for snippet in snippets %}
+					<li class="snippet" data-snippet-id="{{ snippet.id }}">
+						<label class="snippet-trigger">{{ snippet.title }}</label>
+						{% if no_formatting %}
+							<div class="content raw">{{ snippet.snippet }}</div>
+							<textarea class="value raw" style="display: none;">{{ snippet.snippet }}</textarea>
+						{% else %}
+							<div class="content raw" style="display: none;">{{ snippet.snippet }}</div>
+							<textarea class="value raw" style="display: none;">{{ snippet.snippet }}</textarea>
+							<div class="content formatted">{{ snippet.snippetFormattedHtml(ticket, person)|raw }}</div>
+							<textarea class="value formatted" style="display: none;">{{ snippet.snippetFormatted(ticket, person) }}</textarea>
+						{% endif %}
+					</li>
+				{% endfor %}
+			</ul>
+		</article>
+	{% endfor %}
+</div>

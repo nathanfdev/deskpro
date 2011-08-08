@@ -29,7 +29,6 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
 	 */
 	protected $id = null;
 
@@ -114,7 +113,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 
 		$replace_from_object = function ($prefix, $obj) use (&$snippet) {
 			$matches = null;
-			if (preg_match_all('#\{\{\s*'.$prefix.'\.([a-zA-Z]{1}[a-zA-Z0-9]+)\s\}\}', $snippet, $matches, PREG_SET_ORDER)) {
+			if (preg_match_all('#\{\{\s*'.$prefix.'\.([a-zA-Z]{1}[a-zA-Z0-9]+)\s\}\}#', $snippet, $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $m) {
 					$find = $m[0];
 					$key = $m[1];
@@ -135,6 +134,21 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 		if ($person) {
 			$replace_from_object('person', $person);
 		}
+
+		return $snippet;
+	}
+
+	/**
+	 * Format a snippet for display as html (ie preview)
+	 *
+	 * @param Application\DeskPRO\Entity\Ticket $ticket
+	 * @param Application\DeskPRO\Entity\Person $person
+	 * @return string
+	 */
+	public function snippetFormattedHtml(Ticket $ticket = null, Person $person = null)
+	{
+		$snippet = $this->snippetFormatted($ticket, $person);
+		$snippet = nl2br(htmlspecialchars(($snippet)));
 
 		return $snippet;
 	}

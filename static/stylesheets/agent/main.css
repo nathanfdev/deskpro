@@ -5343,6 +5343,17 @@ article.ticket .urgency span {
     margin-left: 141px;
 }
 
+.snippets-overlay textarea {
+    height: 100px;
+    width: 400px;
+}
+
+.snippets-overlay li.snippet {
+    border-bottom: 1px solid #BCC6D2;
+    margin-bottom: 11px;
+    padding-bottom: 11px;
+}
+
 
 .reply-box .controls-area .loading-spinner {
     margin-left: 10px;

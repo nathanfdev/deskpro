@@ -191,6 +191,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 				self.getEl('ticket_status_name').text(statusName);
 			}
 		});
+
+		//------------------------------
+		// Snippets Viewer
+		//------------------------------
+
+		this.snippetsViewer = new DeskPRO.Agent.Widget.SnippetViewer({
+			viewUrl: this.page.getUrl('snippetviewer'),
+			triggerElement: $('.ticket-snippets-trigger', this.replyBox),
+			onSnippetClick: this._onSnippetClick.bind(this)
+		});
+	},
+
+	_onSnippetClick: function(info) {
+		this.getEl('replybox_txt').val(this.getEl('replybox_txt').val() + "\n\n" + info.snippet);
 	},
 
 	/**

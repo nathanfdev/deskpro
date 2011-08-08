@@ -19,6 +19,10 @@ pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages'
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
 pageMeta.getUpdatedCountsUrl          = '{{ path('agent_ticket_ajaxgetupdatedcounts', {'ticket_id': ticket.id}) }}';
 
+pageMeta.urls = {
+	'snippetviewer': '{{ path('agent_ticket_snippetviewer', {'ticket_id': ticket.id}) }}'
+};
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 

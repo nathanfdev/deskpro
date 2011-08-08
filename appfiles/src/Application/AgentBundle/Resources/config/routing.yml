@@ -511,6 +511,11 @@ agent_ticket_view:
   requirements: { ticket_id: "\d+" }
   options: { fragment_name: 't' }
 
+agent_ticket_snippetviewer:
+  pattern: /tickets/{ticket_id}/snippet-viewer
+  defaults: { _controller: AgentBundle:Ticket:snippetsViewer }
+  requirements: { ticket_id: "\d+" }
+
 agent_ticket_viewtip:
   pattern: /tickets/{ticket_id}/tip
   defaults: { _controller: AgentBundle:Ticket:viewTip }

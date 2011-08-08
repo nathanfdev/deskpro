@@ -42,7 +42,6 @@ class TemplatingExtension extends \Twig_Extension
             'phrase'   => new \Twig_Function_Method($this, 'getPhrase'),
             'phrase_object'   => new \Twig_Function_Method($this, 'getPhraseObject'),
 			'url_fragment' => new \Twig_Function_Method($this, 'urlFragment'),
-            'md5_hash'   => new \Twig_Function_Method($this, 'getMd5'),
 			'asset_full' => new \Twig_Function_Method($this, 'assetFull'),
 			'asset_url' => new \Twig_Function_Method($this, 'assetFull'),
 			'url_full' => new \Twig_Function_Method($this, 'urlFull'),
@@ -77,6 +76,7 @@ class TemplatingExtension extends \Twig_Extension
 			'trim' => new \Twig_Filter_Method($this, 'strTrim'),
 			'encode_number' => new \Twig_Filter_Method($this, 'encNum', array('is_safe' => array('html'))),
 			'decode_number' => new \Twig_Filter_Method($this, 'decNum', array('is_safe' => array('html'))),
+			'md5_hash'   => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
         );
     }
 
