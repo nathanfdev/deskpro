@@ -2,9 +2,20 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
 DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
-	Extends: DeskPRO.Agent.PageFragment.Page.BasicTicket,
+	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	TYPENAME: 'ticket',
+
+	wrapper: null,
+
+	destroyEls: [],
+	destroyMenus: [],
+	destroyOverlays: [],
+
+	changeManager: null,
+	valueForm: null,
+
+	layout: null,
 
 	popout: null,
 	popout_overview: null,
@@ -15,7 +26,45 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	initPage: function(el) {
 
-		this.parent(el);
+		this.wrapper = el;
+		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
+		this.barWrapper = $('.bar-wrapper', this.wrapper);
+
+		this.valueForm = $('form.value-form:first', this.contentWrapper);
+		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
+
+		window.TICKET = this;
+
+		if (!this.meta.isDeleted) {
+			this._initTicketOptionsMenus();
+			this._initCustomFieldsEditor();
+
+			//this._initReplyBar();
+			//this._initAttachments();
+
+			//this._initParticipants();
+		}
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
+			this._handleResize()
+		}).bind(this));
+
+		var self = this;
+		$('div.ticket-messages > ul > li').each(function() {
+			self._initMessage($(this));
+		});
+
+		// Custom field widgets
+		$('input.date-field', this.contentWrapper).datepicker({ 'dateFormat': 'M d, yy'});
+
+		this.ticketDisplay = new DeskPRO.Agent.PageHelper.TicketDisplay(this, {
+			wrapper: el
+		});
+
+		this.initFeaturesOnCollection(this.wrapper, {
+			routes: [],
+			times: ['.timeago']
+		});
 
 		var cw = this.contentWrapper;
 		cw.tinyscrollbar();
@@ -187,7 +236,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	destroyPage: function() {
 
-		this.parent();
+		for (var i = 0; i < this.destroyEls.length; i++) {
+			$(this.destroyEls[i]).remove();
+		}
+
+		for (var i = 0; i < this.destroyMenus.length; i++) {
+			this.destroyMenus[i].destroy();
+		}
+
+		for (var i = 0; i < this.destroyOverlays.length; i++) {
+			this.destroyOverlays[i].destroy();
+		}
 
 		if (this.popoutPage) {
 			this.popoutPage.destroyPage();
@@ -225,6 +284,370 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		if (!info.isLocked) {
 			$('div.lock-bar:first', this.contentWrapper).hide();
 		}
+	},
+
+	_initMessage: function(messageEl) {
+		var imageEls = $('ul.attachment-list li.is-image a', messageEl);
+
+		imageEls.colorbox({
+			title: function(){ var url = $(this).attr('href'); return '<a href="'+url+'" target="_blank">Open In New Window</a>' },
+			width: '50%',
+			height: '50%',
+			initialWidth: '200',
+			initialHeight: '150',
+			scalePhotos: true,
+			photo: true,
+			opacity: 0.5,
+			transition: 'none'
+		});
+	},
+
+	incCount: function(id) {
+		var countEl = $('.'+id+'-count', this.wrapper);
+		var count = countEl.data('count') + 1;
+		countEl.data('count', count).html('(' + count + ')');
+	},
+
+	setCount: function(id, count) {
+		var countEl = $('.'+id+'-count', this.wrapper);
+		countEl.data('count', count).html('(' + count + ')');
+	},
+
+	//#################################################################
+	//# Property managers
+	//#################################################################
+
+	propertyManagers: {},
+
+	getPropertyManager: function(type, type_id) {
+
+		if (this.propertyManagers[type]) {
+			return this.propertyManagers[type];
+		}
+
+		var manager = null;
+		switch (type) {
+			case 'department_id':
+		 	case 'category_id':
+			case 'product_id':
+			case 'workflow_id':
+			case 'priority_id':
+			case 'agent_id':
+			case 'agent_team_id':
+				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this, { optionName: type });
+				break;
+			case 'status':
+				manager = new DeskPRO.Agent.Ticket.Property.Status(this, { optionName: 'status'});
+				break;
+			case 'add_labels':
+				manager = new DeskPRO.Agent.Ticket.Property.Labels(this, { mode: 'add' });
+				break;
+			case 'remove_labels':
+				manager = new DeskPRO.Agent.Ticket.Property.Labels(this, { mode: 'remove' });
+				break;
+			case 'flag':
+				manager = new DeskPRO.Agent.Ticket.Property.Flag(this);
+				break;
+			case 'new_reply':
+				manager = new DeskPRO.Agent.Ticket.Property.NewReply(this);
+				break;
+			case 'ticket_field':
+				manager = new DeskPRO.Agent.Ticket.Property.TicketField(this, { fieldId: type_id });
+				break;
+		}
+
+		this.propertyManagers[type] = manager;
+
+		return manager;
+	},
+
+	//#################################################################
+	//# Ticket Participants
+	//#################################################################
+
+	_initParticipants: function() {
+		$('.agent-participants-edit', this.wrapper).click(this.showAgentParticipants.bind(this));
+		$('.user-participants-edit', this.wrapper).click(this.showUserParticipants.bind(this));
+		this._initCcArea();
+	},
+
+	showAgentParticipants: function(ev) {
+		if (!this.agentPartsSelector) {
+
+			var self = this;
+
+			var startWith = [];
+			$('ul.agent-participants-list > li', this.wrapper).each(function() {
+				startWith.push($(this).data('person-id'));
+			});
+
+			this.agentPartsSelector = new DeskPRO.Agent.Widget.AgentSelector({
+				agentList: $('#agent_selector_list'),
+				multipleChoice: true,
+				startWith: startWith,
+				onSelectionChanged: function() {
+					self.updateAgentParticipants();
+				}
+			});
+		}
+
+		this.agentPartsSelector.open(ev);
+	},
+
+	updateAgentParticipants: function() {
+		var agentIds = this.agentPartsSelector.getSelection();
+
+		var data = [];
+		Array.each(agentIds, function(id) {
+			data.push({
+				name: 'person_ids[]',
+				value: id
+			});
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/save-agent-parts',
+			data: data,
+			dataType: 'html',
+			type: 'POST',
+			context: this,
+			success: function(html) {
+				$('ul.agent-participants-list', this.wrapper).empty().html(html);
+				this.reloadCcReplyTab();
+			}
+		});
+	},
+
+	showUserParticipants: function(ev) {
+		if (!this.userFind) {
+
+			var self = this;
+
+			this.userFind = new DeskPRO.Agent.Widget.FindPerson({
+				onChoosePerson: function(ev) {
+					self.addUserPart(ev.personId);
+				}
+			});
+		}
+
+		this.userFind.open(ev);
+	},
+
+	addUserPart: function(personId) {
+		var personIds = [personId];
+		$('ul.user-participants-list > li', this.wrapper).each(function() {
+			personIds.push($(this).data('person-id'));
+		});
+
+		var data = [];
+		Array.each(personIds, function(id) {
+			data.push({
+				name: 'person_ids[]',
+				value: id
+			});
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/save-user-parts',
+			data: data,
+			dataType: 'html',
+			type: 'POST',
+			context: this,
+			success: function(html) {
+				$('ul.user-participants-list', this.wrapper).empty().html(html);
+				this.reloadCcReplyTab();
+			}
+		});
+	},
+
+	reloadCcReplyTab: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/cc-reply-tab',
+			dataType: 'html',
+			type: 'GET',
+			context: this,
+			success: function(html) {
+				$('.cc-area', this.wrapper).empty().html(html);
+				this._initCcArea();
+			}
+		});
+	},
+
+	_initCcArea: function() {
+		var area = $('.cc-area', this.wrapper);
+		var newparts = $('.cc-new-parts', area);
+
+		$('li', area).click(function(ev) {
+			if (!$(ev.target).is('input')) {
+				$('input', this).click();
+			}
+		});
+
+		var txt = $('.new-part input', newparts);
+		var btn = $('.new-part button', newparts);
+
+		$('section.cc-section .with-scrollbar', area).tinyscrollbar();
+		var newSectionScroll = $('section.cc-new-parts .with-scrollbar', area);
+
+		btn.click(function() {
+			var val = txt.val();
+			var el = $('<li>' + val + '<input type="hidden" name="new_parts[]" value="'+val+'" />&nbsp;&nbsp;<span class="remove-trigger" style="cursor: pointer;">x</span></li>');
+
+			$('.remove-trigger', el).click(function() {
+				el.remove();
+			});
+			$('ul', newparts).append(el);
+
+			newSectionScroll.tinyscrollbar();
+		});
+	},
+
+	//#################################################################
+	//# Ticket attachments
+	//#################################################################
+
+	_initAttachments: function() {
+		var self = this;
+
+		var list = $('.file-list', this.barWrapper);
+		$('input', list[0]).live('click', function() {
+			var el = $(this);
+			var li = el.parent();
+			if (el.is(':checked')) {
+				li.removeClass('unchecked');
+			} else {
+				li.addClass('unchecked');
+			}
+		});
+
+		this.barWrapper.fileupload({
+			url: this.getMetaData('uploadAttachUrl'),
+			dropZone: this.barWrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', this.barWrapper),
+			downloadTemplate: $('.template-download', this.barWrapper)
+		});
+	},
+
+	//#################################################################
+	//# Ticket options menus
+	//#################################################################
+
+	ticketOptionsMenus: {},
+	ticketOptionsMenuEls: {},
+	_initTicketOptionsMenus: function() {
+		var options = ['department_id', 'category_id', 'product_id', 'priority_id', 'workflow_id', 'status', 'agent_id', 'agent_team_id'];
+		var self = this;
+
+		// We're setting up the menus here right now as they're always on,
+		// then the TicketDisplay inits triggers when it sets the holder els
+		for (var i = 0; i < options.length; i++) {
+			var opt = options[i];
+			var menuEl = $('.menu.'+opt+':first', this.wrapper);
+			var menu = new DeskPRO.UI.Menu({
+				menuElement: menuEl,
+				onItemClicked: function(info) {
+					self._handleTicketOptionClick(info);
+				}
+			});
+			this.ticketOptionsMenus[opt] = menu;
+			this.ticketOptionsMenuEls[opt] = menuEl;
+			this.destroyMenus.push(menu);
+		}
+
+		// And these arent handled by TickerDisplay, so set up the triggers now
+		var btnOptions = ['department_id', 'status', 'agent_id', 'agent_team_id'];
+		for (var i = 0; i < options.length; i++) {
+			var opt = options[i];
+			var btnEl = $('.menu-trigger.' + opt + ':first', this.wrapper);
+
+			this.initTicketOptionsMenuForProp(opt, btnEl);
+		}
+	},
+
+	/**
+	 * @TicketDisplay
+	 *
+	 * @param property
+	 * @param trigger
+	 */
+	initTicketOptionsMenuForProp: function(property, trigger) {
+		var menu = this.ticketOptionsMenus[property];
+		if (!menu) {
+			console.log('No menu for %s', property);
+			return;
+		}
+
+		menu.setupTriggerElement(trigger);
+	},
+
+	_handleTicketOptionClick: function(info) {
+		var typeEl = $(info.itemEl);
+		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
+		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
+		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
+		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
+
+		var opt = typeEl.data('option-name');
+		var itemId = $(info.itemEl).data('option-id');
+		if (!itemId) itemId = $(info.itemEl).data('option-value');
+
+		var prop = this.getPropertyManager(opt);
+		this.changeManager.setInstantChange(prop, itemId);
+	},
+
+	//#################################################################
+	//# Custom Fields popout
+	//#################################################################
+
+	custom_fields_display: null,
+	custom_fields_edit: null,
+	_initCustomFieldsEditor: function() {
+		$('.ticket-custom-fields-edit-btn', this.wrapper).click((function() {
+			this.showCustomFieldEditor();
+		}).bind(this));
+
+		this.custom_fields_display = $('.ticket-custom-fields:not(.edit)', this.wrapper);
+		this.custom_fields_edit = $('.ticket-custom-fields.edit', this.wrapper);
+		this.custom_fields_edit.detach().appendTo(this.custom_fields_display.parent().parent().parent().parent());
+
+		$('.close-trigger', this.custom_fields_edit).click((function() {
+			this.closeCustomFieldEditor();
+		}).bind(this));
+
+		var self = this;
+		$('.save-trigger', this.custom_fields_edit).click((function() {
+			var fieldEls = $(':input', self.custom_fields_edit);
+			this._saveCustomFields(fieldEls);
+		}).bind(this));
+	},
+
+	showCustomFieldEditor: function() {
+
+		var pos = this.custom_fields_display.position();
+		var width = this.custom_fields_display.width();
+
+		if (width > 690) {
+			pos.left += width-690; // always want it hugging the right
+			width = 690;
+		}
+
+		this.custom_fields_edit.css({
+			position: 'absolute',
+			top: pos.top,
+			left: pos.left,
+			width: width
+		});
+
+		this.custom_fields_edit.slideDown();
+	},
+
+	closeCustomFieldEditor: function() {
+		this.custom_fields_edit.slideUp();
+	},
+
+	_saveCustomFields: function(fieldEls) {
+		console.warn('This method shold be overriden in a subclass!');
 	},
 
 	//#################################################################
@@ -880,7 +1303,94 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//#################################################################
 
 	_initReplyBar: function() {
-		this.parent();
+		this.ticketBar = $('.tab-bottom-open:first', this.barWrapper);
+		this.ticketReply = $('div.tab-bottom-open:first', this.barWrapper);
+
+		this.ticketReplyTabs = $('.tab-bottom-tabs', this.barWrapper);
+
+		var self = this;
+
+		// Send reply
+		$('.send-reply button', this.barWrapper).click(function(ev) {
+			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
+			self._sendReply();
+		});
+
+		// Init ticket reply tabs
+		var simpleTabs = this.replySimpleTabs = new DeskPRO.UI.SimpleTabs({
+			context: this.ticketReply,
+			triggerElements: $('li.tab-trigger', this.ticketReplyTabs)
+		});
+
+		// Actions menu
+		this.ticketActionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.bar-actions li.actions', this.ticketBar),
+			menuElement: $('ul.ticket-info-edit-menu:first', this.contentWrapper),
+			onItemClicked: this._handleActionsMenuClick.bind(this)
+		});
+		this.destroyMenus.push(this.ticketActionsMenu);
+
+		// Macros menu
+		this.ticketMacrosMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.tab-bottom-tabs .macros', this.ticketBar),
+			menuElement: $('ul.ticket-macros-menu:first', this.contentWrapper),
+			onItemClicked: this._handleMacroClick.bind(this)
+		});
+		this.destroyMenus.push(this.ticketMacrosMenu);
+
+		// Macro apply/cancel
+		$('.tab-bottom-tabs .macros-apply', this.ticketBar).click((function() {
+			var data = [];
+			if (this._currentMacroId) {
+				data.push({ name: 'macro_id', value: this._currentMacroId });
+			}
+			this.changeManager.saveChanges(data);
+			this.toggleMacroApplyBtn('off');
+
+			this._currentMacroId = null;
+		}).bind(this));
+
+		$('.tab-bottom-tabs .macros-cancel', this.ticketBar).click((function() {
+			this.changeManager.revertChanges();
+			this.toggleMacroApplyBtn('off');
+
+			this._currentMacroId = null;
+		}).bind(this));
+
+		// Menus to change reply info
+		var menu = this.actionMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('span.trigger.agent_id', this.ticketReply),
+			menuElement: $('.reply-agent_id-menu', this.ticketReply),
+			onItemClicked: (function(info) {
+				var id = $(info.itemEl).data('option-value');
+				var display = DeskPRO_Window.getDisplayName('agent', id);
+
+				$('span.prop-val.agent_id', this.ticketReply).html(display);
+				$('input[name="options[agent_id]"]', this.ticketReply).val(id);
+			}).bind(this)
+		});
+		var menu = this.actionMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('span.trigger.agent_team_id', this.ticketReply),
+			menuElement: $('.reply-agent_team_id-menu', this.ticketReply),
+			onItemClicked: (function(info) {
+				var id = $(info.itemEl).data('option-value');
+				var display = DeskPRO_Window.getDisplayName('agent_team', id);
+
+				$('span.prop-val.agent_team_id', this.ticketReply).html(display);
+				$('input[name="options[agent_team_id]"]', this.ticketReply).val(id);
+			}).bind(this)
+		});
+		var menu = this.actionMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('span.trigger.status', this.ticketReply),
+			menuElement: $('.reply-status-menu', this.ticketReply),
+			onItemClicked: (function(info) {
+				var id = $(info.itemEl).data('option-value');
+				var display = DeskPRO_Window.getDisplayName('status', id);
+
+				$('span.prop-val.status', this.ticketReply).html(id);
+				$('input[name="options[status]"]', this.ticketReply).val(id);
+			}).bind(this)
+		});
 
 		var self = this;
 
@@ -964,6 +1474,200 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		} else {
 			$('input.reply-assign-trigger', this.ticketReply).attr('checked', false).val('0');
 			$('span.reply-assign-label', this.ticketReply).hide().html('');
+		}
+	},
+	ticketBar: null,
+	ticketReply: null,
+	ticketReplyTabs: null,
+
+	ticketActionsMenu: null,
+	ticketMacrosMenu: null,
+
+	_handleActionsMenuClick: function(info) {
+		var op = $(info.itemEl).data('option-id');
+
+		switch (op) {
+			case 'delete':
+				$.ajax({
+					url: this.getMetaData('deleteTicketUrl'),
+					type: 'GET',
+					data: {'ticket_ids[]': this.getMetaData('ticket_id') },
+					context: this,
+					dataType: 'json',
+					success: function(data) {
+						DeskPRO_Window.getMessageBroker().sendMessage('tickets.deleted', data.deleted_tickets);
+					}
+				});
+				break;
+
+			case 'print':
+				var width = 700;
+				var height = 550;
+				var win = window.open(
+					this.getMetaData('printTicketUrl'),
+					"print_ticket_win_" + this.getMetaData('ticket_id'),
+					"width="+width+",height="+height+",locationbar=false,directories=false,status=false,copyhistory=false"
+				);
+				break;
+		}
+	},
+
+	_currentMacroId: null,
+	_handleMacroClick: function(info) {
+
+		if ($(info.itemEl).data('no-macro')) {
+			var overlay = new DeskPRO.UI.Overlay({
+				contentMethod: 'iframe',
+				iframeUrl: BASE_URL + 'agent/settings/ticket-macros/new'
+			});
+
+			overlay.openOverlay();
+			return;
+		}
+
+		this._currentMacroId = $(info.itemEl).data('macro-id');
+		$.ajax({
+			url: this.getMetaData('getMacroUrl').replace('$macro_id', this._currentMacroId),
+			type: 'GET',
+			context: this,
+			dataType: 'json',
+			success: function(data) {
+				this._performMacro(data);
+			}
+		});
+	},
+
+	_performMacro: function (actions) {
+		Object.each(actions, function(action, type) {
+
+			var type_id = null;
+			var m = /^(.*?)\[(.*?)\]$/.exec(type);
+			if (m !== null) {
+				type = m[1];
+				type_id = m[2];
+			}
+
+			var prop = this.getPropertyManager(type, type_id);
+
+			if (prop) {
+				if (typeOf(action) == 'object' && action.value_display) {
+					action = action.value_display;//custom fields
+				}
+				this.changeManager.addChange(prop, action);
+			} else {
+				console.warn('Unknown property `%s`. Actions: %o', type, actions);
+			}
+		}, this);
+
+		this.changeManager.applyChanges();
+		this.toggleMacroApplyBtn('on');
+	},
+
+	toggleMacroApplyBtn: function(force) {
+
+		var ul = $('.bar-actions', this.ticketBar);
+
+		if (!force) {
+			if ($('li.macros', ul).is(':visible')) {
+				force = 'on';
+			} else {
+				force = 'off';
+			}
+		}
+
+		var otherBtns = $('li:not(.macro-on)', ul);
+		var applyBtns = $('li.macro-on', ul);
+
+		if (force == 'on') {
+			otherBtns.hide();
+			applyBtns.show();
+		} else {
+			otherBtns.show();
+			applyBtns.hide();
+		}
+	},
+
+	isSendingReply: false,
+	_sendReply: function() {
+		this._handleSendReply($(':input, textarea, select', this.ticketReply));
+	},
+
+	_handleSendReply: function(els) {
+		console.warn('This method should be overriden in a subclass!');
+	},
+
+	_handleSendReplySuccess: function(data) {
+
+		var slideCallback = null;
+		if (data.close_tab) {
+			var self = this;
+			slideCallback = function() {
+				DeskPRO_Window.removePage(self);
+			};
+		}
+
+		this.displayNewMessage(data.message_html, slideCallback);
+		this.newReplyNewProps(data);
+		this.afterNewReply();
+	},
+
+	newReplyNewProps: function(data) {
+		var prop = null;
+
+		prop = this.getPropertyManager('agent_id');
+		prop.setValue(data.agent_id);
+
+		prop = this.getPropertyManager('agent_team_id');
+		prop.setValue(data.agent_team_id);
+
+		prop = this.getPropertyManager('status');
+		prop.setValue(data.status);
+	},
+
+	afterNewReply: function(data) {
+		// If there are new attachments, that tab is now stale
+		if ($('.attachments-area ul.file-list li', this.ticketReply).length) {
+			this.unloadTicketTab('attachments');
+		}
+
+		// New reply means theres a ticketlog entry of course
+		this.unloadTicketTab('notes');
+
+		this.updateCounts();
+
+		this.resetReply();
+	},
+
+	updateCounts: function() {
+		var wrap = $('.full-container-tabbed-tabs', this.wrapper);
+
+		$.ajax({
+			url: this.getMetaData('getUpdatedCountsUrl'),
+			type: 'GET',
+			context: this,
+			dataType: 'json',
+			success: function(counts) {
+				Object.each(counts, function(v,k) {
+					var sel = '.ticket-' + k + '-count';
+					$(sel, wrap).html('(' + v + ')');
+				});
+			}
+		});
+	},
+
+	resetReply: function() {
+
+		if (this._draftTimer) {
+			window.clearTimeout(this._draftTimer);
+			this._draftTimer = null;
+		}
+
+		$('textarea[name="message"]', this.ticketReply).val('');
+		$('.attachments-area ul.file-list', this.ticketReply).html('');
+
+		// If we have a signature, then set it
+		if (this.meta.agentSignature) {
+			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n" + this.meta.agentSignature);
 		}
 	}
 });

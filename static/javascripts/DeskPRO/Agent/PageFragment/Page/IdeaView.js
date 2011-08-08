@@ -2,7 +2,7 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
 DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 
-	Extends: DeskPRO.Agent.PageFragment.Page.BasicTicket,
+	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	TYPENAME: 'ticket',
 

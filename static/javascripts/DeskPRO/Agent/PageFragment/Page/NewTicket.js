@@ -2,7 +2,7 @@ Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
 
 DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 
-	Extends: DeskPRO.Agent.PageFragment.Page.BasicTicket,
+	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	allowDupe: true,
 	TYPENAME: 'newticket',
