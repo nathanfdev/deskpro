@@ -1454,16 +1454,23 @@ class Arrays
 	 * // );
 	 * </code>
 	 *
-	 * @param array $array
-	 * @param $group_key
+	 * @param array    $array            The array to work on
+	 * @param string   $group_key        The key in the array that serves as the grouping value
+	 * @param bool     $preserve_keys    True to preserve keys when grouping
+	 * @param callback $mutator_callback A callback function to call on the group to normalize the group value
 	 * @return array
 	 */
-	public static function groupItems($array, $group_key, $preserve_keys = false)
+	public static function groupItems($array, $group_key, $preserve_keys = false, $mutator_callback = null)
 	{
 		$ret = array();
 
 		foreach ($array as $k => $v) {
 			$group = $v[$group_key];
+
+			if ($mutator_callback) {
+				$group = $mutator_callback($group);
+			}
+
 			if (!isset($ret[$group])) $ret[$group] = array();
 
 			if ($preserve_keys) {

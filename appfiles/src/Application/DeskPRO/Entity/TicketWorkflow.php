@@ -37,4 +37,10 @@ class TicketWorkflow extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
+
+
+	public function __toString()
+	{
+		return $this->title;
+	}
 }

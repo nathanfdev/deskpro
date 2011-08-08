@@ -195,4 +195,10 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 		}
 		return $this->title;
 	}
+	
+
+	public function __toString()
+	{
+		return $this->getFullTitle();
+	}
 }

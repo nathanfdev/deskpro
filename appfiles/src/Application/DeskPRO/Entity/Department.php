@@ -172,4 +172,10 @@ class Department extends \Application\DeskPRO\Domain\DomainObject implements Has
 		}
 		return $this->title;
 	}
+	
+
+	public function __toString()
+	{
+		return $this->getFullTitle();
+	}
 }

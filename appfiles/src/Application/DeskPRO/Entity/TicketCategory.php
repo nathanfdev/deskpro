@@ -165,4 +165,10 @@ class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements
 		}
 		return $this->title;
 	}
+
+
+	public function __toString()
+	{
+		return $this->getFullTitle();
+	}
 }
