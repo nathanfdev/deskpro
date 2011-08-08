@@ -70,6 +70,8 @@ Orb.Util.TimeAgo = {
 	_refreshElements: function(els) {
 		if (!els) els = this._watchEls;
 
+		var self = this;
+
 		els.each(function(el) {
 
 			// Could be removed, just skip it
@@ -85,6 +87,10 @@ Orb.Util.TimeAgo = {
 				var isTime = el.get(0).tagName.toLowerCase() == 'time';
 				var iso8601 = isTime ? el.attr('datetime') : el.attr('title');
 
+				if (!iso8601) {
+					return;
+				}
+
 				var s = iso8601.replace(/\.\d\d\d+/,""); // remove milliseconds
 				s = s.replace(/-/,"/").replace(/-/,"/");
 				s = s.replace(/T/," ").replace(/Z/," UTC");
@@ -98,7 +104,7 @@ Orb.Util.TimeAgo = {
 
 			var data = el.data('timeago');
 			if (!isNaN(data.datetime)) {
-				el.text(this.get(data.datetime));
+				el.text(self.get(data.datetime));
 			}
 		});
 	},
@@ -143,7 +149,6 @@ Orb.Util.TimeAgo = {
 	 */
 	getForMs: function(ms) {
 		var info = this.getRelativeInfo(ms);
-		console.log(info);
 
 		var total_secs = parseInt(ms / 1000);
 
@@ -255,5 +260,6 @@ Orb.Util.TimeAgo = {
 if (jQuery) {
 	jQuery.fn.timeago = function() {
 		Orb.Util.TimeAgo.applyToJquery(this);
+		return this;
 	};
 }

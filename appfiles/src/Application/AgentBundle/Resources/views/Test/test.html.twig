@@ -18,78 +18,13 @@
 		var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
 
 		$(document).ready(function() {
-			var ce = new DeskPRO.Agent.PageHelper.CategoryEdit({
-				wrapper: $('.category-editor:first')
-			});
-
-			ce.open();
-
-			$('#btn_trigger').click(function() {
-				ce.open();
-			});
+			$('.timeago').timeago();
 		});
 	</script>
 </head>
 <body>
-
-<button class="dp-button" id="btn_trigger">Open</button>
-
-<div class="category-editor field-overlay" style="display: none">
-	<span class="close-trigger">x</span>
-	<div class="backdrop" style="display: none"></div>
-	<div class="new-dlg field-overlay" style="display:none">
-		<span class="new-close-trigger">x</span>
-		Parent: <select>
-			<option value="0" class="none">&lt;none&gt;</option>
-		</select>
-		<br />
-		Title: <input type="text" value="" />
-		<br />
-		<button class="dp-button x-small add-save-trigger">Add</button>
-	</div>
-	<header>
-		<div class="new">
-			<button class="dp-button x-small add-trigger">Add Category</button>
-		</div>
-		<h4>KB Categories</h4>
-	</header>
-	<section>
-		<ul class="top">
-			<li>
-				<div class="title" data-cat-id="1" data-depth="0">Category</div>
-				<ul>
-					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
-					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
-					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
-				</ul>
-			</li>
-			<li class="category-1">
-				<div class="title" data-cat-id="1" data-depth="0">Category X</div>
-			</li>
-			<li>
-				<div class="title" data-cat-id="1" data-depth="0">Category</div>
-			</li>
-			<li>
-				<div class="title" data-cat-id="1" data-depth="0">Category</div>
-				<ul>
-					<li>
-						<div class="title" data-cat-id="1" data-depth="1">Category</div>
-						<ul>
-							<li><div class="title" data-cat-id="1" data-depth="2">Category</div></li>
-							<li><div class="title" data-cat-id="1" data-depth="2">Category</div></li>
-							<li><div class="title" data-cat-id="1" data-depth="2">Category</div></li>
-						</ul>
-					</li>
-					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
-					<li><div class="title" data-cat-id="1" data-depth="1">Category</div></li>
-				</ul>
-			</li>
-		</ul>
-	</section>
-	<footer>
-		<button class="dp-button x-small save-all-trigger">Save Changes</button>
-	</footer>
-</div>
-
+	<em class="timeago" title="{{ ''|date('c') }}">{{ ''|date('c') }}</em>
+	<em class="timeago" title="{{ ''|date('c') }}">{{ ''|date('c') }}</em>
+	<em class="timeago" title="{{ ''|date('c') }}">{{ ''|date('c') }}</em>
 </body>
 </html>
