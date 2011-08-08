@@ -1,15 +1,18 @@
 <div class="ticket-snippets-overlay snippets-overlay">
 	<nav>
 		<ul>
-			{% for group,snippets in ticket_snippets %}
-				<li data-tab-for="article.{{ group|md5_hash }}">{{ group }}</li>
+			{% for group in ticket_snippets %}
+				<li data-category="{{ group.category.id }}" data-tab-for="article.cat-{{ group.category.id }}">
+					<label>{{ group.category.title }}</label>
+				</li>
 			{% endfor %}
+			<li class="new-category tipped" title="Add new category">new category</li>
 		</ul>
 	</nav>
-	{% for group,snippets in ticket_snippets %}
-		<article class="{{ group|md5_hash }}" style="display:none;">
+	{% for group in ticket_snippets %}
+		<article class="cat-{{ group.category.id }}" style="display:none;">
 			<ul>
-				{% for snippet in snippets %}
+				{% for snippet in group.snippets %}
 					<li class="snippet snippet-{{ snippet.id }}" data-snippet-id="{{ snippet.id }}">
 						<label class="snippet-trigger" data-snippet-id="{{ snippet.id }}">{{ snippet.title }}</label>
 						{% if no_formatting %}
@@ -26,4 +29,23 @@
 			</ul>
 		</article>
 	{% endfor %}
+
+	<script type="text/x-jquery-tmpl" class="tpl-cat-row">
+		<li class="editing" data-tab-for="article.${category_hash}">
+			<label></label>
+			<input type="text" name="category_name" value="New Category" />
+		</li>
+	</script>
+	<script type="text/x-jquery-tmpl" class="tpl-cat-list">
+		<article class="{{ category_hash }}" style="display: none;">
+			<ul>
+			</ul>
+		</article>
+	</script>
+	<script type="text/x-jquery-tmpl" class="tpl-snippet-list">
+		<li class="new-snippet ${tmp_id}">
+			<label><input type="text" name="title[]" /></label>
+			<textarea class="value raw" style="display: none;">{{ snippet.snippet }}</textarea>
+		</li>
+	</script>
 </div>

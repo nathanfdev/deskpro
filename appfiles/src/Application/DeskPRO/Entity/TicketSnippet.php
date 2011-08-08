@@ -19,8 +19,6 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
 /**
- * Ticket macros
- *
  * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketSnippet")
  * @orm:Table(name="ticket_snippets")
  */
@@ -34,7 +32,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Who created the snippet
-	 * 
+	 *
 	 * @var \Application\DeskPRO\Entity\Person
 	 * @orm:ManyToOne(targetEntity="Person")
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
@@ -42,28 +40,9 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
-	 * Teams who can use this snippet
-	 * 
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="AgentTeam", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="ticket_snippet_to_team", joinColumns={@orm:JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")})
-	 */
-	protected $agent_teams = null;
-
-	/**
-	 * Everyone can see it?
-	 * 
-	 * @var bool
-	 * @orm:Column(name="is_global", type="boolean")
-	 */
-	protected $is_global = false;
-
-	/**
-	 * A plain-text category as string a string. We sort them properly when sending them
-	 * to the client (so there's not a separate category table).
-	 *
-	 * @var string
-	 * @orm:Column(name="category", type="string", length=255)
+	 * @var \Application\DeskPRO\Entity\TicketCategory
+	 * @orm:ManyToOne(targetEntity="TicketSnippetCategory", fetch="EAGER")
+	 * @orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $category;
 
@@ -78,7 +57,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="snippet", type="text")
 	 */
 	protected $snippet;
-
+	
 	
 	/**
 	 * Format a snippet

@@ -25,11 +25,12 @@ class TicketSnippet extends \Doctrine\ORM\EntityRepository
 		$agent_teams = $agent->getAgentTeamIds();
 
 		$dql = "
-			SELECT s
+			SELECT s, c
 			FROM DeskPRO:TicketSnippet s
+			LEFT JOIN s.category c
 			WHERE
-				s.person = ?1
-				OR s.is_global = true
+				c.person = ?1
+				OR c.is_global = true
 		";
 
 		$coll = $this->getEntityManager()->createQuery($dql)
@@ -43,8 +44,15 @@ class TicketSnippet extends \Doctrine\ORM\EntityRepository
 
 	public function groupSnippetCollection($collection)
 	{
-		$ret = Arrays::groupItems($collection, 'category');
-		ksort($ret, SORT_STRING);
+		$ret = array();
+
+		foreach ($collection as $snippet) {
+			if (!isset($ret[$snippet->category['id']])) {
+				$ret[$snippet->category['id']] = array('category' => $snippet->category, 'snippets' => array());
+			}
+
+			$ret[$snippet->category['id']]['snippets'][] = $snippet;
+		}
 
 		return $ret;
 	}

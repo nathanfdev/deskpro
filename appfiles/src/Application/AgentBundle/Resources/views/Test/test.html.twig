@@ -18,13 +18,14 @@
 		var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
 
 		$(document).ready(function() {
-			$('.timeago').timeago();
+			var sv = new DeskPRO.Agent.Widget.SnippetViewer({
+				viewUrl: BASE_URL + 'agent/tickets/19/snippet-viewer'
+			});
+			sv.open();
 		});
 	</script>
 </head>
 <body>
-	<em class="timeago" title="{{ ''|date('c') }}">{{ ''|date('c') }}</em>
-	<em class="timeago" title="{{ ''|date('c') }}">{{ ''|date('c') }}</em>
-	<em class="timeago" title="{{ ''|date('c') }}">{{ ''|date('c') }}</em>
+
 </body>
 </html>
