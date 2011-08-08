@@ -113,7 +113,7 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 
 		$replace_from_object = function ($prefix, $obj) use (&$snippet) {
 			$matches = null;
-			if (preg_match_all('#\{\{\s*'.$prefix.'\.([a-zA-Z]{1}[a-zA-Z0-9]+)\s\}\}#', $snippet, $matches, PREG_SET_ORDER)) {
+			if (preg_match_all('#\{\{\s*'.$prefix.'\.([a-zA-Z]{1}[a-zA-Z0-9_]+)\s*\}\}#', $snippet, $matches, PREG_SET_ORDER)) {
 				foreach ($matches as $m) {
 					$find = $m[0];
 					$key = $m[1];
