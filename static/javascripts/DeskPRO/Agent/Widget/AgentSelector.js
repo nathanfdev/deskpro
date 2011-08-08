@@ -6,6 +6,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 
 	initialize: function(options) {
 		this.options = {
+			triggerElement: null,
 			agentList: null,
 			multipleChoice: false,
 			zIndex: 1000001,
@@ -15,6 +16,14 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 		if (options) this.setOptions(options);
 
 		this.previousSelection = '';
+
+		if (this.options.triggerElement) {
+			var self = this;
+			$(this.options.triggerElement).click(function(ev) {
+				ev.preventDefault();
+				self.open(ev);
+			});
+		}
 	},
 
 	_initWrapper: function() {

@@ -605,6 +605,9 @@ class TicketController extends AbstractController
 
 		if ($this->in->getBool('options.do_assign')) {
 			$ticket['agent_id'] = $this->in->getUint('options.agent_id');
+		}
+
+		if ($this->in->getBool('options.do_assign_team')) {
 			$ticket['agent_team_id'] = $this->in->getUint('options.agent_team_id');
 		}
 

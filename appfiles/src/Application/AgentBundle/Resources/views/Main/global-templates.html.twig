@@ -1,0 +1,40 @@
+{#
+	This file contains global JS templates and menus and other such
+	resources used throughout.
+#}
+<div id="deskpro_window_templates" style="display: none;">
+
+{# Agents Selector #}
+<ul id="agent_selector_list">
+	{% for id,title in agent_names %}
+		<li data-agent-id="{{id}}">
+			<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 30}) }}" alt="" width="30" height="30" />
+			<a>{{title}}</a>
+		</li>
+	{% endfor %}
+</ul>
+
+{# Teams #}
+<ul id="agent_teams_menu">
+	{% if app.user.teams %}
+		<li class="section-title">Your Teams</li>
+		{% for team in app.user.teams %}
+			<li data-team-id="{{ team.id }}">{{ team.name }}</li>
+		{% endfor %}
+		<li class="sep">-</li>
+	{% endif %}
+
+	{% for team in agent_teams %}
+		<li data-team-id="{{ team.id }}">{{ team.name }}</li>
+	{% endfor %}
+</ul>
+
+{# Ticket Status #}
+<ul id="ticket_status_menu">
+	<li data-status="open">Open</li>
+	<li data-status="pending">Pending</li>
+	<li data-status="resolved">Resolved</li>
+	<li data-status="closed">Closed</li>
+</ul>
+
+</div>

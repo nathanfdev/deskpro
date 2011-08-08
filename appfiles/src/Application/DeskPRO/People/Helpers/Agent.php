@@ -47,6 +47,12 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 		return array(
 			'getAgent' => '_getThis',
 			'agent' => '_getThis',
+
+			'teams' => 'getTeams',
+			'getTeams' => 'getTeams',
+
+			'team' => 'getTeam',
+			'getTeam' => 'getTeam',
 		);
 	}
 
@@ -98,7 +104,7 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 
 		$this->_agent_teams = App::getOrm()->createQuery("
 			SELECT t
-			FROM DeskPRO:AgentTeam t
+			FROM DeskPRO:AgentTeam t INDEX BY t.id
 			LEFT JOIN t.members p
 			WHERE p.id = ?1
 		")->execute(array(1=>$this->person['id']));;
@@ -124,6 +130,23 @@ class Agent extends \Application\DeskPRO\Domain\DomainObject implements \Orb\Hel
 		return $this->_agent_team_ids;
 	}
 
+
+	/**
+	 * Get the persons team. If a person has more than one team ID, then this
+	 * will return the first
+	 *
+	 * @return int
+	 */
+	public function getTeam()
+	{
+		$teams = $this->getTeams();
+		if (!$teams) {
+			return 0;
+		}
+
+		$t = array_shift($teams);
+		return $t;
+	}
 
 
 	/**

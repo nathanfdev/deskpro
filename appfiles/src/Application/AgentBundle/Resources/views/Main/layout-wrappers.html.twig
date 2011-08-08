@@ -157,11 +157,4 @@
 {% include 'AgentBundle:Main:volume-menu.html.twig' %}
 {% include 'AgentBundle:Main:audio-preload.html.twig' %}
 
-<ul id="agent_selector_list" style="display: none">
-	{% for id,title in agent_names %}
-		<li data-agent-id="{{id}}">
-			<img src="{{ path('serve_person_picture_size', {'person_id': id, 'size': 30}) }}" alt="" width="30" height="30" />
-			<a>{{title}}</a>
-		</li>
-	{% endfor %}
-</ul>
+{% include 'AgentBundle:Main:global-templates.html.twig' %}

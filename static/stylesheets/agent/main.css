@@ -5342,3 +5342,22 @@ article.ticket .urgency span {
 .snippets-overlay article li div.content {
     margin-left: 141px;
 }
+
+
+.reply-box .controls-area .loading-spinner {
+    margin-left: 10px;
+    background: url(../../images/loading-small.gif) no-repeat 0 50%;
+    display: none;
+    padding-left: 20px;
+}
+
+.reply-box.loading .controls-area .loading-spinner {
+    display: block;
+}
+.reply-box.loading .controls-area .controls {
+    display: none;
+}
+
+.reply-box .menu-trigger {
+    border-bottom: 1px dotted #8C8D8D;
+}

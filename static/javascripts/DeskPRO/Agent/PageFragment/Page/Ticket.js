@@ -88,9 +88,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this._initTicketTabs();
 		this._initTicketNotes();
 
-		// Need this to set the initial agent signature
-		this.resetReply();
-
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'tickets', id: this.getMetaData('ticket_id') });
 
@@ -167,71 +164,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			updateMessageTypes();
 		});
 
-		var textSnippetsBtn = this.getEl('text_snippets_btn');
-		var self= this;
-		textSnippetsBtn.click(function() {
-			self.showTextSnippets();
-		});
-
-		// Switching between reply/note
-		var replyBox = this.getEl('replybox');
-		console.log(replyBox);
-		var tabReply = this.getEl('replybox_replytab_btn');
-		var tabNote = this.getEl('replybox_notetab_btn');
-
-		tabReply.click(function() {
-			tabNote.removeClass('on');
-			tabReply.addClass('on');
-
-			$('.reply-hide', replyBox).hide();
-			$('.note-hide', replyBox).show();
-		});
-		tabNote.click(function() {
-			tabNote.addClass('on');
-			tabReply.removeClass('on');
-			console.log('eref: %o', $('.hide-reply', replyBox));
-
-			$('.reply-hide', replyBox).show();
-			$('.note-hide', replyBox).hide();
-		});
-
 		// Goto reply
 		$('button.goto-reply', this.wrapper).click(function() {
-			console.log('click');
 			cw.tinyscrollbar_scrolltop(1000000);
 		});
 
-		var followersList = this.getEl('newnote_followerslist');
-		this.replyboxAddFollowers = new DeskPRO.Agent.Widget.AgentSelector({
-			agentList: $('#agent_selector_list'),
-			multipleChoice: true,
-			onSelectionClick: function(info) {
-				if (info.checked) {
-					$('.agent-' + info.agentId, followersList).remove();
-				} else {
-					var agentInfo = DeskPRO_Window.getAgentInfo(info.agentId);
-					if (!agentInfo) return;
-
-					var html = '<li class="agent-'+agentInfo.id+'"><span style="background: url(\'' + agentInfo.pictureUrlSizable.replace('{SIZE}', 30) + '\')">' + Orb.escapeHtml(agentInfo.name) + '</li>';
-					var li = $(html);
-
-					li.appendTo(followersList);
-				}
-			}
-		});
-		$('.add-followers-trigger', replyBox).click(function(ev) {
-			self.replyboxAddFollowers.open(ev);
-		});
-	},
-
-	showTextSnippets: function() {
-		if (!this.textsnippetsOverlay) {
-			this.textsnippetsOverlay = new DeskPRO.UI.Overlay({
-				contentElement: this.getEl('text_snippets_overlay')
-			});
-		}
-
-		this.textsnippetsOverlay.open();
+		this._initReplyBox();
 	},
 
 	destroyPage: function() {
@@ -259,9 +197,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	displayNewMessage: function(html, slideCallback) {
 		var new_message = $(html).hide();
 
-		var self = this;
 		slideCallback = slideCallback || function(){};
-		new_message.appendTo($('.ticket-messages .messages-wrap', this.contentWrapper)).slideDown('fast', slideCallback);
+
+		new_message.appendTo($(this.getEl('messages_wrap'))).slideDown('fast', slideCallback);
 
 		this._initMessage(new_message);
 		this.incCount('ticket-messages');
@@ -473,60 +411,29 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		});
 	},
 
-	_initCcArea: function() {
-		var area = $('.cc-area', this.wrapper);
-		var newparts = $('.cc-new-parts', area);
+	//#################################################################
+	//# Reply area
+	//#################################################################
 
-		$('li', area).click(function(ev) {
-			if (!$(ev.target).is('input')) {
-				$('input', this).click();
-			}
+	_initReplyBox: function() {
+		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
+			replyBox: this.getEl('replybox'),
+			onBeforeSaveReply: this._beforeSaveReply.bind(this),
+			onSaveReplySuccess: this._saveReplySuccess.bind(this)
 		});
 
-		var txt = $('.new-part input', newparts);
-		var btn = $('.new-part button', newparts);
+		this.replyBox.resetReplyBox();
+	},
 
-		$('section.cc-section .with-scrollbar', area).tinyscrollbar();
-		var newSectionScroll = $('section.cc-new-parts .with-scrollbar', area);
-
-		btn.click(function() {
-			var val = txt.val();
-			var el = $('<li>' + val + '<input type="hidden" name="new_parts[]" value="'+val+'" />&nbsp;&nbsp;<span class="remove-trigger" style="cursor: pointer;">x</span></li>');
-
-			$('.remove-trigger', el).click(function() {
-				el.remove();
-			});
-			$('ul', newparts).append(el);
-
-			newSectionScroll.tinyscrollbar();
+	_beforeSaveReply: function(info) {
+		info.formData.push({
+			name: 'client_messages_since',
+			value: DeskPRO_Window.getLastClientMessageId()
 		});
 	},
 
-	//#################################################################
-	//# Ticket attachments
-	//#################################################################
-
-	_initAttachments: function() {
-		var self = this;
-
-		var list = $('.file-list', this.barWrapper);
-		$('input', list[0]).live('click', function() {
-			var el = $(this);
-			var li = el.parent();
-			if (el.is(':checked')) {
-				li.removeClass('unchecked');
-			} else {
-				li.addClass('unchecked');
-			}
-		});
-
-		this.barWrapper.fileupload({
-			url: this.getMetaData('uploadAttachUrl'),
-			dropZone: this.barWrapper,
-			autoUpload: true,
-			uploadTemplate: $('.template-upload', this.barWrapper),
-			downloadTemplate: $('.template-download', this.barWrapper)
-		});
+	_saveReplySuccess: function(info) {
+		this.displayNewMessage(info.result.message_html);
 	},
 
 	//#################################################################
@@ -1096,53 +1003,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}
 	},
 
-	_handleSendReply: function(els) {
-		if (this.isSendingReply) {
-			return;
-		}
-
-		$('.send-reply button', this.ticketBar).hide();
-		var spinnerContainer = $('.send-reply .spinner', this.ticketBar).show().empty();
-		spinnerContainer.parent().addClass('is-loading');
-		var spinner = new Spinner(spinnerContainer, {
-			radii: [4,8],
-			padding: 0
-		}).play();
-
-		this.isSendingReply = true;
-
-		var data = els.serializeArray();
-		data.push({
-			name: 'client_messages_since',
-			value: DeskPRO_Window.getLastClientMessageId()
-		});
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-reply',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'json',
-			success: function(data) {
-				this.isSendingReply = false;
-
-				if (data.client_messages) {
-					DeskPRO_Window.forwardClientMessageData(data.client_messages);
-				}
-
-				this._handleSendReplySuccess(data);
-			},
-			complete: function() {
-				var spinnerContainer = $('.send-reply .spinner', this.ticketBar).hide().empty();
-				spinnerContainer.parent().removeClass('is-loading');
-
-				this.afterNewReply();
-
-				$('.send-reply button', this.ticketBar).show();
-			}
-		});
-	},
-
 	//#################################################################
 	//# Popout
 	//#################################################################
@@ -1302,165 +1162,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//# Reply bar
 	//#################################################################
 
-	_initReplyBar: function() {
-		this.ticketBar = $('.tab-bottom-open:first', this.barWrapper);
-		this.ticketReply = $('div.tab-bottom-open:first', this.barWrapper);
-
-		this.ticketReplyTabs = $('.tab-bottom-tabs', this.barWrapper);
-
-		var self = this;
-
-		// Send reply
-		$('.send-reply button', this.barWrapper).click(function(ev) {
-			ev.preventDefault(); // its wrapped in a form tag, we dont want to submit the page tho
-			self._sendReply();
-		});
-
-		// Init ticket reply tabs
-		var simpleTabs = this.replySimpleTabs = new DeskPRO.UI.SimpleTabs({
-			context: this.ticketReply,
-			triggerElements: $('li.tab-trigger', this.ticketReplyTabs)
-		});
-
-		// Actions menu
-		this.ticketActionsMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.bar-actions li.actions', this.ticketBar),
-			menuElement: $('ul.ticket-info-edit-menu:first', this.contentWrapper),
-			onItemClicked: this._handleActionsMenuClick.bind(this)
-		});
-		this.destroyMenus.push(this.ticketActionsMenu);
-
-		// Macros menu
-		this.ticketMacrosMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.tab-bottom-tabs .macros', this.ticketBar),
-			menuElement: $('ul.ticket-macros-menu:first', this.contentWrapper),
-			onItemClicked: this._handleMacroClick.bind(this)
-		});
-		this.destroyMenus.push(this.ticketMacrosMenu);
-
-		// Macro apply/cancel
-		$('.tab-bottom-tabs .macros-apply', this.ticketBar).click((function() {
-			var data = [];
-			if (this._currentMacroId) {
-				data.push({ name: 'macro_id', value: this._currentMacroId });
-			}
-			this.changeManager.saveChanges(data);
-			this.toggleMacroApplyBtn('off');
-
-			this._currentMacroId = null;
-		}).bind(this));
-
-		$('.tab-bottom-tabs .macros-cancel', this.ticketBar).click((function() {
-			this.changeManager.revertChanges();
-			this.toggleMacroApplyBtn('off');
-
-			this._currentMacroId = null;
-		}).bind(this));
-
-		// Menus to change reply info
-		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('span.trigger.agent_id', this.ticketReply),
-			menuElement: $('.reply-agent_id-menu', this.ticketReply),
-			onItemClicked: (function(info) {
-				var id = $(info.itemEl).data('option-value');
-				var display = DeskPRO_Window.getDisplayName('agent', id);
-
-				$('span.prop-val.agent_id', this.ticketReply).html(display);
-				$('input[name="options[agent_id]"]', this.ticketReply).val(id);
-			}).bind(this)
-		});
-		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('span.trigger.agent_team_id', this.ticketReply),
-			menuElement: $('.reply-agent_team_id-menu', this.ticketReply),
-			onItemClicked: (function(info) {
-				var id = $(info.itemEl).data('option-value');
-				var display = DeskPRO_Window.getDisplayName('agent_team', id);
-
-				$('span.prop-val.agent_team_id', this.ticketReply).html(display);
-				$('input[name="options[agent_team_id]"]', this.ticketReply).val(id);
-			}).bind(this)
-		});
-		var menu = this.actionMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('span.trigger.status', this.ticketReply),
-			menuElement: $('.reply-status-menu', this.ticketReply),
-			onItemClicked: (function(info) {
-				var id = $(info.itemEl).data('option-value');
-				var display = DeskPRO_Window.getDisplayName('status', id);
-
-				$('span.prop-val.status', this.ticketReply).html(id);
-				$('input[name="options[status]"]', this.ticketReply).val(id);
-			}).bind(this)
-		});
-
-		var self = this;
-
-		$('input.reply-assign-trigger', this.ticketReply).click(function(ev) {
-			// We can uncheck easy
-			if ($(this).val() != '0') {
-				$(this).attr('checked', false).val('0');
-				$('span.reply-assign-label', self.ticketReply).hide().html('');
-
-			// To check popup the menu
-			} else {
-				ev.preventDefault();
-
-				ev.customEvents = new Events();
-				ev.customEvents.addEvent('itemClicked', self._handleReplybarAssign.bind(self));
-
-				self.ticketOptionsMenus['agent_id'].openMenu(ev);
-			}
-		});
-		$('span.reply-assign-label', this.ticketReply).click(function(ev) {
-			ev.customEvents = new Events();
-			ev.customEvents.addEvent('itemClicked', self._handleReplybarAssign.bind(self));
-			self.ticketOptionsMenus['agent_id'].openMenu(ev);
-		});
-
-		var menu = new DeskPRO.UI.Menu({
-			menuElement: $('ul.cc-to-menu:first', this.ticketReply)
-		});
-		this.destroyMenus.push(menu);
-
-		var ccToInput = $('ul.cc-to-menu:first input', this.ticketReply);
-
-		var ccCheck = $('input.cc-to-trigger', this.ticketReply).click(function(ev) {
-
-			// We can uncheck easy
-			if ($(this).val() != '') {
-				$(this).attr('checked', false).val('0');
-				$('span.cc-to-label', self.ticketReply).hide().html('');
-
-			// To check popup the menu
-			} else {
-				ev.preventDefault();
-				menu.openMenu(ev);
-				ccCheck.focus();
-			}
-		})
-		$('span.cc-to-label', this.ticketReply).click(function(ev) {
-			menu.openMenu(ev);
-		});
-
-		var ccSaveBtn = $('button.cc-to-save-trigger', this.ticketReply).click(function(ev) {
-			var val = ccToInput.val().trim();
-
-			if (val.length) {
-				ccCheck.attr('checked', true).val(val);
-
-				var labelEl = $('span.cc-to-label', self.ticketReply);
-				var displayName = labelEl.data('label').replace('%email%', val);
-
-				labelEl.html(displayName).show();
-
-				menu.closeMenu();
-
-			} else {
-				ccCheck.attr('checked', false).val('');
-				$('span.cc-to-label', self.ticketReply).hide().html('');
-			}
-		});
-	},
-
 	_handleReplybarAssign: function(info) {
 		var agentId = $(info.itemEl).data('option-id');
 		var agentName = $(info.itemEl).html();
@@ -1476,10 +1177,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			$('span.reply-assign-label', this.ticketReply).hide().html('');
 		}
 	},
-	ticketBar: null,
-	ticketReply: null,
-	ticketReplyTabs: null,
-
 	ticketActionsMenu: null,
 	ticketMacrosMenu: null,
 
@@ -1587,57 +1284,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}
 	},
 
-	isSendingReply: false,
-	_sendReply: function() {
-		this._handleSendReply($(':input, textarea, select', this.ticketReply));
-	},
-
-	_handleSendReply: function(els) {
-		console.warn('This method should be overriden in a subclass!');
-	},
-
-	_handleSendReplySuccess: function(data) {
-
-		var slideCallback = null;
-		if (data.close_tab) {
-			var self = this;
-			slideCallback = function() {
-				DeskPRO_Window.removePage(self);
-			};
-		}
-
-		this.displayNewMessage(data.message_html, slideCallback);
-		this.newReplyNewProps(data);
-		this.afterNewReply();
-	},
-
-	newReplyNewProps: function(data) {
-		var prop = null;
-
-		prop = this.getPropertyManager('agent_id');
-		prop.setValue(data.agent_id);
-
-		prop = this.getPropertyManager('agent_team_id');
-		prop.setValue(data.agent_team_id);
-
-		prop = this.getPropertyManager('status');
-		prop.setValue(data.status);
-	},
-
-	afterNewReply: function(data) {
-		// If there are new attachments, that tab is now stale
-		if ($('.attachments-area ul.file-list li', this.ticketReply).length) {
-			this.unloadTicketTab('attachments');
-		}
-
-		// New reply means theres a ticketlog entry of course
-		this.unloadTicketTab('notes');
-
-		this.updateCounts();
-
-		this.resetReply();
-	},
-
 	updateCounts: function() {
 		var wrap = $('.full-container-tabbed-tabs', this.wrapper);
 
@@ -1653,21 +1299,5 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				});
 			}
 		});
-	},
-
-	resetReply: function() {
-
-		if (this._draftTimer) {
-			window.clearTimeout(this._draftTimer);
-			this._draftTimer = null;
-		}
-
-		$('textarea[name="message"]', this.ticketReply).val('');
-		$('.attachments-area ul.file-list', this.ticketReply).html('');
-
-		// If we have a signature, then set it
-		if (this.meta.agentSignature) {
-			$('textarea[name="message"]', this.ticketReply).val("\n\n--\n" + this.meta.agentSignature);
-		}
 	}
 });

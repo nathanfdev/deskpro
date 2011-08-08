@@ -226,7 +226,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<li><label><input type="checkbox" class="show-logs" />Show logs</label></li>
 		</ul>
 	</div>
-	<div class="messages-wrap">
+	<div class="messages-wrap" id="{{baseId}}_messages_wrap">
 		{{ ticket_messages_block|raw }}
 	</div>
 </div>

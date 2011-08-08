@@ -52,6 +52,7 @@ abstract class AbstractController extends \Application\DeskPRO\Controller\Abstra
 			// TODO implement no perms
 		}
 
+		$this->person->loadHelper('Agent');
 		$this->person->loadHelper('AgentTeam');
 		$this->person->loadHelper('AgentPermissions');
 		$this->person->loadHelper('HelpMessages');
