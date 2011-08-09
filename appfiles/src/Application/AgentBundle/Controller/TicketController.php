@@ -931,13 +931,11 @@ class TicketController extends AbstractController
 			));
 		}
 
-		if ($is_dep_changed OR $this->in->checkIsset('actions.department_id')) {
-			$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-			$data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
-				'ticket' => $ticket,
-				'ticket_options' => $ticket_options
-			));
-		}
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+		$data['holders'] = $this->renderView('AgentBundle:Ticket:view-page-display-holders.html.twig', array(
+			'ticket' => $ticket,
+			'ticket_options' => $ticket_options
+		));
 
 		return $this->createJsonResponse($data);
 	}

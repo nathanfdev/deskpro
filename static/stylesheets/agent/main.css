@@ -5444,3 +5444,17 @@ article.ticket .urgency span {
     padding-left: 16px;
     cursor: pointer;
 }
+
+
+
+.fields-edit-container.loading .controls {
+    display:none;
+}
+
+.fields-edit-container .saving {
+    display:none;
+}
+
+.fields-edit-container.loading .saving {
+    display: block;
+}

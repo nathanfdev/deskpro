@@ -41,8 +41,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		if (!this.meta.isDeleted) {
 			this._initCustomFieldsEditor();
-
-			//this._initParticipants();
 		}
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {

@@ -203,7 +203,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	/**
 	 * Save the changes for all queued items
 	 */
-	saveChanges: function(data) {
+	saveChanges: function(data, callback) {
 		data = data || [];
 
 		var saving_classes = [];
@@ -241,15 +241,18 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				context: this,
 				success: function(data) {
 
-					this.ticketPage.unloadTicketTab('ticket-log');
 					this.changes = {};
 					this.oldValues = {};
 
 					if (data && data.properties) {
 						Object.each(data, function (returnValue, type) {
-							var property = this.ticketPage.getPropertyManager(type);
+							var property = this.getPropertyManager(type);
 							property.setIncomingValue(returnValue);
 						}, this);
+					}
+
+					if (callback) {
+						//callback(data);
 					}
 
 					this.fireEvent('updateResult', [data]);
@@ -314,7 +317,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	 */
 	setPropertyUpdated: function(property, newValue) {
 		if (typeOf(property) == 'string') {
-			property = this.ticketPage.getPropertyManager(property);
+			property = this.getPropertyManager(property);
 		}
 
 		property.setIncomingValue(newValue);

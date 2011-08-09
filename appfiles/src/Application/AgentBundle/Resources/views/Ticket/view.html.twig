@@ -157,6 +157,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 
 			<li {% if not (ticket.status == 'resolved' or ticket.status == 'pending') %}style="display:none"{% endif %} class="set-open"><button class="clean-gray xx-small">Set Awaiting Agent</button></li>
 
+			<li class="macros"><button class="clean-gray xx-small">Macros</button></li>
 			<li class="more"><button class="clean-gray xx-small">More</button></li>
 		</ul>
 	</nav>
@@ -264,8 +265,13 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<tfoot>
 				<tr>
 					<td colspan="2">
-						<button class="clean-gray xx-small save-trigger">Save</button>
-						<button class="clean-gray xx-small close-trigger">Cancel</button>
+						<div class="controls">
+							<button class="clean-gray xx-small save-trigger">Save</button>
+							<button class="clean-gray xx-small close-trigger">Cancel</button>
+						</div>
+						<div class="saving">
+							Saving, please wait...
+						</div>
 					</td>
 				</tr>
 			</tfoot>
@@ -303,6 +309,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
 
 {% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
+
+{% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

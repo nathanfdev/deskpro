@@ -1,35 +1,35 @@
 <div class="page-display-holders" style="display:none">
 	{# Standard fields #}
-	<div class="ticket_category category_id standard-field item" data-item-type="ticket_category">
+	<div class="ticket_category category_id standard-field item {% if not ticket.category %}no-value{% endif %}" data-item-type="ticket_category">
 		<div class="title">
 			<span class="menu-trigger category_id label">Category</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger category_id {% if not ticket.category %}no-value{% endif %}">{{ticket.category.full_title|default('None')}}</span>
+			<span class="prop-val menu-trigger category_id">{{ticket.category.full_title|default('None')}}</span>
 		</div>
 	</div>
-	<div class="ticket_product product_id standard-field item" data-item-type="ticket_product">
+	<div class="ticket_product product_id standard-field item {% if not ticket.product %}no-value{% endif %}" data-item-type="ticket_product">
 		<div class="title">
 			<span class="menu-trigger product_id label">Product</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger product_id {% if not ticket.category %}no-value{% endif %}">{{ticket.product.title|default('None')}}</span>
+			<span class="prop-val menu-trigger product_id">{{ticket.product.title|default('None')}}</span>
 		</div>
 	</div>
-	<div class="ticket_priority priority_id standard-field item" data-item-type="ticket_priority">
+	<div class="ticket_priority priority_id standard-field item {% if not ticket.priority %}no-value{% endif %}" data-item-type="ticket_priority">
 		<div class="title">
 			<span class="menu-trigger priority_id label">Priority</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger priority_id {% if not ticket.category %}no-value{% endif %}">{{ticket.priority.title|default('None')}}</span>
+			<span class="prop-val menu-trigger priority_id">{{ticket.priority.title|default('None')}}</span>
 		</div>
 	</div>
-	<div class="ticket_workflow workflow_id standard-field item" data-item-type="ticket_workflow">
+	<div class="ticket_workflow workflow_id standard-field item {% if not ticket.workflow %}no-value{% endif %}" data-item-type="ticket_workflow">
 		<div class="title">
 			<span class="menu-trigger workflow_id label">Workflow</span>
 		</div>
 		<div class="content">
-			<span class="prop-val menu-trigger workflow_id {% if not ticket.workflow %}no-value{% endif %}">{{ticket.workflow.title|default('None')}}</span>
+			<span class="prop-val menu-trigger workflow_id">{{ticket.workflow.title|default('None')}}</span>
 		</div>
 	</div>
 

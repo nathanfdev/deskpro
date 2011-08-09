@@ -71,7 +71,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.setOptions(options);
 
-		this.wrapper      = $(this.options.wrapper);
+		this.wrapper      = $(this.options.wrapper || ticketPage.wrapper);
 		this.holders      = $(this.options.holders, this.wrapper);
 		this.inputHolders = $(this.options.inputHolders, this.wrapper);
 
@@ -146,7 +146,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	handleChangeUpdateResult: function(data) {
 		if (data.holders) {
 			this.replaceHolders(data.holders);
-			this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
+			this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0), true);
 		}
 	},
 
@@ -156,12 +156,17 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	 * @param {String} html
 	 */
 	replaceHolders: function(html) {
+
+		var els = $(html);
+
 		this.holders.remove();
-		this.holders = $(html).hide();
+		this.holders = els.filter('.page-display-holders');
+
+		this.inputHolders.remove();
+		this.inputHolders = $(els).filter('.page-display-input');
 
 		this.wrapper.append(this.holders);
-
-		return this.holders;
+		this.wrapper.append(this.inputHolders);
 	},
 
 	/**
@@ -175,6 +180,8 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.sectionProperties.hide();
 
+		$('.fields-show', this.sectionProperties).show();
+
 		// Reset editable areas
 		var container = $(this.sectionPropertiesEditTpl);
 		$('.close-trigger', container).click((function(ev) {
@@ -185,7 +192,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			ev.preventDefault();
 			this.saveEditMode('default');
 		}).bind(this));
-		$('.fields-edit', this.sectionProperties).empty().append(container);
+		$('.fields-edit', this.sectionProperties).empty().hide().append(container);
 	},
 
 
@@ -193,13 +200,13 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 	 * Inits all section elements for the department. This assumes a pristine copy of the holder element,
 	 * so either the first time this is called or it was reset with replaceHolders().
 	 */
-	setDepartment: function(department_id) {
+	setDepartment: function(department_id, refresh) {
 		department_id = parseInt(department_id);
 		console.log('Setting %i', department_id);
-		
+
 		this.clearAll();
 
-		if (department_id == this.departmentId) {
+		if (department_id == this.departmentId && !refresh) {
 			return;
 		}
 
@@ -217,8 +224,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		//------------------------------
 		// Add items to their right places
 		//------------------------------
-		///var container = $(this.sectionPropertiesEditTpl);
-		
+
 		Array.each(depItems, function(item) {
 			switch (item.section) {
 				case 'default':
@@ -228,22 +234,28 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 						return;
 					}
 
-					if (itemEls.itemHolder.data('custom-field-handler')) {
-						item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
+					this.sectionProperties.show();
+
+					var itemId = this.getItemId(item);
+
+					// only put fields with values in the display
+					if (1 || !itemEls.itemHolder.is('.no-value')) {
+						if (itemEls.itemHolder.data('custom-field-handler')) {
+							item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
+						}
+
+						var displayWrap = $(this.sectionPropertiesWrapTpl);
+
+						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
+						itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
+
+						displayWrap.appendTo(this.sectionPropertiesContent);
+						item.sectionEl = this.sectionPropertiesContent;
+
+						itemEls.itemHolder.remove(); //save mem, just remove the orig container
 					}
 
-					var displayWrap = $(this.sectionPropertiesWrapTpl);
-
-					itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
-					itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
-
-					displayWrap.appendTo(this.sectionPropertiesContent);
-					item.sectionEl = this.sectionPropertiesContent;
-
-					itemEls.itemHolder.remove();
-
 					var editWrap = $('.fields-edit-container', this.sectionProperties);
-					var itemId = this.getItemId(item);
 					var itemInputHolder = $('> .' + itemId, this.inputHolders);
 
 					var editTitle = $('> .title', itemInputHolder);
@@ -331,6 +343,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 	saveEditMode: function(section) {
 		var editWrapper = $('.fields-edit', this.sectionProperties);
+		editWrapper.addClass('loading');
 
 		var changeManager = this.page.changeManager;
 
@@ -341,7 +354,9 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			changeManager.addChange(prop);
 		});
 
-		changeManager.saveChanges();
+		changeManager.saveChanges(null, (function() {
+			this.closeEditMode();
+		}).bind(this));
 		
 		var data = $('input, textarea, select', editWrapper).serializeArray();
 	},

@@ -15,19 +15,13 @@
 	<li data-option-id="print"><span class="icon edit">Print Single Message</span></li>
 	<li data-option-id="edit"><span class="icon edit">Edit</span></li>
 </ul>
-<ul class="ticket-macros-menu" style="display:none">
+<ul class="ticket-macros-menu" style="display:none" {% if baseId %}id="{{baseId}}_macros_menu"{% endif %}>
 	{% for macro in macros %}
 		<li data-macro-id="{{macro.id}}">{{macro.title}}</li>
 	{% else %}
 		<li data-no-macro="1">Create a macro</li>
 	{% endfor %}
 </ul>
-
-{% include 'AgentBundle:Common:menu-department.html.twig' with {'departments': ticket_options.departments_hierarchy} %}
-{% include 'AgentBundle:Common:menu-ticket-category.html.twig' with {'categories': ticket_options.ticket_categories_hierarchy} %}
-{% include 'AgentBundle:Common:menu-ticket-product.html.twig' with {'products': ticket_options.products_hierarchy} %}
-{% include 'AgentBundle:Common:menu-ticket-workflow.html.twig' with {'workflows': ticket_options.ticket_workflows } %}
-{% include 'AgentBundle:Common:menu-ticket-priority.html.twig' with {'priorities': ticket_options.priorities } %}
 
 <ul class="ticket-actions-menu" style="display:none">
 	<li data-op="delete">Delete ticket</li>

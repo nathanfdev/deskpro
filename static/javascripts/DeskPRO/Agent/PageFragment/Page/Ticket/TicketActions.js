@@ -100,7 +100,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		}).bind(this));
 
 		//------------------------------
-		// Department
+		// Status
 		//------------------------------
 
 		this.statusMenu = new DeskPRO.UI.Menu({
@@ -113,6 +113,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 				var status = parseInt(item.data('department-id'));
 				this.changeManager.setInstantChange(prop, status);
 			}).bind(this)
+		});
+
+		//------------------------------
+		// Macros
+		//------------------------------
+
+		this.macrosMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.macros button', actionsButtons),
+			menuElement: this.getEl('macros_menus')
 		});
 	},
 
