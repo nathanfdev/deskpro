@@ -255,6 +255,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 				evData.result = result;
 				evData.success = true;
 
+				this.resetReplyBox();
+
 				this.fireEvent('saveReply', [evData]);
 				this.fireEvent('saveReplySuccess', [evData]);
 			},

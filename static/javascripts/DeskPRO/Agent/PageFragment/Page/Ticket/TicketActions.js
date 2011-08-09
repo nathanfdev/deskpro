@@ -169,6 +169,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 	},
 
 	saveMacro: function() {
+
+		if (this.changeManager.hasChangedProperty('reply')) {
+			this.page.replyBox.saveReply();	
+		}
+
 		this.changeManager.saveChanges();
 		if (this.macroOpacityHighlight) {
 			this.macroOpacityHighlight.css('opacity', 1);

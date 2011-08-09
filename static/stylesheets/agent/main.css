@@ -5470,7 +5470,7 @@ article.ticket .urgency span {
     box-shadow: inset 0px 0px 3px 0px #000000;
 }
 
-.display-item.highlight-change-on {
+.display-item.highlight-change-on,  .reply-box.highlight-change-on {
     background-color: #FFFA9D;
     border: 1px solid #D8D58C;
 }

@@ -61,8 +61,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 			case 'flag':
 				manager = new DeskPRO.Agent.Ticket.Property.Flag(this.ticketPage);
 				break;
-			case 'new_reply':
-				manager = new DeskPRO.Agent.Ticket.Property.NewReply(this.ticketPage);
+			case 'reply':
+				manager = new DeskPRO.Agent.Ticket.Property.Reply(this.ticketPage);
 				break;
 			case 'ticket_field':
 				manager = new DeskPRO.Agent.Ticket.Property.TicketField(this.ticketPage, { fieldId: type_id });
@@ -142,6 +142,20 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 	},
 
 
+	/**
+	 * Check if a change is currently in the queue waiting to be saved
+	 * 
+	 * @param type
+	 */
+	hasChangedProperty: function(type) {
+		if (this.changes[type]) {
+			return true;
+		}
+
+		return false;
+	},
+
+
 
 	/**
 	 * Revert all queuued changes in the interface to their previuos values
@@ -161,7 +175,7 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 
 		this.oldValues = {};
 
-		$('.change-on, .highlight-change-on', this.wrapper).removeClass('change-on').removeClass('highlight-change-on');
+		$('.change-on, .highlight-change-on', this.ticketPage.wrapper).removeClass('change-on').removeClass('highlight-change-on');
 
 		this.mode = 'single';
 	},
@@ -222,6 +236,12 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		Object.each(this.changes, function (change) {
 			var property = change[0];
 			var name = property.getName();
+
+			// Reply is made through the ReplyBox helper instead
+			if (name == 'reply') {
+				property.unhighlightInterfaceElement();
+				return;
+			}
 
 			var classname = 'saving-' + name.replace('.', '_');
 			saving_classes.push(classname);

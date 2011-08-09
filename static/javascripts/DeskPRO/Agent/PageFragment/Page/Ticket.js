@@ -166,7 +166,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
 			replyBox: this.getEl('replybox'),
-			onBeforeSaveReply: (function() {
+			onBeforeSaveReply: (function(info) {
 				info.formData.push({
 					name: 'client_messages_since',
 					value: DeskPRO_Window.getLastClientMessageId()
