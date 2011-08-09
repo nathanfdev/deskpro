@@ -354,7 +354,9 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			changeManager.addChange(prop);
 		});
 
-		changeManager.saveChanges(null, (function() {
+		var customFieldData = $('.custom-field input, .custom-field textarea, .custom-field select', editWrapper).serializeArray();
+
+		changeManager.saveChanges(customFieldData, (function() {
 			this.closeEditMode();
 		}).bind(this));
 		
