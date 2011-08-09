@@ -351,6 +351,18 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_user_participants;
 	}
 
+	public function getAgentParticipants()
+	{
+		$ret = array();
+		foreach ($this->participants as $p) {
+			if ($p->person['is_agent']) {
+				$ret[] = $p;
+			}
+		}
+
+		return $ret;
+	}
+
 
 	/**
 	 * Try to find a user that is a part of this tikcet based on

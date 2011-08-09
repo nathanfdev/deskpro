@@ -116,8 +116,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			<div class="desc">
 				Ticket owned by <a class="user-link person-overview" style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }} &lt;{{ ticket.person.primary_email_address }}&gt;</a>
 			</div>
-			<div class="more">
-				3 users CC'ed
+			<div class="more user-participants-edit">
+				<span class="user-part-count">{{ ticket.user_participants|length }}</span> users CC'ed
 			</div>
 			<br style="clear:both;height: 1px;overflow: hidden;" />
 		</div>
@@ -126,10 +126,20 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 				Ticket assigned to <a class="agent-link prop-agent-id" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
 				and team <a class="team-link prop-agent-team-id" style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');">{{ ticket.agent_team.name }}</a>
 			</div>
-			<div class="more">
-				6 agents subscribed
+			<div class="more agent-participants-edit">
+				<span class="agent-part-count">{{ ticket.agent_participants|length }}</span> agents subscribed
 			</div>
 			<br style="clear:both;height: 1px;overflow: hidden;" />
+		</div>
+		<div class="agents-list" style="display: none;">
+			<ul id="{{baseId}}_agent_part_list">
+				{% include 'AgentBundle:Ticket:view-participants-agents.html.twig' with {'participants': participants} %}
+			</ul>
+		</div>
+		<div class="user-list" style="display: none;">
+			<ul id="{{baseId}}_user_part_list">
+				{% include 'AgentBundle:Ticket:view-participants-users.html.twig' with {'participants': participants} %}
+			</ul>
 		</div>
 	</div>
 

@@ -111,10 +111,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			h.initPage();
 		}, this);
 
-		// Sit min length on middletabs so switch doesnt go much smaller
-		var el = $('.container-tabbed-wrap.ticket-participants:first', this.wrapper);
-		el.css('min-width', el.width());
-
 		this.addEvent('shortcutFocusReply', (function() {
 
 			// Scroll down
@@ -169,11 +165,22 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			cw.tinyscrollbar_scrolltop(1000000);
 		});
 
-		this._initReplyBox();
 
-		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this, {
-
+		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
+			replyBox: this.getEl('replybox'),
+			onBeforeSaveReply: (function() {
+				info.formData.push({
+					name: 'client_messages_since',
+					value: DeskPRO_Window.getLastClientMessageId()
+				});
+			}).bind(this),
+			onSaveReplySuccess: (function(info) {
+				this.displayNewMessage(info.result.message_html);
+			}).bind(this)
 		});
+
+		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
+		this.ticketParticipants = new DeskPRO.Agent.PageFragment.Page.Ticket.Participants(this);
 	},
 
 	destroyPage: function() {
@@ -263,141 +270,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		console.warn('Depreciated');
 		return this.changeManager.getPropertyManager(type, type_id);
-	},
-
-	//#################################################################
-	//# Ticket Participants
-	//#################################################################
-
-	_initParticipants: function() {
-		$('.agent-participants-edit', this.wrapper).click(this.showAgentParticipants.bind(this));
-		$('.user-participants-edit', this.wrapper).click(this.showUserParticipants.bind(this));
-		this._initCcArea();
-	},
-
-	showAgentParticipants: function(ev) {
-		if (!this.agentPartsSelector) {
-
-			var self = this;
-
-			var startWith = [];
-			$('ul.agent-participants-list > li', this.wrapper).each(function() {
-				startWith.push($(this).data('person-id'));
-			});
-
-			this.agentPartsSelector = new DeskPRO.Agent.Widget.AgentSelector({
-				agentList: $('#agent_selector_list'),
-				multipleChoice: true,
-				startWith: startWith,
-				onSelectionChanged: function() {
-					self.updateAgentParticipants();
-				}
-			});
-		}
-
-		this.agentPartsSelector.open(ev);
-	},
-
-	updateAgentParticipants: function() {
-		var agentIds = this.agentPartsSelector.getSelection();
-
-		var data = [];
-		Array.each(agentIds, function(id) {
-			data.push({
-				name: 'person_ids[]',
-				value: id
-			});
-		});
-
-		$.ajax({
-			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/save-agent-parts',
-			data: data,
-			dataType: 'html',
-			type: 'POST',
-			context: this,
-			success: function(html) {
-				$('ul.agent-participants-list', this.wrapper).empty().html(html);
-				this.reloadCcReplyTab();
-			}
-		});
-	},
-
-	showUserParticipants: function(ev) {
-		if (!this.userFind) {
-
-			var self = this;
-
-			this.userFind = new DeskPRO.Agent.Widget.FindPerson({
-				onChoosePerson: function(ev) {
-					self.addUserPart(ev.personId);
-				}
-			});
-		}
-
-		this.userFind.open(ev);
-	},
-
-	addUserPart: function(personId) {
-		var personIds = [personId];
-		$('ul.user-participants-list > li', this.wrapper).each(function() {
-			personIds.push($(this).data('person-id'));
-		});
-
-		var data = [];
-		Array.each(personIds, function(id) {
-			data.push({
-				name: 'person_ids[]',
-				value: id
-			});
-		});
-
-		$.ajax({
-			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/save-user-parts',
-			data: data,
-			dataType: 'html',
-			type: 'POST',
-			context: this,
-			success: function(html) {
-				$('ul.user-participants-list', this.wrapper).empty().html(html);
-				this.reloadCcReplyTab();
-			}
-		});
-	},
-
-	reloadCcReplyTab: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/ticket/' + this.meta.ticket_id + '/cc-reply-tab',
-			dataType: 'html',
-			type: 'GET',
-			context: this,
-			success: function(html) {
-				$('.cc-area', this.wrapper).empty().html(html);
-				this._initCcArea();
-			}
-		});
-	},
-
-	//#################################################################
-	//# Reply area
-	//#################################################################
-
-	_initReplyBox: function() {
-		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
-			replyBox: this.getEl('replybox'),
-			onBeforeSaveReply: this._beforeSaveReply.bind(this),
-			onSaveReplySuccess: this._saveReplySuccess.bind(this)
-		});
-	},
-
-	_beforeSaveReply: function(info) {
-		info.formData.push({
-			name: 'client_messages_since',
-			value: DeskPRO_Window.getLastClientMessageId()
-		});
-	},
-
-	_saveReplySuccess: function(info) {
-		this.displayNewMessage(info.result.message_html);
 	},
 
 	//#################################################################
@@ -562,10 +434,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 				Array.each(data.messages, function (html) {
 					this.displayNewMessage(html);
 				}, this);
-
-				if (data.has_notes) {
-					this.unloadTicketTab('ticket-notes');
-				}
 			}
 		});
 	},
@@ -685,42 +553,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		*/
 	},
 
-	/**
- 	 * Resets the 'loaded' status of a tab. If there are changes somewhere,
-	 * its easiest to just reloaded the affected part the next time the user
-	 * needs to see it.
-	 */
-	unloadTicketTab: function(tab) {
-		var contentEl = $('.tab-content.' + tab, this.wrapper);
-		contentEl.html('').addClass('unloaded');
-	},
-
-	_loadTicketTab_Log: function() {
-
-		var contentEl = $('.tab-content.ticket-log', this.wrapper);
-
-		if (!contentEl.is('.unloaded')) {
-			// Already loaded
-			return;
-		}
-
-		$.ajax({
-			url: this.getMetaData('tabTicketLogUrl'),
-			type: 'GET',
-			dataType: 'html',
-			context: this,
-			success: function(html) {
-				contentEl.html(html);
-				contentEl.removeClass('unloaded');
-
-				this.initFeaturesOnCollection(contentEl, {
-					routes: ['.with-route'],
-					times: ['.timeago']
-				});
-			}
-		});
-	},
-
 	_loadTicketTab_RelatedContent: function() {
 		var contentEl = $('.tab-content.ticket-realted-content', this.wrapper);
 
@@ -731,26 +563,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		$.ajax({
 			url: this.getMetaData('tabRelatedContentUrl'),
-			type: 'GET',
-			dataType: 'html',
-			success: function(html) {
-				contentEl.html(html);
-				contentEl.removeClass('unloaded');
-			}
-		});
-	},
-
-	_loadTicketTab_Attach: function() {
-
-		var contentEl = $('.tab-content.ticket-attach', this.wrapper);
-
-		if (!contentEl.is('.unloaded')) {
-			// Already loaded
-			return;
-		}
-
-		$.ajax({
-			url: this.getMetaData('tabAttachmentsUrl'),
 			type: 'GET',
 			dataType: 'html',
 			success: function(html) {
