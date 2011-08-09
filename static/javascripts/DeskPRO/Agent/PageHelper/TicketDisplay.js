@@ -15,8 +15,7 @@ Orb.createNamespace('DeskPRO.Agent.PageHelper');
  * "section" as defiend by the layout. So we output them all into a hidden div, and then
  * using JS we move them into their proper wrappers.
  *
- * 2) For custom fields, we also have the overlay holders for editing the field. These are opened
- * on-click similar to the standard category/priority etc
+ * 2) Input rows that go into the edit table when the user has activated edit mode.
  *
  * 3) Wrapper templates: Each section (properties box, or in a bottom tab etc) will have different
  * layout for how the title and content from (1) is supposed to be. So each section also
@@ -65,22 +64,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			holders: '.page-display-holders:first',
 			inputHolders: '.page-display-input:first',
 			
-			sectionProperties: '.field-section-properties:first',
-			sectionPropertiesContent: '.field-section-properties-content:first',
-			sectionPropertiesWrapTpl: '.fields-wrap-properties',
-			
-			sectionBodyTabs: '.field-section-bodytabs-tabs:first',
-			sectionBodyTabContents: '.field-section-bodytabs-tab-contents:first',
-			sectionBodyTabsWrapTpl: '.fields-wrap-bodytabs',
-			sectionBodyTabsTabTpl: '.fields-new-bodytabs-tab',
-			sectionBodyTabsTabContentTpl: '.fields-new-bodytabs-content',
-			
-			sectionMiddleTabs: '.field-section-middletabs-tabs:first',
-			sectionMiddleTabContents: '.field-section-middletabs-tab-contents:first',
-			sectionMiddleTabsWrapTpl: '.fields-wrap-middletabs',
-			sectionMiddleTabsTabTpl: '.fields-new-middletabs-tab',
-			sectionMiddleTabsTabContentTpl: '.fields-new-middletabs-content',
-			
 			fieldWrapSelector: '.display-item',
 			fieldTabSelector: 'li.field-tab',
 			fieldTabContentSelector: '.field-tab-content'
@@ -92,21 +75,52 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		this.holders      = $(this.options.holders, this.wrapper);
 		this.inputHolders = $(this.options.inputHolders, this.wrapper);
 
-		this.sectionProperties          = $(this.options.sectionProperties, this.wrapper);
-		this.sectionPropertiesContent   = $(this.options.sectionPropertiesContent, this.wrapper);
-		this.sectionPropertiesWrapTpl   = $(this.options.sectionPropertiesWrapTpl, this.wrapper).get(0).innerHTML;
+		/**
+		 * The default properties wrapper. This wraps the whole row (ie the title and the contents).
+		 * It's completely hidden when there are no fields to show.
+		 */
+		this.sectionProperties          = ticketPage.getEl('fields_display_main_wrap');
 
-		this.sectionBodyTabs               = $(this.options.sectionBodyTabs, this.wrapper);
-		this.sectionBodyTabContents        = $(this.options.sectionBodyTabContents, this.wrapper);
-		this.sectionBodyTabsWrapTpl        = $(this.options.sectionBodyTabsWrapTpl, this.wrapper).get(0).innerHTML;
-		this.sectionBodyTabsTabTpl         = $(this.options.sectionBodyTabsTabTpl, this.wrapper).get(0).innerHTML;
-		this.sectionBodyTabsTabContentTpl  = $(this.options.sectionBodyTabsTabContentTpl, this.wrapper).get(0).innerHTML;
+		/**
+		 * This is the proeprties content container (under the wrapper). This is where fields
+		 * are injected into.
+		 */
+		this.sectionPropertiesContent   = ticketPage.getEl('fields_display_main');
 
-		this.sectionMiddleTabs           = $(this.options.sectionMiddleTabs, this.wrapper);
-		this.sectionMiddleTabContents    = $(this.options.sectionMiddleTabContents, this.wrapper);
-		this.sectionMiddleTabsWrapTpl        = $(this.options.sectionMiddleTabsWrapTpl, this.wrapper).get(0).innerHTML;
-		this.sectionMiddleTabsTabTpl         = $(this.options.sectionMiddleTabsTabTpl, this.wrapper).get(0).innerHTML;
-		this.sectionMiddleTabsTabContentTpl  = $(this.options.sectionMiddleTabsTabContentTpl, this.wrapper).get(0).innerHTML;
+		/**
+		 * This is the field template that we use to inject the title and content of a
+		 * field.
+		 */
+		this.sectionPropertiesWrapTpl   = ticketPage.getEl('fields_display_main_wrap_tpl').get(0).innerHTML;
+
+
+		/**
+		 * This is the ticket tabs ul for the clickable tab li's
+		 */
+		this.sectionBodyTabs               = ticketPage.getEl('ticket_tabs');
+
+		/**
+		 * This is the wrapper around the tab content elements. We use this as a scope
+		 * for clearing custom tabs.
+		 */
+		this.sectionBodyTabContents        = ticketPage.getEl('ticket_tabs_content');
+
+		/**
+		 * This is the template we'll use to add a new tab li to the ul container.
+		 * Its the clickable tab part.
+		 */
+		this.sectionBodyTabsTabTpl         = ticketPage.getEl('fields_display_tabs_tab_tpl').get(0).innerHTML;
+
+		/**
+		 * This is the template we'll use to construct the body wrapper of the tab. This is
+		 * the 'data-tab-for' target for the tab, and where new fields will be appended.
+		 */
+		this.sectionBodyTabsTabContentTpl  = ticketPage.getEl('fields_display_tabs_content_tpl').get(0).innerHTML;
+
+		/**
+		 * This is the field template that we use to inject the title and content of a field
+		 */
+		this.sectionBodyTabsWrapTpl        = ticketPage.getEl('fields_display_tabs_wrap_tpl').get(0).innerHTML;
 
 		this.departmentId = null;
 
@@ -256,50 +270,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 						}
 
 						var displayWrap = $(this.sectionBodyTabsWrapTpl);
-
-						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
-						itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));
-
-						displayWrap.appendTo(newTabContent);
-						tab_item.sectionEl = newTabContent;
-
-						this._initWrapper(tab_item, displayWrap);
-
-						itemEls.itemHolder.remove();
-					}, this);
-
-					break;
-				
-				// TODO rewrite this and body to share code
-				case 'middletabs':
-					if (!item.items || !item.items.length) {
-						item.items = [];
-					}
-
-					// Init the tab itself
-					var id = 'middletabfieldtab_' + $(this.options.fieldTabSelector, this.sectionMiddleTabs).length + 1;
-					var newTab = $(this.sectionMiddleTabsTabTpl.replace(/\{title\}/g, item.title).replace(/\{id\}/g, id));
-					var newTabContent = $(this.sectionMiddleTabsTabContentTpl.replace(/\{id\}/g, id));
-
-					newTab.appendTo(this.sectionMiddleTabs);
-					newTabContent.appendTo(this.sectionMiddleTabContents);
-
-					Array.each(item.items, function(tab_item) {
-
-						// Set this so its easier to lookup sections later,
-						// even though we can know through the structure,
-						// its easier with this value set
-						tab_item.section = 'middletabs';
-						var itemEls = this.getItemHolderEls(tab_item);
-						if (!itemEls) {
-							return;
-						}
-
-						if (itemEls.itemHolder.data('custom-field-handler')) {
-							item.custom_field_handler = itemEls.itemHolder.data('custom-field-handler');
-						}
-
-						var displayWrap = $(this.sectionMiddleTabsWrapTpl);
 
 						itemEls.itemTitle.detach().appendTo($('.display-title', displayWrap));
 						itemEls.itemContent.detach().appendTo($('.display-content', displayWrap));

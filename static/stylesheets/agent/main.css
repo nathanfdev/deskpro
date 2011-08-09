@@ -5003,6 +5003,14 @@ section.ticket-header nav.actions ul li.more {
 
 .extra-info li .prop-title {
     color: #666C77;
+    display: inline;
+}
+.extra-info li .prop-title .title, .extra-info li .prop-val .content {
+    display: inline;
+}
+
+.extra-info li .prop-val {
+    display: inline;
 }
 
 .page-ticket .tab-bottom-wrap.inner .tab-bottom-contents {

@@ -171,7 +171,7 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <div class="full-container-tabbed main-tabs">
 	{# Tab Triggers #}
 	<div class="full-container-tabbed-tabs">
-		<ul class="field-section-bodytabs-tabs">
+		<ul class="field-section-bodytabs-tabs" id="{{baseId}}_ticket_tabs">
 			<li class="tab-trigger tab-details on" data-tab-for=".tab-details"><a>Ticket Details</a></li>
 			<li class="tab-trigger tab-attachments" data-tab-for=".tab-attach"><a>Attachments</a></li>
 		</ul>
@@ -197,29 +197,15 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 					</div>
 				</div>
 			</div>
-			<div class="row-table-cotent">
+			<div class="row-table-cotent" id="{{baseId}}_fields_display_main_wrap">
 				<div class="col-table-content title-col">
-					<span>Properties</span>
+					<span class="properties-edit-trigger" data-section="main">
+						Properties
+					</span>
 				</div>
 				<div class="col-table-content">
 					<div class="extra-info">
-						<ul>
-							<li>
-								<span class="prop-title">Category:</span>
-								<span class="prop-val">{{ ticket.category.title|default('None') }}</span>
-							</li>
-							<li>
-								<span class="prop-title">Product:</span>
-								<span class="prop-val">{{ ticket.product.title|default('None') }}</span>
-							</li>
-							<li>
-								<span class="prop-title">Priority:</span>
-								<span class="prop-val">{{ ticket.priority.title|default('None') }}</span>
-							</li>
-							<li>
-								<span class="prop-title">Workflow:</span>
-								<span class="prop-val">{{ ticket.workflow.title|default('None') }}</span>
-							</li>
+						<ul id="{{baseId}}_fields_display_main">
 						</ul>
 					</div>
 				</div>
@@ -262,45 +248,24 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 </div>
 
 {# Wrapper around fields in the properties box #}
-<script type="text/x-deskpro-plain" class="fields-wrap-properties">
-	<div class="row-table-cotent display-item">
-		<div class="col-table-content title-col display-title">
-		</div>
-		<div class="col-table-content display-content">
-		</div>
-	</div>
-</script>
-
-{# New tab code for middle tabs #}
-<script type="text/x-deskpro-plain" class="fields-new-middletabs-tab">
-	<li class="tab-trigger {id} field-tab" data-tab-for=".field-tab-content.{id}" data-field-tab-id="{id}">
-		<a>{title}</a>
+<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_wrap_tpl">
+	<li class="display-item">
+		<div class="prop-title display-title"></div>
+		<div class="prop-val display-content"></div>
 	</li>
-</script>
-<script type="text/x-deskpro-plain" class="fields-new-middletabs-content">
-	<div class="container-tabbed-contents field-tab-content {id}" data-tab-trigger=".field-tab.{id}" data-field-tab-id="{id}" style="display: none">
-	</div>
-</script>
-<script type="text/x-deskpro-plain" class="fields-wrap-middletabs">
-	<div class="row-table-cotent display-item">
-		<div class="col-table-content title-col display-title">
-		</div>
-		<div class="col-table-content display-content">
-		</div>
-	</div>
 </script>
 
 {# New tab code for bottom tabs (for addition to tabstrip) #}
-<script type="text/x-deskpro-plain" class="fields-new-bodytabs-tab">
+<script type="text/x-deskpro-plain" class="tpl-fields-maintabs-tab" id="{{baseId}}_fields_display_tabs_tab_tpl">
 	<li class="tab-trigger {id} field-tab" data-tab-for=".{id}" data-field-tab-id="{id}">
 		<a>{title}</a>
 	</li>
 </script>
-<script type="text/x-deskpro-plain" class="fields-new-bodytabs-content">
-	<div class="full-container-tabbed-contents tab-content field-tab-content {id}" data-tab-trigger=".{id}" data-field-tab-id="{id}">
+<script type="text/x-deskpro-plain" class="tpl-fields-maintabs-content" id="{{baseId}}_fields_display_tabs_content_tpl">
+	<div class="full-container-tabbed-contents tab-content field-tab-content {id}">
 	</div>
 </script>
-<script type="text/x-deskpro-plain" class="fields-wrap-bodytabs">
+<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_tabs_wrap_tpl">
 	<div class="row-table-cotent display-item">
 		<div class="col-table-content title-col display-title">
 		</div>
@@ -308,30 +273,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		</div>
 	</div>
 </script>
-
-<script type="text/x-deskpro-plain" class="fields-edit-overlay">
-	<div class="show-fields edit-fields-overlay edit {id}" style="display:none;">
-		<div class="content" style="padding: 5px">
-
-		</div>
-		<div class="buttons">
-			<button class="close-trigger dp-button gray x-small">Cancel</button>
-			<button class="save-trigger dp-button x-small">Save</button>
-		</div>
-	</div>
-</script>
-
-{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 
 {% if ticket.hidden_status != 'deleted' %}
 	{% include 'AgentBundle:Ticket:replybox.html.twig' %}
 {% endif %}
 
-{#
-{% if ticket.hidden_status != 'deleted' %}
-	{% include 'AgentBundle:Ticket:part-ticket-bar.html.twig' %}
-{% endif %}
-#}
+{% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

@@ -533,7 +533,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			btnText: 'Undo',
 			extraClasses: 'undo'
 		});
-	}
+	},
 	
 	//#################################################################
 	//# Routes and page loading

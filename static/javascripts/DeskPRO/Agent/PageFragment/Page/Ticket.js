@@ -872,21 +872,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//# Reply bar
 	//#################################################################
 
-	_handleReplybarAssign: function(info) {
-		var agentId = $(info.itemEl).data('option-id');
-		var agentName = $(info.itemEl).html();
-
-		if (agentId) {
-			$('input.reply-assign-trigger', this.ticketReply).attr('checked', true).val(agentId);
-			var labelEl = $('span.reply-assign-label', this.ticketReply);
-			var displayName = labelEl.data('label').replace('%agent%', agentName);
-
-			labelEl.html(displayName).show();
-		} else {
-			$('input.reply-assign-trigger', this.ticketReply).attr('checked', false).val('0');
-			$('span.reply-assign-label', this.ticketReply).hide().html('');
-		}
-	},
 	ticketActionsMenu: null,
 	ticketMacrosMenu: null,
 
