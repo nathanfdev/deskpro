@@ -115,7 +115,20 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	 * Highlight the UI element to bring attention to some change.
 	 */
 	highlightInterfaceElement: function() {
+		var i = this.getInterfaceElement();
+
+		if (!i || !i.length) {
+			return;
+		}
+
 		this.getInterfaceElement().addClass('change-on');
+
+		var displayItemWrap = i.parentsUntil(null, '.display-item');
+		if (displayItemWrap.length) {
+			displayItemWrap.addClass('highlight-change-on');
+		} else {
+			i.addClass('change-on');
+		}
 	},
 
 	changePersisted: function() {

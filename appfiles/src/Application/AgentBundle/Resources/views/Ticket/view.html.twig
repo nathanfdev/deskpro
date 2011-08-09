@@ -35,6 +35,10 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 <div class="layout-content with-scrollbar page-ticket">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
+<div class="macro-controls" style="display: none;">
+	<button class="clean-gray small save" id="macro_apply_btn">Apply Macro</button>
+	<button class="clean-gray small cancel" id="macro_cancel_btn">Cancel</button>
+</div>
 
 <form class="value-form" style="display:none">
 	<input type="hidden" name="agent_id" class="agent_id" value="{{ticket.agent.id|default(0)}}" />
@@ -311,6 +315,11 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% include 'AgentBundle:Ticket:view-page-display-holders.html.twig' %}
 
 {% include 'AgentBundle:Ticket:part-ticket-menus.html.twig' %}
+
+<div class="macro-controls" style="display: none;">
+	<button class="clean-gray small save" id="macro_apply_btn">Apply Macro</button>
+	<button class="clean-gray small cancel" id="macro_cancel_btn">Cancel</button>
+</div>
 
 </div></div> {# /scroll #}
 </div>{# /layout #}

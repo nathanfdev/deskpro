@@ -5458,3 +5458,19 @@ article.ticket .urgency span {
 .fields-edit-container.loading .saving {
     display: block;
 }
+
+.macro-controls {
+    background-color: #C6E1F0;
+    margin-bottom: 8px;
+    padding: 8px;
+    text-align: center;
+
+    -webkit-box-shadow: inset 0px 0px 3px 0px #000000;
+    -moz-box-shadow: inset 0px 0px 3px 0px #000000;
+    box-shadow: inset 0px 0px 3px 0px #000000;
+}
+
+.display-item.highlight-change-on {
+    background-color: #FFFA9D;
+    border: 1px solid #D8D58C;
+}

@@ -74,6 +74,9 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 				pictureEl.addClass('no-value').hide();
 			}
 		}
+
+		var fieldEl = $('.prop-input-' + this.optionName, this.ticketPage.wrapper);
+		fieldEl.val(value);
 	},
 
 	_getInterfaceElement: function() {

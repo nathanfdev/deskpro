@@ -69,6 +69,15 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				break;
 		}
 
+		if (manager === null && type.indexOf('_id') == -1) {
+			type += '_id';
+			return this.getPropertyManager(type, type_id);
+		}
+
+		if (manager === null) {
+			return null;
+		}
+
 		this.propertyManagers[type] = manager;
 
 		return manager;
@@ -151,6 +160,8 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		}, this);
 
 		this.oldValues = {};
+
+		$('.change-on, .highlight-change-on', this.wrapper).removeClass('change-on').removeClass('highlight-change-on');
 
 		this.mode = 'single';
 	},

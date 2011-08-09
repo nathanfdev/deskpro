@@ -119,10 +119,115 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 		// Macros
 		//------------------------------
 
+		this.macroControls  = $('.macro-controls');
+		this.macroApplyBtn  = $('.save', this.macroControls);
+		this.macroCancelBtn = $('.cancel', this.macroControls);
+
 		this.macrosMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.macros button', actionsButtons),
-			menuElement: this.getEl('macros_menus')
+			menuElement: this.getEl('macros_menu'),
+			onItemClicked: (function(info) {
+
+				if ($(info.itemEl).data('no-macro')) {
+					var overlay = new DeskPRO.UI.Overlay({
+						contentMethod: 'iframe',
+						iframeUrl: BASE_URL + 'agent/settings/ticket-macros/new'
+					});
+
+					overlay.openOverlay();
+					return;
+				}
+
+				this.activateMacro($(info.itemEl).data('macro-id'));
+
+			}).bind(this)
 		});
+
+		this.macroCancelBtn.click((function() {
+			this.revertMacro();
+		}).bind(this));
+
+		this.macroApplyBtn.click((function() {
+			this.saveMacro();
+		}).bind(this));
+	},
+
+	activateMacro: function(macroId) {
+		this.currentMacroId = macroId;
+		
+		$.ajax({
+			url: this.page.getMetaData('getMacroUrl').replace('$macro_id', this.currentMacroId),
+			type: 'GET',
+			context: this,
+			dataType: 'json',
+			success: function(data) {
+				this.previewMacroActions(data);
+			}
+		});
+	},
+
+	saveMacro: function() {
+		this.changeManager.saveChanges();
+		this.toggleMacroApplyBtn('off');
+	},
+
+	revertMacro: function() {
+		this.changeManager.revertChanges();
+		this.toggleMacroApplyBtn('off');
+	},
+
+	previewMacroActions: function(actions) {
+
+		Array.each(actions, function(action_info) {
+			var type = action_info.action;
+			var action;
+
+			delete action_info.action;
+			var action_info_vals = Object.values(action_info);
+			if (action_info_vals.length == 1) {
+				action = action_info_vals[0];
+			} else {
+				action = action_info;
+			}
+
+			var type_id = null;
+			var m = /^(.*?)\[(.*?)\]$/.exec(type);
+			if (m !== null) {
+				type = m[1];
+				type_id = m[2];
+			}
+
+			var prop = this.changeManager.getPropertyManager(type, type_id);
+
+			if (prop) {
+				if (typeOf(action) == 'object' && action.value_display) {
+					action = action.value_display;//custom fields
+				}
+				this.changeManager.addChange(prop, action);
+			} else {
+				console.warn('Unknown property `%s`. Actions: %o', type, actions);
+			}
+		}, this);
+
+		this.changeManager.applyChanges();
+		this.toggleMacroApplyBtn('on');
+	},
+
+	toggleMacroApplyBtn: function(force) {
+
+		if (!force) {
+			if (this.macroControls.is(':visible')) {
+				force = 'off';
+			} else {
+				force = 'on';
+			}
+		}
+
+		if (force == 'on') {
+			this.macroControls.show();
+		} else {
+			this.macroControls.hide();
+		}
 	},
 
 	/**

@@ -954,7 +954,8 @@ class TicketController extends AbstractController
 			$ticket = $this->getTicketOr404($ticket_id);
 		}
 
-		$actions = $macro->getActionsArray($ticket);
+		$actions_collection = $macro->getActionsCollection($ticket);
+		$actions = $actions_collection->getApplyActions($ticket, $this->person);
 
 		return $this->createJsonResponse($actions);
 	}
