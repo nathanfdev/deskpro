@@ -112,9 +112,10 @@ $(".on",this.headerNav).removeClass("on");this.advancedBtn.addClass("on");this.s
 this._initNewResults();this.switchDisplayElement("results")},_initNewResults:function(){var a=this;$(".choose-trigger",this.results).click(function(e){e.preventDefault();
 var b=$(this);var d=b.data("person-id");var c={el:b,personId:d,event:e,doCloseOverlay:true};a.fireEvent("choosePerson",[c]);
 if(c.doCloseOverlay){a.close()}})},destroy:function(){if(this.overlay){this.overlay.destroy()}if(this.ruleBuilder){this.ruleBuilder.destroy()
-}}});Orb.createNamespace("DeskPRO.Agent.Widget");DeskPRO.Agent.Widget.AgentSelector=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={agentList:null,multipleChoice:false,zIndex:1000001,startWith:[]};
-if(a){this.setOptions(a)}this.previousSelection=""},_initWrapper:function(){if(this.wrapper){return}var b=$("li",this.options.agentList);
-this.backdrop=$('<div class="backdrop"></div>').appendTo("body");this.backdrop.click(this.close.bind(this));this.wrapper=$('<div class="field-overlay agent-selector" style="display:none;"><div class="close-trigger"></div></div>');
+}}});Orb.createNamespace("DeskPRO.Agent.Widget");DeskPRO.Agent.Widget.AgentSelector=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(b){this.options={triggerElement:null,agentList:null,multipleChoice:false,zIndex:1000001,startWith:[]};
+if(b){this.setOptions(b)}this.previousSelection="";if(this.options.triggerElement){var a=this;$(this.options.triggerElement).click(function(c){c.preventDefault();
+a.open(c)})}},_initWrapper:function(){if(this.wrapper){return}var b=$("li",this.options.agentList);this.backdrop=$('<div class="backdrop"></div>').appendTo("body");
+this.backdrop.click(this.close.bind(this));this.wrapper=$('<div class="field-overlay agent-selector" style="display:none;"><div class="close-trigger"></div></div>');
 $(".close-trigger",this.wrapper).click(this.close.bind(this));var a=$('<div class="with-scrollbar"><div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div><div class="scroll-viewport"><div class="scroll-content"></div></div></div>');
 if(b.length>=10){this.filter=$('<div class="filter"><div class="input-wrap"><input type="text" value="" placeholder="Find an agent" /></div></div>').appendTo(this.wrapper);
 $("input",this.filter).keyup(this.updateFilter.bind(this))}else{this.filter=null}var h=this.options.multipleChoice;var g=this.options.startWith;
@@ -139,7 +140,43 @@ this.backdrop.hide();this.wrapper.hide().removeClass("open");this.fireEvent("clo
 }if(this.previousSelection!=b){a.selection=this.getSelection();this.fireEvent("selectionChanged",[a]);this.previousSelection=b
 }},isOpen:function(){return this.wrapper.is(".open")},getWrapper:function(){return this.wrapper},getSelection:function(){if(this.options.multipleChoice){var a=[];
 $('input[type="checkbox"]:checked',this.agentList).each(function(){a.push($(this).val())});return a}else{var b=$('input[type="checkbox"]:checked:first',this.agentList).val();
-return b}}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");DeskPRO.Agent.RuleBuilder.TermAbstract=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.options={ruleBuilder:null,rowEl:null,rowId:null,opMenu:null};
+return b}}});Orb.createNamespace("DeskPRO.Agent.Widget");DeskPRO.Agent.Widget.SnippetViewer=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(b){this.options={viewUrl:null,triggerElement:null};
+this.setOptions(b);if(this.options.triggerElement){var a=this;$(this.options.triggerElement).click(function(c){c.preventDefault();
+c.stopPropagation();a.open()})}},_init:function(){if(this._hasInit){return}if(this._isInitting){return}this._isInitting=true;
+$.ajax({url:this.options.viewUrl,type:"GET",dataType:"html",context:this,success:function(a){this._init2(a)}})},_init2:function(b){var a=this;
+this.wrapper=$(b);this.catTabs=new DeskPRO.UI.SimpleTabs({triggerElements:$("nav:first > ul > li:not(.new-category)",this.wrapper),context:this.wrapper});
+this.overlay=new DeskPRO.UI.Overlay({contentElement:this.wrapper,destroyOnClose:false});this.wrapper.delegate(".snippet-trigger","click",function(f){f.preventDefault();
+f.stopPropagation();var e=$(this).data("snippet-id");var c=$(".snippet-"+e,a.wrapper);var h=$("textarea.value.formatted",c);
+if(!h.length){h=$("textarea.value.raw",c)}var d=h.val().trim();var g={event:f,snippetId:e,snippetEl:c,snippet:d};a.fireEvent("snippetClick",[g]);
+a.overlay.close()});this._initEditing();this._isInitting=false;this._hasInit=true;if(this._showNow){this.open()}},open:function(){if(!this._hasInit){this._showNow=true;
+this._init();return}var a={snippetViewer:this,overlay:this.overlay,cancel:false};this.fireEvent("beforeOpen",[a]);if(a.cancel){return
+}this.overlay.open();delete a.cancel;this.fireEvent("open",[a])},close:function(){var a={snippetViewer:this,overlay:this.overlay,cancel:false};
+this.fireEvent("beforeClose",[a]);if(a.cancel){return}this.overlay.close();delete a.cancel;this.fireEvent("open",[a])},destroy:function(){var a={snippetViewer:this,overlay:this.overlay};
+this.fireEvent("beforeDestroy",[a]);this.overlay.destroy();this.wrapper.remove();this.fireEvent("destroy",[a])},_initEditing:function(){var a=this;
+this.newCategoryBtn=$("nav li.new-category",this.wrapper);this.newCategoryBtn.click(function(b){b.preventDefault();b.stopPropagation();
+a.newCategory()});this.newCatOverlay=$(".new-snippet-category",this.wrapper);this.newCatOverlay.detach().appendTo("body");
+$(".perm-type-opt",this.newCatOverlay).click(function(){console.log("click");if($(this).val()=="team"){$(".perm-teams",a.newCatOverlay).slideDown()
+}else{$(".perm-teams",a.newCatOverlay).slideUp()}});$(".new-cat-trigger",this.newCatOverlay).click(function(){a.saveNewCat()
+});this.newCatBackdrop=$('<div class="backdrop" />').hide().appendTo("body");this.newCatBackdrop.click(function(){a.newCatOverlay.slideUp();
+a.newCatBackdrop.hide()});this.wrapper.delegate(".save-snippet-trigger","click",function(b){b.preventDefault();b.stopPropagation();
+var c=$(this).parent().parent().parent();a.saveSnippet($(c))});this.wrapper.delegate(".snippet .show","dblclick",function(b){var c=$(this).parent();
+$(".show",c).slideUp("fast",function(){$(".edit",c).slideDown()})});this.wrapper.delegate(".delete-snippet-trigger","click",function(b){var c=$(this).data("snippet-id");
+$.ajax({url:BASE_URL+"agent/tickets/snippet-viewer/delete-snippet",type:"POST",data:{snippet_id:c},dataType:"json",context:this,success:function(e){var d=$(".snippet-"+e.snippet_id,this.wrapper);
+d.slideUp(function(){d.remove()})}})});this.wrapper.delegate("nav li","dblclick",function(b){a.editCategory($(this))})},editCategory:function(c){var a=this;
+var b=c.data("category");$.ajax({url:BASE_URL+"agent/tickets/snippet-viewer/edit-category",type:"GET",data:{category_id:b},dataType:"html",context:this,success:function(f){var e=$(f).hide().appendTo("body");
+var d=$('<div class="backdrop" />').hide().appendTo("body");var h=c.offset();e.css({left:h.left,top:h.top});e.slideDown();
+d.show();function g(){d.remove();e.slideUp(function(){e.remove()})}d.click(g);$(".save-trigger",e).click(function(i){i.preventDefault();
+i.stopPropagation();var j=$("input",c).serializeArray();$.ajax({url:BASE_URL+"agent/tickets/snippet-viewer/save-category",type:"POST",data:j,dataType:"json",context:this,success:function(k){$(".cat-title-"+k.category_id,a.wrapper).text(k.title);
+g()}})});$(".delete-trigger",e).click(function(i){i.preventDefault();i.stopPropagation();$.ajax({url:BASE_URL+"agent/tickets/snippet-viewer/delete-category",type:"POST",data:{category_id:b},dataType:"json",context:this,success:function(l){var j=$(".cat-title-"+l.category_id,a.wrapper);
+var k=j.prev();j.remove();a.catTabs.activateTab(k);g()}})})}})},newCategory:function(){var a=this.newCategoryBtn.offset();
+this.newCatOverlay.css({left:a.left,top:a.top});this.newCatOverlay.slideDown();this.newCatBackdrop.show()},saveNewCat:function(){var a=$("input",this.newCatOverlay).serializeArray();
+$.ajax({url:BASE_URL+"agent/tickets/snippet-viewer/new-cat",type:"POST",data:a,dataType:"json",context:this,success:function(c){var b=$(c.cat_row_html);
+this.newCatOverlay.slideUp();this.newCatBackdrop.hide();b.insertBefore(this.newCategoryBtn);var d=$(c.cat_section_html);d.appendTo($(".snippet-sections",this.wrapper));
+this.catTabs.addTriggerElement(b);this.catTabs.activateTab(b)}})},saveSnippet:function(b){var a=$("input, textarea",b).serializeArray();
+if(this.wrapper.data("ticket-id")){a.push({name:"ticket_id",value:this.wrapper.data("ticket-id")})}$.ajax({url:BASE_URL+"agent/tickets/snippet-viewer/save-snippet",type:"POST",data:a,dataType:"json",context:this,success:function(d){var c=$(d.snippet_row_html);
+c.hide();if(b.is(".new-snippet")){$(".cat-"+d.category_id+" .new-snippet",this.wrapper).before(c);$('input[name="title"], textarea[name="snippet"]',b).val("")
+}else{$(".snippet-"+d.snippet_id,this.wrapper).replaceWith(c)}c.slideDown()}})}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");
+DeskPRO.Agent.RuleBuilder.TermAbstract=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.options={ruleBuilder:null,rowEl:null,rowId:null,opMenu:null};
 if(a){this.setOptions(a)}this.ruleBuilder=this.options.ruleBuilder;this.rowEl=$(this.options.rowEl);this.rowId=this.options.rowId;
 this.opMenu=this.options.opMenu;this.init()},init:function(){},initRow:function(){},initValues:function(){}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");
 DeskPRO.Agent.RuleBuilder.DateTerm=new Orb.Class({Extends:DeskPRO.Agent.RuleBuilder.TermAbstract,initRow:function(){this._initUi()
