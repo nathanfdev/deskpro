@@ -24,6 +24,56 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 		this.updateUrl  = ticketPage.getMetaData('saveActionsUrl');
 	},
 
+	propertyManagers: {},
+
+	getPropertyManager: function(type, type_id) {
+
+		if (this.propertyManagers[type]) {
+			return this.propertyManagers[type];
+		}
+
+		var manager = null;
+		switch (type) {
+		 	case 'category_id':
+			case 'product_id':
+			case 'workflow_id':
+			case 'priority_id':
+				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this.ticketPage, { optionName: type });
+				break;
+			case 'agent_id':
+				manager = new DeskPRO.Agent.Ticket.Property.Agent(this.ticketPage);
+				break;
+			case 'agent_team_id':
+				manager = new DeskPRO.Agent.Ticket.Property.AgentTeam(this.ticketPage);
+				break;
+			case 'department_id':
+				manager = new DeskPRO.Agent.Ticket.Property.Department(this.ticketPage);
+				break;
+			case 'status':
+				manager = new DeskPRO.Agent.Ticket.Property.Status(this.ticketPage);
+				break;
+			case 'add_labels':
+				manager = new DeskPRO.Agent.Ticket.Property.Labels(this.ticketPage, { mode: 'add' });
+				break;
+			case 'remove_labels':
+				manager = new DeskPRO.Agent.Ticket.Property.Labels(this.ticketPage, { mode: 'remove' });
+				break;
+			case 'flag':
+				manager = new DeskPRO.Agent.Ticket.Property.Flag(this.ticketPage);
+				break;
+			case 'new_reply':
+				manager = new DeskPRO.Agent.Ticket.Property.NewReply(this.ticketPage);
+				break;
+			case 'ticket_field':
+				manager = new DeskPRO.Agent.Ticket.Property.TicketField(this.ticketPage, { fieldId: type_id });
+				break;
+		}
+
+		this.propertyManagers[type] = manager;
+
+		return manager;
+	},
+
 
 	hasChanges: function() {
 		if (Object.getLength(this.changes)) {
@@ -143,8 +193,6 @@ DeskPRO.Agent.Ticket.ChangeManager = new Class({
 				dataType: 'json',
 				context: this,
 				success: function(data) {
-
-					this.ticketPage.unloadTicketTab('ticket-log');
 					this.fireEvent('updateResult', [data]);
 				}
 			});

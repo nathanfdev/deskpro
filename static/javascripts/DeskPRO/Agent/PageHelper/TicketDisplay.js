@@ -155,7 +155,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 			var prop = options[i];
 			var btnEl = $('> .' + prop + ' .menu-trigger', this.holders);
 
-			this.page.initTicketOptionsMenuForProp(prop, btnEl);
+			//this.page.initTicketOptionsMenuForProp(prop, btnEl);
 		}
 	},
 

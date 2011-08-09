@@ -1,7 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.Ticket.Property');
 
 DeskPRO.Agent.Ticket.Property.Status = new Class({
-	Extends: DeskPRO.Agent.Ticket.Property.StandardOption,
+	Extends: DeskPRO.Agent.Ticket.Property.Abstract,
 
 	setValue: function(value) {
 
@@ -19,29 +19,36 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 			}
 		}
 
-		var statusEl = this.getInterfaceElement().parent();
-		var hiddenEl = $('.ticket-hidden-bar', this.ticketPage.contentWrapper);
-		var hiddenWordEl = $('span', hiddenEl);
-		var hiddenFormEl = $('input.hidden_status:first', this.ticketPage.valueForm);
+		var btnSetOpen = $('.set-resolved button, .set-closed button, .mark-spam button', this.ticketPage.getEl('action_buttons'));
+		var btnSetOther = $('.set-open button', this.ticketPage.getEl('action_buttons'));
+		if (value == 'open' || value == 'pending') {
+			btnSetOpen.show();
+			btnSetOther.hide();
+		} else {
+			btnSetOpen.hide();
 
-		hiddenEl.hide();
-		hiddenFormEl.val('');
-		if (hidden_status) {
-			hiddenWordEl.text(DeskPRO_Window.getDisplayName('hidden_status', hidden_status));
-			hiddenEl.show();
-
-			hiddenFormEl.val(hidden_status);
+			if (value == 'resolved' || value == 'pending') {
+				btnSetOther.show();
+			} else {
+				btnSetOther.hide();
+			}
 		}
 
-		this.parent(value);
-		statusEl.removeClass('ticket-open ticket-closed ticket-pending ticket-resolved ticket-hidden').addClass('ticket-' + value);
+		var statusDisplay = $('.prop-status-icon', this.ticketPage.getEl('ticket_header'));
+		statusDisplay.attr('title', value);
+		var icon = $('> span', statusDisplay);
+		icon.attr('class', '');
+		icon.addClass('ticket-' + value);
+
+		$('input.status:first', this.ticketPage.valueForm).val(value);
+		$('input.hidden_status:first', this.ticketPage.valueForm).val(hidden_status);
 	},
 
 	getValue: function() {
 		var data = [];
 		data.push({
 			full_name: 'actions[status]',
-			value: this.parent()
+			value: $('input.status:first', this.ticketPage.valueForm).val()
 		});
 
 		data.push({
@@ -50,5 +57,9 @@ DeskPRO.Agent.Ticket.Property.Status = new Class({
 		});
 
 		return data;
+	},
+
+	getName: function() {
+		return 'status';
 	}
 });

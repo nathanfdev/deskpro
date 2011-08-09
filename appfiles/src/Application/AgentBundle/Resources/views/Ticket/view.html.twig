@@ -77,30 +77,30 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	</div>
 {% endif %}
 
-<section class="ticket-header">
+<section class="ticket-header" id="{{baseId}}_ticket_header">
 	<div class="ticket-id">
 		<span>#{{ ticket.id }}</span>
 	</div>
 	<div class="the-status">
-		<div class="ticket-status ticket-{{ticket.status}}">
-			<span class="ticket-{{ticket.status}} prop-val menu-trigger status"></span>
+		<div class="ticket-status prop-status-icon tipped" title="{{ ticket.status }}">
+			<span class="ticket-{{ticket.status}}"></span>
 		</div>
 	</div>
 
 	<div class="the-department">
-		<div class="ticket-department">
-			{% if ticket.department.parent %}
-				<div class="ticket-source prop-val menu-trigger department_id saving" data-no-value="Choose Department">
-					{{ ticket.department.parent.title|default('Choose Department') }}
-				</div>
-				<div class="sub-department">
+		<div class="ticket-department prop-department-id">
+			<div class="parent">
+				{% if ticket.department.parent %}
+					{{ ticket.department.parent.title }}
+				{% else %}
 					{{ ticket.department.title }}
-				</div>
-			{% else %}
-				<div class="ticket-source prop-val menu-trigger department_id saving" data-no-value="Choose Department">
-					{{ ticket.department.title|default('Choose Department') }}
-				</div>
-			{% endif %}
+				{% endif %}
+			</div>
+			<div class="sub">
+				{% if ticket.department.parent %}
+					{{ ticket.department.title }}
+				{% endif %}
+			</div>
 		</div>
 	</div>
 	<div class="ticket-subject">
@@ -123,8 +123,8 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		</div>
 		<div class="agent">
 			<div class="desc">
-				Ticket assigned to <a class="agent-link" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
-				and team <a class="team-link" style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');">{{ ticket.agent_team.name }}</a>
+				Ticket assigned to <a class="agent-link prop-agent-id" style="background-image: url('{{ ticket.agent.getPictureUrl(20) }}');">{{ ticket.agent.display_name }}</a>
+				and team <a class="team-link prop-agent-team-id" style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');">{{ ticket.agent_team.name }}</a>
 			</div>
 			<div class="more">
 				6 agents subscribed
@@ -133,14 +133,20 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		</div>
 	</div>
 
-	<nav class="actions">
+	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
-			<li class="assign-me"><button class="clean-gray xx-small">Assign To Me</button></li>
+			<li class="assign-me" {% if ticket.agent.id != app.user.id %}style="display: none"{% endif %}><button class="clean-gray xx-small">Assign To Me</button></li>
+			<li class="assign-none" {% if ticket.agent.id == app.user.id %}style="display: none"{% endif %}><button class="clean-gray xx-small">Unassign</button></li>
+
 			<li class="assign-to"><button class="clean-gray xx-small">Assign To</button></li>
 			<li class="assign-to-team"><button class="clean-gray xx-small">Assign To Team</button></li>
-			<li class="set-resolved"><button class="clean-gray xx-small">Set Resolved</button></li>
-			<li class="close"><button class="clean-gray xx-small">Close</button></li>
-			<li class="mark-spam"><button class="clean-gray xx-small">Mark As Spam</button></li>
+
+			<li {% if not (ticket.status == 'open' or ticket.status == 'pending') %}style="display:none"{% endif %} class="set-resolved"><button class="clean-gray xx-small">Set Resolved</button></li>
+			<li {% if not (ticket.status == 'open' or ticket.status == 'pending') %}style="display:none"{% endif %} class="set-closed"><button class="clean-gray xx-small">Close</button></li>
+			<li {% if not (ticket.status == 'open' or ticket.status == 'pending') %}style="display:none"{% endif %} class="mark-spam"><button class="clean-gray xx-small">Mark As Spam</button></li>
+
+			<li {% if not (ticket.status == 'resolved' or ticket.status == 'pending') %}style="display:none"{% endif %} class="set-open"><button class="clean-gray xx-small">Set Awaiting Agent</button></li>
+
 			<li class="more"><button class="clean-gray xx-small">More</button></li>
 		</ul>
 	</nav>

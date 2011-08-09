@@ -352,7 +352,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 	},
 
 	/**
-	 * Alias for <code>this.page
+	 * Alias for <code>this.page</code>
 	 *
 	 * @param {HTMLElement}
 	 */

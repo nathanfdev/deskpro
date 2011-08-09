@@ -47,7 +47,6 @@ class MainController extends AbstractController
 		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
 
 		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
-
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),

@@ -70,6 +70,7 @@ $CONFIG['agent']['pages'] = array(
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/ReplyBox.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js',
@@ -165,6 +166,9 @@ $CONFIG['agent']['misc'] = array(
 
 		'javascripts/DeskPRO/Agent/Ticket/ChangeManager.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/Abstract.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Agent.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/Department.js',
+		'javascripts/DeskPRO/Agent/Ticket/Property/AgentTeam.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/StandardOption.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/Status.js',
 		'javascripts/DeskPRO/Agent/Ticket/Property/NewReply.js',

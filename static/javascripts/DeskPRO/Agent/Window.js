@@ -297,7 +297,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * Get information about an agent like their name, initials, picture URL.
 	 *
 	 * @param {Integer} agent_id
-	 * @return {Object{
+	 * @return {Object}
 	 */
 	getAgentInfo: function(agent_id) {
 		// offline list always has all agents and their info
@@ -314,6 +314,33 @@ DeskPRO.Agent.Window = new Orb.Class({
 			shortName: agentEl.data('agent-short-name'),
 			pictureUrl: agentEl.data('picture-url'),
 			pictureUrlSizable: agentEl.data('picture-url-sizable')
+		};
+	},
+
+
+	/**
+	 * Get information about a team
+	 * 
+	 * @param {Integer} agent_team_id
+	 * @return {Object}
+	 */
+	getTeamInfo: function(team_id) {
+
+		team_id = parseInt(team_id);
+
+		// chat list always has teams and info
+		var teamEl = $('#agent_team_list .team-' + team_id);
+
+		if (!teamEl.length) {
+			console.error('Unknow team %i', team_id);
+			return null;
+		}
+
+		return {
+			id: team_id,
+			name: teamEl.data('team-name'),
+			pictureUrl: teamEl.data('picture-url'),
+			pictureUrlSizable: teamEl.data('picture-url-sizable')
 		};
 	},
 
@@ -506,9 +533,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			btnText: 'Undo',
 			extraClasses: 'undo'
 		});
-	},
-
-
+	}
+	
 	//#################################################################
 	//# Routes and page loading
 	//#################################################################

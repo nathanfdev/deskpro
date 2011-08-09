@@ -9,6 +9,8 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 			triggerElement: null,
 			agentList: null,
 			multipleChoice: false,
+			showNone: false,
+			noneLabel: 'Unassigned',
 			zIndex: 1000001,
 			startWith: []
 		};
@@ -56,6 +58,26 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 
 		var startWith = this.options.startWith;
 		var agentList = $('<ul />');
+
+		if (this.options.showNone) {
+			var newLi = $('<li class="agent-0" data-agent-id="0"><div class="name"><a>' + this.options.noneLabel + '</a></div></li>');
+			var choiceContainer = $('<div class="choice" />');
+
+			var checked = '';
+			if (!startWith.length) {
+				checked = 'checked="checked"';
+			}
+			if (isMulti) {
+				var choice = $('<input type="checkbox" name="agents[]" '+checked+' value="0" class="agent-choice-0" />');
+			} else {
+				var choice = $('<input type="radio" name="agents[]" '+checked+' value="0" class="agent-choice-0" />');
+			}
+			choice.appendTo(choiceContainer);
+			newLi.append(choiceContainer);
+			newLi.append($('<br style="clear:left;height: 1px;overflow: hidden;"/>'));
+			agentList.append(newLi);
+		}
+
 		agentListItems.each(function() {
 			var li = $(this);
 
@@ -270,7 +292,7 @@ DeskPRO.Agent.Widget.AgentSelector = new Orb.Class({
 			return ids;
 
 		} else {
-			var id = $('input[type="checkbox"]:checked:first', this.agentList).val();
+			var id = $('input[type="radio"]:checked:first', this.agentList).val();
 			return id;
 		}
 	}

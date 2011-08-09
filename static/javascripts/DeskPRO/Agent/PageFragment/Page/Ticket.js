@@ -31,12 +31,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.barWrapper = $('.bar-wrapper', this.wrapper);
 
 		this.valueForm = $('form.value-form:first', this.contentWrapper);
+		this.valueForm.submit(function(ev) {
+			// Never actually submit the form (would load a new page)
+			ev.preventDefault();
+		});
 		this.changeManager = new DeskPRO.Agent.Ticket.ChangeManager(this);
 
 		window.TICKET = this;
 
 		if (!this.meta.isDeleted) {
-			this._initTicketOptionsMenus();
 			this._initCustomFieldsEditor();
 
 			//this._initParticipants();
@@ -167,6 +170,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		});
 
 		this._initReplyBox();
+
+		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this, {
+
+		});
 	},
 
 	destroyPage: function() {
@@ -252,48 +259,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	//# Property managers
 	//#################################################################
 
-	propertyManagers: {},
-
 	getPropertyManager: function(type, type_id) {
 
-		if (this.propertyManagers[type]) {
-			return this.propertyManagers[type];
-		}
-
-		var manager = null;
-		switch (type) {
-			case 'department_id':
-		 	case 'category_id':
-			case 'product_id':
-			case 'workflow_id':
-			case 'priority_id':
-			case 'agent_id':
-			case 'agent_team_id':
-				manager = new DeskPRO.Agent.Ticket.Property.StandardOption(this, { optionName: type });
-				break;
-			case 'status':
-				manager = new DeskPRO.Agent.Ticket.Property.Status(this, { optionName: 'status'});
-				break;
-			case 'add_labels':
-				manager = new DeskPRO.Agent.Ticket.Property.Labels(this, { mode: 'add' });
-				break;
-			case 'remove_labels':
-				manager = new DeskPRO.Agent.Ticket.Property.Labels(this, { mode: 'remove' });
-				break;
-			case 'flag':
-				manager = new DeskPRO.Agent.Ticket.Property.Flag(this);
-				break;
-			case 'new_reply':
-				manager = new DeskPRO.Agent.Ticket.Property.NewReply(this);
-				break;
-			case 'ticket_field':
-				manager = new DeskPRO.Agent.Ticket.Property.TicketField(this, { fieldId: type_id });
-				break;
-		}
-
-		this.propertyManagers[type] = manager;
-
-		return manager;
+		console.warn('Depreciated');
+		return this.changeManager.getPropertyManager(type, type_id);
 	},
 
 	//#################################################################
@@ -429,73 +398,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	_saveReplySuccess: function(info) {
 		this.displayNewMessage(info.result.message_html);
-	},
-
-	//#################################################################
-	//# Ticket options menus
-	//#################################################################
-
-	ticketOptionsMenus: {},
-	ticketOptionsMenuEls: {},
-	_initTicketOptionsMenus: function() {
-		var options = ['department_id', 'category_id', 'product_id', 'priority_id', 'workflow_id', 'status', 'agent_id', 'agent_team_id'];
-		var self = this;
-
-		// We're setting up the menus here right now as they're always on,
-		// then the TicketDisplay inits triggers when it sets the holder els
-		for (var i = 0; i < options.length; i++) {
-			var opt = options[i];
-			var menuEl = $('.menu.'+opt+':first', this.wrapper);
-			var menu = new DeskPRO.UI.Menu({
-				menuElement: menuEl,
-				onItemClicked: function(info) {
-					self._handleTicketOptionClick(info);
-				}
-			});
-			this.ticketOptionsMenus[opt] = menu;
-			this.ticketOptionsMenuEls[opt] = menuEl;
-			this.destroyMenus.push(menu);
-		}
-
-		// And these arent handled by TickerDisplay, so set up the triggers now
-		var btnOptions = ['department_id', 'status', 'agent_id', 'agent_team_id'];
-		for (var i = 0; i < options.length; i++) {
-			var opt = options[i];
-			var btnEl = $('.menu-trigger.' + opt + ':first', this.wrapper);
-
-			this.initTicketOptionsMenuForProp(opt, btnEl);
-		}
-	},
-
-	/**
-	 * @TicketDisplay
-	 *
-	 * @param property
-	 * @param trigger
-	 */
-	initTicketOptionsMenuForProp: function(property, trigger) {
-		var menu = this.ticketOptionsMenus[property];
-		if (!menu) {
-			console.log('No menu for %s', property);
-			return;
-		}
-
-		menu.setupTriggerElement(trigger);
-	},
-
-	_handleTicketOptionClick: function(info) {
-		var typeEl = $(info.itemEl);
-		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
-		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
-		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
-		if (!typeEl.data('option-name')) typeEl =  typeEl.parent();
-
-		var opt = typeEl.data('option-name');
-		var itemId = $(info.itemEl).data('option-id');
-		if (!itemId) itemId = $(info.itemEl).data('option-value');
-
-		var prop = this.getPropertyManager(opt);
-		this.changeManager.setInstantChange(prop, itemId);
 	},
 
 	//#################################################################
@@ -1005,6 +907,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	personPopoutHtml: null,
 	personPopoutWaiting: false,
 	_initPopout: function() {
+		return;
 		var self = this;
 		var el = this.wrapper;
 

@@ -29,6 +29,34 @@
 	{% endfor %}
 </ul>
 
+{# My Teams #}
+{% if app.user.teams %}
+	<ul id="agent_my_teams_menu">
+		{% for team in app.user.teams %}
+			<li data-team-id="{{ team.id }}">{{ team.name }}</li>
+		{% endfor %}
+	</ul>
+{% endif %}
+
+{# Department #}
+<ul id="department_menu">
+	{% for dep in ticket_options.departments_hierarchy %}
+		{% if last_with_child %}
+			<li class="sep">-</li>
+		{% endif %}
+		{% if dep.children %}
+			<li data-department-id="{{dep.id}}" class="section-title">{{dep.title}}</li>
+			{% for subdep in dep.children %}
+				<li data-department-id="{{subdep.id}}">{{subdep.title}}</li>
+			{% endfor %}
+			{% set last_with_child = true %}
+		{% else %}
+			<li data-department-id="{{dep.id}}">{{dep.title}}</li>
+			{% set last_with_child = false %}
+		{% endif %}
+	{% endfor %}
+</ul>
+
 {# Ticket Status #}
 <ul id="ticket_status_menu">
 	<li data-status="open">Open</li>

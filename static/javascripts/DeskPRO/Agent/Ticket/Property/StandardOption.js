@@ -11,7 +11,7 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 	displayNameType: 'standardOption',
 
 	init: function() {
-		var valid_options = ['department_id', 'category_id', 'product_id', 'priority_id', 'workflow_id', 'status', 'agent_id', 'agent_team_id'];
+		var valid_options = ['category_id', 'product_id', 'priority_id', 'workflow_id'];
 
 		if (valid_options.indexOf(this.options.optionName) == -1) {
 			throw 'invalidOptionName:'+this.options.optionName;
@@ -20,14 +20,10 @@ DeskPRO.Agent.Ticket.Property.StandardOption = new Class({
 		this.optionName = this.options.optionName;
 
 		switch (this.optionName) {
-			case 'department_id': this.displayNameType = 'department_full'; this.displayCaption = 'Department'; break;
 			case 'category_id': this.displayNameType = 'ticket_category_full'; this.displayCaption = 'Category'; break;
 			case 'product_id': this.displayNameType = 'product'; this.displayCaption = 'Product'; break;
 			case 'priority_id': this.displayNameType = 'ticket_priority'; this.displayCaption = 'Priority'; break;
 			case 'workflow_id': this.displayNameType = 'ticket_workflow'; this.displayCaption = 'Workflow'; break;
-			case 'status': this.displayNameType = 'status'; this.displayCaption = 'Status'; break;
-			case 'agent_id': this.displayNameType = 'agent'; this.displayCaption = 'Agent'; break;
-			case 'agent_team_id': this.displayNameType = 'agent_team'; this.displayCaption = 'Agent Team'; break;
 		}
 	},
 
