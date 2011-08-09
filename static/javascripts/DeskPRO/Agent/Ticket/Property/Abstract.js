@@ -89,11 +89,7 @@ DeskPRO.Agent.Ticket.Property.Abstract = new Class({
 	 * Get the UI element used to display the property.
 	 */
 	getInterfaceElement: function() {
-		if (this._interfaceEl !== null) return this._interfaceEl;
-
-		this._interfaceEl = this._getInterfaceElement();
-
-		return this._interfaceEl;
+		return this._getInterfaceElement();
 	},
 
 	_interfaceEl: null,

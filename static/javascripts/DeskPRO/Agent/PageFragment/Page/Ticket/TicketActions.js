@@ -162,17 +162,27 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions = new Orb.Class({
 			dataType: 'json',
 			success: function(data) {
 				this.previewMacroActions(data);
+
+				this.macroOpacityHighlight = $('section.ticket-header, div.messages-wrap').css('opacity', '0.4');
 			}
 		});
 	},
 
 	saveMacro: function() {
 		this.changeManager.saveChanges();
+		if (this.macroOpacityHighlight) {
+			this.macroOpacityHighlight.css('opacity', 1);
+			this.macroOpacityHighlight = null;
+		}
 		this.toggleMacroApplyBtn('off');
 	},
 
 	revertMacro: function() {
 		this.changeManager.revertChanges();
+		if (this.macroOpacityHighlight) {
+			this.macroOpacityHighlight.css('opacity', 1);
+			this.macroOpacityHighlight = null;
+		}
 		this.toggleMacroApplyBtn('off');
 	},
 
