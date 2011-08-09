@@ -5437,3 +5437,10 @@ article.ticket .urgency span {
 .reply-box .menu-trigger {
     border-bottom: 1px dotted #8C8D8D;
 }
+
+
+.properties-edit-trigger {
+    background: url(../../images/icons/edit-gear.png) no-repeat 0 50%;
+    padding-left: 16px;
+    cursor: pointer;
+}

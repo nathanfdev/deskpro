@@ -199,15 +199,16 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 			</div>
 			<div class="row-table-cotent" id="{{baseId}}_fields_display_main_wrap">
 				<div class="col-table-content title-col">
-					<span class="properties-edit-trigger" data-section="main">
+					<span class="properties-edit-trigger edit-fields-trigger">
 						Properties
 					</span>
 				</div>
 				<div class="col-table-content">
-					<div class="extra-info">
+					<div class="extra-info fields-show">
 						<ul id="{{baseId}}_fields_display_main">
 						</ul>
 					</div>
+					<div class="fields-edit" style="display: none;"></div>
 				</div>
 			</div>
 		</div>
@@ -253,6 +254,29 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="prop-title display-title"></div>
 		<div class="prop-val display-content"></div>
 	</li>
+</script>
+<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_edit_tpl">
+	<div class="fields-edit-container">
+		<table>
+			<tbody class="fields-edit-rows">
+
+			</tbody>
+			<tfoot>
+				<tr>
+					<td colspan="2">
+						<button class="clean-gray xx-small save-trigger">Save</button>
+						<button class="clean-gray xx-small close-trigger">Cancel</button>
+					</td>
+				</tr>
+			</tfoot>
+		</table>
+	</div>
+</script>
+<script type="text/x-deskpro-plain" id="{{baseId}}_fields_display_main_edit_row_tpl">
+	<tr>
+		<td class="display-title"></td>
+		<td class="display-content"></td>
+	</tr>
 </script>
 
 {# New tab code for bottom tabs (for addition to tabstrip) #}

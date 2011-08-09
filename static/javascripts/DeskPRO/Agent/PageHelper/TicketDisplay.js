@@ -79,57 +79,68 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		 * The default properties wrapper. This wraps the whole row (ie the title and the contents).
 		 * It's completely hidden when there are no fields to show.
 		 */
-		this.sectionProperties          = ticketPage.getEl('fields_display_main_wrap');
+		this.sectionProperties = ticketPage.getEl('fields_display_main_wrap');
 
 		/**
 		 * This is the proeprties content container (under the wrapper). This is where fields
 		 * are injected into.
 		 */
-		this.sectionPropertiesContent   = ticketPage.getEl('fields_display_main');
+		this.sectionPropertiesContent = ticketPage.getEl('fields_display_main');
 
 		/**
 		 * This is the field template that we use to inject the title and content of a
 		 * field.
 		 */
-		this.sectionPropertiesWrapTpl   = ticketPage.getEl('fields_display_main_wrap_tpl').get(0).innerHTML;
+		this.sectionPropertiesWrapTpl = ticketPage.getEl('fields_display_main_wrap_tpl').get(0).innerHTML;
 
+		/**
+		 * This is wrapper around the editable list when edit mode is enabled
+		 */
+		this.sectionPropertiesEditTpl = ticketPage.getEl('fields_display_main_edit_tpl').get(0).innerHTML;
+
+		/**
+		 * This is the template for a row (a single field) in the edit wrapper.
+		 */
+		this.sectionPropertiesEditRowTpl = ticketPage.getEl('fields_display_main_edit_row_tpl').get(0).innerHTML;
 
 		/**
 		 * This is the ticket tabs ul for the clickable tab li's
 		 */
-		this.sectionBodyTabs               = ticketPage.getEl('ticket_tabs');
+		this.sectionBodyTabs = ticketPage.getEl('ticket_tabs');
 
 		/**
 		 * This is the wrapper around the tab content elements. We use this as a scope
 		 * for clearing custom tabs.
 		 */
-		this.sectionBodyTabContents        = ticketPage.getEl('ticket_tabs_content');
+		this.sectionBodyTabContents = ticketPage.getEl('ticket_tabs_content');
 
 		/**
 		 * This is the template we'll use to add a new tab li to the ul container.
 		 * Its the clickable tab part.
 		 */
-		this.sectionBodyTabsTabTpl         = ticketPage.getEl('fields_display_tabs_tab_tpl').get(0).innerHTML;
+		this.sectionBodyTabsTabTpl = ticketPage.getEl('fields_display_tabs_tab_tpl').get(0).innerHTML;
 
 		/**
 		 * This is the template we'll use to construct the body wrapper of the tab. This is
 		 * the 'data-tab-for' target for the tab, and where new fields will be appended.
 		 */
-		this.sectionBodyTabsTabContentTpl  = ticketPage.getEl('fields_display_tabs_content_tpl').get(0).innerHTML;
+		this.sectionBodyTabsTabContentTpl = ticketPage.getEl('fields_display_tabs_content_tpl').get(0).innerHTML;
 
 		/**
 		 * This is the field template that we use to inject the title and content of a field
 		 */
-		this.sectionBodyTabsWrapTpl        = ticketPage.getEl('fields_display_tabs_wrap_tpl').get(0).innerHTML;
+		this.sectionBodyTabsWrapTpl = ticketPage.getEl('fields_display_tabs_wrap_tpl').get(0).innerHTML;
 
 		this.departmentId = null;
 
 		this.page = ticketPage;
 		this.page.changeManager.addEvent('updateResult', this.handleChangeUpdateResult.bind(this));
 
-		this._initHolders();
-
 		this.setDepartment(parseInt($('input.department_id', this.wrapper).val()||0));
+
+		$('.edit-fields-trigger', this.sectionProperties).click((function() {
+			this.enableEditMode('default');
+		}).bind(this));
 	},
 
 	handleChangeUpdateResult: function(data) {
@@ -150,29 +161,8 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 
 		this.wrapper.append(this.holders);
 
-		this._initHolders();
-
 		return this.holders;
 	},
-
-
-	/**
-	 * Init events etc on holders. These are generally the click-to-edit ones.
-	 */
-	_initHolders: function() {
-		//------------------------------
-		// Property menu triggers
-		//------------------------------
-		
-		var options = ['category_id', 'product_id', 'priority_id', 'workflow_id'];
-		for (var i = 0; i < options.length; i++) {
-			var prop = options[i];
-			var btnEl = $('> .' + prop + ' .menu-trigger', this.holders);
-
-			//this.page.initTicketOptionsMenuForProp(prop, btnEl);
-		}
-	},
-
 
 	/**
 	 * Clears all sections of their display fields. This is usually called
@@ -182,7 +172,20 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		$(this.options.fieldTabSelector, this.sectionBodyTabs).remove();
 		$(this.options.fieldTabContentSelector, this.sectionBodyTabContents).remove();
 		$(this.options.fieldWrapSelector, this.sectionPropertiesContent).remove();
+
 		this.sectionProperties.hide();
+
+		// Reset editable areas
+		var container = $(this.sectionPropertiesEditTpl);
+		$('.close-trigger', container).click((function(ev) {
+			ev.preventDefault();
+			this.closeEditMode('default');
+		}).bind(this));
+		$('.save-trigger', container).click((function(ev) {
+			ev.preventDefault();
+			this.saveEditMode('default');
+		}).bind(this));
+		$('.fields-edit', this.sectionProperties).empty().append(container);
 	},
 
 
@@ -214,6 +217,7 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		//------------------------------
 		// Add items to their right places
 		//------------------------------
+		///var container = $(this.sectionPropertiesEditTpl);
 		
 		Array.each(depItems, function(item) {
 			switch (item.section) {
@@ -236,9 +240,20 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 					displayWrap.appendTo(this.sectionPropertiesContent);
 					item.sectionEl = this.sectionPropertiesContent;
 
-					this._initWrapper(item, displayWrap);
-
 					itemEls.itemHolder.remove();
+
+					var editWrap = $('.fields-edit-container', this.sectionProperties);
+					var itemId = this.getItemId(item);
+					var itemInputHolder = $('> .' + itemId, this.inputHolders);
+
+					var editTitle = $('> .title', itemInputHolder);
+					var editInput = $('> .content', itemInputHolder);
+					var editRow = $(this.sectionPropertiesEditRowTpl);
+					editTitle.detach().appendTo($('.display-title', editRow));
+					editInput.detach().appendTo($('.display-content', editRow));
+
+					editRow.appendTo($('.fields-edit-rows', editWrap));
+
 					break;
 
 				case 'bodytabs':
@@ -277,9 +292,11 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 						displayWrap.appendTo(newTabContent);
 						tab_item.sectionEl = newTabContent;
 
-						this._initWrapper(tab_item, displayWrap);
-
 						itemEls.itemHolder.remove();
+
+						$('.edit-fields-trigger', displayWrap).click((function() {
+							this.enableEditMode('default');
+						}).bind(this));
 					}, this);
 
 					break;
@@ -295,116 +312,39 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		this.updateSectionDisplay();
 	},
 
-	_initWrapper: function(item, displayWrap) {
+	enableEditMode: function(section) {
 
-		if (item.item_type != 'ticket_field') {
-			return;
-		}
+		var showWrapper = $('.fields-show', this.sectionProperties);
+		var editWrapper = $('.fields-edit', this.sectionProperties);
 
-		var edit = $('.edit-trigger', displayWrap);
-		if (!edit.length) {
-			return;
-		}
-
-		var inputHolders = this.inputHolders;
-		var itemId = this.getItemId(item);
-		var itemInputHolder = $('> .' + itemId, inputHolders);
-		var contentEl = $('.content:first', displayWrap);
-		var tplEl = $('.fields-edit-overlay:first', this.wrapper);
-		var ticketPage = this.page;
-
-		var showEditField = function() {
-
-			var overlayEl = null;
-			var inputEl = null;
-
-			if (displayWrap.is('.edit-open')) {
-				return;
-			}
-			displayWrap.addClass('edit-open');
-
-			console.log('showEditField: %s', itemId);
-
-			var overlayEl = $(tplEl.get(0).innerHTML.replace('{id}', itemId));
-			overlayEl.appendTo('body');
-
-			var inputEl = $('> .field-input', itemInputHolder);
-			inputEl.detach().appendTo($('.content', overlayEl));
-
-			var closeOverlay = function() {
-				displayWrap.removeClass('edit-open');
-				overlayEl.slideUp(function() {
-					inputEl.detach().appendTo(itemInputHolder);
-					overlayEl.remove();
-				});
-			};
-
-			var saveField = function() {
-
-				contentEl.empty();
-				var spinner = new Spinner(contentEl, {
-					radii: [4,8],
-					padding: 0
-				}).play();
-
-				closeOverlay();
-
-				var data = $(':input, select, textarea', overlayEl).serializeArray();
-
-				$.ajax({
-					url: BASE_URL + 'agent/tickets/' + ticketPage.getMetaData('ticket_id') + '/ajax-save-custom-fields',
-					type: 'POST',
-					context: this,
-					data: data,
-					dataType: 'html',
-					success: function(html) {
-						// We only want the one rendered field
-						var tmpEl = $('<div>' + html + '</div>');
-
-						var tmpItemHolder  = $('div.page-display-holders > .' + itemId + ':first', tmpEl);
-						var tmpItemContent = $('> .content:first', tmpItemHolder);
-
-						contentEl.empty().append(tmpItemContent);
-					}
-				});
-			};
-
-			$('.close-trigger', overlayEl).click(closeOverlay);
-			$('.save-trigger', overlayEl).click(saveField);
-
-			var positionOf = displayWrap;
-			var positionMy = 'left top';
-			var positionAt = 'left top';
-
-			var width = displayWrap.width() - 8;
-			if (width < 150) {
-				width = 150;
-			} else if (width > 300) {
-				width = 250;
-				positionOf = $('.title:first', displayWrap);
-				positionMy = 'left top';
-				positionAt = 'right top';
-			}
-
-			overlayEl.css({
-				position: 'absolute',
-				width: width,
-				'z-index': 10000
-			});
-
-			overlayEl.position({
-				my: positionMy,
-				at: positionAt,
-				of: positionOf,
-				collision: 'fit'
-			});
-
-			overlayEl.slideDown();
-		}
-
-		displayWrap.dblclick(showEditField);
+		showWrapper.hide();
+		editWrapper.show();
 	},
-	
+
+	closeEditMode: function(section) {
+		var showWrapper = $('.fields-show', this.sectionProperties);
+		var editWrapper = $('.fields-edit', this.sectionProperties);
+
+		editWrapper.hide();
+		showWrapper.show();
+	},
+
+	saveEditMode: function(section) {
+		var editWrapper = $('.fields-edit', this.sectionProperties);
+
+		var changeManager = this.page.changeManager;
+
+		$('[data-prop-id]', editWrapper).each(function() {
+			var prop = changeManager.getPropertyManager($(this).data('prop-id'));
+			prop.setValue($(this).val());
+
+			changeManager.addChange(prop);
+		});
+
+		changeManager.saveChanges();
+		
+		var data = $('input, textarea, select', editWrapper).serializeArray();
+	},
 
 	/**
 	 * Run through all the rules and show/hide all display items and
@@ -551,52 +491,6 @@ DeskPRO.Agent.PageHelper.TicketDisplay = new Orb.Class({
 		}
 		var itemTitle   = $('> .title:first', itemHolder);
 		var itemContent = $('> .content:first', itemHolder);
-
-		/**
-		 * This goes into the menus to show/hide specific options
-		 * as defined by the display
-		 */
-		function handleCatMenu(show_ids, menu_id, class_prefix) {
-			var menuEl = $('.'+menu_id+'.menu:first', this.wrapper);
-			var lis = $('li', menuEl).show().removeClass('off');
-
-			if (!show_ids || !show_ids.length) {
-				return;
-			}
-
-			$('li', menuEl).each(function() {
-				var id = $(this).data('option-value');
-				if (show_ids.indexOf(id+"") == -1 && show_ids.indexOf(id) == -1) {
-					$('li.'+class_prefix+'-' + id, menuEl).hide().addClass('off'); // hides separators, children as well as self
-				}
-			});
-
-			var vis = $('li:not(.off)', menuEl);
-			var first = vis.first();
-			if (first.is('.sep')) first.hide().addClass('off');
-
-			var last = vis.last();
-			if (last.is('.sep')) last.hide().addClass('off');
-		};
-
-		// Reduce options in the selections to what was defined
-		switch (item.item_type) {
-			case 'ticket_category':
-				handleCatMenu(item.ticket_categories, 'category_id', 'cat');
-				break;
-
-			case 'ticket_workflow':
-				handleCatMenu(item.ticket_workflows, 'workflow_id', 'work');
-				break;
-
-			case 'ticket_priority':
-				handleCatMenu(item.ticket_priorities, 'priority_id', 'pri');
-				break;
-
-			case 'ticket_product':
-				handleCatMenu(item.ticket_products, 'product_id', 'prod');
-				break;
-		}
 
 		return {
 			itemHolder:  itemHolder,
