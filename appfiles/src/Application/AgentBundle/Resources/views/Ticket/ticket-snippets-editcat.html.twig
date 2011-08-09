@@ -1,0 +1,29 @@
+<div class="edit-snippet-category field-overlay" style="display: none">
+	<form>
+		<input type="hidden" name="category_id" value="{{ category.id }}" />
+	<dl>
+		<dt>Title:</dt>
+		<dd><input type="text" name="title" value="{{ category.title }}" /></dd>
+
+		<dt>Permissions:</dt>
+		<dd>
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" {% if perm_type == 'me' %}checked="checked"{% endif %} /> Just me</label><br />
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" {% if perm_type == 'team' %}checked="checked"{% endif %} /> My Team</label><br />
+			<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" {% if perm_type == 'global' %}checked="checked"{% endif %} /> Everyone</label><br />
+		</dd>
+
+		<dt class="perm-teams" style="display: none">Teams:</dt>
+		<dd class="perm-teams" style="display: none">
+			<select name="teams[]" multiple="multiple" size="6">
+				{% for team in agent_teams %}
+					<option value="{{ team.id }}">{{ team.name }}</option>
+				{% endfor %}
+			</select>
+		</dd>
+	</dl>
+
+	<div class="controls">
+		<button class="dp-button xx-small save-trigger">Save</button>
+		<button class="dp-button xx-small delete-trigger">Delete</button>
+	</div>
+</div>

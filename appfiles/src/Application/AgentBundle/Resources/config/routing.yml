@@ -516,6 +516,30 @@ agent_ticket_snippetviewer:
   defaults: { _controller: AgentBundle:Ticket:snippetsViewer }
   requirements: { ticket_id: "\d+" }
 
+agent_ticket_snippetviewer_newcat:
+  pattern: /tickets/snippet-viewer/new-cat
+  defaults: { _controller: AgentBundle:Ticket:newSnippetCat }
+
+agent_ticket_snippetviewer_savesnippet:
+  pattern: /tickets/snippet-viewer/save-snippet
+  defaults: { _controller: AgentBundle:Ticket:saveSnippet }
+
+agent_ticket_snippetviewer_delsnippet:
+  pattern: /tickets/snippet-viewer/delete-snippet
+  defaults: { _controller: AgentBundle:Ticket:deleteSnippet }
+
+agent_ticket_snippetviewer_savecat:
+  pattern: /tickets/snippet-viewer/save-category
+  defaults: { _controller: AgentBundle:Ticket:saveSnippetCat }
+
+agent_ticket_snippetviewer_editcat:
+  pattern: /tickets/snippet-viewer/edit-category
+  defaults: { _controller: AgentBundle:Ticket:editSnippetCat }
+
+agent_ticket_snippetviewer_delcat:
+  pattern: /tickets/snippet-viewer/delete-category
+  defaults: { _controller: AgentBundle:Ticket:deleteSnippetCat }
+
 agent_ticket_viewtip:
   pattern: /tickets/{ticket_id}/tip
   defaults: { _controller: AgentBundle:Ticket:viewTip }

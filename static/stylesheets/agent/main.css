@@ -5285,6 +5285,8 @@ article.ticket .urgency span {
 
 .snippets-overlay nav ul {
     margin-top: 10px;
+    position: relative;
+    padding-bottom: 27px;
 }
 
 .snippets-overlay nav li {
@@ -5310,6 +5312,29 @@ article.ticket .urgency span {
     -webkit-box-shadow: 0px 0px 3px 1px #bac4cf;
     -moz-box-shadow: 0px 0px 3px 1px #bac4cf;
     box-shadow: 0px 0px 3px 1px #bac4cf;
+}
+
+.snippets-overlay nav li.new-category {
+    width: 16px;
+    height: 16px;
+    overflow: hidden;
+    text-indent: -100px;;
+    background-image: url(../../images/icons/plus-black.png);
+    background-repeat: no-repeat;
+    background-position: 50% 50%;
+
+    position: absolute;
+    right: 0;
+    bottom: 0;
+}
+
+.snippets-overlay nav li.editing {
+}
+
+.snippets-overlay nav li.editing input {
+    font-size: 11px;
+    padding: 0 1px 0 2px;
+    width: 110px;
 }
 
 .snippets-overlay article {
@@ -5352,6 +5377,38 @@ article.ticket .urgency span {
     border-bottom: 1px solid #BCC6D2;
     margin-bottom: 11px;
     padding-bottom: 11px;
+}
+
+.new-snippet-category {
+    width: 300px;
+    font-size: 11px;
+}
+
+.new-snippet-category dl dt {
+    clear: both;
+    float: left;
+    width: 140px;
+
+    padding-bottom: 4px;
+}
+
+.new-snippet-category dl dd {
+    float: left;
+    padding-bottom: 4px;
+}
+
+.new-snippet-category input {
+    margin: 4px;
+}
+
+.new-snippet-category {
+    position: absolute;
+}
+
+.new-snippet-category .controls {
+    clear: left;
+    padding-top: 8px;
+    text-align: center;
 }
 
 

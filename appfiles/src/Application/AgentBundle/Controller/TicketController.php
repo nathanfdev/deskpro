@@ -325,11 +325,142 @@ class TicketController extends AbstractController
 		}
 
 		$ticket_snippets = App::getEntityRepository('DeskPRO:TicketSnippet')->getSnippetsForAgent($this->person);
+		$ticket_snippet_cats = App::getEntityRepository('DeskPRO:TicketSnippetCategory')->getCatsForAgent($this->person);
+
+		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
 
 		return $this->render('AgentBundle:Ticket:ticket-snippets.html.twig', array(
 			'ticket' => $ticket,
 			'person' => $person,
 			'ticket_snippets' => $ticket_snippets,
+			'ticket_snippet_cats' => $ticket_snippet_cats,
+			'agent_teams' => $agent_teams,
+		));
+	}
+
+	public function newSnippetCatAction()
+	{
+		$cat = new \Application\DeskPRO\Entity\TicketSnippetCategory();
+		$cat['title'] = $this->in->getString('title');
+		$cat->person = $this->person;
+
+		if ($this->in->getString('perm_type') == 'global') {
+			$cat['is_global'] = true;
+		} elseif ($this->in->getString('perm_type') == 'team') {
+			$team_ids = $this->in->getArrayValue('teams');
+			$teams = $this->em->getRepository('DeskPRO:AgentTeam')->getTeamsFromIds($team_ids);
+
+			foreach ($teams as $t) {
+				$cat->agent_teams->add($t);
+			}
+		}
+
+		$this->em->transactional(function($em) use ($cat) {
+			$em->persist($cat);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'cat_row_html' => $this->renderView('AgentBundle:Ticket:ticket-snippets-catrow.html.twig', array(
+				'category' => $cat
+			)),
+			'cat_section_html' => $this->renderView('AgentBundle:Ticket:ticket-snippets-catsection.html.twig', array(
+				'category' => $cat,
+				'snippets' => array()
+			))
+		));
+	}
+
+	public function editSnippetCatAction()
+	{
+		$cat = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+
+		return $this->render('AgentBundle:Ticket:ticket-snippets-editcat.html.twig', array(
+			'category' => $cat,
+		));
+	}
+
+	public function saveSnippetCatAction()
+	{
+		$cat = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+		$cat['title'] = $this->in->getString('title');
+
+		return $this->createJsonResponse(array(
+			'category_id' => $cat['id'],
+			'title' => $cat['title']
+		 ));
+	}
+
+	public function deleteSnippetCatAction()
+	{
+		$cat = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+
+		$cat_id = $cat['id'];
+
+		$this->em->transactional(function($em) use ($cat) {
+			$em->remove($cat);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'category_id' => $cat_id,
+		 ));
+	}
+
+	public function saveSnippetAction()
+	{
+		if ($this->in->getUint('snippet_id')) {
+			$snippet = App::findEntity('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
+			$category = $snippet->category;
+		} else {
+			$category = App::findEntity('DeskPRO:TicketSnippetCategory', $this->in->getUint('category_id'));
+			$snippet = new \Application\DeskPRO\Entity\TicketSnippet();
+			$snippet->category = $category;
+		}
+
+		$snippet['title'] = $this->in->getString('title');
+		$snippet['snippet'] = $this->in->getString('snippet');
+		$snippet->person = $this->person;
+
+		$this->em->transactional(function($em) use ($snippet) {
+			$em->persist($snippet);
+			$em->flush();
+		});
+
+		if ($this->in->getUint('ticket_id')) {
+			$ticket = $this->getTicketOr404($this->in->getUint('ticket_id'));
+			$person = $ticket->person;
+		} else {
+			$ticket = null;
+			$person = null;
+		}
+
+		return $this->createJsonResponse(array(
+			'snippet_row_html' => $this->renderView('AgentBundle:Ticket:ticket-snippets-row.html.twig', array(
+				'snippet' => $snippet,
+				'ticket' => $ticket,
+				'person' => $person,
+			)),
+			'snippet_id' => $snippet['id'],
+			'category_id' => $category['id']
+		));
+	}
+
+	public function deleteSnippetAction()
+	{
+		$snippet = App::findEntity('DeskPRO:TicketSnippet', $this->in->getUint('snippet_id'));
+
+		$snippet_id = $snippet['id'];
+		$category_id = $snippet->category['id'];
+
+		$this->em->transactional(function($em) use ($snippet) {
+			$em->remove($snippet);
+			$em->flush();
+		});
+
+		return $this->createJsonResponse(array(
+			'snippet_id' => $snippet_id,
+			'category_id' => $category_id
 		));
 	}
 

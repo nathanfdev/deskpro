@@ -52,6 +52,15 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		this.activateTab(firstTab);
 	},
 
+	addTriggerElement: function(el) {
+		var self = this;
+		
+		this.triggerEls.add(el);
+		el.click(function(ev) {
+			self._handleTabClick(this, ev);
+		});
+	},
+
 	_handleTabClick: function(el, event) {
 		var tab = $(el);
 		this.activateTab(tab, event);

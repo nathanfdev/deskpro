@@ -1,51 +1,43 @@
-<div class="ticket-snippets-overlay snippets-overlay">
+<div class="ticket-snippets-overlay snippets-overlay" {% if ticket %}data-ticket-id="{{ ticket.id }}"{% endif %}>
 	<nav>
 		<ul>
-			{% for group in ticket_snippets %}
-				<li data-category="{{ group.category.id }}" data-tab-for="article.cat-{{ group.category.id }}">
-					<label>{{ group.category.title }}</label>
-				</li>
+			{% for category in ticket_snippet_cats %}
+				{% include 'AgentBundle:TIcket:ticket-snippets-catrow.html.twig' %}
 			{% endfor %}
 			<li class="new-category tipped" title="Add new category">new category</li>
 		</ul>
 	</nav>
-	{% for group in ticket_snippets %}
-		<article class="cat-{{ group.category.id }}" style="display:none;">
-			<ul>
-				{% for snippet in group.snippets %}
-					<li class="snippet snippet-{{ snippet.id }}" data-snippet-id="{{ snippet.id }}">
-						<label class="snippet-trigger" data-snippet-id="{{ snippet.id }}">{{ snippet.title }}</label>
-						{% if no_formatting %}
-							<div class="content raw">{{ snippet.snippet }}</div>
-							<textarea class="value raw" style="display: none;">{{ snippet.snippet }}</textarea>
-						{% else %}
-							<div class="content raw" style="display: none;">{{ snippet.snippet }}</div>
-							<textarea class="value raw" style="display: none;">{{ snippet.snippet }}</textarea>
-							<div class="content formatted">{{ snippet.snippetFormattedHtml(ticket, person)|raw }}</div>
-							<textarea class="value formatted" style="display: none;">{{ snippet.snippetFormatted(ticket, person) }}</textarea>
-						{% endif %}
-					</li>
-				{% endfor %}
-			</ul>
-		</article>
+	<div class="snippet-sections">
+	{% for category in ticket_snippet_cats %}
+		{% set group = ticket_snippets[category.id] %}
+		{% include 'AgentBundle:TIcket:ticket-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
 	{% endfor %}
+	</div>
 
-	<script type="text/x-jquery-tmpl" class="tpl-cat-row">
-		<li class="editing" data-tab-for="article.${category_hash}">
-			<label></label>
-			<input type="text" name="category_name" value="New Category" />
-		</li>
-	</script>
-	<script type="text/x-jquery-tmpl" class="tpl-cat-list">
-		<article class="{{ category_hash }}" style="display: none;">
-			<ul>
-			</ul>
-		</article>
-	</script>
-	<script type="text/x-jquery-tmpl" class="tpl-snippet-list">
-		<li class="new-snippet ${tmp_id}">
-			<label><input type="text" name="title[]" /></label>
-			<textarea class="value raw" style="display: none;">{{ snippet.snippet }}</textarea>
-		</li>
-	</script>
+	<div class="new-snippet-category field-overlay" style="display: none">
+		<dl>
+			<dt>Title:</dt>
+			<dd><input type="text" name="title" value="New Category" /></dd>
+
+			<dt>Permissions:</dt>
+			<dd>
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="me" checked="checked" /> Just me</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="team" /> My Team</label><br />
+				<label><input type="radio" class="perm-type-opt" name="perm_type" value="global" /> Everyone</label><br />
+			</dd>
+
+			<dt class="perm-teams" style="display: none">Teams:</dt>
+			<dd class="perm-teams" style="display: none">
+				<select name="teams[]" multiple="multiple" size="6">
+					{% for team in agent_teams %}
+						<option value="{{ team.id }}">{{ team.name }}</option>
+					{% endfor %}
+				</select>
+			</dd>
+		</dl>
+
+		<div class="controls">
+			<button class="dp-button xx-small new-cat-trigger">Add</button>
+		</div>
+	</div>
 </div>

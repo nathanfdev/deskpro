@@ -1,0 +1,19 @@
+<article class="cat-{{ category.id }}" style="display:none;">
+	<ul>
+		{% for snippet in snippets %}
+			{% include 'AgentBundle:Ticket:ticket-snippets-row.html.twig' %}
+		{% endfor %}
+		<li class="new-snippet">
+			<form>
+				<input type="hidden" name="category_id" value="{{ category.id }}" />
+				<input type="hidden" name="snippet_id" value="0" />
+				<label><input type="text" name="title" value="" /></label>
+				<div class="content">
+					<textarea name="snippet"></textarea>
+					<br />
+					<button class="dp-button save-snippet-trigger">Add Snippet</button>
+				</div>
+			</form>
+		</li>
+	</ul>
+</article>

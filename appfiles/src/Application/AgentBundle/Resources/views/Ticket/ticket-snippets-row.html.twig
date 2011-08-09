@@ -1,0 +1,27 @@
+<li class="snippet snippet-{{ snippet.id }}" data-snippet-id="{{ snippet.id }}">
+	<div class="show">
+		<label class="snippet-trigger" data-snippet-id="{{ snippet.id }}">{{ snippet.title }}</label>
+		<div class="content show">
+			{% if no_formatting %}
+				<div class="content raw">{{ snippet.snippet }}</div>
+			{% else %}
+				<div class="content formatted">{{ snippet.snippetFormattedHtml(ticket, person)|raw }}</div>
+				<textarea class="value formatted" style="display: none;">{{ snippet.snippetFormatted(ticket, person) }}</textarea>
+			{% endif %}
+		</div>
+	</div>
+	<div class="edit" style="display: none">
+		<form>
+			<input type="hidden" name="snippet_id" value="{{ snippet.id }}" />
+			<label><input type="text" name="title" value="{{ snippet.title }}" /></label>
+			<div class="content">
+				<textarea name="snippet">{{ snippet.snippet }}</textarea>
+				<br />
+				<div style="float:right;font-size: 9px; color: #B60004;">
+					<span class="delete-snippet-trigger" data-snippet-id="{{ snippet.id }}" style="cursor: pointer;">delete</span>
+				</div>
+				<button class="dp-button save-snippet-trigger">Save Snippet</button>
+			</div>
+		</form>
+	</div>
+</li>

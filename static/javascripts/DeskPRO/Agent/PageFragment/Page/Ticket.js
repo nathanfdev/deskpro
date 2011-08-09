@@ -418,8 +418,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			onBeforeSaveReply: this._beforeSaveReply.bind(this),
 			onSaveReplySuccess: this._saveReplySuccess.bind(this)
 		});
-
-		this.replyBox.resetReplyBox();
 	},
 
 	_beforeSaveReply: function(info) {

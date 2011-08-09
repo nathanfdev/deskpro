@@ -47,6 +47,15 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 		});
 
 		//------------------------------
+		// Init saving of drafts
+		//------------------------------
+
+		this.getEl('replybox_txt').keypress(this.updateDraftWait.bind(this));
+
+		// Before the tab is closed and desotryed, save the draft if there is one
+		this.page.addEvent('closeTab', this.updateDraft.bind(this));
+
+		//------------------------------
 		// Init reply/note tab switcher
 		//------------------------------
 		
@@ -201,8 +210,17 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 			triggerElement: $('.ticket-snippets-trigger', this.replyBox),
 			onSnippetClick: this._onSnippetClick.bind(this)
 		});
+
+		if (!this.getEl('replybox_txt').val().trim().length) {
+			this.resetReplyBox();
+		}
 	},
 
+	/**
+	 * Called when a snippet link is clicked
+	 *
+	 * @param info
+	 */
 	_onSnippetClick: function(info) {
 		this.getEl('replybox_txt').val(this.getEl('replybox_txt').val() + "\n\n" + info.snippet);
 	},
@@ -289,6 +307,48 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 		if (this.page.getMetaData('agentSignature', false)) {
 			$('textarea.reply', this.replyBox).val("\n\n--\n" + this.page.getMetaData('agentSignature', ''));
 		}
+	},
+
+	updateDraftWait: function() {
+		// Already running, we'll just
+		// let it run out
+		if (this._draftTimer) {
+			return;
+		}
+
+		this._draftTimer = window.setTimeout(this.updateDraft.bind(this), 1000);
+	},
+
+	updateDraft: function() {
+
+		if (this._draftTimer) {
+			window.clearTimeout(this._draftTimer);
+			this._draftTimer = null;
+		}
+
+		var text = this.getEl('replybox_txt').val().trim();
+
+		if (!text) {
+			return;
+		}
+
+		var k = 'ticket_draft.' + this.page.getMetaData('ticket_id');
+
+		var data = [];
+		data.push({
+			name: 'prefs_expire['+k+']',
+			value: '+30 days'
+		});
+		data.push({
+			name: 'prefs['+k+']',
+			value: text
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/misc/ajax-save-prefs',
+			type: 'POST',
+			data: data
+		});
 	},
 
 	/**

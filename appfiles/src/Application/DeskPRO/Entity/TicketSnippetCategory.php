@@ -61,4 +61,9 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="title", type="string", length=255)
 	 */
 	protected $title;
+
+	public function __construct()
+	{
+		$this->agent_teams = new \Doctrine\Common\Collections\ArrayCollection();
+	}
 }
