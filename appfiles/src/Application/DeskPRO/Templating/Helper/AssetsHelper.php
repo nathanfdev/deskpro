@@ -14,13 +14,18 @@ namespace Application\DeskPRO\Templating\Helper;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\Templating\Helper\AssetsHelper as BaseAssetsHelper;
 
+use Application\DeskPRO\App;
+
 class AssetsHelper extends BaseAssetsHelper
 {
 	public function __construct(Request $request, $baseURLs = array(), $version = null, $packages = array())
 	{
-		foreach ($baseURLs as &$u) {
-			$u = str_replace('BASE_PATH', $request->getBasePath(), $u);
+		$static_path = App::getConfig('static_path');
+		if (!$static_path) {
+			$static_path = $request->getBasePath() . '/static/';
 		}
+
+		$baseURLs[0] = $static_path;
 
 		parent::__construct($request->getBasePath(), $baseURLs, $version, $packages);
 	}

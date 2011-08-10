@@ -96,6 +96,12 @@ $CONFIG['elastica'] = array(
 ################################################################################
 
 /**
+ * Path to serve static files from, with trailing slash.
+ * When none provided, the /static/ directory under the current request is used.
+ */
+//$CONFIG['static_path'] = 'http://static.example.com/';
+
+/**
  * Path to store cache files. Defaults to appfiles/sys/cache
  */
 //$CONFIG['cache_dir'] = '/some/path';

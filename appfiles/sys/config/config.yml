@@ -43,7 +43,7 @@ framework:
   secret: mube224etsmhxky1gvwixc4b
   templating:
     engines: ['twig', 'php', 'jsonphp']
-    assets_base_urls: "BASE_PATH/static/"
+    assets_base_urls: "/"
   validation:
     enabled: true
   session:
