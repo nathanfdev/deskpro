@@ -122,9 +122,20 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		<div class="user">
 			<div class="desc">
 				Ticket owned by
-					<a class="user-link person-overview" style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }} &lt;{{ ticket.person.primary_email_address }}&gt;</a>
+					<a
+						class="user-link person-overview"
+						style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');"
+						data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}"
+					>
+						{{ ticket.person.display_name }}
+						&lt;{{ ticket.person_email_address }}&gt;
+					</a>
 					{% if ticket.person.organization %}
-						from <a style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');" class="org-link org-overview" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}">{{ ticket.person.organization.name }}</a>
+						from <a
+							style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');"
+							class="org-link org-overview"
+							data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}"
+						>{{ ticket.person.organization.name }}</a>
 						{% if ticket.person.organization_position %}<span class="org-pos">({{ ticket.person.organization_position }})</span>{% endif %}
 					{% endif %}
 			</div>

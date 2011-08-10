@@ -30,9 +30,19 @@ class Message implements LogActionInterface
 
 	public function getLogDetails()
 	{
-		return array(
-			'message_id' => $this->message['id']
-		);
+		$details = array();
+		$details['message_id'] = $this->message['id'];
+		$details['creation_system'] = $this->message['creation_system'];
+
+		if ($this->message['ip_address']) {
+			$details['ip_address'] = $this->message['ip_address'];
+		}
+
+		if ($this->message['email']) {
+			$details['email'] = $this->message['email'];
+		}
+
+		return $details;
 	}
 
 	public function getMessage()

@@ -885,6 +885,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getPersonEmailAddress()
+	{
+		$email = $this->getPersonEmail();
+		return $email['email'];
+	}
+
 	public function getDepartmentId()
 	{
 		if (!$this->department) {
@@ -1479,6 +1485,21 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		// TODO controller by setting
 		return $this->id;
+	}
+
+
+	/**
+	 * Did this ticket originate from a gateway?
+	 *
+	 * @return bool
+	 */
+	public function isFromGateway()
+	{
+		if (strpos($this->creation_system, 'gateway') === 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 

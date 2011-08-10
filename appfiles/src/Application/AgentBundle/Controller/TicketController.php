@@ -742,6 +742,7 @@ class TicketController extends AbstractController
 		$message = new Entity\TicketMessage();
 		$message['ticket'] = $ticket;
 		$message['person'] = $this->person;
+		$message['ip_address'] = $this->request->getClientIp();
 		$message->setMessageText($this->in->getString('message'));
 
 		foreach ($this->in->getCleanValueArray('attach') as $blob_id) {

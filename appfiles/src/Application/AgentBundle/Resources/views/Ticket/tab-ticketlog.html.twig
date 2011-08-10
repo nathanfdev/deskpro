@@ -26,7 +26,13 @@
 						<span class="type">Department</span> changed from
 						<span class="old-val">{{log.details.old_department_title}}</span> to <span class="new-val">{{log.details.new_department_title}}</span>
 					{% elseif log.action_type == 'message_created' %}
-						<span class="type">New reply</span> <span class="new-val">#{{log.details.message_id}}</span>
+						<span class="type">New message</span> <span class="new-val">#{{log.details.message_id}}</span>
+						{% if log.details.ip_address %}
+						from web ({{ log.details.ip_address }})
+						{% endif %}
+						{% if log.details.email %}
+						from email ({{ log.details.email }})
+						{% endif %}
 					{% elseif log.action_type == 'changed_priority' %}
 						<span class="type">Priority</span> changed from
 						<span class="old-val">{{log.details.old_priority_title}}</span> to <span class="new-val">{{log.details.new_priority_title}}</span>

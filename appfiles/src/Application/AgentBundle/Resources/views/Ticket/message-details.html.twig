@@ -29,10 +29,19 @@
 	</tr>
 	{% endif %}
 
+	{% if message.email %}
+	<tr>
+		<td>Sent From Address</td>
+		<td>{{ message.email }}</td>
+	</tr>
+	{% endif %}
+
+	{% if message.ip_address %}
 	<tr>
 		<td>IP Address</td>
 		<td>{{ message.ip_address }}</td>
 	</tr>
+	{% endif %}
 
 	{% if message.visitor %}
 		<tr>

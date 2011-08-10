@@ -189,6 +189,7 @@ class TicketGateway extends AbstractGateway
 
 		$message['ticket'] = $ticket;
 		$message['person'] = $person;
+		$message['email'] = $this->reader->getFromAddress()->getEmail();
 
 		$message['message'] = $email_info['body'];
 
@@ -326,6 +327,8 @@ class TicketGateway extends AbstractGateway
 		$ticket = $newticket->save();
 
 		$message = $newticket->new_message;
+		$message['email'] = $this->reader->getFromAddress()->getEmail();
+		
 		foreach ($this->processBlobs() as $blob) {
 			$attach = new Entity\TicketAttachment();
 			$attach['blob'] = $blob;
@@ -340,6 +343,14 @@ class TicketGateway extends AbstractGateway
 
 		if ($this->reader->hasProperty('email_source')) {
 			$message['email_source'] = $this->reader->getProperty('email_source');
+		}
+
+		// Set the proper email address on the ticket from the users account
+		if ($this->reader->getFromAddress()->email != $person->getPrimaryEmailAddress()) {
+			$email_rec = $person->findEmailAddress($this->reader->getFromAddress());
+			if ($email_rec) {
+				$ticket->person_email = $email_rec;
+			}
 		}
 
 		App::getOrm()->persist($ticket);

@@ -46,7 +46,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
-	
+
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailSource
 	 * @orm:OneToOne(targetEntity="EmailSource")
@@ -89,6 +89,16 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * @orm:Column(name="ip_address", type="string", length=30)
 	 */
 	protected $ip_address = '';
+
+	/**
+	 * The email address the user sent the email from (gateway messages only).
+	 * This is a perm record and doesnt change even if the user changes/deletes their email
+	 * address.
+	 *
+	 * @var string
+	 * @orm:Column(name="email", type="string", length=255)
+	 */
+	protected $email = '';
 
 	/**
 	 * @var string
@@ -185,6 +195,20 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		if (!$this->ip_address) {
 			$this['ip_address'] = $visitor['ip_address'];
 		}
+	}
+
+	/**
+	 * Did this message originate from a gateway?
+	 *
+	 * @return bool
+	 */
+	public function isFromGateway()
+	{
+		if (strpos($this->creation_system, 'gateway') === 0) {
+			return true;
+		}
+
+		return false;
 	}
 
 	/**
