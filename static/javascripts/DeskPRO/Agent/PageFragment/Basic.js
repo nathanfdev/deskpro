@@ -307,5 +307,13 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		}
 
 		return $('#' + id, context);
+	},
+
+
+	/**
+	 * Close this tab
+	 */
+	closeSelf: function() {
+		DeskPRO_Window.removePage(this);
 	}
 });

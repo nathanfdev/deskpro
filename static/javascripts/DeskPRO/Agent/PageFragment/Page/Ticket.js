@@ -174,6 +174,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			}).bind(this),
 			onSaveReplySuccess: (function(info) {
 				this.displayNewMessage(info.result.message_html);
+
+				if (info.result.close_tab) {
+					window.setTimeout((function() {
+						console.log('ere');
+						this.closeSelf();
+					}).bind(this), 400);
+				}
 			}).bind(this)
 		});
 
