@@ -145,11 +145,18 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 				var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
 				el.addClass('tipped');
 				el.attr('data-tipped', tipUrl);
-				el.attr('data-tipped-options', 'ajax:true, showDelay: 0.8');
+				el.attr('data-tipped-options', 'ajax:true, showOn: "click", hideOn: { element: "target", event: "click" }, hideOnClickOutside: true ');
 
-				el.mouseover(function() {
-					Tipped.show(this);
+				el.click(function(ev) {
+					Tipped.toggle(this);
 				});
+
+				if (el.is('.with-route')) {
+					el.addClass('cancel-route')
+				}
+				if (el.parent().is('.with-route')) {
+					el.parent().addClass('cancel-route')
+				}
 			}
 		});
 	},

@@ -3,21 +3,38 @@
 		<article class="ticket ticket-{{ticket.id}}">
 			<input type="checkbox" class="ticket-select" value="{{ ticket.id }}"/>
 			<div class="toprow">
-				<div class="userinfo">
-					<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
-						<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
-					</a>
-					{% if ticket.person.primary_email %}
-						<span class="email">(...@{{ ticket.person.primary_email.email_domain }})</span>
-					{% endif %}
+				<div class="left">
+					<span class="department">
+						{% if ticket.department.parent %}
+							{{ ticket.department.parent.title }}
+						{% else %}
+							{{ ticket.department.title }}
+						{% endif %}
+					</span>
+					<div class="userinfo">
+						<a class="with-route name" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
+							<span class="person-tip" data-person-id="{{ ticket.person.id|default(0) }}">{{ ticket.person.display_name }}</span>
+						</a>
+						{% if ticket.person.organization %}
+							<span class="org">
+								({% if ticket.person.organization_position %}{{ ticket.person.organization_position }}, {% endif %}{{ ticket.person.organization.name }})
+							</span>
+						{% endif %}
+						{% if ticket.person.primary_email %}
+							<span class="email">{{ ticket.person.primary_email_address }}</span>
+						{% endif %}
+					</div>
 				</div>
 				<div class="ticketinfo">
+					<div class="bound-faded"></div>
 					<span class="urgency"><span>{{ rand(1,10) }}</span></span>
 					<span class="status status-{{ ticket.status }}" title="{{ ticket.status }}">{{ ticket.status }}</span>
 				</div>
 			</div>
 			<div class="preview">
-				<span class="department">{{ ticket.department.title }}</span>
+				{% if ticket.department.parent %}
+				<span class="sub-department">{{ ticket.department.title }}</span>
+				{% endif %}
 				<a class="with-route" data-route="ticket:{{ path('agent_ticket_view', {'ticket_id': ticket.id}) }}">
 					<span class="subject">{{ ticket.subject }}</span>
 				</a>

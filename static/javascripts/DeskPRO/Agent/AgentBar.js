@@ -194,6 +194,10 @@ DeskPRO.Agent.AgentBar = new Orb.Class({
 
 		el = $(el);
 
+		if (el.is('.cancel-route')) {
+			return;
+		}
+
 		if (!el.data('route')) {
 			console.warn('Element has no route: %o', el);
 		}

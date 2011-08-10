@@ -422,15 +422,21 @@ section.deskpro-results-list article.ticket .toprow {
 }
 
 section.deskpro-results-list article.ticket .toprow .userinfo {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 3px 0 0 4px;
+
+}
+
+section.deskpro-results-list article.ticket .toprow .userinfo a.name {
+    color: #303338;
 }
 
 section.deskpro-results-list article.ticket .toprow .userinfo .email {
     font-size: 95%;
-    color: #959DAB;
+    color: #484A4C;
+}
+
+section.deskpro-results-list article.ticket .toprow .userinfo .org {
+    font-size: 95%;
+    color: #484A4C;
 }
 
 section.deskpro-results-list article.ticket .toprow .ticketinfo {
@@ -438,7 +444,9 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo {
     top: 0;
     right: 0;
     padding: 3px 4px 0 0;
-    padding-left: 25px;
+    background-color: #FAFAFB;
+    padding-left: 5px;
+    margin-left: 32px;
 }
 
 section.deskpro-results-list article.ticket .toprow .ticketinfo .inner {
@@ -450,7 +458,8 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo .bound-faded {
     top: 3px;
     left: 0;
     bottom: 0;
-    width: 25px;
+    width: 32px;
+    margin-left: -32px;
 
     background: -moz-linear-gradient(left, rgba(251,251,252,0) 0%, rgba(251,251,252,1) 87%, rgba(251,251,252,1) 100%);
     background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(251,251,252,0)), color-stop(87%,rgba(251,251,252,1)), color-stop(100%,rgba(251,251,252,1)));
@@ -513,15 +522,19 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo .agent-team {
     margin: 0 3px 0 3px;
 }
 
-section.deskpro-results-list article.ticket .preview {
-    
+section.deskpro-results-list article.ticket .toprow .left {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    overflow: hidden;
+
+    width: 700px;
+
+    padding: 3px 0 0 0;
 }
 
-section.deskpro-results-list article.ticket .preview .subject {
-
-}
-
-section.deskpro-results-list article.ticket .preview .department {
+section.deskpro-results-list article.ticket .toprow .department {
     color: #6C6F72;
     border:  1px solid #CACED1;
     padding: 1px 3px 1px 3px;
@@ -529,6 +542,40 @@ section.deskpro-results-list article.ticket .preview .department {
 
     -moz-border-radius: 3px;
     border-radius: 3px;
+
+    float: left;
+    line-height: 100%;
+
+    margin-top: 2px;
+    margin-right: 6px;
+}
+
+section.deskpro-results-list article.ticket .preview {
+    background: url(../../images/elbow-end.gif) no-repeat 0 50%;
+    padding-left: 18px;
+    margin-left: 14px;
+}
+
+section.deskpro-results-list article.ticket .preview a, 
+section.deskpro-results-list article.ticket .preview a .subject {
+    color: #4769B3 !important;
+}
+
+section.deskpro-results-list article.ticket .preview .subject {
+
+}
+
+
+section.deskpro-results-list article.ticket .preview .sub-department {
+    color: #6C6F72;
+    border:  1px solid #CACED1;
+    padding: 0px 2px 0px 2px;
+    background-color: #fff;
+
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+    line-height: 100%;
+    margin-right: 4px;
 }
 
 section.deskpro-results-list article.ticket .extra-info {
