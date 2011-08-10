@@ -3034,11 +3034,11 @@ table.padded-1 td {
 	padding: 3px 8px;
 }
 
-ul.person-popout-tabs {
+ul.popover-tabs {
 	position: absolute;
 }
 
-ul.person-popout-tabs li {
+ul.popover-tabs li {
 	display: block;
 	float: right;
 
@@ -3047,7 +3047,7 @@ ul.person-popout-tabs li {
 	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
 }
 
-ul.person-popout-tabs li {
+ul.popover-tabs li {
 	float: left;
 	margin-left: 10px;
 
@@ -3064,7 +3064,7 @@ ul.person-popout-tabs li {
 	cursor: pointer;
 }
 
-ul.person-popout-tabs li:hover {
+ul.popover-tabs li:hover {
 	background: #afb5c2;
 	border-bottom: 1px solid #afb5c2;
 	text-shadow: 0 -1px 0 #657087;
@@ -3074,7 +3074,7 @@ ul.person-popout-tabs li:hover {
     box-shadow: inset 0 2px #c0c5cf;
 }
 
-ul.person-popout-tabs li a{
+ul.popover-tabs li a{
 	color: #fff;
 	text-shadow: none;
 	font-weight: bold;

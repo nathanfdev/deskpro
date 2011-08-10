@@ -655,7 +655,7 @@ ul.tagit input[type="text"] {
 	font-weight: normal;
 }
 
-.person-popout-outer {
+.popover-outer {
 	background-color: #E1E3E6;
 	-webkit-border-radius: 7px;
 	-moz-border-radius: 7px;
@@ -666,7 +666,7 @@ ul.tagit input[type="text"] {
 	box-shadow: 9px 9px 20px rgba(0, 0, 0, 0.5);
 }
 
-.person-popout {
+.popover-inner {
 	padding: 0;
 	background-color: #fff;
 	border: 3px solid rgba(11, 11, 11, 0.6);
@@ -676,7 +676,7 @@ ul.tagit input[type="text"] {
 	border-radius: 6px;
 }
 
-.person-popout .tabbar {
+.popover-inner .tabbar {
 	-moz-border-radius-topleft: 3px;
 	-moz-border-radius-topright: 3px;
 	-moz-border-radius-bottomright: 0px;
@@ -697,7 +697,7 @@ ul.tagit input[type="text"] {
 	overflow: hidden;
 }
 
-.person-popout .tabbar .pin-icon {
+.popover-inner .tabbar .pin-icon {
 	cursor: pointer;
 	background: transparent url(../../images/icons/flag_pink.png) no-repeat center right;
 	height: 28px;
@@ -706,11 +706,11 @@ ul.tagit input[type="text"] {
 	float: right;
 }
 
-.person-popout .tabbar .pin-icon.on {
+.popover-inner .tabbar .pin-icon.on {
 	background-image: url(../../images/icons/cross.png);
 }
 
-.person-popout > .content {
+.popover-inner > .content {
 
 }
 
