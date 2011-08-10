@@ -724,6 +724,20 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		$('.person-overview', this.wrapper).css({'cursor': 'pointer'}).click((function(event) {
 			this.personPopover.open();
 		}).bind(this));
+
+		this.orgPopover = null;
+
+		var orgEl = $('.org-overview', this.wrapper);
+		if (orgEl.length) {
+			this.orgPopover = new DeskPRO.Agent.PageHelper.Popover({
+				pageUrl: this.getMetaData('viewOrgUrl'),
+				tabRoute: orgEl.data('route')
+			});
+
+			orgEl.css({'cursor': 'pointer'}).click((function(event) {
+				this.orgPopover.open();
+			}).bind(this));
+		}
 	},
 
 	updateCounts: function() {

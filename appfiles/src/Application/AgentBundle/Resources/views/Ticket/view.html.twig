@@ -17,6 +17,9 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 pageMeta.tabRelatedContentUrl         = '{{ path('agent_ticket_ajaxtab_releated_content', {'ticket_id': ticket.id}) }}';
 pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
+{% if ticket.person.organization %}
+	pageMeta.viewOrgUrl = '{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}';
+{% endif %}
 pageMeta.getUpdatedCountsUrl          = '{{ path('agent_ticket_ajaxgetupdatedcounts', {'ticket_id': ticket.id}) }}';
 
 pageMeta.urls = {
@@ -118,7 +121,12 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<div class="assignments">
 		<div class="user">
 			<div class="desc">
-				Ticket owned by <a class="user-link person-overview" style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }} &lt;{{ ticket.person.primary_email_address }}&gt;</a>
+				Ticket owned by
+					<a class="user-link person-overview" style="background-image: url('{{ ticket.person.getPictureUrl(20) }}');" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }} &lt;{{ ticket.person.primary_email_address }}&gt;</a>
+					{% if ticket.person.organization %}
+						from <a style="background-image: url('{{ asset('images/icons/color_swatch.png') }}');" class="org-link org-overview" data-route="page:{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}">{{ ticket.person.organization.name }}</a>
+						{% if ticket.person.organization_position %}<span class="org-pos">({{ ticket.person.organization_position }})</span>{% endif %}
+					{% endif %}
 			</div>
 			<div class="more user-participants-edit">
 				<span class="user-part-count">{{ ticket.user_participants|length }}</span> users CC'ed
