@@ -27,7 +27,9 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 			 * The label type. This is used with autocomplete.
 			 * Values: tickets, people, articles, downloads, ideas, news
 			 */
-			type: ''
+			type: '',
+
+			showMax: 50
 		};
 
 		this.setOptions(options);
@@ -71,6 +73,16 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 				source: BASE_URL + '/misc/ajax-labels/' + this.options.type
 			}
 		}
+
+		// Limit to max entries
+		var max = this.options.showMax;
+		tagitOptions.autocompleteOptions.open = (function(event, ui) {
+			var el = this.tagit.getInput();
+			var list = $(el.autocomplete('widget'));
+
+			var remove_lis = $('> li', list).slice(max);
+			remove_lis.remove();
+		}).bind(this);
 
 		this.tagit = $(this.options.list).tagit(tagitOptions);
 	}

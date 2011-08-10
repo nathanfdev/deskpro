@@ -120,9 +120,8 @@
 
 		if (options.focusShowAutocomplete) {
 			tag_input.focus(function() {
-				if (this.value == '') {
-					$(this).trigger('keydown.autocomplete');
-				}
+				$(this).trigger('keydown.autocomplete');
+				$(this).autocomplete('widget').show();
 			});
 		}
 
@@ -183,6 +182,9 @@
 					$(this).children('a').click();
 			});
 			return this;
+		};
+		this.getInput = function() {
+			return tag_input;
 		};
 
 		in_init = false;

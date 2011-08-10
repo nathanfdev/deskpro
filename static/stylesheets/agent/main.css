@@ -36,6 +36,12 @@ a {
     user-select: none;
 }
 
+.ui-autocomplete {
+    max-height: 275px;
+    min-width: 130px;
+    overflow: auto;
+}
+
 #deskpro_outline li .bound-faded {
     position: absolute;
     top: 0;
