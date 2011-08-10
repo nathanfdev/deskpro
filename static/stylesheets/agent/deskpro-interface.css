@@ -314,10 +314,9 @@ section.deskpro-results-list article .ticket-select {
 }
 
 section.deskpro-results-list article > div.preview {
-    max-height: 15px;
     overflow: hidden;
-    padding: 0 3px 0 5px;
-    line-height: 125%;
+    padding: 3px 3px 4px 5px;
+    line-height: 100%;
     margin-left: 19px;
     padding-left: 0;
 }
@@ -416,24 +415,17 @@ section.deskpro-results-list article.ticket.open {
 }
 
 section.deskpro-results-list article.ticket .toprow {
-    margin-bottom: 0px;
+    margin-bottom: 0;
     margin-left: 19px;
     position: relative;
-    height: 23px;
-}
-
-section.deskpro-results-list article.ticket .toprow .department {
-    position: absolute;
-    top: 0;
-    left: 0;
-    padding: 3px 0 0 0;
+    height: 25px;
 }
 
 section.deskpro-results-list article.ticket .toprow .userinfo {
     position: absolute;
     top: 0;
-    right: 46px;
-    padding: 3px 0 0 0;
+    left: 0;
+    padding: 3px 0 0 4px;
 }
 
 section.deskpro-results-list article.ticket .toprow .userinfo .email {
@@ -530,11 +522,17 @@ section.deskpro-results-list article.ticket .preview .subject {
 }
 
 section.deskpro-results-list article.ticket .preview .department {
-    color: #666C77;
+    color: #6C6F72;
+    border:  1px solid #CACED1;
+    padding: 1px 3px 1px 3px;
+    background-color: #fff;
+
+    -moz-border-radius: 3px;
+    border-radius: 3px;
 }
 
 section.deskpro-results-list article.ticket .extra-info {
-    padding: 4px 3px 0 19px;
+    padding: 5px 3px 0 19px;
 }
 
 section.deskpro-results-list article.ticket .extra-info li {
