@@ -779,7 +779,7 @@ class TicketController extends AbstractController
 		}
 
 		$kb_pending = false;
-		if ($this->in->getBool('options.kb_pending')) {
+		if ($this->in->getBool('options.do_kbpending')) {
 			$kb_pending = new ArticlePendingCreate();
 			$kb_pending->fromArray(array(
 				'person' => $this->person,
