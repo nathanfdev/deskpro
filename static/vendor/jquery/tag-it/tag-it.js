@@ -99,7 +99,9 @@
 						create_choice (typed);
 					}
 					// Cleaning the input.
+					tag_input.blur();
 					tag_input.val(tag_input.data('placeholder')).removeClass('editting');
+					tag_input.focus();
 				}
 			}
 		});
