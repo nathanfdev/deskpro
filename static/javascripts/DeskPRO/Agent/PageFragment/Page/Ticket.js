@@ -48,7 +48,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}).bind(this));
 
 		var self = this;
-		$('div.ticket-messages > ul > li').each(function() {
+		$('div.messages-wrap > .message').each(function() {
 			self._initMessage($(this));
 		});
 
