@@ -260,7 +260,7 @@ this.addEvent("render",this.initPage);this.addEvent("destroy",this.destroyPage);
 if(a.routes&&a.routes.length){this.initRoutesOnCollection($(a.routes.join(", "),b))}if(a.times&&a.times.length){this.initTimesOnCollection($(a.times.join(", "),b))
 }if(this.wrapper){this.initTipsOnCollection($(".person-tip",this.wrapper))}},initRoutesOnCollection:function(a){a.click(function(){DeskPRO_Window.runPageRouteFromElement(this)
 })},initTimesOnCollection:function(a){a.timeago()},initTipsOnCollection:function(a){$(a).each(function(){var c=$(this);if(c.is(".person-tip")){var b=BASE_URL+"agent/person/"+c.data("person-id")+"/tip";
-c.addClass("tipped");c.attr("data-tipped",b);c.attr("data-tipped-options","ajax:true");c.mouseover(function(){Tipped.show(this)
+c.addClass("tipped");c.attr("data-tipped",b);c.attr("data-tipped-options","ajax:true, showDelay: 0.8");c.mouseover(function(){Tipped.show(this)
 })}})},setMetaData:function(a,b){if(b===undefined&&typeOf(a)=="object"){this.meta=Object.merge(this.meta,a)}else{this.meta[a]=b
 }},getAllMetaData:function(){return this.meta},getMetaData:function(b,a){if(a===undefined){a=null}if(this.meta[b]===undefined){return a
 }return this.meta[b]},getUrl:function(b,c){if(!this.meta.urls){console.error("Unknown url name %s (no urls set)",b);return null
