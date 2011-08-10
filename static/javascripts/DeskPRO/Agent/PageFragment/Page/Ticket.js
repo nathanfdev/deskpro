@@ -195,8 +195,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			this.destroyOverlays[i].destroy();
 		}
 
-		if (this.popoutPage) {
-			this.popoutPage.destroyPage();
+		if (this.personPopover) {
+			this.personPopover.destroy();
+		}
+		if (this.orgPopover) {
+			this.orgPopover.destroy();
 		}
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.closed', { ticketId: this.getMetaData('ticket_id') });
@@ -718,11 +721,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		this.personPopover = new DeskPRO.Agent.PageHelper.Popover({
 			pageUrl: this.getMetaData('viewPersonUrl'),
-			tabRoute: $('.person-overview', this.wrapper).data('route')
+			tabRoute: $('.person-overview', this.wrapper).data('route'),
+			loadTimeout: 500
 		});
 
 		$('.person-overview', this.wrapper).css({'cursor': 'pointer'}).click((function(event) {
-			this.personPopover.open();
+
+			this.personPopover.toggle();
 		}).bind(this));
 
 		this.orgPopover = null;
@@ -731,11 +736,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		if (orgEl.length) {
 			this.orgPopover = new DeskPRO.Agent.PageHelper.Popover({
 				pageUrl: this.getMetaData('viewOrgUrl'),
-				tabRoute: orgEl.data('route')
+				tabRoute: orgEl.data('route'),
+				loadTimeout: 1200
 			});
 
 			orgEl.css({'cursor': 'pointer'}).click((function(event) {
-				this.orgPopover.open();
+				this.orgPopover.toggle();
 			}).bind(this));
 		}
 	},

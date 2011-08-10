@@ -1,5 +1,7 @@
 Orb.createNamespace('DeskPRO.Agent.PageHelper');
 
+DeskPRO.Agent.PageHelper.Popover_Instances = {};
+
 DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
 
@@ -24,6 +26,9 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 			overFrom: '#deskpro_content'
 		};
+
+		this.id = Orb.uuid();
+		DeskPRO.Agent.PageHelper.Popover_Instances[this.id] = this;
 
 		this.setOptions(options);
 
@@ -52,7 +57,7 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.popoverTabs = null;
 
 		if (this.options.loadTimeout) {
-			window.setTimeout(this.options.loadTimeout, this._loadPage.bind(this));
+			this.autoloadTimeout = window.setTimeout(this._loadPage.bind(this), this.options.loadTimeout);
 		}
 	},
 
@@ -60,6 +65,11 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 
 		if (this._isLoading) return;
 		this._isLoading = true;
+
+		if (this.autoloadTimeout) {
+			window.clearTimeout(this.autoloadTimeout);
+			this.autoloadTimeout = null;
+		}
 
 		$.ajax({
 			dataType: 'text',
@@ -166,6 +176,14 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.pageSource = null;
 	},
 
+	isOpen: function() {
+		if (this.popover && this.popover.is(':visible')) {
+			return true;
+		}
+
+		return false;
+	},
+
 	open: function() {
 
 		this._initPopover();
@@ -177,13 +195,28 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		}
 
 		// Already open
-		if (this.popover.is(':visible')) {
+		if (this.isOpen()) {
 			return;
 		}
+
+		// Go through other instances and make sure the others arent open
+		Object.each(DeskPRO.Agent.PageHelper.Popover_Instances, function(inst) {
+			if (inst.isOpen()) {
+				inst.close();
+			}
+		});
 
 		this.popover.show();
 		this.popoverOuter.show();
 		this.popoverTabs.show();
+	},
+
+	toggle: function() {
+		if (this.isOpen()) {
+			this.close();
+		} else {
+			this.open();
+		}
 	},
 
 	close: function() {
@@ -193,10 +226,17 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	},
 
 	destroy: function() {
+
+		if (this.page) {
+			this.page.fireEvent('destroy');
+		}
+
 		if (this.popover) {
 			this.popover.remove();
 			this.popoverOuter.remove();
 			this.popoverTabs.remove();
 		}
+
+		delete DeskPRO.Agent.PageHelper.Popover_Instances[this.id];
 	}
 });
