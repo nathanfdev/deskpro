@@ -2187,12 +2187,12 @@ var c={obj:a(".scrollbar:first",this)};var q={obj:a(".track:first",c.obj)};var v
 var x,F={start:0,now:0},u={};var d=null;var E=null;if(this.length>1){this.each(function(){a(this).tinyscrollbar(f)});return this
 }this.initialize=function(){this.tinyscrollbar_update();y()};this.tinyscrollbar_update=function(){x=0;k[f.axis]=k.obj[0]["offset"+B];
 g[f.axis]=g.obj[0]["scroll"+B];g.ratio=k[f.axis]/g[f.axis];c.obj.toggleClass("disable",g.ratio>=1);q[f.axis]=f.size=="auto"?k[f.axis]:f.size;
-v[f.axis]=Math.min(q[f.axis],Math.max(0,(f.sizethumb=="auto"?(q[f.axis]*g.ratio):f.sizethumb)));c.ratio=f.sizethumb=="auto"?(g[f.axis]/q[f.axis]):(g[f.axis]-k[f.axis])/(q[f.axis]-v[f.axis]);
-C()};this.tinyscrollbar_scrolltop=function(G){b(G)};function C(){v.obj.removeAttr("style");u.start=v.obj.offset()[r];var G=B.toLowerCase();
-c.obj.css(G,q[f.axis]);q.obj.css(G,q[f.axis]);v.obj.css(G,v[f.axis])}function y(){v.obj.bind("mousedown",j);q.obj.bind("mouseup",A);
-if(f.scroll&&this.addEventListener){z[0].addEventListener("DOMMouseScroll",D,false);z[0].addEventListener("mousewheel",D,false)
-}else{if(f.scroll){z[0].onmousewheel=D}}k.obj.mouseover(function(G){c.obj.addClass("is-scrolling");G.stopPropagation()});
-k.obj.mouseout(function(G){c.obj.removeClass("is-scrolling");G.stopPropagation()})}function j(H){u.start=l?H.pageX:H.pageY;
+v[f.axis]=Math.min(q[f.axis],Math.max(0,(f.sizethumb=="auto"?(q[f.axis]*g.ratio):f.sizethumb)));if(v[f.axis]<30){v[f.axis]=30;
+f.sizethumb=30}c.ratio=f.sizethumb=="auto"?(g[f.axis]/q[f.axis]):(g[f.axis]-k[f.axis])/(q[f.axis]-v[f.axis]);C()};this.tinyscrollbar_scrolltop=function(G){b(G)
+};function C(){v.obj.removeAttr("style");u.start=v.obj.offset()[r];var G=B.toLowerCase();c.obj.css(G,q[f.axis]);q.obj.css(G,q[f.axis]);
+v.obj.css(G,v[f.axis])}function y(){v.obj.bind("mousedown",j);q.obj.bind("mouseup",A);if(f.scroll&&this.addEventListener){z[0].addEventListener("DOMMouseScroll",D,false);
+z[0].addEventListener("mousewheel",D,false)}else{if(f.scroll){z[0].onmousewheel=D}}k.obj.mouseover(function(G){c.obj.addClass("is-scrolling");
+G.stopPropagation()});k.obj.mouseout(function(G){c.obj.removeClass("is-scrolling");G.stopPropagation()})}function j(H){u.start=l?H.pageX:H.pageY;
 var G=parseInt(v.obj.css(r));F.start=G=="auto"?0:G;a(document).bind("mousemove",A);a(document).bind("mouseup",e);v.obj.bind("mouseup",e);
 c.obj.addClass("is-scrolling");return false}function D(H){if(!(g.ratio>=1)){var I=parseInt(g.obj.css(r));H=a.event.fix(H||window.event);
 var G=H.wheelDelta?H.wheelDelta/120:-H.detail/3;x-=G*f.wheel;x=Math.min((g[f.axis]-k[f.axis]),Math.max(0,x));v.obj.css(r,x/c.ratio);

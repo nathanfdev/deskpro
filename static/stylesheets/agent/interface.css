@@ -27,6 +27,8 @@
     -webkit-transition: background 600ms ease;
     -moz-transition: background 600ms ease;
     transition: background 600ms ease;
+
+    min-height: 30px !important;
 }
 .with-scrollbar .thumb .end {
 	display:none;

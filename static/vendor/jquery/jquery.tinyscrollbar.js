@@ -60,6 +60,12 @@
 			oScrollbar.obj.toggleClass('disable', oContent.ratio >= 1);
 			oTrack[options.axis] = options.size == 'auto' ? oViewport[options.axis] : options.size;
 			oThumb[options.axis] = Math.min(oTrack[options.axis], Math.max(0, ( options.sizethumb == 'auto' ? (oTrack[options.axis] * oContent.ratio) : options.sizethumb )));
+
+			if (oThumb[options.axis] < 30) {
+				oThumb[options.axis] = 30;
+				options.sizethumb = 30;
+			}
+
 			oScrollbar.ratio = options.sizethumb == 'auto' ? (oContent[options.axis] / oTrack[options.axis]) : (oContent[options.axis] - oViewport[options.axis]) / (oTrack[options.axis] - oThumb[options.axis]);
 			setSize();
 		};
