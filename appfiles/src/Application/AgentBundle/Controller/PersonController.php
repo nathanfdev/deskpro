@@ -179,8 +179,11 @@ class PersonController extends AbstractController
 
 		$counts = $this->_fetchCounts($person);
 
+		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person);
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
+			'activity_stream' => $activity_stream,
 			'form' => $form,
 			'fields' => $form->getCustomFields(),
 			'custom_fields' => $custom_fields,

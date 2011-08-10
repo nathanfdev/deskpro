@@ -52,42 +52,34 @@ pageMeta.getUpdatedCountsUrl = '{{ path('agent_person_ajaxgetupdatedcounts', {'p
 				<div class="container-tabbed-contents">
 
 					{# Tab: Stream #}
+					{% if activity_stream|length %}
 					<div class="container-tabbed-content-tab">
 						<div class="row">
 							<ul class="activity-stream">
-								<li>
-									<span class="time">14 mins</span>
-									<span class="who">John Doe</span>
-									<span class="what">updated profile fields <a href="">phone number and email address</a></span>
-								</li>
-								<li>
-									<span class="time">42 mins</span>
-									<span class="who">John Doe</span>
-									<span class="what">created new ticket <a href="">trouble</a></span>
-								</li>
-								<li>
-									<span class="time">1 day ago</span>
-									<span class="who">System</span>
-									<span class="what">auto-closed ticket <a href="">something or other</a></span>
-								</li>
-								<li>
-									<span class="time">2 days</span>
-									<span class="who">Ben</span>
-									<span class="what">replied to ticket <a href="">something or other</a></span>
-								</li>
-								<li>
-									<span class="time">2 days</span>
-									<span class="who">John Doe</span>
-									<span class="what">created ticket <a href="">something or other</a></span>
-								</li>
-								<li>
-									<span class="time">2 days</span>
-									<span class="who">John Doe</span>
-									<span class="what">registered</span>
-								</li>
+								{% for action in activity_stream %}
+									<li>
+										<span class="time">{{ action.date_created|date('M j, Y') }}</span>
+										<span class="what">
+											{% if action.action_type == 'registered' %}
+												Registered an account
+											{% elseif action.action_type == 'new_ticket' %}
+												Submitted a new ticket
+												<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+													{{ action.details.subject }}
+												</a>
+											{% elseif action.action_type == 'new_ticket_reply' %}
+												Replied to ticket
+												<a class="with-route" data-route="{{ path('agent_ticket_view', {'ticket_id': action.details.ticket_id }) }}">
+													{{ action.details.subject }}
+												</a>
+											{% endif %}
+										</span>
+									</li>
+								{% endfor %}
 							</ul>
 						</div>
 					</div>
+					{% endif %}
 					{# /Tab: Stream #}
 				</div>
 			</div>

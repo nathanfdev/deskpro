@@ -45,6 +45,7 @@ class App
 	const SERVICE_SEARCH_ENGINE      = 'deskpro.search_engine';
 	const SERVICE_TEMPLATING         = 'templating';
 	const SERVICE_SEARCH             = 'deskpro.search_adapter';
+	const SERVICE_PERSON_ACTIVITY_LOGGER = 'deskpro.person_activity_logger';
 	/**#@-*/
 
 	/**
@@ -423,6 +424,17 @@ class App
 	public static function getSearchEngine()
 	{
 		return self::get(self::SERVICE_SEARCH_ENGINE);
+	}
+
+
+	/**
+	 * Get the person activity logger
+	 *
+	 * @return \Application\DeskPRO\People\ActivityLogger\ActivityLogger
+	 */
+	public static function getPersonActivityLogger()
+	{
+		return self::get(self::SERVICE_PERSON_ACTIVITY_LOGGER);
 	}
 
 

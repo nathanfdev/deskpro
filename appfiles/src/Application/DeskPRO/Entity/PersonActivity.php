@@ -14,16 +14,11 @@ namespace Application\DeskPRO\Entity;
 /**
  * Person log items (aka user stream)
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonLog")
- * @orm:Table(name="person_logs")
+ * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonActivity")
+ * @orm:Table(name="person_activity")
  */
-class PersonLog extends \Application\DeskPRO\Domain\DomainObject
+class PersonActivity extends \Application\DeskPRO\Domain\DomainObject
 {
-	const TYPE_TICKET_NEW                   = 'ticket_new';
-	const TYPE_TICKET_REPLY                 = 'ticket_reply';
-	const TYPE_TICKET_CLOSED                = 'ticket_closed';
-	const TYPE_PERSON_UPDATED               = 'person_changed_profile';
-
 	/**
 	 * @var int
 	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")

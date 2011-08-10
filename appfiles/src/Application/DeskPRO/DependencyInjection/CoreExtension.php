@@ -56,6 +56,12 @@ class CoreExtension extends Extension
 		$definition->setFactoryService('session')->setFactoryMethod('getPerson');
 		$container->setDefinition('deskpro.session_person', $definition);
 
+		$definition = new Definition('Application\\DeskPRO\\People\\ActivityLogger\\ActivityLogger', array(
+			new Reference('doctrine.orm.entity_manager')
+		));
+		$container->setDefinition('deskpro.person_activity_logger', $definition);
+
+
 		$this->loadInputReader($container);
 		$this->loadTranslation($container);
 		$this->loadSettings($container);
