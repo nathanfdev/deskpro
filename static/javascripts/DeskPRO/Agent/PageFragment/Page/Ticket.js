@@ -376,11 +376,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	_initLabels: function() {
 		// Tags
 		this.labelsList = $(".ticket-tags ul", this.contentWrapper);
-		this.labelsTagit = this.labelsList.tagit({
-			availableTags: this.getMetaData('labelsAutocompleteUrl'),
-			enableBackspace: false,
-			fieldName: 'labels',
-			onchange: this.saveLabels.bind(this)
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'tickets',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
 		});
 	},
 

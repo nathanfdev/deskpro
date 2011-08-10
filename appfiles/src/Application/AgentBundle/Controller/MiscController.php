@@ -68,8 +68,13 @@ class MiscController extends AbstractController
 		$fragment_router = new FragmentRouter($this->get('router')->getGenerator());
 		$js[] = $fragment_router->compile();
 
+		$count = App::getEntityRepository('DeskPRO:LabelDef')->countLabels();
+		if ($count <= 300) {
+			$js[] = "window.DESKPRO_DATA_REGISTRY.labels = " . json_encode(APp::getEntityRepository('DeskPRO:LabelDef')->getAllLabelsToTyped());
+		}
+
 		$js = implode("\n", $js);
-		
+
 		$response = $this->response;
 		$response->headers->set('Content-Type', 'application/javascript');
 		$response->setContent($js);

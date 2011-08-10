@@ -17,6 +17,52 @@ use \Doctrine\ORM\EntityRepository;
 class LabelDef extends EntityRepository
 {
 	/**
+	 * Count how many different labels exist
+	 *
+	 * @param string $type Type or null to count all [distinct] labels across every type
+	 * @return int
+	 */
+	public function countLabels($type = null)
+	{
+		if ($type) {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM label_defs
+				WHERE label_type = ?
+			", array($type));
+		} else {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(DISTINCT label)
+				FROM label_defs
+			");
+		}
+	}
+
+	/**
+	 * Fetch all labels from the db and which types they're set for.
+	 * This returns an array of array('label' => array('type1', 'type2'))
+	 *
+	 * @return array
+	 */
+	public function getAllLabelsToTyped()
+	{
+		$all = App::getDb()->fetchAll("SELECT * FROM label_defs");
+
+		$ret = array();
+
+		foreach ($all as $x) {
+			if (!isset($x['label'])) {
+				$ret[$x['label']] = array();
+			}
+
+			$ret[$x['label']][] = $x['label_type'];
+		}
+
+		return $ret;
+	}
+
+
+	/**
 	 * Get the top counts for labels of a certain type.
 	 *
 	 * @return array
