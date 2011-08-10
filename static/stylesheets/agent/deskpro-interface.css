@@ -416,17 +416,24 @@ section.deskpro-results-list article.ticket.open {
 }
 
 section.deskpro-results-list article.ticket .toprow {
-    margin-bottom: 2px;
+    margin-bottom: 0px;
     margin-left: 19px;
     position: relative;
-    height: 25px;
+    height: 23px;
+}
+
+section.deskpro-results-list article.ticket .toprow .department {
+    position: absolute;
+    top: 0;
+    left: 0;
+    padding: 3px 0 0 0;
 }
 
 section.deskpro-results-list article.ticket .toprow .userinfo {
     position: absolute;
     top: 0;
-    left: 0;
-    padding: 3px 0 0 4px;
+    right: 46px;
+    padding: 3px 0 0 0;
 }
 
 section.deskpro-results-list article.ticket .toprow .userinfo .email {
@@ -527,7 +534,7 @@ section.deskpro-results-list article.ticket .preview .department {
 }
 
 section.deskpro-results-list article.ticket .extra-info {
-    padding: 5px 3px 0 19px;
+    padding: 4px 3px 0 19px;
 }
 
 section.deskpro-results-list article.ticket .extra-info li {

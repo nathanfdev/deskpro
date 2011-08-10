@@ -145,7 +145,7 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 				var tipUrl = BASE_URL + 'agent/person/' + el.data('person-id') + '/tip';
 				el.addClass('tipped');
 				el.attr('data-tipped', tipUrl);
-				el.attr('data-tipped-options', 'ajax:true');
+				el.attr('data-tipped-options', 'ajax:true, showDelay: 0.8');
 
 				el.mouseover(function() {
 					Tipped.show(this);
