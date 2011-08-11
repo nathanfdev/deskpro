@@ -789,9 +789,24 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 			$custom_data['field'] = $field;
 		}
 
+		$field = $custom_data->field;
+		if ($field->parent) {
+			foreach ($this->custom_data as $d) {
+				if ($d->field && $d->field->parent && $d->field->parent['id'] == $field->parent['id']) {
+					$this->custom_data->removeElement($d);
+				}
+			}
+		}
+
+		$this->custom_data->removeElement($custom_data);
+
 		if ($value === null) {
-			$this['custom_data']->removeElement($custom_data);
+			$this->custom_data->removeElement($custom_data);
 			return null;
+		}
+
+		if ($field->getTypeName() == 'choice') {
+
 		}
 
 		$custom_data[$value_type] = $value;
@@ -829,6 +844,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		foreach ($this->custom_data as $data) {
 			if ($data->field['id'] == $field_id) {
+				return true;
+			}
+		}
+
+		foreach ($this->custom_data as $data) {
+			if ($data->field->parent AND $data->field->parent['id'] == $field_id) {
 				return true;
 			}
 		}

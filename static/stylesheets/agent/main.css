@@ -5033,6 +5033,10 @@ section.ticket-header nav.actions ul li.more {
     display: inline;
 }
 
+.extra-info li .prop-title .title, .extra-info li .prop-val .content .rendered {
+    display: inline;
+}
+
 .extra-info li .prop-val {
     display: inline;
 }

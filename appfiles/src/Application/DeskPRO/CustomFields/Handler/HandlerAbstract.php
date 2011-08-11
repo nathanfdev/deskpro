@@ -164,7 +164,7 @@ abstract class HandlerAbstract
 	 *
 	 * @var array
 	 */
-	public function getRenderTemplateVars()
+	public function getRenderTemplateVars($context = 'html')
 	{
 		return array();
 	}
@@ -178,7 +178,7 @@ abstract class HandlerAbstract
 	{
 		$templating = $this->getTemplateEngine();
 
-		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
+		$vars = array_merge($this->getRenderTemplateVars('html'), $template_vars, array(
 			'data'          => $data,
 			'field_def'     => $this->field_def,
 			'field_handler' => $this,
@@ -198,7 +198,7 @@ abstract class HandlerAbstract
 	{
 		$templating = $this->getTemplateEngine();
 
-		$vars = array_merge($this->getRenderTemplateVars(), $template_vars, array(
+		$vars = array_merge($this->getRenderTemplateVars('text'), $template_vars, array(
 			'data'          => $data,
 			'field_def'     => $this->field_def,
 			'field_handler' => $this,

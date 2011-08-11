@@ -22,13 +22,13 @@ class Choice extends HandlerAbstract
 	public function renderHtml(array $data, array $template_vars = array())
 	{
 		$data['value'] = $this->_getRenderableString($data);
-		parent::renderText($data, $template_vars);
+		return parent::renderText($data, $template_vars);
 	}
 
 	public function renderText(array $data, array $template_vars = array())
 	{
 		$data['value'] = $this->_getRenderableString($data);
-		parent::renderText($data, $template_vars);
+		return  parent::renderText($data, $template_vars);
 	}
 
 	protected function _getRenderableString($data)
@@ -67,28 +67,9 @@ class Choice extends HandlerAbstract
 			}
 		}
 
-		/* Symfony bug to do with nested arrays? causes warning, for now lets just use a normal select
-		$field_group = new \Symfony\Component\Form\Form($this->getFormFieldName(), array('required' => false));
-		$field_choice = new \Symfony\Component\Form\ChoiceField('choice', array(
-			'choices' => $options,
-			'required' => false,
-		));
-		if ($selected_options) {
-			$field_choice->setData($selected_options);
-		}
-		$field_group->add($field_choice);
-
-		if ($has_other) {
-			$field_other = new \Symfony\Component\Form\TextField('other');
-			$field_group->add($field_other);
-		}
-
-		return $field_group;
-		 */
-
 		$setData = null;
 		if ($selected_options) {
-			$setData = $selected_options;
+			$setData = array_pop($selected_options);
 		}
 		$field_choice = App::getFormFactory()->createNamedBuilder('choice', $this->getFormFieldName(), $setData, array(
 			'choices' => $options,
@@ -102,39 +83,18 @@ class Choice extends HandlerAbstract
 	{
 		$name = $this->getFormFieldName();
 
-		if (!isset($form_data[$name])) $form_data[$name] = null;
-		$form_data[$name] = array('choice' => $form_data[$name]);// TODO fix for above
-
-		$from_data_choices = null;
-		if (isset($form_data[$name]['choice'])) {
-			$form_data[$name]['choice'] = (array)$form_data[$name]['choice'];
+		$value = null;
+		if (!empty($form_data[$name])) {
+			$value = $form_data[$name];
 		}
 
-		$all_values = array();
-
-		foreach ($this->field_def['children'] as $child) {
-			$value = array($child['id'], 'value', null);
-			// "other" field
-			if ($child['handler_class']) {
-				$value[1] = 'input';
-
-				if (isset($form_data[$name]['other'])) {
-					$value[2] = $form_data[$child['id']];
-				} else {
-					$value[2] = null;
-				}
-
-			// Normal option
-			} else {
-				if (isset($form_data[$name]['choice']) AND in_array($child['id'], $form_data[$name]['choice'])) {
-					$value[2] = 1;
-				}
-			}
-
-			$all_values[] = $value;
+		if ($value) {
+			return array(
+				array($value, 'value', 1)
+			);
 		}
 
-		return $all_values;
+		return array();
 	}
 
 	public function getSearchCapabilities()

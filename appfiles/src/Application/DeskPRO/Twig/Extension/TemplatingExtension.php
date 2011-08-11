@@ -65,6 +65,7 @@ class TemplatingExtension extends \Twig_Extension
 			'object_path'  => new \Twig_Function_Method($this, 'getObjectPath'),
 			'object_path_agent'  => new \Twig_Function_Method($this, 'getObjectPathAgent'),
 			'get_type'  => new \Twig_Function_Method($this, 'getType'),
+			'debug_var' => new \Twig_Function_Method($this, 'debugVar'),
         );
     }
 
@@ -79,6 +80,11 @@ class TemplatingExtension extends \Twig_Extension
 			'md5_hash'   => new \Twig_Filter_Method($this, 'getMd5', array('is_safe' => array('html'))),
         );
     }
+
+	public function debugVar($var)
+	{
+		return print_r($var, true);
+	}
 
 	public function getType($var, $basename = true)
 	{
