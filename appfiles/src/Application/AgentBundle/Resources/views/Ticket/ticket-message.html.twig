@@ -1,10 +1,3 @@
-{% if ticket_message_logs[message.id] %}
-	{% for log_id in ticket_message_logs[message.id] %}
-		{% set log = ticket_logs[log_id] %}
-		{% include 'AgentBundle:Ticket:ticket-log-row.html.twig' %}
-	{% endfor %}
-{% endif %}
-
 <div data-message-id="{{message.id}}" class="message message-{{message.id}} {% if message.is_agent_note %}note-message{% elseif message.person.is_agent %}admin-message{% else %}user-message{% endif %}">
 	<div class="message-avatar left">
 		<img src="{{ message.person.getPictureUrl(35) }}" alt="" width="35" height="35" {% if not message.person.is_agent %}class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': message.person.id}) }}"{% endif %} />

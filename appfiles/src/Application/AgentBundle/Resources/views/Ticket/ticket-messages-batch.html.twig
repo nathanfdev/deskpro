@@ -1,3 +1,19 @@
 {% for message in ticket.messages %}
+	{% if ticket_message_logs[message.id] %}
+		<div class="log-batch" style="display: none">
+			{% for log_id in ticket_message_logs[message.id] %}
+				{% set log = ticket_logs[log_id] %}
+				{% include 'AgentBundle:Ticket:ticket-log-row.html.twig' %}
+			{% endfor %}
+		</div>
+	{% endif %}
 	{% include 'AgentBundle:Ticket:ticket-message.html.twig' with {'message': message} %}
 {% endfor %}
+{% if ticket_message_logs['after'] %}
+	<div class="log-batch" style="display: none">
+		{% for log_id in ticket_message_logs['after'] %}
+			{% set log = ticket_logs[log_id] %}
+			{% include 'AgentBundle:Ticket:ticket-log-row.html.twig' %}
+		{% endfor %}
+	</div>
+{% endif %}

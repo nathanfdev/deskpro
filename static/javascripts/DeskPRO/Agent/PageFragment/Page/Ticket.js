@@ -150,8 +150,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			}
 			if (logs) {
 				$('div.log-row', msgWrap).show();
+				$('div.log-batch', msgWrap).show();
 			} else {
 				$('div.log-row', msgWrap).hide();
+				$('div.log-batch', msgWrap).hide();
 			}
 		};
 
@@ -248,9 +250,12 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			var new_messages = $(data.ticket_messages_block).hide();
 			new_messages.appendTo($(this.getEl('messages_wrap'))).slideDown('fast');
 
-			var showMessages = $('input.show-messages', this.wrapper);
-			var showNotes = $('input.show-notes', this.wrapper);
-			var showLogs = $('input.show-logs', this.wrapper);
+			var showMessages = $('input.show-messages', this.wrapper).is(':checked');
+			var showNotes = $('input.show-notes', this.wrapper).is(':checked');
+			var showLogs = $('input.show-logs', this.wrapper).is(':checked');
+
+			console.log($('input.show-logs', this.wrapper));
+			
 			var msgWrap = $('.messages-wrap', this.wrapper);
 
 			if (!showMessages) {
@@ -261,6 +266,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 			if (!showLogs) {
 				new_messages.find('div.log-row').hide();
+				new_messages.find('div.log-batch').hide();
 			}}
 
 			this._initMessage(new_messages);

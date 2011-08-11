@@ -5068,16 +5068,23 @@ section.ticket-header nav.actions ul li.more {
 }
 
 
-.log-row {
+.log-batch {
     background-color: #F9F9F9;
     border: 1px solid #C9CBCB;
-    margin: 8px;
-    padding: 5px;
-    font-size: 10px;
 
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
+}
+
+.log-row:first-child {
+    border-top: none;
+}
+
+.log-row {
+    border-top: 1px solid #C9CBCB;
+    padding: 1px 4px 1px 4px;
+    font-size: 10px;
 }
 
 .log-row .changed_department {
@@ -5110,6 +5117,7 @@ section.ticket-header nav.actions ul li.more {
     -webkit-border-radius: 8px;
     -moz-border-radius: 8px;
     border-radius: 8px;
+    line-height: 100%;
 }
 
 .log-row .old-val {

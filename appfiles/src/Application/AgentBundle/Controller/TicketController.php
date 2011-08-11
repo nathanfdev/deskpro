@@ -243,19 +243,39 @@ class TicketController extends AbstractController
 			}
 		}
 
+		// Sort log items into messages
+		// - $ticket_message_logs[123] is an array of log items that should be displayed before it
+		// - $ticket_message_logs[123] is an array of remaining log items (ie after last message)
+		$log_keys = array_keys($ticket_logs);
+
+		$before_m = null;
 		foreach ($ticket_messages as $m) {
-			foreach ($ticket_logs as $l) {
-				if ($l['date_created'] <= $m['date_created']) {
-					if (!isset($ticket_message_logs[$m['id']])) {
-						$ticket_message_logs[$m['id']] = array();
-					}
-					$ticket_message_logs[$m['id']][] = $l['id'];
-				} else {
-					break;
+			if (!$before_m) {
+				$before_m = $m;
+				continue;
+			}
+
+			foreach ($log_keys as $thisk => $k) {
+				$l = $ticket_logs[$k];
+
+				if ($l['date_created'] >= $before_m['date_created'] && $l['date_created'] < $m['date_created']) {
+					$ticket_message_logs[$before_m['id']][] = $l['id'];
+					unset($log_keys[$thisk]);
 				}
 			}
+
+			$before_m = $m;
 		}
 
+		if ($log_keys) {
+			$ticket_message_logs['after'] = array();
+			foreach ($log_keys as $k) {
+				$l = $ticket_logs[$k];
+				$ticket_message_logs['after'][] = $l['id'];
+				unset($log_keys[$k]);
+			}
+		}
+		
 		$ticket_messages_block = '';
 
 		if ($ticket_messages) {
