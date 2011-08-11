@@ -1,9 +1,11 @@
 <section class="reply-box" id="{{baseId}}_replybox">
 	<form id="{{baseId}}_reply_form" method="post" action="{{ path('agent_ticket_ajaxsavereply', {'ticket_id': ticket.id}) }}" enctype="multipart/form-data">
 
-		<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{app.user.id}}" />
-		<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{app.user.team.id }}" />
-		<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
+		<div class="fields-both">
+			<input type="hidden" id="{{baseId}}_agent_id" name="options[agent_id]" value="{{ app.user.id }}" />
+			<input type="hidden" id="{{baseId}}_agent_team_id" name="options[agent_team_id]" value="{{ app.user.team.id }}" />
+			<input type="hidden" id="{{baseId}}_ticket_status" name="options[status]" value="awaiting_user" />
+		</div>
 
 		<nav class="reply-type">
 			<ul>
@@ -20,7 +22,7 @@
 				</ul>
 				<br style="clear: both; height: 0; overflow: hidden;" />
 			</div>
-			<div class="reply-area">
+			<div class="fields-both reply-area">
 				<textarea class="reply" name="message" id="{{baseId}}_replybox_txt">{{ draft_text }}</textarea>
 				<div class="attachments">
 					<script class="template-upload" type="text/x-jquery-tmpl">
@@ -48,7 +50,9 @@
 				</div>
 				<br style="clear: both; height: 0; overflow: hidden;" />
 			</div>
-			<div class="options-area note-hide">
+
+			{# Reply Options #}
+			<div class="reply-options options-area note-hide">
 				<ul>
 					<li>
 						<input id="{{baseId}}_assign_opt" class="small" type="checkbox" name="options[do_assign]" value="1" checked="checked" />
@@ -81,27 +85,21 @@
 				</ul>
 				<br style="clear: both; height: 0; overflow: hidden;" />
 			</div>
-			<div class="options-area reply-hide" style="display: none;">
+			{# /Reply Options #}
+
+			{# Note Options #}
+			<div class="note-options options-area reply-hide" style="display: none;">
+				<input type="hidden" name="options[is_note]" value="1" />
 				<ul>
 					<li>
-						<input id="{{baseId}}_assign_opt" class="small" type="checkbox" name="options[do_assign]" value="1" />
-						<span class="assign_opt_withval" style="display: none;">
-							<label for="{{baseId}}_assign_opt">Assign to</label>
-						</span>
-						<span class="assign_opt_withoutval">
-							<label for="{{baseId}}_assign_opt">Assign to...</label>
-						</span>
-						<span class="prop-val trigger agent_id"></span>
+						<input id="{{baseId}}_note_assign_opt" class="small" type="checkbox" name="options[do_assign]" value="1" />
+						<label for="{{baseId}}_note_assign_opt">Assign to</label>
+						<span class="reply-agent-menu-trigger menu-trigger" id="{{baseId}}_note_agent_id_name"></span>
 					</li>
 					<li>
-						<input id="{{baseId}}_assign_team_opt" class="small" type="checkbox" name="options[do_assign_team]" value="1" />
-						<span class="assign_team_opt_withval" style="display: none;">
-							<label for="{{baseId}}_assign_team_opt">Assign to team</label>
-						</span>
-						<span class="assign_team_opt_withoutval">
-							<label for="{{baseId}}_assign_team_opt">Assign team...</label>
-						</span>
-						<span class="prop-val trigger agent_id"></span>
+						<input id="{{baseId}}_note_assign_team_opt" class="small" type="checkbox" name="options[do_assign_team]" value="1" />
+						<label for="{{baseId}}_note_assign_team_opt">Assign to team</label>
+						<span class="reply-agent-team-menu-trigger menu-trigger" id="{{baseId}}_note_agent_team_id_name"></span>
 					</li>
 				</ul>
 				<div class="followers">
@@ -113,6 +111,7 @@
 				</div>
 				<br style="clear: both; height: 0; overflow: hidden;" />
 			</div>
+			{# /Note Options #}
 
 			<div class="controls-area">
 				<div class="loading-spinner">
@@ -125,4 +124,4 @@
 			</div>
 		</div>
 	</form>
-</div></section>
+</section>

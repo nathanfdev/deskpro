@@ -180,6 +180,13 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 						console.log('ere');
 						this.closeSelf();
 					}).bind(this), 400);
+				} else {
+
+					if (info.result.updated_agent_parts_html) {
+						this.getEL('agent_part_list').html(info.result.updated_agent_parts_html);
+						$('.agent-part-count', this.wrapper).text(info.result.updated_agent_parts_count);
+					}
+
 				}
 			}).bind(this)
 		});

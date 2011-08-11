@@ -77,8 +77,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 			$('.note-hide', replyBox).hide();
 		});
 
+		this.tabReply = tabReply;
+		this.tabNote = tabNote;
+
 		//------------------------------
-		// Init follers listing
+		// Init followers listing
 		//------------------------------
 
 		var followersList = this.getEl('newnote_followerslist');
@@ -92,7 +95,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 					var agentInfo = DeskPRO_Window.getAgentInfo(info.agentId);
 					if (!agentInfo) return;
 
-					var html = '<li class="agent-'+agentInfo.id+'"><span style="background: url(\'' + agentInfo.pictureUrlSizable.replace('{SIZE}', 30) + '\')">' + Orb.escapeHtml(agentInfo.name) + '</li>';
+					var html = '<li class="agent-'+agentInfo.id+'"><input type="hidden" name="add_agent_part[]" value="'+agentInfo.id+'" /><span style="background: url(\'' + agentInfo.pictureUrlSizable.replace('{SIZE}', 30) + '\')">' + Orb.escapeHtml(agentInfo.name) + '</li>';
 					var li = $(html);
 
 					li.appendTo(followersList);
@@ -169,6 +172,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 
 				self.getEl('agent_id').val(agentInfo.id);
 				self.getEl('agent_id_name').text(agentInfo.name);
+				self.getEl('note_agent_id_name').text(agentInfo.name);
 			}
 		});
 
@@ -183,21 +187,19 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 
 					self.getEl('agent_team_id').val(teamId);
 					self.getEl('agent_team_id_name').text(teamName);
+					self.getEl('note_agent_team_id_name').text(teamName);
 				}
 			}
 		});
 
-		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.reply-status-menu-trigger', this.replyBox),
-			menuElement: $('#ticket_status_menu'),
-			onItemClicked: function(info) {
-				var item = $(info.itemEl);
-
-				var status = item.data('status');
-				var statusName = item.text().trim();
-
-				self.getEl('ticket_status').val(status);
-				self.getEl('ticket_status_name').text(statusName);
+		this.getEl('note_assign_opt').click(function(ev) {
+			if (self.getEl('note_agent_id_name').text().trim() == '') {
+				self.assignAgentSelector.open(ev);
+			}
+		});
+		this.getEl('note_assign_team_opt').click(function(ev) {
+			if (self.getEl('note_agent_team_id_name').text().trim() == '') {
+				self.assignTeamMenu.open(ev);
 			}
 		});
 
@@ -280,7 +282,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 	 * @return {Array}
 	 */
 	serializeFormData: function() {
-		return this.replyForm.serializeArray();
+
+		var wrappers = $('.fields-both', this.replyBox);
+
+		if (this.getReplyType() == 'reply') {
+			wrappers = wrappers.add($('.reply-options', this.replyBox));
+		} else {
+			wrappers = wrappers.add($('.note-options', this.replyBox));
+		}
+
+		var fields = wrappers.find('input, select, textarea');
+
+		return fields.serializeArray();
 	},
 
 	showTextSnippets: function() {
@@ -309,6 +322,9 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 		if (this.page.getMetaData('agentSignature', false)) {
 			$('textarea.reply', this.replyBox).val("\n\n--\n" + this.page.getMetaData('agentSignature', ''));
 		}
+
+		// Reselect main reply tab
+		this.tabReply.click();
 	},
 
 	updateDraftWait: function() {
@@ -352,6 +368,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox = new Orb.Class({
 			data: data
 		});
 	},
+
+
+	/**
+	 * Get the reply type currently selected
+	 *
+	 * @return {String}
+	 */
+	getReplyType: function() {
+		if (this.tabReply.is('.on')) {
+			return 'reply';
+		} else {
+			return 'note';
+		}
+	},
+
 
 	/**
 	 * Alias for <code>this.page</code>

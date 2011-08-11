@@ -787,6 +787,10 @@ class TicketController extends AbstractController
 			));
 		}
 
+		if ($this->in->getBool('options.is_note')) {
+			$message['is_agent_note'] = true;
+		}
+
 		#------------------------------
 		# Handle CC'ing/parts
 		#------------------------------
@@ -830,6 +834,41 @@ class TicketController extends AbstractController
 		if ($draft_pref) {
 			App::getOrm()->remove($draft_pref);
 		}
+		
+		$add_agent_parts = $this->in->getCleanValueArray('add_agent_part', 'uint', 'discard');
+		foreach ($add_agent_parts as $aid) {
+			$ticket->addParticipantPerson($aid);
+		}
+
+		$updated_agent_parts = false;
+		$updated_agent_parts_count = 0;
+		if ($add_agent_parts) {
+
+			$added = false;
+			foreach ($add_agent_parts as $p) {
+				if (!$ticket->hasParticipantPerson($p)) {
+					$ticket->addParticipantPerson($p);
+					$added = true;
+				}
+			}
+
+			if ($added) {
+				$participants = App::getOrm()->createQuery("
+					SELECT p
+					FROM DeskPRO:TicketParticipant p
+					LEFT JOIN p.person person
+					LEFT JOIN p.person_email person_email
+					WHERE p.ticket = ?1 AND person.is_agent = true
+				")->setParameter(1, $ticket)->execute();
+
+				$updated_agent_parts_count = count($participants);
+
+				$updated_agent_parts = $this->renderView('AgentBundle:Ticket:view-participants-agents.html.twig', array(
+					'ticket' => $ticket,
+					'participants' => $participants
+				));
+			}
+		}
 
 		$this->em->persist($ticket);
 		$this->em->flush();
@@ -848,6 +887,8 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array('message' => $message)),
+			'updated_agent_parts_html' => $updated_agent_parts,
+			'updated_agent_parts_html_count' => $updated_agent_parts_count,
 			'agent_id' => $ticket['agent_id'],
 			'agent_team_id' => $ticket['agent_team_id'],
 			'status' => $ticket['status'],
