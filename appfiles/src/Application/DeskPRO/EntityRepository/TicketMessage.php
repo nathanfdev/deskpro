@@ -54,13 +54,14 @@ class TicketMessage extends EntityRepository
 	 * @param  $ticket
 	 * @return array
 	 */
-	public function getTicketMessages($ticket, array $options = array())
+	public function getTicketMessages($ticket, array $set_options = array())
 	{
 		$options = array_merge(array(
 			'order' => 'ASC',
 			 'limit' => null,
-			 'with_notes' => false
-		), $options);
+			 'with_notes' => false,
+			 'since_id' => 0
+		), $set_options);
 
 		$order = strtoupper($options['order']);
 		if (!in_array($order, array('ASC', 'DESC'))) {
@@ -71,8 +72,16 @@ class TicketMessage extends EntityRepository
 		$q->from('DeskPRO:TicketMessage', 'm');
 		$q->select('m');
 		$q->leftJoin('m.person', 'p');
-		$q->where('m.ticket = ?1');
+		$q->where('m.ticket = :ticket');
 		$q->addOrderBy('m.id', $order);
+
+		$params = array();
+		$params['ticket'] = $ticket;
+
+		if (isset($options['since_id']) && $options['since_id']) {
+			$q->andWhere('m.id > :since_id');
+			$params['since_id'] = $options['since_id'];
+		}
 
 		if (!$options['with_notes']) {
 			$q->andWhere('m.is_agent_note = false');
@@ -83,9 +92,8 @@ class TicketMessage extends EntityRepository
 		}
 
 		$q = $q->getQuery();
-		$q->setParameter(1, $ticket);
 
-		$messages = $q->execute();
+		$messages = $q->execute($params);
 
 		return $messages;
 	}

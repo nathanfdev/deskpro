@@ -17,6 +17,9 @@ pageMeta.tabAttachmentsUrl            = '{{ path('agent_ticket_ajaxtab_attachmen
 pageMeta.tabRelatedContentUrl         = '{{ path('agent_ticket_ajaxtab_releated_content', {'ticket_id': ticket.id}) }}';
 pageMeta.getMessagesUrl               = '{{ path('agent_ticket_ajax_getmessages', {'ticket_id': ticket.id}) }}';
 pageMeta.viewPersonUrl                = '{{ path('agent_people_view', {'person_id': ticket.person.id}) }}';
+pageMeta.lastMessageId = {{ last_message_id|default(0) }};
+pageMeta.lastLogId = {{ last_log_id|default(0) }};
+
 {% if ticket.person.organization %}
 	pageMeta.viewOrgUrl = '{{ path('agent_org_view', {'organization_id': ticket.person.organization.id}) }}';
 {% endif %}

@@ -18,14 +18,23 @@ use \Doctrine\ORM\EntityRepository;
 
 class TicketLog extends EntityRepository
 {
-	public function getLogsForTicket(Entity\Ticket $ticket)
+	public function getLogsForTicket(Entity\Ticket $ticket, array $options = array())
 	{
-		$query = $this->_em->createQuery("
-			SELECT log
-			FROM DeskPRO:TicketLog log INDEX BY log.id
-			WHERE log.ticket = ?1
-			ORDER BY log.id ASC
-		")->setParameter(1, $ticket);
+		if (!empty($options['since_id'])) {
+			$query = $this->_em->createQuery("
+				SELECT log
+				FROM DeskPRO:TicketLog log INDEX BY log.id
+				WHERE log.ticket = ?1 AND log.id > ?2
+				ORDER BY log.id ASC
+			")->setParameter(1, $ticket)->setParameter(2, $options['since_id']);
+		} else {
+			$query = $this->_em->createQuery("
+				SELECT log
+				FROM DeskPRO:TicketLog log INDEX BY log.id
+				WHERE log.ticket = ?1
+				ORDER BY log.id ASC
+			")->setParameter(1, $ticket);
+		}
 
 		return $query->execute();
 	}

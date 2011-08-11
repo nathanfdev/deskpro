@@ -85,67 +85,12 @@ class TicketController extends AbstractController
 
 		if (($ticket_messages_blockcache = App::getEntityRepository('DeskPRO:Cache')->load("ticket_messages.{$ticket['id']}.agent_block")) === false) {
 
-			$message_count = 0;
-			$note_count = 0;
-
-			$ticket_messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages($ticket);
-			// Group attachments into messages so we can place them into each message
-			$ticket_message_attachments = array();
-			foreach ($ticket_attachments as $attach) {
-				if (!isset($ticket_message_attachments[$attach['message']['id']])) {
-					$ticket_message_attachments[$attach['message']['id']] = array();
-				}
-
-				$ticket_message_attachments[$attach['message']['id']][] = $attach['id'];
-			}
-
-			foreach ($ticket_messages as $m) {
-				$message_count++;
-			}
-
-			$ticket_logs = App::getEntityRepository('DeskPRO:TicketLog')->getLogsForTicket($ticket);
-			$ticket_message_logs = array();
-
-			foreach ($ticket_messages as $m) {
-				foreach ($ticket_logs as $l) {
-					if ($l['date_created'] <= $m['date_created']) {
-						if (!isset($ticket_message_logs[$m['id']])) {
-							$ticket_message_logs[$m['id']] = array();
-						}
-						$ticket_message_logs[$m['id']][] = $l['id'];
-					} else {
-						break;
-					}
-				}
-			}
-
-			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-block.html.twig', array(
-				'ticket' => $ticket,
-				'ticket_messages' => $ticket_messages,
-				'ticket_message_attachments' => $ticket_message_attachments,
-				'ticket_attachments' => $ticket_attachments,
-				'ticket_message_logs' => $ticket_message_logs,
-				'ticket_logs' => $ticket_logs,
-			));
-
-			$ticket_notes_block = $this->renderView('AgentBundle:Ticket:ticket-notes-block.html.twig', array(
-				'ticket' => $ticket,
-				'ticket_messages' => $ticket_messages,
-				'ticket_message_attachments' => $ticket_attachments
-			));
-
-			$ticket_messages_blockcache = array(
-				'ticket_messages_block' => $ticket_messages_block,
-				'ticket_notes_block' => $ticket_notes_block,
-				'message_count' => $message_count,
-				'note_count' => $note_count
-			);
+			$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket);
 
 			App::getEntityRepository('DeskPRO:Cache')->save("ticket_messages.{$ticket['id']}.agent_block", $ticket_messages_blockcache, 259200);
 		}
 
 		$ticket_messages_block = $ticket_messages_blockcache['ticket_messages_block'];
-		$ticket_notes_block = $ticket_messages_blockcache['ticket_notes_block'];
 		$counts['messages'] = $ticket_messages_blockcache['message_count'];
 
 		$ticket_flagged = APp::getOrm()->getRepository('DeskPRO:TicketFlagged')->find(array(
@@ -227,6 +172,9 @@ class TicketController extends AbstractController
 
 			'draft_text' => $draft_text,
 
+			'last_message_id' => $ticket_messages_blockcache['last_message_id'],
+			'last_log_id' => $ticket_messages_blockcache['last_log_id'],
+
 			'participants' => $participants,
 
 			'custom_fields' => $custom_fields,
@@ -234,7 +182,6 @@ class TicketController extends AbstractController
 			'show_related_content' => $show_related_content,
 
 			'ticket_messages_block' => $ticket_messages_block,
-			'ticket_notes_block' => $ticket_notes_block,
 
 			'ticket_deleted' => $ticket_deleted,
 			'hard_delete_time' => $hard_delete_time,
@@ -246,6 +193,91 @@ class TicketController extends AbstractController
 
 			'agent_signature' => $this->person->getPref('agent.ticket_signature')
 		));
+	}
+
+	protected function _getMessageBlockInfo($ticket, $since_message_id = 0, $since_log_id = 0,$d=0)
+	{
+		$ticket_attachments = array();
+		
+		$message_count = 0;
+		$note_count = 0;
+
+		$ticket_messages = App::getEntityRepository('DeskPRO:TicketMessage')->getTicketMessages(
+			$ticket,
+			array('since_id' => $since_message_id)
+		);
+		
+		// Group attachments into messages so we can place them into each message
+		$ticket_message_attachments = array();
+		foreach ($ticket_attachments as $attach) {
+			if (!isset($ticket_message_attachments[$attach['message']['id']])) {
+				$ticket_message_attachments[$attach['message']['id']] = array();
+			}
+
+			$ticket_message_attachments[$attach['message']['id']][] = $attach['id'];
+		}
+		
+		$ticket_logs = App::getEntityRepository('DeskPRO:TicketLog')->getLogsForTicket(
+			$ticket,
+			array('since_id' => $since_log_id)
+		);
+		$ticket_message_logs = array();
+
+		$last_message_id = 0;
+		$last_log_id = 0;
+		
+		foreach ($ticket_messages as $m) {
+			if ($m['id'] > $last_message_id) {
+				$last_message_id = $m['id'];
+			}
+
+			if ($m['is_agent_note']) {
+				$note_count++;
+			} else {
+				$message_count++;
+			}
+		}
+		foreach ($ticket_logs as $l) {
+			if ($l['id'] > $last_log_id) {
+				$last_log_id = $l['id'];
+			}
+		}
+
+		foreach ($ticket_messages as $m) {
+			foreach ($ticket_logs as $l) {
+				if ($l['date_created'] <= $m['date_created']) {
+					if (!isset($ticket_message_logs[$m['id']])) {
+						$ticket_message_logs[$m['id']] = array();
+					}
+					$ticket_message_logs[$m['id']][] = $l['id'];
+				} else {
+					break;
+				}
+			}
+		}
+
+		$ticket_messages_block = '';
+
+		if ($ticket_messages) {
+			$ticket_messages_block = $this->renderView('AgentBundle:Ticket:ticket-messages-batch.html.twig', array(
+				'ticket' => $ticket,
+				'ticket_messages' => $ticket_messages,
+				'ticket_message_attachments' => $ticket_message_attachments,
+				'ticket_attachments' => $ticket_attachments,
+				'ticket_message_logs' => $ticket_message_logs,
+				'ticket_logs' => $ticket_logs,
+			));
+		}
+
+		$ticket_messages_blockcache = array(
+			'ticket_messages_block' => $ticket_messages_block,
+			'message_count' => $message_count,
+			'note_count' => $note_count,
+			'last_message_id' => $last_message_id,
+			'last_log_id' => $last_log_id,
+		);
+
+		return $ticket_messages_blockcache;
 	}
 
 	protected function _fetchTicketCounts($ticket)
@@ -885,8 +917,14 @@ class TicketController extends AbstractController
 
 		$close_tab = $this->in->getBool('options.close_tab');
 
-		return $this->createJsonResponse(array(
-			'message_html' => $this->renderView('AgentBundle:Ticket:ticket-message.html.twig', array('message' => $message)),
+		$data = $this->_getMessageBlockInfo(
+			$ticket,
+			$this->in->getUint('last_message_id'),
+			$this->in->getUint('last_log_id'),
+			1
+		);
+
+		$data = array_merge($data, array(
 			'updated_agent_parts_html' => $updated_agent_parts,
 			'updated_agent_parts_html_count' => $updated_agent_parts_count,
 			'agent_id' => $ticket['agent_id'],
@@ -895,25 +933,21 @@ class TicketController extends AbstractController
 			'close_tab' => $close_tab,
 			'client_messages' => $client_messages,
 		));
+
+		return $this->createJsonResponse($data);
 	}
 
-	public function ajaxSaveNoteAction($ticket_id)
+	public function ajaxUpdateCheckAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
-		$ticket_edit = App::getApi('tickets')->getTicketEditor($ticket);
 
-		$message = new Entity\TicketMessage();
-		$message['ticket'] = $ticket;
-		$message['person'] = $this->person;
-		$message['message'] = $this->in->getString('message');
-		$message['is_agent_note'] = true;
+		$data = $this->_getMessageBlockInfo(
+			$ticket,
+			$this->in->getUint('last_message_id'),
+			$this->in->getUint('last_log_id')
+		);
 
-		$ticket_edit->addMessage($message);
-		$ticket_edit->save();
-
-		return $this->render('AgentBundle:Ticket:ticket-message.html.twig', array(
-			'message' => $message
-		));
+		return $this->createJsonResponse($data);
 	}
 
 	############################################################################

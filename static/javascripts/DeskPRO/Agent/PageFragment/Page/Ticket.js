@@ -24,6 +24,8 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	hasInitPopout: false,
 	popoutPage: null,
 
+	lastActiveDate: null,
+
 	initPage: function(el) {
 
 		this.wrapper = el;
@@ -84,7 +86,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 		this._initPopout();
 		this._initTicketTabs();
-		this._initTicketNotes();
 
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.ticket.opened', { ticketId: this.getMetaData('ticket_id') });
 		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'tickets', id: this.getMetaData('ticket_id') });
@@ -171,35 +172,49 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 					name: 'client_messages_since',
 					value: DeskPRO_Window.getLastClientMessageId()
 				});
+
+				info.formData.push({
+					name: 'last_message_id',
+					value: this.ticketChecker.getLastMessageId()
+				});
+				info.formData.push({
+					name: 'last_log_id',
+					value: this.ticketChecker.getLastLogId()
+				});
+
+				this.ticketChecker.pause(true);
 			}).bind(this),
 			onSaveReplySuccess: (function(info) {
-				this.displayNewMessage(info.result.message_html);
 
-				if (info.result.client_messages) {
-					DeskPRO_Window.getMessageChanneler().handleMessageAjax(info.result.client_messages);
-				}
+				this.handleTicketUpdate(info.result);
+				this.ticketChecker.unpause();
 
 				if (info.result.close_tab) {
 					window.setTimeout((function() {
 						console.log('ere');
 						this.closeSelf();
 					}).bind(this), 400);
-				} else {
-
-					if (info.result.updated_agent_parts_html) {
-						this.getEL('agent_part_list').html(info.result.updated_agent_parts_html);
-						$('.agent-part-count', this.wrapper).text(info.result.updated_agent_parts_count);
-					}
-
 				}
 			}).bind(this)
 		});
 
 		this.ticketActions = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketActions(this);
 		this.ticketParticipants = new DeskPRO.Agent.PageFragment.Page.Ticket.Participants(this);
+
+		this.ticketChecker = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketChecker(this, {
+			lastMessageId: this.meta.lastMessageId,
+			lastLogId: this.meta.lastLogId,
+			checkUrl: BASE_URL + 'agent/tickets/'+this.getMetaData('ticket_id')+'/ajax-update-check'
+		});
 	},
 
 	destroyPage: function() {
+		
+		this.ticketChecker.destroy();
+
+		if (this.updateCheckTimeout) {
+			this.updateCheckTimeout = window.clearTimeout(this.updateCheckTimeout);
+		}
 
 		for (var i = 0; i < this.destroyEls.length; i++) {
 			$(this.destroyEls[i]).remove();
@@ -224,6 +239,39 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		DeskPRO_Window.getMessageBroker().removeTaggedListeners(this.pageUid);
 	},
 
+	handleTicketUpdate: function(data) {
+		if (data.client_messages) {
+			DeskPRO_Window.getMessageChanneler().handleMessageAjax(data.client_messages);
+		}
+
+		if (data.ticket_messages_block) {
+			var new_messages = $(data.ticket_messages_block).hide();
+			new_messages.appendTo($(this.getEl('messages_wrap'))).slideDown('fast');
+
+			var showMessages = $('input.show-messages', this.wrapper);
+			var showNotes = $('input.show-notes', this.wrapper);
+			var showLogs = $('input.show-logs', this.wrapper);
+			var msgWrap = $('.messages-wrap', this.wrapper);
+
+			if (!showMessages) {
+				new_messages.find('div.message:not(.note-message)').hide();
+			}
+			if (!showNotes) {
+				new_messages.find('div.note-message').hide();
+
+			if (!showLogs) {
+				new_messages.find('div.log-row').hide();
+			}}
+
+			this._initMessage(new_messages);
+		}
+
+		if (data.updated_agent_parts_html) {
+			this.getEL('agent_part_list').html(data.updated_agent_parts_html);
+			$('.agent-part-count', this.wrapper).text(data.updated_agent_parts_count);
+		}
+	},
+
 	displayNewMessage: function(html, slideCallback) {
 		var new_message = $(html).hide();
 
@@ -236,15 +284,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 
 	activate: function() {
-		if (this.popoutPinIcon && this.popoutPinIcon.is('.on')) {
-			this.popout.fadeIn(200);
-		}
+		this.ticketChecker.unpause();
 	},
 
 	deactivate: function() {
-		if (this.popoutPinIcon && this.popoutPinIcon.is('.on')) {
-			this.popout.fadeOut(200);
-		}
+		this.ticketChecker.pause();
 	},
 
 
@@ -343,50 +387,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	_saveCustomFields: function(fieldEls) {
 		console.warn('This method shold be overriden in a subclass!');
-	},
-
-	//#################################################################
-	//# Labels
-	//#################################################################
-
-	newnoteWrapper: null,
-	_initTicketNotes: function() {
-		this.newnoteWrapper = $('.new-note:first', this.contentWrapper);
-		$('button', this.newnoteWrapper).click(this.saveNewNote.bind(this));
-	},
-
-	saveNewNote: function() {
-
-		var loadingOn = $('.loading-on', this.newnoteWrapper).show();
-		var loadingOff = $('.loading-off', this.newnoteWrapper).hide();
-
-		var data = [];
-		data.push({
-			name: 'message',
-			value: $('textarea', this.newnoteWrapper).val()
-		});
-
-		$.ajax({
-			url: BASE_URL + 'agent/tickets/' + this.getMetaData('ticket_id') + '/ajax-save-note',
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'html',
-			success: function(html) {
-				loadingOn.hide();
-				loadingOff.show();
-
-				$('textarea', this.newnoteWrapper).val('');
-				var el = $(html);
-				this.newnoteWrapper.before(el);
-				this._initMessage(el);
-
-				// Inc note count
-				this.incCount('ticket-notes');
-
-				this.displayNewMessage(html);
-			}
-		});
 	},
 
 	//#################################################################
