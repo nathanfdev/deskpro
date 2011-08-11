@@ -5150,9 +5150,14 @@ article.ticket .urgency span {
     margin: 15px 10px 15px 10px;
 }
 
+.page-ticket .reply-box .form-inner {
+    border: 1px solid #BCC6D2;
+    padding: 15px;
+}
+
 .page-ticket .reply-box nav.reply-type ul {
-    height: 30px;
-    margin-bottom: 5px;
+    height: 28px;
+    margin-left: 20px;
 }
 
 .page-ticket .reply-box nav.reply-type li {
@@ -5169,9 +5174,9 @@ article.ticket .urgency span {
     -moz-border-radius-topleft: 5px;
     -moz-border-radius-topright: 0px;
     -moz-border-radius-bottomright: 0px;
-    -moz-border-radius-bottomleft: 5px;
-    -webkit-border-radius: 5px 0px 0px 5px;
-    border-radius: 5px 0px 0px 5px;
+    -moz-border-radius-bottomleft: 0px;
+    -webkit-border-radius: 5px 0px 0px 0px;
+    border-radius: 5px 0px 0px 0px;
 
     border-right: none;
 }
@@ -5179,10 +5184,10 @@ article.ticket .urgency span {
 .page-ticket .reply-box nav.reply-type li:last-child {
     -moz-border-radius-topleft: 0px;
     -moz-border-radius-topright: 5px;
-    -moz-border-radius-bottomright: 5px;
+    -moz-border-radius-bottomright: 0px;
     -moz-border-radius-bottomleft: 0px;
-    -webkit-border-radius: 0px 5px 5px 0px;
-    border-radius: 0px 5px 5px 0px;
+    -webkit-border-radius: 0px 5px 0px 0px;
+    border-radius: 0px 5px 0px 0px;
 }
 
 .page-ticket .reply-box nav.reply-type li.on {
