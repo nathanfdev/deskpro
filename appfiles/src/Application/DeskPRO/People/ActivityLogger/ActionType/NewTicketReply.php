@@ -44,7 +44,7 @@ class NewTicketReply extends ActionTypeAbstract
 		return array(
 			'ticket_id'  => $this->ticket_message->ticket['id'],
 			'message_id' => $this->ticket_message['id'],
-			'subject' => $this->ticket['subject'],
+			'subject' => $this->ticket_message->ticket['subject'],
 			'message'    => $this->ticket_message->getMessageText()
 		);
 	}
