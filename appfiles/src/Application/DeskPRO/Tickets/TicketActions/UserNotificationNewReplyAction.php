@@ -29,10 +29,19 @@ class UserNotificationNewReplyAction extends AbstractUserNotificationAction
 	 */
 	public function apply(Ticket $ticket)
 	{
+		$change_info = array(
+			'type' => 'user_notify',
+			'notify_type' => 'newreply',
+			'emailed' => array(),
+			'cced' => array()
+		);
+
 		$vars = array(
 			'email_subject' => new DelegatePhrase('core_tickets_user_email.subject_new_reply', array('ticket_subject' => $ticket['subject'])),
 		);
 
-		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket);
+		$this->doSend('DeskPRO:emails_user:new-agent-reply', $vars, $ticket, $change_info);
+
+		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 }

@@ -5130,6 +5130,16 @@ section.ticket-header nav.actions ul li.more {
     color: #17911F;
 }
 
+.log-row .new-val.expand {
+    padding-left: 14px;
+    background: url(../../images/icons/bullet_toggle_plus.png) no-repeat 0 50%;
+    cursor: pointer;
+}
+
+.log-row .new-val.expand.open {
+    background-image: url(../../images/icons/bullet_toggle_minus.png);
+}
+
 .log-row .info {
     float: right;
     font-size: 9px;

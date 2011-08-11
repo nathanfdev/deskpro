@@ -48,6 +48,12 @@ class AgentNotificationNewReplyAction extends AbstractAgentNotificationAction
 			return;
 		}
 
+		$change_info = array(
+			'type' => 'agent_notify',
+			'notify_type' => 'newreply',
+			'emailed' => array()
+		);
+
 		foreach ($agent_ids as $agent_id => $tpl) {
 			$agent = App::getEntityRepository('DeskPRO:Person')->find($agent_id);
 
@@ -56,6 +62,10 @@ class AgentNotificationNewReplyAction extends AbstractAgentNotificationAction
 			);
 
 			$this->doSend($tpl, $vars, $ticket, $agent);
+
+			$change_info['emailed'][] = $agent;
 		}
+
+		$this->tracker->recordMultiPropertyChanged('log_actions', null, $change_info);
 	}
 }

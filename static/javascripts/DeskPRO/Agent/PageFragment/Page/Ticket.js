@@ -50,9 +50,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		}).bind(this));
 
 		var self = this;
-		$('div.messages-wrap > .message').each(function() {
-			self._initMessage($(this));
-		});
+		this._initMessage($('div.messages-wrap'));
 
 		// Custom field widgets
 		$('input.date-field', this.contentWrapper).datepicker({ 'dateFormat': 'M d, yy'});
@@ -317,6 +315,26 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			photo: true,
 			opacity: 0.5,
 			transition: 'none'
+		});
+
+		$('.log-row', messageEl).each(function() {
+			var expandBtn = $('.expand', this);
+			var el = $(this);
+			expandBtn.click(function() {
+				var sel = '.expand-set';
+				if ($(this).data('set')) {
+					sel = $(this).data('set');
+				}
+
+				var expandEl = $(sel, messageEl);
+				if (expandEl.is(':visible')) {
+					expandEl.slideUp();
+					expandBtn.removeClass('open');
+				} else {
+					expandEl.slideDown();
+					expandBtn.addClass('open');
+				}
+			});
 		});
 	},
 

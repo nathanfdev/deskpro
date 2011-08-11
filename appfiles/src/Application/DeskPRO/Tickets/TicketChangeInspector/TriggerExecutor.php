@@ -73,7 +73,7 @@ class TriggerExecutor
 		$all_triggers = App::getEntityRepository('DeskPRO:TicketTrigger')->getTriggersForEvents($this->event_types);
 
 		$factory = new \Application\DeskPRO\Tickets\TicketActions\ActionsFactory();
-		$factory->addGlobalOption('tracker', clone $this->tracker);
+		$factory->addGlobalOption('tracker', $this->tracker);
 		$factory->addGlobalOption('ticket', $this->tracker->getTicket());
 
 		$actions_collection = new ActionsCollection();

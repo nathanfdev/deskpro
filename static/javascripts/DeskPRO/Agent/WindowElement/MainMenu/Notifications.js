@@ -74,7 +74,7 @@ DeskPRO.Agent.WindowElement.MainMenu.Notifications = new Class({
 
 		this.updateCount(type, 'add', 1);
 
-		if (DeskPRO_Window.options.desktopNotifications) {
+		if (DeskPRO_Window.options && DeskPRO_Window.options.desktopNotifications) {
 			Orb.DesktopNotify.show({
 				title: title,
 				content: 'Click to open',

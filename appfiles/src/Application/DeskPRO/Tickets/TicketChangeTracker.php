@@ -189,8 +189,8 @@ class TicketChangeTracker extends \Application\DeskPRO\Domain\ChangeTracker
 	public function done()
 	{
 		$this->getListUpdater()->run();
-		$this->getLogInspector()->run();
 		$this->getTriggerExecutorInspector()->run();
+		$this->getLogInspector()->run();
 
 		$person_activity = new \Application\DeskPRO\Tickets\TicketChangeInspector\PersonActivity($this);
 		$person_activity->run();

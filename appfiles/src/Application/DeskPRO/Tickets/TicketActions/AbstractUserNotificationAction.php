@@ -51,10 +51,13 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		return $this->from_address;
 	}
 
-	protected function doSend($tpl, $vars, Ticket $ticket)
+	protected function doSend($tpl, $vars, Ticket $ticket, &$change_info = array())
 	{
 		$person = $ticket->person;
 		$parts  = $ticket->getUserParticipants();
+
+		$change_info['emailed'] = array($person);
+		$change_info['cced'] = $parts;
 
 		// Is null if not provided,
 		// or an array of people ID's if provided (from agent reply)

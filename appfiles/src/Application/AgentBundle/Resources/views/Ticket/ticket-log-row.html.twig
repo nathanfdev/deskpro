@@ -36,6 +36,47 @@
 	{% elseif log.action_type == 'changed_status' %}
 		<span class="type">Status</span> changed from
 		<span class="old-val">{{log.details.old_status}}</span> to <span class="new-val">{{log.details.new_status}}</span>
+	{% elseif log.action_type == 'agent_notify' %}
+		<span class="new-val expand">{{ log.details.who_emailed|length }} agents</span> notified of
+		
+		{% if log.details.type == 'newticket'%}new ticket
+		{% elseif log.details.type == 'newreply' %}new reply
+		{% else %}{{ log.details.type }}
+		{% endif %}
+
+		<div class="expand-set" style="display: none">
+			<ul>
+				{% for info in log.details.who_emailed %}
+					<li>{{ info.display_name }} ({{ info.person_email }})</li>
+				{% endfor %}
+			</ul>
+		</div>
+	{% elseif log.action_type == 'user_notify' %}
+		<span class="new-val expand" data-set=".set-emailed">{{ log.details.who_emailed|length }} users</span> notified of
+
+		{% if log.details.type == 'newticket' %}new ticket
+		{% elseif log.details.type == 'newreply' %}new reply
+		{% else %}{{ log.details.type }}
+		{% endif %}
+
+		{% if log.details.who_cced|length %}
+			(and <span class="new-val expand" data-set=".set-cced">{{ log.details.who_cced|length }} users</span> were CC'ed)
+		{% endif %}
+
+		<div class="expand-set set-emailed" style="display: none">
+			<ul>
+				{% for info in log.details.who_emailed %}
+					<li>{{ info.display_name }} ({{ info.person_email }})</li>
+				{% endfor %}
+			</ul>
+		</div>
+		<div class="expand-set set-cced" style="display: none">
+			<ul>
+				{% for info in log.details.who_cced %}
+					<li>{{ info.display_name }} ({{ info.person_email }})</li>
+				{% endfor %}
+			</ul>
+		</div>
 	{% endif %}
 	</div>
 </div>

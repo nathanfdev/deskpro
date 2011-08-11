@@ -11,10 +11,12 @@
 
 namespace Application\DeskPRO\Tickets\TicketChangeInspector;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
+use Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\Tickets\TicketChangeTracker;
+use Application\DeskPRO\Tickets\TicketChangeTracker;
+
+use Orb\Util\Strings;
 
 class Log
 {
@@ -153,11 +155,33 @@ class Log
 							$action = new LogActions\HiddenStatus($old_val, $new_val);
 						}
 						break;
+
+					default:
+						$unknown[] = $prop;
+						break;
 				}
 
 				if ($action) {
 					$actions[] = $action;
 				}
+			}
+		}
+
+		// These are manually added log entries from elsewhere,
+		// for example when sending emails.
+		// $new_val contains:
+		// - type: represents the action class
+		// anywthing else is info for the action class to use
+		$log_actions = $this->tracker->getChangedProperty('log_actions');
+		if ($log_actions) {
+			foreach ($log_actions as $log_action) {
+				$info = $log_action['new'];
+
+				$classname = ucfirst(Strings::underscoreToCamelCase($info['type']));
+				$classname = 'Application\\DeskPRO\\Tickets\\TicketChangeInspector\\LogActions\\' . $classname;
+
+				$action = new $classname($info);
+				$actions[] = $action;
 			}
 		}
 
