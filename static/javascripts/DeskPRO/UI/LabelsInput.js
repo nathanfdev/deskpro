@@ -36,9 +36,9 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 
 		var tagitOptions = {
 			enableBackspace: false,
-			fieldName: this.options.labels,
-			onchange: (function() {
-				this.fireEvent('change');
+			fieldName: this.options.fieldName,
+			onchange: (function(labels) {
+				this.fireEvent('change', [this.getLabels()]);
 			}).bind(this)
 		};
 
@@ -85,5 +85,25 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		}).bind(this);
 
 		this.tagit = $(this.options.list).tagit(tagitOptions);
+	},
+
+
+	/**
+	 * Get the labels currently added to the list
+	 *
+	 * @return {Array}
+	 */
+	getLabels: function() {
+		return this.tagit.getLabels();
+	},
+
+
+	/**
+	 * Get labels serialized as a form array suitable with jQuery.ajax
+	 *
+	 * @return {Array}
+	 */
+	getFormData: function() {
+		return this.tagit.getFormData();
 	}
 });

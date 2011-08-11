@@ -397,8 +397,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	_saveLabelsTimeout: null,
 	saveLabels: function() {
 		if (this.changeManager.hasChanges()) {
-			// If change manager has changes, we dont save new/removed
-			// tags
+			// If change manager has changes, we dont save new/removed tags
 			return;
 		}
 
@@ -410,7 +409,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 
 	_doSaveLabels: function() {
-		var data = $(':input', this.labelsList).serializeArray();
+		var data = this.labelsInput.getFormData();
 
 		$.ajax({
 			url: this.getMetaData('labelsSaveUrl'),

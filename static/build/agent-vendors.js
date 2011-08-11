@@ -2478,23 +2478,28 @@ var d=new Image();d.onload=function(){a.Jcrop(f,c)};d.src=e}if(typeof(c)!=="obje
 var r=8;var e=13;var m=32;var l=44;var q=9;if(!y.fieldName){y.fieldName="tags"}if(!y.inputFieldHtml){y.inputFieldHtml='<input class="tagit-input" type="text" data-placeholder="add..." value="add..." />'
 }if(!y.inputFieldAppendTo){y.inputFieldAppendTo=c}if(y.enableBackspace===undefined){y.enableBackspace=true}if(!y.onchange){y.onchange=function(){}
 }var d=true;var j=y.onchange;y.onchange=function(){if(d){return}return j()};c.addClass("tagit");if(y.inputFieldAppendTo==c){var g=a('<li class="tagit-new">'+y.inputFieldHtml+"</li>");
-a("input",g).focus(function(){if(a(this).val()==a(this).data("placeholder")){a(this).val("")}a(this).addClass("editting")
-}).blur(function(){if(!a(this).val().trim().length){a(this).val(a(this).data("placeholder"));a(this).removeClass("editting")
+a("input",g).focus(function(){if(a(this).val()==a(this).data("placeholder")){a(this).val("")}a(this).addClass("editting");
+if(y.focusShowAutocomplete){f.focus(function(){a(this).trigger("keydown.autocomplete");a(this).autocomplete("widget").show()
+})}}).blur(function(){if(!a(this).val().trim().length){a(this).val(a(this).data("placeholder"));a(this).removeClass("editting")
 }});c.append(g)}else{var g=a(y.inputFieldHtml);y.inputFieldAppendTo.append(g)}var k=c;var f=a(".tagit-input",y.inputFieldAppendTo);
 c.children("li:not(.tagit-new)").each(function(){if(!a(this).hasClass("tagit-new")){v(a("span",this).eq(0).html());a(this).remove()
-}});a(this).click(function(z){if(z.target.tagName=="A"){a(z.target).parent().remove();y.onchange()}else{f.focus()}});f.keydown(function(z){var A=z.keyCode||z.which;
+}});a(this).delegate("a.close","click",function(){if(a(this).parent().is("li")){a(this).parent().remove()}else{a(this).parent().parent().remove()
+}y.onchange()});a(this).click(function(z){if(z.target.tagName=="A"){}else{f.focus()}});f.keydown(function(z){var A=z.keyCode||z.which;
 if(A==r&&y.enableBackspace){if(f.val()==""){a(c).children(".tagit-choice:last").remove()}}});f.keypress(function(z){var B=z.keyCode||z.which;
 if(B==l||B==e||B==q){z.preventDefault();var A=f.val();A=A.replace(/,+$/,"").trim().replace(/^"/,"").replace(/"$/,"");A=A.trim();
 if(A!=""){if(b(A)){v(A)}f.blur();f.val(f.data("placeholder")).removeClass("editting");f.focus()}}});var x=y.autocompleteOptions||{};
-x.select=function(z,A){if(b(A.item.name)){v(A.item.name,A.item.value)}f.val("");return false};f.autocomplete(x);if(y.focusShowAutocomplete){f.focus(function(){a(this).trigger("keydown.autocomplete");
-a(this).autocomplete("widget").show()})}function p(){var z=[];f.parents("ul").children(".tagit-choice").each(function(){z.push(a(this).children("input").val())
+x.select=function(z,A){if(b(A.item.value)){v(A.item.value,A.item.label)}window.setTimeout(function(){f.blur();f.val(f.data("placeholder")).removeClass("editting");
+f.focus();a(f).trigger("keydown.autocomplete")},100);return false};f.autocomplete(x);function p(){var z=[];f.parents("ul").children(".tagit-choice").each(function(){z.push(a(this).children("input").val())
 });return z}function u(B,A){var z=new Array();for(var C=0;C<B.length;C++){if(A.indexOf(B[C])==-1){z.push(B[C])}}return z}function b(z){var A=true;
 f.parents("ul").children(".tagit-choice").each(function(B){n=a(this).children("input").val();if(z==n){A=false}});return A
-}function v(B,z){var A="";A='<li class="tagit-choice">\n<span>';A+=z||B+"</span>\n";A+='<a class="close">x</a>\n';A+='<input type="hidden" style="display:none;" value="'+B+'" name="'+y.fieldName+'[]">\n';
-A+="</li>\n";if(y.inputFieldAppendTo==k){var C=f.parent();a(A).insertBefore(C)}else{a(A).appendTo(k)}f.val(f.data("placeholder"));
-y.onchange()}this.add=function(A,z){v(A,z);return this};this.remove=function(z){f.parents("ul").children(".tagit-choice").each(function(A){n=a(this).children("input").val();
-if(z==n){a(this).children("a").click()}});return this};this.getInput=function(){return f};d=false;return this};String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")
-}})(jQuery);(function(){window.Bridge||(window.Bridge={});var e=window.Bridge,d={Version:"1.1.2",options:{adapter:"auto",path:!1},Framework:{Prototype:{included:!!window.Prototype&&Prototype.Version,required:"1.7"},jQuery:{included:!!window.jQuery&&jQuery.fn.jquery,required:"1.5"}},insertScript:function(j){try{document.write("<script type='text/javascript' src='"+j+"'><\/script>")
+}function v(B,z){var A="";if(!z){z=B}A='<li class="tagit-choice">\n<span>';A+=z||B+"</span>\n";A+='<a class="close">x</a>\n';
+A+='<input class="tagit-val" type="hidden" style="display:none;" value="'+B+'" name="'+y.fieldName+'[]">\n';A+="</li>\n";
+if(y.inputFieldAppendTo==k){var C=f.parent();a(A).insertBefore(C)}else{a(A).appendTo(k)}f.val(f.data("placeholder"));y.onchange()
+}this.add=function(A,z){v(A,z);return this};this.remove=function(z){f.parents("ul").children(".tagit-choice").each(function(A){n=a(this).children("input").val();
+if(z==n){a(this).children("a").click()}});return this};this.getInput=function(){return f};this.getLabels=function(){var z=[];
+a("input.tagit-val",k).each(function(){z.push(a(this).val().trim())});return z};this.getFormData=function(){return a("input.tagit-val",k).serializeArray()
+};d=false;return this};String.prototype.trim=function(){return this.replace(/^\s+|\s+$/g,"")}})(jQuery);(function(){window.Bridge||(window.Bridge={});
+var e=window.Bridge,d={Version:"1.1.2",options:{adapter:"auto",path:!1},Framework:{Prototype:{included:!!window.Prototype&&Prototype.Version,required:"1.7"},jQuery:{included:!!window.jQuery&&jQuery.fn.jquery,required:"1.5"}},insertScript:function(j){try{document.write("<script type='text/javascript' src='"+j+"'><\/script>")
 }catch(g){var l=document.head||document.getElementsByTagName("head")[0],k=document.createElement("script");k.type="text/javascript",k.src=j,l.appendChild(k)
 }},start:function(){function E(g,c){return F(g)>=F(c)}function F(j){var c=j.match(G),p=c&&c[1]&&c[1].split(".")||[],m=0;for(var l=0,k=p.length;
 l<k;l++){m+=parseInt(p[l]*Math.pow(10,6-l*2))}return c&&c[3]?m-1:m}var G=/^(\d+(\.?\d+){0,3})([_-]+[A-Za-z0-9]+)?/;if(e.options){for(var D in e.options){d.options[D]=e.options[D]

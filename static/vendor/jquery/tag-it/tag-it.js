@@ -36,6 +36,13 @@
 					$(this).val('');
 				}
 				$(this).addClass('editting');
+
+				if (options.focusShowAutocomplete) {
+					tag_input.focus(function() {
+						$(this).trigger('keydown.autocomplete');
+						$(this).autocomplete('widget').show();
+					});
+				}
 			}).blur(function() {
 				if (!$(this).val().trim().length) {
 					$(this).val($(this).data('placeholder'));
@@ -59,12 +66,17 @@
 			}
 		});
 
+		$(this).delegate('a.close', 'click', function() {
+			if ($(this).parent().is('li')) {
+				$(this).parent().remove();
+			} else {
+				$(this).parent().parent().remove();
+			}
+			options.onchange();
+		});
 		$(this).click(function(e){
 			if (e.target.tagName == 'A') {
-				// Removes a tag when the little 'x' is clicked.
-				// Event is binded to the UL, otherwise a new tag (LI > A) wouldn't have this event attached to it.
-				$(e.target).parent().remove();
-				options.onchange();
+				
 			}
 			else {
 				// Sets the focus() to the input field, if the user clicks anywhere inside the UL.
@@ -98,6 +110,7 @@
 					if (is_new (typed)) {
 						create_choice (typed);
 					}
+
 					// Cleaning the input.
 					tag_input.blur();
 					tag_input.val(tag_input.data('placeholder')).removeClass('editting');
@@ -108,24 +121,23 @@
 
 		var autocomplete_opts = options.autocompleteOptions || {};
 		autocomplete_opts.select = function(event,ui) {
-			if (is_new (ui.item.name)) {
-				create_choice (ui.item.name, ui.item.value);
+			if (is_new (ui.item.value)) {
+				create_choice (ui.item.value, ui.item.label);
 			}
-			// Cleaning the input.
-			tag_input.val("");
 
+			window.setTimeout(function() {
+				tag_input.blur();
+				tag_input.val(tag_input.data('placeholder')).removeClass('editting');
+				tag_input.focus();
+
+				$(tag_input).trigger('keydown.autocomplete');
+			}, 100);
+			
 			// Preventing the tag input to be updated with the chosen value.
 			return false;
 		}
 
 		tag_input.autocomplete(autocomplete_opts);
-
-		if (options.focusShowAutocomplete) {
-			tag_input.focus(function() {
-				$(this).trigger('keydown.autocomplete');
-				$(this).autocomplete('widget').show();
-			});
-		}
 
 		function assigned_tags(){
 			var tags = [];
@@ -157,10 +169,13 @@
 		}
 		function create_choice (value, label){
 			var el = "";
+
+			if (!label) label = value;
+
 			el  = "<li class=\"tagit-choice\">\n<span>";
 			el += label || value + "</span>\n";
 			el += "<a class=\"close\">x</a>\n";
-			el += "<input type=\"hidden\" style=\"display:none;\" value=\""+value+"\" name=\"" + options.fieldName + "[]\">\n";
+			el += "<input class=\"tagit-val\" type=\"hidden\" style=\"display:none;\" value=\""+value+"\" name=\"" + options.fieldName + "[]\">\n";
 			el += "</li>\n";
 
 			if (options.inputFieldAppendTo == tag_ul) {
@@ -187,6 +202,20 @@
 		};
 		this.getInput = function() {
 			return tag_input;
+		};
+
+		this.getLabels = function() {
+			var labels = [];
+
+			$('input.tagit-val', tag_ul).each(function() {
+				labels.push($(this).val().trim());
+			});
+
+			return labels;
+		};
+
+		this.getFormData = function () {
+			return $('input.tagit-val', tag_ul).serializeArray();
 		};
 
 		in_init = false;
