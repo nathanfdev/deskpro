@@ -3,7 +3,8 @@
 		{% if not disable_actions %}
 			<th class="check-all check not-draggable not-resizable no-option-trigger" width="5" valign="middle" style="vertical-align: middle;"><input type="checkbox" class="check-all-box" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/></th>
 		{% endif %}
-		<th class="not-draggable not-resizable" width="35"></th>
+		<th class="">Subject</th>
+		<th>User</th>
 		{% for field in display_fields %}
 			{% if field == 'deleted_reason' %}<th data-field="deleted_reason">Deleted Reason</th>
 			{% elseif field == 'person_email' %}<th data-field="person">User Email</th>

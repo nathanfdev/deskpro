@@ -1,20 +1,10 @@
 <tbody class="search-results page-set" data-page="{{page}}">
 {% for ticket in tickets %}
-	<tr class="{% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-1 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
-		{% if not disable_actions %}
-			<td class="check-all" rowspan="2" style="vertical-align: middle;">
-				<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
-			</td>
-		{% endif %}
-		<td rowspan="2" width="20" style="vertical-align: middle; padding: 4px; white-space:nowrap;">
-			{% if ticket.agent %}<img src="{{ticket.agent.getPictureUrl(35)}}" width="30" height="30" class="tipped" data-tipped="{{ticket.agent.display_name}}" />{% else %}<img src="http://www.gravatar.com/avatar/00000000000000000000000000000000?d=mm&amp;s=30" width="30" height="30" class="tipped" data-tipped="Unassigned" />{% endif %}
+	<tr class="{% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-2 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
+		<td class="check-all" style="vertical-align: middle;">
+			<input type="checkbox" value="{{ticket.id}}" class="ticket" style="width:10px; margin: 0; margin-rght: 4px; padding: 0;"/>
 		</td>
-		<td colspan="{{display_fields|length}}" class="subject tipped">
-			<cite class="person-name">
-				<a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
-					{{ticket.person.getDisplayContactShort(35)}}
-				</a>
-			</cite>
+		<td class="subject">
 			<a
 				style="background: url({{ asset('images/ticket-status-' ~ ticket.status ~ '.png') }}) no-repeat center left; line-height: 13px; padding-left: 15px;"
 				class="with-route subject-link"
@@ -25,12 +15,11 @@
 				data-tipped-options="skin: 'light', hook: { target: 'topleft', tooltip: 'bottomleft' }, ajax: true, maxWidth: 400, showDelay: 1.2"
 			>{{ticket.subject}}</span></a>
 		</td>
-		{% if show_flag and 0 %}
-			{% set ticket_flagged_color = flagged_tickets[ticket.id]|default('none') %}
-			<td rowspan="2" class="wrap-flag flag"><span class="ticket-flag icon icon-flag-{{ticket_flagged_color}}" data-flag="{{ticket_flagged_color}}"></span></td>
-		{% endif %}
-	</tr>
-	<tr class="{% if loop.index % 2 == 0 %}white{% endif %} ticket-{{ticket.id}} line-2 urgency-{{ticket.rounded_urgency}} {% if ticket.is_locked %}locked{% endif %}" data-ticket-id="{{ticket.id}}">
+		<td>
+			<a class="with-route" data-route="ticket:{{ path('agent_people_view', {'person_id': ticket.person.id|default('0')}) }}">
+				{{ticket.person.getDisplayName()}}
+			</a>
+		</td>
 		{% for field in display_fields %}{% if field != 'agent' %}
 			{% if field == 'date_created' %}
 				<td class="{{field}}">
@@ -64,7 +53,7 @@
 						None
 					{% endif %}
 					</span>
-				</div>
+				</td>
 			{% elseif field == 'product' %}
 				<td class="{{field}}">
 					<span class="prop-val product_id" data-prop-value="{{ticket.product.id}}">
