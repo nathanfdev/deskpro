@@ -110,7 +110,9 @@
 					{% if field == 'ticket_fields['~f.id~']' %}
 						<td class="ticket-field">
 							<div class="prop-val ticket_fields_{{f.id}}">
-								{{ticket.renderCustomField(f.id)}}
+								{% if ticket.hasCustomField(f.id) %}
+									{{ render_custom_field(ticket.getCustomFieldDisplayArray(f.id)) }}
+								{% endif %}
 							</div>
 						</td>
 					{% endif %}
@@ -119,7 +121,9 @@
 					{% if field == 'person_fields['~f.id~']' %}
 						<td class="person-field">
 							<div class="prop-val person_fields_{{f.id}}">
-								{{ticket.person.renderCustomField(f.id)}}
+								{% if person.hasCustomField(f.id) %}
+									{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
+								{% endif %}
 							</div>
 						</td>
 					{% endif %}
