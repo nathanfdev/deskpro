@@ -82,10 +82,12 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		});
 
 		// Init ticket reply tabs
+		/*
 		var simpleTabs = this.replySimpleTabs = new DeskPRO.UI.SimpleTabs({
 			context: $('.ticket-reply', this.actionsWrap),
 			triggerElements: $('li.tab-trigger', $('.ticket-reply', this.actionsWrap))
 		});
+		*/
 
 		var to_el = $('.actions-form .actions-terms', this.actionsWrap);
 
@@ -265,10 +267,10 @@ DeskPRO.Agent.PageHelper.TicketActionsBar = new Class({
 		num = parseInt(num);
 
 		if (num == 0) {
-			this.layout.collapseFooter();
+			//this.layout.collapseFooter();
 			$('.check-count span', this.ticketBar).html(0);
 		} else {
-			this.layout.expandFooter();
+			//this.layout.expandFooter();
 			$('.check-count span', this.ticketBar).html(num);
 		}
 	},

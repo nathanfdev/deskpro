@@ -11,7 +11,7 @@ DeskPRO.Agent.Layout.FooterActionbarLayout = Orb.Class({
 		this.content  = $('div.layout-content:first', this.wrapper);
 		this.footer = $('div.layout-footer:first', this.wrapper);
 
-		this.isFooterOpen = false;
+		this.isFooterOpen = true;
 
 		var parentLayout = this.paneWrapper.closest('.has-layout');
 		if (parentLayout.length) {

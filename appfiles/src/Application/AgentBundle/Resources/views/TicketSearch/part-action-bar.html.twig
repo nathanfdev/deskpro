@@ -1,15 +1,18 @@
 {% import 'AgentBundle:Common:macro-flagname.html.twig' as flagnamer %}
-<div class="tab-bottom-wrap">
+<div class="tab-bottom-wrap" style="display: block">
 	<div class="tab-bottom">
+		<div class="more-btn">
+			<button class="dp-button x-small">More Results</button>
+		</div>
 		<div class="check-count">
 			<span>0</span> selected
+
+			<button class="clean-gray xx-small perform-actions-trigger">
+				<span>Perform Action</span>
+			</button>
 		</div>
-		<div class="bar-actions">
-			<ul>
-				<li class="macro-on macros-apply" style="display:none"><a>Apply</a></li>
-				<li class="macro-on macros-cancel" style="display:none"><a>Cancel</a></li>
-				<li class="actions"><a>Mass Actions</a></li>
-			</ul>
+		<div class="results-count">
+			Showing 10 results of 340
 		</div>
 	</div>
 

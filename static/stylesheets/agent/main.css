@@ -2718,6 +2718,7 @@ table.participants-table .partis ul li{
 }
 
 .tab-bottom {
+    position: relative;
 	height: 33px;
 	width: 100%;
 	border-top: 1px solid #737E8B;
@@ -2729,12 +2730,29 @@ table.participants-table .partis ul li{
 	background-color: #a9b1c0;
 	background: -webkit-gradient(linear, 0 bottom, 0 top, from(#99a2b3 ), to(#b6bdca));
     background: -moz-linear-gradient(90deg, #99a2b3, #b6bdca );
+    text-align: center;
 }
 
 .tab-bottom .check-count {
-	float: left;
 	line-height: 33px;
 	padding-left: 8px;
+    position: absolute;;
+    left: 0;
+    top: 0px;
+}
+
+.tab-bottom .check-count  button {
+    margin-left: 6px !important;
+}
+
+.tab-bottom .results-count {
+    position: absolute;
+    right: 7px;;
+    top: 7px;
+}
+
+.tab-bottom .more-btn {
+    margin-top: 5px;
 }
 
 .tab-bottom input{

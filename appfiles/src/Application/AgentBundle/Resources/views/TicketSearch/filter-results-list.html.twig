@@ -40,17 +40,6 @@ pageMeta.viewType = 'list';
 		</div>
 	</div>
 
-	<div class="pagination">
-		<ul>
-			{% for i in pageinfo.pages %}
-				<li {% if i == page %}class="cur_page"{% endif %}><a>{{ i }}</a></li>
-			{% endfor %}
-			{% if pageinfo.next %}
-				<li><a>Next</a></li>
-			{% endif %}
-		</ul>
-	</div>
-
 	<div class="loading-more">
 		Loading more results ...
 	</div>
