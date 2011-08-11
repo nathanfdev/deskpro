@@ -175,6 +175,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			onSaveReplySuccess: (function(info) {
 				this.displayNewMessage(info.result.message_html);
 
+				if (info.result.client_messages) {
+					DeskPRO_Window.getMessageChanneler().handleMessageAjax(info.result.client_messages);
+				}
+
 				if (info.result.close_tab) {
 					window.setTimeout((function() {
 						console.log('ere');
