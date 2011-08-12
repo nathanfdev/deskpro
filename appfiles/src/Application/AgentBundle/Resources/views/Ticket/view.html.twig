@@ -191,6 +191,11 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 		</ul>
 	</nav>
 
+	<ul id="{{baseId}}_more_actions_menu" style="display: none;">
+		<li class="split-trigger">Split Ticket</li>
+		<li class="merge-trigger">Merge Ticket</li>
+	</ul>
+
 	<div class="times">
 		Ticket created <time>2 hours ago</time> by <span class="person-overview" data-route="person:{{ path('agent_people_view', {'person_id': ticket.person_id}) }}">{{ ticket.person.display_name }}</span> at <time>{{ticket.date_created|date('H:ia M j Y')}}</time>.<br/>
 		User has been waiting <time>23 minutes</time> for a reply, and a total of <time>8 hours</time> since the ticket started.

@@ -706,17 +706,30 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	public function addMessage(TicketMessage $message)
 	{
 		$this->messages->add($message);
-		$message['ticket'] = $this;
+		$message->ticket = $this;
 
-		if ($message['person']['is_agent']) {
-			$this['date_last_agent_reply'] = new \DateTime();
-		} else {
-			$this['date_last_user_reply'] = new \DateTime();
+		$now = new \DateTime();
+		if ($message->person['is_agent'] AND (!$this->date_last_agent_reply || $this->date_last_agent_reply < $now)) {
+			$this->date_last_agent_reply = $now;
+		} elseif (!$this->date_last_user_reply || $this->date_last_user_reply < $now) {
+			$this->date_last_user_reply = $now;
 		}
 
 		$this->_onPropertyChanged('messages', null, $message);
 	}
 
+
+	/**
+	 * Add a ticket attachment
+	 * 
+	 * @param TicketAttachment $attach
+	 * @return void
+	 */
+	public function addAttachment(TicketAttachment $attach)
+	{
+		$attach->ticket = $this;
+		$this->attachments->add($attach);
+	}
 
 
 	/**

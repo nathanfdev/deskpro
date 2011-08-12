@@ -158,6 +158,21 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			cw.tinyscrollbar_scrolltop(1000000);
 		});
 
+		this.moreActionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.more', this.getEl('action_buttons')),
+			menuElement: this.getEl('more_actions_menu'),
+			itemClicked: (function(info) {
+				var el = $(info.itemEl);
+				if (el.is('.merge-trigger')) {
+					var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
+						ticketId: this.getMetaData('ticket_id'),
+						destroyOnClose: true
+					});
+					mergeOverlay.show();
+				}
+			}).bind(this)
+		});
+
 
 		this.replyBox = new DeskPRO.Agent.PageFragment.Page.Ticket.ReplyBox(this, {
 			replyBox: this.getEl('replybox'),

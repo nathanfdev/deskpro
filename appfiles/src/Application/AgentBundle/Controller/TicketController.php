@@ -1247,6 +1247,23 @@ class TicketController extends AbstractController
 
 
 	############################################################################
+	# merge
+	############################################################################
+
+	/**
+	 * Merge a ticket interface
+	 */
+	public function mergeAction($ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+
+	############################################################################
 
 	/**
 	 * @return \Application\DeskPRO\Entity\Ticket
