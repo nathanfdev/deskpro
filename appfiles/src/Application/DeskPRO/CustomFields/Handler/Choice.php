@@ -99,7 +99,7 @@ class Choice extends HandlerAbstract
 
 	public function getSearchCapabilities()
 	{
-		return array('contains', 'notcontains');
+		return array('is', 'not');
 	}
 
 	public function getSearchType()

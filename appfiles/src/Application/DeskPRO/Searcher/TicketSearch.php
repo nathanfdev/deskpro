@@ -760,6 +760,12 @@ class TicketSearch extends SearcherAbstract
 						case 'input':
 						case 'value':
 
+							if ($op == self::OP_IS) {
+								$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $field['title'], 'value' => $choice));
+							} else {
+								$this->summary[] = $tr->phrase('core.x_is_not_y', array('field' => $field['title'], 'value' => $choice));
+							}
+
 							$joins[] = array(
 								'custom_data_ticket',
 								"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id = $term_id)"
@@ -780,19 +786,38 @@ class TicketSearch extends SearcherAbstract
 									$wheres[] = "$field $op " . $db->quote('%'.$choice.'%');
 									break;
 							}
+
+							$this->summary[] = "";
+
 							break;
 
 						case 'id':
 							$join_id = Util::requestUniqueId();
 							$choices_in = array();
-							foreach ((array)$choice as $c) {
+							$choice = (array)$choice;
+							foreach ($choice as $c) {
 								$choices_in[] = (int)$c;
 							}
 							$choices_in = implode(',', $choices_in);
 
+							$choice_str = array();
+							foreach ($field->children as $child) {
+								if (in_array($child['id'], $choice)) {
+									$choice_str[] = $child['title'];
+								}
+							}
+							$choice_str = implode(', ', $choice_str);
+
+							if ($op == self::OP_IS OR $op== self::OP_CONTAINS) {
+								$this->summary[] = $tr->phrase('core.x_is_y', array('field' => $field['title'], 'value' => $choice_str));
+							} else {
+								$this->summary[] = $tr->phrase('core.x_is_not_y', array('field' => $field['title'], 'value' => $choice_str));
+							}
+
 							$field = 'custom_data_ticket_'.$join_id.'.field_id';
 							switch ($op) {
 								case self::OP_CONTAINS:
+								case self::OP_IS:
 									$joins[] = array(
 										'custom_data_ticket',
 										"LEFT JOIN custom_data_ticket AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id)"
@@ -801,6 +826,7 @@ class TicketSearch extends SearcherAbstract
 									break;
 
 								case self::OP_NOTCONTAINS:
+								case self::OP_NOT:
 									$joins[] = array(
 										'custom_data_ticket',
 										"LEFT JOIN AS custom_data_ticket_$join_id ON (custom_data_ticket_$join_id.ticket_id = tickets.id AND custom_data_ticket_$join_id.field_id IN ($choices_in)"
