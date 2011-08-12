@@ -796,6 +796,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	_doAjaxLoadRoute: function(url, routeData, successFn) {
 
+		routeData = routeData || {};
 		if (!url) {
 			console.error('No URL provided! routeData: %o', routeData);
 			return;

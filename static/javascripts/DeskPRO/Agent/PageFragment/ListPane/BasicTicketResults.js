@@ -501,7 +501,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			});
 		});
 
-
 		// and the ordering
 		data.push({
 			name: 'prefs[agent.ui.ticket-'+ this.resultTypeName + '-order-by.' + this.resultTypeId +']',

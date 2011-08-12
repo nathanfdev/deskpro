@@ -9,8 +9,8 @@ DeskPRO.Agent.PageFragment.ListPane.TicketFilter = new Class({
 	resultTypeId: 0,
 
 	initPage: function(el) {
-		this.parent(el);
 		this.resultTypeId = this.getMetaData('filter_id');
+		this.parent(el);
 	},
 
 	activate: function() {
