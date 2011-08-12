@@ -1419,6 +1419,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			this.openSection.fireEvent('afterhide');
 		}
 
+		$('#deskpro_list_loading').removeClass('on');
+
 		handler.fireEvent('show');
 		var sectionEl = handler.getSectionElement();
 		if (sectionEl) {

@@ -197,6 +197,8 @@ DeskPRO.Agent.WindowElement.Section.AbstractSection = new Orb.Class({
 
 		this.getListElement().addClass('on');
 
+		$('#deskpro_list_loading').removeClass('on');
+
 		page.fireEvent('render', [contentEl]);
 		page.fireEvent('activate');
 	},
