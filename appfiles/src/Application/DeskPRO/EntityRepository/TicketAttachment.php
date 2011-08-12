@@ -37,4 +37,28 @@ class TicketAttachment extends \Doctrine\ORM\EntityRepository
 
 		return $attachments;
 	}
+
+	public function getAttachmentsForMessages($messages)
+	{
+		if (!$messages) {
+			return array();
+		}
+
+		$message_ids = array();
+		foreach ($messages as $m) {
+			$message_ids[] = $m['id'];
+		}
+
+		$message_ids = implode(',', $message_ids);
+
+		$attachments = $this->getEntityManager()->createQuery("
+			SELECT a, b
+			FROM DeskPRO:TicketAttachment a INDEX BY a.id
+			LEFT JOIN a.blob b
+			WHERE a.message IN ($message_ids)
+			ORDER BY a.id DESC
+		")->execute();
+
+		return $attachments;
+	}
 }

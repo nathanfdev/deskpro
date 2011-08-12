@@ -62,7 +62,7 @@ class TicketController extends AbstractController
 
 		if (($ticket_messages_blockcache = App::getEntityRepository('DeskPRO:Cache')->load("ticket_messages.{$ticket['id']}.agent_block")) === false) {
 
-			$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket);
+			$ticket_messages_blockcache = $this->_getMessageBlockInfo($ticket, 0, 0, $ticket_attachments);
 
 			App::getEntityRepository('DeskPRO:Cache')->save("ticket_messages.{$ticket['id']}.agent_block", $ticket_messages_blockcache, 259200);
 		}
@@ -184,10 +184,8 @@ class TicketController extends AbstractController
 		));
 	}
 
-	protected function _getMessageBlockInfo($ticket, $since_message_id = 0, $since_log_id = 0,$d=0)
+	protected function _getMessageBlockInfo($ticket, $since_message_id = 0, $since_log_id = 0, array $ticket_attachments = null)
 	{
-		$ticket_attachments = array();
-		
 		$message_count = 0;
 		$note_count = 0;
 
@@ -195,6 +193,10 @@ class TicketController extends AbstractController
 			$ticket,
 			array('since_id' => $since_message_id)
 		);
+
+		if (!$ticket_attachments) {
+			$ticket_attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);
+		}
 		
 		// Group attachments into messages so we can place them into each message
 		$ticket_message_attachments = array();
@@ -929,8 +931,7 @@ class TicketController extends AbstractController
 		$data = $this->_getMessageBlockInfo(
 			$ticket,
 			$this->in->getUint('last_message_id'),
-			$this->in->getUint('last_log_id'),
-			1
+			$this->in->getUint('last_log_id')
 		);
 
 		$data = array_merge($data, array(
