@@ -209,16 +209,20 @@ abstract class SearcherAbstract implements PersonContextInterface
 		$choice = (array)$choice;
 
 		$date1 = null;
-		if (isset($choice['date1'])) {
+		if (!empty($choice['date1'])) {
 			$date1 = $choice['date1'];
-		} else if (isset($choice[0])) {
+		} else if (!empty($choice['date1_relative']) AND !empty($choice['date1_relative_type'])) {
+			$date1 = date_create("-" . (int)$choice['date1_relative'] . " {$choice['date1_relative_type']}");
+		} else if (!empty($choice[0])) {
 			$date1 = $choice[0];
 		}
 
 		$date2 = null;
-		if (isset($choice['date2'])) {
+		if (!empty($choice['date2'])) {
 			$date2 = $choice['date2'];
-		} else if (isset($choice[1])) {
+		} else if (!empty($choice['date2_relative']) AND !empty($choice['date2_relative_type'])) {
+			$date1 = date_create("-" . (int)$choice['date2_relative'] . " {$choice['date2_relative_type']}");
+		} else if (!empty($choice[1])) {
 			$date2 = $choice[1];
 		}
 
@@ -388,16 +392,26 @@ abstract class SearcherAbstract implements PersonContextInterface
 		$choice = (array)$choice;
 		
 		$date1 = null;
-		if (isset($choice['date1'])) {
+		if (!empty($choice['date1'])) {
 			$date1 = $choice['date1'];
-		} else if (isset($choice[0])) {
+		} else if (!empty($choice['date1_relative']) AND !empty($choice['date1_relative_type'])) {
+			return App::getTranslator()->phrase('core.x_before_y', array(
+				'field' => $field,
+				'value' => (int)$choice['date1_relative'] . " {$choice['date1_relative_type']} ago"
+			));
+		} else if (!empty($choice[0])) {
 			$date1 = $choice[0];
 		}
 
 		$date2 = null;
-		if (isset($choice['date2'])) {
+		if (!empty($choice['date2'])) {
 			$date2 = $choice['date2'];
-		} else if (isset($choice[1])) {
+		} else if (!empty($choice['date2_relative']) AND !empty($choice['date2_relative_type'])) {
+			return App::getTranslator()->phrase('core.x_before_y', array(
+				'field' => $field,
+				'value' => (int)$choice['date2_relative'] . " {$choice['date2_relative_type']} ago"
+			));
+		} else if (!empty($choice[1])) {
 			$date2 = $choice[1];
 		}
 

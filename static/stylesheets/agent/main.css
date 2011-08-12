@@ -5590,3 +5590,30 @@ article.ticket .urgency span {
     -o-user-select: none;
     user-select: none;
 }
+
+
+
+.field-overlay .date-wrap .switcher {
+    font-size: 10px;
+    float: right;
+    cursor: pointer;
+    color: #969CA7;
+    text-decoration: none;
+    margin-top: 5px;
+
+    background: url(../../images/breadcrumb-bullet.gif) no-repeat 100% 50%;
+    padding-right: 8px;
+}
+
+.field-overlay .date-wrap .switcher:hover {
+    color: #5A5E65;
+}
+
+.field-overlay .date-wrap .relative1-type,
+.field-overlay .date-wrap .relative2-type {
+    margin-top: 3px;
+}
+
+.field-overlay .date-wrap .relative {
+    width: 247px;
+}

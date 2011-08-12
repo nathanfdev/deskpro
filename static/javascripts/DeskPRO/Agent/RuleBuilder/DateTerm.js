@@ -119,6 +119,36 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 			}
 			self.date2Widget.datepicker('setDate', date);
 		});
+
+		//------------------------------
+		// Switcher between relative input
+		//------------------------------
+
+		$('.switcher', this.date1).click((function() {
+			var date = $('.date', this.date1);
+			var rel  = $('.relative', this.date1);
+
+			if (date.is(':visible')) {
+				date.hide();
+				rel.show();
+			} else {
+				rel.hide();
+				date.show();
+			}
+		}).bind(this));
+
+		$('.switcher', this.date2).click((function() {
+			var date = $('.date', this.date2);
+			var rel  = $('.relative', this.date2);
+
+			if (date.is(':visible')) {
+				date.hide();
+				rel.show();
+			} else {
+				rel.hide();
+				date.show();
+			}
+		}).bind(this));
 	},
 
 	show: function() {
@@ -139,38 +169,60 @@ DeskPRO.Agent.RuleBuilder.DateTerm = new Orb.Class({
 	},
 
 	updateStatus: function() {
-		if (this.opInput.val() == 'between') {
-			var date1 = this.date1Widget.datepicker('getDate');
-			var date2 = this.date2Widget.datepicker('getDate');
 
-			var str = '';
-			if (date1) {
-				str = $.datepicker.formatDate('M d, yy', date1);
-			} else {
-				str = '(click to set)';
-			}
+		var str1 = '', str2 = '', status = '';
 
-			str += ' and ';
+		// If we're using the relative times, update the values on close
+		var relative1 = $('.relative1', this.date1);
+		var relative2 = $('.relative2', this.date2);
 
-			if (date2) {
-				str += $.datepicker.formatDate('M d, yy', date2);
-			} else {
-				str += '(click to set)';
+		if (relative1.is(':visible')) {
+			$('.date1-relative-input', this.rowEl).val($('.relative1-input', this.date1).val());
+			$('.date1-relative-type', this.rowEl).val($('.relative1-type', this.date1).val());
+
+			// Erase any calendar time we mightve set before
+			this.date1Input.val('');
+
+			if ($('.relative1-input', this.date1).val().trim().length) {
+				str1 = $('.relative1-input', this.date1).val() + ' ' + $('.relative1-type', this.date1).val() + ' ago';
 			}
 		} else {
 			var date1 = this.date1Widget.datepicker('getDate');
-			var str = '';
 			if (date1) {
-				str = $.datepicker.formatDate('M d, yy', date1);
-			} else {
-				str = '(click to set)';
+				str1 = $.datepicker.formatDate('M d, yy', date1);
 			}
 		}
 
-		this.currentValue.text(str);
+		if (relative2.is(':visible')) {
+			$('.date2-relative-input', this.rowEl).val($('.relative2-input', this.date2).val());
+			$('.date2-relative-type', this.rowEl).val($('.relative2-type', this.date2).val());
+
+			this.date2Input.val('');
+
+			if ($('.relative2-input', this.date2).val().trim().length) {
+				str2 = $('.relative2-input', this.date2).val() + ' ' + $('.relative2-type', this.date2).val() + ' ago';
+			}
+		} else {
+			var date2 = this.date2Widget.datepicker('getDate');
+			if (date2) {
+				str2 = $.datepicker.formatDate('M d, yy', date2);
+			}
+		}
+
+		if (!str1.length) str1 = '(click to set)';
+		if (!str2.length) str1 = '(click to set)';
+
+		if (this.opInput.val() == 'between') {
+			status = str1 + ' and ' + str2;
+		} else {
+			status = str1;
+		}
+
+		this.currentValue.text(status);
 	},
 
 	hide: function() {
+		this.updateStatus();
 		this.backdrop.hide();
 		this.wrapper.hide();
 	},
