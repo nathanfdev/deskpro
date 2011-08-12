@@ -76,11 +76,11 @@
 			<input type="text" name="subject" value="" />
 		</div>
 	</div>
-	<div class="type" title="Labels" data-rule-type="label">
+	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets">
 		<div class="op">
 			<select name="op" class="op">
-				<option value="is">include</option>
-				<option value="not">does not include</option>
+				<option value="is">is</option>
+				<option value="not">is not</option>
 				{% if with_change_terms %}
 					<option value="changed">Changed</option>
 					<option value="changed_to">Changed to include</option>
@@ -89,7 +89,7 @@
 			</select>
 		</div>
 		<div class="options">
-			<input type="text" name="label" value="" />
+			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
 	<div class="type" title="Assigned Agent" data-rule-type="agent">
