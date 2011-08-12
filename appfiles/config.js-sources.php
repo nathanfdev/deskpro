@@ -71,6 +71,7 @@ $CONFIG['agent']['pages'] = array(
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/ReplyBox.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketLocked.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketChecker.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/Participants.js',
@@ -123,6 +124,7 @@ $CONFIG['agent']['agent-ui'] = array(
 		'javascripts/DeskPRO/Agent/Layout/FooterActionbarLayout.js',
 		'javascripts/DeskPRO/Agent/TabManager.js',
 		'javascripts/DeskPRO/Agent/TabStrip.js',
+		'javascripts/DeskPRO/Agent/TabWatcher.js',
 		'javascripts/DeskPRO/Agent/ScrollerHandler.js',
 		'javascripts/DeskPRO/Agent/KeyboardShortcuts.js',
 
@@ -132,7 +134,9 @@ $CONFIG['agent']['agent-ui'] = array(
 		'javascripts/DeskPRO/Agent/Notifier/Notifier.js',
 		'javascripts/DeskPRO/Agent/Notifier/Types/Abstract.js',
 		'javascripts/DeskPRO/Agent/Notifier/Types/Ticket.js',
-		
+
+		'javascripts/DeskPRO/Agent/WindowElement/TabWatcher/Tickets.js',
+
 		'javascripts/DeskPRO/Agent/WindowElement/MainMenuOpener.js',
 		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Abstract.js',
 		'javascripts/DeskPRO/Agent/WindowElement/MainMenu/Notifications.js',
@@ -225,11 +229,13 @@ $CONFIG['agent']['vendors'] = array(
 
 		'vendor/jquery/tag-it/tag-it.js',
 
-		'vendor/jquery/tipped/js/bridge/bridge.js',
 		'vendor/jquery/tipped/js/bridge/adapters/shared.js',
 		'vendor/jquery/tipped/js/bridge/adapters/jquery.js',
+		'vendor/jquery/tipped/js/bridge/bridge.js',
 		'vendor/jquery/tipped/js/excanvas/excanvas.js',
 		'vendor/jquery/tipped/js/spinners/spinners.js',
+		'vendor/jquery/tipped/js/tipped/skins-base-reset.js',
+		'vendor/jquery/tipped/js/tipped/skins.js',
 		'vendor/jquery/tipped/js/tipped/tipped.js',
 
 		'vendor/mootools/mootools-core.min.js',

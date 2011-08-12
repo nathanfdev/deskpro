@@ -319,7 +319,7 @@ Header
 
     padding: 1px 3px 0px 3px;
     color: #636467;
-    
+
     text-shadow: 1px 0px 0px #ffffff;
     filter: dropshadow(color=#ffffff, offx=1, offy=);
 
@@ -3184,7 +3184,7 @@ ul.popover-tabs li a{
     float: right;
     line-height: 37px;
     background-color: #D5DFEB;
-    
+
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
@@ -3844,7 +3844,7 @@ section.new-user-chat-alert footer {
 
 
 .chat .tab-bottom {
-    
+
 }
 
 .chat .tab-bottom .new-message {
@@ -4044,7 +4044,7 @@ html.admin, body.admin {
 
     text-shadow: 0px 1px 0px #ffffff;
     filter: dropshadow(color=#ffffff, offx=0, offy=1);
-    
+
     text-align: center;
 
     padding: 0 10px 0 10px;
@@ -4095,7 +4095,7 @@ html.admin, body.admin {
     display: none;
 
     background-color: rgba(27,40,74,0.3);
-    
+
     -webkit-box-shadow: 2px 2px 6px 0px #000000;
     -moz-box-shadow: 2px 2px 6px 0px #000000;
     box-shadow: 2px 2px 6px 0px #000000;
@@ -4428,7 +4428,7 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 
 .field-overlay.agent-selector .filter .input-wrap input {
     font-size: 10px;
-    
+
     padding: 5px;
     margin: 0;
     border: 0;
@@ -4833,7 +4833,7 @@ section.ticket-header .the-status {
     -webkit-border-radius: 3px;
     -moz-border-radius: 3px;
     border-radius: 3px;
-    
+
     padding: 4px;
     padding-left: 8px;
     padding-right: 0px;
@@ -4939,7 +4939,7 @@ section.ticket-header .assignments .user, section.ticket-header .assignments .ag
 }
 
 section.ticket-header .assignments .agent {
-    
+
 }
 
 section.ticket-header .assignments .desc {
@@ -5011,7 +5011,7 @@ section.ticket-header nav.actions ul li.more {
 }
 
 .extra-info {
-    
+
 }
 
 .extra-info li {
@@ -5306,7 +5306,7 @@ article.ticket .urgency span {
 }
 
 .page-ticket .reply-box .options-area .followers .add-followers-trigger {
-    
+
 }
 
 .page-ticket .reply-box .options-area .followers {
@@ -5524,4 +5524,69 @@ article.ticket .urgency span {
 .display-item.highlight-change-on,  .reply-box.highlight-change-on {
     background-color: #FFFA9D;
     border: 1px solid #D8D58C;
+}
+
+
+.page-ticket.locked {
+    padding-top: 38px;
+}
+.page-ticket.locked .scroll-viewport {
+    margin-top: 38px;
+}
+
+.page-ticket .locked-bar {
+    display: none;
+}
+
+.page-ticket.locked .locked-bar {
+    background-color: #E7F1FF;
+    padding: 8px 5px 8px 5px;
+    border-bottom: 2px solid #B2BAC5;
+    display: block;
+
+    position: absolute;
+    top: 0;
+    left: 0;
+    right: 0;
+    height: 20px;
+}
+
+.page-ticket .locked-bar cite {
+    background-color: #fff;
+    border:  1px solid #B2BAC5;
+
+    -webkit-border-radius: 3px;
+    -moz-border-radius: 3px;
+    border-radius: 3px;
+
+    padding: 1px 2px 1px 2px;
+
+    font-style: normal;
+}
+
+.page-ticket .locked-bar button {
+    float: right;
+}
+
+.page-ticket .locked-overlay {
+    display: none;
+}
+
+.page-ticket.locked .locked-overlay {
+    display: block;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
+
+    background-color: #fff;
+    opacity: 0.6;
+    z-index: 999;
+
+    -webkit-user-select: none;
+    -khtml-user-select: none;
+    -moz-user-select: none;
+    -o-user-select: none;
+    user-select: none;
 }

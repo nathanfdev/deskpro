@@ -45,10 +45,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			this._initCustomFieldsEditor();
 		}
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
-			this._handleResize()
-		}).bind(this));
-
 		var self = this;
 		this._initMessage($('div.messages-wrap'));
 
@@ -94,8 +90,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			}
 		}).bind(this), this.pageUid);
 
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.check.' + this.getMetaData('ticket_id'), this.handleTicketCheck.bind(this), this.pageUid);
-		//DeskPRO_Window.getMessageBroker().addMessageListener('tickets.updated.' + this.getMetaData('ticket_id'), this.getTicketUpdates.bind(this), this.pageUid);
 		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.new-messages.' + this.getMetaData('ticket_id'), this.getNewTicketMessages.bind(this), this.pageUid);
 
 		Array.each(this.getMetaData('fieldHandlers', []), function(h) {
@@ -206,6 +200,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			lastLogId: this.meta.lastLogId,
 			checkUrl: BASE_URL + 'agent/tickets/'+this.getMetaData('ticket_id')+'/ajax-update-check'
 		});
+
+		if (this.meta.isLocked) {
+			this.ticketLocked = new DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked(this);
+		}
 	},
 
 	destroyPage: function() {
@@ -293,13 +291,6 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 
 	deactivate: function() {
 		this.ticketChecker.pause();
-	},
-
-
-	handleTicketCheck: function(info) {
-		if (!info.isLocked) {
-			$('div.lock-bar:first', this.contentWrapper).hide();
-		}
 	},
 
 	_initMessage: function(messageEl) {

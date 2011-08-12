@@ -33,14 +33,24 @@ pageMeta.urls = {
 pageMeta.baseId = '{{ baseId }}';
 
 pageMeta.isDeleted = {% if ticket.hidden_status == 'deleted' %}true{% else %}false{% endif %};
+pageMeta.isLocked = {% if ticket.is_locked == 'deleted' %}true{% else %}false{% endif %};
 {% if agent_signature %}
 pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 {% endif %}
 
 </script>
-<div class="layout-content with-scrollbar page-ticket">
+<div class="layout-content with-scrollbar page-ticket {% if ticket.is_locked %}locked{% endif %}">
+{% if ticket.is_locked %}
+<div class="locked-bar" id="{{baseId}}_locked_bar">
+	<button class="clean-gray xx-small dismiss">Dismiss</button>
+	The ticket is in use by <cite>{{ ticket.locked_by_agent }}</cite>.
+</div>
+{% endif %}
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
+
+{% if ticket.is_locked %}<div class="locked-overlay" id="{{baseId}}_locked_overlay"></div>{% endif %}
+
 <div class="macro-controls" style="display: none;">
 	<button class="clean-gray small save" id="macro_apply_btn">Apply Macro</button>
 	<button class="clean-gray small cancel" id="macro_cancel_btn">Cancel</button>
@@ -57,13 +67,6 @@ pageMeta.agentSignature = {{ agent_signature|json_encode|raw }};
 	<input type="hidden" name="status" class="status" value="{{ticket.status}}" />
 	<input type="hidden" name="hidden_status" class="hidden_status" value="{{ticket.hidden_status}}" />
 </form>
-
-{% if ticket.is_locked %}
-	<div class="ticket-lock-bar">
-		This ticket is currently in use by {{ ticket.locked_by_agent.display_name }}. You may want to avoid
-		making changes until they are finished with it.
-	</div>
-{% endif %}
 
 {% if ticket.status == 'hidden' %}
 	<div class="ticket-hidden-bar">

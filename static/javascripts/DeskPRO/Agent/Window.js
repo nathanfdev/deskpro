@@ -37,10 +37,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.loadingIndicatorEl = null;
 		this.loadingIndicatorCount = 0;
 		this.ajaxErrorOverlay = null;
-		
-		this.openTicketIds = [];
-		this.releaseTicketLocks_timeout = null;
-		this.releaseTicketLocks = [];
 
 		this.winStateQueue = [];
 	},
@@ -275,6 +271,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return this.poller;
 	},
 
+	/**
+	 * Get the tab watcher
+	 */
+	getTabWatcher: function() {
+		return this.tabWatcher;
+	},
 
 
 	/**
@@ -1179,83 +1181,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 			notifySummaryButton: $('#notify_button'),
 			notifyList: $('#notify_list')
 		});
-
-		// Set up listener for badge count
-		this.getMessageBroker().addMessageListener('filters.counts', this._updatefilterCounts.bind(this));
-
-		// When a ticket is open or closed, apply style
-		this.getMessageBroker().addMessageListener('ui.ticket.opened', function (data) {
-			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).addClass('open');
-			self.openTicketIds.push(data.ticketId);
-		});
-		this.getMessageBroker().addMessageListener('ui.ticket.closed', (function (data) {
-			$('table.list tr.ticket-'+data.ticketId, $('#pane_list')).removeClass('open');
-			self.openTicketIds.erase(data.ticketId);
-
-			this.releaseTicketLocks.push(data.ticketId);
-			if (this.releaseTicketLocks_timeout) {
-				window.clearTimeout(this.releaseTicketLocks_timeout);
-			}
-
-			this.releaseTicketLocks_timeout = (function() {
-
-				if (!this.releaseTicketLocks.length) {
-					return;
-				}
-
-				var data = [];
-				Array.each(this.releaseTicketLocks, function(id) {
-					data.push( {
-						name: 'ticket_ids[]',
-						value: id
-					});
-				});
-				this.releaseTicketLocks = [];
-
-				$.ajax({
-					url: BASE_URL + 'agent/ticket-search/ajax-release-locks',
-					type: 'GET',
-					data: data,
-					dataType: 'json',
-					success: function(data) {
-
-					}
-				});
-			}).delay(3500, this);
-		}).bind(this));
-
-		// Re-dispatch ticket messages to their specific tickets
-		this.getMessageBroker().addMessageListener('tickets.new-messages', (function(data) {
-			var name = 'tickets.new-messages.' + data.ticket_id;
-			this.getMessageBroker().sendMessage(name, data);
-		}).bind(this));
-		this.getMessageBroker().addMessageListener('tickets.updated', (function(data) {
-			var name = 'tickets.updated.' + data.ticket_id;
-			this.getMessageBroker().sendMessage(name, data);
-		}).bind(this));
 	},
-
-	runOpenTicketStateOnElement: function(el) {
-		var self = this;
-
-		$('tr', el).each(function() {
-			var tr = $(this);
-			var ticketId = tr.data('ticket-id');
-			if (self.openTicketIds.indexOf(ticketId) !== -1) {
-				tr.addClass('open');
-			}
-		})
-	},
-
-	_updatefilterCounts: function (counts) {
-		var total = 0;
-		Object.each(counts, function (count, filter_id) {
-			total += count;
-		});
-
-		$('.ticket-filter-count-all').html('(' + total + ')');
-	},
-
+	
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
@@ -1519,6 +1446,13 @@ DeskPRO.Agent.Window = new Orb.Class({
 			$('#deskpro_tabstrip > ul:first'),
 			new DeskPRO.Agent.TabManager('#deskpro_viewport')
 		);
+		this.tabManager = this.pageTabStrip.tabManager;
+
+		this.tabWatcher = new DeskPRO.Agent.TabWatcher({
+			tabManager: this.tabManager
+		});
+
+		this.tabWatcher.addTabTypeWatcher('ticket', new DeskPRO.Agent.WindowElement.TabWatcher.Tickets());
 
 		this.pageTabStrip.tabManager.addEvent('addTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});
 		this.pageTabStrip.tabManager.addEvent('removeTab', function() { DeskPRO_Window.windowStateUpdated('tabs');	});

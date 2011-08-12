@@ -1123,23 +1123,23 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		return $this->isLocked();
 	}
 
-	public function isLocked()
+	public function isLocked(Person $current_agent = null)
 	{
-		$lock_timeout = date_create('-' . App::getSetting('core_tickets.lock_timeout') . ' seconds');
-
 		if (!$this->locked_by_agent) {
 			return false;
 		}
+
+		$lock_timeout = date_create('-' . App::getSetting('core_tickets.lock_timeout') . ' seconds');
 
 		// Timed out
 		if ($this->date_locked < $lock_timeout) {
 			return false;
 		}
 
-		// Check if we have a current user context,
-		// to see if its locked to us
-		$person = App::getCurrentPerson();
-		if ($person AND $this->locked_by_agent['id'] == $person['id']) {
+		if ($current_agent === null) {
+			$current_agent = App::getCurrentPerson();
+		}
+		if ($current_agent && $this->locked_by_agent['id'] == $current_agent['id']) {
 			return false;
 		}
 

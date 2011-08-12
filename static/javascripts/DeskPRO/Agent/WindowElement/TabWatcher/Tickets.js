@@ -1,0 +1,45 @@
+Orb.createNamespace('DeskPRO.Agent.WindowElement.TabWatcher');
+
+/**
+ * This just handles releasing locks on tickets
+ */
+DeskPRO.Agent.WindowElement.TabWatcher.Tickets = new Orb.Class({
+	Implements: [Orb.Util.Events],
+
+	initialize: function() {
+		this.addEvent('activateTab', this.activateTab.bind(this));
+		this.addEvent('deactivateTab', this.deactivateTab.bind(this));
+
+		this.releasing = {};
+	},
+
+	activateTab: function(tab) {
+
+		// When a ticket is opened, double-check that we dont have a release
+		// request already processing. If so, cancel it, because we just opened it again
+		// (ie a quick open/close)
+
+		var ticketId = tab.page.getMetaData('ticket_id');
+		if (this.releasing[ticketId]) {
+			this.releasing[ticketId].abort();
+			delete this.releasing[ticketId];
+		}
+	},
+	
+	deactivateTab: function(tab) {
+
+		// If its locked, it means its locked by someone else
+		// so we dont need to release our locks
+		if (tab.page.getMetaData('isLocked')) {
+			return;
+		}
+
+		var ticketId = tab.page.getMetaData('ticket_id');
+		this.releasing[ticketId] = $.ajax({
+			url: BASE_URL + 'agent/ticket-search/ajax-release-locks',
+			type: 'GET',
+			data: [{ name: 'ticket_ids[]', value: ticketId}],
+			dataType: 'json'
+		});
+	}
+});

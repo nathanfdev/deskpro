@@ -166,6 +166,8 @@ class TicketController extends AbstractController
 			$draft_text = $draft_pref->getValue();
 		}
 
+		//$ticket->setLockedByAgentId(9);
+
 		return $this->render($tpl, array(
 			'ticket' => $ticket,
 			'ticket_attachments' => $ticket_attachments,
