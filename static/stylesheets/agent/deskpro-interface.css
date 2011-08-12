@@ -268,18 +268,14 @@ section.deskpro-results-list article h4.user-name {
 }
 
 section.deskpro-results-list article > div.userinfo {
-    height: 28px;
     position: relative;
+    margin-left: 19px;
 }
 
 section.deskpro-results-list article > div.userinfo > a.name {
-    position: absolute;
     color: #2D76B1;
-    top: 5px;
-    left: 5px;
     text-decoration: none;
-    background-color: #fefefe;
-    padding-right: 8px;
+    padding-right: 0px;
 }
 
 section.deskpro-results-list article > div.userinfo > address {
@@ -314,7 +310,7 @@ section.deskpro-results-list article > div.title > a:hover {
 section.deskpro-results-list article .ticket-select {
     float: left;
     margin-left: 3px;
-    margin-top: 6px;
+    margin-top: 7px;
 }
 
 section.deskpro-results-list article > div.preview {
@@ -422,7 +418,21 @@ section.deskpro-results-list article.ticket .toprow {
     margin-bottom: 0;
     margin-left: 19px;
     position: relative;
-    height: 25px;
+    height: 23px;
+}
+
+section.deskpro-results-list article.ticket .toprow .subject {
+    font-size: 12px;
+    font-weight: bolder;
+}
+
+section.deskpro-results-list article.ticket .toprow .subject a {
+    text-decoration: underline;
+    color: #3D5D8C;
+}
+
+section.deskpro-results-list article.ticket .toprow .subject a:hover {
+    color: #000;
 }
 
 section.deskpro-results-list article.ticket .toprow .userinfo {
