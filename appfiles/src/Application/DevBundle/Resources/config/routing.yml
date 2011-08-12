@@ -81,3 +81,7 @@ dev_build_upgrade:
 dev_build_upgrade_do:
   pattern: /build/upgrade-do
   defaults: { _controller: DevBundle:Build:upgradeDo }
+
+dev_cm:
+  pattern: /client-messages
+  defaults: { _controller: DevBundle:ClientMessages:index }
