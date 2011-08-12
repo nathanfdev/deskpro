@@ -196,7 +196,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 			if (this.getTabType(tab) == typename) {
 				tabs.push(tab);
 			}
-		});
+		}, this);
 
 		return tabs;
 	}

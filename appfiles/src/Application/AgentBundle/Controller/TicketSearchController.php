@@ -14,6 +14,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\Searcher\TicketSearch;
 use Application\DeskPRO\Entity\TicketFilter;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\App;
 
@@ -940,7 +941,19 @@ class TicketSearchController extends AbstractController
 
 		foreach ($tickets as $ticket) {
 			$ticket->unlockTicket();
+
+			$lock_cm = new ClientMessage();
+			$lock_cm->fromArray(array(
+				'channel' => 'agent-notification.tickets.unlocked',
+				'data' => array(
+					'ticket_id' => $ticket['id'],
+					'agent_id' => $ticket['id'],
+				),
+				'created_by_client' => $this->session->getEntity()->getId(),
+			));
+
 			App::getOrm()->persist($ticket);
+			App::getOrm()->persist($lock_cm);
 		}
 
 		App::getOrm()->flush();

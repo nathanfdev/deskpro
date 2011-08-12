@@ -19,16 +19,25 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketLocked = new Orb.Class({
 		this.dismissBtn.click(this.dismiss.bind(this));
 	},
 
+	/**
+	 * The user dismisses the message
+	 */
 	dismiss: function() {
 		var wrapper = $('.page-ticket:first', this.page.wrapper);
 
 		var self = this;
 		this.lockedOverlay.fadeOut('fast');
 		this.lockedBar.fadeOut('fast', function() {
-			self.lockedOverlay.remove();
-			self.lockedBar.remove();
 			wrapper.removeClass('locked');
 		});
+	},
+
+	/**
+	 * The ticket becomes unlocked while we're viewing
+	 */
+	unlock: function() {
+		// same as dismiss right now
+		this.dismiss();
 	},
 
 	destroy: function() {

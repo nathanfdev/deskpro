@@ -254,6 +254,10 @@ section.deskpro-results-list article {
     border-bottom: 1px solid #C3CBCE;
 }
 
+section.deskpro-results-list article.locked {
+    opacity: 0.6;
+}
+
 section.deskpro-results-list article.person {
     padding:  8px 5px 8px 5px;
 }

@@ -14,6 +14,7 @@ namespace Application\AgentBundle\Controller;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Entity\Person;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
+use Application\DeskPRO\Entity\ClientMessage;
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -55,30 +56,6 @@ class TicketController extends AbstractController
 		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
 		$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
 
-		// TODO this all needs to be updated to cache new custom fields structure / designer stuff
-		/*
-		if (($ticket_custom_fields_block = App::getEntityRepository('DeskPRO:Cache')->load("ticket_custom_fields.{$ticket['id']}.agent_block")) === false) {
-			// Custom fields
-			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-			$ticket_field_defs = array();
-			$ticket_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($ticket['custom_data'], $ticket_field_defs);
-
-			// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
-			// So dont remove it even though it looks like it's not used! :-)
-			$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
-			$custom_fields = App::getApi('custom_fields.tickets')->getFieldsDisplayArray($ticket_field_defs, $ticket_data_structured, $custom_fields_form);
-
-			$ticket_custom_fields_block = $this->renderView('AgentBundle:Ticket:part-custom-fields.html.twig', array(
-				'ticket' => $ticket,
-				'ticket_field_defs' => $ticket_field_defs,
-				'custom_fields_form' => $custom_fields_form,
-				'custom_fields' => $custom_fields
-			));
-
-			App::getEntityRepository('DeskPRO:Cache')->save("ticket_custom_fields.{$ticket['id']}.agent_block", $ticket_custom_fields_block, 259200);
-		}
-		*/
-
 		#------------------------------
 		# Messages
 		#------------------------------
@@ -108,6 +85,18 @@ class TicketController extends AbstractController
 		// Get or update the lock on this ticket
 		if (!$ticket->isLocked()) {
 			$ticket->setLockedByAgent($this->person);
+
+			$lock_cm = new ClientMessage();
+			$lock_cm->fromArray(array(
+				'channel' => 'agent-notification.tickets.unlocked',
+				'data' => array(
+					'ticket_id' => $ticket['id'],
+					'agent_id' => $ticket['id'],
+				),
+				'created_by_client' => $this->session->getEntity()->getId(),
+			));
+
+			App::getOrm()->persist($lock_cm);
 			App::getOrm()->persist($ticket);
 			App::getOrm()->flush();
 		}
@@ -166,7 +155,7 @@ class TicketController extends AbstractController
 			$draft_text = $draft_pref->getValue();
 		}
 
-		//$ticket->setLockedByAgentId(9);
+		$ticket->setLockedByAgentId(9);
 
 		return $this->render($tpl, array(
 			'ticket' => $ticket,

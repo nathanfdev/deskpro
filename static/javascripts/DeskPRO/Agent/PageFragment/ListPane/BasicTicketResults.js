@@ -21,7 +21,27 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 
 	initPage: function(el) {
 
-		window.TICKET_LIST = this;
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.unlocked', (function(info) {
+			var ticketId = info.ticket_id;
+			$('.ticket-' + ticketId, this.contentWrapper).removeClass('locked');
+		}).bind(this));
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-notification.tickets.locked', (function(info) {
+			var ticketId = info.ticket_id;
+			$('.ticket-' + ticketId, this.contentWrapper).addClass('locked');
+		}).bind(this));
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
+			var sels = [];
+			Array.each(ticket_ids, function(val) {
+				sels.push('.ticket-' + val);
+			});
+
+			sels = sels.join(', ');
+
+			$(sels, this.contentWrapper).fadeOut(400, function() {
+				$(this).remove();
+			});
+		}).bind(this));
 
 		this.loadFirst = this.getMetaData('loadFirst');
 		if (this.loadFirst) {
@@ -118,30 +138,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			this.noMoreResults = true;
 			$('.no-more-results', this.contentWrapper).show();
 		}
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('ui.ticket.opened', (function(info) {
-			var ticketId = info.ticketId;
-			var row = $('.ticket-' + ticketId, this.wrapper);
-			row.addClass('open');
-		}).bind(this));
-		DeskPRO_Window.getMessageBroker().addMessageListener('ui.ticket.closed', (function(info) {
-			var ticketId = info.ticketId;
-			var row = $('.ticket-' + ticketId, this.wrapper);
-			row.removeClass('open');
-		}).bind(this));
-
-		DeskPRO_Window.getMessageBroker().addMessageListener('tickets.deleted', (function(ticket_ids) {
-			var sels = [];
-			Array.each(ticket_ids, function(val) {
-				sels.push('tr.ticket-' + val);
-			});
-
-			sels = sels.join(', ');
-
-			$(sels, this.contentWrapper).fadeOut(400, function() {
-				$(this).remove();
-			});
-		}).bind(this));
 
 		DeskPRO_Window.getMessageBroker().addMessageListener('window.innerLayout.resize', (function() {
 			this._handleResize()
