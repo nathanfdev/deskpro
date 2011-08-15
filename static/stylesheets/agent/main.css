@@ -5684,3 +5684,27 @@ article.ticket .urgency span {
 	color: #000;
 	font-style: normal;
 }
+
+
+.ticket-merge.overlay {
+    min-width: 660px;
+}
+
+.ticket-merge.overlay .group {
+    margin-bottom: 15px;
+}
+
+.ticket-merge.overlay .group li {
+    padding: 5px 0 5px 0;
+    background-color: #F2F6FC;
+    margin-top: 1px;
+}
+
+.ticket-merge.overlay .group li:hover {
+    background-color: #E8EDF3;
+}
+
+.ticket-merge.overlay .group li button {
+    float: right;
+    margin-top: -3px;
+}

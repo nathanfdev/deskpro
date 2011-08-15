@@ -35,6 +35,13 @@ class Agent extends PropertyAbstract
 			if ($this->getStrategyOption('add_follower') and $old_agent != $this->ticket->agent) {
 				$this->ticket->addParticipantPerson($old_agent);
 			}
+		} elseif ($this->strategy == self::STRATEGY_COMBINE) {
+			if (!$this->ticket->agent) {
+				$this->ticket->agent = $this->other_ticket->agent;
+			}
+			if (!$this->ticket->agent_team) {
+				$this->ticket->agent_team = $this->other_ticket->agent_team;
+			}
 		}
 	}
 }

@@ -161,14 +161,28 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.moreActionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.more', this.getEl('action_buttons')),
 			menuElement: this.getEl('more_actions_menu'),
-			itemClicked: (function(info) {
+			onItemClicked: (function(info) {
 				var el = $(info.itemEl);
 				if (el.is('.merge-trigger')) {
 					var mergeOverlay = new DeskPRO.Agent.Widget.MergeTicket({
 						ticketId: this.getMetaData('ticket_id'),
-						destroyOnClose: true
+						destroyOnClose: true,
+						onMergeSuccess: function(data) {
+
+							// remove old tabs, theyre outdated
+							Array.each(DeskPRO_Window.getTabWatcher().findTabType('ticket'), function(tab) {
+								var tid = tab.page.getMetaData('ticket_id');
+								if (tid == data.old_ticket_id || tid == data.ticket_id) {
+									DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
+								}
+							});
+
+							DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+
+							mergeOverlay.close();
+						}
 					});
-					mergeOverlay.show();
+					mergeOverlay.open();
 				}
 			}).bind(this)
 		});

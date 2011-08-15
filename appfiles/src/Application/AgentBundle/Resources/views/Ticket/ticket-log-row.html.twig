@@ -15,6 +15,8 @@
 		Ticket <span class="new-val">#{{log.details.ticket_id}}</span> created
 	{% elseif log.action_type == 'ticket_split' %}
 		Ticket split from <span class="old-val">#{{log.details.from_ticket_id}}</span>
+	{% elseif log.action_type == 'ticket_merge' %}
+		Ticket <span class="old-val">#{{log.details.from_ticket_id}}</span> merged into this
 	{% elseif log.action_type == 'changed_category' %}
 		<span class="type">Category</span> changed from
 		<span class="old-val">{{log.details.old_category_title|default('None')}}</span> to <span class="new-val">{{log.details.new_category_title}}</span>

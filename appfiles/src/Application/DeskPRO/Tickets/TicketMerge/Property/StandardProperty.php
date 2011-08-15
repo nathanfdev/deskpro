@@ -44,7 +44,17 @@ class StandardProperty extends PropertyAbstract
 
 	public function merge()
 	{
+		$do_set = false;
+
 		if ($this->strategy == self::STRATEGY_RIGHT) {
+			$do_set = true;
+		} elseif ($this->strategy == self::STRATEGY_COMBINE) {
+			if (!$this->ticket[$this->property]) {
+				$do_set = true;
+			}
+		}
+
+		if ($do_set) {
 			$this->ticket[$this->property] = $this->other_ticket[$this->property];
 
 			if ($this->property == 'status' && $this->other_ticket[$this->property] == 'hidden') {

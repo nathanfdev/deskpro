@@ -68,6 +68,8 @@ class TicketSplit
 		$new_ticket->resetTicketLogger();// we dont want any of the usual logs to do with new items etc
 		$new_ticket->getTicketLogger()->recordExtra('ticket_split', array('old_ticket' => $ticket)); // just the split
 
+		$new_ticket->subject .= " (2)";
+
 		$this->em->persist($ticket);
 		$this->em->persist($new_ticket);
 		$this->em->flush();

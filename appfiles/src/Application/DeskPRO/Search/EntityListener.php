@@ -71,6 +71,6 @@ class EntityListener
 			return;
 		}
 
-		$this->adapter->deleteObjectFromIndex($entity);
+		//$this->adapter->deleteObjectFromIndex($entity);
 	}
 }

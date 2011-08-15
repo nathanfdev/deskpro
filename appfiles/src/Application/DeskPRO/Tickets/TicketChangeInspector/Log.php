@@ -190,6 +190,12 @@ class Log
 
 	public function run()
 	{
+		if ($this->tracker->isExtraSet('ticket_merge')) {
+			$merge_info = $this->tracker->getExtra('ticket_merge');
+			$action = new LogActions\Merge($this->ticket, $merge_info['other_ticket']);
+			$this->addLogItem($action);
+		}
+
 		if ($this->tracker->isExtraSet('ticket_split')) {
 			$split_info = $this->tracker->getExtra('ticket_split');
 			$action = new LogActions\Split($this->ticket, $split_info['old_ticket']);

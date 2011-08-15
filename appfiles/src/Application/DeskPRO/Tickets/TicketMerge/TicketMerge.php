@@ -77,11 +77,42 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 		$this->em->beginTransaction();
 
 		try {
+
 			$this->mergeMessages();
 			$this->mergeAttachments();
 			$this->mergeParticipants();
 			$this->mergeLogs();
 			$this->mergeMisc();
+
+			// dont add logs for new messages etc
+			$this->ticket->resetTicketLogger();
+
+			$prop_agent = new Property\Agent($this->ticket, $this->other_ticket);
+			$prop_agent->setStrategy(Property\Agent::STRATEGY_COMBINE);
+			$prop_agent->merge();
+
+			$prop_person = new Property\Person($this->ticket, $this->other_ticket);
+			$prop_person->setStrategy(Property\Person::STRATEGY_LEFT);
+			$prop_person->merge();
+
+			$standard_prop_names = array(
+				'agent',
+				'agent_team',
+				'person',
+				'person_email',
+				'department',
+				'category',
+				'product',
+				'workflow',
+				'organization',
+				'status',
+				'hidden_status',
+				'subject'
+			);
+			foreach ($standard_prop_names as $prop_name) {
+				$prop_standard = new Property\StandardProperty($this->ticket, $this->other_ticket);
+				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
+			}
 
 			$ticket_del = new TicketDeleted();
 			$ticket_del->ticket_id = $this->other_ticket['id'];
@@ -92,6 +123,9 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 
 			$this->em->persist($this->ticket);
 			$this->em->remove($this->other_ticket);
+
+			$this->other_ticket->resetTicketLogger();
+			$this->ticket->getTicketLogger()->recordExtra('ticket_merge', array('other_ticket' => $this->other_ticket));
 
 			$this->em->flush();
 		} catch (\Exception $e) {
@@ -138,7 +172,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 		}
 	}
 
-	public function mergeMisc()
+	protected function mergeMisc()
 	{
 		// Flags
 		App::getDb()->executeUpdate("
@@ -146,7 +180,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
-		App::getDb()->delete('tickets_flagged', $this->other_ticket['id']);
+		App::getDb()->delete('tickets_flagged', array('ticket_id' => $this->other_ticket['id']));
 
 		// Pending articles
 		App::getDb()->executeUpdate("
@@ -154,7 +188,7 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
-		App::getDb()->delete('article_pending_create', $this->other_ticket['id']);
+		App::getDb()->delete('article_pending_create', array('ticket_id' => $this->other_ticket['id']));
 
 		// Pending articles
 		App::getDb()->executeUpdate("
@@ -162,6 +196,6 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			SET ticket_id = ?
 			WHERE ticket_id = ?
 		", array($this->ticket['id'], $this->other_ticket['id']));
-		App::getDb()->delete('labels_tickets', $this->other_ticket['id']);
+		App::getDb()->delete('labels_tickets', array('ticket_id' => $this->other_ticket['id']));
 	}
 }

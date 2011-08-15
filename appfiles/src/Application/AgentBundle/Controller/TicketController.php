@@ -1253,15 +1253,55 @@ class TicketController extends AbstractController
 	# merge
 	############################################################################
 
-	/**
-	 * Merge a ticket interface
-	 */
-	public function mergeAction($ticket_id)
+	public function mergeOverlayAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
 
+		$tickets_by_user = $this->em->getRepository('DeskPRO:Ticket')->getLatestByUser($ticket->person);
+		$open_tickets    = $this->em->getRepository('DeskPRO:Ticket')->getTicketsFromIds($this->in->getCleanValueArray('open_ticket_ids', 'uint', 'discard'));
+
+		$fn = function ($t) use ($ticket) {
+			if ($t['id'] == $ticket['id']) {
+				return false;
+			}
+			return true;
+		};
+
+		$tickets_by_user = array_filter($tickets_by_user, $fn);
+		$open_tickets    = array_filter($open_tickets, $fn);
+
+		return $this->render('AgentBundle:Ticket:merge-overlay.html.twig', array(
+			'ticket'          => $ticket,
+			'tickets_by_user' => $tickets_by_user,
+			'open_tickets'    => $open_tickets,
+		));
+	}
+
+	/**
+	 * Merge a ticket interface
+	 */
+	public function mergeAction($ticket_id, $other_ticket_id)
+	{
+		$ticket = $this->getTicketOr404($ticket_id);
+		$other_ticket = $this->getTicketOr404($other_ticket_id);
+
+		$old_ticket_id = $other_ticket['id'];
+
+		try {
+			$this->em->beginTransaction();
+			$merge = new TicketMerge($this->person, $ticket, $other_ticket);
+			$merge->merge();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
 		return $this->createJsonResponse(array(
-			'success' => true
+			'success' => true,
+			'ticket_id' => $ticket['id'],
+			'old_ticket_id' => $old_ticket_id
 		));
 	}
 

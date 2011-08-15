@@ -105,7 +105,26 @@ class Ticket extends EntityRepository
 	}
 
 
+	/**
+	 * Get the latest tickets from a particular user
+	 * 
+	 * @param \Application\DeskPRO\Entity\Person $person
+	 * @param int $max The max number of results
+	 * @return array
+	 */
+	public function getLatestByUser(Entity\Person $person, $max = 20)
+	{
+		$tickets = $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t
+			WHERE t.person = ?1
+			ORDER BY t.id DESC
+		")->setMaxResults($max)->execute(array(1=> $person));
 
+		return $tickets;
+	}
+
+	
 	/**
 	 * Executes a query to re-fill the ticket_search_active table
 	 */

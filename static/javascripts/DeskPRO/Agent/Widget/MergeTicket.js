@@ -34,7 +34,7 @@ DeskPRO.Agent.Widget.MergeTicket = new Orb.Class({
 		this.overlay = new DeskPRO.UI.Overlay({
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/ticket/merge',
+				url: BASE_URL + 'agent/tickets/merge-overlay/' + this.ticketId,
 				data: data
 			}
 		});
@@ -43,7 +43,39 @@ DeskPRO.Agent.Widget.MergeTicket = new Orb.Class({
 	},
 
 	_initElements: function() {
+		this.wrapper = this.overlay.getWrapper();
+		var self = this;
 
+		$('.merge-trigger', this.wrapper).click(function() {
+			$(this).text('...').attr('disabled', true);
+			$('.merge-trigger', this.wrapper).attr('disabled', true );
+
+			// this is the "left" ticket, because the overlay is "merge INTO"
+			var ticketId = $(this).data('ticket-id');
+
+			// the one we're viewing is technically the right
+			var otherTicketId = self.ticketId;
+
+			$.ajax({
+				url: BASE_URL + 'agent/tickets/merge/' + ticketId + '/' + otherTicketId,
+				type: 'POST',
+				dataType: 'json',
+				success: function(data) {
+					if (data.success) {
+						self.fireEvent('mergeSuccess', [data]);
+					} else {
+						self.fireEvent('mergeError', [data]);
+					}
+				},
+				error: function(data) {
+					self.fireEvent('mergeError', [data]);
+				}
+			});
+		});
+
+		$('.with-route', this.wrapper).click(function() {
+			DeskPRO_Window.runPageRouteFromElement(this);
+		});
 	},
 
 	open: function() {
@@ -53,6 +85,10 @@ DeskPRO.Agent.Widget.MergeTicket = new Orb.Class({
 
 	close: function() {
 		this.overlay.close();
+
+		if (this.options.destroyOnClose) {
+			this.desotry
+		}
 	},
 
 	destroy: function() {

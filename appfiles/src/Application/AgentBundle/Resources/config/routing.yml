@@ -516,6 +516,16 @@ agent_ticket_split:
   defaults: { _controller: AgentBundle:Ticket:split }
   requirements: { message_id: "\d+" }
 
+agent_ticket_merge_overlay:
+  pattern: /tickets/merge-overlay/{ticket_id}
+  defaults: { _controller: AgentBundle:Ticket:mergeOverlay }
+  requirements: { ticket_id: "\d+" }
+
+agent_ticket_merge:
+  pattern: /tickets/merge/{ticket_id}/{other_ticket_id}
+  defaults: { _controller: AgentBundle:Ticket:merge }
+  requirements: { ticket_id: "\d+", other_ticket_id: "\d+" }
+
 agent_ticket_snippetviewer:
   pattern: /tickets/{ticket_id}/snippet-viewer
   defaults: { _controller: AgentBundle:Ticket:snippetsViewer }
