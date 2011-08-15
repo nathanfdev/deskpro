@@ -138,11 +138,13 @@ class ExceptionListener
 		$trace = $this->getTraceString(debug_backtrace());
 		$trace = $this->_stripPathPrefix($trace);
 
-		$summary = "[$errname:$errno] $errstr ($errfile:$errline)";
+		$dpsn = Strings::random(8, Strings::CHARS_KEY);
+		$summary = "[$errname:$errno] $errstr ($errfile:$errline:SN$dpsn)";
 
 		try {
 			$logger = App::createNewLogger('error_log', null);
 			$logger->log($summary, $pri, array(
+				'session_name' => $dpsn,
 				'trace' => $trace,
 				'errno' => $errno,
 				'errname' => $errname,
