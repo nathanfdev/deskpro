@@ -178,6 +178,7 @@ DeskPRO.AjaxPoller.Poller = new Orb.Class({
 			context: this,
 			data: send_data,
 			dataType: 'json',
+			dpIsPolling: true,
 			success: function (data) {
 				this._handleAjaxSuccess(data, sent_info);
 			},

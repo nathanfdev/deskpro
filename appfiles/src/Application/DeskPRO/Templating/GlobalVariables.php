@@ -36,4 +36,14 @@ class GlobalVariables extends BaseGlobalVariables
 	{
 		return App::getSession()->getVisitor();
 	}
+
+	public function getLastException()
+	{
+		if (!App::has('deskpro.exception_logger')) {
+			return null;
+		}
+
+		$logger = App::get('deskpro.exception_logger');
+		return $logger->getLastException();
+	}
 }

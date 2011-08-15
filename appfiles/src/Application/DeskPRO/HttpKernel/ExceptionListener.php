@@ -20,6 +20,13 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 
 class ExceptionListener
 {
+	protected $last_exception = null;
+
+	public function getLastException()
+	{
+		return $this->last_exception;
+	}
+
 	public function onKernelException(GetResponseForExceptionEvent $event)
 	{
 		static $handling;
@@ -47,6 +54,9 @@ class ExceptionListener
 		$trace = $this->_stripPathPrefix($trace);
 
 		$exception->_dp_sn = Strings::random(8, Strings::CHARS_KEY);
+
+		// This is fetched from the template
+		$this->last_exception = $exception;
 
 		try {
 			$logger = App::createNewLogger('error_log', null);
@@ -139,7 +149,7 @@ class ExceptionListener
 		$trace = $this->_stripPathPrefix($trace);
 
 		$dpsn = Strings::random(8, Strings::CHARS_KEY);
-		$summary = "[$errname:$errno] $errstr ($errfile:$errline:SN$dpsn)";
+		$summary = "[$errname:$errno] $errstr ($errfile:$errline) [SN$dpsn]";
 
 		try {
 			$logger = App::createNewLogger('error_log', null);

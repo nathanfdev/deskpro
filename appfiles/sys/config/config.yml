@@ -40,7 +40,7 @@ services:
   deskpro.exception_logger:
     class: Application\DeskPRO\HttpKernel\ExceptionListener
     tags:
-      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException }
+      - { name: kernel.event_listener, event: kernel.exception, method: onKernelException, priority: -128 }
 
 framework:
   charset: UTF-8

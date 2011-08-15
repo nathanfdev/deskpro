@@ -17,6 +17,8 @@ class TestController extends AbstractController
     {
 		$vars = array();
 
+		throw new \Exception("test");
+
 		$agent_names = APp::getEntityRepository('DeskPRO:Person')->getAgentNames();
 		$vars['agent_names'] = $agent_names;
 		

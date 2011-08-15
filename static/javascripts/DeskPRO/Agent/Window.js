@@ -1064,16 +1064,19 @@ DeskPRO.Agent.Window = new Orb.Class({
 			is_success = true;
 		}
 
-		if (is_success) {
-			$('#network_status_indicator').addClass('active');
-			$('#network_status_indicator span').html('0');
-		} else {
-			$('#network_status_indicator').removeClass('active');
-			var spanEl = $('#network_status_indicator span');
-			var num = parseInt(spanEl.html()) || 0;
-			num++;
+		// Only polling-type requests really dictate the "network" status
+		if (ajaxOptions && ajaxOptions.dpIsPolling) {
+			if (is_success) {
+				$('#network_status_indicator').addClass('active');
+				$('#network_status_indicator span').html('0');
+			} else {
+				$('#network_status_indicator').removeClass('active');
+				var spanEl = $('#network_status_indicator span');
+				var num = parseInt(spanEl.html()) || 0;
+				num++;
 
-			spanEl.html(num);
+				spanEl.html(num);
+			}
 		}
 	},
 
@@ -1118,11 +1121,16 @@ DeskPRO.Agent.Window = new Orb.Class({
 		// We dont use this handler if there was an error handler used
 		if (ajaxOptions && ajaxOptions.error && !ajaxOptions.noErrorOverride) return;
 
+		// We dont show the error popup if it was just an error with polling
+		if (ajaxOptions && ajaxOptions.dpIsPolling) return;
+
+		// We dont know if the request was JSON or HTML,
+		// so we have to sniff the raw responseText to see about any embedded SN code
 		var sn = null;
 		if (data && data.sn) {
 			sn = data.sn;
 		} else {
-			var match = /\[\[SN:(.*?)\]\]/.exec(xhr.responseText);
+			var match = /\[SN([0-9A-Z]{8})\]/.exec(xhr.responseText);
 			if (match) {
 				sn = match[1];
 			}
