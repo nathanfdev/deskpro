@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Symfony\Component\Validator\Constraints;
 use \Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -22,22 +24,22 @@ use \Application\DeskPRO\App;
 /**
  * These are pre-defined labels that are allowed to be used.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\LabelDef")
- * @orm:Table(name="label_defs")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\LabelDef")
+ * @ORM_Mapping\Table(name="label_defs")
  */
 class LabelDef extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="label_type", type="string", length=50)
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="label_type", type="string", length=50)
 	 */
 	protected $label_type;
 
 	/**
 	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="label", type="string", length=255)
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="label", type="string", length=255)
 	 */
 	protected $label;
 

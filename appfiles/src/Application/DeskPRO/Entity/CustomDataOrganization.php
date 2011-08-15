@@ -11,29 +11,31 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Custom organization data
  *
- * @orm:Entity
- * @orm:Table(name="custom_data_organizations", indexes={
- *     @orm:Index(name="field_id_idx", columns={"field_id","organization_id"})
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="custom_data_organizations", indexes={
+ *     @ORM_Mapping\Index(name="field_id_idx", columns={"field_id","organization_id"})
  * })
  */
 class CustomDataOrganization extends CustomDataAbstract
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @orm:ManyToOne(targetEntity="Organization")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
-	 * @orm:Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Organization")
+	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
 	 */
 	protected $organization;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefOrganization
-	 * @orm:ManyToOne(targetEntity="CustomDefOrganization")
-	 * @orm:JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
-	 * @orm:Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefOrganization")
+	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
 	 */
 	protected $field = null;
 

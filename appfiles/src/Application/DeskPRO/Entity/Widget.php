@@ -11,13 +11,15 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 /**
  * A widget is a Javascript widget added to various pages.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Widget")
- * @orm:Table(name="widgets")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Widget")
+ * @ORM_Mapping\Table(name="widgets")
  */
 class Widget extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -25,8 +27,8 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -36,7 +38,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * 'com_example_getuser'
 	 *
 	 * @var string
-	 * @orm:Column(name="name_id", type="string", length=200)
+	 * @ORM_Mapping\Column(name="name_id", type="string", length=200)
 	 */
 	protected $name_id = '';
 
@@ -44,7 +46,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * Note/title for this widget, reminder for admin
 	 *
 	 * @var string
-	 * @orm:Column(name="note", type="string", length=255)
+	 * @ORM_Mapping\Column(name="note", type="string", length=255)
 	 */
 	protected $note = '';
 
@@ -52,7 +54,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * An array of CSS files this widget loads.
 	 *
 	 * @var array
-	 * @orm:Column(name="assets_css", type="array")
+	 * @ORM_Mapping\Column(name="assets_css", type="array")
 	 */
 	protected $assets_css = array();
 
@@ -60,7 +62,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * An array of JS files this widget loads.
 	 *
 	 * @var array
-	 * @orm:Column(name="assets_js", type="array")
+	 * @ORM_Mapping\Column(name="assets_js", type="array")
 	 */
 	protected $assets_js = array();
 
@@ -68,7 +70,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * An array of other data that might be used in templates
 	 *
 	 * @var array
-	 * @orm:Column(name="data", type="array")
+	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
@@ -76,7 +78,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * The page/section this widget should be displayed on.
 	 *
 	 * @var string
-	 * @orm:Column(name="section", type="string", length=200)
+	 * @ORM_Mapping\Column(name="section", type="string", length=200)
 	 */
 	protected $section;
 
@@ -84,7 +86,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * The JS classname that contains the widget handler.
 	 *
 	 * @var string
-	 * @orm:Column(name="js_widget_class", type="string", length=200, nullable=true)
+	 * @ORM_Mapping\Column(name="js_widget_class", type="string", length=200, nullable=true)
 	 */
 	protected $js_widget_class;
 
@@ -92,7 +94,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * The PHP class that handles fetch data/processing
 	 *
 	 * @var string
-	 * @orm:Column(name="php_widget_class", type="string", length=200, nullable=true)
+	 * @ORM_Mapping\Column(name="php_widget_class", type="string", length=200, nullable=true)
 	 */
 	protected $php_widget_class;
 
@@ -100,7 +102,7 @@ class Widget extends \Application\DeskPRO\Domain\DomainObject
 	 * The template used to render the widget HTML.
 	 *
 	 * @var string
-	 * @orm:Column(name="template_name", type="string", length=200, nullable=true)
+	 * @ORM_Mapping\Column(name="template_name", type="string", length=200, nullable=true)
 	 */
 	protected $template_name;
 

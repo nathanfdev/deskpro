@@ -10,20 +10,22 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * Comments on articles
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleComment")
- * @orm:Table(name="article_comments")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleComment")
+ * @ORM_Mapping\Table(name="article_comments")
  */
 class ArticleComment extends CommentAbstract
 {
 	/**
-	 * @orm:ManyToOne(targetEntity="Article", inversedBy="comment")
-	 * @orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Article", inversedBy="comment")
+	 * @ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article;
 

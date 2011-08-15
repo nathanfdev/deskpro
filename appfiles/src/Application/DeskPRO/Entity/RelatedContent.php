@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\Markdown;
@@ -20,36 +22,36 @@ use \Orb\Util\Strings;
 /**
  * Related content
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\RelatedContent")
- * @orm:Table(name="related_content")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\RelatedContent")
+ * @ORM_Mapping\Table(name="related_content")
  */
 class RelatedContent extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @orm:Column(name="object_type", type="string", length=100)
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="object_type", type="string", length=100)
+	 * @ORM_Mapping\Id
 	 */
 	protected $object_type;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="object_id", type="integer")
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="object_id", type="integer")
+	 * @ORM_Mapping\Id
 	 */
 	protected $object_id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="rel_object_type", type="string", length=100)
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="rel_object_type", type="string", length=100)
+	 * @ORM_Mapping\Id
 	 */
 	protected $rel_object_type;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="rel_object_id", type="integer")
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="rel_object_id", type="integer")
+	 * @ORM_Mapping\Id
 	 */
 	protected $rel_object_id = null;
 

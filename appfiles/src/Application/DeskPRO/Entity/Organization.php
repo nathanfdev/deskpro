@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\ORM\Util\Util as ORM_Util;
 
@@ -25,8 +27,8 @@ use Application\DeskPRO\Entity;
 /**
  * An organization is a grouping we put similar people into (eg companies).
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Organization")
- * @orm:Table(name="organizations")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Organization")
+ * @ORM_Mapping\Table(name="organizations")
  */
 class Organization extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -34,8 +36,8 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -43,7 +45,7 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The organization name
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=255)
+	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
 
@@ -51,31 +53,31 @@ class Organization extends \Application\DeskPRO\Domain\DomainObject
 	 * The org importance
 	 *
 	 * @var int
-	 * @orm:Column(name="importance", type="smallint")
+	 * @ORM_Mapping\Column(name="importance", type="smallint")
 	 */
 	protected $importance = 0;
 
 	/**
-	 * @orm:OneToMany(targetEntity="CustomDataOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDataOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $custom_data;
 	
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TaskAssociatedOrganization", mappedBy="organization")
+	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociatedOrganization", mappedBy="organization")
 	 */
 	protected $task_associations;
 	
 	
 
 	/**
-	 * @orm:OneToMany(targetEntity="LabelOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="LabelOrganization", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="OrganizationContactData", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="OrganizationContactData", mappedBy="organization", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $contact_data;
 

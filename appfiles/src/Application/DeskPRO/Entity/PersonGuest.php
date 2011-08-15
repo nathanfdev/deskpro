@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -41,7 +43,7 @@ class PersonGuest extends Person
 		return true;
 	}
 
-	/** @orm:PrePersist */
+	/** @ORM_Mapping\PrePersist */
 	public function noPersist()
 	{
 		throw new \BadMethodCallException('A PersonGuest cannot be persisted');

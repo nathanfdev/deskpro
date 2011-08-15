@@ -11,50 +11,52 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Ticket log items
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketLog")
- * @orm:Table(name="tickets_logs")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketLog")
+ * @ORM_Mapping\Table(name="tickets_logs")
  */
 class TicketLog extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @orm:ManyToOne(targetEntity="Ticket")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
+	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="action_type", type="string", length=40)
+	 * @ORM_Mapping\Column(name="action_type", type="string", length=40)
 	 */
 	protected $action_type;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="details", type="array")
+	 * @ORM_Mapping\Column(name="details", type="array")
 	 */
 	protected $details = array();
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

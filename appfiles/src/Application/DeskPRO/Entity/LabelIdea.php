@@ -11,12 +11,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Labels on tickets
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="labels_ideas")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="labels_ideas")
  */
 class LabelIdea extends LabelAssocAbstract
 {
@@ -24,9 +26,9 @@ class LabelIdea extends LabelAssocAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
-	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="Idea")
-	 * @orm:JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Idea")
+	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $idea;
 }

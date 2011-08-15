@@ -11,20 +11,22 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\Log\Logger;
 
 /**
  * A worker job is some task that needs to run regularly, or on a schedule.
  *
- * @orm:Entity
- * @orm:Table(name="worker_jobs")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="worker_jobs")
  */
 class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id
-	 * @orm:Column(name="id", type="string", type="string", length=50)
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="id", type="string", type="string", length=50)
 	 */
 	protected $id = null;
 
@@ -33,7 +35,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * fields groups them into named bundles.
 	 *
 	 * @var string
-	 * @orm:Column(name="worker_group", type="string", length=50, nullable=true)
+	 * @ORM_Mapping\Column(name="worker_group", type="string", length=50, nullable=true)
 	 */
 	protected $worker_group = null;
 
@@ -41,7 +43,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the job.
 	 *
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=100)
+	 * @ORM_Mapping\Column(name="title", type="string", length=100)
 	 */
 	protected $title = '';
 
@@ -49,7 +51,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * What it does
 	 *
 	 * @var string
-	 * @orm:Column(name="description", type="string", length=100)
+	 * @ORM_Mapping\Column(name="description", type="string", length=100)
 	 */
 	protected $description = '';
 
@@ -57,7 +59,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * The PHP classname of the job executor
 	 *
 	 * @var string
-	 * @orm:Column(name="job_class", type="string", length=100)
+	 * @ORM_Mapping\Column(name="job_class", type="string", length=100)
 	 */
 	protected $job_class;
 
@@ -65,14 +67,14 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * Options for the job
 	 *
 	 * @var array
-	 * @orm:Column(name="data", type="array", nullable=true)
+	 * @ORM_Mapping\Column(name="data", type="array", nullable=true)
 	 */
 	protected $options = array();
 
 	/**
 	 * The most ideal interval for this task to run.
 	 *
-	 * @orm:Column(name="run_interval", type="integer")
+	 * @ORM_Mapping\Column(name="run_interval", type="integer")
 	 */
 	protected $interval = 3600;
 
@@ -80,7 +82,7 @@ class WorkerJob extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time this job was run
 	 *
 	 * @var DateTime
-	 * @orm:Column(name="last_run_date",type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="last_run_date",type="datetime", nullable=true)
 	 */
 	protected $last_run_date = null;
 

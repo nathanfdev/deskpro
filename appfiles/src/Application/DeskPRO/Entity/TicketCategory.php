@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
@@ -18,41 +20,41 @@ use Application\DeskPRO\Translate\Translate;
 /**
  * Ticket categories
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketCategory")
- * @orm:Table(name="ticket_categories")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketCategory")
+ * @ORM_Mapping\Table(name="ticket_categories")
  */
 class TicketCategory extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var TicketCategory
-	 * @orm:ManyToOne(targetEntity="TicketCategory")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TicketCategory")
+	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TicketCategory", mappedBy="parent")
-	 * @orm:OrderBy({"title" = "ASC"})
+	 * @ORM_Mapping\OneToMany(targetEntity="TicketCategory", mappedBy="parent")
+	 * @ORM_Mapping\OrderBy({"title" = "ASC"})
 	 */
 	protected $children = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="display_order", type="integer")
+	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 

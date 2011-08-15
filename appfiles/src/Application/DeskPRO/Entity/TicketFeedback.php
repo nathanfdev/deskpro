@@ -11,56 +11,58 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Feedback left on tickets
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFeedback")
- * @orm:Table(name="ticket_feedback")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFeedback")
+ * @ORM_Mapping\Table(name="ticket_feedback")
  */
 class TicketFeedback extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @orm:ManyToOne(targetEntity="Ticket")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
+	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketMessage
-	 * @orm:ManyToOne(targetEntity="TicketMessage")
-	 * @orm:JoinColumn(name="message_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TicketMessage")
+	 * @ORM_Mapping\JoinColumn(name="message_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket_message = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="rating", type="integer")
+	 * @ORM_Mapping\Column(name="rating", type="integer")
 	 */
 	protected $rating;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="message", type="text")
+	 * @ORM_Mapping\Column(name="message", type="text")
 	 */
 	protected $message = '';
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

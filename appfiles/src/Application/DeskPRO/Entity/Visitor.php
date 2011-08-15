@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -27,9 +29,9 @@ use Orb\Util\Util;
  * It's sortof like a session except its not used for anything dangerous like granting
  * access to things.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Visitor")
- * @orm:Table(name="visitors", indexes={
- *     @orm:Index(name="date_last_idx", columns={"date_last"})
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Visitor")
+ * @ORM_Mapping\Table(name="visitors", indexes={
+ *     @ORM_Mapping\Index(name="date_last_idx", columns={"date_last"})
  * })
  */
 class Visitor extends \Application\DeskPRO\Domain\DomainObject
@@ -38,8 +40,8 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id;
 
@@ -47,14 +49,14 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The authcode to verify an id
 	 *
 	 * @var string
-	 * @orm:Column(name="auth", type="string", length=15)
+	 * @ORM_Mapping\Column(name="auth", type="string", length=15)
 	 */
 	protected $auth;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
@@ -62,7 +64,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The users IP address
 	 *
 	 * @var string
-	 * @orm:Column(name="ip_address", type="string", length=80)
+	 * @ORM_Mapping\Column(name="ip_address", type="string", length=80)
 	 */
 	protected $ip_address;
 
@@ -70,7 +72,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The users user agent string
 	 *
 	 * @var string
-	 * @orm:Column(name="user_agent", type="string", length=255)
+	 * @ORM_Mapping\Column(name="user_agent", type="string", length=255)
 	 */
 	protected $user_agent = '';
 
@@ -78,7 +80,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The page the user came from
 	 *
 	 * @var string
-	 * @orm:Column(name="ref_page", type="string", length=255)
+	 * @ORM_Mapping\Column(name="ref_page", type="string", length=255)
 	 */
 	protected $ref_page = '';
 
@@ -86,7 +88,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The page the user came from
 	 *
 	 * @var string
-	 * @orm:Column(name="landing_page", type="string", length=255)
+	 * @ORM_Mapping\Column(name="landing_page", type="string", length=255)
 	 */
 	protected $landing_page = '';
 
@@ -94,7 +96,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The last page the user was on
 	 *
 	 * @var string
-	 * @orm:Column(name="last_page", type="string", length=255)
+	 * @ORM_Mapping\Column(name="last_page", type="string", length=255)
 	 */
 	protected $last_page = '';
 
@@ -103,7 +105,7 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * save it in the visitor record for future reference
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=255)
+	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name = '';
 
@@ -111,19 +113,19 @@ class Visitor extends \Application\DeskPRO\Domain\DomainObject
 	 * The users email, like the name above
 	 *
 	 * @var string
-	 * @orm:Column(name="email", type="string", length=255)
+	 * @ORM_Mapping\Column(name="email", type="string", length=255)
 	 */
 	protected $email = '';
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_last",type="datetime")
+	 * @ORM_Mapping\Column(name="date_last",type="datetime")
 	 */
 	protected $date_last;
 

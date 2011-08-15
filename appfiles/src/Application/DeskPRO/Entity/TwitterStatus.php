@@ -12,148 +12,150 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
  * Twitter Status
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterStatus")
- * @orm:Table(name="twitter_statuses")
- * @orm:HasLifecycleCallbacks
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterStatus")
+ * @ORM_Mapping\Table(name="twitter_statuses")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @orm:Id
-	 * @orm:GeneratedValue(strategy="NONE")
-	 * @orm:Column(name="id", type="bigint")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\GeneratedValue(strategy="NONE")
+	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="statuses")
-	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterUser", inversedBy="statuses")
+	 * @ORM_Mapping\JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="text", type="string", length=4000)
+	 * @ORM_Mapping\Column(name="text", type="string", length=4000)
 	 */
 	protected $text;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @orm:ManyToOne(targetEntity="TwitterStatus", inversedBy="replies")
-	 * @orm:JoinColumn(name="in_reply_to_status_id", referencedColumnName="id", nullable=true)
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterStatus", inversedBy="replies")
+	 * @ORM_Mapping\JoinColumn(name="in_reply_to_status_id", referencedColumnName="id", nullable=true)
 	 */
 	protected $in_reply_to_status;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="in_reply_to_status")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatus", mappedBy="in_reply_to_status")
 	 */
 	protected $replies;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @orm:ManyToOne(targetEntity="TwitterStatus", inversedBy="retweets")
-	 * @orm:JoinColumn(name="retweet_id", referencedColumnName="id", nullable=true)
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterStatus", inversedBy="retweets")
+	 * @ORM_Mapping\JoinColumn(name="retweet_id", referencedColumnName="id", nullable=true)
 	 */
 	protected $retweet;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="retweet")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatus", mappedBy="retweet")
 	 */
 	protected $retweets;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="replies")
-	 * @orm:JoinColumn(name="in_reply_to_user_id", referencedColumnName="id", nullable=true)
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterUser", inversedBy="replies")
+	 * @ORM_Mapping\JoinColumn(name="in_reply_to_user_id", referencedColumnName="id", nullable=true)
 	 */
 	protected $in_reply_to_user;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="messages")
-	 * @orm:JoinColumn(name="recipient_id", referencedColumnName="id", nullable=true)
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterUser", inversedBy="messages")
+	 * @ORM_Mapping\JoinColumn(name="recipient_id", referencedColumnName="id", nullable=true)
 	 */
 	protected $recipient;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="is_truncated", type="boolean")
+	 * @ORM_Mapping\Column(name="is_truncated", type="boolean")
 	 */
 	protected $is_truncated = false;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="is_favorited", type="boolean")
+	 * @ORM_Mapping\Column(name="is_favorited", type="boolean")
 	 */
 	protected $is_favorited = false;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="is_archived", type="boolean")
+	 * @ORM_Mapping\Column(name="is_archived", type="boolean")
 	 */
 	protected $is_archived = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created", type="datetime")
+	 * @ORM_Mapping\Column(name="date_created", type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var double
-	 * @orm:Column(name="geo_latitude", type="decimal", nullable=true, precision=10, scale=5)
+	 * @ORM_Mapping\Column(name="geo_latitude", type="decimal", nullable=true, precision=10, scale=5)
 	 */
 	protected $geo_latitude;
 
 	/**
 	 * @var double
-	 * @orm:Column(name="geo_longitude", type="decimal", nullable=true, precision=10, scale=5)
+	 * @ORM_Mapping\Column(name="geo_longitude", type="decimal", nullable=true, precision=10, scale=5)
 	 */
 	protected $geo_longitude;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="source", type="string", length=4000, nullable=true)
+	 * @ORM_Mapping\Column(name="source", type="string", length=4000, nullable=true)
 	 */
 	protected $source;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatusLong
-	 * @orm:OneToOne(targetEntity="TwitterStatusLong", mappedBy="status")
+	 * @ORM_Mapping\OneToOne(targetEntity="TwitterStatusLong", mappedBy="status")
 	 */
 	protected $long;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatusMention", mappedBy="status")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusMention", mappedBy="status")
 	 */
 	protected $mentions;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatusTag", mappedBy="status")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusTag", mappedBy="status")
 	 */
 	protected $tags;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatusUrl", mappedBy="status")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusUrl", mappedBy="status")
 	 */
 	protected $urls;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatusNote", mappedBy="status")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusNote", mappedBy="status")
 	 */
 	protected $notes;
 
@@ -418,7 +420,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	static public function createFromXML($status)
 	{
-		// @TODO check against \SimpleXMLElement & \Zend_Rest_Client_Result
+		// @!TODO check against \SimpleXMLElement & \Zend_Rest_Client_Result
 
 		$entity                 = new self();
 		$entity['id']           = (string) $status->id;
@@ -429,7 +431,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		$entity['date_created'] = new \DateTime((string) $status->created_at);
 		$entity['source']       = (string) $status->source;
 
-		// @TODO add geo informations
+		// @!TODO add geo informations
 		// $entity['geo_latitude'] = (float) $status['geo'][];
 		// $entity['geo_longitude'] = (float) $status['geo'][];
 
@@ -451,7 +453,7 @@ class TwitterStatus extends \Application\DeskPRO\Domain\DomainObject
 		$entity['date_created'] = new \DateTime($status['created_at']);
 		$entity['source']       = $status['source'];
 
-		// @TODO add geo informations
+		// @!TODO add geo informations
 		// $entity['geo_latitude'] = $json['geo'][];
 		// $entity['geo_longitude'] = $json['geo'][];
 

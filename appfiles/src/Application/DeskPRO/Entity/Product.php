@@ -11,23 +11,25 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Products
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Product")
- * @orm:Table(name="products")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Product")
+ * @ORM_Mapping\Table(name="products")
  */
 class Product extends CategoryAbstract
 {
 	/**
 	 * @gedmo:TreeParent
-	 * @orm:ManyToOne(targetEntity="Product", inversedBy="children")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Product", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
-	 * @orm:OneToMany(targetEntity="Product", mappedBy="parent")
-	 * @orm:OrderBy({"lft" = "ASC"})
+	 * @ORM_Mapping\OneToMany(targetEntity="Product", mappedBy="parent")
+	 * @ORM_Mapping\OrderBy({"lft" = "ASC"})
 	 */
 	protected $children;
 }

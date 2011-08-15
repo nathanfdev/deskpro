@@ -10,6 +10,8 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -18,11 +20,11 @@ use Orb\Util\Arrays;
  * roughly tied to identity (ie local login uses email as identity), and are integral
  * in many cases (notifications etc).
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="people_emails",
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="people_emails",
  *     indexes={
- *         @orm:Index(name="email_domain_idx", columns={"email_domain"})
+ *         @ORM_Mapping\Index(name="email_domain_idx", columns={"email_domain"})
  * })
  */
 class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
@@ -31,15 +33,15 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -47,7 +49,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * The email address
 	 *
 	 * @var string
-	 * @orm:Column(name="email", type="string", length=255)
+	 * @ORM_Mapping\Column(name="email", type="string", length=255)
 	 */
 	protected $email;
 
@@ -55,13 +57,13 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * The email address domain
 	 *
 	 * @var string
-	 * @orm:Column(name="email_domain", type="string", length=255)
+	 * @ORM_Mapping\Column(name="email_domain", type="string", length=255)
 	 */
 	protected $email_domain;
 
 	/**
 	 * @var bool
-	 * @orm:Column(name="is_validated", type="boolean")
+	 * @ORM_Mapping\Column(name="is_validated", type="boolean")
 	 */
 	protected $is_validated = false;
 
@@ -69,19 +71,19 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 * A comment or description of the email address. For example, "work" or "home."
 	 *
 	 * @var string
-	 * @orm:Column(name="comment", type="text", length=100)
+	 * @ORM_Mapping\Column(name="comment", type="text", length=100)
 	 */
 	protected $comment = '';
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_validated",type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="date_validated",type="datetime", nullable=true)
 	 */
 	protected $date_validated = null;
 

@@ -12,9 +12,11 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
- * @orm:Entity
- * @orm:Table(name="api_auth_codes")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="api_auth_codes")
  */
 class ApiAuthCode extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -22,45 +24,45 @@ class ApiAuthCode extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="code", type="string", length=50)
+	 * @ORM_Mapping\Column(name="code", type="string", length=50)
 	 */
 	protected $code;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="scope", type="string", length=250, nullable=true)
+	 * @ORM_Mapping\Column(name="scope", type="string", length=250, nullable=true)
 	 */
 	protected $scope = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="redirect_url", type="string", length=250, nullable=true)
+	 * @ORM_Mapping\Column(name="redirect_url", type="string", length=250, nullable=true)
 	 */
 	protected $redirect_url = null;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_expires",type="datetime")
+	 * @ORM_Mapping\Column(name="date_expires",type="datetime")
 	 */
 	protected $date_expires;
 

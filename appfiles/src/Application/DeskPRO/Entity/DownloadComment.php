@@ -10,20 +10,22 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * Comments on articles
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadComment")
- * @orm:Table(name="download_comments")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadComment")
+ * @ORM_Mapping\Table(name="download_comments")
  */
 class DownloadComment extends CommentAbstract
 {
 	/**
-	 * @orm:ManyToOne(targetEntity="Download", inversedBy="comment")
-	 * @orm:JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Download", inversedBy="comment")
+	 * @ORM_Mapping\JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download;
 

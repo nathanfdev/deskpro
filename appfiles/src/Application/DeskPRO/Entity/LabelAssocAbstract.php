@@ -11,13 +11,15 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 
 /**
  * Base labels associations class
  *
- * @orm:HasLifecycleCallbacks
- * @orm:MappedSuperclass
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\MappedSuperclass
  */
 class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -29,8 +31,8 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="label", type="string", length=255)
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="label", type="string", length=255)
 	 */
 	protected $label;
 
@@ -40,7 +42,7 @@ class LabelAssocAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * After a new association is made, we need to make sure the def table has this
 	 * record.
 	 * 
-	 * @orm:PostPersist
+	 * @ORM_Mapping\PostPersist
 	 */
 	public function syncWithDef()
 	{

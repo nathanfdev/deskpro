@@ -12,83 +12,85 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
  * Twitter User
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterUser")
- * @orm:Table(name="twitter_users")
- * @orm:HasLifecycleCallbacks
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterUser")
+ * @ORM_Mapping\Table(name="twitter_users")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @orm:Id
-	 * @orm:GeneratedValue(strategy="NONE")
-	 * @orm:Column(name="id", type="bigint")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\GeneratedValue(strategy="NONE")
+	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=40)
+	 * @ORM_Mapping\Column(name="name", type="string", length=40)
 	 */
 	protected $name;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="screen_name", type="string", length=20)
+	 * @ORM_Mapping\Column(name="screen_name", type="string", length=20)
 	 */
 	protected $screen_name;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="profile_image_url", type="string", length=200)
+	 * @ORM_Mapping\Column(name="profile_image_url", type="string", length=200)
 	 */
 	protected $profile_image_url;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="language", type="string", length=3)
+	 * @ORM_Mapping\Column(name="language", type="string", length=3)
 	 */
 	protected $language;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="is_protected", type="boolean")
+	 * @ORM_Mapping\Column(name="is_protected", type="boolean")
 	 */
 	protected $is_protected = false;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="is_verified", type="boolean")
+	 * @ORM_Mapping\Column(name="is_verified", type="boolean")
 	 */
 	protected $is_verified = false;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="location", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Column(name="location", type="string", length=255, nullable=true)
 	 */
 	protected $location;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="is_geo_enabled", type="boolean")
+	 * @ORM_Mapping\Column(name="is_geo_enabled", type="boolean")
 	 */
 	protected $is_geo_enabled = false;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="user")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatus", mappedBy="user")
 	 */
 	protected $statuses;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="in_reply_to_user")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatus", mappedBy="in_reply_to_user")
 	 */
 	protected $replies;
 
@@ -96,31 +98,31 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatusMention", mappedBy="user")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatusMention", mappedBy="user")
 	 */
 	protected $mentions;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterStatus", mappedBy="recipient")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterStatus", mappedBy="recipient")
 	 */
 	protected $messages;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterAccountFriend", mappedBy="user")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterAccountFriend", mappedBy="user")
 	 */
 	protected $friends;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="TwitterAccountFollower", mappedBy="user")
+	 * @ORM_Mapping\OneToMany(targetEntity="TwitterAccountFollower", mappedBy="user")
 	 */
 	protected $followers;
 
 	/**
 	 * @var Application\DeskPRO\EntityRepository\TwitterAccount
-	 * @orm:OneToOne(targetEntity="TwitterAccount", mappedBy="user")
+	 * @ORM_Mapping\OneToOne(targetEntity="TwitterAccount", mappedBy="user")
 	 */
 	protected $account;
 
@@ -168,7 +170,7 @@ class TwitterUser extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	static public function createFromXML($user)
 	{
-		// @TODO check against \SimpleXMLElement & \Zend_Rest_Client_Result
+		// @!TODO check against \SimpleXMLElement & \Zend_Rest_Client_Result
 
 		$entity                      = new self();
 		$entity['id']                = (integer) $user->id;

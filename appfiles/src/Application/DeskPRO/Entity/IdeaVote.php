@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
@@ -20,59 +22,59 @@ use Orb\Util\Numbers;
 /**
  * Votes on ideas
  *
- * @orm:Entity
- * @orm:Table(name="idea_votes")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="idea_votes")
  */
 class IdeaVote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
-	 * @orm:ManyToOne(targetEntity="Idea", fetch="EAGER")
-	 * @orm:JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Idea", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $idea = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Visitor
-	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
-	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Visitor", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $visitor = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="ip_address", type="string", length=30)
+	 * @ORM_Mapping\Column(name="ip_address", type="string", length=30)
 	 */
 	protected $ip_address;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="email", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Column(name="email", type="string", length=255, nullable=true)
 	 */
 	protected $email = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Column(name="name", type="string", length=255, nullable=true)
 	 */
 	protected $name = null;
 	
 	/**
 	 * @var int
-	 * @orm:Column(name="num_votes", type="integer")
+	 * @ORM_Mapping\Column(name="num_votes", type="integer")
 	 */
 	protected $num_votes = 0;
 
@@ -80,13 +82,13 @@ class IdeaVote extends \Application\DeskPRO\Domain\DomainObject
 	 * If these votes have been returned to the person
 	 * 
 	 * @var string
-	 * @orm:Column(name="is_returned", type="boolean")
+	 * @ORM_Mapping\Column(name="is_returned", type="boolean")
 	 */
 	protected $is_returned = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

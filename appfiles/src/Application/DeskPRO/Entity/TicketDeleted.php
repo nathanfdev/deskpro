@@ -11,47 +11,49 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 
 /**
  * A log of deleted tickets
  *
- * @orm:Entity
- * @orm:Table(name="tickets_deleted")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="tickets_deleted")
  */
 class TicketDeleted extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id
-	 * @orm:Column(name="ticket_id", type="integer")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id;
 
 	/**
 	 * @var int
-	 * @orm:Id
-	 * @orm:Column(name="new_ticket_id", type="integer")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="new_ticket_id", type="integer")
 	 */
 	protected $new_ticket_id = 0;
 
 	/**
 	 * @var int
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="by_person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="by_person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $by_person;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="reason", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="reason", type="string", length=1000)
 	 */
 	protected $reason;
 

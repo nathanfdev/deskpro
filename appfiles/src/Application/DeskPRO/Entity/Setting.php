@@ -10,15 +10,17 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * Settings used by the system.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Setting")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="settings")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Setting")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="settings")
  */
 class Setting extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -26,9 +28,9 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -37,7 +39,7 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the setting
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=255)
+	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
 
@@ -47,8 +49,8 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * before the first dot in the name. deskpro.url, the group is 'deskpro'
 	 *
 	 * @var string
-	 * @orm:Index
-	 * @orm:Column(name="groupname", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Index
+	 * @ORM_Mapping\Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;
 
@@ -57,7 +59,7 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * The value of a setting
 	 *
 	 * @var string
-	 * @orm:Column(name="value", type="text", nullable=true)
+	 * @ORM_Mapping\Column(name="value", type="text", nullable=true)
 	 */
 	protected $value;
 
@@ -66,21 +68,21 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	 * The default value set by DeskPRO.
 	 *
 	 * @var string
-	 * @orm:Column(name="default_value", type="text")
+	 * @ORM_Mapping\Column(name="default_value", type="text")
 	 */
 	protected $default_value = '';
 
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="created_at",type="datetime")
+	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="updated_at",type="datetime")
+	 * @ORM_Mapping\Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 
@@ -102,8 +104,8 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @orm:PrePersist
-	 * @orm:PreUpdate
+	 * @ORM_Mapping\PrePersist
+	 * @ORM_Mapping\PreUpdate
 	 */
 	public function _resetValueIfDefault()
 	{
@@ -113,8 +115,8 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @orm:PrePersist
-	 * @orm:PreUpdate
+	 * @ORM_Mapping\PrePersist
+	 * @ORM_Mapping\PreUpdate
 	 */
 	public function _resetGroupFromName()
 	{
@@ -126,13 +128,13 @@ class Setting extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	/** @orm:PrePersist */
+	/** @ORM_Mapping\PrePersist */
 	public function _incCreatedAt()
 	{
 		$this->created_at = $this->updated_at = new \DateTime();
 	}
 
-	/** @orm:PreUpdate */
+	/** @ORM_Mapping\PreUpdate */
 	public function _incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

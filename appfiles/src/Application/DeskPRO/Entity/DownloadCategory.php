@@ -11,25 +11,27 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 /**
  * Idea categories
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadCategory")
- * @orm:Table(name="download_categories")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadCategory")
+ * @ORM_Mapping\Table(name="download_categories")
  */
 class DownloadCategory extends CategoryAbstract
 {
 	/**
 	 * @gedmo:TreeParent
-	 * @orm:ManyToOne(targetEntity="DownloadCategory", inversedBy="children")
+	 * @ORM_Mapping\ManyToOne(targetEntity="DownloadCategory", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
-	 * @orm:OneToMany(targetEntity="DownloadCategory", mappedBy="parent")
-	 * @orm:OrderBy({"lft" = "ASC"})
+	 * @ORM_Mapping\OneToMany(targetEntity="DownloadCategory", mappedBy="parent")
+	 * @ORM_Mapping\OrderBy({"lft" = "ASC"})
 	 */
 	protected $children;
 }

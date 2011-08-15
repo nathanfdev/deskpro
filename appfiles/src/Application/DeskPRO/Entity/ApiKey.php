@@ -12,6 +12,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Symfony\Component\Validator\Constraints;
 use \Symfony\Component\Validator\Mapping\ClassMetadata;
 
@@ -24,8 +26,8 @@ use Orb\Util\Arrays;
  * for things like system services. User services (things users want to do)
  * will want to use OAuth.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ApiKey")
- * @orm:Table(name="api_keys")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ApiKey")
+ * @ORM_Mapping\Table(name="api_keys")
  */
 class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -33,21 +35,21 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="code", type="string", length=25)
+	 * @ORM_Mapping\Column(name="code", type="string", length=25)
 	 */
 	protected $code;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -55,7 +57,7 @@ class ApiKey extends \Application\DeskPRO\Domain\DomainObject
 	 * A note or description about the key (ie what its used for).
 	 *
 	 * @var string
-	 * @orm:Column(name="note", type="text")
+	 * @ORM_Mapping\Column(name="note", type="text")
 	 */
 	protected $note = '';
 

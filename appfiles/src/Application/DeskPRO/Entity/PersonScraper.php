@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * A person scraper fetches information about a Person from a remote resource.
  * For example, to keep information up-to-date using a pre-existing contact management product.
@@ -18,8 +20,8 @@ namespace Application\DeskPRO\Entity;
  * Some PersonScrapers might be attached to usersources. Usersources only responsibility is to offer
  * authentication, so PersonScrapers take care of bringing over other data about an identity.
  *
- * @orm:Entity
- * @orm:Table(name="person_scraper")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="person_scraper")
  */
 class PersonScraper extends Scraper
 {
@@ -27,8 +29,8 @@ class PersonScraper extends Scraper
 	 * The usersource that this scraper is attached to
 	 *
 	 * @var Usersource
-	 * @orm:OneToOne(targetEntity="Usersource")
-	 * @orm:JoinColumn(name="usersource_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="Usersource")
+	 * @ORM_Mapping\JoinColumn(name="usersource_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usersource;
 
@@ -37,7 +39,7 @@ class PersonScraper extends Scraper
 	 * means disabled.
 	 *
 	 * @var int
-	 * @orm:Column(name="poll_interval", type="integer", nullable=true)
+	 * @ORM_Mapping\Column(name="poll_interval", type="integer", nullable=true)
 	 */
 	protected $poll_interval = null;
 
@@ -48,7 +50,7 @@ class PersonScraper extends Scraper
 	 * This is the time between auto discovery checks. Null means disabled.
 	 *
 	 * @var int
-	 * @orm:Column(name="poll_discovery_interval", type="integer", nullable=true)
+	 * @ORM_Mapping\Column(name="poll_discovery_interval", type="integer", nullable=true)
 	 */
 	protected $poll_discovery_interval = null;
 

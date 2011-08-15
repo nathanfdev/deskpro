@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 /**
@@ -21,17 +23,17 @@ use \Application\DeskPRO\App;
  * The client continuously verifies the list of subscriptions and they expire after a
  * time (for example, if the client disconnects without letting us know).
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ClientChannelSubscription")
- * @orm:Table(name="client_channel_subscriptions", indexes={
- *     @orm:Index(name="date_ping", columns={"date_ping"}),
- *     @orm:Index(name="channel", columns={"channel"})
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ClientChannelSubscription")
+ * @ORM_Mapping\Table(name="client_channel_subscriptions", indexes={
+ *     @ORM_Mapping\Index(name="date_ping", columns={"date_ping"}),
+ *     @ORM_Mapping\Index(name="channel", columns={"channel"})
  * })
  */
 class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -39,8 +41,8 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * The session the subscription is for.
 	 *
 	 * @var Application\DeskPRO\Entity\Session
-	 * @orm:ManyToOne(targetEntity="Session")
-	 * @orm:JoinColumn(name="session_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Session")
+	 * @ORM_Mapping\JoinColumn(name="session_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $session;
 
@@ -48,7 +50,7 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * The channel the message is placed in.
 	 *
 	 * @var string
-	 * @orm:Column(name="channel", type="string", length=255)
+	 * @ORM_Mapping\Column(name="channel", type="string", length=255)
 	 */
 	protected $channel;
 
@@ -58,13 +60,13 @@ class ClientChannelSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * (Ex in the ajax script we can just check the currently logged in user).
 	 *
 	 * @var string
-	 * @orm:Column(name="private_channel_id", type="string", length="150", nullable=true)
+	 * @ORM_Mapping\Column(name="private_channel_id", type="string", length="150", nullable=true)
 	 */
 	protected $private_channel_id = null;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_ping",type="datetime")
+	 * @ORM_Mapping\Column(name="date_ping",type="datetime")
 	 */
 	protected $date_ping;
 

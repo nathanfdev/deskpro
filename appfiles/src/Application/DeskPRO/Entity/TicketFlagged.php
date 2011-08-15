@@ -11,29 +11,31 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Flagged tickets
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFlagged")
- * @orm:Table(name="tickets_flagged")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFlagged")
+ * @ORM_Mapping\Table(name="tickets_flagged")
  */
 class TicketFlagged extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="ticket_id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\Column(name="ticket_id", type="integer")
 	 */
 	protected $ticket_id = null;
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:Column(name="person_id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\Column(name="person_id", type="integer")
 	 */
 	protected $person_id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="color", type="string", length=20)
+	 * @ORM_Mapping\Column(name="color", type="string", length=20)
 	 */
 	protected $color = 'blue';
 }

@@ -11,32 +11,34 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Raw email sources
  *
- * @orm:Entity
- * @orm:Table(name="sendmail_queue_part")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="sendmail_queue_part")
  */
 class SendmailQueuePart extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\SendmailQueue
-	 * @orm:ManyToOne(targetEntity="SendmailQueue")
-	 * @orm:JoinColumn(name="sendmail_queue_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="SendmailQueue")
+	 * @ORM_Mapping\JoinColumn(name="sendmail_queue_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $queue = null;
 
 	/**
-	 * @TODO This needs to be a binary type
+	 * @!TODO This needs to be a binary type
 	 *
 	 * @var string
-	 * @orm:Column(name="data", type="text")
+	 * @ORM_Mapping\Column(name="data", type="text")
 	 */
 	protected $data;
 }

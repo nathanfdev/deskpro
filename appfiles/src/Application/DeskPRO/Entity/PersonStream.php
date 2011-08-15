@@ -11,53 +11,55 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Ticket log items
  *
- * @orm:Entity
- * @orm:Table(name="person_stream")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="person_stream")
  */
 class PersonStream extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:OneToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="action_type", type="string", length=40)
+	 * @ORM_Mapping\Column(name="action_type", type="string", length=40)
 	 */
 	protected $action_type;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="summary", type="string", length=255)
+	 * @ORM_Mapping\Column(name="summary", type="string", length=255)
 	 */
 	protected $summary;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="details", type="array")
+	 * @ORM_Mapping\Column(name="details", type="array")
 	 */
 	protected $details = array();
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
-	/** @orm:PrePersist */
+	/** @ORM_Mapping\PrePersist */
 	public function _prePersist()
 	{
 		if (!$this->date_created) {

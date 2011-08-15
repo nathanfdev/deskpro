@@ -11,29 +11,31 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 
 /**
  * Raw email sources
  *
- * @orm:Entity
- * @orm:Table(name="email_sources",
- *     indexes={@orm:Index(name="object_idx", columns={"object_type", "object_id"})}
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="email_sources",
+ *     indexes={@ORM_Mapping\Index(name="object_idx", columns={"object_type", "object_id"})}
  * )
  */
 class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailGateway
-	 * @orm:ManyToOne(targetEntity="EmailGateway")
-	 * @orm:JoinColumn(name="gateway_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="EmailGateway")
+	 * @ORM_Mapping\JoinColumn(name="gateway_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $gateway = null;
 
@@ -45,7 +47,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * the status is 'processed').
 	 *
 	 * @var string
-	 * @orm:Column(name="object_type", type="string", length=50)
+	 * @ORM_Mapping\Column(name="object_type", type="string", length=50)
 	 */
 	protected $object_type = '';
 
@@ -53,7 +55,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * The ID of the object this is attached to.
 	 *
 	 * @var int
-	 * @orm:Column(name="object_id", type="integer")
+	 * @ORM_Mapping\Column(name="object_id", type="integer")
 	 */
 	protected $object_id = '';
 
@@ -61,7 +63,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * Just the headers portion of the email
 	 *
 	 * @var string
-	 * @orm:Column(name="headers", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="headers", type="string", length=1000)
 	 */
 	protected $headers;
 
@@ -71,7 +73,7 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * - complete: Fully processed
 	 *
 	 * @var string
-	 * @orm:Column(name="status", type="string", length=15)
+	 * @ORM_Mapping\Column(name="status", type="string", length=15)
 	 */
 	protected $status = 'inserted';
 
@@ -79,13 +81,13 @@ class EmailSource extends \Application\DeskPRO\Domain\DomainObject
 	 * The path to the raw email if it was saved to the filesystem
 	 *
 	 * @var string
-	 * @orm:Column(name="save_path", type="string", length=255)
+	 * @ORM_Mapping\Column(name="save_path", type="string", length=255)
 	 */
 	protected $save_path = '';
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

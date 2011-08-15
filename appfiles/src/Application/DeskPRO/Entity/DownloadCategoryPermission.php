@@ -10,6 +10,8 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Web;
@@ -17,24 +19,24 @@ use Orb\Util\Web;
 /**
  * Download category permissions
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadCategoryPermission")
- * @orm:Table(name="download_category_permissions")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\DownloadCategoryPermission")
+ * @ORM_Mapping\Table(name="download_category_permissions")
  */
 class DownloadCategoryPermission extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Usergroup
-	 * @orm:ManyToOne(targetEntity="Usergroup", fetch="EAGER")
-	 * @orm:JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
-	 * @orm:Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Usergroup", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
 	 */
 	protected $usergroup = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\DownloadCategory
-	 * @orm:ManyToOne(targetEntity="DownloadCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")
-	 * @orm:Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="DownloadCategory", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
 	 */
 	protected $category = null;
 }

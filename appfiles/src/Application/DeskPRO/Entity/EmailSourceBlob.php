@@ -11,33 +11,35 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Raw email data
  *
- * @orm:Entity
- * @orm:Table(name="email_sources_blobs")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="email_sources_blobs")
  */
 class EmailSourceBlob extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailSource
-	 * @orm:ManyToOne(targetEntity="EmailSource")
-	 * @orm:JoinColumn(name="source_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="EmailSource")
+	 * @ORM_Mapping\JoinColumn(name="source_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $source = null;
 
 	/**
-	 * @TODO This needs to be a binary type
+	 * @!TODO This needs to be a binary type
 	 *
 	 * @var string
-	 * @orm:Column(name="data", type="text")
+	 * @ORM_Mapping\Column(name="data", type="text")
 	 */
 	protected $data;
 }

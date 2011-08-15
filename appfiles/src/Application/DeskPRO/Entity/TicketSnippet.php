@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
@@ -19,14 +21,14 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
 /**
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketSnippet")
- * @orm:Table(name="ticket_snippets")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketSnippet")
+ * @ORM_Mapping\Table(name="ticket_snippets")
  */
 class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -34,27 +36,27 @@ class TicketSnippet extends \Application\DeskPRO\Domain\DomainObject
 	 * Who created the snippet
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketCategory
-	 * @orm:ManyToOne(targetEntity="TicketSnippetCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TicketSnippetCategory", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $category;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="snippet", type="text")
+	 * @ORM_Mapping\Column(name="snippet", type="text")
 	 */
 	protected $snippet;
 	

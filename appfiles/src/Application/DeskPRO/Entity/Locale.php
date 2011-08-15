@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use \Symfony\Component\Validator\Constraints;
@@ -23,9 +25,9 @@ use Orb\Util\Arrays;
  * Locale. A locale defines various formats (number formatting, times, dates etc),
  * as well as which language is used.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Locale")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="locales")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Locale")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="locales")
  */
 class Locale extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -33,15 +35,15 @@ class Locale extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var Language
-	 * @orm:ManyToOne(targetEntity="Language")
-	 * @orm:JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Language")
+	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $language = null;
 
@@ -49,7 +51,7 @@ class Locale extends \Application\DeskPRO\Domain\DomainObject
 	 * The locale code
 	 *
 	 * @var string
-	 * @orm:Column(name="locale", type="string", length=20)
+	 * @ORM_Mapping\Column(name="locale", type="string", length=20)
 	 */
 	protected $locale = 'en_US';
 
@@ -57,7 +59,7 @@ class Locale extends \Application\DeskPRO\Domain\DomainObject
 	 * Title of the locale
 	 *
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 

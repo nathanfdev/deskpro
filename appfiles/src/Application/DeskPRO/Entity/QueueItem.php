@@ -10,6 +10,8 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
@@ -23,9 +25,9 @@ use Orb\Util\Arrays;
  * in the task. So instead, we simply store the QueueItem ID and the task
  * worker can fetch the data when it processes the task.
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="queue_items")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="queue_items")
  */
 class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -33,8 +35,8 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -44,8 +46,8 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * In beanstalkd terminology: tube
 	 *
 	 * @var string
-	 * @orm:Index
-	 * @orm:Column(name="groupname", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Index
+	 * @ORM_Mapping\Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;
 
@@ -53,7 +55,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The priority of this job
 	 * 
 	 * @var int
-	 * @orm:Column(name="priority", type="integer")
+	 * @ORM_Mapping\Column(name="priority", type="integer")
 	 */
 	protected $priority = 0;
 
@@ -61,7 +63,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Don't process this item until this date.
 	 * 
 	 * @var \DateTime
-	 * @orm:Column(name="delay_until",type="datetime")
+	 * @ORM_Mapping\Column(name="delay_until",type="datetime")
 	 */
 	protected $delay_until = null;
 
@@ -73,7 +75,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The minimum value is 1.
 	 *
 	 * @var int
-	 * @orm:Column(name="ttr", type="integer")
+	 * @ORM_Mapping\Column(name="ttr", type="integer")
 	 */
 	protected $ttr = 60;
 
@@ -81,7 +83,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * When this is true, the job is ready to be reserved.
 	 * 
 	 * @var bool
-	 * @orm:Column(name="is_ready", type="boolean")
+	 * @ORM_Mapping\Column(name="is_ready", type="boolean")
 	 */
 	protected $is_ready = true;
 
@@ -90,7 +92,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * alongside other queue systems that are using this as a store for data.
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_dataonly", type="boolean")
+	 * @ORM_Mapping\Column(name="is_dataonly", type="boolean")
 	 */
 	protected $is_dataonly = false;
 
@@ -101,7 +103,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * In beanstalkd terminology: buried
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_ignored", type="boolean")
+	 * @ORM_Mapping\Column(name="is_ignored", type="boolean")
 	 */
 	protected $is_ignored = false;
 
@@ -111,7 +113,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * should use this job.
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="reserved_at",type="datetime")
+	 * @ORM_Mapping\Column(name="reserved_at",type="datetime")
 	 */
 	protected $reserved_at = null;
 
@@ -120,7 +122,7 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * That is, $reserved_at+$ttr
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="timeout_at",type="datetime")
+	 * @ORM_Mapping\Column(name="timeout_at",type="datetime")
 	 */
 	protected $timeout_at = null;
 
@@ -128,15 +130,15 @@ class QueueItem extends \Application\DeskPRO\Domain\DomainObject
 	 * When this job was created.
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="created_at",type="datetime")
+	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at = null;
 
 	/**
 	 * Any data pertaining to the job
-	 * TODO: Change to BLOB type when Doctrine2 has that type. Or we will have to create it ourselves.
+	 * !TODO: Change to BLOB type when Doctrine2 has that type. Or we will have to create it ourselves.
 	 * @var string
-	 * @orm:Column(name="data", type="text", nullable=true)
+	 * @ORM_Mapping\Column(name="data", type="text", nullable=true)
 	 */
 	protected $data = '';
 }

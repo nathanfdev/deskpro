@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -21,8 +23,8 @@ use Orb\Util\Util;
  * A cache of various permissions for a given set of usergroups. For example,
  * a computed array of category ID's 1,3,5 has access to.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\PermissionCache")
- * @orm:Table(name="permissions_cache")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PermissionCache")
+ * @ORM_Mapping\Table(name="permissions_cache")
  */
 class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -30,8 +32,8 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * The type of permissions cache
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=255)
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="name", type="string", length=255)
+	 * @ORM_Mapping\Id
 	 */
 	protected $name;
 
@@ -40,8 +42,8 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * with a command in asending order.
 	 *
 	 * @var string
-	 * @orm:Column(name="usergroup_key", type="string", length=32)
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="usergroup_key", type="string", length=32)
+	 * @ORM_Mapping\Id
 	 */
 	protected $usergroup_key;
 
@@ -49,7 +51,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * A comma-separated list of usergroup_ids this cache applies to
 	 *
 	 * @var string
-	 * @orm:Column(name="usergroup_ids", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="usergroup_ids", type="string", length=1000)
 	 */
 	protected $usergroup_ids = '';
 
@@ -57,7 +59,7 @@ class PermissionCache extends \Application\DeskPRO\Domain\DomainObject
 	 * Permission data
 	 *
 	 * @var bool
-	 * @orm:Column(name="perms", type="object")
+	 * @ORM_Mapping\Column(name="perms", type="object")
 	 */
 	protected $perms = array();
 

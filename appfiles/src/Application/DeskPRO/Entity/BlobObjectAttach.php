@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
 use \Orb\Util\Numbers;
@@ -19,28 +21,28 @@ use \Orb\Util\Numbers;
  * This is a simplified lookup table to see which blobs are attached to which objects.
  * This is to aid the media browser.
  *
- * @orm:Entity
- * @orm:Table(name="blob_object_attach")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="blob_object_attach")
  */
 class BlobObjectAttach extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var bool
-	 * @orm:Column(name="object_type", type="string", length="100")
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="object_type", type="string", length="100")
+	 * @ORM_Mapping\Id
 	 */
 	protected $object_type;
 
 	/**
 	 * @var bool
-	 * @orm:Column(name="object_id", type="integer")
+	 * @ORM_Mapping\Column(name="object_id", type="integer")
 	 */
 	protected $object_id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @orm:ManyToOne(targetEntity="Blob", fetch="EAGER")
-	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Blob", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob;
 

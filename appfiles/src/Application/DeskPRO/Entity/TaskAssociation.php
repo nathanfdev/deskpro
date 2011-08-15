@@ -11,18 +11,20 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Base class for Task Associations.
  *
- * @orm:Entity
- * @orm:InheritanceType("SINGLE_TABLE")
- * @orm:DiscriminatorColumn(name="discr", type="string")
- * @orm:DiscriminatorMap({
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\InheritanceType("SINGLE_TABLE")
+ * @ORM_Mapping\DiscriminatorColumn(name="discr", type="string")
+ * @ORM_Mapping\DiscriminatorMap({
  * 	"person" = "TaskAssociatedPerson",
  * 	"ticket" = "TaskAssociatedTicket",
  *  "organization" = "TaskAssociatedOrganization"
  * })
- * @orm:Table(name="task_associations")
+ * @ORM_Mapping\Table(name="task_associations")
  */
 abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -31,17 +33,17 @@ abstract class TaskAssociation extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
-	 * @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer", nullable=false)
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer", nullable=false)
+	 * 
 	 */
 	protected $id;
 	
 	/**
 	 * @var Application\DeskPRO\Entity\Task
-	 * @orm:ManyToOne(targetEntity="Task", inversedBy="task_associations")
-	 * @orm:JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Task", inversedBy="task_associations")
+	 * @ORM_Mapping\JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $task;
 	

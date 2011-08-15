@@ -11,18 +11,20 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Contact data for an organization
  *
- * @orm:Entity
- * @orm:Table(name="organizations_contact_data")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="organizations_contact_data")
  */
 class OrganizationContactData extends ContactDataAbstract
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @orm:ManyToOne(targetEntity="Organization")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Organization")
+	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
 }

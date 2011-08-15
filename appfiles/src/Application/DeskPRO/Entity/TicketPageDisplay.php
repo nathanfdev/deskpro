@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -22,8 +24,8 @@ use \Application\DeskPRO\Entity;
  * Description for a section within the ticket page.
  *
  * @see \Application\DeskPRO\PageDisplay\Zone\BasicZone
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketPageDisplay")
- * @orm:Table(name="ticket_page_display")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketPageDisplay")
+ * @ORM_Mapping\Table(name="ticket_page_display")
  */
 class TicketPageDisplay extends PageDisplayAbstract
 {
@@ -41,14 +43,14 @@ class TicketPageDisplay extends PageDisplayAbstract
 	 * - user
 	 *
 	 * @var string
-	 * @orm:Column(name="zone", type="string", length=50)
+	 * @ORM_Mapping\Column(name="zone", type="string", length=50)
 	 */
 	protected $zone;
 	
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
-	 * @orm:ManyToOne(targetEntity="Department")
-	 * @orm:JoinColumn(name="department_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Department")
+	 * @ORM_Mapping\JoinColumn(name="department_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $department = null;
 
@@ -59,7 +61,7 @@ class TicketPageDisplay extends PageDisplayAbstract
 	 * Generally these are saved in the 'default' section.
 	 *
 	 * @var array
-	 * @orm:Column(name="options", type="array")
+	 * @ORM_Mapping\Column(name="options", type="array")
 	 */
 	protected $options = array();
 

@@ -10,6 +10,8 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Web;
@@ -17,7 +19,7 @@ use Orb\Util\Web;
 /**
  * Settings used by the system.
  *
- * @orm:Entity
+ * @ORM_Mapping\Entity
  */
 class UsergroupPropertyPermission extends \Application\DeskPRO\Entity\UsergroupProperty
 {

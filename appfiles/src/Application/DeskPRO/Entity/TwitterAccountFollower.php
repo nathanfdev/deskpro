@@ -12,39 +12,41 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
  * Twitter Account followed by a User
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterAccountFollower")
- * @orm:Table(name="twitter_accounts_followers", uniqueConstraints={
- *     @orm:UniqueConstraint(name="account_user_idx", columns={"account_id", "user_id"})
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TwitterAccountFollower")
+ * @ORM_Mapping\Table(name="twitter_accounts_followers", uniqueConstraints={
+ *     @ORM_Mapping\UniqueConstraint(name="account_user_idx", columns={"account_id", "user_id"})
  * }))
- * @orm:HasLifecycleCallbacks
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterAccountFollower extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @orm:Id
-	 * @orm:GeneratedValue(strategy="AUTO")
-	 * @orm:Column(name="id", type="bigint")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
+	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 * @orm:ManyToOne(targetEntity="TwitterAccount", inversedBy="followers")
-	 * @orm:JoinColumn(name="account_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterAccount", inversedBy="followers")
+	 * @ORM_Mapping\JoinColumn(name="account_id", referencedColumnName="id")
 	 */
 	protected $account;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="followers")
-	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterUser", inversedBy="followers")
+	 * @ORM_Mapping\JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
 

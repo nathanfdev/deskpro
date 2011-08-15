@@ -11,23 +11,25 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use Application\DeskPRO\UI\RuleBuilder;
 
 /**
  * Ticket queues
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFilter")
- * @orm:Table(name="ticket_filters",
- *     uniqueConstraints={@orm:UniqueConstraint(name="sys_name_unique", columns={"sys_name"})}
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketFilter")
+ * @ORM_Mapping\Table(name="ticket_filters",
+ *     uniqueConstraints={@ORM_Mapping\UniqueConstraint(name="sys_name_unique", columns={"sys_name"})}
  * )
  */
 class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -36,8 +38,8 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	 * also means the person it belongs to.
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
@@ -45,50 +47,50 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a team filter, the team it belongs to.
 	 *
 	 * @var \Application\DeskPRO\Entity\AgentTeam
-	 * @orm:ManyToOne(targetEntity="AgentTeam")
-	 * @orm:JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="AgentTeam")
+	 * @ORM_Mapping\JoinColumn(name="agent_team_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $agent_team = null;
 
 	/**
 	 * @var bool
-	 * @orm:Column(name="is_global", type="boolean")
+	 * @ORM_Mapping\Column(name="is_global", type="boolean")
 	 */
 	protected $is_global = false;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var bool
-	 * @orm:Column(name="is_enabled", type="boolean")
+	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
 	/**
 	 * @var bool
-	 * @orm:Column(name="sys_name", type="string", length="50", nullable=true)
+	 * @ORM_Mapping\Column(name="sys_name", type="string", length="50", nullable=true)
 	 */
 	protected $sys_name = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="terms", type="array")
+	 * @ORM_Mapping\Column(name="terms", type="array")
 	 */
 	protected $terms;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="group_by", type="string", length=255)
+	 * @ORM_Mapping\Column(name="group_by", type="string", length=255)
 	 */
 	protected $group_by = '';
 
 	/**
 	 * @var string
-	 * @orm:Column(name="order_by", type="string", length=255)
+	 * @ORM_Mapping\Column(name="order_by", type="string", length=255)
 	 */
 	protected $order_by = '';
 
@@ -202,7 +204,7 @@ class TicketFilter extends \Application\DeskPRO\Domain\DomainObject
 
 		$searcher = $this->getSearcher();
 
-		// TODO make person be passed in directly to this method
+		// !TODO make person be passed in directly to this method
 		if (!$person) {
 			$person = App::getCurrentPerson();
 		}

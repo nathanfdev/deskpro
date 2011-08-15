@@ -11,25 +11,27 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 /**
  * Article categories
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleCategory")
- * @orm:Table(name="article_categories")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleCategory")
+ * @ORM_Mapping\Table(name="article_categories")
  */
 class ArticleCategory extends CategoryAbstract
 {
 	/**
 	 * @gedmo:TreeParent
-	 * @orm:ManyToOne(targetEntity="ArticleCategory", inversedBy="children")
+	 * @ORM_Mapping\ManyToOne(targetEntity="ArticleCategory", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
-	 * @orm:OneToMany(targetEntity="ArticleCategory", mappedBy="parent")
-	 * @orm:OrderBy({"lft" = "ASC"})
+	 * @ORM_Mapping\OneToMany(targetEntity="ArticleCategory", mappedBy="parent")
+	 * @ORM_Mapping\OrderBy({"lft" = "ASC"})
 	 */
 	protected $children;
 	
@@ -39,7 +41,7 @@ class ArticleCategory extends CategoryAbstract
 	 * the user interface
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_agent", type="boolean")
+	 * @ORM_Mapping\Column(name="is_agent", type="boolean")
 	 */
 	protected $is_agent = false;
 
@@ -48,7 +50,7 @@ class ArticleCategory extends CategoryAbstract
 	 * is treated as a book (aka manual).
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_book", type="boolean")
+	 * @ORM_Mapping\Column(name="is_book", type="boolean")
 	 */
 	protected $is_book = false;
 
@@ -61,7 +63,7 @@ class ArticleCategory extends CategoryAbstract
 	 * UserBundle:Articles:article-download.html.twig
 	 *
 	 * @var string
-	 * @orm:Column(name="template_suffix", type="string", length=100, nullable=true)
+	 * @ORM_Mapping\Column(name="template_suffix", type="string", length=100, nullable=true)
 	 */
 	protected $template_suffix = '';
 }

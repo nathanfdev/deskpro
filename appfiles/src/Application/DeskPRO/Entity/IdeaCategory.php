@@ -11,25 +11,27 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 /**
  * Idea categories
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaCategory")
- * @orm:Table(name="idea_categories")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaCategory")
+ * @ORM_Mapping\Table(name="idea_categories")
  */
 class IdeaCategory extends CategoryAbstract
 {
 	/**
 	 * @gedmo:TreeParent
-	 * @orm:ManyToOne(targetEntity="IdeaCategory", inversedBy="children")
+	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaCategory", inversedBy="children")
 	 */
 	protected $parent;
 
 	/**
-	 * @orm:OneToMany(targetEntity="IdeaCategory", mappedBy="parent")
-	 * @orm:OrderBy({"lft" = "ASC"})
+	 * @ORM_Mapping\OneToMany(targetEntity="IdeaCategory", mappedBy="parent")
+	 * @ORM_Mapping\OrderBy({"lft" = "ASC"})
 	 */
 	protected $children;
 }

@@ -10,17 +10,19 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * General logs
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\LogItem")
- * @orm:Table(name="log_items",
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\LogItem")
+ * @ORM_Mapping\Table(name="log_items",
  *     indexes={
- *         @orm:Index(name="log_name_idx", columns={"log_name","session_name"}),
- *         @orm:Index(name="flag_idx", columns={"flag"})
+ *         @ORM_Mapping\Index(name="log_name_idx", columns={"log_name","session_name"}),
+ *         @ORM_Mapping\Index(name="flag_idx", columns={"flag"})
  *     }
  * )
  */
@@ -28,7 +30,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -37,7 +39,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * each kind of component (eg. gateways, error_log, etc).
 	 *
 	 * @var string
-	 * @orm:Column(name="log_name", type="string", length=50)
+	 * @ORM_Mapping\Column(name="log_name", type="string", length=50)
 	 */
 	protected $log_name;
 
@@ -46,7 +48,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * procedure.
 	 *
 	 * @var string
-	 * @orm:Column(name="session_name", type="string", length=100, nullable=true)
+	 * @ORM_Mapping\Column(name="session_name", type="string", length=100, nullable=true)
 	 */
 	protected $session_name = null;
 
@@ -54,19 +56,19 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Any kind of special flag to mark this log item.
 	 *
 	 * @var string
-	 * @orm:Column(name="flag", type="string", length=50, nullable=true)
+	 * @ORM_Mapping\Column(name="flag", type="string", length=50, nullable=true)
 	 */
 	protected $flag = null;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="priority", type="integer")
+	 * @ORM_Mapping\Column(name="priority", type="integer")
 	 */
 	protected $priority;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="priority_name", type="string", length=25)
+	 * @ORM_Mapping\Column(name="priority_name", type="string", length=25)
 	 */
 	protected $priority_name;
 
@@ -74,7 +76,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The log message
 	 *
 	 * @var string
-	 * @orm:Column(name="message", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="message", type="string", length=1000)
 	 */
 	protected $message;
 
@@ -82,7 +84,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * Other data, such as backtrace or debug info
 	 *
 	 * @var string
-	 * @orm:Column(name="data", type="array", nullable=true)
+	 * @ORM_Mapping\Column(name="data", type="array", nullable=true)
 	 */
 	protected $data = null;
 
@@ -90,7 +92,7 @@ class LogItem extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

@@ -11,41 +11,43 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Email sources that we need to send
  *
- * @orm:Entity
- * @orm:Table(name="sendmail_queue")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="sendmail_queue")
  */
 class SendmailQueue extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="subject", type="string", length=255)
+	 * @ORM_Mapping\Column(name="subject", type="string", length=255)
 	 */
 	protected $subject;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="to_address", type="string", length=255)
+	 * @ORM_Mapping\Column(name="to_address", type="string", length=255)
 	 */
 	protected $to_address;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="attempts", type="integer")
+	 * @ORM_Mapping\Column(name="attempts", type="integer")
 	 */
 	protected $attempts = 0;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

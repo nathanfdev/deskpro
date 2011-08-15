@@ -11,17 +11,19 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * A "from" email address, and how to send emails (SMTP, native etc) from it.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailFrom")
- * @orm:Table(name="email_from")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailFrom")
+ * @ORM_Mapping\Table(name="email_from")
  */
 class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -29,7 +31,7 @@ class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
 	 * The human readable "from" name
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="text", length=100)
+	 * @ORM_Mapping\Column(name="name", type="text", length=100)
 	 */
 	protected $name = '';
 
@@ -37,7 +39,7 @@ class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
 	 * The email address for the account.
 	 *
 	 * @var string
-	 * @orm:Column(name="address", type="text", length=255)
+	 * @ORM_Mapping\Column(name="address", type="text", length=255)
 	 */
 	protected $address;
 
@@ -46,14 +48,14 @@ class EmailFrom extends \Application\DeskPRO\Domain\DomainObject
 	 * (eg static factory) that returns one.
 	 *
 	 * @var string
-	 * @orm:Column(name="transport_class", type="string", length=80)
+	 * @ORM_Mapping\Column(name="transport_class", type="string", length=80)
 	 */
 	protected $transport_class = '';
 
 	/**
 	 * Options for the transport
 	 *
-	 * @orm:Column(name="transport_options", type="array")
+	 * @ORM_Mapping\Column(name="transport_options", type="array")
 	 */
 	protected $transport_options = array();
 

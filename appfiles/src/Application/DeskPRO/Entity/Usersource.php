@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\Usersource\Handler\AbstractHandler;
 use Application\DeskPRO\App;
 
@@ -28,9 +30,9 @@ use Orb\Util\Arrays;
  *
  * @see Application\DeskPRO\Auth\UserInitializer
  * @see Application\DeskPRO\RemoteResourceListener\Auth
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="usersources")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="usersources")
  */
 class Usersource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -38,8 +40,8 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @orm:GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * @ORM_Mapping\GeneratedValue
 	 */
 	protected $id = null;
 
@@ -47,7 +49,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * A note or description about the user source (admin eyes)
 	 *
 	 * @var string
-	 * @orm:Column(name="note", type="text")
+	 * @ORM_Mapping\Column(name="note", type="text")
 	 */
 	protected $note = '';
 
@@ -56,7 +58,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * based on language.
 	 *
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title = '';
 
@@ -65,7 +67,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * based on language.
 	 *
 	 * @var string
-	 * @orm:Column(name="description", type="string", length=255)
+	 * @ORM_Mapping\Column(name="description", type="string", length=255)
 	 */
 	protected $description = '';
 
@@ -73,7 +75,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * The URL/homepage of this service.
 	 *
 	 * @var string
-	 * @orm:Column(name="url", type="string", length=255)
+	 * @ORM_Mapping\Column(name="url", type="string", length=255)
 	 */
 	protected $url = '';
 
@@ -81,8 +83,8 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * If this usersource includes a person scraper to fetch contact info, this is it.
 	 *
 	 * @var Application\DeskPRO\Entity\PersonScraper
-	 * @orm:ManyToOne(targetEntity="PersonScraper")
-	 * @orm:JoinColumn(name="person_scraper_id", referencedColumnName="id", nullable=true, onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="PersonScraper")
+	 * @ORM_Mapping\JoinColumn(name="person_scraper_id", referencedColumnName="id", nullable=true, onDelete="cascade")
 	 */
 	protected $person_scraper = null;
 
@@ -91,7 +93,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * handling things like creating auth adapters etc.
 	 *
 	 * @var string
-	 * @orm:Column(name="handler_class", type="string", length=255)
+	 * @ORM_Mapping\Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class;
 
@@ -99,14 +101,14 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * Options we'll pass to the handler
 	 *
 	 * @var array
-	 * @orm:Column(name="options", type="array")
+	 * @ORM_Mapping\Column(name="options", type="array")
 	 */
 	protected $options = array();
 
 	/**
 	 * The order in which to display this source
 	 * @var int
-	 * @orm:Column(name="display_order", type="integer")
+	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
@@ -114,7 +116,7 @@ class Usersource extends \Application\DeskPRO\Domain\DomainObject
 	 * True if this usersource is enabled/usable.
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_enabled", type="boolean")
+	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 

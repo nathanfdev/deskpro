@@ -11,14 +11,16 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 /**
  * Ticket triggers
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketTrigger")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="ticket_triggers")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketTrigger")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="ticket_triggers")
  */
 class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -32,44 +34,44 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="event_trigger", type="string", length=50)
+	 * @ORM_Mapping\Column(name="event_trigger", type="string", length=50)
 	 */
 	protected $event_trigger;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="event_trigger_option", type="string", length=255)
+	 * @ORM_Mapping\Column(name="event_trigger_option", type="string", length=255)
 	 */
 	protected $event_trigger_option = '';
 
 	/**
 	 * @var bool
-	 * @orm:Column(name="is_enabled", type="boolean")
+	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="terms", type="array")
+	 * @ORM_Mapping\Column(name="terms", type="array")
 	 */
 	protected $terms = array();
 
 	/**
 	 * @var string
-	 * @orm:Column(name="actions", type="array")
+	 * @ORM_Mapping\Column(name="actions", type="array")
 	 */
 	protected $actions = array();
 
@@ -78,7 +80,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * Used prefixes: "urgency." for urgency-type triggers.
 	 *
 	 * @var bool
-	 * @orm:Column(name="sys_name", type="string", length="50", nullable=true)
+	 * @ORM_Mapping\Column(name="sys_name", type="string", length="50", nullable=true)
 	 */
 	protected $sys_name = null;
 
@@ -87,7 +89,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 	 * listed on the urgency page.
 	 *
 	 * @var bool
-	 * @orm:Column(name="has_urgency", type="boolean")
+	 * @ORM_Mapping\Column(name="has_urgency", type="boolean")
 	 */
 	protected $has_urgency = false;
 
@@ -205,7 +207,7 @@ class TicketTrigger extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @orm:PostDelete
+	 * @ORM_Mapping\PostRemove
 	 */
 	public function _removeAssocPlugins()
 	{

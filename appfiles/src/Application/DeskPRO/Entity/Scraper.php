@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * A scraper is something that fetches data from a remote resource. This is the abstract
  * scraper type, but each different type of scrape defines its own entity and may have
@@ -19,7 +21,7 @@ namespace Application\DeskPRO\Entity;
  * Actual scrapers are also responsible for how to store any scraped data (hence there is no
  * use in an abstract ScraperData class).
  *
- * @orm:MappedSuperclass
+ * @ORM_Mapping\MappedSuperclass
  */
 abstract class Scraper
 {
@@ -27,8 +29,8 @@ abstract class Scraper
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id;
 
@@ -37,7 +39,7 @@ abstract class Scraper
 	 * creating all the resources needed for a scraper to do its job.
 	 *
 	 * @var string
-	 * @orm:Column(name="handler_class", type="string", length=255)
+	 * @ORM_Mapping\Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class;
 
@@ -45,7 +47,7 @@ abstract class Scraper
 	 * Options we'll pass to the handler
 	 *
 	 * @var array
-	 * @orm:Column(name="options", type="array")
+	 * @ORM_Mapping\Column(name="options", type="array")
 	 */
 	protected $options = array();
 
@@ -53,7 +55,7 @@ abstract class Scraper
 	 * True if this scraper is enabled
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_enabled", type="boolean")
+	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 

@@ -12,6 +12,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
@@ -20,54 +22,54 @@ use \Application\DeskPRO\Entity;
  *
  * Long Reply/Message w/ URL Shortener.
  *
- * @orm:Entity
- * @orm:Table(name="twitter_statuses_long")
- * @orm:HasLifecycleCallbacks
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="twitter_statuses_long")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterStatusLong extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @orm:Id
-	 * @orm:GeneratedValue(strategy="AUTO")
-	 * @orm:Column(name="id", type="bigint")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
+	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @orm:OneToOne(targetEntity="TwitterStatus")
-	 * @orm:JoinColumn(name="status_id", referencedColumnName="id")
+	 * @ORM_Mapping\OneToOne(targetEntity="TwitterStatus")
+	 * @ORM_Mapping\JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="text", type="string", length="4000")
+	 * @ORM_Mapping\Column(name="text", type="string", length="4000")
 	 */
 	protected $text;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="is_public", type="boolean")
+	 * @ORM_Mapping\Column(name="is_public", type="boolean")
 	 */
 	protected $is_public = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created", type="datetime")
+	 * @ORM_Mapping\Column(name="date_created", type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var Boolean
-	 * @orm:Column(name="is_read", type="boolean")
+	 * @ORM_Mapping\Column(name="is_read", type="boolean")
 	 */
 	protected $is_read = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_read", type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="date_read", type="datetime", nullable=true)
 	 */
 	protected $date_read = null;
 

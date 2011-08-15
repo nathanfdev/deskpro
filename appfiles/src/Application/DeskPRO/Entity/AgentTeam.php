@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -21,9 +23,9 @@ use \Application\DeskPRO\Entity;
 /**
  * An agent team is a group of agents. Similar to usergroups but for agents.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\AgentTeam")
- * @orm:Table(name="agent_teams")
- * @orm:HasLifecycleCallbacks
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\AgentTeam")
+ * @ORM_Mapping\Table(name="agent_teams")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -31,31 +33,31 @@ class AgentTeam extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 
 	/**
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=255)
+	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name;
 
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="agent_team_members", joinColumns={@orm:JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
-	 * @orm:OrderBy({"first_name" = "ASC", "last_name" = "ASC"})
+	 * @ORM_Mapping\ManyToMany(targetEntity="Person", cascade={"persist", "remove", "merge"})
+     * @ORM_Mapping\JoinTable(name="agent_team_members", joinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
+	 * @ORM_Mapping\OrderBy({"first_name" = "ASC", "last_name" = "ASC"})
 	 */
 	protected $members = null;
 
   /**
 	 * The tasks assigned to this team.
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="Task", mappedBy="assigned_agent_team", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="Task", mappedBy="assigned_agent_team", cascade={"persist", "remove", "merge"})
 	 */
 	protected $assigned_tasks;
 

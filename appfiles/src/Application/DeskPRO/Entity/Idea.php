@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
@@ -21,9 +23,9 @@ use \Orb\Util\Strings;
 /**
  * Ideas (feedback)
  *
- * @orm:HasLifecycleCallbacks
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Idea")
- * @orm:Table(name="ideas")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Idea")
+ * @ORM_Mapping\Table(name="ideas")
  */
 class Idea extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -38,57 +40,57 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="status", type="string", length=15)
+	 * @ORM_Mapping\Column(name="status", type="string", length=15)
 	 */
 	protected $status;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\IdeaStatusCategory
-	 * @orm:ManyToOne(targetEntity="IdeaStatusCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="status_category_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaStatusCategory", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="status_category_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $status_category = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="hidden_status", type="string", length=15, nullable=true)
+	 * @ORM_Mapping\Column(name="hidden_status", type="string", length=15, nullable=true)
 	 */
 	protected $hidden_status = null;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="num_votes", type="integer")
+	 * @ORM_Mapping\Column(name="num_votes", type="integer")
 	 */
 	protected $num_votes = 0;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToOne(targetEntity="IdeaCategory", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaCategory", cascade={"persist", "remove", "merge"})
 	 */
 	protected $category;
 
@@ -96,23 +98,23 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	 * The primary email address used by this account
 	 *
 	 * @var \Application\DeskPRO\Entity\IdeaComment
-	 * @orm:OneToOne(targetEntity="IdeaComment", fetch="EAGER", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
-	 * @orm:JoinColumn(name="first_comment_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="IdeaComment", fetch="EAGER", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\JoinColumn(name="first_comment_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $first_comment;
 
 	/**
-	 * @orm:OneToMany(targetEntity="IdeaComment", mappedBy="idea", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="IdeaComment", mappedBy="idea", cascade={"persist", "remove", "merge"})
 	 */
 	protected $comments;
 
 	/**
-	 * @orm:OneToMany(targetEntity="IdeaVote", mappedBy="idea", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="IdeaVote", mappedBy="idea", cascade={"persist", "remove", "merge"})
 	 */
 	protected $votes;
 
 	/**
-	 * @orm:OneToMany(targetEntity="LabelIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="LabelIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 
@@ -358,7 +360,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @orm:PostPersist
+	 * @ORM_Mapping\PostPersist
 	 */
 	public function _notifyNewIdea()
 	{

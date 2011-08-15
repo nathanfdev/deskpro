@@ -11,10 +11,12 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Base class used for storing custom field data.
  *
- * @orm:MappedSuperclass
+ * @ORM_Mapping\MappedSuperclass
  */
 abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -23,8 +25,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * The form field this is attached to
 	 *
 	 * @var \Application\DeskPRO\Entity\CustomDefXXX
-	 * @orm:ManyToOne(targetEntity="CustomDefXXX")
-	 * @orm:JoinColumn(name="field_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefXXX")
+	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id")
 	 */
 	//protected $field = null;
 
@@ -32,8 +34,8 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var \Application\DeskPRO\Entity\Xxx
-	 * @orm:ManyToOne(targetEntity="xxx")
-	 * @orm:JoinColumn(name="xxx_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="xxx")
+	 * @ORM_Mapping\JoinColumn(name="xxx_id", referencedColumnName="id")
 	 */
 	//protected $xxx;
 
@@ -41,7 +43,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * User numeric data
 	 *
 	 * @var int
-	 * @orm:Column(name="value", type="integer")
+	 * @ORM_Mapping\Column(name="value", type="integer")
 	 */
 	protected $value = 0;
 
@@ -49,7 +51,7 @@ abstract class CustomDataAbstract extends \Application\DeskPRO\Domain\DomainObje
 	 * User string data
 	 *
 	 * @var string
-	 * @orm:Column(name="input", type="text")
+	 * @ORM_Mapping\Column(name="input", type="text")
 	 */
 	protected $input = '';
 

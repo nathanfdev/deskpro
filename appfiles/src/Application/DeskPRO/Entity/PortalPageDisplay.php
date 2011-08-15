@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\PageDisplay\Item\Portal\PortalItemAbstract;
 
@@ -39,8 +41,8 @@ use Orb\Util\Arrays;
  *
  * Keys in the data array are insignificant. They may be used to keep track of things in the designer.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\PortalPageDisplay")
- * @orm:Table(name="portal_page_display")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PortalPageDisplay")
+ * @ORM_Mapping\Table(name="portal_page_display")
  */
 class PortalPageDisplay extends PageDisplayAbstract
 {

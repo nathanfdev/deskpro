@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -18,32 +20,32 @@ use Orb\Util\Arrays;
 /**
  * Basic ratings
  *
- * @orm:MappedSuperclass
+ * @ORM_Mapping\MappedSuperclass
  */
 class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="ip_address", type="string", length=50)
+	 * @ORM_Mapping\Column(name="ip_address", type="string", length=50)
 	 */
 	protected $ip_address;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="rating", type="integer")
+	 * @ORM_Mapping\Column(name="rating", type="integer")
 	 */
 	protected $rating;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

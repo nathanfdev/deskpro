@@ -11,7 +11,9 @@
 
 namespace Application\DeskPRO\Entity;
 
-use \Application\DeskPRO\App;
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
+use Application\DeskPRO\App;
 
 use Orb\Util\Strings;
 use Orb\Util\Util;
@@ -19,9 +21,9 @@ use Orb\Util\Util;
 /**
  * Active user sessions
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Session")
- * @orm:Table(name="sessions", indexes={
- *     @orm:Index(name="date_last_idx", columns={"date_last","is_person"})
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Session")
+ * @ORM_Mapping\Table(name="sessions", indexes={
+ *     @ORM_Mapping\Index(name="date_last_idx", columns={"date_last","is_person"})
  * })
  */
 class Session extends \Application\DeskPRO\Domain\DomainObject
@@ -30,8 +32,8 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\GeneratedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id;
 
@@ -39,58 +41,58 @@ class Session extends \Application\DeskPRO\Domain\DomainObject
 	 * The authcode for the session to verify an id
 	 *
 	 * @var string
-	 * @orm:Column(name="auth", type="string", length=15)
+	 * @ORM_Mapping\Column(name="auth", type="string", length=15)
 	 */
 	protected $auth;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Visitor
-	 * @orm:ManyToOne(targetEntity="Visitor", fetch="EAGER")
-	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Visitor", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $visitor = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="data", type="text")
+	 * @ORM_Mapping\Column(name="data", type="text")
 	 */
 	protected $data = '';
 
 	/**
 	 * @var string
-	 * @orm:Column(name="is_person", type="boolean")
+	 * @ORM_Mapping\Column(name="is_person", type="boolean")
 	 */
 	protected $is_person = false;
 
 	/**
 	 * For agents, if they are available for chat or away
 	 * @var string
-	 * @orm:Column(name="active_status", type="string", length=15)
+	 * @ORM_Mapping\Column(name="active_status", type="string", length=15)
 	 */
 	protected $active_status = '';
 
 	/**
 	 * @var int
-	 * @orm:Column(name="page_count", type="integer")
+	 * @ORM_Mapping\Column(name="page_count", type="integer")
 	 */
 	protected $page_count = 0;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_last",type="datetime")
+	 * @ORM_Mapping\Column(name="date_last",type="datetime")
 	 */
 	protected $date_last;
 

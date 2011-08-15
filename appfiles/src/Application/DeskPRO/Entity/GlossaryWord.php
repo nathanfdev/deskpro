@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\Markdown;
@@ -20,26 +22,26 @@ use \Orb\Util\Strings;
 /**
  * Glossary
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\GlossaryWord")
- * @orm:Table(name="glossary_words")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\GlossaryWord")
+ * @ORM_Mapping\Table(name="glossary_words")
  */
 class GlossaryWord extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="word", type="string", length=255)
+	 * @ORM_Mapping\Column(name="word", type="string", length=255)
 	 */
 	protected $word;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="content", type="text")
+	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content;
 }

@@ -10,28 +10,30 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * A result cache is a cached result from a search or filter.
  *
- * @orm:Entity
- * @orm:Table(name="result_cache")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="result_cache")
  */
 class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", inversedBy="preferences")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="preferences")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -39,7 +41,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	 * Criteria information like what the user searched for
 	 *
 	 * @var array
-	 * @orm:Column(name="criteria", type="array")
+	 * @ORM_Mapping\Column(name="criteria", type="array")
 	 */
 	protected $criteria = array();
 
@@ -47,7 +49,7 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	 * An array of results
 	 *
 	 * @var array
-	 * @orm:Column(name="results", type="array")
+	 * @ORM_Mapping\Column(name="results", type="array")
 	 */
 	protected $results = array();
 
@@ -55,19 +57,19 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 	 * Any extra data
 	 *
 	 * @var array
-	 * @orm:Column(name="extra", type="array")
+	 * @ORM_Mapping\Column(name="extra", type="array")
 	 */
 	protected $extra = array();
 
 	/**
 	 * @var int
-	 * @orm:Column(name="num_results", type="integer")
+	 * @ORM_Mapping\Column(name="num_results", type="integer")
 	 */
 	protected $num_results = 0;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\Markdown;
@@ -20,40 +22,40 @@ use \Orb\Util\Strings;
 /**
  * Articles that need to be created
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticlePendingCreate")
- * @orm:Table(name="article_pending_create")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticlePendingCreate")
+ * @ORM_Mapping\Table(name="article_pending_create")
  */
 class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @orm:ManyToOne(targetEntity="Ticket", fetch="EAGER")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="comment", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="comment", type="string", length=1000)
 	 */
 	protected $comment = '';
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -21,8 +23,8 @@ use \Application\DeskPRO\Entity;
 /**
  * Tracks notification preferences for each agent on each queue.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\AgentNotification")
- * @orm:Table(name="agent_notifications")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\AgentNotification")
+ * @ORM_Mapping\Table(name="agent_notifications")
  */
 class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -33,24 +35,24 @@ class AgentNotification extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketFilter
-	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="TicketFilter")
-	 * @orm:JoinColumn(name="filter_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="TicketFilter")
+	 * @ORM_Mapping\JoinColumn(name="filter_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $filter = null;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="notify_type", type="string", length="50")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="notify_type", type="string", length="50")
 	 */
 	protected $notify_type = false;
 

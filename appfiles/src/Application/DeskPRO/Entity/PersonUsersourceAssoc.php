@@ -11,12 +11,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * This tracks associations between a user and a usersource.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonUsersourceAssoc")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="person_usersource_assoc")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonUsersourceAssoc")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="person_usersource_assoc")
  */
 class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -24,14 +26,14 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -39,8 +41,8 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * The usersource that this scraper is attached to
 	 *
 	 * @var Usersource
-	 * @orm:OneToOne(targetEntity="Usersource")
-	 * @orm:JoinColumn(name="usersource_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="Usersource")
+	 * @ORM_Mapping\JoinColumn(name="usersource_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usersource;
 
@@ -49,8 +51,8 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * ID such as a UserID.
 	 *
 	 * @var string
-	 * @orm:Index
-	 * @orm:Column(name="identity", type="string", length=255)
+	 * @ORM_Mapping\Index
+	 * @ORM_Mapping\Column(name="identity", type="string", length=255)
 	 */
 	protected $identity;
 
@@ -60,8 +62,8 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * if this changes.
 	 *
 	 * @var string
-	 * @orm:Index
-	 * @orm:Column(name="identity_friendly", type="string", length=255)
+	 * @ORM_Mapping\Index
+	 * @ORM_Mapping\Column(name="identity_friendly", type="string", length=255)
 	 */
 	protected $identity_friendly;
 
@@ -70,7 +72,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * such as auth keys (eg: in twitter or facebook).
 	 *
 	 * @var array
-	 * @orm:Column(name="data", type="array")
+	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
@@ -78,7 +80,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * When the record was first created in the system
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="created_at", type="datetime")
+	 * @ORM_Mapping\Column(name="created_at", type="datetime")
 	 */
 	protected $created_at;
 
@@ -86,7 +88,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time the user logged in using this auth.
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="last_used_at", type="datetime")
+	 * @ORM_Mapping\Column(name="last_used_at", type="datetime")
 	 */
 	protected $last_used_at;
 
@@ -105,7 +107,7 @@ class PersonUsersourceAssoc extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	/** @orm:PrePersist */
+	/** @ORM_Mapping\PrePersist */
 	public function _incCreatedAt()
 	{
 		if (!$this->created_at) {

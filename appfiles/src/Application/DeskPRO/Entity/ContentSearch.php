@@ -10,33 +10,35 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * Combined search index of content
  *
- * @orm:Entity
- * @orm:Table(name="content_search")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="content_search")
  */
 class ContentSearch extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var string
-	 * @orm:Column(name="object_type", type="string", length=100)
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="object_type", type="string", length=100)
+	 * @ORM_Mapping\Id
 	 */
 	protected $object_type;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="object_id", type="integer")
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="object_id", type="integer")
+	 * @ORM_Mapping\Id
 	 */
 	protected $object_id = null;
 
 	/**
-	 * @orm:Column(name="content", type="text")
+	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content;
 }

@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
@@ -18,15 +20,15 @@ use Application\DeskPRO\App;
 /**
  * Ticket macros
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ChatQuickReply")
- * @orm:Table(name="chat_quick_replies")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ChatQuickReply")
+ * @ORM_Mapping\Table(name="chat_quick_replies")
  */
 class ChatQuickReply extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -34,14 +36,14 @@ class ChatQuickReply extends \Application\DeskPRO\Domain\DomainObject
 	 * Who created/owns this quick reply
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -49,13 +51,13 @@ class ChatQuickReply extends \Application\DeskPRO\Domain\DomainObject
 	 * Gloabl means everyone can see/use it. But only owner can edit it.
 	 * 
 	 * @var bool
-	 * @orm:Column(name="is_global", type="boolean")
+	 * @ORM_Mapping\Column(name="is_global", type="boolean")
 	 */
 	protected $is_global = false;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="content", type="text")
+	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content = '';
 

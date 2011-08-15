@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Orb\Util\Util;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -18,7 +20,7 @@ use Orb\Util\Arrays;
 /**
  * A custom field definition
  *
- * @orm:MappedSuperclass
+ * @ORM_Mapping\MappedSuperclass
  */
 class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -26,7 +28,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -35,8 +37,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * These generally cant be edited.
 	 *
 	 * @var \Application\DeskPRO\Entity\Plugin
-	 * @orm:OneToOne(targetEntity="Plugin")
-	 * @orm:JoinColumn(name="plugin_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\OneToOne(targetEntity="Plugin")
+	 * @ORM_Mapping\JoinColumn(name="plugin_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $plugin = null;
 
@@ -44,7 +46,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * JS class to init
 	 *
 	 * @var string
-	 * @orm:Column(name="js_class", type="string", length=255)
+	 * @ORM_Mapping\Column(name="js_class", type="string", length=255)
 	 */
 	protected $js_class = '';
 
@@ -52,7 +54,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * True if this field uses a custom template when rendering the form input
 	 *
 	 * @var string
-	 * @orm:Column(name="has_form_template", type="boolean")
+	 * @ORM_Mapping\Column(name="has_form_template", type="boolean")
 	 */
 	protected $has_form_template = false;
 
@@ -60,7 +62,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * True i this field uses a custom template when rendering the form value for display
 	 *
 	 * @var string
-	 * @orm:Column(name="has_display_template", type="boolean")
+	 * @ORM_Mapping\Column(name="has_display_template", type="boolean")
 	 */
 	protected $has_display_template = false;
 
@@ -70,8 +72,8 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * MUST BE IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var XXX
-	 * @orm:OneToOne(targetEntity="XXX")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="XXX")
+	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	//protected $parent = null;
 
@@ -81,7 +83,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * MUST BE IMPLEMENT IN CHILD CLASS
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="CustomDefXXX", mappedBy="parent_id", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefXXX", mappedBy="parent_id", cascade={"persist", "remove", "merge"})
 	 */
 	//protected $children = null;
 
@@ -89,7 +91,7 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * The title
 	 *
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title = '';
 
@@ -100,14 +102,14 @@ class CustomDefAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 * For example, a select box has children who we only need the 'title' for.
 	 *
 	 * @var string
-	 * @orm:Column(name="handler_class", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Column(name="handler_class", type="string", length=255, nullable=true)
 	 */
 	protected $handler_class = null;
 
 	/**
 	 * Options for the field
 	 *
-	 * @orm:Column(name="options", type="array")
+	 * @ORM_Mapping\Column(name="options", type="array")
 	 */
 	protected $options = array();
 

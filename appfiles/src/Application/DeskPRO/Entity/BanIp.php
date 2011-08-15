@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Orb\Util\Strings;
 use \Orb\Util\Numbers;
@@ -18,8 +20,8 @@ use \Orb\Util\Numbers;
 /**
  * Ban an IP addresses and ranges
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\BanIp")
- * @orm:Table(name="ban_ips")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\BanIp")
+ * @ORM_Mapping\Table(name="ban_ips")
  */
 class BanIp extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -27,8 +29,8 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 	 * The banned IP address (human readable)
 	 * 
 	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="banned_ip", type="string", length=100)
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="banned_ip", type="string", length=100)
 	 */
 	protected $banned_ip;
 
@@ -36,7 +38,7 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 	 * Start of the IP range
 	 *
 	 * @var int
-	 * @orm:Column(name="ip_start", type="bigint")
+	 * @ORM_Mapping\Column(name="ip_start", type="bigint")
 	 */
 	protected $ip_start;
 
@@ -44,7 +46,7 @@ class BanIp extends \Application\DeskPRO\Domain\DomainObject
 	 * End of the IP range
 	 *
 	 * @var int
-	 * @orm:Column(name="ip_end", type="bigint")
+	 * @ORM_Mapping\Column(name="ip_end", type="bigint")
 	 */
 	protected $ip_end;
 

@@ -10,14 +10,16 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * A plugin is a group of event listeners and other resources.
  *
- * @orm:Entity
- * @orm:Table(name="plugins")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="plugins")
  */
 class Plugin extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -25,26 +27,26 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
-	 * @orm:Column(name="id", type="string", length=255)
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="id", type="string", length=255)
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="description", type="text")
+	 * @ORM_Mapping\Column(name="description", type="text")
 	 */
 	protected $description;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="version", type="string", length=100)
+	 * @ORM_Mapping\Column(name="version", type="string", length=100)
 	 */
 	protected $version;
 	
@@ -53,7 +55,7 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * install/uninstall etc.
 	 *
 	 * @var string
-	 * @orm:Column(name="package_class", type="string", length=255)
+	 * @ORM_Mapping\Column(name="package_class", type="string", length=255)
 	 */
 	protected $package_class = null;
 
@@ -61,7 +63,7 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * The file of the package class
 	 *
 	 * @var string
-	 * @orm:Column(name="package_class_file", type="string", length=255)
+	 * @ORM_Mapping\Column(name="package_class_file", type="string", length=255)
 	 */
 	protected $package_class_file = null;
 
@@ -69,13 +71,13 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * The path where this plugins Resources directory can be found
 	 *
 	 * @var string
-	 * @orm:Column(name="resources_path", type="string", length=255)
+	 * @ORM_Mapping\Column(name="resources_path", type="string", length=255)
 	 */
 	protected $resources_path = null;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="PluginListener", mappedBy="plugin", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="PluginListener", mappedBy="plugin", cascade={"persist", "remove", "merge"})
 	 */
 	protected $listeners;
 
@@ -84,13 +86,13 @@ class Plugin extends \Application\DeskPRO\Domain\DomainObject
 	 * This is just a cache version from PluginPackage
 	 *
 	 * @var string
-	 * @orm:Column(name="autoload_paths", type="array")
+	 * @ORM_Mapping\Column(name="autoload_paths", type="array")
 	 */
 	protected $autoload_paths = null;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

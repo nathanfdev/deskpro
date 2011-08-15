@@ -11,11 +11,13 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * TaskComment entity definition
  *
- * @orm:Entity
- * @orm:Table(name="task_comments")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="task_comments")
  */
 class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -24,10 +26,10 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id
-	 * @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -35,29 +37,29 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	 * The comment's content
 	 *
 	 * @var string
-	 * @orm:Column(name="content", type="text")
+	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content = '';
 
 	/**
 	 * @var Application\DeskPRO\Entity\Task
-	 * @orm:ManyToOne(
+	 * @ORM_Mapping\ManyToOne(
 	 * 	targetEntity="Task",
 	 * 	inversedBy="comments",
 	 * 	cascade={"persist", "remove", "merge"}
 	 * )
-	 * @orm:JoinColumn(name="task_id", referencedColumnName="id", nullable=false, onDelete="cascade")
+	 * @ORM_Mapping\JoinColumn(name="task_id", referencedColumnName="id", nullable=false, onDelete="cascade")
 	 */
 	protected $task;
  	
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(
+	 * @ORM_Mapping\ManyToOne(
 	 * 	targetEntity="Person",
 	 * 	inversedBy="task_comments",
 	 * 	cascade={"persist", "remove", "merge"}
 	 * )
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person;
  	
@@ -65,7 +67,7 @@ class TaskComment extends \Application\DeskPRO\Domain\DomainObject
 	 * The date the comment was inserted into the system
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 

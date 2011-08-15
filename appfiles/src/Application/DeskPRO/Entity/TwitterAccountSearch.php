@@ -12,36 +12,38 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
  * Twitter Account Search
  *
- * @orm:Entity
- * @orm:Table(name="twitter_accounts_searches")
- * @orm:HasLifecycleCallbacks
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="twitter_accounts_searches")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterAccountSearch extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @orm:Id
-	 * @orm:GeneratedValue(strategy="AUTO")
-	 * @orm:Column(name="id", type="bigint")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
+	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterAccount
-	 * @orm:ManyToOne(targetEntity="TwitterAccount", inversedBy="searches")
-	 * @orm:JoinColumn(name="account_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterAccount", inversedBy="searches")
+	 * @ORM_Mapping\JoinColumn(name="account_id", referencedColumnName="id")
 	 */
 	protected $account;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="term", type="string", length="255")
+	 * @ORM_Mapping\Column(name="term", type="string", length="255")
 	 */
 	protected $term;
 

@@ -10,6 +10,8 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Web;
@@ -17,8 +19,8 @@ use Orb\Util\Web;
 /**
  * CSS resource
  *
- * @orm:Entity
- * @orm:Table(name="style_resource_css")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="style_resource_css")
  */
 class StyleResourceCss extends StyleResource
 {
@@ -47,7 +49,7 @@ class StyleResourceCss extends StyleResource
 
 
 	/**
-	 * @orm:PreUpdate
+	 * @ORM_Mapping\PreUpdate
 	 */
 	public function updateCompiledCss()
 	{

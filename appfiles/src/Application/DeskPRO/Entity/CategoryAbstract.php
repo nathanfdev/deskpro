@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
 use Application\DeskPRO\Translate\Translate;
@@ -24,62 +26,62 @@ use Orb\Util\Util;
  * by a Doctrine NestedSet implementation
  *
  * @gedmo:Tree(type="nested")
- * @orm:MappedSuperclass
+ * @ORM_Mapping\MappedSuperclass
  */
 class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="display_order", type="integer")
+	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
 	// IMPLEMENT IN CHILDREN : Limitation of doctrine mapping, you have to map these with the correct targets
 	///**
 	// * @gedmo:TreeParent
-	// * @orm:ManyToOne(targetEntity="CategoryAbstract", inversedBy="children")
+	// * @ORM_Mapping\ManyToOne(targetEntity="CategoryAbstract", inversedBy="children")
 	// */
 	//protected $parent;
 	//
 	///**
-	// * @orm:OneToMany(targetEntity="CategoryAbstract", mappedBy="parent")
-	// * @orm:OrderBy({"lft" = "ASC"})
+	// * @ORM_Mapping\OneToMany(targetEntity="CategoryAbstract", mappedBy="parent")
+	// * @ORM_Mapping\OrderBy({"lft" = "ASC"})
 	// */
 	//protected $children;
 
 	/**
 	 * @gedmo:TreeRoot
-	 * @orm:Column(name="root", type="integer", nullable=true)
+	 * @ORM_Mapping\Column(name="root", type="integer", nullable=true)
 	 */
 	protected $root;
 
 	/**
 	 * @gedmo:TreeLevel
-	 * @orm:Column(name="depth", type="integer")
+	 * @ORM_Mapping\Column(name="depth", type="integer")
 	 */
 	protected $depth;
 
 	/**
 	 * @gedmo:TreeLeft
-	 * @orm:Column(name="lft", type="integer")
+	 * @ORM_Mapping\Column(name="lft", type="integer")
 	 */
 	protected $lft;
 
 	/**
 	 * @gedmo:TreeRight
-	 * @orm:Column(name="rgt", type="integer")
+	 * @ORM_Mapping\Column(name="rgt", type="integer")
 	 */
 	protected $rgt;
 

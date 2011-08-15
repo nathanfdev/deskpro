@@ -12,49 +12,51 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
 /**
  * Twitter Status Mention
  *
- * @orm:Entity
- * @orm:Table(name="twitter_statuses_mentions")
- * @orm:HasLifecycleCallbacks
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="twitter_statuses_mentions")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class TwitterStatusMention extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var integer
-	 * @orm:Id
-	 * @orm:GeneratedValue(strategy="AUTO")
-	 * @orm:Column(name="id", type="bigint")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\GeneratedValue(strategy="AUTO")
+	 * @ORM_Mapping\Column(name="id", type="bigint")
 	 */
 	protected $id;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterStatus
-	 * @orm:ManyToOne(targetEntity="TwitterStatus", inversedBy="mentions")
-	 * @orm:JoinColumn(name="status_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterStatus", inversedBy="mentions")
+	 * @ORM_Mapping\JoinColumn(name="status_id", referencedColumnName="id")
 	 */
 	protected $status;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TwitterUser
-	 * @orm:ManyToOne(targetEntity="TwitterUser", inversedBy="mentions")
-	 * @orm:JoinColumn(name="user_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TwitterUser", inversedBy="mentions")
+	 * @ORM_Mapping\JoinColumn(name="user_id", referencedColumnName="id")
 	 */
 	protected $user;
 
 	/**
 	 * @var integer
-	 * @orm:Column(name="starts", type="integer")
+	 * @ORM_Mapping\Column(name="starts", type="integer")
 	 */
 	protected $starts = 0;
 
 	/**
 	 * @var integer
-	 * @orm:Column(name="ends", type="integer")
+	 * @ORM_Mapping\Column(name="ends", type="integer")
 	 */
 	protected $ends = 0;
 

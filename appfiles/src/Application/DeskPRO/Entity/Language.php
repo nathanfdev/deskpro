@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use \Symfony\Component\Validator\Constraints;
@@ -23,9 +25,9 @@ use Orb\Util\Arrays;
  * A language is just a collection of phrases. For other internationalization
  * features, the Locale is used.
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="languages")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="languages")
  */
 class Language extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -33,16 +35,16 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var Style
-	 * @orm:ManyToOne(targetEntity="Language")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Language")
+	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 
@@ -50,7 +52,7 @@ class Language extends \Application\DeskPRO\Domain\DomainObject
 	 * Title of the language
 	 *
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 

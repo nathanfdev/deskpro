@@ -11,18 +11,20 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Task-Ticket association class.
  *
- * @orm:Entity
+ * @ORM_Mapping\Entity
  */
 class TaskAssociatedTicket extends TaskAssociation
 {
   
   /**
    * @var Application\DeskPRO\Entity\Ticket
-   * @orm:ManyToOne(targetEntity="Ticket", inversedBy="task_associations")
-   * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
+   * @ORM_Mapping\ManyToOne(targetEntity="Ticket", inversedBy="task_associations")
+   * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
    */
   protected $ticket;
   

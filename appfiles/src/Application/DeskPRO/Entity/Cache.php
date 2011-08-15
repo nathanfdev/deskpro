@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use \Orb\Util\Strings;
@@ -18,27 +20,27 @@ use \Orb\Util\Strings;
 /**
  * A simple DB table cache for k=>v
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Cache")
- * @orm:Table(name="cache")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Cache")
+ * @ORM_Mapping\Table(name="cache")
  */
 class Cache extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id
-	 * @orm:Column(name="id", type="string", length=100)
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="id", type="string", length=100)
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="data", type="array")
+	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_expire",type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="date_expire",type="datetime", nullable=true)
 	 */
 	protected $date_expire;
 

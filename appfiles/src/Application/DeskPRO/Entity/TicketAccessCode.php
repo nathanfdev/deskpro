@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Orb\Util\Util;
 use Orb\Util\Strings;
 
@@ -23,34 +25,34 @@ use Application\DeskPRO\App;
  *
  * So there's TAC's (this) and PTAC's (public ticket access code) that is attached to the ticket.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAccessCode")
- * @orm:Table(name="ticket_access_codes")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAccessCode")
+ * @ORM_Mapping\Table(name="ticket_access_codes")
  */
 class TicketAccessCode extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @orm:ManyToOne(targetEntity="Ticket")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
+	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="auth", type="string", length=20)
+	 * @ORM_Mapping\Column(name="auth", type="string", length=20)
 	 */
 	protected $auth;
 

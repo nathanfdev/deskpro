@@ -10,20 +10,22 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * A note is a private note added by an agent to a persons account.
  *
- * @orm:Entity
- * @orm:Table(name="organization_notes")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="organization_notes")
  */
 class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -31,8 +33,8 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The org the note is attached to.
 	 * 
 	 * @var \Application\DeskPRO\Entity\Organization
-	 * @orm:ManyToOne(targetEntity="Organization")
-	 * @orm:JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Organization")
+	 * @ORM_Mapping\JoinColumn(name="organization_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $organization;
 
@@ -40,14 +42,14 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The agent that added the note
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -55,7 +57,7 @@ class OrganizationNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The note contents
 	 *
 	 * @var string
-	 * @orm:Column(name="note", type="string")
+	 * @ORM_Mapping\Column(name="note", type="string")
 	 */
 	protected $note;
 

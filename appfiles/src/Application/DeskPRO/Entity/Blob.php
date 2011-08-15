@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 use Orb\Util\Strings;
 use Orb\Util\Numbers;
@@ -20,14 +22,14 @@ use Application\DeskPRO\Entity\LabelBlob;
 /**
  * A blob is just a pointer to data.
  *
- * @orm:Entity
- * @orm:Table(name="blobs")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="blobs")
  */
 class Blob extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -37,8 +39,8 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * is linked here.
 	 *
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @orm:ManyToOne(targetEntity="Blob", fetch="EAGER")
-	 * @orm:JoinColumn(name="original_blob_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Blob", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="original_blob_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $original_blob;
 
@@ -46,7 +48,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * The path to the file if it's not stored in the database.
 	 *
 	 * @var string
-	 * @orm:Column(name="save_path", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Column(name="save_path", type="string", length=255, nullable=true)
 	 */
 	protected $save_path = null;
 
@@ -54,7 +56,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * The original filename
 	 *
 	 * @var string
-	 * @orm:Column(name="filename", type="string", length=120)
+	 * @ORM_Mapping\Column(name="filename", type="string", length=120)
 	 */
 	protected $filename = null;
 
@@ -62,7 +64,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * The file size
 	 *
 	 * @var int
-	 * @orm:Column(name="filesize", type="integer")
+	 * @ORM_Mapping\Column(name="filesize", type="integer")
 	 */
 	protected $filesize;
 
@@ -70,13 +72,13 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * The files mimetype
 	 *
 	 * @var string
-	 * @orm:Column(name="content_type", type="string", length=50)
+	 * @ORM_Mapping\Column(name="content_type", type="string", length=50)
 	 */
 	protected $content_type = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="authcode", type="string", length="20")
+	 * @ORM_Mapping\Column(name="authcode", type="string", length="20")
 	 */
 	protected $authcode;
 
@@ -84,14 +86,14 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * Is this a media upload (appears in the media browser etc). These are files that were
 	 * uploaded and are attached to things.
 	 * 
-	 * @orm:Column(name="is_media_upload", type="boolean")
+	 * @ORM_Mapping\Column(name="is_media_upload", type="boolean")
 	 */
 	protected $is_media_upload = false;
 
 	/**
 	 * The title of this file used in interfaces if its a media upload
 	 *
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title = '';
 
@@ -99,7 +101,7 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * If this type of file has dimentions, the width
 	 *
 	 * @var int
-	 * @orm:Column(name="dim_w", type="integer")
+	 * @ORM_Mapping\Column(name="dim_w", type="integer")
 	 */
 	protected $dim_w = 0;
 
@@ -107,18 +109,18 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	 * If this type of file has dimentions, the height
 	 *
 	 * @var int
-	 * @orm:Column(name="dim_h", type="integer")
+	 * @ORM_Mapping\Column(name="dim_h", type="integer")
 	 */
 	protected $dim_h = 0;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
-	 * @orm:OneToMany(targetEntity="LabelBlob", mappedBy="blob", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="LabelBlob", mappedBy="blob", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 

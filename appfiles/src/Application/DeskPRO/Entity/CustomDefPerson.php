@@ -10,22 +10,24 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * A custom field definition
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefPerson")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="custom_def_people")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefPerson")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="custom_def_people")
  */
 class CustomDefPerson extends CustomDefAbstract
 {
 	/**
 	 * @var CustomDefPeople
-	 * @orm:ManyToOne(targetEntity="CustomDefPerson", inversedBy="children", fetch="EAGER")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefPerson", inversedBy="children", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 
@@ -33,7 +35,7 @@ class CustomDefPerson extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="CustomDefTicket", mappedBy="parent", cascade={"persist", "remove", "merge"}, fetch="EAGER")
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefTicket", mappedBy="parent", cascade={"persist", "remove", "merge"}, fetch="EAGER")
 	 */
 	protected $children = null;
 }

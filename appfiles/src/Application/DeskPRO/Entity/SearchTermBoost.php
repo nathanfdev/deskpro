@@ -11,11 +11,13 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Stores which documents have been boosted, and by which terms
  *
- * @orm:Entity
- * @orm:Table(name="search_term_boosters")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="search_term_boosters")
  * @Orm:HasLifecycleCallbacks
  */
 class SearchTermBoosters extends \Application\DeskPRO\Domain\DomainObject
@@ -35,15 +37,15 @@ class SearchTermBoosters extends \Application\DeskPRO\Domain\DomainObject
 	
 	/**
 	 * @var string
-	 * @orm:Column(name="object_type", type="string", length=100)
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="object_type", type="string", length=100)
+	 * @ORM_Mapping\Id
 	 */
 	protected $object_type;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="object_id", type="integer")
-	 * @orm:Id
+	 * @ORM_Mapping\Column(name="object_id", type="integer")
+	 * @ORM_Mapping\Id
 	 */
 	protected $object_id = null;
 
@@ -53,13 +55,13 @@ class SearchTermBoosters extends \Application\DeskPRO\Domain\DomainObject
 	 * If not, then the b
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_user", type="boolean")
+	 * @ORM_Mapping\Column(name="is_user", type="boolean")
 	 */
 	protected $boosted_method = false;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="boosted_terms", type="string", length=255)
+	 * @ORM_Mapping\Column(name="boosted_terms", type="string", length=255)
 	 */
 	protected $boosted_terms;
 }

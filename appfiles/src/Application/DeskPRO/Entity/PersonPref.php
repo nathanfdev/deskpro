@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -20,17 +22,17 @@ use Orb\Util\Arrays;
  * Every person can have various data or preferences associated with their account.
  * These are just key value pairs basically.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonPref")
- * @orm:Table(name="people_prefs")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonPref")
+ * @ORM_Mapping\Table(name="people_prefs")
  */
 class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 {
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="Person", inversedBy="preferences")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="preferences")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -38,8 +40,8 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the pref
 	 *
 	 * @var string
-	 * @orm:Id
-	 * @orm:Column(name="name", type="string", length=255)
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name;
 
@@ -47,7 +49,7 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	 * String value
 	 *
 	 * @var string
-	 * @orm:Column(name="value_str", type="text", nullable=true)
+	 * @ORM_Mapping\Column(name="value_str", type="text", nullable=true)
 	 */
 	protected $value_str = null;
 
@@ -55,13 +57,13 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	 * Array value
 	 *
 	 * @var array
-	 * @orm:Column(name="value_array", type="array", nullable=true)
+	 * @ORM_Mapping\Column(name="value_array", type="array", nullable=true)
 	 */
 	protected $value_array = null;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_expire",type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="date_expire",type="datetime", nullable=true)
 	 */
 	protected $date_expire = null;
 

@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * This tracks associations between a Person and a PersonScraper.
  *
@@ -19,9 +21,9 @@ namespace Application\DeskPRO\Entity;
  * because technically Usersources and PersonScrapers are two distinct subsystems,
  * we just offer a way to tie them together aesthetically because they are often found together.
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="person_scraper_assoc")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="person_scraper_assoc")
  */
 class PersonScraperAssoc
 {
@@ -29,15 +31,15 @@ class PersonScraperAssoc
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id;
 
 	/**
 	 * @var Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", inversedBy="emails")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", inversedBy="emails")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -45,15 +47,15 @@ class PersonScraperAssoc
 	 * The scraper the person is connected to
 	 *
 	 * @var Usersource
-	 * @orm:OneToOne(targetEntity="Usersource")
-	 * @orm:JoinColumn(name="person_scraper_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="Usersource")
+	 * @ORM_Mapping\JoinColumn(name="person_scraper_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $scraper;
 
 	/**
 	 * The person scraper ID
 	 * @var int
-	 * @orm:Column(name="person_scraper_id", type="integer")
+	 * @ORM_Mapping\Column(name="person_scraper_id", type="integer")
 	 */
 	protected $person_scraper_id;
 
@@ -65,8 +67,8 @@ class PersonScraperAssoc
 	 * auto-discovery attempts.
 	 *
 	 * @var string
-	 * @orm:Index
-	 * @orm:Column(name="identity", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Index
+	 * @ORM_Mapping\Column(name="identity", type="string", length=255, nullable=true)
 	 */
 	protected $identity;
 
@@ -76,7 +78,7 @@ class PersonScraperAssoc
 	 * not the raw JSON string).
 	 *
 	 * @var array
-	 * @orm:Column(name="raw_data", type="array")
+	 * @ORM_Mapping\Column(name="raw_data", type="array")
 	 */
 	protected $data = array();
 
@@ -84,7 +86,7 @@ class PersonScraperAssoc
 	 * When the record was first created in the system
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="created_at", type="datetime")
+	 * @ORM_Mapping\Column(name="created_at", type="datetime")
 	 */
 	protected $created_at;
 
@@ -92,7 +94,7 @@ class PersonScraperAssoc
 	 * When the record was last updated in the system.
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="updated_at", type="datetime")
+	 * @ORM_Mapping\Column(name="updated_at", type="datetime")
 	 */
 	protected $updated_at;
 
@@ -100,7 +102,7 @@ class PersonScraperAssoc
 	 * If the remote resource reports when it was created, this is when
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="remote_created_at", type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="remote_created_at", type="datetime", nullable=true)
 	 */
 	protected $remote_created_at = null;
 
@@ -108,7 +110,7 @@ class PersonScraperAssoc
 	 * If the remote resource reports when it was updated, this is when.
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="remote_updated_at", type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="remote_updated_at", type="datetime", nullable=true)
 	 */
 	protected $remote_updated_at = null;
 
@@ -119,7 +121,7 @@ class PersonScraperAssoc
 	}
 
 
-	/** @orm:PrePersist */
+	/** @ORM_Mapping\PrePersist */
 	public function __incCreatedAt()
 	{
 		if (!$this->created_at) {
@@ -128,7 +130,7 @@ class PersonScraperAssoc
 		$this->updated_at = new \DateTime();
 	}
 
-	/** @orm:PreUpdate */
+	/** @ORM_Mapping\PreUpdate */
 	public function __incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

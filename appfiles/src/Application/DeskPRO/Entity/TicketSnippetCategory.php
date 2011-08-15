@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Orb\Util\Arrays;
 
 use Application\DeskPRO\App;
@@ -19,14 +21,14 @@ use Application\DeskPRO\Tickets\TicketActions\ActionsFactory;
 use Application\DeskPRO\Tickets\TicketActions\ActionsCollection;
 
 /**
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketSnippetCategory")
- * @orm:Table(name="ticket_snippet_categories")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketSnippetCategory")
+ * @ORM_Mapping\Table(name="ticket_snippet_categories")
  */
 class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 	
@@ -34,8 +36,8 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * Who created the cat
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
@@ -43,8 +45,8 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * Teams who can use this snippet
 	 *
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="AgentTeam", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="ticket_snippetcat_to_team", joinColumns={@orm:JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")})
+	 * @ORM_Mapping\ManyToMany(targetEntity="AgentTeam", cascade={"persist", "remove", "merge"})
+     * @ORM_Mapping\JoinTable(name="ticket_snippetcat_to_team", joinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="team_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $agent_teams = null;
 
@@ -52,13 +54,13 @@ class TicketSnippetCategory extends \Application\DeskPRO\Domain\DomainObject
 	 * Everyone can see it?
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_global", type="boolean")
+	 * @ORM_Mapping\Column(name="is_global", type="boolean")
 	 */
 	protected $is_global = false;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 

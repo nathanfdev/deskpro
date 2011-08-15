@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Markdown;
@@ -21,40 +23,40 @@ use Orb\Util\Arrays;
 /**
  * News
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\News")
- * @orm:Table(name="news")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\News")
+ * @ORM_Mapping\Table(name="news")
  */
 class News extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\NewsCategory
-	 * @orm:ManyToOne(targetEntity="NewsCategory", fetch="EAGER")
-	 * @orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="NewsCategory", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $category;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="content", type="text")
+	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content;
 
@@ -62,18 +64,18 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	 * Is the news item currently listed for users to read?
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_published", type="boolean")
+	 * @ORM_Mapping\Column(name="is_published", type="boolean")
 	 */
 	protected $is_published = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
-	 * @orm:OneToMany(targetEntity="LabelNews", mappedBy="news", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="LabelNews", mappedBy="news", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 

@@ -11,25 +11,27 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * A usermask is applied to a specific user to override permissions set by a usergroup.
  *
- * @orm:Entity
- * @orm:Table(name="user_masks")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="user_masks")
  */
 class UserMask extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:OneToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
-	 * @orm:Id
+	 * @ORM_Mapping\OneToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
 	 */
 	protected $person;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="overrides", type="array")
+	 * @ORM_Mapping\Column(name="overrides", type="array")
 	 */
 	protected $overrides = array();
 }

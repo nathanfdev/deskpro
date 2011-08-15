@@ -10,21 +10,23 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * A custom field definition
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefOrganization")
- * @orm:Table(name="custom_def_organizations")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\CustomDefOrganization")
+ * @ORM_Mapping\Table(name="custom_def_organizations")
  */
 class CustomDefOrganization extends CustomDefAbstract
 {
 	/**
 	 * @var CustomDefOrganization
-	 * @orm:ManyToOne(targetEntity="CustomDefOrganization", inversedBy="children")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefOrganization", inversedBy="children")
+	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent = null;
 
@@ -32,7 +34,7 @@ class CustomDefOrganization extends CustomDefAbstract
 	 * Field children
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="CustomDefOrganization", mappedBy="parent", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="CustomDefOrganization", mappedBy="parent", cascade={"persist", "remove", "merge"})
 	 */
 	protected $children = null;
 }

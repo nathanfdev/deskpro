@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\ClientMessage\Generator\Chat as ChatClientMessageGenerator;
 
@@ -19,9 +21,9 @@ use Orb\Util\Strings;
 /**
  * A conversation between one or more people
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ChatConversation")
- * @orm:Table(name="chat_conversations")
- * @orm:HasLifecycleCallbacks
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ChatConversation")
+ * @ORM_Mapping\Table(name="chat_conversations")
+ * @ORM_Mapping\HasLifecycleCallbacks
  */
 class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -30,27 +32,27 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Id
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Department
-	 * @orm:ManyToOne(targetEntity="Department", fetch="EAGER")
-	 * @orm:JoinColumn(name="department_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Department", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="department_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $department = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="subject", type="string", length=255)
+	 * @ORM_Mapping\Column(name="subject", type="string", length=255)
 	 */
 	protected $subject = '';
 
 	/**
 	 * @var string
-	 * @orm:Column(name="status", type="string", length=15)
+	 * @ORM_Mapping\Column(name="status", type="string", length=15)
 	 */
 	protected $status = 'open';
 
@@ -58,8 +60,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a user conversation, this is the agent assigned.
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent = null;
 
@@ -67,8 +69,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a user conversation, this is the user who started the chat
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
@@ -76,8 +78,8 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * If this is a user convo, this is the users session
 	 *
 	 * @var \Application\DeskPRO\Entity\Session
-	 * @orm:ManyToOne(targetEntity="Session")
-	 * @orm:JoinColumn(name="session_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Session")
+	 * @ORM_Mapping\JoinColumn(name="session_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $session = null;
 
@@ -85,7 +87,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * User chat: The users name, if they arent a person
 	 * 
 	 * @var string
-	 * @orm:Column(name="person_name", type="string", length=255)
+	 * @ORM_Mapping\Column(name="person_name", type="string", length=255)
 	 */
 	protected $person_name = '';
 
@@ -93,7 +95,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * User chat: The users email, if they arent a person
 	 *
 	 * @var string
-	 * @orm:Column(name="person_email", type="string", length=255)
+	 * @ORM_Mapping\Column(name="person_email", type="string", length=255)
 	 */
 	protected $person_email = '';
 
@@ -101,20 +103,20 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * ...and this is the users visitor
 	 *
 	 * @var \Application\DeskPRO\Entity\Visitor
-	 * @orm:ManyToOne(targetEntity="Visitor")
-	 * @orm:JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Visitor")
+	 * @ORM_Mapping\JoinColumn(name="visitor_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $visitor = null;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="Person", cascade={"all"})
-     * @orm:JoinTable(name="chat_conversation_to_person", joinColumns={@orm:JoinColumn(name="conversation_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
+	 * @ORM_Mapping\ManyToMany(targetEntity="Person", cascade={"all"})
+     * @ORM_Mapping\JoinTable(name="chat_conversation_to_person", joinColumns={@ORM_Mapping\JoinColumn(name="conversation_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $participants;
 
 	/**
-	 * @orm:OneToMany(targetEntity="ChatMessage", mappedBy="conversation", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="ChatMessage", mappedBy="conversation", cascade={"persist", "remove", "merge"})
 	 */
 	protected $messages;
 
@@ -122,7 +124,7 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * Is this an agent chat
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_agent", type="boolean")
+	 * @ORM_Mapping\Column(name="is_agent", type="boolean")
 	 */
 	protected $is_agent = false;
 
@@ -131,31 +133,31 @@ class ChatConversation extends \Application\DeskPRO\Domain\DomainObject
 	 * This is used to make sure the JS widget on pages doesn't load again.
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_window", type="boolean")
+	 * @ORM_Mapping\Column(name="is_window", type="boolean")
 	 */
 	protected $is_window = false;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_assigned",type="datetime",nullable=true)
+	 * @ORM_Mapping\Column(name="date_assigned",type="datetime",nullable=true)
 	 */
 	protected $date_assigned;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_first_agent_message",type="datetime",nullable=true)
+	 * @ORM_Mapping\Column(name="date_first_agent_message",type="datetime",nullable=true)
 	 */
 	protected $date_first_agent_message;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_ended",type="datetime",nullable=true)
+	 * @ORM_Mapping\Column(name="date_ended",type="datetime",nullable=true)
 	 */
 	protected $date_ended;
 

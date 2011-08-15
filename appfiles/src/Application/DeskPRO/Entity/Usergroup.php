@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -19,9 +21,9 @@ use Orb\Util\Arrays;
 /**
  * A usergroup is any way to group related users together. Not necessarily just for permissions.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Usergroup")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="usergroups")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Usergroup")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="usergroups")
  */
 class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -34,9 +36,9 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -44,7 +46,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * Title of the usergroup
 	 *
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -52,7 +54,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * A note or description about the usergroup
 	 *
 	 * @var string
-	 * @orm:Column(name="note", type="text")
+	 * @ORM_Mapping\Column(name="note", type="text")
 	 */
 	protected $note = '';
 
@@ -60,7 +62,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * Is this an agent group?
 	 *
 	 * @var bool
-	 * @orm:Column(name="is_agent_group", type="boolean")
+	 * @ORM_Mapping\Column(name="is_agent_group", type="boolean")
 	 */
 	protected $is_agent_group = false;
 
@@ -68,7 +70,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * When non-null, the group is a special system group (hidden from most interfaces).
 	 * 
 	 * @var bool
-	 * @orm:Column(name="sys_name", type="string", length="50", nullable=true)
+	 * @ORM_Mapping\Column(name="sys_name", type="string", length="50", nullable=true)
 	 */
 	protected $sys_name = null;
 
@@ -76,7 +78,7 @@ class Usergroup extends \Application\DeskPRO\Domain\DomainObject
 	 * Properties attached to this usergroup
 	 *
 	 * @var Application\DeskPRO\Entity\UsergroupProperty
-	 * @orm:OneToMany(targetEntity="UsergroupProperty", mappedBy="usergroup", cascade={"persist", "remove"})
+	 * @ORM_Mapping\OneToMany(targetEntity="UsergroupProperty", mappedBy="usergroup", cascade={"persist", "remove"})
 	 */
 	protected $properties;
 

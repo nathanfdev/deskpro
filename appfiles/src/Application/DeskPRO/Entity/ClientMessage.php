@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use \Orb\Util\Strings;
@@ -33,15 +35,15 @@ use \Orb\Util\Strings;
  * and the client would later request the full information as an HTTP request or by pushing
  * the ID through the socket.
  *
- * @orm:HasLifecycleCallbacks
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ClientMessage")
- * @orm:Table(name="client_messages")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ClientMessage")
+ * @ORM_Mapping\Table(name="client_messages")
  */
 class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -49,7 +51,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * The channel the message is placed in.
 	 *
 	 * @var string
-	 * @orm:Column(name="channel", type="string", length=255)
+	 * @ORM_Mapping\Column(name="channel", type="string", length=255)
 	 */
 	protected $channel;
 
@@ -58,13 +60,13 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * original push sent only a short.
 	 *
 	 * @var string
-	 * @orm:Column(name="auth", type="string", length=15)
+	 * @ORM_Mapping\Column(name="auth", type="string", length=15)
 	 */
 	protected $auth;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="handler_class", type="string", length=255)
+	 * @ORM_Mapping\Column(name="handler_class", type="string", length=255)
 	 */
 	protected $handler_class = 'Application\\DeskPRO\\ClientMessage\\MessageHandler\\BasicArray';
 
@@ -72,7 +74,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * Data to give the handler
 	 *
 	 * @var array
-	 * @orm:Column(name="data", type="array")
+	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data = array();
 
@@ -80,7 +82,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * The client ID (usully sessionid) that created this message.
 	 * This is so when we fetch messages, we don't get our own messages back.
 	 *
-	 * @orm:Column(name="created_by_client", type="string", length=255)
+	 * @ORM_Mapping\Column(name="created_by_client", type="string", length=255)
 	 */
 	protected $created_by_client = '';
 
@@ -88,7 +90,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * The client ID (usully sessionid) that this message is for
 	 * specifically.
 	 *
-	 * @orm:Column(name="for_client", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Column(name="for_client", type="string", length=255, nullable=true)
 	 */
 	protected $for_client;
 
@@ -96,19 +98,19 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 	 * Who this message is for specifically
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="for_person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="for_person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $for_person;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
-	 * Event manager. This is used in the postInsert callback to notify
+	 * Event manager. This is used in the PostPersist callback to notify
 	 * any listeners. For example, if the web socket server is enabled,
 	 * it'll listen to this even and can handle pushing the message through
 	 * to clients.
@@ -143,7 +145,7 @@ class ClientMessage extends \Application\DeskPRO\Domain\DomainObject
 
 
 	/**
-	 * @orm:postInsert
+	 * @ORM_Mapping\PostPersist
 	 */
 	public function notifyMessageServers()
 	{

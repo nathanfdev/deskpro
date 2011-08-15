@@ -11,24 +11,26 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Ticket attachments
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAttachment")
- * @orm:Table(name="tickets_attachments")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\TicketAttachment")
+ * @ORM_Mapping\Table(name="tickets_attachments")
  */
 class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @orm:ManyToOne(targetEntity="Ticket")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
+	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket;
 
@@ -36,22 +38,22 @@ class TicketAttachment extends \Application\DeskPRO\Domain\DomainObject
 	 * Who created the attachment
 	 *
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @orm:ManyToOne(targetEntity="Blob", fetch="EAGER")
-	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Blob", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketMessage
-	 * @orm:ManyToOne(targetEntity="TicketMessage", fetch="EAGER")
-	 * @orm:JoinColumn(name="message_id", referencedColumnName="id")
+	 * @ORM_Mapping\ManyToOne(targetEntity="TicketMessage", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="message_id", referencedColumnName="id")
 	 */
 	protected $message = null;
 

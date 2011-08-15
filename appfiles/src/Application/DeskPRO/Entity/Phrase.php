@@ -10,15 +10,17 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * Templates used in the system
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Phrase")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="phrases")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Phrase")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="phrases")
  */
 class Phrase extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -26,8 +28,8 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 	
@@ -35,8 +37,8 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	 * The language this phrase belongs to
 	 *
 	 * @var Language
-	 * @orm:ManyToOne(targetEntity="Language")
-	 * @orm:JoinColumn(name="language_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Language")
+	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $language;
 
@@ -44,7 +46,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	 * The name of the phrase
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=255)
+	 * @ORM_Mapping\Column(name="name", type="string", length=255)
 	 */
 	protected $name = null;
 
@@ -53,26 +55,26 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 	 * before the first dot in the name. deskpro.profile, the group is 'deskpro'
 	 *
 	 * @var string
-	 * @orm:Index
-	 * @orm:Column(name="groupname", type="string", length=255, nullable=true)
+	 * @ORM_Mapping\Index
+	 * @ORM_Mapping\Column(name="groupname", type="string", length=255, nullable=true)
 	 */
 	protected $groupname;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="phrase", type="text")
+	 * @ORM_Mapping\Column(name="phrase", type="text")
 	 */
 	protected $phrase;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="created_at",type="datetime")
+	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="updated_at",type="datetime")
+	 * @ORM_Mapping\Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 
@@ -92,7 +94,7 @@ class Phrase extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	/** @orm:PreUpdate */
+	/** @ORM_Mapping\PreUpdate */
 	public function incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

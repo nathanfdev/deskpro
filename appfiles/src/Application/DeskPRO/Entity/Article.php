@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\Markdown;
@@ -20,8 +22,8 @@ use \Orb\Util\Strings;
 /**
  * Article
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Article")
- * @orm:Table(name="articles")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Article")
+ * @ORM_Mapping\Table(name="articles")
  */
 class Article extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -42,64 +44,64 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="Product", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="article_to_product", joinColumns={@orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="product_id", referencedColumnName="id", onDelete="cascade")})
+	 * @ORM_Mapping\ManyToMany(targetEntity="Product", cascade={"persist", "remove", "merge"})
+     * @ORM_Mapping\JoinTable(name="article_to_product", joinColumns={@ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="product_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $products;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @orm:OneToMany(targetEntity="ArticleRevision", mappedBy="article", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="ArticleRevision", mappedBy="article", cascade={"persist", "remove", "merge"})
 	 */
 	protected $revisions;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var Language
-	 * @orm:ManyToOne(targetEntity="Language")
-	 * @orm:JoinColumn(name="language_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Language")
+	 * @ORM_Mapping\JoinColumn(name="language_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $language = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="markup_mode", type="string", length=15)
+	 * @ORM_Mapping\Column(name="markup_mode", type="string", length=15)
 	 */
 	protected $markup_mode = 'markdown';
 
 	/**
 	 * @var string
-	 * @orm:Column(name="slug", type="string", length=100)
+	 * @ORM_Mapping\Column(name="slug", type="string", length=100)
 	 */
 	protected $slug;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="excerpt", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="excerpt", type="string", length=1000)
 	 */
 	protected $excerpt = '';
 
 	/**
 	 * @var string
-	 * @orm:Column(name="content", type="text")
+	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content;
 
@@ -107,7 +109,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 * View counts
 	 *
 	 * @var string
-	 * @orm:Column(name="view_count", type="integer")
+	 * @ORM_Mapping\Column(name="view_count", type="integer")
 	 */
 	protected $view_count = 0;
 
@@ -115,7 +117,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 * Total rating
 	 *
 	 * @var string
-	 * @orm:Column(name="total_rating", type="integer")
+	 * @ORM_Mapping\Column(name="total_rating", type="integer")
 	 */
 	protected $total_rating = 0;
 
@@ -123,20 +125,20 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 * Total rating
 	 *
 	 * @var string
-	 * @orm:Column(name="num_ratings", type="integer")
+	 * @ORM_Mapping\Column(name="num_ratings", type="integer")
 	 */
 	protected $num_ratings = 0;
 
 
 	/**
 	 * @var string
-	 * @orm:Column(name="status", type="string", length=15)
+	 * @ORM_Mapping\Column(name="status", type="string", length=15)
 	 */
 	protected $status;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="hidden_status", type="string", length=15, nullable=true)
+	 * @ORM_Mapping\Column(name="hidden_status", type="string", length=15, nullable=true)
 	 */
 	protected $hidden_status = null;
 
@@ -144,43 +146,43 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 * Display order of this article. This is mostly used in books.
 	 * 
 	 * @var string
-	 * @orm:Column(name="display_order", type="integer")
+	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_published",type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="date_published",type="datetime", nullable=true)
 	 */
 	protected $date_published;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_end",type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="date_end",type="datetime", nullable=true)
 	 */
 	protected $date_end;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="end_action", type="string", length=10, nullable=true)
+	 * @ORM_Mapping\Column(name="end_action", type="string", length=10, nullable=true)
 	 */
 	protected $end_action = null;
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @orm:ManyToMany(targetEntity="ArticleCategory", cascade={"persist", "remove", "merge"})
-     * @orm:JoinTable(name="article_to_categories", joinColumns={@orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@orm:JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")})
+	 * @ORM_Mapping\ManyToMany(targetEntity="ArticleCategory", cascade={"persist", "remove", "merge"})
+     * @ORM_Mapping\JoinTable(name="article_to_categories", joinColumns={@ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $categories;
 
 	/**
-	 * @orm:OneToMany(targetEntity="LabelArticle", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
+	 * @ORM_Mapping\OneToMany(targetEntity="LabelArticle", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
 

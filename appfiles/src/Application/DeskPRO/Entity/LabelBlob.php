@@ -11,12 +11,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Labels on blobs
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="labels_blobs")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="labels_blobs")
  */
 class LabelBlob extends LabelAssocAbstract
 {
@@ -24,9 +26,9 @@ class LabelBlob extends LabelAssocAbstract
 	
 	/**
 	 * @var \Application\DeskPRO\Entity\Blob
-	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="Blob")
-	 * @orm:JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Blob")
+	 * @ORM_Mapping\JoinColumn(name="blob_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $blob;
 }

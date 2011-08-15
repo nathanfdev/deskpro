@@ -10,27 +10,29 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * A single table that controls subscriptions to all common content types
  * 
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ContentSubscription")
- * @orm:Table(name="content_subscriptions")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ContentSubscription")
+ * @ORM_Mapping\Table(name="content_subscriptions")
  */
 class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -38,7 +40,7 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * Enable email notifications for the subscription
 	 *
 	 * @var bool
-	 * @orm:Column(name="use_email", type="boolean")
+	 * @ORM_Mapping\Column(name="use_email", type="boolean")
 	 */
 	protected $use_email = false;
 
@@ -46,7 +48,7 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time the user dismissed a notice about this sub
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="last_dismiss_date",type="datetime")
+	 * @ORM_Mapping\Column(name="last_dismiss_date",type="datetime")
 	 */
 	protected $last_dismiss_date;
 
@@ -54,7 +56,7 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time we emailed the user about this sub
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="last_email_date",type="datetime")
+	 * @ORM_Mapping\Column(name="last_email_date",type="datetime")
 	 */
 	protected $last_email_date;
 
@@ -62,35 +64,35 @@ class ContentSubscription extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time the subscription was updated.
 	 * 
 	 * @var \DateTime
-	 * @orm:Column(name="updated_date",type="datetime")
+	 * @ORM_Mapping\Column(name="updated_date",type="datetime")
 	 */
 	protected $updated_date;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Article
-	 * @orm:ManyToOne(targetEntity="Article", fetch="EAGER")
-	 * @orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Article", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Download
-	 * @orm:ManyToOne(targetEntity="Download", fetch="EAGER")
-	 * @orm:JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Download", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Idea
-	 * @orm:ManyToOne(targetEntity="Idea", fetch="EAGER")
-	 * @orm:JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Idea", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $idea = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\News
-	 * @orm:ManyToOne(targetEntity="News", fetch="EAGER")
-	 * @orm:JoinColumn(name="news_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="News", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="news_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $news = null;
 

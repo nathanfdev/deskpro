@@ -11,26 +11,28 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Records labels on people.
  *
- * @orm:Entity
- * @orm:Table(name="labels_tasks")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="labels_tasks")
  */
 class LabelTask extends \Application\DeskPRO\Domain\DomainObject
 {
   /**
    * @var string
-   * @orm:Id
-   * @orm:Column(name="label", type="string", length=255)
+   * @ORM_Mapping\Id
+   * @ORM_Mapping\Column(name="label", type="string", length=255)
    */
   protected $label;
 
   /**
    * @var \Application\DeskPRO\Entity\Task
-   * @orm:Id
-   * @orm:ManyToOne(targetEntity="Task")
-   * @orm:JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
+   * @ORM_Mapping\Id
+   * @ORM_Mapping\ManyToOne(targetEntity="Task")
+   * @ORM_Mapping\JoinColumn(name="task_id", referencedColumnName="id", onDelete="cascade")
    */
   protected $task;
   

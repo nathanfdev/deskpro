@@ -10,31 +10,33 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * Logs for email gateways.
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="email_gateway_logs",
- *     indexes={@orm:Index(name="log_type_idx", columns={"log_type"})}
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="email_gateway_logs",
+ *     indexes={@ORM_Mapping\Index(name="log_type_idx", columns={"log_type"})}
  * )
  */
 class EmailGatewayLog extends CustomDefAbstract
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\EmailGateway
-	 * @orm:OneToOne(targetEntity="EmailGateway")
-	 * @orm:JoinColumn(name="gateway_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="EmailGateway")
+	 * @ORM_Mapping\JoinColumn(name="gateway_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $gateway = null;
 
@@ -42,7 +44,7 @@ class EmailGatewayLog extends CustomDefAbstract
 	 * The log message
 	 *
 	 * @var string
-	 * @orm:Column(name="message", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="message", type="string", length=1000)
 	 */
 	protected $message;
 
@@ -50,7 +52,7 @@ class EmailGatewayLog extends CustomDefAbstract
 	 * Other data, such as backtrace or debug info
 	 *
 	 * @var string
-	 * @orm:Column(name="data", type="array")
+	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data;
 
@@ -58,7 +60,7 @@ class EmailGatewayLog extends CustomDefAbstract
 	 * The log type
 	 *
 	 * @var string
-	 * @orm:Column(name="log_type", type="string", length=50)
+	 * @ORM_Mapping\Column(name="log_type", type="string", length=50)
 	 */
 	protected $log_type = 'info';
 
@@ -66,11 +68,11 @@ class EmailGatewayLog extends CustomDefAbstract
 	 * The date the user was inserted into the system
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
-	/** @orm:PrePersist */
+	/** @ORM_Mapping\PrePersist */
 	public function _prePersist()
 	{
 		if (!$this->date_created) {

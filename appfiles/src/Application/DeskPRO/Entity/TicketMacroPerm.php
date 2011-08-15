@@ -11,12 +11,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Ticket macro permissions
  *
- * @orm:Entity
- * @orm:Table(name="ticket_macros_perms",
- *     indexes={@orm:Index(name="object_idx", columns={"object_type", "object_id"})}
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="ticket_macros_perms",
+ *     indexes={@ORM_Mapping\Index(name="object_idx", columns={"object_type", "object_id"})}
  * )
  */
 class TicketMacroPerm extends \Application\DeskPRO\Domain\DomainObject
@@ -27,15 +29,15 @@ class TicketMacroPerm extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketMacro
-	 * @orm:OneToOne(targetEntity="TicketMacro")
-	 * @orm:JoinColumn(name="macro_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="TicketMacro")
+	 * @ORM_Mapping\JoinColumn(name="macro_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $macro = null;
 
@@ -44,7 +46,7 @@ class TicketMacroPerm extends \Application\DeskPRO\Domain\DomainObject
 	 * the super type, eg: tickets, people, organizations).
 	 *
 	 * @var string
-	 * @orm:Column(name="object_type", type="string", length=50)
+	 * @ORM_Mapping\Column(name="object_type", type="string", length=50)
 	 */
 	protected $object_type;
 
@@ -52,7 +54,7 @@ class TicketMacroPerm extends \Application\DeskPRO\Domain\DomainObject
 	 * The ID of the object this is attached to.
 	 *
 	 * @var int
-	 * @orm:Column(name="object_id", type="integer")
+	 * @ORM_Mapping\Column(name="object_id", type="integer")
 	 */
 	protected $object_id;
 }

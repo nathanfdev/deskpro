@@ -10,15 +10,17 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * Templates used in the system
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\Template")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="templates")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Template")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="templates")
  */
 class Template extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -26,9 +28,9 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -36,8 +38,8 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 * The style this template belongs to
 	 *
 	 * @var Style
-	 * @orm:ManyToOne(targetEntity="Style")
-	 * @orm:JoinColumn(name="style_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Style")
+	 * @ORM_Mapping\JoinColumn(name="style_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $style;
 
@@ -45,31 +47,31 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 	 * The path of the template
 	 *
 	 * @var string
-	 * @orm:Column(name="path", type="string", length=255)
+	 * @ORM_Mapping\Column(name="path", type="string", length=255)
 	 */
 	protected $path;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="template", type="text")
+	 * @ORM_Mapping\Column(name="template", type="text")
 	 */
 	protected $template = '';
 
 	/**
 	 * @var string
-	 * @orm:Column(name="template_compiled", type="text")
+	 * @ORM_Mapping\Column(name="template_compiled", type="text")
 	 */
 	protected $template_compiled = '';
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="created_at",type="datetime")
+	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="updated_at",type="datetime")
+	 * @ORM_Mapping\Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 
@@ -102,7 +104,7 @@ class Template extends \Application\DeskPRO\Domain\DomainObject
 		return $this->style ? $this->style['id'] : 0;
 	}
 
-	/** @orm:PreUpdate */
+	/** @ORM_Mapping\PreUpdate */
 	public function _incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

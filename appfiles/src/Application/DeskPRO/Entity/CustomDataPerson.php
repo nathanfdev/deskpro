@@ -11,31 +11,33 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Custom ticket data
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="custom_data_person",
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="custom_data_person",
  *     indexes={
- *         @orm:Index(name="field_id_idx", columns={"field_id","person_id"})
+ *         @ORM_Mapping\Index(name="field_id_idx", columns={"field_id","person_id"})
  * })
  */
 class CustomDataPerson extends CustomDataAbstract
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
-	 * @orm:Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
 	 */
 	protected $person;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\CustomDefPerson
-	 * @orm:ManyToOne(targetEntity="CustomDefTicket", fetch="EAGER")
-	 * @orm:JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
-	 * @orm:Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="CustomDefTicket", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="field_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
 	 */
 	protected $field = null;
 

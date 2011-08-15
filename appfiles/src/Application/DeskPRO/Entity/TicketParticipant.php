@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Orb\Util\Strings;
 
 use Application\DeskPRO\App;
@@ -18,39 +20,39 @@ use Application\DeskPRO\App;
 /**
  * Links participants to tickets
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="tickets_participants")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="tickets_participants")
  */
 class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
-	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="Ticket", inversedBy="participants")
-	 * @orm:JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket", inversedBy="participants")
+	 * @ORM_Mapping\JoinColumn(name="ticket_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $ticket = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
-	 * @orm:Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
 	 */
 	protected $person = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\TicketAccessCode
-	 * @orm:OneToOne(targetEntity="TicketAccessCode", fetch="EAGER", cascade={"persist", "remove", "merge"})
-	 * @orm:JoinColumn(name="access_code_id", referencedColumnName="id")
+	 * @ORM_Mapping\OneToOne(targetEntity="TicketAccessCode", fetch="EAGER", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\JoinColumn(name="access_code_id", referencedColumnName="id")
 	 */
 	protected $access_code = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\PersonEmail
-	 * @orm:ManyToOne(targetEntity="PersonEmail", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_email_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="PersonEmail", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_email_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $person_email = null;
 
@@ -58,7 +60,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	 * Default checkbox status of the user
 	 * 
 	 * @var bool
-	 * @orm:Column(name="default_on", type="boolean")
+	 * @ORM_Mapping\Column(name="default_on", type="boolean")
 	 */
 	protected $default_on = true;
 
@@ -99,7 +101,7 @@ class TicketParticipant extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
-	 * @orm:PrePersist
+	 * @ORM_Mapping\PrePersist
 	 */
 	public function _setAccessCode()
 	{

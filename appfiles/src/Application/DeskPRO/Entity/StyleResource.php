@@ -10,6 +10,8 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Web;
@@ -17,12 +19,9 @@ use Orb\Util\Web;
 /**
  * Settings used by the system.
  *
- * @orm:Entity
- * @InheritanceType("SINGLE_TABLE")
- * @DiscriminatorColumn(name="resource_type", type="string")
- * @DiscriminatorMap({"css" = "StyleResourceCss"})
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="style_resources")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="style_resources")
  */
 abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -30,9 +29,9 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -41,8 +40,8 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 	 * The style this template belongs to
 	 *
 	 * @var Style
-	 * @orm:OneToOne(targetEntity="Style")
-	 * @orm:JoinColumn(name="style_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="Style")
+	 * @ORM_Mapping\JoinColumn(name="style_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $style;
 
@@ -51,7 +50,7 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 	 * Title of the style
 	 *
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -60,7 +59,7 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 	 * The resource value.
 	 *
 	 * @var string
-	 * @orm:Column(name="resource", type="text", nullable=true)
+	 * @ORM_Mapping\Column(name="resource", type="text", nullable=true)
 	 */
 	protected $resource = null;
 
@@ -69,7 +68,7 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 	 * The resource value.
 	 *
 	 * @var string
-	 * @orm:Column(name="raw_resource", type="text", nullable=true)
+	 * @ORM_Mapping\Column(name="raw_resource", type="text", nullable=true)
 	 */
 	protected $raw_resource = null;
 
@@ -78,7 +77,7 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 	 * Any resource data such as options or config data used in sub-classes.
 	 *
 	 * @var array
-	 * @orm:Column(name="resource_data", type="array", nullable=true)
+	 * @ORM_Mapping\Column(name="resource_data", type="array", nullable=true)
 	 */
 	protected $resource_data = null;
 
@@ -87,21 +86,21 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 	 * Any user data such as customizations or defined options.
 	 *
 	 * @var array
-	 * @orm:Column(name="user_data", type="array", nullable=true)
+	 * @ORM_Mapping\Column(name="user_data", type="array", nullable=true)
 	 */
 	protected $user_data = null;
 
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="created_at",type="datetime")
+	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="updated_at",type="datetime")
+	 * @ORM_Mapping\Column(name="updated_at",type="datetime")
 	 */
 	protected $updated_at;
 
@@ -161,13 +160,13 @@ abstract class StyleResource extends \Application\DeskPRO\Domain\DomainObject
 
 
 	
-	/** @orm:PrePersist */
+	/** @ORM_Mapping\PrePersist */
 	public function incCreatedAt()
 	{
 		$this->created_at = $this->updated_at = new \DateTime();
 	}
 
-	/** @orm:PreUpdate */
+	/** @ORM_Mapping\PreUpdate */
 	public function incUpdatedAt()
 	{
 		$this->updated_at = new \DateTime();

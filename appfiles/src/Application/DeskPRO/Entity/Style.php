@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use \Symfony\Component\Validator\Constraints;
@@ -22,8 +24,8 @@ use \Orb\Util\Arrays;
 /**
  * Settings used by the system.
  *
- * @orm:Entity
- * @orm:Table(name="styles")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="styles")
  */
 class Style extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -31,16 +33,16 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
 	/**
 	 * @var Style
-	 * @orm:ManyToOne(targetEntity="Style")
-	 * @orm:JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Style")
+	 * @ORM_Mapping\JoinColumn(name="parent_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $parent;
 
@@ -48,7 +50,7 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	 * Title of the style
 	 *
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
@@ -56,13 +58,13 @@ class Style extends \Application\DeskPRO\Domain\DomainObject
 	 * A note or description about the style
 	 *
 	 * @var string
-	 * @orm:Column(name="note", type="text")
+	 * @ORM_Mapping\Column(name="note", type="text")
 	 */
 	protected $note = '';
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="created_at",type="datetime")
+	 * @ORM_Mapping\Column(name="created_at",type="datetime")
 	 */
 	protected $created_at;
 

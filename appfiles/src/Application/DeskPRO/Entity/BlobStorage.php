@@ -11,35 +11,37 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * When blobs are stored in the database, they are stored as muliple parts in this table.
  *
  * (Ordering is by id ASC)
  *
- * @orm:Entity
- * @orm:Table(name="blobs_storage")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="blobs_storage")
  */
 class BlobStorage extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="blob_id", type="integer")
+	 * @ORM_Mapping\Column(name="blob_id", type="integer")
 	 */
 	protected $blob_id;
 
 	/**
 	 * The users name (best guess from other sources etc)
 	 *
-	 * @TODO This needs to be a binary type
+	 * @!TODO This needs to be a binary type
 	 *
 	 * @var string
-	 * @orm:Column(name="data", type="text")
+	 * @ORM_Mapping\Column(name="data", type="text")
 	 */
 	protected $data;
 }

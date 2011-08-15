@@ -11,11 +11,13 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Records labels on people.
  *
- * @orm:Entity
- * @orm:Table(name="labels_people")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\Table(name="labels_people")
  */
 class LabelPerson extends LabelAssocAbstract
 {
@@ -23,9 +25,9 @@ class LabelPerson extends LabelAssocAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 }

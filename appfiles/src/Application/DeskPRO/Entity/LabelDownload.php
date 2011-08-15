@@ -11,12 +11,14 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 /**
  * Labels on downloads
  *
- * @orm:Entity
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="labels_downloads")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="labels_downloads")
  */
 class LabelDownload extends LabelAssocAbstract
 {
@@ -24,9 +26,9 @@ class LabelDownload extends LabelAssocAbstract
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Article
-	 * @orm:Id
-	 * @orm:ManyToOne(targetEntity="Download")
-	 * @orm:JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\Id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Download")
+	 * @ORM_Mapping\JoinColumn(name="download_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $download;
 }

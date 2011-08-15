@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity;
 use Application\DeskPRO\Markdown;
@@ -22,40 +24,40 @@ use FineDiff;
 /**
  * Tracks an article edit that needs to be validated
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleValidatingEdit")
- * @orm:Table(name="article_validating_edits")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleValidatingEdit")
+ * @ORM_Mapping\Table(name="article_validating_edits")
  */
 class ArticleValidatingEdit extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
-	 * @orm:id
-	 * @orm:ManyToOne(targetEntity="Article")
-	 * @orm:JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\id
+	 * @ORM_Mapping\ManyToOne(targetEntity="Article")
+	 * @ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $article;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="excerpt", type="string", length=1000)
+	 * @ORM_Mapping\Column(name="excerpt", type="string", length=1000)
 	 */
 	protected $excerpt = '';
 
 	/**
 	 * @var string
-	 * @orm:Column(name="content", type="text")
+	 * @ORM_Mapping\Column(name="content", type="text")
 	 */
 	protected $content;
 

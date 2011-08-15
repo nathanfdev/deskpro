@@ -24,7 +24,7 @@ $loader->registerNamespaces(array(
     'Doctrine\\Common'             => DP_ROOT.'/vendor/doctrine-common/lib',
     'Doctrine\\DBAL\\Migrations'   => DP_ROOT.'/vendor/doctrine-migrations/lib',
     'Doctrine\\DBAL'               => DP_ROOT.'/vendor/doctrine-dbal/lib',
-    'Doctrine'                     => DP_ROOT.'/vendor/doctrine-orm/lib',
+    'Doctrine'                     => DP_ROOT.'/vendor/doctrine/lib',
 	'Zend'                         => DP_ROOT.'/vendor/zend/library',
 	'Gedmo'                        => DP_ROOT.'/vendor/DoctrineExtensions/lib',
 	'FOQ'                          => DP_ROOT.'/vendor',
@@ -64,3 +64,16 @@ $GLOBALS['DP_AUTOLOADER'] = $loader;
 // ezC autoloading
 require DP_ROOT.'/vendor/ezcomponents/Base/src/ezc_bootstrap.php';
 spl_autoload_register(array('ezcBase', 'autoload'), true, true);
+
+
+use Doctrine\Common\Annotations\AnnotationRegistry;
+AnnotationRegistry::registerLoader(function($class) use ($loader) {
+    $loader->loadClass($class);
+    return class_exists($class, false);
+});
+AnnotationRegistry::registerFile(DP_ROOT.'/vendor/doctrine/lib/Doctrine/ORM/Mapping/Driver/DoctrineAnnotations.php');
+
+if (is_file(DP_ROOT.'/vendor/swiftmailer/lib/classes/Swift.php')) {
+	require_once DP_ROOT.'/vendor/swiftmailer/lib/classes/Swift.php';
+	Swift::registerAutoload(DP_ROOT.'/vendor/swiftmailer/lib/swift_init.php');
+}

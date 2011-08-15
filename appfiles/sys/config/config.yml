@@ -39,7 +39,6 @@ services:
 
 framework:
   charset: UTF-8
-#  profiler: { only_exceptions: false }
   secret: mube224etsmhxky1gvwixc4b
   templating:
     engines: ['twig', 'php', 'jsonphp']

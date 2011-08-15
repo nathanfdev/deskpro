@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 
@@ -21,8 +23,8 @@ use \Orb\Util\Strings;
 /**
  * Ideas status types for accepted/declined statuses
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaStatusCategory")
- * @orm:Table(name="idea_status_categories")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\IdeaStatusCategory")
+ * @ORM_Mapping\Table(name="idea_status_categories")
  */
 class IdeaStatusCategory extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -31,25 +33,25 @@ class IdeaStatusCategory extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="status_type", type="string", length=255)
+	 * @ORM_Mapping\Column(name="status_type", type="string", length=255)
 	 */
 	protected $status_type;
 
 	/**
 	 * @var string
-	 * @orm:Column(name="title", type="string", length=255)
+	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
 
 	/**
 	 * @var int
-	 * @orm:Column(name="display_order", type="integer")
+	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
 	protected $display_order = 0;
 }

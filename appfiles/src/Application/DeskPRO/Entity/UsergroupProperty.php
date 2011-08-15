@@ -10,6 +10,8 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Web;
@@ -17,12 +19,12 @@ use Orb\Util\Web;
 /**
  * Settings used by the system.
  *
- * @orm:Entity
- * @orm:InheritanceType("SINGLE_TABLE")
- * @orm:DiscriminatorColumn(name="property_type", type="string")
- * @orm:DiscriminatorMap({"permission" = "UsergroupPropertyPermission"})
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="usergroup_properties")
+ * @ORM_Mapping\Entity
+ * @ORM_Mapping\InheritanceType("SINGLE_TABLE")
+ * @ORM_Mapping\DiscriminatorColumn(name="property_type", type="string")
+ * @ORM_Mapping\DiscriminatorMap({"permission" = "UsergroupPropertyPermission"})
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="usergroup_properties")
  */
 abstract class UsergroupProperty extends \Application\DeskPRO\Domain\DomainObject
 {
@@ -30,9 +32,9 @@ abstract class UsergroupProperty extends \Application\DeskPRO\Domain\DomainObjec
 	 * The unique ID.
 	 *
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY")
-	 * @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY")
+	 * @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -40,7 +42,7 @@ abstract class UsergroupProperty extends \Application\DeskPRO\Domain\DomainObjec
 	 * The name of the property. This may be quite important if the system uses the property.
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="string", length=50)
+	 * @ORM_Mapping\Column(name="name", type="string", length=50)
 	 */
 	protected $name = null;
 
@@ -49,8 +51,8 @@ abstract class UsergroupProperty extends \Application\DeskPRO\Domain\DomainObjec
 	 * The usergroup this property belongs to
 	 *
 	 * @var Application\DeskPRO\Entity\Usergroup
-	 * @orm:OneToOne(targetEntity="Usergroup", mappedBy="properties")
-	 * @orm:JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\OneToOne(targetEntity="Usergroup", mappedBy="properties")
+	 * @ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $usergroup;
 
@@ -59,7 +61,7 @@ abstract class UsergroupProperty extends \Application\DeskPRO\Domain\DomainObjec
 	 * An flag value
 	 *
 	 * @var bool
-	 * @orm:Column(name="flag", type="boolean", nullable=true)
+	 * @ORM_Mapping\Column(name="flag", type="boolean", nullable=true)
 	 */
 	protected $flag = null;
 
@@ -68,7 +70,7 @@ abstract class UsergroupProperty extends \Application\DeskPRO\Domain\DomainObjec
 	 * Any arbitrary value
 	 *
 	 * @var bool
-	 * @orm:Column(name="data", type="text", nullable=true)
+	 * @ORM_Mapping\Column(name="data", type="text", nullable=true)
 	 */
 	protected $data = null;
 

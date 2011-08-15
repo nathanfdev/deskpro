@@ -11,19 +11,21 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use Application\DeskPRO\EmailGateway\Reader\AbstractReader;
 
 /**
  * An email gateway contains info about how to read emails from an email account.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailGateway")
- * @orm:Table(name="email_gateways")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\EmailGateway")
+ * @ORM_Mapping\Table(name="email_gateways")
  */
 class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -31,7 +33,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * The human name of the account.
 	 *
 	 * @var string
-	 * @orm:Column(name="name", type="text", length=100)
+	 * @ORM_Mapping\Column(name="name", type="text", length=100)
 	 */
 	protected $name = '';
 
@@ -39,7 +41,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * The email address for the account.
 	 *
 	 * @var string
-	 * @orm:Column(name="address", type="text", length=255)
+	 * @ORM_Mapping\Column(name="address", type="text", length=255)
 	 */
 	protected $address;
 
@@ -47,14 +49,14 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * The connection class that handles connecting/downloading etc.
 	 *
 	 * @var string
-	 * @orm:Column(name="connection_class", type="string", length=80)
+	 * @ORM_Mapping\Column(name="connection_class", type="string", length=80)
 	 */
 	protected $connection_class = '';
 
 	/**
 	 * Options for the connection handler
 	 *
-	 * @orm:Column(name="connection_options", type="array")
+	 * @ORM_Mapping\Column(name="connection_options", type="array")
 	 */
 	protected $connection_options = array();
 
@@ -63,13 +65,13 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * or agent replies etc.
 	 *
 	 * @var string
-	 * @orm:Column(name="processor_class", type="string", length=80)
+	 * @ORM_Mapping\Column(name="processor_class", type="string", length=80)
 	 */
 	protected $processor_class;
 
 	/**
 	 * @var bool
-	 * @orm:Column(name="is_enabled", type="boolean")
+	 * @ORM_Mapping\Column(name="is_enabled", type="boolean")
 	 */
 	protected $is_enabled = true;
 
@@ -77,7 +79,7 @@ class EmailGateway extends \Application\DeskPRO\Domain\DomainObject
 	 * The last time this gateway successfully connected and checked for messages.
 	 *
 	 * @var \DateTime
-	 * @orm:Column(name="date_last_login", type="datetime", nullable=true)
+	 * @ORM_Mapping\Column(name="date_last_login", type="datetime", nullable=true)
 	 */
 	protected $date_last_login = null;
 

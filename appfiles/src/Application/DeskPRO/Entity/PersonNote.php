@@ -10,22 +10,24 @@
  */
 
 namespace Application\DeskPRO\Entity;
+
+use Doctrine\ORM\Mapping as ORM_Mapping;
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
  * A note is a private note added by an agent to a persons account.
  *
- * @orm:Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonNote")
- * @orm:HasLifecycleCallbacks
- * @orm:Table(name="people_notes")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\PersonNote")
+ * @ORM_Mapping\HasLifecycleCallbacks
+ * @ORM_Mapping\Table(name="people_notes")
  */
 class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
-	 * @GeneratedValue
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
+	 * 
 	 */
 	protected $id = null;
 
@@ -33,8 +35,8 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The person the note is attached to.
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $person;
 
@@ -42,14 +44,14 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The agent that added the note
 	 * 
 	 * @var \Application\DeskPRO\Entity\Person
-	 * @orm:ManyToOne(targetEntity="Person")
-	 * @orm:JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
+	 * @ORM_Mapping\ManyToOne(targetEntity="Person")
+	 * @ORM_Mapping\JoinColumn(name="agent_id", referencedColumnName="id", onDelete="set null")
 	 */
 	protected $agent;
 
 	/**
 	 * @var \DateTime
-	 * @orm:Column(name="date_created",type="datetime")
+	 * @ORM_Mapping\Column(name="date_created",type="datetime")
 	 */
 	protected $date_created;
 
@@ -57,7 +59,7 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 	 * The note contents
 	 *
 	 * @var string
-	 * @orm:Column(name="note", type="string")
+	 * @ORM_Mapping\Column(name="note", type="string")
 	 */
 	protected $note;
 
@@ -66,7 +68,7 @@ class PersonNote extends \Application\DeskPRO\Domain\DomainObject
 		return nl2br(htmlspecialchars($this->note), true);
 	}
 
-	/** @orm:PrePersist */
+	/** @ORM_Mapping\PrePersist */
 	public function _prePersist()
 	{
 		$this->date_created = new \DateTime();

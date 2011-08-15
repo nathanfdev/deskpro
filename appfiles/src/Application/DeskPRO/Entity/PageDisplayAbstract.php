@@ -11,6 +11,8 @@
 
 namespace Application\DeskPRO\Entity;
 
+use Doctrine\ORM\Mapping as ORM_Mapping;
+
 use \Application\DeskPRO\App;
 
 use Orb\Util\Strings;
@@ -22,13 +24,13 @@ use \Application\DeskPRO\Entity;
  * Standard base for storing display information, such as fields or widgets on a page.
  *
  * @see \Application\DeskPRO\PageDisplay\Zone\BasicZone
- * @orm:MappedSuperclass
+ * @ORM_Mapping\MappedSuperclass
  */
 abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
-	 * @orm:Id @orm:generatedValue(strategy="IDENTITY") @orm:Column(name="id", type="integer")
+	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
 
@@ -36,7 +38,7 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * The actual section within the page that this description applies (ex 'toptabs')
 	 *
 	 * @var string
-	 * @orm:Column(name="section", type="string", length=50)
+	 * @ORM_Mapping\Column(name="section", type="string", length=50)
 	 */
 	protected $section = 'default';
 
@@ -45,7 +47,7 @@ abstract class PageDisplayAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * to reconstruct the display strcuture.
 	 *
 	 * @var array
-	 * @orm:Column(name="data", type="array")
+	 * @ORM_Mapping\Column(name="data", type="array")
 	 */
 	protected $data;
 }
