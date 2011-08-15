@@ -11,7 +11,7 @@ parameters:
   router.options.generator_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
   router.options.generator_base_class: "Application\DeskPRO\Routing\Generator\UrlGenerator"
   templating.globals.class: "Application\DeskPRO\Templating\GlobalVariables"
-  templating.helper.assets.class: "Application\DeskPRO\\Templating\Helper\AssetsHelper"
+  templating.asset.url_package.class: "Application\DeskPRO\\Templating\Asset\UrlPackage"
   router.options.generator_dumper_class: "Application\DeskPRO\Routing\Generator\Dumper\\PhpGeneratorDumper"
   router.options.generator_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
   router.options.generator_base_class: "Application\DeskPRO\\Routing\Generator\UrlGenerator"
@@ -44,7 +44,7 @@ framework:
   secret: mube224etsmhxky1gvwixc4b
   templating:
     engines: ['twig', 'php', 'jsonphp']
-    assets_base_urls: "/"
+    assets_base_urls: "CONFIG_HTTP"
   validation:
     enabled: true
   session:
