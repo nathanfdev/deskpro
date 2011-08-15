@@ -49,8 +49,13 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		$this->response          = $this->get('response');
 		$this->event_dispatcher  = $this->get('event_dispatcher');
 
-		$this->event_dispatcher->addListener('DeskPRO_onControllerPreAction', $this);
-		$this->event_dispatcher->addListener('DeskPRO_onControllerPostAction', $this);
+		$self=$this;
+		$this->event_dispatcher->addListener('DeskPRO_onControllerPreAction', function($ev) use ($self) {
+			$self->DeskPRO_onControllerPreAction($ev);
+		});
+		$this->event_dispatcher->addListener('DeskPRO_onControllerPostAction', function($ev) use ($self) {
+			$self->DeskPRO_onControllerPostAction($ev);
+		});
 
 		$this->init();
 	}
