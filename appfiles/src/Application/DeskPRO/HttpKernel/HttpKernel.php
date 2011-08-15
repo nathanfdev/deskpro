@@ -18,6 +18,7 @@ use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
 use Symfony\Component\HttpKernel\Event\FilterControllerEvent;
 use Symfony\Component\HttpKernel\Event\FilterResponseEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseEvent;
+use Symfony\Component\HttpKernel\KernelEvents;
 use Symfony\Component\HttpKernel\Event\GetResponseForControllerResultEvent;
 use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 use Symfony\Component\HttpFoundation\Request;
@@ -84,7 +85,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 	protected function handleRaw(Request $request, $type = self::MASTER_REQUEST)
 	{
 		$event = new GetResponseEvent($this, $request, $type);
-		$this->dispatcher->dispatch(\Symfony\Component\HttpKernel\Events::onCoreRequest, $event);
+		$this->dispatcher->dispatch(\Symfony\Component\HttpKernel\KernelEvents::REQUEST, $event);
 		if ($event->hasResponse()) {
 			return $this->filterResponse($event->getResponse(), $request, $type);
 		}
@@ -94,7 +95,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 		}
 
 		$event = new FilterControllerEvent($this, $controller, $request, $type);
-		$this->dispatcher->dispatch(\Symfony\Component\HttpKernel\Events::onCoreController, $event);
+		$this->dispatcher->dispatch(\Symfony\Component\HttpKernel\KernelEvents::CONTROLLER, $event);
 		$controller = $event->getController();
 		$arguments = $this->resolver->getArguments($request, $controller);
 
@@ -138,7 +139,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 
 		if (!$response instanceof Response) {
 			$event = new GetResponseForControllerResultEvent($this, $request, $type, $response);
-			$this->dispatcher->dispatch(\Symfony\Component\HttpKernel\Events::onCoreView, $event);
+			$this->dispatcher->dispatch(\Symfony\Component\HttpKernel\KernelEvents::VIEW, $event);
 			if ($event->hasResponse()) {
 				$response = $event->getResponse();
 			}
@@ -286,13 +287,13 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
 	private function filterResponse(Response $response, Request $request, $type)
     {
         $event = new FilterResponseEvent($this, $request, $type, $response);
-        $this->dispatcher->dispatch(\Symfony\Component\HttpKernel\Events::onCoreResponse, $event);
+        $this->dispatcher->dispatch(\Symfony\Component\HttpKernel\KernelEvents::RESPONSE, $event);
         return $event->getResponse();
     }
     private function handleException(\Exception $e, $request, $type)
     {
         $event = new GetResponseForExceptionEvent($this, $request, $type, $e);
-        $this->dispatcher->dispatch(\Symfony\Component\HttpKernel\Events::onCoreException, $event);
+        $this->dispatcher->dispatch(\Symfony\Component\HttpKernel\KernelEvents::EXCEPTION, $event);
         if (!$event->hasResponse()) {
             throw $e;
         }

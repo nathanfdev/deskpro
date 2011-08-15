@@ -24,6 +24,12 @@ class CallbackListener
 		$this->callback = $callback;
 	}
 
+	public function __invoke()
+	{
+		$args = func_get_args();
+		return call_user_func_array($this->callback, $args);
+	}
+
 	public function __call($name, $args)
 	{
 		return call_user_func_array($this->callback, $args);
