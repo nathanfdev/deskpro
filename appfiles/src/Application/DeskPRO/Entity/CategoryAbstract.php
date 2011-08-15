@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
+use Gedmo\Mapping\Annotation as Gedmo_Mapping;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Translate\HasPhraseName;
@@ -25,7 +26,7 @@ use Orb\Util\Util;
  * Basic hierarchicial category entity. Hierarchy is maintained automatically
  * by a Doctrine NestedSet implementation
  *
- * @gedmo:Tree(type="nested")
+ * @Gedmo_Mapping\Tree(type="nested")
  * @ORM_Mapping\MappedSuperclass
  */
 class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implements HasPhraseName
@@ -50,7 +51,7 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 
 	// IMPLEMENT IN CHILDREN : Limitation of doctrine mapping, you have to map these with the correct targets
 	///**
-	// * @gedmo:TreeParent
+	// * @Gedmo_Mapping\TreeParent
 	// * @ORM_Mapping\ManyToOne(targetEntity="CategoryAbstract", inversedBy="children")
 	// */
 	//protected $parent;
@@ -62,25 +63,25 @@ class CategoryAbstract extends \Application\DeskPRO\Domain\DomainObject implemen
 	//protected $children;
 
 	/**
-	 * @gedmo:TreeRoot
+	 * @Gedmo_Mapping\TreeRoot
 	 * @ORM_Mapping\Column(name="root", type="integer", nullable=true)
 	 */
 	protected $root;
 
 	/**
-	 * @gedmo:TreeLevel
+	 * @Gedmo_Mapping\TreeLevel
 	 * @ORM_Mapping\Column(name="depth", type="integer")
 	 */
 	protected $depth;
 
 	/**
-	 * @gedmo:TreeLeft
+	 * @Gedmo_Mapping\TreeLeft
 	 * @ORM_Mapping\Column(name="lft", type="integer")
 	 */
 	protected $lft;
 
 	/**
-	 * @gedmo:TreeRight
+	 * @Gedmo_Mapping\TreeRight
 	 * @ORM_Mapping\Column(name="rgt", type="integer")
 	 */
 	protected $rgt;

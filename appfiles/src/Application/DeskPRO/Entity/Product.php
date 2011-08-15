@@ -12,6 +12,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
+use Gedmo\Mapping\Annotation as Gedmo_Mapping;
 
 /**
  * Products
@@ -22,7 +23,7 @@ use Doctrine\ORM\Mapping as ORM_Mapping;
 class Product extends CategoryAbstract
 {
 	/**
-	 * @gedmo:TreeParent
+Gedmo_Mappinggedmo:TreeParent
 	 * @ORM_Mapping\ManyToOne(targetEntity="Product", inversedBy="children")
 	 */
 	protected $parent;
