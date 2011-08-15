@@ -25,6 +25,9 @@ use Application\DeskPRO\Search\Adapter\AbstractAdapter as AbstractSearchAdapter;
 use Application\DeskPRO\PageDisplay\Page\TicketPageZoneCollection;
 use Application\DeskPRO\EventDispatcher\PropertyChangedCallback;
 
+use Application\DeskPRO\Tickets\TicketSplit;
+use Application\DeskPRO\Tickets\TicketMerge\TicketMerge;
+
 /**
  * Handles ticket searches
  */
@@ -1259,6 +1262,32 @@ class TicketController extends AbstractController
 
 		return $this->createJsonResponse(array(
 			'success' => true
+		));
+	}
+
+	############################################################################
+	# split
+	############################################################################
+
+	public function splitAction($message_id)
+	{
+		$message = $this->em->getRepository('DeskPRO:TicketMessage')->find($message_id);
+
+		$split = new TicketSplit($message);
+
+		try {
+			$this->em->beginTransaction();
+			$new_ticket = $split->split();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'ticket_id' => $new_ticket['id']
 		));
 	}
 

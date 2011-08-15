@@ -757,6 +757,24 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 					}
 				});
 				break;
+
+			case 'split':
+				var msg = "Are you sure you want to split this ticket into two?";
+				DeskPRO_Window.showConfirm(msg, function() {
+					$.ajax({
+						url: BASE_URL + 'agent/tickets/split/' + messageId,
+						type: 'POST',
+						context: this,
+						dataType: 'json',
+						success: function(data) {
+							console.log('Ticket split return %o', data);
+							if (data.success) {
+								DeskPRO_Window.loadPage(BASE_URL + 'agent/tickets/' + data.ticket_id);
+							}
+						}
+					});
+				});
+				break;
 		}
 	},
 

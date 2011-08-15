@@ -1642,9 +1642,31 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$alt_ticket = new Ticket();
 
-		$load = array('agent', 'agent_team', 'person', 'department', 'category', 'product', 'workflow', 'organization');
+		$load = array(
+			'agent',
+			'agent_team',
+			'person',
+			'person_email',
+			'department',
+			'category',
+			'product',
+			'workflow',
+			'organization',
+			'status',
+			'hidden_status',
+			'subject'
+		);
+
 		foreach ($load as $k) {
 			$alt_ticket[$k] = $this[$k];
+		}
+
+		// Custom field data
+		foreach ($this->custom_data as $custom_data) {
+			$new_custom_data = clone $custom_data;
+			$new_custom_data->ticket = $alt_ticket;
+
+			$new_custom_data->addCustomData($new_custom_data);
 		}
 
 		return $alt_ticket;
