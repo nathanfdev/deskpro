@@ -35,7 +35,8 @@ services:
     arguments: [@swiftmailer.transport.eventdispatcher]
   doctrine.dbal.connection_factory:
     class: Application\DeskPRO\DBAL\ConnectionFactory
-    arguments: [[], @service_container]
+    calls:
+      - [ setContainer, [@service_container] ]
 
 framework:
   charset: UTF-8

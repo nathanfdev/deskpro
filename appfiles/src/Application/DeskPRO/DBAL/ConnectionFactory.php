@@ -11,28 +11,31 @@
 
 namespace Application\DeskPRO\DBAL;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
-use \Symfony\Component\DependencyInjection\ContainerInterface;
-use \Doctrine\Common\EventManager;
-use \Doctrine\DBAL\Configuration;
-use \Doctrine\DBAL\DriverManager;
-use \Doctrine\DBAL\Types\Type;
+use Symfony\Component\DependencyInjection\ContainerInterface;
+use Symfony\Component\DependencyInjection\ContainerAwareInterface;
+use Doctrine\Common\EventManager;
+use Doctrine\DBAL\Configuration;
+use Doctrine\DBAL\DriverManager;
+use Doctrine\DBAL\Types\Type;
 
 /**
  * Custom loading database creds from config.php
  */
-class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
+class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory implements ContainerAwareInterface
 {
-	protected $container;
+	/**
+	 * @var \Symfony\Component\DependencyInjection\ContainerInterface
+	 */
+	protected $container = null;
 
-    public function __construct(array $typesConfig, $container)
-    {
-		parent::__construct($typesConfig);
+	public function setContainer(ContainerInterface $container = null)
+	{
 		$this->container = $container;
-    }
+	}
 
-	public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null)
+	public function createConnection(array $params, Configuration $config = null, EventManager $eventManager = null, array $mappingTypes = array())
 	{
 		$params['wrapperClass'] = 'Application\\DeskPRO\\DBAL\\Connection';
 
@@ -45,10 +48,14 @@ class ConnectionFactory extends \Symfony\Bundle\DoctrineBundle\ConnectionFactory
 			$params = array_merge($params, App::getConfig($key));
 		}
 
-		$conn = parent::createConnection($params, $config, $eventManager);
+		$conn = parent::createConnection($params, $config, $eventManager, $mappingTypes);
 
 		$evm = $conn->getEventManager();
-		$evm->addEventSubscriber(new SymfonyEventConnector($this->container->get('event_dispatcher')));
+
+		if ($this->container && $this->container->has('event_dispatcher')) {
+			$evm->addEventSubscriber(new SymfonyEventConnector($this->container->get('event_dispatcher')));
+		}
+
 		$evm->addEventSubscriber(new \Gedmo\Tree\TreeListener());
 
 		return $conn;
