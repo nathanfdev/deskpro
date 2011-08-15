@@ -31,7 +31,6 @@ $loader->registerNamespaces(array(
 ));
 
 $loader->registerPrefixes(array(
-    'Swift_'      => DP_ROOT.'/vendor/swiftmailer/lib/classes',
     'Twig_'       => DP_ROOT.'/vendor/twig/lib',
 	'Pheanstalk'  => DP_ROOT.'/vendor/pheanstalk/classes',
 	'Zend_'       => DP_ROOT.'/vendor/zend1/library',
