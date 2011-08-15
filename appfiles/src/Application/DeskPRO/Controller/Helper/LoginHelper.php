@@ -94,14 +94,16 @@ class LoginHelper
 	public function execLogoutAction()
 	{
 		// When an agent actually logs out, we should be clearing the state
-		if ($this->controller->person['is_agent']) {
+		$person = $this->controller->session->getPerson();
+		if ($person['is_agent']) {
 			App::getDb()->executeUpdate("
 				DELETE FROM people_prefs
 				WHERE person_id = ? AND name = ?
-			", array($this->person['id'], 'agent.ui.state'));
+			", array($person['id'], 'agent.ui.state'));
 		}
 
-		$this->controller->session->setAttributes(array());
+		$this->controller->session->replace(array());
+		$this->controller->session->save();
 
 		return $this->controller->redirectRoute($this->route_prefix . '_login');
 	}
