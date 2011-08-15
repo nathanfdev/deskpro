@@ -55,7 +55,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket.TicketChecker = new Orb.Class({
 
 		if (this.lastDate) {
 			var now = new Date();
-			if (now.getTime() - this.lastDate().getTime()) {
+			if (now.getTime() - this.lastDate.getTime()) {
 				this.runCheck();
 			}
 		}
