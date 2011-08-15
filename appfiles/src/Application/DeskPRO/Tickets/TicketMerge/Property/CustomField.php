@@ -14,6 +14,7 @@ namespace Application\DeskPRO\Tickets\TicketMerge\Property;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Ticket;
+use Application\DeskPRO\Entity\CustomDefTicket;
 use Application\DeskPRO\Entity\CustomDataTicket;
 
 use Orb\Util\Arrays;
@@ -24,11 +25,11 @@ use Orb\Util\Arrays;
 class CustomField extends PropertyAbstract
 {
 	/**
-	 * @var \Application\DeskPRO\Entity\CustomDataTicket
+	 * @var \Application\DeskPRO\Entity\CustomDefTicket
 	 */
 	protected $field;
 
-	public function setField(CustomDataTicket $field)
+	public function setField(CustomDefTicket $field)
 	{
 		$this->field = $field;
 	}
@@ -41,16 +42,15 @@ class CustomField extends PropertyAbstract
 
 		// No children means its a simple field (text input etc)
 		if (!count($this->field->children)) {
-			$other_exist = $this->ticket->getCustomDataForField($field);
-			if ($other_exist) {
-				$exist = $this->ticket->getCustomDataForField($field);
-				if ($exist) {
-					$this->ticket->custom_fields->removeElements($exist);
-				}
+			if ($this->strategy == self::STRATEGY_RIGHT) {
+				$other_exist = $this->other_ticket->getCustomDataForField($this->field);
+				if ($other_exist) {
 
-				$this->other_ticket->custom_fields->removeElement($other_exist);
-				$other_exist->ticket = $this->ticket;
-				$this->ticket->custom_fields->add($other_exist);
+					$this->ticket->removeCustomDataForField($this->field);
+
+					$other_exist->ticket = $this->ticket;
+					$this->ticket->custom_data->add($other_exist);
+				}
 			}
 
 		// Children means we can potentially merge selections
@@ -65,24 +65,19 @@ class CustomField extends PropertyAbstract
 
 					$other_exist = $this->other_ticket->getCustomDataForField($child);
 					if ($other_exist) {
-						$this->other_ticket->custom_fields->removeElement($other_exist);
 						$other_exist->ticket = $this->ticket;
-						$this->ticket->custom_fields->add($child);
+						$this->ticket->custom_data->add($child);
 					}
 				}
-			} else {
+			} elseif ($this->strategy == self::STRATEGY_RIGHT) {
+
 				// Take right ones over left ones
 				foreach ($this->field->children as $child) {
-					$other_exist = $this->ticket->getCustomDataForField($child);
+					$other_exist = $this->other_ticket->getCustomDataForField($child);
 					if ($other_exist) {
-						$exist = $this->ticket->getCustomDataForField($child);
-						if ($exist) {
-							$this->ticket->custom_fields->removeElements($exist);
-						}
 
-						$this->other_ticket->custom_fields->removeElement($other_exist);
 						$other_exist->ticket = $this->ticket;
-						$this->ticket->custom_fields->add($other_exist);
+						$this->ticket->custom_data->add($other_exist);
 					}
 				}
 			}

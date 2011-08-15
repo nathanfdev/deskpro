@@ -50,11 +50,8 @@ DeskPRO.Agent.Widget.MergeTicket = new Orb.Class({
 			$(this).text('...').attr('disabled', true);
 			$('.merge-trigger', this.wrapper).attr('disabled', true );
 
-			// this is the "left" ticket, because the overlay is "merge INTO"
-			var ticketId = $(this).data('ticket-id');
-
-			// the one we're viewing is technically the right
-			var otherTicketId = self.ticketId;
+			var otherTicketId = $(this).data('ticket-id');
+			var ticketId = self.ticketId;
 
 			$.ajax({
 				url: BASE_URL + 'agent/tickets/merge/' + ticketId + '/' + otherTicketId,

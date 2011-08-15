@@ -88,11 +88,11 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			$this->ticket->resetTicketLogger();
 
 			$prop_agent = new Property\Agent($this->ticket, $this->other_ticket);
-			$prop_agent->setStrategy(Property\Agent::STRATEGY_COMBINE);
+			$prop_agent->setStrategy(Property\Agent::STRATEGY_RIGHT);
 			$prop_agent->merge();
 
 			$prop_person = new Property\Person($this->ticket, $this->other_ticket);
-			$prop_person->setStrategy(Property\Person::STRATEGY_LEFT);
+			$prop_person->setStrategy(Property\Person::STRATEGY_RIGHT);
 			$prop_person->merge();
 
 			$standard_prop_names = array(
@@ -111,7 +111,17 @@ class TicketMerge implements \Application\DeskPRO\People\PersonContextInterface
 			);
 			foreach ($standard_prop_names as $prop_name) {
 				$prop_standard = new Property\StandardProperty($this->ticket, $this->other_ticket);
-				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_COMBINE);
+				$prop_standard->setProperty($prop_name);
+				$prop_standard->setStrategy(Property\StandardProperty::STRATEGY_RIGHT);
+				$prop_standard->merge();
+			}
+
+			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+			foreach ($ticket_field_defs as $f) {
+				$prop_field = new Property\CustomField($this->ticket, $this->other_ticket);
+				$prop_field->setField($f);
+				$prop_field->setStrategy(Property\StandardProperty::STRATEGY_RIGHT);
+				$prop_field->merge();
 			}
 
 			$ticket_del = new TicketDeleted();
