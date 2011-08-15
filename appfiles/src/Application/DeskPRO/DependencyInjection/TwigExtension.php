@@ -25,9 +25,6 @@ class TwigExtension extends \Symfony\Bundle\TwigBundle\DependencyInjection\TwigE
     {
 		parent::load($config, $container);
 
-		// Set our loader class
-        $container->setParameter('twig.loader.class', 'Application\\DeskPRO\\Twig\\Loader\\Hybrid');
-
 		// And our loader class also needs the service container, because we
 		// fetch a database connection from it
 		$def = $container->getDefinition('twig.loader');

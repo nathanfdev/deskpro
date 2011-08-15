@@ -83,11 +83,13 @@ class HybridLoader extends \Symfony\Bundle\TwigBundle\Loader\FilesystemLoader
 		return parent::getSource($name);
     }
 
-	protected function _getStringName($name)
+	protected function _getStringName($tpl)
 	{
-		if (is_string($name)) return $name;
+		if (is_string($tpl)) return $tpl;
 
-		$str_name = "{$name['bundle']}:{$name['controller']}:{$name['name']}.{$name['format']}.{$name['engine']}";
+		$info = $tpl->all();
+
+		$str_name = "{$info['bundle']}:{$info['controller']}:{$info['name']}.{$info['format']}.{$info['engine']}";
 		return $str_name;
 	}
 }
