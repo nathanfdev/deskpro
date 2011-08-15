@@ -290,6 +290,7 @@ class HttpKernel extends \Symfony\Component\HttpKernel\HttpKernel
         $this->dispatcher->dispatch(\Symfony\Component\HttpKernel\KernelEvents::RESPONSE, $event);
         return $event->getResponse();
     }
+	
     private function handleException(\Exception $e, $request, $type)
     {
         $event = new GetResponseForExceptionEvent($this, $request, $type, $e);
