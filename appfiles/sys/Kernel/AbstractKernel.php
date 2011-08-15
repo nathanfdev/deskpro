@@ -85,6 +85,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
+			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
 		);

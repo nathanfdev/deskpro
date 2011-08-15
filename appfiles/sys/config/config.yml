@@ -66,7 +66,7 @@ doctrine:
         logging: true
 
 swiftmailer:
-  transport: 'dp_delegating'
+  transport: 'deskpro.mail.delegating_transport'
 
 deskpro_cache:
   common: ~
