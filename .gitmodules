@@ -1,8 +1,8 @@
 [submodule "appfiles/vendor/symfony"]
 	path = appfiles/vendor/symfony
 	url = http://github.com/symfony/symfony.git
-[submodule "appfiles/vendor/doctrine-orm"]
-	path = appfiles/vendor/doctrine-orm
+[submodule "appfiles/vendor/doctrine"]
+	path = appfiles/vendor/doctrine
 	url = git://github.com/doctrine/doctrine2.git
 [submodule "appfiles/vendor/doctrine-dbal"]
 	path = appfiles/vendor/doctrine-dbal
@@ -37,3 +37,9 @@
 [submodule "appfiles/vendor/Elastica"]
 	path = appfiles/vendor/Elastica
 	url = git://github.com/ruflin/Elastica.git
+[submodule "appfiles/vendor/monolog"]
+	path = appfiles/vendor/monolog
+	url = https://github.com/Seldaek/monolog.git
+[submodule "appfiles/vendor/metadata"]
+	path = appfiles/vendor/metadata
+	url = https://github.com/schmittjoh/metadata.git
