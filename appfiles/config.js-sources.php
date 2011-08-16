@@ -172,6 +172,8 @@ $CONFIG['agent']['misc'] = array(
 		'javascripts/DeskPRO/Agent/Widget/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/Widget/MergeTicket.js',
 
+		'javascripts/DeskPRO/Agent/Widget/NewTicket.js',
+
 		'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
 		'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
 		'javascripts/DeskPRO/Agent/RuleBuilder/LabelsTerm.js',

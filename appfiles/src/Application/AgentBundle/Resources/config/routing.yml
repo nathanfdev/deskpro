@@ -501,6 +501,11 @@ agent_ticket_new:
   defaults: { _controller: AgentBundle:Ticket:new }
   options: { fragment_name: 'nt' }
 
+agent_ticket_new_getpersonrow:
+  pattern: /tickets/new/get-person-row/{person_id}
+  defaults: { _controller: AgentBundle:Ticket:newticketGetPersonRow }
+  options: { fragment_name: 'nt' }
+
 agent_people_new_ajaxsave:
   pattern: /tickets/new-ajax-save
   defaults: { _controller: AgentBundle:Ticket:newAjaxSave }

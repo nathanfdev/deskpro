@@ -15,14 +15,25 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			loadTimeout: 0,
 
 			/**
-			 * The page to load
+			 * The page to load. False to not use the loader in this class,
+			 * you can use setHtml() instead.
 			 */
 			pageUrl: '',
+			
+			/**
+			 * Callback method for loading the page instead of using default ajax loader.
+			 */
+			pageCallback: null,
 
 			/**
 			 * The route to load when clicking "move to tab"
 			 */
 			tabRoute: false,
+			
+			/**
+			 * Destroy the popover when it closes?
+			 */
+			destroyOnClose: false,
 
 			overFrom: '#deskpro_content'
 		};
@@ -62,6 +73,14 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 	},
 
 	_loadPage: function() {
+		
+		if (this.options.pageCallback) {
+			return this.options.pageCallback(this.setHtml.bind(this));
+		}
+		
+		if (!this.options.pageUrl) {
+			return;
+		}
 
 		if (this._isLoading) return;
 		this._isLoading = true;
@@ -78,15 +97,18 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			context: this,
 			success: function(html) {
 				this._isLoading = false;
-				
-				this.pageSource = html;
-				if (this.isWaiting) {
-					this.isWaiting = false;
-					this._initFragment();
-					this.open();
-				}
+				this.setHtml(html);
 			}
 		});
+	},
+	
+	setHtml: function(html) {
+		this.pageSource = html;
+		if (this.isWaiting) {
+			this.isWaiting = false;
+			this._initFragment();
+			this.open();
+		}
 	},
 
 	_initPopover: function() {
@@ -223,6 +245,10 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.popover.hide();
 		this.popoverOuter.hide();
 		this.popoverTabs.hide();
+		
+		if (this.options.destroyOnClose) {
+			this.destroy();
+		}
 	},
 
 	destroy: function() {

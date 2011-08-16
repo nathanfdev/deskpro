@@ -1,0 +1,177 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.NewTicket';
+pageMeta.title = 'New Ticket';
+pageMeta.ticket_id = 0;
+
+pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'ticket'}) }}';
+pageMeta.uploadAttachUrl              = '{{ path('agent_accept_upload') }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+{# scroll containers #}
+<div class="layout-content with-scrollbar page-new-ticket">
+<div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
+<div class="scroll-viewport"><div class="scroll-content">
+{# /scroll containers #}
+
+<form id="{{baseId}}_newticket">
+<input type="hidden" name="person[id]" value="{{ person.id }}" id="{{baseId}}_person_id"/>
+
+<div class="section user-section" id="{{baseId}}_user_section">
+	<div class="step">
+		<span class="num">1</span>
+		<span class="check">Done</span>
+	</div>
+	<div class="content">
+		<h4>User</h4>
+		<input type="text" name="email_address" id="{{baseId}}_usersearch" class="user-search" /> <button class="clean-gray xx-small" id="{{baseId}}_me_btn">Me</button>
+		<div class="user-info" id="{{baseId}}_userinfo" style="display: none"></div>
+		<div class="user-info new" id="{{baseId}}_guest_userinfo" style="display: none"></div>
+
+		<br class="clear" />
+	</div>
+</div>
+
+<div class="section department-section" id="{{baseId}}_dep_section">
+	<div class="step">
+		<span class="num">2</span>
+		<span class="check">Done</span>
+	</div>
+	<div class="content">
+		<h4>Department</h4>
+		{% include 'AgentBundle:Common:select-department.html.twig' with {
+			'name': "ticket[department]",
+			'id': baseId ~ '_dep',
+			'departments': ticket_options.departments_hierarchy,
+			'with_blank': true
+		} %}
+	</div>
+</div>
+
+<div class="section subject-section" id="{{baseId}}_subject_section">
+	<div class="step">
+		<span class="num">3</span>
+		<span class="check">Done</span>
+	</div>
+	<div class="content">
+		<h4>Subject</h4>
+		<input type="text" name="ticket[subject]" id="{{baseId}}_subject" value="" />
+	</div>
+</div>
+
+<div class="section message-section" id="{{baseId}}_message_section">
+	<div class="step">
+		<span class="num">4</span>
+		<span class="check">Done</span>
+	</div>
+	<div class="content">
+		<h4>Message</h4>
+		<div class="type-wrap">
+			Type: <select name="ticket[ticket_type]">
+				<option value="blank">Tracked email</option>
+				<option value="incident">Logged Incident</option>
+				<option value="ticket">Normal Ticket</option>
+			</select>
+		</div>
+		<textarea name="message" class="ticket-message" id="{{baseId}}_message"></textarea>
+	</div>
+</div>
+
+<div class="section other-section" id="{{baseId}}_other_section">
+	<div class="step">
+		<span class="num">5</span>
+		<span class="check">Done</span>
+	</div>
+	<div class="content">
+		<h4>Other Properties</h4>
+		<ul class="other-props" id="{{baseId}}_other_props">
+			<li data-property="status">Status</li>
+			<li data-property="agent">Agent</li>
+			<li data-property="agent_team">Agent Team</li>
+			<li data-property="category">Category</li>
+			<li data-property="priority">Priority</li>
+			<li data-property="workflow">Workflow</li>
+			<li data-property="product">Product</li>
+		</ul>
+
+		<dl id="{{baseId}}_other_props_input">
+			<dt class="prop prop-status">Status</dt>
+			<dd class="prop prop-status">
+				<select name="ticket[status]">
+					<option value="open" selected="selected">Awaiting agent</option>
+					<option value="pending">Awaiting user</option>
+					<option value="resolved">Resolved</option>
+				</select>
+			</dd>
+
+			<dt class="prop prop-agent">Agent</dt>
+			<dd class="prop prop-agent">
+				<div class="selected-agent" id="{{baseId}}_assigned_agent">Unassigned</div>
+				<button class="clean-gray xx-small" id="{{baseId}}_assign_agent_choose">Select</button>
+			</dd>
+
+			<dt class="prop prop-agent_team">Agent Team</dt>
+			<dd class="prop prop-agent_team">
+				{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
+					'name': "ticket[agent_team]",
+					'id': baseId ~ '_agent_team',
+					'agent_teams': ticket_options.agent_teams,
+					'with_blank': true,
+					'with_my_teams': true
+				} %}
+			</dd>
+
+			<dt class="prop prop-category">Category</dt>
+			<dd class="prop prop-category">
+				{% include 'AgentBundle:Common:select-category.html.twig' with {
+					'name': "ticket[category]",
+					'id': baseId ~ '_cat',
+					'categories': ticket_options.ticket_categories_hierarchy,
+					'with_blank': true
+				} %}
+			</dd>
+
+			<dt class="prop prop-priority">Priority</dt>
+			<dd class="prop prop-priority">
+				{% include 'AgentBundle:Common:select-priority.html.twig' with {
+					'name': "ticket[priority]",
+					'id': baseId ~ '_pri',
+					'priorities': ticket_options.ticket_priorities,
+					'with_blank': true
+				} %}
+			</dd>
+
+			<dt class="prop prop-workflow">Workflow</dt>
+			<dd class="prop prop-workflow">
+				{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+					'name': "ticket[workflow]",
+					'id': baseId ~ '_work',
+					'workflows': ticket_options.ticket_workflows,
+					'with_blank': true
+				} %}
+			</dd>
+
+			<dt class="prop prop-product">Product</dt>
+			<dd class="prop prop-product">
+				{% include 'AgentBundle:Common:select-product.html.twig' with {
+					'name': "ticket[workflow]",
+					'id': baseId ~ '_work',
+					'products': ticket_options.products_hierarchy,
+					'with_blank': true
+				} %}
+			</dd>
+		</dl>
+	</div>
+</div>
+
+<div class="foot">
+	<button class="dp-button">Save Ticket</button>
+</div>
+
+</form>
+
+{# scroll containers #}
+</div></div>
+</div>
+{# /scroll containers #}

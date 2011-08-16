@@ -1327,6 +1327,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 			triggerElement: '#create_content_trigger',
 			menuElement: '#create_content_menu'
 		});
+		
+		// NewTicket loader
+		this.newTicket = new DeskPRO.Agent.Widget.NewTicket({
+			loadUrl: BASE_URL + 'agent/tickets/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/tickets/new'
+		});
 	},
 
 	toggleAgentStatus: function(force_back) {

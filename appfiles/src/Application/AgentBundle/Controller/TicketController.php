@@ -511,106 +511,6 @@ class TicketController extends AbstractController
 	}
 
 	############################################################################
-	# new
-	############################################################################
-
-	public function newAction()
-	{
-		$ticket = new Entity\Ticket();
-
-		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
-
-		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
-
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$custom_fields = array();
-		foreach ($ticket_field_defs as $f_def) {
-			$value = !empty($ticket_data_structured[$f_def['id']]) ? $ticket_data_structured[$f_def['id']] : null;
-
-			$f = $f_def->getHandler()->getFormField($value);
-			$custom_fields_form->add($f);
-
-			$custom_fields[] = array(
-				'field_def' => $f_def,
-				'title' => $f_def['title'],
-				'form' => $f,
-				'rendered' => false
-			);
-		}
-
-		$macros = App::getOrm()->getRepository('DeskPRO:TicketMacro')->getMacrosForPerson($this->person);
-
-		$initial_person = null;
-		if ($this->in->getUint('person_id')) {
-			$initial_person = App::getEntityRepository('DeskPRO:Person')->find($this->in->getUint('person_id'));
-		}
-
-		if ($initial_person) {
-			$ticket['person'] = $initial_person;
-		}
-
-		return $this->render('AgentBundle:Ticket:new-ticket.html.twig', array(
-			'ticket' => $ticket,
-			'ticket_options' => $ticket_options,
-			'custom_fields' => $custom_fields,
-			'macros' => $macros,
-			'initial_person' => $initial_person
-		));
-	}
-
-	// Handles actually creating the ticket now
-	public function newAjaxSaveAction()
-	{
-		App::getOrm()->beginTransaction();
-
-		$ticket = new Entity\Ticket();
-		$ticket['agent_id']  = $this->in->getUint('agent_id');
-		$ticket['agent_team_id']  = $this->in->getUint('agent_team_id');
-		$ticket['department_id']  = $this->in->getUint('department_id');
-		$ticket['category_id']    = $this->in->getUint('category_id');
-		$ticket['product_id']     = $this->in->getUint('product_id');
-		$ticket['priority_id']    = $this->in->getUint('priority_id');
-		$ticket['workflow_id']    = $this->in->getUint('workflow_id');
-		$ticket['status']         = $this->in->getString('status');
-		$ticket['person_id']      = max($this->in->getUint('person_id'), $this->person['id']); // TODO handle no person selected
-
-		$ticket['subject']      = $this->in->getString('subject');
-
-		if (!$ticket['status']) {
-			$ticket['status'] = Entity\Ticket::STATUS_OPEN;
-		}
-
-		$ticket['creation_system'] = Entity\Ticket::CREATED_WEB_AGENT;
-
-		$message = new Entity\TicketMessage();
-		$message['person'] = $this->person;
-		$message['message'] = $this->in->getString('message');
-		$ticket->addMessage($message);
-
-		// Custom fields
-		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		$ticket_field_datas = array();
-		foreach ($ticket_field_defs as $field_def) {
-			$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm(isset($_POST['custom_fields']) ? $_POST['custom_fields'] : array()));
-		}
-
-		foreach ($ticket_field_datas as $info) {
-			$ticket->setCustomData($info[0], $info[1], $info[2]);
-		}
-
-		App::getOrm()->persist($ticket);
-		App::getOrm()->flush();
-		App::getOrm()->commit();
-
-		$data = array(
-			'id' => $ticket['id'],
-			'loadUrl' => $this->generateUrl('agent_ticket_view', array('ticket_id' => $ticket['id']))
-		);
-
-		return $this->createJsonResponse($data);
-	}
-
-	############################################################################
 	# Ajax loaded tabs
 	############################################################################
 
@@ -1329,6 +1229,89 @@ class TicketController extends AbstractController
 			'success' => true,
 			'ticket_id' => $new_ticket['id']
 		));
+	}
+
+	############################################################################
+	# new
+	############################################################################
+
+	public function newAction()
+	{
+		$ticket_options = App::getApi('tickets')->getTicketOptions($this->person);
+
+		return $this->render('AgentBundle:Ticket:newticket.html.twig', array(
+			'ticket_options' => $ticket_options,
+		));
+	}
+
+	public function newticketGetPersonRowAction($person_id)
+	{
+		$person = false;
+		if ($person_id) {
+			$person = $this->em->find('DeskPRO:Person', $person_id);
+		} elseif ($email = $this->in->getString('email_address')) {
+			$person = $this->em->getRepository('DeskPRO:Person')->findOneByEmail($email);
+		}
+
+		if (!$person) {
+			$person = new Person();
+		}
+
+		return $this->render('AgentBundle:Ticket:newticket-person-row.html.twig', array(
+			'person' => $person
+		));
+	}
+
+	// Handles actually creating the ticket now
+	public function newAjaxSaveAction()
+	{
+		App::getOrm()->beginTransaction();
+
+		$ticket = new Entity\Ticket();
+		$ticket['agent_id']  = $this->in->getUint('agent_id');
+		$ticket['agent_team_id']  = $this->in->getUint('agent_team_id');
+		$ticket['department_id']  = $this->in->getUint('department_id');
+		$ticket['category_id']    = $this->in->getUint('category_id');
+		$ticket['product_id']     = $this->in->getUint('product_id');
+		$ticket['priority_id']    = $this->in->getUint('priority_id');
+		$ticket['workflow_id']    = $this->in->getUint('workflow_id');
+		$ticket['status']         = $this->in->getString('status');
+		$ticket['person_id']      = max($this->in->getUint('person_id'), $this->person['id']); // TODO handle no person selected
+
+		$ticket['subject']      = $this->in->getString('subject');
+
+		if (!$ticket['status']) {
+			$ticket['status'] = Entity\Ticket::STATUS_OPEN;
+		}
+
+		$ticket['creation_system'] = Entity\Ticket::CREATED_WEB_AGENT;
+
+		$message = new Entity\TicketMessage();
+		$message['person'] = $this->person;
+		$message['message'] = $this->in->getString('message');
+		$ticket->addMessage($message);
+
+		// Custom fields
+		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
+		$ticket_field_datas = array();
+		foreach ($ticket_field_defs as $field_def) {
+			$ticket_field_datas = Arrays::mergeAssoc($ticket_field_datas, $field_def->getHandler()->getDataFromForm(isset($_POST['custom_fields']) ? $_POST['custom_fields'] : array()));
+		}
+
+		foreach ($ticket_field_datas as $info) {
+			$ticket->setCustomData($info[0], $info[1], $info[2]);
+		}
+
+		App::getOrm()->persist($ticket);
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		$data = array(
+			'id' => $ticket['id'],
+			'loadUrl' => $this->generateUrl('agent_ticket_view', array('ticket_id' => $ticket['id']))
+		);
+
+		return $this->createJsonResponse($data);
 	}
 
 

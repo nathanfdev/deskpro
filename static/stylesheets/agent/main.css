@@ -27,6 +27,7 @@ a {
 .pad {
 	padding: 5px;
 }
+.clear { clear: both; height: 0; width: 0; overflow: hidden; }
 
 .no-select {
     -webkit-user-select: none;
@@ -5708,3 +5709,130 @@ article.ticket .urgency span {
     float: right;
     margin-top: -3px;
 }
+
+
+
+
+
+.page-new-ticket .section {
+	border-top: 1px solid #E4E4E4;
+	padding-top: 5px;
+	padding-bottom: 5px;
+	margin-top: 5px;
+	margin-bottom: 5px;
+	clear: both;
+}
+
+.page-new-ticket .section:first-child {
+	border-top: none;
+}
+
+.page-new-ticket .section .step {
+	float: left;
+	width: 24px;
+	
+	margin: 0 10px 0 5px;
+}
+
+
+.page-new-ticket .section .step .num {
+	border: 2px solid #E4E4E4;
+	-webkit-border-radius: 20px;
+	-moz-border-radius: 20px;
+	border-radius: 20px;
+	
+	color: #B9BABA;
+	
+	font-size: 12px;
+	font-weight: bold;
+	
+	line-height: 18px;
+	
+	display: block;
+	width: 18px;
+	height: 18px;
+	text-align: center;
+}
+
+.page-new-ticket .section.done .step .num {
+	background-color: #79B44D;
+	color: #000;
+	border-color: #4F7831;
+}
+
+.page-new-ticket .section .step .check {
+	display: block;
+	background: url(../../images/step-check.png) no-repeat 50% 50%;
+	width: 20px;
+	height: 15px;
+	text-indent: -100px;
+	overflow: hidden;
+	margin-top: 5px;
+	display: none;
+}
+
+.page-new-ticket .section.done .step .check {
+	display: block;
+}
+
+.page-new-ticket .section .content {
+	margin-left: 40px;
+}
+
+.page-new-ticket .user-section .user-search {
+	width: 400px;
+}
+
+
+.page-new-ticket dl dt {
+	clear: left;
+	float: left;
+	width: 100px;
+	margin-top: 2px;
+}
+
+.page-new-ticket dl dd {
+	margin-left: 110px;
+	margin-top: 6px;
+}
+
+.page-new-ticket .message-section .ticket-message {
+	width: 80%;
+	height: 100px;
+}
+
+.page-new-ticket .message-section .type-wrap {
+	float: right;
+}
+
+.page-new-ticket .other-section .content ul.other-props li {
+	display: inline;
+	color: #5375A3;
+	margin-right: 8px;
+	cursor: pointer;
+}
+
+.page-new-ticket .other-section .content ul.other-props li:hover {
+	text-decoration: underline;
+}
+
+
+.page-new-ticket .other-section .content dl .prop {
+	display: none;
+}
+
+.page-new-ticket .other-section .content dl .prop.on {
+	display: block;
+}
+
+.page-new-ticket .foot {
+	margin-top: 10px;
+	text-align: center;
+}	
+	
+	
+	
+	
+	
+	
+	

@@ -325,11 +325,14 @@ class PeopleSearchController extends AbstractController
 			LEFT JOIN p.emails emails
 			LEFT JOIN p.organization org
 			WHERE
-				p.name LIKE '%$q%'
-				OR p.first_name LIKE '%$q%'
-				OR p.last_name LIKE '%$q%'
-				OR emails.email LIKE '%$q%'
-				OR org.name LIKE '%$q%'
+				emails.email LIKE '$q%'
+				OR (
+					p.name LIKE '%$q%'
+					OR p.first_name LIKE '%$q%'
+					OR p.last_name LIKE '%$q%'
+					OR emails.email LIKE '%$q%'
+					OR org.name LIKE '%$q%'
+				)
 			GROUP BY p.id
 			ORDER BY p.last_name ASC, p.first_name ASC, p.name ASC
 		")->setMaxResults($limit)->getResult();

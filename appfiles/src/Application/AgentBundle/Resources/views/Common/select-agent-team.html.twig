@@ -1,0 +1,11 @@
+<select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="agent_team_id {{add_classname}}" {{ add_attr }}>
+	{% if with_blank %}<option value="">{{ blank_title }}</option>{% endif %}
+	{% if with_my_teams %}
+		{% for team in app.user.teams %}
+			<option value="{{ team.id }}">{{ team.name }}</option>
+		{% endfor %}
+	{% endif %}
+	{% for id,name in agent_teams %}
+		<option value="{{ id }}">{{ name }}</option>
+	{% endfor %}
+</select>
