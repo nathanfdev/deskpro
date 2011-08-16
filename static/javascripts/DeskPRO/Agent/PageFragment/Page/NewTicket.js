@@ -9,7 +9,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 
 	initPage: function(el) {
 		this.wrapper = el;
+		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
+		
+		var cw = this.contentWrapper;
+		cw.tinyscrollbar();
+		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+			cw.tinyscrollbar_update();
+		});
 		
 		$('form', this.wrapper).submit(function(ev) {
 			ev.preventDefault();
@@ -34,6 +41,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			
 			var me = DeskPRO_Window.getAgentInfo(DESKPRO_PERSON_ID);
 			this.getEl('usersearch').val(me.email);
+			this.setUser(me.id);
 		}).bind(this));
 		
 		this.getEl('usersearch').autocomplete({
@@ -120,6 +128,12 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 				if (person_id) {
 					this.getEl('user_section').addClass('done');
 				}
+
+				var self = this;
+				$('button.more-fields', this.getEl('userinfo')).click(function() {
+					self.getEl('user_section').addClass('more-on');
+					$(this).remove();
+				});
 			}
 		});
 	},
@@ -184,13 +198,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 	
 	_initOtherSection: function() {
 		var toggleProp = (function(prop) {
+			var propLi = $('li.prop-' + prop, this.getEl('other_props'));
 			var propDt = $('dt.prop-' + prop, this.getEl('other_props_input'));
 			var propDd = $('dd.prop-' + prop, this.getEl('other_props_input'));
 			
-			if (propDt.is('.on')) {
+			if (propLi.is('.on')) {
+				propLi.removeClass('on');
 				propDt.removeClass('on');
 				propDd.removeClass('on');
 			} else {
+				propLi.addClass('on');
 				propDt.addClass('on');
 				propDd.addClass('on');
 			}

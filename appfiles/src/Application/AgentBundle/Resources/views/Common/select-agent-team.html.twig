@@ -1,11 +1,17 @@
 <select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="agent_team_id {{add_classname}}" {{ add_attr }}>
 	{% if with_blank %}<option value="">{{ blank_title }}</option>{% endif %}
 	{% if with_my_teams %}
+		<optgroup label="My Teams">
 		{% for team in app.user.teams %}
-			<option value="{{ team.id }}">{{ team.name }}</option>
+			<option value="{{ team.id }}" {% if selected == team.id or (with_my_team_default and not selected) %}selected="selected"{% endif %}>{{ team.name }}</option>
 		{% endfor %}
+		</optgroup>
+		<optgroup label="All Teams">
 	{% endif %}
 	{% for id,name in agent_teams %}
-		<option value="{{ id }}">{{ name }}</option>
+		<option value="{{ id }}" {% if selected == id %}selected="selected"{% endif %}>{{ name }}</option>
 	{% endfor %}
+	{% if with_my_teams %}
+		</optgroup>
+	{% endif %}
 </select>

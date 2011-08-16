@@ -1,10 +1,13 @@
 <select {% if name %}name="{{ name }}"{% endif %} {% if id %}id="{{ id }}"{% endif %} class="{{add_classname}}" {{ add_attr }}>
 	{% if with_blank %}<option value="">{{ blank_title }}</option>{% endif %}
-	{% for cat in categories %}
-		<option value="{{ cat.id }}" {% if cat.id == selected %}selected="selected"{% endif %}>{{ cat.title }}</option>
+	{% for k,cat in categories %}
+		{% set id = cat.id|default(k) %}
+		{% set title = cat.title|default(cat.name|default(cat)) %}
+		<option value="{{ id }}" {% if id == selected %}selected="selected"{% endif %}>{{ title }}</option>
+		
 		{% if cat.children %}
 			{% for subcat in cat.children %}
-				<option value="{{subcat.id}}" {% if subcat.id == selected %}selected="selected"{% endif %}>-- {{subcat.title}}</option>
+				<option value="{{subcat.id}}" {% if subcat.id == selected %}selected="selected"{% endif %}>-- {{subcat.title|default(cat.name)}}</option>
 			{% endfor %}
 		{% endif %}
 	{% endfor %}

@@ -9,10 +9,10 @@
 	</dd>
 
 	<dt class="more" {% if not person.organization %}style="display:none"{% endif %}>Organization</dt>
-	<dd class="more" {% if not person.organization %}style="display:none"{% endif %}></dd>
-
-	<dt class="more" {% if not person.organization %}style="display:none"{% endif %}>Organization Position</dt>
-	<dd class="more" {% if not person.organization %}style="display:none"{% endif %}><input type="text" name="person[organization_position]" /></dd>
+	<dd class="more" {% if not person.organization %}style="display:none"{% endif %}>
+		<input type="text" name="person[organization]" />
+		(Position: <input type="text" name="person[organization_position]" />)
+	</dd>
 </dl>
 <br class="clear" />
 

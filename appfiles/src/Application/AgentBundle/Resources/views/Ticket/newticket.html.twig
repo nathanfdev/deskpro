@@ -39,13 +39,41 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="check">Done</span>
 	</div>
 	<div class="content">
-		<h4>Department</h4>
-		{% include 'AgentBundle:Common:select-department.html.twig' with {
-			'name': "ticket[department]",
-			'id': baseId ~ '_dep',
-			'departments': ticket_options.departments_hierarchy,
-			'with_blank': true
-		} %}
+		<div class="col">
+			<h4>Department</h4>
+			{% include 'AgentBundle:Common:select-department.html.twig' with {
+				'name': "ticket[department]",
+				'id': baseId ~ '_dep',
+				'departments': ticket_options.departments_hierarchy,
+				'with_blank': true
+			} %}
+		</div>
+		<div class="col">
+			<h4 class="light">Status</h4>
+			<select name="ticket[status]">
+				<option value="open" selected="selected">Awaiting agent</option>
+				<option value="pending">Awaiting user</option>
+				<option value="resolved">Resolved</option>
+			</select>
+		</div>
+		<div class="col">
+			<h4 class="light">Agent</h4>
+			<span class="selected-agent" id="{{baseId}}_assigned_agent">Me</span>
+			<button class="clean-gray xxx-small" id="{{baseId}}_assign_agent_choose">Change</button>
+			<input type="hidden" name="ticket[agent]" value="{{ app.user.id }}" />
+		</div>
+		<div class="col">
+			<h4 class="light">Agent Team</h4>
+			{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
+				'name': "ticket[agent_team]",
+				'id': baseId ~ '_agent_team',
+				'agent_teams': ticket_options.agent_teams,
+				'with_blank': true,
+				'with_my_teams': true,
+				'with_my_team_default': true
+			} %}
+		</div>
+		<br class="clear" />
 	</div>
 </div>
 
@@ -68,10 +96,9 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>Message</h4>
 		<div class="type-wrap">
-			Type: <select name="ticket[ticket_type]">
-				<option value="blank">Tracked email</option>
-				<option value="incident">Logged Incident</option>
-				<option value="ticket">Normal Ticket</option>
+			Template: <select name="ticket[notification_template]">
+				<option value="blank">Ticket</option>
+				<option value="blank">Blank</option>
 			</select>
 		</div>
 		<textarea name="message" class="ticket-message" id="{{baseId}}_message"></textarea>
@@ -86,44 +113,12 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>Other Properties</h4>
 		<ul class="other-props" id="{{baseId}}_other_props">
-			<li data-property="status">Status</li>
-			<li data-property="agent">Agent</li>
-			<li data-property="agent_team">Agent Team</li>
-			<li data-property="category">Category</li>
-			<li data-property="priority">Priority</li>
-			<li data-property="workflow">Workflow</li>
-			<li data-property="product">Product</li>
+			<li class="prop-basic" data-property="basic">Properties</li>
 		</ul>
 
 		<dl id="{{baseId}}_other_props_input">
-			<dt class="prop prop-status">Status</dt>
-			<dd class="prop prop-status">
-				<select name="ticket[status]">
-					<option value="open" selected="selected">Awaiting agent</option>
-					<option value="pending">Awaiting user</option>
-					<option value="resolved">Resolved</option>
-				</select>
-			</dd>
-
-			<dt class="prop prop-agent">Agent</dt>
-			<dd class="prop prop-agent">
-				<div class="selected-agent" id="{{baseId}}_assigned_agent">Unassigned</div>
-				<button class="clean-gray xx-small" id="{{baseId}}_assign_agent_choose">Select</button>
-			</dd>
-
-			<dt class="prop prop-agent_team">Agent Team</dt>
-			<dd class="prop prop-agent_team">
-				{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
-					'name': "ticket[agent_team]",
-					'id': baseId ~ '_agent_team',
-					'agent_teams': ticket_options.agent_teams,
-					'with_blank': true,
-					'with_my_teams': true
-				} %}
-			</dd>
-
-			<dt class="prop prop-category">Category</dt>
-			<dd class="prop prop-category">
+			<dt class="prop prop-basic">Category</dt>
+			<dd class="prop prop-basic">
 				{% include 'AgentBundle:Common:select-category.html.twig' with {
 					'name': "ticket[category]",
 					'id': baseId ~ '_cat',
@@ -132,8 +127,8 @@ pageMeta.baseId = '{{ baseId }}';
 				} %}
 			</dd>
 
-			<dt class="prop prop-priority">Priority</dt>
-			<dd class="prop prop-priority">
+			<dt class="prop prop-basic">Priority</dt>
+			<dd class="prop prop-basic">
 				{% include 'AgentBundle:Common:select-priority.html.twig' with {
 					'name': "ticket[priority]",
 					'id': baseId ~ '_pri',
@@ -142,8 +137,8 @@ pageMeta.baseId = '{{ baseId }}';
 				} %}
 			</dd>
 
-			<dt class="prop prop-workflow">Workflow</dt>
-			<dd class="prop prop-workflow">
+			<dt class="prop prop-basic">Workflow</dt>
+			<dd class="prop prop-basic">
 				{% include 'AgentBundle:Common:select-workflow.html.twig' with {
 					'name': "ticket[workflow]",
 					'id': baseId ~ '_work',
@@ -152,8 +147,8 @@ pageMeta.baseId = '{{ baseId }}';
 				} %}
 			</dd>
 
-			<dt class="prop prop-product">Product</dt>
-			<dd class="prop prop-product">
+			<dt class="prop prop-basic">Product</dt>
+			<dd class="prop prop-basic">
 				{% include 'AgentBundle:Common:select-product.html.twig' with {
 					'name': "ticket[workflow]",
 					'id': baseId ~ '_work',
