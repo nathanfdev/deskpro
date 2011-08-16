@@ -231,7 +231,25 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 
 		this.otherTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li', this.getEl('other_props_tabs')),
-			context: this.getEl('other_props_tabs_content')
+			context: this.getEl('other_props_tabs_content'),
+			autoSelectFirst: false,
+			onTabClick: (function(ev) {
+				var contentWrap = this.getEl('other_props_tabs_content');
+				var navWrap = this.getEl('other_props_tabs_wrap');
+				var tab = ev.tabEl;
+
+				// Toggle content state if we're clicking for the first time,
+				// or re-clicking a tab
+				if (!$('.on', navWrap).length || tab.is('.on')) {
+					if (contentWrap.is(':visible')) {
+						contentWrap.slideUp();
+						navWrap.removeClass('on');
+					} else {
+						window.setTimeout(function() { contentWrap.slideDown() }, 20);
+						navWrap.addClass('on');
+					}
+				}
+			}).bind(this)
 		});
 		
 		// Agent selector

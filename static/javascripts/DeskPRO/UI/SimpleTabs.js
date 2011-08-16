@@ -40,7 +40,9 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 			/**
 			 * The context for tab contents when executing data-tab-for
 			 */
-			context: document
+			context: document,
+
+			autoSelectFirst: true
 		};
 
 		this.lastActiveTab = null;
@@ -56,15 +58,24 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 
 		var self = this;
 		this.triggerEls.click(function(ev) {
-			self._handleTabClick(this, ev);
+			ev.cancel = false;
+			ev.tabEl = $(this);
+
+			self.fireEvent('tabClick', [ev]);
+
+			if (!ev.cancel) {
+				self._handleTabClick(this, ev);
+			}
 		});
 
-		var firstTab = this.triggerEls.filter('.on:first');
-		if (!firstTab.length) {
-			firstTab = this.triggerEls.first();
-		}
+		if (this.options.autoSelectFirst) {
+			var firstTab = this.triggerEls.filter('.on:first');
+			if (!firstTab.length) {
+				firstTab = this.triggerEls.first();
+			}
 
-		this.activateTab(firstTab);
+			this.activateTab(firstTab);
+		}
 	},
 
 	addTriggerElement: function(el) {
@@ -72,7 +83,14 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		
 		this.triggerEls.add(el);
 		el.click(function(ev) {
-			self._handleTabClick(this, ev);
+			ev.cancel = false;
+			ev.tabEl = $(this);
+			
+			self.fireEvent('tabClick', [ev]);
+
+			if (!ev.cancel) {
+				self._handleTabClick(this, ev);
+			}
 		});
 	},
 

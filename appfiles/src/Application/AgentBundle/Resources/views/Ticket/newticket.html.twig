@@ -114,14 +114,14 @@ pageMeta.baseId = '{{ baseId }}';
 
 		{# Tab Container #}
 		<div class="tab-container">
-			<nav>
+			<nav id="{{baseId}}_other_props_tabs_wrap">
 				<ul id="{{baseId}}_other_props_tabs">
 					<li data-tab-for="> .tab-properties">Properties</li>
 					<li data-tab-for="> .tab-cc">CC's</li>
 					<li data-tab-for="> .tab-attach">Attachments</li>
 				</ul>
 			</nav>
-			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content">
+			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content" style="display: none">
 				{# Tab Properties #}
 				<div class="tab-properties" style="display: none">
 					<dl>
