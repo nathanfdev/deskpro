@@ -197,21 +197,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 	//#########################################################################
 	
 	_initOtherSection: function() {
-		var toggleProp = (function(prop) {
-			var propLi = $('li.prop-' + prop, this.getEl('other_props'));
-			var propIn = $('.prop-' + prop, this.getEl('other_props_input'));
 
-			if (propLi.is('.on')) {
-				propLi.removeClass('on');
-				propIn.removeClass('on');
-			} else {
-				propLi.addClass('on');
-				propIn.addClass('on');
-			}
-		}).bind(this);
-		
-		$('li', this.getEl('other_props')).click(function() {
-			toggleProp($(this).data('property'));
+		this.otherTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li', this.getEl('other_props_tabs')),
+			context: this.getEl('other_props_tabs_content')
 		});
 		
 		// Agent selector

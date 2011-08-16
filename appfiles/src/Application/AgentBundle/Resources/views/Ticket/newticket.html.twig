@@ -58,8 +58,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="col">
 			<h4 class="light">Agent</h4>
-			<span class="selected-agent" id="{{baseId}}_assigned_agent">Me</span>
-			<button class="clean-gray xxx-small" id="{{baseId}}_assign_agent_choose">Change</button>
+			<button class="clean-gray xxx-small" id="{{baseId}}_assign_agent_choose"><span class="selected-agent" id="{{baseId}}_assigned_agent">Me</span></button>
 			<input type="hidden" name="ticket[agent]" value="{{ app.user.id }}" />
 		</div>
 		<div class="col">
@@ -112,86 +111,99 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<h4>Other Properties</h4>
-		<ul class="other-props" id="{{baseId}}_other_props">
-			<li class="prop-basic" data-property="basic">Properties</li>
-			<li class="prop-cc" data-property="cc">CC's</li>
-			<li class="prop-attach" data-property="attach">Attachments</li>
-		</ul>
 
-		<div id="{{baseId}}_other_props_input">
-			<dl>
-				<dt class="prop prop-basic">Category</dt>
-				<dd class="prop prop-basic">
-					{% include 'AgentBundle:Common:select-category.html.twig' with {
-						'name': "ticket[category]",
-						'id': baseId ~ '_cat',
-						'categories': ticket_options.ticket_categories_hierarchy,
-						'with_blank': true
-					} %}
-				</dd>
+		{# Tab Container #}
+		<div class="tab-container">
+			<nav>
+				<ul id="{{baseId}}_other_props_tabs">
+					<li data-tab-for="> .tab-properties">Properties</li>
+					<li data-tab-for="> .tab-cc">CC's</li>
+					<li data-tab-for="> .tab-attach">Attachments</li>
+				</ul>
+			</nav>
+			<div class="content-wrapper" id="{{baseId}}_other_props_tabs_content">
+				{# Tab Properties #}
+				<div class="tab-properties" style="display: none">
+					<dl>
+						<dt class="prop">Category</dt>
+						<dd class="prop">
+							{% include 'AgentBundle:Common:select-category.html.twig' with {
+								'name': "ticket[category]",
+								'id': baseId ~ '_cat',
+								'categories': ticket_options.ticket_categories_hierarchy,
+								'with_blank': true
+							} %}
+						</dd>
 
-				<dt class="prop prop-basic">Priority</dt>
-				<dd class="prop prop-basic">
-					{% include 'AgentBundle:Common:select-priority.html.twig' with {
-						'name': "ticket[priority]",
-						'id': baseId ~ '_pri',
-						'priorities': ticket_options.ticket_priorities,
-						'with_blank': true
-					} %}
-				</dd>
+						<dt class="prop">Priority</dt>
+						<dd class="prop">
+							{% include 'AgentBundle:Common:select-priority.html.twig' with {
+								'name': "ticket[priority]",
+								'id': baseId ~ '_pri',
+								'priorities': ticket_options.ticket_priorities,
+								'with_blank': true
+							} %}
+						</dd>
 
-				<dt class="prop prop-basic">Workflow</dt>
-				<dd class="prop prop-basic">
-					{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-						'name': "ticket[workflow]",
-						'id': baseId ~ '_work',
-						'workflows': ticket_options.ticket_workflows,
-						'with_blank': true
-					} %}
-				</dd>
+						<dt class="prop">Workflow</dt>
+						<dd class="prop">
+							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+								'name': "ticket[workflow]",
+								'id': baseId ~ '_work',
+								'workflows': ticket_options.ticket_workflows,
+								'with_blank': true
+							} %}
+						</dd>
 
-				<dt class="prop prop-basic">Product</dt>
-				<dd class="prop prop-basic">
-					{% include 'AgentBundle:Common:select-product.html.twig' with {
-						'name': "ticket[workflow]",
-						'id': baseId ~ '_work',
-						'products': ticket_options.products_hierarchy,
-						'with_blank': true
-					} %}
-				</dd>
-			</dl>
-
-			<div class="prop prop-cc">
-				<h6>CC</h6>
-				<div class="cc-input">
-					<input type="text" class="new-cc" id="{{baseId}}_add_cc_txt" /> <button class="clean-gray xxx-small add-cc-trigger">Add</button>
+						<dt class="prop">Product</dt>
+						<dd class="prop">
+							{% include 'AgentBundle:Common:select-product.html.twig' with {
+								'name': "ticket[workflow]",
+								'id': baseId ~ '_work',
+								'products': ticket_options.products_hierarchy,
+								'with_blank': true
+							} %}
+						</dd>
+					</dl>
 				</div>
-				<ul class="cc-list" id="{{baseId}}_cc_list"></ul>
-			</div>
+				{# /Tab Properties #}
 
-			<div class="attachments prop prop-attach">
-				<script class="template-upload" type="text/x-jquery-tmpl">
-					<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
-				</script>
-				<script class="template-download" type="text/x-jquery-tmpl">
-					<li class="uploaded">
-						<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
-						<a href="${download_url}" target="_blank">${filename}</a>
-						<span class="size">${filesize_readable}</span>
-					</li>
-				</script>
-				<h6>Attachments</h6>
-				<div class="file-input">
-					<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+				{# Tab CC #}
+				<div class="tab-cc" style="display: none">
+					<div class="cc-input">
+						<input type="text" class="new-cc" id="{{baseId}}_add_cc_txt" /> <button class="clean-gray xxx-small add-cc-trigger">Add</button>
+					</div>
+					<ul class="cc-list" id="{{baseId}}_cc_list"></ul>
 				</div>
-				<ul class="files file-list"></ul>
+				{# /Tab CC #}
+
+				{# Tab Attach #}
+				<div class="tab-attach" style="display: none">
+					<script class="template-upload" type="text/x-jquery-tmpl">
+						<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+					</script>
+					<script class="template-download" type="text/x-jquery-tmpl">
+						<li class="uploaded">
+							<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
+							<a href="${download_url}" target="_blank">${filename}</a>
+							<span class="size">${filesize_readable}</span>
+						</li>
+					</script>
+					<h6>Attachments</h6>
+					<div class="file-input">
+						<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+					</div>
+					<ul class="files file-list"></ul>
+				</div>
+				{# /Tab Attach #}
 			</div>
 		</div>
+		{# /Tab Container #}
 	</div>
 </div>
 
 <div class="foot">
-	<button class="dp-button">Save Ticket</button>
+	<button class="dp-button">Create Ticket</button>
 </div>
 
 </form>

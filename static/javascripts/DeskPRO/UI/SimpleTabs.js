@@ -23,8 +23,23 @@ DeskPRO.UI.SimpleTabs = new Orb.Class({
 		
 		// Initial values
 		this.options = {
+			/**
+			 * Elements that will act as tab triggers. Tabs
+			 * must have a data-tab-for attribute with a jQuery selector
+			 * to define which tab they activate.
+			 *
+			 * You can add new triggers dynamically with addTriggerElement() later
+			 */
 			triggerElements: '.tab-trigger',
+
+			/**
+			 * This classname is added to tabs and tab content wrappers when they're activated
+			 */
 			activeClassname: 'on',
+
+			/**
+			 * The context for tab contents when executing data-tab-for
+			 */
 			context: document
 		};
 
