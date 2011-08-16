@@ -4,16 +4,22 @@ Orb.Util.Events = {
 	
 	__initEventsObj: function() {
 		if (!this.__events) this.__events = {};
+		if (!this.__events_default_context) this.__events_default_context = null;
+	},
+
+	setDefaultEventContext: function(context) {
+		this.__events_default_context = context;
 	},
 	
 	normalizeEventName: function(type) {
 		return type.toLowerCase().replace(/^on/, '');
 	},
 
-	addEvent: function(type, fn, internal){
+	addEvent: function(type, fn, context, internal){
 		type = this.normalizeEventName(type);
 		this.__initEventsObj();
 		this.__events[type] = (this.__events[type] || []).include(fn);
+		if (context) fn.context = context;
 		if (internal) fn.internal = true;
 		return this;
 	},
@@ -30,8 +36,8 @@ Orb.Util.Events = {
 		if (!events) return this;
 		args = Array.from(args);
 		events.each(function(fn){
-			if (delay) fn.delay(delay, this, args);
-			else fn.apply(this, args);
+			if (delay) fn.delay(delay, fn.context || this.__events_default_context || this, args);
+			else fn.apply(fn.context || this.__events_default_context || this, args);
 		}, this);
 		return this;
 	},

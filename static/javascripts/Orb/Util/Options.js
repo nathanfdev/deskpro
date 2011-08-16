@@ -7,10 +7,13 @@ Orb.Util.Options = {
 
 		if (this.addEvent) {
 			for (var option in options){
-				if (typeof options[option] != 'function' || !(/^on[A-Z]/).test(option)) continue;
-
-				this.addEvent(option, options[option]);
-				delete options[option];
+				if (option == 'defaultEventContext') {
+					this.setDefaultEventContext(options[option]);
+					delete options[option];
+				} else if (typeof options[option] == 'function' && (/^on[A-Z]/).test(option)) {
+					this.addEvent(option, options[option]);
+					delete options[option];
+				}
 			}
 		}
 
