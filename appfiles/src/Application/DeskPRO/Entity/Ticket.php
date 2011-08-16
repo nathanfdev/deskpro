@@ -166,6 +166,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
+	 * @ORM_Mapping\Column(name="notify_template", type="string", length=200)
+	 */
+	protected $notify_template = '';
+
+	/**
+	 * @var string
 	 * @ORM_Mapping\Column(name="creation_system", type="string", length=20)
 	 */
 	protected $creation_system;

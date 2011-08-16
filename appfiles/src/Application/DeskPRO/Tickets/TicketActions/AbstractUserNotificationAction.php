@@ -76,6 +76,10 @@ abstract class AbstractUserNotificationAction implements ActionInterface
 		$vars['messages'] = $messages;
 
 		$tpl_suffix = $this->getTemplateSuffix();
+		if (!$tpl_suffix && $ticket['notify_template']) {
+			$tpl_suffix .= '-' . $ticket['notify_template'];
+		}
+
 		App::getTranslator()->setTemporaryLocale($person->getLocale(), function($tr, $locale) use ($tpl, $vars, $ticket, $person, $parts, $tpl_suffix, $only_cc_ids) {
 			$email_subject = $tr->phrase($vars['email_subject']);
 			$email_body = App::get('templating')->render($tpl.$tpl_suffix.'.html.twig', $vars);
