@@ -313,6 +313,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		return {
 			id: agent_id,
 			name: agentEl.data('agent-name'),
+			email: agentEl.data('email'),
 			shortName: agentEl.data('agent-short-name'),
 			pictureUrl: agentEl.data('picture-url'),
 			pictureUrlSizable: agentEl.data('picture-url-sizable')

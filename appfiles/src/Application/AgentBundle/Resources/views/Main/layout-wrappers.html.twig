@@ -108,6 +108,7 @@
 							class="agent-{{ agent.id }}"
 							style="background-image: url({{ agent.getPictureUrl(30) }}); {% if agent.id == app.user.id %}display: none;{% endif %}"
 							data-agent-id="{{ agent.id }}"
+							data-email="{{ agent.primary_email_address }}"
 							data-agent-name="{{ agent.display_name }}"
 							data-agent-short-name="{{ agent.getDisplayContactShort(4) }}"
 							data-picture-url="{{ agent.getPictureUrl(30) }}"
