@@ -5333,9 +5333,11 @@ article.ticket .urgency span {
 
 
 .snippets-overlay {
-    width: 790px;
-    height: 500px;
-    position: relative;
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    right: 0;
 }
 
 .snippets-overlay nav {
@@ -5424,13 +5426,13 @@ article.ticket .urgency span {
     cursor: pointer;
 }
 
-.snippets-overlay article li div.content {
+.snippets-overlay article li div.content.show {
     margin-left: 141px;
 }
 
 .snippets-overlay textarea {
     height: 100px;
-    width: 400px;
+    width: 340px;
 }
 
 .snippets-overlay li.snippet {

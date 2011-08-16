@@ -157,11 +157,17 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 			'bottom': 29 //popover bottom (30) -1 for the white border
 		});
 
+		if (this.options.tabRoute) {
+			var tabLeft = width - 210;
+		} else {
+			var tabLeft = width - 100;
+		}
+
 		this.popoverTabs.css({
 			'z-index': 999996,
 			'display': 'none',
 			'top': top - 24,
-			'left': width - 210
+			'left': tabLeft
 		});
 
 		$('.close:first', this.popoverTabs).click((function(ev) {
