@@ -114,49 +114,79 @@ pageMeta.baseId = '{{ baseId }}';
 		<h4>Other Properties</h4>
 		<ul class="other-props" id="{{baseId}}_other_props">
 			<li class="prop-basic" data-property="basic">Properties</li>
+			<li class="prop-cc" data-property="cc">CC's</li>
+			<li class="prop-attach" data-property="attach">Attachments</li>
 		</ul>
 
-		<dl id="{{baseId}}_other_props_input">
-			<dt class="prop prop-basic">Category</dt>
-			<dd class="prop prop-basic">
-				{% include 'AgentBundle:Common:select-category.html.twig' with {
-					'name': "ticket[category]",
-					'id': baseId ~ '_cat',
-					'categories': ticket_options.ticket_categories_hierarchy,
-					'with_blank': true
-				} %}
-			</dd>
+		<div id="{{baseId}}_other_props_input">
+			<dl>
+				<dt class="prop prop-basic">Category</dt>
+				<dd class="prop prop-basic">
+					{% include 'AgentBundle:Common:select-category.html.twig' with {
+						'name': "ticket[category]",
+						'id': baseId ~ '_cat',
+						'categories': ticket_options.ticket_categories_hierarchy,
+						'with_blank': true
+					} %}
+				</dd>
 
-			<dt class="prop prop-basic">Priority</dt>
-			<dd class="prop prop-basic">
-				{% include 'AgentBundle:Common:select-priority.html.twig' with {
-					'name': "ticket[priority]",
-					'id': baseId ~ '_pri',
-					'priorities': ticket_options.ticket_priorities,
-					'with_blank': true
-				} %}
-			</dd>
+				<dt class="prop prop-basic">Priority</dt>
+				<dd class="prop prop-basic">
+					{% include 'AgentBundle:Common:select-priority.html.twig' with {
+						'name': "ticket[priority]",
+						'id': baseId ~ '_pri',
+						'priorities': ticket_options.ticket_priorities,
+						'with_blank': true
+					} %}
+				</dd>
 
-			<dt class="prop prop-basic">Workflow</dt>
-			<dd class="prop prop-basic">
-				{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-					'name': "ticket[workflow]",
-					'id': baseId ~ '_work',
-					'workflows': ticket_options.ticket_workflows,
-					'with_blank': true
-				} %}
-			</dd>
+				<dt class="prop prop-basic">Workflow</dt>
+				<dd class="prop prop-basic">
+					{% include 'AgentBundle:Common:select-workflow.html.twig' with {
+						'name': "ticket[workflow]",
+						'id': baseId ~ '_work',
+						'workflows': ticket_options.ticket_workflows,
+						'with_blank': true
+					} %}
+				</dd>
 
-			<dt class="prop prop-basic">Product</dt>
-			<dd class="prop prop-basic">
-				{% include 'AgentBundle:Common:select-product.html.twig' with {
-					'name': "ticket[workflow]",
-					'id': baseId ~ '_work',
-					'products': ticket_options.products_hierarchy,
-					'with_blank': true
-				} %}
-			</dd>
-		</dl>
+				<dt class="prop prop-basic">Product</dt>
+				<dd class="prop prop-basic">
+					{% include 'AgentBundle:Common:select-product.html.twig' with {
+						'name': "ticket[workflow]",
+						'id': baseId ~ '_work',
+						'products': ticket_options.products_hierarchy,
+						'with_blank': true
+					} %}
+				</dd>
+			</dl>
+
+			<div class="prop prop-cc">
+				<h6>CC</h6>
+				<div class="cc-input">
+					<input type="text" class="new-cc" id="{{baseId}}_add_cc_txt" /> <button class="clean-gray xxx-small add-cc-trigger">Add</button>
+				</div>
+				<ul class="cc-list" id="{{baseId}}_cc_list"></ul>
+			</div>
+
+			<div class="attachments prop prop-attach">
+				<script class="template-upload" type="text/x-jquery-tmpl">
+					<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+				</script>
+				<script class="template-download" type="text/x-jquery-tmpl">
+					<li class="uploaded">
+						<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
+						<a href="${download_url}" target="_blank">${filename}</a>
+						<span class="size">${filesize_readable}</span>
+					</li>
+				</script>
+				<h6>Attachments</h6>
+				<div class="file-input">
+					<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+				</div>
+				<ul class="files file-list"></ul>
+			</div>
+		</div>
 	</div>
 </div>
 

@@ -5852,11 +5852,21 @@ article.ticket .urgency span {
 }
 
 
-.page-new-ticket .other-section .content dl .prop {
+.page-new-ticket .other-section .content .prop {
 	display: none;
 }
 
-.page-new-ticket .other-section .content dl .prop.on {
+.page-new-ticket .other-section .content .prop-cc {
+    clear: both;
+    margin-top: 12px;
+}
+
+.page-new-ticket .other-section .content .prop-attach {
+    clear: both;
+    margin-top: 12px;
+}
+
+.page-new-ticket .other-section .content .prop.on {
 	display: block;
 }
 

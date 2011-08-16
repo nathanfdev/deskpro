@@ -199,17 +199,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 	_initOtherSection: function() {
 		var toggleProp = (function(prop) {
 			var propLi = $('li.prop-' + prop, this.getEl('other_props'));
-			var propDt = $('dt.prop-' + prop, this.getEl('other_props_input'));
-			var propDd = $('dd.prop-' + prop, this.getEl('other_props_input'));
-			
+			var propIn = $('.prop-' + prop, this.getEl('other_props_input'));
+
 			if (propLi.is('.on')) {
 				propLi.removeClass('on');
-				propDt.removeClass('on');
-				propDd.removeClass('on');
+				propIn.removeClass('on');
 			} else {
 				propLi.addClass('on');
-				propDt.addClass('on');
-				propDd.addClass('on');
+				propIn.addClass('on');
 			}
 		}).bind(this);
 		
@@ -232,6 +229,44 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 					this.getEl('assigned_agent').text(agentInfo.name);
 				}
 			}).bind(this)
+		});
+
+		// Add CC's
+		var self = this;
+		$('.add-cc-trigger', this.wrapper).click(function() {
+			var txt = self.getEl('add_cc_txt');
+			var val = txt.val();
+			var el = $('<li>' + val + '<input type="hidden" name="new_parts[]" value="'+val+'" />&nbsp;&nbsp;<span class="remove-trigger" style="cursor: pointer;">x</span></li>');
+
+			$('.remove-trigger', el).click(function(ev) {
+				ev.preventDefault();
+				ev.stopPropagation();
+				el.remove();
+			});
+
+			el.appendTo(self.getEl('cc_list'));
+
+			txt.val('');
+		});
+
+		// Attachments
+		var list = $('.file-list', this.wrapper);
+		$('input', list[0]).live('click', function() {
+			var el = $(this);
+			var li = el.parent();
+			if (el.is(':checked')) {
+				li.removeClass('unchecked');
+			} else {
+				li.addClass('unchecked');
+			}
+		});
+
+		this.wrapper.fileupload({
+			url: BASE_URL + 'agent/misc/accept-upload',
+			dropZone: this.wrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', this.wrapper),
+			downloadTemplate: $('.template-download', this.wrapper)
 		});
 	}
 });
