@@ -52,7 +52,7 @@ class SettingsController extends AbstractController
 			$file = $this->request->files->get('picture');
 
 			try {
-				$im = new \Imagick($file->getPath());
+				$im = new \Imagick($file->getRealPath());
 
 				$s = min(100, $im->getImageWidth(), $im->getImageHeight());
 				$im->resizeImage($s, $s, \Imagick::FILTER_LANCZOS, true);
@@ -65,7 +65,7 @@ class SettingsController extends AbstractController
 
 			$desc->write($im->getImageBlob(), array(
 				'content_type' => $file->getMimeType(),
-				'filename' => $file->getOriginalName()
+				'filename' => $file->getClientOriginalName()
 			));
 
 			$im->destroy();

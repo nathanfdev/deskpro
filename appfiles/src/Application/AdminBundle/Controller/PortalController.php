@@ -17,7 +17,7 @@ class PortalController extends AbstractController
 		$desc = App::getApi('filestorage')->createRandomPath();
 
 		$im = new \Imagick();
-		$im->readImage($file->getPath());
+		$im->readImage($file->getRealPath());
 		$im->scaleImage(16, 16, true);
 		$im->setImageFormat('ico');
 
@@ -25,7 +25,7 @@ class PortalController extends AbstractController
 
 		$desc->write($file_content, array(
 			'content_type' => $file->getMimeType(),
-			'filename' => $file->getOriginalName()
+			'filename' => $file->getClientOriginalName()
 		));
 
 		$blob_id = $desc->getPath();

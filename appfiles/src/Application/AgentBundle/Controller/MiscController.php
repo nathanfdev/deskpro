@@ -172,9 +172,9 @@ class MiscController extends AbstractController
 		$file = $this->request->files->get('file-upload');
 		$desc = App::getApi('filestorage')->createRandomPath();
 
-		$desc->write(file_get_contents($file->getPath()), array(
+		$desc->write(file_get_contents($file->getRealPath()), array(
 			'content_type' => $file->getMimeType(),
-			'filename' => $file->getOriginalName()
+			'filename' => $file->getClientOriginalName()
 		));
 
 		$blob_id = $desc->getPath();

@@ -54,9 +54,9 @@ class NewReply
 		if ($this->new_upload) {
 			$desc = App::getApi('filestorage')->createRandomPath();
 
-			$desc->write(file_get_contents($this->new_upload->getPath()), array(
+			$desc->write(file_get_contents($this->new_upload->getRealPath()), array(
 				'content_type' => $this->new_upload->getMimeType(),
-				'filename' => $this->new_upload->getOriginalName()
+				'filename' => $this->new_upload->getClientOriginalName()
 			));
 
 			$blob_id = $desc->getPath();

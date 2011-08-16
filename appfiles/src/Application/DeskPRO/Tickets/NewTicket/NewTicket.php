@@ -120,9 +120,9 @@ class NewTicket
 			if ($this->ticket->new_upload) {
 				$desc = App::getApi('filestorage')->createRandomPath();
 
-				$desc->write(file_get_contents($this->ticket->new_upload->getPath()), array(
+				$desc->write(file_get_contents($this->ticket->new_upload->getRealPath()), array(
 					'content_type' => $this->ticket->new_upload->getMimeType(),
-					'filename' => $this->ticket->new_upload->getOriginalName()
+					'filename' => $this->ticket->new_upload->getClientOriginalName()
 				));
 
 				$blob_id = $desc->getPath();
