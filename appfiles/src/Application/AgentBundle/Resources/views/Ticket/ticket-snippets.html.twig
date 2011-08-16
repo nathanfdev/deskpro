@@ -10,7 +10,7 @@
 	<div class="snippet-sections">
 	{% for category in ticket_snippet_cats %}
 		{% set group = ticket_snippets[category.id] %}
-		{% include 'AgentBundle:TIcket:ticket-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
+		{% include 'AgentBundle:Ticket:ticket-snippets-catsection.html.twig' with {'category': category, 'snippets': group.snippets} %}
 	{% endfor %}
 	</div>
 
