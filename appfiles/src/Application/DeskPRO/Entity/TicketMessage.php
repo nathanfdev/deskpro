@@ -199,6 +199,14 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function setVisitorFromRequest()
+	{
+		if (App::has('session')) {
+			$v = App::getSession()->getVisitor();
+			$this->setVisitor($v);
+		}
+	}
+
 	/**
 	 * Did this message originate from a gateway?
 	 *

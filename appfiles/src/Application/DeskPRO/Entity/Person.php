@@ -1299,7 +1299,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$email_address = strtolower($email_address);
 
 		foreach ($this->emails as $email) {
-			if ($email['email'] == $email_address) {
+			if (strtolower($email['email']) == $email_address) {
 				return $email;
 			}
 		}

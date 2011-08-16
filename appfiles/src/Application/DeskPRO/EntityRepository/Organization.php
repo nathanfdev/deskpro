@@ -21,7 +21,14 @@ class Organization extends EntityRepository
 {
 	protected $_organization_names = null;
 
-
+	public function findOneByName($name)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT o
+			FROM DeskPRO:Organization o
+			WHERE o.name = ?1
+		")->setParamter(1, $name)->getOneOrNullResult();
+	}
 
 	/**
 	 * @return array

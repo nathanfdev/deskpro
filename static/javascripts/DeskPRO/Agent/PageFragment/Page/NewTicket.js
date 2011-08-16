@@ -18,7 +18,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			cw.tinyscrollbar_update();
 		});
 		
-		$('form', this.wrapper).submit(function(ev) {
+		this.form = $('form', this.wrapper).submit(function(ev) {
 			ev.preventDefault();
 		});
 		
@@ -27,6 +27,37 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 		this._initSubjectSection();
 		this._initMessageSection();
 		this._initOtherSection();
+
+		$('button.submit-trigger', this.wrapper).click(this.submit.bind(this));
+	},
+
+	closeSelf: function() {
+		var ev = {cancel: false};
+		this.fireEvent('closeSelf', ev);
+
+		if (!ev.cancel) {
+			this.parent();
+		}
+	},
+
+	submit: function() {
+		var formData = this.form.serializeArray();
+
+		$.ajax({
+			url: BASE_URL + 'agent/tickets/new/save',
+			type: 'POST',
+			data: formData,
+			dataType: 'json',
+			context: this,
+			success: function(data) {
+				if (data.success) {
+					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
+					this.closeSelf();
+				} else {
+					alert('There was an error with the form');
+				}
+			}
+		});
 	},
 	
 	//#########################################################################
@@ -213,9 +244,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 				var agentId = parseInt(info.selection);
 				if (!info.selection) {
 					this.getEl('assigned_agent').text('Unassigned');
+					this.getEl('agent_id').val('0');
 				} else {
 					var agentInfo = DeskPRO_Window.getAgentInfo(agentId);
 					this.getEl('assigned_agent').text(agentInfo.name);
+					this.getEl('agent_id').val(agentId);
 				}
 			}).bind(this)
 		});
@@ -225,7 +258,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 		$('.add-cc-trigger', this.wrapper).click(function() {
 			var txt = self.getEl('add_cc_txt');
 			var val = txt.val();
-			var el = $('<li>' + val + '<input type="hidden" name="new_parts[]" value="'+val+'" />&nbsp;&nbsp;<span class="remove-trigger" style="cursor: pointer;">x</span></li>');
+			var el = $('<li>' + val + '<input type="hidden" name="newticket[new_parts][]" value="'+val+'" />&nbsp;&nbsp;<span class="remove-trigger" style="cursor: pointer;">x</span></li>');
 
 			$('.remove-trigger', el).click(function(ev) {
 				ev.preventDefault();

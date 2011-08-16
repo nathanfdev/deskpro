@@ -140,9 +140,16 @@ DeskPRO.Agent.Widget.NewTicket = new Orb.Class({
 			this.pop.show();
 			return;
 		}
-		
+
+		var self = this;
 		var pop = new DeskPRO.Agent.PageHelper.Popover({
-			tabRoute: this.options.tabRoute
+			tabRoute: this.options.tabRoute,
+			onPageInit: function(pop, page) {
+				page.addEvent('closeSelf', function(ev) {
+					ev.cancel = true;
+					self.destroyPop();
+				});
+			}
 		});
 		
 		var tpl = this.getTemplate();
@@ -157,7 +164,6 @@ DeskPRO.Agent.Widget.NewTicket = new Orb.Class({
 		pop.open();
 		this.pop = pop;
 	},
-	
 	
 	toggle: function() {
 		if (!this.pop) {

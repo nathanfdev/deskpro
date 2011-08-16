@@ -1244,6 +1244,32 @@ class TicketController extends AbstractController
 		));
 	}
 
+	public function newSaveAction()
+	{
+		$newticket = new \Application\AgentBundle\Form\Model\NewTicket($this->person);
+
+		$formType = new \Application\AgentBundle\Form\Type\NewTicket();
+		$form = $this->get('form.factory')->create($formType, $newticket);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+			$form->isValid();
+
+			$newticket->save();
+
+			$ticket = $newticket->getTicket();
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'ticket_id' => $ticket['id']
+			));
+		} else {
+			return $this->createJsonResponse(array(
+				'success' => false,
+			));
+		}
+	}
+
 	public function newticketGetPersonRowAction($person_id)
 	{
 		$person = false;

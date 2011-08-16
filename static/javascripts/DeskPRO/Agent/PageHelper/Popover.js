@@ -196,6 +196,8 @@ DeskPRO.Agent.PageHelper.Popover = new Orb.Class({
 		this.popover.html(this.pageSource);
 		this.page.initPage(this.popover);
 		this.pageSource = null;
+
+		this.fireEvent('pageInit', [this, this.page]);
 	},
 
 	isOpen: function() {

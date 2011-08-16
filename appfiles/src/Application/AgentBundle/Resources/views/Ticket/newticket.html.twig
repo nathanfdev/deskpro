@@ -16,7 +16,7 @@ pageMeta.baseId = '{{ baseId }}';
 {# /scroll containers #}
 
 <form id="{{baseId}}_newticket">
-<input type="hidden" name="person[id]" value="{{ person.id }}" id="{{baseId}}_person_id"/>
+<input type="hidden" name="newticket[person][id]" value="{{ person.id }}" id="{{baseId}}_person_id"/>
 
 <div class="section user-section" id="{{baseId}}_user_section">
 	<div class="step">
@@ -25,7 +25,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<h4>User</h4>
-		<input type="text" name="email_address" id="{{baseId}}_usersearch" class="user-search" /> <button class="clean-gray xx-small" id="{{baseId}}_me_btn">Me</button>
+		<input type="text" name="newticket[person][email_address]" id="{{baseId}}_usersearch" class="user-search" /> <button class="clean-gray xx-small" id="{{baseId}}_me_btn">Me</button>
 		<div class="user-info" id="{{baseId}}_userinfo" style="display: none"></div>
 		<div class="user-info new" id="{{baseId}}_guest_userinfo" style="display: none"></div>
 
@@ -42,7 +42,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<h4>Department</h4>
 			{% include 'AgentBundle:Common:select-department.html.twig' with {
-				'name': "ticket[department]",
+				'name': "newticket[department_id]",
 				'id': baseId ~ '_dep',
 				'departments': ticket_options.departments_hierarchy,
 				'with_blank': true
@@ -50,7 +50,7 @@ pageMeta.baseId = '{{ baseId }}';
 		</div>
 		<div class="col">
 			<h4 class="light">Status</h4>
-			<select name="ticket[status]">
+			<select name="newticket[status]">
 				<option value="open" selected="selected">Awaiting agent</option>
 				<option value="pending">Awaiting user</option>
 				<option value="resolved">Resolved</option>
@@ -59,12 +59,12 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<h4 class="light">Agent</h4>
 			<button class="clean-gray xxx-small" id="{{baseId}}_assign_agent_choose"><span class="selected-agent" id="{{baseId}}_assigned_agent">Me</span></button>
-			<input type="hidden" name="ticket[agent]" value="{{ app.user.id }}" />
+			<input type="hidden" name="newticket[agent_id]" value="{{ app.user.id }}" id="{{baseId}}_agent_id" />
 		</div>
 		<div class="col">
 			<h4 class="light">Agent Team</h4>
 			{% include 'AgentBundle:Common:select-agent-team.html.twig' with {
-				'name': "ticket[agent_team]",
+				'name': "newticket[agent_team_id]",
 				'id': baseId ~ '_agent_team',
 				'agent_teams': ticket_options.agent_teams,
 				'with_blank': true,
@@ -83,7 +83,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<h4>Subject</h4>
-		<input type="text" name="ticket[subject]" id="{{baseId}}_subject" value="" />
+		<input type="text" name="newticket[subject]" id="{{baseId}}_subject" value="" />
 	</div>
 </div>
 
@@ -96,11 +96,11 @@ pageMeta.baseId = '{{ baseId }}';
 		<h4>Message</h4>
 		<div class="type-wrap">
 			Template: <select name="ticket[notification_template]">
-				<option value="blank">Ticket</option>
+				<option value="">Ticket</option>
 				<option value="blank">Blank</option>
 			</select>
 		</div>
-		<textarea name="message" class="ticket-message" id="{{baseId}}_message"></textarea>
+		<textarea name="newticket[message]" class="ticket-message" id="{{baseId}}_message"></textarea>
 	</div>
 </div>
 
@@ -128,7 +128,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">Category</dt>
 						<dd class="prop">
 							{% include 'AgentBundle:Common:select-category.html.twig' with {
-								'name': "ticket[category]",
+								'name': "newticket[category_id]",
 								'id': baseId ~ '_cat',
 								'categories': ticket_options.ticket_categories_hierarchy,
 								'with_blank': true
@@ -138,7 +138,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">Priority</dt>
 						<dd class="prop">
 							{% include 'AgentBundle:Common:select-priority.html.twig' with {
-								'name': "ticket[priority]",
+								'name': "newticket[priority_id]",
 								'id': baseId ~ '_pri',
 								'priorities': ticket_options.ticket_priorities,
 								'with_blank': true
@@ -148,7 +148,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">Workflow</dt>
 						<dd class="prop">
 							{% include 'AgentBundle:Common:select-workflow.html.twig' with {
-								'name': "ticket[workflow]",
+								'name': "newticket[workflow_id]",
 								'id': baseId ~ '_work',
 								'workflows': ticket_options.ticket_workflows,
 								'with_blank': true
@@ -158,7 +158,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<dt class="prop">Product</dt>
 						<dd class="prop">
 							{% include 'AgentBundle:Common:select-product.html.twig' with {
-								'name': "ticket[workflow]",
+								'name': "newticket[product_id]",
 								'id': baseId ~ '_work',
 								'products': ticket_options.products_hierarchy,
 								'with_blank': true
@@ -184,7 +184,7 @@ pageMeta.baseId = '{{ baseId }}';
 					</script>
 					<script class="template-download" type="text/x-jquery-tmpl">
 						<li class="uploaded">
-							<input type="checkbox" checked="checked" name="attach[]" value="${blob_id}" />
+							<input type="checkbox" checked="checked" name="newticket[attach][]" value="${blob_id}" />
 							<a href="${download_url}" target="_blank">${filename}</a>
 							<span class="size">${filesize_readable}</span>
 						</li>
@@ -203,7 +203,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 <div class="foot">
-	<button class="dp-button">Create Ticket</button>
+	<button class="dp-button submit-trigger">Create Ticket</button>
 </div>
 
 </form>
