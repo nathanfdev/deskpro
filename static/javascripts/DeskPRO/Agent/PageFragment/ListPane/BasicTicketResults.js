@@ -58,81 +58,83 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this.barWrapper = $('div.layout-footer:first', this.wrapper);
 
 		if (!this.barWrapper.length) {
+			var grid = false;
 			var mock_bottom = true;
 		} else {
+			var grid = true;
 			var mock_bottom = false;
 		}
 		
 		this.contentWrapper = $('.content:first', this.wrapper);
 
-		this.listColDrag = new DeskPRO.Agent.PageHelper.ListColDrag({
-			table: $('table:first', this.contentWrapper).get(0),
-			onlyRowSel: '.line-2',
-			onlyRowColOffset: 2
-		});
+		if (grid) {
+			this.listColDrag = new DeskPRO.Agent.PageHelper.ListColDrag({
+				table: $('table:first', this.contentWrapper).get(0),
+				onlyRowSel: '.line-2',
+				onlyRowColOffset: 2
+			});
 
-		this.listColResize = new DeskPRO.Agent.PageHelper.ListColResize({
-			table: $('table:first', this.contentWrapper).get(0)
-		});
+			this.listColResize = new DeskPRO.Agent.PageHelper.ListColResize({
+				table: $('table:first', this.contentWrapper).get(0)
+			});
 
-		var center_id = Orb.getUniqueId('listpane_');
-		var south_id = Orb.getUniqueId('listpane_');
+			var center_id = Orb.getUniqueId('listpane_');
+			var south_id = Orb.getUniqueId('listpane_');
 
-		this.contentWrapper.attr('id', center_id);
-		this.barWrapper.attr('id', south_id);
+			this.contentWrapper.attr('id', center_id);
+			this.barWrapper.attr('id', south_id);
 
-		if (mock_bottom) {
-			this.layout = {
-				wrapper: this.wrapper,
-				paneWrapper: this.wrapper.parent(),
-				content: this.contentWrapper,
-				footer: $(),
-				isFooterOpen: false,
-				doLayout: function() {},
-				expandFooter: function() {},
-				collapseFooter: function() {}
-			};
-		} else {
-			this.layout = new DeskPRO.Agent.Layout.FooterActionbarLayout(this.wrapper);
+			if (mock_bottom) {
+				this.layout = {
+					wrapper: this.wrapper,
+					paneWrapper: this.wrapper.parent(),
+					content: this.contentWrapper,
+					footer: $(),
+					isFooterOpen: false,
+					doLayout: function() {},
+					expandFooter: function() {},
+					collapseFooter: function() {}
+				};
+			} else {
+				this.layout = new DeskPRO.Agent.Layout.FooterActionbarLayout(this.wrapper);
+			}
 		}
 
 		this.changeManager = new DeskPRO.Agent.TicketList.ChangeManager(this);
 
 		this._initDisplayOptions();
-		this._initInfiniteScroll();
 		this._initFlagMenu();
 		this._initGroupingOptions();
 		this._initSearchOptions();
 
-		if (mock_bottom) {
-			this.actionsBarHelper = {
-				page: null,
-				wrapper: null,
-				contentWrapper: null,
-				tableEl: null,
-				selectedActionData: null,
-				ticketBar: null,
-				barWrapper: null,
-				initOverlay: function() {},
-				getSelectedTicketIds: function() { },
-				setActiveTable: function() {},
-				handleTicketCheckClick: function() {},
-				updateCount: function() {},
-				applyActions: function() {},
-				toggleMacroApplyBtn: function() {},
-				saveActions: function() {}
-			};
-		} else {
-			this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this);
-			this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
+		if (grid) {
+			if (mock_bottom) {
+				this.actionsBarHelper = {
+					page: null,
+					wrapper: null,
+					contentWrapper: null,
+					tableEl: null,
+					selectedActionData: null,
+					ticketBar: null,
+					barWrapper: null,
+					initOverlay: function() {},
+					getSelectedTicketIds: function() { },
+					setActiveTable: function() {},
+					handleTicketCheckClick: function() {},
+					updateCount: function() {},
+					applyActions: function() {},
+					toggleMacroApplyBtn: function() {},
+					saveActions: function() {}
+				};
+			} else {
+				this.actionsBarHelper = new DeskPRO.Agent.PageHelper.TicketActionsBar(this);
+				this.actionsBarHelper.setActiveTable($('table.list:first', this.contentWrapper));
+			}
 		}
-
 		this.initFeaturesOnCollection(el, {
 			routes: ['.with-route'],
 			times: ['.timeago']
 		});
-
-		DeskPRO_Window.runOpenTicketStateOnElement(el);
 
 		if (this.getMetaData('noResults')) {
 			this.noMoreResults = true;
@@ -153,7 +155,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 		this.selectedCount = $('.selected-count', this.wrapper);
 		this.selectionBar = $('.selection-bar', this.wrapper);
 		this.performActionsBtn = $('.perform-actions-trigger', this.wrapper);
-		console.log(this.performActionsBtn);
 
 		$('input.ticket-select', this.wrapper).click(function() {
 			var count = $('input.ticket-select:checked', self.wrapper).length;
@@ -620,8 +621,6 @@ DeskPRO.Agent.PageFragment.ListPane.BasicTicketResults = new Class({
 			routes: ['.with-route'],
 			times: ['.timeago']
 		});
-
-		DeskPRO_Window.runOpenTicketStateOnElement(el);
 
 		$('table.list', this.contentWrapper).append(el);
 
