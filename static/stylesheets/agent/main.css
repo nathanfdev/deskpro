@@ -5861,6 +5861,7 @@ article.ticket .urgency span {
     line-height: 100%;
     cursor: pointer;
     background: url(../../images/icons/bullet_arrow_down.png) no-repeat 100% 50%;
+    font-weight: bold;
 }
 .page-new-ticket .other-section nav.on li.on {
     background: #fff url(../../images/icons/bullet_arrow_up.png) no-repeat 100% 50%;

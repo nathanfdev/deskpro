@@ -1334,6 +1334,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadUrl: BASE_URL + 'agent/tickets/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/tickets/new'
 		});
+
+		$('#create_ticket_btn').click(function() {
+			DeskPRO_Window.newTicket.toggle();
+		});
 	},
 
 	toggleAgentStatus: function(force_back) {
