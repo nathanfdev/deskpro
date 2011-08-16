@@ -14,7 +14,7 @@ use \Orb\Log;
 use \Orb\Log\Logger;
 use \Application\DeskPRO\Elastica\IndexInitializer\ContentInitializer;
 
-class ElasticInitializerCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class ElasticInitializerCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected $set_verbose = false;
 	protected $ignore_interval = false;

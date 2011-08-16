@@ -12,7 +12,7 @@ use \Application\DeskPRO\App;
 use \Application\DeskPRO\Entity;
 use \Application\DeskPRO\Log\Logger;
 
-class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class WorkerJobCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected $set_verbose = false;
 	protected $ignore_interval = false;

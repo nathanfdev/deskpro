@@ -12,7 +12,7 @@ use \Application\DeskPRO\Build\VersionReader;
 use \Application\DeskPRO\Build\Upgrader;
 use \Application\DeskPRO\App;
 
-class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class UpgradeCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
 	{

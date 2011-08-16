@@ -25,7 +25,7 @@ use Symfony\Component\Console\Output\Output;
  * Uses database info from config and drops/re-creates the database, and then inspects
  * all entities to generate a fresh schema.
  */
-class NewInstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class NewInstallCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
 	{

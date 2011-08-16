@@ -16,7 +16,7 @@ use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 
 use Orb\Util\Util;
 
-class ReadEmailFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class ReadEmailFileCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected $set_verbose = false;
 	protected $ignore_interval = false;

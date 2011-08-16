@@ -23,7 +23,7 @@ use Symfony\Component\Console\Output\Output;
  *
  * Inserts some default data for a fresh install to get you going.
  */
-class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class NewInstallDataCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	/**
 	 * Entity manager

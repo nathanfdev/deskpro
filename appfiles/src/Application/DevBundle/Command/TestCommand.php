@@ -21,7 +21,7 @@ use \Application\DeskPRO\App;
 
 use \Orb\Util\Strings;
 
-class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class TestCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
 	{

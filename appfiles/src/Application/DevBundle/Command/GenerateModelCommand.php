@@ -24,7 +24,7 @@ use Symfony\Component\Console\Output\Output;
  *
  * Generates the SQL to create a table for a model.
  */
-class GenerateModelCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class GenerateModelCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
 	{

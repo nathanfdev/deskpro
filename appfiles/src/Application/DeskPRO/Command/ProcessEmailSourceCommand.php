@@ -17,7 +17,7 @@ use Application\DeskPRO\EmailGateway\Reader\EzcReader;
 use Orb\Util\Util;
 use Orb\Util\Numbers;
 
-class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class ProcessEmailSourceCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected $set_verbose = false;
 	protected $ignore_interval = false;

@@ -10,7 +10,7 @@ use Symfony\Component\Console\Output\Output;
 
 use \Application\DeskPRO\App;
 
-class DatatestFillDbCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class DatatestFillDbCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
 	{

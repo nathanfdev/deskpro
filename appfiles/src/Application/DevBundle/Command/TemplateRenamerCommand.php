@@ -15,7 +15,7 @@ use \Application\DeskPRO\Log\Logger;
 /**
  * Used when Symfony changed naming scheme for tempaltes in PR5
  */
-class TemplateRenamerCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class TemplateRenamerCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected $set_verbose = false;
 	protected $ignore_interval = false;

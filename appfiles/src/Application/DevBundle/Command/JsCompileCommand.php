@@ -28,7 +28,7 @@ use Application\DeskPRO\App;
  * NOTE: This command assumes default file structure, where assets are stored in
  * /static
  */
-class JsCompileCommand extends \Symfony\Bundle\FrameworkBundle\Command\Command
+class JsCompileCommand extends \Symfony\Bundle\FrameworkBundle\Command\ContainerAwareCommand
 {
 	protected function configure()
 	{
