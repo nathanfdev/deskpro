@@ -70,7 +70,7 @@ DeskPRO.Agent.Widget.NewTicket = new Orb.Class({
 		if (this.timeout) return;
 		
 		if (this.template) {
-			t = this.options.peridoicalTimeout;
+			t = this.options.periodicalTimeout;
 		} else {
 			t = this.options.initialTimeout;
 		}
@@ -154,7 +154,7 @@ DeskPRO.Agent.Widget.NewTicket = new Orb.Class({
 		
 		var tpl = this.getTemplate();
 		if (tpl) {
-			pop.setHtml(html);
+			pop.setHtml(tpl);
 		} else {
 			this.loadTemplate(function(html) {
 				pop.setHtml(html);
@@ -181,5 +181,6 @@ DeskPRO.Agent.Widget.NewTicket = new Orb.Class({
 	destroyPop: function() {
 		if (!this.pop) return;
 		this.pop.destroy();
+		this.pop = null;
 	}
 });
