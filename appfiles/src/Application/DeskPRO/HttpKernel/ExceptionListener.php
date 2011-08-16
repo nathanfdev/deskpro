@@ -21,6 +21,7 @@ use Symfony\Component\HttpKernel\Event\GetResponseForExceptionEvent;
 class ExceptionListener
 {
 	protected $last_exception = null;
+	private $handling_exception = false;
 
 	public function getLastException()
 	{
@@ -29,15 +30,13 @@ class ExceptionListener
 
 	public function onKernelException(GetResponseForExceptionEvent $event)
 	{
-		static $handling;
-
-		if ($handling === true) return false;
-		$handling = true;
+		if ($this->handling_exception === true) return false;
+		$this->handling_exception = true;
 
 		$exception = $event->getException();
 		$this->_logException($exception);
 
-		$handling = false;
+		$this->handling_exception = false;
 	}
 
 	protected function _logException(\Exception $exception)
@@ -100,10 +99,8 @@ class ExceptionListener
 	{
 		if (!(error_reporting() & $errno)) return true;
 
-		static $handling;
-
-		if ($handling === true) return false;
-		$handling = true;
+		if ($this->handling_exception === true) return true;
+		$this->handling_exception = true;
 
 		$die = false;
 
@@ -167,7 +164,7 @@ class ExceptionListener
 			echo $summary;
 		}
 
-		$handling = false;
+		$this->handling_exception = false;
 
 		if ($die) {
 			exit;
