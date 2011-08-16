@@ -1,9 +1,11 @@
-Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.LabelsInput_Grouped={};DeskPRO.UI.LabelsInput=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(b){this.options={list:null,fieldName:"labels",type:""};
-this.setOptions(b);var a={enableBackspace:false,fieldName:this.options.labels,onchange:(function(){this.fireEvent("change")
-}).bind(this)};var c=false;if(DeskPRO.UI.LabelsInput_Grouped[this.options.type]){c=DeskPRO.UI.LabelsInput_Grouped[this.options.type]
-}else{if(window.DESKPRO_DATA_REGISTRY.labels){c=[];Object.each(window.DESKPRO_DATA_REGISTRY.labels,function(e,d){if(e.indexOf(this.options.type)!=-1){c.push(d)
-}},this);DeskPRO.UI.LabelsInput_Grouped[this.options.type]=c}}if(c&&c.length){a.autocompleteOptions={source:c,minLength:0,delay:20};
-a.focusShowAutocomplete=true}else{a.autocompleteOptions={source:BASE_URL+"/misc/ajax-labels/"+this.options.type}}this.tagit=$(this.options.list).tagit(a)
+Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.LabelsInput_Grouped={};DeskPRO.UI.LabelsInput=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(c){this.options={list:null,fieldName:"labels",type:"",showMax:50};
+this.setOptions(c);var b={enableBackspace:false,fieldName:this.options.fieldName,onchange:(function(e){this.fireEvent("change",[this.getLabels()])
+}).bind(this)};var d=false;if(DeskPRO.UI.LabelsInput_Grouped[this.options.type]){d=DeskPRO.UI.LabelsInput_Grouped[this.options.type]
+}else{if(window.DESKPRO_DATA_REGISTRY.labels){d=[];Object.each(window.DESKPRO_DATA_REGISTRY.labels,function(f,e){if(f.indexOf(this.options.type)!=-1){d.push(e)
+}},this);DeskPRO.UI.LabelsInput_Grouped[this.options.type]=d}}if(d&&d.length){b.autocompleteOptions={source:d,minLength:0,delay:20};
+b.focusShowAutocomplete=true}else{b.autocompleteOptions={source:BASE_URL+"/misc/ajax-labels/"+this.options.type}}var a=this.options.showMax;
+b.autocompleteOptions.open=(function(f,h){var e=this.tagit.getInput();var g=$(e.autocomplete("widget"));var i=$("> li",g).slice(a);
+i.remove()}).bind(this);this.tagit=$(this.options.list).tagit(b)},getLabels:function(){return this.tagit.getLabels()},getFormData:function(){return this.tagit.getFormData()
 }});Orb.createNamespace("DeskPRO.UI");DeskPRO.UI.Overlay=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.objectId=null,this.options={triggerElement:null,contentMethod:"element",contentElement:null,contentAjax:{url:"",type:"GET",dataType:"html"},iframeUrl:null,iframeId:false,maxHeight:700,maxWidth:900,destroyOnClose:false,customClassname:"",isModal:true,zIndex:100000,escapeClose:true,modalClickClose:true,objectGroup:"default",addClose:true};
 this.isThisDestroyed=false;this.hasInit=false;this.hasSentAjax=false;this.elements={};if(a){this.setOptions(a)}if(this.options.triggerElement){this.setupTriggerElement($(this.options.triggerElement))
 }if(this.options.escapeClose){$(document).keydown((function(b){if(b.which==27){this.closeOverlay()}}).bind(this))}},isOpen:function(){return this.isOverlayOpen()

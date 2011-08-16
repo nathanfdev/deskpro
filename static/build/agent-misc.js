@@ -178,8 +178,17 @@ this.newCatOverlay.slideUp();this.newCatBackdrop.hide();b.insertBefore(this.newC
 this.catTabs.addTriggerElement(b);this.catTabs.activateTab(b)}})},saveSnippet:function(b){var a=$("input, textarea",b).serializeArray();
 if(this.wrapper.data("ticket-id")){a.push({name:"ticket_id",value:this.wrapper.data("ticket-id")})}$.ajax({url:BASE_URL+"agent/tickets/snippet-viewer/save-snippet",type:"POST",data:a,dataType:"json",context:this,success:function(d){var c=$(d.snippet_row_html);
 c.hide();if(b.is(".new-snippet")){$(".cat-"+d.category_id+" .new-snippet",this.wrapper).before(c);$('input[name="title"], textarea[name="snippet"]',b).val("")
-}else{$(".snippet-"+d.snippet_id,this.wrapper).replaceWith(c)}c.slideDown()}})}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");
-DeskPRO.Agent.RuleBuilder.TermAbstract=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.options={ruleBuilder:null,rowEl:null,rowId:null,opMenu:null};
+}else{$(".snippet-"+d.snippet_id,this.wrapper).replaceWith(c)}c.slideDown()}})}});Orb.createNamespace("DeskPRO.Agent.Widget");
+DeskPRO.Agent.Widget.MergeTicket=new Orb.Class({Implements:[Orb.Util.Options,Orb.Util.Events],initialize:function(a){this.options={ticketId:0,destroyOnClose:false};
+this.setOptions(a);this.ticketId=this.options.ticketId;this.overlay=null},_initOverlay:function(){if(this.overlay){return this.overlay
+}var a=[];Array.each(DeskPRO_Window.getTabWatcher().findTabType("ticket"),function(b){var c=b.page.getMetaData("ticket_id");
+if(c&&c!=this.ticketId){a.push({name:"open_ticket_ids[]",value:c})}});this.overlay=new DeskPRO.UI.Overlay({contentMethod:"ajax",contentAjax:{url:BASE_URL+"agent/tickets/merge-overlay/"+this.ticketId,data:a}});
+this.overlay.addEvent("ajaxDone",this._initElements.bind(this))},_initElements:function(){this.wrapper=this.overlay.getWrapper();
+var a=this;$(".merge-trigger",this.wrapper).click(function(){$(this).text("...").attr("disabled",true);$(".merge-trigger",this.wrapper).attr("disabled",true);
+var b=$(this).data("ticket-id");var c=a.ticketId;$.ajax({url:BASE_URL+"agent/tickets/merge/"+c+"/"+b,type:"POST",dataType:"json",success:function(d){if(d.success){a.fireEvent("mergeSuccess",[d])
+}else{a.fireEvent("mergeError",[d])}},error:function(d){a.fireEvent("mergeError",[d])}})});$(".with-route",this.wrapper).click(function(){DeskPRO_Window.runPageRouteFromElement(this)
+})},open:function(){this._initOverlay();this.overlay.open()},close:function(){this.overlay.close();if(this.options.destroyOnClose){this.desotry
+}},destroy:function(){if(this.overlay){this.overlay.destroy()}}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");DeskPRO.Agent.RuleBuilder.TermAbstract=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.options={ruleBuilder:null,rowEl:null,rowId:null,opMenu:null};
 if(a){this.setOptions(a)}this.ruleBuilder=this.options.ruleBuilder;this.rowEl=$(this.options.rowEl);this.rowId=this.options.rowId;
 this.opMenu=this.options.opMenu;this.init()},init:function(){},initRow:function(){},initValues:function(){}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");
 DeskPRO.Agent.RuleBuilder.DateTerm=new Orb.Class({Extends:DeskPRO.Agent.RuleBuilder.TermAbstract,initRow:function(){this._initUi()
@@ -195,13 +204,29 @@ a.date1Display.val(d);a.updateStatus()}});this.date2Widget=$(".widget",this.date
 a.date2Display.val(d);a.updateStatus()}});var b=function(d){var e=strtotime(d.val());if(!e){return null}var c=new Date(e*1000);
 return c};this.date1Display.change(function(){var c=b($(this));if(!c){$(this).val("");return}a.date1Widget.datepicker("setDate",c)
 });this.date2Display.change(function(){var c=b($(this));if(!c){$(this).val("");return}a.date2Widget.datepicker("setDate",c)
-})},show:function(){if(this.opInput.val()=="between"){this.dateWrap.addClass("two")}else{this.dateWrap.removeClass("two")
-}this.wrapper.css({left:this.currentValue.offset().left,top:this.currentValue.offset().top});this.backdrop.show();this.wrapper.show()
-},updateStatus:function(){if(this.opInput.val()=="between"){var b=this.date1Widget.datepicker("getDate");var a=this.date2Widget.datepicker("getDate");
-var c="";if(b){c=$.datepicker.formatDate("M d, yy",b)}else{c="(click to set)"}c+=" and ";if(a){c+=$.datepicker.formatDate("M d, yy",a)
-}else{c+="(click to set)"}}else{var b=this.date1Widget.datepicker("getDate");var c="";if(b){c=$.datepicker.formatDate("M d, yy",b)
-}else{c="(click to set)"}}this.currentValue.text(c)},hide:function(){this.backdrop.hide();this.wrapper.hide()},destroy:function(){this.wrapper.remove();
-this.backdrop.remove()}});Orb.createNamespace("DeskPRO.Agent.Ticket");DeskPRO.Agent.Ticket.ChangeManager=new Class({Implements:[Events],ticketPage:null,ticketId:null,updateUrl:null,mode:"single",oldValues:{},changes:{},initialize:function(a){this.ticketPage=a;
+});$(".switcher",this.date1).click((function(){var d=$(".date",this.date1);var c=$(".relative",this.date1);if(d.is(":visible")){d.hide();
+c.show()}else{c.hide();d.show()}}).bind(this));$(".switcher",this.date2).click((function(){var d=$(".date",this.date2);var c=$(".relative",this.date2);
+if(d.is(":visible")){d.hide();c.show()}else{c.hide();d.show()}}).bind(this))},show:function(){if(this.opInput.val()=="between"){this.dateWrap.addClass("two")
+}else{this.dateWrap.removeClass("two")}this.wrapper.css({left:this.currentValue.offset().left,top:this.currentValue.offset().top});
+this.backdrop.show();this.wrapper.show()},updateStatus:function(){var e="",c="",b="";var a=$(".relative1",this.date1);var g=$(".relative2",this.date2);
+if(a.is(":visible")){$(".date1-relative-input",this.rowEl).val($(".relative1-input",this.date1).val());$(".date1-relative-type",this.rowEl).val($(".relative1-type",this.date1).val());
+this.date1Input.val("");if($(".relative1-input",this.date1).val().trim().length){e=$(".relative1-input",this.date1).val()+" "+$(".relative1-type",this.date1).val()+" ago"
+}}else{var f=this.date1Widget.datepicker("getDate");if(f){e=$.datepicker.formatDate("M d, yy",f)}}if(g.is(":visible")){$(".date2-relative-input",this.rowEl).val($(".relative2-input",this.date2).val());
+$(".date2-relative-type",this.rowEl).val($(".relative2-type",this.date2).val());this.date2Input.val("");if($(".relative2-input",this.date2).val().trim().length){c=$(".relative2-input",this.date2).val()+" "+$(".relative2-type",this.date2).val()+" ago"
+}}else{var d=this.date2Widget.datepicker("getDate");if(d){c=$.datepicker.formatDate("M d, yy",d)}}if(!e.length){e="(click to set)"
+}if(!c.length){e="(click to set)"}if(this.opInput.val()=="between"){b=e+" and "+c}else{b=e}this.currentValue.text(b)},hide:function(){this.updateStatus();
+this.backdrop.hide();this.wrapper.hide()},destroy:function(){this.wrapper.remove();this.backdrop.remove()}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");
+DeskPRO.Agent.RuleBuilder.LabelsTerm=new Orb.Class({Extends:DeskPRO.Agent.RuleBuilder.TermAbstract,initRow:function(){this.inner=$(".label-chooser-wrap",this.rowEl);
+this.labelType=this.rowEl.data("label-type");this.labelsList=$("ul:first",this.rowEl);this.labelsInput=new DeskPRO.UI.LabelsInput({type:"tickets",list:this.labelsList,onChange:this.updateLabels.bind(this)});
+this.currentValue=$(".status-value",this.rowEl);this.currentValue.text("(click to set)");this.currentValue.click(this.show.bind(this));
+this.values=$(".label-values",this.rowEl);this.backdrop=$('<div class="backdrop" style="display: none"></div>');this.backdrop.appendTo("body");
+this.backdrop.click(this.hide.bind(this));this.wrapper=$('<div class="field-overlay labels-chooser" style="display:none"><div class="close-trigger"></div></div>');
+$(".close-trigger",this.wrapper).click(this.hide.bind(this));this.inner.detach().appendTo(this.wrapper).css("display","block");
+this.wrapper.appendTo("body")},updateLabels:function(){var b=this.labelsInput.getLabels();var a="(click to set)";if(b.length){a=b.join(", ")
+}this.currentValue.text(a);this.values.empty();if(b.length){Array.each(b,function(d){var c=$('<option value="" selected="selected" />');
+c.val(d);c.appendTo(this.values)},this)}},show:function(){this.wrapper.css({left:this.currentValue.offset().left,top:this.currentValue.offset().top});
+this.backdrop.show();this.wrapper.show()},hide:function(){this.backdrop.hide();this.wrapper.hide()},destroy:function(){this.wrapper.remove();
+this.backdrop.remove();this.labelsInput.destroy()}});Orb.createNamespace("DeskPRO.Agent.Ticket");DeskPRO.Agent.Ticket.ChangeManager=new Class({Implements:[Events],ticketPage:null,ticketId:null,updateUrl:null,mode:"single",oldValues:{},changes:{},initialize:function(a){this.ticketPage=a;
 this.ticketId=a.getMetaData("ticket_id");this.updateUrl=a.getMetaData("saveActionsUrl")},propertyManagers:{},getPropertyManager:function(b,c){if(this.propertyManagers[b]){return this.propertyManagers[b]
 }var a=null;switch(b){case"category_id":case"product_id":case"workflow_id":case"priority_id":a=new DeskPRO.Agent.Ticket.Property.StandardOption(this.ticketPage,{optionName:b});
 break;case"agent_id":a=new DeskPRO.Agent.Ticket.Property.Agent(this.ticketPage);break;case"agent_team_id":a=new DeskPRO.Agent.Ticket.Property.AgentTeam(this.ticketPage);

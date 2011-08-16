@@ -112,7 +112,7 @@ return}var d=new Date();var c=[];var h=[];var f=this.filterdData;this.filterdDat
 var b=item_orig_data=e[1];var a=e[2];if(a.minDelay&&!(a.minDelayAfterOne&&!a.sentCount)){if(a.minDelay>(d.getTime()-a.addedTime.getTime())){this.addData(item_orig_data,g,a);
 continue}}if(typeOf(b)=="function"){b=b(g,{},a)}b=this.transformData(g,b,a);if(!b){continue}if(typeOf(b)=="array"){c.append(b)
 }else{Object.each(b,function(j,i){c.push({name:i,value:j})})}h.push([item_orig_data,g,a])}if(!this.options.alwaysRequest&&!h.length){this._handleAjaxSuccess({},h);
-return}$.ajax({cache:false,type:this.options.ajaxType,url:this.options.ajaxUrl,context:this,data:c,dataType:"json",success:function(i){this._handleAjaxSuccess(i,h)
+return}$.ajax({cache:false,type:this.options.ajaxType,url:this.options.ajaxUrl,context:this,data:c,dataType:"json",dpIsPolling:true,success:function(i){this._handleAjaxSuccess(i,h)
 },error:function(j,k,i){this._handleAjaxError(h,j,k,i)}})},_handleAjaxSuccess:function(a,b){this.resetSentItems(b);this.fireEvent("ajaxSuccess",a);
 this.autoSendTimeout=this.send.delay(this.options.interval,this)},resetSentItems:function(e){var c=null;while(c=e.shift()){var d=c[0];
 var b=c[1];var a=c[2];if(a.recurring){a.lastSent=new Date();if(a.sentCount===undefined){a.sentCount=0}a.sentCount++;delete a.addedTime;
