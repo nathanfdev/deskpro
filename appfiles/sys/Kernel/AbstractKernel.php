@@ -85,6 +85,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 			new \Symfony\Bundle\FrameworkBundle\FrameworkBundle(),
 			new \Symfony\Bundle\TwigBundle\TwigBundle(),
 			new \Symfony\Bundle\DoctrineBundle\DoctrineBundle(),
+			new \Stof\DoctrineExtensionsBundle\StofDoctrineExtensionsBundle(),
 			new \Symfony\Bundle\SwiftmailerBundle\SwiftmailerBundle(),
 
 			new \Application\DeskPRO\DeskPROBundle(),
@@ -93,6 +94,7 @@ abstract class AbstractKernel extends \Symfony\Component\HttpKernel\Kernel
 		$bundles = array_merge($bundles, $this->registerAdditionalBundles());
 
 		if ($this->isDebug()) {
+
 			$bundles[] = new \Symfony\Bundle\WebProfilerBundle\WebProfilerBundle();
 			$bundles[] = new \Application\DevBundle\DevBundle();
 		}

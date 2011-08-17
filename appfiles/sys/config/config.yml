@@ -63,14 +63,20 @@ doctrine:
     default_entity_manager: default
     entity_managers:
       default:
-          mappings:
-            DeskPRO: ~
+        mappings:
+          DeskPRO: ~
   dbal:
     default_connection: default
     connections:
       default:
         host: 'from_user_config.db'
         logging: true
+
+stof_doctrine_extensions:
+  default_locale: en_US
+  orm:
+    default:
+      tree: true
 
 swiftmailer:
   transport: 'deskpro.mail.delegating_transport'
