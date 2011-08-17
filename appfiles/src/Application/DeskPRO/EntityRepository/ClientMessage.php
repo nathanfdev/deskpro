@@ -28,48 +28,49 @@ class ClientMessage extends EntityRepository
 	 * @param int $since
 	 * @return array
 	 */
-	public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0)
+	public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0, $last_since = null)
 	{
 		// Automatically ping
 		// AJAX clients dont send ping manually, it's just part of this call
 		$person->loadHelper('ClientChannelSubscriptions', array('session' => $session));
 		$person->getClientChannelSubs()->pingSubscriptions();
 
+		$data = array('messages' => array(), 'last_id' => -1);
+
 		// if $since is 0, the client is new and asking for us to send it the last id
+		// and send any initial messages
 		if (!$since) {
-			$data = array('messages' => array(), 'last_id' => -1);
 			$last_id = App::getDb()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
 			if ($last_id) {
 				$data['last_id'] = $last_id;
 			}
-			
+
+			// Certain messages we want to save if theyre sent offline.
+			if ($last_since) {
+				$all_messages = $this->getInitialMessagesForPerson($person, $last_since);
+			}
+
 		} else {
+			$all_messages = $this->getMessagesForClient($session->getEntityId(), $person['id'], $since);
+		}
 
-			$data = array();
-			if ($since) {
-				$data = array('messages' => array(), 'last_id' => -1);
+		if ($all_messages) {
+			foreach ($all_messages as $message) {
+				$handler = $message->getHandler();
+				$data['messages'][] = array(
+					$message['id'],
+					$message['channel'],
+					$handler->getMessage('ajax')
+				);
 
-				$all_messages = App::getEntityRepository('DeskPRO:ClientMessage')->getMessagesForClient($session->getEntityId(), $person['id'], $since);
-				foreach ($all_messages as $message) {
-					$handler = $message->getHandler();
-
-					if ($message['created_by_client'] != $session->getEntityId()) {
-						$data['messages'][] = array(
-							$message['id'],
-							$message['channel'],
-							$handler->getMessage('ajax')
-						);
-					}
-
-					if ($message['id'] > $data['last_id']) {
-						$data['last_id'] = $message['id'];
-					}
-				}
-
-				if ($data['last_id'] == -1) {
-					unset($data['last_id']);
+				if ($message['id'] > $data['last_id']) {
+					$data['last_id'] = $message['id'];
 				}
 			}
+		}
+
+		if ($data['last_id'] == -1) {
+			unset($data['last_id']);
 		}
 
 		return $data;
@@ -106,6 +107,9 @@ class ClientMessage extends EntityRepository
 		$qb->select('m');
 		$qb->where('m.channel IN (' . $names . ') OR ('. $names_like . ')');
 
+		$qb->andWhere('m.created_by_client != :n_created_by_client');
+		$params['n_created_by_client'] = $client_id;
+
 		if ($person_id) {
 			$qb->andWhere('m.for_client = :for_client OR m.for_person = :for_person OR (m.for_client IS NULL AND m.for_person IS NULL)');
 			$params['for_client'] = $client_id;
@@ -114,6 +118,36 @@ class ClientMessage extends EntityRepository
 			$qb->andWhere('m.for_client = :for_client OR (m.for_client IS NULL AND m.for_person IS NULL)');
 			$params['for_client'] = $client_id;
 		}
+
+		if ($since_id) {
+			$qb->andWhere('m.id > :since_id');
+			$params['since_id'] = $since_id;
+		} else {
+			$qb->setMaxResults(100);
+		}
+
+		$qb->orderBy('m.id', 'asc');
+
+		return $qb->getQuery()->execute($params);
+	}
+
+	/**
+	 * Gets the initials messages to send to the client after they load the interface, and request
+	 * messages for the first time.
+	 *
+	 * This is like getMessagesForClientInChannels() except we check specifically for a person,
+	 * and $since is an ID from the preference from the last one the user got.
+	 *
+	 * @param $person_id
+	 * @param $since
+	 * @return array
+	 */
+	public function getInitialMessagesForPerson($person_id, $since = null)
+	{
+		$qb = $this->createQueryBuilder('m');
+		$qb->select('m');
+		$qb->andWhere('m.for_person = :for_person');
+		$params['for_person'] = $person_id;
 
 		if ($since_id) {
 			$qb->andWhere('m.id > :since_id');

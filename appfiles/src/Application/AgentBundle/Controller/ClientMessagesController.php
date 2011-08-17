@@ -23,11 +23,23 @@ class ClientMessagesController extends AbstractController
 {
 	public function getNewMessagesAction()
 	{
+		$new_since = $this->in->getUint('since');
+		$last_since = (int)$this->person->getPref('agent.ui.last_message_id');
+
 		$data = App::getEntityRepository('DeskPRO:ClientMessage')->getMessageData(
 			$this->person,
 			$this->session,
-			$this->in->getUint('since')
+			$new_since,
+			$last_since
 		);
+
+		// We save the last message we know a user got because we need to know
+		// to deliver offline messages (such as chats) the next time the user logs in
+		if ($new_since != $last_since) {
+			$pref = $this->person->setPreference('agent.ui.last_message_id', $new_since);
+			$this->em->persist($pref);
+			$this->em->flush();
+		}
 
 		return $this->createJsonResponse($data);
 	}
