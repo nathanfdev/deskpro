@@ -47,19 +47,27 @@ class AgentChatController extends AbstractController
 		if ($conversation['is_agent']) {
 			$channel = 'agent_chat.new-message';
 		}
+
+		$part_ids = array();
 		foreach ($conversation->participants as $part) {
+			$part_ids[] = $part['id'];
+		}
+
+		foreach ($conversation->participants as $part) {
+			if ($part['id'] == $this->person['id']) {
+				continue;
+			}
+			
 			$cm = new ClientMessage();
 			$cm->fromArray(array(
 				'channel' => $channel,
 				'data' => array(
-					'conversation_id' => $conversation_id,
-					'message_id'      => $chat_message['id'],
-					'author_id'       => $chat_message->author['id'],
-					'author_name'     => $chat_message->author['display_name'],
-					'author_short_name' => $chat_message->author->getDisplayContactShort(5),
-					'author_picture'  => $chat_message->author->getPictureUrl(10),
-					'message'         => $chat_message['content'],
-					'date_created'    => $chat_message['date_created']->getTimestamp()
+					'conversation_id'   => $conversation['id'],
+					'participant_ids'   => $part_ids,
+					'message_id'        => $chat_message['id'],
+					'author_id'         => $chat_message->author['id'],
+					'message'           => $chat_message['content'],
+					'date_created'      => $chat_message['date_created']->getTimestamp()
 				),
 				'created_by_client' => App::getSession()->getEntityId(),
 				'for_person' => $part
@@ -81,7 +89,7 @@ class AgentChatController extends AbstractController
 		});
 
 		return $this->createJsonResponse(array(
-			'conversation_id' => $conversation_id,
+			'conversation_id' => $conversation['id'],
 			'new_message_id'  => $chat_message['id']
 		));
 	}
@@ -92,18 +100,39 @@ class AgentChatController extends AbstractController
 	 * create conversations based on time, instead of having
 	 * chats created first.
 	 *
-	 * @param  $agent_id
+	 * @param string $agent_id One or more agent ID's
 	 */
-	public function sendAgentMessageAction($agent_id)
+	public function sendAgentMessageAction($convo_id = 0)
 	{
-		$date_cut = new \DateTime('-5 hours');
-		$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople(array($agent_id, $this->person['id']), $date_cut);
+		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');
+
+		$conversation = null;
+		if ($convo_id) {
+			$conversation = $this->em->find('DeskPRO:ChatConversation', $convo_id);
+			if ($conversation AND !$conversation->hasParticipant($this->person)) {
+				// invalid convo if we're not part of it
+				// sneaky hobitses
+				$conversation = null;
+			}
+		}
+
+		// Try to find an existing convo
+		if (!$conversation) {
+			$date_cut = new \DateTime('-5 hours');
+
+			$find_agent_ids = $agent_ids;
+			$find_agent_ids[] = $this->person['id'];
+			
+			$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople($find_agent_ids, $date_cut);
+		}
 
 		if (!$conversation) {
 			$conversation = new ChatConversation();
 			$conversation['is_agent'] = true;
-			$conversation->addParticipant($agent_id);
 			$conversation->addParticipant($this->person);
+			foreach ($agent_ids as $aid) {
+				$conversation->addParticipant($aid);
+			}
 		}
 
 		App::getOrm()->beginTransaction();

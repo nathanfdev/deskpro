@@ -1050,7 +1050,7 @@ agent_agentchat_send_message:
   defaults: { _controller: AgentBundle:AgentChat:sendMessage }
 
 agent_agentchat_send_agent_message:
-  pattern: /agent-chat/send-agent-message/{agent_id}
+  pattern: /agent-chat/send-agent-message/{convo_id}
   defaults: { _controller: AgentBundle:AgentChat:sendAgentMessage }
 
 agent_agentchat_history:

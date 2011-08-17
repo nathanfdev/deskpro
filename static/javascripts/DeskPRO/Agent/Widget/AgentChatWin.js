@@ -1,0 +1,289 @@
+Orb.createNamespace('DeskPRO.Agent.Widget');
+
+DeskPRO.Agent.Widget.AgentChatWin_Registry = {};
+
+DeskPRO.Agent.Widget.AgentChatWin_Find = function(chatId) {
+	var found = null;
+
+	Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
+		if (!found && chatWin.getConvoId() == chatId) {
+			found = chatWin;
+		}
+	});
+
+	return found;
+};
+
+DeskPRO.Agent.Widget.AgentChatWin_FindAgents = function(agent_ids) {
+	var found = null;
+
+	agent_ids = agent_ids.sort(function(a,b) {
+		return parseInt(a) - parseInt(b);
+	});
+
+	agent_ids_str = agent_ids.join(',');
+
+	Object.each(DeskPRO.Agent.Widget.AgentChatWin_Registry, function(chatWin) {
+		if (!found && chatWin.agentIdsStr == agent_ids_str) {
+			found = chatWin;
+		}
+	});
+
+	return found;
+};
+
+/**
+ * An agent chat window handles send/rec of chat messages to a particular
+ * "window" (conversation) between at least one agent.
+ */
+DeskPRO.Agent.Widget.AgentChatWin = new Orb.Class({
+	Implements: [Orb.Util.Events, Orb.Util.Options],
+
+	initialize: function(options) {
+
+		this.options = {
+			convoId: 0,
+			agentIds: []
+		};
+
+		this.setOptions(options);
+
+		this.uuid = Orb.uuid();
+		this.convoId = this.options.convoId;
+		
+		this.chatsWrapper = $('#agent_chats_wrapper');
+
+		DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid] = this;
+
+		this.agentIds = [];
+		Array.each(this.options.agentIds, function(i) {
+			this.agentIds.push(parseInt(i));
+		}, this);
+
+		this.agentIds = this.agentIds.sort(function(a,b) {
+			return a-b;
+		});
+
+		// Used with find
+		this.agentIdsStr = this.agentIds.join(',');
+
+		this.wrapper = null;
+
+		this._initWindow();
+	},
+
+	/**
+	 * Inits the actual chat window elements on the page
+	 */
+	_initWindow: function() {
+		if (this._hasInitWin) return;
+		this._hasInitWin = true;
+
+		var self = this;
+
+		if (this.convoId) {
+			// Make sure it doesnt already exist
+			var exist = $('#agent_chat_conversation_' + this.convoId);
+			if (exist.length) {
+				return;
+			}
+		}
+
+		// One agent: we're sending a new one, we dont define ourselves
+		// Two agents with us: incoming new message and got agentids from server, which includes us
+		if ( this.agentIds.length == 1 || (this.agentIds.length == 2 && this.agentIds.indexOf(parseInt(DESKPRO_PERSON_ID)) != -1) ) {
+			var agentInfo = DeskPRO_Window.getAgentInfo(this.agentIds[0]);
+
+			var newContainer = $.tmpl('agent_chat_conversation', {
+				local_id: this.uuid,
+				to_agent_name: agentInfo.name,
+				to_agent_id: agentInfo.id,
+				to_agent_picture: agentInfo.pictureUrlSizable.replace('{SIZE}', 30)
+			});
+		} else {
+			var newContainer = $.tmpl('agent_groupchat_conversation', {
+				local_id: this.uuid
+			});
+		}
+
+		this.wrapper = newContainer;
+
+		// Modify position of button if there are others
+		var lastChat = $('> section.agent-chat:last', this.chatsWrapper);
+		if (lastChat.length) {
+			var leftPos = lastChat.position().left + $('> nav', lastChat).outerWidth() + 8;
+			newContainer.css('left', leftPos);
+		}
+
+		this.chatsWrapper.append(newContainer);
+
+		newContainer.addClass('new-message');
+
+		$('textarea', newContainer).keypress((function(ev) {
+			// Enter, but not when meta key (alt, ctrl etc) are pressed
+			if (ev.keyCode == 13 && !ev.metaKey) {
+				ev.preventDefault();//dont enter enter key
+				this._fireSendMessage();
+			}
+		}).bind(this));
+
+		var nav = $('> nav', newContainer);
+		nav.click(function(ev) {
+			ev.stopPropagation();
+			if (newContainer.is('.open')) {
+				newContainer.removeClass('open');
+			} else {
+				newContainer.addClass('open');
+			}
+		});
+
+		$('.close-trigger', nav).click(function(ev) {
+			ev.stopPropagation();
+			self.destroy();
+		});
+	},
+
+	_fireSendMessage: function() {
+		var txt = $('textarea', this.wrapper);
+		var msg = txt.val().trim();
+		txt.val('');
+
+		if (!msg.length) {
+			return;
+		}
+
+		this.sendMessage(msg);
+		this.showMyMessage(msg);
+	},
+
+	
+	/**
+	 * Get the convo ID
+	 *
+	 * @return {Integer}
+	 */
+	getConvoId: function() {
+		return this.convoId;
+	},
+
+
+	/**
+	 * Get the local uuid we've given the chat. Useful for things like element IDs.
+	 *
+	 * @return {String}
+	 */
+	getConvoLocalId: function() {
+		return this.uuid;
+	},
+
+
+	/**
+	 * Send a new message
+	 * 
+	 * @param {String} message
+	 */
+	sendMessage: function(message) {
+		var data = [];
+		data.push({
+			name: 'content',
+			value: message
+		});
+		data.push({
+			name: 'local_id',
+			value: this.uuid
+		});
+
+		Array.each(this.agentIds, function(id) {
+			data.push({
+				name: 'agent_ids[]',
+				value: id
+			});
+		});
+
+		var messageLocalId = Orb.uuid();
+		var info = {
+			message: message,
+			localMessageId: messageLocalId,
+			convoId: this.convoId,
+			convoLocalId: this.uuid
+		};
+
+		this.fireEvent('sendMessage', [this, info]);
+
+		$.ajax({
+			url: BASE_URL + 'agent/agent-chat/send-agent-message/' + this.convoId,
+			data: data,
+			contentType: 'json',
+			context: this,
+			success: function(data) {
+				this.convoId = data.conversation_id;
+
+				info.messageId = data.message_id;
+				info.convoId = this.convoId;
+				this.fireEvent('sendMessageDone', [this, info]);
+			}
+		});
+	},
+
+	
+	/**
+	 * Show a new incoming message from someone
+	 *
+	 * @param agent_id
+	 * @param message
+	 */
+	showMessage: function(agent_id, message) {
+
+		var agentInfo = DeskPRO_Window.getAgentInfo(agent_id);
+
+		var newMessage = $.tmpl('agent_chat_message', {
+			author_id: agent_id,
+			author_name: agentInfo.name,
+			author_picture: agentInfo.pictureUrlSizable.replace('{SIZE}', 20),
+			message: message
+		});
+
+		$('.messages-container:first', this.wrapper).append(newMessage).scrollTop(100000);
+	},
+
+
+	/**
+	 * Add own messages to the window immediately
+	 *
+	 * @param message
+	 */
+	showMyMessage: function(message) {
+		var newMessage = $.tmpl('agent_chat_message_me', { message: message });
+		$('.messages-container:first', this.wrapper).append(newMessage).scrollTop(100000);
+	},
+
+
+	/**
+	 * Open the chat tab
+	 */
+	open: function() {
+		this.wrapper.addClass('open');
+	},
+
+
+	/**
+	 * Close the chat tab
+	 */
+	close: function() {
+		this.wrapper.removeClass('open');
+	},
+
+	
+	/**
+	 * Remove the chat window
+	 */
+	destroy: function() {
+		if (this.wrapper) {
+			this.wrapper.remove();
+			this.wrapper = null;
+		}
+
+		this.fireEvent('destroy', [this]);
+		delete DeskPRO.Agent.Widget.AgentChatWin_Registry[this.uuid];
+	}
+});

@@ -1,6 +1,6 @@
 {% raw %}
 <script type="text/x-jquery-tmpl" id="agent_chat_conversation">
-	<section class="agent-chat" id="agent_chat_conversation_${to_agent_id}" data-to-agent-id="${to_agent_id}">
+	<section class="agent-chat" id="agent_chat_conversation_${local_id}">
 		{{if to_agent_picture}}
 		<nav class="with-picture" style="background-image: url('${to_agent_picture}');">
 		{{else}}
@@ -8,6 +8,19 @@
 		{{/if}}
 			<span class="close-trigger">x</span>
 			<a>${to_agent_name}</a>
+		</nav>
+		<div class="messages-box">
+			<div class="messages-container"></div>
+			<div class="input-message"><textarea></textarea></div>
+		</div>
+	</section>
+</script>
+
+<script type="text/x-jquery-tmpl" id="agent_groupchat_conversation">
+	<section class="agent-chat" id="agent_groupchat_conversation_${to_agent_id}">
+		<nav>
+			<span class="close-trigger">x</span>
+			<a>Group</a>
 		</nav>
 		<div class="messages-box">
 			<div class="messages-container"></div>
