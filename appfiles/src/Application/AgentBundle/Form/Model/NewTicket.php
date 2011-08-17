@@ -125,8 +125,6 @@ class NewTicket
 			$ticket->addParticipantPerson($cc_person);
 		}
 		
-		$em->persist($ticket);
-
 		#------------------------------
 		# Message
 		#------------------------------
