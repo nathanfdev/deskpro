@@ -169,13 +169,16 @@ class Ticket extends EntityRepository
 			return false;
 		}
 
-		$timesnip = date('Y-m-d H:m:s', time() - $secs_ago);
+		$timesnip = date_create('-' . $secs_ago . ' seconds');
 
 		$check = $this->getEntityManager()->createQuery("
 			SELECT t
 			FROM DeskPRO:Ticket t
 			WHERE t.ticket_hash = ?1 AND t.date_created > ?2
-		")->setParameters(array(1=> $ticket['ticket_hash'], 2=>$timesnip))->getOneOrNullResult();
+		")->setParameters(array(1=> $ticket['ticket_hash'], 2=>$timesnip))->getResult();
+		if (count($check)) {
+			$check = array_shift($check);
+		}
 
 		if ($check) {
 			return $check;

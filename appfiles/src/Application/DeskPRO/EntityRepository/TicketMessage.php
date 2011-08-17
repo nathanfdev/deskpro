@@ -120,7 +120,11 @@ class TicketMessage extends EntityRepository
 			SELECT m
 			FROM DeskPRO:TicketMessage m
 			WHERE m.message_hash = ?1 AND m.date_created > ?2
-		")->setParameters(array(1=> $message['message_hash'], 2=>$timesnip))->getOneOrNullResult();
+		")->setParameters(array(1=> $message['message_hash'], 2=>$timesnip))->getResult();
+
+		if (count($check)) {
+			$check = array_shift($check);
+		}
 
 		if ($check && ($ticket && $message->ticket['id'] == $ticket['id'])) {
 			return $check;
