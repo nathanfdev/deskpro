@@ -19,9 +19,9 @@
 				<span class="prop-val email_address">{{p.locale.title|default('Default')}}</span>
 			{% else %}
 				{% for f in person_field_defs %}
-					{% if field == 'person_fields['~f.id~']' %}
+					{% if field == 'person_fields['~f.id~']' and person.hasCustomField(f.id) %}
 					<div class="prop-val person_fields_{{f.id}}">
-						{{p.renderCustomField(f.id)}}
+						{{ render_custom_field(person.getCustomFieldDisplayArray(f.id)) }}
 					</div>
 					{% endif %}
 				{% endfor %}
