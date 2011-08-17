@@ -125,6 +125,17 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 	displayOptionsList: null,
 	_initDisplayOptions: function() {
 
+		// View type switcher
+		if (this.meta.viewTypeUrl) {
+			var switcher = $('nav.mode-buttons:first', this.contentWrapper);
+			var self = this;
+			$('li:not(.on)', switcher).click(function(ev) {
+				ev.preventDefault();
+				var view_type = $(this).data('view-type');
+				self.switchViewType(view_type);
+			});
+		}
+
 		this.displayOptionsList = $('.display-options:first ul.sortable-list', this.contentWrapper);
 		var overlay_wrapper = this.displayOptionsWrapper = $('.display-options:first', this.contentWrapper);
 
@@ -150,6 +161,64 @@ DeskPRO.Agent.PageFragment.ListPane.BasicPeopleResults = new Class({
 		var self = this;
 		$('.list thead th', this.contentWrapper).each(function() {
 			$('li[data-field="'+$(this).data('field')+'"] input[type="checkbox"]', self.displayOptionsList).attr('checked', true);
+		});
+
+		$('.detail-view-trigger', this.wrapper).click((function() {
+			this.switchViewType('list');
+		}).bind(this));
+	},
+
+	switchViewType: function(view_type) {
+
+		var new_url = this.meta.viewTypeUrl.replace('$view_type', view_type);
+
+		if (view_type == 'list') {
+
+			var w = $(window).width() - 100;
+			var h = $(window).height() - 100;
+
+			var contentEl = $('<div>Loading...</div>');
+			contentEl.width(w);
+			contentEl.height(h);
+			contentEl.css('overflow', 'auto');
+
+			var  overlay = new DeskPRO.UI.Overlay({
+				contentElement: contentEl,
+				destroyOnClose: true,
+				customClassname: 'no-padding',
+				maxWidth: w,
+				maxHeight: h
+			});
+			overlay.openOverlay();
+
+			var pageReloader = function(new_url) {
+				$.ajax({
+					timeout: 20000,
+					type: 'GET',
+					url: new_url,
+					dataType: 'html',
+					success: function(html) {
+						if (overlay.isDestroyed()) {
+							return;
+						}
+
+						var page = DeskPRO_Window.createPageFragment(html, 'DeskPRO.Agent.PageFragment.ListPane.Basic');
+						page.setMetaData('routeUrl', new_url);
+						page.setMetaData('pageReloader', pageReloader);
+
+						contentEl.html(page.html);
+						page.fireEvent('render', [contentEl]);
+						page.fireEvent('activate');
+					}
+				});
+			}
+
+			pageReloader(new_url);
+			return;
+		}
+
+		DeskPRO_Window.loadListPane(new_url, null, function() {
+			DeskPRO_Window.removePage(self);
 		});
 	},
 

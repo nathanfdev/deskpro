@@ -110,4 +110,134 @@ class ResultCache extends \Application\DeskPRO\Domain\DomainObject
 			$this->extra[$key] = $value;
 		}
 	}
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set criteria
+     *
+     * @param array $criteria
+     */
+    public function setCriteria($criteria)
+    {
+        $this->criteria = $criteria;
+    }
+
+    /**
+     * Get criteria
+     *
+     * @return array 
+     */
+    public function getCriteria()
+    {
+        return $this->criteria;
+    }
+
+    /**
+     * Set results
+     *
+     * @param array $results
+     */
+    public function setResults($results)
+    {
+        $this->results = $results;
+    }
+
+    /**
+     * Get results
+     *
+     * @return array 
+     */
+    public function getResults()
+    {
+        return $this->results;
+    }
+
+    /**
+     * Set extra
+     *
+     * @param array $extra
+     */
+    public function setExtra($extra)
+    {
+        $this->extra = $extra;
+    }
+
+    /**
+     * Get extra
+     *
+     * @return array 
+     */
+    public function getExtra()
+    {
+        return $this->extra;
+    }
+
+    /**
+     * Set num_results
+     *
+     * @param integer $numResults
+     */
+    public function setNumResults($numResults)
+    {
+        $this->num_results = $numResults;
+    }
+
+    /**
+     * Get num_results
+     *
+     * @return integer 
+     */
+    public function getNumResults()
+    {
+        return $this->num_results;
+    }
+
+    /**
+     * Set date_created
+     *
+     * @param datetime $dateCreated
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->date_created = $dateCreated;
+    }
+
+    /**
+     * Get date_created
+     *
+     * @return datetime 
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * Get person
+     *
+     * @return Application\DeskPRO\Entity\Person 
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+
+	public function getPersonId()
+	{
+		if (!$this->person) {
+			return 0;
+		}
+
+		return $this->person['id'];
+	}
 }

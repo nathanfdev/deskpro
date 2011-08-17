@@ -21,19 +21,6 @@ pageMeta.preselectTerms = {{preselect_terms|json_encode|raw}};
 </div>
 <div class="content">
 	{% include 'AgentBundle:PeopleSearch:part-display-options-overlay.html.twig' %}
-	{% include 'AgentBundle:PeopleSearch:part-terms-overlay.html.twig' %}
-
-	<div class="inner-box-tab-content top-box">
-		<ul>
-			<li>
-				<a class="edit-terms-trigger" style="cursor:pointer;">Edit search terms</a>
-			</li>
-			<li class="total on" data-group-id="NONE">
-				<label>Total</label>
-				<span class="counter">{{num_results}}</span>
-			</li>
-		</ul>
-	</div>
 
 	<div class="pad">
 		<div class="inner-box-tab-content box-list no-pad">

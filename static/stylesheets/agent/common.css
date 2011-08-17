@@ -300,6 +300,7 @@ button.clean-gray {
   padding: 8px 8px;
   text-align: center;
   text-shadow: 0 1px 0 #eee;
+    white-space: nowrap;
   }
   button.clean-gray:hover {
     background-color: #dddddd;
