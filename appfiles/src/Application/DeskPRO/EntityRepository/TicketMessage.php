@@ -102,24 +102,27 @@ class TicketMessage extends EntityRepository
 	/**
 	 * Checks the database for a duplicate message.
 	 *
-	 * Returns the message ID if there was one found, or false if none found.
+	 * Returns the TicketMessage if there was one found, or false if none found.
 	 *
 	 * @param \Application\DeskPRO\Entity\TicketMessage $message
 	 * @param int $secs_ago
 	 * @return bool|mixed
 	 */
-	public function checkDupeMessage(Entity\TicketMessage $message, $secs_ago = 10800 /* 3 hours */)
+	public function checkDupeMessage(Entity\TicketMessage $message, $ticket = null, $secs_ago = 10800 /* 3 hours */)
 	{
-		return false;
-		$timesnip = date('Y-m-d H:m:s', time() - $secs_ago);
+		if (App::getConfig('debug.disable_dupe_check')) {
+			return false;
+		}
 
-		$check = App::getDb()->fetchColumn("
-			SELECT id
-			FROM tickets_messages
-			WHERE message_hash = ? AND date_created > ?
-		", array($message['message_hash'], $timesnip));
+		$timesnip = date_create('-' . $secs_ago . ' seconds');
 
-		if ($check) {
+		$check = $this->getEntityManager()->createQuery("
+			SELECT m
+			FROM DeskPRO:TicketMessage m
+			WHERE m.message_hash = ?1 AND m.date_created > ?2
+		")->setParameters(array(1=> $message['message_hash'], 2=>$timesnip))->getOneOrNullResult();
+
+		if ($check && ($ticket && $message->ticket['id'] == $ticket['id'])) {
 			return $check;
 		}
 

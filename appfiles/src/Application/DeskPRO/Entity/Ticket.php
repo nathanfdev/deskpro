@@ -177,6 +177,12 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 	protected $creation_system;
 
 	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="ticket_hash", type="string", length="40")
+	 */
+	protected $ticket_hash;
+
+	/**
 	 * @!TODO Make this an enum type
 	 *
 	 * @var string
@@ -1594,6 +1600,49 @@ class Ticket extends \Application\DeskPRO\Domain\DomainObject
 		$this->_ticket_logger = null;
 	}
 
+
+	public function getTicketHash()
+	{
+		if (!$this->ticket_hash) {
+			return $this->initHashCode();
+		}
+
+		return $this->ticket_hash;
+	}
+
+
+	/**
+	 * @ORM_Mapping\PrePersist
+	 */
+	public function initHashCode()
+	{
+		if ($this->ticket_hash) {
+			return;
+		}
+		
+		$hashes = array();
+		$hashes[] = sha1(
+			$this->subject
+			. $this->person->id
+			. $this->getAgentId()
+			. $this->getAgentTeamId()
+			. $this->getCategoryId()
+			. $this->getWorkflowId()
+			. $this->getPriorityId()
+			. $this->getProductId()
+		);
+
+		foreach ($this->custom_data as $d) {
+			$hashes[] = sha1($d['field_id'] . $d['value'] . $d['input']);
+		}
+
+		$hashes[] = $this->messages[0]->getMessageHash();
+
+		sort($hashes, \SORT_STRING);
+
+		$this->ticket_hash = sha1(implode('', $hashes));
+		$this->_onPropertyChanged('ticket_hash', '', $this->message_hash);
+	}
 	
 
 	/**

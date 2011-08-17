@@ -22,7 +22,8 @@ abstract class AbstractFileDescriptor
 	const METADATA_CONTENT_TYPE = 'content_type';
 	const METADATA_FILENAME = 'filename';
 	const METADATA_FILESIZE = 'filesize';
-	
+	const METADATA_FILEHASH = 'filehash';
+
 	/**
 	 * @param string $path The path to the file
 	 */
@@ -113,6 +114,9 @@ abstract class AbstractFileDescriptor
 	public function writeFromFile($fp_read, $meta = null)
 	{
 		$data = stream_get_contents($fp_read);
+		if (!isset($meta[self::METADATA_FILEHASH])) {
+			$meta[self::METADATA_FILEHASH] = sha1($data);
+		}
 		$this->write($data, $meta);
 	}
 

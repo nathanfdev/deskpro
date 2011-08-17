@@ -136,12 +136,6 @@ class NewTicket
 			}
 
 			$this->new_message = $ticket_message;
-
-			if ($id = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
-				$ticket_message = App::findEntity('DeskPRO:TicketMessage', $id);
-				return $ticket_message->ticket;
-			}
-
 			$ticket->addMessage($ticket_message);
 
 			if ($ticket->person_email['is_validated']) {
@@ -159,6 +153,11 @@ class NewTicket
 				foreach ($field_def->getHandler()->getDataFromForm($raw_custom_fields) as $info) {
 					$ticket->setCustomData($info[0], $info[1], $info[2]);
 				}
+			}
+
+			if ($dupe_ticket = App::getEntityRepository('DeskPRO:Ticket')->checkDupeTicket($ticket)) {
+				App::getOrm()->rollback();
+				return $dupe_ticket;
 			}
 			
 			App::getOrm()->persist($ticket);

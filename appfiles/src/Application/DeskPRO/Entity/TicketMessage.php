@@ -177,7 +177,6 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	public function setMessage($message)
 	{
 		$this->message = $message;
-		$this['message_hash'] = sha1($message);
 	}
 
 	public function addAttachment(TicketAttachment $attach)
@@ -219,6 +218,40 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return false;
+	}
+
+	public function getMessageHash()
+	{
+		if (!$this->message_hash) {
+			$this->initHashCode();
+		}
+
+		return $this->message_hash;
+	}
+
+	/**
+	 * Inits the hash code for this message
+	 * 
+	 * @ORM_Mapping\PrePersist
+	 */
+	public function initHashCode()
+	{
+		if ($this->message_hash) {
+			return;
+		}
+		
+		$hashes = array();
+		$hashes[] = sha1($this->message . $this->person->id);
+
+		foreach ($this->attachments as $a) {
+			$hashes[] = $a->blob['file_hash'];
+		}
+
+		// Sort hashes so theyre always the same order
+		sort($hashes, \SORT_STRING);
+
+		$this->message_hash = sha1(implode('', $hashes));
+		$this->_onPropertyChanged('message_hash', '', $this->message_hash);
 	}
 
 	/**

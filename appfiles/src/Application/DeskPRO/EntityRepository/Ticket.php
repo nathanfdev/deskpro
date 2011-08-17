@@ -150,4 +150,37 @@ class Ticket extends EntityRepository
 			WHERE status IN ('open', 'pending')
 		");
 	}
+
+	/**
+	 * Checks the database for a duplicate ticket.
+	 *
+	 * Note: Make sure $ticket has its first message added or else the check
+	 * will fail.
+	 *
+	 * Returns the ticket ID if there was one found, or false if none found.
+	 *
+	 * @param \Application\DeskPRO\Entity\TicketMessage $message
+	 * @param int $secs_ago
+	 * @return bool|mixed
+	 */
+	public function checkDupeTicket($ticket = null, $secs_ago = 10800 /* 3 hours */)
+	{
+		if (App::getConfig('debug.disable_dupe_check')) {
+			return false;
+		}
+
+		$timesnip = date('Y-m-d H:m:s', time() - $secs_ago);
+
+		$check = $this->getEntityManager()->createQuery("
+			SELECT t
+			FROM DeskPRO:Ticket t
+			WHERE t.ticket_hash = ?1 AND t.date_created > ?2
+		")->setParameters(array(1=> $ticket['ticket_hash'], 2=>$timesnip))->getOneOrNullResult();
+
+		if ($check) {
+			return $check;
+		}
+
+		return false;
+	}
 }

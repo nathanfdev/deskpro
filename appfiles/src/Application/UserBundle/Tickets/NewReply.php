@@ -46,10 +46,6 @@ class NewReply
 		$ticket_message->ticket = $this->ticket;
 		$ticket_message->person = $this->person;
 
-		if ($id = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message)) {
-			return;
-		}
-
 		$attach = false;
 		if ($this->new_upload) {
 			$desc = App::getApi('filestorage')->createRandomPath();
@@ -70,6 +66,11 @@ class NewReply
 		}
 
 		$this->ticket->addMessage($ticket_message);
+
+		if ($dupe_message = App::getEntityRepository('DeskPRO:TicketMessage')->checkDupeMessage($ticket_message, $this->ticket)) {
+			$this->ticket_message = $dupe_message;
+			return;
+		}
 
 		// If status is pending, we'll switch it to open so agents will see it
 		if ($this->ticket['status'] == Ticket::STATUS_PENDING) {

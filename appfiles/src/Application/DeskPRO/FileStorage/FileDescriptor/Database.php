@@ -92,6 +92,10 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 	{
 		$this->db->beginTransaction();
 
+		if (!isset($meta[self::METADATA_FILEHASH])) {
+			$meta[self::METADATA_FILEHASH] = sha1($data);
+		}
+
 		if (!$this->exists()) {
 			$blob_data = array(
 				'date_created' => date('Y-m-d H:i:s'),
@@ -128,6 +132,7 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 		if ($metadata) {
 			if (!empty($meta[self::METADATA_CONTENT_TYPE])) $metadata['content_type'] = $meta[self::METADATA_CONTENT_TYPE];
 			if (!empty($meta[self::METADATA_FILENAME]))     $metadata['filename']     = $meta[self::METADATA_FILENAME];
+			if (!empty($meta[self::METADATA_FILEHASH]))     $metadata['blob_hash']    = $meta[self::METADATA_FILEHASH];
 		}
 		$this->db->update('blobs', $metadata, array('id' => $this->blob_id));
 
@@ -199,12 +204,13 @@ class Database extends \Orb\FileStorage\FileDescriptor\AbstractFileDescriptor
 			return null;
 		}
 
-		$metadata_red = $this->db->fetchAssoc("SELECT filesize, content_type, filename FROM blobs WHERE id = ?", array($this->blob_id));
+		$metadata_read = $this->db->fetchAssoc("SELECT filesize, content_type, filename, blob_hash FROM blobs WHERE id = ?", array($this->blob_id));
 
 		$metadata = array(
-			self::METADATA_FILESIZE => $metadata['filesize'],
-			self::METADATA_FILENAME => $metadata['filename'],
-			self::METADATA_CONTENT_TYPE => $metadata['content_type'],
+			self::METADATA_FILESIZE => $metadata_read['filesize'],
+			self::METADATA_FILENAME => $metadata_read['filename'],
+			self::METADATA_FILEHASH => $metadata_read['blob_hash'],
+			self::METADATA_CONTENT_TYPE => $metadata_read['content_type'],
 		);
 
 		$metadata = Arrays::removeEmptyString($metadata);

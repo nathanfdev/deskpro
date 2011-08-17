@@ -83,6 +83,12 @@ class Blob extends \Application\DeskPRO\Domain\DomainObject
 	protected $authcode;
 
 	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="blob_hash", type="string", length="40")
+	 */
+	protected $blob_hash;
+
+	/**
 	 * Is this a media upload (appears in the media browser etc). These are files that were
 	 * uploaded and are attached to things.
 	 * 
