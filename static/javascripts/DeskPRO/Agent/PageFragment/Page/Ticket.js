@@ -217,6 +217,18 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 						console.log('ere');
 						this.closeSelf();
 					}).bind(this), 400);
+				} else {
+
+					// Apply changed props
+					var agentProp = this.changeManager.getPropertyManager('agent_id');
+					agentProp.setIncomingValue(info.result.agent_id);
+
+					var agentTeamProp = this.changeManager.getPropertyManager('agent_team_id');
+					agentTeamProp.setIncomingValue(info.result.agent_team_id);
+
+					var statusProp = this.changeManager.getPropertyManager('status');
+					statusProp.setIncomingValue(info.result.status);
+
 				}
 			}).bind(this)
 		});
