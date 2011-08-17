@@ -70,13 +70,29 @@ class Upgrader
 			$this->setUpgradeStatus($version, $cur_step, $cur_step_sub);
 		}
 
-		try {
-			$output->writeln("<info>Regenerating proxies</info>");
-			$warmer = new \Symfony\Bundle\DoctrineBundle\CacheWarmer\ProxyCacheWarmer(App::getContainer());
-			$warmer->warmUp(null /* doctrine has its own config for cache dir */);
-		} catch (Exception $e) {
-			$output->writeln("<warn>Regenerating proxies failed: {$e->getMessage()}</warn>");
-		}
+		$output->writeln("<info>Clearing caches</info>");
+		$rrmdir = function ($dir) use (&$rrmdir) {
+		   if (is_dir($dir)) {
+			 $objects = scandir($dir);
+			 foreach ($objects as $object) {
+			   if ($object != "." && $object != "..") {
+				 if (filetype($dir."/".$object) == "dir") $rrmdir($dir."/".$object); else unlink($dir."/".$object);
+			   }
+			 }
+			 reset($objects);
+			 rmdir($dir);
+		   }
+		 };
+		$rrmdir(DP_ROOT . "/sys/cache/dev");
+		$rrmdir(DP_ROOT . "/sys/cache/prod");
+
+		//try {
+		//	$output->writeln("<info>Regenerating proxies</info>");
+		//	$warmer = new \Symfony\Bundle\DoctrineBundle\CacheWarmer\ProxyCacheWarmer(App::getContainer());
+		//	$warmer->warmUp(null /* doctrine has its own config for cache dir */);
+		//} catch (Exception $e) {
+		//	$output->writeln("<warn>Regenerating proxies failed: {$e->getMessage()}</warn>");
+		//}
 
 		$output->writeln("<info>UPGRADE COMPLETE</info>");
 		$this->setCurrentVersion($version);
