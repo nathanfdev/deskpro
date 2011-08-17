@@ -12,6 +12,10 @@ use \Application\DeskPRO\Entity;
 
 class PersonSearch extends SearcherAbstract
 {
+	// These are all prefixed with person_ because this searcher
+	// can be combined with the TicketSearch, so we need to namespace
+	// these term names.
+
 	const TERM_ID               = 'person_id';
 	const TERM_ORGANIZATION     = 'person_organization';
 	const TERM_USERGROUP        = 'person_usergroup';

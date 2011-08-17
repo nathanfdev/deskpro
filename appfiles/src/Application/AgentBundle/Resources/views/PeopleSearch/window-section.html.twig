@@ -15,7 +15,7 @@
 <section id="people_outline_tagcloud" class="deskpro-tab-item" data-tab-trigger="#people_outline_tabstrip li.tag-cloud" style="padding: 8px;">
 	<ol class="tags tag-cloud">
 		{% for label,css_class in people_tag_cloud %}
-			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
 		{% else %}
 			<li>View a person to add labels to their profile. The most popular labels will show here.</li>
 		{% endfor %}
@@ -28,7 +28,7 @@
 			<dd>
 				<ul class="comma-list">
 					{% for label in labels %}
-						<li><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+						<li><a data-route="listpane:{{ path('agent_peoplesearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
 					{% endfor %}
 				</ul>
 			</dd>
@@ -56,7 +56,7 @@
 <section id="people_outline_org_tagcloud" class="deskpro-tab-item" data-tab-trigger="#people_outline_org_tabstrip li.tag-cloud" style="padding: 8px;">
 	<ol class="tags tag-cloud">
 		{% for label,css_class in org_tag_cloud %}
-			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+			<li class="{{css_class}}"><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
 		{% else %}
 			<li>View an organization to add labels to its profile. The most popular labels will show here.</li>
 		{% endfor %}
@@ -69,7 +69,7 @@
 			<dd>
 				<ul class="comma-list">
 					{% for label in labels %}
-						<li><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
+						<li><a data-route="listpane:{{ path('agent_orgsearch_customfilter') }}?terms[0][rule_type]=person_label&amp;terms[0][op]=is&amp;terms[0][label]={{label}}">{{label}}</a></li>
 					{% endfor %}
 				</ul>
 			</dd>
