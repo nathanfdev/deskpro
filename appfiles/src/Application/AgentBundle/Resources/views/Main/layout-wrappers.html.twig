@@ -130,6 +130,7 @@
 						data-team-name="{{ team.name }}"
 						data-picture-url=""
 						data-picture-url-sizable=""
+						data-member-ids="{% for m in team.members %}{{ m.id }}{% if not loop.last %},{% endif %}{% endfor %}"
 					>
 						{{ team.name }}
 					</li>

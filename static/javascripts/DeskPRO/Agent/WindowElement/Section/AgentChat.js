@@ -44,6 +44,7 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		this.onlineListEl = $('#agent_online_list');
 		this.offlineListEl = $('#agent_offline_list');
 		this.onlineCountEl = $('#chat_online_count');
+		this.agentTeamList = $('#agent_team_list');
 
 		$('.show-offline-opt', this.panelEl).click(function() {
 			if ($(this).is(':checked')) {
@@ -98,6 +99,15 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 		this.onlineListEl.delegate('li', 'click', openChatFn);
 		this.offlineListEl.delegate('li', 'click', openChatFn);
+		this.agentTeamList.delegate('li', 'click', function(ev) {
+			ev.stopPropagation();
+			var agentIds = $(this).data('member-ids');
+			console.log(agentIds);
+			agentIds = agentIds.split(',');
+			console.log(agentIds);
+
+			self.newChatWindow(agentIds);
+		});
 
 		// Agents/teams tabs
 		this.listTabs = new DeskPRO.UI.SimpleTabs({
