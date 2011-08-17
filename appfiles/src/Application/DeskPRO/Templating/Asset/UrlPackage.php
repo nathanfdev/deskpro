@@ -37,6 +37,11 @@ class UrlPackage extends BaseUrlPackage
 				}
 			}
 
+			if (!$burl AND App::has('request')) {
+				$request = App::get('request');
+				$burl = $request->getBasePath() . '/static';
+			}
+
 			if ($burl) {
 				$real[] = $burl;
 			}
