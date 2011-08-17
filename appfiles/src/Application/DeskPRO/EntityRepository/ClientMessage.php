@@ -28,7 +28,7 @@ class ClientMessage extends EntityRepository
 	 * @param int $since
 	 * @return array
 	 */
-	public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0, $last_since = null)
+	public function getMessageData(PersonEntity $person, HttpSession $session, $since = 0, $with_last_since = null)
 	{
 		// Automatically ping
 		// AJAX clients dont send ping manually, it's just part of this call
@@ -36,32 +36,45 @@ class ClientMessage extends EntityRepository
 		$person->getClientChannelSubs()->pingSubscriptions();
 
 		$data = array('messages' => array(), 'last_id' => -1);
+		$all_messages = false;
 
-		// if $since is 0, the client is new and asking for us to send it the last id
-		// and send any initial messages
 		if (!$since) {
 			$last_id = App::getDb()->fetchColumn("SELECT id FROM client_messages ORDER BY id DESC LIMIT 1");
 			if ($last_id) {
 				$data['last_id'] = $last_id;
 			}
 
-			// Certain messages we want to save if theyre sent offline.
-			if ($last_since) {
-				$all_messages = $this->getInitialMessagesForPerson($person, $last_since);
-			}
-
 		} else {
 			$all_messages = $this->getMessagesForClient($session->getEntityId(), $person['id'], $since);
+		}
+
+		if ($with_last_since) {
+			$all_messages = array_merge($all_messages, $this->getInitialMessagesForPerson($person, $with_last_since));
 		}
 
 		if ($all_messages) {
 			foreach ($all_messages as $message) {
 				$handler = $message->getHandler();
-				$data['messages'][] = array(
+
+				// Mesasge is a numeric array
+				// 0 => id
+				// 1 => channel
+				// 2 => data
+				// 3 => (optional) flags
+
+				$info = array(
 					$message['id'],
 					$message['channel'],
 					$handler->getMessage('ajax')
 				);
+
+				if ($message['id'] < $since && $with_last_since) {
+					$info[] = array(
+						'offline_messsage' => true
+					);
+				}
+
+				$data['messages'][] = $info;
 
 				if ($message['id'] > $data['last_id']) {
 					$data['last_id'] = $message['id'];
@@ -139,10 +152,10 @@ class ClientMessage extends EntityRepository
 	 * and $since is an ID from the preference from the last one the user got.
 	 *
 	 * @param $person_id
-	 * @param $since
+	 * @param $since_id
 	 * @return array
 	 */
-	public function getInitialMessagesForPerson($person_id, $since = null)
+	public function getInitialMessagesForPerson($person_id, $since_id = null)
 	{
 		$qb = $this->createQueryBuilder('m');
 		$qb->select('m');

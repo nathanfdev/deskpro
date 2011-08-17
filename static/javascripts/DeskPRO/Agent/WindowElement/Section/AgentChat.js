@@ -91,7 +91,8 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 		});
 
 		var self = this;
-		this.onlineListEl.delegate('li', 'click', function (ev) {
+
+		var openChatFn = function (ev) {
 			ev.stopPropagation();
 
 			var agent_id     = $(this).data('agent-id');
@@ -103,7 +104,10 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 
 			// And close the online list
 			self.panelEl.removeClass('open');
-		});
+		};
+
+		this.onlineListEl.delegate('li', 'click', openChatFn);
+		this.offlineListEl.delegate('li', 'click', openChatFn);
 
 		// Agents/teams tabs
 		this.listTabs = new DeskPRO.UI.SimpleTabs({
@@ -113,11 +117,11 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 	},
 
 	_initDemo: function() {
+		return;
 		// TODO [UI demo]
 		// Show example chat window for the one online agent
 		var onlineAgentLi = $('li:not(.no-agents):first', this.onlineListEl);
-		console.log(onlineAgentLi);
-		
+
 		var chatData = {
 			author_id: onlineAgentLi.data('agent-id'),
 			author_name: onlineAgentLi.data('agent-name'),
@@ -125,8 +129,6 @@ DeskPRO.Agent.WindowElement.Section.AgentChat = new Orb.Class({
 			author_picture: onlineAgentLi.data('picture-url'),
 			author_picture_sizable: onlineAgentLi.data('picture-url-sizable')
 		};
-
-		console.log(chatData);
 
 		var messages = [
 			'Lorem ipsum dolor sit amet, consectetur adipiscing elit',

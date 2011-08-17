@@ -25,6 +25,8 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 			return { 'since': this.lastMessageId };
 		}).bind(this), 'since', { recurring: true });
 
+		this.poller.addData({is_initial_poll:1}, 'is_initial_poll');
+
 		this.poller.addEvent('ajaxSuccess', this.handleMessageAjax.bind(this));
 
 		if (this.options.lastMessageId) {
@@ -35,7 +37,7 @@ DeskPRO.MessageChanneler.AjaxChanneler = new Class({
 	handleMessageAjax: function(data) {
 		if (data.messages) {
 			Array.each(data.messages, function(d) {
-				if (d[0] <= this.lastMessageId) {
+				if (d[0] <= this.lastMessageId && (!d[3] || !d[3]['offline_messsage'])) {
 					return;
 				}
 				

@@ -37,6 +37,11 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 	protected $person;
 
 	/**
+	 * @ORM_Mapping\Id
+	 */
+	protected $person_id;
+
+	/**
 	 * The name of the pref
 	 *
 	 * @var string
@@ -85,4 +90,104 @@ class PersonPref extends \Application\DeskPRO\Domain\DomainObject
 			$this->value_str = (string)$val;
 		}
 	}
+
+    /**
+     * Set name
+     *
+     * @param string $name
+     */
+    public function setName($name)
+    {
+        $this->name = $name;
+    }
+
+    /**
+     * Get name
+     *
+     * @return string 
+     */
+    public function getName()
+    {
+        return $this->name;
+    }
+
+    /**
+     * Set value_str
+     *
+     * @param text $valueStr
+     */
+    public function setValueStr($valueStr)
+    {
+        $this->value_str = $valueStr;
+    }
+
+    /**
+     * Get value_str
+     *
+     * @return text 
+     */
+    public function getValueStr()
+    {
+        return $this->value_str;
+    }
+
+    /**
+     * Set value_array
+     *
+     * @param array $valueArray
+     */
+    public function setValueArray($valueArray)
+    {
+        $this->value_array = $valueArray;
+    }
+
+    /**
+     * Get value_array
+     *
+     * @return array 
+     */
+    public function getValueArray()
+    {
+        return $this->value_array;
+    }
+
+    /**
+     * Set date_expire
+     *
+     * @param datetime $dateExpire
+     */
+    public function setDateExpire($dateExpire)
+    {
+        $this->date_expire = $dateExpire;
+    }
+
+    /**
+     * Get date_expire
+     *
+     * @return datetime 
+     */
+    public function getDateExpire()
+    {
+        return $this->date_expire;
+    }
+
+    /**
+     * Set person
+     *
+     * @param Application\DeskPRO\Entity\Person $person
+     */
+    public function setPerson(\Application\DeskPRO\Entity\Person $person)
+    {
+        $this->person = $person;
+    }
+
+    /**
+     * Get person
+     *
+     * @return Application\DeskPRO\Entity\Person 
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
 }
