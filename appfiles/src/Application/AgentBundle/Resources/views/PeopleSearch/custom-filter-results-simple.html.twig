@@ -4,7 +4,7 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PeopleCustomFilter
 pageMeta.viewTypeUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}&view_type=$view_type';
 pageMeta.pageUrl = '{{ path('agent_peoplesearch_customfilter') }}?partial=1&cache_id={{cache_id}}&page=$page';
 pageMeta.refreshUrl = '{{ path('agent_peoplesearch_customfilter') }}?cache_id={{cache_id}}';
-pageMeta.saveListPrefsUrl = '{{ path('agent_peoplesearch_save_resultprefs', {'cache_id': cache_id}) }}';
+pageMeta.saveListPrefsUrl = '{{ path('agent_ajax_save_prefs') }}';
 {% if cache_id %}
 	pageMeta.cache_id = {{cache_id}};
 {% endif %}
