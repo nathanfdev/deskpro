@@ -1355,8 +1355,11 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		context = new DeskPRO.UI.OmniSearch.Context.TicketsContext();
 
-		term = new DeskPRO.UI.OmniSearch.Term.Tickets.LabelsTerm();
-		context.addTerm('labels', term);
+		term = new DeskPRO.UI.OmniSearch.Term.Tickets.LabelTerm();
+		context.addTerm('label', term);
+
+		term = new DeskPRO.UI.OmniSearch.Term.Tickets.DepartmentTerm();
+		context.addTerm('department', term);
 
 		this.omnisearch.addContext('tickets', context);
 	},

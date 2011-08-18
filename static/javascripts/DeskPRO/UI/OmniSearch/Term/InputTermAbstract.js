@@ -22,16 +22,21 @@ DeskPRO.UI.OmniSearch.Term.InputTermAbstract = new Orb.Class({
 
 		el.addClass('edit');
 
-		el.dblclick(function() {
+		el.click(function() {
 			el.addClass('edit');
 			input.focus();
 		});
 
 		var endEdit = function() {
 			el.removeClass('edit');
-			displayValue.text(input.val().trim());
+			var val = input.val().trim();
+			displayValue.text(val);
 
-			searchBox.fireEvent('termInputDone');
+			if (!val.length) {
+				el.remove();
+			}
+
+			searchBox.fireEvent('termInputDone', [el]);
 		};
 
 		input.blur(endEdit).keypress(function(ev) {
@@ -48,6 +53,14 @@ DeskPRO.UI.OmniSearch.Term.InputTermAbstract = new Orb.Class({
 			f.val(value);
 			f.appendTo(el);
 		});
+
+		var handler = {
+			afterAdd: function(el) {
+				input.focus();
+			}
+		};
+
+		el.data('handler', handler);
 
 		return el;
 	},

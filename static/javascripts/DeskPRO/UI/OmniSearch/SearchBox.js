@@ -42,6 +42,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 				ev.preventDefault();
 				var val = $(this).val().trim();
 				$(this).val('');
+				$(this).blur();
 
 				self.addSearchTermByTrigger(val);
 			} else if (ev.which == 8 /* backspace */) {
@@ -177,9 +178,8 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 
 		el.insertBefore(this.inputEl);
 
-		var input = $('input:visible', el).first();
-		if (input.length) {
-			input.focus();
+		if (el.data('handler') && el.data('handler').afterAdd) {
+			el.data('handler').afterAdd(el);
 		}
 	},
 

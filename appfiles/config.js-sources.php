@@ -150,7 +150,9 @@ $CONFIG['agent']['agent-ui'] = array(
 		'javascripts/DeskPRO/UI/OmniSearch/Context/TicketsContext.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Term/TermAbstract.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Term/InputTermAbstract.js',
-		'javascripts/DeskPRO/UI/OmniSearch/Term/Tickets/LabelsTerm.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Term/MenuTermAbstract.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Term/Tickets/LabelTerm.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Term/Tickets/DepartmentTerm.js',
 	)
 );
 

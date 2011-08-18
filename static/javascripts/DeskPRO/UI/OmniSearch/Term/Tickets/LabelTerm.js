@@ -3,7 +3,7 @@ Orb.createNamespace('DeskPRO.UI.OmniSearch.Term.Tickets');
 /**
  * A context is a group of search terms
  */
-DeskPRO.UI.OmniSearch.Term.Tickets.LabelsTerm = new Orb.Class({
+DeskPRO.UI.OmniSearch.Term.Tickets.LabelTerm = new Orb.Class({
 	Extends: DeskPRO.UI.OmniSearch.Term.InputTermAbstract,
 
 	init: function() {
