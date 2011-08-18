@@ -33,7 +33,7 @@ DeskPRO.UI.OmniSearch.Term.InputTermAbstract = new Orb.Class({
 			displayValue.text(val);
 
 			if (!val.length) {
-				el.remove();
+				searchBox.removeSearchTerm(el);
 			}
 
 			searchBox.fireEvent('termInputDone', [el]);

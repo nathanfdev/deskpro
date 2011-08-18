@@ -55,10 +55,21 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 				if (!$(this).val().trim().length) {
 					var prevTerm = $('#omnisearch_input').prev();
 					if (prevTerm.length && prevTerm.is('.term')) {
-						prevTerm.remove();
+						self.removeSearchTerm(prevTerm);
 					}
 				}
 			}
+		});
+
+		$('.remove-all-terms-trigger:first', this.wrapperEl).click(function(ev) {
+			ev.preventDefault();
+			ev.stopPropagation();
+
+			$('.term', self.wrapperEl).each(function() {
+				self.removeSearchTerm($(this));
+			});
+
+			$('#omnisearch_input').focus();
 		});
 
 		this.addEvent('termInputDone', function() {
@@ -194,8 +205,23 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 				el.remove();
 			});
 		}
+
+		this.wrapperEl.addClass('with-terms');
 	},
 
+
+	/**
+	 * Remove a search term
+	 *
+	 * @param {jQuery} el
+	 */
+	removeSearchTerm: function(el) {
+		el.remove();
+
+		if (!$('.term:first', this.wrapperEl).length) {
+			this.wrapperEl.removeClass('with-terms');
+		}
+	},
 
 	/**
 	 * Drop down the search builder for the current context

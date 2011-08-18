@@ -5922,6 +5922,28 @@ border-radius: 0px 0px 4px 4px;
     position: relative;
 
     cursor: text;
+
+    padding-right: 14px;
+
+    overflow: hidden;
+}
+
+#omnisearch .remove-all-terms-trigger {
+    display: none;
+    position: absolute;
+    top: 0;
+    right: 5px;
+    bottom: 0;
+    width: 13px;
+
+    cursor: pointer;
+    background: url(../../images/icons/remove-terms.png) no-repeat 100% 50%;
+    text-indent: -100px;
+    overflow: auto;
+}
+
+#omnisearch.with-terms .remove-all-terms-trigger {
+    display: block;
 }
 
 #omnisearch_type {

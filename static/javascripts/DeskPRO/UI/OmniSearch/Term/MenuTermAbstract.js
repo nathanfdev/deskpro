@@ -42,7 +42,7 @@ DeskPRO.UI.OmniSearch.Term.MenuTermAbstract = new Orb.Class({
 				var val = $(info.itemEl).data(dataKey);
 				var display = $(info.itemEl).text().trim();
 				if (!val) {
-					el.remove();
+					searchBox.removeSearchTerm(el);
 				} else {
 					termValue.val(val);
 					displayValue.text(display);
@@ -50,7 +50,7 @@ DeskPRO.UI.OmniSearch.Term.MenuTermAbstract = new Orb.Class({
 			},
 			onMenuClosed: function() {
 				if (!termValue.val()) {
-					el.remove();
+					searchBox.removeSearchTerm(el);
 				}
 			}
 		});
