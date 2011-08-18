@@ -74,6 +74,18 @@ DeskPRO.Agent.OmniSearchBox = new Orb.Class({
 						triggerWords: triggers
 					});
 					break;
+
+				case 'GenericDateTerm':
+					var term = new DeskPRO.UI.OmniSearch.Term.GenericDateTerm({
+						inputName: inputName,
+						label: label,
+						fields: {
+							'op': 'is',
+							'type': ruleType
+						},
+						triggerWords: triggers
+					});
+					break;
 			}
 
 			if (term) {

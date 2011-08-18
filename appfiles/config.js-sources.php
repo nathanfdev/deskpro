@@ -152,6 +152,7 @@ $CONFIG['agent']['agent-ui'] = array(
 		'javascripts/DeskPRO/UI/OmniSearch/Term/TermAbstract.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericInputTerm.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericMenuTerm.js',
+		'javascripts/DeskPRO/UI/OmniSearch/Term/GenericDateTerm.js',
 	)
 );
 
@@ -163,6 +164,7 @@ $CONFIG['agent']['deskpro-ui'] = array(
 		'javascripts/DeskPRO/UI/Overlay.js',
 		'javascripts/DeskPRO/UI/Menu.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
+		'javascripts/DeskPRO/UI/DateChooser.js',
 	)
 );
 
