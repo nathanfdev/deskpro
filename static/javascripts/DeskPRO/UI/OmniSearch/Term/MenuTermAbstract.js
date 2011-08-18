@@ -7,11 +7,7 @@ Orb.createNamespace('DeskPRO.UI.OmniSearch.Term.Tickets');
  */
 DeskPRO.UI.OmniSearch.Term.MenuTermAbstract = new Orb.Class({
 	Extends: DeskPRO.UI.OmniSearch.Term.TermAbstract,
-
-	init: function() {
-
-	},
-
+	
 	createTermElement: function(searchBox) {
 		var el = this.parent(searchBox);
 

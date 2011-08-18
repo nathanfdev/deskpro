@@ -1355,10 +1355,28 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		context = new DeskPRO.UI.OmniSearch.Context.TicketsContext();
 
-		term = new DeskPRO.UI.OmniSearch.Term.Tickets.LabelTerm();
+		term = new DeskPRO.UI.OmniSearch.Term.GenericInputTerm({
+			triggerWords: ['label', 'labels', 'labelled'],
+			fields: {
+				'type': 'label',
+				'op': 'is'
+			},
+			label: 'Label',
+			inputName: 'label'
+		});
 		context.addTerm('label', term);
 
-		term = new DeskPRO.UI.OmniSearch.Term.Tickets.DepartmentTerm();
+		term = new DeskPRO.UI.OmniSearch.Term.GenericMenuTerm({
+			menuEl: $('#department_menu'),
+			menuDataKey: 'department-id',
+			triggerWords: ['dep', 'department'],
+			fields: {
+				'type': 'department',
+				'op': 'is'
+			},
+			label: 'Department',
+			inputName: 'department'
+		});
 		context.addTerm('department', term);
 
 		this.omnisearch.addContext('tickets', context);

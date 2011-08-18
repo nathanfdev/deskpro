@@ -49,7 +49,7 @@ DeskPRO.UI.OmniSearch.Term.TermAbstract = new Orb.Class({
 	 * @return {Array}
 	 */
 	getTriggerWords: function() {
-		console.error('Abstract method');
+		return this.options.triggerWords;
 	},
 
 	
@@ -59,6 +59,6 @@ DeskPRO.UI.OmniSearch.Term.TermAbstract = new Orb.Class({
 	 * @return {String}
 	 */
 	getLabel: function() {
-		console.error('Abstract method');
+		return this.options.label;
 	}
 });
