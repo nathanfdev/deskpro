@@ -57,7 +57,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 		});
 
 		this.inputEl.keypress(function(ev) {
-			if (ev.which == 58 /* colon : key */) {
+			if (ev.which == 58 /* colon : key */ || ev.which == 61 /* equals = */) {
 				ev.preventDefault();
 				var val = $(this).val().trim();
 				$(this).val('');
@@ -237,6 +237,11 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 	 * @param {jQuery} el
 	 */
 	removeSearchTerm: function(el) {
+
+		if (el.data('handler') && el.data('handler').destroy) {
+			el.data('handler').destroy();
+		}
+		
 		el.remove();
 
 		if (!$('.term:first', this.wrapperEl).length) {
