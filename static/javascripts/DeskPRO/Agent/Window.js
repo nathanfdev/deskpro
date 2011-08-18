@@ -46,7 +46,6 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initSections();
 		this._initRoutes();
 		this._initWindowInterface();
-		this._initOmniSearch();
 		this._initLayout();
 
 		$('#page_loading').remove();
@@ -1339,47 +1338,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#create_ticket_btn').click(function() {
 			DeskPRO_Window.newTicket.toggle();
 		});
-	},
 
-	_initOmniSearch: function() {
-
-		var context, term;
-
-		this.omnisearch = new DeskPRO.UI.OmniSearch.SearchBox({
-			wrapperEl: $('#omnisearch')
-		});
-
-		//-----
-		// Tickets
-		//-----
-
-		context = new DeskPRO.UI.OmniSearch.Context.TicketsContext();
-
-		term = new DeskPRO.UI.OmniSearch.Term.GenericInputTerm({
-			triggerWords: ['label', 'labels', 'labelled'],
-			fields: {
-				'type': 'label',
-				'op': 'is'
-			},
-			label: 'Label',
-			inputName: 'label'
-		});
-		context.addTerm('label', term);
-
-		term = new DeskPRO.UI.OmniSearch.Term.GenericMenuTerm({
-			menuEl: $('#department_menu'),
-			menuDataKey: 'department-id',
-			triggerWords: ['dep', 'department'],
-			fields: {
-				'type': 'department',
-				'op': 'is'
-			},
-			label: 'Department',
-			inputName: 'department'
-		});
-		context.addTerm('department', term);
-
-		this.omnisearch.addContext('tickets', context);
+		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();
 	},
 
 	toggleAgentStatus: function(force_back) {

@@ -146,6 +146,7 @@ $CONFIG['agent']['agent-ui'] = array(
 
 		// Omnisearch
 		'javascripts/DeskPRO/UI/OmniSearch/SearchBox.js',
+		'javascripts/DeskPRO/Agent/OmniSearchBox.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Context/ContextAbstract.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Context/TicketsContext.js',
 		'javascripts/DeskPRO/UI/OmniSearch/Term/TermAbstract.js',

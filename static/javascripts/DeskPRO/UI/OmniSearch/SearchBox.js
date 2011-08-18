@@ -15,13 +15,27 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 			 * The wrapper element. Usually this is the thing that mimics the look
 			 * of an input box, but its just where the terms etc are appended to.
 			 */
-			wrapperEl: null
+			wrapperEl: null,
+
+			/**
+			 * Input element, usually within wrapper
+			 */
+			inputEl: null,
+
+			/**
+			 * Context type button
+			 */
+			contextBtnEl: null
 		};
 
+		this.setOptions(this.getDefaultOptions());
 		this.setOptions(options);
 
-		this.wrapperEl = $(this.options.wrapperEl);
-		this.inputEl   = $('#omnisearch_input');
+		var self = this;
+
+		this.wrapperEl    = $(this.options.wrapperEl);
+		this.inputEl      = $(this.options.inputEl);
+		this.contextBtnEl = $(this.options.contextBtnEl);
 
 		$('.clear-trigger:first', this.wrapperEl).click((function(ev) {
 			ev.preventDefault();
@@ -38,12 +52,11 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 
 		this.wrapperEl.click(function(ev) {
 			if (ev.target == this) {
-				$('#omnisearch_input').focus();
+				self.inputEl.focus();
 			}
 		});
 
-		var self = this;
-		$('#omnisearch_input').keypress(function(ev) {
+		this.inputEl.keypress(function(ev) {
 			if (ev.which == 58 /* colon : key */) {
 				ev.preventDefault();
 				var val = $(this).val().trim();
@@ -53,7 +66,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 				self.addSearchTermByTrigger(val);
 			} else if (ev.which == 8 /* backspace */) {
 				if (!$(this).val().trim().length) {
-					var prevTerm = $('#omnisearch_input').prev();
+					var prevTerm = self.inputEl.prev();
 					if (prevTerm.length && prevTerm.is('.term')) {
 						self.removeSearchTerm(prevTerm);
 					}
@@ -69,13 +82,21 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 				self.removeSearchTerm($(this));
 			});
 
-			$('#omnisearch_input').focus();
+			self.inputEl.focus();
 		});
 
 		this.addEvent('termInputDone', function() {
-			$('#omnisearch_input').focus();
+			self.inputEl.focus();
 		});
+
+		this.init();
 	},
+
+	getDefaultOptions: function() {
+		return {};
+	},
+
+	init: function() {},
 
 
 	/**
@@ -88,7 +109,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 			this.contextMenuEl.appendTo('body');
 
 			this.contextMenu = new DeskPRO.UI.Menu({
-				triggerElement: $('#omnisearch_type'),
+				triggerElement: this.contextBtnEl,
 				menuElement: this.contextMenuEl,
 				defaultEventContext: this,
 				onItemClicked: function(info) {
@@ -151,7 +172,7 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 		var context = this.getContext(id);
 		context.fireEvent('activate');
 
-		$('#omnisearch_type .label').text(context.getLabel());
+		$('.label', this.contextBtnEl).text(context.getLabel());
 	},
 
 
