@@ -5907,7 +5907,7 @@ border-radius: 0px 0px 4px 4px;
 	color: #d3d5d7;
 
     width: 400px;
-    height: 20px;
+    height: 21px;
 
     background: #fff;
 
@@ -5920,6 +5920,8 @@ border-radius: 0px 0px 4px 4px;
     border-radius: 4px;
 
     position: relative;
+
+    cursor: text;
 }
 
 #omnisearch_type {
@@ -5936,7 +5938,7 @@ border-radius: 0px 0px 4px 4px;
     font-size: 10px;
     font-weight: bold;
 
-    padding: 1px 3px 0px 3px;
+    padding: 1px 3px 1px 3px;
     color: #636467;
 
     text-shadow: 1px 0px 0px #ffffff;
@@ -5967,6 +5969,7 @@ border-radius: 0px 0px 4px 4px;
 
     color: #000;
 
+    border: 1px solid #E9EBF7;
     background-color: #E9EBF7;
     font-size: 10px;
     text-shadow: none;
@@ -5977,6 +5980,34 @@ border-radius: 0px 0px 4px 4px;
     margin-left: 3px;
 
     cursor: pointer;
+    position: relative;
+}
+
+#omnisearch .term .remove-term-trigger {
+    display: none;
+
+    position: absolute;
+    top: 0;
+    right: 0;
+
+    margin-top: -7px;
+    margin-right: -10px;
+
+    width: 20px;
+    height: 20px;
+
+    background: url(../../images/close-small.png) no-repeat 100% 0;
+
+    text-indent: -100px;
+    overflow:hidden;
+}
+
+#omnisearch .term:hover {
+    border: 1px solid #9A9BA3;
+}
+
+#omnisearch .term:hover .remove-term-trigger {
+    display: block;
 }
 
 #omnisearch .term .label {

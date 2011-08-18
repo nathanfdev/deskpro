@@ -36,6 +36,12 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 		this.contexts = {};
 		this.activeContextId = null;
 
+		this.wrapperEl.click(function(ev) {
+			if (ev.target == this) {
+				$('#omnisearch_input').focus();
+			}
+		});
+
 		var self = this;
 		$('#omnisearch_input').keypress(function(ev) {
 			if (ev.which == 58 /* colon : key */) {
@@ -180,6 +186,13 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 
 		if (el.data('handler') && el.data('handler').afterAdd) {
 			el.data('handler').afterAdd(el);
+		}
+
+		var removeTrigger = $('.remove-term-trigger:first', el);
+		if (removeTrigger.length) {
+			removeTrigger.click(function() {
+				el.remove();
+			});
 		}
 	},
 
