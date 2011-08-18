@@ -201,9 +201,9 @@ DeskPRO.UI.OmniSearch.SearchBox = new Orb.Class({
 
 		var removeTrigger = $('.remove-term-trigger:first', el);
 		if (removeTrigger.length) {
-			removeTrigger.click(function() {
-				el.remove();
-			});
+			removeTrigger.click((function() {
+				this.removeSearchTerm(el);
+			}).bind(this));
 		}
 
 		this.wrapperEl.addClass('with-terms');
