@@ -7,12 +7,20 @@
 
 			{# search start #}
 			<div class="left box-header select">
+				<div id="omnisearch_wrap">
+					<div id="omnisearch">
+						<span id="omnisearch_type"><span class="label">All</span></span>
+						<input type="text" id="omnisearch_input" autocomplete="off" value="" />
+					</div>
+				</div>
+			</div>
 				{#
 				<div class="type-select users">
 					<span class="icn-dropdown floating"></span>
 				</div>
 				#}
-				<div id="window_search_form" autocomplete="off" data-menu-handler="DeskPRO.Agent.WindowElement.MainMenu.SearchBoxResults">
+				<!--
+				<div id="window_search_form" autocomplete="off">
 					<form id="search-form" action="#" method="post">
 						<div class="wrap">
 							<input id="window_search_box" autocomplete="off" type="text" name="search" value="" />
@@ -71,6 +79,7 @@
 					</div>
 				</div>
 			</div>
+			-->
 			{# search end #}
 
 			{# notifications start #}

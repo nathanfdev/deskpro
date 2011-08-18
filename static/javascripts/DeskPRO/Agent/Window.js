@@ -46,6 +46,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._initSections();
 		this._initRoutes();
 		this._initWindowInterface();
+		this._initOmniSearch();
 		this._initLayout();
 
 		$('#page_loading').remove();
@@ -1338,6 +1339,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#create_ticket_btn').click(function() {
 			DeskPRO_Window.newTicket.toggle();
 		});
+	},
+
+	_initOmniSearch: function() {
+
+		var context, term;
+
+		this.omnisearch = new DeskPRO.UI.OmniSearch.SearchBox({
+			wrapperEl: $('#omnisearch')
+		});
+
+		//-----
+		// Tickets
+		//-----
+
+		context = new DeskPRO.UI.OmniSearch.Context.TicketsContext();
+
+		term = new DeskPRO.UI.OmniSearch.Term.Tickets.LabelsTerm();
+		context.addTerm('labels', term);
+
+		this.omnisearch.addContext('tickets', context);
 	},
 
 	toggleAgentStatus: function(force_back) {
