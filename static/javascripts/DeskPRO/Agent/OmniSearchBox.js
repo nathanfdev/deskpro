@@ -12,36 +12,75 @@ DeskPRO.Agent.OmniSearchBox = new Orb.Class({
 	},
 
 	init: function() {
+
+		var self = this;
+		
 		//-----
 		// Tickets
 		//-----
 
-		context = new DeskPRO.UI.OmniSearch.Context.TicketsContext();
+		var wrap = $('#ticket_search_terms_global');
 
-		term = new DeskPRO.UI.OmniSearch.Term.GenericInputTerm({
-			triggerWords: ['label', 'labels', 'labelled'],
-			fields: {
-				'type': 'label',
-				'op': 'is'
-			},
-			label: 'Label',
-			inputName: 'label'
+		var ticketsContext = new DeskPRO.UI.OmniSearch.Context.TicketsContext();
+
+		$('div.type[data-term-type]', wrap).each(function() {
+			var el = $(this);
+			var termTypeHandler = el.data('term-type');
+			var ruleType = el.data('rule-type');
+			var label = el.attr('title');
+			var triggers = el.data('term-triggers').split(',');
+
+			var term = null;
+
+			switch (termTypeHandler) {
+				case 'GenericInputTerm':
+					var term = new DeskPRO.UI.OmniSearch.Term.GenericInputTerm({
+						inputName: inputName,
+						label: label,
+						fields: {
+							'op': 'is',
+							'type': ruleType
+						},
+						triggerWords: triggers
+					});
+
+					break;
+
+				case 'GenericMenuTerm':
+					var menuEl = $('<ul />').hide();
+
+					var sel = $('.options select', el);
+					var inputName = sel.attr('name');
+
+					$('option', sel).each(function() {
+						var li = $('<li />');
+						li.data('prop-val', sel.val());
+						li.text($(this).text().trim());
+
+						menuEl.append(li);
+					});
+
+					menuEl.appendTo('body');
+
+					var term = new DeskPRO.UI.OmniSearch.Term.GenericMenuTerm({
+						menuEl: menuEl,
+						inputName: inputName,
+						label: label,
+						menuDataKey: 'prop-val',
+						fields: {
+							'op': 'is',
+							'type': ruleType
+						},
+						triggerWords: triggers
+					});
+					break;
+			}
+
+			if (term) {
+				ticketsContext.addTerm(ruleType, term);
+			}
 		});
-		context.addTerm('label', term);
 
-		term = new DeskPRO.UI.OmniSearch.Term.GenericMenuTerm({
-			menuEl: $('#department_menu'),
-			menuDataKey: 'department-id',
-			triggerWords: ['dep', 'department'],
-			fields: {
-				'type': 'department',
-				'op': 'is'
-			},
-			label: 'Department',
-			inputName: 'department'
-		});
-		context.addTerm('department', term);
-
-		this.addContext('tickets', context);
+		this.addContext('tickets', ticketsContext);
 	}
 });

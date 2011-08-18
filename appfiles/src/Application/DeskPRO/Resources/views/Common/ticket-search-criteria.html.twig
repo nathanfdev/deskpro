@@ -30,7 +30,7 @@
 			</div>
 		</div>
 	{% endif %}
-	<div class="type" title="Originated interface" data-rule-type="creation_system">
+	<div class="type" title="Originated interface" data-rule-type="creation_system" data-term-type="GenericMenuTerm" data-term-triggers="interface,orig-interface,original-interface">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">is</option>
@@ -47,7 +47,7 @@
 		</div>
 	</div>
 	{% if term_options.gateway_names %}
-	<div class="type" title="Receiving gateway account" data-rule-type="receiving_gateway">
+	<div class="type" title="Receiving gateway account" data-rule-type="receiving_gateway" data-term-type="GenericMenuTerm" data-term-triggers="gateway,email-account">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">is</option>
@@ -76,7 +76,7 @@
 			<input type="text" name="subject" value="" />
 		</div>
 	</div>
-	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets">
+	<div class="type" title="Labels" data-rule-type="label" data-rule-handler="DeskPRO.Agent.RuleBuilder.LabelsTerm" data-label-type="tickets" data-term-type="GenericInputTerm" data-term-triggers="label,labelled,labels">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">is</option>
@@ -92,7 +92,7 @@
 			{% include 'DeskPRO:Common:rulebuilder-labels-options.html.twig' %}
 		</div>
 	</div>
-	<div class="type" title="Assigned Agent" data-rule-type="agent">
+	<div class="type" title="Assigned Agent" data-rule-type="agent" data-term-type="GenericMenuTerm" data-term-triggers="agent">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">is</option>
@@ -116,7 +116,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Subscribers" data-rule-type="participant">
+	<div class="type" title="Subscribers" data-rule-type="participant" data-term-type="GenericMenuTerm" data-term-triggers="followers">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">include</option>
@@ -138,7 +138,7 @@
 		</div>
 	</div>
 	{% if term_options.agent_teams %}
-		<div class="type" title="Agent Team" data-rule-type="agent_team">
+		<div class="type" title="Agent Team" data-rule-type="agent_team" data-term-type="GenericMenuTerm" data-term-triggers="team,agent-team">
 			<div class="op">
 				<select name="op" class="op">
 					<option value="is">is</option>
@@ -163,7 +163,7 @@
 			</div>
 		</div>
 	{% endif %}
-	<div class="type" title="Status" data-rule-type="status">
+	<div class="type" title="Status" data-rule-type="status" data-term-type="GenericMenuTerm" data-term-triggers="status">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">is</option>
@@ -187,7 +187,7 @@
 			</select>
 		</div>
 	</div>
-	<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	<div class="type" title="Date created" data-rule-type="date_created" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-created">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="lte">before</option>
@@ -199,7 +199,7 @@
 			{% include 'DeskPRO:Common:rulebuilder-date-options.html.twig' %}
 		</div>
 	</div>
-	<div class="type" title="Date resolved" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm">
+	<div class="type" title="Date resolved" data-rule-type="date_resolved" data-rule-handler="DeskPRO.Agent.RuleBuilder.DateTerm" data-term-triggers="date-resolved">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="lte">before</option>
@@ -248,7 +248,7 @@
 		</div>
 	</div>
 	{% if term_options.products %}
-		<div class="type" title="Product" data-rule-type="product">
+		<div class="type" title="Product" data-rule-type="product" data-term-type="GenericMenuTerm" data-term-triggers="prod,product">
 			<div class="op">
 				<select name="op" class="op">
 					<option value="is">is</option>
@@ -272,7 +272,7 @@
 		</div>
 	{% endif %}
 	{% if term_options.departments %}
-		<div class="type" title="Department" data-rule-type="department">
+		<div class="type" title="Department" data-rule-type="department" data-term-type="GenericMenuTerm" data-term-triggers="dep,department">
 			<div class="op">
 				<select name="op" class="op">
 					<option value="is">is</option>
@@ -296,7 +296,7 @@
 		</div>
 	{% endif %}
 	{% if term_options.categories %}
-		<div class="type" title="Category" data-rule-type="category">
+		<div class="type" title="Category" data-rule-type="category" data-term-type="GenericMenuTerm" data-term-triggers="cat,category">
 			<div class="op">
 				<select name="op" class="op">
 					<option value="is">is</option>
@@ -319,7 +319,7 @@
 			</div>
 		</div>
 	{% endif %}
-	<div class="type" title="Urgency" data-rule-type="urgency">
+	<div class="type" title="Urgency" data-rule-type="urgency" data-term-type="GenericInputTerm" data-term-triggers="urgency">
 		<div class="op">
 			<select name="op" class="op">
 				<option value="is">is</option>
@@ -350,7 +350,7 @@
 		</div>
 	</div>
 	{% if term_options.priorities %}
-		<div class="type" title="Priority" data-rule-type="priority">
+		<div class="type" title="Priority" data-rule-type="priority" data-term-type="GenericMenuTerm" data-term-triggers="pri,priority">
 			<div class="op">
 				<select name="op" class="op">
 					<option value="is">is</option>
@@ -376,7 +376,7 @@
 		</div>
 	{% endif %}
 	{% if term_options.ticket_workflows %}
-		<div class="type" title="Workflow" data-rule-type="workflow">
+		<div class="type" title="Workflow" data-rule-type="workflow" data-term-type="GenericMenuTerm" data-term-triggers="work,workflow">
 			<div class="op">
 				<select name="op" class="op">
 					<option value="is">is</option>

@@ -77,6 +77,11 @@
 	</div>
 </script>
 
+{##############################################################}
+{# Search related #}
+{##############################################################}
+
+{# Omnisearch Tempaltes #}
 <script type="text/x-deskpro-plain" id="omnisearch_term_tpl">
 	<div class="term">
 		<span class="remove-term-trigger">x</span>
@@ -94,5 +99,10 @@
 		</div>
 	</div>
 </script>
+
+{# Ticket Search Menus #}
+<div id="ticket_search_terms_global">
+	{% include 'DeskPRO:Common:ticket-search-criteria.html.twig' with { 'id': 0, 'classname': 0, 'term_options': ticket_options }%}
+</div>
 
 </div>
