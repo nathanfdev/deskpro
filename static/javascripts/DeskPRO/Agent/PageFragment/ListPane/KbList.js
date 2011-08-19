@@ -8,8 +8,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Class({
 	initPage: function(el) {
 		this.wrapper = el;
 
-		this.initRoutesOnCollection($('.with-route', el));
-
+		/*
 		this.listSearchForm = new DeskPRO.Agent.PageHelper.ListSearchForm(this, {
 			form: $('form.kb-search-form', this.topSection),
 			context: this.topSection,
@@ -19,5 +18,18 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Class({
 		this.listSearchForm.addEvent('searchSubmit', function(url, data) {
 			DeskPRO_Window.loadListPane(url, { postData: data });
 		});
+		*/
+
+		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+			prefId: 'kb-filter',
+			resultId: this.meta.resultId,
+			refreshUrl: this.meta.refreshUrl
+		});
+
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+
+		});
+
+		this.initRoutesOnCollection($('.with-route', el));
 	}
 });

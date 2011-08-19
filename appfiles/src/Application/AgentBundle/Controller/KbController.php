@@ -15,8 +15,11 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleValidatingEdit;
+use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\UI\RuleBuilder;
+
+use Application\AgentBundle\Controller\Helper\ArticleResults;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -456,56 +459,40 @@ class KbController extends AbstractController
 			$category = App::findEntity('DeskPRO:ArticleCategory', $category_id);
 		}
 
-		$searcher = new ArticleSearch();
-		$searcher->setPersonContext($this->person);
-
-		if ($category) {
-			$searcher->addTerm(ArticleSearch::TERM_CATEGORY, 'is', $category['id']);
-			$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
-		} else {
-			if ($this->in->getCleanValueArray('terms', 'raw' , 'discard')) {
-				$term_rules = RuleBuilder::newTermsBuilder();
-				$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-
-				foreach ($terms as $term) {
-					$searcher->addTerm($term['type'], $term['op'], $term['options']);
-				}
-
-			// Viewing "All" link, default to published
-			} else {
-				$searcher->addTerm(ArticleSearch::TERM_STATUS, 'is', 'published');
-			}
+		$show_all = false;
+		if (!$category) {
+			$show_all = $this->in->getBool('all');
 		}
 
-		$total = $searcher->getCount();
-		$per_page = 20;
-		$pageinfo = Numbers::getPaginationPages($total, $this->in->getUint('page'), $per_page);
+		$result_helper = ArticleResults::newFromRequest($this, array(
+			'category' => $category,
+			'show_all' => $show_all
+		));
 
-		$limit = array(
-			'offset' => ($pageinfo['curpage'] - 1) * $per_page,
-			'max' => $per_page
-		);
+		$page = $this->in->getUint('p');
+		if (!$page) $page = 1;
 
-		$result_ids = $searcher->getMatches($limit);
+		$results = $result_helper->getArticlesForPage($page);
+		$result_cache = $result_helper->getResultCache();
 
-		$results = App::getEntityRepository('DeskPRO:Article')->getByResultIds($result_ids);
+		$display_fields = $this->person->getPref('agent.ui.kb-filter-display-fields.' . $result_cache['id']);
+		if (!$display_fields) {
+			$display_fields = array('author', 'date_created');
+		}
 
-		$tpl = 'AgentBundle:Kb:list.html.twig';
+		$tpl = 'AgentBundle:Kb:filter.html.twig';
 		if ($this->request->isPartialRequest()) {
-			$tpl = 'AgentBundle:Kb:list-page.html.twig';
+			$tpl = 'AgentBundle:Kb:filter-page.html.twig';
 		}
-
-		$article_options = array();
-		$article_options['categories'] = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
 
 		return $this->render($tpl, array(
 			'results'            => $results,
-			'article_options'    => $article_options,
-			'search_form'        => array('terms' => $searcher->getTerms()),
-			'terms_summary'      => $searcher->getSummary(),
+			'result_id'          => $result_cache['id'],
+			'display_fields'     => $display_fields,
+
+			'search_form'        => array('terms' => $result_cache['criteria']['terms']),
+			'terms_summary'      => $result_cache['extra']['summary'],
 			'category'           => $category,
-			'pageinfo'           => $pageinfo,
-			'page'               => $pageinfo['curpage']
 		));
 	}
 

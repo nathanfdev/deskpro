@@ -4730,7 +4730,8 @@ div.person-quick-find section.search-area select, div.person-quick-find section.
 
 
 
-.ticket-select {
+.ticket-select,
+.item-select {
     height: 11px;
 }
 

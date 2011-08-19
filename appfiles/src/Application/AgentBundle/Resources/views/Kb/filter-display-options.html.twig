@@ -1,0 +1,15 @@
+{% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
+{% block other_options %}
+	Order By: <select name="order_by">
+		<option value="article.date_created:desc">Date Created (Newest-Oldest)</option>
+		<option value="article.date_created:asc">Date Created (Oldest-Newest)</option>
+		<option value="article.view_count:desc">View Count (Highest-Lowest)</option>
+		<option value="article.view_count:asc">View Count (Lowest-Highest)</option>
+	</select>
+{% endblock %}
+{% block display_elements_list %}
+	<li data-field="author"><input type="checkbox" name="author" /> Author</li>
+	<li data-field="category"><input type="checkbox" name="category" /> Category</li>
+	<li data-field="date_created"><input type="checkbox" name="date_created" /> Date Created</li>
+	<li data-field="view_count"><input type="checkbox" name="view_count" /> View Count</li>
+{% endblock %}

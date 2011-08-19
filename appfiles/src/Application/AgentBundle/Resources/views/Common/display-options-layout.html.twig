@@ -1,0 +1,25 @@
+<div class="display-options overlay">
+	<div class="overlay-title">
+		<h4>Display Options</h4>
+	</div>
+
+	<div class="overlay-content">
+		<div style="float: right;">
+			{% block other_options %}{% endblock %}
+		</div>
+		<div style="margin-right: 250px;">
+			<strong>Display Elements</strong><br />
+			<ul class="sortable-list">
+				{% block display_elements_list %}{% endblock %}
+			</ul>
+		</div>
+	</div>
+	<div class="overlay-actions">
+		<div class="loading-off">
+			<button class="save-trigger dp-button small">Save</button>
+		</div>
+		<div class="loading-on" style="display:none">
+			<span>Saving ...</span>
+		</div>
+	</div>
+</div>

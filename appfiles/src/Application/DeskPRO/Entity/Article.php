@@ -311,7 +311,13 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$cats = array();
 		foreach ($this->categories as $cat) {
 			if ($full) {
-				$cats[] = $cat->getFullTitle();
+				if ($full !== true) {
+					// If its not a boolean, then its a string separator
+					$cats[] = $cat->getFullTitle($full);
+				} else {
+					$cats[] = $cat->getFullTitle();
+				}
+
 			} else {
 				$cats[] = $cat['title'];
 			}
@@ -396,4 +402,424 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 		return $path;
 	}
+
+    /**
+     * Get id
+     *
+     * @return integer 
+     */
+    public function getId()
+    {
+        return $this->id;
+    }
+
+    /**
+     * Set markup_mode
+     *
+     * @param string $markupMode
+     */
+    public function setMarkupMode($markupMode)
+    {
+        $this->markup_mode = $markupMode;
+    }
+
+    /**
+     * Get markup_mode
+     *
+     * @return string 
+     */
+    public function getMarkupMode()
+    {
+        return $this->markup_mode;
+    }
+
+    /**
+     * Set slug
+     *
+     * @param string $slug
+     */
+    public function setSlug($slug)
+    {
+        $this->slug = $slug;
+    }
+
+    /**
+     * Get slug
+     *
+     * @return string 
+     */
+    public function getSlug()
+    {
+        return $this->slug;
+    }
+
+    /**
+     * Get title
+     *
+     * @return string 
+     */
+    public function getTitle()
+    {
+        return $this->title;
+    }
+
+    /**
+     * Set excerpt
+     *
+     * @param string $excerpt
+     */
+    public function setExcerpt($excerpt)
+    {
+        $this->excerpt = $excerpt;
+    }
+
+    /**
+     * Get excerpt
+     *
+     * @return string 
+     */
+    public function getExcerpt()
+    {
+        return $this->excerpt;
+    }
+
+    /**
+     * Set content
+     *
+     * @param text $content
+     */
+    public function setContent($content)
+    {
+        $this->content = $content;
+    }
+
+    /**
+     * Get content
+     *
+     * @return text 
+     */
+    public function getContent()
+    {
+        return $this->content;
+    }
+
+    /**
+     * Set view_count
+     *
+     * @param integer $viewCount
+     */
+    public function setViewCount($viewCount)
+    {
+        $this->view_count = $viewCount;
+    }
+
+    /**
+     * Get view_count
+     *
+     * @return integer 
+     */
+    public function getViewCount()
+    {
+        return $this->view_count;
+    }
+
+    /**
+     * Set total_rating
+     *
+     * @param integer $totalRating
+     */
+    public function setTotalRating($totalRating)
+    {
+        $this->total_rating = $totalRating;
+    }
+
+    /**
+     * Get total_rating
+     *
+     * @return integer 
+     */
+    public function getTotalRating()
+    {
+        return $this->total_rating;
+    }
+
+    /**
+     * Set num_ratings
+     *
+     * @param integer $numRatings
+     */
+    public function setNumRatings($numRatings)
+    {
+        $this->num_ratings = $numRatings;
+    }
+
+    /**
+     * Get num_ratings
+     *
+     * @return integer 
+     */
+    public function getNumRatings()
+    {
+        return $this->num_ratings;
+    }
+
+    /**
+     * Set status
+     *
+     * @param string $status
+     */
+    public function setStatus($status)
+    {
+        $this->status = $status;
+    }
+
+    /**
+     * Get status
+     *
+     * @return string 
+     */
+    public function getStatus()
+    {
+        return $this->status;
+    }
+
+    /**
+     * Set hidden_status
+     *
+     * @param string $hiddenStatus
+     */
+    public function setHiddenStatus($hiddenStatus)
+    {
+        $this->hidden_status = $hiddenStatus;
+    }
+
+    /**
+     * Get hidden_status
+     *
+     * @return string 
+     */
+    public function getHiddenStatus()
+    {
+        return $this->hidden_status;
+    }
+
+    /**
+     * Set display_order
+     *
+     * @param integer $displayOrder
+     */
+    public function setDisplayOrder($displayOrder)
+    {
+        $this->display_order = $displayOrder;
+    }
+
+    /**
+     * Get display_order
+     *
+     * @return integer 
+     */
+    public function getDisplayOrder()
+    {
+        return $this->display_order;
+    }
+
+    /**
+     * Set date_created
+     *
+     * @param datetime $dateCreated
+     */
+    public function setDateCreated($dateCreated)
+    {
+        $this->date_created = $dateCreated;
+    }
+
+    /**
+     * Get date_created
+     *
+     * @return datetime 
+     */
+    public function getDateCreated()
+    {
+        return $this->date_created;
+    }
+
+    /**
+     * Set date_published
+     *
+     * @param datetime $datePublished
+     */
+    public function setDatePublished($datePublished)
+    {
+        $this->date_published = $datePublished;
+    }
+
+    /**
+     * Get date_published
+     *
+     * @return datetime 
+     */
+    public function getDatePublished()
+    {
+        return $this->date_published;
+    }
+
+    /**
+     * Set date_end
+     *
+     * @param datetime $dateEnd
+     */
+    public function setDateEnd($dateEnd)
+    {
+        $this->date_end = $dateEnd;
+    }
+
+    /**
+     * Get date_end
+     *
+     * @return datetime 
+     */
+    public function getDateEnd()
+    {
+        return $this->date_end;
+    }
+
+    /**
+     * Set end_action
+     *
+     * @param string $endAction
+     */
+    public function setEndAction($endAction)
+    {
+        $this->end_action = $endAction;
+    }
+
+    /**
+     * Get end_action
+     *
+     * @return string 
+     */
+    public function getEndAction()
+    {
+        return $this->end_action;
+    }
+
+    /**
+     * Add products
+     *
+     * @param Application\DeskPRO\Entity\Product $products
+     */
+    public function addProduct(\Application\DeskPRO\Entity\Product $products)
+    {
+        $this->products[] = $products;
+    }
+
+    /**
+     * Get products
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getProducts()
+    {
+        return $this->products;
+    }
+
+    /**
+     * Add revisions
+     *
+     * @param Application\DeskPRO\Entity\ArticleRevision $revisions
+     */
+    public function addArticleRevision(\Application\DeskPRO\Entity\ArticleRevision $revisions)
+    {
+        $this->revisions[] = $revisions;
+    }
+
+    /**
+     * Get revisions
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getRevisions()
+    {
+        return $this->revisions;
+    }
+
+    /**
+     * Set person
+     *
+     * @param Application\DeskPRO\Entity\Person $person
+     */
+    public function setPerson(\Application\DeskPRO\Entity\Person $person)
+    {
+        $this->person = $person;
+    }
+
+    /**
+     * Get person
+     *
+     * @return Application\DeskPRO\Entity\Person 
+     */
+    public function getPerson()
+    {
+        return $this->person;
+    }
+
+    /**
+     * Set language
+     *
+     * @param Application\DeskPRO\Entity\Language $language
+     */
+    public function setLanguage(\Application\DeskPRO\Entity\Language $language)
+    {
+        $this->language = $language;
+    }
+
+    /**
+     * Get language
+     *
+     * @return Application\DeskPRO\Entity\Language 
+     */
+    public function getLanguage()
+    {
+        return $this->language;
+    }
+
+    /**
+     * Add categories
+     *
+     * @param Application\DeskPRO\Entity\ArticleCategory $categories
+     */
+    public function addArticleCategory(\Application\DeskPRO\Entity\ArticleCategory $categories)
+    {
+        $this->categories[] = $categories;
+    }
+
+    /**
+     * Get categories
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getCategories()
+    {
+        return $this->categories;
+    }
+
+    /**
+     * Add labels
+     *
+     * @param Application\DeskPRO\Entity\LabelArticle $labels
+     */
+    public function addLabelArticle(\Application\DeskPRO\Entity\LabelArticle $labels)
+    {
+        $this->labels[] = $labels;
+    }
+
+    /**
+     * Get labels
+     *
+     * @return Doctrine\Common\Collections\Collection 
+     */
+    public function getLabels()
+    {
+        return $this->labels;
+    }
 }

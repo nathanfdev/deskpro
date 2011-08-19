@@ -308,7 +308,8 @@ section.deskpro-results-list article > div.title > a:hover {
     text-decoration: underline;
 }
 
-section.deskpro-results-list article .ticket-select {
+section.deskpro-results-list article .ticket-select,
+section.deskpro-results-list article .item-select {
     float: left;
     margin-left: 3px;
     margin-top: 7px;
@@ -409,13 +410,13 @@ section.deskpro-results-list article > div.info > ul.single-col > li {
 
 
 
-section.deskpro-results-list article.ticket.open {
+section.deskpro-results-list article.open {
     -webkit-box-shadow: inset 0px 0px 2px 1px #931004;
     -moz-box-shadow: inset 0px 0px 2px 1px #931004;
     box-shadow: inset 0px 0px 2px 1px #931004;
 }
 
-section.deskpro-results-list article.ticket .toprow .status {
+section.deskpro-results-list article .toprow .status {
     background-color: #62C184;
     color: #fff;
     padding: 2px 3px 2px 3px;
@@ -428,46 +429,46 @@ section.deskpro-results-list article.ticket .toprow .status {
 border-radius: 3px;
     margin-top: 2px !important;
 }
-section.deskpro-results-list article.ticket .toprow {
+section.deskpro-results-list article .toprow {
     margin-bottom: 0;
     margin-left: 19px;
     position: relative;
     height: 23px;
 }
 
-section.deskpro-results-list article.ticket .toprow .subject {
+section.deskpro-results-list article .toprow .subject {
     font-size: 12px;
     font-weight: bolder;
 }
 
-section.deskpro-results-list article.ticket .toprow .subject a {
+section.deskpro-results-list article .toprow .subject a {
     text-decoration: underline;
     color: #3D5D8C;
 }
 
-section.deskpro-results-list article.ticket .toprow .subject a:hover {
+section.deskpro-results-list article .toprow .subject a:hover {
     color: #000;
 }
 
-section.deskpro-results-list article.ticket .toprow .userinfo {
+section.deskpro-results-list article .toprow .userinfo {
 
 }
 
-section.deskpro-results-list article.ticket .toprow .userinfo a.name {
+section.deskpro-results-list article .toprow .userinfo a.name {
     color: #303338;
 }
 
-section.deskpro-results-list article.ticket .toprow .userinfo .email {
+section.deskpro-results-list article .toprow .userinfo .email {
     font-size: 95%;
     color: #484A4C;
 }
 
-section.deskpro-results-list article.ticket .toprow .userinfo .org {
+section.deskpro-results-list article .toprow .userinfo .org {
     font-size: 95%;
     color: #484A4C;
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo {
+section.deskpro-results-list article .toprow .ticketinfo {
     position: absolute;
     top: 0;
     right: 0;
@@ -477,11 +478,11 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo {
     margin-left: 32px;
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo .inner {
+section.deskpro-results-list article .toprow .ticketinfo .inner {
     background-color: #FBFBFC;
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo .bound-faded {
+section.deskpro-results-list article .toprow .ticketinfo .bound-faded {
     position: absolute;
     top: 3px;
     left: 0;
@@ -498,18 +499,18 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo .bound-faded {
     background: linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo time {
+section.deskpro-results-list article .toprow .ticketinfo time {
     color: #959DAB;
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo .agent {
+section.deskpro-results-list article .toprow .ticketinfo .agent {
     display: block;
     height: 20px;
     float: left;
     margin-right: 6px;
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo .status {
+section.deskpro-results-list article .toprow .ticketinfo .status {
     display: block;
     float: left;
     overflow: hidden;
@@ -519,22 +520,22 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo .status {
     margin: 0 3px 0 3px;
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-open {
+section.deskpro-results-list article .toprow .ticketinfo .status.status-open {
     background-image: url(../../images/ticket-status-open.png);
 }
-section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-pending {
+section.deskpro-results-list article .toprow .ticketinfo .status.status-pending {
     background-image: url(../../images/ticket-status-pending.png);
 }
-section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-resolved,
-section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-closed
+section.deskpro-results-list article .toprow .ticketinfo .status.status-resolved,
+section.deskpro-results-list article .toprow .ticketinfo .status.status-closed
 {
     background-image: url(../../images/ticket-status-closed.png);
 }
-section.deskpro-results-list article.ticket .toprow .ticketinfo .status.status-hidden {
+section.deskpro-results-list article .toprow .ticketinfo .status.status-hidden {
     background-image: url(../../images/ticket-status-hidden.png);
 }
 
-section.deskpro-results-list article.ticket .toprow .ticketinfo .agent-team {
+section.deskpro-results-list article .toprow .ticketinfo .agent-team {
     display: block;
     float: left;
     width: 16px;
@@ -547,7 +548,7 @@ section.deskpro-results-list article.ticket .toprow .ticketinfo .agent-team {
     margin: 0 3px 0 3px;
 }
 
-section.deskpro-results-list article.ticket .toprow .left {
+section.deskpro-results-list article .toprow .left {
     position: absolute;
     top: 0;
     left: 0;
@@ -559,7 +560,7 @@ section.deskpro-results-list article.ticket .toprow .left {
     padding: 3px 0 0 0;
 }
 
-section.deskpro-results-list article.ticket .toprow .department {
+section.deskpro-results-list article .toprow .department {
     color: #6C6F72;
     border:  1px solid #CACED1;
     padding: 1px 3px 1px 3px;
@@ -575,23 +576,23 @@ section.deskpro-results-list article.ticket .toprow .department {
     margin-right: 6px;
 }
 
-section.deskpro-results-list article.ticket .preview {
+section.deskpro-results-list article .preview {
     background: url(../../images/elbow-end.gif) no-repeat 0 50%;
     padding-left: 18px;
     margin-left: 14px;
 }
 
-section.deskpro-results-list article.ticket .preview a, 
-section.deskpro-results-list article.ticket .preview a .subject {
+section.deskpro-results-list article .preview a, 
+section.deskpro-results-list article .preview a .subject {
     color: #4769B3 !important;
 }
 
-section.deskpro-results-list article.ticket .preview .subject {
+section.deskpro-results-list article .preview .subject {
 
 }
 
 
-section.deskpro-results-list article.ticket .preview .sub-department {
+section.deskpro-results-list article .preview .sub-department {
     color: #6C6F72;
     border:  1px solid #CACED1;
     padding: 0px 2px 0px 2px;
@@ -603,11 +604,11 @@ section.deskpro-results-list article.ticket .preview .sub-department {
     margin-right: 4px;
 }
 
-section.deskpro-results-list article.ticket .extra-info {
+section.deskpro-results-list article .extra-info {
     padding: 5px 3px 0 19px;
 }
 
-section.deskpro-results-list article.ticket .extra-info li {
+section.deskpro-results-list article .extra-info li {
     float: left;
     display: block;
     
@@ -621,11 +622,11 @@ section.deskpro-results-list article.ticket .extra-info li {
     line-height: 15px;;
 }
 
-section.deskpro-results-list article.ticket .extra-info li .prop-title {
+section.deskpro-results-list article .extra-info li .prop-title {
     color: #666C77;
 }
 
-section.deskpro-results-list article.ticket .extra-info li.agent span.prop-val span {
+section.deskpro-results-list article .extra-info li.agent span.prop-val span {
     float:right;
     display: block;
     padding-left: 17px;

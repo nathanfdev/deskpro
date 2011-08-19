@@ -67,6 +67,8 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/TicketDisplay.js',
 		'javascripts/DeskPRO/Agent/PageHelper/ListSearchForm.js',
 		'javascripts/DeskPRO/Agent/PageHelper/CategoryEdit.js',
+		'javascripts/DeskPRO/Agent/PageHelper/DisplayOptions.js',
+		'javascripts/DeskPRO/Agent/PageHelper/SelectionBar.js',
 		'javascripts/DeskPRO/Agent/PageHelper/Popover.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',

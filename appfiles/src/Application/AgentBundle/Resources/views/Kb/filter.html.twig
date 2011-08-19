@@ -1,0 +1,22 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.KbList';
+pageMeta.resultId = {{ result_id }};
+pageMeta.refreshUrl = '{{ path('agent_kb_list', {'cache_id': result_id}) }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+<div class="layout-content">
+<div class="content">
+
+	{% include 'AgentBundle:Kb:filter-display-options.html.twig' %}
+	{% include 'AgentBundle:Kb:filter-control-bar.html.twig' %}
+	{% include 'AgentBundle:Kb:filter-massactions-bar.html.twig' %}
+	{# {% include 'AgentBundle:Kb:search-form.html.twig' %} #}
+
+	<section class="kb-simple-list deskpro-results-list">
+		{% include 'AgentBundle:Kb:filter-page.html.twig' %}
+	</section>
+</div>
+
+</div>
