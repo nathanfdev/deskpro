@@ -496,31 +496,6 @@ class KbController extends AbstractController
 		));
 	}
 
-	public function categoryListAction($category_id)
-	{
-		$category = App::findEntity('DeskPRO:ArticleCategory', $category_id);
-
-		$is_agent = $category['is_agent'];
-
-		$all_cat_ids = $category->getTreeIds();
-
-		$articles = App::getOrm()->createQuery("
-			SELECT a
-			FROM DeskPRO:Article a INDEX BY a.id
-			LEFT JOIN a.categories cat
-			LEFT JOIN a.person p
-			WHERE cat.id IN (" . implode(',', $all_cat_ids) . ")
-				AND ((a.status = 'published' OR a.status = 'archived') OR (a.hidden_status = 'unpublished'))
-			ORDER BY a.id DESC
-		")->execute();
-
-		return $this->render('AgentBundle:Kb:list.html.twig', array(
-			'category' => $category,
-			'articles' => $articles,
-			'is_agent' => $is_agent
-		));
-	}
-
 	############################################################################
 	# Validating comments
 	############################################################################
