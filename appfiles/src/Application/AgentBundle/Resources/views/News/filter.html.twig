@@ -1,0 +1,21 @@
+<script>
+pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.NewsList';
+pageMeta.resultId = {{ result_id }};
+pageMeta.refreshUrl = '{{ path('agent_news_list', {'cache_id': result_id}) }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
+</script>
+<div class="layout-content">
+<div class="content">
+
+	{% include 'AgentBundle:News:filter-display-options.html.twig' %}
+	{% include 'AgentBundle:News:filter-control-bar.html.twig' %}
+	{% include 'AgentBundle:News:filter-massactions-bar.html.twig' %}
+
+	<section class="news-simple-list deskpro-results-list">
+		{% include 'AgentBundle:News:filter-page.html.twig' %}
+	</section>
+</div>
+
+</div>

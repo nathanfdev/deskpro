@@ -17,6 +17,8 @@ use Application\DeskPRO\Entity\NewsComment;
 use Application\DeskPRO\Searcher\NewsSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 
+use Application\AgentBundle\Controller\Helper\NewsResults;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -118,55 +120,37 @@ class NewsController extends AbstractController
 			$category = App::findEntity('DeskPRO:NewsCategory', $category_id);
 		}
 
-		$searcher = new \Application\DeskPRO\Searcher\NewsSearch();
-		$searcher->setPersonContext($this->person);
-
-		$terms = null;
-		if ($category) {
-			$searcher->addTerm(NewsSearch::TERM_CATEGORY, 'is', $category['id']);
-			$searcher->addTerm('is_published', 'is', 1);
-		} else {
-			if ($this->in->getCleanValueArray('terms', 'raw' , 'discard')) {
-				$term_rules = RuleBuilder::newTermsBuilder();
-				$terms = $term_rules->readForm($this->in->getCleanValueArray('terms', 'raw' , 'discard'));
-
-				foreach ($terms as $term) {
-					$searcher->addTerm($term['type'], $term['op'], $term['options']);
-				}
-			} else {
-				$searcher->addTerm('is_published', 'is', 1);
-			}
+		$show_all = false;
+		if (!$category) {
+			$show_all = $this->in->getBool('all');
 		}
 
-		$total = $searcher->getCount();
-		$per_page = 20;
-		$pageinfo = Numbers::getPaginationPages($total, $this->in->getUint('page'), $per_page);
+		$result_helper = NewsResults::newFromRequest($this, array(
+			'category' => $category,
+			'show_all' => $show_all
+		));
 
-		$limit = array(
-			'offset' => ($pageinfo['curpage'] - 1) * $per_page,
-			'max' => $per_page
-		);
+		$page = $this->in->getUint('p');
+		if (!$page) $page = 1;
 
-		$result_ids = $searcher->getMatches($limit);
+		$results = $result_helper->getNewsForPage($page);
+		$result_cache = $result_helper->getResultCache();
 
-		$results = App::getEntityRepository('DeskPRO:News')->getByResultIds($result_ids);
+		$display_fields = $this->person->getPref('agent.ui.news-filter-display-fields.' . $result_cache['id']);
+		if (!$display_fields) {
+			$display_fields = array('author', 'date_created');
+		}
 
-		$tpl = 'AgentBundle:News:list.html.twig';
+		$tpl = 'AgentBundle:News:filter.html.twig';
 		if ($this->request->isPartialRequest()) {
-			$tpl = 'AgentBundle:News:list-page.html.twig';
+			$tpl = 'AgentBundle:News:filter-page.html.twig';
 		}
-
-		$news_options = array();
-		$news_options['categories'] = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
 
 		return $this->render($tpl, array(
 			'results'        => $results,
-			'news_options'   => $news_options,
-			'search_form'    => array('terms' => $searcher->getTerms()),
-			'terms_summary'  => $searcher->getSummary(),
+			'result_id'      => $result_cache['id'],
+			'display_fields'  => $display_fields,
 			'category'       => $category,
-			'pageinfo'       => $pageinfo,
-			'page'           => $pageinfo['curpage']
 		));
 	}
 }

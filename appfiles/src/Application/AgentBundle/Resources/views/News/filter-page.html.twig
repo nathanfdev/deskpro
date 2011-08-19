@@ -1,0 +1,41 @@
+<section class="search-reuslts page-set" data-page="{{ page }}">
+	{% for news in results %}
+		<article class="news news-{{news.id}}">
+			<input class="item-select" type="checkbox" value="{{news.id}}" />
+			<div class="toprow">
+				<div class="left">
+					<span class="subject">
+						<a class="with-route" data-route="page:{{ path('agent_news_view', {'news_id': news.id}) }}">{{ news.title }}</a>
+					</span>
+				</div>
+			</div>
+			{% if display_fields|length %}
+				<div class="extra-info">
+					<ul>
+						{% for field in display_fields %}
+							{% if field == 'category' %}
+								<li>
+									<span class="prop-title">Category</span>
+									<span class="prop-val">{{ news.category.full_title }}</span>
+								</li>
+							{% elseif field == 'author' %}
+								<li>
+									<span class="prop-title">Author</span>
+									<span class="prop-val">{{ news.person.display_name }}</span>
+								</li>
+							{% elseif field == 'date_created' %}
+								<li>
+									<span class="prop-title">Date Created</span>
+									<span class="prop-val">{{ news.date_created|date('M j, Y')}}</span>
+								</li>
+							{% endif %}
+						{% endfor %}
+					</ul>
+					<br class="clear" />
+				</div>
+			{% else %}
+				<br class="clear" />
+			{% endif %}
+		</article>
+	{% endfor %}
+</section>
