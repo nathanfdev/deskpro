@@ -1,8 +1,8 @@
 <section id="publish_outline_downloads" class="deskpro-tab-item" data-editor-class="download-cat-editor">
 	<ul class="nav-list">
-		<li class="all expanded" data-route="listpane:{{ path('agent_downloads_list') }}">
+		<li class="all expanded">
 			<span class="sub-toggle">expand</span>
-			<a>All</a>
+			<a class="all-route" data-route="listpane:{{ path('agent_downloads_list') }}">All</a>
 			<ul class="sub-group">
 			{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': download_cats, 'counts': download_cats_counts, 'depth': 0 } %}
 			</ul>

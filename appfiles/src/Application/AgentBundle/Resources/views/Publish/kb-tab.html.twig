@@ -1,8 +1,8 @@
 <section id="publish_outline_kb" class="deskpro-tab-item" data-editor-class="kb-cat-editor">
 	<ul class="nav-list">
-		<li class="all expanded" data-route="listpane:{{ path('agent_kb_list') }}">
+		<li class="all expanded">
 			<span class="sub-toggle">expand</span>
-			<a>All</a>
+			<a class="all-route" data-route="listpane:{{ path('agent_kb_list') }}">All</a>
 			<ul class="sub-group">
 			{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
 			</ul>
