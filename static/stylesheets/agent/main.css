@@ -5725,7 +5725,7 @@ article.ticket .urgency span {
 
 
 
-.page-new-ticket .section {
+.page-new-content .section {
 	border-top: 1px solid #E4E4E4;
 	padding-top: 5px;
 	padding-bottom: 5px;
@@ -5734,11 +5734,11 @@ article.ticket .urgency span {
 	clear: both;
 }
 
-.page-new-ticket .section:first-of-type {
+.page-new-content .section:first-of-type {
 	border-top: none;
 }
 
-.page-new-ticket .section .step {
+.page-new-content .section .step {
 	float: left;
 	width: 24px;
 	
@@ -5746,7 +5746,7 @@ article.ticket .urgency span {
 }
 
 
-.page-new-ticket .section .step .num {
+.page-new-content .section .step .num {
 	border: 2px solid #E4E4E4;
 	-webkit-border-radius: 20px;
 	-moz-border-radius: 20px;
@@ -5765,13 +5765,13 @@ article.ticket .urgency span {
 	text-align: center;
 }
 
-.page-new-ticket .section.done .step .num {
+.page-new-content .section.done .step .num {
 	background-color: #79B44D;
 	color: #000;
 	border-color: #4F7831;
 }
 
-.page-new-ticket .section .step .check {
+.page-new-content .section .step .check {
 	display: block;
 	background: url(../../images/step-check.png) no-repeat 50% 50%;
 	width: 20px;
@@ -5782,67 +5782,67 @@ article.ticket .urgency span {
 	display: none;
 }
 
-.page-new-ticket .section.done .step .check {
+.page-new-content .section.done .step .check {
 	display: block;
 }
 
-.page-new-ticket .section .content {
+.page-new-content .section .content {
 	margin-left: 40px;
 }
 
-.page-new-ticket h4.light {
+.page-new-content h4.light {
     font-weight: normal;
 }
 
-.page-new-ticket .section .col {
+.page-new-content .section .col {
     float: left;
     margin-right: 10px;
 }
 
-.page-new-ticket .user-section .more {
+.page-new-content .user-section .more {
     display: none;
 }
 
-.page-new-ticket .user-section.more-on .more {
+.page-new-content .user-section.more-on .more {
     display: block;
 }
 
-.page-new-ticket .user-section br {
+.page-new-content .user-section br {
     display:none;
 }
-.page-new-ticket .user-section .more-fields {
+.page-new-content .user-section .more-fields {
     clear: both;
     float:left;
     margin: 4px 0 10px 110px;
 }
 
-.page-new-ticket .user-section .user-search {
+.page-new-content .user-section .user-search {
 	width: 400px;
 }
 
 
-.page-new-ticket dl dt {
+.page-new-content dl dt {
 	clear: left;
 	float: left;
 	width: 100px;
 	margin-top: 6px;
 }
 
-.page-new-ticket dl dd {
+.page-new-content dl dd {
 	margin-left: 110px;
 	margin-top: 6px;
 }
 
-.page-new-ticket .message-section .ticket-message {
+.page-new-content .message-section .ticket-message {
 	width: 80%;
 	height: 100px;
 }
 
-.page-new-ticket .message-section .type-wrap {
+.page-new-content .message-section .type-wrap {
     margin: 3px 0 3px 0;
 }
 
-.page-new-ticket .other-section nav {
+.page-new-content .other-section nav {
     height: 18px;
     background-color: #E1EBF9;
     border: 1px solid #CBD4DF;
@@ -5852,7 +5852,7 @@ article.ticket .urgency span {
     border-radius: 4px;
 }
 
-.page-new-ticket .other-section nav.on {
+.page-new-content .other-section nav.on {
     -moz-border-radius-topleft: 4px;
     -moz-border-radius-topright: 4px;
     -moz-border-radius-bottomright: 0px;
@@ -5861,11 +5861,11 @@ article.ticket .urgency span {
     border-radius: 4px 4px 0px 0px;
 }
 
-.page-new-ticket .other-section {
+.page-new-content .other-section {
     padding-right: 12px;
 }
 
-.page-new-ticket .other-section nav li {
+.page-new-content .other-section nav li {
     border-right: 1px solid #CBD4DF;
     padding: 3px 17px 3px 8px;
     float: left;
@@ -5874,11 +5874,11 @@ article.ticket .urgency span {
     background: url(../../images/icons/bullet_arrow_down.png) no-repeat 100% 50%;
     font-weight: bold;
 }
-.page-new-ticket .other-section nav.on li.on {
+.page-new-content .other-section nav.on li.on {
     background: #fff url(../../images/icons/bullet_arrow_up.png) no-repeat 100% 50%;
 }
 
-.page-new-ticket .other-section .tab-container .content-wrapper {
+.page-new-content .other-section .tab-container .content-wrapper {
     border: 1px solid #CBD4DF;
     border-top: none;
     padding: 6px;
@@ -5890,7 +5890,7 @@ article.ticket .urgency span {
 border-radius: 0px 0px 4px 4px;
 }
 
-.page-new-ticket .foot {
+.page-new-content .foot {
 	margin-top: 10px;
 	margin-bottom: 10px;
 	text-align: center;

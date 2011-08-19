@@ -79,7 +79,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 * @var string
 	 * @ORM_Mapping\Column(name="markup_mode", type="string", length=15)
 	 */
-	protected $markup_mode = 'markdown';
+	protected $markup_mode = 'html';
 
 	/**
 	 * @var string
@@ -202,6 +202,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->products = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->revisions = new \Doctrine\Common\Collections\ArrayCollection();	
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->status = self::STATUS_HIDDEN;
@@ -210,6 +211,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	public function setTitle($title)
 	{
+		$this->_onPropertyChanged('title', $this->title, $title);
 		$this->title = $title;
 
 		if (!$this->slug) {

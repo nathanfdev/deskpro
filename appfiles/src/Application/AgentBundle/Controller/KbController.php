@@ -114,50 +114,6 @@ class KbController extends AbstractController
 		));
 	}
 
-	public function newArticleSaveAction()
-	{
-		$article = new Article();
-		$article['title'] = $this->in->getString('article.title');
-		$article['content'] = $this->in->getString('article.content');
-		$article['status_code'] = $this->in->getString('article.status_code');
-		$article->person = $this->person;
-
-		if ($this->in->getString('article.date_published')) {
-			$article['date_published'] = new \DateTime($this->in->getString('article.date_published'));
-		}
-		if ($this->in->getString('article.date_end')) {
-			$article['date_end'] = new \DateTime($this->in->getString('article.date_end'));
-		}
-
-		$cat_ids = $this->in->getCleanValueArray('article.categories', 'uint', 'discard');
-		$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoriesById($cat_ids);
-		foreach ($cats as $c) {
-			$article->categories->add($c);
-		}
-
-		$product_ids = $this->in->getCleanValueArray('article.products', 'uint', 'discard');
-		$products = App::getEntityRepository('DeskPRO:Product')->getProductsById($product_ids);
-		foreach ($products as $p) {
-			$article->products->add($p);
-		}
-
-		$pending_article_id = false;
-		if ($this->in->getUint('pending_article_id')) {
-			$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
-			$pending_article_id = $pending_article['id'];
-			App::getOrm()->remove($pending_article);
-		}
-
-		App::getOrm()->persist($article);
-		App::getOrm()->flush();
-
-		return $this->createJsonResponse(array(
-			'load_url'   => $this->generateUrl('agent_kb_article', array('article_id' => $article['id'])),
-			'pending_article_id' => $pending_article_id,
-			'article_id' => $article['id']
-		));
-	}
-
 	public function editArticleSaveAction($article_id)
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
@@ -560,5 +516,44 @@ class KbController extends AbstractController
 			'rev_new' => $rev_new,
 			'rendered_diff' => $rendered_diff
 		));
+	}
+
+	############################################################################
+	# New article
+	############################################################################
+
+	public function newArticleAction()
+	{
+		$article_categories = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getFlatHierarchy();
+
+		return $this->render('AgentBundle:Kb:newarticle.html.twig', array(
+			'article_categories' => $article_categories,
+		));
+	}
+
+	public function newArticleSaveAction()
+	{
+		$newarticle = new \Application\AgentBundle\Form\Model\NewArticle($this->person);
+
+		$formType = new \Application\AgentBundle\Form\Type\NewArticle();
+		$form = $this->get('form.factory')->create($formType, $newarticle);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+			$form->isValid();
+
+			$newarticle->save();
+
+			$article = $newarticle->getArticle();
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'article_id' => $article['id']
+			));
+		} else {
+			return $this->createJsonResponse(array(
+				'success' => false,
+			));
+		}
 	}
 }

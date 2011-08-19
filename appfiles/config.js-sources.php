@@ -79,6 +79,7 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketActions.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/Participants.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket/TicketFields.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewArticle.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js',
@@ -187,7 +188,7 @@ $CONFIG['agent']['misc'] = array(
 		'javascripts/DeskPRO/Agent/Widget/MergeTicket.js',
 		'javascripts/DeskPRO/Agent/Widget/AgentChatWin.js',
 
-		'javascripts/DeskPRO/Agent/Widget/NewTicket.js',
+		'javascripts/DeskPRO/Agent/Widget/BackgroundPopout.js',
 
 		'javascripts/DeskPRO/Agent/RuleBuilder/TermAbstract.js',
 		'javascripts/DeskPRO/Agent/RuleBuilder/DateTerm.js',
@@ -239,6 +240,8 @@ $CONFIG['agent']['vendors'] = array(
 		'vendor/jquery/jquery.hotkeys.js',
 		'vendor/jquery/mwheelIntent.js',
 		'vendor/jquery/jquery.ajax-retry.js',
+
+		'vendor/tiny_mce/jquery.tinymce.js',
 
 		'vendor/jquery/colorbox/jquery.colorbox-min.js',
 

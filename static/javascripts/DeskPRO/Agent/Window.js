@@ -1329,14 +1329,20 @@ DeskPRO.Agent.Window = new Orb.Class({
 			menuElement: '#create_content_menu'
 		});
 		
-		// NewTicket loader
-		this.newTicket = new DeskPRO.Agent.Widget.NewTicket({
+		this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/tickets/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/tickets/new'
 		});
+		this.newArticleLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+			loadUrl: BASE_URL + 'agent/kb/article/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/kb/article/new'
+		});
 
 		$('#create_ticket_btn').click(function() {
-			DeskPRO_Window.newTicket.toggle();
+			DeskPRO_Window.newTicketLoader.toggle();
+		});
+		$('#create_article_btn').click(function() {
+			DeskPRO_Window.newArticleLoader.toggle();
 		});
 
 		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();

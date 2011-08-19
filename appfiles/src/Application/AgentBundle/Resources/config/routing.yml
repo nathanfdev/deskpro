@@ -794,7 +794,7 @@ agent_kb_newarticle_save:
 
 agent_kb_newarticle:
   pattern: /kb/article/new
-  defaults: { _controller: AgentBundle:Kb:viewArticle, article_id: '0' }
+  defaults: { _controller: AgentBundle:Kb:newArticle }
 
 agent_kb_article:
   pattern: /kb/article/{article_id}
