@@ -11,6 +11,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		// Create-type
 		$(document).bind('keydown', 't', this.showNewTicket.bind(this));
 		$(document).bind('keydown', 'k', this.showNewArticle.bind(this));
+		$(document).bind('keydown', 'n', this.showNewNews.bind(this));
 
 		this.boundShortkuts = {};
 
@@ -68,6 +69,9 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 	showNewArticle: function() {
 		DeskPRO_Window.newArticleLoader.toggle();
+	},
+	showNewNews: function() {
+		DeskPRO_Window.newNewsLoader.toggle();
 	},
 
 	tabLeft: function() {

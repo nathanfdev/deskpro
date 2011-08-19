@@ -904,6 +904,14 @@ agent_news_ajax_save_comment:
   defaults: { _controller: AgentBundle:News:ajaxSaveComment }
   requirements: { news_id: "\d+" }
 
+agent_news_new_save:
+  pattern: /news/new/save
+  defaults: { _controller: AgentBundle:News:newNewsSave }
+
+agent_news_new:
+  pattern: /news/new
+  defaults: { _controller: AgentBundle:News:newNews }
+
 ################################################################################
 # Downloads
 ################################################################################

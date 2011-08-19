@@ -153,4 +153,43 @@ class NewsController extends AbstractController
 			'category'       => $category,
 		));
 	}
+
+	############################################################################
+	# New news
+	############################################################################
+
+	public function newNewsAction()
+	{
+		$news_categories = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
+
+		return $this->render('AgentBundle:News:newnews.html.twig', array(
+			'news_categories' => $news_categories,
+		));
+	}
+
+	public function newNewsSaveAction()
+	{
+		$newnews = new \Application\AgentBundle\Form\Model\NewNews($this->person);
+
+		$formType = new \Application\AgentBundle\Form\Type\NewNews();
+		$form = $this->get('form.factory')->create($formType, $newnews);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+			$form->isValid();
+
+			$newnews->save();
+
+			$news = $newnews->getNews();
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'news_id' => $news['id']
+			));
+		} else {
+			return $this->createJsonResponse(array(
+				'success' => false,
+			));
+		}
+	}
 }

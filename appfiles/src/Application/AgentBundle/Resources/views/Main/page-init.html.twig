@@ -34,7 +34,7 @@
 		window.DeskPRO_Window.set('agent.ui.show-listpane', '{{ show_listpane|default('auto') }}');
 
 		window.DeskPRO_Window.initPage();
-		window.DeskPRO_Window.newArticleLoader.open();
+		window.DeskPRO_Window.newNewsLoader.open();
 
 		{% if js_debug.autoLoadRoutes %}
 			{% for i in js_debug.autoLoadRoutes %}
