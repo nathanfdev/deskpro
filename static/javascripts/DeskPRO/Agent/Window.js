@@ -1341,6 +1341,10 @@ DeskPRO.Agent.Window = new Orb.Class({
 			loadUrl: BASE_URL + 'agent/news/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/news/new'
 		});
+		this.newDownloadLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
+			loadUrl: BASE_URL + 'agent/downloads/new',
+			tabRoute: 'page:' + BASE_URL + 'agent/news/new'
+		});
 
 		$('#create_ticket_btn').click(function() {
 			DeskPRO_Window.newTicketLoader.toggle();
@@ -1350,6 +1354,9 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 		$('#create_news_btn').click(function() {
 			DeskPRO_Window.newNewsLoader.toggle();
+		});
+		$('#create_download_btn').click(function() {
+			DeskPRO_Window.newDownloadLoader.toggle();
 		});
 
 		this.omnisearch = new DeskPRO.Agent.OmniSearchBox();

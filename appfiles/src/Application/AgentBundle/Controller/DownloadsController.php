@@ -150,4 +150,43 @@ class DownloadsController extends AbstractController
 			'category'           => $category,
 		));
 	}
+
+	############################################################################
+	# New download
+	############################################################################
+
+	public function newDownloadAction()
+	{
+		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
+
+		return $this->render('AgentBundle:Downloads:newdownload.html.twig', array(
+			'download_categories' => $download_categories,
+		));
+	}
+
+	public function newDownloadSaveAction()
+	{
+		$newdownload = new \Application\AgentBundle\Form\Model\NewDownload($this->person);
+
+		$formType = new \Application\AgentBundle\Form\Type\NewDownlaod();
+		$form = $this->get('form.factory')->create($formType, $newdownload);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+			$form->isValid();
+
+			$newdownload->save();
+
+			$download = $newdownload->getDownload();
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'download_id' => $download['id']
+			));
+		} else {
+			return $this->createJsonResponse(array(
+				'success' => false,
+			));
+		}
+	}
 }
