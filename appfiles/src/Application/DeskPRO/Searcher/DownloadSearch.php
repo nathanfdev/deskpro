@@ -243,7 +243,7 @@ class DownloadSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_CATEGORY:
-					$base_ids = is_array($choice['category']) ? $choice['category'] : array($choice);
+						$base_ids = (array)(is_array($choice['category']) ? $choice['category'] : $choice);
 					$ids = array();
 
 					foreach ($base_ids as $id) {

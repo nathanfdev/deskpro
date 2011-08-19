@@ -1,0 +1,175 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @subpackage AgentBundle
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\AgentBundle\Controller\Helper;
+
+use Application\DeskPRO\Searcher\DownloadSearch;
+use Application\DeskPRO\UI\RuleBuilder;
+use Application\DeskPRO\Entity\ResultCache;
+use Application\DeskPRO\Entity\Download;
+use Application\DeskPRO\App;
+use Orb\Util\Strings;
+use Orb\Util\Arrays;
+
+class DownloadResults
+{
+	/**
+	 * @var Application\AgentBundle\Controller\AbstractController
+	 */
+	protected $controller;
+
+	/**
+	 * @var array
+	 */
+	protected $download_ids = array();
+
+	/**
+	 * @var array
+	 */
+	protected $order_by = null;
+
+	/**
+	 * @var \Application\DeskPRO\Entity\ResultCache
+	 */
+	protected $result_cache;
+
+	/**
+	 * $options can have:
+	 * - default_terms: For when viewing the page that you havent submitted
+	 * - specific_terms: Always added to the search
+	 * - default_order_by: The default order by for a page you havent submitted
+	 *
+	 * @param  $controller
+	 * @param array $options
+	 * @return \Application\AgentBundle\Controller\Helper\DownloadResults
+	 */
+	public static function newFromRequest($controller, array $options = array())
+	{
+		$result_cache = false;
+		if ($controller->in->getUint('cache_id')) {
+			$result_cache = App::getEntityRepository('DeskPRO:ResultCache')->find($controller->in->getUint('cache_id'));
+			if ($result_cache['person_id'] != $controller->person['id']) {
+				$result_cache = false;
+			}
+		}
+
+		#------------------------------
+		# If there's no result set, we're running it for the first time
+		#------------------------------
+
+		if (!$result_cache) {
+			$term_rules = RuleBuilder::newTermsBuilder();
+
+			if (isset($options['category'])) {
+				$terms = array(
+					array('type' => 'category', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
+				);
+
+			} elseif (isset($options['show_all'])) {
+				$terms = array();
+
+			} else {
+				$form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');
+				$form_terms = Arrays::removeFalsey($form_terms);
+
+				$terms = $term_rules->readForm($form_terms);
+			}
+
+			$searcher = new DownloadSearch();
+			foreach ($terms as $term) {
+				$searcher->addTerm($term['type'], $term['op'], $term['options']);
+			}
+
+			$order_by = $controller->in->getString('order_by');
+
+			if ($order_by) {
+				$searcher->setOrderByCode($order_by);
+			}
+
+			$results = $searcher->getMatches();
+
+			$result_cache = new ResultCache();
+			$result_cache['person'] = $controller->person;
+			$result_cache['criteria'] = array('terms' => $searcher->getTerms(), 'order_by' => $order_by);
+			$result_cache['extra'] = array('summary' => $searcher->getSummary());
+			$result_cache['results'] = $results;
+			$result_cache['num_results'] = count($results);
+
+			App::getOrm()->persist($result_cache);
+			App::getOrm()->flush();
+		}
+
+		return new self($controller, $result_cache);
+	}
+
+
+	public function __construct($controller, ResultCache $result_cache = null)
+	{
+		$this->controller = $controller;
+
+		if ($result_cache) {
+			$this->result_cache = $result_cache;
+			$this->setDownloadIds($result_cache['results']);
+		}
+	}
+
+
+	/**
+	 * @return \Application\DeskPRO\Entity\ResultCache
+	 */
+	public function getResultCache()
+	{
+		return $this->result_cache;
+	}
+
+
+	/**
+	 * @param array $download_ids
+	 */
+	public function setDownloadIds(array $download_ids)
+	{
+		$this->download_ids = $download_ids;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getDownloadIds()
+	{
+		return $this->download_ids;
+	}
+
+
+	/**
+	 * @return array
+	 */
+	public function getDownloadsForPage($page, $per_page = 50)
+	{
+		return $this->_getPageFromDownloadIds($this->getDownloadIds(), $page, $per_page);
+	}
+
+
+	protected function _getPageFromDownloadIds(array $download_ids, $page, $per_page)
+	{
+		$page_download_ids = Arrays::getPageChunk($download_ids, $page, $per_page);
+		$downloads_raw = App::getEntityRepository('DeskPRO:Download')->getByResultIds($page_download_ids);
+
+		$downloads = array();
+		foreach ($download_ids as $tid) {
+			if (isset($downloads_raw[$tid])) {
+				$downloads[$tid] = $downloads_raw[$tid];
+			}
+		}
+
+		return $downloads;
+	}
+}

@@ -7,18 +7,17 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Class({
 
 	initPage: function(el) {
 		this.wrapper = el;
+
+		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+			prefId: 'download-filter',
+			resultId: this.meta.resultId,
+			refreshUrl: this.meta.refreshUrl
+		});
+
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+
+		});
+
 		this.initRoutesOnCollection($('.with-route', el));
-
-		this.topSection = $('.list-top-area:first', this.wrapper);
-
-		this.listSearchForm = new DeskPRO.Agent.PageHelper.ListSearchForm(this, {
-			form: $('form.download-search-form', this.topSection),
-			context: this.topSection,
-			searchData: $('.search-form-data:first', this.topSection)
-		});
-
-		this.listSearchForm.addEvent('searchSubmit', function(url, data) {
-			DeskPRO_Window.loadListPane(url, { postData: data });
-		});
 	}
 });
