@@ -1,0 +1,15 @@
+{% for cat in cats %}
+
+	<li class="{% if depth %}sub-list{% endif %} download-cat-{{ cat.id }}">
+		<span class="list-counter" id="download_cat_count_{{ cat.id }}">{{ counts[cat.id]|default(0) }}</span>
+		{% if cat.children|length %}
+			<span class="sub-toggle">expand</span>
+		{% endif %}
+		<a data-route="listpane:{{ path('agent_downloads_list', {'category_id':cat.id}) }}">{{ cat.title }}</a>
+		{% if cat.children|length %}
+			<ul class="sub-group" style="display: none">
+				{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': cat.children, 'counts': counts, 'depth': depth+1 } %}
+			</ul>
+		{% endif %}
+	</li>
+{% endfor %}

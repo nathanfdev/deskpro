@@ -42,6 +42,20 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			self.openCatEditor($(this).data('editor-class'));
 		});
 
+		$('#publish_outline .sub-toggle').click(function(ev) {
+			ev.stopPropagation();
+			var li = $(this).parent();
+			var sub = $('ul.sub-group:first', li);
+
+			if (sub.is(':visible')) {
+				sub.slideUp();
+				$(this).removeClass('open');
+			} else {
+				sub.slideDown();
+				$(this).addClass('open');
+			}
+		});
+
 		this._initGlossary();
 
 		//publish_outline_edit_cats

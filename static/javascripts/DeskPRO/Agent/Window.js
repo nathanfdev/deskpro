@@ -1405,6 +1405,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		});
 
 		$('#deskpro_outline').delegate('[data-route]', 'click', function(ev) {
+			ev.stopPropagation();
 			DeskPRO_Window.runPageRouteFromElement(this);
 		});
 

@@ -1,13 +1,12 @@
 <section id="publish_outline_downloads" class="deskpro-tab-item" data-editor-class="download-cat-editor">
 	<ul class="nav-list">
-		<li data-route="listpane:{{ path('agent_downloads_list') }}">
+		<li class="all expanded" data-route="listpane:{{ path('agent_downloads_list') }}">
+			<span class="sub-toggle">expand</span>
 			<a>All</a>
+			<ul class="sub-group">
+			{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': download_cats, 'counts': download_cats_counts, 'depth': 0 } %}
+			</ul>
 		</li>
-		{% for cat in download_cats %}
-			<li data-route="listpane:{{ path('agent_downloads_list', {'category_id':cat.id}) }}">
-				<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
-			</li>
-		{% endfor %}
 	</ul>
 
 	{% include 'AgentBundle:Publish:category-editor.html.twig' with { 'categories': download_cats_full, 'classname': 'download-cat-editor', 'type': 'download', 'title': 'Download Categories' } %}

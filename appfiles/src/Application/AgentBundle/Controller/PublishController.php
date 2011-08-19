@@ -15,6 +15,8 @@ use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentAbstractRepos;
 
+use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
+
 use Orb\Util\Strings;
 use Orb\Util\Numbers;
 use Orb\Util\Arrays;
@@ -37,49 +39,42 @@ class PublishController extends AbstractController
 		$kb_counts['drafts']                       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM articles WHERE hidden_status = ?", array('draft'));
 		$kb_counts['pending']                      = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
 
-		$kb_cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper()->getFlatHierarchy();
-		$kb_cats_full = App::getEntityRepository('DeskPRO:ArticleCategory')->getRootNodes();
+		$publish_helper = new PublishHelper();
+		$publish_helper->setPersonContext($this->person);
 
-		#------------------------------
-		# News
-		#------------------------------
+		$kb_cats              = $publish_helper->getCategoryStructure(PublishHelper::ARTICLES);
+		$kb_cats_counts       = $publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
 
-		$news_cats = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
-		$news_cats_full = App::getEntityRepository('DeskPRO:NewsCategory')->getRootNodes();
+		$news_cats            = $publish_helper->getCategoryStructure(PublishHelper::NEWS);
+		$news_cats_counts     = $publish_helper->getCategoryCounts(PublishHelper::NEWS);
 
-		#------------------------------
-		# Downloads
-		#------------------------------
+		$download_cats        = $publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS);
+		$download_cats_counts = $publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
-		$download_cats = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
-		$download_cats_full = App::getEntityRepository('DeskPRO:DownloadCategory')->getRootNodes();
-
-		#------------------------------
-		# Glossary
-		#------------------------------
-
-		$glossary_words = App::getEntityRepository('DeskPRO:GlossaryWord')->getWords();
-		$glossary_words = Arrays::sortIntoAlphabeticalIndex($glossary_words, null, true, true);
+		$glossary_words     = $publish_helper->getGlossaryWordsIndex();
 
 		$counts = array();
 		$counts['validating_comments'] = CommentAbstractRepos::getCombinedValidatingCount();
 
 
 		$data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', array(
-			'counts' => $counts,
-			'kb_counts' => $kb_counts,
-			'kb_cats' => $kb_cats,
-			'kb_cats_full' => $kb_cats_full,
-			'news_cats' => $news_cats,
-			'news_cats_full' => $news_cats_full,
-			'download_cats' => $download_cats,
-			'download_cats_full' => $download_cats_full,
-			'glossary_words' => $glossary_words,
+			'counts'                => $counts,
+
+			'kb_counts'             => $kb_counts,
+			'kb_cats'               => $kb_cats,
+			'kb_cats_counts'        => $kb_cats_counts,
+
+			'news_cats'             => $news_cats,
+			'news_cats_counts'      => $news_cats_counts,
+
+			'download_cats'         => $download_cats,
+			'download_cats_counts'  => $download_cats_counts,
+
+			'glossary_words'        => $glossary_words,
 		));
 
 		return $this->createJsonResponse($data);
 	}
-
 
 	############################################################################
 	# comments

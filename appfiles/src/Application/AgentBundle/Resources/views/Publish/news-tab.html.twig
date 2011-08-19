@@ -1,13 +1,12 @@
 <section id="publish_outline_news" class="deskpro-tab-item" data-editor-class="news-cat-editor">
 	<ul class="nav-list">
-		<li data-route="listpane:{{ path('agent_news_list') }}">
+		<li class="all expanded" data-route="listpane:{{ path('agent_news_list') }}">
+			<span class="sub-toggle">expand</span>
 			<a>All</a>
+			<ul class="sub-group">
+			{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}
+			</ul>
 		</li>
-		{% for cat in news_cats %}
-			<li data-route="listpane:{{ path('agent_news_list', {'category_id':cat.id}) }}">
-				<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
-			</li>
-		{% endfor %}
 	</ul>
 
 	{% include 'AgentBundle:Publish:category-editor.html.twig' with { 'categories': news_cats_full, 'classname': 'news-cat-editor', 'type': 'news', 'title': 'News Categories' } %}

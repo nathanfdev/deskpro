@@ -1,13 +1,12 @@
 <section id="publish_outline_kb" class="deskpro-tab-item" data-editor-class="kb-cat-editor">
 	<ul class="nav-list">
-		<li data-route="listpane:{{ path('agent_kb_list') }}">
+		<li class="all expanded" data-route="listpane:{{ path('agent_kb_list') }}">
+			<span class="sub-toggle">expand</span>
 			<a>All</a>
+			<ul class="sub-group">
+			{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
+			</ul>
 		</li>
-		{% for cat in kb_cats %}
-			<li data-route="listpane:{{ path('agent_kb_list', {'category_id':cat.id}) }}">
-				<a {% if cat.depth %}style="margin-left: {{ 10 * cat.depth }}px"{% endif %}>{{ cat.title }}</a>
-			</li>
-		{% endfor %}
 	</ul>
 
 	{% include 'AgentBundle:Publish:category-editor.html.twig' with { 'categories': kb_cats_full, 'classname': 'kb-cat-editor', 'type': 'article', 'title': 'KB Categories' } %}

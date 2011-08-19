@@ -3533,7 +3533,7 @@ span.kb-editor-edit a {
     border-bottom: 1px solid transparent;
 }
 
-#deskpro_outline ul.nav-list li:hover, #deskpro_outline ul.nav-list li.active-nav {
+#deskpro_outline ul.nav-list li:not(.all):hover, #deskpro_outline ul.nav-list li:not(.all).active-nav {
     background: #e1e9f3;
     background: -moz-linear-gradient(top, #e1e9f3 0%, #d1dfea 100%);
     background: -webkit-gradient(linear, left top, left bottom, color-stop(0%,#e1e9f3), color-stop(100%,#d1dfea));
@@ -3546,10 +3546,18 @@ span.kb-editor-edit a {
     border-bottom: 1px solid #AEBECD;
 }
 
+#deskpro_outline ul.nav-list li.all {
+    margin-bottom: 0px;
+}
+
+#deskpro_outline ul.nav-list li.all a {
+    padding-left: 5px;
+}
+
 #deskpro_outline ul.nav-list > li a {
 	color: #5F738E;
 	display: block;
-    padding: 5px 0 5px 8px;
+    padding: 5px 0 5px 13px;
 }
 
 #deskpro_outline ul.nav-list li {
