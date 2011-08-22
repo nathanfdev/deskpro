@@ -25,10 +25,11 @@ Orb.Util.TimeAgo = {
 		'month':    '1 month',
 		'months':   '{0} months',
 		'year':     '1 year',
-		'years':    '{0} years'
+		'years':    '{0} years',
+        'ago':      'ago'
 	},
 
-	
+
 	/**
 	 * Get the full words for a given date.
 	 *
@@ -41,7 +42,7 @@ Orb.Util.TimeAgo = {
 
 	/**
 	 * Apply to an array of elements.
-	 * 
+	 *
 	 * @param $els
 	 */
 	applyToElements: function(els) {
@@ -59,14 +60,14 @@ Orb.Util.TimeAgo = {
 
 	/**
 	 * APply to a jQuery collection
-	 * 
+	 *
 	 * @param $els
 	 */
 	applyToJquery: function($els) {
 		this.applyToElements($els.toArray());
 	},
 
-	
+
 	_refreshElements: function(els) {
 		if (!els) els = this._watchEls;
 
@@ -85,7 +86,7 @@ Orb.Util.TimeAgo = {
 			if (!el.data("timeago")) {
 
 				var isTime = el.get(0).tagName.toLowerCase() == 'time';
-				var iso8601 = isTime ? el.attr('datetime') : el.attr('title');
+				var iso8601 = isTime && el.attr('datetime') ? el.attr('datetime') : el.attr('title');
 
 				if (!iso8601) {
 					return;
@@ -99,12 +100,21 @@ Orb.Util.TimeAgo = {
 				el.data("timeago", { datetime: new Date(s) });
 
 				var text = $.trim(el.text());
+
+                if (!el.data('timeago-no-ago')) {
+                    text += ' ' + self.phrases['ago'];
+                }
+
 				if (text.length > 0) el.attr("title", text);
 			}
 
 			var data = el.data('timeago');
 			if (!isNaN(data.datetime)) {
-				el.text(self.get(data.datetime));
+                var text = self.get(data.datetime);
+                if (!el.data('timeago-no-ago')) {
+                    text += ' ' + self.phrases['ago'];
+                }
+				el.text(text);
 			}
 		});
 	},
@@ -112,7 +122,7 @@ Orb.Util.TimeAgo = {
 
 	/**
 	 * Get the relative date info for ms.
-	 * 
+	 *
 	 * @param int ms
 	 */
 	getRelativeInfo: function(ms) {
@@ -144,7 +154,7 @@ Orb.Util.TimeAgo = {
 
 	/**
 	 * Get the full words for given ms.
-	 * 
+	 *
 	 * @param ms
 	 */
 	getForMs: function(ms) {
@@ -224,7 +234,7 @@ Orb.Util.TimeAgo = {
 
 	/**
 	 * Get the difference in ms or s for a date and current date.
-	 * 
+	 *
 	 * @param date
 	 * @param bool secs True to return seconds instead of ms
 	 */
@@ -238,7 +248,7 @@ Orb.Util.TimeAgo = {
 
 	/**
 	 * Get the phrase for a time denomination
-	 * 
+	 *
 	 * @param string type
 	 * @param int num
 	 */
