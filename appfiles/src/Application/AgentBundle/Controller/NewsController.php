@@ -49,6 +49,15 @@ class NewsController extends AbstractController
 		));
 	}
 
+	public function viewRevisionsAction($news_id)
+	{
+		$news = App::findEntity('DeskPRO:News', $news_id);
+
+		return $this->render('AgentBundle:News:view-revisions-tab.html.twig', array(
+			'news' => $news,
+		));
+	}
+
 	public function ajaxSaveLabelsAction($news_id)
 	{
 		$news = App::findEntity('DeskPRO:News', $news_id);
@@ -128,6 +137,12 @@ class NewsController extends AbstractController
 
 		$this->em->flush();
 		$this->em->commit();
+
+		if ($rev) {
+			$data['revision_id'] = $rev['id'];
+		} else {
+			$data['revision_id'] = null;
+		}
 
 		return $this->createJsonResponse($data);
 	}

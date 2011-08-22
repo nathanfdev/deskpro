@@ -35,6 +35,18 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		btn.click(this.showEditor.bind(this));
 	},
 
+	handleUnloadRevisions: function(revision_id) {
+		if (!revision_id) {
+			return;
+		}
+
+		if ($('.rev-' + revision_id, this.getEl('revs')).length) {
+			return;
+		}
+
+		this.getEl('revs').empty().removeClass('loaded');
+	},
+
 	//#################################################################
 	//# Basic
 	//#################################################################
@@ -45,7 +57,21 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
-			context: this.getEl('bodytabs')
+			context: this.getEl('bodytabs'),
+			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.news-revs')) {
+					$.ajax({
+						url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/view-revisions',
+						type: 'GET',
+						dataType: 'html',
+						context: this,
+						success: function(html) {
+							this.getEl('revs').html(html);
+							this._initCompareRevs();
+						}
+					});
+				}
+			}).bind(this)
 		});
 
 		// Name is editable
@@ -57,7 +83,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
 			ajax: {
-				url: BASE_URL + 'agent/news/' + this.meta.news_id + '/ajax-save'
+				url: BASE_URL + 'agent/news/' + this.meta.news_id + '/ajax-save',
+				success: function(data) {
+					self.handleUnloadRevisions(data.revision_id);
+				}
 			}
 		});
 	},
@@ -255,6 +284,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 				dataType: 'json',
 				success: function(data) {
 					this.getEl('content_ed').html(data.content_html);
+					this.handleUnloadRevisions(data.revision_id);
 					this._initPostArea();
 				}
 			});

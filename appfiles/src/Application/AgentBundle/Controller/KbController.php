@@ -66,6 +66,21 @@ class KbController extends AbstractController
 		));
 	}
 
+	public function viewRevisionsAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+		if (!$article) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
+		}
+
+		$article_revisions = $article->getRevisions();
+
+		return $this->render('AgentBundle:Kb:view-revisions-tab.html.twig', array(
+			'article'              => $article,
+			'article_revisions'    => $article_revisions,
+		));
+	}
+
 	public function ajaxSaveLabelsAction($article_id)
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
@@ -147,13 +162,18 @@ class KbController extends AbstractController
 		}
 
 		$this->em->persist($article);
-
 		if ($rev) {
 			$this->em->persist($rev);
 		}
 
 		$this->em->flush();
 		$this->em->commit();
+
+		if ($rev) {
+			$data['revision_id'] = $rev['id'];
+		} else {
+			$data['revision_id'] = null;
+		}
 
 		return $this->createJsonResponse($data);
 	}

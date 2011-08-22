@@ -46,6 +46,15 @@ class DownloadsController extends AbstractController
 		));
 	}
 
+	public function viewRevisionsAction($download_id)
+	{
+		$download = App::findEntity('DeskPRO:Download', $download_id);
+
+		return $this->render('AgentBundle:Downloads:view-revisions-tab.html.twig', array(
+			'download' => $download,
+		));
+	}
+
 	public function ajaxSaveLabelsAction($download_id)
 	{
 		$download = App::findEntity('DeskPRO:Download', $download_id);
@@ -144,6 +153,12 @@ class DownloadsController extends AbstractController
 
 		$this->em->flush();
 		$this->em->commit();
+
+		if ($rev) {
+			$data['revision_id'] = $rev['id'];
+		} else {
+			$data['revision_id'] = null;
+		}
 
 		return $this->createJsonResponse($data);
 	}

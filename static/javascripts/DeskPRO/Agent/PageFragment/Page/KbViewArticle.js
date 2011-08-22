@@ -40,6 +40,17 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		$('time.timeago', this.wrapper).timeago();
 	},
 
+	handleUnloadRevisions: function(revision_id) {
+		if (!revision_id) {
+			return;
+		}
+
+		if ($('.rev-' + revision_id, this.getEl('revs')).length) {
+			return;
+		}
+
+		this.getEl('revs').empty().removeClass('loaded');
+	},
 
 	//#################################################################
 	//# Basic
@@ -66,14 +77,31 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
 			ajax: {
-				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save'
+				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+				success: function(data) {
+					self.handleUnloadRevisions(data.revision_id);
+				}
 			}
 		});
 
 		// Tabs
 		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
-			context: this.getEl('bodytabs')
+			context: this.getEl('bodytabs'),
+			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.kb-revs')) {
+					$.ajax({
+						url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/view-revisions',
+						type: 'GET',
+						dataType: 'html',
+						context: this,
+						success: function(html) {
+							this.getEl('revs').html(html);
+							this._initCompareRevs();
+						}
+					});
+				}
+			}).bind(this)
 		});
 
 		var actions = this.getEl('action_buttons');
@@ -560,6 +588,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 				success: function(data) {
 					this.getEl('content_ed').html(data.content_html);
 					this._initPostArea();
+					this.handleUnloadRevisions(data.revision_id);
 				}
 			});
 

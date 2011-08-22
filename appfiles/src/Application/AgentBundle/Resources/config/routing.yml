@@ -802,6 +802,11 @@ agent_kb_article:
   requirements: { article_id: "\d+" }
   options: { fragment_name: 'a' }
 
+agent_kb_article_revisionstab:
+  pattern: /kb/article/{article_id}/view-revisions
+  defaults: { _controller: AgentBundle:Kb:viewRevisions }
+  requirements: { article_id: "\d+" }
+
 agent_kb_article_ajaxsave:
   pattern: /kb/article/{article_id}/ajax-save
   defaults: { _controller: AgentBundle:Kb:ajaxSave }
@@ -894,6 +899,11 @@ agent_news_view:
   defaults: { _controller: AgentBundle:News:view }
   requirements: { news_id: "\d+" }
 
+agent_news_revisionstab:
+  pattern: /news/post/{news_id}/view-revisions
+  defaults: { _controller: AgentBundle:News:viewRevisions }
+  requirements: { news_id: "\d+" }
+
 agent_news_save:
   pattern: /news/post/{news_id}/ajax-save
   defaults: { _controller: AgentBundle:News:ajaxSave }
@@ -933,6 +943,11 @@ agent_downloads_view:
   pattern: /downloads/file/{download_id}
   defaults: { _controller: AgentBundle:Downloads:view }
   requirements: { download_id: "\d+" }
+
+agent_kb_downloads_revisionstab:
+  pattern: /downloads/file/{download_id}/view-revisions
+  defaults: { _controller: AgentBundle:Downloads:viewRevisions }
+  requirements: { article_id: "\d+" }
 
 agent_downloads_save:
   pattern: /downloads/file/{download_id}/ajax-save
