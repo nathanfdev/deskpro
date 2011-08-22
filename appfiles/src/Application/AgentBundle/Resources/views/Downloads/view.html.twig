@@ -85,50 +85,96 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 </div>
 
-{# Content #}
-<div class="download-content" id="{{baseId}}_content_ed">
-{% include 'AgentBundle:Downloads:view-content-tab.html.twig' %}
-</div>
-{# /Content #}
-
-<br class="clear" />
-
-{# Tab: Comments #}
-<div class="download-comments">
-	<div class="full-tab-content">
-		<div class="messages-wrap">
-			{% for comment in download_comments %}
-				{% include 'AgentBundle:Downloads:view-comment.html.twig' %}
-			{% endfor %}
-		</div>
+{# Main Tabs #}
+<div class="full-container-tabbed messages-container" id="{{baseId}}_bodytabs">
+	{# Tab Triggers #}
+	<div class="full-container-tabbed-tabs">
+		<span class="kb-editor-edit download-editor-edit"><a>edit</a></span>
+		<ul>
+			<li class="tab-trigger on" data-tab-for=".tab-content.dl-content"><a>Post</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.dl-revs"><a>Revisions</a></li>
+		</ul>
 	</div>
+	{# /Tab Triggers #}
 
-	<div class="message admin-message new-note">
-		<div class="message-avatar left">
-			<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-		</div>
-		<div class="message-body">
-			<div class="message-meta">
-				<span class="arrow-left"></span>
-				<h4>{{ app.user.display_name }}</h4>
+	{# Tab Contents #}
+	<div class="full-container-tabbed-contents-wrap">
+		{# Tab: Content #}
+		<div class="full-container-tabbed-contents tab-content dl-content on">
+
+			{# Content #}
+			<div class="download-content" id="{{baseId}}_content_ed">
+			{% include 'AgentBundle:Downloads:view-content-tab.html.twig' %}
 			</div>
-			<div class="message-text">
-				<p>
-					<textarea style="width:98%; height: 80px;"></textarea>
-					<div style="text-align:center; margin-top: 9px;">
-						<div class="loading-off">
-							<button class="dp-button x-small">Add Comment</button>
+			{# /Content #}
+
+			<br class="clear" />
+
+			{# Tab: Comments #}
+			<div class="download-comments">
+				<div class="full-tab-content">
+					<div class="messages-wrap">
+						{% for comment in download_comments %}
+							{% include 'AgentBundle:Downloads:view-comment.html.twig' %}
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="message admin-message new-note">
+					<div class="message-avatar left">
+						<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+					</div>
+					<div class="message-body">
+						<div class="message-meta">
+							<span class="arrow-left"></span>
+							<h4>{{ app.user.display_name }}</h4>
 						</div>
-						<div class="loading-on" style="display:none">
-							Saving ...
+						<div class="message-text">
+							<p>
+								<textarea style="width:98%; height: 80px;"></textarea>
+								<div style="text-align:center; margin-top: 9px;">
+									<div class="loading-off">
+										<button class="dp-button x-small">Add Comment</button>
+									</div>
+									<div class="loading-on" style="display:none">
+										Saving ...
+									</div>
+								</div>
+							</p>
 						</div>
 					</div>
-				</p>
+				</div>
+			</div>
+			{# /Tab Comments #}
+		</div>
+		{# /Content #}
+
+		{# Tab: Revisions #}
+		<div class="full-container-tabbed-contents tab-content dl-revs">
+			<table class="list" width="100%">
+				{% for rev in download.revisions %}
+					<tr>
+						<td width="30">{{ loop.index }}</td>
+						<td>
+							<span style="float:right">
+								{{ rev.date_created|date('Y-m-d') }}
+							</span>
+							By {{ rev.person.display_name }}
+						</td>
+						<td width="150">
+							<input type="radio" class="old" name="old" value="{{rev.id}}" /> |
+							<input type="radio" class="new" name="new" value="{{rev.id}}" />
+						</td>
+					</tr>
+				{% endfor %}
+			</table>
+			<div style="text-align: right">
+				<button class="dp-button compare-trigger">Compare Selected</button>
 			</div>
 		</div>
+		{# /Tab: Revisions #}
 	</div>
 </div>
-{# /Tab Comments #}
 
 <div class="inline-editable" style="display:none">
 	<div class="title">

@@ -18,18 +18,18 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Markdown;
 
 /**
- * Article revisions
+ * News revisions
  *
- * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\ArticleRevision")
- * @ORM_Mapping\Table(name="article_revisions")
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\NewsRevision")
+ * @ORM_Mapping\Table(name="news_revisions")
  */
-class ArticleRevision extends RevisionAbstract
+class NewsRevision extends RevisionAbstract
 {
 	/**
-	 * @ORM_Mapping\ManyToOne(targetEntity="Article")
-	 * @ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")
+	 * @ORM_Mapping\ManyToOne(targetEntity="News")
+	 * @ORM_Mapping\JoinColumn(name="news_id", referencedColumnName="id", onDelete="cascade")
 	 */
-	protected $article;
+	protected $news;
 
 	/**
 	 * @var string

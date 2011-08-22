@@ -18,6 +18,7 @@ use Application\DeskPRO\Searcher\NewsSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 
 use Application\AgentBundle\Controller\Helper\NewsResults;
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
@@ -84,14 +85,21 @@ class NewsController extends AbstractController
 	public function ajaxSaveAction($news_id)
 	{
 		$news = App::findEntity('DeskPRO:News', $news_id);
+		$rev = null;
 
 		$action = $this->in->getString('action');
 
 		$data = array('success' => 1);
 
+		$this->em->beginTransaction();
+
 		switch ($action) {
 			case 'title':
 				$news['title'] = $this->in->getString('title');
+
+				$rev = ContentRevisionUtil::findOrCreate($news, 'title', $this->person);
+				$rev['title'] = $news['title'];
+
 				break;
 
 			case 'content':
@@ -99,6 +107,10 @@ class NewsController extends AbstractController
 				$data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
 					'news' => $news
 				));
+
+				$rev = ContentRevisionUtil::findOrCreate($news, 'content', $this->person);
+				$rev['content'] = $news['content'];
+
 				break;
 
 			case 'category':
@@ -108,10 +120,32 @@ class NewsController extends AbstractController
 				break;
 		}
 
-		App::getOrm()->persist($news);
-		App::getOrm()->flush();
+		$this->em->persist($news);
+
+		if ($rev) {
+			$this->em->persist($rev);
+		}
+
+		$this->em->flush();
+		$this->em->commit();
 
 		return $this->createJsonResponse($data);
+	}
+
+	############################################################################
+	# Compare revisions
+	############################################################################
+
+	public function compareRevisionsAction($rev_old_id, $rev_new_id)
+	{
+		$diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:NewsRevision', $rev_old_id, $rev_new_id);
+
+		return $this->render('AgentBundle:News:compare-revs.html.twig', array(
+			'rev_old' => $rev_old,
+			'rev_new' => $rev_new,
+			'rendered_content_diff' => $diff_info['rendered_content_diff'],
+			'rendered_title_diff'   => $diff_info['rendered_title_diff'],
+		));
 	}
 
 	############################################################################

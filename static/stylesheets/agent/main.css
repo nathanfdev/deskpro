@@ -6140,3 +6140,8 @@ border-radius: 0px 0px 4px 4px;
 	margin-right: 4px;
 	margin-top: 3px;
 }
+
+
+.revision-compare {
+	min-width: 680px;
+}

@@ -17,6 +17,7 @@ use Application\DeskPRO\Entity\DownloadComment;
 use Application\DeskPRO\Searcher\DownloadSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\AgentBundle\Controller\Helper\DownloadResults;
 
 use Orb\Util\Strings;
@@ -81,27 +82,51 @@ class DownloadsController extends AbstractController
 	public function ajaxSaveAction($download_id)
 	{
 		$download = App::findEntity('DeskPRO:Download', $download_id);
+		$rev = null;
 
 		$action = $this->in->getString('action');
 
 		$data = array('success' => 1);
 
+		$this->em->beginTransaction();
+
 		switch ($action) {
 			case 'title':
 				$download['title'] = $this->in->getString('title');
+
+				$rev = ContentRevisionUtil::findOrCreate($download, 'title', $this->person);
+				$rev['title'] = $download['title'];
+
 				break;
 
 			case 'content':
-				$download['content'] = $this->in->getString('content');
-
+				$changed_blob = false;
 				if ($this->in->getUint('attach')) {
+					$changed_blob = true;
 					$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('attach'));
         			$download->blob = $blob;
+				}
+
+				$changed_content = false;
+				if ($this->in->getString('content') != $download['content']) {
+					$changed_content = true;
+					$download['content'] = $this->in->getString('content');
 				}
 
 				$data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', array(
 					'download' => $download
 				));
+
+				$rev = ContentRevisionUtil::findOrCreate($download, array('content','blob'), $this->person);
+
+				if ($changed_content) {
+					$rev['content'] = $download['content'];
+				}
+
+				if ($changed_blob) {
+					$rev->blob = $download->blob;
+				}
+
 				break;
 
 			case 'category':
@@ -111,10 +136,32 @@ class DownloadsController extends AbstractController
 				break;
 		}
 
-		App::getOrm()->persist($download);
-		App::getOrm()->flush();
+		$this->em->persist($download);
+
+		if ($rev) {
+			$this->em->persist($rev);
+		}
+
+		$this->em->flush();
+		$this->em->commit();
 
 		return $this->createJsonResponse($data);
+	}
+
+	############################################################################
+	# Compare revisions
+	############################################################################
+
+	public function compareRevisionsAction($rev_old_id, $rev_new_id)
+	{
+		$diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:DownloadRevision', $rev_old_id, $rev_new_id);
+
+		return $this->render('AgentBundle:Downloads:compare-revs.html.twig', array(
+			'rendered_content_diff' => $diff_info['rendered_content_diff'],
+			'rendered_title_diff'   => $diff_info['rendered_title_diff'],
+			'new_blob'              => !empty($diff_info['new_blob']) ? $diff_info['new_blob'] : null,
+			'old_blob'              => !empty($diff_info['old_blob']) ? $diff_info['old_blob'] : null,
+		));
 	}
 
 	############################################################################

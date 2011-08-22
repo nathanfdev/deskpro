@@ -625,9 +625,16 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	//#################################################################
 
 	_initCompareRevs: function() {
-		return;
-		var old_id = $('.tab-content.kb-revs radio.old:selected', this.wrapper).val();
-		var new_id = $('.tab-content.kb-revs radio.new:selected', this.wrapper).val();
+		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
+	},
+
+	showCompareRev: function() {
+		var old_id = $('.kb-revs input.old:checked', this.wrapper).val();
+		var new_id = $('.kb-revs input.new:checked', this.wrapper).val();
+
+		if (!old_id || !new_id) {
+			return;
+		}
 
 		var overlay = new DeskPRO.UI.Overlay({
 			triggerElement: $('button.compare-trigger', this.wrapper),

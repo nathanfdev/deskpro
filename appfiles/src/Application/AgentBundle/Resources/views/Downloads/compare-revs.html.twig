@@ -7,12 +7,29 @@
 					By {{ rev_old.person.display_name }} ({{ rev_old.date_created|date('H:ia M j Y') }})
 				</td>
 			</tr>
-			<tr class="line-1">
+			<tr class="line-2">
 				<td>Newer</td>
 				<td>
 					By {{ rev_new.person.display_name }} ({{ rev_new.date_created|date('H:ia M j Y') }})
 				</td>
 			</tr>
+
+			{% if new_blob %}
+			<tr class="line-2">
+				<td>File changed</td>
+				<td>
+					Old File: {% if not old_blob %}N/A
+					{% else %}
+						<a href="{{ old_blob.getDownloadUrl() }}">{{ old_blob.filename }}</a> ({{ old_blob.readable_filesize }})
+					{% endif %}
+					<br />
+					New File: {% if not new_blob %}N/A
+					{% else %}
+						<a href="{{ new_blob.getDownloadUrl() }}">{{ new_blob.filename }}</a> ({{ new_blob.readable_filesize }})
+					{% endif %}
+				</td>
+			</tr>
+			{% endif %}
 
 			{% if rendered_title_diff %}
 			<tr class="line-2">
@@ -23,7 +40,7 @@
 
 			{% if rendered_content_diff %}
 			<tr class="line-2">
-				<td>Changes in article</td>
+				<td>Changes in post</td>
 				<td><div class="diff-box">{{ rendered_content_diff|raw }}</div></td>
 			</tr>
 			{% endif %}

@@ -917,6 +917,10 @@ agent_news_new:
   pattern: /news/new
   defaults: { _controller: AgentBundle:News:newNews }
 
+agent_news_comparerevs:
+  pattern: /news/compare-revs/{rev_old_id}/{rev_new_id}
+  defaults: { _controller: AgentBundle:News:compareRevisions }
+
 ################################################################################
 # Downloads
 ################################################################################
@@ -952,6 +956,10 @@ agent_downloads_new_save:
 agent_downloads_new:
   pattern: /downloads/new
   defaults: { _controller: AgentBundle:Downloads:newDownload }
+
+agent_downloads_comparerevs:
+  pattern: /downloads/compare-revs/{rev_old_id}/{rev_new_id}
+  defaults: { _controller: AgentBundle:Downloads:compareRevisions }
 
 ################################################################################
 # Media browser

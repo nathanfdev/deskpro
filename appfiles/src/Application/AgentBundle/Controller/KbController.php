@@ -20,6 +20,8 @@ use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
+
 use Application\AgentBundle\Controller\Helper\ArticleResults;
 
 use Orb\Util\Strings;
@@ -40,11 +42,6 @@ class KbController extends AbstractController
 
 	public function viewArticleAction($article_id)
 	{
-		$article_categories = array();
-		$article_products   = array();
-		$pending_article    = null;
-		$validating_edit    = null;
-
 		$article = App::findEntity('DeskPRO:Article', $article_id);
 		if (!$article) {
 			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
@@ -56,18 +53,16 @@ class KbController extends AbstractController
 			App::getOrm()->flush();
 		}
 
-		// Check if this user has an edit for this article
-		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article, $this->person);
-
 		$tpl = 'AgentBundle:Kb:view.html.twig';
 
 		$article_comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
 
+		$article_revisions = $article->getRevisions();
+
 		return $this->render($tpl, array(
 			'article'              => $article,
 			'article_comments'     => $article_comments,
-			'pending_article'      => $pending_article,
-			'validating_edit'      => $validating_edit,
+			'article_revisions'    => $article_revisions,
 		));
 	}
 
@@ -88,14 +83,21 @@ class KbController extends AbstractController
 	public function ajaxSaveAction($article_id)
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
+		$rev = null;
 
 		$action = $this->in->getString('action');
 
 		$data = array('success' => 1);
 
+		$this->em->beginTransaction();
+
 		switch ($action) {
 			case 'title':
 				$article['title'] = $this->in->getString('title');
+
+				$rev = ContentRevisionUtil::findOrCreate($article, 'title', $this->person);
+				$rev['title'] = $article['title'];
+
 				break;
 
 			case 'categories':
@@ -135,14 +137,23 @@ class KbController extends AbstractController
 			case 'content':
 				$article['content'] = $this->in->getString('content');
 
+				$rev = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
+				$rev['content'] = $article['content'];
+
 				$data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', array(
 					'article' => $article
 				));
 				break;
 		}
 
-		App::getOrm()->persist($article);
-		App::getOrm()->flush();
+		$this->em->persist($article);
+
+		if ($rev) {
+			$this->em->persist($rev);
+		}
+
+		$this->em->flush();
+		$this->em->commit();
 
 		return $this->createJsonResponse($data);
 	}
@@ -460,24 +471,13 @@ class KbController extends AbstractController
 
 	public function compareRevisionsAction($rev_old_id, $rev_new_id)
 	{
-		$rev_old = App::findEntity('DeskPRO:ArticleRevision', $rev_old_id);
-		$rev_new = App::findEntity('DeskPRO:ArticleRevision', $rev_new_id);
-
-		$diff = new FineDiff(
-			$rev_old['content'],
-			$rev_new['content'],
-			FineDiff::$wordGranularity
-		);
-
-		$edits = $diff->getOps();
-		$rendered_diff = $diff->renderDiffToHTML();
-
-		$rendered_diff = nl2br($rendered_diff);
+		$diff_info = ContentRevisionUtil::compareRevisions('DeskPRO:ArticleRevision', $rev_old_id, $rev_new_id);
 
 		return $this->render('AgentBundle:Kb:compare-revs.html.twig', array(
 			'rev_old' => $rev_old,
 			'rev_new' => $rev_new,
-			'rendered_diff' => $rendered_diff
+			'rendered_content_diff' => $diff_info['rendered_content_diff'],
+			'rendered_title_diff'   => $diff_info['rendered_title_diff'],
 		));
 	}
 

@@ -495,7 +495,7 @@ button.clean-gray.disabled {
     border-radius: 6px;
     padding:  1px 0 0 1px;
     border: 1px solid #CCCBB6;
-    
+
 
     background: #FFFCCC url(../../images/drag-handle.png) no-repeat 1px 1px;
     text-indent: -90000px;
@@ -611,7 +611,7 @@ ul.comma-list li:last-child:after { content: ""; }
 	font-size: 11px;
 	line-height: 15px;
 	background-color: #F5F7FA;
-	
+
 	padding: 4px;
 	margin: 0 0 9px 0;
 	-webkit-border-radius: 3px;
@@ -1106,14 +1106,22 @@ ul.item-list > li.sub {
 
 .diff-box ins {
     color:green;
-    background:#dfd;
+    background-color:#dfd;
     text-decoration:none;
+}
+
+.diff-box ins p {
+	background-color:#dfd;
 }
 
 .diff-box del {
     color:red;
-    background:#fdd;
+    background-color:#fdd;
     text-decoration:none;
+}
+
+.diff-box del p {
+	background-color:#fdd;
 }
 
 

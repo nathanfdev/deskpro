@@ -49,6 +49,12 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\OneToMany(targetEntity="NewsRevision", mappedBy="news", cascade={"persist", "remove", "merge"}, indexBy="id")
+	 */
+	protected $revisions;
+
+	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
@@ -87,8 +93,9 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
-		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->comments     = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->revisions    = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	public function getContentHtml()

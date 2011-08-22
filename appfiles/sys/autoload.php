@@ -66,6 +66,7 @@ require DP_ROOT.'/vendor/ezcomponents/Base/src/ezc_bootstrap.php';
 spl_autoload_register(array('ezcBase', 'autoload'), true, true);
 
 class_exists('Markdown_Parser');
+class_exists('FineDiff');
 
 use Doctrine\Common\Annotations\AnnotationRegistry;
 AnnotationRegistry::registerLoader(function($class) use ($loader) {

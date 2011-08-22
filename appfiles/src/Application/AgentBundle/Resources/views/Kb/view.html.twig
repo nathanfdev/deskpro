@@ -181,45 +181,48 @@ pageMeta.baseId = '{{ baseId }}';
 	{# Tab Contents #}
 	<div class="full-container-tabbed-contents-wrap">
 		{# Tab: Content #}
-		<div id="{{baseId}}_content_ed" class="full-container-tabbed-contents tab-content kb-content" data-tab-trigger=".tab-trigger.kb-content" style="display: block">
+		<div class="full-container-tabbed-contents tab-content kb-content" data-tab-trigger=".tab-trigger.kb-content" style="display: block">
+			<div id="{{baseId}}_content_ed">
 			{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
-		</div>
-		{# Comments #}
-		<div class="article-comments">
-			<div class="full-tab-content">
-				<div class="messages-wrap">
-					{% for comment in download_comments %}
-						{% include 'AgentBundle:Kb:view-comment.html.twig' %}
-					{% endfor %}
-				</div>
 			</div>
 
-			<div class="message admin-message new-note">
-				<div class="message-avatar left">
-					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-				</div>
-				<div class="message-body">
-					<div class="message-meta">
-						<span class="arrow-left"></span>
-						<h4>{{ app.user.display_name }}</h4>
+			{# Comments #}
+			<div class="article-comments">
+				<div class="full-tab-content">
+					<div class="messages-wrap">
+						{% for comment in download_comments %}
+							{% include 'AgentBundle:Kb:view-comment.html.twig' %}
+						{% endfor %}
 					</div>
-					<div class="message-text">
-						<p>
-							<textarea style="width:98%; height: 80px;"></textarea>
-							<div style="text-align:center; margin-top: 9px;">
-								<div class="loading-off">
-									<button class="dp-button x-small">Add Comment</button>
+				</div>
+
+				<div class="message admin-message new-note">
+					<div class="message-avatar left">
+						<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+					</div>
+					<div class="message-body">
+						<div class="message-meta">
+							<span class="arrow-left"></span>
+							<h4>{{ app.user.display_name }}</h4>
+						</div>
+						<div class="message-text">
+							<p>
+								<textarea style="width:98%; height: 80px;"></textarea>
+								<div style="text-align:center; margin-top: 9px;">
+									<div class="loading-off">
+										<button class="dp-button x-small">Add Comment</button>
+									</div>
+									<div class="loading-on" style="display:none">
+										Saving ...
+									</div>
 								</div>
-								<div class="loading-on" style="display:none">
-									Saving ...
-								</div>
-							</div>
-						</p>
+							</p>
+						</div>
 					</div>
 				</div>
 			</div>
+			{# Comments #}
 		</div>
-		{# Comments #}
 		{# /Tab: Content #}
 
 		{# Tab: Revisions #}
@@ -232,11 +235,11 @@ pageMeta.baseId = '{{ baseId }}';
 							<span style="float:right">
 								{{ rev.date_created|date('Y-m-d') }}
 							</span>
-							By {{ rev.author.display_name }}
+							By {{ rev.person.display_name }}
 						</td>
 						<td width="150">
-							<input type="radio" class="old" value="{{rev.id}}" /> |
-							<input type="radio" class="new" value="{{rev.id}}" />
+							<input type="radio" class="old" name="old" value="{{rev.id}}" /> |
+							<input type="radio" class="new" name="new" value="{{rev.id}}" />
 						</td>
 					</tr>
 				{% endfor %}

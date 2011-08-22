@@ -48,6 +48,12 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	protected $person = null;
 
 	/**
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\OneToMany(targetEntity="DownloadRevision", mappedBy="download", cascade={"persist", "remove", "merge"}, indexBy="id")
+	 */
+	protected $revisions;
+
+	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="slug", type="string", length=100)
 	 */
@@ -99,8 +105,9 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->date_created = new \DateTime();
-		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->comments     = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->revisions    = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	public function getFileName()

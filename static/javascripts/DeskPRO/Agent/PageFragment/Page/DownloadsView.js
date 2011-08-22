@@ -19,6 +19,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 		this._initCommentForm();
 		this._initPostArea();
 		this._initActions();
+		this._initCompareRevs();
 
 		var btn = $('.download-editor-edit', this.wrap);
 		btn.click(this.showEditor.bind(this));
@@ -39,6 +40,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 
 	_initBasic: function() {
 		var self = this;
+
+		// Tabs
+		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
+			context: this.getEl('bodytabs')
+		});
 
 		// Name is editable
 		var name = $('h3.title.editable:first', this.wrapper);
@@ -293,5 +300,33 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 	hideEditor: function() {
 		$('.download-editor-wrap', this.getEl('content_ed')).hide();
 		$('.download-content-wrap', this.getEl('content_ed')).show();
+	},
+
+	//#################################################################
+	//# Compare revisions
+	//#################################################################
+
+	_initCompareRevs: function() {
+		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
+	},
+
+	showCompareRev: function() {
+		var old_id = $('.dl-revs input.old:checked', this.wrapper).val();
+		var new_id = $('.dl-revs input.new:checked', this.wrapper).val();
+
+		if (!old_id || !new_id) {
+			return;
+		}
+
+		var overlay = new DeskPRO.UI.Overlay({
+			triggerElement: $('button.compare-trigger', this.wrapper),
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/downloads/compare-revs/' + old_id + '/' + new_id
+			},
+			destroyOnClose: true
+		});
+
+		overlay.openOverlay();
 	}
 });

@@ -20,6 +20,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		this._initLabels();
 		this._initPostArea();
 		this._initCommentForm();
+		this._initCompareRevs();
 
 		var cw = this.wrapper;
 		cw.tinyscrollbar();
@@ -40,6 +41,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 	_initBasic: function() {
 		var self = this;
+
+		// Tabs
+		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
+			context: this.getEl('bodytabs')
+		});
 
 		// Name is editable
 		var name = $('h3.title.editable:first', this.wrapper);
@@ -307,5 +314,33 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 	showMediaBrowser: function() {
 		this._initMediaBrowser();
 		this.mediaBrowserOverlay.openOverlay();
+	},
+
+	//#################################################################
+	//# Compare revisions
+	//#################################################################
+
+	_initCompareRevs: function() {
+		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
+	},
+
+	showCompareRev: function() {
+		var old_id = $('.news-revs input.old:checked', this.wrapper).val();
+		var new_id = $('.news-revs input.new:checked', this.wrapper).val();
+
+		if (!old_id || !new_id) {
+			return;
+		}
+
+		var overlay = new DeskPRO.UI.Overlay({
+			triggerElement: $('button.compare-trigger', this.wrapper),
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/news/compare-revs/' + old_id + '/' + new_id
+			},
+			destroyOnClose: true
+		});
+
+		overlay.openOverlay();
 	}
 });
