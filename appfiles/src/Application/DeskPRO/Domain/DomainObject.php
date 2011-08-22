@@ -303,11 +303,11 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 	public function offsetSet($offset, $value)
 	{
 		$old_value = isset($this[$offset]) ? $this[$offset] : null;
-		
+
 		// No change
-		if ($old_value == $value) {
-			return;
-		}
+		//if ($old_value == $value) {
+		//	return;
+		//}
 
 		$func = "set" . str_replace('_', '', $offset);
 		if (method_exists($this, $func)) {
@@ -348,7 +348,7 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 
 	/**
 	 * Sets the value of a field, and calls the property changed tracker
-	 * 
+	 *
 	 * @param $field
 	 * @param $value
 	 * @return void

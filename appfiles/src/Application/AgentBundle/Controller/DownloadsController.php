@@ -93,7 +93,21 @@ class DownloadsController extends AbstractController
 
 			case 'content':
 				$download['content'] = $this->in->getString('content');
-				$data['content_html'] = $download->getContentHtml();
+
+				if ($this->in->getUint('attach')) {
+					$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('attach'));
+        			$download->blob = $blob;
+				}
+
+				$data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', array(
+					'download' => $download
+				));
+				break;
+
+			case 'category':
+				$cat = $this->em->find('DeskPRO:DownloadCategory', $this->in->getUint('category_id'));
+				$download['category'] = $cat;
+				$data['category_id'] = $cat['id'];
 				break;
 		}
 

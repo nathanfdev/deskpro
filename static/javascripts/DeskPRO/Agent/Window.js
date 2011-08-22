@@ -323,7 +323,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	/**
 	 * Get information about a team
-	 * 
+	 *
 	 * @param {Integer} agent_team_id
 	 * @return {Object}
 	 */
@@ -388,7 +388,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 	showAlert: function(msg, classname) {
 		this._initAlertOverlay();
-		$('#alert_overlay_msg').html(msg);
+
+		if (typeof msg == 'string') {
+			var msg = $(msg);
+		}
+
+		$('#alert_overlay_msg').empty().append(msg);
 
 		var wrapper = this._alertOverlay.elements.wrapperOuter;
 		var wrapperModel = this._alertOverlay.elements.modal;
@@ -523,7 +528,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 
-	
+
 	/**
 	 * Shows a status message with defaults for an 'undo' type button.
 	 *
@@ -537,7 +542,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			extraClasses: 'undo'
 		});
 	},
-	
+
 	//#################################################################
 	//# Routes and page loading
 	//#################################################################
@@ -920,7 +925,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		this.runPageRoute(route);
 	},
-	
+
 
 	/**
 	 * Get the message channeler
@@ -935,7 +940,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	 * request to the server to record the dismiss so it doesnt show again.
 	 *
 	 * The element must have a data-message-id attribute.
-	 * 
+	 *
 	 * @param el
 	 */
 	dismissHelpMessage: function(el) {
@@ -1029,7 +1034,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	/**
 	 * Plays a standard sound from the static dir. This assumes an MP3
 	 * and OGG version of the file exists.
-	 * 
+	 *
 	 * @param name
 	 * @param options
 	 */
@@ -1082,7 +1087,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	_globalHandleAjaxError: function(event, xhr, ajaxOptions, errorThrown) {
-		
+
 		// We dont care about aborts
 		// This is caused when the user navigates away from a page, any running
 		// ajax requests are aborted by the browser. Without this the user
@@ -1192,7 +1197,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			notifyList: $('#notify_list')
 		});
 	},
-	
+
 	_initRoutes: function() {
 		// Set ourselves up as the first route listener
 		this.addPageRouteLoader('navpane', this.loadRoute.bind(this));
@@ -1228,7 +1233,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.keyboardShortcuts = new DeskPRO.Agent.KeyboardShortcuts();
 
 		var menuOpener = new DeskPRO.Agent.WindowElement.MainMenuOpener();
-		
+
 		// Settings is a window
 		$('#user_settings_link').click(function() {
 			var overlay = new DeskPRO.UI.Overlay({
@@ -1328,7 +1333,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 			triggerElement: '#create_content_trigger',
 			menuElement: '#create_content_menu'
 		});
-		
+
 		this.newTicketLoader = new DeskPRO.Agent.Widget.BackgroundPopout({
 			loadUrl: BASE_URL + 'agent/tickets/new',
 			tabRoute: 'page:' + BASE_URL + 'agent/tickets/new'
@@ -1457,7 +1462,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 		$('#deskpro_list > section.on').removeClass('on');
 
 		$('#deskpro_list_loading, #deskpro_outline_loading').addClass('on');
-		
+
 		if (this.openSection) {
 			this.openSection.fireEvent('afterhide');
 		}
@@ -1481,7 +1486,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	getOpenSection: function() {
 		return this.openSection;
 	},
-	
+
 	_initLayout: function() {
 
 		this.layout = new DeskPRO.Agent.Layout.DeskproWindow();

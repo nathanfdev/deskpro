@@ -121,7 +121,7 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	public function setTitle($title)
 	{
 		$this->setModelField('title', $title);
-		
+
 		if (!$this->slug) {
 			$this['slug']  = Strings::slugifyTitle($title);
 		}
@@ -166,12 +166,22 @@ class Download extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 	/**
+	 * Add a label
+	 * @param \Application\DeskPRO\Entity\LabelDownload $label
+	 */
+	public function addLabel(LabelDownload $label)
+	{
+		$label['download'] = $this;
+		$this->labels->add($label);
+	}
+
+	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
 	public function getLabelManager()
 	{
 		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelArticle');
+			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelDownload');
 		}
 
 		return $this->_label_manager;

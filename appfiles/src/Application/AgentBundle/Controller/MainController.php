@@ -45,8 +45,11 @@ class MainController extends AbstractController
 		// Agent info
 		$agent_info = array();
 		$agents = App::getEntityRepository('DeskPRO:Person')->getAgents();
-
 		$agent_teams = App::getEntityRepository('DeskPRO:AgentTeam')->findAll();
+
+		// Download Cats
+		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
+
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
 			'agent_names' => App::getEntityRepository('DeskPRO:Person')->getAgentNames(),
@@ -60,6 +63,8 @@ class MainController extends AbstractController
 			'restore_state' => $restore_state,
 			'agents' => $agents,
 			'agent_teams' => $agent_teams,
+
+			'download_categories' => $download_categories,
 		));
     }
 }

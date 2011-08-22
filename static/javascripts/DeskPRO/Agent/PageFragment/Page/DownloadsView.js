@@ -16,8 +16,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 
 		this._initBasic();
 		this._initLabels();
-		this._initEditorEnable();
 		this._initCommentForm();
+		this._initPostArea();
+		this._initActions();
+
+		var btn = $('.download-editor-edit', this.wrap);
+		btn.click(this.showEditor.bind(this));
 
 		var cw = this.wrapper;
 		cw.tinyscrollbar();
@@ -25,17 +29,8 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 			// When size changes within the pane, need to re-size the scroll
 			cw.tinyscrollbar_update();
 		});
-	},
 
-	incCount: function(id) {
-		var countEl = $('.'+id+'-count', this.wrapper);
-		var count = countEl.data('count') + 1;
-		countEl.data('count', count).html('(' + count + ')');
-	},
-
-	setCount: function(id, count) {
-		var countEl = $('.'+id+'-count', this.wrapper);
-		countEl.data('count', count).html('(' + count + ')');
+        $('time.timeago', this.wrapper).timeago();
 	},
 
 	//#################################################################
@@ -44,7 +39,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 
 	_initBasic: function() {
 		var self = this;
-		
+
 		// Name is editable
 		var name = $('h3.title.editable:first', this.wrapper);
 		if (!name.attr('id')) {
@@ -58,10 +53,72 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 			}
 		});
 
-		// Body tabs
-		var bodyTabs = new DeskPRO.UI.SimpleTabs({
-			context: $('.full-container-tabbed.messages-container', this.contentWrapper),
-			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper)
+        // Change category menu
+        var catMenu = new DeskPRO.UI.Menu({
+			menuElement: $('#download_category_menu'),
+			triggerElement: this.getEl('category'),
+			onItemClicked: function(info) {
+				var catId = $(info.itemEl).data('category-id');
+				var parentId = $(info.itemEl).data('parent-id');
+
+				var catTitle = $('#download_category_menu .cat-' + catId).text().trim();
+
+				var parentTitle = '';
+				if (parentId) {
+					parentTitle = $('#download_category_menu .cat-' + parentId).text().trim();
+				}
+
+				if (parentId) {
+					$('.parent', self.getEl('category')).text(parentTitle);
+					$('.sub', self.getEl('category')).text(catTitle).show();
+				} else {
+					$('.parent', self.getEl('category')).text(catTitle);
+					$('.sub', self.getEl('category')).text('').hide();
+				}
+
+				$.ajax({
+					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+					type: 'POST',
+					data: {
+						'action': 'category',
+						'category_id': catId
+					},
+					dataType: 'json',
+					success: function() {
+
+					}
+				});
+			}
+        });
+	},
+
+	//#################################################################
+	//# Actions menus
+	//#################################################################
+
+	_initActions: function() {
+		var self = this;
+		var actions = this.getEl('action_buttons');
+
+		$('.delete', actions).click(function() {
+
+		});
+
+		$('.permalink', actions).click(function() {
+			var html = [];
+			html.push('<div>');
+			html.push('The permalink to this download on the website is:<br />');
+			html.push('<input type="text" style="width:450px;" />');
+			html.push('</div>');
+
+			var msg = $(html.join(''));
+			$('input', msg).val(self.meta.permalink);
+
+			DeskPRO_Window.showAlert(msg);
+		});
+
+		$('.view-user-interface', actions).click(function() {
+			window.open(self.meta.permalink);
 		});
 	},
 
@@ -71,13 +128,14 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 
 	labelsList: null,
 	_initLabels: function() {
+
 		// Tags
-		this.labelsList = $(".download-tags ul", this.contentWrapper);
-		this.labelsTagit = this.labelsList.tagit({
-			availableTags: this.getMetaData('labelsAutocompleteUrl'),
-			enableBackspace: false,
-			fieldName: 'labels',
-			onchange: this.saveLabels.bind(this)
+		this.labelsList = $(".download-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'downloads',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
 		});
 	},
 
@@ -142,9 +200,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 				$('textarea', this.newCommentWrapper).val('');
 				var el = $(html);
 				this.newCommentWrapper.before(el);
-
-				// Inc note count
-				this.incCount('download-comments');
 			}
 		});
 	},
@@ -153,16 +208,21 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 	//# Editor
 	//#################################################################
 
-	_initEditorEnable: function() {
-		var btn = $('.kb-editor-edit', this.wrapper);
-		btn.click(this.showEditor.bind(this));
+	_initPostArea: function() {
+		this._hasInitEd = false;
+		$('.editor-cancel-trigger', this.getEl('content_ed')).click((function() {
+			this.hideEditor();
+		}).bind(this));
 
-		$('.editor-save-trigger', this.wrapper).click((function(ev) {
+		var wrap = this.wrapper;
+
+		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
 			ev.preventDefault();
 
 			var data = {
 				action: 'content',
-				content: $('.download-editor-wrap textarea:first', this.wrapper).val()
+				content: $('.download-editor-wrap textarea:first', wrap).val(),
+				attach: $('.download-editor-wrap .edit-content-attach:first', wrap).val()
 			};
 
 			$.ajax({
@@ -172,28 +232,66 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 				data: data,
 				dataType: 'json',
 				success: function(data) {
-					$('.download-content-wrap').html(data.content_html);
-					this.hideEditor();
+					this.getEl('content_ed').html(data.content_html);
+					this._initPostArea();
 				}
 			});
-			
+
 		}).bind(this));
+
+		this.hideEditor();
 	},
 
 	showEditor: function() {
-		$('.download-content-wrap', this.wrapper).hide();
-		this._initMarkdownEditor();
 
-		$('.download-content.tab-content', this.wrapper).addClass('editor-on');
+		var self = this;
+
+		$('.download-content-wrap', this.getEl('content_ed')).hide();
+		$('.download-editor-wrap', this.getEl('content_ed')).show();
+
+		if (!this._hasInitEd) {
+			this._hasInitEd = true;
+
+			$('.edit-content-field', this.getEl('content_ed')).tinymce({
+				script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
+
+				theme: 'advanced',
+				plugins : "fullscreen",
+				fullscreen_new_window: true,
+				theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,fontselect,fontsizeselect,formatselect',
+				theme_advanced_buttons2: ',bullist,numlist,|,outdent,indent,|,link,unlink,anchor,image,|,code,removeformat,fullscreen',
+				theme_advanced_buttons3: '',
+				theme_advanced_toolbar_location: 'top',
+				theme_advanced_toolbar_align: 'left',
+				theme_advanced_resizing: true,
+				theme_advanced_statusbar_location: 'bottom'
+			});
+
+			// Attachments
+			var list = $('.file-list', this.getEl('content_ed'));
+
+			if (this._hasInitEdBefore) {
+				this.wrapper.fileupload('destroy');
+			}
+
+			this.wrapper.fileupload({
+				url: BASE_URL + 'agent/misc/accept-upload',
+				dropZone: this.wrapper,
+				autoUpload: true,
+				uploadTemplate: $('.template-upload', self.getEl('content_ed')),
+				downloadTemplate: $('.template-download', self.getEl('content_ed'))
+			});
+
+			this.wrapper.bind('fileuploadadd', function() {
+				$('ul.file-list', self.getEl('content_ed')).empty();
+			});
+
+			this._hasInitEdBefore = true;
+		}
 	},
 
 	hideEditor: function() {
-		$('.download-editor-wrap', this.wrapper).hide();
-		$('.download-content-wrap', this.wrapper).show();
-	},
-
-	_initMarkdownEditor: function() {
-		var editorWrap = $('.download-editor-wrap', this.wrapper).show();
-		var textarea = $('> textarea', editorWrap);
+		$('.download-editor-wrap', this.getEl('content_ed')).hide();
+		$('.download-content-wrap', this.getEl('content_ed')).show();
 	}
 });

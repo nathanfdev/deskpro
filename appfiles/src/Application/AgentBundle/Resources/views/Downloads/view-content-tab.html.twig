@@ -1,0 +1,85 @@
+<div class="full-tab-content">
+	<div class="download-content-wrap">
+		{# Top Right #}
+		<div class="ticket-properties right">
+			<div class="table-container">
+				<div class="table-title">
+					<div style="float:right;padding-right: 10px;">
+						<button class="download-editor-edit clean-gray xxx-small">Edit</button>
+					</div>
+					<h4>File Information</h4>
+				</div>
+				<div class="table-content">
+					<div class="row-table-cotent">
+						<div class="col-table-content title-col">
+							<span>File</span>
+						</div>
+						<div class="col-table-content">
+							{{ download.blob.filename }}
+						</div>
+					</div>
+					<div class="row-table-cotent">
+						<div class="col-table-content title-col">
+							<span>Size</span>
+						</div>
+						<div class="col-table-content">
+							{{ download.blob.readable_filesize }}
+						</div>
+					</div>
+					<div class="row-table-cotent">
+						<div class="col-table-content title-col">
+							<span>Type</span>
+						</div>
+						<div class="col-table-content">
+							{{ download.blob.content_type }}
+						</div>
+					</div>
+					<div class="row-table-cotent">
+						<div class="col-table-content title-col">
+							<span>Download</span>
+						</div>
+						<div class="col-table-content">
+							<a class="dp-button x-small" href="{{ download.blob.download_url }}">Download</a>
+						</div>
+					</div>
+					<div class="row-table-cotent">
+						<div class="col-table-content title-col">
+							<span>Created</span>
+						</div>
+						<div class="col-table-content">
+							<span class="timeago" title="{{download.date_created|date('c')}}">{{download.date_created|date('Y-m-d')}}</span>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Top Right #}
+		{{ download.content_html|raw }}
+	</div>
+	<div class="download-editor-wrap" style="display: none">
+		<div class="download-editor">
+			<textarea class="edit-content-field" name="download[content]" rows="5" cols="50">{{ download.content }}</textarea>
+
+			<br />
+
+			Upload a new file to replace the old one:
+			<input type="file" name="file-upload" multiple="multiple" /> <button class="clean-gray xxx-small">Upload</button>
+			<script class="template-upload" type="text/x-jquery-tmpl">
+				<li class="uploading">${name} <span class="cancel"><button class="clean-gray xx-small">Cancel</button></span></li>
+			</script>
+			<script class="template-download" type="text/x-jquery-tmpl">
+				<li class="uploaded">
+					<input type="hidden" class="edit-content-attach" name="download[attach]" value="${blob_id}" />
+					<a href="${download_url}" target="_blank">${filename}</a>
+					<span class="size">${filesize_readable}</span>
+				</li>
+			</script>
+			<ul class="files file-list"></ul>
+
+			<br />
+
+			<button class="dp-button editor-save-trigger small">Save</button>
+			<button class="dp-button editor-cancel-trigger small">Cancel</button>
+		</div>
+	</div>
+</div>
