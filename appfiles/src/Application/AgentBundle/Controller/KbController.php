@@ -13,6 +13,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleValidatingEdit;
 use Application\DeskPRO\Entity\ResultCache;
@@ -60,8 +61,11 @@ class KbController extends AbstractController
 
 		$tpl = 'AgentBundle:Kb:view.html.twig';
 
+		$article_comments = App::getEntityRepository('DeskPRO:ArticleComment')->getComments($article);
+
 		return $this->render($tpl, array(
 			'article'              => $article,
+			'article_comments'     => $article_comments,
 			'pending_article'      => $pending_article,
 			'validating_edit'      => $validating_edit,
 		));
@@ -141,6 +145,25 @@ class KbController extends AbstractController
 		App::getOrm()->flush();
 
 		return $this->createJsonResponse($data);
+	}
+
+	public function ajaxSaveCommentAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+
+		$comment = new ArticleComment();
+		$comment->article = $article;
+		$comment->person = $this->person;
+		$comment['content'] = $this->in->getString('content');
+		$comment['status'] = 'visible';
+		$comment['date_created']  = new \DateTime();
+
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
+
+		return $this->render('AgentBundle:Kb:view-comment.html.twig', array(
+			'comment' => $comment
+		));
 	}
 
 	############################################################################

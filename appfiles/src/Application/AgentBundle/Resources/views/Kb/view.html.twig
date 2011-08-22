@@ -173,7 +173,6 @@ pageMeta.baseId = '{{ baseId }}';
 			<li class="tab-trigger kb-content on" data-tab-for=".tab-content.kb-content"><a>Article</a></li>
 			<li class="tab-trigger kb-revs" data-tab-for=".tab-content.kb-revs"><a>Revisions</a></li>
 			<li class="tab-trigger kb-related-content" data-tab-for=".tab-content.kb-related-content"><a>Related Content</a></li>
-			<li class="tab-trigger kb-comments" data-tab-for=".tab-content.kb-comments"><a>Comments</a></li>
 			<li class="tab-trigger kb-search-stats" data-tab-for=".tab-content.kb-search-stats"><a>Search Statistics</a></li>
 		</ul>
 	</div>
@@ -185,6 +184,42 @@ pageMeta.baseId = '{{ baseId }}';
 		<div id="{{baseId}}_content_ed" class="full-container-tabbed-contents tab-content kb-content" data-tab-trigger=".tab-trigger.kb-content" style="display: block">
 			{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
 		</div>
+		{# Comments #}
+		<div class="article-comments">
+			<div class="full-tab-content">
+				<div class="messages-wrap">
+					{% for comment in download_comments %}
+						{% include 'AgentBundle:Kb:view-comment.html.twig' %}
+					{% endfor %}
+				</div>
+			</div>
+
+			<div class="message admin-message new-note">
+				<div class="message-avatar left">
+					<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+				</div>
+				<div class="message-body">
+					<div class="message-meta">
+						<span class="arrow-left"></span>
+						<h4>{{ app.user.display_name }}</h4>
+					</div>
+					<div class="message-text">
+						<p>
+							<textarea style="width:98%; height: 80px;"></textarea>
+							<div style="text-align:center; margin-top: 9px;">
+								<div class="loading-off">
+									<button class="dp-button x-small">Add Comment</button>
+								</div>
+								<div class="loading-on" style="display:none">
+									Saving ...
+								</div>
+							</div>
+						</p>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# Comments #}
 		{# /Tab: Content #}
 
 		{# Tab: Revisions #}

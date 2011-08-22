@@ -807,6 +807,11 @@ agent_kb_article_ajaxsave:
   defaults: { _controller: AgentBundle:Kb:ajaxSave }
   requirements: { article_id: "\d+" }
 
+agent_kb_ajax_save_comment:
+  pattern: /kb/article/{article_id}/ajax-save-comment
+  defaults: { _controller: AgentBundle:Kb:ajaxSaveComment }
+  requirements: { article_id: "\d+" }
+
 agent_kb_ajax_labels_save:
   pattern: /kb/article/{article_id}/ajax-save-labels
   defaults: { _controller: AgentBundle:Kb:ajaxSaveLabels }

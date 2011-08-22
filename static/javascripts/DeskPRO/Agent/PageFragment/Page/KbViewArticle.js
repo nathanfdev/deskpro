@@ -17,6 +17,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		this._initBasic();
 		this._initMenus();
 		this._initLabels();
+		this._initCommentForm();
 		this._initPostArea();
 		this._initCompareRevs();
 		this._initAutoUnpublishOptions();
@@ -638,5 +639,42 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		});
 
 		overlay.openOverlay();
-	}
+	},
+
+	//#################################################################
+	//# Comments
+	//#################################################################
+
+	_initCommentForm: function() {
+		this.newCommentWrapper = $('.new-note:first', this.wrapper);
+		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
+	},
+
+	saveNewComment: function() {
+
+		var loadingOn = $('.loading-on', this.newCommentWrapper).show();
+		var loadingOff = $('.loading-off', this.newCommentWrapper).hide();
+
+		var data = [];
+		data.push({
+			name: 'content',
+			value: $('textarea', this.newCommentWrapper).val()
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.getMetaData('article_id') + '/ajax-save-comment',
+			type: 'POST',
+			context: this,
+			data: data,
+			dataType: 'html',
+			success: function(html) {
+				loadingOn.hide();
+				loadingOff.show();
+
+				$('textarea', this.newCommentWrapper).val('');
+				var el = $(html);
+				this.newCommentWrapper.before(el);
+			}
+		});
+	},
 });
