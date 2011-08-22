@@ -39,7 +39,7 @@
 {% endif %}
 
 {# Department #}
-<ul id="department_menu">
+<ul id="department_menu" data-menu-flag="copy-menu">
 	{% for dep in ticket_options.departments_hierarchy %}
 		{% if last_with_child %}
 			<li class="sep">-</li>
@@ -52,6 +52,25 @@
 			{% set last_with_child = true %}
 		{% else %}
 			<li data-department-id="{{dep.id}}">{{dep.title}}</li>
+			{% set last_with_child = false %}
+		{% endif %}
+	{% endfor %}
+</ul>
+
+{# Products #}
+<ul id="products_menu" data-menu-flag="copy-menu">
+	{% for cat in ticket_options.products_hierarchy %}
+		{% if last_with_child %}
+			<li class="sep">-</li>
+		{% endif %}
+		{% if cat.children %}
+			<li data-product-id="{{cat.id}}" class="section-title prod-{{ cat.id }}">{{cat.title}}</li>
+			{% for subcat in cat.children %}
+				<li data-product-id="{{subcat.id}}" data-parent-id="{{ cat.id }}" class="prod-{{ subcat.id }}">{{subcat.title}}</li>
+			{% endfor %}
+			{% set last_with_child = true %}
+		{% else %}
+			<li data-product-id="{{cat.id}}" class="prod-{{ cat.id }}">{{cat.title}}</li>
 			{% set last_with_child = false %}
 		{% endif %}
 	{% endfor %}
@@ -76,6 +95,28 @@
 		Loading ...
 	</div>
 </script>
+
+{##############################################################}
+{# Articles related #}
+{##############################################################}
+
+<ul id="article_category_menu" data-menu-flag="copy-menu">
+	{% for cat in article_categories %}
+		{% if last_with_child %}
+			<li>-</li>
+		{% endif %}
+		{% if cat.children %}
+			<li data-category-id="{{cat.id}}" class="section-title cat-{{cat.id}}">{{cat.title}}</li>
+			{% for subcat in cat.children %}
+				<li data-category-id="{{subcat.id}}" data-parent-id="{{cat.id}}" class="cat-{{cat.id}} cat-{{subcat.id}}">{{subcat.title}}</li>
+			{% endfor %}
+			{% set last_with_child = true %}
+		{% else %}
+			<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
+			{% set last_with_child = false %}
+		{% endif %}
+	{% endfor %}
+</ul>
 
 {##############################################################}
 {# Download related #}

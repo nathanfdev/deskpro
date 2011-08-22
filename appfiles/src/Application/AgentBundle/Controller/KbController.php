@@ -44,134 +44,28 @@ class KbController extends AbstractController
 		$pending_article    = null;
 		$validating_edit    = null;
 
-		if ($article_id) {
-			$article = App::findEntity('DeskPRO:Article', $article_id);
-			if (!$article) {
-				throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
-			}
-
-			$article_categories = App::getDb()->fetchAllCol("
-				SELECT category_id
-				FROM article_to_categories
-				WHERE article_id = ?
-			", array($article['id']));
-
-			$article_products = App::getDb()->fetchAllCol("
-				SELECT product_id
-				FROM article_to_product
-				WHERE article_id = ?
-			", array($article['id']));
-
-			if ($this->in->getBool('do_validate') AND $article['status_code'] == 'hidden.validating') {
-				$article['status_code'] = Article::STATUS_PUBLISHED;
-				App::getOrm()->persist($article);
-				App::getOrm()->flush();
-			}
-
-			// Check if this user has an edit for this article
-			$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article, $this->person);
-
-		} else {
-			$article = new Article();
-
-			if ($this->in->getUint('pending_article_id')) {
-				$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
-			}
-
-			if ($this->in->getUint('in_category')) {
-				$article_categories[] = $this->in->getUint('in_category');
-			}
-		}
-
-		/** @var $agent_cat_helper \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy */
-		$agent_cat_helper = App::getEntityRepository('DeskPRO:ArticleCategory')->getAgentCategoryHelper();
-		$agent_category_names = $agent_cat_helper->getFullCategoryNames();
-
-		/** @var $user_cat_helper \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy */
-		$user_cat_helper = App::getEntityRepository('DeskPRO:ArticleCategory')->getUserCategoryHelper();
-		$user_category_names = $user_cat_helper->getFullCategoryNames();
-
-		$product_name   = App::getEntityRepository('DeskPRO:Product')->getFullCategoryNames();
-
-		$tpl = 'AgentBundle:Kb:edit.html.twig';
-		if ($this->in->getBool('view')) {
-			$tpl = 'AgentBundle:Kb:view.html.twig';
-		}
-		$tpl = 'AgentBundle:Kb:view.html.twig';
-		if (!$article['id']) {
-			$tpl = 'AgentBundle:Kb:new.html.twig';
-		}
-
-		return $this->render($tpl, array(
-			'article'              => $article,
-			'user_category_names'  => $user_category_names,
-			'agent_category_names' => $agent_category_names,
-			'product_names'        => $product_name,
-			'article_categories'   => $article_categories,
-			'article_products'     => $article_products,
-			'pending_article'      => $pending_article,
-			'validating_edit'      => $validating_edit,
-		));
-	}
-
-	public function editArticleSaveAction($article_id)
-	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
-		
-		$require_validating = $this->in->getBool('use_validating_edit');
-		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article, $this->person);
-		if ($validating_edit) {
-			// If the user already has an edit, then we're just updating that
-			$require_validating = true;
+		if (!$article) {
+			throw new \Symfony\Component\HttpKernel\Exception\NotFoundHttpException("Unknown article $article_id");
 		}
 
-		if ($require_validating) {
-
-			if (!$validating_edit) {
-				$validating_edit = new ArticleValidatingEdit();
-				$validating_edit->person = $this->person;
-				$validating_edit->article = $article;
-			}
-
-			$validating_edit['title'] = $this->in->getString('article.title');
-			$validating_edit['content'] = $this->in->getString('article.content');
-
-			App::getOrm()->persist($validating_edit);
-			App::getOrm()->flush();
-
-		} else {
-			$article['title'] = $this->in->getString('article.title');
-			$article['content'] = $this->in->getString('article.content');
-			$article['status_code'] = $this->in->getString('article.status_code');
-
-			if ($this->in->getString('article.date_published')) {
-				$article['date_published'] = new \DateTime($this->in->getString('article.date_published'));
-			}
-			if ($this->in->getString('article.date_end')) {
-				$article['date_end'] = new \DateTime($this->in->getString('article.date_end'));
-			}
-
-			$article->categories->clear();
-			$article->products->clear();
-
-			$cat_ids = $this->in->getCleanValueArray('article.categories', 'uint', 'discard');
-			$cats = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoriesById($cat_ids);
-			foreach ($cats as $c) {
-				$article->categories->add($c);
-			}
-
-			$product_ids = $this->in->getCleanValueArray('article.products', 'uint', 'discard');
-			$products = App::getEntityRepository('DeskPRO:Product')->getProductsById($product_ids);
-			foreach ($products as $p) {
-				$article->products->add($p);
-			}
-
+		if ($this->in->getBool('do_validate') AND $article['status_code'] == 'hidden.validating') {
+			$article['status_code'] = Article::STATUS_PUBLISHED;
 			App::getOrm()->persist($article);
 			App::getOrm()->flush();
 		}
 
-		return $this->createJsonResponse(array(
-			'success' => true
+		// Check if this user has an edit for this article
+		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article, $this->person);
+
+		$product_name   = App::getEntityRepository('DeskPRO:Product')->getFullCategoryNames();
+
+		$tpl = 'AgentBundle:Kb:view.html.twig';
+
+		return $this->render($tpl, array(
+			'article'              => $article,
+			'pending_article'      => $pending_article,
+			'validating_edit'      => $validating_edit,
 		));
 	}
 
@@ -189,18 +83,71 @@ class KbController extends AbstractController
 		return $this->createJsonResponse(array('success' => 1));
 	}
 
-	public function getArticleEditorAction($article_id)
+	public function ajaxSaveAction($article_id)
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
 
-		$tpl = 'view-editor-markdown.html.twig';
-		if ($article['markup_mode'] == Article::MARKUP_MODE_HTML) {
-			$tpl = 'view-editor-html.html.twig';
+		$action = $this->in->getString('action');
+
+		$data = array('success' => 1);
+
+		switch ($action) {
+			case 'title':
+				$article['title'] = $this->in->getString('title');
+				break;
+
+			case 'categories':
+				$cat_ids = $this->in->getCleanValueArray('category_ids', 'uint', 'discard');
+				$article->setCategories($cat_ids);
+				$data['category_ids'] = $article->categories->getKeys();
+				break;
+
+			case 'products':
+				$cat_ids = $this->in->getCleanValueArray('product_ids', 'uint', 'discard');
+				$article->setProducts($cat_ids);
+				$data['product_ids'] = $article->products->getKeys();
+				break;
+
+			case 'remove-auto-unpub':
+				$article->date_end = null;
+				$article->end_action = null;
+				break;
+
+			case 'auto-unpub':
+				$date = date_create('@' . $this->in->getUint('end_timestamp'));
+				$action = $this->in->getString('end_action');
+
+				$article->date_end = $date;
+				$article->end_action = $action;
+				break;
+
+			case 'remove-auto-pub':
+				$article->date_published = null;
+				break;
+
+			case 'auto-unpub':
+				$date = date_create('@' . $this->in->getUint('end_timestamp'));
+				$article->date_published = $date;
+				break;
+
+			case 'content':
+				$article['content'] = $this->in->getString('content');
+
+				if ($this->in->getUint('attach')) {
+					$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('attach'));
+        			$download->blob = $blob;
+				}
+
+				$data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', array(
+					'download' => $download
+				));
+				break;
 		}
 
-		return $this->render("AgentBundle:Kb:$tpl", array(
-			'article' => $article
-		));
+		App::getOrm()->persist($article);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse($data);
 	}
 
 	############################################################################
@@ -219,7 +166,7 @@ class KbController extends AbstractController
 		));
 	}
 
-	
+
 	/**
 	 * [AJAX] Adds a new pending article
 	 */
@@ -293,7 +240,7 @@ class KbController extends AbstractController
 	{
 		$article = App::findEntity('DeskPRO:Article', $article_id);
 		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article);
-		
+
 		return $this->render('AgentBundle:Kb:preview-validating-edit.html.twig', array(
 			'article' => $article,
 			'edit' => $validating_edit,
@@ -379,7 +326,7 @@ class KbController extends AbstractController
 		if (!$next_id) {
 			App::getDb()->fetchColumn("SELECT article_id FROM article_validating_edits ORDER BY id DESC");
 		}
-		
+
 		return $next_id;
 	}
 
@@ -495,7 +442,7 @@ class KbController extends AbstractController
 	# Compare revisions
 	############################################################################
 
-	public function compareRevisionsActions($rev_old_id, $rev_new_id)
+	public function compareRevisionsAction($rev_old_id, $rev_new_id)
 	{
 		$rev_old = App::findEntity('DeskPRO:ArticleRevision', $rev_old_id);
 		$rev_new = App::findEntity('DeskPRO:ArticleRevision', $rev_new_id);

@@ -1146,7 +1146,12 @@ DeskPRO.Agent.Window = new Orb.Class({
 
 		// Show overlay about failed
 		if (sn) {
-			this._showAjaxError('If the error persists, give your administrator this code: SN' + sn);
+			var showsn = 'SN' + sn;
+			if (DESKPRO_PERSON_ISADMIN) {
+				showsn = '<a href="' + BASE_URL + 'admin/logs/sn/SN' + sn + '">SN' + sn + '</a>';
+			}
+
+			this._showAjaxError('<div>If the error persists, give your administrator this code: ' + showsn + '</div>');
 		} else {
 			this._showAjaxError();
 		}

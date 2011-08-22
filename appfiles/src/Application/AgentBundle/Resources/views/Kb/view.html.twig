@@ -2,10 +2,12 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.KbViewArticle';
 pageMeta.title = {{article.title|json_encode|raw}};
 pageMeta.article_id = {{article.id}};
-pageMeta.markup_mode = '{{article.markup_mode}}';
-pageMeta.urls = {
-	'agent_kb_article_edit_geteditor': '{{ path('agent_kb_article_edit_geteditor', {'article_id': article.id}) }}'
-};
+
+pageMeta.permalink = '{{ article.permalink }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_kb_ajax_labels_save', {'article_id': article.id}) }}';
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content full-page kb-page with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
@@ -19,140 +21,148 @@ pageMeta.urls = {
 </div>
 {% endif %}
 
-<div class="inner-box-tab-content-2 ticket-element">
-	<div class="ticket-status ticket-{{article.status}}">
-		<span class="ticket-{{article.status}} prop-val menu-trigger status">
-			{% if article.hidden_status %}
-				{{ phrase('core_kb.hidden_status_' ~ article.hidden_status) }}
-			{% else %}
-				{{ phrase('core_kb.status_' ~ article.status) }}
+<section class="ticket-header" id="{{baseId}}_article_header">
+	<div class="ticket-id">
+		<span>#{{ article.id }}</span>
+	</div>
+	<div class="the-status">
+		<div class="ticket-status article-status prop-status-icon tipped" title="{{ article.status }}">
+			<span class="ticket-{{article.status}}"></span>
+		</div>
+	</div>
+	<div class="ticket-subject editable hover-edit no-cat" data-editable-for=".inline-editable .title">
+		{{ article.title }}
+	</div>
+	<br style="clear:both;height: 1px;overflow: hidden;" />
+
+	<div class="assignments">
+		<div class="agent">
+			<div class="desc">
+				By {% for author in article.authors %}<cite>{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
+			</div>
+			<br style="clear:both;height: 1px;overflow: hidden;" />
+		</div>
+	</div>
+
+	<nav class="actions" id="{{baseId}}_action_buttons">
+		<ul>
+			<li class="delete"><button class="clean-gray xx-small">Delete</button></li>
+			<li class="permalink"><button class="clean-gray xx-small">Copy Permalink</button></li>
+			<li class="view-user-interface"><button class="clean-gray xx-small">View in user interface</button></li>
+		</ul>
+	</nav>
+
+	<div class="times">
+		{% if article.date_created == article.date_published %}
+			Created and published <time class="timeago" datetime="{{article.date_created|date('c')}}"></time> at <time>{{article.date_created|date('H:ia M j Y')}}</time>.<br/>
+		{% else %}
+			Created <time class="timeago" datetime="{{article.date_created|date('c')}}"></time> at <time>{{article.date_created|date('H:ia M j Y')}}</time>.<br/>
+
+			{# Makes sure its not a future date, which means auto-publish sometime in the future #}
+			{% if article.date_published and article.date_published|date('U') < 'now'|date('U') %}
+				Published <time class="timeago" datetime="{{article.date_published|date('c')}}"></time> at <time>{{article.date_published|date('H:ia M j Y')}}</time>.<br/>
 			{% endif %}
-		</span>
-	</div>
-	<div class="kb-info-top">
-		<div class="kb-author-names">
-			By {% for author in article.authors %}<cite>{{ author.person.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
-		</div>
-		<h3 class="title editable hover-edit" data-editable-for=".inline-editable .title">
-			{{ article.title }}
-		</h3>
-	</div>
-</div>
+		{% endif %}
 
-{# Info Wrap #}
-<div class="ticket-info-wrapper">
+		<div id="{{baseId}}_auto_unpub" {% if not (article.status == 'published') %}style="display: none"{% endif %}>
+				<span class="auto-unpublish" {% if not article.date_end %}style="display: none"{% endif %}>
+					Automatically <span class="end-action opt" data-val="{{article.end_action|default('unpublish')}}">{{article.end_action|default('Unpublish')}}</span>
+					on <span class="end-date opt" {% if article.date_end %}data-val="{{ article.date_end|date('U') }}"{% endif %}>
+						{% if article.date_end %}{{ article.date_end|date('M j Y') }}{% else %}(click to set date){% endif %}</span>
+					<input type="text" class="end-date-input" value="{{ article.date_end|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
+					(<span class="remove-auto-unpublish options-text">remove</span>)
+				</span>
+				<span class="options-text auto-unpublish-set" {% if article.date_end %}style="display: none"{% endif %}>
+					Set an automatic unpublish date
+				</span>
+				<br />
 
-	{# Top Left #}
-	<div class="ticket-info left">
-		<div class="tags-wrap kb-tags">
-			<span class="tag-icon"></span>
-			<ul>
-				{% for label in article.labels %}
-					<li><span>{{label.label}}</span></li>
-				{% endfor %}
-			</ul>
-		</div>
-
-		{# Top Tabs #}
-		<div class="container-tabbed-wrap ticket-participants">
-
-			<div class="container-tabbed-tabs">
-				<ul>
-					<li class="container-tabbed-tabs-active"><a>Properties</a></li>
+				<ul class="end-action-menu" style="display: none">
+					<li data-action="unpublish">Unpublish</li>
+					<li data-action="delete">Delete</li>
+					<li data-action="archive">Archive</li>
 				</ul>
 			</div>
+		<div id="{{baseId}}_auto_pub" {% if not (article.hidden_status == 'unpublished') %}style="display: none"{% endif %}>
+			<span class="auto-publish" {% if not article.date_published %}style="display: none"{% endif %}>
+				Automatically publish
+				on <span class="pub-date opt" {% if article.date_published %}data-val="{{ article.date_published|date('U') }}"{% endif %}>
+					{% if article.date_published %}{{ article.date_published|date('M j Y') }}{% else %}(click to set date){% endif %}</span>
+				<input type="text" class="pub-date-input" value="{{ article.date_published|date('U') }}" style="visibility: none; width: 1px; height: 1px; overflow: hidden; border: 0; margin: 0; padding: 0;" />
+				(<span class="remove-auto-publish options-text">remove</span>)
+			</span>
+			<span class="options-text auto-publish-set" {% if article.date_published %}style="display: none"{% endif %}>
+				Set an automatic publish date
+			</span>
+		</div>
+	</div>
+</section>
 
-			<div class="container-tabbed">
-				<div class="container-tabbed-contents">
-
-					{# Tab: Properties #}
-					<div class="container-tabbed-content-tab">
-
-						<div class="row-table-cotent article-category-prop">
-							<div class="col-table-content title-col">
-								<span>Category</span>
-							</div>
-							<div class="col-table-content prop-val">
-								<ul>
-									{% for id in article_categories %}
-										<li>{{ category_names[id] }}</li>
-									{% endfor %}
-								</ul>
-							</div>
-						</div>
-
-						<div class="row-table-cotent article-product-prop">
-							<div class="col-table-content title-col">
-								<span>Product</span>
-							</div>
-							<div class="col-table-content prop-val">
-								<ul>
-									{% for id in article_products %}
-										<li>{{ product_names[id] }}</li>
-									{% endfor %}
-								</ul>
-							</div>
+<div class="full-container-tabbed main-tabs">
+	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
+		<div class="full-container-tabbed-contents">
+			<div class="table-content">
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Labels</span>
+					</div>
+					<div class="col-table-content">
+						<div class="tags-wrap kb-tags">
+							<span class="tag-icon"></span>
+							<ul>
+								{% for label in article.labels %}
+									<li><span>{{label.label}}</span></li>
+								{% endfor %}
+							</ul>
 						</div>
 					</div>
 				</div>
-			</div>
-		</div>
-		{# /Top Tabs #}
-		<br class="clear" />
-	</div>
-	{# /Top Left #}
-
-	{# Top Right #}
-	<div class="ticket-properties right">
-
-		{# Box Times #}
-		<div class="table-container">
-			<div class="table-title">
-				<h4>Dates</h4>
-			</div>
-			<div class="table-content">
 
 				<div class="row-table-cotent">
 					<div class="col-table-content title-col">
-						<span>Created</span>
+						<span>Categories</span>
 					</div>
 					<div class="col-table-content">
-						<span class="timeago" title="{{article.date_created|date('c')}}">{{ article.date_created|date('Y-m-d') }}</span>
+						<ul id="{{baseId}}_categories" class="add-remove-list">
+							{% for cat in article.categories %}
+								<li>
+									<span class="remove">remove</span>
+									{{ cat.full_title }}
+									<input type="hidden" name="category_ids[]" value="{{ cat.id }}" />
+								</li>
+							{% endfor %}
+							<li class="add">
+								<span class="add">add</span>
+								Add Category
+							</li>
+						</ul>
 					</div>
 				</div>
 
-				<div class="row-table-cotent article-date_published-prop">
+                <div class="row-table-cotent">
 					<div class="col-table-content title-col">
-						<span>Publish</span>
+						<span>Products</span>
 					</div>
-					<div class="col-table-content prop-val">
-						{% if article.date_published %}
-							{{ article.date_published|date('Y-m-d') }}
-						{% else %}
-							<em>(Unpublished and no future date set)</em>
-						{% endif %}
-					</div>
-				</div>
-
-				<div class="row-table-cotent article-date_end-prop">
-					<div class="col-table-content title-col">
-						<span>End</span>
-					</div>
-					<div class="col-table-content prop-val">
-						{% if article.date_end %}
-							{{ article.date_end|date('Y-m-d') }} ({{ article.end_action }})
-						{% else %}
-							<em>(No end date set)</em>
-						{% endif %}
+					<div class="col-table-content">
+						<ul id="{{baseId}}_products" class="add-remove-list">
+							{% for prod in article.products %}
+								<li>
+									<span class="remove">remove</span>
+									{{ prod.full_title }}
+									<input type="hidden" name="product_ids[]" value="{{ prod.id }}" />
+								</li>
+							{% endfor %}
+							<li class="add">
+								<span class="add">add</span>
+								Add Product
+							</li>
+						</ul>
 					</div>
 				</div>
 			</div>
 		</div>
-		{# /Box Times #}
 	</div>
-	{# /Top Right #}
 </div>
-{# /Info Wrap #}
 
 {# Main Tabs #}
 <div class="full-container-tabbed messages-container">
@@ -209,7 +219,7 @@ pageMeta.urls = {
 </div>
 {# /Main Tabs #}
 
-<ul class="menu status" data-option-name="status" style="display:none">
+<ul class="status-menu" data-option-name="status" style="display:none">
 	<li data-option-value="published">{{ phrase('core_kb.status_published') }}</li>
 	<li data-option-value="hidden.unpublished">{{ phrase('core_kb.hidden_status_unpublished') }}</li>
 	<li data-option-value="archived">{{ phrase('core_kb.status_archived') }}</li>

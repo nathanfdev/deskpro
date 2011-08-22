@@ -4913,6 +4913,11 @@ section.ticket-header .ticket-subject {
     padding-left: 20px;
 }
 
+section.ticket-header .ticket-subject.no-cat {
+	padding-left: 5px;
+	background: none;
+}
+
 section.ticket-header .ticket-urgency {
     float: right;
     margin: 10px 6px 0 0;
@@ -4988,6 +4993,20 @@ section.ticket-header .times time {
     font-weight: bold;
 }
 
+section.ticket-header .times .options-text {
+	border-bottom: 1px dotted #A9ADB1;
+	cursor: pointer;
+}
+
+section.ticket-header .times .opt {
+	border: 1px solid #CACFD4;
+	webkit-border-radius: 3px;
+	-moz-border-radius: 3px;
+	border-radius: 3px;
+	padding: 0 3px 0 3px;
+	cursor: pointer;
+}
+
 section.ticket-header nav.actions {
     height: 25px;
 }
@@ -5026,7 +5045,7 @@ section.ticket-header nav.actions ul li.more {
 
 .extra-info li {
     display: inline;
-   
+
     border: 1px solid #D8DCE0;
     margin-right: 5px;
     -webkit-box-shadow: inset 0px 1px 0px px #ffffff;
@@ -5741,7 +5760,7 @@ article.ticket .urgency span {
 .page-new-content .section .step {
 	float: left;
 	width: 24px;
-	
+
 	margin: 0 10px 0 5px;
 }
 
@@ -5751,14 +5770,14 @@ article.ticket .urgency span {
 	-webkit-border-radius: 20px;
 	-moz-border-radius: 20px;
 	border-radius: 20px;
-	
+
 	color: #B9BABA;
-	
+
 	font-size: 12px;
 	font-weight: bold;
-	
+
 	line-height: 18px;
-	
+
 	display: block;
 	width: 18px;
 	height: 18px;
@@ -5894,14 +5913,14 @@ border-radius: 0px 0px 4px 4px;
 	margin-top: 10px;
 	margin-bottom: 10px;
 	text-align: center;
-}	
-	
-	
-	
-	
-	
-	
-	
+}
+
+
+
+
+
+
+
 
 
 #omnisearch_wrap {
@@ -6051,14 +6070,14 @@ border-radius: 0px 0px 4px 4px;
 
     padding: 0 3px 0 3px;
 
-    
+
 }
 
 #omnisearch .term .value {
     display: block;
     float: left;
     white-space: nowrap;
-    
+
     padding: 0 3px 0 3px;
 }
 
@@ -6088,4 +6107,36 @@ border-radius: 0px 0px 4px 4px;
 
 #omnisearch .input-term.edit .display-value {
     display: none;
+}
+
+
+
+.add-remove-list li span.add {
+	display: block;
+	background: url(../../images/action-add.png) no-repeat 50% 50%;
+	width: 11px;
+	height: 11px;
+	overflow: hidden;
+
+	cursor: pointer;
+	text-indent: -100px;
+
+	float: left;
+	margin-right: 4px;
+	margin-top: 3px;
+}
+
+.add-remove-list li span.remove {
+	display: block;
+	background: url(../../images/action-remove.png) no-repeat 50% 50%;
+	width: 11px;
+	height: 11px;
+	overflow: hidden;
+
+	cursor: pointer;
+	text-indent: -100px;
+
+	float: left;
+	margin-right: 4px;
+	margin-top: 3px;
 }

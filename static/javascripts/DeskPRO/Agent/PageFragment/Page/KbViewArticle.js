@@ -19,6 +19,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		this._initLabels();
 		this._initEditorEnable();
 		this._initCompareRevs();
+		this._initAutoUnpublishOptions();
+		this._initAutoPublishOptions();
 
 		if (this.meta.has_validating) {
 			this._initValidating();
@@ -30,6 +32,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			// When size changes within the pane, need to re-size the scroll
 			cw.tinyscrollbar_update();
 		});
+
+		$('time.timeago', this.wrapper).timeago();
 	},
 
 
@@ -59,23 +63,170 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
 			ajax: {
-				url: BASE_URL + 'agent/kb/' + this.meta.article_id + '/ajax-save'
+				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save'
 			}
+		});
+
+		var actions = this.getEl('action_buttons');
+		$('.permalink', actions).click(function() {
+			var html = [];
+			html.push('<div>');
+			html.push('The permalink to this download on the website is:<br />');
+			html.push('<input type="text" style="width:450px;" />');
+			html.push('</div>');
+
+			var msg = $(html.join(''));
+			$('input', msg).val(self.meta.permalink);
+
+			DeskPRO_Window.showAlert(msg);
+		});
+
+		$('.view-user-interface', actions).click(function() {
+			window.open(self.meta.permalink);
 		});
 	},
 
-	
+
 	//#################################################################
 	//# Menus
 	//#################################################################
 
 	_initMenus: function() {
+		var self = this;
+
+		var trigger = $('.the-status:first', this.wrapper);
 		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.menu-trigger.status:first', this.wrapper),
-			menuElement: $('.menu.status:first', this.wrapper)
+			triggerElement: trigger,
+			menuElement: $('.status-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var status = $(info.itemEl).data('option-value');
+
+				$('.article-status', trigger).attr('title', status);
+				$('.article-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+
+				self.getEl('auto_unpub').hide();
+				self.getEl('auto_pub').hide();
+
+				if (status == 'published') {
+					self.getEl('auto_unpub').show();
+				} else if (status == 'hidden.unpublished') {
+					self.getEl('auto_pub').show();
+				}
+
+				$.ajax({
+					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					type: 'POST',
+					data: {action: 'status', status: status},
+					context: self,
+					dataType: 'json'
+				});
+			}
+		});
+
+		this.catMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('li.add', this.getEl('categories')),
+			menuElement: $('#article_category_menu'),
+			onItemClicked: function(info) {
+				var catId = $(info.itemEl).data('category-id');
+				var parentId = $(info.itemEl).data('parent-id');
+
+				var parts = [];
+				parts.push($('#article_category_menu .cat-' + catId).text().trim());
+
+				if (parentId) {
+					parts.push($('#article_category_menu .cat-' + parentId).text().trim());
+				}
+				var title = parts.reverse().join(' > ');
+
+				var li = $('<li />');
+				li.append('<span class="remove">remove</span>');
+
+				var t = $('<span />');
+				t.text(title);
+				li.append(t);
+
+				li.append('<input type="hidden" name="category_ids[]" value="' + catId + '" />');
+
+				li.insertBefore($('li.add', self.getEl('categories')));
+
+				self.sendUpdateCats();
+			}
+		});
+		this.getEl('categories').delegate('.remove', 'click', function(ev) {
+			var li = $(this).parent();
+			li.remove();
+			self.sendUpdateCats();
+		});
+
+		this.prodMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('li.add', this.getEl('products')),
+			menuElement: $('#products_menu'),
+			onItemClicked: function(info) {
+				var catId = $(info.itemEl).data('product-id');
+				var parentId = $(info.itemEl).data('parent-id');
+
+				var parts = [];
+				parts.push($('#products_menu .prod-' + catId).text().trim());
+
+				if (parentId) {
+					parts.push($('#products_menu .prod-' + parentId).text().trim());
+				}
+				var title = parts.reverse().join(' > ');
+
+				var li = $('<li />');
+				li.append('<span class="remove">remove</span>');
+
+				var t = $('<span />');
+				t.text(title);
+				li.append(t);
+
+				li.append('<input type="hidden" name="product_ids[]" value="' + catId + '" />');
+
+				li.insertBefore($('li.add', self.getEl('products')));
+
+				self.sendUpdateProds();
+			}
+		});
+		this.getEl('products').delegate('.remove', 'click', function(ev) {
+			var li = $(this).parent();
+			li.remove();
+			self.sendUpdateProds();
 		});
 	},
 
+	sendUpdateCats: function() {
+		var formData = $('input', this.getEl('categories')).serializeArray();
+
+		formData.push({
+			name: 'action',
+			value: 'categories'
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			type: 'POST',
+			data: formData,
+			context: this,
+			dataType: 'json'
+		});
+	},
+
+	sendUpdateProds: function() {
+		var formData = $('input', this.getEl('products')).serializeArray();
+
+		formData.push({
+			name: 'action',
+			value: 'products'
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			type: 'POST',
+			data: formData,
+			context: this,
+			dataType: 'json'
+		});
+	},
 
 	//#################################################################
 	//# Labels
@@ -84,23 +235,17 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	labelsList: null,
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".kb-tags ul", this.contentWrapper);
-		this.labelsTagit = this.labelsList.tagit({
-			availableTags: this.getMetaData('labelsAutocompleteUrl'),
-			enableBackspace: false,
-			fieldName: 'labels',
-			onchange: this.saveLabels.bind(this)
+		this.labelsList = $(".kb-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'articles',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
 		});
 	},
 
 	_saveLabelsTimeout: null,
 	saveLabels: function() {
-		if (this.changeManager.hasChanges()) {
-			// If change manager has changes, we dont save new/removed
-			// tags
-			return;
-		}
-
 		if (this._saveLabelsTimeout) {
 			window.clearTimeout(this._saveLabelsTimeout);
 		}
@@ -125,6 +270,184 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 
 	_handleSaveLabelsSuccess: function(data) {
 
+	},
+
+	//#################################################################
+	//# Automatic Unpublish
+	//#################################################################
+
+	_initAutoUnpublishOptions: function() {
+		var self = this;
+
+		var optWrap = this.getEl('auto_unpub');
+
+		$('.auto-unpublish-set', optWrap).click(function() {
+			self.updateAutoUnPubOptions();
+			$('.auto-unpublish', optWrap).show();
+			$(this).hide();
+		});
+
+		$('.remove-auto-unpublish', optWrap).click(function() {
+			self.removeAutoUnPubOptions();
+			$('.auto-unpublish-set', optWrap).show();
+			$('.auto-unpublish', optWrap).hide();
+		});
+
+		var endOpt = $('.auto-unpublish .end-action.opt', optWrap);
+		var m = new DeskPRO.UI.Menu({
+			triggerElement: endOpt,
+			menuElement: $('.end-action-menu', optWrap),
+			onItemClicked: function(info) {
+				var val = $(info.itemEl).data('action');
+				var label = $(info.itemEl).text().trim();
+
+				endOpt.data('val', val);
+				endOpt.text(label);
+
+				self.updateAutoUnPubOptions();
+			}
+		});
+
+		var endDate = $('.auto-unpublish .end-date.opt', optWrap);
+		var dateInput = $('.auto-unpublish .end-date-input', optWrap);
+		dateInput.datepicker({
+			dateFormat: 'M d, yy',
+			onSelect: function(dateText, inst) {
+
+				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
+
+				endDate.data('val', timestamp);
+				endDate.text(dateText);
+
+				self.updateAutoUnPubOptions();
+			}
+		});
+
+		endDate.click(function() {
+			$('.auto-unpublish .end-date-input', optWrap).datepicker('show');
+		});
+	},
+
+	removeAutoUnPubOptions: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			type: 'POST',
+			data: {action: 'remove-auto-unpub'},
+			context: this,
+			dataType: 'json'
+		});
+	},
+
+	updateAutoUnPubOptions: function() {
+		var optWrap = this.getEl('auto_unpub');
+		var endTimestamp = $('.auto-unpublish .end-date.opt', optWrap).data('val');
+		var endAction = $('.auto-unpublish .end-action.opt', optWrap).data('val');
+
+		// Still need them to enter an input
+		if (!endTimestamp || !endAction) {
+			return;
+		}
+
+		var data = [];
+		data.push({
+			name: 'action',
+			value: 'auto-unpub'
+		});
+		data.push({
+			name: 'end_action',
+			value: endAction
+		});
+		data.push({
+			name: 'end_timestamp',
+			value: endTimestamp
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			type: 'POST',
+			data: data,
+			context: this,
+			dataType: 'json'
+		});
+	},
+
+	//#################################################################
+	//# Automatic Publish
+	//#################################################################
+
+	_initAutoPublishOptions: function() {
+		var self = this;
+
+		var optWrap = this.getEl('auto_pub');
+
+		$('.auto-publish-set', optWrap).click(function() {
+			self.updateAutoPubOptions();
+			$('.auto-publish', optWrap).show();
+			$(this).hide();
+		});
+
+		$('.remove-auto-publish', optWrap).click(function() {
+			self.removeAutoPubOptions();
+			$('.auto-publish-set', optWrap).show();
+			$('.auto-publish', optWrap).hide();
+		});
+
+		var pubDate = $('.auto-publish .pub-date.opt', optWrap);
+		var dateInput = $('.auto-publish .pub-date-input', optWrap);
+		dateInput.datepicker({
+			dateFormat: 'M d, yy',
+			onSelect: function(dateText, inst) {
+
+				var timestamp = dateInput.datepicker('getDate').getTime() / 1000;
+
+				pubDate.data('val', timestamp);
+				pubDate.text(dateText);
+
+				self.updateAutoPubOptions();
+			}
+		});
+
+		pubDate.click(function() {
+			$('.auto-publish .pub-date-input', optWrap).datepicker('show');
+		});
+	},
+
+	removeAutoPubOptions: function() {
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			type: 'POST',
+			data: {action: 'remove-auto-pub'},
+			context: this,
+			dataType: 'json'
+		});
+	},
+
+	updateAutoPubOptions: function() {
+		var optWrap = this.getEl('auto_unpub');
+		var timestamp = $('.auto-unpublish .end-date.opt', optWrap).data('val');
+
+		// Still need them to enter an input
+		if (!timestamp) {
+			return;
+		}
+
+		var data = [];
+		data.push({
+			name: 'action',
+			value: 'auto-pub'
+		});
+		data.push({
+			name: 'pub_timestamp',
+			value: timestamp
+		});
+
+		$.ajax({
+			url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+			type: 'POST',
+			data: data,
+			context: this,
+			dataType: 'json'
+		});
 	},
 
 	//#################################################################
@@ -300,6 +623,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	//#################################################################
 
 	_initCompareRevs: function() {
+		return;
 		var old_id = $('.tab-content.kb-revs radio.old:selected', this.wrapper).val();
 		var new_id = $('.tab-content.kb-revs radio.new:selected', this.wrapper).val();
 

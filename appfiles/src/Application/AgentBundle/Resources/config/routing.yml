@@ -802,14 +802,14 @@ agent_kb_article:
   requirements: { article_id: "\d+" }
   options: { fragment_name: 'a' }
 
-agent_kb_article_edit:
-  pattern: /kb/article/{article_id}/save
-  defaults: { _controller: AgentBundle:Kb:editArticleSave }
+agent_kb_article_ajaxsave:
+  pattern: /kb/article/{article_id}/ajax-save
+  defaults: { _controller: AgentBundle:Kb:ajaxSave }
   requirements: { article_id: "\d+" }
 
-agent_kb_article_edit_geteditor:
-  pattern: /kb/article/{article_id}/get-editor
-  defaults: { _controller: AgentBundle:Kb:getArticleEditor }
+agent_kb_ajax_labels_save:
+  pattern: /kb/article/{article_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Kb:ajaxSaveLabels }
   requirements: { article_id: "\d+" }
 
 agent_kb_comparerevs:

@@ -4,6 +4,9 @@
 	var DESKPRO_PERSON_ID = {{ app.user.id }};
 	var DESKPRO_SESSION_ID = {{ app.session.getEntityId() }};
 	var DESKPRO_PROXY_KEY = '{{ app.session.getSessionSecret('proxy_key') }}';
+	{# {% if app.user.is_admin %} #}
+	var DESKPRO_PERSON_ISADMIN = true;
+	{# {% endif %} #}
 
 	$(document).ready(function() {
 		$('pane_list_content').css('display', '');

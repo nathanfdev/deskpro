@@ -27,9 +27,6 @@ use \Orb\Util\Strings;
  */
 class Article extends \Application\DeskPRO\Domain\DomainObject
 {
-	const MARKUP_MODE_MARKDOWN = 'markdown';
-	const MARKUP_MODE_HTML = 'html';
-
 	const END_ACTION_DELETE  = 'delete';
 	const END_ACTION_ARCHIVE = 'archive';
 
@@ -50,14 +47,21 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Product", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\ManyToMany(targetEntity="ArticleCategory", cascade={"persist", "remove", "merge"}, indexBy="id")
+     * @ORM_Mapping\JoinTable(name="article_to_categories", joinColumns={@ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")})
+	 */
+	protected $categories;
+
+	/**
+	 * @var Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\ManyToMany(targetEntity="Product", cascade={"persist", "remove", "merge"}, indexBy="id")
      * @ORM_Mapping\JoinTable(name="article_to_product", joinColumns={@ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="product_id", referencedColumnName="id", onDelete="cascade")})
 	 */
 	protected $products;
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="ArticleRevision", mappedBy="article", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="ArticleRevision", mappedBy="article", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $revisions;
 
@@ -77,12 +81,6 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="markup_mode", type="string", length=15)
-	 */
-	protected $markup_mode = 'html';
-
-	/**
-	 * @var string
 	 * @ORM_Mapping\Column(name="slug", type="string", length=100)
 	 */
 	protected $slug;
@@ -92,12 +90,6 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\Column(name="title", type="string", length=255)
 	 */
 	protected $title;
-
-	/**
-	 * @var string
-	 * @ORM_Mapping\Column(name="excerpt", type="string", length=1000)
-	 */
-	protected $excerpt = '';
 
 	/**
 	 * @var string
@@ -129,7 +121,6 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $num_ratings = 0;
 
-
 	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="status", type="string", length=15)
@@ -144,7 +135,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Display order of this article. This is mostly used in books.
-	 * 
+	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="display_order", type="integer")
 	 */
@@ -175,13 +166,6 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 	protected $end_action = null;
 
 	/**
-	 * @var Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="ArticleCategory", cascade={"persist", "remove", "merge"})
-     * @ORM_Mapping\JoinTable(name="article_to_categories", joinColumns={@ORM_Mapping\JoinColumn(name="article_id", referencedColumnName="id", onDelete="cascade")}, inverseJoinColumns={@ORM_Mapping\JoinColumn(name="category_id", referencedColumnName="id", onDelete="cascade")})
-	 */
-	protected $categories;
-
-	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="LabelArticle", mappedBy="article", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
@@ -202,7 +186,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->products = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->revisions = new \Doctrine\Common\Collections\ArrayCollection();	
+		$this->revisions = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
 
 		$this->status = self::STATUS_HIDDEN;
@@ -246,22 +230,9 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function getExcerptHtml()
-	{
-		if ($this->markup_mode == self::MARKUP_MODE_HTML) {
-			return $this->excerpt;
-		} else {
-			return Markdown::format($this->excerpt);
-		}
-	}
-
 	public function getContentHtml()
 	{
-		if ($this->markup_mode == self::MARKUP_MODE_HTML) {
-			return $this->content;
-		} else {
-			return Markdown::format($this->content);
-		}
+		return $this->content;
 	}
 
 	public function getContentPlainHtml()
@@ -291,21 +262,63 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 		return $url;
 	}
 
-	public function setHtmlContent($content)
-	{
-		$this->content = $content;
-		$this->markup_mode = self::MARKUP_MODE_HTML;
-	}
-
-	public function setMarkdownContent($content)
-	{
-		$this->content = $content;
-		$this->markup_mode = self::MARKUP_MODE_MARKDOWN;
-	}
-
 	public function addToCategory(ArticleCategory $cat)
 	{
 		$this->categories->add($cat);
+	}
+
+	public function setCategories(array $cats)
+	{
+		// Normalize array
+		// Make sure we have real cat objects, index array by id
+		$set = array();
+		foreach ($cats as $cat) {
+			if (!is_object($cat)) {
+				$cat = App::findEntity('DeskPRO:ArticleCategory', $cat);
+			}
+
+			$set[$cat['id']] = $cat;
+		}
+
+		// Go through find which ones we need to add or remove
+		$all_ids = $this->categories->getKeys();
+		$new_ids = array_keys($set);
+
+		$add = array_diff($new_ids, $all_ids);
+		$del = array_diff($all_ids, $new_ids);
+
+		foreach ($add as $cid) {
+			$this->categories->add($set[$cid]);
+		}
+		foreach ($del as $cid) {
+			$this->categories->remove($cid);
+		}
+	}
+
+	public function setProducts(array $prods)
+	{
+		$set = array();
+		foreach ($prods as $prod) {
+			if (!is_object($prod)) {
+				$prod = App::findEntity('DeskPRO:Product', $prod);
+			}
+
+			$set[$prod['id']] = $prod;
+		}
+
+		// Go through find which ones we need to add or remove
+		$all_ids = $this->products->getKeys();
+		$new_ids = array_keys($set);
+
+		$add = array_diff($new_ids, $all_ids);
+		$del = array_diff($all_ids, $new_ids);
+
+		foreach ($add as $pid) {
+			$this->products->add($set[$pid]);
+		}
+		foreach ($del as $pid) {
+			$this->products->remove($pid);
+		}
 	}
 
 	public function getCategoryNames($sep = ', ', $full = true)
@@ -354,7 +367,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Get an array of authors
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getAuthors()
@@ -408,31 +421,11 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
         return $this->id;
-    }
-
-    /**
-     * Set markup_mode
-     *
-     * @param string $markupMode
-     */
-    public function setMarkupMode($markupMode)
-    {
-        $this->markup_mode = $markupMode;
-    }
-
-    /**
-     * Get markup_mode
-     *
-     * @return string 
-     */
-    public function getMarkupMode()
-    {
-        return $this->markup_mode;
     }
 
     /**
@@ -448,7 +441,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get slug
      *
-     * @return string 
+     * @return string
      */
     public function getSlug()
     {
@@ -458,7 +451,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get title
      *
-     * @return string 
+     * @return string
      */
     public function getTitle()
     {
@@ -478,7 +471,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get excerpt
      *
-     * @return string 
+     * @return string
      */
     public function getExcerpt()
     {
@@ -498,7 +491,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get content
      *
-     * @return text 
+     * @return text
      */
     public function getContent()
     {
@@ -518,7 +511,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get view_count
      *
-     * @return integer 
+     * @return integer
      */
     public function getViewCount()
     {
@@ -538,7 +531,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get total_rating
      *
-     * @return integer 
+     * @return integer
      */
     public function getTotalRating()
     {
@@ -558,7 +551,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get num_ratings
      *
-     * @return integer 
+     * @return integer
      */
     public function getNumRatings()
     {
@@ -578,7 +571,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get status
      *
-     * @return string 
+     * @return string
      */
     public function getStatus()
     {
@@ -598,7 +591,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get hidden_status
      *
-     * @return string 
+     * @return string
      */
     public function getHiddenStatus()
     {
@@ -618,7 +611,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get display_order
      *
-     * @return integer 
+     * @return integer
      */
     public function getDisplayOrder()
     {
@@ -638,7 +631,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get date_created
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDateCreated()
     {
@@ -658,7 +651,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get date_published
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDatePublished()
     {
@@ -678,7 +671,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get date_end
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDateEnd()
     {
@@ -698,7 +691,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get end_action
      *
-     * @return string 
+     * @return string
      */
     public function getEndAction()
     {
@@ -718,7 +711,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get products
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getProducts()
     {
@@ -738,7 +731,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get revisions
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getRevisions()
     {
@@ -758,7 +751,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get person
      *
-     * @return Application\DeskPRO\Entity\Person 
+     * @return Application\DeskPRO\Entity\Person
      */
     public function getPerson()
     {
@@ -778,7 +771,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get language
      *
-     * @return Application\DeskPRO\Entity\Language 
+     * @return Application\DeskPRO\Entity\Language
      */
     public function getLanguage()
     {
@@ -798,7 +791,7 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get categories
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getCategories()
     {
@@ -808,17 +801,18 @@ class Article extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Add labels
      *
-     * @param Application\DeskPRO\Entity\LabelArticle $labels
+     * @param Application\DeskPRO\Entity\LabelArticle $label
      */
-    public function addLabelArticle(\Application\DeskPRO\Entity\LabelArticle $labels)
+    public function addLabel(\Application\DeskPRO\Entity\LabelArticle $label)
     {
-        $this->labels[] = $labels;
+		$label['article'] = $this;
+        $this->labels[] = $label;
     }
 
     /**
      * Get labels
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getLabels()
     {
