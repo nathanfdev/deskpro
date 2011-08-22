@@ -157,12 +157,25 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 
 				li.insertBefore($('li.add', self.getEl('categories')));
 
+				var lis = $('li:not(.add)', self.getEl('categories'));
+				if (lis.length > 1) {
+					// make sure to show it again
+					$('.remove', lis).show();
+				}
+
 				self.sendUpdateCats();
 			}
 		});
 		this.getEl('categories').delegate('.remove', 'click', function(ev) {
 			var li = $(this).parent();
 			li.remove();
+
+			var lis = $('li:not(.add)', self.getEl('categories'));
+			if (lis.length == 1) {
+				// Hide the remove from the last cat
+				$('.remove', lis).hide();
+			}
+
 			self.sendUpdateCats();
 		});
 
