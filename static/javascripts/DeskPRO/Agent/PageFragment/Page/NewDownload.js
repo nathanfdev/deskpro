@@ -5,7 +5,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
 	allowDupe: true,
-	TYPENAME: 'newnews',
+	TYPENAME: 'newdownload',
 
 	initPage: function(el) {
 		this.wrapper = el;
@@ -28,6 +28,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
 
 		this._initCategorySection();
 		this._initTitleSection();
+		this._initFileSection();
 		this._initContentSection();
 		this._initOtherSection();
 	},
@@ -52,7 +53,7 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
 			context: this,
 			success: function(data) {
 				if (data.success) {
-					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/downloads/' + data.news_id);
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/downloads/file/' + data.download_id);
 					this.closeSelf();
 				} else {
 					alert('There was an error with the form');
@@ -99,6 +100,42 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
 
 			self.getEl('slug').val(val);
 		});
+	},
+
+	//#################################################################
+	//# Download section
+	//#################################################################
+
+	_initFileSection: function() {
+
+        var self = this;
+
+        // Attachments
+		var list = $('.file-list', this.wrapper);
+		$('input', list[0]).live('click', function() {
+			var el = $(this);
+			var li = el.parent();
+			if (el.is(':checked')) {
+				li.removeClass('unchecked');
+			} else {
+				li.addClass('unchecked');
+			}
+		});
+
+		this.wrapper.fileupload({
+			url: BASE_URL + 'agent/misc/accept-upload',
+			dropZone: this.wrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', this.wrapper),
+			downloadTemplate: $('.template-download', this.wrapper)
+		});
+
+        this.wrapper.bind('fileuploaddone', function() {
+            self.getEl('file_section').addClass('done');
+        });
+        this.wrapper.bind('fileuploadadd', function() {
+            $('ul.file-list', self.wrapper).empty();
+        });
 	},
 
 	//#################################################################
@@ -171,8 +208,8 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
 
 		// Labels
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
-			type: 'news',
-			fieldName: 'newnews[labels][]',
+			type: 'downloads',
+			fieldName: 'newdownload[labels][]',
 			list: $(".tags-wrap ul", this.wrapper)
 		});
 

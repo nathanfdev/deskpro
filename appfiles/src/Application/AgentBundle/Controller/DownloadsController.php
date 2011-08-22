@@ -168,7 +168,7 @@ class DownloadsController extends AbstractController
 	{
 		$newdownload = new \Application\AgentBundle\Form\Model\NewDownload($this->person);
 
-		$formType = new \Application\AgentBundle\Form\Type\NewDownlaod();
+		$formType = new \Application\AgentBundle\Form\Type\NewDownload();
 		$form = $this->get('form.factory')->create($formType, $newdownload);
 
 		if ($this->get('request')->getMethod() == 'POST') {

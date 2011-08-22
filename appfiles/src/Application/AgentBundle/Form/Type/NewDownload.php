@@ -33,12 +33,7 @@ class NewDownload extends AbstractType
 			'required' => false,
 		));
 
-		$builder->add('attach', 'collection', array(
-			'type' => 'hidden',
-			'required' => false,
-			'allow_add' => true,
-			'allow_delete' => true
-		));
+        $builder->add('attach', 'hidden');
     }
 
 	public function getDefaultOptions(array $options)
@@ -50,6 +45,6 @@ class NewDownload extends AbstractType
 
     public function getName()
     {
-        return 'newnews';
+        return 'newdownload';
     }
 }

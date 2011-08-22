@@ -54,6 +54,9 @@ class NewDownload
 
 		$download->getLabelManager()->setLabelsArray($this->labels);
 
+        $blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->attach);
+        $download->blob = $blob;
+
 		$this->_em->persist($download);
 		$this->_em->flush();
 		$this->_em->commit();
