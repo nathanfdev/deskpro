@@ -16,8 +16,9 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 		this._initBasic();
 		this._initMenus();
+		this._initActions();
 		this._initLabels();
-		this._initEditorEnable();
+		this._initPostArea();
 		this._initCommentForm();
 
 		var cw = this.wrapper;
@@ -26,17 +27,11 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 			// When size changes within the pane, need to re-size the scroll
 			cw.tinyscrollbar_update();
 		});
-	},
 
-	incCount: function(id) {
-		var countEl = $('.'+id+'-count', this.wrapper);
-		var count = countEl.data('count') + 1;
-		countEl.data('count', count).html('(' + count + ')');
-	},
+		$('time.timeago', this.wrapper).timeago();
 
-	setCount: function(id, count) {
-		var countEl = $('.'+id+'-count', this.wrapper);
-		countEl.data('count', count).html('(' + count + ')');
+		var btn = $('.news-editor-edit', this.wrapper);
+		btn.click(this.showEditor.bind(this));
 	},
 
 	//#################################################################
@@ -45,7 +40,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 	_initBasic: function() {
 		var self = this;
-		
+
 		// Name is editable
 		var name = $('h3.title.editable:first', this.wrapper);
 		if (!name.attr('id')) {
@@ -58,23 +53,84 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 				url: BASE_URL + 'agent/news/' + this.meta.news_id + '/ajax-save'
 			}
 		});
-
-		// Body tabs
-		var bodyTabs = new DeskPRO.UI.SimpleTabs({
-			context: $('.full-container-tabbed.messages-container', this.contentWrapper),
-			triggerElements: $('.full-container-tabbed-tabs li', this.contentWrapper)
-		});
 	},
 
-	
+
 	//#################################################################
 	//# Menus
 	//#################################################################
 
 	_initMenus: function() {
+
+		var self = this;
+
 		this.statusMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('.menu-trigger.status:first', this.wrapper),
 			menuElement: $('.menu.status:first', this.wrapper)
+		});
+
+		// Change category menu
+        var catMenu = new DeskPRO.UI.Menu({
+			menuElement: $('#news_category_menu'),
+			triggerElement: this.getEl('category'),
+			onItemClicked: function(info) {
+				var catId = $(info.itemEl).data('category-id');
+				var parentId = $(info.itemEl).data('parent-id');
+
+				var catTitle = $('#news_category_menu .cat-' + catId).text().trim();
+
+				var parentTitle = '';
+				if (parentId) {
+					parentTitle = $('#news_category_menu .cat-' + parentId).text().trim();
+				}
+
+				if (parentId) {
+					$('.parent', self.getEl('category')).text(parentTitle);
+					$('.sub', self.getEl('category')).text(catTitle).show();
+				} else {
+					$('.parent', self.getEl('category')).text(catTitle);
+					$('.sub', self.getEl('category')).text('').hide();
+				}
+
+				$.ajax({
+					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
+					type: 'POST',
+					data: {
+						'action': 'category',
+						'category_id': catId
+					},
+					dataType: 'json',
+					success: function() {
+
+					}
+				});
+			}
+        });
+	},
+
+	_initActions: function() {
+		var self = this;
+		var actions = this.getEl('action_buttons');
+
+		$('.delete', actions).click(function() {
+
+		});
+
+		$('.permalink', actions).click(function() {
+			var html = [];
+			html.push('<div>');
+			html.push('The permalink to this post on the website is:<br />');
+			html.push('<input type="text" style="width:450px;" />');
+			html.push('</div>');
+
+			var msg = $(html.join(''));
+			$('input', msg).val(self.meta.permalink);
+
+			DeskPRO_Window.showAlert(msg);
+		});
+
+		$('.view-user-interface', actions).click(function() {
+			window.open(self.meta.permalink);
 		});
 	},
 
@@ -86,12 +142,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 	labelsList: null,
 	_initLabels: function() {
 		// Tags
-		this.labelsList = $(".news-tags ul", this.contentWrapper);
-		this.labelsTagit = this.labelsList.tagit({
-			availableTags: this.getMetaData('labelsAutocompleteUrl'),
-			enableBackspace: false,
-			fieldName: 'labels',
-			onchange: this.saveLabels.bind(this)
+		this.labelsList = $(".news-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'news',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
 		});
 	},
 
@@ -167,16 +223,21 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 	//# Editor
 	//#################################################################
 
-	_initEditorEnable: function() {
-		var btn = $('.kb-editor-edit', this.wrapper);
-		btn.click(this.showEditor.bind(this));
+	_initPostArea: function() {
+		this._hasInitEd = false;
+		$('.editor-cancel-trigger', this.getEl('content_ed')).click((function() {
+			this.hideEditor();
+		}).bind(this));
 
-		$('.editor-save-trigger', this.wrapper).click((function(ev) {
+		var wrap = this.wrapper;
+
+		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
 			ev.preventDefault();
 
 			var data = {
 				action: 'content',
-				content: $('.news-editor-wrap textarea:first', this.wrapper).val()
+				content: $('.news-editor-wrap textarea:first', wrap).val(),
+				attach: $('.news-editor-wrap .edit-content-attach:first', wrap).val()
 			};
 
 			$.ajax({
@@ -186,66 +247,46 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 				data: data,
 				dataType: 'json',
 				success: function(data) {
-					$('.news-content-wrap').html(data.content_html);
-					this.hideEditor();
+					this.getEl('content_ed').html(data.content_html);
+					this._initPostArea();
 				}
 			});
-			
+
 		}).bind(this));
+
+		this.hideEditor();
 	},
 
 	showEditor: function() {
-		$('.news-content-wrap', this.wrapper).hide();
-		this._initMarkdownEditor();
 
-		$('.news-content.tab-content', this.wrapper).addClass('editor-on');
+		var self = this;
+
+		$('.news-content-wrap', this.getEl('content_ed')).hide();
+		$('.news-editor-wrap', this.getEl('content_ed')).show();
+
+		if (!this._hasInitEd) {
+			this._hasInitEd = true;
+
+			$('.edit-content-field', this.getEl('content_ed')).tinymce({
+				script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
+
+				theme: 'advanced',
+				plugins : "fullscreen",
+				fullscreen_new_window: true,
+				theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,fontselect,fontsizeselect,formatselect',
+				theme_advanced_buttons2: ',bullist,numlist,|,outdent,indent,|,link,unlink,anchor,image,|,code,removeformat,fullscreen',
+				theme_advanced_buttons3: '',
+				theme_advanced_toolbar_location: 'top',
+				theme_advanced_toolbar_align: 'left',
+				theme_advanced_resizing: true,
+				theme_advanced_statusbar_location: 'bottom'
+			});
+		}
 	},
 
 	hideEditor: function() {
-		$('.news-editor-wrap', this.wrapper).hide();
-		$('.news-content-wrap', this.wrapper).show();
-	},
-
-	_initMarkdownEditor: function() {
-		var editorWrap = $('.news-editor-wrap', this.wrapper).show();
-		var textarea = $('> textarea', editorWrap);
-		//textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
-
-		/*
-		$('.dp-media-trigger', editorWrap).click(this.showMediaBrowser.bind(this));
-
-		var self = this;
-		this.mediaBrowser.addEvent('addLinkCode', function(code, fileRow) {
-			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
-			self.mediaBrowserOverlay.closeOverlay();
-		});
-		this.mediaBrowser.addEvent('addImageCode', function(code, fileRow) {
-			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
-			self.mediaBrowserOverlay.closeOverlay();
-		});
-		this.mediaBrowser.addEvent('addImageEditedCode', function(code, fileRow) {
-			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
-			self.mediaBrowserOverlay.closeOverlay();
-		});
-
-		// If a file was uploaded via drag+drop onto the editor,
-		// and the overlay isnt open, then just insert the default
-		// codes for it
-		this.mediaBrowser.addEvent('filesUploaded', function(els) {
-			if (self.mediaBrowserOverlay.isOverlayOpen()) {
-				return;
-			}
-
-			els.each(function() {
-				var el = $(this);
-				if (el.is('.is-image')) {
-					$('.image-trigger', el).click();
-				} else {
-					$('.link-trigger', el).click();
-				}
-			});
-		});
-		*/
+		$('.news-editor-wrap', this.getEl('content_ed')).hide();
+		$('.news-content-wrap', this.getEl('content_ed')).show();
 	},
 
 	_initMediaBrowser: function() {

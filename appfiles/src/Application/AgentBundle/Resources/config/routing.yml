@@ -900,7 +900,7 @@ agent_news_ajax_labels_save:
   requirements: { news_id: "\d+" }
 
 agent_news_ajax_save_comment:
-  pattern: /news/{news_id}/ajax-save-comment
+  pattern: /news/post/{news_id}/ajax-save-comment
   defaults: { _controller: AgentBundle:News:ajaxSaveComment }
   requirements: { news_id: "\d+" }
 

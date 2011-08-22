@@ -1,0 +1,15 @@
+<div class="full-tab-content">
+	<div class="news-content-wrap">
+		{{ news.content_html|raw }}
+	</div>
+	<div class="news-editor-wrap" style="display: none">
+		<div class="news-editor">
+			<textarea class="edit-content-field" name="news[content]" rows="5" cols="50">{{ news.content }}</textarea>
+
+			<br />
+
+			<button class="dp-button editor-save-trigger small">Save</button>
+			<button class="dp-button editor-cancel-trigger small">Cancel</button>
+		</div>
+	</div>
+</div>

@@ -50,6 +50,7 @@ class MainController extends AbstractController
 		// Publish-info
 		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
 		$article_categories = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getFlatHierarchy();
+		$news_categories = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
 
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
@@ -67,6 +68,7 @@ class MainController extends AbstractController
 
 			'download_categories' => $download_categories,
 			'article_categories' => $article_categories,
+			'news_categories' => $news_categories,
 		));
     }
 }

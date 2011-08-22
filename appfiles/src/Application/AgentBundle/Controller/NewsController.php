@@ -65,7 +65,7 @@ class NewsController extends AbstractController
 	public function ajaxSaveCommentAction($news_id)
 	{
 		$news = App::findEntity('DeskPRO:News', $news_id);
-		
+
 		$comment = new NewsComment();
 		$comment->news = $news;
 		$comment->person = $this->person;
@@ -96,7 +96,15 @@ class NewsController extends AbstractController
 
 			case 'content':
 				$news['content'] = $this->in->getString('content');
-				$data['content_html'] = $news->getContentHtml();
+				$data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
+					'news' => $news
+				));
+				break;
+
+			case 'category':
+				$cat = $this->em->find('DeskPRO:NewsCategory', $this->in->getUint('category_id'));
+				$news['category'] = $cat;
+				$data['category_id'] = $cat['id'];
 				break;
 		}
 
