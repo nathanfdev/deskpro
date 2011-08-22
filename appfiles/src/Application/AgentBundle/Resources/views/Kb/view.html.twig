@@ -165,7 +165,7 @@ pageMeta.baseId = '{{ baseId }}';
 </div>
 
 {# Main Tabs #}
-<div class="full-container-tabbed messages-container">
+<div class="full-container-tabbed messages-container" id="{{baseId}}_bodytabs">
 	{# Tab Triggers #}
 	<div class="full-container-tabbed-tabs">
 		<span class="kb-editor-edit"><a>edit</a></span>
@@ -182,16 +182,13 @@ pageMeta.baseId = '{{ baseId }}';
 	{# Tab Contents #}
 	<div class="full-container-tabbed-contents-wrap">
 		{# Tab: Content #}
-		<div class="full-container-tabbed-contents tab-content kb-content" data-tab-trigger=".tab-trigger.kb-content" style="display: block">
-			<div class="kb-content-wrap">
-				{{ article.content_html|raw }}
-			</div>
-			<div class="kb-editor-wrap"></div>
+		<div id="{{baseId}}_content_ed" class="full-container-tabbed-contents tab-content kb-content" data-tab-trigger=".tab-trigger.kb-content" style="display: block">
+			{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
 		</div>
 		{# /Tab: Content #}
 
 		{# Tab: Revisions #}
-		<div class="full-container-tabbed-contents tab-content kb-revs" data-tab-trigger=".tab-trigger.kb-revs" style="display: block">
+		<div class="full-container-tabbed-contents tab-content kb-revs" data-tab-trigger=".tab-trigger.kb-revs">
 			<table class="list" width="100%">
 				{% for rev in article.revisions %}
 					<tr>

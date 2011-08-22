@@ -58,8 +58,6 @@ class KbController extends AbstractController
 		// Check if this user has an edit for this article
 		$validating_edit = App::getEntityRepository('DeskPRO:ArticleValidatingEdit')->getEditForArticle($article, $this->person);
 
-		$product_name   = App::getEntityRepository('DeskPRO:Product')->getFullCategoryNames();
-
 		$tpl = 'AgentBundle:Kb:view.html.twig';
 
 		return $this->render($tpl, array(
@@ -133,13 +131,8 @@ class KbController extends AbstractController
 			case 'content':
 				$article['content'] = $this->in->getString('content');
 
-				if ($this->in->getUint('attach')) {
-					$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($this->in->getUint('attach'));
-        			$download->blob = $blob;
-				}
-
-				$data['content_html'] = $this->renderView('AgentBundle:Downloads:view-content-tab.html.twig', array(
-					'download' => $download
+				$data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', array(
+					'article' => $article
 				));
 				break;
 		}

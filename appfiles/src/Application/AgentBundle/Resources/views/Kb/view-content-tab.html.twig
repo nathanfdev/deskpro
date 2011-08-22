@@ -1,0 +1,13 @@
+<div class="full-tab-content">
+	<div class="article-content-wrap">
+		{{ article.content|raw }}
+	</div>
+	<div class="article-editor-wrap" style="display: none">
+		<div class="article-editor">
+			<textarea class="edit-content-field" name="aritcle[content]" rows="5" cols="50">{{ article.content }}</textarea>
+
+			<button class="dp-button editor-save-trigger small">Save</button>
+			<button class="dp-button editor-cancel-trigger small">Cancel</button>
+		</div>
+	</div>
+</div>

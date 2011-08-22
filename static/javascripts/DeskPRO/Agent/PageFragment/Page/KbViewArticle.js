@@ -17,10 +17,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		this._initBasic();
 		this._initMenus();
 		this._initLabels();
-		this._initEditorEnable();
+		this._initPostArea();
 		this._initCompareRevs();
 		this._initAutoUnpublishOptions();
 		this._initAutoPublishOptions();
+
+		var btn = $('.kb-editor-edit', this.wrap);
+		btn.click(this.showEditor.bind(this));
 
 		if (this.meta.has_validating) {
 			this._initValidating();
@@ -53,7 +56,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			DeskPRO_Window.removePage(self);
 		});
 
-
 		// Name is editable
 		var name = $('h3.title.editable:first', this.wrapper);
 		if (!name.attr('id')) {
@@ -65,6 +67,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			ajax: {
 				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save'
 			}
+		});
+
+		// Tabs
+		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
+			context: this.getEl('bodytabs')
 		});
 
 		var actions = this.getEl('action_buttons');
@@ -513,89 +521,69 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	//# Editor
 	//#################################################################
 
-	_initEditorEnable: function() {
-		var btn = $('.kb-editor-edit', this.wrapper);
-		btn.click(this.showEditor.bind(this));
+	_initPostArea: function() {
+		this._hasInitEd = false;
+		$('.editor-cancel-trigger', this.getEl('content_ed')).click((function() {
+			this.hideEditor();
+		}).bind(this));
+
+		var wrap = this.wrapper;
+
+		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
+			ev.preventDefault();
+
+			var data = {
+				action: 'content',
+				content: $('.article-editor-wrap textarea:first', wrap).val()
+			};
+
+			$.ajax({
+				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
+				type: 'POST',
+				context: this,
+				data: data,
+				dataType: 'json',
+				success: function(data) {
+					this.getEl('content_ed').html(data.content_html);
+					this._initPostArea();
+				}
+			});
+
+		}).bind(this));
+
+		this.hideEditor();
 	},
 
 	showEditor: function() {
-		if (!this.editor_has_loaded) {
-			this._initEditor();
-			return;//this func will be recalled when editor has been init
-		}
-
-		$('.kb-content.tab-content', this.wrapper).addClass('editor-on');
-	},
-
-	_initEditor: function() {
-		this.editor_has_loaded = true;
-
-		$.ajax({
-			url: this.getUrl('agent_kb_article_edit_geteditor'),
-			type: 'GET',
-			context: this,
-			dataType: 'html',
-			success: function(html) {
-				$('.kb-editor-wrap', this.wrapper).html(html);
-
-				this._initMediaBrowser();
-
-				if (this.getMetaData('markup_mode') == 'html') {
-					this._initHtmlEditor();
-				} else {
-					this._initMarkdownEditor();
-				}
-				this.showEditor();
-			}
-		});
-	},
-
-	_initMarkdownEditor: function() {
-		var editorWrap = $('.kb-editor', this.wrapper);
-		var textarea = $('> textarea', editorWrap);
-		textarea.markItUp(MARKITUP_MARKDOWN_SETTINGS);
-
-		$('.dp-media-trigger', editorWrap).click(this.showMediaBrowser.bind(this));
 
 		var self = this;
-		this.mediaBrowser.addEvent('addLinkCode', function(code, fileRow) {
-			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
-			self.mediaBrowserOverlay.closeOverlay();
-		});
-		this.mediaBrowser.addEvent('addImageCode', function(code, fileRow) {
-			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
-			self.mediaBrowserOverlay.closeOverlay();
-		});
-		this.mediaBrowser.addEvent('addImageEditedCode', function(code, fileRow) {
-			$.markItUp({ target: textarea, openWith: '', closeWith:code } );
-			self.mediaBrowserOverlay.closeOverlay();
-		});
 
-		// If a file was uploaded via drag+drop onto the editor,
-		// and the overlay isnt open, then just insert the default
-		// codes for it
-		this.mediaBrowser.addEvent('filesUploaded', function(els) {
-			if (self.mediaBrowserOverlay.isOverlayOpen()) {
-				return;
-			}
+		$('.article-content-wrap', this.getEl('content_ed')).hide();
+		$('.article-editor-wrap', this.getEl('content_ed')).show();
 
-			els.each(function() {
-				var el = $(this);
-				if (el.is('.is-image')) {
-					$('.image-trigger', el).click();
-				} else {
-					$('.link-trigger', el).click();
-				}
+		if (!this._hasInitEd) {
+			this._hasInitEd = true;
+
+			$('.edit-content-field', this.getEl('content_ed')).tinymce({
+				script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
+
+				theme: 'advanced',
+				plugins : "fullscreen",
+				fullscreen_new_window: true,
+				theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,fontselect,fontsizeselect,formatselect',
+				theme_advanced_buttons2: ',bullist,numlist,|,outdent,indent,|,link,unlink,anchor,image,|,code,removeformat,fullscreen',
+				theme_advanced_buttons3: '',
+				theme_advanced_toolbar_location: 'top',
+				theme_advanced_toolbar_align: 'left',
+				theme_advanced_resizing: true,
+				theme_advanced_statusbar_location: 'bottom'
 			});
-		});
+		}
 	},
 
-	_initHtmlEditor: function() {
-		var textarea = $('.kb-editor > textarea', this.wrapper);
-		textarea.tinyMce({
-			script_url: TINYMCE_URL,
-			theme: 'basic'
-		});
+	hideEditor: function() {
+		$('.article-editor-wrap', this.getEl('content_ed')).hide();
+		$('.article-content-wrap', this.getEl('content_ed')).show();
 	},
 
 	_initMediaBrowser: function() {
