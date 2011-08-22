@@ -17,7 +17,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
-		
+
 		// Initialize
 		this.options = {
 			triggerElement: null,
@@ -41,7 +41,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 		this.subMenus = [];
 		this.openSubMenuId = null;
 		this.parentMenu = null;
-		
+
 
 		this.objectId = Orb.uuid();
 
@@ -70,6 +70,10 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 	_setupMenuElement: function() {
 		var origMenuElement = $(this.options.menuElement);
+
+		if (origMenuElement.data('menu-flag') && origMenuElement.data('menu-flag').indexOf('copy-menu') !== -1) {
+			origMenuElement = origMenuElement.clone();
+		}
 
 		//------------------------------
 		// Set up a bound select box
