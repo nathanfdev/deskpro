@@ -98,7 +98,7 @@ class UserChatController extends AbstractController
 		));
 	}
 
-	
+
 	/**
 	 * [JSON] Get a QR
 	 *
@@ -165,7 +165,7 @@ class UserChatController extends AbstractController
 		});
 
 		return $this->createJsonResponse(array(
-			
+
 		));
 	}
 
@@ -196,7 +196,7 @@ class UserChatController extends AbstractController
 			$conversation,
 			$agent
 		));
-		
+
 		$client_messages = array_merge($client_messages, ChatClientMessageGenerator::createPartisipatedUpdatedMessages(
 			App::getSession()->getEntityId(),
 			$conversation
@@ -317,7 +317,7 @@ class UserChatController extends AbstractController
 		$counts = App::getEntityRepository('DeskPRO:ChatConversation')->getOpenChatsForAgents();
 
 		// Also run through timeout checks now for any chats this agent has
-		if (!empty($counts[$this->person['id']]) AND $counts[$this->person['id']]) {
+		if (false && !empty($counts[$this->person['id']]) AND $counts[$this->person['id']]) {
 			$convos = App::getEntityRepository('DeskPRO:ChatConversation')->getConversationsForAgent($this->person);
 			foreach ($convos as $convo) {
 				$status_check = new ChatStatusCheck($convo, App::getSession()->getEntity());
