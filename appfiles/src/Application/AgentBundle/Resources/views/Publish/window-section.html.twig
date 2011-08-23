@@ -37,7 +37,7 @@
 {% include 'AgentBundle:Publish:glossary-tab.html.twig' %}
 
 <div id="cat_usergroups_editor_tab" class="usergroups-editor-tab" style="display: none">
-<span class="title"></span>
+<input type="text" class="title" />
 </div>
 <div id="cat_usergroups_editor" class="usergroups-editor" style="display: none">
 	<span class="close-trigger">x</span>
@@ -55,6 +55,7 @@
 <script type="text/x-deskpro-plain" id="publish_outline_cat_list_newitem">
 	<li>
 		<span class="list-counter">0</span>
+		<span class="edit-cat">edit</span>
 		<span class="sub-toggle">expand</span>
 		<a>New Category</a>
 		<ul class="sub-group"></ul>

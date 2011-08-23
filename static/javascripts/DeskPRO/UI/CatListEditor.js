@@ -294,7 +294,6 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		this.fireEvent('newAddEditable', [li, input, this]);
 
 		var input = $('input.dp-cat-input', li);
-		input.focus();
 		var fnDone = function() {
 			self.fireEvent('newAdded', [li, input, self]);
 			self._disableEditable($('.dp-cat-item', li));
@@ -307,5 +306,8 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 		// init new item
 		this._initLisCollection(li);
+
+		var input = $('input:first', li);
+		input.focus().val();
 	}
 });

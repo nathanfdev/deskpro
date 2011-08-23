@@ -128,6 +128,11 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				}
 			});
 
+			$('#publish_outline_'+type+'cat_editmode').click(function() {
+				var ul = $(this).parent().parent();
+				ul.toggleClass('edit-mode');
+			});
+
 			$('#publish_outline_'+type+'cat_edittiles').click(function() {
 				if (ed.isTitleEditing()) {
 					ed.endEditTitles();
@@ -146,15 +151,24 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 	usergroupEditing: function() {
 		var self = this;
-		$('#publish_outline .edit-usergroups').click(function(ev) {
+		$('#publish_outline').delegate('.edit-cat', 'click', function(ev) {
 			ev.stopPropagation();
 			self._openUserGroupEditor($(this).parent().parent());
 		});
 
+		this.ugEdBack = $('<div class="backdrop usergroup-editor-backdrop" style="position: absolute; top:0;left:0;right:0;bottom:0; display: none;" />').appendTo('body');
 		this.ugEdTab = $('#cat_usergroups_editor_tab').detach().appendTo('body');
 		this.ugEd = $('#cat_usergroups_editor').detach().appendTo('body');
 		this.ugEdTabBk = $('<div class="usergroups-editor-shadow-breaker" style="display: none" />').appendTo('body');
-		this.ugEdBack = $('<div class="backdrop usergroup-editor-backdrop" style="position: absolute; top:0;left:0;right:0;bottom:0; display: none;" />').appendTo('body');
+
+		$('.close-trigger', this.ugEd).click(this._closeUserGroupEditor.bind(this));
+
+		this.ugEdTab.click(function(ev) {
+			ev.stopPropagation();
+		});
+		this.ugEd.click(function(ev) {
+			ev.stopPropagation();
+		});
 	},
 
 	_openUserGroupEditor: function(el) {
@@ -167,7 +181,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		var elWidth = el.width() - 10;
 
 		var title = $('a:first', el).text().trim();
-		$('.title', tab).text(title);
+		$('.title', tab).val(title);
 
 		tab.css({
 			left: elPos.left,
