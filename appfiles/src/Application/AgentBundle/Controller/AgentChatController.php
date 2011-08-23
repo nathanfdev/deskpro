@@ -25,76 +25,29 @@ use Orb\Util\Util;
  */
 class AgentChatController extends AbstractController
 {
+	protected $agent_chat;
+
+	public function init()
+	{
+		parent::init();
+
+		$this->agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+	}
+
 	/**
 	 * Accepts a POST of a new message to a conversation
 	 */
 	public function sendMessageAction($conversation_id)
 	{
-		if ($conversation_id instanceof ChatConversation) {
-			// sendAgentMessageAction calls this with the convo already
-			$conversation = $conversation_id;
-		} else {
-			$conversation = App::findEntity('DeskPRO:ChatConversation', $conversation_id);
-		}
-
-		$chat_message = $conversation->addNewMessage(
-			$this->in->getString('content'),
-			$this->person
-		);
-
-		$client_messages = array();
-		$channel = 'chat.message';
-		if ($conversation['is_agent']) {
-			$channel = 'agent_chat.new-message';
-		}
-
-		$part_ids = array();
-		foreach ($conversation->participants as $part) {
-			$part_ids[] = $part['id'];
-		}
-
-		foreach ($conversation->participants as $part) {
-			if ($part['id'] == $this->person['id']) {
-				continue;
-			}
-			
-			$cm = new ClientMessage();
-			$cm->fromArray(array(
-				'channel' => $channel,
-				'data' => array(
-					'conversation_id'   => $conversation['id'],
-					'participant_ids'   => $part_ids,
-					'message_id'        => $chat_message['id'],
-					'author_id'         => $chat_message->author['id'],
-					'message'           => $chat_message['content'],
-					'date_created'      => $chat_message['date_created']->getTimestamp()
-				),
-				'created_by_client' => App::getSession()->getEntityId(),
-				'for_person' => $part
-			));
-
-			$client_messages[] = $cm;
-		}
-
-		App::getOrm()->transactional(function ($em) use ($conversation, $client_messages) {
-			$em->persist($conversation);
-
-			if ($client_messages) {
-				foreach ($client_messages as $cm) {
-					$em->persist($cm);
-				}
-			}
-
-			$em->flush();
-		});
+		$info = $this->agent_chat->sendMessage($this->in->getString('content'), $conversation_id);
 
 		return $this->createJsonResponse(array(
-			'conversation_id' => $conversation['id'],
-			'new_message_id'  => $chat_message['id']
+			'conversation_id' => $info['conversation']['id'],
+			'new_message_id'  => $info['chat_message']['id']
 		));
 	}
 
-	
+
 	/**
 	 * Sending an agent message is less formal in that we automatically
 	 * create conversations based on time, instead of having
@@ -106,45 +59,15 @@ class AgentChatController extends AbstractController
 	{
 		$agent_ids = $this->in->getCleanValueArray('agent_ids', 'uint', 'discard');
 
-		$conversation = null;
-		if ($convo_id) {
-			$conversation = $this->em->find('DeskPRO:ChatConversation', $convo_id);
-			if ($conversation AND !$conversation->hasParticipant($this->person)) {
-				// invalid convo if we're not part of it
-				// sneaky hobitses
-				$conversation = null;
-			}
-		}
+		$info = $this->agent_chat->sendAgentMessage($this->in->getString('content'), $agent_ids, $convo_id);
 
-		// Try to find an existing convo
-		if (!$conversation) {
-			$date_cut = new \DateTime('-5 hours');
-
-			$find_agent_ids = $agent_ids;
-			$find_agent_ids[] = $this->person['id'];
-			
-			$conversation = App::getEntityRepository('DeskPRO:ChatConversation')->getRecentForPeople($find_agent_ids, $date_cut);
-		}
-
-		if (!$conversation) {
-			$conversation = new ChatConversation();
-			$conversation['is_agent'] = true;
-			$conversation->addParticipant($this->person);
-			foreach ($agent_ids as $aid) {
-				$conversation->addParticipant($aid);
-			}
-		}
-
-		App::getOrm()->beginTransaction();
-		App::getOrm()->persist($conversation);
-		App::getOrm()->flush();
-		$res = $this->sendMessageAction($conversation);
-		App::getOrm()->commit();
-
-		return $res;
+		return $this->createJsonResponse(array(
+			'conversation_id' => $info['conversation']['id'],
+			'new_message_id'  => $info['chat_message']['id']
+		));
 	}
 
-	
+
 	public function getOnlineAgentsAction()
 	{
 		$cutoff = date('Y-m-d H:m:s', time() - App::getSetting('core.sessions_lifetime'));

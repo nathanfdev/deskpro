@@ -21,6 +21,13 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 		this._initActions();
 		this._initCompareRevs();
 
+		if (this.meta.isValidating) {
+			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
+				typename: 'downloads',
+				contentId: this.meta.download_id
+			});
+		}
+
 		var btn = $('.download-editor-edit', this.wrap);
 		btn.click(this.showEditor.bind(this));
 

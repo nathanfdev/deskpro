@@ -166,20 +166,25 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function setStatus($status)
+	{
+		$this->setStatusCode($status);
+	}
+
 	public function setStatusCode($status_code)
 	{
 		if (strpos($status_code, 'hidden.') === 0) {
 			$status_code = str_replace('hidden.', '', $status_code);
-			$this['status'] = 'hidden';
-			$this['hidden_status'] = $status_code;
+			$this->setModelField('status', 'hidden');
+			$this->setModelField('hidden_status', $status_code);
 
-			$this->date_published = null;
+			$this->setModelField('date_published', null);
 		} else {
-			$this['status'] = $status_code;
-			$this['hidden_status'] = null;
+			$this->setModelField('status', $status_code);
+			$this->setModelField('hidden_status', null);
 
 			if (!$this->date_published) {
-				$this->date_published = new \DateTime();
+				$this->setModelField('date_published', new \DateTime());
 			}
 		}
 	}

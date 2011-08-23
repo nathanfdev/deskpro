@@ -22,6 +22,13 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		this._initCommentForm();
 		this._initCompareRevs();
 
+		if (this.meta.isValidating) {
+			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
+				typename: 'news',
+				contentId: this.meta.news_id
+			});
+		}
+
 		var cw = this.wrapper;
 		cw.tinyscrollbar();
 		$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).resize(function() {

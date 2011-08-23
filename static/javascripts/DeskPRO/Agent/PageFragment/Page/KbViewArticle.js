@@ -26,8 +26,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		var btn = $('.kb-editor-edit', this.wrap);
 		btn.click(this.showEditor.bind(this));
 
-		if (this.meta.has_validating) {
-			this._initValidating();
+		if (this.meta.isValidating) {
+			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
+				typename: 'articles',
+				contentId: this.meta.article_id
+			});
 		}
 
 		var cw = this.wrapper;
@@ -499,65 +502,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			dataType: 'json'
 		});
 	},
-
-	//#################################################################
-	//# Validation controls
-	//#################################################################
-
-	_initValidating: function() {
-		$('button.approve-article', this.wrapper).click(this.approveEdit.bind(this));
-		$('button.disapprove-article', this.wrapper).click(this.disapproveEdit.bind(this));
-		$('button.skip-article', this.wrapper).click(this.skipValidateEdit.bind(this));
-	},
-
-	approveEdit: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/kb/validating-articles/validate/'+this.meta.article_id+'.json',
-			type: 'POST',
-			context: this,
-			dataType: 'json',
-			success: function(info) {
-				var next_id = info.next_article_id;
-				if (next_id) {
-					DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + next_id);
-				}
-				DeskPRO_Window.removePage(this);
-			}
-		});
-	},
-
-	disapproveEdit: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/kb/validating-articles/disapprove/'+this.meta.article_id+'.json',
-			type: 'POST',
-			context: this,
-			dataType: 'json',
-			success: function(info) {
-				var next_id = info.next_article_id;
-				if (next_id) {
-					DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + next_id);
-				}
-				DeskPRO_Window.removePage(this);
-			}
-		});
-	},
-
-	skipValidateEdit: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/kb/validating-articles/get-next/'+this.meta.article_id+'.json',
-			type: 'POST',
-			context: this,
-			dataType: 'json',
-			success: function(info) {
-				var next_id = info.next_article_id;
-				if (next_id) {
-					DeskPRO_Window.runPageRoute('kb_article_edit:' + BASE_URL + 'agent/kb/article/' + next_id);
-				}
-				DeskPRO_Window.removePage(this);
-			}
-		});
-	},
-
 
 	//#################################################################
 	//# Editor

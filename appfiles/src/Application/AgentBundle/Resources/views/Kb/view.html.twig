@@ -6,6 +6,10 @@ pageMeta.article_id = {{article.id}};
 pageMeta.permalink = '{{ article.permalink }}';
 pageMeta.labelsSaveUrl = '{{ path('agent_kb_ajax_labels_save', {'article_id': article.id}) }}';
 
+{% if article.hidden_status == 'validating' %}
+pageMeta.isValidating = true;
+{% endif %}
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
@@ -14,11 +18,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scroll-viewport"><div class="scroll-content">
 
 {% if article.status_code == "hidden.validating" %}
-<div class="ticket-lock-bar" style="padding: 4px; text-align: right;">
-	<button class="dp-button x-small disapprove-trigger">Delete</button>
-	<button class="dp-button x-small skip-trigger">Skip</button>
-	<button class="dp-button x-small approve-trigger">Approve</button>
-</div>
+	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
 
 <section class="ticket-header" id="{{baseId}}_article_header">

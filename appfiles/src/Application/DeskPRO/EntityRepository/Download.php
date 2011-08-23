@@ -36,6 +36,8 @@ class Download extends EntityRepository
 	 */
 	public function getByIds(array $ids, PersonEntity $person_context = null)
 	{
+		if (!$ids) return array();
+
 		if ($person_context) {
 			$downloads = $this->getEntityManager()->createQuery("
 				SELECT d
@@ -58,7 +60,7 @@ class Download extends EntityRepository
 	public function getByResultIds(array $ids)
 	{
 		if (!$ids) return array();
-		
+
 		$unsorted_downloads = $this->getEntityManager()->createQuery("
 			SELECT d
 			FROM DeskPRO:Download d INDEX BY d.id

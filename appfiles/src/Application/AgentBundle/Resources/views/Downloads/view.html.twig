@@ -6,12 +6,20 @@ pageMeta.permalink = '{{ url('user_downloads_file', {'slug': download.url_slug }
 pageMeta.labelsAutocompleteUrl        = '{{ path('agent_ajax_labels_autocomplete', {'label_type': 'downloads'}) }}';
 pageMeta.labelsSaveUrl                = '{{ path('agent_downloads_ajax_labels_save', {'download_id': download.id}) }}';
 
+{% if download.hidden_status == 'validating' %}
+pageMeta.isValidating = true;
+{% endif %}
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content full-page download-page with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
+
+{% if download.status_code == "hidden.validating" %}
+	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
+{% endif %}
 
 <section class="ticket-header" id="{{baseId}}_download_header">
 	<div class="ticket-id">

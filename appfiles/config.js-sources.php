@@ -52,6 +52,7 @@ $CONFIG['agent']['pages-lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewsList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/DownloadList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingComments.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingContent.js',
 	)
 );
 
@@ -70,6 +71,7 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageHelper/DisplayOptions.js',
 		'javascripts/DeskPRO/Agent/PageHelper/SelectionBar.js',
 		'javascripts/DeskPRO/Agent/PageHelper/Popover.js',
+		'javascripts/DeskPRO/Agent/PageHelper/ValidatingEdit.js',
 
 		'javascripts/DeskPRO/Agent/PageFragment/Page/SnippetViewer.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Ticket.js',

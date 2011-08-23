@@ -768,6 +768,22 @@ agent_publish_getsectiondata:
   pattern: /publish/get-section-data.json
   defaults: { _controller: AgentBundle:Publish:getSectionData }
 
+agent_public_validatingcontent:
+  pattern: /publish/content/validating
+  defaults: { _controller: AgentBundle:Publish:listValidatingContent }
+
+agent_public_validatingcontent_approve:
+  pattern: /publish/content/approve/{type}/{content_id}.json
+  defaults: { _controller: AgentBundle:Publish:approveContent }
+
+agent_public_validatingcontent_disapprove:
+  pattern: /publish/content/disapprove/{type}/{content_id}.json
+  defaults: { _controller: AgentBundle:Publish:disapproveContent }
+
+agent_public_validatingcontent_next:
+  pattern: /publish/content/get-next-validating/{type}/{content_id}.json
+  defaults: { _controller: AgentBundle:Publish:nextValidatingContent }
+
 agent_publish_validatingcomments:
   pattern: /publish/comments/validating
   defaults: { _controller: AgentBundle:Publish:listValidatingComments }

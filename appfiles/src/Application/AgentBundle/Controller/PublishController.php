@@ -167,7 +167,139 @@ class PublishController extends AbstractController
 
 	public function listValidatingContentAction()
 	{
+		$per_page = 25;
 
+		$curpage = $this->in->getUint('page');
+		if (!$curpage) $curpage = 1;
+
+		$limit = array(
+			'max' => $per_page,
+			'offset' => ($curpage - 1) * $per_page
+		);
+
+		$pageinfo = null;
+		$total = null;
+		if (!$this->request->isPartialRequest()) {
+			$total = PublishHelper::getValidatingContentCount();
+			$pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
+		}
+
+		$content_validating = PublishHelper::getValidatingContent($limit);
+
+		$tpl = 'AgentBundle:Publish:validating-content.html.twig';
+		if ($this->request->isPartialRequest()) {
+			$tpl = 'AgentBundle:Publish:validating-content-page.html.twig';
+		}
+
+		return $this->render($tpl, array(
+			'content_validating' => $content_validating,
+			'total'    => $total,
+			'pageinfo' => $pageinfo
+		));
+	}
+
+	public function approveContentAction($type, $content_id)
+	{
+		$content_validating = PublishHelper::getValidatingContentInfo(1000);
+
+		$entity = PublishHelper::getEntityNameFor($type);
+		$obj = $this->em->getRepository($entity)->find($content_id);
+
+		$obj->status = 'published';
+
+		$this->em->beginTransaction();
+		$this->em->persist($obj);
+		$this->em->flush();
+		$this->em->commit();
+
+		$next = $this->_findNextValidating($content_validating, $type, $content_id);
+
+		$next_url = null;
+		if ($next) {
+			$next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, array(), 'agent');
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'next_url' => $next_url
+		));
+	}
+
+	public function disapproveContentAction($type, $content_id)
+	{
+		$content_validating = PublishHelper::getValidatingContentInfo(1000);
+
+		$entity = PublishHelper::getEntityNameFor($type);
+		$obj = $this->em->getRepository($entity)->find($content_id);
+
+		$obj->status_code = 'hidden.draft';
+
+		$reason = $this->in->getString('reason');
+		if (0 && $reason) {
+			$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+			$agent_chat->sendAgentMessage($reason, array($obj->person['id']));
+		}
+
+		$this->em->beginTransaction();
+		$this->em->persist($obj);
+		$this->em->flush();
+		$this->em->commit();
+
+		$next = $this->_findNextValidating($content_validating, $type, $content_id);
+
+		$next_url = null;
+		if ($next) {
+			$next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, array(), 'agent');
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'next_url' => $next_url
+		));
+	}
+
+	public function nextValidatingContentAction($type, $content_id)
+	{
+		$content_validating = PublishHelper::getValidatingContentInfo(1000);
+
+		$next = $this->_findNextValidating($content_validating, $type, $content_id);
+
+		$next_url = null;
+		if ($next) {
+			$next_url = $this->get('router')->getGenerator()->generateObjectUrl($next, array(), 'agent');
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'next_url' => $next_url
+		));
+	}
+
+	protected function _findNextValidating($content_validating, $type, $content_id)
+	{
+		$do_ret = false;
+
+		foreach ($content_validating as $info) {
+			if ($do_ret) {
+				$entity = PublishHelper::getEntityNameFor($info['content_type']);
+				$obj = $this->em->getRepository($entity)->find($info['content_id']);
+				if ($obj) {
+					return $obj;
+				}
+			} else if ($info['content_type'] == $type && $info['content_id'] == $content_id) {
+				$do_ret = true;
+			}
+		}
+
+		// If we got here, just return the first
+		$info = array_shift($content_validating);
+		$entity = PublishHelper::getEntityNameFor($info['content_type']);
+		$obj = $this->em->getRepository($entity)->find($info['content_id']);
+		if ($obj) {
+			return $obj;
+		}
+
+		return null;
 	}
 
 	############################################################################

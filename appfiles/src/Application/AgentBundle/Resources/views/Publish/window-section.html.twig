@@ -4,8 +4,8 @@
 			<span class="list-counter" id="publish_validating_comments_count">{{ counts.validating_comments|default(0) }}</span>
 			<a>Comments Validating</a>
 		</li>
-		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_kb_validating') }}">
-			<span class="list-counter" id="kb_validating_count">{{ kb_counts.awaiting_validation|default(0) }}</span>
+		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent') }}">
+			<span class="list-counter" id="publish_validating_count">{{ kb_counts.awaiting_validation|default(0) }}</span>
 			<a>Content Validating</a>
 		</li>
 		<li class="with-route" data-route="listpane:{{ path('agent_kb_pending') }}">

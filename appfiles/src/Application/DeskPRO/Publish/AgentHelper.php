@@ -102,7 +102,7 @@ class AgentHelper implements PersonContextInterface
 	 *
 	 * @return int
 	 */
-	public function getValidatingContentCount()
+	public static function getValidatingContentCount()
 	{
 		$types = array(
 			'articles',
@@ -132,44 +132,15 @@ class AgentHelper implements PersonContextInterface
 	 *
 	 * @return array
 	 */
-	public function getValidatingContent($limit = 25, $order_dir = 'ASC')
+	public static function getValidatingContent($limit = 25, $order_dir = 'ASC')
 	{
-		$sql_parts = array();
-
-		if (!is_array($limit)) {
-			$limit = array(
-				'max' => $limit,
-				'offset' => 0
-			);
-		}
+		$results = self::getValidatingContentInfo($limit, $order_dir);
 
 		$types = array(
-			'articles'    => array('entity' => 'DeskPRO:ArticleComment',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-			'downloads'   => array('entity' => 'DeskPRO:DownloadComment', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-			'news'        => array('entity' => 'DeskPRO:NewsComment',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
 		);
-
-		#------------------------------
-		# Fetch from each comment table with a union
-		#------------------------------
-
-		foreach ($types as $t => $t_info) {
-			$sql_parts[] = "(
-				SELECT c.id as content_id, '$t' as content_type, r.id AS revision_id, date_created
-				FROM $t AS c
-				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-				WHERE c.hidden_status = 'validating' OR r.status = 'validating'
-				GROUP BY c.id
-			)";
-		}
-
-		$sql = implode(' UNION ', $sql_parts);
-		$sql .= "ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
-
-		$db = App::getDb();
-		$results = $db->fetchAll($sql);
-
-		if (!$results) return array();
 
 		#------------------------------
 		# Fetch each comment in the result
@@ -182,7 +153,7 @@ class AgentHelper implements PersonContextInterface
 				$result_ids_typed[$r['content_type']] = array();
 			}
 
-			$result_ids_typed[$r['content_type']][] = $r['comment_id'];
+			$result_ids_typed[$r['content_type']][] = $r['content_id'];
 		}
 
 		$results_typed = array();
@@ -200,14 +171,61 @@ class AgentHelper implements PersonContextInterface
 		$results_ordered = array();
 
 		foreach ($results as $r) {
-			if (isset($results_typed[$r['content_type']][$r['comment_id']])) {
-				$results_ordered[] = $results_typed[$r['content_type']][$r['comment_id']];
+			if (isset($results_typed[$r['content_type']][$r['content_id']])) {
+				$results_ordered[] = array(
+					'info' => $r,
+					'obj'  => $results_typed[$r['content_type']][$r['content_id']]
+				);
 			}
 		}
 
 		return $results_ordered;
 	}
 
+
+	public static function getValidatingContentInfo($limit = 25, $order_dir = 'ASC')
+	{
+		$sql_parts = array();
+
+		if ($limit !== null && !is_array($limit)) {
+			$limit = array(
+				'max' => $limit,
+				'offset' => 0
+			);
+		}
+
+		$types = array(
+			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+		);
+
+		#------------------------------
+		# Fetch from each comment table with a union
+		#------------------------------
+
+		foreach ($types as $t => $t_info) {
+			$sql_parts[] = "(
+				SELECT c.id as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
+				FROM $t AS c
+				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
+				WHERE c.hidden_status = 'validating' OR r.status = 'validating'
+				GROUP BY c.id
+			)";
+		}
+
+		$sql = implode(' UNION ', $sql_parts);
+		if ($limit) {
+			$sql .= " ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+		} else {
+			$sql .= " ORDER BY date_created $order_dir";
+		}
+
+		$db = App::getDb();
+		$results = $db->fetchAll($sql);
+
+		return $results;
+	}
 
 	/**
 	 * Get the content entity for a publish type

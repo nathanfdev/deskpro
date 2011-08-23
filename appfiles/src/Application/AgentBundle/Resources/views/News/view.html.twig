@@ -5,12 +5,20 @@ pageMeta.news_id = {{news.id}};
 pageMeta.permalink = '{{news.permalink}}';
 pageMeta.labelsSaveUrl = '{{ path('agent_news_ajax_labels_save', {'news_id': news.id}) }}';
 
+{% if news.hidden_status == 'validating' %}
+pageMeta.isValidating = true;
+{% endif %}
+
 {% set baseId = el_uid() %}
 pageMeta.baseId = '{{ baseId }}';
 </script>
 <div class="layout-content full-page news-page with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
+
+{% if news.status_code == "hidden.validating" %}
+	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
+{% endif %}
 
 <section class="ticket-header" id="{{baseId}}_news_header">
 	<div class="ticket-id">
