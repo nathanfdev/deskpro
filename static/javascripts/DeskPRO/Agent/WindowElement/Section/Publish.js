@@ -140,10 +140,64 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				ed.addNew();
 			});
 		}, this);
+
+		this.usergroupEditing();
 	},
 
-	updateTitles: function(type, titles) {
+	usergroupEditing: function() {
+		var self = this;
+		$('#publish_outline .edit-usergroups').click(function(ev) {
+			ev.stopPropagation();
+			self._openUserGroupEditor($(this).parent().parent());
+		});
 
+		this.ugEdTab = $('#cat_usergroups_editor_tab').detach().appendTo('body');
+		this.ugEd = $('#cat_usergroups_editor').detach().appendTo('body');
+		this.ugEdTabBk = $('<div class="usergroups-editor-shadow-breaker" style="display: none" />').appendTo('body');
+		this.ugEdBack = $('<div class="backdrop usergroup-editor-backdrop" style="position: absolute; top:0;left:0;right:0;bottom:0; display: none;" />').appendTo('body');
+	},
+
+	_openUserGroupEditor: function(el) {
+		var back = this.ugEdBack;
+		var tab = this.ugEdTab;
+		var tabBk = this.ugEdTabBk;
+		var pop = this.ugEd
+
+		var elPos = el.offset();
+		var elWidth = el.width() - 10;
+
+		var title = $('a:first', el).text().trim();
+		$('.title', tab).text(title);
+
+		tab.css({
+			left: elPos.left,
+			top: elPos.top,
+			width: elWidth
+		});
+
+		tabBk.css({
+			left: elPos.left + elWidth - 4,
+			top: elPos.top + 1
+		})
+
+		pop.css({
+			left: elPos.left + elWidth,
+			top: elPos.top - 10
+		});
+
+		back.show();
+		tab.show();
+		tabBk.show();
+		pop.show();
+
+		back.click(this._closeUserGroupEditor.bind(this));
+	},
+
+	_closeUserGroupEditor: function() {
+		this.ugEdBack.hide();
+		this.ugEdTab.hide();
+		this.ugEdTabBk.hide();
+		this.ugEd.hide();
 	},
 
 	//#########################################################################

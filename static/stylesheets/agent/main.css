@@ -3583,6 +3583,24 @@ span.kb-editor-edit a {
 	visibility: hidden;
 }
 
+#deskpro_outline ul.nav-list li .edit-usergroups {
+	float: right;
+	width: 16px;
+	height: 16px;
+	display: none;
+	background: url(../../images/tab-icon-person.png) no-repeat 50% 50%;
+	overflow: hidden;
+	text-indent: -100px;
+	opacity: 0.5;
+	margin-top: 3px;
+	margin-right: 3px;
+}
+
+#deskpro_outline ul.nav-list li:hover > .dp-cat-item .edit-usergroups,
+#deskpro_outline ul.nav-list li:hover > .edit-usergroups {
+	display: block;
+}
+
 #deskpro_outline ul.nav-list li.has-children > .sub-toggle,
 #deskpro_outline ul.nav-list li.has-children > .dp-cat-item > .sub-toggle {
 	visibility: visible;
@@ -6198,4 +6216,83 @@ border-radius: 0px 0px 4px 4px;
 #deskpro_outline > section .deskpro-tab-item .controls {
 	text-align: center;
 	padding: 0 0 3px 0;
+}
+
+
+
+.usergroups-editor-tab {
+	position: absolute;
+	background-color: #fff;
+	padding: 5px;
+	font-size: 11px;
+	border: 1px solid #BFC2C7;
+	border-right: 1px solid #fff;
+
+	-webkit-box-shadow: 1px 1px 3px 0px #000000;
+	-moz-box-shadow: 1px 1px 3px 0px #000000;
+	box-shadow: 1px 1px 3px 0px #000000;
+	z-index: 999997;
+
+	-moz-border-radius-topleft: 4px;
+	-moz-border-radius-topright: 0px;
+	-moz-border-radius-bottomright: 0px;
+	-moz-border-radius-bottomleft: 4px;
+	-webkit-border-radius: 4px 0px 0px 4px;
+	border-radius: 4px 0px 0px 4px;
+
+	margin-left: 2px;
+}
+.usergroups-editor-shadow-breaker {
+	display: block;
+	position: absolute;
+	background-color: #fff;
+	height: 21px;
+	width: 6px;
+	z-index: 999999;
+}
+.usergroups-editor {
+	position: absolute;
+	background-color: #fff;
+	min-width: 200px;
+	font-size: 11px;
+	padding: 5px;
+	border: 1px solid #BFC2C7;
+
+	-webkit-border-radius: 5px;
+	-moz-border-radius: 5px;
+	border-radius: 5px;
+
+	-webkit-box-shadow: 1px 1px 3px 0px #000000;
+	-moz-box-shadow: 1px 1px 3px 0px #000000;
+	box-shadow: 1px 1px 3px 0px #000000;
+	z-index: 999998;
+}
+
+.usergroups-editor h5 {
+
+}
+
+.usergroup-editor-backdrop {
+	z-index: 999990;
+}
+
+.usergroups-editor label {
+	display: block;
+	margin: 3px 0 3px 0;
+}
+
+.usergroups-editor .close-trigger {
+    display: block;
+    width: 13px;
+    height: 13px;
+    text-indent: -100px;
+    overflow: hidden;
+    background: url(../../images/close-small.png) no-repeat 0 0;
+    margin-top: 0;
+    cursor: pointer;
+	position: absolute;;
+	top: 0;
+	right: 0;
+	margin-top: -5px;
+	margin-right: -5px;
 }

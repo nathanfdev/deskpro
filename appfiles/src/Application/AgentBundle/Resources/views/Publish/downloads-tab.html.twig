@@ -10,6 +10,4 @@
 		</li>
 		{% include 'AgentBundle:Publish:downloads-cat-list.html.twig' with {'cats': download_cats, 'counts': download_cats_counts, 'depth': 0 } %}
 	</ul>
-
-	{% include 'AgentBundle:Publish:category-editor.html.twig' with { 'categories': download_cats_full, 'classname': 'download-cat-editor', 'type': 'download', 'title': 'Download Categories' } %}
 </section>
