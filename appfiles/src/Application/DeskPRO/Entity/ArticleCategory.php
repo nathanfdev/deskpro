@@ -32,10 +32,10 @@ class ArticleCategory extends CategoryAbstract
 
 	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="ArticleCategory", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"lft" = "ASC"})
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children;
-	
+
 	/**
 	 * If this is true, then all categories and articles under this one
 	 * are considered agent KB articles and wont be displayed in

@@ -22,7 +22,6 @@
 <header class="section-header with-tabs" style="margin-top: 28px;">
 	<h1>Content</h1>
 	<nav id="publish_outline_tabstrip" class="deskpro-inner-tabstrip">
-		<span id="publish_outline_edit_cats" class="tipped" title="Edit categories" data-tipped-options="hook: 'bottommiddle'">edit</span>
 		<ul>
 			<li data-tab-for="#publish_outline_kb"><a>KB</a></li>
 			<li data-tab-for="#publish_outline_news"><a>News</a></li>
@@ -36,3 +35,12 @@
 {% include 'AgentBundle:Publish:downloads-tab.html.twig' %}
 {% include 'AgentBundle:Publish:news-tab.html.twig' %}
 {% include 'AgentBundle:Publish:glossary-tab.html.twig' %}
+
+<script type="text/x-deskpro-plain" id="publish_outline_cat_list_newitem">
+	<li>
+		<span class="list-counter">0</span>
+		<span class="sub-toggle">expand</span>
+		<a>New Category</a>
+		<ul class="sub-group"></ul>
+	</li>
+</script>

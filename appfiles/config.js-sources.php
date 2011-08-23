@@ -170,6 +170,7 @@ $CONFIG['agent']['deskpro-ui'] = array(
 		'javascripts/DeskPRO/UI/Menu.js',
 		'javascripts/DeskPRO/UI/SimpleTabs.js',
 		'javascripts/DeskPRO/UI/DateChooser.js',
+		'javascripts/DeskPRO/UI/CatListEditor.js',
 	)
 );
 

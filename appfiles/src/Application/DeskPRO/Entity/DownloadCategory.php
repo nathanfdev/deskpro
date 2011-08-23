@@ -32,7 +32,7 @@ class DownloadCategory extends CategoryAbstract
 
 	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="DownloadCategory", mappedBy="parent")
-	 * @ORM_Mapping\OrderBy({"lft" = "ASC"})
+	 * @ORM_Mapping\OrderBy({"display_order" = "ASC"})
 	 */
 	protected $children;
 }

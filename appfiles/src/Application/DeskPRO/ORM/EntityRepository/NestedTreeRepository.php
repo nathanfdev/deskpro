@@ -13,6 +13,7 @@ namespace Application\DeskPRO\ORM\EntityRepository;
 
 use \Application\DeskPRO\App;
 
+use Gedmo\Tool\Wrapper\EntityWrapper;
 use Doctrine\ORM\Query,
     Gedmo\Tree\Strategy,
     Gedmo\Tree\Strategy\ORM\Nested,
@@ -72,4 +73,21 @@ class NestedTreeRepository extends \Gedmo\Tree\Entity\Repository\NestedTreeRepos
 
 		return $ids;
 	}
+
+	public function reorderAll($sortByField = 'lft', $direction = 'ASC')
+    {
+		$meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('node')
+            ->from($config['useObjectClass'], 'node')
+            ->where('node.' . $config['parent'] . " IS NULL")
+            ->orderBy('node.' . $sortByField, 'ASC');
+        $q = $qb->getQuery();
+
+		$roots = $q->getResult();
+		foreach ($roots as $node) {
+			$this->reorder($node, $sortByField, $direction, false);
+		}
+    }
 }

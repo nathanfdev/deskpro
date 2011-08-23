@@ -1,13 +1,13 @@
 <section id="publish_outline_kb" class="deskpro-tab-item" data-editor-class="kb-cat-editor">
-	<ul class="nav-list">
-		<li class="all expanded">
-			<span class="sub-toggle">expand</span>
+	<div class="controls">
+		<button class="clean-gray xxx-small" id="publish_outline_articlescat_edittiles">Edit Titles</button>
+		<button class="clean-gray xxx-small" id="publish_outline_articlescat_addcat">Add Category</button>
+	</div>
+	<ul class="nav-list" id="publish_outline_articlescat_list">
+		<li class="all">
+			<span class="list-counter" id="kb_cat_count_0">{{ kb_cats_counts[0]|default(0) }}</span>
 			<a class="all-route" data-route="listpane:{{ path('agent_kb_list') }}">All</a>
-			<ul class="sub-group">
-			{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
-			</ul>
 		</li>
+		{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
 	</ul>
-
-	{% include 'AgentBundle:Publish:category-editor.html.twig' with { 'categories': kb_cats_full, 'classname': 'kb-cat-editor', 'type': 'article', 'title': 'KB Categories' } %}
 </section>

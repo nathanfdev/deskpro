@@ -38,32 +38,112 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 				var all = $('a.all-route:first', info.tabContent);
 				if (all.length) {
-					DeskPRO_Window.runPageRouteFromElement(all);
+					//DeskPRO_Window.runPageRouteFromElement(all);
 				}
 			}
 		});
-
-		$('#publish_outline_edit_cats').click(function() {
-			self.openCatEditor($(this).data('editor-class'));
-		});
-
-		$('#publish_outline .sub-toggle').click(function(ev) {
-			ev.stopPropagation();
-			var li = $(this).parent();
-			var sub = $('ul.sub-group:first', li);
-
-			if (sub.is(':visible')) {
-				sub.slideUp();
-				$(this).removeClass('open');
-			} else {
-				sub.slideDown();
-				$(this).addClass('open');
-			}
-		});
-
 		this._initGlossary();
 
-		//publish_outline_edit_cats
+		var types = ['articles','downloads','news'];
+		this.catEditors = {};
+
+		var makeOrderData = function(orders) {
+			var orderData = [];
+
+			Array.each(orders, function(id) {
+				orderData.push({
+					name: 'orders[]',
+					value: id
+				});
+			});
+
+			return orderData;
+		};
+
+		var makeStructureData = function(structure) {
+			var structureData = [];
+
+			Object.each(structure, function(parent_id, id) {
+				structureData.push({
+					name: 'structure[' + id + ']',
+					value: parent_id
+				});
+			});
+
+			return structureData;
+		};
+
+		var makeTitleData = function(titles) {
+			var titleData = [];
+
+			Object.each(titles, function(title, id) {
+				titleData.push({
+					name: 'titles[' + id + ']',
+					value: title
+				});
+			});
+
+			return titleData;
+		};
+
+		Array.each(types, function(type) {
+			var ed = new DeskPRO.UI.CatListEditor({
+				listEl: '#publish_outline_'+type+'cat_list',
+				itemSelector: 'li:not(.all)',
+				newItemTplSelector: '#publish_outline_cat_list_newitem',
+				onReordered: function() {
+					$.ajax({
+						url: BASE_URL + 'agent/publish/categories/'+type+'/update-orders',
+						data: makeOrderData(ed.getOrder()),
+						type: 'POST'
+					});
+				},
+				onTitlesUpdated: function(titles) {
+					$.ajax({
+						url: BASE_URL + 'agent/publish/categories/'+type+'/update-titles',
+						data: makeTitleData(titles),
+						type: 'POST'
+					});
+				},
+				onRestructured: function() {
+					$.ajax({
+						url: BASE_URL + 'agent/publish/categories/'+type+'/update-structure',
+						data: makeStructureData(ed.getStructure()),
+						type: 'POST'
+					});
+				},
+				onNewAdded: function(li, input) {
+					var title = input.val().trim();
+					$.ajax({
+						url: BASE_URL + 'agent/publish/categories/'+type+'/add-category',
+						data: { title: title },
+						type: 'POST',
+						dataType: 'json',
+						success: function(info) {
+							li.data('category-id', info.id);
+							$('a', li).data('route', 'listpane:' + info.url);
+							$('.list-counter', li).id(type + '_cat_count_' + info.id);
+						}
+					});
+				}
+			});
+
+			$('#publish_outline_'+type+'cat_edittiles').click(function() {
+				if (ed.isTitleEditing()) {
+					ed.endEditTitles();
+				} else {
+					ed.showEditTitles();
+				}
+			});
+
+			$('#publish_outline_'+type+'cat_addcat').click(function() {
+				ed.addNew();
+			});
+		}, this);
+	},
+
+	updateTitles: function(type, titles) {
+
 	},
 
 	//#########################################################################
@@ -209,46 +289,6 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			success: function(counts) {
 
 			}
-		});
-	},
-
-
-	//#########################################################################
-	//# Cat Editor
-	//#########################################################################
-
-	openCatEditor: function(editorClassname) {
-		if (!this.catEditors) this.catEditors = {};
-
-		this._initCatEditor(editorClassname);
-		if (!this.catEditors[editorClassname]) {
-			console.error('No category editor for %s', editorClassname);
-			return;
-		}
-
-		var editor = this.catEditors[editorClassname];
-		editor.open();
-	},
-
-	_initCatEditor: function(editorClassname) {
-		if (this.catEditors[editorClassname]) return;
-
-		var editor = new DeskPRO.Agent.PageHelper.CategoryEdit({
-			wrapper: $('.' + editorClassname, this.contentEl)
-		});
-
-		this.catEditors[editorClassname] = editor;
-
-		var type = editor.wrapper.data('type');
-
-		editor.addEvent('save', function(editor) {
-			var data = editor.encodeForm();
-			$.ajax({
-				url: BASE_URL + 'agent/publish/save-categories/' + type,
-				data: data,
-				type: 'GET',
-				dataType: 'json'
-			});
 		});
 	}
 });

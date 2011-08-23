@@ -784,6 +784,22 @@ agent_publish_savecats:
   pattern: /publish/save-categories/{type}
   defaults: { _controller: AgentBundle:Publish:saveCategories }
 
+agent_publish_cats_addcat:
+  pattern: /publish/categories/{type}/add-category
+  defaults: { _controller: AgentBundle:Publish:addCategory }
+
+agent_publish_cats_updateorders:
+  pattern: /publish/categories/{type}/update-orders
+  defaults: { _controller: AgentBundle:Publish:updateCategoryOrders }
+
+agent_publish_cats_updatetitles:
+  pattern: /publish/categories/{type}/update-titles
+  defaults: { _controller: AgentBundle:Publish:updateCategoryTitles }
+
+agent_publish_cats_updatestructure:
+  pattern: /publish/categories/{type}/update-structure
+  defaults: { _controller: AgentBundle:Publish:updateCategoryStructure }
+
 ################################################################################
 # KB
 ################################################################################

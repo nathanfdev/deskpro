@@ -21,6 +21,23 @@ class AbstractNestedTreeCategoryRepository extends \Application\DeskPRO\ORM\Enti
 	protected $_cat_helper = null;
 
 	/**
+     * Get all root nodes query
+     *
+     * @return Query
+     */
+    public function getRootNodesQuery()
+    {
+        $meta = $this->getClassMetadata();
+        $config = $this->listener->getConfiguration($this->_em, $meta->name);
+        $qb = $this->_em->createQueryBuilder();
+        $qb->select('node')
+            ->from($config['useObjectClass'], 'node')
+            ->where('node.' . $config['parent'] . " IS NULL")
+            ->orderBy('node.display_order', 'ASC');
+        return $qb->getQuery();
+    }
+
+	/**
 	 * @return \Application\DeskPRO\EntityRepository\Helper\CategoryHierarchy
 	 */
 	public function getCategoryHelper()

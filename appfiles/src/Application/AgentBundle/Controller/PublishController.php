@@ -16,6 +16,7 @@ use Application\DeskPRO\Entity\GlossaryWord;
 use Application\DeskPRO\EntityRepository\CommentAbstract as CommentAbstractRepos;
 
 use Application\DeskPRO\Publish\AgentHelper as PublishHelper;
+use Application\DeskPRO\Publish\CategoryEdit as PublishCategoryEdit;
 
 use Orb\Util\Strings;
 use Orb\Util\Numbers;
@@ -79,11 +80,11 @@ class PublishController extends AbstractController
 	############################################################################
 	# comments
 	############################################################################
-	
+
 	public function listValidatingCommentsAction()
 	{
 		$per_page = 25;
-		
+
 		$curpage = $this->in->getUint('page');
 		if (!$curpage) $curpage = 1;
 
@@ -116,7 +117,7 @@ class PublishController extends AbstractController
 	public function approveCommentAction($typename, $comment_id)
 	{
 		$entity = $this->_getCommentEntityName($typename);
-		
+
 		$comment = App::findEntity($entity, $comment_id);
 		$comment['status'] = 'visible';
 
@@ -132,7 +133,7 @@ class PublishController extends AbstractController
 	public function disapproveCommentAction($typename, $comment_id)
 	{
 		$entity = $this->_getCommentEntityName($typename);
-		
+
 		$comment = App::findEntity($entity, $comment_id);
 		$comment['status'] = 'deleted';
 
@@ -211,5 +212,39 @@ class PublishController extends AbstractController
 		});
 
 		return $this->createJsonResponse(array('success' => true));
+	}
+
+	public function updateCategoryTitlesAction($type)
+	{
+		PublishCategoryEdit::updateTitles($type, $this->in->getCleanValueArray('titles', 'string', 'uint'));
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+	public function updateCategoryOrdersAction($type)
+	{
+		PublishCategoryEdit::updateOrders($type, $this->in->getCleanValueArray('orders', 'uint', 'discard'));
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+	public function updateCategoryStructureAction($type)
+	{
+		PublishCategoryEdit::updateStructure($type, $this->in->getCleanValueArray('structure', 'uint', 'uint'));
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+	public function addCategoryAction($type)
+	{
+		$cat = PublishCategoryEdit::addCategory($type, $this->in->getString('title'));
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'id' => $cat['id'],
+			'url' => ''
+		));
 	}
 }

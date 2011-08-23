@@ -266,7 +266,7 @@ nav.mode-buttons > ul > li.on {
 
     text-shadow: 1px 1px 0px #000;
     filter: dropshadow(color=#000000, offx=1, offy=1);
-    
+
 }
 
 #deskpro_sections > ul > li.tickets > a {
@@ -606,7 +606,7 @@ section#agent_chat_panel nav {
 }
 
 section#agent_chat_panel nav div.title {
-    
+
 }
 
 section#agent_chat_panel nav ul.tabs {
@@ -782,16 +782,25 @@ So only the 'on' one is visible at a time */
     overflow: hidden;
 }
 
+.nav-list .sub-expanded .sub-toggle,
 .nav-list .sub-toggle.open {
     background-image: url(../../images/icons/bullet_toggle_minus.png);
 }
 
+.nav-list li > ul.sub-group {
+	display: none;
+}
+
+.nav-list li.sub-expanded > ul.sub-group {
+	display: block;
+}
+
 #tickets_outline_viewtypetabs {
-    
+
 }
 
 #tickets_outline_viewtypetabs ul li {
-    
+
 }
 
 #tickets_outline_viewtypetabs ul {
@@ -986,7 +995,7 @@ So only the 'on' one is visible at a time */
 
     border: 1px solid #E5EAED;
     border-bottom: none;
-    
+
     -moz-border-radius-topleft: 3px;
     -moz-border-radius-topright: 3px;
     -moz-border-radius-bottomright: 0px;
@@ -1221,7 +1230,7 @@ header.grouping-bar ul li.on, header.grouping-bar ul li:hover {
     transition: background 550ms ease;
 
     border-color: #6A9BB3;
-    
+
 }
 
 header.grouping-bar ul li .count {
