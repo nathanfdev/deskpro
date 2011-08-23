@@ -16,7 +16,7 @@ use Symfony\Component\DependencyInjection\ContainerInterface;
 use Application\DeskPRO\App;
 
 use Orb\Util\Util;
-	
+
 class TemplatingExtension extends \Twig_Extension
 {
     protected $container;
@@ -105,7 +105,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	public function getObjectPath($object, array $params = array(), $context = 'user')
 	{
-		$generator = $this->container->get('router.real')->getGenerator();
+		$generator = $this->container->get('router')->getGenerator();
 		return $generator->generateObjectUrl($object, $params, $context);
 	}
 
@@ -205,7 +205,7 @@ class TemplatingExtension extends \Twig_Extension
 
 	/**
 	 * Checks the special _partial flag in incoming requests to see if the user wants a partial
-	 * 
+	 *
 	 * @return bool
 	 */
 	public function isPartialRequest()
@@ -241,7 +241,7 @@ class TemplatingExtension extends \Twig_Extension
 	/**
 	 * Just gets a full helpdesk URL minus the http:// and www bits.
 	 * Makes it prettier when displaying links in emails.
-	 * 
+	 *
 	 * @param $name
 	 * @param array $parameters
 	 * @return mixed|string
@@ -282,7 +282,7 @@ class TemplatingExtension extends \Twig_Extension
 		$formView = $display_array['formView'];
 
 		$vars = array_merge($display_array, $vars);
-		
+
 		return $handler->renderFormHtml($formView, $vars);
 	}
 
@@ -359,7 +359,7 @@ class TemplatingExtension extends \Twig_Extension
 
 		$file =	$this->container->get('templating.helper.assets')->getUrl('build/' . $pack['out']);
 		$html = '<script src="'.$file.'"></script>';
-		
+
 		return $html;
 	}
 
