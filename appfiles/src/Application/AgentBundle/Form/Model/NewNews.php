@@ -19,7 +19,7 @@ class NewNews
 {
 	public $title;
 	public $category_id;
-	public $is_published = false;
+	public $status;
 	public $content;
 
 	public $slug;
@@ -46,10 +46,10 @@ class NewNews
 
 		$news = new News();
 		$news->person = $this->_person_context;
-		$news->is_published = $this->is_published;
 		$news->title = $this->title;
 		$news->content = $this->content;
 		$news->slug = $this->slug;
+		$news->setStatusCode($this->status);
 
 		$cat = $this->_em->find('DeskPRO:NewsCategory', $this->category_id);
 		$news->category = $cat;

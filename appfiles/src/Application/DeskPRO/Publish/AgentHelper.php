@@ -41,7 +41,7 @@ class AgentHelper implements PersonContextInterface
 
 	/**
 	 * Get the category structure
-	 * 
+	 *
 	 * @param string $type
 	 * @return array
 	 */
@@ -96,7 +96,119 @@ class AgentHelper implements PersonContextInterface
 		return $glossary_words;
 	}
 
-	
+
+	/**
+	 * Counts all content that needs validating
+	 *
+	 * @return int
+	 */
+	public function getValidatingContentCount()
+	{
+		$types = array(
+			'articles',
+			'downloads',
+			'news'
+		);
+
+		foreach ($types as $t) {
+			$sql_parts[] = "(
+				SELECT COUNT(*)
+				FROM $t
+				WHERE hidden_status = 'validating'
+			) AS count_$t";
+		}
+
+		$sql =  "SELECT " . implode(', ', $sql_parts);
+
+		$db = App::getDb();
+		$results = $db->fetchAssoc($sql);
+
+		return array_sum($results);
+	}
+
+
+	/**
+	 * Get an array of all content awaiting validation from each content type.
+	 *
+	 * @return array
+	 */
+	public function getValidatingContent($limit = 25, $order_dir = 'ASC')
+	{
+		$sql_parts = array();
+
+		if (!is_array($limit)) {
+			$limit = array(
+				'max' => $limit,
+				'offset' => 0
+			);
+		}
+
+		$types = array(
+			'articles'    => array('entity' => 'DeskPRO:ArticleComment',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+			'downloads'   => array('entity' => 'DeskPRO:DownloadComment', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+			'news'        => array('entity' => 'DeskPRO:NewsComment',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+		);
+
+		#------------------------------
+		# Fetch from each comment table with a union
+		#------------------------------
+
+		foreach ($types as $t => $t_info) {
+			$sql_parts[] = "(
+				SELECT c.id as content_id, '$t' as content_type, r.id AS revision_id, date_created
+				FROM $t AS c
+				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
+				WHERE c.hidden_status = 'validating' OR r.status = 'validating'
+				GROUP BY c.id
+			)";
+		}
+
+		$sql = implode(' UNION ', $sql_parts);
+		$sql .= "ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+
+		$db = App::getDb();
+		$results = $db->fetchAll($sql);
+
+		if (!$results) return array();
+
+		#------------------------------
+		# Fetch each comment in the result
+		#------------------------------
+
+		$result_ids_typed = array();
+
+		foreach ($results as $r) {
+			if (!isset($result_ids_typed[$r['content_type']])) {
+				$result_ids_typed[$r['content_type']] = array();
+			}
+
+			$result_ids_typed[$r['content_type']][] = $r['comment_id'];
+		}
+
+		$results_typed = array();
+
+		foreach ($result_ids_typed as $t => $ids) {
+			$t_info = $types[$t];
+			$results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
+		}
+
+		#------------------------------
+		# Put back into original sort order
+		# as a combined array
+		#------------------------------
+
+		$results_ordered = array();
+
+		foreach ($results as $r) {
+			if (isset($results_typed[$r['content_type']][$r['comment_id']])) {
+				$results_ordered[] = $results_typed[$r['content_type']][$r['comment_id']];
+			}
+		}
+
+		return $results_ordered;
+	}
+
+
 	/**
 	 * Get the content entity for a publish type
 	 *

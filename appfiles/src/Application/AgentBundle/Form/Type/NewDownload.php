@@ -24,6 +24,7 @@ class NewDownload extends AbstractType
 
 		$builder->add('title', 'text');
 		$builder->add('content', 'textarea');
+		$builder->add('status', 'text');
 
 		$builder->add('category_id', 'text');
 		$builder->add('slug', 'text');

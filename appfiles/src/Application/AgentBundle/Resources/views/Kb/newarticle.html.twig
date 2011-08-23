@@ -37,8 +37,12 @@ pageMeta.baseId = '{{ baseId }}';
 		<div class="col">
 			<h4 class="light">Status</h4>
 			<select name="newarticle[status]">
-				<option value="published" selected="selected">Publish</option>
+				<option value="published">Published</option>
+				<option value="hidden.unpublished">Unpublished</option>
 				<option value="hidden.draft">Draft</option>
+				{% if constant('DP_DEBUG') %}
+					<option value="hidden.validating" selected="selected">DEV: Validating</option>
+				{% endif %}
 			</select>
 		</div>
 		<br class="clear" />

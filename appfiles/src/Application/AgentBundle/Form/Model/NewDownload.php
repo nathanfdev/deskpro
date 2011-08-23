@@ -19,6 +19,7 @@ class NewDownload
 {
 	public $title;
 	public $category_id;
+	public $status;
 	public $content;
 
 	public $slug;
@@ -48,6 +49,7 @@ class NewDownload
 		$download->title = $this->title;
 		$download->content = $this->content;
 		$download->slug = $this->slug;
+		$download->setStatusCode($this->status);
 
 		$cat = $this->_em->find('DeskPRO:DownloadCategory', $this->category_id);
 		$download->category = $cat;

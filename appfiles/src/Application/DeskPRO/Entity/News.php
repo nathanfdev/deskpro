@@ -26,14 +26,8 @@ use Orb\Util\Arrays;
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\News")
  * @ORM_Mapping\Table(name="news")
  */
-class News extends \Application\DeskPRO\Domain\DomainObject
+class News extends ContentAbstract
 {
-	/**
-	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 */
-	protected $id = null;
-
 	/**
 	 * @var \Application\DeskPRO\Entity\NewsCategory
 	 * @ORM_Mapping\ManyToOne(targetEntity="NewsCategory", fetch="EAGER")
@@ -42,61 +36,15 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	protected $category;
 
 	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
-	 */
-	protected $person = null;
-
-	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="NewsRevision", mappedBy="news", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $revisions;
 
 	/**
-	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
-	 */
-	protected $title;
-
-	/**
-	 * @var string
-	 * @ORM_Mapping\Column(name="content", type="text")
-	 */
-	protected $content;
-
-	/**
-	 * Is the news item currently listed for users to read?
-	 *
-	 * @var bool
-	 * @ORM_Mapping\Column(name="is_published", type="boolean")
-	 */
-	protected $is_published = false;
-
-	/**
-	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
-	 */
-	protected $date_created;
-
-	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="LabelNews", mappedBy="news", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
 	 */
 	protected $labels;
-
-	/**
-	 * @var \Application\DeskPRO\Labels\LabelManager
-	 */
-	protected $_label_manager = null;
-
-	public function __construct()
-	{
-		$this->date_created = new \DateTime();
-		$this->comments     = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->labels       = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->revisions    = new \Doctrine\Common\Collections\ArrayCollection();
-	}
 
 	public function getContentHtml()
 	{
@@ -105,7 +53,7 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 		// Remove the intro separator
 		$content = preg_replace('#[\r\n]+\-{3,}[\r\n]+#', "\n", $content);
 
-		return Markdown::format($content);
+		return $content;
 	}
 
 	public function getExcerptHtml()
@@ -127,7 +75,7 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 			$excerpt .= '...';
 		}
 
-		return Markdown::format($excerpt);
+		return $excerpt;
 	}
 
 	public function getCountWordsAfterExcerpt()
@@ -138,11 +86,6 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 		$diff = str_word_count($content) - str_word_count($exceprt);
 
 		return $diff;
-	}
-
-	public function getUrlSlug()
-	{
-		return $this->id . '-' . Strings::slugifyTitle($this->title);
 	}
 
 	public function getLink()
@@ -177,17 +120,5 @@ class News extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$label['news'] = $this;
 		$this->labels->add($label);
-	}
-
-	/**
-	 * @return \Application\DeskPRO\Labels\LabelManager
-	 */
-	public function getLabelManager()
-	{
-		if ($this->_label_manager === null) {
-			$this->_label_manager = new \Application\DeskPRO\Labels\LabelManager($this, 'DeskPRO:LabelNews');
-		}
-
-		return $this->_label_manager;
 	}
 }

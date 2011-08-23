@@ -26,7 +26,7 @@ class NewNews extends AbstractType
 		$builder->add('content', 'textarea');
 
 		$builder->add('category_id', 'text');
-		$builder->add('is_published', 'checkbox', array('required' => false));
+		$builder->add('status', 'text');
 		$builder->add('slug', 'text');
 
 		$builder->add('labels', 'collection', array(
