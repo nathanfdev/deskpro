@@ -302,6 +302,36 @@ class PublishController extends AbstractController
 		return null;
 	}
 
+	public function validatingMassActionsAction($action)
+	{
+		$data = $this->in->getCleanValueArray('content', 'array', 'string');
+
+		$this->em->beginTransaction();
+
+		foreach ($data as $type => $ids) {
+			$entity = PublishHelper::getEntityNameFor($type);
+			if (!$entity) continue;
+
+			$results = App::getEntityRepository($entity)->getByIds($ids);
+			foreach ($results as $r) {
+				if ($action == 'approve') {
+					$r->status = 'approve';
+				} else {
+					$r->status_code = 'hidden.draft';
+				}
+
+				$this->em->persist($r);
+			}
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
 	############################################################################
 	# saving categories
 	############################################################################

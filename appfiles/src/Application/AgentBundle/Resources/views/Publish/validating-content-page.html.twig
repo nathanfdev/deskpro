@@ -3,7 +3,7 @@
 		{% set info = content_info.info %}
 		{% set content = content_info.obj %}
 		<article class="content {{ info.content_type }}-{{content.id}} {{ get_type(content)|lower }}">
-			<input class="item-select" type="checkbox" value="{{ info.content_type }}.{{content.id}}" />
+			<input class="item-select" type="checkbox" value="{{ info.content_type }}.{{content.id}}" data-content-type="{{ info.content_type }}" data-content-id="{{ content.id }}" />
 			<div class="toprow">
 				<div class="left">
 					<span class="subject">
