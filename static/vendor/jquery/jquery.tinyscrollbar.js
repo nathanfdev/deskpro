@@ -92,11 +92,9 @@
 
 			oViewport.obj.mouseover(function(ev) {
 				oScrollbar.obj.addClass('is-scrolling');
-				ev.stopPropagation();
 			});
 			oViewport.obj.mouseout(function(ev) {
 				oScrollbar.obj.removeClass('is-scrolling');
-				ev.stopPropagation();
 			});
 		};
 		function start(oEvent){
