@@ -36,10 +36,12 @@
 {% include 'AgentBundle:Publish:news-tab.html.twig' %}
 {% include 'AgentBundle:Publish:glossary-tab.html.twig' %}
 
-<div id="cat_usergroups_editor_tab" class="usergroups-editor-tab" style="display: none">
-<input type="text" class="title" />
+{# Category editor #}
+<div id="publish_cat_editor_backdrop" class="backdrop cat-editor-backdrop" style="position: absolute; top:0;left:0;right:0;bottom:0; display: none;"></div>
+<div id="publish_cat_editor_tab" class="cat-editor-tab" style="display: none">
+	<input type="text" class="title" />
 </div>
-<div id="cat_usergroups_editor" class="usergroups-editor" style="display: none">
+<div id="publish_cat_editor" class="cat-editor" style="display: none">
 	<span class="close-trigger">x</span>
 	<h5>Usergroup Permissions</h5>
 	<div class="list">
@@ -51,11 +53,13 @@
 		<label><input type="checkbox" /> Usergroup 6</label>
 	</div>
 </div>
+<div id="publish_cat_editor_shadowbreak" class="cat-editor-shadow-breaker" style="display: none" />
 
 <script type="text/x-deskpro-plain" id="publish_outline_cat_list_newitem">
 	<li>
 		<span class="list-counter">0</span>
 		<span class="edit-cat">edit</span>
+		<span class="delete-cat">delete</span>
 		<span class="sub-toggle">expand</span>
 		<a>New Category</a>
 		<ul class="sub-group"></ul>

@@ -804,6 +804,10 @@ agent_publish_savecats:
   pattern: /publish/save-categories/{type}
   defaults: { _controller: AgentBundle:Publish:saveCategories }
 
+agent_publish_cats_adddel:
+  pattern: /publish/categories/{type}/delete-category
+  defaults: { _controller: AgentBundle:Publish:deleteCategory }
+
 agent_publish_cats_addcat:
   pattern: /publish/categories/{type}/add-category
   defaults: { _controller: AgentBundle:Publish:addCategory }

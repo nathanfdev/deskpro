@@ -418,4 +418,15 @@ class PublishController extends AbstractController
 			'url' => ''
 		));
 	}
+
+	public function deleteCategoryAction($type)
+	{
+		PublishCategoryEdit::deleteCategory($type, $this->in->getUint('category_id'));
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'category_id' => $this->in->getUint('category_id'),
+			'type' => $type
+		));
+	}
 }

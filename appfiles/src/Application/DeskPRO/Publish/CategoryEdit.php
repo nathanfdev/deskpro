@@ -191,6 +191,49 @@ class CategoryEdit
 		return $cats;
 	}
 
+
+	/**
+	 * Deletes a category and all its children if they are empty.
+	 *
+	 * @throws \InvalidArgumentException
+	 * @param $type
+	 * @param $category_id
+	 * @return void
+	 */
+	public static function deleteCategory($type, $category_id)
+	{
+		$entity = self::getEntityNameFor($type);
+		$repos  = App::getOrm()->getRepository($entity);
+		$cat = $repos->find($category_id);
+
+		if (!$cat) {
+			throw new \InvalidArgumentException("Unknown category `$category_id`");
+		}
+
+		$counts = $repos->getAllCounts(App::getCurrentPerson(), null);
+		if (isset($counts[$cat['id']]) && $counts[$cat['id']]) {
+			throw new \OutOfBoundsException("Category is not empty");
+		}
+
+		App::getOrm()->beginTransaction();
+
+		$fn = function($delcat) use (&$fn) {
+			foreach ($delcat->children as $subcat) {
+				$fn($subcat);
+			}
+
+			App::getOrm()->remove($delcat);
+		};
+
+		$fn($cat);
+
+		App::getOrm()->flush();
+		App::getOrm()->commit();
+
+		return $cat;
+	}
+
+
 	/**
 	 * Get the content entity for a publish type
 	 *

@@ -53,7 +53,7 @@ class ArticleCategory extends AbstractNestedTreeCategoryRepository
 	}
 
 
-	
+
 	public function getCategoriesById(array $ids)
 	{
 		$ids = Arrays::removeFalsey($ids);
@@ -101,12 +101,12 @@ class ArticleCategory extends AbstractNestedTreeCategoryRepository
 		return $this->find($id);
 	}
 
-	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal')
+	public function getAllCounts(PersonEntity $person_context = null, $cache_name = 'portal', $from_parent = 0)
 	{
 		// TODO
 		// move caching mechanism into own class, like stuff is done with
 		// Application\DeskPRO\Publish\AgentHelper
-		
+
 		$cache = App::getCache($cache_name);
 		$cache_id = "counts_articles";
 

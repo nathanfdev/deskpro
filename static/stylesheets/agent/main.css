@@ -6223,7 +6223,7 @@ border-radius: 0px 0px 4px 4px;
 	background-image: url(../../images/icons/add.png);
 }
 
-.usergroups-editor-tab {
+.cat-editor-tab {
 	position: absolute;
 	background-color: #fff;
 	padding: 5px;
@@ -6245,15 +6245,20 @@ border-radius: 0px 0px 4px 4px;
 
 	margin-left: 2px;
 }
-.usergroups-editor-shadow-breaker {
+
+.cat-editor-tab input.title {
+	width: 160px;
+}
+
+.cat-editor-shadow-breaker {
 	display: block;
 	position: absolute;
 	background-color: #fff;
-	height: 21px;
+	height: 31px;
 	width: 6px;
 	z-index: 999999;
 }
-.usergroups-editor {
+.cat-editor {
 	position: absolute;
 	background-color: #fff;
 	min-width: 200px;
@@ -6271,20 +6276,20 @@ border-radius: 0px 0px 4px 4px;
 	z-index: 999998;
 }
 
-.usergroups-editor h5 {
+.cat-editor h5 {
 
 }
 
-.usergroup-editor-backdrop {
+.cat-editor-backdrop {
 	z-index: 999990 !important;
 }
 
-.usergroups-editor label {
+.cat-editor label {
 	display: block;
 	margin: 3px 0 3px 0;
 }
 
-.usergroups-editor .close-trigger {
+.cat-editor .close-trigger {
     display: block;
     width: 13px;
     height: 13px;
@@ -6300,7 +6305,8 @@ border-radius: 0px 0px 4px 4px;
 	margin-right: -5px;
 }
 
-#deskpro_outline ul.nav-list li .edit-cat {
+#deskpro_outline ul.nav-list li .edit-cat,
+#deskpro_outline ul.nav-list li .delete-cat {
 	float: right;
 	width: 16px;
 	height: 16px;
@@ -6313,7 +6319,12 @@ border-radius: 0px 0px 4px 4px;
 	margin-right: 3px;
 }
 
-#deskpro_outline ul.nav-list li:hover .edit-cat {
+#deskpro_outline ul.nav-list li .delete-cat {
+	background-image: url(../../images/icons/trash.png);
+}
+
+#deskpro_outline ul.nav-list li:hover .edit-cat,
+#deskpro_outline ul.nav-list li:hover .delete-cat {
 	opacity: 1;
 }
 
@@ -6321,6 +6332,7 @@ border-radius: 0px 0px 4px 4px;
 	display: none;
 }
 
-#deskpro_outline ul.nav-list.edit-mode .edit-cat {
+#deskpro_outline ul.nav-list.edit-mode .edit-cat,
+#deskpro_outline ul.nav-list.edit-mode .delete-cat {
 	display: block;
 }

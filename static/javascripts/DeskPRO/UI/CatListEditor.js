@@ -45,7 +45,12 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 			 * Selector for new item template
 			 * {String}
 			 */
-			newItemTplSelector: null
+			newItemTplSelector: null,
+
+			/**
+			 * The basename for the editor elements
+			 */
+			editorBaseId: ''
 		};
 
 		this.setOptions(options);
@@ -309,5 +314,99 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 		var input = $('input:first', li);
 		input.focus().val();
+	},
+
+	/**
+	 * Show an editor for a certain item in the list
+	 *
+	 * @param {jQuery} li
+	 */
+	showEditor: function(li) {
+
+		this._initEditor();
+
+		var elPos = li.offset();
+		var elWidth = li.width() - 10;
+
+		var title = $('a:first', li).text().trim();
+		$('input.title', this.editTab).val(title);
+
+		this.editTab.css({
+			left: elPos.left,
+			top: elPos.top,
+			width: elWidth
+		});
+
+		this.editTabBk.css({
+			left: elPos.left + elWidth - 4,
+			top: elPos.top + 1
+		})
+
+		this.edit.css({
+			left: elPos.left + elWidth,
+			top: elPos.top - 10
+		});
+
+		this.editBack.show();
+		this.editTab.show();
+		this.edit.show();
+		this.editTabBk.show();
+
+		this.edit.data('editing-li', li);
+	},
+
+	closeOpenEditor: function() {
+
+		var li = this.edit.data('editing-li');
+
+		if (li) {
+			var newTitle = $('input.title', this.editTab).val().trim();
+			var titleEl = $('a:first', li);
+			var oldTitle = titleEl.text().trim();
+			var dataId = li.data(this.options.dataId);
+
+			if (newTitle != oldTitle) {
+				titleEl.text(newTitle);
+
+				var titles = {};
+				titles[dataId] = newTitle;
+				this.fireEvent('titlesUpdated', [titles, this]);
+			}
+		}
+
+		this.editBack.hide();
+		this.editTab.hide();
+		this.edit.hide().data('editing-li', 0);
+		this.editTabBk.hide();
+	},
+
+	_initEditor: function() {
+		if (this._editorHasInit) return;
+		this._editorHasInit = true;
+
+		this.editBack   = $('#' + this.options.editorBaseId + 'cat_editor_backdrop').detach().appendTo('body');
+		this.editTab    = $('#' + this.options.editorBaseId + 'cat_editor_tab').detach().appendTo('body');
+		this.edit       = $('#' + this.options.editorBaseId + 'cat_editor').detach().appendTo('body');
+		this.editTabBk  = $('#' + this.options.editorBaseId + 'cat_editor_shadowbreak').detach().appendTo('body');
+
+		$('.close-trigger', this.edit).click(this.closeOpenEditor.bind(this));
+
+		this.edit.click(function(ev) {
+			ev.stopPropagation();
+		});
+		this.editTab.click(function(ev) {
+			ev.stopPropagation();
+		});
+
+		this.editBack.click(this.closeOpenEditor.bind(this));
+	},
+
+	destroy: function() {
+		if (this.editBack) {
+			this.editBack.remove();
+			this.editTab.remove();
+			this.edit.remove();
+			this.editTabBk.remove();
+		}
 	}
 });
