@@ -338,6 +338,69 @@ class PublishController extends AbstractController
 	}
 
 	############################################################################
+	# content validating
+	############################################################################
+
+	public function listDraftsAction()
+	{
+		$per_page = 25;
+
+		$curpage = $this->in->getUint('page');
+		if (!$curpage) $curpage = 1;
+
+		$limit = array(
+			'max' => $per_page,
+			'offset' => ($curpage - 1) * $per_page
+		);
+
+		$pageinfo = null;
+		$total = null;
+		if (!$this->request->isPartialRequest()) {
+			$total = $this->publish_helper->getDraftsCount();
+			$pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
+		}
+
+		$drafts =  $this->publish_helper->getDraftContent(null);
+
+		$tpl = 'AgentBundle:Publish:drafts.html.twig';
+		if ($this->request->isPartialRequest()) {
+			$tpl = 'AgentBundle:Publish:drafts-page.html.twig';
+		}
+
+		return $this->render($tpl, array(
+			'drafts'   => $drafts,
+			'total'    => $total,
+			'pageinfo' => $pageinfo
+		));
+	}
+
+	public function draftsMassActionsAction($action)
+	{
+		$data = $this->in->getCleanValueArray('content', 'array', 'string');
+
+		$this->em->beginTransaction();
+
+		foreach ($data as $type => $ids) {
+			$entity =  $this->publish_helper->getEntityNameFor($type);
+			if (!$entity OR $entity['status_code'] != 'hidden.draft' OR $entity->person['id'] != $this->person['id']) continue;
+
+			$results = App::getEntityRepository($entity)->getByIds($ids);
+			foreach ($results as $r) {
+				if ($action == 'delete') {
+					$this->em->remove($r);
+				}
+			}
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+	############################################################################
 	# saving categories
 	############################################################################
 

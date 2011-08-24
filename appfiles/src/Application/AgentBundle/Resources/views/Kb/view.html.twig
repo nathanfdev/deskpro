@@ -25,11 +25,15 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="ticket-id">
 		<span>#{{ article.id }}</span>
 	</div>
-	<div class="the-status">
-		<div class="ticket-status article-status prop-status-icon tipped" title="{{ article.status }}">
-			<span class="ticket-{{article.status}}"></span>
+
+	{% if article.status_code != "hidden.validating" %}
+		<div class="the-status">
+			<div class="ticket-status article-status prop-status-icon tipped" title="{{ article.status }}">
+				<span class="ticket-{{article.status}}"></span>
+			</div>
 		</div>
-	</div>
+	{% endif %}
+
 	<div class="ticket-subject editable hover-edit no-cat" data-editable-for=".inline-editable .title">
 		{{ article.title }}
 	</div>
@@ -239,9 +243,9 @@ pageMeta.baseId = '{{ baseId }}';
 	<li data-option-value="published">{{ phrase('core_kb.status_published') }}</li>
 	<li data-option-value="hidden.unpublished">{{ phrase('core_kb.hidden_status_unpublished') }}</li>
 	<li data-option-value="archived">{{ phrase('core_kb.status_archived') }}</li>
-	<li data-option-value="hidden.draft">{{ phrase('core_kb.hidden_status_draft') }}</li>
-	<li class="sep">-</li>
-	<li data-option-value="hidden.deleted">{{ phrase('core_kb.hidden_status_deleted') }}</li>
+	{% if article.person.id == app.user.id %}
+		<li data-option-value="hidden.draft">{{ phrase('core_kb.hidden_status_draft') }}</li>
+	{% endif %}
 </ul>
 
 

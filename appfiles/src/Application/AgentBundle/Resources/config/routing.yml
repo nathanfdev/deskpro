@@ -824,6 +824,14 @@ agent_publish_cats_updatestructure:
   pattern: /publish/categories/{type}/update-structure
   defaults: { _controller: AgentBundle:Publish:updateCategoryStructure }
 
+agent_public_drafts:
+  pattern: /publish/drafts
+  defaults: { _controller: AgentBundle:Publish:listDrafts }
+
+agent_public_drafts_mass:
+  pattern: /publish/drafts/mass-actions/{action}
+  defaults: { _controller: AgentBundle:Publish:draftsMassActions }
+
 ################################################################################
 # KB
 ################################################################################

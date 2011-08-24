@@ -26,6 +26,14 @@ pageMeta.baseId = '{{ baseId }}';
 		<span>#{{ download.id }}</span>
 	</div>
 
+	{% if download.status_code != "hidden.validating" %}
+		<div class="the-status">
+			<div class="ticket-status download-status prop-status-icon tipped" title="{{ download.status }}">
+				<span class="ticket-{{download.status}}"></span>
+			</div>
+		</div>
+	{% endif %}
+
 	<div class="the-department">
 		<div class="ticket-department prop-department-id" id="{{baseId}}_category">
 			<div class="parent">
@@ -171,6 +179,15 @@ pageMeta.baseId = '{{ baseId }}';
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>
+
+<ul class="status-menu" data-option-name="status" style="display:none">
+	<li data-option-value="published">{{ phrase('core_kb.status_published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('core_kb.hidden_status_unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('core_kb.status_archived') }}</li>
+	{% if download.person.id == app.user.id %}
+		<li data-option-value="hidden.draft">{{ phrase('core_kb.hidden_status_draft') }}</li>
+	{% endif %}
+</ul>
 
 </div></div> {# scrollbar divs #}
 </div> {# main layout div #}

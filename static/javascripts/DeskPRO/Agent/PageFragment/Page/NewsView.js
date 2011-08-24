@@ -107,9 +107,25 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 		var self = this;
 
+		// Status
+		var trigger = $('.the-status:first', this.wrapper);
 		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.menu-trigger.status:first', this.wrapper),
-			menuElement: $('.menu.status:first', this.wrapper)
+			triggerElement: trigger,
+			menuElement: $('.status-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var status = $(info.itemEl).data('option-value');
+
+				$('.news-status', trigger).attr('title', status);
+				$('.news-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+
+				$.ajax({
+					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
+					type: 'POST',
+					data: {action: 'status', status: status},
+					context: self,
+					dataType: 'json'
+				});
+			}
 		});
 
 		// Change category menu

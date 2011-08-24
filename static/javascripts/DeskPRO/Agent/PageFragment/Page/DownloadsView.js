@@ -133,6 +133,27 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 				});
 			}
         });
+
+		// Status
+		var trigger = $('.the-status:first', this.wrapper);
+		this.statusMenu = new DeskPRO.UI.Menu({
+			triggerElement: trigger,
+			menuElement: $('.status-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var status = $(info.itemEl).data('option-value');
+
+				$('.download-status', trigger).attr('title', status);
+				$('.download-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+
+				$.ajax({
+					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+					type: 'POST',
+					data: {action: 'status', status: status},
+					context: self,
+					dataType: 'json'
+				});
+			}
+		});
 	},
 
 	//#################################################################

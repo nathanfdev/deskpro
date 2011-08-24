@@ -240,13 +240,13 @@ class AgentHelper implements PersonContextInterface
 	 *
 	 * @return array
 	 */
-	public function getDraftContent($limit = 25, $order_dir = 'ASC')
+	public function getDraftContent($limit = null, $order_dir = 'ASC')
 	{
 		$results = $this->getDraftInfo($limit, $order_dir);
 		return $this->getContentFromInfo($results);
 	}
 
-	public function getDraftInfo($limit = null)
+	public function getDraftInfo($limit = null, $order_dir = 'ASC')
 	{
 		$sql_parts = array();
 
@@ -272,7 +272,7 @@ class AgentHelper implements PersonContextInterface
 				SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
 				FROM $t AS c
 				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-				WHERE (c.hidden_status = 'draft' OR r.status = 'draft') AND (c.person_id = {$this->person_context['id']} OR r.person_id = {$this->person_context['id']})
+				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' AND c.person_id = {$this->person_context['id']}) OR (r.status = 'draft' AND r.person_id = {$this->person_context['id']})
 				GROUP BY c.id
 			)";
 		}
@@ -310,7 +310,7 @@ class AgentHelper implements PersonContextInterface
 				SELECT COUNT(*)
 				FROM $t c
 				LEFT JOIN {$t_info['rev_table']} r ON (r.{$t_info['id_field']} = c.id)
-				WHERE (c.hidden_status = 'draft' OR r.status = 'draft') AND (c.person_id = {$this->person_context['id']} OR r.person_id = {$this->person_context['id']})
+				WHERE (c.status = 'hidden' AND c.hidden_status = 'draft' AND c.person_id = {$this->person_context['id']}) OR (r.status = 'draft' AND r.person_id = {$this->person_context['id']})
 			) AS count_$t";
 		}
 

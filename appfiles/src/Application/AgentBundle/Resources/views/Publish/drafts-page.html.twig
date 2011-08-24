@@ -1,0 +1,31 @@
+<section class="search-reuslts page-set" data-page="{{ page }}">
+	{% for content_info in drafts %}
+		{% set info = content_info.info %}
+		{% set content = content_info.obj %}
+		<article class="content {{ info.content_type }}-{{content.id}} {{ get_type(content)|lower }}">
+			<input class="item-select" type="checkbox" value="{{ info.content_type }}.{{content.id}}" data-content-type="{{ info.content_type }}" data-content-id="{{ content.id }}" />
+			<div class="toprow">
+				<div class="left">
+					<span class="subject">
+						<a class="with-route" data-route="page:{{ object_path_agent(content) }}">{{ content.title }}</a>
+					</span>
+				</div>
+			</div>
+			<div class="extra-info">
+				<ul>
+					<li>{{ get_type(content) }}</li>
+					{% if info.revision_id %}
+						<li>
+							Revision
+						</li>
+					{% else %}
+						<li>
+							New
+						</li>
+					{% endif %}
+				</ul>
+				<br class="clear" />
+			</div>
+		</article>
+	{% endfor %}
+</section>

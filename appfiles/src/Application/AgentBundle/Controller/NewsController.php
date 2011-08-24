@@ -103,6 +103,10 @@ class NewsController extends AbstractController
 		$this->em->beginTransaction();
 
 		switch ($action) {
+			case 'status':
+				$news['status_code'] = $this->in->getString('status');
+				break;
+
 			case 'title':
 				$news['title'] = $this->in->getString('title');
 

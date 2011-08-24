@@ -25,6 +25,14 @@ pageMeta.baseId = '{{ baseId }}';
 		<span>#{{ news.id }}</span>
 	</div>
 
+	{% if news.status_code != "hidden.validating" %}
+		<div class="the-status">
+			<div class="ticket-status news-status prop-status-icon tipped" title="{{ news.status }}">
+				<span class="ticket-{{news.status}}"></span>
+			</div>
+		</div>
+	{% endif %}
+
 	<div class="the-department">
 		<div class="ticket-department prop-department-id" id="{{baseId}}_category">
 			<div class="parent">
@@ -167,6 +175,15 @@ pageMeta.baseId = '{{ baseId }}';
 		<input type="hidden" name="action" value="title" />
 	</div>
 </div>
+
+<ul class="status-menu" data-option-name="status" style="display:none">
+	<li data-option-value="published">{{ phrase('core_kb.status_published') }}</li>
+	<li data-option-value="hidden.unpublished">{{ phrase('core_kb.hidden_status_unpublished') }}</li>
+	<li data-option-value="archived">{{ phrase('core_kb.status_archived') }}</li>
+	{% if news.person.id == app.user.id %}
+		<li data-option-value="hidden.draft">{{ phrase('core_kb.hidden_status_draft') }}</li>
+	{% endif %}
+</ul>
 
 </div></div> {# scrollbar divs #}
 </div> {# main layout div #}

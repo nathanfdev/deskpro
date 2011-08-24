@@ -100,6 +100,11 @@ class DownloadsController extends AbstractController
 		$this->em->beginTransaction();
 
 		switch ($action) {
+
+			case 'status':
+				$download['status_code'] = $this->in->getString('status');
+				break;
+
 			case 'title':
 				$download['title'] = $this->in->getString('title');
 

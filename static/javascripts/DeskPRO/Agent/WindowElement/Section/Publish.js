@@ -38,7 +38,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 				var all = $('a.all-route:first', info.tabContent);
 				if (all.length) {
-					DeskPRO_Window.runPageRouteFromElement(all);
+					//DeskPRO_Window.runPageRouteFromElement(all);
 				}
 			}
 		});
