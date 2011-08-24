@@ -24,6 +24,14 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		this.contentEl.html(data.section_html);
 		//this.contentEl.addClass('scroll-content').tinyscrollbar();
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', function (info) {
+			DeskPRO_Window.util.modCountEl('#publish_drafts_count', '-');
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-add', function (info) {
+			DeskPRO_Window.util.modCountEl('#publish_drafts_count', '+');
+		});
+
 		var self = this;
 		this.typeTabs = new DeskPRO.UI.SimpleTabs({
 			context: this.sectionEl,

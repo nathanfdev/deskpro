@@ -380,14 +380,21 @@ class PublishController extends AbstractController
 
 		$this->em->beginTransaction();
 
+		$affected_content = array();
+
 		foreach ($data as $type => $ids) {
 			$entity =  $this->publish_helper->getEntityNameFor($type);
-			if (!$entity OR $entity['status_code'] != 'hidden.draft' OR $entity->person['id'] != $this->person['id']) continue;
+			if (!$entity) continue;
 
 			$results = App::getEntityRepository($entity)->getByIds($ids);
 			foreach ($results as $r) {
+				if ($r['status_code'] != 'hidden.draft' OR $r->person['id'] != $this->person['id']) continue;
 				if ($action == 'delete') {
 					$this->em->remove($r);
+					$affected_content[] = array('typename' => $type, 'contentId' => $r->id);
+				} elseif ($action == 'publish') {
+					$r->setStatusCode('published');
+					$affected_content[] = array('typename' => $type, 'contentId' => $r->id);
 				}
 			}
 		}
@@ -396,7 +403,8 @@ class PublishController extends AbstractController
 		$this->em->commit();
 
 		return $this->createJsonResponse(array(
-			'success' => true
+			'success' => true,
+			'affected' => $affected_content
 		));
 	}
 

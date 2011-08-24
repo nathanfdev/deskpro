@@ -39,6 +39,26 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this.ajaxErrorOverlay = null;
 
 		this.winStateQueue = [];
+
+		this.util = {
+			modCountEl: function(el, op, num) {
+
+				el = $(el);
+
+				if (!num) num = 1;
+
+				var count = parseInt(el.text().trim());
+
+				if (op == '-' || op == 'rem' || op == 'del') {
+					count -= num;
+					if (count < 0) count = 0;
+				} else {
+					count += num;
+				}
+
+				el.text(count);
+			}
+		};
 	},
 
 	initPage: function() {

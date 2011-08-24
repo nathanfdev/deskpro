@@ -13,6 +13,10 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Class({
 
 		});
 
+		DeskPRO_Window.getMessageBroker().addMessageListener('publish.drafts.list-remove', (function (info) {
+			$('article.' + info.typename + '-' + info.contentId, this.wrapper).slideUp();
+		}).bind(this));
+
 		this.actionsMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('button.perform-actions-trigger:first', this.wrapper),
 			menuElement: $('ul.actions-menu:first', this.wrapper),
@@ -41,8 +45,13 @@ DeskPRO.Agent.PageFragment.ListPane.PublishDraftsList = new Class({
 					data: data,
 					type: 'POST',
 					dataType: 'json',
-					success: function() {
-						$(lines).fadeOut();
+					context: this,
+					success: function(data) {
+						if (data.affected) {
+							Array.each(data.affected, function(info) {
+								DeskPRO_Window.getMessageBroker().sendMessage('publish.drafts.list-remove', info);
+							}, this);
+						}
 					}
 				});
 			}
