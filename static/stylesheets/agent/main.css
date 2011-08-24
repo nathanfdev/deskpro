@@ -6402,3 +6402,12 @@ article .pending-delete {
 .page-new-article input[name="newarticle[title]"] {
 	width: 350px;
 }
+
+
+
+.kb-visible-ticket-controls {
+	display: none;
+}
+.with-visible-ticket .kb-visible-ticket-controls {
+	display: block;
+}

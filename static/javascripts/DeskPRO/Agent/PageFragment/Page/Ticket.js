@@ -248,7 +248,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	},
 
 	destroyPage: function() {
-		
+
 		this.ticketChecker.destroy();
 
 		if (this.updateCheckTimeout) {
@@ -292,7 +292,7 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 			var showLogs = $('input.show-logs', this.wrapper).is(':checked');
 
 			console.log($('input.show-logs', this.wrapper));
-			
+
 			var msgWrap = $('.messages-wrap', this.wrapper);
 
 			if (!showMessages) {
@@ -379,6 +379,10 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 	setCount: function(id, count) {
 		var countEl = $('.'+id+'-count', this.wrapper);
 		countEl.data('count', count).html('(' + count + ')');
+	},
+
+	appendToMessage: function(content) {
+		this.getEl('replybox_txt').insertAtCaret(content);
 	},
 
 	//#################################################################

@@ -211,6 +211,34 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return $content;
 	}
 
+	public function getContentPlain()
+	{
+		if (!$this->content) {
+			return '';
+		}
+		$content = Strings::standardEol($this->content);
+		$content = preg_replace("#<br\s*/?><p>#", "<p>", $content);
+		$content = preg_replace("#<p></p><br\s*/?>#", "<p>", $content);
+		$content = preg_replace("#</p><br\s*/?>#", "</p>", $content);
+		$content = preg_replace("#<br\s*/?></p>#", "</p>", $content);
+		$content = preg_replace("#<br\s*/?>?#", "\n", $content);
+		$content = preg_replace("#<p>\n?#", "\n", $content);
+		$content = preg_replace("#\n?</p>#", "\n", $content);
+		$content = html_entity_decode(strip_tags($content), \ENT_QUOTES, 'UTF-8');
+		$content = trim($content);
+
+		$lines_raw = explode("\n", $content);
+		$lines = array();
+		foreach ($lines_raw as $l) {
+			$lines[] = trim($l);
+		}
+
+		$content = implode("\n", $lines);
+		$content = preg_replace("#\n{3,}#", "\n\n", $content);
+
+		return $content;
+	}
+
 	public function getUrlSlug()
 	{
 		return $this->id . '-' . $this->slug;

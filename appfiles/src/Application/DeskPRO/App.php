@@ -169,7 +169,7 @@ class App
 
 	/**
 	 * Get the autoloader
-	 * 
+	 *
 	 * @var \Orb\Util\ClassLoader
 	 */
 	public static function getClassLoader()
@@ -286,7 +286,7 @@ class App
 
 	/**
 	 * Get the search adapter.
-	 * 
+	 *
 	 * @return \Application\DeskPRO\Search\Adapter\AbstractAdapter
 	 */
 	public static function getSearchAdapter()
@@ -785,7 +785,7 @@ class App
 
 		return $logger;
 	}
-	
+
 
 	/**
 	 * Log a single error message to the standard error_log with subtype $type.

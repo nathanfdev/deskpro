@@ -8,6 +8,11 @@
 						<a class="with-route" data-route="page:{{ path('agent_kb_article', {'article_id': article.id}) }}">{{ article.title }}</a>
 					</span>
 				</div>
+				<div class="ticketinfo kb-visible-ticket-controls">
+					<div class="bound-faded"></div>
+					<button class="clean-gray xxx-small kb-insert-link" data-article-id="{{ article.id }}">Insert Link</button>
+					<button class="clean-gray xxx-small kb-insert-content" data-article-id="{{ article.id }}">Insert Content</button>
+				</div>
 			</div>
 			{% if display_fields|length %}
 				<div class="extra-info">

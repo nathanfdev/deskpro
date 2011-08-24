@@ -854,6 +854,11 @@ agent_kb_article:
   requirements: { article_id: "\d+" }
   options: { fragment_name: 'a' }
 
+agent_kb_article_info:
+  pattern: /kb/article/{article_id}/info
+  defaults: { _controller: AgentBundle:Kb:articleInfo }
+  requirements: { article_id: "\d+" }
+
 agent_kb_article_revisionstab:
   pattern: /kb/article/{article_id}/view-revisions
   defaults: { _controller: AgentBundle:Kb:viewRevisions }

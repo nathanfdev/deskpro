@@ -192,7 +192,7 @@ Orb.linkUrls = function(string) {
 /**
  * Appends query data to a URL which might already have query data. So this
  * appends an ? or an & depending.
- * 
+ *
  * @param url
  * @param k
  * @param v
@@ -215,7 +215,7 @@ Orb.appendQueryData = function(url, k, v) {
 
 /**
  * Repeat a string `str` `count` times
- * 
+ *
  * @param str
  * @param count
  * @return string
@@ -492,6 +492,32 @@ $.fn.single_double_click = function(single_click_callback, double_click_callback
 	});
 };
 
+
+jQuery.fn.extend({
+insertAtCaret: function(myValue){
+  return this.each(function(i) {
+    if (document.selection) {
+      this.focus();
+      sel = document.selection.createRange();
+      sel.text = myValue;
+      this.focus();
+    }
+    else if (this.selectionStart || this.selectionStart == '0') {
+      var startPos = this.selectionStart;
+      var endPos = this.selectionEnd;
+      var scrollTop = this.scrollTop;
+      this.value = this.value.substring(0, startPos)+myValue+this.value.substring(endPos,this.value.length);
+      this.focus();
+      this.selectionStart = startPos + myValue.length;
+      this.selectionEnd = startPos + myValue.length;
+      this.scrollTop = scrollTop;
+    } else {
+      this.value += myValue;
+      this.focus();
+    }
+  })
+}
+});
 
 
 // resize event -

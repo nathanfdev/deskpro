@@ -355,6 +355,19 @@ class KbController extends AbstractController
 		));
 	}
 
+	public function articleInfoAction($article_id)
+	{
+		$article = App::findEntity('DeskPRO:Article', $article_id);
+
+		$data = array(
+			'article_id' => $article['id'],
+			'permalink'  => $article->getLink(),
+			'content'    => $article->getContentPlain()
+		);
+
+		return $this->createJsonResponse($data);
+	}
+
 	############################################################################
 	# Compare revisions
 	############################################################################

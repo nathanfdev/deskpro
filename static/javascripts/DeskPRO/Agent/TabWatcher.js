@@ -33,7 +33,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
 			Array.each(this.watchedTypes[typename], function(watcher) {
-				watcher.fireEvent('activateTab', [tab]);
+				watcher.fireEvent('watchedTabActivated', [tab]);
 			});
 		}
 	},
@@ -42,7 +42,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
 			Array.each(this.watchedTypes[typename], function(watcher) {
-				watcher.fireEvent('deactivateTab', [tab]);
+				watcher.fireEvent('watchedTabDeactivated', [tab]);
 			});
 		}
 	},
@@ -53,7 +53,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 		var typename = this.getTabType(tab);
 		if (this.watchedTypes[typename]) {
 			Array.each(this.watchedTypes[typename], function(watcher) {
-				watcher.fireEvent('removeTab', [tab]);
+				watcher.fireEvent('watchedTabRemoved', [tab]);
 			});
 		}
 	},
@@ -61,7 +61,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 
 	/**
 	 * Add a type watcher.
-	 * 
+	 *
 	 * @param string typename
 	 * @param {Object} watcher
 	 */
@@ -87,7 +87,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 
 		this.watchedTypes[typename].erase(watcher);
 	},
-	
+
 
 	/**
 	 * Return the active tab
@@ -95,7 +95,23 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	 * @return {Object}
 	 */
 	getActiveTab: function() {
-		this.tabManager.getActiveTab();
+		return this.tabManager.getActiveTab();
+	},
+
+
+	/**
+	 * Get the active tab iif it's typename
+	 *
+	 * @param typename
+	 * @return {Object}
+	 */
+	getActiveTabIfType: function(typename) {
+		var tab = this.getActiveTab();
+		if (this.getTabType(tab) != typename) {
+			return null;
+		}
+
+		return tab;
 	},
 
 
@@ -105,7 +121,17 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	 * @return {Object}
 	 */
 	getActiveTabType: function() {
-		return this.getTabType(tab);
+		return this.getTabType(this.getActiveTab());
+	},
+
+
+	/**
+	 * Check if the active tab is a certain type
+	 *
+	 * @param typename
+	 */
+	isTabTypeActive: function(typename) {
+		return this.getActiveTabType() == typename;
 	},
 
 
@@ -116,6 +142,10 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 	 * @return string
 	 */
 	getTabType: function(tab) {
+		if (!tab) {
+			return null;
+		}
+
 		if (tab.page && tab.page.TYPENAME) {
 			return tab.page.TYPENAME;
 		}
@@ -144,7 +174,7 @@ DeskPRO.Agent.TabWatcher = new Orb.Class({
 
 	/**
 	 * Get the last selected tab of a certain type.
-	 * 
+	 *
 	 * @param string typename
 	 * @return {Object}
 	 */
