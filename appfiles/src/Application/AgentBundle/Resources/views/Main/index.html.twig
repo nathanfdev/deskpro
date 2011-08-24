@@ -50,32 +50,7 @@
 </div>
 
 {% include 'AgentBundle:Main:header.html.twig' %}
-
 {% include 'AgentBundle:Main:layout-wrappers.html.twig' %}
-
-<div id="global_ajax_error" style="display:none; width: 340px; text-align: center;">
-	<div class="overlay-content">
-		<p>A network exception occurred and your last request did not complete. Please try again.</p>
-		<div id="global_ajax_error_info" style="font-size: 9px; margin-top: 8px;"></div>
-	</div>
-</div>
-<div id="alert_overlay" style="display:none; min-width: 150px;">
-	<div class="overlay-content">
-		<p id="alert_overlay_msg"></p>
-	</div>
-	<div class="overlay-actions">
-		<button class="close-trigger dp-button small">Dismiss</button>
-	</div>
-</div>
-<div id="confirm_overlay" style="display:none; min-width: 150px;">
-	<div class="overlay-content">
-		<p id="confirm_overlay_msg"></p>
-	</div>
-	<div class="overlay-actions">
-		<button class="okay-trigger dp-button small green">Okay</button>
-		<button class="cancel-trigger dp-button small">Cancel</button>
-	</div>
-</div>
 
 {####################
  # RESOURCE LOADING

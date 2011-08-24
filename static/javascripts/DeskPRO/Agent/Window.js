@@ -441,8 +441,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 		this._confirmOverlay.openOverlay();
 	},
 
+	showPrompt: function(msg, callback_ok, callback_cancel) {
+		this._initPromptOverlay();
+
+		this._promptOverlay_callback_yes = callback_ok || function() { };
+		this._promptOverlay_callback_no = callback_cancel || function() { };
+
+		$('#prompt_overlay_msg').html(msg);
+		this._promptOverlay.openOverlay();
+	},
+
 	_initAlertOverlay: function() {
-		if (this._alertOverlay !== null) return;
+		if (this._alertOverlay) return;
 
 		this._alertOverlay = new DeskPRO.UI.Overlay({
 			contentElement: $('#alert_overlay'),
@@ -460,7 +470,7 @@ DeskPRO.Agent.Window = new Orb.Class({
 	},
 
 	_initConfirmOverlay: function() {
-		if (this._confirmOverlay !== null) return;
+		if (this._confirmOverlay) return;
 
 		this._confirmOverlay_callback_yes = function() { };
 		this._confirmOverlay_callback_no = function() { };
@@ -480,6 +490,34 @@ DeskPRO.Agent.Window = new Orb.Class({
 					eventData.overlay.closeOverlay();
 					self._confirmOverlay_callback_yes();
 					self._confirmOverlay_callback_yes = function() {};
+				}).bind(this));
+			}
+		});
+	},
+
+	_initPromptOverlay: function() {
+		if (this._promptOverlay) return;
+
+		this._promptOverlay_callback_ok = function() { };
+		this._promptOverlay_callback_cancel = function() { };
+
+		var self = this;
+
+		this._promptOverlay = new DeskPRO.UI.Overlay({
+			contentElement: $('#prompt_overlay'),
+			zIndex: 10000000, /* this should be bigger than everything */
+			onContentSet: function(eventData) {
+				$('.cancel-trigger', eventData.wrapperEl).click((function() {
+					eventData.overlay.closeOverlay();
+					self._confirmOverlay_callback_cancel($('#prompt_overlay_input').val());
+					self._confirmOverlay_callback_cancel = function() {};
+					$('#prompt_overlay_input').val('');
+				}).bind(this));
+				$('.okay-trigger', eventData.wrapperEl).click((function() {
+					eventData.overlay.closeOverlay();
+					self._confirmOverlay_callback_ok($('#prompt_overlay_input').val());
+					self._confirmOverlay_callback_ok = function() {};
+					$('#prompt_overlay_input').val('');
 				}).bind(this));
 			}
 		});

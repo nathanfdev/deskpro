@@ -6411,3 +6411,11 @@ article .pending-delete {
 .with-visible-ticket .visible-ticket-controls {
 	display: block;
 }
+
+
+#prompt_overlay_msg {
+	margin:  0 0 8px 0;
+}
+#prompt_overlay_input {
+	width: 350px;
+}
