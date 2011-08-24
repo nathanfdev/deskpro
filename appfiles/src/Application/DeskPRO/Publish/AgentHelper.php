@@ -76,6 +76,10 @@ class AgentHelper implements PersonContextInterface
 	}
 
 
+	############################################################################
+	# Glossary
+	############################################################################
+
 	/**
 	 * Get an array of glossary words, sorted into an alphabetically-indexed array
 	 *
@@ -96,6 +100,10 @@ class AgentHelper implements PersonContextInterface
 		return $glossary_words;
 	}
 
+
+	############################################################################
+	# Validating Content
+	############################################################################
 
 	/**
 	 * Counts all content that needs validating
@@ -181,18 +189,46 @@ class AgentHelper implements PersonContextInterface
 		return $results;
 	}
 
+	############################################################################
+	# Validating Comments
+	############################################################################
 
-	/**
-	 * @param int $limit
-	 * @return array
-	 */
-	public function getContentFromInfo($results)
+	public static function getValidatingComments($limit = 25, $order_dir = 'ASC')
 	{
+		$sql_parts = array();
+
+		if (!is_array($limit)) {
+			$limit = array(
+				'max' => $limit,
+				'offset' => 0
+			);
+		}
+
 		$types = array(
-			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
-			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
-			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+			'articles'  => array('content_type' => 'articles',  'table' => 'article_comments',    'entity' => 'DeskPRO:ArticleComment',   'id_field' => 'article_id'),
+			'downloads' => array('content_type' => 'downloads', 'table' => 'download_comments',   'entity' => 'DeskPRO:DownloadComment',  'id_field' => 'download_id'),
+			'news'      => array('content_type' => 'news',      'table' => 'news_comments',       'entity' => 'DeskPRO:NewsComment',      'id_field' => 'news_id'),
 		);
+
+		#------------------------------
+		# Fetch from each comment table with a union
+		#------------------------------
+
+		foreach ($types as $t => $t_info) {
+			$sql_parts[] = "(
+				SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
+				FROM {$t_info['table']}
+				WHERE status = 'validating'
+			)";
+		}
+
+		$sql = implode(' UNION ', $sql_parts);
+		$sql .= "ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+
+		$db = App::getDb();
+		$results = $db->fetchAll($sql);
+
+		if (!$results) return array();
 
 		#------------------------------
 		# Fetch each comment in the result
@@ -205,7 +241,7 @@ class AgentHelper implements PersonContextInterface
 				$result_ids_typed[$r['content_type']] = array();
 			}
 
-			$result_ids_typed[$r['content_type']][] = $r['content_id'];
+			$result_ids_typed[$r['content_type']][] = $r['comment_id'];
 		}
 
 		$results_typed = array();
@@ -223,10 +259,10 @@ class AgentHelper implements PersonContextInterface
 		$results_ordered = array();
 
 		foreach ($results as $r) {
-			if (isset($results_typed[$r['content_type']][$r['content_id']])) {
+			if (isset($results_typed[$r['content_type']][$r['comment_id']])) {
 				$results_ordered[] = array(
 					'info' => $r,
-					'obj'  => $results_typed[$r['content_type']][$r['content_id']]
+					'obj'  => $results_typed[$r['content_type']][$r['comment_id']]
 				);
 			}
 		}
@@ -234,6 +270,35 @@ class AgentHelper implements PersonContextInterface
 		return $results_ordered;
 	}
 
+	public function getValidatingCommentsCount()
+	{
+		$types = array(
+			'article_comments',
+			'download_comments',
+			'news_comments'
+		);
+
+		foreach ($types as $t) {
+			$sql_parts[] = "(
+				SELECT COUNT(*)
+				FROM $t
+				WHERE status = 'validating'
+			) AS count_$t";
+		}
+
+		$sql =  "SELECT " . implode(', ', $sql_parts);
+
+		$db = App::getDb();
+		$results = $db->fetchAssoc($sql);
+
+		return array_sum($results);
+	}
+
+
+
+	############################################################################
+	# Drafts
+	############################################################################
 
 	/**
 	 * Get an array of all drafts
@@ -320,6 +385,61 @@ class AgentHelper implements PersonContextInterface
 		$results = $db->fetchAssoc($sql);
 
 		return array_sum($results);
+	}
+
+
+	############################################################################
+
+	/**
+	 * @param int $limit
+	 * @return array
+	 */
+	public function getContentFromInfo($results)
+	{
+		$types = array(
+			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+		);
+
+		#------------------------------
+		# Fetch each comment in the result
+		#------------------------------
+
+		$result_ids_typed = array();
+
+		foreach ($results as $r) {
+			if (!isset($result_ids_typed[$r['content_type']])) {
+				$result_ids_typed[$r['content_type']] = array();
+			}
+
+			$result_ids_typed[$r['content_type']][] = $r['content_id'];
+		}
+
+		$results_typed = array();
+
+		foreach ($result_ids_typed as $t => $ids) {
+			$t_info = $types[$t];
+			$results_typed[$t] = App::getEntityRepository($t_info['entity'])->getByIds($ids);
+		}
+
+		#------------------------------
+		# Put back into original sort order
+		# as a combined array
+		#------------------------------
+
+		$results_ordered = array();
+
+		foreach ($results as $r) {
+			if (isset($results_typed[$r['content_type']][$r['content_id']])) {
+				$results_ordered[] = array(
+					'info' => $r,
+					'obj'  => $results_typed[$r['content_type']][$r['content_id']]
+				);
+			}
+		}
+
+		return $results_ordered;
 	}
 
 

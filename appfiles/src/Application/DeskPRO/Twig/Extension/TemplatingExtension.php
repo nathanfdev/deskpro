@@ -98,6 +98,10 @@ class TemplatingExtension extends \Twig_Extension
 			if ($basename) {
 				$var_type = Util::getBaseClassname($var_type);
 			}
+
+			if ($var instanceof \Doctrine\ORM\Proxy\Proxy) {
+				$var_type = preg_replace('#(^|\\\\)ApplicationDeskPROEntity(.*?)Proxy$#', '$2', $var_type);
+			}
 		}
 
 		return $var_type;

@@ -796,9 +796,13 @@ agent_publish_approve_comment:
   pattern: /publish/comments/approve/{typename}/{comment_id}
   defaults: { _controller: AgentBundle:Publish:approveComment }
 
-agent_publish_disapprove_comment:
-  pattern: /publish/comments/disapprove/{typename}/{comment_id}
-  defaults: { _controller: AgentBundle:Publish:disapproveComment }
+agent_publish_delete_comment:
+  pattern: /publish/comments/delete/{typename}/{comment_id}
+  defaults: { _controller: AgentBundle:Publish:deleteComment }
+
+agent_public_validatingcomments_mass:
+  pattern: /publish/comments/validating-mass-actions/{action}
+  defaults: { _controller: AgentBundle:Publish:validatingCommentsMassActions }
 
 agent_publish_savecats:
   pattern: /publish/save-categories/{type}

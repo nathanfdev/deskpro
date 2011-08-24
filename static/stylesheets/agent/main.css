@@ -6346,3 +6346,39 @@ border-radius: 0px 0px 4px 4px;
 
 	padding: 3px 8px 3px 8px;
 }
+
+
+article .validation-controls {
+	float: right;
+	margin: 3px 3px 3px 3px;
+}
+
+article .comment-text {
+	padding-top: 0px;
+	padding-left: 20px;
+	padding-right: 4px;
+}
+
+article .validate-approve,
+article .validate-delete {
+	width: 16px;
+	height: 16px;
+	overflow: hidden;
+	text-indent: -100px;
+
+	display: block;
+	float: right;
+
+	padding: 0;
+	margin: 0;
+
+	background-repeat: no-repeat;
+	background-position: 50% 50%;
+}
+
+article .validate-approve {
+	background-image: url(../../images/icons/tick.png);
+}
+article .validate-delete {
+	background-image: url(../../images/icons/cross.png);
+}

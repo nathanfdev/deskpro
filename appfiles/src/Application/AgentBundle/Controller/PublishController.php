@@ -58,7 +58,7 @@ class PublishController extends AbstractController
 		$glossary_words     = $this->publish_helper->getGlossaryWordsIndex();
 
 		$counts = array();
-		$counts['validating_comments']   = CommentAbstractRepos::getCombinedValidatingCount();
+		$counts['validating_comments']   = $this->publish_helper->getValidatingCommentsCount();
 		$counts['validating_content']    = $this->publish_helper->getValidatingContentCount();
 		$counts['drafts']                = $this->publish_helper->getDraftsCount();
 		$counts['pending']               = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
@@ -101,11 +101,11 @@ class PublishController extends AbstractController
 		$pageinfo = null;
 		$total = null;
 		if (!$this->request->isPartialRequest()) {
-			$total = CommentAbstractRepos::getCombinedValidatingCount();
+			$total = $this->publish_helper->getValidatingCommentsCount();
 			$pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
 		}
 
-		$comments = CommentAbstractRepos::getCombinedValidating($limit);
+		$validating_comments = $this->publish_helper->getValidatingComments($limit);
 
 		$tpl = 'AgentBundle:Publish:validating-comments.html.twig';
 		if ($this->request->isPartialRequest()) {
@@ -113,7 +113,7 @@ class PublishController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
-			'comments' => $comments,
+			'validating_comments' => $validating_comments,
 			'total'    => $total,
 			'pageinfo' => $pageinfo
 		));
@@ -135,7 +135,7 @@ class PublishController extends AbstractController
 		));
 	}
 
-	public function disapproveCommentAction($typename, $comment_id)
+	public function deleteCommentAction($typename, $comment_id)
 	{
 		$entity = $this->_getCommentEntityName($typename);
 
@@ -151,19 +151,46 @@ class PublishController extends AbstractController
 		));
 	}
 
-	protected function _getCommentEntityName($classname)
+	public function validatingCommentsMassActionsAction($action)
 	{
-		if ($classname instanceof \Application\DeskPRO\Entity\ArticleComment) {
-			return 'DeskPRO:ArticleComment';
-		} elseif ($classname instanceof \Application\DeskPRO\Entity\DownloadComment) {
-			return 'DeskPRO:DownloadComment';
-		} elseif ($classname instanceof \Application\DeskPRO\Entity\IdeaComment) {
-			return 'DeskPRO:IdeaComment';
-		} elseif ($classname instanceof \Application\DeskPRO\Entity\NewsComment) {
-			return 'DeskPRO:NewsComment';
+		$data = $this->in->getCleanValueArray('content', 'array', 'string');
+
+		$this->em->beginTransaction();
+
+		foreach ($data as $typename => $ids) {
+			$entity = $this->_getCommentEntityName($typename);
+			if (!$entity) continue;
+
+			$results = App::getEntityRepository($entity)->getByIds($ids);
+			foreach ($results as $r) {
+				if ($action == 'approve') {
+					$r->status = 'visible';
+				} else {
+					$r->status = 'deleted';
+				}
+
+				$this->em->persist($r);
+			}
 		}
 
-		return $classname;
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => true
+		));
+	}
+
+	protected function _getCommentEntityName($typename)
+	{
+		switch ($typename) {
+			case 'articles':
+				return 'DeskPRO:ArticleComment';
+			case 'downloads':
+				return 'DeskPRO:DownloadComment';
+			case 'news':
+				return 'DeskPRO:IdeaComment';
+		}
 	}
 
 	############################################################################

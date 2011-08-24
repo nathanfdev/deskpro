@@ -4,15 +4,10 @@ pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.PublishValidatingC
 <div class="layout-content">
 <div class="content">
 
-	<header class="section-header">
-		<h1>
-			Comments awaiting validating
-		</h1>
-	</header>
+	{% include 'AgentBundle:Publish:validating-comments-massactions-bar.html.twig' %}
 
 	<section class="comments-list deskpro-results-list">
 		{% include 'AgentBundle:Publish:validating-comments-page.html.twig' %}
 	</section>
-
 </div>
 </div>

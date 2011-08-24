@@ -1,28 +1,37 @@
 <section class="search-reuslts page-set" data-page="{{ page }}">
-	{% for comment in comments %}
-		<article class="comment comment-{{comment.id}}">
-			<div class="title">
-				{{ comment.content_html_plain }}
-			</div>
-			<div class="info">
-				<ul class="single-col">
-					<li>
-						By
-						{% if comment.person %}<a class="with-route" data-route="page:{{ object_path_agent(comment.person) }}">{% endif %}
-						{{ comment.user_name }} {% if comment.user_email %}&lt;{{ comment.user_email }}&gt;{% endif %}
-						{% if comment.person %}</a>{% endif %}
-					</li>
-					<li>On <a class="with-route" data-route="page:{{ object_path_agent(comment.object) }}">{{ comment.object.title }}</a></li>
-				</ul>
-			</div>
-			<div class="foot" style="padding-bottom: 3px; padding-left: 4px; padding-right: 4px;">
-				<time class="timeago" datetime="{{ news.date_created|date('c') }}">{{ news.date_created|date('M d') }}</time>
-				<div style="float:right;">
-					<button class="dp-button x-small delete-trigger" data-url="{{ path('agent_publish_disapprove_comment', {'comment_id': comment.id, 'typename': get_type(comment, false) }) }}">Delete</button>
-					<button class="dp-button x-small ignore-trigger">Ignore</button>
-					<button class="dp-button x-small approve-trigger" data-url="{{ path('agent_publish_approve_comment', {'comment_id': comment.id, 'typename': get_type(comment, false) }) }}">Approve</button>
+	{% for comment_info in validating_comments %}
+		{% set info = comment_info.info %}
+		{% set comment = comment_info.obj %}
+
+		<article class="comment {{ info.content_type }}-{{content.id}} {{ get_type(comment.object)|lower }}">
+			<input
+				class="item-select"
+				type="checkbox"
+				value="{{ info.content_type }}.{{info.content_id}}"
+				data-content-type="{{ info.content_type }}"
+				data-comment-id="{{ comment.id }}"
+			/>
+			<div class="toprow">
+				<div class="left">
+					<span class="subject">
+						{{ get_type(comment.object) }} <a class="with-route" data-route="page:{{ object_path_agent(comment.object) }}">{{ comment.object.title }}</a>
+					</span>
 				</div>
-				<br style="clear: both; height: 1px; overflow: hidden; "/>
+				<div class="ticketinfo">
+					<div class="bound-faded"></div>
+					<span class="validate-approve">Approve</span>
+					<span class="validate-delete">Delete</span>
+				</div>
+			</div>
+			<div class="comment-text">
+				{{ comment.content_html_plain }}
+				<br class="clear" />
+			</div>
+			<div class="userinfo">
+				By
+				{% if comment.person %}<a class="with-route" data-route="page:{{ object_path_agent(comment.person) }}">{% endif %}
+				{{ comment.user_name }} {% if comment.user_email %}&lt;{{ comment.user_email }}&gt;{% endif %}
+				{% if comment.person %}</a>{% endif %}
 			</div>
 		</article>
 	{% endfor %}
