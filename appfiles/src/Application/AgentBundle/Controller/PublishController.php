@@ -340,6 +340,9 @@ class PublishController extends AbstractController
 
 		$this->em->beginTransaction();
 
+		$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+		$reason = $this->in->getString('decline_reason');
+
 		foreach ($data as $type => $ids) {
 			$entity =  $this->publish_helper->getEntityNameFor($type);
 			if (!$entity) continue;
@@ -349,6 +352,9 @@ class PublishController extends AbstractController
 				if ($action == 'approve') {
 					$r->status = 'approve';
 				} else {
+					if ($reason) {
+						$agent_chat->sendAgentMessage($reason, array($r->person['id']));
+					}
 					$r->status_code = 'hidden.draft';
 				}
 

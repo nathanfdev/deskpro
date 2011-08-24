@@ -40,15 +40,29 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingContent = new Class({
 
 				var action = $(info.itemEl).data('action');
 
-				$.ajax({
-					url: BASE_URL + 'agent/publish/content/validating-mass-actions/' + action,
-					data: data,
-					type: 'POST',
-					dataType: 'json',
-					success: function() {
-						$(lines).fadeOut();
-					}
-				});
+				var sendFn = function() {
+					$.ajax({
+						url: BASE_URL + 'agent/publish/content/validating-mass-actions/' + action,
+						data: data,
+						type: 'POST',
+						dataType: 'json',
+						success: function() {
+							$(lines).fadeOut();
+						}
+					});
+				}
+
+				if (action == 'disapprove') {
+					DeskPRO_Window.showPrompt("Enter a reason or comment to send to the authors", function(reason) {
+						data.push({
+							name: 'reason',
+							value: reason
+						});
+						sendFn();
+					});
+				} else {
+					sendFn();
+				}
 			}
 		});
 	}

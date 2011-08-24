@@ -498,8 +498,8 @@ DeskPRO.Agent.Window = new Orb.Class({
 	_initPromptOverlay: function() {
 		if (this._promptOverlay) return;
 
-		this._promptOverlay_callback_ok = function() { };
-		this._promptOverlay_callback_cancel = function() { };
+		this._promptOverlay_callback_yes = function() { };
+		this._promptOverlay_callback_no = function() { };
 
 		var self = this;
 
@@ -509,14 +509,14 @@ DeskPRO.Agent.Window = new Orb.Class({
 			onContentSet: function(eventData) {
 				$('.cancel-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
-					self._confirmOverlay_callback_cancel($('#prompt_overlay_input').val());
-					self._confirmOverlay_callback_cancel = function() {};
+					self._promptOverlay_callback_no($('#prompt_overlay_input').val());
+					self._promptOverlay_callback_no = function() {};
 					$('#prompt_overlay_input').val('');
 				}).bind(this));
 				$('.okay-trigger', eventData.wrapperEl).click((function() {
 					eventData.overlay.closeOverlay();
-					self._confirmOverlay_callback_ok($('#prompt_overlay_input').val());
-					self._confirmOverlay_callback_ok = function() {};
+					self._promptOverlay_callback_yes($('#prompt_overlay_input').val());
+					self._promptOverlay_callback_yes = function() {};
 					$('#prompt_overlay_input').val('');
 				}).bind(this));
 			}
