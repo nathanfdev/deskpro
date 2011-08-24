@@ -3,7 +3,7 @@
 		<li class="all">
 			<span class="edit-mode" id="publish_outline_newscat_editmode">edit mode</span>
 			<span class="add-new" id="publish_outline_newscat_addcat">add</span>
-			<a class="all-route" data-route="listpane:{{ path('agent_news_list') }}">{{ news_cats_counts[0]|default(0) }} Posts</a>
+			<a class="all-route" data-route="listpane:{{ path('agent_news_list') }}">{{ news_cats_counts['0_total']|default(0) }} Posts</a>
 		</li>
 		{% include 'AgentBundle:Publish:news-cat-list.html.twig' with {'cats': news_cats, 'counts': news_cats_counts, 'depth': 0 } %}
 	</ul>

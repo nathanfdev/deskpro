@@ -70,11 +70,14 @@ class DownloadResults
 
 			if (isset($options['category'])) {
 				$terms = array(
-					array('type' => 'category', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
+					array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
+					array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
 				);
 
 			} elseif (isset($options['show_all'])) {
-				$terms = array();
+				$terms = array(
+					array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
+				);
 
 			} else {
 				$form_terms = $controller->in->getCleanValueArray('terms', 'raw' , 'string');

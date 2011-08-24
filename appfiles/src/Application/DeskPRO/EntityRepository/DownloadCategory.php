@@ -49,7 +49,7 @@ class DownloadCategory extends AbstractNestedTreeCategoryRepository
 
 		return $this->hierarchy;
 	}
-	
+
 	public function getBySlug($slug)
 	{
 		$id = Strings::extractRegexMatch('#^([0-9]+)#', $slug, 1);
@@ -64,19 +64,38 @@ class DownloadCategory extends AbstractNestedTreeCategoryRepository
 		$cache_id = "counts_downloads";
 
 		if (($counts = $cache->load($cache_id)) === false) {
-			$counts = array(0 => 0);
+			$counts = array('0' => 0, '0_total' => 0);
+
 			foreach ($this->children() as $c) {
 				$searcher = new DownloadSearch();
 				$searcher->setPersonContext($person_context);
-				$searcher->addTerm(DownloadSearch::TERM_CATEGORY, 'is', $c['id']);
+				$searcher->addTerm(DownloadSearch::TERM_CATEGORY_SPECIFIC, 'is', $c['id']);
+				$searcher->addTerm(DownloadSearch::TERM_STATUS, 'is', 'published');
 
 				$counts[$c['id']] = $searcher->getCount();
 
-				// 0 is sum of all root nodes
-				if (!$c['depth']) {
-					$counts[0] += $counts[$c['id']];
-				}
+				$counts['0_total'] += $counts[$c['id']];
 			}
+
+			$repos = $this;
+			$fn_count = function($node) use (&$counts, $repos, &$fn_count) {
+				$total = 0;
+				foreach ($repos->children($node, true) as $c) {
+					// We already have the single count
+					$total += $counts[$c['id']];
+
+					// Now add up all its subs
+					$total += $fn_count($c);
+				}
+
+				if ($node) {
+					$counts[$node['id'] . '_total'] = $total;
+				}
+
+				return $total;
+			};
+
+			$fn_count(null);
 
 			$cache->save($counts, $cache_id);
 		}

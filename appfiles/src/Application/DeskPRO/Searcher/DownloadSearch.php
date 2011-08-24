@@ -12,11 +12,13 @@ class DownloadSearch extends SearcherAbstract
 {
 	const TERM_ID              = 'id';
 	const TERM_CATEGORY        = 'category';
+	const TERM_CATEGORY_SPECIFIC = 'category_specific';
 	const TERM_DOWNLOADS       = 'num_downloads';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_POPULAR         = 'popular';
 	const TERM_NEW             = 'new';
 	const TERM_LABEL           = 'label';
+	const TERM_STATUS          = 'status';
 
 	const ORDER_ID       = 'id';
 	const ORDER_DATE     = 'id';
@@ -212,7 +214,7 @@ class DownloadSearch extends SearcherAbstract
 
 		return $order_by;
 	}
-	
+
 
 	/**
 	 * Get the SQL parts we need in the query.
@@ -222,7 +224,7 @@ class DownloadSearch extends SearcherAbstract
 	public function getSqlParts()
 	{
 		if ($this->sql_parts !== null) return $this->sql_parts;
-		
+
 		$db = App::getDb();
 		$tr = App::getTranslator();
 
@@ -242,12 +244,45 @@ class DownloadSearch extends SearcherAbstract
 					$this->summary[] = $this->_rangeSummary($tr->phrase('core.id'), $op, $choice);
 					break;
 
+				case self::TERM_STATUS:
+
+					$choice = (array)$choice;
+					$choice = array_pop($choice);
+
+					// Normal vis status
+					if (strpos($choice, '.') === false){
+						$status = $choice;
+						$hidden_status = '';
+
+					// Formatted: hidden.hidden_status
+					} else {
+						list ($status, $hidden_status) = explode('.', $choice, 2);
+					}
+
+					if ($hidden_status) {
+						$wheres[] = $this->_stringMatch('downloads.hidden_status', $op, $hidden_status);
+					} else {
+						$wheres[] = $this->_stringMatch('downloads.status', $op, $status);
+					}
+
+					$phrase = 'core.x_is_y';
+					if ($op == self::OP_NOT OR $op == self::OP_NOTCONTAINS) {
+						$phrase = 'core.x_is_not_y';
+					}
+					$this->summary[] = $tr->phrase($phrase, array('field' => 'Status', 'value' => ($hidden_status ? $hidden_status : $status)));
+					break;
+
 				case self::TERM_CATEGORY:
-						$base_ids = (array)(is_array($choice['category']) ? $choice['category'] : $choice);
+				case self::TERM_CATEGORY_SPECIFIC:
+					$base_ids = (array)(is_array($choice['category']) ? $choice['category'] : $choice);
 					$ids = array();
 
-					foreach ($base_ids as $id) {
-						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:DownloadCategory')->getIdsInTree($id, true));
+					if ($term == self::TERM_CATEGORY_SPECIFIC) {
+						$ids = $base_ids;
+					} else {
+						foreach ($base_ids as $id) {
+							$ids = array_merge($ids, App::getEntityRepository('DeskPRO:DownloadCategory')->getIdsInTree($id, true));
+						}
 					}
 
 					$ids = array_unique($ids);
@@ -263,7 +298,7 @@ class DownloadSearch extends SearcherAbstract
 				case self::TERM_DOWNLOADS:
 					$choice = (array)$choice;
 					$choice = array_values($choice);
-						
+
 					$wheres[] = $this->_rangeMatch('downloads.num_downloads', $op, $choice);
 					$this->summary[] = $this->_rangeSummary('Downloads', $op, $choice);
 					break;

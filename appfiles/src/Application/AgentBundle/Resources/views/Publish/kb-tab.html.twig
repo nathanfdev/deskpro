@@ -3,7 +3,7 @@
 		<li class="all">
 			<span class="edit-mode" id="publish_outline_articlescat_editmode">edit mode</span>
 			<span class="add-new" id="publish_outline_articlescat_addcat">add</span>
-			<a class="all-route" data-route="listpane:{{ path('agent_kb_list') }}">{{ kb_cats_counts[0]|default(0) }} Articles</a>
+			<a class="all-route" data-route="listpane:{{ path('agent_kb_list') }}">{{ kb_cats_counts['0_total']|default(0) }} Articles</a>
 		</li>
 		{% include 'AgentBundle:Publish:kb-cat-list.html.twig' with {'cats': kb_cats, 'counts': kb_cats_counts, 'depth': 0 } %}
 	</ul>

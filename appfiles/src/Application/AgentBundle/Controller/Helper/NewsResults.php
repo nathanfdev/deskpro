@@ -72,7 +72,7 @@ class NewsResults
 			// and published
 			if (isset($options['category'])) {
 				$terms = array(
-					array('type' => 'category', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
+					array('type' => 'category_specific', 'op' => 'is', 'options' => array('category' => $options['category']['id'])),
 					array('type' => 'status', 'op' => 'is', 'options' => array('status' => 'published')),
 				);
 

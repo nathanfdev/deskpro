@@ -14,6 +14,7 @@ class ArticleSearch extends SearcherAbstract
 	const TERM_STATUS          = 'status';
 	const TERM_HIDDEN_STATUS   = 'hidden_status';
 	const TERM_CATEGORY        = 'category';
+	const TERM_CATEGORY_SPECIFIC = 'category_specific';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_VIEW_COUNT      = 'view_count';
 	const TERM_POPULAR         = 'popular';
@@ -54,7 +55,7 @@ class ArticleSearch extends SearcherAbstract
 
 	/**
 	 * Get actual model objects for matches
-	 * 
+	 *
 	 * @param array $limit
 	 * @return array
 	 */
@@ -125,7 +126,7 @@ class ArticleSearch extends SearcherAbstract
 
 		return $summary;
 	}
-	
+
 
 	/**
 	 * Get the SQL query that'll fetch the results
@@ -214,7 +215,7 @@ class ArticleSearch extends SearcherAbstract
 
 		return $order_by;
 	}
-	
+
 
 	/**
 	 * Get the SQL parts we need in the query.
@@ -224,7 +225,7 @@ class ArticleSearch extends SearcherAbstract
 	public function getSqlParts()
 	{
 		if ($this->sql_parts !== null) return $this->sql_parts;
-		
+
 		$db = App::getDb();
 		$tr = App::getTranslator();
 
@@ -277,11 +278,16 @@ class ArticleSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_CATEGORY:
+				case self::TERM_CATEGORY_SPECIFIC:
 					$base_ids = (array)(is_array($choice['category']) ? $choice['category'] : $choice);
 					$ids = array();
 
-					foreach ($base_ids as $id) {
-						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:ArticleCategory')->getIdsInTree($id, true));
+					if ($term == self::TERM_CATEGORY_SPECIFIC) {
+						$ids = $base_ids;
+					} else {
+						foreach ($base_ids as $id) {
+							$ids = array_merge($ids, App::getEntityRepository('DeskPRO:ArticleCategory')->getIdsInTree($id, true));
+						}
 					}
 
 					$ids = array_unique($ids);
