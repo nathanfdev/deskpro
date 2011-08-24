@@ -399,6 +399,14 @@ class KbController extends AbstractController
 
 			$article = $newarticle->getArticle();
 
+			if ($this->in->getUint('pending_article_id')) {
+				$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $this->in->getUint('pending_article_id'));
+				if ($pending_article) {
+					App::getOrm()->remove($pending_article);
+					App::getOrm()->flush();
+				}
+			}
+
 			return $this->createJsonResponse(array(
 				'success' => true,
 				'article_id' => $article['id']

@@ -43,6 +43,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 					},
 					success: function() {
 						$(els).remove();
+						DeskPRO_Window.util.modCountEl('#kb_pending_count', '-', els.length);
 					}
 				});
 			}
@@ -85,6 +86,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 				},
 				success: function() {
 					row.remove();
+					DeskPRO_Window.util.modCountEl('#kb_pending_count', '-');
 				}
 			});
 		});
@@ -117,6 +119,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 						if (data.message_content_html) {
 							page.setContent(data.message_content_html, true);
 						}
+						page.setPendingArticleId(id);
 					});
 				}
 			});
@@ -152,11 +155,14 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 				var addEl = $(info.row_html);
 				this.initRoutesOnCollection($('.with-route', addEl));
 				$('section.pending-articles-list', this.wrapper).prepend(addEl);
+
+				DeskPRO_Window.util.modCountEl('#kb_pending_count', '+');
 			}
 		});
 	},
 
 	removeFromList: function(id) {
 		$('article.pending-article-' + id, this.wrapper).slideUp('fast');
+		DeskPRO_Window.util.modCountEl('#kb_pending_count', '-');
 	}
 });
