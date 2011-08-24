@@ -85,12 +85,31 @@ this.orgTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$
 this.contentEl.addClass("scroll-content").tinyscrollbar();if(this.isVisible()){this._onShowLoadList()}}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
 DeskPRO.Agent.WindowElement.Section.Publish=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#publish_section");
 this.setSectionElement($('<section id="publish_outline"></section>'));$.ajax({url:BASE_URL+"agent/publish/get-section-data.json",context:this,success:function(a){this._initSection(a)
-}})},_initSection:function(b){this.setHasInitialLoaded();this.contentEl.html(b.section_html);var a=this;this.typeTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#publish_outline_tabstrip li"),onTabSwitch:function(c){var d=c.tabContent.data("editor-class");
-if(d){$("#publish_outline_edit_cats").data("editor-class",d).show()}else{$("#publish_outline_edit_cats").hide()}}});$("#publish_outline_edit_cats").click(function(){a.openCatEditor($(this).data("editor-class"))
-});this._initGlossary()},_initGlossary:function(){this.glossaryWrapper=$("#publish_outline_glossary");var a=this;$(".glossary-new-trigger",this.glossaryWrapper).click(this.showGlossaryAddDlg.bind(this));
-$(".glossary-word-trigger",this.glossaryWrapper).click(function(b){b.preventDefault();a.showGlossaryEditDlg($(this).data("word-id"))
-})},showGlossaryAddDlg:function(){var a=this.getGlossaryAddDlg();a.openOverlay()},showGlossaryEditDlg:function(d){var a=this.getGlossaryEditDlg();
-var b=$(".form",a.elements.wrapper);var c=$(".loading",a.elements.wrapper);b.hide();c.show();a.openOverlay();$.ajax({url:BASE_URL+"agent/glossary/"+d+".json",type:"GET",context:this,dataType:"json",success:function(e){$(".word",b).html(e.word);
+}})},_initSection:function(e){this.setHasInitialLoaded();this.contentEl.html(e.section_html);DeskPRO_Window.getMessageBroker().addMessageListener("publish.drafts.list-remove",function(g){DeskPRO_Window.util.modCountEl("#publish_drafts_count","-")
+});DeskPRO_Window.getMessageBroker().addMessageListener("publish.drafts.list-add",function(g){DeskPRO_Window.util.modCountEl("#publish_drafts_count","+")
+});var c=this;this.typeTabs=new DeskPRO.UI.SimpleTabs({context:this.sectionEl,triggerElements:$("#publish_outline_tabstrip li"),onTabSwitch:function(h){var i=h.tabContent.data("editor-class");
+if(i){$("#publish_outline_edit_cats").data("editor-class",i).show()}else{$("#publish_outline_edit_cats").hide()}var g=$("a.all-route:first",h.tabContent);
+if(g.length){}}});this._initGlossary();var d=["articles","downloads","news"];this.catEditors={};var b=function(h){var g=[];
+Array.each(h,function(i){g.push({name:"orders[]",value:i})});return g};var a=function(h){var g=[];Object.each(h,function(i,j){g.push({name:"structure["+j+"]",value:i})
+});return g};var f=function(g){var h=[];Object.each(g,function(i,j){h.push({name:"titles["+j+"]",value:i})});return h};Array.each(d,function(h){var i=$("#publish_outline_"+h+"cat_list");
+var g=new DeskPRO.UI.CatListEditor({listEl:i,itemSelector:"li:not(.all)",newItemTplSelector:"#publish_outline_cat_list_newitem",editorBaseId:"publish_",onReordered:function(){$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/update-orders",data:b(g.getOrder()),type:"POST"})
+},onRestructured:function(){$(".dp-cat-li",i).each(function(){var j=true;$(".list-counter",this).each(function(){if(parseInt($(this).text().trim())>0){j=false;
+return false}});if(j){$(".delete-cat",this).show()}else{$(".delete-cat",this).hide()}});c.recountChildCounts(i);$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/update-structure",data:a(g.getStructure()),type:"POST"})
+},onTitlesUpdated:function(j){$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/update-titles",data:f(j),type:"POST"})
+},onNewAdded:function(j,k){var l=k.val().trim();$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/add-category",data:{title:l},type:"POST",dataType:"json",success:function(m){j.data("category-id",m.id);
+$("a",j).data("route","listpane:"+m.url);$(".list-counter",j).attr("id",h+"_cat_count_"+m.id)}})}});$("#publish_outline_"+h+"cat_editmode").click(function(){var j=$(this).parent().parent();
+j.toggleClass("edit-mode")});$("#publish_outline_"+h+"cat_edittiles").click(function(){if(g.isTitleEditing()){g.endEditTitles()
+}else{g.showEditTitles()}});$("#publish_outline_"+h+"cat_addcat").click(function(){g.addNew()});$("#publish_outline_"+h+"cat_list").delegate(".edit-cat","click",function(k){var j=$(this).parent().parent();
+g.showEditor(j)});$("#publish_outline_"+h+"cat_list").delegate(".delete-cat","click",function(m){var k=0;var j=$(this);while(!j.is("li")){if(k++>5){return
+}j=j.parent()}var l=function(){$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/delete-category",data:{category_id:j.data("category-id")},type:"POST",dataType:"json",error:function(){j.show()
+},success:function(n){j.remove()}})};j.fadeOut("fast",l)});this.recountChildCounts(i)},this)},recountChildCounts:function(b){var a=this;
+$("> li",b).each(function(){var c=$(this);var h=$(".list-counter:first",c);var e=parseInt(h.data("count"));var d=e;var g=$("> ul",c);
+var f=null;if(g.length){f=$("> li",g)}if(f&&f.length){a.recountChildCounts(g);f.each(function(){d+=parseInt($(".list-counter:first",this).data("total-count"))
+});h.text(e+"/"+d)}else{h.text(e)}h.data("total-count",d)})},_initGlossary:function(){this.glossaryWrapper=$("#publish_outline_glossary");
+var a=this;$(".glossary-new-trigger",this.glossaryWrapper).click(this.showGlossaryAddDlg.bind(this));$(".glossary-word-trigger",this.glossaryWrapper).click(function(b){b.preventDefault();
+a.showGlossaryEditDlg($(this).data("word-id"))})},showGlossaryAddDlg:function(){var a=this.getGlossaryAddDlg();a.openOverlay()
+},showGlossaryEditDlg:function(d){var a=this.getGlossaryEditDlg();var b=$(".form",a.elements.wrapper);var c=$(".loading",a.elements.wrapper);
+b.hide();c.show();a.openOverlay();$.ajax({url:BASE_URL+"agent/glossary/"+d+".json",type:"GET",context:this,dataType:"json",success:function(e){$(".word",b).html(e.word);
 $("input.word_id",b).val(e.id);$("textarea.content",b).val(e.content);c.hide();b.show()}})},getGlossaryAddDlg:function(){if(this.addDlg){return this.addDlg
 }var a=$(".glossary-add-dlg:first",this.glossaryWrapper);this.addDlg=new DeskPRO.UI.Overlay({contentElement:a});$(".save-trigger",a).click(this.saveNewWord.bind(this));
 return this.addDlg},getGlossaryEditDlg:function(){if(this.editDlg){return this.editDlg}var a=$(".glossary-edit-dlg:first",this.glossaryWrapper);
@@ -103,51 +122,34 @@ d.show();i.show();$("ul",i).prepend(j);$("input.word",this.addDlg.elements.wrapp
 this.addDlg.closeOverlay()}})},saveEditWord:function(){var b=$("input.word_id",this.editDlg.elements.wrapperOuter).val().trim();
 var a=[];a.push({name:"word_id",value:b});a.push({name:"content",value:$("textarea.content",this.editDlg.elements.wrapperOuter).val().trim()});
 $.ajax({url:BASE_URL+"agent/glossary/"+b+"/edit.json",type:"POST",data:a,context:this,dataType:"json",success:function(c){}})
-},openCatEditor:function(a){if(!this.catEditors){this.catEditors={}}this._initCatEditor(a);if(!this.catEditors[a]){console.error("No category editor for %s",a);
-return}var b=this.catEditors[a];b.open()},_initCatEditor:function(a){if(this.catEditors[a]){return}var c=new DeskPRO.Agent.PageHelper.CategoryEdit({wrapper:$("."+a,this.contentEl)});
-this.catEditors[a]=c;var b=c.wrapper.data("type");c.addEvent("save",function(d){var e=d.encodeForm();$.ajax({url:BASE_URL+"agent/publish/save-categories/"+b,data:e,type:"GET",dataType:"json"})
-})}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.Twitter=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#twitter_section");
+}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.Twitter=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#twitter_section");
 this.setSectionElement($('<section id="twitter_outline"></section>'));$.ajax({url:BASE_URL+"agent/twitter/get-section-data.json",context:this,success:function(a){this._initSection(a)
 }})},_initSection:function(a){this.setHasInitialLoaded();this.contentEl.html(a.section_html);if(this.isVisible()){this._onShowLoadList()
 }this.contentEl.addClass("scroll-content").tinyscrollbar()}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
 DeskPRO.Agent.WindowElement.Section.AgentChat=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#agent_chat_section");
 this.chatsWrapper=$("#agent_chats_wrapper");this.setSectionElement($('<section id="agent_chat_outline"></section>'));$("#agent_chat_conversation").template("agent_chat_conversation");
-$("#agent_chat_message").template("agent_chat_message");$("#agent_chat_message_me").template("agent_chat_message_me");this._initMessageHandlers();
-this._initInterface()},onShow:function(){$.ajax({url:BASE_URL+"agent/agent-chat/get-section-data.json",context:this,success:function(a){this.setHasInitialLoaded();
+$("#agent_groupchat_conversation").template("agent_groupchat_conversation");$("#agent_chat_message").template("agent_chat_message");
+$("#agent_chat_message_me").template("agent_chat_message_me");this._initMessageHandlers();this._initInterface()},onShow:function(){$.ajax({url:BASE_URL+"agent/agent-chat/get-section-data.json",context:this,success:function(a){this.setHasInitialLoaded();
 this.contentEl.html(a.section_html)}})},_initMessageHandlers:function(){DeskPRO_Window.getMessageChanneler().subscribeChannel("agent_chat.new-message");
-DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.new-agent-online");DeskPRO_Window.getMessageBroker().addMessageListener("agent_chat.new-message",this.showNewMessage.bind(this));
+DeskPRO_Window.getMessageChanneler().subscribeChannel("agent.new-agent-online");DeskPRO_Window.getMessageBroker().addMessageListener("agent_chat.new-message",this.newIncomingMessage.bind(this));
 DeskPRO_Window.getMessageBroker().addMessageListener("agent.new-agent-online",(function(a){var b=a.agent_id;this.addOnlineAgent.bind(b)
 }).bind(this))},_initInterface:function(){this.panelEl=$("#agent_chat_panel");this.onlineListEl=$("#agent_online_list");this.offlineListEl=$("#agent_offline_list");
-this.onlineCountEl=$("#chat_online_count");$(".show-offline-opt",this.panelEl).click(function(){if($(this).is(":checked")){$("#agent_chat_panel").addClass("show-offline")
-}else{$("#agent_chat_panel").removeClass("show-offline")}});this.panelEl.click(function(b){b.stopPropagation()});$(".show-section",this.panelEl).click(function(){DeskPRO_Window.switchToSection("agent_chat_section")
-});$("#agent_chat_section").click((function(b){b.stopPropagation();this.panelEl.toggleClass("open")}).bind(this));$("body, #agent_chat_panel .close-trigger").click((function(){this.panelEl.removeClass("open");
-$("> section",this.chatsWrapper).removeClass("open")}).bind(this));$.ajax({url:BASE_URL+"agent/agent-chat/get-online-agents.json",context:this,success:function(b){if(b.online_agents){Array.each(b.online_agents,function(c){this.addOnlineAgent(c)
-},this)}this._initDemo()}});this.chatsWrapper.click(function(b){b.stopPropagation()});var a=this;this.onlineListEl.delegate("li","click",function(c){c.stopPropagation();
-var d=$(this).data("agent-id");var b=$(this).data("agent-short-name");var e=$(this).data("picture-url");a.addChatBox(b,d,e);
-a.openChatBox(d);a.panelEl.removeClass("open")});this.listTabs=new DeskPRO.UI.SimpleTabs({triggerElements:$("#agent_chat_panel_listviews > li"),context:$("#agent_chat_panel div.wrap:first")})
-},_initDemo:function(){var c=$("li:not(.no-agents):first",this.onlineListEl);console.log(c);var a={author_id:c.data("agent-id"),author_name:c.data("agent-name"),author_short_name:c.data("agent-short-name"),author_picture:c.data("picture-url"),author_picture_sizable:c.data("picture-url-sizable")};
-console.log(a);var b=["Lorem ipsum dolor sit amet, consectetur adipiscing elit","Proin venenatis, dui vitae congue pretium, enim tellus pharetra ante, vel laoreet purus felis sed orci","Ut bibendum ipsum sed arcu gravida at tristique risus congue","Sed in auctor arcu. Sed nec felis massa, id pulvinar augue","Ut vel nulla sit amet ante pharetra dictum id at nunc","Fusce est est, vestibulum ac ultrices vel, pharetra eget purus","Aliquam mattis ullamcorper laoreet. Fusce facilisis rhoncus rhoncus","Maecenas pellentesque sollicitudin lectus, sed venenatis augue adipiscing ut.","Etiam eget odio dui. Mauris urna odio, gravida tincidunt aliquam nec, aliquet vitae ipsum","In tortor sapien, accumsan vel aliquet eget, egestas quis dui","In id ante eget nisi posuere varius","Fusce gravida, enim sit amet faucibus semper, dui nisl scelerisque mauris, non ultricies sem justo nec magna"];
-Array.each(b,function(e,d){if(d%2==0){a.message=e;this.showNewMessage(a)}else{this.showMyMessage(c.data("agent-id"),e)}},this)
-},addOnlineAgent:function(d){if(DESKPRO_PERSON_ID&&d==DESKPRO_PERSON_ID){return}var b=$(".agent-"+d,this.offlineListEl);if(!b.length){console.warn("No agent element for %i",d);
-return}if($(".agent-"+d,this.onlineListEl).length){return}var a=b.clone();this.onlineListEl.append(a);b.hide();var c=parseInt(this.onlineCountEl.html());
-c++;this.onlineCountEl.html(c);$("li.no-agents",this.onlineListEl).hide()},removeOnlineAgent:function(d){var a=$(".agent-"+d,this.onlineListEl);
-var c=$(".agent-"+d,this.offlineListEl);if(!a.length){return}a.remove();c.show();var b=parseInt(this.onlineCountEl.html());
-b--;this.onlineCountEl.html(b);if(b<1){$("li.no-agents",this.onlineListEl).show()}},addChatBox:function(c,h,f){var e=$("#agent_chat_conversation_"+h);
-if(e.length){return}var b=$.tmpl("agent_chat_conversation",{to_agent_name:c,to_agent_id:h,to_agent_picture:f});var g=$("> section.agent-chat:last",this.chatsWrapper);
-if(g.length){var d=g.position().left+$("> nav",g).outerWidth()+8;b.css("left",d)}this.chatsWrapper.append(b);b.addClass("new-message");
-var i=this;$("textarea",b).keypress(function(j){if(j.keyCode==13&&!j.metaKey){var k=$(this).val().trim();$(this).val("");
-i.sendMessage(h,k);i.showMyMessage(h,k)}});var a=$("> nav",b);a.click(function(j){j.stopPropagation();if(b.is(".open")){b.removeClass("open")
-}else{i.openChatBox(h)}});$(".close-trigger",a).click(function(j){j.stopPropagation();b.remove()})},getChatBox:function(b){var a=$("#agent_chat_conversation_"+b);
-return a},openChatBox:function(b){var a=this.getChatBox(b);if(a.is(".open")){return}$("> section",this.chatsWrapper).removeClass("open");
-a.addClass("open");a.removeClass("new-message");$("textarea",a).focus()},getChatContainerForMessage:function(b){var a=$("#agent_chat_conversation_"+b.author_id);
-if(!a.length){var c=$(".agent-"+b.author_id,this.offlineListEl);if(c.length){b.author_picture=c.data("picture-url-sizable").replace("{SIZE}",20)
-}this.addChatBox(b.author_short_name,b.author_id,b.author_picture)}a=$("#agent_chat_conversation_"+b.author_id);return a},getChatContainer:function(b){var a=$("#agent_chat_conversation_"+b);
-if(!a.length){console.warn("No chat box for %i",b);return null}return a},showNewMessage:function(c){var b=this.getChatContainerForMessage(c);
-var a=$.tmpl("agent_chat_message",{author_id:c.author_id,author_name:c.author_name,author_picture:c.author_picture,message:c.message});
-$(".messages-container:first",b).append(a).scrollTop(100000)},showMyMessage:function(c,d){var b=this.getChatContainer(c);
-var a=$.tmpl("agent_chat_message_me",{message:d});$(".messages-container:first",b).append(a).scrollTop(100000)},sendMessage:function(a,b){var c=[];
-c.push({name:"content",value:b});$.ajax({url:BASE_URL+"agent/agent-chat/send-agent-message/"+a,data:c,context:this,contentType:"json"})
-}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.UserChat=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#chat_section");
+this.onlineCountEl=$("#chat_online_count");this.agentTeamList=$("#agent_team_list");$(".show-offline-opt",this.panelEl).click(function(){if($(this).is(":checked")){$("#agent_chat_panel").addClass("show-offline")
+}else{$("#agent_chat_panel").removeClass("show-offline")}});this.panelEl.click(function(c){c.stopPropagation()});$(".show-section",this.panelEl).click(function(){DeskPRO_Window.switchToSection("agent_chat_section")
+});$("#agent_chat_section").click((function(c){c.stopPropagation();this.panelEl.toggleClass("open")}).bind(this));$("body, #agent_chat_panel .close-trigger").click((function(){this.close()
+}).bind(this));$.ajax({url:BASE_URL+"agent/agent-chat/get-online-agents.json",context:this,success:function(c){if(c.online_agents){Array.each(c.online_agents,function(d){this.addOnlineAgent(d)
+},this)}}});this.chatsWrapper.click(function(c){c.stopPropagation()});var a=this;var b=function(c){c.stopPropagation();var d=$(this).data("agent-id");
+a.newChatWindow([d])};this.onlineListEl.delegate("li","click",b);this.offlineListEl.delegate("li","click",b);this.agentTeamList.delegate("li","click",function(d){d.stopPropagation();
+var c=$(this).data("member-ids");console.log(c);c=c.split(",");console.log(c);a.newChatWindow(c)});this.listTabs=new DeskPRO.UI.SimpleTabs({triggerElements:$("#agent_chat_panel_listviews > li"),context:$("#agent_chat_panel div.wrap:first")})
+},close:function(){this.panelEl.removeClass("open");$("> section",this.chatsWrapper).removeClass("open")},newChatWindow:function(a){var b=DeskPRO.Agent.Widget.AgentChatWin_FindAgents(a);
+if(!b){b=new DeskPRO.Agent.Widget.AgentChatWin({agentIds:a})}this.close();b.open()},newIncomingMessage:function(a){var b=DeskPRO.Agent.Widget.AgentChatWin_Find(a.conversation_id);
+if(!b){b=new DeskPRO.Agent.Widget.AgentChatWin({convoId:a.conversation_id,agentIds:a.participant_ids})}b.showMessage(a.author_id,a.message);
+b.open()},addOnlineAgent:function(d){if(DESKPRO_PERSON_ID&&d==DESKPRO_PERSON_ID){return}var b=$(".agent-"+d,this.offlineListEl);
+if(!b.length){console.warn("No agent element for %i",d);return}if($(".agent-"+d,this.onlineListEl).length){return}var a=b.clone();
+this.onlineListEl.append(a);b.hide();var c=parseInt(this.onlineCountEl.html());c++;this.onlineCountEl.html(c);$("li.no-agents",this.onlineListEl).hide()
+},removeOnlineAgent:function(d){var a=$(".agent-"+d,this.onlineListEl);var c=$(".agent-"+d,this.offlineListEl);if(!a.length){return
+}a.remove();c.show();var b=parseInt(this.onlineCountEl.html());b--;this.onlineCountEl.html(b);if(b<1){$("li.no-agents",this.onlineListEl).show()
+}}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.UserChat=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#chat_section");
 this.setSectionElement($('<section id="chat_outline"></section>'));$("#new_user_chat_alert").template("new_user_chat_alert");
 $("#new_user_chat_alert_message").template("new_user_chat_alert_message");$("#added_part_user_chat_alert").template("added_part_user_chat_alert");
 $("#user_chat_newmsg_sound").template("user_chat_newmsg_sound");this._initMessageHandlers();this.poller=new DeskPRO.AjaxPoller.Poller({ajaxUrl:BASE_URL+"agent/chat/get-section-counts.json",interval:5000,alwaysRequest:true});
