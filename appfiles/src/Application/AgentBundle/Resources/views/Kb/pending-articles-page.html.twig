@@ -1,0 +1,42 @@
+<section class="search-reuslts page-set" data-page="{{ page }}">
+	{% for pending_article in pending_articles %}
+		<article class="pending-article pending-article-{{pending_article.id}}">
+			<input
+				class="item-select"
+				type="checkbox"
+				value="{{ pending_article.id }}"
+				{% if pending_article.ticket %}
+					data-ticket-route="page:{{ object_path_agent(pending_article.ticket) }}"
+				{% endif %}
+			/>
+			{% if pending_article.ticket %}
+				<div class="toprow">
+					<div class="left">
+						<span class="subject">
+							Ticket <a class="with-route" data-route="page:{{ object_path_agent(pending_article.ticket) }}">{{ pending_article.ticket.subject }}</a>
+						</span>
+					</div>
+					<div class="ticketinfo">
+						<div class="bound-faded"></div>
+						<span class="pending-create">Create</span>
+						<span class="pending-delete">Delete</span>
+					</div>
+				</div>
+			{% else %}
+				<div class="ticketinfo" style="padding: 3px; float: right;">
+					<div class="bound-faded"></div>
+					<span class="pending-create">Create</span>
+					<span class="pending-delete">Delete</span>
+				</div>
+			{% endif %}
+			{% if pending_article.comment %}
+				<div class="comment-text" {% if not pending_article.ticket %}style="padding-top: 3px;" {% endif %}>
+					{{ pending_article.comment }}
+					<br class="clear" />
+				</div>
+			{% else %}
+				<br class="clear" />
+			{% endif %}
+		</article>
+	{% endfor %}
+</section>

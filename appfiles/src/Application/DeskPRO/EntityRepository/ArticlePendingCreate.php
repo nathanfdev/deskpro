@@ -11,9 +11,10 @@
 
 namespace Application\DeskPRO\EntityRepository;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
+use Doctrine\ORM\EntityRepository;
 
-use \Doctrine\ORM\EntityRepository;
+use Orb\Util\Arrays;
 
 class ArticlePendingCreate extends EntityRepository
 {
@@ -28,5 +29,23 @@ class ArticlePendingCreate extends EntityRepository
 		")->execute();
 
 		return $pending_articles;
+	}
+
+
+	public function getByIds(array $ids)
+	{
+		$ids = Arrays::castToType($ids, 'int');
+		$ids = Arrays::removeFalsey($ids);
+
+		if (!$ids) {
+			return array();
+		}
+		$ids = implode(',', $ids);
+
+		return $this->getEntityManager()->createQuery("
+			SELECT a
+			FROM DeskPRO:ArticlePendingCreate a INDEX BY a.id
+			WHERE a.id IN ($ids)
+		")->execute();
 	}
 }

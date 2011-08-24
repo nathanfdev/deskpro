@@ -64,8 +64,13 @@ class ObjectUrlGenerator
 				$params['person_id'] = $object['id'];
 				return $this->generator->generate('agent_people_view', $params);
 			}
+		} elseif ($object instanceof \Application\DeskPRO\Entity\Ticket) {
+			if ($context == 'agent') {
+				$params['ticket_id'] = $object['id'];
+				return $this->generator->generate('agent_ticket_view', $params);
+			}
 		}
-		
+
 		return null;
 	}
 }

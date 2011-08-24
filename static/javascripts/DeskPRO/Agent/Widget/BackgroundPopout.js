@@ -135,10 +135,13 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 	/**
 	 * Opens the page in the popout
 	 */
-	open: function() {
+	open: function(callback) {
 
 		if (this.pop) {
-			this.pop.show();
+			this.pop.open();
+			if (callback) {
+				callback(this.pop.page);
+			}
 			return;
 		}
 
@@ -150,6 +153,10 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 					ev.cancel = true;
 					self.destroyPop();
 				});
+
+				if (callback) {
+					callback(page);
+				}
 			}
 		});
 
@@ -162,8 +169,8 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			});
 		}
 
-		pop.open();
 		this.pop = pop;
+		pop.open();
 	},
 
 	toggle: function() {

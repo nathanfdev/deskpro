@@ -886,9 +886,17 @@ agent_kb_pending_remove:
   pattern: /kb/pending-articles/{pending_article_id}/remove
   defaults: { _controller: AgentBundle:Kb:removePendingArticle }
 
+agent_kb_pending_info:
+  pattern: /kb/pending-articles/{pending_article_id}/info
+  defaults: { _controller: AgentBundle:Kb:pendingArticleInfo }
+
 agent_kb_pending:
   pattern: /kb/pending-articles
   defaults: { _controller: AgentBundle:Kb:listPendingArticles }
+
+agent_kb_pending_massactions:
+  pattern: /kb/pending-articles/mass-actions/{action}
+  defaults: { _controller: AgentBundle:Kb:pendingArticlesMassActions }
 
 agent_kb_list:
   pattern: /kb/list/{category_id}

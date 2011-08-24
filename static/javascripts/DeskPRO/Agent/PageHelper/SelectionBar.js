@@ -54,6 +54,20 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		this.fireEvent('buttonClick');
 	},
 
+	getCheckedValues: function() {
+		var values = [];
+
+		$('input.item-select:checked', this.page.wrapper).each(function() {
+			values.push($(this).val());
+		});
+
+		return values;
+	},
+
+	getChecked: function() {
+		return $('input.item-select:checked', this.page.wrapper);
+	},
+
 	getCount: function() {
 		return $('input.item-select:checked', this.page.wrapper).length;
 	},

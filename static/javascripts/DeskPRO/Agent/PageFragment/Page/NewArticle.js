@@ -61,6 +61,20 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Class({
 		});
 	},
 
+	setTitle: function(title) {
+		this.getEl('title').val(title).change();
+	},
+	setContent: function(content, is_html) {
+		if (!is_html) {
+			content = Orb.escapeHtml(content);
+		}
+		this.getEl('content').html(content);
+	},
+
+	setPendingArticleId: function(id) {
+		this.getEl('pending_article_id').val(id);
+	},
+
 	//#################################################################
 	//# Category section
 	//#################################################################
@@ -83,7 +97,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Class({
 
 	_initTitleSection: function() {
 		var self = this;
-		
+
 		var fn = function() {
 			if ($(this).val().trim() == '') {
 				self.getEl('title_section').removeClass('done');
@@ -91,12 +105,12 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Class({
 				self.getEl('title_section').addClass('done');
 			}
 		};
-		
+
 		this.getEl('title').change(fn).keypress(fn).change(function() {
 			var val = $(this).val().trim().toLowerCase();
 			val = val.replace(/[^a-z0-9\-_]/g, '-');
 			val = val.replace(/-{2,}/g, '-');
-			
+
 			self.getEl('slug').val(val);
 		});
 	},
@@ -117,7 +131,7 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Class({
 			width: this.wrapper.width() - 80,
 			height: calcH
 		});
-		
+
 		this.getEl('content').tinymce({
 			script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
 

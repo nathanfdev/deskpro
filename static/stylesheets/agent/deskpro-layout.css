@@ -1262,7 +1262,7 @@ header.selection-bar button span {
     background: url(../../images/icons/bullet_arrow_down.png) no-repeat 100% 50%;
     padding-right: 16px;
 }
-header.control-bar button span {
+header.control-bar button:not(.no-menu) span {
     background: url(../../images/icons/bullet_arrow_down.png) no-repeat 100% 50%;
     padding-right: 16px;
     margin-right: -4px;

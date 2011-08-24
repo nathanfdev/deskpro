@@ -216,7 +216,7 @@ class KbController extends AbstractController
 	{
 		$pending_articles = App::getEntityRepository('DeskPRO:ArticlePendingCreate')->getPendingArticles();
 
-		return $this->render('AgentBundle:Kb:list-pending-articles.html.twig', array(
+		return $this->render('AgentBundle:Kb:pending-articles.html.twig', array(
 			'pending_articles' => $pending_articles,
 		));
 	}
@@ -242,7 +242,7 @@ class KbController extends AbstractController
 		App::getOrm()->persist($pending_article);
 		App::getOrm()->flush();
 
-		$row_html = $this->renderView('AgentBundle:Kb:list-pending-row.html.twig', array('pending_article' => $pending_article));
+		$row_html = $this->renderView('AgentBundle:Kb:pending-articles-page.html.twig', array('pending_articles' => array($pending_article)));
 
 		return $this->createJsonResponse(array(
 			'row_html' => $row_html,
@@ -263,6 +263,47 @@ class KbController extends AbstractController
 		return $this->createJsonResponse(array(
 			'success' => true,
 			'pending_article_id' => $pending_article_id,
+		));
+	}
+
+	public function pendingArticleInfoAction($pending_article_id)
+	{
+		$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $pending_article_id);
+
+		$data = array();
+		$data['pending_article_id'] = $pending_article_id;
+
+		if ($pending_article->ticket) {
+			$data['ticket_id'] = $pending_article->ticket;
+			$data['ticket_subject'] = $pending_article->ticket->subject;
+		}
+		if ($pending_article->message) {
+			$data['message_id'] = $pending_article->message->id;
+			$data['message_content_html'] = $pending_article->message->getMessageHtml();
+		}
+
+		return $this->createJsonResponse($data);
+	}
+
+	public function pendingArticlesMassActionsAction($action)
+	{
+		$this->em->beginTransaction();
+
+		$p_articles = $this->em->getRepository('DeskPRO:ArticlePendingCreate')->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
+
+		foreach ($p_articles as $p_article) {
+			switch ($action) {
+				case 'delete':
+					$this->em->remove($p_article);
+					break;
+			}
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => 1
 		));
 	}
 

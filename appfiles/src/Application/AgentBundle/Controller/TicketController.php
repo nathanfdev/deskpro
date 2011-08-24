@@ -200,7 +200,7 @@ class TicketController extends AbstractController
 		if (!$ticket_attachments) {
 			$ticket_attachments = App::getEntityRepository('DeskPRO:TicketAttachment')->getAttachmentsForMessages($ticket_messages);
 		}
-		
+
 		// Group attachments into messages so we can place them into each message
 		$ticket_message_attachments = array();
 		foreach ($ticket_attachments as $attach) {
@@ -210,7 +210,7 @@ class TicketController extends AbstractController
 
 			$ticket_message_attachments[$attach['message']['id']][] = $attach['id'];
 		}
-		
+
 		$ticket_logs = App::getEntityRepository('DeskPRO:TicketLog')->getLogsForTicket(
 			$ticket,
 			array('since_id' => $since_log_id)
@@ -219,7 +219,7 @@ class TicketController extends AbstractController
 
 		$last_message_id = 0;
 		$last_log_id = 0;
-		
+
 		foreach ($ticket_messages as $m) {
 			if ($m['id'] > $last_message_id) {
 				$last_message_id = $m['id'];
@@ -269,7 +269,7 @@ class TicketController extends AbstractController
 				unset($log_keys[$k]);
 			}
 		}
-		
+
 		$ticket_messages_block = '';
 
 		if ($ticket_messages) {
@@ -587,7 +587,7 @@ class TicketController extends AbstractController
 		$ticket = $this->getTicketOr404($ticket_id);
 
 		$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-		
+
 		if (!empty($_POST['custom_fields'])) {
 			foreach ($ticket_field_defs as $field_def) {
 				foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
@@ -727,15 +727,6 @@ class TicketController extends AbstractController
 			$ticket['status'] = $this->in->getString('options.status');
 		}
 
-		$kb_pending = false;
-		if ($this->in->getBool('options.do_kbpending')) {
-			$kb_pending = new ArticlePendingCreate();
-			$kb_pending->fromArray(array(
-				'person' => $this->person,
-				'ticket' => $ticket
-			));
-		}
-
 		if ($this->in->getBool('options.is_note')) {
 			$message['is_agent_note'] = true;
 		}
@@ -774,16 +765,12 @@ class TicketController extends AbstractController
 		$tracker = $ticket->getTicketLogger();
 		$tracker->recordExtra('enabled_cc', $cc_person_ids);
 
-		if ($kb_pending) {
-			$this->em->persist($kb_pending);
-		}
-
 		// Delete any possible ticket draft
 		$draft_pref = App::getOrm()->getRepository('DeskPRO:PersonPref')->find(array('person' => $this->person['id'], 'name' => "ticket_draft.{$ticket['id']}"));
 		if ($draft_pref) {
 			App::getOrm()->remove($draft_pref);
 		}
-		
+
 		$add_agent_parts = $this->in->getCleanValueArray('add_agent_part', 'uint', 'discard');
 		foreach ($add_agent_parts as $aid) {
 			$ticket->addParticipantPerson($aid);
@@ -817,6 +804,16 @@ class TicketController extends AbstractController
 					'participants' => $participants
 				));
 			}
+		}
+
+		if ($this->in->getBool('options.do_kbpending')) {
+			$kb_pending = new ArticlePendingCreate();
+			$kb_pending->fromArray(array(
+				'person' => $this->person,
+				'ticket' => $ticket,
+				'message' => $message
+			));
+			$this->em->persist($kb_pending);
 		}
 
 		$this->em->persist($ticket);
@@ -913,7 +910,7 @@ class TicketController extends AbstractController
 
 		if (!empty($_POST['custom_fields'])) {
 			$ticket_field_defs = App::getApi('custom_fields.tickets')->getEnabledFields();
-			
+
 			foreach ($ticket_field_defs as $field_def) {
 				foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
 					$ticket->setCustomData($info[0], $info[1], $info[2]);
@@ -1111,7 +1108,7 @@ class TicketController extends AbstractController
 	public function ccReplyTabAction($ticket_id)
 	{
 		$ticket = $this->getTicketOr404($ticket_id);
-		
+
 		$participants = APp::getOrm()->createQuery("
 			SELECT p
 			FROM DeskPRO:TicketParticipant p

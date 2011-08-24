@@ -48,6 +48,13 @@ class ArticlePendingCreate extends \Application\DeskPRO\Domain\DomainObject
 	protected $ticket = null;
 
 	/**
+	 * @var \Application\DeskPRO\Entity\TicketMessage
+	 * @ORM_Mapping\ManyToOne(targetEntity="TicketMessage", fetch="EAGER")
+	 * @ORM_Mapping\JoinColumn(name="ticket_message_id", referencedColumnName="id", onDelete="cascade")
+	 */
+	protected $message = null;
+
+	/**
 	 * @var string
 	 * @ORM_Mapping\Column(name="comment", type="string", length=1000)
 	 */

@@ -6360,7 +6360,9 @@ article .comment-text {
 }
 
 article .validate-approve,
-article .validate-delete {
+article .validate-delete,
+article .pending-delete,
+article .pending-create {
 	width: 16px;
 	height: 16px;
 	overflow: hidden;
@@ -6374,6 +6376,8 @@ article .validate-delete {
 
 	background-repeat: no-repeat;
 	background-position: 50% 50%;
+
+	cursor: pointer;
 }
 
 article .validate-approve {
@@ -6381,4 +6385,20 @@ article .validate-approve {
 }
 article .validate-delete {
 	background-image: url(../../images/icons/cross.png);
+}
+
+article .pending-create {
+	background-image: url(../../images/icons/document__pencil.png);
+}
+article .pending-delete {
+	background-image: url(../../images/icons/cross.png);
+}
+
+
+.add-new-form textarea {
+	width: 95%;
+}
+
+.page-new-article input[name="newarticle[title]"] {
+	width: 350px;
 }
