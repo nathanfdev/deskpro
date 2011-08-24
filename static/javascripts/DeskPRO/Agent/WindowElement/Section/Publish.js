@@ -95,8 +95,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		};
 
 		Array.each(types, function(type) {
+			var listEl = $('#publish_outline_'+type+'cat_list');
 			var ed = new DeskPRO.UI.CatListEditor({
-				listEl: '#publish_outline_'+type+'cat_list',
+				listEl: listEl,
 				itemSelector: 'li:not(.all)',
 				newItemTplSelector: '#publish_outline_cat_list_newitem',
 				editorBaseId: 'publish_',
@@ -108,6 +109,24 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 					});
 				},
 				onRestructured: function() {
+
+					// Hide/show delete icons
+					$('.dp-cat-li', listEl).each(function() {
+						var show = true;
+						$('.list-counter', this).each(function() {
+							if (parseInt($(this).text().trim()) > 0) {
+								show = false;
+								return false;
+							}
+						});
+
+						if (show) {
+							$('.delete-cat', this).show();
+						} else {
+							$('.delete-cat', this).hide();
+						}
+					});
+
 					$.ajax({
 						url: BASE_URL + 'agent/publish/categories/'+type+'/update-structure',
 						data: makeStructureData(ed.getStructure()),
@@ -131,7 +150,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						success: function(info) {
 							li.data('category-id', info.id);
 							$('a', li).data('route', 'listpane:' + info.url);
-							$('.list-counter', li).id(type + '_cat_count_' + info.id);
+							$('.list-counter', li).attr('id', type + '_cat_count_' + info.id);
 						}
 					});
 				}
@@ -160,7 +179,13 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			});
 
 			$('#publish_outline_'+type+'cat_list').delegate('.delete-cat', 'click', function(ev) {
-				var li = $(this).parent().parent();
+
+				var i = 0;
+				var li = $(this);
+				while (!li.is('li')) {
+					if (i++ > 5) return;
+					li = li.parent();
+				}
 
 				var fn = function() {
 					$.ajax({

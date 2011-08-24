@@ -283,9 +283,6 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 
 		var tpl = $(this.options.newItemTplSelector).get(0).innerHTML;
 		var li = $(tpl);
-		li.addClass('dp-cat-li')
-			.wrapInner('<div class="dp-cat-item" />')
-			.prepend('<div class="dp-cat-dropzone" />');
 
 		var firstLi = $('li.dp-cat-li:first', this.list);
 		if (firstLi.length) {
@@ -293,6 +290,9 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 		} else {
 			li.appendTo(this.list);
 		}
+
+		// init new item
+		this._initLisCollection(li);
 
 		this._enableEditable($('.dp-cat-item', li));
 
@@ -308,9 +308,6 @@ DeskPRO.UI.CatListEditor = new Orb.Class({
 				fnDone();
 			}
 		});
-
-		// init new item
-		this._initLisCollection(li);
 
 		var input = $('input:first', li);
 		input.focus().val();

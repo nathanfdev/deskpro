@@ -6221,6 +6221,7 @@ border-radius: 0px 0px 4px 4px;
 
 .deskpro-tab-item li.all .add-new {
 	background-image: url(../../images/icons/add.png);
+	display: none;
 }
 
 .cat-editor-tab {
@@ -6333,7 +6334,8 @@ border-radius: 0px 0px 4px 4px;
 }
 
 #deskpro_outline ul.nav-list.edit-mode .edit-cat,
-#deskpro_outline ul.nav-list.edit-mode .delete-cat {
+#deskpro_outline ul.nav-list.edit-mode .delete-cat,
+#deskpro_outline ul.nav-list.edit-mode .add-new {
 	display: block;
 }
 

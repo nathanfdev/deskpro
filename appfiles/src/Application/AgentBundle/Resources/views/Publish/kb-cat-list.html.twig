@@ -2,9 +2,7 @@
 	<li class="kb-cat-{{ cat.id }} {% if cat.children|length %}has-children{% endif %}" data-category-id="{{ cat.id }}">
 		<span class="list-counter" id="kb_cat_count_{{ cat.id }}">{{ counts[cat.id]|default(0) }}</span>
 		<span class="edit-cat">edit</span>
-		{% if not counts[cat.id] %}
-			<span class="delete-cat">delete</span>
-		{% endif %}
+		<span class="delete-cat" {% if counts[cat.id] %}style="display: none"{% endif %}>delete</span>
 		<span class="sub-toggle">expand</span>
 		<a data-route="listpane:{{ path('agent_kb_list', {'category_id':cat.id}) }}">{{ cat.title }}</a>
 		<ul class="sub-group">
