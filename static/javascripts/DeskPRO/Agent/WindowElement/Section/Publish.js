@@ -127,6 +127,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 						}
 					});
 
+					// Recounts
+					self.recountChildCounts(listEl);
+
 					$.ajax({
 						url: BASE_URL + 'agent/publish/categories/'+type+'/update-structure',
 						data: makeStructureData(ed.getStructure()),
@@ -204,7 +207,40 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 
 				li.fadeOut('fast', fn);
 			});
+
+			// Perform count calcs now
+			this.recountChildCounts(listEl);
 		}, this);
+	},
+
+	recountChildCounts: function(ul) {
+		var self = this;
+		$('> li', ul).each(function() {
+			var li = $(this);
+			var countEl = $('.list-counter:first', li);
+			var count = parseInt(countEl.data('count'));
+			var totalCount = count;
+
+			var subUl = $('> ul', li);
+			var subLis = null;
+			if (subUl.length) {
+				subLis = $('> li', subUl);
+			}
+
+			if (subLis && subLis.length) {
+				self.recountChildCounts(subUl);
+
+				subLis.each(function() {
+					totalCount += parseInt($('.list-counter:first', this).data('total-count'));
+				});
+
+				countEl.text(count + '/' + totalCount);
+			} else {
+				countEl.text(count);
+			}
+
+			countEl.data('total-count', totalCount);
+		});
 	},
 
 	//#########################################################################
