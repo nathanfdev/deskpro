@@ -163,6 +163,11 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			}
 		});
 
+		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
+			ajaxSaveUrl: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+			statusMenu: this.statusMenu
+		});
+
 		this.catMenu = new DeskPRO.UI.Menu({
 			triggerElement: $('li.add', this.getEl('categories')),
 			menuElement: $('#article_category_menu'),

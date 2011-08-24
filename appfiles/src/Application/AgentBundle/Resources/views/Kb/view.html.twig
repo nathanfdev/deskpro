@@ -17,6 +17,10 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
+<div class="deleted-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
+	This article has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
+</div>
+
 {% if article.status_code == "hidden.validating" %}
 	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
@@ -27,7 +31,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 
 	{% if article.status_code != "hidden.validating" %}
-		<div class="the-status">
+		<div class="the-status" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}>
 			<div class="ticket-status article-status prop-status-icon tipped" title="{{ article.status }}">
 				<span class="ticket-{{article.status}}"></span>
 			</div>
@@ -50,7 +54,7 @@ pageMeta.baseId = '{{ baseId }}';
 
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
-			<li class="delete"><button class="clean-gray xx-small">Delete</button></li>
+			<li class="delete" {% if article.status_code == "hidden.deleted" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Delete</button></li>
 			<li class="permalink"><button class="clean-gray xx-small">Copy Permalink</button></li>
 			<li class="view-user-interface"><button class="clean-gray xx-small">View in user interface</button></li>
 		</ul>

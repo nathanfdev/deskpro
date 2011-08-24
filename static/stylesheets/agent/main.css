@@ -6336,3 +6336,11 @@ border-radius: 0px 0px 4px 4px;
 #deskpro_outline ul.nav-list.edit-mode .delete-cat {
 	display: block;
 }
+
+
+.deleted-notice {
+	background-color: #D2D6DA;
+	border-bottom: 2px solid #ACB0B4;
+
+	padding: 3px 8px 3px 8px;
+}

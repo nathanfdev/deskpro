@@ -128,6 +128,11 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 			}
 		});
 
+		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
+			ajaxSaveUrl: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
+			statusMenu: this.statusMenu
+		});
+
 		// Change category menu
         var catMenu = new DeskPRO.UI.Menu({
 			menuElement: $('#news_category_menu'),

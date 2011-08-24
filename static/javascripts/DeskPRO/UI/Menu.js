@@ -245,7 +245,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (event && event.customEvents) {
 			event.customEvents.fireEvent('beforeMenuOpened', eventData);
-		} else {
+		}
+
+		if (!eventData.noFireEvent) {
 			this.fireEvent('beforeMenuOpened', eventData);
 		}
 
@@ -344,7 +346,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (event && event.customEvents) {
 			event.customEvents.fireEvent('menuOpened', { menu: this });
-		} else {
+		}
+
+		if (!eventData.noFireEvent) {
 			this.fireEvent('menuOpened', { menu: this });
 		}
 	},
@@ -356,7 +360,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 	 * @param event
 	 */
 	close: function() {
-		return this.closeMenu(event);
+		return this.closeMenu();
 	},
 
 
@@ -370,7 +374,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('beforeMenuClosed', eventData);
-		} else {
+		}
+
+		if (!eventData.noFireEvent) {
 			this.fireEvent('beforeMenuClosed', eventData);
 		}
 
@@ -391,7 +397,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('menuClosed', { menu: this });
-		} else {
+		}
+
+		if (!eventData.noFireEvent) {
 			this.fireEvent('menuClosed', { menu: this });
 		}
 
@@ -421,7 +429,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('itemClicked', eventData);
-		} else {
+		}
+
+		if (!eventData.noFireEvent) {
 			this.fireEvent('itemClicked', eventData);
 		}
 
@@ -448,7 +458,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (this.openTriggerEvent && this.openTriggerEvent.customEvents) {
 			this.openTriggerEvent.customEvents.fireEvent('itemMouseover', eventData);
-		} else {
+		}
+
+		if (!eventData.noFireEvent) {
 			this.fireEvent('itemMouseover', eventData);
 		}
 

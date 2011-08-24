@@ -115,6 +115,10 @@ class KbController extends AbstractController
 
 				break;
 
+			case 'delete':
+				$article->status_code = 'hidden.deleted';
+				break;
+
 			case 'categories':
 				$cat_ids = $this->in->getCleanValueArray('category_ids', 'uint', 'discard');
 				$article->setCategories($cat_ids);
