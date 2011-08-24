@@ -5,7 +5,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 
 	initialize: function(page, options) {
 		var self = this;
-		
+
 		this.page = page;
 
 		this.options = {
@@ -60,11 +60,21 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 
 	checkAll: function() {
 		$('input.item-select', this.page.wrapper).attr('checked', true);
-		this.button.removeClass('disabled');
+
+		var count = this.getCount();
+		this.selectedCount.text(count);
+
+		if (count > 0) {
+			this.button.removeClass('disabled');
+		}
 	},
 
 	checkNone: function() {
 		$('input.item-select:checked', this.page.wrapper).attr('checked', false);
+
+		var count = this.getCount();
+		this.selectedCount.text(count);
+
 		this.button.addClass('disabled');
 	},
 
