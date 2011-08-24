@@ -6405,9 +6405,9 @@ article .pending-delete {
 
 
 
-.kb-visible-ticket-controls {
+.visible-ticket-controls {
 	display: none;
 }
-.with-visible-ticket .kb-visible-ticket-controls {
+.with-visible-ticket .visible-ticket-controls {
 	display: block;
 }

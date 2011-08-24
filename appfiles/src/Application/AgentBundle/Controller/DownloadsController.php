@@ -46,6 +46,22 @@ class DownloadsController extends AbstractController
 		));
 	}
 
+	public function infoAction($download_id)
+	{
+		$download = App::findEntity('DeskPRO:Download', $download_id);
+		$blob = $download->blob;
+
+		$data = array(
+			'blob_id' => $blob['id'],
+			'download_url' => $blob->getDownloadUrl(true),
+			'filename' => $blob['filename'],
+			'filesize_readable' => $blob->getReadableFilesize(),
+			'permalink' => $download->getLink()
+		);
+
+		return $this->createJsonResponse($data);
+	}
+
 	public function viewRevisionsAction($download_id)
 	{
 		$download = App::findEntity('DeskPRO:Download', $download_id);

@@ -985,6 +985,11 @@ agent_downloads_view:
   defaults: { _controller: AgentBundle:Downloads:view }
   requirements: { download_id: "\d+" }
 
+agent_downloads_info:
+  pattern: /downloads/file/{download_id}/info
+  defaults: { _controller: AgentBundle:Downloads:info }
+  requirements: { download_id: "\d+" }
+
 agent_kb_downloads_revisionstab:
   pattern: /downloads/file/{download_id}/view-revisions
   defaults: { _controller: AgentBundle:Downloads:viewRevisions }

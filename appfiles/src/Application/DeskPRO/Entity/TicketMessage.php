@@ -31,10 +31,10 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
-	
+
 	/**
 	 * @var \Application\DeskPRO\Entity\Ticket
 	 * @ORM_Mapping\ManyToOne(targetEntity="Ticket")
@@ -155,7 +155,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		// This is needed so when outputting, they arent double-encoded by twig
 		// (And its just proper!)
 		$message = html_entity_decode($message);
-		
+
 		return $message;
 	}
 
@@ -231,7 +231,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Inits the hash code for this message
-	 * 
+	 *
 	 * @ORM_Mapping\PrePersist
 	 */
 	public function initHashCode()
@@ -239,12 +239,12 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 		if ($this->message_hash) {
 			return;
 		}
-		
+
 		$hashes = array();
 		$hashes[] = sha1($this->message . $this->person->id);
 
 		foreach ($this->attachments as $a) {
-			$hashes[] = $a->blob['file_hash'];
+			$hashes[] = $a->blob['blob_hash'];
 		}
 
 		// Sort hashes so theyre always the same order
@@ -257,7 +257,7 @@ class TicketMessage extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * When a new message is added to a ticket, make sure the person has
 	 * their own access code ready to use.
-	 * 
+	 *
 	 * @ORM_Mapping\PostPersist
 	 */
 	public function initPersonAccessCode()

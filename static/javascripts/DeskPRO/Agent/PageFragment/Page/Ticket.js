@@ -385,6 +385,11 @@ DeskPRO.Agent.PageFragment.Page.Ticket = new Class({
 		this.getEl('replybox_txt').insertAtCaret(content);
 	},
 
+	addAttachToList: function(attachInfo) {
+		var row = $('.template-download', this.getEl('replybox')).tmpl(attachInfo);
+		$('.file-list', this.getEl('replybox')).append(row);
+	},
+
 	//#################################################################
 	//# Property managers
 	//#################################################################

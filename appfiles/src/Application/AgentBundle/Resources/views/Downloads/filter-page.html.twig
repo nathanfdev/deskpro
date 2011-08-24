@@ -8,6 +8,11 @@
 						<a class="with-route" data-route="page:{{ path('agent_downloads_view', {'download_id': download.id}) }}">{{ download.title }}</a>
 					</span>
 				</div>
+				<div class="ticketinfo visible-ticket-controls">
+					<div class="bound-faded"></div>
+					<button class="clean-gray xxx-small dl-insert-link" data-download-id="{{ download.id }}">Insert Link</button>
+					<button class="clean-gray xxx-small dl-insert-attach" data-download-id="{{ download.id }}">Add Attachment</button>
+				</div>
 			</div>
 			{% if display_fields|length %}
 				<div class="extra-info">
