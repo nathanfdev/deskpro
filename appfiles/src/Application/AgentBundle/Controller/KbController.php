@@ -107,6 +107,10 @@ class KbController extends AbstractController
 		$this->em->beginTransaction();
 
 		switch ($action) {
+			case 'status':
+				$article['status_code'] = $this->in->getString('status');
+				break;
+
 			case 'title':
 				$article['title'] = $this->in->getString('title');
 
