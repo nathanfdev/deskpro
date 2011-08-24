@@ -102,7 +102,7 @@ class AgentHelper implements PersonContextInterface
 	 *
 	 * @return int
 	 */
-	public static function getValidatingContentCount()
+	public function getValidatingContentCount()
 	{
 		$types = array(
 			'articles',
@@ -132,10 +132,62 @@ class AgentHelper implements PersonContextInterface
 	 *
 	 * @return array
 	 */
-	public static function getValidatingContent($limit = 25, $order_dir = 'ASC')
+	public function getValidatingContent($limit = 25, $order_dir = 'ASC')
 	{
-		$results = self::getValidatingContentInfo($limit, $order_dir);
+		$results = $this->getValidatingContentInfo($limit, $order_dir);
+		return $this->getContentFromInfo($results);
+	}
 
+	public function getValidatingContentInfo($limit = 25, $order_dir = 'ASC')
+	{
+		$sql_parts = array();
+
+		if ($limit !== null && !is_array($limit)) {
+			$limit = array(
+				'max' => $limit,
+				'offset' => 0
+			);
+		}
+
+		$types = array(
+			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+		);
+
+		#------------------------------
+		# Fetch from each comment table with a union
+		#------------------------------
+
+		foreach ($types as $t => $t_info) {
+			$sql_parts[] = "(
+				SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
+				FROM $t AS c
+				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
+				WHERE c.hidden_status = 'validating' OR r.status = 'validating'
+			)";
+		}
+
+		$sql = implode(' UNION ', $sql_parts);
+		if ($limit) {
+			$sql .= " ORDER BY date_created $order_dir LIMIT {$limit['offset']}, {$limit['max']}";
+		} else {
+			$sql .= " ORDER BY date_created $order_dir";
+		}
+
+		$db = App::getDb();
+		$results = $db->fetchAll($sql);
+
+		return $results;
+	}
+
+
+	/**
+	 * @param int $limit
+	 * @return array
+	 */
+	public function getContentFromInfo($results)
+	{
 		$types = array(
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
@@ -183,7 +235,18 @@ class AgentHelper implements PersonContextInterface
 	}
 
 
-	public static function getValidatingContentInfo($limit = 25, $order_dir = 'ASC')
+	/**
+	 * Get an array of all drafts
+	 *
+	 * @return array
+	 */
+	public function getDraftContent($limit = 25, $order_dir = 'ASC')
+	{
+		$results = $this->getDraftInfo($limit, $order_dir);
+		return $this->getContentFromInfo($results);
+	}
+
+	public function getDraftInfo($limit = null)
 	{
 		$sql_parts = array();
 
@@ -206,10 +269,10 @@ class AgentHelper implements PersonContextInterface
 
 		foreach ($types as $t => $t_info) {
 			$sql_parts[] = "(
-				SELECT c.id as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
+				SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
 				FROM $t AS c
 				LEFT JOIN {$t_info['rev_table']} r ON (c.id = r.{$t_info['id_field']})
-				WHERE c.hidden_status = 'validating' OR r.status = 'validating'
+				WHERE (c.hidden_status = 'draft' OR r.status = 'draft') AND (c.person_id = {$this->person_context['id']} OR r.person_id = {$this->person_context['id']})
 				GROUP BY c.id
 			)";
 		}
@@ -227,15 +290,47 @@ class AgentHelper implements PersonContextInterface
 		return $results;
 	}
 
+
+	/**
+	 * Count how many drafts there are for this user
+	 *
+	 * @return int
+	 */
+	public function getDraftsCount()
+	{
+		$types = array(
+			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
+			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
+			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+		);
+
+		$sql_parts = array();
+		foreach ($types as $t => $t_info) {
+			$sql_parts[] = "(
+				SELECT COUNT(*)
+				FROM $t c
+				LEFT JOIN {$t_info['rev_table']} r ON (r.{$t_info['id_field']} = c.id)
+				WHERE (c.hidden_status = 'draft' OR r.status = 'draft') AND (c.person_id = {$this->person_context['id']} OR r.person_id = {$this->person_context['id']})
+			) AS count_$t";
+		}
+
+		$sql =  "SELECT " . implode(', ', $sql_parts);
+
+		$db = App::getDb();
+		$results = $db->fetchAssoc($sql);
+
+		return array_sum($results);
+	}
+
+
 	/**
 	 * Get the content entity for a publish type
 	 *
-	 * @static
 	 * @throws \InvalidArgumentException
 	 * @param $type
 	 * @return string
 	 */
-	public static function getEntityNameFor($type)
+	public function getEntityNameFor($type)
 	{
 		switch ($type) {
 			case self::ARTICLES:
@@ -256,7 +351,6 @@ class AgentHelper implements PersonContextInterface
 	/**
 	 * Get the category entity for a publish type
 	 *
-	 * @static
 	 * @throws \InvalidArgumentException
 	 * @param $type
 	 * @return string

@@ -31,6 +31,7 @@ abstract class RevisionAbstract extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_VISIBLE     = 'published';
 	const STATUS_VALIDATING  = 'validating';
 	const STATUS_DECLINED    = 'declined';
+	const STATUS_DRAFT       = 'draft';
 
 	/**
 	 * The unique ID.

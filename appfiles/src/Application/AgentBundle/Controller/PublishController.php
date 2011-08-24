@@ -25,6 +25,19 @@ use Orb\Util\Util;
 
 class PublishController extends AbstractController
 {
+	/**
+	 * @var \Application\DeskPRO\Publish\AgentHelper
+	 */
+	protected $publish_helper;
+
+	protected function init()
+	{
+		parent::init();
+
+		$this->publish_helper = new PublishHelper();
+		$this->publish_helper->setPersonContext($this->person);
+	}
+
 	public function getSectionDataAction()
 	{
 		$data = array();
@@ -33,35 +46,27 @@ class PublishController extends AbstractController
 		# KB
 		#------------------------------
 
-		$kb_counts = array();
-		$kb_counts['awaiting_validation_articles'] = App::getDb()->fetchColumn("SELECT COUNT(*) FROM articles WHERE hidden_status = ?", array('validating'));
-		$kb_counts['awaiting_validation_edits']    = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_validating_edits");
-		$kb_counts['awaiting_validation']          = $kb_counts['awaiting_validation_articles'] + $kb_counts['awaiting_validation_edits'];
-		$kb_counts['drafts']                       = App::getDb()->fetchColumn("SELECT COUNT(*) FROM articles WHERE hidden_status = ?", array('draft'));
-		$kb_counts['pending']                      = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
+		$kb_cats              = $this->publish_helper->getCategoryStructure(PublishHelper::ARTICLES);
+		$kb_cats_counts       = $this->publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
 
-		$publish_helper = new PublishHelper();
-		$publish_helper->setPersonContext($this->person);
+		$news_cats            = $this->publish_helper->getCategoryStructure(PublishHelper::NEWS);
+		$news_cats_counts     = $this->publish_helper->getCategoryCounts(PublishHelper::NEWS);
 
-		$kb_cats              = $publish_helper->getCategoryStructure(PublishHelper::ARTICLES);
-		$kb_cats_counts       = $publish_helper->getCategoryCounts(PublishHelper::ARTICLES);
+		$download_cats        = $this->publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS);
+		$download_cats_counts = $this->publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
 
-		$news_cats            = $publish_helper->getCategoryStructure(PublishHelper::NEWS);
-		$news_cats_counts     = $publish_helper->getCategoryCounts(PublishHelper::NEWS);
-
-		$download_cats        = $publish_helper->getCategoryStructure(PublishHelper::DOWNLOADS);
-		$download_cats_counts = $publish_helper->getCategoryCounts(PublishHelper::DOWNLOADS);
-
-		$glossary_words     = $publish_helper->getGlossaryWordsIndex();
+		$glossary_words     = $this->publish_helper->getGlossaryWordsIndex();
 
 		$counts = array();
-		$counts['validating_comments'] = CommentAbstractRepos::getCombinedValidatingCount();
+		$counts['validating_comments']   = CommentAbstractRepos::getCombinedValidatingCount();
+		$counts['validating_content']    = $this->publish_helper->getValidatingContentCount();
+		$counts['drafts']                = $this->publish_helper->getDraftsCount();
+		$counts['pending']               = App::getDb()->fetchColumn("SELECT COUNT(*) FROM article_pending_create");
 
 
 		$data['section_html'] = $this->renderView('AgentBundle:Publish:window-section.html.twig', array(
 			'counts'                => $counts,
 
-			'kb_counts'             => $kb_counts,
 			'kb_cats'               => $kb_cats,
 			'kb_cats_counts'        => $kb_cats_counts,
 
@@ -180,11 +185,11 @@ class PublishController extends AbstractController
 		$pageinfo = null;
 		$total = null;
 		if (!$this->request->isPartialRequest()) {
-			$total = PublishHelper::getValidatingContentCount();
+			$total = $this->publish_helper->getValidatingContentCount();
 			$pageinfo = Numbers::getPaginationPages($total, $curpage, $per_page);
 		}
 
-		$content_validating = PublishHelper::getValidatingContent($limit);
+		$content_validating =  $this->publish_helper->getValidatingContent($limit);
 
 		$tpl = 'AgentBundle:Publish:validating-content.html.twig';
 		if ($this->request->isPartialRequest()) {
@@ -200,9 +205,9 @@ class PublishController extends AbstractController
 
 	public function approveContentAction($type, $content_id)
 	{
-		$content_validating = PublishHelper::getValidatingContentInfo(1000);
+		$content_validating =  $this->publish_helper->getValidatingContentInfo(1000);
 
-		$entity = PublishHelper::getEntityNameFor($type);
+		$entity =  $this->publish_helper->getEntityNameFor($type);
 		$obj = $this->em->getRepository($entity)->find($content_id);
 
 		$obj->status = 'published';
@@ -227,9 +232,9 @@ class PublishController extends AbstractController
 
 	public function disapproveContentAction($type, $content_id)
 	{
-		$content_validating = PublishHelper::getValidatingContentInfo(1000);
+		$content_validating =  $this->publish_helper->getValidatingContentInfo(1000);
 
-		$entity = PublishHelper::getEntityNameFor($type);
+		$entity = $this->publish_helper->getEntityNameFor($type);
 		$obj = $this->em->getRepository($entity)->find($content_id);
 
 		$obj->status_code = 'hidden.draft';
@@ -260,7 +265,7 @@ class PublishController extends AbstractController
 
 	public function nextValidatingContentAction($type, $content_id)
 	{
-		$content_validating = PublishHelper::getValidatingContentInfo(1000);
+		$content_validating =  $this->publish_helper->getValidatingContentInfo(1000);
 
 		$next = $this->_findNextValidating($content_validating, $type, $content_id);
 
@@ -281,7 +286,7 @@ class PublishController extends AbstractController
 
 		foreach ($content_validating as $info) {
 			if ($do_ret) {
-				$entity = PublishHelper::getEntityNameFor($info['content_type']);
+				$entity =  $this->publish_helper->getEntityNameFor($info['content_type']);
 				$obj = $this->em->getRepository($entity)->find($info['content_id']);
 				if ($obj) {
 					return $obj;
@@ -293,7 +298,7 @@ class PublishController extends AbstractController
 
 		// If we got here, just return the first
 		$info = array_shift($content_validating);
-		$entity = PublishHelper::getEntityNameFor($info['content_type']);
+		$entity =  $this->publish_helper->getEntityNameFor($info['content_type']);
 		$obj = $this->em->getRepository($entity)->find($info['content_id']);
 		if ($obj) {
 			return $obj;
@@ -309,7 +314,7 @@ class PublishController extends AbstractController
 		$this->em->beginTransaction();
 
 		foreach ($data as $type => $ids) {
-			$entity = PublishHelper::getEntityNameFor($type);
+			$entity =  $this->publish_helper->getEntityNameFor($type);
 			if (!$entity) continue;
 
 			$results = App::getEntityRepository($entity)->getByIds($ids);

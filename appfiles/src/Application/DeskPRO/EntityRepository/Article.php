@@ -31,7 +31,7 @@ class Article extends EntityRepository
 
 	/**
 	 * Get articles waiting for validating
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getValidatingArticle()
@@ -53,7 +53,7 @@ class Article extends EntityRepository
 	 * @param \Application\DeskPRO\Entity\Person $person
 	 * @return array
 	 */
-	public function getDraftArticles(OersonEntity $person = null)
+	public function getDraftArticles(PersonEntity $person = null)
 	{
 		if ($person) {
 			$articles = $this->getEntityManager()->createQuery("
@@ -72,11 +72,32 @@ class Article extends EntityRepository
 				ORDER BY a.id DESC
 			")->setParameter(1, 'draft')->execute();
 		}
-		
+
 		return $articles;
 	}
 
-	
+
+	/**
+	 * @param \Application\DeskPRO\Entity\Person|null $person
+	 * @return int
+	 */
+	public function getDraftArticlesCount(PersonEntity $person = null)
+	{
+		if ($person) {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM articles
+				WHERE hidden_status = ? AND person_id = ?
+			", array('draft', $person['id']));
+		} else {
+			return App::getDb()->fetchColumn("
+				SELECT COUNT(*)
+				FROM articles
+				WHERE hidden_status = ?
+			", array('draft'));
+		}
+	}
+
 
 	/**
 	 * Get a collection of articles by ID. If $person_context
@@ -87,7 +108,7 @@ class Article extends EntityRepository
 	public function getByIds(array $ids, PersonEntity $person_context = null)
 	{
 		if (!$ids) return array();
-		
+
 		if ($person_context) {
 			//$cat_ids = $person_context->getPermissionsManager()->ArticleCategories->getAllowedCategories();
 			//if (!$cat_ids) return array();
@@ -119,7 +140,7 @@ class Article extends EntityRepository
 	public function getByResultIds(array $ids)
 	{
 		if (!$ids) return array();
-		
+
 		$unsorted_articles = $this->getEntityManager()->createQuery("
 			SELECT a
 			FROM DeskPRO:Article a INDEX BY a.id
@@ -134,7 +155,7 @@ class Article extends EntityRepository
 				$articles[$id] = $unsorted_articles[$id];
 			}
 		}
-		
+
 		return $articles;
 	}
 
@@ -143,7 +164,7 @@ class Article extends EntityRepository
 	/**
 	 * Given an array of nodes (usually roots), get the top $num newest articles, and then
 	 * sort them into an array keyed by the node IDs.
-	 * 
+	 *
 	 * @param  $nodes
 	 * @return void
 	 */
@@ -187,7 +208,7 @@ class Article extends EntityRepository
 	}
 
 
-	
+
 	public function getNewest($num = 10, $node = false)
 	{
 		if ($node) {
