@@ -113,13 +113,7 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 					}
 
 					DeskPRO_Window.newArticleLoader.open(function(page) {
-						if (data.ticket_subject) {
-							page.setTitle(data.ticket_subject);
-						}
-						if (data.message_content_html) {
-							page.setContent(data.message_content_html, true);
-						}
-						page.setPendingArticleId(id);
+						page.setPendingArticle(data);
 
 						if (data.ticket_id) {
 							var closeTicketId = data.ticket_id;

@@ -6419,3 +6419,13 @@ article .pending-delete {
 #prompt_overlay_input {
 	width: 350px;
 }
+
+
+
+.page-new-article .pending-info {
+	background-color: #F0F0EE;
+	border: 1px solid #CFD0CF;
+	padding: 5px;
+
+	margin: 10px;
+}

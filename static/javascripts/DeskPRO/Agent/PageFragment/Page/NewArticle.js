@@ -79,8 +79,29 @@ DeskPRO.Agent.PageFragment.Page.NewArticle = new Class({
 		this.getEl('content').html(content);
 	},
 
-	setPendingArticleId: function(id) {
-		this.getEl('pending_article_id').val(id);
+	setPendingArticle: function(data) {
+		this.getEl('pending_article_id').val(data.id);
+
+		if (data.ticket_subject) {
+			this.setTitle(data.ticket_subject);
+		}
+		if (data.message_content_html) {
+			this.setContent(data.message_content_html, true);
+		}
+
+		var infoWrap = $('.pending-info:first', this.wrapper);
+
+		if (data.ticket_url) {
+			$('.pending-ticket a', infoWrap).text(data.ticket_subject);
+			$('.pending-ticket a', infoWrap).data('route', 'page:' + data.ticket_url);
+			$('.pending-ticket', infoWrap).show();
+		} else {
+			$('.pending-reason', infoWrap).text(data.comment).show();
+		}
+
+		$('.person-name', infoWrap).text(data.person_name);
+
+		infoWrap.show();
 	},
 
 	//#################################################################

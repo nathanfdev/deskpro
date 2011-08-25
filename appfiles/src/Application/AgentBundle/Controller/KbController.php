@@ -271,11 +271,16 @@ class KbController extends AbstractController
 		$pending_article = App::findEntity('DeskPRO:ArticlePendingCreate', $pending_article_id);
 
 		$data = array();
-		$data['pending_article_id'] = $pending_article_id;
+		$data['id'] = $pending_article_id;
+		$data['comment'] = $pending_article['comment'];
+
+		$data['person_id'] = $pending_article->person['id'];
+		$data['person_name'] = $pending_article->person->getDisplayName();
 
 		if ($pending_article->ticket) {
 			$data['ticket_id'] = $pending_article->ticket->id;
 			$data['ticket_subject'] = $pending_article->ticket->subject;
+			$data['ticket_url'] = $this->get('router')->generate('agent_ticket_view', array('ticket_id' => $pending_article->ticket->id));
 		}
 		if ($pending_article->message) {
 			$data['message_id'] = $pending_article->message->id;
