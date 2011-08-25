@@ -299,6 +299,7 @@ class PublishController extends AbstractController
 		$reason = $this->in->getString('reason');
 		if (0 && $reason) {
 			$agent_chat = new \Application\DeskPRO\Chat\AgentChat($this->person, $this->session->getEntity());
+			$reason .= ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
 			$agent_chat->sendAgentMessage($reason, array($obj->person['id']));
 		}
 
@@ -383,7 +384,8 @@ class PublishController extends AbstractController
 					$r->status = 'approve';
 				} else {
 					if ($reason) {
-						$agent_chat->sendAgentMessage($reason, array($r->person['id']));
+						$this_reason .= $reason . ' (<a data-route="' . $this->get('router')->getGenerator()->generateObjectUrl($obj, array(), 'agent') .'">' . htmlentities($obj->title) . '</a>)';
+						$agent_chat->sendAgentMessage($this_reason, array($r->person['id']));
 					}
 					$r->status_code = 'hidden.draft';
 				}
