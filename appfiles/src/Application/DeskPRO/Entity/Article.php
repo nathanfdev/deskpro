@@ -51,6 +51,11 @@ class Article extends ContentAbstract
 	protected $revisions;
 
 	/**
+	 * @ORM_Mapping\OneToMany(targetEntity="ArticleAttachment", mappedBy="article", cascade={"persist", "remove", "merge"}, indexBy="id")
+	 */
+	protected $attachments;
+
+	/**
 	 * @var \DateTime
 	 * @ORM_Mapping\Column(name="date_end",type="datetime", nullable=true)
 	 */
@@ -71,8 +76,9 @@ class Article extends ContentAbstract
 	{
 		parent::__construct();
 
-		$this->products = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->categories = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->products    = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->categories  = new \Doctrine\Common\Collections\ArrayCollection();
+		$this->attachments = new \Doctrine\Common\Collections\ArrayCollection();
 	}
 
 	public function getLink()
@@ -192,5 +198,11 @@ class Article extends ContentAbstract
 		}
 
 		return $path;
+	}
+
+	public function addAttachment(ArticleAttachment $attach)
+	{
+		$this->attachments->add($attach);
+		$attach['article'] = $this;
 	}
 }

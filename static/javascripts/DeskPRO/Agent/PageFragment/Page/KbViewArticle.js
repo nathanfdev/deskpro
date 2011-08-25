@@ -518,15 +518,41 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			this.hideEditor();
 		}).bind(this));
 
+		var imageEls = $('ul.attachment-list li.is-image a', this.wrapper);
+
+		imageEls.colorbox({
+			title: function(){ var url = $(this).attr('href'); return '<a href="'+url+'" target="_blank">Open In New Window</a>' },
+			width: '50%',
+			height: '50%',
+			initialWidth: '200',
+			initialHeight: '150',
+			scalePhotos: true,
+			photo: true,
+			opacity: 0.5,
+			transition: 'none'
+		});
+
 		var wrap = this.wrapper;
 
 		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
 			ev.preventDefault();
 
-			var data = {
-				action: 'content',
-				content: $('.article-editor-wrap textarea:first', wrap).val()
-			};
+			var data = [];
+			data.push({
+				name: 'action',
+				value: 'content'
+			});
+			data.push({
+				name: 'content',
+				value: $('.article-editor-wrap textarea:first', wrap).val()
+			});
+
+			$('input.edit-content-attach:checked', wrap).each(function() {
+				data.push({
+					name: 'attach[]',
+					value: $(this).val()
+				});
+			});
 
 			$.ajax({
 				url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/ajax-save',
@@ -570,6 +596,23 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 				theme_advanced_resizing: true,
 				theme_advanced_statusbar_location: 'bottom'
 			});
+
+			// Attachments
+			var list = $('.file-list', this.getEl('content_ed'));
+
+			if (this._hasInitEdBefore) {
+				this.wrapper.fileupload('destroy');
+			}
+
+			this.wrapper.fileupload({
+				url: BASE_URL + 'agent/misc/accept-upload',
+				dropZone: this.wrapper,
+				autoUpload: true,
+				uploadTemplate: $('.template-upload', self.getEl('content_ed')),
+				downloadTemplate: $('.template-download', self.getEl('content_ed'))
+			});
+
+			this._hasInitEdBefore = true;
 		}
 	},
 

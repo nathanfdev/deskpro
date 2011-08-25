@@ -13,6 +13,7 @@ namespace Application\AgentBundle\Form\Model;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\Person;
 
 class NewArticle
@@ -55,6 +56,18 @@ class NewArticle
 		$article->addToCategory($cat);
 
 		$article->getLabelManager()->setLabelsArray($this->labels);
+
+		// Message Attachments
+		foreach ($this->attach as $blob_id) {
+
+			$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
+
+			$attach = new ArticleAttachment();
+			$attach['blob'] = $blob;
+			$attach['person'] = $this->_person_context;
+
+			$article->addAttachment($attach);
+		}
 
 		$this->_em->persist($article);
 		$this->_em->flush();

@@ -13,6 +13,7 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Article;
+use Application\DeskPRO\Entity\ArticleAttachment;
 use Application\DeskPRO\Entity\ArticleComment;
 use Application\DeskPRO\Entity\ArticlePendingCreate;
 use Application\DeskPRO\Entity\ArticleValidatingEdit;
@@ -162,6 +163,31 @@ class KbController extends AbstractController
 
 				$rev = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
 				$rev['content'] = $article['content'];
+
+				// Add/remove files
+				$set_blob_ids = $this->in->getCleanValueArray('attach', 'uint', 'discard');
+				$got_blob_ids = array();
+
+				// Go through current ones and figure which to remove
+				foreach ($article->attachments as $attach) {
+					if (!in_array($attach->blob->id, $set_blob_ids)) {
+						$article->attachments->remove($attach['id']);
+						$got_blob_ids[] = $attach->blob->id;
+					}
+					$got_blob_ids[] = $attach->blob->id;
+				}
+
+				// Make sure to connect new ones
+				$new_blob_ids = array_diff($set_blob_ids, $got_blob_ids);
+				foreach ($new_blob_ids as $bid) {
+					$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($bid);
+
+					$attach = new ArticleAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $this->person;
+
+					$article->addAttachment($attach);
+				}
 
 				$data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', array(
 					'article' => $article
