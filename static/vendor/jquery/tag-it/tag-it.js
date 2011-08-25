@@ -76,7 +76,7 @@
 		});
 		$(this).click(function(e){
 			if (e.target.tagName == 'A') {
-				
+
 			}
 			else {
 				// Sets the focus() to the input field, if the user clicks anywhere inside the UL.
@@ -119,25 +119,27 @@
 			}
 		});
 
-		var autocomplete_opts = options.autocompleteOptions || {};
-		autocomplete_opts.select = function(event,ui) {
-			if (is_new (ui.item.value)) {
-				create_choice (ui.item.value, ui.item.label);
+		var autocomplete_opts = options.autocompleteOptions;
+		if (autocomplete_opts) {
+			autocomplete_opts.select = function(event,ui) {
+				if (is_new (ui.item.value)) {
+					create_choice (ui.item.value, ui.item.label);
+				}
+
+				window.setTimeout(function() {
+					tag_input.blur();
+					tag_input.val(tag_input.data('placeholder')).removeClass('editting');
+					tag_input.focus();
+
+					$(tag_input).trigger('keydown.autocomplete');
+				}, 100);
+
+				// Preventing the tag input to be updated with the chosen value.
+				return false;
 			}
 
-			window.setTimeout(function() {
-				tag_input.blur();
-				tag_input.val(tag_input.data('placeholder')).removeClass('editting');
-				tag_input.focus();
-
-				$(tag_input).trigger('keydown.autocomplete');
-			}, 100);
-			
-			// Preventing the tag input to be updated with the chosen value.
-			return false;
+			tag_input.autocomplete(autocomplete_opts);
 		}
-
-		tag_input.autocomplete(autocomplete_opts);
 
 		function assigned_tags(){
 			var tags = [];
