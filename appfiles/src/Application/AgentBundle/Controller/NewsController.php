@@ -48,11 +48,14 @@ class NewsController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $news);
 		$related_content = $related_finder->getRelatedEntities();
 
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
+
 		return $this->render('AgentBundle:News:view.html.twig', array(
 			'news'             => $news,
 			'news_comments'    => $news_comments,
 			'news_cats'        => $news_cats,
 			'related_content'  => $related_content,
+			'state'            => $state,
 		));
 	}
 
@@ -139,6 +142,9 @@ class NewsController extends AbstractController
 				break;
 
 			case 'content':
+
+				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editcontent', $this->person->id);
+
 				$news['content'] = $this->in->getString('content');
 				$data['content_html'] = $this->renderView('AgentBundle:News:view-content-tab.html.twig', array(
 					'news' => $news

@@ -155,5 +155,15 @@ DeskPRO.Agent.PageHelper.StateSaver = new Orb.Class({
 				}
 			}
 		});
+	},
+
+	destroy: function() {
+		if (this.ajax) {
+			this.ajax.abort();
+		}
+		if (this.timer) {
+			window.clearTimeout(this.timer);
+			this.timer = null;
+		}
 	}
 });

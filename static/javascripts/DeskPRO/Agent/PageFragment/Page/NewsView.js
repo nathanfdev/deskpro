@@ -328,6 +328,15 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 		var wrap = this.wrapper;
 
+		if (this.editStateSaver) {
+			this.editStateSaver.destroy();
+		}
+
+		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+			stateId: 'editnews',
+			listenOn: $('.news-editor-wrap:first', wrap)
+		});
+
 		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
 			ev.preventDefault();
 
@@ -359,6 +368,14 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 		var self = this;
 
+		var edWrap = $('.news-editor-wrap', this.getEl('content_ed')).show();
+		$('.revert-default', edWrap).click(function() {
+			var def = $('textarea.edit-content-field-default').val();
+			$('textarea.edit-content-field').val(def);
+
+			$('.revert-message-notice', edWrap).remove();
+		});
+
 		$('.news-content-wrap', this.getEl('content_ed')).hide();
 		$('.news-editor-wrap', this.getEl('content_ed')).show();
 
@@ -377,7 +394,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 				theme_advanced_toolbar_location: 'top',
 				theme_advanced_toolbar_align: 'left',
 				theme_advanced_resizing: true,
-				theme_advanced_statusbar_location: 'bottom'
+				theme_advanced_statusbar_location: 'bottom',
+				setup: function(ed) {
+					ed.onKeyPress.add(function() {
+						self.editStateSaver.triggerChange();
+					});
+				}
 			});
 		}
 	},

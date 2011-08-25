@@ -70,12 +70,15 @@ class KbController extends AbstractController
 		$content = $article->content;
 		$content = $glossary->processText($content);
 
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
+
 		return $this->render($tpl, array(
 			'article'              => $article,
 			'content'              => $content,
 			'article_comments'     => $article_comments,
 			'article_revisions'    => $article_revisions,
 			'related_content'      => $related_content,
+			'state'                => $state,
 		));
 	}
 
@@ -187,6 +190,9 @@ class KbController extends AbstractController
 				break;
 
 			case 'content':
+
+				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editarticle', $this->person->id);
+
 				$article['content'] = $this->in->getString('content');
 
 				$rev = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);

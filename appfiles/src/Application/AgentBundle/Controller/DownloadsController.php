@@ -45,11 +45,14 @@ class DownloadsController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $download);
 		$related_content = $related_finder->getRelatedEntities();
 
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editdownload', $this->person->id);
+
 		return $this->render('AgentBundle:Downloads:view.html.twig', array(
 			'download'           => $download,
 			'download_comments'  => $download_comments,
 			'download_cats'      => $download_cats,
 			'related_content'    => $related_content,
+			'state'              => $state
 		));
 	}
 
@@ -153,6 +156,9 @@ class DownloadsController extends AbstractController
 				break;
 
 			case 'content':
+
+				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editdownload', $this->person->id);
+
 				$changed_blob = false;
 				if ($this->in->getUint('attach')) {
 					$changed_blob = true;

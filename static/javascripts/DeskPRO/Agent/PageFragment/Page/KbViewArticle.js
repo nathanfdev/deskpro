@@ -68,7 +68,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		});
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
-			revisionCompareUrl: BASE_URL + 'agent/kb/compare-revs/{OLD}/{NEW}'
+
 		});
 	},
 
@@ -129,8 +129,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 						context: this,
 						success: function(html) {
 							this.getEl('revs').html(html);
-							this.miscContent._initCompareRevs();
-							$(info.tabContent).addClass('loaded');
+							this.miscCont();
 						}
 					});
 				}
@@ -568,6 +567,15 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			});
 		}
 
+		if (this.editStateSaver) {
+			this.editStateSaver.destroy();
+		}
+
+		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+			stateId: 'editarticle',
+			listenOn: $('.article-editor-wrap:first', wrap)
+		});
+
 		var wrap = this.wrapper;
 
 		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
@@ -613,7 +621,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		var self = this;
 
 		$('.article-content-wrap', this.getEl('content_ed')).hide();
-		$('.article-editor-wrap', this.getEl('content_ed')).show();
+		var edWrap = $('.article-editor-wrap', this.getEl('content_ed')).show();
+
+		$('.revert-default', edWrap).click(function() {
+			var def = $('textarea.edit-content-field-default').val();
+			$('textarea.edit-content-field').val(def);
+
+			$('.revert-message-notice', edWrap).remove();
+		});
 
 		if (!this._hasInitEd) {
 			this._hasInitEd = true;
@@ -630,7 +645,13 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 				theme_advanced_toolbar_location: 'top',
 				theme_advanced_toolbar_align: 'left',
 				theme_advanced_resizing: true,
-				theme_advanced_statusbar_location: 'bottom'
+				theme_advanced_statusbar_location: 'bottom',
+
+				setup: function(ed) {
+					ed.onKeyPress.add(function() {
+						self.editStateSaver.triggerChange();
+					});
+				}
 			});
 
 			// Attachments

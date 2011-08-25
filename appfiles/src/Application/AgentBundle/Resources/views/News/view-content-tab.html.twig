@@ -4,7 +4,14 @@
 	</div>
 	<div class="news-editor-wrap" style="display: none">
 		<div class="news-editor">
-			<textarea class="edit-content-field" name="news[content]" rows="5" cols="50">{{ news.content }}</textarea>
+			{% if state.news.content %}
+				<div class="revert-message-notice">
+					Unsaved changes were restored. <button class="revert-default">Discard and revert to default</button>
+					<br />
+					<textarea class="edit-content-field-default" style="display: none;">{{news.content}}</textarea>
+				</div>
+			{% endif %}
+			<textarea class="edit-content-field" name="news[content]" rows="5" cols="50">{{ state.news.content|default(news.content) }}</textarea>
 
 			<br />
 

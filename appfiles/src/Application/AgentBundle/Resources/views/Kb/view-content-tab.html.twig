@@ -17,7 +17,14 @@
 	</div>
 	<div class="article-editor-wrap" style="display: none">
 		<div class="article-editor">
-			<textarea class="edit-content-field" name="aritcle[content]" rows="5" cols="50">{{ article.content }}</textarea>
+			{% if state.article.content %}
+				<div class="revert-message-notice">
+					Unsaved changes were restored. <button class="revert-default">Discard and revert to default</button>
+					<br />
+					<textarea class="edit-content-field-default" style="display: none;">{{article.content}}</textarea>
+				</div>
+			{% endif %}
+			<textarea class="edit-content-field" name="article[content]" rows="5" cols="50">{{ state.article.content|default(article.content) }}</textarea>
 
 			<br />
 
@@ -28,7 +35,7 @@
 			</script>
 			<script class="template-download" type="text/x-jquery-tmpl">
 				<li class="uploaded">
-					<input type="checkbox" class="edit-content-attach" name="aritcle[attach]" value="${blob_id}" checked="checked" />
+					<input type="checkbox" class="edit-content-attach" name="article[attach]" value="${blob_id}" checked="checked" />
 					<a href="${download_url}" target="_blank">${filename}</a>
 					<span class="size">${filesize_readable}</span>
 				</li>
@@ -36,7 +43,7 @@
 			<ul class="files file-list">
 				{% for attach in article.attachments %}
 					<li>
-						<input type="checkbox" class="edit-content-attach" name="aritcle[attach]" value="{{ attach.blob.id }}" checked="checked" />
+						<input type="checkbox" class="edit-content-attach" name="article[attach]" value="{{ attach.blob.id }}" checked="checked" />
 						<a href="{{ attach.blob.download_url }}" target="_blank">{{ attach.blob.filename }}</a>
 						<span class="size">{{ attach.blob.readable_filesize }}</span>
 					</li>
