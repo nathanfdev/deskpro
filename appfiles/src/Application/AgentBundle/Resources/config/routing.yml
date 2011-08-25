@@ -935,6 +935,10 @@ agent_glossary_saveword_json:
   pattern: /glossary/{word_id}/edit.json
   defaults: { _controller: AgentBundle:Glossary:glossarySaveWordJson }
 
+agent_glossary_word_tip:
+  pattern: /glossary/{word}/tip
+  defaults: { _controller: AgentBundle:Glossary:tip }
+
 ################################################################################
 # News
 ################################################################################

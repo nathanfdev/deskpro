@@ -87,4 +87,18 @@ class GlossaryController extends AbstractController
 			'content' => $word['content']
 		));
 	}
+
+	public function tipAction($word)
+	{
+		$def = '';
+
+		try {
+			$word = App::getEntityRepository('DeskPRO:GlossaryWord')->findOneByWord($word);
+			$def = $word['content'];
+		} catch (\Exception $e) {
+			$def = '';
+		}
+
+		return $this->createResponse($def);
+	}
 }

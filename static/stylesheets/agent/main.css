@@ -6511,3 +6511,10 @@ article .pending-delete {
 .validating .comment-validate-btn {
 	display: block;
 }
+
+
+
+.embedded-glossary-word {
+	border-bottom: 1px dotted #FF6B1F;
+	cursor: help;
+}

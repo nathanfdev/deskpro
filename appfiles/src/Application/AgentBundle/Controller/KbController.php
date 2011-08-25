@@ -66,8 +66,13 @@ class KbController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $article);
 		$related_content = $related_finder->getRelatedEntities();
 
+		$glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+		$content = $article->content;
+		$content = $glossary->processText($content);
+
 		return $this->render($tpl, array(
 			'article'              => $article,
+			'content'              => $content,
 			'article_comments'     => $article_comments,
 			'article_revisions'    => $article_revisions,
 			'related_content'      => $related_content,
@@ -212,8 +217,13 @@ class KbController extends AbstractController
 					$article->addAttachment($attach);
 				}
 
+				$glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
+				$content = $article->content;
+				$content = $glossary->processText($content);
+
 				$data['content_html'] = $this->renderView('AgentBundle:Kb:view-content-tab.html.twig', array(
-					'article' => $article
+					'article' => $article,
+					'content' => $content
 				));
 				break;
 		}

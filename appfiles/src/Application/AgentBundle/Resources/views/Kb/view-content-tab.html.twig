@@ -1,9 +1,9 @@
 <div class="full-tab-content">
 	<div class="article-content-wrap">
-		{{ article.content|raw }}
+		{{ content|raw }}
 		{% if article.attachments|length %}
 			<ul class="attachment-list">
-				{% for attach in article.attachments %}
+				{% for attach in article.attachments%}
 					<li class="{% if attach.blob.isImage() %}is-image{% else %}icon icon-attachment icon-filetype-{{attach.blob.extension|default('none')}}{% endif %}" rel="message-{{message.id}}">
 						{% if attach.blob.isImage() %}
 							<a href="{{ attach.blob.download_url }}" target="_blank"><img src="{{ path('serve_blob', {'blob_auth_id': attach.blob.auth_id, 's': 50, 'size-fit': '1'}) }}" alt="" class="preview" /></a>
