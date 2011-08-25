@@ -345,7 +345,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 				var word = data.word;
 				var word_id = data.word_id;
 
-				var li = $('<li><a class="edit-word-trigger" data-word-id="'+word_id+'">'+word+'</a></li>');
+				var li = $('<li><a class="edit-word-trigger word-'+word_id+'" data-word-id="'+word_id+'">'+word+'</a></li>');
 
 				var dt = $('dt[data-letter="' + letter + '"]:first', this.glossaryWrapper);
 				var dd = $('dd[data-letter="' + letter + '"]:first', this.glossaryWrapper);
@@ -384,7 +384,9 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			context: this,
 			dataType: 'json',
 			success: function(counts) {
-
+				var wordEl = $('.word-' + word_id, this.glossaryWrapper);
+				DeskPRO_Window.util.showSavePuff(wordEl);
+				this.getGlossaryEditDlg().close();
 			}
 		});
 	}

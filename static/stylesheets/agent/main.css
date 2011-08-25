@@ -6518,3 +6518,13 @@ article .pending-delete {
 	border-bottom: 1px dotted #FF6B1F;
 	cursor: help;
 }
+
+
+.load-puff {
+	background: url(../../images/step-check.png) no-repeat 50% 50%;
+	width: 15px;
+	height: 15px;
+	z-index: 100000 !important;
+	overflow: hidden;
+	position: absolute;
+}
