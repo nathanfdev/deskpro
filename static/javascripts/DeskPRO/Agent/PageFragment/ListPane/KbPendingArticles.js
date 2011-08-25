@@ -120,6 +120,17 @@ DeskPRO.Agent.PageFragment.ListPane.KbPendingArticles = new Class({
 							page.setContent(data.message_content_html, true);
 						}
 						page.setPendingArticleId(id);
+
+						if (data.ticket_id) {
+							var closeTicketId = data.ticket_id;
+							page.addEvent('destroy', function() {
+								Object.each(DeskPRO_Window.tabManager.getTabs(), function(tab, id) {
+									if (tab.page && tab.page.meta.ticket_id == closeTicketId) {
+										DeskPRO_Window.removePage(tab.page);
+									}
+								});
+							});
+						}
 					});
 				}
 			});

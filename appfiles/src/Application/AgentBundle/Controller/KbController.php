@@ -274,7 +274,7 @@ class KbController extends AbstractController
 		$data['pending_article_id'] = $pending_article_id;
 
 		if ($pending_article->ticket) {
-			$data['ticket_id'] = $pending_article->ticket;
+			$data['ticket_id'] = $pending_article->ticket->id;
 			$data['ticket_subject'] = $pending_article->ticket->subject;
 		}
 		if ($pending_article->message) {
