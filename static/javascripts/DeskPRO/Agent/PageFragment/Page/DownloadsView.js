@@ -20,7 +20,6 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 		this._initCommentForm();
 		this._initPostArea();
 		this._initActions();
-		this._initCompareRevs();
 
 		if (this.meta.isValidating) {
 			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
@@ -64,6 +63,10 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 				});
 			}
 		});
+
+		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
+			revisionCompareUrl: BASE_URL + 'agent/downloads/compare-revs/{OLD}/{NEW}'
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -90,7 +93,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
 			context: this.getEl('bodytabs'),
 			onTabSwitch: (function(info) {
-				if ($(info.tabContent).is('.dl-revs')) {
+				if ($(info.tabContent).is('.dl-revs') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/downloads/file/' + this.meta.download_id + '/view-revisions',
 						type: 'GET',
@@ -98,7 +101,8 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 						context: this,
 						success: function(html) {
 							this.getEl('revs').html(html);
-							this._initCompareRevs();
+							this.miscContent._initCompareRevs();
+							$(info.tabContent).addClass('loaded');
 						}
 					});
 				}
@@ -392,33 +396,5 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 	hideEditor: function() {
 		$('.download-editor-wrap', this.getEl('content_ed')).hide();
 		$('.download-content-wrap', this.getEl('content_ed')).show();
-	},
-
-	//#################################################################
-	//# Compare revisions
-	//#################################################################
-
-	_initCompareRevs: function() {
-		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
-	},
-
-	showCompareRev: function() {
-		var old_id = $('.dl-revs input.old:checked', this.wrapper).val();
-		var new_id = $('.dl-revs input.new:checked', this.wrapper).val();
-
-		if (!old_id || !new_id) {
-			return;
-		}
-
-		var overlay = new DeskPRO.UI.Overlay({
-			triggerElement: $('button.compare-trigger', this.wrapper),
-			contentMethod: 'ajax',
-			contentAjax: {
-				url: BASE_URL + 'agent/downloads/compare-revs/' + old_id + '/' + new_id
-			},
-			destroyOnClose: true
-		});
-
-		overlay.openOverlay();
 	}
 });

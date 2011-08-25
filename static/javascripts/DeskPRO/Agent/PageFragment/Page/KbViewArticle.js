@@ -20,7 +20,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		this._initLabels();
 		this._initCommentForm();
 		this._initPostArea();
-		this._initCompareRevs();
+
 		this._initAutoUnpublishOptions();
 		this._initAutoPublishOptions();
 
@@ -65,6 +65,10 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 					dataType: 'json'
 				});
 			}
+		});
+
+		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
+			revisionCompareUrl: BASE_URL + 'agent/kb/compare-revs/{OLD}/{NEW}'
 		});
 	},
 
@@ -117,7 +121,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
 			context: this.getEl('bodytabs'),
 			onTabSwitch: (function(info) {
-				if ($(info.tabContent).is('.kb-revs')) {
+				if ($(info.tabContent).is('.revisions') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/kb/article/' + this.meta.article_id + '/view-revisions',
 						type: 'GET',
@@ -125,7 +129,8 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 						context: this,
 						success: function(html) {
 							this.getEl('revs').html(html);
-							this._initCompareRevs();
+							this.miscContent._initCompareRevs();
+							$(info.tabContent).addClass('loaded');
 						}
 					});
 				}
@@ -673,34 +678,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 	},
 
 	//#################################################################
-	//# Compare revisions
-	//#################################################################
-
-	_initCompareRevs: function() {
-		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
-	},
-
-	showCompareRev: function() {
-		var old_id = $('.kb-revs input.old:checked', this.wrapper).val();
-		var new_id = $('.kb-revs input.new:checked', this.wrapper).val();
-
-		if (!old_id || !new_id) {
-			return;
-		}
-
-		var overlay = new DeskPRO.UI.Overlay({
-			triggerElement: $('button.compare-trigger', this.wrapper),
-			contentMethod: 'ajax',
-			contentAjax: {
-				url: BASE_URL + 'agent/kb/compare-revs/' + old_id + '/' + new_id
-			},
-			destroyOnClose: true
-		});
-
-		overlay.openOverlay();
-	},
-
-	//#################################################################
 	//# Comments
 	//#################################################################
 
@@ -740,5 +717,5 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 				this.newCommentWrapper.before(el);
 			}
 		});
-	},
+	}
 });

@@ -21,7 +21,6 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		this._initLabels();
 		this._initPostArea();
 		this._initCommentForm();
-		this._initCompareRevs();
 
 		if (this.meta.isValidating) {
 			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
@@ -65,6 +64,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 				});
 			}
 		});
+
+		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
+			revisionCompareUrl: BASE_URL + 'agent/downloads/compare-revs/{OLD}/{NEW}'
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -91,7 +94,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
 			context: this.getEl('bodytabs'),
 			onTabSwitch: (function(info) {
-				if ($(info.tabContent).is('.news-revs')) {
+				if ($(info.tabContent).is('.news-revs') && !$(info.tabContent).is('.loaded')) {
 					$.ajax({
 						url: BASE_URL + 'agent/news/post/' + this.meta.news_id + '/view-revisions',
 						type: 'GET',
@@ -99,7 +102,8 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 						context: this,
 						success: function(html) {
 							this.getEl('revs').html(html);
-							this._initCompareRevs();
+							this.miscContent._initCompareRevs();
+							$(info.tabContent).addClass('loaded');
 						}
 					});
 				}

@@ -181,7 +181,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<li class="tab-trigger kb-content on" data-tab-for=".tab-content.kb-content"><a>Article</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.attach-tab"><a>Attach (<span id="{{baseId}}_count_attach">{{article.attachments|length|default(0)}}</span>)</a></li>
-			<li class="tab-trigger kb-revs" data-tab-for=".tab-content.kb-revs"><a>Revisions</a></li>
+			<li class="tab-trigger kb-revs" data-tab-for=".tab-content.revisions"><a>Revisions</a></li>
 			<li class="tab-trigger kb-related-content" data-tab-for=".tab-content.kb-related-content"><a>Related Content</a></li>
 			<li class="tab-trigger kb-search-stats" data-tab-for=".tab-content.kb-search-stats"><a>Search Statistics</a></li>
 		</ul>
@@ -247,7 +247,7 @@ pageMeta.baseId = '{{ baseId }}';
 		{# /Tab: Attachments #}
 
 		{# Tab: Revisions #}
-		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content kb-revs">
+		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content revisions">
 			{% include 'AgentBundle:Kb:view-revisions-tab.html.twig' %}
 		</div>
 		{# /Tab: Revisions #}
