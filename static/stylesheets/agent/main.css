@@ -2318,11 +2318,18 @@ border-left: none;
 
 .tags-wrap span.tag-icon {
 	display: block;
-	width: 16px;
 	height: 16px;
+	width: 16px;
 	background: url("../../images/icn-sprite.png") left -978px no-repeat;
 	float: left;
 	margin-top: 2px;
+}
+
+
+.tags-wrap span.tag-icon.with-label {
+	width: 100px;
+	padding-left: 18px;
+	line-height: 16px;
 }
 
 .tags-wrap ul {
@@ -6527,4 +6534,16 @@ article .pending-delete {
 	z-index: 100000 !important;
 	overflow: hidden;
 	position: absolute;
+}
+
+
+
+
+.sticky-search-words {
+	margin: 10px;
+}
+.sticky-search-words .explain {
+	clear: both;
+	margin-left: 125px;
+	font-size: 9px;
 }

@@ -242,6 +242,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 			list: this.labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
+
+		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+			contentType: 'news',
+			contentId: this.meta.news_id,
+			element: $('.sticky-search-words ul', this.wrapper)
+		});
 	},
 
 	_saveLabelsTimeout: null,
@@ -333,7 +339,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		}
 
 		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
-			stateId: 'editnews',
+			stateId: 'editarticle',
 			listenOn: $('.news-editor-wrap:first', wrap)
 		});
 

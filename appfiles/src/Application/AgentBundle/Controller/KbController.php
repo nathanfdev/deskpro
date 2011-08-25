@@ -72,8 +72,11 @@ class KbController extends AbstractController
 
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
+		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($article);
+
 		return $this->render($tpl, array(
 			'article'              => $article,
+			'sticky_search_words'  => $sticky_search_words,
 			'content'              => $content,
 			'article_comments'     => $article_comments,
 			'article_revisions'    => $article_revisions,

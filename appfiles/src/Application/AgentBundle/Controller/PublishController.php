@@ -474,6 +474,45 @@ class PublishController extends AbstractController
 	}
 
 	############################################################################
+	# saving sticky words
+	############################################################################
+
+	public function saveStickySearchWordsAction($type, $content_id)
+	{
+		$entity_name = null;
+		switch ($type) {
+			case 'articles':   $entity_name = 'DeskPRO:Article';   break;
+			case 'downloads':  $entity_name = 'DeskPRO:Download';  break;
+			case 'news':       $entity_name = 'DeskPRO:News';      break;
+		}
+
+		$this->db->beginTransaction();
+
+		// Lets just recreate them all
+		$this->db->executeUpdate("
+			DELETE FROM search_sticky_result
+			WHERE object_type = ? AND object_id = ?
+		", array($entity_name, $content_id));
+
+		foreach ($this->in->getCleanValueArray('words', 'string', 'discard') as $word) {
+			$word = Strings::utf8_strtolower($word);
+			$word = Strings::utf8_accents_to_ascii($word);
+
+			$this->db->insert('search_sticky_result', array(
+				'word'        => $word,
+				'object_type' => $entity_name,
+				'object_id'   => $content_id
+			));
+		}
+
+		$this->db->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => 1
+		));
+	}
+
+	############################################################################
 	# saving categories
 	############################################################################
 

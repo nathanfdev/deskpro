@@ -43,7 +43,7 @@ DeskPRO.UI.LabelsInput = new Orb.Class({
 		};
 
 		var tagSource = false;
-		
+
 		if (DeskPRO.UI.LabelsInput_Grouped[this.options.type]) {
 			tagSource = DeskPRO.UI.LabelsInput_Grouped[this.options.type];
 		} else if (window.DESKPRO_DATA_REGISTRY.labels) {

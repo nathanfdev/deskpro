@@ -47,12 +47,15 @@ class DownloadsController extends AbstractController
 
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editdownload', $this->person->id);
 
+		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($download);
+
 		return $this->render('AgentBundle:Downloads:view.html.twig', array(
-			'download'           => $download,
-			'download_comments'  => $download_comments,
-			'download_cats'      => $download_cats,
-			'related_content'    => $related_content,
-			'state'              => $state
+			'download'              => $download,
+			'download_comments'     => $download_comments,
+			'download_cats'         => $download_cats,
+			'related_content'       => $related_content,
+			'state'                 => $state,
+			'sticky_search_words'   => $sticky_search_words,
 		));
 	}
 

@@ -329,6 +329,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			list: this.labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
+
+		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+			contentType: 'articles',
+			contentId: this.meta.article_id,
+			element: $('.sticky-search-words ul', this.wrapper)
+		});
 	},
 
 	_saveLabelsTimeout: null,

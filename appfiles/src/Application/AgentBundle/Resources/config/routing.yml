@@ -768,6 +768,10 @@ agent_publish_getsectiondata:
   pattern: /publish/get-section-data.json
   defaults: { _controller: AgentBundle:Publish:getSectionData }
 
+agent_publish_save_stickysearchwords:
+  pattern: /publish/save-sticky-search-words/{type}/{content_id}
+  defaults: { _controller: AgentBundle:Publish:saveStickySearchWords }
+
 agent_public_validatingcontent:
   pattern: /publish/content/validating
   defaults: { _controller: AgentBundle:Publish:listValidatingContent }

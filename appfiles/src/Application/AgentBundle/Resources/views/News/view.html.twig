@@ -114,6 +114,7 @@ pageMeta.baseId = '{{ baseId }}';
 			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.news-revs"><a>Revisions</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.news-related-content"><a>Related Content</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.search-tab"><a>Search</a></li>
 		</ul>
 	</div>
 	{# /Tab Triggers #}
@@ -179,6 +180,22 @@ pageMeta.baseId = '{{ baseId }}';
 			{% include 'AgentBundle:Common:content-related-list.html.twig' %}
 		</div>
 		{# /Tab: Related #}
+
+		{# Tab: Search #}
+		<div id="{{baseId}}_searchtab" class="full-container-tabbed-contents tab-content search-tab">
+			<div class="tags-wrap sticky-search-words">
+				<span class="tag-icon with-label">Search Words</span>
+				<ul>
+					{% for word in sticky_search_words %}
+						<li><span>{{word}}</span></li>
+					{% endfor %}
+				</ul>
+				<div class="explain">
+					When a user searches for any of these words, this page will always be listed in their top results.
+				</div>
+			</div>
+		</div>
+		{# /Tab: Search #}
 	</div>
 </div>
 {# /Main Tabs #}

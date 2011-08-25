@@ -235,6 +235,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 			list: this.labelsList,
 			onChange: this.saveLabels.bind(this)
 		});
+
+		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+			contentType: 'downloads',
+			contentId: this.meta.download_id,
+			element: $('.sticky-search-words ul', this.wrapper)
+		});
 	},
 
 	_saveLabelsTimeout: null,
