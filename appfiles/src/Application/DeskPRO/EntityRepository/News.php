@@ -37,7 +37,7 @@ class News extends EntityRepository
 	public function getByIds(array $ids, PersonEntity $person_context = null)
 	{
 		if (!$ids) return array();
-		
+
 		if ($person_context) {
 			$posts = $this->getEntityManager()->createQuery("
 				SELECT p
@@ -78,7 +78,7 @@ class News extends EntityRepository
 
 		return $news;
 	}
-	
+
 	public function getNews($node, $num = 20)
 	{
 		if ($node) {
@@ -107,14 +107,14 @@ class News extends EntityRepository
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT n
 				FROM DeskPRO:News n INDEX BY n.id
-				WHERE n.is_published = 1 AND n.category IN (" . implode(',',$cat_ids) . ")
+				WHERE n.status = 'published' AND n.category IN (" . implode(',',$cat_ids) . ")
 				ORDER BY n.id DESC
 			")->setMaxResults($num)->execute();
 		} else {
 			$articles = $this->getEntityManager()->createQuery("
 				SELECT n
 				FROM DeskPRO:News n INDEX BY n.id
-				WHERE n.is_published = 1
+				WHERE n.status = 'published'
 				ORDER BY n.id DESC
 			")->setMaxResults($num)->execute();
 		}

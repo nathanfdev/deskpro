@@ -67,16 +67,25 @@ class Download extends ContentAbstract
 
 	public function getFileName()
 	{
+		if (!$this->blob) {
+			return '';
+		}
 		return $this->blob['filename'];
 	}
 
 	public function getFileSize()
 	{
+		if (!$this->blob) {
+			return 0;
+		}
 		return $this->blob['filesize'];
 	}
 
 	public function getReadableFileSize()
 	{
+		if (!$this->blob) {
+			return '0 B';
+		}
 		return $this->blob->getReadableFilesize();
 	}
 
