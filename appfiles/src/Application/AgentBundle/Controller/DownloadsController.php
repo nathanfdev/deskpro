@@ -20,6 +20,9 @@ use Application\DeskPRO\UI\RuleBuilder;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 use Application\AgentBundle\Controller\Helper\DownloadResults;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -39,10 +42,14 @@ class DownloadsController extends AbstractController
 		$download_cats = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
 		$download_comments = App::getEntityRepository('DeskPRO:DownloadComment')->getComments($download);
 
+		$related_finder = new RelatedContentFinder($this->person, $download);
+		$related_content = $related_finder->getRelatedEntities();
+
 		return $this->render('AgentBundle:Downloads:view.html.twig', array(
 			'download'           => $download,
 			'download_comments'  => $download_comments,
 			'download_cats'      => $download_cats,
+			'related_content'    => $related_content,
 		));
 	}
 
@@ -127,6 +134,22 @@ class DownloadsController extends AbstractController
 				$rev = ContentRevisionUtil::findOrCreate($download, 'title', $this->person);
 				$rev['title'] = $download['title'];
 
+				break;
+
+			case 'add-related':
+				$updater = new RelatedContentUpdate($download);
+				$updater->addRelated(
+					$this->in->getString('content_type'),
+					$this->in->getString('content_id')
+				);
+				break;
+
+			case 'remove-related':
+				$updater = new RelatedContentUpdate($download);
+				$updater->removeRelated(
+					$this->in->getString('content_type'),
+					$this->in->getString('content_id')
+				);
 				break;
 
 			case 'content':

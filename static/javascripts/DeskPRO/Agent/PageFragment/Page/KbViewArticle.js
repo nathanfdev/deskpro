@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 
 	initPage: function(el) {
 
+		var self = this;
 		this.wrapper = el;
 
 		this.article_id = this.getMetaData('article_id');
@@ -45,7 +46,25 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'articles',
 			content_id: this.meta.article_id,
-			listEl: $('section.linked-content:first', this.wrapper)
+			listEl: $('section.linked-content:first', this.wrapper),
+			onContentLinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			},
+			onContentUnlinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			}
 		});
 	},
 

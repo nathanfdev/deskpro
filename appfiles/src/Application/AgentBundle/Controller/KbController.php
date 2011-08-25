@@ -21,6 +21,9 @@ use Application\DeskPRO\Entity\ResultCache;
 use Application\DeskPRO\Searcher\ArticleSearch;
 use Application\DeskPRO\UI\RuleBuilder;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
+
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 
 use Application\AgentBundle\Controller\Helper\ArticleResults;
@@ -60,10 +63,14 @@ class KbController extends AbstractController
 
 		$article_revisions = $article->getRevisions();
 
+		$related_finder = new RelatedContentFinder($this->person, $article);
+		$related_content = $related_finder->getRelatedEntities();
+
 		return $this->render($tpl, array(
 			'article'              => $article,
 			'article_comments'     => $article_comments,
 			'article_revisions'    => $article_revisions,
+			'related_content'      => $related_content,
 		));
 	}
 
@@ -156,6 +163,22 @@ class KbController extends AbstractController
 			case 'auto-unpub':
 				$date = date_create('@' . $this->in->getUint('end_timestamp'));
 				$article->date_published = $date;
+				break;
+
+			case 'add-related':
+				$updater = new RelatedContentUpdate($article);
+				$updater->addRelated(
+					$this->in->getString('content_type'),
+					$this->in->getString('content_id')
+				);
+				break;
+
+			case 'remove-related':
+				$updater = new RelatedContentUpdate($article);
+				$updater->removeRelated(
+					$this->in->getString('content_type'),
+					$this->in->getString('content_id')
+				);
 				break;
 
 			case 'content':

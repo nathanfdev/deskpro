@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 	initPage: function(el) {
 
+		var self = this;
 		this.wrapper = el;
 
 		this.news_id = this.getMetaData('news_id');
@@ -44,7 +45,25 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'news',
 			content_id: this.meta.article_id,
-			listEl: $('section.linked-content:first', this.wrapper)
+			listEl: $('section.linked-content:first', this.wrapper),
+			onContentLinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			},
+			onContentUnlinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/news/post/' + self.meta.news_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			}
 		});
 	},
 

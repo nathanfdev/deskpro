@@ -10,6 +10,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 
 	initPage: function(el) {
 
+		var self = this;
 		this.wrapper = el;
 
 		this.download_id = this.getMetaData('download_id');
@@ -43,7 +44,25 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
 			typename: 'downloads',
 			content_id: this.meta.download_id,
-			listEl: $('section.linked-content:first', this.wrapper)
+			listEl: $('section.linked-content:first', this.wrapper),
+			onContentLinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			},
+			onContentUnlinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/downloads/file/' + self.meta.download_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			}
 		});
 	},
 

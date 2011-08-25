@@ -20,6 +20,9 @@ use Application\DeskPRO\UI\RuleBuilder;
 use Application\AgentBundle\Controller\Helper\NewsResults;
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -42,10 +45,14 @@ class NewsController extends AbstractController
 		$news_comments = App::getEntityRepository('DeskPRO:NewsComment')->getComments($news);
 		$news_cats = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
 
+		$related_finder = new RelatedContentFinder($this->person, $news);
+		$related_content = $related_finder->getRelatedEntities();
+
 		return $this->render('AgentBundle:News:view.html.twig', array(
-			'news'           => $news,
-			'news_comments'  => $news_comments,
-			'news_cats'      => $news_cats,
+			'news'             => $news,
+			'news_comments'    => $news_comments,
+			'news_cats'        => $news_cats,
+			'related_content'  => $related_content,
 		));
 	}
 
@@ -113,6 +120,22 @@ class NewsController extends AbstractController
 				$rev = ContentRevisionUtil::findOrCreate($news, 'title', $this->person);
 				$rev['title'] = $news['title'];
 
+				break;
+
+			case 'add-related':
+				$updater = new RelatedContentUpdate($news);
+				$updater->addRelated(
+					$this->in->getString('content_type'),
+					$this->in->getString('content_id')
+				);
+				break;
+
+			case 'remove-related':
+				$updater = new RelatedContentUpdate($news);
+				$updater->removeRelated(
+					$this->in->getString('content_type'),
+					$this->in->getString('content_id')
+				);
 				break;
 
 			case 'content':
