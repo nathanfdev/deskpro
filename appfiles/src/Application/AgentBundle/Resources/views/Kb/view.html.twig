@@ -179,6 +179,8 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="kb-editor-edit"><a>edit</a></span>
 		<ul>
 			<li class="tab-trigger kb-content on" data-tab-for=".tab-content.kb-content"><a>Article</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{article_comments|length|default(0)}}</span>)</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.attach-tab"><a>Attach (<span id="{{baseId}}_count_attach">{{article.attachments|length|default(0)}}</span>)</a></li>
 			<li class="tab-trigger kb-revs" data-tab-for=".tab-content.kb-revs"><a>Revisions</a></li>
 			<li class="tab-trigger kb-related-content" data-tab-for=".tab-content.kb-related-content"><a>Related Content</a></li>
 			<li class="tab-trigger kb-search-stats" data-tab-for=".tab-content.kb-search-stats"><a>Search Statistics</a></li>
@@ -193,12 +195,15 @@ pageMeta.baseId = '{{ baseId }}';
 			<div id="{{baseId}}_content_ed">
 			{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
 			</div>
+		</div>
+		{# /Tab: Content #}
 
-			{# Comments #}
+		{# Tab: Comments #}
+		<div class="full-container-tabbed-contents tab-content comments-tab">
 			<div class="article-comments">
 				<div class="full-tab-content">
 					<div class="messages-wrap">
-						{% for comment in download_comments %}
+						{% for comment in article_comments %}
 							{% include 'AgentBundle:Kb:view-comment.html.twig' %}
 						{% endfor %}
 					</div>
@@ -229,9 +234,17 @@ pageMeta.baseId = '{{ baseId }}';
 					</div>
 				</div>
 			</div>
-			{# Comments #}
 		</div>
-		{# /Tab: Content #}
+		{# /Tab: Comments #}
+
+		{# Tab: Attachments #}
+		<div class="full-container-tabbed-contents tab-content attach-tab" id="{{baseId}}_attachtab">
+			{#
+				See the Page fragment, the attachments are dynamically
+				inserted from the content container
+			#}
+		</div>
+		{# /Tab: Attachments #}
 
 		{# Tab: Revisions #}
 		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content kb-revs">

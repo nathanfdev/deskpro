@@ -543,19 +543,25 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 			this.hideEditor();
 		}).bind(this));
 
-		var imageEls = $('ul.attachment-list li.is-image a', this.wrapper);
+		var attachList = $('ul.attachment-list:first', this.wrapper);
+		if (attachList.length) {
 
-		imageEls.colorbox({
-			title: function(){ var url = $(this).attr('href'); return '<a href="'+url+'" target="_blank">Open In New Window</a>' },
-			width: '50%',
-			height: '50%',
-			initialWidth: '200',
-			initialHeight: '150',
-			scalePhotos: true,
-			photo: true,
-			opacity: 0.5,
-			transition: 'none'
-		});
+			this.getEl('attachtab').empty().append(attachList);
+
+			var imageEls = $('li.is-image a', attachList);
+
+			imageEls.colorbox({
+				title: function(){ var url = $(this).attr('href'); return '<a href="'+url+'" target="_blank">Open In New Window</a>' },
+				width: '50%',
+				height: '50%',
+				initialWidth: '200',
+				initialHeight: '150',
+				scalePhotos: true,
+				photo: true,
+				opacity: 0.5,
+				transition: 'none'
+			});
+		}
 
 		var wrap = this.wrapper;
 

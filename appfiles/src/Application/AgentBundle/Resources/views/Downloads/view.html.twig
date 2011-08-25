@@ -112,6 +112,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="kb-editor-edit download-editor-edit"><a>edit</a></span>
 		<ul>
 			<li class="tab-trigger on" data-tab-for=".tab-content.dl-content"><a>Post</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{download_comments|length|default(0)}}</span>)</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.dl-revs"><a>Revisions</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.dl-related-content"><a>Related Content</a></li>
 		</ul>
@@ -130,8 +131,11 @@ pageMeta.baseId = '{{ baseId }}';
 			{# /Content #}
 
 			<br class="clear" />
+		</div>
+		{# /Content #}
 
-			{# Tab: Comments #}
+		{# Tab: Comments #}
+		<div class="full-container-tabbed-contents tab-content comments-tab">
 			<div class="download-comments">
 				<div class="full-tab-content">
 					<div class="messages-wrap">
@@ -166,9 +170,8 @@ pageMeta.baseId = '{{ baseId }}';
 					</div>
 				</div>
 			</div>
-			{# /Tab Comments #}
 		</div>
-		{# /Content #}
+		{# /Tab: Comments #}
 
 		{# Tab: Revisions #}
 		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content dl-revs">

@@ -111,6 +111,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<span class="kb-editor-edit news-editor-edit"><a>edit</a></span>
 		<ul>
 			<li class="tab-trigger on" data-tab-for=".tab-content.news-content"><a>Post</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{news_comments|length|default(0)}}</span>)</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.news-revs"><a>Revisions</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.news-related-content"><a>Related Content</a></li>
 		</ul>
@@ -126,9 +127,11 @@ pageMeta.baseId = '{{ baseId }}';
             {% include 'AgentBundle:News:view-content-tab.html.twig' %}
             </div>
             {# /Content #}
+        </div>
 
-            {# Tab: Comments #}
-            <div class="news-comments">
+        {# Tab: Comments #}
+		<div class="full-container-tabbed-contents tab-content comments-tab">
+			<div class="news-comments">
             	<div class="full-tab-content">
             		<div class="messages-wrap">
             			{% for comment in news_comments %}
@@ -162,8 +165,8 @@ pageMeta.baseId = '{{ baseId }}';
             		</div>
             	</div>
             </div>
-            {# /Tab Comments #}
-        </div>
+		</div>
+		{# /Tab: Comments #}
 
 		{# Tab: Revisions #}
 		<div id="{{baseId}}_revs" class="full-container-tabbed-contents tab-content news-revs">
