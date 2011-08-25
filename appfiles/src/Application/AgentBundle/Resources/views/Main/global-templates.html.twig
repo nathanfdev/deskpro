@@ -84,6 +84,18 @@
 	<li data-status="closed">Closed</li>
 </ul>
 
+{# Comment Menu #}
+<ul id="comment_tools_menu" data-menu-flag="copy-menu">
+	<li data-action="edit">Edit Comment</li>
+	<li data-action="delete">Delete Comment</li>
+</ul>
+
+{# Comment Validation Menu #}
+<ul id="comment_validation_menu" data-menu-flag="copy-menu">
+	<li data-action="approve">Validate Comment</li>
+	<li data-action="delete">Delete Comment</li>
+</ul>
+
 {# Popover tempalte #}
 <script type="text/x-deskpro-plain" id="popover_tpl">
 	<ul class="popover-tabs" style="display:none">
@@ -103,6 +115,13 @@
 	<li data-usergroup-id="3">Usergroup 3</li>
 	<li data-usergroup-id="4">Usergroup 4</li>
 </ul>
+
+<script type="text/x-deskpro-plain" id="comment_edit_tpl">
+	<div class="comment-edit">
+		<textarea class="comment"></textarea><br />
+		<button class="dp-button xx-small save-trigger">Save Comment</button>
+	</div>
+</script>
 
 {##############################################################}
 {# Articles related #}

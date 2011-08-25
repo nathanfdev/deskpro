@@ -175,4 +175,15 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	{
 		return Util::getBaseClassname($this->getObject());
 	}
+
+
+	/**
+	 * Get the "content-type" of the object on this comment
+	 *
+	 * @return string
+	 */
+	public function getObjectContentType()
+	{
+		return $this->getObject()->getTableName();
+	}
 }

@@ -6481,3 +6481,33 @@ article .pending-delete {
 	float: right;
 	margin-top: 2px;
 }
+
+
+
+
+.comment-edit-btn {
+    float: right;
+    display: block;
+    padding-left: 19px;
+    background: url(../../images/icons/cog.png) no-repeat 0 50%;
+}
+
+.comment-edit-btn:hover {
+	text-decoration: underline;
+	cursor: pointer;
+}
+.comment-validate-btn {
+    float: right;
+    display: none;
+    width: 16px;
+	height: 16px;
+    background: url(../../images/step-warn.png) no-repeat 50% 50%;
+	overflow: hidden;
+	text-indent: -100px;
+	cursor: pointer;
+	margin: 2px 5px 0 0;
+}
+
+.validating .comment-validate-btn {
+	display: block;
+}

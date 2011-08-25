@@ -273,6 +273,10 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 	//#################################################################
 
 	_initCommentForm: function() {
+		this.commentsController = new DeskPRO.Agent.PageHelper.Comments(this, {
+			commentsWrapper: this.getEl('comments_wrap')
+		});
+
 		this.newCommentWrapper = $('.new-note:first', this.wrapper);
 		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
 	},

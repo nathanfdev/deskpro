@@ -73,6 +73,9 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		if (origMenuElement.data('menu-flag') && origMenuElement.data('menu-flag').indexOf('copy-menu') !== -1) {
 			origMenuElement = origMenuElement.clone();
+			if (origMenuElement.attr('id')) {
+				origMenuElement.attr('id', origMenuElement.attr('id') + '_' + Orb.uuid());
+			}
 		}
 
 		//------------------------------

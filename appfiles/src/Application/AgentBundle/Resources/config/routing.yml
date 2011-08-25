@@ -800,6 +800,14 @@ agent_publish_delete_comment:
   pattern: /publish/comments/delete/{typename}/{comment_id}
   defaults: { _controller: AgentBundle:Publish:deleteComment }
 
+agent_publish_comment_info:
+  pattern: /publish/comments/info/{typename}/{comment_id}
+  defaults: { _controller: AgentBundle:Publish:commentInfo }
+
+agent_publish_comment_save:
+  pattern: /publish/comments/save-comment/{typename}/{comment_id}
+  defaults: { _controller: AgentBundle:Publish:saveComment }
+
 agent_public_validatingcomments_mass:
   pattern: /publish/comments/validating-mass-actions/{action}
   defaults: { _controller: AgentBundle:Publish:validatingCommentsMassActions }

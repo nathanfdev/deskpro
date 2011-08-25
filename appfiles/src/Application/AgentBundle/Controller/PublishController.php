@@ -181,6 +181,36 @@ class PublishController extends AbstractController
 		));
 	}
 
+	public function commentInfoAction($typename, $comment_id)
+	{
+		$entity = $this->_getCommentEntityName($typename);
+
+		$comment = App::findEntity($entity, $comment_id);
+
+		return $this->createJsonResponse(array(
+			'comment_id' => $comment['id'],
+			'content_type'   => $typename,
+			'comment_text' => $comment->content
+		));
+	}
+
+	public function saveCommentAction($typename, $comment_id)
+	{
+		$entity = $this->_getCommentEntityName($typename);
+
+		$comment = App::findEntity($entity, $comment_id);
+		$comment->content = $this->in->getString('comment');
+
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'comment_id' => $comment['id'],
+			'content_type'   => $typename,
+			'comment_html' => $comment->getContentHtml()
+		));
+	}
+
 	protected function _getCommentEntityName($typename)
 	{
 		switch ($typename) {

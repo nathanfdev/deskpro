@@ -33,14 +33,23 @@ class CommentAbstract extends EntityRepository
 		")->execute();
 	}
 
-	public function getComments($object)
+	public function getComments($object, $show_validating = true)
 	{
-		return $this->getEntityManager()->createQuery("
-			SELECT c
-			FROM " . $this->_entityName ." c
-			WHERE c.status = ?1 AND c." . static::FIELD . " = ?2
-			ORDER BY c.id DESC
-		")->setParameter(1, 'visible')->setParameter(2, $object)->execute();
+		if ($show_validating) {
+			return $this->getEntityManager()->createQuery("
+				SELECT c
+				FROM " . $this->_entityName ." c
+				WHERE c.status != ?1 AND c." . static::FIELD . " = ?2
+				ORDER BY c.id DESC
+			")->setParameter(1, 'deleted')->setParameter(2, $object)->execute();
+		} else {
+			return $this->getEntityManager()->createQuery("
+				SELECT c
+				FROM " . $this->_entityName ." c
+				WHERE c.status = ?1 AND c." . static::FIELD . " = ?2
+				ORDER BY c.id DESC
+			")->setParameter(1, 'visible')->setParameter(2, $object)->execute();
+		}
 	}
 
 	public function countAwaitingValidation()

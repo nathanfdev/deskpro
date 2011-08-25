@@ -1,4 +1,8 @@
-<div data-comment-id="{{comment.id}}" class="message comment-{{comment.id}} {% if comment.person.is_agent %}admin-message{% else %}user-message{% endif %}">
+<div
+	data-comment-id="{{comment.id}}"
+	data-content-type="{{ comment.object_content_type }}"
+	class="message comment-{{comment.id}} {% if comment.person.is_agent %}admin-message{% else %}user-message{% endif %} {% if comment.status == 'validating' %}validating{% endif %}"
+>
 	<div class="message-avatar left">
 		<img
 			src="{% if comment.person %}{{ comment.person.getPictureUrl(35) }}{% else %}{{ path('serve_default_picture', {'s': 35}) }}{% endif %}"
@@ -19,9 +23,14 @@
 				{% endif %}
 			{% endif %}
 			<span class="timestamp">from {{ comment.ip_address }}, <span class="timeago" title="{{comment.date_created|date('c')}}">{{comment.date_created|date('Y-m-d')}}</span></span>
+			<span class="comment-edit-btn count tipped">
+				#{{ loop.index }}
+			</span>
+
+			<span class="comment-validate-btn count tipped" title="Comment is awaiting validation. Click to manage.">Validate comment</span>
 		</div>
 		<div class="message-text">
-			{{ comment.content_html|raw }}
+			<div class="rendered-message">{{ comment.content_html|raw }}</div>
 		</div>
 	</div>
 </div>
