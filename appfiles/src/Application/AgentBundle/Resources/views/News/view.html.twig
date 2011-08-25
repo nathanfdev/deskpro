@@ -112,6 +112,7 @@ pageMeta.baseId = '{{ baseId }}';
 		<ul>
 			<li class="tab-trigger on" data-tab-for=".tab-content.news-content"><a>Post</a></li>
 			<li class="tab-trigger" data-tab-for=".tab-content.news-revs"><a>Revisions</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.news-related-content"><a>Related Content</a></li>
 		</ul>
 	</div>
 	{# /Tab Triggers #}
@@ -164,11 +165,17 @@ pageMeta.baseId = '{{ baseId }}';
             {# /Tab Comments #}
         </div>
 
-            {# Tab: Revisions #}
-			<div id="{{baseId}}_revs" class="full-container-tabbed-contents tab-content news-revs">
-				{% include 'AgentBundle:News:view-revisions-tab.html.twig' %}
-			</div>
-			{# /Tab: Revisions #}
+		{# Tab: Revisions #}
+		<div id="{{baseId}}_revs" class="full-container-tabbed-contents tab-content news-revs">
+			{% include 'AgentBundle:News:view-revisions-tab.html.twig' %}
+		</div>
+		{# /Tab: Revisions #}
+
+		{# Tab: Related #}
+		<div id="{{baseId}}_related_content" class="full-container-tabbed-contents tab-content news-related-content">
+			{% include 'AgentBundle:Common:content-related-list.html.twig' %}
+		</div>
+		{# /Tab: Related #}
 	</div>
 </div>
 {# /Main Tabs #}

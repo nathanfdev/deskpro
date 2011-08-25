@@ -3,7 +3,7 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'kb_article_view',
+	TYPENAME: 'article',
 
 	wrapper: null,
 	article_id: null,
@@ -41,6 +41,12 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		});
 
 		$('time.timeago', this.wrapper).timeago();
+
+		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
+			typename: 'articles',
+			content_id: this.meta.article_id,
+			listEl: $('section.linked-content:first', this.wrapper)
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {

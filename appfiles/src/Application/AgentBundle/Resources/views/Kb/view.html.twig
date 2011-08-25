@@ -189,7 +189,7 @@ pageMeta.baseId = '{{ baseId }}';
 	{# Tab Contents #}
 	<div class="full-container-tabbed-contents-wrap">
 		{# Tab: Content #}
-		<div class="full-container-tabbed-contents tab-content kb-content" data-tab-trigger=".tab-trigger.kb-content" style="display: block">
+		<div class="full-container-tabbed-contents tab-content kb-content" style="display: block">
 			<div id="{{baseId}}_content_ed">
 			{% include 'AgentBundle:Kb:view-content-tab.html.twig' %}
 			</div>
@@ -234,10 +234,16 @@ pageMeta.baseId = '{{ baseId }}';
 		{# /Tab: Content #}
 
 		{# Tab: Revisions #}
-		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content kb-revs" data-tab-trigger=".tab-trigger.kb-revs">
+		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content kb-revs">
 			{% include 'AgentBundle:Kb:view-revisions-tab.html.twig' %}
 		</div>
 		{# /Tab: Revisions #}
+
+		{# Tab: Related #}
+		<div id="{{baseId}}_related_content" class="full-container-tabbed-contents tab-content kb-related-content">
+			{% include 'AgentBundle:Common:content-related-list.html.twig' %}
+		</div>
+		{# /Tab: Related #}
 	</div>
 	{# /Tab Contents $}
 </div>

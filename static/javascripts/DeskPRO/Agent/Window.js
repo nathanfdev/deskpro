@@ -57,6 +57,18 @@ DeskPRO.Agent.Window = new Orb.Class({
 				}
 
 				el.text(count);
+			},
+
+			/**
+			 * Get a "plain" article. ie of type="text/x-deskpro-plain"
+			 *
+			 * @param el
+			 * @return {String}
+			 */
+			getPlainTpl: function(el) {
+				var el = $(el);
+
+				return el.get(0).innerHTML;
 			}
 		};
 	},

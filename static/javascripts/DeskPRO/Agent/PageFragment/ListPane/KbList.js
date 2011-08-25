@@ -37,6 +37,10 @@ DeskPRO.Agent.PageFragment.ListPane.KbList = new Class({
 		$('section.kb-simple-list', this.wrapper)
 			.delegate('button.kb-insert-link', 'click', function() { self.insertIntoTicket($(this).data('article-id'), 'link') })
 			.delegate('button.kb-insert-content', 'click', function() { self.insertIntoTicket($(this).data('article-id'), 'content') })
+
+		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
+			contentListEl: this.listWrapper
+		});
 	},
 
 	initVisibleTicket: function() {

@@ -1,12 +1,17 @@
 <section class="search-reuslts page-set" data-page="{{ page }}">
 	{% for news in results %}
-		<article class="news news-{{news.id}}">
+		<article class="news news-{{news.id}} related-is-linkable" data-content-type="news" data-content-id="{{ news.id }}">
 			<input class="item-select" type="checkbox" value="{{news.id}}" />
 			<div class="toprow">
 				<div class="left">
 					<span class="subject">
 						<a class="with-route" data-route="page:{{ path('agent_news_view', {'news_id': news.id}) }}">{{ news.title }}</a>
 					</span>
+				</div>
+				<div class="ticketinfo visible-related-content-controls">
+					<div class="bound-faded"></div>
+					<button class="clean-gray xxx-small related-link">Add as related</button>
+					<button class="clean-gray xxx-small related-unlink">Remove as related</button>
 				</div>
 			</div>
 			{% if display_fields|length %}

@@ -1,6 +1,6 @@
 <section class="search-reuslts page-set" data-page="{{ page }}">
 	{% for article in results %}
-		<article class="article article-{{article.id}}">
+		<article class="article article-{{article.id}} articles-{{article.id}} related-is-linkable" data-content-type="articles" data-content-id="{{ article.id }}">
 			<input class="item-select" type="checkbox" value="{{article.id}}" />
 			<div class="toprow">
 				<div class="left">
@@ -12,6 +12,11 @@
 					<div class="bound-faded"></div>
 					<button class="clean-gray xxx-small kb-insert-link" data-article-id="{{ article.id }}">Insert Link</button>
 					<button class="clean-gray xxx-small kb-insert-content" data-article-id="{{ article.id }}">Insert Content</button>
+				</div>
+				<div class="ticketinfo visible-related-content-controls">
+					<div class="bound-faded"></div>
+					<button class="clean-gray xxx-small related-link">Add as related</button>
+					<button class="clean-gray xxx-small related-unlink">Remove as related</button>
 				</div>
 			</div>
 			{% if display_fields|length %}

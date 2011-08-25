@@ -3,7 +3,7 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'news_view',
+	TYPENAME: 'news',
 
 	wrapper: null,
 	article_id: null,
@@ -40,6 +40,12 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 
 		var btn = $('.news-editor-edit', this.wrapper);
 		btn.click(this.showEditor.bind(this));
+
+		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
+			typename: 'news',
+			content_id: this.meta.article_id,
+			listEl: $('section.linked-content:first', this.wrapper)
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {

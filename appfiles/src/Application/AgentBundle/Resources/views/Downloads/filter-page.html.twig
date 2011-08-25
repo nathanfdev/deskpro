@@ -1,6 +1,6 @@
 <section class="search-reuslts page-set" data-page="{{ page }}">
 	{% for download in results %}
-		<article class="download download-{{download.id}}">
+		<article class="download download-{{download.id}} downloads-{{download.id}} related-is-linkable" data-content-type="downloads" data-content-id="{{ download.id }}">
 			<input class="item-select" type="checkbox" value="{{download.id}}" />
 			<div class="toprow">
 				<div class="left">
@@ -12,6 +12,11 @@
 					<div class="bound-faded"></div>
 					<button class="clean-gray xxx-small dl-insert-link" data-download-id="{{ download.id }}">Insert Link</button>
 					<button class="clean-gray xxx-small dl-insert-attach" data-download-id="{{ download.id }}">Add Attachment</button>
+				</div>
+				<div class="ticketinfo visible-related-content-controls">
+					<div class="bound-faded"></div>
+					<button class="clean-gray xxx-small related-link">Add as related</button>
+					<button class="clean-gray xxx-small related-unlink">Remove as related</button>
 				</div>
 			</div>
 			{% if display_fields|length %}

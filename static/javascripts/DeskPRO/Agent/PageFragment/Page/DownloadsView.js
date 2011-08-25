@@ -3,7 +3,7 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'download_view',
+	TYPENAME: 'download',
 
 	wrapper: null,
 	article_id: null,
@@ -39,6 +39,12 @@ DeskPRO.Agent.PageFragment.Page.DownloadsView = new Class({
 		});
 
         $('time.timeago', this.wrapper).timeago();
+
+		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
+			typename: 'downloads',
+			content_id: this.meta.download_id,
+			listEl: $('section.linked-content:first', this.wrapper)
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {

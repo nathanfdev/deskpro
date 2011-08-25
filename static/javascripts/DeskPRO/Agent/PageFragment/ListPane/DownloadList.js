@@ -37,6 +37,10 @@ DeskPRO.Agent.PageFragment.ListPane.DownloadList = new Class({
 		if (DeskPRO_Window.getTabWatcher().isTabTypeActive('ticket')) {
 			self.initVisibleTicket();
 		}
+
+		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
+			contentListEl: this.listWrapper
+		});
 	},
 
 	initVisibleTicket: function() {

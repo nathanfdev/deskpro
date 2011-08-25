@@ -6429,3 +6429,55 @@ article .pending-delete {
 
 	margin: 10px;
 }
+
+
+
+.visible-related-content-controls {
+	display: none;
+}
+
+.with-related-content-controls .visible-related-content-controls {
+	display: block;
+}
+
+.visible-related-content-controls .related-unlink {
+	display: none;
+}
+
+.related-is-linked .visible-related-content-controls .related-unlink {
+	display: block;
+}
+.related-is-linked .visible-related-content-controls .related-link {
+	display: none;
+}
+
+.related-not-linkable .visible-related-content-controls .related-link,
+.related-not-linkable .visible-related-content-controls .related-unlink {
+	display: none;
+}
+
+
+.linked-content {
+	margin: 10px;
+}
+
+.linked-content .no-related-content {
+	background-color: #FAF1A9;
+	border: #FDE46E;
+	padding: 5px;
+}
+
+.linked-content .related-section {
+	margin-bottom: 10px;
+}
+
+.linked-content .related-content {
+	background-color: #EDF1F0;
+	padding: 2px 5px 2px 5px;
+	margin: 1px 0 1px 0;
+}
+
+.linked-content .related-content button.remove {
+	float: right;
+	margin-top: 2px;
+}
