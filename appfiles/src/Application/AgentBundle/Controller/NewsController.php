@@ -246,8 +246,11 @@ class NewsController extends AbstractController
 	{
 		$news_categories = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
 
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newnews', $this->person->id);
+
 		return $this->render('AgentBundle:News:newnews.html.twig', array(
 			'news_categories' => $news_categories,
+			'state' => $state
 		));
 	}
 
@@ -265,6 +268,8 @@ class NewsController extends AbstractController
 			$newnews->save();
 
 			$news = $newnews->getNews();
+
+			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newnews', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

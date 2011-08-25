@@ -31,6 +31,11 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
 		this._initFileSection();
 		this._initContentSection();
 		this._initOtherSection();
+
+		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+			stateId: 'newdownload',
+			listenOn: this.getEl('newdownload')
+		});
 	},
 
 	closeSelf: function() {
@@ -168,10 +173,13 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
 			theme_advanced_toolbar_align: 'left',
 			theme_advanced_resizing: true,
 			theme_advanced_statusbar_location: 'bottom',
-
 			setup: function(ed) {
 				ed.onClick.add(function() {
 					self.getEl('content_section').addClass('done');
+				});
+
+				ed.onKeyPress.add(function() {
+					self.stateSaver.triggerChange();
 				});
 			}
 		});
@@ -207,10 +215,14 @@ DeskPRO.Agent.PageFragment.Page.NewDownload = new Class({
 		});
 
 		// Labels
+		var self = this;
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'downloads',
-			fieldName: 'newdownload[labels][]',
-			list: $(".tags-wrap ul", this.wrapper)
+			fieldName: 'newdownload[labels]',
+			list: $(".tags-wrap ul", this.wrapper),
+			onChange: function() {
+				self.stateSaver.triggerChange();
+			}
 		});
 
 		this.getEl('slug').focus(function() {

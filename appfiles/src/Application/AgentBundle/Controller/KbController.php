@@ -456,8 +456,11 @@ class KbController extends AbstractController
 	{
 		$article_categories = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getFlatHierarchy();
 
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newarticle', $this->person->id);
+
 		return $this->render('AgentBundle:Kb:newarticle.html.twig', array(
 			'article_categories' => $article_categories,
+			'state' => $state
 		));
 	}
 
@@ -483,6 +486,8 @@ class KbController extends AbstractController
 					App::getOrm()->flush();
 				}
 			}
+
+			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newarticle', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

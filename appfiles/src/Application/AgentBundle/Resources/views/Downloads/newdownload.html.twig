@@ -31,7 +31,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'with_blank': 1,
 				'blank_title': '',
 				'categories': download_categories,
-				'selected': 0
+				'selected': state.newdownload.category_id
 			} %}
 		</div>
 		<div class="col">
@@ -56,7 +56,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<h4>Title</h4>
-		<input type="title" name="newdownload[title]" id="{{baseId}}_title" value="" />
+		<input type="title" name="newdownload[title]" id="{{baseId}}_title" value="{{ state.newdownload.title }}" />
 	</div>
 </div>
 
@@ -89,7 +89,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<h4>Description</h4>
-		<textarea type="text" name="newdownload[content]" id="{{baseId}}_content"></textarea>
+		<textarea type="text" name="newdownload[content]" id="{{baseId}}_content">{{ state.newdownload.content }}</textarea>
 	</div>
 </div>
 
@@ -113,14 +113,18 @@ pageMeta.baseId = '{{ baseId }}';
 					<dl>
 						<dt class="prop">URL Slug</dt>
 						<dd class="prop">
-							<input type="input" name="newdownload[slug]" id="{{baseId}}_slug" value="" />
+							<input type="input" name="newdownload[slug]" id="{{baseId}}_slug" value="{{ state.newdownload.slug }}" />
 						</dd>
 
 						<dt class="prop">Labels</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<span class="tag-icon"></span>
-								<ul></ul>
+								<ul>
+									{% for l in state.newdownload.labels %}
+										<li>{{ l }}</li>
+									{% endfor %}
+								</ul>
 							</div>
 						</dd>
 					</dl>

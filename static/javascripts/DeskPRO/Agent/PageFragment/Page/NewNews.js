@@ -30,6 +30,11 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Class({
 		this._initTitleSection();
 		this._initContentSection();
 		this._initOtherSection();
+
+		this.stateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+			stateId: 'c',
+			listenOn: this.getEl('newnews')
+		});
 	},
 
 	closeSelf: function() {
@@ -136,6 +141,9 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Class({
 				ed.onClick.add(function() {
 					self.getEl('content_section').addClass('done');
 				});
+				ed.onKeyPress.add(function() {
+					self.stateSaver.triggerChange();
+				});
 			}
 		});
 	},
@@ -170,10 +178,14 @@ DeskPRO.Agent.PageFragment.Page.NewNews = new Class({
 		});
 
 		// Labels
+		var self = this;
 		this.labelsInput = new DeskPRO.UI.LabelsInput({
 			type: 'news',
-			fieldName: 'newnews[labels][]',
-			list: $(".tags-wrap ul", this.wrapper)
+			fieldName: 'newnews[labels]',
+			list: $(".tags-wrap ul", this.wrapper),
+			onChange: function() {
+				self.stateSaver.triggerChange();
+			}
 		});
 
 		this.getEl('slug').focus(function() {

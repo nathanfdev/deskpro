@@ -128,4 +128,17 @@ class PersonPref extends EntityRepository
 			return $ret;
 		}
 	}
+
+	/**
+	 * @param $pref_name
+	 * @param $person_id
+	 * @return void
+	 */
+	public function deletePrefForPersonId($pref_name, $person_id)
+	{
+		$pref = $this->getEntityManager()->getConnection()->executeUpdate("
+			DELETE FROM people_prefs
+			WHERE person_id = ? AND name = ? LIMIT 1
+		", array($person_id, $pref_name));
+	}
 }

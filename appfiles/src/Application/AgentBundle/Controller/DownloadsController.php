@@ -278,9 +278,11 @@ class DownloadsController extends AbstractController
 	public function newDownloadAction()
 	{
 		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
 		return $this->render('AgentBundle:Downloads:newdownload.html.twig', array(
 			'download_categories' => $download_categories,
+			'state' => $state,
 		));
 	}
 
@@ -298,6 +300,8 @@ class DownloadsController extends AbstractController
 			$newdownload->save();
 
 			$download = $newdownload->getDownload();
+
+			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newdownload', $this->person->id);
 
 			return $this->createJsonResponse(array(
 				'success' => true,

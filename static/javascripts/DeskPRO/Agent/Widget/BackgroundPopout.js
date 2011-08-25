@@ -151,7 +151,7 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 			onPageInit: function(pop, page) {
 				page.addEvent('closeSelf', function(ev) {
 					ev.cancel = true;
-					self.destroyPop();
+					self.clear();
 				});
 
 				if (callback) {
@@ -185,6 +185,19 @@ DeskPRO.Agent.Widget.BackgroundPopout = new Orb.Class({
 		if (!this.pop) return;
 		this.pop.close();
 	},
+
+	/**
+	 * Clears the currently loaded page (it'll be reloaded next time this is opened)
+	 * Same as desotryPop except the template is also removed, so it means
+	 * a new ajax request to fetch the page is needed.
+	 */
+	clear: function() {
+		if (this.pop) {
+			this.pop.destroy();
+			this.pop = null;
+		}
+	},
+
 
 	destroyPop: function() {
 		if (!this.pop) return;

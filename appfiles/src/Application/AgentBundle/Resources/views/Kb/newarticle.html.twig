@@ -41,7 +41,7 @@ pageMeta.baseId = '{{ baseId }}';
 				'with_blank': 1,
 				'blank_title': '',
 				'categories': article_categories,
-				'selected': 0
+				'selected': state.newarticle.category_id|default(0)
 			} %}
 		</div>
 		<div class="col">
@@ -66,7 +66,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<h4>Title</h4>
-		<input type="title" name="newarticle[title]" id="{{baseId}}_title" value="" />
+		<input type="title" name="newarticle[title]" id="{{baseId}}_title" value="{{ state.newarticle.title }}" />
 	</div>
 </div>
 
@@ -77,7 +77,7 @@ pageMeta.baseId = '{{ baseId }}';
 	</div>
 	<div class="content">
 		<h4>Article</h4>
-		<textarea type="text" name="newarticle[content]" id="{{baseId}}_content"></textarea>
+		<textarea type="text" name="newarticle[content]" id="{{baseId}}_content">{{ state.newarticle.content }}</textarea>
 	</div>
 </div>
 
@@ -102,14 +102,18 @@ pageMeta.baseId = '{{ baseId }}';
 					<dl>
 						<dt class="prop">URL Slug</dt>
 						<dd class="prop">
-							<input type="input" name="newarticle[slug]" id="{{baseId}}_slug" value="" />
+							<input type="input" name="newarticle[slug]" id="{{baseId}}_slug" value="{{ state.newarticle.slug }}" />
 						</dd>
 
 						<dt class="prop">Labels</dt>
 						<dd class="prop">
 							<div class="tags-wrap article-tags">
 								<span class="tag-icon"></span>
-								<ul></ul>
+								<ul>
+									{% for l in state.newarticle.labels %}
+										<li>{{ l }}</li>
+									{% endfor %}
+								</ul>
 							</div>
 						</dd>
 					</dl>
