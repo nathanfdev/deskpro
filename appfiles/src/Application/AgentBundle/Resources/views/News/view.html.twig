@@ -16,7 +16,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
-<div class="deleted-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
+<div class="deleted-notice" {% if news.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	This post has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
 </div>
 
@@ -97,6 +97,16 @@ pageMeta.baseId = '{{ baseId }}';
 								{% endfor %}
 							</ul>
 						</div>
+					</div>
+				</div>
+
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Rating</span>
+					</div>
+					<div class="col-table-content">
+						{{ news.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ news.num_ratings }} votes</span>)<br />
+						<small>{{ news.up_votes }} found the article helpful, {{ news.down_votes }} found the article unhelpful</small>
 					</div>
 				</div>
 			</div>
@@ -194,6 +204,10 @@ pageMeta.baseId = '{{ baseId }}';
 					When a user searches for any of these words, this page will always be listed in their top results.
 				</div>
 			</div>
+
+			<br />
+
+			{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
 		</div>
 		{# /Tab: Search #}
 	</div>

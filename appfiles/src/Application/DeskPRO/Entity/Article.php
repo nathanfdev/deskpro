@@ -174,18 +174,6 @@ class Article extends ContentAbstract
 		return implode($sep, $cats);
 	}
 
-	public function getRatingPercent()
-	{
-		if (!$this->total_rating) {
-			return 0;
-		}
-
-		$neg_ratings = $this->num_ratings - $this->total_rating;
-		$rating = ceil(($neg_ratings / $this->total_rating) * 100);
-
-		return $rating;
-	}
-
 	public function getCategoryPath($index = 0)
 	{
 		$path = array();

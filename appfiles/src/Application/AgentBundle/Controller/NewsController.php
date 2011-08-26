@@ -51,6 +51,7 @@ class NewsController extends AbstractController
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editarticle', $this->person->id);
 
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($news);
+		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('news', $news['id'], 'counted');
 
 		return $this->render('AgentBundle:News:view.html.twig', array(
 			'news'                 => $news,
@@ -59,6 +60,7 @@ class NewsController extends AbstractController
 			'related_content'      => $related_content,
 			'state'                => $state,
 			'sticky_search_words'  => $sticky_search_words,
+			'rated_searches'       => $rated_searches
 		));
 	}
 

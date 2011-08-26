@@ -167,6 +167,16 @@ pageMeta.baseId = '{{ baseId }}';
 						</ul>
 					</div>
 				</div>
+
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Rating</span>
+					</div>
+					<div class="col-table-content">
+						{{ article.rating_percent }}% helpful (<span class="link-look who-voted-trigger">{{ article.num_ratings }} votes</span>)<br />
+						<small>{{ article.up_votes }} found the article helpful, {{ article.down_votes }} found the article unhelpful</small>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
@@ -271,6 +281,10 @@ pageMeta.baseId = '{{ baseId }}';
 					When a user searches for any of these words, this page will always be listed in their top results.
 				</div>
 			</div>
+
+			<br />
+
+			{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
 		</div>
 		{# /Tab: Search #}
 	</div>

@@ -1,0 +1,53 @@
+{% if rated_searches.helpful or rated_searches.unhelpful %}
+<div class="pad">
+
+{% if rated_searches.helpful %}
+<h5>Searches where this was rated helpful</h5>
+<div class="inner-box-tab-content box-list">
+	<table class="list" cellspacing="0" width="100%">
+		<thead class="display-options-trigger dbl-click-trigger nosel">
+			<tr>
+				<td>Search Terms</td>
+				<td>Frequency</td>
+			</tr>
+		</thead>
+		<tbody>
+		{% for term,count in rated_searches.helpful %}
+			<tr class="line-1">
+				<td>{{ term }}</td>
+				<td>{{ count }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+
+
+<br />
+{% endif %}
+
+{% if rated_searches.unhelpful %}
+<h5>Searches where this was rated unhelpful</h5>
+<div class="inner-box-tab-content box-list">
+	<table class="list" cellspacing="0" width="100%">
+		<thead class="display-options-trigger dbl-click-trigger nosel">
+			<tr>
+				<td>Search Terms</td>
+				<td>Frequency</td>
+			</tr>
+		</thead>
+		<tbody>
+		{% for term,count in rated_searches.unhelpful %}
+			<tr class="line-1">
+				<td>{{ term }}</td>
+				<td>{{ count }}</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>
+{% endif %}
+
+
+</div>
+{% endif %}

@@ -20,24 +20,18 @@ use Orb\Util\Strings;
 use Orb\Util\Arrays;
 
 /**
- * Basic ratings
+ * Log of searches on userend
  *
- * @ORM_Mapping\MappedSuperclass
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\SearchLog")
+ * @ORM_Mapping\Table(name="searchlog")
  */
-abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
+class SearchLog extends \Application\DeskPRO\Domain\DomainObject
 {
 	/**
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
 	 */
 	protected $id = null;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\SearchLog
-	 * @ORM_Mapping\ManyToOne(targetEntity="SearchLog")
-	 * @ORM_Mapping\JoinColumn(name="searchlog_id", referencedColumnName="id", onDelete="set null")
-	 */
-	protected $searchlog = null;
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -73,9 +67,15 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var string
-	 * @ORM_Mapping\Column(name="rating", type="integer")
+	 * @ORM_Mapping\Column(name="query", type="string", length=1000)
 	 */
-	protected $rating;
+	protected $query;
+
+	/**
+	 * @var string
+	 * @ORM_Mapping\Column(name="num_results", type="integer")
+	 */
+	protected $num_results;
 
 	/**
 	 * @var \DateTime
@@ -83,20 +83,21 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 	 */
 	protected $date_created;
 
-	public static function create($user_rating, $use_request = true)
+	public static function create($query, $num_results, $use_request = true)
 	{
-		$rating = new static();
-		$rating->rating = $user_rating;
+		$searchlog = new self();
+		$searchlog->query = $query;
+		$searchlog->num_results = $num_results;
 
 		if ($use_request && App::has('request')) {
 			if (!App::getCurrentPerson()->isGuest()) {
-				$rating->person = App::getCurrentPerson();
+				$searchlog->person = App::getCurrentPerson();
 			}
 
-			$rating->visitor = App::getSession()->getVisitor();
+			$searchlog->visitor = App::getSession()->getVisitor();
 		}
 
-		return $rating;
+		return $searchlog;
 	}
 
 	public function __construct()
@@ -104,41 +105,18 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$this->date_created = new \DateTime();
 	}
 
-	public function setRating($rating)
+	/**
+	 * Sets the query after trying to normalize it a bit
+	 *
+	 * @param $query
+	 */
+	public function setQuery($query)
 	{
-		if ($rating > 0) {
-			$this->rating = 1;
-		} else {
-			$this->rating = -1;
-		}
+		$query = trim($query);
+		$query = preg_replace('# {2,}#', ' ', $query);
+		$query = Strings::utf8_strtolower($query);
+		$query = Strings:: utf8_accents_to_ascii($query);
+
+		$this->query = $query;
 	}
-
-	public function rateUp()
-	{
-		$this->setRating(1);
-	}
-
-	public function rateDown()
-	{
-		return $this->setRating(-1);
-	}
-
-	public function setVisitor(Visitor $visitor = null)
-	{
-		$this->_onPropertyChanged('visitor', $this->visitor, $visitor);
-		$this->visitor = $visitor;
-
-		if ($visitor === null) return;
-
-		$this['ip_address'] = $visitor['ip_address'];
-
-		if (!$this->name AND $visitor['name']) {
-			$this['name'] = $visitor['name'];
-		}
-		if (!$this->email AND $visitor['email']) {
-			$this['email'] = $visitor['email'];
-		}
-	}
-
-	abstract public function setContentObject($obj);
 }

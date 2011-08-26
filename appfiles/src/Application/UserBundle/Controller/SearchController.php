@@ -12,7 +12,7 @@
 namespace Application\UserBundle\Controller;
 
 use Application\DeskPRO\App;
-use Application\DeskPRO\Entity;
+use Application\DeskPRO\Entity\SearchLog;
 
 use Application\DeskPRO\Elastica\Searcher\ContentSearcher;
 use Application\DeskPRO\Labels\ContentLabelCloud;
@@ -39,6 +39,14 @@ class SearchController extends AbstractController
 
 			$sticky_search = new StickyWordSearch($this->em);
 			$sticky_results = $sticky_search->getResults($q, 5);
+
+			$searchlog = SearchLog::create($q, count($results) + count($sticky_results), true);
+			$this->em->transactional(function($em) use ($searchlog) {
+				$em->persist($searchlog);
+				$em->flush();
+			});
+
+			$this->session->set('last_searchlog_id', $searchlog->id);
 
 			$is_search = true;
 		}

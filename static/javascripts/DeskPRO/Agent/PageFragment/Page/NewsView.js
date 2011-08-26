@@ -68,6 +68,14 @@ DeskPRO.Agent.PageFragment.Page.NewsView = new Class({
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
 			revisionCompareUrl: BASE_URL + 'agent/downloads/compare-revs/{OLD}/{NEW}'
 		});
+
+		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '.who-voted-trigger',
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/publish/rating-who-voted/news/' + this.meta.news_id
+			}
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {

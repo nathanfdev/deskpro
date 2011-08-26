@@ -70,6 +70,14 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
 
 		});
+
+		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '.who-voted-trigger',
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/publish/rating-who-voted/article/' + this.meta.article_id
+			}
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {

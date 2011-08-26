@@ -768,6 +768,10 @@ agent_publish_getsectiondata:
   pattern: /publish/get-section-data.json
   defaults: { _controller: AgentBundle:Publish:getSectionData }
 
+agent_publish_ratingwhovoted:
+  pattern: /publish/rating-who-voted/{object_type}/{object_id}
+  defaults: { _controller: AgentBundle:Publish:ratingWhoVoted }
+
 agent_publish_save_stickysearchwords:
   pattern: /publish/save-sticky-search-words/{type}/{content_id}
   defaults: { _controller: AgentBundle:Publish:saveStickySearchWords }
@@ -941,7 +945,7 @@ agent_glossary_saveword_json:
 
 agent_glossary_delword_json:
   pattern: /glossary/{word_id}/delete.json
-  defaults: { _controller: AgentBundle:Glossary:glossaryDeleteWordJson }
+  defaults: { _controller: AgentBundle:Glossary:user_articles_article }
 
 agent_glossary_word_tip:
   pattern: /glossary/{word}/tip

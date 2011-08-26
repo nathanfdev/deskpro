@@ -30,6 +30,8 @@
 
 	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': post.labels} %}
 
+	{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': post} %}
+
 	{% if comments_widget %}
 			{{comments_widget|raw}}
 	{% else %}

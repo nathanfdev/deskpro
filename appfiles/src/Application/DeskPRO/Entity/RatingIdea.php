@@ -29,4 +29,9 @@ class RatingIdea extends RatingAbstract
 	 * @ORM_Mapping\JoinColumn(name="idea_id", referencedColumnName="id", onDelete="cascade")
 	 */
 	protected $idea;
+
+	public function setContentObject($idea)
+	{
+		$this->idea = $idea;
+	}
 }

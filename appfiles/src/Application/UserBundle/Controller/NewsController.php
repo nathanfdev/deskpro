@@ -17,6 +17,7 @@ use Application\DeskPRO\Entity;
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
+use Application\UserBundle\Controller\Helper\ContentRating;
 use Application\UserBundle\Controller\Helper\Comments;
 use Application\UserBundle\Controller\Helper\FacebookLike;
 
@@ -101,7 +102,7 @@ class NewsController extends AbstractController
 		}
 
 		$category_counts = App::getEntityRepository('DeskPRO:NewsCategory')->getAllCounts($this->person);
-		
+
 		return $this->render($tpl, array(
 			'news_cats' => $news_cats,
 			'news_cat_objs' => $news_cat_objs,
@@ -166,8 +167,22 @@ class NewsController extends AbstractController
 		$related_finder = new RelatedContentFinder($this->person, $post);
 		$related_content = $related_finder->getRelatedEntities();
 
+		$content_rating = new ContentRating($post, $this->person, $this->session->getVisitor());
+		$content_rating->setRequest($this->request);
+		$rating = $content_rating->getRating();
+
+		if ($rating_log_search_id = $content_rating->getSearchLogId()) {
+			$this->session->set('news.' . $post['id'], $rating_log_search_id);
+		} elseif ($this->session->has('news.' . $post['id'])) {
+			$rating_log_search_id = $this->session->get('news.' . $post['id']);
+		} else {
+			$rating_log_search_id = 0;
+		}
+
 		return $this->render('UserBundle:News:view.html.twig', array(
 			'subscription' => $subscription,
+			'rating' => $rating,
+			'rating_log_search_id' => $rating_log_search_id,
 			'post' => $post,
 			'category_path' => $category_path,
 			'category' => $category,
@@ -194,7 +209,7 @@ class NewsController extends AbstractController
 		if (!$post) {
 			return $this->renderStandardError('@user_news.error_not_found', '@core.not_found', 404);
 		}
-		
+
 		$form = new \Application\DeskPRO\Comments\CommentForm('new_comment', array('validator' => $this->get('validator')));
 		$new_comment = new \Application\DeskPRO\Comments\NewComment(
 			'Application\\DeskPRO\\Entity\\NewsComment',

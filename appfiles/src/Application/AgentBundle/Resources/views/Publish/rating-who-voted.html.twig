@@ -1,0 +1,45 @@
+<div class="rating-who-voted" style="width: 500px; max-height: 500px; overflow: auto;">
+	<table class="list" cellspacing="0" width="100%">
+		<thead class="display-options-trigger dbl-click-trigger nosel">
+			<tr>
+				<td>Who</td>
+				<td>Rating</td>
+				<td>When</td>
+			</tr>
+		</thead>
+		<tbody>
+		{% for rating in ratings %}
+			<tr class="line-2">
+				<td>
+					{% if rating.person %}
+						{{ rating.person.display_name }}
+						{% if rating.person.primary_email_address %}
+							&lt;{{ rating.person.primary_email_address }}&gt;
+						{% endif %}
+					{% else %}
+						{% if rating.name %}
+							{{ rating.name }}
+						{% else %}
+							Anonymouse
+						{% endif %}
+						{% if rating.email %}
+							&lt;{{ rating.email }}&gt;
+						{% endif %}
+					{% endif %}
+					{% if rating.ip_address %}from {{ rating.ip_address }}{% endif %}
+				</td>
+				<td>
+					{% if rating.rating >= 1 %}
+						Helpful
+					{% else %}
+						Not Helpful
+					{% endif %}
+				</td>
+				<td>
+					{{ rating.date_created|date('M j Y') }}
+				</td>
+			</tr>
+		{% endfor %}
+		</tbody>
+	</table>
+</div>

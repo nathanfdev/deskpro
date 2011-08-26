@@ -6,6 +6,10 @@ user_test:
   pattern:  /test
   defaults: { _controller: UserBundle:Test:index }
 
+user_saverating:
+  pattern:  /portal/save-rating/{object_type}/{object_id}
+  defaults: { _controller: UserBundle:Portal:saveRating }
+
 ################################################################################
 # Login/logout
 ################################################################################

@@ -74,9 +74,12 @@ class KbController extends AbstractController
 
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($article);
 
+		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('article', $article['id'], 'counted');
+
 		return $this->render($tpl, array(
 			'article'              => $article,
 			'sticky_search_words'  => $sticky_search_words,
+			'rated_searches'       => $rated_searches,
 			'content'              => $content,
 			'article_comments'     => $article_comments,
 			'article_revisions'    => $article_revisions,

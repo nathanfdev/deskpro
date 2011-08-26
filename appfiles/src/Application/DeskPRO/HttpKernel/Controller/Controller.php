@@ -24,19 +24,19 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 {
 	/**
 	 * The request
-	 * @var Symfony\Component\HttpFoundation\Request
+	 * @var \Symfony\Component\HttpFoundation\Request
 	 */
 	public $request;
 
 	/**
 	 * The response
-	 * @var Symfony\Component\HttpFoundation\Response
+	 * @var \Symfony\Component\HttpFoundation\Response
 	 */
 	public $response;
 
 	/**
 	 * Event dispatcher
-	 * @var Symfony\Component\EventDispatcher\EventDispatcher
+	 * @var \Symfony\Component\EventDispatcher\EventDispatcher
 	 */
 	protected $event_dispatcher;
 
@@ -195,7 +195,7 @@ abstract class Controller extends \Symfony\Bundle\FrameworkBundle\Controller\Con
 		if (!$callback_name) {
 			$callback_name = 'jsonp_callback';
 		}
-		
+
 		$response = $this->container->get('response');
 		$response->headers->set('Content-Type', 'text/javascript');
 		$response->setStatusCode($status_code);

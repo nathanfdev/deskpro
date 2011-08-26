@@ -1,0 +1,21 @@
+<div class="user-vote">
+	{% if app.getSetting('user.show_ratings') and content_object.num_ratings >= app.getSetting('user.show_ratings') %}
+		<div style="float:left; margin-top: 2px;">
+			<em>{{ content_object.rating_percent }}</em>% of {% if app.getSetting('user.show_num_votes') %}{{ content_object.num_ratings }}{% endif %}
+			people found this page helpful
+		</div>
+	{% endif %}
+	<form action="{{ path('user_saverating', { 'object_type': content_object.content_type, 'object_id': content_object.id}) }}" method="post">
+		<input type="hidden" name="log_search_id" value="{{ rating_log_search_id }}" />
+		{% if rating.rating %}
+			{% if rating.rating > 1 %}
+				You marked this page as helpful
+			{% else %}
+				You marked this page as unhelpful
+			{% endif %}
+		{% else %}
+			<button class="good" value="1" name="rating"><span>This page was helpful</span></button>
+			<button class="bad" value="-1" name="rating"><span>This page was not helpful</span></button>
+		{% endif %}
+	</form>
+</div>

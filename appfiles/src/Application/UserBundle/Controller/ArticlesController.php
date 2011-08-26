@@ -21,6 +21,7 @@ use Orb\Util\Numbers;
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
 use Application\DeskPRO\Comments\NewCommentFormType;
 
+use Application\UserBundle\Controller\Helper\ContentRating;
 use Application\UserBundle\Controller\Helper\Comments;
 use Application\UserBundle\Controller\Helper\FacebookLike;
 
@@ -35,10 +36,10 @@ class ArticlesController extends AbstractController
 		$page = max(1, $page);
 
 		$per_page = 25;
-		
+
 		if ($slug) {
 			$category = App::getEntityRepository('DeskPRO:ArticleCategory')->getBySlug($slug);
-	
+
 			if (!$category) {
 				return $this->renderStandardError('@core.error_page_not_found', '@core.not_found', 404);
 			}
@@ -107,7 +108,7 @@ class ArticlesController extends AbstractController
 		$search_options['order_by'] = '';
 		$search_options['product_id'] = '';
 		$search_options['category_id'] = '';
-		
+
 		if ($this->in->getString('order_by')) {
 			$searcher->setOrderByCode($this->in->getString('order_by'));
 			$search_options['order_by'] = $this->in->getString('order_by');
@@ -286,24 +287,31 @@ class ArticlesController extends AbstractController
 			$facebook_like = $like_helper->getHtml();
 		}
 
-		$rating_this = App::getDb()->fetchColumn("
-			SELECT rating
-			FROM article_ratings
-			WHERE (person_id = ? OR visitor_id = ?) AND article_id = ?
-		", array(Util::coalesce($this->person['id'], -1), App::getSession()->getVisitor()->getId(), $article['id']));
-
 		$related_finder = new RelatedContentFinder($this->person, $article);
 		$related_content = $related_finder->getRelatedEntities();
 
+		$content_rating = new ContentRating($article, $this->person, $this->session->getVisitor());
+		$content_rating->setRequest($this->request);
+		$rating = $content_rating->getRating();
+
+		if ($rating_log_search_id = $content_rating->getSearchLogId()) {
+			$this->session->set('article.' . $article['id'], $rating_log_search_id);
+		} elseif ($this->session->has('article.' . $article['id'])) {
+			$rating_log_search_id = $this->session->get('article.' . $article['id']);
+		} else {
+			$rating_log_search_id = 0;
+		}
+
 		return $this->render('UserBundle:Articles:article.html.twig', array(
 			'subscription' => $subscription,
+			'rating' => $rating,
+			'rating_log_search_id' => $rating_log_search_id,
 
 			'article' => $article,
 			'all_categories' => $all_categories,
 			'comments' => $comments,
 			'comments_widget' => $comments_widget,
 			'facebook_like' => isset($facebook_like) ? $facebook_like : null,
-			'rating_this' => $rating_this,
 
 			'related_content' => $related_content
 		));
@@ -374,8 +382,9 @@ class ArticlesController extends AbstractController
 		$rating['date_created'] = new \DateTime();
 
 		App::getOrm()->persist($rating);
+		App::getOrm()->persist($article);
 		App::getOrm()->flush();
 
-		return $this->redirectRoute('user_articles_article', array('article_id' => $article['id'], 'slug' => $article['slug']));
+		return $this->redirectRoute('user_articles_article', array('slug' => $article['slug']));
 	}
 }

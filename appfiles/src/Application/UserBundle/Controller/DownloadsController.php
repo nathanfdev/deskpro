@@ -19,6 +19,7 @@ use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
 use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\UserBundle\Controller\Helper\ContentRating;
 use Application\UserBundle\Controller\Helper\Comments;
 use Application\UserBundle\Controller\Helper\FacebookLike;
 
@@ -88,7 +89,7 @@ class DownloadsController extends AbstractController
 			'section_counts' => App::getEntityRepository('DeskPRO:Download')->getSectionCounts($this->person),
 		));
 	}
-	
+
 
 	/**
 	 * @param int $page
@@ -164,7 +165,7 @@ class DownloadsController extends AbstractController
 		));
 	}
 
-	
+
 	/**
 	 * View a file
 	 *
@@ -208,8 +209,22 @@ class DownloadsController extends AbstractController
 			$comments = App::getEntityRepository('DeskPRO:DownloadComment')->getComments($download);
 		}
 
+		$content_rating = new ContentRating($download, $this->person, $this->session->getVisitor());
+		$content_rating->setRequest($this->request);
+		$rating = $content_rating->getRating();
+
+		if ($rating_log_search_id = $content_rating->getSearchLogId()) {
+			$this->session->set('download.' . $download['id'], $rating_log_search_id);
+		} elseif ($this->session->has('download.' . $download['id'])) {
+			$rating_log_search_id = $this->session->get('download.' . $download['id']);
+		} else {
+			$rating_log_search_id = 0;
+		}
+
 		return $this->render('UserBundle:Downloads:file.html.twig', array(
 			'subscription' => $subscription,
+			'rating' => $rating,
+			'rating_log_search_id' => $rating_log_search_id,
 
 			'comments_widget' => $comments_widget,
 			'comments' => $comments,

@@ -513,6 +513,25 @@ class PublishController extends AbstractController
 	}
 
 	############################################################################
+	# ratings
+	############################################################################
+
+	public function ratingWhoVotedAction($object_type, $object_id)
+	{
+		$ratings = App::getOrm()->createQuery("
+			SELECT r
+			FROM DeskPRO:Rating r
+			LEFT JOIN r.person p
+			WHERE r.object_type = ?1 AND r.object_id = ?2
+			ORDER BY r.id DESC
+		")->execute(array(1=> $object_type, 2=> $object_id));
+
+		return $this->render('AgentBundle:Publish:rating-who-voted.html.twig', array(
+			'ratings' => $ratings
+		));
+	}
+
+	############################################################################
 	# saving categories
 	############################################################################
 

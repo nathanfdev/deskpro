@@ -49,6 +49,8 @@ class DownloadsController extends AbstractController
 
 		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($download);
 
+		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('download', $download['id'], 'counted');
+
 		return $this->render('AgentBundle:Downloads:view.html.twig', array(
 			'download'              => $download,
 			'download_comments'     => $download_comments,
@@ -56,6 +58,7 @@ class DownloadsController extends AbstractController
 			'related_content'       => $related_content,
 			'state'                 => $state,
 			'sticky_search_words'   => $sticky_search_words,
+			'rated_searches'        => $rated_searches
 		));
 	}
 

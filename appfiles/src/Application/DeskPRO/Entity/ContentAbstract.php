@@ -287,6 +287,32 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return implode($sep, $names);
 	}
 
+	public function getUpVotes()
+	{
+		return $this->total_rating;
+	}
+
+	public function getDownVotes()
+	{
+		return $this->num_ratings - $this->total_rating;
+	}
+
+	public function getRatingPercent()
+	{
+		if (!$this->num_ratings) {
+			return 0;
+		}
+
+		return min(100, ceil(($this->total_rating / $this->num_ratings) * 100));
+	}
+
+	public function addRating($rating)
+	{
+		$this->num_ratings = $this->num_ratings + 1;
+		$this->total_rating = $this->total_rating + $rating->rating;
+		$rating->setContentObject($this);
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */
@@ -297,5 +323,21 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $this->_label_manager;
+	}
+
+
+	/**
+	 * @return string
+	 */
+	public static function getContentType()
+	{
+		static $name = null;
+
+		if ($name === null) {
+			$name = self::getEntityName();
+			$name = strtolower(str_replace('DeskPRO:', '', $name));
+		}
+
+		return $name;
 	}
 }

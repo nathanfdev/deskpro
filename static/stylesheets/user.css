@@ -320,10 +320,6 @@ a {
     padding: 3px;
 }
 
-.content-list > ul > li.sticky {
-	background-color: #FCFCC5;
-}
-
 .content-list.icon .item, .content-list.icon > ul > li {
     padding-left: 24px;
     background: url(../images/icons/bullet_blue.png) no-repeat 5px 50%;
@@ -1463,7 +1459,7 @@ ul.sidebar-nav li.profile span {
 }
 
 
-.idea .user-vote, .article .user-vote {
+.idea .user-vote, .user-vote {
     background-color: #F4F4F4;
     -webkit-border-radius: 6px;
     -moz-border-radius: 6px;
@@ -1537,11 +1533,11 @@ ul.sidebar-nav li.profile span {
     background-color: #FAFDDF;
 }
 
-.article .user-vote {
+.user-vote {
     text-align: right;
 }
 
-.article .user-vote button {
+.user-vote button {
     -moz-border-radius: 5px 5px 7px 7px;
     -webkit-border-radius: 5px 5px 7px 7px;
     border-radius: 5px 5px 7px 7px;
@@ -1564,20 +1560,20 @@ ul.sidebar-nav li.profile span {
     cursor: pointer;
 }
 
-.article .user-vote button span {
+.user-vote button span {
     background-position: 3px 50%;
     background-repeat: no-repeat;
     padding-left: 22px;
 }
 
-.article .user-vote button.good span {
+.user-vote button.good span {
     background-image: url(../images/icons/tick.png);
 }
-.article .user-vote button.bad span {
+.user-vote button.bad span {
     background-image: url(../images/icons/cross.png);
 }
 
-.article .user-vote button:hover {
+.user-vote button:hover {
     -webkit-box-shadow: inset 0px 0px 3px 2px #d6d6d6;
     -moz-box-shadow: inset 0px 0px 3px 2px #d6d6d6;
     box-shadow: inset 0px 0px 3px 2px #d6d6d6;

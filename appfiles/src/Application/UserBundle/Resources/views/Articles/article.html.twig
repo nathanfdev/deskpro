@@ -22,7 +22,7 @@
 		<div class="month">{{ article.date_created|date('M')|upper }}</div>
 		<div class="day">{{ article.date_created|date('d') }}</div>
 	</div>
-	<div class="page-title"> 
+	<div class="page-title">
 		<h1>{{ article.title }}</h1>
 		<div class="info-line">
 			By {{ article.by_line }}
@@ -43,26 +43,7 @@
 
 	{% include 'UserBundle:Common:labels-box.html.twig' with {'labels': article.labels} %}
 
-	<div class="user-vote">
-		{% if article.rating_percent %}
-			<div style="float:left; margin-top: 2px;">
-				<em>{{ article.rating_percent }}</em>% of people found this article helpful
-			</div>
-		{% endif %}
-		<form action="{{ path('user_articles_rate', {'article_id': article.id}) }}" method="post">
-			{% if rating_this %}
-				{% if rating_this > 1 %}
-					You found this article helpful
-				{% else %}
-					You didn't like this article
-				{% endif %}
-			{% else %}
-				<button class="good" value="1" name="rating"><span>This article was helpful</span></button>
-				<button class="bad" value="-1" name="rating"><span>This article was not helpful</span></button>
-			{% endif %}
-		</form>
-	</div>
-
+	{% include 'UserBundle:Common:rating-bar.html.twig' with {'content_object': article} %}
 
 	{% if comments_widget %}
 			{{comments_widget|raw}}

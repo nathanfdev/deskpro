@@ -1646,7 +1646,7 @@ class Arrays
 	 * @param int $sort_flags
 	 * @return void
 	 */
-	public function sortMulti(array &$array, $k, $sort_flags = \SORT_REGULAR)
+	public static function sortMulti(array &$array, $k, $sort_flags = \SORT_REGULAR)
 	{
 		usort($array, function($a, $b) use ($k, $sort_flags) {
 			$a = $a[$k];
