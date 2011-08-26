@@ -161,6 +161,30 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 		$('.view-user-interface', actions).click(function() {
 			window.open(self.meta.permalink);
 		});
+
+		// Attachments
+		var list = $('.file-list', this.getEl('attachtab'));
+
+		this.wrapper.fileupload({
+			url: BASE_URL + 'agent/misc/accept-upload?attach_to_object=article&object_id=' + this.meta.article_id,
+			dropZone: this.wrapper,
+			autoUpload: true,
+			uploadTemplate: $('.template-upload', self.getEl('attachtab')),
+			downloadTemplate: $('.template-download', self.getEl('attachtab'))
+		});
+
+		list.delegate('.delete', 'click', function() {
+			var blob_id = $(this).data('blob-id');
+			$.ajax({
+				url: BASE_URL + 'agent/kb/article/' + self.meta.article_id + '/ajax-save',
+				type: 'POST',
+				data: {action: 'remove-blob', blob_id: blob_id},
+				context: self,
+				dataType: 'json'
+			});
+
+			$(this).parent().fadeOut();
+		});
 	},
 
 
@@ -666,21 +690,6 @@ DeskPRO.Agent.PageFragment.Page.KbViewArticle = new Class({
 						self.editStateSaver.triggerChange();
 					});
 				}
-			});
-
-			// Attachments
-			var list = $('.file-list', this.getEl('content_ed'));
-
-			if (this._hasInitEdBefore) {
-				this.wrapper.fileupload('destroy');
-			}
-
-			this.wrapper.fileupload({
-				url: BASE_URL + 'agent/misc/accept-upload',
-				dropZone: this.wrapper,
-				autoUpload: true,
-				uploadTemplate: $('.template-upload', self.getEl('content_ed')),
-				downloadTemplate: $('.template-download', self.getEl('content_ed'))
 			});
 
 			this._hasInitEdBefore = true;

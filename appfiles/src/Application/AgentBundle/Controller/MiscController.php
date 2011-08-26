@@ -180,6 +180,24 @@ class MiscController extends AbstractController
 		$blob_id = $desc->getPath();
 		$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($blob_id);
 
+		if ($this->in->getString('attach_to_object')) {
+			switch ($this->in->getString('attach_to_object')) {
+				case 'article':
+					$article = App::findEntity('DeskPRO:Article', $this->in->getUint('object_id'));
+
+					$attach = new \Application\DeskPRO\Entity\ArticleAttachment();
+					$attach['blob'] = $blob;
+					$attach['person'] = $this->person;
+
+					$article->addAttachment($attach);
+
+					App::getOrm()->persist($article);
+					App::getOrm()->flush();
+
+					break;
+			}
+		}
+
 		return $this->createJsonResponse(array(array(
 			'blob_id' => $blob['id'],
 			'download_url' => $blob->getDownloadUrl(true),

@@ -195,6 +195,18 @@ class KbController extends AbstractController
 				);
 				break;
 
+			case 'remove-blob':
+
+				foreach ($article->attachments as $k => $attach) {
+					if ($attach->blob['id'] == $this->in->getUint('blob_id')) {
+						$article->attachments->remove($k);
+						App::getOrm()->remove($attach);
+						break;
+					}
+				}
+
+				break;
+
 			case 'content':
 
 				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editarticle', $this->person->id);
@@ -203,31 +215,6 @@ class KbController extends AbstractController
 
 				$rev = ContentRevisionUtil::findOrCreate($article, 'content', $this->person);
 				$rev['content'] = $article['content'];
-
-				// Add/remove files
-				$set_blob_ids = $this->in->getCleanValueArray('attach', 'uint', 'discard');
-				$got_blob_ids = array();
-
-				// Go through current ones and figure which to remove
-				foreach ($article->attachments as $attach) {
-					if (!in_array($attach->blob->id, $set_blob_ids)) {
-						$article->attachments->remove($attach['id']);
-						$got_blob_ids[] = $attach->blob->id;
-					}
-					$got_blob_ids[] = $attach->blob->id;
-				}
-
-				// Make sure to connect new ones
-				$new_blob_ids = array_diff($set_blob_ids, $got_blob_ids);
-				foreach ($new_blob_ids as $bid) {
-					$blob = App::getOrm()->getRepository('DeskPRO:Blob')->find($bid);
-
-					$attach = new ArticleAttachment();
-					$attach['blob'] = $blob;
-					$attach['person'] = $this->person;
-
-					$article->addAttachment($attach);
-				}
 
 				$glossary = new \Application\DeskPRO\Publish\GlossaryHandler($this->em);
 				$content = $article->content;
