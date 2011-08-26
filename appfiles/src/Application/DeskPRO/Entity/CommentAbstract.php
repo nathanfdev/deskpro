@@ -154,7 +154,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 
 	public function getContentHtml()
 	{
-		return Markdown::format($this->content);
+		return Markdown::format(htmlspecialchars($this->content, \ENT_NOQUOTES, 'UTF-8'));
 	}
 
 	public function getContentHtmlPlain()

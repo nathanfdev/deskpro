@@ -13,12 +13,9 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
+use Application\DeskPRO\App;
 
-use Application\DeskPRO\Markdown;
-
-use \Orb\Util\Strings;
+use Orb\Util\Strings;
 
 /**
  * Ideas (feedback)
@@ -128,7 +125,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	public function __construct()
 	{
 		$this->_is_new = true;
-		
+
 		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
 		$this->votes = new \Doctrine\Common\Collections\ArrayCollection();
@@ -179,7 +176,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	public function setFirstComment(IdeaComment $comment)
 	{
 		$this->_onPropertyChanged('first_comment', $this->first_comment, $comment);
-		
+
 		$comment->idea = $this;
 		$this->first_comment = $comment;
 
@@ -266,7 +263,7 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	{
 		$this->_onPropertyChanged('status', $this->status, $status);
 		$this->status = $status;
-		
+
 		switch ($status) {
 			case self::STATUS_NEW:
 				$this['hidden_status'] = null;

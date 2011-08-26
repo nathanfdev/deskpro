@@ -13,13 +13,6 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
-use \Application\DeskPRO\App;
-use \Application\DeskPRO\Entity;
-
-use Application\DeskPRO\Markdown;
-
-use \Orb\Util\Strings;
-
 /**
  * Ideas status types for accepted/declined statuses
  *
