@@ -144,6 +144,11 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 					});
 				},
 				onNewAdded: function(li, input) {
+					// Saving having on blur, which might have happened by clicking
+					// trashcan
+					if (li.is('.being-deleted')) {
+						return;
+					}
 					var title = input.val().trim();
 					$.ajax({
 						url: BASE_URL + 'agent/publish/categories/'+type+'/add-category',
@@ -205,7 +210,13 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 					});
 				};
 
-				li.fadeOut('fast', fn);
+				li.addClass('being-deleted');
+
+				if (li.data('category-id')) {
+					li.fadeOut('fast', fn);
+				} else {
+					li.fadeOut('fast');
+				}
 			});
 
 			// Perform count calcs now
