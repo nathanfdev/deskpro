@@ -1,0 +1,155 @@
+<?php
+/**
+ * DeskPRO
+ *
+ * @package DeskPRO
+ * @category Search
+ * @copyright Copyright (c) 2010 DeskPRO (http://www.deskpro.com/)
+ * @license http://www.deskpro.com/license-agreement DeskPRO License
+ * @author Christopher Nadeau <chris.nadeau@deskpro.com>
+ */
+
+namespace Application\DeskPRO\Search;
+
+use Doctrine\ORM\EntityManager;
+
+use Orb\Util\Arrays;
+
+/**
+ * This finds sticky results for a search term
+ */
+class StickyWordSearch
+{
+	/**
+	 * Entity manager
+	 * @var \Doctrine\ORM\EntityManager
+	 */
+	public $em;
+
+	/**
+	 * Plain database connection for raw queries
+	 * @var \Application\DeskPRO\DBAL\Connection
+	 */
+	public $db;
+
+	public function __construct(EntityManager $em)
+	{
+		$this->em = $em;
+		$this->db = $em->getConnection();
+	}
+
+	public function getWordsFromQuery($query)
+	{
+		// Split query into words, quoted strings are grouped togehter
+		$words = preg_split(
+			"/[\\s,]*\\\"([^\\\"]+)\\\"[\\s,]*|[\\s,]+/",
+			$query,
+			0,
+			PREG_SPLIT_DELIM_CAPTURE
+		);
+
+		$words = array_filter($words, function($w) {
+			if (strlen($w) >= 2 && strlen($w) <= 50) {
+				return true;
+			}
+			return false;
+		});
+		$words = Arrays::removeFalsey($words);
+
+		return $words;
+	}
+
+	public function getResults($query, $limit = 10)
+	{
+		$words = $this->getWordsFromQuery($query);
+
+		if (!$words) {
+			return array();
+		}
+
+		if (count($words) > 15) {
+			$words = array_slice($words, 0, 15);
+		}
+
+		$in_q = array_fill(0, count($words), '?');
+		$in_q = implode(',', $in_q);
+
+		$results_raw = $this->db->fetchAll("
+			SELECT object_type, object_id
+			FROM search_sticky_result
+			WHERE word IN ($in_q)
+			ORDER BY object_id DESC
+			LIMIT 1000
+		", $words);
+
+		// Count matches
+		$results_ranked = array();
+		foreach ($results_raw as $r) {
+			$k = "{$r['object_type']}-{$r['object_id']}";
+			if (!isset($results_ranked[$k])) {
+				$results_ranked[$k] = $r;
+				$results_ranked[$k]['count'] = 0;
+			}
+
+			$results_ranked[$k]['count']++;
+		}
+
+		// If we have too many results, we have to trim them down
+		// to the top $limit results
+		if (count($results_ranked) > $limit) {
+			Arrays::sortMulti($results_ranked, 'count', \SORT_NUMERIC);
+			$results_ranked = array_slice($results_ranked, 0, $limit, true);
+		}
+
+		// Get IDs for each type
+		$results_typed = array();
+		foreach ($results_ranked as $r) {
+			if (!isset($results_typed[$r['object_type']])) {
+				$results_typed[$r['object_type']] = array();
+			}
+			$results_typed[$r['object_type']][] = $r['object_id'];
+		}
+
+		// Fetech actual objects
+		$real_results = array();
+		foreach ($results_typed as $entity_name => $ids) {
+			$real_results = array_merge(
+				$real_results,
+				array_values($this->em->getRepository($entity_name)->getByIds($ids))
+			);
+		}
+
+		// Sort
+		usort($real_results, function($a, $b) use ($results_ranked) {
+			$class = get_class($a);
+			$entity_name = $class::getEntityName();
+			$ka = "$entity_name-{$a['id']}";
+
+			$class = get_class($b);
+			$entity_name = $class::getEntityName();
+			$kb = "$entity_name-{$b['id']}";
+
+			if ($results_ranked[$ka]['count'] == $results_ranked[$kb]['count']) {
+				return 0;
+			}
+
+			return ($results_ranked[$ka]['count'] < $results_ranked[$kb]['count']) ? -1 : 1;
+		});
+
+		// Make them a usual array we expect
+		// type => typename, object => entity
+		$typed_results = array();
+		foreach ($real_results as $r) {
+			$class = get_class($r);
+			$entity_name = $class::getEntityName();
+			$type = strtolower(str_replace('DeskPRO:', '', $entity_name));
+
+			$typed_results[] = array(
+				'type' => $type,
+				'object' => $r
+			);
+		}
+
+		return $typed_results;
+	}
+}

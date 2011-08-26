@@ -1,0 +1,43 @@
+<li {% if is_sticky %}class="sticky"{% endif %}>
+	{% if res.type == 'article' %}
+		<div class="breadcrumb-line">
+			<ul>
+				<li><a href="{{ path('user_articles') }}">Knowledgebase</a></li>
+				{% for c in res.object.category_path %}
+					<li><a href="{{ path('user_articles', {'slug': c.url_slug}) }}">{{c.title}}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		<h4><a href="{{ path('user_articles_article', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a></h4>
+	{% elseif res.type == 'download' %}
+		<div class="breadcrumb-line">
+			<ul>
+				<li><a href="{{ path('user_downloads') }}">Downloads</a></li>
+				{% for cat in res.object.category_path %}
+					<li><a href="{{ path('user_downloads', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		<h4><a href="{{ path('user_downloads_file', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a></h4>
+	{% elseif res.type == 'idea' %}
+		<div class="breadcrumb-line">
+			<ul>
+				<li><a href="{{ path('user_ideas') }}">Ideas</a></li>
+				{% for cat in res.object.category_path %}
+					<li><a href="{{ path('user_ideas', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		<h4><a href="{{ path('user_ideas_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a></h4>
+	{% elseif res.type == 'news' %}
+		<div class="breadcrumb-line">
+			<ul>
+				<li><a href="{{ path('user_news') }}">News</a></li>
+				{% for cat in res.object.category_path %}
+					<li><a href="{{ path('user_news', {'slug': cat.url_slug}) }}">{{cat.title}}</a></li>
+				{% endfor %}
+			</ul>
+		</div>
+		<h4><a href="{{ path('user_news_view', {'slug': res.object.url_slug}) }}">{{ res.object.title }}</a></h4>
+	{% endif %}
+</li>

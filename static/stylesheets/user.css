@@ -320,6 +320,10 @@ a {
     padding: 3px;
 }
 
+.content-list > ul > li.sticky {
+	background-color: #FCFCC5;
+}
+
 .content-list.icon .item, .content-list.icon > ul > li {
     padding-left: 24px;
     background: url(../images/icons/bullet_blue.png) no-repeat 5px 50%;
@@ -2099,7 +2103,7 @@ box-shadow: 1px 2px 5px 1px #5c5c5c;
 
 .portal_contactbox .create .button:hover a {
     background-color: #fff;
-    
+
     -webkit-transition: background 300ms ease;
     -moz-transition: background 300ms ease;
     -o-transition: background 300ms ease;
@@ -2203,7 +2207,7 @@ box-shadow: 1px 2px 5px 1px #5c5c5c;
 
 
 .label-search .search-box {
-    
+
 }
 
 .label-search h3 {

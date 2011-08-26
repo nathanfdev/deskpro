@@ -11,10 +11,12 @@
 
 namespace Application\DeskPRO\Domain;
 
-use \Application\DeskPRO\App;
+use Application\DeskPRO\App;
 
 use Doctrine\Common\NotifyPropertyChanged;
 use Doctrine\Common\PropertyChangedListener;
+
+use Orb\Util\Util;
 
 /**
  * The basic entitiy class
@@ -276,6 +278,20 @@ abstract class DomainObject implements \ArrayAccess /*, NotifyPropertyChanged*/
 	public static function getTableName()
 	{
 		return App::getOrm()->getClassMetadata(get_called_class())->getTableName();
+	}
+
+	public static function getEntityName()
+	{
+		// todo must be a cleaner way of doing this with metadata class?
+
+		$name = Util::getBaseClassname(get_called_class());
+		if (preg_match('#^ApplicationDeskPROEntity(.*?)Proxy$#', $name, $m)) {
+			$name = $m[1];
+		}
+
+		$name = 'DeskPRO:' . $name;
+
+		return $name;
 	}
 
 	############################################################################

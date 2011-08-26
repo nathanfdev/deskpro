@@ -1531,7 +1531,7 @@ class Arrays
 
 	/**
 	 * Splices an assoc array and maintains keys.
-	 * 
+	 *
 	 * @param $array
 	 * @param $start
 	 * @param null $length
@@ -1636,5 +1636,35 @@ class Arrays
 		}
 
 		return $aindex;
+	}
+
+
+	/**
+	 * Sort an array by the value i a sub-array
+	 *
+	 * @param array $array
+	 * @param int $sort_flags
+	 * @return void
+	 */
+	public function sortMulti(array &$array, $k, $sort_flags = \SORT_REGULAR)
+	{
+		usort($array, function($a, $b) use ($k, $sort_flags) {
+			$a = $a[$k];
+			$b = $b[$k];
+
+			if ($sort_flags == \SORT_NUMERIC) {
+				$a += 0.0;
+				$b += 0.0;
+			} elseif ($sort_flags == \SORT_STRING) {
+				$a .= '';
+				$b .= '';
+			}
+
+			if ($a == $b) {
+				return 0;
+			}
+
+			return ($a < $b) ? -1 : 1;
+		});
 	}
 }

@@ -17,6 +17,8 @@ use Application\DeskPRO\Entity;
 use Application\DeskPRO\Elastica\Searcher\ContentSearcher;
 use Application\DeskPRO\Labels\ContentLabelCloud;
 
+use Application\DeskPRO\Search\StickyWordSearch;
+
 use Orb\Util\Arrays;
 use Orb\Util\Numbers;
 
@@ -28,19 +30,24 @@ class SearchController extends AbstractController
 
 		$is_search = false;
 		$results = false;
-		
+		$sticky_results = false;
+
 		if ($q) {
 			$search = App::getSearchAdapter();
 			$result_set = $search->getContentSearcher()->query($q);
 			$results = $search->getResultSetObjects($result_set, true);
 
+			$sticky_search = new StickyWordSearch($this->em);
+			$sticky_results = $sticky_search->getResults($q, 5);
+
 			$is_search = true;
 		}
 
 		return $this->render('UserBundle:Search:search.html.twig', array(
-			'is_search' => $is_search,
-			'results'   => $results,
-			'query' => $q
+			'is_search'         => $is_search,
+			'results'           => $results,
+			'sticky_results'    => $sticky_results,
+			'query'             => $q
 		));
 	}
 
@@ -121,7 +128,7 @@ class SearchController extends AbstractController
 			}
 		}
 
-		
+
 
 		#------------------------------
 		# Make combined search cloud
@@ -129,7 +136,7 @@ class SearchController extends AbstractController
 
 		$content_cloud = new ContentLabelCloud();
 		$cloud = $content_cloud->getCloud();
-		
+
 		return $this->render('UserBundle:Search:label-search.html.twig', array(
 			'cloud' => $cloud,
 			'label' => $label,
@@ -155,7 +162,7 @@ class SearchController extends AbstractController
 	public function similarToAction($content_type)
 	{
 		$content = $this->request->query->get('content', '');
-		
+
 		$search = App::getSearchAdapter();
 		$result_set = $search->getContentSearcher()->similarContent($content, array($content_type));
 		$results = $search->getResultSetObjects($result_set, true);
