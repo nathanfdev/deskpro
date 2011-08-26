@@ -16,6 +16,9 @@
 			<span class="list-counter" id="publish_drafts_count">{{ counts.drafts|default(0) }}</span>
 			<a>Draft Content</a>
 		</li>
+		<li class="with-route" data-route="listpane:{{ path('agent_publish_searchlog') }}">
+			<a>Search Logs</a>
+		</li>
 	</ul>
 </section>
 

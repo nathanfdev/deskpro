@@ -852,6 +852,10 @@ agent_public_drafts_mass:
   pattern: /publish/drafts/mass-actions/{action}
   defaults: { _controller: AgentBundle:Publish:draftsMassActions }
 
+agent_publish_searchlog:
+  pattern: /publish/search-logs
+  defaults: { _controller: AgentBundle:Publish:searchLogs }
+
 ################################################################################
 # KB
 ################################################################################

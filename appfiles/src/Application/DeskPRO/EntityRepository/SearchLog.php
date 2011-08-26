@@ -75,6 +75,40 @@ class SearchLog extends EntityRepository
 		return null;
 	}
 
+	public function popularSearchTerms($limit = 100)
+	{
+		return App::getDb()->fetchAll("
+			SELECT COUNT(*) AS num_searches, num_results, query
+			FROM searchlog
+			GROUP BY query
+			ORDER BY num_searches DESC, num_results ASC
+			LIMIT $limit
+		");
+	}
+
+	public function popularSearchTermsLowHits($limit = 100, $max_hits = 0)
+	{
+		return App::getDb()->fetchAll("
+			SELECT COUNT(*) AS num_searches, num_results, query
+			FROM searchlog
+			WHERE num_results <= $max_hits
+			GROUP BY query
+			ORDER BY num_results ASC, num_searches DESC
+			LIMIT $limit
+		");
+	}
+
+	public function recentSearchTerms($limit = 100)
+	{
+		return App::getDb()->fetchAll("
+			SELECT COUNT(*) AS num_searches, num_results, query
+			FROM searchlog
+			GROUP BY query
+			ORDER BY id DESC
+			LIMIT $limit
+		");
+	}
+
 	public function getByIds(array $ids)
 	{
 		$ids = Arrays::castToType($ids, 'int');
