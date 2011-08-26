@@ -324,6 +324,7 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 		});
 
 		$('.save-trigger', el).click(this.saveEditWord.bind(this));
+		$('.delete-trigger', el).click(this.deleteEditWord.bind(this));
 
 		return this.editDlg;
 	},
@@ -397,6 +398,25 @@ DeskPRO.Agent.WindowElement.Section.Publish = new Orb.Class({
 			success: function(counts) {
 				var wordEl = $('.word-' + word_id, this.glossaryWrapper);
 				DeskPRO_Window.util.showSavePuff(wordEl);
+				this.getGlossaryEditDlg().close();
+			}
+		});
+	},
+
+	deleteEditWord: function() {
+
+		var word_id = $('input.word_id', this.editDlg.elements.wrapperOuter).val().trim();
+
+		$.ajax({
+			url: BASE_URL + 'agent/glossary/' + word_id + '/delete.json',
+			type: 'POST',
+			context: this,
+			dataType: 'json',
+			success: function(counts) {
+				var wordEl = $('.word-' + word_id, this.glossaryWrapper);
+				wordEl.fadeOut('fast', function() {
+					wordEl.remove();
+				});
 				this.getGlossaryEditDlg().close();
 			}
 		});

@@ -77,6 +77,18 @@ class GlossaryController extends AbstractController
 		));
 	}
 
+	public function glossaryDeleteWordJsonAction($word_id)
+	{
+		$word = App::findEntity('DeskPRO:GlossaryWord', $word_id);
+		App::getOrm()->remove($word);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array(
+			'id' => $word['id'],
+			'word' => $word['word'],
+		));
+	}
+
 	public function glossaryWordJsonAction($word_id)
 	{
 		$word = App::findEntity('DeskPRO:GlossaryWord', $word_id);
