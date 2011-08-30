@@ -45,10 +45,10 @@ this.hasInit=false;this.elements={};this.openTriggerEvent=null;this.openedTime=n
 this.openSubMenuId=null;this.parentMenu=null;this.objectId=Orb.uuid();if(a){this.setOptions(a)}if(this.options.parentMenu){this.parentMenu=this.options.parentMenu;
 delete this.options.parentMenu}if(DeskPRO.UI.Menu_Instances[this.options.objectGroup]===undefined){DeskPRO.UI.Menu_Instances[this.options.objectGroup]={}
 }DeskPRO.UI.Menu_Instances[this.options.objectGroup][this.objectId]=this;this._setupMenuElement();if(this.options.triggerElement){this.setupTriggerElement($(this.options.triggerElement))
-}if(this.options.initMenuNow){this._initMenu()}},_setupMenuElement:function(){var e=$(this.options.menuElement);if(e.data("menu-flag")&&e.data("menu-flag").indexOf("copy-menu")!==-1){e=e.clone()
-}if(e.is("select")){var c=[];c.push('<ul class="menu" style="display:none">');var g=null;var b=$("option",e);var h=false;
-b.each(function(j,l){l=$(l);var i=(l.next().text().indexOf("--")!==-1);var k=(l.text().indexOf("--")!==-1);if(!g||l.is(":selected")){g=l.text()
-}if(j&&!k&&(i||h)){c.push('<li class="sep">')}if(i){h=true;c.push('<li class="section-title">'+Orb.escapeHtml(l.text())+"</li>")
+}if(this.options.initMenuNow){this._initMenu()}},_setupMenuElement:function(){var e=$(this.options.menuElement);if(e.data("menu-flag")&&e.data("menu-flag").indexOf("copy-menu")!==-1){e=e.clone();
+if(e.attr("id")){e.attr("id",e.attr("id")+"_"+Orb.uuid())}}if(e.is("select")){var c=[];c.push('<ul class="menu" style="display:none">');
+var g=null;var b=$("option",e);var h=false;b.each(function(j,l){l=$(l);var i=(l.next().text().indexOf("--")!==-1);var k=(l.text().indexOf("--")!==-1);
+if(!g||l.is(":selected")){g=l.text()}if(j&&!k&&(i||h)){c.push('<li class="sep">')}if(i){h=true;c.push('<li class="section-title">'+Orb.escapeHtml(l.text())+"</li>")
 }else{if(!k){h=false}c.push('<li data-value="'+l.val()+'">'+Orb.escapeHtml(l.text())+"</li>")}});c.push("</ul>");var d=$(c.join("")).appendTo("body");
 this.options.menuElement=d;e.css({display:"none"});if(!this.options.triggerElement){var f=g;if(!f.length){f="Choose..."}var a=this.options.triggerElement=$('<span class="menu-trigger">'+Orb.escapeHtml(f)+"</span>").insertAfter(e);
 this.addEvent("itemClicked",function(j){var i=$(j.itemEl);var l=i.text().trim();if(!l.length){l="Choose..."}else{var k=$(j.itemEl).data("prefix");

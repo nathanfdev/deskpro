@@ -96,15 +96,16 @@ var g=new DeskPRO.UI.CatListEditor({listEl:i,itemSelector:"li:not(.all)",newItem
 },onRestructured:function(){$(".dp-cat-li",i).each(function(){var j=true;$(".list-counter",this).each(function(){if(parseInt($(this).text().trim())>0){j=false;
 return false}});if(j){$(".delete-cat",this).show()}else{$(".delete-cat",this).hide()}});c.recountChildCounts(i);$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/update-structure",data:a(g.getStructure()),type:"POST"})
 },onTitlesUpdated:function(j){$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/update-titles",data:f(j),type:"POST"})
-},onNewAdded:function(j,k){var l=k.val().trim();$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/add-category",data:{title:l},type:"POST",dataType:"json",success:function(m){j.data("category-id",m.id);
+},onNewAdded:function(j,k){if(j.is(".being-deleted")){return}var l=k.val().trim();$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/add-category",data:{title:l},type:"POST",dataType:"json",success:function(m){j.data("category-id",m.id);
 $("a",j).data("route","listpane:"+m.url);$(".list-counter",j).attr("id",h+"_cat_count_"+m.id)}})}});$("#publish_outline_"+h+"cat_editmode").click(function(){var j=$(this).parent().parent();
 j.toggleClass("edit-mode")});$("#publish_outline_"+h+"cat_edittiles").click(function(){if(g.isTitleEditing()){g.endEditTitles()
 }else{g.showEditTitles()}});$("#publish_outline_"+h+"cat_addcat").click(function(){g.addNew()});$("#publish_outline_"+h+"cat_list").delegate(".edit-cat","click",function(k){var j=$(this).parent().parent();
 g.showEditor(j)});$("#publish_outline_"+h+"cat_list").delegate(".delete-cat","click",function(m){var k=0;var j=$(this);while(!j.is("li")){if(k++>5){return
 }j=j.parent()}var l=function(){$.ajax({url:BASE_URL+"agent/publish/categories/"+h+"/delete-category",data:{category_id:j.data("category-id")},type:"POST",dataType:"json",error:function(){j.show()
-},success:function(n){j.remove()}})};j.fadeOut("fast",l)});this.recountChildCounts(i)},this)},recountChildCounts:function(b){var a=this;
-$("> li",b).each(function(){var c=$(this);var h=$(".list-counter:first",c);var e=parseInt(h.data("count"));var d=e;var g=$("> ul",c);
-var f=null;if(g.length){f=$("> li",g)}if(f&&f.length){a.recountChildCounts(g);f.each(function(){d+=parseInt($(".list-counter:first",this).data("total-count"))
+},success:function(n){j.remove()}})};j.addClass("being-deleted");if(j.data("category-id")){j.fadeOut("fast",l)}else{j.fadeOut("fast")
+}});this.recountChildCounts(i)},this)},recountChildCounts:function(b){var a=this;$("> li",b).each(function(){var c=$(this);
+var h=$(".list-counter:first",c);var e=parseInt(h.data("count"));var d=e;var g=$("> ul",c);var f=null;if(g.length){f=$("> li",g)
+}if(f&&f.length){a.recountChildCounts(g);f.each(function(){d+=parseInt($(".list-counter:first",this).data("total-count"))
 });h.text(e+"/"+d)}else{h.text(e)}h.data("total-count",d)})},_initGlossary:function(){this.glossaryWrapper=$("#publish_outline_glossary");
 var a=this;$(".glossary-new-trigger",this.glossaryWrapper).click(this.showGlossaryAddDlg.bind(this));$(".glossary-word-trigger",this.glossaryWrapper).click(function(b){b.preventDefault();
 a.showGlossaryEditDlg($(this).data("word-id"))})},showGlossaryAddDlg:function(){var a=this.getGlossaryAddDlg();a.openOverlay()
@@ -113,16 +114,19 @@ b.hide();c.show();a.openOverlay();$.ajax({url:BASE_URL+"agent/glossary/"+d+".jso
 $("input.word_id",b).val(e.id);$("textarea.content",b).val(e.content);c.hide();b.show()}})},getGlossaryAddDlg:function(){if(this.addDlg){return this.addDlg
 }var a=$(".glossary-add-dlg:first",this.glossaryWrapper);this.addDlg=new DeskPRO.UI.Overlay({contentElement:a});$(".save-trigger",a).click(this.saveNewWord.bind(this));
 return this.addDlg},getGlossaryEditDlg:function(){if(this.editDlg){return this.editDlg}var a=$(".glossary-edit-dlg:first",this.glossaryWrapper);
-this.editDlg=new DeskPRO.UI.Overlay({contentElement:a});$(".save-trigger",a).click(this.saveEditWord.bind(this));return this.editDlg
-},saveNewWord:function(){var a=[];a.push({name:"word",value:$("input.word",this.addDlg.elements.wrapperOuter).val().trim()});
+this.editDlg=new DeskPRO.UI.Overlay({contentElement:a});$(".save-trigger",a).click(this.saveEditWord.bind(this));$(".delete-trigger",a).click(this.deleteEditWord.bind(this));
+return this.editDlg},saveNewWord:function(){var a=[];a.push({name:"word",value:$("input.word",this.addDlg.elements.wrapperOuter).val().trim()});
 a.push({name:"content",value:$("textarea.content",this.addDlg.elements.wrapperOuter).val().trim()});$.ajax({url:BASE_URL+"agent/glossary/new-word.json",type:"POST",data:a,context:this,dataType:"json",success:function(h){var b=$(".counter-words",this.glossaryWrapper);
-var f=parseInt(b.html());b.html(f+1);var e=h.letter;var c=h.word;var g=h.word_id;var j=$('<li><a class="edit-word-trigger" data-word-id="'+g+'">'+c+"</a></li>");
+var f=parseInt(b.html());b.html(f+1);var e=h.letter;var c=h.word;var g=h.word_id;var j=$('<li><a class="edit-word-trigger word-'+g+'" data-word-id="'+g+'">'+c+"</a></li>");
 var d=$('dt[data-letter="'+e+'"]:first',this.glossaryWrapper);var i=$('dd[data-letter="'+e+'"]:first',this.glossaryWrapper);
 d.show();i.show();$("ul",i).prepend(j);$("input.word",this.addDlg.elements.wrapperOuter).val("");$("textarea.content",this.addDlg.elements.wrapperOuter).val("");
 this.addDlg.closeOverlay()}})},saveEditWord:function(){var b=$("input.word_id",this.editDlg.elements.wrapperOuter).val().trim();
 var a=[];a.push({name:"word_id",value:b});a.push({name:"content",value:$("textarea.content",this.editDlg.elements.wrapperOuter).val().trim()});
-$.ajax({url:BASE_URL+"agent/glossary/"+b+"/edit.json",type:"POST",data:a,context:this,dataType:"json",success:function(c){}})
-}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");DeskPRO.Agent.WindowElement.Section.Twitter=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#twitter_section");
+$.ajax({url:BASE_URL+"agent/glossary/"+b+"/edit.json",type:"POST",data:a,context:this,dataType:"json",success:function(d){var c=$(".word-"+b,this.glossaryWrapper);
+DeskPRO_Window.util.showSavePuff(c);this.getGlossaryEditDlg().close()}})},deleteEditWord:function(){var a=$("input.word_id",this.editDlg.elements.wrapperOuter).val().trim();
+$.ajax({url:BASE_URL+"agent/glossary/"+a+"/delete.json",type:"POST",context:this,dataType:"json",success:function(c){var b=$(".word-"+a,this.glossaryWrapper);
+b.fadeOut("fast",function(){b.remove()});this.getGlossaryEditDlg().close()}})}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");
+DeskPRO.Agent.WindowElement.Section.Twitter=new Orb.Class({Extends:DeskPRO.Agent.WindowElement.Section.AbstractSection,init:function(){this.buttonEl=$("#twitter_section");
 this.setSectionElement($('<section id="twitter_outline"></section>'));$.ajax({url:BASE_URL+"agent/twitter/get-section-data.json",context:this,success:function(a){this._initSection(a)
 }})},_initSection:function(a){this.setHasInitialLoaded();this.contentEl.html(a.section_html);if(this.isVisible()){this._onShowLoadList()
 }this.contentEl.addClass("scroll-content").tinyscrollbar()}});Orb.createNamespace("DeskPRO.Agent.WindowElement.Section");

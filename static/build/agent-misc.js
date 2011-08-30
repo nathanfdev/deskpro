@@ -189,10 +189,10 @@ this.timeout=null}if(this.xhr){return}this.xhr=$.ajax({url:this.options.loadUrl,
 if(a){a.call(this,b)}},complete:function(){this.startTimeout();this.xhr=null}})},invalidateTemplate:function(){this.loadTemplate()
 },getTemplate:function(){return this.template},open:function(d){if(this.pop){this.pop.open();if(d){d(this.pop.page)}return
 }var b=this;var a=new DeskPRO.Agent.PageHelper.Popover({tabRoute:this.options.tabRoute,onPageInit:function(e,f){f.addEvent("closeSelf",function(g){g.cancel=true;
-b.destroyPop()});if(d){d(f)}}});var c=this.getTemplate();if(c){a.setHtml(c)}else{this.loadTemplate(function(e){a.setHtml(e)
-})}this.pop=a;a.open()},toggle:function(){if(!this.pop){this.open();return}this.pop.toggle()},close:function(){if(!this.pop){return
-}this.pop.close()},destroyPop:function(){if(!this.pop){return}this.pop.destroy();this.pop=null}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");
-DeskPRO.Agent.RuleBuilder.TermAbstract=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.options={ruleBuilder:null,rowEl:null,rowId:null,opMenu:null};
+b.clear()});if(d){d(f)}}});var c=this.getTemplate();if(c){a.setHtml(c)}else{this.loadTemplate(function(e){a.setHtml(e)})}this.pop=a;
+a.open()},toggle:function(){if(!this.pop){this.open();return}this.pop.toggle()},close:function(){if(!this.pop){return}this.pop.close()
+},clear:function(){if(this.pop){this.pop.destroy();this.pop=null}},destroyPop:function(){if(!this.pop){return}this.pop.destroy();
+this.pop=null}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");DeskPRO.Agent.RuleBuilder.TermAbstract=new Orb.Class({Implements:[Orb.Util.Events,Orb.Util.Options],initialize:function(a){this.options={ruleBuilder:null,rowEl:null,rowId:null,opMenu:null};
 if(a){this.setOptions(a)}this.ruleBuilder=this.options.ruleBuilder;this.rowEl=$(this.options.rowEl);this.rowId=this.options.rowId;
 this.opMenu=this.options.opMenu;this.init()},init:function(){},initRow:function(){},initValues:function(){}});Orb.createNamespace("DeskPRO.Agent.RuleBuilder");
 DeskPRO.Agent.RuleBuilder.DateTerm=new Orb.Class({Extends:DeskPRO.Agent.RuleBuilder.TermAbstract,initRow:function(){this._initUi()
