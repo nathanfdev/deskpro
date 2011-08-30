@@ -315,6 +315,12 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		$rating->setContentObject($this);
 	}
 
+	public function removeRating($rating)
+	{
+		$this->num_ratings   = $this->num_ratings - 1;
+		$this->total_rating  = $this->total_rating - $rating->rating;
+	}
+
 	/**
 	 * @return \Application\DeskPRO\Labels\LabelManager
 	 */

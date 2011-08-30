@@ -59,11 +59,16 @@ class IdeasController extends AbstractController
 
 		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editidea', $this->person->id);
 
+		$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($idea, $this->person, $this->session->getVisitor());
+		$my_vote = $content_rating->getRating();
+
 		return $this->render('AgentBundle:Ideas:view.html.twig', array(
 			'idea'           => $idea,
 			'idea_comments'  => $idea_comments,
 			'idea_revisions' => $idea_revisions,
 			'state'          => $state,
+
+			'my_vote' => $my_vote,
 
 			'rated_searches'      => $rated_searches,
 			'related_content'     => $related_content,
@@ -245,6 +250,26 @@ class IdeasController extends AbstractController
 				$cat = $this->em->find('DeskPRO:IdeaCategory', $this->in->getUint('category_id'));
 				$idea['category'] = $cat;
 				$data['category_id'] = $cat['id'];
+				break;
+
+			case 'vote':
+
+				$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($idea, $this->person, $this->session->getVisitor());
+				$content_rating->setRating(1);
+
+				break;
+
+			case 'clear-vote':
+
+				$content_rating = new \Application\UserBundle\Controller\Helper\ContentRating($idea, $this->person, $this->session->getVisitor());
+				$vote = $content_rating->getRating();
+
+				if ($vote) {
+					$idea->removeRating($vote);
+
+					$this->em->remove($vote);
+				}
+
 				break;
 		}
 

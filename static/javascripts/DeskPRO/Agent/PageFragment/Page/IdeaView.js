@@ -76,6 +76,10 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 				url: BASE_URL + 'agent/publish/rating-who-voted/ideas/' + this.idea_id
 			}
 		});
+
+		this.getEl('my_vote').click(function() {
+			self.toggleMyVote();
+		});
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -132,6 +136,27 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 					self.handleUnloadRevisions(data.revision_id);
 				}
 			}
+		});
+	},
+
+	toggleMyVote: function() {
+		var action;
+		if (this.getEl('my_vote').is('.radio-on')) {
+			action = 'clear-vote';
+			DeskPRO_Window.util.modCountEl(this.getEl('num_votes'), '-');
+			this.getEl('my_vote').removeClass('radio-on');
+		} else {
+			action = 'vote';
+			DeskPRO_Window.util.modCountEl(this.getEl('num_votes'), '+');
+			this.getEl('my_vote').addClass('radio-on');
+		}
+
+		$.ajax({
+			url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/ajax-save',
+			type: 'POST',
+			data: {action: action},
+			context: this,
+			dataType: 'json'
 		});
 	},
 

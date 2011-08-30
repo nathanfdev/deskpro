@@ -103,11 +103,11 @@ pageMeta.baseId = '{{ baseId }}';
 
 				<div class="row-table-cotent">
 					<div class="col-table-content title-col">
-						<span>Rating</span>
+						<span>Votes</span>
 					</div>
 					<div class="col-table-content">
-						{{ idea.rating_percent }}% in favor (<span class="link-look who-voted-trigger">{{ idea.num_ratings }} votes</span>)<br />
-						<small>{{ idea.up_votes }} up, {{ idea.down_votes }} down</small>
+						<span id="{{baseId}}_num_votes">{{ idea.num_ratings }}</span> votes
+						<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this idea" id="{{baseId}}_my_vote">+1</button>
 					</div>
 				</div>
 			</div>
