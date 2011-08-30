@@ -107,26 +107,10 @@ class Idea extends EntityRepository
 		", array('new'));
 	}
 
-
-	/**
-	 * Count the number of "popular" ideas
-	 *
-	 * @return int
-	 */
-	public function countPopular()
-	{
-		return App::getDb()->fetchColumn("
-			SELECT COUNT(*)
-			FROM ideas
-			WHERE num_votes >= ?
-		", array(App::getSetting('core_ideas.popular_votes')));
-	}
-
-
 	/**
 	 * Count the number of non-hidden ideas in all categories, grouped by category ID key.
 	 * Each parent category has the sum of all children.
-	 * 
+	 *
 	 * @return array
 	 */
 	public function countAllCategoriesGrouped()
@@ -160,7 +144,7 @@ class Idea extends EntityRepository
 
 		return $counts;
 	}
-	
+
 
 	############################################################################
 	# Fetchers
@@ -206,7 +190,7 @@ class Idea extends EntityRepository
 	public function getByResultIds(array $ids)
 	{
 		if (!$ids) return array();
-		
+
 		$unsorted_ideas = $this->getEntityManager()->createQuery("
 			SELECT i
 			FROM DeskPRO:Idea i INDEX BY i.id
@@ -224,7 +208,7 @@ class Idea extends EntityRepository
 
 		return $ideas;
 	}
-	
+
 	public function getIdeas($status, $node = false, $sort = 'id', $num = 10)
 	{
 		if ($sort == 'date') $sort = 'id';

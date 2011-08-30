@@ -1102,6 +1102,13 @@ agent_ideas_getsectiondata:
   pattern: /ideas/get-section-data.json
   defaults: { _controller: AgentBundle:Ideas:getSectionData }
 
+agent_ideas_new:
+  pattern: /ideas/new
+  defaults: { _controller: AgentBundle:Ideas:newIdea }
+
+agent_ideas_new_save:
+  pattern: /ideas/new/save
+  defaults: { _controller: AgentBundle:Ideas:newIdeaSave }
 
 
 agent_ideas_validating_comments:

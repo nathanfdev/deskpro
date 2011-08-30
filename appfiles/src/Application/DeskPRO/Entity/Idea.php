@@ -203,8 +203,8 @@ class Idea extends ContentAbstract
 			case self::STATUS_ACTIVE:
 			case self::STATUS_CLOSED:
 				$this['status'] = $status;
-				$status_cat = App::findEntity('DeskPRO:IdaeStatusCategory', $sub_status);
-				$this->status_category = $status_cat['id'];
+				$status_cat = App::findEntity('DeskPRO:IdeaStatusCategory', $sub_status);
+				$this->status_category = $status_cat;
 				break;
 
 			case self::STATUS_HIDDEN:

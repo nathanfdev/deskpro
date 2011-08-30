@@ -94,6 +94,7 @@ $CONFIG['agent']['pages'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewDownload.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewNews.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/NewTicket.js',
+		'javascripts/DeskPRO/Agent/PageFragment/Page/NewIdea.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Organization.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/Person.js',
 		'javascripts/DeskPRO/Agent/PageFragment/Page/PersonPopout.js',

@@ -7,12 +7,13 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 		$(document).bind('keydown', 'ctrl+left', this.tabLeft.bind(this));
 		$(document).bind('keydown', 'ctrl+right', this.tabRight.bind(this));
 		$(document).bind('keydown', 'ctrl+shift+c', this.closeTab.bind(this));
-		
+
 		// Create-type
 		$(document).bind('keydown', 't', this.showNewTicket.bind(this));
 		$(document).bind('keydown', 'k', this.showNewArticle.bind(this));
 		$(document).bind('keydown', 'n', this.showNewNews.bind(this));
 		$(document).bind('keydown', 'd', this.showNewDownload.bind(this));
+		$(document).bind('keydown', 'i', this.showNewIdea.bind(this));
 
 		this.boundShortkuts = {};
 
@@ -23,7 +24,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	/**
 	 * Adds a shortcut that only applies to specific tab types. When the shortcut is run,
 	 * an event (`eventName`) is fired on the active tab of its type for the tab to handle.
-	 * 
+	 *
 	 * @param pageTypeName
 	 * @param key
 	 * @param eventName
@@ -43,7 +44,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	/**
 	 * Called when a registered context shortcut is fired. We need to decide which, if any,
 	 * event to dispatch to the tab.
-	 * 
+	 *
 	 * @param ev
 	 * @param key
 	 */
@@ -64,7 +65,7 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	//#########################################################################
 	//# Global Shortcuts
 	//#########################################################################
-	
+
 	showNewTicket: function() {
 		DeskPRO_Window.newTicketLoader.toggle();
 	},
@@ -76,6 +77,9 @@ DeskPRO.Agent.KeyboardShortcuts = new Orb.Class({
 	},
 	showNewDownload: function() {
 		DeskPRO_Window.newDownloadLoader.toggle();
+	},
+	showNewIdea: function() {
+		DeskPRO_Window.newIdeaLoader.toggle();
 	},
 
 	tabLeft: function() {

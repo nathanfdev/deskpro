@@ -237,7 +237,6 @@ class IdeasController extends AbstractController
 
 		$counts = array();
 		$counts['ideas_awaiting_validation']    = App::getEntityRepository('DeskPRO:Idea')->countAwaitingValidation();
-		$counts['popular_ideas']                = App::getEntityRepository('DeskPRO:Idea')->countPopular();
 		$counts['comments_awaiting_validation'] = App::getEntityRepository('DeskPRO:IdeaComment')->countAwaitingValidation();
 
 		$status_counts = array();
@@ -318,7 +317,7 @@ class IdeasController extends AbstractController
 
 	/**
 	 * List of ideas waiting to be validated
-	 * 
+	 *
 	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
 	 */
 	public function validatingListAction()
@@ -352,10 +351,10 @@ class IdeasController extends AbstractController
 		);
 	}
 
-	
+
 	/**
 	 * A shortcut to run a filter on a category
-	 * 
+	 *
 	 * @param  $category_id
 	 * @return
 	 */
@@ -422,7 +421,7 @@ class IdeasController extends AbstractController
 		);
 	}
 
-	
+
 	/**
 	 * A shortcut to run a filter on a status
 	 *
@@ -457,7 +456,7 @@ class IdeasController extends AbstractController
 
 	/**
 	 * This takes a result helper and just handles rendering it
-	 * 
+	 *
 	 * @param  $result_helper
 	 * @param string $template
 	 * @param array $template_vars
@@ -491,12 +490,60 @@ class IdeasController extends AbstractController
 			'cache'        => $result_cache,
 			'cache_id'     => $result_cache['id'],
 			'ideas'        => $ideas,
-			 
+
 			'filter_form' => $filter_form_values,
 
 			 'idea_cats'          => $idea_cats,
 			 'active_status_cats' => $active_status_cats,
 			 'closed_status_cats' => $closed_status_cats,
 		), $template_vars));
+	}
+
+	############################################################################
+	# newidea
+	############################################################################
+
+	public function newIdeaAction()
+	{
+		$idea_categories    = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
+		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.newidea', $this->person->id);
+
+		return $this->render('AgentBundle:Ideas:newidea.html.twig', array(
+			'idea_categories'    => $idea_categories,
+			'active_status_cats' => $active_status_cats,
+			'closed_status_cats' => $closed_status_cats,
+			'state'              => $state
+		));
+	}
+
+	public function newIdeaSaveAction()
+	{
+		$newidea = new \Application\AgentBundle\Form\Model\NewIdea($this->person);
+
+		$formType = new \Application\AgentBundle\Form\Type\NewIdea();
+		$form = $this->get('form.factory')->create($formType, $newidea);
+
+		if ($this->get('request')->getMethod() == 'POST') {
+			$form->bindRequest($this->get('request'));
+			$form->isValid();
+
+			$newidea->save();
+
+			$idea = $newidea->getIdea();
+
+			App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.newidea', $this->person->id);
+
+			return $this->createJsonResponse(array(
+				'success' => true,
+				'idea_id' => $idea['id']
+			));
+		} else {
+			return $this->createJsonResponse(array(
+				'success' => false,
+			));
+		}
 	}
 }
