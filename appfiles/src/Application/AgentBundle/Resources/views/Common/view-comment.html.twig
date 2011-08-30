@@ -13,7 +13,11 @@
 		<div class="message-meta">
 			<span class="arrow-left"></span>
 			{% if comment.person %}
-				<h4 class="with-route" data-route="page:{{ path('agent_people_view', {'person_id': comment.person.id}) }}">{{ comment.person.name }}</h4>
+				<h4
+					class="with-route person-popover"
+					data-person-id="{{ comment.person.id }}"
+					data-route="page:{{ path('agent_people_view', {'person_id': comment.person.id}) }}"
+				>{{ comment.person.name }}</h4>
 			{% else %}
 				{% if comment.name or comment.email %}
 					{% if comment.name %}{{ comment.name }}{% endif %}

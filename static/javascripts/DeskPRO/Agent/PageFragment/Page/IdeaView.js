@@ -13,6 +13,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 		var self = this;
 		this.wrapper = el;
 
+		this.initFeaturesOnCollection(this.wrapper);
+
 		this.idea_id = this.getMetaData('idea_id');
 
 		this._initBasic();

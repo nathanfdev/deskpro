@@ -115,9 +115,8 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 			this.initTimesOnCollection($(featureSelectors.times.join(', '), wrapper));
 		}
 
-		if (this.wrapper) {
-			this.initTipsOnCollection($('.person-tip', this.wrapper));
-		}
+		this.initTipsOnCollection($('.person-tip', wrapper));
+		this.initPersonPopoversOnCollection($('.person-popover', wrapper));
 	},
 
 	/**
@@ -161,7 +160,48 @@ DeskPRO.Agent.PageFragment.Basic = new Class({
 		});
 	},
 
+	initPersonPopoversOnCollection: function(els) {
+		var made_popovers = {};
+		var self = this;
+		$(els).each(function() {
+			var el = $(this);
+			if (el.is('.person-popover') && !el.is('.with-person-popover')) {
 
+				el.addClass('with-person-popover');
+
+				var loadtimeout = 0;
+				if (el.is('.preload')) {
+					loadtimeout = 250;
+				}
+
+				var personId = el.data('person-id');
+				var url = BASE_URL + 'agent/people/' + personId + '';
+
+				var popover;
+				if (made_popovers[personId]) {
+					popover = made_popovers[personId];
+				} else {
+					popover = new DeskPRO.Agent.PageHelper.Popover({
+						pageUrl: url,
+						tabRoute: 'page:' + url,
+						loadTimeout: loadtimeout
+					});
+					made_popovers[personId] = popover;
+
+					self.addEvent('destroy', function() {
+						popover.destroy();
+					});
+				}
+
+				el.click(function(ev) {
+					ev.stopPropagation();
+					ev.preventDefault();
+
+					popover.toggle();
+				});
+			}
+		});
+	},
 
 	/**
 	 * Set metadata about this page.

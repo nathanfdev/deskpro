@@ -66,7 +66,7 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="assignments">
 		<div class="agent">
 			<div class="desc">
-				By {% for author in idea.authors %}<cite>{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
+				By {% for author in idea.authors %}<cite class="person-popover preload" data-person-id="{{ author.id }}">{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
 			</div>
 			<br style="clear:both;height: 1px;overflow: hidden;" />
 		</div>
