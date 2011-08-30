@@ -12,7 +12,7 @@
 namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
-w
+
 use \Orb\Util\Strings;
 
 /**
