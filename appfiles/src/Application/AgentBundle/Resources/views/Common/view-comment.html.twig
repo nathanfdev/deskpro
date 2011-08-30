@@ -1,7 +1,7 @@
 <div
 	data-comment-id="{{comment.id}}"
 	data-content-type="{{ comment.object_content_type }}"
-	class="message comment-{{comment.id}} {% if comment.person.is_agent %}admin-message{% else %}user-message{% endif %} {% if comment.status == 'validating' %}validating{% endif %}"
+	class="message comment-{{comment.id}} {% if comment.status == 'agent' %}note-message{% elseif comment.person.is_agent %}admin-message{% else %}user-message{% endif %} {% if comment.status == 'validating' %}validating{% endif %}"
 >
 	<div class="message-avatar left">
 		<img

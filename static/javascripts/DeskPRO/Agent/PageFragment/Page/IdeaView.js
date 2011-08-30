@@ -335,6 +335,13 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 			value: $('textarea', this.newCommentWrapper).val()
 		});
 
+		if (this.getEl('agent_comment_ck').is(':checked')) {
+			data.push({
+				name: 'agent_only',
+				value: 1
+			});
+		}
+
 		$.ajax({
 			url: BASE_URL + 'agent/ideas/view/' + this.getMetaData('idea_id') + '/ajax-save-comment',
 			type: 'POST',

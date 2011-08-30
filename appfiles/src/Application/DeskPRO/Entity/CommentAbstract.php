@@ -31,6 +31,7 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_VISIBLE    = 'visible';
 	const STATUS_VALIDATING = 'validating';
 	const STATUS_DELETED    = 'deleted';
+	const STATUS_AGENT      = 'agent';
 
 	/**
 	 * The unique ID.

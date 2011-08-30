@@ -179,7 +179,13 @@ class IdeasController extends AbstractController
 		$comment->idea = $idea;
 		$comment->person = $this->person;
 		$comment['content'] = $this->in->getString('content');
-		$comment['status'] = 'visible';
+
+		if ($this->in->getBool('agent_only')) {
+			$comment['status'] = 'agent';
+		} else {
+			$comment['status'] = 'visible';
+		}
+
 		$comment['date_created']  = new \DateTime();
 
 		App::getOrm()->persist($comment);
