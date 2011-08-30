@@ -7,6 +7,8 @@ pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_
 {% elseif list_type == 'status' %}
 	pageMeta.refreshUrl = '{{ path('agent_ideas_status', {'status': status}) }}?';
 	{% set subgroup_url = path('agent_ideas_status', {'status': status, 'subgroup': 'SUBGROUP_ID'}) %}
+{% elseif list_type == 'label' %}
+	pageMeta.refreshUrl = '{{ path('agent_ideas_label', {'label': label}) }}?';
 {% else %}
 	pageMeta.refreshUrl = '{{ path('agent_ideas_status') }}?cache_id={{cache_id}}';
 {% endif %}

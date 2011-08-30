@@ -564,7 +564,11 @@ class IdeasController extends AbstractController
 		return $this->renderList(
 			$result_helper,
 			null,
-			array('list_type' => 'label', 'page_title' => $label)
+			array(
+				'list_type' => 'label',
+				'label' => $label,
+				'page_title' => $label
+			)
 		);
 	}
 
