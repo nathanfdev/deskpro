@@ -390,7 +390,29 @@ class IdeasController extends AbstractController
 		$grouping->setGrouping('category_id', 'status');
 		$grouped = $grouping->getDisplayArray();
 
-		$grouped_key = $category_id;
+		if (!$cat->parent) {
+			$grouped_key = $cat->getId();
+			$group_data = array();
+			$t = 0;
+			if (isset($grouped['items'][$grouped_key])) {
+				$group_data = Arrays::mergeAssoc($group_data, array($grouped_key => $grouped['items'][$grouped_key]));
+				$t = $grouped['items'][$grouped_key]['total'];
+			}
+
+			$group_data[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
+		} else {
+			$grouped_key = $cat->getId();
+			$t = 0;
+			foreach ($cat->children as $c) {
+				$k = $c['id'];
+				if (isset($grouped['items'][$k])) {
+					$group_data = Arrays::mergeAssoc($group_data, array($k => $grouped['items'][$k]));
+					$t += $grouped['items'][$k]['total'];
+				}
+			}
+
+			$group_data[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
+		}
 
 		return $this->renderList(
 			$result_helper,
@@ -400,6 +422,7 @@ class IdeasController extends AbstractController
 				'category_id' => $category_id,
 				'page_title' => $cat->getFullTitle(),
 				'grouped' => $grouped,
+				'group_data' => $group_data,
 				'grouped_key' => $grouped_key,
 				'subgroup' => $this->in->getString('subgroup'),
 			)
@@ -456,11 +479,11 @@ class IdeasController extends AbstractController
 			));
 		} else {
 			$result_helper = IdeaResults::newFromRequest($this, array(
-			'specific_terms' => array(
-				'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
-				'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
-			)
-		));
+				'specific_terms' => array(
+					'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
+					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
+				)
+			));
 		}
 
 		$grouping = new GroupingCounter();
@@ -471,9 +494,36 @@ class IdeasController extends AbstractController
 			$status_cat = App::findEntity('DeskPRO:IdeaStatusCategory', $status);
 			$status_name = $status_cat['title'];
 			$grouped_key = $status_cat['status_type'] . '.' . $status_cat['id'];
+
+			$group_data = array();
+			$t = 0;
+			if (isset($grouped['items'][$grouped_key])) {
+				$group_data = Arrays::mergeAssoc($group_data, array($grouped_key => $grouped['items'][$grouped_key]));
+				$t = $grouped['items'][$grouped_key]['total'];
+			}
+
+			$group_data[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
 		} else {
 			$status_name = App::getTranslator()->phrase('core_ideas.status_' . $status);
 			$grouped_key = $status;
+			$group_data = array();
+
+			if ($status == 'active') {
+				$status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+			} else {
+				$status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+			}
+
+			$t = 0;
+			foreach ($status_cats as $c) {
+				$k = $status . '.' . $c['id'];
+				if (isset($grouped['items'][$k])) {
+					$group_data = Arrays::mergeAssoc($group_data, array($k => $grouped['items'][$k]));
+					$t += $grouped['items'][$k]['total'];
+				}
+			}
+
+			$group_data[-1] = array('id' => -1, 'title' => 'TOTAL', 'total' => $t);
 		}
 
 		return $this->renderList(
@@ -484,6 +534,7 @@ class IdeasController extends AbstractController
 				'status' => $status,
 				'grouped' => $grouped,
 				'grouped_key' => $grouped_key,
+				'group_data' => $group_data,
 				'page_title' => $status_name,
 				'subgroup' => $this->in->getString('subgroup'),
 			)

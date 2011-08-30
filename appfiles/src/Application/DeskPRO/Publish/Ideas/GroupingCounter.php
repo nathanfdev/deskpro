@@ -96,9 +96,34 @@ class GroupingCounter
 		$group1_structure = array();
 		$group2_structure = array();
 
+		$status_hierarchy = function() {
+			$titles = array(
+				'new' => array('title' => 'New'),
+				'active' => array('title' => 'Active', 'children' => array()),
+				'closed' => array('title' => 'Closed', 'children' => array()),
+				'hidden' => array('title' => 'Hidden'),
+			);
+
+			$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+			$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+
+			foreach ($active_status_cats as $cat) {
+				$titles['active.' . $cat['id']] = array('title' => $cat['title']);
+				$titles['active']['children']['active.' . $cat['id']] = array('title' => $cat['title']);
+			}
+			foreach ($closed_status_cats as $cat) {
+				$titles['closed.' . $cat['id']] = array('title' => $cat['title']);
+				$titles['closed']['children']['closed.' . $cat['id']] = array('title' => $cat['title']);
+			}
+		};
+
 		switch ($this->grouping1) {
 			case 'category_id':
-				$group2_structure = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoriesInHierarchy();
+				$group1_structure = App::getEntityRepository('DeskPRO:IdeaCategory')->getFullCategoryNames();
+				break;
+
+			case 'status':
+				$group1_structure = $status_hierarchy();
 				break;
 
 			default:
@@ -111,7 +136,11 @@ class GroupingCounter
 		if ($this->grouping2) {
 			switch ($this->grouping2) {
 				case 'category_id':
-					$group2_structure = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoriesInHierarchy();
+					$group1_structure = App::getEntityRepository('DeskPRO:IdeaCategory')->getFullCategoryNames();
+					break;
+
+				case 'status':
+					$group1_structure = $status_hierarchy();
 					break;
 
 				default:
@@ -292,7 +321,7 @@ class GroupingCounter
 		$titles = null;
 		switch ($field) {
 			case 'category_id':
-				$titles = App::getOrm()->getRepository('DeskPRO:IdeaCategory')->getCategoryNames();
+				$titles = App::getOrm()->getRepository('DeskPRO:IdeaCategory')->getFullCategoryNames();
 				Arrays::unshiftAssoc($titles, 0, App::getTranslator()->phrase('core.none'));
 				break;
 
@@ -309,10 +338,10 @@ class GroupingCounter
 				$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
 				foreach ($active_status_cats as $cat) {
-					$titles['active.' . $cat['id']] = $cat['title'];
+					$titles['active.' . $cat['id']] = 'Active > ' . $cat['title'];
 				}
 					foreach ($closed_status_cats as $cat) {
-					$titles['closed.' . $cat['id']] = $cat['title'];
+					$titles['closed.' . $cat['id']] = 'Closed > ' . $cat['title'];
 				}
 
 				return $titles;

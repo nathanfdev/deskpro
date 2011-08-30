@@ -228,6 +228,9 @@ class IdeaSearch extends SearcherAbstract
 					$types = array();
 
 					foreach ((array)$choice as $c) {
+						if (strpos($c, '.') !== false) {
+							list (, $c) = explode('.', $c, 2);
+						}
 						if (ctype_digit($c)) {
 							$cats[] = $c;
 						} else {
@@ -236,7 +239,7 @@ class IdeaSearch extends SearcherAbstract
 					}
 
 					// Visible is a special type name
-					if (($k = array_search('visible', $types)) !== null) {
+					if (($k = array_search('visible', $types)) !== false) {
 						unset($types[$k]);
 						$types = array_merge($types, array('new', 'active', 'closed'));
 						$types = array_unique($types);
