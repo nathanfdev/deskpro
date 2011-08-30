@@ -111,7 +111,7 @@ pageMeta.baseId = '{{ baseId }}';
 						<span>Votes</span>
 					</div>
 					<div class="col-table-content">
-						<span id="{{baseId}}_num_votes">{{ idea.num_ratings }}</span> votes
+						<span class="link-look who-voted-trigger"><span id="{{baseId}}_num_votes">{{ idea.num_ratings }}</span> votes</span>
 						<button class="clean-gray xxx-small tipped {% if my_vote %}radio-on{% endif %}" title="Vote for this idea" id="{{baseId}}_my_vote">+1</button>
 					</div>
 				</div>

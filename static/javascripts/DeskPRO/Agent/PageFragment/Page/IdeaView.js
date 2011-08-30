@@ -80,7 +80,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 			triggerElement: '.who-voted-trigger',
 			contentMethod: 'ajax',
 			contentAjax: {
-				url: BASE_URL + 'agent/publish/rating-who-voted/ideas/' + this.idea_id
+				url: BASE_URL + 'agent/publish/rating-who-voted/idea/' + this.idea_id
 			}
 		});
 

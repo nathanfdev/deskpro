@@ -544,7 +544,8 @@ class PublishController extends AbstractController
 		")->execute(array(1=> $object_type, 2=> $object_id));
 
 		return $this->render('AgentBundle:Publish:rating-who-voted.html.twig', array(
-			'ratings' => $ratings
+			'ratings' => $ratings,
+			'object_type' => $object_type,
 		));
 	}
 

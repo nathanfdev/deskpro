@@ -3,7 +3,9 @@
 		<thead class="display-options-trigger dbl-click-trigger nosel">
 			<tr>
 				<td>Who</td>
-				<td>Rating</td>
+				{% if object_type != 'idea' %}
+					<td>Rating</td>
+				{% endif %}
 				<td>When</td>
 			</tr>
 		</thead>
@@ -28,13 +30,15 @@
 					{% endif %}
 					{% if rating.ip_address %}from {{ rating.ip_address }}{% endif %}
 				</td>
-				<td>
-					{% if rating.rating >= 1 %}
-						Helpful
-					{% else %}
-						Not Helpful
-					{% endif %}
-				</td>
+				{% if object_type != 'idea' %}
+					<td>
+						{% if rating.rating >= 1 %}
+							Helpful
+						{% else %}
+							Not Helpful
+						{% endif %}
+					</td>
+				{% endif %}
 				<td>
 					{{ rating.date_created|date('M j Y') }}
 				</td>
