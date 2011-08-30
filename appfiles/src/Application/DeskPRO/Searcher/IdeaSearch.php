@@ -13,6 +13,7 @@ class IdeaSearch extends SearcherAbstract
 	const TERM_ID              = 'id';
 	const TERM_STATUS          = 'status';
 	const TERM_CATEGORY        = 'category';
+	const TERM_CATEGORY_SPECIFIC = 'category_specific';
 	const TERM_HIDDEN_STATUS   = 'hidden_status';
 	const TERM_VOTES           = 'num_votes';
 	const TERM_DATE_CREATED    = 'date_created';
@@ -23,7 +24,7 @@ class IdeaSearch extends SearcherAbstract
 	const ORDER_DATE  = 'id';
 	const ORDER_VOTES = 'num_votes';
 
-	
+
 	/**
 	 * Run the search and return an array of matching ID's.
 	 *
@@ -54,11 +55,11 @@ class IdeaSearch extends SearcherAbstract
 
 		return App::getEntityRepository('DeskPRO:Idea')->getByResultIds($ids);
 	}
-	
+
 
 	/**
 	 * Get the total number of matches
-	 * 
+	 *
 	 * @return int
 	 */
 	public function getCount()
@@ -102,7 +103,7 @@ class IdeaSearch extends SearcherAbstract
 
 	/**
 	 * Get the SQL query that'll fetch the results
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getSql(array $limit = null)
@@ -251,16 +252,26 @@ class IdeaSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_CATEGORY:
-					$base_ids = is_array($choice['category']) ? $choice['category'] : array($choice);
+				case self::TERM_CATEGORY_SPECIFIC:
+					$base_ids = (array)(is_array($choice['category']) ? $choice['category'] : $choice);
 					$ids = array();
 
-					foreach ($base_ids as $id) {
-						$ids = array_merge($ids, App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($id, true));
+					if ($term == self::TERM_CATEGORY_SPECIFIC) {
+						$ids = $base_ids;
+					} else {
+						foreach ($base_ids as $id) {
+							$ids = array_merge($ids, App::getEntityRepository('DeskPRO:IdeaCategory')->getIdsInTree($id, true));
+						}
 					}
 
 					$ids = array_unique($ids);
 
 					$wheres[] = $this->_choiceMatch('ideas.category_id', $op, $ids);
+
+					$this->summary[] = $this->_choiceSummary('Category', $op, $choice, function($choice) {
+						$titles = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryNames((array)$choice);
+						return $titles;
+					});
 					break;
 
 				case self::TERM_VOTES:

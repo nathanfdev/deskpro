@@ -7,47 +7,25 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Class({
 	filterSearchForm: null,
 
 	initPage: function(el) {
+		var self = this;
 		this.wrapper = el;
+
+		this.displayOptions = new DeskPRO.Agent.PageHelper.DisplayOptions(this, {
+			prefId: 'idea-filter',
+			resultId: this.meta.resultId,
+			refreshUrl: this.meta.refreshUrl
+		});
+
+		this.selectionBar = new DeskPRO.Agent.PageHelper.SelectionBar(this, {
+
+		});
 
 		this.initRoutesOnCollection($('.with-route', el));
 
-		this.filterSearchForm = $('.idea-filter-form', el);
-		if (this.filterSearchForm) {
-			this._initFilterSearch();
-		} else {
-			this.filterSearchForm = null;
-		}
+		this.listWrapper = $('section.idea-simple-list', this.wrapper);
 
-		// When we get these messages we can remove them from the list
-		if (this.meta.isValidating)	{
-			DeskPRO_Window.getMessageBroker().addMessageListener('validating-ideas.deleted', this.handleRemoveIdea.bind(this));
-			DeskPRO_Window.getMessageBroker().addMessageListener('validating-ideas.approved', this.handleRemoveIdea.bind(this));
-		}
-	},
-
-	handleRemoveIdea: function(info) {
-		$('.idea-' + info.idea_id, this.wrapper).fadeOut();
-	},
-
-	_initFilterSearch: function() {
-		var self = this;
-		$(':input', this.filterSearchForm).change(function() {
-			$('.submit-row', self.filterSearchForm).show();
+		this.relatedContentList = new DeskPRO.Agent.PageHelper.RelatedContentList(this, {
+			contentListEl: this.listWrapper
 		});
-
-		$('.submit-trigger', this.filterSearchForm).click(function(ev) {
-
-			// Its a real form, prevent submission
-			ev.preventDefault();
-
-			var data = $('select, :input', self.filterSearchForm).serializeArray();
-
-			var url = self.meta.submitFilterUrl;
-			var routeData = {
-				postData: data
-			};
-			DeskPRO_Window.loadListPane(url, routeData);
-		});
-		
 	}
 });

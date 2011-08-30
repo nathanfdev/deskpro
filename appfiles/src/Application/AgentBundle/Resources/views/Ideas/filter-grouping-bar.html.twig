@@ -1,0 +1,17 @@
+{% if grouped and grouped.items[grouped_key] %}
+	<header class="grouping-bar">
+		<ul>
+			<li class="{% if not subgroup %}on{% endif %} with-route" data-route="listpane:{{ subgroup_url|replace({'SUBGROUP_ID': ''}) }}">
+				<span class="prop">All:</span>
+				<span class="count">{{ grouped.items[grouped_key].total }}</span>
+			</li>
+			{% for sub in grouped.items[grouped_key].sub %}
+				<li class="{% if subgroup == sub.id %}on{% endif %} with-route" data-route="listpane:{{ subgroup_url|replace({'SUBGROUP_ID': sub.id}) }}">
+					<span class="prop">{{ sub.title }}:</span>
+					<span class="count">{{ sub.total }}</span>
+				</li>
+			{% endfor %}
+		</ul>
+		<br style="clear: both; height: 1px; overflow: hidden; "/>
+	</header>
+{% endif %}

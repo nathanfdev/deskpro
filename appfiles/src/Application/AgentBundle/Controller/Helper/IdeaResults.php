@@ -46,7 +46,7 @@ class IdeaResults
 	 * - default_terms: For when viewing the page that you havent submitted
 	 * - specific_terms: Always added to the search
 	 * - default_order_by: The default order by for a page you havent submitted
-	 * 
+	 *
 	 * @param  $controller
 	 * @param array $options
 	 * @return \Application\AgentBundle\Controller\Helper\IdeaResults
@@ -80,7 +80,7 @@ class IdeaResults
 			}
 
 			$terms = $term_rules->readForm($form_terms);
-			
+
 			$searcher = new IdeaSearch();
 			foreach ($terms as $term) {
 				$searcher->addTerm($term['type'], $term['op'], $term['options']);
@@ -107,14 +107,14 @@ class IdeaResults
 			 * The keys are discarded when read in by the RuleBuilder class above.
 			 * But in the IdeasController and template, we set specific keys
 			 * for terms so the values can be easily plugged back into the form.
-			 * 
+			 *
 			 * (See IdeasController setting 'specific_terms', and the 'filter-searhc-form' template)
 			 *
 			 * Usually search forms are made with the RuleBuilder JS widget, which
 			 * adds terms dynamically. But when we want a static form and just want
 			 * to plug values back in, we do it this way.
 			 */
-			$result_cache['extra'] = array('form' => array_merge(array('order_by' => $order_by), $form_terms));
+			$result_cache['extra'] = array();
 
 			App::getOrm()->persist($result_cache);
 			App::getOrm()->flush();

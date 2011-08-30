@@ -1,8 +1,15 @@
 <script>
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.ListPane.IdeaFilter';
 pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_id}}&page=$page';
-pageMeta.refreshUrl = '{{ path('agent_ideas_filter') }}?cache_id={{cache_id}}';
-pageMeta.submitFilterUrl = '{{ path('agent_ideas_filter') }}';
+{% if list_type == 'category' %}
+	pageMeta.refreshUrl = '{{ path('agent_ideas_category', {'category_id': category_id}) }}';
+	{% set subgroup_url = path('agent_ideas_category', {'category_id': category_id, 'subgroup': 'SUBGROUP_ID'}) %}
+{% elseif list_type == 'status' %}
+	pageMeta.refreshUrl = '{{ path('agent_ideas_status', {'status': status}) }}?';
+	{% set subgroup_url = path('agent_ideas_status', {'status': status, 'subgroup': 'SUBGROUP_ID'}) %}
+{% else %}
+	pageMeta.refreshUrl = '{{ path('agent_ideas_status') }}?cache_id={{cache_id}}';
+{% endif %}
 {% if cache_id %}
 	pageMeta.cache_id = {{cache_id}};
 {% endif %}
@@ -10,24 +17,16 @@ pageMeta.submitFilterUrl = '{{ path('agent_ideas_filter') }}';
 	pageMeta.noResults = true;
 {% endif %}
 </script>
-<header class="section-header">
-	<h1>
-		{% if page_title %}
-			{{ page_title }}
-		{% else %}
-			Ideas
-		{% endif %}
-	</h1>
-</header>
 <div class="layout-content">
 <div class="content">
 
-	{% if not no_filter_form %}
-		{% include 'AgentBundle:Ideas:filter-search-form.html.twig' %}
-	{% endif %}
+	{% include 'AgentBundle:Ideas:filter-display-options.html.twig' %}
+	{% include 'AgentBundle:Ideas:filter-control-bar.html.twig' %}
+	{% include 'AgentBundle:Ideas:filter-grouping-bar.html.twig' %}
+	{% include 'AgentBundle:Ideas:filter-massactions-bar.html.twig' %}
 
 	<section class="ideas-simple-list deskpro-results-list">
-		{% include 'AgentBundle:Ideas:filter-list-part.html.twig' %}
+		{% include 'AgentBundle:Ideas:filter-page.html.twig' %}
 	</section>
 
 	<div class="loading-more">

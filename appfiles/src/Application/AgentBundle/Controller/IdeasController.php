@@ -25,6 +25,8 @@ use Application\DeskPRO\Publish\RelatedContentUpdate;
 
 use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 
+use Application\DeskPRO\Publish\Ideas\GroupingCounter;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -484,7 +486,11 @@ class IdeasController extends AbstractController
 	 */
 	public function filterListAction()
 	{
+		$vars = array('list_type' => 'filter');
+
 		$result_helper = IdeaResults::newFromRequest($this);
+
+		$result_cache = $result_helper->getResultCache();
 
 		return $this->renderList(
 			$result_helper,
@@ -502,41 +508,40 @@ class IdeasController extends AbstractController
 	 */
 	public function categoryListAction($category_id)
 	{
-		$result_helper = IdeaResults::newFromRequest($this, array(
-			'specific_terms' => array(
-				'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-				'status' => array('type' => 'status', 'op' => 'is', 'status' => 'visible')
-			)
-		));
+		if ($this->in->getString('subgroup')) {
+			$result_helper = IdeaResults::newFromRequest($this, array(
+				'specific_terms' => array(
+					'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+					'status' => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup'))
+				)
+			));
+		} else {
+			$result_helper = IdeaResults::newFromRequest($this, array(
+				'specific_terms' => array(
+					'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+				)
+			));
+		}
 
 		$cat = App::findEntity('DeskPRO:IdeaCategory', $category_id);
 
+		$grouping = new GroupingCounter();
+		$grouping->setGrouping('category_id', 'status');
+		$grouped = $grouping->getDisplayArray();
+
+		$grouped_key = $category_id;
+
 		return $this->renderList(
 			$result_helper,
 			null,
-			array('list_type' => 'category', 'page_title' => $cat->getFullTitle())
-		);
-	}
-
-
-	/**
-	 * A shortcut to run a filter on a category
-	 *
-	 * @param  $category_id
-	 * @return
-	 */
-	public function popularListAction()
-	{
-		$result_helper = IdeaResults::newFromRequest($this, array(
-			'specific_terms' => array(
-				'popular' => array('type' => 'popular', 'op' => 'is', 'popular' => 1),
+			array(
+				'list_type' => 'category',
+				'category_id' => $category_id,
+				'page_title' => $cat->getFullTitle(),
+				'grouped' => $grouped,
+				'grouped_key' => $grouped_key,
+				'subgroup' => $this->in->getString('subgroup'),
 			)
-		));
-
-		return $this->renderList(
-			$result_helper,
-			null,
-			array('list_type' => 'category', 'page_title' => 'Popular')
 		);
 	}
 
@@ -553,13 +558,13 @@ class IdeasController extends AbstractController
 			'specific_terms' => array(
 				array('type' => 'label', 'op' => 'is', 'label' => $label),
 				array('type' => 'status', 'op' => 'not', 'status' => 'hidden')
-			)
+			),
 		));
 
 		return $this->renderList(
 			$result_helper,
 			null,
-			array('list_type' => 'label', 'page_title' => $label, 'no_filter_form' => true)
+			array('list_type' => 'label', 'page_title' => $label)
 		);
 	}
 
@@ -575,23 +580,45 @@ class IdeasController extends AbstractController
 		// $status can be either a top-level name like active, closed or hidden,
 		// or an integer which will be treated as a status category (Active > Planned for example)
 
-		$result_helper = IdeaResults::newFromRequest($this, array(
+		if ($this->in->getString('subgroup')) {
+			$result_helper = IdeaResults::newFromRequest($this, array(
+				'specific_terms' => array(
+					'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
+					'category' => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
+				)
+			));
+		} else {
+			$result_helper = IdeaResults::newFromRequest($this, array(
 			'specific_terms' => array(
 				'status' => array('type' => 'status', 'op' => 'is', 'status' => $status)
 			)
 		));
+		}
+
+		$grouping = new GroupingCounter();
+		$grouping->setGrouping('status', 'category_id');
+		$grouped = $grouping->getDisplayArray();
 
 		if (ctype_digit($status)) {
 			$status_cat = App::findEntity('DeskPRO:IdeaStatusCategory', $status);
 			$status_name = $status_cat['title'];
+			$grouped_key = $status_cat['status_type'] . '.' . $status_cat['id'];
 		} else {
 			$status_name = App::getTranslator()->phrase('core_ideas.status_' . $status);
+			$grouped_key = $status;
 		}
 
 		return $this->renderList(
 			$result_helper,
 			null,
-			array('list_type' => 'status', 'page_title' => $status_name)
+			array(
+				'list_type' => 'status',
+				'status' => $status,
+				'grouped' => $grouped,
+				'grouped_key' => $grouped_key,
+				'page_title' => $status_name,
+				'subgroup' => $this->in->getString('subgroup'),
+			)
 		);
 	}
 
@@ -626,18 +653,24 @@ class IdeasController extends AbstractController
 		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
-		$filter_form_values = !empty($result_cache['extra']['form']) ? $result_cache['extra']['form'] : array();
+		$display_fields = $this->person->getPref('agent.ui.idea-filter-display-fields.' . $result_cache['id']);
+		if (!$display_fields) {
+			$display_fields = $this->person->getPref('agent.ui.idea-filter-display-fields.0');
+		}
+		if (!$display_fields) {
+			$display_fields = array('num_ratings', 'date_created');
+		}
 
 		return $this->render($template, array_merge(array(
 			'cache'        => $result_cache,
 			'cache_id'     => $result_cache['id'],
 			'ideas'        => $ideas,
 
-			'filter_form' => $filter_form_values,
-
 			 'idea_cats'          => $idea_cats,
 			 'active_status_cats' => $active_status_cats,
 			 'closed_status_cats' => $closed_status_cats,
+
+			 'display_fields' => $display_fields,
 		), $template_vars));
 	}
 
