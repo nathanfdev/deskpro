@@ -32,7 +32,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		this.button.addClass('disabled');
 		this.button.click(this.buttonClicked.bind(this));
 
-		$('.selection-control', this.page.wrapper).click(function() {
+		this.controlCheck = $('.selection-control', this.page.wrapper).click(function() {
 			if ($(this).is(':checked')) {
 				self.checkAll();
 			} else {
@@ -113,6 +113,13 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 			this.button.removeClass('disabled');
 		} else {
 			this.button.addClass('disabled');
+		}
+
+
+		if ($('input.item-select:not(:checked):first', this.page.wrapper).length) {
+			this.controlCheck.attr('checked', false);
+		} else {
+			this.controlCheck.attr('checked', true);
 		}
 
 		this.fireEvent('checkChange', [el, is_checked, count]);
