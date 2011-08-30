@@ -194,6 +194,11 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 			ajaxSaveUrl: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
 			statusMenu: this.statusMenu
 		});
+		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
+			ajaxSaveUrl: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+			statusMenu: this.statusMenu,
+			type: 'spam'
+		});
 
 		// Change category menu
         var catMenu = new DeskPRO.UI.Menu({

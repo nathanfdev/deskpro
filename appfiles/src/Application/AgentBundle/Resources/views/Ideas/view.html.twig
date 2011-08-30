@@ -17,8 +17,12 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
-<div class="deleted-notice" {% if idea.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
+<div class="delete-notice" {% if idea.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	This idea has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
+</div>
+
+<div class="spam-notice" {% if idea.status_code != "hidden.spam" %}style="display: none;"{% endif %}>
+	This idea has been marked as spam. <button class="clean-gray xxx-small unspam">Unspam</button>
 </div>
 
 {% if idea.status_code == "hidden.validating" %}
@@ -70,7 +74,8 @@ pageMeta.baseId = '{{ baseId }}';
 
 	<nav class="actions" id="{{baseId}}_action_buttons">
 		<ul>
-			<li class="delete" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Delete</button></li>
+			<li class="delete delete-type" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Delete</button></li>
+			<li class="spam delete-type" {% if idea.status_code == "hidden.spam" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Spam</button></li>
 			<li class="permalink"><button class="clean-gray xx-small">Copy Permalink</button></li>
 			<li class="view-user-interface"><button class="clean-gray xx-small">View in user interface</button></li>
 		</ul>

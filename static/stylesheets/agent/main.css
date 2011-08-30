@@ -6328,9 +6328,16 @@ border-radius: 0px 0px 4px 4px;
 }
 
 
-.deleted-notice {
+.delete-notice {
 	background-color: #D2D6DA;
 	border-bottom: 2px solid #ACB0B4;
+
+	padding: 3px 8px 3px 8px;
+}
+
+.spam-notice {
+	background-color: #E1CDB9;
+	border-bottom: 2px solid #BA8F7D;
 
 	padding: 3px 8px 3px 8px;
 }

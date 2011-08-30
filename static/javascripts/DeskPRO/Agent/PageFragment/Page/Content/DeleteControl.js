@@ -1,7 +1,8 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page.Content');
 
 /**
- * Management of participants in the ticket
+ * Delete/spam things. Toggles visibility of status section, and notice bar,
+ * and sens appropriate save ajax.
  */
 DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 	Implements: [Orb.Util.Events, Orb.Util.Options],
@@ -11,16 +12,19 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 
 		this.options = {
 			ajaxSaveUrl: '',
-			statusMenu: null
+			statusMenu: null,
+			type: 'delete'
 		};
 
 		this.setOptions(options);
 		this.page = page;
 
-		this.deleteBtn      = $('.delete', this.page.getEl('action_buttons'));
-		this.deletedNotice  = $('.deleted-notice:first', this.page.wrapper);
+		this.deleteBtn      = $('.' + this.options.type, this.page.getEl('action_buttons'));
+		this.deletedNotice  = $('.' + this.options.type + '-notice:first', this.page.wrapper);
 		this.statusBtn      = $('.the-status:first', this.page.wrapper);
-		this.undeleteBtn    = $('.undelete', this.deletedNotice);
+		this.undeleteBtn    = $('.un' + this.options.type, this.deletedNotice);
+
+		this.otherDeleteBtns = $('.delete-type:not(.' + this.options.type + ')', this.page.getEl('action_buttons'));
 
 		this.undeleteBtn.click(function(ev) {
 			ev.customEvents = new Orb.Util.EventObj({
@@ -35,7 +39,7 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 			self.handleDeleted();
 			$.ajax({
 				url: self.options.ajaxSaveUrl,
-				data: { action: 'delete' },
+				data: { action: self.options.type },
 				type: 'GET',
 				dataType: 'json',
 				error: function() {
@@ -57,11 +61,13 @@ DeskPRO.Agent.PageFragment.Page.Content.DeleteControl = new Orb.Class({
 		this.deleteBtn.hide();
 		this.statusBtn.hide();
 		this.deletedNotice.show();
+		this.otherDeleteBtns.hide();
 	},
 
 	handleUndelete: function() {
 		this.deleteBtn.show();
 		this.statusBtn.show();
 		this.deletedNotice.hide();
+		this.otherDeleteBtns.show();
 	}
 });

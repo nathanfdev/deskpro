@@ -17,7 +17,7 @@ pageMeta.baseId = '{{ baseId }}';
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
-<div class="deleted-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
+<div class="delete-notice" {% if article.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
 	This article has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
 </div>
 
