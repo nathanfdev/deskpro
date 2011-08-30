@@ -1074,14 +1074,6 @@ agent_mediabrowser_imageeditor_save:
 # Ideas
 ################################################################################
 
-agent_ideas_validating:
-  pattern: /ideas/awaiting-validation
-  defaults: { _controller: AgentBundle:Ideas:validatingList }
-
-agent_ideas_popular:
-  pattern: /ideas/popular
-  defaults: { _controller: AgentBundle:Ideas:popularList }
-
 agent_ideas_category:
   pattern: /ideas/category/{category_id}
   defaults: { _controller: AgentBundle:Ideas:categoryList }
@@ -1110,37 +1102,10 @@ agent_ideas_new_save:
   pattern: /ideas/new/save
   defaults: { _controller: AgentBundle:Ideas:newIdeaSave }
 
-
-agent_ideas_validating_comments:
-  pattern: /ideas/comments-awaiting-validation
-  defaults: { _controller: AgentBundle:Ideas:validatingCommentsList }
-
-agent_ideas_approve_comment:
-  pattern: /ideas/approve-comment/{comment_id}
-  defaults: { _controller: AgentBundle:Ideas:approveComment }
-
-agent_ideas_disapprove_comment:
-  pattern: /ideas/disapprove-comment/{comment_id}
-  defaults: { _controller: AgentBundle:Ideas:disapproveComment }
-
-
-
 agent_ideas_view:
   pattern: /ideas/view/{idea_id}
   defaults: { _controller: AgentBundle:Ideas:view }
   options: { fragment_name: 'i' }
-
-agent_ideas_validate:
-  pattern: /ideas/view/{idea_id}/validate
-  defaults: { _controller: AgentBundle:Ideas:validate }
-
-agent_ideas_validate_delete:
-  pattern: /ideas/view/{idea_id}/validate-delete
-  defaults: { _controller: AgentBundle:Ideas:validateDelete }
-
-agent_ideas_validate_skip:
-  pattern: /ideas/view/{idea_id}/validate-skip
-  defaults: { _controller: AgentBundle:Ideas:validateSkip }
 
 agent_ideas_who_voted:
   pattern: /ideas/view/{idea_id}/who-voted

@@ -185,6 +185,7 @@ class GroupingCounter
 		$sql = "
 			SELECT " . implode(', ', $select_fields) . "
 			FROM ideas
+			WHERE (ideas.hidden_status IS NULL OR ideas.hidden_status != 'validating')
 			$group_by WITH ROLLUP
 		";
 

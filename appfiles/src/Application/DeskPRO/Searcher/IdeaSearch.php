@@ -12,9 +12,9 @@ class IdeaSearch extends SearcherAbstract
 {
 	const TERM_ID              = 'id';
 	const TERM_STATUS          = 'status';
+	const TERM_HIDDEN_STATUS   = 'hidden_status';
 	const TERM_CATEGORY        = 'category';
 	const TERM_CATEGORY_SPECIFIC = 'category_specific';
-	const TERM_HIDDEN_STATUS   = 'hidden_status';
 	const TERM_VOTES           = 'num_votes';
 	const TERM_DATE_CREATED    = 'date_created';
 	const TERM_POPULAR         = 'popular';
@@ -215,7 +215,11 @@ class IdeaSearch extends SearcherAbstract
 					break;
 
 				case self::TERM_HIDDEN_STATUS:
-					$wheres[] = $this->_stringMatch('ideas.hidden_status', $op, $choice);
+					if ($op == 'not') {
+						$wheres[] = '(ideas.hidden_status IS NULL OR ' . $this->_stringMatch('ideas.hidden_status', $op, $choice) . ')';
+					} else {
+						$wheres[] = $this->_stringMatch('ideas.hidden_status', $op, $choice);
+					}
 					break;
 
 				case self::TERM_STATUS:

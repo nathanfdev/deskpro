@@ -1,17 +1,13 @@
 
 <section class="inbox">
 	<ul class="nav-list">
-		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_ideas_validating') }}">
+		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_public_validatingcontent', {'specific_type': 'ideas'}) }}">
 			<span class="list-counter" id="ideas_validating_count">{{ counts.ideas_awaiting_validation|default(0) }}</span>
 			<a>Ideas Validating</a>
 		</li>
-		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_ideas_validating_comments') }}">
+		<li class="with-route auto-load-route" data-route="listpane:{{ path('agent_publish_validatingcomments', {'specific_type': 'ideas'}) }}">
 			<span class="list-counter" id="ideas_comments_validating_count">{{ counts.comments_awaiting_validation|default(0) }}</span>
 			<a>Comments Validating</a>
-		</li>
-		<li class="with-route" data-route="listpane:{{ path('agent_ideas_popular') }}">
-			<span class="list-counter" id="ideas_popular_count">{{ counts.popular_ideas|default(0) }}</span>
-			<a>Popular Ideas</a>
 		</li>
 	</ul>
 </section>

@@ -47,7 +47,6 @@ $CONFIG['agent']['pages-lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/AgentChatHistory.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/OpenChats.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaFilter.js',
-		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewCustomFilter.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/NewsList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/DownloadList.js',
@@ -55,6 +54,8 @@ $CONFIG['agent']['pages-lists'] = array(
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishValidatingContent.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishDraftsList.js',
 		'javascripts/DeskPRO/Agent/PageFragment/ListPane/PublishSearchLog.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaCommentsValidating.js',
+		'javascripts/DeskPRO/Agent/PageFragment/ListPane/IdeaContentValidating.js',
 	)
 );
 

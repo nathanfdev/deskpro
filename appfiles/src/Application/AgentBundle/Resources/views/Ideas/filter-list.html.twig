@@ -9,8 +9,10 @@ pageMeta.pageUrl = '{{ path('agent_ideas_filter') }}?partial=1&cache_id={{cache_
 	{% set subgroup_url = path('agent_ideas_status', {'status': status, 'subgroup': 'SUBGROUP_ID'}) %}
 {% elseif list_type == 'label' %}
 	pageMeta.refreshUrl = '{{ path('agent_ideas_label', {'label': label}) }}?';
+{% elseif list_type == 'validating' %}
+	pageMeta.refreshUrl = '{{ path('agent_ideas_validating') }}?';
 {% else %}
-	pageMeta.refreshUrl = '{{ path('agent_ideas_status') }}?cache_id={{cache_id}}';
+	pageMeta.refreshUrl = '{{ path('agent_ideas_filter') }}?cache_id={{cache_id}}';
 {% endif %}
 {% if cache_id %}
 	pageMeta.cache_id = {{cache_id}};

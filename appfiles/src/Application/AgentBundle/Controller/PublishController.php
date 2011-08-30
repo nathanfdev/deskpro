@@ -36,6 +36,10 @@ class PublishController extends AbstractController
 
 		$this->publish_helper = new PublishHelper();
 		$this->publish_helper->setPersonContext($this->person);
+
+		if ($this->in->getString('specific_type')) {
+			$this->publish_helper->setEnabledTypes(array($this->in->getString('specific_type')));
+		}
 	}
 
 	public function getSectionDataAction()
@@ -113,6 +117,7 @@ class PublishController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
+			'single_type' => $this->publish_helper->getSingleSpecificType(),
 			'validating_comments' => $validating_comments,
 			'total'    => $total,
 			'pageinfo' => $pageinfo
@@ -219,6 +224,8 @@ class PublishController extends AbstractController
 			case 'downloads':
 				return 'DeskPRO:DownloadComment';
 			case 'news':
+				return 'DeskPRO:NewsComment';
+			case 'ideas':
 				return 'DeskPRO:IdeaComment';
 		}
 	}
@@ -254,6 +261,7 @@ class PublishController extends AbstractController
 		}
 
 		return $this->render($tpl, array(
+			'single_type' => $this->publish_helper->getSingleSpecificType(),
 			'content_validating' => $content_validating,
 			'total'    => $total,
 			'pageinfo' => $pageinfo
@@ -267,7 +275,11 @@ class PublishController extends AbstractController
 		$entity =  $this->publish_helper->getEntityNameFor($type);
 		$obj = $this->em->getRepository($entity)->find($content_id);
 
-		$obj->status = 'published';
+		if ($obj instanceof \Application\DeskPRO\Entity\Idea) {
+			$obj->status = 'new';
+		} else {
+			$obj->status = 'published';
+		}
 
 		$this->em->beginTransaction();
 		$this->em->persist($obj);
@@ -294,7 +306,11 @@ class PublishController extends AbstractController
 		$entity = $this->publish_helper->getEntityNameFor($type);
 		$obj = $this->em->getRepository($entity)->find($content_id);
 
-		$obj->status_code = 'hidden.draft';
+		if ($obj instanceof \Application\DeskPRO\Entity\Idea) {
+			$obj->status_code = 'hidden.deleted';
+		} else {
+			$obj->status_code = 'hidden.draft';
+		}
 
 		$reason = $this->in->getString('reason');
 		if (0 && $reason) {

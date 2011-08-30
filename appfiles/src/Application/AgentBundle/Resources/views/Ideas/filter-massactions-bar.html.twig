@@ -3,4 +3,12 @@
 	<button class="clean-gray xx-small perform-actions-trigger disabled">
 		<span>Perform Action</span>
 	</button>
+	<ul class="actions-menu" style="display: none">
+		{% if list_type == 'validating' %}
+			<li data-action="approve">Approve</li>
+			<li data-action="disapprove">Decline</li>
+		{% endif %}
+		<li data-action="delete">Delete</li>
+		<li data-action="spam">Mark as spam</li>
+	</ul>
 </header>

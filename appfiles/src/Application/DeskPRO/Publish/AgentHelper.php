@@ -27,6 +27,24 @@ class AgentHelper implements PersonContextInterface
 	const ARTICLES  = 'articles';
 	const DOWNLOADS = 'downloads';
 	const NEWS      = 'news';
+	const IDEAS     = 'ideas';
+
+	protected $enabled_types = array('articles', 'downloads', 'news');
+
+	public function setEnabledTypes(array $types)
+	{
+		$this->enabled_types = $types;
+	}
+
+	public function getSingleSpecificType()
+	{
+		$t = $this->enabled_types;
+		if (count($t) == 1) {
+			return array_pop($t);
+		}
+
+		return null;
+	}
 
 	/**
 	 * @var \Application\DeskPRO\Entity\Person
@@ -112,13 +130,7 @@ class AgentHelper implements PersonContextInterface
 	 */
 	public function getValidatingContentCount()
 	{
-		$types = array(
-			'articles',
-			'downloads',
-			'news'
-		);
-
-		foreach ($types as $t) {
+		foreach ($this->enabled_types as $t) {
 			$sql_parts[] = "(
 				SELECT COUNT(*)
 				FROM $t
@@ -161,13 +173,15 @@ class AgentHelper implements PersonContextInterface
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
 			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+			'ideas'       => array('content_type' => 'ideas',     'entity' => 'DeskPRO:Idea',     'id_field' => 'idea_id',     'rev_table' => 'idea_revisions'),
 		);
 
 		#------------------------------
 		# Fetch from each comment table with a union
 		#------------------------------
 
-		foreach ($types as $t => $t_info) {
+		foreach ($this->enabled_types as $t) {
+			$t_info = $types[$t];
 			$sql_parts[] = "(
 				SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
 				FROM $t AS c
@@ -193,7 +207,7 @@ class AgentHelper implements PersonContextInterface
 	# Validating Comments
 	############################################################################
 
-	public static function getValidatingComments($limit = 25, $order_dir = 'ASC')
+	public function getValidatingComments($limit = 25, $order_dir = 'ASC')
 	{
 		$sql_parts = array();
 
@@ -208,13 +222,15 @@ class AgentHelper implements PersonContextInterface
 			'articles'  => array('content_type' => 'articles',  'table' => 'article_comments',    'entity' => 'DeskPRO:ArticleComment',   'id_field' => 'article_id'),
 			'downloads' => array('content_type' => 'downloads', 'table' => 'download_comments',   'entity' => 'DeskPRO:DownloadComment',  'id_field' => 'download_id'),
 			'news'      => array('content_type' => 'news',      'table' => 'news_comments',       'entity' => 'DeskPRO:NewsComment',      'id_field' => 'news_id'),
+			'ideas'     => array('content_type' => 'ideas',     'table' => 'idea_comments',       'entity' => 'DeskPRO:IdeaComment',      'id_field' => 'idea_id'),
 		);
 
 		#------------------------------
 		# Fetch from each comment table with a union
 		#------------------------------
 
-		foreach ($types as $t => $t_info) {
+		foreach ($this->enabled_types as $t) {
+			$t_info = $types[$t];
 			$sql_parts[] = "(
 				SELECT id as comment_id, '{$t_info['content_type']}' as content_type, date_created
 				FROM {$t_info['table']}
@@ -273,15 +289,17 @@ class AgentHelper implements PersonContextInterface
 	public function getValidatingCommentsCount()
 	{
 		$types = array(
-			'article_comments',
-			'download_comments',
-			'news_comments'
+			'articles'  => array('content_type' => 'articles',  'table' => 'article_comments',    'entity' => 'DeskPRO:ArticleComment',   'id_field' => 'article_id'),
+			'downloads' => array('content_type' => 'downloads', 'table' => 'download_comments',   'entity' => 'DeskPRO:DownloadComment',  'id_field' => 'download_id'),
+			'news'      => array('content_type' => 'news',      'table' => 'news_comments',       'entity' => 'DeskPRO:NewsComment',      'id_field' => 'news_id'),
+			'ideas'     => array('content_type' => 'ideas',     'table' => 'idea_comments',       'entity' => 'DeskPRO:IdeaComment',      'id_field' => 'idea_id'),
 		);
 
-		foreach ($types as $t) {
+		foreach ($this->enabled_types as $t) {
+			$t_info = $types[$t];
 			$sql_parts[] = "(
 				SELECT COUNT(*)
-				FROM $t
+				FROM {$t_info['table']}
 				WHERE status = 'validating'
 			) AS count_$t";
 		}
@@ -326,13 +344,15 @@ class AgentHelper implements PersonContextInterface
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
 			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+			'ideas'       => array('content_type' => 'ideas',     'entity' => 'DeskPRO:Idea',     'id_field' => 'idea_id',     'rev_table' => 'idea_revisions'),
 		);
 
 		#------------------------------
 		# Fetch from each comment table with a union
 		#------------------------------
 
-		foreach ($types as $t => $t_info) {
+		foreach ($this->enabled_types as $t) {
+			$t_info = $types[$t];
 			$sql_parts[] = "(
 				SELECT DISTINCT(c.id) as content_id, '{$t_info['content_type']}' as content_type, r.id AS revision_id, c.date_created
 				FROM $t AS c
@@ -367,10 +387,12 @@ class AgentHelper implements PersonContextInterface
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
 			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+			'ideas'       => array('content_type' => 'ideas',     'entity' => 'DeskPRO:Idea',     'id_field' => 'idea_id',     'rev_table' => 'idea_revisions'),
 		);
 
 		$sql_parts = array();
-		foreach ($types as $t => $t_info) {
+		foreach ($this->enabled_types as $t) {
+			$t_info = $types[$t];
 			$sql_parts[] = "(
 				SELECT COUNT(*)
 				FROM $t c
@@ -400,6 +422,7 @@ class AgentHelper implements PersonContextInterface
 			'articles'    => array('content_type' => 'articles',  'entity' => 'DeskPRO:Article',  'id_field' => 'article_id',  'rev_table' => 'article_revisions'),
 			'downloads'   => array('content_type' => 'downloads', 'entity' => 'DeskPRO:Download', 'id_field' => 'download_id', 'rev_table' => 'download_revisions'),
 			'news'        => array('content_type' => 'news',      'entity' => 'DeskPRO:News',     'id_field' => 'news_id',     'rev_table' => 'news_revisions'),
+			'ideas'       => array('content_type' => 'ideas',     'entity' => 'DeskPRO:Idea',     'id_field' => 'idea_id',     'rev_table' => 'idea_revisions'),
 		);
 
 		#------------------------------
@@ -462,6 +485,9 @@ class AgentHelper implements PersonContextInterface
 			case self::NEWS:
 				return 'DeskPRO:News';
 				break;
+			case self::IDEAS:
+				return 'DeskPRO:Idea';
+				break;
 		}
 
 		throw new \InvalidArgumentException("Unknow type `$type`");
@@ -486,6 +512,9 @@ class AgentHelper implements PersonContextInterface
 				break;
 			case self::NEWS:
 				return 'DeskPRO:NewsCategory';
+				break;
+			case self::IDEAS:
+				return 'DeskPRO:IdeaCategory';
 				break;
 		}
 

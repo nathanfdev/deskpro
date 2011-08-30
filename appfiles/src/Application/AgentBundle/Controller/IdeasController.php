@@ -13,7 +13,6 @@ namespace Application\AgentBundle\Controller;
 
 use Application\DeskPRO\App;
 use Application\DeskPRO\Entity\Idea;
-use Application\DeskPRO\Entity\IdeaVote;
 use Application\DeskPRO\Entity\IdeaComment;
 
 use Application\DeskPRO\Searcher\IdeaSearch;
@@ -412,53 +411,6 @@ class IdeasController extends AbstractController
 	}
 
 
-	public function validatingCommentsListAction()
-	{
-		$comments = App::getOrm()->createQuery("
-			SELECT c
-			FROM DeskPRO:IdeaComment c
-			LEFT JOIN c.person p
-			LEFT JOIN c.idea i
-			WHERE c.status = ?1
-			ORDER BY c.id DESC
-		")->setParameter(1, 'validating')->execute();
-
-		return $this->render('AgentBundle:Ideas:validating-comments-list.html.twig', array(
-			'comments' => $comments
-		));
-	}
-
-	public function approveCommentAction($comment_id)
-	{
-		$comment = App::findEntity('DeskPRO:IdeaComment', $comment_id);
-
-		if ($comment['status'] == 'validating') {
-			$comment['status'] = 'visible';
-			App::getOrm()->transactional(function ($em) use ($comment) {
-				$em->persist($comment);
-				$em->flush();
-			});
-		}
-
-		return $this->createJsonResponse(array('success' => true, 'comment_id' => $comment['id']));
-	}
-
-	public function disapproveCommentAction($comment_id)
-	{
-		$comment = App::findEntity('DeskPRO:IdeaComment', $comment_id);
-
-		if ($comment['status'] == 'validating') {
-			$comment['status'] = 'deleted';
-			App::getOrm()->transactional(function ($em) use ($comment) {
-				$em->persist($comment);
-				$em->flush();
-			});
-		}
-
-		return $this->createJsonResponse(array('success' => true, 'comment_id' => $comment['id']));
-	}
-
-
 	/**
 	 * List of ideas waiting to be validated
 	 *
@@ -475,7 +427,10 @@ class IdeasController extends AbstractController
 
 		return $this->renderList(
 			$result_helper,
-			'AgentBundle:Ideas:validating-list.html.twig'
+			null,
+			array(
+				'list_type' => 'validating'
+			)
 		);
 	}
 
@@ -512,13 +467,15 @@ class IdeasController extends AbstractController
 			$result_helper = IdeaResults::newFromRequest($this, array(
 				'specific_terms' => array(
 					'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
-					'status' => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup'))
+					'status' => array('type' => 'status', 'op' => 'is', 'status' => $this->in->getString('subgroup')),
+					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
 				)
 			));
 		} else {
 			$result_helper = IdeaResults::newFromRequest($this, array(
 				'specific_terms' => array(
 					'category' => array('type' => 'category', 'op' => 'is', 'category' => $category_id),
+					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
 				)
 			));
 		}
@@ -557,7 +514,8 @@ class IdeasController extends AbstractController
 		$result_helper = IdeaResults::newFromRequest($this, array(
 			'specific_terms' => array(
 				array('type' => 'label', 'op' => 'is', 'label' => $label),
-				array('type' => 'status', 'op' => 'not', 'status' => 'hidden')
+				array('type' => 'status', 'op' => 'not', 'status' => 'hidden'),
+				array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
 			),
 		));
 
@@ -589,12 +547,14 @@ class IdeasController extends AbstractController
 				'specific_terms' => array(
 					'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
 					'category' => array('type' => 'category', 'op' => 'is', 'category' => $this->in->getString('subgroup')),
+					'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
 				)
 			));
 		} else {
 			$result_helper = IdeaResults::newFromRequest($this, array(
 			'specific_terms' => array(
-				'status' => array('type' => 'status', 'op' => 'is', 'status' => $status)
+				'status' => array('type' => 'status', 'op' => 'is', 'status' => $status),
+				'v_status' => array('type' => 'hidden_status', 'op' => 'not', 'hidden_status' => 'validating')
 			)
 		));
 		}

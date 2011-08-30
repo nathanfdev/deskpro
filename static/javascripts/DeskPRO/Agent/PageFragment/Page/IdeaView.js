@@ -25,7 +25,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 		if (this.meta.isValidating) {
 			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
 				typename: 'ideas',
-				contentId: this.idea_id
+				contentId: this.idea_id,
+				singleTyle: 'idea'
 			});
 		}
 
@@ -63,6 +64,10 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 					dataType: 'json'
 				});
 			}
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('publish.validating.list-remove', function (info) {
+			$('article.' + info.typename + '-' + info.contentId).slideUp();
 		});
 
 		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
