@@ -24,7 +24,7 @@ use Orb\Util\Strings;
  * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Idea")
  * @ORM_Mapping\Table(name="ideas")
  */
-class Idea extends \Application\DeskPRO\Domain\DomainObject
+class Idea extends ContentAbstract
 {
 	const STATUS_NEW      = 'new';
 	const STATUS_ACTIVE   = 'active';
@@ -32,33 +32,8 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	const STATUS_HIDDEN   = 'hidden';
 
 	const HIDDEN_STATUS_VALIDATING = 'validating';
-	const HIDDEN_STATUS_SPAM = 'spam';
-	const HIDDEN_STATUS_DELETED = 'deleted';
-
-	/**
-	 * @var int
-	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 */
-	protected $id = null;
-
-	/**
-	 * @var \Application\DeskPRO\Entity\Person
-	 * @ORM_Mapping\ManyToOne(targetEntity="Person", fetch="EAGER")
-	 * @ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="set null")
-	 */
-	protected $person = null;
-
-	/**
-	 * @var string
-	 * @ORM_Mapping\Column(name="title", type="string", length=255)
-	 */
-	protected $title;
-
-	/**
-	 * @var string
-	 * @ORM_Mapping\Column(name="status", type="string", length=15)
-	 */
-	protected $status;
+	const HIDDEN_STATUS_SPAM       = 'spam';
+	const HIDDEN_STATUS_DELETED    = 'deleted';
 
 	/**
 	 * @var \Application\DeskPRO\Entity\IdeaStatusCategory
@@ -74,41 +49,21 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	protected $hidden_status = null;
 
 	/**
-	 * @var int
-	 * @ORM_Mapping\Column(name="num_votes", type="integer")
-	 */
-	protected $num_votes = 0;
-
-	/**
-	 * @var \DateTime
-	 * @ORM_Mapping\Column(name="date_created",type="datetime")
-	 */
-	protected $date_created;
-
-	/**
 	 * @var Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaCategory", cascade={"persist", "remove", "merge"})
 	 */
 	protected $category;
 
 	/**
-	 * The primary email address used by this account
-	 *
-	 * @var \Application\DeskPRO\Entity\IdeaComment
-	 * @ORM_Mapping\OneToOne(targetEntity="IdeaComment", fetch="EAGER", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
-	 * @ORM_Mapping\JoinColumn(name="first_comment_id", referencedColumnName="id", onDelete="cascade")
+	 * @var \Doctrine\Common\Collections\ArrayCollection
+	 * @ORM_Mapping\OneToMany(targetEntity="IdeaRevision", mappedBy="idea", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
-	protected $first_comment;
+	protected $revisions;
 
 	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="IdeaComment", mappedBy="idea", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="IdeaComment", mappedBy="idea", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $comments;
-
-	/**
-	 * @ORM_Mapping\OneToMany(targetEntity="IdeaVote", mappedBy="idea", cascade={"persist", "remove", "merge"})
-	 */
-	protected $votes;
 
 	/**
 	 * @ORM_Mapping\OneToMany(targetEntity="LabelIdea", mappedBy="idea", cascade={"persist", "remove", "merge"}, orphanRemoval=true)
@@ -116,30 +71,22 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	protected $labels;
 
 	/**
-	 * @var \Application\DeskPRO\Labels\LabelManager
+	 * Popularity (see recalculatePopularity).
+	 *
+	 * @var string
+	 * @ORM_Mapping\Column(name="popularity", type="integer")
 	 */
-	protected $_label_manager = null;
+	protected $popularity = 0;
 
 	protected $_is_new = false;
 
 	public function __construct()
 	{
+		parent::__construct();
+
 		$this->_is_new = true;
 
-		$this->date_created = new \DateTime();
 		$this->comments = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->votes = new \Doctrine\Common\Collections\ArrayCollection();
-		$this->labels = new \Doctrine\Common\Collections\ArrayCollection();
-	}
-
-	public function getContent()
-	{
-		return $this->first_comment['content'];
-	}
-
-	public function getContentHtml()
-	{
-		return $this->first_comment->getContentHtml();
 	}
 
 	public function getUserEmail()
@@ -164,33 +111,28 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	public function setFirstCommentText($text)
-	{
-		$comment = new IdeaComment();
-		$comment->person = $this->person;
-		$comment->content = $text;
-
-		$this->setFirstComment($comment);
-	}
-
-	public function setFirstComment(IdeaComment $comment)
-	{
-		$this->_onPropertyChanged('first_comment', $this->first_comment, $comment);
-
-		$comment->idea = $this;
-		$this->first_comment = $comment;
-
-		$this->comments->add($comment);
-
-		return $comment;
-	}
-
 	public function addComment(IdeaComment $comment)
 	{
 		$comment->idea = $this;
 		$this->comments->add($comment);
 
 		return $comment;
+	}
+
+	public function addRating($rating)
+	{
+		parent::addRating($rating);
+		$this->recalculatePopularity();
+	}
+
+	public function recalculatePopularity()
+	{
+		$days = (time() - $this->date_created->getTimestamp()) / 86400;
+		if (!$days) $days = 1;
+
+		$pop = ceil($this->total_rating / sqrt($days));
+
+		$this->setModelField('popularity', $pop);
 	}
 
 	public function getCategoryId()
@@ -201,23 +143,6 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 	public function setCategoryId($id)
 	{
 		$this->category = App::getEntityRepository('DeskPRO:IdeaCategory')->find($id);
-	}
-
-
-	public function recountVotes()
-	{
-		if (!$this->id) return;
-
-		$this['num_votes'] = App::getDb()->fetchColumn("
-			SELECT SUM(num_votes)
-			FROM idea_votes
-			WHERE idea_id = ?
-		", array($this->id));
-	}
-
-	public function getUrlSlug()
-	{
-		return $this->id . '-' . Strings::slugifyTitle($this->title);
 	}
 
 	public function getLink()
@@ -232,26 +157,6 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		$url = App::getRouter()->generate('user_ideas_view', array('slug' => $this->id), true);
 
 		return $url;
-	}
-
-	/**
-	 * Get a summary line.
-	 *
-	 * @return string
-	 */
-	public function getSummaryLine($max_len = 200)
-	{
-		$summary = $this->title;
-		if (strlen($summary) < $max_len) {
-			$summary .= '. ';
-			$summary .= Strings::removeLineBreaks($this->first_comment['content']);
-		}
-
-		if (strlen($summary) > $max_len) {
-			$summary = substr($summary, 0, $max_len);
-		}
-
-		return $summary;
 	}
 
 	public function getCategoryName()
@@ -337,11 +242,6 @@ class Idea extends \Application\DeskPRO\Domain\DomainObject
 		}
 
 		return $path;
-	}
-
-	public function getObject()
-	{
-		return $this->article;
 	}
 
 	/**

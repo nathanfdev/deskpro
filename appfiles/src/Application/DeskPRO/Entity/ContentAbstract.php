@@ -71,6 +71,8 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	protected $title;
 
 	/**
+	 * The main content for the item. This should be HTML!
+	 *
 	 * @var string
 	 * @ORM_Mapping\Column(name="content", type="text")
 	 */

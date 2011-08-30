@@ -107,9 +107,9 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 	public function setRating($rating)
 	{
 		if ($rating > 0) {
-			$this->rating = 1;
+			$this->setModelField('rating', 1);
 		} else {
-			$this->rating = -1;
+			$this->setModelField('rating', -1);
 		}
 	}
 
