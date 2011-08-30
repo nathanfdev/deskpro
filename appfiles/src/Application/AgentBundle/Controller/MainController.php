@@ -51,7 +51,10 @@ class MainController extends AbstractController
 		$download_categories = App::getEntityRepository('DeskPRO:DownloadCategory')->getCategoryHelper()->getFlatHierarchy();
 		$article_categories  = App::getEntityRepository('DeskPRO:ArticleCategory')->getCategoryHelper()->getFlatHierarchy();
 		$news_categories     = App::getEntityRepository('DeskPRO:NewsCategory')->getCategoryHelper()->getFlatHierarchy();
-		$idea_categories     = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
+
+		$idea_categories         = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
+		$idea_active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+		$idea_closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
         return $this->render('AgentBundle:Main:index.html.twig', array(
 			'show_listpane' => $this->person->getPref('agent.ui.show-listpane'),
@@ -70,7 +73,10 @@ class MainController extends AbstractController
 			'download_categories'  => $download_categories,
 			'article_categories'   => $article_categories,
 			'news_categories'      => $news_categories,
-			'idea_categories'      => $idea_categories
+
+			'idea_categories'      => $idea_categories,
+			'idea_active_status_cats' => $idea_active_status_cats,
+			'idea_closed_status_cats' => $idea_closed_status_cats,
 		));
     }
 }

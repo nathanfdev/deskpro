@@ -193,7 +193,7 @@
 {# Ideas related #}
 {##############################################################}
 
-<ul id="idea_category_menu" data-menu-flag="copy-menu">
+<ul id="idea_category_menu" data-menu-type="idea-category-menu" data-menu-flag="copy-menu">
 	{% for cat in idea_categories %}
 		{% if last_with_child %}
 			<li>-</li>
@@ -208,6 +208,38 @@
 			<li data-category-id="{{cat.id}}" class="cat-{{cat.id}}">{{cat.title}}</li>
 			{% set last_with_child = false %}
 		{% endif %}
+	{% endfor %}
+</ul>
+
+<ul id="idea_status_menu" data-menu-type="idea-status-menu" data-menu-flag="copy-menu">
+	<li
+		class="status-new"
+		data-status-type="new"
+		data-option-value="new"
+	>New</li>
+	<li
+		class="section-title status-active"
+		data-status-type="active"
+		data-option-value="active"
+	>Active</li>
+	{% for cat in idea_active_status_cats %}
+		<li
+			class="status-{{cat.id}}"
+			data-status-type="active"
+			data-option-value="active.{{cat.id}}"
+		>{{cat.title}}</li>
+	{% endfor %}
+	<li
+		class="section-title status-closed"
+		data-status-type="closed"
+		data-option-value="closed"
+	>Closed</li>
+	{% for cat in idea_closed_status_cats %}
+		<li
+			class="status-{{cat.id}}"
+			data-status-type="closed"
+			data-option-value="closed.{{cat.id}}"
+		>{{cat.title}}</li>
 	{% endfor %}
 </ul>
 

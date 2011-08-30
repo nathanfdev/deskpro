@@ -31,10 +31,6 @@ class Idea extends ContentAbstract
 	const STATUS_CLOSED   = 'closed';
 	const STATUS_HIDDEN   = 'hidden';
 
-	const HIDDEN_STATUS_VALIDATING = 'validating';
-	const HIDDEN_STATUS_SPAM       = 'spam';
-	const HIDDEN_STATUS_DELETED    = 'deleted';
-
 	/**
 	 * @var \Application\DeskPRO\Entity\IdeaStatusCategory
 	 * @ORM_Mapping\ManyToOne(targetEntity="IdeaStatusCategory", fetch="EAGER")

@@ -1090,6 +1090,10 @@ agent_ideas_filter:
   pattern: /ideas/filter
   defaults: { _controller: AgentBundle:Ideas:filterList }
 
+agent_ideas_massactions:
+  pattern: /ideas/filter/mass-actions/{action}
+  defaults: { _controller: AgentBundle:Ideas:massActions }
+
 agent_ideas_getsectiondata:
   pattern: /ideas/get-section-data.json
   defaults: { _controller: AgentBundle:Ideas:getSectionData }

@@ -36,6 +36,7 @@ abstract class ContentAbstract extends \Application\DeskPRO\Domain\DomainObject
 	const HIDDEN_STATUS_UNPUBLISHED   = 'unpublished';
 	const HIDDEN_STATUS_VALIDATING    = 'validating';
 	const HIDDEN_STATUS_DELETED       = 'deleted';
+	const HIDDEN_STATUS_SPAM          = 'spam';
 	const HIDDEN_STATUS_DRAFT         = 'draft';
 
 	/**

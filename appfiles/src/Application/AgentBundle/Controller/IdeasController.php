@@ -298,78 +298,6 @@ class IdeasController extends AbstractController
 		return $this->createJsonResponse($data);
 	}
 
-	public function validateAction($idea_id)
-	{
-		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
-		$idea['status'] = Idea::STATUS_NEW;
-
-		App::getOrm()->transactional(function ($em) use ($idea) {
-			$em->persist($idea);
-			$em->flush();
-		});
-
-		$next = $this->_getNextInResult($idea_id);
-		if (!$next) {
-			$next = $this->generateUrl('agent_ideas_view', array('idea_id' => $idea['id']));
-		}
-
-		return $this->createJsonResponse(array(
-			'success' => true,
-			'next_url' => $next
-		));
-	}
-
-	public function validateDeleteAction($idea_id)
-	{
-		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
-		$idea['status_code'] = 'hidden.deleted';
-
-		App::getOrm()->transactional(function ($em) use ($idea) {
-			$em->persist($idea);
-			$em->flush();
-		});
-
-		$next = $this->_getNextInResult($idea_id);
-		if (!$next) {
-			$next = $this->generateUrl('agent_ideas_view', array('idea_id' => $idea['id']));
-		}
-
-		return $this->createJsonResponse(array(
-			'success' => true,
-			'next_url' => $next
-		));
-	}
-
-	public function validateSkipAction($idea_id)
-	{
-		$next = $this->_getNextInResult($idea_id);
-
-		return $this->createJsonResponse(array(
-			'success' => true,
-			'next_url' => $next
-		));
-	}
-
-	protected function _getNextInResult($idea_id)
-	{
-		$next = false;
-
-		// Or if we came froma  result list,
-		// load the next one in the list
-		if ($this->in->getUint('from_result_id')) {
-			$result_cache = App::findEntity('DeskPRO:ResultCache', $this->in->getUint('from_result_id'));
-			$results = $result_cache['results'];
-			if (($k = array_search($idea_id, $results)) !== false) {
-				$k++;
-				if (isset($results[$k])) {
-					$next = $this->generateUrl('agent_ideas_view', array('idea_id' => $results[$k]));
-				}
-			}
-		}
-
-		return $next;
-	}
-
 	############################################################################
 	# get-section-data
 	############################################################################
@@ -408,30 +336,6 @@ class IdeasController extends AbstractController
 		));
 
 		return $this->createJsonResponse($data);
-	}
-
-
-	/**
-	 * List of ideas waiting to be validated
-	 *
-	 * @return \Symfony\Bundle\FrameworkBundle\Controller\Response
-	 */
-	public function validatingListAction()
-	{
-		$result_helper = IdeaResults::newFromRequest($this, array(
-			// Validating always has this term, the template doesnt let you change it
-			'specific_terms' => array(
-				array('type' => 'hidden_status', 'op' => 'is', 'status' => 'validating')
-			)
-		));
-
-		return $this->renderList(
-			$result_helper,
-			null,
-			array(
-				'list_type' => 'validating'
-			)
-		);
 	}
 
 	/**
@@ -636,6 +540,35 @@ class IdeasController extends AbstractController
 
 			 'display_fields' => $display_fields,
 		), $template_vars));
+	}
+
+	public function massActionsAction($action)
+	{
+		$this->em->beginTransaction();
+
+		$ideas = $this->em->getRepository('DeskPRO:Idea')->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
+
+		foreach ($ideas as $idea) {
+			switch ($action) {
+				case 'set-status':
+					$idea->setStatusCode($this->in->getString('status'));
+					break;
+
+				case 'set-category':
+					$cat = App::findEntity('DeskPRO:IdeaCategory', $this->in->getUint('category_id'));
+					if ($cat) {
+						$idea->category = $cat;
+					}
+					break;
+			}
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => 1
+		));
 	}
 
 	############################################################################
