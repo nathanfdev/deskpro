@@ -20,6 +20,11 @@ use Application\DeskPRO\Searcher\IdeaSearch;
 use Application\AgentBundle\Controller\Helper\IdeaResults;
 use Application\DeskPRO\UI\RuleBuilder;
 
+use Application\DeskPRO\ContentSearch\RelatedContentFinder;
+use Application\DeskPRO\Publish\RelatedContentUpdate;
+
+use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -41,19 +46,29 @@ class IdeasController extends AbstractController
 
 		$idea_comments = $idea->comments;
 
-		$idea_cats          = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
 		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
 		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
 
-		$from_listing_result_id = $this->in->getUint('from_listing_result_id');
+		$idea_revisions = $idea->getRevisions();
+		$sticky_search_words = $this->em->getRepository('DeskPRO:SearchStickyResult')->getWordsForObject($idea);
+
+		$related_finder = new RelatedContentFinder($this->person, $idea);
+		$related_content = $related_finder->getRelatedEntities();
+
+		$rated_searches = App::getEntityRepository('DeskPRO:SearchLog')->getRatedSearchesFor('idea', $idea['id'], 'counted');
+
+		$state = App::getOrm()->getRepository('DeskPRO:PersonPref')->getPrefForPersonId('agent.ui.state.editidea', $this->person->id);
 
 		return $this->render('AgentBundle:Ideas:view.html.twig', array(
-			'idea' => $idea,
-			'idea_comments' => $idea_comments,
+			'idea'           => $idea,
+			'idea_comments'  => $idea_comments,
+			'idea_revisions' => $idea_revisions,
+			'state'          => $state,
 
-			'from_listing_result_id' => $from_listing_result_id,
+			'rated_searches'      => $rated_searches,
+			'related_content'     => $related_content,
+			'sticky_search_words' => $sticky_search_words,
 
-			'idea_cats'          => $idea_cats,
 			'active_status_cats' => $active_status_cats,
 			'closed_status_cats' => $closed_status_cats,
 		));
@@ -137,22 +152,118 @@ class IdeasController extends AbstractController
 		));
 	}
 
+	public function ajaxSaveLabelsAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+
+		$labels = $this->in->getCleanValueArray('labels', 'string', 'discard');
+
+		$idea->getLabelManager()->setLabelsArray($labels);
+
+		App::getOrm()->persist($idea);
+		App::getOrm()->flush();
+
+		return $this->createJsonResponse(array('success' => 1));
+	}
+
 	public function ajaxSaveCommentAction($idea_id)
 	{
 		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
 
-		$comment = IdeaComment::newForPerson($this->person, true);
+		$comment = new IdeaComment();
+		$comment->idea = $idea;
+		$comment->person = $this->person;
 		$comment['content'] = $this->in->getString('content');
-		$idea->addComment($comment);
+		$comment['status'] = 'visible';
+		$comment['date_created']  = new \DateTime();
 
-		App::getOrm()->transactional(function ($em) use ($idea) {
-			$em->persist($idea);
-			$em->flush();
-		});
+		App::getOrm()->persist($comment);
+		App::getOrm()->flush();
 
 		return $this->render('AgentBundle:Ideas:view-comment.html.twig', array(
 			'comment' => $comment
 		));
+	}
+
+	public function ajaxSaveAction($idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+		$rev = null;
+
+		$action = $this->in->getString('action');
+
+		$data = array('success' => 1);
+
+		$this->em->beginTransaction();
+
+		switch ($action) {
+
+			case 'status':
+				$idea['status_code'] = $this->in->getString('status');
+				break;
+
+			case 'title':
+				$idea['title'] = $this->in->getString('title');
+
+				$rev = ContentRevisionUtil::findOrCreate($idea, 'title', $this->person);
+				$rev['title'] = $idea['title'];
+
+				break;
+
+			case 'add-related':
+				$updater = new RelatedContentUpdate($idea);
+				$updater->addRelated(
+					$this->in->getString('content_type'),
+					$this->in->getString('content_id')
+				);
+				break;
+
+			case 'remove-related':
+				$updater = new RelatedContentUpdate($idea);
+				$updater->removeRelated(
+					$this->in->getString('content_type'),
+					$this->in->getString('content_id')
+				);
+				break;
+
+			case 'content':
+
+				App::getOrm()->getRepository('DeskPRO:PersonPref')->deletePrefForPersonId('agent.ui.state.editidea', $this->person->id);
+
+				$idea['content'] = $this->in->getString('content');
+
+				$data['content_html'] = $this->renderView('AgentBundle:Ideas:view-content-tab.html.twig', array(
+					'idea' => $idea
+				));
+
+				$rev = ContentRevisionUtil::findOrCreate($idea, array('content'), $this->person);
+				$rev['content'] = $idea['content'];
+
+				break;
+
+			case 'category':
+				$cat = $this->em->find('DeskPRO:IdeaCategory', $this->in->getUint('category_id'));
+				$idea['category'] = $cat;
+				$data['category_id'] = $cat['id'];
+				break;
+		}
+
+		$this->em->persist($idea);
+
+		if ($rev) {
+			$this->em->persist($rev);
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		if ($rev) {
+			$data['revision_id'] = $rev['id'];
+		} else {
+			$data['revision_id'] = null;
+		}
+
+		return $this->createJsonResponse($data);
 	}
 
 	public function validateAction($idea_id)

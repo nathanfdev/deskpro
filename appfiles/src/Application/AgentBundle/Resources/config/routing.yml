@@ -1146,6 +1146,26 @@ agent_ideas_who_voted:
   pattern: /ideas/view/{idea_id}/who-voted
   defaults: { _controller: AgentBundle:Ideas:whoVoted }
 
+agent_ideas_revisionstab:
+  pattern: /ideas/view/{idea_id}/view-revisions
+  defaults: { _controller: AgentBundle:Ideas:viewRevisions }
+  requirements: { news_id: "\d+" }
+
+agent_ideas_save:
+  pattern: /ideas/view/{idea_id}/ajax-save
+  defaults: { _controller: AgentBundle:Ideas:ajaxSave }
+  requirements: { news_id: "\d+" }
+
+agent_ideas_ajax_labels_save:
+  pattern: /ideas/view/{idea_id}/ajax-save-labels
+  defaults: { _controller: AgentBundle:Ideas:ajaxSaveLabels }
+  requirements: { news_id: "\d+" }
+
+agent_ideas_ajax_save_comment:
+  pattern: /ideas/view/{idea_id}/ajax-save-comment
+  defaults: { _controller: AgentBundle:Ideas:ajaxSaveComment }
+  requirements: { news_id: "\d+" }
+
 agent_ideas_ajaxsavecomment:
   pattern: /ideas/view/{idea_id}/ajax-save-comment
   defaults: { _controller: AgentBundle:Ideas:ajaxSaveComment }

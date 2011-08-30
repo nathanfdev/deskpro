@@ -2,90 +2,233 @@
 pageMeta.fragmentClass = 'DeskPRO.Agent.PageFragment.Page.IdeaView';
 pageMeta.title = {{idea.title|json_encode|raw}};
 pageMeta.idea_id = {{idea.id}};
-pageMeta.is_validating = {% if idea.is_validating %}true{% else %}false{% endif %};
-{% if from_listing_result_id %}
-pageMeta.from_listing_result = {{from_listing_result_id}};
+
+pageMeta.permalink = '{{ idea.permalink }}';
+pageMeta.labelsSaveUrl = '{{ path('agent_ideas_ajax_labels_save', {'idea_id': idea.id}) }}';
+
+{% if idea.hidden_status == 'validating' %}
+pageMeta.isValidating = true;
 {% endif %}
+
+{% set baseId = el_uid() %}
+pageMeta.baseId = '{{ baseId }}';
 </script>
-<div class="layout-content with-scrollbar">
+<div class="layout-content full-page idea-page with-scrollbar">
 <div class="scrollbar"><div class="track"><div class="thumb"><div class="end"></div></div></div></div>
 <div class="scroll-viewport"><div class="scroll-content">
 
-{% if idea.is_validating %}
-<div class="ticket-lock-bar" style="padding: 4px; text-align: right;">
-	<div style="float:left">
-		This idea is awaiting validation
-	</div>
-	<button class="dp-button x-small disapprove-trigger">Delete</button>
-	<button class="dp-button x-small skip-trigger">Skip</button>
-	<button class="dp-button x-small approve-trigger">Approve</button>
+<div class="deleted-notice" {% if idea.status_code != "hidden.deleted" %}style="display: none;"{% endif %}>
+	This idea has been deleted. <button class="clean-gray xxx-small undelete">Undelete</button>
 </div>
+
+{% if idea.status_code == "hidden.validating" %}
+	{% include 'AgentBundle:Publish:view-approve-header.html.twig' %}
 {% endif %}
 
-<div class="inner-box-tab-content-2 idea">
-	<div class="idea-status status-{{idea.status}}">
-		{% if idea.hidden_status %}
-			<span class="prop-val {% if not idea.is_validating %}menu-trigger{% endif %} status">{{ phrase('core_ideas.status_' ~ idea.hidden_status) }}</span>
-		{% else %}
-			<span class="prop-val menu-trigger status">{{ phrase('core_ideas.status_' ~ idea.status) }}</span>
-		{% endif %}
+<section class="ticket-header" id="{{baseId}}_idea_header">
+	<div class="ticket-id">
+		<span>#{{ idea.id }}</span>
 	</div>
-	<div class="idea-votes">
-		{{idea.num_votes}}<br />
-		<button class="who-voted-trigger">Who Voted</button>
-	</div>
-	<div class="ticket-info-top">
-	<span class="ticket-source prop-val menu-trigger category_id" data-no-value="Choose Category">
-		{{idea.category.full_title|default('Choose Category')}}
-	</span>
-	<h3 class="prop title editable hover-edit" data-editable-for=".inline-editable .title">
-		{{idea.title}}
-	</h3>
-	</div>
-</div>
 
-<div class="messages-wrap">
-	{% for comment in idea_comments %}
-		{% include 'AgentBundle:Ideas:view-comment.html.twig' %}
-	{% endfor %}
-
-	{% if not idea.is_validating %}
-	<div class="message admin-message new-comment">
-		<div class="message-avatar left">
-			<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
-		</div>
-		<div class="message-body">
-			<div class="message-meta">
-				<span class="arrow-left"></span>
-				<h4>{{ app.user.display_name }}</h4>
+	{% if idea.status_code != "hidden.validating" %}
+		<div class="the-status" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}>
+			<div class="ticket-status idea-status prop-status-icon tipped" title="{{ idea.status }}">
+				<span class="ticket-{{idea.status}}"></span>
 			</div>
-			<div class="message-text">
-				<p>
-					<textarea style="width:98%; height: 80px;"></textarea>
-					<div style="text-align:center; margin-top: 9px;">
-						<div class="loading-off">
-							<button class="dp-button x-small">Add Comment</button>
-						</div>
-						<div class="loading-on" style="display:none">
-							Saving ...
+		</div>
+	{% endif %}
+
+	<div class="the-department">
+		<div class="ticket-department prop-department-id" id="{{baseId}}_category">
+			<div class="parent">
+				{% if idea.category.parent %}
+					{{ idea.category.parent.title }}
+				{% else %}
+					{{ idea.category.title }}
+				{% endif %}
+			</div>
+			<div class="sub">
+				{% if idea.category.parent %}
+					{{ idea.category.title }}
+				{% endif %}
+			</div>
+		</div>
+	</div>
+	<div class="ticket-subject editable hover-edit no-cat" data-editable-for=".inline-editable .title">
+		{{ idea.title }}
+	</div>
+	<br style="clear:both;height: 1px;overflow: hidden;" />
+
+	<div class="assignments">
+		<div class="agent">
+			<div class="desc">
+				By {% for author in idea.authors %}<cite>{{ author.display_name }}</cite>{% if not loop.last %}, {% endif %}{% endfor %}
+			</div>
+			<br style="clear:both;height: 1px;overflow: hidden;" />
+		</div>
+	</div>
+
+	<nav class="actions" id="{{baseId}}_action_buttons">
+		<ul>
+			<li class="delete" {% if idea.status_code == "hidden.deleted" %}style="display:none"{% endif %}><button class="clean-gray xx-small">Delete</button></li>
+			<li class="permalink"><button class="clean-gray xx-small">Copy Permalink</button></li>
+			<li class="view-user-interface"><button class="clean-gray xx-small">View in user interface</button></li>
+		</ul>
+	</nav>
+
+	<div class="times">
+		Created <time class="timeago" datetime="{{idea.date_created|date('c')}}"></time> at <time>{{idea.date_created|date('H:ia M j Y')}}</time>.<br/>
+	</div>
+</section>
+
+<div class="full-container-tabbed main-tabs">
+	<div class="full-container-tabbed-contents-wrap field-section-bodytabs-tab-contents">
+		<div class="full-container-tabbed-contents">
+			<div class="table-content">
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Labels</span>
+					</div>
+					<div class="col-table-content">
+						<div class="tags-wrap idea-tags">
+							<span class="tag-icon"></span>
+							<ul>
+								{% for label in idea.labels %}
+									<li><span>{{label.label}}</span></li>
+								{% endfor %}
+							</ul>
 						</div>
 					</div>
-				</p>
+				</div>
+
+				<div class="row-table-cotent">
+					<div class="col-table-content title-col">
+						<span>Rating</span>
+					</div>
+					<div class="col-table-content">
+						{{ idea.rating_percent }}% in favor (<span class="link-look who-voted-trigger">{{ idea.num_ratings }} votes</span>)<br />
+						<small>{{ idea.up_votes }} up, {{ idea.down_votes }} down</small>
+					</div>
+				</div>
 			</div>
 		</div>
 	</div>
-	{% endif %}
 </div>
 
-{% include 'AgentBundle:Ideas:view-menus.html.twig' %}
+{# Main Tabs #}
+<div class="full-container-tabbed messages-container" id="{{baseId}}_bodytabs">
+	{# Tab Triggers #}
+	<div class="full-container-tabbed-tabs">
+		<span class="idea-editor-edit kb-editor-edit"><a>edit</a></span>
+		<ul>
+			<li class="tab-trigger" data-tab-for=".tab-content.content-tab"><a>Description</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.comments-tab"><a>Comments (<span id="{{baseId}}_count_comments">{{idea_comments|length|default(0)}}</span>)</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.revisions"><a>Revisions</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.related-content"><a>Related Content</a></li>
+			<li class="tab-trigger" data-tab-for=".tab-content.search-tab"><a>Search</a></li>
+		</ul>
+	</div>
+	{# /Tab Triggers #}
+
+	{# Tab Contents #}
+	<div class="full-container-tabbed-contents-wrap">
+		{# Tab: Content #}
+		<div class="full-container-tabbed-contents tab-content content-tab" style="display: block">
+			<div id="{{baseId}}_content_ed">
+			{% include 'AgentBundle:Ideas:view-content-tab.html.twig' %}
+			</div>
+		</div>
+		{# /Tab: Content #}
+
+		{# Tab: Comments #}
+		<div class="full-container-tabbed-contents tab-content comments-tab">
+			<div class="idea-comments">
+				<div class="full-tab-content">
+					<div class="messages-wrap" id="{{baseId}}_comments_wrap">
+						{% for comment in idea_comments %}
+							{% include 'AgentBundle:Ideas:view-comment.html.twig' %}
+						{% endfor %}
+					</div>
+				</div>
+
+				<div class="message admin-message new-note">
+					<div class="message-avatar left">
+						<img src="{{ app.user.getPictureUrl(35) }}" alt="" width="35" height="35" />
+					</div>
+					<div class="message-body">
+						<div class="message-meta">
+							<span class="arrow-left"></span>
+							<h4>{{ app.user.display_name }}</h4>
+						</div>
+						<div class="message-text">
+							<p>
+								<textarea style="width:98%; height: 80px;"></textarea>
+								<div style="text-align:center; margin-top: 9px;">
+									<div class="loading-off">
+										<button class="dp-button x-small">Add Comment</button>
+									</div>
+									<div class="loading-on" style="display:none">
+										Saving ...
+									</div>
+								</div>
+							</p>
+						</div>
+					</div>
+				</div>
+			</div>
+		</div>
+		{# /Tab: Comments #}
+
+		{# Tab: Revisions #}
+		<div id="{{baseId}}_revs" class="loaded full-container-tabbed-contents tab-content revisions">
+			{% include 'AgentBundle:Ideas:view-revisions-tab.html.twig' %}
+		</div>
+		{# /Tab: Revisions #}
+
+		{# Tab: Related #}
+		<div id="{{baseId}}_related_content" class="full-container-tabbed-contents tab-content related-content">
+			{% include 'AgentBundle:Common:content-related-list.html.twig' %}
+		</div>
+		{# /Tab: Related #}
+
+		{# Tab: Search #}
+		<div id="{{baseId}}_searchtab" class="full-container-tabbed-contents tab-content search-tab">
+			<div class="tags-wrap sticky-search-words">
+				<span class="tag-icon with-label">Search Words</span>
+				<ul>
+					{% for word in sticky_search_words %}
+						<li><span>{{word}}</span></li>
+					{% endfor %}
+				</ul>
+				<div class="explain">
+					When a user searches for any of these words, this page will always be listed in their top results.
+				</div>
+			</div>
+
+			<br />
+
+			{% include 'AgentBundle:Publish:rated-searches.html.twig' %}
+		</div>
+		{# /Tab: Search #}
+	</div>
+	{# /Tab Contents $}
+</div>
+{# /Main Tabs #}
+
+{% include 'AgentBundle:Common:menu-idea-status.html.twig' with {'active_status_cats': active_status_cats, 'closed_status_cats': closed_status_cats} %}
 
 <div class="inline-editable" style="display:none">
-	<span class="title">
+	<div class="title">
+		<input type="text" name="title" value="{{ idea.title }}"/>
 		<input type="hidden" name="action" value="title" />
-		<input type="text" name="title" value="{{idea.title}}" />
-	</span>
+	</div>
 </div>
 
-{# Scrollbar elements #}
-</div></div>
 </div>
+
+
+</div></div> {# scrollbar divs #}
+
+</div> {# main layout div #}
+
+{% include 'AgentBundle:MediaBrowser:overlay.html.twig' %}

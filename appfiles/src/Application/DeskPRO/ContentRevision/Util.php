@@ -187,6 +187,11 @@ class Util
 			case 'Application\\DeskPRO\\Entity\\DownloadRevision':
 				return 'download';
 				break;
+
+			case 'Application\\DeskPRO\\Entity\\Idea':
+			case 'Application\\DeskPRO\\Entity\\IdeaRevision':
+				return 'idea';
+				break;
 		}
 
 		throw new \InvalidArgumentException("Unknown type `$type`");
@@ -218,6 +223,14 @@ class Util
 					return 'DeskPRO:DownloadRevision';
 				} else {
 					return 'Application\\DeskPRO\\Entity\\DownloadRevision';
+				}
+				break;
+
+			case 'Application\\DeskPRO\\Entity\\Idea':
+				if ($entity_name) {
+					return 'DeskPRO:IdeaRevision';
+				} else {
+					return 'Application\\DeskPRO\\Entity\\IdeaRevision';
 				}
 				break;
 		}

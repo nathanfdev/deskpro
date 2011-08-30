@@ -27,7 +27,7 @@ DeskPRO.Agent.PageHelper.RelatedContentList = new Orb.Class({
 		var selectedTabType = DeskPRO_Window.getTabWatcher().getActiveTabType();
 		var doEnable = false;
 
-		var types = ['article', 'download', 'news'];
+		var types = ['article', 'download', 'news', 'idea'];
 		Array.each(types, function(t) {
 			DeskPRO_Window.getTabWatcher().addTabTypeWatcher(t, this);
 

@@ -1,275 +1,305 @@
 Orb.createNamespace('DeskPRO.Agent.PageFragment.Page');
-
 DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 
 	Extends: DeskPRO.Agent.PageFragment.Basic,
 
-	TYPENAME: 'ticket',
+	TYPENAME: 'idea',
 
-	popout: null,
-	popout_overview: null,
-
-	isMouseOverPopout: false,
-	hasInitPopout: false,
-	popoutPage: null,
+	wrapper: null,
+	idea_id: null,
 
 	initPage: function(el) {
 
-		this.wrapper = $(el);
-		this.contentWrapper = $('.layout-content:first', this.wrapper).attr('id', Orb.getUniqueId());
+		var self = this;
+		this.wrapper = el;
 
-		var cw = this.contentWrapper;
+		this.idea_id = this.getMetaData('idea_id');
+
+		this._initBasic();
+		this._initMenus();
+		this._initActions();
+		this._initLabels();
+		this._initPostArea();
+		this._initCommentForm();
+
+		if (this.meta.isValidating) {
+			this.validatingEdit = new DeskPRO.Agent.PageHelper.ValidatingEdit(this, {
+				typename: 'ideas',
+				contentId: this.idea_id
+			});
+		}
+
+		var cw = this.wrapper;
 		cw.tinyscrollbar();
-		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
+		$('div.scroll-content:first, div.scroll-viewport:first', this.wrapper).resize(function() {
 			// When size changes within the pane, need to re-size the scroll
 			cw.tinyscrollbar_update();
 		});
 
-		DeskPRO_Window.getMessageBroker().sendMessage('ui.tab.opened', { type: 'ideas', id: this.getMetaData('idea_id') });
+		$('time.timeago', this.wrapper).timeago();
 
-		this._initEditables();
-		this._initMenus();
-		this._initComments();
-		$('button.who-voted-trigger', this.wrapper).click(this.showWhoVoted.bind(this));
+		var btn = $('.idea-editor-edit', this.wrapper);
+		btn.click(this.showEditor.bind(this));
 
-		if (this.meta.is_validating) {
-			this._initValidating();
-			if (!this.meta.from_listing_result) {
-				this.meta.from_listing_result = '';
+		this.relatedContent = new DeskPRO.Agent.PageHelper.RelatedContent(this, {
+			typename: 'ideas',
+			content_id: this.idea_id,
+			listEl: $('section.linked-content:first', this.wrapper),
+			onContentLinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
+			},
+			onContentUnlinked: function(typename, content_id) {
+				$.ajax({
+					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+					type: 'POST',
+					data: { content_type: typename, content_id: content_id, action: 'add-related' },
+					context: this,
+					dataType: 'json'
+				});
 			}
+		});
+
+		this.miscContent = new DeskPRO.Agent.PageHelper.MiscContent(this, {
+			revisionCompareUrl: BASE_URL + 'agent/ideas/compare-revs/{OLD}/{NEW}'
+		});
+
+		this.whoVotedOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: '.who-voted-trigger',
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/publish/rating-who-voted/ideas/' + this.idea_id
+			}
+		});
+	},
+
+	handleUnloadRevisions: function(revision_id) {
+		if (!revision_id) {
+			return;
 		}
+
+		if ($('.rev-' + revision_id, this.getEl('revs')).length) {
+			return;
+		}
+
+		this.getEl('revs').empty().removeClass('loaded');
 	},
 
 	//#################################################################
-	//# Validation
+	//# Basic
 	//#################################################################
 
-	_initValidating: function() {
-		$('button.approve-trigger', this.wrapper).click(this.approveIdea.bind(this));
-		$('button.disapprove-trigger', this.wrapper).click(this.disapproveIdea.bind(this));
-		$('button.skip-trigger', this.wrapper).click(this.skipValidateIdea.bind(this));
-	},
+	_initBasic: function() {
+		var self = this;
 
-	approveIdea: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/validate?from_result_id=' + this.meta.from_listing_result,
-			type: 'POST',
-			context: this,
-			dataType: 'json',
-			success: function(info) {
-
-				DeskPRO_Window.getMessageBroker().sendMessage('validating-ideas.approved', {idea_id: this.meta.idea_id});
-
-				var load_url = info.next_url;
-				if (info.next_url) {
-					DeskPRO_Window.runPageRoute('page:' + info.next_url);
+		// Tabs
+		this.bodyTabs = new DeskPRO.UI.SimpleTabs({
+			triggerElements: $('li.tab-trigger', this.getEl('bodytabs')),
+			context: this.getEl('bodytabs'),
+			onTabSwitch: (function(info) {
+				if ($(info.tabContent).is('.idea-revs') && !$(info.tabContent).is('.loaded')) {
+					$.ajax({
+						url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/view-revisions',
+						type: 'GET',
+						dataType: 'html',
+						context: this,
+						success: function(html) {
+							this.getEl('revs').html(html);
+							this.miscContent._initCompareRevs();
+							$(info.tabContent).addClass('loaded');
+						}
+					});
 				}
-				DeskPRO_Window.removePage(this);
-			}
+			}).bind(this)
 		});
-	},
 
-	disapproveIdea: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/validate-delete?from_result_id=' + this.meta.from_listing_result,
-			type: 'POST',
-			context: this,
-			dataType: 'json',
-			success: function(info) {
-
-				DeskPRO_Window.getMessageBroker().sendMessage('validating-ideas.deleted', {idea_id: this.meta.idea_id});
-
-				var load_url = info.next_url;
-				if (info.next_url) {
-					DeskPRO_Window.runPageRoute('page:' + info.next_url);
-				}
-				DeskPRO_Window.removePage(this);
-			}
-		});
-	},
-
-	skipValidateIdea: function() {
-		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/validate-skip?from_result_id=' + this.meta.from_listing_result,
-			type: 'POST',
-			context: this,
-			dataType: 'json',
-			success: function(info) {
-
-				var load_url = info.next_url;
-				if (info.next_url) {
-					DeskPRO_Window.runPageRoute('page:' + info.next_url);
-				}
-				DeskPRO_Window.removePage(this);
-			}
-		});
-	},
-
-
-	//#################################################################
-	//# Editables
-	//#################################################################
-
-	_initEditables: function() {
-		var titleEl = $('h3.title.prop:first', this.wrapper);
-		if (!titleEl.attr('id')) {
-			titleEl.attr('id', Orb.getUniqueId());
+		// Name is editable
+		var name = $('h3.title.editable:first', this.wrapper);
+		if (!name.attr('id')) {
+			name.attr('id', Orb.getUniqueId());
 		}
 
 		var editable = new DeskPRO.Form.InlineEdit({
 			baseElement: this.wrapper,
 			ajax: {
-				url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/ajax-save-editables'
+				url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/ajax-save',
+				success: function(data) {
+					self.handleUnloadRevisions(data.revision_id);
+				}
 			}
 		});
 	},
+
 
 	//#################################################################
 	//# Menus
 	//#################################################################
 
 	_initMenus: function() {
+
 		var self = this;
-		this.catMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.menu-trigger.category_id:first', this.wrapper),
-			menuElement: $('.menu.category_id:first', this.wrapper),
-			onItemClicked: function(info) {
-				self.updateCategory($(info.itemEl).data('option-value'));
-			}
-		});
 
+		// Status
+		var trigger = $('.the-status:first', this.wrapper);
 		this.statusMenu = new DeskPRO.UI.Menu({
-			triggerElement: $('.menu-trigger.status:first', this.wrapper),
-			menuElement: $('.menu.status:first', this.wrapper),
+			triggerElement: trigger,
+			menuElement: $('.status-menu:first', this.wrapper),
 			onItemClicked: function(info) {
-				self.updateStatus($(info.itemEl).data('option-value'), $(info.itemEl).data('status-type'));
+				var status = $(info.itemEl).data('option-value');
+
+				$('.idea-status', trigger).attr('title', status);
+				$('.idea-status span', trigger).attr('class', '').addClass('ticket-' + status.replace(/\./, '_'));
+
+				$.ajax({
+					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+					type: 'POST',
+					data: {action: 'status', status: status},
+					context: self,
+					dataType: 'json'
+				});
 			}
+		});
+
+		this.deleteHelper = new DeskPRO.Agent.PageFragment.Page.Content.DeleteControl(this, {
+			ajaxSaveUrl: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+			statusMenu: this.statusMenu
+		});
+
+		// Change category menu
+        var catMenu = new DeskPRO.UI.Menu({
+			menuElement: $('#idea_category_menu'),
+			triggerElement: this.getEl('category'),
+			onItemClicked: function(info) {
+				var catId = $(info.itemEl).data('category-id');
+				var parentId = $(info.itemEl).data('parent-id');
+
+				var catTitle = $('#idea_category_menu .cat-' + catId).text().trim();
+
+				var parentTitle = '';
+				if (parentId) {
+					parentTitle = $('#idea_category_menu .cat-' + parentId).text().trim();
+				}
+
+				if (parentId) {
+					$('.parent', self.getEl('category')).text(parentTitle);
+					$('.sub', self.getEl('category')).text(catTitle).show();
+				} else {
+					$('.parent', self.getEl('category')).text(catTitle);
+					$('.sub', self.getEl('category')).text('').hide();
+				}
+
+				$.ajax({
+					url: BASE_URL + 'agent/ideas/view/' + self.idea_id + '/ajax-save',
+					type: 'POST',
+					data: {
+						'action': 'category',
+						'category_id': catId
+					},
+					dataType: 'json',
+					success: function() {
+
+					}
+				});
+			}
+        });
+	},
+
+	_initActions: function() {
+		var self = this;
+		var actions = this.getEl('action_buttons');
+
+		$('.delete', actions).click(function() {
+
+		});
+
+		$('.permalink', actions).click(function() {
+			var html = [];
+			html.push('<div>');
+			html.push('The permalink to this idea on the website is:<br />');
+			html.push('<input type="text" style="width:450px;" />');
+			html.push('</div>');
+
+			var msg = $(html.join(''));
+			$('input', msg).val(self.meta.permalink);
+
+			DeskPRO_Window.showAlert(msg);
+		});
+
+		$('.view-user-interface', actions).click(function() {
+			window.open(self.meta.permalink);
 		});
 	},
 
-	updateCategory: function(category_id) {
-		var catEl = $('li.cat-' + category_id, this.catMenu.getListElement());
-		var title = catEl.data('full-title');
 
-		$('.prop-val.category_id', this.wrapper).html(Orb.escapeHtml(title));
+	//#################################################################
+	//# Labels
+	//#################################################################
 
-		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/ajax-update-category/' + category_id,
-			type: 'POST',
-			context: this,
-			dataType: 'json',
-			success: function(html) {
-				
-			}
+	labelsList: null,
+	_initLabels: function() {
+		// Tags
+		this.labelsList = $(".idea-tags ul", this.wrapper);
+
+		this.labelsInput = new DeskPRO.UI.LabelsInput({
+			type: 'ideas',
+			list: this.labelsList,
+			onChange: this.saveLabels.bind(this)
+		});
+
+		this.stickyWords = new DeskPRO.Agent.PageFragment.Page.Content.StickyWords(this, {
+			contentType: 'ideas',
+			contentId: this.idea_id,
+			element: $('.sticky-search-words ul', this.wrapper)
 		});
 	},
 
-	updateStatus: function(status, status_type) {
-		var statusEl = $('li.status-' + status, this.statusMenu.getListElement());
-		var title = statusEl.html();
-
-		var propEl = $('.prop-val.status', this.wrapper).html(Orb.escapeHtml(title));
-		var containEl = propEl.parent();
-		var className = containEl.attr('class');
-		className = className.replace(/\bstatus\-(.*?)\b/, '');
-		className += ' status-' + status_type;
-		containEl.attr('class', className);
-
-		if (status != status_type) {
-			var status_code = status_type + '.' + status;
-		} else {
-			var status_code = status;
+	_saveLabelsTimeout: null,
+	saveLabels: function() {
+		if (this._saveLabelsTimeout) {
+			window.clearTimeout(this._saveLabelsTimeout);
 		}
 
+		this._saveLabelsTimeout = this._doSaveLabels.delay(2000, this);
+	},
+
+	_doSaveLabels: function() {
+		var data = $(':input', this.labelsList).serializeArray();
+
 		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/ajax-update-status/' + status_code,
+			url: this.getMetaData('labelsSaveUrl'),
 			type: 'POST',
 			context: this,
+			data: data,
 			dataType: 'json',
-			success: function(html) {
-
+			success: function(data) {
+				this._handleSaveLabelsSuccess(data);
 			}
 		});
 	},
 
-	//#################################################################
-	//# Who Voted
-	//#################################################################
+	_handleSaveLabelsSuccess: function(data) {
 
-	showWhoVoted: function() {
-
-		var displayEl = $('<div style="width: 650px; height: 400px;"></div>"');
-		var spinner = new Spinner(displayEl, {
-			radii: [15,9],
-			padding: 15
-		}).play();
-
-		var overlay = new DeskPRO.UI.Overlay({
-			contentElement: displayEl,
-			maxWidth: 650,
-			destroyOnClose: true
-		});
-		overlay.openOverlay();
-
-		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/who-voted',
-			context: this,
-			dataType: 'html',
-			success: function(html) {
-				var el = $('<div style="width: 650px; height: 500px;">' + html + '</div>');
-				overlay.setContent(el);
-
-				spinner.remove();
-				displayEl.remove();
-				
-				this._initWhoVotedEl(overlay.elements.wrapper);
-			}
-		});
-	},
-
-	_initWhoVotedEl: function(el) {
-		var controls = $('.who-voted-controls', el);
-
-		var self = this;
-		$('.show-people, .show-guests', controls).click(function() {
-
-			var show_people = $('.show-people', controls).is(':checked');
-			var show_guests = $('.show-guests', controls).is(':checked');
-
-			// Always at least one checked
-			if (!show_people && !show_guests) {
-				if ($(this).is('.show-people')) {
-					$('.show-guests', controls).attr('checked', true);
-				} else {
-					$('.show-people', controls).attr('checked', true);
-				}
-			}
-
-			if (show_people) {
-				$('table.who-voted', el).addClass('do-show-people');
-			} else {
-				$('table.who-voted', el).removeClass('do-show-people');
-			}
-
-			if (show_guests) {
-				$('table.who-voted', el).addClass('do-show-guests');
-			} else {
-				$('table.who-voted', el).removeClass('do-show-guests');
-			}
-		})
 	},
 
 	//#################################################################
 	//# Comments
 	//#################################################################
 
-	_initComments: function() {
-		this.commentWrapper = $('.messages-wrap', this.wrapper);
-		this.newCommentWrapper = $('.new-comment:first', this.wrapper);
-		$('button', this.newCommentWrapper).click(this.submitNewComment.bind(this));
+	_initCommentForm: function() {
+		this.commentsController = new DeskPRO.Agent.PageHelper.Comments(this, {
+			commentsWrapper: this.getEl('comments_wrap')
+		});
+
+		this.newCommentWrapper = $('.new-note:first', this.wrapper);
+		$('button', this.newCommentWrapper).click(this.saveNewComment.bind(this));
 	},
 
-	submitNewComment: function() {
+	saveNewComment: function() {
 
 		var loadingOn = $('.loading-on', this.newCommentWrapper).show();
 		var loadingOff = $('.loading-off', this.newCommentWrapper).hide();
@@ -281,7 +311,7 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 		});
 
 		$.ajax({
-			url: BASE_URL + 'agent/ideas/view/' + this.meta.idea_id + '/ajax-save-comment',
+			url: BASE_URL + 'agent/ideas/view/' + this.getMetaData('idea_id') + '/ajax-save-comment',
 			type: 'POST',
 			context: this,
 			data: data,
@@ -293,11 +323,151 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 				$('textarea', this.newCommentWrapper).val('');
 				var el = $(html);
 				this.newCommentWrapper.before(el);
-				this._initMessage(el);
 
-				this._handleSendReplySuccess(html);
+				// Inc note count
+				this.incCount('idea-comments');
 			}
 		});
 	},
 
+	//#################################################################
+	//# Editor
+	//#################################################################
+
+	_initPostArea: function() {
+		this._hasInitEd = false;
+		$('.editor-cancel-trigger', this.getEl('content_ed')).click((function() {
+			this.hideEditor();
+		}).bind(this));
+
+		var wrap = this.wrapper;
+
+		if (this.editStateSaver) {
+			this.editStateSaver.destroy();
+		}
+
+		this.editStateSaver = new DeskPRO.Agent.PageHelper.StateSaver({
+			stateId: 'editidea',
+			listenOn: $('.idea-editor-wrap:first', wrap)
+		});
+
+		$('.editor-save-trigger', this.getEl('content_ed')).click((function(ev) {
+			ev.preventDefault();
+
+			var data = {
+				action: 'content',
+				content: $('.idea-editor-wrap textarea:first', wrap).val(),
+				attach: $('.idea-editor-wrap .edit-content-attach:first', wrap).val()
+			};
+
+			$.ajax({
+				url: BASE_URL + 'agent/ideas/view/' + this.idea_id + '/ajax-save',
+				type: 'POST',
+				context: this,
+				data: data,
+				dataType: 'json',
+				success: function(data) {
+					this.getEl('content_ed').html(data.content_html);
+					this.handleUnloadRevisions(data.revision_id);
+					this._initPostArea();
+				}
+			});
+
+		}).bind(this));
+
+		this.hideEditor();
+	},
+
+	showEditor: function() {
+
+		var self = this;
+
+		var edWrap = $('.idea-editor-wrap', this.getEl('content_ed')).show();
+		$('.revert-default', edWrap).click(function() {
+			var def = $('textarea.edit-content-field-default').val();
+			$('textarea.edit-content-field').val(def);
+
+			$('.revert-message-notice', edWrap).remove();
+		});
+
+		$('.idea-content-wrap', this.getEl('content_ed')).hide();
+		$('.idea-editor-wrap', this.getEl('content_ed')).show();
+
+		if (!this._hasInitEd) {
+			this._hasInitEd = true;
+
+			$('.edit-content-field', this.getEl('content_ed')).tinymce({
+				script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
+
+				theme: 'advanced',
+				plugins : "fullscreen",
+				fullscreen_new_window: true,
+				theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,fontselect,fontsizeselect,formatselect',
+				theme_advanced_buttons2: ',bullist,numlist,|,outdent,indent,|,link,unlink,anchor,image,|,code,removeformat,fullscreen',
+				theme_advanced_buttons3: '',
+				theme_advanced_toolbar_location: 'top',
+				theme_advanced_toolbar_align: 'left',
+				theme_advanced_resizing: true,
+				theme_advanced_statusbar_location: 'bottom',
+				setup: function(ed) {
+					ed.onKeyPress.add(function() {
+						self.editStateSaver.triggerChange();
+					});
+				}
+			});
+		}
+	},
+
+	hideEditor: function() {
+		$('.idea-editor-wrap', this.getEl('content_ed')).hide();
+		$('.idea-content-wrap', this.getEl('content_ed')).show();
+	},
+
+	_initMediaBrowser: function() {
+		if (this.mediabrowser_has_init) return;
+		this.mediabrowser_has_init = true;
+
+		this.mediaBrowserEl = $('.media-browser', this.wrapper);
+		this.mediaBrowserOverlay = new DeskPRO.UI.Overlay({
+			contentElement: this.mediaBrowserEl
+		});
+
+		this.mediaBrowser = new DeskPRO.Agent.MediaBrowser({
+			wrapper: this.mediaBrowserEl,
+			additionalDropZone: $('.kb-editor > textarea', this.wrapper)
+		});
+	},
+
+	showMediaBrowser: function() {
+		this._initMediaBrowser();
+		this.mediaBrowserOverlay.openOverlay();
+	},
+
+	//#################################################################
+	//# Compare revisions
+	//#################################################################
+
+	_initCompareRevs: function() {
+		$('.compare-trigger', this.wrapper).click(this.showCompareRev.bind(this));
+	},
+
+	showCompareRev: function() {
+		var old_id = $('.idea-revs input.old:checked', this.wrapper).val();
+		var new_id = $('.idea-revs input.new:checked', this.wrapper).val();
+
+		if (!old_id || !new_id) {
+			return;
+		}
+
+		var overlay = new DeskPRO.UI.Overlay({
+			triggerElement: $('button.compare-trigger', this.wrapper),
+			contentMethod: 'ajax',
+			contentAjax: {
+				url: BASE_URL + 'agent/ideas/compare-revs/' + old_id + '/' + new_id
+			},
+			destroyOnClose: true
+		});
+
+		overlay.openOverlay();
+	}
 });
