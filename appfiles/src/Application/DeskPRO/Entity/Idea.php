@@ -131,6 +131,16 @@ class Idea extends ContentAbstract
 		$this->setModelField('popularity', $pop);
 	}
 
+	public function recalculateVoteStats(array $votes)
+	{
+		$this->num_ratings = count($votes);
+		$this->total_rating = 0;
+		foreach ($votes as $v) {
+			$this->total_rating += $v->getRating();
+		}
+		$this->recalculatePopularity();
+	}
+
 	public function getCategoryId()
 	{
 		return $this->category['id'];

@@ -26,6 +26,8 @@ use Application\DeskPRO\ContentRevision\Util as ContentRevisionUtil;
 
 use Application\DeskPRO\Publish\Ideas\GroupingCounter;
 
+use Application\DeskPRO\Ideas\IdeaMerge;
+
 use Orb\Util\Strings;
 use Orb\Util\Arrays;
 use Orb\Util\Util;
@@ -37,6 +39,46 @@ use FineDiff;
  */
 class IdeasController extends AbstractController
 {
+	############################################################################
+	# get-section-data
+	############################################################################
+
+	public function getSectionDataAction()
+	{
+		$data = array();
+
+		$counts = array();
+		$counts['ideas_awaiting_validation']    = App::getEntityRepository('DeskPRO:Idea')->countAwaitingValidation();
+		$counts['comments_awaiting_validation'] = App::getEntityRepository('DeskPRO:IdeaComment')->countAwaitingValidation();
+
+		$status_counts = array();
+		$status_counts['new']    = App::getEntityRepository('DeskPRO:Idea')->countNew();
+		$status_counts['active'] = App::getEntityRepository('DeskPRO:Idea')->countActiveGrouped();
+		$status_counts['closed'] = App::getEntityRepository('DeskPRO:Idea')->countClosedGrouped();
+		$status_counts['hidden'] = App::getEntityRepository('DeskPRO:Idea')->countHiddenGrouped();
+
+		$category_counts = App::getEntityRepository('DeskPRO:Idea')->countAllCategoriesGrouped();
+
+		$idea_cats          = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
+		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
+		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
+
+		$label_lister = new \Application\DeskPRO\Labels\LabelLister('ideas');
+		$ideas_tag_index = $label_lister->getIndexList();
+
+		$data['section_html'] = $this->renderView('AgentBundle:Ideas:window-section.html.twig', array(
+			'counts'             => $counts,
+			'status_counts'      => $status_counts,
+			'category_counts'    => $category_counts,
+			'idea_cats'          => $idea_cats,
+			'active_status_cats' => $active_status_cats,
+			'closed_status_cats' => $closed_status_cats,
+			'ideas_tag_index'    => $ideas_tag_index
+		));
+
+		return $this->createJsonResponse($data);
+	}
+
 	############################################################################
 	# view
 	############################################################################
@@ -299,44 +341,61 @@ class IdeasController extends AbstractController
 	}
 
 	############################################################################
-	# get-section-data
+	# merge
 	############################################################################
 
-	public function getSectionDataAction()
+	public function mergeOverlayAction($idea_id)
 	{
-		$data = array();
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
 
-		$counts = array();
-		$counts['ideas_awaiting_validation']    = App::getEntityRepository('DeskPRO:Idea')->countAwaitingValidation();
-		$counts['comments_awaiting_validation'] = App::getEntityRepository('DeskPRO:IdeaComment')->countAwaitingValidation();
+		$open_ideas = $this->em->getRepository('DeskPRO:Idea')->getByIds($this->in->getCleanValueArray('open_idea_ids', 'uint', 'discard'));
 
-		$status_counts = array();
-		$status_counts['new']    = App::getEntityRepository('DeskPRO:Idea')->countNew();
-		$status_counts['active'] = App::getEntityRepository('DeskPRO:Idea')->countActiveGrouped();
-		$status_counts['closed'] = App::getEntityRepository('DeskPRO:Idea')->countClosedGrouped();
-		$status_counts['hidden'] = App::getEntityRepository('DeskPRO:Idea')->countHiddenGrouped();
+		$fn = function ($i) use ($idea) {
+			if ($i['id'] == $idea['id']) {
+				return false;
+			}
+			return true;
+		};
 
-		$category_counts = App::getEntityRepository('DeskPRO:Idea')->countAllCategoriesGrouped();
+		$open_ideas = array_filter($open_ideas, $fn);
 
-		$idea_cats          = App::getEntityRepository('DeskPRO:IdeaCategory')->getCategoryHelper()->getFlatHierarchy();
-		$active_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getActiveCategories();
-		$closed_status_cats = App::getEntityRepository('DeskPRO:IdeaStatusCategory')->getClosedCategories();
-
-		$label_lister = new \Application\DeskPRO\Labels\LabelLister('ideas');
-		$ideas_tag_index = $label_lister->getIndexList();
-
-		$data['section_html'] = $this->renderView('AgentBundle:Ideas:window-section.html.twig', array(
-			'counts'             => $counts,
-			'status_counts'      => $status_counts,
-			'category_counts'    => $category_counts,
-			'idea_cats'          => $idea_cats,
-			'active_status_cats' => $active_status_cats,
-			'closed_status_cats' => $closed_status_cats,
-			'ideas_tag_index'    => $ideas_tag_index
+		return $this->render('AgentBundle:Ideas:merge-overlay.html.twig', array(
+			'idea'          => $idea,
+			'open_ideas'    => $open_ideas,
 		));
-
-		return $this->createJsonResponse($data);
 	}
+
+	/**
+	 * Merge a ticket interface
+	 */
+	public function mergeAction($idea_id, $other_idea_id)
+	{
+		$idea = App::findEntity('DeskPRO:Idea', $idea_id);
+		$other_idea = App::findEntity('DeskPRO:Idea', $other_idea_id);
+
+		$old_idea_id = $other_idea['id'];
+
+		try {
+			$this->em->beginTransaction();
+			$merge = new IdeaMerge($this->person, $idea, $other_idea);
+			$merge->merge();
+			$this->em->commit();
+		} catch (\Exception $e) {
+			$this->em->rollback();
+
+			throw $e;
+		}
+
+		return $this->createJsonResponse(array(
+			'success' => true,
+			'idea_id' => $idea['id'],
+			'old_idea_id' => $old_idea_id
+		));
+	}
+
+	############################################################################
+	# filters
+	############################################################################
 
 	/**
 	 * Any general search. For example, status, category or label

@@ -1,0 +1,37 @@
+<div class="ticket-merge idea-merge overlay">
+	<div class="overlay-title">
+		<h4>Merge "{{ idea.title }}" into ...</h4>
+		<div class="info">
+			Merge this idea ({{ idea.id }}) into one of the open ideas below. This description will be
+			added as a new comment and any existing comments on this idea will be appended. Afterwards,
+			this idea will be deleted.
+		</div>
+	</div>
+
+	<div class="overlay-content">
+		{% if not open_ideas %}
+			<div class="group">
+				<ul>
+					<li>
+						You have no other ideas open. Find an idea you want to merge with and open it in a
+						new tab, then click on the merge button again.
+					</li>
+				</ul>
+			</div>
+		{% endif %}
+
+		{% if open_ideas %}
+		<div class="group open-tickets">
+			<h2>Currently open ideas</h2>
+			<ul>
+				{% for idea in open_ideas %}
+					<li>
+						<a data-route="page:{{ path('agent_ideas_view', {'idea_id': idea.id}) }}" class="with-route">{{ idea.title }}</a>
+						<button class="clean-gray xx-small merge-trigger" data-idea-id="{{ idea.id }}">Merge</button>
+					</li>
+				{% endfor %}
+			</ul>
+		</div>
+		{% endif %}
+	</div>
+</div>

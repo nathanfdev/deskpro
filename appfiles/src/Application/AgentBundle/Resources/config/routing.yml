@@ -1151,6 +1151,16 @@ agent_ideas_ajaxupdatestatus:
   pattern: /ideas/view/{idea_id}/ajax-update-status/{status_code}
   defaults: { _controller: AgentBundle:Ideas:ajaxUpdateStatus }
 
+agent_ideas_merge_overlay:
+  pattern: /ideas/merge-overlay/{idea_id}
+  defaults: { _controller: AgentBundle:Ideas:mergeOverlay }
+  requirements: { idea_id: "\d+" }
+
+agent_ideas_merge:
+  pattern: /ideas/merge/{idea_id}/{other_idea_id}
+  defaults: { _controller: AgentBundle:Ideas:merge }
+  requirements: { idea_id: "\d+", other_idea_id: "\d+" }
+
 ################################################################################
 # Chat
 ################################################################################

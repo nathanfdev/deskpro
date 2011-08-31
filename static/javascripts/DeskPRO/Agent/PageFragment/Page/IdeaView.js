@@ -87,6 +87,8 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 		this.getEl('my_vote').click(function() {
 			self.toggleMyVote();
 		});
+
+
 	},
 
 	handleUnloadRevisions: function(revision_id) {
@@ -270,6 +272,28 @@ DeskPRO.Agent.PageFragment.Page.IdeaView = new Class({
 		$('.view-user-interface', actions).click(function() {
 			window.open(self.meta.permalink);
 		});
+
+		$('.merge', actions).click((function(ev) {
+			var mergeOverlay = new DeskPRO.Agent.Widget.MergeIdea({
+				ideaId: this.getMetaData('idea_id'),
+				destroyOnClose: true,
+				onMergeSuccess: function(data) {
+
+					// remove old tabs, theyre outdated
+					Array.each(DeskPRO_Window.getTabWatcher().findTabType('idea'), function(tab) {
+						var tid = tab.page.getMetaData('idea_id');
+						if (tid == data.old_idea_id || tid == data.idea_id) {
+							DeskPRO_Window.pageTabStrip.removeTabById(tab.id);
+						}
+					});
+
+					DeskPRO_Window.runPageRoute('page:' + BASE_URL + 'agent/ideas/view/' + data.idea_id);
+
+					mergeOverlay.close();
+				}
+			});
+			mergeOverlay.open();
+		}).bind(this));
 	},
 
 

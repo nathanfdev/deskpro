@@ -18,7 +18,7 @@ use Orb\Util\Arrays;
 /**
  * General ratings (articles, downloads, news)
  *
- * @ORM_Mapping\Entity
+ * @ORM_Mapping\Entity(repositoryClass="Application\DeskPRO\EntityRepository\Rating")
  * @ORM_Mapping\Table(name="ratings")
  */
 class Rating extends RatingAbstract

@@ -14,23 +14,10 @@ class TestController extends Controller
 {
     public function indexAction()
     {
-		$cats = App::getOrm()->createQuery("
-			SELECT c
-			FROM DeskPRO:ArticleCategory c INDEX BY c.id
-			ORDER BY c.display_order
-		")->execute();
+		$ids = App::getEntityRepository('DeskPRO:Rating')->getRatingsFor('idea', 2);
 
-		$cats[2]['parent'] = $cats[1];
-		$cats[3]['parent'] = $cats[1];
-
-		$cats[8]['parent'] = $cats[7];
-		$cats[9]['parent'] = $cats[7];
-
-		App::getOrm()->persist($cats[2]);
-		App::getOrm()->persist($cats[3]);
-		App::getOrm()->persist($cats[8]);
-		App::getOrm()->persist($cats[9]);
-		App::getOrm()->flush();
+		echo count($ids);
+		print_r(array_keys($ids));
 
 		exit;
 		return $this->render('DevBundle:Test:test.html.twig');

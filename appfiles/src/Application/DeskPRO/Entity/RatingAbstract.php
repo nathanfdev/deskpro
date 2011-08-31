@@ -140,5 +140,23 @@ abstract class RatingAbstract extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
+	public function getPersonId()
+	{
+		if ($this->person) {
+			return $this->person->getId();
+		}
+
+		return 0;
+	}
+
+	public function getVisitorId()
+	{
+		if ($this->visitor) {
+			return $this->visitor->getId();
+		}
+
+		return 0;
+	}
+
 	abstract public function setContentObject($obj);
 }

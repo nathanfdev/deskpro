@@ -6537,3 +6537,13 @@ article .pending-delete {
 	margin-left: 125px;
 	font-size: 9px;
 }
+
+
+.idea-merge.overlay {
+	max-width: 680px;
+}
+
+.idea-merge.overlay .overlay-title .info {
+	font-size: 11px;
+	margin: -3px 5px 5px 5px;
+}
