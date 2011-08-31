@@ -86,6 +86,19 @@ class Organization extends EntityRepository
 		return $orgs;
 	}
 
+	/**
+	 * Get a count of how many people there are
+	 *
+	 * @return int
+	 */
+	public function getCount()
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM organizations
+		");
+	}
+
 
 
 	/**

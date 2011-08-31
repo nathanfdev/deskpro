@@ -32,6 +32,8 @@ class PeopleSearchController extends AbstractController
 		# People labels
 		#------------------------------
 
+		$people_count = App::getEntityRepository('DeskPRO:Person')->getCount();
+
 		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('people', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$people_tag_cloud = $cloud_gen->getCloud();
@@ -43,6 +45,8 @@ class PeopleSearchController extends AbstractController
 		# Org labels
 		#------------------------------
 
+		$org_count = App::getEntityRepository('DeskPRO:Organization')->getCount();
+
 		$label_counts = App::getEntityRepository('DeskPRO:LabelDef')->getLabelCounts('organizations', 25);
 		$cloud_gen = new \Application\DeskPRO\UI\TagCloud($label_counts);
 		$org_tag_cloud = $cloud_gen->getCloud();
@@ -51,10 +55,12 @@ class PeopleSearchController extends AbstractController
 		$org_tag_index = $label_lister->getIndexList();
 
 		$data['section_html'] = $this->renderView('AgentBundle:PeopleSearch:window-section.html.twig', array(
+			'people_count'     => $people_count,
 			'people_tag_cloud' => $people_tag_cloud,
 			'people_tag_index' => $people_tag_index,
 			'org_tag_cloud'    => $org_tag_cloud,
-			'org_tag_index'    => $org_tag_index
+			'org_tag_index'    => $org_tag_index,
+			'org_count'        => $org_count
 		));
 
 		return $this->createJsonResponse($data);
@@ -94,7 +100,7 @@ class PeopleSearchController extends AbstractController
 		if (empty($vars['display_fields'])) {
 			$vars['display_fields'] = array('email_address');
 		}
-		
+
 		$vars['display_fields'] = Arrays::removeFalsey($vars['display_fields']);
 		$vars['display_fields'] = array_unique($vars['display_fields']);
 

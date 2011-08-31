@@ -85,7 +85,7 @@ class Person extends EntityRepository
 
 	/**
 	 * Get all online and active (not away) agents.
-	 * 
+	 *
 	 * @param bool $ids_only
 	 * @return array
 	 */
@@ -218,5 +218,18 @@ class Person extends EntityRepository
 		", array('ended'));
 
 		return App::findEntity('DeskPRO:Person', $id);
+	}
+
+	/**
+	 * Get a count of how many people there are
+	 *
+	 * @return int
+	 */
+	public function getCount()
+	{
+		return App::getDb()->fetchColumn("
+			SELECT COUNT(*)
+			FROM people
+		");
 	}
 }
