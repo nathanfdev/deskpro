@@ -134,6 +134,24 @@ class PublishController extends AbstractController
 		App::getOrm()->persist($comment);
 		App::getOrm()->flush();
 
+		if ($comment->getUserEmail()) {
+			$email_subject = 'Your comment was published';
+			$email_body = App::get('templating')->render('DeskPRO:emails_user:comment-approved.html.twig', array(
+				'comment' => $comment
+			));
+
+			$message = App::getMailer()->createMessage();
+			if ($comment->person) {
+				$message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
+			} else {
+				$message->setTo($comment->getUserEmail());
+			}
+			$message->setSubject($email_subject);
+			$message->setBody($email_body, 'text/html');
+			$message->enableQueueHint();
+			App::getMailer()->send($message);
+		}
+
 		return $this->createJsonResponse(array(
 			'comment_id' => $comment['id'],
 			'typename'   => $typename
@@ -149,6 +167,24 @@ class PublishController extends AbstractController
 
 		App::getOrm()->persist($comment);
 		App::getOrm()->flush();
+
+		if ($comment->getUserEmail()) {
+			$email_subject = 'Your comment was read';
+			$email_body = App::get('templating')->render('DeskPRO:emails_user:comment-deleted.html.twig', array(
+				'comment' => $comment
+			));
+
+			$message = App::getMailer()->createMessage();
+			if ($comment->person) {
+				$message->setTo($comment->person->getPrimaryEmailAddress(), $comment->person->getDisplayName());
+			} else {
+				$message->setTo($comment->getUserEmail());
+			}
+			$message->setSubject($email_subject);
+			$message->setBody($email_body, 'text/html');
+			$message->enableQueueHint();
+			App::getMailer()->send($message);
+		}
 
 		return $this->createJsonResponse(array(
 			'comment_id' => $comment['id'],
