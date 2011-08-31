@@ -87,11 +87,16 @@ class IdeaResults
 			}
 
 			$order_by = $controller->in->getString('order_by');
+			if (!$order_by) {
+				$order_by = $controller->person->getPref('agent.ui.idea-filter-order-by.0');
+			}
 
 			if ($order_by) {
 				$searcher->setOrderByCode($order_by);
 			} elseif (!empty($options['default_order_by'])) {
 				$searcher->setOrderByCode($options['default_order_by']);
+			} else {
+				$order_by = 'id:desc';
 			}
 
 			$results = $searcher->getMatches();

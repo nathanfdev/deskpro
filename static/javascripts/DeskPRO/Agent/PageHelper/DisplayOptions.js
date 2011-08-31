@@ -54,10 +54,17 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		$('.loading-off', this.overlay.elements.wrapper).hide();
 		$('.loading-on', this.overlay.elements.wrapper).show();
 
+		this.saveAndRefresh();
+	},
+
+	saveAndRefresh: function() {
+
+		var wrap = this.getWrapperElement();
+
 		var data = [];
 		var pref_name = 'prefs[agent.ui.'+ this.options.prefId + '-display-fields.' + this.options.resultId +'][]';
 
-		$('input[type="checkbox"]:checked', this.overlay.elements.wrapper).each(function() {
+		$('input[type="checkbox"]:checked', wrap).each(function() {
 			data.push({
 				name: pref_name,
 				value: $(this).attr('name')
@@ -67,7 +74,7 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 		// and the ordering
 		data.push({
 			name: 'prefs[agent.ui.'+ this.options.prefId + '-order-by.' + this.options.resultId +']',
-			value: $('select[name="order_by"]', this.overlay.elements.wrapper).val()
+			value: $('select[name="order_by"]', wrap).val()
 		});
 
 		// We reload the same page which will have changes applied
@@ -93,6 +100,14 @@ DeskPRO.Agent.PageHelper.DisplayOptions = new Orb.Class({
 	close: function() {
 		if (this.overlay) {
 			this.overlay.close();
+		}
+	},
+
+	getWrapperElement: function() {
+		if (this.overlay) {
+			return $(this.overlay.elements.wrapper);
+		} else {
+			return $('.display-options:first', this.page.wrapper);
 		}
 	},
 

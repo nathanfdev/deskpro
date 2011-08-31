@@ -2,7 +2,21 @@
 	<span class="display-options-trigger tipped" title="Change display options">Display Options</span>
 
 	Ordered by
-	<button class="clean-gray xxx-small sub-group-trigger" class="tipped" title="Change sorting">
-		<span>Popularity</span>
+	<button class="clean-gray xxx-small order-by-trigger" class="tipped" title="Change sorting">
+		<span class="label">
+			{% if 'popularity' in cache.criteria.order_by %}
+				Popularity
+			{% elseif 'num_ratings' in cache.criteria.order_by %}
+				Votes
+			{% else %}
+				Date
+			{% endif %}
+		</span>
 	</button>
+
+	<ul class="order-by-menu" style="display: none">
+		<li data-field="popularity">Popularity</li>
+		<li data-field="votes">Votes</li>
+		<li data-field="date">Date</li>
+	</ul>
 </header>

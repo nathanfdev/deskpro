@@ -20,6 +20,28 @@ DeskPRO.Agent.PageFragment.ListPane.IdeaFilter = new Class({
 
 		});
 
+		var menuBtn = $('button.order-by-trigger:first', this.wrapper);
+		this.orderByMenu = new DeskPRO.UI.Menu({
+			triggerElement: menuBtn,
+			menuElement: $('ul.order-by-menu:first', this.wrapper),
+			onItemClicked: (function(info) {
+				var item = $(info.itemEl);
+
+				var prop = item.data('field')
+				var label = item.text().trim();
+
+				$('.label', menuBtn).text(label);
+
+				var disOptWrap = this.displayOptions.getWrapperElement();
+				var sel = $('select.sel-order-by', disOptWrap);
+				$('option', sel).prop('selected', false);
+				$('option.' + prop, sel).prop('selected', true);
+
+				this.displayOptions.saveAndRefresh();
+
+			}).bind(this)
+		});
+
 		this.initRoutesOnCollection($('.with-route', el));
 
 		this.listWrapper = $('section.idea-simple-list', this.wrapper);

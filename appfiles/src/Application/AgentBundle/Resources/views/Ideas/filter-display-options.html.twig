@@ -1,4 +1,14 @@
 {% extends 'AgentBundle:Common:display-options-layout.html.twig' %}
+{% block other_options %}
+	Order By: <select name="order_by" class="sel-order-by">
+		<option class="date" value="date_created:desc">Date Created (Newest-Oldest)</option>
+		<option value="date_created:desc">Date Created (Oldest-Newest)</option>
+		<option class="popularity" value="popularity:desc">Popularity (Most-Least)</option>
+		<option value="popularity:desc">Popularity (Least-Most)</option>
+		<option class="votes" value="num_ratings:desc">Votes (Most-Least)</option>
+		<option value="num_ratings:desc">Votes (Least-Most)</option>
+	</select>
+{% endblock %}
 {% block display_elements_list %}
 	<li data-field="author"><input type="checkbox" name="author" /> Author</li>
 	<li data-field="category"><input type="checkbox" name="category" /> Category</li>

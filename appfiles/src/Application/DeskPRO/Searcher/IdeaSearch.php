@@ -177,12 +177,16 @@ class IdeaSearch extends SearcherAbstract
 
 		switch ($type) {
 			case 'id':
-			case 'date':
+			case 'date_created':
 				$order_by = "ORDER BY ideas.id $dir";
 				break;
 
-			case 'num_votes':
-				$order_by = "ORDER BY ideas.num_votes $dir";
+			case 'popularity':
+				$order_by = "ORDER BY ideas.popularity $dir";
+				break;
+
+			case 'num_ratings':
+				$order_by = "ORDER BY ideas.num_ratings $dir";
 				break;
 		}
 
