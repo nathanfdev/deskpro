@@ -636,7 +636,7 @@ class IdeasController extends AbstractController
 			$display_fields = $this->person->getPref('agent.ui.idea-filter-display-fields.0');
 		}
 		if (!$display_fields) {
-			$display_fields = array('num_ratings', 'date_created');
+			$display_fields = array('date_created');
 		}
 
 		return $this->render($template, array_merge(array(

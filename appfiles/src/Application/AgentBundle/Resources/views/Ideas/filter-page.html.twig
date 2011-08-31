@@ -4,6 +4,9 @@
 			<input class="item-select" type="checkbox" value="{{idea.id}}" />
 			<div class="toprow">
 				<div class="left">
+					<span class="votes">
+						{{ idea.num_ratings|default(0) }}
+					</span>
 					<span class="subject">
 						<a class="with-route" data-route="page:{{ path('agent_ideas_view', {'idea_id': idea.id}) }}">{{ idea.title }}</a>
 					</span>
@@ -32,11 +35,6 @@
 								<li>
 									<span class="prop-title">Date Created</span>
 									<span class="prop-val">{{ idea.date_created|date('M j, Y')}}</span>
-								</li>
-							{% elseif field == 'num_ratings' %}
-								<li>
-									<span class="prop-title">Votes</span>
-									<span class="prop-val">{{ idea.num_ratings|default(0) }}</span>
 								</li>
 							{% endif %}
 						{% endfor %}
