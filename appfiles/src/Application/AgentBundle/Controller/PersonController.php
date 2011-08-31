@@ -343,6 +343,7 @@ class PersonController extends AbstractController
 			if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
 				if (!$email) {
 					$this->em->remove($person->emails[$email_id]);
+					$person->emails->remove($email_id);
 				} else {
 					$person->emails[$email_id]->email = $email;
 					$this->em->persist($person->emails[$email_id]);
@@ -359,6 +360,7 @@ class PersonController extends AbstractController
 		// Removing emails
 		foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
 			if (isset($person->emails[$email_id])) {
+				$person->emails->remove($email_id);
 				$this->em->remove($person->emails[$email_id]);
 			}
 		}
@@ -374,6 +376,7 @@ class PersonController extends AbstractController
 					$contact_data->person = $person;
 
 					$this->em->persist($contact_data);
+					$person->contact_data->add($contact_data);
 				} catch (\Exception $e) {
 					throw $e;
 				}
@@ -394,14 +397,34 @@ class PersonController extends AbstractController
 		foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
 			if (isset($person->contact_data[$id])) {
 				$this->em->remove($person->contact_data[$id]);
+				$person->contact_data->remove($id);
 			}
 		}
 
 		$this->em->flush();
 		$this->em->commit();
 
+		$contact_data = array();
+		foreach ($person->contact_data as $cd) {
+			if (!isset($contact_data[$cd->contact_type])) {
+				$contact_data[$cd->contact_type] = array();
+			}
+			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+		}
+
+		$display_html = $this->renderView('AgentBundle:Person:view-contact-display.html.twig', array(
+			'person' => $person,
+			'contact_data' => $contact_data,
+		));
+		$editor_overlay_html = $this->renderView('AgentBundle:Person:contact-overlay.html.twig', array(
+			'person' => $person,
+			'contact_data' => $contact_data,
+		));
+
 		return $this->createJsonResponse(array(
-			'success' => 1
+			'success' => 1,
+			'display_html' => $display_html,
+			'editor_overlay_html' => $editor_overlay_html
 		));
 	}
 
