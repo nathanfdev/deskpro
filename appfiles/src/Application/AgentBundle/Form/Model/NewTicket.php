@@ -21,7 +21,7 @@ use Application\DeskPRO\Entity\Organization;
 class NewTicket
 {
 	public $person;
-	
+
 	public $subject;
 	public $notify_template = '';
 	public $message;
@@ -105,6 +105,11 @@ class NewTicket
 			$ticket[$k] = $this->$k;
 		}
 
+		if (!$ticket['notify_template']) {
+			$ticket['notify_template'] = '';
+		}
+
+
 		$ticket->person = $person;
 
 		// CC'ed
@@ -124,7 +129,7 @@ class NewTicket
 		foreach ($new_parts_to_people as $cc_person) {
 			$ticket->addParticipantPerson($cc_person);
 		}
-		
+
 		#------------------------------
 		# Message
 		#------------------------------

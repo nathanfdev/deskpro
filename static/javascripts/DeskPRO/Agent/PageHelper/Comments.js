@@ -49,6 +49,19 @@ DeskPRO.Agent.PageHelper.Comments = new Orb.Class({
 					case 'delete':
 						self.deleteComment(commentEl, commentEl.data('content-type'), commentEl.data('comment-id'));
 						break;
+
+					case 'create-ticket':
+						$.ajax({
+							url: BASE_URL + 'agent/publish/comments/new-ticket-info/' + commentEl.data('content-type') + '/' + commentEl.data('comment-id') + '.json',
+							type: 'GET',
+							dataType: 'json',
+							success: function(data) {
+								DeskPRO_Window.newTicketLoader.open(function(page) {
+									page.setNewByComment(data);
+								});
+							}
+						});
+						break;
 				}
 			}
 		});

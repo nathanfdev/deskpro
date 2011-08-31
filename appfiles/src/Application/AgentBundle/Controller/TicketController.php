@@ -1259,14 +1259,52 @@ class TicketController extends AbstractController
 
 			$ticket = $newticket->getTicket();
 
+			$comment_type   = $this->in->getString('for_comment_type');
+			$comment_id     = $this->in->getUint('for_comment_id');
+			$comment_action = $this->in->getString('comment_action');
+
+			if ($comment_id && $comment_type && $comment_action) {
+				$entity = $this->_getCommentEntityName($comment_type);
+				$comment = App::findEntity($entity, $comment_id);
+
+				switch ($comment_action) {
+					case 'delete':
+						$comment->setStatus('deleted');
+						break;
+					case 'approve':
+						$comment->setStatus('visible');
+						break;
+				}
+
+				$this->em->persist($comment);
+				$this->em->flush();
+			}
+
 			return $this->createJsonResponse(array(
 				'success' => true,
-				'ticket_id' => $ticket['id']
+				'ticket_id' => $ticket['id'],
+				'comment_id' => $comment_id,
+				'comment_type' => $comment_type
 			));
 		} else {
 			return $this->createJsonResponse(array(
 				'success' => false,
 			));
+		}
+	}
+
+	// TODO abstract this bit out somewhere,same as in PublishController
+	protected function _getCommentEntityName($typename)
+	{
+		switch ($typename) {
+			case 'articles':
+				return 'DeskPRO:ArticleComment';
+			case 'downloads':
+				return 'DeskPRO:DownloadComment';
+			case 'news':
+				return 'DeskPRO:NewsComment';
+			case 'ideas':
+				return 'DeskPRO:IdeaComment';
 		}
 	}
 

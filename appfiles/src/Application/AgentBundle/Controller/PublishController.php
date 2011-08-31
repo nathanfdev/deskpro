@@ -216,6 +216,24 @@ class PublishController extends AbstractController
 		));
 	}
 
+	public function getNewTicketCommentInfoAction($typename, $comment_id)
+	{
+		$entity = $this->_getCommentEntityName($typename);
+
+		$comment = App::findEntity($entity, $comment_id);
+
+		return $this->createJsonResponse(array(
+			'message'       => $comment->getContentPlain(),
+			'status'        => $comment->status,
+			'content_type'  => $typename,
+			'comment_id'    => $comment_id,
+			'person_id'     => $comment->getPersonId(),
+			'email_address' => $comment->getUserEmail(),
+			'object_title'  => $comment->getObject()->getTitle(),
+			'object_url'    => $this->get('router')->getGenerator()->generateObjectUrl($comment->getObject())
+		));
+	}
+
 	protected function _getCommentEntityName($typename)
 	{
 		switch ($typename) {

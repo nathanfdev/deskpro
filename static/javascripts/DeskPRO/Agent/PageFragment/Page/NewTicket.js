@@ -11,17 +11,17 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 		this.wrapper = el;
 		this.contentWrapper = this.wrapper.children('.layout-content').attr('id', Orb.getUniqueId());
 		this.parent(el);
-		
+
 		var cw = this.contentWrapper;
 		cw.tinyscrollbar();
 		$('div.scroll-content:first, div.scroll-viewport:first', this.contentWrapper).resize(function() {
 			cw.tinyscrollbar_update();
 		});
-		
+
 		this.form = $('form', this.wrapper).submit(function(ev) {
 			ev.preventDefault();
 		});
-		
+
 		this._initUserSection();
 		this._initDepartmentSection();
 		this._initSubjectSection();
@@ -51,6 +51,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			context: this,
 			success: function(data) {
 				if (data.success) {
+
+					if (data.comment_id) {
+						DeskPRO_Window.getMessageBroker().sendMessage('agent-ui.comment-remove', {
+							comment_id: data.comment_id,
+							comment_type: data.comment_type
+						});
+					}
+
 					DeskPRO_Window.runPageRoute('ticket:' + BASE_URL + 'agent/tickets/' + data.ticket_id);
 					this.closeSelf();
 				} else {
@@ -59,22 +67,40 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			}
 		});
 	},
-	
+
+	setNewByComment: function(data) {
+		this.getEl('message').val(data.message);
+		this.getEl('for_comment_type').val(data.content_type);
+		this.getEl('for_comment_id').val(data.comment_id);
+		$('.pending-info', this.wrapper).show();
+
+		this.getEl('comment_object_link').data('route', 'page:' + data.object_url).text(data.object_title);
+
+		this.getEl('usersearch').val(data.email_address);
+		this.setUser(data.person_id);
+
+		if (data.status == 'validating') {
+			$('option[value="approve"]', this.getEl('comment_action')).hide();
+		} else {
+			$('option[value="approve"]', this.getEl('comment_action')).show();
+		}
+	},
+
 	//#########################################################################
 	//# User Section
 	//#########################################################################
-	
+
 	_initUserSection: function() {
 		var self = this;
-		
+
 		this.getEl('me_btn').click((function(ev) {
 			ev.preventDefault();
-			
+
 			var me = DeskPRO_Window.getAgentInfo(DESKPRO_PERSON_ID);
 			this.getEl('usersearch').val(me.email);
 			this.setUser(me.id);
 		}).bind(this));
-		
+
 		this.getEl('usersearch').autocomplete({
 			focus: true,
 			delay: 300,
@@ -99,13 +125,13 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			},
 			select: (function(ev, ui) {
 				this.setUser(ui.item.value);
-				
+
 				ev.preventDefault();
-				
+
 				this.getEl('usersearch').val(ui.item.email);
 			}).bind(this)
 		});
-		
+
 		this.getEl('usersearch').blur((function() {
 			if (!$('input.person_id', this.wrapper).length) {
 				this.setUser(0);
@@ -119,20 +145,20 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			}
 		}).bind(this));
 	},
-	
+
 	clearUser: function() {
 		this.getEl('userinfo').hide().empty();
 		this.getEl('new_userinfo').hide();
 	},
-	
+
 	setUser: function(person_id) {
-		
+
 		this.getEl('user_section').removeClass('done');
-		
+
 		var data = [];
-		
+
 		person_id = parseInt(person_id) || 0;
-		
+
 		if (!person_id) {
 			data.push({
 				name: 'email_address',
@@ -142,7 +168,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 		} else {
 			this.getEl('person_id').val(person_id);
 		}
-		
+
 		$.ajax({
 			type: 'GET',
 			url: BASE_URL + 'agent/tickets/new/get-person-row/' + person_id,
@@ -152,10 +178,10 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			success: function(html) {
 				this.getEl('new_userinfo').hide();
 				this.getEl('userinfo').empty().html(html).show();
-				
+
 				var person_id = parseInt($('.person_id', this.getEl('userinfo')).val());
 				this.getEl('person_id').val(person_id);
-				
+
 				if (person_id) {
 					this.getEl('user_section').addClass('done');
 				}
@@ -168,16 +194,16 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			}
 		});
 	},
-	
+
 	setGuestUser: function() {
 		this.getEl('userinfo').hide();
 		this.getEl('new_userinfo').show();
 	},
-	
+
 	//#########################################################################
 	//# Department Section
 	//#########################################################################
-	
+
 	_initDepartmentSection: function() {
 		var self = this;
 		this.getEl('dep').change(function() {
@@ -188,11 +214,11 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 			}
 		});
 	},
-	
+
 	//#########################################################################
 	//# Subject Section
 	//#########################################################################
-	
+
 	_initSubjectSection: function() {
 		var self = this;
 		var fn = function() {
@@ -202,14 +228,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 				self.getEl('subject_section').addClass('done');
 			}
 		};
-		
+
 		this.getEl('subject').change(fn).blur(fn).keypress(fn);
 	},
-	
+
 	//#########################################################################
 	//# Message Section
 	//#########################################################################
-	
+
 	_initMessageSection: function() {
 		var self = this;
 		var fn = function() {
@@ -219,14 +245,14 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 				self.getEl('message_section').addClass('done');
 			}
 		};
-		
+
 		this.getEl('message').change(fn).blur(fn).keypress(fn);
 	},
-	
+
 	//#########################################################################
 	//# Other Section
 	//#########################################################################
-	
+
 	_initOtherSection: function() {
 
 		this.otherTabs = new DeskPRO.UI.SimpleTabs({
@@ -251,7 +277,7 @@ DeskPRO.Agent.PageFragment.Page.NewTicket = new Class({
 				}
 			}).bind(this)
 		});
-		
+
 		// Agent selector
 		this.assignAgentSelector = new DeskPRO.Agent.Widget.AgentSelector({
 			agentList: $('#agent_selector_list'),

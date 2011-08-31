@@ -112,6 +112,24 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Class({
 			var wr = $('.edit-comment', info.row).hide();
 			$('.comment-display', info.row).show();
 		});
+
+		this.wrapper.delegate('.validate-create-ticket', 'click', function(ev) {
+			var info = findRowInfo(this);
+			$.ajax({
+				url: BASE_URL + 'agent/publish/comments/new-ticket-info/' + info.contentType + '/' + info.commentId + '.json',
+				type: 'GET',
+				dataType: 'json',
+				success: function(data) {
+					DeskPRO_Window.newTicketLoader.open(function(page) {
+						page.setNewByComment(data);
+					});
+				}
+			});
+		});
+
+		DeskPRO_Window.getMessageBroker().addMessageListener('agent-ui.comment-remove', function(data) {
+			$('article.' + data.comment_type + '-' + data.comment_id, this.wrapper).fadeOut();
+		});
 	},
 
 	deleteComment: function(typename, commentId, el) {

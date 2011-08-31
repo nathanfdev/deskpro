@@ -163,6 +163,43 @@ abstract class CommentAbstract extends \Application\DeskPRO\Domain\DomainObject
 		return nl2br(htmlspecialchars($this->content));
 	}
 
+	public function getContentPlain()
+	{
+		if (!$this->content) {
+			return '';
+		}
+		$content = Strings::standardEol($this->content);
+		$content = preg_replace("#<br\s*/?><p>#", "<p>", $content);
+		$content = preg_replace("#<p></p><br\s*/?>#", "<p>", $content);
+		$content = preg_replace("#</p><br\s*/?>#", "</p>", $content);
+		$content = preg_replace("#<br\s*/?></p>#", "</p>", $content);
+		$content = preg_replace("#<br\s*/?>?#", "\n", $content);
+		$content = preg_replace("#<p>\n?#", "\n", $content);
+		$content = preg_replace("#\n?</p>#", "\n", $content);
+		$content = html_entity_decode(strip_tags($content), \ENT_QUOTES, 'UTF-8');
+		$content = trim($content);
+
+		$lines_raw = explode("\n", $content);
+		$lines = array();
+		foreach ($lines_raw as $l) {
+			$lines[] = trim($l);
+		}
+
+		$content = implode("\n", $lines);
+		$content = preg_replace("#\n{3,}#", "\n\n", $content);
+
+		return $content;
+	}
+
+	public function getPersonId()
+	{
+		if ($this->person) {
+			return $this->person->getId();
+		}
+
+		return 0;
+	}
+
 	/**
 	 * Get the entity this comment is attached to. This is a standardized way to fetch the
 	 * entity when you might not know the $comment->XXX to use.

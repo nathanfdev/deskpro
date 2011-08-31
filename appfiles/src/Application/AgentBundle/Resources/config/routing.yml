@@ -816,6 +816,10 @@ agent_publish_comment_save:
   pattern: /publish/comments/save-comment/{typename}/{comment_id}
   defaults: { _controller: AgentBundle:Publish:saveComment }
 
+agent_public_comment_newticketinfo:
+  pattern: /publish/comments/new-ticket-info/{typename}/{comment_id}.json
+  defaults: { _controller: AgentBundle:Publish:getNewTicketCommentInfo }
+
 agent_public_validatingcomments_mass:
   pattern: /publish/comments/validating-mass-actions/{action}
   defaults: { _controller: AgentBundle:Publish:validatingCommentsMassActions }

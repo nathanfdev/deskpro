@@ -18,6 +18,20 @@ pageMeta.baseId = '{{ baseId }}';
 <form id="{{baseId}}_newticket">
 <input type="hidden" name="newticket[person][id]" value="{{ person.id }}" id="{{baseId}}_person_id"/>
 
+<input type="hidden" name="for_comment_type" id="{{baseId}}_for_comment_type" value="" />
+<input type="hidden" name="for_comment_id" id="{{baseId}}_for_comment_id" value="" />
+
+<div class="pending-info" style="display: none;">
+	<h3>Creating ticket for comment</h3>
+	<div class="pending-ticket">
+		 Commented on <a data-route="" class="with-route ticket-link" id="{{baseId}}_comment_object_link"></a><br />
+		 <select name="comment_action" id="{{baseId}}_comment_action">
+		 	<option value="delete">Delete</option>
+		 	<option value="approve">Validate</option>
+		 </select> comment after ticket is created
+	</div>
+</div>
+
 <div class="section user-section" id="{{baseId}}_user_section">
 	<div class="step">
 		<span class="num">1</span>
@@ -95,8 +109,8 @@ pageMeta.baseId = '{{ baseId }}';
 	<div class="content">
 		<h4>Message</h4>
 		<div class="type-wrap">
-			Template: <select name="ticket[notification_template]">
-				<option value="">Ticket</option>
+			Template: <select name="ticket[notify_template]">
+				<option value="ticket">Ticket</option>
 				<option value="blank">Blank</option>
 			</select>
 		</div>

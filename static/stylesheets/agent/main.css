@@ -6408,6 +6408,7 @@ article .pending-delete {
 
 
 
+.page-new-ticket .pending-info,
 .page-new-article .pending-info {
 	background-color: #F0F0EE;
 	border: 1px solid #CFD0CF;
