@@ -13,6 +13,8 @@ namespace Application\DeskPRO\Entity;
 
 use Doctrine\ORM\Mapping as ORM_Mapping;
 
+use Application\DeskPRO\ContactData\ContactData;
+
 /**
  * Contact data is stuff like address, instant messaging, phone etc.
  * These can be applied to People and Organizations.
@@ -29,7 +31,7 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 *
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -37,9 +39,9 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 	 * The handler class
 	 *
 	 * @var string
-	 * @ORM_Mapping\Column(name="handler_class", type="string", length=80)
+	 * @ORM_Mapping\Column(name="contact_type", type="string", length=80)
 	 */
-	protected $handler_class;
+	protected $contact_type;
 
 	/**
 	 * The label/comment/name for this contact entry (Work, Home, etc).
@@ -111,25 +113,47 @@ abstract class ContactDataAbstract extends \Application\DeskPRO\Domain\DomainObj
 
 	/**
 	 * Instance of the handler class
-	 * @var !TODO
+	 * @var \Application\DeskPRO\ContactData\AbstractContactData
 	 */
-	protected $_handler_instance = null;
-
+	protected $_handler = null;
 
 
 	/**
 	 * Get the DeskPRO form field object that knows how to render data etc.
 	 *
-	 * @return Application\DeskPRO\Form\FieldHandler\AbstractFieldHandler
+	 * @return \Application\DeskPRO\ContactData\AbstractContactData
 	 */
 	public function getHandler()
 	{
-		if ($this->_handler_instance !== null) return $this->_handler_instance;
+		if ($this->_handler !== null) return $this->_handler;
+		$this->_handler = ContactData::getHandler($this->contact_type);
 
-		$classname = $this->handler_class;
+		return $this->_handler;
+	}
 
-		$this->_handler_instance = new $classname($this);
 
-		return $this->_handler_instance;
+	/**
+	 * @param array $input
+	 * @return void
+	 */
+	public function applyFormData(array $input)
+	{
+		$this->getHandler()->applyFormData($input, $this);
+	}
+
+
+	/**
+	 * Get values that will be useful in a template.
+	 *
+	 * @return string
+	 */
+	public function getTemplateVars()
+	{
+		$vars = $this->getHandler()->getTemplateVars($this);
+		$vars['contact_type'] = $this->getHandler()->getContactType();
+		$vars['id'] = $this->id;
+		$vars['rec'] = $this;
+
+		return $vars;
 	}
 }

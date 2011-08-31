@@ -6613,3 +6613,116 @@ article.idea .toprow .votes {
     filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fbfbfc', endColorstr='#fbfbfc',GradientType=1 );
     background: linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
 }
+
+
+.profile section.property-col {
+	padding: 8px;
+}
+
+.profile button.contact-edit {
+	float: right;
+	margin: 2px 3px 0 0 !important;
+}
+
+.contact-list ul {
+	padding: 4px;
+}
+
+.contact-list ul li {
+	background-position: 0 50%;
+	background-repeat: no-repeat;
+	padding-left: 20px;
+}
+
+.contact-list ul li.email .primary {
+	background-color: #FFF09C;
+	color: #A19963;
+	font-size: 10px;
+	line-height: 100%;
+	padding: 0 0 1px 0;
+	margin-left: 5px;
+}
+
+.contact-list ul li.email {
+	background-image: url(../../images/icons/social_media_mini_icons/email.png);
+}
+
+.contact-list ul li.facebook {
+	background-image: url(../../images/icons/social_media_mini_icons/facebook.png);
+}
+
+.contact-list ul li.linked_in {
+	background-image: url(../../images/icons/social_media_mini_icons/linkedin.png);
+}
+
+.contact-list ul li.twitter {
+	background-image: url(../../images/icons/social_media_mini_icons/twitter.png);
+}
+
+.contact-list ul li.website {
+	background-image: url(../../images/icons/social_media_mini_icons/stumble.png);
+}
+.contact-list ul li.phone {
+	background-image: url(../../images/icons/social_media_mini_icons/sphinn.png);
+}
+
+
+.profile-contact-editor {
+	width: 680px;
+	height: 450px;
+	overflow: auto;
+}
+
+.profile-contact-editor .add-row {
+	background-color: #E7F3FD;
+	padding: 2px;
+	margin: 3px;
+}
+
+.profile-contact-editor .add-row:hover {
+	background-color: #DDE8F2;
+}
+
+.add-new-type-trigger {
+	display: block;
+	padding: 2px 0 2px 15px;
+	background: url(../../images/action-add.png) no-repeat 0 50%;
+	cursor: pointer;
+	font-size: 11px;
+}
+
+.contact-edit-list li {
+	position: relative;
+	margin-bottom: 1px;
+	margin-top: 1px;
+	background-color: #E7F3FD;
+	padding: 2px 2px 2px 2px;
+}
+
+.contact-edit-list li table td {
+	font-size: 11px;
+	padding-right: 5px;
+}
+
+.contact-edit-list li .type {
+	float: left;
+	width: 60px;
+	font-size: 11px;
+	margin-top: 4px;
+}
+
+.contact-edit-list li .input {
+	margin-left: 65px;
+}
+
+.contact-edit-list li .remove {
+	position: absolute;
+	right: 2px;
+	top: 4px;
+	width: 16px;
+	height: 16px;
+	background: url(../../images/icons/cross.png) no-repeat 50% 50%;
+	overflow: hidden;
+	text-indent: -100px;
+	cursor: pointer;
+}

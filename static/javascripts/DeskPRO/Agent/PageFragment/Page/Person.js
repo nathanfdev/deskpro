@@ -15,7 +15,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	notesSection: null,
 
 	initPage: function(el) {
-
 		this.wrapper = el;
 		this.contentWrapper = $('div.layout-content:first', el);
 
@@ -29,6 +28,69 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			// When size changes within the pane, need to re-size the scroll
 			cw.tinyscrollbar_update();
 		});
+
+
+		var contactEditor = $('.profile-contact-editor:first', this.wrapper);
+
+		this.contactOverlay = new DeskPRO.UI.Overlay({
+			triggerElement: $('.contact-edit:first', this.wrapper),
+			contentElement: contactEditor
+		});
+
+		this.contactNewMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.add-new-type-trigger', this.wrapper),
+			menuElement: $('.add-new-type-menu:first', this.wrapper),
+			onItemClicked: (function(info) {
+				var wrap = this.contactOverlay.elements.wrapper;
+				var item = $(info.itemEl);
+				var tpl = $('.' + item.data('tpl'), wrap).get(0).innerHTML;
+				tpl = tpl.replace('%id%', Orb.uuid());
+
+				var el = $(tpl);
+				el.appendTo($('.contact-edit-list ul', wrap));
+			}).bind(this)
+		});
+
+		$('.save-trigger', contactEditor).click(function(ev) {
+
+			var formData = $(':input, select, textarea', contactEditor).serializeArray();
+
+			$.ajax({
+				url: BASE_URL + 'agent/people/' + self.meta.person_id + '/save-contact-data.json',
+				type: 'POST',
+				dataType: 'json',
+				data: formData,
+				success: function(data) {
+					console.log(data)
+				}
+			});
+		});
+
+		contactEditor.delegate('.remove', 'click', function(ev) {
+			var el = $(this);
+
+			var row = el;
+			while (!row.is('li')) {
+				row = row.parent();
+			}
+
+			var removeName = row.data('remove-name');
+			var removeVal  = row.data('remove-value');
+
+			if (removeName && removeVal) {
+				var input = $('<input type="hidden" />');
+				input.attr('name', removeName);
+				input.val(removeVal);
+
+				input.appendTo($('.contact-edit-list', contactEditor));
+			}
+
+			row.fadeOut('fast', function() {
+				row.remove();
+			});
+		});
+
+		return;
 
 		this.initRoutesOnCollection($('.with-route', this.wrapper));
 		this.initTimesOnCollection($('time.timeago', this.wrapper));
@@ -80,7 +142,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 			context: $('.full-container-tabbed', this.wrapper),
 			triggerElements: $('.full-container-tabbed-tabs li', this.wrapper)
 		});
-		
+
 		this.initNoteFormEditable();
 		this.initNotePagination();
 		this.initOrgEditable();
@@ -321,7 +383,7 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 	initNoteFormEditable: function() {
 		this.notesSection = $('.notes-wrap:first', this.wrapper);
-		
+
 		$('.new-note-form .trigger.save', this.notesSection).click((function() {
 			this.saveNote();
 		}).bind(this));

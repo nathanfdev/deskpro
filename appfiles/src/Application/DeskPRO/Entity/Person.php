@@ -38,7 +38,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -203,7 +203,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonEmail", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="PersonEmail", mappedBy="person", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $emails;
 
@@ -219,7 +219,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\OneToMany(targetEntity="PersonContactData", mappedBy="person", cascade={"persist", "remove", "merge"})
+	 * @ORM_Mapping\OneToMany(targetEntity="PersonContactData", mappedBy="person", cascade={"persist", "remove", "merge"}, indexBy="id")
 	 */
 	protected $contact_data;
 
@@ -299,27 +299,27 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * @ORM_Mapping\OneToMany(targetEntity="Task", mappedBy="creator", cascade={"persist", "remove", "merge"})
 	 */
 	protected $created_tasks;
-	
+
 	/**
 	 * The tasks assigned to this user.
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="Task", mappedBy="assigned_agent", cascade={"persist", "remove", "merge"})
 	 */
 	protected $assigned_tasks;
-	
+
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="TaskComment", mappedBy="person")
 	 */
 	protected $task_comments;
-	
+
 	/**
 	 * @var \Doctrine\Common\Collections\ArrayCollection
 	 * @ORM_Mapping\OneToMany(targetEntity="TaskAssociatedPerson", mappedBy="person")
 	 */
 	protected $task_associations;
 
-	
+
 	/**
 	 * If we have set a password for this user, then the plaintext version will be set here.
 	 * @var string
@@ -594,11 +594,11 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		}
 	}
 
-	
+
 
 	/**
 	 * Gets this persons name and their primary email address
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getDisplayContact()
@@ -804,7 +804,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	/**
 	 * Set the value of a preference. Will update if it exists, or create a new one
 	 * if it doesnt.
-	 * 
+	 *
 	 * @param  $pref
 	 * @param  $value
 	 * @return PersonPref
@@ -916,7 +916,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Get an array of usergroup ID's this user belongs to.
 	 *
@@ -1107,7 +1107,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $custom_fields;
 	}
 
-	
+
 	/**
 	 * Get the primary email address, or null if this person has none.
 	 *
@@ -1125,7 +1125,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Alias for getPrimaryEmailAddress
-	 * 
+	 *
 	 * @return string
 	 */
 	public function getEmailAddress()
@@ -1173,7 +1173,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 
 	/**
 	 * Get email addresses that are validated
-	 * 
+	 *
 	 * @return array
 	 */
 	public function getValidatedEmails()
@@ -1222,7 +1222,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		$email_obj['email'] = $email;
 
 		$this->addEmailAddress($email_obj);
-		
+
 		return $email_obj;
 	}
 
@@ -1539,7 +1539,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	/**
 	 * Is this a newly created person?
 	 *
@@ -1601,7 +1601,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $keys;
 	}
 
-	
+
 	/**
 	 * This will sync the names fields as best as we can. For example, if first/last
 	 * is set but not name, automatically set name
@@ -1709,7 +1709,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	public function getHelperManager()
 	{
 		if ($this->_helper_manager === null) {
@@ -1724,7 +1724,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 		return $this->_person_logger;
 	}
 
-	
+
 
 	/**
 	 * @ORM_Mapping\PostUpdate
@@ -1740,7 +1740,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get id
      *
-     * @return integer 
+     * @return integer
      */
     public function getId()
     {
@@ -1750,7 +1750,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get gravatar_url
      *
-     * @return text 
+     * @return text
      */
     public function getGravatarUrl()
     {
@@ -1770,7 +1770,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get is_contact
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsContact()
     {
@@ -1790,7 +1790,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get is_user
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsUser()
     {
@@ -1810,7 +1810,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get is_agent
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsAgent()
     {
@@ -1830,7 +1830,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get is_confirmed
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsConfirmed()
     {
@@ -1850,7 +1850,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get is_agent_confirmed
      *
-     * @return boolean 
+     * @return boolean
      */
     public function getIsAgentConfirmed()
     {
@@ -1860,7 +1860,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get importance
      *
-     * @return smallint 
+     * @return smallint
      */
     public function getImportance()
     {
@@ -1880,7 +1880,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get name
      *
-     * @return text 
+     * @return text
      */
     public function getName()
     {
@@ -1900,7 +1900,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get first_name
      *
-     * @return text 
+     * @return text
      */
     public function getFirstName()
     {
@@ -1920,7 +1920,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get last_name
      *
-     * @return text 
+     * @return text
      */
     public function getLastName()
     {
@@ -1940,7 +1940,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get secret_string
      *
-     * @return string 
+     * @return string
      */
     public function getSecretString()
     {
@@ -1960,7 +1960,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get organization_position
      *
-     * @return string 
+     * @return string
      */
     public function getOrganizationPosition()
     {
@@ -1980,7 +1980,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get timezone
      *
-     * @return string 
+     * @return string
      */
     public function getTimezone()
     {
@@ -1990,7 +1990,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get password
      *
-     * @return string 
+     * @return string
      */
     public function getPassword()
     {
@@ -2010,7 +2010,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get salt
      *
-     * @return string 
+     * @return string
      */
     public function getSalt()
     {
@@ -2030,7 +2030,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get date_created
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDateCreated()
     {
@@ -2050,7 +2050,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get date_last_login
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDateLastLogin()
     {
@@ -2070,7 +2070,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get date_picture_check
      *
-     * @return datetime 
+     * @return datetime
      */
     public function getDatePictureCheck()
     {
@@ -2080,7 +2080,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get picture_blob
      *
-     * @return Application\DeskPRO\Entity\Blob 
+     * @return Application\DeskPRO\Entity\Blob
      */
     public function getPictureBlob()
     {
@@ -2100,7 +2100,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get organization
      *
-     * @return Application\DeskPRO\Entity\Organization 
+     * @return Application\DeskPRO\Entity\Organization
      */
     public function getOrganization()
     {
@@ -2120,7 +2120,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get primary_email
      *
-     * @return Application\DeskPRO\Entity\PersonEmail 
+     * @return Application\DeskPRO\Entity\PersonEmail
      */
     public function getPrimaryEmail()
     {
@@ -2140,7 +2140,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get emails
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getEmails()
     {
@@ -2160,7 +2160,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get labels
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getLabels()
     {
@@ -2180,7 +2180,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get custom_data
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getCustomData()
     {
@@ -2200,7 +2200,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get contact_data
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getContactData()
     {
@@ -2210,7 +2210,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get usergroups
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getUsergroups()
     {
@@ -2230,7 +2230,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get preferences
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getPreferences()
     {
@@ -2250,7 +2250,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get usersource_assoc
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getUsersourceAssoc()
     {
@@ -2270,7 +2270,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get personscraper_assoc
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getPersonscraperAssoc()
     {
@@ -2290,7 +2290,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get twitter_accounts
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getTwitterAccounts()
     {
@@ -2310,7 +2310,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get twitter_status_notes
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getTwitterStatusNotes()
     {
@@ -2330,7 +2330,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get created_tasks
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getCreatedTasks()
     {
@@ -2340,7 +2340,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get assigned_tasks
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getAssignedTasks()
     {
@@ -2360,7 +2360,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get task_comments
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getTaskComments()
     {
@@ -2380,7 +2380,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
     /**
      * Get task_associations
      *
-     * @return Doctrine\Common\Collections\Collection 
+     * @return Doctrine\Common\Collections\Collection
      */
     public function getTaskAssociations()
     {

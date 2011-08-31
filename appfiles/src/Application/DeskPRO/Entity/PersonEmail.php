@@ -34,7 +34,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	 *
 	 * @var int
 	 * @ORM_Mapping\Id @ORM_Mapping\generatedValue(strategy="IDENTITY") @ORM_Mapping\Column(name="id", type="integer")
-	 * 
+	 *
 	 */
 	protected $id = null;
 
@@ -157,7 +157,7 @@ class PersonEmail extends \Application\DeskPRO\Domain\DomainObject
 	}
 
 
-	
+
 	public function setIsValidated($yesno)
 	{
 		$this->is_validated = $yesno;

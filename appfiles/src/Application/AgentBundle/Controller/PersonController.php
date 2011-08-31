@@ -181,8 +181,17 @@ class PersonController extends AbstractController
 
 		$activity_stream = $this->em->getRepository('DeskPRO:PersonActivity')->getForPerson($person);
 
+		$contact_data = array();
+		foreach ($person->contact_data as $cd) {
+			if (!isset($contact_data[$cd->contact_type])) {
+				$contact_data[$cd->contact_type] = array();
+			}
+			$contact_data[$cd->contact_type][] = $cd->getTemplateVars();
+		}
+
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
+			'contact_data' => $contact_data,
 			'activity_stream' => $activity_stream,
 			'form' => $form,
 			'fields' => $form->getCustomFields(),
@@ -319,6 +328,83 @@ class PersonController extends AbstractController
 		}
 	}
 
+	############################################################################
+	# save-contact-data
+	############################################################################
+
+	public function saveContactDataAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		$this->em->beginTransaction();
+
+		// Editing emails
+		foreach ($this->in->getCleanValueArray('emails', 'string', 'uint') as $email_id => $email) {
+			if (isset($person->emails[$email_id]) AND $person->emails[$email_id]->email != $email) {
+				if (!$email) {
+					$this->em->remove($person->emails[$email_id]);
+				} else {
+					$person->emails[$email_id]->email = $email;
+					$this->em->persist($person->emails[$email_id]);
+				}
+			}
+		}
+
+		// Adding emails
+		foreach ($this->in->getCleanValueArray('new_emails', 'string', 'discard') as $email) {
+			$email_rec = $person->addEmailAddressString($email);
+			$this->em->persist($email_rec);
+		}
+
+		// Removing emails
+		foreach ($this->in->getCleanValueArray('remove_emails', 'uint') as $email_id) {
+			if (isset($person->emails[$email_id])) {
+				$this->em->remove($person->emails[$email_id]);
+			}
+		}
+
+		// Adding contact data
+		foreach ($this->in->getCleanValueArray('new_contact_data') as $type => $inputs) {
+			foreach ($inputs as $input) {
+				try {
+					$contact_data = new PersonContactData();
+					$contact_data->contact_type = $type;
+					$contact_data->applyFormData($input);
+
+					$contact_data->person = $person;
+
+					$this->em->persist($contact_data);
+				} catch (\Exception $e) {
+					throw $e;
+				}
+			}
+		}
+
+		// Editing values
+		foreach ($this->in->getCleanValueArray('new_contact_data') as $id => $input) {
+			if (!isset($person->contact_data[$id])) {
+				continue;
+			}
+
+			$person->contact_data[$id]->applyFormData($input);
+			$this->em->persist($person->contact_data[$id]);
+		}
+
+		// Removing values
+		foreach ($this->in->getCleanValueArray('remove_contact_data', 'uint') as $id) {
+			if (isset($person->contact_data[$id])) {
+				$this->em->remove($person->contact_data[$id]);
+			}
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => 1
+		));
+	}
+
 
 	############################################################################
 	# /agent/people/:person_id/ajax-save-organization        agent_people_ajaxsave_organization
@@ -437,54 +523,6 @@ class PersonController extends AbstractController
 			'person_id' => $person['id'],
 			'dlg_html' => $this->renderView('AgentBundle:Person:email-dlg-li.html.twig', array('person' => $person)),
 			'emails_list' => $emails_list
-		));
-	}
-
-
-	############################################################################
-	# /agent/people/:person_id/ajax-save-contact     agent_people_ajaxsave_contact
-	############################################################################
-
-	// TODO error checking
-	public function ajaxSaveContactAction($person_id)
-	{
-		if ($person_id) {
-			$person = $this->getPersonOr404($person_id);
-		} else {
-			$person = new Person();
-		}
-
-		$type = $this->in->getString('contact_type');
-		$handler = \Application\DeskPRO\Form\ContactFieldHandler\AbstractContactFieldHandler::simpleNameToClassName($type);
-
-		$handler = new $handler();
-
-		$contact_data = new PersonContactData();
-		$contact_data['handler_class'] = get_class($handler);
-
-		$post_data = isset($_POST[$handler->getSimpleName()]) ? $_POST[$handler->getSimpleName()] : array();
-
-		foreach ($post_data as $k => $v) {
-			$field_k = $k;
-			if ($k != 'comment') {
-				$field_k = $handler->mapNameToField($k);
-			}
-			if (!$field_k) continue;
-
-			$contact_data[$field_k] = $v;
-		}
-
-		$em = App::getOrm();
-		$em->beginTransaction();
-		$person->addContactData($contact_data);
-		$em->persist($contact_data);
-		$em->flush();
-		$em->commit();
-
-		return $this->createJsonResponse(array(
-			'success' => true,
-			'person_id' => $person['id'],
-			'contact_html' => $this->renderView('AgentBundle:Person:contact-section.html.twig', array('person' => $person))
 		));
 	}
 
