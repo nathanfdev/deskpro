@@ -6569,6 +6569,10 @@ article.idea .toprow .votes {
 	font-size: 12px;
 }
 
+.deskpro-results-list article.comment .edit-comment {
+	padding: 5px;
+}
+
 .deskpro-results-list article.comment .comment-info {
 	margin-left: 21px;
 	color: #8D97AA;

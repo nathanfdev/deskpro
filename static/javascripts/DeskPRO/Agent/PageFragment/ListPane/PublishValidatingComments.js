@@ -48,10 +48,8 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Class({
 			}
 		});
 
-		this.wrapper.delegate('.validate-approve', 'click', function(ev) {
-			ev.stopPropagation();
-
-			var row = $(this);
+		var findRowInfo = function(el) {
+			var row = $(el);
 			var x = 0;
 			while (!row.is('article')) {
 				if (x++ > 10) return;
@@ -62,23 +60,57 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Class({
 				return;
 			}
 
-			self.approveComment($(check).data('content-type'), $(check).data('comment-id'), row);
+			return {
+				row: row,
+				contentType: $(check).data('content-type'),
+				commentId: $(check).data('comment-id')
+			};
+		};
+
+		this.wrapper.delegate('.validate-approve', 'click', function(ev) {
+			ev.stopPropagation();
+
+			var info = findRowInfo(this);
+			self.approveComment(info.contentType, info.commentId, info.row);
 		});
 		this.wrapper.delegate('.validate-delete', 'click', function(ev) {
 			ev.stopPropagation();
 
-			var row = $(this);
-			var x = 0;
-			while (!row.is('article')) {
-				if (x++ > 10) return;
-				row = row.parent();
-			}
-			var check = $('input.item-select', row);
-			if (!check.length) {
-				return;
-			}
+			var info = findRowInfo(this);
+			self.deleteComment(info.contentType, info.commentId, info.row);
+		});
 
-			self.deleteComment($(check).data('content-type'), $(check).data('comment-id'), row);
+		this.wrapper.delegate('.validate-edit', 'click', function(ev) {
+			ev.stopPropagation();
+
+			var info = findRowInfo(this);
+			self.editComment(info.contentType, info.commentId, info.row);
+		});
+
+		this.wrapper.delegate('.comment-editsave-trigger', 'click', function(ev) {
+			var info = findRowInfo(this);
+
+			$.ajax({
+				url: BASE_URL + 'agent/publish/comments/save-comment/'+info.contentType+'/'+info.commentId,
+				type: 'POST',
+				data: {
+					comment: $('textarea:first', info.row).val()
+				},
+				dataType: 'json',
+				success: function(data) {
+					var rendered = $('.rendered', info.row);
+					rendered.html(data.comment_html);
+
+					var wr = $('.edit-comment', info.row).hide();
+					$('.comment-display', info.row).show();
+				}
+			});
+		});
+
+		this.wrapper.delegate('.comment-editcancel-trigger', 'click', function(ev) {
+			var info = findRowInfo(this);
+			var wr = $('.edit-comment', info.row).hide();
+			$('.comment-display', info.row).show();
 		});
 	},
 
@@ -126,6 +158,28 @@ DeskPRO.Agent.PageFragment.ListPane.PublishValidatingComments = new Class({
 				el.remove();
 			}
 		});
+	},
+
+	editComment: function(typename, commentId, el) {
+		$('.comment-display', el).hide();
+		var wr = $('.edit-comment', el).show();
+		if (!wr.is('.rte-inited')) {
+			wr.addClass('rte-inited');
+			$('textarea', wr).tinymce({
+				script_url: ASSETS_BASE_URL + '/vendor/tiny_mce/tiny_mce.js',
+
+				theme: 'advanced',
+				plugins : "fullscreen",
+				fullscreen_new_window: true,
+				theme_advanced_buttons1: 'bold,italic,underline,|,justifyleft,justifycenter,justifyright,|,fontselect,fontsizeselect,formatselect',
+				theme_advanced_buttons2: ',bullist,numlist,|,outdent,indent,|,link,unlink,anchor,image,|,code,removeformat,fullscreen',
+				theme_advanced_buttons3: '',
+				theme_advanced_toolbar_location: 'top',
+				theme_advanced_toolbar_align: 'left',
+				theme_advanced_resizing: true,
+				theme_advanced_statusbar_location: 'bottom'
+			});
+		}
 	},
 
 	updateCount: function(action) {

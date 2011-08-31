@@ -212,7 +212,7 @@ class PublishController extends AbstractController
 		return $this->createJsonResponse(array(
 			'comment_id' => $comment['id'],
 			'content_type'   => $typename,
-			'comment_html' => $comment->getContentHtml()
+			'comment_html' => $comment->getContent()
 		));
 	}
 
