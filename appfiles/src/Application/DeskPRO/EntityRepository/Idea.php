@@ -103,7 +103,7 @@ class Idea extends EntityRepository
 		return App::getDb()->fetchColumn("
 			SELECT COUNT(*)
 			FROM ideas
-			WHERE hidden_status = ?
+			WHERE status = ?
 		", array('new'));
 	}
 
