@@ -6354,8 +6354,6 @@ article .comment-text {
 	padding-right: 4px;
 }
 
-article .validate-approve,
-article .validate-delete,
 article .pending-delete,
 article .pending-create {
 	width: 16px;
@@ -6373,13 +6371,6 @@ article .pending-create {
 	background-position: 50% 50%;
 
 	cursor: pointer;
-}
-
-article .validate-approve {
-	background-image: url(../../images/icons/tick.png);
-}
-article .validate-delete {
-	background-image: url(../../images/icons/cross.png);
 }
 
 article .pending-create {
@@ -6567,4 +6558,53 @@ article.idea .toprow .votes {
 	-webkit-border-radius: 15px;
 	-moz-border-radius: 15px;
 	border-radius: 15px;
+}
+
+
+
+
+.deskpro-results-list article.comment .comment-row {
+	margin-left: 21px;
+	padding-top: 3px;
+	font-size: 12px;
+}
+
+.deskpro-results-list article.comment .comment-info {
+	margin-left: 21px;
+	color: #8D97AA;
+}
+
+.deskpro-results-list article.comment .comment-info a {
+	color: #727B8C;
+}
+
+.deskpro-results-list article.comment .comment-foot {
+	margin-left: 21px;
+	position: relative;
+	height: 20px;
+	overflow: hidden;
+}
+
+.deskpro-results-list article.comment .comment-foot .comment-controls {
+	position: absolute;
+	right: 4px;
+	bottom: 2px;;
+}
+
+
+.deskpro-results-list article.comment .bound-faded {
+    position: absolute;
+    top: 3px;
+    left: 0;
+    bottom: 0;
+    width: 32px;
+    margin-left: -32px;
+
+    background: -moz-linear-gradient(left, rgba(251,251,252,0) 0%, rgba(251,251,252,1) 87%, rgba(251,251,252,1) 100%);
+    background: -webkit-gradient(linear, left top, right top, color-stop(0%,rgba(251,251,252,0)), color-stop(87%,rgba(251,251,252,1)), color-stop(100%,rgba(251,251,252,1)));
+    background: -webkit-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+    background: -o-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+    background: -ms-linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
+    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#00fbfbfc', endColorstr='#fbfbfc',GradientType=1 );
+    background: linear-gradient(left, rgba(251,251,252,0) 0%,rgba(251,251,252,1) 87%,rgba(251,251,252,1) 100%);
 }

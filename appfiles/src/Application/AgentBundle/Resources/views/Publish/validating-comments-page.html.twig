@@ -3,36 +3,6 @@
 		{% set info = comment_info.info %}
 		{% set comment = comment_info.obj %}
 
-		<article class="comment {{ info.content_type }}-{{content.id}} {{ get_type(comment.object)|lower }}">
-			<input
-				class="item-select"
-				type="checkbox"
-				value="{{ info.content_type }}.{{info.content_id}}"
-				data-content-type="{{ info.content_type }}"
-				data-comment-id="{{ comment.id }}"
-			/>
-			<div class="toprow">
-				<div class="left">
-					<span class="subject">
-						{{ get_type(comment.object) }} <a class="with-route" data-route="page:{{ object_path_agent(comment.object) }}">{{ comment.object.title }}</a>
-					</span>
-				</div>
-				<div class="ticketinfo">
-					<div class="bound-faded"></div>
-					<span class="validate-approve">Approve</span>
-					<span class="validate-delete">Delete</span>
-				</div>
-			</div>
-			<div class="comment-text">
-				{{ comment.content_html_plain }}
-				<br class="clear" />
-			</div>
-			<div class="userinfo">
-				By
-				{% if comment.person %}<a class="with-route" data-route="page:{{ object_path_agent(comment.person) }}">{% endif %}
-				{{ comment.user_name }} {% if comment.user_email %}&lt;{{ comment.user_email }}&gt;{% endif %}
-				{% if comment.person %}</a>{% endif %}
-			</div>
-		</article>
+		{% include 'AgentBundle:Publish:validating-comments-page-row.html.twig' %}
 	{% endfor %}
 </section>
