@@ -8,7 +8,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 	Implements: [Orb.Util.Options, Orb.Util.Events],
 
 	initialize: function(options) {
-		
+
 		// Init vars
 		this.objectId = null,
 
@@ -28,7 +28,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 			destroyOnClose: false,
 			customClassname: '',
 			isModal: true,
-			zIndex: 100000,
+			zIndex: 1000000,
 			escapeClose: true,
 			modalClickClose: true,
 			objectGroup: 'default',
@@ -82,7 +82,7 @@ DeskPRO.UI.Overlay = new Orb.Class({
 		return this.openOverlay();
 	},
 
-	
+
 	/**
 	 * Display the overlay
 	 */
