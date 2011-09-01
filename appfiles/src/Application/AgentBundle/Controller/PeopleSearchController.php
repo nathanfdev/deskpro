@@ -273,6 +273,79 @@ class PeopleSearchController extends AbstractController
 		return $this->_getResponseForPeople('list', $result_cache['id'], $results_helper, $vars);
 	}
 
+	public function massActionsAction($action)
+	{
+		$this->em->beginTransaction();
+
+		$people = $this->em->getRepository('DeskPRO:Person')->getByIds($this->in->getCleanValueArray('ids', 'uint', 'discard'));
+
+		$organization = null;
+		$usergroup = null;
+
+		if ($this->in->getUint('organization_id')) {
+			$organization = App::findEntity('DeskPRO:Organization', $this->in->getUint('organization_id'));
+		}
+		if ($this->in->getUint('usergroup_id')) {
+			$usergroup = App::findEntity('DeskPRO:Usergroup', $this->in->getUint('usergroup_id'));
+		}
+
+
+		foreach ($ideas as $idea) {
+			switch ($action) {
+				case 'delete':
+					// todo need way to handle soft-deleted
+					break;
+
+				case 'add-to-organization':
+					if ($organization) {
+						foreach ($people as $p) {
+							$p->organization = $organization;
+							$this->em->persist($p);
+						}
+					}
+					break;
+
+				case 'del-from-organization':
+					foreach ($people as $p) {
+						if ($p->organization) {
+							$p->organization = null;
+							$this->em->persist($p);
+						}
+					}
+					break;
+
+				case 'add-to-usergroup':
+					if ($usergroup) {
+						foreach ($people as $p) {
+							if (!isset($p->usergroups[$usergroup->id])) {
+								$p->usergroups->add($usergroup);
+								$this->em->persist($p);
+							}
+						}
+					}
+					break;
+
+				case 'del-form-usergroup':
+					if ($usergroup) {
+						foreach ($people as $p) {
+							if (isset($p->usergroups[$usergroup->id])) {
+								$p->usergroups->remove($usergroup->id);
+								$this->em->persist($p);
+							}
+						}
+					}
+					break;
+			}
+		}
+
+		$this->em->flush();
+		$this->em->commit();
+
+		return $this->createJsonResponse(array(
+			'success' => 1
+		));
+	}
+
 	############################################################################
 	# quick-find
 	############################################################################

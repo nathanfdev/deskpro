@@ -227,7 +227,7 @@ class Person extends \Application\DeskPRO\Domain\DomainObject
 	 * Usergroups the user belongs to
 	 *
 	 * @var \Doctrine\Common\Collections\ArrayCollection
-	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", fetch="EAGER")
+	 * @ORM_Mapping\ManyToMany(targetEntity="Usergroup", fetch="EAGER", indexBy="id")
 	 * @ORM_Mapping\JoinTable(name="person2usergroups",
 	 *     joinColumns={@ORM_Mapping\JoinColumn(name="person_id", referencedColumnName="id", onDelete="cascade")},
      *     inverseJoinColumns={@ORM_Mapping\JoinColumn(name="usergroup_id", referencedColumnName="id", onDelete="cascade")}

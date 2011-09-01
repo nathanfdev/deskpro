@@ -47,6 +47,92 @@ DeskPRO.Agent.PageFragment.ListPane.PeopleList = new Class({
 		$('.detail-view-trigger', this.wrapper).click((function() {
 			this.switchViewType('list');
 		}).bind(this));
+
+		this.massActionsMenu = new DeskPRO.UI.Menu({
+			triggerElement: $('.perform-actions-trigger:first', this.wrapper),
+			menuElement: $('.actions-menu:first', this.wrapper),
+			onItemClicked: function(info) {
+				var itemEl = $(info.itemEl);
+				var menuEl = itemEl.parent();
+				var action = itemEl.data('action');
+
+				if (menuEl.is('.submenu')) {
+					action = menuEl.data('action');
+				}
+
+				var postData = self.selectionBar.getCheckedFormValues('ids');
+				var removeFromList = false;
+
+				switch (action) {
+					case 'delete':
+
+						break;
+
+					case 'add-to-organization':
+						var id = itemEl.data('organization-id');
+						if (!id) {
+							return;
+						}
+
+						postData.push({
+							name: 'organization_id',
+							value: id
+						});
+						break;
+
+					case 'del-from-organization':
+
+						break;
+
+					case 'add-to-usergroup':
+						var id = itemEl.data('usergroup-id');
+						if (!id) {
+							return;
+						}
+
+						postData.push({
+							name: 'usergroup_id',
+							value: id
+						});
+						break;
+
+					case 'del-from-usergroup':
+						var id = itemEl.data('usergroup-id');
+						if (!id) {
+							return;
+						}
+
+						postData.push({
+							name: 'usergroup_id',
+							value: id
+						});
+						break;
+
+					default:
+						return;
+						break;
+				}
+
+				$.ajax({
+					url: BASE_URL + 'agent/ideas/filter/mass-actions/' + action,
+					data: postData,
+					type: 'POST',
+					dataType: 'json',
+					success: function(data) {
+						if (removeFromList) {
+							self.selectionBar.getChecked().parent().fadeOut('fast');
+						} else {
+							self.selectionBar.getChecked().each(function() {
+								var name = $('.subject', $(this).parent());
+								DeskPRO_Window.util.showSavePuff(name);
+							});
+						}
+
+						self.selectionBar.checkNone();
+					}
+				});
+			}
+		});
 	},
 
 	destroyPage: function() {

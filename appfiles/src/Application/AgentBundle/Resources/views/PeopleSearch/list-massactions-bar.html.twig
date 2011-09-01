@@ -3,4 +3,22 @@
 	<button class="clean-gray xx-small perform-actions-trigger disabled">
 		<span>Perform Action</span>
 	</button>
+
+	<ul class="actions-menu" style="display: none" data-menu-type="people-actions-menu">
+		<li data-action="delete">Delete</li>
+		<li class="sep">-</li>
+		<li data-action="add-to-organization" data-submenu-selector="#organizations_menu" data-submenu-add-action="add-to-organization">
+			Set users organization
+		</li>
+		<li data-action="del-from-organization">
+			Remove organization from users
+		</li>
+		<li class="sep">-</li>
+		<li data-action="add-to-usergroup" data-submenu-selector="#usergroups_menu" data-submenu-add-action="add-to-usergroup">
+			Add users to usergroup
+		</li>
+		<li data-action="del-from-usergroup" data-submenu-selector="#usergroups_menu" data-submenu-add-action="del-from-usergroup">
+			Remove users from usergroup
+		</li>
+	</ul>
 </header>

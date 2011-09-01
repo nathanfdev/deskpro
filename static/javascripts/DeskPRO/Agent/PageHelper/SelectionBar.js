@@ -93,6 +93,9 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 
 		if (count > 0) {
 			this.button.removeClass('disabled');
+			this.controlCheck.attr('checked', true);
+		} else {
+			this.controlCheck.attr('checked', false);
 		}
 	},
 
@@ -103,6 +106,7 @@ DeskPRO.Agent.PageHelper.SelectionBar = new Orb.Class({
 		this.selectedCount.text(count);
 
 		this.button.addClass('disabled');
+		this.controlCheck.attr('checked', false);
 	},
 
 	handleCheckChange: function(el, is_checked) {

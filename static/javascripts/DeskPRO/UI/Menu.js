@@ -238,7 +238,7 @@ DeskPRO.UI.Menu = new Orb.Class({
 
 		this.openTriggerEvent = event;
 
-		if (event.stopPropagation) {
+		if (event && event.stopPropagation) {
 			// Stop bubbling up, which would call the document
 			// click and immediately close the menu
 			event.stopPropagation();
@@ -548,6 +548,11 @@ DeskPRO.UI.Menu = new Orb.Class({
 				subMenuEl.attr('menu-flag', '');
 				subMenuEl.attr('id', '');
 				subMenuEl.addClass('submenu');
+
+				if ($(el).data('submenu-add-action')) {
+					subMenuEl.data('action', $(el).data('submenu-add-action'))
+						.attr('data-action', $(el).data('submenu-add-action'));
+				}
 
 				subMenuEl.appendTo(el);
 				$(el).data('submenu-selector', '').attr('submenu-selector', '');

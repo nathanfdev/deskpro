@@ -76,6 +76,24 @@
 	{% endfor %}
 </ul>
 
+{# Usergroups #}
+{% if titles.usergroups %}
+<ul id="usergroups_menu" data-menu-flag="copy-menu" data-menu-type="usergroups">
+	{% for id,title in titles.usergroups %}
+		<li data-usergroup-id="{{ id }}">{{ title }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
+
+{# Organizations #}
+{% if titles.organizations %}
+<ul id="organizations_menu" data-menu-flag="copy-menu" data-menu-type="organizations">
+	{% for id,title in titles.organizations %}
+		<li data-organization-id="{{ id }}">{{ title }}</li>
+	{% endfor %}
+</ul>
+{% endif %}
+
 {# Ticket Status #}
 <ul id="ticket_status_menu">
 	<li data-status="open">Open</li>
