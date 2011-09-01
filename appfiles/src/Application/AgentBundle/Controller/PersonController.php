@@ -60,13 +60,18 @@ class PersonController extends AbstractController
 			}
 		}
 
-		// Custom fields
-		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		$field_defs = array();
-		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $field_defs);
+		#------------------------------
+		# Custom fields
+		#------------------------------
 
+		// Custom fields
+		$user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+		$user_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $user_field_defs);
+
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
 		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
-		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($field_defs, $data_structured, $custom_fields_form);
+		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
 
 		#------------------------------
 		# Misc info needed
@@ -89,17 +94,23 @@ class PersonController extends AbstractController
 		$session = App::getEntityRepository('DeskPRO:Session')->getSessionForPerson($person);
 
 		$timezone_options = \DateTimeZone::listIdentifiers();
+		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+
+		$person_usergroups = $person->usergroups;
 
 		return $this->render('AgentBundle:Person:view.html.twig', array(
 			'person' => $person,
+			'person_usergroups' => $person_usergroups,
 			'session' => $session,
 			'timezone_options' => $timezone_options,
+			'usergroup_names' => $usergroup_names,
 			'contact_data' => $contact_data,
 			'activity_stream' => $activity_stream,
 			'custom_fields' => $custom_fields,
 			'notes' => $notes,
 			'person_tickets' => $person_tickets,
 			'person_tickets_count' => $person_tickets_count,
+			'custom_fields' => $custom_fields,
 		));
 	}
 
@@ -173,11 +184,7 @@ class PersonController extends AbstractController
 
 	public function ajaxSaveAction($person_id)
 	{
-		if ($person_id) {
-			$person = $this->getPersonOr404($person_id);
-		} else {
-			$person = new Person();
-		}
+		$person = $this->getPersonOr404($person_id);
 
 		$this->em->beginTransaction();
 		$data = array(
@@ -254,6 +261,53 @@ class PersonController extends AbstractController
 		$this->em->commit();
 
 		return $this->createJsonResponse($data);
+	}
+
+	public function ajaxSaveCustomFieldsAction($person_id)
+	{
+		$person = $this->getPersonOr404($person_id);
+
+		$user_field_defs = App::getApi('custom_fields.people')->getEnabledFields();
+
+		if (!empty($_POST['custom_fields'])) {
+			foreach ($user_field_defs as $field_def) {
+				foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
+					$person->setCustomData($info[0], $info[1], $info[2]);
+				}
+			}
+
+			App::getOrm()->persist($person);
+			App::getOrm()->flush();
+		}
+
+		// Custom fields
+		$user_data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $user_field_defs);
+
+		// We use this fieldgroup so the form names are part of custom_fields array: custom_fields[field_1] etc
+		// So dont remove it even though it looks like it's not used! :-)
+		$custom_fields_form = $this->get('form.factory')->createNamedBuilder('form', 'custom_fields');
+		$custom_fields = App::getApi('custom_fields.people')->getFieldsDisplayArray($user_field_defs, $user_data_structured, $custom_fields_form);
+
+		// Usergroups
+		$db = App::getDb();
+		$db->delete('person2usergroups', array('person_id' => $person['id']));
+
+		foreach ($usergroups as $u) {
+			$db->insert('person2usergroups', array(
+				'person_id' => $person['id'],
+				'usergroup_id' => $u
+			));
+		}
+
+		$usergroup_names = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames();
+		$person_usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getByIds($this->in->getCleanValueArray('usergroups', 'uint', 'discard'));
+
+		return $this->render('AgentBundle:Person:view-customfields-rendered-rows.html.twig', array(
+			'person' => $person,
+			'custom_fields' => $custom_fields,
+			'usergroup_names' => $usergroup_names,
+			'person_usergroups' => $person_usergroups,
+		));
 	}
 
 	public function changePictureOverlayAction($person_id)
@@ -545,58 +599,6 @@ class PersonController extends AbstractController
 		);
 
 		return $this->createJsonResponse($data);
-	}
-
-	############################################################################
-	# ajax-save-custom-fields
-	############################################################################
-
-	public function ajaxSaveCustomFieldsAction($person_id)
-	{
-		$person = $this->getPersonOr404($person_id);
-
-		$field_defs = App::getApi('custom_fields.people')->getEnabledFields();
-		foreach ($field_defs as $field_def) {
-			foreach ($field_def->getHandler()->getDataFromForm($_POST['custom_fields']) as $info) {
-				$person->setCustomData($info[0], $info[1], $info[2]);
-			}
-		}
-
-		App::getOrm()->persist($person);
-		App::getOrm()->flush();
-
-		$data_structured = App::getApi('custom_fields.util')->createDataHierarchy($person['custom_data'], $field_defs);
-		$custom_fields = array();
-		foreach ($field_defs as $f_def) {
-			$f = $f_def->getHandler()->getFormField();
-
-			$custom_fields[] = array(
-				'field_def' => $f_def,
-				'title' => $f_def['title'],
-				'rendered' => $data_structured[$f_def['id']] ? $f_def->getHandler()->renderHtml($data_structured[$f_def['id']]) : false
-			);
-		}
-
-		// Usergroups
-		$db = App::getDb();
-		$db->delete('person2usergroups', array('person_id' => $person['id']));
-
-		$usergroups = $this->in->getCleanValueArray('usergroups', 'uint', 'discard');
-		if (!$usergroups) return;
-
-		foreach ($usergroups as $u) {
-			$db->insert('person2usergroups', array(
-				'person_id' => $person['id'],
-				'usergroup_id' => $u
-			));
-		}
-
-		$usergroups = App::getEntityRepository('DeskPRO:Usergroup')->getUsergroupNames($usergroups);
-
-		return $this->createJsonResponse(array(
-			'custom_fields_html' => $this->renderView('AgentBundle:Person:custom-fields-rendered.html.twig', array('custom_fields' => $custom_fields)),
-			'usergroup_names' => array_values($usergroups)
-		));
 	}
 
 	############################################################################

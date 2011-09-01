@@ -18,7 +18,49 @@
 {# Box Contact #}
 <div class="table-container">
 	<div class="table-title">
+		{% if custom_fields|length %}
+			<button class="clean-gray xxx-small show-edit-custom-fields" style="float:right">edit</button>
+		{% endif %}
 		<h4>Properties</h4>
+	</div>
+	<div class="table-content contact-list contact-list-wrapper">
+		<table cellpadding="0" cellspacing="0" width="100%" class="props-table">
+			<tbody>
+				<tr>
+					<td colspan="2">
+						<div class="people-tags tags-wrap">
+							<span class="tag-icon"></span>
+							<ul>
+								{% for label in ticket.labels %}
+									<li><span>{{label.label}}</span></li>
+								{% endfor %}
+							</ul>
+						</div>
+					</td>
+				</tr>
+			</tbody>
+			{% if custom_fields|length %}
+				<tbody id="{{baseId}}_custom_fields_rendered">
+					{% include 'AgentBundle:Person:view-customfields-rendered-rows.html.twig' %}
+				</tbody>
+				<tbody id="{{baseId}}_custom_fields_editable" style="display: none">
+					{% include 'AgentBundle:Person:view-customfields-edit-rows.html.twig' %}
+					<tr>
+						<td colspan="2" style="text-align: center;">
+							<button class="clean-gray xxx-small save-custom-fields">Save</button>
+						</td>
+					</tr>
+				</tbody>
+			{% endif %}
+		</table>
+	</div>
+</div>
+{# /Box Contact #}
+
+{# Box Contact #}
+<div class="table-container">
+	<div class="table-title">
+		<h4>Inforation</h4>
 	</div>
 	<div class="table-content">
 		<table cellpadding="0" cellspacing="0" width="100%" class="props-table">

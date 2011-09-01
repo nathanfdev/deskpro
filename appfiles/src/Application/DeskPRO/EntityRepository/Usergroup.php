@@ -82,6 +82,16 @@ class Usergroup extends EntityRepository
 		return $this->_agent_usergroup_names;
 	}
 
+	public function getByIds(array $ids)
+	{
+		return $this->getEntityManager()->createQuery("
+			SELECT u
+			FROM DeskPRO:Usergroup u INDEX BY u.id
+			WHERE u.id IN (" . implode(',', $ids) . ")
+			ORDER BY u.id DESC
+		")->execute();
+	}
+
 
 	/**
 	 * Invalidates caches

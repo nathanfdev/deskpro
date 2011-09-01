@@ -152,7 +152,6 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 
 		this.changePic = new DeskPRO.Agent.PageFragment.Page.PersonHelper.ChangePic(this);
 
-		return;
 		this._initLabels();
 		this._initCustomFieldsEditor();
 	},
@@ -276,85 +275,41 @@ DeskPRO.Agent.PageFragment.Page.Person = new Class({
 	//# Custom fields
 	//#########################################################################
 
-	custom_fields_display: null,
-	custom_fields_edit: null,
 	_initCustomFieldsEditor: function() {
-		$('.person-custom-fields-edit:first', this.wrapper).click((function() {
-			this.showCustomFieldEditor();
-		}).bind(this));
 
-		this.custom_fields_display = $('.person-custom-fields:not(.edit)', this.wrapper);
-		this.custom_fields_edit = $('.person-custom-fields.edit', this.wrapper).detach().appendTo($('body'));
+		var fieldsRenderedWrap, fieldsEditWrap;
 
-		$('.close-trigger', this.custom_fields_edit).click((function() {
-			this.closeCustomFieldEditor();
-		}).bind(this));
+		fieldsRenderedWrap = this.fieldsRenderedWrap = this.getEl('custom_fields_rendered');
+		fieldsEditWrap = this.fieldsEditWrap = this.getEl('custom_fields_editable');
 
-		var self = this;
-		$('.save-trigger', this.custom_fields_edit).click((function() {
-			var fieldEls = $(':input', self.custom_fields_edit);
-			this._saveCustomFields(fieldEls);
-		}).bind(this));
-	},
-
-	showCustomFieldEditor: function() {
-
-		var width = this.custom_fields_display.width();
-		if (width < 350) width = 350;
-
-		this.custom_fields_edit.css({
-			position: 'absolute',
-			width: width,
-			'z-index': this.zIndex
-		});
-
-		this.custom_fields_edit.position({
-			my: 'right top',
-			at: 'right top',
-			of: $('.properties-info-list-wrap', this.wrapper)
-		});
-
-		this.custom_fields_edit.slideDown();
-	},
-
-	closeCustomFieldEditor: function() {
-		this.custom_fields_edit.slideUp();
-	},
-
-	_saveCustomFields: function(fieldEls) {
-		$('.buttons .loading-off', this.custom_fields_edit).hide();
-		$('.buttons .loading-on', this.custom_fields_edit).show();
-
-		var data = fieldEls.serializeArray();
-
-		$.ajax({
-			url: this.getMetaData('saveFieldsUrl'),
-			type: 'POST',
-			context: this,
-			data: data,
-			dataType: 'json',
-			success: function(data) {
-				this._handleSaveCustomFieldsSuccess(data);
+		var toggle = (function() {
+			if (fieldsRenderedWrap.is(':visible')) {
+				fieldsRenderedWrap.hide();
+				fieldsEditWrap.show();
+			} else {
+				fieldsEditWrap.hide();
+				fieldsRenderedWrap.show();
 			}
+		}).bind(this);;
+
+		$('.show-edit-custom-fields', this.wrapper).click(function() {
+			toggle();
 		});
-	},
 
-	_handleSaveCustomFieldsSuccess: function(data) {
-		$('.buttons .loading-on', this.custom_fields_edit).hide();
-		$('.buttons .loading-off', this.custom_fields_edit).show();
-		this.closeCustomFieldEditor();
+		$('.save-custom-fields', this.wrapper).click((function() {
+			var formData = $('input, select, textarea', fieldsEditWrap).serializeArray();
 
-		$('.wrap', this.custom_fields_display).html(data.custom_fields_html);
-
-		var uglist = $('ul.usergroups-list', this.wrapper).html('<li>' + data.usergroup_names.join('</li><li>') + '</li>');
-
-		// Make sure usergroups list is shown/hidden if there are groups
-		var ugwrapper = $('.usergroups-list-wrap', this.wrapper);
-		if ($('li', uglist).length) {
-			ugwrapper.show();
-		} else {
-			ugwrapper.hide();
-		}
+			$.ajax({
+				url: BASE_URL + 'agent/person/' + this.meta.person_id + '/ajax-save-custom-fields',
+				type: 'POST',
+				data: formData,
+				dataType: 'html',
+				success: function(rendered) {
+					fieldsRenderedWrap.empty().html(rendered);
+					toggle();
+				}
+			});
+		}).bind(this));
 	},
 
 	//#########################################################################
